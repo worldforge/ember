@@ -159,7 +159,11 @@ namespace Ogre
         virtual void _updateSceneGraph(Camera* cam);
 
         /** Recurses through the PagingLandScapeOctree determining which nodes are visible. */
+#ifdef PLSM2_EIHORT
+        virtual void _findVisibleObjects(Camera* cam, VisibleObjectsBoundsInfo *visibleBounds, bool onlyShadowCasters);
+#else
         virtual void _findVisibleObjects(Camera* cam, bool onlyShadowCasters);
+#endif
 
         /** Alerts each un-culled object, notifying it that it will be drawn.
         * Useful for doing calculations only on nodes that will be drawn, prior
@@ -314,6 +318,8 @@ namespace Ogre
             bool mCullCamera;
             /// cull camera flag
             bool mCullDebug;
+
+			String mDebugText;
         #endif //_VISIBILITYDEBUG
 
 
@@ -326,6 +332,8 @@ namespace Ogre
         void disableHardwareOcclusionTests();
 
         OctreeSet mOctreeSet;
+
+
     };
 
 

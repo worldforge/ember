@@ -99,7 +99,7 @@ namespace Ogre
                                                 pageSize, 
                                                 pageSize, 
                                                 1, 
-                                                PF_BYTE_RGB, 
+                                                PF_R8G8B8A8, 
                                                 true);
 
 					BaseImage.resize(pageSize - 1, 

@@ -6,6 +6,7 @@
 
 namespace Ogre
 {
+	struct VisibleObjectsBoundsInfo;
     class OcclusionElement
     {
         public :
@@ -24,12 +25,12 @@ namespace Ogre
             //virtual void _addAlreadyNotifiedToVisibles(Camera* cam, RenderQueue* const q, const bool onlyShadowCasters) = 0;
             //virtual void notifyNodeObjects(Camera*  cam) = 0;
 
-	        virtual void traversal(Traversal&) = 0;
-	        virtual void traversal(const TraversalConst&) = 0;
-	        virtual void traversal(const ConstTraversalConst&) const = 0;
+	        virtual void traversal(Traversal&, VisibleObjectsBoundsInfo * const visibleBounds) = 0;
+	        virtual void traversal(const TraversalConst&, VisibleObjectsBoundsInfo * const visibleBounds) = 0;
+	        virtual void traversal(const ConstTraversalConst&, VisibleObjectsBoundsInfo * const visibleBounds) const = 0;
 
-            virtual const AxisAlignedBox getCullBoundingBox() const = 0;           
-            virtual const Vector3 &getHalfSize() const = 0;
+            virtual const AxisAlignedBox &getCullBoundingBox() const = 0;           
+            virtual const Vector3        &getHalfSize() const = 0;
                
             #ifdef _VISIBILITYDEBUG
                 DebugRectangle2D *getRectangle2d(SceneManager *scnMgr);

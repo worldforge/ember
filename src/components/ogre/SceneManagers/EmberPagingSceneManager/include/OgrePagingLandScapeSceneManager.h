@@ -23,6 +23,8 @@
 #include "OgrePagingLandScapeOptions.h"
 #include "OgreStringVector.h"
 
+#include "OgrePagingLandScapeData2DManager.h"
+
 namespace Ogre
 {
     
@@ -153,7 +155,7 @@ namespace Ogre
 	    bool hasOption(const String& strKey) const;
 
 	    /** Method for getting all possible values for a specific option. When this list is too large
-		    (i.e. the option expects, for example, a Real), the return value will be true, but the
+		    (i.e. the option expects, for example, aOgre::Real), the return value will be true, but the
 		    list will contain just one element whose size will be set to 0.
 		    Otherwise, the list will be filled with all the possible values the option can
 		    accept.
@@ -204,6 +206,23 @@ namespace Ogre
 	    */
 	    //void _findVisibleObjects(Camera * cam, bool onlyShadowCasters);
 
+        /** Creates an AxisAlignedBoxSceneQuery for this scene manager. 
+        @remarks
+            This method creates a new instance of a query object for this scene manager, 
+            for an axis aligned box region. See SceneQuery and AxisAlignedBoxSceneQuery 
+            for full details.
+			Currently this only supports custom geometry results.  It ignores the y
+			coords of the AABB.
+        @par
+            The instance returned from this method must be destroyed by calling
+            SceneManager::destroyQuery when it is no longer required.
+        @param box Details of the box which describes the region for this query.
+        @param mask The query mask to apply to this query; can be used to filter out
+            certain objects; see SceneQuery for details.
+        */
+        AxisAlignedBoxSceneQuery* createAABBQuery(const AxisAlignedBox& box, unsigned long mask = 0xFFFFFFFF);
+
+
 	    /** Creates a RaySceneQuery for this scene manager. 
 		    @remarks
 			    This method creates a new instance of a query object for this scene manager, 
@@ -241,7 +260,7 @@ namespace Ogre
             @param result 
                 where it intersects with terrain
         */
-        bool intersectSegment(const Vector3& start, const Vector3& end, Vector3* result);
+        bool intersectSegment(const Ogre::Vector3& start, const Ogre::Vector3& end, Ogre::Vector3* result);
     
         /** intersectSegment 
             @remarks
@@ -253,28 +272,28 @@ namespace Ogre
             @param result 
                 where it intersects with terrain
         */
-        bool intersectSegmentTerrain(const Vector3& begin, const Vector3& dir, Vector3* result);
+        bool intersectSegmentTerrain(const Ogre::Vector3& begin, const Ogre::Vector3& dir, Ogre::Vector3* result);
         /** load
         * @remarks load heights only LandScape, need brush and brush scale to be set before
         * @param &impact  where load take place, where BrushArray is centered
         */
-        void setHeight (const Vector3 &impact);
+        void setHeight (const Ogre::Vector3 &impact);
         /** deform
         * @remarks deform only LandScape, need brush and brush scale to be set before
         * @param &impact  where deformation take place, where BrushArray is centered
         */
-        void deformHeight(const Vector3& impact);
+        void deformHeight(const Ogre::Vector3& impact);
         /** paint
         * @remarks paint only LandScape, need channel, brush and brush scale to be set before
         * @param impact  where painting take place
         * @param isAlpha  if we want to paint alpha or color
         */
-        void paint (const Vector3 &impact);
+        void paint (const Ogre::Vector3 &impact);
         /** getAreaHeight
         * @remarks used to fill user allocated array with values.
         * @param impact  where array is centered
         */
-        void getAreaHeight(const Vector3& impact); 
+        void getAreaHeight(const Ogre::Vector3& impact); 
 
 		/** renderBaseTextures()
 		* @remarks Performs render to texture for all pages to create base textures from
@@ -285,17 +304,28 @@ namespace Ogre
 		void renderBaseTextures(const String& alternateMatName); 
 
 	    /** Overridden from SceneManager */
-	    void setWorldGeometryRenderQueue(RenderQueueGroupID qid);
+	    void setWorldGeometryRenderQueue(uint8 qid);
 
         void PagingLandScapeOctreeResize(void);
 
         void WorldDimensionChange(void);
 
-        _OgrePagingLandScapeExport float getHeightAt(const Real x, const Real z);
-        _OgrePagingLandScapeExport float getSlopeAt(const Real x, const Real z);
+        //-----------------------------------------------------------------------
+        inline Ogre::Real _OgrePagingLandScapeExport getHeightAt(const Ogre::Real x, const Ogre::Real z)
+        {
+            return mData2DManager->getInterpolatedWorldHeight(x, z);
+        }
+        //-----------------------------------------------------------------------
+        inline Ogre::Real _OgrePagingLandScapeExport getSlopeAt(const Ogre::Real x, const Ogre::Real z)
+        {
+           Ogre::Real slope;
+            //      return mData2DManager->getRealWorldSlope(x, z);
+            mData2DManager->getInterpolatedWorldHeight(x, z, &slope);
+            return slope;
+        }
 
-        _OgrePagingLandScapeExport void  getWorldSize(Real *worldSizeX, Real *worldSizeZ);
-        _OgrePagingLandScapeExport float getMaxSlope(Vector3 location1, Vector3 location2, float maxSlopeIn);
+        _OgrePagingLandScapeExport void  getWorldSize(Real *worldSizeX,Ogre::Real *worldSizeZ);
+        _OgrePagingLandScapeExport float getMaxSlope(Vector3 location1, Ogre::Vector3 location2, float maxSlopeIn);
 
         inline PagingLandScapeOptions                 * getOptions()
         {
@@ -409,18 +439,20 @@ namespace Ogre
         bool mWorldGeomIsInit;
 
         PagingLandScapeTileInfo* mImpactInfo;
-        Vector3 mImpact;  
-        Vector3 mBrushCenter;
+        Ogre::Vector3 mImpact;  
+        Ogre::Vector3 mBrushCenter;
         unsigned int mBrushSize;
-        Real mBrushScale;
+       Ogre::Real mBrushScale;
 
-        Real* mCraterArray;
-        Real* mBrushArray;
+       Ogre::Real* mCraterArray;
+       Ogre::Real* mBrushArray;
 
         unsigned int mBrushArrayHeight;
         unsigned int mBrushArrayWidth;
 
 		bool textureFormatChanged;
+
+		MovableObjectFactory* mMeshDecalFactory;
 
         // re-create the default Crater brush.
         void resizeCrater ();  

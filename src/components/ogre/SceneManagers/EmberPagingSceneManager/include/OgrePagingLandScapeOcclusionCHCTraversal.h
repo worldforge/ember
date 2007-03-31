@@ -15,8 +15,8 @@ namespace Ogre
     class CHCTraversal : public TraversalConst 
     {
 	    public:
-		    virtual void onTree(PagingLandScapeOctree& n) const;
-		    virtual void onLeaf(PagingLandScapeOctreeNode& n) const ;
+		    virtual void onTree(PagingLandScapeOctree& n, VisibleObjectsBoundsInfo * const visibleBounds ) const;
+		    virtual void onLeaf(PagingLandScapeOctreeNode& n, VisibleObjectsBoundsInfo * const visibleBounds ) const ;
 
 		    CHCTraversal(FrontToBackNodeSorterPriorityQueue& vStack, Occlusion& o);
 

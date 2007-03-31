@@ -100,16 +100,44 @@ namespace Ogre
 			@param x	result placed in reference to the x index of the page
 			@param z	result placed in reference to the z index of the page
 			*/
-			bool getPageIndices(const Real posx, const Real posz, unsigned int& x, unsigned int& z, bool alwaysAnswer) const;
-
+            inline bool getPageIndices(const Real posx, const Real posz, unsigned int& x, unsigned int& z, bool alwaysAnswer) const
+            {
+                if (alwaysAnswer)
+                {
+                    getNearestPageIndicesUnscaled(posx * mOptions->invScale.x, posz* mOptions->invScale.z, x, z);
+                    return true;
+                }
+                else
+                {
+                    return getRealPageIndicesUnscaled(posx * mOptions->invScale.x, posz* mOptions->invScale.z, x, z);
+                }
+            }
 			/** Get the Page indices from a position, returning page only if position is in.
 			@param posx the world position vector but unscaled. 
 			@param posz the world position vector but unscaled.  
 			@param x	result placed in reference to the x index of the page
 			@param z	result placed in reference to the z index of the page
 			*/
-			bool getRealPageIndicesUnscaled(const Real posx, const Real posz, unsigned int& x, unsigned int& z) const; 
+		    inline bool getRealPageIndicesUnscaled(const Real posx, const Real posz, 
+                                                    unsigned int& x, unsigned int& z) 
+                                                    const
+           {      
+                const Real lx = ((posx + mOptions->maxUnScaledX) * mOptions->invPageSizeMinusOne);
+                const Real lz = ((posz + mOptions->maxUnScaledZ) * mOptions->invPageSizeMinusOne);
 
+                // make sure indices are not negative or outside range of number of pages
+                if (lx >= mOptions->world_width || lx < static_cast <Real> (0.0) || 
+                    lz >= mOptions->world_height || lz < static_cast <Real> (0.0) )
+                {
+                    return false;
+                }
+                else 
+                {
+                    x = static_cast< unsigned int > (lx);
+                    z = static_cast< unsigned int > (lz);
+                    return true;
+                }
+            }
 			/** Get the Page indices from a position, always returning a page.
 			@param posx the world position vector but unscaled. 
 			@param posz the world position vector but unscaled.  
@@ -134,7 +162,31 @@ namespace Ogre
 			@param x	result placed in reference to the x index of the page
 			@param z	result placed in reference to the z index of the page
 			*/
-			bool getRealTileIndicesUnscaled(const Real posx, const Real posz, const unsigned int pagex, const unsigned int pagez, unsigned int& x, unsigned int& z) const;
+			inline bool getRealTileIndicesUnscaled(const Real posx, const Real posz, 
+                                                    const unsigned int pagex, const unsigned int pagez, 
+                                                    unsigned int& x, unsigned int& z) const
+            {
+                // adjust x and z to be local to page
+                const int pSize = mOptions->PageSize - 1;
+                const int tilex = static_cast< int >((posx - ((pagex * pSize) - mOptions->maxUnScaledX)) * mOptions->invTileSizeMinusOne); 
+                const int tilez = static_cast< int >((posz - ((pagez * pSize) - mOptions->maxUnScaledZ)) * mOptions->invTileSizeMinusOne);
+
+            
+                const int tilesPerPage = static_cast< int >(mOptions->NumTiles);
+                //const int tilesPerPage = static_cast< int >(mOptions->NumTiles(pSize * inv_tSize) - 1);
+
+                if (tilex > tilesPerPage || tilex < 0 || 
+                    tilez > tilesPerPage || tilez < 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    x = static_cast< unsigned int >(tilex);
+                    z = static_cast< unsigned int >(tilez);
+                    return true;
+                }
+            }
 
 			/** Get the Tile indices from a position, returning tile only if position is in.
 			@param posx the world position vector but unscaled. 
@@ -155,7 +207,7 @@ namespace Ogre
 			bool frameStarted(const FrameEvent& evt);
 			bool frameEnded(const FrameEvent& evt);
 
-			void setWorldGeometryRenderQueue(RenderQueueGroupID qid);
+			void setWorldGeometryRenderQueue(uint8 qid);
 			RenderQueueGroupID getRenderQueueGroupID(void)
 			{
 				return mRenderQueueGroupID;

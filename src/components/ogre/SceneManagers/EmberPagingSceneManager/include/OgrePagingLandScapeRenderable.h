@@ -144,8 +144,9 @@ namespace Ogre
 		virtual Technique* getTechnique(void) const;
 		
 		virtual Real getSquaredViewDepth(const Camera* cam) const;
-		
-		virtual Real getBoundingRadius(void) const;
+
+        /** Overridden from MovableObject */
+        Real getBoundingRadius(void) const { return mBoundingRadius; }
 		
 		/// Overridden from Renderable to allow the morph LOD entry to be set
 		void _updateCustomGpuParameter(const GpuProgramParameters::AutoConstantEntry& constantEntry, GpuProgramParameters* params) const;
@@ -167,6 +168,7 @@ namespace Ogre
         
         bool mQueued;
         PagingLandScapeTile *mParentTile;
+
 
 	protected:	
 
@@ -231,7 +233,10 @@ namespace Ogre
 
         PagingLandScapeRenderableManager *mParent;
 
+        /// The bounding radius of this renderable
+        Real mBoundingRadius;
     private :            
+
 
             Image::Box mRect;
             bool        mIsRectModified;

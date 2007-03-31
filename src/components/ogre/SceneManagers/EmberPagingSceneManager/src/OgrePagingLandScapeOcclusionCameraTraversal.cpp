@@ -15,24 +15,24 @@
 namespace Ogre
 {
     //-----------------------------------------------------------------------
-    void RegisterCameraTraversal::onTree(PagingLandScapeOctree& n) const 
+    void RegisterCameraTraversal::onTree(PagingLandScapeOctree& n, VisibleObjectsBoundsInfo * const visibleBounds) const 
     {
         n.addCamNodeData (cam);
-        traverseChildren (n);
+        traverseChildren (n, visibleBounds);
     }
     //-----------------------------------------------------------------------
-    void RegisterCameraTraversal::onLeaf(PagingLandScapeOctreeNode& n) const 
+    void RegisterCameraTraversal::onLeaf(PagingLandScapeOctreeNode& n, VisibleObjectsBoundsInfo * const visibleBounds) const 
     {
         n.addCamNodeData (cam);
     }
     //-----------------------------------------------------------------------
-    void UnregisterCameraTraversal::onTree(PagingLandScapeOctree& n) const 
+    void UnregisterCameraTraversal::onTree(PagingLandScapeOctree& n, VisibleObjectsBoundsInfo * const visibleBounds) const 
     {
         n.removeCamNodeData (cam);
-        traverseChildren (n);
+        traverseChildren (n, visibleBounds);
     }
     //-----------------------------------------------------------------------
-    void UnregisterCameraTraversal::onLeaf(PagingLandScapeOctreeNode& n) const 
+    void UnregisterCameraTraversal::onLeaf(PagingLandScapeOctreeNode& n, VisibleObjectsBoundsInfo * const visibleBounds) const 
     {
         n.removeCamNodeData (cam);
     } 

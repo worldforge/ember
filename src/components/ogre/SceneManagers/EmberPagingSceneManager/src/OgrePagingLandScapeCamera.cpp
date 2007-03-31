@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright © 2000-2004 The OGRE Team
+Copyright Â© 2000-2004 The OGRE Team
 Also see acknowledgements in Readme.html
 
 This program is free software; you can redistribute it and/or modify it under
@@ -197,43 +197,41 @@ namespace Ogre
         //(static_cast <PagingLandScapeSceneManager*> (getSceneManager())->resize());
     }
     //-----------------------------------------------------------------------
+
     bool PagingLandScapeCamera::isVisible(const AxisAlignedBox &bound) const
     {
-        // Null boxes always invisible
-        if (bound.isNull())
-            return false;
 
-        // Make any pending updates to the calculated frustum
-        Camera::updateView();
+		// Null boxes always invisible
+		assert (!bound.isNull());
+		// Infinite boxes always visible
+		assert (!bound.isInfinite());
+	
 
-        // Get corners of the box
-        const Vector3 * ogre_restrict const pCorners = bound.getAllCorners();
+		// Get centre of the box
+		const Vector3 &centre (bound.getCenter());
+		// Get the half-size of the box
+		const Vector3 &halfSize =(bound.getHalfSize());
 
 		// For each plane, see if all points are on the negative side
 		// If so, object is not visible
-        const bool infinite_far_clip = (mFarDist == 0);
-        for (unsigned int plane = 0; plane < 6; ++plane)
-        {
-            // Skip far plane if infinite view frustum
-            if (infinite_far_clip && plane == FRUSTUM_PLANE_FAR)
-                continue;
+		const bool infinite_far_clip = (mFarDist == 0);
+		for (unsigned int plane = 0; plane < 6; ++plane)
+		{
+			// Skip far plane if infinite view frustum
+			if (plane == FRUSTUM_PLANE_FAR && infinite_far_clip)
+				continue;
 
-            const Plane * ogre_restrict const frustumPlane = &mFrustumPlanes[ plane ];
-
-			if (frustumPlane->getSide(pCorners[0]) == Plane::NEGATIVE_SIDE &&
-				frustumPlane->getSide(pCorners[1]) == Plane::NEGATIVE_SIDE &&
-				frustumPlane->getSide(pCorners[2]) == Plane::NEGATIVE_SIDE &&
-				frustumPlane->getSide(pCorners[3]) == Plane::NEGATIVE_SIDE &&
-				frustumPlane->getSide(pCorners[4]) == Plane::NEGATIVE_SIDE &&
-				frustumPlane->getSide(pCorners[5]) == Plane::NEGATIVE_SIDE &&
-				frustumPlane->getSide(pCorners[6]) == Plane::NEGATIVE_SIDE &&
-				frustumPlane->getSide(pCorners[7]) == Plane::NEGATIVE_SIDE)
+			const Plane::Side side = mFrustumPlanes[plane].getSide(centre, halfSize);
+			if (side == Plane::NEGATIVE_SIDE)
 			{
+				// ALL corners on negative side therefore out of view
 				return false;
 			}
-        }
-        return true;
+
+		}
+		return true;
     }
+ 
 }
 
 

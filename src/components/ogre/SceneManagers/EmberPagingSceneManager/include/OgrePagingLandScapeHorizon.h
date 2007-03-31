@@ -25,7 +25,7 @@ namespace Ogre
     class PagingLandScapeHorizon
     {
         public:
-	       PagingLandScapeHorizon(const PagingLandScapeOptions *options);
+	       PagingLandScapeHorizon(const PagingLandScapeOptions * const options);
            ~PagingLandScapeHorizon(void);
    
             void registerMinMaxHeightPage(const unsigned int pageX, const unsigned int pageZ, const Real minHeight, const Real maxHeight);
@@ -53,7 +53,7 @@ namespace Ogre
 
         private :
 
-            PagingLandScapeOptions*		mOptions;
+             const PagingLandScapeOptions *	const mOptions;
 
              bool calcVis(const Vector3& src, const Vector3& dest, const Real* const heightMap, const unsigned int mapWidth, const unsigned int mapHeight);
 

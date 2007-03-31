@@ -68,7 +68,9 @@ void PagingLandScapeOctreeSphereSceneQuery::execute(SceneQueryListener* listener
         while (oit.hasMoreElements())
         {
             MovableObject* m = oit.getNext();
-            if ((m->getQueryFlags() & mQueryMask) && m->isInScene() && mSphere.intersects(m->getWorldBoundingBox()))
+            if ((m->getQueryFlags() & mQueryMask) 
+                && m->isInScene() 
+                && mSphere.intersects(m->getWorldBoundingBox()))
             {
                 listener->queryResult(m);
             }

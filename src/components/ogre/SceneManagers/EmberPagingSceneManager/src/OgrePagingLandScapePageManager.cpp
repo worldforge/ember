@@ -59,7 +59,8 @@ namespace Ogre
         mCurrentcam(0),
         mTerrainReady(false),
         mTimePreLoaded(0),
-        mRenderQueueGroupID (RENDER_QUEUE_WORLD_GEOMETRY_2),
+        mRenderQueueGroupID (static_cast<Ogre::RenderQueueGroupID>(scnMgr->getWorldGeometryRenderQueue())),
+        //mRenderQueueGroupID (RENDER_QUEUE_WORLD_GEOMETRY_2),
 		mPageLoadInterval (mOptions->PageLoadInterval),
 		mOnFrame(false),
         mEnabled(false)
@@ -170,6 +171,9 @@ namespace Ogre
 
 		// unload some pages if no more in use
 		processUnloadQueues();
+		// load some pages that are still queued
+		processLoadQueues();
+
         if (!mTerrainReady && 
             mPagePreloadQueue.empty() && 
             mPageLoadQueue.empty() && 
@@ -182,6 +186,7 @@ namespace Ogre
         if (mOptions->VisMap)
             mSceneManager->getHorizon()->update();
 
+		mSceneManager->getTileManager()->unloadUntouched();
 		mRenderablesMgr->resetVisibles();
         return true;
     }
@@ -289,7 +294,11 @@ namespace Ogre
 	//-----------------------------------------------------------------------
 	void PagingLandScapePageManager::updateLoadedPages()
 	{
-		PagingLandScapeCamera *cam = mCurrentcam;
+		PagingLandScapeCamera * const cam = mCurrentcam;
+
+        // Make any pending updates to the calculated frustum
+        cam->updateView();
+
 		const Vector3 pos (cam->getDerivedPosition().x, 127.0f,cam->getDerivedPosition().z);
 		// hide page not visible by this Camera
 		// Notify those Page (update tile vis/ rend load on cam distance)
@@ -331,7 +340,6 @@ namespace Ogre
 
 
 
-		mSceneManager->getTileManager ()->updateLoadedTiles();
 		if (lightchange)
 			mOptions->lightmoved = false;
 	}
@@ -423,7 +431,7 @@ namespace Ogre
 
 	    //updateStats(pos);
 
-		bool need_touch = (mTimePreLoaded < 0);
+		bool need_touch = false;//(mTimePreLoaded < 0);
 	
 	    if (cam->mLastCameraPos != pos
 			&& (mOptions->cameraThreshold < fabs (cam->mLastCameraPos.x - pos.x) ||
@@ -487,7 +495,6 @@ namespace Ogre
         if (need_touch) 
 			queuePageNeighbors();
         updateLoadedPages();
-		processLoadQueues();
 		//if (mNextQueueFrameCount < 0)
 			mRenderablesMgr->executeRenderableLoading(pos);
 
@@ -505,7 +512,7 @@ namespace Ogre
 		PagingLandScapePageList::iterator itl;
 		for (itl = mPreLoadedPages.begin (); itl != mPreLoadedPages.end ();)
 		{
-			if ((*itl)->touched ())
+			if ((*itl)->unloadUntouched ())
 			{
 				p = *itl;
 				releasePage (p);
@@ -518,7 +525,7 @@ namespace Ogre
 		}
 		for (itl = mTextureLoadedPages.begin (); itl != mTextureLoadedPages.end ();)
 		{
-			if ((*itl)->touched ())
+			if ((*itl)->unloadUntouched ())
 			{
 				p = *itl;
 				releasePage (p);
@@ -531,7 +538,7 @@ namespace Ogre
 		}
 		for (itl = mLoadedPages.begin (); itl != mLoadedPages.end ();)
 		{             
-			if ((*itl)->touched ())
+			if ((*itl)->unloadUntouched ())
 			{
 				p = *itl;
 				releasePage (p);
@@ -550,7 +557,7 @@ namespace Ogre
 		{
 			assert (!(*itq)->isLoaded() && !(*itq)->isPreLoaded() && !(*itq)->isTextureLoaded());
 		    assert (!(*itq)->mIsLoading && !(*itq)->mIsTextureLoading);
-			if ((*itq)->touched ())
+			if ((*itq)->unloadUntouched ())
 			{
 				p = *itq;
 				// remove from queue
@@ -569,7 +576,7 @@ namespace Ogre
 		{
 			assert (!(*itq)->isLoaded() && (*itq)->isPreLoaded() && !(*itq)->isTextureLoaded());
 		    assert (!(*itq)->mIsLoading && (*itq)->mIsTextureLoading && !(*itq)->mIsPreLoading);
-			if ((*itq)->touched ())
+			if ((*itq)->unloadUntouched ())
 			{
 				p = *itq;
 				// remove from queue
@@ -588,7 +595,7 @@ namespace Ogre
 		{
 			assert (!(*itq)->isLoaded());
 		    assert ((*itq)->mIsLoading && !(*itq)->mIsTextureLoading && !(*itq)->mIsPreLoading);
-			if ((*itq)->touched ())
+			if ((*itq)->unloadUntouched ())
 			{
 				p = *itq;
 				// remove from queue
@@ -611,52 +618,57 @@ namespace Ogre
 		// to minimize fps impact
 		if (mNextQueueFrameCount-- < 0)
 		{
-			const Vector3 pos (mCurrentcam->getDerivedPosition().x, 
-			                    127.0f, 
-			                    mCurrentcam->getDerivedPosition().z);
-
-			//	We to Load nearest page in non-empty queue
-			if (!mPageLoadQueue.empty ())
+			SceneManager::CameraIterator camIt = mSceneManager->getCameraIterator();
+			while (camIt.hasMoreElements())
 			{
-			    //	We to Load nearest page in non-empty queue
-				PagingLandScapePage *p = mPageLoadQueue.find_nearest (pos);
-                assert (p && !p->isLoaded ());
-                assert (!p->mIsTextureLoading && !p->mIsPreLoading);
-				p->load ();
+				Camera const * const currentCamera = camIt.getNext();
+				const Vector3 pos (currentCamera->getDerivedPosition().x, 
+									127.0f, 
+									currentCamera->getDerivedPosition().z);
 
-				p->mIsLoading = false;   
-				mLoadedPages.push_back (p);
-				mTextureLoadedPages.remove (p);
-				mNextQueueFrameCount = mPageLoadInterval;
-			}
-			else if (!mPageTextureloadQueue.empty ())
-			{
-                //	We TextureLoad nearest page in non-empty queue
-				PagingLandScapePage *p = mPageTextureloadQueue.find_nearest (pos);
-                assert (p && !p->isTextureLoaded());
-                assert (!p->mIsLoading && !p->mIsPreLoading);
-				p->loadTexture ();
+				//	We to Load nearest page in non-empty queue
+				if (!mPageLoadQueue.empty ())
+				{
+					//	We to Load nearest page in non-empty queue
+					PagingLandScapePage *p = mPageLoadQueue.find_nearest (pos);
+					assert (p && !p->isLoaded ());
+					assert (!p->mIsTextureLoading && !p->mIsPreLoading);
+					p->load ();
 
-				p->mIsTextureLoading = false;   
-				mTextureLoadedPages.push_back (p);
-				mPreLoadedPages.remove (p);
-				// do not automatically push to level up.
-				//mPageLoadQueue.push (p);
-				mNextQueueFrameCount = mPageLoadInterval;
-			}
-			else if (!mPagePreloadQueue.empty ())
-			{
-			    //	We PreLoad nearest page in non-empty queue
-				PagingLandScapePage *p = mPagePreloadQueue.find_nearest (pos);
-                assert (p && !p->isPreLoaded());
-                assert (!p->mIsLoading && !p->mIsTextureLoading);
-				p->preload ();
+					p->mIsLoading = false;   
+					mLoadedPages.push_back (p);
+					mTextureLoadedPages.remove (p);
+					mNextQueueFrameCount = mPageLoadInterval;
+				}
+				else if (!mPageTextureloadQueue.empty ())
+				{
+					//	We TextureLoad nearest page in non-empty queue
+					PagingLandScapePage *p = mPageTextureloadQueue.find_nearest (pos);
+					assert (p && !p->isTextureLoaded());
+					assert (!p->mIsLoading && !p->mIsPreLoading);
+					p->loadTexture ();
 
-				p->mIsPreLoading = false;
-				mPreLoadedPages.push_back (p);
-				mPageTextureloadQueue.push (p);
-				p->mIsTextureLoading = true;
-				mNextQueueFrameCount = mPageLoadInterval;
+					p->mIsTextureLoading = false;   
+					mTextureLoadedPages.push_back (p);
+					mPreLoadedPages.remove (p);
+					// do not automatically push to level up.
+					//mPageLoadQueue.push (p);
+					mNextQueueFrameCount = mPageLoadInterval;
+				}
+				else if (!mPagePreloadQueue.empty ())
+				{
+					//	We PreLoad nearest page in non-empty queue
+					PagingLandScapePage *p = mPagePreloadQueue.find_nearest (pos);
+					assert (p && !p->isPreLoaded());
+					assert (!p->mIsLoading && !p->mIsTextureLoading);
+					p->preload ();
+
+					p->mIsPreLoading = false;
+					mPreLoadedPages.push_back (p);
+					mPageTextureloadQueue.push (p);
+					p->mIsTextureLoading = true;
+					mNextQueueFrameCount = mPageLoadInterval;
+				}
 			}
 		} // if (mNextQueueFrameCount-- < 0)
 	}
@@ -773,28 +785,6 @@ namespace Ogre
 	    x = static_cast< int >(((x / mOptions->scale.x) + mOptions->maxUnScaledX) * inv_pSize);
 	    z = static_cast< int >(((z / mOptions->scale.z) + mOptions->maxUnScaledZ) * inv_pSize);
     }
-    //-----------------------------------------------------------------------
-    bool PagingLandScapePageManager::getRealPageIndicesUnscaled(const Real posx, 
-        const Real posz, unsigned int& x, unsigned int& z) const
-    {
-        const Real inv_pSize = 1.0f / (mOptions->PageSize - 1);
-      
-	    const Real lx = ((posx + mOptions->maxUnScaledX) * inv_pSize);
-	    const Real lz = ((posz + mOptions->maxUnScaledZ) * inv_pSize);
-
-	    // make sure indices are not negative or outside range of number of pages
-	    if (lx >= mOptions->world_width || lx < 0.0f || 
-			lz >= mOptions->world_height || lz < 0.0f )
-	    {
-		   return false;
-	    }
-        else 
-        {
-            x = static_cast< unsigned int > (lx);
-            z = static_cast< unsigned int > (lz);
-            return true;
-        }
-    }
 
     //-----------------------------------------------------------------------
     void PagingLandScapePageManager::getNearestPageIndicesUnscaled(const Real posx, const Real posz, unsigned int& x, unsigned int& z) const
@@ -836,48 +826,8 @@ namespace Ogre
 		}
     }
 
-    //-----------------------------------------------------------------------
-    bool PagingLandScapePageManager::getPageIndices(const Real posx, const Real posz, unsigned int& x, unsigned int& z, bool alwaysAnswer) const
-    {
-        if (alwaysAnswer)
-        {
-            getNearestPageIndicesUnscaled(posx / mOptions->scale.x, posz / mOptions->scale.z, x, z);
-            return true;
-        }
-        else
-		{
-            return getRealPageIndicesUnscaled(posx / mOptions->scale.x, posz / mOptions->scale.z, x, z);
-		}
-    }
-    //-----------------------------------------------------------------------
-    bool PagingLandScapePageManager::getRealTileIndicesUnscaled(const Real posx, const Real posz, 
-                                                                const unsigned int pagex, const unsigned int pagez, 
-                                                                unsigned int& x, unsigned int& z) const
-    {
-		// adjust x and z to be local to page
-        const Real inv_tSize = 1.0f / (mOptions->TileSize - 1);
-        const int pSize = mOptions->PageSize - 1;
-
-        int tilex = static_cast< int >((posx - ((pagex * pSize) - mOptions->maxUnScaledX)) * inv_tSize); 
-        //- mOptions->maxUnScaledX
-
-        int tilez = static_cast< int >((posz - ((pagez * pSize) - mOptions->maxUnScaledZ)) * inv_tSize);
-        //- mOptions->maxUnScaledZ
-
-        const int tilesPerPage = static_cast< int >((pSize * inv_tSize) - 1);
-
-        if (tilex > tilesPerPage || tilex < 0 || tilez > tilesPerPage || tilez < 0)
-		{
-            return false;
-		}
-        else
-        {
-            x = static_cast< unsigned int >(tilex);
-            z = static_cast< unsigned int >(tilez);
-            return true;
-        }
-    }
-
+  
+    
     //-----------------------------------------------------------------------
     void PagingLandScapePageManager::getNearestTileIndicesUnscaled(const Real posx, const Real posz, 
                                                                     const unsigned int pagex, const unsigned int pagez, 
@@ -1041,9 +991,8 @@ namespace Ogre
 		return 0;
     }
     //-------------------------------------------------------------------------
-	void PagingLandScapePageManager::setWorldGeometryRenderQueue(RenderQueueGroupID qid)
-	{
-        mRenderQueueGroupID = qid;
+	void PagingLandScapePageManager::setWorldGeometryRenderQueue(uint8 qid)
+    {
         PagingLandScapePageList::iterator l, lend = mLoadedPages.end();
         for (l = mLoadedPages.begin(); l != lend; ++l)
         {

@@ -31,8 +31,7 @@ namespace Ogre
     Occlusion::Occlusion(unsigned  int visibilityThsd):                
                 mVisibilityTreshold(visibilityThsd),
 				mIsQueryPoolNotInitiated(true),
-				mFrameConservativeVisibility (300),
-				mCurrentCam(0)
+				mFrameConservativeVisibility (300)
     {
     };
     //-----------------------------------------------------------------------
@@ -213,13 +212,13 @@ namespace Ogre
     } 
     //-----------------------------------------------------------------------
     //this is the algorithm from the paper
-    void Occlusion::CHCtraversal(PagingLandScapeOctree *octree)
+    void Occlusion::CHCtraversal(PagingLandScapeOctree *octree, VisibleObjectsBoundsInfo * const visibleBounds)
     {
         if (mIsQueryPoolNotInitiated)
             initQueryPool ();
 
 		const unsigned int visibilityTreshold = mVisibilityTreshold;
-        const Vector3 &camPos = mCurrentCam->getPosition();
+        const Vector3 &camPos = mCurrentCam->getDerivedPosition();
 	    FrontToBackNodeSorterPriorityQueue traversalStack = FrontToBackNodeSorterPriorityQueue(FrontToBackNodeSorterOperator (camPos));
 
         //draw leaves, stack otherwise   
@@ -260,7 +259,8 @@ namespace Ogre
                     
 				    // Traverse for sure this visible node
                     // And therefore check children
- 					node.traversal (toStackTraversal);      
+ 					node.traversal (toStackTraversal, visibleBounds);      
+					//node.traversal (toStackTraversal, 0);      
                 }
 		    }
 		    //2nd part
@@ -311,7 +311,8 @@ namespace Ogre
                         {
                             // skip testing previously visible node 
                             // (interior nodes in hierarchy)
-					        node.traversal (toStackTraversal);
+					        node.traversal (toStackTraversal, visibleBounds);
+							//node.traversal (toStackTraversal, 0);
 				        }
                         else
                         {
@@ -335,7 +336,7 @@ namespace Ogre
     }
     //-----------------------------------------------------------------------
     //this is the algorithm from the paper, conservative way.
-    void Occlusion::CHCtraversalConservative(PagingLandScapeOctree *octree)
+    void Occlusion::CHCtraversalConservative(PagingLandScapeOctree *octree, VisibleObjectsBoundsInfo * const visibleBounds)
     {
 
 		const unsigned int frameConservativeVisibility = mFrameConservativeVisibility;
@@ -344,7 +345,8 @@ namespace Ogre
         if (mIsQueryPoolNotInitiated)
             initQueryPool ();
 
-        const Vector3 &camPos = mCurrentCam->getPosition();
+        
+        const Vector3 &camPos = mCurrentCam->getDerivedPosition();
 	    FrontToBackNodeSorterPriorityQueue traversalStack = FrontToBackNodeSorterPriorityQueue(FrontToBackNodeSorterOperator (camPos));
 
         //draw leaves, stack otherwise   
@@ -385,7 +387,8 @@ namespace Ogre
                     
 				    // Traverse for sure this visible node
                     // And therefore check children
- 					node.traversal (toStackTraversal);      
+ 					node.traversal (toStackTraversal, visibleBounds);      
+					//node.traversal (toStackTraversal, 0);      
                 }
 		    }
 		    //2nd part
@@ -426,7 +429,8 @@ namespace Ogre
                             vis->notified = true;
                         }
 				        pullUpVisibility (node);
-                        node.traversal (toStackTraversal);
+                        node.traversal (toStackTraversal, visibleBounds);
+						//node.traversal (toStackTraversal, 0);
                     }
                     else
                     {
@@ -464,7 +468,8 @@ namespace Ogre
                             {
                                 // skip testing previously visible node 
                                 // (interior nodes in hierarchy)
-					            node.traversal (toStackTraversal);
+					            node.traversal (toStackTraversal, visibleBounds);
+								//node.traversal (toStackTraversal, 0);
 				            }
                             else
                             {

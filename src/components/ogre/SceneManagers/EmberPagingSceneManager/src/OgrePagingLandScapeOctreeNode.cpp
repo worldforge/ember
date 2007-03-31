@@ -122,9 +122,12 @@ namespace Ogre
     */
     bool PagingLandScapeOctreeNode::_isIn(const AxisAlignedBox &box) const
     {
-	    // Always fail if not in the scene graph
-	    if (!mIsInSceneGraph) 
-            return false;
+	    // Always fail if not in the scene graph or box is null
+		if (!mIsInSceneGraph || box.isNull()) 
+			return false;
+		// Always succeed if AABB is infinite
+		if (box.isInfinite())
+			return true;
 
         // Object Bounding Box Center
         const Vector3 center = mWorldAABB.getMaximum().midPoint(mWorldAABB.getMinimum());
@@ -134,15 +137,28 @@ namespace Ogre
         const Vector3 &bmax = box.getMaximum();
 
         // Object Bbox center is IN Octree BBox ?
-        return (bmax.x >= center.x && bmax.y >= center.y && bmax.z >= center.z &&
-                bmin.x <= center.x && bmin.y <= center.y && bmin.z <= center.z);
+
+        const bool centre  = bmax.x >= center.x && bmax.y >= center.y && bmax.z >= center.z &&
+                             bmin.x <= center.x && bmin.y <= center.y && bmin.z <= center.z;
+        if (!centre)
+          		return false;
+        
+         // Even if covering the centre line, need to make sure this BB is not large
+        // enough to require being moved up into parent. When added, bboxes would
+        // end up in parent due to cascade but when updating need to deal with
+        // bbox growing too large for this child
+        const Vector3 octreeSize (bmax - bmin);
+        const Vector3 nodeSize (mWorldAABB.getMaximum() - mWorldAABB.getMinimum());
+
+        return (nodeSize < octreeSize);
 
     }
     //-----------------------------------------------------------------------
      /** Adds the attached objects of this PagingLandScapeOctreeScene node into the queue. */
     void PagingLandScapeOctreeNode::_addToRenderQueue(Camera*  cam, 
                                         RenderQueue * const queue, 
-                                        const bool onlyShadowCasters)
+										const bool onlyShadowCasters,
+										VisibleObjectsBoundsInfo* visibleBounds)
     {
         ObjectMap::iterator mit = mObjectsByName.begin();
 
@@ -155,10 +171,14 @@ namespace Ogre
             if (mo->isVisible() &&
                 (!onlyShadowCasters || mo->getCastShadows()))
             {
-                mo->_updateRenderQueue(queue);
-            }
-
-
+				mo->_updateRenderQueue(queue);
+					
+				if (visibleBounds)
+				{
+					visibleBounds->merge(mo->getWorldBoundingBox(true), 
+										 mo->getWorldBoundingSphere(true), cam);
+				}
+			}
             ++mit;
         }
         
@@ -205,7 +225,7 @@ namespace Ogre
     {
 		// if we detach 1 object, after the return, 
 		// there's none left so we reset the thing.
-        if (1 == mObjectsByName.size())
+        if (!mObjectsByName.empty() && 1 == mObjectsByName.size())
         {
             mIsStaticNode = true;
             mIsOccluder = true;
@@ -216,7 +236,7 @@ namespace Ogre
     //-----------------------------------------------------------------------
     MovableObject* PagingLandScapeOctreeNode::detachObject(const String& name)
     {        
-        if (1 == mObjectsByName.size())
+        if (!mObjectsByName.empty() && 1 == mObjectsByName.size())
         {
             mIsStaticNode = true;
             mIsOccluder = true;
@@ -226,7 +246,7 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeOctreeNode::detachObject(MovableObject* obj)
     {
-        if (1 == mObjectsByName.size())
+        if (!mObjectsByName.empty() && 1 == mObjectsByName.size())
         {
             mIsStaticNode = true;
             mIsOccluder = true;

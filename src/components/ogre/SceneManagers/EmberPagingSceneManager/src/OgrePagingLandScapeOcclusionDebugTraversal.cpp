@@ -27,7 +27,7 @@ namespace Ogre
         {
         }
         //-----------------------------------------------------------------------
-        void TreeOverlayDebug::onTree(PagingLandScapeOctree& n) const 
+        void TreeOverlayDebug::onTree(PagingLandScapeOctree& n, VisibleObjectsBoundsInfo * const visibleBounds) const 
 		{    
 			SimpleRenderable * const s = n.getRectangle2d(mScnMrg);
             if (n.getNodeData (occlusion.mCurrentCam)->viewFrustumVisible)
@@ -37,7 +37,7 @@ namespace Ogre
                     s->setMaterial ("BaseWhiteNoLightNoDepthCheck");
                     occlusion.mCurrentRenderQueue->addRenderable (s, s->getRenderQueueGroup ());
 
-                    traverseChildren (n);
+                    traverseChildren (n, visibleBounds);
 			    }
 			    else 
                 {
@@ -52,7 +52,7 @@ namespace Ogre
 		    }       
         }
         //-----------------------------------------------------------------------
-	    void TreeOverlayDebug::onLeaf(PagingLandScapeOctreeNode& n) const 
+	    void TreeOverlayDebug::onLeaf(PagingLandScapeOctreeNode& n, VisibleObjectsBoundsInfo * const visibleBounds) const 
 		{
 			SimpleRenderable * const s = n.getRectangle2d(mScnMrg);
 		    if(n.getNodeData (occlusion.mCurrentCam)->viewFrustumVisible)

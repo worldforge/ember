@@ -350,14 +350,14 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapePage::touch ()
     { 
-        mTimePreLoaded = mParent->getOptions()->PageInvisibleUnloadFrames;
+        mTimeUntouched = mParent->getOptions()->PageInvisibleUnloadFrames;
     }
     //-----------------------------------------------------------------------
-    const bool PagingLandScapePage::touched ()        
+    const bool PagingLandScapePage::unloadUntouched ()        
     { 
-        if (mTimePreLoaded == 0)
+        if (mTimeUntouched == 0)
             return true;
-        mTimePreLoaded--; 
+        mTimeUntouched--; 
         return false;
     }
     //-----------------------------------------------------------------------
@@ -402,7 +402,7 @@ namespace Ogre
 
 		assert (mTiles.empty());
 
-		mVisibletouch = 0;
+		//mVisibletouch = 0;
 		mIsLoaded = true;
         //mPageNode->showBoundingBox (true) ;
         if (mIsLoadable)
@@ -479,18 +479,21 @@ namespace Ogre
         mParent->getSceneManager()->getListenerManager()->firePageLoaded(mTableX, mTableZ, 
             mParent->getSceneManager()->getData2DManager()->getData2D(mTableX, mTableZ)->getHeightData(),
             mBounds);
+
+		_Show(true);
     }
 
     //-----------------------------------------------------------------------
     void PagingLandScapePage::unload()
-    {
+	{
         if (mIsLoaded)
         {
 
 			assert (!mTiles.empty());
 
-			mVisibletouch = 0;
-            if (mVisible)
+            // must be 0 to make sure page is really set as non visible
+			//mVisibletouch = 0;
+            //if (mVisible)
                 _Show (false);
 
             // Unload the Tiles
@@ -598,7 +601,8 @@ namespace Ogre
         }
         else if (mVisible)
         {
-			if (mVisibletouch == 0)
+            assert (do_show == false);
+			//if (mVisibletouch == 0)
 			{
 				if (mPageNode->getParent ())
 					mParent->getSceneManager()->getRootSceneNode()->removeChild (mPageNode->getName ());
@@ -619,33 +623,40 @@ namespace Ogre
 					}
 				}
 				mVisible = false;
-			}
-			else
-			{
-				mVisibletouch--;
-			}
+            }
+            //else
+            //{
+            //    mVisibletouch--;
+            //}
         }
     }
     //-----------------------------------------------------------------------
-    bool PagingLandScapePage::_Notify(const Vector3 &pos, PagingLandScapeCamera* Cam)
+    bool PagingLandScapePage::_Notify(const Vector3 &pos, const PagingLandScapeCamera * const Cam)
     {
 	    if (mIsLoaded && mIsLoadable)
         {
+            // ((pos - mWorldPosition).squaredLength() < mParent->getOptions()->page_factor ?
             if (
-                Cam->isVisible (mBoundsExt) 
-                //&& PagingLandScapeHorizon::getSingleton ().IsPageVisible (Cam, mTableX, mTableZ)
+                1
+				//Cam->isVisible (mBoundsExt) 
+                //&& 
+                // if we use an Horizon Visibility Map
+                //( !(mParent->getOptions()->VisMap)  
+                //  || (mParent->getOptions()->VisMap 
+                //      && mParent->getSceneManager()->getHorizon()->IsPageVisible (Cam, mTableX, mTableZ)))
                 
               )
 	        {         
-				if (!mVisible)
-					_Show (true);
-				mVisibletouch = 30;
+				touch();
+				//if (!mVisible)
+				//	_Show (true);
+				//mVisibletouch = 30;
 	            for (unsigned int i = 0; i < mNumTiles; i++)
 	            {
                     PagingLandScapeTileRow &tr = mTiles[ i ];
 	                for (unsigned int k = 0; k < mNumTiles; k++)
-                    {
-                        tr[ k ]->_Notify(pos, Cam);
+                    {                 
+                       tr[ k ]->_Notify(pos, Cam);
 			        }
 		        }
                 return true;
@@ -653,7 +664,7 @@ namespace Ogre
             else if (mVisible)
             {
                 // if it was visible it needs to change its state
-                _Show (false);
+                //_Show (false);
                 return false;
             }
         }
@@ -692,9 +703,10 @@ namespace Ogre
         }
     }
     //-------------------------------------------------------------------------
-	void PagingLandScapePage::setRenderQueue(RenderQueueGroupID qid)
+	void PagingLandScapePage::setRenderQueue(uint8 qid)
 	{
-        if (mVisible && mIsLoadable)
+        if (mVisible && 
+			mIsLoadable)
         {
             unsigned int i,k;
 	        for (i = 0; i < mNumTiles; ++i)

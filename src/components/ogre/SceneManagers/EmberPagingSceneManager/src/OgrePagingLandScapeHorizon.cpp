@@ -44,7 +44,8 @@ namespace Ogre
 {
 
     //-----------------------------------------------------------------------
-    PagingLandScapeHorizon::PagingLandScapeHorizon(const PagingLandScapeOptions *options)
+    PagingLandScapeHorizon::PagingLandScapeHorizon(const PagingLandScapeOptions * const options):
+        mOptions(options)
     {
         mPageWidth = options->world_width;
         mPageHeight = options->world_height;
@@ -150,7 +151,7 @@ namespace Ogre
                 uchar *TexData = new uchar [s];
                 memset (TexData, 0, s * sizeof(uchar));
 		        // Assign the texture to the alpha map		        
-		        mVisImage.loadDynamicImage(TexData, mTileWidth, mTileHeight, 1, PF_BYTE_RGBA, true);
+		        mVisImage.loadDynamicImage(TexData, mTileWidth, mTileHeight, 1, PF_R8G8B8A8, true);
                 mVisData = mVisImage.getData();
                 const String texname = filename + ".Visibility";
                 mVisTex = TextureManager::getSingleton().loadImage(texname, 
@@ -167,7 +168,7 @@ namespace Ogre
                 uchar *TexData = new uchar [s];
                 memset (TexData, 0, s * sizeof(uchar));
 		        // Assign the texture to the alpha map
-		        mVisImage.loadDynamicImage(TexData, mTileWidth, mTileHeight, 1, PF_BYTE_RGBA, true);
+		        mVisImage.loadDynamicImage(TexData, mTileWidth, mTileHeight, 1, PF_R8G8B8A8, true);
                 mVisData = mVisImage.getData();
                 mVisTex = TextureManager::getSingleton().getByName (filename + ".Visibility");
             }
@@ -272,11 +273,11 @@ namespace Ogre
        
         // test if there is potential occluders
         if (fabs (RsrcTileX - RdestTileX) < 2.0f && fabs (RsrcTileZ - RdestTileZ) < 2.0f)
-            return true;
+            return true; 
 
         const size_t pos = static_cast <size_t> (RdestTileX + RdestTileZ*mTileWidth);
         
-       assert (pos < mTileWidth*mTileHeight);
+       assert (pos < mTileWidth*mTileHeight); 
 
         return calcVis(Vector3 (RsrcTileX, cam->getDerivedPosition ().y, RsrcTileZ), 
                        Vector3 (RdestTileX, mMaxTileHeights[pos], RdestTileZ), 
@@ -304,7 +305,7 @@ namespace Ogre
 
         Real lasty = src.y;
 
-        Vector3 currpos = src + direction; // fetch new tile
+        Vector3 currpos (src + direction); // fetch new tile
 
         /* For each heightmap location in the ray */ 
         while (currpos.x >= 0 &&
@@ -317,7 +318,7 @@ namespace Ogre
             if (posx == dest.x && posz == dest.z)
                 break;
 
-            Real curry = currpos.y;
+            const Real curry = currpos.y;
             currpos = currpos + direction;  // fetch new tile
             const Real nexty = currpos.y;   // fetch next tile height
             
@@ -325,15 +326,15 @@ namespace Ogre
             if (h > nexty && h > lasty)
             {
                 AddVisibleTile (static_cast <unsigned int> (dest.x),
-				static_cast <unsigned int> (dest.z),
-						    false);
+				                static_cast <unsigned int> (dest.z),
+						        false);
                 return false; // line of sight is occluded               
             }
             lasty = curry;           
         }
         AddVisibleTile (static_cast <unsigned int> (dest.x),
-			static_cast <unsigned int> (dest.z),
-			true);
+			            static_cast <unsigned int> (dest.z),
+			            true);
         return true;
     }
 } //namespace

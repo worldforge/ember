@@ -86,10 +86,7 @@ void PagingLandScapeTile::uninit(void)
 		if (mLoaded)
 		{
 			if (mLoading)
-			{
 				mParent->getSceneManager()->getRenderableManager()->unqueueRenderable (this);
-				mLoading = false;
-			}
 			unload ();
 		}
 
@@ -122,12 +119,7 @@ void PagingLandScapeTile::init (SceneNode *ParentSceneNode,
 	mInit = true;
 
 	PagingLandScapeOptions * const opt = mParent->getOptions();
-	mInfo = opt->getTileInfo (pageX, pageZ, tileX, tileZ);
-	if (mInfo == 0)
-	{
-		mInfo = new PagingLandScapeTileInfo(pageX, pageZ, tileX, tileZ);
-		opt->setTileInfo(mInfo);
-	}
+	mInfo = opt->getTileInfo (pageX, pageZ, tileX, tileZ);	
 
 	// Calculate the offset from the parent for this tile
 	const Vector3 scale = opt->scale;
@@ -284,7 +276,7 @@ void PagingLandScapeTile::load()
 
 	mParentSceneNode->addChild (mTileSceneNode);
 	mLoaded = true;	    
-	mVisible = true;
+	mVisible = false;
 
 	//Queue its renderable for loading
 	rendMgr->queueRenderableLoading (this);
@@ -293,72 +285,91 @@ void PagingLandScapeTile::load()
 //-----------------------------------------------------------------------
 void PagingLandScapeTile::unload()
 {
-	assert (mLoaded);
+    assert (mLoaded);
 	mRenderable->uninit ();
 
 	mRenderable = 0;
-	mVisible = false;
+	mVisible = true;
 	mLoaded = false;
-	mTimePreLoaded = 0;
+	mTimeUntouched = 0;
 	mParentSceneNode->removeChild (mTileSceneNode);
+
+    assert (mInfo);
+    mParent->getSceneManager()->getListenerManager()->fireTileUnloaded (mInfo->mPageX, mInfo->mPageZ,
+        mInfo->mTileX, mInfo->mTileZ, getWorldBbox ());
 }
+
 //-----------------------------------------------------------------------
-void PagingLandScapeTile::_Notify(const Vector3 &pos, PagingLandScapeCamera* Cam)
+void PagingLandScapeTile::_Notify(const Vector3 &pos, const PagingLandScapeCamera * const Cam)
 {
-	bool wasvisible = mVisible;
-	if ((pos - mWorldPosition).squaredLength() < mParent->getOptions()->renderable_factor)
-	{    
-		if (Cam->isVisible (mWorldBoundsExt))
-		{
-			if (!mLoaded)
-				load(); 
-			touch();
-			mVisible = true;
-			mRenderable->setVisible (true);
-		}
-		else
-		{
-			mVisible = false;
-		}
+	//const bool wasvisible = mVisible && mLoaded && (mRenderable != 0) && mRenderable->isVisible ();
+	if (
+		1
+		//(pos - mWorldPosition).squaredLength() < mParent->getOptions()->renderable_factor
+        //&& Cam->isVisible (mWorldBoundsExt)
+		)
+    {
+        touch();
+        mVisible = true;
+        
 	}
-	else
+	else 
 	{
 		mVisible = false;
 	}
-	if (wasvisible != mVisible)
+    // if it changes
+	//if (wasvisible != mVisible)
 	{
-		if (wasvisible)
+		if (mVisible)
+        {
+            if (!mLoaded)
+			{
+				load(); 
+
+				// now visible 
+				mParent->getSceneManager()->getListenerManager ()->fireTileShow
+					(mInfo->mPageX, mInfo->mPageZ, mInfo->mTileX,  mInfo->mTileZ, mWorldBounds);
+			}
+            assert (mRenderable);
+            mRenderable->setVisible (true);   
+
+		}
+		else // if (wasvisible)
 		{
+			// now hidden
 			if (mRenderable)
 				mRenderable->setVisible (false);
-			mParent->getSceneManager()->getListenerManager ()->fireTileHide 
-				(mInfo->mPageX, mInfo->mPageZ, mInfo->mTileX,  mInfo->mTileZ, mWorldBounds);
-		}
-		else 
-		{
-			mParent->getSceneManager()->getListenerManager ()->fireTileShow
-				(mInfo->mPageX, mInfo->mPageZ, mInfo->mTileX,  mInfo->mTileZ, mWorldBounds);
+
 		}
 	}
 
 }
 //-----------------------------------------------------------------------
-const bool PagingLandScapeTile::touched ()        
+const bool PagingLandScapeTile::unloadUntouched ()        
 { 
-	if (mLoaded)
+	//if (mLoaded)
 	{
-		if (mTimePreLoaded == 0)
+		if (mTimeUntouched == 0)
 		{
 			// not visible check if we must unload it
 			// must not have been visible for some time
-			
+
+			if (mInfo)
+			{
+				mParent->getSceneManager()->getListenerManager ()->fireTileHide 
+					(mInfo->mPageX, mInfo->mPageZ, mInfo->mTileX,  mInfo->mTileZ, mWorldBounds);
+
+			}
 			if  (mLoading)
 				mParent->getSceneManager()->getRenderableManager()->unqueueRenderable (this);
-			unload();
+			else if (mLoaded)
+				unload();
+
+
 			return true;			
 		}
 
-		mTimePreLoaded--; 
+		mTimeUntouched--; 
 	}
 	return false;
 }
@@ -367,37 +378,33 @@ bool PagingLandScapeTile::intersectSegmentFromAbove(const Vector3 & start,
 													const Vector3 & dir, 
 													Vector3 * result)
 {
-	Vector3 ray = start; 
 	if (mWorldBounds.isNull())
 	{
 		if (result != 0)
 			* result = Vector3(-1.0f, -1.0f, -1.0f);
-
 		return false;
 	}
-	const Vector3 * corners = mWorldBounds.getAllCorners();
+	Vector3 ray = start; 
+	const Vector3 * const corners = mWorldBounds.getAllCorners();
 
 	//start with the next one...
 	ray += dir;
 
-	PagingLandScapeData2DManager * const dataManager = mParent->getSceneManager()->getData2DManager();
-
-	PagingLandScapeData2D *data = dataManager->getData2D (mInfo->mPageX, mInfo->mPageZ);
 
 	const Real leftBorder = corners[ 0 ].x;
 	const Real rightBorder = corners[ 4 ].x;
 	const Real topBorder = corners[ 0 ].z;
 	const Real bottomBorder = corners[ 4 ].z;
 
-
-
+	PagingLandScapeData2DManager * const dataManager = mParent->getSceneManager()->getData2DManager();
+	PagingLandScapeData2D * const data = dataManager->getData2D (mInfo->mPageX, mInfo->mPageZ);
 	if (data == 0)
 	{
 		// just go until next tile.
-		while (! ((ray.x < leftBorder) ||
-			(ray.x > rightBorder) ||
-			(ray.z < topBorder) ||
-			(ray.z > bottomBorder)))
+		while((ray.x > leftBorder) &&
+			(ray.x < rightBorder) &&
+			(ray.z > topBorder) &&
+			(ray.z < bottomBorder))
 		{           
 			ray += dir;
 		}
@@ -405,47 +412,72 @@ bool PagingLandScapeTile::intersectSegmentFromAbove(const Vector3 & start,
 	else
 	{
 		const Real localMax = (mRenderable && mRenderable->isLoaded ()) ? 
-			mRenderable->getMaxHeight () 
-			: 
-		data->getMaxHeight ();
+								mRenderable->getMaxHeight () 
+								: 
+								data->getMaxHeight ();
+		const Vector3 &invScale = mParent->getOptions ()->invScale;
+		const unsigned int pSize = mParent->getOptions ()->PageSize;
 
-		while (! ((ray.x < leftBorder) ||
-			(ray.x > rightBorder) ||
-			(ray.z < topBorder) ||
-			(ray.z > bottomBorder)))
+		const Real invScaledDirX = dir.x * invScale.x;
+		const Real invScaledDirZ = dir.z * invScale.z;
+		Real invScaledRayX = (ray.x * invScale.x) - data->getShiftX ();
+		Real invScaledRayZ = (ray.z * invScale.z) - data->getShiftZ ();
+		const int pSizeMinusOne = static_cast <int> (pSize - 1);
+
+		int i_x, i_z;
+
+
+		while((ray.x > leftBorder) &&
+			(ray.x < rightBorder) &&
+			(ray.z > topBorder) &&
+			(ray.z < bottomBorder))
 		{
 
-			if (ray.y <= localMax &&  // until under the max possible for this page/tile
-				ray.y <= data->getHeightAbsolute(ray.x, ray.z)// until under the max 
-				)
+			if (ray.y <= localMax) // until under the max possible for this page/tile
 			{
+				// adjust x and z to be local to page
+				i_x = static_cast<int> (invScaledRayX);
+				i_z = static_cast<int> (invScaledRayZ);
 
-				// Found intersection range 
-				// zone (ray -  dir < intersection < ray.y +  dir)
-				// now do a precise check using a interpolated height getter (height between vertices)
-				ray -= dir;
-				// until under the interpolated upon current LOD max      
+				// due to Real imprecision on Reals, we have to use boundaries here
+				// otherwise we'll hit asserts.
+				if (i_x > pSizeMinusOne)		i_x = pSizeMinusOne;
+				else if (i_x < 0)	i_x = 0;
+				if (i_z > pSizeMinusOne)		i_z = pSizeMinusOne;
+				else if (i_z < 0)	i_z = 0;
+
+				if (ray.y <= data->getHeight (static_cast<unsigned int> (i_z * pSize + i_x)))// until under the max 				
 				{
-					while (ray.y > dataManager->getInterpolatedWorldHeight(ray.x, ray.z)
-						&&
-						ray.y < localMax 
-						&&
-						ray.y > 0 
-						&&
-						! ( (ray.x < leftBorder) ||
-						(ray.x > rightBorder) ||
-						(ray.z < topBorder) ||
-						(ray.z > bottomBorder)))
-					{
-						ray += dir;
-					}
-				}
-				ray.y = dataManager->getInterpolatedWorldHeight(ray.x, ray.z);
 
-				*result = ray;
-				return true;
+					// Found intersection range 
+					// zone (ray -  dir < intersection < ray.y +  dir)
+					// now do a precise check using a interpolated height getter (height between vertices)
+					ray -= dir;
+					// until under the interpolated upon current LOD max      
+					{
+						while (ray.y > dataManager->getInterpolatedWorldHeight(ray.x, ray.z)
+							&&
+							ray.y < localMax 
+							&&
+							ray.y > 0 
+							&&
+							(ray.x > leftBorder) &&
+							(ray.x < rightBorder) &&
+							(ray.z > topBorder) &&
+							(ray.z < bottomBorder))
+						{
+							ray += dir;
+						}
+					}
+					ray.y = dataManager->getInterpolatedWorldHeight(ray.x, ray.z);
+
+					*result = ray;
+					return true;
+				}
 			}          
 			ray += dir;
+			invScaledRayX += invScaledDirX;
+			invScaledRayZ += invScaledDirZ;
 		}
 	}
 
@@ -471,7 +503,6 @@ bool PagingLandScapeTile::intersectSegmentFromBelow(const Vector3 & start,
 													const Vector3 & dir, 
 													Vector3 * result)
 {
-	Vector3 ray = start; 
 	if (mWorldBounds.isNull())
 	{
 		if (result != 0)
@@ -479,7 +510,8 @@ bool PagingLandScapeTile::intersectSegmentFromBelow(const Vector3 & start,
 
 		return false;
 	}
-	const Vector3 * corners = mWorldBounds.getAllCorners();
+	Vector3 ray = start; 
+	const Vector3 * const corners = mWorldBounds.getAllCorners();
 
 	//start with the next one...
 	ray += dir;
@@ -498,10 +530,10 @@ bool PagingLandScapeTile::intersectSegmentFromBelow(const Vector3 & start,
 	if (data == 0)
 	{
 		// just go until next tile.
-		while (! ((ray.x < leftBorder) ||
-			(ray.x > rightBorder) ||
-			(ray.z < topBorder) ||
-			(ray.z > bottomBorder)))
+		while ((ray.x > leftBorder) &&
+			(ray.x < rightBorder) &&
+			(ray.z > topBorder) &&
+			(ray.z < bottomBorder))
 		{           
 			ray += dir;
 		}
@@ -513,10 +545,10 @@ bool PagingLandScapeTile::intersectSegmentFromBelow(const Vector3 & start,
 			: 
 		data->getMaxHeight ();
 
-		while (! ((ray.x < leftBorder) ||
-			(ray.x > rightBorder) ||
-			(ray.z < topBorder) ||
-			(ray.z > bottomBorder)))
+		while ((ray.x > leftBorder) &&
+			(ray.x < rightBorder) &&
+			(ray.z > topBorder) &&
+			(ray.z < bottomBorder))
 		{
 
 			if (ray.y >= 0 &&
@@ -535,10 +567,10 @@ bool PagingLandScapeTile::intersectSegmentFromBelow(const Vector3 & start,
 						&&
 						ray.y >= 0 
 						&&
-						! ( (ray.x < leftBorder) ||
-						(ray.x > rightBorder) ||
-						(ray.z < topBorder) ||
-						(ray.z > bottomBorder)))
+						(ray.x > leftBorder) &&
+						(ray.x < rightBorder) &&
+						(ray.z > topBorder) &&
+						(ray.z < bottomBorder))
 					{
 						ray += dir;
 					}
@@ -576,7 +608,7 @@ void PagingLandScapeTile::updateTerrain ()
 	mRenderable->setNeedUpdate ();
 }
 
-void PagingLandScapeTile::setRenderQueueGroup(RenderQueueGroupID qid)
+void PagingLandScapeTile::setRenderQueueGroup(uint8 qid)
 {
 	if (mRenderable && mRenderable->isLoaded())
 		mRenderable->setRenderQueueGroup(qid);

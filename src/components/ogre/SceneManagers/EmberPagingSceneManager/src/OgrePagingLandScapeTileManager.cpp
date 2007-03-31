@@ -124,11 +124,11 @@ void PagingLandScapeTileManager::_addBatch(const unsigned int num)
 	}
 }
 //-----------------------------------------------------------------------
-void PagingLandScapeTileManager::updateLoadedTiles()
+void PagingLandScapeTileManager::unloadUntouched()
 {
 	std::for_each(mTiles.begin(), 
 		mTiles.end(),  
-		std::mem_fun(&PagingLandScapeTile::touched)); 
+		std::mem_fun(&PagingLandScapeTile::unloadUntouched)); 
 }
 
 } //namespace

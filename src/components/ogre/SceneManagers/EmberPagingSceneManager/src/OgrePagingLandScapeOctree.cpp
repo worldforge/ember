@@ -117,24 +117,30 @@ namespace Ogre
     /** Returns true is the box will fit in a child.
     */
     bool PagingLandScapeOctree::_isTwiceSize(const AxisAlignedBox &box) const
-    {
-        const Vector3 &boxMin = box.getMinimum();
-        const Vector3 &boxMax = box.getMaximum();
-        return((boxMax.x - boxMin.x) <= mHalfSize.x) &&
-              ((boxMax.y - boxMin.y) <= mHalfSize.y) &&
-              ((boxMax.z - boxMin.z) <= mHalfSize.z) ;
+	{ 	
+		// infinite boxes never fit in a child - always root node
+		if (box.isInfinite())
+	 		return false;
 
+		const Vector3 &halfMBoxSize = mBox.getHalfSize();
+		const Vector3 &boxSize = box.getSize();
+		return ((boxSize.x <= halfMBoxSize.x) && 
+				(boxSize.y <= halfMBoxSize.y) && 
+				(boxSize.z <= halfMBoxSize.z));
     }
     //-----------------------------------------------------------------------
     /** Returns true is the box will fit in a child.
     */
     bool PagingLandScapeOctree::_isTwiceCullSize(const AxisAlignedBox &box) const
-    {
-        const Vector3 &boxMin = box.getMinimum();
-        const Vector3 &boxMax = box.getMaximum();
-        return((boxMax.x - boxMin.x) <= mCullHalfSize.x) &&
-              ((boxMax.y - boxMin.y) <= mCullHalfSize.y) &&
-              ((boxMax.z - boxMin.z) <= mCullHalfSize.z) ;
+	{
+		// infinite boxes never fit in a child - always root node
+		if (box.isInfinite())
+			return false;
+
+		const Vector3 &boxSize = box.getSize();
+        return(boxSize.x  <= mCullHalfSize.x) &&
+              (boxSize.y  <= mCullHalfSize.y) &&
+              (boxSize.z  <= mCullHalfSize.z) ;
 
     }
      //-----------------------------------------------------------------------

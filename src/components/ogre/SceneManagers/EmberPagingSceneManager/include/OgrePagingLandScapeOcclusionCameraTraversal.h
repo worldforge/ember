@@ -15,8 +15,8 @@ namespace Ogre
 
 	    public:
 		    RegisterCameraTraversal(PagingLandScapeOctreeCamera *c) : cam (c) {};
-		    virtual void onTree(PagingLandScapeOctree& n) const ;
-		    virtual void onLeaf(PagingLandScapeOctreeNode& n) const ;
+		    virtual void onTree(PagingLandScapeOctree& n, VisibleObjectsBoundsInfo * const visibleBounds ) const ;
+		    virtual void onLeaf(PagingLandScapeOctreeNode& n, VisibleObjectsBoundsInfo * const visibleBounds ) const ;
 	};
     //-----------------------------------------------------------------------
     // 
@@ -27,8 +27,8 @@ namespace Ogre
 
 	    public:
             UnregisterCameraTraversal(PagingLandScapeOctreeCamera *c) : cam (c) {};
-		    virtual void onTree(PagingLandScapeOctree& n) const ;
-		    virtual void onLeaf(PagingLandScapeOctreeNode& n) const ;
+		    virtual void onTree(PagingLandScapeOctree& n, VisibleObjectsBoundsInfo * const visibleBounds ) const ;
+		    virtual void onLeaf(PagingLandScapeOctreeNode& n, VisibleObjectsBoundsInfo * const visibleBounds ) const ;
 	};
   
 }

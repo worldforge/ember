@@ -94,7 +94,7 @@ namespace Ogre
 
 			for (size_t i = 0; i < mNumTexture; i++)
 			{
-				mImages[i].loadDynamicImage (0, 0, 0, 1, PF_BYTE_RGB, true, 1, 0);
+				mImages[i].loadDynamicImage (0, 0, 0, 1, PF_R8G8B8A8, true, 1, 0);
 			}
 
 		}
@@ -126,7 +126,19 @@ namespace Ogre
 						bindCompressionSettings (params);
 						bindCompressionSettings (p->getShadowReceiverVertexProgramParameters ());
 					}
+
 					// splat settings.
+#ifdef PLSM2_EIHORT
+					GpuConstantDefinition const * const e = params->_findNamedConstantDefinition("splatSettings", false);
+					if (e)
+					{
+						// use index to get RealConstantEntry
+						params->_writeRawConstant(e->physicalIndex + 0, opt->matHeight[1]);
+						params->_writeRawConstant(e->physicalIndex + 1, opt->matHeight[2]);
+						params->_writeRawConstant(e->physicalIndex + 2, float(opt->maxValue));
+						params->_writeRawConstant(e->physicalIndex + 3, 0.0f);				
+					}
+#else
 					GpuProgramParameters::RealConstantEntry * const e = params->getNamedRealConstantEntry ("splatSettings");
 					if (e)
 					{
@@ -136,6 +148,9 @@ namespace Ogre
 						e->val[3] = static_cast <float> (0.0);
 						e->isSet = true;
 					}
+#endif
+
+
 				}
 			}
 		}
@@ -187,10 +202,10 @@ namespace Ogre
 			{
 				Technique *t = mMaterial->getBestTechnique (k);
 				Technique::PassIterator pIt = t->getPassIterator ();
-				String texType;
+                String texType;
+                channel = 0;
 				while (pIt.hasMoreElements ())
 				{
-					channel = 0;
 					Pass *p = pIt.getNext ();
 					Pass::TextureUnitStateIterator tuIt = p->getTextureUnitStateIterator ();
 					while (tuIt.hasMoreElements ())
@@ -331,11 +346,16 @@ namespace Ogre
 						hasVertexProgram = p->hasVertexProgram ();
 					}
 					GpuProgramParametersSharedPtr params = p->getVertexProgramParameters();	
+
+#ifdef PLSM2_EIHORT
+                    GpuConstantDefinition const * const e = params->_findNamedConstantDefinition("splatSettings");
+#else
 					GpuProgramParameters::RealConstantEntry * const e = params->getNamedRealConstantEntry ("splatSettings");
+#endif
 					if (e)
 					{
 						opt->normals = true;
-					}			
+					}
 				}		
 
 				// pixel shaders.
@@ -382,11 +402,11 @@ namespace Ogre
 		unsigned int numDynamicTexture = 0;
 
 		//per pass count
-		size_t passNumTextureUnits = 0;
-		size_t passNumAlphaTextures = 0;
-		size_t passNumCoverageTextures = 0;
-		size_t passNumSplats = 0;
-		unsigned int passNumDynamicTextures = 0;
+		size_t passNumTextureUnits;
+		size_t passNumAlphaTextures;
+		size_t passNumCoverageTextures;
+		size_t passNumSplats;
+		unsigned int passNumDynamicTextures;
 
 		bool needVertexProgram = false;
 		bool needFragmentProgram = false;
@@ -399,21 +419,25 @@ namespace Ogre
 		{
 			Technique * const t = tIt.getNext ();
 			numPasses = std::max (numPasses, t->getNumPasses());
-			Technique::PassIterator pIt = t->getPassIterator ();
+            Technique::PassIterator pIt = t->getPassIterator ();
 			while (pIt.hasMoreElements ())
 			{
-				passNumTextureUnits = 0;
-				passNumAlphaTextures = 0;
-				passNumCoverageTextures = 0;
-				passNumSplats = 0;
-				passNumDynamicTextures = 0;
 
-				Pass * const p = pIt.getNext ();
+                passNumTextureUnits = 0;
+                passNumAlphaTextures = 0;
+                passNumCoverageTextures = 0;
+                passNumSplats = 0;
+                passNumDynamicTextures = 0;
+                Pass * const p = pIt.getNext ();
 				if (needVertexProgram == false)
 					needVertexProgram = p->hasVertexProgram ();
 				if (needFragmentProgram == false)
-					needFragmentProgram = p->hasFragmentProgram ();				
+					needFragmentProgram = p->hasFragmentProgram ();
+#ifdef PLSM2_EIHORT
+                numTextureUnits = std::max<unsigned int>(static_cast<unsigned int>(numTextureUnits), static_cast<unsigned int>(p->getNumTextureUnitStates()));
+#else			
 				numTextureUnits = std::max (numTextureUnits, p->getNumTextureUnitStates());
+#endif
 				Pass::TextureUnitStateIterator tuIt = p->getTextureUnitStateIterator ();
 				while (tuIt.hasMoreElements ())
 				{
@@ -423,39 +447,46 @@ namespace Ogre
 					{
 						// This Texture Name is A keyword,
 						// check how many are dynamic in this material
-						if (!isBaseMode && texType == "Base")
+                        if (!isBaseMode && 
+                            StringUtil::startsWith (texType, "base", true))
 						{
 							isBaseMode = true;
 							passNumDynamicTextures++;
 						}
-						else if (!isImageMode && texType == "Image")
+						else if (!isImageMode && 
+                            StringUtil::startsWith (texType, "image", true))
 						{
 							isImageMode = true;
 							passNumDynamicTextures++;
 						}
-						else if (texType == "Alpha")
+                        else if (texType == "Alpha" && 
+                            StringUtil::startsWith (texType, "alpha", true))
 						{
 							isSplatMode = true;
 							passNumAlphaTextures++;
 							passNumDynamicTextures++;
 						}
-						else if (texType == "Coverage")
+                        else if (texType == "Coverage" && 
+                            StringUtil::startsWith (texType, "coverage", true))
 						{
 							isSplatMode = true;
 							passNumDynamicTextures++;
 							passNumCoverageTextures++;
 						}
-						else if (texType == "Splatting")
+                        else if (texType == "Splatting" && 
+                            StringUtil::startsWith (texType, "splatting", true))
 						{
 							mIsSplatMode = true;
 							passNumSplats++;
 						}
-						else if (texType == "Light")
+                        else if (texType == "Light" && 
+                            StringUtil::startsWith (texType, "light", true))
 						{
 							//dynamic light... but in software
 							mIsShadowed = true;
 						}
-						else if (texType == "Horizon")
+                        else if (texType == "Horizon" && 
+                            StringUtil::startsWith (texType, "horizon", true))
 						{
 							//dynamic light...  but shader
 							mIsShaderShadowed = true;
@@ -467,17 +498,10 @@ namespace Ogre
 				if(passNumTextureUnits > numTextureUnits)
 					numTextureUnits = passNumTextureUnits;
 
-				if(passNumAlphaTextures > numAlphaTexture)
-					numAlphaTexture = passNumAlphaTextures;
-
-				if(passNumCoverageTextures > numCoverageTexture)
-					numCoverageTexture = passNumCoverageTextures;
-
-				if(passNumSplats > numSplats)
-					numSplats = passNumSplats;
-
-				if(passNumDynamicTextures > numDynamicTexture)
-					numDynamicTexture = passNumDynamicTextures;
+				numAlphaTexture += passNumAlphaTextures;
+                numCoverageTexture += passNumCoverageTextures;
+                numSplats += passNumSplats;
+                numDynamicTexture += passNumDynamicTextures;
 
 			}
 		}
@@ -555,15 +579,15 @@ namespace Ogre
 
 					Material::TechniqueIterator tIt = mMaterial->getTechniqueIterator ();
 					while (tIt.hasMoreElements ())
-					{
+                    {
+                        splat = 0;
+                        channel = 0;
+                        coveragechannel = 0;
+                        alphachannel = 0;
 						Technique * const t = tIt.getNext ();
 						Technique::PassIterator pIt = t->getPassIterator ();
 						while (pIt.hasMoreElements ())
 						{
-							splat = 0;
-							channel = 0;
-							coveragechannel = 0;
-							alphachannel = 0;
 							Pass * const p = pIt.getNext ();
 							Pass::TextureUnitStateIterator tuIt = p->getTextureUnitStateIterator ();
 							while (tuIt.hasMoreElements ())
@@ -576,23 +600,23 @@ namespace Ogre
 									// meaning we have to dynamically replace it
 									deformable = false;
 									// check by what texture to replace keyword
-									if (texType == "Image")
+									if (StringUtil::startsWith (texType, "image", true))
 									{
 										texName = opt->image_filename + endName;
 										deformable = true;
 									}
-									else if (texType == "Splatting")
+									else if (StringUtil::startsWith (texType, "splatting", true))
 									{
-										texName = opt->SplatDetailMapNames[splat];
+										texName = opt->SplatDetailMapNames[splat % opt->NumMatHeightSplat];
 										splat++;
 									}
-									else if (texType == "Base")
+									else if (StringUtil::startsWith (texType, "base", true))
 									{
 										texName = beginName + texType + endName;
 										channel++;
 										deformable = true;
 									}
-									else if (texType == "Alpha")
+									else if (StringUtil::startsWith (texType, "alpha", true))
 									{
 										texName = beginName + texType + nameSep + 
 											StringConverter::toString(alphachannel) + endName;
@@ -600,19 +624,19 @@ namespace Ogre
 										alphachannel++;
 										channel++;
 									}
-									else if (texType == "Coverage")
+									else if (StringUtil::startsWith (texType, "coverage", true))
 									{
 										texName = beginName + texType + nameSep + 
-											StringConverter::toString(coveragechannel) + endName;
+											StringConverter::toString((coveragechannel * 4)  % opt->NumMatHeightSplat) + endName;
 										deformable = true;
 										channel++;
 										coveragechannel++;
 									}
-									else if (texType ==  "Light")
+									else if (StringUtil::startsWith (texType, "light", true))
 									{
 										texName = beginName +  texType + endName + extName;										
 									}
-									else if (texType ==  "Horizon")
+									else if (StringUtil::startsWith (texType, "horizon", true))
 									{
 										texName = beginName +  "HSP" + endName + extName;
 										mPositiveShadow = true;                   
@@ -691,7 +715,7 @@ namespace Ogre
 				isTextureModified[i] = false;
 				mBuffers[i].setNull ();
 				mTextures[i].setNull ();
-				mImages[i].loadDynamicImage (0, 0, 0, 1, PF_BYTE_RGB, true, 1, 0);
+				mImages[i].loadDynamicImage (0, 0, 0, 1, PF_R8G8B8A8, true, 1, 0);
 			} 
 			// Anyway, they're surely null already, as they're freed by delete page()
 			
@@ -1090,13 +1114,17 @@ namespace Ogre
 				mPositiveShadow = positiveHorizon;
 			}
 			GpuProgramParametersSharedPtr params = mMaterial->getBestTechnique()->getPass(0)->getFragmentProgramParameters();   
+#ifdef PLSM2_EIHORT
+            params->setNamedConstant("HorizonSettings", Vector4(SunDir.x, SunDir.y, SunDir.z, LightAngle));
+#else
 			GpuProgramParameters::RealConstantEntry * const e = params->getNamedRealConstantEntry ("HorizonSettings");
 			assert (e);
 			e->val[0] = static_cast <float> (SunDir.x);
 			e->val[1] = static_cast <float> (SunDir.y); 
 			e->val[2] = static_cast <float> (SunDir.z); 
 			e->val[3] = static_cast <float> (LightAngle);
-			e->isSet = true;	
+			e->isSet = true;
+#endif
 		}
 		else if (mIsShadowed)
 		{

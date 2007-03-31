@@ -22,7 +22,7 @@ namespace Ogre
         
     }
     //-----------------------------------------------------------------------
-    void ViewFrustumCullingTraversal::onTree(PagingLandScapeOctree& node)
+    void ViewFrustumCullingTraversal::onTree(PagingLandScapeOctree& node, VisibleObjectsBoundsInfo * const visibleBounds)
     {
         PagingLandScapeOctreeCamera::Visibility newVis = mCurrentVisibility;
 
@@ -59,13 +59,13 @@ namespace Ogre
         PagingLandScapeOctreeCamera::Visibility oldVis = mCurrentVisibility;
         mCurrentVisibility = newVis;
 
-        traverseChildren (node);
+        traverseChildren (node, visibleBounds);
 
         // Restore Parent Vis so that bothers can be pre-culled.
         mCurrentVisibility = oldVis; 
     }
     //-----------------------------------------------------------------------
-    void ViewFrustumCullingTraversal::onLeaf(PagingLandScapeOctreeNode &node)
+    void ViewFrustumCullingTraversal::onLeaf(PagingLandScapeOctreeNode &node, VisibleObjectsBoundsInfo * const visibleBounds)
     {
         // if this PagingLandScapeOctree is partially visible, manually cull all
         // scene nodes attached directly to this level.
@@ -104,7 +104,7 @@ namespace Ogre
 
         node._addToRenderQueue (occlusion.mCurrentCam, 
                                 occlusion.mCurrentRenderQueue, 
-                                occlusion.mOnlyShadowCaster);
+                                occlusion.mOnlyShadowCaster, visibleBounds);
 
 
         // Restore Parent Vis so that bothers can be pre-culled.
@@ -119,7 +119,7 @@ namespace Ogre
         
     }
     //-----------------------------------------------------------------------
-    void ViewFrustumCullingTraversalDirect::onTree(PagingLandScapeOctree& node)
+    void ViewFrustumCullingTraversalDirect::onTree(PagingLandScapeOctree& node, VisibleObjectsBoundsInfo * const visibleBounds)
     {
         if (occlusion.mCurrentCam->isVisible(node.getCullBoundingBox ()))      
         {          
@@ -131,7 +131,7 @@ namespace Ogre
             #endif //_VISIBILITYDEBUG
 
             // if we get there, then it's at least partially visible.   
-            traverseChildren (node);     
+            traverseChildren (node, visibleBounds);     
         } 
         #ifdef _VISIBILITYDEBUG
             else
@@ -146,7 +146,7 @@ namespace Ogre
         #endif //_VISIBILITYDEBUG     
     }
     //-----------------------------------------------------------------------
-    void ViewFrustumCullingTraversalDirect::onLeaf(PagingLandScapeOctreeNode &node)
+    void ViewFrustumCullingTraversalDirect::onLeaf(PagingLandScapeOctreeNode &node, VisibleObjectsBoundsInfo * const visibleBounds)
     {
         // if this PagingLandScapeOctree is partially visible, manually cull all
         // scene nodes attached directly to this level.
@@ -162,7 +162,7 @@ namespace Ogre
             // if we get there, then it's at least partially visible.  
             node._addToRenderQueue (occlusion.mCurrentCam, 
                                 occlusion.mCurrentRenderQueue, 
-                                occlusion.mOnlyShadowCaster);
+                                occlusion.mOnlyShadowCaster, visibleBounds);
 
         } 
         #ifdef _VISIBILITYDEBUG

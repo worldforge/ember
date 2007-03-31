@@ -20,6 +20,9 @@
 
 #include "OgrePagingLandScapePrerequisites.h"
 
+#include "OgrePagingLandScapeData2DManager.h"
+#include "OgrePagingLandScapeOptions.h"
+
 namespace Ogre
 {
     /**
@@ -114,8 +117,46 @@ namespace Ogre
             {
 				return 0.0f;
 			};
+			//-----------------------------------------------------------------------
+			const Real getShiftX() const
+			{   
+				return mShiftX;
+			}
+			//-----------------------------------------------------------------------
+			const Real getShiftZ() const
+			{   
+				return mShiftZ;
+			}
+			//-----------------------------------------------------------------------
+			inline const Real getHeightAbsolute(const Real x, const Real z) const
+			{   
+				const Vector3 &invScale = mParent->getOptions()->invScale;
 
-            const Real getHeightAbsolute(const Real x, const Real z);
+				// adjust x and z to be local to page
+				int i_x = static_cast<int> (x * invScale.x - mShiftX);
+				int i_z = static_cast<int> (z * invScale.z - mShiftZ);
+
+				// due to Real imprecision on Reals, we have to use boundaries here
+				// otherwise we'll hit asserts.
+				int size =  static_cast<int> (mSize-1);
+				if (i_x > size)
+					i_x = size; 
+				else if (i_x < 0)
+					i_x = 0;
+
+				if (i_z > size)
+					i_z = size;
+				else if (i_z < 0)
+					i_z = 0;
+
+				const unsigned int u_x = static_cast<unsigned int> (i_x);
+				const unsigned int u_z = static_cast<unsigned int> (i_z);
+
+				const size_t arraypos = u_z * mSize + u_x; 
+				assert (mHeightData && arraypos < mMaxArrayPos);
+				return mHeightData[arraypos];
+			}
+
 
             inline const Real getHeight(const Real x, const Real z) const 
             {
@@ -143,7 +184,13 @@ namespace Ogre
                 assert (mMaxArrayPos > Pos);
                 return mHeightData[ Pos ]; 
             };
-            
+
+			inline const Real getHeight(const unsigned int pos) const 
+			{
+				assert (mHeightData);
+				assert (mMaxArrayPos > pos);
+				return mHeightData[ pos ]; 
+			};
             inline const Real getMaxHeight(void) const 
 			{
 				return mMaxheight;

@@ -25,9 +25,9 @@
 namespace Ogre
 {
 
-    /** Represents a LandScape tile in terms of vertexes.
+    /** Represents a LandScape page in terms of vertexes.
 	    @remarks
-		    A LandScapeRenderable represents a tile used to render a
+		    A LandScapeRenderable represents a Page used to render a
             block of LandScape using the procedural terrain approach for LOD.
     */
     class PagingLandScapePageRenderable : public Renderable, public MovableObject
@@ -54,9 +54,17 @@ namespace Ogre
             /////////Movable overridden object methods
             
             /** Updates the level of detail to be used for rendering this TerrainRenderable based on the passed in Camera */
-            virtual void _notifyCurrentCamera(Camera* cam);
-
-	        virtual void _updateRenderQueue(RenderQueue* queue);
+            inline void _notifyCurrentCamera(Camera* cam)
+            {
+                //if (static_cast<PagingLandScapeCamera*> (cam)->isVisible (mBounds.getAllCorners()))
+                //{
+                mVisible = true;
+                //   MovableObject::_notifyCurrentCamera(cam);
+                //}
+                //else
+                //   mVisible = false;
+            }
+	        void _updateRenderQueue(RenderQueue* queue);
 
             /** Returns the type of the movable. */
             virtual const String& getMovableType(void) const

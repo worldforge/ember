@@ -177,61 +177,42 @@ namespace Ogre
 	}
     //-----------------------------------------------------------------------
     PagingLandScapeOctreeCamera::Visibility PagingLandScapeOctreeCamera::getVisibility(const AxisAlignedBox &bound) const 
-    {
-        // Null boxes always invisible
-        if (bound.isNull())
-            return NONE;
+	{
+		// Null boxes always invisible
+		if ( bound.isNull() )
+			return NONE;
+		// Infinite boxes always visible
+		if (bound.isInfinite())
+			return FULL;
 
-        // Make any pending updates to the calculated frustum
-        Camera::updateView();
+		// Get centre of the box
+		const Vector3 &centre (bound.getCenter());
+		// Get the half-size of the box
+		const Vector3 &halfSize (bound.getHalfSize());
 
-        // Get corners of the box
-        const Vector3 * const pCorners = bound.getAllCorners();
+		bool all_inside = true;
 
-        // For each plane, see if all points are on the negative side
-        // If so, object is not visible.
-        // If one or more are, it's partial.
-        // If all aren't, full
+		const bool infinite_far_clip = (mFarDist == 0);
+		for (unsigned int plane = 0; plane < 6; ++plane)
+		{
 
-        static unsigned int corners[ 8 ] = {0, 4, 3, 5, 2, 6, 1, 7};
+			// Skip far plane if infinite view frustum
+			if (plane == FRUSTUM_PLANE_FAR && infinite_far_clip)
+				continue;
 
-        static unsigned int planes[ 6 ] = 
-                        {FRUSTUM_PLANE_TOP, FRUSTUM_PLANE_BOTTOM,
-                         FRUSTUM_PLANE_LEFT, FRUSTUM_PLANE_RIGHT,
-                         FRUSTUM_PLANE_FAR, FRUSTUM_PLANE_NEAR };
+			// This updates frustum planes and deals with cull frustum
+			const Plane::Side side = getFrustumPlane(plane).getSide(centre, halfSize);
+			if (side == Plane::NEGATIVE_SIDE) 
+				return NONE;
+			// We can't return now as the box could be later on the negative side of a plane.
+			if (side == Plane::BOTH_SIDE) 
+				all_inside = false;
+		}
 
-        bool all_inside = true;
-
-        const bool infinite_far_clip = (mFarDist == 0);
-        for (unsigned int plane = 0; plane < 6; ++plane)
-        {
-            const unsigned int currPlane = planes[ plane ];
-
-            // Skip far plane if infinite view frustum
-            if (infinite_far_clip && currPlane == FRUSTUM_PLANE_FAR)
-                continue;
-
-            bool all_outside = true;
-            const Plane &frustumPlane = mFrustumPlanes[ currPlane ];
-            for (unsigned int corner = 0; corner < 8; ++corner)
-            {
-                const Real distance = frustumPlane.getDistance(pCorners[ corners[ corner ] ]);
-               
-                all_outside = all_outside && (distance < 0);
-                all_inside = all_inside && (distance >= 0);
-
-                if (!all_outside && !all_inside)
-                    break;
-            }
-
-            if (all_outside)
-                return NONE;
-        }
-
-        if (all_inside)
-            return FULL;
-        else
-            return PARTIAL;
+		if ( all_inside )
+			return FULL;
+		else
+			return PARTIAL;
 
     }
 

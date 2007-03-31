@@ -19,12 +19,12 @@ namespace Ogre
     SWTraversal::SWTraversal  (Occlusion& o):
         occlusion(o), 
         mCurrentVisibility (PagingLandScapeOctreeCamera::NONE),
-        camPos(occlusion.mCurrentCam->getPosition ())
+        camPos(occlusion.mCurrentCam->getDerivedPosition ())
     {
         
     }
     //-----------------------------------------------------------------------
-    void SWTraversal::traverseChildren(PagingLandScapeOctree & node)
+    void SWTraversal::traverseChildren(PagingLandScapeOctree & node, VisibleObjectsBoundsInfo * const visibleBounds)
     {
 	    FrontToBackNodeSorterPriorityQueue myStack = FrontToBackNodeSorterPriorityQueue(FrontToBackNodeSorterOperator (camPos));
        
@@ -70,7 +70,7 @@ namespace Ogre
         {
 	        OcclusionElement& nstacked = *myStack.top ();
 	        myStack.pop ();
-            nstacked.traversal(*this);
+            nstacked.traversal(*this, visibleBounds);
         }
     }
     //-----------------------------------------------------------------------
@@ -98,7 +98,7 @@ namespace Ogre
 	       
     }
     //-----------------------------------------------------------------------
-    void SWTraversal::onLeaf(PagingLandScapeOctreeNode &n)
+    void SWTraversal::onLeaf(PagingLandScapeOctreeNode &n, VisibleObjectsBoundsInfo * const visibleBounds)
     {
         if(occlusion.mCurrentCam->isVisible (n.getCullBoundingBox ()))
         {
@@ -132,7 +132,7 @@ namespace Ogre
 		#endif //_VISIBILITYDEBUG    
     }
     //-----------------------------------------------------------------------
-    void SWTraversal::onTree(PagingLandScapeOctree & n)
+    void SWTraversal::onTree(PagingLandScapeOctree & n, VisibleObjectsBoundsInfo * const visibleBounds)
     {
         if(occlusion.mCurrentCam->isVisible(n.getCullBoundingBox ())) 
         {
@@ -146,7 +146,7 @@ namespace Ogre
 
 		    if (isitVisible) 
             {
-                traverseChildren (n);
+                traverseChildren (n, visibleBounds);
 		    }
 
 		    #ifdef _VISIBILITYDEBUG

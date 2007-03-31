@@ -122,7 +122,9 @@ void EmberPagingLandScapeData2D_HeightField::_unload()
 
 const Ogre::Real EmberPagingLandScapeData2D_HeightField::getMaxAbsoluteHeight(void) const
 {
-	return mMaxheight;
+	///return a totally arbitrary high enough value
+	return 250.0f;
+	//return mMaxheight;
 }
 
 

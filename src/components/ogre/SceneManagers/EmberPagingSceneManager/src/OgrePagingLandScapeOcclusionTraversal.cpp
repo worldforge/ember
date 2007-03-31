@@ -12,7 +12,7 @@
 namespace Ogre
 {
     //-----------------------------------------------------------------------
-    void ConstTraversalConst::traverseChildren(const PagingLandScapeOctree& node) const 
+	void ConstTraversalConst::traverseChildren(const PagingLandScapeOctree& node, VisibleObjectsBoundsInfo * const visibleBounds) const 
     {                
         if (!node.mNodes.empty())
         {
@@ -21,7 +21,7 @@ namespace Ogre
 			PagingLandScapeOctreeNodeList::const_iterator itEnd = node.mNodes.end();
 			while (it != itEnd)
 			{
-				(*it)->traversal (*this);
+				(*it)->traversal (*this, visibleBounds);
 				++it;
 			}
         }
@@ -29,32 +29,32 @@ namespace Ogre
         PagingLandScapeOctree *n = 
             node.mChildren[ 0 ][ 0 ][ 0 ];
         if (n && n->hasChildren())  
-            n->traversal (*this);
+            n->traversal (*this, visibleBounds);
         n = node.mChildren[ 1 ][ 0 ][ 0 ];
         if (n && n->hasChildren())  
-            n->traversal (*this);
+            n->traversal (*this, visibleBounds);
         n = node.mChildren[ 0 ][ 1 ][ 0 ];
         if (n && n->hasChildren())  
-            n->traversal (*this);
+            n->traversal (*this, visibleBounds);
         n = node.mChildren[ 1 ][ 1 ][ 0 ];
         if (n && n->hasChildren())  
-            n->traversal (*this);
+            n->traversal (*this, visibleBounds);
         n = node.mChildren[ 0 ][ 0 ][ 1 ];
         if (n && n->hasChildren())  
-            n->traversal (*this);
+            n->traversal (*this, visibleBounds);
         n = node.mChildren[ 1 ][ 0 ][ 1 ];
         if (n && n->hasChildren())  
-            n->traversal (*this);
+            n->traversal (*this, visibleBounds);
         n = node.mChildren[ 0 ][ 1 ][ 1 ];
         if (n && n->hasChildren())  
-            n->traversal (*this);
+            n->traversal (*this, visibleBounds);
         n = node.mChildren[ 1 ][ 1 ][ 1 ];
         if (n && n->hasChildren())  
-            n->traversal (*this);
+            n->traversal (*this, visibleBounds);
 
 	}
     //-----------------------------------------------------------------------
-    void TraversalConst::traverseChildren(PagingLandScapeOctree& node) const 
+    void TraversalConst::traverseChildren(PagingLandScapeOctree& node, VisibleObjectsBoundsInfo * const visibleBounds) const 
     {                  
         if (!node.mNodes.empty())
         {
@@ -63,7 +63,7 @@ namespace Ogre
 			PagingLandScapeOctreeNodeList::iterator itEnd = node.mNodes.end();
 			while (it != itEnd)
             {
-                (*it)->traversal(*this);
+                (*it)->traversal(*this, visibleBounds);
                 ++it;
             }            
         }
@@ -71,33 +71,34 @@ namespace Ogre
         PagingLandScapeOctree *n = 
             node.mChildren[ 0 ][ 0 ][ 0 ];
         if (n && n->hasChildren())  
-            n->traversal (*this);
+            n->traversal (*this, visibleBounds);
         n = node.mChildren[ 1 ][ 0 ][ 0 ];
         if (n && n->hasChildren())  
-            n->traversal (*this);
+            n->traversal (*this, visibleBounds);
         n = node.mChildren[ 0 ][ 1 ][ 0 ];
         if (n && n->hasChildren())  
-            n->traversal (*this);
+            n->traversal (*this, visibleBounds);
         n = node.mChildren[ 1 ][ 1 ][ 0 ];
         if (n && n->hasChildren())  
-            n->traversal (*this);
+            n->traversal (*this, visibleBounds);
         n = node.mChildren[ 0 ][ 0 ][ 1 ];
         if (n && n->hasChildren())  
-            n->traversal (*this);
+            n->traversal (*this, visibleBounds);
         n = node.mChildren[ 1 ][ 0 ][ 1 ];
         if (n && n->hasChildren())  
-            n->traversal (*this);
+            n->traversal (*this, visibleBounds);
         n = node.mChildren[ 0 ][ 1 ][ 1 ];
         if (n && n->hasChildren())  
-            n->traversal (*this);
+            n->traversal (*this, visibleBounds);
         n = node.mChildren[ 1 ][ 1 ][ 1 ];
         if (n && n->hasChildren())  
-            n->traversal (*this);
+            n->traversal (*this, visibleBounds);
 
 	} 
     //-----------------------------------------------------------------------
-    void Traversal::traverseChildren(PagingLandScapeOctree& node)
+    void Traversal::traverseChildren(PagingLandScapeOctree& node, VisibleObjectsBoundsInfo * const visibleBounds)
     {                  
+        // hasLocalChildren
         if (!node.mNodes.empty())
         {
             //Add stuff to be rendered;
@@ -105,7 +106,7 @@ namespace Ogre
 			PagingLandScapeOctreeNodeList::iterator itEnd = node.mNodes.end();
             while (it != itEnd)
             {
-                (*it)->traversal (*this);
+                (*it)->traversal (*this, visibleBounds);
                 ++it;
             }
         }
@@ -113,35 +114,35 @@ namespace Ogre
         PagingLandScapeOctree *n = 
             node.mChildren[ 0 ][ 0 ][ 0 ];
         if (n && n->hasChildren())  
-            n->traversal (*this);
+            n->traversal (*this, visibleBounds);
 
         n = node.mChildren[ 1 ][ 0 ][ 0 ];
         if (n && n->hasChildren())  
-            n->traversal (*this);
+            n->traversal (*this, visibleBounds);
 
         n = node.mChildren[ 0 ][ 1 ][ 0 ];
         if (n && n->hasChildren())  
-            n->traversal (*this);
+            n->traversal (*this, visibleBounds);
 
         n = node.mChildren[ 1 ][ 1 ][ 0 ];
         if (n && n->hasChildren())  
-            n->traversal (*this);
+            n->traversal (*this, visibleBounds);
 
         n = node.mChildren[ 0 ][ 0 ][ 1 ];
         if (n && n->hasChildren())  
-            n->traversal (*this);
+            n->traversal (*this, visibleBounds);
 
         n = node.mChildren[ 1 ][ 0 ][ 1 ];
         if (n && n->hasChildren())  
-            n->traversal (*this);
+            n->traversal (*this, visibleBounds);
 
         n = node.mChildren[ 0 ][ 1 ][ 1 ];
         if (n && n->hasChildren())  
-            n->traversal (*this);
+            n->traversal (*this, visibleBounds);
 
         n = node.mChildren[ 1 ][ 1 ][ 1 ];
         if (n && n->hasChildren())  
-            n->traversal (*this);
+            n->traversal (*this, visibleBounds);
 
 	}
     

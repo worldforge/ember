@@ -56,30 +56,38 @@ PagingLandScapeOctreeRaySceneQuery::~PagingLandScapeOctreeRaySceneQuery(void)
 //---------------------------------------------------------------------
 void PagingLandScapeOctreeRaySceneQuery::execute(RaySceneQueryListener* listener)
 {
-    std::list < SceneNode* > list;
-    //find the nodes that intersect the AAB
-    static_cast< PagingLandScapeOctreeSceneManager* >(mParentSceneMgr)->findNodesIn(mRay, list, 0);
+	// if anything else is queried, ask Octree Scene Manager.
+	if (getQueryTypeMask() != SceneManager::WORLD_GEOMETRY_TYPE_MASK)
+	{
+		std::list < SceneNode* > list;
+		//find the nodes that intersect the AAB
+		static_cast< PagingLandScapeOctreeSceneManager* >(mParentSceneMgr)->findNodesIn(mRay, list, 0);
 
-    //grab all movables from the node that intersect...
-    std::list < SceneNode* >::iterator it = list.begin();
-    while (it != list.end())
-    {
-        SceneNode::ObjectIterator oit = (*it)->getAttachedObjectIterator();
-        while (oit.hasMoreElements())
-        {
-            MovableObject* m = oit.getNext();
-            if ((m->getQueryFlags() & mQueryMask) && m->isInScene())
-            {
-                std::pair< bool, Real > result = mRay.intersects(m->getWorldBoundingBox());
+		//grab all movables from the node that intersect...
+		std::list < SceneNode* >::iterator it = list.begin();
+		while (it != list.end())
+		{
+			SceneNode::ObjectIterator oit = (*it)->getAttachedObjectIterator();
+			while (oit.hasMoreElements())
+			{
+				MovableObject* m = oit.getNext();
+				if ((m->getQueryFlags() & mQueryMask) && m->isInScene())
+				{
+					std::pair< bool, Real > result = mRay.intersects(m->getWorldBoundingBox());
 
-                if (result.first)
-                {
-                    listener->queryResult(m, result.second);
-                }
-            }
-        }
-        ++it;
-    }
+					if (result.first)
+					{
+						listener->queryResult(m, result.second);
+					}
+				}
+			}
+			++it;
+		}
+	}
+	//else
+	// { //if we want to handle static scene geometry inside the scene manager ?
+	//
+	// }
 }
 
 }

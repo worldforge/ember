@@ -26,10 +26,10 @@ namespace Ogre
 
 		    SWTraversal (Occlusion& o);
 
-            virtual void onTree(PagingLandScapeOctree&);
-            virtual void onLeaf(PagingLandScapeOctreeNode&);
+            virtual void onTree(PagingLandScapeOctree&, VisibleObjectsBoundsInfo * const visibleBounds );
+            virtual void onLeaf(PagingLandScapeOctreeNode&, VisibleObjectsBoundsInfo * const visibleBounds );
             bool isVisible(OcclusionElement & n);
-            void traverseChildren(PagingLandScapeOctree & n);
+            void traverseChildren(PagingLandScapeOctree & n, VisibleObjectsBoundsInfo * const visibleBounds );
 	};
     
 }

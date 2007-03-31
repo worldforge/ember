@@ -178,9 +178,7 @@ namespace Ogre
                 mParent->getOptions()->LandScape_extension;   
             if (!ResourceGroupManager::getSingleton().resourceExists(mParent->getOptions()->groupName,finalName))
             { 
-                LogManager::getSingleton().logMessage(String("PLSM2 : Cannot find map named ") + finalName, 
-                    LML_CRITICAL,
-                    true);
+                LogManager::getSingleton().logMessage(LML_CRITICAL, String("PLSM2 : Cannot find map named ") + finalName);
                 return false;
             }
         }

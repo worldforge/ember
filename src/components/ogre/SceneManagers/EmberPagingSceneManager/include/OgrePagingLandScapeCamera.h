@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright © 2000-2004 The OGRE Team
+Copyright Â© 2000-2004 The OGRE Team
 Also see acknowledgements in Readme.html
 
 This program is free software; you can redistribute it and/or modify it under
@@ -59,7 +59,7 @@ namespace Ogre
 
             /** Returns the visibility of the box
             */
-            bool isVisible(const AxisAlignedBox& bound) const;
+            bool isVisible(const AxisAlignedBox &bounds) const;
 
             void updatePaging(const unsigned int x, const unsigned int z);
 

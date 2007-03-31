@@ -70,9 +70,17 @@ namespace Ogre
 
             Real getBoundingRadius(void) const { return 0; }
             /// Identity view and projection
+#ifdef PLSM2_EIHORT
+            bool getUseIdentityProjection(void) const { return mUseIdentityProjection; }
+#else
             bool useIdentityProjection(void) const { return true; }
+#endif
             /// Identity view and projection
+#ifdef PLSM2_EIHORT
+            bool getUseIdentityView(void) const { return mUseIdentityView; }
+#else
             bool useIdentityView(void) const { return true; }
+#endif
 
     };
 

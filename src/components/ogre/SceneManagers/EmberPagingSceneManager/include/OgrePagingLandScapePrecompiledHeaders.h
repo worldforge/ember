@@ -65,6 +65,7 @@ email                : tuan.kuranes@free.fr
 
 #include "OgrePagingLandScapeRaySceneQuery.h"
 #include "OgrePagingLandScapeIntersectionSceneQuery.h"
+#include "OgrePagingLandScapeAxisAlignedBoxSceneQuery.h"
 
 // Horizon Culling 
 #include "OgrePagingLandScapeHorizon.h"
@@ -121,6 +122,10 @@ email                : tuan.kuranes@free.fr
 #include "OgrePagingLandScapeListener.h"
 #include "OgrePagingLandScapeCallback.h"
 #include "OgrePagingLandScapeCallbackEvent.h"
+
+//decals 
+
+#include "OgrePagingLandScapeMeshDecal.h"
 
 //utils 
 

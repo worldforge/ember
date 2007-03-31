@@ -68,13 +68,13 @@ namespace Ogre
 	        /** Loads the LandScape texture using parameters int he given in the constructor. */
             void loadTexture(void);
 
-	        /** Unloads the LandScape texture, but doesn´t destroy the LandScape data. */
+	        /** Unloads the LandScape texture, but doesn't destroy the LandScape data. */
             void unloadTexture(void);
 
-	        /** Unloads the LandScape data, but doesn´t destroy the LandScape page. */
+	        /** Unloads the LandScape data, but doesn't destroy the LandScape page. */
 	        void unload(void);
 
-	        /** Post Unloads the LandScape data, but doesn´t destroy the LandScape page. */
+	        /** Post Unloads the LandScape data, but doesn't destroy the LandScape page. */
 	        void postUnload(void);
             
 	        void unsetLoading(void)
@@ -127,7 +127,7 @@ namespace Ogre
 				return mIsLoadable;
 			};
 
-            const bool touched(void);
+            const bool unloadUntouched(void);
             void touch(void);
 
             bool isVisible(void) const 
@@ -139,7 +139,7 @@ namespace Ogre
 	        */
 	        int isCameraIn(const Vector3& pos) const;
 
-	        bool _Notify(const Vector3& pos, PagingLandScapeCamera* Cam);
+	        bool _Notify(const Vector3 &pos, const PagingLandScapeCamera * const Cam);
             void _Show(const bool do_show);
 
             void getCoordinates(unsigned int& X, unsigned int& Z) const 
@@ -159,7 +159,7 @@ namespace Ogre
             bool mIsTextureunloading;
 
 		    /** Sets the render queue group which the tiles should be rendered in. */
-		    void setRenderQueue(RenderQueueGroupID qid);
+		    void setRenderQueue(uint8 qid);
 
             void _updateLod(void);
 
@@ -188,7 +188,7 @@ namespace Ogre
 			// as it unload instantly
 			// but loading is queued
 			// if not page not showed until mVisibletouch==0 it becomes invisible
-			size_t mVisibletouch;
+			//size_t mVisibletouch;
 
 			// Position of this Terrain Page in the Terrain Page Array
 	        unsigned int mTableX;	
@@ -209,7 +209,7 @@ namespace Ogre
 
             PagingLandScapePageRenderable* mRenderable;
 
-            unsigned int mTimePreLoaded;
+            unsigned int mTimeUntouched;
 
 			PageState pageState;
             PageQueuingState pageQueingState;

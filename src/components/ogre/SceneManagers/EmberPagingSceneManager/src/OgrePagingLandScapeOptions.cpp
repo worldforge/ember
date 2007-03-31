@@ -49,6 +49,7 @@ namespace Ogre
     PagingLandScapeOptions::PagingLandScapeOptions(PagingLandScapeSceneManager * scnMgr):
         mScnMgr(scnMgr)
     {
+      cfgGroupName = "";
       primaryCamera = 0;
       isInit = false;
 	  setDefault();
@@ -63,8 +64,10 @@ namespace Ogre
     void PagingLandScapeOptions::setDefault()
 	{
 
+        mUseLodMapCache = false;
 		materialPerPage = false;
 		textureModifiable = true;
+        roughnessLod = true;    
 
         data2DFormat = "HeightField";
 	    textureFormat = "Image";
@@ -104,8 +107,9 @@ namespace Ogre
 	    distanceLOD = 4;
 	    LOD_factor = 10;
 
-        scale = Vector3::UNIT_SCALE;
-		position = Vector3::ZERO;
+		scale = Ogre::Vector3::UNIT_SCALE;
+		invScale = Ogre::Vector3::UNIT_SCALE;
+		position = Ogre::Vector3::ZERO;
 
 	    num_renderables = 64;
 	    num_renderables_increment = 64;
@@ -172,7 +176,8 @@ namespace Ogre
         mResourceFilesystem.clear ();
         mResourceZip.clear();
 
-
+		queryNoInterpolation = false;
+		queryResolutionFactor = 1.0f;
 #ifdef _MAPSPLITTER
 
         Blur = 0.0f;
@@ -200,7 +205,7 @@ namespace Ogre
         ZHorizon = false;
         SRTM_water = false;
         
-#endif //_MAPSPLITTER
+#endif
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeOptions::init()
@@ -224,125 +229,158 @@ namespace Ogre
         }
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeOptions::load(const String &filename)
+    void PagingLandScapeOptions::loadcfg (const String &filename, ConfigFile& config)
     {
         std::ifstream fs;
- 		fs.open(filename.c_str(), std::ios::in | std::ios::binary);
- 		if (fs)
- 		{
- 			// Wrap as a stream
- 			DataStreamPtr stream(
- 				new FileStreamDataStream(filename, &fs, false));
- 			load(stream);
- 		}
-		else
- 		{
- 			// otherwise try resource system
- 			DataStreamPtr stream = 
-				ResourceGroupManager::getSingleton().openResource(filename);
-     			
- 			load(stream);
- 		}
+        fs.open(filename.c_str(), std::ios::in | std::ios::binary);
+        if (fs)
+        {
+            // Wrap as a stream
+            DataStreamPtr stream(
+                new FileStreamDataStream(filename, &fs, false));
+
+	        config.load(stream);
+
+        } 
+        else
+        {
+            // otherwise try resource system
+            DataStreamPtr stream = 
+                ResourceGroupManager::getSingleton().openResource(filename);
+
+	        config.load(stream);
+        }
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeOptions::load(DataStreamPtr& stream)
+    bool PagingLandScapeOptions::load(const String &filename)
     {
-        init();
-	    /* Set up the options : List of map associated with map names.*/
+	    ConfigFile config;
+        loadcfg(filename, config);
+        return load(filename, config);
+    }
+    //-----------------------------------------------------------------------
+    bool PagingLandScapeOptions::load(DataStreamPtr &stream)
+    {
 	    ConfigFile config;
 	    config.load(stream);
+        return load(stream->getName (), config);
+    }
+    //-----------------------------------------------------------------------
+    bool  PagingLandScapeOptions::load(const String &filename, ConfigFile& config)
+    {
+        init();
 
-        // Go through all sections & settings in the file
+	    // Set up the options :  
+        // List of map associated with map names.
+        // or directly a map.
 
-        ConfigFile::SettingsIterator setIt = config.getSettingsIterator();
-        while (setIt.hasMoreElements())
-        {  
-            const String name = setIt.peekNextKey();
-            const String value = setIt.getNext();
-            mMapList.insert(LandScapeFileNames::value_type(name, value));
+
+        if (config.getSetting ("DefaultMap").empty())
+        {
+            mConfig = &config;
+            mCurrentMap = filename;
+            loadMapOptions (filename);
+            return true;
         }
-
-        LandScapeFileNames::iterator i = mMapList.find("GroupName");
-        if (i == mMapList.end())
-        {
-            OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, 
-                "You need to define a GroupName where to find the map definition file ",
-                "PagingLandScapeOptions::load");
-        }    
-		cfgGroupName = i->second;
-		mMapList.erase (i);
-
-
-        i = mMapList.find("BatchMode");
-        if ((i != mMapList.end()) && (i->second == "yes"))
-        {
-            mBatchMode = true;
-            mMapList.erase (i);
-        }    
         else
-		{
-            mBatchMode = false;
-		}
+        {
+            // Go through all sections & settings in the file
+            ConfigFile::SettingsIterator setIt = config.getSettingsIterator();
+            while (setIt.hasMoreElements())
+            {  
+                const String name = setIt.peekNextKey();
+                const String value = setIt.getNext();
+                mMapList.insert(LandScapeFileNames::value_type(name, value));
+            }
 
-        i = mMapList.find("TextureFormatDebug");
-        if (i != mMapList.end())
-        {       
-            TextureFormatDebug = config.getSetting("TextureFormatDebug") == "yes";
+            LandScapeFileNames::iterator i = mMapList.find("GroupName");
+            if (i == mMapList.end())
+            {
+                OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, 
+                    "You need to define a GroupName where to find the map definition file ",
+                    "PagingLandScapeOptions::load");
+            }    
+            cfgGroupName = i->second;
             mMapList.erase (i);
-        }
+
+
+            i = mMapList.find("BatchMode");
+            if ((i != mMapList.end()) && (i->second == "yes"))
+            {
+                mBatchMode = true;
+                mMapList.erase (i);
+            }    
+            else
+            {
+                mBatchMode = false;
+            }
+
+            i = mMapList.find("TextureFormatDebug");
+            if (i != mMapList.end())
+            {       
+                TextureFormatDebug = config.getSetting("TextureFormatDebug") == "yes";
+                mMapList.erase (i);
+            }
 
 
 
-        i = mMapList.find("DefaultMap");
-        if (i == mMapList.end()) 
-		{
-			if( mBatchMode == false)
-			{
-				OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, 
-					"You need to define a DefaultMap= ",
-					"PagingLandScapeOptions::load");
-			}
-		}
-		else
-		{
-			mCurrentMap = i->second; 
-		}
-		if (i != mMapList.end()) 
-			mMapList.erase (i);
-   
+            i = mMapList.find("DefaultMap");
+            if (i == mMapList.end()) 
+            {
+                if( mBatchMode == false)
+                {
+                    OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, 
+                        "You need to define a DefaultMap= ",
+                        "PagingLandScapeOptions::load");
+                }
+            }
+            else
+            {
+                mCurrentMap = i->second; 
+            }
+            if (i != mMapList.end()) 
+                mMapList.erase (i);
+
 
 #ifndef _MAPSPLITTER
-		ResourceGroupManager * const rgsm = ResourceGroupManager::getSingletonPtr();
-		rgsm->initialiseResourceGroup (cfgGroupName);
-		LandScapeFileNames::iterator iend = mMapList.end();
-		LandScapeFileNames::iterator itCheck = mMapList.begin();
-		const String cfgExt(".cfg");
-		for (; itCheck != iend; )
-		{
-			const String mapName (itCheck->first);
-			const String mapFileName (itCheck->second);
-			if ( 
-				!rgsm->resourceExists(cfgGroupName, mapFileName) 
-				&&
-				!rgsm->resourceExists(cfgGroupName, mapFileName + cfgExt) 
-				&&
-				!rgsm->resourceExists(cfgGroupName, mapName + cfgExt)
-				&&
-				!rgsm->resourceExists(cfgGroupName, mapName)
-				)
-			{
-				mMapList.erase (itCheck++);
-			}
-			else
-			{
-				++itCheck;
-			}
-		}
+			ResourceGroupManager * const rgsm = ResourceGroupManager::getSingletonPtr();
+			
+			rgsm->initialiseResourceGroup (cfgGroupName);
+
+            LandScapeFileNames::iterator iend = mMapList.end();
+            LandScapeFileNames::iterator itCheck = mMapList.begin();
+            const String cfgExt(".cfg");
+            for (; itCheck != iend; )
+            {
+                const String mapName (itCheck->first);
+                const String mapFileName (itCheck->second);
+                if ( 
+                    !rgsm->resourceExists(cfgGroupName, mapFileName) 
+                    &&
+                    !rgsm->resourceExists(cfgGroupName, mapFileName + cfgExt) 
+                    &&
+                    !rgsm->resourceExists(cfgGroupName, mapName + cfgExt)
+                    &&
+                    !rgsm->resourceExists(cfgGroupName, mapName)
+                    )
+                {
+                    mMapList.erase (itCheck++);
+                }
+                else
+                {
+                    ++itCheck;
+                }
+            }
 #endif //_MAPSPLITTER
 
-        if (!mBatchMode && !StringUtil::startsWith(mCurrentMap, "none", true))
-			loadMap(mCurrentMap);
+            if (!mBatchMode && !StringUtil::startsWith(mCurrentMap, "none", true))
+            {
+                loadMap(mCurrentMap);
+                return true;
+            }
+        }
 
+        return false;
     }
     //-----------------------------------------------------------------------
     const String &PagingLandScapeOptions::getCurrentTextureFormat() const
@@ -381,16 +419,21 @@ namespace Ogre
     //-----------------------------------------------------------------------
     const String& PagingLandScapeOptions::getPreviousMapName() const
     {
-        LandScapeFileNames::const_reverse_iterator iend = mMapList.rend();
-        LandScapeFileNames::const_reverse_iterator i = mMapList.rbegin();
-        for (; i != iend; ++i)
+        if (!mMapList.empty ())
         {
-            if (i->first == mCurrentMap || i->second == mCurrentMap)
-            {   
-                ++i;
-                if (i == iend)
-                    i = mMapList.rbegin();
-                return i->first;
+            if (StringUtil::startsWith(mCurrentMap, "none", true))
+                return mMapList.rbegin()->first;
+            LandScapeFileNames::const_reverse_iterator iend = mMapList.rend();
+            LandScapeFileNames::const_reverse_iterator i = mMapList.rbegin();
+            for (; i != iend; ++i)
+            {
+                if (i->first == mCurrentMap || i->second == mCurrentMap)
+                {   
+                    ++i;
+                    if (i == iend)
+                        i = mMapList.rbegin();
+                    return i->first;
+                }
             }
         }
         return StringUtil::BLANK;
@@ -398,16 +441,22 @@ namespace Ogre
     //-----------------------------------------------------------------------
     const String& PagingLandScapeOptions::getNextMapName() const
     {  
-        LandScapeFileNames::const_iterator iend = mMapList.end();
-        LandScapeFileNames::const_iterator i = mMapList.begin();
-        for (; i != iend; ++i)
+        if (!mMapList.empty ())
         {
-            if (i->first == mCurrentMap || i->second == mCurrentMap)
-            {   
-                ++i;
-                if (i == iend)
-                    i = mMapList.begin();
-                return i->first;
+            if (StringUtil::startsWith(mCurrentMap, "none", true))
+                return mMapList.begin()->first;
+
+            LandScapeFileNames::const_iterator iend = mMapList.end();
+            LandScapeFileNames::const_iterator i = mMapList.begin();
+            for (; i != iend; ++i)
+            {
+                if (i->first == mCurrentMap || i->second == mCurrentMap)
+                {   
+                    ++i;
+                    if (i == iend)
+                        i = mMapList.begin();
+                    return i->first;
+                }
             }
         }
         return StringUtil::BLANK;
@@ -434,25 +483,33 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeOptions::loadMap(const String& mapName)
     {
-        std::vector<Ogre::String>::iterator itFileSystem = mResourceFilesystem.begin();
-        for(; itFileSystem != mResourceFilesystem.end(); ++itFileSystem) 
+        ConfigFile config;
+        mConfig = &config;
+        const String fileMapName (getMapFilename(mapName) + 
+            (StringUtil::endsWith(mapName, ".cfg", true) ? StringUtil::BLANK : String(".cfg")));
+        if (!cfgGroupName.empty ())
         {
-            ResourceGroupManager::getSingleton().removeResourceLocation(
-                *itFileSystem, groupName);
+            std::vector<Ogre::String>::iterator itFileSystem = mResourceFilesystem.begin();
+            for(; itFileSystem != mResourceFilesystem.end(); ++itFileSystem) 
+            {
+                ResourceGroupManager::getSingleton().removeResourceLocation(
+                    *itFileSystem, cfgGroupName);
+            }
+            std::vector<Ogre::String>::iterator itZip = mResourceZip.begin();
+            for(; itZip != mResourceZip.end(); ++itZip) 
+            {
+                ResourceGroupManager::getSingleton().removeResourceLocation(
+                    *itZip, cfgGroupName);
+            }
+            // Set up the options For a Map
+            mConfig->load (fileMapName, cfgGroupName, String("="), true);
         }
-        std::vector<Ogre::String>::iterator itZip = mResourceZip.begin();
-        for(; itZip != mResourceZip.end(); ++itZip) 
+        else
         {
-            ResourceGroupManager::getSingleton().removeResourceLocation(
-                *itZip, groupName);
+            mConfig->load (fileMapName, ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME, String("="), true);
         }
-
-		// unload cached map info
-		clearTileInfo(); 
-
-	    /* Set up the options For a Map*/
-	    //ConfigFile config;
-	    loadMapOptions (getMapFilename(mapName)  + String(".cfg"));
+        /* Set up the options For a Map*/
+	    loadMapOptions (fileMapName);
 	}
 	//-----------------------------------------------------------------------
 	const String &PagingLandScapeOptions::getMapFilename(const String &currMapName) const
@@ -471,9 +528,7 @@ namespace Ogre
 				return i->second;
 			}
 		}			
-		OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, 
-			"Cannot locate a Config File defining the map named " + currMapName,
-			"PagingLandScapeOptions::loadMap");	
+        return currMapName;
 	}
     //-----------------------------------------------------------------------
     void PagingLandScapeOptions::insertMap(const String& mapName)
@@ -485,49 +540,61 @@ namespace Ogre
         }
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeOptions::setUint (unsigned int &u, const String &ValuetoGet)
+    bool PagingLandScapeOptions::setUint (unsigned int &u, const String &ValuetoGet)
 	{	
 		const String valString = mConfig->getSetting(ValuetoGet);
-		if (valString != StringUtil::BLANK)
+		if (!valString.empty())
 		{
-			u = static_cast<unsigned int> (StringConverter::parseReal(valString));
-		}
+            u = static_cast<unsigned int> (StringConverter::parseReal(valString));
+            return true;
+        }
+        return false;
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeOptions::setBool (bool &b, const String &ValuetoGet)
+    bool PagingLandScapeOptions::setBool (bool &b, const String &ValuetoGet)
 	{
 		const String valString = mConfig->getSetting (ValuetoGet);
-		if (valString != StringUtil::BLANK)
+		if (!valString.empty())
 		{
-			b = StringUtil::startsWith(valString, "yes", true);
-		}
+            b = StringUtil::startsWith(valString, "yes", true);
+            return true;
+        }
+        return false;
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeOptions::setReal (Real &r, const String &ValuetoGet)
+    bool PagingLandScapeOptions::setReal (Real &r, const String &ValuetoGet)
 	{
 		const String valString = mConfig->getSetting(ValuetoGet);
-		if (valString != StringUtil::BLANK)
+		if (!valString.empty())
 		{
-			const Real val = StringConverter::parseReal(valString);
-			r = val;
-		}
+			const Ogre::Real val = StringConverter::parseReal(valString);
+            r = val;
+            return true;
+        }
+        return false;
 	}
 	//-----------------------------------------------------------------------
-	void PagingLandScapeOptions::setColourValue(ColourValue &r, const String &ValuetoGet)
+	bool PagingLandScapeOptions::setColourValue(ColourValue &r, const String &ValuetoGet)
 	{
 		const String valString = mConfig->getSetting(ValuetoGet);
-		if (valString != StringUtil::BLANK)
+		if (!valString.empty())
 		{
 			const ColourValue val = StringConverter::parseColourValue(valString);
-			r = val;
-		}
+            r = val;
+            return true;
+        }
+        return false;
 	}
     //-----------------------------------------------------------------------
-    void PagingLandScapeOptions::setString (String &s, const String &ValuetoGet)
+    bool PagingLandScapeOptions::setString (String &s, const String &ValuetoGet)
     {
         const String val = mConfig->getSetting (ValuetoGet);
-        if (val != StringUtil::BLANK)
+        if (!val.empty())
+        {
             s = val;
+            return true;
+        }
+        return false;
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeOptions::loadMapOptions(const String& mapName)
@@ -537,10 +604,12 @@ namespace Ogre
         init ();
 		setDefault ();
 
+		///By Ember start
 	    // Set up the options For a Map
 	    ConfigFile config;
 	    config.load (mapName, cfgGroupName, String("="), true);
         mConfig = &config;
+		///By Ember end
 
 
 	    // Set up the dimensions For a Map
@@ -559,6 +628,10 @@ namespace Ogre
 
 	    setUint (PageSize, "PageSize");
         setUint (TileSize, "TileSize");
+
+        invPageSizeMinusOne = 1.0 / (PageSize - 1);	
+        invTileSizeMinusOne = 1.0 / (TileSize - 1);	
+
         NumTiles = static_cast<unsigned int> (static_cast <Real> (PageSize) / (TileSize - 1));
         NumPages = static_cast<unsigned int> (static_cast <Real> (world_height * world_width));
         const unsigned int totalNumTiles = NumPages * (NumTiles*NumTiles) + 1;
@@ -570,13 +643,13 @@ namespace Ogre
 //         setReal (scale.y, "ScaleY");
 //         setReal (scale.z, "ScaleZ");
 
-	setReal( position.x, "PositionX");
-	setReal( position.y, "PositionY");
-	setReal( position.z, "PositionZ");
+	    setReal( position.x, "PositionX");
+	    setReal( position.y, "PositionY");
+	    setReal( position.z, "PositionZ");
 	
 		// secret tweak helping joining tile using vertex compression
 		// leads to texture distortion at page breaks otherwise.
-		const double scalemodif = static_cast <double> (PageSize - 1) / PageSize;
+		const double scalemodif = 1.0f;//static_cast <double> (PageSize - 1) / PageSize;
         ScaledPageSizeX = scale.x * scalemodif;
         ScaledPageSizeZ = scale.z * scalemodif;
         ScaledHeightY = scale.y / 65535;
@@ -586,14 +659,19 @@ namespace Ogre
 #if !defined(_MAPSPLITTER) && !defined(_MAPEDITOR)
 
         // Scale x/z relative to page size
-        scale.x /= PageSize;
-        scale.z /= PageSize;    
-#else// !defined(_MAPSPLITTER) && !defined(_MAPEDITOR)
-        //scale.y = scale.y;
-        scale.x /= PageSize * TextureStretchFactor;
-        scale.z /= PageSize * TextureStretchFactor;    
+        scale.x /= (PageSize - 1);
+        scale.z /= (PageSize - 1);    
 
-#endif// !defined(_MAPSPLITTER) && !defined(_MAPEDITOR)
+#else// defined(_MAPSPLITTER) || defined(_MAPEDITOR)
+        //scale.y = scale.y;
+        scale.x /= (PageSize - 1) * TextureStretchFactor;
+        scale.z /= (PageSize - 1) * TextureStretchFactor;    
+
+#endif// defined(_MAPSPLITTER) || defined(_MAPEDITOR)
+
+		invScale.x = 1 / scale.x;
+		invScale.y = 1 / scale.y;
+		invScale.z = 1 / scale.z;
 
 	    maxUnScaledZ = world_height * (PageSize - 1) * 0.5f;
 	    maxUnScaledX = world_width  * (PageSize - 1) * 0.5f;
@@ -604,20 +682,27 @@ namespace Ogre
 
 	    // Set up the names For a Map
 
-        setString (groupName, "GroupName");  
-        setString (LandScape_filename, "LandScapeFileName");
+        setString (groupName, "GroupName");
+        
+        if (!setString (LandScape_filename, "HeightMapFileName"))
+            setString (LandScape_filename, "LandScapeFileName");
 
+        if (!setString (TerrainName, "TerrainName"))
+            TerrainName = LandScape_filename;    
 
-		
         //add Resources Group to Ogre if needed.
-		StringVector mResourceFilesystem =  config.getMultiSetting("FileSystem");
+		StringVector mResourceFilesystem =  mConfig->getMultiSetting("FileSystem");
         std::vector<Ogre::String>::iterator itFileSystem = mResourceFilesystem.begin();
         for(; itFileSystem != mResourceFilesystem.end(); ++itFileSystem) 
         {
 			String resourceFileSystem = *itFileSystem;
 			String BasePath, FilePath;
 			StringUtil::splitFilename(resourceFileSystem, BasePath, FilePath);
-            if (StringUtil::endsWith  (BasePath, "landscapefilename", true))
+            if (StringUtil::endsWith  (BasePath, "terrainname", true))
+            {
+                BasePath = TerrainName;
+            }
+            else if (StringUtil::endsWith  (BasePath, "landscapefilename", true))
             {
                 BasePath = LandScape_filename;
             }
@@ -626,17 +711,25 @@ namespace Ogre
                 BasePath = LandScape_export_filename;
             }
 
-			if (FilePath.empty ())
+			if (!cfgGroupName.empty() && FilePath.empty () && !mapName.empty())
 			{
-				FileInfoListPtr finfo = ResourceGroupManager::getSingleton().findResourceFileInfo(cfgGroupName, mapName);
-				FilePath = (finfo->begin() != finfo->end())? (finfo->begin())->archive->getName() : ""; 
-			}
+				FileInfoListPtr finfo = ResourceGroupManager::getSingleton().findResourceFileInfo(
+                    cfgGroupName, 
+                    mapName);
+				FilePath = (finfo->begin() != finfo->end())? (finfo->begin())->archive->getName() : "."; 
+            }
+            if (!FilePath.empty ())
+            {
+               
+                FilePath = FilePath + "/"; 
+            } 
+
             ResourceGroupManager::getSingleton().addResourceLocation(
-                 FilePath + "/" + BasePath, "FileSystem", groupName);
+                 FilePath + BasePath, "FileSystem", groupName);
         }
 
 
-        StringVector mResourceZip =  config.getMultiSetting("Zip");
+        StringVector mResourceZip =  mConfig->getMultiSetting("Zip");
         std::vector<Ogre::String>::iterator itZip = mResourceZip.begin();
         for(; itZip != mResourceZip.end(); ++itZip) 
         {
@@ -649,26 +742,31 @@ namespace Ogre
             }
         }
 
-	    setString (LandScape_filename, "LandScapeFileName");
-	    setString (LandScape_export_filename, "LandScapeExportFileName");
-	    
-        if (LandScape_export_filename == StringUtil::BLANK)
+        if (!setString (LandScape_filename, "HeightMapFileName"))
+            setString (LandScape_filename, "LandScapeFileName");
+
+	    if (!setString (LandScape_export_filename, "LandScapeExportFileName"))
             LandScape_export_filename = LandScape_filename;
             
-	    setString (LandScape_extension, "LandScapeExtension");
-        setString (LandScape_export_extension, "LandScapeExportExtension");
-        
-        if (LandScape_export_extension == StringUtil::BLANK)
-            LandScape_export_extension = LandScape_extension;
-            
-        setString (TextureExtension, "TextureExtension");
+        if (!setString (LandScape_extension, "HeightMapExtension"))
+            setString (LandScape_extension, "LandScapeExtension");
 
-        setString (image_filename, "ImageFilename");
-        if (image_filename == "")
-            ImageNameLoad = false;
-        else 
-            ImageNameLoad = true;
+        if (!setString (LandScape_export_extension, "HeightMapExportExtension"))
+            setString (LandScape_export_extension, "LandScapeExportExtension");
+                
+                    
+        if (!setString (TextureExtension, "ImageExtension"))
+            if (!setString (TextureExtension, "ColorMapExtension"))
+                setString (TextureExtension, "TextureExtension");
 
+        if (!setString (TextureExportExtension, "ImageExportExtension"))
+            if (!setString (TextureExportExtension, "ColorMapExportExtension"))
+                setString (TextureExportExtension, "TextureExportExtension");
+
+        ImageNameLoad = setString (image_filename, "ImageFilename");
+        if (!ImageNameLoad)
+            ImageNameLoad = setString (image_filename, "ColorMapFileName");
+      
 	    // Set up the data source For a Map
 	    
 	    setString (data2DFormat, "Data2DFormat");
@@ -721,7 +819,11 @@ namespace Ogre
         }
 
 		setBool (materialPerPage, "MaterialPerPage");
-		setBool (textureModifiable, "TextureModifiable");
+        setBool (textureModifiable, "TextureModifiable");
+        setBool(mUseLodMapCache, "UseLodMapCache");
+
+        setBool(roughnessLod, "RoughnessLod");
+
 
 
 	    // Set up the splatting options For a Map
@@ -739,7 +841,7 @@ namespace Ogre
 		{			
 			matHeight[i] = 0.0f;
 		}
-        const Real divider = (maxValue - minValue) / (100.0f);
+        const Ogre::Real divider = (maxValue - minValue) / (100.0f);
 		for (i = 0; i < NumMatHeightSplat; i++)
 		{
 			setReal (matHeight[i], 
@@ -753,7 +855,7 @@ namespace Ogre
 						baseSplatName + StringConverter::toString (i));
         getAvgColors ();
         
-        Real MaterialDistanceLod = 0.0f;   
+       Ogre::Real MaterialDistanceLod = 0.0f;   
         setReal (MaterialDistanceLod,"MaterialDistanceLod");
         if (MaterialDistanceLod != 0.0f)
         {
@@ -819,7 +921,7 @@ namespace Ogre
 
 	    // compute the actual distance as a square
         // Factor is a Tile distance squared
-        const Real Factor = TileSize * scale.x * TileSize * scale.z;
+        const Ogre::Real Factor = TileSize * scale.x * TileSize * scale.z;
 
 
         // max distance upon which renderables are not rendered anymore
@@ -834,7 +936,6 @@ namespace Ogre
 	    setReal (distanceLOD, "DistanceLOD");
 	    // Compute the actual distance as a square
 	    LOD_factor = distanceLOD * Factor;
-		//LOD_factor *= LOD_factor;
 		loadMapInfo();
 
         setBool (lit, "VertexLit");
@@ -886,6 +987,7 @@ namespace Ogre
         setReal (Baselookat.y, "Baselookat.y");
         setReal (Baselookat.z, "Baselookat.z");
 
+
 		ResourceGroupManager::getSingleton().initialiseResourceGroup (groupName);
 #else 
         
@@ -928,7 +1030,10 @@ namespace Ogre
 
 
         setBool (ColorMapGenerate, "ColorMapGenerate");
-        setBool (ColorMapSplit, "ColorMapSplit");
+
+        if (!setBool (ColorMapSplit, "ImageSplit"))
+            setBool (ColorMapSplit, "ColorMapSplit");
+
         setBool (LightMap, "LightMap");
         setBool (NormalMap, "NormalMap");
         setBool (HeightMap, "HeightMap");
@@ -937,9 +1042,15 @@ namespace Ogre
         setBool (InfiniteMap, "InfiniteMap");
         setBool (CoverageMap, "CoverageMap");
         setBool (LitColorMapGenerate, "LitColorMapGenerate");
-        setBool (LitColorMapSplit, "LitColorMapSplit");
+
+        if (!setBool (LitColorMapSplit, "LitImageSplit"))
+            setBool (LitColorMapSplit, "LitColorMapSplit");
+
         setBool (HeightNormalMap, "HeightNormalMap");
-        setString (ColorMapName, "ColorMapName");
+
+        if (!setString (ColorMapName, "ImageFileName"))
+            if (!setString (ColorMapName, "ColorMapFileName"))
+                setString (ColorMapName, "ColorMapName");
 
 		if ((BaseMap || CoverageMap || AlphaMaps)
 			&& NumMatHeightSplat == 0)
@@ -980,9 +1091,9 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeOptions::calculateCFactor()
     {
-        // Const Real A = 1 / Math::Tan(Math::AngleUnitsToRadians(opts.primaryCamera->getFOVy()));
+        // ConstOgre::Real A = 1 / Math::Tan(Math::AngleUnitsToRadians(opts.primaryCamera->getFOVy()));
 		// Turn off detail compression at higher FOVs
-        const Real A = 1.0f;
+        const Ogre::Real A = 1.0f;
 
 		assert (primaryCamera);
         const Viewport *v = primaryCamera->getViewport();
@@ -992,7 +1103,7 @@ namespace Ogre
             
             assert (vertRes != 0);
 
-            const Real T = 2 * static_cast < Real > (maxPixelError) / vertRes;
+            const Ogre::Real T = 2 * static_cast <Ogre::Real > (maxPixelError) / vertRes;
             
 			if (T != 0)
                 CFactor =  A / T;
@@ -1024,7 +1135,7 @@ namespace Ogre
 // 	    {
 // 		    visible_renderables = * static_cast < const int * > (pValue);
 // 		    // compute the actual distance as a square
-//             Real Factor = TileSize;
+//            Ogre::Real Factor = TileSize;
 //             Factor = Factor * scale.x * Factor * scale.z;
 // 
 // 	        renderable_factor = visible_renderables * Factor;
@@ -1032,22 +1143,22 @@ namespace Ogre
 // 	    }
 	    if (strKey == "DistanceLOD")
 	    {
-		    distanceLOD = * static_cast < const Real * > (pValue);
+		    distanceLOD = * static_cast < const Ogre::Real * > (pValue);
 		    // Compute the actual distance as a square
-            Real Factor = TileSize;
+           Ogre::Real Factor = TileSize;
             Factor = Factor * scale.x * Factor * scale.z;
 	        LOD_factor = distanceLOD * Factor;
             return true;
 	    }
 	    if (strKey == "Sun")
 	    {
-            Sun = * static_cast < const Vector3 * > (pValue);
+            Sun = * static_cast < const Ogre::Vector3 * > (pValue);
 		    lightmoved = true;
             return true;
 	    }
 	    if (strKey == "SunAngle")
 	    {
-            SunAngle = * static_cast < const Real * > (pValue);
+            SunAngle = * static_cast < const Ogre::Real * > (pValue);
 		    lightmoved = true;
             return true;
 	    }
@@ -1127,17 +1238,17 @@ namespace Ogre
 		}
 		if (strKey == "PositionX")
 		{
-			position.x = * static_cast < const Real * > (pValue);
+			position.x = * static_cast < const Ogre::Real * > (pValue);
 			return true;
 		}
 		if (strKey == "PositionY")
 		{
-			position.y = * static_cast < const Real * > (pValue);
+			position.y = * static_cast < const Ogre::Real * > (pValue);
 			return true;
 		}
 		if (strKey == "PositionZ")
 		{
-			position.z = * static_cast < const Real * > (pValue);
+			position.z = * static_cast < const Ogre::Real * > (pValue);
 			return true;
 		}	
 
@@ -1146,6 +1257,16 @@ namespace Ogre
 			cfgGroupName = * static_cast < const String * > (pValue);
 			return true;
 		}  
+		if (strKey == "queryNoInterpolation")
+		{
+			queryNoInterpolation = * static_cast < const bool * > (pValue);
+			return true;
+		}  
+		if (strKey == "queryResolutionFactor")
+		{
+			queryResolutionFactor = * static_cast < const Ogre::Real * > (pValue);
+			return true;
+        }  
 	    return false;
     }
        
@@ -1164,19 +1285,19 @@ namespace Ogre
 	    }
 	    if (strKey == "DistanceLOD")
 	    {
-		    * static_cast < Real * > (pDestValue) = static_cast<Real> (distanceLOD);
+		    * static_cast <Ogre::Real * > (pDestValue) = static_cast<Real> (distanceLOD);
 		    return true;
 	    }
 	    if (strKey == "VisibleDistance")
 	    {
 		    // we need to return the square root of the distance
-            * static_cast < Real * > (pDestValue) =  Math::Sqrt (renderable_factor);
+            * static_cast <Ogre::Real * > (pDestValue) =  Math::Sqrt (renderable_factor);
             return true;
 	    }
 	    if (strKey == "VisibleLOD")
 	    {
 		    // we need to return the square root of the distance
-		    * static_cast < Real * > (pDestValue) =  Math::Sqrt (LOD_factor);
+		    * static_cast <Ogre::Real * > (pDestValue) =  Math::Sqrt (LOD_factor);
             return true;
 	    }
 	    // Some options proposed by Praetor
@@ -1189,40 +1310,50 @@ namespace Ogre
 	    {
 		    * static_cast < int * > (pDestValue) = world_height;
 		    return true;
-	    }
+		}
+		if (strKey == "MaxHeight")
+		{
+			* static_cast <Ogre::Real * > (pDestValue) = scale.y;
+			return true;
+		}
 	    if (strKey == "PageSize")
 	    {
 		    * static_cast < int * > (pDestValue) = PageSize;
 		    return true;
-	    }
+		}
+		if (strKey == "Scale")
+		{
+			* static_cast < Ogre::Vector3 * > (pDestValue) = scale;
+			return true;
+		}
 	    if (strKey == "ScaleX")
 	    {
-		    * static_cast < Real * > (pDestValue) = scale.x;
+		    * static_cast <Ogre::Real * > (pDestValue) = scale.x;
 		    return true;
 	    }
 	    if (strKey == "ScaleY")
 	    {
-		    * static_cast < Real * > (pDestValue) = scale.y;
+		    * static_cast <Ogre::Real * > (pDestValue) = scale.y;
 		    return true;
 	    }
 	    if (strKey == "ScaleZ")
 	    {
-		    * static_cast < Real * > (pDestValue) = scale.z;
+		    * static_cast <Ogre::Real * > (pDestValue) = scale.z;
 		    return true;
 	    }	
     	if (strKey == "PositionX")
 	    {
-		    * static_cast < Real * > (pDestValue) = position.x;
+		    * static_cast <Ogre::Real * > (pDestValue) = position.x;
 		    return true;
 	    }
 	    if (strKey == "PositionY")
 	    {
-		    * static_cast < Real * > (pDestValue) = position.y;
+		    * static_cast <Ogre::Real * > (pDestValue) = position.y;
 		    return true;
 	    }
 	    if (strKey == "PositionZ")
 	    {
-		    * static_cast < Real * > (pDestValue) = position.z;
+		    * static_cast <Ogre::Real * > (pDestValue) = position.z;
 		    return true;
 	    }	
     
@@ -1255,13 +1386,13 @@ namespace Ogre
 		
 		if (strKey == "BaseCameraViewpoint")
 	    {
-			* static_cast < Vector3 * > (pDestValue) =  BaseCameraViewpoint;
+			* static_cast < Ogre::Vector3 * > (pDestValue) =  BaseCameraViewpoint;
 		    return true;
 	    }
 	    
 		if (strKey == "Baselookat")
 	    {
-			* static_cast < Vector3 * > (pDestValue) =  Baselookat;
+			* static_cast < Ogre::Vector3 * > (pDestValue) =  Baselookat;
 		    return true;
         }
 
@@ -1278,6 +1409,16 @@ namespace Ogre
 		if (strKey == "ConfigGroupName")
 		{
 			* static_cast < String * > (pDestValue) = cfgGroupName;
+			return true;
+		}  
+		if (strKey == "queryNoInterpolation")
+		{
+			* static_cast < bool * > (pDestValue) = queryNoInterpolation;
+			return true;
+		}  
+		if (strKey == "queryResolutionFactor")
+		{
+			* static_cast <Ogre::Real * > (pDestValue) = queryResolutionFactor;
 			return true;
 		}  
 	    return false;
@@ -1440,7 +1581,7 @@ namespace Ogre
     //-----------------------------------------------------------------------
     ColourValue PagingLandScapeOptions::_getAvgColor(const String &tex) const
     {
-        if (tex == "")
+        if (tex.empty())
             return ColourValue::White;
 
 	    Image img;
@@ -1471,7 +1612,7 @@ namespace Ogre
 		    s++;
 	    }
         assert (s > 0);
-        Real divider = 1.0f /  (s * 255);
+       Ogre::Real divider = 1.0f /  (s * 255);
 	    return ColourValue (cr * divider, cg * divider, cb * divider, 1.0f);
 	}
 	//-----------------------------------------------------------------------
@@ -1508,7 +1649,10 @@ namespace Ogre
 			}
 			++q;
 		}
-		return 0;
+        // no info in cache.
+        t = new PagingLandScapeTileInfo(pageX, pageZ, tileX, tileZ);
+        setTileInfo (t);
+		return t;
 	}
 	//-----------------------------------------------------------------------
 	void PagingLandScapeOptions::setTileInfo(PagingLandScapeTileInfo *t)
@@ -1519,144 +1663,150 @@ namespace Ogre
 	void PagingLandScapeOptions::loadMapInfo()
 	{
 		// load terrain.info.cfg into the deque.
-		const String fName (mCurrentMap + ".info.cfg");
-		if (ResourceGroupManager::getSingleton().resourceExists(groupName, fName))
-		{
-			ConfigFile config;
+        if (mUseLodMapCache)
+        {
+            assert (!mCurrentMap.empty ());
+		    const String fName (mCurrentMap + ".info.cfg");
+		    if (ResourceGroupManager::getSingleton().resourceExists(groupName, fName))
+		    {
+			    ConfigFile config;
 
-			config.load (fName, cfgGroupName, String("="), true);
+			    config.load (fName, cfgGroupName, String("="), true);
 
-			// those info are dependent of Pagesize and Tilesize.
-			// if not the same as when generated...
-			// we must recompute them.
-			const String pageSizeString = config.getSetting(String("PageSize"));
-			if (pageSizeString.empty() || PageSize != StringConverter::parseUnsignedInt (pageSizeString)) 
-				return;
+			    // those info are dependent of Pagesize and Tilesize.
+			    // if not the same as when generated...
+			    // we must recompute them.
+			    const String pageSizeString = config.getSetting(String("PageSize"));
+			    if (pageSizeString.empty() || PageSize != StringConverter::parseUnsignedInt (pageSizeString)) 
+				    return;
 
-			const String tileSizeString = config.getSetting(String("TileSize"));
-			if (tileSizeString.empty() || TileSize != StringConverter::parseUnsignedInt (tileSizeString)) 
-				return;
+			    const String tileSizeString = config.getSetting(String("TileSize"));
+			    if (tileSizeString.empty() || TileSize != StringConverter::parseUnsignedInt (tileSizeString)) 
+                    return;
 
-			ConfigFile::SettingsIterator setIt = config.getSettingsIterator();
-			const size_t numLod = maxRenderLevel;
-			PagingLandScapeTileInfo *t;
-			while (setIt.hasMoreElements())
-			{  
-				const String name = setIt.peekNextKey();
-				const String value = setIt.getNext();
-				if (name != "PageSize" && name != "TileSize")
-				{
-					// name to pageX, uint pageZ, uint tileX, uint tileZ
-					{
-						std::vector<String> coordinates = StringUtil::split(name, "_");
+			    ConfigFile::SettingsIterator setIt = config.getSettingsIterator();
+			    const size_t numLod = maxRenderLevel;
+			    PagingLandScapeTileInfo *t;
+			    while (setIt.hasMoreElements())
+			    {  
+				    const String name = setIt.peekNextKey();
+				    const String value = setIt.getNext();
+				    if (name != "PageSize" && name != "TileSize")
+				    {
+					    // name to pageX, uint pageZ, uint tileX, uint tileZ
+					    {
+						    std::vector<String> coordinates = StringUtil::split(name, "_");
 
-						const uint pageX = StringConverter::parseUnsignedInt(coordinates[0]);
-						const uint pageZ = StringConverter::parseUnsignedInt(coordinates[1]);
-						const uint tileX = StringConverter::parseUnsignedInt(coordinates[2]);
-						const uint tileZ = StringConverter::parseUnsignedInt(coordinates[3]);
+						    const uint pageX = StringConverter::parseUnsignedInt(coordinates[0]);
+						    const uint pageZ = StringConverter::parseUnsignedInt(coordinates[1]);
+						    const uint tileX = StringConverter::parseUnsignedInt(coordinates[2]);
+						    const uint tileZ = StringConverter::parseUnsignedInt(coordinates[3]);
 
-						t = new PagingLandScapeTileInfo(pageX, pageZ, tileX, tileZ);
-					}
+						    t = new PagingLandScapeTileInfo(pageX, pageZ, tileX, tileZ);
+					    }
 
-					// name to LOD roughness value.
-					{
-						std::vector<String> minLevelDistSqr = StringUtil::split(value, "_");
-						assert (minLevelDistSqr.size () == numLod);
+					    // name to LOD roughness value.
+					    {
+						    std::vector<String> minLevelDistSqr = StringUtil::split(value, "_");
+						    assert (minLevelDistSqr.size () == numLod);
 
-						t->mMinLevelDistSqr =  new std::vector<Real>();
+						    t->mMinLevelDistSqr =  new std::vector<Real>();
 
-						t->mMinLevelDistSqr->reserve(numLod);
-						t->mMinLevelDistSqr->resize(numLod);
+						    t->mMinLevelDistSqr->reserve(numLod);
+						    t->mMinLevelDistSqr->resize(numLod);
 
-						for (size_t i = 0; i < numLod; i++)
-						{
-							(*(t->mMinLevelDistSqr))[i]  = StringConverter::parseReal(minLevelDistSqr[i]);
-						}
-					}
-					mTileInfoCache.push_back(t);
-				}
-				
-			}
-		}
+						    for (size_t i = 0; i < numLod; i++)
+						    {
+							    (*(t->mMinLevelDistSqr))[i]  = StringConverter::parseReal(minLevelDistSqr[i]);
+						    }
+					    }
+					    mTileInfoCache.push_back(t);
+				    }
+    				
+			    }
+		    }
+        }
 	}
 	//-----------------------------------------------------------------------
 	void PagingLandScapeOptions::saveMapInfo()
 	{
+        if (mUseLodMapCache)
+        {
+		    //if(modif ||was_empty when loaded.) ??
 
-		//if(modif ||was_empty when loaded.) ??
+            assert (!mCurrentMap.empty ());
+		    const String fInfoName (getMapFilename(mCurrentMap) + ".cfg");
 
-		const String fInfoName (getMapFilename(mCurrentMap) + ".cfg");
+		    FileInfoListPtr finfo =  ResourceGroupManager::getSingleton().findResourceFileInfo (
+			    groupName, fInfoName);
+		    FileInfoList::iterator it = finfo->begin();	
+		    if (it != finfo->end())
+		    {
+			    // save deque into terrain.info.cfg
+			    const size_t numLod = maxRenderLevel;
+			    const String eol("\n");
+			    const String coordinateSeparator("_");
+			    const String valueSeparator("=");
+			    PagingLandScapeTileInfo *t;
 
-		FileInfoListPtr finfo =  ResourceGroupManager::getSingleton().findResourceFileInfo (
-			groupName, fInfoName);
-		FileInfoList::iterator it = finfo->begin();	
-		if (it != finfo->end())
-		{
-			// save deque into terrain.info.cfg
-			const size_t numLod = maxRenderLevel;
-			const String eol("\n");
-			const String coordinateSeparator("_");
-			const String valueSeparator("=");
-			PagingLandScapeTileInfo *t;
+			    String tilesInfo("");
 
-			String tilesInfo("");
+			    // those info are dependent of Pagesize and Tilesize.
+			    // if not the same as when generated...
+			    // we must recompute them.
+			    tilesInfo += String("PageSize=")+StringConverter::toString(PageSize) + eol;
+			    tilesInfo += String("TileSize=")+StringConverter::toString(TileSize) + eol;
 
-			// those info are dependent of Pagesize and Tilesize.
-			// if not the same as when generated...
-			// we must recompute them.
-			tilesInfo += String("PageSize=")+StringConverter::toString(PageSize) + eol;
-			tilesInfo += String("TileSize=")+StringConverter::toString(TileSize) + eol;
+			    std::deque<PagingLandScapeTileInfo*>::iterator q = mTileInfoCache.begin ();
+			    std::deque<PagingLandScapeTileInfo*>::iterator qend = mTileInfoCache.end ();
+			    while (q != qend)
+			    {
+				    t = *q;
 
-			std::deque<PagingLandScapeTileInfo*>::iterator q = mTileInfoCache.begin ();
-			std::deque<PagingLandScapeTileInfo*>::iterator qend = mTileInfoCache.end ();
-			while (q != qend)
-			{
-				t = *q;
+				    if (t->mMinLevelDistSqr)
+				    {
+					    bool notEmpty = false;
+					    for (size_t i = 0; i < numLod; i++)
+					    {
+						    if ((*(t->mMinLevelDistSqr))[i] != 0.0f)
+						    {
+							    notEmpty = true;
+							    break;
+						    }
+					    }
+					    if (notEmpty)
+					    {
+						    tilesInfo += StringConverter::toString(t->mPageX) + coordinateSeparator;
+						    tilesInfo += StringConverter::toString(t->mPageZ) + coordinateSeparator;
+						    tilesInfo += StringConverter::toString(t->mTileX) + coordinateSeparator;
+						    tilesInfo += StringConverter::toString(t->mTileZ);
 
-				if (t->mMinLevelDistSqr)
-				{
-					bool notEmpty = false;
-					for (size_t i = 0; i < numLod; i++)
-					{
-						if ((*(t->mMinLevelDistSqr))[i] != 0.0f)
-						{
-							notEmpty = true;
-							break;
-						}
-					}
-					if (notEmpty)
-					{
-						tilesInfo += StringConverter::toString(t->mPageX) + coordinateSeparator;
-						tilesInfo += StringConverter::toString(t->mPageZ) + coordinateSeparator;
-						tilesInfo += StringConverter::toString(t->mTileX) + coordinateSeparator;
-						tilesInfo += StringConverter::toString(t->mTileZ);
+						    tilesInfo += valueSeparator;
 
-						tilesInfo += valueSeparator;
-
-						for (size_t i = 0; i < numLod; i++)
-						{
-							tilesInfo +=  StringConverter::toString((*(t->mMinLevelDistSqr))[i]) + coordinateSeparator;
-						}
-						tilesInfo += eol;
-					}
-				}
-				++q;
-			}
+						    for (size_t i = 0; i < numLod; i++)
+						    {
+							    tilesInfo +=  StringConverter::toString((*(t->mMinLevelDistSqr))[i]) + coordinateSeparator;
+						    }
+						    tilesInfo += eol;
+					    }
+				    }
+				    ++q;
+			    }
 
 
-			const String fConfigName (mCurrentMap + ".info.cfg");
+			    const String fConfigName (mCurrentMap + ".info.cfg");
 
-			char *olddir = ChangeToDir (const_cast< char * > (((it)->archive->getName()).c_str()));
-			std::ofstream outfile;
-			outfile.open (const_cast< char * > (fConfigName.c_str())
-							//,std::ios:b:inary
-							);
-			// Write out
-			outfile << tilesInfo;
-			outfile.close ();
+			    char *olddir = ChangeToDir (const_cast< char * > (((it)->archive->getName()).c_str()));
+			    std::ofstream outfile;
+			    outfile.open (const_cast< char * > (fConfigName.c_str())
+							    //,std::ios:binary
+							    );
+			    // Write out
+			    outfile << tilesInfo;
+			    outfile.close ();
 
-			RetablishDir (olddir);
-		}
-
+			    RetablishDir (olddir);
+		    }
+        }
 	}
 } //namespace

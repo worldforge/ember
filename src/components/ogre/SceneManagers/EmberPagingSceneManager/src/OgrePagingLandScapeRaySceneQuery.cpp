@@ -38,163 +38,93 @@ namespace Ogre
 // Supplied by Praetor. Thanks a lot. ]:)
 void PagingLandScapeRaySceneQuery::execute(RaySceneQueryListener* listener) 
 { 
-	ulong mask = getQueryMask();  
-	ulong type_mask = getQueryTypeMask();     
-    
-    static WorldFragment worldFrag;
-    worldFrag.fragmentType = SceneQuery::WFT_SINGLE_INTERSECTION;
-
-    const Vector3& dir = mRay.getDirection();
-    const Vector3& origin = mRay.getOrigin();
-
-    bool noSpecializedQueries = true;
-    bool noTerrainQuery = true;
-
-    PagingLandScapeSceneManager* mSceneMgr = static_cast<PagingLandScapeSceneManager*>(mParentSceneMgr);
-
-    // Exclusive Specialized Queries
-    // Straight up / down?
-    if ((mask & RSQ_Height) || 
-		(mask & RSQ_Height_no_interpolation) ||
-        dir == Vector3::UNIT_Y || 
-        dir == Vector3::NEGATIVE_UNIT_Y)
-    {
-        noTerrainQuery = false;
-        //noSpecializedQueries = false;
-
-        Real height;
-        if (mask & RSQ_Height_no_interpolation)
-            height = mSceneMgr->getData2DManager()->getWorldHeight(origin.x, origin.z);
-        else
-            height = mSceneMgr->getData2DManager()->getInterpolatedWorldHeight(origin.x, origin.z);
-
-        worldFrag.singleIntersection.x = origin.x;
-        worldFrag.singleIntersection.z = origin.z;
-        worldFrag.singleIntersection.y = height;
-	
-	worldFrag.singleIntersection += mSceneMgr->getOptions()->position; //consider terrain offset
-	
-        //if (!listener->queryResult(&worldFrag,  (worldFrag.singleIntersection - origin).length()))					
-        //if (!listener->queryResult(&worldFrag,  0))
-		//			return;
-        listener->queryResult(&worldFrag,  0);
-    } 
-    else if (mask & RSQ_FirstTerrain)
-    {
-        noTerrainQuery = false;
-        //noSpecializedQueries = false;
-
-        Real resFactor = 1.0f;
-		// Only bother if the non-default mask has been set
-		if((mask & RSQ_1xRes) == 0)
-		{
-			if(mask & RSQ_2xRes)
-            {
-				resFactor = 0.5f;
-			} 
-            else if(mask & RSQ_4xRes) 
-            {
-				resFactor = 0.25f;
-			} 
-			//if(mask & RSQ_8xRes) 
-            //{
-			//	resFactor = 0.125f;
-			//}
-		}
-        if (mSceneMgr->intersectSegmentTerrain(
-                        origin, dir*resFactor, 
-                        &worldFrag.singleIntersection))
-        {
-            //if (!listener->queryResult(&worldFrag,  (worldFrag.singleIntersection - origin).length()))					
-            //if (!listener->queryResult(&worldFrag,  0))
-			//		    return;
-            listener->queryResult(&worldFrag,  (worldFrag.singleIntersection - origin).length());
-        }
-    }  
-    else if (mask & RSQ_AllTerrain)
+	///Ember start
+	///Make sure that there really is some world geometry first
+    if ((static_cast<PagingLandScapeSceneManager*>(mParentSceneMgr)->mWorldGeomIsSetup) && (getQueryTypeMask() & SceneManager::WORLD_GEOMETRY_TYPE_MASK))
+	///Ember end
 	{
-        noTerrainQuery = false;
-        //noSpecializedQueries = false;
+		mWorldFrag.fragmentType = SceneQuery::WFT_SINGLE_INTERSECTION;
 
-       	Real resFactor = 1.0f;
-		// Only bother if the non-default mask has been set
-		if((mask & RSQ_1xRes) == 0)
+		const Vector3& dir = mRay.getDirection();
+		const Vector3& origin = mRay.getOrigin();
+
+		PagingLandScapeSceneManager* mSceneMgr = static_cast<PagingLandScapeSceneManager*>(mParentSceneMgr);
+		if (mWorldFragmentType & WFT_SINGLE_INTERSECTION)
 		{
-			if(mask & RSQ_2xRes)
-            {
-				resFactor = 0.5f;
+			if (dir == Vector3::UNIT_Y || 
+				dir == Vector3::NEGATIVE_UNIT_Y)
+			{
+				Real height;
+				if (mSceneMgr->getOptions()->queryNoInterpolation)
+					height = mSceneMgr->getData2DManager()->getWorldHeight(origin.x, origin.z);
+				else
+					height = mSceneMgr->getData2DManager()->getInterpolatedWorldHeight(origin.x, origin.z);
+
+				mWorldFrag.singleIntersection.x = origin.x;
+				mWorldFrag.singleIntersection.z = origin.z;
+				mWorldFrag.singleIntersection.y = height;
+
+				mWorldFrag.singleIntersection += mSceneMgr->getOptions()->position; //consider terrain offset
+
+				listener->queryResult(&mWorldFrag, (Math::Abs(mWorldFrag.singleIntersection.y - origin.y)));
+				return;
+			}
+			else if (mSceneMgr->intersectSegmentTerrain(
+					origin, 
+					dir * mSceneMgr->getOptions()->queryResolutionFactor, 
+					&mWorldFrag.singleIntersection))
+			{
+                listener->queryResult(&mWorldFrag, (mWorldFrag.singleIntersection - origin).length());
+                ///Ember start
+                PagingLandScapeOctreeRaySceneQuery::execute(listener);
+                ///Ember end
+                return;
+			}
+		}
+		else
+		{
+			// multiple terrain intersection
+			const Vector3 raydir (mRay.getDirection());
+			const Vector3 raymove (raydir * mSceneMgr->getOptions()->queryResolutionFactor);
+			const Real distmove = mSceneMgr->getOptions()->queryResolutionFactor;
+			const Real maxHeight = mSceneMgr->getData2DManager()->getMaxHeight ();
+			const Real MaxTerrainX = mSceneMgr->getOptions()->maxScaledX;
+			const Real MaxTerrainZ = mSceneMgr->getOptions()->maxScaledZ;
+
+			Vector3 ray (mRay.getOrigin());
+			Real dist = 0.0f;
+
+			// while ray is inside or ray is outside but raydir going inside
+			while ((ray.y < 0 && raydir.y > 0) || 
+				(ray.y > maxHeight    && raydir.y < 0) || 
+				(ray.x < -MaxTerrainX && raydir.x > 0) || 
+				(ray.x > MaxTerrainX  && raydir.x < 0) || 
+				(ray.z < -MaxTerrainZ && raydir.z > 0) || 
+				(ray.z > MaxTerrainZ  && raydir.z < 0)) 
+			{
+				ray += raymove;
+				dist += distmove;
+				if (ray.y < maxHeight)// no need to do complex tests
+				{
+					const Vector3 land (getHeightAt(ray));
+					if (ray.y < land.y)
+					{
+						WorldFragment* frag = new WorldFragment();
+						//fragmentList.push_back(frag);
+
+						frag->fragmentType = SceneQuery::WFT_SINGLE_INTERSECTION; 
+						frag->singleIntersection = land;
+
+						if (!listener->queryResult(frag,  dist))
+							return;
+					}
+				}
 			} 
-            else if(mask & RSQ_4xRes) 
-            {
-				resFactor = 0.25f;
-			} 
-            //else if(mask & RSQ_8xRes) 
-            //{
-			//	resFactor = 0.125f;
-			//}
 		}
 
-
-        const Vector3 raydir (mRay.getDirection());
-        const Vector3 raymove (raydir * resFactor);
-        const Real distmove = 1 * resFactor;
-        const Real maxHeight = mSceneMgr->getData2DManager()->getMaxHeight ();
-        const Real MaxTerrainX = mSceneMgr->getOptions()->maxScaledX;
-        const Real MaxTerrainZ = mSceneMgr->getOptions()->maxScaledZ;
-
-        Vector3 ray (mRay.getOrigin());
-	    Real dist = 0.0f;
-
-        // while ray is inside or ray is outside but raydir going inside
-        while ((ray.y < 0 && raydir.y > 0) || 
-                (ray.y > maxHeight    && raydir.y < 0) || 
-                (ray.x < -MaxTerrainX && raydir.x > 0) || 
-                (ray.x > MaxTerrainX  && raydir.x < 0) || 
-                (ray.z < -MaxTerrainZ && raydir.z > 0) || 
-                (ray.z > MaxTerrainZ  && raydir.z < 0)) 
-		{
-			ray += raymove;
-			dist += distmove;
-            if (ray.y < maxHeight)// no need to do complex tests
-            {
-                const Vector3 land (getHeightAt(ray));
-                if (ray.y < land.y)
-                {
-                    WorldFragment* frag = new WorldFragment();
-                    //fragmentList.push_back(frag);
-
-                    frag->fragmentType = SceneQuery::WFT_SINGLE_INTERSECTION; 
-                    frag->singleIntersection = land;
-                    			
-                    if (!listener->queryResult(frag,  dist))
-					    break;
-                }
-            }
-        } 
-    }
-
-    // Could want entities and terrain or or just entities, or didn't say nothing...
-    if(mask & RSQ_Entities)
-    {
-        noSpecializedQueries = false;
-        // Check for entity contacts
-        PagingLandScapeOctreeRaySceneQuery::execute(listener);
-    }
-
-    if (noSpecializedQueries)
-    {
-        /*
-        if (noTerrainQuery)
-        {
-            setQueryMask(mask | RSQ_AllTerrain | RSQ_Entities);
-            // Check for terrain contacts
-            PagingLandScapeRaySceneQuery::execute(listener);
-            setQueryMask(mask);
-        }
-        */
-        // Check for entity contacts
-        PagingLandScapeOctreeRaySceneQuery::execute(listener);
-    }
+	}
+    // if anything else is queried, ask underlying Octree Scene Manager.
+    PagingLandScapeOctreeRaySceneQuery::execute(listener);
 } 
 //----------------------------------------------------------------------------
 Vector3 PagingLandScapeRaySceneQuery::getHeightAt(const Vector3& origin) const

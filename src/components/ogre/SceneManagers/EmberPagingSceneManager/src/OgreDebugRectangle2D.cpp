@@ -38,6 +38,10 @@ namespace Ogre {
 
     DebugRectangle2D::DebugRectangle2D() : SimpleRenderable ()
     {
+#ifdef PLSM2_EIHORT
+        mUseIdentityProjection = true;
+        mUseIdentityView = true;
+#endif
         mRenderOp.indexData = new IndexData();
         mRenderOp.vertexData = new VertexData();
         mRenderOp.operationType = RenderOperation::OT_LINE_LIST; 

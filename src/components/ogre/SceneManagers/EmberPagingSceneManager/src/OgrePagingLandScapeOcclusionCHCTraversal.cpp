@@ -16,7 +16,7 @@ namespace Ogre
 {
 
     //-----------------------------------------------------------------------
-    void CHCTraversal::onTree(PagingLandScapeOctree& node) const 
+    void CHCTraversal::onTree(PagingLandScapeOctree& node, VisibleObjectsBoundsInfo * const visibleBounds) const 
     {
     	#ifdef _VISIBILITYDEBUG
             assert (node.getNodeData (occlusion.mCurrentCam)->viewFrustumVisible);
@@ -60,7 +60,7 @@ namespace Ogre
             stack.push(n);
 	}
     //-----------------------------------------------------------------------
-    void CHCTraversal::onLeaf(PagingLandScapeOctreeNode& n) const 
+    void CHCTraversal::onLeaf(PagingLandScapeOctreeNode& n, VisibleObjectsBoundsInfo * const visibleBounds) const 
     {
 		#ifdef _VISIBILITYDEBUG
             assert (n.getNodeData (occlusion.mCurrentCam)->viewFrustumVisible);

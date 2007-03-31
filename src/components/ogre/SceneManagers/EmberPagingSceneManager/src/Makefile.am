@@ -70,6 +70,8 @@ libEmberPagingSceneManager_la_SOURCES = \
 						OgreDebugRectangle2D.cpp \
 						OgreOcclusionBoundingBox.cpp \
 						OgrePagingLandScapeOcclusionQuerySet.cpp \
+						OgrePagingLandScapeAxisAlignedBoxSceneQuery.cpp \
+						OgrePagingLandScapeMeshDecal.cpp \
 						\
 						EmberPagingSceneManager.cpp \
 						EmberPagingLandScapeData2D_HeightField.cpp \

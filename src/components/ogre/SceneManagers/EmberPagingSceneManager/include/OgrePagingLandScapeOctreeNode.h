@@ -78,7 +78,7 @@ namespace Ogre
 
             /** Adds all the attached scene nodes to the render queue
             */
-            virtual void _addToRenderQueue(Camera* cam, RenderQueue* const q, const bool onlyShadowCasters);
+            virtual void _addToRenderQueue(Camera* cam, RenderQueue* const q, const bool onlyShadowCasters, VisibleObjectsBoundsInfo * const visibleBounds);
             
             MovableObjectList *getVisibleNotifiedNodeObjects(Camera*  cam, 
                                         const bool onlyShadowCasters);
@@ -142,7 +142,7 @@ namespace Ogre
             virtual OcclusionElement* getParent ()  {return mOctant;};   
 
 
-            virtual const AxisAlignedBox getCullBoundingBox() const 
+            inline const AxisAlignedBox &getCullBoundingBox() const 
             {
                 return _getWorldAABB();
             };
@@ -155,17 +155,17 @@ namespace Ogre
             
             virtual bool isLeaf() const {return true;};
 
-            virtual void traversal(Traversal&tr)
+            virtual void traversal(Traversal&tr, VisibleObjectsBoundsInfo * const visibleBounds)
             {   
-                tr.onLeaf (*this);
+                tr.onLeaf (*this, visibleBounds);
             };
-            virtual void traversal(const TraversalConst &tr)
+            virtual void traversal(const TraversalConst &tr, VisibleObjectsBoundsInfo * const visibleBounds)
             {  
-                tr.onLeaf(*this);
+                tr.onLeaf(*this, visibleBounds);
             };
-            virtual void traversal(const ConstTraversalConst &tr) const
+            virtual void traversal(const ConstTraversalConst &tr, VisibleObjectsBoundsInfo * const visibleBounds) const
             {   
-                tr.onLeaf (*this);
+                tr.onLeaf (*this, visibleBounds);
             };             
 		    /** creates the opaque bounding box for this octant
 		    */

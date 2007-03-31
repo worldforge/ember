@@ -96,8 +96,12 @@ namespace Ogre
     //---------------------------------------------------------------------
     Intersection intersect(const Ray &ray, const AxisAlignedBox &box)
 	{
+		// Null box?
 		if (box.isNull()) 
 			return OUTSIDE;
+		// Infinite box?
+		if (box.isInfinite()) 
+			return INTERSECT;
 
 		const Vector3& min = box.getMinimum();
 		const Vector3& max = box.getMaximum();
@@ -222,6 +226,9 @@ namespace Ogre
         // Null box?
         if (two.isNull()) 
             return OUTSIDE;
+		// Infinite box?
+		if (two.isInfinite()) 
+			return INTERSECT;
 
         const Vector3* const pCorners = two.getAllCorners();
         const Vector3 origin = one.getOrigin();
@@ -286,7 +293,9 @@ namespace Ogre
         PagingLandScapeOctreeSceneManager::intersect_call++;
         // Null box?
         if (two.isNull()) 
-            return OUTSIDE;
+			return OUTSIDE;
+		if (two.isInfinite()) 
+			return INTERSECT;
 
         // Get corners of the box
         const Vector3 * const pCorners = two.getAllCorners();
@@ -333,6 +342,10 @@ namespace Ogre
         // Null box?
         if (one.isNull() || two.isNull()) 
             return OUTSIDE;
+		if (one.isInfinite()) 
+			return INSIDE;
+		if (two.isInfinite()) 
+			return INTERSECT;
 
         const Vector3 * outside = one.getAllCorners();
         const Vector3 *inside = two.getAllCorners();
@@ -369,7 +382,9 @@ namespace Ogre
 
         // Null box?
         if (two.isNull()) 
-            return OUTSIDE;
+			return OUTSIDE;
+		if (two.isInfinite()) 
+			return INTERSECT;
 
 
         const Real sradius = Math::Sqr (one.getRadius());
@@ -513,8 +528,10 @@ namespace Ogre
         // --End Changes by Steve
 
         if (mPagingLandScapeOctree)
+        {
             deleteOctree (mPagingLandScapeOctree);
-
+            mPagingLandScapeOctree = 0;
+        }
         VisiblesPerCam::iterator i = mVisibles.begin ();
         while (i != mVisibles.end())
         {            
@@ -547,7 +564,7 @@ namespace Ogre
         if (!c->isRegisteredInOcclusionSystem()
 			&& c->needRegistrationInOcclusionSystem())
         {
-            mPagingLandScapeOctree->traversal(RegisterCameraTraversal(c));
+            mPagingLandScapeOctree->traversal(RegisterCameraTraversal(c), 0);
             c->setRegisteredInOcclusionSystem(true);
         }
 		if (!mCurrentOptionCamera)
@@ -564,7 +581,7 @@ namespace Ogre
 		}
 		if (c->isRegisteredInOcclusionSystem ())
 		{
-			mPagingLandScapeOctree->traversal (UnregisterCameraTraversal(c));
+			mPagingLandScapeOctree->traversal (UnregisterCameraTraversal(c), 0);
 			c->setRegisteredInOcclusionSystem (false);                   
 		} 
 		if (mCurrentOptionCamera == c)
@@ -634,7 +651,9 @@ namespace Ogre
         if (box.isNull())
             return ;
 
-        assert (onode && mPagingLandScapeOctree);
+        // Skip if octree has been destroyed (shutdown conditions)
+        if (!mPagingLandScapeOctree)
+            return;
 
         if (onode->getOctant() == 0)
         {
@@ -662,7 +681,12 @@ namespace Ogre
     */
     void PagingLandScapeOctreeSceneManager::_removePagingLandScapeOctreeNode(PagingLandScapeOctreeNode * n)
     {
-		assert (n);
+        assert (n);
+
+        // Skip if octree has been destroyed (shutdown conditions)
+        if (!mPagingLandScapeOctree)
+            return;
+
 		PagingLandScapeOctree * oct = n->getOctant();
 		if (oct)
 			oct->_removeNode (n);
@@ -777,7 +801,7 @@ namespace Ogre
             assert (c);
             if (c->isRegisteredInOcclusionSystem ())
             {
-                on->traversal (RegisterCameraTraversal(c));
+                on->traversal (RegisterCameraTraversal(c), 0);
                 isRegistered = true;
             }
         }
@@ -793,7 +817,7 @@ namespace Ogre
             PagingLandScapeOctreeCamera *c = static_cast <PagingLandScapeOctreeCamera *> (it->second);
             assert (c);
             if (c->isRegisteredInOcclusionSystem ())
-                on->traversal (UnregisterCameraTraversal(c));
+                on->traversal (UnregisterCameraTraversal(c), 0);
         }   
         on->setRegisteredtoCam (false);               
 	}
@@ -933,10 +957,14 @@ namespace Ogre
 		octreeCam->_addCHCRenderedFaces(mDestRenderSystem->_getFaceCount());
 	}
     //---------------------------------------------------------------------
+#ifdef PLSM2_EIHORT
+    void PagingLandScapeOctreeSceneManager::_findVisibleObjects(Camera* cam, VisibleObjectsBoundsInfo * visibleBounds, bool onlyShadowCasters)
+#else
     void PagingLandScapeOctreeSceneManager::_findVisibleObjects(Camera * cam, bool onlyShadowCasters)
+#endif
     {
         RenderQueue *q = SceneManager::getRenderQueue();
-       
+
 
 		PagingLandScapeOctreeCamera * const octreeCam = static_cast <PagingLandScapeOctreeCamera *> (cam);
 		
@@ -976,14 +1004,13 @@ namespace Ogre
                 case CHC:
                     {                     
                         enableHardwareOcclusionTests();
-                        mOcclusion.CHCtraversal (mPagingLandScapeOctree);
+                        mOcclusion.CHCtraversal (mPagingLandScapeOctree, visibleBounds);
 						disableHardwareOcclusionTests();
 						q->clear();
-
 						#ifdef _VISIBILITYDEBUG
 						if (mCullDebug && cam->getViewport ())
 						{
-                            cam->getViewport ()->getTarget ()->setDebugText(
+                            mDebugText =(
                                 "CHC = " + StringConverter::toString(mOcclusion.object_cnt) + ", t=" +
                                 StringConverter::toString(mOcclusion.traversed_nodes_cnt) + ", f=" +
                                 StringConverter::toString(mOcclusion.frustum_culled_nodes_cnt) + ", q=" +
@@ -996,14 +1023,14 @@ namespace Ogre
                 case CHC_CONSERVATIVE:
                     {                     
                         enableHardwareOcclusionTests();
-                        mOcclusion.CHCtraversalConservative (mPagingLandScapeOctree);
+                        mOcclusion.CHCtraversalConservative (mPagingLandScapeOctree, visibleBounds);
 						disableHardwareOcclusionTests();
 						q->clear();
 
                         #ifdef _VISIBILITYDEBUG
 							if (mCullDebug && cam->getViewport ())
 							{
-							cam->getViewport ()->getTarget ()->setDebugText(
+							mDebugText =(
 									"CHC Conservative = " + StringConverter::toString(mOcclusion.object_cnt) + ", t=" +
 									StringConverter::toString(mOcclusion.traversed_nodes_cnt) + ", f=" +
 									StringConverter::toString(mOcclusion.frustum_culled_nodes_cnt) + ", q=" +
@@ -1011,14 +1038,13 @@ namespace Ogre
 												);
 							}
 						#endif //_VISIBILITYDEBUG
-
                     }
                     break;
 //                    case STOP_AND_WAIT:
 //                        {     
 //                            enableHardwareOcclusionTests();
 //                            mOcclusion.initQueryPool ();
-//                            mPagingLandScapeOctree->traversal (SWTraversal (mOcclusion));
+//                            mPagingLandScapeOctree->traversal (SWTraversal (mOcclusion), visibleBounds);
 //                            disableHardwareOcclusionTests(); q->clear();
 //    
 //                           #ifdef _VISIBILITYDEBUG
@@ -1035,7 +1061,7 @@ namespace Ogre
 //                         break;
 //                case VIEW_FRUSTUM:
 //                        {
-//                            mPagingLandScapeOctree->traversal (ViewFrustumCullingTraversal (mOcclusion));
+//                            mPagingLandScapeOctree->traversal (ViewFrustumCullingTraversal (mOcclusion), visibleBounds);
 //							q->clear();
 //                            #ifdef _VISIBILITYDEBUG
 //								if (mCullDebug && cam->getViewport ())
@@ -1052,12 +1078,12 @@ namespace Ogre
                 case VIEW_FRUSTUM_DIRECT:
                 {
 					ViewFrustumCullingTraversalDirect temp (mOcclusion);
-                    mPagingLandScapeOctree->traversal (temp);
+                    mPagingLandScapeOctree->traversal (temp, visibleBounds);
 
                     #ifdef _VISIBILITYDEBUG
 						if (mCullDebug && cam->getViewport ())
 						{ 
-							cam->getViewport ()->getTarget ()->setDebugText(
+							mDebugText =(
 								"VFD = " +  StringConverter::toString(mOcclusion.object_cnt) + ", t=" +
 							StringConverter::toString(mOcclusion.traversed_nodes_cnt) + ", f=" +
 							StringConverter::toString(mOcclusion.frustum_culled_nodes_cnt) + ", q=" +
@@ -1088,7 +1114,7 @@ namespace Ogre
             #ifdef _VISIBILITYDEBUG
                 if (mCullDebug)
                 {   
-                    mPagingLandScapeOctree->traversal (TreeOverlayDebug (mOcclusion, this));
+                    mPagingLandScapeOctree->traversal (TreeOverlayDebug (mOcclusion, this), visibleBounds);
                 }      
             #endif // _VISIBILITYDEBUG
         }
@@ -1129,7 +1155,7 @@ namespace Ogre
     //---------------------------------------------------------------------
     void PagingLandScapeOctreeSceneManager::registerCamera (PagingLandScapeOctreeCamera *c)
     {        
-       mPagingLandScapeOctree->traversal(RegisterCameraTraversal(c));
+       mPagingLandScapeOctree->traversal(RegisterCameraTraversal(c), 0);
     }  
     //---------------------------------------------------------------------
      // --- non template versions
@@ -1492,8 +1518,10 @@ namespace Ogre
         else if (key == "Depth")
         {
             assert (mPagingLandScapeOctree);
-            mMaxDepth = * static_cast < const int * > (val);
-            resize(mPagingLandScapeOctree->getBoundingBox());
+			mMaxDepth = * static_cast < const int * > (val);
+			// copy the box since resize will delete mOctree and reference won't work
+			AxisAlignedBox box = mPagingLandScapeOctree->getBoundingBox();
+            resize(box);
             return true;
         }
         else if (key == "NextCullMode")
@@ -1600,10 +1628,14 @@ namespace Ogre
             {
                 * static_cast < bool * > (val) = mCullDebug;
                 return true;
-            }
+			}
+			else if (key == "DebugText")
+			{
+				* static_cast < String * > (val) = mDebugText;
+				return true;
+			}
         #endif //_VISIBILITYDEBUG
     
-
         return SceneManager::getOption(key, val);
     }
     //---------------------------------------------------------------------

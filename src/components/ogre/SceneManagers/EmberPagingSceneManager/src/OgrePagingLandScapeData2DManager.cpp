@@ -399,7 +399,7 @@ namespace Ogre
         const Real modificationHeight,
         const PagingLandScapeTileInfo* info)
     {
-#ifndef _MAPSPLITTER
+#ifndef _MAPSPLITTER 
         const unsigned int pX = info->mPageX;
         const unsigned int pZ = info->mPageZ;
         const unsigned int pSize = mOptions->PageSize - 1;
@@ -505,10 +505,8 @@ namespace Ogre
                 return true;
             } // if (data->deformHeight (x, z, heightResult))
         } // if (data->isLoaded())
-        return false;
-#else //_MAPSPLITTER
-        return true;
-#endif //_MAPSPLITTER
+#endif
+		return false;
     }
     //-----------------------------------------------------------------------
     bool PagingLandScapeData2DManager::deformHeight(const Vector3 &deformationPoint,
@@ -638,8 +636,8 @@ namespace Ogre
 		//#define _DEBUGPOSHEIGHTSTICH
 		
         // scale position from world to page scale
-        const Real unscaledX = (x / mOptions->scale.x) + mOptions->maxUnScaledX;
-        const Real unscaledZ = (z / mOptions->scale.z) + mOptions->maxUnScaledZ;
+        const Real unscaledX = (x * mOptions->invScale.x) + mOptions->maxUnScaledX;
+        const Real unscaledZ = (z * mOptions->invScale.z) + mOptions->maxUnScaledZ;
         
         const Real pSize = mOptions->PageSize - 1;
         const Real inv_pSize = 1.0f / pSize;
@@ -1497,12 +1495,12 @@ namespace Ogre
         unsigned int pageX, pageZ;
         if (mPageManager->getPageIndices(x, z, pageX, pageZ, false))
 		{
-			PagingLandScapeData2D *data = getData2D (pageX, pageZ, false);
+			PagingLandScapeData2D * const data = getData2D (pageX, pageZ, false);
 			if (data && data->isLoaded())
             {
                 // scale position from world to page scale
-                Real localX = x / mOptions->scale.x;
-                Real localZ = z / mOptions->scale.z;
+                Real localX = x * mOptions->invScale.x;
+                Real localZ = z * mOptions->invScale.z;
 
                 // adjust x and z to be local to page
                 const Real pSize = mOptions->PageSize - 1;
@@ -1612,7 +1610,7 @@ namespace Ogre
     const Real PagingLandScapeData2DManager::getHeightAtPage(const unsigned int dataX, const unsigned int dataZ, 
                                                         const int x, const int z) 
     {
-		PagingLandScapeData2D* data = getData2D (dataX, dataZ, false );
+		PagingLandScapeData2D * data = getData2D (dataX, dataZ, false );
 		if (data && data->isLoaded())
         {
             int lX = x;
@@ -1811,8 +1809,8 @@ namespace Ogre
         Vector3  result;
 
         // scale position from world to page scale
-        Real localX = x / mOptions->scale.x;
-        Real localZ = z / mOptions->scale.z;
+        Real localX = x * mOptions->invScale.x;
+        Real localZ = z * mOptions->invScale.z;
 
         // adjust x and z to be local to page
         const Real pSize = mOptions->PageSize - 1;

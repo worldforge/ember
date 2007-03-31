@@ -53,7 +53,7 @@ namespace Ogre
 	
 			// unload invisible tiles after option::mTileInvisibleUnloadFrames tick
 			// without being visible.
-			void updateLoadedTiles();
+			void unloadUntouched();
 
             inline PagingLandScapeOptions*		getOptions()
 			{

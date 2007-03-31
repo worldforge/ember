@@ -148,21 +148,21 @@ namespace Ogre
 		    NodeList mMovingNodes;
 		    NodeList mStaticNodes;
 
-            virtual OcclusionElement* getParent () {return mParent;};  
+            inline OcclusionElement* getParent () {return mParent;};  
 
-            virtual bool isLeaf() const {return false;};
+            inline bool isLeaf() const {return false;};
             
-            virtual void traversal(Traversal &tr) 
+            inline void traversal(Traversal &tr, VisibleObjectsBoundsInfo * const visibleBounds) 
             {   
-                tr.onTree (*this);
+                tr.onTree (*this, visibleBounds);
             };
-            virtual void traversal(const TraversalConst &tr)
+            inline void traversal(const TraversalConst &tr, VisibleObjectsBoundsInfo * const visibleBounds)
             {  
-                tr.onTree(*this);
+                tr.onTree(*this, visibleBounds);
             };
-            virtual void traversal(const ConstTraversalConst &tr) const
+            inline void traversal(const ConstTraversalConst &tr, VisibleObjectsBoundsInfo * const visibleBounds) const
             {   
-                tr.onTree (*this);
+                tr.onTree (*this, visibleBounds);
             };
 
             // check if need to traverse it.
@@ -177,15 +177,12 @@ namespace Ogre
                 void setDebugCorners(PagingLandScapeOctreeSceneManager *scnMgr);
             #endif //_VISIBILITYDEBUG    
 
-            virtual const AxisAlignedBox getCullBoundingBox() const 
-            {        
-                 return mCullBox;
-            };
-            const AxisAlignedBox& getBoundingBox() const{return mBox;};
-            virtual const Vector3 &getHalfSize()  const {return mHalfSize;};
-            virtual const Vector3 &getCullHalfSize()  const {return mCullHalfSize;};
+            inline const AxisAlignedBox &getCullBoundingBox() const {return mCullBox;};
+            inline const AxisAlignedBox &getBoundingBox()     const {return mBox;};
+            inline const Vector3        &getHalfSize()        const {return mHalfSize;};
+            inline const Vector3        &getCullHalfSize()    const {return mCullHalfSize;};
 
-            virtual bool isOccluder () const  { return true; }
+            inline bool isOccluder () const  { return true; }
 
 	    protected:
 

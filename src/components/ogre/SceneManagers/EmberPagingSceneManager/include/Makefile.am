@@ -77,6 +77,8 @@ noinst_HEADERS = \
 			OgrePagingLandScapeCallBackEvent.h \
 			OgrePagingLandScapeCallback.h \
 			OgrePagingLandScapeTexture_InstantBaseTextureShadowed.h \
+			OgrePagingLandScapeAxisAlignedBoxSceneQuery.h \
+			OgrePagingLandScapeMeshDecal.h \
 			\
 EmberPagingLandScapeData2D_HeightField.h \
 EmberPagingLandScapeTexture.h \

@@ -140,26 +140,7 @@ namespace Ogre
         // ispow2
         return ((p & (p - 1)) == 0);
     }
-    //-----------------------------------------------------------------------
-    const Real PagingLandScapeData2D::getHeightAbsolute(const Real x, const Real z)
-    {   
-        const Vector3 scale = mParent->getOptions()->scale;
-	
-        // adjust x and z to be local to page
-        const int i_x = static_cast<int> (x / scale.x - mShiftX);
-        const int i_z = static_cast<int> (z / scale.z - mShiftZ);
-
-        // due to Real imprecision on Reals, we have to use boundaries here
-        // otherwise we'll hit asserts.
-        const int size =  static_cast<int> (mSize-1);
-        const unsigned int u_x = static_cast<unsigned int> (std::max(std::min (i_x, size), 0));
-        const unsigned int u_z = static_cast<unsigned int> (std::max(std::min (i_z, size), 0));
-	
-        const size_t arraypos = u_z * mSize + u_x; 
-        assert (mHeightData && arraypos < mMaxArrayPos);
-	    return mHeightData[arraypos];
-    }
-
+    
 #ifndef _MAPSPLITTER
     //-----------------------------------------------------------------------
     void PagingLandScapeData2D::resetDeformationRectangle ()

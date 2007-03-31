@@ -39,8 +39,9 @@ namespace Ogre
             void init();
             void setDefault();
 
-	        void load(DataStreamPtr& stream);
-            void load(const String &filename);
+            bool load(DataStreamPtr& stream);
+            bool load(const String &filename, ConfigFile& config);
+            bool load(const String &filename);
 
             void loadMap(const String& mapName);
             void loadMapOptions(const String& mapName);
@@ -80,6 +81,8 @@ namespace Ogre
 	        String data2DFormat;
 	        String textureFormat;
 
+            String TerrainName;
+
 	        String LandScape_filename;
             String LandScape_extension;
 	        String LandScape_export_filename;
@@ -92,6 +95,7 @@ namespace Ogre
             // MAP TOOL OPTIONS
             String OutDirectory;
             String TextureExtension;
+            String TextureExportExtension;
 
             bool Paged;
             bool BaseMap;
@@ -119,6 +123,8 @@ namespace Ogre
             Real    Amb;
             Real    Diff;
 
+            bool mUseLodMapCache;
+
             unsigned int     Blur;
             // end of MAP TOOL OPTIONS
 
@@ -126,7 +132,9 @@ namespace Ogre
 	        unsigned int minValue;
 
             unsigned int TileSize;
-	        unsigned int PageSize;						//size of the page.
+            unsigned int PageSize;						//size of the page.
+            Real invTileSizeMinusOne;
+            Real invPageSizeMinusOne;					
             unsigned int NumTiles;
             unsigned int NumPages;
 
@@ -148,11 +156,12 @@ namespace Ogre
 
 			Vector3 position;				//Startup position of the terrain surface			
 			Vector3 scale;
-		
+			Vector3	invScale;
+
 	        Material::LodDistanceList lodMaterialDistanceList; //Distance for the material LOD change
 	        Real distanceLOD;					//Distance for the LOD change
 	        Real LOD_factor;
-
+            bool roughnessLod;
 
 	        unsigned int num_renderables;				//Max number of renderables to use.
 	        unsigned int num_renderables_increment;		//Number of renderables to add in case we run out of renderables
@@ -249,6 +258,8 @@ namespace Ogre
             unsigned int NumTextureFormatSupported;
             std::vector<String> TextureFormatSupported;
 
+			bool  queryNoInterpolation;
+			Real  queryResolutionFactor;
 
 			bool materialPerPage;
 			bool textureModifiable;
@@ -256,11 +267,11 @@ namespace Ogre
 			Vector3 BaseCameraViewpoint;
 			Vector3 Baselookat;
 			
-            void setUint (unsigned int &u, const String &ValuetoGet);
-            void setBool (bool &b, const String &ValuetoGet);
-            void setReal (Real &r,const String &ValuetoGet);
-			void setColourValue(ColourValue &r,const String &ValuetoGet);
-            void setString (String &s, const String &ValuetoGet);
+            bool setUint (unsigned int &u, const String &ValuetoGet);
+            bool setBool (bool &b, const String &ValuetoGet);
+            bool setReal (Real &r,const String &ValuetoGet);
+			bool setColourValue(ColourValue &r,const String &ValuetoGet);
+            bool setString (String &s, const String &ValuetoGet);
 
             StringVector mResourceFilesystem;
             StringVector mResourceZip;
@@ -276,6 +287,7 @@ namespace Ogre
 
         private:
 
+            void loadcfg (const String &filename, ConfigFile& config);
 	        ColourValue _getAvgColor(const String& tex) const;
             String mCurrentMap;
             LandScapeFileNames mMapList;

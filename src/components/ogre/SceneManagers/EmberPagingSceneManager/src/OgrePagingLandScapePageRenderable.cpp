@@ -236,17 +236,6 @@ namespace Ogre
 
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapePageRenderable::_notifyCurrentCamera(Camera* cam)
-    {
-	    if (static_cast<PagingLandScapeCamera*> (cam)->isVisible (mBounds))
-        {
-           mVisible = true;
-           MovableObject::_notifyCurrentCamera(cam);
-        }
-        else
-           mVisible = false;
-    }
-    //-----------------------------------------------------------------------
     void PagingLandScapePageRenderable::_updateRenderQueue(RenderQueue* queue)
     {    	
         queue->addRenderable(this);
@@ -259,7 +248,11 @@ namespace Ogre
     //-----------------------------------------------------------------------
     const LightList& PagingLandScapePageRenderable::getLights(void) const
     {
+#ifdef PLSM2_EIHORT
+        return queryLights();
+#else
         return MovableObject::getParentSceneNode()->findLights(this->getBoundingRadius());
+#endif
     }
     //-----------------------------------------------------------------------
     Real PagingLandScapePageRenderable::getSquaredViewDepth(const Camera* cam) const

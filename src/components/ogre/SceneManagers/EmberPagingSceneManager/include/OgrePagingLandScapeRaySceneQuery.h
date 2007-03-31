@@ -24,37 +24,6 @@ email                : spoke2@supercable.es && tuan.kuranes@free.fr
 namespace Ogre
 {
 
-	typedef enum RaySceneQueryFlags
-	{
-		// Height will return the height at the origin
-		// Distance will always be 0
-		RSQ_Height       = 1<<0,
-
-		// AllTerrain will return all terrain contacts
-		// along the ray
-		RSQ_AllTerrain   = 1<<1,
-
-		// FirstTerrain will return only the first
-		// contact along the ray
-		RSQ_FirstTerrain = 1<<2,
-
-		// Entities will return all entity contacts along the ray
-		RSQ_Entities     = 1<<3,
-
-		// Different resolution scales.  It defaults to 1 unit
-		// resolution.  2x resolution tests every 0.5 units
-		// 4x tests every 0.25 and 8x every 0.125
-		//RSQ_8xRes        = 1<<4, // removed to get only 8 flags.
-		RSQ_4xRes        = 1<<4,
-		RSQ_2xRes        = 1<<5,
-		RSQ_1xRes        = 1<<6,
-
-		// Height will return the height at the origin
-		// Distance will always be 0
-        // without interpolation = Much faster but
-        // wrong between points.
-        RSQ_Height_no_interpolation =  1<<7,
-	};
 
 	/** PagingLandScape's specialisation of RaySceneQuery.
 		if RSQ_Height bit mask is set, RSQ_Terrain and RSQ_Entity bits will be ignored
@@ -111,9 +80,10 @@ namespace Ogre
 //				    }
 //			    }
 //			    fragmentList.clear();
-//		    }
+			//		    }
 
-	    private:
+	private:
+		WorldFragment mWorldFrag;
 
 	};
 

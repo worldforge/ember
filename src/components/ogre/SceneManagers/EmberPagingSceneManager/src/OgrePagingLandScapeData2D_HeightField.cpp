@@ -295,10 +295,8 @@ namespace Ogre
         {      
             if (!ResourceGroupManager::getSingleton().resourceExists(groupName, strFileName + fileExt))
             {
-                LogManager::getSingleton().logMessage(
-                                String("PLSM2 : Cannot find map named ") + strFileName + fileExt, 
-                                LML_CRITICAL,
-                                true);
+                LogManager::getSingleton().logMessage(LML_CRITICAL,
+                                String("PLSM2 : Cannot find map named ") + strFileName + fileExt);
                 return false;
             }
             mImage->load (strFileName + fileExt, groupName); 

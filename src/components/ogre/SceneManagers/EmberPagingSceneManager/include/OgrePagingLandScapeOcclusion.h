@@ -26,8 +26,8 @@ namespace Ogre
                 mQueryPool.deletePool ();
             }
 	        //this is the algorithm from the paper
-	        void CHCtraversal(PagingLandScapeOctree *octree);
-            void CHCtraversalConservative (PagingLandScapeOctree *octree);
+	        void CHCtraversal(PagingLandScapeOctree *octree, VisibleObjectsBoundsInfo * const visibleBounds);
+            void CHCtraversalConservative (PagingLandScapeOctree *octree, VisibleObjectsBoundsInfo * const visibleBounds);
   
 	        bool insideViewFrustum (OcclusionElement& node);
             void pullUpVisibility(OcclusionElement& n);

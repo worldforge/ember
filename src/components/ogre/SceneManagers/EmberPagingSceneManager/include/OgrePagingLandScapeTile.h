@@ -85,7 +85,7 @@ public:
     void unload(void);
 	void uninit(void);
 
-	void _Notify(const Vector3& pos, PagingLandScapeCamera* Cam);
+	void _Notify(const Vector3 &pos, const PagingLandScapeCamera * const Cam);
 
     inline bool isLoaded(void)
 	{
@@ -112,13 +112,13 @@ public:
 		return mVisible;
 	}
 
-	/// make tile visible not being unload until a certain time.
+	/// make tile visible not being unload or invisible until a certain time.
 	inline void touch ()
 	{ 
-		mTimePreLoaded = mParent->getOptions()->TileInvisibleUnloadFrames;
+        mTimeUntouched = mParent->getOptions()->TileInvisibleUnloadFrames;
 	}
 
-    void setRenderQueueGroup(RenderQueueGroupID qid);
+    void setRenderQueueGroup(uint8 qid);
 
 	SceneNode *getSceneNode()
 	{
@@ -127,13 +127,17 @@ public:
 	const AxisAlignedBox &getWorldBbox() const 
 	{
 		return mWorldBounds;
-	};
-	const Vector3 &getCenter(void) const 
+    };
+    inline const AxisAlignedBox &getCullWorldBbox() const 
+    {
+        return mWorldBoundsExt;
+    };
+	inline const Vector3 &getCenter(void) const 
 	{
 		return mWorldPosition;
 	};
 
-	const bool touched ();
+	const bool unloadUntouched ();
 
 protected:
 	//movable object variables
@@ -157,7 +161,7 @@ protected:
 
 	PagingLandScapeTileInfo *mInfo;
 	bool mVisible;
-	unsigned int mTimePreLoaded;
+	unsigned int mTimeUntouched;
 
     PagingLandScapeTileManager *mParent;
 };

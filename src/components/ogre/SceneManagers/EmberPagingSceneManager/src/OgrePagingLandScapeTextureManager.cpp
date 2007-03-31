@@ -162,7 +162,7 @@ namespace Ogre
 		Real Texturescale = opt->TextureStretchFactor;
 		const unsigned int textureSize = (unsigned int) (mPageSize * Texturescale);
 		uchar *data = new uchar[textureSize * textureSize * 3];
-		mImage.loadDynamicImage (data, textureSize, textureSize, PF_BYTE_RGB);
+		mImage.loadDynamicImage (data, textureSize, textureSize, PF_R8G8B8A8);
 
 		const unsigned int numColors = opt->NumMatHeightSplat;
 
@@ -205,13 +205,14 @@ namespace Ogre
 	void PagingLandScapeTextureManager::clearData ()
 	{
 		delete [] mImage.getData ();    
-		mImage.loadDynamicImage (0, 0, 0, PF_BYTE_RGB);    
+		mImage.loadDynamicImage (0, 0, 0, PF_R8G8B8A8);    
 	}
     //-----------------------------------------------------------------------
     String PagingLandScapeTextureManager::getCurrentTextureFormat()
     {
-        assert (!mTextureTypeMap.empty());
-        return mTextureTypeMap[mTextureType]->getName();;
+        if (!mTextureTypeMap.empty())
+            return mTextureTypeMap[mTextureType]->getName();
+        return StringUtil::BLANK;
     }
     //-----------------------------------------------------------------------
     PagingLandScapeTextureManager::~PagingLandScapeTextureManager()
@@ -303,13 +304,14 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeTextureManager::load ()
     {        
-		registerTextureFormats ();
-        if (mOptions->textureFormat != mTextureFormat)
+		registerTextureFormats ();        
         {
             reset ();
             mTextureFormat = mOptions->textureFormat; 
             unsigned int i = 0;
+
             assert (!mTextureTypeMap.empty());
+
             const size_t numTextureTypes = mTextureTypeMap.size();
             for (; i != numTextureTypes; ++i)
             {

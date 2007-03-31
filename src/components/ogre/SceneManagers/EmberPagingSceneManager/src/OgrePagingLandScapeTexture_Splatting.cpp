@@ -175,7 +175,7 @@ namespace Ogre
 												pageSize, 
 												pageSize, 
 												1, 
-												PF_BYTE_RGBA, 
+												PF_R8G8B8A8, 
 												true);
 					tmpImage.resize(pageSize - 1, pageSize - 1);						
 		            texMgr->loadImage (Basetexname, 

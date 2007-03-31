@@ -32,6 +32,9 @@
 
 //#define _VISIBILITYDEBUG
 
+#if !(OGRE_VERSION <  ((1 << 16) | (3 << 8) | 0))
+    #define PLSM2_EIHORT 1
+#endif
 
 //-----------------------------------------------------------------------
 // Forward declarations

@@ -85,8 +85,11 @@ namespace Ogre
         mRenderLevel (-1),
         mIsRectModified (false),
         mRect (0, 0, 0, 0, 0, 1),
-        mForcedMaxLod (false),
-        mNeedReload(false)
+        mForcedMaxLod (false)
+        ///Ember added start
+        , mNeedReload(false)
+        ///Ember added stop
+
     {
 	    // No shadow projection
         MovableObject::mCastShadows = false;
@@ -221,6 +224,7 @@ namespace Ogre
 
         mForcedMaxLod = false;
         mUpperDistance = mParent->getOptions ()->renderable_factor;
+        mIsLoaded = false;
 
 		//we can init texcoord buffer as it's data independent.
 		VertexDeclaration   * const decl = mCurrVertexes->vertexDeclaration;
@@ -250,14 +254,15 @@ namespace Ogre
 	{
 		assert (mQueued || mNeedReload);
 	    assert (mInfo);
-        if (!mInUse)
-		{
+        
+		//if (!mInUse)
+		//{
 			// if not in use, do not load.
 			//if (mIsLoaded)
 			//	return true;
 			//else
-			return false;
-		}
+		//	return false;
+		//}
         // case renderable was queued before page was unloaded
         // when loaded, page exists no more.
         PagingLandScapeData2D *data = mParent->getSceneManager()->getData2DManager()->getData2D(mInfo->mPageX, mInfo->mPageZ);
@@ -311,12 +316,10 @@ namespace Ogre
             mRect.bottom += 1;
 
             
-//            LogManager::getSingleton().logMessage(
+//            LogManager::getSingleton().logMessage(LML_CRITICAL,
 //                String("PLSM2 : Deformation on tile ") + StringConverter::toString(mInfo->tileX) + ", " + StringConverter::toString(mInfo->tileZ) 
 //                +  " : " + StringConverter::toString(mRect.left) + " - " + StringConverter::toString(mRect.right) 
-//                +  " | " + StringConverter::toString(mRect.top) + " - " + StringConverter::toString(mRect.bottom),
-//                LML_CRITICAL,
-//                true);
+//                +  " | " + StringConverter::toString(mRect.top) + " - " + StringConverter::toString(mRect.bottom));
 
             // Make sure we get a new min and max
             // only if modified heights exceed current bounds 
@@ -443,6 +446,10 @@ namespace Ogre
 	        mBounds.setExtents(minbound.x, min, minbound.z, 
                                maxbound.x, max,  maxbound.z);
         }
+        mBoundingRadius = Math::Sqrt(
+                         Math::Sqr(max - min) +
+                         Math::Sqr((endx - 1 - offSetX) * scale_x) +
+                         Math::Sqr((endz - 1 - offSetZ) * scale_z)) / 2;
        
 
        
@@ -480,8 +487,6 @@ namespace Ogre
     {
         assert (mIsLoaded && mInfo);
 		assert (!mQueued);
-        mParent->getSceneManager()->getListenerManager()->fireTileUnloaded (mInfo->mPageX, mInfo->mPageZ,
-			mInfo->mTileX, mInfo->mTileZ, mParentTile->getWorldBbox ());
         if (mNeighbors[SOUTH])
             mNeighbors[SOUTH]->_setNeighbor (NORTH, 0);
         if (mNeighbors[NORTH])
@@ -546,24 +551,16 @@ namespace Ogre
                 mMaterialLODIndex = 0;
             }
             else
-			{                                
-				const Vector3 cpos = cam -> getDerivedPosition();
-				const Vector3 center = getWorldPosition();
-				const AxisAlignedBox& aabb = getWorldBoundingBox(true);
-				Vector3 diff(0, 0, 0);
-				diff.makeFloor(cpos - aabb.getMinimum());
-				diff.makeCeil(cpos - aabb.getMaximum());
-				const Real L = (center - cpos).squaredLength();
-
-                // Now adjust it by the camera bias
-                mDistanceToCam = L * cam->getLodBias ();
-
+			{      
+                // get distance between renderable and tile and  adjust it by the camera bias
+                mDistanceToCam =  (getWorldPosition() - cam -> getDerivedPosition()).squaredLength() * cam->getLodBias ();
+              
                 // Material LOD
                 if (!mMaterial.isNull() 
                     && mMaterial->getNumLodLevels(MaterialManager::getSingleton()._getActiveSchemeIndex()) > 1
                     )
 				{
-					const unsigned short LODIndex = mMaterial->getLodIndexSquaredDepth (L);
+					const unsigned short LODIndex = mMaterial->getLodIndexSquaredDepth (mDistanceToCam);
 					if (LODIndex != mMaterialLODIndex)
 						mMaterialLODIndex = LODIndex; 
 				}
@@ -572,7 +569,8 @@ namespace Ogre
 				assert (mMinLevelDistSqr);
                 for (int i = 0; i < maxMipmap; i++)
                 {
-                    if ((*mMinLevelDistSqr)[ i ] > L)
+                    
+                    if ((*mMinLevelDistSqr)[ i ] > mDistanceToCam)
                     {
                         mRenderLevel = i - 1;
                         break;
@@ -599,7 +597,7 @@ namespace Ogre
                         const Real range = (*mMinLevelDistSqr)[nextLevel] - (*mMinLevelDistSqr)[mRenderLevel];
                         if (range)
                         {
-                            const Real percent = (L - (*mMinLevelDistSqr)[mRenderLevel]) / range;
+                            const Real percent = (mDistanceToCam - (*mMinLevelDistSqr)[mRenderLevel]) / range;
                             // scale result so that msLODMorphStart == 0, 1 == 1, clamp to 0 below that
                             const Real rescale = 1.0f / (1.0f - mParent->getOptions ()->lodMorphStart);
                             mLODMorphFactor = std::max((percent - mParent->getOptions ()->lodMorphStart) * rescale, 
@@ -703,11 +701,6 @@ namespace Ogre
     }
 
     //-----------------------------------------------------------------------
-    Real PagingLandScapeRenderable::getBoundingRadius(void) const
-    {
-	    return mWorldBoundingSphere.getRadius();
-    }
-    //-----------------------------------------------------------------------
     void PagingLandScapeRenderable::getRenderOperation(RenderOperation& op)
     {
         assert (mIsLoaded);
@@ -755,7 +748,8 @@ namespace Ogre
     {
 		//level 0 has no delta.
 	   PagingLandScapeOptions * const opt = mParent->getOptions();
-	   const bool lodMorph = opt->lodMorph;
+	   const bool lodMorph = opt->lodMorph; 
+       const bool roughnessLod = opt->roughnessLod;
 
 	   bool doComputeMinLevelDistSqr = mIsRectModified;
        if (mMinLevelDistSqr == 0)
@@ -920,7 +914,7 @@ namespace Ogre
                 {
                   	//added for Ember
                    bool isInValidVertex;
-                   {
+                    {
                         const Vector3 v1(i,        heightField[ i +        K_heightFieldPos ],         j);
                         const Vector3 v2(i + step, heightField[ i + step + K_heightFieldPos ],         j);
                         const Vector3 v3(i,        heightField[ i +        K_heightFieldPos + ZShift], j + step);
@@ -937,90 +931,91 @@ namespace Ogre
                     }
 
 					if (!isInValidVertex) {
-						// include the bottommost row of vertices if this is the last row
-						const int zubound = (j == (tilesizeMinusstepZ)? step : step - 1);
-						for (int z = 0; z <= zubound; z++)
-						{
-							const int fulldetailz = j + z;
-							const Real zpct = z * invStep;
-							const bool isFullDetailZ = (fulldetailz % step == 0);
-							const int zPageSize = z * pageSize;
-							{
-								// include the rightmost col of vertices if this is the last col
-								const int xubound = (i == (tilesizeMinusstepX)? step : step - 1);
-								for (int x = 0; x <= xubound; x++)
+                    // include the bottommost row of vertices if this is the last row
+                    const int zubound = (j == (tilesizeMinusstepZ)? step : step - 1);
+                    for (int z = 0; z <= zubound; z++)
+                    {
+                        const int fulldetailz = j + z;
+                        const Real zpct = z * invStep;
+                        const bool isFullDetailZ = (fulldetailz % step == 0);
+                        const int zPageSize = z * pageSize;
+                        {
+                            // include the rightmost col of vertices if this is the last col
+                            const int xubound = (i == (tilesizeMinusstepX)? step : step - 1);
+                            for (int x = 0; x <= xubound; x++)
+                            {
+                                const int fulldetailx = i + x;
+
+                                if (isFullDetailZ && 
+                                    fulldetailx % step == 0)
+                                {
+                                    // Skip, this one is a vertex at this level
+                                    continue;
+                                }
+                                const Real xpct = x * invStep;
+
+                                //interpolated height                           
+                                Real interp_h;
+                                // Determine which triangle we're on 
+                                if (xpct + zpct <= 1.0f)
+                                {
+                                    // Solve for x/z
+                                    interp_h = 
+                                        (-(t1.normal.x * fulldetailx)
+                                        - t1.normal.z * fulldetailz
+                                        - t1.d) / t1.normal.y;
+                                }
+                                else
+                                {
+                                    // Second triangle
+                                    interp_h = 
+                                        (-(t2.normal.x * fulldetailx)
+                                        - t2.normal.z * fulldetailz
+                                        - t2.d) / t2.normal.y;
+                                } 
+
+                                assert  ((fulldetailx + K_heightFieldPos + zPageSize) < (pageSize*pageSize));
+								
+								const Real actual_h = heightField[ fulldetailx + K_heightFieldPos + zPageSize];
+							    const Real delta = interp_h - actual_h;
+							    if (doComputeMinLevelDistSqr)
 								{
-									const int fulldetailx = i + x;
-	
-									if (isFullDetailZ && 
-										fulldetailx % step == 0)
-									{
-										// Skip, this one is a vertex at this level
-										continue;
-									}
-									const Real xpct = x * invStep;
-	
-									//interpolated height                           
-									Real interp_h;
-									// Determine which triangle we're on 
-									if (xpct + zpct <= 1.0f)
-									{
-										// Solve for x/z
-										interp_h = 
-											(-(t1.normal.x * fulldetailx)
-											- t1.normal.z * fulldetailz
-											- t1.d) / t1.normal.y;
-									}
-									else
-									{
-										// Second triangle
-										interp_h = 
-											(-(t2.normal.x * fulldetailx)
-											- t2.normal.z * fulldetailz
-											- t2.d) / t2.normal.y;
-									} 
-	
-									assert  ((fulldetailx + K_heightFieldPos + zPageSize) < (pageSize*pageSize));
-									
-									const Real actual_h = heightField[ fulldetailx + K_heightFieldPos + zPageSize];
-									const Real delta = interp_h - actual_h;
-									if (doComputeMinLevelDistSqr)
-									{
-										// need to recompute it.
-										const Real D2 = delta * delta * Csqr;
-	
-										if ((*mMinLevelDistSqr)[ level ] < D2)
-											(*mMinLevelDistSqr)[ level ] = D2;
-									}
-									// Should be save height difference?
-									// Don't morph along edges
-									if (lodMorph)
-									{   
-										// Save height difference                    
-										if (delta != 0.0f)
-										{
-											const int tileposx = fulldetailx - offSetX;
-											const int tileposy = fulldetailz - offSetZ;
-	
-											if (tileposx != 0  && tileposx != (tilesize - 1) && 
-												tileposy != 0  && tileposy != (tilesize - 1))
-											{         
-	
-												assert ((tileposx + (tileposy * tilesize))*blendWeights < size);
-	
-												pDeltas[(tileposx + (tileposy * tilesize))*blendWeights] =  
-													static_cast<short>                                     
-													((interp_h  * inv_scale) - 32768); 
-												//                                        pDeltas[(tileposx + (tileposy * tilesize))*blendWeights] =  
-												//                                            interp_h; 
-											}
-										}
-									}
+									// need to recompute it.
+                                    const Real D2 = (roughnessLod)? delta * delta * Csqr: Csqr;
+
+									if ((*mMinLevelDistSqr)[ level ] < D2)
+										(*mMinLevelDistSqr)[ level ] = D2;
 								}
-	
-							}
-						}
+
+                                // Should be save height difference?
+                                // Don't morph along edges
+                                if (lodMorph)
+                                {   
+                                    // Save height difference                    
+                                    if (delta != 0.0f)
+                                    {
+                                        const int tileposx = fulldetailx - offSetX;
+                                        const int tileposy = fulldetailz - offSetZ;
+
+                                        if (tileposx != 0  && tileposx != (tilesize - 1) && 
+                                            tileposy != 0  && tileposy != (tilesize - 1))
+                                        {         
+
+                                            assert ((tileposx + (tileposy * tilesize))*blendWeights < size);
+
+                                            pDeltas[(tileposx + (tileposy * tilesize))*blendWeights] =  
+                                                static_cast<short>                                     
+                                                ((interp_h  * inv_scale) - 32768); 
+                                            //                                        pDeltas[(tileposx + (tileposy * tilesize))*blendWeights] =  
+                                            //                                            interp_h; 
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
                     }
+                }       
                 }       
                 K_heightFieldPos += pageSize * step;
             }
@@ -1032,28 +1027,43 @@ namespace Ogre
         // delete Height Data cache and Buffer initial value.
         delete[] BaseHeight;
 
-		if (doComputeMinLevelDistSqr)
-		{
-			// Post validate the whole set
-			for (i = 1; i < maxMip; i++)
-			{
 
-				// Make sure no LOD transition within the tile
-				// This is especially a problem when using large tiles with flat areas
-	            
-				/* Hmm, this can look bad on some areas, disable for now
-					Vector3 delta(_vertex(0,0,0), mCenter.y, _vertex(0,0,2));
-					delta = delta - mCenter;
-					Real minDist = delta.squaredLength();
-					mMinLevelDistSqr[ i ] = std::max(mMinLevelDistSqr[ i ], minDist);
-				*/
+        if (doComputeMinLevelDistSqr)
+        {
+            if (roughnessLod)
+            {
+                // Post validate the whole set
+                for (i = 1; i < maxMip; i++)
+                {
 
-				//make sure the levels are increasing...
-				if ((*mMinLevelDistSqr)[ i ] < (*mMinLevelDistSqr)[ i - 1 ])
-					(*mMinLevelDistSqr)[ i ] = (*mMinLevelDistSqr)[ i - 1 ];
-			}
-			fillNextLevelDown();
-		}
+                // Make sure no LOD transition within the tile
+                // This is especially a problem when using large tiles with flat areas
+
+                /* Hmm, this can look bad on some areas, disable for now
+                Vector3 delta(_vertex(0,0,0), mCenter.y, _vertex(0,0,2));
+                delta = delta - mCenter;
+                Real minDist = delta.squaredLength();
+                mMinLevelDistSqr[ i ] = std::max(mMinLevelDistSqr[ i ], minDist);
+                */
+
+                //make sure the levels are increasing...
+                if ((*mMinLevelDistSqr)[ i ] < (*mMinLevelDistSqr)[ i - 1 ])
+                    (*mMinLevelDistSqr)[ i ] = (*mMinLevelDistSqr)[ i - 1 ];
+                }
+            }
+            else
+            {
+                const int maxMip = static_cast <int> (mParent->getOptions ()->maxRenderLevel) - 1;
+                Real distanceLod = mParent->getOptions ()->LOD_factor;
+                for (int level = 1; level < maxMip; level++)
+                {
+                    (*mMinLevelDistSqr)[level] = distanceLod;
+                    distanceLod *= 2;
+
+                }
+            }
+            fillNextLevelDown();
+        }
 	}
 	//-----------------------------------------------------------------------
 	void PagingLandScapeRenderable::fillNextLevelDown(void)
@@ -1084,6 +1094,7 @@ namespace Ogre
 			}
 		}
 	}
+
     //-----------------------------------------------------------------------
     HardwareVertexBufferSharedPtr PagingLandScapeRenderable::createDeltaBuffer(void) const
     {

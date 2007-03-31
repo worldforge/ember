@@ -45,8 +45,10 @@
 #include "OgrePagingLandScapeTileManager.h"
 #include "OgrePagingLandScapeRenderable.h"
 #include "OgrePagingLandScapeRenderableManager.h"
+#include "OgrePagingLandScapeAxisAlignedBoxSceneQuery.h"
 #include "OgrePagingLandScapeRaySceneQuery.h"
 #include "OgrePagingLandScapeCamera.h"
+#include "OgrePagingLandScapeMeshDecal.h"
 
 #include "OgrePagingLandScapeListenerManager.h"
 
@@ -107,6 +109,10 @@ namespace Ogre
     {
 	    //showBoundingBoxes(true);
 	    //setDisplaySceneNodes(true);	
+
+		mMeshDecalFactory = new PagingLandScapeMeshDecalFactory;
+		if( !(Root::getSingleton().hasMovableObjectFactory("PagingLandScapeMeshDecal")) )
+			Root::getSingleton().addMovableObjectFactory( mMeshDecalFactory ); 
     }
     //-------------------------------------------------------------------------
     const String& PagingLandScapeSceneManager::getTypeName(void) const
@@ -116,10 +122,10 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeSceneManager::PagingLandScapeOctreeResize()
     {	    
-        const Real x = mOptions->maxScaledX;
+        const Ogre::Real x = mOptions->maxScaledX;
         assert (mData2DManager);
-        const Real y = mData2DManager->getMaxHeight () * 4;
-        const Real z = mOptions->maxScaledZ;
+        const Ogre::Real y = mData2DManager->getMaxHeight () * 4;
+        const Ogre::Real z = mOptions->maxScaledZ;
         PagingLandScapeOctreeSceneManager::resize(AxisAlignedBox(-x , 0, -z, x, y, z));
     }
     //-----------------------------------------------------------------------
@@ -166,6 +172,9 @@ namespace Ogre
 
         delete[] mCraterArray;
         mCraterArray = 0;
+
+		Root::getSingleton().removeMovableObjectFactory( mMeshDecalFactory );
+		delete mMeshDecalFactory;
     }
     //-----------------------------------------------------------------------
     PagingLandScapeSceneManager::~PagingLandScapeSceneManager()
@@ -193,8 +202,8 @@ namespace Ogre
 	    // Load the configuration file
 		if (!stream.isNull ())
 		{
-			mOptions->load(stream);    
-			loadScene ();
+			if (mOptions->load(stream))
+			    loadScene ();
 		}
 		// Check if we need to set the camera
 		if (!mOptions->primaryCamera && !mCameras.empty ())
@@ -206,9 +215,13 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeSceneManager::setWorldGeometry(const String& filename)
 	{
-		if (filename == StringUtil::BLANK)
+		if (filename.empty())
 		{
+#ifdef PLSM2_EIHORT
+            DataStreamPtr myStream;
+#else
 			DataStreamPtr myStream (0);
+#endif
 			myStream.setNull();
 			setWorldGeometry (myStream);
 			return;
@@ -329,7 +342,8 @@ namespace Ogre
             // clear queues
             mRenderableManager->clear();
 			mTileManager->clear();
-			
+
+            // unload cached map info
 			mOptions->clearTileInfo();
 
 			// clear hardware buffer caches
@@ -338,6 +352,8 @@ namespace Ogre
 
 		    mWorldGeomIsSetup = false;
 		    mWorldGeomIsInit = false;
+
+            //PagingLandScapeOctreeSceneManager::clearScene();
 	    }
     }
     //-----------------------------------------------------------------------
@@ -395,6 +411,15 @@ namespace Ogre
 //	    return q;
 //    }
 
+	AxisAlignedBoxSceneQuery* PagingLandScapeSceneManager::createAABBQuery( const AxisAlignedBox& box, 
+																			unsigned long mask )
+	{
+		PagingLandScapeAxisAlignedBoxSceneQuery* q = new PagingLandScapeAxisAlignedBoxSceneQuery(this);
+		q->setBox(box);
+		q->setQueryMask(mask);
+		return q;
+	}
+
     //----------------------------------------------------------------------------
     RaySceneQuery* PagingLandScapeSceneManager::createRayQuery(const Ray& ray, unsigned long mask)
     {
@@ -404,19 +429,45 @@ namespace Ogre
 	    return q;
     }
     //-------------------------------------------------------------------------
-    bool PagingLandScapeSceneManager::intersectSegment(const Vector3 & raybegin, 
-                                                    const Vector3 & rayend, 
-                                                    Vector3 * rayresult)
+    bool PagingLandScapeSceneManager::intersectSegment(const Ogre::Vector3 & raybegin, 
+                                                    const Ogre::Vector3 & rayend, 
+                                                    Ogre::Vector3 * rayresult)
     {
         return intersectSegmentTerrain (raybegin, rayend, rayresult);
     }
     //-------------------------------------------------------------------------
-    bool PagingLandScapeSceneManager::intersectSegmentTerrain (const Vector3 & raybegin, 
-                                                                const Vector3 & raydir, 
-                                                                Vector3 * rayresult)
+    bool PagingLandScapeSceneManager::intersectSegmentTerrain (const Ogre::Vector3 & raybegin, 
+                                                                const Ogre::Vector3 & raydir, 
+                                                                Ogre::Vector3 * rayresult)
     {
-        Vector3 raystart (raybegin);
-        assert (mPageManager && mData2DManager);
+        Ogre::Vector3 raystart (raybegin);
+		assert (mPageManager && mData2DManager);
+
+		const Ogre::Real maxHeight = mData2DManager->getMaxHeight ();
+		
+		if (raystart.y > maxHeight)
+		{
+			// find an new ray start that is under highest terrain height
+			// so that we do not test intersection between terrain and ray
+			// on ray part where Y > maxHeight
+
+			// First check if not parallel to terrain
+			if (Math::Abs(raydir.y) < std::numeric_limits<Real>::epsilon())
+			{
+				// Parallel ?
+				*rayresult = Ogre::Vector3(-1.0f, -1.0f, -1.0f);
+				return false;
+			}
+			// now ray should begin at a pertinent place.
+			const Ogre::Real t = -(raystart.y-maxHeight)/raydir.y;
+			raystart += raydir*t;
+			if (raystart.y <= mData2DManager->getInterpolatedWorldHeight(raystart.x, raystart.z))
+			{
+				*rayresult = raystart;
+				return true;
+			}
+		} 
+
         PagingLandScapeTile * t = mPageManager->getTile (raystart.x, raystart.z, false);
         if (t == 0)
         {
@@ -424,9 +475,9 @@ namespace Ogre
             #ifndef _STRICT_LandScape
                 // if you want to be able to intersect from a point outside the canvas
                 //const int pageSize = mOptions->PageSize - 1;
-                const Real W = mOptions->maxScaledX;
-                const Real H = mOptions->maxScaledZ;
-                const Real maxHeight = mData2DManager->getMaxHeight ();
+                const Ogre::Real W = mOptions->maxScaledX;
+                const Ogre::Real H = mOptions->maxScaledZ;
+                const Ogre::Real maxHeight = mData2DManager->getMaxHeight ();
                 
                 // while ray is outside but raydir going inside
                 while ((raystart.y < 0.0f && raydir.y > 0.0f) || 
@@ -443,7 +494,7 @@ namespace Ogre
                     raystart.x < -W || raystart.x > W  || 
                     raystart.z < -H || raystart.z > H)
                 {
-                    *rayresult = Vector3(-1.0f, -1.0f, -1.0f);
+                    *rayresult = Ogre::Vector3(-1.0f, -1.0f, -1.0f);
                     return false;
                 }
                 t = mPageManager->getTile (raystart.x, raystart.z, false);
@@ -451,28 +502,31 @@ namespace Ogre
                     return false;
             #else //_STRICT_LandScape
                 // if you don't want to be able to intersect from a point outside the canvas
-                *rayresult = Vector3(-1.0f, -1.0f, -1.0f);
+                *rayresult = Ogre::Vector3(-1.0f, -1.0f, -1.0f);
                 return false;
             #endif //_STRICT_LandScape
         }
 
         bool impact;
 
+
         //special case...
-        if (raydir.x == 0.0f && raydir.z == 0.0f)
+//         if (raydir.x == 0.0f && raydir.z == 0.0f)
+//         {
+//             if (raystart.y <=  mData2DManager->getInterpolatedWorldHeight(raystart.x, raystart.z))
+//             {
+//                 *rayresult = raystart;
+//                 impact = true;
+//             }
+//             impact = false;
+//         }      
+//         else
         {
-            if (raystart.y <=  mData2DManager->getInterpolatedWorldHeight(raystart.x, raystart.z))
-            {
-                *rayresult = raystart;
-                impact = true;
-            }
-            impact = false;
-        }      
-        else
-        {
-            //    dir.x = dir.x * mOptions->scale.x;
-            //    dir.y = dir.y * mOptions->scale.y;
-			//    dir.z = dir.z * mOptions->scale.z;
+			// should we scale ?
+// 			const Ogre::Vector3 rayDirScaled ( 
+// 				raydir.x * mOptions->scale.x,
+// 				raydir.y * mOptions->scale.y,
+// 				raydir.z * mOptions->scale.z);
 
 			if (raystart.y >= mData2DManager->getInterpolatedWorldHeight(raystart.x, raystart.z))
 			{
@@ -482,6 +536,7 @@ namespace Ogre
 			{
 				impact = t->intersectSegmentFromBelow(raystart, raydir, rayresult);
 			}
+
         }
         return true;
     } 
@@ -510,11 +565,11 @@ namespace Ogre
         // (goes through each X value)
 		unsigned int array_indx = 0;
 		const int radiussquare = radius * radius;
-		//const Real scaler = mOptions->scale.y;// / radius;
-		const Real scaler = 1.0 / radius;
+		//const Ogre::Real scaler = mOptions->scale.y;// / radius;
+		const Ogre::Real scaler = 1.0 / radius;
         for (int Zcurr = Zmin; Zcurr < Zmax; Zcurr++)
         {
-            const Real Precalc = radiussquare - (Zcurr * Zcurr);
+            const Ogre::Real Precalc = radiussquare - (Zcurr * Zcurr);
             if (Precalc > 1.0f)
             {
                 // Determine the minimum and maximum X value for that 
@@ -528,8 +583,8 @@ namespace Ogre
                 {
                     assert (curr_indx < array_size);
                     // Calculate the new theoretical height for the current point on the circle
-					const Real val = static_cast <Real> (Xcurr * Xcurr);
-					const Real diffPrecalc = Precalc - val;
+					const Ogre::Real val = static_cast <Real> (Xcurr * Xcurr);
+					const Ogre::Real diffPrecalc = Precalc - val;
                     mCraterArray[curr_indx] = std::min(static_cast <Real> (1.0), 
 													   std::max(static_cast <Real> (0.0), 
 																Math::Sqrt (diffPrecalc)* scaler)) ; 
@@ -542,7 +597,7 @@ namespace Ogre
         mBrushArray = mCraterArray;
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeSceneManager::paint (const Vector3 &impact)
+    void PagingLandScapeSceneManager::paint (const Ogre::Vector3 &impact)
     {
 		if (mOptions->textureModifiable)
 		{
@@ -600,15 +655,15 @@ namespace Ogre
 				for (int Xcurr = Xmin; Xcurr < Xmax; Xcurr++)
 				{
 					// get results by page index ?
-					const Real h = mBrushArray[curr_indx];
+					const Ogre::Real h = mBrushArray[curr_indx];
 					// Make sure we do it for something.
 					if (h - 0.005f > 0)
 					{
 						assert (h >= 0.0f && h <= 1.0f);
-						const Real bushForce = std::min(static_cast <Real> (1.0), h*mBrushScale);
+						const Ogre::Real bushForce = std::min(static_cast <Real> (1.0), h*mBrushScale);
 						if (bushForce - 0.005f > 0)
 						{
-							const Vector3 currpoint (X + Xcurr, static_cast <Real> (0.0), Z + Zcurr);
+							const Ogre::Vector3 currpoint (X + Xcurr, static_cast <Real> (0.0), Z + Zcurr);
 							assert (mPageManager&&  mData2DManager && mTextureManager);
 							PagingLandScapeTile * t = mPageManager->getTileUnscaled (currpoint.x, currpoint.z, false);                
 							if (t && t->isLoaded ())
@@ -627,7 +682,7 @@ namespace Ogre
 			} // for (int Zcurr = Zmin; Zcurr < Zmax; Zcurr++) 
 		}
     }//-----------------------------------------------------------------------
-    void PagingLandScapeSceneManager::setHeight (const Vector3 &impact)
+    void PagingLandScapeSceneManager::setHeight (const Ogre::Vector3 &impact)
     {
         if (mOptions->Deformable)
         {
@@ -675,7 +730,7 @@ namespace Ogre
             if (Zmax + Z > H)
                 Zmax = H - Z;
 
-			const Real Hscale = mOptions->scale.y * mBrushScale;
+			const Ogre::Real Hscale = mOptions->scale.y * mBrushScale;
             // Main loop to draw the circle on the height map 
             // (goes through each X value)
             unsigned int array_indx = zshift*brushW;
@@ -686,11 +741,11 @@ namespace Ogre
                 for (int Xcurr = Xmin; Xcurr < Xmax; Xcurr++)
                 {
                     // get results by page index ?
-                    const Real h = - mBrushArray[curr_indx] * mBrushScale * Hscale;
+                    const Ogre::Real h = - mBrushArray[curr_indx] * mBrushScale * Hscale;
                     // Make sure we do it for something.
                     if (h != 0.0f)
                     {
-                        const Vector3 currpoint (X + Xcurr, 0.0f, Z + Zcurr);
+                        const Ogre::Vector3 currpoint (X + Xcurr, 0.0f, Z + Zcurr);
                         assert (mPageManager&&  mData2DManager && mTextureManager);
                         PagingLandScapeTile * t = mPageManager->getTileUnscaled (currpoint.x, currpoint.z, false);                
                         if (t && t->isLoaded ())
@@ -710,7 +765,7 @@ namespace Ogre
         } // if (mOptions->Deformable)
     } 
     //-----------------------------------------------------------------------
-    void PagingLandScapeSceneManager::deformHeight (const Vector3 &impact)
+    void PagingLandScapeSceneManager::deformHeight (const Ogre::Vector3 &impact)
     {
         if (mOptions->Deformable)
         {
@@ -758,7 +813,7 @@ namespace Ogre
             if (Zmax + Z > H)
                 Zmax = H - Z;
 
-			const Real Hscale = mOptions->scale.y * mBrushScale;
+			const Ogre::Real Hscale = mOptions->scale.y * mBrushScale;
 
             // Main loop to draw the circle on the height map 
             // (goes through each X value)
@@ -770,11 +825,11 @@ namespace Ogre
                 for (int Xcurr = Xmin; Xcurr < Xmax; Xcurr++)
                 {
                     // get results by page index ?
-	    const Real h = - mBrushArray[curr_indx] * Hscale;
+	    const Ogre::Real h = - mBrushArray[curr_indx] * Hscale;
                     // Make sure we do it for something.
                     if (h != 0.0f)
                     {
-                        const Vector3 currpoint (X + Xcurr, 0.0f, Z + Zcurr);
+                        const Ogre::Vector3 currpoint (X + Xcurr, 0.0f, Z + Zcurr);
                         assert (mPageManager&&  mData2DManager && mTextureManager);
                         PagingLandScapeTile * t = mPageManager->getTileUnscaled (currpoint.x, currpoint.z, false);                
                         if (t && t->isLoaded ())
@@ -794,7 +849,7 @@ namespace Ogre
         } // if (mOptions->Deformable)
     } 
     //-----------------------------------------------------------------------
-    void PagingLandScapeSceneManager::getAreaHeight (const Vector3 &impact)
+    void PagingLandScapeSceneManager::getAreaHeight (const Ogre::Vector3 &impact)
     {
         const int X = static_cast<int> (impact.x / mOptions->scale.x);
         const int Z = static_cast<int> (impact.z / mOptions->scale.z);
@@ -841,7 +896,7 @@ namespace Ogre
             Zmax = H - Z;
 
 		const unsigned int pSize = mOptions->PageSize - 1;
-		const Real Hscale = 1 / (mOptions->scale.y * mBrushScale);
+		const Ogre::Real Hscale = 1 / (mOptions->scale.y * mBrushScale);
         // Main loop to draw the circle on the height map 
         // (goes through each X value)
         unsigned int array_indx = zshift*brushW;
@@ -851,7 +906,7 @@ namespace Ogre
             unsigned int curr_indx = array_indx + xshift;
             for (int Xcurr = Xmin; Xcurr < Xmax; Xcurr++)
             {
-                const Vector3 currpoint (X + Xcurr, 0.0f, Z + Zcurr);
+                const Ogre::Vector3 currpoint (X + Xcurr, 0.0f, Z + Zcurr);
                 assert (mPageManager&&  mData2DManager && mTextureManager);
                 PagingLandScapeTile * t = mPageManager->getTileUnscaled (currpoint.x, currpoint.z, false);                
                 if (t && t->isLoaded ())
@@ -901,7 +956,7 @@ namespace Ogre
         // deformation and painting
         if (strKey == "BrushArray")
 	    {
-		    mBrushArray =  const_cast < Real * > (static_cast < const Real * >(pValue));
+		    mBrushArray =  const_cast <Ogre::Real * > (static_cast < const Ogre::Real * >(pValue));
 		    return true;
 	    }
         if (strKey == "BrushArrayHeight")
@@ -916,7 +971,7 @@ namespace Ogre
 	    }
         if (strKey == "BrushScale")
 	    {
-		    mBrushScale = * static_cast < const Real * >  (pValue) ;
+		    mBrushScale = * static_cast < const Ogre::Real * >  (pValue) ;
             return true;
 	    }
         if (strKey == "BrushSize")
@@ -927,27 +982,27 @@ namespace Ogre
         }
         if (strKey == "setHeightCenter")
         {
-            mBrushCenter = * static_cast < const Vector3 * > (pValue);
+            mBrushCenter = * static_cast < const Ogre::Vector3 * > (pValue);
             setHeight (mBrushCenter);
             return true;
 
         }
         if (strKey == "DeformationCenter")
 	    {
-		    mBrushCenter = * static_cast < const Vector3 * > (pValue);
+		    mBrushCenter = * static_cast < const Ogre::Vector3 * > (pValue);
             deformHeight (mBrushCenter);
             return true;
 	    
         }
         if (strKey == "fillBrushArray")
 	    {
-		    mBrushCenter = * static_cast < const Vector3 * > (pValue);
+		    mBrushCenter = * static_cast < const Ogre::Vector3 * > (pValue);
             getAreaHeight (mBrushCenter);
             return true;         
         }
         if (strKey == "PaintCenter")
 	    {
-		    mBrushCenter = * static_cast < const Vector3 * > (pValue);
+		    mBrushCenter = * static_cast < const Ogre::Vector3 * > (pValue);
             paint(mBrushCenter);
             return true;
 	    }
@@ -971,12 +1026,7 @@ namespace Ogre
 		{
 			const String textureFormatName(mOptions->getCurrentTextureFormat ());
 
-			PagingLandScapeSceneManager::resetScene();			
-			//mOptions->loadMap(mOptions->getCurrentMapName()); 
-
-			//if (textureFormatChanged) 
-			//	mOptions->setTextureFormat (textureFormatName);
-
+			PagingLandScapeSceneManager::resetScene();		
 			PagingLandScapeSceneManager::loadScene ();
 
 			textureFormatChanged = false;
@@ -1016,22 +1066,22 @@ namespace Ogre
 			const Vector2 page = *static_cast < const Vector2 * > (pValue);
 
 			// Reload Data. ALso must reload pages that depend on this
-			mData2DManager->reload (static_cast<unsigned int>(page.x), static_cast<unsigned int>(page.y));
-			mTextureManager->reload(static_cast<unsigned int>(page.x), static_cast<unsigned int>(page.y));
+			mData2DManager->reload (page.x, page.y);
+			mTextureManager->reload(page.x, page.y);
 			if (page.x > 0)
             {
-                mData2DManager->reload (static_cast<unsigned int>(page.x-1), static_cast<unsigned int>(page.y));
-			    mTextureManager->reload(static_cast<unsigned int>(page.x-1), static_cast<unsigned int>(page.y));
+                mData2DManager->reload (page.x-1, page.y);
+			    mTextureManager->reload(page.x-1, page.y);
             }
 			if (page.y > 0)
             {
-			    mTextureManager->reload(static_cast<unsigned int>(page.x), static_cast<unsigned int>(page.y-1));
-				mData2DManager->reload (static_cast<unsigned int>(page.x), static_cast<unsigned int>(page.y-1));
+			    mTextureManager->reload(page.x, page.y-1);
+				mData2DManager->reload (page.x, page.y-1);
             }
 			if (page.x > 0 && page.y > 0)
             { 
-				mData2DManager->reload (static_cast<unsigned int>(page.x-1), static_cast<unsigned int>(page.y-1));
-			    mTextureManager->reload(static_cast<unsigned int>(page.x-1), static_cast<unsigned int>(page.y-1));
+				mData2DManager->reload (page.x-1, page.y-1);
+			    mTextureManager->reload(page.x-1, page.y-1);
             }
 
 			// Now reload pages
@@ -1045,6 +1095,7 @@ namespace Ogre
             {
                 // Configuration file is telling us to pre-load all pages at startup.
                 for (unsigned int pageY = 0; pageY < mOptions->world_height; pageY++)
+                {
                     for (unsigned int pageX = 0; pageX < mOptions->world_width; pageX++)
                     {
                         PagingLandScapePage * const p = mPageManager->getPage(pageX, pageY);
@@ -1052,14 +1103,23 @@ namespace Ogre
                         mPageManager->addLoadedPage(p);
 
                     }
+                }
+                if (mOptions->primaryCamera)
+                    mPageManager->loadNow (mOptions->primaryCamera);
             }
             else if (pValue)
             {
 			    PagingLandScapeCamera *cam = const_cast <PagingLandScapeCamera *> (static_cast < const PagingLandScapeCamera * > (pValue));
-                mPageManager->loadNow (mOptions->primaryCamera);
+                mPageManager->loadNow (cam);
             }                
         }
-        
+        if (strKey == "ResetScene")
+        {
+            if( * static_cast < const bool * > (pValue) )
+                PagingLandScapeSceneManager::resetScene();         
+
+            return true;
+        }  
 		if (mOptions->setOption(strKey, pValue) == true)
         {
             return true;
@@ -1076,15 +1136,15 @@ namespace Ogre
     //-----------------------------------------------------------------------
 	bool PagingLandScapeSceneManager::getOption(const String& strKey, void* pDestValue)
     {
-        if (strKey == "getHeightAt")
+        if (strKey == "h" || strKey == "getHeightAt")
         {
-            Vector3 *p = static_cast < Vector3 * > (pDestValue);
+            Ogre::Vector3 *p = static_cast < Ogre::Vector3 * > (pDestValue);
             p->y = getHeightAt (p->x, p->z);
             return true;
         }
-        if (strKey == "getSlopeAt")
+        if (strKey == "s" || strKey == "getSlopeAt")
         {
-            Vector3 *p = static_cast < Vector3 * > (pDestValue);
+            Ogre::Vector3 *p = static_cast < Ogre::Vector3 * > (pDestValue);
             p->y = getSlopeAt (p->x, p->z);
             return true;
         }
@@ -1110,13 +1170,13 @@ namespace Ogre
         }
         if (strKey == "GlobalToPage")
 	    {
-            Vector3 *pos = static_cast < Vector3 * > (pDestValue);
+            Ogre::Vector3 *pos = static_cast < Ogre::Vector3 * > (pDestValue);
             mPageManager->getGlobalToPage (pos->x, pos->z);
 		    return true;            
         } 
         if (strKey == "getAreaSize")
 	    {
-            Vector3 *vertices_array = static_cast < Vector3 * > (pDestValue);
+            Ogre::Vector3 *vertices_array = static_cast < Ogre::Vector3 * > (pDestValue);
 
             mPageManager->getGlobalToPage (vertices_array[0].x, vertices_array[0].z);
             mPageManager->getGlobalToPage (vertices_array[1].x, vertices_array[1].z);
@@ -1124,20 +1184,20 @@ namespace Ogre
             mPageManager->getGlobalToPage (vertices_array[3].x, vertices_array[3].z);
 
             // define an area an get number of point in it.
-            const Real maxx = std::max (vertices_array[0].x, 
+            const Ogre::Real maxx = std::max (vertices_array[0].x, 
                                         std::max (vertices_array[1].x, 
                                                   std::max (vertices_array[2].x,
                                                             vertices_array[3].x)));
-            const Real minx = std::min (vertices_array[0].x, 
+            const Ogre::Real minx = std::min (vertices_array[0].x, 
                                         std::min (vertices_array[1].x, 
                                                   std::min (vertices_array[2].x,
                                                             vertices_array[3].x)));
           
-            const Real maxz = std::max (vertices_array[0].z, 
+            const Ogre::Real maxz = std::max (vertices_array[0].z, 
                                         std::max (vertices_array[1].z, 
                                                   std::max (vertices_array[2].z,
                                                             vertices_array[3].z)));
-            const Real minz = std::min (vertices_array[0].z, 
+            const Ogre::Real minz = std::min (vertices_array[0].z, 
                                         std::min (vertices_array[1].z, 
                                                   std::min (vertices_array[2].z,
                                                             vertices_array[3].z)));
@@ -1313,7 +1373,7 @@ namespace Ogre
         // IMPACT INFO
         if (strKey == "Impact")
         {
-            * static_cast < Vector3 * > (pDestValue) = mImpact;
+            * static_cast < Ogre::Vector3 * > (pDestValue) = mImpact;
             return true;
         }
         if (strKey == "ImpactPageX")
@@ -1353,7 +1413,7 @@ namespace Ogre
 	    }
         if (strKey == "BrushScale")
 	    {
-		    * static_cast < Real * > (pDestValue) = mBrushScale;
+		    * static_cast <Ogre::Real * > (pDestValue) = mBrushScale;
             return true;
 	    }
 		
@@ -1376,7 +1436,7 @@ namespace Ogre
         }
         //added for Vertex data retrieval		
 		if (strKey == "PageGetTileVertexData_2")
-        {
+		{
             /**
              * This is the optimized, yet a bit fuzzy implementation of the getVertexDataPatch
              * Usage: Pass in a std::vector<void*> Pointer to the getOption call containing at least 5 Elements
@@ -1389,7 +1449,7 @@ namespace Ogre
              *		[End-2](Ogre::unsigned int*) = Number of vertices returned
              *		[End-1] (Ogre::Vector3*) = The actual vertices, this is a array containing as many elements as returned in [End-2]
              *		[End] (Ogre::IndexData*) = The index data for the terrain polygons at the queried LodLevel
-             *	@remark note that the caller is in charge of deleting the vector array
+             *	@remark note that the caller is in charge of deleting the vector array, vertices array and indice array.
              */
 			unsigned int requestPageX = *static_cast<unsigned int *>((*static_cast<std::vector<void*>*>(pDestValue))[0]);
 			unsigned int requestPageZ = *static_cast<unsigned int *>((*static_cast<std::vector<void*>*>(pDestValue))[1]);
@@ -1409,7 +1469,7 @@ namespace Ogre
 						unsigned int*			numPtr = new unsigned int;
 						*numPtr = rend->getVertexCount();
 						(*static_cast<std::vector<void*>*>(pDestValue)).push_back(numPtr);
-                        tempPointer = new Vector3[*numPtr];
+                        tempPointer = new Ogre::Vector3[*numPtr];
 						//warning! make sure that the allocated space for the vertices is big enough!
 						rend->getRawVertexData(tempPointer);
 						(*static_cast<std::vector<void*>*>(pDestValue)).push_back(tempPointer);
@@ -1426,12 +1486,12 @@ namespace Ogre
 			if (mPageManager)
 			{
 				// convert position
-				Vector3 *pos = static_cast < Vector3 * > (pDestValue);
-				mPageManager->getGlobalToPage (pos->x, pos->z);
+				Vector3 **pos = static_cast < Ogre::Vector3 ** > (pDestValue);
+				mPageManager->getGlobalToPage ((*pos)->x, (*pos)->z);
 
 				// get the texture
 				Ogre::PagingLandScapeTexture* texture_ptr =
-					mTextureManager->getTexture(static_cast<unsigned int>(pos->x), static_cast<unsigned int>(pos->z), false);
+					mTextureManager->getTexture((*pos)->x, (*pos)->z, false);
 
 				// check for valid texture
 				if( texture_ptr )
@@ -1612,8 +1672,9 @@ namespace Ogre
         return PagingLandScapeOctreeSceneManager::getOptionKeys (refKeys);
     }
 	//-------------------------------------------------------------------------
-	void PagingLandScapeSceneManager::setWorldGeometryRenderQueue (RenderQueueGroupID qid)
-	{
+	void PagingLandScapeSceneManager::setWorldGeometryRenderQueue (uint8 qid)
+    {
+        PagingLandScapeOctreeSceneManager::setWorldGeometryRenderQueue(qid);
         if (mPageManager)
             mPageManager->setWorldGeometryRenderQueue (qid);
 	}
@@ -1649,6 +1710,10 @@ namespace Ogre
 			getOption( "VisibleDistance", &tmp);
 			c->setFarClipDistance( tmp );
 		}
+#ifdef PLSM2_EIHORT
+        // create visible bounds aab map entry
+	    mCamVisibleObjectsMap[c] = VisibleObjectsBoundsInfo();
+#endif
         return c;
     }
     //-----------------------------------------------------------------------
@@ -1676,20 +1741,7 @@ namespace Ogre
         PagingLandScapeOctreeSceneManager::destroyAllCameras();
     } 
     //-----------------------------------------------------------------------
-    float _OgrePagingLandScapeExport PagingLandScapeSceneManager::getHeightAt(const Real x, const Real z)
-    {
-      return mData2DManager->getInterpolatedWorldHeight(x, z);
-    }
-    //-----------------------------------------------------------------------
-    float _OgrePagingLandScapeExport PagingLandScapeSceneManager::getSlopeAt(const Real x, const Real z)
-    {
-    Real slope;
-//      return mData2DManager->getRealWorldSlope(x, z);
-    mData2DManager->getInterpolatedWorldHeight(x, z, &slope);
-    return slope;
-    }
-    //-----------------------------------------------------------------------
-    void _OgrePagingLandScapeExport PagingLandScapeSceneManager::getWorldSize(Real *worldSizeX, Real *worldSizeZ)
+    void _OgrePagingLandScapeExport PagingLandScapeSceneManager::getWorldSize(Real *worldSizeX,Ogre::Real *worldSizeZ)
    {
       *worldSizeX = mOptions->maxScaledX * 2.0f;
       *worldSizeZ = mOptions->maxScaledZ * 2.0f;
@@ -1697,7 +1749,7 @@ namespace Ogre
 //      *worldSizeZ = (float)mOptions->world_height * mOptions->scale.z;
    }
    //-----------------------------------------------------------------------
-   float _OgrePagingLandScapeExport PagingLandScapeSceneManager::getMaxSlope(Vector3 location1, Vector3 location2, float maxSlopeIn)
+   float _OgrePagingLandScapeExport PagingLandScapeSceneManager::getMaxSlope(Vector3 location1, Ogre::Vector3 location2, float maxSlopeIn)
    {
       return mData2DManager->getMaxSlope(location1, location2, maxSlopeIn);
    }

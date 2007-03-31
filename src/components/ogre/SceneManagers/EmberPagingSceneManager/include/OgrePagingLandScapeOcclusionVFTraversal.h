@@ -17,8 +17,8 @@ namespace Ogre
 
 		    ViewFrustumCullingTraversal (Occlusion& o);
 
-            virtual void onTree(PagingLandScapeOctree&);
-            virtual void onLeaf(PagingLandScapeOctreeNode&);
+            virtual void onTree(PagingLandScapeOctree&, VisibleObjectsBoundsInfo * const visibleBounds );
+            virtual void onLeaf(PagingLandScapeOctreeNode&, VisibleObjectsBoundsInfo * const visibleBounds );
 	    private:
 
 		    Occlusion& occlusion;
@@ -35,8 +35,8 @@ namespace Ogre
 
 		    ViewFrustumCullingTraversalDirect (Occlusion& o);
 
-            virtual void onTree(PagingLandScapeOctree&);
-            virtual void onLeaf(PagingLandScapeOctreeNode&);
+            virtual void onTree(PagingLandScapeOctree&, VisibleObjectsBoundsInfo * const visibleBounds );
+            virtual void onLeaf(PagingLandScapeOctreeNode&, VisibleObjectsBoundsInfo * const visibleBounds );
 	    private:
 
 		    Occlusion& occlusion;

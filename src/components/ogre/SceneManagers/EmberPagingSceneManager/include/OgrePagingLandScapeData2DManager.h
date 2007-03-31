@@ -98,7 +98,7 @@ namespace Ogre
         void registerDataType(PagingLandScapeData2D* source)
         {
             mData2DTypeMap.push_back(source);
-//            LogManager::getSingleton().logMessage(
+//            LogManager::getSingleton().logMessage(LML_CRITICAL,
 //                "PagingLandScape: Registered a new Data2DType for "
 //                "type " + typeName);
         }

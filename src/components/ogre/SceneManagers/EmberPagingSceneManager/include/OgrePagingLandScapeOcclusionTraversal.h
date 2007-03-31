@@ -3,6 +3,7 @@
 
 #include "OgrePagingLandScapePrerequisites.h"
 #include "OgrePagingLandScapeOctreeCamera.h"
+#include <OgreSceneManager.h>
 
 namespace Ogre
 {
@@ -11,33 +12,33 @@ namespace Ogre
     {
 
         public:
-		    virtual void onTree(const PagingLandScapeOctree& n) const = 0;
-	        virtual void onLeaf(const PagingLandScapeOctreeNode&) const = 0;
+		    virtual void onTree(const PagingLandScapeOctree& n, VisibleObjectsBoundsInfo * const visibleBounds ) const = 0;
+	        virtual void onLeaf(const PagingLandScapeOctreeNode&, VisibleObjectsBoundsInfo * const visibleBounds ) const = 0;
 
         protected:
-            virtual void traverseChildren(const PagingLandScapeOctree& n) const;
+            virtual void traverseChildren(const PagingLandScapeOctree& n, VisibleObjectsBoundsInfo * const visibleBounds) const;
     };
     //-----------------------------------------------------------------------
     class TraversalConst 
     {
 
         public:
-		    virtual void onTree(PagingLandScapeOctree& n) const = 0;
-	        virtual void onLeaf(PagingLandScapeOctreeNode&) const = 0;
+		    virtual void onTree(PagingLandScapeOctree& n, VisibleObjectsBoundsInfo * const visibleBounds ) const = 0;
+	        virtual void onLeaf(PagingLandScapeOctreeNode&, VisibleObjectsBoundsInfo * const visibleBounds ) const = 0;
 
         protected:
-            virtual void traverseChildren(PagingLandScapeOctree& n) const ;
+            virtual void traverseChildren(PagingLandScapeOctree& n, VisibleObjectsBoundsInfo * const visibleBounds) const ;
     };
     //-----------------------------------------------------------------------
     class Traversal 
     {
 
         public:
-		    virtual void onTree(PagingLandScapeOctree& n) = 0;
-	        virtual void onLeaf(PagingLandScapeOctreeNode&) = 0;
+		    virtual void onTree(PagingLandScapeOctree& n, VisibleObjectsBoundsInfo * const visibleBounds ) = 0;
+	        virtual void onLeaf(PagingLandScapeOctreeNode&, VisibleObjectsBoundsInfo * const visibleBounds ) = 0;
 
         protected:
-            virtual void traverseChildren(PagingLandScapeOctree& n);
+            virtual void traverseChildren(PagingLandScapeOctree& n, VisibleObjectsBoundsInfo * const visibleBounds );
     };
 }
 #endif //PagingLandScapeOcclusionTraversal

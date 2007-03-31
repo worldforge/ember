@@ -19,8 +19,8 @@ namespace Ogre
     {
 	    public:
 		    TreeOverlayDebug(Occlusion& o, PagingLandScapeOctreeSceneManager *scnMgr);
-		    virtual void onTree(PagingLandScapeOctree& n) const ;
-		    virtual void onLeaf(PagingLandScapeOctreeNode& n) const ;
+		    virtual void onTree(PagingLandScapeOctree& n, VisibleObjectsBoundsInfo * const visibleBounds ) const ;
+		    virtual void onLeaf(PagingLandScapeOctreeNode& n, VisibleObjectsBoundsInfo * const visibleBounds ) const ;
 
 	    private:
 		    Occlusion& occlusion;

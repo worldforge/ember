@@ -179,9 +179,7 @@ namespace Ogre
 
 			if (tex->getData() == 0)
             { 
-                LogManager::getSingleton().logMessage(String("PLSM2 : Cannot find map named ") + strFileName + extModif, 
-                    LML_CRITICAL,
-                    true);
+                LogManager::getSingleton().logMessage(LML_CRITICAL, String("PLSM2 : Cannot find map named ") + strFileName + extModif);
 
 				delete tex;
 				delete t_right;
@@ -208,9 +206,7 @@ namespace Ogre
 
 			if (tex->getData() == 0)
             { 
-                LogManager::getSingleton().logMessage(String("PLSM2 : Cannot find map named ") + strFileName + ext, 
-                    LML_CRITICAL,
-                    true);
+                LogManager::getSingleton().logMessage(LML_CRITICAL, String("PLSM2 : Cannot find map named ") + strFileName + ext);
 
 				delete tex;
 				delete t_right;
