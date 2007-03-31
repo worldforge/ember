@@ -36,6 +36,7 @@ class InspectWidget : public Widget
 public:
 
     InspectWidget();
+    virtual ~InspectWidget();
 	void buildWidget();
 	virtual void frameStarted(const Ogre::FrameEvent & evt);
 	
@@ -66,7 +67,7 @@ protected:
 	void startInspecting(EmberEntity* entity);
 	
 	CEGUI::Listbox* mChildList;
-	CEGUI::StaticText* mInfo;
+	CEGUI::GUISheet* mInfo;
 	
 	/**
 	 * Updated the entity information text

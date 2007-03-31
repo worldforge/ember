@@ -28,6 +28,11 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "../input/IInputAdapter.h"
 
+namespace CEGUI
+{
+class GUISheet;
+}
+
 namespace EmberOgre {
 
 class EntityCEGUITexture;
@@ -40,9 +45,9 @@ Class used for rendering a single Ogre::MovableObject to a EntityCEGUITexture
 class MovableObjectRenderer : public IInputAdapter, public Ogre::FrameListener
 {
 public:
-    MovableObjectRenderer(CEGUI::StaticImage* image);
+    MovableObjectRenderer(CEGUI::Window* image);
 
-    ~MovableObjectRenderer();
+    virtual ~MovableObjectRenderer();
     
     /**
      * Adapts the position of the camera so that the whole scene is shown.
@@ -180,7 +185,7 @@ protected:
 	*/
 	bool mAutoShowFull;
 	
-	CEGUI::StaticImage* mImage;
+	CEGUI::Window* mImage;
 	
 	virtual Ogre::MovableObject* getMovableObject() = 0;
 	

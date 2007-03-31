@@ -25,7 +25,7 @@
 
 #include "Widget.h"
 #include "framework/ConsoleObject.h"
-#include <elements/CEGUIStaticImage.h>
+#include <elements/CEGUIGUISheet.h>
 #include <CEGUIEvent.h> 
 
 namespace EmberOgre {
@@ -41,7 +41,7 @@ class Help : public Widget
 public:
     Help();
 
-    ~Help();
+    virtual ~Help();
 	virtual void buildWidget();
 	virtual void runCommand(const std::string &command, const std::string &args);
 
@@ -61,7 +61,7 @@ protected:
 	
 	Ogre::Real mTimeUntilShowBlurb, mTimeBlurbShown, mTimeToShowBlurb;
 	
-	CEGUI::StaticText* mBlurb;
+	CEGUI::GUISheet* mBlurb;
 
 	/**
 	 *    hooked to EmberOgre::EventCreatedAvatarEntity, show a help blurb about the movement mode

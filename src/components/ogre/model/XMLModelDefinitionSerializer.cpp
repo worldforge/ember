@@ -290,13 +290,13 @@ void XMLModelDefinitionSerializer::readSubEntities(Ember::TiXmlElement* mSubEntN
 		if (tmp) {
 				notfound = false;
 				subEntityDef = def->createSubEntityDefinition(Ogre::StringConverter::parseInt(tmp));
-				S_LOG_VERBOSE( "   Add sub entity with index: "+ subEntityDef->getSubEntityIndex());
+				S_LOG_VERBOSE( "   Add sub entity with index: " << subEntityDef->getSubEntityIndex());
 		} else {
 			tmp =  seElem->Attribute("name");
 			if (tmp) {
 				notfound = false;
 				subEntityDef = def->createSubEntityDefinition(tmp);
-				S_LOG_VERBOSE( "   Add sub entity: "+ subEntityDef->getSubEntityName());
+				S_LOG_VERBOSE( "   Add sub entity: " << subEntityDef->getSubEntityName());
 			}
 		}
 		if (!notfound) {
@@ -527,7 +527,7 @@ void XMLModelDefinitionSerializer::readParticleSystemsBindings(ModelDefinition::
 		else
 			continue;
 		
-		S_LOG_VERBOSE( "  Add binding between "+ binding.EmitterVar + " and " + binding.AtlasAttribute + "." );
+		S_LOG_VERBOSE( "  Add binding between "<< binding.EmitterVar << " and " << binding.AtlasAttribute << "." );
 
 
 		def.Bindings.push_back(binding);

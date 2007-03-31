@@ -98,6 +98,11 @@ private:
 	 */
 	void parseWindowGeometry(Ogre::ConfigOptionMap& config, unsigned int& width, unsigned int& height, bool& fullscreen);
 	
+	/**
+	Sets standard values in the ogre environment.
+	*/
+	void setStandardValues();
+	
 };
 
 Ogre::Root* OgreSetup::getRoot() const { return mRoot;}

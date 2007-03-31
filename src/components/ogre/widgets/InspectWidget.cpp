@@ -31,7 +31,7 @@
 #include <CEGUIWindowManager.h>
 #include <elements/CEGUIListbox.h> 
 #include <elements/CEGUIListboxTextItem.h> 
-#include <elements/CEGUIStaticText.h> 
+#include <elements/CEGUIGUISheet.h> 
 
 #include <Eris/TypeInfo.h>
 #include <Eris/View.h>
@@ -71,6 +71,9 @@ InspectWidget::InspectWidget() : mCurrentEntity(0), Inspect("inspect", this, "In
 
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotView.connect(sigc::mem_fun(*this, &InspectWidget::Server_GotView));
 }
+InspectWidget::~InspectWidget()
+{
+}
 
 void InspectWidget::Server_GotView(Eris::View* view)
 {
@@ -92,7 +95,7 @@ void InspectWidget::buildWidget()
 //	mMainWindow->setAlwaysOnTop(true);
 	
 	mChildList = static_cast<CEGUI::Listbox*>(getWindow("ChildList"));
-	mInfo = static_cast<CEGUI::StaticText*>(getWindow("EntityInfo"));
+	mInfo = static_cast<CEGUI::GUISheet*>(getWindow("EntityInfo"));
 	
 	
 	mGuiManager->EventEntityAction.connect(sigc::mem_fun(*this, &InspectWidget::handleAction));

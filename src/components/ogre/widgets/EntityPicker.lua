@@ -49,7 +49,8 @@ function EntityPicker_showMenu(position)
 	EntityPicker.widget:show()
 	position.x = position.x - 10.0
 	position.y = position.y - 10.0
-	EntityPicker.widget:getMainWindow():setPosition(CEGUI.Absolute, position )
+	local uPosition = CEGUI.UVector2:new_local(CEGUI.UDim(0,position.x), CEGUI.UDim(0,position.y))
+	EntityPicker.widget:getMainWindow():setPosition(uPosition )
 
 end
 
@@ -60,7 +61,7 @@ function EntityPicker_pickedEntity(result, args)
 	EntityPicker.entity = result.entity
 	--we must make a copy, else the vector object will be deleted by C++ and we'll end up with garbage
 	EntityPicker.position = Ogre.Vector3:new_local(result.position)
-	local point = CEGUI.Point:new_local(args.windowX, args.windowY)
+	local point = CEGUI.Vector2:new_local(args.windowX, args.windowY)
 	EntityPicker_showMenu(point)
 	local name
 	--if the entity has a name, use it, else use the type name

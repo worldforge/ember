@@ -27,7 +27,7 @@
 #include <CEGUIImageset.h> 
 #include "framework/ConsoleBackend.h"
 #include <elements/CEGUIFrameWindow.h>
-#include <elements/CEGUIStaticText.h>
+#include <elements/CEGUIGUISheet.h>
 
 #include "services/EmberServices.h"
 #include "services/logging/LoggingService.h"
@@ -42,6 +42,7 @@
 #include <CEGUIWindowManager.h>
 #include <CEGUIExceptions.h>
 
+using namespace CEGUI;
 namespace EmberOgre {
 
 
@@ -109,13 +110,13 @@ void Help::EmberOgre_CreatedAvatarEntity(AvatarEmberEntity* entity)
 	///Show a small helpful blurb about the gui system
 	if (!mBlurb) {
 		try {
-			mBlurb = static_cast<CEGUI::StaticText*>(mWindowManager->createWindow(getDefaultScheme() + "/StaticText", (CEGUI::utf8*)"Help/Blurb"));
-			mBlurb->setSize(CEGUI::Size(0.3f, 0.1f));
-			mBlurb->setPosition(CEGUI::Point(0.35f, 0.3f));
-			mBlurb->setFrameEnabled(false);
+			mBlurb = static_cast<CEGUI::GUISheet*>(mWindowManager->createWindow(getDefaultScheme() + "/StaticText", (CEGUI::utf8*)"Help/Blurb"));
+			mBlurb->setSize(UVector2(UDim(0.3f, 0), UDim(0.1f, 0)));
+			mBlurb->setPosition(UVector2(UDim(0.35f, 0), UDim(0.3f, 0)));
+// 			mBlurb->setFrameEnabled(false);
 		//	mBlurb->setInheritAlpha(true);
 			//mEntityName->setBackgroundEnabled(false);
-			mBlurb->setHorizontalFormatting(CEGUI::StaticText::WordWrapLeftAligned);
+			mBlurb->setProperty("HorizontalFormatting", "WordWrapLeftAligned");
 			mBlurb->setText("Click right mouse button to switch between MOVEMENT and INPUT MODE.");
 			
 			

@@ -23,11 +23,11 @@
 #include "OgreEntityRenderer.h"
 #include "EntityCEGUITexture.h"
 
-#include <elements/CEGUIStaticImage.h>
+#include <elements/CEGUIGUISheet.h>
 
 namespace EmberOgre {
 
-OgreEntityRenderer::OgreEntityRenderer(CEGUI::StaticImage* image) : mEntity(0), MovableObjectRenderer(image)
+OgreEntityRenderer::OgreEntityRenderer(CEGUI::Window* image) : mEntity(0), MovableObjectRenderer(image)
 {
 }
 

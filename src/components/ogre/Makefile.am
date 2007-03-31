@@ -1,52 +1,9 @@
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
-SUBDIRS = environment model SceneManagers input widgets carpenter jesus \
-		ogreopcode scripting cegui sound manipulation terrain modeldefinitions
+SUBDIRS = SceneManagers carpenter cegui environment image input jesus \
+	manipulation model modeldefinitions ogreopcode scripting sound terrain widgets
 
-#gamesdir = $(bindir)/games
 noinst_LTLIBRARIES = libEmberOgre.la
-#bin_PROGRAMS = ember.bin
-if BUILD_STATIC
 
-#ember_bin_LDFLAGS = -nodefaultlibs -rdynamic -export-dynamic -dlpreopen self
-
-EMBER_EXT_LIBS = -L/usr/X11R6/lib \
-        /usr/local/lib/liberis-1.3.a \
-        /usr/local/lib/libmercator-0.2.a \
-        /usr/local/lib/libAtlasObjects-0.6.a \
-        /usr/local/lib/libAtlasNet-0.6.a \
-        /usr/local/lib/libAtlasCodecs-0.6.a \
-        /usr/local/lib/libAtlasMessage-0.6.a \
-        /usr/local/lib/libAtlas-0.6.a \
-        /usr/local/lib/libskstream-0.3.a \
-        /usr/local/lib/libwfmath-0.3.a \
-        /usr/local/lib/libCEGUIOgreRenderer.a \
-	/usr/local/lib/libCEGUIBase.a \
-	/home/erik/opt/ogre_static/lib/libOgreMain.so \
-	/usr/lib/libSDL.a \
-        /usr/local/lib/libILU.a \
-        /usr/local/lib/libIL.a \
- 	/usr/lib/libtiff.a \
-	/usr/lib/libjpeg.a \
-	/usr/lib/libpng12.a \
-	/usr/lib/libfreetype.a \
-	/usr/lib/libmng.a \
-	/usr/lib/liblcms.a \
-        /usr/lib/libzzip.a \
-	/usr/lib/libz.a \
-	/usr/lib/libvarconf-1.0.a \
-	/usr/lib/libsigc-2.0.a \
-	/home/erik/code/openal/linux/src/libopenal.a \
-	/usr/lib/libasound.a \
- 	$(STATIC_LIBSTDCPP) \
-	$(STATIC_LIBGCC) \
-	-lGL \
-	-laudio -lc -lm -lgcc_s -lXext -lstdc++ /usr/lib/libltdl.a 
-
-
-
-else
-EMBER_EXT_LIBS = $(EMBER_LIBS)
-endif
 
 
 libEmberOgre_la_LIBADD = \
@@ -66,7 +23,7 @@ libEmberOgre_la_LIBADD = \
 	manipulation/libmanipulation.la \
 	sound/libSound.la \
 	ogreopcode/libOgreOpcode.la \
-	$(EMBER_EXT_LIBS) 
+	image/libImage.la 
         
 
 

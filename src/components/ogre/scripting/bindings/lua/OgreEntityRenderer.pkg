@@ -31,7 +31,7 @@ Renders a single Ogre::Entity to a EntityCEGUITexture.
 class OgreEntityRenderer : public EmberOgre::MovableObjectRenderer
 {
 public:
-    OgreEntityRenderer(CEGUI::StaticImage* image);
+    OgreEntityRenderer(CEGUI::Window* image);
 
     ~OgreEntityRenderer();
     
@@ -46,6 +46,7 @@ public:
      * @return 
      */
     Ogre::Entity* getEntity();
+
 
 };
 

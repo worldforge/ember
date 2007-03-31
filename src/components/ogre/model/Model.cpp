@@ -96,7 +96,9 @@ void Model::reload()
 	createFromDefn();
 	//if we are attached, we have to nofify the new entities, else they won't appear in the scene
 	if (mParentNode != 0) {
-		_notifyAttached(mParentNode, mParentIsTagPoint);
+		Ogre::Node* theParent = mParentNode;
+		_notifyAttached(0, false);
+		_notifyAttached(theParent, mParentIsTagPoint);
 	}
 	Reloaded.emit();
 }

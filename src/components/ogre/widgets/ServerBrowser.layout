@@ -14,13 +14,13 @@
 				<Property Name='UnifiedSize' Value='{{0.000000,590.000000},{0.000000,420.000000}}'/>
 				<Property Name='InheritsAlpha' Value='false'/>
 				<Property Name='SelectionMode' Value='RowSingle'/>
-				<Property Name='ColumnHeader' Value='text:Server Name width:0.25 id:0'/>
-				<Property Name='ColumnHeader' Value='text:Ping width:0.1 id:1'/>
-				<Property Name='ColumnHeader' Value='text:Clients width:0.1 id:2'/>
-				<Property Name='ColumnHeader' Value='text:Ruleset width:0.1 id:3'/>
-				<Property Name='ColumnHeader' Value='text:Server type width:0.15 id:4'/>
-				<Property Name='ColumnHeader' Value='text:Version width:0.1 id:5'/>
-				<Property Name='ColumnHeader' Value='text:Address width:0.15 id:6'/>
+				<Property Name='ColumnHeader' Value='text:Server Name width:{0.25, 0} id:0'/>
+				<Property Name='ColumnHeader' Value='text:Ping width:{0.1, 0} id:1'/>
+				<Property Name='ColumnHeader' Value='text:Clients width:{0.1, 0} id:2'/>
+				<Property Name='ColumnHeader' Value='text:Ruleset width:{0.1, 0} id:3'/>
+				<Property Name='ColumnHeader' Value='text:Server type width:{0.15, 0} id:4'/>
+				<Property Name='ColumnHeader' Value='text:Version width:{0.1, 0} id:5'/>
+				<Property Name='ColumnHeader' Value='text:Address width:{0.15, 0} id:6'/>
 			</Window>
 			<Window Type='EmberLook/Editbox' Name='ManualServerName'>
 				<Property Name='UnifiedSize' Value='{{0.000000,150.000000},{0.000000,25.000000}}'/>

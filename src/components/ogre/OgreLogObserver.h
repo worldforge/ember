@@ -42,10 +42,7 @@ class OgreLogObserver: public Ogre::LogListener
 		*/
 		OgreLogObserver();
 		~OgreLogObserver();
-	virtual void write( const Ogre::String& name,
-		const Ogre::String& message, 
-		Ogre::LogMessageLevel lml = Ogre::LML_NORMAL, 
-		bool maskDebug = false );
+		virtual void messageLogged( const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName );
 		
 	protected:
 		

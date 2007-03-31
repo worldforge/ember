@@ -654,7 +654,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* t
 		pass->setFragmentProgram("splat_cg");
 		
 		Ogre::GpuProgramParametersSharedPtr fpParams = Ogre::GpuProgramManager::getSingleton().createParameters();
-		fpParams->setAutoAddParamName(true);
+// 		fpParams->setAutoAddParamName(true);
 		//set how much the texture should tile, perhaps this shouldn't be placed here...
 		fpParams->setNamedConstant("tile",  50);
 		pass->setFragmentProgramParameters(fpParams);

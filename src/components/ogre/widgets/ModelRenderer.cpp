@@ -24,7 +24,7 @@
 
 #include "EntityCEGUITexture.h"
 
-#include <elements/CEGUIStaticImage.h>
+#include <elements/CEGUIGUISheet.h>
 
 #include "components/ogre/model/Model.h"
 #include "framework/Exception.h"
@@ -35,7 +35,7 @@
 
 namespace EmberOgre {
 
-ModelRenderer::ModelRenderer(CEGUI::StaticImage* image) 
+ModelRenderer::ModelRenderer(CEGUI::Window* image) 
 : mModel(0), MovableObjectRenderer(image)
 {
 

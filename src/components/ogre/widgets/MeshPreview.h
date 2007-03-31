@@ -184,7 +184,7 @@ class MeshPreview : public Widget {
 public:
     MeshPreview();
 
-    ~MeshPreview();
+    virtual ~MeshPreview();
 	
 	virtual void buildWidget();
 	

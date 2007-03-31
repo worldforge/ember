@@ -28,7 +28,7 @@
 
 namespace CEGUI
 {
-	class StaticImage;
+	class GUISheet;
 	
 }
 
@@ -52,16 +52,16 @@ public:
 	 *    Creates a one shot image. This is rather inexpensive, since there's no need for rendering each frame, but it disallows updates to the image.
 	 * @param image 
 	 */
-	static void OneShotRender(CEGUI::StaticImage* image);
+	//static void OneShotRender(CEGUI::Window* image);
 
     /**
      * Constructir
      * @param image A valid CEGUI::StaticImage, to which the Model will be rendered.
      * @return 
      */
-    ModelRenderer(CEGUI::StaticImage* image);
+    ModelRenderer(CEGUI::Window* image);
 
-    ~ModelRenderer();
+    virtual ~ModelRenderer();
     
     /**
      * Renders the submitted Model.

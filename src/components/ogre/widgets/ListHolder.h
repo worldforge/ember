@@ -52,7 +52,7 @@ public:
      */
     ListHolder(CEGUI::Listbox* listbox, CEGUI::Editbox* filterEditbox);
 
-    ~ListHolder();
+    virtual ~ListHolder();
     
     
 	/**

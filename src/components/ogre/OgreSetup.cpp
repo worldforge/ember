@@ -36,8 +36,10 @@
 	#include <SDL/SDL.h>
 	#include <SDL/SDL_syswm.h>
 	#include "framework/binreloc.h"
+	#include <GL/glx.h>
 #endif
 #include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
+#include "image/OgreILCodecs.h"
 
 namespace EmberOgre {
 
@@ -55,6 +57,7 @@ OgreSetup::~OgreSetup()
 void OgreSetup::shutdown()
 {
 	SDL_Quit();
+	Ogre::ILCodecs::deleteCodecs();
 	delete mRoot;
 	mRoot = 0;
 }
@@ -84,6 +87,9 @@ Ogre::Root* OgreSetup::createOgreSystem(bool loadOgrePluginsThroughBinreloc)
 		mRoot = new Ogre::Root(sharePath + "/plugins.cfg", "ogre.cfg", "ogre.log");
 	}
 #endif
+	// Register image codecs
+    Ogre::ILCodecs::registerCodecs();
+
 	return mRoot;
 }
 
@@ -133,7 +139,7 @@ bool OgreSetup::configure(void)
    // New method: As proposed by Sinbad.
    //  This method always works.
    HWND hWnd;
-   mRenderWindow->getCustomAttribute("HWND", &hWnd);
+   mRenderWindow->getCustomAttribute("WINDOW", &hWnd);
 	
    char tmp[64];
    // Set the SDL_WINDOWID environment variable
@@ -190,10 +196,9 @@ bool OgreSetup::configure(void)
 		
 		parseWindowGeometry(mRoot->getRenderSystem()->getConfigOptions(), width, height, fullscreen);
 		
-		/// initialise root, without creating a 
-		mRoot->initialise(false);
-		
 		SDL_Init(SDL_INIT_VIDEO);
+		
+		
 		
 		///this is a failsafe which guarantees that SDL is correctly shut down (returning the screen to correct resolution, releasing mouse etc.) if there's a crash.
  		atexit(SDL_Quit);
@@ -225,10 +230,20 @@ bool OgreSetup::configure(void)
 		std::vector<Ogre::String> tokens = Ogre::StringUtil::split(dsp, ".");
 	
 		Ogre::NameValuePairList misc;
-		std::string s = Ogre::StringConverter::toString((long)info.info.x11.display);
+/*		std::string s = Ogre::StringConverter::toString((long)info.info.x11.display);
 		s += ":" + tokens[1] +":";
 		s += Ogre::StringConverter::toString((long)info.info.x11.window);
-		misc["parentWindowHandle"] = s;
+		misc["parentWindowHandle"] = s;*/
+		
+		GLXContext glxContext(glXGetCurrentContext());
+		GLXDrawable glxDrawable(glXGetCurrentDrawable());
+		std::string glxContextString = Ogre::StringConverter::toString((long)glxContext);
+		glxContextString += ":" + Ogre::StringConverter::toString((long)glxDrawable);
+		misc["glxcontext"] = glxContextString;
+		
+		/// initialise root, without creating a 
+		mRoot->initialise(false);
+		
 		mRenderWindow = mRoot->createRenderWindow("ogre", width, height, fullscreen, &misc);
 		
 		///we need to set the window to be active by ourselves, since GLX by default sets it to false, but then activates it upon recieving some X event (which it will never recieve since we'll use SDL).
@@ -622,6 +637,8 @@ static struct {
 
 
 #endif
+	
+		setStandardValues();
 
 		return true;
     }
@@ -630,6 +647,22 @@ static struct {
         return false;
     }
 }
+
+void OgreSetup::setStandardValues()
+{
+	/// Set default mipmap level (NB some APIs ignore this)
+	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
+ 
+	/// Set default animation mode
+	Ogre::Animation::setDefaultInterpolationMode(Ogre::Animation::IM_SPLINE);
+
+	///remove padding for bounding boxes
+	Ogre::MeshManager::getSingletonPtr()->setBoundsPaddingFactor(0);
+
+	///all new movable objects shall by default be unpickable; it's up to the objects themselved to make themselves pickable
+	Ogre::MovableObject::setDefaultQueryFlags(0);
+}
+
 
 EmberPagingSceneManager* OgreSetup::chooseSceneManager()
 {

@@ -103,7 +103,7 @@ class IngameChatWidget : public Widget {
 typedef std::map<std::string, ActiveChatWindow*> ActiveChatWindowMap;
 public:
 
-    ~IngameChatWidget();
+    virtual ~IngameChatWidget();
 	void buildWidget();
 	virtual void frameStarted(const Ogre::FrameEvent & event);
 	

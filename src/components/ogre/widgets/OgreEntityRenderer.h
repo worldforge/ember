@@ -35,9 +35,9 @@ Renders a single Ogre::Entity to a EntityCEGUITexture.
 class OgreEntityRenderer : public MovableObjectRenderer
 {
 public:
-    OgreEntityRenderer(CEGUI::StaticImage* image);
+    OgreEntityRenderer(CEGUI::Window* image);
 
-    ~OgreEntityRenderer();
+    virtual ~OgreEntityRenderer();
     
     /**
      * Renders the submitted Entity.

@@ -46,7 +46,7 @@ class MakeEntityWidget : public Widget
 public:
 
 	MakeEntityWidget();
-    ~MakeEntityWidget();
+    virtual ~MakeEntityWidget();
 	virtual void buildWidget();
 
 	

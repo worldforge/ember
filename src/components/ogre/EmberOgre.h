@@ -59,6 +59,9 @@ namespace EmberOgre {
 
 namespace Model {
 	class ModelDefinitionManager;
+	namespace Mapping {
+		class EmberModelMappingManager;
+	}
 }
 
 class CameraRotator;
@@ -344,6 +347,11 @@ protected:
 	Resonsible for managing all Model definitions;
 	*/
 	Model::ModelDefinitionManager* mModelDefinitionManager;
+	
+	/**
+	Handles all model mappings.
+	*/
+	Model::Mapping::EmberModelMappingManager* mModelMappingManager;
 	
 	/**
 	Responsible for allowing movement of entities in the world by the user.

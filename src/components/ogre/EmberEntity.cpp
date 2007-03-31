@@ -171,7 +171,7 @@ void EmberEntity::createSceneNode(Ogre::SceneManager* sceneManager)
 {
 	EmberEntity* container = getEmberLocation();
 	if (container == 0) {
-		S_LOG_VERBOSE( "Entity created in limbo: "<< this->getId() << " (" << this->getName() << ") \n" )
+		//S_LOG_VERBOSE( "Entity created in limbo: "<< this->getId() << " (" << this->getName() << ")" )
 
 		mOgreNode = sceneManager->createSceneNode(getId());
 		

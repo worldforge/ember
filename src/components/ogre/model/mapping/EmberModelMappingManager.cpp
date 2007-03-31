@@ -59,6 +59,8 @@ EmberModelMappingManager::EmberModelMappingManager() : mModelMappingManager(), m
 
 EmberModelMappingManager::~EmberModelMappingManager()
 {
+	Ogre::ResourceGroupManager::getSingleton()._unregisterResourceManager(mResourceType);
+	Ogre::ResourceGroupManager::getSingleton()._unregisterScriptLoader(this);
 }
 
 

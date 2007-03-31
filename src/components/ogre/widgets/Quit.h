@@ -35,7 +35,7 @@ class Quit : public Widget
 public:
     Quit();
 
-    ~Quit();
+    virtual ~Quit();
 	
 	virtual void buildWidget();
 	virtual void runCommand(const std::string &command, const std::string &args);

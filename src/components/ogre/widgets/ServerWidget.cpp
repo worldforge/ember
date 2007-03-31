@@ -37,8 +37,6 @@
 #include <elements/CEGUIListbox.h> 
 #include <elements/CEGUIListboxItem.h> 
 #include <elements/CEGUIListboxTextItem.h> 
-#include <elements/CEGUIStaticText.h> 
-#include <elements/CEGUIStaticImage.h> 
 #include <elements/CEGUIPushButton.h> 
 #include <elements/CEGUIEditbox.h> 
 #include <elements/CEGUIMultiLineEditbox.h>
@@ -46,6 +44,7 @@
 #include <elements/CEGUIComboDropList.h> 
 #include <elements/CEGUICombobox.h> 
 #include <elements/CEGUITabControl.h> 
+#include <elements/CEGUIGUISheet.h> 
 
 #include "ModelRenderer.h"
 
@@ -58,6 +57,7 @@
 #include "components/ogre/model/mapping/EmberModelMappingManager.h"
 
 
+using namespace CEGUI;
 namespace EmberOgre {
 
 
@@ -204,20 +204,20 @@ void ServerWidget::loginSuccess(Eris::Account* account)
 
 void ServerWidget::showLoginFailure(Eris::Account* account, std::string msg)
 {
-	CEGUI::StaticText* helpText = static_cast<CEGUI::StaticText*>(getWindow("LoginPanel/HelpText"));
-	helpText->setYPosition(0.6);
+	CEGUI::GUISheet* helpText = static_cast<CEGUI::GUISheet*>(getWindow("LoginPanel/HelpText"));
+	helpText->setYPosition(UDim(0.6, 0));
 
-	CEGUI::StaticText* loginFailure = static_cast<CEGUI::StaticText*>(getWindow("LoginPanel/LoginFailure"));
+	CEGUI::GUISheet* loginFailure = static_cast<CEGUI::GUISheet*>(getWindow("LoginPanel/LoginFailure"));
 	loginFailure->setText(msg);
 	loginFailure->setVisible(true);
 }
 
 bool ServerWidget::hideLoginFailure()
 {
-	CEGUI::StaticText* helpText = static_cast<CEGUI::StaticText*>(getWindow("LoginPanel/HelpText"));
-	helpText->setYPosition(0.55);
+	CEGUI::GUISheet* helpText = static_cast<CEGUI::GUISheet*>(getWindow("LoginPanel/HelpText"));
+	helpText->setYPosition(UDim(0.55, 0));
 
-	CEGUI::StaticText* loginFailure = static_cast<CEGUI::StaticText*>(getWindow("LoginPanel/LoginFailure"));
+	CEGUI::GUISheet* loginFailure = static_cast<CEGUI::GUISheet*>(getWindow("LoginPanel/LoginFailure"));
 	loginFailure->setVisible(false);
 
 	return true;
@@ -416,7 +416,7 @@ void ServerWidget::gotAvatar(Eris::Avatar* avatar)
 
 void ServerWidget::createPreviewTexture()
 {
-	CEGUI::StaticImage* imageWidget = static_cast<CEGUI::StaticImage*>(getWindow("CreateCharacterPanel/Image"));
+	CEGUI::GUISheet* imageWidget = static_cast<CEGUI::GUISheet*>(getWindow("CreateCharacterPanel/Image"));
 	if (!imageWidget) {
 		S_LOG_FAILURE("Could not find CreateCharacterPanel/Image, aborting creation of preview texture.");
 	} else {

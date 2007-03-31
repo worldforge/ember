@@ -54,7 +54,7 @@
 #include <elements/CEGUIListboxTextItem.h> 
 #include <elements/CEGUIEditbox.h> 
 #include <elements/CEGUIPushButton.h> 
-#include <elements/CEGUIStaticImage.h> 
+#include <elements/CEGUIGUISheet.h> 
 #include "framework/ConsoleBackend.h"
 
 #include "../terrain/TerrainGenerator.h"
@@ -296,7 +296,7 @@ Eris::TypeInfo* MakeEntityWidget::getSelectedTypeInfo()
 
 void MakeEntityWidget::createPreviewTexture()
 {
-	CEGUI::StaticImage* imageWidget = static_cast<CEGUI::StaticImage*>(getWindow("ModelPreviewImage"));
+	CEGUI::GUISheet* imageWidget = static_cast<CEGUI::GUISheet*>(getWindow("ModelPreviewImage"));
 	if (!imageWidget) {
 		S_LOG_FAILURE("Could not find ModelPreviewImage, aborting creation of preview texture.");
 	} else {

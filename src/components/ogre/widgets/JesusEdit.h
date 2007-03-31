@@ -78,7 +78,7 @@ class JesusEditPreview
 {
 public:
 	JesusEditPreview(GUIManager* guiManager, Jesus* jesus);
-	~JesusEditPreview();
+	virtual ~JesusEditPreview();
 	
 	/**
 	 *    shows a preview of the BuildingBlockSpec
@@ -177,7 +177,7 @@ class JesusEdit : public Widget
 public:
     JesusEdit();
 
-    ~JesusEdit();
+    virtual ~JesusEdit();
 	
 	Jesus* mJesus;
 	

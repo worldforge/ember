@@ -7,8 +7,8 @@
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Server'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
-			<Property Name='UnifiedSize' Value='{{0.960000,0.000000},{0.960000,0.000000}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.020000,0.000000},{0.040000,0.000000}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,4},{0,15}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-8},{1,-15}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/StaticText' Name='Info'>
 				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.200000,0.000000}}'/>
@@ -18,8 +18,8 @@
 				<Property Name='Text' Value='Server info'/>
 			</Window>
 			<Window Type='EmberLook/StaticText' Name='LoginPanel'>
-				<Property Name='UnifiedSize' Value='{{0.960000,0.000000},{0.750000,0.000000}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.020000,0.000000},{0.250000,0.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,4},{0.25,0.0}}'/>
+				<Property Name='UnifiedSize' Value='{{1,-8},{0.75,0}}'/>
 				<Property Name='Text' Value='Login'/>
 				<Property Name='InheritsAlpha' Value='false'/>
 				<Property Name='ReadOnly' Value='true'/>
@@ -207,6 +207,7 @@
 					<Window Type='EmberLook/StaticImage' Name='CreateCharacterPanel/Image'>
 						<Property Name='UnifiedSize' Value='{{0.000000,150.000000},{0.000000,250.000000}}'/>
 						<Property Name='UnifiedPosition' Value='{{0.000000,210.000000},{0.000000,5.000000}}'/>
+						<!--<Property Name='ImageColours' Value='tl:99999999 tr:99999999 bl:99999999 br:99999999'/>-->
 					</Window>
 				</Window>
 			</Window>

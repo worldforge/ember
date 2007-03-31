@@ -173,7 +173,8 @@ mLogObserver(0), mGeneralCommandMapper("general"),
 mWindow(0),
 mMaterialEditor(0),
 mJesus(0),
-mAvatar(0)
+mAvatar(0),
+mModelMappingManager(0)
 {
 	Ember::Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
 }
@@ -198,6 +199,8 @@ EmberOgre::~EmberOgre()
 
 	delete mGUIManager;
 
+
+	delete mModelMappingManager;
 
 	///we need to make sure that all Models are destroyed before Ogre begins destroying other movable objects (such as Entities)
 	///this is because Model internally uses Entities, so if those Entities are destroyed by Ogre before the Models are destroyed, the Models will try to delete them again, causing segfaults and other wickedness
@@ -360,7 +363,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	///if we do this we will override the automatic creation of a LogManager and can thus route all logging from ogre to the ember log
 	new Ogre::LogManager();
 	Ogre::LogManager::getSingleton().createLog("Ogre", true, false, true);
-	Ogre::LogManager::getSingleton().addListener(mLogObserver);
+	Ogre::LogManager::getSingleton().getDefaultLog()->addListener(mLogObserver);
 
 	///We need a root object.
 	mRoot = mOgreSetup->createOgreSystem(loadOgrePluginsThroughBinreloc);
@@ -372,7 +375,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	///Create the model definition manager
 	mModelDefinitionManager = new Model::ModelDefinitionManager();
 	
-	Model::Mapping::EmberModelMappingManager* modelMappingManager = new Model::Mapping::EmberModelMappingManager();
+	mModelMappingManager = new Model::Mapping::EmberModelMappingManager();
 	
 	///Create a resource loader which loads all the resources we need.
 	OgreResourceLoader ogreResourceLoader;
@@ -439,14 +442,6 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	///create the collision manager
 	new OgreOpcode::CollisionManager(mSceneMgr);
 	
-	/// Set default mipmap level (NB some APIs ignore this)
-	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
- 
-	/// Set default animation mode
-	Ogre::Animation::setDefaultInterpolationMode(Ogre::Animation::IM_SPLINE);
-
-	///remove padding for bounding boxes
-	Ogre::MeshManager::getSingletonPtr()->setBoundsPaddingFactor(0);
 	
 	ogreResourceLoader.loadGui();
 	ogreResourceLoader.loadGeneral();

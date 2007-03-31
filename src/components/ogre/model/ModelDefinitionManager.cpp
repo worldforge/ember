@@ -72,6 +72,7 @@ ModelDefinitionManager::ModelDefinitionManager() :  mShowModels(true)
 ModelDefinitionManager::~ModelDefinitionManager()
 {
 	Ogre::ResourceGroupManager::getSingleton()._unregisterResourceManager(mResourceType);
+	Ogre::ResourceGroupManager::getSingleton()._unregisterScriptLoader(this);
 	///we need to make sure that all Models are destroyed before Ogre begins destroying other movable objects (such as Entities)
 	///this is because Model internally uses Entities, so if those Entities are destroyed by Ogre before the Models are destroyed, the Models will try to delete them again, causing segfaults and other wickedness 
 	Ogre::SceneManagerEnumerator::SceneManagerIterator sceneManagerIterator =  Ogre::SceneManagerEnumerator::getSingleton().getSceneManagerIterator();

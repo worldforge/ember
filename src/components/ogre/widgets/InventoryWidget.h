@@ -44,7 +44,7 @@ class InventoryWidget : public Widget
 {
 public:
 
-    ~InventoryWidget();
+    virtual ~InventoryWidget();
 	void buildWidget();
 
 

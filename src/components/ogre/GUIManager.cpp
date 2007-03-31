@@ -25,8 +25,8 @@
 #include <CEGUISchemeManager.h>
 #include <CEGUIExceptions.h>
 #include <CEGUIFactoryModule.h>
-#include <elements/CEGUIStaticText.h>
 #include <elements/CEGUIPushButton.h>
+#include <elements/CEGUIGUISheet.h>
 
 #include "widgets/Widget.h"
 #include "widgets/ConsoleWidget.h"
@@ -61,6 +61,8 @@
 
 template<> EmberOgre::GUIManager* Ember::Singleton<EmberOgre::GUIManager>::ms_Singleton = 0;
 
+using namespace CEGUI;
+
 namespace EmberOgre {
 
 
@@ -84,7 +86,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		chdir(configSrv->getEmberDataDirectory().c_str());
 		
 		//use a macro from CEGUIFactoryModule
-		DYNLIB_LOAD( "libCEGUIFalagardBase.so");
+		//DYNLIB_LOAD( "libCEGUIFalagardBase.so");
 		
 		Ember::EmberServices::getSingleton().getScriptingService()->registerScriptingProvider(new LuaScriptingProvider());
 		
@@ -98,10 +100,10 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		provider = Ember::EmberServices::getSingleton().getScriptingService()->getProviderFor("LuaScriptingProvider");
 		if (provider != 0) {
 			LuaScriptingProvider* luaScriptProvider = static_cast<LuaScriptingProvider*>(provider);
-			mGuiSystem = new CEGUI::System(mGuiRenderer, & luaScriptProvider->getScriptModule(), resourceProvider, (CEGUI::utf8*)"cegui/datafiles/configs/cegui.config"); 
+			mGuiSystem = new CEGUI::System(mGuiRenderer, resourceProvider, 0, &luaScriptProvider->getScriptModule(), (CEGUI::utf8*)"cegui/datafiles/configs/cegui.config"); 
 			mScriptingProviders.push_back(provider);
 		} else {
-			mGuiSystem = new CEGUI::System(mGuiRenderer, resourceProvider, (CEGUI::utf8*)"cegui/datafiles/configs/cegui.config"); 
+			mGuiSystem = new CEGUI::System(mGuiRenderer, resourceProvider, 0, 0, (CEGUI::utf8*)"cegui/datafiles/configs/cegui.config"); 
 		}
 		
 		mWindowManager = &CEGUI::WindowManager::getSingleton();
@@ -125,7 +127,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		BIND_CEGUI_EVENT(mSheet, CEGUI::Window::EventInputCaptureLost, GUIManager::mSheet_CaptureLost);
 			
 		//set a default tool tip
-		CEGUI::System::getSingleton().setTooltip(getDefaultScheme() + "/Tooltip");
+		CEGUI::System::getSingleton().setDefaultTooltip(getDefaultScheme() + "/Tooltip");
 		
 		S_LOG_INFO("CEGUI system set up");
 
@@ -169,7 +171,9 @@ GUIManager::~GUIManager()
 /*	delete mGuiSystem;
 	mGuiSystem = 0;*/
 	
-	for (WidgetStore::iterator I = mWidgets.begin(); I != mWidgets.end(); ++I) {
+	WidgetStore widgetStoreCopy(mWidgets);
+	for (WidgetStore::iterator I = widgetStoreCopy.begin(); I != widgetStoreCopy.end(); ++I) {
+		S_LOG_INFO("Deleting widget " << (*I)->getPrefix() << ".");
 		delete *I;
 	}
 	
@@ -194,14 +198,14 @@ void GUIManager::initialize()
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 	chdir(configSrv->getEmberDataDirectory().c_str());
 	try {
-		mDebugText = (CEGUI::StaticText*)mWindowManager->createWindow(getDefaultScheme() + "/StaticText", (CEGUI::utf8*)"DebugText");
+		mDebugText = (CEGUI::GUISheet*)mWindowManager->createWindow(getDefaultScheme() + "/StaticText", (CEGUI::utf8*)"DebugText");
 		mSheet->addChildWindow(mDebugText);
-		mDebugText->setMaximumSize(CEGUI::Size(1.0f, 0.1f));
-		mDebugText->setPosition(CEGUI::Point(0.0f, 0.93f));
-		mDebugText->setSize(CEGUI::Size(1.0f, 0.1f));
+		mDebugText->setMaxSize(CEGUI::UVector2(UDim(1.0f, 0), UDim(1.0f, 0)));
+		mDebugText->setPosition(CEGUI::UVector2(UDim(0.0f, 0), UDim(0.93f, 0)));
+		mDebugText->setSize(CEGUI::UVector2(UDim(1.0f, 0), UDim(0.1f, 0)));
 		
-		mDebugText->setFrameEnabled(false);
-		mDebugText->setBackgroundEnabled(false);
+/*		mDebugText->setFrameEnabled(false);
+		mDebugText->setBackgroundEnabled(false);*/
 		//stxt->setHorizontalFormatting(StaticText::WordWrapCentred);
 	
 
@@ -228,7 +232,7 @@ void GUIManager::initialize()
 			S_LOG_FAILURE("Error when loading bootstrap script. Error message: " << ex.getFullDescription());
 		}
 		
-		createWidget("StatusIconBar");
+		//createWidget("StatusIconBar");
 		createWidget("IngameChatWidget");
 		createWidget("InventoryWidget");
 		createWidget("InspectWidget");
@@ -260,7 +264,7 @@ Widget* GUIManager::createWidget()
 
 Widget* GUIManager::createWidget(const std::string& name)
 {
-	Widget* widget;
+	Widget* widget(0);
 	try {
 	
 		widget = WidgetLoader::createWidget(name);

@@ -341,14 +341,15 @@ void AvatarCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const Mouse
 	/// Start a new ray query 
 	Ogre::Ray cameraRay = getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
 
-	unsigned long queryMask = Ogre::RSQ_Entities;
+	unsigned long queryMask = Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK;
 	queryMask |= EmberEntity::CM_AVATAR;
 	queryMask |= EmberEntity::CM_ENTITY;
 	queryMask |= EmberEntity::CM_NATURE;
 	queryMask |= EmberEntity::CM_UNDEFINED;
-	queryMask |= Ogre::RSQ_FirstTerrain;
+// 	queryMask |= Ogre::RSQ_FirstTerrain;
 	
 	Ogre::RaySceneQuery *raySceneQuery = mSceneManager->createRayQuery( cameraRay, queryMask); 
+	raySceneQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
 	raySceneQuery->setSortByDistance(true);
 
 	raySceneQuery->execute(); 
@@ -415,7 +416,7 @@ void AvatarCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const Mouse
 	bool AvatarCamera::adjustForTerrain()
 	{
 		
-		Ogre::RaySceneQuery *raySceneQueryHeight = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery( Ogre::Ray(mCamera->getDerivedPosition(), Ogre::Vector3::NEGATIVE_UNIT_Y), Ogre::RSQ_Height); 
+		Ogre::RaySceneQuery *raySceneQueryHeight = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery( Ogre::Ray(mCamera->getDerivedPosition(), Ogre::Vector3::NEGATIVE_UNIT_Y), Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK); 
 		
 		
 		raySceneQueryHeight->execute(); 

@@ -164,10 +164,11 @@ int main(int argc, char **argv)
 	app.start();
 
 
-		if (homeDir != "") {
-			chdir(homeDir.c_str());
-		} else {
-			chdir("~/.ember");
-		}
+	if (homeDir != "") {
+		chdir(homeDir.c_str());
+	} else {
+		chdir("~/.ember");
+	}
+	std::cout << "Ember shut down successfully." << std::endl;
     return 0;
 }

@@ -27,7 +27,6 @@
 
 #include <sigc++/trackable.h>
 
-#include <OgreKeyEvent.h> 
 #include "framework/Singleton.h"
 
 #include <SDL.h>
@@ -37,6 +36,11 @@
 
 #include "input/Input.h"
 #include "input/InputCommandMapper.h"
+
+namespace CEGUI
+{
+class GUISheet;
+}
 
 namespace Ember {
 class IScriptingProvider;
@@ -222,7 +226,7 @@ protected:
 
 	CEGUI::Window* mSheet;
 	CEGUI::WindowManager* mWindowManager;
-	CEGUI::StaticText* mDebugText;
+	CEGUI::GUISheet* mDebugText;
 	
 	ConsoleWidget* mConsoleWidget;
 	

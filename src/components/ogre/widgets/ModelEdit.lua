@@ -678,7 +678,7 @@ function ModelEdit_buildWidget()
 	ModelEdit.widget:loadMainSheet("ModelEdit.layout", "ModelEdit/")
 	
 	ModelEdit.renderImage = ModelEdit.widget:getWindow("Image")
-	ModelEdit.renderImage = CEGUI.toStaticImage(ModelEdit.renderImage)
+	--ModelEdit.renderImage = CEGUI.toStaticImage(ModelEdit.renderImage)
 
 	ModelEdit.models = ModelEdit.widget:getWindow("Models")
 	ModelEdit.models = CEGUI.toListbox(ModelEdit.models)
@@ -760,7 +760,7 @@ function ModelEdit_buildWidget()
 
 
 	ModelEdit.contentparts.modelInfo.renderImage =  ModelEdit.widget:getWindow("MeshPreviewImage")
-	ModelEdit.contentparts.modelInfo.renderImage = CEGUI.toStaticImage(ModelEdit.contentparts.modelInfo.renderImage)
+	--ModelEdit.contentparts.modelInfo.renderImage = CEGUI.toStaticImage(ModelEdit.contentparts.modelInfo.renderImage)
 	
 --	ModelEdit.materials = ModelEdit.widget:getWindow("Materials")
 --	ModelEdit.materials = CEGUI.toListbox(ModelEdit.materials)
@@ -784,11 +784,11 @@ function ModelEdit_buildWidget()
 	ModelEdit.renderer = EmberOgre.ModelRenderer:new(ModelEdit.renderImage)
 	
 	local subMeshPreviewImage = ModelEdit.widget:getWindow("SubMeshPreviewImage")
-	subMeshPreviewImage = CEGUI.toStaticImage(subMeshPreviewImage)
+	--subMeshPreviewImage = CEGUI.toStaticImage(subMeshPreviewImage)
 	ModelEdit.subMeshPartRenderer = EmberOgre.OgreEntityRenderer:new(subMeshPreviewImage)
 	
 	local meshPreviewImage = ModelEdit.widget:getWindow("MeshPreviewImage")
-	meshPreviewImage = CEGUI.toStaticImage(meshPreviewImage)
+	--meshPreviewImage = CEGUI.toStaticImage(meshPreviewImage)
 	ModelEdit.submeshRenderer = EmberOgre.OgreEntityRenderer:new(meshPreviewImage)
 	
 	--ModelEdit.contentparts.modelInfo.renderer = EmberOgre.ModelRenderer:new(ModelEdit.contentparts.modelInfo.renderImage)

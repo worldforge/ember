@@ -24,7 +24,7 @@
 
 #include "EntityCEGUITexture.h"
 
-#include <elements/CEGUIStaticImage.h>
+#include <elements/CEGUIGUISheet.h>
 
 #include "framework/Exception.h"
 
@@ -33,7 +33,7 @@
 
 namespace EmberOgre {
 
-MovableObjectRenderer::MovableObjectRenderer(CEGUI::StaticImage* image)
+MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image)
 : mImage(image), mTexture(0), mIsInputCatchingAllowed(true), mAutoShowFull(true), mActive(true)
 {
 	std::string name(image->getName().c_str());
@@ -43,7 +43,8 @@ MovableObjectRenderer::MovableObjectRenderer(CEGUI::StaticImage* image)
 		mTexture = new EntityCEGUITexture(name, width, height);
 		///most models are rotated away from the camera, so as a convenience we'll rotate the node
 		//mTexture->getSceneNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)180);
-		mImage->setImage(mTexture->getImage());
+		std::string imageName = std::string("set:") + mTexture->getImage()->getImagesetName().c_str() + " image:" + mTexture->getImage()->getName().c_str();
+		mImage->setProperty("Image", imageName);
 		//mImage->setImageColours(CEGUI::colour(1.0f, 1.0f, 1.0f));
 		BIND_CEGUI_EVENT(mImage, CEGUI::Window::EventMouseButtonDown, MovableObjectRenderer::image_MouseButtonDown);
 		BIND_CEGUI_EVENT(mImage, CEGUI::Window::EventMouseWheel, MovableObjectRenderer::image_MouseWheel);

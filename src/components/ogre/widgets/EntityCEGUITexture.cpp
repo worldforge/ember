@@ -24,13 +24,13 @@
 #include <CEGUIWindowManager.h>
 #include <CEGUIImagesetManager.h> 
 #include <CEGUIImageset.h> 
-#include <elements/CEGUIStaticImage.h>
 
 #include "../EmberOgre.h"
 #include "../GUIManager.h"
 #include "../model/Model.h"
 
 #include "framework/Exception.h"
+#include <OgreBitwise.h>
 
 
 namespace EmberOgre {
@@ -171,16 +171,8 @@ void EntityCEGUITexture::createImage(const std::string& imageSetName)
 	Ogre::Real aspectRatio = static_cast<float>(mWidth) / static_cast<float>(mHeight);
 	
 	///the width and height needs to be multipes of 2
-	///perhaps there's a better way to do this? bitwise shifts?
-	int finalWidth = 1, finalHeight = 1;
-	while (finalWidth < mWidth) {
-		finalWidth *= 2;
-	}
-	while (finalHeight < mHeight) {
-		finalHeight *= 2;
-	}
-	mWidth = finalWidth;
-	mHeight = finalHeight;
+	mWidth = Ogre::Bitwise::firstPO2From(mWidth); 
+	mHeight = Ogre::Bitwise::firstPO2From(mHeight); 
 	
 	
 	///first, create a RenderTexture to which the Ogre renderer should render the image
@@ -221,10 +213,10 @@ void EntityCEGUITexture::createImage(const std::string& imageSetName)
 	mImageSet = CEGUI::ImagesetManager::getSingleton().createImageset(imageSetName + "_EntityCEGUITextureImageset", ceguiTexture);
 	
 	///we only want one element: the whole texture
-	mImageSet->defineImage("full", CEGUI::Rect(0,0,mWidth,mHeight), CEGUI::Point(0,0));
+	mImageSet->defineImage("full_image", CEGUI::Rect(0,0,mWidth,mHeight), CEGUI::Point(0,0));
 
 	///assign our image element to the StaticImage widget
-	mImage = &mImageSet->getImage("full");
+	mImage = &mImageSet->getImage("full_image");
 	
 
 }

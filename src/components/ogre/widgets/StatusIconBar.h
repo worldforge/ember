@@ -35,33 +35,33 @@ class IconBase;
 */
 class StatusIconBar : public Widget {
 public:
-    StatusIconBar();
-
-    ~StatusIconBar();
-
-	virtual void buildWidget();
-protected:
-
-	bool help_MouseClick(const CEGUI::EventArgs& args);
-	bool close_MouseClick(const CEGUI::EventArgs& args);
-	bool movement_MouseClick(const CEGUI::EventArgs& args);
-
-
-	IconBase* mMovementModeIcon;
-	const CEGUI::Image* mMovementImage_walk;
-	const CEGUI::Image* mMovementImage_run;
-	const CEGUI::Image* mMovementImage_gui;
-	
-	void Input_InputModeChanged(Input::InputMode mode);
-	void AvatarController_MovementModeChanged(AvatarMovementMode::Mode mode);
-	
-	Input::InputMode mCurrentMode;
-	
-	void checkMovementMode();
-	
-	const CEGUI::Image* mOriginalCursorImage;
-	
-	std::vector<IconBase*> mIconBases;
+//     StatusIconBar();
+// 
+//     virtual ~StatusIconBar();
+// 
+// 	virtual void buildWidget();
+// protected:
+// 
+// 	bool help_MouseClick(const CEGUI::EventArgs& args);
+// 	bool close_MouseClick(const CEGUI::EventArgs& args);
+// 	bool movement_MouseClick(const CEGUI::EventArgs& args);
+// 
+// 
+// 	IconBase* mMovementModeIcon;
+// 	const CEGUI::Image* mMovementImage_walk;
+// 	const CEGUI::Image* mMovementImage_run;
+// 	const CEGUI::Image* mMovementImage_gui;
+// 	
+// 	void Input_InputModeChanged(Input::InputMode mode);
+// 	void AvatarController_MovementModeChanged(AvatarMovementMode::Mode mode);
+// 	
+// 	Input::InputMode mCurrentMode;
+// 	
+// 	void checkMovementMode();
+// 	
+// 	const CEGUI::Image* mOriginalCursorImage;
+// 	
+// 	std::vector<IconBase*> mIconBases;
 };
 
 }

@@ -24,7 +24,7 @@
 
 #include "../jesus/Jesus.h"
 #include <elements/CEGUIPushButton.h>
-#include <elements/CEGUIStaticImage.h>
+#include <elements/CEGUIGUISheet.h>
 #include <elements/CEGUISlider.h>
 #include "../GUIManager.h"
 #include "../carpenter/Carpenter.h"
@@ -634,9 +634,9 @@ void JesusEditPreview::selectAttachPoint(const Carpenter::AttachPoint* point)
 
 void JesusEditPreview::createPreviewTexture()
 {
-	CEGUI::StaticImage* imageWidget = static_cast<CEGUI::StaticImage*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditPreview/Image"));
+	CEGUI::GUISheet* imageWidget = static_cast<CEGUI::GUISheet*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditPreview/Image"));
 	mTexture = new EntityCEGUITexture(imageWidget->getName().c_str(), 256, 256);
-	imageWidget->setImage(mTexture->getImage());
+	imageWidget->setProperty("image", "set:" + mTexture->getImage()->getImagesetName() + " image:" + mTexture->getImage()->getName());
 
 	
 	mZoomSlider = static_cast<CEGUI::Slider*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditPreview/Zoom"));

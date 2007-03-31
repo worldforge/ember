@@ -26,7 +26,7 @@
 #include "services/logging/LoggingService.h"
 
 
-
+using namespace Ogre;
 namespace EmberOgre {
 
 
@@ -42,11 +42,7 @@ OgreLogObserver::~OgreLogObserver()
 
 
 			
-			
-void OgreLogObserver::write( const Ogre::String& name,
-							const Ogre::String& message, 
-							Ogre::LogMessageLevel lml, 
-							bool maskDebug )
+void OgreLogObserver::messageLogged( const String& message, LogMessageLevel lml, bool maskDebug, const String &logName )	
 {
 	switch (lml) {
 		case Ogre::LML_TRIVIAL:

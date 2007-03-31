@@ -248,7 +248,7 @@ namespace EmberOgre {
 	{
 		mSection.setCaption(scriptName);
 	}
-	void ResourceGroupLoadingBarSection::scriptParseEnded(void)
+	void ResourceGroupLoadingBarSection::scriptParseEnded(const Ogre::String& scriptName)
 	{
 		///make the black blocking block a little bit smaller and move it to the right
 		mSection.tick(mProgressBarInc);

@@ -64,21 +64,21 @@ void ConsoleWidget::frameStarted(const Ogre::FrameEvent & event)
 {
 	if(mState == CS_CLOSING )
 	{
-		mMainWindow->setYPosition(mMainWindow->getYPosition() - (mSpeedOfWindow*event.timeSinceLastFrame));
+		mMainWindow->setYPosition(mMainWindow->getYPosition() - CEGUI::UDim(mSpeedOfWindow*event.timeSinceLastFrame, 0));
 		
-		if(mMainWindow->getYPosition() <= -0.475)
+		if(mMainWindow->getYPosition().asRelative(0)  <= -0.475)
 		{
-			mMainWindow->setYPosition(-0.475);
+			mMainWindow->setYPosition(CEGUI::UDim(-0.475f, 0));
 			mState = CS_CLOSED;
 		}
 	}
 	else if(mState == CS_OPENING)
 	{
-		mMainWindow->setYPosition(mMainWindow->getYPosition() + (mSpeedOfWindow*event.timeSinceLastFrame));
+		mMainWindow->setYPosition(mMainWindow->getYPosition() + CEGUI::UDim(mSpeedOfWindow*event.timeSinceLastFrame, 0));
 		
-		if(mMainWindow->getYPosition() >= 0)
+		if(mMainWindow->getYPosition().asRelative(0) >= 0)
 		{
-			mMainWindow->setYPosition(0);
+			mMainWindow->setYPosition(CEGUI::UDim(0.0f, 0));
 			mState = CS_OPEN;
 		}
 	}
