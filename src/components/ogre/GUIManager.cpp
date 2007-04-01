@@ -198,11 +198,11 @@ void GUIManager::initialize()
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 	chdir(configSrv->getEmberDataDirectory().c_str());
 	try {
-		mDebugText = (CEGUI::GUISheet*)mWindowManager->createWindow(getDefaultScheme() + "/StaticText", (CEGUI::utf8*)"DebugText");
+		mDebugText = (CEGUI::GUISheet*)mWindowManager->createWindow("DefaultGUISheet", (CEGUI::utf8*)"DebugText");
 		mSheet->addChildWindow(mDebugText);
-		mDebugText->setMaxSize(CEGUI::UVector2(UDim(1.0f, 0), UDim(1.0f, 0)));
-		mDebugText->setPosition(CEGUI::UVector2(UDim(0.0f, 0), UDim(0.93f, 0)));
-		mDebugText->setSize(CEGUI::UVector2(UDim(1.0f, 0), UDim(0.1f, 0)));
+		mDebugText->setMaxSize(CEGUI::UVector2(UDim(1.0f, 0), UDim(0, 25)));
+		mDebugText->setPosition(CEGUI::UVector2(UDim(0.0f, 0), UDim(1.0f, -25)));
+		mDebugText->setSize(CEGUI::UVector2(UDim(1.0f, 0), UDim(0, 25)));
 		
 /*		mDebugText->setFrameEnabled(false);
 		mDebugText->setBackgroundEnabled(false);*/
@@ -232,7 +232,7 @@ void GUIManager::initialize()
 			S_LOG_FAILURE("Error when loading bootstrap script. Error message: " << ex.getFullDescription());
 		}
 		
-		//createWidget("StatusIconBar");
+		createWidget("StatusIconBar");
 		createWidget("IngameChatWidget");
 		createWidget("InventoryWidget");
 		createWidget("InspectWidget");
