@@ -118,9 +118,6 @@ namespace Ogre
 			opt->position.y, 
 			static_cast<Real> (mIniZ));
 
-		//translate page scene node to the desired position	
-  		mPageNode->translate( opt->position);
-
 	    const Real EndX = mIniX + factorX;
 	    const Real EndZ = mIniZ + factorZ;
         const Real MaxHeight = mParent->getSceneManager()->getData2DManager()->getMaxHeight(mTableX, mTableZ);
