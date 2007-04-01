@@ -45,36 +45,24 @@ public:
      * @param borderActive the image for the border when inactive (i.e. not rolled over). Will only be active when not rolled over.
      * @return 
      */
-//     IconBase(const std::string& name, const CEGUI::Image* background, const CEGUI::Image* foreground, const CEGUI::Image* borderInactive, const CEGUI::Image* borderActive);
-// 
-//     ~IconBase();
-//     
-//     /**
-//      * Returns a pointer to the container which holds the button. If you want to attach to event etc. use this one.
-//      * @return 
-//      */
-//     CEGUI::Window* getContainer();
-//  	CEGUI::PushButton* getButton();
-//  	
-//  	void setForeground(const CEGUI::Image* image);
-//    
-//     static const CEGUI::Image* loadImageFromImageset(const std::string & imagesetName, const std::string & image);
-// 
-// protected:
-// 	
-// // 	CEGUI::RenderableImage* mRenderNormalBack;
-// // 	CEGUI::RenderableImage* mRenderNormalFront;
-// // 	CEGUI::RenderableImage* mRenderNormalBorder;
-// // 	CEGUI::RenderableImage* mRenderActiveBack;
-// // 	CEGUI::RenderableImage* mRenderActiveFront;
-// // 	CEGUI::RenderableImage* mRenderActiveBorder;
-// 	
-// 	
-// 	CEGUI::Window* mContainer;
-// 	CEGUI::PushButton* mButton;
-// 	
-// 	CEGUI::RenderableImage* makeRenderableImage(const CEGUI::Image* image);
+    IconBase(const std::string& name, const CEGUI::Image* background, const CEGUI::Image* foreground, const CEGUI::Image* borderInactive, const CEGUI::Image* borderActive);
 
+    ~IconBase();
+    
+    /**
+     * Returns a pointer to the container which holds the button. If you want to attach to event etc. use this one.
+     * @return 
+     */
+    CEGUI::Window* getContainer();
+ 	CEGUI::PushButton* getButton();
+ 	
+	void setForeground(const CEGUI::Image* image);
+	
+    static const CEGUI::Image* loadImageFromImageset(const std::string & imagesetName, const std::string & image);
+
+protected:
+	CEGUI::Window* mContainer;
+	CEGUI::PushButton* mButton;
 };
 
 }
