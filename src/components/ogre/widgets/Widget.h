@@ -5,17 +5,8 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include <elements/CEGUIListboxTextItem.h> 
 
-//#include <CEGUIWindowManager.h>
-
-
 
 #include <sigc++/trackable.h>
-//#include <sigc++/signal.h>
-//#include <sigc++/slot.h>
-//#include <sigc++/bind.h>
-//#include <sigc++/object_slot.h>
-
-
 
 #include "framework/ConsoleObject.h"
 

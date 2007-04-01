@@ -52,10 +52,8 @@ protected:
 	CEGUI::Listbox* mListBox;
 	std::map<EmberEntity*, CEGUI::ListboxItem*> mListBoxMap;
 
-/*	void removedEntity(EmberEntity* dimeEntity);
-	void addedEntity(EmberEntity* dimeEntity);*/
-	void removedEntity(EmberEntity* dimeEntity);
-	void addedEntity(EmberEntity* dimeEntity);
+	void removedEntity(EmberEntity* emberEntity);
+	void addedEntity(EmberEntity* emberEntity);
 	void createdAvatarEmberEntity(AvatarEmberEntity* entity);
 	bool Drop_Click(const CEGUI::EventArgs& args);
 	bool Wield_Click(const CEGUI::EventArgs& args);

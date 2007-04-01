@@ -5,14 +5,6 @@
 #include "../input/Input.h"
 #include "../EmberOgre.h"
 
-
-// #include <sigc++/object.h>
-// #include <sigc++/signal.h>
-// #include <sigc++/slot.h>
-// #include <sigc++/bind.h>
-// #include <sigc++/object_slot.h>
-
-
 #include <elements/CEGUIFrameWindow.h>
 #include <CEGUIWindowManager.h>
 

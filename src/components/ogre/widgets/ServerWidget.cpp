@@ -100,13 +100,6 @@ void ServerWidget::buildWidget()
 	mNewCharDescription = static_cast<CEGUI::MultiLineEditbox*>(getWindow("CreateCharacterPanel/Description"));
 	mTypesList = static_cast<CEGUI::Combobox*>(getWindow("CreateCharacterPanel/Type"));
     
-	
-	//NOTE: hardcoded! we should get the values from the server somehow
-// 	CEGUI::ListboxItem* item = new ColoredListItem("settler", 0, 0);
-// 	mTypesList->addItem(item);
-
-	
-	
 	mGenderRadioButton =  static_cast<CEGUI::RadioButton*>(getWindow("CreateCharacterPanel/Gender/Male"));
 	CEGUI::RadioButton* femaleRadioButton =  static_cast<CEGUI::RadioButton*>(getWindow("CreateCharacterPanel/Gender/Female"));
 	
