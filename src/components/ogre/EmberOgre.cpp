@@ -461,7 +461,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 		EventGUIManagerCreated.emit(*mGUIManager);
 	} catch (...) {
 		///we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
-		throw Ogre::Exception(0, "Could not load gui, aborting. Make sure that all media got downloaded (currently this requires java 1.4+.", "EmberOgre.cpp");
+		throw Ember::Exception("Could not load gui, aborting. Make sure that all media got downloaded and installed correctly.");
 	}
     
 	
@@ -496,7 +496,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 		EventGUIManagerInitialized.emit(*mGUIManager);
 	} catch (...) {
 		///we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
-		throw Ogre::Exception(0, "Could not initialize gui, aborting. Make sure that all media got downloaded .", "EmberOgre.cpp");
+		throw Ember::Exception("Could not initialize gui, aborting. Make sure that all media got downloaded and installed correctly.");
 	}
 
 	/// Create the scene
