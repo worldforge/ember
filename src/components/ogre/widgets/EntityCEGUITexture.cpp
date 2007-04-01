@@ -185,8 +185,8 @@ void EntityCEGUITexture::createImage(const std::string& imageSetName)
 	
 	
 	mRenderTexture = texPtr->getBuffer()->getRenderTarget();
+	mRenderTexture->setAutoUpdated(false);
 	
-// 	mRenderTexture = EmberOgre::getSingleton().getOgreRoot()->getRenderSystem()->createRenderTexture(imageSetName + "_EntityCEGUITextureRenderTexture", mWidth, mHeight );
 	S_LOG_VERBOSE("Removing viewports.");
 	mRenderTexture->removeAllViewports();
 	///initially deactivate it until setActive(true) is called
@@ -195,14 +195,12 @@ void EntityCEGUITexture::createImage(const std::string& imageSetName)
 	mCamera->setAspectRatio(aspectRatio);
 	///make sure the camera renders into this new texture
 	S_LOG_VERBOSE("Adding camera.");
-	Ogre::Viewport *v = mRenderTexture->addViewport(mCamera );
+	Ogre::Viewport *v = mRenderTexture->addViewport(mCamera);
 	///this should preferrably be a transparent background, so that CEGUI could itself decide what to show behind it, but alas I couldn't get it to work, thus black
 	v->setBackgroundColour(Ogre::ColourValue::Black);
 	///don't show the CEGUI
 	v->setOverlaysEnabled(false);
 	///the cegui renderer wants a TexturePtr (not a RenderTexturePtr), so we just ask the texturemanager for texture we just created (rttex)
-// 	S_LOG_VERBOSE("Creating new Ogre texture with name " << mRenderTexture->getName());
-// 	Ogre::TexturePtr texPtr = Ogre::TextureManager::getSingleton().getByName(mRenderTexture->getName());
 	
 	///create a CEGUI texture from our Ogre texture
 	S_LOG_VERBOSE("Creating new CEGUI texture from Ogre texture.");
@@ -241,6 +239,10 @@ void EntityCEGUITexture::showFull(const Ogre::MovableObject* object)
 	
 }
 
+Ogre::RenderTexture* EntityCEGUITexture::getRenderTexture()
+{
+	return mRenderTexture;
+}
 
 
 

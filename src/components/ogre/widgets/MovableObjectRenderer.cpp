@@ -25,6 +25,7 @@
 #include "EntityCEGUITexture.h"
 
 #include <elements/CEGUIGUISheet.h>
+#include <CEGUIPropertyHelper.h>
 
 #include "framework/Exception.h"
 
@@ -43,8 +44,8 @@ MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image)
 		mTexture = new EntityCEGUITexture(name, width, height);
 		///most models are rotated away from the camera, so as a convenience we'll rotate the node
 		//mTexture->getSceneNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)180);
-		std::string imageName = std::string("set:") + mTexture->getImage()->getImagesetName().c_str() + " image:" + mTexture->getImage()->getName().c_str();
-		mImage->setProperty("Image", imageName);
+
+		mImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(mTexture->getImage()));
 		//mImage->setImageColours(CEGUI::colour(1.0f, 1.0f, 1.0f));
 		BIND_CEGUI_EVENT(mImage, CEGUI::Window::EventMouseButtonDown, MovableObjectRenderer::image_MouseButtonDown);
 		BIND_CEGUI_EVENT(mImage, CEGUI::Window::EventMouseWheel, MovableObjectRenderer::image_MouseWheel);
@@ -223,6 +224,9 @@ bool MovableObjectRenderer::frameStarted(const Ogre::FrameEvent& event)
 //	S_LOG_VERBOSE(mImage->getName().c_str() << " visible: " << (mActive && mImage->isVisible()));
 	///if the window isn't shown, don't update the render texture
 	mTexture->setActive(mActive && mImage->isVisible());
+	if (mActive && mImage->isVisible()) {
+		mTexture->getRenderTexture()->update();
+	}
 	return true;
 }
 

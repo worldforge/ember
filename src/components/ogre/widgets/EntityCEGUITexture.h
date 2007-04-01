@@ -153,6 +153,8 @@ public:
     
     inline Ogre::SceneManager* getSceneManager() const;
     
+    Ogre::RenderTexture* getRenderTexture();
+    
 private:
 
 	/**
