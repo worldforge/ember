@@ -42,6 +42,8 @@
 #include "components/ogre/widgets/Vector3Adapter.h"
 #include "components/ogre/widgets/QuaternionAdapter.h"
 
+#include "components/ogre/widgets/IconBar.h"
+#include "components/ogre/widgets/IconBase.h"
 //#include "components/ogre/widgets/MaterialPicker.h"
 
 #include "components/ogre/model/Model.h"

@@ -21,6 +21,9 @@ $pfile "TerrainEditor.pkg"
 $pfile "MotionManager.pkg"
 
 $pfile "Widget.pkg"
+$pfile "IconBase.pkg"
+$pfile "IconBar.pkg"
+
 $pfile "Model.pkg"
 $pfile "SubModel.pkg"
 $pfile "ModelDefinition.pkg"

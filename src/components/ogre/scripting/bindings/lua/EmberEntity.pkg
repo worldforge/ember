@@ -1,13 +1,6 @@
 namespace EmberOgre {
 class EmberEntity : public Eris::Entity {
-	enum ClickMasks
-	{
-		CM_AVATAR = 1<<9,
-		CM_ENTITY = 1<<10,
-		CM_NATURE = 1<<11,
-		CM_UNDEFINED = 1<<12
-	};
-	
+
 	enum MovementMode
 	{
 		MM_DEFAULT = 0,
