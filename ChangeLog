@@ -1,5 +1,13 @@
 2007-04-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
 
+	* src/components/ogre/widgets/Makefile.am: updated Makefile
+
+2007-04-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/scripting/bindings/lua/EmberEntity.pkg, src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/IconBar.pkg, src/components/ogre/scripting/bindings/lua/MousePicker.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/scripting/bindings/lua/required.h: updated bindings
+
+2007-04-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
 	* src/components/ogre/terrain/TerrainEditor.cpp: mark height point markers as pickable 
 
 2007-04-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 

@@ -25,15 +25,16 @@ uninstall-local:
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src
 METASOURCES = AUTO
 noinst_LTLIBRARIES = libWidgets.la
-libWidgets_la_SOURCES = Widget.cpp ConsoleWidget.cpp 			IngameChatWidget.cpp \
-	InspectWidget.cpp InventoryWidget.cpp MakeEntityWidget.cpp 			ServerWidget.cpp \
-	WidgetDefinitions.cpp JesusEdit.cpp Help.cpp Quit.cpp IconBase.cpp 			StatusIconBar.cpp \
-	MeshPreview.cpp EntityCEGUITexture.cpp ModelRenderer.cpp 			MovableObjectRenderer.cpp \
-	OgreEntityRenderer.cpp ListHolder.cpp LoadingBar.cpp QuaternionAdapter.cpp Vector3Adapter.cpp
+libWidgets_la_SOURCES = 			IngameChatWidget.cpp 			MovableObjectRenderer.cpp \
+				ServerWidget.cpp 			StatusIconBar.cpp ConsoleWidget.cpp EntityCEGUITexture.cpp Help.cpp \
+	IconBar.cpp IconBase.cpp InspectWidget.cpp InventoryWidget.cpp JesusEdit.cpp \
+	ListHolder.cpp LoadingBar.cpp MakeEntityWidget.cpp MeshPreview.cpp ModelRenderer.cpp \
+	OgreEntityRenderer.cpp QuaternionAdapter.cpp Quit.cpp Vector3Adapter.cpp Widget.cpp \
+	WidgetDefinitions.cpp
 #TerrainEdit.cpp Map.cpp
-noinst_HEADERS = WidgetDefinitions.h JesusEdit.h Help.h Quit.h IconBase.h \
-				StatusIconBar.h MeshPreview.h EntityCEGUITexture.h ModelRenderer.h MakeEntityWidget.h \
-				ConsoleWidget.h Widget.h IngameChatWidget.h InspectWidget.h 			ServerWidget.h \
-	InventoryWidget.h MovableObjectRenderer.h OgreEntityRenderer.h 		ListHolder.h \
-	LoadingBar.h QuaternionAdapter.h Vector3Adapter.h
+noinst_HEADERS = 			ServerWidget.h 		ListHolder.h ConsoleWidget.h \
+	EntityCEGUITexture.h Help.h IconBar.h IconBase.h IngameChatWidget.h InspectWidget.h \
+	InventoryWidget.h JesusEdit.h LoadingBar.h MakeEntityWidget.h MeshPreview.h \
+	ModelRenderer.h MovableObjectRenderer.h OgreEntityRenderer.h QuaternionAdapter.h Quit.h \
+	StatusIconBar.h Vector3Adapter.h Widget.h WidgetDefinitions.h
 #TerrainEdit.h Map.h
