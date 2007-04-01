@@ -292,7 +292,6 @@
         </StateImagery>
     </WidgetLook>
 
-
     <!--
     ***************************************************
         EmberLook/Checkbox
@@ -604,7 +603,9 @@
         </ImagerySection>
         <StateImagery name="Enabled">
             <Layer>
-                <Section section="main" />
+                <Section section="main">
+					<Colours topLeft="fffff8db" topRight="fffff8db" bottomLeft="fffff8db" bottomRight="fffff8db" />
+				</Section>
             </Layer>
         </StateImagery>
         <StateImagery name="Disabled">
@@ -4232,7 +4233,8 @@
     <WidgetLook name="EmberLook/TabContentPane">
         <PropertyDefinition name="EnableTop" initialValue="0" redrawOnWrite="true" layoutOnWrite="true" />
         <PropertyDefinition name="EnableBottom" initialValue="0" redrawOnWrite="true" layoutOnWrite="true" />
-        <ImagerySection name="normal">
+		<PropertyDefinition name="BackgroundColours" initialValue="tl:FFDFDFDF tr:FFDFDFDF bl:FFDFDFDF br:FFDFDFDF" redrawOnWrite="true" />
+		<ImagerySection name="normal">
             <FrameComponent>
                 <Area>
                     <Dim type="LeftEdge" ><AbsoluteDim value="0" /></Dim>
@@ -4301,7 +4303,9 @@
         </ImagerySection>
         <StateImagery name="Enabled">
             <Layer>
-                <Section section="normal" />
+                <Section section="normal">
+					<Colours topLeft="FFe2d5c0" topRight="FFe2d5c0" bottomLeft="FFe2d5c0" bottomRight="FFe2d5c0" />
+				</Section>
             </Layer>
         </StateImagery>
         <StateImagery name="Disabled">
@@ -4701,6 +4705,115 @@
             <Layer>
                 <Section section="main" />
                 <Section section="label" />
+            </Layer>
+        </StateImagery>
+    </WidgetLook>
+    
+    
+    
+    
+    
+    
+    
+    
+    <!--
+    ***************************************************
+        EmberLook/BorderIconButton
+    ***************************************************
+    -->
+    <WidgetLook name="EmberLook/BorderIconButton">
+        <PropertyDefinition name="DisabledColour" initialValue="FF888888" redrawOnWrite="true" />
+		<PropertyDefinition name="BackImage" redrawOnWrite="true" defaultValue="set:iconset_standard image:background_A" />
+        <PropertyDefinition name="FrontImage" redrawOnWrite="true"/>
+		<PropertyDefinition name="BorderNormalImage" redrawOnWrite="true" defaultValue="set:iconset_standard image:ring"  />
+		<PropertyDefinition name="BorderHoverImage" redrawOnWrite="true" defaultValue="set:iconset_standard image:ring_over"  />
+        <ImagerySection name="back">
+            <ImageryComponent>
+                <Area>
+                    <Dim type="LeftEdge" ><AbsoluteDim value="0" /></Dim>
+                    <Dim type="TopEdge" ><AbsoluteDim value="0" /></Dim>
+                    <Dim type="RightEdge" ><UnifiedDim scale="1.0" type="RightEdge" /></Dim>
+                    <Dim type="BottomEdge" ><UnifiedDim scale="1.0" type="BottomEdge" /></Dim>
+                </Area>
+                <ImageProperty name="BackImage" />
+                <VertFormat type="CentreAligned" />
+                <HorzFormat type="CentreAligned" />
+            </ImageryComponent>
+        </ImagerySection>
+        <ImagerySection name="front">
+            <ImageryComponent>
+                <Area>
+                    <Dim type="LeftEdge" ><AbsoluteDim value="0" /></Dim>
+                    <Dim type="TopEdge" ><AbsoluteDim value="0" /></Dim>
+                    <Dim type="RightEdge" ><UnifiedDim scale="1.0" type="RightEdge" /></Dim>
+                    <Dim type="BottomEdge" ><UnifiedDim scale="1.0" type="BottomEdge" /></Dim>
+                </Area>
+                <ImageProperty name="FrontImage" />
+                <VertFormat type="CentreAligned" />
+                <HorzFormat type="CentreAligned" />
+            </ImageryComponent>
+        </ImagerySection>
+        <ImagerySection name="border_normal">
+            <ImageryComponent>
+                <Area>
+                    <Dim type="LeftEdge" ><AbsoluteDim value="0" /></Dim>
+                    <Dim type="TopEdge" ><AbsoluteDim value="0" /></Dim>
+                    <Dim type="RightEdge" ><UnifiedDim scale="1.0" type="RightEdge" /></Dim>
+                    <Dim type="BottomEdge" ><UnifiedDim scale="1.0" type="BottomEdge" /></Dim>
+                </Area>
+                <ImageProperty name="BorderNormalImage" />
+                <VertFormat type="CentreAligned" />
+                <HorzFormat type="CentreAligned" />
+            </ImageryComponent>
+        </ImagerySection>
+        <ImagerySection name="border_hover">
+            <ImageryComponent>
+                <Area>
+                    <Dim type="LeftEdge" ><AbsoluteDim value="0" /></Dim>
+                    <Dim type="TopEdge" ><AbsoluteDim value="0" /></Dim>
+                    <Dim type="RightEdge" ><UnifiedDim scale="1.0" type="RightEdge" /></Dim>
+                    <Dim type="BottomEdge" ><UnifiedDim scale="1.0" type="BottomEdge" /></Dim>
+                </Area>
+                <ImageProperty name="BorderHoverImage" />
+                <VertFormat type="CentreAligned" />
+                <HorzFormat type="CentreAligned" />
+            </ImageryComponent>
+        </ImagerySection>
+        <StateImagery name="Normal">
+            <Layer>
+                <Section section="back" />
+                <Section section="front" />
+                <Section section="border_normal" />
+            </Layer>
+        </StateImagery>
+        <StateImagery name="Hover">
+            <Layer>
+                <Section section="back" />
+                <Section section="front" />
+                <Section section="border_hover" />
+            </Layer>
+        </StateImagery>
+        <StateImagery name="Pushed">
+            <Layer>
+                <Section section="back" />
+                <Section section="front" />
+                <Section section="border_hover" />
+            </Layer>
+        </StateImagery>
+        <StateImagery name="PushedOff">
+            <Layer>
+                <Section section="back" />
+                <Section section="front" />
+                <Section section="border_hover" />
+            </Layer>
+        </StateImagery>
+        <StateImagery name="Disabled">
+            <Layer>
+                <Section section="back" />
+                <Section section="front" />
+                <Section section="border_normal">
+                    <ColourProperty name="DisabledColour" />
+                </Section>
             </Layer>
         </StateImagery>
     </WidgetLook>
