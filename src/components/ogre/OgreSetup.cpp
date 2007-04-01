@@ -204,10 +204,10 @@ bool OgreSetup::configure(void)
  		atexit(SDL_Quit);
 		
 		///set the window size
-        int flags = SDL_OPENGL | SDL_HWPALETTE | SDL_RESIZABLE | SDL_HWSURFACE;
-//        int flags = SDL_HWPALETTE | SDL_RESIZABLE | SDL_HWSURFACE;
+//        int flags = SDL_OPENGL | SDL_HWPALETTE | SDL_RESIZABLE | SDL_HWSURFACE;
+        int flags = SDL_HWPALETTE | SDL_RESIZABLE | SDL_HWSURFACE;
 		
-         SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+//         SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
         // request good stencil size if 32-bit colour
 /*        if (colourDepth == 32)
         {
@@ -226,25 +226,27 @@ bool OgreSetup::configure(void)
 	
 		SDL_GetWMInfo(&info);
 	
-		std::string dsp(&(DisplayString(info.info.x11.display)[1]));
-		std::vector<Ogre::String> tokens = Ogre::StringUtil::split(dsp, ".");
+/*		std::string dsp(&(DisplayString(info.info.x11.display)[1]));
+		std::vector<Ogre::String> tokens = Ogre::StringUtil::split(dsp, ".");*/
 	
 		Ogre::NameValuePairList misc;
-/*		std::string s = Ogre::StringConverter::toString((long)info.info.x11.display);
-		s += ":" + tokens[1] +":";
-		s += Ogre::StringConverter::toString((long)info.info.x11.window);
-		misc["parentWindowHandle"] = s;*/
+		std::string s = Ogre::StringConverter::toString((long)info.info.x11.display);
+		//s += ":" + tokens[1] +":";
+		s += ":" + Ogre::StringConverter::toString((long)info.info.x11.window);
+		misc["parentWindowHandle"] = s;
 		
-		GLXContext glxContext(glXGetCurrentContext());
+		//misc["externalGLControl"] = "true";
+		
+/*		GLXContext glxContext(glXGetCurrentContext());
 		GLXDrawable glxDrawable(glXGetCurrentDrawable());
 		std::string glxContextString = Ogre::StringConverter::toString((long)glxContext);
 		glxContextString += ":" + Ogre::StringConverter::toString((long)glxDrawable);
-		misc["glxcontext"] = glxContextString;
+		misc["glxcontext"] = glxContextString;*/
 		
-		/// initialise root, without creating a 
+		/// initialise root, without creating a window
 		mRoot->initialise(false);
 		
-		mRenderWindow = mRoot->createRenderWindow("ogre", width, height, fullscreen, &misc);
+		mRenderWindow = mRoot->createRenderWindow("MainWindow", width, height, true, &misc);
 		
 		///we need to set the window to be active by ourselves, since GLX by default sets it to false, but then activates it upon recieving some X event (which it will never recieve since we'll use SDL).
 		///see OgreGLXWindow.cpp

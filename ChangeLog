@@ -1,3 +1,23 @@
+2007-04-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/OgreSetup.cpp: fixed the way sdl and ogre interact. It didn't work with having sdl create the ogre context, because rtt's didn't work when using FBO's (at least not on my nvidia 6800 card)
+
+2007-04-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/EmberOgre.cpp: fix exceptions
+
+2007-04-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/EntityCEGUITexture.cpp, src/components/ogre/widgets/EntityCEGUITexture.h, src/components/ogre/widgets/MovableObjectRenderer.cpp: don't autoupdate, use a framelistener instead
+
+2007-04-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapePage.cpp: no need to translate
+
+2007-03-31 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/AvatarCamera.cpp, src/components/ogre/EmberEntity.cpp, src/components/ogre/EmberOgre.cpp, src/components/ogre/EmberOgre.h, src/components/ogre/GUIManager.cpp, src/components/ogre/GUIManager.h, src/components/ogre/Makefile.am, src/components/ogre/OgreLogObserver.cpp, src/components/ogre/OgreLogObserver.h, src/components/ogre/OgreSetup.cpp, src/components/ogre/OgreSetup.h, src/components/ogre/cegui/datafiles/fonts/vera-sans-10.xml, src/components/ogre/cegui/datafiles/fonts/vera-sans-14.xml, src/components/ogre/cegui/datafiles/fonts/vera-sans-8.xml, src/components/ogre/cegui/datafiles/imagesets/EmberLook.imageset, src/components/ogre/cegui/datafiles/looknfeel/EmberLook.looknfeel, src/components/ogre/cegui/datafiles/schemes/EmberLookSkin.scheme, src/components/ogre/environment/Makefile.am, src/components/ogre/image/Makefile.am, src/components/ogre/image/OgreILCodecs.cpp, src/components/ogre/image/OgreILCodecs.h, src/components/ogre/image/OgreILImageCodec.cpp, src/components/ogre/image/OgreILImageCodec.h, src/components/ogre/image/OgreILUtil.cpp, src/components/ogre/image/OgreILUtil.h, src/components/ogre/model/Model.cpp, src/components/ogre/model/ModelDefinitionManager.cpp, src/components/ogre/model/XMLModelDefinitionSerializer.cpp, src/components/ogre/model/mapping/EmberModelMappingManager.cpp, src/components/ogre/scripting/bindings/lua/ModelRenderer.pkg, src/components/ogre/scripting/bindings/lua/OgreEntityRenderer.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/terrain/TerrainPage.cpp, src/components/ogre/widgets/ConsoleWidget.cpp, src/components/ogre/widgets/EntityCEGUITexture.cpp, src/components/ogre/widgets/EntityPicker.lua, src/components/ogre/widgets/Help.cpp, src/components/ogre/widgets/Help.h, src/components/ogre/widgets/HelpWidget.xml, src/components/ogre/widgets/IconBase.cpp, src/components/ogre/widgets/IconBase.h, src/components/ogre/widgets/IngameChatWidget.cpp, src/components/ogre/widgets/IngameChatWidget.h, src/components/ogre/widgets/InspectWidget.cpp, src/components/ogre/widgets/InspectWidget.h, src/components/ogre/widgets/InventoryWidget.h, src/components/ogre/widgets/JesusEdit.cpp, src/components/ogre/widgets/JesusEdit.h, src/components/ogre/widgets/ListHolder.h, src/components/ogre/widgets/LoadingBar.cpp, src/components/ogre/widgets/LoadingBar.h, src/components/ogre/widgets/MakeEntityWidget.cpp, src/components/ogre/widgets/MakeEntityWidget.h, src/components/ogre/widgets/MeshPreview.h, src/components/ogre/widgets/ModelEdit.lua, src/components/ogre/widgets/ModelRenderer.cpp, src/components/ogre/widgets/ModelRenderer.h, src/components/ogre/widgets/MovableObjectRenderer.cpp, src/components/ogre/widgets/MovableObjectRenderer.h, src/components/ogre/widgets/OgreEntityRenderer.cpp, src/components/ogre/widgets/OgreEntityRenderer.h, src/components/ogre/widgets/Quit.h, src/components/ogre/widgets/ServerBrowser.layout, src/components/ogre/widgets/ServerWidget.cpp, src/components/ogre/widgets/ServerWidget.h, src/components/ogre/widgets/ServerWidget.xml, src/components/ogre/widgets/StatusIconBar.cpp, src/components/ogre/widgets/StatusIconBar.h, src/main/Ember.cpp: adapt to update to cegui 0.5.0 and ogre 1.4.0
+
 2007-03-31 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* configure.ac: upgrade to cegui 0.5.0 and ogre 1.4.0
