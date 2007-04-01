@@ -105,9 +105,11 @@ void EntityCEGUITexture::repositionCamera()
 {
 	mEntityNode->_update(true, true);
 	Ogre::AxisAlignedBox bbox = mEntityNode->_getWorldAABB();
-	Ogre::Vector3 center = bbox.getCenter();
-	Ogre::Vector3 localCenter =  center - mRootNode->getPosition();
-	mCameraNode->setPosition(localCenter);
+	if (!bbox.isInfinite() && !bbox.isNull()) {
+		Ogre::Vector3 center = bbox.getCenter();
+		Ogre::Vector3 localCenter =  center - mRootNode->getPosition();
+		mCameraNode->setPosition(localCenter);
+	}
 }
 
 void EntityCEGUITexture::createCamera(const std::string& imageSetName)
