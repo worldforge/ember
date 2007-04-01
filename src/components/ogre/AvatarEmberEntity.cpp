@@ -26,6 +26,7 @@
 #include "model/Model.h"
 #include "AvatarEmberEntity.h"
 #include "EmberOgre.h"
+#include "MousePicker.h"
 
 #include <Eris/Entity.h>
 #include <Eris/Avatar.h>
@@ -45,7 +46,7 @@ AvatarEmberEntity::~AvatarEmberEntity()
 void AvatarEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
 	EmberPhysicalEntity::init(ge, fromCreateOp);
-	mModel->setQueryFlags(EmberEntity::CM_AVATAR);
+	mModel->setQueryFlags(MousePicker::CM_AVATAR);
 	
 
 }

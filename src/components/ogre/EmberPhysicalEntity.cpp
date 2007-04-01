@@ -36,6 +36,7 @@
 #include <OgreException.h>
 
 #include "EmberOgre.h"
+#include "MousePicker.h"
 
 #include "EmberEntityUserObject.h"
 #include "OpcodeCollisionDetector.h"
@@ -188,7 +189,7 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 
 	onModeChanged(EmberEntity::MM_DEFAULT);
 	EmberEntity::init(ge, fromCreateOp);
-	getModel()->setQueryFlags(EmberEntity::CM_ENTITY);
+	getModel()->setQueryFlags(MousePicker::CM_ENTITY);
 
 /*	assert(mOgreNode);
 	assert(mScaleNode);*/

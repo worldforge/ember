@@ -63,14 +63,6 @@ class EmberEntity : public Eris::Entity {
 	friend class EmberEntityFactory;
 public:
 
-	enum ClickMasks
-	{
-		CM_AVATAR = 1<<9,
-		CM_ENTITY = 1<<10,
-		CM_NATURE = 1<<11,
-		CM_UNDEFINED = 1<<12,
-		CM_NONPICKABLE = 1<<13
-	};
 	
 	enum MovementMode
 	{

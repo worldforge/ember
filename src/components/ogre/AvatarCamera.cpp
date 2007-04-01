@@ -342,10 +342,10 @@ void AvatarCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const Mouse
 	Ogre::Ray cameraRay = getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
 
 	unsigned long queryMask = Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK;
-	queryMask |= EmberEntity::CM_AVATAR;
-	queryMask |= EmberEntity::CM_ENTITY;
-	queryMask |= EmberEntity::CM_NATURE;
-	queryMask |= EmberEntity::CM_UNDEFINED;
+	queryMask |= MousePicker::CM_AVATAR;
+	queryMask |= MousePicker::CM_ENTITY;
+	queryMask |= MousePicker::CM_NATURE;
+	queryMask |= MousePicker::CM_UNDEFINED;
 // 	queryMask |= Ogre::RSQ_FirstTerrain;
 	
 	Ogre::RaySceneQuery *raySceneQuery = mSceneManager->createRayQuery( cameraRay, queryMask); 
