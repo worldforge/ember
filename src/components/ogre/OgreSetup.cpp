@@ -205,7 +205,7 @@ bool OgreSetup::configure(void)
 		
 		///set the window size
 //        int flags = SDL_OPENGL | SDL_HWPALETTE | SDL_RESIZABLE | SDL_HWSURFACE;
-        int flags = SDL_HWPALETTE | SDL_RESIZABLE | SDL_HWSURFACE;
+        int flags = SDL_HWPALETTE | SDL_HWSURFACE;
 		
 //         SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
         // request good stencil size if 32-bit colour
