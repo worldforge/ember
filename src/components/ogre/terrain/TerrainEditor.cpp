@@ -45,6 +45,8 @@
 #include "services/server/ServerService.h"
 #include "ISceneManagerAdapter.h"
 
+#include "../MousePicker.h"
+
 
 namespace EmberOgre {
 
@@ -233,6 +235,7 @@ void TerrainEditor::createOverlay()
 				///start out with a normal material
 				entity->setMaterialName("BasePointMarkerMaterial");
 				entity->setRenderingDistance(300);
+				entity->setQueryFlags(MousePicker::CM_UNDEFINED);
 				basepointNode->attachObject(entity);
 				BasePointUserObject* userObject = new BasePointUserObject(TerrainPosition(x,y), basepoint, basepointNode);
 				entity->setUserObject(userObject);

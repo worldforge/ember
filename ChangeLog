@@ -1,5 +1,41 @@
 2007-04-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
 
+	* src/components/ogre/terrain/TerrainEditor.cpp: mark height point markers as pickable 
+
+2007-04-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/InventoryWidget.h, src/components/ogre/widgets/ServerWidget.cpp, src/components/ogre/widgets/Widget.cpp, src/components/ogre/widgets/Widget.h: code cleanup
+
+2007-04-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/EntityCEGUITexture.cpp: make sure we're not using an invalud bounding box
+
+2007-04-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/IconBase.cpp, src/components/ogre/widgets/IconBase.h, src/components/ogre/widgets/StatusIconBar.cpp, src/components/ogre/widgets/StatusIconBar.h, src/components/ogre/widgets/IconBar.cpp, src/components/ogre/widgets/IconBar.h: updated the icon bar to work with 0.5.0, separated it into a dedicated iconbar class
+
+2007-04-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/OgreSetup.cpp: don't allow resizing
+
+2007-04-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/GUIManager.cpp: fixed the debug text, reactivate the StatusIconBar
+
+2007-04-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/AvatarCamera.cpp, src/components/ogre/AvatarEmberEntity.cpp, src/components/ogre/EmberEntity.h, src/components/ogre/EmberPhysicalEntity.cpp, src/components/ogre/MousePicker.h: moved the clickmask enum to MousePicker
+
+2007-04-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/environment/LensFlare.cpp: no need to set the query flags since it's zero by default
+
+2007-04-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/cegui/datafiles/looknfeel/EmberLook.looknfeel, src/components/ogre/cegui/datafiles/schemes/EmberLookSkin.scheme: added a widget for an icon button with a border 
+
+2007-04-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
 	* src/components/ogre/OgreSetup.cpp: fixed the way sdl and ogre interact. It didn't work with having sdl create the ogre context, because rtt's didn't work when using FBO's (at least not on my nvidia 6800 card)
 
 2007-04-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
