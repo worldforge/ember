@@ -22,10 +22,8 @@
 #define AVATAR_H
 #include "EmberOgrePrerequisites.h"
 
-//#include <OgreNoMemoryMacros.h>
-
-
 #include <sigc++/trackable.h>
+#include <sigc++/signal.h>
 	
 
 #include "framework/Singleton.h"

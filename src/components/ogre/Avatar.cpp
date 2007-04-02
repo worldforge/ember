@@ -41,6 +41,7 @@
 #include "model/Model.h"
 #include "model/SubModel.h"
 #include "EmberOgre.h"
+#include "MathConverter.h"
 
 #include <Eris/Avatar.h>
 #include <Eris/Connection.h>

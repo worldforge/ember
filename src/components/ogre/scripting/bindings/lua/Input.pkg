@@ -24,6 +24,7 @@ struct MouseMotion
 
 class Input
 {
+	static Input& getSingleton( void );
 	enum MouseButton
 	{
 		MouseButtonLeft,

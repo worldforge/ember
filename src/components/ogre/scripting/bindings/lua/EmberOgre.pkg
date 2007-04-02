@@ -78,7 +78,7 @@ class EmberOgre
 	AvatarCamera* getMainCamera() const;
 	AvatarController* getAvatarController() const;
 	EntityMoveManager* getMoveManager() const;
-	Input& getInput();
+//	Input& getInput();
 	
 	EmberEntity* getEmberEntity(const std::string & eid);
 	

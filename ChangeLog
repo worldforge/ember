@@ -1,3 +1,16 @@
+2007-04-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/Avatar.cpp, src/components/ogre/Avatar.h, src/components/ogre/AvatarController.cpp, src/components/ogre/EmberEntity.cpp, src/components/ogre/EmberOgre.cpp, src/components/ogre/EmberOgre.h, src/components/ogre/EmberOgrePrerequisites.h, src/components/ogre/EntityWorldPickListener.h, src/components/ogre/GUIManager.cpp, src/components/ogre/WorldEmberEntity.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/EmberPagingSceneManagerAdapter.cpp, src/components/ogre/environment/FoliageArea.h, src/components/ogre/input/Input.cpp, src/components/ogre/input/Input.h, src/components/ogre/jesus/Jesus.cpp, src/components/ogre/jesus/Jesus.h, src/components/ogre/manipulation/EntityMoveAdapter.cpp,src/components/ogre/manipulation/EntityMover.cpp, src/components/ogre/manipulation/EntityMover.h, src/components/ogre/manipulation/IEntityMoveBridge.h, src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/Input.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/terrain/TerrainInfo.h, src/components/ogre/terrain/TerrainPage.h, src/components/ogre/widgets/InventoryWidget.cpp, src/components/ogre/widgets/StatusIconBar.cpp, src/components/ogre/widgets/Vector3Adapter.h, src/components/ogre/widgets/Widget.cpp, src/components/ogre/widgets/Widget.h, src/framework/Exception.h, src/services/sound/SoundService.cpp: stream line code and inclusion to make compilations faster
+
+2007-04-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/services/logging/LoggingService.cpp, src/services/logging/LoggingService.h, src/services/logging/Makefile.am, src/services/logging/ErisLogReciever.h, src/services/logging/ErisLogReciever.cpp: moved eris functionality to its own class
+
+
+2007-04-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/terrain/TerrainEditor.cpp, src/components/ogre/terrain/TerrainGenerator.cpp, src/components/ogre/terrain/TerrainGenerator.h: the terrain is now automatically updated when changes are sent from the server
+
 2007-04-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
 
 	* src/components/ogre/widgets/Makefile.am: updated Makefile

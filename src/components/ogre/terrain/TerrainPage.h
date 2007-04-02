@@ -28,6 +28,7 @@
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
 #include <Mercator/Surface.h>
+#include "../MathConverter.h"
 
 namespace Ogre
 {

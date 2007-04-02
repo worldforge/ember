@@ -25,6 +25,8 @@
 
 #include "../EmberOgrePrerequisites.h"
 #include <Mercator/BasePoint.h>
+// #include <wfmath/wfmath.h>
+#include <wfmath/axisbox.h>
 
 
 namespace EmberOgre {

@@ -25,6 +25,7 @@
 
 #include "EmberOgrePrerequisites.h"
 #include "IWorldPickListener.h"
+#include <sigc++/signal.h>
 
 
 namespace EmberOgre {

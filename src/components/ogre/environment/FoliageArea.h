@@ -23,6 +23,7 @@
 #ifndef EMBEROGREFOLIAGEAREA_H
 #define EMBEROGREFOLIAGEAREA_H
 #include "components/ogre/EmberOgrePrerequisites.h"
+#include "components/ogre/MathConverter.h"
 
 namespace EmberOgre {
 

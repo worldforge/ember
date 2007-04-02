@@ -29,7 +29,7 @@
 #include <map>
 
 #include "../EmberOgre.h"
-
+#include <wfmath/vector.h>
 
 namespace Carpenter
 {

@@ -31,11 +31,11 @@ http://www.gnu.org/copyleft/lesser.txt.
 // Include sigc header files
 // ------------------------------
 #include <sigc++/trackable.h>
+#include <sigc++/signal.h>
 
 
 #include "framework/Singleton.h"
 
-#include "input/InputCommandMapper.h"
 
 
 namespace Eris {
@@ -84,7 +84,11 @@ class TerrainGenerator;
 
 class MotionManager;
 
+class Input;
+
 class InputManager;
+
+class InputCommandMapper;
 
 class GUIManager;
 
@@ -152,7 +156,7 @@ public:
 	AvatarCamera* getMainCamera() const;
 	AvatarController* getAvatarController() const;
 	inline EntityMoveManager* getMoveManager() const;
-	inline Input& getInput();
+// 	inline Input& getInput();
 	
 	/**
 	 * Gets the entity with the supplies id from the world.
@@ -292,12 +296,12 @@ protected:
 	/**
 	The main input object.
 	*/
-	Input mInput;
+	std::auto_ptr<Input> mInput;
 	
 	/**
 	An InputCommandMapper that will handle all general input events.
 	*/
-	InputCommandMapper mGeneralCommandMapper;
+	std::auto_ptr<InputCommandMapper> mGeneralCommandMapper;
 
 	/**
 	Main factory for all entities created in the world.
@@ -397,10 +401,10 @@ protected:
 	
 };
 
-Input& EmberOgre::getInput() 
-{ 
-	return mInput;
-}
+// Input& EmberOgre::getInput() 
+// { 
+// 	return mInput;
+// }
 EntityMoveManager* EmberOgre::getMoveManager() const 
 {
 	return mMoveManager;

@@ -24,6 +24,8 @@
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
 #include "../EmberEntity.h"
+#include "../MathConverter.h"
+
 
 namespace EmberOgre {
 

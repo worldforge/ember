@@ -31,11 +31,12 @@
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
 
+template<> EmberOgre::Input* Ember::Singleton<EmberOgre::Input>::ms_Singleton = 0;
+
 namespace EmberOgre {
 
 const std::string Input::BINDCOMMAND("bind");
 const std::string Input::UNBINDCOMMAND("unbind");
-
 
 
 Input::Input()

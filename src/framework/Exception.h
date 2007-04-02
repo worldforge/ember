@@ -38,8 +38,8 @@
 
 // Included system headers
 #include <string>
-#include <stdarg.h>
-#include <stdio.h>
+// #include <stdarg.h>
+// #include <stdio.h>
 
 namespace Ember 
 {
@@ -48,10 +48,10 @@ class Exception;
  *	The default way to throw exceptions is to use one of the following macros.
  */
 
-#define THROW(message) throw Exception(message, __FILE__, __LINE__);
-#define THROW1(message, p1) throw Exception(message, __FILE__, __LINE__, p1);
-#define THROW2(message, p1, p2) throw Exception(message, __FILE__, __LINE__, p1, p2);
-#define THROW3(message, p1, p2, p3) throw Exception(message, __FILE__, __LINE__, p1, p2, p3);
+// #define THROW(message) throw Exception(message, __FILE__, __LINE__);
+// #define THROW1(message, p1) throw Exception(message, __FILE__, __LINE__, p1);
+// #define THROW2(message, p1, p2) throw Exception(message, __FILE__, __LINE__, p1, p2);
+// #define THROW3(message, p1, p2, p3) throw Exception(message, __FILE__, __LINE__, p1, p2, p3);
 
 /**
  * The base class for all exceptions that are thrown within Ember.

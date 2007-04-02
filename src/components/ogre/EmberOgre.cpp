@@ -56,6 +56,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 // ------------------------------
 /*#include <Eris/PollDefault.h>*/
 #include <Eris/Connection.h>
+#include <Eris/View.h>
 
 
 
@@ -136,6 +137,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "MediaUpdater.h"
 
 #include "main/Application.h"
+#include "input/InputCommandMapper.h"
+#include "input/Input.h"
 
 template<> EmberOgre::EmberOgre* Ember::Singleton<EmberOgre::EmberOgre>::ms_Singleton = 0;
 
@@ -169,12 +172,14 @@ mAvatarController(0),
 mModelDefinitionManager(0),
 mEmberEntityFactory(0), 
 // mPollEris(true), 
-mLogObserver(0), mGeneralCommandMapper("general"),
+mLogObserver(0), 
+mGeneralCommandMapper(std::auto_ptr<InputCommandMapper>(new InputCommandMapper("general"))),
 mWindow(0),
 mMaterialEditor(0),
 mJesus(0),
 mAvatar(0),
-mModelMappingManager(0)
+mModelMappingManager(0),
+mInput(std::auto_ptr<Input>(new Input))
 {
 	Ember::Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
 }
@@ -242,7 +247,7 @@ EmberOgre::~EmberOgre()
 
 bool EmberOgre::frameEnded(const Ogre::FrameEvent & evt)
 {
-	mInput.processInput(evt);
+	mInput->processInput(evt);
 	return true;
 }
 
@@ -408,11 +413,11 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	unsigned int height, width, depth;
 	int top, left;
 	mWindow->getMetrics(width, height, depth, left, top);
-	mInput.initialize(width, height);
+	mInput->initialize(width, height);
 	
 	///bind general commands
-	mGeneralCommandMapper.readFromConfigSection("key_bindings_general");
-	mGeneralCommandMapper.bindToInput(mInput);
+	mGeneralCommandMapper->readFromConfigSection("key_bindings_general");
+	mGeneralCommandMapper->bindToInput(*mInput);
 	
 	///we need a nice loading bar to show the user how far the setup has progressed
 	LoadingBar loadingBar;

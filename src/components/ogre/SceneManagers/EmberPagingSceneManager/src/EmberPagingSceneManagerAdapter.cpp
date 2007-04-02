@@ -86,6 +86,7 @@ namespace EmberOgre {
 	void EmberPagingSceneManagerAdapter::loadScene()
 	{
 		mSceneManager->loadScene();
+		mSceneManager->getOptions()->setOption("LoadNow", 0);
 	}
 
 	void EmberPagingSceneManagerAdapter::setOption(const std::string& strKey, const void* pValue)

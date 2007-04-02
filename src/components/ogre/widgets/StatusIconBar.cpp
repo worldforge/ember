@@ -28,6 +28,7 @@
 #include "framework/ConsoleBackend.h"
 #include <elements/CEGUIFrameWindow.h>
 #include "../EmberOgre.h"
+#include "../input/Input.h"
 
 #include "IconBase.h"
 
@@ -81,7 +82,7 @@ void StatusIconBar::buildWidget()
 	
 	BIND_CEGUI_EVENT(mMovementModeIcon->getButton(), ButtonBase::EventMouseClick, StatusIconBar::movement_MouseClick);
 	
-	EmberOgre::getSingleton().getInput().EventChangedInputMode.connect(sigc::mem_fun(*this, &StatusIconBar::Input_InputModeChanged));
+	Input::getSingleton().EventChangedInputMode.connect(sigc::mem_fun(*this, &StatusIconBar::Input_InputModeChanged));
 	EmberOgre::getSingleton().getAvatarController()->EventMovementModeChanged.connect(sigc::mem_fun(*this, &StatusIconBar::AvatarController_MovementModeChanged));
 	
 	float height = mIconBar.getAbsoluteHeight();

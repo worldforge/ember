@@ -32,6 +32,7 @@
 #include "../EmberEntityFactory.h"
 #include "../EmberOgre.h"
 #include "../Avatar.h"
+#include "../MathConverter.h"
 #include "InventoryWidget.h"
 #include <Eris/TypeInfo.h>
 

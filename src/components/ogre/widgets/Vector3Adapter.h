@@ -23,6 +23,7 @@
 #ifndef EMBEROGRE_CEGUIVECTOR3ADAPTER_H
 #define EMBEROGRE_CEGUIVECTOR3ADAPTER_H
 #include "components/ogre/EmberOgrePrerequisites.h"
+#include <sigc++/signal.h>
 
 namespace CEGUI
 {

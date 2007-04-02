@@ -259,7 +259,7 @@ namespace EmberOgre
 				if (I != mTabOrder.end()) {
 					I->second->activate();
 					///we don't want to process the event any more, in case something else will try to interpret the tab event to also change the focus
-					EmberOgre::getSingleton().getInput().suppressFurtherHandlingOfCurrentEvent();
+					Input::getSingleton().suppressFurtherHandlingOfCurrentEvent();
 					return true;
 				}
 			}

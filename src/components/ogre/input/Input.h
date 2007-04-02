@@ -25,8 +25,10 @@
 
 #include "../EmberOgrePrerequisites.h"
 #include <sigc++/slot.h>
-#include <SDL.h>
+#include <sigc++/signal.h>
+#include <SDL_events.h>
 #include "framework/ConsoleObject.h"
+#include "framework/Singleton.h"
 
 
 
@@ -75,7 +77,7 @@ We use SDL for now. Perhaps in the future we'll add support for other input mech
 
 Note that while keyboard input is buffered, mouse input is not.
 */
-class Input : public Ember::ConsoleObject
+class Input : public Ember::ConsoleObject, public Ember::Singleton<Input>
 {
 friend class InputCommandMapper;
 

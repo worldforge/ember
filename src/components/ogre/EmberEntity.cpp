@@ -26,6 +26,7 @@
 #include "MotionManager.h"
 #include "GUIManager.h"
 #include "terrain/TerrainArea.h"
+#include "MathConverter.h"
 
 #include "EmberOgre.h"
 #include <OgreWireBoundingBox.h>

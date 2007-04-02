@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Sun Apr  1 21:01:59 2007.
+** Generated automatically by tolua++-1.0.92 on Mon Apr  2 00:42:34 2007.
 */
 
 #ifndef __cplusplus
@@ -9253,6 +9253,34 @@ static int tolua_set_EmberOgre__MouseMotion_timeSinceLastMovement(lua_State* tol
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: getSingleton of class  EmberOgre::Input */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Input_getSingleton00
+static int tolua_EmberOgre_EmberOgre_Input_getSingleton00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"EmberOgre::Input",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   EmberOgre::Input& tolua_ret = (EmberOgre::Input&)  EmberOgre::Input::getSingleton();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"EmberOgre::Input");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getSingleton'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* get function: EventKeyPressed of class  EmberOgre::Input */
 #ifndef TOLUA_DISABLE_tolua_get_EmberOgre__Input_EventKeyPressed
 static int tolua_get_EmberOgre__Input_EventKeyPressed(lua_State* tolua_S)
@@ -15548,38 +15576,6 @@ static int tolua_EmberOgre_EmberOgre_EmberOgre_getMoveManager00(lua_State* tolua
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: getInput of class  EmberOgre::EmberOgre */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EmberOgre_getInput00
-static int tolua_EmberOgre_EmberOgre_EmberOgre_getInput00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::EmberOgre",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  EmberOgre::EmberOgre* self = (EmberOgre::EmberOgre*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getInput'",NULL);
-#endif
-  {
-   EmberOgre::Input& tolua_ret = (EmberOgre::Input&)  self->getInput();
-   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"EmberOgre::Input");
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getInput'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* method: getEmberEntity of class  EmberOgre::EmberOgre */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EmberOgre_getEmberEntity00
 static int tolua_EmberOgre_EmberOgre_EmberOgre_getEmberEntity00(lua_State* tolua_S)
@@ -16620,6 +16616,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
    tolua_endmodule(tolua_S);
    tolua_cclass(tolua_S,"Input","EmberOgre::Input","",NULL);
    tolua_beginmodule(tolua_S,"Input");
+    tolua_function(tolua_S,"getSingleton",tolua_EmberOgre_EmberOgre_Input_getSingleton00);
     tolua_constant(tolua_S,"MouseButtonLeft",EmberOgre::Input::MouseButtonLeft);
     tolua_constant(tolua_S,"MouseButtonRight",EmberOgre::Input::MouseButtonRight);
     tolua_constant(tolua_S,"MouseButtonMiddle",EmberOgre::Input::MouseButtonMiddle);
@@ -17037,7 +17034,6 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"getMainCamera",tolua_EmberOgre_EmberOgre_EmberOgre_getMainCamera00);
     tolua_function(tolua_S,"getAvatarController",tolua_EmberOgre_EmberOgre_EmberOgre_getAvatarController00);
     tolua_function(tolua_S,"getMoveManager",tolua_EmberOgre_EmberOgre_EmberOgre_getMoveManager00);
-    tolua_function(tolua_S,"getInput",tolua_EmberOgre_EmberOgre_EmberOgre_getInput00);
     tolua_function(tolua_S,"getEmberEntity",tolua_EmberOgre_EmberOgre_EmberOgre_getEmberEntity00);
     tolua_function(tolua_S,"getJesus",tolua_EmberOgre_EmberOgre_EmberOgre_getJesus00);
     tolua_function(tolua_S,"getRenderWindow",tolua_EmberOgre_EmberOgre_EmberOgre_getRenderWindow00);

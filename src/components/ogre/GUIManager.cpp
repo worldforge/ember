@@ -297,7 +297,7 @@ void GUIManager::setDebugText(const std::string& text)
 
 Input& GUIManager::getInput() const
 {
-	return EmberOgre::getSingleton().getInput();
+	return Input::getSingleton();
 }
 
 

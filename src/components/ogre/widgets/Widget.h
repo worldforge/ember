@@ -7,6 +7,7 @@
 
 
 #include <sigc++/trackable.h>
+#include <sigc++/signal.h>
 
 #include "framework/ConsoleObject.h"
 

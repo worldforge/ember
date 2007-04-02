@@ -32,6 +32,7 @@
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 
+#include "../MathConverter.h"
 
 
 namespace EmberOgre {

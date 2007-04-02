@@ -24,6 +24,7 @@
 #define EMBEROGREIENTITYMOVEBRIDGE_H
 
 #include "../EmberOgrePrerequisites.h"
+#include <wfmath/quaternion.h>
 
 namespace EmberOgre {
 

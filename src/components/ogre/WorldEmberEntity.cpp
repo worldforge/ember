@@ -26,9 +26,6 @@
 #include "terrain/TerrainGenerator.h"
 #include "WorldEmberEntity.h"
 #include "environment/Foliage.h"
-/*#include "environment/Water.h"
-#include "environment/Sun.h"
-#include "environment/Sky.h"*/
 #include "environment/Environment.h"
 #include "environment/CaelumEnvironment.h"
 #include "EmberOgre.h"
@@ -44,11 +41,7 @@ mTerrainGenerator(terrainGenerator),
 mFoliage(0),
 EmberEntity(id, ty, vw, sceneManager)
 {
-	//getSceneNode()->setOrientation(Ogre::Quaternion::IDENTITY);
 	sceneManager->getRootSceneNode()->addChild(getSceneNode());
-	//mOgreNode = mSceneManager->getRootSceneNode();
-	//mSceneManager->getRootSceneNode()->addChild(mOgreNode);
-//	this->mModel->setQueryFlag(EmberEntity::CM_TERRAIN);
 }
 
 WorldEmberEntity::~WorldEmberEntity()

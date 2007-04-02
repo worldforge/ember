@@ -26,6 +26,8 @@
 #include "EntityMoveManager.h"
 #include "../AvatarCamera.h"
 #include "../GUIManager.h"
+#include "../MathConverter.h"
+//#include "../input/Input.h"
 
 using namespace WFMath;
 
@@ -62,7 +64,7 @@ bool EntityMoveAdapter::injectMouseMove(const MouseMotion& motion, bool& freezeM
 	direction.y() = motion.yRelativeMovement;
 	direction = direction * mMovementSpeed;
 	///hard coded to allow the shift button to increase the speed
-	if (EmberOgre::getSingleton().getInput().isKeyDown(SDLK_RSHIFT) || EmberOgre::getSingleton().getInput().isKeyDown(SDLK_LSHIFT)) {
+	if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
 		direction = direction * 5;
 	}
 	
