@@ -1,18 +1,20 @@
 #include "LoggingService.h"
+#include "ErisLogReciever.h"
 
 // Include system headers here
 #include <string>
 #include <list>
 #include <stdio.h>
+#include <sstream>
 //#include <varargs.h> //TODO: Needed by unix?
 
 #include <sigc++/object_slot.h>
 
+namespace Ember {
 
+LoggingService* LoggingService::theInstance = NULL;
 
-Ember::LoggingService* Ember::LoggingService::theInstance = NULL;
-
-Ember::Service::Status Ember::LoggingService::start ()
+Service::Status LoggingService::start ()
 {
     setRunning (true);
     setStatus (Service::OK);
@@ -20,7 +22,7 @@ Ember::Service::Status Ember::LoggingService::start ()
 }
 
 
-void Ember::LoggingService::log (const char *message, ...)
+void LoggingService::log (const char *message, ...)
 {
     va_list vl;
     va_start (vl, message);
@@ -29,7 +31,7 @@ void Ember::LoggingService::log (const char *message, ...)
 }
 
 
-void Ember::LoggingService::log (const char *file, const char *message, ...)
+void LoggingService::log (const char *file, const char *message, ...)
 {
     va_list vl;
     va_start (vl, message);
@@ -39,7 +41,7 @@ void Ember::LoggingService::log (const char *file, const char *message, ...)
 
 
 
-void Ember::LoggingService::log (const char *file, const int line,
+void LoggingService::log (const char *file, const int line,
                                 const char *message, ...)
 {
     va_list vl;
@@ -49,7 +51,7 @@ void Ember::LoggingService::log (const char *file, const int line,
 }
 
 
-void Ember::LoggingService::log (const MessageImportance importance,
+void LoggingService::log (const MessageImportance importance,
                                 const char *message, ...)
 {
     va_list vl;
@@ -58,7 +60,7 @@ void Ember::LoggingService::log (const MessageImportance importance,
     va_end (vl);
 }
 
-void Ember::LoggingService::log (const char *file,
+void LoggingService::log (const char *file,
                                 const MessageImportance importance,
                                 const char *message, ...)
 {
@@ -68,7 +70,7 @@ void Ember::LoggingService::log (const char *file,
     va_end (vl);
 }
 
-void Ember::LoggingService::log (const char *file, const int line,
+void LoggingService::log (const char *file, const int line,
                                 const MessageImportance importance,
                                 const char *message, ...)
 {
@@ -78,7 +80,7 @@ void Ember::LoggingService::log (const char *file, const int line,
     va_end (vl);
 }
 
-void Ember::LoggingService::logVarParam (const char *file, const int line,
+void LoggingService::logVarParam (const char *file, const int line,
                                         const MessageImportance importance,
                                         const char *message, va_list argptr)
 {
@@ -88,7 +90,7 @@ void Ember::LoggingService::logVarParam (const char *file, const int line,
 }
 
 
-Ember::LoggingService & Ember::LoggingService::slog (const std::string & file,
+LoggingService & LoggingService::slog (const std::string & file,
                                                    const int line,
                                                    const MessageImportance
                                                    importance)
@@ -99,14 +101,14 @@ Ember::LoggingService & Ember::LoggingService::slog (const std::string & file,
     return *this;
 }
 
-Ember::LoggingService & Ember::LoggingService::
+LoggingService & LoggingService::
 slog (const MessageImportance importance)
 {
     myImportance = importance;
     return *this;
 }
 
-Ember::LoggingService & Ember::LoggingService::slog (const std::string & file,
+LoggingService & LoggingService::slog (const std::string & file,
                                                    const MessageImportance
                                                    importance)
 {
@@ -115,7 +117,7 @@ Ember::LoggingService & Ember::LoggingService::slog (const std::string & file,
     return *this;
 }
 
-Ember::LoggingService & Ember::LoggingService::slog (const std::string & file,
+LoggingService & LoggingService::slog (const std::string & file,
                                                    const int line)
 {
     myFile = file;
@@ -123,7 +125,7 @@ Ember::LoggingService & Ember::LoggingService::slog (const std::string & file,
     return *this;
 }
 
-Ember::LoggingService & Ember::LoggingService::slog (const std::string & file)
+LoggingService & LoggingService::slog (const std::string & file)
 {
     myFile = file;
     return *this;
@@ -132,7 +134,7 @@ Ember::LoggingService & Ember::LoggingService::slog (const std::string & file)
 
 
 
-void Ember::LoggingService::addObserver (Observer * observer)
+void LoggingService::addObserver (Observer * observer)
 {
     //test on already existing observer
     for (ObserverList::iterator i = myObserverList.begin ();
@@ -148,7 +150,7 @@ void Ember::LoggingService::addObserver (Observer * observer)
     myObserverList.push_back (observer);
 }
 
-int Ember::LoggingService::removeObserver (Observer * observer)
+int LoggingService::removeObserver (Observer * observer)
 {
     for (ObserverList::iterator i = myObserverList.begin ();
          i != myObserverList.end (); i++)
@@ -163,7 +165,7 @@ int Ember::LoggingService::removeObserver (Observer * observer)
     return -1;
 }
 
-Ember::LoggingService::HexNumber Ember::LoggingService::
+LoggingService::HexNumber LoggingService::
 hexNumber (const int intDecimal)
 {
     HexNumber intHex;
@@ -171,14 +173,14 @@ hexNumber (const int intDecimal)
     return intHex;
 }
 
-Ember::LoggingService & Ember::LoggingService::operator<< (const std::
+LoggingService & LoggingService::operator<< (const std::
                                                          string & stringToAdd)
 {
     myMessage += stringToAdd;
     return *this;
 }
 
-Ember::LoggingService & Ember::LoggingService::operator<< (const unsigned int uintToAdd)
+LoggingService & LoggingService::operator<< (const unsigned int uintToAdd)
 {
 	std::stringstream ss;
 	ss << uintToAdd;
@@ -187,7 +189,7 @@ Ember::LoggingService & Ember::LoggingService::operator<< (const unsigned int ui
     return *this;
 }
 
-Ember::LoggingService & Ember::LoggingService::operator<< (const int intToAdd)
+LoggingService & LoggingService::operator<< (const int intToAdd)
 {
 	std::stringstream ss;
 	ss << intToAdd;
@@ -196,7 +198,7 @@ Ember::LoggingService & Ember::LoggingService::operator<< (const int intToAdd)
     return *this;
 }
 
-Ember::LoggingService & Ember::LoggingService::
+LoggingService & LoggingService::
 operator<< (const HexNumber & intHexToAdd)
 {
     char buffer[NUMBER_BUFFER_SIZE];
@@ -205,7 +207,7 @@ operator<< (const HexNumber & intHexToAdd)
     return *this;
 }
 
-Ember::LoggingService & Ember::LoggingService::
+LoggingService & LoggingService::
 operator<< (const double doubleToAdd)
 {
 	std::stringstream ss;
@@ -214,7 +216,7 @@ operator<< (const double doubleToAdd)
     return *this;
 }
 
-Ember::LoggingService & Ember::LoggingService::
+LoggingService & LoggingService::
 operator<< (const unsigned long ulongToAdd)
 {
 	std::stringstream ss;
@@ -224,7 +226,7 @@ operator<< (const unsigned long ulongToAdd)
 }
 
 
-void Ember::LoggingService::operator<< (const EndMessageEnum endMessage)
+void LoggingService::operator<< (const EndMessageEnum endMessage)
 {
     sendMessage (myMessage, myFile, myLine, myImportance);
 
@@ -234,7 +236,7 @@ void Ember::LoggingService::operator<< (const EndMessageEnum endMessage)
     myImportance = INFO;
 }
 
-Ember::LoggingService::LoggingService () : Service()
+LoggingService::LoggingService () : Service()
 {
     //set service properties
 
@@ -248,40 +250,17 @@ Ember::LoggingService::LoggingService () : Service()
     myLine = -1;
     myImportance = INFO;
 
-    //Hook up to Eris's logging Service
-    Eris::Logged.
-        connect (sigc::mem_fun (*this, &LoggingService::erisLogReceiver));
+	mErisLogReciever = std::auto_ptr<ErisLogReciever>(new ErisLogReciever(*this));
 }
 
-void Ember::LoggingService::erisLogReceiver (Eris::LogLevel level,
-                                            const std::string & msg)
+
+LoggingService::~LoggingService ()
 {
-    MessageImportance importance;
 
-
-    // Translate Eris importance's to ours
-
-    switch (level)
-    {
-    case Eris::LOG_ERROR:
-        importance = CRITICAL;
-        break;
-    case Eris::LOG_WARNING:
-        importance = WARNING;
-        break;
-    case Eris::LOG_NOTICE:
-      importance=INFO;
-      break;
-    case Eris::LOG_VERBOSE:
-    default:
-        importance = VERBOSE;
-    }
-
-    sendMessage (msg, "ERIS", 0, importance);
 }
 
 
-void Ember::LoggingService::sendMessage (const std::string & message,
+void LoggingService::sendMessage (const std::string & message,
                                         const std::string & file,
                                         const int line,
                                         const MessageImportance importance)
@@ -297,4 +276,6 @@ void Ember::LoggingService::sendMessage (const std::string & message,
             (*i)->onNewMessage (message, file, line, importance, currentTime);
         }
     }
+}
+
 }

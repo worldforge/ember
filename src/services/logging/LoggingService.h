@@ -23,7 +23,6 @@
 #include "framework/Service.h"
 
 // Include library headers here
-#include "Eris/Log.h"
 #include <sigc++/object.h>
 //#include <sigc++/object_slot.h>
 
@@ -40,7 +39,7 @@ namespace Ember
 //%TASK Tim,2: Add debug assertions. (How are the platform independent macros called?)
 
 
-
+class ErisLogReciever;
 
 //======================================================================
 // Short type macros
@@ -124,7 +123,7 @@ namespace Ember
         // Public Constants and enums
         //======================================================================
       public:
-
+		friend class ErisLogReciever;
         /**
 	 * This enum contains all levels of message importance.
 	 * -VERBOSE messages are for maxiumum level of verboseness and are emitted frequently with details of Ember's internal state.
@@ -356,10 +355,7 @@ namespace Ember
     /**
      * Deletes a LoggingService instance.
      */
-        virtual ~ LoggingService ()
-        {
-            //all freeing of memory is done in subsequent member destructors
-        }
+        virtual ~LoggingService ();
 
 
         //----------------------------------------------------------------------
@@ -504,11 +500,7 @@ namespace Ember
         //----------------------------------------------------------------------
         // Other private methods
 
-    /**
-     *
-     */
-        void erisLogReceiver (Eris::LogLevel level, const std::string & msg);
-
+	std::auto_ptr<ErisLogReciever> mErisLogReciever;
 
     /**
      * Unifies the sending mechanism for streaming- and formatting-input
