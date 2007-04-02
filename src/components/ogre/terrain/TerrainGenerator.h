@@ -21,33 +21,31 @@
 #define TERRAINGENERATOR_H
 
 #include "../EmberOgrePrerequisites.h"
-#include <OgreCodec.h>
-#include <OgreImage.h>
-#include <OgreImageCodec.h>
-#include <OgreTextureManager.h>
 
 #include <wfmath/point.h>
-
 #include <Mercator/Terrain.h>
-#include <Mercator/Segment.h>
-#include <Mercator/FillShader.h>
-#include <Mercator/ThresholdShader.h>
-#include <Mercator/DepthShader.h>
-#include <Mercator/GrassShader.h>
-#include <Mercator/Surface.h>
-#include <Mercator/Matrix.h>
-
-#include <Eris/Entity.h>
-#include <Eris/View.h>
 
 #include <sigc++/trackable.h>
+#include <sigc++/signal.h>
 
 #include "framework/ConsoleObject.h"
 
 #include "TerrainInfo.h"
+#include "../MathConverter.h"
 namespace Ogre
 {
 	class TerrainOptions;
+}
+
+namespace Eris
+{
+	class Entity;
+	class View;
+}
+
+namespace Mercator
+{
+	class Area;
 }
 
 namespace EmberOgre {
@@ -59,6 +57,9 @@ class TerrainPage;
 class EmberPagingSceneManager;
 
 class ISceneManagerAdapter;
+
+class EmberEntity;
+class EmberEntityFactory;
 
 struct TerrainDefPoint
 {
@@ -320,6 +321,12 @@ protected:
 	TerrainShader* createShader(const std::string& textureName, Mercator::Shader* mercatorShader);
 	
 	TerrainShader* createShader(Ogre::MaterialPtr material, Mercator::Shader* mercatorShader);
+	
+	void reloadTerrain(std::vector<TerrainPosition>& positions);
+	void updateHeightMapAndShaders(const std::set<TerrainPage*>& pagesToUpdate);
+	void updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate);
+	void updateEntityPosition(EmberEntity* entity, const std::set<TerrainPage*>& pagesToUpdate);
+
 	
 	/**
 	 *    returns whether the foliage should be shown or not

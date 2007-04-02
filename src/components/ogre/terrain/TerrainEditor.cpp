@@ -498,11 +498,6 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 				page = terrainGenerator->getTerrainPage(position);
 				if (page) {
 					pagesToUpdate.insert(page);
-/*					Vector2 targetPage (X, Z);
-					
-					
-					myScnMgr::setOption("PageUpdate", &targetPage); 
-					pagesToUpdate.insert(page);*/
 				}
 			}
 		}
@@ -524,10 +519,10 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 	
 	
 	///reload all shader textures of the affected pages
-	for (std::set<TerrainPage*>::iterator I = pagesToUpdate.begin(); I != pagesToUpdate.end(); ++I) {
-		(*I)->update();
-		(*I)->updateAllShaderTextures();
-	}
+// 	for (std::set<TerrainPage*>::iterator I = pagesToUpdate.begin(); I != pagesToUpdate.end(); ++I) {
+// 		(*I)->update();
+// 		(*I)->updateAllShaderTextures();
+// 	}
 	
 
 	
@@ -561,27 +556,12 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 // 	terrainGenerator->getAdapter()->reloadAllPages();
 	
 	
-	updateEntityPositions(pagesToUpdate);
+// 	updateEntityPositions(pagesToUpdate);
 	
 
 }
 
-void TerrainEditor::updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate)
-{
-	EmberEntity* entity = EmberOgre::getSingleton().getEntityFactory()->getWorld();
-	if (entity) {
-		updateEntityPosition(entity, pagesToUpdate);
-	}
-}
 
-void TerrainEditor::updateEntityPosition(EmberEntity* entity, const std::set<TerrainPage*>& pagesToUpdate)
-{
-	entity->adjustPosition();
-	for (unsigned int i = 0; i < entity->numContained(); ++i) {
-		EmberEntity* containedEntity = static_cast<EmberEntity*>(entity->getContained(i));
-		updateEntityPosition(containedEntity, pagesToUpdate);
-	}
-}
 
 
 

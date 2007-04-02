@@ -23,7 +23,17 @@
 #include "services/config/ConfigService.h"
 
 #include "../EmberOgre.h"
+#include "../EmberEntity.h"
+#include "../WorldEmberEntity.h"
+#include "../EmberEntityFactory.h"
 
+#include <Eris/Entity.h>
+#include <Eris/View.h>
+
+#include <OgreCodec.h>
+#include <OgreImage.h>
+#include <OgreImageCodec.h>
+#include <OgreTextureManager.h>
 #include <OgreStringConverter.h>
 #include <OgreRenderSystemCapabilities.h>
 #include "TerrainShader.h"
@@ -33,6 +43,14 @@
 
 #include "TerrainPage.h"
 #include <Mercator/Area.h>
+#include <Mercator/Segment.h>
+#include <Mercator/FillShader.h>
+#include <Mercator/ThresholdShader.h>
+#include <Mercator/DepthShader.h>
+#include <Mercator/GrassShader.h>
+#include <Mercator/Surface.h>
+#include <Mercator/Matrix.h>
+
 #include "../model/ModelDefinition.h"
 #include "../model/ModelDefinitionManager.h"
 
@@ -708,37 +726,24 @@ bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world)
 
 bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 {
-/*	int Xmin = mXmin;
-	int Xmax = mXmax;
-	int Ymin = mYmin;
-	int Ymax = mYmax;*/
+	std::vector<TerrainPosition> updatedPositions;
+	bool wasUpdate = false;
 	for (TerrainDefPointStore::const_iterator I = terrainPoints.begin(); I != terrainPoints.end(); ++I) {
-		///if we don't have any info from before, initialize the min and max values now
-		if (!hasTerrainInfo) {
-/*			mXmin = static_cast<int>(I->position.x());
-			mXmax = static_cast<int>(I->position.x());
-			mYmin = static_cast<int>(I->position.y());
-			mYmax = static_cast<int>(I->position.y());*/
-			hasTerrainInfo = true;
-		}
 		
         Mercator::BasePoint bp;
         if (mTerrain->getBasePoint(static_cast<int>(I->position.x()), static_cast<int>(I->position.y()), bp) && (I->height == bp.height())) {
 			S_LOG_VERBOSE( "Point [" << I->position.x() << "," << I->position.y() << " unchanged");
             continue;
         } else {
+        	wasUpdate = true;
 			S_LOG_VERBOSE( "Setting base point [" << I->position.x() << "," << I->position.y() << " to height " << I->height);
         }
-/*        mXmin = std::min<int>(mXmin, static_cast<int>(I->position.x()));
-        mXmax = std::max<int>(mXmax, static_cast<int>(I->position.x()));
-        mYmin = std::min<int>(mYmin, static_cast<int>(I->position.y()));
-        mYmax = std::max<int>(mYmax, static_cast<int>(I->position.y()));*/
         bp.height() = I->height;
-        // FIXME Sort out roughness and falloff, and generally
-        // verify this code is the same as that in Terrain layer
+        /// FIXME Sort out roughness and falloff, and generally
+        /// verify this code is the same as that in Terrain layer
         mTerrain->setBasePoint(static_cast<int>(I->position.x()), static_cast<int>(I->position.y()), bp);
         mTerrainInfo.setBasePoint(I->position, bp);
-
+		updatedPositions.push_back(I->position);
 	}
     mSegments = &mTerrain->getTerrain();
 	
@@ -757,8 +762,65 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 		EventWorldSizeChanged.emit();
 // 	}
 	
+	if (!hasTerrainInfo) {
+		hasTerrainInfo = true;
+	} else {
+		if (wasUpdate) {
+			///if it's an update, we need to reload all pages and adjust all entity positions
+			reloadTerrain(updatedPositions);
+		}
+	}
+	
 	
 	return true;
+}
+
+void TerrainGenerator::reloadTerrain(std::vector<TerrainPosition>& positions)
+{
+	std::set<TerrainPage*> pagesToUpdate;
+	for (std::vector<TerrainPosition>::iterator I(positions.begin()); I != positions.end(); ++I) {
+		TerrainPosition worldPosition(I->x() * 64, I->y() * 64);
+		TerrainPage* page;
+		///make sure we sample pages from all four points around the base point, in case the base point is on a page border
+		for (int i = -65; i < 66; i += 64) {
+			for (int j = -65; j < 66; j += 64) {
+				TerrainPosition position(worldPosition.x() + i, worldPosition.y() + j);
+				page = getTerrainPage(position);
+				if (page) {
+					pagesToUpdate.insert(page);
+				}
+			}
+		}
+	}
+
+	updateHeightMapAndShaders(pagesToUpdate);
+	updateEntityPositions(pagesToUpdate);
+	
+}
+void TerrainGenerator::updateHeightMapAndShaders(const std::set<TerrainPage*>& pagesToUpdate)
+{
+	///reload all shader textures of the affected pages
+	for (std::set<TerrainPage*>::iterator I = pagesToUpdate.begin(); I != pagesToUpdate.end(); ++I) {
+		(*I)->update();
+		(*I)->updateAllShaderTextures();
+	}
+}
+
+void TerrainGenerator::updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate)
+{
+	EmberEntity* entity = EmberOgre::getSingleton().getEntityFactory()->getWorld();
+	if (entity) {
+		updateEntityPosition(entity, pagesToUpdate);
+	}
+}
+
+void TerrainGenerator::updateEntityPosition(EmberEntity* entity, const std::set<TerrainPage*>& pagesToUpdate)
+{
+	entity->adjustPosition();
+	for (unsigned int i = 0; i < entity->numContained(); ++i) {
+		EmberEntity* containedEntity = static_cast<EmberEntity*>(entity->getContained(i));
+		updateEntityPosition(containedEntity, pagesToUpdate);
+	}
 }
 
 // Ogre::Material* TerrainGenerator::getMaterialForSegment(TerrainPosition& atPosition)
