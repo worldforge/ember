@@ -213,11 +213,10 @@ PKG_CHECK_MODULES(CEGUI, CEGUI >= 0.5,
 		LDFLAGS="$LDFLAGS $CEGUI_LIBS"
 	],
 	[
-		AC_MSG_ERROR(Couldn't find CEGUI-OGRE [or tests failed]. Please go to http://crayzedsgui.sourceforge.net to get the latest, or check config.log to see why the tests failed, and fix it.)
+		AC_MSG_ERROR([Couldn't find CEGUI-OGRE or tests failed. Please go to http://crayzedsgui.sourceforge.net to get the latest, or check config.log to see why the tests failed, and fix it.])
 	])
 
 # Check for OGRE
-# (version 1.2.0 would work, but since there's an optimization issue with gcc 4.1 which causes a segfault with code involved in software skinning we'll just avoid the issue of users getting random crashes by requiring 1.2.1)
 OGRE_VERSION=1.4.0
 PKG_CHECK_MODULES(OGRE, [OGRE >= $OGRE_VERSION CEGUI-OGRE >= $OGRE_VERSION],
 	[
@@ -225,7 +224,7 @@ PKG_CHECK_MODULES(OGRE, [OGRE >= $OGRE_VERSION CEGUI-OGRE >= $OGRE_VERSION],
 		LDFLAGS="$LDFLAGS $OGRE_LIBS"
 	],
 	[
-		AC_MSG_ERROR(Couldn't find OGRE [or tests failed.] Please goto http://www.ogre3d.org to get the latest, or check config.log to see why the tests failed, and fix it.)
+		AC_MSG_ERROR([Couldn't find OGRE or tests failed. Please goto http://www.ogre3d.org to get the latest, or check config.log to see why the tests failed, and fix it.])
 	])
 
 
@@ -235,13 +234,12 @@ AC_DEFINE(OGRE_DEBUG_MEMORY_MANAGER, 0, [disable Ogre memory manager])
 
 #check for lua
 PKG_CHECK_MODULES(LUA, lua >= 5.0 lua < 5.1,
-		  p
 [
 	CXXFLAGS="$CXXFLAGS $LUA_CFLAGS"
 	LDFLAGS="$LDFLAGS $LUA_LIBS -lCEGUILuaScriptModule -lCEGUItoluapp"
 ],
 [
-	AC_MSG_ERROR(Couldn't find Lua or tests failed. Error: $LUA_PKG_ERRORS. Please go to http://www.lua.org to get the latest, or check config.log to see why the tests failed, and fix it.)
+	AC_MSG_ERROR([Couldn't find Lua or tests failed. Error: $LUA_PKG_ERRORS. Please go to http://www.lua.org to get the latest, or check config.log to see why the tests failed, and fix it.])
 ])      
 
 # Check for OpenAL
@@ -252,7 +250,7 @@ PKG_CHECK_MODULES(OPENAL, openal >= $OPENAL_VERSION,
 		LDFLAGS="$LDFLAGS $OPENAL_LIBS"
 	],
 	[
-		AC_MSG_ERROR(Couldn't find OpenAL or tests failed. Error: $OPENAL_PKG_ERRORS. Please go to http://www.openal.org to get the latest, or check config.log to see why the tests failed, and fix it.)
+		AC_MSG_ERROR([Couldn't find OpenAL or tests failed. Error: $OPENAL_PKG_ERRORS. Please go to http://www.openal.org to get the latest, or check config.log to see why the tests failed, and fix it.])
 	])
 
 # Check for FreeALUT
@@ -263,7 +261,7 @@ PKG_CHECK_MODULES(FREEALUT, freealut >= $FREEALUT_VERSION,
 		LDFLAGS="$LDFLAGS $FREEALUT_LIBS"
 	],
 	[
-		AC_MSG_ERROR(Couldn't find FreeALUT or tests failed. Error: $FREEALUT_PKG_ERRORS. Please go to http://www.openal.org to get the latest, or check config.log to see why the tests failed, and fix it.)
+		AC_MSG_ERROR([Couldn't find FreeALUT or tests failed. Error: $FREEALUT_PKG_ERRORS. Please go to http://www.openal.org to get the latest, or check config.log to see why the tests failed, and fix it.])
 	])
 
 
@@ -281,8 +279,8 @@ PKG_CHECK_MODULES(WF, [eris-1.3 >= 1.3.12 \
 		CXXFLAGS="$CXXFLAGS $WF_CFLAGS"
 		LDFLAGS="$LDFLAGS $WF_LIBS"
 	],
- AC_MSG_ERROR(Couldn't find some of the required WorldForge libraries: $WF_PKG_ERRORS
-Please visit  http://worldforge.org/dev/eng/libraries to get the latest versions.)
+ AC_MSG_ERROR([Couldn't find some of the required WorldForge libraries: $WF_PKG_ERRORS
+Please visit  http://worldforge.org/dev/eng/libraries to get the latest versions.])
 )
 # AC_DEFINE(ATLAS_ELEMENT_TYPEDEF_PRIVATE, 1, [Remove Atlas compiler warnings])
 CXXFLAGS="$CXXFLAGS -DATLAS_ELEMENT_TYPEDEF_PRIVATE"
