@@ -88,9 +88,9 @@ namespace Ogre
         mPreFinX = 0;
         mPreIniZ = 0;
         mPreFinZ = 0;
-        mLastCameraPos = Vector3 (std::numeric_limits<Real>::min (), 
+        mLastCameraPos = Vector3 (std::numeric_limits<Real>::max (), 
                                   0.0f, 
-                                  std::numeric_limits<Real>::min ());
+                                  std::numeric_limits<Real>::max ());
         updatePaging (0, 0);
 //        Real dist = Camera::getDerivedPosition().squaredLength()
 //            + mParent->getOptions()->cameraThreshold

@@ -1,4 +1,9 @@
+2007-04-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeCamera.cpp: fixed a bug where the paging wasn't updated unless the camera was moved
+
 2007-04-08 Kai Blin  <kai.blin@gmail.com>
+	
 	* configure.ac: Fix error messages when a dependecy is not found.
 
 2007-04-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
