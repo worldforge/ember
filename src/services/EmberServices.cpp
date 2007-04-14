@@ -103,13 +103,13 @@ template<> Ember::EmberServices* Ember::Singleton<Ember::EmberServices>::ms_Sing
   
 
 	EmberServices::EmberServices()
-	: mWfutService(std::auto_ptr<ServiceContainer<WfutService> >(new ServiceContainer<WfutService>()) )
-	, mConfigService(std::auto_ptr<ServiceContainer<ConfigService> >(new ServiceContainer<ConfigService>()) )
-	, mScriptingService(std::auto_ptr<ServiceContainer<ScriptingService> >(new ServiceContainer<ScriptingService>()) )
+	: mScriptingService(std::auto_ptr<ServiceContainer<ScriptingService> >(new ServiceContainer<ScriptingService>()) )
 	, mSoundService(std::auto_ptr<ServiceContainer<SoundService> >(new ServiceContainer<SoundService>()) )
 	, mServerService(std::auto_ptr<ServiceContainer<ServerService> >(new ServiceContainer<ServerService>()) )
 	, mMetaserverService(std::auto_ptr<ServiceContainer<MetaserverService> >(new ServiceContainer<MetaserverService>()) )
-	//   , mInputService(std::auto_ptr<ServiceContainer<InputService> >(new ServiceContainer<InputService>()) )
+//   , mInputService(std::auto_ptr<ServiceContainer<InputService> >(new ServiceContainer<InputService>()) )
+	, mWfutService(std::auto_ptr<ServiceContainer<WfutService> >(new ServiceContainer<WfutService>()) )
+	, mConfigService(std::auto_ptr<ServiceContainer<ConfigService> >(new ServiceContainer<ConfigService>()) )
 	{
 	}
 

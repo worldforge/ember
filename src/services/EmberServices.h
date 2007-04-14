@@ -47,7 +47,9 @@ template <typename T>
 class IInnerServiceContainer
 {
 public:
+	virtual ~IInnerServiceContainer() {}
 	virtual T* getService() = 0;
+	virtual bool hasService() = 0;
 
 };
 
@@ -73,6 +75,12 @@ public:
 	{
 		mInnerContainer = std::auto_ptr<IInnerServiceContainer<T> >(newContainer);
 	}
+	
+	bool hasService()
+	{
+		return mInnerContainer->hasService();
+	} 
+
 private:
 	std::auto_ptr<IInnerServiceContainer<T> > mInnerContainer;
 };
@@ -87,10 +95,21 @@ public:
 	{
 	}
 	
+	virtual ~InitializedInnerServiceContainer() 
+	{
+		mService->stop(0);
+	}
+	
 	virtual T* getService()
 	{
 		return mService.get();
 	}
+	
+	virtual bool hasService()
+	{
+		return true;
+	} 
+	
 private:
 	std::auto_ptr<T> mService;
 };  
@@ -110,6 +129,11 @@ public:
 		tempContainer->setInnerContainer(new InitializedInnerServiceContainer<T>());
 		return tempContainer->getService();
 	}
+	
+	virtual bool hasService()
+	{
+		return false;
+	} 
 private:
 	ServiceContainer<T>* mContainer;
 };
