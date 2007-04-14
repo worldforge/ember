@@ -67,9 +67,19 @@ namespace EmberOgre {
 
 
 GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr) 
-: mWindow(window), mGuiRenderer(0), mGuiCommandMapper("gui", "key_bindings_gui")
-, ToggleInputMode("toggle_inputmode", this, "Toggle the input mode.")
+: ToggleInputMode("toggle_inputmode", this, "Toggle the input mode.")
 , ReloadGui("reloadgui", this, "Reloads the gui.")
+, mGuiCommandMapper("gui", "key_bindings_gui")
+, mPicker(0)
+, mEntityWorldPickListener(0)
+, mSheet(0)
+, mWindowManager(0)
+, mDebugText(0)
+, mConsoleWidget(0)
+, mWindow(window)
+, mGuiSystem(0)
+, mGuiRenderer(0)
+, mLuaScriptModule(0)
 {
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI );
 
@@ -88,7 +98,6 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		//use a macro from CEGUIFactoryModule
 		//DYNLIB_LOAD( "libCEGUIFalagardBase.so");
 		
-		Ember::EmberServices::getSingleton().getScriptingService()->registerScriptingProvider(new LuaScriptingProvider());
 		
 		
 		mGuiRenderer = new CEGUI::OgreCEGUIRenderer(window, Ogre::RENDER_QUEUE_OVERLAY, false, 0, sceneMgr);
@@ -100,10 +109,10 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		provider = Ember::EmberServices::getSingleton().getScriptingService()->getProviderFor("LuaScriptingProvider");
 		if (provider != 0) {
 			LuaScriptingProvider* luaScriptProvider = static_cast<LuaScriptingProvider*>(provider);
-			mGuiSystem = new CEGUI::System(mGuiRenderer, resourceProvider, 0, &luaScriptProvider->getScriptModule(), (CEGUI::utf8*)"cegui/datafiles/configs/cegui.config"); 
-			mScriptingProviders.push_back(provider);
+			mLuaScriptModule = new LuaScriptModule(luaScriptProvider->getLuaState()); 
+			mGuiSystem = new CEGUI::System(mGuiRenderer, resourceProvider, 0, mLuaScriptModule, "cegui/datafiles/configs/cegui.config"); 
 		} else {
-			mGuiSystem = new CEGUI::System(mGuiRenderer, resourceProvider, 0, 0, (CEGUI::utf8*)"cegui/datafiles/configs/cegui.config"); 
+			mGuiSystem = new CEGUI::System(mGuiRenderer, resourceProvider, 0, 0, "cegui/datafiles/configs/cegui.config"); 
 		}
 		
 		mWindowManager = &CEGUI::WindowManager::getSingleton();
@@ -111,7 +120,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 
 			
 		try {
-			mGuiSystem->setDefaultMouseCursor(getDefaultScheme(), (CEGUI::utf8*)"MouseArrow");
+			mGuiSystem->setDefaultMouseCursor(getDefaultScheme(), "MouseArrow");
 		} catch (const CEGUI::Exception& ex) {
 			S_LOG_FAILURE("CEGUI - could not set mouse pointer. Make sure that the correct scheme " << getDefaultScheme() << " is available. Message: " << ex.getMessage().c_str());
 			throw Ember::Exception(ex.getMessage().c_str());
@@ -167,9 +176,6 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 GUIManager::~GUIManager()
 {
 	S_LOG_INFO("Shutting down GUI manager.");
-	//can't delete this one since cegui will then throw a segfault
-/*	delete mGuiSystem;
-	mGuiSystem = 0;*/
 	
 	WidgetStore widgetStoreCopy(mWidgets);
 	for (WidgetStore::iterator I = widgetStoreCopy.begin(); I != widgetStoreCopy.end(); ++I) {
@@ -177,17 +183,15 @@ GUIManager::~GUIManager()
 		delete *I;
 	}
 	
-	for (std::vector<Ember::IScriptingProvider*>::iterator I = mScriptingProviders.begin(); I != mScriptingProviders.end(); ++I) {
-		delete *I;
-	}
 	
-	
+	delete mGuiSystem;
 	Ogre::Root::getSingleton().removeFrameListener(this);
 	delete mCEGUIAdapter;
 	
 	delete mEntityWorldPickListener;
 	delete mPicker;
 	delete mGuiRenderer;
+	delete mLuaScriptModule;
 	//delete mMousePicker;
 	//mMousePicker = 0;
 
@@ -226,7 +230,7 @@ void GUIManager::initialize()
 		//this should be defined in some kind of text file, which should be different depending on what game you're playing (like mason)
 		try {
 		//load the bootstrap script which will load all other scripts
-			Ember::EmberServices::getSingleton().getScriptingService()->loadScript("cegui/datafiles/lua_scripts/Bootstrap.lua");
+			Ember::EmberServices::getSingleton().getScriptingService()->loadScript("lua/Bootstrap.lua");
 		} catch (const Ogre::Exception& ex)
 		{
 			S_LOG_FAILURE("Error when loading bootstrap script. Error message: " << ex.getFullDescription());

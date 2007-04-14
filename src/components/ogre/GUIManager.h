@@ -40,6 +40,7 @@
 namespace CEGUI
 {
 class GUISheet;
+class LuaScriptModule;
 }
 
 namespace Ember {
@@ -236,35 +237,25 @@ protected:
 	
 	std::string mDefaultScheme;
 
-	
 	/**
 	all loaded widgets are stored here
 	*/
 	WidgetStore mWidgets;
-	
-	std::vector<Ember::IScriptingProvider*> mScriptingProviders;
-
-	
 
 	/**
 	A stack of the mouse pickers used. This allows for a component to "push down" the current mouse picker in favor of its own
 	*/
 	std::stack<MousePicker*> mMousePickers;
-		
 
 	//events
 	bool mSheet_MouseButtonDown(const CEGUI::EventArgs& args);
 	bool mSheet_CaptureLost(const CEGUI::EventArgs& args);
-	
-	
-
 	
 	/**
 	 *    hooked to EmberOgre::EventCreatedAvatarEntity, switches the input mode to movement mode
 	 * @param entity 
 	 */
 	void EmberOgre_CreatedAvatarEntity(AvatarEmberEntity* entity);
-	
 	
 	/**
 	 *    hooked to EmberOgre::EventAvatarControllerCreated, connects the mEntityWorldPickListener to the main AvatarCamera
@@ -280,7 +271,7 @@ protected:
 	*/
 	GUICEGUIAdapter* mCEGUIAdapter;
 	
-// 	GUIScriptManager* mScriptManager;
+	CEGUI::LuaScriptModule* mLuaScriptModule;
 
 };
 }
