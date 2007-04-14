@@ -1,19 +1,19 @@
 /*
-    Copyright (C) 2002  Tim Enderling
+	Copyright (C) 2002  Tim Enderling
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #ifndef LOGGINGSERVICE_H
@@ -24,7 +24,6 @@
 
 // Include library headers here
 #include <sigc++/object.h>
-//#include <sigc++/object_slot.h>
 
 #include <ctime>
 #include <stdarg.h>
@@ -60,457 +59,460 @@ class ErisLogReciever;
 //#define S_LOG_INFO(message) Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << message << ENDM;
 	
 //TODO: Sorry, but innerclass didn't work properly
-    const int NUMBER_BUFFER_SIZE = 24;
-    const int MESSAGE_BUFFER_SIZE = 4096;
+const int NUMBER_BUFFER_SIZE = 24;
+const int MESSAGE_BUFFER_SIZE = 4096;
 
 /**
- * Easy-to-deal-with logging class.
- *
- * This service class should make adding and observing logging messages more easy. This
- * can be done using printf-like log method or just streaming operator << in
- * cout-like way. 
- *
- * The cout-like way always needs a LoggingService::END_MESSAGE to be streamed-in 
- * last (use ENDM* macro). To specify formats like hexadecimal printing static functions
- * are available for conversion (use the HEX_NUM* macro).
- * 
- * NOTE: Since streaming actually constist of many operations that can be interrupted by
- * switching the active thread, streaming should only be used in thread safe areas. [TODO: How
- * to fix this unwanted behaviour?]
- *
- *
- * There are some log variants for which you can specify some options:
- * - source file (use __FILE__) 
- * - source line (use __LINE__)
- * - level of importance (see enum called MessageImportance), always INFO if not specified
- *
- * As a special feature you can use a function called slog* (abbr. for stream log) that can
- * be used for setting the options before using streaming. (See example.)  
- *
- * Observers of logging process can easily be managed 
- * using addObserver and removeObserver. An observer class handling FILE * is predefined already.
- *
- * To less the amount of messages passed through to the observers, you can specify a filter by
- * levels of importance. Thus all messages above or equal a filter level of importance are
- * written/passed by the callback to an observer.
- * 
- * 
- * HINT: Names marked with * were chosen this short, because they are intentended to be used very 
- * frequently.
- *
- * SAMPLE:
- * using namespace Ember::services;
- * LoggingService * logger;
- * //service is assumed to be started; observers are added
- *
- * //do you prefer this way?
- * logger->log(__FILE__, __LINE__, LoggingService::WARNING,
- *      "Player %s (ID: %x) is already dead (but used in %d new messages).", 
- *		player->getName(), player->getID(), player->getMessages()->getCount());
- *
- * //or this?
- * logger->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Player: " << player->getName() 
- *		<<"(ID: " << HEX_NUM(player->getID()) << "is already dead (but used in " << 
- *      player->getMessages()->getCount() << " new messages)." << ENDM;
- *
- *
- * @author Tim Enderling
- */
+* Easy-to-deal-with logging class.
+*
+* This service class should make adding and observing logging messages more easy. This
+* can be done using printf-like log method or just streaming operator << in
+* cout-like way. 
+*
+* The cout-like way always needs a LoggingService::END_MESSAGE to be streamed-in 
+* last (use ENDM* macro). To specify formats like hexadecimal printing static functions
+* are available for conversion (use the HEX_NUM* macro).
+* 
+* NOTE: Since streaming actually constist of many operations that can be interrupted by
+* switching the active thread, streaming should only be used in thread safe areas. [TODO: How
+* to fix this unwanted behaviour?]
+*
+*
+* There are some log variants for which you can specify some options:
+* - source file (use __FILE__) 
+* - source line (use __LINE__)
+* - level of importance (see enum called MessageImportance), always INFO if not specified
+*
+* As a special feature you can use a function called slog* (abbr. for stream log) that can
+* be used for setting the options before using streaming. (See example.)  
+*
+* Observers of logging process can easily be managed 
+* using addObserver and removeObserver. An observer class handling FILE * is predefined already.
+*
+* To less the amount of messages passed through to the observers, you can specify a filter by
+* levels of importance. Thus all messages above or equal a filter level of importance are
+* written/passed by the callback to an observer.
+* 
+* 
+* HINT: Names marked with * were chosen this short, because they are intentended to be used very 
+* frequently.
+*
+* SAMPLE:
+* using namespace Ember::services;
+* LoggingService * logger;
+* //service is assumed to be started; observers are added
+*
+* //do you prefer this way?
+* logger->log(__FILE__, __LINE__, LoggingService::WARNING,
+*      "Player %s (ID: %x) is already dead (but used in %d new messages).", 
+*		player->getName(), player->getID(), player->getMessages()->getCount());
+*
+* //or this?
+* logger->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Player: " << player->getName() 
+*		<<"(ID: " << HEX_NUM(player->getID()) << "is already dead (but used in " << 
+*      player->getMessages()->getCount() << " new messages)." << ENDM;
+*
+*
+* @author Tim Enderling
+*/
 
-    class LoggingService:public Service, public sigc::trackable
-    {
-        //======================================================================
-        // Public Constants and enums
-        //======================================================================
-      public:
-		friend class ErisLogReciever;
-        /**
-	 * This enum contains all levels of message importance.
-	 * -VERBOSE messages are for maxiumum level of verboseness and are emitted frequently with details of Ember's internal state.
-	 * -INFO messages are intended to be read only to look for reasons of errors.
-	 * -WARNING messages appear whenever something could get critical in some case.
-	 * -CRITICAL messages should be read always and contain fatal errors.
-	 */
-        enum MessageImportance
-        {
-	  VERBOSE = 0,
-	  INFO = 1,
-	  WARNING = 2,
-	  FAILURE = 3,
-	  CRITICAL = 4
-        };
-
-
-        /**
-	 * Pseudo-enum necessary to make the END_MESSAGE constant not be mixed with ints
-	 */
-        enum EndMessageEnum
-        {
-            END_MESSAGE = 0
-        };
-
-        //======================================================================
-        // Inner Classes and typedefs
-        //======================================================================
-
-      public:
+class LoggingService:public Service, public sigc::trackable
+{
+	//======================================================================
+	// Public Constants and enums
+	//======================================================================
+	public:
+	friend class ErisLogReciever;
+	/**
+	* This enum contains all levels of message importance.
+	* -VERBOSE messages are for maxiumum level of verboseness and are emitted frequently with details of Ember's internal state.
+	* -INFO messages are intended to be read only to look for reasons of errors.
+	* -WARNING messages appear whenever something could get critical in some case.
+	* -CRITICAL messages should be read always and contain fatal errors.
+	*/
+	enum MessageImportance
+	{
+		VERBOSE = 0,
+		INFO = 1,
+		WARNING = 2,
+		FAILURE = 3,
+		CRITICAL = 4
+	};
 
 
-        /**
-	 * Abstract base class (=interface) for all observers
-	 */
-          class Observer
-        {
-          public:
+	/**
+	* Pseudo-enum necessary to make the END_MESSAGE constant not be mixed with ints
+	*/
+	enum EndMessageEnum
+	{
+		END_MESSAGE = 0
+	};
 
-            Observer ()
-            {
-                myFilter = INFO;        //No filtering assumed
-            }
+	//======================================================================
+	// Inner Classes and typedefs
+	//======================================================================
 
-                /**
-		 * Called every time a new message arrived at the LoggingService
-		 *
-		 * @param message The message string to send.
-		 * @param file The source code file the message was initiated or empty if not specified.
-		 * @param line The source code line the message was initiated or -1 if not specified.
-		 * @param importance The level of importance (see MessageImportance enum)
-		 * @param time_t The time the message was initiated.
-		 */
+	public:
 
-            virtual void onNewMessage (const std::string & message,
-                                       const std::string & file,
-                                       const int &line,
-                                       const MessageImportance & importance,
-                                       const time_t & timeStamp) = 0;
 
-            MessageImportance getFilter ()
-            {
-                return myFilter;
-            }
+	/**
+	* Abstract base class (=interface) for all observers
+	*/
+	class Observer
+	{
+	public:
 
-            void setFilter (MessageImportance filter)
-            {
-                myFilter = filter;
-            }
+		Observer ()
+		{
+			myFilter = INFO;        //No filtering assumed
+		}
+		
+		virtual ~Observer() {}
 
-          private:
+	/**
+	* Called every time a new message arrived at the LoggingService
+	*
+	* @param message The message string to send.
+	* @param file The source code file the message was initiated or empty if not specified.
+	* @param line The source code line the message was initiated or -1 if not specified.
+	* @param importance The level of importance (see MessageImportance enum)
+	* @param time_t The time the message was initiated.
+	*/
 
-                /**
-		 * A filter used by the LoggingService to determine wether the message should be send
-		 * to onNewMessage. This happens only if the message is at least as important as
-		 * the filter value.
-		 */
+		virtual void onNewMessage (const std::string & message,
+								const std::string & file,
+								const int &line,
+								const MessageImportance & importance,
+								const time_t & timeStamp) = 0;
 
-            MessageImportance myFilter;
-        };
+		MessageImportance getFilter ()
+		{
+			return myFilter;
+		}
 
-        /**
-	 * Predefined implementation of Observer-class handling FILE * 
-	 *
-	 * The format of messages written into a FILE * is the following:
-	 * 
-	 * timeStamp "\t" importance "\t" file "\t" line "\t" message
-	 */
+		void setFilter (MessageImportance filter)
+		{
+			myFilter = filter;
+		}
 
-        class FileObserver:public Observer
-        {
-          public:
-            FileObserver (FILE * file, MessageImportance filter)
-            {
-                setFilter (filter);
-                myFile = file;
-            }
+	private:
 
-            virtual void onNewMessage (const std::string & message,
-                                       const std::string & file,
-                                       const int &line,
-                                       const MessageImportance & importance,
-                                       const time_t & timeStamp)
-            {
-                tm *ctm = localtime (&timeStamp);       //currentLocalTime was too long, sorry
+			/**
+	* A filter used by the LoggingService to determine wether the message should be send
+	* to onNewMessage. This happens only if the message is at least as important as
+	* the filter value.
+	*/
 
-                fprintf (myFile,
-                         "[%04d-%02d-%02d %02d:%02d:%02d]\t%s\t%s\t%d\t%s\n",
-                         ctm->tm_year, ctm->tm_mon, ctm->tm_mday,
-                         ctm->tm_hour, ctm->tm_min, ctm->tm_sec,
-                         (importance ==
-                          CRITICAL) ? "CRITICAL" : ((importance ==
-                                                     FAILURE) ? "FAILURE"
-                                                    : ((importance ==
-                                                        WARNING) ? "WARNING" :
-                                                       ((importance== INFO) ?"INFO":"VERBOSE"))),
-                         file.c_str (), line, message.c_str ());
-            }
+		MessageImportance myFilter;
+	};
 
-            FILE *getFile ()
-            {
-                return myFile;
-            }
+	/**
+	* Predefined implementation of Observer-class handling FILE * 
+	*
+	* The format of messages written into a FILE * is the following:
+	* 
+	* timeStamp "\t" importance "\t" file "\t" line "\t" message
+	*/
 
-          private:
-            FILE * myFile;
-        };
+	class FileObserver:public Observer
+	{
+	public:
+		FileObserver (FILE * file, MessageImportance filter)
+		{
+			setFilter (filter);
+			myFile = file;
+		}
+		virtual ~FileObserver() {}
 
-      private:
+		virtual void onNewMessage (const std::string & message,
+								const std::string & file,
+								const int &line,
+								const MessageImportance & importance,
+								const time_t & timeStamp)
+		{
+			tm *ctm = localtime (&timeStamp);       //currentLocalTime was too long, sorry
 
-        typedef std::list < Observer * >ObserverList;
+			fprintf (myFile,
+					"[%04d-%02d-%02d %02d:%02d:%02d]\t%s\t%s\t%d\t%s\n",
+					ctm->tm_year, ctm->tm_mon, ctm->tm_mday,
+					ctm->tm_hour, ctm->tm_min, ctm->tm_sec,
+					(importance ==
+					CRITICAL) ? "CRITICAL" : ((importance ==
+												FAILURE) ? "FAILURE"
+												: ((importance ==
+													WARNING) ? "WARNING" :
+												((importance== INFO) ?"INFO":"VERBOSE"))),
+					file.c_str (), line, message.c_str ());
+		}
 
-        /**
+		FILE *getFile ()
+		{
+			return myFile;
+		}
+
+	private:
+		FILE * myFile;
+	};
+
+private:
+
+	typedef std::list < Observer * >ObserverList;
+
+	/**
 	* pseudo-type used for multiple overriding with the same type of the operator<<
 	*/
 
-        struct HexNumber
-        {
-            int myNumber;
-        };
+	struct HexNumber
+	{
+		int myNumber;
+	};
 
-        //======================================================================
-        // Private Constants
-        //======================================================================
-      private:
+	//======================================================================
+	// Private Constants
+	//======================================================================
+private:
 
-        //======================================================================
-        // Private Variables
-        //======================================================================
-      private:
+	//======================================================================
+	// Private Variables
+	//======================================================================
+private:
 
-    /**
-	 list of observers
-     */
-        ObserverList myObserverList;
-
-        /**
-	 currently given part of the message string (used by << streaming only)
-	 */
-        std::string myMessage;
-
-        /**
-	 * currently set source file (option; used by << streaming only)
-	 * An empty string indicates that no file option was set.
-	 */
-        std::string myFile;
-
-        /**
-	 * currently set source code line (option; used by << streaming only)
-	 * -1 indicates that no line option was set.
-	 */
-        int myLine;
-
-        /**
-	 * currently set importance (option; used by << streaming only)
-	 * The default value is INFO.
-	 */
-        MessageImportance myImportance;
 	/**
-	 * Singleton instance
-	 */
+	list of observers
+	*/
+	ObserverList myObserverList;
+
+	/**
+	currently given part of the message string (used by << streaming only)
+	*/
+	std::string myMessage;
+
+	/**
+	* currently set source file (option; used by << streaming only)
+	* An empty string indicates that no file option was set.
+	*/
+	std::string myFile;
+
+	/**
+	* currently set source code line (option; used by << streaming only)
+	* -1 indicates that no line option was set.
+	*/
+	int myLine;
+
+		/**
+	* currently set importance (option; used by << streaming only)
+	* The default value is INFO.
+	*/
+	MessageImportance myImportance;
+	/**
+	* Singleton instance
+	*/
 	static LoggingService* theInstance;
 
 
-        //======================================================================
-        // Public Methods
-        //======================================================================
-      public:
+	//======================================================================
+	// Public Methods
+	//======================================================================
+public:
 
-        //----------------------------------------------------------------------
-        // Singleton
+	//----------------------------------------------------------------------
+	// Singleton
 
-    /**
-     * Returns the LoggingService instance.
-     */
-        static LoggingService *getInstance ()
-        {
-	    if( !theInstance )
-	      {
-		theInstance = new LoggingService;
-	      }
+	/**
+	* Returns the LoggingService instance.
+	*/
+	static LoggingService *getInstance ()
+	{
+	if( !theInstance )
+	{
+	theInstance = new LoggingService;
+	}
 
-	    return theInstance;
-        }
+	return theInstance;
+	}
 
-        //----------------------------------------------------------------------
-        // Constructors
+	//----------------------------------------------------------------------
+	// Constructors
 
-        /* NOTE: No copy constructor available (needed anywhere?)
-           LoggingService( const LoggingService &source )
-           {
-           // Use assignment operator to do the copy
-           // NOTE: If you need to do custom initialization in the constructor this may not be enough.
-           *this = source;
-           }
+	/* NOTE: No copy constructor available (needed anywhere?)
+	LoggingService( const LoggingService &source )
+	{
+	// Use assignment operator to do the copy
+	// NOTE: If you need to do custom initialization in the constructor this may not be enough.
+	*this = source;
+	}
 
-           LoggingService &operator= ( const LoggingService &source )
-           {
-           // Copy fields from source class to this class here.
+	LoggingService &operator= ( const LoggingService &source )
+	{
+	// Copy fields from source class to this class here.
 
-           // Return this object with new value
-           return *this;
-           } */
-
-
-        //----------------------------------------------------------------------
-        // Destructor
-
-    /**
-     * Deletes a LoggingService instance.
-     */
-        virtual ~LoggingService ();
+	// Return this object with new value
+	return *this;
+	} */
 
 
-        //----------------------------------------------------------------------
-        // Getters
+	//----------------------------------------------------------------------
+	// Destructor
 
-        //----------------------------------------------------------------------
-        // Setters
-
-        //----------------------------------------------------------------------
-        // Other public methods
-
-        virtual Service::Status start ();
-
-    /**
-     * Adds a message presented by various options, a format string and variable params like
-     * in printf using also the same format specifications.
-     *
-     * @param file The source code file the message was initiated.
-     * @param line The source code line the message was initiated.
-     * @param importance The level of importance (see MessageImportance enum)
-     * @param message The message format string.
-     *
-     */
-        void log (const char *message, ...);
-
-        void log (const char *file, const char *message, ...);
-
-        void log (const char *file, const int line, const char *message, ...);
-
-        void log (const MessageImportance importance, const char *message,
-                  ...);
-
-        void log (const char *file, const MessageImportance importance,
-                  const char *message, ...);
-
-        void log (const char *file, const int line,
-                  const MessageImportance importance, const char *message,
-                  ...);
+	/**
+	* Deletes a LoggingService instance.
+	*/
+	virtual ~LoggingService ();
 
 
-    /**
-     * Is actually used in all cases of log. (Generates the message and then uses sendMessage.)
-     * @see log
-     */
-        void logVarParam (const char *file, const int line,
-                          const MessageImportance importance,
-                          const char *message, va_list argptr);
+	//----------------------------------------------------------------------
+	// Getters
 
-    /**
-     * Gives the possibility to specify options when using the streaming method << for messages.
-     * 
-     * @param file The source code file the message was initiated.
-     * @param line The source code line the message was initiated.
-     * @param importance The level of importance (see MessageImportance enum)
-     *
-     * @return This function always returns a reference to the LoggingService object. You
-     * can thus easily apply the shifting operator to it.
-     */
+	//----------------------------------------------------------------------
+	// Setters
 
-        LoggingService & slog (const std::string & file, const int line,
-                               const MessageImportance importance);
+	//----------------------------------------------------------------------
+	// Other public methods
 
-        LoggingService & slog (const MessageImportance importance);
+	virtual Service::Status start ();
 
-        LoggingService & slog (const std::string & file,
-                               const MessageImportance importance);
+	/**
+	* Adds a message presented by various options, a format string and variable params like
+	* in printf using also the same format specifications.
+	*
+	* @param file The source code file the message was initiated.
+	* @param line The source code line the message was initiated.
+	* @param importance The level of importance (see MessageImportance enum)
+	* @param message The message format string.
+	*
+	*/
+	void log (const char *message, ...);
 
-        LoggingService & slog (const std::string & file, const int line);
+	void log (const char *file, const char *message, ...);
 
-        LoggingService & slog (const std::string & file);
+	void log (const char *file, const int line, const char *message, ...);
 
-    /**
-     * Adds an observer to the list. 
-     *
-     * @param observer Pointer to an object with an Observer interface to be added to the list.
-     */
+	void log (const MessageImportance importance, const char *message,
+			...);
 
-        void addObserver (Observer * observer);
+	void log (const char *file, const MessageImportance importance,
+			const char *message, ...);
+
+	void log (const char *file, const int line,
+			const MessageImportance importance, const char *message,
+			...);
 
 
-    /**
-     * Removes an observer from the list.
-     *
-     * @param observer The pointer previously added the the observer list via addObserver.
-     *
-     * @return 0 if the observer was found and removed, <> 0 otherwise
-     */
+	/**
+	* Is actually used in all cases of log. (Generates the message and then uses sendMessage.)
+	* @see log
+	*/
+	void logVarParam (const char *file, const int line,
+					const MessageImportance importance,
+					const char *message, va_list argptr);
+
+	/**
+	* Gives the possibility to specify options when using the streaming method << for messages.
+	* 
+	* @param file The source code file the message was initiated.
+	* @param line The source code line the message was initiated.
+	* @param importance The level of importance (see MessageImportance enum)
+	*
+	* @return This function always returns a reference to the LoggingService object. You
+	* can thus easily apply the shifting operator to it.
+	*/
+
+	LoggingService & slog (const std::string & file, const int line,
+						const MessageImportance importance);
+
+	LoggingService & slog (const MessageImportance importance);
+
+	LoggingService & slog (const std::string & file,
+						const MessageImportance importance);
+
+	LoggingService & slog (const std::string & file, const int line);
+
+	LoggingService & slog (const std::string & file);
+
+	/**
+	* Adds an observer to the list. 
+	*
+	* @param observer Pointer to an object with an Observer interface to be added to the list.
+	*/
+
+	void addObserver (Observer * observer);
 
 
-        int removeObserver (Observer * observer);
+	/**
+	* Removes an observer from the list.
+	*
+	* @param observer The pointer previously added the the observer list via addObserver.
+	*
+	* @return 0 if the observer was found and removed, <> 0 otherwise
+	*/
 
-        //----------------------------------------------------------------------
-        // shifting operator and helper functions
 
-    /**
-     * Converts a normal int to a hexadecimal int that can be streamed into the
-     * LoggingService object. (use HEX_NUM macro if you want)
-     */
+	int removeObserver (Observer * observer);
 
-        static HexNumber hexNumber (const int intDecimal);
+	//----------------------------------------------------------------------
+	// shifting operator and helper functions
 
-        LoggingService & operator<< (const std::string & stringToAdd);
+	/**
+	* Converts a normal int to a hexadecimal int that can be streamed into the
+	* LoggingService object. (use HEX_NUM macro if you want)
+	*/
 
-        LoggingService & operator<< (const int intToAdd);
-        
-        LoggingService & operator<< (const unsigned int uintToAdd);
-        
-        LoggingService & operator<< (const unsigned long ulongToAdd);
+	static HexNumber hexNumber (const int intDecimal);
 
-        LoggingService & operator<< (const HexNumber & intHexToAdd);
-        
-         LoggingService & operator<< (const double doubleToAdd);
+	LoggingService & operator<< (const std::string & stringToAdd);
+
+	LoggingService & operator<< (const int intToAdd);
+	
+	LoggingService & operator<< (const unsigned int uintToAdd);
+	
+	LoggingService & operator<< (const unsigned long ulongToAdd);
+
+	LoggingService & operator<< (const HexNumber & intHexToAdd);
+	
+	LoggingService & operator<< (const double doubleToAdd);
 
 //         LoggingService & operator<< (const size_t sizetToAdd);
-        /**
-	 * By streaming in END_MESSAGE (equally to ENDM-macro) you finish the message and start
-	 * sending it.
-	 */
+	/**
+	* By streaming in END_MESSAGE (equally to ENDM-macro) you finish the message and start
+	* sending it.
+	*/
 
-        void operator<< (const EndMessageEnum endMessage);
+	void operator<< (const EndMessageEnum endMessage);
 
-        //======================================================================
-        // Protected Methods
-        //======================================================================
-      protected:
+	//======================================================================
+	// Protected Methods
+	//======================================================================
+protected:
 
 
-        //======================================================================
-        // Private Methods
-        //======================================================================
-      private:
+	//======================================================================
+	// Private Methods
+	//======================================================================
+private:
 
-        //----------------------------------------------------------------------
-        // Constructors
+	//----------------------------------------------------------------------
+	// Constructors
 
-    /**
-     * Creates a new LoggingService using default values.
-     * Private so LoggingService can only be initialized through getInstance.
-     */
-        LoggingService ();
+	/**
+	* Creates a new LoggingService using default values.
+	* Private so LoggingService can only be initialized through getInstance.
+	*/
+	LoggingService ();
 
-        //----------------------------------------------------------------------
-        // Other private methods
+	//----------------------------------------------------------------------
+	// Other private methods
 
 	std::auto_ptr<ErisLogReciever> mErisLogReciever;
 
-    /**
-     * Unifies the sending mechanism for streaming- and formatting-input
-     */
+	/**
+	* Unifies the sending mechanism for streaming- and formatting-input
+	*/
 
-        virtual void sendMessage (const std::string & message,
-                                  const std::string & file, const int line,
-                                  const MessageImportance importance);
-
-    };                          // LoggingService
+	virtual void sendMessage (const std::string & message,
+							const std::string & file, const int line,
+							const MessageImportance importance);
+	
+};                          // LoggingService
 
 }                               // namespace Ember
 
