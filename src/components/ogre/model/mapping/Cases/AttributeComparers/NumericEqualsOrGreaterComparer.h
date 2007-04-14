@@ -44,6 +44,7 @@ class NumericEqualsOrGreaterComparer : public NumericComparer, private NumericVa
 {
 public:
 	NumericEqualsOrGreaterComparer(float value);
+	virtual ~NumericEqualsOrGreaterComparer() {}
 	
 	/**
 	Returns true if the supplied value is equal or greater than the held value.

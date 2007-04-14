@@ -27,7 +27,7 @@ namespace EmberOgre {
 namespace Environment {
 
 CaelumSun::CaelumSun(CaelumEnvironment& environment, caelum::Sun* sun)
-: mSun(sun), CaelumEnvironmentComponent( environment)
+: CaelumEnvironmentComponent( environment), mSun(sun) 
 {
 }
 

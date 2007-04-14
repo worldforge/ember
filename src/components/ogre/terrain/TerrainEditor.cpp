@@ -53,7 +53,7 @@ namespace EmberOgre {
 const std::string BasePointUserObject::s_TypeName("BasePointMarker");
 	
 	
-BasePointUserObject::BasePointUserObject(const TerrainPosition terrainPosition,const Mercator::BasePoint& basePoint, Ogre::SceneNode* basePointMarkerNode) : mPosition(terrainPosition), mBasePoint(basePoint), mBasePointMarkerNode(basePointMarkerNode)
+BasePointUserObject::BasePointUserObject(const TerrainPosition terrainPosition,const Mercator::BasePoint& basePoint, Ogre::SceneNode* basePointMarkerNode) : mBasePoint(basePoint), mBasePointMarkerNode(basePointMarkerNode), mPosition(terrainPosition)
 {
 }
 

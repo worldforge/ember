@@ -39,13 +39,13 @@ namespace Environment {
 	Ogre::Real FoliageArea::mZinc = Ogre::Math::PI * 0.0055;
 
 FoliageArea::FoliageArea() :
+mSceneMgr(0),
 mFoliage(0),
-mSceneMgr(0), 
-mStaticGeom(0), 
-mVisible(false)
+mVisible(false),
+mStaticGeom(0)
 {
-	Ogre::Real mXpos = Ogre::Math::RangeRandom(-Ogre::Math::PI, Ogre::Math::PI);
-	Ogre::Real mZpos = Ogre::Math::RangeRandom(-Ogre::Math::PI, Ogre::Math::PI);
+	mXpos = Ogre::Math::RangeRandom(-Ogre::Math::PI, Ogre::Math::PI);
+	mZpos = Ogre::Math::RangeRandom(-Ogre::Math::PI, Ogre::Math::PI);
 }
 
 

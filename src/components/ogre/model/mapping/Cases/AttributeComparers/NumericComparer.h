@@ -40,6 +40,7 @@ namespace AttributeComparers {
 class NumericComparer
 {
 public:
+	virtual ~NumericComparer() {}
 	/**
 	Test the supplied value.
 	@param value The value to test.

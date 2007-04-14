@@ -56,6 +56,7 @@ public:
 	* @param entity 
 	*/
 	HeightComparerWrapper(NumericComparer* comparer, Eris::Entity* entity);
+	virtual ~HeightComparerWrapper() {}
 	
 	/**
 	Test the height. The attribute passed will be ignored.

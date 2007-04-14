@@ -62,11 +62,17 @@ class CloudsUpdater : public caelum::CaelumListener {
 
 
 CaelumEnvironment::CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera* camera)
-: mCaelumSystem(0)
+: 
+ SetCaelumTime("set_caelumtime",this, "Sets the caelum time. parameters: <hour> <minute>")
+, mCaelumSystem(0)
+, mCaelumModel(0)
 , mSceneMgr(sceneMgr)
 , mWindow(window)
 , mCamera(camera)
-, SetCaelumTime("set_caelumtime",this, "Sets the caelum time. parameters: <hour> <minute>")
+, mSky(0)
+, mSun(0)
+, mWater(0)
+
 //,mLensFlare(camera, sceneMgr)
 {
 	sceneMgr->setAmbientLight(Ogre::ColourValue(0.3f, 0.3f, 0.3f));
@@ -83,6 +89,11 @@ CaelumEnvironment::CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderW
 
 CaelumEnvironment::~CaelumEnvironment()
 {
+	delete mSky;
+	delete mSun;
+	delete mWater;
+	delete mCaelumModel;
+	delete mCaelumSystem;
 }
 
 void CaelumEnvironment::createEnvironment()

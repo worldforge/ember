@@ -41,7 +41,7 @@ class CaelumSky
 public:
     CaelumSky(CaelumEnvironment& environment, caelum::SkyColourModel *caelumModel, caelum::SkyDome *dome);
 
-    ~CaelumSky();
+    virtual ~CaelumSky();
     
 
  	void setDensity(float density);

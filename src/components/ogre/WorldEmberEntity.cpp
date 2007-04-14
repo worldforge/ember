@@ -37,9 +37,10 @@
 
 namespace EmberOgre {
 WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, TerrainGenerator* terrainGenerator) : 
-mTerrainGenerator(terrainGenerator),
-mFoliage(0),
 EmberEntity(id, ty, vw, sceneManager)
+, mTerrainGenerator(terrainGenerator)
+, mFoliage(0)
+, mEnvironment(0)
 {
 	sceneManager->getRootSceneNode()->addChild(getSceneNode());
 }
@@ -50,7 +51,6 @@ WorldEmberEntity::~WorldEmberEntity()
 void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
 	EmberEntity::init(ge, fromCreateOp);
-	//mTerrainGenerator->initTerrain(this, getView());
 	
 	mEnvironment = new Environment::Environment(new Environment::CaelumEnvironment( EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), EmberOgre::getSingleton().getMainCamera()->getCamera()));
 	
@@ -85,7 +85,7 @@ void WorldEmberEntity::updateTerrain(const Atlas::Message::Element& terrain)
     }
     const Atlas::Message::MapType & tmap = terrain.asMap();
     Atlas::Message::MapType::const_iterator I = tmap.find("points");
-    int xmin = 0, xmax = 0, ymin = 0, ymax = 0;
+//     int xmin = 0, xmax = 0, ymin = 0, ymax = 0;
     if (I == tmap.end()) {
 		S_LOG_FAILURE( "No terrain points" );
     }

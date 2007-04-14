@@ -31,7 +31,7 @@ namespace EmberOgre {
 namespace Gui {
 
 Vector3Adapter::Vector3Adapter(CEGUI::Window *xWindow, CEGUI::Window *yWindow, CEGUI::Window *zWindow, const Ogre::Vector3& vector)
-: mOriginalVector(vector), mVector(vector), mXWindow(xWindow), mYWindow(yWindow), mZWindow(zWindow), mSelfUpdate(false)
+: mVector(vector), mOriginalVector(vector), mXWindow(xWindow), mYWindow(yWindow), mZWindow(zWindow), mSelfUpdate(false)
 
 {
 	if (xWindow) {

@@ -48,6 +48,7 @@ class IWorldPickListener
 {
 public:
 
+virtual ~IWorldPickListener() {}
 
 /**
 Called at the start of a picking context. This allows the pickers to be reset and to keep state for each picking.

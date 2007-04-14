@@ -32,6 +32,8 @@ class ISceneManagerAdapter
 {
 public:
 
+	virtual ~ISceneManagerAdapter() {}
+
 	virtual int getPageSize() = 0;
 	
 	virtual void setWorldPagesDimensions(int numberOfPagesHeight, int numberOfPagesWidth) = 0;

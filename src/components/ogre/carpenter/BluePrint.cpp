@@ -25,7 +25,7 @@
 namespace Carpenter {
 
 BluePrint::BluePrint(const std::string & name, Carpenter* carpenter)
-: mCarpenter(carpenter), mName(name)
+: mName(name), mCarpenter(carpenter)
 {
 }
 
@@ -35,7 +35,7 @@ BluePrint::BluePrint(const std::string & name, Carpenter* carpenter)
 // }
 
 BuildingBlock::BuildingBlock() 
-: mAttached(false), mPosition(0,0,0), mChildBindings(0)
+: mPosition(0,0,0), mAttached(false), mChildBindings(0)
 
 {
 mOrientation.identity();

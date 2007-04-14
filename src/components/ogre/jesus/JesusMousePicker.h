@@ -40,7 +40,7 @@ class JesusMousePicker : public MousePicker
 public:
     JesusMousePicker();
 
-    ~JesusMousePicker();
+    virtual ~JesusMousePicker();
 
 	virtual void doMousePicking(const Ogre::Real x, const Ogre::Real y, const MousePickerArgs& args);
 	virtual void initializePickingContext();

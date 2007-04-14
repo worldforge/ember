@@ -46,6 +46,7 @@ class StringComparerWrapper : public AttributeComparerWrapper
 {
 public:
 	StringComparerWrapper(StringComparer* comparer);
+	virtual ~StringComparerWrapper() {}
 	virtual bool testAttribute(const Atlas::Message::Element& attribute);
 private:
 	std::auto_ptr<StringComparer> mStringComparer;

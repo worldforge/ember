@@ -47,7 +47,11 @@ namespace EmberOgre {
 
 
 Help::Help()
- : mTimeUntilShowBlurb(30), mTimeBlurbShown(0), mTimeToShowBlurb(10), mBlurb(0), HelpCommand("help", this, "Display the help.")
+ : HelpCommand("help", this, "Display the help.")
+ , mTimeBlurbShown(0)
+ , mTimeToShowBlurb(10)
+ , mTimeUntilShowBlurb(30)
+ , mBlurb(0)
 {
 
 }

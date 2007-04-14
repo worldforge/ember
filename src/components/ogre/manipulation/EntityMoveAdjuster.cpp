@@ -27,7 +27,7 @@
 namespace EmberOgre {
 
 EntityMoveAdjustmentInstance::EntityMoveAdjustmentInstance(EntityMoveAdjuster* moveAdjuster, EmberEntity* entity)
-:mMoveAdjuster(moveAdjuster), mEntity(entity), mTimeout(1500)
+:  mEntity(entity), mTimeout(1500), mMoveAdjuster(moveAdjuster)
 {
 	mTimeout.Expired.connect(sigc::mem_fun(this, &EntityMoveAdjustmentInstance::timout_Expired));
 }

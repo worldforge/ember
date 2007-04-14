@@ -45,6 +45,7 @@ class NumericEqualsOrLesserComparer : public NumericComparer, private NumericVal
 {
 public:
 	NumericEqualsOrLesserComparer(float value);
+	virtual ~NumericEqualsOrLesserComparer() {}
 	/**
 	Returns true if the supplied value is equal or lesser than the held value.
 	*/

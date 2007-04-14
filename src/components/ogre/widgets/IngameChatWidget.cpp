@@ -26,8 +26,6 @@
 #include "Widget.h"
 #include "../GUIManager.h"
 #include "../EmberEntity.h"
-//#include "../EmberPhysicalEntity.h"
-//#include "../model/Model.h"
 
 #include <CEGUIWindowManager.h>
 #include <CEGUIExceptions.h>
@@ -44,9 +42,8 @@
 #include "../Avatar.h"
 
 #include "../EmberEntity.h"
- #include "../EmberPhysicalEntity.h"
-//  #include "../PersonEmberEntity.h"
- #include "../AvatarEmberEntity.h"
+#include "../EmberPhysicalEntity.h"
+#include "../AvatarEmberEntity.h"
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
@@ -55,10 +52,6 @@
 
 using namespace CEGUI;
 namespace EmberOgre {
-
-// template<> WidgetLoader WidgetLoaderHolder<IngameChatWidget>::loader("IngameChatWidget", &createWidgetInstance);
-
-//WidgetLoader Widget::loader("IngameChatWidget", &createWidgetInstance<IngameChatWidget>);
 
 
 IngameChatWidget::~IngameChatWidget()
@@ -252,8 +245,8 @@ void EmberOgre::IngameChatWidget::ActiveChatWindow::updateText( const std::strin
 			responseText->setSize(UVector2(UDim(0.8f, 0), UDim(0.9f, 0)));
 			responseText->setPosition(UVector2(UDim(0.1f, 0), UDim(0.05f, 0)));
 			responseText->setProperty("HorzFormatting", "WordWrapLeftAligned");
-/* 			responseText->setFrameEnabled(false);
- 			responseText->setBackgroundEnabled(false);*/
+ 			responseText->setProperty("FrameEnabled", "false");
+ 			responseText->setProperty("BackgroundEnabled", "false");
 			responseText->setInheritsAlpha(true);
 			///we need to disable and deactivate it so it won't recieve any input (input should go to the button instead)
 			responseText->deactivate();
@@ -281,7 +274,11 @@ void EmberOgre::IngameChatWidget::ActiveChatWindow::updateText( const std::strin
 }
 
 EmberOgre::IngameChatWidget::ActiveChatWindow::ActiveChatWindow( Window * window, EmberEntity * entity, WindowManager * windowManager, IngameChatWidget& containerWidget)
- : mWindow(window), mEntity(entity), mWindowManager(windowManager), mElapsedTimeSinceLastUpdate(0.0f), mContainerWidget(containerWidget)
+ : mWindow(window), 
+ mElapsedTimeSinceLastUpdate(0.0f), 
+ mEntity(entity), 
+ mWindowManager(windowManager), 
+ mContainerWidget(containerWidget)
 {
 	entity->BeingDeleted.connect(sigc::mem_fun(*this, &ActiveChatWindow::entity_BeingDeleted));
 	try {

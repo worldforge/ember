@@ -41,6 +41,7 @@ class EntityMover : public IEntityMoveBridge
 public:
 
 	EntityMover(EmberEntity* entity);
+	virtual ~EntityMover() {}
 
 	virtual const WFMath::Quaternion& getOrientation() const;
 	virtual const WFMath::Point<3>& getPosition() const;

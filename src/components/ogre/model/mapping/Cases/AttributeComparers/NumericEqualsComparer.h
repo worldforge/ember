@@ -44,6 +44,7 @@ class NumericEqualsComparer : public NumericComparer, private NumericValueHolder
 {
 public:
 	NumericEqualsComparer(float value);
+	virtual ~NumericEqualsComparer() {}
 	/**
 	Returns true if the supplied value is equal to the held value.
 	*/

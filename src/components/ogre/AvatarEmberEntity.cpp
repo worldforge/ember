@@ -34,9 +34,8 @@
 namespace EmberOgre {
 
 
-AvatarEmberEntity::AvatarEmberEntity(const std::string& id, Eris::TypeInfo* type, Eris::View* vw, Ogre::SceneManager* sceneManager, Eris::Avatar* erisAvatar) : 
+AvatarEmberEntity::AvatarEmberEntity(const std::string& id, Eris::TypeInfo* type, Eris::View* vw, Ogre::SceneManager* sceneManager, Eris::Avatar* erisAvatar) : EmberPhysicalEntity(id, type, vw, sceneManager),
 mAvatar(0), mErisAvatar(erisAvatar)
-,EmberPhysicalEntity(id, type, vw, sceneManager)
 {
 }
 

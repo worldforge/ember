@@ -38,7 +38,7 @@ namespace EmberOgre {
 
 
 EntityCEGUITexture::EntityCEGUITexture(const std::string& imageSetName, int width, int height)
-: mWidth(width), mHeight(height), mCamera(0), mRootNode(0), mSceneManager(0), mRenderTexture(0)
+: mWidth(width), mHeight(height), mSceneManager(0), mRenderTexture(0), mRootNode(0), mCamera(0)
 {
 
 	S_LOG_VERBOSE("Creating new EntityCEGUITexture for imageset " << imageSetName  << " with w:" << mWidth << " h:" << mHeight);

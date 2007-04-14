@@ -27,7 +27,7 @@
 
 namespace EmberOgre {
 
-OgreEntityRenderer::OgreEntityRenderer(CEGUI::Window* image) : mEntity(0), MovableObjectRenderer(image)
+OgreEntityRenderer::OgreEntityRenderer(CEGUI::Window* image) : MovableObjectRenderer(image), mEntity(0)
 {
 }
 

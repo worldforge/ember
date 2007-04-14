@@ -47,6 +47,9 @@ namespace Cases {
 class EntityBaseCase
 {
 public:
+
+	virtual ~EntityBaseCase() {}
+
 	bool testMatch(Eris::Entity* entity);
 	
 	/**

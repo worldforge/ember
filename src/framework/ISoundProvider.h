@@ -35,6 +35,8 @@ class SoundService;
 class ISoundProvider{
 public:
 	
+	virtual ~ISoundProvider() {}
+	
 	/**
 	 *    Loads a sound
 	 * @param soundName 

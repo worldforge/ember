@@ -72,17 +72,17 @@ namespace EmberOgre {
 
 
 EmberEntityFactory::EmberEntityFactory(Eris::View* view, TerrainGenerator* terrainGenerator, Eris::TypeService* typeService)
-: mTerrainGenerator(terrainGenerator)
-, mTypeService(typeService)
-, mView(view)
-, mWorldEntity(0)
-, ShowModels("showmodels", this, "Show or hide models.")
+: ShowModels("showmodels", this, "Show or hide models.")
 , DumpAttributes("dump_attributes", this, "Dumps the attributes of a supplied entity to a file. If no entity id is supplied the current avatar will be used.")
+, mTerrainGenerator(terrainGenerator)
+, mTypeService(typeService)
+, mTerrainType(0)
+, mWorldEntity(0)
+, mView(view)
 {
 	mView->registerFactory(this);
 	
 	mTerrainType = mTypeService->getTypeByName("world");
-	Ember::ServerService* serverService = Ember::EmberServices::getSingletonPtr()->getServerService();
 	
 	getErisAvatar()->GotCharacterEntity.connect(sigc::mem_fun(*this, &EmberEntityFactory::gotAvatarCharacter));
 	
@@ -225,7 +225,6 @@ void EmberEntityFactory::runCommand(const std::string &command, const std::strin
 		tokeniser.initTokens(args);
 		std::string value = tokeniser.nextToken();
 		if (value == "") {
-			Eris::Entity* entity(0); 
 			if (getErisAvatar()) {
 				dumpAttributesOfEntity(getErisAvatar()->getEntity()->getId());
 			}

@@ -47,7 +47,7 @@ BuildingBlockSpecDefinition::BuildingBlockSpecDefinition()
 }
 	
 AttachPoint::AttachPoint(const std::string& name, WFMath::Point<3> position, WFMath::Vector<3> normal)
-: mName(name), mPosition(position), mNormal(normal), mAttachPair(0)
+: mNormal(normal), mPosition(position), mName(name), mAttachPair(0)
 {
 }
 

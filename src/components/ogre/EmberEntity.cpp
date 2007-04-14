@@ -88,24 +88,24 @@ namespace Ogre {
 namespace EmberOgre {
 
 
-const char * const EmberEntity::MODE_STANDING = "standing";
-const char * const EmberEntity::MODE_RUNNING = "running";
-const char * const EmberEntity::MODE_WALKING = "walking";
-const char * const EmberEntity::MODE_SWIMMING = "swimming";
-const char * const EmberEntity::MODE_FLOATING = "floating";
-const char * const EmberEntity::MODE_FIXED = "fixed";
+const std::string EmberEntity::MODE_STANDING("standing");
+const std::string EmberEntity::MODE_RUNNING("running");
+const std::string EmberEntity::MODE_WALKING("walking");
+const std::string EmberEntity::MODE_SWIMMING("swimming");
+const std::string EmberEntity::MODE_FLOATING("floating");
+const std::string EmberEntity::MODE_FIXED("fixed");
 
 const std::string EmberEntity::BboxMaterialName("BaseYellowNoLightning");
 
 
 EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw,Ogre::SceneManager* sceneManager)
 :
-mIsInitialized(false)
-, Eris::Entity(id, ty, vw) 
-, mTerrainArea(this)
+Eris::Entity(id, ty, vw) 
+, mIsInitialized(false)
 , mIsInMotionManager(false)
 , mErisEntityBoundingBox(0)
 , mOgreNode(0)
+, mTerrainArea(this)
 {
 	createSceneNode(sceneManager);
 }

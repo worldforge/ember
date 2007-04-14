@@ -76,12 +76,12 @@ public:
 		MM_FIXED = 7  
 	};
 
-	static const char * const MODE_STANDING;
-	static const char * const MODE_RUNNING;
-	static const char * const MODE_WALKING;
-	static const char * const MODE_SWIMMING;
-	static const char * const MODE_FLOATING;
-	static const char * const MODE_FIXED;
+	static const std::string MODE_STANDING;
+	static const std::string MODE_RUNNING;
+	static const std::string MODE_WALKING;
+	static const std::string MODE_SWIMMING;
+	static const std::string MODE_FLOATING;
+	static const std::string MODE_FIXED;
 	
 	/**
 	The material used for showing the eris bbox.

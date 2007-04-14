@@ -30,7 +30,7 @@ namespace EmberOgre {
 namespace Gui {
 
 QuaternionAdapter::QuaternionAdapter(CEGUI::Window *degreeWindow, CEGUI::Window *xWindow, CEGUI::Window *yWindow, CEGUI::Window *zWindow, const Ogre::Quaternion& quaternion)
-: mVectorAdapter(xWindow, yWindow, zWindow), mDegreeWindow(degreeWindow), mOriginalQuaternion(quaternion), mQuaternion(quaternion), mSelfUpdate(false)
+: mQuaternion(quaternion), mOriginalQuaternion(quaternion), mVectorAdapter(xWindow, yWindow, zWindow), mDegreeWindow(degreeWindow), mSelfUpdate(false)
 {
 	if (degreeWindow) {
 		BIND_CEGUI_EVENT(degreeWindow, CEGUI::Window::EventTextChanged, QuaternionAdapter::window_TextChanged);

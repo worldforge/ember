@@ -447,8 +447,8 @@ void TerrainGenerator::prepareAllSegments()
 
 bool TerrainGenerator::isValidTerrainAt(const TerrainPosition& position)
 {
-	int x = (int)position.x();
-	int y = (int)position.y();
+// /*	int x = (int)position.x();
+// 	int y = (int)position.y();*/
 	Mercator::Segment* segment = mTerrain->getSegment(position.x(),position.y());
 	return (segment &&	segment->isValid());
 //	return (segment &&	segment->isValid() && getMaterialForSegment(position));
@@ -593,135 +593,6 @@ float TerrainGenerator::getHeight(const TerrainPosition& point) const
 	return -1;
 	
 }
-
-
-
-
-
-bool TerrainGenerator::initTerrain(Eris::Entity *we, Eris::View *world) 
-{
-
-	//_fpreset();
-   if (!we->hasAttr("terrain")) {
-	   S_LOG_FAILURE( "View entity has no terrain" );
-	   S_LOG_FAILURE( "View entity id " << we->getId() );
-        return false;
-    }
-    const Atlas::Message::Element &terrain = we->valueOfAttr("terrain");
-    if (!terrain.isMap()) {
-		S_LOG_FAILURE( "Terrain is not a map" );
-    }
-    const Atlas::Message::MapType & tmap = terrain.asMap();
-    Atlas::Message::MapType::const_iterator I = tmap.find("points");
-    int xmin = 0, xmax = 0, ymin = 0, ymax = 0;
-    if (I == tmap.end()) {
-		S_LOG_FAILURE( "No terrain points" );
-    }
-
-	TerrainDefPointStore pointStore;
-	if (I->second.isList()) {
-        // Legacy support for old list format.
-        const Atlas::Message::ListType & plist = I->second.asList();
-        Atlas::Message::ListType::const_iterator J = plist.begin();
-        for(; J != plist.end(); ++J) {
-            if (!J->isList()) {
-				S_LOG_INFO( "Non list in points" );
-                continue;
-            }
-            const Atlas::Message::ListType & point = J->asList();
-            if (point.size() != 3) {
-				S_LOG_INFO( "point without 3 nums" );
-                continue;
-            }
-            //int x = (int)point[0].asNum();
-            //int y = (int)point[1].asNum();
-
-			TerrainDefPoint defPoint((int)point[0].asNum(),(int)point[1].asNum(),(int)point[3].asNum());
-			pointStore.push_back(defPoint);
-			//mTerrain->setBasePoint(x,y,point[2].asNum());
-        }
-    } else if (I->second.isMap()) {
-
-        const Atlas::Message::MapType & plist = I->second.asMap();
-        Atlas::Message::MapType::const_iterator J = plist.begin();
-        for(; J != plist.end(); ++J) {
-            if (!J->second.isList()) {
-				S_LOG_INFO( "Non list in points" );
-                continue;
-            }
-            const Atlas::Message::ListType & point = J->second.asList();
-            if (point.size() != 3) {
-				S_LOG_INFO( "point without 3 nums" );
-                continue;
-            }
-            int x = (int)point[0].asNum();
-            int y = (int)point[1].asNum();
-            float z = point[2].asNum();
-			TerrainDefPoint defPoint(x,y,z);
-			pointStore.push_back(defPoint);
-
-			
-/*	        Mercator::BasePoint bp;
-            if (mTerrain->getBasePoint(x, y, bp) && (z == bp.height())) {
-				S_LOG_INFO( "Point [" << x << "," << y << " unchanged");
-                continue;
-            }
-            xmin = std::min(xmin, x);
-            xmax = std::max(xmax, x);
-            ymin = std::min(ymin, y);
-            ymax = std::max(ymax, y);
-            bp.height() = z;
-            // FIXME Sort out roughness and falloff, and generally
-            // verify this code is the same as that in Terrain layer
-            mTerrain->setBasePoint(x, y, bp);*/
-            
-        }
-	
-	
-/*        const Atlas::Message::MapType & plist = I->second.asMap();
-        Atlas::Message::MapType::const_iterator J = plist.begin();
-        for(; J != plist.end(); ++J) {
-            if (!J->second.isList()) {
-                std::cout << "Non list in points" << std::endl << std::flush;
-                continue;
-            }
-            const Atlas::Message::ListType & point = J->second.asList();
-            if (point.size() != 3) {
-                std::cout << "point without 3 nums" << std::endl << std::flush;
-                continue;
-            }
-            int x = (int)point[0].asNum();
-            int y = (int)point[1].asNum();
-            xmin = std::min(xmin, x);
-            xmax = std::max(xmax, x);
-            ymin = std::min(ymin, y);
-            ymax = std::max(ymax, y);
-          //  m_terrain.setBasePoint(x, y, point[2].asNum());
-			mTerrain->setBasePoint(x,y,point[2].asNum());
-//System::instance()->getGraphics()->getTerrainRenderer()->m_terrain.setBasePoint(x,y,point[2].asNum());
-//System::Instance()->getGraphics(x,y,point[2].asNum());
-        }*/
-
-      
-
-    } else {
-		S_LOG_FAILURE( "Terrain is the wrong type" );
-        return false;
-    }
-	updateTerrain(pointStore);
-/*    mXmin = xmin;
-    mXmax = xmax;
-    mYmin = ymin;
-    mYmax = ymax;*/
-//     mSegments = &mTerrain->getTerrain();
-	
-
-
-	
-	
-    return true;
-}
-
 
 
 bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)

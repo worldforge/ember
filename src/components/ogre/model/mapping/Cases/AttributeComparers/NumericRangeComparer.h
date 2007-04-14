@@ -44,6 +44,7 @@ class NumericRangeComparer : public NumericComparer
 {
 public:
 	NumericRangeComparer(NumericComparer* minComparer, NumericComparer* maxComparer);
+	virtual ~NumericRangeComparer() {}
 	/**
 	Returns true if the supplied value is true for both the used comparers.
 	*/

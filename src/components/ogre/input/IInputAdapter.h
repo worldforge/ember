@@ -39,6 +39,8 @@ namespace EmberOgre {
 class IInputAdapter
 {
 public:
+
+	virtual ~IInputAdapter() {}
 	/**
 	 *    Injects a mouse move. Returns false if the event shouldn't be processed any more.
 	 * @param x 

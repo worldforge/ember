@@ -34,7 +34,7 @@ namespace Mapping {
 namespace Cases {
 
 CaseBase::CaseBase() 
-: mParentCase(0), mIsActive(false), mIsTrue(false) 
+: mParentCase(0), mIsTrue(false), mIsActive(false)
 {
 }
 

@@ -35,15 +35,16 @@ class EmberEntity;
 /**
 @author Erik Hjortsberg
 */
-class TerrainArea{
+class TerrainArea
+{
 public:
     TerrainArea(EmberEntity* entity);
 
     ~TerrainArea();
 	void init();
 	
-	inline Mercator::Area* getArea() const { return mArea; }
-	inline void setArea(Mercator::Area* area) { mArea = area; }
+	inline Mercator::Area* getArea() const;
+	inline void setArea(Mercator::Area* area);
 
 protected:
 
@@ -51,6 +52,10 @@ protected:
 	EmberEntity* mEntity;
 
 };
+
+Mercator::Area* TerrainArea::getArea() const { return mArea; }
+void TerrainArea::setArea(Mercator::Area* area) { mArea = area; }
+
 
 };
 

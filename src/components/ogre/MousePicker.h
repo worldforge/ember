@@ -52,7 +52,7 @@ public:
     
     MousePicker();
 
-    ~MousePicker();
+    virtual ~MousePicker();
 
 	/**
 	 *    Try to pick something at the specified coordinates

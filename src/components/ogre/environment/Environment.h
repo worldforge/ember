@@ -44,6 +44,7 @@ public:
 class IFog
 {
 public:
+	virtual ~IFog() {}
 	virtual void setDensity(float density) = 0;
 	virtual float getDensity() const = 0;
 };
@@ -56,6 +57,8 @@ public:
 class IEnvironmentProvider
 {
 public:
+
+	virtual ~IEnvironmentProvider() {}
 
 	virtual void createEnvironment() = 0;
 

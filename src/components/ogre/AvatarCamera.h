@@ -305,6 +305,8 @@ protected:
 
 class ICameraMount
 {
+	virtual ~ICameraMount() {};
+	
 	/**
 	 * Pitches the camera the supplied degrees
 	 */
@@ -347,6 +349,8 @@ class ICameraMount
 
 class MainCamera
 {
+	virtual ~MainCamera() {}
+
 	/**
 	 * returns a pointer to the Ogre::Camera instance 
 	 */

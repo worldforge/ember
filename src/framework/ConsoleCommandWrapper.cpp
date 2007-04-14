@@ -27,7 +27,7 @@
 namespace Ember {
 
 
-ConsoleCommandWrapper::ConsoleCommandWrapper(std::string command, ConsoleObject *object, std::string description) : mCommand(command), mObject(object), mDescription(description), mInverseCommand("")
+ConsoleCommandWrapper::ConsoleCommandWrapper(std::string command, ConsoleObject *object, std::string description) : mCommand(command), mInverseCommand(""), mDescription(description), mObject(object)
 {
 	if (mCommand.size() > 0 && mCommand[0] == '+') {
 		mInverseCommand = std::string("-") + std::string(mCommand).erase(0, 1);

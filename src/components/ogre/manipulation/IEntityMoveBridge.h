@@ -34,6 +34,8 @@ namespace EmberOgre {
 class IEntityMoveBridge
 {
 public:
+	
+	virtual ~IEntityMoveBridge() {}
 
 	virtual const WFMath::Quaternion& getOrientation() const = 0;
 	virtual const WFMath::Point<3>& getPosition() const = 0;

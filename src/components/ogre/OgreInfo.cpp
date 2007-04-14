@@ -49,7 +49,7 @@ bool OgreInfo::isIndirect() const
 	const GLubyte* pcRenderer = glGetString(GL_RENDERER);
 	const std::string renderer((const char*)pcRenderer);
 	
-	return renderer.find("Indirect") != -1;
+	return renderer.find("Indirect") != std::string::npos;
 #endif
 	
 }

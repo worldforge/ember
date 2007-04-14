@@ -35,7 +35,7 @@
 namespace EmberOgre {
 
 MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image)
-: mImage(image), mTexture(0), mIsInputCatchingAllowed(true), mAutoShowFull(true), mActive(true)
+: mTexture(0), mIsInputCatchingAllowed(true), mAutoShowFull(true), mImage(image), mActive(true)
 {
 	std::string name(image->getName().c_str());
 	int width = static_cast<int>(image->getPixelRect().getWidth());
@@ -72,15 +72,12 @@ MovableObjectRenderer::~MovableObjectRenderer()
 bool MovableObjectRenderer::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
 {
 	///rotate the modelnode
-	Ogre::SceneNode* node = mTexture->getSceneNode();
-	
 	if (GUIManager::getSingleton().getInput().isKeyDown(SDLK_RCTRL) || GUIManager::getSingleton().getInput().isKeyDown(SDLK_LCTRL)) {
 		mTexture->roll(Ogre::Degree(motion.xRelativeMovement * 180));
 	} else {
 		mTexture->yaw(Ogre::Degree(motion.xRelativeMovement * 180));
 		mTexture->pitch(Ogre::Degree(motion.yRelativeMovement * 180));
 	}
-//	node->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)(motion.xRelativeMovement * 180));
 	///we don't want to move the cursor
 	freezeMouse = true;
 	return false;

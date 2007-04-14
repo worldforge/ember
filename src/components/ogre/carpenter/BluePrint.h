@@ -77,10 +77,10 @@ public:
 
 
 protected:
+	const BuildingBlock* mBlock1;
 	const AttachPoint* mPoint1;
 	const BuildingBlock* mBlock2;
 	const AttachPoint* mPoint2;
-	const BuildingBlock* mBlock1;
 };
 
 

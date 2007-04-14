@@ -36,7 +36,7 @@
 namespace EmberOgre {
 
 ModelRenderer::ModelRenderer(CEGUI::Window* image) 
-: mModel(0), MovableObjectRenderer(image)
+: MovableObjectRenderer(image), mModel(0) 
 {
 
 }

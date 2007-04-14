@@ -34,7 +34,7 @@ using namespace WFMath;
 namespace EmberOgre {
 
 EntityMoveAdapter::EntityMoveAdapter(EntityMoveManager* manager)
-: mMovementSpeed(10), mManager(manager), mBridge(0)
+: mBridge(0), mMovementSpeed(10), mManager(manager) 
 {}
 
 EntityMoveAdapter::~EntityMoveAdapter()

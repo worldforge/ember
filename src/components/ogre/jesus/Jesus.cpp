@@ -125,7 +125,10 @@ Carpenter::BluePrint* Jesus::getBluePrint(const std::string& name) const
 
 
 Construction::Construction(Carpenter::BluePrint* bluePrint, Jesus* jesus, Ogre::SceneNode* node)
-: mBaseNode(node), mJesus(jesus), mBlueprint(bluePrint)
+: 
+mBlueprint(bluePrint),
+mBaseNode(node), 
+mJesus(jesus)
 {
 
 
@@ -150,7 +153,7 @@ void Construction::buildFromBluePrint(bool createAttachPointNodes)
 	{
 		Carpenter::BuildingBlock* block = *J;
 		if (block->isAttached()) {
-			ModelBlock* modelBlock = createModelBlock(block, createAttachPointNodes);
+			createModelBlock(block, createAttachPointNodes);
 		}
 	}
 
@@ -234,7 +237,10 @@ ModelBlock::~ModelBlock()
 
 
 ModelBlock::ModelBlock(Ogre::SceneNode* baseNode,const  Carpenter::BuildingBlock* buildingBlock, Model::Model* model, Construction* construction)
-: mBuildingBlock(buildingBlock), mModel(model), mConstruction(construction), mModelNode(0)
+: mBuildingBlock(buildingBlock)
+, mModel(model)
+, mModelNode(0)
+, mConstruction(construction)
 {
 	
 	

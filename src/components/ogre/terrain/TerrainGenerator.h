@@ -128,14 +128,6 @@ public:
 	 */
 	virtual float getHeight(const TerrainPosition& atPosition) const;
 	
-	/**
-	 *    Sets up the terrain. Call this only once.
-	 * @param we 
-	 * @param world 
-	 * @return 
-	 */
-	virtual bool initTerrain(Eris::Entity *we, Eris::View *world);
-	
 	bool updateTerrain(const TerrainDefPointStore& terrainPoints);
 
 	/**

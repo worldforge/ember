@@ -62,7 +62,7 @@ namespace EmberOgre
 	
 	const std::string Widget::DEFAULT_TAB_GROUP("default");
 	
-	Widget::Widget() : mMainWindow(0), mCommandSuffix(""), mActiveWindowIsOpaque(true), mFirstTabWindow(0), mLastTabWindow(0)
+	Widget::Widget() : mCommandSuffix(""), mMainWindow(0), mActiveWindowIsOpaque(true), mFirstTabWindow(0), mLastTabWindow(0)
 	{
 	}
 	

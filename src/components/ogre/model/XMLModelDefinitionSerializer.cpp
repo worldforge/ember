@@ -506,7 +506,7 @@ void  XMLModelDefinitionSerializer::readParticleSystems(ModelDefinitionPtr model
 void XMLModelDefinitionSerializer::readParticleSystemsBindings(ModelDefinition::ParticleSystemDefinition& def, Ember::TiXmlElement* mParticleSystemsNode)
 {
 	const char* tmp = 0;
-	bool nopartfound = true;
+// 	bool nopartfound = true;
 
 	for (Ember::TiXmlElement* apElem = mParticleSystemsNode->FirstChildElement();
             apElem != 0; apElem = apElem->NextSiblingElement())

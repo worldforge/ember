@@ -45,6 +45,7 @@ class NumericGreaterComparer : public NumericComparer, private NumericValueHolde
 {
 public:
 	NumericGreaterComparer(float value);
+	virtual ~NumericGreaterComparer() {}
 	/**
 	Returns true if the supplied value is greater than the held value.
 	*/
