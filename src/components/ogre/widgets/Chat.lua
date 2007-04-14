@@ -30,19 +30,23 @@ end
 --handler for Out Of Game chat event
 --adds messages to the top of the textbox
 function Chat_appendOOGChatLine(line, entity)
-	local textWnd = Chat.widget:getWindow("TextBox")
-	local chatString = textWnd:getText()
-	chatString = "{" .. entity:getName() .. "}" .. line .. "\n" .. chatString
-	textWnd:setText(chatString)
-	
+	Chat_appendLine("{" .. entity:getName() .. "}" .. line)
 end
+
 --handler for In Game chat events
 --adds messages to the top of the textbox
 function Chat_appendIGChatLine(line, entity)
-	local textWnd = Chat.widget:getWindow("TextBox")
-	local chatString = textWnd:getText()
-	chatString = "<" .. entity:getName() .. ">" .. line .. "\n" .. chatString
-	textWnd:setText(chatString)
+	Chat_appendLine("<" .. entity:getName() .. ">" .. line)
+end
+
+function Chat_appendLine(line)
+	local window = Chat.widget:getWindow("TextBox")
+	local textWnd = CEGUI.toMultiLineEditbox(window)
+--	chatString = "<" .. entity:getName() .. ">" .. line .. "\n" .. chatString
+	textWnd:setText(textWnd:getText() .. line)
+	--make sure that the newly added line is shown
+	textWnd:setCaratIndex(string.len(textWnd:getText()))
+	textWnd:ensureCaratIsVisible() 
 end
 
 Chat_buildWidget()
