@@ -61,27 +61,27 @@ class ServerService : public Service, public ConsoleObject, public sigc::trackab
     /** 
      * Holds our connection to the server
      */
-    Eris::Connection *myConn;
+    Eris::Connection *mConn;
 
     /**
      * Holds the player object we are connected with
      */
-    Eris::Account *myAccount;
+    Eris::Account *mAccount;
 
     /**
      * Holds the world object of this server
      */
-    Eris::View *myView;
+    Eris::View *mView;
 
 	/**
      * Holds the current avatar
      */
-	Eris::Avatar *myAvatar;
+	Eris::Avatar *mAvatar;
 
     /**
      * Contains the class that controls Out of Game Chat
      */
-    OOGChat *myOOGChat;
+    OOGChat *mOOGChat;
 
     /**
      * The host we are connected/ing to at present
@@ -96,7 +96,7 @@ class ServerService : public Service, public ConsoleObject, public sigc::trackab
     /**
      * True if and only if we are successfully connected to the server
      */
-    bool myConnected;
+    bool mConnected;
 
 
     //----------------------------------------------------------------------
@@ -106,7 +106,7 @@ class ServerService : public Service, public ConsoleObject, public sigc::trackab
   
   //HACK!!!
   //this is only for testing purposes
-  Eris::Connection* getConnection() { return myConn; }
+  Eris::Connection* getConnection() { return mConn; }
 
     /** Creates a new ServerService using default values. */
     ServerService();
@@ -190,6 +190,8 @@ class ServerService : public Service, public ConsoleObject, public sigc::trackab
 
 	void gotAvatarSuccess(Eris::Avatar* avatar);
 
+	void gotAvatarDeactivated(Eris::Avatar* avatar);
+	
     void gotCharacterInfo(const Atlas::Objects::Entity::RootEntity &);
 
     void gotAllCharacters();
@@ -215,29 +217,17 @@ class ServerService : public Service, public ConsoleObject, public sigc::trackab
 	const Ember::ConsoleCommandWrapper Say;
 	const Ember::ConsoleCommandWrapper Delete;
 	
-// 	static const char * const CONNECT;
-// 	static const char * const RECONNECT;
-// 	static const char * const DISCONNECT;
-// 	static const char * const CREATEACC;
-// 	static const char * const LOGIN;
-// 	static const char * const LOGOUT;
-// 	static const char * const CREATECHAR;
-// 	static const char * const TAKECHAR;
-// 	static const char * const LISTCHARS;
-// 	static const char * const SAY;
-	
 	IServerAdapter* mServerAdapter;
-// 	static const char * const TOUCH;	
-}; //ServerService
+};
 
 bool ServerService::isConnected() const
 {
-	return myConnected;
+	return mConnected;
 }
 
 inline Eris::View* ServerService::getView()
 {
-	return myView;
+	return mView;
 }
 
 

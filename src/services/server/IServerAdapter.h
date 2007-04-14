@@ -41,6 +41,8 @@ namespace Ember {
 class IServerAdapter{
 public:
 
+	virtual ~IServerAdapter() {}
+
 	virtual void moveToPoint(const WFMath::Point<3>& dest) = 0; 
 	virtual void moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation) = 0;
 	virtual void moveInDirection(const WFMath::Vector<3>& velocity) = 0;

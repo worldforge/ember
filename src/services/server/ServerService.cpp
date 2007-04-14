@@ -58,23 +58,13 @@
 namespace Ember
 {
 
-	// List of ServerService's console commands
-// 	const char * const ServerService::CONNECT    = "connect";
-// 	const char * const ServerService::RECONNECT  = "reconnect";
-// 	const char * const ServerService::DISCONNECT = "disconnect";
-// 	const char * const ServerService::CREATEACC  = "create";
-// 	const char * const ServerService::LOGIN      = "login";
-// 	const char * const ServerService::LOGOUT     = "logout";
-// 	const char * const ServerService::CREATECHAR = "add";
-// 	const char * const ServerService::TAKECHAR   = "take";
-// 	const char * const ServerService::LISTCHARS  = "list";
-// 	const char * const ServerService::SAY        = "say";
-// 	const char * const ServerService::TOUCH      = "touch";
-
-  /* ctor */
-  ServerService::ServerService() : myConn(0), myAccount(0),
-				   myView(0), myOOGChat(0),
-				   myConnected(false), myAvatar(0), mServerAdapter(new NonConnectedAdapter()),
+ServerService::ServerService() : 
+	mConn(0),
+	mAccount(0),
+	mView(0), 
+	mAvatar(0),
+	mOOGChat(0),
+	mConnected(false),
 	Connect("connect", this, "Connect to a server."),
 	DisConnect("disconnect", this, "Disconnect from the server."),
 //	ReConnect("reconnect", this, "Reconnect to the server"),
@@ -85,89 +75,87 @@ namespace Ember
 	TakeChar("take", this, "Take control of one of your characters."),
 	ListChars("list", this, "List you available characters on the server."),
 	Say("say", this, "Say something."),
-	Delete("delete", this, "Deletes an entity.")
-  {
-    setName("Server Service");
-    setDescription("Service for Server session");
-  }
+	Delete("delete", this, "Deletes an entity."),
+	mServerAdapter(new NonConnectedAdapter())
+{
+	setName("Server Service");
+	setDescription("Service for Server session");
+}
 
-  /* dtor */
-  ServerService::~ServerService()
-  {
-    delete myConn;
-    delete myAccount;
-    delete myView;
-  }
+/* dtor */
+ServerService::~ServerService()
+{
+	delete mConn;
+	//delete mAccount;
+	//delete mView;
+	delete mServerAdapter;
+}
 	
-  /* Method for starting this service 	*/
-  Service::Status ServerService::start()
-  {
-    setStatus(Service::OK);
-    setRunning( true );
+/* Method for starting this service 	*/
+Service::Status ServerService::start()
+{
+	setStatus(Service::OK);
+	setRunning( true );
 
-    return Service::OK;
+	return Service::OK;
 	
-  }
+}
 
-  /* Interface method for stopping this service 	*/
-  void ServerService::stop(int code)
-  {
-    setStatus(Service::OK);
-    setRunning( false );
+/* Interface method for stopping this service 	*/
+void ServerService::stop(int code)
+{
+	setStatus(Service::OK);
+	setRunning( false );
 
-	if (myConn) {
-		myConn->disconnect();
-    }
-	myConnected = false;
-  }
+	disconnect();
+}
 
-  /* Interface method for connecting to host */
-  bool ServerService::connect(const std::string& host, short port)
-  {
-    myHost = host;
-    myPort = port;
-    try {
-		// Create new instance of myConn the constructor sets the
+/* Interface method for connecting to host */
+bool ServerService::connect(const std::string& host, short port)
+{
+	myHost = host;
+	myPort = port;
+	try {
+		// Create new instance of mConn the constructor sets the
 		// singleton instance up.  Do _not_ use Connection::Instance()
 		// this does not create a new connection.
 		// We are connected without debuging enabled thus the false
-		myConn = new Eris::Connection(std::string("Ember ") + VERSION,myHost, port, false);
+		mConn = new Eris::Connection(std::string("Ember ") + VERSION,myHost, port, false);
 		
 		// Bind signals
-		myConn->Failure.connect(sigc::mem_fun(*this, &ServerService::gotFailure));
-		myConn->Connected.connect(sigc::mem_fun(*this, &ServerService::connected));
-		myConn->Disconnected.connect(sigc::mem_fun(*this, &ServerService::disconnected));
-		myConn->Disconnecting.connect(sigc::mem_fun(*this, &ServerService::disconnecting));
-		myConn->StatusChanged.connect(sigc::mem_fun(*this, &ServerService::statusChanged));
-		//myConn->Timeout.connect(SigC::slot(*this, &ServerService::timeout));
-      // If the connection fails here an errnumber is returned
-      int errorno = myConn->connect();
+		mConn->Failure.connect(sigc::mem_fun(*this, &ServerService::gotFailure));
+		mConn->Connected.connect(sigc::mem_fun(*this, &ServerService::connected));
+		mConn->Disconnected.connect(sigc::mem_fun(*this, &ServerService::disconnected));
+		mConn->Disconnecting.connect(sigc::mem_fun(*this, &ServerService::disconnecting));
+		mConn->StatusChanged.connect(sigc::mem_fun(*this, &ServerService::statusChanged));
+		//mConn->Timeout.connect(SigC::slot(*this, &ServerService::timeout));
+		// If the connection fails here an errnumber is returned
+		int errorno = mConn->connect();
 		if (errorno) 
 		{
 			return false;
 		}
-    }
-    catch (const Eris::BaseException& except)
-    {
-        LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got error on connect:" << except._msg << ENDM;
-        return false;
-    }
-    catch (...)
-      {
-        LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on connect" << ENDM;
-        return false;
-      }
+	}
+	catch (const Eris::BaseException& except)
+	{
+		S_LOG_WARNING("Got error on connect:" << except._msg);
+		return false;
+	}	catch (...)
+	{
+		S_LOG_WARNING("Got unknown error on connect.");
+		return false;
+	}
 
-    return true;
-  }
+	return true;
+}
 
 
 //   void ServerService::reconnect()
 //   {
-//     if (!myConn) return;
+//     if (!mConn) return;
 //     try {
-// 		const std::string host = myConn->get
-//         myConn->reconnect();
+// 		const std::string host = mConn->get
+//         mConn->reconnect();
 //       }
 //     catch (const Eris::BaseException& except)
 //     {
@@ -182,86 +170,92 @@ namespace Ember
 //   }
 
 
-  void ServerService::disconnect()
-  {
-    if (!myConn) return;
-    try {
-      myConn->disconnect();
-      }
-    catch (const Eris::BaseException& except)
-    {
-        LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got error on disconnect:" << except._msg << ENDM;
-        return;
-    }
-    catch (...)
-      {
-        LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on disconnect" << ENDM;
-        return;
-      }
-  }
+void ServerService::disconnect()
+{
+	if (!mConn) return;
+	try {
+		delete mAccount;
+		mAccount = 0;
+		mConn->disconnect();
+	}
+	catch (const Eris::BaseException& except)
+	{
+		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got error on disconnect:" << except._msg << ENDM;
+		return;
+	}
+	catch (...)
+	{
+		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on disconnect" << ENDM;
+		return;
+	}
+}
 	
-  void ServerService::gotFailure(const std::string & msg)
-  {
-    std::ostringstream temp;
+void ServerService::gotFailure(const std::string & msg)
+{
+	std::ostringstream temp;
 
-    temp << "Got Server error: " << msg;
-    S_LOG_WARNING(temp.str());
-    
-    ConsoleBackend::getMainConsole()->pushMessage(temp.str());
-  }
+	temp << "Got Server error: " << msg;
+	S_LOG_WARNING(temp.str());
 	
-  void ServerService::connected()
-  {
-  	S_LOG_INFO("Connected");
-    myConnected = true;
-    GotConnection.emit(myConn);
-
-    // Set up the player object
-    myAccount=new Eris::Account(myConn);
-    myAccount->GotCharacterInfo.connect(sigc::mem_fun(*this,&ServerService::gotCharacterInfo));
-    myAccount->GotAllCharacters.connect(sigc::mem_fun(*this,&ServerService::gotAllCharacters));
-    myAccount->LoginFailure.connect(sigc::mem_fun(*this,&ServerService::loginFailure));
-    myAccount->LoginSuccess.connect(sigc::mem_fun(*this,&ServerService::loginSuccess));
-    myAccount->LogoutComplete.connect(sigc::mem_fun(*this,&ServerService::logoutComplete));
-	myAccount->AvatarSuccess.connect(sigc::mem_fun(*this,&ServerService::gotAvatarSuccess));
+	ConsoleBackend::getMainConsole()->pushMessage(temp.str());
+}
 	
-	GotAccount.emit(myAccount);
-    // Init OOGChat controller
-//     myOOGChat = new OOGChat(myAccount);
-    
+void ServerService::connected()
+{
+	S_LOG_INFO("Connected");
+	mConnected = true;
+	GotConnection.emit(mConn);
 
-    ConsoleBackend::getMainConsole()->pushMessage("Connected to Server");
-  }
+	// Set up the player object
+	mAccount=new Eris::Account(mConn);
+	mAccount->GotCharacterInfo.connect(sigc::mem_fun(*this,&ServerService::gotCharacterInfo));
+	mAccount->GotAllCharacters.connect(sigc::mem_fun(*this,&ServerService::gotAllCharacters));
+	mAccount->LoginFailure.connect(sigc::mem_fun(*this,&ServerService::loginFailure));
+	mAccount->LoginSuccess.connect(sigc::mem_fun(*this,&ServerService::loginSuccess));
+	mAccount->LogoutComplete.connect(sigc::mem_fun(*this,&ServerService::logoutComplete));
+	mAccount->AvatarSuccess.connect(sigc::mem_fun(*this,&ServerService::gotAvatarSuccess));
+	mAccount->AvatarDeactivated.connect(sigc::mem_fun(*this,&ServerService::gotAvatarDeactivated));
+	
+	GotAccount.emit(mAccount);
+	// Init OOGChat controller
+//     mOOGChat = new OOGChat(mAccount);
+	
 
-  bool ServerService::disconnecting()
-  {
+	ConsoleBackend::getMainConsole()->pushMessage("Connected to Server");
+}
+
+bool ServerService::disconnecting()
+{
 	S_LOG_INFO("Disconnecting");
-    return true;
-  }
+	delete mAccount;
+	mAccount = 0;
+	return true;
+}
 
-  void ServerService::disconnected()
-  {
+void ServerService::disconnected()
+{
 	S_LOG_INFO("Disconnected");
 
-    // NULL out OOGChat & player so noone gets tempted to play with an unconnected lobby/player
-    delete myAccount;
-    myAccount=NULL;
-    delete myOOGChat;
-    myOOGChat = NULL;
+	// NULL out OOGChat & player so noone gets tempted to play with an unconnected lobby/player
+/*	delete mAccount;
+	mAccount=NULL;*/
+	mConnected = false;
+	delete mOOGChat;
+	mOOGChat = NULL;
 
-    ConsoleBackend::getMainConsole()->pushMessage("Disconnected from server.");
-  }
+	ConsoleBackend::getMainConsole()->pushMessage("Disconnected from server.");
+}
 
-  void ServerService::statusChanged(Eris::BaseConnection::Status status)
-  {
+void ServerService::statusChanged(Eris::BaseConnection::Status status)
+{
 	S_LOG_INFO("Status Changed to: "<<status);
-  }
+}
 
-  void ServerService::timeout(Eris::BaseConnection::Status status)
-  {
+void ServerService::timeout(Eris::BaseConnection::Status status)
+{
 	S_LOG_INFO( "Connection Timed Out");
-    ConsoleBackend::getMainConsole()->pushMessage("Connection to server timed out");
-  }
+	ConsoleBackend::getMainConsole()->pushMessage("Connection to server timed out");
+}
 
 void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & info)
 {
@@ -275,63 +269,72 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
   {
 	S_LOG_INFO("Got All Characters");
 	ConsoleBackend::getMainConsole()->pushMessage("Got all characters");
-	Eris::CharacterMap cm = myAccount->getCharacters();
+	Eris::CharacterMap cm = mAccount->getCharacters();
 	Eris::CharacterMap::iterator i;
 	for(i=cm.begin();i!=cm.end();i++) {
 		std::string msg;
 		msg = "Character ID: [" + (*i).first + "].";
 		ConsoleBackend::getMainConsole()->pushMessage(msg);
 	}
-	GotAllCharacters.emit(myAccount);
+	GotAllCharacters.emit(mAccount);
 
   }
 
 //  void ServerService::loginFailure(Eris::LoginFailureType, const std::string &msg) 
-  void ServerService::loginFailure(const std::string &msg) 
-  {
-    std::ostringstream temp;
+void ServerService::loginFailure(const std::string &msg) 
+{
+	std::ostringstream temp;
 
-    temp<< "Login Failure:"<<msg;
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << temp.str() << ENDM;
+	temp<< "Login Failure:"<<msg;
+	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << temp.str() << ENDM;
 
-    ConsoleBackend::getMainConsole()->pushMessage(temp.str());
-	LoginFailure.emit(myAccount, msg);
-  }
+	ConsoleBackend::getMainConsole()->pushMessage(temp.str());
+	LoginFailure.emit(mAccount, msg);
+}
 
-  void ServerService::loginSuccess(){
-    //myView = new Eris::View(myAccount, myConn);
+void ServerService::loginSuccess(){
+	//mView = new Eris::View(mAccount, mConn);
 
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Login Success."<< ENDM;
-    ConsoleBackend::getMainConsole()->pushMessage("Login Successful");
-	LoginSuccess.emit(myAccount);
-  }
-  
-  void ServerService::takeCharacter(const std::string &id){
-		myAccount->takeCharacter(id);
-	}
+	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Login Success."<< ENDM;
+	ConsoleBackend::getMainConsole()->pushMessage("Login Successful");
+	LoginSuccess.emit(mAccount);
+}
+
+void ServerService::takeCharacter(const std::string &id){
+		mAccount->takeCharacter(id);
+}
 	
-	void ServerService::gotAvatarSuccess(Eris::Avatar* avatar) {
-		//if we already have a avatar, do nothing
-		//TODO: perhaps signal an error?
-		if (!myAvatar) {
-			myAvatar = avatar;
-			myView = myAvatar->getView();
-			GotAvatar.emit(myAvatar);
-			GotView.emit(myView);
-		}
-		delete mServerAdapter;
-		mServerAdapter = new ConnectedAdapter(myAvatar, myConn);
-	
+void ServerService::gotAvatarSuccess(Eris::Avatar* avatar) {
+	//if we already have a avatar, do nothing
+	//TODO: perhaps signal an error?
+	if (!mAvatar) {
+		mAvatar = avatar;
+		mView = mAvatar->getView();
+		GotAvatar.emit(mAvatar);
+		GotView.emit(mView);
 	}
+	delete mServerAdapter;
+	mServerAdapter = new ConnectedAdapter(mAvatar, mConn);
+
+}
+
+void ServerService::gotAvatarDeactivated(Eris::Avatar* avatar) {
+	mAvatar = 0;
+	mView = 0;
+	delete mServerAdapter;
+	mServerAdapter = new NonConnectedAdapter();
+}
 
 
-  void ServerService::logoutComplete(bool clean) {
-    delete myView;
-    myView = 0;
 
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Logout Complete cleanness="<<clean<< ENDM;
-    ConsoleBackend::getMainConsole()->pushMessage("Logged out from server");
-  }
+
+void ServerService::logoutComplete(bool clean) {
+//     delete mView;
+	mView = 0;
+
+	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Logout Complete cleanness="<<clean<< ENDM;
+	ConsoleBackend::getMainConsole()->pushMessage("Logged out from server");
+}
 
 	void ServerService::runCommand(const std::string &command, const std::string &args)
 	{
@@ -356,7 +359,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 
 		// Create Account command
 		} else if (CreateAcc == command) {	
-			if (!myAccount) return;
+			if (!mAccount) return;
 			Tokeniser tokeniser = Tokeniser();
 			tokeniser.initTokens(args);
 			std::string uname = tokeniser.nextToken();
@@ -367,7 +370,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 			msg = "Creating account: Name: [" + uname + "], Password: [" + password + "], Real Name: [" + realname + "]";
 			
 			try {
-				myAccount->createAccount(uname,realname,password);
+				mAccount->createAccount(uname,realname,password);
 			} 
 			catch (const Eris::BaseException& except)
 			{
@@ -384,7 +387,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 		} else if (Login == command) {
 	
 		// TODO: put this in a separate method
-			if (myAccount)
+			if (mAccount)
 			{
 				// Split string into userid / password pair
 				Tokeniser tokeniser = Tokeniser();
@@ -392,7 +395,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 				std::string userid = tokeniser.nextToken();
 				std::string password = tokeniser.remainingTokens();
 	
-				myAccount->login(userid,password);
+				mAccount->login(userid,password);
 				
 				std::string msg;
 				msg = "Login: [" + userid + "," + password + "]";
@@ -403,10 +406,10 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 
 		// Logout command
 		} else if (Logout == command) {
-			ConsoleBackend::getMainConsole()->pushMessage("Loggin out...");
-			if (myAccount)
+			ConsoleBackend::getMainConsole()->pushMessage("Logging out...");
+			if (mAccount)
 			{
-				myAccount->logout();
+				mAccount->logout();
 			}
 		
 		// Create Character command
@@ -425,16 +428,16 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 
 		// Take Character Command
 		} else if (TakeChar == command) {
-			if (myAccount)
+			if (mAccount)
 			{
 				takeCharacter(args);
 			}
 
 		// List Characters Command
 		} else if (ListChars == command) {
-			if (myAccount)
+			if (mAccount)
 			{
-				myAccount->refreshCharacterInfo();
+				mAccount->refreshCharacterInfo();
 			}
 
 		// Say (In-Game chat) Command
@@ -458,7 +461,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 			// TODO: make this switch call the touch method
 			// TODO: polish this rough check
 			S_LOG_VERBOSE("Touching");
-			if(!myAvatar) {
+			if(!mAvatar) {
 				S_LOG_WARNING("No avatar.");
 				return;
 			}
@@ -467,17 +470,17 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 			Atlas::Message::MapType opargs;
 	
 			opargs["id"] = args;
-			touch->setFrom(myAvatar->getId());
+			touch->setFrom(mAvatar->getId());
 			touch->setArgsAsList(Atlas::Message::ListType(1, opargs));
 	
-			myConn->send(touch);*/
+			mConn->send(touch);*/
 		}	
 	}
 	
 	bool ServerService::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description)
 	{
 		ConsoleBackend::getMainConsole()->pushMessage("Creating char...");
-		if (myAccount)
+		if (mAccount)
 		{
 			std::string msg;
 			msg = "Creating character: Name: [" + name + "], Sex: [" + sex + "], Type: [" + type + "], Desc: [" + description + "]";
@@ -490,7 +493,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 			character->setAttr("sex", sex);
 			character->setAttr("description", description);
 			try {
-				myAccount->createCharacter(character);
+				mAccount->createCharacter(character);
 			} 
 			catch (const Eris::BaseException& except)
 			{
@@ -503,11 +506,11 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 				return false;
 			}
 			S_LOG_INFO("Done creating character.");
-			if (myAvatar) {
-				GotAvatar.emit(myAvatar);
-				myView = myAvatar->getView();
-				if (myView) {
-					GotView.emit(myView);
+			if (mAvatar) {
+				GotAvatar.emit(mAvatar);
+				mView = mAvatar->getView();
+				if (mView) {
+					GotView.emit(mView);
 				}
 			}
 		} else {
@@ -517,10 +520,10 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 	
 		return true;
 	}
-  
+
 	void ServerService::moveToPoint(const WFMath::Point<3>& dest) {
 		mServerAdapter->moveToPoint(dest);
- 	}
+	}
 
 	void ServerService::moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation) {
 		mServerAdapter->moveInDirection(velocity, orientation);
@@ -540,12 +543,12 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 	void ServerService::take(Eris::Entity* entity) 
 	{
 		mServerAdapter->take(entity);
-   	}
-  	
+	}
+	
 	void ServerService::drop(Eris::Entity* entity, const WFMath::Vector<3>& offset) 
-   	{
+	{
 		mServerAdapter->drop(entity, offset);
-   	}   
+	}   
 	
 	void ServerService::place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos)
 	{
@@ -558,14 +561,14 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 	}
 	
 	void ServerService::wield(Eris::Entity* entity)
-   	{
+	{
 		mServerAdapter->wield(entity);
-   	}
+	}
 
 	void ServerService::use(Eris::Entity* entity, WFMath::Point<3> pos)
-   	{
+	{
 		mServerAdapter->use(entity, pos);
-   	}
+	}
 
 	void ServerService::useStop()
 	{
@@ -574,9 +577,9 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 
 
 	void ServerService::attack(Eris::Entity* entity)
-   	{
+	{
 		mServerAdapter->attack(entity);
-   	}   
+	}   
 
 	void ServerService::say(const std::string &message) {
 		mServerAdapter->say(message);
