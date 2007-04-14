@@ -106,6 +106,8 @@ class MaterialEditor;
 
 class OgreSetup;
 
+class OgreResourceProvider;
+
 /** 
 
 The main class of ember. This functions as a hub for almost all subsystems. (Perhaps this should be refactored?)
@@ -398,6 +400,8 @@ protected:
 	MaterialEditor* mMaterialEditor;
 	
 	void Application_ServicesInitialized();
+	
+	std::auto_ptr<OgreResourceProvider> mScriptingResourceProvider;
 	
 };
 

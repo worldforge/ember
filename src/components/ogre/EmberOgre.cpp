@@ -140,6 +140,9 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "input/InputCommandMapper.h"
 #include "input/Input.h"
 
+#include "OgreResourceProvider.h"
+#include "scripting/LuaScriptingProvider.h"
+
 template<> EmberOgre::EmberOgre* Ember::Singleton<EmberOgre::EmberOgre>::ms_Singleton = 0;
 
 namespace EmberOgre {
@@ -216,12 +219,14 @@ EmberOgre::~EmberOgre()
 		mRoot->detachRenderTarget(mWindow);
 	}
 	
+	Ogre::LogManager::getSingleton().getDefaultLog()->removeListener(mLogObserver);
+	delete mLogObserver;
+	
 	if (mOgreSetup.get()) {
 		mOgreSetup->shutdown();
 		mOgreSetup.release();
 	}
 	
-	delete mLogObserver;
 	
 /*	delete mOgreResourceLoader;
 //	mSceneMgr->shutdown();
@@ -771,6 +776,12 @@ void EmberOgre::Application_ServicesInitialized()
 {
 	Ember::EmberServices::getSingleton().getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EmberOgre::connectedToServer));
 	Ember::EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotView));
+	
+	mScriptingResourceProvider = std::auto_ptr<OgreResourceProvider>(new OgreResourceProvider("Scripting"));
+	Ember::EmberServices::getSingleton().getScriptingService()->setResourceProvider(mScriptingResourceProvider.get());
+	///register the lua scripting provider
+	Ember::EmberServices::getSingleton().getScriptingService()->registerScriptingProvider(new LuaScriptingProvider());
+	
 }
 
 Eris::View* EmberOgre::getMainView() 
