@@ -65,11 +65,11 @@ template<> Ember::Application *Ember::Singleton<Ember::Application>::ms_Singleto
 
 
 Application::Application(const std::string prefix, const std::string homeDir, bool useBinReloc)
-: mShouldQuit(false)
+: mOgreView(0)
+, mShouldQuit(false)
 , mPrefix(prefix)
 , mHomeDir(homeDir)
 , mUseBinreloc(useBinReloc)
-, mOgreView(0)
 , mLogObserver(0)
 , mServices(0)
 , mWorldView(0)
@@ -81,10 +81,11 @@ Application::Application(const std::string prefix, const std::string homeDir, bo
 
 Application::~Application()
 {
-	delete mWorldView;
+	EmberServices::getSingleton().getServerService()->stop(0);
 	delete mOgreView;
-	delete mLogObserver;
 	delete mServices;
+	LoggingService::getInstance()->removeObserver(mLogObserver);
+	delete mLogObserver;
 }
 
 void Application::registerComponents()
@@ -205,7 +206,7 @@ void Application::initializeServices()
 	EmberServices::getSingleton().getServerService()->start();
 
 	S_LOG_INFO("Initializing scripting service");
- 	EmberServices::getSingleton().getScriptingService()->start();
+	EmberServices::getSingleton().getScriptingService()->start();
 
 	S_LOG_INFO("Initializing wfut service");
  	EmberServices::getSingleton().getWfutService()->start();
