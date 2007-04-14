@@ -35,7 +35,7 @@ console = Ember.ConsoleBackend:getMainConsole()
 function loadScript(scriptname)
 	--load all lua files
 	--they all reside in the same directory
-	local dirPrefix = "cegui/datafiles/lua_scripts/"
+	local dirPrefix = "lua/"
 	
 	scriptingService:loadScript(dirPrefix .. scriptname)
 
