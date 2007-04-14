@@ -23,14 +23,15 @@
 #include "../EmberOgrePrerequisites.h"
 #include "LuaScriptingProvider.h"
 
-#include "tolua++.h"
 #include "bindings/lua/helpers/LuaConnector.h"
-
-#include <OgreString.h>
 
 #include <CEGUIExceptions.h>
 
 #include "framework/Exception.h"
+
+// include Lua libs and tolua++
+#include <lua.hpp>
+#include <tolua++.h>
 
 TOLUA_API int tolua_Ogre_open (lua_State* tolua_S);
 TOLUA_API int tolua_Eris_open (lua_State* tolua_S);
@@ -43,26 +44,78 @@ TOLUA_API int tolua_Application_open (lua_State* tolua_S);
 namespace EmberOgre {
 
 LuaScriptingProvider::LuaScriptingProvider()
+: mService(0)
 {
-	tolua_Framework_open(mLuaScriptModule.getLuaState());
-	tolua_EmberOgre_open(mLuaScriptModule.getLuaState());
-	tolua_Eris_open(mLuaScriptModule.getLuaState());
-	tolua_EmberServices_open(mLuaScriptModule.getLuaState());
-	tolua_Helpers_open (mLuaScriptModule.getLuaState());
-	tolua_Ogre_open(mLuaScriptModule.getLuaState());
-	tolua_Application_open(mLuaScriptModule.getLuaState());
-	LuaConnector::setState(mLuaScriptModule.getLuaState());
+	initialize();
 }
 
 
 LuaScriptingProvider::~LuaScriptingProvider()
 {
+	lua_close(mLuaState);
 }
 
-void LuaScriptingProvider::loadScript(const std::string& scriptName)
+void LuaScriptingProvider::initialize() 
+{
+	createState();
+	tolua_Framework_open(mLuaState);
+	tolua_EmberOgre_open(mLuaState);
+	tolua_Eris_open(mLuaState);
+	tolua_EmberServices_open(mLuaState);
+	tolua_Helpers_open (mLuaState);
+	tolua_Ogre_open(mLuaState);
+	tolua_Application_open(mLuaState);
+	LuaConnector::setState(mLuaState);
+}
+
+void LuaScriptingProvider::createState() 
+{
+	mLuaState = lua_open();
+
+	// init all standard libraries
+	luaopen_base(mLuaState);
+	luaopen_io(mLuaState);
+	luaopen_string(mLuaState);
+	luaopen_table(mLuaState);
+	luaopen_math(mLuaState);
+// #if defined(DEBUG) || defined (_DEBUG)
+// 	luaopen_debug(d_state);
+// #endif
+}
+
+lua_State* LuaScriptingProvider::getLuaState()
+{
+	return mLuaState;
+}
+
+
+void LuaScriptingProvider::loadScript(Ember::ResourceWrapper& resWrapper)
 {
 	try {
-		getScriptModule().executeScriptFile(scriptName);
+		
+		// load code into lua
+		int top = lua_gettop(mLuaState);
+		int loaderr = luaL_loadbuffer(mLuaState, resWrapper.getDataPtr(), resWrapper.getSize(), resWrapper.getName().c_str());
+		
+		if (loaderr)
+		{
+			std::string errMsg(lua_tostring(mLuaState,-1));
+			lua_settop(mLuaState,top);
+			throw Ember::Exception("Unable to execute Lua script file: '"+resWrapper.getName()+"'\n\n"+errMsg+"\n");
+		}
+		
+		// call it
+		if (lua_pcall(mLuaState,0,0,0))
+		{
+			std::string errMsg(lua_tostring(mLuaState,-1));
+			lua_settop(mLuaState,top);
+			throw Ember::Exception("Unable to execute Lua script file: '"+resWrapper.getName()+"'\n\n"+errMsg+"\n");
+		}
+	
+		lua_settop(mLuaState,top); // just in case :P
+		
+		
+// 		getScriptModule().executeScriptFile(scriptName);
 	} catch (const CEGUI::Exception& ex) {
 		throw Ember::Exception(ex.getMessage().c_str());
 	} catch( const CEGUI::String& str )
@@ -81,7 +134,19 @@ void LuaScriptingProvider::loadScript(const std::string& scriptName)
 void LuaScriptingProvider::executeScript(const std::string& scriptCode)
 {
 	try {
-		getScriptModule().executeString(scriptCode);
+		int top = lua_gettop(mLuaState);
+	
+		// load code into lua and call it
+		int error =	luaL_loadbuffer(mLuaState, scriptCode.c_str(), scriptCode.length(), scriptCode.c_str()) || lua_pcall(mLuaState,0,0,0);
+	
+		// handle errors
+		if (error)
+		{
+			std::string errMsg(lua_tostring(mLuaState,-1));
+			lua_settop(mLuaState,top);
+			throw Ember::Exception("Unable to execute Lua script string: '"+scriptCode+"'\n\n"+errMsg+"\n");
+		}
+// 		getScriptModule().executeString(scriptCode);
 	} catch (const CEGUI::Exception& ex) {
 		throw Ember::Exception(ex.getMessage().c_str());
 	} catch( const CEGUI::String& str )
@@ -111,12 +176,12 @@ const std::string& LuaScriptingProvider::getName() const
 
 void LuaScriptingProvider::_registerWithService(Ember::ScriptingService* service)
 {	
-	this->service = service;
+	mService = service;
 }
 
-CEGUI::ScriptModule& LuaScriptingProvider::getScriptModule()
-{
-	return mLuaScriptModule;
-}
+// CEGUI::ScriptModule& LuaScriptingProvider::getScriptModule()
+// {
+// 	return mLuaScriptModule;
+// }
 
 }

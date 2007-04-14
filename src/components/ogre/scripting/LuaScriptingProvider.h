@@ -28,6 +28,8 @@
 #include <CEGUIScriptModule.h>
 #include <CEGUILua.h>
 
+struct lua_State;
+
 namespace Ember
 {
 	class ScriptingService;
@@ -43,13 +45,13 @@ class LuaScriptingProvider : public Ember::IScriptingProvider
 public:
     LuaScriptingProvider();
 
-    ~LuaScriptingProvider();
+    virtual ~LuaScriptingProvider();
     
 	/**
 	 *    Loads the script.
 	 * @param scriptName 
 	 */
-	virtual void loadScript(const std::string& scriptName);
+	virtual void loadScript(Ember::ResourceWrapper& resWrapper);
 	
 	/**
 	 *    Executes the supplied string directly into the scripting environment.
@@ -80,13 +82,17 @@ public:
      * Returns the scripting module 
      * @return 
      */
-    CEGUI::ScriptModule& getScriptModule();
+//     CEGUI::ScriptModule& getScriptModule();
+    
+    lua_State* getLuaState();
 
 private:
-	CEGUI::LuaScriptModule mLuaScriptModule;
-	Ember::ScriptingService* service; 
-	
-	
+
+	void initialize();
+	void createState();
+// 	std::auto_ptr<CEGUI::LuaScriptModule> mLuaScriptModule;
+	Ember::ScriptingService* mService;
+	lua_State* mLuaState;
 	
 };
 

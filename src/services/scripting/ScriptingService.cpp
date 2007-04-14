@@ -32,13 +32,17 @@
 namespace Ember {
 
 ScriptingService::ScriptingService()
-: LoadScript("loadscript", this, "Loads a script.")
+: LoadScript("loadscript", this, "Loads a script."), mResourceProvider(0)
 {
 }
 
 
 ScriptingService::~ScriptingService()
 {
+	for(ProviderStore::iterator I = mProviders.begin(); I != mProviders.end(); ++I) 
+	{
+		delete I->second;
+	}
 }
 
 Service::Status ScriptingService::start()
@@ -48,27 +52,36 @@ Service::Status ScriptingService::start()
 
 void ScriptingService::loadScript(const std::string& script)
 {
-	for(ProviderStore::iterator I = mProviders.begin(); I != mProviders.end(); ++I) 
-	{
-		//check if the provider will load the script
-		if (I->second->willLoadScript(script)) {
-			S_LOG_INFO("Loading script: " << script << " with scripting provider " << I->second->getName() );
-			try {
-				I->second->loadScript(script);
-			} catch (const Ember::Exception& ex) {
-				S_LOG_WARNING("Error when loading script " << script << " with provider " << I->second->getName() << ". Message: " << ex.getError());
-				scriptError(ex.getError());
-			} catch (const std::exception& ex) {
-				S_LOG_WARNING("Error when loading script " << script << " with provider " << I->second->getName() << ". Message: " << ex.what());
-				scriptError(ex.what());
-			} catch (...) {
-				S_LOG_WARNING("Got unknown script error when loading the script " << script);
-				scriptError("Unknown error loading script " + script );
-			}
+	if (mResourceProvider) {
+		Ember::ResourceWrapper resWrapper = mResourceProvider->getResource(script);
+		if (!resWrapper.hasData()) {
+			scriptError("Unable to find script file " + script + ".");
+			S_LOG_FAILURE("Unable to find script file " + script + ".");
 			return;
 		}
+		
+		for(ProviderStore::iterator I = mProviders.begin(); I != mProviders.end(); ++I) 
+		{
+			//check if the provider will load the script
+			if (I->second->willLoadScript(script)) {
+				S_LOG_INFO("Loading script: " << script << " with scripting provider " << I->second->getName() );
+				try {
+					I->second->loadScript(resWrapper);
+				} catch (const Ember::Exception& ex) {
+					S_LOG_WARNING("Error when loading script " << script << " with provider " << I->second->getName() << ". Message: " << ex.getError());
+					scriptError(ex.getError());
+				} catch (const std::exception& ex) {
+					S_LOG_WARNING("Error when loading script " << script << " with provider " << I->second->getName() << ". Message: " << ex.what());
+					scriptError(ex.what());
+				} catch (...) {
+					S_LOG_WARNING("Got unknown script error when loading the script " << script);
+					scriptError("Unknown error loading script " + script );
+				}
+				return;
+			}
+		}
+		S_LOG_FAILURE("Could not find a scripting provider which will load the script " << script << ".");
 	}
-	S_LOG_FAILURE("Could not find a scripting provider which will load the script " << script << ".");
 }
 
 void ScriptingService::executeCode(const std::string& scriptCode, const std::string& scriptType)
@@ -149,5 +162,16 @@ std::vector<std::string> ScriptingService::getProviderNames()
 	return names;
 	
 }
+
+Ember::IResourceProvider* ScriptingService::getResourceProvider()
+{
+	return mResourceProvider;
+}
+	
+void ScriptingService::setResourceProvider(Ember::IResourceProvider* resourceProvider)
+{
+	mResourceProvider = resourceProvider;
+}
+
 
 }

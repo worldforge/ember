@@ -25,6 +25,8 @@
 
 #include <string>
 
+#include "IResourceProvider.h"
+
 namespace Ember {
 
 class ScriptingService;
@@ -35,14 +37,13 @@ class ScriptingService;
 class IScriptingProvider{
 public:
 	
-//	IScriptingProvider() {};
 	virtual ~IScriptingProvider(){}
 
 	/**
 	 *    Loads the script.
 	 * @param scriptName 
 	 */
-	virtual void loadScript(const std::string& scriptName) = 0;
+	virtual void loadScript(ResourceWrapper& resourceWrapper) = 0;
 	
 	/**
 	 *    Executes the supplied string directly into the scripting environment.

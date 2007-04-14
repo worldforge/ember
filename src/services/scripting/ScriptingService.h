@@ -31,7 +31,7 @@
 #include <vector>
 
 namespace Ember {
-
+class IResourceProvider;
 class IScriptingProvider;	
 /**
 @author Erik Hjortsberg
@@ -47,7 +47,7 @@ public:
     
     ScriptingService();
 
-    ~ScriptingService();
+    virtual ~ScriptingService();
 
 	virtual Service::Status start();
 	
@@ -101,7 +101,9 @@ public:
 	 */
 	std::vector<std::string> getProviderNames();
 	
+	IResourceProvider* getResourceProvider();
 	
+	void setResourceProvider(Ember::IResourceProvider* resourceProvider);
 private:
 
 	/**
@@ -118,6 +120,8 @@ private:
 	ProviderStore mProviders;
 	
 	sigc::signal<void, const std::string&> mEventScriptError;
+
+	IResourceProvider* mResourceProvider;
 
 };
 
