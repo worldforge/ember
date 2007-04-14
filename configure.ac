@@ -429,6 +429,7 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/image/Makefile
 		 src/components/ogre/cegui/Makefile
 		 src/components/ogre/widgets/Makefile
+		 src/components/ogre/widgets/adapters/Makefile
 		 src/components/ogre/environment/meshtree/Makefile
 		 src/components/ogre/environment/caelum/Makefile
 		 src/components/ogre/environment/Makefile
