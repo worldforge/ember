@@ -154,6 +154,7 @@ class ServerService : public Service, public ConsoleObject, public sigc::trackab
 	void useStop();
 	void attack(Eris::Entity* entity);
 	void deleteEntity(Eris::Entity* entity);
+	void setAttributes(Eris::Entity* entity, std::map<std::string, Atlas::Message::Element>& attributes);
 	//void use(Eris::Entity* entity);
 
     //----------------------------------------------------------------------

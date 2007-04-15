@@ -247,6 +247,33 @@ void ConnectedAdapter::deleteEntity(Eris::Entity* entity)
 	}
 }
 	
+void ConnectedAdapter::setAttributes(Eris::Entity* entity, std::map<std::string, Atlas::Message::Element>& elements)
+{
+	try {
+		Atlas::Objects::Entity::Anonymous what;
+		what->setId(entity->getId());
+		for(std::map<std::string, Atlas::Message::Element>::iterator I = elements.begin(); I != elements.end(); ++I) {
+			what->setAttr(I->first, I->second);			
+		}
+		
+		Atlas::Objects::Operation::Set setOp;
+		setOp->setFrom(mAvatar->getEntity()->getId());
+		//setOp->setTo(entity->getId());
+		setOp->setArgs1(what);
+		
+		S_LOG_INFO("Setting attributes of entity with id " << entity->getId() << ", named " << entity->getName());
+		mConnection->send(setOp);	
+	}
+	catch (const Eris::BaseException& except)
+	{
+		S_LOG_WARNING("Got Eris error on setting attributes on entity: " << except._msg);
+	}
+	catch (const std::runtime_error& except)
+	{
+		S_LOG_WARNING("Got unknown error on setting attributes on entity: " << except.what());
+	}
+}
+	
 	
 void ConnectedAdapter::attack(Eris::Entity* entity)
 {

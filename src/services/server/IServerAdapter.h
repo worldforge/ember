@@ -57,6 +57,7 @@ public:
 	virtual void useStop() = 0;
 	virtual void attack(Eris::Entity* entity) = 0;
 	virtual void deleteEntity(Eris::Entity* entity) = 0;
+	virtual void setAttributes(Eris::Entity* entity, std::map<std::string, Atlas::Message::Element>& attributes) = 0;
 };
 
 }
