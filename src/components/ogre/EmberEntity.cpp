@@ -561,7 +561,7 @@ void EmberEntity::showErisBoundingBox(bool show)
 		mErisEntityBoundingBox->setMaterial(BboxMaterialName);
 		Ogre::SceneNode* boundingBoxNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
 		boundingBoxNode->attachObject(mErisEntityBoundingBox);
-		Ogre::AxisAlignedBox aabb(Atlas2Ogre(getBBox().highCorner()), Atlas2Ogre(getBBox().lowCorner()));
+		Ogre::AxisAlignedBox aabb = Atlas2Ogre(getBBox());
 		mErisEntityBoundingBox->setupBoundingBox(aabb);
 		
 		boundingBoxNode->setPosition(Atlas2Ogre(getPredictedPos()));

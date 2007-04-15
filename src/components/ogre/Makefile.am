@@ -7,23 +7,17 @@ noinst_LTLIBRARIES = libEmberOgre.la
 
 
 libEmberOgre_la_LIBADD = \
-	scripting/bindings/lua/liblua_EmberOgre.la \
-	scripting/bindings/lua/ogre/liblua_Ogre.la \
-	scripting/bindings/lua/helpers/liblua_Helpers.la \
-	scripting/libScripting.la\
-	widgets/libWidgets.la \
-	terrain/libTerrain.la \
-	environment/libEnvironment.la \
-	model/libModel.la \
-	model/mapping/libMapping.la \
-	SceneManagers/EmberPagingSceneManager/src/libEmberPagingSceneManager.la \
-	input/libInput.la \
-	carpenter/libCarpenter.la \
-	jesus/libJesus.la \
-	manipulation/libmanipulation.la \
-	sound/libSound.la \
-	ogreopcode/libOgreOpcode.la \
-	image/libImage.la 
+	$(top_builddir)/src/components/ogre/widgets/libWidgets.la $(top_builddir)/src/components/ogre/terrain/libTerrain.la \
+	$(top_builddir)/src/components/ogre/sound/libSound.la \
+	$(top_builddir)/src/components/ogre/scripting/bindings/lua/ogre/liblua_Ogre.la \
+	$(top_builddir)/src/components/ogre/scripting/bindings/lua/helpers/liblua_Helpers.la \
+	$(top_builddir)/src/components/ogre/scripting/bindings/lua/liblua_EmberOgre.la $(top_builddir)/src/components/ogre/scripting/libScripting.la \
+	$(top_builddir)/src/components/ogre/ogreopcode/libOgreOpcode.la $(top_builddir)/src/components/ogre/model/mapping/libMapping.la \
+	$(top_builddir)/src/components/ogre/model/libModel.la $(top_builddir)/src/components/ogre/manipulation/libmanipulation.la \
+	$(top_builddir)/src/components/ogre/jesus/libJesus.la $(top_builddir)/src/components/ogre/input/libInput.la \
+	$(top_builddir)/src/components/ogre/image/libImage.la $(top_builddir)/src/components/ogre/environment/libEnvironment.la \
+	$(top_builddir)/src/components/ogre/carpenter/libCarpenter.la \
+	$(top_builddir)/src/components/ogre/SceneManagers/EmberPagingSceneManager/src/libEmberPagingSceneManager.la
         
 
 
@@ -49,3 +43,4 @@ noinst_HEADERS = Avatar.h AvatarCamera.h AvatarController.h AvatarEmberEntity.h 
 	OgreLogObserver.h OgreResourceLoader.h OgreResourceProvider.h OgreSetup.h \
 	OpcodeCollisionDetector.h WorldEmberEntity.h XMLHelper.h
 	
+libEmberOgre_la_LDFLAGS = -all-static -no-undefined

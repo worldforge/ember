@@ -170,7 +170,19 @@ inline WFMath::Quaternion Ogre2Atlas(const Ogre::Quaternion& aq){
 	return WFMath::Quaternion(aq.w,aq.x,-aq.z,aq.y);
 }
 
+inline Ogre::AxisAlignedBox Atlas2Ogre(const WFMath::AxisBox<3>& axisBox){
+	if (!axisBox.isValid()) {
+		return Ogre::AxisAlignedBox();
+	}
+	return Ogre::AxisAlignedBox(axisBox.lowCorner().x(), axisBox.lowCorner().z(), axisBox.lowCorner().y(), axisBox.highCorner().x(), axisBox.highCorner().z(), axisBox.highCorner().y());
+}
 
+inline WFMath::AxisBox<3> Ogre2Atlas(const Ogre::AxisAlignedBox& axisBox){
+	if (axisBox.isNull() || axisBox.isInfinite()) {
+		return WFMath::AxisBox<3>();
+	}
+	return WFMath::AxisBox<3>(WFMath::Point<3>(axisBox.getMinimum().x, axisBox.getMinimum().z, axisBox.getMinimum().y), WFMath::Point<3>(axisBox.getMaximum().x, axisBox.getMaximum().z, axisBox.getMaximum().y));
+}
 
 }
 
