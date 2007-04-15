@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='DefaultGUISheet' Name='SizeAdapter'>
+		<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+		<Property Name='UnifiedSize' Value='{{0,150},{0,70}}'/>
+		<Window Type='EmberLook/Editbox' Name='lowerX'>
+			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+			<Property Name='UnifiedSize' Value='{{0,45},{0,20}}'/>
+		</Window>
+		<Window Type='EmberLook/Editbox' Name='lowerY'>
+			<Property Name='UnifiedPosition' Value='{{0,50},{0,0}}'/>
+			<Property Name='UnifiedSize' Value='{{0,45},{0,20}}'/>
+		</Window>
+		<Window Type='EmberLook/Editbox' Name='lowerZ'>
+			<Property Name='UnifiedPosition' Value='{{0,100},{0,0}}'/>
+			<Property Name='UnifiedSize' Value='{{0,45},{0,20}}'/>
+		</Window>
+		<Window Type='EmberLook/Editbox' Name='upperX'>
+			<Property Name='UnifiedPosition' Value='{{0,0},{0,25}}'/>
+			<Property Name='UnifiedSize' Value='{{0,45},{0,20}}'/>
+		</Window>
+		<Window Type='EmberLook/Editbox' Name='upperY'>
+			<Property Name='UnifiedPosition' Value='{{0,50},{0,25}}'/>
+			<Property Name='UnifiedSize' Value='{{0,45},{0,20}}'/>
+		</Window>
+		<Window Type='EmberLook/Editbox' Name='upperZ'>
+			<Property Name='UnifiedPosition' Value='{{0,100},{0,25}}'/>
+			<Property Name='UnifiedSize' Value='{{0,45},{0,20}}'/>
+		</Window>
+		<Window Type='EmberLook/Slider' Name='scaler'>
+			<Property Name='UnifiedPosition' Value='{{0,5},{0,50}}'/>
+			<Property Name='UnifiedSize' Value='{{0,140},{0,15}}'/>
+			<!-- Property Name='CurrentValue' Value='1'/>
+			<Property Name='MaximumValue' Value='5'/ -->
+		</Window>
+	</Window>
+</GUILayout>
