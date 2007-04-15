@@ -33,6 +33,8 @@ class ServerService
 	//void use(Eris::Entity* entity);
 	void useStop();
 	void attack(Eris::Entity* entity);
+	void deleteEntity(Eris::Entity* entity);
+	void setAttributes(Eris::Entity* entity, std::map<std::string, Atlas::Message::Element>& attributes);
 
     //----------------------------------------------------------------------
 	// Signals

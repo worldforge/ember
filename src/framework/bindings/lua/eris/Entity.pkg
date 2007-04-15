@@ -4,14 +4,12 @@ $#include <Eris/Entity.h>
 namespace Eris {
 class Entity {
 
-    typedef std::map<std::string, Atlas::Message::Element> AttrMap;
-
     unsigned int numContained() const;
 
 
-//    const Atlas::Message::Element& valueOfAttr(const std::string& attr) const;
+    const Atlas::Message::Element& valueOfAttr(const std::string& attr) const;
 
-//    bool hasAttr(const std::string &p) const;
+    bool hasAttr(const std::string &p) const;
 
     typedef sigc::slot<void, const std::string&, const Atlas::Message::Element&> AttrChangedSlot;
 
@@ -34,7 +32,7 @@ class Entity {
 	
     WFMath::Point<3> getPosition() const;
     
-    const AttrMap& getAttributes() const;
+    const std::map<std::string, Atlas::Message::Element>& getAttributes() const;
     
     bool isMoving() const;
         

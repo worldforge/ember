@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Eris
-** Generated automatically by tolua++-1.0.92 on Thu Apr 12 22:32:20 2007.
+** Generated automatically by tolua++-1.0.92 on Sat Apr 14 21:45:22 2007.
 */
 
 #ifndef __cplusplus
@@ -117,6 +117,76 @@ static int tolua_Eris_Eris_Entity_numContained00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'numContained'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: valueOfAttr of class  Eris::Entity */
+#ifndef TOLUA_DISABLE_tolua_Eris_Eris_Entity_valueOfAttr00
+static int tolua_Eris_Eris_Entity_valueOfAttr00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Eris::Entity",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Eris::Entity* self = (const Eris::Entity*)  tolua_tousertype(tolua_S,1,0);
+  const std::string attr = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'valueOfAttr'",NULL);
+#endif
+  {
+   const Atlas::Message::Element& tolua_ret = (const Atlas::Message::Element&)  self->valueOfAttr(attr);
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const Atlas::Message::Element");
+   tolua_pushcppstring(tolua_S,(const char*)attr);
+  }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'valueOfAttr'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: hasAttr of class  Eris::Entity */
+#ifndef TOLUA_DISABLE_tolua_Eris_Eris_Entity_hasAttr00
+static int tolua_Eris_Eris_Entity_hasAttr00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Eris::Entity",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Eris::Entity* self = (const Eris::Entity*)  tolua_tousertype(tolua_S,1,0);
+  const std::string p = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'hasAttr'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->hasAttr(p);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+   tolua_pushcppstring(tolua_S,(const char*)p);
+  }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'hasAttr'.",&tolua_err);
  return 0;
 #endif
 }
@@ -386,7 +456,7 @@ static int tolua_Eris_Eris_Entity_getAttributes00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getAttributes'",NULL);
 #endif
   {
-    const std::map<std::string,Atlas::Message::Element>& tolua_ret = (  const std::map<std::string,Atlas::Message::Element>&)  self->getAttributes();
+   const std::map<std::string,Atlas::Message::Element>& tolua_ret = (const std::map<std::string,Atlas::Message::Element>&)  self->getAttributes();
    tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const std::map<std::string,Atlas::Message::Element>");
   }
  }
@@ -2312,6 +2382,8 @@ TOLUA_API int tolua_Eris_open (lua_State* tolua_S)
    tolua_cclass(tolua_S,"Entity","Eris::Entity","",NULL);
    tolua_beginmodule(tolua_S,"Entity");
     tolua_function(tolua_S,"numContained",tolua_Eris_Eris_Entity_numContained00);
+    tolua_function(tolua_S,"valueOfAttr",tolua_Eris_Eris_Entity_valueOfAttr00);
+    tolua_function(tolua_S,"hasAttr",tolua_Eris_Eris_Entity_hasAttr00);
     tolua_function(tolua_S,"observe",tolua_Eris_Eris_Entity_observe00);
     tolua_function(tolua_S,"getId",tolua_Eris_Eris_Entity_getId00);
     tolua_function(tolua_S,"getName",tolua_Eris_Eris_Entity_getName00);
