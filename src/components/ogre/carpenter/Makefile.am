@@ -18,3 +18,4 @@ METASOURCES = AUTO
 noinst_HEADERS = Carpenter.h BluePrint.h
 noinst_LTLIBRARIES = libCarpenter.la
 libCarpenter_la_SOURCES = Carpenter.cpp BluePrint.cpp
+libCarpenter_la_LDFLAGS = -all-static -no-undefined

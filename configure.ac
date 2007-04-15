@@ -399,6 +399,7 @@ AC_CONFIG_FILES([Makefile
 		 src/framework/bindings/Makefile
 		 src/framework/bindings/lua/Makefile
 		 src/framework/bindings/lua/eris/Makefile
+		 src/framework/bindings/lua/atlas/Makefile
 		 src/services/Makefile
 		 src/services/config/Makefile
 		 src/services/logging/Makefile
@@ -430,6 +431,7 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/cegui/Makefile
 		 src/components/ogre/widgets/Makefile
 		 src/components/ogre/widgets/adapters/Makefile
+		 src/components/ogre/widgets/adapters/atlas/Makefile
 		 src/components/ogre/environment/meshtree/Makefile
 		 src/components/ogre/environment/caelum/Makefile
 		 src/components/ogre/environment/Makefile

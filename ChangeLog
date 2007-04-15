@@ -1,3 +1,151 @@
+2007-04-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* configure.ac, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/Makefile.am, src/components/ogre/carpenter/Makefile.am: updated project files
+
+2007-04-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/EntityCEGUITexture.cpp: fixed a crash if zoom was applied without any valid model
+
+2007-04-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/EmberEntity.cpp, src/components/ogre/Makefile.am, src/components/ogre/MathConverter.h: added bbox converting methods, also fix a crash when showing the eris bbox
+
+2007-04-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/framework/Makefile.am, src/framework/bindings/lua/Makefile.am, src/framework/bindings/lua/update.sh, src/framework/bindings/lua/eris/Entity.pkg, src/framework/bindings/lua/eris/lua_Eris.cpp, src/framework/bindings/lua/eris/update.sh, src/services/bindings/lua/ServerService.pkg, src/services/bindings/lua/lua_EmberServices.cpp, src/services/bindings/lua/update.sh: updated bindings
+
+2007-04-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/scripting/LuaScriptingProvider.cpp: activate new lua modules
+
+2007-04-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/scripting/bindings/lua/required.h, src/components/ogre/scripting/bindings/lua/update.sh, src/components/ogre/scripting/bindings/lua/helpers/update.sh, src/components/ogre/scripting/bindings/lua/ogre/update.sh: update bindings
+
+2007-04-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/adapters/atlas/bindings/lua/AdapterBase.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/AdapterFactory.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/NumberAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/PositionAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/SizeAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/StringAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/bindings.cpp, src/components/ogre/widgets/adapters/atlas/bindings/lua/bindings.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/update.sh: added bindings
+
+2007-04-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/Bootstrap.lua: load the entity editing widget at startup
+
+2007-04-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+	
+	* src/components/ogre/widgets/EntityEditor.cpp, src/components/ogre/widgets/EntityEditor.h, src/components/ogre/widgets/EntityEditor.layout, src/components/ogre/widgets/EntityEditor.lua: added an entity editing widget
+
+2007-04-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/adapters/Makefile.am, src/components/ogre/widgets/adapters/atlas/AdapterBase.cpp, src/components/ogre/widgets/adapters/atlas/AdapterBase.h, src/components/ogre/widgets/adapters/atlas/AdapterFactory.cpp, src/components/ogre/widgets/adapters/atlas/AdapterFactory.h, src/components/ogre/widgets/adapters/atlas/Makefile.am, src/components/ogre/widgets/adapters/atlas/NumberAdapter.cpp, src/components/ogre/widgets/adapters/atlas/NumberAdapter.h, src/components/ogre/widgets/adapters/atlas/NumberAdapter.layout, src/components/ogre/widgets/adapters/atlas/PositionAdapter.cpp, src/components/ogre/widgets/adapters/atlas/PositionAdapter.h, src/components/ogre/widgets/adapters/atlas/SizeAdapter.cpp, src/components/ogre/widgets/adapters/atlas/SizeAdapter.h, src/components/ogre/widgets/adapters/atlas/SizeAdapter.layout, src/components/ogre/widgets/adapters/atlas/StringAdapter.cpp, src/components/ogre/widgets/adapters/atlas/StringAdapter.h, src/components/ogre/widgets/adapters/atlas/StringAdapter.layout: added adapters for manipulating atlas elements
+
+2007-04-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/Widget.cpp: use an existing brush
+
+2007-04-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/QuaternionAdapter.h, src/components/ogre/widgets/Vector3Adapter.h: formatting
+
+2007-04-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/Performance.layout: avoid scroll bars
+
+2007-04-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/Makefile.am, src/components/ogre/widgets/StackableContainer.cpp, src/components/ogre/widgets/StackableContainer.h: added a stackable container which stacks contained windows either horizontally or vertically
+
+2007-04-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/cegui/datafiles/imagesets/EmberLook.imageset, src/components/ogre/cegui/datafiles/looknfeel/EmberLook.looknfeel: updated gui
+
+2007-04-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/framework/bindings/lua/atlas/Atlas.pkg, src/framework/bindings/lua/atlas/Makefile.am, src/framework/bindings/lua/atlas/lua_Atlas.cpp, src/framework/bindings/lua/atlas/required.h, src/framework/bindings/lua/atlas/update.sh, src/framework/bindings/lua/atlas/Message/Element.pkg: added lua bindings for Atlas
+
+2007-04-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/main/Application.cpp: shut down scripting to prevent memory corruption
+
+2007-04-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/services/server/ConnectedAdapter.cpp, src/services/server/ConnectedAdapter.h, src/services/server/IServerAdapter.h, src/services/server/NonConnectedAdapter.cpp, src/services/server/NonConnectedAdapter.h, src/services/server/ServerService.cpp, src/services/server/ServerService.h: added method for settings attributes on entities
+
+2007-04-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/AvatarCamera.h, src/components/ogre/AvatarEmberEntity.cpp, src/components/ogre/EmberEntity.cpp, src/components/ogre/EmberEntity.h, src/components/ogre/EmberEntityFactory.cpp, src/components/ogre/IWorldPickListener.h, src/components/ogre/MousePicker.h, src/components/ogre/OgreInfo.cpp, src/components/ogre/WorldEmberEntity.cpp, src/components/ogre/carpenter/BluePrint.cpp, src/components/ogre/carpenter/BluePrint.h, src/components/ogre/carpenter/Carpenter.cpp, src/components/ogre/environment/CaelumEnvironment.cpp, src/components/ogre/environment/CaelumSky.h, src/components/ogre/environment/CaelumSun.cpp, src/components/ogre/environment/Environment.h, src/components/ogre/environment/FoliageArea.cpp, src/components/ogre/input/IInputAdapter.h, src/components/ogre/jesus/Jesus.cpp, src/components/ogre/jesus/JesusMousePicker.h, src/components/ogre/manipulation/EntityMoveAdapter.cpp, src/components/ogre/manipulation/EntityMoveAdjuster.cpp, src/components/ogre/manipulation/EntityMover.h, src/components/ogre/manipulation/IEntityMoveBridge.h, src/components/ogre/model/Model.cpp, src/components/ogre/model/XMLModelDefinitionSerializer.cpp, src/components/ogre/model/mapping/IActionCreator.h, src/components/ogre/model/mapping/Cases/CaseBase.cpp, src/components/ogre/model/mapping/Cases/EntityBaseCase.h, src/components/ogre/model/mapping/Cases/AttributeComparers/AttributeComparerWrapper.h, src/components/ogre/model/mapping/Cases/AttributeComparers/HeightComparerWrapper.h, src/components/ogre/model/mapping/Cases/AttributeComparers/NumericComparer.h, src/components/ogre/model/mapping/Cases/AttributeComparers/NumericComparerWrapper.h, src/components/ogre/model/mapping/Cases/AttributeComparers/NumericEqualsComparer.h, src/components/ogre/model/mapping/Cases/AttributeComparers/NumericEqualsOrGreaterComparer.h, src/components/ogre/model/mapping/Cases/AttributeComparers/NumericEqualsOrLesserComparer.h, src/components/ogre/model/mapping/Cases/AttributeComparers/NumericGreaterComparer.h, src/components/ogre/model/mapping/Cases/AttributeComparers/NumericLesserComparer.h, src/components/ogre/model/mapping/Cases/AttributeComparers/NumericRangeComparer.h, src/components/ogre/model/mapping/Cases/AttributeComparers/StringComparer.h, src/components/ogre/model/mapping/Cases/AttributeComparers/StringComparerWrapper.h, src/components/ogre/terrain/ISceneManagerAdapter.h, src/components/ogre/terrain/TerrainArea.h, src/components/ogre/terrain/TerrainEditor.cpp, src/components/ogre/terrain/TerrainGenerator.cpp, src/components/ogre/terrain/TerrainGenerator.h, src/components/ogre/widgets/EntityCEGUITexture.cpp, src/components/ogre/widgets/Help.cpp, src/components/ogre/widgets/IngameChatWidget.cpp, src/components/ogre/widgets/MakeEntityWidget.cpp, src/components/ogre/widgets/ModelRenderer.cpp, src/components/ogre/widgets/MovableObjectRenderer.cpp, src/components/ogre/widgets/OgreEntityRenderer.cpp, src/components/ogre/widgets/QuaternionAdapter.cpp, src/components/ogre/widgets/Vector3Adapter.cpp, src/components/ogre/widgets/Widget.cpp, src/framework/ConsoleCommandWrapper.cpp, src/framework/ISoundProvider.h: cleanup code, removing unused variables, refactor and conform to better C++
+
+2007-04-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/EmberOgre.cpp, src/components/ogre/EmberOgre.h: use an instance of OgreResourceProvider as a IResourceProvider for the lua scripting
+
+2007-04-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/main/Application.cpp: properly shut down services and disconnect before quitting
+
+2007-04-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/services/EmberServices.cpp, src/services/EmberServices.h: stop all services before deleting them
+
+2007-04-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/services/logging/LoggingService.h: cleaned up code
+
+2007-04-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/scripting/bindings/lua/helpers/lua_Helpers.cpp, src/components/ogre/scripting/bindings/lua/ogre/OgreSubMesh.pkg, src/components/ogre/scripting/bindings/lua/ogre/lua_Ogre.cpp, src/framework/bindings/lua/lua_Framework.cpp, src/framework/bindings/lua/eris/lua_Eris.cpp, src/main/bindings/lua/lua_Main.cpp, src/services/bindings/lua/lua_EmberServices.cpp: updated bindings
+
+2007-04-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/MathConverter.h: updated authors section
+
+2007-04-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/services/server/IServerAdapter.h, src/services/server/ServerService.cpp, src/services/server/ServerService.h: cleaned up how connections and accounts were handled, allowing for more clean shutdown and disconnect
+
+2007-04-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/resources.cfg: added a "Scripting" resource group for scripts
+
+2007-04-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/adapters/Makefile.am, configure.ac: added a library for gui adapters
+	
+2007-04-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/Bootstrap.lua: changed place to load lua scripts from
+
+2007-04-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/Chat.lua: put new text at the bottom instead of at the top (more natural I think)
+
+2007-04-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/Makefile.am: install lua files in a directory completely separated from CEGUI
+
+2007-04-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/framework/Component.h, src/framework/ComponentFactory.h, src/framework/EntityListener.cpp, src/framework/EntityListener.h, src/framework/TemplateEntityListener.cpp, src/framework/TemplateEntityListener.h: removed obsolete files
+
+2007-04-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/GUIManager.cpp, src/components/ogre/GUIManager.h: we don't use the CEGUI lua handler any more, instead letting the ScriptingService handle all setup and teardown. Also updated to reflect lua scripts being separate from CEGUI
+
+2007-04-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/framework/IScriptingProvider.h, src/components/ogre/scripting/LuaScriptingProvider.cpp, src/components/ogre/scripting/LuaScriptingProvider.h, src/services/scripting/ScriptingService.cpp, src/services/scripting/ScriptingService.h: use the IResourceProvider interface for loading scripts, refactored the way lua scripts are handled: instead of using the CEGUI lua handler we now handle all of lua ourselves
+
+2007-04-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/OgreResourceProvider.cpp, src/components/ogre/OgreResourceProvider.h, src/components/ogre/Makefile.am: added a IResourceProvider which uses the Ogre resource system
+
+2007-04-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/framework/IResourceProvider.h, src/framework/Makefile.am: added simple interface for resource providers
+
+2007-04-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* scratchpad/RRRewRite/BmpRecRenderer.cpp, scratchpad/RRRewRite/BmpRecRenderer.h, scratchpad/RRRewRite/ColourRecRenderer.cpp, scratchpad/RRRewRite/ColourRecRenderer.h, scratchpad/RRRewRite/GradientRecRenderer.cpp, scratchpad/RRRewRite/GradientRecRenderer.h, scratchpad/RRRewRite/GridRecRenderer.cpp, scratchpad/RRRewRite/GridRecRenderer.h, scratchpad/RRRewRite/RRFactory.h, scratchpad/RRRewRite/RectangleRenderer.cpp, scratchpad/RRRewRite/RectangleRenderer.h, scratchpad/TeaTimeGui/readme.txt, scratchpad/TeaTimeGui/src/american.ttf, scratchpad/TeaTimeGui/src/arial.ttf, scratchpad/TeaTimeGui/src/blackadd.ttf, scratchpad/TeaTimeGui/src/fe______.ttf, scratchpad/TeaTimeGui/src/gripbg1.cel, scratchpad/TeaTimeGui/src/guitest.cc, scratchpad/TeaTimeGui/src/guitest.gdt, scratchpad/TeaTimeGui/src/guitest.gpr, scratchpad/TeaTimeGui/src/mousecur.cel, scratchpad/TeaTimeGui/src/mousehor.cel, scratchpad/TeaTimeGui/src/mouselef.cel, scratchpad/TeaTimeGui/src/mousemov.cel, scratchpad/TeaTimeGui/src/mouserig.cel, scratchpad/TeaTimeGui/src/mousever.cel, scratchpad/TeaTimeGui/src/rhide.key, scratchpad/TeaTimeGui/src/splash.cel, scratchpad/TeaTimeGui/src/ttapplic.cc, scratchpad/TeaTimeGui/src/ttapplic.h, scratchpad/TeaTimeGui/src/ttbutton.cc, scratchpad/TeaTimeGui/src/ttbutton.h, scratchpad/TeaTimeGui/src/ttedit.cc, scratchpad/TeaTimeGui/src/ttedit.h, scratchpad/TeaTimeGui/src/ttform.cc, scratchpad/TeaTimeGui/src/ttform.h, scratchpad/TeaTimeGui/src/ttgui.h, scratchpad/TeaTimeGui/src/ttguidef.h, scratchpad/TeaTimeGui/src/ttguigfx.cc, scratchpad/TeaTimeGui/src/ttguigfx.h, scratchpad/TeaTimeGui/src/ttlist.cc, scratchpad/TeaTimeGui/src/ttlist.h, scratchpad/TeaTimeGui/src/ttmousev.cc, scratchpad/TeaTimeGui/src/ttmousev.h, scratchpad/TeaTimeGui/src/ttproper.h, scratchpad/TeaTimeGui/src/ttstatic.cc, scratchpad/TeaTimeGui/src/ttstatic.h, scratchpad/TeaTimeGui/src/tttime.cc, scratchpad/TeaTimeGui/src/tttime.h, scratchpad/TeaTimeGui/src/ttwindow.cc, scratchpad/TeaTimeGui/src/ttwindow.h, scratchpad/TeaTimeGui/src/ttwstyle.cc, scratchpad/TeaTimeGui/src/ttwstyle.h, scratchpad/Theme/AuthorInfo.h, scratchpad/Theme/BackgroundStyle.h, scratchpad/Theme/CompositeBackground.h, scratchpad/Theme/FontStyle.h, scratchpad/Theme/GradientBackground.h, scratchpad/Theme/IconStyle.h, scratchpad/Theme/SolidBackground.h, scratchpad/Theme/Style.h, scratchpad/Theme/TextureBackground.h, scratchpad/Theme/WidgetStyle.h, scratchpad/Theme/simpletheme.xml, scratchpad/lesson05/Makefile, scratchpad/lesson05/README, scratchpad/lesson05/lesson05.c, scratchpad/testOGL/do.sh, scratchpad/testOGL/test.cpp: removed obsolete files
+
 2007-04-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
 
 	* src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeCamera.cpp: fixed a bug where the paging wasn't updated unless the camera was moved
