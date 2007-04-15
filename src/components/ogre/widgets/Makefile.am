@@ -26,16 +26,20 @@ INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src
 METASOURCES = AUTO
 noinst_LTLIBRARIES = libWidgets.la
 libWidgets_la_SOURCES = 			IngameChatWidget.cpp 			MovableObjectRenderer.cpp \
-				ServerWidget.cpp 			StatusIconBar.cpp ConsoleWidget.cpp EntityCEGUITexture.cpp Help.cpp \
-	IconBar.cpp IconBase.cpp InspectWidget.cpp InventoryWidget.cpp JesusEdit.cpp \
-	ListHolder.cpp LoadingBar.cpp MakeEntityWidget.cpp MeshPreview.cpp ModelRenderer.cpp \
-	OgreEntityRenderer.cpp QuaternionAdapter.cpp Quit.cpp Vector3Adapter.cpp Widget.cpp \
-	WidgetDefinitions.cpp
+	ConsoleWidget.cpp EntityCEGUITexture.cpp EntityEditor.cpp Help.cpp IconBar.cpp \
+	IconBase.cpp IngameChatWidget.cpp InspectWidget.cpp InventoryWidget.cpp \
+	JesusEdit.cpp ListHolder.cpp LoadingBar.cpp MakeEntityWidget.cpp MeshPreview.cpp \
+	ModelRenderer.cpp OgreEntityRenderer.cpp QuaternionAdapter.cpp Quit.cpp ServerWidget.cpp \
+	StackableContainer.cpp StatusIconBar.cpp Vector3Adapter.cpp Widget.cpp WidgetDefinitions.cpp
 #TerrainEdit.cpp Map.cpp
 noinst_HEADERS = 			ServerWidget.h 		ListHolder.h ConsoleWidget.h \
-	EntityCEGUITexture.h Help.h IconBar.h IconBase.h IngameChatWidget.h InspectWidget.h \
-	InventoryWidget.h JesusEdit.h LoadingBar.h MakeEntityWidget.h MeshPreview.h \
-	ModelRenderer.h MovableObjectRenderer.h OgreEntityRenderer.h QuaternionAdapter.h Quit.h \
-	StatusIconBar.h Vector3Adapter.h Widget.h WidgetDefinitions.h
+	EntityCEGUITexture.h EntityEditor.h Help.h IconBar.h IconBase.h IngameChatWidget.h \
+	InspectWidget.h InventoryWidget.h JesusEdit.h LoadingBar.h MakeEntityWidget.h \
+	MeshPreview.h ModelRenderer.h MovableObjectRenderer.h OgreEntityRenderer.h \
+	QuaternionAdapter.h Quit.h ServerWidget.h StackableContainer.h StatusIconBar.h \
+	Vector3Adapter.h Widget.h WidgetDefinitions.h
 #TerrainEdit.h Map.h
-#SUBDIRS = adapters
+SUBDIRS = adapters
+libWidgets_la_LIBADD = \
+	$(top_builddir)/src/components/ogre/widgets/adapters/atlas/libAtlas.la
+libWidgets_la_LDFLAGS = -all-static -no-undefined
