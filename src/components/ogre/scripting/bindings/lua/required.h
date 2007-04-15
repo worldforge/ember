@@ -41,6 +41,8 @@
 #include "components/ogre/widgets/ListHolder.h"
 #include "components/ogre/widgets/Vector3Adapter.h"
 #include "components/ogre/widgets/QuaternionAdapter.h"
+#include "components/ogre/widgets/EntityEditor.h"
+#include "components/ogre/widgets/StackableContainer.h"
 
 #include "components/ogre/widgets/IconBar.h"
 #include "components/ogre/widgets/IconBase.h"

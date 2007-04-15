@@ -23,6 +23,8 @@ $pfile "MotionManager.pkg"
 $pfile "Widget.pkg"
 $pfile "IconBase.pkg"
 $pfile "IconBar.pkg"
+$pfile "EntityEditor.pkg"
+$pfile "StackableContainer.pkg"
 
 $pfile "Model.pkg"
 $pfile "SubModel.pkg"
