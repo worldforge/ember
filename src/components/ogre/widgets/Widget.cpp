@@ -34,7 +34,7 @@ namespace EmberOgre
  		setSelectionColours(CEGUI::colour(50,50,50));
 		setTextColours(CEGUI::colour(0,0,0));
 		try {
-			setSelectionBrushImage((CEGUI::utf8*)"EmberLook", (CEGUI::utf8*)"SelectionBrush");
+			setSelectionBrushImage("EmberLook", "MultiListSelectionBrush");
 		} catch (...) {}
 	
 	}
