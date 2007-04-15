@@ -1,0 +1,11 @@
+$#include "../../AdapterBase.h"
+$#include "../../AdapterFactory.h"
+$#include "../../StringAdapter.h"
+$#include "../../NumberAdapter.h"
+$#include "../../SizeAdapter.h"
+
+$pfile "AdapterBase.pkg"
+$pfile "AdapterFactory.pkg"
+$pfile "StringAdapter.pkg"
+$pfile "NumberAdapter.pkg"
+$pfile "SizeAdapter.pkg"
