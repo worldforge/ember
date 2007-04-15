@@ -1,0 +1,181 @@
+// This file may be redistributed and modified only under the terms of
+// the GNU Lesser General Public License (See COPYING for details).
+// Copyright (C) 2000-2001 Stefanus Du Toit, Karsten-O. Laux and Al Riddoch
+
+
+
+namespace Atlas { 
+namespace Message {
+
+/// An exception class issued when the wrong type is requested in as().
+// class WrongTypeException : public Atlas::Exception
+// {
+//   public:
+//     WrongTypeException() : Atlas::Exception("Wrong Message::Element type") { }
+// };
+
+
+
+/** Multi-type container
+ *
+ * FIXME: Document this
+ *
+ * @author Stefanus Du Toit <sdt@gmx.net>
+ *
+ * Changes:
+ *
+ *   2003/04/02   Al Riddcoh <alriddoch@zepler.org>
+ *                Add in some assignment operators for efficiency
+ *   2002/11/07   Al Riddcoh <alriddoch@zepler.org>
+ *                Changed the name to Element as Object is a stupid name
+ *                for a class.
+ *   2000/08/05   Karsten-O. Laux <klaux@rhrk.uni-kl.de>
+ *                Changed the members to pointers which only get created when
+ *                really needed. This is a major speedup for passing
+ *                Object as parameter or when copying it.
+ *                Because copying of unused members is omitted.  
+ *                All pointers are stored as a union, so we save memory !
+ *                Changed long to long and added convinience Constructors
+ *                for float, int and bool
+ *                
+
+
+ */
+class Element
+{
+    enum Type {
+        TYPE_NONE,
+        TYPE_INT,
+        TYPE_FLOAT,
+        TYPE_PTR,
+        TYPE_STRING,
+        TYPE_MAP,
+        TYPE_LIST
+    };
+
+
+    /// Construct an empty object.
+    Element();
+
+    ///
+    ~Element();
+
+    /// Copy an existing object.
+    Element(const Element& obj);
+
+    /// Set type to int, and value to v.
+    Element(int v);
+
+    /// Set type to int, and value to v.
+    Element(bool v);
+
+    /// Set type to int, and value to v.
+    Element(long v);
+
+    /// Set type to double, and value to v.
+    Element(float v);
+
+    /// Set type to double, and value to v.
+    Element(double v);
+
+    /// Set type to void*, and value to v.
+    Element(void* v);
+
+    /// Set type to std::string, and value to v.
+    Element(const char* v);
+
+    /// Set type to std::string, and value to v.
+    Element(const std::string& v);
+    /// Set type to std::map<std::string, Atlas::Message::Element>, and value to v.
+    Element(const std::map<std::string, Atlas::Message::Element>& v);
+    /// Set type to std::vector<Atlas::Message::Element>, and value to v.
+    Element(const std::vector<Atlas::Message::Element>& v);
+
+
+    /// Check for equality with another Element.
+    bool operator==(const Element& o) const;
+
+    /// Check for inequality with anything we can check equality with
+    template<class C>
+    bool operator!=(C c) const;
+
+    /// Check for equality with a int.
+    bool operator==(long v) const;
+
+    /// Check for equality with a double.
+    bool operator==(double v) const;
+
+    /// Check for equality with a pointer.
+    bool operator==(void* v) const;
+
+    /// Check for equality with a const char *.
+    bool operator==(const char * v) const;
+
+    /// Check for equality with a std::string.
+    bool operator==(const std::string& v) const;
+
+    /// Check for equality with a std::map<std::string, Atlas::Message::Element>.
+    bool operator==(const std::map<std::string, Atlas::Message::Element>& v) const;
+
+    /// Check for equality with a std::vector<Atlas::Message::Element>.
+    bool operator==(const std::vector<Atlas::Message::Element>& v) const;
+
+    /// Get the current type.
+    Atlas::Message::Element::Type getType() const;
+    /// Check whether the current type is nothing.
+    bool isNone() const ;
+    /// Check whether the current type is int.
+    bool isInt() const;
+    /// Check whether the current type is double.
+    bool isFloat() const ;
+    /// Check whether the current type is pointer.
+    bool isPtr() const;
+    /// Check whether the current type is numeric.
+    bool isNum() const;
+    /// Check whether the current type is std::string.
+    bool isString() const;
+    /// Check whether the current type is std::map<std::string, Atlas::Message::Element>.
+    bool isMap() const;
+    /// Check whether the current type is std::vector<Atlas::Message::Element>.
+    bool isList() const;
+
+    /// Retrieve the current value as a int.
+    long asInt() const;
+    long Int() const;
+    /// Retrieve the current value as a double.
+    double asFloat() const;
+    double Float() const;
+    /// Retrieve the current value as a pointer.
+/*    void* asPtr() const ;
+    void* Ptr() const;*/
+    /// Retrieve the current value as a number.
+    double asNum() const ;
+    /// Retrieve the current value as a const std::string reference.
+    const std::string& asString() const;
+    /// Retrieve the current value as a non-const std::string reference.
+    std::string& asString() ;
+    const std::string& String() const;
+    std::string& String();
+    /// Retrieve the current value as a const std::map<std::string, Atlas::Message::Element> reference.
+    const std::map<std::string, Atlas::Message::Element>& asMap() const ;
+    /// Retrieve the current value as a non-const std::map<std::string, Atlas::Message::Element> reference.
+    std::map<std::string, Atlas::Message::Element>& asMap();
+    const std::map<std::string, Atlas::Message::Element>& Map() const;
+    std::map<std::string, Atlas::Message::Element>& Map();
+    /// Retrieve the current value as a const std::vector<Atlas::Message::Element> reference.
+    const std::vector<Atlas::Message::Element>& asList() const;
+    /// Retrieve the current value as a non-const std::vector<Atlas::Message::Element> reference.
+    std::vector<Atlas::Message::Element>& asList();
+    const std::vector<Atlas::Message::Element>& List() const;
+    std::vector<Atlas::Message::Element>& List();
+
+//     static const char * typeName(Type);
+
+
+};
+
+} 
+} // namespace Atlas::Message
+
+
+
