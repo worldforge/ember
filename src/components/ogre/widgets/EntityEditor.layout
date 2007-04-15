@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='EmberLook/FrameWindow' Name='Mainwindow'>
+		<Property Name='UnifiedSize' Value='{{0.00000,250.000000},{0.00000,400.000000}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.000000,650.000000},{0.000000,25.000000}}'/>
+		<Property Name='Alpha' Value='0.6'/>
+		<Property Name='Text' Value='Entity editor'/>
+		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
+			<Property Name='UnifiedPosition' Value='{{0.0,4},{0,15}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-8},{1,-20}}'/>
+			<Property Name='InheritsAlpha' Value='True'/>
+			<Window Type='EmberLook/StaticText' Name='EntityInfo'>
+				<Property Name='UnifiedPosition' Value='{{0.0},{0,0}}'/>
+				<Property Name='UnifiedSize' Value='{{1,0},{0,40}}'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Text' Value='test' />
+				<Property Name='FrameEnabled' Value='false' />
+				<Property Name='BackgroundEnabled' Value='false' />
+			</Window>
+			<Window Type='EmberLook/TabControl' Name='MainTabControl'>
+				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.00000,-70.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.0000,40.000000}}'/>
+				<Property Name='InheritsAlpha' Value='false'/>
+				<Window Type='DefaultGUISheet' Name='AttributesPanel'>
+					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='Text' Value='Attributes'/>
+					<Property Name='InheritsAlpha' Value='false'/>
+					<Property Name='Visible' Value='true'/>
+					<Window Type='EmberLook/ScrollablePane' Name='AttributesContainer'>
+						<Property Name='UnifiedSize' Value='{{1,0.000000},{1.00000,-25.000000}}'/>
+						<Property Name='Text' Value=''/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Property Name='ReadOnly' Value='true'/>
+						<Property Name='VertFormatting' Value='TopAligned'/>
+						<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
+						<Property Name='VertScrollbar' Value='true'/>
+					</Window>
+				</Window>
+				<Window Type='DefaultGUISheet' Name='KnowledgePanel'>
+					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='Text' Value='Knowledge'/>
+					<Property Name='InheritsAlpha' Value='false'/>
+					<!-- Property Name='Visible' Value='true'/ -->
+				</Window>
+				<Window Type='DefaultGUISheet' Name='GoalsPanel'>
+					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='Text' Value='Goals'/>
+					<Property Name='InheritsAlpha' Value='false'/>
+					<!-- Property Name='Visible' Value='true'/ -->
+				</Window>
+			</Window>
+			<Window Type='EmberLook/Button' Name='Submit'>
+				<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-20}}'/>
+				<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
+				<Property Name='Text' Value='Submit'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='ShowOgreBoundingBox'>
+				<Property Name='UnifiedPosition' Value='{{0,80},{1.0,-20}}'/>
+				<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
+				<Property Name='Text' Value='Ogre bbox'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='ShowErisBoundingBox'>
+				<Property Name='UnifiedPosition' Value='{{0,160},{1.0,-20}}'/>
+				<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
+				<Property Name='Text' Value='Eris bbox'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='DeleteButton'>
+				<Property Name='UnifiedPosition' Value='{{0,240},{1.0,-20}}'/>
+				<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
+				<Property Name='Text' Value='Delete'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+			</Window>
+		</Window>
+	</Window>
+</GUILayout>
