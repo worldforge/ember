@@ -42,29 +42,29 @@ namespace Gui {
 */
 class QuaternionAdapter{
 public:
-    QuaternionAdapter(CEGUI::Window *degreeWindow, CEGUI::Window *xWindow, CEGUI::Window *yWindow, CEGUI::Window *zWindow, const Ogre::Quaternion& quaternion = Ogre::Quaternion::ZERO);
+	QuaternionAdapter(CEGUI::Window *degreeWindow, CEGUI::Window *xWindow, CEGUI::Window *yWindow, CEGUI::Window *zWindow, const Ogre::Quaternion& quaternion = Ogre::Quaternion::ZERO);
 
-    ~QuaternionAdapter();
-    
-    
-    const Ogre::Quaternion& getValue() const;
-    const Ogre::Quaternion& getOriginalValue() const;
-    
-    
-    /**
-    Sets the value, thus also updating the gui.
-    */
-    void setValue(const Ogre::Quaternion& quaternion);
-    
-    /**
-    Updates the gui with new values.
-    */
-    void updateGui(const Ogre::Quaternion& vector);
-    
-    /**
-    	Emitted when the value has been changed from a gui update.
-    */
-    sigc::signal<void> EventValueChanged;
+	~QuaternionAdapter();
+	
+	
+	const Ogre::Quaternion& getValue() const;
+	const Ogre::Quaternion& getOriginalValue() const;
+	
+	
+	/**
+	Sets the value, thus also updating the gui.
+	*/
+	void setValue(const Ogre::Quaternion& quaternion);
+	
+	/**
+	Updates the gui with new values.
+	*/
+	void updateGui(const Ogre::Quaternion& vector);
+	
+	/**
+	Emitted when the value has been changed from a gui update.
+	*/
+	sigc::signal<void> EventValueChanged;
 
 private:
 

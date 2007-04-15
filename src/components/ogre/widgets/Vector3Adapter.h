@@ -41,27 +41,27 @@ namespace Gui {
 */
 class Vector3Adapter {
 public:
-    Vector3Adapter(CEGUI::Window *xWindow, CEGUI::Window *yWindow, CEGUI::Window *zWindow, const Ogre::Vector3& vector = Ogre::Vector3::ZERO);
+	Vector3Adapter(CEGUI::Window *xWindow, CEGUI::Window *yWindow, CEGUI::Window *zWindow, const Ogre::Vector3& vector = Ogre::Vector3::ZERO);
 
-    ~Vector3Adapter();
-    
-    const Ogre::Vector3& getValue() const;
-    const Ogre::Vector3& getOriginalValue() const;
-    
-     /**
-    Sets the value, thus also updating the gui.
-    */
-    void setValue(const Ogre::Vector3& vector);
-    
-     /**
-    Updates the gui with new values.
-    */
-   void updateGui(const Ogre::Vector3& vector);
-    
-    /**
-    	Emitted when the value has been changed from a gui update.
-    */
-    sigc::signal<void> EventValueChanged;
+	~Vector3Adapter();
+	
+	const Ogre::Vector3& getValue() const;
+	const Ogre::Vector3& getOriginalValue() const;
+	
+	/**
+	Sets the value, thus also updating the gui.
+	*/
+	void setValue(const Ogre::Vector3& vector);
+	
+	/**
+	Updates the gui with new values.
+	*/
+	void updateGui(const Ogre::Vector3& vector);
+	
+	/**
+		Emitted when the value has been changed from a gui update.
+	*/
+	sigc::signal<void> EventValueChanged;
 protected:
 
 	mutable Ogre::Vector3 mVector;
