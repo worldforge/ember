@@ -83,6 +83,7 @@ Application::~Application()
 {
 	EmberServices::getSingleton().getServerService()->stop(0);
 	delete mOgreView;
+	EmberServices::getSingleton().getScriptingService()->stop(0);
 	delete mServices;
 	LoggingService::getInstance()->removeObserver(mLogObserver);
 	delete mLogObserver;
