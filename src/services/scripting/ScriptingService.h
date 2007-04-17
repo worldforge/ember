@@ -50,6 +50,8 @@ public:
     virtual ~ScriptingService();
 
 	virtual Service::Status start();
+    
+    virtual void stop(int code);
 	
     /**
     Console command for loading scripts.

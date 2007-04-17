@@ -101,8 +101,8 @@ namespace Ember
   /* Interface method for stopping this service 	*/
   void MetaserverService::stop(int code)
   {
-    setStatus(Service::OK);
-    setRunning( false );
+	Service::stop(code);
+	setStatus(Service::OK);
   }
 
     

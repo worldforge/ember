@@ -39,10 +39,17 @@ ScriptingService::ScriptingService()
 
 ScriptingService::~ScriptingService()
 {
+	stop(0);
+}
+
+void ScriptingService::stop(int code)
+{
+	Service::stop(code);
 	for(ProviderStore::iterator I = mProviders.begin(); I != mProviders.end(); ++I) 
 	{
 		delete I->second;
 	}
+	mProviders.clear();
 }
 
 Service::Status ScriptingService::start()

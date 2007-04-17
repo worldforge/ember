@@ -43,7 +43,7 @@ namespace Ember {
      * @see Ember::Service
      * @see varconf
      */
-class ConfigService: public Service, public Ember::ConsoleObject, public sigc::trackable
+class ConfigService: public Service, public Ember::ConsoleObject
 {
     private:
     //----------------------------------------------------------------------

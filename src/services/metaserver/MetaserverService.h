@@ -40,7 +40,7 @@ namespace Ember {
  * @see Ember::ServerService
  * @see Ember::ConsoleObject
  */
-class MetaserverService: public Service, public sigc::trackable,
+class MetaserverService: public Service,
   public ConsoleObject
 {
     //======================================================================

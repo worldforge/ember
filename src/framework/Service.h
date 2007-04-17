@@ -25,6 +25,8 @@
 
 // Include system headers here
 #include <string>
+#include <sigc++/trackable.h>
+#include <sigc++/signal.h>
 
 namespace Ember {
 
@@ -38,8 +40,7 @@ namespace Ember {
  * @see OtherSubsystem::AnOtherRelatedClass
  * NOTE: Add other related classes here, doxygen will create links to them.
  */
-class Service
-
+class Service : public sigc::trackable
 {
     //======================================================================
     // Public Constants
@@ -220,8 +221,14 @@ class Service
      */
     virtual void stop( int code )
     {
+    	EventStopping.emit();
         setRunning( false );
     }
+    
+    /**
+    Emitted when the server has stopped. 
+    */
+    sigc::signal<void> EventStopping;
 
 	
     //======================================================================

@@ -116,7 +116,7 @@ const int MESSAGE_BUFFER_SIZE = 4096;
 * @author Tim Enderling
 */
 
-class LoggingService:public Service, public sigc::trackable
+class LoggingService:public Service
 {
 	//======================================================================
 	// Public Constants and enums

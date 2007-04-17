@@ -53,6 +53,10 @@ Service::Status WfutService::start()
 	return Service::OK;
 }
 
+// void WfutService::stop(int code)
+// {
+// 	Service::stop(code);
+// }
 
 void WfutService::startUpdate(const std::string &serverRoot,
 const std::string &channelName,

@@ -181,10 +181,10 @@ namespace Ember
 	/* Interface method for stopping this service */
 	void SoundService::stop(int code)
 	{
+    	Service::stop(code);
 		alSourceStop(worldSources[0]);
 		alutExit();			// Finalize OpenAL
 		setStatus(Service::OK);
-		setRunning( false );
 	}
 
 	void SoundService::runCommand(const std::string &command, const std::string &args)

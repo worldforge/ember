@@ -38,7 +38,7 @@ class WfutSession;
 
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
-class WfutService : public Service, public sigc::trackable
+class WfutService : public Service
 {
 public:
     WfutService();

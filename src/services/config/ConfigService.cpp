@@ -107,8 +107,8 @@ namespace Ember
 
     void ConfigService::stop(int code)
     {
+    	Service::stop(code);
 		deregisterConsoleCommands();
-		setRunning(false);
 		return;
     }
 

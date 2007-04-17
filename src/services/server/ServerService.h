@@ -51,7 +51,7 @@ namespace Ember {
  * @see Ember::MetaserverService
  * @see Ember::ConsoleObject
  */
-class ServerService : public Service, public ConsoleObject, public sigc::trackable
+class ServerService : public Service, public ConsoleObject
 {
     //======================================================================
     // Private Variables
