@@ -267,9 +267,11 @@ bool GUICEGUIAdapter::injectChar(char character)
 			mGuiSystem->injectChar(' ');
 			mGuiSystem->injectChar(' ');
 			mGuiSystem->injectChar(' ');
-		//can't handle CR either really, iosert a line break (0x0a) instead
+		//can't handle CR either really, insert a line break (0x0a) instead
 		} else if (character == '\r') {
-			mGuiSystem->injectChar(0x0a);
+ 			//mGuiSystem->injectChar(0x0a);
+ 			mGuiSystem->injectKeyDown(CEGUI::Key::Return);
+ 			mGuiSystem->injectKeyUp(CEGUI::Key::Return);
 		} else {
 			mGuiSystem->injectChar(character);
 		}
