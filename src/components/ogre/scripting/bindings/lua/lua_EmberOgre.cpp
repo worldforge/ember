@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Sun Apr 15 11:16:29 2007.
+** Generated automatically by tolua++-1.0.92 on Sun Apr 15 22:08:49 2007.
 */
 
 #ifndef __cplusplus
@@ -7304,6 +7304,39 @@ static int tolua_EmberOgre_EmberOgre_Gui_StackableContainer_delete00(lua_State* 
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: setInnerContainerWindow of class  EmberOgre::Gui::StackableContainer */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_StackableContainer_setInnerContainerWindow00
+static int tolua_EmberOgre_EmberOgre_Gui_StackableContainer_setInnerContainerWindow00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::StackableContainer",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"CEGUI::Window",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Gui::StackableContainer* self = (EmberOgre::Gui::StackableContainer*)  tolua_tousertype(tolua_S,1,0);
+  CEGUI::Window* window = ((CEGUI::Window*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setInnerContainerWindow'",NULL);
+#endif
+  {
+   self->setInnerContainerWindow(window);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setInnerContainerWindow'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: getWindow of class  EmberOgre::Gui::StackableContainer */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_StackableContainer_getWindow00
 static int tolua_EmberOgre_EmberOgre_Gui_StackableContainer_getWindow00(lua_State* tolua_S)
@@ -7493,6 +7526,37 @@ static int tolua_EmberOgre_EmberOgre_Gui_StackableContainer_getFlowDirection00(l
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'getFlowDirection'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: repositionWindows of class  EmberOgre::Gui::StackableContainer */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_StackableContainer_repositionWindows00
+static int tolua_EmberOgre_EmberOgre_Gui_StackableContainer_repositionWindows00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::StackableContainer",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Gui::StackableContainer* self = (EmberOgre::Gui::StackableContainer*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'repositionWindows'",NULL);
+#endif
+  {
+   self->repositionWindows();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'repositionWindows'.",&tolua_err);
  return 0;
 #endif
 }
@@ -17050,12 +17114,14 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"new_local",tolua_EmberOgre_EmberOgre_Gui_StackableContainer_new00_local);
      tolua_function(tolua_S,".call",tolua_EmberOgre_EmberOgre_Gui_StackableContainer_new00_local);
      tolua_function(tolua_S,"delete",tolua_EmberOgre_EmberOgre_Gui_StackableContainer_delete00);
+     tolua_function(tolua_S,"setInnerContainerWindow",tolua_EmberOgre_EmberOgre_Gui_StackableContainer_setInnerContainerWindow00);
      tolua_function(tolua_S,"getWindow",tolua_EmberOgre_EmberOgre_Gui_StackableContainer_getWindow00);
      tolua_function(tolua_S,"setPadding",tolua_EmberOgre_EmberOgre_Gui_StackableContainer_setPadding00);
      tolua_function(tolua_S,"getAbsoluteHeight",tolua_EmberOgre_EmberOgre_Gui_StackableContainer_getAbsoluteHeight00);
      tolua_function(tolua_S,"getAbsoluteWidth",tolua_EmberOgre_EmberOgre_Gui_StackableContainer_getAbsoluteWidth00);
      tolua_function(tolua_S,"setFlowDirection",tolua_EmberOgre_EmberOgre_Gui_StackableContainer_setFlowDirection00);
      tolua_function(tolua_S,"getFlowDirection",tolua_EmberOgre_EmberOgre_Gui_StackableContainer_getFlowDirection00);
+     tolua_function(tolua_S,"repositionWindows",tolua_EmberOgre_EmberOgre_Gui_StackableContainer_repositionWindows00);
     tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
