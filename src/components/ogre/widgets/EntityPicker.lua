@@ -14,9 +14,10 @@ EntityPicker = {}
 --local EntityPicker.mainWindow
 EntityPicker.menuWindow = nil
 EntityPicker.entityName = nil
-EntityPicker.useButton = nil
+EntityPicker.useButtons = {}
 EntityPicker.entity = nil
 EntityPicker.position = nil
+EntityPicker.buttons = {}
 
 EntityPicker.widget = guiManager:createWidget()
 
@@ -33,35 +34,71 @@ function EntityPicker_buildWidget()
 	EntityPicker.entityName = EntityPicker.widget:getWindow("EntityName")
 	
 
-	EntityPicker.widget:getWindow("TouchButton"):subscribeEvent("MouseButtonUp", "EntityPicker_buttonTouch_Click")
-	EntityPicker.widget:getWindow("TakeButton"):subscribeEvent("MouseButtonUp", "EntityPicker_buttonTake_Click")
-	EntityPicker.widget:getWindow("GiveButton"):subscribeEvent("MouseButtonUp", "EntityPicker_buttonGive_Click")
-	EntityPicker.widget:getWindow("InspectButton"):subscribeEvent("MouseButtonUp", "EntityPicker_buttonInspect_Click")
-	EntityPicker.widget:getWindow("MoveButton"):subscribeEvent("MouseButtonUp", "EntityPicker_buttonMove_Click")
-	EntityPicker.useButton = EntityPicker.widget:getWindow("UseButton")
-	EntityPicker.useButton:subscribeEvent("MouseButtonUp", "EntityPicker_buttonUse_Click")
+	EntityPicker.buttons.touch = EntityPicker.widget:getWindow("TouchButton")
+	EntityPicker.buttons.touch:subscribeEvent("MouseButtonUp", "EntityPicker_buttonTouch_Click")
+	EntityPicker.buttons.take = EntityPicker.widget:getWindow("TakeButton")
+	EntityPicker.buttons.take:subscribeEvent("MouseButtonUp", "EntityPicker_buttonTake_Click")
+	EntityPicker.buttons.give = EntityPicker.widget:getWindow("GiveButton")
+	EntityPicker.buttons.give:subscribeEvent("MouseButtonUp", "EntityPicker_buttonGive_Click")
+	EntityPicker.buttons.inspect = EntityPicker.widget:getWindow("InspectButton")
+	EntityPicker.buttons.inspect:subscribeEvent("MouseButtonUp", "EntityPicker_buttonInspect_Click")
+	EntityPicker.buttons.move = EntityPicker.widget:getWindow("MoveButton")
+	EntityPicker.buttons.move:subscribeEvent("MouseButtonUp", "EntityPicker_buttonMove_Click")
+	EntityPicker.buttons.edit = EntityPicker.widget:getWindow("EditButton")
+	EntityPicker.buttons.edit:subscribeEvent("MouseButtonUp", "EntityPicker_editButton_Click")
+	
+	--disble the edit button if we're not admin
+	if emberOgre:getAvatar():isAdmin() then
+		EntityPicker.buttons.edit:setVisible(true)
+	else
+		EntityPicker.buttons.edit:setVisible(false)
+	end
+	
+	--get a couple of use buttons to allow for different use actions
+	EntityPicker.useButtons[1] = EntityPicker.widget:getWindow("UseButton1")
+	EntityPicker.useButtons[1]:subscribeEvent("MouseButtonUp", "EntityPicker_buttonUse_Click")
+	EntityPicker.useButtons[2] = EntityPicker.widget:getWindow("UseButton2")
+	EntityPicker.useButtons[2]:subscribeEvent("MouseButtonUp", "EntityPicker_buttonUse_Click")
+	EntityPicker.useButtons[3] = EntityPicker.widget:getWindow("UseButton3")
+	EntityPicker.useButtons[3]:subscribeEvent("MouseButtonUp", "EntityPicker_buttonUse_Click")
+	EntityPicker.useButtons[4] = EntityPicker.widget:getWindow("UseButton4")
+	EntityPicker.useButtons[4]:subscribeEvent("MouseButtonUp", "EntityPicker_buttonUse_Click")
+	EntityPicker.useButtons[5] = EntityPicker.widget:getWindow("UseButton5")
+	EntityPicker.useButtons[5]:subscribeEvent("MouseButtonUp", "EntityPicker_buttonUse_Click")
 		
+	EntityPicker.stackableContainer = EmberOgre.Gui.StackableContainer:new_local(EntityPicker.menuWindow)
+	EntityPicker.stackableContainer:setInnerContainerWindow(EntityPicker.menuWindow)
     EmberOgre.LuaConnector:new(guiManager:getInput().EventMouseButtonReleased):connect("EntityPicker_input_MouseButtonReleased")
 
 end
 
 function EntityPicker_showMenu(position)
 	EntityPicker.widget:show()
-	position.x = position.x - 10.0
+	
+	position.x = position.x - EntityPicker.widget:getMainWindow():getWidth():asAbsolute(0) * 0.5
 	position.y = position.y - 10.0
 	local uPosition = CEGUI.UVector2:new_local(CEGUI.UDim(0,position.x), CEGUI.UDim(0,position.y))
 	EntityPicker.widget:getMainWindow():setPosition(uPosition )
-
+	EntityPicker.stackableContainer:repositionWindows()
 end
 
+--called when an entity has been picked
 function EntityPicker_pickedEntity(result, args)
---	debug(args)
---	debug(args.windowY)
 	
 	EntityPicker.entity = result.entity
 	--we must make a copy, else the vector object will be deleted by C++ and we'll end up with garbage
 	EntityPicker.position = Ogre.Vector3:new_local(result.position)
 	local point = CEGUI.Vector2:new_local(args.windowX, args.windowY)
+	
+	if (EntityPicker.entity:getId() == '0') then
+		EntityPicker.buttons.move:setVisible(false)
+		EntityPicker.buttons.take:setVisible(false)
+	else 
+		EntityPicker.buttons.move:setVisible(true)
+		EntityPicker.buttons.take:setVisible(true)
+	end
+	
+	EntityPicker_checkUse()
 	EntityPicker_showMenu(point)
 	local name
 	--if the entity has a name, use it, else use the type name
@@ -72,27 +109,29 @@ function EntityPicker_pickedEntity(result, args)
 		name = EntityPicker.entity:getType():getName()
 	end	
 	EntityPicker.entityName:setText(name)
-	EntityPicker_checkUse()
 end
 
 function EntityPicker_checkUse()
 	--try to find the default operation for the wielded entity
-	--TODO: right now it only shows the default operations, we want to show all possible too
-	local defaultOp = ""
+	for i,v in ipairs(EntityPicker.useButtons) do
+		v:setVisible(false)
+	end
+	
+	
 	local wieldedEntity = emberOgre:getAvatar():getAvatarEmberEntity():getEntityAttachedToPoint("right_hand_wield")
 	if wieldedEntity then
-		EntityPicker.useButton:setVisible(true)
 		local operatorList = wieldedEntity:getDefaultUseOperators();
 		if operatorList:size() > 0 then 
-			local defaultOp = operatorList[0]
-			if defaultOp == "" then
-				EntityPicker.useButton:setText("Use with " .. wieldedEntity:getType():getName())
-			else
-				EntityPicker.useButton:setText(defaultOp .. " with " .. wieldedEntity:getType():getName())
+			for i = 0, operatorList:size() - 1 do
+				local defaultOp = operatorList[i]
+				EntityPicker.useButtons[i+1]:setVisible(true)
+				if defaultOp == "" then
+					EntityPicker.useButtons[i+1]:setText("Use with " .. wieldedEntity:getType():getName())
+				else
+					EntityPicker.useButtons[i+1]:setText(defaultOp .. " with " .. wieldedEntity:getType():getName())
+				end
 			end
 		end
-	else 
-		EntityPicker.useButton:setVisible(false)
 	end
 end
 
@@ -137,6 +176,10 @@ function EntityPicker_buttonUse_Click(args)
 	EntityPickerWidget_removeMenu()
 end
 
+function EntityPicker_editButton_Click(args)
+	guiManager:EmitEntityAction("edit", EntityPicker.entity)
+	EntityPickerWidget_removeMenu()
+end
 
 
 function EntityPickerWidget_removeMenu()

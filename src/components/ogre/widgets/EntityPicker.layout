@@ -1,52 +1,82 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
 	<Window Type='DefaultGUISheet' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.150000,0.000000},{0.230000,0.000000}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.250000,0.000000},{0.250000,0.000000}}'/>
+		<Property Name='UnifiedSize' Value='{{0.0000,120.000000},{0.0000,300.000000}}'/>
+		<Property Name='UnifiedPosition' Value='{{0,0.000000},{0,0.000000}}'/>
 		<Property Name='Visible' Value='false'/>
 		<Property Name='Enabled' Value='false'/>
 		<Property Name='AlwaysOnTop' Value='true'/>
 		<Window Type='EmberLook/StaticText' Name='EntityName'>
-			<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.1600000,0.000000}}'/>
+			<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.00000,25.000000}}'/>
 			<Property Name='InheritsAlpha' Value='true'/>
 			<Property Name='FrameEnabled' Value='true'/>
 			<Property Name='HorzFormatting' Value='HorzCentred'/>
 		</Window>
 		<Window Type='DefaultGUISheet' Name='Menu'>
-			<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.8400000,0.000000}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.1600000,0.000000}}'/>
+			<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.00000,275.000000}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.00000,25.000000}}'/>
 			<Property Name='InheritsAlpha' Value='true'/>
 			<Window Type='EmberLook/Button' Name='TouchButton'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.16,0.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
 				<Property Name='Text' Value='Touch'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='TakeButton'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.16,0.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.16,0.000000}}'/>
 				<Property Name='Text' Value='Take'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='GiveButton'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.16,0.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.32,0.000000}}'/>
 				<Property Name='Text' Value='Give'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='MoveButton'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.16,0.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.48,0.000000}}'/>
 				<Property Name='Text' Value='Move'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='InspectButton'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.16,0.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.64,0.000000}}'/>
 				<Property Name='Text' Value='Inspect'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>
-			<Window Type='EmberLook/Button' Name='UseButton'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.16,0.000000}}'/>
+			<Window Type='EmberLook/Button' Name='EditButton'>
+				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.64,0.000000}}'/>
+				<Property Name='Text' Value='Edit'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='UseButton1'>
+				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.800000,0.000000}}'/>
+				<Property Name='Text' Value='Use'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='UseButton2'>
+				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.800000,0.000000}}'/>
+				<Property Name='Text' Value='Use'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='UseButton3'>
+				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.800000,0.000000}}'/>
+				<Property Name='Text' Value='Use'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='UseButton4'>
+				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.800000,0.000000}}'/>
+				<Property Name='Text' Value='Use'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='UseButton5'>
+				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.800000,0.000000}}'/>
 				<Property Name='Text' Value='Use'/>
 				<Property Name='InheritsAlpha' Value='True'/>

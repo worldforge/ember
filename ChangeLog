@@ -1,3 +1,35 @@
+2007-04-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/EntityEditor.lua, src/components/ogre/widgets/EntityPicker.layout, src/components/ogre/widgets/EntityPicker.lua: use a stackablecontainer for the menu, also added an edit option
+
+2007-04-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/GUIManager.cpp, src/components/ogre/GUIManager.h: listen for the event for stopping the scripting service, and when recieving it shut down the lua module
+
+2007-04-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/GUICEGUIAdapter.cpp: with CEGUI 0.5.0 we can't any longer send line breaks as characters; instead we have to inject return key presses
+
+2007-04-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/StackableContainer.cpp, src/components/ogre/widgets/StackableContainer.h: some windows, such as the scrollable pane, use an internal window. Thus we can't listen for the ChildRemoved event on the main window since it will never be emitted. We thus have to bind the container window later on when we really know which window is the main parent window.
+
+2007-04-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/EmberEntity.cpp, src/components/ogre/EmberEntity.h, src/components/ogre/EmberPhysicalEntity.cpp, src/components/ogre/EmberPhysicalEntity.h: added method for getting the bounding sphere
+
+2007-04-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/scripting/bindings/lua/EntityEditor.pkg, src/components/ogre/scripting/bindings/lua/StackableContainer.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: update bindings
+
+2007-04-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/main/Application.cpp: shut down scripting service before shutting down other services
+
+2007-04-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/framework/Service.h, src/services/config/ConfigService.cpp, src/services/config/ConfigService.h, src/services/logging/LoggingService.h, src/services/metaserver/MetaserverService.cpp, src/services/metaserver/MetaserverService.h, src/services/scripting/ScriptingService.cpp, src/services/scripting/ScriptingService.h, src/services/server/ServerService.h, src/services/sound/SoundService.cpp, src/services/time/TimeService.h, src/services/wfut/WfutService.cpp, src/services/wfut/WfutService.h: added an event signalled at stopping
+
 2007-04-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
 
 	* configure.ac, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/Makefile.am, src/components/ogre/carpenter/Makefile.am: updated project files

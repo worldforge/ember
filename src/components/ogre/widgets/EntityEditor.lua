@@ -77,6 +77,7 @@ function EntityEditor_addAdapterContainer(attributeName, adapter, container, par
 	label:setWidth(CEGUI.UDim(0, 100))
 	label:setProperty("FrameEnabled", "false");
  	label:setProperty("BackgroundEnabled", "false");
+	label:setProperty("VertFormatting", "TopAligned");
 	
 	local width = container:getWidth()
 	width = width + CEGUI.UDim(0, 100)
