@@ -205,6 +205,9 @@ public:
 	 */
 	virtual const Ogre::AxisAlignedBox& getWorldBoundingBox(bool derive = true) const;
 	
+	
+	virtual const Ogre::Sphere & getWorldBoundingSphere (bool derive=true) const;
+	
 	/**
 	 *    Returns a list of the default use operators that can be used with this entity.
 	 For example, an axe would have a list of operators such as "chop" and "sharpen".

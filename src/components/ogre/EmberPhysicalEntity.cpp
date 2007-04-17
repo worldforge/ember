@@ -625,7 +625,12 @@ void EmberPhysicalEntity::onBboxChanged()
 
 const Ogre::AxisAlignedBox& EmberPhysicalEntity::getWorldBoundingBox(bool derive) const
 {
-	return getModel()->getWorldBoundingBox(true);
+	return getModel()->getWorldBoundingBox(derive);
+}
+
+const Ogre::Sphere & EmberPhysicalEntity::getWorldBoundingSphere (bool derive) const
+{
+	return getModel()->getWorldBoundingSphere(derive);
 }
 
 void EmberPhysicalEntity::onAction(const Atlas::Objects::Operation::RootOperation& act)

@@ -585,8 +585,7 @@ void EmberEntity::createErisBboxMaterial()
 void EmberEntity::onBboxChanged()
 {
 	if (mErisEntityBoundingBox) {
-		Ogre::AxisAlignedBox aabb(Atlas2Ogre(getBBox().highCorner()), Atlas2Ogre(getBBox().lowCorner()));
-		mErisEntityBoundingBox->setupBoundingBox(aabb);
+		mErisEntityBoundingBox->setupBoundingBox(Atlas2Ogre(getBBox()));
 	}
 }
 
@@ -617,6 +616,12 @@ const Ogre::AxisAlignedBox& EmberEntity::getWorldBoundingBox(bool derive) const
 {
 	static Ogre::AxisAlignedBox boundingBox(0,0,0,0,0,0);
 	return boundingBox;
+}
+	
+const Ogre::Sphere & EmberEntity::getWorldBoundingSphere (bool derive) const
+{
+	static Ogre::Sphere sphere;
+	return sphere;
 }
 
 std::vector<std::string> EmberEntity::getDefaultUseOperators()
