@@ -273,6 +273,7 @@ protected:
 	
 	CEGUI::LuaScriptModule* mLuaScriptModule;
 
+	void scriptingServiceStopping();
 };
 }
 

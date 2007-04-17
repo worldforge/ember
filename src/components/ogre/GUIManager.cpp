@@ -110,7 +110,9 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		if (provider != 0) {
 			LuaScriptingProvider* luaScriptProvider = static_cast<LuaScriptingProvider*>(provider);
 			mLuaScriptModule = new LuaScriptModule(luaScriptProvider->getLuaState()); 
-			mGuiSystem = new CEGUI::System(mGuiRenderer, resourceProvider, 0, mLuaScriptModule, "cegui/datafiles/configs/cegui.config"); 
+			mGuiSystem = new CEGUI::System(mGuiRenderer, resourceProvider, 0, mLuaScriptModule, "cegui/datafiles/configs/cegui.config");
+			
+			Ember::EmberServices::getSingleton().getScriptingService()->EventStopping.connect(sigc::mem_fun(*this, &GUIManager::scriptingServiceStopping));
 		} else {
 			mGuiSystem = new CEGUI::System(mGuiRenderer, resourceProvider, 0, 0, "cegui/datafiles/configs/cegui.config"); 
 		}
@@ -253,6 +255,13 @@ void GUIManager::initialize()
 		S_LOG_FAILURE("GUIManager - error when initializing widgets: " << e.getMessage().c_str());
 	}
 	
+}
+
+void GUIManager::scriptingServiceStopping()
+{
+	mGuiSystem->setScriptingModule(0);
+	delete mLuaScriptModule;
+	mLuaScriptModule = 0;
 }
 
 void GUIManager::EmitEntityAction(const std::string& action, EmberEntity* entity)
