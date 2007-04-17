@@ -33,7 +33,6 @@ StackableContainer::StackableContainer(CEGUI::Window* window)
 {
 	if (window) {
 		window->subscribeEvent(CEGUI::Window::EventChildAdded, CEGUI::Event::Subscriber(&StackableContainer::window_ChildAdded, this));
-		//window->subscribeEvent(CEGUI::Window::EventChildRemoved, CEGUI::Event::Subscriber(&StackableContainer::window_ChildRemoved, this));
 	} 
 }
 
@@ -43,21 +42,6 @@ StackableContainer::~StackableContainer()
 }
 
 
-// void StackableContainer::addWindow(CEGUI::Window* window)
-// {
-// 	mWindows.push_back(window);
-// 	mWindow->addChildWindow(iconBase->getContainer());
-// 	repositionIcons();
-// }
-// void StackableContainer::removeIcon(IconBase* iconBase)
-// {
-// 	IconBaseStore::iterator I = std::find(mIconBases.begin(), mIconBases.end(), iconBase);
-// 	if (I != mIconBases.end()) {
-// 		mWindow->removeChildWindow(iconBase->getContainer());
-// 		mIconBases.erase(I);
-// 	}
-// 	repositionIcons();
-// }
 
 CEGUI::Window* StackableContainer::getWindow()
 {
@@ -78,27 +62,27 @@ void StackableContainer::repositionWindows()
 	float maxWidth(0);
 	size_t childCount = mInnerContainerWindow->getChildCount();
  	for(size_t i = 0; i < childCount; ++i) {
-// 	for (WindowStore::iterator I = mWindows.begin(); I != mWindows.end(); ++I) {
 		CEGUI::Window* childWindow = mInnerContainerWindow->getChildAtIdx(i);
-// 		CEGUI::Window* childWindow = *I;
-		float absHeight = childWindow->getHeight().asAbsolute(0);
-		float absWidth = childWindow->getWidth().asAbsolute(0);
-		if (mFlowDirection == Horizontal) {
-			maxHeight = std::max<float>(maxHeight, absHeight);
-			childWindow->setPosition(UVector2(UDim(0, accumulatedWidth), UDim(0,0)));
-			accumulatedWidth += absWidth + mPadding;
-		} else {
-			maxWidth= std::max<float>(maxWidth, absWidth);
-			childWindow->setPosition(UVector2(UDim(0, 0), UDim(0,accumulatedHeight)));
-			accumulatedHeight += absHeight + mPadding;
+		if (childWindow->isVisible()) {
+			float absHeight = childWindow->getHeight().asAbsolute(1);
+			float absWidth = childWindow->getWidth().asAbsolute(1);
+			if (mFlowDirection == Horizontal) {
+				maxHeight = std::max<float>(maxHeight, absHeight);
+				childWindow->setPosition(UVector2(UDim(0, accumulatedWidth), UDim(0,0)));
+				accumulatedWidth += absWidth + mPadding;
+			} else {
+				maxWidth= std::max<float>(maxWidth, absWidth);
+				childWindow->setPosition(UVector2(UDim(0, 0), UDim(0,accumulatedHeight)));
+				accumulatedHeight += absHeight + mPadding;
+			}
 		}
 	}
 	if (mFlowDirection == Horizontal) {
 		accumulatedWidth -= mPadding;
-		mInnerContainerWindow->setSize(UVector2(UDim(0, accumulatedWidth), UDim(0,maxHeight)));
+		mInnerContainerWindow->setWidth(UDim(0, accumulatedWidth));
 	} else {
 		accumulatedHeight -= mPadding;
-		mInnerContainerWindow->setSize(UVector2(UDim(0, maxWidth), UDim(0,accumulatedHeight)));
+		mInnerContainerWindow->setHeight(UDim(0,accumulatedHeight));
 	}
 	if (mInnerContainerWindow->getParent()) {
 		mInnerContainerWindow->getParent()->performChildWindowLayout();
@@ -125,13 +109,18 @@ StackableContainer::FlowDirection StackableContainer::getFlowDirection() const
 	return mFlowDirection;
 }
 
+void StackableContainer::setInnerContainerWindow(CEGUI::Window* window)
+{
+	mInnerContainerWindow = window;
+	mInnerContainerWindow->subscribeEvent(CEGUI::Window::EventChildRemoved, CEGUI::Event::Subscriber(&StackableContainer::window_ChildRemoved, this));
+}
+
 
 bool StackableContainer::window_ChildAdded(const CEGUI::EventArgs& e)
 {
 	const WindowEventArgs& windowEventArg = static_cast<const WindowEventArgs&>(e);
 	if (!mInnerContainerWindow) {
-		mInnerContainerWindow = windowEventArg.window->getParent();
-		mInnerContainerWindow->subscribeEvent(CEGUI::Window::EventChildRemoved, CEGUI::Event::Subscriber(&StackableContainer::window_ChildRemoved, this));
+		setInnerContainerWindow(windowEventArg.window->getParent());
 	}
 	repositionWindows();
 	return true;
@@ -139,7 +128,6 @@ bool StackableContainer::window_ChildAdded(const CEGUI::EventArgs& e)
 
 bool StackableContainer::window_ChildRemoved(const CEGUI::EventArgs& e)
 {
-// 	const WindowEventArgs& windowEventArg = static_cast<const WindowEventArgs&>(e);
 	repositionWindows();
 	return true;
 }

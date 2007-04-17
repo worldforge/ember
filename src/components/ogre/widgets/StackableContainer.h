@@ -48,8 +48,7 @@ public:
 
     virtual ~StackableContainer();
 	
-/*	void addWindow(CEGUI::Window* window);
-	void removeWindow(CEGUI::Window* window);*/
+	void setInnerContainerWindow(CEGUI::Window* window);
 	
 	CEGUI::Window* getWindow();
 	
@@ -60,19 +59,17 @@ public:
 	
 	void setFlowDirection(FlowDirection flowDirection);
 	FlowDirection getFlowDirection() const;
-
-protected:
-// 	typedef std::list<CEGUI::Window*> WindowStore;
-	
-	CEGUI::Window* mWindow;
-	CEGUI::Window* mInnerContainerWindow;
-	
-//  	WindowStore mWindows;
 	
 	/**
 	Repositions all windows as they are added and removed to the list.
 	*/
 	void repositionWindows();
+
+protected:
+	
+	CEGUI::Window* mWindow;
+	CEGUI::Window* mInnerContainerWindow;
+	
 	
 	int mPadding;
 	FlowDirection mFlowDirection;
