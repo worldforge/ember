@@ -270,9 +270,9 @@ void Avatar::attemptJump() {}
 void Avatar::attemptRotate(AvatarControllerMovement& movement)
 {
 	//TODO: remove the direct references to AvatarCamera
-	float degHoriz = movement.rotationDegHoriz;
+/*	float degHoriz = movement.rotationDegHoriz;
 	float degVert = movement.rotationDegVert;
-	Ogre::Real timeSlice = movement.timeSlice;
+	Ogre::Real timeSlice = movement.timeSlice;*/
 	
 //	mAccumulatedHorizontalRotation += (degHoriz * timeSlice);
 
