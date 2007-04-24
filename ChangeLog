@@ -1,3 +1,27 @@
+2007-04-24 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/Makefile.am, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/Makefile.am, src/components/ogre/carpenter/Makefile.am, src/components/ogre/widgets/adapters/atlas/Makefile.am, src/framework/Makefile.am: removed --all-static
+
+2007-04-24 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/EntityWorldPickListener.cpp: detect when the user has picked the sky instead of a valid terrain segment and don't register that as a valid pick op
+
+2007-04-24 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/EmberOgre.cpp, src/components/ogre/EmberOgre.h, src/main/Application.cpp: added a method for shutting down the gui. The problem stems from the order in which we need to shut down stuff. We first want to shut down the gui, then the scripting service, and lastly the Ogre component. Thus the need for this method.
+
+2007-04-24 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/Avatar.cpp: code cleanup
+
+2007-04-24 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/Admin.lua, src/components/ogre/widgets/Chat.lua, src/components/ogre/widgets/EntityEditor.lua, src/components/ogre/widgets/EntityPicker.lua, src/components/ogre/widgets/Give.lua, src/components/ogre/widgets/IndirectRenderingChecker.lua, src/components/ogre/widgets/Makefile.am, src/components/ogre/widgets/ModelEdit.lua, src/components/ogre/widgets/Mover.lua, src/components/ogre/widgets/Performance.lua, src/components/ogre/widgets/ScriptEdit.lua, src/components/ogre/widgets/ServerBrowser.lua, src/components/ogre/widgets/Tasks.lua, src/components/ogre/widgets/TerrainEditor.lua: use nested method naming now that the LuaConnector allows it
+
+2007-04-24 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.cpp, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.h, src/components/ogre/scripting/bindings/lua/helpers/LuaConnectorHelper.cpp, src/components/ogre/scripting/bindings/lua/helpers/LuaConnectorHelper.h, src/components/ogre/scripting/bindings/lua/helpers/Makefile.am: allow for callbacks to use nested lua functions, i.e. "foo.bar.method()"
+
 2007-04-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
 
 	* src/components/ogre/widgets/EntityEditor.lua, src/components/ogre/widgets/EntityPicker.layout, src/components/ogre/widgets/EntityPicker.lua: use a stackablecontainer for the menu, also added an edit option

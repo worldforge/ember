@@ -16,4 +16,4 @@ noinst_HEADERS = ConsoleBackend.h \
 	IScriptingProvider.h ISoundProvider.h Service.h ServiceManager.h Singleton.h \
 	StreamLogObserver.h Tokeniser.h binreloc.h float_cast.h osdir.h \
 	scrap.h tinyxml/tinystr.h tinyxml/tinyxml.h
-libFramework_la_LDFLAGS = -all-static -no-undefined
+libFramework_la_LDFLAGS = -no-undefined

@@ -77,4 +77,4 @@ libEmberPagingSceneManager_la_SOURCES = \
 						EmberPagingLandScapeData2D_HeightField.cpp \
 						EmberPagingLandScapeTexture.cpp \
 						EmberPagingSceneManagerAdapter.cpp
-libEmberPagingSceneManager_la_LDFLAGS = -all-static -no-undefined
+libEmberPagingSceneManager_la_LDFLAGS = -no-undefined

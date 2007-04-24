@@ -43,4 +43,4 @@ noinst_HEADERS = Avatar.h AvatarCamera.h AvatarController.h AvatarEmberEntity.h 
 	OgreLogObserver.h OgreResourceLoader.h OgreResourceProvider.h OgreSetup.h \
 	OpcodeCollisionDetector.h WorldEmberEntity.h XMLHelper.h
 	
-libEmberOgre_la_LDFLAGS = -all-static -no-undefined
+libEmberOgre_la_LDFLAGS = -no-undefined
