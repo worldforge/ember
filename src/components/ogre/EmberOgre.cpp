@@ -300,6 +300,11 @@ bool EmberOgre::renderOneFrame()
 	return mRoot->renderOneFrame();
 }
 
+void EmberOgre::shutdownGui()
+{
+	delete mGUIManager;
+	mGUIManager = 0;
+}
 
 void EmberOgre::go(bool loadOgrePluginsThroughBinreloc)
 {

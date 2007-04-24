@@ -260,6 +260,8 @@ public:
      * @return 
      */
     bool setup(bool loadOgrePluginsThroughBinreloc = false);
+    
+    void shutdownGui();
 
 protected:
 
