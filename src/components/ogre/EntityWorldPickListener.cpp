@@ -71,21 +71,24 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 
 	if (entry.worldFragment) {
 		///this is terrain
-// 		EntityPickResult result;
+		///a position of -1, -1, -1 is not valid terrain
 		Ogre::SceneQuery::WorldFragment* wf = entry.worldFragment;
-		if (mFurthestPickingDistance == 0) {
-			mResult.entity = EmberOgre::getSingleton().getEntityFactory()->getWorld();
-			mResult.position = wf->singleIntersection;
-			mResult.distance = entry.distance;
-			continuePicking = false;
-		} else {
-			if (entry.distance < mResult.distance) {
+		static Ogre::Vector3 invalidPos(-1, -1, -1);
+		if (wf->singleIntersection != invalidPos) {
+			if (mFurthestPickingDistance == 0) {
 				mResult.entity = EmberOgre::getSingleton().getEntityFactory()->getWorld();
 				mResult.position = wf->singleIntersection;
 				mResult.distance = entry.distance;
 				continuePicking = false;
-			} 
-		} 
+			} else {
+				if (entry.distance < mResult.distance) {
+					mResult.entity = EmberOgre::getSingleton().getEntityFactory()->getWorld();
+					mResult.position = wf->singleIntersection;
+					mResult.distance = entry.distance;
+					continuePicking = false;
+				}
+			}
+		}
 /*		std::stringstream ss;
 		ss << wf->singleIntersection;
 		S_LOG_VERBOSE("Picked in terrain: " << ss.str() << " distance: " << mResult.distance);*/
