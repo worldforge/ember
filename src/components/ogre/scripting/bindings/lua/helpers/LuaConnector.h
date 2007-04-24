@@ -16,7 +16,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 // 
-// You should have received a copy of the GNU General Public License
+// You should have received a copy ofthe GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
@@ -78,6 +78,12 @@ namespace LuaConnectors {
 			std::string mLuaMethod;
 			unsigned int mNumberOfArguments;
 			std::vector<std::string> mLuaTypeNames;
+		protected:
+			/**
+			pushes the lua method onto the stack
+			*/
+			void pushNamedFunction(lua_State* state);
+	
 	};
 
 	class ConnectorZero : public ConnectorBase

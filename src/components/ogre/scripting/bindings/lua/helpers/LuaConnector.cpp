@@ -21,20 +21,13 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 #include "LuaConnector.h"
+#include "LuaConnectorHelper.h"
 
 #include "framework/Exception.h"
 #include "services/logging/LoggingService.h"
 
-#include "components/ogre/EmberEntity.h"
-#include "components/ogre/EmberPhysicalEntity.h"
-// #include "components/ogre/PersonEmberEntity.h"
-#include "components/ogre/AvatarEmberEntity.h"
-// 
 #include "components/ogre/MousePicker.h"
 #include "components/ogre/EntityWorldPickListener.h"
-// #include "../EmberEntityFactory.h"
-// #include "../jesus/Jesus.h"
-
 
 #include <Eris/Task.h>
 
@@ -62,20 +55,23 @@ void ConnectorBase::connect(const std::string & luaMethod)
 	mLuaMethod = luaMethod;
 }
 
+void ConnectorBase::pushNamedFunction(lua_State* state)
+{
+	LuaConnectorHelper::pushNamedFunction(state, mLuaMethod);
+}
+
 //template<> void ConnectorBase::callLuaMethod(std::string t0, std::string t1, Empty t2, Empty t3);
 template <typename T0, typename T1, typename T2, typename T3> void ConnectorBase::callLuaMethod(T0 t0, T1 t1, T2 t2, T3 t3)
 {
+	int numberOfArguments = static_cast<int>(mLuaTypeNames.size());
+	lua_State* state = EmberOgre::LuaConnector::getState();
+	int top = lua_gettop(state);
 	try {
-		int numberOfArguments = static_cast<int>(mLuaTypeNames.size());
-		lua_State* state = EmberOgre::LuaConnector::getState();
-		
-		lua_getglobal(state, mLuaMethod.c_str());
+	
+		pushNamedFunction(state);
+// 		lua_getglobal(state, mLuaMethod.c_str());
 	
 		// is it a function
-		if ( !lua_isfunction(state,-1) )
-		{
-			throw Ember::Exception( "\"" + mLuaMethod + "\" does not represent a Lua function" );
-		}
 		
 		LuaTypeStore::const_iterator I = mLuaTypeNames.begin();
 		if (I != mLuaTypeNames.end()) 
@@ -87,36 +83,37 @@ template <typename T0, typename T1, typename T2, typename T3> void ConnectorBase
 		if (I != mLuaTypeNames.end()) 
 			EmberOgre::LuaConnector::pushValue(t3, (*I++));
 			
-		// call it
+		/// call it
 		int error = lua_pcall(state,numberOfArguments,0,0);
 			
-		// handle errors
+		/// handle errors
 		if ( error )
 		{
 			const std::string& msg = lua_tostring(state,-1);
-			lua_pop(state,numberOfArguments);
+			lua_settop(state, top );
+// 			lua_pop(state,numberOfArguments);
 			throw Ember::Exception(msg);
 		}
 
 	}
 	catch(const Ember::Exception& ex )
 	{
-		lua_settop( EmberOgre::LuaConnector::getState(), 0 );
+		lua_settop(state, top );
 		S_LOG_FAILURE("Unable to execute scripted event handler: " << mLuaMethod << "\n" << ex.getError());
 	}
 	catch( const CEGUI::String& str )
 	{
-		lua_settop( EmberOgre::LuaConnector::getState(), 0 );
+		lua_settop(state, top );
 		S_LOG_FAILURE("(LuaScriptModule) Unable to execute scripted event handler: "<<mLuaMethod<<"\n"<<str.c_str());
 	}
 	catch( const CEGUI::Exception& ex )
 	{
-		lua_settop( EmberOgre::LuaConnector::getState(), 0 );
+		lua_settop(state, top );
 		S_LOG_FAILURE("(LuaScriptModule) Unable to execute scripted event handler: "<<mLuaMethod<<"\n"<<ex.getMessage().c_str());
 
 	} catch (...) 
 	{
-		lua_settop( EmberOgre::LuaConnector::getState(), 0 );
+		lua_settop(state, top );
 		S_LOG_FAILURE("Unspecified error when executing: " << mLuaMethod  );
 	}
 }
