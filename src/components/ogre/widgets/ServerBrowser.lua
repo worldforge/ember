@@ -8,47 +8,47 @@
 ServerBrowser = {}
 
 
-function ServerBrowser_connectToMetaServer()
+function ServerBrowser.connectToMetaServer()
 	local metaServer = Ember.EmberServices:getSingleton():getMetaserverService():getMetaServer()
 	
 --    EmberOgre.LuaConnector:new(metaServer:Failure.connect, "MetaServer_Failure")
-    EmberOgre.LuaConnector:new(metaServer.ReceivedServerInfo):connect("ServerBrowser_MetaServer_ReceivedServerInfo")
+    EmberOgre.LuaConnector:new(metaServer.ReceivedServerInfo):connect("ServerBrowser.MetaServer_ReceivedServerInfo")
 --    EmberOgre.LuaConnector:new(metaServer:CompletedServerList.connect, "MetaServer_CompletedServerList.connect")
     metaServer:refresh()
 end
 
 
-function ServerBrowser_buildWidget()
+function ServerBrowser.buildWidget()
 	ServerBrowser.widget = guiManager:createWidget()
 	ServerBrowser.widget:loadMainSheet("ServerBrowser.layout", "ServerBrowser/")
 	
 	local wee
 	wee = ServerBrowser.widget:getWindow("ServerList")
 	ServerBrowser.serverList = CEGUI.toMultiColumnList(wee)
-	ServerBrowser.serverList:subscribeEvent("MouseDoubleClick", "ServerBrowser_ServerList_DoubleClick")
+	ServerBrowser.serverList:subscribeEvent("MouseDoubleClick", "ServerBrowser.ServerList_DoubleClick")
 	
 	wee = ServerBrowser.widget:getWindow("Refresh")
 	local refreshButton = CEGUI.toPushButton(wee)
-	refreshButton:subscribeEvent("MouseClick", "ServerBrowser_Refresh_Click")
+	refreshButton:subscribeEvent("MouseClick", "ServerBrowser.Refresh_Click")
 	
 	wee = ServerBrowser.widget:getWindow("Connect")
 	local connectButton = CEGUI.toPushButton(wee)
-	connectButton:subscribeEvent("MouseClick", "ServerBrowser_Connect_Click")
+	connectButton:subscribeEvent("MouseClick", "ServerBrowser.Connect_Click")
 		
 	wee = ServerBrowser.widget:getWindow("ManualServerName")
 	ServerBrowser.manualServerNameTextbox = CEGUI.toPushButton(wee)
-	ServerBrowser.manualServerNameTextbox:subscribeEvent("TextAccepted", "ServerBrowser_manualServerNameTextbox_TextAcceptedEvent")
+	ServerBrowser.manualServerNameTextbox:subscribeEvent("TextAccepted", "ServerBrowser.manualServerNameTextbox_TextAcceptedEvent")
 	
 	
 	local serverService = emberServices:getServerService()
-	EmberOgre.LuaConnector:new(serverService.GotConnection):connect("ServerBrowser_Server_GotConnection")
+	EmberOgre.LuaConnector:new(serverService.GotConnection):connect("ServerBrowser.Server_GotConnection")
 	
-	ServerBrowser_connectToMetaServer()
+	ServerBrowser.connectToMetaServer()
 
 end
 
 
-function ServerBrowser_connectWithColumnList()
+function ServerBrowser.connectWithColumnList()
 	local serverName
 	if ServerBrowser.serverList:getFirstSelectedItem() ~= nil then
 		local selectedRowIndex = ServerBrowser.serverList:getItemRowIndex(ServerBrowser.serverList:getFirstSelectedItem())
@@ -65,7 +65,7 @@ function ServerBrowser_connectWithColumnList()
 	end
 end
 
-function ServerBrowser_doConnect()
+function ServerBrowser.doConnect()
 	local serverName
 
 	--first we check if there is text in the ManualServerName textbox
@@ -76,32 +76,32 @@ function ServerBrowser_doConnect()
 		Ember.EmberServices:getSingleton():getServerService():connect(serverName)
 	elseif ServerBrowser.serverList:getFirstSelectedItem() ~= nil then
 		--if ManualServerName is empty we try to connect to the server selected from the list 
-		ServerBrowser_connectWithColumnList()
+		ServerBrowser.connectWithColumnList()
 	end
 end
 
-function ServerBrowser_Server_GotConnection()
+function ServerBrowser.Server_GotConnection()
 	ServerBrowser.widget:hide()
 end
 
-function ServerBrowser_Refresh_Click(args)
+function ServerBrowser.Refresh_Click(args)
 	ServerBrowser.serverList:resetList()
 	--Ember.EmberServices:getSingleton():getMetaserverService():getMetaserver():refresh()
 end
 
-function ServerBrowser_Connect_Click(args)
-	ServerBrowser_doConnect()
+function ServerBrowser.Connect_Click(args)
+	ServerBrowser.doConnect()
 end
 
-function ServerBrowser_manualServerNameTextbox_TextAcceptedEvent(args)
-	ServerBrowser_doConnect()
+function ServerBrowser.manualServerNameTextbox_TextAcceptedEvent(args)
+	ServerBrowser.doConnect()
 end
 
-function ServerBrowser_ServerList_DoubleClick(args)
-	ServerBrowser_connectWithColumnList()
+function ServerBrowser.ServerList_DoubleClick(args)
+	ServerBrowser.connectWithColumnList()
 end
 
-function ServerBrowser_MetaServer_ReceivedServerInfo(sInfo)
+function ServerBrowser.MetaServer_ReceivedServerInfo(sInfo)
 	--we got some server info, add it to the server list
 
 	--mGuiManager->setDebugText("Got server info.");
@@ -142,4 +142,4 @@ function ServerBrowser_MetaServer_ReceivedServerInfo(sInfo)
 end
 
 
-ServerBrowser_buildWidget()
+ServerBrowser.buildWidget()

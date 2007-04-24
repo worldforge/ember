@@ -1,23 +1,23 @@
 Admin = {}
 
-function Admin_buildWidget()
+function Admin.buildWidget()
 	Admin.widget = guiManager:createWidget()
 	
 	Admin.widget:loadMainSheet("Admin.layout", "Admin/")
 	
-	Admin.widget:getWindow("ModelEditor"):subscribeEvent("MouseClick", "Admin_ModelEditor_Click")
-	Admin.widget:getWindow("TerrainEditor"):subscribeEvent("MouseClick", "Admin_TerrainEditor_Click")
-	Admin.widget:getWindow("SwitchCamera"):subscribeEvent("MouseClick", "Admin_SwitchCamera_Click")
-	Admin.widget:getWindow("EntityCreator"):subscribeEvent("MouseClick", "Admin_EntityCreator_Click")
-	Admin.widget:getWindow("ScriptEditor"):subscribeEvent("MouseClick", "Admin_ScriptEditor_Click")
+	Admin.widget:getWindow("ModelEditor"):subscribeEvent("MouseClick", "Admin.ModelEditor_Click")
+	Admin.widget:getWindow("TerrainEditor"):subscribeEvent("MouseClick", "Admin.TerrainEditor_Click")
+	Admin.widget:getWindow("SwitchCamera"):subscribeEvent("MouseClick", "Admin.SwitchCamera_Click")
+	Admin.widget:getWindow("EntityCreator"):subscribeEvent("MouseClick", "Admin.EntityCreator_Click")
+	Admin.widget:getWindow("ScriptEditor"):subscribeEvent("MouseClick", "Admin.ScriptEditor_Click")
 
 end
 
-function Admin_ModelEditor_Click(args)
+function Admin.ModelEditor_Click(args)
 	console:runCommand("/show_modelEdit")
 end
 
-function Admin_TerrainEditor_Click(args)
+function Admin.TerrainEditor_Click(args)
 	if TerrainEditor == nil then
 		loadScript("TerrainEditor.lua")
 	end
@@ -25,24 +25,24 @@ function Admin_TerrainEditor_Click(args)
 	
 end
 
-function Admin_SwitchCamera_Click(args)
+function Admin.SwitchCamera_Click(args)
 	console:runCommand("/toggle_cameraattached")
 end
 
-function Admin_EntityCreator_Click(args)
+function Admin.EntityCreator_Click(args)
 	console:runCommand("/show_entitycreator")
 end
 
-function Admin_ScriptEditor_Click(args)
+function Admin.ScriptEditor_Click(args)
 	console:runCommand("/show_scriptEdit")
 end
 
 
-function Admin_createdAvatarEmberEntity(avatarEntity)
+function Admin.createdAvatarEmberEntity(avatarEntity)
 	if avatarEntity:getAvatar():isAdmin() then
-		Admin_buildWidget()
+		Admin.buildWidget()
 	end
 end
 
 
-EmberOgre.LuaConnector:new(emberOgre.EventCreatedAvatarEntity):connect("Admin_createdAvatarEmberEntity")
+EmberOgre.LuaConnector:new(emberOgre.EventCreatedAvatarEntity):connect("Admin.createdAvatarEmberEntity")

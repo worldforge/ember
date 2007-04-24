@@ -2,7 +2,7 @@ TerrainEditor = {}
  
  
  
-function TerrainEditor_pickedBasePoint(userObject)
+function TerrainEditor.pickedBasePoint(userObject)
 	TerrainEditor.currentObject = userObject
 	local terrainPosition = userObject:getPosition()
 	
@@ -11,13 +11,13 @@ function TerrainEditor_pickedBasePoint(userObject)
 	TerrainEditor.heightSpinner:setText(userObject:getHeight())
 end
 
-function TerrainEditor_selectedBasePointUpdatedPosition(userObject)
+function TerrainEditor.selectedBasePointUpdatedPosition(userObject)
 	--inspectObject(userObject:getHeight())
 	TerrainEditor.heightSpinner:setText(userObject:getHeight())
 
 end
 
-function TerrainEditor_HeightSpinner_ValueChanged(args)
+function TerrainEditor.HeightSpinner_ValueChanged(args)
 	if TerrainEditor.currentObject ~= nil then
 		local translation = TerrainEditor.heightSpinner:getCurrentValue() - TerrainEditor.currentObject:getHeight()
 		TerrainEditor.currentObject:translate(translation)
@@ -25,46 +25,46 @@ function TerrainEditor_HeightSpinner_ValueChanged(args)
 	end
 end
 
-function TerrainEditor_UndoButton_Click(args)
+function TerrainEditor.UndoButton_Click(args)
 	TerrainEditor.editor:undoLastAction()
 end
 
-function TerrainEditor_RedoButton_Click(args)
+function TerrainEditor.RedoButton_Click(args)
 	TerrainEditor.editor:redoAction()
 end
 
-function TerrainEditor_ShowOverlayButton_Click(args)
-	TerrainEditor_ToggleOverlayVisibility()
+function TerrainEditor.ShowOverlayButton_Click(args)
+	TerrainEditor.ToggleOverlayVisibility()
 end
 
 --Toggles the visibility of the overlay, which is the blue movable dots
-function TerrainEditor_ToggleOverlayVisibility()
+function TerrainEditor.ToggleOverlayVisibility()
 	if TerrainEditor.editor:isOverlayShown() then
-		TerrainEditor_HideOverlay()
+		TerrainEditor.HideOverlay()
 	else 
-		TerrainEditor_ShowOverlay()
+		TerrainEditor.ShowOverlay()
 	end
 end
 
-function TerrainEditor_HideOverlay()
+function TerrainEditor.HideOverlay()
 	TerrainEditor.showOverlayButton:setText("Show overlay")
 	TerrainEditor.editor:hideOverlay()
 end
 
-function TerrainEditor_ShowOverlay()
+function TerrainEditor.ShowOverlay()
 	TerrainEditor.showOverlayButton:setText("Hide overlay")
 	TerrainEditor.editor:showOverlay()
 end
 
-function TerrainEditor_SendToServerButton_Click(args)
+function TerrainEditor.SendToServerButton_Click(args)
 	TerrainEditor.editor:sendChangesToServer()
 end
 
-function TerrainEditor_MainWindow_Hidden(args)
-	TerrainEditor_HideOverlay()
+function TerrainEditor.MainWindow_Hidden(args)
+	TerrainEditor.HideOverlay()
 end
 
-function TerrainEditor_buildWidget()
+function TerrainEditor.buildWidget()
 	TerrainEditor.widget = guiManager:createWidget()
 	TerrainEditor.widget:loadMainSheet("TerrainEditor.layout", "TerrainEditor/")
 	
@@ -76,22 +76,22 @@ function TerrainEditor_buildWidget()
 	TerrainEditor.editor:createOverlay()
 	TerrainEditor.editor:showOverlay()
 	
-	EmberOgre.LuaConnector:new(TerrainEditor.editor.EventPickedBasePoint):connect("TerrainEditor_pickedBasePoint")
-	EmberOgre.LuaConnector:new(TerrainEditor.editor.EventSelectedBasePointUpdatedPosition):connect("TerrainEditor_selectedBasePointUpdatedPosition")
+	EmberOgre.LuaConnector:new(TerrainEditor.editor.EventPickedBasePoint):connect("TerrainEditor.pickedBasePoint")
+	EmberOgre.LuaConnector:new(TerrainEditor.editor.EventSelectedBasePointUpdatedPosition):connect("TerrainEditor.selectedBasePointUpdatedPosition")
 	
-	--TerrainEditor.heightSpinner:subscribeEvent("ValueChanged", "TerrainEditor_HeightSpinner_ValueChanged")
+	--TerrainEditor.heightSpinner:subscribeEvent("ValueChanged", "TerrainEditor.HeightSpinner_ValueChanged")
 	
 	TerrainEditor.showOverlayButton = TerrainEditor.widget:getWindow("ShowOverlayButton")
 	TerrainEditor.showOverlayButton = CEGUI.toPushButton(TerrainEditor.showOverlayButton)
-	TerrainEditor.showOverlayButton:subscribeEvent("MouseClick", "TerrainEditor_ShowOverlayButton_Click")
+	TerrainEditor.showOverlayButton:subscribeEvent("MouseClick", "TerrainEditor.ShowOverlayButton_Click")
 	
 	--hook up the undo and redo buttons
-	TerrainEditor.widget:getWindow("UndoButton"):subscribeEvent("MouseClick", "TerrainEditor_UndoButton_Click")
-	TerrainEditor.widget:getWindow("RedoButton"):subscribeEvent("MouseClick", "TerrainEditor_RedoButton_Click")
+	TerrainEditor.widget:getWindow("UndoButton"):subscribeEvent("MouseClick", "TerrainEditor.UndoButton_Click")
+	TerrainEditor.widget:getWindow("RedoButton"):subscribeEvent("MouseClick", "TerrainEditor.RedoButton_Click")
 	
-	TerrainEditor.widget:getMainWindow():subscribeEvent("Hidden", "TerrainEditor_MainWindow_Hidden")
+	TerrainEditor.widget:getMainWindow():subscribeEvent("Hidden", "TerrainEditor.MainWindow_Hidden")
 	
-	TerrainEditor.widget:getWindow("SendToServerButton"):subscribeEvent("MouseClick", "TerrainEditor_SendToServerButton_Click")
+	TerrainEditor.widget:getWindow("SendToServerButton"):subscribeEvent("MouseClick", "TerrainEditor.SendToServerButton_Click")
 	
 	
 	TerrainEditor.widget:registerConsoleVisibilityToggleCommand("terrainEditor")
@@ -99,4 +99,4 @@ function TerrainEditor_buildWidget()
 	--TerrainEditor.widget:hide()
 
 end
-TerrainEditor_buildWidget()
+TerrainEditor.buildWidget()

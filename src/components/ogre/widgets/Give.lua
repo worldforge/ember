@@ -9,36 +9,36 @@ Give.targetEntity = nil
 Give.listboxMap = {}
 Give.widget = guiManager:createWidget()
 
-function GiveWidget_buildWidget()
+function Give.buildWidget()
 	
 	Give.widget:loadMainSheet("Give.layout", "Give/")
 	
 	Give.widget:getMainWindow():setVisible(false)
 	
-	EmberOgre.LuaConnector:new(emberOgre.EventCreatedAvatarEntity):connect("Give_createdAvatarEmberEntity")
+	EmberOgre.LuaConnector:new(emberOgre.EventCreatedAvatarEntity):connect("Give.createdAvatarEmberEntity")
 	
 	giveButton = Give.widget:getWindow("Give")
-	giveButton:subscribeEvent("MouseClick", "Give_Give_Click")
+	giveButton:subscribeEvent("MouseClick", "Give.Give.Click")
 	
 	cancelButton = Give.widget:getWindow("Cancel")
-	cancelButton:subscribeEvent("MouseClick", "Give_Cancel_Click")
+	cancelButton:subscribeEvent("MouseClick", "Give.Cancel_Click")
 
-	EmberOgre.LuaConnector:new(guiManager.EventEntityAction):connect("Give_handleAction")
+	EmberOgre.LuaConnector:new(guiManager.EventEntityAction):connect("Give.handleAction")
 	
 	local widget = Give.widget:getWindow("ListBox")
 	Give.listbox = CEGUI.toListbox(widget)
 end
 
-function Give_createdAvatarEmberEntity(avatarEntity)
+function Give.createdAvatarEmberEntity(avatarEntity)
 --	console:pushMessage("Created avatar.")
 --	console:pushMessage("Avatar type: " .. tolua.type(avatarEntity:getAvatar()))
 --	console:pushMessage("Avatar event type: " .. tolua.type(avatarEntity:getAvatar().EventAddedEntityToInventory))
 --	console:pushMessage("Avatar event type: " .. tolua.type(avatarEntity:getAvatar().EventRemovedEntityFromInventory))
-	EmberOgre.LuaConnector:new(avatarEntity:getAvatar().EventAddedEntityToInventory):connect("Give_addedEntity")
-	EmberOgre.LuaConnector:new(avatarEntity:getAvatar().EventRemovedEntityFromInventory):connect("Give_removedEntity")
+	EmberOgre.LuaConnector:new(avatarEntity:getAvatar().EventAddedEntityToInventory):connect("Give.addedEntity")
+	EmberOgre.LuaConnector:new(avatarEntity:getAvatar().EventRemovedEntityFromInventory):connect("Give.removedEntity")
 end
 
-function Give_addedEntity(entity)
+function Give.addedEntity(entity)
 	local name = entity:getType():getName() .. " (" .. entity:getId() .. " : " .. entity:getName() .. ")"
 	local item = EmberOgre.ColoredListItem:new(name, entity:getId(), entity)
 	Give.listboxMap[entity] = item
@@ -46,7 +46,7 @@ function Give_addedEntity(entity)
 	Give.listbox:addItem(item)
 end
 
-function Give_removedEntity(entity) 
+function Give.removedEntity(entity) 
 	local item = Give.listboxMap[entity];
 	if item ~= nil then
 		Give.listbox:removeItem(tolua.cast(item, "CEGUI::ListboxItem"))
@@ -54,7 +54,7 @@ function Give_removedEntity(entity)
 	end
 end
 
-function Give_Give_Click(args)
+function Give.Give.Click(args)
 	local item = Give.listbox:getFirstSelectedItem()
 	while (item ~= nil) do
 		local entityId = item:getID()
@@ -66,18 +66,18 @@ function Give_Give_Click(args)
 	end
 end
 
-function Give_Cancel_Click(args)
+function Give.Cancel_Click(args)
 	Give.widget:hide()
 end
 
-function Give_handleAction(action, entity) 
+function Give.handleAction(action, entity) 
 
 	if action == "give" then
-		Give_show(entity)
+		Give.show(entity)
 	end
 end
 
-function Give_show(entity)
+function Give.show(entity)
 	Give.targetEntity = entity
 	Give.widget:show()
 	local textWidget = Give.widget:getWindow("Text")
@@ -86,4 +86,4 @@ function Give_show(entity)
 
 end
 
-GiveWidget_buildWidget()
+Give.buildWidget()

@@ -7,21 +7,21 @@ Chat = {}
 Chat.widget = guiManager:createWidget()
 
 --Set up the widget.
-function Chat_buildWidget()
+function Chat.buildWidget()
 	Chat.widget:loadMainSheet("Chat.layout", "Chat/")
 	Chat.widget:registerConsoleVisibilityToggleCommand("chat")
 	Chat.widget:enableCloseButton();
 	
-	EmberOgre.LuaConnector:new(guiManager.AppendIGChatLine):connect("Chat_appendIGChatLine")
-	EmberOgre.LuaConnector:new(guiManager.AppendOOGChatLine):connect("Chat_appendIGChatLine")
+	EmberOgre.LuaConnector:new(guiManager.AppendIGChatLine):connect("Chat.appendIGChatLine")
+	EmberOgre.LuaConnector:new(guiManager.AppendOOGChatLine):connect("Chat.appendIGChatLine")
 	
 	--let's hide it to begin with
 	Chat.widget:hide()
 	--and show if when the avatar has been created (though this disallows out of game chat)
-	EmberOgre.LuaConnector:new(emberOgre.EventCreatedAvatarEntity):connect("Chat_createdAvatarEmberEntity")
+	EmberOgre.LuaConnector:new(emberOgre.EventCreatedAvatarEntity):connect("Chat.createdAvatarEmberEntity")
 end
 
-function Chat_createdAvatarEmberEntity(avatarEntity)
+function Chat.createdAvatarEmberEntity(avatarEntity)
 	--show the chat window upon creation of the avatarEntity
 	--this should perhaps happen before, to allow for Out Of Game chat?
 	Chat.widget:show()
@@ -29,17 +29,17 @@ end
 
 --handler for Out Of Game chat event
 --adds messages to the top of the textbox
-function Chat_appendOOGChatLine(line, entity)
-	Chat_appendLine("{" .. entity:getName() .. "}" .. line)
+function Chat.appendOOGChatLine(line, entity)
+	Chat.appendLine("{" .. entity:getName() .. "}" .. line)
 end
 
 --handler for In Game chat events
 --adds messages to the top of the textbox
-function Chat_appendIGChatLine(line, entity)
-	Chat_appendLine("<" .. entity:getName() .. ">" .. line)
+function Chat.appendIGChatLine(line, entity)
+	Chat.appendLine("<" .. entity:getName() .. ">" .. line)
 end
 
-function Chat_appendLine(line)
+function Chat.appendLine(line)
 	local window = Chat.widget:getWindow("TextBox")
 	local textWnd = CEGUI.toMultiLineEditbox(window)
 --	chatString = "<" .. entity:getName() .. ">" .. line .. "\n" .. chatString
@@ -49,4 +49,4 @@ function Chat_appendLine(line)
 	textWnd:ensureCaratIsVisible() 
 end
 
-Chat_buildWidget()
+Chat.buildWidget()

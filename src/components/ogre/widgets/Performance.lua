@@ -3,7 +3,7 @@ Performance = {}
 Performance.widget = guiManager:createWidget()
 Performance.mainText = nil
 
-function Performance_buildWidget()
+function Performance.buildWidget()
 	Performance.widget:loadMainSheet("Performance.layout", "Performance/")
 	
 	local window = Performance.widget:getWindow("TextBox")
@@ -17,7 +17,7 @@ function Performance_buildWidget()
 	Performance.widget:enableCloseButton()
 end
 
-function Performance_framestarted(timeSinceLastFrame)
+function Performance.framestarted(timeSinceLastFrame)
 	if (Performance.widget:getMainWindow():isVisible()) then
 		local statString
 		local stats = emberOgre:getRenderWindow():getStatistics()
@@ -39,6 +39,6 @@ function Performance_framestarted(timeSinceLastFrame)
 
 end
 
-Performance_buildWidget()
-EmberOgre.LuaConnector:new(guiManager.EventFrameStarted):connect("Performance_framestarted")
+Performance.buildWidget()
+EmberOgre.LuaConnector:new(guiManager.EventFrameStarted):connect("Performance.framestarted")
 

@@ -2,23 +2,23 @@ Tasks = {}
 
 Tasks.currentTask = nil
 
---function Tasks_frameStarted(time)
+--function Tasks.frameStarted(time)
 --	if Tasks.currentTask ~= nil then
 --		Tasks.progressBar:setProgress(Tasks.currentTask)
 --	end
 --end
 
-function Tasks_Progressed()
+function Tasks.Progressed()
 	Tasks.progressBar:setProgress(Tasks.currentTask:progress())
 end
 
-function Tasks_Cancelled()
+function Tasks.Cancelled()
 end
 
-function Tasks_Completed()
+function Tasks.Completed()
 end
 
-function Tasks_ResetTask()
+function Tasks.ResetTask()
 	Tasks.currentTask = nil
 	--tear down bindings
 	Tasks.progressAdapter = nil
@@ -29,41 +29,41 @@ function Tasks_ResetTask()
 
 end
 
-function Tasks_SetCurrentTask(task)
+function Tasks.SetCurrentTask(task)
 	Tasks.currentTask = task
 	Tasks.nameWindow:setText("Task name: " .. task:name())
 	--set up bindings
 	Tasks.progressAdapter = EmberOgre.LuaConnector:new_local(task.Progressed)
-	Tasks.progressAdapter:connect("Tasks_Progressed")
+	Tasks.progressAdapter:connect("Tasks.Progressed")
 	Tasks.cancelledAdapter = EmberOgre.LuaConnector:new_local(task.Cancelled)
-	Tasks.cancelledAdapter:connect("Tasks_Cancelled")
+	Tasks.cancelledAdapter:connect("Tasks.Cancelled")
 	Tasks.completedAdapter = EmberOgre.LuaConnector:new_local(task.Completed)
-	Tasks.completedAdapter:connect("Tasks_Completed")
+	Tasks.completedAdapter:connect("Tasks.Completed")
 	Tasks.widget:show()
 end
 
-function Tasks_TaskAdded(task)
+function Tasks.TaskAdded(task)
 	if Tasks.currentTask == nil then
-		Tasks_SetCurrentTask(task)
+		Tasks.SetCurrentTask(task)
 	end
 end
 
-function Tasks_TaskRemoved(task)
+function Tasks.TaskRemoved(task)
 	if task == Tasks.currentTask then
-		Tasks_ResetTask()
+		Tasks.ResetTask()
 	end
 end
 
-function Tasks_createdAvatarEmberEntity(avatarEntity)
-	EmberOgre.LuaConnector:new(avatarEntity.TaskAdded):connect("Tasks_TaskAdded")
-	EmberOgre.LuaConnector:new(avatarEntity.TaskRemoved):connect("Tasks_TaskRemoved")
+function Tasks.createdAvatarEmberEntity(avatarEntity)
+	EmberOgre.LuaConnector:new(avatarEntity.TaskAdded):connect("Tasks.TaskAdded")
+	EmberOgre.LuaConnector:new(avatarEntity.TaskRemoved):connect("Tasks.TaskRemoved")
 end
 
-function Tasks_StopButtonClicked(args)
+function Tasks.StopButtonClicked(args)
 	emberServices:getServerService():useStop()
 end
 
-function Tasks_buildWidget()
+function Tasks.buildWidget()
 
 	Tasks.widget = guiManager:createWidget()
 	Tasks.widget:loadMainSheet("Tasks.layout", "Tasks/")
@@ -73,12 +73,12 @@ function Tasks_buildWidget()
 	
 	Tasks.nameWindow = Tasks.widget:getWindow("NameText")
 
-	Tasks.widget:getWindow("StopButton"):subscribeEvent("MouseClick", "Tasks_StopButtonClicked")
+	Tasks.widget:getWindow("StopButton"):subscribeEvent("MouseClick", "Tasks.StopButtonClicked")
 
 
-	EmberOgre.LuaConnector:new(emberOgre.EventCreatedAvatarEntity):connect("Tasks_createdAvatarEmberEntity")
+	EmberOgre.LuaConnector:new(emberOgre.EventCreatedAvatarEntity):connect("Tasks.createdAvatarEmberEntity")
 
---	EmberOgre.LuaConnector:new(Tasks.widget:EventFrameStarted):connect("Tasks_frameStarted")
+--	EmberOgre.LuaConnector:new(Tasks.widget:EventFrameStarted):connect("Tasks.frameStarted")
 
 
 	Tasks.widget:registerConsoleVisibilityToggleCommand("tasks")
@@ -88,4 +88,4 @@ function Tasks_buildWidget()
 end
 
 
-Tasks_buildWidget()
+Tasks.buildWidget()

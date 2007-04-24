@@ -11,10 +11,10 @@ if ogreInfo:isIndirect() then
 	IndirectRenderingChecker.widget = guiManager:createWidget()
 	IndirectRenderingChecker.widget:loadMainSheet("IndirectRenderingChecker.layout", "IndirectRenderingChecker/")
 	
-	IndirectRenderingChecker.widget:getWindow("OkButton"):subscribeEvent("MouseClick", "IndirectRenderingChecker_OkButton_Click")
+	IndirectRenderingChecker.widget:getWindow("OkButton"):subscribeEvent("MouseClick", "IndirectRenderingChecker.OkButton_Click")
 
 end
 
-function IndirectRenderingChecker_OkButton_Click(args)
+function IndirectRenderingChecker.OkButton_Click(args)
 	IndirectRenderingChecker.widget:hide()
 end

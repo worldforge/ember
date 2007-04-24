@@ -11,7 +11,7 @@ ScriptEdit = {}
 
 ScriptEdit.widget = guiManager:createWidget()
 
-function ScriptEdit_buildWidget()
+function ScriptEdit.buildWidget()
 	
 	ScriptEdit.widget:loadMainSheet("ScriptEdit.layout", "ScriptEdit/")
 	
@@ -25,15 +25,15 @@ function ScriptEdit_buildWidget()
 	ScriptEdit.inspect = ScriptEdit.widget:getWindow("InspectButton")
 	ScriptEdit.inspectText = ScriptEdit.widget:getWindow("InspectText")
 	
-	ScriptEdit.widget:getWindow("ClearScriptTextButton"):subscribeEvent("MouseClick", "ScriptEdit_ClearScriptTextButtonClick")
-	ScriptEdit.widget:getWindow("ClearOutputButton"):subscribeEvent("MouseClick", "ScriptEdit_ClearOutputButtonClick")
+	ScriptEdit.widget:getWindow("ClearScriptTextButton"):subscribeEvent("MouseClick", "ScriptEdit.ClearScriptTextButtonClick")
+	ScriptEdit.widget:getWindow("ClearOutputButton"):subscribeEvent("MouseClick", "ScriptEdit.ClearOutputButtonClick")
 	
 	
 	
 	--subscribe event
-	ScriptEdit.execute:subscribeEvent("MouseClick", "ScriptEdit_executeClick")
-	ScriptEdit.inspect:subscribeEvent("MouseClick", "ScriptEdit_inspectClick")
-	EmberOgre.LuaConnector:new(scriptingService:getEventScriptError()):connect("ScriptEdit_scriptError")
+	ScriptEdit.execute:subscribeEvent("MouseClick", "ScriptEdit.executeClick")
+	ScriptEdit.inspect:subscribeEvent("MouseClick", "ScriptEdit.inspectClick")
+	EmberOgre.LuaConnector:new(scriptingService:getEventScriptError()):connect("ScriptEdit.scriptError")
 	
 	
 	
@@ -59,16 +59,16 @@ end
 
 --handler for script error
 --updates the output textbox
-function ScriptEdit_scriptError(error)
+function ScriptEdit.scriptError(error)
 	ScriptEdit.output:setText(error .. "\n" .. ScriptEdit.output:getText())
 end
 
 --execute a block of code
-function ScriptEdit_executeCode(providerType)
-	scriptingService:executeCode(ScriptEdit_getSelectedText(), providerType)
+function ScriptEdit.executeCode(providerType)
+	scriptingService:executeCode(ScriptEdit.getSelectedText(), providerType)
 end
 
-function ScriptEdit_getSelectedText()
+function ScriptEdit.getSelectedText()
 	local text = ScriptEdit.scriptText:getText()
 	if ScriptEdit.scriptText:getSelectionLength() > 0 then
 		text = string.sub(text, ScriptEdit.scriptText:getSelectionStartIndex() + 1, ScriptEdit.scriptText:getSelectionEndIndex())
@@ -77,21 +77,21 @@ function ScriptEdit_getSelectedText()
 end
 --handler for the execute click
 --will execute the code in the script text window
-function ScriptEdit_executeClick(args)
+function ScriptEdit.executeClick(args)
 
 	local item = ScriptEdit.scriptList:getSelectedItem()
 	if item ~= nil then
-		ScriptEdit_executeCode(item:getText())
+		ScriptEdit.executeCode(item:getText())
 	end
 
 end
 
 --will try to inspect the type of the current selected code
-function ScriptEdit_inspectClick(args)
+function ScriptEdit.inspectClick(args)
 	--see if something is selected
 	if ScriptEdit.scriptText:getSelectionLength() > 0 then
 		
-		local inspectCodeString = "return " .. ScriptEdit_getSelectedText()
+		local inspectCodeString = "return " .. ScriptEdit.getSelectedText()
 		local inspectFunction = loadstring(inspectCodeString)
 		if inspectFunction == nil then
 			inspectObject(nil)
@@ -118,13 +118,13 @@ function inspectObject(anObject)
 end
 
 --will clear the text of the script edit box
-function ScriptEdit_ClearScriptTextButtonClick(args)
+function ScriptEdit.ClearScriptTextButtonClick(args)
 	ScriptEdit.scriptText:setText("")
 end
 
 --will clear the text of the output edit box
-function ScriptEdit_ClearOutputButtonClick(args)
+function ScriptEdit.ClearOutputButtonClick(args)
 	ScriptEdit.output:setText("")
 end
 
-ScriptEdit_buildWidget()
+ScriptEdit.buildWidget()

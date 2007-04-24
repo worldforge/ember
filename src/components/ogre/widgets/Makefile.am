@@ -42,4 +42,4 @@ noinst_HEADERS = 			ServerWidget.h 		ListHolder.h ConsoleWidget.h \
 SUBDIRS = adapters
 libWidgets_la_LIBADD = \
 	$(top_builddir)/src/components/ogre/widgets/adapters/atlas/libAtlas.la
-libWidgets_la_LDFLAGS = -all-static -no-undefined
+libWidgets_la_LDFLAGS = -no-undefined

@@ -21,11 +21,11 @@ EntityPicker.buttons = {}
 
 EntityPicker.widget = guiManager:createWidget()
 
-function EntityPicker_buildWidget()
+function EntityPicker.buildWidget()
 
 	local entityPickListener = guiManager:getEntityPickListener()
-    EmberOgre.LuaConnector:new(entityPickListener.EventPickedEntity):connect("EntityPicker_pickedEntity")
-    --EmberOgre.LuaConnector:new(mousePicker.EventPickedNothing):connect("EntityPicker_pickedNothing")
+    EmberOgre.LuaConnector:new(entityPickListener.EventPickedEntity):connect("EntityPicker.pickedEntity")
+    --EmberOgre.LuaConnector:new(mousePicker.EventPickedNothing):connect("EntityPicker.pickedNothing")
     
     EntityPicker.widget:loadMainSheet("EntityPicker.layout", "EntityPicker/")
 
@@ -35,17 +35,17 @@ function EntityPicker_buildWidget()
 	
 
 	EntityPicker.buttons.touch = EntityPicker.widget:getWindow("TouchButton")
-	EntityPicker.buttons.touch:subscribeEvent("MouseButtonUp", "EntityPicker_buttonTouch_Click")
+	EntityPicker.buttons.touch:subscribeEvent("MouseButtonUp", "EntityPicker.buttonTouch_Click")
 	EntityPicker.buttons.take = EntityPicker.widget:getWindow("TakeButton")
-	EntityPicker.buttons.take:subscribeEvent("MouseButtonUp", "EntityPicker_buttonTake_Click")
+	EntityPicker.buttons.take:subscribeEvent("MouseButtonUp", "EntityPicker.buttonTake_Click")
 	EntityPicker.buttons.give = EntityPicker.widget:getWindow("GiveButton")
-	EntityPicker.buttons.give:subscribeEvent("MouseButtonUp", "EntityPicker_buttonGive_Click")
+	EntityPicker.buttons.give:subscribeEvent("MouseButtonUp", "EntityPicker.buttonGive_Click")
 	EntityPicker.buttons.inspect = EntityPicker.widget:getWindow("InspectButton")
-	EntityPicker.buttons.inspect:subscribeEvent("MouseButtonUp", "EntityPicker_buttonInspect_Click")
+	EntityPicker.buttons.inspect:subscribeEvent("MouseButtonUp", "EntityPicker.buttonInspect_Click")
 	EntityPicker.buttons.move = EntityPicker.widget:getWindow("MoveButton")
-	EntityPicker.buttons.move:subscribeEvent("MouseButtonUp", "EntityPicker_buttonMove_Click")
+	EntityPicker.buttons.move:subscribeEvent("MouseButtonUp", "EntityPicker.buttonMove_Click")
 	EntityPicker.buttons.edit = EntityPicker.widget:getWindow("EditButton")
-	EntityPicker.buttons.edit:subscribeEvent("MouseButtonUp", "EntityPicker_editButton_Click")
+	EntityPicker.buttons.edit:subscribeEvent("MouseButtonUp", "EntityPicker.editButton_Click")
 	
 	--disble the edit button if we're not admin
 	if emberOgre:getAvatar():isAdmin() then
@@ -56,23 +56,23 @@ function EntityPicker_buildWidget()
 	
 	--get a couple of use buttons to allow for different use actions
 	EntityPicker.useButtons[1] = EntityPicker.widget:getWindow("UseButton1")
-	EntityPicker.useButtons[1]:subscribeEvent("MouseButtonUp", "EntityPicker_buttonUse_Click")
+	EntityPicker.useButtons[1]:subscribeEvent("MouseButtonUp", "EntityPicker.buttonUse_Click")
 	EntityPicker.useButtons[2] = EntityPicker.widget:getWindow("UseButton2")
-	EntityPicker.useButtons[2]:subscribeEvent("MouseButtonUp", "EntityPicker_buttonUse_Click")
+	EntityPicker.useButtons[2]:subscribeEvent("MouseButtonUp", "EntityPicker.buttonUse_Click")
 	EntityPicker.useButtons[3] = EntityPicker.widget:getWindow("UseButton3")
-	EntityPicker.useButtons[3]:subscribeEvent("MouseButtonUp", "EntityPicker_buttonUse_Click")
+	EntityPicker.useButtons[3]:subscribeEvent("MouseButtonUp", "EntityPicker.buttonUse_Click")
 	EntityPicker.useButtons[4] = EntityPicker.widget:getWindow("UseButton4")
-	EntityPicker.useButtons[4]:subscribeEvent("MouseButtonUp", "EntityPicker_buttonUse_Click")
+	EntityPicker.useButtons[4]:subscribeEvent("MouseButtonUp", "EntityPicker.buttonUse_Click")
 	EntityPicker.useButtons[5] = EntityPicker.widget:getWindow("UseButton5")
-	EntityPicker.useButtons[5]:subscribeEvent("MouseButtonUp", "EntityPicker_buttonUse_Click")
+	EntityPicker.useButtons[5]:subscribeEvent("MouseButtonUp", "EntityPicker.buttonUse_Click")
 		
 	EntityPicker.stackableContainer = EmberOgre.Gui.StackableContainer:new_local(EntityPicker.menuWindow)
 	EntityPicker.stackableContainer:setInnerContainerWindow(EntityPicker.menuWindow)
-    EmberOgre.LuaConnector:new(guiManager:getInput().EventMouseButtonReleased):connect("EntityPicker_input_MouseButtonReleased")
+    EmberOgre.LuaConnector:new(guiManager:getInput().EventMouseButtonReleased):connect("EntityPicker.input_MouseButtonReleased")
 
 end
 
-function EntityPicker_showMenu(position)
+function EntityPicker.showMenu(position)
 	EntityPicker.widget:show()
 	
 	position.x = position.x - EntityPicker.widget:getMainWindow():getWidth():asAbsolute(0) * 0.5
@@ -83,7 +83,7 @@ function EntityPicker_showMenu(position)
 end
 
 --called when an entity has been picked
-function EntityPicker_pickedEntity(result, args)
+function EntityPicker.pickedEntity(result, args)
 	
 	EntityPicker.entity = result.entity
 	--we must make a copy, else the vector object will be deleted by C++ and we'll end up with garbage
@@ -98,8 +98,8 @@ function EntityPicker_pickedEntity(result, args)
 		EntityPicker.buttons.take:setVisible(true)
 	end
 	
-	EntityPicker_checkUse()
-	EntityPicker_showMenu(point)
+	EntityPicker.checkUse()
+	EntityPicker.showMenu(point)
 	local name
 	--if the entity has a name, use it, else use the type name
 	--perhaps we should prefix the type name with an "a" or "an"?
@@ -111,7 +111,7 @@ function EntityPicker_pickedEntity(result, args)
 	EntityPicker.entityName:setText(name)
 end
 
-function EntityPicker_checkUse()
+function EntityPicker.checkUse()
 	--try to find the default operation for the wielded entity
 	for i,v in ipairs(EntityPicker.useButtons) do
 		v:setVisible(false)
@@ -135,48 +135,48 @@ function EntityPicker_checkUse()
 	end
 end
 
---function EntityPicker_pickedNothing(args)
+--function EntityPicker.pickedNothing(args)
 --	if EntityPicker.widget:getMainWindow():isVisible() then
 --		EntityPickerWidget_removeMenu()
 --	end
 --end
 
-function EntityPicker_buttonTouch_Click(args)
+function EntityPicker.buttonTouch_Click(args)
 	--print("Type: ", tolua.type(EntityPicker.position))
 	emberServices:getServerService():touch(EntityPicker.entity)
 	guiManager:EmitEntityAction("touch", EntityPicker.entity)
 	EntityPickerWidget_removeMenu()
 end
 
-function EntityPicker_buttonTake_Click(args)
+function EntityPicker.buttonTake_Click(args)
 	emberServices:getServerService():take(EntityPicker.entity)
 	guiManager:EmitEntityAction("take", EntityPicker.entity)
 	EntityPickerWidget_removeMenu()
 end
 
-function EntityPicker_buttonGive_Click(args)
+function EntityPicker.buttonGive_Click(args)
 	guiManager:EmitEntityAction("give", EntityPicker.entity)
 	EntityPickerWidget_removeMenu()
 end
 
-function EntityPicker_buttonInspect_Click(args)
+function EntityPicker.buttonInspect_Click(args)
 	guiManager:EmitEntityAction("inspect", EntityPicker.entity)
 	EntityPickerWidget_removeMenu()
 end
 
-function EntityPicker_buttonMove_Click(args)
+function EntityPicker.buttonMove_Click(args)
 	guiManager:EmitEntityAction("move", EntityPicker.entity)
 	EntityPickerWidget_removeMenu()
 end
 
-function EntityPicker_buttonUse_Click(args)
+function EntityPicker.buttonUse_Click(args)
 --	emberServices:getServerService():use(EntityPicker.entity, EmberOgre.Ogre2Atlas(tolua.cast(EntityPicker.position, "Ogre::Vector<3>")))
 	emberServices:getServerService():use(EntityPicker.entity, EmberOgre.Ogre2Atlas(EntityPicker.position))
 	guiManager:EmitEntityAction("use", EntityPicker.entity)
 	EntityPickerWidget_removeMenu()
 end
 
-function EntityPicker_editButton_Click(args)
+function EntityPicker.editButton_Click(args)
 	guiManager:EmitEntityAction("edit", EntityPicker.entity)
 	EntityPickerWidget_removeMenu()
 end
@@ -187,11 +187,11 @@ function EntityPickerWidget_removeMenu()
 	EntityPicker.widget:hide()
 end
 
-function EntityPicker_input_MouseButtonReleased(button,  mode)
+function EntityPicker.input_MouseButtonReleased(button,  mode)
 	--only show the menu while the left mouse button is pressed
 	if button == EmberOgre.Input.MouseButtonLeft then
 		EntityPickerWidget_removeMenu()
 	end
 end
 
-EntityPicker_buildWidget()
+EntityPicker.buildWidget()

@@ -2,7 +2,7 @@ ModelEdit = {}
 ModelEdit.zoomRatio = 10
 ModelEdit.modelContentsItems = {}
 
-function ModelEdit_selectMaterial(subentity)
+function ModelEdit.selectMaterial(subentity)
 	if subentity == nil then
 		--there is no subentity (for example if the part doesn't have any defined), just clear the selection
 		ModelEdit.materials:clearAllSelections()
@@ -26,29 +26,29 @@ function ModelEdit_selectMaterial(subentity)
 	end
 end
 
-function ModelEdit_updateMaterial(subentity, material)
+function ModelEdit.updateMaterial(subentity, material)
 	if subentity ~= nil then
 		subentity:setMaterialName(material)
-		ModelEdit_reloadModel()
+		ModelEdit.reloadModel()
 	end
 end
 
-function ModelEdit_updatePartShown(part, shown)
+function ModelEdit.updatePartShown(part, shown)
 	if part ~= nil then
 		part:setShow(shown)
-		ModelEdit_reloadModel()
---		ModelEdit_updateModelContentList()
+		ModelEdit.reloadModel()
+--		ModelEdit.updateModelContentList()
 	end
 end
 
-function ModelEdit_reloadModel()
+function ModelEdit.reloadModel()
 	local model = ModelEdit.renderer:getModel()
 	if model ~= nil then
 		model:reload()
 	end
 end
 
-function ModelEdit_fillMaterialList()
+function ModelEdit.fillMaterialList()
 	ModelEdit.contentparts.submeshInfo.listholder:resetList()
 	materialDefMgr = Ogre.MaterialManager:getSingleton()
 	local I = materialDefMgr:getResourceIterator()
@@ -64,7 +64,7 @@ function ModelEdit_fillMaterialList()
 	end
 end
 
-function ModelEdit_fillMeshList()
+function ModelEdit.fillMeshList()
 	local manager = EmberOgre.Model.ModelDefinitionManager:getSingleton()
 	local meshes = manager:getAllMeshes()
 	
@@ -76,7 +76,7 @@ function ModelEdit_fillMeshList()
 	end	
 end
 
-function ModelEdit_fillSubMeshList(part)
+function ModelEdit.fillSubMeshList(part)
 	local list = ModelEdit.widget:getWindow("SubmeshList")
 	list = CEGUI.toListbox(list)
 	list:resetList()
@@ -93,14 +93,14 @@ function ModelEdit_fillSubMeshList(part)
 	local numberOfSubmeshes = mesh:getNumSubMeshes()
 	local i = 0
 	while i < numberOfSubmeshes do
-		local submeshname = ModelEdit_getSubMeshName(mesh, i)
+		local submeshname = ModelEdit.getSubMeshName(mesh, i)
 		local item = EmberOgre.ColoredListItem:new(submeshname, i)
 		list:addItem(item)
 		i = i + 1
 	end	
 end
 
-function ModelEdit_getSubMeshName(mesh, index)
+function ModelEdit.getSubMeshName(mesh, index)
 	local submeshname = EmberOgre.OgreUtils:getSubMeshName(mesh, index)
 	if submeshname == "" then
 		submeshname = "(index: " .. index .. ")"
@@ -108,20 +108,20 @@ function ModelEdit_getSubMeshName(mesh, index)
 	return submeshname
 end
 
-function ModelEdit_loadModelDefinition(definitionName)
+function ModelEdit.loadModelDefinition(definitionName)
 	modelDefMgr = EmberOgre.Model.ModelDefinitionManager:getSingleton()
 	ModelEdit.definitionPtr = modelDefMgr:getByName(definitionName)
 	ModelEdit.definition = ModelEdit.definitionPtr:get()
-	ModelEdit_showPreview(definitionName)
+	ModelEdit.showPreview(definitionName)
 	
-	--ModelEdit_updateSubmodelsList()
-	ModelEdit_updateModelContentList()
-	ModelEdit_updateModelInfo()
-	ModelEdit_showModel()
+	--ModelEdit.updateSubmodelsList()
+	ModelEdit.updateModelContentList()
+	ModelEdit.updateModelInfo()
+	ModelEdit.showModel()
 
 end
 
-function ModelEdit_updateSubmodelsList()
+function ModelEdit.updateSubmodelsList()
 	ModelEdit.submodels:resetList()
 	ModelEdit.submodels:clearAllSelections()
 	local submodels = ModelEdit.definition:getSubModelDefinitions()
@@ -132,7 +132,7 @@ function ModelEdit_updateSubmodelsList()
 	end	
 end
 
-function ModelEdit_updatePartsList(submodel)
+function ModelEdit.updatePartsList(submodel)
 	ModelEdit.parts:resetList()
 	ModelEdit.parts:clearAllSelections()
 	if submodel ~= nil then
@@ -147,7 +147,7 @@ end
 
 
 
-function ModelEdit_updateSubentitiesList(part)
+function ModelEdit.updateSubentitiesList(part)
 	ModelEdit.subentities:resetList()
 	ModelEdit.subentities:clearAllSelections()
 	if part ~= nil then
@@ -163,13 +163,13 @@ function ModelEdit_updateSubentitiesList(part)
 	end
 end
 
-function ModelEdit_showPreview(definitionName)
+function ModelEdit.showPreview(definitionName)
 	ModelEdit.renderer:showModel(definitionName)
 	--ModelEdit.renderer:showFullModel()
 
 end
 
-function ModelEdit_fillModellist()
+function ModelEdit.fillModellist()
 	ModelEdit.modelslistholder:resetList()
 	ModelEdit.models:clearAllSelections()
 	local modelDefMgr = EmberOgre.Model.ModelDefinitionManager:getSingleton()
@@ -187,15 +187,15 @@ function ModelEdit_fillModellist()
 
 end
 
-function ModelEdit_updateModelInfo()
+function ModelEdit.updateModelInfo()
 	ModelEdit.widget:getWindow("ModelName_Text"):setText("Name: " .. ModelEdit.definition:getName())
 	ModelEdit.scaleTextbox:setText(ModelEdit.definition:getScale())
 	--ModelEdit.widget:getWindow("ModelRotation"):setText(ModelEdit.definition:getRotation())
 	ModelEdit.rotationAdapter:updateGui(ModelEdit.definition:getRotation());
 	ModelEdit.translateAdapter:updateGui(ModelEdit.definition:getTranslate());
 	ModelEdit.containedOffsetAdapter:updateGui(ModelEdit.definition:getContentOffset());
---	ModelEdit_fillWindowsFromVector("ModelContainedOffset", ModelEdit.definition:getContentOffset())
---	ModelEdit_fillWindowsFromVector("ModelTranslate", ModelEdit.definition:getTranslate())
+--	ModelEdit.fillWindowsFromVector("ModelContainedOffset", ModelEdit.definition:getContentOffset())
+--	ModelEdit.fillWindowsFromVector("ModelTranslate", ModelEdit.definition:getTranslate())
 	
 	local showContent = ModelEdit.widget:getWindow("ModelShowContent")
 	
@@ -206,21 +206,21 @@ function ModelEdit_updateModelInfo()
 	ModelEdit.scaleTypes:setItemSelectState(ModelEdit.definition:getUseScaleOf(), true)
 end
 
-function ModelEdit_translateAdapter_update()
+function ModelEdit.translateAdapter_update()
 	ModelEdit.definition:setTranslate(ModelEdit.translateAdapter:getValue())
 end
 
-function ModelEdit_containedOffsetAdapter_update()
+function ModelEdit.containedOffsetAdapter_update()
 	ModelEdit.definition:setContentOffset(ModelEdit.containedOffsetAdapter:getValue())
 end
 
-function ModelEdit_rotationAdapter_update()
+function ModelEdit.rotationAdapter_update()
 	ModelEdit.definition:setRotation(ModelEdit.rotationAdapter:getValue())
 end
 
 
 
-function ModelEdit_fillWindowsFromVector(windowNamePrefix, vector)
+function ModelEdit.fillWindowsFromVector(windowNamePrefix, vector)
 		local xWindow = ModelEdit.widget:getWindow(windowNamePrefix .. "_x");
 		local yWindow = ModelEdit.widget:getWindow(windowNamePrefix .. "_y");
 		local zWindow = ModelEdit.widget:getWindow(windowNamePrefix .. "_z");
@@ -236,7 +236,7 @@ function ModelEdit_fillWindowsFromVector(windowNamePrefix, vector)
 	
 end
 
-function ModelEdit_fillVectorFromWindows(windowNamePrefix, vector)
+function ModelEdit.fillVectorFromWindows(windowNamePrefix, vector)
 	local xWindow = ModelEdit.widget:getWindow(windowNamePrefix .. "_x");
 	local yWindow = ModelEdit.widget:getWindow(windowNamePrefix .. "_y");
 	local zWindow = ModelEdit.widget:getWindow(windowNamePrefix .. "_z");
@@ -248,39 +248,39 @@ function ModelEdit_fillVectorFromWindows(windowNamePrefix, vector)
 end
 
 
-function ModelEdit_models_SelectionChanged(args)
+function ModelEdit.models_SelectionChanged(args)
 	local item = ModelEdit.models:getFirstSelectedItem()
-	ModelEdit_loadModelDefinition(item:getText())
+	ModelEdit.loadModelDefinition(item:getText())
 end
 
-function ModelEdit_parts_SelectionChanged(args)
-	local part = ModelEdit_getSelectedPart()
-	ModelEdit_updateSubentitiesList(part)
-	ModelEdit_updateShownCheckbox(part)
+function ModelEdit.parts_SelectionChanged(args)
+	local part = ModelEdit.getSelectedPart()
+	ModelEdit.updateSubentitiesList(part)
+	ModelEdit.updateShownCheckbox(part)
 end
 
-function ModelEdit_submodels_SelectionChanged(args)
-	local submodel = ModelEdit_getSelectedSubModel()
+function ModelEdit.submodels_SelectionChanged(args)
+	local submodel = ModelEdit.getSelectedSubModel()
 	--inspectObject(submodel)
-	ModelEdit_updatePartsList(submodel)
+	ModelEdit.updatePartsList(submodel)
 end
 
-function ModelEdit_subentities_SelectionChanged(args)
-	local subentity = ModelEdit_getSelectedSubEntity()
-	ModelEdit_selectMaterial(subentity)
+function ModelEdit.subentities_SelectionChanged(args)
+	local subentity = ModelEdit.getSelectedSubEntity()
+	ModelEdit.selectMaterial(subentity)
 end
 
-function ModelEdit_submeshinfomaterials_SelectionChanged(args)
+function ModelEdit.submeshinfomaterials_SelectionChanged(args)
 	local item = ModelEdit.contentparts.submeshInfo.materiallist:getFirstSelectedItem()
 	if item ~= nil then 
 		local material = item:getText()
-		local subentity = ModelEdit_getSelectedSubEntity()
+		local subentity = ModelEdit.getSelectedSubEntity()
 		--inspectObject(subentity)
-		ModelEdit_updateMaterial(subentity, material)
+		ModelEdit.updateMaterial(subentity, material)
 	end
 end
 
-function ModelEdit_ModelUseScaleOf_SelectionChanged(args)
+function ModelEdit.ModelUseScaleOf_SelectionChanged(args)
 	local model = ModelEdit.definition
 	local item = ModelEdit.scaleTypes:getSelectedItem()
 	if item ~= nil then
@@ -288,85 +288,85 @@ function ModelEdit_ModelUseScaleOf_SelectionChanged(args)
 	end
 end
 
-function ModelEdit_ModelScale_TextChanged(args)
+function ModelEdit.ModelScale_TextChanged(args)
 	local model = ModelEdit.definition
 	model:setScale(tonumber(ModelEdit.scaleTextbox:getText()));
 end
 
-function ModelEdit_YawLeft_MouseClick(args)
+function ModelEdit.YawLeft_MouseClick(args)
 	ModelEdit.renderer:yaw(Ogre.Degree:new_local(-45))
 end
 
-function ModelEdit_YawRight_MouseClick(args)
+function ModelEdit.YawRight_MouseClick(args)
 	ModelEdit.renderer:yaw(Ogre.Degree:new_local(45))
 end
 
-function ModelEdit_PitchUp_MouseClick(args)
+function ModelEdit.PitchUp_MouseClick(args)
 	ModelEdit.renderer:pitch(Ogre.Degree:new_local(-45))
 end
 
-function ModelEdit_PitchDown_MouseClick(args)
+function ModelEdit.PitchDown_MouseClick(args)
 	ModelEdit.renderer:pitch(Ogre.Degree:new_local(45))
 end
 
-function ModelEdit_RollLeft_MouseClick(args)
+function ModelEdit.RollLeft_MouseClick(args)
 	ModelEdit.renderer:roll(Ogre.Degree:new_local(-45))
 end
 
-function ModelEdit_RollRight_MouseClick(args)
+function ModelEdit.RollRight_MouseClick(args)
 	ModelEdit.renderer:roll(Ogre.Degree:new_local(45))
 end
 
-function ModelEdit_ResetOrientation_MouseClick(args)
+function ModelEdit.ResetOrientation_MouseClick(args)
 	ModelEdit.renderer:resetCameraOrientation()
 end
 
 
-function ModelEdit_submeshinforemovesubmesh_MouseClick(args)
+function ModelEdit.submeshinforemovesubmesh_MouseClick(args)
 	--just remove the subentity definition from the part
-	local subentity = ModelEdit_getSelectedSubEntity()
+	local subentity = ModelEdit.getSelectedSubEntity()
 	local part = subentity:getPartDefinition()
 	part:removeSubEntityDefinition(subentity)
-	ModelEdit_reloadModel()
-	ModelEdit_updateModelContentList()
+	ModelEdit.reloadModel()
+	ModelEdit.updateModelContentList()
 end
 
-function ModelEdit_removePart_MouseClick(args)
+function ModelEdit.removePart_MouseClick(args)
 	--just remove the part definition from the submodel
-	local part = ModelEdit_getSelectedPart()
+	local part = ModelEdit.getSelectedPart()
 	local submodel = part:getSubModelDefinition()
 	submodel:removePartDefinition(part)
-	ModelEdit_reloadModel()
-	ModelEdit_updateModelContentList()
+	ModelEdit.reloadModel()
+	ModelEdit.updateModelContentList()
 end
 
-function ModelEdit_addSubmesh_MouseClick(args)
+function ModelEdit.addSubmesh_MouseClick(args)
 --get the selected submesh and add it to the part
 	local list = ModelEdit.widget:getWindow("SubmeshList")
 	list = CEGUI.toListbox(list)
 	local item = list:getFirstSelectedItem()
 	--an item must be selected
 	if item ~= nil then
-		local part = ModelEdit_getSelectedPart()
+		local part = ModelEdit.getSelectedPart()
 		part:createSubEntityDefinition(item:getID())
-		ModelEdit_reloadModel()
-		ModelEdit_updateModelContentList()
+		ModelEdit.reloadModel()
+		ModelEdit.updateModelContentList()
 	end
 
 end
 
-function ModelEdit_ReloadModelListButton_MouseClick(args)
-	ModelEdit_fillModellist()
+function ModelEdit.ReloadModelListButton_MouseClick(args)
+	ModelEdit.fillModellist()
 end
 
-function ModelEdit_SaveModelButton_MouseClick(args)
+function ModelEdit.SaveModelButton_MouseClick(args)
 	local modelDefMgr = EmberOgre.Model.ModelDefinitionManager:getSingleton()
 	modelDefMgr:exportScript(ModelEdit.definitionPtr)	
 	inspectObject(ModelEdit.definition:getName())
 
 end
 
-function ModelEdit_AddSubmodelButton_MouseClick(args)
+function ModelEdit.AddSubmodelButton_MouseClick(args)
 	
 	local item = ModelEdit.contentparts.modelInfo.meshlist:getFirstSelectedItem()
 	--an item must be selected
@@ -391,143 +391,143 @@ function ModelEdit_AddSubmodelButton_MouseClick(args)
 		end
 		
 		
-		ModelEdit_reloadModel()
+		ModelEdit.reloadModel()
 		--update the renderer so that the camera is repositioned and the complete model is shown
 		ModelEdit.renderer:showModel(ModelEdit.definition:getName())
-		ModelEdit_updateModelContentList()
+		ModelEdit.updateModelContentList()
 	end
 
 end
 
-function ModelEdit_ReloadInstancesButton_MouseClick(args)
+function ModelEdit.ReloadInstancesButton_MouseClick(args)
 	--reload all model instances
 	ModelEdit.definition:reloadAllInstances()
 end
 
 
-function ModelEdit_GetRotationFromPreviewButton_MouseClick(args)
+function ModelEdit.GetRotationFromPreviewButton_MouseClick(args)
 	--Get the rotation from the preview window
 
 	ModelEdit.rotationAdapter:setValue(ModelEdit.renderer:getEntityRotation())
 end
 
-function ModelEdit_RemoveSubmodelButton_MouseClick(args)
+function ModelEdit.RemoveSubmodelButton_MouseClick(args)
 
-	local submodel = ModelEdit_getSelectedSubModel()
+	local submodel = ModelEdit.getSelectedSubModel()
 	ModelEdit.definition:removeSubModelDefinition(submodel)
 		
-	ModelEdit_reloadModel()
-	ModelEdit_updateModelContentList()
+	ModelEdit.reloadModel()
+	ModelEdit.updateModelContentList()
 	
 end
 
 
-function ModelEdit_addPart_MouseClick(args)
+function ModelEdit.addPart_MouseClick(args)
 	local editbox = ModelEdit.widget:getWindow("NewPartName")
 	local name = editbox:getText()
 	if name ~= "" then
-		local submodel = ModelEdit_getSelectedSubModel()
+		local submodel = ModelEdit.getSelectedSubModel()
 		if submodel ~= nil then
 			submodel:createPartDefinition(name);
-			ModelEdit_reloadModel()
-			ModelEdit_updateModelContentList()
+			ModelEdit.reloadModel()
+			ModelEdit.updateModelContentList()
 		end
 	end
 end
 
-function ModelEdit_renamePart_MouseClick(args)
+function ModelEdit.renamePart_MouseClick(args)
 	local editbox = ModelEdit.widget:getWindow("PartName")
 	local name = editbox:getText()
 	if name ~= "" then
-		local part = ModelEdit_getSelectedPart()
+		local part = ModelEdit.getSelectedPart()
 		if part ~= nil then
 			part:setName(name)
-			ModelEdit_reloadModel()
-			ModelEdit_updateModelContentList()
+			ModelEdit.reloadModel()
+			ModelEdit.updateModelContentList()
 		end
 	end	
 end
 
 
-function ModelEdit_AddModelButton_MouseClick(args)
+function ModelEdit.AddModelButton_MouseClick(args)
 	ModelEdit.widget:getWindow("NewModelWindow"):setVisible(true)
 	ModelEdit.widget:getWindow("NewModelWindow"):moveToFront()
 end
 
-function ModelEdit_NewModelCancel_MouseClick(args)
+function ModelEdit.NewModelCancel_MouseClick(args)
 	ModelEdit.widget:getWindow("NewModelWindow"):setVisible(false)
 end
 
-function ModelEdit_NewModelOk_MouseClick(args)
+function ModelEdit.NewModelOk_MouseClick(args)
 	local modelDefMgr = EmberOgre.Model.ModelDefinitionManager:getSingleton()
 	local name = ModelEdit.widget:getWindow("NewModelName"):getText()
 	def = modelDefMgr:create(name, "ModelDefinitions"):get()
 	def:setValid(true)
 	
 	--after adding the definition, update the model list
-	ModelEdit_fillModellist()
+	ModelEdit.fillModellist()
 	local item = ModelEdit.models:findItemWithText(name, ModelEdit.models:getListboxItemFromIndex(0))
 	if item ~= nil then
 		item:setSelected(true)
 		ModelEdit.models:ensureItemIsVisible(item)	
 	end
 	ModelEdit.widget:getWindow("NewModelWindow"):setVisible(false)
-	ModelEdit_loadModelDefinition(item:getText())
-	ModelEdit_reloadModel()
-	ModelEdit_updateModelContentList()
+	ModelEdit.loadModelDefinition(item:getText())
+	ModelEdit.reloadModel()
+	ModelEdit.updateModelContentList()
 end
 
 
-function ModelEdit_previewMesh(meshname)
+function ModelEdit.previewMesh(meshname)
 	ModelEdit.submeshRenderer:showEntity(meshname)
 end
 
-function ModelEdit_modelinfoMeshlist_SelectionChanged()
+function ModelEdit.modelinfoMeshlist_SelectionChanged()
 	local item = ModelEdit.contentparts.modelInfo.meshlist:getFirstSelectedItem()
-	ModelEdit_previewMesh(item:getText())
+	ModelEdit.previewMesh(item:getText())
 
 end
 
 
-function ModelEdit_partShown_StateChanged(args)
+function ModelEdit.partShown_StateChanged(args)
 	local shown = ModelEdit.partShown:isSelected()
-	local part = ModelEdit_getSelectedPart()
+	local part = ModelEdit.getSelectedPart()
 	--inspectObject(part)
-	ModelEdit_updatePartShown(part, shown)	
+	ModelEdit.updatePartShown(part, shown)	
 end
 
-function ModelEdit_modelcontents_SelectionChanged(args)
+function ModelEdit.modelcontents_SelectionChanged(args)
 	local item = ModelEdit.modelcontents:getFirstSelectedItem()
-	ModelEdit_showModelContent(item)
+	ModelEdit.showModelContent(item)
 end
 
 
-function ModelEdit_zoom_ValueChanged(args)
+function ModelEdit.zoom_ValueChanged(args)
 	local zoomValue = ModelEdit.zoomSlider:getCurrentValue()
 	ModelEdit.renderer:setCameraDistance(zoomValue)
 end
 
-function ModelEdit_getSelectedSubModel()
-	local item = ModelEdit_getCurrentModelContentItem()
+function ModelEdit.getSelectedSubModel()
+	local item = ModelEdit.getCurrentModelContentItem()
 	
 	return item.submodel
 end
 
-function ModelEdit_getSelectedPart()
-	local item = ModelEdit_getCurrentModelContentItem()
+function ModelEdit.getSelectedPart()
+	local item = ModelEdit.getCurrentModelContentItem()
 	
 	return item.part
 	
 end
 
-function ModelEdit_getSelectedSubEntity()
-	local item = ModelEdit_getCurrentModelContentItem()
+function ModelEdit.getSelectedSubEntity()
+	local item = ModelEdit.getCurrentModelContentItem()
 	
 	return item.subentity
 end
 
 
-function ModelEdit_updateModelContentList()
+function ModelEdit.updateModelContentList()
 	ModelEdit.modelcontents:resetList()
 	--ModelEdit.modelcontents:clearAllSelections()
 	
@@ -585,7 +585,7 @@ function ModelEdit_updateModelContentList()
 					for val = 0, subentities:size() - 1 do
 						local subentity = subentities[val]
 						
-						local submeshname = ModelEdit_getSubMeshName(mesh, subentity:getSubEntityIndex())
+						local submeshname = ModelEdit.getSubMeshName(mesh, subentity:getSubEntityIndex())
  
 						
 						local modelcontentItem = {}
@@ -605,7 +605,7 @@ function ModelEdit_updateModelContentList()
 end
 
 
-function ModelEdit_getCurrentModelContentItem()
+function ModelEdit.getCurrentModelContentItem()
 	local item = ModelEdit.modelcontents:getFirstSelectedItem()
 	if item ~= nil then
 		local itemId= item:getID()
@@ -615,64 +615,64 @@ function ModelEdit_getCurrentModelContentItem()
 	return nil
 end
 
-function ModelEdit_showModelContent(listitem)
+function ModelEdit.showModelContent(listitem)
 	if listitem ~= nil then
 		local itemId= listitem:getID()
 		local contentItem = ModelEdit.modelContentsItems[itemId]
 		--inspectObject(contentItem.type)
 		
 		if contentItem.type == "submodel" then
-			ModelEdit_showSubModel(contentItem)
+			ModelEdit.showSubModel(contentItem)
 		elseif contentItem.type == "part" then
-			ModelEdit_showPart(contentItem)
+			ModelEdit.showPart(contentItem)
 		elseif contentItem.type == "subentity" then
-			ModelEdit_showSubEntity(contentItem)
+			ModelEdit.showSubEntity(contentItem)
 		else
-			ModelEdit_showModel()
+			ModelEdit.showModel()
 		end
 	else
-		ModelEdit_showModel()
+		ModelEdit.showModel()
 	end
 end
 
-function ModelEdit_hideAllContentParts()
+function ModelEdit.hideAllContentParts()
 	ModelEdit.contentparts.partInfo:setVisible(false)
 	ModelEdit.contentparts.modelInfo:setVisible(false)
 	ModelEdit.contentparts.submodelInfo:setVisible(false)
 	ModelEdit.contentparts.submeshInfo:setVisible(false)
 end
 
-function ModelEdit_showSubModel(contentItem)
-	ModelEdit_hideAllContentParts()
+function ModelEdit.showSubModel(contentItem)
+	ModelEdit.hideAllContentParts()
 	ModelEdit.contentparts.submodelInfo:setVisible(true)
-	local submodel = ModelEdit_getSelectedSubModel()
+	local submodel = ModelEdit.getSelectedSubModel()
 	
 	ModelEdit.widget:getWindow("SubModelName"):setText(submodel:getMeshName())
 end
 
-function ModelEdit_showPart(contentItem)
-	ModelEdit_hideAllContentParts()
+function ModelEdit.showPart(contentItem)
+	ModelEdit.hideAllContentParts()
 	ModelEdit.contentparts.partInfo:setVisible(true)
 	local part = contentItem.part
 	ModelEdit.widget:getWindow("PartName"):setText(part:getName())
 	ModelEdit.partShown:setSelected(part:getShow())
 	
-	ModelEdit_fillSubMeshList(part)
+	ModelEdit.fillSubMeshList(part)
 end
 
 
-function ModelEdit_showSubEntity(contentItem)
-	ModelEdit_hideAllContentParts()
+function ModelEdit.showSubEntity(contentItem)
+	ModelEdit.hideAllContentParts()
 	ModelEdit.contentparts.submeshInfo:setVisible(true)
-	ModelEdit_selectMaterial(contentItem.subentity)
+	ModelEdit.selectMaterial(contentItem.subentity)
 end
 
-function ModelEdit_showModel()
-	ModelEdit_hideAllContentParts()
+function ModelEdit.showModel()
+	ModelEdit.hideAllContentParts()
 	ModelEdit.contentparts.modelInfo:setVisible(true)
 end
 
-function ModelEdit_buildWidget()
+function ModelEdit.buildWidget()
 	ModelEdit.widget = guiManager:createWidget()
 
 	ModelEdit.widget:loadMainSheet("ModelEdit.layout", "ModelEdit/")
@@ -682,7 +682,7 @@ function ModelEdit_buildWidget()
 
 	ModelEdit.models = ModelEdit.widget:getWindow("Models")
 	ModelEdit.models = CEGUI.toListbox(ModelEdit.models)
-	ModelEdit.models:subscribeEvent("ItemSelectionChanged", "ModelEdit_models_SelectionChanged")
+	ModelEdit.models:subscribeEvent("ItemSelectionChanged", "ModelEdit.models_SelectionChanged")
 	ModelEdit.modelsfilter = ModelEdit.widget:getWindow("FilterModels")
 	ModelEdit.modelsfilter = CEGUI.toEditbox(ModelEdit.modelsfilter)
 	ModelEdit.modelslistholder = EmberOgre.ListHolder:new(ModelEdit.models, ModelEdit.modelsfilter)
@@ -691,20 +691,20 @@ function ModelEdit_buildWidget()
 	local yW = ModelEdit.widget:getWindow("ModelTranslate_y")
 	local zW = ModelEdit.widget:getWindow("ModelTranslate_z")
 	ModelEdit.translateAdapter = EmberOgre.Gui.Vector3Adapter:new(xW,yW ,zW)
-	EmberOgre.LuaConnector:new(ModelEdit.translateAdapter.EventValueChanged):connect("ModelEdit_translateAdapter_update")
+	EmberOgre.LuaConnector:new(ModelEdit.translateAdapter.EventValueChanged):connect("ModelEdit.translateAdapter_update")
 	
 	local xW = ModelEdit.widget:getWindow("ModelContainedOffset_x")
 	local yW = ModelEdit.widget:getWindow("ModelContainedOffset_y")
 	local zW = ModelEdit.widget:getWindow("ModelContainedOffset_z")
 	ModelEdit.containedOffsetAdapter = EmberOgre.Gui.Vector3Adapter:new(xW,yW ,zW)
-	EmberOgre.LuaConnector:new(ModelEdit.containedOffsetAdapter.EventValueChanged):connect("ModelEdit_containedOffsetAdapter_update")
+	EmberOgre.LuaConnector:new(ModelEdit.containedOffsetAdapter.EventValueChanged):connect("ModelEdit.containedOffsetAdapter_update")
 
 	local xW = ModelEdit.widget:getWindow("ModelRotation_x")
 	local yW = ModelEdit.widget:getWindow("ModelRotation_y")
 	local zW = ModelEdit.widget:getWindow("ModelRotation_z")
 	local degreeW = ModelEdit.widget:getWindow("ModelRotation_degrees")
 	ModelEdit.rotationAdapter = EmberOgre.Gui.QuaternionAdapter:new(degreeW, xW,yW ,zW)
-	EmberOgre.LuaConnector:new(ModelEdit.rotationAdapter.EventValueChanged):connect("ModelEdit_rotationAdapter_update")
+	EmberOgre.LuaConnector:new(ModelEdit.rotationAdapter.EventValueChanged):connect("ModelEdit.rotationAdapter_update")
 
 
 
@@ -717,45 +717,45 @@ function ModelEdit_buildWidget()
 	ModelEdit.contentparts.submeshInfo = ModelEdit.widget:getWindow("SubMeshInfo")
 	
 	--hide all parts initially
-	ModelEdit_hideAllContentParts()
+	ModelEdit.hideAllContentParts()
 	
 	
 	ModelEdit.contentparts.modelInfo.meshlist = ModelEdit.widget:getWindow("MeshList")
 	ModelEdit.contentparts.modelInfo.meshlist = CEGUI.toListbox(ModelEdit.contentparts.modelInfo.meshlist)
-	ModelEdit.contentparts.modelInfo.meshlist:subscribeEvent("ItemSelectionChanged", "ModelEdit_modelinfoMeshlist_SelectionChanged")
+	ModelEdit.contentparts.modelInfo.meshlist:subscribeEvent("ItemSelectionChanged", "ModelEdit.modelinfoMeshlist_SelectionChanged")
 	
 	ModelEdit.contentparts.submeshInfo.materiallist = ModelEdit.widget:getWindow("Materials")
 	ModelEdit.contentparts.submeshInfo.materiallist = CEGUI.toListbox(ModelEdit.contentparts.submeshInfo.materiallist)
-	ModelEdit.contentparts.submeshInfo.materiallist:subscribeEvent("ItemSelectionChanged", "ModelEdit_submeshinfomaterials_SelectionChanged")
+	ModelEdit.contentparts.submeshInfo.materiallist:subscribeEvent("ItemSelectionChanged", "ModelEdit.submeshinfomaterials_SelectionChanged")
 	ModelEdit.contentparts.submeshInfo.filter = ModelEdit.widget:getWindow("FilterMaterials")
 	ModelEdit.contentparts.submeshInfo.filter = CEGUI.toEditbox(ModelEdit.contentparts.submeshInfo.filter)
 	ModelEdit.contentparts.submeshInfo.listholder = EmberOgre.ListHolder:new(ModelEdit.contentparts.submeshInfo.materiallist, ModelEdit.contentparts.submeshInfo.filter)
 	
 	ModelEdit.contentparts.submeshInfo.removeSubMeshButton = ModelEdit.widget:getWindow("RemoveSubMeshButton")
-	ModelEdit.contentparts.submeshInfo.removeSubMeshButton:subscribeEvent("MouseClick", "ModelEdit_submeshinforemovesubmesh_MouseClick")
+	ModelEdit.contentparts.submeshInfo.removeSubMeshButton:subscribeEvent("MouseClick", "ModelEdit.submeshinforemovesubmesh_MouseClick")
 	
-	ModelEdit.widget:getWindow("PartRemoveButton"):subscribeEvent("MouseClick", "ModelEdit_removePart_MouseClick")
-	ModelEdit.widget:getWindow("AddSubmeshButton"):subscribeEvent("MouseClick", "ModelEdit_addSubmesh_MouseClick")
-	ModelEdit.widget:getWindow("AddPartButton"):subscribeEvent("MouseClick", "ModelEdit_addPart_MouseClick")
-	ModelEdit.widget:getWindow("RenamePartButton"):subscribeEvent("MouseClick", "ModelEdit_renamePart_MouseClick")
-	ModelEdit.widget:getWindow("AddModelButton"):subscribeEvent("MouseClick", "ModelEdit_AddModelButton_MouseClick")
-	ModelEdit.widget:getWindow("ReloadModelListButton"):subscribeEvent("MouseClick", "ModelEdit_ReloadModelListButton_MouseClick")
+	ModelEdit.widget:getWindow("PartRemoveButton"):subscribeEvent("MouseClick", "ModelEdit.removePart_MouseClick")
+	ModelEdit.widget:getWindow("AddSubmeshButton"):subscribeEvent("MouseClick", "ModelEdit.addSubmesh_MouseClick")
+	ModelEdit.widget:getWindow("AddPartButton"):subscribeEvent("MouseClick", "ModelEdit.addPart_MouseClick")
+	ModelEdit.widget:getWindow("RenamePartButton"):subscribeEvent("MouseClick", "ModelEdit.renamePart_MouseClick")
+	ModelEdit.widget:getWindow("AddModelButton"):subscribeEvent("MouseClick", "ModelEdit.AddModelButton_MouseClick")
+	ModelEdit.widget:getWindow("ReloadModelListButton"):subscribeEvent("MouseClick", "ModelEdit.ReloadModelListButton_MouseClick")
 	
-	ModelEdit.widget:getWindow("AddSubmodelButton"):subscribeEvent("MouseClick", "ModelEdit_AddSubmodelButton_MouseClick")
-	ModelEdit.widget:getWindow("SaveModelButton"):subscribeEvent("MouseClick", "ModelEdit_SaveModelButton_MouseClick")
-	ModelEdit.widget:getWindow("NewModelOk"):subscribeEvent("MouseClick", "ModelEdit_NewModelOk_MouseClick")
-	ModelEdit.widget:getWindow("NewModelCancel"):subscribeEvent("MouseClick", "ModelEdit_NewModelCancel_MouseClick")
-	ModelEdit.widget:getWindow("RemoveSubmodelButton"):subscribeEvent("MouseClick", "ModelEdit_RemoveSubmodelButton_MouseClick")
-	ModelEdit.widget:getWindow("ReloadInstancesButton"):subscribeEvent("MouseClick", "ModelEdit_ReloadInstancesButton_MouseClick")
-	ModelEdit.widget:getWindow("GetRotationFromPreviewButton"):subscribeEvent("MouseClick", "ModelEdit_GetRotationFromPreviewButton_MouseClick")
+	ModelEdit.widget:getWindow("AddSubmodelButton"):subscribeEvent("MouseClick", "ModelEdit.AddSubmodelButton_MouseClick")
+	ModelEdit.widget:getWindow("SaveModelButton"):subscribeEvent("MouseClick", "ModelEdit.SaveModelButton_MouseClick")
+	ModelEdit.widget:getWindow("NewModelOk"):subscribeEvent("MouseClick", "ModelEdit.NewModelOk_MouseClick")
+	ModelEdit.widget:getWindow("NewModelCancel"):subscribeEvent("MouseClick", "ModelEdit.NewModelCancel_MouseClick")
+	ModelEdit.widget:getWindow("RemoveSubmodelButton"):subscribeEvent("MouseClick", "ModelEdit.RemoveSubmodelButton_MouseClick")
+	ModelEdit.widget:getWindow("ReloadInstancesButton"):subscribeEvent("MouseClick", "ModelEdit.ReloadInstancesButton_MouseClick")
+	ModelEdit.widget:getWindow("GetRotationFromPreviewButton"):subscribeEvent("MouseClick", "ModelEdit.GetRotationFromPreviewButton_MouseClick")
 	
-	ModelEdit.widget:getWindow("YawLeft"):subscribeEvent("MouseClick", "ModelEdit_YawLeft_MouseClick")
-	ModelEdit.widget:getWindow("YawRight"):subscribeEvent("MouseClick", "ModelEdit_YawRight_MouseClick")
-	ModelEdit.widget:getWindow("RollLeft"):subscribeEvent("MouseClick", "ModelEdit_RollLeft_MouseClick")
-	ModelEdit.widget:getWindow("RollRight"):subscribeEvent("MouseClick", "ModelEdit_RollRight_MouseClick")
-	ModelEdit.widget:getWindow("PitchUp"):subscribeEvent("MouseClick", "ModelEdit_PitchUp_MouseClick")
-	ModelEdit.widget:getWindow("PitchDown"):subscribeEvent("MouseClick", "ModelEdit_PitchDown_MouseClick")
-	ModelEdit.widget:getWindow("ResetOrientation"):subscribeEvent("MouseClick", "ModelEdit_ResetOrientation_MouseClick")
+	ModelEdit.widget:getWindow("YawLeft"):subscribeEvent("MouseClick", "ModelEdit.YawLeft_MouseClick")
+	ModelEdit.widget:getWindow("YawRight"):subscribeEvent("MouseClick", "ModelEdit.YawRight_MouseClick")
+	ModelEdit.widget:getWindow("RollLeft"):subscribeEvent("MouseClick", "ModelEdit.RollLeft_MouseClick")
+	ModelEdit.widget:getWindow("RollRight"):subscribeEvent("MouseClick", "ModelEdit.RollRight_MouseClick")
+	ModelEdit.widget:getWindow("PitchUp"):subscribeEvent("MouseClick", "ModelEdit.PitchUp_MouseClick")
+	ModelEdit.widget:getWindow("PitchDown"):subscribeEvent("MouseClick", "ModelEdit.PitchDown_MouseClick")
+	ModelEdit.widget:getWindow("ResetOrientation"):subscribeEvent("MouseClick", "ModelEdit.ResetOrientation_MouseClick")
 
 
 
@@ -764,20 +764,20 @@ function ModelEdit_buildWidget()
 	
 --	ModelEdit.materials = ModelEdit.widget:getWindow("Materials")
 --	ModelEdit.materials = CEGUI.toListbox(ModelEdit.materials)
---	ModelEdit.materials:subscribeEvent("ItemSelectionChanged", "ModelEdit_materials_SelectionChanged")
+--	ModelEdit.materials:subscribeEvent("ItemSelectionChanged", "ModelEdit.materials_SelectionChanged")
 	
 	
 	ModelEdit.modelcontents = ModelEdit.widget:getWindow("ModelContents")
 	ModelEdit.modelcontents = CEGUI.toListbox(ModelEdit.modelcontents)
-	ModelEdit.modelcontents:subscribeEvent("ItemSelectionChanged", "ModelEdit_modelcontents_SelectionChanged")
-	ModelEdit.modelcontents:subscribeEvent("ListItemsChanged", "ModelEdit_modelcontents_SelectionChanged")
+	ModelEdit.modelcontents:subscribeEvent("ItemSelectionChanged", "ModelEdit.modelcontents_SelectionChanged")
+	ModelEdit.modelcontents:subscribeEvent("ListItemsChanged", "ModelEdit.modelcontents_SelectionChanged")
 	
 	--ModelEdit.modelcontents:setMutedState(true)
 
 	
 	ModelEdit.partShown = ModelEdit.widget:getWindow("Shown")
 	ModelEdit.partShown = CEGUI.toCheckbox(ModelEdit.partShown)
-	ModelEdit.partShown:subscribeEvent("CheckStateChanged", "ModelEdit_partShown_StateChanged")
+	ModelEdit.partShown:subscribeEvent("CheckStateChanged", "ModelEdit.partShown_StateChanged")
 		
 	
 		
@@ -795,15 +795,15 @@ function ModelEdit_buildWidget()
 	
 	ModelEdit.zoomSlider  = ModelEdit.widget:getWindow("Zoom")
 	ModelEdit.zoomSlider = CEGUI.toSlider(ModelEdit.zoomSlider)
-	ModelEdit.zoomSlider:subscribeEvent("ValueChanged", "ModelEdit_zoom_ValueChanged")
+	ModelEdit.zoomSlider:subscribeEvent("ValueChanged", "ModelEdit.zoom_ValueChanged")
 	
 	ModelEdit.scaleTextbox = ModelEdit.widget:getWindow("ModelScale")
-	ModelEdit.scaleTextbox:subscribeEvent("TextChanged", "ModelEdit_ModelScale_TextChanged")
+	ModelEdit.scaleTextbox:subscribeEvent("TextChanged", "ModelEdit.ModelScale_TextChanged")
 	
-	ModelEdit_fillMaterialList()
-	ModelEdit_fillModellist()
-	ModelEdit_fillMeshList()
-	ModelEdit_fillScaleTypesList()
+	ModelEdit.fillMaterialList()
+	ModelEdit.fillModellist()
+	ModelEdit.fillMeshList()
+	ModelEdit.fillScaleTypesList()
 	--def:setValid(true)	
 	--model = ModelEdit.renderer:getModel()
 	--def = model:getDefinition():get()
@@ -814,7 +814,7 @@ function ModelEdit_buildWidget()
 
 end
 
-function ModelEdit_fillScaleTypesList()
+function ModelEdit.fillScaleTypesList()
 	ModelEdit.scaleTypes  = ModelEdit.widget:getWindow("ModelUseScaleOf")
 	ModelEdit.scaleTypes = CEGUI.toCombobox( ModelEdit.scaleTypes)
 	
@@ -829,7 +829,7 @@ function ModelEdit_fillScaleTypesList()
 	local item = EmberOgre.ColoredListItem:new("height", 4)
 	ModelEdit.scaleTypes:addItem(item)
 	
-	ModelEdit.scaleTypes:subscribeEvent("ListSelectionChanged", "ModelEdit_ModelUseScaleOf_SelectionChanged")
+	ModelEdit.scaleTypes:subscribeEvent("ListSelectionChanged", "ModelEdit.ModelUseScaleOf_SelectionChanged")
 
 end
 
@@ -853,7 +853,7 @@ function test2()
 	ModelEdit.renderer:showModel("test2")
 end
 
-ModelEdit_buildWidget()
+ModelEdit.buildWidget()
 
 --model:reload()
 

@@ -12,10 +12,10 @@ EntityEditor.hiddenAttributes = {objtype = 1, stamp = 1}
 
 function editEntity(id)
 	local entity = emberOgre:getEntity(id)
-	EntityEditor_editEntity(entity)
+	EntityEditor.editEntity(entity)
 end
 
-function EntityEditor_editEntity(entity)
+function EntityEditor.editEntity(entity)
 	EntityEditor.widget:show()
 	EntityEditor.entity = entity
 	if EntityEditor.helper ~= nil then
@@ -28,49 +28,49 @@ function EntityEditor_editEntity(entity)
 	for i = 0, attributeNames:size() - 1 do
 		local name = attributeNames[i]
 		local element = entity:valueOfAttr(name)
-		EntityEditor_createAdapter(name, element, EntityEditor.attributesContainer)
+		EntityEditor.createAdapter(name, element, EntityEditor.attributesContainer)
 	end	
 end
 
-function EntityEditor_createAdapter(attributeName, element, parentContainer)
+function EntityEditor.createAdapter(attributeName, element, parentContainer)
 	if EntityEditor.hiddenAttributes[attributeName] == nil then
 		if attributeName == 'bbox' then
-			local adapter = EntityEditor_createSizeAdapter(attributeName, element, parentContainer)
+			local adapter = EntityEditor.createSizeAdapter(attributeName, element, parentContainer)
 		elseif element:isString() then
-			local adapter = EntityEditor_createStringAdapter(attributeName, element, parentContainer)
+			local adapter = EntityEditor.createStringAdapter(attributeName, element, parentContainer)
 		elseif element:isNum() then
-			local adapter = EntityEditor_createNumberAdapter(attributeName, element, parentContainer)
+			local adapter = EntityEditor.createNumberAdapter(attributeName, element, parentContainer)
 		end
 	end
 end
 
-function EntityEditor_createStringAdapter(attributeName, element, parentContainer)
+function EntityEditor.createStringAdapter(attributeName, element, parentContainer)
 	local container = windowManager:createWindow("DefaultGUISheet", "EntityEditor" .. EntityEditor.entity:getId() .. "_" .. attributeName)
 	local adapter = EntityEditor.factory:createStringAdapter(container, EntityEditor.entity:getId(), element)
 	EntityEditor.adapters[attributeName] = adapter
-	EntityEditor_addAdapterContainer(attributeName, adapter, container, parentContainer)
+	EntityEditor.addAdapterContainer(attributeName, adapter, container, parentContainer)
 	return adapter	
 end
 
-function EntityEditor_createNumberAdapter(attributeName, element, parentContainer)
+function EntityEditor.createNumberAdapter(attributeName, element, parentContainer)
 	local container = windowManager:createWindow("DefaultGUISheet", "EntityEditor" .. EntityEditor.entity:getId() .. "_" .. attributeName)
 	local adapter = EntityEditor.factory:createNumberAdapter(container, EntityEditor.entity:getId(), element)
 	EntityEditor.adapters[attributeName] = adapter
-	EntityEditor_addAdapterContainer(attributeName, adapter, container, parentContainer)
+	EntityEditor.addAdapterContainer(attributeName, adapter, container, parentContainer)
 	return adapter	
 end
 
-function 	EntityEditor_createSizeAdapter(attributeName, element, parentContainer)
+function 	EntityEditor.createSizeAdapter(attributeName, element, parentContainer)
 	local container = windowManager:createWindow("DefaultGUISheet", "EntityEditor" .. EntityEditor.entity:getId() .. "_" .. attributeName)
 	local adapter = EntityEditor.factory:createSizeAdapter(container, EntityEditor.entity:getId(), element)
 	EntityEditor.adapters[attributeName] = adapter
-	EntityEditor_addAdapterContainer(attributeName, adapter, container, parentContainer)
+	EntityEditor.addAdapterContainer(attributeName, adapter, container, parentContainer)
 	return adapter	
 end
 
 
 
-function EntityEditor_addAdapterContainer(attributeName, adapter, container, parentContainer)
+function EntityEditor.addAdapterContainer(attributeName, adapter, container, parentContainer)
 	local outercontainer = windowManager:createWindow("DefaultGUISheet", "EntityEditor" .. EntityEditor.entity:getId() .. "_" .. attributeName .. "outercontainer")
 	local label = windowManager:createWindow("EmberLook/StaticText", "EntityEditor" .. EntityEditor.entity:getId() .. "_" .. attributeName .. "outercontainerLabel")
 	label:setText(attributeName)
@@ -96,24 +96,24 @@ function EntityEditor_addAdapterContainer(attributeName, adapter, container, par
 	--EntityEditor.accumulatedHeight = EntityEditor.accumulatedHeight + outercontainer:getHeight():asAbsolute(0)
 end
 
-function EntityEditor_Submit_MouseClick(args)
+function EntityEditor.Submit_MouseClick(args)
 	EntityEditor.helper:submitChanges()
 end
 
-function EntityEditor_DeleteButton_MouseClick(args)
+function EntityEditor.DeleteButton_MouseClick(args)
 	emberServices:getServerService():deleteEntity(EntityEditor.entity)
 end
 
-function EntityEditor_handleAction(action, entity) 
+function EntityEditor.handleAction(action, entity) 
 
 	if action == "edit" then
-		EntityEditor_editEntity(entity)
+		EntityEditor.editEntity(entity)
 	end
 end
 
 
 
-function EntityEditor_buildWidget()
+function EntityEditor.buildWidget()
 
 	EntityEditor.widget = guiManager:createWidget()
 	EntityEditor.widget:loadMainSheet("EntityEditor.layout", "EntityEditor/")
@@ -123,11 +123,11 @@ function EntityEditor_buildWidget()
 	EntityEditor.infoWindow = EntityEditor.widget:getWindow("EntityInfo")
 	
 	
-	EntityEditor.widget:getWindow("Submit"):subscribeEvent("MouseClick", "EntityEditor_Submit_MouseClick")
-	EntityEditor.widget:getWindow("DeleteButton"):subscribeEvent("MouseClick", "EntityEditor_DeleteButton_MouseClick")
+	EntityEditor.widget:getWindow("Submit"):subscribeEvent("MouseClick", "EntityEditor.Submit_MouseClick")
+	EntityEditor.widget:getWindow("DeleteButton"):subscribeEvent("MouseClick", "EntityEditor.DeleteButton_MouseClick")
 	
 	
-	EmberOgre.LuaConnector:new(guiManager.EventEntityAction):connect("EntityEditor_handleAction")
+	EmberOgre.LuaConnector:new(guiManager.EventEntityAction):connect("EntityEditor.handleAction")
 	
 	
 	EntityEditor.stackableContainer = EmberOgre.Gui.StackableContainer:new_local(EntityEditor.attributesContainer)
@@ -138,4 +138,4 @@ function EntityEditor_buildWidget()
 end
 
 
-EntityEditor_buildWidget()
+EntityEditor.buildWidget()
