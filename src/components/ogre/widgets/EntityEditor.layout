@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
 	<Window Type='EmberLook/FrameWindow' Name='Mainwindow'>
-		<Property Name='UnifiedSize' Value='{{0.00000,250.000000},{0.00000,400.000000}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.000000,650.000000},{0.000000,25.000000}}'/>
+		<Property Name='UnifiedSize' Value='{{0.00000,350.000000},{0.00000,500.000000}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{.25,25.000000}}'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Entity editor'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
@@ -71,6 +71,12 @@
 				<Property Name='UnifiedPosition' Value='{{0,240},{1.0,-20}}'/>
 				<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 				<Property Name='Text' Value='Delete'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='ExportButton'>
+				<Property Name='UnifiedPosition' Value='{{0,320},{1.0,-20}}'/>
+				<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
+				<Property Name='Text' Value='Export'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>
 		</Window>

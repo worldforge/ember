@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Sun Apr 15 22:08:49 2007.
+** Generated automatically by tolua++-1.0.92 on Wed Apr 25 22:15:14 2007.
 */
 
 #ifndef __cplusplus
@@ -3168,6 +3168,40 @@ static int tolua_EmberOgre_EmberOgre_EmberEntityFactory_getWorld00(lua_State* to
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'getWorld'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: dumpAttributesOfEntity of class  EmberOgre::EmberEntityFactory */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EmberEntityFactory_dumpAttributesOfEntity00
+static int tolua_EmberOgre_EmberOgre_EmberEntityFactory_dumpAttributesOfEntity00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::EmberEntityFactory",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::EmberEntityFactory* self = (const EmberOgre::EmberEntityFactory*)  tolua_tousertype(tolua_S,1,0);
+  const std::string entityId = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'dumpAttributesOfEntity'",NULL);
+#endif
+  {
+   self->dumpAttributesOfEntity(entityId);
+   tolua_pushcppstring(tolua_S,(const char*)entityId);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'dumpAttributesOfEntity'.",&tolua_err);
  return 0;
 #endif
 }
@@ -16830,6 +16864,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
    tolua_cclass(tolua_S,"EmberEntityFactory","EmberOgre::EmberEntityFactory","",NULL);
    tolua_beginmodule(tolua_S,"EmberEntityFactory");
     tolua_function(tolua_S,"getWorld",tolua_EmberOgre_EmberOgre_EmberEntityFactory_getWorld00);
+    tolua_function(tolua_S,"dumpAttributesOfEntity",tolua_EmberOgre_EmberOgre_EmberEntityFactory_dumpAttributesOfEntity00);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"EmberOgre",0);

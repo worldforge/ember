@@ -112,7 +112,7 @@ public:
 	 * @param entityId 
 	 * @return 
 	 */
-	const void dumpAttributesOfEntity(const std::string& entityId) const;
+	void dumpAttributesOfEntity(const std::string& entityId) const;
 	
 protected:
 

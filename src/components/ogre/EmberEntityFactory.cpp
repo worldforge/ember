@@ -180,7 +180,7 @@ Eris::Avatar* EmberEntityFactory::getErisAvatar()
 	return mView->getAvatar();
 }
 
-const void EmberEntityFactory::dumpAttributesOfEntity(const std::string& entityId) const
+void EmberEntityFactory::dumpAttributesOfEntity(const std::string& entityId) const
 {
 	EmberEntity* entity = EmberOgre::getSingleton().getEmberEntity(entityId);
 	if (entity) {

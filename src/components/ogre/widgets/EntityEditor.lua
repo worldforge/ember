@@ -104,6 +104,10 @@ function EntityEditor.DeleteButton_MouseClick(args)
 	emberServices:getServerService():deleteEntity(EntityEditor.entity)
 end
 
+function EntityEditor.ExportButton_MouseClick(args)
+	emberOgre:getEntityFactory():dumpAttributesOfEntity(EntityEditor.entity:getId())
+end
+
 function EntityEditor.handleAction(action, entity) 
 
 	if action == "edit" then
@@ -125,6 +129,7 @@ function EntityEditor.buildWidget()
 	
 	EntityEditor.widget:getWindow("Submit"):subscribeEvent("MouseClick", "EntityEditor.Submit_MouseClick")
 	EntityEditor.widget:getWindow("DeleteButton"):subscribeEvent("MouseClick", "EntityEditor.DeleteButton_MouseClick")
+	EntityEditor.widget:getWindow("ExportButton"):subscribeEvent("MouseClick", "EntityEditor.ExportButton_MouseClick")
 	
 	
 	EmberOgre.LuaConnector:new(guiManager.EventEntityAction):connect("EntityEditor.handleAction")
