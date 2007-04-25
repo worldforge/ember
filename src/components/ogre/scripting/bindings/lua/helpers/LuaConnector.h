@@ -74,15 +74,16 @@ namespace LuaConnectors {
 			ConnectorBase(const LuaTypeStore& luaTypeNames);
 			template <typename T0, typename T1, typename T2, typename T3> void callLuaMethod(T0 t0, T1 t1, T2 t2, T3 t3);
 			//void callLuaMethod(const std::string& t0, const std::string& t1, LuaConnectors::Empty t2, LuaConnectors::Empty t3) ;
-			protected:
-			std::string mLuaMethod;
-			unsigned int mNumberOfArguments;
-			std::vector<std::string> mLuaTypeNames;
 		protected:
+			std::string mLuaMethod;
+// 			unsigned int mNumberOfArguments;
+			std::vector<std::string> mLuaTypeNames;
 			/**
 			pushes the lua method onto the stack
 			*/
 			void pushNamedFunction(lua_State* state);
+			
+			int mLuaFunctionIndex;
 	
 	};
 

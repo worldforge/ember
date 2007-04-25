@@ -45,7 +45,7 @@ ConnectorBase::ConnectorBase()
 
 
 ConnectorBase::ConnectorBase(const LuaTypeStore& luaTypeNames)
-: mLuaTypeNames(luaTypeNames)
+: mLuaTypeNames(luaTypeNames), mLuaFunctionIndex(LUA_NOREF)
 {
 }
 
@@ -68,7 +68,14 @@ template <typename T0, typename T1, typename T2, typename T3> void ConnectorBase
 	int top = lua_gettop(state);
 	try {
 	
-		pushNamedFunction(state);
+		if (mLuaFunctionIndex == LUA_NOREF) {
+			pushNamedFunction(state);
+			mLuaFunctionIndex = luaL_ref(state, LUA_REGISTRYINDEX);
+		}
+
+		///get the lua function
+		lua_rawgeti(state, LUA_REGISTRYINDEX, mLuaFunctionIndex);
+
 // 		lua_getglobal(state, mLuaMethod.c_str());
 	
 		// is it a function
