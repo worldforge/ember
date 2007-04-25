@@ -18,7 +18,7 @@ function Give.buildWidget()
 	EmberOgre.LuaConnector:new(emberOgre.EventCreatedAvatarEntity):connect("Give.createdAvatarEmberEntity")
 	
 	giveButton = Give.widget:getWindow("Give")
-	giveButton:subscribeEvent("MouseClick", "Give.Give.Click")
+	giveButton:subscribeEvent("MouseClick", "Give.Give_Click")
 	
 	cancelButton = Give.widget:getWindow("Cancel")
 	cancelButton:subscribeEvent("MouseClick", "Give.Cancel_Click")
@@ -30,10 +30,6 @@ function Give.buildWidget()
 end
 
 function Give.createdAvatarEmberEntity(avatarEntity)
---	console:pushMessage("Created avatar.")
---	console:pushMessage("Avatar type: " .. tolua.type(avatarEntity:getAvatar()))
---	console:pushMessage("Avatar event type: " .. tolua.type(avatarEntity:getAvatar().EventAddedEntityToInventory))
---	console:pushMessage("Avatar event type: " .. tolua.type(avatarEntity:getAvatar().EventRemovedEntityFromInventory))
 	EmberOgre.LuaConnector:new(avatarEntity:getAvatar().EventAddedEntityToInventory):connect("Give.addedEntity")
 	EmberOgre.LuaConnector:new(avatarEntity:getAvatar().EventRemovedEntityFromInventory):connect("Give.removedEntity")
 end
@@ -54,7 +50,7 @@ function Give.removedEntity(entity)
 	end
 end
 
-function Give.Give.Click(args)
+function Give.Give_Click(args)
 	local item = Give.listbox:getFirstSelectedItem()
 	while (item ~= nil) do
 		local entityId = item:getID()

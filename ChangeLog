@@ -1,3 +1,15 @@
+2007-04-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/Give.lua: fixed an incorrect function
+
+2007-04-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/scripting/bindings/lua/EmberEntityFactory.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/widgets/EntityEditor.layout, src/components/ogre/widgets/EntityEditor.lua,rc/components/ogre/EmberEntityFactory.cpp, src/components/ogre/EmberEntityFactory.h: added a button for exporting entities
+	
+2007-04-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.cpp, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.h: allow for some lazy imitializing
+
 2007-04-24 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
 
 	* src/components/ogre/Makefile.am, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/Makefile.am, src/components/ogre/carpenter/Makefile.am, src/components/ogre/widgets/adapters/atlas/Makefile.am, src/framework/Makefile.am: removed --all-static
