@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Framework
-** Generated automatically by tolua++-1.0.92 on Thu Apr 12 22:32:13 2007.
+** Generated automatically by tolua++-1.0.92 on Thu Apr 26 21:33:29 2007.
 */
 
 #ifndef __cplusplus
@@ -30,6 +30,7 @@ static int tolua_collect_Ember__Tokeniser (lua_State* tolua_S)
 /* function to register type */
 static void tolua_reg_types (lua_State* tolua_S)
 {
+ tolua_usertype(tolua_S,"sigc::signal<bool,const std::string&>");
  tolua_usertype(tolua_S,"Ember::Tokeniser");
  tolua_usertype(tolua_S,"Ember::ConsoleBackend");
 }
@@ -161,6 +162,36 @@ static int tolua_Framework_Ember_ConsoleBackend_runCommand01(lua_State* tolua_S)
  return 2;
 tolua_lerror:
  return tolua_Framework_Ember_ConsoleBackend_runCommand00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: GotMessage of class  Ember::ConsoleBackend */
+#ifndef TOLUA_DISABLE_tolua_get_Ember__ConsoleBackend_GotMessage
+static int tolua_get_Ember__ConsoleBackend_GotMessage(lua_State* tolua_S)
+{
+  Ember::ConsoleBackend* self = (Ember::ConsoleBackend*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'GotMessage'",NULL);
+#endif
+  tolua_pushusertype(tolua_S,(void*)&self->GotMessage,"sigc::signal<bool,const std::string&>");
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: GotMessage of class  Ember::ConsoleBackend */
+#ifndef TOLUA_DISABLE_tolua_set_Ember__ConsoleBackend_GotMessage
+static int tolua_set_Ember__ConsoleBackend_GotMessage(lua_State* tolua_S)
+{
+  Ember::ConsoleBackend* self = (Ember::ConsoleBackend*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'GotMessage'",NULL);
+  if (!tolua_isusertype(tolua_S,2,"sigc::signal<bool,const std::string&>",0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->GotMessage = *((sigc::signal<bool,const std::string&>*)  tolua_tousertype(tolua_S,2,0))
+;
+ return 0;
 }
 #endif //#ifndef TOLUA_DISABLE
 
@@ -362,6 +393,7 @@ TOLUA_API int tolua_Framework_open (lua_State* tolua_S)
     tolua_function(tolua_S,"runCommand",tolua_Framework_Ember_ConsoleBackend_runCommand00);
     tolua_function(tolua_S,"pushMessage",tolua_Framework_Ember_ConsoleBackend_pushMessage00);
     tolua_function(tolua_S,"runCommand",tolua_Framework_Ember_ConsoleBackend_runCommand01);
+    tolua_variable(tolua_S,"GotMessage",tolua_get_Ember__ConsoleBackend_GotMessage,tolua_set_Ember__ConsoleBackend_GotMessage);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"Ember",0);

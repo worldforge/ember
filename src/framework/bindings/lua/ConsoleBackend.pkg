@@ -56,6 +56,11 @@ class ConsoleBackend
     void runCommand(const std::string &command, const std::string &args);
     
 
+    /**
+     * This event is raised every time a message is pushed to the console.
+     * If True is returned, the message won't be saved in myConsoleMessages 
+     */ 
+    sigc::signal<bool, const std::string&> GotMessage;
 
 }; // End of ConsoleBackend
 
