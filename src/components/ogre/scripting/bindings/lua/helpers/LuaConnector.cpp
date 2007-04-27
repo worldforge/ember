@@ -49,6 +49,16 @@ ConnectorBase::ConnectorBase(const LuaTypeStore& luaTypeNames)
 {
 }
 
+ConnectorBase::~ConnectorBase() 
+{
+	mConnection.disconnect();
+}
+
+void ConnectorBase::disconnect()
+{
+	mConnection.disconnect();
+}
+
 
 void ConnectorBase::connect(const std::string & luaMethod)
 {
@@ -106,7 +116,7 @@ template <typename T0, typename T1, typename T2, typename T3> void ConnectorBase
 	catch(const Ember::Exception& ex )
 	{
 		lua_settop(state, top );
-		S_LOG_FAILURE("Unable to execute scripted event handler: " << mLuaMethod << "\n" << ex.getError());
+		S_LOG_FAILURE("(LuaScriptModule) Unable to execute scripted event handler: " << mLuaMethod << "\n" << ex.getError());
 	}
 	catch( const CEGUI::String& str )
 	{
@@ -117,7 +127,11 @@ template <typename T0, typename T1, typename T2, typename T3> void ConnectorBase
 	{
 		lua_settop(state, top );
 		S_LOG_FAILURE("(LuaScriptModule) Unable to execute scripted event handler: "<<mLuaMethod<<"\n"<<ex.getMessage().c_str());
-
+	}
+	catch(const std::exception& ex )
+	{
+		lua_settop(state, top );
+		S_LOG_FAILURE("(LuaScriptModule) Unable to execute scripted event handler: " << mLuaMethod << "\n" << ex.what());
 	} catch (...) 
 	{
 		lua_settop(state, top );
@@ -127,68 +141,70 @@ template <typename T0, typename T1, typename T2, typename T3> void ConnectorBase
 
 
 
-ConnectorZero::ConnectorZero(sigc::signal<void>& signal) :  ConnectorBase(), mSignal(signal)
+template <typename Treturn> 
+ConnectorZero<Treturn>::ConnectorZero(sigc::signal<Treturn>& signal) :  ConnectorBase(), mSignal(signal)
 {
-	mSignal.connect(sigc::mem_fun(*this, &ConnectorZero::signal_recieve));
+	mConnection = mSignal.connect(sigc::mem_fun(*this, &ConnectorZero<Treturn>::signal_recieve));
 }
 
-template <typename T0> 
-ConnectorOne<T0>::ConnectorOne(sigc::signal<void, T0>& signal, const LuaTypeStore& luaTypeNames) :  ConnectorBase(luaTypeNames), mSignal(signal)
+template <typename Treturn, typename T0> 
+ConnectorOne<Treturn, T0>::ConnectorOne(sigc::signal<Treturn, T0>& signal, const LuaTypeStore& luaTypeNames) :  ConnectorBase(luaTypeNames), mSignal(signal)
 {
-	mSignal.connect(sigc::mem_fun(*this, &ConnectorOne<T0>::signal_recieve));
+	mConnection = mSignal.connect(sigc::mem_fun(*this, &ConnectorOne<Treturn, T0>::signal_recieve));
 }
 
-template <typename T0> 
-ConnectorOne<T0>::ConnectorOne(SigC::Signal1<void, T0>& signal, const LuaTypeStore& luaTypeNames) :
+template <typename Treturn, typename T0> 
+ConnectorOne<Treturn, T0>::ConnectorOne(SigC::Signal1<Treturn, T0>& signal, const LuaTypeStore& luaTypeNames) :
  ConnectorBase(luaTypeNames), mSignal_old(signal)
 {
-	mSignal_old.connect(sigc::mem_fun(*this, &ConnectorOne<T0>::signal_recieve));
+	mConnection = mSignal_old.connect(sigc::mem_fun(*this, &ConnectorOne<Treturn, T0>::signal_recieve));
 }
 
-template <typename T0, typename T1> 
-ConnectorTwo<T0, T1>::ConnectorTwo(sigc::signal<void, T0, T1>& signal, const LuaTypeStore& luaTypeNames) :  ConnectorBase(luaTypeNames), mSignal(signal)
+template <typename Treturn, typename T0, typename T1> 
+ConnectorTwo<Treturn, T0, T1>::ConnectorTwo(sigc::signal<Treturn, T0, T1>& signal, const LuaTypeStore& luaTypeNames) :  ConnectorBase(luaTypeNames), mSignal(signal)
 {
-	mSignal.connect(sigc::mem_fun(*this, &ConnectorTwo<T0, T1>::signal_recieve));
+	mConnection = mSignal.connect(sigc::mem_fun(*this, &ConnectorTwo<Treturn, T0, T1>::signal_recieve));
 }
 
-template <typename T0, typename T1, typename T2> 
-ConnectorThree<T0, T1, T2>::ConnectorThree(sigc::signal<void, T0, T1, T2>& signal, const LuaTypeStore& luaTypeNames) :  ConnectorBase(luaTypeNames), mSignal(signal)
+template <typename Treturn, typename T0, typename T1, typename T2> 
+ConnectorThree<Treturn, T0, T1, T2>::ConnectorThree(sigc::signal<Treturn, T0, T1, T2>& signal, const LuaTypeStore& luaTypeNames) :  ConnectorBase(luaTypeNames), mSignal(signal)
 {
-	mSignal.connect(sigc::mem_fun(*this, &ConnectorThree<T0, T1, T2>::signal_recieve));
+	mConnection = mSignal.connect(sigc::mem_fun(*this, &ConnectorThree<Treturn, T0, T1, T2>::signal_recieve));
 }
 
-template <typename T0, typename T1, typename T2, typename T3> 
-ConnectorFour<T0, T1, T2, T3>::ConnectorFour(sigc::signal<void, T0, T1, T2, T3>& signal, const LuaTypeStore& luaTypeNames) :  ConnectorBase(luaTypeNames), mSignal(signal)
+template <typename Treturn, typename T0, typename T1, typename T2, typename T3> 
+ConnectorFour<Treturn, T0, T1, T2, T3>::ConnectorFour(sigc::signal<Treturn, T0, T1, T2, T3>& signal, const LuaTypeStore& luaTypeNames) :  ConnectorBase(luaTypeNames), mSignal(signal)
 {
-	mSignal.connect(sigc::mem_fun(*this, &ConnectorFour<T0, T1, T2, T3>::signal_recieve));
+	mConnection = mSignal.connect(sigc::mem_fun(*this, &ConnectorFour<Treturn, T0, T1, T2, T3>::signal_recieve));
 }
 
 
-void ConnectorZero::signal_recieve()
+template <typename Treturn>
+Treturn ConnectorZero<Treturn>::signal_recieve()
 {
 	callLuaMethod(Empty(), Empty(), Empty(), Empty());
 }
 
-template <typename T0>
-void ConnectorOne<T0>::signal_recieve(T0 t0)
+template <typename Treturn, typename T0>
+Treturn ConnectorOne<Treturn, T0>::signal_recieve(T0 t0)
 {
 	callLuaMethod(t0, Empty(), Empty(), Empty());
 }
 
-template <typename T0, typename T1>
-void ConnectorTwo<T0, T1>::signal_recieve(T0 t0, T1 t1)
+template <typename Treturn, typename T0, typename T1>
+Treturn ConnectorTwo<Treturn, T0, T1>::signal_recieve(T0 t0, T1 t1)
 {
 	callLuaMethod(t0, t1, Empty(), Empty());
 }
 
-template <typename T0, typename T1, typename T2>
-void ConnectorThree<T0, T1, T2>::signal_recieve(T0 t0, T1 t1, T2 t2)
+template <typename Treturn, typename T0, typename T1, typename T2>
+Treturn ConnectorThree<Treturn, T0, T1, T2>::signal_recieve(T0 t0, T1 t1, T2 t2)
 {
 	callLuaMethod(t0, t1, t2, Empty());
 }
 
-template <typename T0, typename T1, typename T2, typename T3>
-void ConnectorFour<T0, T1, T2, T3>::signal_recieve(T0 t0, T1 t1, T2 t2, T3 t3)
+template <typename Treturn, typename T0, typename T1, typename T2, typename T3>
+Treturn ConnectorFour<Treturn, T0, T1, T2, T3>::signal_recieve(T0 t0, T1 t1, T2 t2, T3 t3)
 {
 	callLuaMethod(t0, t1, t2, t3);
 }
@@ -279,9 +295,15 @@ lua_State* LuaConnector::getState()
 	return sState;
 }
 
-void LuaConnector::connect(const std::string& luaMethod)
+LuaConnector* LuaConnector::connect(const std::string& luaMethod)
 {
 	mConnector->connect(luaMethod);
+	return this;
+}
+
+void LuaConnector::disconnect()
+{
+	mConnector->disconnect();
 }
 
 
@@ -292,7 +314,7 @@ void LuaConnector::connect(const std::string& luaMethod)
 
 LuaConnector::LuaConnector(sigc::signal<void>& signal)
 {
-	mConnector = new LuaConnectors::ConnectorZero(signal);
+	mConnector = new LuaConnectors::ConnectorZero<void>(signal);
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, const std::string&, EmberEntity*> & signal)
@@ -300,28 +322,28 @@ LuaConnector::LuaConnector(sigc::signal<void, const std::string&, EmberEntity*> 
 	LuaTypeStore luaTypes;
 	luaTypes.push_back("string");
 	luaTypes.push_back("EmberOgre::EmberEntity");
-	mConnector = new LuaConnectors::ConnectorTwo<const std::string&, EmberEntity*>(signal, luaTypes);
+	mConnector = new LuaConnectors::ConnectorTwo<void, const std::string&, EmberEntity*>(signal, luaTypes);
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, Eris::Connection*>& signal)
 {
 	LuaTypeStore luaTypes;
 	luaTypes.push_back("Eris::Connection");
-	mConnector = new LuaConnectors::ConnectorOne<Eris::Connection*>(signal, luaTypes);
+	mConnector = new LuaConnectors::ConnectorOne<void, Eris::Connection*>(signal, luaTypes);
 }
 
 LuaConnector::LuaConnector(SigC::Signal1<void, const Eris::ServerInfo&>& signal)
 {
 	LuaTypeStore luaTypes;
 	luaTypes.push_back("Eris::ServerInfo");
-	mConnector = new LuaConnectors::ConnectorOne<const Eris::ServerInfo&>(signal, luaTypes);
+	mConnector = new LuaConnectors::ConnectorOne<void, const Eris::ServerInfo&>(signal, luaTypes);
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, float>& signal)
 {
 	LuaTypeStore luaTypes;
 	luaTypes.push_back("float");
-	mConnector = new LuaConnectors::ConnectorOne<float>(signal, luaTypes);
+	mConnector = new LuaConnectors::ConnectorOne<void, float>(signal, luaTypes);
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, const EntityPickResult&, const MousePickerArgs&>& signal)
@@ -329,14 +351,14 @@ LuaConnector::LuaConnector(sigc::signal<void, const EntityPickResult&, const Mou
 	LuaTypeStore luaTypes;
 	luaTypes.push_back("EmberOgre::EntityPickResult");
 	luaTypes.push_back("EmberOgre::MousePickerArgs");
-	mConnector = new LuaConnectors::ConnectorTwo<const EntityPickResult&, const MousePickerArgs&>(signal, luaTypes);
+	mConnector = new LuaConnectors::ConnectorTwo<void, const EntityPickResult&, const MousePickerArgs&>(signal, luaTypes);
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, const MousePickerArgs&>& signal)
 {
 	LuaTypeStore luaTypes;
 	luaTypes.push_back("EmberOgre::MousePickerArgs");
-	mConnector = new LuaConnectors::ConnectorOne<const MousePickerArgs&>(signal, luaTypes);
+	mConnector = new LuaConnectors::ConnectorOne<void, const MousePickerArgs&>(signal, luaTypes);
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, Input::MouseButton, Input::InputMode>& signal)
@@ -344,39 +366,46 @@ LuaConnector::LuaConnector(sigc::signal<void, Input::MouseButton, Input::InputMo
 	LuaTypeStore luaTypes;
 	luaTypes.push_back("EmberOgre::Input::MouseButton");
 	luaTypes.push_back("EmberOgre::Input::InputMode");
-	mConnector = new LuaConnectors::ConnectorTwo<Input::MouseButton, Input::InputMode>(signal, luaTypes);
+	mConnector = new LuaConnectors::ConnectorTwo<void, Input::MouseButton, Input::InputMode>(signal, luaTypes);
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, EmberEntityFactory*>& signal)
 {
 	LuaTypeStore luaTypes;
 	luaTypes.push_back("EmberOgre::EmberEntityFactory");
-	mConnector = new LuaConnectors::ConnectorOne<EmberEntityFactory*>(signal, luaTypes);
+	mConnector = new LuaConnectors::ConnectorOne<void, EmberEntityFactory*>(signal, luaTypes);
 }
 LuaConnector::LuaConnector(sigc::signal<void, AvatarEmberEntity*>& signal)
 {
 	LuaTypeStore luaTypes;
 	luaTypes.push_back("EmberOgre::AvatarEmberEntity");
-	mConnector = new LuaConnectors::ConnectorOne<AvatarEmberEntity*>(signal, luaTypes);
+	mConnector = new LuaConnectors::ConnectorOne<void, AvatarEmberEntity*>(signal, luaTypes);
 }
 LuaConnector::LuaConnector(sigc::signal<void, Jesus*>& signal)
 {
 	LuaTypeStore luaTypes;
 	luaTypes.push_back("EmberOgre::Jesus");
-	mConnector = new LuaConnectors::ConnectorOne<Jesus*>(signal, luaTypes);
+	mConnector = new LuaConnectors::ConnectorOne<void, Jesus*>(signal, luaTypes);
 }
 LuaConnector::LuaConnector(sigc::signal<void, EmberEntity*>& signal)
 {
 	LuaTypeStore luaTypes;
 	luaTypes.push_back("EmberOgre::EmberEntity");
-	mConnector = new LuaConnectors::ConnectorOne<EmberEntity*>(signal, luaTypes);
+	mConnector = new LuaConnectors::ConnectorOne<void, EmberEntity*>(signal, luaTypes);
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, const std::string&>& signal)
 {
 	LuaTypeStore luaTypes;
 	luaTypes.push_back("string");
-	mConnector = new LuaConnectors::ConnectorOne<const std::string&>(signal, luaTypes);
+	mConnector = new LuaConnectors::ConnectorOne<void, const std::string&>(signal, luaTypes);
+}
+
+LuaConnector::LuaConnector(sigc::signal<bool, const std::string&>& signal)
+{
+	LuaTypeStore luaTypes;
+	luaTypes.push_back("string");
+	mConnector = new LuaConnectors::ConnectorOne<bool, const std::string&>(signal, luaTypes);
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, const std::string&, const std::string&>& signal)
@@ -384,28 +413,28 @@ LuaConnector::LuaConnector(sigc::signal<void, const std::string&, const std::str
 	LuaTypeStore luaTypes;
 	luaTypes.push_back("string");
 	luaTypes.push_back("string");
-	mConnector = new LuaConnectors::ConnectorTwo<const std::string&, const std::string&>(signal, luaTypes);
+	mConnector = new LuaConnectors::ConnectorTwo<void, const std::string&, const std::string&>(signal, luaTypes);
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, BasePointUserObject*>& signal)
 {
 	LuaTypeStore luaTypes;
 	luaTypes.push_back("EmberOgre::BasePointUserObject");
-	mConnector = new LuaConnectors::ConnectorOne<BasePointUserObject*>(signal, luaTypes);
+	mConnector = new LuaConnectors::ConnectorOne<void, BasePointUserObject*>(signal, luaTypes);
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, TerrainEditAction*>& signal)
 {
 	LuaTypeStore luaTypes;
 	luaTypes.push_back("EmberOgre::TerrainEditAction");
-	mConnector = new LuaConnectors::ConnectorOne<TerrainEditAction*>(signal, luaTypes);
+	mConnector = new LuaConnectors::ConnectorOne<void, TerrainEditAction*>(signal, luaTypes);
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, Eris::Task*>& signal)
 {
 	LuaTypeStore luaTypes;
 	luaTypes.push_back("Eris::Task");
-	mConnector = new LuaConnectors::ConnectorOne<Eris::Task*>(signal, luaTypes);
+	mConnector = new LuaConnectors::ConnectorOne<void, Eris::Task*>(signal, luaTypes);
 }
 
 

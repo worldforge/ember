@@ -26,6 +26,7 @@
 #include "tolua++.h"
 #include <sigc++/signal.h>
 #include <sigc++/trackable.h>
+#include <sigc++/connection.h>
 #include <string>
 #include <vector>
 
@@ -69,86 +70,114 @@ namespace LuaConnectors {
 	: public sigc::trackable
 	{
 		public:
-			void connect(const std::string & luaMethod);
 			ConnectorBase();
 			ConnectorBase(const LuaTypeStore& luaTypeNames);
+			virtual ~ConnectorBase();
+			
+			/**
+			Connects to a specified lua method.
+			*/
+			void connect(const std::string & luaMethod);
+			
+			/**
+			Disconnects from the signal.
+			*/
+			void disconnect();
+			
 			template <typename T0, typename T1, typename T2, typename T3> void callLuaMethod(T0 t0, T1 t1, T2 t2, T3 t3);
-			//void callLuaMethod(const std::string& t0, const std::string& t1, LuaConnectors::Empty t2, LuaConnectors::Empty t3) ;
+	
 		protected:
+			
+			/**
+			The lua method to call.
+			*/
 			std::string mLuaMethod;
-// 			unsigned int mNumberOfArguments;
+			
+			/**
+			A vector of the lua type names of the arguments, in order called.
+			*/
 			std::vector<std::string> mLuaTypeNames;
+			
 			/**
 			pushes the lua method onto the stack
 			*/
 			void pushNamedFunction(lua_State* state);
 			
+			/**
+			After the lua method has been bound, we don't need to do any more lookups and can instead just use the function index, which is stored in this variable.
+			*/
 			int mLuaFunctionIndex;
+			
+			/**
+			The connection.
+			*/
+			sigc::connection mConnection;
 	
 	};
 
+template <typename Treturn>
 	class ConnectorZero : public ConnectorBase
 	{
 		public:
-			ConnectorZero(sigc::signal<void>& signal);
-			ConnectorZero(SigC::Signal0<void>& signal);
+			ConnectorZero(sigc::signal<Treturn>& signal);
+			ConnectorZero(SigC::Signal0<Treturn>& signal);
 			
 		private:
-			sigc::signal<void> mSignal;
-			SigC::Signal0<void> mSignal_old;
-			void signal_recieve();
+			sigc::signal<Treturn> mSignal;
+			SigC::Signal0<Treturn> mSignal_old;
+			Treturn signal_recieve();
 	};
 
 
-template <typename T0>
+template <typename Treturn, typename T0>
 	class ConnectorOne : public ConnectorBase
 	{
 		public:
-			ConnectorOne(sigc::signal<void, T0>& signal,  const LuaTypeStore& luaTypeNames);
-			ConnectorOne(SigC::Signal1<void, T0>& signal, const LuaTypeStore& luaTypeNames);
+			ConnectorOne(sigc::signal<Treturn, T0>& signal,  const LuaTypeStore& luaTypeNames);
+			ConnectorOne(SigC::Signal1<Treturn, T0>& signal, const LuaTypeStore& luaTypeNames);
 			
 		private:
-			sigc::signal<void, T0> mSignal;
-			SigC::Signal1<void, T0> mSignal_old;
-			void signal_recieve(T0 t0);
+			sigc::signal<Treturn, T0> mSignal;
+			SigC::Signal1<Treturn, T0> mSignal_old;
+			Treturn signal_recieve(T0 t0);
 	
 	};
 
-template <typename T0, typename T1>
+template <typename Treturn, typename T0, typename T1>
 	class ConnectorTwo : public ConnectorBase
 	{
 		public:
-			ConnectorTwo(sigc::signal<void, T0, T1>& signal, const LuaTypeStore& luaTypeNames);
+			ConnectorTwo(sigc::signal<Treturn, T0, T1>& signal, const LuaTypeStore& luaTypeNames);
 		
 		private:
-			sigc::signal<void, T0, T1> mSignal;
-			void signal_recieve(T0 t0, T1 t1);
+			sigc::signal<Treturn, T0, T1> mSignal;
+			Treturn signal_recieve(T0 t0, T1 t1);
 	
 	};
 
-template <typename T0, typename T1, typename T2>
+template <typename Treturn, typename T0, typename T1, typename T2>
 	class ConnectorThree : public ConnectorBase
 	{
 		public:
-			ConnectorThree(sigc::signal<void, T0, T1, T2>& signal, const LuaTypeStore& luaTypeNames);
+			ConnectorThree(sigc::signal<Treturn, T0, T1, T2>& signal, const LuaTypeStore& luaTypeNames);
 		
 		
 		private:
-			sigc::signal<void, T0, T1, T2> mSignal;
-			void signal_recieve(T0 t0, T1 t1, T2 t2);
+			sigc::signal<Treturn, T0, T1, T2> mSignal;
+			Treturn signal_recieve(T0 t0, T1 t1, T2 t2);
 	
 	};
 
-template <typename T0, typename T1, typename T2, typename T3>
+template <typename Treturn, typename T0, typename T1, typename T2, typename T3>
 	class ConnectorFour : public ConnectorBase
 	{
 		public:
-			ConnectorFour(sigc::signal<void, T0, T1, T2, T3>& signal, const LuaTypeStore& luaTypeNames);
+			ConnectorFour(sigc::signal<Treturn, T0, T1, T2, T3>& signal, const LuaTypeStore& luaTypeNames);
 		
 		
 		private:
-			sigc::signal<void, T0, T1, T2, T3> mSignal;
-			void signal_recieve(T0 t0, T1 t1, T2 t2, T3 t3);
+			sigc::signal<Treturn, T0, T1, T2, T3> mSignal;
+			Treturn signal_recieve(T0 t0, T1 t1, T2 t2, T3 t3);
 	
 	};
 }
@@ -206,6 +235,7 @@ public:
 	LuaConnector(sigc::signal<void, Jesus*>& signal);
 	LuaConnector(sigc::signal<void, EmberEntity*>& signal);
  	LuaConnector(sigc::signal<void, const std::string&>& signal);
+ 	LuaConnector(sigc::signal<bool, const std::string&>& signal);
  	LuaConnector(sigc::signal<void, const std::string&, const std::string&>& signal);
  	LuaConnector(sigc::signal<void, BasePointUserObject*>& signal);
  	LuaConnector(sigc::signal<void, TerrainEditAction*>& signal);
@@ -215,7 +245,13 @@ public:
    
     ~LuaConnector();
     
-    void connect(const std::string& luaMethod);
+	LuaConnector* connect(const std::string& luaMethod);
+	
+	/**
+	Disconnects from the signal.
+	*/
+	void disconnect();
+	
 private:
 	LuaConnectors::ConnectorBase* mConnector;
 };
