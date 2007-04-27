@@ -5,6 +5,11 @@
 
 Chat = {}
 Chat.widget = guiManager:createWidget()
+Chat.gameTextWindow = nil
+Chat.systemTextWindow = nil
+Chat.consoleAdapter = nil
+Chat.consoleInputWindow = nil
+Chat.connectors = {}
 
 --Set up the widget.
 function Chat.buildWidget()
@@ -12,13 +17,32 @@ function Chat.buildWidget()
 	Chat.widget:registerConsoleVisibilityToggleCommand("chat")
 	Chat.widget:enableCloseButton();
 	
-	EmberOgre.LuaConnector:new(guiManager.AppendIGChatLine):connect("Chat.appendIGChatLine")
-	EmberOgre.LuaConnector:new(guiManager.AppendOOGChatLine):connect("Chat.appendIGChatLine")
+	Chat.gameTextWindow = CEGUI.toMultiLineEditbox(Chat.widget:getWindow("GameTextBox"))
+	Chat.systemTextWindow = CEGUI.toMultiLineEditbox(Chat.widget:getWindow("SystemTextBox"))
+	Chat.consoleInputWindow = CEGUI.toEditbox(Chat.widget:getWindow("InputBox"))
+	
+	--this will bring console functionality to the editbox (such as history, tab completion etc.)
+	Chat.consoleAdapter = EmberOgre.Gui.ConsoleAdapter:new_local(Chat.consoleInputWindow);
+	
+	
+	
+	Chat.connectors.appendIGChatLine = EmberOgre.LuaConnector:new_local(guiManager.AppendIGChatLine):connect("Chat.appendIGChatLine")
+	Chat.connectors.appendIGChatLine = EmberOgre.LuaConnector:new_local(guiManager.AppendOOGChatLine):connect("Chat.appendIGChatLine")
 	
 	--let's hide it to begin with
-	Chat.widget:hide()
+--	Chat.widget:hide()
+	Chat.widget:show()
 	--and show if when the avatar has been created (though this disallows out of game chat)
-	EmberOgre.LuaConnector:new(emberOgre.EventCreatedAvatarEntity):connect("Chat.createdAvatarEmberEntity")
+	Chat.connectors.createdAvatarEmberEntity = EmberOgre.LuaConnector:new_local(emberOgre.EventCreatedAvatarEntity):connect("Chat.createdAvatarEmberEntity")
+	Chat.connectors.consoleGotMessage = EmberOgre.LuaConnector:new_local(console.GotMessage):connect("Chat.consoleGotMessage")
+	
+	Chat.consoleObject = EmberOgre.LuaConsoleObject:new_local("console_focus", "Chat.console_focus")
+	
+
+end
+
+function Chat.console_focus()
+	Chat.consoleInputWindow:activate()
 end
 
 function Chat.createdAvatarEmberEntity(avatarEntity)
@@ -30,23 +54,26 @@ end
 --handler for Out Of Game chat event
 --adds messages to the top of the textbox
 function Chat.appendOOGChatLine(line, entity)
-	Chat.appendLine("{" .. entity:getName() .. "}" .. line)
+	Chat.appendLine("{" .. entity:getName() .. "}" .. line, Chat.gameTextWindow)
 end
 
 --handler for In Game chat events
 --adds messages to the top of the textbox
 function Chat.appendIGChatLine(line, entity)
-	Chat.appendLine("<" .. entity:getName() .. ">" .. line)
+	Chat.appendLine("<" .. entity:getName() .. ">" .. line, Chat.gameTextWindow)
 end
 
-function Chat.appendLine(line)
-	local window = Chat.widget:getWindow("TextBox")
-	local textWnd = CEGUI.toMultiLineEditbox(window)
+function Chat.appendLine(line, window)
 --	chatString = "<" .. entity:getName() .. ">" .. line .. "\n" .. chatString
-	textWnd:setText(textWnd:getText() .. line)
+	window:setText(window:getText() .. line)
 	--make sure that the newly added line is shown
-	textWnd:setCaratIndex(string.len(textWnd:getText()))
-	textWnd:ensureCaratIsVisible() 
+	window:setCaratIndex(string.len(window:getText()))
+	window:ensureCaratIsVisible() 
+end
+
+function Chat.consoleGotMessage(message)
+	Chat.appendLine(message, Chat.systemTextWindow)
+	return true
 end
 
 Chat.buildWidget()

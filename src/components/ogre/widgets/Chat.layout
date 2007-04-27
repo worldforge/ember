@@ -1,19 +1,49 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
-	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.300000,0.000000},{0.250000,0.000000}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.000000,25.000000}}'/>
-		<Property Name='Alpha' Value='0.9'/>
+	<Window Type='DefaultGUISheet' Name='MainWindow'>
+		<Property Name='UnifiedSize' Value='{{0.300000,0.000000},{0.0000,250.000000}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{1.000000,-300.000000}}'/>
+		<Property Name='Alpha' Value='0.2'/>
 		<Property Name='Text' Value='Chat output'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
-			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,15}}'/>
-			<Property Name='UnifiedSize' Value='{{1,-2},{1,-15}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,4},{0,15}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-8},{1,-15}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
-			<Window Type='EmberLook/MultiLineEditbox' Name='TextBox'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+			<Window Type='EmberLook/TabControl' Name='MainTabControl'>
+				<Property Name='UnifiedSize' Value='{{1.000000,-10.000000},{1.00000,-35.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,5.000000},{0.0000,5.000000}}'/>
+				<Property Name='InheritsAlpha' Value='true'/>
+				<Window Type='DefaultGUISheet' Name='GamePanel'>
+					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='Text' Value='Game'/>
+					<Property Name='InheritsAlpha' Value='true'/>
+					<Property Name='Visible' Value='true'/>
+					<Window Type='EmberLook/MultiLineEditbox' Name='GameTextBox'>
+						<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+						<Property Name='Text' Value=''/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Property Name='ReadOnly' Value='true'/>
+					</Window>
+				</Window>
+				<Window Type='DefaultGUISheet' Name='SystemPanel'>
+					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='Text' Value='System'/>
+					<Property Name='InheritsAlpha' Value='true'/>
+					<Property Name='Visible' Value='false'/>
+					<Window Type='EmberLook/MultiLineEditbox' Name='SystemTextBox'>
+						<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+						<Property Name='Text' Value=''/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Property Name='ReadOnly' Value='true'/>
+					</Window>
+				</Window>
+			</Window>
+			<Window Type='EmberLook/Editbox' Name='InputBox'>
+				<Property Name='UnifiedSize' Value='{{1.000000,-10.000000},{0.000000,25.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,5.000000},{1.000000,-30.000000}}'/>
 				<Property Name='Text' Value=''/>
-				<Property Name='InheritsAlpha' Value='True'/>
-				<Property Name='ReadOnly' Value='true'/>
+				<Property Name='InheritsTooltipText' Value='true'/>
+				<Property Name='InheritsAlpha' Value='true'/>
 			</Window>
 		</Window>
 	</Window>
