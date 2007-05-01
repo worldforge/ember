@@ -306,6 +306,10 @@ bool ConsoleWidget::consoleTextBox_KeyUp(const CEGUI::EventArgs& args)
 		
 			break;
 		}
+	default: 
+		{
+		break;
+		}
 	}
 	
 	return true;
