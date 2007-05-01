@@ -216,10 +216,10 @@ void GUIManager::initialize()
 	
 
 		//the console and quit widgets are not lua scripts, and should be loaded explicit
-		mConsoleWidget = static_cast<ConsoleWidget*>(createWidget("ConsoleWidget"));
-		if (!mConsoleWidget) {
-			throw Ember::Exception("Could not create console widget.");
-		}
+// 		mConsoleWidget = static_cast<ConsoleWidget*>(createWidget("ConsoleWidget"));
+// 		if (!mConsoleWidget) {
+// 			throw Ember::Exception("Could not create console widget.");
+// 		}
 		createWidget("Quit");
 	} catch (const std::exception& e) {
 		S_LOG_FAILURE("GUIManager - error when initializing widgets: " << e.what());
