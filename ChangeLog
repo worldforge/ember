@@ -1,3 +1,43 @@
+2007-05-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/scripting/bindings/lua/required.h, src/components/ogre/scripting/bindings/lua/ConsoleAdapter.pkg: updated bindings
+
+2007-05-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/GUIManager.cpp: removed the console widget
+
+2007-05-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/EntityEditor.layout, src/components/ogre/widgets/EntityPicker.lua, src/components/ogre/widgets/IngameChatWidget.cpp, src/components/ogre/widgets/IngameChatWidget.xml, src/components/ogre/widgets/InspectWidget.xml, src/components/ogre/widgets/Makefile.am, src/components/ogre/widgets/Mover.lua, src/components/ogre/widgets/Performance.layout, src/components/ogre/widgets/Quit.widget, src/components/ogre/widgets/ServerBrowser.layout, src/components/ogre/widgets/ServerWidget.xml, src/components/ogre/widgets/Tasks.layout, src/components/ogre/widgets/Tasks.lua: adapted to the removal of the console bar
+
+2007-05-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/adapters/atlas/Makefile.am, src/components/ogre/widgets/adapters/atlas/MapAdapter.cpp, src/components/ogre/widgets/adapters/atlas/MapAdapter.h: added a map adapter
+
+2007-05-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/ConsoleWidget.cpp: don't fall through the switch
+
+2007-04-27 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/ConsoleAdapter.cpp, src/components/ogre/widgets/ConsoleAdapter.h: added adapter for a console enabled input box, allowing for history and tab completion
+
+2007-04-27 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/Chat.layout, src/components/ogre/widgets/Chat.lua: make the chat window the main message and interaction window, and remove the console window
+
+2007-04-27 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/main/Application.cpp: avoid segfaults by proper shutdown
+
+2007-04-27 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/framework/bindings/lua/ConsoleBackend.pkg, src/framework/bindings/lua/lua_Framework.cpp: updated bindings
+
+2007-04-27 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.cpp, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.h, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.pkg, src/components/ogre/scripting/bindings/lua/helpers/lua_Helpers.cpp, src/components/ogre/scripting/bindings/lua/helpers/update.sh: allow for return values, also added new connector signature
+
 2007-04-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
 
 	* src/components/ogre/widgets/Give.lua: fixed an incorrect function

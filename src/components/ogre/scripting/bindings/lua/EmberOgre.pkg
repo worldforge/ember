@@ -25,6 +25,8 @@ $pfile "IconBase.pkg"
 $pfile "IconBar.pkg"
 $pfile "EntityEditor.pkg"
 $pfile "StackableContainer.pkg"
+$pfile "ConsoleAdapter.pkg"
+
 
 $pfile "Model.pkg"
 $pfile "SubModel.pkg"
