@@ -308,14 +308,14 @@ void EmberOgre::IngameChatWidget::ActiveChatWindow::placeWindowOnEntity()
 	Ogre::Vector3 screenCoords;
 	
 	bool result = false;
-	Ogre::Vector3 entityWorldCoords = getEntity()->getWorldBoundingBox(true).getCenter();
+	Ogre::Vector3 entityWorldCoords = getEntity()->getWorldBoundingSphere(true).getCenter();
 	entityWorldCoords.y = getEntity()->getWorldBoundingBox(true).getMaximum().y;
 	//check what the new position is in screen coords
 	result = EmberOgre::getSingletonPtr()->getMainCamera()->worldToScreen(entityWorldCoords, screenCoords);
 	
 	if (result) {
 		mWindow->setVisible(true);
-		mWindow->setPosition(UVector2(UDim(screenCoords.x - (mWindow->getWidth().asRelative(0) * 0.5), 0.0f), UDim(screenCoords.y  - (mWindow->getHeight().asRelative(0) * 0.5), 0.0f)));
+		mWindow->setPosition(UVector2(UDim(screenCoords.x, -(mWindow->getWidth().asAbsolute(0) * 0.5)), UDim(screenCoords.y,  -(mWindow->getHeight().asAbsolute(0) * 0.5))));
 	} else {
 		mWindow->setVisible(false);
 	}

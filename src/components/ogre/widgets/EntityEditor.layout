@@ -2,7 +2,7 @@
 <GUILayout>
 	<Window Type='EmberLook/FrameWindow' Name='Mainwindow'>
 		<Property Name='UnifiedSize' Value='{{0.00000,350.000000},{0.00000,500.000000}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{.25,25.000000}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0,0.000000}}'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Entity editor'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>

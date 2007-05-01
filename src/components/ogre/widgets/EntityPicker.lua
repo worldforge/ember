@@ -3,9 +3,7 @@
 
 
 --TODO: 
--- * allow for movement
 -- * perhaps implement it as a pie menu with some nice icons?
--- * allow for more than the default action to be shown
 -----------------------------------------
 
 

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
 	<Window Type='DefaultGUISheet' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.300000,0.000000},{0.150000,0.000000}}'/>
+		<Property Name='UnifiedSize' Value='{{0.00000,300.000000},{0.0000,115.000000}}'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Window Type='EmberLook/StaticText' Name='Text'>
 			<Property Name='UnifiedSize' Value='{{0.400000,0.000000},{0.850000,0.000000}}'/>

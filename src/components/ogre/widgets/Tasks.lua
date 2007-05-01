@@ -1,6 +1,7 @@
 Tasks = {}
 
 Tasks.currentTask = nil
+Tasks.connectors = {}
 
 --function Tasks.frameStarted(time)
 --	if Tasks.currentTask ~= nil then
@@ -21,6 +22,15 @@ end
 function Tasks.ResetTask()
 	Tasks.currentTask = nil
 	--tear down bindings
+	if Tasks.progressAdapter ~= nil then
+		Tasks.progressAdapter:disconnect()
+	end
+	if Tasks.cancelledAdapter ~= nil then
+		Tasks.cancelledAdapter:disconnect()
+	end
+	if Tasks.completedAdapter ~= nil then
+		Tasks.completedAdapter:disconnect()
+	end
 	Tasks.progressAdapter = nil
 	Tasks.cancelledAdapter = nil
 	Tasks.completedAdapter = nil
@@ -55,8 +65,8 @@ function Tasks.TaskRemoved(task)
 end
 
 function Tasks.createdAvatarEmberEntity(avatarEntity)
-	EmberOgre.LuaConnector:new(avatarEntity.TaskAdded):connect("Tasks.TaskAdded")
-	EmberOgre.LuaConnector:new(avatarEntity.TaskRemoved):connect("Tasks.TaskRemoved")
+	Tasks.connectors.TaskAdded =  EmberOgre.LuaConnector:new_local(avatarEntity.TaskAdded):connect("Tasks.TaskAdded")
+	Tasks.connectors.TaskRemoved = EmberOgre.LuaConnector:new_local(avatarEntity.TaskRemoved):connect("Tasks.TaskRemoved")
 end
 
 function Tasks.StopButtonClicked(args)
