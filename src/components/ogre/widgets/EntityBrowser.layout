@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='EmberLook/FrameWindow' Name='Mainwindow'>
+		<Property Name='UnifiedSize' Value='{{0.00000,250.000000},{0.00000,400.000000}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0,0.000000}}'/>
+		<Property Name='Alpha' Value='0.6'/>
+		<Property Name='Text' Value='Entity browser'/>
+		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
+			<Property Name='UnifiedPosition' Value='{{0.0,4},{0,15}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-8},{1,-20}}'/>
+			<Property Name='InheritsAlpha' Value='True'/>
+			<Window Type='EmberLook/Editbox' Name='FilterEntities'>
+				<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-50}}'/>
+				<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='Refresh'>
+				<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-20}}'/>
+				<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
+				<Property Name='Text' Value='Refresh'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+			</Window>
+			<Window Type='EmberLook/Listbox' Name='EntityList'>
+				<Property Name='UnifiedPosition' Value='{{0.0},{0,0}}'/>
+				<Property Name='UnifiedSize' Value='{{1,0},{1,-70}}'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+			</Window>
+		</Window>
+	</Window>
+</GUILayout>

@@ -63,6 +63,7 @@ loadScript("Mover.lua")
 loadScript("Admin.lua")
 loadScript("IndirectRenderingChecker.lua")
 loadScript("EntityEditor.lua")
+loadScript("EntityBrowser.lua")
 
 --loadScript("TerrainEditor.lua")
 
