@@ -23,6 +23,7 @@
 #include "EntityEditor.h"
 
 #include "adapters/atlas/AdapterBase.h"
+#include "adapters/atlas/MapAdapter.h"
 
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
@@ -33,58 +34,57 @@ namespace EmberOgre {
 
 namespace Gui {
 
-EntityEditor::EntityEditor(Eris::Entity* entity)
-: mEntity(entity)
+EntityEditor::EntityEditor(Eris::Entity* entity, Adapters::Atlas::MapAdapter* rootAdapter)
+: mRootAdapter(rootAdapter), mEntity(entity)
 {
 }
 
 
 EntityEditor::~EntityEditor()
 {
-	removeAdapters();
+	delete mRootAdapter;
 }
 
-std::vector<std::string> EntityEditor::getAttributeNames()
-{
-	std::vector<std::string> attributeNames;
-	for (Eris::Entity::AttrMap::const_iterator I = mEntity->getAttributes().begin(); I != mEntity->getAttributes().end(); ++I) {
-		attributeNames.push_back(I->first);
-	}
-	return attributeNames;
-}
+// std::vector<std::string> EntityEditor::getAttributeNames()
+// {
+// 	std::vector<std::string> attributeNames;
+// 	for (Eris::Entity::AttrMap::const_iterator I = mEntity->getAttributes().begin(); I != mEntity->getAttributes().end(); ++I) {
+// 		attributeNames.push_back(I->first);
+// 	}
+// 	return attributeNames;
+// }
 
 
 void EntityEditor::submitChanges()
 {
-	std::map<std::string, ::Atlas::Message::Element> attributes;
-	for (AdapterStore::iterator I = mAdapters.begin(); I != mAdapters.end(); ++I) {
-		Adapters::Atlas::AdapterBase* adapter = I->second.Adapter;
-		if (adapter->hasChanges()) {
-			attributes.insert(std::map<std::string, ::Atlas::Message::Element>::value_type(I->first, adapter->getValue()));
+	if (mRootAdapter->hasChanges()) {
+		Atlas::Message::Element rootElement = mRootAdapter->getSelectedChangedElements();
+		if (rootElement.isMap()) {
+			std::map<std::string, ::Atlas::Message::Element> attributes(rootElement.asMap());
+			if (attributes.size()) {
+				Ember::EmberServices::getSingleton().getServerService()->setAttributes(mEntity, attributes);		
+			}
 		}
-	}
-	if (attributes.size()) {
-		Ember::EmberServices::getSingleton().getServerService()->setAttributes(mEntity, attributes);		
 	}
 }
 
-void EntityEditor::addAttributeAdapter(const std::string& attributeName, Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow)
-{
-	AdapterWrapper wrapper;
-	wrapper.Adapter = adapter;
-	wrapper.ContainerWindow = containerWindow;
-	mAdapters.insert(AdapterStore::value_type(attributeName, wrapper));
-}
-    
-void EntityEditor::removeAdapters()
-{
-	for (AdapterStore::iterator I = mAdapters.begin(); I != mAdapters.end(); ++I) {
-		delete I->second.Adapter;
-// 		I->second.ContainerWindow->getParent()->removeChildWindow(I->second.ContainerWindow);
-		CEGUI::WindowManager::getSingleton().destroyWindow(I->second.ContainerWindow);
-	}
-	mAdapters.clear();
-}
+// void EntityEditor::addAttributeAdapter(const std::string& attributeName, Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow)
+// {
+// 	AdapterWrapper wrapper;
+// 	wrapper.Adapter = adapter;
+// 	wrapper.ContainerWindow = containerWindow;
+// 	mAdapters.insert(AdapterStore::value_type(attributeName, wrapper));
+// }
+//     
+// void EntityEditor::removeAdapters()
+// {
+// 	for (AdapterStore::iterator I = mAdapters.begin(); I != mAdapters.end(); ++I) {
+// 		delete I->second.Adapter;
+// // 		I->second.ContainerWindow->getParent()->removeChildWindow(I->second.ContainerWindow);
+// 		CEGUI::WindowManager::getSingleton().destroyWindow(I->second.ContainerWindow);
+// 	}
+// 	mAdapters.clear();
+// }
 
 
 }

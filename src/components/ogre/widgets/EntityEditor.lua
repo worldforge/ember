@@ -2,13 +2,14 @@
 
 EntityEditor = {}
 EntityEditor.entity = nil
-EntityEditor.adapters = {}
+EntityEditor.rootMapAdapter = nil
 EntityEditor.helper = nil
 EntityEditor.factory = nil
 EntityEditor.attributesContainer = nil
 EntityEditor.accumulatedHeight = 0
 EntityEditor.stackableContainer = 0
 EntityEditor.hiddenAttributes = {objtype = 1, stamp = 1}
+EntityEditor.windowCounter = 0
 
 function editEntity(id)
 	local entity = emberOgre:getEntity(id)
@@ -21,68 +22,134 @@ function EntityEditor.editEntity(entity)
 	if EntityEditor.helper ~= nil then
 		EntityEditor.helper:delete()
 	end
-	EntityEditor.helper = EmberOgre.Gui.EntityEditor:new(entity)
+	if EntityEditor.outercontainer ~= nil then
+		windowManager:destroyWindow(EntityEditor.outercontainer)
+	end
 	EntityEditor.factory = EmberOgre.Gui.Adapters.Atlas.AdapterFactory:new_local(entity:getId())
 	EntityEditor.infoWindow:setText('Id: ' .. entity:getId() .. ' Name: ' .. entity:getName())
-	local attributeNames = EntityEditor.helper:getAttributeNames()
+	
+	local container = windowManager:createWindow("DefaultGUISheet", "EntityEditor" .. EntityEditor.entity:getId() .. "_" .. EntityEditor.windowCounter)
+	EntityEditor.windowCounter = EntityEditor.windowCounter + 1
+	local adapter = EntityEditor.factory:createMapAdapter(container, EntityEditor.entity:getId(), EntityEditor.entity)
+	EntityEditor.rootMapAdapter = adapter
+	EntityEditor.helper = EmberOgre.Gui.EntityEditor:new(entity, EntityEditor.rootMapAdapter)
+	EntityEditor.outercontainer = EntityEditor.addAdapterContainer("", adapter, container, EntityEditor.attributesContainer)
+	
+
+	
+	local attributeNames = EntityEditor.rootMapAdapter:getAttributeNames()
 	for i = 0, attributeNames:size() - 1 do
 		local name = attributeNames[i]
-		local element = entity:valueOfAttr(name)
-		EntityEditor.createAdapter(name, element, EntityEditor.attributesContainer)
+		local element = EntityEditor.rootMapAdapter:valueOfAttr(name)
+		local adapterWrapper = EntityEditor.createAdapter(name, element, EntityEditor.attributesContainer)
+		if adapterWrapper ~= nil then
+			EntityEditor.rootMapAdapter:addAttributeAdapter(name, adapterWrapper.adapter, adapterWrapper.outercontainer)
+		end
 	end	
 end
 
 function EntityEditor.createAdapter(attributeName, element, parentContainer)
 	if EntityEditor.hiddenAttributes[attributeName] == nil then
 		if attributeName == 'bbox' then
-			local adapter = EntityEditor.createSizeAdapter(attributeName, element, parentContainer)
+			return EntityEditor.createSizeAdapter(attributeName, element, parentContainer)
 		elseif element:isString() then
-			local adapter = EntityEditor.createStringAdapter(attributeName, element, parentContainer)
+			return EntityEditor.createStringAdapter(attributeName, element, parentContainer)
 		elseif element:isNum() then
-			local adapter = EntityEditor.createNumberAdapter(attributeName, element, parentContainer)
+			return EntityEditor.createNumberAdapter(attributeName, element, parentContainer)
+		elseif element:isMap() then
+			return EntityEditor.createMapAdapter(attributeName, element, parentContainer)
+		elseif element:isList() then
+			return EntityEditor.createListAdapter(attributeName, element, parentContainer)
 		end
 	end
 end
 
+function EntityEditor.createMapAdapter(attributeName, element, parentContainer)
+	local wrapper = {}
+	local container = windowManager:createWindow("DefaultGUISheet", "EntityEditor" .. EntityEditor.entity:getId() .. "_" .. attributeName .. EntityEditor.windowCounter)
+	EntityEditor.windowCounter = EntityEditor.windowCounter + 1
+	wrapper.adapter = EntityEditor.factory:createMapAdapter(container, EntityEditor.entity:getId(), element)
+	--TODO: make sure that this is cleaned up at destruction
+	wrapper.stackableContainer = EmberOgre.Gui.StackableContainer:new_local(container)
+	local attributeNames = wrapper.adapter:getAttributeNames()
+	for i = 0, attributeNames:size() - 1 do
+		local name = attributeNames[i]
+		local childElement = wrapper.adapter:valueOfAttr(name)
+		local adapterWrapper = EntityEditor.createAdapter(name, childElement, container)
+		if adapterWrapper ~= nil then
+			wrapper.adapter:addAttributeAdapter(name, adapterWrapper.adapter, adapterWrapper.outercontainer)
+		end
+	end	
+	wrapper.outercontainer = EntityEditor.addAdapterContainer(attributeName, adapter, container, parentContainer)
+	return wrapper	
+end
+
+function EntityEditor.createListAdapter(attributeName, element, parentContainer)
+	local wrapper = {}
+	local container = windowManager:createWindow("DefaultGUISheet", "EntityEditor" .. EntityEditor.entity:getId() .. "_" .. attributeName .. EntityEditor.windowCounter)
+	EntityEditor.windowCounter = EntityEditor.windowCounter + 1
+	wrapper.adapter = EntityEditor.factory:createListAdapter(container, EntityEditor.entity:getId(), element)
+	--TODO: make sure that this is cleaned up at destruction
+	wrapper.stackableContainer = EmberOgre.Gui.StackableContainer:new_local(container)
+	for i = 0, wrapper.adapter:getSize() - 1 do
+		local childElement = wrapper.adapter:valueOfAttr(i)
+		local adapterWrapper = EntityEditor.createAdapter(i, childElement, container)
+		if adapterWrapper ~= nil then
+			wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
+		end
+	end	
+	wrapper.outercontainer = EntityEditor.addAdapterContainer(attributeName, adapter, container, parentContainer)
+	return wrapper	
+end
+
 function EntityEditor.createStringAdapter(attributeName, element, parentContainer)
-	local container = windowManager:createWindow("DefaultGUISheet", "EntityEditor" .. EntityEditor.entity:getId() .. "_" .. attributeName)
-	local adapter = EntityEditor.factory:createStringAdapter(container, EntityEditor.entity:getId(), element)
-	EntityEditor.adapters[attributeName] = adapter
-	EntityEditor.addAdapterContainer(attributeName, adapter, container, parentContainer)
-	return adapter	
+	local wrapper = {}
+	local container = windowManager:createWindow("DefaultGUISheet", "EntityEditor" .. EntityEditor.entity:getId() .. "_" .. attributeName .. EntityEditor.windowCounter)
+	EntityEditor.windowCounter = EntityEditor.windowCounter + 1
+	wrapper.adapter = EntityEditor.factory:createStringAdapter(container, EntityEditor.entity:getId(), element)
+	--EntityEditor.adapters[attributeName] = adapter
+	wrapper.outercontainer = EntityEditor.addAdapterContainer(attributeName, adapter, container, parentContainer)
+	return wrapper	
 end
 
 function EntityEditor.createNumberAdapter(attributeName, element, parentContainer)
-	local container = windowManager:createWindow("DefaultGUISheet", "EntityEditor" .. EntityEditor.entity:getId() .. "_" .. attributeName)
-	local adapter = EntityEditor.factory:createNumberAdapter(container, EntityEditor.entity:getId(), element)
-	EntityEditor.adapters[attributeName] = adapter
-	EntityEditor.addAdapterContainer(attributeName, adapter, container, parentContainer)
-	return adapter	
+	local wrapper = {}
+	local container = windowManager:createWindow("DefaultGUISheet", "EntityEditor" .. EntityEditor.entity:getId() .. "_" .. attributeName .. EntityEditor.windowCounter)
+	EntityEditor.windowCounter = EntityEditor.windowCounter + 1
+	wrapper.adapter = EntityEditor.factory:createNumberAdapter(container, EntityEditor.entity:getId(), element)
+	--EntityEditor.adapters[attributeName] = adapter
+	wrapper.outercontainer = EntityEditor.addAdapterContainer(attributeName, adapter, container, parentContainer)
+	return wrapper	
 end
 
-function 	EntityEditor.createSizeAdapter(attributeName, element, parentContainer)
-	local container = windowManager:createWindow("DefaultGUISheet", "EntityEditor" .. EntityEditor.entity:getId() .. "_" .. attributeName)
-	local adapter = EntityEditor.factory:createSizeAdapter(container, EntityEditor.entity:getId(), element)
-	EntityEditor.adapters[attributeName] = adapter
-	EntityEditor.addAdapterContainer(attributeName, adapter, container, parentContainer)
-	return adapter	
+function EntityEditor.createSizeAdapter(attributeName, element, parentContainer)
+	local wrapper = {}
+	local container = windowManager:createWindow("DefaultGUISheet", "EntityEditor" .. EntityEditor.entity:getId() .. "_" .. attributeName .. EntityEditor.windowCounter)
+	EntityEditor.windowCounter = EntityEditor.windowCounter + 1
+	wrapper.adapter = EntityEditor.factory:createSizeAdapter(container, EntityEditor.entity:getId(), element)
+	--EntityEditor.adapters[attributeName] = adapter
+	wrapper.outercontainer = EntityEditor.addAdapterContainer(attributeName, wrapper.adapter, container, parentContainer)
+	return wrapper	
 end
 
 
 
 function EntityEditor.addAdapterContainer(attributeName, adapter, container, parentContainer)
-	local outercontainer = windowManager:createWindow("DefaultGUISheet", "EntityEditor" .. EntityEditor.entity:getId() .. "_" .. attributeName .. "outercontainer")
-	local label = windowManager:createWindow("EmberLook/StaticText", "EntityEditor" .. EntityEditor.entity:getId() .. "_" .. attributeName .. "outercontainerLabel")
+	local textWidth = 75
+	local outercontainer = windowManager:createWindow("DefaultGUISheet", "EntityEditor" .. EntityEditor.entity:getId() .. "_" .. attributeName .. "outercontainer" .. EntityEditor.windowCounter)
+	EntityEditor.windowCounter = EntityEditor.windowCounter + 1
+	local label = windowManager:createWindow("EmberLook/StaticText", "EntityEditor" .. EntityEditor.entity:getId() .. "_" .. attributeName .. "outercontainerLabel" .. EntityEditor.windowCounter)
+	EntityEditor.windowCounter = EntityEditor.windowCounter + 1
 	label:setText(attributeName)
-	label:setWidth(CEGUI.UDim(0, 100))
+	label:setWidth(CEGUI.UDim(0, textWidth))
 	label:setProperty("FrameEnabled", "false");
  	label:setProperty("BackgroundEnabled", "false");
 	label:setProperty("VertFormatting", "TopAligned");
 	
 	local width = container:getWidth()
-	width = width + CEGUI.UDim(0, 100)
+	width = width + CEGUI.UDim(0, textWidth)
 	outercontainer:setWidth(width)
-	container:setXPosition(CEGUI.UDim(0, 100))
+	container:setXPosition(CEGUI.UDim(0, textWidth))
 	
 	outercontainer:setHeight(container:getHeight())
 	
@@ -90,8 +157,9 @@ function EntityEditor.addAdapterContainer(attributeName, adapter, container, par
 	outercontainer:addChildWindow(label)
 
 	parentContainer:addChildWindow(outercontainer)
+	return outercontainer
 --	EntityEditor.attributesContainer:addChildWindow(outercontainer)
-	EntityEditor.helper:addAttributeAdapter(attributeName, adapter, outercontainer)
+	--EntityEditor.helper:addAttributeAdapter(attributeName, adapter, outercontainer)
 	--outercontainer:setYPosition(CEGUI.UDim(0, EntityEditor.accumulatedHeight))
 	--EntityEditor.accumulatedHeight = EntityEditor.accumulatedHeight + outercontainer:getHeight():asAbsolute(0)
 end

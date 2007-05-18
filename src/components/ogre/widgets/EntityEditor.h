@@ -45,6 +45,7 @@ namespace Adapters {
 namespace Atlas {
 
 class AdapterBase;
+class MapAdapter;
 
 }
 
@@ -61,20 +62,19 @@ struct AdapterWrapper
 */
 class EntityEditor{
 public:
-    EntityEditor(Eris::Entity* entity);
+    EntityEditor(Eris::Entity* entity, Adapters::Atlas::MapAdapter* rootAdapter);
 
     virtual ~EntityEditor();
     
-    std::vector<std::string> getAttributeNames();
+//     std::vector<std::string> getAttributeNames();
     
     void submitChanges();
-    void addAttributeAdapter(const std::string& attributeName, Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow);
-    
-    void removeAdapters();
+//     void addAttributeAdapter(const std::string& attributeName, Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow);
+//     
+//     void removeAdapters();
 protected:
-	typedef std::map<std::string, AdapterWrapper> AdapterStore;
 
-	AdapterStore mAdapters;
+	Adapters::Atlas::MapAdapter* mRootAdapter;
 
 	Eris::Entity* mEntity;
 	
