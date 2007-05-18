@@ -35,6 +35,9 @@ function ScriptEdit.buildWidget()
 	ScriptEdit.inspect:subscribeEvent("MouseClick", "ScriptEdit.inspectClick")
 	EmberOgre.LuaConnector:new(scriptingService:getEventScriptError()):connect("ScriptEdit.scriptError")
 	
+	ScriptEdit.dynamicBindings = CEGUI.toCheckbox(ScriptEdit.widget:getWindow("DynamicBindings"))
+	ScriptEdit.dynamicBindings:subscribeEvent("CheckStateChanged", "ScriptEdit.dynamicBindings_CheckStateChanged")
+	
 	
 	
 	local providerNames = scriptingService:getProviderNames()
@@ -56,6 +59,8 @@ function ScriptEdit.buildWidget()
 	ScriptEdit.widget:hide()
 
 end
+
+
 
 --handler for script error
 --updates the output textbox
@@ -85,6 +90,11 @@ function ScriptEdit.executeClick(args)
 	end
 
 end
+
+function ScriptEdit.dynamicBindings_CheckStateChanged(args)
+	scriptingService:setAlwaysLookup(ScriptEdit.dynamicBindings:isSelected())
+end
+
 
 --will try to inspect the type of the current selected code
 function ScriptEdit.inspectClick(args)

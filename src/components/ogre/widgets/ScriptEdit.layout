@@ -24,6 +24,12 @@
 			<Property Name='UnifiedAreaRect' Value='{{0.415482,287.000000},{0.893085,435.000000},{0.615483,425.000000},{1.223404,596.000000}}'/>
 			<Property Name='UnifiedAreaRect' Value='{{0.415482,0.000000},{0.893085,0.000000},{0.615483,0.000000},{1.223404,0.000000}}'/>
 		</Window>
+		<Window Type='EmberLook/Checkbox' Name='DynamicBindings'>
+			<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.00000,30.000000}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.500000,0.000000},{1.0000,-35.000000}}'/>
+			<Property Name='Text' Value='Always lookup'/>
+			<Property Name='Tooltip' Value='If checked, all script calls will always be looked up at calling time. This will decrease performance, but allow for dynamic updating of scripts.'/>
+		</Window>
 		<Window Type='EmberLook/Button' Name='InspectButton'>
 			<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,25.000000}}'/>
 			<Property Name='UnifiedPosition' Value='{{0.650000,0.000000},{0.900000,0.000000}}'/>
