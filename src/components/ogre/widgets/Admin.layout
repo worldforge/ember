@@ -39,6 +39,12 @@
 				<Property Name='Text' Value='Script editor'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>
+			<Window Type='EmberLook/Button' Name='EntityBrowser'>
+				<Property Name='UnifiedPosition' Value='{{0,330},{0,0}}'/>
+				<Property Name='UnifiedSize' Value='{{0,80},{0,25}}'/>
+				<Property Name='Text' Value='Entity browser'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+			</Window>
 		</Window>
 	</Window>
 </GUILayout>
