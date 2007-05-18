@@ -20,11 +20,11 @@ function Mover.StartMoving(entity)
 	Mover.updateEntityText(entity)
 end 
 
-function Mover.FinishedMoving(entity)
+function Mover.FinishedMoving()
 	Mover.widget:hide()
 end 
 
-function Mover.CancelledMoving(entity)
+function Mover.CancelledMoving()
 	Mover.widget:hide()
 end 
 

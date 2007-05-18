@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
 	<Window Type='DefaultGUISheet' Name='MainWindow'>
-		<Property Name='UnifiedPosition' Value='{{0.4,0},{0.9,0}}'/>
-		<Property Name='UnifiedSize' Value='{{0.2,0},{0.075,0}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.5,-150},{0.9,0}}'/>
+		<Property Name='UnifiedSize' Value='{{0,300},{0.075,0}}'/>
 		<Window Type='EmberLook/StaticText' Name='EntityText'>
 			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 			<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0}}'/>
