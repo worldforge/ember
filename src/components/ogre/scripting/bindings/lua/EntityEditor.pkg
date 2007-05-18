@@ -33,16 +33,12 @@ namespace Gui {
 */
 class EntityEditor{
 public:
-    EntityEditor(Eris::Entity* entity);
+    EntityEditor(Eris::Entity* entity, EmberOgre::Gui::Adapters::Atlas::MapAdapter* rootAdapter);
 
     virtual ~EntityEditor();
     
-    std::vector<std::string> getAttributeNames();
     
     void submitChanges();
-    void addAttributeAdapter(const std::string& attributeName, EmberOgre::Gui::Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow);
-    
-    void removeAdapters();
 	
 	
 

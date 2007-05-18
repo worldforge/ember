@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Thu Apr 26 23:21:09 2007.
+** Generated automatically by tolua++-1.0.92 on Mon May 14 23:54:28 2007.
 */
 
 #ifndef __cplusplus
@@ -449,7 +449,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"WFMath::Quaternion");
  tolua_usertype(tolua_S,"Ogre::Real");
  tolua_usertype(tolua_S,"Ogre::Vector2");
- tolua_usertype(tolua_S,"EmberOgre::IconBase");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::MapAdapter");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntity*>");
  tolua_usertype(tolua_S,"EmberOgre::MotionManager::MotionManagerInfo");
  tolua_usertype(tolua_S,"Ogre::Quaternion");
@@ -458,11 +458,11 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"EmberOgre::EmberEntity");
  tolua_usertype(tolua_S,"Eris::Task");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Input::InputMode>");
- tolua_usertype(tolua_S,"Ogre::Entity");
  tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefnPtr");
+ tolua_usertype(tolua_S,"EmberOgre::IconBase");
  tolua_usertype(tolua_S,"EmberOgre::MotionManager");
  tolua_usertype(tolua_S,"EmberOgre::Model::SubModelDefinition");
- tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::AdapterBase");
+ tolua_usertype(tolua_S,"Ogre::Entity");
  tolua_usertype(tolua_S,"EmberOgre::Widgets::IconBar");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::BasePointUserObject*>");
  tolua_usertype(tolua_S,"EmberOgre::WorldEmberEntity");
@@ -7037,15 +7037,17 @@ static int tolua_EmberOgre_EmberOgre_Gui_EntityEditor_new00(lua_State* tolua_S)
  if (
      !tolua_isusertable(tolua_S,1,"EmberOgre::Gui::EntityEditor",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"Eris::Entity",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
+     !tolua_isusertype(tolua_S,3,"EmberOgre::Gui::Adapters::Atlas::MapAdapter",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
   Eris::Entity* entity = ((Eris::Entity*)  tolua_tousertype(tolua_S,2,0));
+  EmberOgre::Gui::Adapters::Atlas::MapAdapter* rootAdapter = ((EmberOgre::Gui::Adapters::Atlas::MapAdapter*)  tolua_tousertype(tolua_S,3,0));
   {
-   EmberOgre::Gui::EntityEditor* tolua_ret = (EmberOgre::Gui::EntityEditor*)  new EmberOgre::Gui::EntityEditor(entity);
+   EmberOgre::Gui::EntityEditor* tolua_ret = (EmberOgre::Gui::EntityEditor*)  new EmberOgre::Gui::EntityEditor(entity,rootAdapter);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Gui::EntityEditor");
   }
  }
@@ -7067,15 +7069,17 @@ static int tolua_EmberOgre_EmberOgre_Gui_EntityEditor_new00_local(lua_State* tol
  if (
      !tolua_isusertable(tolua_S,1,"EmberOgre::Gui::EntityEditor",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"Eris::Entity",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
+     !tolua_isusertype(tolua_S,3,"EmberOgre::Gui::Adapters::Atlas::MapAdapter",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
   Eris::Entity* entity = ((Eris::Entity*)  tolua_tousertype(tolua_S,2,0));
+  EmberOgre::Gui::Adapters::Atlas::MapAdapter* rootAdapter = ((EmberOgre::Gui::Adapters::Atlas::MapAdapter*)  tolua_tousertype(tolua_S,3,0));
   {
-   EmberOgre::Gui::EntityEditor* tolua_ret = (EmberOgre::Gui::EntityEditor*)  new EmberOgre::Gui::EntityEditor(entity);
+   EmberOgre::Gui::EntityEditor* tolua_ret = (EmberOgre::Gui::EntityEditor*)  new EmberOgre::Gui::EntityEditor(entity,rootAdapter);
    tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::Gui::EntityEditor");
   }
  }
@@ -7117,46 +7121,6 @@ static int tolua_EmberOgre_EmberOgre_Gui_EntityEditor_delete00(lua_State* tolua_
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: getAttributeNames of class  EmberOgre::Gui::EntityEditor */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_EntityEditor_getAttributeNames00
-static int tolua_EmberOgre_EmberOgre_Gui_EntityEditor_getAttributeNames00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::EntityEditor",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  EmberOgre::Gui::EntityEditor* self = (EmberOgre::Gui::EntityEditor*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getAttributeNames'",NULL);
-#endif
-  {
-   std::vector<std::string> tolua_ret = (std::vector<std::string>)  self->getAttributeNames();
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new std::vector<std::string>(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"std::vector<std::string>");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(std::vector<std::string>));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"std::vector<std::string>");
-#endif
-   }
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getAttributeNames'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* method: submitChanges of class  EmberOgre::Gui::EntityEditor */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_EntityEditor_submitChanges00
 static int tolua_EmberOgre_EmberOgre_Gui_EntityEditor_submitChanges00(lua_State* tolua_S)
@@ -7183,75 +7147,6 @@ static int tolua_EmberOgre_EmberOgre_Gui_EntityEditor_submitChanges00(lua_State*
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'submitChanges'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: addAttributeAdapter of class  EmberOgre::Gui::EntityEditor */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_EntityEditor_addAttributeAdapter00
-static int tolua_EmberOgre_EmberOgre_Gui_EntityEditor_addAttributeAdapter00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::EntityEditor",0,&tolua_err) ||
-     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"EmberOgre::Gui::Adapters::Atlas::AdapterBase",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"CEGUI::Window",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,5,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  EmberOgre::Gui::EntityEditor* self = (EmberOgre::Gui::EntityEditor*)  tolua_tousertype(tolua_S,1,0);
-  const std::string attributeName = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
-  EmberOgre::Gui::Adapters::Atlas::AdapterBase* adapter = ((EmberOgre::Gui::Adapters::Atlas::AdapterBase*)  tolua_tousertype(tolua_S,3,0));
-  CEGUI::Window* containerWindow = ((CEGUI::Window*)  tolua_tousertype(tolua_S,4,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addAttributeAdapter'",NULL);
-#endif
-  {
-   self->addAttributeAdapter(attributeName,adapter,containerWindow);
-   tolua_pushcppstring(tolua_S,(const char*)attributeName);
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'addAttributeAdapter'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: removeAdapters of class  EmberOgre::Gui::EntityEditor */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_EntityEditor_removeAdapters00
-static int tolua_EmberOgre_EmberOgre_Gui_EntityEditor_removeAdapters00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::EntityEditor",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  EmberOgre::Gui::EntityEditor* self = (EmberOgre::Gui::EntityEditor*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'removeAdapters'",NULL);
-#endif
-  {
-   self->removeAdapters();
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'removeAdapters'.",&tolua_err);
  return 0;
 #endif
 }
@@ -17223,10 +17118,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"new_local",tolua_EmberOgre_EmberOgre_Gui_EntityEditor_new00_local);
      tolua_function(tolua_S,".call",tolua_EmberOgre_EmberOgre_Gui_EntityEditor_new00_local);
      tolua_function(tolua_S,"delete",tolua_EmberOgre_EmberOgre_Gui_EntityEditor_delete00);
-     tolua_function(tolua_S,"getAttributeNames",tolua_EmberOgre_EmberOgre_Gui_EntityEditor_getAttributeNames00);
      tolua_function(tolua_S,"submitChanges",tolua_EmberOgre_EmberOgre_Gui_EntityEditor_submitChanges00);
-     tolua_function(tolua_S,"addAttributeAdapter",tolua_EmberOgre_EmberOgre_Gui_EntityEditor_addAttributeAdapter00);
-     tolua_function(tolua_S,"removeAdapters",tolua_EmberOgre_EmberOgre_Gui_EntityEditor_removeAdapters00);
     tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
