@@ -24,7 +24,9 @@
 #include "LuaConnectorHelper.h"
 
 #include "framework/Exception.h"
+#include "services/EmberServices.h"
 #include "services/logging/LoggingService.h"
+#include "services/scripting/ScriptingService.h"
 
 #include "components/ogre/MousePicker.h"
 #include "components/ogre/EntityWorldPickListener.h"
@@ -40,6 +42,7 @@ namespace EmberOgre {
 namespace LuaConnectors {
 
 ConnectorBase::ConnectorBase()
+: mLuaFunctionIndex(LUA_NOREF)
 {
 }
 
@@ -78,7 +81,7 @@ template <typename T0, typename T1, typename T2, typename T3> void ConnectorBase
 	int top = lua_gettop(state);
 	try {
 	
-		if (mLuaFunctionIndex == LUA_NOREF) {
+		if (mLuaFunctionIndex == LUA_NOREF || Ember::EmberServices::getSingleton().getScriptingService()->getAlwaysLookup()) {
 			pushNamedFunction(state);
 			mLuaFunctionIndex = luaL_ref(state, LUA_REGISTRYINDEX);
 		}
