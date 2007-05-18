@@ -1,5 +1,5 @@
 //
-// C++ Interface: MapAdapter
+// C++ Interface: CustomAdapter
 //
 // Description: 
 //
@@ -20,16 +20,14 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBEROGRE_GUI_ADAPTERS_ATLASMAPADAPTER_H
-#define EMBEROGRE_GUI_ADAPTERS_ATLASMAPADAPTER_H
+#ifndef EMBEROGRE_GUI_ADAPTERS_ATLASCUSTOMADAPTER_H
+#define EMBEROGRE_GUI_ADAPTERS_ATLASCUSTOMADAPTER_H
 
 #include "AdapterBase.h"
-#include "components/ogre/widgets/StackableContainer.h"
 
-
-namespace CEGUI {
-	class Window;
-}
+using Atlas::Message::Element;
+using Atlas::Message::ListType;
+using Atlas::Message::MapType;
 
 namespace EmberOgre {
 
@@ -39,47 +37,32 @@ namespace Adapters {
 
 namespace Atlas {
 
-
-
-
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
-class MapAdapter : public AdapterBase
+class CustomAdapter : public AdapterBase, public sigc::trackable
 {
 public:
+    CustomAdapter(const ::Atlas::Message::Element& element);
+
+    virtual ~CustomAdapter();
     
-    MapAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* childContainer);
-
-    virtual ~MapAdapter();
-
-    std::vector<std::string> getAttributeNames();
-
-	const ::Atlas::Message::Element& valueOfAttr(const std::string& attr) const;
-	bool hasAttr(const std::string& attr) const;
-
 	/**
 	Updates the gui with new values.
 	*/
 	virtual void updateGui(const ::Atlas::Message::Element& element);
-
-    void addAttributeAdapter(const std::string& attributeName, Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow);
-    void removeAdapters();
     
-	::Atlas::Message::Element getSelectedChangedElements();
-
+    sigc::signal<void, bool&> QueryHasChanges;
+    sigc::signal<void, const ::Atlas::Message::Element*> QueryUpdateGui;
+    sigc::signal<void, ::Atlas::Message::Element*> QueryFillElementFromGui;
+    sigc::signal<void, ::Atlas::Message::Element*> QueryGetChangedElement;
+    
 protected:
-	typedef std::map<std::string, AdapterWrapper> AdapterStore;
-	
-	CEGUI::Window* mChildContainer;
-// 	StackableContainer mStackableContainer;
-	const ::Atlas::Message::MapType& mAttributes;
-	
-	AdapterStore mAdapters;
 	
 	virtual void fillElementFromGui();
 	virtual bool _hasChanges();
 	virtual ::Atlas::Message::Element _getChangedElement();
+
 
 };
 

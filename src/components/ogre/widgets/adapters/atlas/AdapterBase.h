@@ -40,10 +40,19 @@ namespace Adapters {
 
 namespace Atlas {
 
+class AdapterBase;
+
+struct AdapterWrapper
+{
+	AdapterBase* Adapter;
+	CEGUI::Window* ContainerWindow;
+};
+
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
-class AdapterBase{
+class AdapterBase
+{
 public:
     AdapterBase(const ::Atlas::Message::Element& element);
 
@@ -69,6 +78,7 @@ public:
 	virtual void updateGui(const ::Atlas::Message::Element& element) = 0;
 	
 	bool hasChanges();
+	::Atlas::Message::Element getChangedElement();
 	
 protected:
 
@@ -79,6 +89,7 @@ protected:
 	
 	virtual void fillElementFromGui() = 0;
 	virtual bool _hasChanges() = 0;
+	virtual ::Atlas::Message::Element _getChangedElement();
 
 };
 

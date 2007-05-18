@@ -1,5 +1,5 @@
 //
-// C++ Interface: MapAdapter
+// C++ Interface: ListAdapter
 //
 // Description: 
 //
@@ -20,11 +20,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBEROGRE_GUI_ADAPTERS_ATLASMAPADAPTER_H
-#define EMBEROGRE_GUI_ADAPTERS_ATLASMAPADAPTER_H
+#ifndef EMBEROGRE_GUI_ADAPTERS_ATLASLISTADAPTER_H
+#define EMBEROGRE_GUI_ADAPTERS_ATLASLISTADAPTER_H
 
 #include "AdapterBase.h"
-#include "components/ogre/widgets/StackableContainer.h"
+// #include "components/ogre/widgets/StackableContainer.h"
 
 
 namespace CEGUI {
@@ -39,41 +39,35 @@ namespace Adapters {
 
 namespace Atlas {
 
-
-
-
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
-class MapAdapter : public AdapterBase
+class ListAdapter : public AdapterBase
 {
 public:
+    ListAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* childContainer);
+
+    virtual ~ListAdapter();
     
-    MapAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* childContainer);
 
-    virtual ~MapAdapter();
-
-    std::vector<std::string> getAttributeNames();
-
-	const ::Atlas::Message::Element& valueOfAttr(const std::string& attr) const;
-	bool hasAttr(const std::string& attr) const;
+    unsigned int getSize();
+	const ::Atlas::Message::Element& valueOfAttr(unsigned int index) const;
 
 	/**
 	Updates the gui with new values.
 	*/
 	virtual void updateGui(const ::Atlas::Message::Element& element);
 
-    void addAttributeAdapter(const std::string& attributeName, Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow);
+//     void addAttributeAdapter(int index, Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow);
+    void addAttributeAdapter(Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow);
     void removeAdapters();
     
-	::Atlas::Message::Element getSelectedChangedElements();
-
 protected:
-	typedef std::map<std::string, AdapterWrapper> AdapterStore;
+	typedef std::vector<AdapterWrapper> AdapterStore;
 	
 	CEGUI::Window* mChildContainer;
 // 	StackableContainer mStackableContainer;
-	const ::Atlas::Message::MapType& mAttributes;
+	const ::Atlas::Message::ListType& mAttributes;
 	
 	AdapterStore mAdapters;
 	

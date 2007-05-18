@@ -29,6 +29,11 @@ namespace CEGUI
 class Window;
 }
 
+namespace Eris
+{
+class Entity;
+}
+
 namespace EmberOgre {
 
 namespace Gui {
@@ -40,6 +45,8 @@ namespace Atlas {
 class StringAdapter;
 class NumberAdapter;
 class SizeAdapter;
+class MapAdapter;
+class ListAdapter;
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
@@ -53,6 +60,12 @@ public:
     StringAdapter* createStringAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
     NumberAdapter* createNumberAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
     SizeAdapter* createSizeAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
+    MapAdapter* createMapAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
+    MapAdapter* createMapAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const std::map<std::string, ::Atlas::Message::Element> attributes);
+    MapAdapter* createMapAdapter(CEGUI::Window* container, const std::string& adapterPrefix, Eris::Entity* entity);
+    
+	ListAdapter* createListAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
+
 protected:
 
 	CEGUI::Window* loadLayoutIntoContainer(CEGUI::Window* container, const std::string& adapterPrefix, const std::string& layoutfile);

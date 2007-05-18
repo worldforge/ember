@@ -24,9 +24,12 @@
 #include "StringAdapter.h"
 #include "NumberAdapter.h"
 #include "SizeAdapter.h"
+#include "MapAdapter.h"
+#include "ListAdapter.h"
 #include <CEGUI.h>
 #include "components/ogre/GUIManager.h"
 #include "services/logging/LoggingService.h"
+#include <Eris/Entity.h>
 
 using namespace CEGUI;
 
@@ -101,6 +104,42 @@ SizeAdapter* AdapterFactory::createSizeAdapter(CEGUI::Window* container, const s
 	}
 }
 
+MapAdapter* AdapterFactory::createMapAdapter(CEGUI::Window* container, const std::string& adapterPrefix, Eris::Entity* entity)
+{
+	return createMapAdapter(container, adapterPrefix, entity->getAttributes());
+}
+
+MapAdapter* AdapterFactory::createMapAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const std::map<std::string, ::Atlas::Message::Element> attributes)
+{
+	return createMapAdapter(container, adapterPrefix, ::Atlas::Message::Element(attributes));
+}
+
+MapAdapter* AdapterFactory::createMapAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
+{
+	if (!container) {
+		return 0;
+	}
+	Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/MapAdapter.layout");
+	MapAdapter* adapter = new MapAdapter(element, window);
+	
+	return adapter;
+}
+
+ListAdapter* AdapterFactory::createListAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
+{
+	if (!container) {
+		return 0;
+	}
+	try {
+		Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/ListAdapter.layout");
+		ListAdapter* adapter = new ListAdapter(element, window);
+		
+		return adapter;
+	} catch (const CEGUI::Exception& ex) {
+		S_LOG_FAILURE("Error when loading ListAdapter. " << ex.getMessage().c_str());
+		return 0;
+	}
+}
 
 CEGUI::Window* AdapterFactory::loadLayoutIntoContainer(CEGUI::Window* container, const std::string& adapterPrefix, const std::string& layoutfile)
 {

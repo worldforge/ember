@@ -1,5 +1,5 @@
 //
-// C++ Implementation: AdapterBase
+// C++ Implementation: CustomAdapter
 //
 // Description: 
 //
@@ -20,7 +20,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#include "AdapterBase.h"
+#include "CustomAdapter.h"
 
 namespace EmberOgre {
 
@@ -30,48 +30,37 @@ namespace Adapters {
 
 namespace Atlas {
 
-
-
-AdapterBase::AdapterBase(const ::Atlas::Message::Element& element)
-: mOriginalElement(element), mEditedElement(element)
+CustomAdapter::CustomAdapter(const ::Atlas::Message::Element& element)
+: AdapterBase(element)
 {
 }
 
 
-AdapterBase::~AdapterBase()
+CustomAdapter::~CustomAdapter()
 {
 }
 
-void AdapterBase::setValue(::Atlas::Message::Element& element)
+void CustomAdapter::updateGui(const ::Atlas::Message::Element& element)
 {
-	updateGui(element);
-	EventValueChanged.emit();
+	QueryUpdateGui(&element);
 }
 
-::Atlas::Message::Element& AdapterBase::getValue()
+void CustomAdapter::fillElementFromGui()
 {
-	fillElementFromGui();
-	return mEditedElement;
+	Element element;
+	QueryFillElementFromGui(&element);
 }
-
-const ::Atlas::Message::Element& AdapterBase::getOriginalValue() const
+bool CustomAdapter::_hasChanges()
 {
-	return mOriginalElement;
+	bool hasChanges;
+	QueryHasChanges(hasChanges);
+	return hasChanges;
 }
-
-bool AdapterBase::hasChanges()
+::Atlas::Message::Element CustomAdapter::_getChangedElement()
 {
-	return _hasChanges();
-}
-
-::Atlas::Message::Element AdapterBase::getChangedElement()
-{
-	return _getChangedElement();
-}
-
-::Atlas::Message::Element AdapterBase::_getChangedElement()
-{
-	return getValue();
+	Element element;
+	QueryGetChangedElement(&element);
+	return element;
 }
 
 
