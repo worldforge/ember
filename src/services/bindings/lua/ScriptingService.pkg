@@ -49,6 +49,14 @@ class ScriptingService
 	 */
 	std::vector<std::string> getProviderNames();
 	
+	/**
+	Returns whether all scripting methods should be looked up at every call. Setting this to true will decrease performance, but allow for dynamic updating of script methods.
+	*/
+	bool getAlwaysLookup() const;
+	/**
+	Sets whether all scripting methods should be looked up at every call. Setting this to true will decrease performance, but allow for dynamic updating of script methods.
+	*/
+	void setAlwaysLookup(bool alwaysLookup);
 
 };
 

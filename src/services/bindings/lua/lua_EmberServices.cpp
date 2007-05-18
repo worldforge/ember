@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberServices
-** Generated automatically by tolua++-1.0.92 on Sun Apr 15 19:33:41 2007.
+** Generated automatically by tolua++-1.0.92 on Tue May 15 07:40:33 2007.
 */
 
 #ifndef __cplusplus
@@ -1754,6 +1754,71 @@ static int tolua_EmberServices_Ember_ScriptingService_getProviderNames00(lua_Sta
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: getAlwaysLookup of class  Ember::ScriptingService */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_ScriptingService_getAlwaysLookup00
+static int tolua_EmberServices_Ember_ScriptingService_getAlwaysLookup00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ember::ScriptingService",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ember::ScriptingService* self = (const Ember::ScriptingService*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getAlwaysLookup'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->getAlwaysLookup();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getAlwaysLookup'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setAlwaysLookup of class  Ember::ScriptingService */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_ScriptingService_setAlwaysLookup00
+static int tolua_EmberServices_Ember_ScriptingService_setAlwaysLookup00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ember::ScriptingService",0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ember::ScriptingService* self = (Ember::ScriptingService*)  tolua_tousertype(tolua_S,1,0);
+  bool alwaysLookup = ((bool)  tolua_toboolean(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setAlwaysLookup'",NULL);
+#endif
+  {
+   self->setAlwaysLookup(alwaysLookup);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setAlwaysLookup'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: getSingleton of class  Ember::EmberServices */
 #ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_EmberServices_getSingleton00
 static int tolua_EmberServices_Ember_EmberServices_getSingleton00(lua_State* tolua_S)
@@ -2035,6 +2100,8 @@ TOLUA_API int tolua_EmberServices_open (lua_State* tolua_S)
     tolua_function(tolua_S,"getEventScriptError",tolua_EmberServices_Ember_ScriptingService_getEventScriptError00);
     tolua_function(tolua_S,"getProviderFor",tolua_EmberServices_Ember_ScriptingService_getProviderFor00);
     tolua_function(tolua_S,"getProviderNames",tolua_EmberServices_Ember_ScriptingService_getProviderNames00);
+    tolua_function(tolua_S,"getAlwaysLookup",tolua_EmberServices_Ember_ScriptingService_getAlwaysLookup00);
+    tolua_function(tolua_S,"setAlwaysLookup",tolua_EmberServices_Ember_ScriptingService_setAlwaysLookup00);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"Ember",0);
