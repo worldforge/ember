@@ -120,7 +120,7 @@ void Help::EmberOgre_CreatedAvatarEntity(AvatarEmberEntity* entity)
 // 			mBlurb->setFrameEnabled(false);
 		//	mBlurb->setInheritAlpha(true);
 			//mEntityName->setBackgroundEnabled(false);
-			mBlurb->setProperty("HorizontalFormatting", "WordWrapLeftAligned");
+			mBlurb->setProperty("HorzFormatting", "WordWrapLeftAligned");
 			mBlurb->setText("Click right mouse button to switch between MOVEMENT and INPUT MODE.");
 			
 			
