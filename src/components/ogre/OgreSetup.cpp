@@ -57,7 +57,7 @@ OgreSetup::~OgreSetup()
 void OgreSetup::shutdown()
 {
 	SDL_Quit();
-	Ogre::ILCodecs::deleteCodecs();
+//	Ogre::ILCodecs::deleteCodecs();
 	delete mRoot;
 	mRoot = 0;
 }
@@ -88,7 +88,7 @@ Ogre::Root* OgreSetup::createOgreSystem(bool loadOgrePluginsThroughBinreloc)
 	}
 #endif
 	// Register image codecs
-    Ogre::ILCodecs::registerCodecs();
+//    Ogre::ILCodecs::registerCodecs();
 
 	return mRoot;
 }
@@ -226,12 +226,12 @@ bool OgreSetup::configure(void)
 	
 		SDL_GetWMInfo(&info);
 	
-/*		std::string dsp(&(DisplayString(info.info.x11.display)[1]));
-		std::vector<Ogre::String> tokens = Ogre::StringUtil::split(dsp, ".");*/
+		std::string dsp(&(DisplayString(info.info.x11.display)[1]));
+		std::vector<Ogre::String> tokens = Ogre::StringUtil::split(dsp, ".");
 	
 		Ogre::NameValuePairList misc;
 		std::string s = Ogre::StringConverter::toString((long)info.info.x11.display);
-		//s += ":" + tokens[1] +":";
+		s += ":" + tokens[1] +":";
 		s += ":" + Ogre::StringConverter::toString((long)info.info.x11.window);
 		misc["parentWindowHandle"] = s;
 		
@@ -248,7 +248,7 @@ bool OgreSetup::configure(void)
 		
 		mRenderWindow = mRoot->createRenderWindow("MainWindow", width, height, true, &misc);
 		
-		///we need to set the window to be active by ourselves, since GLX by default sets it to false, but then activates it upon recieving some X event (which it will never recieve since we'll use SDL).
+		///we need to set the window to be active by ourselves, since GLX by default sets it to false, but then activates it upon receiving some X event (which it will never recieve since we'll use SDL).
 		///see OgreGLXWindow.cpp
 		mRenderWindow->setActive(true);
 		mRenderWindow->setAutoUpdated(true);
