@@ -41,7 +41,7 @@ public:
     TerrainArea(EmberEntity* entity);
 
     ~TerrainArea();
-	void init();
+	bool init();
 	
 	inline Mercator::Area* getArea() const;
 	inline void setArea(Mercator::Area* area);

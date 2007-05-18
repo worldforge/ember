@@ -36,7 +36,7 @@ TerrainArea::~TerrainArea()
 {
 }
 
-void TerrainArea::init() {
+bool TerrainArea::init() {
 	
  //   _fpreset();
 	//_controlfp(_PC_64, _MCW_PC);
@@ -45,21 +45,21 @@ void TerrainArea::init() {
 
 	if (!mEntity->hasAttr("area")) {
         S_LOG_FAILURE("AreaModel defined on entity with no area attribute");
-        return;
+        return false;
     }
     
     const Atlas::Message::MapType& areaData(mEntity->valueOfAttr("area").asMap());
     Atlas::Message::MapType::const_iterator it = areaData.find("points");
     if ((it == areaData.end()) || !it->second.isList()) {
         S_LOG_FAILURE("malformed area attribute on entity, no points data");
-        return;
+        return false;
     }
     
     const Atlas::Message::ListType& pointsData(it->second.asList());
     it = areaData.find("layer");
     if ((it == areaData.end()) || !it->second.isInt()) {
         S_LOG_FAILURE("malformed area attribute on entity, no layer data");
-        return;
+        return false;
     }
 
     int layer = it->second.asInt();
@@ -100,6 +100,7 @@ void TerrainArea::init() {
     	mArea->setShape(poly);
 		
 	}
+	return true;
    // Environment::getInstance().registerArea(m_area);
 }
 
