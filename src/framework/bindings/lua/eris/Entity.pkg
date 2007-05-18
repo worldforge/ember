@@ -4,7 +4,9 @@ $#include <Eris/Entity.h>
 namespace Eris {
 class Entity {
 
+// heirarchy interface    
     unsigned int numContained() const;
+    Eris::Entity* getContained(unsigned int index) const;
 
 
     const Atlas::Message::Element& valueOfAttr(const std::string& attr) const;

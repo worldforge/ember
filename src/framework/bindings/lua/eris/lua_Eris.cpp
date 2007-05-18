@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Eris
-** Generated automatically by tolua++-1.0.92 on Sat Apr 14 21:45:22 2007.
+** Generated automatically by tolua++-1.0.92 on Tue May  1 21:44:36 2007.
 */
 
 #ifndef __cplusplus
@@ -117,6 +117,40 @@ static int tolua_Eris_Eris_Entity_numContained00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'numContained'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getContained of class  Eris::Entity */
+#ifndef TOLUA_DISABLE_tolua_Eris_Eris_Entity_getContained00
+static int tolua_Eris_Eris_Entity_getContained00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Eris::Entity",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Eris::Entity* self = (const Eris::Entity*)  tolua_tousertype(tolua_S,1,0);
+  unsigned int index = ((unsigned int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getContained'",NULL);
+#endif
+  {
+   Eris::Entity* tolua_ret = (Eris::Entity*)  self->getContained(index);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Eris::Entity");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getContained'.",&tolua_err);
  return 0;
 #endif
 }
@@ -2382,6 +2416,7 @@ TOLUA_API int tolua_Eris_open (lua_State* tolua_S)
    tolua_cclass(tolua_S,"Entity","Eris::Entity","",NULL);
    tolua_beginmodule(tolua_S,"Entity");
     tolua_function(tolua_S,"numContained",tolua_Eris_Eris_Entity_numContained00);
+    tolua_function(tolua_S,"getContained",tolua_Eris_Eris_Entity_getContained00);
     tolua_function(tolua_S,"valueOfAttr",tolua_Eris_Eris_Entity_valueOfAttr00);
     tolua_function(tolua_S,"hasAttr",tolua_Eris_Eris_Entity_hasAttr00);
     tolua_function(tolua_S,"observe",tolua_Eris_Eris_Entity_observe00);
