@@ -147,8 +147,9 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 	S_LOG_VERBOSE( ss.str());
 	
 	if (hasAttr("area")) {
-		mTerrainArea.init();
-		addArea(&mTerrainArea);
+		if (mTerrainArea.init()) {
+			addArea(&mTerrainArea);
+		}
 	}
 		
 	mIsInitialized = true;
