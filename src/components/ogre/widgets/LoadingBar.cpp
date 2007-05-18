@@ -76,7 +76,7 @@ namespace EmberOgre {
 			mLoadingCommentElement = omgr.getOverlayElement("EmberCore/LoadPanel/Comment");
 			mLoadingDescriptionElement = omgr.getOverlayElement("EmberCore/LoadPanel/Description");
 	
-			OverlayElement* barContainer = omgr.getOverlayElement("EmberCore/LoadPanel/Bar");
+			//OverlayElement* barContainer = omgr.getOverlayElement("EmberCore/LoadPanel/Bar");
 			mProgressBarMaxSize = mLoadingBarElement->getWidth();
 	 		mProgressBarMaxLeft = mLoadingBarElement->getLeft();
 			
@@ -152,7 +152,7 @@ namespace EmberOgre {
 	
 	
 	LoadingBarSection::LoadingBarSection(LoadingBar& loadingBar, float size, const std::string& name)
-	: mName(name), mAccumulatedSize(0), mLoadingBar(loadingBar), mActive(false), mSize(size)
+	: mSize(size), mLoadingBar(loadingBar), mAccumulatedSize(0), mName(name), mActive(false)
 	{
 	}
 	LoadingBarSection::~LoadingBarSection()
@@ -305,7 +305,7 @@ namespace EmberOgre {
 	
 	
 	WfutLoadingBarSection::WfutLoadingBarSection(LoadingBarSection& section) 
-	: mSection(section), mDownloadedSoFar(0), mNumberOfFilesToUpdate(0)
+	: mSection(section), mNumberOfFilesToUpdate(0), mDownloadedSoFar(0)
 	{
 		Ember::WfutService* wfutSrv = Ember::EmberServices::getSingleton().getWfutService();
 		wfutSrv->DownloadComplete.connect(sigc::mem_fun(*this, &WfutLoadingBarSection::wfutService_DownloadComplete));

@@ -66,7 +66,7 @@ namespace EmberOgre {
 //WidgetLoader Widget::loader("MakeEntityWidget", &createWidgetInstance<MakeEntityWidget>);
 
 MakeEntityWidget::MakeEntityWidget()
- : Widget(), mIsReady(false), CreateEntity("createentity", this, "Create an entity."), Make("make", this, "Create an entity."), mModelPreviewRenderer(0)
+ : Widget(), CreateEntity("createentity", this, "Create an entity."), Make("make", this, "Create an entity."), mIsReady(false), mModelPreviewRenderer(0)
 {
 
 	Ember::ConsoleBackend::getMainConsole()->registerCommand("testarea",this);
