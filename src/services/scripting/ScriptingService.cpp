@@ -32,7 +32,7 @@
 namespace Ember {
 
 ScriptingService::ScriptingService()
-: LoadScript("loadscript", this, "Loads a script."), mResourceProvider(0)
+: LoadScript("loadscript", this, "Loads a script."), mResourceProvider(0), mAlwaysLookup(false)
 {
 }
 
@@ -179,6 +179,8 @@ void ScriptingService::setResourceProvider(Ember::IResourceProvider* resourcePro
 {
 	mResourceProvider = resourceProvider;
 }
+
+
 
 
 }

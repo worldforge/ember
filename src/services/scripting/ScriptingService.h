@@ -106,6 +106,15 @@ public:
 	IResourceProvider* getResourceProvider();
 	
 	void setResourceProvider(Ember::IResourceProvider* resourceProvider);
+	
+	/**
+	Returns whether all scripting methods should be looked up at every call. Setting this to true will decrease performance, but allow for dynamic updating of script methods.
+	*/
+	inline bool getAlwaysLookup() const;
+	/**
+	Sets whether all scripting methods should be looked up at every call. Setting this to true will decrease performance, but allow for dynamic updating of script methods.
+	*/
+	inline void setAlwaysLookup(bool alwaysLookup);
 private:
 
 	/**
@@ -124,8 +133,21 @@ private:
 	sigc::signal<void, const std::string&> mEventScriptError;
 
 	IResourceProvider* mResourceProvider;
+	
+	bool mAlwaysLookup;
 
 };
+
+bool ScriptingService::getAlwaysLookup() const
+{
+	return mAlwaysLookup;
+}
+
+void ScriptingService::setAlwaysLookup(bool alwaysLookup)
+{
+	mAlwaysLookup = alwaysLookup;
+}
+
 
 }
 
