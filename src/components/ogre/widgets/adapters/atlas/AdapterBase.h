@@ -40,6 +40,13 @@ namespace Adapters {
 
 namespace Atlas {
 
+static std::string toString(float number)
+{
+	std::stringstream ss;
+	ss << number;
+	return ss.str();
+}
+
 class AdapterBase;
 
 struct AdapterWrapper

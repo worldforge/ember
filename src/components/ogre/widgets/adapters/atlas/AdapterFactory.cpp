@@ -26,6 +26,7 @@
 #include "SizeAdapter.h"
 #include "MapAdapter.h"
 #include "ListAdapter.h"
+#include "PositionAdapter.h"
 #include <CEGUI.h>
 #include "components/ogre/GUIManager.h"
 #include "services/logging/LoggingService.h"
@@ -100,6 +101,27 @@ SizeAdapter* AdapterFactory::createSizeAdapter(CEGUI::Window* container, const s
 		return adapter;
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_FAILURE("Error when creating SizeAdapter. " << ex.getMessage ().c_str());
+		return 0;
+	}
+}
+
+PositionAdapter* AdapterFactory::createPositionAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
+{
+	if (!container) {
+		return 0;
+	}
+	
+	try {
+		Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/PositionAdapter.layout");
+		WindowManager& windowMgr = WindowManager::getSingleton();
+		Window* x = windowMgr.getWindow(mCurrentPrefix + "x");
+		Window* y = windowMgr.getWindow(mCurrentPrefix + "y");
+		Window* z = windowMgr.getWindow(mCurrentPrefix + "z");
+		PositionAdapter* adapter = new PositionAdapter(element, x, y, z);
+		
+		return adapter;
+	} catch (const CEGUI::Exception& ex) {
+		S_LOG_FAILURE("Error when creating PositionAdapter. " << ex.getMessage ().c_str());
 		return 0;
 	}
 }

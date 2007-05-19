@@ -23,6 +23,8 @@
 #ifndef EMBEROGRE_GUI_ADAPTERS_ATLASPOSITIONADAPTER_H
 #define EMBEROGRE_GUI_ADAPTERS_ATLASPOSITIONADAPTER_H
 
+#include "AdapterBase.h"
+
 namespace EmberOgre {
 
 namespace Gui {
@@ -34,11 +36,28 @@ namespace Atlas {
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
-class PositionAdapter{
+class PositionAdapter : public AdapterBase
+{
 public:
-    PositionAdapter();
+    PositionAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* xWindow, CEGUI::Window* yWindow, CEGUI::Window* zWindow);
 
-    ~PositionAdapter();
+    virtual ~PositionAdapter();
+	
+	/**
+	Updates the gui with new values.
+	*/
+	virtual void updateGui(const ::Atlas::Message::Element& element);
+    
+protected:
+
+	CEGUI::Window* mXWindow;
+	CEGUI::Window* mYWindow;
+	CEGUI::Window* mZWindow;
+
+	bool window_TextChanged(const CEGUI::EventArgs& e);
+
+	virtual void fillElementFromGui();
+	virtual bool _hasChanges();
 
 };
 

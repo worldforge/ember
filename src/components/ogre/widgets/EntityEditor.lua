@@ -53,6 +53,8 @@ function EntityEditor.createAdapter(attributeName, element)
 	if EntityEditor.hiddenAttributes[attributeName] == nil then
 		if attributeName == 'bbox' then
 			return EntityEditor.createSizeAdapter(element)
+		elseif attributeName == 'pos' then
+			return EntityEditor.createPositionAdapter(element)
 		elseif element:isString() then
 			return EntityEditor.createStringAdapter(element)
 		elseif element:isNum() then
@@ -121,6 +123,13 @@ function EntityEditor.createSizeAdapter(element)
 	local wrapper = {}
 	wrapper.container = windowManager:createWindow("DefaultGUISheet", EntityEditor.windowName("EntityEditor" .. EntityEditor.entity:getId()))
 	wrapper.adapter = EntityEditor.factory:createSizeAdapter(wrapper.container, EntityEditor.entity:getId(), element)
+	return wrapper	
+end
+
+function EntityEditor.createPositionAdapter(element)
+	local wrapper = {}
+	wrapper.container = windowManager:createWindow("DefaultGUISheet", EntityEditor.windowName("EntityEditor" .. EntityEditor.entity:getId()))
+	wrapper.adapter = EntityEditor.factory:createPositionAdapter(wrapper.container, EntityEditor.entity:getId(), element)
 	return wrapper	
 end
 

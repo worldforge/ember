@@ -36,7 +36,7 @@ namespace Atlas {
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
-class SizeAdapter : AdapterBase
+class SizeAdapter : public AdapterBase
 {
 public:
     SizeAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* lowerXWindow, CEGUI::Window* lowerYWindow, CEGUI::Window* lowerZWindow, CEGUI::Window* upperXWindow, CEGUI::Window* upperYWindow, CEGUI::Window* upperZWindow, CEGUI::Slider* scaler);

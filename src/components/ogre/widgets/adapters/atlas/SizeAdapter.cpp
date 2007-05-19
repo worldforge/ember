@@ -32,13 +32,6 @@ namespace Adapters {
 
 namespace Atlas {
 
-static std::string toString(float number)
-{
-	std::stringstream ss;
-	ss << number;
-	return ss.str();
-}
-
 SizeAdapter::SizeAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* lowerXWindow, CEGUI::Window* lowerYWindow, CEGUI::Window* lowerZWindow, CEGUI::Window* upperXWindow, CEGUI::Window* upperYWindow, CEGUI::Window* upperZWindow, CEGUI::Slider* scaler)
 : AdapterBase(element), mLowerXWindow(lowerXWindow), mLowerYWindow(lowerYWindow), mLowerZWindow(lowerZWindow), mUpperXWindow(upperXWindow), mUpperYWindow(upperYWindow), mUpperZWindow(upperZWindow), mScaler(scaler)
 {

@@ -21,6 +21,8 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 #include "PositionAdapter.h"
+#include <wfmath/vector.h>
+#include <wfmath/atlasconv.h>
 
 namespace EmberOgre {
 
@@ -30,8 +32,20 @@ namespace Adapters {
 
 namespace Atlas {
 
-PositionAdapter::PositionAdapter()
+PositionAdapter::PositionAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* xWindow, CEGUI::Window* yWindow, CEGUI::Window* zWindow)
+: AdapterBase(element), mXWindow(xWindow), mYWindow(yWindow), mZWindow(zWindow)
 {
+	if (mXWindow) {
+		mXWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&PositionAdapter::window_TextChanged, this)); 
+	}
+	if (mYWindow) {
+		mYWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&PositionAdapter::window_TextChanged, this)); 
+	}
+	if (mZWindow) {
+		mZWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&PositionAdapter::window_TextChanged, this)); 
+	}
+	
+	updateGui(mOriginalElement);
 }
 
 
@@ -39,7 +53,54 @@ PositionAdapter::~PositionAdapter()
 {
 }
 
+void PositionAdapter::updateGui(const ::Atlas::Message::Element& element)
+{
+	mSelfUpdate = true;
+	WFMath::Vector<3> vector(element);
+// 	axisBox.fromAtlas(element.asList());
+	if (mXWindow) {
+		mXWindow->setText(toString(vector.x())); 
+	}
+	if (mYWindow) {
+		mYWindow->setText(toString(vector.y())); 
+	}
+	if (mZWindow) {
+		mZWindow->setText(toString(vector.z())); 
+	}
+	mSelfUpdate = false;
+}
 
+bool PositionAdapter::window_TextChanged(const CEGUI::EventArgs& e)
+{
+	if (!mSelfUpdate) {
+		EventValueChanged.emit();
+	}
+	return true;
+}
+
+void PositionAdapter::fillElementFromGui()
+{
+	WFMath::Vector<3> vector;
+	if (mXWindow) {
+		vector.x() = atof(mXWindow->getText().c_str()); 
+	}
+	if (mYWindow) {
+		vector.y() = atof(mYWindow->getText().c_str()); 
+	}
+	if (mZWindow) {
+		vector.z() = atof(mZWindow->getText().c_str()); 
+	}
+	mEditedElement = vector.toAtlas();
+}
+
+bool PositionAdapter::_hasChanges()
+{
+	WFMath::Vector<3> originalValue;
+	originalValue.fromAtlas(mOriginalElement);
+	WFMath::Vector<3> newValue;
+	newValue.fromAtlas(getValue());
+	return originalValue != newValue;
+}
 }
 
 }
