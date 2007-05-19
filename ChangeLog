@@ -1,3 +1,79 @@
+2007-05-19 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/EntityEditor.lua: handle lists better
+
+2007-05-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+	
+	* src/components/ogre/Makefile.am, configure.ac: don't include image as these classes now are part of the basic ogre build if built with devil support (perhaps we should check for the existance of the ogre devil bindings and provide a fallback?)
+	
+2007-05-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/scripting/bindings/lua/EntityEditor.pkg, src/components/ogre/scripting/bindings/lua/TerrainArea.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/scripting/bindings/lua/required.h: updated bindings
+
+2007-05-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/adapters/atlas/bindings/lua/AdapterFactory.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/ListAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/MapAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/bindings.cpp, src/components/ogre/widgets/adapters/atlas/bindings/lua/bindings.pkg: updated bindings
+
+2007-05-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/services/bindings/lua/ScriptingService.pkg, src/services/bindings/lua/lua_EmberServices.cpp: updated bindings
+
+2007-05-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/EntityEditor.cpp, src/components/ogre/widgets/EntityEditor.h, src/components/ogre/widgets/EntityEditor.lua: added functionality for more adapters
+
+2007-05-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/ScriptEdit.layout, src/components/ogre/widgets/ScriptEdit.lua: added option to force script lookup
+
+2007-05-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/Mover.layout, src/components/ogre/widgets/Mover.lua: layout fixes and more correct function signatures
+
+2007-05-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/LoadingBar.cpp, src/components/ogre/widgets/MakeEntityWidget.cpp: code cleanup
+
+2007-05-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/Help.cpp: don't use incorrect gui properties
+
+2007-05-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/Chat.layout: a little less alpha
+
+2007-05-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/Admin.layout, src/components/ogre/widgets/Admin.lua: use a StackableContainer for the positioning, also added a button for the entityBrowser
+
+2007-05-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/adapters/atlas/AdapterBase.cpp, src/components/ogre/widgets/adapters/atlas/AdapterBase.h, src/components/ogre/widgets/adapters/atlas/AdapterFactory.cpp, src/components/ogre/widgets/adapters/atlas/AdapterFactory.h, src/components/ogre/widgets/adapters/atlas/CustomAdapter.cpp, src/components/ogre/widgets/adapters/atlas/CustomAdapter.h, src/components/ogre/widgets/adapters/atlas/ListAdapter.cpp, src/components/ogre/widgets/adapters/atlas/ListAdapter.h, src/components/ogre/widgets/adapters/atlas/ListAdapter.layout, src/components/ogre/widgets/adapters/atlas/Makefile.am, src/components/ogre/widgets/adapters/atlas/MapAdapter.cpp, src/components/ogre/widgets/adapters/atlas/MapAdapter.h, src/components/ogre/widgets/adapters/atlas/MapAdapter.layout, src/components/ogre/widgets/adapters/atlas/NumberAdapter.cpp: expanded with more adapters
+
+2007-05-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.cpp: fixed a bug where lua methods without any arguments wouldn't be correctly called
+	
+2007-05-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/terrain/TerrainArea.cpp, src/components/ogre/terrain/TerrainArea.h: return false if failed to initialize
+
+2007-05-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/services/scripting/ScriptingService.cpp, src/services/scripting/ScriptingService.h: added an option to disable script functions caching, forcing all script providers to always look all functions when they are called
+
+2007-05-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/EmberEntity.cpp: don't try to load an invalid area
+
+2007-05-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/OgreSetup.cpp: make it work with Ogre 1.4.1 (which is required due to the DevIL patches in this version)
+
+2007-05-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/framework/bindings/lua/eris/Entity.pkg, src/framework/bindings/lua/eris/lua_Eris.cpp: updated bindings
+
 2007-05-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
 
 	* src/components/ogre/widgets/EntityBrowser.layout, src/components/ogre/widgets/EntityBrowser.lua, src/components/ogre/widgets/Bootstrap.lua: added an entity browser widget which shows all entities in the world in a hierarchical list
