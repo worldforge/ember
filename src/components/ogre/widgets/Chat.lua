@@ -27,7 +27,8 @@ function Chat.buildWidget()
 	
 	
 	Chat.connectors.appendIGChatLine = EmberOgre.LuaConnector:new_local(guiManager.AppendIGChatLine):connect("Chat.appendIGChatLine")
-	Chat.connectors.appendIGChatLine = EmberOgre.LuaConnector:new_local(guiManager.AppendOOGChatLine):connect("Chat.appendIGChatLine")
+	Chat.connectors.appendOOGChatLine = EmberOgre.LuaConnector:new_local(guiManager.AppendOOGChatLine):connect("Chat.appendIGChatLine")
+	Chat.connectors.appendAvatarImaginary = EmberOgre.LuaConnector:new_local(guiManager.AppendAvatarImaginary):connect("Chat.appendAvatarImaginary")
 	
 	--let's hide it to begin with
 --	Chat.widget:hide()
@@ -54,13 +55,25 @@ end
 --handler for Out Of Game chat event
 --adds messages to the top of the textbox
 function Chat.appendOOGChatLine(line, entity)
-	Chat.appendLine("{" .. entity:getName() .. "}" .. line, Chat.gameTextWindow)
+	if entity ~= nil then
+		Chat.appendLine("{" .. entity:getName() .. "}" .. line, Chat.gameTextWindow)
+	else 
+		Chat.appendLine(line, Chat.gameTextWindow)
+	end
 end
 
 --handler for In Game chat events
 --adds messages to the top of the textbox
 function Chat.appendIGChatLine(line, entity)
-	Chat.appendLine("<" .. entity:getName() .. ">" .. line, Chat.gameTextWindow)
+	if entity ~= nil then
+		Chat.appendLine("<" .. entity:getName() .. ">" .. line, Chat.gameTextWindow)
+	else
+		Chat.appendLine(line, Chat.gameTextWindow)
+	end
+end
+
+function Chat.appendAvatarImaginary(line)
+	Chat.appendLine(line, Chat.gameTextWindow)
 end
 
 function Chat.appendLine(line, window)
