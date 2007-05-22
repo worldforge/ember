@@ -76,6 +76,7 @@ protected:
 	
 	bool window_ChildAdded(const CEGUI::EventArgs& e);
 	bool window_ChildRemoved(const CEGUI::EventArgs& e);
+	bool childwindow_Sized(const CEGUI::EventArgs& e);
 	
 };
 

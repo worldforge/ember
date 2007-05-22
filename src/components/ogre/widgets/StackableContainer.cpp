@@ -79,10 +79,14 @@ void StackableContainer::repositionWindows()
 	}
 	if (mFlowDirection == Horizontal) {
 		accumulatedWidth -= mPadding;
-		mInnerContainerWindow->setWidth(UDim(0, accumulatedWidth));
+		if (mInnerContainerWindow->getWidth().asRelative(0) != 1) {
+			mInnerContainerWindow->setWidth(UDim(0, accumulatedWidth));
+		}
 	} else {
 		accumulatedHeight -= mPadding;
-		mInnerContainerWindow->setHeight(UDim(0,accumulatedHeight));
+		if (mInnerContainerWindow->getHeight().asRelative(0) != 1) {
+			mInnerContainerWindow->setHeight(UDim(0,accumulatedHeight));
+		}
 	}
 	if (mInnerContainerWindow->getParent()) {
 		mInnerContainerWindow->getParent()->performChildWindowLayout();
@@ -113,6 +117,11 @@ void StackableContainer::setInnerContainerWindow(CEGUI::Window* window)
 {
 	mInnerContainerWindow = window;
 	mInnerContainerWindow->subscribeEvent(CEGUI::Window::EventChildRemoved, CEGUI::Event::Subscriber(&StackableContainer::window_ChildRemoved, this));
+	size_t childCount = mInnerContainerWindow->getChildCount();
+ 	for(size_t i = 0; i < childCount; ++i) {
+		CEGUI::Window* childWindow = mInnerContainerWindow->getChildAtIdx(i);
+		childWindow->subscribeEvent(CEGUI::Window::EventSized, CEGUI::Event::Subscriber(&StackableContainer::childwindow_Sized, this));
+	}
 }
 
 
@@ -122,6 +131,7 @@ bool StackableContainer::window_ChildAdded(const CEGUI::EventArgs& e)
 	if (!mInnerContainerWindow) {
 		setInnerContainerWindow(windowEventArg.window->getParent());
 	}
+	windowEventArg.window->subscribeEvent(CEGUI::Window::EventSized, CEGUI::Event::Subscriber(&StackableContainer::childwindow_Sized, this));
 	repositionWindows();
 	return true;
 }
@@ -132,6 +142,11 @@ bool StackableContainer::window_ChildRemoved(const CEGUI::EventArgs& e)
 	return true;
 }
 
+bool StackableContainer::childwindow_Sized(const CEGUI::EventArgs& e)
+{
+	repositionWindows();
+	return true;
+}
 
 
 }
