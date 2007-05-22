@@ -65,6 +65,8 @@ using namespace CEGUI;
 
 namespace EmberOgre {
 
+unsigned long GUIManager::msAutoGenId(0);
+
 
 GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr) 
 : ToggleInputMode("toggle_inputmode", this, "Toggle the input mode.")
@@ -269,6 +271,27 @@ void GUIManager::EmitEntityAction(const std::string& action, EmberEntity* entity
 	EventEntityAction.emit(action, entity);
 }
 
+
+CEGUI::Window* GUIManager::createWindow(const std::string& windowType)
+{
+	std::stringstream ss;
+	ss << "_autoWindow_" <<  (msAutoGenId++);
+	return createWindow(windowType, ss.str());
+}
+
+CEGUI::Window* GUIManager::createWindow(const std::string& windowType, const std::string& windowName)
+{
+	try {
+		CEGUI::Window* window = mWindowManager->createWindow(windowType, windowName);
+		return window;
+	} catch (const CEGUI::Exception& ex) {
+		S_LOG_FAILURE("Error when creating new window of type " << windowType << " with name " << windowName << ".\n" << ex.getMessage().c_str());
+		return 0;
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Error when creating new window of type " << windowType << " with name " << windowName << ".\n" << ex.what());
+		return 0;
+	}
+}
 
 Widget* GUIManager::createWidget()
 {
