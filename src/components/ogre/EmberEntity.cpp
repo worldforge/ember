@@ -466,14 +466,12 @@ void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act)
 
 void EmberEntity::onImaginary(const Atlas::Objects::Root& act)
 {
-	const std::list<std::string> &p = act->getParents();
-	std::list<std::string>::const_iterator I = p.begin();
-	
-	if (I == p.end()) return;
-	
-	const std::string& name = *I;
+    Atlas::Message::Element attr;
+    if (act->copyAttr("description", attr) != 0 || !attr.isString()) {
+        return;
+    }
 		
-	S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") imaginary: " << name);
+	S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") imaginary: " << attr.String());
 }
 
 
