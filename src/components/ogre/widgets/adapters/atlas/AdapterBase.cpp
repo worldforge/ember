@@ -33,7 +33,7 @@ namespace Atlas {
 
 
 AdapterBase::AdapterBase(const ::Atlas::Message::Element& element)
-: mOriginalElement(element), mEditedElement(element)
+: mOriginalElement(element), mEditedElement(element), mRemoved(false)
 {
 }
 
@@ -61,17 +61,33 @@ const ::Atlas::Message::Element& AdapterBase::getOriginalValue() const
 
 bool AdapterBase::hasChanges()
 {
+	if (mRemoved) {
+		return true;
+	}
 	return _hasChanges();
 }
 
 ::Atlas::Message::Element AdapterBase::getChangedElement()
 {
+	if (mRemoved) {
+		return ::Atlas::Message::Element();
+	}
 	return _getChangedElement();
 }
 
 ::Atlas::Message::Element AdapterBase::_getChangedElement()
 {
 	return getValue();
+}
+
+void AdapterBase::remove()
+{
+	mRemoved = true;
+}
+
+bool AdapterBase::isRemoved() const
+{
+	return mRemoved;
 }
 
 

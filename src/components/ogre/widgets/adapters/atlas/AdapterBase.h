@@ -87,12 +87,17 @@ public:
 	bool hasChanges();
 	::Atlas::Message::Element getChangedElement();
 	
+	void remove();
+	
+	bool isRemoved() const;
+	
 protected:
 
 	const ::Atlas::Message::Element& mOriginalElement;
 	::Atlas::Message::Element mEditedElement;
 	
 	bool mSelfUpdate;
+	bool mRemoved;
 	
 	virtual void fillElementFromGui() = 0;
 	virtual bool _hasChanges() = 0;
