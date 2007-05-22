@@ -25,6 +25,7 @@
 
 #include <map>
 #include <vector>
+#include <Atlas/Message/Element.h>
 
 namespace Eris
 {
@@ -66,12 +67,13 @@ public:
 
     virtual ~EntityEditor();
     
-//     std::vector<std::string> getAttributeNames();
-    
     void submitChanges();
-//     void addAttributeAdapter(const std::string& attributeName, Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow);
-//     
-//     void removeAdapters();
+
+	Atlas::Message::Element createMapElement();
+	Atlas::Message::Element createListElement();
+	Atlas::Message::Element createStringElement();
+	Atlas::Message::Element createIntElement();
+	Atlas::Message::Element createFloatElement();
 protected:
 
 	Adapters::Atlas::MapAdapter* mRootAdapter;

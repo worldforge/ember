@@ -27,7 +27,7 @@
 					<Property Name='InheritsAlpha' Value='false'/>
 					<Property Name='Visible' Value='true'/>
 					<Window Type='EmberLook/ScrollablePane' Name='AttributesContainer'>
-						<Property Name='UnifiedSize' Value='{{1,0.000000},{1.00000,-25.000000}}'/>
+						<Property Name='UnifiedSize' Value='{{1,0.000000},{1.00000,0.000000}}'/>
 						<Property Name='Text' Value=''/>
 						<Property Name='InheritsAlpha' Value='True'/>
 						<Property Name='ReadOnly' Value='true'/>

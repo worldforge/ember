@@ -30,6 +30,8 @@
 #include <Atlas/Message/Element.h>
 #include <Eris/Entity.h>
 
+using namespace Atlas::Message;
+
 namespace EmberOgre {
 
 namespace Gui {
@@ -45,16 +47,6 @@ EntityEditor::~EntityEditor()
 	delete mRootAdapter;
 }
 
-// std::vector<std::string> EntityEditor::getAttributeNames()
-// {
-// 	std::vector<std::string> attributeNames;
-// 	for (Eris::Entity::AttrMap::const_iterator I = mEntity->getAttributes().begin(); I != mEntity->getAttributes().end(); ++I) {
-// 		attributeNames.push_back(I->first);
-// 	}
-// 	return attributeNames;
-// }
-
-
 void EntityEditor::submitChanges()
 {
 	if (mRootAdapter->hasChanges()) {
@@ -68,23 +60,27 @@ void EntityEditor::submitChanges()
 	}
 }
 
-// void EntityEditor::addAttributeAdapter(const std::string& attributeName, Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow)
-// {
-// 	AdapterWrapper wrapper;
-// 	wrapper.Adapter = adapter;
-// 	wrapper.ContainerWindow = containerWindow;
-// 	mAdapters.insert(AdapterStore::value_type(attributeName, wrapper));
-// }
-//     
-// void EntityEditor::removeAdapters()
-// {
-// 	for (AdapterStore::iterator I = mAdapters.begin(); I != mAdapters.end(); ++I) {
-// 		delete I->second.Adapter;
-// // 		I->second.ContainerWindow->getParent()->removeChildWindow(I->second.ContainerWindow);
-// 		CEGUI::WindowManager::getSingleton().destroyWindow(I->second.ContainerWindow);
-// 	}
-// 	mAdapters.clear();
-// }
+Atlas::Message::Element EntityEditor::createMapElement()
+{
+	return Element(MapType());
+}
+
+Atlas::Message::Element EntityEditor::createListElement()
+{
+	return Element(ListType());
+}
+Atlas::Message::Element EntityEditor::createStringElement()
+{
+	return Element("");
+}
+Atlas::Message::Element EntityEditor::createIntElement()
+{
+	return Element(0);
+}
+Atlas::Message::Element EntityEditor::createFloatElement()
+{
+	return Element(0.0f);
+}
 
 
 }
