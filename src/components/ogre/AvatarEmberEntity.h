@@ -47,9 +47,6 @@ public:
 	AvatarEmberEntity(const std::string& id, Eris::TypeInfo* type, Eris::View* vw, Ogre::SceneManager* sceneManager, Eris::Avatar* erisAvatar);
 	virtual ~AvatarEmberEntity();
 	
-	
-	
-	
 	/**
 	 * used by the main application to set the EmberOgre::Avatar connected to this instance 
 	 */
@@ -75,9 +72,10 @@ protected:
 	virtual void onChildAdded(Entity *e);
 	virtual void onChildRemoved(Entity *e);
 
-	/*Eris methods, see Eris::Entity.h for documentation */
+	/**Eris methods, see Eris::Entity.h for documentation */
 //	virtual void handleTalk(const std::string &msg);
 	virtual void onMoved();
+	virtual void onImaginary(const Atlas::Objects::Root& act);
 /*	virtual void addMember(Entity *e);
 	virtual void rmvMember(Entity *e);*/
 	//virtual void setVisible(bool vis);	
@@ -91,18 +89,18 @@ protected:
 };
 
 ///inline implementations
-	void AvatarEmberEntity::setAvatar(Avatar* avatar) 
-	{
-		mAvatar = avatar;
-	}
-	Avatar* AvatarEmberEntity::getAvatar() 
-	{
-		return mAvatar;
-	}
-	Eris::Avatar* AvatarEmberEntity::getErisAvatar() 
-	{
-		return mErisAvatar;	
-	}
+void AvatarEmberEntity::setAvatar(Avatar* avatar) 
+{
+	mAvatar = avatar;
+}
+Avatar* AvatarEmberEntity::getAvatar() 
+{
+	return mAvatar;
+}
+Eris::Avatar* AvatarEmberEntity::getErisAvatar() 
+{
+	return mErisAvatar;	
+}
 
 }
 

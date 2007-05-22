@@ -60,6 +60,17 @@ void AvatarEmberEntity::onMoved()
 	Eris::Entity::onMoved();
 }
 
+void AvatarEmberEntity::onImaginary(const Atlas::Objects::Root& act)
+{
+    Atlas::Message::Element attr;
+    if (act->copyAttr("description", attr) != 0 || !attr.isString()) {
+        return;
+    }
+    
+	/// Make the message appear in the chat box
+	GUIManager::getSingleton().AppendAvatarImaginary.emit(getName() + " " + attr.String());
+}
+
 /*
 void AvatarEmberEntity::handleTalk(const std::string &msg)
 {
