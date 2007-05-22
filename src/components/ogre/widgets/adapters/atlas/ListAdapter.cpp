@@ -107,7 +107,9 @@ void ListAdapter::removeAdapters()
 	::Atlas::Message::ListType attributes;
 	for (AdapterStore::iterator I = mAdapters.begin(); I != mAdapters.end(); ++I) {
 		Adapters::Atlas::AdapterBase* adapter = I->Adapter;
-		attributes.push_back(adapter->getChangedElement());
+		if (!adapter->isRemoved()) {
+			attributes.push_back(adapter->getChangedElement());
+		}
 	}
 	return Element(attributes);
 }

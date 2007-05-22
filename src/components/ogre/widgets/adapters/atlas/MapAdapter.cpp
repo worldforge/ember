@@ -117,7 +117,9 @@ void MapAdapter::removeAdapters()
 	::Atlas::Message::MapType attributes;
 	for (AdapterStore::iterator I = mAdapters.begin(); I != mAdapters.end(); ++I) {
 		Adapters::Atlas::AdapterBase* adapter = I->second.Adapter;
-		attributes.insert(std::map<std::string, ::Atlas::Message::Element>::value_type(I->first, adapter->getChangedElement()));
+		if (!adapter->isRemoved()) {
+			attributes.insert(std::map<std::string, ::Atlas::Message::Element>::value_type(I->first, adapter->getChangedElement()));
+		}
 	}
 	return Element(attributes);
 }
@@ -127,7 +129,7 @@ void MapAdapter::removeAdapters()
 	::Atlas::Message::MapType attributes;
 	for (AdapterStore::iterator I = mAdapters.begin(); I != mAdapters.end(); ++I) {
 		Adapters::Atlas::AdapterBase* adapter = I->second.Adapter;
-		if (adapter->hasChanges()) {
+		if (adapter->hasChanges() && !adapter->isRemoved()) {
 			attributes.insert(std::map<std::string, ::Atlas::Message::Element>::value_type(I->first, adapter->getChangedElement()));
 		}
 	}

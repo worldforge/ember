@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='DefaultGUISheet' Name='MapAdapterNewElement'>
+		<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+		<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
+		<Window Type='EmberLook/Editbox' Name='ElementName'>
+			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+			<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+		</Window>
+		<Window Type='EmberLook/Combobox' Name='ElementType'>
+			<Property Name='UnifiedPosition' Value='{{0,75},{0,0}}'/>
+			<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+		</Window>
+		<Window Type='EmberLook/Button' Name='NewElementButton'>
+			<Property Name='UnifiedPosition' Value='{{0,150},{0,0}}'/>
+			<Property Name='UnifiedSize' Value='{{0,50},{0,20}}'/>
+			<Property Name='Text' Value='New'/>
+		</Window>
+	</Window>
+</GUILayout>
