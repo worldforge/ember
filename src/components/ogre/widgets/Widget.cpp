@@ -1,12 +1,13 @@
 #include "Widget.h"
 
 #include "../GUIManager.h"
-#include <CEGUIWindow.h>
 #include "../input/Input.h"
 #include "../EmberOgre.h"
 
-#include <elements/CEGUIFrameWindow.h>
+#include <CEGUIWindow.h>
+#include <CEGUIExceptions.h>
 #include <CEGUIWindowManager.h>
+#include <elements/CEGUIFrameWindow.h>
 
 #include "framework/ConsoleBackend.h"
 
@@ -125,13 +126,17 @@ namespace EmberOgre
 
 	}
 
+	CEGUI::Window* Widget::createWindow(const std::string& windowType)
+	{
+		return mGuiManager->createWindow(windowType);
+	}
 	
-//	WidgetLoader::WidgetLoaderMap WidgetLoader::sWidgetLoaders;
-//	WidgetFactoryMap sFactories;
+	CEGUI::Window* Widget::createWindow(const std::string& windowType, const std::string& windowName)
+	{
+		return mGuiManager->createWindow(windowType, windowName);
+	}
+
 	
-/*	void WidgetLoader::addWidgetDef(std::string name, Widget* (*)() ptr) {
-		sWidgetDefs[name] =ptr;
-	}*/
 	
 	Widget* WidgetLoader::createWidget(const std::string& name) {
 
