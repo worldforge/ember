@@ -40,7 +40,11 @@ public:
     
     void submitChanges();
 	
-	
+	Atlas::Message::Element createMapElement();
+	Atlas::Message::Element createListElement();
+	Atlas::Message::Element createStringElement();
+	Atlas::Message::Element createIntElement();
+	Atlas::Message::Element createFloatElement();
 
 };
 

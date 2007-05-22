@@ -1,3 +1,63 @@
+2007-05-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/scripting/bindings/lua/EntityEditor.pkg, src/components/ogre/scripting/bindings/lua/GUIManager.pkg, src/components/ogre/scripting/bindings/lua/Widget.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
+
+2007-05-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/Makefile.am: removed ogre image workaround for ogre 1.4.0
+
+2007-05-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/adapters/atlas/bindings/lua/AdapterBase.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/AdapterFactory.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/bindings.cpp: updated bindings
+
+2007-05-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	*src/components/ogre/widgets/adapters/atlas/ListAdapter.cpp, src/components/ogre/widgets/adapters/atlas/ListAdapterNewElement.layout, src/components/ogre/widgets/adapters/atlas/MapAdapter.cpp, src/components/ogre/widgets/adapters/atlas/MapAdapterNewElement.layout, src/components/ogre/widgets/adapters/atlas/NumberAdapter.layout, src/components/ogre/widgets/adapters/atlas/PositionAdapter.layout, src/components/ogre/widgets/adapters/atlas/SizeAdapter.layout, src/components/ogre/widgets/adapters/atlas/StringAdapter.layout: added layouts for new elements, layout changes and support for removing elements
+
+2007-05-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/adapters/atlas/AdapterFactory.cpp, src/components/ogre/widgets/adapters/atlas/AdapterFactory.h: better checks for error and invalid input
+
+2007-05-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/adapters/atlas/AdapterBase.cpp, src/components/ogre/widgets/adapters/atlas/AdapterBase.h: added methods for removing an adapter
+
+2007-05-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/Chat.lua: listen and output imaginary avatar ops
+
+2007-05-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/EntityEditor.cpp, src/components/ogre/widgets/EntityEditor.h, src/components/ogre/widgets/EntityEditor.layout, src/components/ogre/widgets/EntityEditor.lua: added ability to create new elements, and delete existing ones
+
+2007-05-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/ServerBrowser.layout: adjusted layout
+
+2007-05-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/StackableContainer.cpp, src/components/ogre/widgets/StackableContainer.h: only change height or width if it's not set to relative 100%, also listen for child resize events and resize the container
+
+2007-05-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/Widget.cpp, src/components/ogre/widgets/Widget.h: added methods for creating autonamed new windows
+
+2007-05-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/EmberEntity.cpp: correctly log imaginary ops
+
+2007-05-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/AvatarEmberEntity.cpp, src/components/ogre/AvatarEmberEntity.h: send imaginary ops to the gui, to be displayed
+
+2007-05-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/GUIManager.cpp, src/components/ogre/GUIManager.h: added event for avatar messages. We might perhaps need to revise the message system, to make it easier to handle and extend.
+
+2007-05-19 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/EntityEditor.lua, src/components/ogre/widgets/adapters/atlas/AdapterBase.h, src/components/ogre/widgets/adapters/atlas/AdapterFactory.cpp, src/components/ogre/widgets/adapters/atlas/AdapterFactory.h, src/components/ogre/widgets/adapters/atlas/PositionAdapter.cpp, src/components/ogre/widgets/adapters/atlas/PositionAdapter.h, src/components/ogre/widgets/adapters/atlas/SizeAdapter.cpp, src/components/ogre/widgets/adapters/atlas/SizeAdapter.h, src/components/ogre/widgets/adapters/atlas/bindings/lua/AdapterFactory.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/PositionAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/bindings.cpp, src/components/ogre/widgets/adapters/atlas/bindings/lua/bindings.pkg: added position adapter
+
 2007-05-19 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
 
 	* src/components/ogre/widgets/EntityEditor.lua: handle lists better
