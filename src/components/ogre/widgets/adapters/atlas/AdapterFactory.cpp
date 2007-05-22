@@ -57,32 +57,66 @@ AdapterFactory::~AdapterFactory()
 StringAdapter* AdapterFactory::createStringAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
 	if (!container) {
+		S_LOG_FAILURE("No container sent to AdapterFactory::createStringAdapter.");
 		return 0;
 	}
 	
-	CEGUI::Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/StringAdapter.layout");
-	StringAdapter* adapter = new StringAdapter(element, window);
+	if (!element.isString()) {
+		S_LOG_FAILURE("Incorrect element type.");
+		return 0;
+	}
 	
-	return adapter;
+	try {
+		CEGUI::Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/StringAdapter.layout");
+		StringAdapter* adapter = new StringAdapter(element, window);
+		
+		return adapter;
+	} catch (const CEGUI::Exception& ex) {
+		S_LOG_FAILURE("Error when creating StringAdapter. " << ex.getMessage ().c_str());
+		return 0;
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Error when loading StringAdapter. " << ex.what());
+		return 0;
+	}
 
 }
 
 NumberAdapter* AdapterFactory::createNumberAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
 	if (!container) {
+		S_LOG_FAILURE("No container sent to AdapterFactory::createNumberAdapter.");
 		return 0;
 	}
 	
-	CEGUI::Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/NumberAdapter.layout");
-	NumberAdapter* adapter = new NumberAdapter(element, window);
+	if (!element.isNum()) {
+		S_LOG_FAILURE("Incorrect element type.");
+		return 0;
+	}
 	
-	return adapter;
+	try {
+		CEGUI::Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/NumberAdapter.layout");
+		NumberAdapter* adapter = new NumberAdapter(element, window);
+		
+		return adapter;
+	} catch (const CEGUI::Exception& ex) {
+		S_LOG_FAILURE("Error when creating NumberAdapter. " << ex.getMessage ().c_str());
+		return 0;
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Error when loading NumberAdapter. " << ex.what());
+		return 0;
+	}
 
 }
 
 SizeAdapter* AdapterFactory::createSizeAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
 	if (!container) {
+		S_LOG_FAILURE("No container sent to AdapterFactory::createSizeAdapter.");
+		return 0;
+	}
+	
+	if (!element.isList()) {
+		S_LOG_FAILURE("Incorrect element type.");
 		return 0;
 	}
 	
@@ -102,12 +136,21 @@ SizeAdapter* AdapterFactory::createSizeAdapter(CEGUI::Window* container, const s
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_FAILURE("Error when creating SizeAdapter. " << ex.getMessage ().c_str());
 		return 0;
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Error when loading SizeAdapter. " << ex.what());
+		return 0;
 	}
 }
 
 PositionAdapter* AdapterFactory::createPositionAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
 	if (!container) {
+		S_LOG_FAILURE("No container sent to AdapterFactory::createPositionAdapter.");
+		return 0;
+	}
+	
+	if (!element.isList()) {
+		S_LOG_FAILURE("Incorrect element type.");
 		return 0;
 	}
 	
@@ -122,6 +165,9 @@ PositionAdapter* AdapterFactory::createPositionAdapter(CEGUI::Window* container,
 		return adapter;
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_FAILURE("Error when creating PositionAdapter. " << ex.getMessage ().c_str());
+		return 0;
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Error when loading PositionAdapter. " << ex.what());
 		return 0;
 	}
 }
@@ -139,19 +185,42 @@ MapAdapter* AdapterFactory::createMapAdapter(CEGUI::Window* container, const std
 MapAdapter* AdapterFactory::createMapAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
 	if (!container) {
+		S_LOG_FAILURE("No container sent to AdapterFactory::createMapAdapter.");
 		return 0;
 	}
-	Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/MapAdapter.layout");
-	MapAdapter* adapter = new MapAdapter(element, window);
 	
-	return adapter;
+	if (!element.isMap()) {
+		S_LOG_FAILURE("Incorrect element type.");
+		return 0;
+	}
+	
+	
+	try {
+		Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/MapAdapter.layout");
+		MapAdapter* adapter = new MapAdapter(element, window);
+		
+		return adapter;
+	} catch (const CEGUI::Exception& ex) {
+		S_LOG_FAILURE("Error when loading MapAdapter. " << ex.getMessage().c_str());
+		return 0;
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Error when loading MapAdapter. " << ex.what());
+		return 0;
+	}
 }
 
 ListAdapter* AdapterFactory::createListAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
 	if (!container) {
+		S_LOG_FAILURE("No container sent to AdapterFactory::createListAdapter.");
 		return 0;
 	}
+	
+	if (!element.isList()) {
+		S_LOG_FAILURE("Incorrect element type.");
+		return 0;
+	}
+	
 	try {
 		Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/ListAdapter.layout");
 		ListAdapter* adapter = new ListAdapter(element, window);
@@ -160,22 +229,33 @@ ListAdapter* AdapterFactory::createListAdapter(CEGUI::Window* container, const s
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_FAILURE("Error when loading ListAdapter. " << ex.getMessage().c_str());
 		return 0;
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Error when loading ListAdapter. " << ex.what());
+		return 0;
 	}
 }
 
 CEGUI::Window* AdapterFactory::loadLayoutIntoContainer(CEGUI::Window* container, const std::string& adapterPrefix, const std::string& layoutfile)
 {
-	CEGUI::WindowManager& windowManager = CEGUI::WindowManager::getSingleton();
-
-	std::string finalFileName(GUIManager::getSingleton().getLayoutDir() + layoutfile);
-	std::stringstream ss;
-	ss << mPrefix << adapterPrefix << (msAutoGenId++);
-	mCurrentPrefix = ss.str();
-	CEGUI::Window* window = windowManager.loadWindowLayout(finalFileName, mCurrentPrefix);
-	container->addChildWindow(window); 
-	container->setHeight(window->getHeight());
-	container->setWidth(window->getWidth());
-	return window;
+	try {
+		CEGUI::WindowManager& windowManager = CEGUI::WindowManager::getSingleton();
+	
+		std::string finalFileName(GUIManager::getSingleton().getLayoutDir() + layoutfile);
+		std::stringstream ss;
+		ss << mPrefix << adapterPrefix << (msAutoGenId++);
+		mCurrentPrefix = ss.str();
+		CEGUI::Window* window = windowManager.loadWindowLayout(finalFileName, mCurrentPrefix);
+		container->addChildWindow(window); 
+		container->setHeight(window->getHeight());
+		container->setWidth(window->getWidth());
+		return window;
+	} catch (const CEGUI::Exception& ex) {
+		S_LOG_FAILURE("Error when loading" << layoutfile <<": " << ex.getMessage().c_str());
+		return 0;
+	} catch (const std::exception& ex) {
+		S_LOG_WARNING("Error when loading " << layoutfile <<": " << ex.what());
+		return 0;
+	}
 }
 
 

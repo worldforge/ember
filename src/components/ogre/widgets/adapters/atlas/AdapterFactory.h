@@ -68,15 +68,23 @@ public:
     
 	ListAdapter* createListAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
 
+	CEGUI::Window* loadLayoutIntoContainer(CEGUI::Window* container, const std::string& adapterPrefix, const std::string& layoutfile);
+	
+	inline const std::string& getCurrentPrefix() const;
+
 protected:
 
-	CEGUI::Window* loadLayoutIntoContainer(CEGUI::Window* container, const std::string& adapterPrefix, const std::string& layoutfile);
 
 	static unsigned long msAutoGenId;
 	std::string mPrefix;
 	std::string mCurrentPrefix;
 
 };
+
+const std::string& AdapterFactory::getCurrentPrefix() const
+{
+	return mCurrentPrefix;
+}
 
 }
 
