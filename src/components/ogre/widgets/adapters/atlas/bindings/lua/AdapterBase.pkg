@@ -63,6 +63,8 @@ public:
 	virtual void updateGui(const Atlas::Message::Element& element) = 0;
 	
 	bool hasChanges();
+	void remove();
+	bool isRemoved() const;
 	
 };
 
