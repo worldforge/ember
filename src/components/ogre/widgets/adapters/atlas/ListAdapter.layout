@@ -3,5 +3,6 @@
 	<Window Type='DefaultGUISheet' Name='ListAdapter'>
 		<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 		<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
+		<Property Name='RiseOnClick' Value='false'/>
 	</Window>
 </GUILayout>

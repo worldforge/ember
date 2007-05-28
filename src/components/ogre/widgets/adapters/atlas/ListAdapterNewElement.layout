@@ -9,8 +9,8 @@
 		</Window>
 		<Window Type='EmberLook/Button' Name='NewElementButton'>
 			<Property Name='UnifiedPosition' Value='{{0,75},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{0,50},{0,20}}'/>
-			<Property Name='Text' Value='New'/>
+			<Property Name='UnifiedSize' Value='{{0,40},{0,20}}'/>
+			<Property Name='Text' Value='Add'/>
 		</Window>
 	</Window>
 </GUILayout>
