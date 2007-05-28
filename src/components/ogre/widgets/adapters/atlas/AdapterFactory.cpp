@@ -121,7 +121,7 @@ SizeAdapter* AdapterFactory::createSizeAdapter(CEGUI::Window* container, const s
 	}
 	
 	try {
-		Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/SizeAdapter.layout");
+		loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/SizeAdapter.layout");
 		WindowManager& windowMgr = WindowManager::getSingleton();
 		Window* lowerX = windowMgr.getWindow(mCurrentPrefix + "lowerX");
 		Window* lowerY = windowMgr.getWindow(mCurrentPrefix + "lowerY");
@@ -155,7 +155,7 @@ PositionAdapter* AdapterFactory::createPositionAdapter(CEGUI::Window* container,
 	}
 	
 	try {
-		Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/PositionAdapter.layout");
+		loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/PositionAdapter.layout");
 		WindowManager& windowMgr = WindowManager::getSingleton();
 		Window* x = windowMgr.getWindow(mCurrentPrefix + "x");
 		Window* y = windowMgr.getWindow(mCurrentPrefix + "y");
