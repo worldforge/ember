@@ -183,6 +183,12 @@ void LuaScriptingProvider::_registerWithService(Ember::ScriptingService* service
 	mService = service;
 }
 
+void LuaScriptingProvider::forceGC()
+{
+	lua_setgcthreshold(mLuaState,0);
+}
+
+
 // CEGUI::ScriptModule& LuaScriptingProvider::getScriptModule()
 // {
 // 	return mLuaScriptModule;

@@ -78,6 +78,11 @@ public:
 	 */
 	virtual void _registerWithService(Ember::ScriptingService* service);
 	
+	/**
+	 *    Forces a full garbage collection.
+	 */
+	virtual void forceGC();
+    
     /**
      * Returns the scripting module 
      * @return 
