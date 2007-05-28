@@ -427,7 +427,6 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/ogreopcode/opcode/Makefile
 		 src/components/ogre/ogreopcode/Makefile
 		 src/components/ogre/Makefile
-		 src/components/ogre/image/Makefile
 		 src/components/ogre/cegui/Makefile
 		 src/components/ogre/widgets/Makefile
 		 src/components/ogre/widgets/adapters/Makefile
