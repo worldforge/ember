@@ -70,6 +70,11 @@ public:
 	 * @param service 
 	 */
 	virtual void _registerWithService(ScriptingService* service) = 0;
+	
+	/**
+	 *    Forces a full garbage collection.
+	 */
+	virtual void forceGC() = 0;
 
 };
 
