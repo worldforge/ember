@@ -32,12 +32,12 @@ libWidgets_la_SOURCES = 			IngameChatWidget.cpp 			MovableObjectRenderer.cpp \
 	ModelRenderer.cpp OgreEntityRenderer.cpp QuaternionAdapter.cpp Quit.cpp ServerWidget.cpp \
 	StackableContainer.cpp StatusIconBar.cpp Vector3Adapter.cpp Widget.cpp WidgetDefinitions.cpp
 #TerrainEdit.cpp Map.cpp
-noinst_HEADERS = 			ServerWidget.h 		ListHolder.h ConsoleAdapter.h \
-	ConsoleWidget.h EntityCEGUITexture.h EntityEditor.h Help.h IconBar.h IconBase.h \
-	IngameChatWidget.h InspectWidget.h InventoryWidget.h JesusEdit.h LoadingBar.h \
-	MakeEntityWidget.h MeshPreview.h ModelRenderer.h MovableObjectRenderer.h \
-	OgreEntityRenderer.h QuaternionAdapter.h Quit.h ServerWidget.h StackableContainer.h \
-	StatusIconBar.h Vector3Adapter.h Widget.h WidgetDefinitions.h
+noinst_HEADERS = ServerWidget.h 		ListHolder.h ConsoleAdapter.h ConsoleWidget.h \
+	EntityCEGUITexture.h EntityEditor.h Help.h IconBar.h IconBase.h IngameChatWidget.h \
+	InspectWidget.h InventoryWidget.h JesusEdit.h LoadingBar.h MakeEntityWidget.h \
+	MeshPreview.h ModelRenderer.h MovableObjectRenderer.h OgreEntityRenderer.h \
+	QuaternionAdapter.h Quit.h ServerWidget.h StackableContainer.h StatusIconBar.h \
+	Vector3Adapter.h Widget.h WidgetDefinitions.h
 #TerrainEdit.h Map.h
 SUBDIRS = adapters
 libWidgets_la_LIBADD = \
