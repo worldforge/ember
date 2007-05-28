@@ -73,7 +73,7 @@ class Entity {
 
     /** Emitted when one or more attributes change. The arguments are the
     Entity which changed, and a set of attribute IDs which were modified. */
-    sigc::signal<void, const Eris::StringSet&> Changed;
+    sigc::signal<void, const std::set<std::string>&> Changed;
 
     /** Emitted when then entity's position, orientation or velocity change.
     Argument is the entity that moved, so you can bind the same slot to

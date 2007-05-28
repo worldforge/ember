@@ -2,3 +2,4 @@ $#include "required.h"
 
 $pfile "ConsoleBackend.pkg"
 $pfile "Tokeniser.pkg"
+$pfile "IScriptingProvider.pkg"

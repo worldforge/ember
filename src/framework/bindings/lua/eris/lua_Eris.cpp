@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Eris
-** Generated automatically by tolua++-1.0.92 on Tue May  1 21:44:36 2007.
+** Generated automatically by tolua++-1.0.92 on Fri May 25 08:01:59 2007.
 */
 
 #ifndef __cplusplus
@@ -66,14 +66,14 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"std::set<Eris::TypeInfo*>");
  tolua_usertype(tolua_S,"Eris::TypeInfo");
  tolua_usertype(tolua_S,"Eris::View");
- tolua_usertype(tolua_S,"sigc::signal<void,const Atlas::Objects::Operation::RootOperation&>");
+ tolua_usertype(tolua_S,"sigc::signal<void,bool>");
  tolua_usertype(tolua_S,"std::map<std::string,Atlas::Message::Element>");
  tolua_usertype(tolua_S,"sigc::connection");
  tolua_usertype(tolua_S,"sigc::signal<void,Eris::Entity*>");
  tolua_usertype(tolua_S,"Eris::Connection");
  tolua_usertype(tolua_S,"sigc::signal<void,Eris::Task*>");
  tolua_usertype(tolua_S,"SigC::Signal1<void,const Eris::ServerInfo&>");
- tolua_usertype(tolua_S,"sigc::signal<void,const Eris::StringSet&>");
+ tolua_usertype(tolua_S,"sigc::slot<void,const std::string&,const Atlas::Message::Element&>");
  tolua_usertype(tolua_S,"SigC::Signal0<void>");
  tolua_usertype(tolua_S,"Eris::Entity");
  tolua_usertype(tolua_S,"SigC::Signal1<void,int>");
@@ -82,10 +82,10 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Eris::Meta");
  tolua_usertype(tolua_S,"SigC::Signal1<void,const std::string&>");
  tolua_usertype(tolua_S,"WFMath::Point<3>");
- tolua_usertype(tolua_S,"sigc::slot<void,const std::string&,const Atlas::Message::Element&>");
+ tolua_usertype(tolua_S,"sigc::signal<void,const Atlas::Objects::Operation::RootOperation&>");
  tolua_usertype(tolua_S,"Eris::Account");
  tolua_usertype(tolua_S,"sigc::signal<void>");
- tolua_usertype(tolua_S,"sigc::signal<void,bool>");
+ tolua_usertype(tolua_S,"sigc::signal<void,const std::set<std::string>&>");
  tolua_usertype(tolua_S,"Atlas::Message::Element");
  tolua_usertype(tolua_S,"WFMath::AxisBox<3>");
 }
@@ -988,7 +988,7 @@ static int tolua_get_Eris__Entity_Changed(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Changed'",NULL);
 #endif
-  tolua_pushusertype(tolua_S,(void*)&self->Changed,"sigc::signal<void,const Eris::StringSet&>");
+  tolua_pushusertype(tolua_S,(void*)&self->Changed,"sigc::signal<void,const std::set<std::string>&>");
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
@@ -1001,10 +1001,10 @@ static int tolua_set_Eris__Entity_Changed(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Changed'",NULL);
-  if (!tolua_isusertype(tolua_S,2,"sigc::signal<void,const Eris::StringSet&>",0,&tolua_err))
+  if (!tolua_isusertype(tolua_S,2,"sigc::signal<void,const std::set<std::string>&>",0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->Changed = *((sigc::signal<void,const Eris::StringSet&>*)  tolua_tousertype(tolua_S,2,0))
+  self->Changed = *((sigc::signal<void,const std::set<std::string>&>*)  tolua_tousertype(tolua_S,2,0))
 ;
  return 0;
 }

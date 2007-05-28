@@ -1,3 +1,63 @@
+2007-05-28 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/framework/bindings/lua/Framework.pkg, src/framework/bindings/lua/IScriptingProvider.pkg, src/framework/bindings/lua/lua_Framework.cpp, src/framework/bindings/lua/eris/Entity.pkg, src/framework/bindings/lua/eris/lua_Eris.cpp: updated bindings
+
+2007-05-28 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/scripting/bindings/lua/StackableContainer.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/scripting/bindings/lua/stdlib.pkg, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.pkg, src/components/ogre/scripting/bindings/lua/helpers/lua_Helpers.cpp: updated bindings
+
+2007-05-28 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/scripting/bindings/lua/helpers/LuaConsoleObject.cpp: specify the template method to use
+
+2007-05-28 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.cpp, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.h: added more bindings
+
+2007-05-28 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/EntityEditor.lua: refactored the code to better clean up used resources
+
+2007-05-28 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/ScriptEdit.layout, src/components/ogre/widgets/ScriptEdit.lua: clean up layout and added button for forcing garbage collection
+
+2007-05-28 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/Makefile.am: removed unused file
+
+2007-05-28 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/GUICEGUIAdapter.cpp: catch unknown errors
+
+2007-05-28 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/adapters/atlas/AdapterFactory.cpp: don't keep unused pointers
+
+2007-05-28 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/adapters/atlas/ListAdapter.layout, src/components/ogre/widgets/adapters/atlas/ListAdapterNewElement.layout, src/components/ogre/widgets/adapters/atlas/MapAdapterNewElement.layout: don't rise on click to avoid hiding other windows
+
+2007-05-28 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/scripting/LuaScriptingProvider.cpp, src/components/ogre/scripting/LuaScriptingProvider.h: implement garbage collection method
+
+2007-05-28 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/cegui/datafiles/layouts/GUILayout.xsd: updated scheme
+
+2007-05-28 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/framework/IScriptingProvider.h: added method for forcing garbage collection
+
+2007-05-28 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/StackableContainer.cpp, src/components/ogre/widgets/StackableContainer.h: fixed some problems with not cleaning up correctly
+
+2007-05-28 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* configure.ac: removed our own copy of Ogre DevIL codecs, as these are now included in Ogre 1.4.1
+
 2007-05-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
 
 	* src/components/ogre/scripting/bindings/lua/EntityEditor.pkg, src/components/ogre/scripting/bindings/lua/GUIManager.pkg, src/components/ogre/scripting/bindings/lua/Widget.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
