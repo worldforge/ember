@@ -74,7 +74,7 @@ void ConnectorBase::pushNamedFunction(lua_State* state)
 }
 
 //template<> void ConnectorBase::callLuaMethod(std::string t0, std::string t1, Empty t2, Empty t3);
-template <typename T0, typename T1, typename T2, typename T3> void ConnectorBase::callLuaMethod(T0 t0, T1 t1, T2 t2, T3 t3)
+template <typename Treturn, typename T0, typename T1, typename T2, typename T3> Treturn ConnectorBase::callLuaMethod(T0 t0, T1 t1, T2 t2, T3 t3)
 {
 	int numberOfArguments = static_cast<int>(mLuaTypeNames.size());
 	lua_State* state = EmberOgre::LuaConnector::getState();
@@ -104,7 +104,7 @@ template <typename T0, typename T1, typename T2, typename T3> void ConnectorBase
 			EmberOgre::LuaConnector::pushValue(t3, (*I++));
 			
 		/// call it
-		int error = lua_pcall(state,numberOfArguments,0,0);
+		int error = lua_pcall(state,numberOfArguments,LUA_MULTRET,0);
 			
 		/// handle errors
 		if ( error )
@@ -114,6 +114,10 @@ template <typename T0, typename T1, typename T2, typename T3> void ConnectorBase
 // 			lua_pop(state,numberOfArguments);
 			throw Ember::Exception(msg);
 		}
+		
+//		Treturn& returnValue(0);
+		//return (Treturn)returnValueFromLua(state);
+		//return returnValue;
 
 	}
 	catch(const Ember::Exception& ex )
@@ -140,9 +144,24 @@ template <typename T0, typename T1, typename T2, typename T3> void ConnectorBase
 		lua_settop(state, top );
 		S_LOG_FAILURE("Unspecified error when executing: " << mLuaMethod  );
 	}
+/*	void* test(0);
+	return (Treturn)*test;*/
 }
 
+template<typename Treturn> 
+Treturn ConnectorBase::returnValueFromLua(lua_State* state)
+{
+	return static_cast<Treturn>(lua_touserdata(state,-1));
+}
 
+// void ConnectorBase::returnValueFromLua(lua_State* state, bool& returnValueHolder)
+// {
+// 	returnValueHolder = lua_toboolean(state,-1);
+// }
+// 
+// void returnValueFromLua(lua_State* state)
+// {
+// }
 
 template <typename Treturn> 
 ConnectorZero<Treturn>::ConnectorZero(sigc::signal<Treturn>& signal) :  ConnectorBase(), mSignal(signal)
@@ -185,31 +204,31 @@ ConnectorFour<Treturn, T0, T1, T2, T3>::ConnectorFour(sigc::signal<Treturn, T0, 
 template <typename Treturn>
 Treturn ConnectorZero<Treturn>::signal_recieve()
 {
-	callLuaMethod(Empty(), Empty(), Empty(), Empty());
+	return callLuaMethod<Treturn, Empty, Empty, Empty, Empty>(Empty(), Empty(), Empty(), Empty());
 }
 
 template <typename Treturn, typename T0>
 Treturn ConnectorOne<Treturn, T0>::signal_recieve(T0 t0)
 {
-	callLuaMethod(t0, Empty(), Empty(), Empty());
+	return callLuaMethod<Treturn, T0, Empty, Empty, Empty>(t0, Empty(), Empty(), Empty());
 }
 
 template <typename Treturn, typename T0, typename T1>
 Treturn ConnectorTwo<Treturn, T0, T1>::signal_recieve(T0 t0, T1 t1)
 {
-	callLuaMethod(t0, t1, Empty(), Empty());
+	return callLuaMethod<Treturn, T0, T1, Empty, Empty>(t0, t1, Empty(), Empty());
 }
 
 template <typename Treturn, typename T0, typename T1, typename T2>
 Treturn ConnectorThree<Treturn, T0, T1, T2>::signal_recieve(T0 t0, T1 t1, T2 t2)
 {
-	callLuaMethod(t0, t1, t2, Empty());
+	return callLuaMethod<Treturn, T0, T1, T2, Empty>(t0, t1, t2, Empty());
 }
 
 template <typename Treturn, typename T0, typename T1, typename T2, typename T3>
 Treturn ConnectorFour<Treturn, T0, T1, T2, T3>::signal_recieve(T0 t0, T1 t1, T2 t2, T3 t3)
 {
-	callLuaMethod(t0, t1, t2, t3);
+	return callLuaMethod<Treturn, T0, T1, T2, T3>(t0, t1, t2, t3);
 }
 
 
@@ -280,6 +299,12 @@ void LuaConnector::pushValue(const Input::InputMode& theValue, const std::string
 {
 	tolua_pushnumber(EmberOgre::LuaConnector::getState(), theValue);
 }
+	
+void LuaConnector::pushValue(const std::set<std::string>& theValue, const std::string& luaTypename)
+{
+	tolua_pushusertype(EmberOgre::LuaConnector::getState(),(void*)&theValue, luaTypename.c_str());
+}
+
 
 LuaConnector::~LuaConnector()
 {
@@ -440,6 +465,12 @@ LuaConnector::LuaConnector(sigc::signal<void, Eris::Task*>& signal)
 	mConnector = new LuaConnectors::ConnectorOne<void, Eris::Task*>(signal, luaTypes);
 }
 
+LuaConnector::LuaConnector(sigc::signal<void, const std::set<std::string>&>& signal)
+{
+	LuaTypeStore luaTypes;
+	luaTypes.push_back("std::set<std::string>");
+	mConnector = new LuaConnectors::ConnectorOne<void, const std::set<std::string>&>(signal, luaTypes);
+}
 
 
 };

@@ -84,7 +84,7 @@ namespace LuaConnectors {
 			*/
 			void disconnect();
 			
-			template <typename T0, typename T1, typename T2, typename T3> void callLuaMethod(T0 t0, T1 t1, T2 t2, T3 t3);
+			template <typename Treturn, typename T0, typename T1, typename T2, typename T3> Treturn callLuaMethod(T0 t0, T1 t1, T2 t2, T3 t3);
 	
 		protected:
 			
@@ -112,6 +112,10 @@ namespace LuaConnectors {
 			The connection.
 			*/
 			sigc::connection mConnection;
+			
+			template<typename Treturn> Treturn returnValueFromLua(lua_State* state);
+/*			void returnValueFromLua(lua_State* state, bool& returnValueHolder);
+			void returnValueFromLua(lua_State* state);*/
 	
 	};
 
@@ -220,6 +224,7 @@ public:
 	static void pushValue(LuaConnectors::Empty theValue, const std::string& luaTypename);
 	static void pushValue(const Input::MouseButton& theValue, const std::string& luaTypename);
 	static void pushValue(const Input::InputMode& theValue, const std::string& luaTypename);
+	static void pushValue(const std::set<std::string>& theValue, const std::string& luaTypename);
 	
 	
  	LuaConnector(sigc::signal<void>& signal);
@@ -240,6 +245,7 @@ public:
  	LuaConnector(sigc::signal<void, BasePointUserObject*>& signal);
  	LuaConnector(sigc::signal<void, TerrainEditAction*>& signal);
  	LuaConnector(sigc::signal<void, Eris::Task*>& signal);
+ 	LuaConnector(sigc::signal<void, const std::set<std::string>&>& signal);
    
    
    
