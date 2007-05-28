@@ -35,29 +35,65 @@ namespace EmberOgre {
 namespace Gui {
 
 /**
+	Use this class with CEGUI windows to allow for automatic layout of child window.
+	An instance of this will attach itself to a window and listen for children being added and removed, as well as resized.
+	It will rearrange these child windows so that they are stacked, either vertically or horizontally.
+
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
 class StackableContainer{
 public:
+	/**
+	The flow direction of the child window.
+	*/
 	enum FlowDirection {
 		Horizontal = 0,
 		Vertical = 1
 	};
 
+	/**
+	Default constructor.
+	@param A valid window, which will have its children automatically arranged.
+	*/
     StackableContainer(CEGUI::Window* window);
 
     virtual ~StackableContainer();
 	
+	/**
+	Manually sets the inner container window. In some cases, such as with a ScrollablePane, this will differ from the main window.
+	*/
 	void setInnerContainerWindow(CEGUI::Window* window);
 	
+	/**
+	Gets the window that this instance listens to.
+	*/
 	CEGUI::Window* getWindow();
 	
+	/**
+	Sets how much to pad between each child, in pixels.
+	*/
 	void setPadding(int padding);
+	/**
+	Gets how much to pad between each child, in pixels.
+	*/
+	int getPadding() const;
 
+	/**
+	Utility method for getting the absolute height of the window.
+	*/
 	float getAbsoluteHeight();
+	/**
+	Utility method for getting the absolute width of the window.
+	*/
 	float getAbsoluteWidth();
 	
+	/**
+	Sets the direction that children will flow.
+	*/
 	void setFlowDirection(FlowDirection flowDirection);
+	/**
+	Gets the direction that children will flow.
+	*/
 	FlowDirection getFlowDirection() const;
 	
 	/**
@@ -66,17 +102,40 @@ public:
 	void repositionWindows();
 
 protected:
+
+	/**
+	Hold references to all event bindings, so we can properly clean them up.
+	*/
+	typedef std::map<CEGUI::Window*, CEGUI::Event::Connection> ConnectorStore;
+	CEGUI::Event::Connection mChildRemovedConnection, mChildAddedConnection, mWindowDestructionConnection;
+	ConnectorStore mChildConnections;
 	
+	/**
+	We keep a reference to both the mainwindow and an inner container window. In most cases these will be the same, but when for example using the ScrollablePane, they might be different.
+	*/
 	CEGUI::Window* mWindow;
 	CEGUI::Window* mInnerContainerWindow;
 	
 	
+	/**
+	In pixels, how much to pad between each window.
+	*/
 	int mPadding;
+	
+	/**
+	The direction the windows will flow.
+	*/
 	FlowDirection mFlowDirection;
 	
 	bool window_ChildAdded(const CEGUI::EventArgs& e);
 	bool window_ChildRemoved(const CEGUI::EventArgs& e);
 	bool childwindow_Sized(const CEGUI::EventArgs& e);
+	bool window_DestructionStarted(const CEGUI::EventArgs& e);
+	
+	/**
+	Clean up all bindings.
+	*/
+	void cleanup();
 	
 };
 
