@@ -25,6 +25,7 @@ class LuaConnector{
  	LuaConnector(sigc::signal<void, EmberOgre::BasePointUserObject*>& signal);
  	LuaConnector(sigc::signal<void, EmberOgre::TerrainEditAction*>& signal);
  	LuaConnector(sigc::signal<void, Eris::Task*>& signal);
+ 	LuaConnector(sigc::signal<void, const std::set<std::string>&>& signal);
 
 
 };

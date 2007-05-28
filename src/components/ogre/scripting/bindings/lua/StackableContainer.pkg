@@ -45,7 +45,14 @@ public:
 	
 	CEGUI::Window* getWindow();
 	
+	/**
+	Sets how much to pad between each child, in pixels.
+	*/
 	void setPadding(int padding);
+	/**
+	Gets how much to pad between each child, in pixels.
+	*/
+	int getPadding() const;
 
 	float getAbsoluteHeight();
 	float getAbsoluteWidth();

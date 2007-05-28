@@ -14,21 +14,20 @@ class vector {
         ~vector();
 };
 
-// class set {
-// 
-// //        TEMPLATE_BIND(T, Ogre::SubEntity*, EmberOgre::Model::SubModel*)
-//         TEMPLATE_BIND(T, Ogre::SubEntity*)
-// 
-//         void clear();
-//         int size() const;
-// 
-//         const T& operator[](int index) const;
-//         T& operator[](int index);
-//         void push_back(T val);
-// 
-//         set();
-//         ~set();
-// };
+class set {
+ 
+        TEMPLATE_BIND(T, std::string)
+ 
+         void clear();
+         int size() const;
+
+         //const T& operator[](int index) const;
+         //T& operator[](int index);
+         //void push_back(T val);
+ 
+         set();
+         ~set();
+};
 
 // class map {
 // 

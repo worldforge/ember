@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Mon May 21 23:56:56 2007.
+** Generated automatically by tolua++-1.0.92 on Fri May 25 08:38:23 2007.
 */
 
 #ifndef __cplusplus
@@ -29,6 +29,13 @@ static int tolua_collect_WFMath__Point_3_ (lua_State* tolua_S)
 static int tolua_collect_EmberOgre__Jesus (lua_State* tolua_S)
 {
  EmberOgre::Jesus* self = (EmberOgre::Jesus*) tolua_tousertype(tolua_S,1,0);
+	delete self;
+	return 0;
+}
+
+static int tolua_collect_std__set_std__string_ (lua_State* tolua_S)
+{
+ std::set<std::string>* self = (std::set<std::string>*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -416,19 +423,20 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"EmberOgre::ModelRenderer");
  tolua_usertype(tolua_S,"EmberOgre::Model::SubEntityDefinition");
  tolua_usertype(tolua_S,"Ogre;;ResourceManager");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::TerrainGenerator&>");
  tolua_usertype(tolua_S,"Ogre::Camera");
  tolua_usertype(tolua_S,"Mercator::Area");
  tolua_usertype(tolua_S,"EmberOgre::EmberEntity");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::TerrainGenerator&>");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::MotionManager&>");
- tolua_usertype(tolua_S,"EmberOgre::OgreInfo");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntityFactory*>");
- tolua_usertype(tolua_S,"EmberOgre::ModelMapping");
- tolua_usertype(tolua_S,"Ogre::RenderWindow");
- tolua_usertype(tolua_S,"CEGUI::Listbox");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Jesus*>");
  tolua_usertype(tolua_S,"EmberOgre::Gui::QuaternionAdapter");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntityFactory*>");
+ tolua_usertype(tolua_S,"Ogre::RenderWindow");
+ tolua_usertype(tolua_S,"EmberOgre::ModelMapping");
+ tolua_usertype(tolua_S,"CEGUI::Listbox");
+ tolua_usertype(tolua_S,"EmberOgre::OgreInfo");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Jesus*>");
  tolua_usertype(tolua_S,"std::vector<EmberOgre::Model::PartDefinition*>");
+ tolua_usertype(tolua_S,"std::set<std::string>");
  tolua_usertype(tolua_S,"Carpenter::BuildingBlockSpec");
  tolua_usertype(tolua_S,"std::map<std::string,Carpenter::BluePrint*>");
  tolua_usertype(tolua_S,"EmberOgre::EntityPickResult");
@@ -7710,6 +7718,38 @@ static int tolua_EmberOgre_EmberOgre_Gui_StackableContainer_setPadding00(lua_Sta
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'setPadding'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getPadding of class  EmberOgre::Gui::StackableContainer */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_StackableContainer_getPadding00
+static int tolua_EmberOgre_EmberOgre_Gui_StackableContainer_getPadding00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Gui::StackableContainer",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Gui::StackableContainer* self = (const EmberOgre::Gui::StackableContainer*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getPadding'",NULL);
+#endif
+  {
+   int tolua_ret = (int)  self->getPadding();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getPadding'.",&tolua_err);
  return 0;
 #endif
 }
@@ -15526,6 +15566,154 @@ static int tolua_EmberOgre_std_vector_Eris__Task___delete00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: clear of class  std::set<std::string> */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_std_set_std__string__clear00
+static int tolua_EmberOgre_std_set_std__string__clear00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"std::set<std::string>",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  std::set<std::string>* self = (std::set<std::string>*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'clear'",NULL);
+#endif
+  {
+   self->clear();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'clear'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: size of class  std::set<std::string> */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_std_set_std__string__size00
+static int tolua_EmberOgre_std_set_std__string__size00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const std::set<std::string>",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const std::set<std::string>* self = (const std::set<std::string>*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'size'",NULL);
+#endif
+  {
+   int tolua_ret = (int)  self->size();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'size'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new of class  std::set<std::string> */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_std_set_std__string__new00
+static int tolua_EmberOgre_std_set_std__string__new00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"std::set<std::string>",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   std::set<std::string>* tolua_ret = (std::set<std::string>*)  new std::set<std::string>();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"std::set<std::string>");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  std::set<std::string> */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_std_set_std__string__new00_local
+static int tolua_EmberOgre_std_set_std__string__new00_local(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"std::set<std::string>",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   std::set<std::string>* tolua_ret = (std::set<std::string>*)  new std::set<std::string>();
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"std::set<std::string>");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: delete of class  std::set<std::string> */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_std_set_std__string__delete00
+static int tolua_EmberOgre_std_set_std__string__delete00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"std::set<std::string>",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  std::set<std::string>* self = (std::set<std::string>*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'delete'",NULL);
+#endif
+  delete self;
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'delete'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: new of class  EmberOgre::Gui::Vector3Adapter */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_Vector3Adapter_new00
 static int tolua_EmberOgre_EmberOgre_Gui_Vector3Adapter_new00(lua_State* tolua_S)
@@ -17527,6 +17715,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"setInnerContainerWindow",tolua_EmberOgre_EmberOgre_Gui_StackableContainer_setInnerContainerWindow00);
      tolua_function(tolua_S,"getWindow",tolua_EmberOgre_EmberOgre_Gui_StackableContainer_getWindow00);
      tolua_function(tolua_S,"setPadding",tolua_EmberOgre_EmberOgre_Gui_StackableContainer_setPadding00);
+     tolua_function(tolua_S,"getPadding",tolua_EmberOgre_EmberOgre_Gui_StackableContainer_getPadding00);
      tolua_function(tolua_S,"getAbsoluteHeight",tolua_EmberOgre_EmberOgre_Gui_StackableContainer_getAbsoluteHeight00);
      tolua_function(tolua_S,"getAbsoluteWidth",tolua_EmberOgre_EmberOgre_Gui_StackableContainer_getAbsoluteWidth00);
      tolua_function(tolua_S,"setFlowDirection",tolua_EmberOgre_EmberOgre_Gui_StackableContainer_setFlowDirection00);
@@ -18021,6 +18210,19 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"new_local",tolua_EmberOgre_std_vector_Eris__Task___new00_local);
     tolua_function(tolua_S,".call",tolua_EmberOgre_std_vector_Eris__Task___new00_local);
     tolua_function(tolua_S,"delete",tolua_EmberOgre_std_vector_Eris__Task___delete00);
+   tolua_endmodule(tolua_S);
+   #ifdef __cplusplus
+   tolua_cclass(tolua_S,"set_std__string_","std::set<std::string>","",tolua_collect_std__set_std__string_);
+   #else
+   tolua_cclass(tolua_S,"set_std__string_","std::set<std::string>","",NULL);
+   #endif
+   tolua_beginmodule(tolua_S,"set_std__string_");
+    tolua_function(tolua_S,"clear",tolua_EmberOgre_std_set_std__string__clear00);
+    tolua_function(tolua_S,"size",tolua_EmberOgre_std_set_std__string__size00);
+    tolua_function(tolua_S,"new",tolua_EmberOgre_std_set_std__string__new00);
+    tolua_function(tolua_S,"new_local",tolua_EmberOgre_std_set_std__string__new00_local);
+    tolua_function(tolua_S,".call",tolua_EmberOgre_std_set_std__string__new00_local);
+    tolua_function(tolua_S,"delete",tolua_EmberOgre_std_set_std__string__delete00);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"EmberOgre",0);
