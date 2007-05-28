@@ -1,50 +1,67 @@
 --Allows the editing of entities
 
 EntityEditor = {}
-EntityEditor.entity = nil
-EntityEditor.rootMapAdapter = nil
-EntityEditor.helper = nil
+EntityEditor.instance = {}
+EntityEditor.instance.entity = nil
+EntityEditor.instance.rootMapAdapter = nil
+EntityEditor.instance.helper = nil
 EntityEditor.factory = nil
 EntityEditor.attributesContainer = nil
-EntityEditor.accumulatedHeight = 0
-EntityEditor.stackableContainer = 0
 EntityEditor.hiddenAttributes = {objtype = 1, stamp = 1}
+
 
 function editEntity(id)
 	local entity = emberOgre:getEntity(id)
 	EntityEditor.editEntity(entity)
 end
 
+function EntityEditor.createStackableContainer(container)
+	local stackableContainer = EmberOgre.Gui.StackableContainer:new(container)
+	EntityEditor.instance.stackableContainers[container:getName()] = stackableContainer
+	return stackableContainer
+end
+
 function EntityEditor.editEntity(entity)
 	EntityEditor.widget:show()
-	EntityEditor.entity = entity
-	if EntityEditor.helper ~= nil then
-		EntityEditor.helper:delete()
+
+	if EntityEditor.instance ~= nil then
+		if EntityEditor.instance.outercontainer ~= nil then
+			windowManager:destroyWindow(EntityEditor.instance.outercontainer)
+		end
+		if EntityEditor.instance.entityChangeConnection ~= nil then
+			EntityEditor.instance.entityChangeConnection:disconnect()
+		end
+		if EntityEditor.instance.helper ~= nil then
+			EntityEditor.instance.helper:delete()
+		end
+		EntityEditor.instance = nil
 	end
-	if EntityEditor.outercontainer ~= nil then
-		windowManager:destroyWindow(EntityEditor.outercontainer)
-	end
-	EntityEditor.infoWindow:setText('Id: ' .. entity:getId() .. ' Name: ' .. entity:getName())
+	EntityEditor.instance = {}
+	EntityEditor.instance.stackableContainers = {}
+	EntityEditor.instance.entity = entity
 	
-	EntityEditor.outercontainer = guiManager:createWindow("DefaultGUISheet")
-	EntityEditor.stackableContainer = EmberOgre.Gui.StackableContainer:new_local(EntityEditor.outercontainer)
-	local adapter = EntityEditor.factory:createMapAdapter(EntityEditor.outercontainer, EntityEditor.entity:getId(), EntityEditor.entity)
-	EntityEditor.rootMapAdapter = adapter
-	EntityEditor.helper = EmberOgre.Gui.EntityEditor:new(entity, EntityEditor.rootMapAdapter)
-	EntityEditor.attributesContainer:addChildWindow(EntityEditor.outercontainer)
+	EntityEditor.instance.entityChangeConnection = EmberOgre.LuaConnector:new_local(entity.Changed):connect("EntityEditor.Entity_Changed")
+	EntityEditor.instance.outercontainer = guiManager:createWindow("DefaultGUISheet")
+	EntityEditor.createStackableContainer(EntityEditor.instance.outercontainer)
+	local adapter = EntityEditor.factory:createMapAdapter(EntityEditor.instance.outercontainer, EntityEditor.instance.entity:getId(), EntityEditor.instance.entity)
+	EntityEditor.instance.rootMapAdapter = adapter
+	EntityEditor.instance.helper = EmberOgre.Gui.EntityEditor:new(entity, EntityEditor.instance.rootMapAdapter)
+	EntityEditor.attributesContainer:addChildWindow(EntityEditor.instance.outercontainer)
 	
-	local attributeNames = EntityEditor.rootMapAdapter:getAttributeNames()
+	local attributeNames = EntityEditor.instance.rootMapAdapter:getAttributeNames()
 	for i = 0, attributeNames:size() - 1 do
 		local name = attributeNames[i]
-		local element = EntityEditor.rootMapAdapter:valueOfAttr(name)
+		local element = EntityEditor.instance.rootMapAdapter:valueOfAttr(name)
 		local adapterWrapper = EntityEditor.createAdapter(name, element)
 		if adapterWrapper ~= nil then
-			EntityEditor.rootMapAdapter:addAttributeAdapter(name, adapterWrapper.adapter, adapterWrapper.outercontainer)
-			EntityEditor.addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, EntityEditor.outercontainer)
+			EntityEditor.instance.rootMapAdapter:addAttributeAdapter(name, adapterWrapper.adapter, adapterWrapper.outercontainer)
+			EntityEditor.addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, EntityEditor.instance.outercontainer)
 		end
 	end
-	local newElementWrapper = EntityEditor.createNewMapElementWidget(adapter, EntityEditor.outercontainer)
-	EntityEditor.outercontainer:addChildWindow(newElementWrapper.container)
+	local newElementWrapper = EntityEditor.createNewMapElementWidget(adapter, EntityEditor.instance.outercontainer)
+	EntityEditor.instance.outercontainer:addChildWindow(newElementWrapper.container)
+
+	EntityEditor.infoWindow:setText('Id: ' .. entity:getId() .. ' Name: ' .. entity:getName())
 
 end
 
@@ -62,19 +79,19 @@ function EntityEditor.createNewListElementWidget(listAdapter, outercontainer)
 		local adapterWrapper = nil
 		local element = nil
 		if wrapper.typeCombobox:getSelectedItem():getID() == 0 then
-			element = EntityEditor.helper:createStringElement()
+			element = EntityEditor.instance.helper:createStringElement()
 			adapterWrapper = EntityEditor.createStringAdapter(element)
 		elseif wrapper.typeCombobox:getSelectedItem():getID() == 1 then
-			element = EntityEditor.helper:createIntElement()
+			element = EntityEditor.instance.helper:createIntElement()
 			adapterWrapper = EntityEditor.createNumberAdapter(element)
 		elseif wrapper.typeCombobox:getSelectedItem():getID() == 2 then
-			element = EntityEditor.helper:createFloatElement()
+			element = EntityEditor.instance.helper:createFloatElement()
 			adapterWrapper = EntityEditor.createNumberAdapter(element)
 		elseif wrapper.typeCombobox:getSelectedItem():getID() == 3 then
-			element = EntityEditor.helper:createMapElement()
+			element = EntityEditor.instance.helper:createMapElement()
 			adapterWrapper = EntityEditor.createMapAdapter(element)
 		elseif wrapper.typeCombobox:getSelectedItem():getID() == 4 then
-			element = EntityEditor.helper:createListElement()
+			element = EntityEditor.instance.helper:createListElement()
 			adapterWrapper = EntityEditor.createListAdapter(element)
 		end
 		
@@ -105,19 +122,19 @@ function EntityEditor.createNewMapElementWidget(mapAdapter, outercontainer)
 		local adapterWrapper = nil
 		local element = nil
 		if wrapper.typeCombobox:getSelectedItem():getID() == 0 then
-			element = EntityEditor.helper:createStringElement()
+			element = EntityEditor.instance.helper:createStringElement()
 			adapterWrapper = EntityEditor.createStringAdapter(element)
 		elseif wrapper.typeCombobox:getSelectedItem():getID() == 1 then
-			element = EntityEditor.helper:createIntElement()
+			element = EntityEditor.instance.helper:createIntElement()
 			adapterWrapper = EntityEditor.createNumberAdapter(element)
 		elseif wrapper.typeCombobox:getSelectedItem():getID() == 2 then
-			element = EntityEditor.helper:createFloatElement()
+			element = EntityEditor.instance.helper:createFloatElement()
 			adapterWrapper = EntityEditor.createNumberAdapter(element)
 		elseif wrapper.typeCombobox:getSelectedItem():getID() == 3 then
-			element = EntityEditor.helper:createMapElement()
+			element = EntityEditor.instance.helper:createMapElement()
 			adapterWrapper = EntityEditor.createMapAdapter(element)
 		elseif wrapper.typeCombobox:getSelectedItem():getID() == 4 then
-			element = EntityEditor.helper:createListElement()
+			element = EntityEditor.instance.helper:createListElement()
 			adapterWrapper = EntityEditor.createListAdapter(element)
 		end
 		
@@ -155,9 +172,9 @@ end
 function EntityEditor.createMapAdapter(element)
 	local wrapper = {}
 	wrapper.container = guiManager:createWindow("DefaultGUISheet")
-	wrapper.adapter = EntityEditor.factory:createMapAdapter(wrapper.container, EntityEditor.entity:getId(), element)
+	wrapper.adapter = EntityEditor.factory:createMapAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
 	--TODO: make sure that this is cleaned up at destruction
-	wrapper.stackableContainer = EmberOgre.Gui.StackableContainer:new_local(wrapper.container)
+	EntityEditor.createStackableContainer(wrapper.container)
 	
 	
 	
@@ -182,9 +199,9 @@ end
 function EntityEditor.createListAdapter(element)
 	local wrapper = {}
 	wrapper.container = guiManager:createWindow("DefaultGUISheet")
-	wrapper.adapter = EntityEditor.factory:createListAdapter(wrapper.container, EntityEditor.entity:getId(), element)
+	wrapper.adapter = EntityEditor.factory:createListAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
 	--TODO: make sure that this is cleaned up at destruction
-	wrapper.stackableContainer = EmberOgre.Gui.StackableContainer:new_local(wrapper.container)
+	EntityEditor.createStackableContainer(wrapper.container)
 	for i = 0, wrapper.adapter:getSize() - 1 do
 		local childElement = wrapper.adapter:valueOfAttr(i)
 		local adapterWrapper = EntityEditor.createAdapter("", childElement)
@@ -203,28 +220,28 @@ end
 function EntityEditor.createStringAdapter(element)
 	local wrapper = {}
 	wrapper.container = guiManager:createWindow("DefaultGUISheet")
-	wrapper.adapter = EntityEditor.factory:createStringAdapter(wrapper.container, EntityEditor.entity:getId(), element)
+	wrapper.adapter = EntityEditor.factory:createStringAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
 	return wrapper	
 end
 
 function EntityEditor.createNumberAdapter(element)
 	local wrapper = {}
 	wrapper.container = guiManager:createWindow("DefaultGUISheet")
-	wrapper.adapter = EntityEditor.factory:createNumberAdapter(wrapper.container, EntityEditor.entity:getId(), element)
+	wrapper.adapter = EntityEditor.factory:createNumberAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
 	return wrapper	
 end
 
 function EntityEditor.createSizeAdapter(element)
 	local wrapper = {}
 	wrapper.container = guiManager:createWindow("DefaultGUISheet")
-	wrapper.adapter = EntityEditor.factory:createSizeAdapter(wrapper.container, EntityEditor.entity:getId(), element)
+	wrapper.adapter = EntityEditor.factory:createSizeAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
 	return wrapper	
 end
 
 function EntityEditor.createPositionAdapter(element)
 	local wrapper = {}
 	wrapper.container = guiManager:createWindow("DefaultGUISheet")
-	wrapper.adapter = EntityEditor.factory:createPositionAdapter(wrapper.container, EntityEditor.entity:getId(), element)
+	wrapper.adapter = EntityEditor.factory:createPositionAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
 	return wrapper	
 end
 
@@ -256,7 +273,7 @@ function EntityEditor.addUnNamedAdapterContainer(adapter, container, parentConta
 	function syncWindowHeights(args)
 		outercontainer:setHeight(container:getHeight())
 	end
-	container:subscribeEvent("Sized", syncWindowHeights)
+	local SizedConnection = container:subscribeEvent("Sized", syncWindowHeights)
 	
 	outercontainer:addChildWindow(deleteButton)
 	outercontainer:addChildWindow(container)
@@ -268,11 +285,23 @@ end
 function EntityEditor.addNamedAdapterContainer(attributeName, adapter, container, parentContainer)
 	local textWidth = 75
 	local outercontainer = guiManager:createWindow("DefaultGUISheet")
+	--outercontainer:setRiseOnClickEnabled(false)
 	local label = guiManager:createWindow("EmberLook/StaticText")
 	
 	local deleteButton = EntityEditor.createDeleteButton(attributeName)
 	deleteButton:setProperty("UnifiedPosition", "{{1,-16},{0,2}}")
 	deleteButton:setProperty("Tooltip", "Delete '" .. attributeName .. "'");
+	
+-- 	function showDeleteButton(args)
+-- 		console:pushMessage("wee")
+-- 		deleteButton:setVisible(true)
+-- 	end
+-- 	function hideDeleteButton(args)
+-- 		console:pushMessage("waa")
+-- 		deleteButton:setVisible(false)
+-- 	end
+-- 	outercontainer:subscribeEvent("MouseEnter", showDeleteButton)
+-- 	outercontainer:subscribeEvent("MouseLeave", hideDeleteButton)
 	
 	function removeAdapter(args)
 		adapter:remove()
@@ -300,8 +329,7 @@ function EntityEditor.addNamedAdapterContainer(attributeName, adapter, container
 	function syncWindowHeights(args)
 		outercontainer:setHeight(container:getHeight())
 	end
-	container:subscribeEvent("Sized", syncWindowHeights)
-	
+	local SizedConnection = container:subscribeEvent("Sized", syncWindowHeights)
 	
 	label:addChildWindow(deleteButton)
 	outercontainer:addChildWindow(container)
@@ -317,6 +345,7 @@ function EntityEditor.createDeleteButton(attributeName)
 	deleteButton:setProperty("HoverImage", "set:EmberLook image:CloseButtonHover")
 	deleteButton:setProperty("PushedImage", "set:EmberLook image:CloseButtonPushed")
 	deleteButton:setProperty("UnifiedSize", "{{0,16},{0,16}}")
+	deleteButton:setAlpha(0.5)
 	return deleteButton
 end
 
@@ -340,16 +369,25 @@ end
 
 
 function EntityEditor.Submit_MouseClick(args)
-	EntityEditor.helper:submitChanges()
-	EntityEditor.editEntity(EntityEditor.entity)
+	EntityEditor.instance.helper:submitChanges()
+	EntityEditor.listenForChanges = true
+	--EntityEditor.editEntity(EntityEditor.instance.entity)
+	
+end
+
+function EntityEditor.Entity_Changed(attributes)
+	if EntityEditor.listenForChanges then
+		EntityEditor.listenForChanges = false
+		EntityEditor.editEntity(EntityEditor.instance.entity)
+	end
 end
 
 function EntityEditor.DeleteButton_MouseClick(args)
-	emberServices:getServerService():deleteEntity(EntityEditor.entity)
+	emberServices:getServerService():deleteEntity(EntityEditor.instance.entity)
 end
 
 function EntityEditor.ExportButton_MouseClick(args)
-	emberOgre:getEntityFactory():dumpAttributesOfEntity(EntityEditor.entity:getId())
+	emberOgre:getEntityFactory():dumpAttributesOfEntity(EntityEditor.instance.entity:getId())
 end
 
 function EntityEditor.handleAction(action, entity) 
@@ -381,7 +419,7 @@ function EntityEditor.buildWidget()
 	EmberOgre.LuaConnector:new(guiManager.EventEntityAction):connect("EntityEditor.handleAction")
 	
 	
-	EntityEditor.stackableContainer = EmberOgre.Gui.StackableContainer:new_local(EntityEditor.attributesContainer)
+	--EntityEditor.attributeStackableContainer = EmberOgre.Gui.StackableContainer:new_local(EntityEditor.attributesContainer)
 	EntityEditor.widget:registerConsoleVisibilityToggleCommand("entityEditor")
 	EntityEditor.widget:enableCloseButton()
 	EntityEditor.widget:hide()
