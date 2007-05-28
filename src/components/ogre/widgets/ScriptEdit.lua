@@ -16,8 +16,8 @@ function ScriptEdit.buildWidget()
 	ScriptEdit.widget:loadMainSheet("ScriptEdit.layout", "ScriptEdit/")
 	
 	--set up some useful values
-	ScriptEdit.scriptList = ScriptEdit.widget:getWindow("ScriptType")
-	ScriptEdit.scriptList = CEGUI.toCombobox(ScriptEdit.scriptList)
+	ScriptEdit.scriptList = CEGUI.toCombobox(ScriptEdit.widget:getWindow("ScriptType"))
+	ScriptEdit.scriptList:getDropList():setProperty("ClippedByParent", "false")
 	ScriptEdit.scriptText = ScriptEdit.widget:getWindow("ScriptText")
 	ScriptEdit.scriptText = CEGUI.toMultiLineEditbox(ScriptEdit.scriptText)
 	ScriptEdit.output = ScriptEdit.widget:getWindow("Output")
@@ -48,8 +48,9 @@ function ScriptEdit.buildWidget()
 		local item = EmberOgre.ColoredListItem:new(name, val)
 		ScriptEdit.scriptList:addItem(item)
 		--select the first item from start
-		if (val == 0) then
-			tolua.cast(item, "CEGUI::ListboxItem"):setSelected(true)
+		if val == 0 then
+			ScriptEdit.scriptList:setItemSelectState(tolua.cast(item, "CEGUI::ListboxItem"), true)
+			ScriptEdit.scriptList:getEditbox():setText(name)
 		end
 	end
 	
@@ -60,7 +61,10 @@ function ScriptEdit.buildWidget()
 
 end
 
-
+function ScriptEdit.getSelectedScriptingProvider()
+	local provider = scriptingService:getProviderFor(ScriptEdit.scriptList:getSelectedItem():getText())
+	return provider
+end
 
 --handler for script error
 --updates the output textbox
@@ -135,6 +139,11 @@ end
 --will clear the text of the output edit box
 function ScriptEdit.ClearOutputButtonClick(args)
 	ScriptEdit.output:setText("")
+end
+
+function ScriptEdit.ForceGCButton_MouseClick(args)
+	local provider = ScriptEdit.getSelectedScriptingProvider()
+	provider:forceGC()
 end
 
 ScriptEdit.buildWidget()
