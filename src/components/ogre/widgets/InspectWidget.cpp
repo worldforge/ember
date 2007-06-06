@@ -21,6 +21,7 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 #include "Widget.h"
+#include "ColouredListItem.h"
 #include "../GUIManager.h"
 #include "../EmberEntity.h"
 
@@ -282,7 +283,7 @@ void InspectWidget::fillChildrenList()
 void InspectWidget::addChildToList(Eris::Entity* child)
 {
 	CEGUI::String name(child->getType()->getName() + " ("+ child->getId() +" : "+child->getName()+")");
-	CEGUI::ListboxItem* item = ColoredListItem::createColoredListItem(name);
+	CEGUI::ListboxItem* item = Gui::ColouredListItem::createColouredListItem(name);
 	item->setUserData(child);
 	mChildList->addItem(item);
 }

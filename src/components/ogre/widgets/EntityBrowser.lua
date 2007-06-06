@@ -33,7 +33,7 @@ function EntityBrowser.addEntity(entity, level)
 		end	
 		label = label .. entity:getName()
 		
-		local item = EmberOgre.ColoredListItem:new(label, entity:getId(), entity)
+		local item = EmberOgre.Gui.ColouredListItem:new(label, entity:getId(), entity)
 		EntityBrowser.listholder:addItem(item)
 	
 	

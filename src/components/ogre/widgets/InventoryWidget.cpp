@@ -24,6 +24,7 @@
 #include "services/EmberServices.h"
 
 #include "Widget.h"
+#include "ColouredListItem.h"
 
 #include "../EmberEntity.h"
 #include "../EmberPhysicalEntity.h"
@@ -88,7 +89,7 @@ void InventoryWidget::createdAvatarEmberEntity(AvatarEmberEntity* entity)
 void InventoryWidget::addedEntity(EmberEntity* dimeEntity) {
 	
 	CEGUI::String name(dimeEntity->getType()->getName() + " ("+ dimeEntity->getId() +" : "+dimeEntity->getName()+")");
-	CEGUI::ListboxItem* item = new ColoredListItem(name, atoi(dimeEntity->getId().c_str()), dimeEntity);
+	CEGUI::ListboxItem* item = new Gui::ColouredListItem(name, atoi(dimeEntity->getId().c_str()), dimeEntity);
 	mListBoxMap.insert(std::map<EmberEntity*, CEGUI::ListboxItem*>::value_type(dimeEntity, item));
 	mListBox->addItem(item);
 

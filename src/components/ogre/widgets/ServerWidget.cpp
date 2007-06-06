@@ -30,6 +30,7 @@
 #include "services/EmberServices.h"
 
 #include "Widget.h"
+#include "ColouredListItem.h"
 #include "../GUIManager.h"
 
 #include "ServerWidget.h"
@@ -243,7 +244,7 @@ void ServerWidget::fillAllowedCharacterTypes(Eris::Account* account)
 			mUseCreator->setEnabled(true);
 		}
 		
-		CEGUI::ListboxItem* item = new ColoredListItem(*I, 0, 0);
+		CEGUI::ListboxItem* item = new Gui::ColouredListItem(*I, 0, 0);
 		mTypesList->addItem(item);
 	}
 }
@@ -268,7 +269,7 @@ void ServerWidget::gotAllCharacters(Eris::Account* account)
 		for(;I != I_end; ++I) {
 			const Atlas::Objects::Entity::RootEntity& entity = (*I).second;
 			const Atlas::Message::Element& nameElement = entity->getAttr("name");
-			ColoredListItem* item = new ColoredListItem(nameElement.asString());
+			Gui::ColouredListItem* item = new Gui::ColouredListItem(nameElement.asString());
 			std::string* id = new std::string(entity->getId());
 			item->setUserData(id);
 			mCharacterList->addItem(item);

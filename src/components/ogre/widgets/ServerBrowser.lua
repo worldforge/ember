@@ -109,7 +109,7 @@ function ServerBrowser.MetaServer_ReceivedServerInfo(sInfo)
 	local rowNumber = ServerBrowser.serverList:getRowCount()
 	ServerBrowser.serverList:addRow()
 	
-	local item = EmberOgre.ColoredListItem:new(sInfo:getServername())
+	local item = EmberOgre.Gui.ColouredListItem:new(sInfo:getServername())
 --	item->setUserData(&sInfo);
 	
 	
@@ -117,22 +117,22 @@ function ServerBrowser.MetaServer_ReceivedServerInfo(sInfo)
 	local ss_ping = sInfo:getPing()
 	local ss_clientNum = sInfo:getNumClients()
 	
-	item = EmberOgre.ColoredListItem:new(ss_ping)
+	item = EmberOgre.Gui.ColouredListItem:new(ss_ping)
 	ServerBrowser.serverList:setItem(item, 1, rowNumber)
 	
-	item = EmberOgre.ColoredListItem:new(ss_clientNum)
+	item = EmberOgre.Gui.ColouredListItem:new(ss_clientNum)
 	ServerBrowser.serverList:setItem(item, 2 ,rowNumber)
 	
-	item = EmberOgre.ColoredListItem:new(sInfo:getRuleset())
+	item = EmberOgre.Gui.ColouredListItem:new(sInfo:getRuleset())
 	ServerBrowser.serverList:setItem(item, 3, rowNumber)
 	
-	item = EmberOgre.ColoredListItem:new(sInfo:getServer())
+	item = EmberOgre.Gui.ColouredListItem:new(sInfo:getServer())
 	ServerBrowser.serverList:setItem(item, 4, rowNumber)
 	
-	item = EmberOgre.ColoredListItem:new(sInfo:getVersion())
+	item = EmberOgre.Gui.ColouredListItem:new(sInfo:getVersion())
 	ServerBrowser.serverList:setItem(item, 5, rowNumber)
 	
-	item = EmberOgre.ColoredListItem:new(sInfo:getHostname())
+	item = EmberOgre.Gui.ColouredListItem:new(sInfo:getHostname())
 	ServerBrowser.serverList:setItem(item, 6, rowNumber)
 	
 	

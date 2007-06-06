@@ -22,6 +22,7 @@
 //
 
 #include "MakeEntityWidget.h"
+#include "ColouredListItem.h"
 
 #include <Eris/TypeService.h>
 #include <Eris/Connection.h>
@@ -202,7 +203,7 @@ void MakeEntityWidget::boundAType(Eris::TypeInfo* typeInfo)
 			}
 		}
 		
-		CEGUI::ListboxTextItem* item = new ColoredListItem(levelindicator.str() + typeInfo->getName());
+		CEGUI::ListboxTextItem* item = new Gui::ColouredListItem(levelindicator.str() + typeInfo->getName());
 		item->setUserData(typeInfo);
 		mTypes[typeInfo] = item;
 		

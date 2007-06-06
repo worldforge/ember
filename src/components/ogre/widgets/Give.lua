@@ -36,7 +36,7 @@ end
 
 function Give.addedEntity(entity)
 	local name = entity:getType():getName() .. " (" .. entity:getId() .. " : " .. entity:getName() .. ")"
-	local item = EmberOgre.ColoredListItem:new(name, entity:getId(), entity)
+	local item = EmberOgre.Gui.ColouredListItem:new(name, entity:getId(), entity)
 	Give.listboxMap[entity] = item
 	--we need to cast it down
 	Give.listbox:addItem(item)

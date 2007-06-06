@@ -22,6 +22,7 @@
 //
 #include "MeshPreview.h"
 #include "framework/Tokeniser.h"
+#include "ColouredListItem.h"
 
 #include "framework/ConsoleBackend.h"
 #include "../EmberOgre.h"
@@ -324,8 +325,8 @@ void MeshPreview::createdNewEntity(size_t index)
 		MeshPreviewMeshInstance instance = mHandler.getInstance(index);
 		Ogre::Entity* entity = instance.getEntity();
 		CEGUI::String name(entity->getMesh()->getName());
-	//	CEGUI::ListboxItem* item = new ColoredListItem(name, 0, index);
-		CEGUI::ListboxItem* item = new ColoredListItem(name, index);
+	//	CEGUI::ListboxItem* item = new ColouredListItem(name, 0, index);
+		CEGUI::ListboxItem* item = new Gui::ColouredListItem(name, index);
 		mCreatedMeshes->addItem(item);
 		
 	} catch (const Ember::Exception&)
@@ -362,7 +363,7 @@ void MeshPreview::fillAnimationList(MeshPreviewMeshInstance& instance )
 			} else if (instance.isAnimationEnabled(state->getAnimationName())) {
 				name += " (paused)";
 			}
-			CEGUI::ListboxItem* item = new ColoredListItem(name, i++);
+			CEGUI::ListboxItem* item = new Gui::ColouredListItem(name, i++);
 			mAnimations->addItem(item);
 //			instance.startAnimation(I->first);
 		}

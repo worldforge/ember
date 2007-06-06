@@ -21,6 +21,7 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 #include "JesusEdit.h"
+#include "ColouredListItem.h"
 
 #include "../jesus/Jesus.h"
 #include <elements/CEGUIPushButton.h>
@@ -205,7 +206,7 @@ void JesusEdit::loadConstruction(Construction* construction)
 	for (std::vector<ModelBlock*>::iterator I = blocks.begin(); I != blocks.end(); ++I) 
 	{
 		CEGUI::String name((*I)->getBuildingBlock()->getName());
-		CEGUI::ListboxItem* item = new ColoredListItem(name, 0, *I);
+		CEGUI::ListboxItem* item = new Gui::ColouredListItem(name, 0, *I);
 		mCurrentBlocksList->addItem(item);
 		//add to the lookup map
 		mCurrentBlocksListLookup.insert(std::map<ModelBlock*, CEGUI::ListboxItem*>::value_type(*I, item));
@@ -234,7 +235,7 @@ void JesusEdit::loadFromJesus(Jesus* jesus)
 	{
 		ConstWrapper<const Carpenter::BuildingBlockSpec*>* holder = new ConstWrapper<const Carpenter::BuildingBlockSpec*>(&I->second);
 		CEGUI::String name(I->second.getName());
-		CEGUI::ListboxItem* item = new ColoredListItem(name, 0, holder);
+		CEGUI::ListboxItem* item = new Gui::ColouredListItem(name, 0, holder);
 		mAvailableBlocksList->addItem(item);
 	}
 }
@@ -312,7 +313,7 @@ void JesusEdit::fillNewAttachPointList(const Carpenter::BlockSpec * blockspec )
 	{
 		CEGUI::String name((*I)->getAttachPair()->getName() + "/" + (*I)->getName() + " ("+(*I)->getAttachPair()->getType() +")");
 		ConstWrapper<const Carpenter::AttachPoint*>* holder = new ConstWrapper<const Carpenter::AttachPoint*>(*I);
-		CEGUI::ListboxItem* item = new ColoredListItem(name, 0, holder);
+		CEGUI::ListboxItem* item = new Gui::ColouredListItem(name, 0, holder);
 		mNewPointsList->addItem(item);
 		
 	}
@@ -329,7 +330,7 @@ void JesusEdit::fillAttachPointList(ModelBlock* block)
 	for (std::vector<AttachPointNode*>::iterator I = nodes.begin(); I != nodes.end(); ++I) 
 	{
 		CEGUI::String name((*I)->getAttachPoint()->getAttachPair()->getName() + "/" + (*I)->getAttachPoint()->getName()+ " ("+(*I)->getAttachPoint()->getAttachPair()->getType() +")");
-		CEGUI::ListboxItem* item = new ColoredListItem(name, 0, *I);
+		CEGUI::ListboxItem* item = new Gui::ColouredListItem(name, 0, *I);
 		mCurrentPointsList->addItem(item);
 		mCurrentPointsListLookup.insert(std::map<AttachPointNode*, CEGUI::ListboxItem*>::value_type(*I, item));
 		
@@ -679,7 +680,7 @@ void JesusEditFile::fillBluePrintList()
 	for (; I != I_end; ++I)
 	{
 		CEGUI::String name(I->first);
-		CEGUI::ListboxItem* item = new ColoredListItem(name, 0, 0);
+		CEGUI::ListboxItem* item = new Gui::ColouredListItem(name, 0, 0);
 		mBluePrintList->addItem(item);
 		
 	}

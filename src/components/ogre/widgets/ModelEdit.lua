@@ -58,7 +58,7 @@ function ModelEdit.fillMaterialList()
 		materialDef = tolua.cast(materialDef, "Ogre::MaterialPtr")
 		local material = materialDef:get()
 		local name = material:getName()
-		local item = EmberOgre.ColoredListItem:new(name, i)
+		local item = EmberOgre.Gui.ColouredListItem:new(name, i)
 		ModelEdit.contentparts.submeshInfo.listholder:addItem(item)
 		i = i + 1
 	end
@@ -70,7 +70,7 @@ function ModelEdit.fillMeshList()
 	
 	for i = 0, meshes:size() - 1 do
 		local name = meshes[i]
-		local item = EmberOgre.ColoredListItem:new(name, i)
+		local item = EmberOgre.Gui.ColouredListItem:new(name, i)
 		ModelEdit.contentparts.modelInfo.meshlist:addItem(item)
 		
 	end	
@@ -94,7 +94,7 @@ function ModelEdit.fillSubMeshList(part)
 	local i = 0
 	while i < numberOfSubmeshes do
 		local submeshname = ModelEdit.getSubMeshName(mesh, i)
-		local item = EmberOgre.ColoredListItem:new(submeshname, i)
+		local item = EmberOgre.Gui.ColouredListItem:new(submeshname, i)
 		list:addItem(item)
 		i = i + 1
 	end	
@@ -127,7 +127,7 @@ function ModelEdit.updateSubmodelsList()
 	local submodels = ModelEdit.definition:getSubModelDefinitions()
 	for val = 0, submodels:size() - 1 do
 		local name = submodels[val]:getMeshName()
-		local item = EmberOgre.ColoredListItem:new(name, val)
+		local item = EmberOgre.Gui.ColouredListItem:new(name, val)
 		ModelEdit.submodels:addItem(item)
 	end	
 end
@@ -139,7 +139,7 @@ function ModelEdit.updatePartsList(submodel)
 		local parts = submodel:getPartDefinitions()
 		for val = 0, parts:size() - 1 do
 			local name = parts[val]:getName()
-			local item = EmberOgre.ColoredListItem:new(name, val)
+			local item = EmberOgre.Gui.ColouredListItem:new(name, val)
 			ModelEdit.parts:addItem(item)
 		end
 	end
@@ -157,7 +157,7 @@ function ModelEdit.updateSubentitiesList(part)
 			if name == "" then
 				name = subentities[val]:getSubEntityIndex()
 			end
-			local item = EmberOgre.ColoredListItem:new(name, val)
+			local item = EmberOgre.Gui.ColouredListItem:new(name, val)
 			ModelEdit.subentities:addItem(item)
 		end
 	end
@@ -180,7 +180,7 @@ function ModelEdit.fillModellist()
 		modelPtr = tolua.cast(modelPtr, "EmberOgre::Model::ModelDefnPtr")
 		local model = modelPtr:get()
 		local name = model:getName()
-		local item = EmberOgre.ColoredListItem:new(name, i)
+		local item = EmberOgre.Gui.ColouredListItem:new(name, i)
 		ModelEdit.modelslistholder:addItem(item)
 		i = i + 1
 	end
@@ -554,7 +554,7 @@ function ModelEdit.updateModelContentList()
 		modelcontentItem.submodel = submodel
 		ModelEdit.modelContentsItems[table.getn(ModelEdit.modelContentsItems) + 1] = modelcontentItem
 		
-		local item = EmberOgre.ColoredListItem:new(name, table.getn(ModelEdit.modelContentsItems))
+		local item = EmberOgre.Gui.ColouredListItem:new(name, table.getn(ModelEdit.modelContentsItems))
 		ModelEdit.modelcontents:addItem(item)
 		
 		--add all parts
@@ -577,7 +577,7 @@ function ModelEdit.updateModelContentList()
 				ModelEdit.modelContentsItems[table.getn(ModelEdit.modelContentsItems) + 1] = modelcontentItem
 				
 				--prefix parts with "-"
-				local item = EmberOgre.ColoredListItem:new(" - " .. name .. partVisible, table.getn(ModelEdit.modelContentsItems))
+				local item = EmberOgre.Gui.ColouredListItem:new(" - " .. name .. partVisible, table.getn(ModelEdit.modelContentsItems))
 				ModelEdit.modelcontents:addItem(item)
 			
 				if part ~= nil then
@@ -595,7 +595,7 @@ function ModelEdit.updateModelContentList()
 						ModelEdit.modelContentsItems[table.getn(ModelEdit.modelContentsItems) + 1] = modelcontentItem
 						
 						--prefix subentities with " -- "
-						local item = EmberOgre.ColoredListItem:new(" -- " .. submeshname, table.getn(ModelEdit.modelContentsItems))
+						local item = EmberOgre.Gui.ColouredListItem:new(" -- " .. submeshname, table.getn(ModelEdit.modelContentsItems))
 						ModelEdit.modelcontents:addItem(item)
 					end
 				end
@@ -818,15 +818,15 @@ function ModelEdit.fillScaleTypesList()
 	ModelEdit.scaleTypes  = ModelEdit.widget:getWindow("ModelUseScaleOf")
 	ModelEdit.scaleTypes = CEGUI.toCombobox( ModelEdit.scaleTypes)
 	
-	local item = EmberOgre.ColoredListItem:new("all", 0)
+	local item = EmberOgre.Gui.ColouredListItem:new("all", 0)
 	ModelEdit.scaleTypes:addItem(item)
-	local item = EmberOgre.ColoredListItem:new("none", 1)
+	local item = EmberOgre.Gui.ColouredListItem:new("none", 1)
 	ModelEdit.scaleTypes:addItem(item)
-	local item = EmberOgre.ColoredListItem:new("width", 2)
+	local item = EmberOgre.Gui.ColouredListItem:new("width", 2)
 	ModelEdit.scaleTypes:addItem(item)
-	local item = EmberOgre.ColoredListItem:new("depth", 3)
+	local item = EmberOgre.Gui.ColouredListItem:new("depth", 3)
 	ModelEdit.scaleTypes:addItem(item)
-	local item = EmberOgre.ColoredListItem:new("height", 4)
+	local item = EmberOgre.Gui.ColouredListItem:new("height", 4)
 	ModelEdit.scaleTypes:addItem(item)
 	
 	ModelEdit.scaleTypes:subscribeEvent("ListSelectionChanged", "ModelEdit.ModelUseScaleOf_SelectionChanged")

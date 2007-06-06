@@ -22,7 +22,6 @@
 				<Property Name='UnifiedPosition' Value='{{0,0},{0.6,0}}'/>
 				<Property Name='UnifiedSize' Value='{{1.0,0},{0.4,-25}}'/>
 				<Property Name='InheritsAlpha' Value='True'/>
-				<Property Name='Alpha' Value='0.6'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='MoveEntity'>
 				<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-25}}'/>
