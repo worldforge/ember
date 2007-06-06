@@ -14,53 +14,6 @@
 
 namespace EmberOgre
 {
-
-	ColoredListItem::ColoredListItem(const CEGUI::String& text) : ListboxTextItem(text)
-	{
-		setColours();
-	}
-	
-	ColoredListItem::ColoredListItem(const CEGUI::String& text, unsigned int item_id) : ListboxTextItem(text, item_id)
-	{
-		setColours();
-	}
-	
-	ColoredListItem::ColoredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data) : ListboxTextItem(text, item_id, item_data)
-	{
-		setColours();
-	}
-	
-	void ColoredListItem::setColours()
-	{
- 		setSelectionColours(CEGUI::colour(50,50,50));
-		setTextColours(CEGUI::colour(0,0,0));
-		try {
-			setSelectionBrushImage("EmberLook", "MultiListSelectionBrush");
-		} catch (...) {}
-	
-	}
-
-	CEGUI::ListboxItem* ColoredListItem::createColoredListItem(const CEGUI::String& text)
-	{
-		return new ColoredListItem(text);
-	}
-	
-	CEGUI::ListboxItem* ColoredListItem::createColoredListItem(const CEGUI::String& text, unsigned int item_id)
-	{
-		return new ColoredListItem(text, item_id);
-	}
-	
-	CEGUI::ListboxItem* ColoredListItem::createColoredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data)
-	{
-		return new ColoredListItem(text, item_id, item_data);
-	}
-	
-	
-	
-	
-	
-	
-	
 	const std::string Widget::DEFAULT_TAB_GROUP("default");
 	
 	Widget::Widget() : mCommandSuffix(""), mMainWindow(0), mActiveWindowIsOpaque(true), mFirstTabWindow(0), mLastTabWindow(0)

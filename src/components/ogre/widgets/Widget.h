@@ -316,23 +316,7 @@ public:
 };
 
 
-/**
-	A standard ListboxTextItem, with the exeption that the selection will be colored.
-*/
-class ColoredListItem : public CEGUI::ListboxTextItem
-{
-public:
-	ColoredListItem(const CEGUI::String& text); 
-	ColoredListItem(const CEGUI::String& text, unsigned int item_id);
-	ColoredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data);
 
-	static CEGUI::ListboxItem* createColoredListItem(const CEGUI::String& text); 
-	static CEGUI::ListboxItem* createColoredListItem(const CEGUI::String& text, unsigned int item_id);
-	static CEGUI::ListboxItem* createColoredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data);
-
-private:
-	void setColours();
-};
 
 
 }
