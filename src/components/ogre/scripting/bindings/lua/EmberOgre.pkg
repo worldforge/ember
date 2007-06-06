@@ -26,6 +26,7 @@ $pfile "IconBar.pkg"
 $pfile "EntityEditor.pkg"
 $pfile "StackableContainer.pkg"
 $pfile "ConsoleAdapter.pkg"
+$pfile "ColouredListItem.pkg"
 
 
 $pfile "Model.pkg"

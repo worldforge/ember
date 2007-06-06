@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Fri May 25 08:38:23 2007.
+** Generated automatically by tolua++-1.0.92 on Tue Jun  5 23:54:28 2007.
 */
 
 #ifndef __cplusplus
@@ -383,7 +383,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::AvatarEmberEntity*>");
  tolua_usertype(tolua_S,"EmberOgre::Input");
  tolua_usertype(tolua_S,"SDLKey");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Input::MouseButton,EmberOgre::Input::InputMode>");
+ tolua_usertype(tolua_S,"Carpenter::BuildingBlock");
  tolua_usertype(tolua_S,"Carpenter::BuildingBlockBindingDefinition");
  tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefinition");
  tolua_usertype(tolua_S,"std::map<const std::string,Carpenter::BuildingBlockSpec>");
@@ -402,7 +402,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Carpenter::Carpenter");
  tolua_usertype(tolua_S,"CEGUI::Image");
  tolua_usertype(tolua_S,"Carpenter::BlockSpec");
- tolua_usertype(tolua_S,"WFMath::Vector<3>");
+ tolua_usertype(tolua_S,"EmberOgre::IconBase");
  tolua_usertype(tolua_S,"Carpenter::BluePrint");
  tolua_usertype(tolua_S,"CEGUI::Editbox");
  tolua_usertype(tolua_S,"const");
@@ -432,24 +432,24 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntityFactory*>");
  tolua_usertype(tolua_S,"Ogre::RenderWindow");
  tolua_usertype(tolua_S,"EmberOgre::ModelMapping");
- tolua_usertype(tolua_S,"CEGUI::Listbox");
+ tolua_usertype(tolua_S,"EmberOgre::BasePointUserObject");
  tolua_usertype(tolua_S,"EmberOgre::OgreInfo");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Jesus*>");
  tolua_usertype(tolua_S,"std::vector<EmberOgre::Model::PartDefinition*>");
  tolua_usertype(tolua_S,"std::set<std::string>");
  tolua_usertype(tolua_S,"Carpenter::BuildingBlockSpec");
- tolua_usertype(tolua_S,"std::map<std::string,Carpenter::BluePrint*>");
+ tolua_usertype(tolua_S,"EmberOgre::Jesus");
  tolua_usertype(tolua_S,"EmberOgre::EntityPickResult");
  tolua_usertype(tolua_S,"CEGUI::PushButton");
  tolua_usertype(tolua_S,"EmberOgre::OgreEntityRenderer");
  tolua_usertype(tolua_S,"EmberOgre::Gui::Vector3Adapter");
  tolua_usertype(tolua_S,"EmberOgre::AvatarEmberEntity");
- tolua_usertype(tolua_S,"Carpenter::BuildingBlock");
+ tolua_usertype(tolua_S,"EmberOgre::TerrainEditAction");
  tolua_usertype(tolua_S,"Carpenter::AttachPair");
- tolua_usertype(tolua_S,"Carpenter::BuildingBlockBinding");
+ tolua_usertype(tolua_S,"Ogre::BillboardSet");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::AvatarController&>");
  tolua_usertype(tolua_S,"EmberOgre::TerrainArea");
- tolua_usertype(tolua_S,"EmberOgre::ColoredListItem");
+ tolua_usertype(tolua_S,"CEGUI::Listbox");
  tolua_usertype(tolua_S,"EmberOgre::Model::PartDefinition");
  tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefinitionManager");
  tolua_usertype(tolua_S,"Carpenter::BuildingBlockDefinition");
@@ -457,38 +457,38 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"EmberOgre::EntityWorldPickListener");
  tolua_usertype(tolua_S,"CEGUI::ListboxItem");
  tolua_usertype(tolua_S,"EmberOgre::EmberOgre");
- tolua_usertype(tolua_S,"EmberOgre::BasePointUserObject");
- tolua_usertype(tolua_S,"Carpenter::BuildingBlockSpecDefinition");
  tolua_usertype(tolua_S,"std::map<const std::string,Carpenter::BluePrint>");
+ tolua_usertype(tolua_S,"Carpenter::BuildingBlockSpecDefinition");
  tolua_usertype(tolua_S,"WFMath::Quaternion");
  tolua_usertype(tolua_S,"Ogre::Vector2");
+ tolua_usertype(tolua_S,"WFMath::Vector<3>");
  tolua_usertype(tolua_S,"EmberOgre::TerrainEditBasePointMovement");
- tolua_usertype(tolua_S,"EmberOgre::Widget");
- tolua_usertype(tolua_S,"Ogre::Real");
  tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::MapAdapter");
+ tolua_usertype(tolua_S,"Ogre::Real");
  tolua_usertype(tolua_S,"Ogre::ColourValue");
  tolua_usertype(tolua_S,"EmberOgre::AvatarControllerMovement");
+ tolua_usertype(tolua_S,"Carpenter::BuildingBlockBinding");
  tolua_usertype(tolua_S,"EmberOgre::MotionManager::MotionManagerInfo");
  tolua_usertype(tolua_S,"Ogre::Quaternion");
  tolua_usertype(tolua_S,"EmberOgre::EntityMoveManager");
- tolua_usertype(tolua_S,"Ogre::BillboardSet");
  tolua_usertype(tolua_S,"Ogre::ControllerValue<Ogre::Real>");
+ tolua_usertype(tolua_S,"std::map<std::string,Carpenter::BluePrint*>");
  tolua_usertype(tolua_S,"Eris::Task");
- tolua_usertype(tolua_S,"EmberOgre::Jesus");
+ tolua_usertype(tolua_S,"EmberOgre::Widget");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Input::InputMode>");
- tolua_usertype(tolua_S,"Ogre::Entity");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Input::MouseButton,EmberOgre::Input::InputMode>");
  tolua_usertype(tolua_S,"EmberOgre::MotionManager");
+ tolua_usertype(tolua_S,"Ogre::Entity");
  tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefnPtr");
  tolua_usertype(tolua_S,"EmberOgre::Model::SubModelDefinition");
- tolua_usertype(tolua_S,"EmberOgre::Widgets::IconBar");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::BasePointUserObject*>");
  tolua_usertype(tolua_S,"EmberOgre::WorldEmberEntity");
- tolua_usertype(tolua_S,"EmberOgre::IconBase");
+ tolua_usertype(tolua_S,"EmberOgre::Widgets::IconBar");
  tolua_usertype(tolua_S,"Carpenter::AttachPoint");
  tolua_usertype(tolua_S,"EmberOgre::AvatarMovementState");
- tolua_usertype(tolua_S,"sigc::signal<void>");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::ColouredListItem");
  tolua_usertype(tolua_S,"Ogre::SceneNode");
- tolua_usertype(tolua_S,"EmberOgre::TerrainEditAction");
+ tolua_usertype(tolua_S,"sigc::signal<void>");
 }
 
 /* method: getAttachPoint of class  Carpenter::AttachPair */
@@ -6015,95 +6015,6 @@ static int tolua_EmberOgre_EmberOgre_MotionManager_getInfo00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: createColoredListItem of class  EmberOgre::ColoredListItem */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_ColoredListItem_new00
-static int tolua_EmberOgre_EmberOgre_ColoredListItem_new00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertable(tolua_S,1,"EmberOgre::ColoredListItem",0,&tolua_err) ||
-     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  const std::string text = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
-  {
-   CEGUI::ListboxItem* tolua_ret = (CEGUI::ListboxItem*)  EmberOgre::ColoredListItem::createColoredListItem(text);
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"CEGUI::ListboxItem");
-   tolua_pushcppstring(tolua_S,(const char*)text);
-  }
- }
- return 2;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: createColoredListItem of class  EmberOgre::ColoredListItem */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_ColoredListItem_new01
-static int tolua_EmberOgre_EmberOgre_ColoredListItem_new01(lua_State* tolua_S)
-{
- tolua_Error tolua_err;
- if (
-     !tolua_isusertable(tolua_S,1,"EmberOgre::ColoredListItem",0,&tolua_err) ||
-     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,4,&tolua_err)
- )
-  goto tolua_lerror;
- else
- {
-  const std::string text = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
-  unsigned int item_id = ((unsigned int)  tolua_tonumber(tolua_S,3,0));
-  {
-   CEGUI::ListboxItem* tolua_ret = (CEGUI::ListboxItem*)  EmberOgre::ColoredListItem::createColoredListItem(text,item_id);
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"CEGUI::ListboxItem");
-   tolua_pushcppstring(tolua_S,(const char*)text);
-  }
- }
- return 2;
-tolua_lerror:
- return tolua_EmberOgre_EmberOgre_ColoredListItem_new00(tolua_S);
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: createColoredListItem of class  EmberOgre::ColoredListItem */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_ColoredListItem_new02
-static int tolua_EmberOgre_EmberOgre_ColoredListItem_new02(lua_State* tolua_S)
-{
- tolua_Error tolua_err;
- if (
-     !tolua_isusertable(tolua_S,1,"EmberOgre::ColoredListItem",0,&tolua_err) ||
-     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
-     !tolua_isuserdata(tolua_S,4,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,5,&tolua_err)
- )
-  goto tolua_lerror;
- else
- {
-  const std::string text = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
-  unsigned int item_id = ((unsigned int)  tolua_tonumber(tolua_S,3,0));
-  void* item_data = ((void*)  tolua_touserdata(tolua_S,4,0));
-  {
-   CEGUI::ListboxItem* tolua_ret = (CEGUI::ListboxItem*)  EmberOgre::ColoredListItem::createColoredListItem(text,item_id,item_data);
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"CEGUI::ListboxItem");
-   tolua_pushcppstring(tolua_S,(const char*)text);
-  }
- }
- return 2;
-tolua_lerror:
- return tolua_EmberOgre_EmberOgre_ColoredListItem_new01(tolua_S);
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* method: delete of class  EmberOgre::Widget */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Widget_delete00
 static int tolua_EmberOgre_EmberOgre_Widget_delete00(lua_State* tolua_S)
@@ -8001,6 +7912,95 @@ static int tolua_EmberOgre_EmberOgre_Gui_ConsoleAdapter_delete00(lua_State* tolu
  tolua_error(tolua_S,"#ferror in function 'delete'.",&tolua_err);
  return 0;
 #endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: createColouredListItem of class  EmberOgre::Gui::ColouredListItem */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_ColouredListItem_new00
+static int tolua_EmberOgre_EmberOgre_Gui_ColouredListItem_new00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"EmberOgre::Gui::ColouredListItem",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const std::string text = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  {
+   CEGUI::ListboxItem* tolua_ret = (CEGUI::ListboxItem*)  EmberOgre::Gui::ColouredListItem::createColouredListItem(text);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"CEGUI::ListboxItem");
+   tolua_pushcppstring(tolua_S,(const char*)text);
+  }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: createColouredListItem of class  EmberOgre::Gui::ColouredListItem */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_ColouredListItem_new01
+static int tolua_EmberOgre_EmberOgre_Gui_ColouredListItem_new01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"EmberOgre::Gui::ColouredListItem",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  const std::string text = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  unsigned int item_id = ((unsigned int)  tolua_tonumber(tolua_S,3,0));
+  {
+   CEGUI::ListboxItem* tolua_ret = (CEGUI::ListboxItem*)  EmberOgre::Gui::ColouredListItem::createColouredListItem(text,item_id);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"CEGUI::ListboxItem");
+   tolua_pushcppstring(tolua_S,(const char*)text);
+  }
+ }
+ return 2;
+tolua_lerror:
+ return tolua_EmberOgre_EmberOgre_Gui_ColouredListItem_new00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: createColouredListItem of class  EmberOgre::Gui::ColouredListItem */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_ColouredListItem_new02
+static int tolua_EmberOgre_EmberOgre_Gui_ColouredListItem_new02(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"EmberOgre::Gui::ColouredListItem",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isuserdata(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  const std::string text = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  unsigned int item_id = ((unsigned int)  tolua_tonumber(tolua_S,3,0));
+  void* item_data = ((void*)  tolua_touserdata(tolua_S,4,0));
+  {
+   CEGUI::ListboxItem* tolua_ret = (CEGUI::ListboxItem*)  EmberOgre::Gui::ColouredListItem::createColouredListItem(text,item_id,item_data);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"CEGUI::ListboxItem");
+   tolua_pushcppstring(tolua_S,(const char*)text);
+  }
+ }
+ return 2;
+tolua_lerror:
+ return tolua_EmberOgre_EmberOgre_Gui_ColouredListItem_new01(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
@@ -17600,12 +17600,6 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"EmberOgre",0);
   tolua_beginmodule(tolua_S,"EmberOgre");
-   tolua_cclass(tolua_S,"ColoredListItem","EmberOgre::ColoredListItem","CEGUI::ListboxTextItem",NULL);
-   tolua_beginmodule(tolua_S,"ColoredListItem");
-    tolua_function(tolua_S,"new",tolua_EmberOgre_EmberOgre_ColoredListItem_new00);
-    tolua_function(tolua_S,"new",tolua_EmberOgre_EmberOgre_ColoredListItem_new01);
-    tolua_function(tolua_S,"new",tolua_EmberOgre_EmberOgre_ColoredListItem_new02);
-   tolua_endmodule(tolua_S);
    #ifdef __cplusplus
    tolua_cclass(tolua_S,"Widget","EmberOgre::Widget","",tolua_collect_EmberOgre__Widget);
    #else
@@ -17738,6 +17732,18 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"new_local",tolua_EmberOgre_EmberOgre_Gui_ConsoleAdapter_new00_local);
      tolua_function(tolua_S,".call",tolua_EmberOgre_EmberOgre_Gui_ConsoleAdapter_new00_local);
      tolua_function(tolua_S,"delete",tolua_EmberOgre_EmberOgre_Gui_ConsoleAdapter_delete00);
+    tolua_endmodule(tolua_S);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"EmberOgre",0);
+  tolua_beginmodule(tolua_S,"EmberOgre");
+   tolua_module(tolua_S,"Gui",0);
+   tolua_beginmodule(tolua_S,"Gui");
+    tolua_cclass(tolua_S,"ColouredListItem","EmberOgre::Gui::ColouredListItem","CEGUI::ListboxTextItem",NULL);
+    tolua_beginmodule(tolua_S,"ColouredListItem");
+     tolua_function(tolua_S,"new",tolua_EmberOgre_EmberOgre_Gui_ColouredListItem_new00);
+     tolua_function(tolua_S,"new",tolua_EmberOgre_EmberOgre_Gui_ColouredListItem_new01);
+     tolua_function(tolua_S,"new",tolua_EmberOgre_EmberOgre_Gui_ColouredListItem_new02);
     tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);

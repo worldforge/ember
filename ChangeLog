@@ -1,3 +1,47 @@
+2007-06-06 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/scripting/bindings/lua/ColouredListItem.pkg, src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/Widget.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/scripting/bindings/lua/required.h: updated bindings
+
+2007-06-06 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/EntityEditor.layout, src/components/ogre/widgets/EntityEditor.lua: added support for more adapters, a list of children and various other improvements
+
+2007-06-06 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/EntityBrowser.lua, src/components/ogre/widgets/Give.lua, src/components/ogre/widgets/InspectWidget.cpp, src/components/ogre/widgets/InspectWidget.xml, src/components/ogre/widgets/InventoryWidget.cpp, src/components/ogre/widgets/JesusEdit.cpp, src/components/ogre/widgets/MakeEntityWidget.cpp, src/components/ogre/widgets/Makefile.am, src/components/ogre/widgets/MeshPreview.cpp, src/components/ogre/widgets/ModelEdit.lua, src/components/ogre/widgets/ScriptEdit.lua, src/components/ogre/widgets/ServerBrowser.lua, src/components/ogre/widgets/ServerWidget.cpp: adapt to changed ColouredListItem class
+
+2007-06-06 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/cegui/datafiles/looknfeel/EmberLook.looknfeel: made it so that the dropdown part of the combobox always is unclipped by parents
+
+2007-06-06 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/adapters/atlas/bindings/lua/AdapterBase.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/AdapterFactory.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/NumberAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/OrientationAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/SizeAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/StringAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/bindings.cpp, src/components/ogre/widgets/adapters/atlas/bindings/lua/bindings.pkg: updated bindings
+
+2007-06-06 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/adapters/atlas/PositionAdapter.layout: updated the layout and added a button for initiating a movement action
+
+2007-06-06 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/ColouredListItem.cpp, src/components/ogre/widgets/ColouredListItem.h, src/components/ogre/widgets/Widget.cpp, src/components/ogre/widgets/Widget.h: moved the ColouredListItem to its separate file, and also changed the namespace
+
+2007-06-06 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/adapters/atlas/Makefile.am: updated for added files
+
+2007-06-06 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/adapters/atlas/AdapterBase.cpp, src/components/ogre/widgets/adapters/atlas/AdapterBase.h: added method for adding a suggested value
+
+2007-06-06 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/adapters/atlas/NumberAdapter.cpp, src/components/ogre/widgets/adapters/atlas/NumberAdapter.h, src/components/ogre/widgets/adapters/atlas/NumberAdapter.layout, src/components/ogre/widgets/adapters/atlas/StringAdapter.cpp, src/components/ogre/widgets/adapters/atlas/StringAdapter.h, src/components/ogre/widgets/adapters/atlas/StringAdapter.layout, src/components/ogre/widgets/adapters/atlas/AdapterFactory.cpp, src/components/ogre/widgets/adapters/atlas/AdapterFactory.h: use a combo box instead of an edit box so that we can allow for suggested values. Also added support for the orientation adapter.
+
+2007-06-06 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/adapters/atlas/OrientationAdapter.cpp, src/components/ogre/widgets/adapters/atlas/OrientationAdapter.h, src/components/ogre/widgets/adapters/atlas/OrientationAdapter.layout: added an adapter for orientation
+
 2007-05-28 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
 
 	* src/framework/bindings/lua/Framework.pkg, src/framework/bindings/lua/IScriptingProvider.pkg, src/framework/bindings/lua/lua_Framework.cpp, src/framework/bindings/lua/eris/Entity.pkg, src/framework/bindings/lua/eris/lua_Eris.cpp: updated bindings

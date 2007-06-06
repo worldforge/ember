@@ -44,6 +44,7 @@
 #include "components/ogre/widgets/EntityEditor.h"
 #include "components/ogre/widgets/StackableContainer.h"
 #include "components/ogre/widgets/ConsoleAdapter.h"
+#include "components/ogre/widgets/ColouredListItem.h"
 #include "components/ogre/widgets/adapters/atlas/MapAdapter.h"
 
 #include "components/ogre/widgets/IconBar.h"

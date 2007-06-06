@@ -13,19 +13,6 @@ public:
 };
 */
 
-/**
-	A standard ListboxTextItem, with the exeption that the selection will be colored.
-*/
-class ColoredListItem : public CEGUI::ListboxTextItem
-{
-/*	ColoredListItem(std::string text); 
-	ColoredListItem(std::string text, unsigned int item_id);
-	ColoredListItem(std::string text, unsigned int item_id, void *item_data);*/
-	
-	static CEGUI::ListboxItem* createColoredListItem @ new(const std::string& text); 
-	static CEGUI::ListboxItem* createColoredListItem @ new(const std::string& text, unsigned int item_id);
-	static CEGUI::ListboxItem* createColoredListItem @ new(const std::string& text, unsigned int item_id, void *item_data);
-};
 
 
 /** 
@@ -44,9 +31,7 @@ When creating a new Widget class, make sure you also add it to WidgetDefinitions
 class Widget 
 {
 public:
-//	static CEGUI::ListItem* createColoredListItem(const CEGUI::String& text); 
-//	static CEGUI::ListItem* createColoredListItem(const CEGUI::String& text, unsigned int item_id);
-//	static CEGUI::ListItem* createColoredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data);
+
 	~Widget();
 
 	/**
