@@ -37,15 +37,9 @@ namespace Atlas {
 class NumberAdapter : AdapterBase
 {
 public:
-    NumberAdapter(const Atlas::Message::Element& element, CEGUI::Window* textWindow);
+    NumberAdapter(const Atlas::Message::Element& element, CEGUI::Combobox* textWindow);
 
     virtual ~NumberAdapter();
-    
-	/**
-	Updates the gui with new values.
-	*/
-	virtual void updateGui(const Atlas::Message::Element& element);
-    
 
 };
 

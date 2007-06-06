@@ -66,6 +66,7 @@ public:
 	void remove();
 	bool isRemoved() const;
 	
+	virtual void addSuggestion(const std::string& suggestedValue);
 };
 
 }

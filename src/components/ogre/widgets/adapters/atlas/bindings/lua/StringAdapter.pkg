@@ -37,15 +37,10 @@ namespace Atlas {
 class StringAdapter : AdapterBase
 {
 public:
-	StringAdapter(const Atlas::Message::Element& element, CEGUI::Window* textWindow);
+	StringAdapter(const Atlas::Message::Element& element, CEGUI::Combobox* textWindow);
 	
 	virtual ~StringAdapter();
 	
-	/**
-	Updates the gui with new values.
-	*/
-	virtual void updateGui(const Atlas::Message::Element& element);
-    
 };
 
 }
