@@ -673,6 +673,7 @@
                 <Dim type="Width" ><UnifiedDim scale="1" type="Width" /></Dim>
                 <Dim type="BottomEdge" ><UnifiedDim scale="1" type="BottomEdge" /></Dim>
             </Area>
+            <Property name="ClippedByParent" value="false" />
         </Child>
         <Child  type="EmberLook/IconButton" nameSuffix="__auto_button__">
             <Area>
