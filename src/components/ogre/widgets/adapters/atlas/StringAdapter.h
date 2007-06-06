@@ -39,7 +39,7 @@ namespace Atlas {
 class StringAdapter : AdapterBase
 {
 public:
-	StringAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* textWindow);
+	StringAdapter(const ::Atlas::Message::Element& element, CEGUI::Combobox* textWindow);
 	
 	virtual ~StringAdapter();
 	
@@ -48,8 +48,10 @@ public:
 	*/
 	virtual void updateGui(const ::Atlas::Message::Element& element);
     
+	virtual void addSuggestion(const std::string& suggestedValue);
+
 protected:
-	CEGUI::Window* mTextWindow;
+	CEGUI::Combobox* mTextWindow;
 	bool window_TextChanged(const CEGUI::EventArgs& e);
 
 	virtual void fillElementFromGui();

@@ -1,7 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
-	<Window Type='EmberLook/Editbox' Name='NumberAdapter'>
+	<Window Type='DefaultGUISheet' Name='NumberAdapter'>
 		<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-		<Property Name='UnifiedSize' Value='{{0,50},{0,20}}'/>
-	</Window>
+		<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+		<Window Type='EmberLook/Combobox' Name='Number'>
+			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+			<Property Name='UnifiedSize' Value='{{0,75},{0,100}}'/>
+		</Window>
+		</Window>
 </GUILayout>

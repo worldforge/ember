@@ -27,6 +27,7 @@
 #include "MapAdapter.h"
 #include "ListAdapter.h"
 #include "PositionAdapter.h"
+#include "OrientationAdapter.h"
 #include <CEGUI.h>
 #include "components/ogre/GUIManager.h"
 #include "services/logging/LoggingService.h"
@@ -67,8 +68,10 @@ StringAdapter* AdapterFactory::createStringAdapter(CEGUI::Window* container, con
 	}
 	
 	try {
-		CEGUI::Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/StringAdapter.layout");
-		StringAdapter* adapter = new StringAdapter(element, window);
+		loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/StringAdapter.layout");
+		WindowManager& windowMgr = WindowManager::getSingleton();
+		Combobox* stringWindow = static_cast<Combobox*>(windowMgr.getWindow(mCurrentPrefix + "String"));
+		StringAdapter* adapter = new StringAdapter(element, stringWindow);
 		
 		return adapter;
 	} catch (const CEGUI::Exception& ex) {
@@ -94,8 +97,11 @@ NumberAdapter* AdapterFactory::createNumberAdapter(CEGUI::Window* container, con
 	}
 	
 	try {
-		CEGUI::Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/NumberAdapter.layout");
-		NumberAdapter* adapter = new NumberAdapter(element, window);
+		
+		loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/NumberAdapter.layout");
+		WindowManager& windowMgr = WindowManager::getSingleton();
+		Combobox* numberWindow = static_cast<Combobox*>(windowMgr.getWindow(mCurrentPrefix + "Number"));
+		NumberAdapter* adapter = new NumberAdapter(element, numberWindow);
 		
 		return adapter;
 	} catch (const CEGUI::Exception& ex) {
@@ -138,6 +144,37 @@ SizeAdapter* AdapterFactory::createSizeAdapter(CEGUI::Window* container, const s
 		return 0;
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when loading SizeAdapter. " << ex.what());
+		return 0;
+	}
+}
+
+OrientationAdapter* AdapterFactory::createOrientationAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
+{
+	if (!container) {
+		S_LOG_FAILURE("No container sent to AdapterFactory::createOrientationAdapter.");
+		return 0;
+	}
+	
+	if (!element.isList()) {
+		S_LOG_FAILURE("Incorrect element type.");
+		return 0;
+	}
+	
+	try {
+		loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/OrientationAdapter.layout");
+		WindowManager& windowMgr = WindowManager::getSingleton();
+		Window* x = windowMgr.getWindow(mCurrentPrefix + "x");
+		Window* y = windowMgr.getWindow(mCurrentPrefix + "y");
+		Window* z = windowMgr.getWindow(mCurrentPrefix + "z");
+		Window* scalar = windowMgr.getWindow(mCurrentPrefix + "scalar");
+		OrientationAdapter* adapter = new OrientationAdapter(element, x, y, z, scalar);
+		
+		return adapter;
+	} catch (const CEGUI::Exception& ex) {
+		S_LOG_FAILURE("Error when creating OrientationAdapter. " << ex.getMessage ().c_str());
+		return 0;
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Error when loading OrientationAdapter. " << ex.what());
 		return 0;
 	}
 }

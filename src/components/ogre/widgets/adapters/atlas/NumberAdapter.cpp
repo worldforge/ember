@@ -21,6 +21,7 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 #include "NumberAdapter.h"
+#include "../../ColouredListItem.h"
 
 namespace EmberOgre {
 
@@ -30,7 +31,7 @@ namespace Adapters {
 
 namespace Atlas {
 
-NumberAdapter::NumberAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* textWindow)
+NumberAdapter::NumberAdapter(const ::Atlas::Message::Element& element, CEGUI::Combobox* textWindow)
 : AdapterBase(element)
 , mTextWindow(textWindow)
 {
@@ -38,6 +39,7 @@ NumberAdapter::NumberAdapter(const ::Atlas::Message::Element& element, CEGUI::Wi
 		textWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&NumberAdapter::window_TextChanged, this)); 
 	}
 	updateGui(mOriginalElement);
+	mTextWindow->getPushButton()->setVisible(false);
 
 }
 
@@ -79,6 +81,12 @@ void NumberAdapter::fillElementFromGui()
 bool NumberAdapter::_hasChanges()
 {
 	return mOriginalElement.asNum() != getValue().asNum();
+}
+
+void NumberAdapter::addSuggestion(const std::string& suggestedValue)
+{
+	mTextWindow->addItem(new ColouredListItem(suggestedValue));
+	mTextWindow->getPushButton()->setVisible(true);
 }
 
 }

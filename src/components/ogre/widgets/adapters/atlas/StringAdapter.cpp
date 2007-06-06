@@ -21,6 +21,7 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 #include "StringAdapter.h"
+#include "../../ColouredListItem.h"
 
 namespace EmberOgre {
 
@@ -30,7 +31,7 @@ namespace Adapters {
 
 namespace Atlas {
 
-StringAdapter::StringAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* textWindow)
+StringAdapter::StringAdapter(const ::Atlas::Message::Element& element, CEGUI::Combobox* textWindow)
 : AdapterBase(element)
 , mTextWindow(textWindow)
 {
@@ -38,6 +39,7 @@ StringAdapter::StringAdapter(const ::Atlas::Message::Element& element, CEGUI::Wi
 		textWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&StringAdapter::window_TextChanged, this)); 
 	}
 	updateGui(mOriginalElement);
+	mTextWindow->getPushButton()->setVisible(false);
 
 }
 
@@ -74,6 +76,13 @@ bool StringAdapter::_hasChanges()
 {
 	return mOriginalElement.asString() != getValue().asString();
 }
+
+void StringAdapter::addSuggestion(const std::string& suggestedValue)
+{
+	mTextWindow->addItem(new ColouredListItem(suggestedValue));
+	mTextWindow->getPushButton()->setVisible(true);
+}
+
 
 }
 
