@@ -2,18 +2,23 @@
 <GUILayout>
 	<Window Type='DefaultGUISheet' Name='PositionAdapter'>
 		<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-		<Property Name='UnifiedSize' Value='{{0,150},{0,25}}'/>
+		<Property Name='UnifiedSize' Value='{{0,200},{0,25}}'/>
 		<Window Type='EmberLook/Editbox' Name='x'>
 			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{0,45},{0,20}}'/>
+			<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
 		</Window>
 		<Window Type='EmberLook/Editbox' Name='y'>
 			<Property Name='UnifiedPosition' Value='{{0,50},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{0,45},{0,20}}'/>
+			<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
 		</Window>
 		<Window Type='EmberLook/Editbox' Name='z'>
 			<Property Name='UnifiedPosition' Value='{{0,100},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{0,45},{0,20}}'/>
+			<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+		</Window>
+		<Window Type='EmberLook/Button' Name='moveButton'>
+			<Property Name='UnifiedPosition' Value='{{0,150},{0,0}}'/>
+			<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+			<Property Name='Text' Value='Move'/>
 		</Window>
 	</Window>
 </GUILayout>
