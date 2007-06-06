@@ -90,6 +90,11 @@ bool AdapterBase::isRemoved() const
 	return mRemoved;
 }
 
+void AdapterBase::addSuggestion(const std::string& suggestedValue)
+{
+}
+
+
 
 }
 

@@ -91,6 +91,8 @@ public:
 	
 	bool isRemoved() const;
 	
+	virtual void addSuggestion(const std::string& suggestedValue);
+	
 protected:
 
 	const ::Atlas::Message::Element& mOriginalElement;
