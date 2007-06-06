@@ -7,12 +7,14 @@ EntityEditor.instance.rootMapAdapter = nil
 EntityEditor.instance.helper = nil
 EntityEditor.factory = nil
 EntityEditor.attributesContainer = nil
-EntityEditor.hiddenAttributes = {objtype = 1, stamp = 1}
+EntityEditor.hiddenAttributes = {objtype = 1, stamp = 1, area = 1}
 
 
 function editEntity(id)
 	local entity = emberOgre:getEntity(id)
-	EntityEditor.editEntity(entity)
+	if entity ~= nil then
+		EntityEditor.editEntity(entity)
+	end
 end
 
 function EntityEditor.createStackableContainer(container)
@@ -62,6 +64,8 @@ function EntityEditor.editEntity(entity)
 	EntityEditor.instance.outercontainer:addChildWindow(newElementWrapper.container)
 
 	EntityEditor.infoWindow:setText('Id: ' .. entity:getId() .. ' Name: ' .. entity:getName())
+	
+	EntityEditor.refreshChildren(entity)
 
 end
 
@@ -157,6 +161,8 @@ function EntityEditor.createAdapter(attributeName, element)
 			return EntityEditor.createSizeAdapter(element)
 		elseif attributeName == 'pos' then
 			return EntityEditor.createPositionAdapter(element)
+		elseif attributeName == 'orientation' then
+			return EntityEditor.createOrientationAdapter(element)
 		elseif element:isString() then
 			return EntityEditor.createStringAdapter(element)
 		elseif element:isNum() then
@@ -221,6 +227,7 @@ function EntityEditor.createStringAdapter(element)
 	local wrapper = {}
 	wrapper.container = guiManager:createWindow("DefaultGUISheet")
 	wrapper.adapter = EntityEditor.factory:createStringAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
+	wrapper.adapter:addSuggestion("test")
 	return wrapper	
 end
 
@@ -245,6 +252,12 @@ function EntityEditor.createPositionAdapter(element)
 	return wrapper	
 end
 
+function EntityEditor.createOrientationAdapter(element)
+	local wrapper = {}
+	wrapper.container = guiManager:createWindow("DefaultGUISheet")
+	wrapper.adapter = EntityEditor.factory:createOrientationAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
+	return wrapper	
+end
 
 function EntityEditor.addUnNamedAdapterContainer(adapter, container, parentContainer)
 	local outercontainer = guiManager:createWindow("DefaultGUISheet")
@@ -351,15 +364,15 @@ end
 
 function EntityEditor.fillNewElementCombobox(combobox)
 	local item = nil
-	item = EmberOgre.ColoredListItem:new("String", 0)
+	item = EmberOgre.Gui.ColouredListItem:new("String", 0)
 	combobox:addItem(item)
-	item = EmberOgre.ColoredListItem:new("Integer", 1)
+	item = EmberOgre.Gui.ColouredListItem:new("Integer", 1)
 	combobox:addItem(item)
-	item = EmberOgre.ColoredListItem:new("Float", 2)
+	item = EmberOgre.Gui.ColouredListItem:new("Float", 2)
 	combobox:addItem(item)
-	item = EmberOgre.ColoredListItem:new("Map", 3)
+	item = EmberOgre.Gui.ColouredListItem:new("Map", 3)
 	combobox:addItem(item)
-	item = EmberOgre.ColoredListItem:new("List", 4)
+	item = EmberOgre.Gui.ColouredListItem:new("List", 4)
 	combobox:addItem(item)
 	combobox:setHeight(CEGUI.UDim(0, 100))
 	combobox:setProperty("ReadOnly", "true")
@@ -370,24 +383,36 @@ end
 
 function EntityEditor.Submit_MouseClick(args)
 	EntityEditor.instance.helper:submitChanges()
+	--we want to update the next time a change comes from the server
 	EntityEditor.listenForChanges = true
 	--EntityEditor.editEntity(EntityEditor.instance.entity)
-	
-end
-
-function EntityEditor.Entity_Changed(attributes)
-	if EntityEditor.listenForChanges then
-		EntityEditor.listenForChanges = false
-		EntityEditor.editEntity(EntityEditor.instance.entity)
-	end
+	return true
 end
 
 function EntityEditor.DeleteButton_MouseClick(args)
 	emberServices:getServerService():deleteEntity(EntityEditor.instance.entity)
+	return true
 end
 
 function EntityEditor.ExportButton_MouseClick(args)
 	emberOgre:getEntityFactory():dumpAttributesOfEntity(EntityEditor.instance.entity:getId())
+	return true
+end
+
+function EntityEditor.ShowOgreBoundingBox_MouseClick(args)
+	EntityEditor.instance.entity:showOgreBoundingBox(not EntityEditor.instance.entity:getShowOgreBoundingBox())
+	return true
+end
+
+function EntityEditor.ShowErisBoundingBox_MouseClick(args)
+	EntityEditor.instance.entity:showErisBoundingBox(not EntityEditor.instance.entity:getShowErisBoundingBox())
+	return true
+end
+
+function EntityEditor.Submit_MouseDoubleClick(args)
+	local entityId = EntityEditor.childlistbox:getFirstSelectedItem():getID()
+	editEntity(entityId)
+	return true
 end
 
 function EntityEditor.handleAction(action, entity) 
@@ -397,6 +422,27 @@ function EntityEditor.handleAction(action, entity)
 	end
 end
 
+function EntityEditor.refreshChildren(entity)
+	EntityEditor.childListholder:resetList()
+	local numContained = entity:numContained()
+	for i = 0, numContained - 1 do
+		local childEntity = entity:getContained(i)
+		local label = childEntity:getName()
+		
+		local item = EmberOgre.Gui.ColouredListItem:new(label, childEntity:getId(), childEntity)
+		EntityEditor.childListholder:addItem(item)
+	end 
+	
+	EntityBrowser.addEntity(emberOgre:getEntityFactory():getWorld(), 0)
+end
+
+function EntityEditor.Entity_Changed(attributes)
+	--only update if we're actively listening (for example right after an update)
+	if EntityEditor.listenForChanges then
+		EntityEditor.listenForChanges = false
+		EntityEditor.editEntity(EntityEditor.instance.entity)
+	end
+end
 
 
 function EntityEditor.buildWidget()
@@ -410,10 +456,17 @@ function EntityEditor.buildWidget()
 	--EntityEditor.attributesContainer = CEGUI.toScrollablePane(EntityEditor.attributesContainer):getContentPane()
 	EntityEditor.infoWindow = EntityEditor.widget:getWindow("EntityInfo")
 	
+	EntityEditor.childlistbox = CEGUI.toListbox(EntityEditor.widget:getWindow("ChildList"))
+	--EntityBrowser.childlistbox:subscribeEvent("ItemSelectionChanged", "EntityBrowser.EntityList_SelectionChanged")
 	
-	EntityEditor.widget:getWindow("Submit"):subscribeEvent("MouseClick", "EntityEditor.Submit_MouseClick")
+	EntityEditor.childlistFilter = CEGUI.toEditbox(EntityEditor.widget:getWindow("FilterChildren"))
+	EntityEditor.childListholder = EmberOgre.ListHolder:new_local(EntityEditor.childlistbox, EntityEditor.childlistFilter)
+	
+	
+	
+--[[	EntityEditor.widget:getWindow("Submit"):subscribeEvent("MouseClick", "EntityEditor.Submit_MouseClick")
 	EntityEditor.widget:getWindow("DeleteButton"):subscribeEvent("MouseClick", "EntityEditor.DeleteButton_MouseClick")
-	EntityEditor.widget:getWindow("ExportButton"):subscribeEvent("MouseClick", "EntityEditor.ExportButton_MouseClick")
+	EntityEditor.widget:getWindow("ExportButton"):subscribeEvent("MouseClick", "EntityEditor.ExportButton_MouseClick")]]
 	
 	
 	EmberOgre.LuaConnector:new(guiManager.EventEntityAction):connect("EntityEditor.handleAction")

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
 	<Window Type='EmberLook/FrameWindow' Name='Mainwindow'>
-		<Property Name='UnifiedSize' Value='{{0.00000,350.000000},{0.00000,500.000000}}'/>
+		<Property Name='UnifiedSize' Value='{{0.00000,400.000000},{0.00000,500.000000}}'/>
 		<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0,0.000000}}'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Entity editor'/>
@@ -11,7 +11,7 @@
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/StaticText' Name='EntityInfo'>
 				<Property Name='UnifiedPosition' Value='{{0.0},{0,0}}'/>
-				<Property Name='UnifiedSize' Value='{{1,0},{0,40}}'/>
+				<Property Name='UnifiedSize' Value='{{1,0},{0,30}}'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='Text' Value='test' />
 				<Property Name='FrameEnabled' Value='false' />
@@ -19,7 +19,7 @@
 			</Window>
 			<Window Type='EmberLook/TabControl' Name='MainTabControl'>
 				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.00000,-70.000000}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.0000,40.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.0000,30.000000}}'/>
 				<Property Name='InheritsAlpha' Value='false'/>
 				<Window Type='DefaultGUISheet' Name='AttributesPanel'>
 					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
@@ -48,36 +48,64 @@
 					<Property Name='InheritsAlpha' Value='false'/>
 					<!-- Property Name='Visible' Value='true'/ -->
 				</Window>
+				<Window Type='DefaultGUISheet' Name='ChildrenPanel'>
+					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='Text' Value='Children'/>
+					<Property Name='InheritsAlpha' Value='false'/>
+					<!-- Property Name='Visible' Value='true'/ -->
+					<Window Type='EmberLook/Listbox' Name='ChildList'>
+						<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+						<Property Name='UnifiedSize' Value='{{0,200},{1,-25}}'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Event Name="MouseDoubleClick" Function="EntityEditor.Submit_MouseDoubleClick" />
+					</Window>
+					<Window Type='EmberLook/Editbox' Name='FilterChildren'>
+						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-25}}'/>
+						<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+					</Window>
+				</Window>
+				<Window Type='DefaultGUISheet' Name='ModelPanel'>
+					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='Text' Value='Model'/>
+					<Property Name='InheritsAlpha' Value='false'/>
+					<!-- Property Name='Visible' Value='true'/ -->
+				</Window>
 			</Window>
 			<Window Type='EmberLook/Button' Name='Submit'>
 				<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-20}}'/>
 				<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 				<Property Name='Text' Value='Submit'/>
 				<Property Name='InheritsAlpha' Value='True'/>
+				<Event Name="MouseClick" Function="EntityEditor.Submit_MouseClick" />
 			</Window>
 			<Window Type='EmberLook/Button' Name='ShowOgreBoundingBox'>
 				<Property Name='UnifiedPosition' Value='{{0,80},{1.0,-20}}'/>
 				<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 				<Property Name='Text' Value='Ogre bbox'/>
 				<Property Name='InheritsAlpha' Value='True'/>
+				<Event Name="MouseClick" Function="EntityEditor.ShowOgreBoundingBox_MouseClick" />
 			</Window>
 			<Window Type='EmberLook/Button' Name='ShowErisBoundingBox'>
 				<Property Name='UnifiedPosition' Value='{{0,160},{1.0,-20}}'/>
 				<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 				<Property Name='Text' Value='Eris bbox'/>
 				<Property Name='InheritsAlpha' Value='True'/>
+				<Event Name="MouseClick" Function="EntityEditor.ShowErisBoundingBox_MouseClick" />
 			</Window>
 			<Window Type='EmberLook/Button' Name='DeleteButton'>
 				<Property Name='UnifiedPosition' Value='{{0,240},{1.0,-20}}'/>
 				<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 				<Property Name='Text' Value='Delete'/>
 				<Property Name='InheritsAlpha' Value='True'/>
+				<Event Name="MouseClick" Function="EntityEditor.DeleteButton_MouseClick" />
 			</Window>
 			<Window Type='EmberLook/Button' Name='ExportButton'>
 				<Property Name='UnifiedPosition' Value='{{0,320},{1.0,-20}}'/>
 				<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 				<Property Name='Text' Value='Export'/>
 				<Property Name='InheritsAlpha' Value='True'/>
+				<Event Name="MouseClick" Function="EntityEditor.ExportButton_MouseClick" />
 			</Window>
 		</Window>
 	</Window>
