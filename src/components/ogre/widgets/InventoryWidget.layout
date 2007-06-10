@@ -7,11 +7,11 @@
 		<Property Name='Text' Value='Inventory'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
 			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,15}}'/>
-			<Property Name='UnifiedSize' Value='{{1,-2},{1,-15}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-4},{1,-15}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/Listbox' Name='ListBox'>
-				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.050000,0.000000}}'/>
-				<Property Name='UnifiedSize' Value='{{1.0,0},{0.95,-25}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.00000,0.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,0},{1,-25}}'/>
 				<Property Name='InheritsAlpha' Value='false'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='Drop'>
