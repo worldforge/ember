@@ -41,7 +41,10 @@ class Avatar;
  * than the other game entities, thus it has it's own subclass.
  * 
  */
-class AvatarEmberEntity: public EmberPhysicalEntity {
+class AvatarEmberEntity 
+: public EmberPhysicalEntity,
+public Ember::ConsoleObject
+{
 public:
 
 	AvatarEmberEntity(const std::string& id, Eris::TypeInfo* type, Eris::View* vw, Ogre::SceneManager* sceneManager, Eris::Avatar* erisAvatar);
@@ -64,9 +67,15 @@ public:
 	 */
 	inline Eris::Avatar* getErisAvatar();
 
+	/**
+	 *    Reimplements the ConsoleObject::runCommand method
+	 * @param command 
+	 * @param args 
+	 */
+	virtual	void runCommand(const std::string &command, const std::string &args);
 
+	const Ember::ConsoleCommandWrapper SetAttachedOrientation;
 
-	
 protected: 
 
 	virtual void onChildAdded(Entity *e);

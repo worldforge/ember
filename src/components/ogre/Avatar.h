@@ -76,11 +76,7 @@ public Ogre::FrameListener
 
 	AvatarCamera* getAvatarCamera() const;
 	
-	Ogre::SceneNode* getAvatarSceneNode() const
-	{
-		return mAvatarNode;
-	}
-
+	inline Ogre::SceneNode* getAvatarSceneNode() const;
 	
 	virtual bool frameStarted(const Ogre::FrameEvent & event);
 
@@ -254,6 +250,10 @@ protected:
 bool Avatar::isAdmin() const
 {
 	return mIsAdmin;
+}
+Ogre::SceneNode* Avatar::getAvatarSceneNode() const
+{
+	return mAvatarNode;
 }
 
 }

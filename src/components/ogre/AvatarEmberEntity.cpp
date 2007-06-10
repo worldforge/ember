@@ -30,17 +30,48 @@
 
 #include <Eris/Entity.h>
 #include <Eris/Avatar.h>
+#include <OgreTagPoint.h>
 
 namespace EmberOgre {
 
 
-AvatarEmberEntity::AvatarEmberEntity(const std::string& id, Eris::TypeInfo* type, Eris::View* vw, Ogre::SceneManager* sceneManager, Eris::Avatar* erisAvatar) : EmberPhysicalEntity(id, type, vw, sceneManager),
+AvatarEmberEntity::AvatarEmberEntity(const std::string& id, Eris::TypeInfo* type, Eris::View* vw, Ogre::SceneManager* sceneManager, Eris::Avatar* erisAvatar) : EmberPhysicalEntity(id, type, vw, sceneManager),  SetAttachedOrientation("setattachedorientation", this, "Sets the orienation of an item attached to the avatar: <attachpointname> <x> <y> <z> <degrees>"),
 mAvatar(0), mErisAvatar(erisAvatar)
 {
 }
 
 AvatarEmberEntity::~AvatarEmberEntity()
 {}
+
+
+void AvatarEmberEntity::runCommand(const std::string &command, const std::string &args)
+{
+	if(SetAttachedOrientation == command) {
+		Ember::Tokeniser tokeniser;
+		tokeniser.initTokens(args);
+		std::string attachPointName = tokeniser.nextToken();
+		if (attachPointName != "") {
+			std::string x = tokeniser.nextToken();
+			std::string y = tokeniser.nextToken();
+			std::string z = tokeniser.nextToken();
+			std::string degrees = tokeniser.nextToken();
+			if (x != "" && y != "" && z != "" && degrees != "") {
+				Ogre::Degree ogreDegrees(Ogre::StringConverter::parseReal(degrees));
+				Ogre::Quaternion rotation(ogreDegrees, Ogre::Vector3(Ogre::StringConverter::parseReal(x), Ogre::StringConverter::parseReal(y), Ogre::StringConverter::parseReal(z)));
+				if (getModel()) {
+					const Model::Model::AttachPointWrapperStore* attachPoints = getModel()->getAttachedPoints();
+					if (attachPoints) {
+						for (Model::Model::AttachPointWrapperStore::const_iterator I = attachPoints->begin(); I != attachPoints->end(); ++I) {
+							if (I->AttachPointName == attachPointName) {
+								I->TagPoint->setOrientation(rotation);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
 
 void AvatarEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
