@@ -11,16 +11,9 @@ class EmberPhysicalEntity : public EmberEntity{
 
 
 
-	inline EmberOgre::Model::Model* EmberPhysicalEntity::getModel() const;
+	inline EmberOgre::Model::Model* getModel() const;
 
-	inline Ogre::SceneNode* EmberPhysicalEntity::getScaleNode() const;
-	
-	virtual void setVisible(bool visible);
-
-
-	virtual void showOgreBoundingBox(bool show);
-
-	virtual bool getShowOgreBoundingBox();
+	inline Ogre::SceneNode* getScaleNode() const;
 	
 	EmberEntity* getEntityAttachedToPoint(const std::string& attachPoint);
 

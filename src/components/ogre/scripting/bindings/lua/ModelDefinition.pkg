@@ -4,6 +4,14 @@ namespace Model {
 typedef std::vector<EmberOgre::Model::SubModelDefinition*> SubModelDefinitionsStore;
 typedef std::vector<EmberOgre::Model::PartDefinition*> PartDefinitionsStore;
 typedef std::vector<EmberOgre::Model::SubEntityDefinition*> SubEntityDefinitionsStore;
+typedef std::vector<EmberOgre::Model::AttachPointDefinition> AttachPointDefinitionStore;
+
+struct AttachPointDefinition
+{
+	std::string Name;
+	std::string BoneName;
+	Ogre::Quaternion Rotation;
+};
 
 
 class SubEntityDefinition
@@ -131,6 +139,9 @@ class ModelDefinition : public Ogre::Resource {
 	EmberOgre::Model::ActionDefinition* createActionDefinition(std::string& actionname);
 	std::vector<EmberOgre::Model::ActionDefinition*>& getActionDefinitions();
 	void removeActionDefinition(EmberOgre::Model::ActionDefinition* def);
+	
+	const std::vector<EmberOgre::Model::AttachPointDefinition>& getAttachPointsDefinitions();
+
 	
 	/**
 	 *    Reloads all the Model instances that uses this definition.

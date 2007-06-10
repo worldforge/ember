@@ -32,9 +32,9 @@ class EmberEntity : public Eris::Entity {
 	
 	virtual void showErisBoundingBox(bool show);
 
-	virtual bool getShowOgreBoundingBox();
+	virtual bool getShowOgreBoundingBox() const;
 	
-	virtual bool getShowErisBoundingBox();
+	virtual bool getShowErisBoundingBox() const;
 
 	virtual const Ogre::AxisAlignedBox& getWorldBoundingBox(bool derive = true) const;
 	
