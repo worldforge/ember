@@ -2,12 +2,14 @@
 
 EntityEditor = {}
 EntityEditor.instance = {}
+EntityEditor.instance.stackableContainers = {}
 EntityEditor.instance.entity = nil
 EntityEditor.instance.rootMapAdapter = nil
 EntityEditor.instance.helper = nil
 EntityEditor.factory = nil
 EntityEditor.attributesContainer = nil
 EntityEditor.hiddenAttributes = {objtype = 1, stamp = 1, area = 1}
+EntityEditor.modelTab = {}
 
 
 function editEntity(id)
@@ -19,14 +21,25 @@ end
 
 function EntityEditor.createStackableContainer(container)
 	local stackableContainer = EmberOgre.Gui.StackableContainer:new(container)
+	stackableContainer:setInnerContainerWindow(container)
 	EntityEditor.instance.stackableContainers[container:getName()] = stackableContainer
 	return stackableContainer
 end
 
-function EntityEditor.editEntity(entity)
-	EntityEditor.widget:show()
-
+function EntityEditor.clearEditing()
 	if EntityEditor.instance ~= nil then
+		
+		if EntityEditor.instance.entity ~= nil then
+			--as we're not editing anymore, hide the bounding boxes
+			EntityEditor.instance.entity:showOgreBoundingBox(false)
+			EntityEditor.instance.entity:showErisBoundingBox(false)
+		end
+		
+		--we want to disconnect all stackable containers before we start
+		for index,value in ipairs(EntityEditor.instance.stackableContainers) do
+			value:disconnect()
+		end
+	
 		if EntityEditor.instance.outercontainer ~= nil then
 			windowManager:destroyWindow(EntityEditor.instance.outercontainer)
 		end
@@ -40,11 +53,25 @@ function EntityEditor.editEntity(entity)
 	end
 	EntityEditor.instance = {}
 	EntityEditor.instance.stackableContainers = {}
+end
+
+function EntityEditor.editEntity(entity)
+	EntityEditor.widget:show()
+
+	EntityEditor.clearEditing()
+	
 	EntityEditor.instance.entity = entity
+	
+	--show the bounding boxes by default when editing
+	EntityEditor.instance.entity:showOgreBoundingBox(false)
+	EntityEditor.instance.entity:showErisBoundingBox(true)
+	
+	EntityEditor.refreshChildren(entity)
+	EntityEditor.refreshModelInfo(entity)
+	
 	
 	EntityEditor.instance.entityChangeConnection = EmberOgre.LuaConnector:new_local(entity.Changed):connect("EntityEditor.Entity_Changed")
 	EntityEditor.instance.outercontainer = guiManager:createWindow("DefaultGUISheet")
-	EntityEditor.createStackableContainer(EntityEditor.instance.outercontainer)
 	local adapter = EntityEditor.factory:createMapAdapter(EntityEditor.instance.outercontainer, EntityEditor.instance.entity:getId(), EntityEditor.instance.entity)
 	EntityEditor.instance.rootMapAdapter = adapter
 	EntityEditor.instance.helper = EmberOgre.Gui.EntityEditor:new(entity, EntityEditor.instance.rootMapAdapter)
@@ -62,11 +89,10 @@ function EntityEditor.editEntity(entity)
 	end
 	local newElementWrapper = EntityEditor.createNewMapElementWidget(adapter, EntityEditor.instance.outercontainer)
 	EntityEditor.instance.outercontainer:addChildWindow(newElementWrapper.container)
+	EntityEditor.createStackableContainer(EntityEditor.instance.outercontainer):repositionWindows()
 
 	EntityEditor.infoWindow:setText('Id: ' .. entity:getId() .. ' Name: ' .. entity:getName())
 	
-	EntityEditor.refreshChildren(entity)
-
 end
 
 function EntityEditor.createNewListElementWidget(listAdapter, outercontainer)
@@ -179,10 +205,6 @@ function EntityEditor.createMapAdapter(element)
 	local wrapper = {}
 	wrapper.container = guiManager:createWindow("DefaultGUISheet")
 	wrapper.adapter = EntityEditor.factory:createMapAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
-	--TODO: make sure that this is cleaned up at destruction
-	EntityEditor.createStackableContainer(wrapper.container)
-	
-	
 	
 	local attributeNames = wrapper.adapter:getAttributeNames()
 	for i = 0, attributeNames:size() - 1 do
@@ -199,6 +221,7 @@ function EntityEditor.createMapAdapter(element)
 	
 	local newElementWrapper = EntityEditor.createNewMapElementWidget(wrapper.adapter, wrapper.container)
 	wrapper.container:addChildWindow(newElementWrapper.container)
+	EntityEditor.createStackableContainer(wrapper.container):repositionWindows()
 	return wrapper	
 end
 
@@ -206,8 +229,6 @@ function EntityEditor.createListAdapter(element)
 	local wrapper = {}
 	wrapper.container = guiManager:createWindow("DefaultGUISheet")
 	wrapper.adapter = EntityEditor.factory:createListAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
-	--TODO: make sure that this is cleaned up at destruction
-	EntityEditor.createStackableContainer(wrapper.container)
 	for i = 0, wrapper.adapter:getSize() - 1 do
 		local childElement = wrapper.adapter:valueOfAttr(i)
 		local adapterWrapper = EntityEditor.createAdapter("", childElement)
@@ -219,6 +240,7 @@ function EntityEditor.createListAdapter(element)
 	
 	local newElementWrapper = EntityEditor.createNewListElementWidget(wrapper.adapter, wrapper.container)
 	wrapper.container:addChildWindow(newElementWrapper.container)
+	EntityEditor.createStackableContainer(wrapper.container):repositionWindows()
 	
 	return wrapper	
 end
@@ -227,7 +249,7 @@ function EntityEditor.createStringAdapter(element)
 	local wrapper = {}
 	wrapper.container = guiManager:createWindow("DefaultGUISheet")
 	wrapper.adapter = EntityEditor.factory:createStringAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
-	wrapper.adapter:addSuggestion("test")
+-- 	wrapper.adapter:addSuggestion("test")
 	return wrapper	
 end
 
@@ -345,8 +367,8 @@ function EntityEditor.addNamedAdapterContainer(attributeName, adapter, container
 	local SizedConnection = container:subscribeEvent("Sized", syncWindowHeights)
 	
 	label:addChildWindow(deleteButton)
-	outercontainer:addChildWindow(container)
 	outercontainer:addChildWindow(label)
+	outercontainer:addChildWindow(container)
 
 	parentContainer:addChildWindow(outercontainer)
 	return outercontainer
@@ -376,7 +398,7 @@ function EntityEditor.fillNewElementCombobox(combobox)
 	combobox:addItem(item)
 	combobox:setHeight(CEGUI.UDim(0, 100))
 	combobox:setProperty("ReadOnly", "true")
-	combobox:getDropList():setProperty("ClippedByParent", "false")
+	--combobox:getDropList():setProperty("ClippedByParent", "false")
 end
 
 
@@ -399,21 +421,34 @@ function EntityEditor.ExportButton_MouseClick(args)
 	return true
 end
 
-function EntityEditor.ShowOgreBoundingBox_MouseClick(args)
-	EntityEditor.instance.entity:showOgreBoundingBox(not EntityEditor.instance.entity:getShowOgreBoundingBox())
+function EntityEditor.RefreshButton_MouseClick(args)
+	if EntityEditor.instance.entity ~= nil then
+		EntityEditor.editEntity(EntityEditor.instance.entity)
+	end
 	return true
 end
 
-function EntityEditor.ShowErisBoundingBox_MouseClick(args)
-	EntityEditor.instance.entity:showErisBoundingBox(not EntityEditor.instance.entity:getShowErisBoundingBox())
+function EntityEditor.ShowOgreBbox_CheckStateChanged(args)
+	if EntityEditor.instance.entity ~= nil then
+		EntityEditor.instance.entity:showOgreBoundingBox(EntityEditor.modelTab.showOgreBbox:isSelected())
+	end
 	return true
 end
 
-function EntityEditor.Submit_MouseDoubleClick(args)
+function EntityEditor.ShowErisBbox_CheckStateChanged(args)
+	if EntityEditor.instance.entity ~= nil then
+		EntityEditor.instance.entity:showErisBoundingBox(EntityEditor.modelTab.showErisBbox:isSelected())
+	end
+	return true
+end
+
+function EntityEditor.ChildList_MouseDoubleClick(args)
 	local entityId = EntityEditor.childlistbox:getFirstSelectedItem():getID()
 	editEntity(entityId)
 	return true
 end
+
+
 
 function EntityEditor.handleAction(action, entity) 
 
@@ -425,15 +460,29 @@ end
 function EntityEditor.refreshChildren(entity)
 	EntityEditor.childListholder:resetList()
 	local numContained = entity:numContained()
-	for i = 0, numContained - 1 do
-		local childEntity = entity:getContained(i)
-		local label = childEntity:getName()
-		
-		local item = EmberOgre.Gui.ColouredListItem:new(label, childEntity:getId(), childEntity)
-		EntityEditor.childListholder:addItem(item)
-	end 
+	if numContained ~= 0 then
+		for i = 0, numContained - 1 do
+			local childEntity = entity:getContained(i)
+			local label = childEntity:getName()
+			
+			local item = EmberOgre.Gui.ColouredListItem:new(label, childEntity:getId(), childEntity)
+			EntityEditor.childListholder:addItem(item)
+		end
+	end
+end
+
+function EntityEditor.refreshModelInfo(entity)
+	EntityEditor.modelTab.showOgreBbox:setSelected(entity:getShowOgreBoundingBox())
+	EntityEditor.modelTab.showErisBbox:setSelected(entity:getShowErisBoundingBox())
 	
-	EntityBrowser.addEntity(emberOgre:getEntityFactory():getWorld(), 0)
+--[[	local physEntity = entity
+	tolua.cast(physEntity, "const EmberOgre::EmberPhysicalEntity")
+	
+	local modelDef = physEntity:getModel():getDefinition()
+	local modelInfoText = "Model name: " .. physEntity:getModel():getName()
+	--modelInfoText = modelInfoText .. "\nModel type: " .. modelDef:getName()
+	--modelInfoText = modelInfoText .. "\nOgre node: " .. physEntity:getModel():getName()
+	EntityEditor.modelTab.modelInfo:setText(modelInfoText)]]
 end
 
 function EntityEditor.Entity_Changed(attributes)
@@ -453,7 +502,6 @@ function EntityEditor.buildWidget()
 	EntityEditor.widget:loadMainSheet("EntityEditor.layout", "EntityEditor/")
 	
 	EntityEditor.attributesContainer = EntityEditor.widget:getWindow("AttributesContainer")
-	--EntityEditor.attributesContainer = CEGUI.toScrollablePane(EntityEditor.attributesContainer):getContentPane()
 	EntityEditor.infoWindow = EntityEditor.widget:getWindow("EntityInfo")
 	
 	EntityEditor.childlistbox = CEGUI.toListbox(EntityEditor.widget:getWindow("ChildList"))
@@ -462,11 +510,12 @@ function EntityEditor.buildWidget()
 	EntityEditor.childlistFilter = CEGUI.toEditbox(EntityEditor.widget:getWindow("FilterChildren"))
 	EntityEditor.childListholder = EmberOgre.ListHolder:new_local(EntityEditor.childlistbox, EntityEditor.childlistFilter)
 	
-	
-	
---[[	EntityEditor.widget:getWindow("Submit"):subscribeEvent("MouseClick", "EntityEditor.Submit_MouseClick")
-	EntityEditor.widget:getWindow("DeleteButton"):subscribeEvent("MouseClick", "EntityEditor.DeleteButton_MouseClick")
-	EntityEditor.widget:getWindow("ExportButton"):subscribeEvent("MouseClick", "EntityEditor.ExportButton_MouseClick")]]
+--[[	EntityEditor.modelTab.stackableWindow = EntityEditor.widget:getWindow("ModelPanelStackable")
+	EntityEditor.modelTab.stackableContainer = EmberOgre.Gui.StackableContainer:new(EntityEditor.modelTab.stackableWindow)
+	EntityEditor.modelTab.stackableContainer:setInnerContainerWindow(EntityEditor.modelTab.stackableWindow)]]
+	EntityEditor.modelTab.showOgreBbox = CEGUI.toCheckbox(EntityEditor.widget:getWindow("ShowOgreBbox"))
+	EntityEditor.modelTab.showErisBbox = CEGUI.toCheckbox(EntityEditor.widget:getWindow("ShowErisBbox"))
+	EntityEditor.modelTab.modelInfo = EntityEditor.widget:getWindow("ModelInfo")
 	
 	
 	EmberOgre.LuaConnector:new(guiManager.EventEntityAction):connect("EntityEditor.handleAction")
