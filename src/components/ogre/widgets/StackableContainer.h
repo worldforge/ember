@@ -100,6 +100,11 @@ public:
 	Repositions all windows as they are added and removed to the list.
 	*/
 	void repositionWindows();
+	
+	/**
+	Disconnects the listener, in effect deactivating the instance.
+	*/
+	void disconnect();
 
 protected:
 

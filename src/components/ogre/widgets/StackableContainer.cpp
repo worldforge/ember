@@ -80,43 +80,45 @@ int StackableContainer::getPadding() const
 
 void StackableContainer::repositionWindows()
 {
-	float accumulatedWidth(0);
-	float accumulatedHeight(0);
-	float maxHeight(0);
-	float maxWidth(0);
-	
-	///iterate over all child window and rearrange them
-	size_t childCount = mInnerContainerWindow->getChildCount();
- 	for(size_t i = 0; i < childCount; ++i) {
-		CEGUI::Window* childWindow = mInnerContainerWindow->getChildAtIdx(i);
-		///only use those windows that are visible
-		if (childWindow->isVisible()) {
-			float absHeight = childWindow->getHeight().asAbsolute(1);
-			float absWidth = childWindow->getWidth().asAbsolute(1);
-			if (mFlowDirection == Horizontal) {
-				maxHeight = std::max<float>(maxHeight, absHeight);
-				childWindow->setPosition(UVector2(UDim(0, accumulatedWidth), UDim(0,0)));
-				accumulatedWidth += absWidth + mPadding;
-			} else {
-				maxWidth= std::max<float>(maxWidth, absWidth);
-				childWindow->setPosition(UVector2(UDim(0, 0), UDim(0,accumulatedHeight)));
-				accumulatedHeight += absHeight + mPadding;
+	if (mInnerContainerWindow) {
+		float accumulatedWidth(0);
+		float accumulatedHeight(0);
+		float maxHeight(0);
+		float maxWidth(0);
+		
+		///iterate over all child window and rearrange them
+		size_t childCount = mInnerContainerWindow->getChildCount();
+		for(size_t i = 0; i < childCount; ++i) {
+			CEGUI::Window* childWindow = mInnerContainerWindow->getChildAtIdx(i);
+			///only use those windows that are visible
+			if (childWindow->isVisible()) {
+				float absHeight = childWindow->getHeight().asAbsolute(1);
+				float absWidth = childWindow->getWidth().asAbsolute(1);
+				if (mFlowDirection == Horizontal) {
+					maxHeight = std::max<float>(maxHeight, absHeight);
+					childWindow->setPosition(UVector2(UDim(0, accumulatedWidth), UDim(0,0)));
+					accumulatedWidth += absWidth + mPadding;
+				} else {
+					maxWidth= std::max<float>(maxWidth, absWidth);
+					childWindow->setPosition(UVector2(UDim(0, 0), UDim(0,accumulatedHeight)));
+					accumulatedHeight += absHeight + mPadding;
+				}
 			}
 		}
-	}
-	if (mFlowDirection == Horizontal) {
-		accumulatedWidth -= mPadding;
-		if (mInnerContainerWindow->getWidth().asRelative(0) != 1) {
-			mInnerContainerWindow->setWidth(UDim(0, accumulatedWidth));
+		if (mFlowDirection == Horizontal) {
+			accumulatedWidth -= mPadding;
+			if (mInnerContainerWindow->getWidth().asRelative(0) != 1) {
+				mInnerContainerWindow->setWidth(UDim(0, accumulatedWidth));
+			}
+		} else {
+			accumulatedHeight -= mPadding;
+			if (mInnerContainerWindow->getHeight().asRelative(0) != 1) {
+				mInnerContainerWindow->setHeight(UDim(0,accumulatedHeight));
+			}
 		}
-	} else {
-		accumulatedHeight -= mPadding;
-		if (mInnerContainerWindow->getHeight().asRelative(0) != 1) {
-			mInnerContainerWindow->setHeight(UDim(0,accumulatedHeight));
+		if (mInnerContainerWindow->getParent()) {
+			mInnerContainerWindow->getParent()->performChildWindowLayout();
 		}
-	}
-	if (mInnerContainerWindow->getParent()) {
-		mInnerContainerWindow->getParent()->performChildWindowLayout();
 	}
 }
 
@@ -191,6 +193,12 @@ bool StackableContainer::window_DestructionStarted(const CEGUI::EventArgs& e)
 	cleanup();
 	return true;
 }
+
+void StackableContainer::disconnect()
+{
+	cleanup();
+}
+
 
 }
 
