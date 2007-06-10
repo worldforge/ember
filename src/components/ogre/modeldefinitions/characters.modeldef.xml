@@ -204,7 +204,9 @@
 			</action>
 		</actions>
 		<attachpoints>
-			<attachpoint name="right_hand_wield" bone="RMiddleRoot" />
+			<attachpoint name="right_hand_wield" bone="RMiddleRoot">
+				<!-- rotation x="1" y="0" z="0" degrees="45.000000" / -->
+			</attachpoint>
 		</attachpoints>
 	</model>
 		

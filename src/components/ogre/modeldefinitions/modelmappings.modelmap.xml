@@ -42,16 +42,16 @@
 				<action type="display-model">boulder</action>
 				<attributematch attribute="style" >
 					<case equals="a">
-						<action type="display-part">boulderA</action>
+						<action type="display-part">boulders_A</action>
 					</case>
 					<case equals="b">
-						<action type="display-part">boulderB</action>
+						<action type="display-part">boulders_B</action>
 					</case>
 					<case equals="c">
-						<action type="display-part">boulderC</action>
+						<action type="display-part">boulders_C</action>
 					</case>
 					<case equals="d">
-						<action type="display-part">boulderD</action>
+						<action type="display-part">boulders_D</action>
 					</case>
 				</attributematch>
 			</case>
