@@ -39,7 +39,7 @@ namespace Atlas {
 class SizeAdapter : public AdapterBase
 {
 public:
-    SizeAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* lowerXWindow, CEGUI::Window* lowerYWindow, CEGUI::Window* lowerZWindow, CEGUI::Window* upperXWindow, CEGUI::Window* upperYWindow, CEGUI::Window* upperZWindow, CEGUI::Slider* scaler);
+    SizeAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* lowerXWindow, CEGUI::Window* lowerYWindow, CEGUI::Window* lowerZWindow, CEGUI::Window* upperXWindow, CEGUI::Window* upperYWindow, CEGUI::Window* upperZWindow, CEGUI::Slider* scaler, CEGUI::Window* infoWindow);
 
     virtual ~SizeAdapter();
 	
@@ -56,6 +56,12 @@ protected:
 	CEGUI::Window* mUpperYWindow;
 	CEGUI::Window* mUpperZWindow;
 	CEGUI::Slider* mScaler;
+	CEGUI::Window* mInfoWindow;
+	
+	/**
+	Updates the info window with measurement information.
+	*/
+	void updateInfo();
 	
 	bool window_TextChanged(const CEGUI::EventArgs& e);
 	bool slider_ValueChanged(const CEGUI::EventArgs& e);

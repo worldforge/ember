@@ -38,7 +38,6 @@ namespace Atlas {
 
 MapAdapter::MapAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* childContainer)
 :  AdapterBase(element), mChildContainer(childContainer),
-//  mStackableContainer(mChildContainer), 
 mAttributes(element.asMap())
 {
 }

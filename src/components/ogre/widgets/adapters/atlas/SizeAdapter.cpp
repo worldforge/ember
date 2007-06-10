@@ -32,8 +32,8 @@ namespace Adapters {
 
 namespace Atlas {
 
-SizeAdapter::SizeAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* lowerXWindow, CEGUI::Window* lowerYWindow, CEGUI::Window* lowerZWindow, CEGUI::Window* upperXWindow, CEGUI::Window* upperYWindow, CEGUI::Window* upperZWindow, CEGUI::Slider* scaler)
-: AdapterBase(element), mLowerXWindow(lowerXWindow), mLowerYWindow(lowerYWindow), mLowerZWindow(lowerZWindow), mUpperXWindow(upperXWindow), mUpperYWindow(upperYWindow), mUpperZWindow(upperZWindow), mScaler(scaler)
+SizeAdapter::SizeAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* lowerXWindow, CEGUI::Window* lowerYWindow, CEGUI::Window* lowerZWindow, CEGUI::Window* upperXWindow, CEGUI::Window* upperYWindow, CEGUI::Window* upperZWindow, CEGUI::Slider* scaler, CEGUI::Window* infoWindow)
+: AdapterBase(element), mLowerXWindow(lowerXWindow), mLowerYWindow(lowerYWindow), mLowerZWindow(lowerZWindow), mUpperXWindow(upperXWindow), mUpperYWindow(upperYWindow), mUpperZWindow(upperZWindow), mScaler(scaler), mInfoWindow(infoWindow)
 {
 	if (mLowerXWindow) {
 		mLowerXWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&SizeAdapter::window_TextChanged, this)); 
@@ -90,6 +90,8 @@ void SizeAdapter::updateGui(const ::Atlas::Message::Element& element)
 		mUpperZWindow->setText(toString(axisBox.highCorner().z())); 
 	}
 	
+	updateInfo();
+	
 	mSelfUpdate = false;
 }
 
@@ -98,7 +100,19 @@ bool SizeAdapter::window_TextChanged(const CEGUI::EventArgs& e)
 	if (!mSelfUpdate) {
 		EventValueChanged.emit();
 	}
+	updateInfo();
 	return true;
+}
+
+void SizeAdapter::updateInfo()
+{
+	WFMath::AxisBox<3> newBox;
+	newBox.fromAtlas(getValue());
+	
+	std::stringstream ss;
+	ss.precision(4);
+	ss << "w: " << (newBox.highCorner().x() - newBox.lowCorner().x()) << " d: " << (newBox.highCorner().y() - newBox.lowCorner().y()) << " h: " << (newBox.highCorner().z() - newBox.lowCorner().z());
+	mInfoWindow->setText(ss.str());
 }
 
 bool SizeAdapter::slider_ValueChanged(const CEGUI::EventArgs& e)

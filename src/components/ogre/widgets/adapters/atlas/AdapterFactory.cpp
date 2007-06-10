@@ -136,7 +136,8 @@ SizeAdapter* AdapterFactory::createSizeAdapter(CEGUI::Window* container, const s
 		Window* upperY = windowMgr.getWindow(mCurrentPrefix + "upperY");
 		Window* upperZ = windowMgr.getWindow(mCurrentPrefix + "upperZ");
 		Slider* scaler = static_cast<Slider*>(windowMgr.getWindow(mCurrentPrefix + "scaler"));
-		SizeAdapter* adapter = new SizeAdapter(element, lowerX, lowerY, lowerZ, upperX, upperY, upperZ, scaler);
+		Window* info = windowMgr.getWindow(mCurrentPrefix + "info");
+		SizeAdapter* adapter = new SizeAdapter(element, lowerX, lowerY, lowerZ, upperX, upperY, upperZ, scaler, info);
 		
 		return adapter;
 	} catch (const CEGUI::Exception& ex) {
