@@ -47,13 +47,9 @@
 
 #include "framework/osdir.h"
 
-// Namespaces
 namespace EmberOgre {
 namespace Model {
 
-// Variables
-
-// Functions
 XMLModelDefinitionSerializer::XMLModelDefinitionSerializer()
 {}
 
@@ -468,6 +464,13 @@ void XMLModelDefinitionSerializer::readAttachPoints(ModelDefinitionPtr modelDef,
 		if (tmp)
 			attachPointDef.BoneName = tmp;
 
+		Ember::TiXmlElement* elem = apElem->FirstChildElement("rotation");
+		if (elem)
+		{
+			attachPointDef.Rotation = fillQuaternionFromElement(elem);
+		} else {
+			attachPointDef.Rotation = Ogre::Quaternion::IDENTITY;
+		}
 
 		attachPoints.push_back(attachPointDef);
 	}
@@ -678,7 +681,7 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		//now do actions
 		exportActions(modelDef, modelElem);
 		
-		
+		exportAttachPoints(modelDef, modelElem);
 		
 		elem.InsertEndChild(modelElem);
 		
@@ -775,6 +778,23 @@ void XMLModelDefinitionSerializer::exportSubModels(ModelDefinitionPtr modelDef, 
 	}
 	modelElem.InsertEndChild(submodelsElem);
 
+}
+
+void XMLModelDefinitionSerializer::exportAttachPoints(ModelDefinitionPtr modelDef, Ember::TiXmlElement& modelElem)
+{
+	Ember::TiXmlElement attachpointsElem("attachpoints");
+	
+	for (AttachPointDefinitionStore::const_iterator I = modelDef->getAttachPointsDefinitions().begin(); I != modelDef->getAttachPointsDefinitions().end(); ++I) {
+		Ember::TiXmlElement attachpointElem("attachpoint");
+		attachpointElem.SetAttribute("name", I->Name.c_str());
+		attachpointElem.SetAttribute("bone", I->BoneName.c_str());
+		Ember::TiXmlElement rotationElem("rotation");
+		fillElementFromQuaternion(rotationElem, I->Rotation);
+		attachpointElem.InsertEndChild(rotationElem);
+		
+		attachpointsElem.InsertEndChild(attachpointElem);
+	}
+	modelElem.InsertEndChild(attachpointsElem);
 }
 
 } //end namespace

@@ -92,6 +92,14 @@ public:
 
 	typedef std::map<std::string, std::vector<std::string > > PartGroupStore;
 	
+	struct AttachPointWrapper
+	{
+		Ogre::TagPoint* TagPoint;
+		std::string AttachPointName;
+		Ogre::MovableObject *Movable;
+	};
+	typedef std::vector<AttachPointWrapper> AttachPointWrapperStore;
+	
 	static const Ogre::String sMovableType;
 	
 	/**
@@ -252,6 +260,12 @@ public:
 	
 	bool hasParticles() const;
 	
+	/**
+	Returns a store of AttachPointWrapper objects, which represents all attached objects.
+	@returns a pointer to an AttachPointWrapperStore instance, or null
+	*/
+	const AttachPointWrapperStore* getAttachedPoints() const;
+	
 protected:
 
 	/**
@@ -353,6 +367,8 @@ protected:
 
 	
 	bool createFromDefn();
+	
+	std::auto_ptr<AttachPointWrapperStore> mAttachPoints;
 	//void enableAnimation(const std::string& nameOfAnimation,bool enable);
 };
 

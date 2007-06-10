@@ -173,6 +173,12 @@ const ActionDefinitionsStore& ModelDefinition::getActionDefinitions()
 	return mActions;
 }
 
+const AttachPointDefinitionStore& ModelDefinition::getAttachPointsDefinitions()
+{
+	return mAttachPoints;
+}
+
+
 void ModelDefinition::removeActionDefinition(ActionDefinition* def)
 {
 	ModelDefinition::removeDefinition(def, mActions);

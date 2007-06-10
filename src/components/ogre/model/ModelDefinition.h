@@ -136,6 +136,7 @@ struct AttachPointDefinition
 {
 	std::string Name;
 	std::string BoneName;
+	Ogre::Quaternion Rotation;
 };
 
 struct AnimationPartDefinition
@@ -317,6 +318,8 @@ public:
 	ActionDefinition* createActionDefinition(const std::string& actionname);
 	const ActionDefinitionsStore& getActionDefinitions();
 	void removeActionDefinition(ActionDefinition* def);
+	
+	const AttachPointDefinitionStore& getAttachPointsDefinitions();
 
 	template <typename T, typename T1>
 	static void removeDefinition(T* def, T1& store);

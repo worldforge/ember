@@ -61,6 +61,7 @@ Model::Model(const std::string& name)
 // , mAnimationStateSet(0)
 , mSkeletonOwnerEntity(0)
 , Ogre::MovableObject(name)
+, mAttachPoints(0)
 {
  mVisible = true;
 }
@@ -84,6 +85,7 @@ void Model::reset()
 	mSkeletonInstance = 0;
 // , mAnimationStateSet(0)
 	mSkeletonOwnerEntity = 0;
+	mAttachPoints = std::auto_ptr<AttachPointWrapperStore>(0);
 
 }
 
@@ -636,10 +638,19 @@ void Model::resetParticles()
 
 Ogre::TagPoint* Model::attachObjectToAttachPoint(const Ogre::String &attachPointName, Ogre::MovableObject *pMovable, const Ogre::Vector3 &scale, const Ogre::Quaternion &offsetOrientation, const Ogre::Vector3 &offsetPosition)
 {
-	for (AttachPointDefinitionStore::iterator I = _masterModel->mAttachPoints.begin(); I < _masterModel->mAttachPoints.end();  ++I) {
+	for (AttachPointDefinitionStore::iterator I = _masterModel->mAttachPoints.begin(); I != _masterModel->mAttachPoints.end();  ++I) {
 		if (I->Name == attachPointName) {
 			const std::string& boneName = I->BoneName;
-			return attachObjectToBone(boneName, pMovable, offsetOrientation, offsetPosition, scale);
+			///use the rotation in the attach point def
+			Ogre::TagPoint* tagPoint = attachObjectToBone(boneName, pMovable, offsetOrientation * I->Rotation, offsetPosition, scale);
+			if (!mAttachPoints.get()) {
+				mAttachPoints = std::auto_ptr<AttachPointWrapperStore>(new AttachPointWrapperStore());
+			}
+			AttachPointWrapper wrapper;
+			wrapper.TagPoint = tagPoint;
+			wrapper.AttachPointName = attachPointName;
+			wrapper.Movable = pMovable;
+			mAttachPoints->push_back(wrapper);
 		}
 	}
 	return 0;
@@ -647,7 +658,7 @@ Ogre::TagPoint* Model::attachObjectToAttachPoint(const Ogre::String &attachPoint
 
 bool Model::hasAttachPoint(const std::string& attachPoint) const
 {
-	for (AttachPointDefinitionStore::iterator I = _masterModel->mAttachPoints.begin(); I < _masterModel->mAttachPoints.end();  ++I) {
+	for (AttachPointDefinitionStore::iterator I = _masterModel->mAttachPoints.begin(); I != _masterModel->mAttachPoints.end();  ++I) {
 		if (I->Name == attachPoint) {
 			return true;
 		}
@@ -730,6 +741,15 @@ Ogre::MovableObject * Model::detachObjectFromBone (const Ogre::String &movableNa
 {
 
 	if (mSubmodels.size() && mSkeletonOwnerEntity) {
+		if (mAttachPoints.get()) {
+			for (AttachPointWrapperStore::iterator I = mAttachPoints->begin(); I != mAttachPoints->end(); ++I) {
+				if (I->Movable->getName() == movableName) {
+					mAttachPoints->erase(I);
+					break;
+				}
+			}
+		}
+
 		return mSkeletonOwnerEntity->detachObjectFromBone(movableName);
 
 	} else {
@@ -743,7 +763,8 @@ Ogre::MovableObject * Model::detachObjectFromBone (const Ogre::String &movableNa
 void Model::detachAllObjectsFromBone(void)
 {
 	if (mSubmodels.size() && mSkeletonOwnerEntity) {
-		return mSkeletonOwnerEntity->detachAllObjectsFromBone();
+		mSkeletonOwnerEntity->detachAllObjectsFromBone();
+		mAttachPoints = std::auto_ptr<AttachPointWrapperStore>(0);
 
 	} else {
 		OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::detachAllObjectsFromBone");		
@@ -976,6 +997,11 @@ Model* Model::createModel(Ogre::SceneManager* sceneManager, const std::string& m
 }
 	
 	
+const Model::AttachPointWrapperStore* Model::getAttachedPoints() const
+{
+	return mAttachPoints.get();
+}
+
 	
 Ogre::String ModelFactory::FACTORY_TYPE_NAME = "Model";
 //-----------------------------------------------------------------------

@@ -71,6 +71,7 @@ private:
 
 	void exportSubModels(ModelDefinitionPtr modelDef, Ember::TiXmlElement& modelElem);
 	void exportActions(ModelDefinitionPtr modelDef, Ember::TiXmlElement& modelElem);
+	void exportAttachPoints(ModelDefinitionPtr modelDef, Ember::TiXmlElement& modelElem);
 
 };
 
