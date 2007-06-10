@@ -33,6 +33,7 @@ namespace Environment {
 class ISun
 {
 public:
+	virtual void setAmbientLight(const Ogre::ColourValue& colour) = 0;
 
 };
 
@@ -87,6 +88,7 @@ public:
  	
  	const Ember::ConsoleCommandWrapper SetTime;
 	const Ember::ConsoleCommandWrapper SetFogDensity;
+	const Ember::ConsoleCommandWrapper SetAmbientLight;
    
 	inline ISun* getSun();
 	inline ISky* getSky();
@@ -98,6 +100,18 @@ public:
     
     void initialize();
     
+	/**
+	 *    changes the ambient light
+	 * @param colour 
+	 */
+	void setAmbientLight(const Ogre::ColourValue& colour);
+    
+    
+   	/**
+	* emitted when the world ambient light is changed
+	*/
+	sigc::signal<void, const Ogre::ColourValue&> EventUpdatedAmbientLight;
+
 private:
 
 	IEnvironmentProvider* mProvider;

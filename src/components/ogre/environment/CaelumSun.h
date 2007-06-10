@@ -39,6 +39,8 @@ public:
 
     ~CaelumSun();
     
+ 	virtual void setAmbientLight(const Ogre::ColourValue& colour);
+   
 private:
 
 	caelum::Sun* mSun;

@@ -21,6 +21,7 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 #include "CaelumSun.h"
+#include "components/ogre/EmberOgre.h"
 
 namespace EmberOgre {
 
@@ -34,6 +35,10 @@ CaelumSun::CaelumSun(CaelumEnvironment& environment, caelum::Sun* sun)
 
 CaelumSun::~CaelumSun()
 {
+}
+
+void CaelumSun::setAmbientLight(const Ogre::ColourValue& colour) {
+	EmberOgre::getSingleton().getSceneManager()->setAmbientLight(colour);
 }
 
 

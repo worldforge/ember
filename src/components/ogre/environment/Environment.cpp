@@ -31,6 +31,7 @@ namespace Environment {
 Environment::Environment(IEnvironmentProvider* provider):
  SetTime("set_time",this, "Sets the time. parameters: <hour> <minute>")
 , SetFogDensity("set_fogdensity",this, "Sets the fog density.")
+, SetAmbientLight("setambientlight", this, "Set the ambient light of the world: <red> <green> <blue>")
 , mProvider(provider)
 {
 }
@@ -61,8 +62,23 @@ void Environment::runCommand(const std::string &command, const std::string &args
 		float density = ::Ogre::StringConverter::parseReal(densityString);
 		getFog()->setDensity( density);
 		
-	}
+	} else if (SetAmbientLight == command)
+	{
+		Ember::Tokeniser tokeniser;
+		tokeniser.initTokens(args);
+		std::string r = tokeniser.nextToken();
+		std::string b = tokeniser.nextToken();
+		std::string g = tokeniser.nextToken();
+		
+		if (r == "" || b == "" || g == "") {
+			return;
+		} else {
+			Ogre::ColourValue colour(Ogre::StringConverter::parseReal(r),Ogre::StringConverter::parseReal(b),Ogre::StringConverter::parseReal(g));
+			setAmbientLight(colour);
+		}
 	
+	}
+
 }
 
 void Environment::initialize()
@@ -75,6 +91,12 @@ void Environment::setTime(int hour, int minute, int second)
 // 	mCaelumSystem->setLocalTime (3600 * hour + 60 * minute + second);
 
 }
+
+void Environment::setAmbientLight(const Ogre::ColourValue& colour) {
+	getSun()->setAmbientLight(colour);
+	EventUpdatedAmbientLight.emit(colour);
+}
+
 }
 
 }
