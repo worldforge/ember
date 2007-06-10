@@ -87,7 +87,7 @@ public:
 	virtual void showOgreBoundingBox(bool show);
 // 	virtual void showErisBoundingBox(bool show);
 
-	virtual bool getShowOgreBoundingBox();
+	virtual bool getShowOgreBoundingBox() const;
 // 	virtual bool getShowErisBoundingBox();
 	
 	

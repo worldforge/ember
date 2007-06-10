@@ -304,7 +304,7 @@ void EmberPhysicalEntity::attachToPointOnModel(const std::string& point, Model::
 		if (model->hasAttachPoint(point) && model->getSkeleton()) {
 			getScaleNode()->detachObject(getModel());
 			getModel()->setVisible(true);
-			model->attachObjectToAttachPoint( point, getModel(), getScaleNode()->getScale());
+			model->attachObjectToAttachPoint( point, getModel(), getScaleNode()->getScale(), getModel()->getDefinition()->getRotation());
 			mModelAttachedTo = model;
 		}
 	}
@@ -326,7 +326,7 @@ void EmberPhysicalEntity::showOgreBoundingBox(bool show)
 }
 
 
-bool EmberPhysicalEntity::getShowOgreBoundingBox()
+bool EmberPhysicalEntity::getShowOgreBoundingBox() const
 {
 	return getScaleNode()->getShowBoundingBox();
 }

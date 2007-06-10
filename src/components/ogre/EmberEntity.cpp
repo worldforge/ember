@@ -575,7 +575,7 @@ void EmberEntity::createErisBboxMaterial()
 	if (!Ogre::MaterialManager::getSingleton().resourceExists(BboxMaterialName)) {
 		Ogre::MaterialPtr baseYellowNoLighting = Ogre::MaterialManager::getSingleton().create(BboxMaterialName, 
 			Ogre::ResourceGroupManager::INTERNAL_RESOURCE_GROUP_NAME);
-// 		baseYellowNoLighting->setLightingEnabled(false);
+ 		baseYellowNoLighting->setLightingEnabled(false);
 		baseYellowNoLighting->setAmbient(Ogre::ColourValue(1, 1, 0.7));
 		baseYellowNoLighting->setDiffuse(Ogre::ColourValue(1, 1, 0.7));
 	}
@@ -589,11 +589,11 @@ void EmberEntity::onBboxChanged()
 }
 
 
-bool EmberEntity::getShowOgreBoundingBox()
+bool EmberEntity::getShowOgreBoundingBox() const
 {
 	return getSceneNode()->getShowBoundingBox();
 }
-bool EmberEntity::getShowErisBoundingBox()
+bool EmberEntity::getShowErisBoundingBox() const
 {
 	return (mErisEntityBoundingBox && mErisEntityBoundingBox->isVisible());
 	

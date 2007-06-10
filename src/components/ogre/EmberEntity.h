@@ -190,13 +190,13 @@ public:
 	/**
 	returns whether the ogre bounding box is shown
 	*/
-	virtual bool getShowOgreBoundingBox();
+	virtual bool getShowOgreBoundingBox() const;
 	
 	/**
 	returns whether the eris/atlas bounding box is shown
 	@see mErisEntityBoundingBox
 	*/
-	virtual bool getShowErisBoundingBox();
+	virtual bool getShowErisBoundingBox() const;
 
 	/**
 	 *    returns the world bounding box of the entity
