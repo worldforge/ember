@@ -53,6 +53,7 @@ namespace EmberOgre {
 class TerrainShader;
 
 class TerrainPage;
+class TerrainArea;
 
 class EmberPagingSceneManager;
 
@@ -167,7 +168,7 @@ public:
 	 *    Adds a new Mercator::Area to the terrain.
 	 * @param area 
 	 */
-	void addArea(Mercator::Area* area);
+	void addArea(TerrainArea* terrainArea);
 	
 //	TerrainPage* getTerrainPage(uint x, uint z);
 	
@@ -338,6 +339,11 @@ protected:
 	 * @param key 
 	 */
 	void ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key);
+	
+	/**
+	Listen to changes in areas.
+	*/
+	void TerrainArea_Changed(TerrainArea* terrainArea);
 	
 	ISceneManagerAdapter* mSceneManagerAdapter;
 };

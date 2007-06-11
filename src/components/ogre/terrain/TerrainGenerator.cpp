@@ -42,6 +42,7 @@
 
 
 #include "TerrainPage.h"
+#include "TerrainArea.h"
 #include <Mercator/Area.h>
 #include <Mercator/Segment.h>
 #include <Mercator/FillShader.h>
@@ -92,7 +93,7 @@ TerrainGenerator::TerrainGenerator(ISceneManagerAdapter* adapter)
 	
     createShader(std::string(configSrv->getValue("shadertextures", "sand")), new Mercator::BandShader(-2.f, 1.5f)); // Sandy beach
  
- 	mGrassShader = createShader(std::string(configSrv->getValue("shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .8f, 2.f)); // Grass
+ 	mGrassShader = createShader(std::string(configSrv->getValue("shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f)); // Grass
 
 
 
@@ -214,8 +215,11 @@ TerrainShader* TerrainGenerator::createShader(Ogre::MaterialPtr material, Mercat
 
 
 
-void TerrainGenerator::addArea(Mercator::Area* area)
+void TerrainGenerator::addArea(TerrainArea* terrainArea)
 {
+
+	terrainArea->EventAreaChanged.connect(sigc::mem_fun(*this, &TerrainGenerator::TerrainArea_Changed));
+	Mercator::Area* area = terrainArea->getArea();
  //   _fpreset();
 	//_controlfp(_PC_64, _MCW_PC);
 	//_controlfp(_RC_NEAR, _MCW_RC);
@@ -244,6 +248,16 @@ void TerrainGenerator::addArea(Mercator::Area* area)
 			mAreaShaders[area->getLayer()] = shader;
 		}
 	}
+	if (mAreaShaders.count(area->getLayer())) {
+		///mark the shader for update
+		///we'll not update immediately, we try to batch many area updates and then only update once per frame
+		markShaderForUpdate(mAreaShaders[area->getLayer()]);
+	}
+}
+
+void TerrainGenerator::TerrainArea_Changed(TerrainArea* terrainArea)
+{
+	Mercator::Area* area = terrainArea->getArea();
 	if (mAreaShaders.count(area->getLayer())) {
 		///mark the shader for update
 		///we'll not update immediately, we try to batch many area updates and then only update once per frame
