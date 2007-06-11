@@ -23,6 +23,9 @@
 #ifndef EMBEROGRETERRAINAREA_H
 #define EMBEROGRETERRAINAREA_H
 
+#include <sigc++/signal.h>
+#include <Eris/Entity.h>
+
 namespace Mercator
 {
     class Area;
@@ -45,11 +48,19 @@ public:
 	
 	inline Mercator::Area* getArea() const;
 	inline void setArea(Mercator::Area* area);
+	
+	sigc::signal<void, TerrainArea*> EventAreaChanged;
 
 protected:
 
 	Mercator::Area* mArea;
 	EmberEntity* mEntity;
+	Eris::Entity::AttrChangedSlot mAttrChangedSlot;
+	
+	void attributeChanged(const std::string& attributeName, const Atlas::Message::Element& attributeValue);
+	void entity_Moved();
+	void observeEntity();
+	bool parseArea();
 
 };
 

@@ -27,7 +27,7 @@
 
 namespace EmberOgre {
 
-TerrainArea::TerrainArea(EmberEntity* entity) : mEntity(entity)
+TerrainArea::TerrainArea(EmberEntity* entity) : mArea(0), mEntity(entity)
 {
 }
 
@@ -42,7 +42,13 @@ bool TerrainArea::init() {
 	//_controlfp(_PC_64, _MCW_PC);
 	//_controlfp(_RC_NEAR , _MCW_RC);
 
+	observeEntity();
+	return parseArea();
+	
+}
 
+bool TerrainArea::parseArea()
+{
 	if (!mEntity->hasAttr("area")) {
         S_LOG_FAILURE("AreaModel defined on entity with no area attribute");
         return false;
@@ -63,7 +69,9 @@ bool TerrainArea::init() {
     }
 
     int layer = it->second.asInt();
-    mArea = new Mercator::Area(layer, false);
+    if (!mArea) {
+    	mArea = new Mercator::Area(layer, false);
+    }
        
     WFMath::Polygon<2> poly;
     for (unsigned int p=0; p<pointsData.size(); ++p) {
@@ -98,11 +106,33 @@ bool TerrainArea::init() {
    
 	if (poly.numCorners()) {
     	mArea->setShape(poly);
-		
 	}
+	
 	return true;
-   // Environment::getInstance().registerArea(m_area);
 }
 
+void TerrainArea::attributeChanged(const std::string& attributeName, const Atlas::Message::Element& attributeValue)
+{
+	if (parseArea()) {
+		EventAreaChanged(this);
+	}
+}
+
+void TerrainArea::entity_Moved()
+{
+	if (parseArea()) {
+		EventAreaChanged(this);
+	}
+}
+
+void TerrainArea::observeEntity()
+{
+	mAttrChangedSlot.disconnect();
+	if (mEntity) {
+		mAttrChangedSlot = sigc::mem_fun(*this, &TerrainArea::attributeChanged);
+		mEntity->observe("area", mAttrChangedSlot);
+		mEntity->Moved.connect(sigc::mem_fun(*this, &TerrainArea::entity_Moved));
+	}
+}
 
 };
