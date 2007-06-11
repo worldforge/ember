@@ -105,7 +105,7 @@ Eris::Entity(id, ty, vw)
 , mIsInMotionManager(false)
 , mErisEntityBoundingBox(0)
 , mOgreNode(0)
-, mTerrainArea(this)
+, mTerrainArea(0)
 {
 	createSceneNode(sceneManager);
 }
@@ -147,8 +147,9 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 	S_LOG_VERBOSE( ss.str());
 	
 	if (hasAttr("area")) {
-		if (mTerrainArea.init()) {
-			addArea(&mTerrainArea);
+		mTerrainArea = std::auto_ptr<TerrainArea>(new TerrainArea(this));
+		if (mTerrainArea->init()) {
+			addArea(mTerrainArea.get());
 		}
 	}
 		

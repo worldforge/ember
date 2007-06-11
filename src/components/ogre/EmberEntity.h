@@ -27,9 +27,6 @@
 
 #include <Eris/Entity.h>
 
-
-#include "terrain/TerrainArea.h"
-
 namespace Ogre
 {
 	class OOBBWireBoundingBox;
@@ -52,7 +49,7 @@ namespace Model {
 }
 
 class EmberEntityFactory;
-
+class TerrainArea;
 /**
  * A representation of an Eris::Entity, ie. a world entity.
  * Note that most entities in the game world will be of type EmberPhysicalEntity
@@ -319,9 +316,8 @@ protected:
 	
 	/**
 	If there's a terrainarea belonging to this entity, that's stored here.
-	TODO: check if we can save some memory by using a pointer?
 	*/
-	TerrainArea mTerrainArea;
+	std::auto_ptr<TerrainArea> mTerrainArea;
 
 		
 	/**

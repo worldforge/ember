@@ -244,7 +244,7 @@ const Ogre::Vector3& WorldEmberEntity::getOffsetForContainedNode(const Ogre::Vec
  
 void WorldEmberEntity::addArea(TerrainArea* area)
 {
-	mTerrainGenerator->addArea(area->getArea());
+	mTerrainGenerator->addArea(area);
 }
 
 
