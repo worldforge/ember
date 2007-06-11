@@ -33,6 +33,7 @@ namespace Environment {
 class ISun
 {
 public:
+	virtual ~ISun() {}
 	virtual void setAmbientLight(const Ogre::ColourValue& colour) = 0;
 
 };
