@@ -1,5 +1,5 @@
 //
-// C++ Interface: SizeAdapter
+// C++ Interface: Position2DAdapter
 //
 // Description: 
 //
@@ -21,8 +21,6 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
-#include "AdapterBase.h"
-
 namespace EmberOgre {
 
 namespace Gui {
@@ -34,13 +32,13 @@ namespace Atlas {
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
-class SizeAdapter : AdapterBase
+class Position2DAdapter : public AdapterBase
 {
 public:
-    SizeAdapter(const Atlas::Message::Element& element, CEGUI::Window* lowerXWindow, CEGUI::Window* lowerYWindow, CEGUI::Window* lowerZWindow, CEGUI::Window* upperXWindow, CEGUI::Window* upperYWindow, CEGUI::Window* upperZWindow, CEGUI::Slider* scaler, CEGUI::Window* infoWindow);
+    Position2DAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* xWindow, CEGUI::Window* yWindow);
 
-    virtual ~SizeAdapter();
-	
+    virtual ~Position2DAdapter();
+
 };
 
 }
@@ -50,5 +48,4 @@ public:
 }
 
 }
-
 
