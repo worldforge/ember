@@ -7,7 +7,7 @@
 		<Property Name='Text' Value='Performance'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
 			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,15}}'/>
-			<Property Name='UnifiedSize' Value='{{1,-2},{1,-15}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-4},{1,-15}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/MultiLineEditbox' Name='TextBox'>
 				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
