@@ -6,9 +6,11 @@ EntityEditor.instance.stackableContainers = {}
 EntityEditor.instance.entity = nil
 EntityEditor.instance.rootMapAdapter = nil
 EntityEditor.instance.helper = nil
+EntityEditor.instance.newElements = {}
 EntityEditor.factory = nil
 EntityEditor.attributesContainer = nil
-EntityEditor.hiddenAttributes = {objtype = 1, stamp = 1, area = 1}
+EntityEditor.hiddenAttributes = {objtype = 1, stamp = 1}
+-- EntityEditor.hiddenAttributes = {objtype = 1, stamp = 1, area = 1}
 EntityEditor.modelTab = {}
 
 
@@ -53,6 +55,10 @@ function EntityEditor.clearEditing()
 	end
 	EntityEditor.instance = {}
 	EntityEditor.instance.stackableContainers = {}
+	EntityEditor.instance.newElements = {}
+	EntityEditor.instance.addNewElement = function(element) 
+		table.insert(EntityEditor.instance.newElements,element)
+	end
 end
 
 function EntityEditor.editEntity(entity)
@@ -125,6 +131,45 @@ function EntityEditor.createNewListElementWidget(listAdapter, outercontainer)
 			adapterWrapper = EntityEditor.createListAdapter(element)
 		end
 		
+		EntityEditor.instance.addNewElement(element)
+		
+		if adapterWrapper ~= nil then
+			wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
+			EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer)
+			--by adding the window again we make sure that it's at the bottom of the child window list
+			wrapper.outercontainer:addChildWindow(wrapper.container)
+		end
+	end
+	wrapper.button:subscribeEvent("MouseClick", wrapper.buttonPressed)
+
+	return wrapper
+end
+
+function EntityEditor.createNewPointsElementWidget(listAdapter, outercontainer)
+	local wrapper = {}
+	wrapper.adapter = listAdapter
+	wrapper.outercontainer = outercontainer
+	wrapper.container = guiManager:createWindow("DefaultGUISheet")
+	EntityEditor.factory:loadLayoutIntoContainer(wrapper.container, "newUnnamedElement", "adapters/atlas/ListAdapterNewElement.layout")
+	wrapper.container:setHeight(CEGUI.UDim(0, 25))
+	wrapper.typeCombobox = CEGUI.toCombobox(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "ElementType"))
+	
+	local item = EmberOgre.Gui.ColouredListItem:new("Point", 0)
+	wrapper.typeCombobox:addItem(item)
+	wrapper.typeCombobox:setHeight(CEGUI.UDim(0, 100))
+	--combobox:setProperty("ReadOnly", "true")
+	
+	wrapper.button = CEGUI.toPushButton(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "NewElementButton"))
+	wrapper.buttonPressed = function(args)
+		local adapterWrapper = nil
+		local element = nil
+		if wrapper.typeCombobox:getSelectedItem():getID() == 0 then
+			element = EntityEditor.instance.helper:createPosition2dElement()
+			adapterWrapper = EntityEditor.createPosition2DAdapter(element)
+		end
+		
+		EntityEditor.instance.addNewElement(element)
+		
 		if adapterWrapper ~= nil then
 			wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
 			EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer)
@@ -168,6 +213,8 @@ function EntityEditor.createNewMapElementWidget(mapAdapter, outercontainer)
 			adapterWrapper = EntityEditor.createListAdapter(element)
 		end
 		
+		EntityEditor.instance.addNewElement(element)
+		
 		if adapterWrapper ~= nil then
 			local name = wrapper.nameEditbox:getText()
 			wrapper.adapter:addAttributeAdapter(name, adapterWrapper.adapter, adapterWrapper.outercontainer)
@@ -189,6 +236,8 @@ function EntityEditor.createAdapter(attributeName, element)
 			return EntityEditor.createPositionAdapter(element)
 		elseif attributeName == 'orientation' then
 			return EntityEditor.createOrientationAdapter(element)
+		elseif attributeName == 'points' then
+			return EntityEditor.createPointsAdapter(element)
 		elseif element:isString() then
 			return EntityEditor.createStringAdapter(element)
 		elseif element:isNum() then
@@ -245,6 +294,26 @@ function EntityEditor.createListAdapter(element)
 	return wrapper	
 end
 
+function EntityEditor.createPointsAdapter(element)
+	local wrapper = {}
+	wrapper.container = guiManager:createWindow("DefaultGUISheet")
+	wrapper.adapter = EntityEditor.factory:createListAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
+	for i = 0, wrapper.adapter:getSize() - 1 do
+		local childElement = wrapper.adapter:valueOfAttr(i)
+		local adapterWrapper = EntityEditor.createPosition2DAdapter(childElement)
+		if adapterWrapper ~= nil then
+			EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.container)
+			wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
+		end
+	end	
+	
+	local newElementWrapper = EntityEditor.createNewPointsElementWidget(wrapper.adapter, wrapper.container)
+	wrapper.container:addChildWindow(newElementWrapper.container)
+	EntityEditor.createStackableContainer(wrapper.container):repositionWindows()
+	
+	return wrapper	
+end
+
 function EntityEditor.createStringAdapter(element)
 	local wrapper = {}
 	wrapper.container = guiManager:createWindow("DefaultGUISheet")
@@ -271,6 +340,13 @@ function EntityEditor.createPositionAdapter(element)
 	local wrapper = {}
 	wrapper.container = guiManager:createWindow("DefaultGUISheet")
 	wrapper.adapter = EntityEditor.factory:createPositionAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
+	return wrapper	
+end
+
+function EntityEditor.createPosition2DAdapter(element)
+	local wrapper = {}
+	wrapper.container = guiManager:createWindow("DefaultGUISheet")
+	wrapper.adapter = EntityEditor.factory:createPosition2DAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
 	return wrapper	
 end
 

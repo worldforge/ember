@@ -81,6 +81,13 @@ Atlas::Message::Element EntityEditor::createFloatElement()
 {
 	return Element(0.0f);
 }
+Atlas::Message::Element EntityEditor::createPosition2dElement()
+{
+	ListType list;
+	list.push_back(createFloatElement());
+	list.push_back(createFloatElement());
+	return Element(list);
+}
 
 
 }

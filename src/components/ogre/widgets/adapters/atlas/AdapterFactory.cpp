@@ -27,6 +27,7 @@
 #include "MapAdapter.h"
 #include "ListAdapter.h"
 #include "PositionAdapter.h"
+#include "Position2DAdapter.h"
 #include "OrientationAdapter.h"
 #include <CEGUI.h>
 #include "components/ogre/GUIManager.h"
@@ -206,6 +207,35 @@ PositionAdapter* AdapterFactory::createPositionAdapter(CEGUI::Window* container,
 		return 0;
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when loading PositionAdapter. " << ex.what());
+		return 0;
+	}
+}
+
+Position2DAdapter* AdapterFactory::createPosition2DAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
+{
+	if (!container) {
+		S_LOG_FAILURE("No container sent to AdapterFactory::createPosition2DAdapter.");
+		return 0;
+	}
+	
+	if (!element.isList()) {
+		S_LOG_FAILURE("Incorrect element type.");
+		return 0;
+	}
+	
+	try {
+		loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/Position2DAdapter.layout");
+		WindowManager& windowMgr = WindowManager::getSingleton();
+		Window* x = windowMgr.getWindow(mCurrentPrefix + "x");
+		Window* y = windowMgr.getWindow(mCurrentPrefix + "y");
+		Position2DAdapter* adapter = new Position2DAdapter(element, x, y);
+		
+		return adapter;
+	} catch (const CEGUI::Exception& ex) {
+		S_LOG_FAILURE("Error when creating Position2DAdapter. " << ex.getMessage ().c_str());
+		return 0;
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Error when loading Position2DAdapter. " << ex.what());
 		return 0;
 	}
 }

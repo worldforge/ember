@@ -74,6 +74,7 @@ public:
 	Atlas::Message::Element createStringElement();
 	Atlas::Message::Element createIntElement();
 	Atlas::Message::Element createFloatElement();
+	Atlas::Message::Element createPosition2dElement();
 protected:
 
 	Adapters::Atlas::MapAdapter* mRootAdapter;
