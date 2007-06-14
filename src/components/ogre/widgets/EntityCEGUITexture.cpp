@@ -69,13 +69,13 @@ EntityCEGUITexture::EntityCEGUITexture(const std::string& imageSetName, int widt
 
 EntityCEGUITexture::~EntityCEGUITexture()
 {
-	if (mCamera) {
+/*	if (mCamera) {
 		mSceneManager->destroyCamera(mCamera);
-	}
-	if (mRootNode) {
+	}*/
+/*	if (mRootNode) {
 		mRootNode->removeAndDestroyAllChildren();
 		mSceneManager->destroySceneNode(mRootNode->getName());
-	}
+	}*/
 	Ogre::Root::getSingleton().destroySceneManager(mSceneManager);
 }
 
