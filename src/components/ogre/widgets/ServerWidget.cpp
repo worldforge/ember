@@ -73,6 +73,7 @@ ServerWidget::ServerWidget() : mModelPreviewRenderer(0)
 
 ServerWidget::~ServerWidget()
 {
+	delete mModelPreviewRenderer;
 }
 
 void ServerWidget::buildWidget()
