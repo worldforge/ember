@@ -30,7 +30,13 @@
 #include "framework/Exception.h"
 
 // include Lua libs and tolua++
-#include <lua.hpp>
+// include Lua libs and tolua++
+extern "C" {
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
+}
+//#include <lua.hpp>
 #include <tolua++.h>
 
 TOLUA_API int tolua_Ogre_open (lua_State* tolua_S);

@@ -1,5 +1,9 @@
 2007-06-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
 
+	* src/components/ogre/scripting/LuaScriptingProvider.cpp: lua 5.0 doesn't include lua.hpp (only 5.1), so we can't use that
+
+2007-06-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
 	* configure.ac: updated requirements
 
 2007-06-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
