@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Thu Jun  7 23:12:28 2007.
+** Generated automatically by tolua++-1.0.92 on Tue Jun 12 23:57:55 2007.
 */
 
 #ifndef __cplusplus
@@ -7346,6 +7346,46 @@ static int tolua_EmberOgre_EmberOgre_Gui_EntityEditor_createFloatElement00(lua_S
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'createFloatElement'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: createPosition2dElement of class  EmberOgre::Gui::EntityEditor */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_EntityEditor_createPosition2dElement00
+static int tolua_EmberOgre_EmberOgre_Gui_EntityEditor_createPosition2dElement00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::EntityEditor",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Gui::EntityEditor* self = (EmberOgre::Gui::EntityEditor*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'createPosition2dElement'",NULL);
+#endif
+  {
+   Atlas::Message::Element tolua_ret = (Atlas::Message::Element)  self->createPosition2dElement();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new Atlas::Message::Element(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Atlas::Message::Element");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Atlas::Message::Element));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Atlas::Message::Element");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'createPosition2dElement'.",&tolua_err);
  return 0;
 #endif
 }
@@ -17741,6 +17781,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"createStringElement",tolua_EmberOgre_EmberOgre_Gui_EntityEditor_createStringElement00);
      tolua_function(tolua_S,"createIntElement",tolua_EmberOgre_EmberOgre_Gui_EntityEditor_createIntElement00);
      tolua_function(tolua_S,"createFloatElement",tolua_EmberOgre_EmberOgre_Gui_EntityEditor_createFloatElement00);
+     tolua_function(tolua_S,"createPosition2dElement",tolua_EmberOgre_EmberOgre_Gui_EntityEditor_createPosition2dElement00);
     tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
