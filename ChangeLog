@@ -1,3 +1,111 @@
+2007-06-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* configure.ac: updated requirements
+
+2007-06-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/scripting/bindings/lua/EntityEditor.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/scripting/bindings/lua/required.h: updated bindings
+
+2007-06-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/adapters/atlas/bindings/lua/AdapterFactory.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/Position2DAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/SizeAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/bindings.cpp, src/components/ogre/widgets/adapters/atlas/bindings/lua/bindings.pkg: updated bindings
+
+2007-06-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/EntityPicker.lua: disable the check that we're really admin for now
+
+2007-06-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/Makefile.am: removed image lib (though perhaps we should keep it and check if ogre is compiled with devil or not?)
+
+2007-06-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/adapters/atlas/AdapterFactory.cpp, src/components/ogre/widgets/adapters/atlas/AdapterFactory.h, src/components/ogre/widgets/EntityEditor.cpp, src/components/ogre/widgets/EntityEditor.h, src/components/ogre/widgets/EntityEditor.lua: added support for 2d points in areas
+	
+2007-06-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/adapters/atlas/ListAdapterNewElement.layout: default to read only
+
+2007-06-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/adapters/atlas/Position2DAdapter.cpp, src/components/ogre/widgets/adapters/atlas/Position2DAdapter.h, src/components/ogre/widgets/adapters/atlas/Position2DAdapter.layout: added a 2d position adapter
+
+2007-06-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/InspectWidget.cpp: use a lower precision when writing out numbers
+
+2007-06-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/Performance.layout: some layout changes
+
+2007-06-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/ServerWidget.cpp: proper cleanup
+
+2007-06-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/EntityCEGUITexture.cpp: no need to clean up the nodes and cameras when we're deleting the whole scene manager anyway
+
+2007-06-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/EmberEntity.cpp, src/components/ogre/EmberEntity.h, src/components/ogre/WorldEmberEntity.cpp: added support for more dynamic areas
+
+2007-06-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/MakeEntityWidget.cpp: removed debug console which won't work with the changes to TerrainArea
+
+2007-06-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/terrain/TerrainGenerator.cpp, src/components/ogre/terrain/TerrainGenerator.h: Update the terrain when areas are changed or moved.
+
+2007-06-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/terrain/TerrainArea.cpp, src/components/ogre/terrain/TerrainArea.h: added event for when the area is updated, allowing for dynamic updating of the terrain
+
+2007-06-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/environment/Environment.h: added virtual destructor
+
+2007-06-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/scripting/bindings/lua/EmberEntity.pkg, src/components/ogre/scripting/bindings/lua/EmberPhysicalEntity.pkg, src/components/ogre/scripting/bindings/lua/ModelDefinition.pkg, src/components/ogre/scripting/bindings/lua/StackableContainer.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
+
+2007-06-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/modeldefinitions/characters.modeldef.xml, src/components/ogre/modeldefinitions/modelmappings.modelmap.xml: added rotation adjustments for the male, and fixed incorrect named parts in the boulder
+
+2007-06-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/EntityEditor.layout, src/components/ogre/widgets/EntityEditor.lua: added more functionality, amongst that a model info tab
+
+2007-06-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/InventoryWidget.xml: cleaned up the layout a little bit
+
+2007-06-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/StackableContainer.cpp, src/components/ogre/widgets/StackableContainer.h: added a diconnect method
+
+2007-06-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/Avatar.h, src/components/ogre/AvatarEmberEntity.cpp, src/components/ogre/AvatarEmberEntity.h: added a console command for tweaking the rotation of the wielded entity, mainly for debug purposes
+
+2007-06-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/EmberEntity.cpp, src/components/ogre/EmberEntity.h, src/components/ogre/EmberPhysicalEntity.cpp, src/components/ogre/EmberPhysicalEntity.h: fixed a problem with the eris bounding box, made some methods const and make sure that wielded entities are rotated in accordance to their preset rotation as they are wielded
+
+2007-06-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/adapters/atlas/AdapterFactory.cpp, src/components/ogre/widgets/adapters/atlas/MapAdapter.cpp, src/components/ogre/widgets/adapters/atlas/SizeAdapter.cpp, src/components/ogre/widgets/adapters/atlas/SizeAdapter.h, src/components/ogre/widgets/adapters/atlas/SizeAdapter.layout: extended the sizeadapter with an info field
+
+2007-06-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/model/Model.cpp, src/components/ogre/model/Model.h, src/components/ogre/model/ModelDefinition.cpp, src/components/ogre/model/ModelDefinition.h, src/components/ogre/model/XMLModelDefinitionSerializer.cpp, src/components/ogre/model/XMLModelDefinitionSerializer.h: added support for defining how objects attached to the model must be rotated to appear correctly. This will allow us to fix the problem with held tools looking strange
+
+2007-06-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/environment/CaelumSun.cpp, src/components/ogre/environment/CaelumSun.h, src/components/ogre/environment/Environment.cpp, src/components/ogre/environment/Environment.h: added console command for setting the ambient light
+
 2007-06-06 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
 
 	* src/components/ogre/scripting/bindings/lua/ColouredListItem.pkg, src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/Widget.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/scripting/bindings/lua/required.h: updated bindings
