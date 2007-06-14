@@ -189,6 +189,7 @@ void InspectWidget::showEntityInfo(EmberEntity* entity)
 	//TODO: restructure this so it won't be done all over each frame, instead cache the values and only update upon changes to the entity
 	Eris::Entity* parent = entity->getLocation();
 	std::stringstream ss;
+	ss.precision(4);
 	
 	ss << "Name: " << entity->getName() << "\n";
 	ss << "Id: " << entity->getId() << "\n";
@@ -343,6 +344,7 @@ bool InspectWidget::ShowErisBoundingBox_Click(const CEGUI::EventArgs& args)
 
 AttributeTextBuilder::AttributeTextBuilder(): mLevel(0)
 {
+	mMainText.precision(4);
 }
 
 std::string AttributeTextBuilder::parseAttributes(const Eris::Entity::AttrMap& map)
