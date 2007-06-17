@@ -29,6 +29,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "config.h"
 #endif
 
+#include "EmberOgre.h"
+
 // Headers to stop compile problems from headers
 #include <stdlib.h>
 #include <stddef.h>
@@ -99,14 +101,14 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "carpenter/Carpenter.h"
 #include "carpenter/BluePrint.h"
 
-#include "ogreopcode/include/OgreCollisionManager.h"
-
-//#include "EmberSceneManager/include/EmberTerrainSceneManager.h"
+#include <OgreSceneManager.h>
 #include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
 #include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManagerAdapter.h"
 #include "model/ModelDefinitionManager.h"
 #include "model/ModelDefinition.h"
 #include "model/mapping/EmberModelMappingManager.h"
+
+#include "ogreopcode/include/OgreCollisionManager.h"
 
 // ------------------------------
 // Include Ember header files
@@ -115,7 +117,6 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "framework/ConsoleBackend.h"
 
 
-#include "EmberOgre.h"
 
 #include "jesus/Jesus.h"
 #include "jesus/XMLJesusSerializer.h"
@@ -165,31 +166,32 @@ namespace EmberOgre {
     
 
 EmberOgre::EmberOgre() :
+mAvatar(0),
+mAvatarController(0),
 mRoot(0),
-mKeepOnRunning(true),
-// mWorldView(0),
-mGUIManager(0),
+mSceneMgr(0),
+mWindow(0),
+mInput(std::auto_ptr<Input>(new Input)),
+mGeneralCommandMapper(std::auto_ptr<InputCommandMapper>(new InputCommandMapper("general"))),
+mEmberEntityFactory(0), 
 mTerrainGenerator(0),
 mMotionManager(0),
-mAvatarController(0),
+mGUIManager(0),
 mModelDefinitionManager(0),
-mEmberEntityFactory(0), 
-// mPollEris(true), 
-mLogObserver(0), 
-mGeneralCommandMapper(std::auto_ptr<InputCommandMapper>(new InputCommandMapper("general"))),
-mWindow(0),
-mMaterialEditor(0),
-mJesus(0),
-mAvatar(0),
 mModelMappingManager(0),
-mInput(std::auto_ptr<Input>(new Input))
+mMoveManager(0),
+mKeepOnRunning(true),
+mJesus(0),
+mLogObserver(0), 
+mMaterialEditor(0),
+mCollisionManager(0)
 {
 	Ember::Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
 }
 
 EmberOgre::~EmberOgre()
 {
-	
+	delete mCollisionManager;
 	delete mMaterialEditor;
 	delete mJesus;
 	delete mMoveManager;
@@ -445,8 +447,8 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	
 	/// Turn off rendering of everything except overlays
 	mSceneMgr->clearSpecialCaseRenderQueues();
-	mSceneMgr->addSpecialCaseRenderQueue(RENDER_QUEUE_OVERLAY);
-	mSceneMgr->setSpecialCaseRenderQueueMode(SceneManager::SCRQM_INCLUDE);
+	mSceneMgr->addSpecialCaseRenderQueue(Ogre::RENDER_QUEUE_OVERLAY);
+	mSceneMgr->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_INCLUDE);
 	
 	if (useWfut) {
 		S_LOG_INFO("Updating media.");
@@ -455,7 +457,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 	}
 	
 	///create the collision manager
-	new OgreOpcode::CollisionManager(mSceneMgr);
+	mCollisionManager = new OgreOpcode::CollisionManager(mSceneMgr);
 	
 	
 	ogreResourceLoader.loadGui();
@@ -524,7 +526,7 @@ bool EmberOgre::setup(bool loadOgrePluginsThroughBinreloc)
 
 	/// Back to full rendering
 	mSceneMgr->clearSpecialCaseRenderQueues();
-	mSceneMgr->setSpecialCaseRenderQueueMode(SceneManager::SCRQM_EXCLUDE);
+	mSceneMgr->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_EXCLUDE);
 
 	mMaterialEditor = new MaterialEditor();
 

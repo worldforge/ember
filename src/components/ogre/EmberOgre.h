@@ -54,6 +54,9 @@ namespace Ember
 class StreamLogObserver;
 }
 
+namespace OgreOpcode {
+class CollisionManager;
+}
 
 namespace EmberOgre {
 
@@ -404,6 +407,8 @@ protected:
 	void Application_ServicesInitialized();
 	
 	std::auto_ptr<OgreResourceProvider> mScriptingResourceProvider;
+	
+	OgreOpcode::CollisionManager* mCollisionManager;
 	
 };
 
