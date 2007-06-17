@@ -12,6 +12,7 @@ namespace Ogre
     {
 
         public:
+        	virtual ~ConstTraversalConst() {}
 		    virtual void onTree(const PagingLandScapeOctree& n, VisibleObjectsBoundsInfo * const visibleBounds ) const = 0;
 	        virtual void onLeaf(const PagingLandScapeOctreeNode&, VisibleObjectsBoundsInfo * const visibleBounds ) const = 0;
 
@@ -23,6 +24,7 @@ namespace Ogre
     {
 
         public:
+        	virtual ~TraversalConst() {}
 		    virtual void onTree(PagingLandScapeOctree& n, VisibleObjectsBoundsInfo * const visibleBounds ) const = 0;
 	        virtual void onLeaf(PagingLandScapeOctreeNode&, VisibleObjectsBoundsInfo * const visibleBounds ) const = 0;
 
@@ -34,6 +36,7 @@ namespace Ogre
     {
 
         public:
+        	virtual ~Traversal() {}
 		    virtual void onTree(PagingLandScapeOctree& n, VisibleObjectsBoundsInfo * const visibleBounds ) = 0;
 	        virtual void onLeaf(PagingLandScapeOctreeNode&, VisibleObjectsBoundsInfo * const visibleBounds ) = 0;
 

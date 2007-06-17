@@ -50,10 +50,10 @@ namespace Ogre
         OcclusionElement(),
 
             mWireBoundingBox(0),
-            mOcclusionBoundingBox(0),
             mHalfSize(Vector3::ZERO),
             mNumNodes (0),
-            mParent (0)
+            mParent (0),
+            mOcclusionBoundingBox(0)
     {
         //initialize all children to null.
         for (unsigned int i = 0; i < 2; i++)

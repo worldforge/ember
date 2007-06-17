@@ -19,12 +19,12 @@
 #define __PagingLandScapePrerequisites_H__
 
 
-#include "OgrePrerequisites.h"
+#include <OgrePrerequisites.h>
 
-#include "OgreHardwareBufferManager.h"
-#include "OgreTextureManager.h"
-#include "OgreHardwarePixelBuffer.h"
-#include "OgreAxisAlignedBox.h"
+#include <OgreHardwareBufferManager.h>
+#include <OgreTextureManager.h>
+#include <OgreHardwarePixelBuffer.h>
+#include <OgreAxisAlignedBox.h>
 
 //-----------------------------------------------------------------------
 // Options 
