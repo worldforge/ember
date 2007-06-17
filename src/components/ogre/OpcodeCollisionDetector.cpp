@@ -22,7 +22,7 @@
 //
 #include "OpcodeCollisionDetector.h"
 #include "ogreopcode/include/OgreCollisionManager.h"
-#include "ogreopcode/include/OgreCollisionShape.h"
+#include "ogreopcode/include/OgreEntityCollisionShape.h"
 #include "ogreopcode/include/OgreCollisionObject.h"
 
 #include "model/Model.h"
@@ -46,8 +46,9 @@ void OpcodeCollisionDetector::destroyCollisionObjects()
 	for (OpcodeCollisionDetector::CollisionObjectStore::iterator I = mCollisionObjects.begin(); I != mCollisionObjects.end(); ++I)
 	{
 		collideContext->removeObject(*I);
-		OgreOpcode::CollisionManager::getSingleton().destroyShape((*I)->getShape());
+		OgreOpcode::ICollisionShape* shape = (*I)->getShape();
 		delete *I;
+		OgreOpcode::CollisionManager::getSingleton().destroyShape(shape);
 	}
 	mCollisionObjects.clear();
 
@@ -60,11 +61,11 @@ void OpcodeCollisionDetector::buildCollisionObjects()
 	for (Model::Model::SubModelSet::const_iterator I = submodels.begin(); I != submodels.end(); ++I)
 	{
 		std::string collideShapeName(std::string("entity_") + (*I)->getEntity()->getName());
-		OgreOpcode::MeshCollisionShape *collideShape = OgreOpcode::CollisionManager::getSingletonPtr()->createMeshCollisionShape(collideShapeName.c_str());
+		OgreOpcode::EntityCollisionShape *collideShape = OgreOpcode::CollisionManager::getSingletonPtr()->createEntityCollisionShape(collideShapeName.c_str());
 // 		if (!collideShape->isInitialized()) {
 			collideShape->load((*I)->getEntity());
 // 		}
-		OgreOpcode::CollisionObject* collideObject = collideContext->newObject(collideShapeName);
+		OgreOpcode::CollisionObject* collideObject = new OgreOpcode::CollisionObject(collideShapeName);
 		collideObject->setShape(collideShape);
 		
 		collideContext->addObject(collideObject);
@@ -95,7 +96,7 @@ void OpcodeCollisionDetector::testCollision(Ogre::Ray& ray, CollisionResult& res
 		OgreOpcode::ICollisionShape* collisionShape = (*I)->getShape();
 		OgreOpcode::CollisionPair pick_result;
 		
-		if (collisionShape->rayCheck(OgreOpcode::COLLTYPE_QUICK, mModel->_getParentNodeFullTransform(), ray, 1000, pick_result)) {
+		if (collisionShape->rayCheck(OgreOpcode::COLLTYPE_QUICK, mModel->_getParentNodeFullTransform(), ray, 1000.0f, pick_result, false)) {
 			result.collided = true;
 			result.distance = pick_result.distance;
 			result.position = pick_result.contact;

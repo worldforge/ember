@@ -11,12 +11,12 @@ libEmberOgre_la_LIBADD = \
 	$(top_builddir)/src/components/ogre/environment/libEnvironment.la $(top_builddir)/src/components/ogre/input/libInput.la \
 	$(top_builddir)/src/components/ogre/jesus/libJesus.la $(top_builddir)/src/components/ogre/manipulation/libmanipulation.la \
 	$(top_builddir)/src/components/ogre/model/libModel.la $(top_builddir)/src/components/ogre/model/mapping/libMapping.la \
-	$(top_builddir)/src/components/ogre/ogreopcode/libOgreOpcode.la \
 	$(top_builddir)/src/components/ogre/scripting/bindings/lua/helpers/liblua_Helpers.la \
 	$(top_builddir)/src/components/ogre/scripting/bindings/lua/liblua_EmberOgre.la \
 	$(top_builddir)/src/components/ogre/scripting/bindings/lua/ogre/liblua_Ogre.la $(top_builddir)/src/components/ogre/scripting/libScripting.la \
 	$(top_builddir)/src/components/ogre/sound/libSound.la $(top_builddir)/src/components/ogre/terrain/libTerrain.la \
-	$(top_builddir)/src/components/ogre/widgets/libWidgets.la
+	$(top_builddir)/src/components/ogre/widgets/libWidgets.la \
+	$(top_builddir)/src/components/ogre/ogreopcode/src/libOgreOpcode.la
         
 
 
@@ -42,4 +42,4 @@ noinst_HEADERS = Avatar.h AvatarCamera.h AvatarController.h AvatarEmberEntity.h 
 	OgreLogObserver.h OgreResourceLoader.h OgreResourceProvider.h OgreSetup.h \
 	OpcodeCollisionDetector.h WorldEmberEntity.h XMLHelper.h
 	
-libEmberOgre_la_LDFLAGS = -no-undefined
+#libEmberOgre_la_LDFLAGS = -no-undefined

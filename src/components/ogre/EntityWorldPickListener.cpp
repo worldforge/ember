@@ -24,9 +24,9 @@
 #include "EmberOgre.h"
 #include "EmberEntityUserObject.h"
 
-#include "ogreopcode/include/OgreCollisionObject.h"
+/*#include "ogreopcode/include/OgreCollisionObject.h"
 #include "ogreopcode/include/OgreCollisionManager.h"
-#include "ogreopcode/include/OgreCollisionShape.h"
+#include "ogreopcode/include/IOgreCollisionShape.h"*/
 #include "model/Model.h"
 #include "EmberEntityFactory.h"
 
