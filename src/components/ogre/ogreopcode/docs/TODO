@@ -1,0 +1,24 @@
+*************************
+* OgreOpcode TODO List
+*************************
+
+--------------
+High priority: 
+--------------
+
+1) Make OgreOpcode use Eihort by default.
+
+2) Either move OPCODE directly into OgreOpcode (to remove the extra project/build), or just statically link to it.
+
+3) Fix the resource management bugs which causes OgreOpcode to goof up when objects are removed, destroyed, added and created during run-time..
+
+----------------
+Medium priority:
+----------------
+
+
+NOTES:
+
+nanoCell says: 05/07/2007
+  I've restructured the layout for the source code which should make it easier to compile on Windows using Visual Studio or Visual dot NET.
+	I'm busy writing the SCons scripts for Opcode. I have yet to include a binary version of SCons for SCons-less operating systems.

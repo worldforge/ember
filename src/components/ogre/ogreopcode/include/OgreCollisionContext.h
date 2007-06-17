@@ -2,7 +2,7 @@
 ///  @file OgreCollisionContext.h
 ///  @brief Contains the definition of the CollisionContext class.
 ///
-///  @author The OgreOpcode Team @date 28-05-2005
+///  @author The OgreOpcode Team
 ///
 ///////////////////////////////////////////////////////////////////////////////
 ///
@@ -32,17 +32,40 @@
 #include "OgreNodes.h"
 #include "OgreCollisionReporter.h"
 #include "OgreCollisionTypes.h"
-
-using namespace OgreOpcode::Details;
+#include "OgreOpcodeDebugObject.h"
+//#include "BP_Scene.h"
+#include "Opcode/Opcode.h"
 
 namespace OgreOpcode
 {
+	class CollisionObject;
+
 	namespace Details
 	{
 		typedef int CollisionClass;
+
+		class BP_Scene;
+
+		class Encounter
+		{
+		public:
+			CollisionObject* obj1;
+			CollisionObject* obj2;
+
+			Encounter(CollisionObject* o1, CollisionObject* o2)
+			{
+				obj1 = o2;
+				obj2 = o1;
+			}
+		};
+
+		inline bool operator<(const Encounter& x, const Encounter& y)
+		{ 
+			return x.obj1 < y.obj1 || (!(y.obj1 < x.obj1) && x.obj2 < y.obj2); 
+		}
+
 	};
 	
-	class CollisionObject;
 	/// Defines a collision space.
 	/// A CollisionContext creates a collision context, defined by
 	/// a collection of CollisionObject%s which can collide with
@@ -53,11 +76,11 @@ namespace OgreOpcode
 	{
 	public:
 		/// constructor
-		CollisionContext(const String& name);
+		CollisionContext(const Ogre::String& name);
 		/// destructor
 		virtual ~CollisionContext();
 		/// create a collide object
-		virtual CollisionObject *newObject(const String& name);
+		virtual CollisionObject *createObject(const Ogre::String& name);
 		/// kills a collide object
 		virtual void destroyObject(CollisionObject *collObj);
 		/// add collide object to context
@@ -65,64 +88,116 @@ namespace OgreOpcode
 		/// remove collide object from context
 		virtual void removeObject(CollisionObject *collObj);
 		/// compute contacts between collision objects in context
-		virtual int collide(Real dt=1.0);
+		virtual int collide(Ogre::Real dt=1.0);
 		/// debug visualization of the collide context
-		virtual void visualize(bool doVisualize, bool doAABBs, bool doLocal, bool doGlobal);
+		virtual void visualize(bool doVisualize, bool doRadii, bool doContacts, bool doBBs, bool doShapes, bool doAABBs);
 		/// get the collide reports for the collisions computed inside collide()
 		virtual int getCollisions(CollisionObject *collObj, CollisionPair **&cpPtr);
 		/// get reporter for for last collide() call.
-		const CollisionReporter& getCollisionReport() const;
+		const CollisionReporter& getCollisionReport();
 		/// get reporter for for last Check...() call.
-		const CollisionReporter& getCheckReport() const;
+		const CollisionReporter& getCheckReport();
+		/// get number of collisions for last collide call.
+		const int getNumCollisions();
 		/// do a "moving sphere" check against collide object radii in the context
-		virtual int movingSphereCheck(const Vector3& p0, const Vector3& v0, Real radius, CollisionClass collClass, CollisionPair **& cpPtr);
+		virtual int sweptSphereCheck(const Ogre::Vector3& position, const Ogre::Vector3& translateVector, Ogre::Real radius, Details::CollisionClass collClass, CollisionPair **& cpPtr, Ogre::String ignorename="");
 		/// do a line-model check
-		virtual int rayCheck(const Ray line, const Real dist, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr);
+		virtual int rayCheck(const Ogre::Ray line, const Ogre::Real dist, CollisionType collType, Details::CollisionClass collClass, CollisionPair**& cpPtr);
 		/// do a sphere-model check
-		virtual int sphereCheck(const Sphere& ball, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr);
+		virtual int sphereCheck(const Ogre::Sphere& ball, CollisionType collType, Details::CollisionClass collClass, CollisionPair**& cpPtr);
 		/// reset position and timestamp of all objects
 		void reset();
-		void update(Real dt=1.0);
+		/// 
+		void update(Ogre::Real dt=1.0);
 
-		virtual const String& getName() { return mName; };
+		Details::BP_Scene* getBroadPhase() { return mBroadPhase; };
+		/// 
 
-		virtual const std::list<CollisionObject*> getAttachedObjects()
+		virtual const Ogre::String& getName() { return mName; };
+
+		/// 
+		virtual CollisionObject* getAttachedObject(Ogre::String name);
+		
+		/// 
+		virtual const std::vector<CollisionObject*> getAttachedObjects()
 		{
 			return attached_list;
 		};
 
-		virtual const std::list<CollisionObject*> getOwnedObjects()
+		/// 
+		virtual const std::list<CollisionObject*>& getPotentialColliders(const CollisionObject* collidee);
+
+		/// 
+		virtual const std::vector<CollisionObject*> getOwnedObjects()
 		{
 			return owned_list;
 		};
 
+		/// 
 		virtual const int getAttachedObjectCount()
 		{
 			return static_cast< int >( attached_list.size() );
 		}
 
+		/// 
 		virtual const int getOwnedObjectCount()
 		{
 			return static_cast< int >( owned_list.size() );
 		}
 
-	private:
-		friend class CollisionObject;
+		///
+		virtual void setRayCulling(bool rayCulling = true)
+		{
+			mRayCulling = rayCulling;
+		}
 
-		static const int maxnum_collisions = 4096;
+		Details::OgreOpcodeDebugger* getVisualDebugger()
+		{
+			return mVisualDebugger;
+		}
+
+	private:
+
+		friend class CollisionObject; ///<
+
+		static const int max_aabbs = 256; ///<
+		static const int maxnum_collisions = 4096; ///<
 
 		CollisionReporter collideReportHandler;     ///< collide reports for collide()
 		CollisionReporter checkReportHandler;       ///< collide reports for Check() functions
-		nList xdim_list;        ///< the x-dimension sorted list (2 nodes per object)
+
+		IceMaths::AABB* aabb_array[max_aabbs]; ///<
+		typedef std::multimap<int,CollisionObject*> CollObjAABBPairs;///<
+		typedef CollObjAABBPairs::const_iterator CollObjAABBPair_Iterator;///<
+		CollObjAABBPairs collAABB_pairs;	///<
+		Details::BP_Scene* mBroadPhase;	///<
+		typedef std::vector<CollisionObject*>::iterator rw_attached_list_iterator; ///<
+		typedef std::vector<CollisionObject*>::iterator rw_owned_list_iterator; ///<
+		typedef std::set<Details::Encounter> ProxList;
+		ProxList proxList;
+
+		static void addPair(void *client_data, void *object1, void *object2)
+		{
+			((ProxList *)client_data)->insert(Details::Encounter((CollisionObject*)object1, (CollisionObject*)object2));
+		}
+
+		static void removePair(void *client_data, void *object1, void *object2)
+		{
+			((ProxList *)client_data)->erase(Details::Encounter((CollisionObject*)object1, (CollisionObject*)object2));
+		}
 
 	protected:
-		std::list<CollisionObject*> owned_list;       ///< list of CollisionObject%s created by this context
-		std::list<CollisionObject*> attached_list;    ///< the list of objects currently attached to the context
-		typedef std::list<CollisionObject*>::const_iterator attached_list_iterator;
-		int unique_id;
-		String mName;
+		std::vector<CollisionObject*> owned_list;       ///< list of CollisionObject%s created by this context
+		typedef std::vector<CollisionObject*>::const_iterator owned_list_iterator; ///<
+		std::vector<CollisionObject*> attached_list;    ///< the list of objects currently attached to the context
+		typedef std::vector<CollisionObject*>::const_iterator attached_list_iterator; ///<
+		int unique_id; ///<
+		Ogre::String mName; ///<
+		bool mRayCulling; ///<
+		bool mIsSAPDirty; ///<
+		std::list<CollisionInfo> mRecentContactList; ///<
+		Details::OgreOpcodeDebugger* mVisualDebugger; ///<
 	};
-
 }
 
 #endif // __OgreCollisionContext_h__

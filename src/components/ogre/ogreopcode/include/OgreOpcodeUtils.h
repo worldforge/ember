@@ -3,7 +3,7 @@
 ///  @brief This header file contains utility methods for OgreOpcode. Most of
 ///         them are for type conversions between IceMaths and Ogre.
 ///
-///  @author The OgreOpcode Team @date 23-01-2006
+///  @author The OgreOpcode Team
 ///
 ///////////////////////////////////////////////////////////////////////////////
 ///  
@@ -33,26 +33,56 @@ namespace OgreOpcode
 {
 	namespace Details
 	{
-		/// Defines an Oriented Bounding Box (OBB). Courtesy from Gilvan Maia :P
-		/// Diferently from AABB's (Axis-Aligned Bounding-Boxes), OBBs are not
-		/// limited to be aligned with the coordinate axes. Thus, it can fit objects
-		/// much more tighly just because it is adaptative to the object's orientation,
-		/// ie, its orientation can be adjusted in order to reduce its volume - this is.
-		/// why it would be preferred for collision detection.
+		/// This utility class is used to convert types from/to Ogre, OgreOpcode and Opcode.
+		/// Thus, it contributes for better, cleaner code and ease of maintenance in the project.
 		class _OgreOpcode_Export OgreOpcodeUtils
 		{
 		public:
 
 			/// Converts from an Ogre's vector into an IceMaths' one
-			static void ogreToIceVector3( const Vector3& ogreVec, IceMaths::Point& opcPoint )
+			static void ogreToIceVector3( const Ogre::Vector3& ogreVec, IceMaths::Point& opcPoint )
 			{
 				opcPoint.x = ogreVec.x;
 				opcPoint.y = ogreVec.y;
 				opcPoint.z = ogreVec.z;
 			}
 
+			static void ogreQuatPosToIceMatrix4(const Ogre::Quaternion& quat, const Ogre::Vector3& pos, IceMaths::Matrix4x4& opcMatrix)
+			{
+				Ogre::Matrix3 rot;
+				Ogre::Vector3 xcol, ycol, zcol;
+
+				quat.ToRotationMatrix( rot );	// creates a 3x3 rotation matrix from the Quaternion.
+
+				xcol = rot.GetColumn(0);
+				ycol = rot.GetColumn(1);
+				zcol = rot.GetColumn(2);
+
+				// now fill the final matrix with the appropriate data:
+				opcMatrix[0][0] = xcol.x;
+				opcMatrix[0][1] = xcol.y;
+				opcMatrix[0][2] = xcol.z;
+				opcMatrix[0][3] = 0.0f;
+
+				opcMatrix[1][0] = ycol.x;
+				opcMatrix[1][1] = ycol.y;
+				opcMatrix[1][2] = ycol.z;
+				opcMatrix[1][3] = 0.0f;
+
+				opcMatrix[2][0] = zcol.x;
+				opcMatrix[2][1] = zcol.y;
+				opcMatrix[2][2] = zcol.z;
+				opcMatrix[2][3] = 0.0f;
+
+				opcMatrix[3][0] = pos.x;
+				opcMatrix[3][1] = pos.y;
+				opcMatrix[3][2] = pos.z;
+				opcMatrix[3][3] = 1.0;
+			
+			}
+
 			/// Converts from an Ogre's matrix4x4 into an IceMaths' one
-			static void ogreToIceMatrix4( const Matrix4& ogreMatrix, IceMaths::Matrix4x4& opcMatrix )
+			static void ogreToIceMatrix4( const Ogre::Matrix4& ogreMatrix, IceMaths::Matrix4x4& opcMatrix )
 			{
 				for(unsigned int i = 0; i < 4; i++)
 				{
@@ -64,7 +94,7 @@ namespace OgreOpcode
 			}
 
 			/// Converts from an Ogre's ray into an IceMaths' one
-			static void ogreToIceRay(  const Ray& from, IceMaths::Ray& opcRay )
+			static void ogreToIceRay(  const Ogre::Ray& from, IceMaths::Ray& opcRay )
 			{
 				opcRay.mOrig.x = from.getOrigin().x;
 				opcRay.mOrig.y = from.getOrigin().y;
@@ -77,9 +107,9 @@ namespace OgreOpcode
 			}
 
 			/// Converts from an Ogre's sphere into an IceMaths' one
-			static void ogreToIceSphere(  const sphere& from, IceMaths::Sphere& to )
+			static void ogreToIceSphere(  const Ogre::Sphere& from, IceMaths::Sphere& to )
 			{
-				to.Set( IceMaths::Point(from.p.x,from.p.y,from.p.z), from.r );
+				to.Set( IceMaths::Point(from.getCenter().x,from.getCenter().y,from.getCenter().z), from.getRadius() );
 			}
 
 		};

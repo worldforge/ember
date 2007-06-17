@@ -2,7 +2,7 @@
 ///  @file OgreCollisionShape.h
 ///  @brief <TODO: insert file description here>
 ///
-///  @author The OgreOpcode Team @date 29-05-2005
+///  @author The OgreOpcode Team
 ///
 ///////////////////////////////////////////////////////////////////////////////
 ///
@@ -34,9 +34,7 @@
 #include "IOgreCollisionShape.h"
 #include "OgreCollisionTypes.h"
 #include "OgreOpcodeDebugObject.h"
-#include "Opcode.h"
-
-using namespace OgreOpcode::Details;
+#include "Opcode/Opcode.h"
 
 namespace OgreOpcode
 {
@@ -54,11 +52,11 @@ namespace OgreOpcode
 	{
 	public:
 		/// Constructs a SphereMeshCollisionShape
-		SphereMeshCollisionShape(const String& name);
+		SphereMeshCollisionShape(const Ogre::String& name);
 		virtual ~SphereMeshCollisionShape();
 
 		/// load collide geometry from mesh, and build a collision tree
-		virtual bool load(const String& name, SceneNode* scnNode, const float r, const int nRings = 16, const int nSegments = 16);
+		virtual bool load(const Ogre::String& name, Ogre::SceneNode* scnNode, const float r, const int nRings = 16, const int nSegments = 16);
 
 		/// Retrieve current vertex data from mesh and refit collision tree.
 		/// This is an O(n) operation in the number of vertices in the mesh.
@@ -90,12 +88,13 @@ namespace OgreOpcode
 		virtual bool _rebuildFromCachedData();
 
 	private:
-		Entity* mEntity;
+		Ogre::Entity* mEntity;
 
+		void createSphere(const std::string& strName, const float r, const int nRings = 16, const int nSegments = 16);
 		/// Count up the total number of vertices and indices in the Ogre mesh
-		void countIndicesAndVertices(Entity * entity, size_t & index_count, size_t & vertex_count);
+		void countIndicesAndVertices(Ogre::Entity * entity, size_t & index_count, size_t & vertex_count);
 		/// Convert ogre Mesh to simple float and int arrays
-		void convertMeshData(Entity * entity, float * vertexData, size_t vertex_count, int * faceData=0, size_t index_count=0);
+		void convertMeshData(Ogre::Entity * entity, float * vertexData, size_t vertex_count, size_t * faceData=0, size_t index_count=0);
 
 		/// prevent default construction
 		SphereMeshCollisionShape();

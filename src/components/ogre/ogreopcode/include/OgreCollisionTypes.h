@@ -2,7 +2,7 @@
 ///  @file OgreCollisionTypes.h
 ///  @brief <TODO: insert file description here>
 ///
-///  @author The OgreOpcode Team @date 30-05-2005
+///  @author The OgreOpcode Team
 ///  
 ///////////////////////////////////////////////////////////////////////////////
 ///  
@@ -34,10 +34,11 @@ namespace OgreOpcode
 	/// Define the collision types for collision queries.
 	enum CollisionType
 	{
-		COLLTYPE_IGNORE     = 0,    ///< no collisions
-		COLLTYPE_QUICK      = 1,    ///< quick sphere-2-sphere collision
-		COLLTYPE_CONTACT    = 2,    ///< first contact only
-		COLLTYPE_EXACT      = 3,    ///< all contacts
+		COLLTYPE_IGNORE     = 1,    ///< no collisions
+		COLLTYPE_QUICK      = 2,    ///< quick sphere-2-sphere collision
+		COLLTYPE_BBOX		= 3,    ///< OBB collision
+		COLLTYPE_CONTACT    = 4,    ///< first contact only
+		COLLTYPE_EXACT      = 5,    ///< all contacts
 	};
 
 	/// special case values for the CollClass check.
@@ -45,8 +46,9 @@ namespace OgreOpcode
 	{
 		COLLTYPE_ALWAYS_IGNORE  = -1,
 		COLLTYPE_ALWAYS_QUICK   = -2,
-		COLLTYPE_ALWAYS_CONTACT = -3,
-		COLLTYPE_ALWAYS_EXACT   = -4,
+		COLLTYPE_ALWAYS__BBOX	= -3,
+		COLLTYPE_ALWAYS_CONTACT = -4,
+		COLLTYPE_ALWAYS_EXACT   = -5,
 	};
 
 }

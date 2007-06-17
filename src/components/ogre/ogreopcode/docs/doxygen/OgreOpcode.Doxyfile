@@ -5,7 +5,7 @@
 #---------------------------------------------------------------------------
 PROJECT_NAME           = OgreOpcode
 PROJECT_NUMBER         = 
-OUTPUT_DIRECTORY       = D:/ogrenew/ogreopcode/docs
+OUTPUT_DIRECTORY       = D:/conglomerate/trunk/ogreopcode/docs
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
 USE_WINDOWS_ENCODING   = YES
@@ -81,7 +81,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = D:/ogrenew/ogreopcode
+INPUT                  = D:/conglomerate/trunk/ogreopcode
 FILE_PATTERNS          = *.c \
                          *.cc \
                          *.cxx \
@@ -109,7 +109,7 @@ FILE_PATTERNS          = *.c \
                          *.mm \
                          *.dox
 RECURSIVE              = YES
-EXCLUDE                = D:/ogrenew/ogreopcode/example \ D:/ogrenew/ogreopcode/opcode13
+EXCLUDE                = D:/conglomerate/trunk/ogreopcode/example \ D:/conglomerate/trunk/ogreopcode/opcode132
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
 EXAMPLE_PATH           = 
@@ -141,9 +141,9 @@ IGNORE_PREFIX          =
 GENERATE_HTML          = YES
 HTML_OUTPUT            = html
 HTML_FILE_EXTENSION    = .html
-HTML_HEADER            = D:/ogrenew/ogreopcode/docs/doxygen/header.html
-HTML_FOOTER            = D:/ogrenew/ogreopcode/docs/doxygen/footer.html
-HTML_STYLESHEET        = D:/ogrenew/ogreopcode/docs/doxygen/style.css
+HTML_HEADER            = D:/conglomerate/trunk/ogreopcode/docs/doxygen/header.html
+HTML_FOOTER            = D:/conglomerate/trunk/ogreopcode/docs/doxygen/footer.html
+HTML_STYLESHEET        = D:/conglomerate/trunk/ogreopcode/docs/doxygen/style.css
 HTML_ALIGN_MEMBERS     = YES
 GENERATE_HTMLHELP      = YES
 CHM_FILE               = ../OgreOpcode.chm

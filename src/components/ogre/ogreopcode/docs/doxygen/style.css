@@ -1,61 +1,148 @@
-a.code { color: #4444EE; font-weight: normal; text-decoration: none; }
-a.coderef { color: #4444EE; font-weight: normal; }
-a:link { color: #0066CC; text-decoration: none; }
-a:visited { color: #436976; text-decoration: none; }
-a.code{ color: #436976; font-weight: normal; text-decoration: none; }
-a.coderef{ color: #436976; font-weight: normal; }
-a.qindex{ font-weight: normal; white-space: nowrap; }
-a.qindex:hover, a.qindexref:hover { background-color: #DDDDFF; text-decoration: none; }
-a.qindexhl, a.qindexrefhl { background-color: #6666CC; color: #FFFFFF; font-weight: bold; text-decoration: none; }
-a.qindexhl:hover, a.qindexrefhl:hover { background-color: #6666CC; text-decoration: none; }
-a.qindexref{ }
-a:hover { color: #B52010; color: #B52010; text-decoration: underline; text-decoration: underline; }
-a.el, a.qindex, a.qindexref, a.el { font-weight: bold; text-decoration: none; }
-/* this is repeated to fix a difference in browser rendering, perhaps should be set for each class of <a> */
-body { background: #FFFFFF; color: #000000; margin-left: 20px; margin-right: 20px; }
-body { background: #FFFFFF; color: #000000; font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 70%; margin: 0; }
-caption, a.elref, a.elref, caption { font-weight: bold; }
-div.ah { background-color: #000000; color: #FFFFFF; font-weight: bold; margin-bottom: 3px; margin-top: 3px; }
-div.ah{ background: #000000; color: #FFFFFF; font-weight: bold; margin-bottom: 3px; margin-top: 3px; }
-div.footer{ background: #B0C2D7; border: 1px solid #436976; color: #000000; font-style: normal; margin-top: 5em; padding-bottom: 3px; text-align: center; }
-div.fragment { background-color: #F5F5F5; border: 1px solid #CCCCCC; margin: 4px; padding-left: 4px; width: 98%; }
-div.fragment{ background: #FFFFCC; border: 1px solid #CCCCCC; margin-left: 2em; margin-right: 2em; }
-div.groupheader { font-weight: bold; margin-bottom: 6px; margin-left: 16px; margin-top: 12px; }
-div.groupheader{ border-bottom: 1px solid #557E8C; font-weight: bold; margin-bottom: 6px; margin-left: 16px; margin-top: 12px; }
-div.grouptext{ font-style: italic; margin-left: 16px; }
-div.header{ font-size: 80% ; background: #B0C2D7; border: 1px solid #436976; color: #000000; font-style: normal; margin-bottom: 1em; padding-bottom: 3px; padding-left: 10px; text-align: left; text-transform: lowercase; }
-div.header a, div.footer a{ color: #436976; font-weight: bold; white-space: nowrap; }
-div.header a {margin-right: 1em; }
-div.header a:visited, div.footer a:visited { color: #436976; font-weight: bold; }
-div.header a:hover, div.footer a:hover { color: #B52010; font-weight: bold; text-decoration: none; }
-div.index { padding-right: 10px; text-align: right; }
-div.maindox { margin: 2%; width: 96%; }
-div.nav { float: left; }
-div.qindex { background-color: #EEEEFF; border: 4px solid #EEEEFF; margin-bottom: 2px; text-align: center; width: 100%; }
-dl.el { margin-left: -1cm; }
-font.charliteral, span.charliteral { color: #008080; }
-font.comment, span.comment { color: #800000; }
-font.keyword, span.keyword { color: #008000; }
-font.keywordflow, span.keywordflow { color: #E08000; }
-font.keywordtype, span.keywordtype { color: #604020; }
-font.preprocessor, span.preprocessor { color: #806020; }
-font.stringliteral, span.stringliteral { color: #002080; }
-h1{ font-size: 220%; text-align: center; }
-h2{ border-bottom: 2px solid #557E8C; font-size: 170%; }
-hr { border: 1px solid #000000; }
-img.formuladsp { }
-img.formulainl { vertical-align: middle; }
-p.formuladsp { text-align: center; }
-td { font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 70%; }
-td.indexkey{ background: #EEEEFF; font-weight: bold; margin: 2px 0px; padding: 2px 10px; }
-td.indexvalue{ background: #EEEEFF; font-style: italic; margin: 2px 0px; padding: 2px 10px; }
-td.md{ font-weight: bold; }
-td.mdname, td.mdname1 { color: #FF9900; font-weight: bold; }
-tr.memlist { background-color: #F0F0F0; }
-ul { list-style-type: square; }
-.mdescleft { background-color: #FAFAFA; border-bottom: 1px none #E0E0E0; border-left: 1px none #E0E0E0; border-right: 1px none #E0E0E0; border-top: 1px none #E0E0E0; margin: 0px; padding-left: 8px; }
-.mdescright { background-color: #FAFAFA; border-bottom: 1px none #E0E0E0; border-left: 1px none #E0E0E0; border-right: 1px none #E0E0E0; border-top: 1px none #E0E0E0; font-style: italic; margin: 0px; padding-bottom: 0px; padding-left: 4px; padding-right: 8px; }
-.mdrow { padding: 8px 20px; }
-.mdtable { background: #EEEEEE; border: 1px solid #CCCCCC; }
-.memitemleft { background-color: #FAFAFA; border-top-color: #FFFFFF; border-top-style: solid; border-top-width: 2px; font-family: Geneva, Arial, Helvetica, sans-serif; font-size: 12px; margin: 4px; padding: 1px 0px 0px 8px; }
-.memitemright { background-color: #FAFAFA; border-top-color: #FFFFFF; border-top-style: solid; border-top-width: 2px; font-family: Geneva, Arial, Helvetica, sans-serif; font-size: 13px; margin: 4px; padding: 1px 0px 0px 8px; }
+body {  font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10pt; color: #000000; background-color: #d2ecd2}
+a:link {  color: #005500; text-decoration: underline}
+a:hover {  color: #F5BC52; text-decoration: underline}
+a:visited {  color: #007700; text-decoration: underline}
+li {  color: #005500; list-style-type: diamond; position: relative; left: -15px; clip:    rect(   )}
+td {  font-size: 10pt}
+th {  font-size: 10pt}
+
+.MainHeader {  font-weight: bold; color: #F5BC52; background-color: #006600; font-size: 10pt}
+.BorderHeader {  background-color: #999900; font-size: 8pt; font-weight: bold; color: #F5BC52; text-align: center} 	  
+.MainContent { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10pt; color: #CCFFCC } 	 
+.BorderContent {  font-size: 8pt; color: #66CC33; border-color: black #666600 #666600; 
+                  padding-top: 2px; padding-right: 2px; padding-bottom: 10px; padding-left: 2px;
+                  margin-bottom: 2px; border-style: solid; 
+                  border-top-width: 0px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px}
+.NewsDate {  color: #CCFFCC; font-weight: bold}
+.Annotation {  font-size: 10px}
+
+H1, H2, H3 {
+        background-color: #6b7d6b;
+	color: #F5BC52;
+	padding: 5px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: white;
+}
+
+H1 {
+	text-align: center; 
+}
+H2 {
+}
+H3 {
+    FONT-FAMILY: trebuchet ms,helvetica,arial;
+}
+pre {
+	background-color: white;
+	color: black;
+	padding: 5px;
+}
+td.example {
+	border-style: solid;
+	border-width: 1px;
+	border-color: #AACCAA;
+}
+dt { color: #3D653D; font-weight: bold;}
+
+A.qindex {} 	 
+A.qindexRef {} 	 
+A.el { text-decoration: none; font-weight: bold } 	 
+A.elRef { font-weight: bold } 	 
+A.code { text-decoration: none; font-weight: normal; color: Blue } 	 
+A:visited.code { text-decoration: none; font-weight: normal; color: Navy } 	 
+A:hover.code { text-decoration: underline; font-weight: normal; color: Blue } 	 
+A.codeRef { font-weight: normal; color: #4444ee } 	 
+DL.el { margin-left: -1cm } 	 
+DIV.fragment { width: 100%; border: none; background-color: #003300 } 	 
+DIV.ah { color: white; background-color: black; margin-bottom: 3; margin-top: 3 } 	 
+DIV.groupHeader { margin-left: 16; margin-top: 12; margin-bottom: 6; font-weight: bold } 	 
+DIV.groupText { margin-left: 16; font-style: italic; font-size: smaller } 	 
+FONT.keyword       { color: #008000 } 	 
+FONT.keywordtype   { color: #999920 } 	 
+FONT.keywordflow   { color: #e0FF00 } 	 
+FONT.comment       { color: #009900 } 	 
+FONT.preprocessor  { color: #809020 } 	 
+FONT.stringliteral { color: #002080 } 	 
+FONT.charliteral   { color: #008080 }
+.ex { 	 
+     FONT-SIZE: 8pt; FONT-FAMILY: tahoma
+}
+CODE.keywordtype { 	 
+     COLOR: #00ccff 	 
+} 	 
+CODE.keyword { 	 
+     FONT-WEIGHT: bold; COLOR: #00ccff 	 
+} 	 
+CODE.fn { 	 
+     COLOR: white; 	 
+     FONT-WEIGHT: bold; 	 
+} 	 
+CODE.var { 	 
+     COLOR: #dcdcdc; 	 
+} 	 
+CODE.macro { 	 
+     COLOR: #809020; 	 
+     FONT-WEIGHT: bold; 	 
+ } 	 
+CODE.comm { 	 
+     COLOR: lime 	 
+ }
+
+CODE.num {
+	COLOR: purple
+	}
+CODE.str {
+	COLOR: #ffcc33;
+	font-style: italic
+}
+/* Used for rendering members in API specification */
+
+.mdTable
+{
+	background-color: #C2DBC2;
+	color: #ED9C08;
+        width: 100%;
+	border-top-style: solid;
+	border-top-color: black;
+	border-top-width: 1px;
+}
+
+.md
+{
+	font-size: 12pt;
+	font-weight: bold;
+	color: 
+}
+.md A.el {
+	color: #F5BC52;
+}
+.md A:link.el {
+	color: #007700;
+}
+.md A:hover.el {
+	color: #F5BC52;
+}
+.md A:visited.el {
+	color: #229922;
+}
+
+
+.mdname1, .mdname
+{
+   font-size: 12pt;
+   font-weight: normal;
+   font-style: italic;
+}
+
+/* There's no class on the graph images in the API docs, but they're
+all centered.  TODO: get doxygen to give them a class.  (This won't 
+look terrible on any image, though, really.) */
+center img {
+	border-style: solid;
+	border-width: 1px;
+	border-color: #AACCAA;
+}
+
+
+HR { height: 1px; }

@@ -2,7 +2,7 @@
 ///  @file OgreCollisionManager.cpp
 ///  @brief <TODO: insert file description here>
 ///
-///  @author The OgreOpcode Team @date 28-05-2005
+///  @author The OgreOpcode Team
 ///
 ///  This file is part of OgreOpcode.
 ///
@@ -26,18 +26,28 @@
 #include "OgreCollisionManager.h"
 #include "OgreCollisionReporter.h"
 
+#include "OgreMeshCollisionShape.h"
+#include "OgreEntityCollisionShape.h"
 #include "OgrePtrCollisionShape.h"
 #include "OgreBoxCollisionShape.h"
 #include "OgreSphereMeshCollisionShape.h"
+#include "OgreTerrainCollisionShape.h"
 
+using namespace Ogre;
+using namespace OgreOpcode::Details;
 template<> OgreOpcode::CollisionManager* Ogre::Singleton<OgreOpcode::CollisionManager>::ms_Singleton = 0;
 
 namespace OgreOpcode
 {
 
-	CollisionManager& CollisionManager::getSingleton(void)
+	CollisionManager* CollisionManager::getSingletonPtr(void)
 	{
-		return Singleton<CollisionManager>::getSingleton();
+		return ms_Singleton;
+	}
+	
+	CollisionManager& CollisionManager::getSingleton(void)
+	{  
+		assert( ms_Singleton );  return ( *ms_Singleton );  
 	}
 
 	CollisionManager::CollisionManager(SceneManager* sMgr)
@@ -45,10 +55,6 @@ namespace OgreOpcode
 		mSceneMgr = sMgr;
 		unique_id             = 0;
 		default_context       = 0;
-		num_coll_classes      = 0;
-		//      colltype_table        = 0;
-		in_begin_collclasses  = false;
-		in_begin_colltypes    = false;
 
 		Opcode::InitOpcode();
 		// setup the tree collider
@@ -74,8 +80,8 @@ namespace OgreOpcode
 		opcPlanesCollider.SetTemporalCoherence(false);        // no temporal coherence
 
 		// setup the LSS collider
-		opcLSSCollider.SetFirstContact(false);
-		opcLSSCollider.SetTemporalCoherence(false);        // no temporal coherence
+		opcSweptSphereCollider.SetFirstContact(false);
+		opcSweptSphereCollider.SetTemporalCoherence(false);        // no temporal coherence
 	}
 
 	CollisionManager::~CollisionManager()
@@ -103,7 +109,7 @@ namespace OgreOpcode
 		Opcode::CloseOpcode();
 	}
 
-	CollisionContext *CollisionManager::createContext(const String& contextName)
+	CollisionContext *CollisionManager::createContext(const Ogre::String& contextName)
 	{
 		ContextIterator i = context_list.find(contextName);
 		if (i != context_list.end())
@@ -117,11 +123,11 @@ namespace OgreOpcode
 	}
 
 	/// Create a new, possibly shared shape object.
-	ICollisionShape *CollisionManager::createShape(const String& id, const ShapeType shpType)
+	ICollisionShape *CollisionManager::createShape(const Ogre::String& id, const ShapeType shpType)
 	{
 		//      assert(id);
 
-		String new_id = getResourceID(id);
+		Ogre::String new_id = getResourceID(id);
 
 		ShapeIterator i = shape_list.find(new_id);
 		if (i != shape_list.end())
@@ -135,6 +141,12 @@ namespace OgreOpcode
 			{
 				shape_list.erase(i->first);
 			}
+		}
+		if(shpType == SHAPETYPE_ENTITY)
+		{
+			EntityCollisionShape* cs = new EntityCollisionShape(new_id);
+			shape_list.insert(ShapeList::value_type(new_id,cs));
+			return cs;
 		}
 		if(shpType == SHAPETYPE_MESH)
 		{
@@ -160,36 +172,52 @@ namespace OgreOpcode
 			shape_list.insert(ShapeList::value_type(new_id,cs));
 			return cs;
 		}
+		if(shpType == SHAPETYPE_TERRAIN)
+		{
+			TerrainCollisionShape* cs = new TerrainCollisionShape(new_id);
+			shape_list.insert(ShapeList::value_type(new_id,cs));
+			return cs;
+		}
 
 		// hacky way of returning a default ..
-		MeshCollisionShape* cs = new MeshCollisionShape(new_id);
+		EntityCollisionShape* cs = new EntityCollisionShape(new_id);
 		shape_list.insert(ShapeList::value_type(new_id,cs));
 		return cs;
 	}
 
-	MeshCollisionShape* CollisionManager::createMeshCollisionShape(const String& name)
+	MeshCollisionShape* CollisionManager::createMeshCollisionShape(const Ogre::String& name)
 	{
 		return static_cast<MeshCollisionShape*>(createShape(name, SHAPETYPE_MESH));
 	}
 
-	BoxCollisionShape* CollisionManager::createBoxCollisionShape(const String& name)
+	EntityCollisionShape* CollisionManager::createEntityCollisionShape(const Ogre::String& name)
+	{
+		return static_cast<EntityCollisionShape*>(createShape(name, SHAPETYPE_ENTITY));
+	}
+
+	BoxCollisionShape* CollisionManager::createBoxCollisionShape(const Ogre::String& name)
 	{
 		return static_cast<BoxCollisionShape*>(createShape(name, SHAPETYPE_BOX));
 	}
 
-	SphereMeshCollisionShape* CollisionManager::createSphereMeshCollisionShape(const String& name)
+	SphereMeshCollisionShape* CollisionManager::createSphereMeshCollisionShape(const Ogre::String& name)
 	{
 		return static_cast<SphereMeshCollisionShape*>(createShape(name, SHAPETYPE_SPHERE));
 	}
 
-	PtrCollisionShape* CollisionManager::createPtrCollisionShape(const String& name)
+	PtrCollisionShape* CollisionManager::createPtrCollisionShape(const Ogre::String& name)
 	{
 		return static_cast<PtrCollisionShape*>(createShape(name, SHAPETYPE_PTR));
 	}
 	
+	TerrainCollisionShape* CollisionManager::createTerrainCollisionShape(const Ogre::String& name)
+	{
+		return static_cast<TerrainCollisionShape*>(createShape(name, SHAPETYPE_TERRAIN));
+	}
+
 	void CollisionManager::attachContext(CollisionContext *cc)
 	{
-		String contextName = cc->getName();
+		Ogre::String contextName = cc->getName();
 		ContextIterator i = context_list.find(contextName);
 		if (i != context_list.end())
 		{
@@ -236,7 +264,7 @@ namespace OgreOpcode
 
 	void CollisionManager::attachShape(ICollisionShape *cs)
 	{
-		String new_id = getResourceID(cs->getName());
+		Ogre::String new_id = getResourceID(cs->getName());
 
 		ShapeIterator i = shape_list.find(new_id);
 		if (i != shape_list.end())
@@ -292,16 +320,13 @@ namespace OgreOpcode
 		return mSceneMgr;
 	}
 
-	CollisionContext *CollisionManager::getContext(const String& name)
+	CollisionContext *CollisionManager::getContext(const Ogre::String& name)
 	{
 		ContextIterator i = context_list.find(name);
 
 		if (i == context_list.end())
 		{
-			// Error handling!
-			// Just return the default context (for now)
-			if(default_context)
-				return default_context;
+			OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, "Error! CollisionContext '" + name + "' not found. Did you create it?", "CollisionManager::getContext");
 		}
 		return i->second;
 	}
@@ -317,7 +342,7 @@ namespace OgreOpcode
 
 	/// Get a resource id string from a path name, or create a unique
 	/// resource id string if no name is given.
-	String CollisionManager::getResourceID(const String& name)
+	Ogre::String CollisionManager::getResourceID(const Ogre::String& name)
 	{
 		char buf[512];
 		if (name == "")
@@ -341,62 +366,56 @@ namespace OgreOpcode
 				str++;
 			}
 		}
-		return String(buf);
+		return Ogre::String(buf);
 	}
 
-	void CollisionManager::beginCollClasses(void)
+	void CollisionManager::addCollClass(const Ogre::String& cl_name)
 	{
-		assert(!in_begin_collclasses);
-
-		/// free any previous collision class definitions
-		num_coll_classes = 0;
-		collclass_list.clear();
-
-		in_begin_collclasses = true;
-	}
-
-	void CollisionManager::addCollClass(const String& cl_name)
-	{
-		assert(in_begin_collclasses);
-		//      assert(cl_name);
-
 		CollClassIterator i = collclass_list.find(cl_name);
 		if (i != collclass_list.end())
 		{
-			// Warning! Collision Class already exsists.
-			return;
+			OGRE_EXCEPT(Exception::ERR_DUPLICATE_ITEM, "Error! CollisionClass '" + cl_name + "' already exsist. Check your code.", "CollisionManager::addCollClass");
 		}
-		collclass_list.insert(CollClassList::value_type(cl_name,collclass_list.size()));
-		num_coll_classes++;
+		collclass_list.insert(CollClassList::value_type(cl_name,collclass_list.size()+1));
 	}
 
-	void CollisionManager::endCollClasses(void)
+	Ogre::String CollisionManager::getCollisionTypeEnum(CollisionType colltype)
 	{
-		assert(in_begin_collclasses);
-		in_begin_collclasses = false;
+		switch(colltype)
+		{
+		case COLLTYPE_IGNORE:
+			return "COLLTYPE_IGNORE";
+			break;
+		case COLLTYPE_QUICK:
+			return "COLLTYPE_QUICK";
+			break;
+		case COLLTYPE_CONTACT:
+			return "COLLTYPE_CONTACT";
+			break;
+		case COLLTYPE_BBOX:
+			return "COLLTYPE_BBOX";
+			break;
+		case COLLTYPE_EXACT:
+			return "COLLTYPE_EXACT";
+			break;
+		default:
+			return "COLLTYPE_UNKNOWN";
+			break;
+		}
 	}
-
-	void CollisionManager::beginCollTypes(void)
-	{
-		colltype_table.clear();
-	}
-
 	/// Important: Collision types MUST be bidirectional, if one object
 	/// checks collision with another object, the collision type must
 	/// be identical as if the check would be in the other direction.
 	/// Due to the implementation of the top-level-collision check,
 	/// one of the 2 checks may return false, although a collision may
 	/// take place!
-	void CollisionManager::addCollType(const String& cl1, const String& cl2, CollisionType collType)
+	void CollisionManager::addCollType(const Ogre::String& cl1, const Ogre::String& cl2, CollisionType collType)
 	{
-		//      assert(cl1);
-		//      assert(cl2);
 		// Retrieve the first collision class
 		CollClassIterator i = collclass_list.find(cl1);
 		if (i == collclass_list.end())
 		{
-			// Warning! Collision Class not found.
-			return;
+			OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, "CollisionClass '" +  cl1 + "' not found! Did you call CollisionManager::addCollClass? If you did, check the names of your collisionclasses.", "CollisionManager::addCollType");
 		}
 		int cc1 = i->second;
 
@@ -404,52 +423,79 @@ namespace OgreOpcode
 		i = collclass_list.find(cl2);
 		if (i == collclass_list.end())
 		{
-			// Warning! Collision Class not found.
-			return;
+			OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, "CollisionClass '" +  cl2 + "' not found! Did you call CollisionManager::addCollClass? If you did, check the names of your collisionclasses.", "CollisionManager::addCollType");
 		}
 		int cc2 = i->second;
 
+		int key = 0;
+		get_merged_id(cc1, cc2, key);
+		
 		// This key shouldn't exsist, but check anyway.
-		int key;
-		get_merged_id(cc1,cc2,key);
 		CollTypeIterator h = colltype_table.find(key);
-		if (h == colltype_table.end())
+		if (h != colltype_table.end())
 		{
-			colltype_table.insert(CollTypeList::value_type(key,collType));
+			OGRE_EXCEPT(Exception::ERR_DUPLICATE_ITEM, "Error! CollisionType '" + cl1 + "->" + cl2 + "' already exsist. Check your code.", "CollisionManager::addCollType");
 		}
-		return;
+		colltype_table.insert(CollTypeList::value_type(key,collType));
 	}
 
-	void CollisionManager::endCollTypes(void)
-	{
-		//assert(in_begin_colltypes);
-		//in_begin_colltypes = false;
-	}
-
-	CollisionClass CollisionManager::queryCollClass(const String& cc)
+	CollisionClass CollisionManager::queryCollClass(const Ogre::String& cc)
 	{
 		CollClassIterator i = collclass_list.find(cc);
 
 		if (i == collclass_list.end())
 		{
-			// Raise an exception here
+			OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, "CollisionClass '" +  cc + "' not found!", "CollisionManager::queryCollClass");
 		}
 
 		return i->second;
 	}
 
-	CollisionType CollisionManager::queryCollType(const String& s_cc1, const String& s_cc2)
+	CollisionType CollisionManager::queryCollType(CollisionClass cc1, CollisionClass cc2)
+	{
+
+		// check for CollClass override cases
+		if ((cc1 == COLLTYPE_ALWAYS_IGNORE) || (cc2 == COLLTYPE_ALWAYS_IGNORE))
+		{
+			return COLLTYPE_IGNORE;
+		}
+		else if ((cc1 == COLLTYPE_ALWAYS_QUICK) || (cc2 == COLLTYPE_ALWAYS_QUICK))
+		{
+			return COLLTYPE_QUICK;
+		}
+		else if ((cc1 == COLLTYPE_ALWAYS_CONTACT) || (cc2 == COLLTYPE_ALWAYS_CONTACT))
+		{
+			return COLLTYPE_CONTACT;
+		}
+		else if ((cc1 == COLLTYPE_ALWAYS_EXACT) || (cc2 == COLLTYPE_ALWAYS_EXACT))
+		{
+			return COLLTYPE_EXACT;
+		}
+
+		int key = 0;
+		get_merged_id(cc1, cc2, key);
+		CollTypeIterator i = colltype_table.find(key);
+		if (i == colltype_table.end())
+		{
+			// Return a default, in case the user don't want to define every possible collision type.
+			return COLLTYPE_IGNORE;
+			//OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, "CollisionType '" + getCollisionTypeEnum(colltype_table[key]) + "' not found!", "CollisionManager::queryCollType");
+		}
+		return colltype_table[key];
+	}
+
+	CollisionType CollisionManager::queryCollType(const Ogre::String& s_cc1, const Ogre::String& s_cc2)
 	{
 		CollClassIterator i = collclass_list.find(s_cc1);
 		if (i == collclass_list.end())
 		{
-			// Error! Collision Class not found.
+			OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, "CollisionClass '" +  s_cc1 + "' not found!", "CollisionManager::queryCollType");
 		}
 		CollisionClass class1 = i->second;
 		i = collclass_list.find(s_cc2);
 		if (i == collclass_list.end())
 		{
-			// Error! Collision Class not found.
+			OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, "CollisionClass '" +  s_cc2 + "' not found!", "CollisionManager::queryCollType");
 		}
 		CollisionClass class2 = i->second;
 

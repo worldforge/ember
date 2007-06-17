@@ -2,7 +2,7 @@
 ///  @file OgreCollisionContext.cpp
 ///  @brief <TODO: insert file description here>
 ///
-///  @author The OgreOpcode Team @date 28-05-2005
+///  @author The OgreOpcode Team
 ///  
 ///////////////////////////////////////////////////////////////////////////////
 ///  
@@ -29,6 +29,10 @@
 #include "OgreCollisionObject.h"
 #include "OgreOpcodeMath.h"
 #include "OgreCollisionManager.h"
+#include "BP_Scene.h"
+
+using namespace Ogre;
+using namespace OgreOpcode::Details;
 
 namespace OgreOpcode
 {
@@ -40,7 +44,7 @@ namespace OgreOpcode
 			//  a's max less than b's min, or a's min greater than b's max.
 			// Otherwise they overlap.
 			// return !(a1<b0 || a0>b1);
-			// I just applyied the De Morgan's law here in order to obtain short-circuit
+			// I just applied the De Morgan's law here in order to obtain short-circuit
 			return (a1>=b0) && (a0<=b1);
 		}
 	} // Details
@@ -53,10 +57,12 @@ namespace OgreOpcode
 		{
 			destroyObject(*(owned_list.begin()));
 		}
+		delete mVisualDebugger;
+		delete mBroadPhase;
 	}
 
 	// Construct a new collide object.
-	CollisionObject *CollisionContext::newObject(const String& name)
+	CollisionObject *CollisionContext::createObject(const Ogre::String& name)
 	{
 		CollisionObject *co = new CollisionObject(name);
 		co->setId(unique_id++);
@@ -65,11 +71,15 @@ namespace OgreOpcode
 		return co;
 	}
 
-	CollisionContext::CollisionContext(const String& name) :
+	CollisionContext::CollisionContext(const Ogre::String& name) :
 	unique_id(0),
-	mName(name)
+	mName(name),
+	mRayCulling(true),
+	mIsSAPDirty(true)
 	{
-		// empty
+		mVisualDebugger = new Details::OgreOpcodeDebugger(mName, CollisionManager::getSingletonPtr()->getSceneManager());
+		mRecentContactList.clear();
+		mBroadPhase = new BP_Scene(&proxList, &OgreOpcode::CollisionContext::addPair, &OgreOpcode::CollisionContext::removePair);
 	}
 
 	// Kill an owned collide object.
@@ -78,11 +88,21 @@ namespace OgreOpcode
 		if (collObj != 0)
 		{
 			if(collObj->isAttached())
-				attached_list.remove(collObj);
-			owned_list.remove(collObj);
+			{
+				rw_attached_list_iterator itAttached = find(attached_list.begin(), attached_list.end(), collObj);
+				if (itAttached != attached_list.end())
+				{
+					attached_list.erase(itAttached);
+				}
+			}
+			
+			rw_owned_list_iterator itOwned = find(owned_list.begin(), owned_list.end(), collObj);
+			if (itOwned != owned_list.end())
+			{
+				owned_list.erase(itOwned);
+			}
 			collObj->setAttached(false);
-			collObj->xmin_cnode.Remove();
-			collObj->xmax_cnode.Remove();
+			collObj->remove_broadphase();
 			collObj->setContext(0);
 			delete collObj;
 		}
@@ -90,12 +110,11 @@ namespace OgreOpcode
 
 	void CollisionContext::addObject(CollisionObject *collObj)
 	{
-		collObj->setAttached(true);
+		if(collObj == 0)
+			OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, "Trying to add a null object.", "CollisionContext::addObject");
+		
 		attached_list.push_back(collObj);
-
-		// add minx/maxx nodes to x-dimensional sorted list
-		collObj->xmin_cnode.AddToList(xdim_list);
-		collObj->xmax_cnode.AddToList(xdim_list);
+		collObj->setAttached(true);
 	}
 
 	void CollisionContext::removeObject(CollisionObject *collObj)
@@ -103,9 +122,12 @@ namespace OgreOpcode
 		if (collObj != 0)
 		{
 			collObj->setAttached(false);
-			attached_list.remove(collObj);
-			collObj->xmin_cnode.Remove();
-			collObj->xmax_cnode.Remove();
+			collObj->remove_broadphase();
+			rw_attached_list_iterator itAttached = find(attached_list.begin(), attached_list.end(), collObj);
+			if (itAttached != attached_list.end())
+			{
+				attached_list.erase(itAttached);
+			}
 		}
 	}
 
@@ -116,17 +138,36 @@ namespace OgreOpcode
 	{
 		update(dt);
 
+		
+		
 		// first, clear the collision counters in all collide objects
 		for (attached_list_iterator i = attached_list.begin(); i != attached_list.end(); ++i)
 		{
 			(*i)->clearCollisions();
 		}
 
+		// then, run the broadphase 
+		for (attached_list_iterator i = attached_list.begin(); i != attached_list.end(); ++i)
+		{
+			(*i)->do_broadphase();
+		}
+
+		// Loop through the Potentially Colliding Set and tell each CollisionObject to test against the other
+		for (ProxList::iterator prox_it = proxList.begin(); prox_it != proxList.end(); ++prox_it) 
+		{
+			// If the shape is marked as being static, do not add it to the PCS.
+			if(!(*prox_it).obj1->getShape()->isStatic())
+				(*prox_it).obj1->addToCollideList((*prox_it).obj2);
+			if(!(*prox_it).obj2->getShape()->isStatic())
+			(*prox_it).obj2->addToCollideList((*prox_it).obj1);
+		}
+
 		// check the collision status for each object
 		collideReportHandler.beginFrame();
 		for (attached_list_iterator i = attached_list.begin(); i != attached_list.end(); ++i)
 		{
-			(*i)->collide();
+			//if ( (*i)->needsUpdate() )
+				(*i)->collide();
 		}
 		collideReportHandler.endFrame();
 
@@ -149,27 +190,170 @@ namespace OgreOpcode
 		}
 	}
 
+	CollisionObject* CollisionContext::getAttachedObject(Ogre::String name)
+	{
+		for (attached_list_iterator i = attached_list.begin(); i != attached_list.end(); ++i)
+		{
+			if( (*i)->getName() == name )
+				return (*i);
+		}
+		OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, "'" + name + "' is not attached! Does it even exsist?", "CollisionContext::getAttachedObject");
+	}
+
+
+	/// 
+	const std::list<CollisionObject*>& CollisionContext::getPotentialColliders(const CollisionObject* collidee)
+	{
+		return collidee->collideList;
+	}
+
 	/// get reporter for for last collide() call.
-	const CollisionReporter& CollisionContext::getCollisionReport() const
+	const CollisionReporter& CollisionContext::getCollisionReport()
 	{
 		return collideReportHandler;
 	}
 
+	/// 
+	const int CollisionContext::getNumCollisions()
+	{
+		return collideReportHandler.getNumCollisions();
+	}
+
 	/// get reporter for for last Check...() call.
-	const CollisionReporter& CollisionContext::getCheckReport() const
+	const CollisionReporter& CollisionContext::getCheckReport()
 	{
 		return checkReportHandler;
 	}
 
 	/// visualize all objects in the context.
-	void CollisionContext::visualize(bool doVisualize, bool doAABBs, bool doLocal, bool doGlobal)
+	void CollisionContext::visualize(bool doVisualize, bool doRadii, bool doContacts, bool doBBs, bool doShapes, bool doAABBs)
 	{
-		if (!attached_list.empty())
+		// if the debugger is down, just return
+		if(!mVisualDebugger) return;
+
+		mVisualDebugger->clearAll();
+		for (attached_list_iterator i = attached_list.begin(); i != attached_list.end(); ++i)
 		{
-			// for each object in the system...
-			for (attached_list_iterator i = attached_list.begin(); i != attached_list.end(); ++i)
+			(*i)->getShape()->clearViz();
+		}
+
+		if(doVisualize)
+		{
+			if (!attached_list.empty())
 			{
-				(*i)->setDebug(doVisualize, doAABBs, doLocal, doGlobal);
+				if(doRadii)
+				{
+					mVisualDebugger->beginRadii();
+					for (attached_list_iterator i = attached_list.begin(); i != attached_list.end(); ++i)
+					{
+						(*i)->visualizeRadii();
+					}
+					mVisualDebugger->endRadii();
+				}
+				if(doContacts)
+				{
+					if( collideReportHandler.getNumCollisions() > 0)
+					{
+						mVisualDebugger->beginContacts();
+						mVisualDebugger->beginContactNormals();
+						for (attached_list_iterator i = attached_list.begin(); i != attached_list.end(); ++i)
+						{
+							(*i)->visualizeContacts();
+						}
+						mVisualDebugger->endContactNormals();
+						mVisualDebugger->endContacts();
+					}
+						
+					static int contactCount = 0;
+					static bool bufferContacts = true;
+
+					if( checkReportHandler.getNumCollisions() > 0)
+					{
+						CollisionPair **pick_report;
+						int num_picks = checkReportHandler.getAllCollisions(pick_report);
+						if(num_picks > 0)
+						{
+
+							for(int i = 0; i < num_picks; i++)
+							{
+								for (int currColl = 0; currColl < static_cast<int>(pick_report[i]->collInfos.size()); currColl++)
+								{
+									if(bufferContacts)
+										contactCount++;
+									CollisionInfo collInfo;
+									collInfo.contact = pick_report[i]->collInfos[currColl].contact;
+									collInfo.this_normal = pick_report[i]->collInfos[currColl].this_normal * 5;
+									collInfo.other_normal = pick_report[i]->collInfos[currColl].other_normal * 5;
+									mRecentContactList.push_back(collInfo);
+									if(!bufferContacts)
+										mRecentContactList.pop_front();
+								}
+							}
+						}
+
+						if(contactCount > 10)
+							bufferContacts = false;
+
+					}
+
+					// render any collision contact points
+					if (mRecentContactList.size() > 0)
+					{
+						mVisualDebugger->beginContacts();
+						mVisualDebugger->beginContactNormals();
+
+						std::list<CollisionInfo>::iterator contactIter;
+						for (contactIter = mRecentContactList.begin(); contactIter != mRecentContactList.end(); ++contactIter)
+						{
+							Vector3 cnt = (*contactIter).contact;
+							mVisualDebugger->addContactLine(cnt.x-0.5f,cnt.y,cnt.z, cnt.x+0.5f,cnt.y,cnt.z);
+							mVisualDebugger->addContactLine(cnt.x,cnt.y-0.5f,cnt.z, cnt.x,cnt.y+0.5f,cnt.z);
+							mVisualDebugger->addContactLine(cnt.x,cnt.y,cnt.z-0.5f, cnt.x,cnt.y,cnt.z+0.5f);
+
+							Vector3 n = (*contactIter).this_normal * 5;
+							mVisualDebugger->addContactNormalsLine(cnt.x,cnt.y,cnt.z, cnt.x+n.x,cnt.y+n.y,cnt.z+n.z);
+							n = (*contactIter).other_normal * 5;
+							mVisualDebugger->addContactNormalsLine(cnt.x,cnt.y,cnt.z, cnt.x+n.x,cnt.y+n.y,cnt.z+n.z);
+
+						}
+						
+						mVisualDebugger->endContactNormals();
+						mVisualDebugger->endContacts();
+					}
+
+				}
+
+				if(doBBs)
+				{
+					mVisualDebugger->beginBBs();
+					for (attached_list_iterator i = attached_list.begin(); i != attached_list.end(); ++i)
+					{
+						(*i)->visualizeBoundingBoxes();
+					}
+					mVisualDebugger->endBBs();
+				}
+				if(doShapes)
+				{
+					//mVisualDebugger->beginShapes();
+
+					for (attached_list_iterator i = attached_list.begin(); i != attached_list.end(); ++i)
+					{
+						if( (*i)->hasCollisions() || (*i)->hasCheckCollisions() )
+							(*i)->getShape()->visualize(mVisualDebugger);
+					}
+					//mVisualDebugger->endShapes();
+				}
+				if(doAABBs)
+				{
+					mVisualDebugger->beginAABBs();
+
+					for (attached_list_iterator i = attached_list.begin(); i != attached_list.end(); ++i)
+					{
+						if( (*i)->hasCollisions() || (*i)->hasCheckCollisions() )
+							(*i)->getShape()->visualizeAABBs(mVisualDebugger);
+					}
+					mVisualDebugger->endAABBs();
+				}
 			}
 		}
 	}
@@ -183,16 +367,16 @@ namespace OgreOpcode
 	/// @param collClass [in] collision class for collision type query
 	/// @param cr_ptr [out] pointer to array of pointers to CollisionPair's
 	/// @return       number of detected contacts (1 per collide object)
-	int CollisionContext::movingSphereCheck(const Vector3& p0, const Vector3& v0, Real radius, CollisionClass collClass, CollisionPair **& cpPtr)
+	int CollisionContext::sweptSphereCheck(const Vector3& position, const Vector3& movementVector, Real radius, CollisionClass collClass, CollisionPair **& cpPtr, String ignorename)
 	{
 		// create a bounding box from the start and end position
-		Vector3 p0v0(p0+v0);
-		Vector3 minv(n_min(p0.x,p0v0.x)-radius, 
-			n_min(p0.y,p0v0.y)-radius, 
-			n_min(p0.z,p0v0.z)-radius);
-		Vector3 maxv(n_max(p0.x,p0v0.x)+radius, 
-			n_max(p0.y,p0v0.y)+radius, 
-			n_max(p0.z,p0v0.z)+radius);
+		Vector3 endPosition(position + movementVector);
+		Vector3 minv(n_min(position.x, endPosition.x) - radius, 
+			n_min(position.y, endPosition.y) - radius, 
+			n_min(position.z, endPosition.z) - radius);
+		Vector3 maxv(n_max(position.x, endPosition.x) + radius, 
+			n_max(position.y, endPosition.y) + radius, 
+			n_max(position.z, endPosition.z) + radius);
 
 		const int own_id = 0xffff;
 
@@ -214,49 +398,76 @@ namespace OgreOpcode
 				if (COLLTYPE_IGNORE == ct) continue;
 
 				checkReportHandler.mTotalObjObjTests++;
-
-				// Trying to extract position information from provided matrices.
-				Vector3 p1 = Vector3((*other)->new_matrix[0][3], (*other)->new_matrix[1][3], (*other)->new_matrix[2][3]);
-				Vector3 v1 = Vector3(Vector3((*other)->new_matrix[0][3], (*other)->new_matrix[1][3], (*other)->new_matrix[2][3]) - p1);
-				//Vector3 p1 = (*other)->new_pos;
-				//Vector3 v1 = (*other)->new_pos - p1;
-
-				// do the contact check between 2 moving spheres
-				sphere s0(p0,radius);
-				sphere s1(p1,(*other)->getRadius());
-				float u0,u1;
-				checkReportHandler.mTotalBVBVTests++;
-				if (s0.intersect_sweep(v0,s1,v1,u0,u1))
+				if((*other)->getName() != ignorename)
 				{
-					if ((u0>=0.0f) && (u0<1.0f))
+					if (COLLTYPE_QUICK == ct)
 					{
-						// we have contact!
+						// Trying to extract position information from provided matrices.
+						Vector3 p1 = Vector3((*other)->old_matrix[0][3], (*other)->old_matrix[1][3], (*other)->old_matrix[2][3]);
+						Vector3 v1 = Vector3(Vector3((*other)->new_matrix[0][3], (*other)->new_matrix[1][3], (*other)->new_matrix[2][3]) - p1);
 
-						// compute the 2 midpoints at the time of collision
-						Vector3 c0(p0 + v0*u0);
-						Vector3 c1(p1 + v1*u0);
+						// do the contact check between 2 moving spheres
+						sphere s0(position,radius);
+						sphere s1(p1,(*other)->getRadius());
+						float u0,u1;
+						checkReportHandler.mTotalBVBVTests++;
+						if (s0.intersect_sweep(movementVector,s1,v1,u0,u1))
+						{
+							if ((u0>=0.0f) && (u0<1.0f))
+							{
+								// we have contact!
 
-						// compute the collide normal
-						Vector3 d(c1-c0);
-						if (d.length() > TINY)
-						{
-							d.normalise();
-						} else
-						{
-							d = Vector3(0.0f, 1.0f, 0.0f);
+								// compute the 2 midpoints at the time of collision
+								Vector3 c0(position + movementVector*u0);
+								Vector3 c1(p1 + v1*u0);
+
+								// compute the collide normal
+								Vector3 d(c1-c0);
+								if (d.length() > TINY)
+								{
+									d.normalise();
+								} else
+								{
+									d = Vector3(0.0f, 1.0f, 0.0f);
+								}
+
+								// fill out a collide report and add to report handler
+								CollisionPair cr;
+								cr.this_object     = (*other);
+								cr.other_object     = (*other);
+								cr.tstamp  = 0.0;
+								CollisionInfo collInfo;
+								collInfo.contact = (d*radius) + c0;
+								collInfo.this_normal = d;
+								collInfo.other_normal = -d;
+								cr.collInfos.push_back(collInfo);
+								checkReportHandler.addCollision(cr,own_id,(*other)->id);
+							}
 						}
+					}
+					else // CONTACT and EXACT
+					{
+						// do sphere-shape collision check
+						ICollisionShape* shape = (*other)->getShape();
 
-						// fill out a collide report and add to report handler
-						CollisionPair cr;
-						cr.co_this     = (*other);
-						cr.co_other     = (*other);
-						cr.tstamp  = 0.0;
-						cr.contact = (d*radius) + c0;
-						cr.co_this_normal = d;
-						cr.co_other_normal = -d;
-						checkReportHandler.addCollision(cr,own_id,(*other)->id);
+						if (shape)
+						{
+							CollisionPair cp;
+							cp.this_object = (*other);
+							cp.other_object = (*other);
+							bool ret = shape->sweptSphereCheck(ct, (*other)->getTransform(), position, movementVector, radius, cp);
+							checkReportHandler.mTotalBVBVTests += cp.numBVBVTests;
+							checkReportHandler.mTotalBVPrimTests += cp.numBVPrimTests;
+							if (ret)
+							{
+								cp.this_object = (*other);
+								cp.other_object = (*other);
+								checkReportHandler.addCollision(cp, own_id, (*other)->id);
+							}
+						}
 					}
 				}
+
 			}
 		}
 		checkReportHandler.endFrame();
@@ -274,7 +485,7 @@ namespace OgreOpcode
 	/// @param  collClass   [in]  optional coll class (COLLCLASS_ALWAYS_* if no coll class filtering wanted)
 	/// @param  cpPtr       [out] will be filled with pointer to collide report pointers
 	/// @return             number of detected contacts (1 per collide object)
-	int CollisionContext::rayCheck(const Ray line, const Real dist, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr)
+	int CollisionContext::rayCheck(const Ogre::Ray line, const Real dist, CollisionType collType, CollisionClass collClass, CollisionPair**& cpPtr)
 	{
 		assert(collType != COLLTYPE_IGNORE);
 
@@ -312,13 +523,13 @@ namespace OgreOpcode
 				{
 					checkReportHandler.mTotalObjObjTests++;
 					CollisionPair cp;
-					bool ret = shape->rayCheck(collType, (*co)->getTransform(), line, dist, cp);
+					bool ret = shape->rayCheck(collType, (*co)->getTransform(), line, dist, cp, mRayCulling);
 					checkReportHandler.mTotalBVBVTests += cp.numBVBVTests;
 					checkReportHandler.mTotalBVBVTests += cp.numBVPrimTests;
 					if (ret)
 					{
-						cp.co_this = (*co);
-						cp.co_other = (*co);
+						cp.this_object = (*co);
+						cp.other_object = (*co);
 						checkReportHandler.addCollision(cp, ownId, (*co)->id);
 						if (COLLTYPE_QUICK == collType)
 						{
@@ -331,16 +542,16 @@ namespace OgreOpcode
 		}
 		checkReportHandler.endFrame();
 
-		if (COLLTYPE_CONTACT == collType)
-		{
-			// get closest contact only
-			return checkReportHandler.getClosestCollision(line.getOrigin(), cpPtr);
-		}
-		else
-		{
+		//if (COLLTYPE_CONTACT == collType) // FIXME!
+		//{
+		//	// get closest contact only
+		//	return checkReportHandler.getClosestCollision(line.getOrigin(), cpPtr);
+		//}
+		//else
+		//{
 			// get all contacts (unsorted)
 			return checkReportHandler.getAllCollisions(cpPtr);
-		}
+		//}
 	}
 
 	/// Test a sphere against the collide objects in the collide context.
@@ -396,8 +607,8 @@ namespace OgreOpcode
 					if (ball.intersects(s0))
 					{
 						CollisionPair cp;
-						cp.co_this = (*co);
-						cp.co_other = (*co);
+						cp.this_object = (*co);
+						cp.other_object = (*co);
 						checkReportHandler.addCollision(cp, ownId, (*co)->id);
 					}
 				}
@@ -413,8 +624,8 @@ namespace OgreOpcode
 						checkReportHandler.mTotalBVPrimTests += cp.numBVPrimTests;
 						if (ret)
 						{
-							cp.co_this = (*co);
-							cp.co_other = (*co);
+							cp.this_object = (*co);
+							cp.other_object = (*co);
 							checkReportHandler.addCollision(cp, ownId, (*co)->id);
 						}
 					}
@@ -423,16 +634,16 @@ namespace OgreOpcode
 		}
 		checkReportHandler.endFrame();
 
-		if (COLLTYPE_CONTACT == collType)
-		{
-			// get closest contact only
-			return checkReportHandler.getClosestCollision(ball.p, cpPtr);
-		}
-		else
-		{
+		//if (COLLTYPE_CONTACT == collType)
+		//{
+		//	// get closest contact only
+		//	return checkReportHandler.getClosestCollision(ball.p, cpPtr);
+		//}
+		//else
+		//{
 			// get all contacts (unsorted)
 			return checkReportHandler.getAllCollisions(cpPtr);
-		}
+		//}
 	}
 
 
@@ -449,8 +660,6 @@ namespace OgreOpcode
 	/// (when objects are repositioned to their starting point in the level).
 	void CollisionContext::reset()
 	{
-		//n_printf("*** nCollideContext::reset() called\n");
-
 		Matrix4 identity = Matrix4::IDENTITY;
 		for (attached_list_iterator co = attached_list.begin(); co != attached_list.end(); ++co)
 		{
@@ -458,5 +667,6 @@ namespace OgreOpcode
 			(*co)->update(-1.0, identity);
 			(*co)->update(-1.0, identity);
 		}
+
 	}
 }

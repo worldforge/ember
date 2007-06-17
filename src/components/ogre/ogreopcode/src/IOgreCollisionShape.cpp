@@ -2,7 +2,7 @@
 ///  @file IOgreCollisionShape.cpp
 ///  @brief <TODO: insert file description here>
 ///
-///  @author The OgreOpcode Team @date 28-05-2005
+///  @author The OgreOpcode Team
 ///
 ///////////////////////////////////////////////////////////////////////////////
 ///
@@ -32,6 +32,8 @@
 #include "OgreOpcodeMath.h"
 #include "OgreOpcodeUtils.h"
 
+using namespace Ogre;
+using namespace OgreOpcode::Details;
 namespace OgreOpcode
 {
 	namespace Details
@@ -130,26 +132,25 @@ namespace OgreOpcode
 		}
 	} // Details
 	//------------------------------------------------------------------------
-	String ICollisionShape::getName() const
+	Ogre::String& ICollisionShape::getName()
 	{
 		return mName;
 	}
 	//------------------------------------------------------------------------
-	Vector3 ICollisionShape::getCenter() const
+	Vector3& ICollisionShape::getCenter()
 	{
 		// World space center
 		const Matrix4 &m = getFullTransform();
-		Vector3 center;
-		GetOpcodeRootCenter(opcModel, center);
-		return m*center;
+		GetOpcodeRootCenter(opcModel, mCenter);
+		mCenter = m * mCenter;
+		return mCenter;
 	}
 	//------------------------------------------------------------------------
-	Vector3 ICollisionShape::getLocalCenter() const
+	Vector3& ICollisionShape::getLocalCenter()
 	{
 		// Object space center
-		Vector3 center;
-		GetOpcodeRootCenter(opcModel, center);
-		return center;
+		GetOpcodeRootCenter(opcModel, mLocalCenter);
+		return mLocalCenter;
 	}
 	//------------------------------------------------------------------------
 	void ICollisionShape::getMinMax(Vector3& bMin, Vector3& bMax) const
@@ -182,16 +183,28 @@ namespace OgreOpcode
 		// because it depends on the current parent node transform.
 		// But the radius is the radius no matter what.
 		Vector3 lMin,lMax;
-		getLocalMinMax(lMin,lMax);
+		getMinMax(lMin,lMax);
 		lMax-=lMin;
 		mRadius = lMax.length()*0.5;
 	}
 
+	//void ICollisionShape::computeIceABB()
+	//{
+	//	Vector3 vA, vB;
+	//	getMinMax(vA,vB);
+	//	mIceABB->SetMinMax(IceMaths::Point(vA.x, vA.y, vA.z), IceMaths::Point(vB.x, vB.y, vB.z));
+	//}
+	
 	//------------------------------------------------------------------------
+	//IceMaths::AABB* ICollisionShape::getIceABB(void) const
+	//{
+	//	return mIceABB;
+	//}
 	//------------------------------------------------------------------------
-	ICollisionShape::ICollisionShape(const String& name)
+	ICollisionShape::ICollisionShape(const Ogre::String& name)
 		: mInitialized(false),
 		mShapeIsStatic(false),
+		mHasCostumTransform(false),
 		mDoVisualizeAABBNodes(false),
 		mName(name),
 		mRadius(0.0f),
@@ -199,24 +212,81 @@ namespace OgreOpcode
 		numFaces(0),
 		mVertexBuf(0),
 		mFaceBuf(0),
-		_debug_obj(0),
 		mFullTransform(Matrix4::IDENTITY),
-		mLocalTransform(Matrix4::IDENTITY)
+		mLocalTransform(Matrix4::IDENTITY),
+		mActiveDebugger(0),
+		mRefitCounter(0),
+		mNumFramesPerRefit(0),
+		mParentNode(0)
 	{
+		//mIceABB = new IceMaths::AABB();
+		//mIceABB->SetEmpty();
 		// initialize pointers to global OPCODE objects
 		opcTreeCache    = &(CollisionManager::getSingletonPtr()->opcTreeCache);
 		opcFaceCache    = &(CollisionManager::getSingletonPtr()->opcFaceCache);
+		mDebugObject = new ManualObject("__OgreOpcode__Debugger__" + mName);
 	}
 
 	//------------------------------------------------------------------------
 	ICollisionShape::~ICollisionShape()
 	{
-		//assert(0 == refCount);
-
-		if(_debug_obj)
-			delete _debug_obj;
-
+		//delete mIceABB;
+		//if(mDebugObject->isAttached())
+		//	mDebugObject->getParentSceneNode()->detachObject(mDebugObject->getName());
+		delete mDebugObject;
 	}
+
+	void ICollisionShape::update(Ogre::Real dt)
+	{
+		if( mNumFramesPerRefit > 0 )
+		{
+		  ++mRefitCounter;
+		  if( mRefitCounter >= mNumFramesPerRefit )
+		  {
+			 refit();
+			 mRefitCounter = 0;
+		  }
+		}
+	}
+
+	int ICollisionShape::getRefitRate()
+	{
+		return mNumFramesPerRefit;
+	}
+
+	void ICollisionShape::setRefitRate(unsigned int NumFramesPerRefit)
+	{
+		mNumFramesPerRefit = NumFramesPerRefit;
+	}
+
+	Matrix4 ICollisionShape::getFullTransform(void) const
+	{
+		if(!mHasCostumTransform)
+		{
+			getParentSceneNode()->_update(true, true);
+			getParentSceneNode()->getWorldTransforms(&mFullTransform);
+		}
+		return mFullTransform;
+	}
+
+	Matrix4& ICollisionShape::getLocalTransform(void) const
+	{
+		if(!mHasCostumTransform)
+		{
+			mLocalTransform = mFullTransform.inverse();
+		}
+		return mLocalTransform;
+	}
+
+	//------------------------------------------------------------------------
+	/// set a costum transform.
+	/// @param newTransform Matrix4          The matrix you want the shape to be transformed by.
+	void ICollisionShape::setTransform(const Matrix4 newTransform)
+	{
+		mLocalTransform = mFullTransform = newTransform;
+		mHasCostumTransform = true;
+	}
+
 
 	//------------------------------------------------------------------------
 	/// perform collision with other ICollisionShape.
@@ -254,7 +324,7 @@ namespace OgreOpcode
 		OgreOpcodeUtils::ogreToIceMatrix4( otherMatrix, m1);
 
 		// validate settings: asserts that we can check collision
-		// another option is to display some annoying error windows using: String(collider.ValidateSettings() )
+		// another option is to display some annoying error windows using: Ogre::String(collider.ValidateSettings() )
 		assert( collider.ValidateSettings() == 0 );
 
 		// perform collision test and checks errors
@@ -269,7 +339,7 @@ namespace OgreOpcode
 
 		// get the number of collided triangle pairs
 		int numPairs = collider.GetNbPairs();
-
+		//LogManager::getSingleton().logMessage("Collisionshape had " + StringConverter::toString(numPairs) + " collisions.");
 
 		if ( collider.GetContactStatus() && numPairs > 0 )
 		{
@@ -281,92 +351,56 @@ namespace OgreOpcode
 			// clamp number of collisions to a reasonable amount
 			if (numPairs > 10) numPairs = 10;
 			int i;
-			Vector3 tp[2][3];
-			line3 l[2][3];
-			triangle t[2];
-			bool intersects[2][3];
-			float ipos[2][3];
+			Vector3 vThis0, vThis1, vThis2;
+			Vector3 vOther0, vOther1, vOther2;
 			for (i = 0; i < numPairs; i++)
 			{
 				// get the current contact triangle coordinates
-				getTriCoords(pairs[i].id0, tp[0][0], tp[0][1], tp[0][2]);
-				opcodeOther->getTriCoords(pairs[i].id1, tp[1][0], tp[1][1], tp[1][2]);
+				getTriCoords(pairs[i].id0, vThis0, vThis1, vThis2);
+				opcodeOther->getTriCoords(pairs[i].id1, vOther0, vOther1, vOther2);
 
-				// transform triangle coords into world space
-				int j;
-				for (j = 0; j < 3; j++)
+				// they are now in object space - transform to world space
+				vThis0 = ownMatrix * vThis0;
+				vThis1 = ownMatrix * vThis1;
+				vThis2 = ownMatrix * vThis2;
+				vOther0 = otherMatrix * vOther0;
+				vOther1 = otherMatrix * vOther1;
+				vOther2 = otherMatrix * vOther2;
+
+				// calculate midpoints and normals in world space
+				Vector3 thisCenter = (vThis0+vThis1+vThis2)*0.33333333333333333333f;
+				Vector3 thisNormal = (vThis1-vThis0).crossProduct(vThis2-vThis0);
+				thisNormal.normalise();
+				Vector3 otherCenter = (vOther0+vOther1+vOther2)*0.33333333333333333333f;
+				Vector3 otherNormal = (vOther1-vOther0).crossProduct(vOther2-vOther0);
+				otherNormal.normalise();
+
+				// fill out CollisionPair's CollisionInfo
+				CollisionInfo collInfo;
+				collInfo.contact = otherCenter;
+				collInfo.this_contact = thisCenter;
+				collInfo.other_contact = otherCenter;
+				collInfo.this_normal = thisNormal;
+				collInfo.other_normal = otherNormal;
+
+				// fill triangle vertex info (world space)
+				collInfo.this_tri_verts[0] = vThis0;
+				collInfo.this_tri_verts[1] = vThis1;
+				collInfo.this_tri_verts[2] = vThis2;
+				collInfo.other_tri_verts[0] = vOther0;
+				collInfo.other_tri_verts[1] = vOther1;
+				collInfo.other_tri_verts[2] = vOther2;
+				
+				collPair.collInfos.push_back(collInfo);
+
+				if(0 == i) // if this is the first contact
 				{
-					tp[0][j] = ownMatrix * tp[0][j];
-					tp[1][j] = otherMatrix * tp[1][j];
+					collPair.contact = otherCenter;
+					collPair.this_contact = thisCenter;
+					collPair.other_contact = otherCenter;
+					collPair.this_normal = thisNormal;
+					collPair.other_normal = otherNormal;
 				}
-
-				// build mathlib triangles...
-				t[0].set(tp[0][0], tp[0][1], tp[0][2]);
-				t[1].set(tp[1][0], tp[1][1], tp[1][2]);
-
-				// build the 3 lines for each triangles and do intersection
-				l[0][0].set(t[0].point(0), t[0].point(1));
-				l[0][1].set(t[0].point(0), t[0].point(2));
-				l[0][2].set(t[0].point(1), t[0].point(2));
-
-				l[1][0].set(t[1].point(0), t[1].point(1));
-				l[1][1].set(t[1].point(0), t[1].point(2));
-				l[1][2].set(t[1].point(1), t[1].point(2));
-
-				// test triangle 0 lines against triangle 1
-				// test triangle 1 lines against triangle 0
-				for (j = 0; j < 3; j++)
-				{
-					intersects[0][j] = t[1].intersect_both_sides(l[0][j], ipos[0][j]);
-					intersects[1][j] = t[0].intersect_both_sides(l[1][j], ipos[1][j]);
-				}
-
-				// get averaged intersection position, we use this as the contact point
-				int numIsects = 0;
-				int k;
-				Vector3 contact(0.0f, 0.0f, 0.0f);
-				for (j = 0; j < 2; j++)
-				{
-					for (k = 0; k < 3; k++)
-					{
-						if (intersects[j][k])
-						{
-							contact += l[j][k].ipol(ipos[j][k]);
-							numIsects++;
-						}
-						else
-						{
-							contact += l[j][k].start();
-							numIsects++;
-						}
-					}
-				}
-
-				if (numIsects>0)
-				{
-					contact /= float(numIsects);
-				}
-
-				// fill the contact point into the collision report
-				collPair.contact    += contact;
-				collPair.co_this_normal += t[0].normal();
-				collPair.co_other_normal += t[1].normal();
-			}
-
-			// average collide results
-			if (numPairs > 0)
-			{
-				float div = 1.0f / float(numPairs);
-				collPair.contact    *= div;
-				collPair.co_this_normal *= div;
-				collPair.co_other_normal *= div;
-				collPair.co_this_normal.normalise();
-				collPair.co_other_normal.normalise();
-				return true;
-			}
-			else
-			{
-				return false;
 			}
 		}
 
@@ -387,24 +421,24 @@ namespace OgreOpcode
 	/// @return                 true if line intersects shape
 	bool ICollisionShape::rayCheck(CollisionType collType,
 		const Matrix4& ownMatrix,
-		const Ray& line,
+		const Ogre::Ray& line,
 		const Real dist,
-		CollisionPair& collPair)
+		CollisionPair& collPair, bool rayCulling)
 	{
 		assert(COLLTYPE_IGNORE != collType);
 
 		// setup ray collider
 		Opcode::RayCollider& collider = CollisionManager::getSingletonPtr()->opcRayCollider;
 		collider.SetMaxDist(dist);
-		collider.SetClosestHit(false);
-		collider.SetCulling(true);
+		collider.SetCulling(rayCulling);
+		collider.SetClosestHit(true);
 		switch (collType)
 		{
 		case COLLTYPE_QUICK:
-			collider.SetFirstContact(true);
+		case COLLTYPE_CONTACT:
+			collider.SetFirstContact(false);
 			break;
 
-		case COLLTYPE_CONTACT:
 		case COLLTYPE_EXACT:
 			collider.SetFirstContact(false);
 			break;
@@ -428,7 +462,7 @@ namespace OgreOpcode
 			OgreOpcodeUtils::ogreToIceRay( line, ray );
 
 		// validate settings: asserts that we can check collision
-		// another option is to display some annoying error windows using: String(collider.ValidateSettings() )
+		// another option is to display some annoying error windows using: Ogre::String(collider.ValidateSettings() )
 		assert( collider.ValidateSettings() == 0 );
 
 		// perform collision
@@ -449,7 +483,8 @@ namespace OgreOpcode
 			{
 				// if in closest hit mode, find the contact with the smallest distance
 				int collFaceIndex = 0;
-				if (COLLTYPE_CONTACT)
+				//if (COLLTYPE_CONTACT)
+				if (1==1) // FIXME
 				{
 					int i;
 					for (i = 0; i < numFaces; i++)
@@ -467,22 +502,32 @@ namespace OgreOpcode
 				Vector3 v0,v1,v2;
 				getTriCoords(triangleIndex, v0, v1, v2);
 
-				// get 3x3 matrix to transform normal into global space
-				Matrix3 m33;
-				ownMatrix.extract3x3Matrix(m33);
+				//const Matrix4 &myMatrix = getFullTransform();
 
 				// Compute the centered normal
-				Vector3 vCenter = (v0+v1+v2)*0.33333333333333333333f;
-				Vector3 vNormal = vCenter + (v2-v1).crossProduct(v0-v1);
+				//Vector3 vCenter = (v0+v1+v2)*0.33333333333333333333f;
+				Vector3 vNormal = (v1-v0).crossProduct(v2-v0);
 				vNormal.normalise();
 
 				// Compute collision contact from barycentric coordinates
-				Vector3 vContact = (1.0f - collFaces[0].mU - collFaces[0].mV) * v0 + collFaces[0].mU * v1 + collFaces[0].mV * v2;
+				Real mU = collFaces[0].mU;
+				Real mV = collFaces[0].mV;
+				Real mW = 1.0f - mU - mV;
+				Vector3 vCenter(Vector3::ZERO);
+				vCenter.x = (v0.x * mW) + (v1.x * mU) + (v2.x * mV);
+				vCenter.y = (v0.y * mW) + (v1.y * mU) + (v2.y * mV);
+				vCenter.z = (v0.z * mW) + (v1.z * mU) + (v2.z * mV);
 
-				collPair.contact = m33 * vContact;//line.getOrigin() + (line.getDirection().normalisedCopy() * thedist);
+				collPair.contact = ownMatrix * vCenter;//line.getOrigin() + (line.getDirection().normalisedCopy() * thedist);//myMatrix * vContact;//
 				collPair.distance = thedist;
-				collPair.co_this_normal = m33 * vNormal;
-				collPair.co_other_normal = collPair.co_this_normal;
+				collPair.this_normal = vNormal;
+				collPair.other_normal = line.getDirection().normalisedCopy();//-collPair.this_normal;
+				CollisionInfo collInfo;
+				collInfo.contact = collPair.contact;
+				collInfo.distance = collPair.distance;
+				collInfo.this_normal = collPair.this_normal;
+				collInfo.other_normal = collPair.other_normal;
+				collPair.collInfos.push_back(collInfo);
 
 				return true;
 			}
@@ -496,12 +541,423 @@ namespace OgreOpcode
 	}
 
 	//------------------------------------------------------------------------
+	/// Check contact of a line swept sphere with shape.
+	/// The collType is interpreted as follows:
+	/// - COLLTYPE_IGNORE:        illegal (makes no sense)
+	/// - COLLTYPE_QUICK:         first contact check only
+	/// - COLLTYPE_CONTACT:       return closest contact
+	/// - COLLTYPE_EXACT:         return a sorted list of contacts
+	/// Currently, sphere checks always work in first contact mode (COLLTYPE_QUICK).
+	/// @param  collType        see above
+	/// @param  ownMatrix       position/orientation of this shape
+	/// @param  ball          sphere definition in world space
+	/// @param  collPair      will be filled with result
+	/// @return                 true if line intersects shape
+	bool ICollisionShape::sweptSphereCheck(CollisionType collType,
+		const Matrix4& ownMatrix,
+		const Vector3& position,
+		const Vector3& movementVector,
+		const Real& radius,
+		CollisionPair& collPair)
+	{
+		assert(COLLTYPE_IGNORE != collType);
+
+		// setup sphere collider
+		Opcode::LSSCollider& collider = CollisionManager::getSingletonPtr()->opcSweptSphereCollider;
+		Opcode::LSSCache& cache = CollisionManager::getSingletonPtr()->opcSweptSphereCache;
+
+		switch (collType)
+		{
+		case COLLTYPE_QUICK:
+		case COLLTYPE_CONTACT:
+			collider.SetFirstContact(true);
+			break;
+
+		case COLLTYPE_EXACT:
+			collider.SetFirstContact(false);
+			break;
+
+		default:
+			break;
+		}
+
+		// convert Matrix4 to Opcode Matrix4x4
+		IceMaths::Matrix4x4 opcMatrix;
+		IceMaths::Matrix4x4 *ptrOpcMatrix = &opcMatrix;
+		OgreOpcodeUtils::ogreToIceMatrix4( ownMatrix, opcMatrix);
+
+		// build identity matrix because sphere is already in world space
+		IceMaths::Matrix4x4 identity;
+		IceMaths::Matrix4x4 *ptrIdentity = &identity;
+		identity.Identity();
+
+		// validate settings: asserts that we can check collision
+		// another option is to display some annoying error windows using: String(collider.ValidateSettings() )
+		assert( collider.ValidateSettings() == 0 );
+
+		IceMaths::Point startPoint;
+		IceMaths::Point endPoint;
+		OgreOpcodeUtils::ogreToIceVector3(position, startPoint);
+		OgreOpcodeUtils::ogreToIceVector3(position + movementVector, endPoint);
+		IceMaths::Segment opcSegment(startPoint, endPoint);
+		IceMaths::LSS opcLSS(opcSegment, radius);
+
+		// perform collision
+		if( !collider.Collide(cache, opcLSS, opcModel, ptrIdentity, ptrOpcMatrix) )
+			return false;
+
+		collPair.distance = movementVector.length();
+
+		collPair.numBVBVTests = collider.GetNbVolumeBVTests();
+		collPair.numBVPrimTests = collider.GetNbVolumePrimTests();
+		collPair.numPrimPrimTests = 0;
+
+		// get collision result
+		if (collider.GetContactStatus())
+		{
+			// fill out contact point and collision normal of closest contact
+			const udword* collFaces = collider.GetTouchedPrimitives();
+			int numFaces = collider.GetNbTouchedPrimitives();
+			//LogManager::getSingleton().logMessage("sphereCheck returned " + StringConverter::toString(numFaces) + " numfaces");
+			if (numFaces > 0)
+			{
+				for(int i = 0; i < numFaces; i++)
+				{
+					//assert(1 == numFaces);
+
+					// build triangle from from faceIndex
+					Vector3 v0,v1,v2;
+					getTriCoords(collFaces[i], v0, v1, v2);
+
+					v0 = ownMatrix * v0;		// transform to world space
+					v1 = ownMatrix * v1;
+					v2 = ownMatrix * v2;
+
+
+
+					testTriangleIntersection(position, movementVector, radius, v0, v1, v2, &collPair);
+
+
+				}
+
+				//if(	collPair.distance == movementVector.length())
+					//return false;
+				//else
+					return true;
+			}
+			else
+			{
+				//n_printf("nOpcodeShape::sphereCheck(): contact but no faces!\n");
+				return false;
+			}
+		}
+
+		// FIXME!
+		return false;
+	}
+
+////////////////////////////////////////////////////////////////////////////////
+// This code adapted from code from Irrlicht (http://www.irrlicht3d.org)
+
+	inline bool ICollisionShape::getLowestRoot(Ogre::Real a, Ogre::Real b, Ogre::Real c, Ogre::Real maxR, Ogre::Real* root)
+	{
+		// check if solution exists
+		Ogre::Real determinant = b*b - 4.0f*a*c;
+
+		// if determinant is negative, no solution
+		if (determinant < 0.0f) return false;
+
+		// calculate two roots: (if det==0 then x1==x2
+		// but lets disregard that slight optimization)
+
+		Ogre::Real sqrtD = (Ogre::Real)sqrt(determinant);
+		Ogre::Real r1 = (-b - sqrtD) / (2*a);
+		Ogre::Real r2 = (-b + sqrtD) / (2*a);
+
+		// sort so x1 <= x2
+		if (r1 > r2) { Ogre::Real tmp=r2; r2=r1; r1=tmp; }
+
+		// get lowest root
+		if (r1 > 0 && r1 < maxR)
+		{
+			*root = r1;
+			return true;
+		}
+
+		// its possible that we want x2, this can happen if x1 < 0
+		if (r2 > 0 && r2 < maxR)
+		{
+			*root = r2;
+			return true;
+		}
+
+		return false;
+	}
+
+/////////////////////////////
+
+	void ICollisionShape::sphereEdgeCheck(Ogre::Vector3 &velocity, 
+		Ogre::Vector3 &edge, Ogre::Vector3 &baseToVertex, 
+		Ogre::Real &t, bool &foundCollision, 
+		Ogre::Vector3 &collisionPoint, Ogre::Vector3 &pnt)
+	{
+		Ogre::Real newT, a,b,c;
+
+		Ogre::Real edgeSqaredLength = (Ogre::Real)edge.squaredLength();
+		Ogre::Real edgeDotVelocity = edge.dotProduct(velocity);
+		Ogre::Real edgeDotBaseToVertex = edge.dotProduct(baseToVertex);
+
+		// calculate parameters for equation
+		Ogre::Real velocitySqaredLength = velocity.squaredLength();
+
+		a = edgeSqaredLength* -velocitySqaredLength + 
+			edgeDotVelocity*edgeDotVelocity;
+		b = edgeSqaredLength* (2*velocity.dotProduct(baseToVertex)) -
+			2.0f*edgeDotVelocity*edgeDotBaseToVertex;
+		c = (Ogre::Real)(edgeSqaredLength* (1-baseToVertex.squaredLength()) +
+			edgeDotBaseToVertex*edgeDotBaseToVertex);
+
+		// does the swept sphere collide against ininite edge?
+		if (getLowestRoot(a,b,c,t,&newT))
+		{
+			Ogre::Real f = (edgeDotVelocity*newT - edgeDotBaseToVertex) / edgeSqaredLength;
+			if (f >=0.0f && f <= 1.0f)
+			{
+				// intersection took place within segment
+				t = newT;
+				foundCollision = true;
+				collisionPoint = pnt + (edge*f);
+			}
+		}
+	}
+
+////////////////////////////////////
+
+	bool ICollisionShape::testTriangleIntersection(Ogre::Vector3 position,
+		Ogre::Vector3 movementVector,
+		Ogre::Real radius,
+		Ogre::Vector3 v0, Ogre::Vector3 v1, Ogre::Vector3 v2,
+		CollisionPair *cp)
+	{
+
+		if(movementVector == Ogre::Vector3::ZERO)
+			return false;
+
+		Ogre::Real scale_fact = 1.0 / radius;
+		v0 *= scale_fact;
+		v1 *= scale_fact;
+		v2 *= scale_fact;
+
+		position *= scale_fact;
+		movementVector *= scale_fact;
+
+		triangle triangle(v0, v1, v2);
+
+		Ogre::Plane trianglePlane = triangle.getplane();
+
+		trianglePlane.normal.normalise();
+
+		// only check front facing polygons
+		if (trianglePlane.getSide(position) == Ogre::Plane::POSITIVE_SIDE)
+		{
+			// get interval of plane intersection
+
+			Ogre::Real t1, t0;
+			bool embeddedInPlane = false;
+
+			// calculate signed distance from sphere position to triangle plane
+			Ogre::Real signedDistToTrianglePlane = trianglePlane.getDistance(position);
+				
+			Ogre::Real normalDotVelocity = trianglePlane.normal.dotProduct(movementVector);			
+
+			if (normalDotVelocity == 0.0f)
+			{
+				// sphere is traveling paralell to plane
+
+				if (fabs(signedDistToTrianglePlane) >= 1.0f)
+					return false; // no collision possible
+				else
+				{
+					// sphere is embedded in plane
+					embeddedInPlane = true;
+					t0 = 0.0;
+					t1 = 1.0;
+				}
+			}
+			else
+			{
+				// N.D is not 0. Calculate intersection interval
+				t0 = (-1.0-signedDistToTrianglePlane)/normalDotVelocity;
+				t1 = (1.0-signedDistToTrianglePlane)/normalDotVelocity;
+
+				// Swap so t0 < t1
+				if (t0 > t1) { Ogre::Real tmp = t1; t1 = t0; t0 = tmp;	}
+
+				// check if at least one value is within the range
+				if (t0 > 1.0f || t1 < 0.0f)
+					return false; // both t values are outside 1 and 0, no collision possible
+
+				// clamp to 0 and 1
+				if (t0 < 0.0) t0 = 0.0;
+				if (t1 < 0.0) t1 = 0.0;
+				if (t0 > 1.0) t0 = 1.0;
+				if (t1 > 1.0) t1 = 1.0;
+			}
+
+			// at this point we have t0 and t1, if there is any intersection, it
+			// is between this interval
+
+			Ogre::Vector3 collisionPoint = Vector3::ZERO;
+			bool foundCollision = false;
+			Ogre::Real t = 1.0f;
+
+			// first check the easy case: Collision within the triangle;
+			// if this happens, it must be at t0 and this is when the sphere
+			// rests on the front side of the triangle plane. This can only happen
+			// if the sphere is not embedded in the triangle plane.
+
+			if (!embeddedInPlane)
+			{
+				Ogre::Vector3 planeIntersectionPoint =
+					(position - trianglePlane.normal)
+					+ (movementVector * (Ogre::Real)t0);
+
+
+				if (triangle.isPointInsideFast(planeIntersectionPoint))
+				{
+					foundCollision = true;
+					t = (Ogre::Real)t0;
+					collisionPoint = planeIntersectionPoint;
+				}
+			}
+
+			// if we havent found a collision already we will have to sweep
+			// the sphere against points and edges of the triangle. Note: A 
+			// collision inside the triangle will always happen before a 
+			// vertex or edge collision. 
+
+			// DAVE: is checking against points really necessary if we are checking against edges? 
+			// Shouldn't the edges take care of that?
+
+			if (!foundCollision)
+			{
+				Ogre::Vector3 velocity = movementVector;
+				Ogre::Vector3 base = position;
+
+				Ogre::Real velocitySqaredLength = (Ogre::Real)velocity.squaredLength();
+				Ogre::Real a,b,c;
+				Ogre::Real newT;
+
+				// for each edge or vertex a quadratic equation has to be solved:
+				// a*t^2 + b*t + c = 0. We calculate a,b, and c for each test.
+
+				// check against points
+				a = velocitySqaredLength;
+
+				// FIXME: turn these 3 into 1 function
+				// p1
+				b = 2.0f * (velocity.dotProduct(base - triangle.point(0)));
+				c = (Ogre::Real)((triangle.point(0)-base).squaredLength() - 1.0);
+				if (getLowestRoot(a,b,c,t, &newT))
+				{
+					t = newT;
+					foundCollision = true;
+					collisionPoint = triangle.point(0);
+				}
+
+				// p2 
+				if (!foundCollision)
+				{
+					b = 2.0f * (velocity.dotProduct(base - triangle.point(1)));
+					c = (Ogre::Real)((triangle.point(1)-base).squaredLength() - 1.0);
+					if (getLowestRoot(a,b,c,t, &newT))
+					{
+						t = newT;
+						foundCollision = true;
+						collisionPoint = triangle.point(1);
+					}
+				}
+
+				// p3
+				if (!foundCollision)
+				{
+					b = 2.0f * (velocity.dotProduct(base - triangle.point(2)));
+					c = (Ogre::Real)((triangle.point(2)-base).squaredLength() - 1.0);
+					if (getLowestRoot(a,b,c,t, &newT))
+					{
+						t = newT;
+						foundCollision = true;
+						collisionPoint = triangle.point(2);
+					}
+				}
+
+				// check against edges:
+
+				Ogre::Vector3 edge;
+				Ogre::Vector3 baseToVertex;
+
+				edge = triangle.point(1) - triangle.point(0);
+				baseToVertex = triangle.point(0) - position;
+
+				Ogre::Vector3 aPoint = triangle.point(0);
+				sphereEdgeCheck(velocity, edge, baseToVertex, t, foundCollision, collisionPoint, aPoint);
+
+				edge = triangle.point(2) - triangle.point(1);
+				baseToVertex = triangle.point(1) - position;
+
+				aPoint = triangle.point(1);
+				sphereEdgeCheck(velocity, edge, baseToVertex, t, foundCollision, collisionPoint, aPoint);
+
+				edge = triangle.point(0) - triangle.point(2);
+				baseToVertex = triangle.point(2) - position;
+
+				aPoint = triangle.point(2);
+				sphereEdgeCheck(velocity, edge, baseToVertex, t, foundCollision, collisionPoint, aPoint);
+
+			}// end no collision found
+
+
+			// set result:
+			if (foundCollision)
+			{
+				// Time to scale everything back..
+
+				// distance to collision is t
+				Ogre::Real distToCollision = (Ogre::Real)(t*movementVector.length() * radius);
+
+				// does this triangle qualify for closest hit?
+				if (distToCollision	<= cp->distance) 
+				{
+					cp->distance = distToCollision;
+					cp->contact = collisionPoint * radius;
+					cp->other_contact = cp->contact;
+					cp->this_contact = (position + (movementVector*t))*radius;
+
+					cp->other_normal = trianglePlane.normal;
+					Ogre::Vector3 vec_to_col = cp->contact - cp->this_contact;
+					cp->this_normal = vec_to_col.normalisedCopy();
+				}
+
+				return true;
+			}// end found collision
+		}// end if is front facing
+
+		return false;
+	}
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+	//------------------------------------------------------------------------
 	/// Check contact of a sphere with shape.
 	/// The collType is interpreted as follows:
 	/// - COLLTYPE_IGNORE:        illegal (makes no sense)
 	/// - COLLTYPE_QUICK:         first contact check only
 	/// - COLLTYPE_CONTACT:       return closest contact
-	/// - COLLTYPE_EXACT:         same as closest contact
+	/// - COLLTYPE_EXACT:         return a sorted list of contacts
 	/// Currently, sphere checks always work in first constact mode (COLLTYPE_QUICK).
 	/// @param  collType        see above
 	/// @param  ownMatrix       position/orientation of this shape
@@ -519,28 +975,40 @@ namespace OgreOpcode
 		Opcode::SphereCollider& collider = CollisionManager::getSingletonPtr()->opcSphereCollider;
 		Opcode::SphereCache& cache = CollisionManager::getSingletonPtr()->opcSphereCache;
 
-		// SPHERE CHECK ALWAYS WORKS IN FIRST CONTACT MODE!!!
-		collider.SetFirstContact(true);
+		switch (collType)
+		{
+		case COLLTYPE_QUICK:
+		case COLLTYPE_CONTACT:
+			collider.SetFirstContact(true);
+			break;
+
+		case COLLTYPE_EXACT:
+			collider.SetFirstContact(false);
+			break;
+
+		default:
+			break;
+		}
 
 		// convert Matrix4 to Opcode Matrix4x4
 		IceMaths::Matrix4x4 opcMatrix;
+		IceMaths::Matrix4x4 *ptrOpcMatrix = &opcMatrix;
 		OgreOpcodeUtils::ogreToIceMatrix4( ownMatrix, opcMatrix);
 
 		// build identity matrix because sphere is already in world space
 		IceMaths::Matrix4x4 identity;
+		IceMaths::Matrix4x4 *ptrIdentity = &identity;
 		identity.Identity();
 
-		sphere collBall;
-		collBall.set(ball.getCenter(), ball.getRadius());
-		// build an Opcode Sphere from sphere object
-		const IceMaths::Sphere opcSphere(IceMaths::Point(collBall.p.x, collBall.p.y, collBall.p.z), collBall.r);
+		IceMaths::Sphere opcSphere;
+		OgreOpcodeUtils::ogreToIceSphere(ball, opcSphere);
 
 		// validate settings: asserts that we can check collision
-		// another option is to display some annoying error windows using: String(collider.ValidateSettings() )
+		// another option is to display some annoying error windows using: Ogre::String(collider.ValidateSettings() )
 		assert( collider.ValidateSettings() == 0 );
 
 		// perform collision
-		if( !collider.Collide(cache, opcSphere, opcModel, &identity, &opcMatrix) )
+		if( !collider.Collide(cache, opcSphere, opcModel, ptrIdentity, ptrOpcMatrix) )
 			return false;
 
 		collPair.numBVBVTests = collider.GetNbVolumeBVTests();
@@ -553,29 +1021,37 @@ namespace OgreOpcode
 			// fill out contact point and collision normal of closest contact
 			const udword* collFaces = collider.GetTouchedPrimitives();
 			int numFaces = collider.GetNbTouchedPrimitives();
+			//LogManager::getSingleton().logMessage("sphereCheck returned " + StringConverter::toString(numFaces) + " numfaces");
 			if (numFaces > 0)
 			{
-				assert(1 == numFaces);
+				for(int i = 0; i < numFaces; i++)
+				{
+					//assert(1 == numFaces);
 
-				// build triangle from from faceIndex
-				Vector3 v0,v1,v2;
-				getTriCoords(collFaces[0], v0, v1, v2);
+					// build triangle from from faceIndex
+					Vector3 v0,v1,v2;
+					getTriCoords(collFaces[i], v0, v1, v2);
 
-				// Compute the centered normal
-				Vector3 vCenter = (v0+v1+v2)*0.33333333333333333333f;
-				Vector3 vNormal = vCenter + (v2-v1).crossProduct(v0-v1);
-				vNormal.normalise();
-
-				// get 3x3 matrix to transform normal into global space
-				Matrix3 m33;
-				ownMatrix.extract3x3Matrix(m33);
-
-				// fill collide report
-				const float div = 1.0f / 3.0f;
-				Vector3 midpoint = (v0 + v1 + v2) * div;
-				collPair.contact    = ownMatrix * midpoint;
-				collPair.co_this_normal = m33 * vNormal;
-				collPair.co_other_normal = collPair.co_this_normal;
+					// Compute the centered normal
+					Vector3 vCenter = (v0+v1+v2)*0.33333333333333333333f;
+					Vector3 vNormal = (v1-v0).crossProduct(v2-v0);
+					vNormal.normalise();
+					Vector3 thePoint = ownMatrix * vCenter;
+					Plane thePlane(vNormal, thePoint);
+					Real theDist = thePlane.getDistance(ball.getCenter());
+					// fill collide report
+					if(0 == i)
+					{
+						collPair.this_normal = vNormal;
+						collPair.other_normal = -collPair.this_normal;
+						collPair.contact = ownMatrix * vCenter;//ball.getCenter() + collPair.this_normal * theDist;
+					}
+					CollisionInfo collInfo;
+					collInfo.this_normal = vNormal;
+					collInfo.other_normal = -collPair.this_normal;
+					collInfo.contact = ownMatrix * vCenter;
+					collPair.collInfos.push_back(collInfo);
+				}
 				return true;
 			}
 			else
@@ -609,23 +1085,33 @@ namespace OgreOpcode
 		Vector3 v12(center.x + extent.x, center.y + extent.y, center.z + extent.z);
 		Vector3 v13(center.x + extent.x, center.y + extent.y, center.z - extent.z);
 
-		// render ground rect
-		_debug_obj->addLine(v00.x, v00.y, v00.z, v01.x, v01.y, v01.z);
-		_debug_obj->addLine(v01.x, v01.y, v01.z, v02.x, v02.y, v02.z);
-		_debug_obj->addLine(v02.x, v02.y, v02.z, v03.x, v03.y, v03.z);
-		_debug_obj->addLine(v03.x, v03.y, v03.z, v00.x, v00.y, v00.z);
+		const Matrix4 &m = getFullTransform();
+		v00 = m * v00;
+		v01 = m * v01;
+		v02 = m * v02;
+		v03 = m * v03;
+		v10 = m * v10;
+		v11 = m * v11;
+		v12 = m * v12;
+		v13 = m * v13;
 
-		// render top rect
-		_debug_obj->addLine(v10.x, v10.y, v10.z, v11.x, v11.y, v11.z);
-		_debug_obj->addLine(v11.x, v11.y, v11.z, v12.x, v12.y, v12.z);
-		_debug_obj->addLine(v12.x, v12.y, v12.z, v13.x, v13.y, v13.z);
-		_debug_obj->addLine(v13.x, v13.y, v13.z, v10.x, v10.y, v10.z);
+		//// render ground rect
+		mActiveDebugger->addAABBLine(v00.x, v00.y, v00.z, v01.x, v01.y, v01.z);
+		mActiveDebugger->addAABBLine(v01.x, v01.y, v01.z, v02.x, v02.y, v02.z);
+		mActiveDebugger->addAABBLine(v02.x, v02.y, v02.z, v03.x, v03.y, v03.z);
+		mActiveDebugger->addAABBLine(v03.x, v03.y, v03.z, v00.x, v00.y, v00.z);
 
-		// render vertical lines
-		_debug_obj->addLine(v00.x, v00.y, v00.z, v10.x, v10.y, v10.z);
-		_debug_obj->addLine(v01.x, v01.y, v01.z, v11.x, v11.y, v11.z);
-		_debug_obj->addLine(v02.x, v02.y, v02.z, v12.x, v12.y, v12.z);
-		_debug_obj->addLine(v03.x, v03.y, v03.z, v13.x, v13.y, v13.z);
+		//// render top rect
+		mActiveDebugger->addAABBLine(v10.x, v10.y, v10.z, v11.x, v11.y, v11.z);
+		mActiveDebugger->addAABBLine(v11.x, v11.y, v11.z, v12.x, v12.y, v12.z);
+		mActiveDebugger->addAABBLine(v12.x, v12.y, v12.z, v13.x, v13.y, v13.z);
+		mActiveDebugger->addAABBLine(v13.x, v13.y, v13.z, v10.x, v10.y, v10.z);
+
+		//// render vertical lines
+		mActiveDebugger->addAABBLine(v00.x, v00.y, v00.z, v10.x, v10.y, v10.z);
+		mActiveDebugger->addAABBLine(v01.x, v01.y, v01.z, v11.x, v11.y, v11.z);
+		mActiveDebugger->addAABBLine(v02.x, v02.y, v02.z, v12.x, v12.y, v12.z);
+		mActiveDebugger->addAABBLine(v03.x, v03.y, v03.z, v13.x, v13.y, v13.z);
 
 		if (!node->IsLeaf())
 		{
@@ -658,23 +1144,33 @@ namespace OgreOpcode
 		Vector3 v12(center.x + extent.x, center.y + extent.y, center.z + extent.z);
 		Vector3 v13(center.x + extent.x, center.y + extent.y, center.z - extent.z);
 
-		// render ground rect
-		_debug_obj->addLine(v00.x, v00.y, v00.z, v01.x, v01.y, v01.z);
-		_debug_obj->addLine(v01.x, v01.y, v01.z, v02.x, v02.y, v02.z);
-		_debug_obj->addLine(v02.x, v02.y, v02.z, v03.x, v03.y, v03.z);
-		_debug_obj->addLine(v03.x, v03.y, v03.z, v00.x, v00.y, v00.z);
+		const Matrix4 &m = getFullTransform();
+		v00 = m * v00;
+		v01 = m * v01;
+		v02 = m * v02;
+		v03 = m * v03;
+		v10 = m * v10;
+		v11 = m * v11;
+		v12 = m * v12;
+		v13 = m * v13;
 
-		// render top rect
-		_debug_obj->addLine(v10.x, v10.y, v10.z, v11.x, v11.y, v11.z);
-		_debug_obj->addLine(v11.x, v11.y, v11.z, v12.x, v12.y, v12.z);
-		_debug_obj->addLine(v12.x, v12.y, v12.z, v13.x, v13.y, v13.z);
-		_debug_obj->addLine(v13.x, v13.y, v13.z, v10.x, v10.y, v10.z);
+		//// render ground rect
+		mActiveDebugger->addAABBLine(v00.x, v00.y, v00.z, v01.x, v01.y, v01.z);
+		mActiveDebugger->addAABBLine(v01.x, v01.y, v01.z, v02.x, v02.y, v02.z);
+		mActiveDebugger->addAABBLine(v02.x, v02.y, v02.z, v03.x, v03.y, v03.z);
+		mActiveDebugger->addAABBLine(v03.x, v03.y, v03.z, v00.x, v00.y, v00.z);
 
-		// render vertical lines
-		_debug_obj->addLine(v00.x, v00.y, v00.z, v10.x, v10.y, v10.z);
-		_debug_obj->addLine(v01.x, v01.y, v01.z, v11.x, v11.y, v11.z);
-		_debug_obj->addLine(v02.x, v02.y, v02.z, v12.x, v12.y, v12.z);
-		_debug_obj->addLine(v03.x, v03.y, v03.z, v13.x, v13.y, v13.z);
+		//// render top rect
+		mActiveDebugger->addAABBLine(v10.x, v10.y, v10.z, v11.x, v11.y, v11.z);
+		mActiveDebugger->addAABBLine(v11.x, v11.y, v11.z, v12.x, v12.y, v12.z);
+		mActiveDebugger->addAABBLine(v12.x, v12.y, v12.z, v13.x, v13.y, v13.z);
+		mActiveDebugger->addAABBLine(v13.x, v13.y, v13.z, v10.x, v10.y, v10.z);
+
+		//// render vertical lines
+		mActiveDebugger->addAABBLine(v00.x, v00.y, v00.z, v10.x, v10.y, v10.z);
+		mActiveDebugger->addAABBLine(v01.x, v01.y, v01.z, v11.x, v11.y, v11.z);
+		mActiveDebugger->addAABBLine(v02.x, v02.y, v02.z, v12.x, v12.y, v12.z);
+		mActiveDebugger->addAABBLine(v03.x, v03.y, v03.z, v13.x, v13.y, v13.z);
 
 		if (!node->HasNegLeaf())
 		{
@@ -690,83 +1186,63 @@ namespace OgreOpcode
 
 	//------------------------------------------------------------------------
 	/// Renders the collide model triangle soup.
-	void ICollisionShape::visualize()
+	void ICollisionShape::visualize(Details::OgreOpcodeDebugger* activeDebugger)
 	{
+		if(!mDebugObject->isAttached())
+			mParentNode->attachObject(mDebugObject);
+
+		mDebugObject->begin("OgreOpcodeDebug/Shapes", Ogre::RenderOperation::OT_LINE_LIST);
+		
+		mActiveDebugger = activeDebugger;
+
+
 		assert(mVertexBuf && mFaceBuf);
 
 		// render the triangle soup
-		int i;
+		size_t i;
 		for (i = 0; i < numFaces; i++)
 		{
-			int* indexPtr = mFaceBuf + 3 * i;
+			size_t* indexPtr = mFaceBuf + 3 * i;
 			float* v0 = mVertexBuf + 3 * indexPtr[0];
 			float* v1 = mVertexBuf + 3 * indexPtr[1];
 			float* v2 = mVertexBuf + 3 * indexPtr[2];
 
-			_debug_obj->addLine(v0[0], v0[1], v0[2], v1[0], v1[1], v1[2]);
-			_debug_obj->addLine(v1[0], v1[1], v1[2], v2[0], v2[1], v2[2]);
-			_debug_obj->addLine(v2[0], v2[1], v2[2], v0[0], v0[1], v0[2]);
-		}
+			//const Matrix4 &m = getFullTransform();
 
-		if(mDoVisualizeAABBNodes)
-		{
-			// render the AABB tree
-			if (opcModel.HasLeafNodes())
-			{
-				const Opcode::AABBCollisionTree* tree = static_cast<const Opcode::AABBCollisionTree*>(opcModel.GetTree());
-				visualizeAABBCollisionNode(tree->GetNodes());
-			}
-			else
-			{
-				const Opcode::AABBNoLeafTree* tree = static_cast<const Opcode::AABBNoLeafTree*>(opcModel.GetTree());
-				visualizeAABBNoLeafNode(tree->GetNodes());
-			}
+			Vector3 vect0(v0[0],v0[1],v0[2]);
+			Vector3 vect1(v1[0],v1[1],v1[2]);
+			Vector3 vect2(v2[0],v2[1],v2[2]);
+			//vect0 = m * vect0;
+			//vect1 = m * vect1;
+			//vect2 = m * vect2;
+
+			mDebugObject->position(vect0.x, vect0.y, vect0.z);
+			mDebugObject->position(vect1.x, vect1.y, vect1.z);
+			mDebugObject->position(vect1.x, vect1.y, vect1.z);
+			mDebugObject->position(vect2.x, vect2.y, vect2.z);
+			mDebugObject->position(vect2.x, vect2.y, vect2.z);
+			mDebugObject->position(vect0.x, vect0.y, vect0.z);
 		}
+		mDebugObject->end();
 	}
 
 
 	//------------------------------------------------------------------------
 	/// <TODO: insert function description here>
-	void ICollisionShape::createDebugObject()
+	void ICollisionShape::visualizeAABBs(Details::OgreOpcodeDebugger* activeDebugger)
 	{
-		_debug_obj = new DebugObject();
-
-		visualize();
-		_debug_obj->draw();
-
-		if(_debug_obj)
+		mActiveDebugger = activeDebugger;
+		// render the AABB tree
+		if (opcModel.HasLeafNodes())
 		{
-			mParentNode->attachObject(_debug_obj);
+			const Opcode::AABBCollisionTree* tree = static_cast<const Opcode::AABBCollisionTree*>(opcModel.GetTree());
+			visualizeAABBCollisionNode(tree->GetNodes());
 		}
-
-		if(_debug_obj)
+		else
 		{
-			if(mShapeIsStatic)
-				_debug_obj->setMode(DebugObject::Mode_Static);
-			else
-				_debug_obj->setMode(DebugObject::Mode_Enabled);
+			const Opcode::AABBNoLeafTree* tree = static_cast<const Opcode::AABBNoLeafTree*>(opcModel.GetTree());
+			visualizeAABBNoLeafNode(tree->GetNodes());
 		}
-
-	}
-
-	//------------------------------------------------------------------------
-	/// <TODO: insert function description here>
-	void ICollisionShape::destroyDebugObject()
-	{
-		if(_debug_obj)
-		{
-			delete _debug_obj;
-			_debug_obj = 0;
-		}
-	}
-
-	//------------------------------------------------------------------------
-	/// <TODO: insert function description here>
-	/// @param [in]       debug bool     <TODO: insert parameter description here>
-	void ICollisionShape::setDebug(bool doVisualize)
-	{
-		destroyDebugObject();
-		if(doVisualize) createDebugObject();
 	}
 
 	//------------------------------------------------------------------------

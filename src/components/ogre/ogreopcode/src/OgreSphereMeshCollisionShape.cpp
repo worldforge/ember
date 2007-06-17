@@ -32,10 +32,11 @@
 #include "OgreOpcodeMath.h"
 #include "OgreOpcodeUtils.h"
 
+using namespace Ogre;
 namespace OgreOpcode
 {
 	//------------------------------------------------------------------------
-	SphereMeshCollisionShape::SphereMeshCollisionShape(const String& name)
+	SphereMeshCollisionShape::SphereMeshCollisionShape(const Ogre::String& name)
 		: ICollisionShape(name)
 	{
 	}
@@ -45,7 +46,11 @@ namespace OgreOpcode
 	{
 		if (mEntity && mEntity->hasSkeleton())
 		{
+#ifdef BUILD_AGAINST_AZATHOTH
+			mEntity->removeSoftwareSkinningRequest(false);
+#else
 			mEntity->removeSoftwareAnimationRequest(false);
+#endif
 		}
 		delete[] mVertexBuf;
 		delete[] mFaceBuf;
@@ -63,7 +68,11 @@ namespace OgreOpcode
 	{
 		Mesh * mesh = entity->getMesh().getPointer();
 
-		bool hwSkinning = entity->isHardwareAnimationEnabled();
+#ifdef BUILD_AGAINST_AZATHOTH
+		bool hwSkinning = entity->isHardwareSkinningEnabled();
+#else
+		bool hwSkinning = entity->isHardwareAnimationEnabled();	
+#endif
 		bool added_shared = false;
 		index_count  = 0;
 		vertex_count = 0;
@@ -106,7 +115,7 @@ namespace OgreOpcode
 	//////////////////////////////////////////////////////////////////////////
 	void SphereMeshCollisionShape::convertMeshData(Entity * entity,
 		float * vertexBuf, size_t vertex_count,
-		int * faceBuf, size_t index_count)
+		size_t * faceBuf, size_t index_count)
 	{
 		//---------------------------------------------------------------------
 		// CONVERT MESH DATA
@@ -139,7 +148,11 @@ namespace OgreOpcode
 				//----------------------------------------------------------------
 				const VertexData * vertex_data;
 				if(useSoftwareBlendingVertices)
+#ifdef BUILD_AGAINST_AZATHOTH
+					vertex_data = useSharedVertices ? entity->_getSharedBlendedVertexData() : entity->getSubEntity(i)->_getBlendedVertexData();
+#else
 					vertex_data = useSharedVertices ? entity->_getSkelAnimVertexData() : entity->getSubEntity(i)->_getSkelAnimVertexData();
+#endif
 				else
 					vertex_data = useSharedVertices ? mesh->sharedVertexData : submesh->vertexData;
 
@@ -165,7 +178,9 @@ namespace OgreOpcode
 					//  comiled/typedefed as double:
 					float* pReal;
 
-					if (useSoftwareBlendingVertices) {
+#ifdef BUILD_AGAINST_AZATHOTH
+					if (useSoftwareBlendingVertices)
+					{
 						// Blended bone data is computed in world space.
 						// Opcode expects data in local coordinates.
 						Matrix4 xform = entity->_getParentNodeFullTransform().inverse();
@@ -173,11 +188,7 @@ namespace OgreOpcode
 						for( size_t j = 0; j < vertex_data->vertexCount; ++j, vertex += vbuf->getVertexSize())
 						{
 							posElem->baseVertexPointerToElement(vertex, &pReal);
-
 							Vector3 v = Vector3(pReal[0],pReal[1],pReal[2]);
-							
-							//v *= entity->getParentSceneNode()->getScale();
-							
 							v = xform * v;
 							size_t n = current_offset*3 + j*3;
 							vertexBuf[n + 0] = v[0];
@@ -185,23 +196,30 @@ namespace OgreOpcode
 							vertexBuf[n + 2] = v[2];
 						}
 					}
-					else {
+					else
+					{
 						for( size_t j = 0; j < vertex_data->vertexCount; ++j, vertex += vbuf->getVertexSize())
 						{
 							posElem->baseVertexPointerToElement(vertex, &pReal);
-
-							//Vector3 v = Vector3(pReal[0],pReal[1],pReal[2]);
-							//v *= entity->getParentSceneNode()->getScale();
-
 							size_t n = current_offset*3 + j*3;
-							//vertexBuf[n + 0] = v[0];
-							//vertexBuf[n + 1] = v[1];
-							//vertexBuf[n + 2] = v[2];
 							vertexBuf[n + 0] = pReal[0];
 							vertexBuf[n + 1] = pReal[1];
 							vertexBuf[n + 2] = pReal[2];
 						}
 					}
+#else
+
+					for( size_t j = 0; j < vertex_data->vertexCount; ++j, vertex += vbuf->getVertexSize())
+					{
+						posElem->baseVertexPointerToElement(vertex, &pReal);
+
+						size_t n = current_offset*3 + j*3;
+
+						vertexBuf[n + 0] = pReal[0];
+						vertexBuf[n + 1] = pReal[1];
+						vertexBuf[n + 2] = pReal[2];
+					}
+#endif 	
 					vbuf->unlock();
 					next_offset += vertex_data->vertexCount;
 				}
@@ -246,7 +264,7 @@ namespace OgreOpcode
 		}
 	}
 
-void createSphere(const std::string& strName, const float r, const int nRings = 16, const int nSegments = 16)
+void SphereMeshCollisionShape::createSphere(const std::string& strName, const float r, const int nRings, const int nSegments)
 {
 	MeshPtr pSphere = MeshManager::getSingleton().createManual(strName, ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 	SubMesh *pSphereVertex = pSphere->createSubMesh();
@@ -336,7 +354,7 @@ void createSphere(const std::string& strName, const float r, const int nRings = 
 	/// <TODO: insert function description here>
 	/// @param [in, out]  ent Entity *    <TODO: insert parameter description here>
 	/// @return bool <TODO: insert return value description here>
-	bool SphereMeshCollisionShape::load(const String& name, SceneNode* scnNode, const float r, const int nRings, const int nSegments)
+	bool SphereMeshCollisionShape::load(const Ogre::String& name, SceneNode* scnNode, const float r, const int nRings, const int nSegments)
 	{
 		assert(!mVertexBuf && !mFaceBuf);
 
@@ -345,12 +363,16 @@ void createSphere(const std::string& strName, const float r, const int nRings = 
 		mEntity = CollisionManager::getSingletonPtr()->getSceneManager()->createEntity(name,name);
 
 		if (mEntity->hasSkeleton()) {
+#ifdef BUILD_AGAINST_AZATHOTH
+			mEntity->addSoftwareSkinningRequest(false);
+#else
 			mEntity->addSoftwareAnimationRequest(false);
+#endif
 		}
 
 		mParentNode = scnNode;
-		//mFullTransform = mEntity->getParentSceneNode()->_getFullTransform();
-		mParentNode->getWorldTransforms(&mFullTransform);
+		mFullTransform = mParentNode->_getFullTransform();
+		//mParentNode->getWorldTransforms(&mFullTransform);
 		return rebuild();
 	}
 
@@ -380,7 +402,7 @@ void createSphere(const std::string& strName, const float r, const int nRings = 
 		if (!mVertexBuf)
 			mVertexBuf = new float[vertex_count * 3];
 		if (!mFaceBuf)
-			mFaceBuf = new int[index_count];
+			mFaceBuf = new size_t[index_count];
 
 		convertMeshData(mEntity, mVertexBuf, vertex_count, mFaceBuf, index_count );
 
@@ -390,7 +412,7 @@ void createSphere(const std::string& strName, const float r, const int nRings = 
 		opcMeshAccess.SetNbTriangles(numFaces);
 		opcMeshAccess.SetNbVertices(numVertices);
 		opcMeshAccess.SetPointers((IceMaths::IndexedTriangle*)mFaceBuf, (IceMaths::Point*)mVertexBuf);
-		opcMeshAccess.SetStrides(sizeof(int) * 3, sizeof(float) * 3);
+		//opcMeshAccess.SetStrides(sizeof(int) * 3, sizeof(float) * 3);
 
 		return _rebuildFromCachedData();
 
@@ -441,9 +463,7 @@ void createSphere(const std::string& strName, const float r, const int nRings = 
 
 		calculateSize();
 
-		if (_debug_obj) {
-			setDebug(true);
-		}
+		//computeIceABB();
 
 		return true;
 	}
@@ -461,9 +481,7 @@ void createSphere(const std::string& strName, const float r, const int nRings = 
 
 		calculateSize();
 
-		if (_debug_obj) {
-			setDebug(true);
-		}
+		//computeIceABB();
 
 		return true;
 	}

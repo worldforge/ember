@@ -2,7 +2,7 @@
 ///  @file IOgreCollisionShape.h
 ///  @brief Abstract base class for collision shapes
 ///
-///  @author The OgreOpcode Team @date 01-29-2006
+///  @author The OgreOpcode Team
 ///
 ///////////////////////////////////////////////////////////////////////////////
 ///
@@ -28,14 +28,15 @@
 #ifndef __IOgreCollisionShape_h__
 # define __IOgreCollisionShape_h__
 
-#include "OgreOpcodeExports.h"
 # include <Ogre.h>
+
+#include "OgreOpcodeExports.h"
 
 #include "OgreCollisionTypes.h"
 #include "OgreOpcodeDebugObject.h"
-#include "../opcode/Opcode.h"
-
-using namespace OgreOpcode::Details;
+#include "Opcode/Opcode.h"
+#include "OgreOpcodeMath.h"
+#include "OgreCollisionReporter.h"
 
 namespace OgreOpcode
 {
@@ -43,117 +44,124 @@ namespace OgreOpcode
 
 	/// Describes shapes for collision system.
 	/// Holds a triangle list describing a collision shape.
-	/// One ICollisionShape object may be shared between several
-	/// CollisionObject%s. 2 ICollisionShape objects may also
-	/// be queried directly whether they intersect.
-	///
-	/// ICollisionShape objects are also able to load themselves
-	/// from a mesh file.
 	class _OgreOpcode_Export ICollisionShape
 	{
 	public:
 		/// Constructs a ICollisionShape
-		ICollisionShape(const String& name);
+		ICollisionShape(const Ogre::String& name);
 		virtual ~ICollisionShape();
 
+		void update(Ogre::Real dt);
+
 		/// visualize the collide shape
-		virtual void visualize();
-		/// toggle debug rendering.
-		virtual void setDebug(bool debug);
-		/// 
-		virtual void setDynamic()
+		virtual void visualize(Details::OgreOpcodeDebugger* activeDebugger);
+		/// Clear visualization buffer
+		virtual void clearViz()
 		{
-			mShapeIsStatic = false;
+			mDebugObject->clear();
 		}
-		virtual void setStatic()
+		
+		virtual void setStatic(bool newstatic = true)
 		{
-			mShapeIsStatic = true;
+			mShapeIsStatic = newstatic;
 		}
-		virtual void showAABB(bool showThis)
-		{
-			mDoVisualizeAABBNodes = showThis;
-		}
+		/// visualise OPCODE AABB tree
+		virtual void visualizeAABBs(Details::OgreOpcodeDebugger* activeDebugger);
 		/// return current center in world space
-		virtual Vector3 getCenter() const;
+		virtual Ogre::Vector3& getCenter();
 		/// return current center in object space
-		virtual Vector3 getLocalCenter() const;
-		virtual String getName() const;
+		virtual Ogre::Vector3& getLocalCenter();
+		/// returns the name of the shape
+		virtual Ogre::String& getName();
 		/// get radius of collide mesh
-		virtual Real getRadius() const;
+		virtual Ogre::Real& getRadius();
 		/// return the full transformation matrix
-		virtual Matrix4 getFullTransform(void) const;
+		virtual Ogre::Matrix4 getFullTransform(void) const;
 		/// return the local transformation matrix
-		virtual Matrix4 getLocalTransform(void) const;
-        virtual SceneNode* getParentSceneNode(void) const;
+		virtual Ogre::Matrix4& getLocalTransform(void) const;
+        ///
+        virtual void setTransform(const Ogre::Matrix4 newTransform);
+		/// returns the scenenode which this shape is attached to
+		virtual Ogre::SceneNode* getParentSceneNode(void) const;
+
+		///// returns the IceMaths::AABB used for pruning
+		//virtual IceMaths::AABB* getIceABB(void) const;
+
+		/// is this shape a static?
+		virtual const bool isStatic() const
+		{
+			return mShapeIsStatic;
+		};
+		
 		/// Retrieve current vertex data from mesh and refit collision tree.
 		/// This is an O(n) operation in the number of vertices in the mesh.
 		virtual bool refit() { return true; };
+		int getRefitRate();
+		void setRefitRate(unsigned int NumFramesPerRefit);
 		/// return current world space AABB min and max
-		virtual void getMinMax(Vector3& bMin, Vector3& bMax) const; 
+		virtual void getMinMax(Ogre::Vector3& bMin, Ogre::Vector3& bMax) const; 
 		/// return current object space AABB min and max
-		virtual void getLocalMinMax(Vector3& bMin, Vector3& bMax) const; 
+		virtual void getLocalMinMax(Ogre::Vector3& bMin, Ogre::Vector3& bMax) const; 
 		/// perform collision with other ICollisionShape
-		virtual bool collide(CollisionType collType, Matrix4& ownMatrix, ICollisionShape* otherShape, Matrix4& otherMatrix, CollisionPair& collPair);
+		virtual bool collide(CollisionType collType, Ogre::Matrix4& ownMatrix, ICollisionShape* otherShape, Ogre::Matrix4& otherMatrix, CollisionPair& collPair);
 		/// perform collision with line
-		virtual bool rayCheck(CollisionType collType, const Matrix4& ownMatrix, const Ray& line, const Real dist, CollisionPair& collPair);
+		virtual bool rayCheck(CollisionType collType, const Ogre::Matrix4& ownMatrix, const Ogre::Ray& line, const Ogre::Real dist, CollisionPair& collPair, bool rayCulling);
 		/// perform a sphere check
-		virtual bool sphereCheck(CollisionType collType, const Matrix4& ownMatrix, const Sphere& ball, CollisionPair& collPair);
+		virtual bool sphereCheck(CollisionType collType, const Ogre::Matrix4& ownMatrix, const Ogre::Sphere& ball, CollisionPair& collPair);
+		/// perform a swept sphere check
+		virtual bool sweptSphereCheck(CollisionType collType, const Ogre::Matrix4& ownMatrix, const Ogre::Vector3& position, const Ogre::Vector3& movementVector, const Ogre::Real& radius, CollisionPair& collPair);
 		/// get tri coords from tri index
-		virtual void getTriCoords(int index, Vector3& v0, Vector3& v1, Vector3& v2);
+		virtual void getTriCoords(size_t index, Ogre::Vector3& v0, Ogre::Vector3& v1, Ogre::Vector3& v2);
+
+		/////////////////////////////////////////
+		// DAVE:
+		inline bool getLowestRoot(Ogre::Real a, Ogre::Real b, Ogre::Real c, Ogre::Real maxR, Ogre::Real* root);
+		void sphereEdgeCheck(Ogre::Vector3 &velocity, Ogre::Vector3 &edge, Ogre::Vector3 &baseToVertex, Ogre::Real &t, bool &foundCollision, Ogre::Vector3 &collisionPoint, Ogre::Vector3 &pnt);
+		bool testTriangleIntersection(Ogre::Vector3 position, Ogre::Vector3 movementVector, Ogre::Real radius, Ogre::Vector3 v0, Ogre::Vector3 v1, Ogre::Vector3 v2, CollisionPair *cp);
 
 		Opcode::Model opcModel;
+
+		///// calculate SAP AABB
+		//virtual void computeIceABB();
+
 	protected:
 		
 		/// has object been initialized?
 		virtual bool isInitialized();
-		/// Reload the collision geometry from mesh, rebuild collision tree from scratch. 
-		/// Potentially very slow. Only necessary if the mesh has drastically changed,
-		/// like topology changing deformations, or a change in the number of tris.
-		/// In most cases RefitToMesh() is sufficient, and much faster.
-		/// Under usual circumstances there is no need to call this method.
-	//virtual bool rebuild();
-		/// Refits the collision tree to the currently cached vertex data.
-		/// This is an O(n) operation in the number of vertices in the mesh.
-		/// This is an advanced method.  It assumes that the user is manually 
-		/// updating both the MeshCollisionShape's cached data and the actual mesh
-		/// hardware buffers.  Mostly useful for implementing something like 
-		/// deformable body physics.
-	//virtual bool _refitToCachedData();
-		/// rebuild collision tree from scratch using currently cached vertex data
-		/// This is potentially quite slow.  Only necessary if the mesh has drastically changed,
-		/// like topology changing deformations, or a change in the number of tris.
-		/// In most cases _RefitToCachedGeometry() is sufficient, and much faster.
-		/// This is an advanced method.  It assumes that the user is manually 
-		/// updating both the MeshCollisionShape's cached data and the actual mesh
-		/// hardware buffers.  Mostly useful for implementing something like
-		/// deformable body physics.
-	//virtual bool _rebuildFromCachedData();
 		/// visualize the AABBTree of the opcode model
 		virtual void visualizeAABBCollisionNode(const Opcode::AABBCollisionNode* node);
 		/// visualize the AABBTree of the opcode model (for no leaf trees)
 		virtual void visualizeAABBNoLeafNode(const Opcode::AABBNoLeafNode* node);
+		/// prepare OPCODE parameters
 		virtual void _prepareOpcodeCreateParams(Opcode::OPCODECREATE& opcc);
+		/// calculates the shape radius
 		virtual void calculateSize();
-		virtual void createDebugObject();
-		virtual void destroyDebugObject();
 
-		Opcode::BVTCache*         opcTreeCache;
-		Opcode::CollisionFaces*   opcFaceCache;
-		Opcode::MeshInterface opcMeshAccess;
-		int numVertices;
-		int numFaces;
-		float* mVertexBuf;
-		int*   mFaceBuf;
-		float   mRadius;
-		SceneNode* mParentNode;
-		String mName;
-		bool mInitialized;
-		bool mShapeIsStatic;
-		bool mDoVisualizeAABBNodes;
-		int refCount;
-		mutable Matrix4 mFullTransform;
-		mutable Matrix4 mLocalTransform;
-		DebugObject* _debug_obj;
+		Opcode::BVTCache*         opcTreeCache; ///<
+		Opcode::CollisionFaces*   opcFaceCache; ///<
+		Opcode::MeshInterface opcMeshAccess; ///<
+		size_t numVertices; ///<
+		size_t numFaces; ///<
+		float* mVertexBuf; ///<
+		size_t*   mFaceBuf; ///<
+		Ogre::Real   mRadius; ///<
+		Ogre::SceneNode* mParentNode; ///<
+		Ogre::String mName; ///<
+		bool mInitialized; ///<
+		bool mShapeIsStatic; ///<
+		bool mHasCostumTransform; ///<
+		bool mDoVisualizeAABBNodes; ///<
+		int refCount; ///<
+		mutable Ogre::Matrix4 mFullTransform; ///<
+		mutable Ogre::Matrix4 mLocalTransform; ///<
+		//IceMaths::AABB* mIceABB; ///<
+		Ogre::Vector3 mCenter; ///<
+		Ogre::Vector3 mLocalCenter; ///<
+		Details::OgreOpcodeDebugger* mActiveDebugger;
+		Ogre::ManualObject* mDebugObject;
+
+		int mNumFramesPerRefit;
+		int mRefitCounter;
 	};
 	inline
 		bool
@@ -162,41 +170,14 @@ namespace OgreOpcode
 		return mInitialized;
 	}
 
-	inline Matrix4 ICollisionShape::getFullTransform(void) const
-	{
-		//if(!mShapeIsStatic)
-		//{
-			getParentSceneNode()->getWorldTransforms(&mFullTransform);
-//		}
-			return mFullTransform;
-	}
-
-	inline Matrix4 ICollisionShape::getLocalTransform(void) const
-	{
-		if(!mShapeIsStatic)
-		{
-			return mFullTransform.inverse();
-		}
-		return mLocalTransform;
-	}
-
-	inline SceneNode* ICollisionShape::getParentSceneNode(void) const
+	inline Ogre::SceneNode* ICollisionShape::getParentSceneNode(void) const
 	{
 		return mParentNode;
 	}
 
-	//inline Entity* MeshCollisionShape::getEntity()
-	//{
-	//	return mEntity;
-	//}
-	//inline const Entity* MeshCollisionShape::getEntity() const
-	//{
-	//	return mEntity;
-	//}
-
 	inline
-		Real
-		ICollisionShape::getRadius() const
+		Ogre::Real&
+		ICollisionShape::getRadius()
 	{
 		return mRadius;
 	}
@@ -204,20 +185,15 @@ namespace OgreOpcode
 	/// Extract triangle coordinates from triangle index.
 	inline
 		void
-		ICollisionShape::getTriCoords(int index, Vector3& v0, Vector3& v1, Vector3& v2)
+		ICollisionShape::getTriCoords(size_t index, Ogre::Vector3& v0, Ogre::Vector3& v1, Ogre::Vector3& v2)
 	{
-		int* indexPtr = &(mFaceBuf[3 * index]);
+		size_t* indexPtr = &(mFaceBuf[3 * index]);
 		float* vp0 = &(mVertexBuf[3 * indexPtr[0]]);
 		float* vp1 = &(mVertexBuf[3 * indexPtr[1]]);
 		float* vp2 = &(mVertexBuf[3 * indexPtr[2]]);
-		v0 = Vector3(vp0[0], vp0[1], vp0[2]);
-		v1 = Vector3(vp1[0], vp1[1], vp1[2]);
-		v2 = Vector3(vp2[0], vp2[1], vp2[2]);
-		
-		//Matrix4 mat = getFullTransform();
-		//v0 = mat * v0;
-		//v1 = mat * v0;
-		//v2 = mat * v0;
+		v0 = Ogre::Vector3(vp0[0], vp0[1], vp0[2]);
+		v1 = Ogre::Vector3(vp1[0], vp1[1], vp1[2]);
+		v2 = Ogre::Vector3(vp2[0], vp2[1], vp2[2]);
 	}
 }; // namespace OgreOpcode
 

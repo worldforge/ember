@@ -1,0 +1,37 @@
+*******************************
+* OgreOpcode README
+*******************************
+
+OgreOpcode is:
+
+* a collision detection library, as opposed to a fullblown physics library.
+* a simple wrapper for OPCODE .
+* made for OGRE users.
+* a work in progress.
+
+
+Current Version: SVN
+
+********************************
+* Building OgreOpcode 
+********************************
+
+Building with SCons
+-------------------
+
+./scons
+
+
+Building with make
+------------------
+
+make
+
+*******************************
+* Source layout
+*******************************
+Put a description here that
+describes the source layout.
+
+Also give some credit to Opcode and whatever.
+

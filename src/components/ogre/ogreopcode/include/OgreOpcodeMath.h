@@ -2,7 +2,7 @@
 ///  @file OgreOpcodeMath.h
 ///  @brief <TODO: insert file description here>
 ///
-///  @author The OgreOpcode Team @date 31-05-2005
+///  @author The OgreOpcode Team
 ///  
 ///////////////////////////////////////////////////////////////////////////////
 ///  
@@ -35,57 +35,77 @@ namespace OgreOpcode
 {
 	namespace Details
 	{
+		// -----------------------------------------------------------------------
+		// Overridden operators
+
+		/// Dot product operator
+		inline Ogre::Real operator | ( const Ogre::Vector3& u,  const Ogre::Vector3& v ) 
+		{
+			return (u.x*v.x + u.y*v.y + u.z*v.z);
+		}
+
+		/// Cross product operator
+		inline Ogre::Vector3 operator ^ ( const Ogre::Vector3& u,  const Ogre::Vector3& v ) 
+		{
+			return u.crossProduct( v );
+		}
+
+		// forward declarations
+		class Capsule;
+		class Line;
+		class OrientedBox;
+
 		class line3
 		{
 		public:
-			Vector3 b;
-			Vector3 m;
+			Ogre::Vector3 b;
+			Ogre::Vector3 m;
 
 			line3() {};
-			line3(const Vector3& v0, const Vector3& v1) : b(v0), m(v1-v0) {};
+			line3(const Ogre::Vector3& v0, const Ogre::Vector3& v1) : b(v0), m(v1-v0) {};
 			line3(const line3& l) : b(l.b), m(l.m) {};
 
-			void set(const Vector3& v0, const Vector3& v1)
+			void set(const Ogre::Vector3& v0, const Ogre::Vector3& v1)
 			{
 				b = v0;
 				m = v1-v0;
 			};
 
-			const Vector3& start(void) const
+			const Ogre::Vector3& start(void) const
 			{
 				return b;
 			};
 
-			Vector3 end(void) const
+			Ogre::Vector3 end(void) const
 			{
 				return (b+m);
 			};
 
-			Real length(void) const
+			Ogre::Real length(void) const
 			{
 				return m.length();
 			};
 
 			//--- minimal distance of point to line -------------------------
-			Real distance(const Vector3& p)
+			Ogre::Real distance(const Ogre::Vector3& p)
 			{
-				Vector3 diff(p-b);
-				Real l = m.dotProduct(m);
+				Ogre::Vector3 diff(p-b);
+				Ogre::Real l = m.dotProduct(m);
 				if (l > 0.0f) {
-					Real t = m.dotProduct(diff) / l;
+					Ogre::Real t = m.dotProduct(diff) / l;
 					diff = diff - m*t;
 					return diff.length();
 				} else
 				{
 					// line is really a point...
-					Vector3 v(p-b);
+					Ogre::Vector3 v(p-b);
 					return v.length();
 				}
 			};
 
 			//--- get 3d point on line given t ------------------------------
-			Vector3 ipol(const Real t) const {
-				return Vector3(b + m*t);
+			Ogre::Vector3 ipol(const Ogre::Real t) const {
+				return Ogre::Vector3(b + m*t);
 			};
 		};
 
@@ -96,64 +116,85 @@ namespace OgreOpcode
 		class triangle
 		{
 		public:
-			Vector3 b,e0,e1;
+			Ogre::Vector3 b,e0,e1;
 
 			triangle() {};
-			triangle(const Vector3& v0, const Vector3& v1, const Vector3& v2) 
+			triangle(const Ogre::Vector3& v0, const Ogre::Vector3& v1, const Ogre::Vector3& v2) 
 				: b(v0), e0(v1-v0), e1(v2-v0) {};
 			triangle(const triangle& t) 
 				: b(t.b), e0(t.e0), e1(t.e1) {}; 
 
-			void set(const Vector3& v0, const Vector3& v1, const Vector3& v2) {
+			void set(const Ogre::Vector3& v0, const Ogre::Vector3& v1, const Ogre::Vector3& v2) {
 				b  = v0;
 				e0 = v1-v0;
 				e1 = v2-v0;
 			};
 
 			//--- get the face normal of the triangle ---------------------------------
-			Vector3 normal(void) const
+			Ogre::Vector3 normal(void) const
 			{
-				Vector3 cross = e0.crossProduct(e1);
+				Ogre::Vector3 cross = e0.crossProduct(e1);
 				cross.normalise();
 				return cross;
 			};
 
 			//--- get the midpoint (center of gravity) of the triangle ----------------
-			Vector3 midpoint(void) const {
+			Ogre::Vector3 midpoint(void) const {
 				return b + ((e0+e1)/3.0f);
 			};
 
 			//--- get the plane of the triangle ---------------------------------------
-			Plane getplane(void) const
+			Ogre::Plane getplane(void) const
 			{
-				return Plane(b,b+e0,b+e1);
+				return Ogre::Plane(b,b+e0,b+e1);
 			};
 
 			//--- get one the edge points ---------------------------------------------
-			Vector3 point(int i) const
+			Ogre::Vector3 point(int i) const
 			{
 				switch (i)
 				{
 				case 0: return b;
 				case 1: return b + e0;
 				case 2: return b + e1;
-				default: return Vector3(0.0f, 0.0f, 0.0f);
+				default: return Ogre::Vector3(0.0f, 0.0f, 0.0f);
 				}
 			};
+
+			bool isPointInsideFast(Ogre::Vector3 &p)
+			{
+				Ogre::Vector3 f = point(1) - point(0);
+				Ogre::Vector3 g = point(2) - point(0);
+
+				Ogre::Real a = f.dotProduct(f);
+				Ogre::Real _b = f.dotProduct(g);
+				Ogre::Real c = g.dotProduct(g);
+
+				Ogre::Real ac_bb = (a*c)-(_b*_b);
+				Ogre::Vector3 vp = p - point(0);
+
+				Ogre::Real d = vp.dotProduct(f);
+				Ogre::Real e = vp.dotProduct(g);
+				Ogre::Real x = (d*c)-(e*_b);
+				Ogre::Real y = (e*a)-(d*_b);
+				Ogre::Real z = x+y-ac_bb;
+
+				return (( ((unsigned int&)z)& ~(((unsigned int&)x)|((unsigned int&)y))) & 0x80000000)!=0;
+			}
 
 			//--- check if and where line intersects triangle -------------------------
 			//  Taken from Magic Software (http://www.cs.unc.edu/~eberly)
 			//  Return false if line is parallel to triangle or hits its backside.
 			//
-			bool intersect(const line3& line, Real& ipos)
+			bool intersect(const line3& line, Ogre::Real& ipos)
 			{
 
 				// Compute plane of triangle, Dot(normal,X-tri.b) = 0 where 'normal' is
 				// the plane normal.  If the angle between the line direction and normal
 				// is small, then the line is effectively parallel to the triangle.
-				const Real fTolerance = 1e-04f;
-				Vector3 norm = e0.crossProduct(e1);
-				Real fDenominator = norm.dotProduct(line.m);
+				const Ogre::Real fTolerance = 1e-04f;
+				Ogre::Vector3 norm = e0.crossProduct(e1);
+				Ogre::Real fDenominator = norm.dotProduct(line.m);
 				//Real fLLenSqr     = line.m % line.m;
 				//Real fNLenSqr     = norm % norm;
 
@@ -168,25 +209,25 @@ namespace OgreOpcode
 				// The line is X(t) = line.b + t*line.m.  Compute line parameter t for
 				// intersection of line and plane of triangle.  Substitute in the plane
 				// equation to get Dot(normal,line.b-tri.b) + t*Dot(normal,line.m)   
-				Vector3 kDiff0(line.b - b);
-				Real fTime = -(norm.dotProduct(kDiff0)) / fDenominator;
+				Ogre::Vector3 kDiff0(line.b - b);
+				Ogre::Real fTime = -(norm.dotProduct(kDiff0)) / fDenominator;
 				if ((fTime<-fTolerance) || (fTime>(1.0f+fTolerance))) return false;
 
 				// Find difference of intersection point of line with plane and vertex
 				// of triangle.
-				Vector3 kDiff1(kDiff0 + line.m*fTime);
+				Ogre::Vector3 kDiff1(kDiff0 + line.m*fTime);
 
 				// Compute if intersection point is inside triangle.  Write
 				// kDiff1 = s0*E0 + s1*E1 and solve for s0 and s1.
-				Real fE00 = e0.dotProduct(e0);
-				Real fE01 = e0.dotProduct(e1);
-				Real fE11 = e1.dotProduct(e1);
-				Real fDet = (Real) fabs(fE00*fE11-fE01*fE01);     // = |normal|^2 > 0
-				Real fR0  = e0.dotProduct(kDiff1);
-				Real fR1  = e1.dotProduct(kDiff1);
+				Ogre::Real fE00 = e0.dotProduct(e0);
+				Ogre::Real fE01 = e0.dotProduct(e1);
+				Ogre::Real fE11 = e1.dotProduct(e1);
+				Ogre::Real fDet = (Ogre::Real) fabs(fE00*fE11-fE01*fE01);     // = |normal|^2 > 0
+				Ogre::Real fR0  = e0.dotProduct(kDiff1);
+				Ogre::Real fR1  = e1.dotProduct(kDiff1);
 
-				Real fS0 = fE11*fR0 - fE01*fR1;
-				Real fS1 = fE00*fR1 - fE01*fR0;
+				Ogre::Real fS0 = fE11*fR0 - fE01*fR1;
+				Ogre::Real fS1 = fE00*fR1 - fE01*fR0;
 
 				if ((fS0>=-fTolerance) && (fS1>=-fTolerance) && (fS0+fS1<=fDet+fTolerance)) {
 					// intersection is inside triangle
@@ -202,16 +243,16 @@ namespace OgreOpcode
 			//  Taken from Magic Software (http://www.cs.unc.edu/~eberly)
 			//  Return false if line is parallel to triangle
 			//
-			bool intersect_both_sides(const line3& line, Real& ipos) {
+			bool intersect_both_sides(const line3& line, Ogre::Real& ipos) {
 
 				// Compute plane of triangle, Dot(normal,X-tri.b) = 0 where 'normal' is
 				// the plane normal.  If the angle between the line direction and normal
 				// is small, then the line is effectively parallel to the triangle.
-				const Real fTolerance = 1e-04f;
-				Vector3 norm = e0.crossProduct(e1);
-				Real fDenominator = norm.dotProduct(line.m);
-				Real fLLenSqr     = line.m.dotProduct(line.m);
-				Real fNLenSqr     = norm.dotProduct(norm);
+				const Ogre::Real fTolerance = 1e-04f;
+				Ogre::Vector3 norm = e0.crossProduct(e1);
+				Ogre::Real fDenominator = norm.dotProduct(line.m);
+				Ogre::Real fLLenSqr     = line.m.dotProduct(line.m);
+				Ogre::Real fNLenSqr     = norm.dotProduct(norm);
 
 				// check if intersecting backface or parallel...
 				if (fDenominator*fDenominator <= fTolerance*fLLenSqr*fNLenSqr) return false;
@@ -224,25 +265,25 @@ namespace OgreOpcode
 				// The line is X(t) = line.b + t*line.m.  Compute line parameter t for
 				// intersection of line and plane of triangle.  Substitute in the plane
 				// equation to get Dot(normal,line.b-tri.b) + t*Dot(normal,line.m)   
-				Vector3 kDiff0(line.b - b);
-				Real fTime = -(norm.dotProduct(kDiff0)) / fDenominator;
+				Ogre::Vector3 kDiff0(line.b - b);
+				Ogre::Real fTime = -(norm.dotProduct(kDiff0)) / fDenominator;
 				if ((fTime<-fTolerance) || (fTime>(1.0f+fTolerance))) return false;
 
 				// Find difference of intersection point of line with plane and vertex
 				// of triangle.
-				Vector3 kDiff1(kDiff0 + line.m*fTime);
+				Ogre::Vector3 kDiff1(kDiff0 + line.m*fTime);
 
 				// Compute if intersection point is inside triangle.  Write
 				// kDiff1 = s0*E0 + s1*E1 and solve for s0 and s1.
-				Real fE00 = e0.dotProduct(e0);
-				Real fE01 = e0.dotProduct(e1);
-				Real fE11 = e1.dotProduct(e1);
-				Real fDet = (Real) fabs(fE00*fE11-fE01*fE01);     // = |normal|^2 > 0
-				Real fR0  = e0.dotProduct(kDiff1);
-				Real fR1  = e1.dotProduct(kDiff1);
+				Ogre::Real fE00 = e0.dotProduct(e0);
+				Ogre::Real fE01 = e0.dotProduct(e1);
+				Ogre::Real fE11 = e1.dotProduct(e1);
+				Ogre::Real fDet = (Ogre::Real) fabs(fE00*fE11-fE01*fE01);     // = |normal|^2 > 0
+				Ogre::Real fR0  = e0.dotProduct(kDiff1);
+				Ogre::Real fR1  = e1.dotProduct(kDiff1);
 
-				Real fS0 = fE11*fR0 - fE01*fR1;
-				Real fS1 = fE00*fR1 - fE01*fR0;
+				Ogre::Real fS0 = fE11*fR0 - fE01*fR1;
+				Ogre::Real fS1 = fE00*fR1 - fE01*fR0;
 
 				if ((fS0>=-fTolerance) && (fS1>=-fTolerance) && (fS0+fS1<=fDet+fTolerance)) {
 					// intersection is inside triangle
@@ -262,8 +303,8 @@ namespace OgreOpcode
 		class bbox3
 		{
 		public:
-			Vector3 vmin;
-			Vector3 vmax;
+			Ogre::Vector3 vmin;
+			Ogre::Vector3 vmax;
 
 			enum
 			{
@@ -286,11 +327,11 @@ namespace OgreOpcode
 
 			//--- constructors ----------------------------------------------
 			bbox3() {};
-			bbox3(const Vector3& _vmin, const Vector3& _vmax) : vmin(_vmin), vmax(_vmax) {};
+			bbox3(const Ogre::Vector3& _vmin, const Ogre::Vector3& _vmax) : vmin(_vmin), vmax(_vmax) {};
 			bbox3(const bbox3& bb) : vmin(bb.vmin), vmax(bb.vmax) {};
 
 			//--- initialize from Vector3 cloud -----------------------------
-			bbox3(Vector3 *varray, int num)
+			bbox3(Ogre::Vector3 *varray, int num)
 			{
 				vmin = varray[0];
 				vmax = varray[0];
@@ -307,19 +348,19 @@ namespace OgreOpcode
 			};
 
 			//--- utility getters ------------------------------------------
-			Vector3 getCenter() const { return (vmin + vmax)*0.5; }
-			void getCenter(Vector3& v) const { v = (vmin + vmax)*0.5; }
+			Ogre::Vector3 getCenter() const { return (vmin + vmax)*0.5; }
+			void getCenter(Ogre::Vector3& v) const { v = (vmin + vmax)*0.5; }
 
-			Vector3 getExtents() const { return (vmax - vmin)*0.5; }
-			void getExtents( Vector3& v) const { v = (vmax - vmin)*0.5; }
+			Ogre::Vector3 getExtents() const { return (vmax - vmin)*0.5; }
+			void getExtents( Ogre::Vector3& v) const { v = (vmax - vmin)*0.5; }
 
 			//--- setting elements ------------------------------------------
-			void set(const Vector3& _vmin, const Vector3& _vmax)
+			void set(const Ogre::Vector3& _vmin, const Ogre::Vector3& _vmax)
 			{
 				vmin = _vmin;
 				vmax = _vmax;
 			};
-			void set(Vector3 *varray, int num)
+			void set(Ogre::Vector3 *varray, int num)
 			{
 				vmin = varray[0];
 				vmax = varray[0];
@@ -338,10 +379,10 @@ namespace OgreOpcode
 			//--- invalidate bounding box to prepare for growing ------------
 			void begin_grow(void)
 			{
-				vmin = Vector3(+1000000.0f,+1000000.0f,+1000000.0f);
-				vmax = Vector3(-1000000.0f,-1000000.0f,-1000000.0f);
+				vmin = Ogre::Vector3(+1000000.0f,+1000000.0f,+1000000.0f);
+				vmax = Ogre::Vector3(-1000000.0f,-1000000.0f,-1000000.0f);
 			};
-			void grow(const Vector3& v)
+			void grow(const Ogre::Vector3& v)
 			{
 				if (v.x<vmin.x) vmin.x=v.x;
 				if (v.x>vmax.x) vmax.x=v.x;
@@ -350,7 +391,7 @@ namespace OgreOpcode
 				if (v.z<vmin.z) vmin.z=v.z;
 				if (v.z>vmax.z) vmax.z=v.z;
 			};
-			void grow(Vector3 *varray, int num)
+			void grow(Ogre::Vector3 *varray, int num)
 			{
 				int i;
 				for (i=0; i<num; i++)
@@ -371,7 +412,7 @@ namespace OgreOpcode
 
 			// get point of intersection of 3d line with planes
 			// on const x,y,z
-			bool isect_const_x(const float x, const line3& l, Vector3& out) const
+			bool isect_const_x(const float x, const line3& l, Ogre::Vector3& out) const
 			{
 				if (l.m.x != 0.0f)
 				{
@@ -386,7 +427,7 @@ namespace OgreOpcode
 				return false;
 			}
 
-			bool isect_const_y(const float y, const line3& l, Vector3& out) const
+			bool isect_const_y(const float y, const line3& l, Ogre::Vector3& out) const
 			{
 				if (l.m.y != 0.0f)
 				{
@@ -401,7 +442,7 @@ namespace OgreOpcode
 				return false;
 			}
 
-			bool isect_const_z(const float z, const line3& l, Vector3& out) const
+			bool isect_const_z(const float z, const line3& l, Ogre::Vector3& out) const
 			{
 				if (l.m.z != 0.0f)
 				{
@@ -417,19 +458,19 @@ namespace OgreOpcode
 			}
 
 			// point in polygon check for sides with constant x,y and z
-			bool pip_const_x(const Vector3& p) const
+			bool pip_const_x(const Ogre::Vector3& p) const
 			{
 				if ((p.y>=vmin.y)&&(p.y<=vmax.y)&&(p.z>=vmin.z)&&(p.z<=vmax.z)) return true;
 				else return false;
 			}
 
-			bool pip_const_y(const Vector3& p) const
+			bool pip_const_y(const Ogre::Vector3& p) const
 			{
 				if ((p.x>=vmin.x)&&(p.x<=vmax.x)&&(p.z>=vmin.z)&&(p.z<=vmax.z)) return true;
 				else return false;
 			}
 
-			bool pip_const_z(const Vector3& p) const
+			bool pip_const_z(const Ogre::Vector3& p) const
 			{
 				if ((p.x>=vmin.x)&&(p.x<=vmax.x)&&(p.y>=vmin.y)&&(p.y<=vmax.y)) return true;
 				else return false;
@@ -452,8 +493,8 @@ namespace OgreOpcode
 				// MAY BE EXTENDED TO RETURN CLOSEST POINT OF INTERSECTION!
 
 				// check if at least one of the 2 points is included in the volume
-				Vector3 s(line.start());
-				Vector3 e(line.end());
+				Ogre::Vector3 s(line.start());
+				Ogre::Vector3 e(line.end());
 				if (((s.x>=vmin.x) && (s.y>=vmin.y) && (s.z>=vmin.z) &&
 					(s.x<=vmax.x) && (s.y<=vmax.y) && (s.z<=vmax.z)) ||
 					((e.x>=vmin.x) && (e.y>=vmin.y) && (e.z>=vmin.z) &&
@@ -464,7 +505,7 @@ namespace OgreOpcode
 				{
 					// otherwise do intersection check
 					int i;
-					Vector3 ipos;
+					Ogre::Vector3 ipos;
 					for (i=0; i<6; i++)
 					{
 						switch (i)
@@ -501,7 +542,7 @@ namespace OgreOpcode
 			@param ipos closest point of intersection if successful, trash otherwise
 			@return true if an intersection occurs
 			*/
-			bool intersect(const line3& line, Vector3& ipos) const
+			bool intersect(const line3& line, Ogre::Vector3& ipos) const
 			{
 				// Handle special case for start point inside box
 				if (line.b.x >= vmin.x && line.b.y >= vmin.y && line.b.z >= vmin.z &&
@@ -586,39 +627,42 @@ namespace OgreOpcode
 			}
 		};
 
+		/// Just for ease of use, let bbox be an AABB. :P
+		typedef bbox3 Aabb;
+
 		class sphere
 		{
 		public:
-			Vector3 p;      // position
-			Real   r;      // radius
+			Ogre::Vector3 p;      // position
+			Ogre::Real   r;      // radius
 
 			//--- constructors ----------------------------------------------
 			sphere() : r(1.0f) {};
-			sphere(const Vector3& _p, Real _r) : p(_p), r(_r) {};
+			sphere(const Ogre::Vector3& _p, Ogre::Real _r) : p(_p), r(_r) {};
 			sphere(const sphere& s) : p(s.p), r(s.r) {};
-			sphere(Real _x, Real _y, Real _z, Real _r) 
+			sphere(Ogre::Real _x, Ogre::Real _y, Ogre::Real _z, Ogre::Real _r) 
 				: r(_r)
 			{
-				p = Vector3(_x,_y,_z);
+				p = Ogre::Vector3(_x,_y,_z);
 			};
 
 			//--- set position and radius ---
-			void set(const Vector3& _p, Real _r)
+			void set(const Ogre::Vector3& _p, Ogre::Real _r)
 			{
 				p = _p;
 				r = _r;
 			};
-			void set(Real _x, Real _y, Real _z, Real _r)
+			void set(Ogre::Real _x, Ogre::Real _y, Ogre::Real _z, Ogre::Real _r)
 			{
-				p = Vector3(_x, _y, _z);
+				p = Ogre::Vector3(_x, _y, _z);
 				r = _r;
 			};
 
 			//--- check if 2 spheres overlap, without contact point ---------
 			bool intersects(const sphere& s) const
 			{
-				Vector3 d(s.p-p);
-				Real rsum = s.r+r;
+				Ogre::Vector3 d(s.p-p);
+				Ogre::Real rsum = s.r+r;
 				if (d.squaredLength() <= (rsum*rsum)) return true;
 				else                                return false;
 			};
@@ -626,15 +670,15 @@ namespace OgreOpcode
 			//--- check if 2 moving spheres have contact --------------------
 			//--- taken from "Simple Intersection Tests For Games" ----------
 			//--- article in Gamasutra, Oct 18 1999 -------------------------
-			bool intersect_sweep(const Vector3& va,     // in: distance travelled by 'this'
+			bool intersect_sweep(const Ogre::Vector3& va,     // in: distance travelled by 'this'
 				const sphere&  sb,     // in: the other sphere
-				const Vector3& vb,     // in: distance travelled by 'sb'
-				Real& u0,             // out: normalized intro contact u0
-				Real& u1)             // out: normalized outro contact u1
+				const Ogre::Vector3& vb,     // in: distance travelled by 'sb'
+				Ogre::Real& u0,             // out: normalized intro contact u0
+				Ogre::Real& u1)             // out: normalized outro contact u1
 			{
-				Vector3 vab(vb - va);
-				Vector3 ab(sb.p - p);
-				Real rab = r + sb.r;
+				Ogre::Vector3 vab(vb - va);
+				Ogre::Vector3 ab(sb.p - p);
+				Ogre::Real rab = r + sb.r;
 
 				// check if spheres are currently overlapping...
 				if ((ab.dotProduct(ab)) <= (rab*rab))
@@ -645,19 +689,19 @@ namespace OgreOpcode
 				} else
 				{
 					// check if they hit each other
-					Real a = vab.dotProduct(vab);
+					Ogre::Real a = vab.dotProduct(vab);
 					if ((a<-TINY) || (a>+TINY))
 					{
 						// if a is '0' then the objects don't move relative to each other
-						Real b = (vab.dotProduct(ab)) * 2.0f;
-						Real c = (ab.dotProduct(ab)) - (rab * rab);
-						Real q = b*b - 4*a*c;
+						Ogre::Real b = (vab.dotProduct(ab)) * 2.0f;
+						Ogre::Real c = (ab.dotProduct(ab)) - (rab * rab);
+						Ogre::Real q = b*b - 4*a*c;
 						if (q >= 0.0f) {
 							// 1 or 2 contacts
-							Real sq = (Real)sqrt(q);
-							Real d  = 1.0f / (2.0f*a);
-							Real r1 = (-b + sq) * d;
-							Real r2 = (-b - sq) * d;
+							Ogre::Real sq = (Ogre::Real)sqrt(q);
+							Ogre::Real d  = 1.0f / (2.0f*a);
+							Ogre::Real r1 = (-b + sq) * d;
+							Ogre::Real r2 = (-b - sq) * d;
 							if (r1 < r2)
 							{
 								u0 = r1;
@@ -675,10 +719,92 @@ namespace OgreOpcode
 				}
 			};
 		};
+
+		// includes the OBB header. looks strange, huh ? :P 
+		//#include "OgreOrientedBox.h"
+
+		/* Triangle/triangle intersection test routine,
+		* by Tomas Moller, 1997.
+		* See article "A Fast Triangle-Triangle Intersection Test",
+		* Journal of Graphics Tools, 2(2), 1997
+		* updated: 2001-06-20 (added line of intersection)
+		*
+		* 2005-04-15 ported to CS by Andrew Dai
+
+		* 2006-06-21 ported to Ogre by Jacob Moen
+		*/
+		/**
+		* A 3D line segment. (Nicked from CrystalSpace)
+		*/
+		class Segment3
+		{
+		private:
+			/// Start.
+			Ogre::Vector3 _start;
+			/// End.
+			Ogre::Vector3 _end;
+
+		public:
+			/// Make a new segment and initialize with the given values.
+			Segment3 (const Ogre::Vector3& s, const Ogre::Vector3& e) { _start = s; _end = e; }
+			/// Make a new uninitialized segment.
+			Segment3 () { }
+
+			/// Set segment to given values.
+			inline void set (const Ogre::Vector3& s, const Ogre::Vector3& e)
+			{ _start = s; _end = e; }
+
+			/// Set the start of the segment.
+			inline void setStart (const Ogre::Vector3& s) { _start = s; }
+
+			/// Set the end of the segment.
+			inline void setEnd (const Ogre::Vector3& e) { _end = e; }
+
+			/// Get the start of the segment.
+			inline const Ogre::Vector3& start () const { return _start; }
+
+			/// Get the end of the segment.
+			inline const Ogre::Vector3& end () const { return _end; }
+
+			/// Get the start of the segment.
+			inline Ogre::Vector3& start () { return _start; }
+
+			/// Get the end of the segment.
+			inline Ogre::Vector3& end () { return _end; }
+		};
+
+		class Intersect3
+		{
+		public:
+			/**
+			* Test intersection between two triangles.
+			* \param tri1 Vertices of triangle 1
+			* \param tri2 Vertices of triangle 2
+			* \return true if the triangles intersect, otherwise false
+			*/
+			static bool triangleTriangle (const Ogre::Vector3 tri1[3],
+				const Ogre::Vector3 tri2[3]);
+
+			/**
+			* Calculate intersection between two triangles and return it
+			* in isectline.
+			* \param tri1 Vertices of triangle 1
+			* \param tri2 Vertices of triangle 2
+			* \param[out] isectline The line segment where they intersect
+			* \param[out] coplanar Returns whether the triangles are coplanar
+			* \return true if the triangles intersect, otherwise false
+			*/
+			static bool triangleTriangle (const Ogre::Vector3 tri1[3],
+				const Ogre::Vector3 tri2[3],
+				Segment3& isectline, bool& coplanar);
+
+		};
+
+		Ogre::String decimalToBinary(unsigned int i);
+
+		bool powerOf2(unsigned int i);
 	}
 }
 
-// includes the OBB header. looks strange, huh ? :P 
-#include "OgreOrientedBox.h"
 
 #endif // __OgreOpcodeMath_h__

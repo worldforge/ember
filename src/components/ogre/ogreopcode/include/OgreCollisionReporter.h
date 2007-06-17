@@ -2,7 +2,7 @@
 ///  @file OgreCollisionReporter.h
 ///  @brief <TODO: insert file description here>
 ///
-///  @author The OgreOpcode Team @date 29-05-2005
+///  @author The OgreOpcode Team
 ///  
 ///////////////////////////////////////////////////////////////////////////////
 ///  
@@ -33,40 +33,68 @@
 #include <set>
 #include <map>
 
-using namespace OgreOpcode::Details;
-
-
 namespace OgreOpcode
 {
 	class CollisionObject;
+
+	class _OgreOpcode_Export CollisionInfo
+	{
+	public:
+		CollisionInfo()
+			: this_contact(Ogre::Vector3::ZERO),
+			other_contact(Ogre::Vector3::ZERO),
+			contact(Ogre::Vector3::ZERO),
+			distance(0.0f),
+			this_normal(Ogre::Vector3::ZERO),
+			other_normal(Ogre::Vector3::ZERO)
+		{};
+		Ogre::Vector3 this_contact;		///< first objects contact point
+		Ogre::Vector3 other_contact;		///< second objects contact point
+		Ogre::Vector3 contact;			///< the point of contact computed
+		Ogre::Real distance;				///< distance to point of contact (for ray checks)
+		Ogre::Vector3 this_normal;		///< First objects collision plane normal
+		Ogre::Vector3 other_normal;		///< Second objects collision plane normal
+
+		Ogre::Vector3 this_tri_verts[3]; ///< First objects collision triangle
+		Ogre::Vector3 other_tri_verts[3]; ///< Second objects collision triangle
+	};
 
 	/// Describes a contact between 2 CollisionObject%s.
 	class _OgreOpcode_Export CollisionPair
 	{
 	public:
 		CollisionPair()
-			: co_this(0),
-			co_other(0),
-			tstamp(0.0f),
+			: this_object(0),
+			other_object(0),
+			this_contact(Ogre::Vector3::ZERO),
+			other_contact(Ogre::Vector3::ZERO),
 			contact(Ogre::Vector3::ZERO),
 			distance(0.0f),
-			co_this_normal(Ogre::Vector3::ZERO),
-			co_other_normal(Ogre::Vector3::ZERO),
+			this_normal(Ogre::Vector3::ZERO),
+			other_normal(Ogre::Vector3::ZERO),
+			tstamp(0.0f),
 			numBVBVTests(0),
 			numBVPrimTests(0),
 			numPrimPrimTests(0)
 		{};
 		
-		CollisionObject *co_this; ///< the first object involved in the collision
-		CollisionObject *co_other; ///< the second object involved in the collision
-		Real tstamp; ///< the timestamp at which the collision occurred
-		Vector3 contact; ///< the point of contact
-		Real distance; ///< distance to point of contact (for ray checks)
-		Vector3 co_this_normal; ///< First objects collision plane normal
-		Vector3 co_other_normal; ///< Second objects collision plane normal
-		unsigned int numBVBVTests;
-		unsigned int numBVPrimTests;
-		unsigned int numPrimPrimTests;
+		CollisionObject *this_object;		///< the first object involved in the collision
+		CollisionObject *other_object;		///< the second object involved in the collision
+		// Why are we duplicating this?
+		// Because if there is only one collision, there is no need
+		// to iterate the CollisionVector
+		Ogre::Vector3 this_contact;				///< first objects contact point
+		Ogre::Vector3 other_contact;				///< second objects contact point
+		Ogre::Vector3 contact;					///< the point of contact computed
+		Ogre::Real distance;						///< distance to point of contact (for ray checks)
+		Ogre::Vector3 this_normal;				///< First objects collision plane normal
+		Ogre::Vector3 other_normal;				///< Second objects collision plane normal
+		Ogre::Real tstamp;						///< the timestamp at which the collision occurred
+		typedef std::vector<CollisionInfo> CollisionVector; ///< a vector containing all collisions between the two objects
+		CollisionVector collInfos;
+		unsigned int numBVBVTests;		///<
+		unsigned int numBVPrimTests;	///<
+		unsigned int numPrimPrimTests;	///<
 	};
 
 	/// Collect and manage CollisionPair%s.
@@ -75,20 +103,20 @@ namespace OgreOpcode
 	/// the CollisionContext avoid redundant checks.
 	class _OgreOpcode_Export CollisionReporter
 	{
-		static const int max_reports_per_object = 256;
-
-		typedef std::set<unsigned int> UIntSet;
-		typedef std::map<unsigned int, CollisionPair> CollPairMap;
-		UIntSet test_pairs;
-		CollPairMap coll_pairs;
-		CollisionPair *report_array[max_reports_per_object];
+		typedef std::vector<CollisionPair> CollPairVector;
+		static const int max_reports_per_object = 256; ///<
+		typedef std::set<unsigned int> UIntSet; ///<
+		typedef std::map<unsigned int, CollisionPair> CollPairMap; ///<
+		UIntSet test_pairs;	///<
+		CollPairMap coll_pairs;	///<
+		CollisionPair *report_array[max_reports_per_object]; ///<
 
 	public:
 		// Misc stats
-		unsigned int mTotalObjObjTests;
-		unsigned int mTotalBVBVTests;
-		unsigned int mTotalBVPrimTests;
-		unsigned int mTotalPrimPrimTests;
+		unsigned int mTotalObjObjTests; ///<
+		unsigned int mTotalBVBVTests; ///<
+		unsigned int mTotalBVPrimTests; ///<
+		unsigned int mTotalPrimPrimTests; ///<
 
 	private:
 
@@ -180,8 +208,9 @@ namespace OgreOpcode
 		};
 
 		/// report collisions for a specific object.
-		/// returns number of collisions and pointer to an array of collision report
-		/// pointers into the nKeyArray.
+		/// @param co [in] pointer to CollisionObject
+		/// @param cr_ptr [out] pointer to collide report pointer array
+		/// @return number of collisions this object is involved in
 		int getCollisions(CollisionObject *co, CollisionPair **& cr_ptr)
 		{
 			// fill report array with all collisions which this
@@ -198,7 +227,7 @@ namespace OgreOpcode
 			for (; icp!=iend; ++icp)
 			{
 				CollisionPair &cp = icp->second;
-				if ((cp.co_this == co) || (cp.co_other == co)) 
+				if ((cp.this_object == co) || (cp.other_object == co)) 
 				{
 					report_array[num_reports++] = &cp;
 				}
@@ -208,7 +237,8 @@ namespace OgreOpcode
 		}
 
 		/// report collisions for a specific object.
-		/// returns number of collisions only
+		/// @param co [in] pointer to CollisionObject
+		/// @return number of collisions this object is involved in
 		int getCollisions(CollisionObject *co)
 		{
 			// fill report array with all collisions which this
@@ -225,7 +255,7 @@ namespace OgreOpcode
 			for (; icp!=iend; ++icp)
 			{
 				CollisionPair &cp = icp->second;
-				if ((cp.co_this == co) || (cp.co_other == co)) 
+				if ((cp.this_object == co) || (cp.other_object == co)) 
 				{
 					num_reports++;
 				}
@@ -234,8 +264,12 @@ namespace OgreOpcode
 		}
 
 		/// get all recorded collisions.
+		/// @param cr_ptr [out] pointer to collide report pointer array
+		/// @return number of collisions
 		int getAllCollisions(CollisionPair **& cr_ptr) 
 		{
+			//coll_pairs.sort()
+			
 			int num = coll_pairs.size();
 			int i;
 
@@ -257,34 +291,36 @@ namespace OgreOpcode
 		/// @param  v       [in] origin coordinate
 		/// @param  crPtr   [out] pointer to collide report pointer array
 		/// @return         number of entries in collide report pointer array (0 or 1)
-		int getClosestCollision(const Vector3& v, CollisionPair **& crPtr)
+		int getClosestCollision(const Ogre::Vector3& v, CollisionPair **& crPtr)
 		{
-			int num = coll_pairs.size();
-			if (0 == num)
-			{
-				crPtr = 0;
-				return 0;
-			}
+			// THIS NEEDS TO BE RE-IMPLEMENTED!
+			
+			//int num = coll_pairs.size();
+			//if (0 == num)
+			//{
+			//	crPtr = 0;
+			//	return 0;
+			//}
 
-			//Vector3 distVec;
-			CollisionPair* minPtr = &coll_pairs.begin()->second;
-			//float minDist = Vector3(minPtr->contact - v).squaredLength();
-			float minDist = minPtr->distance;
-			CollPairMap::iterator icp=coll_pairs.begin(), iend=coll_pairs.end();
-			for (; icp!=iend; ++icp)
-			{
-				CollisionPair* curPtr = &icp->second;
-				//distVec = curPtr->contact - v;
-				//Real dist = distVec.squaredLength();
-				Real dist = curPtr->distance;
-				if (dist < minDist)
-				{
-					minDist = dist;
-					minPtr  = curPtr;
-				}
-			}
-			report_array[0] = minPtr;
-			crPtr = report_array;
+			////Ogre::Vector3 distVec;
+			//CollisionPair* minPtr = &coll_pairs.begin()->second;
+			////float minDist = Vector3(minPtr->contact - v).squaredLength();
+			//float minDist = minPtr->distance;
+			//CollPairMap::iterator icp=coll_pairs.begin(), iend=coll_pairs.end();
+			//for (; icp!=iend; ++icp)
+			//{
+			//	CollisionPair* curPtr = &icp->second;
+			//	//distVec = curPtr->contact - v;
+			//	//Ogre::Real dist = distVec.squaredLength();
+			//	Ogre::Real dist = curPtr->distance;
+			//	if (dist < minDist)
+			//	{
+			//		minDist = dist;
+			//		minPtr  = curPtr;
+			//	}
+			//}
+			//report_array[0] = minPtr;
+			//crPtr = report_array;
 			return 1;
 		}
 	};

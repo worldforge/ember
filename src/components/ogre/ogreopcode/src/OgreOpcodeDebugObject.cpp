@@ -1,8 +1,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///  @file OgreOpcodeDebugObject.cpp
 ///  @brief <TODO: insert file description here>
-///  @remarks  Based directly on code from OgreODE, made by Ed "Green Eyed Monster" Jones.
-///  @author The OgreOpcode Team @date 28-05-2005
+///  @remarks  Based directly on code from OgreNewt, by Walaber.
+///  @author The OgreOpcode Team
 ///////////////////////////////////////////////////////////////////////////////
 ///  
 ///  This file is part of OgreOpcode.
@@ -26,39 +26,308 @@
 ///////////////////////////////////////////////////////////////////////////////
 #include "OgreOpcodeDebugObject.h"
 
+using namespace Ogre;
 namespace OgreOpcode
 {
 	namespace Details
 	{
+		OgreOpcodeDebugger::OgreOpcodeDebugger(const Ogre::String& name, SceneManager* sceneMgr)
+			: mSceneMgr(sceneMgr),
+			mName(name),
+			mRadiiDebugNode(0),
+			mContactsDebugNode(0),
+			mContactNormalsDebugNode(0),
+			mBBsDebugNode(0),
+			mShapesDebugNode(0),
+			mAABBsDebugNode(0),
+			mRadiiDebugObject(0),
+			mContactsDebugObject(0),
+			mContactNormalsDebugObject(0),
+			mBBsDebugObject(0),
+			mShapesDebugObject(0),
+			mAABBsDebugObject(0)
+		{
+			mRadiiDebugNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("__OgreOpcode__RadiiDebugger__" + mName);
+			mContactsDebugNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("__OgreOpcode__ContactsDebugger__" + mName);
+			mContactNormalsDebugNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("__OgreOpcode__ContactNormalsDebugger__" + mName);
+			mBBsDebugNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("__OgreOpcode__BBsDebugger__" + mName);
+			mShapesDebugNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("__OgreOpcode__ShapesDebugger__" + mName);
+			mAABBsDebugNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("__OgreOpcode__AABBsDebugger__" + mName);
 
-		bool DebugLines::_materials_created = false;
+#ifdef BUILD_AGAINST_AZATHOTH
+			mRadiiDebugObject = new DebugLines();
+			mContactsDebugObject =  new DebugLines();
+			mContactNormalsDebugObject =  new DebugLines();
+			mBBsDebugObject = new DebugLines();
+			mShapesDebugObject = new DebugLines();
+			mAABBsDebugObject = new DebugLines();
+#else
+			mRadiiDebugObject = new ManualObject("__OgreOpcode__RadiiDebugger__" + mName);
+			mContactsDebugObject = new ManualObject("__OgreOpcode__ContactsDebugger__" + mName);
+			mContactNormalsDebugObject = new ManualObject("__OgreOpcode__ContactNormalsDebugger__" + mName);
+			mBBsDebugObject = new ManualObject("__OgreOpcode__BBsDebugger__" + mName);
+			mShapesDebugObject = new ManualObject("__OgreOpcode__ShapesDebugger__" + mName);
+			mAABBsDebugObject = new ManualObject("__OgreOpcode__AABBsDebugger__" + mName);
+#endif
 
+		}
+
+		OgreOpcodeDebugger::~OgreOpcodeDebugger()
+		{
+			delete mRadiiDebugObject;
+			delete mContactsDebugObject;
+			delete mContactNormalsDebugObject;
+			delete mBBsDebugObject;
+			delete mShapesDebugObject;
+			delete mAABBsDebugObject;
+			
+			mRadiiDebugNode->getParentSceneNode()->removeChild(mRadiiDebugNode);
+			mSceneMgr->destroySceneNode(mRadiiDebugNode->getName());
+			mRadiiDebugNode = 0;
+			mContactsDebugNode->getParentSceneNode()->removeChild(mContactsDebugNode);
+			mSceneMgr->destroySceneNode(mContactsDebugNode->getName());
+			mContactsDebugNode = 0;
+			mContactNormalsDebugNode->getParentSceneNode()->removeChild(mContactNormalsDebugNode);
+			mSceneMgr->destroySceneNode(mContactNormalsDebugNode->getName());
+			mContactNormalsDebugNode = 0;
+			mBBsDebugNode->getParentSceneNode()->removeChild(mBBsDebugNode);
+			mSceneMgr->destroySceneNode(mBBsDebugNode->getName());
+			mBBsDebugNode = 0;
+			mShapesDebugNode->getParentSceneNode()->removeChild(mShapesDebugNode);
+			mSceneMgr->destroySceneNode(mShapesDebugNode->getName());
+			mShapesDebugNode = 0;
+			mAABBsDebugNode->getParentSceneNode()->removeChild(mAABBsDebugNode);
+			mSceneMgr->destroySceneNode(mAABBsDebugNode->getName());
+			mAABBsDebugNode = 0;
+		}
+
+		void OgreOpcodeDebugger::addRadiiLine(Real lx1, Real ly1, Real lz1, Real lx2, Real ly2, Real lz2)
+		{
+#ifdef BUILD_AGAINST_AZATHOTH
+			mRadiiDebugObject->addLine(lx1, ly1, lz1, lx2, ly2, lz2);
+#else
+			mRadiiDebugObject->position(lx1, ly1, lz1);
+			mRadiiDebugObject->position(lx2, ly2, lz2);
+#endif
+		}
+		
+		void OgreOpcodeDebugger::addContactLine(Real lx1, Real ly1, Real lz1, Real lx2, Real ly2, Real lz2)
+		{
+#ifdef BUILD_AGAINST_AZATHOTH
+			mContactsDebugObject->addLine(lx1, ly1, lz1, lx2, ly2, lz2);
+#else
+			mContactsDebugObject->position(lx1, ly1, lz1);
+			mContactsDebugObject->position(lx2, ly2, lz2);
+#endif
+		}
+		
+		void OgreOpcodeDebugger::addContactNormalsLine(Real lx1, Real ly1, Real lz1, Real lx2, Real ly2, Real lz2)
+		{
+#ifdef BUILD_AGAINST_AZATHOTH
+			mContactNormalsDebugObject->addLine(lx1, ly1, lz1, lx2, ly2, lz2);
+#else
+			mContactNormalsDebugObject->position(lx1, ly1, lz1);
+			mContactNormalsDebugObject->position(lx2, ly2, lz2);
+#endif
+		}
+
+		void OgreOpcodeDebugger::addBBLine(Real lx1, Real ly1, Real lz1, Real lx2, Real ly2, Real lz2)
+		{
+#ifdef BUILD_AGAINST_AZATHOTH
+			mBBsDebugObject->addLine(lx1, ly1, lz1, lx2, ly2, lz2);
+#else
+			mBBsDebugObject->position(lx1, ly1, lz1);
+			mBBsDebugObject->position(lx2, ly2, lz2);
+#endif
+		}
+		
+		void OgreOpcodeDebugger::addShapeLine(Real lx1, Real ly1, Real lz1, Real lx2, Real ly2, Real lz2)
+		{
+#ifdef BUILD_AGAINST_AZATHOTH
+			mShapesDebugObject->addLine(lx1, ly1, lz1, lx2, ly2, lz2);
+#else
+			mShapesDebugObject->position(lx1, ly1, lz1);
+			mShapesDebugObject->position(lx2, ly2, lz2);
+#endif
+		}
+		
+		void OgreOpcodeDebugger::addAABBLine(Real lx1, Real ly1, Real lz1, Real lx2, Real ly2, Real lz2)
+		{
+#ifdef BUILD_AGAINST_AZATHOTH
+			mAABBsDebugObject->addLine(lx1, ly1, lz1, lx2, ly2, lz2);
+#else
+			mAABBsDebugObject->position(lx1, ly1, lz1);
+			mAABBsDebugObject->position(lx2, ly2, lz2);
+#endif
+		}
+
+		void OgreOpcodeDebugger::clearRadii()
+		{
+			mRadiiDebugNode->detachAllObjects();
+			mRadiiDebugObject->clear();
+		}
+
+		void OgreOpcodeDebugger::beginRadii()
+		{
+#ifdef BUILD_AGAINST_AZATHOTH
+			mRadiiDebugObject->setMaterial("OgreOpcodeDebug/Radii");
+#else
+			mRadiiDebugObject->begin("OgreOpcodeDebug/Radii", Ogre::RenderOperation::OT_LINE_LIST);
+#endif
+		}
+		
+		void OgreOpcodeDebugger::endRadii()
+		{
+#ifdef BUILD_AGAINST_AZATHOTH
+			mRadiiDebugObject->draw();
+#else
+			mRadiiDebugObject->end();
+#endif
+			mRadiiDebugNode->attachObject(mRadiiDebugObject); 
+		}
+		
+		void OgreOpcodeDebugger::clearContacts()
+		{
+			mContactsDebugNode->detachAllObjects();
+			mContactsDebugObject->clear();
+		}
+		
+		void OgreOpcodeDebugger::beginContacts()
+		{
+#ifdef BUILD_AGAINST_AZATHOTH
+			mContactsDebugObject->setMaterial("OgreOpcodeDebug/Contacts");
+#else
+			mContactsDebugObject->begin("OgreOpcodeDebug/Contacts", Ogre::RenderOperation::OT_LINE_LIST);
+#endif
+		}
+		
+		void OgreOpcodeDebugger::endContacts()
+		{
+#ifdef BUILD_AGAINST_AZATHOTH
+			mContactsDebugObject->draw();
+#else
+			mContactsDebugObject->end();
+#endif
+			if(mContactsDebugNode->numAttachedObjects() < 1)
+				mContactsDebugNode->attachObject(mContactsDebugObject); 
+		}
+		
+		void OgreOpcodeDebugger::clearContactNormals()
+		{
+			mContactNormalsDebugNode->detachAllObjects();
+			mContactNormalsDebugObject->clear();
+		}
+
+		void OgreOpcodeDebugger::beginContactNormals()
+		{
+#ifdef BUILD_AGAINST_AZATHOTH
+			mContactNormalsDebugObject->setMaterial("OgreOpcodeDebug/ContactNormals");
+#else
+			mContactNormalsDebugObject->begin("OgreOpcodeDebug/ContactNormals", Ogre::RenderOperation::OT_LINE_LIST);
+#endif
+		}
+
+		void OgreOpcodeDebugger::endContactNormals()
+		{
+#ifdef BUILD_AGAINST_AZATHOTH
+			mContactNormalsDebugObject->draw();
+#else
+			mContactNormalsDebugObject->end();
+#endif
+			if(mContactNormalsDebugNode->numAttachedObjects() < 1)
+				mContactNormalsDebugNode->attachObject(mContactNormalsDebugObject); 
+		}
+
+		void OgreOpcodeDebugger::clearBBs()
+		{
+			mBBsDebugNode->detachAllObjects();
+			mBBsDebugObject->clear();
+		}
+
+		void OgreOpcodeDebugger::beginBBs()
+		{
+#ifdef BUILD_AGAINST_AZATHOTH
+			mBBsDebugObject->setMaterial("OgreOpcodeDebug/BBs");
+#else
+			mBBsDebugObject->begin("OgreOpcodeDebug/BBs", Ogre::RenderOperation::OT_LINE_LIST);
+#endif
+		}
+		
+		void OgreOpcodeDebugger::endBBs()
+		{
+#ifdef BUILD_AGAINST_AZATHOTH
+			mBBsDebugObject->draw();
+#else
+			mBBsDebugObject->end();
+#endif
+			mBBsDebugNode->attachObject(mBBsDebugObject); 
+		}
+		
+		void OgreOpcodeDebugger::clearShapes()
+		{
+			mShapesDebugNode->detachAllObjects();
+			mShapesDebugObject->clear();
+		}
+		
+		void OgreOpcodeDebugger::beginShapes()
+		{
+#ifdef BUILD_AGAINST_AZATHOTH
+			mShapesDebugObject->setMaterial("OgreOpcodeDebug/Shapes");
+#else
+			mShapesDebugObject->begin("OgreOpcodeDebug/Shapes", Ogre::RenderOperation::OT_LINE_LIST);
+#endif
+		}
+
+		void OgreOpcodeDebugger::endShapes()
+		{
+#ifdef BUILD_AGAINST_AZATHOTH
+			mShapesDebugObject->draw();
+#else
+			mShapesDebugObject->end();
+#endif
+			mShapesDebugNode->attachObject(mShapesDebugObject); 
+		}
+		
+		void OgreOpcodeDebugger::clearAABBs()
+		{
+			mAABBsDebugNode->detachAllObjects();
+			mAABBsDebugObject->clear();
+		}
+
+		void OgreOpcodeDebugger::beginAABBs()
+		{
+#ifdef BUILD_AGAINST_AZATHOTH
+			mAABBsDebugObject->setMaterial("OgreOpcodeDebug/AABBs");
+#else
+			mAABBsDebugObject->begin("OgreOpcodeDebug/AABBs", Ogre::RenderOperation::OT_LINE_LIST);
+#endif
+		}
+		
+		void OgreOpcodeDebugger::endAABBs()
+		{
+#ifdef BUILD_AGAINST_AZATHOTH
+			mAABBsDebugObject->draw();
+#else
+			mAABBsDebugObject->end();
+#endif
+			mAABBsDebugNode->attachObject(mAABBsDebugObject); 
+		}
+
+		void OgreOpcodeDebugger::clearAll()
+		{
+			clearRadii();
+			clearContacts();
+			clearContactNormals();
+			clearShapes();
+			clearBBs();
+			clearAABBs();
+		}
+
+#ifdef BUILD_AGAINST_AZATHOTH
 		DebugLines::DebugLines()
 		{
 			mRenderOp.vertexData = new VertexData();
 			_drawn = false;
-
-			if(!_materials_created)
-			{
-				MaterialPtr red = MaterialManager::getSingleton().create("OgreOdeDebugLines/Disabled","OgreOde");
-				MaterialPtr green = MaterialManager::getSingleton().create("OgreOdeDebugLines/Enabled","OgreOde");
-				MaterialPtr blue = MaterialManager::getSingleton().create("OgreOdeDebugLines/Static","OgreOde");
-
-				red->setReceiveShadows(false);
-				red->getTechnique(0)->setLightingEnabled(true);
-				red->getTechnique(0)->getPass(0)->setSelfIllumination(1,0,0);
-
-				green->setReceiveShadows(false);
-				green->getTechnique(0)->setLightingEnabled(true);
-				green->getTechnique(0)->getPass(0)->setSelfIllumination(0,1,0);
-
-				blue->setReceiveShadows(false);
-				blue->getTechnique(0)->setLightingEnabled(true);
-				blue->getTechnique(0)->getPass(0)->setSelfIllumination(0,0,1);
-
-				_materials_created = true;
-			}
-			setMaterial("OgreOdeDebugLines/Enabled");
 		}
 
 		void DebugLines::clear()
@@ -153,430 +422,7 @@ namespace OgreOpcode
 		{
 			return Math::Sqrt(std::max(mBox.getMaximum().squaredLength(), mBox.getMinimum().squaredLength()));
 		}
-
-		DebugObject::DebugObject(DebugObject::Mode mode) 
-		{
-			_mode = DebugObject::Mode_Unknown;
-			setMode(mode);
-		}
-
-		void DebugObject::setMode(DebugObject::Mode mode)
-		{
-			if(mode != _mode)
-			{
-				_mode = mode;
-				switch(_mode)
-				{
-				case DebugObject::Mode_Enabled:
-					setMaterial("OgreOdeDebugLines/Enabled");
-					break;
-
-				case DebugObject::Mode_Disabled:
-					setMaterial("OgreOdeDebugLines/Disabled");
-					break;
-
-				case DebugObject::Mode_Static:
-					setMaterial("OgreOdeDebugLines/Static");
-					break;
-				}
-			}
-		}
-
-		DebugObject::~DebugObject() 
-		{
-		}
-
-		BoxDebugObject::BoxDebugObject(const Vector3& size):DebugObject()
-		{
-			AxisAlignedBox aabb(-size.x * 0.5,-size.y * 0.5,-size.z * 0.5,size.x * 0.5,size.y * 0.5,size.z * 0.5);
-
-			Vector3 vmax = aabb.getMaximum();
-			Vector3 vmin = aabb.getMinimum();
-
-			addLine(vmin.x,vmin.y,vmin.z,vmax.x,vmin.y,vmin.z);
-			addLine(vmin.x,vmin.y,vmin.z,vmin.x,vmin.y,vmax.z);
-			addLine(vmin.x,vmin.y,vmin.z,vmin.x,vmax.y,vmin.z);
-			addLine(vmin.x,vmax.y,vmin.z,vmin.x,vmax.y,vmax.z);
-			addLine(vmin.x,vmax.y,vmin.z,vmax.x,vmax.y,vmin.z);
-			addLine(vmax.x,vmin.y,vmin.z,vmax.x,vmin.y,vmax.z);
-			addLine(vmax.x,vmin.y,vmin.z,vmax.x,vmax.y,vmin.z);
-			addLine(vmin.x,vmax.y,vmax.z,vmax.x,vmax.y,vmax.z);
-			addLine(vmin.x,vmax.y,vmax.z,vmin.x,vmin.y,vmax.z);
-			addLine(vmax.x,vmax.y,vmin.z,vmax.x,vmax.y,vmax.z);
-			addLine(vmax.x,vmin.y,vmax.z,vmax.x,vmax.y,vmax.z);
-			addLine(vmin.x,vmin.y,vmax.z,vmax.x,vmin.y,vmax.z);
-
-			draw();
-		}
-
-		BoxDebugObject::~BoxDebugObject()
-		{
-		}
-
-		SphereDebugObject::SphereDebugObject(Real radius):DebugObject()
-		{
-			// X/Y axis
-
-			// NW quadrant
-			addLine(-radius,			0.0,				0.0,
-				-0.866 * radius,	0.5 * radius,		0.0);
-
-			addLine(-0.866 * radius,	0.5 * radius,		0.0,
-				-0.5 * radius,	0.866 * radius,	0.0);
-
-			addLine(-0.5 * radius,	0.866 * radius,	0.0,
-				0.0,				radius,			0.0);
-
-			// NE quadrant
-			addLine(0.0,				radius,			0.0,
-				0.5 * radius,		0.866 * radius,	0.0);
-
-			addLine(0.5 * radius,		0.866 * radius,	0.0,
-				0.866 * radius,	0.5 * radius,		0.0);
-
-			addLine(0.866 * radius,	0.5 * radius,		0.0,
-				radius,			0.0,				0.0);
-
-			// SW quadrant
-			addLine(-radius,			0.0,				0.0,
-				-0.866 * radius,	-0.5 * radius,	0.0);
-
-			addLine(-0.866 * radius,	-0.5 * radius,	0.0,
-				-0.5 * radius,	-0.866 * radius,	0.0);
-
-			addLine(-0.5 * radius,	-0.866 * radius,	0.0,
-				0.0,				-radius,			0.0);
-
-			// SE quadrant
-			addLine(0.0,				-radius,			0.0,
-				0.5 * radius,		-0.866 * radius,	0.0);
-
-			addLine(0.5 * radius,		-0.866 * radius,	0.0,
-				0.866 * radius,	-0.5 * radius,	0.0);
-
-			addLine(0.866 * radius,	-0.5 * radius,	0.0,
-				radius,			0.0,				0.0);
-
-			// X/Z axis
-
-			// NW quadrant
-			addLine(-radius,			0.0,	0.0,	
-				-0.866 * radius,	0.0,	0.5 * radius);
-
-			addLine(-0.866 * radius,	0.0,	0.5 * radius,
-				-0.5 * radius,	0.0,	0.866 * radius);
-
-			addLine(-0.5 * radius,	0.0,	0.866 * radius,
-				0.0,				0.0,	radius);
-
-			// NE quadrant
-			addLine(0.0,				0.0,	radius,
-				0.5 * radius,		0.0,	0.866 * radius);
-
-			addLine(0.5 * radius,		0.0,	0.866 * radius,
-				0.866 * radius,	0.0,	0.5 * radius);
-
-			addLine(0.866 * radius,	0.0,	0.5 * radius,
-				radius,			0.0,	0.0);
-
-			// SW quadrant
-			addLine(-radius,			0.0,	0.0,	
-				-0.866 * radius,	0.0,	-0.5 * radius);
-
-			addLine(-0.866 * radius,	0.0,	-0.5 * radius,
-				-0.5 * radius,	0.0,	-0.866 * radius);
-
-			addLine(-0.5 * radius,	0.0,	-0.866 * radius,
-				0.0,				0.0,	-radius);
-
-			// SE quadrant
-			addLine(0.0,				0.0,	-radius,
-				0.5 * radius,		0.0,	-0.866 * radius);
-
-			addLine(0.5 * radius,		0.0,	-0.866 * radius,
-				0.866 * radius,	0.0,	-0.5 * radius);
-
-			addLine(0.866 * radius,	0.0,	-0.5 * radius,
-				radius,			0.0,	0.0);
-
-			// Y/Z axis
-
-			// NW quadrant
-			addLine(0.0,	-radius,			0.0,	
-				0.0,	-0.866 * radius,	0.5 * radius);
-
-			addLine(0.0,	-0.866 * radius,	0.5 * radius,
-				0.0,	-0.5 * radius,	0.866 * radius);
-
-			addLine(0.0,	-0.5 * radius,	0.866 * radius,
-				0.0,	0.0,				radius);
-
-			// NE quadrant
-			addLine(0.0,	0.0,				radius,
-				0.0,	0.5 * radius,		0.866 * radius);
-
-			addLine(0.0,	0.5 * radius,		0.866 * radius,
-				0.0,	0.866 * radius,	0.5 * radius);
-
-			addLine(0.0,	0.866 * radius,	0.5 * radius,
-				0.0,	radius,			0.0);
-
-			// SW quadrant
-			addLine(0.0,	-radius,			0.0,	
-				0.0,	-0.866 * radius,	-0.5 * radius);
-
-			addLine(0.0,	-0.866 * radius,	-0.5 * radius,
-				0.0,	-0.5 * radius,	-0.866 * radius);
-
-			addLine(0.0,	-0.5 * radius,	-0.866 * radius,
-				0.0,	0.0,				-radius);
-
-			// SE quadrant
-			addLine(0.0,	0.0,				-radius,
-				0.0,	0.5 * radius,		-0.866 * radius);
-
-			addLine(0.0,	0.5 * radius,		-0.866 * radius,
-				0.0,	0.866 * radius,	-0.5 * radius);
-
-			addLine(0.0,	0.866 * radius,	-0.5 * radius,
-				0.0,	radius,			0.0);
-
-			draw();
-		}
-
-		SphereDebugObject::~SphereDebugObject()
-		{
-		}
-
-		CapsuleDebugObject::CapsuleDebugObject(Real radius,Real length):DebugObject()
-		{
-			Real halflen = length * 0.5;
-			AxisAlignedBox aabb(-radius,-radius,-(halflen + radius),radius,radius,halflen + radius);
-
-			// X/Y axis - Near
-
-			// NW quadrant
-			addLine(-radius,			0.0,				halflen,
-				-0.866 * radius,	0.5 * radius,		halflen);
-
-			addLine(-0.866 * radius,	0.5 * radius,		halflen,
-				-0.5 * radius,	0.866 * radius,	halflen);
-
-			addLine(-0.5 * radius,	0.866 * radius,	halflen,
-				0.0,				radius,			halflen);
-
-			// NE quadrant
-			addLine(0.0,				radius,			halflen,
-				0.5 * radius,		0.866 * radius,	halflen);
-
-			addLine(0.5 * radius,		0.866 * radius,	halflen,
-				0.866 * radius,	0.5 * radius,		halflen);
-
-			addLine(0.866 * radius,	0.5 * radius,		halflen,
-				radius,			0.0,				halflen);
-
-			// SW quadrant
-			addLine(-radius,			0.0,				halflen,
-				-0.866 * radius,	-0.5 * radius,	halflen);
-
-			addLine(-0.866 * radius,	-0.5 * radius,	halflen,
-				-0.5 * radius,	-0.866 * radius,	halflen);
-
-			addLine(-0.5 * radius,	-0.866 * radius,	halflen,
-				0.0,				-radius,			halflen);
-
-			// SE quadrant
-			addLine(0.0,				-radius,			halflen,
-				0.5 * radius,		-0.866 * radius,	halflen);
-
-			addLine(0.5 * radius,		-0.866 * radius,	halflen,
-				0.866 * radius,	-0.5 * radius,	halflen);
-
-			addLine(0.866 * radius,	-0.5 * radius,	halflen,
-				radius,			0.0,				halflen);
-
-			// X/Y axis - Far
-
-			// NW quadrant
-			addLine(-radius,			0.0,				-halflen,
-				-0.866 * radius,	0.5 * radius,		-halflen);
-
-			addLine(-0.866 * radius,	0.5 * radius,		-halflen,
-				-0.5 * radius,	0.866 * radius,	-halflen);
-
-			addLine(-0.5 * radius,	0.866 * radius,	-halflen,
-				0.0,				radius,			-halflen);
-
-			// NE quadrant
-			addLine(0.0,				radius,			-halflen,
-				0.5 * radius,		0.866 * radius,	-halflen);
-
-			addLine(0.5 * radius,		0.866 * radius,	-halflen,
-				0.866 * radius,	0.5 * radius,		-halflen);
-
-			addLine(0.866 * radius,	0.5 * radius,		-halflen,
-				radius,			0.0,				-halflen);
-
-			// SW quadrant
-			addLine(-radius,			0.0,				-halflen,
-				-0.866 * radius,	-0.5 * radius,	-halflen);
-
-			addLine(-0.866 * radius,	-0.5 * radius,	-halflen,
-				-0.5 * radius,	-0.866 * radius,	-halflen);
-
-			addLine(-0.5 * radius,	-0.866 * radius,	-halflen,
-				0.0,				-radius,			-halflen);
-
-			// SE quadrant
-			addLine(0.0,				-radius,			-halflen,
-				0.5 * radius,		-0.866 * radius,	-halflen);
-
-			addLine(0.5 * radius,		-0.866 * radius,	-halflen,
-				0.866 * radius,	-0.5 * radius,	-halflen);
-
-			addLine(0.866 * radius,	-0.5 * radius,	-halflen,
-				radius,			0.0,				-halflen);
-
-			// X/Z axis
-
-			// NW quadrant
-			addLine(-radius,			0.0,	halflen,	
-				-0.866 * radius,	0.0,	(0.5 * radius) + halflen);
-
-			addLine(-0.866 * radius,	0.0,	(0.5 * radius) + halflen,
-				-0.5 * radius,	0.0,	(0.866 * radius) + halflen);
-
-			addLine(-0.5 * radius,	0.0,	(0.866 * radius) + halflen,
-				0.0,				0.0,	radius + halflen);
-
-			// NE quadrant
-			addLine(0.0,				0.0,	radius + halflen,
-				0.5 * radius,		0.0,	(0.866 * radius) + halflen);
-
-			addLine(0.5 * radius,		0.0,	(0.866 * radius) + halflen,
-				0.866 * radius,	0.0,	(0.5 * radius) + halflen);
-
-			addLine(0.866 * radius,	0.0,	(0.5 * radius) + halflen,
-				radius,			0.0,	halflen);
-
-			// SW quadrant
-			addLine(-radius,			0.0,	-halflen,	
-				-0.866 * radius,	0.0,	(-0.5 * radius) - halflen);
-
-			addLine(-0.866 * radius,	0.0,	(-0.5 * radius) - halflen,
-				-0.5 * radius,	0.0,	(-0.866 * radius) - halflen);
-
-			addLine(-0.5 * radius,	0.0,	(-0.866 * radius) - halflen,
-				0.0,				0.0,	-radius - halflen);
-
-			// SE quadrant
-			addLine(0.0,				0.0,	-radius - halflen,
-				0.5 * radius,		0.0,	(-0.866 * radius) - halflen);
-
-			addLine(0.5 * radius,		0.0,	(-0.866 * radius) - halflen,
-				0.866 * radius,	0.0,	(-0.5 * radius) - halflen);
-
-			addLine(0.866 * radius,	0.0,	(-0.5 * radius) - halflen,
-				radius,			0.0,	- halflen);
-
-			// Y/Z axis
-
-			// NW quadrant
-			addLine(0.0,	-radius,			halflen,	
-				0.0,	-0.866 * radius,	(0.5 * radius) + halflen);
-
-			addLine(0.0,	-0.866 * radius,	(0.5 * radius) + halflen,
-				0.0,	-0.5 * radius,	(0.866 * radius) + halflen);
-
-			addLine(0.0,	-0.5 * radius,	(0.866 * radius) + halflen,
-				0.0,	0.0,				radius + halflen);
-
-			// NE quadrant
-			addLine(0.0,	0.0,				radius + halflen,
-				0.0,	0.5 * radius,		(0.866 * radius) + halflen);
-
-			addLine(0.0,	0.5 * radius,		(0.866 * radius) + halflen,
-				0.0,	0.866 * radius,	(0.5 * radius) + halflen);
-
-			addLine(0.0,	0.866 * radius,	(0.5 * radius) + halflen,
-				0.0,	radius,			halflen);
-
-			// SW quadrant
-			addLine(0.0,	-radius,			-halflen,	
-				0.0,	-0.866 * radius,	(-0.5 * radius) - halflen);
-
-			addLine(0.0,	-0.866 * radius,	(-0.5 * radius) - halflen,
-				0.0,	-0.5 * radius,	(-0.866 * radius) - halflen);
-
-			addLine(0.0,	-0.5 * radius,	(-0.866 * radius) - halflen,
-				0.0,	0.0,				-radius - halflen);
-
-			// SE quadrant
-			addLine(0.0,	0.0,				-radius - halflen,
-				0.0,	0.5 * radius,		(-0.866 * radius) - halflen);
-
-			addLine(0.0,	0.5 * radius,		(-0.866 * radius) - halflen,
-				0.0,	0.866 * radius,	(-0.5 * radius) - halflen);
-
-			addLine(0.0,	0.866 * radius,	(-0.5 * radius) - halflen,
-				0.0,	radius,			-halflen);
-
-			// Side lines
-			addLine(-radius,	0.0,		-halflen,
-				-radius,	0.0,		halflen);
-
-			addLine(radius,	0.0,		-halflen,
-				radius,	0.0,		halflen);
-
-			addLine(0.0,		radius,	-halflen,
-				0.0,		radius,	halflen);
-
-			addLine(0.0,		-radius,	-halflen,
-				0.0,		-radius,	halflen);
-
-			draw();
-		}
-
-		CapsuleDebugObject::~CapsuleDebugObject()
-		{
-		}
-
-		TriangleMeshDebugObject::TriangleMeshDebugObject(int vertex_count):DebugObject()
-		{
-			_points.reserve(vertex_count); 
-			for(int i = 0;i < vertex_count;++i) _points.push_back(Vector3(0,0,0)); 
-		}
-
-		void TriangleMeshDebugObject::beginDefinition()
-		{
-		}
-
-		void TriangleMeshDebugObject::setVertex(int index,const Vector3& vertex)
-		{
-			_points[index] = vertex;
-		}
-
-		void TriangleMeshDebugObject::endDefinition()
-		{
-			draw();
-		}
-
-		TriangleMeshDebugObject::~TriangleMeshDebugObject()
-		{
-		}
-
-		RayDebugObject::RayDebugObject(const Vector3& start,const Vector3& direction,Real length):DebugObject()
-		{
-			Vector3 end = start + (direction.normalisedCopy() * length);
-			addLine(start,end);
-
-			draw();
-		}
-
-		RayDebugObject::~RayDebugObject()
-		{
-		}
-
+#endif
 	} // namespace Details
 
 } // namespace OgreOpcode

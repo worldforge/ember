@@ -32,10 +32,11 @@
 #include "OgreOpcodeMath.h"
 #include "OgreOpcodeUtils.h"
 
+using namespace Ogre;
 namespace OgreOpcode
 {
 	//------------------------------------------------------------------------
-	PtrCollisionShape::PtrCollisionShape(const String& name)
+	PtrCollisionShape::PtrCollisionShape(const Ogre::String& name)
 		: ICollisionShape(name)
 	{
 	}
@@ -43,8 +44,14 @@ namespace OgreOpcode
 	//------------------------------------------------------------------------
 	PtrCollisionShape::~PtrCollisionShape()
 	{
-		// No, we are not deleting mVertexBuf nor mFaceBuf here!
-		// They are owned by the DotSceneOctree SceneManager.
+		delete[] mVertexBuf;
+		delete[] mFaceBuf;
+		mVertexBuf = 0;
+		mFaceBuf = 0;
+
+		// the "load" function creates a node, so we need to cleanup this node.
+		if(mParentNode != NULL) CollisionManager::getSingleton().getSceneManager()->getRootSceneNode()->removeAndDestroyChild(mParentNode->getName());
+		mParentNode = NULL;
 	}
 
 
@@ -52,13 +59,26 @@ namespace OgreOpcode
 	/// <TODO: insert function description here>
 	/// @param [in, out]  ent Entity *    <TODO: insert parameter description here>
 	/// @return bool <TODO: insert return value description here>
-	bool PtrCollisionShape::load(int numVertex, int numIndices, float *vertices, int *indices)
+	bool PtrCollisionShape::load(size_t numVertex, size_t numIndices, float *vertices, size_t *indices)
 	{
 		assert(!mVertexBuf && !mFaceBuf);
+		assert(numVertex < MAX_UDWORD);
+		assert(numIndices < MAX_UDWORD);
+
 		numVertices = numVertex;
 		numFaces = numIndices/3;
-		mVertexBuf = vertices;
-		mFaceBuf = indices;
+		
+		// Let's make a deep copy of the data
+		mVertexBuf = new float[numVertex];
+		mFaceBuf = new size_t[numIndices*3];
+		for (size_t i = 0; i < numVertex; i++)
+		{
+			mVertexBuf[i] = vertices[i];
+		}
+		for (size_t i = 0; i < numIndices; i++)
+		{
+			mFaceBuf[i] = indices[i];
+		}
 
 		mParentNode = CollisionManager::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode("ptrcollnode" + this->getName());
 
@@ -73,8 +93,8 @@ namespace OgreOpcode
 		//opcMeshAccess.SetInterfaceType(Opcode::MESH_TRIANGLE);
 		opcMeshAccess.SetNbTriangles(numFaces);
 		opcMeshAccess.SetNbVertices(numVertices);
-		opcMeshAccess.SetPointers((IceMaths::IndexedTriangle*)mFaceBuf, (IceMaths::Point*)mVertexBuf);
-		opcMeshAccess.SetStrides(sizeof(int) * 3, sizeof(float) * 3);
+		opcMeshAccess.SetPointers((const IceMaths::IndexedTriangle*)mFaceBuf, (IceMaths::Point*)mVertexBuf);
+		//opcMeshAccess.SetStrides(sizeof(int) * 3, sizeof(float) * 3);
 
 		return _rebuildFromCachedData();
 
@@ -110,9 +130,7 @@ namespace OgreOpcode
 
 		calculateSize();
 
-		if (_debug_obj) {
-			setDebug(true);
-		}
+		//computeIceABB();
 
 		return true;
 	}
@@ -130,9 +148,7 @@ namespace OgreOpcode
 
 		calculateSize();
 
-		if (_debug_obj) {
-			setDebug(true);
-		}
+		//computeIceABB();
 
 		return true;
 	}

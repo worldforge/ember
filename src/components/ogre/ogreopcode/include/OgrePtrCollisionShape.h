@@ -2,7 +2,7 @@
 ///  @file OgrePtrCollisionShape.h
 ///  @brief <TODO: insert file description here>
 ///
-///  @author The OgreOpcode Team @date 29-05-2005
+///  @author The OgreOpcode Team
 ///
 ///////////////////////////////////////////////////////////////////////////////
 ///
@@ -34,9 +34,7 @@
 #include "IOgreCollisionShape.h"
 #include "OgreCollisionTypes.h"
 #include "OgreOpcodeDebugObject.h"
-#include "Opcode.h"
-
-using namespace OgreOpcode::Details;
+#include "Opcode/Opcode.h"
 
 namespace OgreOpcode
 {
@@ -54,7 +52,7 @@ namespace OgreOpcode
 	{
 	public:
 		/// Constructs a PtrCollisionShape
-		PtrCollisionShape(const String& name);
+		PtrCollisionShape(const Ogre::String& name);
 		virtual ~PtrCollisionShape();
 
 		/// Retrieve current vertex data from mesh and refit collision tree.
@@ -62,7 +60,7 @@ namespace OgreOpcode
 		virtual bool refit();
 
 		/// load collide geometry from mesh, and build a collision tree
-		virtual bool load(int numVertices, int numIndices, float *vertices, int *indices);
+		virtual bool load(size_t numVertices, size_t numIndices, float *vertices, size_t *indices);
 
 	protected:
 		

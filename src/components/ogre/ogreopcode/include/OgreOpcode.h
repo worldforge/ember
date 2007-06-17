@@ -2,7 +2,7 @@
 ///  @file OgreOpcode.h
 ///  @brief Main include file for clients.
 ///
-///  @author The OgreOpcode Team @date 31-05-2005
+///  @author The OgreOpcode Team
 ///
 ///////////////////////////////////////////////////////////////////////////////
 ///
@@ -34,10 +34,15 @@
 #include "OgreCollisionContext.h"
 #include "OgreCollisionObject.h"
 #include "OgreCollisionTypes.h"
-#include "OgreCollisionShape.h"
+#include "OgreMeshCollisionShape.h"
+#include "OgreEntityCollisionShape.h"
 #include "OgrePtrCollisionShape.h"
 #include "OgreBoxCollisionShape.h"
 #include "OgreSphereMeshCollisionShape.h"
+#include "OgreTerrainCollisionShape.h"
 #include "OgreCollisionReporter.h"
+
+#include "OgreOpcodeCharacterController.h"
+#include "OgreOpcodeTerrainData.h"
 
 #endif // __OgreOpcode_h__

@@ -2,7 +2,7 @@
 ///  @file OgreBoxCollisionShape.h
 ///  @brief <TODO: insert file description here>
 ///
-///  @author The OgreOpcode Team @date 29-05-2005
+///  @author The OgreOpcode Team
 ///
 ///////////////////////////////////////////////////////////////////////////////
 ///
@@ -34,9 +34,7 @@
 #include "IOgreCollisionShape.h"
 #include "OgreCollisionTypes.h"
 #include "OgreOpcodeDebugObject.h"
-#include "Opcode.h"
-
-using namespace OgreOpcode::Details;
+#include "Opcode/Opcode.h"
 
 namespace OgreOpcode
 {
@@ -54,11 +52,11 @@ namespace OgreOpcode
 	{
 	public:
 		/// Constructs a BoxCollisionShape
-		BoxCollisionShape(const String& name);
+		BoxCollisionShape(const Ogre::String& name);
 		virtual ~BoxCollisionShape();
 
 		/// load collide geometry from mesh, and build a collision tree
-		virtual bool load(int numVertices, int numIndices, float *vertices, int *indices);
+		virtual bool load(Ogre::SceneNode* scnNode, int height, int width, int depth);
 
 	protected:
 		virtual void _prepareOpcodeCreateParams(Opcode::OPCODECREATE& opcc);

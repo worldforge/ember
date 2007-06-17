@@ -32,10 +32,11 @@
 #include "OgreOpcodeMath.h"
 #include "OgreOpcodeUtils.h"
 
+using namespace Ogre;
 namespace OgreOpcode
 {
 	//------------------------------------------------------------------------
-	BoxCollisionShape::BoxCollisionShape(const String& name)
+	BoxCollisionShape::BoxCollisionShape(const Ogre::String& name)
 		: ICollisionShape(name)
 	{
 	}
@@ -61,20 +62,139 @@ namespace OgreOpcode
 	/// <TODO: insert function description here>
 	/// @param [in, out]  ent Entity *    <TODO: insert parameter description here>
 	/// @return bool <TODO: insert return value description here>
-	bool BoxCollisionShape::load(int numVertex, int numIndices, float *vertices, int *indices)
+	bool BoxCollisionShape::load(SceneNode* scnNode, int height, int width, int depth)
 	{
 		assert(!mVertexBuf && !mFaceBuf);
-		numVertices = numVertex;
-		numFaces = numIndices;
-		mVertexBuf = vertices;
-		mFaceBuf = indices;
 
-		mParentNode = CollisionManager::getSingleton().getSceneManager()->getRootSceneNode();
+		mParentNode = scnNode;
+		
+		// Set up the 8 corners of the cube
+		float top     =  height; 
+		float bottom  = -height;
+		float front   = -width; 
+		float back    =  width; 
+		float left    = -depth; 
+		float right   =  depth; 
+
+		numVertices = 8;
+		numFaces = 12;
+		mVertexBuf = new float[numVertices*3];
+		mFaceBuf = new size_t[numFaces*3];
+
+		mVertexBuf[0] = left;
+		mVertexBuf[1] = bottom;
+		mVertexBuf[2] = front;
+		mVertexBuf[3] = right;
+		mVertexBuf[4] = bottom;
+		mVertexBuf[5] = front;
+		mVertexBuf[6] = left;
+		mVertexBuf[7] = top;
+		mVertexBuf[8] = front;
+		mVertexBuf[9] = right;
+		mVertexBuf[10] = top;
+		mVertexBuf[11] = front;
+		mVertexBuf[12] = left;
+		mVertexBuf[13] = bottom;
+		mVertexBuf[14] = back;
+		mVertexBuf[15] = right;
+		mVertexBuf[16] = bottom;
+		mVertexBuf[17] = back;
+		mVertexBuf[18] = left;
+		mVertexBuf[19] = top;
+		mVertexBuf[20] = back;
+		mVertexBuf[21] = right;
+		mVertexBuf[22] = top;
+		mVertexBuf[23] = back;
+
+		int leftbottomfront   = 1; 
+		int rightbottomfront  = 0; 
+		int lefttopfront      = 3; 
+		int righttopfront     = 2;
+		int leftbottomback    = 5;
+		int rightbottomback   = 4; 
+		int lefttopback       = 7;
+		int righttopback      = 6; 
+		//int leftbottomfront   = 0; 
+		//int rightbottomfront  = 1; 
+		//int lefttopfront      = 2; 
+		//int righttopfront     = 3;
+		//int leftbottomback    = 4;
+		//int rightbottomback   = 5; 
+		//int lefttopback       = 6;
+		//int righttopback      = 7; 
+
+		// Left faces
+		mFaceBuf[0] = lefttopfront;
+		mFaceBuf[1] = lefttopback;
+		mFaceBuf[2] = leftbottomback;
+		mFaceBuf[3] = leftbottomback;
+		mFaceBuf[4] = leftbottomfront;
+		mFaceBuf[5] = lefttopfront;
+		// Front faces
+		mFaceBuf[6] = lefttopfront;
+		mFaceBuf[7] = leftbottomfront;
+		mFaceBuf[8] = rightbottomfront;
+		mFaceBuf[9] = rightbottomfront;
+		mFaceBuf[10] = righttopfront;
+		mFaceBuf[11] = lefttopfront;
+		// Right faces
+		mFaceBuf[12] = righttopback;
+		mFaceBuf[13] = righttopfront;
+		mFaceBuf[14] = rightbottomfront;
+		mFaceBuf[15] = rightbottomfront;
+		mFaceBuf[16] = rightbottomback;
+		mFaceBuf[17] = righttopback;
+		// Back faces
+		mFaceBuf[18] = leftbottomback;
+		mFaceBuf[19] = lefttopback;
+		mFaceBuf[20] = righttopback;
+		mFaceBuf[21] = righttopback;
+		mFaceBuf[22] = rightbottomback;
+		mFaceBuf[23] = leftbottomback;
+		// Top faces
+		mFaceBuf[24] = righttopfront;
+		mFaceBuf[25] = righttopback;
+		mFaceBuf[26] = lefttopback;
+		mFaceBuf[27] = lefttopback;
+		mFaceBuf[28] = lefttopfront;
+		mFaceBuf[29] = righttopfront;
+		// Bottom faces
+		mFaceBuf[30] = leftbottomfront;
+		mFaceBuf[31] = leftbottomback;
+		mFaceBuf[32] = rightbottomback;
+		mFaceBuf[33] = rightbottomback;
+		mFaceBuf[34] = rightbottomfront;
+		mFaceBuf[35] = leftbottomfront;
+
+		//numVertices = 4;
+		//numFaces = 2;
+		//mVertexBuf = new float[numVertices*3];
+		//mFaceBuf = new int[numFaces*3];
+		//
+		//mVertexBuf[0] = -size;
+		//mVertexBuf[1] = 0;
+		//mVertexBuf[2] = -size;
+		//mVertexBuf[3] = -size;
+		//mVertexBuf[4] = 0;
+		//mVertexBuf[5] = size;
+		//mVertexBuf[6] = size;
+		//mVertexBuf[7] = 0;
+		//mVertexBuf[8] = size;
+		//mVertexBuf[9] = size;
+		//mVertexBuf[10] = 0;
+		//mVertexBuf[11] = -size;
+
+		//mFaceBuf[0] = 0;
+		//mFaceBuf[1] = 1;
+		//mFaceBuf[2] = 2;
+		//mFaceBuf[3] = 0;
+		//mFaceBuf[4] = 2;
+		//mFaceBuf[5] = 3;
 
 		opcMeshAccess.SetNbTriangles(numFaces);
 		opcMeshAccess.SetNbVertices(numVertices);
 		opcMeshAccess.SetPointers((IceMaths::IndexedTriangle*)mFaceBuf, (IceMaths::Point*)mVertexBuf);
-		opcMeshAccess.SetStrides(sizeof(int) * 3, sizeof(float) * 3);
+		//opcMeshAccess.SetStrides(sizeof(int) * 3, sizeof(float) * 3);
 
 		assert(mVertexBuf && mFaceBuf);
 
@@ -84,10 +204,9 @@ namespace OgreOpcode
 
 		calculateSize();
 
-		if (_debug_obj) {
-			setDebug(true);
-		}
-		
+		mParentNode->getWorldTransforms(&mFullTransform);
+		//mFullTransform = mParentNode->_getFullTransform();
+
 		return true;
 	}
 
