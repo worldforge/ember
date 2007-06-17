@@ -1,3 +1,23 @@
+2007-06-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/framework/IScriptingProvider.cpp: removed unused file
+
+2007-06-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/EntityWorldPickListener.cpp, src/components/ogre/Makefile.am, src/components/ogre/OpcodeCollisionDetector.cpp, configure.ac: update to newer opcode version
+
+2007-06-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/EmberOgre.cpp, src/components/ogre/EmberOgre.h: clean up the collision manager at shut down, correctly use the proper Ogre namespace
+
+2007-06-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeOcclusionTraversal.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapePrerequisites.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeOctree.cpp: compiler fixes
+
+2007-06-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/ogreopcode/*: updated to the latest version of opcode
+
 2007-06-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
 
 	* src/components/ogre/scripting/LuaScriptingProvider.cpp: lua 5.0 doesn't include lua.hpp (only 5.1), so we can't use that
