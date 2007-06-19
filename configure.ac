@@ -213,7 +213,10 @@ PKG_CHECK_MODULES(CEGUI, CEGUI >= 0.5,
 		LDFLAGS="$LDFLAGS $CEGUI_LIBS"
 	],
 	[
-		AC_MSG_ERROR([Couldn't find CEGUI-OGRE or tests failed. Please go to http://crayzedsgui.sourceforge.net to get the latest, or check config.log to see why the tests failed, and fix it.])
+		AC_MSG_ERROR([Couldn't find CEGUI-OGRE or tests failed:
+$CEGUI_PKG_ERRORS
+Please go to http://crayzedsgui.sourceforge.net to get the latest, or check
+config.log to see why the tests failed, and fix it.])
 	])
 
 # Check for OGRE
@@ -224,7 +227,10 @@ PKG_CHECK_MODULES(OGRE, [OGRE >= $OGRE_VERSION CEGUI-OGRE >= $OGRE_VERSION],
 		LDFLAGS="$LDFLAGS $OGRE_LIBS"
 	],
 	[
-		AC_MSG_ERROR([Couldn't find OGRE or tests failed. Please goto http://www.ogre3d.org to get the latest, or check config.log to see why the tests failed, and fix it.])
+		AC_MSG_ERROR([Couldn't find OGRE or tests failed:
+$OGRE_PKG_ERRORS
+Please goto http://www.ogre3d.org to get the latest, or check config.log to
+see why the tests failed, and fix it.])
 	])
 
 

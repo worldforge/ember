@@ -1,3 +1,8 @@
+2007-06-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* configure.ac: Report the error given by pkgconfig when some
+	  libraries are detected so it is easier for the user to tell why.
+
 2007-06-19 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
 
 	* src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/EntityWorldPickListener.pkg, src/components/ogre/scripting/bindings/lua/MousePicker.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
