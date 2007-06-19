@@ -35,6 +35,9 @@
 #include "input/Input.h"
 
 #include "framework/Tokeniser.h"
+#include "MathConverter.h"
+#include "services/EmberServices.h"
+#include "services/server/ServerService.h"
 
 
 using namespace Ogre;
@@ -86,6 +89,8 @@ AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, G
 	
 	
 	mMovementCommandMapper.bindToInput(Input::getSingleton());
+
+	GUIManager::getSingleton().getEntityPickListener()->EventPickedEntity.connect(sigc::mem_fun(*this, &AvatarController::entityPicker_PickedEntity));
 }
 AvatarController::~AvatarController()
 {
@@ -248,6 +253,16 @@ AvatarCamera* AvatarController::getAvatarCamera() const
 {
 	return mAvatarCamera;	
 }
+
+void AvatarController::entityPicker_PickedEntity(const EntityPickResult& result, const MousePickerArgs& args)
+{
+	if (args.pickType == MPT_DOUBLECLICK) {
+		WFMath::Vector<3> atlasVector = Ogre2Atlas_Vector3(result.position);
+		WFMath::Point<3> atlasPos(atlasVector.x(), atlasVector.y(), atlasVector.z());
+		Ember::EmberServices::getSingletonPtr()->getServerService()->moveToPoint(atlasPos);
+	}
+}
+
 
 
 }

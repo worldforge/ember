@@ -28,6 +28,7 @@
 #include "input/Input.h"
 #include "input/InputCommandMapper.h"
 #include "framework/ConsoleObject.h"
+#include "EntityWorldPickListener.h"
 
 
 
@@ -170,7 +171,11 @@ protected:
 	Ogre::Vector3 mMovementDirection;
     
 	const Ember::ConsoleCommandWrapper ToggleCameraAttached;
-		
+	
+	/**
+	Listen for double clicks and send the avatar to the double clicked position.
+	*/
+	void entityPicker_PickedEntity(const EntityPickResult& result, const MousePickerArgs& args);
 };
 
 
