@@ -83,30 +83,32 @@ end
 --called when an entity has been picked
 function EntityPicker.pickedEntity(result, args)
 	
-	EntityPicker.entity = result.entity
-	--we must make a copy, else the vector object will be deleted by C++ and we'll end up with garbage
-	EntityPicker.position = Ogre.Vector3:new_local(result.position)
-	local point = CEGUI.Vector2:new_local(args.windowX, args.windowY)
-	
-	if (EntityPicker.entity:getId() == '0') then
-		EntityPicker.buttons.move:setVisible(false)
-		EntityPicker.buttons.take:setVisible(false)
-	else 
-		EntityPicker.buttons.move:setVisible(true)
-		EntityPicker.buttons.take:setVisible(true)
+	if args.pickType == EmberOgre.MPT_CLICK then
+		EntityPicker.entity = result.entity
+		--we must make a copy, else the vector object will be deleted by C++ and we'll end up with garbage
+		EntityPicker.position = Ogre.Vector3:new_local(result.position)
+		local point = CEGUI.Vector2:new_local(args.windowX, args.windowY)
+		
+		if (EntityPicker.entity:getId() == '0') then
+			EntityPicker.buttons.move:setVisible(false)
+			EntityPicker.buttons.take:setVisible(false)
+		else 
+			EntityPicker.buttons.move:setVisible(true)
+			EntityPicker.buttons.take:setVisible(true)
+		end
+		
+		EntityPicker.checkUse()
+		EntityPicker.showMenu(point)
+		local name
+		--if the entity has a name, use it, else use the type name
+		--perhaps we should prefix the type name with an "a" or "an"?
+		if EntityPicker.entity:getName() ~= "" then
+			name = EntityPicker.entity:getName()
+		else
+			name = EntityPicker.entity:getType():getName()
+		end	
+		EntityPicker.entityName:setText(name)
 	end
-	
-	EntityPicker.checkUse()
-	EntityPicker.showMenu(point)
-	local name
-	--if the entity has a name, use it, else use the type name
-	--perhaps we should prefix the type name with an "a" or "an"?
-	if EntityPicker.entity:getName() ~= "" then
-		name = EntityPicker.entity:getName()
-	else
-		name = EntityPicker.entity:getType():getName()
-	end	
-	EntityPicker.entityName:setText(name)
 end
 
 function EntityPicker.checkUse()
