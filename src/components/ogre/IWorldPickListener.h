@@ -31,6 +31,17 @@ namespace EmberOgre {
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 
+/**
+The kind of mouse click operation.
+*/
+enum MousePickType
+{
+	///Simple click
+	MPT_CLICK = 1,
+	///Double click
+	MPT_DOUBLECLICK = 2
+
+};
 
 /**
 Mouse picking info from the windowing system.
@@ -41,6 +52,8 @@ struct MousePickerArgs
 	The x and y coords in local window space.
 	*/
 	float windowX, windowY;
+	
+	MousePickType pickType;
 };
 
 

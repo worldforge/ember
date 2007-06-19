@@ -138,6 +138,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 
 		BIND_CEGUI_EVENT(mSheet, CEGUI::ButtonBase::EventMouseButtonDown, GUIManager::mSheet_MouseButtonDown);
 		BIND_CEGUI_EVENT(mSheet, CEGUI::Window::EventInputCaptureLost, GUIManager::mSheet_CaptureLost);
+		BIND_CEGUI_EVENT(mSheet, CEGUI::ButtonBase::EventMouseDoubleClick, GUIManager::mSheet_MouseDoubleClick);
 			
 		//set a default tool tip
 		CEGUI::System::getSingleton().setDefaultTooltip(getDefaultScheme() + "/Tooltip");
@@ -419,6 +420,33 @@ bool GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 		MousePickerArgs pickerArgs;
 		pickerArgs.windowX = mouseArgs.position.d_x;
 		pickerArgs.windowY = mouseArgs.position.d_y;
+		pickerArgs.pickType = MPT_CLICK;
+		mPicker->doMousePicking(position.d_x, position.d_y, pickerArgs);
+	}
+
+
+	return true;
+}
+
+bool GUIManager::mSheet_MouseDoubleClick(const CEGUI::EventArgs& args)
+{
+	
+	const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
+	S_LOG_VERBOSE("Main sheet double click.");
+	CEGUI::Window* aWindow = CEGUI::Window::getCaptureWindow();
+	if (aWindow) {
+		aWindow->releaseInput();
+		aWindow->deactivate();
+	}
+	//mSheet->activate();
+	//mSheet->captureInput();
+
+	if (mPicker) {
+		const CEGUI::Point& position = CEGUI::MouseCursor::getSingleton().getDisplayIndependantPosition();
+		MousePickerArgs pickerArgs;
+		pickerArgs.windowX = mouseArgs.position.d_x;
+		pickerArgs.windowY = mouseArgs.position.d_y;
+		pickerArgs.pickType = MPT_DOUBLECLICK;
 		mPicker->doMousePicking(position.d_x, position.d_y, pickerArgs);
 	}
 

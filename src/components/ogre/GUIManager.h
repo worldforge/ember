@@ -265,6 +265,7 @@ protected:
 
 	//events
 	bool mSheet_MouseButtonDown(const CEGUI::EventArgs& args);
+	bool mSheet_MouseDoubleClick(const CEGUI::EventArgs& args);
 	bool mSheet_CaptureLost(const CEGUI::EventArgs& args);
 	
 	/**
