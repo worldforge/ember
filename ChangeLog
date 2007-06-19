@@ -1,3 +1,27 @@
+2007-06-19 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/EntityWorldPickListener.pkg, src/components/ogre/scripting/bindings/lua/MousePicker.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
+
+2007-06-19 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/EntityPicker.lua: only handle single clicks
+
+2007-06-19 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/AvatarController.cpp, src/components/ogre/AvatarController.h: listen for double clicks and move the avatar to the clicked location
+
+2007-06-19 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/GUIManager.cpp, src/components/ogre/GUIManager.h, src/components/ogre/IWorldPickListener.h: added data about the kind of entity click performed (simple of double click)
+
+2007-06-19 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/HelpWidget.xml: formatting updates, thanks to Winter Knight
+	
+2007-06-19 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+
+	* src/components/ogre/widgets/Admin.layout, src/components/ogre/widgets/Admin.lua: fixed incorrect button actions
+
 2007-06-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
 
 	* src/framework/IScriptingProvider.cpp: removed unused file

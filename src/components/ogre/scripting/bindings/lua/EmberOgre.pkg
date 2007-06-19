@@ -44,7 +44,7 @@ $pfile "ModelRenderer.pkg"
 $pfile "ListHolder.pkg"
 //$pfile "MaterialPicker.pkg"
 
-//$pfile "IWorldPickListener.pkg"
+$pfile "IWorldPickListener.pkg"
 $pfile "EntityWorldPickListener.pkg"
 
 $pfile "ModelDefinitionManager.pkg"

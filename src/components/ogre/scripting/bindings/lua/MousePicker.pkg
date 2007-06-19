@@ -6,11 +6,6 @@ struct EntityPickResult
 	Ogre::Real distance;
 };
 
-struct MousePickerArgs
-{
-	float windowX, windowY;
-};
-
 class MousePicker 
 {
 

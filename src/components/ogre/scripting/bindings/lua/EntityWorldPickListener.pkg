@@ -36,16 +36,6 @@ struct EntityPickResult
 	Ogre::Real distance;
 };
 
-/**
-Mouse picking info from the windowing system.
-*/
-struct MousePickerArgs
-{
-	/**
-	The x and y coords in local window space.
-	*/
-	float windowX, windowY;
-};
 
 /**
 	@author Erik Hjortsberg <erik@katastrof.nu>
