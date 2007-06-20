@@ -126,11 +126,7 @@ EmberEntity::~EmberEntity()
 	///TODO: keep a marker in the entity so we don't need to call this for all entities
 	MotionManager::getSingleton().removeEntity(this);
 	
-	if (mErisEntityBoundingBox)
-	{
-		getSceneManager()->destroyMovableObject(mErisEntityBoundingBox);
-// 		EmberOgre::getSingleton().getWorldSceneNode()->removeAndDestroyChild(mErisEntityBoundingBox->getParentSceneNode()->getName());
-	}
+	delete mErisEntityBoundingBox;
 	
 	//mSceneManager->destroySceneNode(getSceneNode()->getName());
 }
