@@ -174,20 +174,44 @@ void ServerService::disconnect()
 {
 	if (!mConn) return;
 	try {
-		delete mAccount;
+		Eris::Account* tempAccount = mAccount;
 		mAccount = 0;
-		mConn->disconnect();
+		delete tempAccount;
 	}
 	catch (const Eris::BaseException& except)
 	{
-		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got error on disconnect:" << except._msg << ENDM;
+		S_LOG_WARNING("Got error on account deletion:" << except._msg);
+		return;
+	}
+	catch (const std::exception& e)
+	{
+		S_LOG_WARNING("Got error on account deletion:" << e.what());
 		return;
 	}
 	catch (...)
 	{
-		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on disconnect" << ENDM;
+		S_LOG_WARNING( "Got unknown error on disconnect");
 		return;
 	}
+	try {
+		mConn->disconnect();
+	}
+	catch (const Eris::BaseException& except)
+	{
+		S_LOG_WARNING("Got error on disconnect:" << except._msg);
+		return;
+	}
+	catch (const std::exception& e)
+	{
+		S_LOG_WARNING("Got error on disconnect:" << e.what());
+		return;
+	}
+	catch (...)
+	{
+		S_LOG_WARNING("Got unknown error on disconnect");
+		return;
+	}
+
 }
 	
 void ServerService::gotFailure(const std::string & msg)
@@ -227,8 +251,9 @@ void ServerService::connected()
 bool ServerService::disconnecting()
 {
 	S_LOG_INFO("Disconnecting");
-	delete mAccount;
+	Eris::Account* tempAccount = mAccount;
 	mAccount = 0;
+	delete tempAccount;
 	return true;
 }
 
