@@ -1,9 +1,30 @@
+2007-06-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/ServerWidget.cpp: added support for default enter behaviour (logging in)
+
+2007-06-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Widget.cpp, src/components/ogre/widgets/Widget.h: added simple "forms" support, so that pressing the enter key will result in a standard operation
+
+2007-06-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityCEGUITexture.cpp: proper cleanup
+
+2007-06-19 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberEntity.cpp: don't destroy bounding boxes by trying to destroy them as if they were movable objects, since there's no factory for them
+
+2007-06-19 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/framework/IScriptingProvider.cpp: removed obsolete file
+	* src/services/server/ServerService.cpp: avoid segfaults at disconnect and better logging
+	
 2007-06-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* configure.ac: Report the error given by pkgconfig when some
 	  libraries are detected so it is easier for the user to tell why.
 
-2007-06-19 Erik Hjortsberg  <erik.hjortsberg@iteam.se> 
+2007-06-19 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/EntityWorldPickListener.pkg, src/components/ogre/scripting/bindings/lua/MousePicker.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
 

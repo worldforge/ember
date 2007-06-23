@@ -129,6 +129,7 @@ void ServerWidget::buildWidget()
 	
 	addTabbableWindow(getWindow("LoginPanel/NameEdit"));
 	addTabbableWindow(getWindow("LoginPanel/PasswordEdit"));
+	addEnterButton(login);
 /*	addTabbableWindow(login);
 	addTabbableWindow(createAcc);*/
 	closeTabGroup();
@@ -138,6 +139,7 @@ void ServerWidget::buildWidget()
 /*	addTabbableWindow(mGenderRadioButton);
 	addTabbableWindow(femaleRadioButton);*/
 	addTabbableWindow(mNewCharDescription);
+	addEnterButton(mCreateChar);
 	closeTabGroup();
 	
 	hide();
