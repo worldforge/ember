@@ -1,5 +1,5 @@
 //
-// C++ Interface: SizeAdapter
+// C++ Interface: StaticAdapter
 //
 // Description: 
 //
@@ -21,7 +21,7 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
-$#include "../../SizeAdapter.h"
+$#include "../../StaticAdapter.h"
 
 namespace EmberOgre {
 
@@ -34,13 +34,14 @@ namespace Atlas {
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
-class SizeAdapter : AdapterBase
+class StaticAdapter : public AdapterBase
 {
 public:
-    SizeAdapter(const Atlas::Message::Element& element, CEGUI::Window* lowerXWindow, CEGUI::Window* lowerYWindow, CEGUI::Window* lowerZWindow, CEGUI::Window* upperXWindow, CEGUI::Window* upperYWindow, CEGUI::Window* upperZWindow, CEGUI::Slider* scaler, CEGUI::Window* infoWindow);
+    StaticAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* textWindow);
 
-    virtual ~SizeAdapter();
-	
+    virtual ~StaticAdapter();
+    
+
 };
 
 }
@@ -50,5 +51,4 @@ public:
 }
 
 }
-
 

@@ -21,10 +21,7 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
-#include <CEGUI.h>
-#include <Atlas/Message/Element.h>
-#include <sigc++/signal.h>
-
+$#include "../../AdapterBase.h"
 
 namespace EmberOgre {
 

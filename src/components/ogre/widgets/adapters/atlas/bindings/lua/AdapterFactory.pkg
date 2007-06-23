@@ -20,7 +20,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#include <Atlas/Message/Element.h>
+$#include "../../AdapterFactory.h"
 
 namespace EmberOgre {
 
@@ -49,6 +49,7 @@ public:
 	MapAdapter* createMapAdapter(CEGUI::Window* container, const std::string& adapterPrefix, Eris::Entity* entity);
 	ListAdapter* createListAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const Atlas::Message::Element& element);
     OrientationAdapter* createOrientationAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const Atlas::Message::Element& element);
+    StaticAdapter* createStaticAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const Atlas::Message::Element& element);
 
 
 	CEGUI::Window* loadLayoutIntoContainer(CEGUI::Window* container, const std::string& adapterPrefix, const std::string& layoutfile);

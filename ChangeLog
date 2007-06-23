@@ -1,5 +1,17 @@
 2007-06-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* src/components/ogre/widgets/adapters/atlas/bindings/lua/AdapterBase.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/AdapterFactory.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/ListAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/MapAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/NumberAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/OrientationAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/Position2DAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/PositionAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/SizeAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/StaticAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/StringAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/bindings.cpp, src/components/ogre/widgets/adapters/atlas/bindings/lua/bindings.pkg: updated bindings
+
+2007-06-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityEditor.lua: restructured how entity prototypes are defined and used
+
+2007-06-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/adapters/atlas/AdapterFactory.cpp, src/components/ogre/widgets/adapters/atlas/AdapterFactory.h, src/components/ogre/widgets/adapters/atlas/Makefile.am, src/components/ogre/widgets/adapters/atlas/StaticAdapter.cpp, src/components/ogre/widgets/adapters/atlas/StaticAdapter.h, src/components/ogre/widgets/adapters/atlas/StaticAdapter.layout: added adapter for static content
+
+2007-06-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* src/components/ogre/OgreSetup.cpp, src/components/ogre/plugins.cfg, src/components/ogre/Makefile.am, ember.conf: reworked how plugins are loaded. Instead of using the plugins.cfg file, get all settings from the config file
 
 2007-06-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>

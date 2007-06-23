@@ -21,7 +21,7 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
-#include "AdapterBase.h"
+$#include "../../StringAdapter.h"
 
 namespace EmberOgre {
 
