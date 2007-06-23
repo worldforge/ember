@@ -38,7 +38,7 @@ namespace EmberOgre {
 
 
 EntityCEGUITexture::EntityCEGUITexture(const std::string& imageSetName, int width, int height)
-: mWidth(width), mHeight(height), mSceneManager(0), mRenderTexture(0), mRootNode(0), mCamera(0)
+: mMainLight(0), mSceneManager(0), mImage(0), mImageSet(0), mWidth(width), mHeight(height), mRenderTexture(0), mCameraNode(0), mCameraPitchNode(0), mEntityNode(0), mRootNode(0), mCamera(0)
 {
 
 	S_LOG_VERBOSE("Creating new EntityCEGUITexture for imageset " << imageSetName  << " with w:" << mWidth << " h:" << mHeight);
@@ -69,13 +69,15 @@ EntityCEGUITexture::EntityCEGUITexture(const std::string& imageSetName, int widt
 
 EntityCEGUITexture::~EntityCEGUITexture()
 {
-/*	if (mCamera) {
+	if (mCamera) {
 		mSceneManager->destroyCamera(mCamera);
-	}*/
-/*	if (mRootNode) {
+	}
+	///we need to do this before the scene manager is destroyed since the destructor for Model relies on the scenemanager existing (and thus can be called in the scene manager's destructor)
+	if (mRootNode) {
 		mRootNode->removeAndDestroyAllChildren();
-		mSceneManager->destroySceneNode(mRootNode->getName());
-	}*/
+		///the root scene node cannot be removed (evar!!)
+// 		mSceneManager->destroySceneNode(mSceneManager->getRootSceneNode()->getName());
+	}
 	Ogre::Root::getSingleton().destroySceneManager(mSceneManager);
 }
 
