@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='DefaultGUISheet' Name='SizeAdapter'>
+		<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+		<Property Name='UnifiedSize' Value='{{0,100},{0,25}}'/>
+		<Window Type='EmberLook/Combobox' Name='String'>
+			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+			<Property Name='UnifiedSize' Value='{{0,100},{0,100}}'/>
+		</Window>
+	</Window>
+</GUILayout>

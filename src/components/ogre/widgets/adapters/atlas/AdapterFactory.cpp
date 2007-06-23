@@ -29,6 +29,7 @@
 #include "PositionAdapter.h"
 #include "Position2DAdapter.h"
 #include "OrientationAdapter.h"
+#include "StaticAdapter.h"
 #include <CEGUI.h>
 #include "components/ogre/GUIManager.h"
 #include "services/logging/LoggingService.h"
@@ -299,6 +300,32 @@ ListAdapter* AdapterFactory::createListAdapter(CEGUI::Window* container, const s
 		return 0;
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when loading ListAdapter. " << ex.what());
+		return 0;
+	}
+}
+
+StaticAdapter* AdapterFactory::createStaticAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
+{
+	if (!container) {
+		S_LOG_FAILURE("No container sent to AdapterFactory::createStaticAdapter.");
+		return 0;
+	}
+	
+	if (!(element.isString() || element.isNum())) {
+		S_LOG_FAILURE("Incorrect element type.");
+		return 0;
+	}
+	
+	try {
+		Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/StaticAdapter.layout");
+		StaticAdapter* adapter = new StaticAdapter(element, window);
+		
+		return adapter;
+	} catch (const CEGUI::Exception& ex) {
+		S_LOG_FAILURE("Error when loading StaticAdapter. " << ex.getMessage().c_str());
+		return 0;
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Error when loading StaticAdapter. " << ex.what());
 		return 0;
 	}
 }

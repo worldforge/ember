@@ -50,6 +50,7 @@ class ListAdapter;
 class PositionAdapter;
 class Position2DAdapter;
 class OrientationAdapter;
+class StaticAdapter;
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
@@ -69,8 +70,8 @@ public:
     MapAdapter* createMapAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const std::map<std::string, ::Atlas::Message::Element> attributes);
     MapAdapter* createMapAdapter(CEGUI::Window* container, const std::string& adapterPrefix, Eris::Entity* entity);
     OrientationAdapter* createOrientationAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
-    
 	ListAdapter* createListAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
+    StaticAdapter* createStaticAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
 
 	CEGUI::Window* loadLayoutIntoContainer(CEGUI::Window* container, const std::string& adapterPrefix, const std::string& layoutfile);
 	
