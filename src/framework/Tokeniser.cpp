@@ -26,13 +26,30 @@
 namespace Ember
 {
 
-const std::string Tokeniser::delimeters = " ";
+
+Tokeniser::Tokeniser()
+: mDelimeters(" ")
+{
+}
+
+Tokeniser::Tokeniser(const std::string &tokens)
+: mDelimeters(" ")
+{
+	initTokens(tokens);
+}
+
+Tokeniser::Tokeniser(const std::string &tokens, const std::string &delimiters)
+: mDelimeters(delimiters)
+{
+	initTokens(tokens);
+}
+
 
 void Tokeniser::initTokens(const std::string &tokens) {
-  token_string = tokens;
+  mTokenString = tokens;
 //  try {
-    last_pos = token_string.find_first_not_of(delimeters, 0);
-    pos = token_string.find_first_of(delimeters, last_pos);
+    mLastPos = mTokenString.find_first_not_of(mDelimeters, 0);
+    mPos = mTokenString.find_first_of(mDelimeters, mLastPos);
 //  } catch (...) {
 //
 //  }
@@ -40,11 +57,11 @@ void Tokeniser::initTokens(const std::string &tokens) {
 }
 
 std::string Tokeniser::nextToken() {
-  if (last_pos == std::string::npos) return "";
+  if (mLastPos == std::string::npos) return "";
 //  try {
-    std::string token = token_string.substr(last_pos, pos - last_pos);
-    last_pos = token_string.find_first_not_of(delimeters, pos);
-    pos = token_string.find_first_of(delimeters, last_pos);
+    std::string token = mTokenString.substr(mLastPos, mPos - mLastPos);
+    mLastPos = mTokenString.find_first_not_of(mDelimeters, mPos);
+    mPos = mTokenString.find_first_of(mDelimeters, mLastPos);
     return token;
 //  } catch (...) {
 //    return "";
@@ -52,9 +69,9 @@ std::string Tokeniser::nextToken() {
 }
 
 std::string Tokeniser::remainingTokens() {
-  if (last_pos == std::string::npos) return "";
+  if (mLastPos == std::string::npos) return "";
 //try {  
-    return token_string.substr(last_pos, token_string.size() - last_pos);
+    return mTokenString.substr(mLastPos, mTokenString.size() - mLastPos);
 //  } catch (...) {
 //    return "";
 //  }
