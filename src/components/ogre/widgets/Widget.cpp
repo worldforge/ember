@@ -8,10 +8,11 @@
 #include <CEGUIExceptions.h>
 #include <CEGUIWindowManager.h>
 #include <elements/CEGUIFrameWindow.h>
+#include <elements/CEGUIPushButton.h>
 
 #include "framework/ConsoleBackend.h"
 
-
+using namespace CEGUI;
 namespace EmberOgre
 {
 	const std::string Widget::DEFAULT_TAB_GROUP("default");
@@ -221,6 +222,17 @@ namespace EmberOgre
 					return true;
 				}
 			}
+		} else if (keyEventArgs.scancode == CEGUI::Key::Return)
+		{
+			///iterate through all enter buttons, and if anyone is visible, activate it
+			for (WindowStore::iterator I = mEnterButtons.begin(); I != mEnterButtons.end(); ++I) {
+				if ((*I)->isVisible()) {
+					CEGUI::Window* window = *I;
+					WindowEventArgs args(window);
+					window->fireEvent(ButtonBase::EventMouseClick, args, PushButton::EventNamespace);
+					break;
+				}
+			}
 		}
 		return true;
 	}
@@ -235,6 +247,11 @@ namespace EmberOgre
 		}
 		mLastTabWindow = window;
 		BIND_CEGUI_EVENT(window, CEGUI::Window::EventKeyDown, Widget::TabbableWindow_KeyDown);
+	}
+	
+	void Widget::addEnterButton(CEGUI::Window* window)
+	{
+		mEnterButtons.push_back(window);
 	}
 	
 	void Widget::closeTabGroup()

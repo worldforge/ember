@@ -210,6 +210,11 @@ public:
 	 */
 	void addTabbableWindow(CEGUI::Window* window);
 	
+	/**
+	 * Adds a window to the "enter" list. If the "Enter" key is pressed within any of the tabbable windows, any "enter" window that is visible will have a MouseClick event sent to it. Use this to enable default enter behaviour in forms.
+	 */
+	void addEnterButton(CEGUI::Window* window);
+	
 	
 	/**
 	 *    Closes the current tab so that the last window connects to the first window.
@@ -258,7 +263,9 @@ protected:
 	bool mActiveWindowIsOpaque;
 	
 	typedef std::map<CEGUI::Window*, CEGUI::Window*> WindowMap;
+	typedef std::vector<CEGUI::Window*> WindowStore;
 	WindowMap mTabOrder;
+	WindowStore mEnterButtons;
 	CEGUI::Window *mFirstTabWindow, *mLastTabWindow;
 		
 	bool TabbableWindow_KeyDown(const CEGUI::EventArgs& args);
