@@ -9,8 +9,36 @@ EntityEditor.instance.helper = nil
 EntityEditor.instance.newElements = {}
 EntityEditor.factory = nil
 EntityEditor.attributesContainer = nil
-EntityEditor.hiddenAttributes = {objtype = 1, stamp = 1}
--- EntityEditor.hiddenAttributes = {objtype = 1, stamp = 1, area = 1}
+EntityEditor.prototypes = 
+{
+	objtype = {
+		hidden = true
+	},
+	stamp = {
+		hidden = true
+	},
+	bbox = {
+		type = "size"
+	},
+	pos = {
+		type = "position"
+	},
+	orientation = {
+		type = "orientation"
+	},
+	points = {
+		type = "points"
+	},
+	style = {
+		suggestions = {
+			"gnarly",
+			"knotted",
+			"weathered"
+		}
+	}
+	
+}
+
 EntityEditor.modelTab = {}
 
 
@@ -229,25 +257,54 @@ function EntityEditor.createNewMapElementWidget(mapAdapter, outercontainer)
 end
 
 function EntityEditor.createAdapter(attributeName, element)
-	if EntityEditor.hiddenAttributes[attributeName] == nil then
-		if attributeName == 'bbox' then
-			return EntityEditor.createSizeAdapter(element)
-		elseif attributeName == 'pos' then
-			return EntityEditor.createPositionAdapter(element)
-		elseif attributeName == 'orientation' then
-			return EntityEditor.createOrientationAdapter(element)
-		elseif attributeName == 'points' then
-			return EntityEditor.createPointsAdapter(element)
-		elseif element:isString() then
-			return EntityEditor.createStringAdapter(element)
-		elseif element:isNum() then
-			return EntityEditor.createNumberAdapter(element)
-		elseif element:isMap() then
-			return EntityEditor.createMapAdapter(element)
-		elseif element:isList() then
-			return EntityEditor.createListAdapter(element)
+	local prototype = EntityEditor.getPrototype(attributeName, element)
+	local adapterWrapper = nil
+	if prototype.hidden == nil then
+		if prototype.type == 'size' then
+			adapterWrapper = EntityEditor.createSizeAdapter(element)
+		elseif prototype.type == 'pos' then
+			adapterWrapper = EntityEditor.createPositionAdapter(element)
+		elseif prototype.type == 'orientation' then
+			adapterWrapper = EntityEditor.createOrientationAdapter(element)
+		elseif prototype.type == 'points' then
+			adapterWrapper = EntityEditor.createPointsAdapter(element)
+		elseif prototype.type == "string" then
+			adapterWrapper = EntityEditor.createStringAdapter(element)
+		elseif prototype.type == "number" then
+			adapterWrapper = EntityEditor.createNumberAdapter(element)
+		elseif prototype.type == "map" then
+			adapterWrapper = EntityEditor.createMapAdapter(element)
+		elseif prototype.type == "list" then
+			adapterWrapper = EntityEditor.createListAdapter(element)
+		end
+		if adapterWrapper ~= nil then
+			if prototype.suggestions ~= nil then
+				for index,value in ipairs(prototype.suggestions) do
+					adapterWrapper.adapter:addSuggestion(value)
+				end
+			end
 		end
 	end
+	return adapterWrapper
+end
+
+function EntityEditor.getPrototype(attributeName, element)
+	local prototype = {}
+	if EntityEditor.prototypes[attributeName] ~= nil then
+		 prototype = EntityEditor.prototypes[attributeName]
+	end
+	if prototype.type == nil then
+		if element:isString() then
+			prototype.type = "string"
+		elseif element:isNum() then
+			prototype.type = "number"
+		elseif element:isMap() then
+			prototype.type = "map"
+		elseif element:isList() then
+			prototype.type = "list"
+		end
+	end
+	return prototype
 end
 
 function EntityEditor.createMapAdapter(element)
