@@ -1,5 +1,17 @@
 2007-06-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* src/components/ogre/OgreSetup.cpp, src/components/ogre/plugins.cfg, src/components/ogre/Makefile.am, ember.conf: reworked how plugins are loaded. Instead of using the plugins.cfg file, get all settings from the config file
+
+2007-06-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/framework/Tokeniser.cpp, src/framework/Tokeniser.h: allow for specifying the delimiter to use
+
+2007-06-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Help.cpp, src/components/ogre/AvatarController.cpp, src/components/ogre/AvatarController.h, src/components/ogre/EmberPhysicalEntity.cpp: code cleanup
+
+2007-06-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* src/components/ogre/widgets/ServerWidget.cpp: added support for default enter behaviour (logging in)
 
 2007-06-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>

@@ -30,7 +30,7 @@ libEmberOgre_la_SOURCES = Avatar.cpp AvatarCamera.cpp AvatarController.cpp \
 	XMLHelper.cpp
 
 confdir = $(sysconfdir)/ember/
-dist_conf_DATA = ogre.cfg plugins.cfg  resources.cfg terrain.cfg
+dist_conf_DATA = ogre.cfg resources.cfg terrain.cfg
 
 
 noinst_HEADERS = Avatar.h AvatarCamera.h AvatarController.h AvatarEmberEntity.h \

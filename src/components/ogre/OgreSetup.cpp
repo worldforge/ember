@@ -40,6 +40,7 @@
 #endif
 #include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
 #include "image/OgreILCodecs.h"
+#include "framework/Tokeniser.h"
 
 namespace EmberOgre {
 
@@ -67,26 +68,43 @@ Ogre::Root* OgreSetup::createOgreSystem(bool loadOgrePluginsThroughBinreloc)
 {
 
 	const std::string& sharePath(Ember::EmberServices::getSingleton().getConfigService()->getSharedConfigDirectory());
-#ifdef __WIN32__
-
-	mRoot = new Ogre::Root(sharePath + "\\plugins.cfg", "ogre.cfg", "ogre.log");
-#else
-	if (loadOgrePluginsThroughBinreloc) {
-		char* br_libdir = br_find_lib_dir(br_strcat(PREFIX, "/lib"));
-		std::string libDir(br_libdir);
-		free(br_libdir);
-		mRoot = new Ogre::Root("", "ogre.cfg", "ogre.log");
-		try {
-			mRoot->loadPlugin(libDir + "/ember/OGRE/Plugin_CgProgramManager.so");
-		} catch (...) {
-			S_LOG_WARNING("Could not load the Cg program manager plugin. This won't crash Ember, but will disable Cg shaders.");
+	std::string pluginExtension = ".so";
+	mRoot = new Ogre::Root("", "ogre.cfg", "");
+	
+	Ember::ConfigService* configSrv = Ember::EmberServices::getSingleton().getConfigService();
+	if (configSrv->itemExists("ogre", "plugindir")) {
+		std::string pluginDir(configSrv->getValue("ogre", "plugindir"));
+		if (configSrv->itemExists("ogre", "plugins")) {
+			std::string plugins(configSrv->getValue("ogre", "plugins"));
+		#ifdef __WIN32__
+			pluginExtension = ".dll";
+		#else
+			pluginExtension = ".so";
+			if (loadOgrePluginsThroughBinreloc) {
+				char* br_libdir = br_find_lib_dir(br_strcat(PREFIX, "/lib"));
+				std::string libDir(br_libdir);
+				free(br_libdir);
+				pluginDir = libDir + "/ember/OGRE/";
+			}
+		#endif
+			Ember::Tokeniser tokeniser(plugins, ",");
+			std::string token = tokeniser.nextToken();
+			while (token != "") {
+				std::string pluginPath(pluginDir + token + pluginExtension);
+				try {
+					S_LOG_INFO("Trying to load the plugin " << pluginPath);
+					mRoot->loadPlugin(pluginPath);
+				} catch (const std::exception& ex) {
+					S_LOG_WARNING("Error when loading plugin '" << token << "' with path '" << pluginPath << "'. We'll continue, but there might be problems later on. The error message was:\n" << ex.what());
+				}
+				token = tokeniser.nextToken();
+			}
 		}
-		mRoot->loadPlugin(libDir + "/ember/OGRE/Plugin_ParticleFX.so");
-		mRoot->loadPlugin(libDir + "/ember/OGRE/RenderSystem_GL.so");
-	} else {
-		mRoot = new Ogre::Root(sharePath + "/plugins.cfg", "ogre.cfg", "ogre.log");
 	}
-#endif
+
+//	std::vector<Ogre::String> tokens = Ogre::StringUtil::split(dsp, ".");
+	Ember::Tokeniser tokeniser();
+
 	// Register image codecs
 //    Ogre::ILCodecs::registerCodecs();
 
