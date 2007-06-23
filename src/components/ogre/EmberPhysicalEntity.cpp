@@ -57,14 +57,14 @@ const char * const EmberPhysicalEntity::ACTION_FLOAT = "__movement_float";
 
 
 EmberPhysicalEntity::EmberPhysicalEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager) : 
-mScaleNode(0),
-mModelAttachedTo(0), 
-mModelMarkedToAttachTo(0),
 EmberEntity(id, ty, vw, sceneManager),
 mCurrentMovementAction(0),
 mActiveAction(0),
-mModelMapping(0),
-mModel(0)
+mModelAttachedTo(0), 
+mModelMarkedToAttachTo(0),
+mModel(0),
+mScaleNode(0),
+mModelMapping(0)
 {
 // 	mModel = static_cast<Model::Model*>(getScaleNode()->getAttachedObject(0));
 
@@ -376,12 +376,12 @@ void EmberPhysicalEntity::onAttrChanged(const std::string& str, const Atlas::Mes
 		processWield(str, v);
 		return;		
 	}
-	if (str == "outfit") {
-		if (v.isMap()) {
-			const Atlas::Message::MapType & outfitMap = v.asMap();
-			int i = 0;
-		}
-	}
+// 	if (str == "outfit") {
+// 		if (v.isMap()) {
+// 			const Atlas::Message::MapType & outfitMap = v.asMap();
+// 			int i = 0;
+// 		}
+// 	}
 // 	if (str == "bbox") {
 // 		scaleNode();
 // 	}

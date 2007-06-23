@@ -119,6 +119,7 @@ public:
 	const AvatarControllerMovement& getCurrentMovement() const;
 
 	const Ember::ConsoleCommandWrapper RunToggle;
+	const Ember::ConsoleCommandWrapper ToggleCameraAttached;
 
 	const Ember::ConsoleCommandWrapper CharacterMoveForward;
 	const Ember::ConsoleCommandWrapper CharacterMoveBackward;
@@ -170,8 +171,6 @@ protected:
 	
 	Ogre::Vector3 mMovementDirection;
     
-	const Ember::ConsoleCommandWrapper ToggleCameraAttached;
-	
 	/**
 	Listen for double clicks and send the avatar to the double clicked position.
 	*/

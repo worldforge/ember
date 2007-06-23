@@ -44,33 +44,35 @@ using namespace Ogre;
 namespace EmberOgre {
 
 
-AvatarControllerMovement::AvatarControllerMovement() :	rotationDegHoriz(0),
+AvatarControllerMovement::AvatarControllerMovement() :
+	rotationDegHoriz(0),
 	rotationDegVert(0),
 	timeSlice(0),
 	movementDirection(Ogre::Vector3::ZERO),
-	isMoving(false),
-	mode(AvatarMovementMode::MM_WALK)
+	mode(AvatarMovementMode::MM_WALK),
+	isMoving(false)
 {
 }
 
 AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, GUIManager* guiManager, Ogre::Camera* camera) 
-: mEntityUnderCursor(0) 
-, mSelectedEntity(0)
-, mGUIManager(guiManager)
-, mWindow(window)
-, mAvatarCamera(0)
-, mCamera(camera)
-, mMovementCommandMapper("movement", "key_bindings_movement")
-, RunToggle("+run", this, "Toggle running mode.")
+: RunToggle("+run", this, "Toggle running mode.")
 , ToggleCameraAttached("toggle_cameraattached", this, "Toggle between the camera being attached to the avatar and free flying.")
 , CharacterMoveForward("+character_move_forward", this, "Move the avatar forward.")
 , CharacterMoveBackward("+character_move_backward", this, "Move the avatar backward.")
+, CharacterMoveDownwards("+character_move_downwards", this, "Move the avatar downwards.")
+, CharacterMoveUpwards("+character_move_upwards", this, "Move the avatar upwards.")
 , CharacterStrafeLeft("+character_strafe_left", this, "Strafe left.")
 , CharacterStrafeRight("+character_strafe_right", this, "Strafe right.")
-, CharacterMoveUpwards("+character_move_upwards", this, "Move the avatar upwards.")
-, CharacterMoveDownwards("+character_move_downwards", this, "Move the avatar downwards.")
-, mMovementDirection(Ogre::Vector3::ZERO)
+, mMovementCommandMapper("movement", "key_bindings_movement")
+, mWindow(window)
+, mGUIManager(guiManager)
+, mAvatarCamera(0)
+, mCamera(camera)
+, mEntityUnderCursor(0) 
+, mSelectedEntity(0)
+, mFreeFlyingCameraNode(0)
 , mIsRunning(false)
+, mMovementDirection(Ogre::Vector3::ZERO)
 {
 
 	mMovementCommandMapper.restrictToInputMode(Input::IM_MOVEMENT );
