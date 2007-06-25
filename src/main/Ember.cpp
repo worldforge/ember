@@ -21,6 +21,7 @@
 #endif
 
 #include "Application.h"
+#include "framework/Tokeniser.h"
 
 #ifdef WIN32
 	#include <tchar.h>
@@ -56,9 +57,9 @@ int main(int argc, char **argv)
 #endif
 {
 	bool exit_program = false;
-	bool useBinreloc = false;
 	std::string prefix("");
 	std::string homeDir("");
+	Ember::Application::ConfigMap configMap;
 #ifndef __WIN32__
 	if (argc > 1) {
 		std::string invoked = std::string((char *)argv[0]);
@@ -71,15 +72,13 @@ int main(int argc, char **argv)
 			if (arg == "-v" || arg == "--version") {
 				std::cout << "Ember version: " << VERSION << std::endl;
 				exit_program = true;
-			} else if (arg == "-b" || arg == "--binrelocloading") {
-				useBinreloc = true;
 			} else if (arg == "-h" || arg == "--help") {
 				std::cout << invoked << " {options}" << std::endl;
 				std::cout << "-h, --help    - display this message" << std::endl;
 				std::cout << "-v, --version - display version info" << std::endl;
-				std::cout << "-b, --binrelocloading - loads ogre plugins through binreloc instead of ~/.ember/plugins.cfg (only valid on *NIX systems)" << std::endl;
 				std::cout << "--home <path>- sets the home directory to something different than the default (~/.ember on *NIX systems, $APPDATA\\Ember on win32 systems)" << std::endl;
 				std::cout << "-p <path>, --prefix <path> - sets the prefix to something else than the one set at compilation (only valid on *NIX systems)" << std::endl;
+				std::cout << "--config <section>:<key> <value> - allows you to override config file settings. See the ember.conf file for examples. (~/.ember/ember.conf on *NIX systems)" << std::endl;
 				exit_program = true;
 			} else if (arg == "-p" || arg == "--prefix") {
 				if (!argc) {
@@ -101,6 +100,21 @@ int main(int argc, char **argv)
 					argc--;
 				}
 				
+			} else if (arg == "--config") {
+				if (argc < 2) {
+					std::cout << "You didn't supply any config arguments.";
+				} else {
+					std::string fullkey(argv[0]);
+					std::string value(argv[1]);
+					Ember::Tokeniser tokeniser(fullkey, ":");
+					if (tokeniser.remainingTokens() != "") {
+						std::string category(tokeniser.nextToken());
+						if (tokeniser.remainingTokens() != "") {
+							std::string key(tokeniser.nextToken());
+							configMap[category][key] = value;
+						}
+					}
+				}
 			}
 		}
 	}
@@ -115,7 +129,7 @@ int main(int argc, char **argv)
 	}
 	
 #ifdef ENABLE_BINRELOC
-    if (prefix == "" && useBinreloc) {
+    if (prefix == ".") {
 		BrInitError error;
 	
 		if (br_init (&error) == 0 && error != BR_INIT_ERROR_DISABLED) {
@@ -150,7 +164,7 @@ int main(int argc, char **argv)
 #endif
 
     /// Create application object
-    Ember::Application app(prefix, homeDir, useBinreloc);
+    Ember::Application app(prefix, homeDir, configMap);
     //EmberOgre::EmberOgre app;
     
     std::cout << "Starting Ember version " << VERSION << std::endl;

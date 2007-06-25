@@ -225,6 +225,7 @@ PKG_CHECK_MODULES(OGRE, [OGRE >= $OGRE_VERSION CEGUI-OGRE >= $OGRE_VERSION],
 	[
 		CXXFLAGS="$CXXFLAGS $OGRE_CFLAGS"
 		LDFLAGS="$LDFLAGS $OGRE_LIBS"
+		AC_DEFINE_UNQUOTED([OGRE_PLUGINDIR], "`pkg-config --variable=plugindir OGRE`", [The Ogre plugin dir])
 	],
 	[
 		AC_MSG_ERROR([Couldn't find OGRE or tests failed:
@@ -232,6 +233,7 @@ $OGRE_PKG_ERRORS
 Please goto http://www.ogre3d.org to get the latest, or check config.log to
 see why the tests failed, and fix it.])
 	])
+
 
 
 #remove this when Ogre includes the CEGUI-OGRE.pc file again

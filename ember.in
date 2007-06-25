@@ -104,5 +104,4 @@ echo @VERSION@ > $homedata/latest_version
 # Execute real ember binary
 echo "Starting Ember...."
 #we have to do the LD_PRELOAD thing, because else at least I get an error: libnvidia-tls.so.1: cannot handle TLS data /ehj
-LD_PRELOAD=libGL.so.1 $bindir/ember.bin --binrelocloading --home $homedata
-
+LD_PRELOAD=libGL.so.1 $bindir/ember.bin --home $homedata

@@ -41,10 +41,9 @@ public:
     
     /**
      * Creates the ogre base system.
-     * @param loadOgrePluginsThroughBinreloc If true, try to load the plugins through binreloc.
      * @return 
      */
-    Ogre::Root* createOgreSystem(bool loadOgrePluginsThroughBinreloc);
+    Ogre::Root* createOgreSystem();
     
 	/**
 	 * Configures the application - returns false if the user chooses to abandon configuration.

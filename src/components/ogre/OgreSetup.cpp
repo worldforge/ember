@@ -22,7 +22,9 @@
 //
 
 
-
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include "OgreSetup.h"
 
@@ -39,7 +41,7 @@
 	#include <GL/glx.h>
 #endif
 #include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
-#include "image/OgreILCodecs.h"
+// #include "image/OgreILCodecs.h"
 #include "framework/Tokeniser.h"
 
 namespace EmberOgre {
@@ -64,41 +66,63 @@ void OgreSetup::shutdown()
 }
 
 
-Ogre::Root* OgreSetup::createOgreSystem(bool loadOgrePluginsThroughBinreloc)
+Ogre::Root* OgreSetup::createOgreSystem()
 {
 
 	const std::string& sharePath(Ember::EmberServices::getSingleton().getConfigService()->getSharedConfigDirectory());
 	std::string pluginExtension = ".so";
 	mRoot = new Ogre::Root("", "ogre.cfg", "");
 	
+	///we will try to load the plugins from series of different location, with the hope of getting at least one right
+	std::vector<std::string> pluginLocations;
+	
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingleton().getConfigService();
-	if (configSrv->itemExists("ogre", "plugindir")) {
-		std::string pluginDir(configSrv->getValue("ogre", "plugindir"));
-		if (configSrv->itemExists("ogre", "plugins")) {
-			std::string plugins(configSrv->getValue("ogre", "plugins"));
-		#ifdef __WIN32__
-			pluginExtension = ".dll";
-		#else
-			pluginExtension = ".so";
-			if (loadOgrePluginsThroughBinreloc) {
-				char* br_libdir = br_find_lib_dir(br_strcat(PREFIX, "/lib"));
-				std::string libDir(br_libdir);
-				free(br_libdir);
-				pluginDir = libDir + "/ember/OGRE/";
-			}
+	if (configSrv->itemExists("ogre", "plugins")) {
+		std::string plugins(configSrv->getValue("ogre", "plugins"));
+		///if it's defined in the config, use that location first
+		if (configSrv->itemExists("ogre", "plugindir")) {
+			std::string pluginDir(configSrv->getValue("ogre", "plugindir"));
+			pluginLocations.push_back(pluginDir);
+		}
+	#ifdef __WIN32__
+		pluginExtension = ".dll";
+	#else
+		pluginExtension = ".so";
+		
+		#ifdef ENABLE_BINRELOC
+		///binreloc might be used
+		char* br_libdir = br_find_lib_dir(br_strcat(PREFIX, "/lib"));
+		std::string libDir(br_libdir);
+		free(br_libdir);
+		pluginLocations.push_back(libDir + "/ember/OGRE");
 		#endif
-			Ember::Tokeniser tokeniser(plugins, ",");
-			std::string token = tokeniser.nextToken();
-			while (token != "") {
-				std::string pluginPath(pluginDir + token + pluginExtension);
+		#ifdef OGRE_PLUGINDIR
+		///also try with the plugindir defined for Ogre
+		pluginLocations.push_back(OGRE_PLUGINDIR);
+		#endif
+		///enter the usual locations if Ogre is installed system wide, with local installations taking precedence
+		pluginLocations.push_back("/usr/local/lib/OGRE");
+		pluginLocations.push_back("/usr/lib/OGRE");
+	#endif
+		Ember::Tokeniser tokeniser(plugins, ",");
+		std::string token = tokeniser.nextToken();
+		while (token != "") {
+			for (std::vector<std::string>::iterator I = pluginLocations.begin(); I != pluginLocations.end(); ++I) {
+				std::string pluginPath((*I) + "/" + token + pluginExtension);
+				bool success = false;
 				try {
 					S_LOG_INFO("Trying to load the plugin " << pluginPath);
 					mRoot->loadPlugin(pluginPath);
-				} catch (const std::exception& ex) {
-					S_LOG_WARNING("Error when loading plugin '" << token << "' with path '" << pluginPath << "'. We'll continue, but there might be problems later on. The error message was:\n" << ex.what());
+					success = true;
+					break;
+				} catch (...) {
+					S_LOG_INFO("Error when loading plugin '" << token << "' with path '" << pluginPath << "'. This is not fatal, we will continue trying with some other paths.");
 				}
-				token = tokeniser.nextToken();
+				if (!success) {
+					S_LOG_WARNING("Error when loading plugin '" << token << "' after trying different parts. We'll continue, but there might be problems later on.");
+				}
 			}
+			token = tokeniser.nextToken();
 		}
 	}
 

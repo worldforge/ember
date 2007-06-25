@@ -134,9 +134,8 @@ public:
 	
     /**
      * starts the main app
-     * @param loadOgrePluginsThroughBinreloc if true, plugins will be loaded through binreloc instead of through ~/.ember/plugins.cfg
      */
-    virtual void go(bool loadOgrePluginsThroughBinreloc = false);
+    virtual void go();
 // 	void shutdown();
 
 	/**
@@ -259,10 +258,9 @@ public:
 
     /**
      * Sets up the application - returns false if the user chooses to abandon configuration.
-     * @param loadOgrePluginsThroughBinreloc if true, plugins will be loaded through binreloc instead of through ~/.ember/plugins.cfg
      * @return 
      */
-    bool setup(bool loadOgrePluginsThroughBinreloc = false);
+    bool setup();
     
     void shutdownGui();
 

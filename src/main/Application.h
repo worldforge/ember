@@ -15,6 +15,7 @@
 #include <list>
 #include <string>
 #include <fstream>
+#include <map>
 
 #include "services/EmberServices.h"
 #include "framework/ConsoleObject.h"
@@ -40,11 +41,13 @@ namespace Ember
         //======================================================================
         // Inner Classes, Typedefs, and Enums
         //======================================================================
+        
     public:
+        typedef std::map<std::string, std::map<std::string, std::string> > ConfigMap;
         //======================================================================
         // Public Methods
         //======================================================================
-         Application(const std::string prefix, const std::string homeDir, bool useBinReloc);
+         Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings);
 
         /**
          * Dtor for Ember::Application.  Free the current surface.
@@ -138,7 +141,6 @@ namespace Ember
 	bool mShouldQuit;
 	const std::string mPrefix;
 	const std::string mHomeDir;
-	bool mUseBinreloc;
 	
 	/**
 	The main log observer used for all logging.
@@ -163,6 +165,8 @@ namespace Ember
 	void Server_GotView(Eris::View* view);
 
 	std::auto_ptr<std::ofstream> mLogOutStream;
+	
+	ConfigMap mConfigSettings;
 
 };//class Application
 }//namespace Ember

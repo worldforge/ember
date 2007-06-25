@@ -64,16 +64,16 @@ namespace Ember
 template<> Ember::Application *Ember::Singleton<Ember::Application>::ms_Singleton = 0;
 
 
-Application::Application(const std::string prefix, const std::string homeDir, bool useBinReloc)
+Application::Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings)
 : mOgreView(0)
 , mShouldQuit(false)
 , mPrefix(prefix)
 , mHomeDir(homeDir)
-, mUseBinreloc(useBinReloc)
 , mLogObserver(0)
 , mServices(0)
 , mWorldView(0)
 , mPollEris(true)
+, mConfigSettings(configSettings)
 {
 
 }
@@ -188,6 +188,12 @@ void Application::initializeServices()
 	///assureConfigFile("ember.conf", sharePath);
 
 	EmberServices::getSingleton().getConfigService()->loadSavedConfig("ember.conf");
+	///after loading the config from file, override with command time settings
+	for (ConfigMap::iterator I = mConfigSettings.begin(); I != mConfigSettings.end(); ++I) {
+		for (std::map<std::string, std::string>::iterator J = I->second.begin(); J != I->second.end(); ++J) {
+			EmberServices::getSingleton().getConfigService()->setValue(I->first, J->first, J->second);
+		}
+	}
 
 // #ifndef WIN32
 // 	/// Initialize the SoundService
@@ -231,7 +237,7 @@ Eris::View* Application::getMainView()
 
 void Application::start()
 {
-	mOgreView->setup(mUseBinreloc);
+	mOgreView->setup();
 	mainLoop();
 	//mOgreView->go(mUseBinreloc);
 }
