@@ -107,23 +107,23 @@ bool Recorder::frameStarted(const Ogre::FrameEvent& event)
  
 
 AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window, GUIManager* guiManager, Ogre::Camera* camera) :
-	mSceneManager(sceneManager),
-	mWindow(window),
-	mGUIManager(guiManager),
-	degreePitch(0),
-	degreeYaw(0),
-	mViewPort(0),
-	mDegreeOfPitchPerSecond(50),
-	mDegreeOfYawPerSecond(50),
-	mClosestPickingDistance(10000),
-	mAvatarNode(0),
-	mInvertCamera(false),
-	mCamera(camera),
 	SetCameraDistance("setcameradistance", this, "Set the distance of the camera."),
 	ToggleRendermode("toggle_rendermode", this, "Toggle between wireframe and solid render modes."),
 	ToggleFullscreen("toggle_fullscreen", this, "Switch between windowed and full screen mode."),
 	Screenshot("screenshot", this, "Take a screenshot and write to disk."),
-	Record("+record", this, "Record to disk.")
+	Record("+record", this, "Record to disk."),
+	mInvertCamera(false),
+	mGUIManager(guiManager),
+	mCamera(camera),
+	mAvatarNode(0),
+	mSceneManager(sceneManager),
+	mDegreeOfPitchPerSecond(50),
+	mDegreeOfYawPerSecond(50),
+	degreePitch(0),
+	degreeYaw(0),
+	mWindow(window),
+	mViewPort(0),
+	mClosestPickingDistance(10000)
 //	mLastOrientationOfTheCamera(avatar->getOrientation())
 {
 	createNodesForCamera();
