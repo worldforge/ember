@@ -12,19 +12,27 @@ EntityEditor.attributesContainer = nil
 EntityEditor.prototypes = 
 {
 	objtype = {
-		hidden = true
+		type = "static",
+		nodelete = true
 	},
 	stamp = {
-		hidden = true
+		hidden = true,
+		nodelete = true
+	},
+	name = {
+		nodelete = true
 	},
 	bbox = {
-		type = "size"
+		type = "size",
+		nodelete = true
 	},
 	pos = {
-		type = "position"
+		type = "position",
+		nodelete = true
 	},
 	orientation = {
-		type = "orientation"
+		type = "orientation",
+		nodelete = true
 	},
 	points = {
 		type = "points"
@@ -36,7 +44,6 @@ EntityEditor.prototypes =
 			"weathered"
 		}
 	}
-	
 }
 
 EntityEditor.modelTab = {}
@@ -118,7 +125,7 @@ function EntityEditor.editEntity(entity)
 		local adapterWrapper = EntityEditor.createAdapter(name, element)
 		if adapterWrapper ~= nil then
 			EntityEditor.instance.rootMapAdapter:addAttributeAdapter(name, adapterWrapper.adapter, adapterWrapper.outercontainer)
-			EntityEditor.addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, EntityEditor.instance.outercontainer)
+			EntityEditor.addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, EntityEditor.instance.outercontainer, adapterWrapper.prototype)
 		end
 	end
 	local newElementWrapper = EntityEditor.createNewMapElementWidget(adapter, EntityEditor.instance.outercontainer)
@@ -129,7 +136,7 @@ function EntityEditor.editEntity(entity)
 	
 end
 
-function EntityEditor.createNewListElementWidget(listAdapter, outercontainer)
+function EntityEditor.createNewListElementWidget(listAdapter, outercontainer, prototype)
 	local wrapper = {}
 	wrapper.adapter = listAdapter
 	wrapper.outercontainer = outercontainer
@@ -163,7 +170,8 @@ function EntityEditor.createNewListElementWidget(listAdapter, outercontainer)
 		
 		if adapterWrapper ~= nil then
 			wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
-			EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer)
+			local newPrototype = {}
+			EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
 			--by adding the window again we make sure that it's at the bottom of the child window list
 			wrapper.outercontainer:addChildWindow(wrapper.container)
 		end
@@ -199,8 +207,9 @@ function EntityEditor.createNewPointsElementWidget(listAdapter, outercontainer)
 		EntityEditor.instance.addNewElement(element)
 		
 		if adapterWrapper ~= nil then
+			local newPrototype = {}
 			wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
-			EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer)
+			EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
 			--by adding the window again we make sure that it's at the bottom of the child window list
 			wrapper.outercontainer:addChildWindow(wrapper.container)
 		end
@@ -210,7 +219,7 @@ function EntityEditor.createNewPointsElementWidget(listAdapter, outercontainer)
 	return wrapper
 end
 
-function EntityEditor.createNewMapElementWidget(mapAdapter, outercontainer)
+function EntityEditor.createNewMapElementWidget(mapAdapter, outercontainer, prototype)
 	local wrapper = {}
 	wrapper.adapter = mapAdapter
 	wrapper.outercontainer = outercontainer
@@ -244,9 +253,10 @@ function EntityEditor.createNewMapElementWidget(mapAdapter, outercontainer)
 		EntityEditor.instance.addNewElement(element)
 		
 		if adapterWrapper ~= nil then
+			local newPrototype = {}
 			local name = wrapper.nameEditbox:getText()
 			wrapper.adapter:addAttributeAdapter(name, adapterWrapper.adapter, adapterWrapper.outercontainer)
-			EntityEditor.addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer)
+			EntityEditor.addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
 			--by adding the window again we make sure that it's at the bottom of the child window list
 			wrapper.outercontainer:addChildWindow(wrapper.container)
 		end
@@ -258,24 +268,30 @@ end
 
 function EntityEditor.createAdapter(attributeName, element)
 	local prototype = EntityEditor.getPrototype(attributeName, element)
+	return EntityEditor.createAdapterFromPrototype(attributeName, element, prototype)
+end
+
+function EntityEditor.createAdapterFromPrototype(attributeName, element, prototype)
 	local adapterWrapper = nil
 	if prototype.hidden == nil then
 		if prototype.type == 'size' then
-			adapterWrapper = EntityEditor.createSizeAdapter(element)
+			adapterWrapper = EntityEditor.createSizeAdapter(element, prototype)
 		elseif prototype.type == 'pos' then
-			adapterWrapper = EntityEditor.createPositionAdapter(element)
+			adapterWrapper = EntityEditor.createPositionAdapter(element, prototype)
 		elseif prototype.type == 'orientation' then
-			adapterWrapper = EntityEditor.createOrientationAdapter(element)
+			adapterWrapper = EntityEditor.createOrientationAdapter(element, prototype)
 		elseif prototype.type == 'points' then
-			adapterWrapper = EntityEditor.createPointsAdapter(element)
+			adapterWrapper = EntityEditor.createPointsAdapter(element, prototype)
 		elseif prototype.type == "string" then
-			adapterWrapper = EntityEditor.createStringAdapter(element)
+			adapterWrapper = EntityEditor.createStringAdapter(element, prototype)
 		elseif prototype.type == "number" then
-			adapterWrapper = EntityEditor.createNumberAdapter(element)
+			adapterWrapper = EntityEditor.createNumberAdapter(element, prototype)
 		elseif prototype.type == "map" then
-			adapterWrapper = EntityEditor.createMapAdapter(element)
+			adapterWrapper = EntityEditor.createMapAdapter(element, prototype)
 		elseif prototype.type == "list" then
-			adapterWrapper = EntityEditor.createListAdapter(element)
+			adapterWrapper = EntityEditor.createListAdapter(element, prototype)
+		elseif prototype.type == "static" then
+			adapterWrapper = EntityEditor.createStaticAdapter(element, prototype)
 		end
 		if adapterWrapper ~= nil then
 			if prototype.suggestions ~= nil then
@@ -283,6 +299,7 @@ function EntityEditor.createAdapter(attributeName, element)
 					adapterWrapper.adapter:addSuggestion(value)
 				end
 			end
+			adapterWrapper.prototype = prototype
 		end
 	end
 	return adapterWrapper
@@ -307,7 +324,7 @@ function EntityEditor.getPrototype(attributeName, element)
 	return prototype
 end
 
-function EntityEditor.createMapAdapter(element)
+function EntityEditor.createMapAdapter(element, prototype)
 	local wrapper = {}
 	wrapper.container = guiManager:createWindow("DefaultGUISheet")
 	wrapper.adapter = EntityEditor.factory:createMapAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
@@ -319,7 +336,7 @@ function EntityEditor.createMapAdapter(element)
 		local adapterWrapper = EntityEditor.createAdapter(name, childElement)
 		if adapterWrapper ~= nil then
 			if adapterWrapper.adapter ~= nil then
-				EntityEditor.addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, wrapper.container)
+				EntityEditor.addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, wrapper.container, adapterWrapper.prototype)
 				wrapper.adapter:addAttributeAdapter(name, adapterWrapper.adapter, adapterWrapper.outercontainer)
 			end
 		end
@@ -331,7 +348,7 @@ function EntityEditor.createMapAdapter(element)
 	return wrapper	
 end
 
-function EntityEditor.createListAdapter(element)
+function EntityEditor.createListAdapter(element, prototype)
 	local wrapper = {}
 	wrapper.container = guiManager:createWindow("DefaultGUISheet")
 	wrapper.adapter = EntityEditor.factory:createListAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
@@ -339,7 +356,7 @@ function EntityEditor.createListAdapter(element)
 		local childElement = wrapper.adapter:valueOfAttr(i)
 		local adapterWrapper = EntityEditor.createAdapter("", childElement)
 		if adapterWrapper ~= nil then
-			EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.container)
+			EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.container, adapterWrapper.prototype)
 			wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
 		end
 	end	
@@ -351,7 +368,7 @@ function EntityEditor.createListAdapter(element)
 	return wrapper	
 end
 
-function EntityEditor.createPointsAdapter(element)
+function EntityEditor.createPointsAdapter(element, prototype)
 	local wrapper = {}
 	wrapper.container = guiManager:createWindow("DefaultGUISheet")
 	wrapper.adapter = EntityEditor.factory:createListAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
@@ -371,7 +388,15 @@ function EntityEditor.createPointsAdapter(element)
 	return wrapper	
 end
 
-function EntityEditor.createStringAdapter(element)
+
+function EntityEditor.createStaticAdapter(element, prototype)
+	local wrapper = {}
+	wrapper.container = guiManager:createWindow("DefaultGUISheet")
+	wrapper.adapter = EntityEditor.factory:createStaticAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
+	return wrapper	
+end
+
+function EntityEditor.createStringAdapter(element, prototype)
 	local wrapper = {}
 	wrapper.container = guiManager:createWindow("DefaultGUISheet")
 	wrapper.adapter = EntityEditor.factory:createStringAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
@@ -379,55 +404,59 @@ function EntityEditor.createStringAdapter(element)
 	return wrapper	
 end
 
-function EntityEditor.createNumberAdapter(element)
+function EntityEditor.createNumberAdapter(element, prototype)
 	local wrapper = {}
 	wrapper.container = guiManager:createWindow("DefaultGUISheet")
 	wrapper.adapter = EntityEditor.factory:createNumberAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
 	return wrapper	
 end
 
-function EntityEditor.createSizeAdapter(element)
+function EntityEditor.createSizeAdapter(element, prototype)
 	local wrapper = {}
 	wrapper.container = guiManager:createWindow("DefaultGUISheet")
 	wrapper.adapter = EntityEditor.factory:createSizeAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
 	return wrapper	
 end
 
-function EntityEditor.createPositionAdapter(element)
+function EntityEditor.createPositionAdapter(element, prototype)
 	local wrapper = {}
 	wrapper.container = guiManager:createWindow("DefaultGUISheet")
 	wrapper.adapter = EntityEditor.factory:createPositionAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
 	return wrapper	
 end
 
-function EntityEditor.createPosition2DAdapter(element)
+function EntityEditor.createPosition2DAdapter(element, prototype)
 	local wrapper = {}
 	wrapper.container = guiManager:createWindow("DefaultGUISheet")
 	wrapper.adapter = EntityEditor.factory:createPosition2DAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
 	return wrapper	
 end
 
-function EntityEditor.createOrientationAdapter(element)
+function EntityEditor.createOrientationAdapter(element, prototype)
 	local wrapper = {}
 	wrapper.container = guiManager:createWindow("DefaultGUISheet")
 	wrapper.adapter = EntityEditor.factory:createOrientationAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
 	return wrapper	
 end
 
-function EntityEditor.addUnNamedAdapterContainer(adapter, container, parentContainer)
+function EntityEditor.addUnNamedAdapterContainer(adapter, container, parentContainer, prototype)
 	local outercontainer = guiManager:createWindow("DefaultGUISheet")
 	
-	local deleteButton = EntityEditor.createDeleteButton("list")
-	deleteButton:setProperty("UnifiedPosition", "{{0,0},{0,2}}")
-	deleteButton:setProperty("Tooltip", "Delete list item");
-	local deleteButtonWidth = 16
-	
-	function removeAdapter(args)
-		adapter:remove()
-		outercontainer:setAlpha(0.2)
+	local deleteButton = nil
+	local deleteButtonWidth = 0
+	if prototype.nodelete == nil then
+		deleteButton = EntityEditor.createDeleteButton("list")
+		deleteButton:setProperty("UnifiedPosition", "{{0,0},{0,2}}")
+		deleteButton:setProperty("Tooltip", "Delete list item");
+		deleteButtonWidth = 16
+		
+		function removeAdapter(args)
+			adapter:remove()
+			outercontainer:setAlpha(0.2)
+		end
+		deleteButton:subscribeEvent("MouseClick", removeAdapter)
 	end
-	deleteButton:subscribeEvent("MouseClick", removeAdapter)
-	
+		
 	local width = container:getWidth()
 	--increase with delete button width
 	width = width + CEGUI.UDim(0, deleteButtonWidth)
@@ -443,40 +472,22 @@ function EntityEditor.addUnNamedAdapterContainer(adapter, container, parentConta
 	end
 	local SizedConnection = container:subscribeEvent("Sized", syncWindowHeights)
 	
-	outercontainer:addChildWindow(deleteButton)
+	if deleteButton ~= nil then
+		outercontainer:addChildWindow(deleteButton)
+	end
 	outercontainer:addChildWindow(container)
 
 	parentContainer:addChildWindow(outercontainer)
 	return outercontainer
 end
 
-function EntityEditor.addNamedAdapterContainer(attributeName, adapter, container, parentContainer)
+function EntityEditor.addNamedAdapterContainer(attributeName, adapter, container, parentContainer, prototype)
 	local textWidth = 75
 	local outercontainer = guiManager:createWindow("DefaultGUISheet")
 	--outercontainer:setRiseOnClickEnabled(false)
 	local label = guiManager:createWindow("EmberLook/StaticText")
 	
-	local deleteButton = EntityEditor.createDeleteButton(attributeName)
-	deleteButton:setProperty("UnifiedPosition", "{{1,-16},{0,2}}")
-	deleteButton:setProperty("Tooltip", "Delete '" .. attributeName .. "'");
-	
--- 	function showDeleteButton(args)
--- 		console:pushMessage("wee")
--- 		deleteButton:setVisible(true)
--- 	end
--- 	function hideDeleteButton(args)
--- 		console:pushMessage("waa")
--- 		deleteButton:setVisible(false)
--- 	end
--- 	outercontainer:subscribeEvent("MouseEnter", showDeleteButton)
--- 	outercontainer:subscribeEvent("MouseLeave", hideDeleteButton)
-	
-	function removeAdapter(args)
-		adapter:remove()
-		outercontainer:setAlpha(0.2)
-	end
-	deleteButton:subscribeEvent("MouseClick", removeAdapter)
-	
+
 	
 	label:setText(attributeName)
 	label:setWidth(CEGUI.UDim(0, textWidth))
@@ -499,7 +510,32 @@ function EntityEditor.addNamedAdapterContainer(attributeName, adapter, container
 	end
 	local SizedConnection = container:subscribeEvent("Sized", syncWindowHeights)
 	
-	label:addChildWindow(deleteButton)
+	if prototype.nodelete == nil then
+	
+		local deleteButton = EntityEditor.createDeleteButton(attributeName)
+		deleteButton:setProperty("UnifiedPosition", "{{1,-16},{0,2}}")
+		deleteButton:setProperty("Tooltip", "Delete '" .. attributeName .. "'");
+	
+	-- 	function showDeleteButton(args)
+	-- 		console:pushMessage("wee")
+	-- 		deleteButton:setVisible(true)
+	-- 	end
+	-- 	function hideDeleteButton(args)
+	-- 		console:pushMessage("waa")
+	-- 		deleteButton:setVisible(false)
+	-- 	end
+	-- 	outercontainer:subscribeEvent("MouseEnter", showDeleteButton)
+	-- 	outercontainer:subscribeEvent("MouseLeave", hideDeleteButton)
+		
+		function removeAdapter(args)
+			adapter:remove()
+			outercontainer:setAlpha(0.2)
+		end
+		deleteButton:subscribeEvent("MouseClick", removeAdapter)
+		
+		label:addChildWindow(deleteButton)
+	end
+	
 	outercontainer:addChildWindow(label)
 	outercontainer:addChildWindow(container)
 
