@@ -129,7 +129,7 @@ int main(int argc, char **argv)
 	}
 	
 #ifdef ENABLE_BINRELOC
-    if (prefix == ".") {
+    if (prefix == "") {
 		BrInitError error;
 	
 		if (br_init (&error) == 0 && error != BR_INIT_ERROR_DISABLED) {

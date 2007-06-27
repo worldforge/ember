@@ -1,3 +1,31 @@
+2007-06-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/main/Ember.cpp: fixed a problem with binreloc
+
+2007-06-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityEditor.lua: added more prototypes
+
+2007-06-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/AvatarCamera.cpp: fixed compilation warnings
+
+2007-06-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityEditor.lua: extend the use of prototype
+
+2007-06-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/adapters/atlas/StaticAdapter.layout: fixed layout
+
+2007-06-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberOgre.cpp, src/components/ogre/EmberOgre.h, src/components/ogre/OgreSetup.cpp, src/components/ogre/OgreSetup.h, src/main/Application.cpp, src/main/Application.h, src/main/Ember.cpp, configure.ac, ember.conf, ember.in: changed how the plugins are loaded. Instead of trying one path and then quitting if not successful, try with a series of paths that are most probable.
+
+2007-06-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/framework/bindings/lua/atlas/Makefile.am: fixed incorrect Makefile
+
 2007-06-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/widgets/adapters/atlas/bindings/lua/AdapterBase.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/AdapterFactory.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/ListAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/MapAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/NumberAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/OrientationAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/Position2DAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/PositionAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/SizeAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/StaticAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/StringAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/bindings.cpp, src/components/ogre/widgets/adapters/atlas/bindings/lua/bindings.pkg: updated bindings
