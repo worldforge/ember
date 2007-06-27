@@ -11,9 +11,19 @@ EntityEditor.factory = nil
 EntityEditor.attributesContainer = nil
 EntityEditor.prototypes = 
 {
+	external = {
+		readonly = true
+	},
+	parents = {
+		nodelete = true,
+		readonly = true
+	},
 	objtype = {
 		type = "static",
 		nodelete = true
+	},
+	velocity = {
+		hidden = true
 	},
 	stamp = {
 		hidden = true,
@@ -122,7 +132,10 @@ function EntityEditor.editEntity(entity)
 	for i = 0, attributeNames:size() - 1 do
 		local name = attributeNames[i]
 		local element = EntityEditor.instance.rootMapAdapter:valueOfAttr(name)
-		local adapterWrapper = EntityEditor.createAdapter(name, element)
+		local prototype = EntityEditor.getPrototype(name, element)
+		--there's currently no way to delete from the root attributes, so we'll just disallow that
+		prototype.nodelete = true
+		local adapterWrapper = EntityEditor.createAdapterFromPrototype(element, prototype)
 		if adapterWrapper ~= nil then
 			EntityEditor.instance.rootMapAdapter:addAttributeAdapter(name, adapterWrapper.adapter, adapterWrapper.outercontainer)
 			EntityEditor.addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, EntityEditor.instance.outercontainer, adapterWrapper.prototype)
@@ -151,21 +164,22 @@ function EntityEditor.createNewListElementWidget(listAdapter, outercontainer, pr
 		local element = nil
 		if wrapper.typeCombobox:getSelectedItem():getID() == 0 then
 			element = EntityEditor.instance.helper:createStringElement()
-			adapterWrapper = EntityEditor.createStringAdapter(element)
+			adapterWrapper = EntityEditor.createStringAdapter(element, EntityEditor.getPrototype("", element))
 		elseif wrapper.typeCombobox:getSelectedItem():getID() == 1 then
 			element = EntityEditor.instance.helper:createIntElement()
-			adapterWrapper = EntityEditor.createNumberAdapter(element)
+			adapterWrapper = EntityEditor.createNumberAdapter(element, EntityEditor.getPrototype("", element))
 		elseif wrapper.typeCombobox:getSelectedItem():getID() == 2 then
 			element = EntityEditor.instance.helper:createFloatElement()
-			adapterWrapper = EntityEditor.createNumberAdapter(element)
+			adapterWrapper = EntityEditor.createNumberAdapter(element, EntityEditor.getPrototype("", element))
 		elseif wrapper.typeCombobox:getSelectedItem():getID() == 3 then
 			element = EntityEditor.instance.helper:createMapElement()
-			adapterWrapper = EntityEditor.createMapAdapter(element)
+			adapterWrapper = EntityEditor.createMapAdapter(element, EntityEditor.getPrototype("", element))
 		elseif wrapper.typeCombobox:getSelectedItem():getID() == 4 then
 			element = EntityEditor.instance.helper:createListElement()
-			adapterWrapper = EntityEditor.createListAdapter(element)
+			adapterWrapper = EntityEditor.createListAdapter(element, EntityEditor.getPrototype("", element))
 		end
 		
+		--store a reference to the element so it isn't garbage collected
 		EntityEditor.instance.addNewElement(element)
 		
 		if adapterWrapper ~= nil then
@@ -201,7 +215,7 @@ function EntityEditor.createNewPointsElementWidget(listAdapter, outercontainer)
 		local element = nil
 		if wrapper.typeCombobox:getSelectedItem():getID() == 0 then
 			element = EntityEditor.instance.helper:createPosition2dElement()
-			adapterWrapper = EntityEditor.createPosition2DAdapter(element)
+			adapterWrapper = EntityEditor.createPosition2DAdapter(element, EntityEditor.getPrototype("", element))
 		end
 		
 		EntityEditor.instance.addNewElement(element)
@@ -233,28 +247,28 @@ function EntityEditor.createNewMapElementWidget(mapAdapter, outercontainer, prot
 	wrapper.buttonPressed = function(args)
 		local adapterWrapper = nil
 		local element = nil
+		local name = wrapper.nameEditbox:getText()
 		if wrapper.typeCombobox:getSelectedItem():getID() == 0 then
 			element = EntityEditor.instance.helper:createStringElement()
-			adapterWrapper = EntityEditor.createStringAdapter(element)
+			adapterWrapper = EntityEditor.createStringAdapter(element, EntityEditor.getPrototype(name, element))
 		elseif wrapper.typeCombobox:getSelectedItem():getID() == 1 then
 			element = EntityEditor.instance.helper:createIntElement()
-			adapterWrapper = EntityEditor.createNumberAdapter(element)
+			adapterWrapper = EntityEditor.createNumberAdapter(element, EntityEditor.getPrototype(name, element))
 		elseif wrapper.typeCombobox:getSelectedItem():getID() == 2 then
 			element = EntityEditor.instance.helper:createFloatElement()
-			adapterWrapper = EntityEditor.createNumberAdapter(element)
+			adapterWrapper = EntityEditor.createNumberAdapter(element, EntityEditor.getPrototype(name, element))
 		elseif wrapper.typeCombobox:getSelectedItem():getID() == 3 then
 			element = EntityEditor.instance.helper:createMapElement()
-			adapterWrapper = EntityEditor.createMapAdapter(element)
+			adapterWrapper = EntityEditor.createMapAdapter(element, EntityEditor.getPrototype(name, element))
 		elseif wrapper.typeCombobox:getSelectedItem():getID() == 4 then
 			element = EntityEditor.instance.helper:createListElement()
-			adapterWrapper = EntityEditor.createListAdapter(element)
+			adapterWrapper = EntityEditor.createListAdapter(element, EntityEditor.getPrototype(name, element))
 		end
 		
 		EntityEditor.instance.addNewElement(element)
 		
 		if adapterWrapper ~= nil then
 			local newPrototype = {}
-			local name = wrapper.nameEditbox:getText()
 			wrapper.adapter:addAttributeAdapter(name, adapterWrapper.adapter, adapterWrapper.outercontainer)
 			EntityEditor.addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
 			--by adding the window again we make sure that it's at the bottom of the child window list
@@ -268,13 +282,19 @@ end
 
 function EntityEditor.createAdapter(attributeName, element)
 	local prototype = EntityEditor.getPrototype(attributeName, element)
-	return EntityEditor.createAdapterFromPrototype(attributeName, element, prototype)
+	return EntityEditor.createAdapterFromPrototype(element, prototype)
 end
 
-function EntityEditor.createAdapterFromPrototype(attributeName, element, prototype)
+function EntityEditor.createAdapterFromPrototype(element, prototype)
 	local adapterWrapper = nil
 	if prototype.hidden == nil then
-		if prototype.type == 'size' then
+		if prototype.type == "map" then
+			adapterWrapper = EntityEditor.createMapAdapter(element, prototype)
+		elseif prototype.type == "list" then
+			adapterWrapper = EntityEditor.createListAdapter(element, prototype)
+		elseif prototype.type == "static" or prototype.readonly ~= nil then
+			adapterWrapper = EntityEditor.createStaticAdapter(element, prototype)
+		elseif prototype.type == 'size' then
 			adapterWrapper = EntityEditor.createSizeAdapter(element, prototype)
 		elseif prototype.type == 'pos' then
 			adapterWrapper = EntityEditor.createPositionAdapter(element, prototype)
@@ -286,12 +306,6 @@ function EntityEditor.createAdapterFromPrototype(attributeName, element, prototy
 			adapterWrapper = EntityEditor.createStringAdapter(element, prototype)
 		elseif prototype.type == "number" then
 			adapterWrapper = EntityEditor.createNumberAdapter(element, prototype)
-		elseif prototype.type == "map" then
-			adapterWrapper = EntityEditor.createMapAdapter(element, prototype)
-		elseif prototype.type == "list" then
-			adapterWrapper = EntityEditor.createListAdapter(element, prototype)
-		elseif prototype.type == "static" then
-			adapterWrapper = EntityEditor.createStaticAdapter(element, prototype)
 		end
 		if adapterWrapper ~= nil then
 			if prototype.suggestions ~= nil then
@@ -342,8 +356,10 @@ function EntityEditor.createMapAdapter(element, prototype)
 		end
 	end
 	
-	local newElementWrapper = EntityEditor.createNewMapElementWidget(wrapper.adapter, wrapper.container)
-	wrapper.container:addChildWindow(newElementWrapper.container)
+	if prototype.readonly == nil then
+		local newElementWrapper = EntityEditor.createNewMapElementWidget(wrapper.adapter, wrapper.container)
+		wrapper.container:addChildWindow(newElementWrapper.container)
+	end
 	EntityEditor.createStackableContainer(wrapper.container):repositionWindows()
 	return wrapper	
 end
@@ -354,15 +370,22 @@ function EntityEditor.createListAdapter(element, prototype)
 	wrapper.adapter = EntityEditor.factory:createListAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
 	for i = 0, wrapper.adapter:getSize() - 1 do
 		local childElement = wrapper.adapter:valueOfAttr(i)
-		local adapterWrapper = EntityEditor.createAdapter("", childElement)
+		local childPrototype = EntityEditor.getPrototype("", childElement)
+		if prototype.readonly ~= nil then
+			childPrototype.readonly = true
+			childPrototype.nodelete = true
+		end
+		local adapterWrapper = EntityEditor.createAdapterFromPrototype(childElement, childPrototype)
 		if adapterWrapper ~= nil then
 			EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.container, adapterWrapper.prototype)
 			wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
 		end
 	end	
 	
-	local newElementWrapper = EntityEditor.createNewListElementWidget(wrapper.adapter, wrapper.container)
-	wrapper.container:addChildWindow(newElementWrapper.container)
+	if prototype.readonly == nil then
+		local newElementWrapper = EntityEditor.createNewListElementWidget(wrapper.adapter, wrapper.container)
+		wrapper.container:addChildWindow(newElementWrapper.container)
+	end
 	EntityEditor.createStackableContainer(wrapper.container):repositionWindows()
 	
 	return wrapper	
