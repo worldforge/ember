@@ -45,13 +45,6 @@ function EntityPicker.buildWidget()
 	EntityPicker.buttons.edit = EntityPicker.widget:getWindow("EditButton")
 	EntityPicker.buttons.edit:subscribeEvent("MouseButtonUp", "EntityPicker.editButton_Click")
 	
-	--disble the edit button if we're not admin
---[[	if emberOgre:getAvatar():isAdmin() then
-		EntityPicker.buttons.edit:setVisible(true)
-	else
-		EntityPicker.buttons.edit:setVisible(false)
-	end]]
-	
 	--get a couple of use buttons to allow for different use actions
 	EntityPicker.useButtons[1] = EntityPicker.widget:getWindow("UseButton1")
 	EntityPicker.useButtons[1]:subscribeEvent("MouseButtonUp", "EntityPicker.buttonUse_Click")
@@ -72,6 +65,13 @@ end
 
 function EntityPicker.showMenu(position)
 	EntityPicker.widget:show()
+	
+	--disble the edit button if we're not admin
+	if emberOgre:getAvatar():isAdmin() then
+		EntityPicker.buttons.edit:setVisible(true)
+	else
+		EntityPicker.buttons.edit:setVisible(false)
+	end	
 	
 	position.x = position.x - EntityPicker.widget:getMainWindow():getWidth():asAbsolute(0) * 0.5
 	position.y = position.y - 10.0

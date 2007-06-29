@@ -1,3 +1,7 @@
+2007-06-29 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityPicker.lua: don't show the "edit" option if we're not admin
+
 2007-06-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/main/Ember.cpp: fixed a problem with binreloc
