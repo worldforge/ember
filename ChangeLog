@@ -1,3 +1,11 @@
+2007-06-30 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/jesus/Makefile.am, src/components/ogre/modeldefinitions/Makefile.am, src/components/ogre/widgets/Makefile.am: make the installation a little bit more robust
+
+2007-06-30 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/ogreopcode/Makefile.am, src/components/ogre/ogreopcode/include/Makefile.am, src/components/ogre/ogreopcode/include/Opcode/Makefile.am, src/components/ogre/ogreopcode/src/Opcode/Makefile.am, configure.ac: distcheck fixes
+
 2007-06-29 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/widgets/EntityPicker.lua: don't show the "edit" option if we're not admin
