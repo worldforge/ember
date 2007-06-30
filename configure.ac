@@ -434,8 +434,9 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/sound/Makefile
 		 src/components/ogre/ogreopcode/Makefile
 		 src/components/ogre/ogreopcode/src/Makefile
-		 src/components/ogre/ogreopcode/include/Makefile
 		 src/components/ogre/ogreopcode/src/Opcode/Makefile
+		 src/components/ogre/ogreopcode/include/Makefile
+		 src/components/ogre/ogreopcode/include/Opcode/Makefile
 		 src/components/ogre/Makefile
 		 src/components/ogre/cegui/Makefile
 		 src/components/ogre/widgets/Makefile
