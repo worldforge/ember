@@ -1,5 +1,13 @@
 2007-06-30 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* src/main/Application.cpp: more proper syntax
+	* src/components/ogre/widgets/EntityCEGUITexture.cpp: make sure that all Models are destroyed first to prevent spurious segfaults
+	* src/components/ogre/ogreopcode/include/OgreCollisionObject.h: try to avoid some more compiler warnings
+	* src/components/ogre/OpcodeCollisionDetector.cpp: use the proper methods for destroying collision objects
+	* src/components/ogre/EmberOgre.cpp: code cleanup
+
+2007-06-30 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* src/components/ogre/jesus/Makefile.am, src/components/ogre/modeldefinitions/Makefile.am, src/components/ogre/widgets/Makefile.am: make the installation a little bit more robust
 
 2007-06-30 Erik Hjortsberg  <erik.hjortsberg@iteam.se>

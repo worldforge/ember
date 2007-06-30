@@ -45,9 +45,8 @@ void OpcodeCollisionDetector::destroyCollisionObjects()
 	OgreOpcode::CollisionContext* collideContext = OgreOpcode::CollisionManager::getSingletonPtr()->getDefaultContext();
 	for (OpcodeCollisionDetector::CollisionObjectStore::iterator I = mCollisionObjects.begin(); I != mCollisionObjects.end(); ++I)
 	{
-		collideContext->removeObject(*I);
 		OgreOpcode::ICollisionShape* shape = (*I)->getShape();
-		delete *I;
+		collideContext->destroyObject(*I);
 		OgreOpcode::CollisionManager::getSingleton().destroyShape(shape);
 	}
 	mCollisionObjects.clear();
@@ -65,7 +64,8 @@ void OpcodeCollisionDetector::buildCollisionObjects()
 // 		if (!collideShape->isInitialized()) {
 			collideShape->load((*I)->getEntity());
 // 		}
-		OgreOpcode::CollisionObject* collideObject = new OgreOpcode::CollisionObject(collideShapeName);
+		OgreOpcode::CollisionObject* collideObject = collideContext->createObject(collideShapeName);
+		
 		collideObject->setShape(collideShape);
 		
 		collideContext->addObject(collideObject);
@@ -105,6 +105,5 @@ void OpcodeCollisionDetector::testCollision(Ogre::Ray& ray, CollisionResult& res
 	}
 
 }
-
 
 }

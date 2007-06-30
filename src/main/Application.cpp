@@ -104,18 +104,19 @@ void Application::mainLoopStep()
 			Eris::PollDefault::poll(1);
 		} catch (const Ember::Exception& ex) {
 			S_LOG_CRITICAL(ex.getError());
-			throw ex;
+			throw;
 		} catch (const std::exception& ex)
 		{
 			S_LOG_CRITICAL("Got exception, shutting down. " << ex.what());
-			throw ex;
+			throw;
 		} catch (const std::string& ex)
 		{
 			S_LOG_CRITICAL("Got exception, shutting down. " << ex);
-			throw ex;
+			throw;
 		} catch (...)
 		{
 			S_LOG_CRITICAL("Got unknown exception.");
+			throw;
 		}
 		if (mWorldView)
 			mWorldView->update();

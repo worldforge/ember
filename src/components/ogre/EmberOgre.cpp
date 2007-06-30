@@ -259,37 +259,6 @@ bool EmberOgre::frameEnded(const Ogre::FrameEvent & evt)
 
 bool EmberOgre::frameStarted(const Ogre::FrameEvent & evt)
 {
-
-
-// 	if (mPollEris) {
-// 		EventStartErisPoll.emit();
-// 		try {
-// 			Eris::PollDefault::poll(1);
-// 		} catch (const Ember::Exception& ex) {
-// 			S_LOG_CRITICAL(ex.getError());
-// 			throw ex;
-// 		} catch (const Ogre::Exception& ex) {
-// 			S_LOG_CRITICAL(ex.getFullDescription());
-// 			throw ex;
-// 	/*	} catch (const CEGUI::Exception& ex) {
-// 			S_LOG_CRITICAL(ex.getMessage());
-// 			throw ex;*/
-// 		} catch (const std::exception& ex)
-// 		{
-// 			S_LOG_CRITICAL("Got exception, shutting down. " << ex.what());
-// 			throw ex;
-// 		} catch (const std::string& ex)
-// 		{
-// 			S_LOG_CRITICAL("Got exception, shutting down. " << ex);
-// 			throw ex;
-// 		} catch (...)
-// 		{
-// 			S_LOG_CRITICAL("Got unknown exception.");
-// 		}
-// 		if (mWorldView)
-// 			mWorldView->update();
-// 		EventEndErisPoll.emit();
-// 	}
 	
 	if (!mKeepOnRunning)
 		S_LOG_INFO( "Shutting down Ember.");
@@ -311,53 +280,7 @@ void EmberOgre::go()
 {
 	if (!setup())
 		return;
-
-// 	try {
-// 	try {
-// 		mRoot->startRendering();
-// 	} catch (const Ember::Exception& ex) {
-// 		S_LOG_CRITICAL(ex.getError());
-// 		throw ex;
-// 	} catch (const Ogre::Exception& ex) {
-// 		S_LOG_CRITICAL(ex.getFullDescription());
-// 		throw ex;
-// 	} catch (const std::string& ex)
-// 	{
-// 		S_LOG_CRITICAL("Got exception, shutting down. " << ex);
-// 		throw ex;
-// /*	} catch (const CEGUI::Exception& ex) {
-// 		S_LOG_CRITICAL(ex.getMessage());
-// 		throw ex;*/
-// 	} catch (const std::exception& ex)
-// 	{
-// 		S_LOG_CRITICAL("Got exception, shutting down. " << ex.what());
-// 		throw ex;
-// 	} catch (...)
-// 	{
-// 		S_LOG_CRITICAL("Got unknown exception,");
-// 	}
-// 	} catch (Ogre::Exception e) {
-// 		std::cerr << "Error in Ogre: !\n";
-// 	}
-
 }
-
-// void EmberOgre::shutdown()
-// {
-// 	mKeepOnRunning = false;
-// }
-// 
-// void EmberOgre::requestQuit()
-// {
-// 	bool handled = false;
-// 	EventRequestQuit.emit(handled);
-// 	///check it was handled (for example if the gui wants to show a confirmation window)
-// 	if (!handled) {
-// 		///it's not handled, quit now
-// 		shutdown();
-// 	}
-// 
-// }
 
 
     

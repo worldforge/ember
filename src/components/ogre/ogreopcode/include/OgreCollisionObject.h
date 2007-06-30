@@ -56,21 +56,21 @@ namespace OgreOpcode
 
 	public:
 		CollisionObject(const Ogre::String& name)
-			: mContext(0),
-			mName(name),
+			: mName(name),
+			mContext(0),
 			mRadius(0.0f),
 			//old_center_offset(0,0,0),
 			//new_center_offset(0,0,0),
-			new_pos(0,0,0),
+			old_matrix(Ogre::Matrix4::IDENTITY),
 			old_pos(0,0,0),
+			new_matrix(Ogre::Matrix4::IDENTITY),
+			new_pos(0,0,0),
 			mShape(0),
 			coll_class(0),
 			m_tdelta(-1.0),
 			client_data(0),
 			is_attached(false),
 			num_colls(0),
-			old_matrix(Ogre::Matrix4::IDENTITY),
-			new_matrix(Ogre::Matrix4::IDENTITY),
 			mNeedsUpdating(true),
 			mForcedUpdate(true),
 			mProxy(0)

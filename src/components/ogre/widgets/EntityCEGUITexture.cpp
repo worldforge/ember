@@ -78,6 +78,8 @@ EntityCEGUITexture::~EntityCEGUITexture()
 		///the root scene node cannot be removed (evar!!)
 // 		mSceneManager->destroySceneNode(mSceneManager->getRootSceneNode()->getName());
 	}
+	///we must make sure that all models are destroyed before the entities are destroyed, else we'll get segfaults in the Model destructor as it tries to access already deleted entities
+	mSceneManager->destroyAllMovableObjectsByType(Model::Model::sMovableType);
 	Ogre::Root::getSingleton().destroySceneManager(mSceneManager);
 }
 
