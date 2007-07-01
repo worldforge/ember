@@ -57,6 +57,11 @@ class AvatarController
 	 */
 	const AvatarControllerMovement& getCurrentMovement() const;
 
+	/**
+	Moves the avatar to the specified point.
+	A terrain decal will be shown.
+	*/
+	void moveToPoint(const Ogre::Vector3& point);
 
 };
 

@@ -1,3 +1,31 @@
+2007-07-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/scripting/bindings/lua/AvatarController.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
+
+2007-07-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityPicker.lua: use the avatarcontroller method for moving to a point
+
+2007-07-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/scripts/environment.material, media/materials/textures/terraindecal.png: added material for a simple terrain decal
+
+2007-07-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/AvatarController.cpp, src/components/ogre/AvatarController.h: added public method for moving to a point, and use a terrain decal to show the destination
+
+2007-07-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeMeshDecal.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeMeshDecal.cpp: make sure that the decal is updated when the LOD changes
+
+2007-07-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityPicker.layout, src/components/ogre/widgets/EntityPicker.lua: added menu option for moving to a point
+
+2007-07-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityEditor.lua: check for nul to avoid crashes when requesting incorrect adapters
+
 2007-06-30 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/main/Application.cpp: more proper syntax
