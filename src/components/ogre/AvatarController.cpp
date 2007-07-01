@@ -73,6 +73,8 @@ AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, G
 , mFreeFlyingCameraNode(0)
 , mIsRunning(false)
 , mMovementDirection(Ogre::Vector3::ZERO)
+, mDecalObject(0)
+, mDecalNode(0)
 {
 
 	mMovementCommandMapper.restrictToInputMode(Input::IM_MOVEMENT );
@@ -93,6 +95,7 @@ AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, G
 	mMovementCommandMapper.bindToInput(Input::getSingleton());
 
 	GUIManager::getSingleton().getEntityPickListener()->EventPickedEntity.connect(sigc::mem_fun(*this, &AvatarController::entityPicker_PickedEntity));
+	
 }
 AvatarController::~AvatarController()
 {
@@ -178,6 +181,12 @@ void AvatarController::attachCamera()
 bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 {
 
+// 	if (mDecalObject) {
+// 		Ogre::Real newSize = mPulsatingController->calculate(event.timeSinceLastFrame);
+// 		//mDecalNode->setScale(Ogre::Vector3(newSize, 1.0f, newSize));
+// // 		mDecalNode->yaw(Ogre::Radian(0.1f));
+// 	}
+
 // 	EmberPagingSceneManager* mScnMgr = static_cast<EmberPagingSceneManager*>(EmberOgre::getSingleton().getSceneManager());
 // 	if (mGUIManager->getInput()->isKeyDown(SDLK_F4)) {
 // /*		Real change;
@@ -259,12 +268,44 @@ AvatarCamera* AvatarController::getAvatarCamera() const
 void AvatarController::entityPicker_PickedEntity(const EntityPickResult& result, const MousePickerArgs& args)
 {
 	if (args.pickType == MPT_DOUBLECLICK) {
-		WFMath::Vector<3> atlasVector = Ogre2Atlas_Vector3(result.position);
-		WFMath::Point<3> atlasPos(atlasVector.x(), atlasVector.y(), atlasVector.z());
-		Ember::EmberServices::getSingletonPtr()->getServerService()->moveToPoint(atlasPos);
+		moveToPoint(result.position);
 	}
 }
 
+void AvatarController::moveToPoint(const Ogre::Vector3& point)
+{
+	if (!mDecalNode) {
+		createDecal();
+	}
+	mDecalNode->setPosition(point);
+	WFMath::Vector<3> atlasVector = Ogre2Atlas_Vector3(point);
+	WFMath::Point<3> atlasPos(atlasVector.x(), atlasVector.y(), atlasVector.z());
+	Ember::EmberServices::getSingletonPtr()->getServerService()->moveToPoint(atlasPos);
+}
+
+void AvatarController::createDecal()
+{
+	// Create object MeshDecal
+	Ogre::SceneManager* sceneManager = EmberOgre::getSingleton().getSceneManager();
+	Ogre::NameValuePairList params;
+	params["materialName"] = "/global/ember/terraindecal";
+	params["width"] = StringConverter::toString( 2 );
+	params["height"] = StringConverter::toString( 2 );
+	params["sceneMgrInstance"] = sceneManager->getName();
+
+	mDecalObject = sceneManager->createMovableObject(
+		"AvatarControllerMoveToDecal",
+		"PagingLandScapeMeshDecal",
+		&params );
+
+	// Add MeshDecal to Scene
+	mDecalNode = sceneManager->createSceneNode("AvatarControllerMoveToDecalNode");
+	mDecalNode->attachObject(mDecalObject);
+	
+	EmberOgre::getSingleton().getWorldSceneNode()->addChild(mDecalNode);
+	
+	mPulsatingController = new Ogre::WaveformControllerFunction(Ogre::WFT_SINE, 1, 0.33, 0.25);
+}
 
 
 }

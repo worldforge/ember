@@ -134,6 +134,12 @@ public:
 	 * @param args 
 	 */
 	virtual	void runCommand(const std::string &command, const std::string &args);
+	
+	/**
+	Moves the avatar to the specified point.
+	A terrain decal will be shown.
+	*/
+	void moveToPoint(const Ogre::Vector3& point);
 
 protected:
 
@@ -175,6 +181,15 @@ protected:
 	Listen for double clicks and send the avatar to the double clicked position.
 	*/
 	void entityPicker_PickedEntity(const EntityPickResult& result, const MousePickerArgs& args);
+	
+	/**
+	Creates the terrain decal needed for displaying where the avatar is heading.
+	*/
+	void createDecal();
+	
+	Ogre::MovableObject* mDecalObject;
+	Ogre::SceneNode* mDecalNode;
+	Ogre::WaveformControllerFunction* mPulsatingController;
 };
 
 
