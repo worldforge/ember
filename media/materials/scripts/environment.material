@@ -1,19 +1,41 @@
+material /global/ember/terraindecal
+{
+	technique
+	{
+		pass
+		{
+			ambient 1 1 1
+			diffuse 1 1 1
+			lighting off
+			scene_blend alpha_blend 
+			fog_override true
+			depth_bias 16
+			texture_unit
+			{
+				tex_address_mode border
+				tex_border_colour 0.0 0.0 0.0 0.0 
+				texture terraindecal.png
+			}
+		}
+	}
+}
+
 material /global/fire
 {
-    technique
-    {
-        pass
-        {
-           cull_hardware none 
-           cull_software none
-          scene_blend alpha_blend 
-		alpha_rejection greater_equal 128            
-           texture_unit
-            {
-                texture 3d_objects/items/fire/textures/flame/low/flame.png
-	    	}
-        }
-    }
+	technique
+	{
+		pass
+		{
+			cull_hardware none 
+			cull_software none
+			scene_blend alpha_blend 
+			alpha_rejection greater_equal 128
+			texture_unit
+			{
+				texture 3d_objects/items/fire/textures/flame/low/flame.png
+			}
+		}
+	}
 }
 
 material /global/environment/boulder/moraf_rock : /base/simple
