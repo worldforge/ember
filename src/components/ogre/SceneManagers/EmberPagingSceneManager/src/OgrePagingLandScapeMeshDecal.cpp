@@ -71,6 +71,7 @@ PagingLandScapeMeshDecal::PagingLandScapeMeshDecal( const String& name,
 	, size_( size )
 	, sceneMgr_( Root::getSingleton().getSceneManager( sceneMgrInstanceName ) )
 	, position_( Vector3::ZERO )
+	, mDirty(true)
 {
 	if( material_.isNull() )
 	{
@@ -98,8 +99,8 @@ PagingLandScapeMeshDecal::PagingLandScapeMeshDecal( const String& name,
 	declSize_ += sizeof( Vector2 );
 
 	// Set bounding information
-	AABB_.setMinimum( Vector3( -size_.x / 2, 0, -size_.y / 2 ) );
-	AABB_.setMaximum( Vector3( size_.x / 2, 0, size_.y / 2 ) );
+	AABB_.setMinimum( Vector3( -size_.x / 2, 1, -size_.y / 2 ) );
+	AABB_.setMaximum( Vector3( size_.x / 2, 1, size_.y / 2 ) );
 
 	CreateGeometry();
 }
@@ -139,6 +140,14 @@ void PagingLandScapeMeshDecal::CreateGeometry()
 
 	if( !height_ || !width_ )
 		return;
+
+	//only continue if it's dirty
+	if (!mDirty) {
+		return;
+	}
+	//make a copy of the subextends for lookup
+	mOldSubExtents = subExtents_;
+	mDirty = false;
 
 	Real xOffset = -size_.x / 2;
 	Real zOffset = -size_.y / 2;
@@ -469,8 +478,11 @@ void PagingLandScapeMeshDecal::getRenderOperation( Ogre::RenderOperation& op )
 	{
 		position_ = position;
 		orientation_ = orientation;
-		CreateGeometry();
+		//force a full geometry rebuild
+		mDirty = true;
 	}
+	//calling this every frame will only trigger a full rebuild when the LOD has changed
+	CreateGeometry();
 	op = renderOp_;
 }
 
@@ -534,6 +546,18 @@ bool PagingLandScapeMeshDecal::queryResult(SceneQuery::WorldFragment* fragment)
 			// that each sub-section was the full tile size, but that's also
 			// pretty wasteful (though possibly faster, since no heap allocation).
 			subSections_[offset].reserve( subExtent.width_ * subExtent.height_ );
+			
+			//compare with earlier result and see if any LOD has changed
+			if (!mDirty) {
+				if (mOldSubExtents.size() >= offset) {
+					SubExtent& oldSubExtent = mOldSubExtents[offset];
+					if (oldSubExtent.renderLevel_ != subExtent.renderLevel_) {
+						mDirty = true;
+					}
+				} else {
+					mDirty = true;
+				}
+			}
 			break;
 		}
 		

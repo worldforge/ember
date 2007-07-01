@@ -90,6 +90,16 @@ namespace Ogre
 
 		int width_;
 		int height_;
+		
+		/**
+		We'll use this flag to prevent rebuilding of the geometry every frame, instead only rebuilding when the LOD has changed.
+		*/
+		bool mDirty;
+		
+		/**
+		A copy of the subextents from the last geometry generation, to allow for dirty checks.
+		*/
+		SubExtentContainer mOldSubExtents;
 
 	public:
 		PagingLandScapeMeshDecal( const String& name,
@@ -142,8 +152,8 @@ namespace Ogre
 		{
 			return material_;
 		}
-		void getRenderOperation( RenderOperation& op );
-		void getWorldTransforms( Matrix4* xform ) const;
+		virtual void getRenderOperation( RenderOperation& op );
+		virtual void getWorldTransforms( Matrix4* xform ) const;
 		const Quaternion& getWorldOrientation() const;
 		const Vector3& getWorldPosition() const;
 		Real getSquaredViewDepth( const Camera* cam ) const;
