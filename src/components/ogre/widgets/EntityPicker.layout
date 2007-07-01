@@ -16,40 +16,52 @@
 			<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.00000,275.000000}}'/>
 			<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.00000,25.000000}}'/>
 			<Property Name='InheritsAlpha' Value='true'/>
+			<Window Type='EmberLook/Button' Name='MoveToButton'>
+				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
+				<Property Name='Text' Value='Move to'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Tooltip' Value='Move to this point.'/>
+			</Window>
 			<Window Type='EmberLook/Button' Name='TouchButton'>
 				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
 				<Property Name='Text' Value='Touch'/>
 				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Tooltip' Value='Touch the entity.'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='TakeButton'>
 				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.16,0.000000}}'/>
 				<Property Name='Text' Value='Take'/>
 				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Tooltip' Value='Pick up the entity.'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='GiveButton'>
 				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.32,0.000000}}'/>
 				<Property Name='Text' Value='Give'/>
 				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Tooltip' Value='Give something to the entity.'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='MoveButton'>
 				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.48,0.000000}}'/>
 				<Property Name='Text' Value='Move'/>
 				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Tooltip' Value='Move the entity.'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='InspectButton'>
 				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.64,0.000000}}'/>
 				<Property Name='Text' Value='Inspect'/>
 				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Tooltip' Value='Inspect the entity.'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='EditButton'>
 				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.64,0.000000}}'/>
 				<Property Name='Text' Value='Edit'/>
 				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Tooltip' Value='Edit the entity.'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='UseButton1'>
 				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>

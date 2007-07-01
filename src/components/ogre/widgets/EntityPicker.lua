@@ -32,6 +32,8 @@ function EntityPicker.buildWidget()
 	EntityPicker.entityName = EntityPicker.widget:getWindow("EntityName")
 	
 
+	EntityPicker.buttons.moveto = EntityPicker.widget:getWindow("MoveToButton")
+	EntityPicker.buttons.moveto:subscribeEvent("MouseButtonUp", "EntityPicker.buttonMoveto_Click")
 	EntityPicker.buttons.touch = EntityPicker.widget:getWindow("TouchButton")
 	EntityPicker.buttons.touch:subscribeEvent("MouseButtonUp", "EntityPicker.buttonTouch_Click")
 	EntityPicker.buttons.take = EntityPicker.widget:getWindow("TakeButton")
@@ -140,6 +142,12 @@ end
 --		EntityPickerWidget_removeMenu()
 --	end
 --end
+
+function EntityPicker.buttonMoveto_Click(args)
+	emberServices:getServerService():moveToPoint( EmberOgre.Ogre2Atlas(EntityPicker.position))
+	EntityPickerWidget_removeMenu()
+end
+
 
 function EntityPicker.buttonTouch_Click(args)
 	--print("Type: ", tolua.type(EntityPicker.position))
