@@ -144,7 +144,7 @@ end
 --end
 
 function EntityPicker.buttonMoveto_Click(args)
-	emberServices:getServerService():moveToPoint( EmberOgre.Ogre2Atlas(EntityPicker.position))
+	emberOgre:getAvatarController():moveToPoint(EntityPicker.position)
 	EntityPickerWidget_removeMenu()
 end
 
