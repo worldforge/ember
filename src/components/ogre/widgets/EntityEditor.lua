@@ -342,6 +342,9 @@ function EntityEditor.createMapAdapter(element, prototype)
 	local wrapper = {}
 	wrapper.container = guiManager:createWindow("DefaultGUISheet")
 	wrapper.adapter = EntityEditor.factory:createMapAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
+	if wrapper.adapter == nil then
+		return nil
+	end
 	
 	local attributeNames = wrapper.adapter:getAttributeNames()
 	for i = 0, attributeNames:size() - 1 do
@@ -368,6 +371,9 @@ function EntityEditor.createListAdapter(element, prototype)
 	local wrapper = {}
 	wrapper.container = guiManager:createWindow("DefaultGUISheet")
 	wrapper.adapter = EntityEditor.factory:createListAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
+	if wrapper.adapter == nil then
+		return nil
+	end
 	for i = 0, wrapper.adapter:getSize() - 1 do
 		local childElement = wrapper.adapter:valueOfAttr(i)
 		local childPrototype = EntityEditor.getPrototype("", childElement)
@@ -395,6 +401,9 @@ function EntityEditor.createPointsAdapter(element, prototype)
 	local wrapper = {}
 	wrapper.container = guiManager:createWindow("DefaultGUISheet")
 	wrapper.adapter = EntityEditor.factory:createListAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
+	if wrapper.adapter == nil then
+		return nil
+	end
 	for i = 0, wrapper.adapter:getSize() - 1 do
 		local childElement = wrapper.adapter:valueOfAttr(i)
 		local adapterWrapper = EntityEditor.createPosition2DAdapter(childElement)
