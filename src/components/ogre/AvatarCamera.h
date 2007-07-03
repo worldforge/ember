@@ -243,6 +243,12 @@ protected:
 	bool mInvertCamera;
 	
 	/**
+	Creates the rays needed for mouse picking and camera adjustment.
+	*/
+	void createRayQueries();
+	
+	
+	/**
 	 * creates all nodes needed for the camera 
 	 */
 	void createNodesForCamera();
@@ -273,11 +279,23 @@ protected:
 	//in meters how far we can pick objects
 	Ogre::Real mClosestPickingDistance;
 
+	Ogre::Vector3 mLastPosition;
+	Ogre::Real mWantedCameraDistance, mCurrentCameraDistance;
+	
+	Ogre::RaySceneQuery *mAdjustTerrainRaySceneQuery, *mCameraRaySceneQuery;
+	Ogre::Ray mAdjustTerrainRay;
+
 	void Input_MouseMoved(const MouseMotion& motion, Input::InputMode mode);
 
 	void ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key);
 	
 	void updateValuesFromConfig();
+
+	/**
+	 *    Internal method for setting the camera distance.
+	 * @param distance the new distance
+	 */
+	void _setCameraDistance(Ogre::Real distance);
 
 };
 

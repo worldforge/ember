@@ -123,7 +123,9 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	degreeYaw(0),
 	mWindow(window),
 	mViewPort(0),
-	mClosestPickingDistance(10000)
+	mClosestPickingDistance(10000),
+	mAdjustTerrainRaySceneQuery(0),
+	mCameraRaySceneQuery(0)
 //	mLastOrientationOfTheCamera(avatar->getOrientation())
 {
 	createNodesForCamera();
@@ -146,11 +148,37 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &AvatarCamera::ConfigService_EventChangedConfigItem));
 	
 	updateValuesFromConfig();
+	createRayQueries();
 }
 
 AvatarCamera::~AvatarCamera()
 {
+	EmberOgre::getSingleton().getSceneManager()->destroyQuery(mAdjustTerrainRaySceneQuery);
+	EmberOgre::getSingleton().getSceneManager()->destroyQuery(mCameraRaySceneQuery);
 }
+
+void AvatarCamera::createRayQueries()
+{
+	mAdjustTerrainRaySceneQuery = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery(mAdjustTerrainRay, Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
+	///only test for terrain
+	mAdjustTerrainRaySceneQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
+	mAdjustTerrainRaySceneQuery->setSortByDistance(true);
+	mAdjustTerrainRaySceneQuery->setQueryTypeMask(Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
+	
+	
+	unsigned long queryMask = Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK;
+	queryMask |= MousePicker::CM_AVATAR;
+	queryMask |= MousePicker::CM_ENTITY;
+	queryMask |= MousePicker::CM_NATURE;
+	queryMask |= MousePicker::CM_UNDEFINED;
+// 	queryMask |= Ogre::RSQ_FirstTerrain;
+	
+	mCameraRaySceneQuery = mSceneManager->createRayQuery( Ogre::Ray(), queryMask); 
+	mCameraRaySceneQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
+	mCameraRaySceneQuery->setSortByDistance(true);
+
+}
+
 
 void AvatarCamera::createNodesForCamera()
 {
@@ -277,11 +305,17 @@ void AvatarCamera::setAvatarNode(Ogre::SceneNode* sceneNode)
 
 void AvatarCamera::setCameraDistance(Ogre::Real distance)
 {
+	mWantedCameraDistance = distance;
+	_setCameraDistance(distance);
+}
+
+void AvatarCamera::_setCameraDistance(Ogre::Real distance)
+{
+	mCurrentCameraDistance = distance;
 	Ogre::Vector3 pos(0,0,distance);
 	mAvatarCameraNode->setPosition(pos);
 	EventChangedCameraDistance.emit(distance);
 }
-
 
 void AvatarCamera::pitch(Ogre::Degree degrees)
 {
@@ -341,21 +375,11 @@ void AvatarCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const Mouse
 	/// Start a new ray query 
 	Ogre::Ray cameraRay = getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
 
-	unsigned long queryMask = Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK;
-	queryMask |= MousePicker::CM_AVATAR;
-	queryMask |= MousePicker::CM_ENTITY;
-	queryMask |= MousePicker::CM_NATURE;
-	queryMask |= MousePicker::CM_UNDEFINED;
-// 	queryMask |= Ogre::RSQ_FirstTerrain;
-	
-	Ogre::RaySceneQuery *raySceneQuery = mSceneManager->createRayQuery( cameraRay, queryMask); 
-	raySceneQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
-	raySceneQuery->setSortByDistance(true);
-
-	raySceneQuery->execute(); 
+	mCameraRaySceneQuery->setRay(cameraRay);
+	mCameraRaySceneQuery->execute(); 
 	
 	///now check the entity picking
-	Ogre::RaySceneQueryResult& queryResult = raySceneQuery->getLastResults(); 
+	Ogre::RaySceneQueryResult& queryResult = mCameraRaySceneQuery->getLastResults(); 
 	bool continuePicking = true;
 			
 	for (WorldPickListenersStore::iterator I = mPickListeners.begin(); I != mPickListeners.end(); ++I) {
@@ -379,10 +403,6 @@ void AvatarCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const Mouse
 	for (WorldPickListenersStore::iterator I = mPickListeners.begin(); I != mPickListeners.end(); ++I) {
 		(*I)->endPickingContext(mousePickerArgs);
 	}
-	
-	///this must be destroyed by the scene manager
-	mSceneManager->destroyQuery(raySceneQuery);
-
 }
 
 	bool AvatarCamera::worldToScreen(const Ogre::Vector3& worldPos, Ogre::Vector3& screenPos) 
@@ -415,8 +435,40 @@ void AvatarCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const Mouse
 	
 	bool AvatarCamera::adjustForTerrain()
 	{
+		/// We will shoot a ray from the camera base node to the camera. If it hits anything on the way we know that there's something between the camera and the avatar and we'll position the camera closer to the avatar. Thus we'll avoid having the camera dip below the terrain
+		///For now we'll only check against the terrain
+		const Ogre::Vector3 direction(-mCamera->getDerivedDirection());
+		///If the direction if pointing straight upwards we'll end up in an infinite loop in the ray query
+		if (direction.z != 0) {
 		
-		Ogre::RaySceneQuery *raySceneQueryHeight = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery( Ogre::Ray(mCamera->getDerivedPosition(), Ogre::Vector3::NEGATIVE_UNIT_Y), Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK); 
+			mAdjustTerrainRay.setDirection(direction);
+			mAdjustTerrainRay.setOrigin(mAvatarCameraRootNode->getWorldPosition());
+			
+ 			mAdjustTerrainRaySceneQuery->setRay(mAdjustTerrainRay);
+			
+			mAdjustTerrainRaySceneQuery->execute(); 
+			
+			Ogre::RaySceneQueryResult queryResult = mAdjustTerrainRaySceneQuery->getLastResults(); 
+			Ogre::RaySceneQueryResult::iterator rayIterator = queryResult.begin( );
+			for ( ; rayIterator != queryResult.end(); ++rayIterator ) {
+				Ogre::RaySceneQueryResultEntry& entry = *rayIterator;
+				
+				if (entry.worldFragment) {
+					Ogre::Vector3 position = entry.worldFragment->singleIntersection;
+					Ogre::Real distance = mAvatarCameraRootNode->getWorldPosition().distance(position);
+					if (distance < mWantedCameraDistance) {
+						_setCameraDistance(distance - 0.1);
+					} else {
+						if (mWantedCameraDistance != mCurrentCameraDistance) {
+							_setCameraDistance(mWantedCameraDistance);
+						}
+					}
+					break;
+				}
+			}
+		}
+		
+/*		Ogre::RaySceneQuery *raySceneQueryHeight = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery( Ogre::Ray(mCamera->getDerivedPosition(), Ogre::Vector3::NEGATIVE_UNIT_Y), Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK); 
 		
 		
 		raySceneQueryHeight->execute(); 
@@ -435,15 +487,14 @@ void AvatarCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const Mouse
 				mCamera->move(mCamera->getDerivedOrientation().Inverse() * Ogre::Vector3(0,terrainHeight - cameraHeight,0));
 //				mCamera->lookAt(mAvatarCameraRootNode->getPosition());
 				
-			}
-			 else if (cameraHeight != cameraNodeHeight) {
+			} else if (cameraHeight != cameraNodeHeight) {
 				Ogre::Real newHeight = std::max<Ogre::Real>(terrainHeight, cameraNodeHeight);
 				mCamera->move(Ogre::Vector3(0,newHeight - cameraHeight,0));
 				mCamera->lookAt(mAvatarCameraRootNode->getWorldPosition());
 				
 			}
 			
-		}
+		}*/
 	
 		return true;		
 	}
@@ -492,6 +543,10 @@ void AvatarCamera::ConfigService_EventChangedConfigItem(const std::string& secti
 
 bool AvatarCamera::frameStarted(const Ogre::FrameEvent& event)
 {
+	if (mCamera->getDerivedPosition() != mLastPosition) {
+		adjustForTerrain();
+	}
+	mLastPosition = mCamera->getDerivedPosition();
 #ifndef WIN32
 	Ember::SoundService* mySoundService = Ember::EmberServices::getSingleton().getSoundService();
 	{

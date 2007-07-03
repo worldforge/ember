@@ -1,3 +1,7 @@
+2007-07-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/AvatarCamera.cpp, src/components/ogre/AvatarCamera.h: make sure that the camera never dips below the terrain
+
 2007-07-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/scripting/bindings/lua/AvatarController.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
