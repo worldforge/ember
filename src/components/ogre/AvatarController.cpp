@@ -181,6 +181,14 @@ void AvatarController::attachCamera()
 bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 {
 
+	if (mDecalObject)
+	{
+		///hide the decal when we're close to it
+		if (mDecalNode->getWorldPosition().distance(mAvatar->getAvatarSceneNode()->getWorldPosition()) < 1) {
+			mDecalNode->setVisible(false);
+		}
+	}
+
 // 	if (mDecalObject) {
 // 		Ogre::Real newSize = mPulsatingController->calculate(event.timeSinceLastFrame);
 // 		//mDecalNode->setScale(Ogre::Vector3(newSize, 1.0f, newSize));
@@ -278,8 +286,20 @@ void AvatarController::moveToPoint(const Ogre::Vector3& point)
 		createDecal();
 	}
 	mDecalNode->setPosition(point);
+	mDecalNode->setVisible(true);
+	
 	WFMath::Vector<3> atlasVector = Ogre2Atlas_Vector3(point);
 	WFMath::Point<3> atlasPos(atlasVector.x(), atlasVector.y(), atlasVector.z());
+/*	WFMath::Point<3> atlas2dPos(atlasVector.x(), atlasVector.y(), 0);
+	WFMath::Point<3> avatar2dPos(mAvatar->getAvatarEmberEntity()->getPosition().x(), mAvatar->getAvatarEmberEntity()->getPosition().y(), 0);
+	WFMath::Vector<3> direction(1, 0, 0);
+	direction = direction.rotate(mAvatar->getAvatarEmberEntity()->getOrientation());
+	WFMath::Vector<3> directionToPoint = atlas2dPos - avatar2dPos;
+	WFMath::Quaternion rotation;
+	rotation = rotation.rotation(directionToPoint, direction);*/
+	//Ember::EmberServices::getSingletonPtr()->getServerService()->moveInDirection(WFMath::Vector<3>(0,0,0), rotation);	
+	
+	
 	Ember::EmberServices::getSingletonPtr()->getServerService()->moveToPoint(atlasPos);
 }
 
