@@ -1,3 +1,11 @@
+2007-07-04 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/Avatar.cpp, src/components/ogre/Avatar.h: correctly handle orientation updates from the server
+
+2007-07-04 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/AvatarController.cpp: hide the decal when we get close to our destination
+
 2007-07-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/AvatarCamera.cpp, src/components/ogre/AvatarCamera.h: make sure that the camera never dips below the terrain

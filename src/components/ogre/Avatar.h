@@ -71,7 +71,7 @@ public Ogre::FrameListener
     public:
 
 	Avatar();
-	~Avatar();
+	virtual ~Avatar();
 
 
 	AvatarCamera* getAvatarCamera() const;

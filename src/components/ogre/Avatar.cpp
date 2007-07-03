@@ -59,7 +59,7 @@ Avatar::Avatar()
 	mThresholdDegreesOfYawForAvatarRotation = 100;
 
 
-	mWalkSpeed = 2.5;
+	mWalkSpeed = 2.47;
 	mRunSpeed = 5; ///5 seems to be the max speed in cyphesis
 
 
@@ -323,6 +323,10 @@ void Avatar::movedInWorld()
 	if (!mCurrentMovementState.isMoving) 
 	{
 		mAvatarNode->setPosition(Atlas2Ogre(mErisAvatarEntity->getPosition()));
+		const WFMath::Quaternion& orient = mErisAvatarEntity->getOrientation();
+		mAvatarNode->setOrientation(Atlas2Ogre(orient));
+		///we must set this, else ember will think that we've rotated the avatar ourselves and try to send an update to the server
+		mMovementStateAtLastServerMessage.orientation = mAvatarNode->getOrientation();
 	}
 
 /*
