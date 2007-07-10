@@ -59,6 +59,7 @@ Avatar::Avatar()
 	mThresholdDegreesOfYawForAvatarRotation = 100;
 
 
+	///these are the defaults, but if anything is set in the config file that will override these values as updateFromConfig is called
 	mWalkSpeed = 2.47;
 	mRunSpeed = 5; ///5 seems to be the max speed in cyphesis
 
@@ -381,6 +382,14 @@ void Avatar::ConfigService_EventChangedConfigItem(const std::string& section, co
 		if (key == "avatarrotationupdatefrequency" ) {
 			updateFromConfig();
 		}
+	} else if (section == "input") {
+		if (key == "walkspeed" ) {
+			updateFromConfig();
+		}
+	} else if (section == "input") {
+		if (key == "runspeed" ) {
+			updateFromConfig();
+		}
 	}
 }
 
@@ -389,6 +398,12 @@ void Avatar::updateFromConfig()
 	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("general", "avatarrotationupdatefrequency")) {
 		double frequency = static_cast<double>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("general", "avatarrotationupdatefrequency"));
 		setMinIntervalOfRotationChanges(static_cast<Ogre::Real>(frequency));
+	}
+	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("input", "walkspeed")) {
+		mWalkSpeed = static_cast<double>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("input", "walkspeed"));
+	}
+	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("input", "runspeed")) {
+		mRunSpeed = static_cast<double>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("input", "runspeed"));
 	}
 
 }
