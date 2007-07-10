@@ -479,16 +479,18 @@ namespace Ogre
                 const Ogre::Real H = mOptions->maxScaledZ;
                 const Ogre::Real maxHeight = mData2DManager->getMaxHeight ();
                 
-                // while ray is outside but raydir going inside
-                while ((raystart.y < 0.0f && raydir.y > 0.0f) || 
-                        (raystart.y > maxHeight && raydir.y < 0.0f) || 
-
-                        (raystart.x < -W && raydir.x > 0.0f) || 
-                        (raystart.x > W  && raydir.x < 0.0f) || 
-
-                        (raystart.z < -H && raydir.z > 0.0f) || 
-                        (raystart.z > H  && raydir.z < 0.0f)) 
-                    raystart += raydir;
+                if (W != 0 && H != 0) {
+					// while ray is outside but raydir going inside
+					while ((raystart.y < 0.0f && raydir.y > 0.0f) || 
+							(raystart.y > maxHeight && raydir.y < 0.0f) || 
+	
+							(raystart.x < -W && raydir.x > 0.0f) || 
+							(raystart.x > W  && raydir.x < 0.0f) || 
+	
+							(raystart.z < -H && raydir.z > 0.0f) || 
+							(raystart.z > H  && raydir.z < 0.0f)) 
+						raystart += raydir;
+				}
 
                 if (raystart.y < 0.0f || raystart.y >= maxHeight ||
                     raystart.x < -W || raystart.x > W  || 
