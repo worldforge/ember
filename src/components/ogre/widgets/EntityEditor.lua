@@ -408,7 +408,7 @@ function EntityEditor.createPointsAdapter(element, prototype)
 		local childElement = wrapper.adapter:valueOfAttr(i)
 		local adapterWrapper = EntityEditor.createPosition2DAdapter(childElement)
 		if adapterWrapper ~= nil then
-			EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.container)
+			EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.container, adapterWrapper.prototype)
 			wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
 		end
 	end	
