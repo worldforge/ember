@@ -29,6 +29,7 @@ TerrainInfo::TerrainInfo()
 :  mXminBasePoint(0), mXmaxBasePoint(0), mYminBasePoint(0), mYmaxBasePoint(0),
 	 mXminBasePointAdjusted(0), mXmaxBasePointAdjusted(0), mYminBasePointAdjusted(0), mYmaxBasePointAdjusted(0)
 {
+	recalculateSize();
 }
 
 
@@ -44,12 +45,18 @@ void TerrainInfo::setBasePoint(const WFMath::Point<2>& position, const Mercator:
 	adjustBasePointPositionDown(mYminBasePointAdjusted, mYminBasePoint);
 	adjustBasePointPositionUp(mYmaxBasePointAdjusted, mYmaxBasePoint);
 	
+	recalculateSize();
+}
+
+void TerrainInfo::recalculateSize()
+{
 	mCalculatedSize = WFMath::AxisBox<2>(WFMath::Point<2>(mXminBasePointAdjusted * 64, mYminBasePointAdjusted * 64), WFMath::Point<2>(mXmaxBasePointAdjusted * 64, mYmaxBasePointAdjusted * 64));
 	mCalculatedSegmentSize = WFMath::AxisBox<2>(WFMath::Point<2>(mXminBasePointAdjusted, mYminBasePointAdjusted ), WFMath::Point<2>(mXmaxBasePointAdjusted , mYmaxBasePointAdjusted ));
 	
 	int mercatorSegmentsPerOgrePage = mPageIndicesSize / 64;
 	mCalculatedPageSize = WFMath::AxisBox<2>(WFMath::Point<2>(mXminBasePointAdjusted / mercatorSegmentsPerOgrePage, mYminBasePointAdjusted / mercatorSegmentsPerOgrePage), WFMath::Point<2>(mXmaxBasePointAdjusted / mercatorSegmentsPerOgrePage, mYmaxBasePointAdjusted / mercatorSegmentsPerOgrePage));
 }
+
 
 void TerrainInfo::adjustBasePointPositionUp(WFMath::CoordType& basePointPositionAdjusted, WFMath::CoordType newBasePointPosition)
 {

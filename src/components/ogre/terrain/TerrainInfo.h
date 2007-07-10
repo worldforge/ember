@@ -63,6 +63,8 @@ private:
 	
 	void adjustBasePointPositionUp(WFMath::CoordType& basePointPositionAdjusted, WFMath::CoordType newBasePointPosition);
 	
+	void recalculateSize();
+	
 	/**
 	* 
 	*/
