@@ -185,7 +185,7 @@ protected:
 	/**
 	Creates the terrain decal needed for displaying where the avatar is heading.
 	*/
-	void createDecal();
+	void createDecal(Ogre::Vector3 position);
 	
 	Ogre::MovableObject* mDecalObject;
 	Ogre::SceneNode* mDecalNode;

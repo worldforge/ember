@@ -29,7 +29,9 @@
 #include "GUIManager.h"
 #include "Avatar.h"
 #include "EmberOgre.h"
-#include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
+// #include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
+#include "terrain/TerrainGenerator.h"
+#include "terrain/ISceneManagerAdapter.h"
 
 
 #include "input/Input.h"
@@ -284,9 +286,12 @@ void AvatarController::entityPicker_PickedEntity(const EntityPickResult& result,
 void AvatarController::moveToPoint(const Ogre::Vector3& point)
 {
 	if (!mDecalNode) {
-		createDecal();
+		createDecal(point);
 	}
-	mDecalNode->setPosition(point);
+	
+	///make sure it's at the correct height, since the visibility of it is determined by the bounding box
+	Ogre::Real height = EmberOgre::getSingleton().getTerrainGenerator()->getAdapter()->getHeightAt(point.x, point.z);
+	mDecalNode->setPosition(Ogre::Vector3(point.x, height, point.z));
 	mDecalNode->setVisible(true);
 	
 	WFMath::Vector<3> atlasVector = Ogre2Atlas_Vector3(point);
@@ -304,7 +309,7 @@ void AvatarController::moveToPoint(const Ogre::Vector3& point)
 	Ember::EmberServices::getSingletonPtr()->getServerService()->moveToPoint(atlasPos);
 }
 
-void AvatarController::createDecal()
+void AvatarController::createDecal(Ogre::Vector3 position)
 {
 	// Create object MeshDecal
 	Ogre::SceneManager* sceneManager = EmberOgre::getSingleton().getSceneManager();
@@ -321,9 +326,12 @@ void AvatarController::createDecal()
 
 	// Add MeshDecal to Scene
 	mDecalNode = sceneManager->createSceneNode("AvatarControllerMoveToDecalNode");
-	mDecalNode->attachObject(mDecalObject);
-	
+	///the decal code is a little shaky and relies on us setting the position of the node before we add the moveable object
 	EmberOgre::getSingleton().getWorldSceneNode()->addChild(mDecalNode);
+	mDecalNode->setPosition(position);
+	mDecalNode->attachObject(mDecalObject);
+// 	mDecalNode->showBoundingBox(true);
+	
 	
 	mPulsatingController = new Ogre::WaveformControllerFunction(Ogre::WFT_SINE, 1, 0.33, 0.25);
 }
