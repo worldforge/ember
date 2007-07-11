@@ -233,6 +233,7 @@ protected:
 
 	bool MainWindow_Activated(const CEGUI::EventArgs& args);
 	bool MainWindow_Deactivated(const CEGUI::EventArgs& args);
+	bool MainWindow_MouseButtonDown(const CEGUI::EventArgs& args);
 
 	/**
 	*    The suffixed used by registerConsoleVisibilityToggleCommand

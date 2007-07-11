@@ -64,6 +64,9 @@ namespace EmberOgre
 			getMainSheet()->addChildWindow(mMainWindow); 
 			BIND_CEGUI_EVENT(mMainWindow, CEGUI::FrameWindow::EventActivated, Widget::MainWindow_Activated);
 			BIND_CEGUI_EVENT(mMainWindow, CEGUI::FrameWindow::EventDeactivated, Widget::MainWindow_Deactivated);
+			///we want to catch all click events, so we'll listen for the mouse button down event
+			BIND_CEGUI_EVENT(mMainWindow, CEGUI::Window::EventMouseButtonDown, Widget::MainWindow_MouseButtonDown);
+			
 		}
 		return mMainWindow;
 	}
@@ -169,6 +172,12 @@ namespace EmberOgre
 	CEGUI::Window* Widget::getMainWindow()
 	{
 		return mMainWindow;
+	}
+	
+	bool Widget::MainWindow_MouseButtonDown(const CEGUI::EventArgs& args)
+	{
+		///we'll return true here to prevent the event from propagating to other windows
+		return true;
 	}
 	
 	bool Widget::MainWindow_Activated(const CEGUI::EventArgs& args)
