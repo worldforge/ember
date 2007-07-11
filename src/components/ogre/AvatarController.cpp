@@ -275,9 +275,10 @@ AvatarCamera* AvatarController::getAvatarCamera() const
 
 void AvatarController::entityPicker_PickedEntity(const EntityPickResult& result, const MousePickerArgs& args)
 {
-	if (args.pickType == MPT_DOUBLECLICK) {
+///don't do this now that we have a "move to" option in the menu, since it will confuse the users
+/*	if (args.pickType == MPT_DOUBLECLICK) {
 		moveToPoint(result.position);
-	}
+	}*/
 }
 
 void AvatarController::moveToPoint(const Ogre::Vector3& point)
