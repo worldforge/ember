@@ -102,7 +102,7 @@ PagingLandScapeMeshDecal::PagingLandScapeMeshDecal( const String& name,
 	AABB_.setMinimum( Vector3( -size_.x / 2, 1, -size_.y / 2 ) );
 	AABB_.setMaximum( Vector3( size_.x / 2, 1, size_.y / 2 ) );
 
-	CreateGeometry();
+// 	CreateGeometry();
 }
 
 PagingLandScapeMeshDecal::~PagingLandScapeMeshDecal()
@@ -112,6 +112,13 @@ PagingLandScapeMeshDecal::~PagingLandScapeMeshDecal()
 	delete renderOp_.vertexData;
 	delete renderOp_.indexData;
 }
+
+void PagingLandScapeMeshDecal::_notifyAttached(Node* parent, bool isTagPoint)
+{
+	MovableObject::_notifyAttached(parent, isTagPoint);
+	CreateGeometry();
+}
+
 
 void PagingLandScapeMeshDecal::CreateGeometry()
 {

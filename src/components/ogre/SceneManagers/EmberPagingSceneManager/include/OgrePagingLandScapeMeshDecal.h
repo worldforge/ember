@@ -110,7 +110,8 @@ namespace Ogre
 
 		// Main public interface
 		void SetSize( const Vector2& size );
-
+		
+		virtual void _notifyAttached(Node* parent, bool isTagPoint = false);
 	private:
 		void CreateGeometry();
 		size_t GetNumVertices() const;
