@@ -235,7 +235,20 @@ public:
 	 */
 	virtual	void runCommand(const std::string &command, const std::string &args);
 	
+	/**
+	Suppress all further event handling of the current event. Call this inside event handling methods to prevent further event handling.
+	*/
 	void suppressFurtherHandlingOfCurrentEvent();
+	
+	/**
+	Gets whether the movement mode is enabled, at which all mouse right click events will toggle between movement mode and mouse mode.
+	*/
+	bool getMovementModeEnabled() const;
+	
+	/**
+	Sets whether the movement mode is enabled, at which all mouse right click events will toggle between movement mode and mouse mode.
+	*/
+	void setMovementModeEnabled(bool value);
 
 protected:
 
@@ -323,6 +336,8 @@ protected:
 	InputCommandMapperStore mInputCommandMappers;
 	
 	bool mSuppressForCurrentEvent;
+	
+	bool mMovementModeEnabled;
 };
 
 };

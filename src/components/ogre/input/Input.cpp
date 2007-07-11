@@ -45,6 +45,7 @@ mCurrentInputMode(IM_GUI)
 , mMouseState(0)
 , mTimeSinceLastRightMouseClick(1000)
 , mSuppressForCurrentEvent(false)
+, mMovementModeEnabled(false)
 {
 	
 	
@@ -144,6 +145,17 @@ void Input::suppressFurtherHandlingOfCurrentEvent()
 	mSuppressForCurrentEvent = true;
 }
 
+bool Input::getMovementModeEnabled() const
+{
+	return mMovementModeEnabled;
+}
+
+void Input::setMovementModeEnabled(bool value)
+{
+	mMovementModeEnabled = value;
+}
+
+
 void Input::registerCommandMapper(InputCommandMapper* mapper)
 {
 	mInputCommandMappers[mapper->getState()] = mapper;
@@ -180,7 +192,9 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 			
 			//if the right mouse button is pressed, switch from gui mode
 			
-			toggleInputMode();
+			if (mMovementModeEnabled) {
+				toggleInputMode();
+			}
 			EventMouseButtonPressed.emit(MouseButtonRight, mCurrentInputMode);
 			
 		}
