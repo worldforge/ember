@@ -135,6 +135,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		mGuiSystem->setGUISheet(mSheet); 
 		mSheet->activate();
 		mSheet->moveToBack();
+		mSheet->setDistributesCapturedInputs(false);
 
 		BIND_CEGUI_EVENT(mSheet, CEGUI::ButtonBase::EventMouseButtonDown, GUIManager::mSheet_MouseButtonDown);
 		BIND_CEGUI_EVENT(mSheet, CEGUI::Window::EventInputCaptureLost, GUIManager::mSheet_CaptureLost);
@@ -404,24 +405,25 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 
 bool GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 {
+	if (isInGUIMode()) {
+		const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
+		S_LOG_VERBOSE("Main sheet is capturing input");
+		CEGUI::Window* aWindow = CEGUI::Window::getCaptureWindow();
+		if (aWindow) {
+			aWindow->releaseInput();
+			aWindow->deactivate();
+		}
+		//mSheet->activate();
+		//mSheet->captureInput();
 	
-	const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
-	S_LOG_VERBOSE("Main sheet is capturing input");
-	CEGUI::Window* aWindow = CEGUI::Window::getCaptureWindow();
-	if (aWindow) {
-		aWindow->releaseInput();
-		aWindow->deactivate();
-	}
-	//mSheet->activate();
-	//mSheet->captureInput();
-
-	if (mPicker) {
-		const CEGUI::Point& position = CEGUI::MouseCursor::getSingleton().getDisplayIndependantPosition();
-		MousePickerArgs pickerArgs;
-		pickerArgs.windowX = mouseArgs.position.d_x;
-		pickerArgs.windowY = mouseArgs.position.d_y;
-		pickerArgs.pickType = MPT_CLICK;
-		mPicker->doMousePicking(position.d_x, position.d_y, pickerArgs);
+		if (mPicker) {
+			const CEGUI::Point& position = CEGUI::MouseCursor::getSingleton().getDisplayIndependantPosition();
+			MousePickerArgs pickerArgs;
+			pickerArgs.windowX = mouseArgs.position.d_x;
+			pickerArgs.windowY = mouseArgs.position.d_y;
+			pickerArgs.pickType = MPT_CLICK;
+			mPicker->doMousePicking(position.d_x, position.d_y, pickerArgs);
+		}
 	}
 
 
