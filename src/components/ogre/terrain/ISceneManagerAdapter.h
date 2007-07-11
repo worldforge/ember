@@ -24,6 +24,7 @@
 namespace Ogre
 {
 class SceneManager;
+class Camera;
 }
 
 namespace EmberOgre {
@@ -35,6 +36,7 @@ public:
 	virtual ~ISceneManagerAdapter() {}
 
 	virtual int getPageSize() = 0;
+	virtual Ogre::Real getHeightAt(const Ogre::Real x, const Ogre::Real z) = 0;
 	
 	virtual void setWorldPagesDimensions(int numberOfPagesHeight, int numberOfPagesWidth) = 0;
 

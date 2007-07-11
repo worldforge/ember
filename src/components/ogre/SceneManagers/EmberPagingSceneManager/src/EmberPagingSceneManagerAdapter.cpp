@@ -44,6 +44,12 @@ namespace EmberOgre {
 		return getOptions()->PageSize;
 	}
 	
+	Ogre::Real EmberPagingSceneManagerAdapter::getHeightAt(const Ogre::Real x, const Ogre::Real z)
+	{
+		return mSceneManager->getHeightAt(x, z);
+	}
+
+	
 	void EmberPagingSceneManagerAdapter::setWorldPagesDimensions(int numberOfPagesHeight, int numberOfPagesWidth)
 	{
 		getOptions()->world_height = numberOfPagesHeight;

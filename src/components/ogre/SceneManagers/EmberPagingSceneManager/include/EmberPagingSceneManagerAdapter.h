@@ -44,6 +44,7 @@ public:
 	
 	
 	virtual int getPageSize();
+	virtual Ogre::Real getHeightAt(const Ogre::Real x, const Ogre::Real z);
 	
 	virtual void setWorldPagesDimensions(int numberOfPagesHeight, int numberOfPagesWidth);
 	
