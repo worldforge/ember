@@ -35,10 +35,10 @@ TerrainShader::TerrainShader(Mercator::Terrain* terrain, int terrainIndex,  cons
 
 TerrainShader::TerrainShader(Mercator::Terrain* terrain, int terrainIndex,  Ogre::MaterialPtr material, Mercator::Shader* shader)
 : mTextureName("")
-, mMaterial(material)
 , mShader(shader)
 , mTerrain(terrain)
 , mTerrainIndex(terrainIndex)
+, mMaterial(material)
 {
 
 	mTerrain->addShader(shader, mTerrainIndex);

@@ -20,6 +20,8 @@ class DllExport SunPositionModel {
 
 // Methods --------------------------------------------------------------------
 	public:
+		virtual ~SunPositionModel() {}
+		
 		/** Updates the sun position.
 				@param time Local time.
 				@return The sun light direction (or the negated sun position).

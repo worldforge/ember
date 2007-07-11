@@ -27,9 +27,10 @@ namespace EmberOgre {
 namespace Model {
 
 ParticleSystemBinding::ParticleSystemBinding(ParticleSystem* parentSystem, const std::string& emitterVal, const std::string& variableName) :
-mParticleSystem(parentSystem)
-, mEmitterVal(emitterVal)
+mEmitterVal(emitterVal)
 , mVariableName(variableName)
+, mParticleSystem(parentSystem)
+, mOriginalValue(0)
 {
 	//TODO: add more emitter values to bind
 	if (mEmitterVal == "emission_rate") {

@@ -39,7 +39,7 @@ JesusMousePicker::~JesusMousePicker()
 
 void JesusMousePicker::doMousePicking(const Ogre::Real x, const Ogre::Real y,const MousePickerArgs& args)
 {
-	AvatarCamera* camera = EmberOgre::getSingleton().getMainCamera();
+// 	AvatarCamera* camera = EmberOgre::getSingleton().getMainCamera();
 
 	
 // 	JesusPickerObject* pickerObject = 0;

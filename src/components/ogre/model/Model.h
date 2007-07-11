@@ -333,7 +333,7 @@ protected:
 	/**
 	modeldef this was copied from
 	*/
-	ModelDefnPtr _masterModel; 
+	ModelDefnPtr mMasterModel; 
 	
 	/**
 	a set of all submodels belonging to the model
@@ -377,7 +377,7 @@ protected:
 // 	return _masterModel->getRenderingDistance();
 // }
 
-ModelDefnPtr Model::getDefinition() const { return _masterModel; }
+ModelDefnPtr Model::getDefinition() const { return mMasterModel; }
 
 // // const Model::SubModelPartStoreMap& Model::getSubmodelParts() const
 // // {

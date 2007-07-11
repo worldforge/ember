@@ -64,7 +64,11 @@ using namespace EmberOgre::Environment;
 namespace EmberOgre {
 
 TerrainPage::TerrainPage(TerrainPosition position, const std::map<const Mercator::Shader*, TerrainShader*> shaderMap, TerrainGenerator* generator) 
-: mPosition(position), mShaderMap(shaderMap), mGenerator(generator), mBytesPerPixel(4), mFoliageArea(0)
+: mFoliageArea(0)
+, mGenerator(generator)
+, mPosition(position)
+, mShaderMap(shaderMap)
+, mBytesPerPixel(4)
 {
 
 	S_LOG_VERBOSE("Creating TerrainPage at position " << position.x() << ":" << position.y());
@@ -77,8 +81,6 @@ TerrainPage::TerrainPage(TerrainPosition position, const std::map<const Mercator
 				pageSegment.pos = TerrainPosition(x,y);
 				pageSegment.segment = segment;
 				mValidSegments.push_back(pageSegment);
-			} else {
-				int i = 0;
 			}
 		}
 	}
@@ -154,7 +156,6 @@ Ogre::MaterialPtr TerrainPage::generateTerrainMaterials() {
 	
 		//create a name for out material
 		S_LOG_INFO("Creating a material for the terrain.");
-		Ogre::SceneManager* sceneManager = EmberOgre::getSingleton().getSceneManager();
 		std::stringstream materialNameSS;
 		materialNameSS << "EmberTerrain_Segment";
 		materialNameSS << "_" << mPosition.x() << "_" << mPosition.y();
@@ -561,7 +562,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueComplexAtlas( Ogre::Techniq
 /*	int numberOfSegmentsToDo = aValidSegment->getSurfaces().size() - 1; //we've already done the base
 	for (int i = 0; i < numberOfSegmentsToDo; ++i) {*/
 	
-	size_t numberOfbaseTextureUnits = pass->getNumTextureUnitStates();
+// 	size_t numberOfbaseTextureUnits = pass->getNumTextureUnitStates();
 	int splattextureChannel = 0;
 	++shadersIterator;
 	for (; shadersIterator != mUsedShaders.end() ; ++shadersIterator) {
@@ -844,7 +845,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueSimple( Ogre::Technique* te
 
 	Mercator::Segment* segment = mGenerator->getTerrain().getSegment((int)mPosition.x(), (int)mPosition.y());
  
-	Ogre::ushort numberOfTextureUnitsOnCard = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits();
+// 	Ogre::ushort numberOfTextureUnitsOnCard = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits();
 	
 	
 	std::list<TerrainShader*>::iterator shadersIterator = mUsedShaders.begin();
@@ -859,7 +860,7 @@ void EmberOgre::TerrainPage::generateTerrainTechniqueSimple( Ogre::Technique* te
 	}
 	aValidSegment = mValidSegments.begin()->segment;
 	
-	Mercator::Surface* surface = (*shadersIterator)->getSurfaceForSegment(aValidSegment);
+// 	Mercator::Surface* surface = (*shadersIterator)->getSurfaceForSegment(aValidSegment);
 // 	Mercator::Surface* surface = *aValidSegment->getSurfaces().begin();
  
 	Ogre::Pass* pass = technique->getPass(0);

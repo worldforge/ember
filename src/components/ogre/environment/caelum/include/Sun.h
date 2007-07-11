@@ -61,7 +61,7 @@ class DllExport Sun : public CameraBoundElement {
 		/** Destructor.
 			@note If a sun position model is in use, it will be deleted.
 		 */
-		~Sun ();
+		virtual ~Sun ();
 
 		/** @copydoc CameraBoundElement::notifyCameraChanged().
 		 */

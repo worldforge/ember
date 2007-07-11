@@ -385,7 +385,7 @@ private:
 	UseScaleOf mUseScaleOf;
 	Ogre::Real mScale;
 	Ogre::Quaternion mRotation;
-	const Ogre::String mPath;
+// 	const Ogre::String mPath;
 	
 	/**
 	Defines how much contained entities should be offset. ZERO if not.

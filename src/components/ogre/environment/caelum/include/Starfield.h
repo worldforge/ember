@@ -41,7 +41,7 @@ class DllExport Starfield : public CameraBoundElement {
 
 		/** Destructor.
 		 */
-		~Starfield ();
+		virtual ~Starfield ();
 
 		/** @copydoc CameraBoundElement::notifyCameraChanged().
 		 */

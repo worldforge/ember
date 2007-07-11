@@ -39,7 +39,7 @@ class DllExport SkyDome : public CameraBoundElement {
 
 		/** Destructor (DO NOT USE! Use CaelumSystem::destroySkyDome instead).
 		 */
-		~SkyDome ();
+		virtual ~SkyDome ();
 
 		/** @copydoc CameraBoundElement::notifyCameraChanged().
 		 */

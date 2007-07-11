@@ -55,12 +55,12 @@ unsigned long Model::msAutoGenId = 0;
 // }
 
 Model::Model(const std::string& name)
-: mScale(0)
-, mRotation(Ogre::Quaternion::IDENTITY)
-, mSkeletonInstance(0)
-// , mAnimationStateSet(0)
+: Ogre::MovableObject(name)
 , mSkeletonOwnerEntity(0)
-, Ogre::MovableObject(name)
+, mSkeletonInstance(0)
+, mScale(0)
+, mRotation(Ogre::Quaternion::IDENTITY)
+, mAnimationStateSet(0)
 , mAttachPoints(0)
 {
  mVisible = true;
@@ -69,8 +69,8 @@ Model::~Model()
 {
 	resetSubmodels();
 	resetParticles();	
-	if (!_masterModel.isNull()) {
-		_masterModel->removeModelInstance(this);
+	if (!mMasterModel.isNull()) {
+		mMasterModel->removeModelInstance(this);
 	}
 }
 
@@ -107,26 +107,26 @@ void Model::reload()
 
 bool Model::create(const std::string& modelType)
 {
-	if (!_masterModel.isNull() && _masterModel->isValid()) {
-		S_LOG_WARNING("Trying to call create('" + modelType +  "') on a Model instance that already have been created as a '" + _masterModel->getName() + "'.");
+	if (!mMasterModel.isNull() && mMasterModel->isValid()) {
+		S_LOG_WARNING("Trying to call create('" + modelType +  "') on a Model instance that already have been created as a '" + mMasterModel->getName() + "'.");
 		return false;
 	}
 
 	static const Ogre::String groupName("ModelDefinitions");
 	//Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME;
 	try {
-		_masterModel= ModelDefinitionManager::instance().load(modelType, groupName);
+		mMasterModel= ModelDefinitionManager::instance().load(modelType, groupName);
 	} catch (const Ogre::Exception& ex) {
 		S_LOG_FAILURE("Could not load model of type " << modelType << " from group " << groupName << ".\nMessage: " << ex.getFullDescription());
 		return false;
 	}
-	if (false && !_masterModel->isValid()) {
+	if (false && !mMasterModel->isValid()) {
 		S_LOG_FAILURE("Model of type " << modelType << " from group " << groupName << " is not valid.");
 		return false;
 	}
 	else
 	{
-		_masterModel->addModelInstance(this);
+		mMasterModel->addModelInstance(this);
 		return true;
 /*		bool success =  createFromDefn();
 		if (!success) {
@@ -152,18 +152,18 @@ bool Model::createFromDefn()
 	// create instance of model from definition
 	Ogre::SceneManager* sceneManager = _getManager();
 	assert(sceneManager);
-	mScale=_masterModel->mScale ;
-	mRotation = _masterModel->mRotation;
-	setRenderingDistance(_masterModel->getRenderingDistance());
+	mScale=mMasterModel->mScale ;
+	mRotation = mMasterModel->mRotation;
+	setRenderingDistance(mMasterModel->getRenderingDistance());
 	
 	std::vector<std::string> showPartVector;
 
 /*	const SubModelDefinitionsStore&
-	std::vector<ModelDefinition::SubModelDefinition>::iterator I_subModels = _masterModel->mSubModels.begin();
-	std::vector<ModelDefinition::SubModelDefinition>::iterator I_subModels_end = _masterModel->mSubModels.end();*/
-	S_LOG_VERBOSE("Number of submodels: " << _masterModel->getSubModelDefinitions().size()); 
+	std::vector<ModelDefinition::SubModelDefinition>::iterator I_subModels = mMasterModel->mSubModels.begin();
+	std::vector<ModelDefinition::SubModelDefinition>::iterator I_subModels_end = mMasterModel->mSubModels.end();*/
+	S_LOG_VERBOSE("Number of submodels: " << mMasterModel->getSubModelDefinitions().size()); 
 	
-	for (SubModelDefinitionsStore::const_iterator I_subModels = _masterModel->getSubModelDefinitions().begin(); I_subModels != _masterModel->getSubModelDefinitions().end(); ++I_subModels) 
+	for (SubModelDefinitionsStore::const_iterator I_subModels = mMasterModel->getSubModelDefinitions().begin(); I_subModels != mMasterModel->getSubModelDefinitions().end(); ++I_subModels) 
 	{
 		std::string entityName = mName + "/" + (*I_subModels)->getMeshName();
 		try {
@@ -175,9 +175,10 @@ bool Model::createFromDefn()
 // 				}
 // 			} 
 			Ogre::Entity* entity = sceneManager->createEntity(entityName, (*I_subModels)->getMeshName());
-			if (_masterModel->getRenderingDistance()) {
-				entity->setRenderingDistance(_masterModel->getRenderingDistance());
+			if (mMasterModel->getRenderingDistance()) {
+				entity->setRenderingDistance(mMasterModel->getRenderingDistance());
 			}
+//  			entity->setNormaliseNormals(true);
 
 // 			//for convenience, if it's a new mesh, check if there's a skeleton file in the same directory
 // 			//if so, use that
@@ -269,8 +270,8 @@ bool Model::createFromDefn()
 
 void Model::createActions()
 {
-	ActionDefinitionsStore::const_iterator I_actions = _masterModel->getActionDefinitions().begin();
-	ActionDefinitionsStore::const_iterator I_actions_end = _masterModel->getActionDefinitions().end();
+	ActionDefinitionsStore::const_iterator I_actions = mMasterModel->getActionDefinitions().begin();
+	ActionDefinitionsStore::const_iterator I_actions_end = mMasterModel->getActionDefinitions().end();
 	for (;I_actions != I_actions_end; ++I_actions) {
 		//std::multiset< Model::AnimationPart* >* animationPartSet = new std::multiset< Model::AnimationPart* >();
 		Action action;
@@ -311,8 +312,8 @@ void Model::createActions()
 
 void Model::createParticles()
 {
-	std::vector<ModelDefinition::ParticleSystemDefinition>::const_iterator I_particlesys = _masterModel->mParticleSystems.begin();
-	std::vector<ModelDefinition::ParticleSystemDefinition>::const_iterator I_particlesys_end = _masterModel->mParticleSystems.end();
+	std::vector<ModelDefinition::ParticleSystemDefinition>::const_iterator I_particlesys = mMasterModel->mParticleSystems.begin();
+	std::vector<ModelDefinition::ParticleSystemDefinition>::const_iterator I_particlesys_end = mMasterModel->mParticleSystems.end();
 	for (;I_particlesys != I_particlesys_end; ++I_particlesys) {
 		//first try to create the ogre particle system
 		std::string name(mName + "/particle" + I_particlesys->Script);
@@ -530,7 +531,7 @@ const Ogre::Quaternion& Model::getRotation() const
 
 const ModelDefinition::UseScaleOf Model::getUseScaleOf() const
 {
-	return _masterModel->getUseScaleOf();
+	return mMasterModel->getUseScaleOf();
 }
 
 
@@ -638,7 +639,7 @@ void Model::resetParticles()
 
 Ogre::TagPoint* Model::attachObjectToAttachPoint(const Ogre::String &attachPointName, Ogre::MovableObject *pMovable, const Ogre::Vector3 &scale, const Ogre::Quaternion &offsetOrientation, const Ogre::Vector3 &offsetPosition)
 {
-	for (AttachPointDefinitionStore::iterator I = _masterModel->mAttachPoints.begin(); I != _masterModel->mAttachPoints.end();  ++I) {
+	for (AttachPointDefinitionStore::iterator I = mMasterModel->mAttachPoints.begin(); I != mMasterModel->mAttachPoints.end();  ++I) {
 		if (I->Name == attachPointName) {
 			const std::string& boneName = I->BoneName;
 			///use the rotation in the attach point def
@@ -658,7 +659,7 @@ Ogre::TagPoint* Model::attachObjectToAttachPoint(const Ogre::String &attachPoint
 
 bool Model::hasAttachPoint(const std::string& attachPoint) const
 {
-	for (AttachPointDefinitionStore::iterator I = _masterModel->mAttachPoints.begin(); I != _masterModel->mAttachPoints.end();  ++I) {
+	for (AttachPointDefinitionStore::iterator I = mMasterModel->mAttachPoints.begin(); I != mMasterModel->mAttachPoints.end();  ++I) {
 		if (I->Name == attachPoint) {
 			return true;
 		}

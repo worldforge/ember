@@ -18,6 +18,8 @@ class DllExport CameraBoundElement {
 		
 // Methods --------------------------------------------------------------------
 	public:
+		virtual ~CameraBoundElement() {}
+		
 		/** Notify new camera conditions.
 			This method notifies that a new camera is about to be used, so this element can follow it or perform other operations.
 			@param cam The new camera.

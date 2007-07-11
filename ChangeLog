@@ -1,3 +1,37 @@
+2007-07-10 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/caelum/include/CaelumListener.h, src/components/ogre/environment/caelum/include/CameraBoundElement.h, src/components/ogre/environment/caelum/include/SkyDome.h, src/components/ogre/environment/caelum/include/Starfield.h, src/components/ogre/environment/caelum/include/Sun.h, src/components/ogre/environment/caelum/include/SunPositionModel.h, src/components/ogre/environment/caelum/src/GeometryFactory.cpp, src/components/ogre/jesus/JesusMousePicker.cpp, src/components/ogre/model/Model.cpp, src/components/ogre/model/Model.h, src/components/ogre/model/ModelDefinition.cpp, src/components/ogre/model/ModelDefinition.h, src/components/ogre/model/ParticleSystemBinding.cpp, src/components/ogre/ogreopcode/src/OgreOpcodeCharacterController.cpp, src/components/ogre/terrain/TerrainPage.cpp, src/components/ogre/terrain/TerrainShader.cpp: cleaned up code
+
+2007-07-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Widget.cpp, src/components/ogre/widgets/Widget.h: catch all left clicks to prevent these from leaking through to the main canvas
+
+2007-07-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/input/Input.cpp, src/components/ogre/input/Input.h: added a flag for disabling the movement mode toggle
+	* src/components/ogre/Avatar.cpp: only allow movement mode when we're in the world
+
+2007-07-10 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/AvatarController.cpp: don't move on double click since it only confuses the user, and there's now a menu option for it instead
+
+2007-07-10 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* ember.conf: added defaults for walk and run speed. also clean up old bindings
+	* src/components/ogre/Avatar.cpp: added comments
+
+2007-07-10 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityEditor.lua: fixed a problem with editing terrain points
+
+2007-07-10 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainInfo.cpp, src/components/ogre/terrain/TerrainInfo.h: make sure that the values are valid even if there's no terrain
+
+2007-07-10 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeSceneManager.cpp: check for zero values to avoid an unending loop
+
 2007-07-04 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/Avatar.cpp, src/components/ogre/Avatar.h: correctly handle orientation updates from the server

@@ -19,6 +19,9 @@ class CaelumSystem;
 class DllExport CaelumListener {
 // Methods --------------------------------------------------------------------
 	public: 
+	
+		virtual ~CaelumListener() {}
+	
 		/** Trigger fired just before Caelum is about to do its work.
 			@param e The Ogre FrameEvent object, in case it's desired to use this as a 
 			FrameListener as well.
