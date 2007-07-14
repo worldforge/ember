@@ -127,6 +127,9 @@ public:
 	const Ember::ConsoleCommandWrapper CharacterMoveUpwards;
 	const Ember::ConsoleCommandWrapper CharacterStrafeLeft;
 	const Ember::ConsoleCommandWrapper CharacterStrafeRight;
+	
+	const Ember::ConsoleCommandWrapper MoveCameraTo;
+	
 
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method

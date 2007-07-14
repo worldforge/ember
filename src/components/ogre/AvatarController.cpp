@@ -65,6 +65,7 @@ AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, G
 , CharacterMoveUpwards("+character_move_upwards", this, "Move the avatar upwards.")
 , CharacterStrafeLeft("+character_strafe_left", this, "Strafe left.")
 , CharacterStrafeRight("+character_strafe_right", this, "Strafe right.")
+, MoveCameraTo("movecamerato", this, "Moves the camera to a point.")
 , mMovementCommandMapper("movement", "key_bindings_movement")
 , mWindow(window)
 , mGUIManager(guiManager)
@@ -160,6 +161,21 @@ void AvatarController::runCommand(const std::string &command, const std::string 
 		mMovementDirection.y = -1;
 	} else if (CharacterMoveDownwards.getInverseCommand() == command) {
 		mMovementDirection.y = 0;
+	} else if (MoveCameraTo == command) {
+		if (!mIsAttached) {
+			Ember::Tokeniser tokeniser;
+			tokeniser.initTokens(args);
+			std::string x = tokeniser.nextToken();
+			std::string y = tokeniser.nextToken();
+			std::string z = tokeniser.nextToken();
+			
+			if (x == "" || y == "" || z == "") {
+				return;
+			} else {
+				Ogre::Vector3 position(Ogre::StringConverter::parseReal(x),Ogre::StringConverter::parseReal(y),Ogre::StringConverter::parseReal(z));
+				mFreeFlyingCameraNode->setPosition(position);
+			}
+		}
 	}
 }
 
