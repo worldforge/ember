@@ -98,31 +98,31 @@ void Application::registerComponents()
 
 void Application::mainLoopStep() 
 {
-	if (mPollEris) {
-		EventStartErisPoll.emit();
-		try {
+	try {
+		if (mPollEris) {
+			EventStartErisPoll.emit();
 			Eris::PollDefault::poll(1);
-		} catch (const Ember::Exception& ex) {
-			S_LOG_CRITICAL(ex.getError());
-			throw;
-		} catch (const std::exception& ex)
-		{
-			S_LOG_CRITICAL("Got exception, shutting down. " << ex.what());
-			throw;
-		} catch (const std::string& ex)
-		{
-			S_LOG_CRITICAL("Got exception, shutting down. " << ex);
-			throw;
-		} catch (...)
-		{
-			S_LOG_CRITICAL("Got unknown exception.");
-			throw;
+			if (mWorldView)
+				mWorldView->update();
+			EventEndErisPoll.emit();
 		}
-		if (mWorldView)
-			mWorldView->update();
-		EventEndErisPoll.emit();
+		mOgreView->renderOneFrame();
+	} catch (const Ember::Exception& ex) {
+		S_LOG_CRITICAL(ex.getError());
+		throw;
+	} catch (const std::exception& ex)
+	{
+		S_LOG_CRITICAL("Got exception, shutting down. " << ex.what());
+		throw;
+	} catch (const std::string& ex)
+	{
+		S_LOG_CRITICAL("Got exception, shutting down. " << ex);
+		throw;
+	} catch (...)
+	{
+		S_LOG_CRITICAL("Got unknown exception.");
+		throw;
 	}
-	mOgreView->renderOneFrame();
 }
 
 void Application::mainLoop() 
@@ -183,7 +183,7 @@ void Application::initializeServices()
 	
 	chdir(EmberServices::getSingleton().getConfigService()->getHomeDirectory().c_str());
 
-	const std::string& sharePath(EmberServices::getSingleton().getConfigService()->getSharedConfigDirectory());
+// 	const std::string& sharePath(EmberServices::getSingleton().getConfigService()->getSharedConfigDirectory());
 
 	///make sure that there are files 
 	///assureConfigFile("ember.conf", sharePath);
@@ -238,7 +238,15 @@ Eris::View* Application::getMainView()
 
 void Application::start()
 {
-	mOgreView->setup();
+	try {
+		mOgreView->setup();
+	} catch (const std::exception& ex) {
+		S_LOG_CRITICAL("Error when setting up Ogre: " << ex.what());
+		return;
+	} catch (...) {
+		S_LOG_CRITICAL("Unknown error when setting up Ogre.");
+		return;
+	}
 	mainLoop();
 	//mOgreView->go(mUseBinreloc);
 }

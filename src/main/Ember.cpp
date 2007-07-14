@@ -165,19 +165,24 @@ int main(int argc, char **argv)
 
 	///put the application object in its own scope so it gets destroyed before we signal all clear
     {
-		/// Create application object
-		Ember::Application app(prefix, homeDir, configMap);
-		//EmberOgre::EmberOgre app;
+		try {
+			/// Create application object
+			Ember::Application app(prefix, homeDir, configMap);
+			//EmberOgre::EmberOgre app;
+			
+			std::cout << "Starting Ember version " << VERSION << std::endl;
 		
-		std::cout << "Starting Ember version " << VERSION << std::endl;
-	
-		app.registerComponents();
-	
-		/// Initialize all Ember services needed for this application
-		app.prepareComponents();
-		app.initializeServices();
-	
-		app.start();
+			app.registerComponents();
+		
+			/// Initialize all Ember services needed for this application
+			app.prepareComponents();
+			app.initializeServices();
+		
+			app.start();
+		} catch (const std::exception& ex)
+		{
+			std::cerr << "Unexpected error, aborting.\n\r" << ex.what();
+		}
 	}
 
 	if (homeDir != "") {
