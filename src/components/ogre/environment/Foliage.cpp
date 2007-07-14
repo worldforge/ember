@@ -48,6 +48,7 @@ namespace Environment {
 Foliage::Foliage( Ogre::SceneManager* sceneMgr)
 :  mSceneMgr(sceneMgr)
 {
+	S_LOG_INFO("Setting up foliage system.");
 	createGrassMesh();
 
 	Ogre::Entity* e = mSceneMgr->createEntity("1", GRASS_MESH_NAME);
@@ -55,6 +56,11 @@ Foliage::Foliage( Ogre::SceneManager* sceneMgr)
 
 	Ogre::Entity* entity;
 	 
+	try {
+		entity = mSceneMgr->createEntity("environment/field/placeholder", "placeholder.mesh");
+		mEntities["placeholder"] = entity;
+	} 
+	catch (const Ogre::Exception& e) {}
 	try {
 		entity = mSceneMgr->createEntity("environment/field/heartblood", "environment/field/small_plant/heartblood/normal.mesh");
 		mEntities["heartblood"] = entity;
@@ -90,11 +96,20 @@ Foliage::Foliage( Ogre::SceneManager* sceneMgr)
 
 Foliage::~Foliage()
 {
+	S_LOG_INFO("Shutting down foliage system.");
+	for (FoliageAreaStore::iterator I = mFoliageAreas.begin(); I != mFoliageAreas.end(); ++I) {
+		delete *I;
+	}
+	
+	Ogre::Root::getSingleton().removeFrameListener(this);
+	for (EntityStore::iterator I = mEntities.begin(); I != mEntities.end(); ++I) {
+		mSceneMgr->destroyMovableObject(I->second);
+	}
 }
 
 Ogre::Entity* Foliage::getEntity(const std::string& name)
 {
-	std::map<const std::string, Ogre::Entity*>::iterator I = mEntities.find(name);
+	EntityStore::iterator I = mEntities.find(name);
 	if (I != mEntities.end()) {
 		return I->second;
 	}

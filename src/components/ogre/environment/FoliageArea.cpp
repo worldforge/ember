@@ -120,7 +120,7 @@ void FoliageArea::init(Foliage* foliage, Ogre::SceneManager* sceneManager, const
 	mStaticGeom->setRegionDimensions(Ogre::Vector3(32,32, 32));
 	// Set the region origin so the centre is at 0 world
 	//s->setOrigin((endPosition - startPosition) / 2);
-	mStaticGeom->setRenderingDistance(34);
+ 	mStaticGeom->setRenderingDistance(34);
 
 	mStaticGeom->setRenderQueueGroup(Ogre::RENDER_QUEUE_7);
 }
@@ -138,20 +138,31 @@ void FoliageArea::placeGrass(const std::string& type, const TerrainPosition& pos
 void FoliageArea::placeGrass(const std::string& type, const TerrainPosition& position, const Ogre::Vector3& scale)
 {
 	TerrainGenerator* terrain = EmberOgre::getSingleton().getTerrainGenerator();
+	Ogre::Vector3 ogrePosition = Atlas2Ogre(position);
+	ogrePosition.y = terrain->getHeight(position);
+	placeGrass(type, ogrePosition, scale);	
+}
+
+void FoliageArea::placeGrass(const std::string& type, const Ogre::Vector3& position, const Ogre::Vector3& scale)
+{
+	Ogre::Quaternion orientation;
+	orientation.FromAngleAxis(
+		Ogre::Degree(Ogre::Math::RangeRandom(0, 359)),
+		Ogre::Vector3::UNIT_Y);
+	placeGrass(type, position, scale, orientation);
+}
+
+void FoliageArea::placeGrass(const std::string& type, const Ogre::Vector3& position, const Ogre::Vector3& scale, const Ogre::Quaternion& orientation)
+{
 	Ogre::Entity* currentEnt;
 	currentEnt = mFoliage->getEntity(type);
 	if (currentEnt) {
-		Ogre::Vector3 ogrePosition = Atlas2Ogre(position);
-		ogrePosition.y = terrain->getHeight(position);
-		
-		Ogre::Quaternion orientation;
-		orientation.FromAngleAxis(
-			Ogre::Degree(Ogre::Math::RangeRandom(0, 359)),
-			Ogre::Vector3::UNIT_Y);
-		mStaticGeom->addEntity(currentEnt, ogrePosition, orientation, scale);
+		std::stringstream ss;
+		ss << "Adding foliage of type '" << type << "' at x:" << position.x << " y:" << position.y << " z:" << position.z;
+		S_LOG_VERBOSE(ss.str());
+
+		mStaticGeom->addEntity(currentEnt, position, orientation, scale);
 	}
-
-
 }
 
 void FoliageArea::build()
@@ -164,6 +175,7 @@ void FoliageArea::build()
 	} catch (const Ogre::Exception& e) {
 		S_LOG_FAILURE("Got error when building static geometry for foliage. Expection: " << e.getFullDescription());
 	}
+// 	mStaticGeom->dump("/home/erik/skit/staticgeom.txt");
 }
 
 

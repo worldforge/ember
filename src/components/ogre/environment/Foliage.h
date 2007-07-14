@@ -42,6 +42,7 @@ class Foliage : public Ember::Singleton<Foliage>, public Ogre::FrameListener
 public:
 
 	typedef std::list<FoliageArea*> FoliageAreaStore;
+	typedef std::map<const std::string, Ogre::Entity* > EntityStore;
     Foliage( Ogre::SceneManager* mSceneMgr);
 
     ~Foliage();
@@ -66,7 +67,7 @@ public:
 	inline double getGrassSpacing() const {return mGrassSpacing;}
 
 protected:
-	std::map<const std::string, Ogre::Entity* > mEntities;
+	EntityStore mEntities;
 
 	//GroundCover* mGround;
 	FoliageAreaStore mFoliageAreas;
@@ -76,10 +77,6 @@ protected:
 
 	double mGrassSpacing;	
 	Ogre::SceneManager* mSceneMgr;
-
-	Foliage* mFoliage;
-	
-	//defines the extent of the foliage
 
 };
 

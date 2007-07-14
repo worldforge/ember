@@ -57,6 +57,8 @@ public:
 	
 	void placeGrass(const std::string& type, const TerrainPosition& position);
 	void placeGrass(const std::string& type, const TerrainPosition& position, const Ogre::Vector3& scale);
+	void placeGrass(const std::string& type, const Ogre::Vector3& position, const Ogre::Vector3& scale);
+	void placeGrass(const std::string& type, const Ogre::Vector3& position, const Ogre::Vector3& scale, const Ogre::Quaternion& orientation);
 	
 	
 	/**
