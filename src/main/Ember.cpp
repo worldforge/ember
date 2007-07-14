@@ -163,20 +163,22 @@ int main(int argc, char **argv)
 
 #endif
 
-    /// Create application object
-    Ember::Application app(prefix, homeDir, configMap);
-    //EmberOgre::EmberOgre app;
-    
-    std::cout << "Starting Ember version " << VERSION << std::endl;
-
-	app.registerComponents();
-
-	/// Initialize all Ember services needed for this application
-	app.prepareComponents();
-	app.initializeServices();
-
-	app.start();
-
+	///put the application object in its own scope so it gets destroyed before we signal all clear
+    {
+		/// Create application object
+		Ember::Application app(prefix, homeDir, configMap);
+		//EmberOgre::EmberOgre app;
+		
+		std::cout << "Starting Ember version " << VERSION << std::endl;
+	
+		app.registerComponents();
+	
+		/// Initialize all Ember services needed for this application
+		app.prepareComponents();
+		app.initializeServices();
+	
+		app.start();
+	}
 
 	if (homeDir != "") {
 		chdir(homeDir.c_str());
