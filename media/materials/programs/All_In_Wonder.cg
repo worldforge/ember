@@ -221,7 +221,7 @@
    #define SPECULAR 0
 
    #define LIGHT0 1
-   #define LIGHT1 1
+   #define LIGHT1 0
    #define LIGHT2 0
 
    // Helper: Expand a range-compressed vector

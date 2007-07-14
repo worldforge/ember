@@ -197,196 +197,22 @@ material /global/plants/fruitable/furry_orange
 
 
 
-
-
-
-
-
-
-material /global/plants/field/heartblood
+material /global/plants/field/heartblood : /base/wavinggrass
 {
-
-	// Vertex program waving grass
-    technique
-    {
-        pass
-        {
-			vertex_program_ref Field/GrassFaderVp
-			{
-				param_named_auto worldViewProj worldviewproj_matrix
-				param_named_auto ambient ambient_light_colour
-				param_named_auto objSpaceLight light_position_object_space 0
-				param_named_auto lightColour light_diffuse_colour 0
-			}
-			alpha_rejection greater_equal 64 
-			scene_blend alpha_blend
-		    cull_hardware none
-            cull_software none
-            texture_unit
-            {
-			
-				texture 3d_objects/plants/tussock/textures/heartblood/low/tussock.png
-            }
-        }
-    }
-
-
-  //receive_shadows off
-  technique
-  {
-    pass
-    {
-          scene_blend alpha_blend 
-         cull_hardware none 
-         cull_software none
- 		alpha_rejection greater_equal 64
-       texture_unit
-	{
-	
-		texture 3d_objects/plants/tussock/textures/heartblood/low/tussock.png
-	}
-
-    }
-  }
-
+	set_texture_alias DiffuseMap 3d_objects/plants/tussock/textures/heartblood/tussock.png
 }
 
-
-
-material /global/plants/field/bittergrass
+material /global/plants/field/bittergrass : /base/wavinggrass
 {
-	// Vertex program waving grass
-    technique
-    {
-        pass
-        {
-			vertex_program_ref Field/GrassFaderVp
-			{
-				param_named_auto worldViewProj worldviewproj_matrix
-				param_named_auto ambient ambient_light_colour
-				param_named_auto objSpaceLight light_position_object_space 0
-				param_named_auto lightColour light_diffuse_colour 0
-				param_named_auto offset custom 999
-			}
-			alpha_rejection greater_equal 64
-			//scene_blend alpha_blend
-		    cull_hardware none
-            cull_software none
-            texture_unit
-            {
-				texture 3d_objects/plants/field/textures/bittergrass/field_1_.png
-            }
-        }
-    }
-  //receive_shadows off
-  technique
-  {
-    pass
-    {
-          //scene_blend alpha_blend 
-         cull_hardware none 
-         cull_software none
- 		alpha_rejection greater_equal 64
-       texture_unit
-	{
-	
-		texture 3d_objects/plants/field/textures/bittergrass/low/field_1_.png
-	}
-
-    }
-  }
-
+	set_texture_alias DiffuseMap 3d_objects/plants/field/textures/bittergrass/field_1_.png
 }
 
-
-
-material /global/plants/field/thingrass
+material /global/plants/field/thingrass : /base/wavinggrass
 {
-	// Vertex program waving grass
-    technique
-    {
-        pass
-        {
-			vertex_program_ref Field/GrassWaverVp
-			{
-				param_named_auto worldViewProj worldviewproj_matrix
-				param_named_auto ambient ambient_light_colour
-				param_named_auto objSpaceLight light_position_object_space 0
-				param_named_auto lightColour light_diffuse_colour 0
-				param_named_auto offset custom 999
-			}
-			alpha_rejection greater_equal 64 
-			//scene_blend alpha_blend
-		    cull_hardware none
-            cull_software none
-            texture_unit
-            {
-				texture 3d_objects/plants/field/textures/thingrass/low/field.png
-            }
-        }
-    }
-  //receive_shadows off
-  technique
-  {
-    pass
-    {
-          //scene_blend alpha_blend 
-         cull_hardware none 
-         cull_software none
- 		alpha_rejection greater_equal 64
-       texture_unit
-	{
-	
-		texture 3d_objects/plants/field/textures/thingrass/low/field.png
-	}
-
-    }
-  }
-
+	set_texture_alias DiffuseMap 3d_objects/plants/field/textures/thingrass/field.png
 }
 
-
-material /global/plants/field/teardrops
+material /global/plants/field/teardrops : /base/wavinggrass
 {
-	// Vertex program waving grass
-    technique
-    {
-        pass
-        {
-			vertex_program_ref Field/GrassWaverVp
-			{
-				param_named_auto worldViewProj worldviewproj_matrix
-				param_named_auto ambient ambient_light_colour
-				param_named_auto objSpaceLight light_position_object_space 0
-				param_named_auto lightColour light_diffuse_colour 0
-				param_named_auto offset custom 999
-			}
-			alpha_rejection greater_equal 64 
-			//scene_blend alpha_blend
-		    cull_hardware none
-            cull_software none
-            texture_unit
-            {
-				texture 3d_objects/plants/field/textures/teardrops/low/field.png
-            }
-        }
-    }
-  //receive_shadows off
-  technique
-  {
-    pass
-    {
-          //scene_blend alpha_blend 
-         cull_hardware none 
-         cull_software none
-		alpha_rejection greater_equal 64
-        texture_unit
-	{
-	
-		texture 3d_objects/plants/field/textures/teardrops/low/field.png
-	}
-
-    }
-  }
-
+	set_texture_alias DiffuseMap 3d_objects/plants/field/textures/teardrops/field.png
 }

@@ -9,7 +9,7 @@
 void main_vp(float4 position   : POSITION, 
               float3 normal      : NORMAL, 
               float2 uv         : TEXCOORD0, 
-              float3 tangent     : TEXCOORD1, 
+              float3 tangent     : TANGENT0, 
               // outputs 
               out float4 oPosition    : POSITION, 
               out float2 oUv          : TEXCOORD0, 

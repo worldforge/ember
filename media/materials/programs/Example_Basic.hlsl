@@ -133,7 +133,7 @@ void hardwareSkinningTwoWeights_vp(
 
 	
 	oUv = uv;
-	colour = float4(0.5, 0.5, 0.5, 1) + 
+	colour = ambient + 
 		(saturate(dot(lightDir0, norm)) * lightDiffuseColour[0]) + 
 		(saturate(dot(lightDir1, norm)) * lightDiffuseColour[1]);
 	
@@ -270,3 +270,4 @@ void hardwarePoseAnimation(float3 pos : POSITION,
 	oUv = uv;
 	colour = float4(1,0,0,1);
 }
+
