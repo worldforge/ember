@@ -44,6 +44,8 @@ function ServerBrowser.buildWidget()
 	EmberOgre.LuaConnector:new(serverService.GotConnection):connect("ServerBrowser.Server_GotConnection")
 	
 	ServerBrowser.connectToMetaServer()
+	ServerBrowser.widget:show()
+	ServerBrowser.widget:getMainWindow():activate()
 
 end
 

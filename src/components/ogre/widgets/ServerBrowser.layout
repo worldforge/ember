@@ -13,7 +13,7 @@
 			<Window Type='EmberLook/MultiColumnList' Name='ServerList'>
 				<Property Name='UnifiedPosition' Value='{{0.0,5},{0,0}}'/>
 				<Property Name='UnifiedSize' Value='{{1.000000,-10.000000},{1.000000,-30.000000}}'/>
-				<Property Name='InheritsAlpha' Value='false'/>
+				<Property Name='InheritsAlpha' Value='true'/>
 				<Property Name='SelectionMode' Value='RowSingle'/>
 				<Property Name='ColumnHeader' Value='text:Server Name width:{0.25, 0} id:0'/>
 				<Property Name='ColumnHeader' Value='text:Ping width:{0.1, 0} id:1'/>
@@ -27,6 +27,7 @@
 				<Property Name='UnifiedSize' Value='{{0.000000,150.000000},{0.000000,25.000000}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{1.000000,-30.000000}}'/>
 				<Property Name='Text' Value=''/>
+				<Property Name='InheritsAlpha' Value='true'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='Refresh'>
 				<Property Name='UnifiedSize' Value='{{0.000000,75.000000},{0.000000,25.000000}}'/>
