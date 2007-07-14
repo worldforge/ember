@@ -46,16 +46,20 @@ EmberEntity(id, ty, vw, sceneManager)
 }
 
 WorldEmberEntity::~WorldEmberEntity()
-{}
+{
+	delete mFoliage;
+	delete mEnvironment;
+}
 
 void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
+	///create the foliage
+ 	mFoliage = new Environment::Foliage(EmberOgre::getSingleton().getSceneManager());
+ 	
 	EmberEntity::init(ge, fromCreateOp);
 	
 	mEnvironment = new Environment::Environment(new Environment::CaelumEnvironment( EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), EmberOgre::getSingleton().getMainCamera()->getCamera()));
 	
-	///create the foliage
- 	mFoliage = new Environment::Foliage(EmberOgre::getSingleton().getSceneManager());
 	
 	///prepare all the segments in advance
 	mTerrainGenerator->prepareAllSegments();
