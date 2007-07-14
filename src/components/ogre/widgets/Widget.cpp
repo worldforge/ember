@@ -58,9 +58,17 @@ namespace EmberOgre
 		assert(mWindowManager && "You must call init() before you can call any other methods.");
 		mPrefix = prefix;
 		std::string finalFileName(mGuiManager->getLayoutDir() + filename);
-		mMainWindow = mWindowManager->loadWindowLayout(finalFileName, prefix);
-		mOriginalWindowAlpha = mMainWindow->getAlpha();
+		try {
+			mMainWindow = mWindowManager->loadWindowLayout(finalFileName, prefix);
+		} catch (const CEGUI::Exception& ex) {
+			S_LOG_FAILURE("Error when loading from " << filename << ".\nMessage: " <<  ex.getMessage().c_str());
+		} catch (const std::exception& ex) {
+			S_LOG_FAILURE("Error when loading from " << filename << ".\nMessage: " <<  ex.what());
+		} catch (...) {
+			S_LOG_FAILURE("Unknown error when loading from " << filename << ".");
+		}
 		if (mMainWindow) {
+			mOriginalWindowAlpha = mMainWindow->getAlpha();
 			getMainSheet()->addChildWindow(mMainWindow); 
 			BIND_CEGUI_EVENT(mMainWindow, CEGUI::FrameWindow::EventActivated, Widget::MainWindow_Activated);
 			BIND_CEGUI_EVENT(mMainWindow, CEGUI::FrameWindow::EventDeactivated, Widget::MainWindow_Deactivated);
@@ -74,6 +82,10 @@ namespace EmberOgre
 	CEGUI::Window* Widget::getWindow(const std::string& windowName)
 	{
 		assert(mWindowManager && "You must call init() before you can call any other methods.");
+		if (!mMainWindow) {
+			S_LOG_WARNING("Trying to get a window ("+ windowName +") on widget that has no main sheet loaded (" << mPrefix << ").");
+			return 0;
+		}
 		assert(mMainWindow && "You must call loadMainSheet(...) before you can call this method.");
 		CEGUI::Window* window = mWindowManager->getWindow(mPrefix + windowName);
 		if (!window) {
