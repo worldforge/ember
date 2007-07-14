@@ -157,9 +157,9 @@ void FoliageArea::placeGrass(const std::string& type, const Ogre::Vector3& posit
 	Ogre::Entity* currentEnt;
 	currentEnt = mFoliage->getEntity(type);
 	if (currentEnt) {
-		std::stringstream ss;
-		ss << "Adding foliage of type '" << type << "' at x:" << position.x << " y:" << position.y << " z:" << position.z;
-		S_LOG_VERBOSE(ss.str());
+// 		std::stringstream ss;
+// 		ss << "Adding foliage of type '" << type << "' at x:" << position.x << " y:" << position.y << " z:" << position.z;
+// 		S_LOG_VERBOSE(ss.str());
 
 		mStaticGeom->addEntity(currentEnt, position, orientation, scale);
 	}
