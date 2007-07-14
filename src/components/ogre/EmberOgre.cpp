@@ -416,7 +416,7 @@ bool EmberOgre::setup()
 	mTerrainGenerator = new TerrainGenerator(new EmberPagingSceneManagerAdapter(mSceneMgr));
 	EventTerrainGeneratorCreated.emit(*mTerrainGenerator);
 	mMotionManager = new MotionManager();
-	mMotionManager->setTerrainGenerator(mTerrainGenerator);
+// 	mMotionManager->setTerrainGenerator(mTerrainGenerator);
 	EventMotionManagerCreated.emit(*mMotionManager);
 	
 //	mSceneMgr->setPrimaryCamera(mAvatar->getAvatarCamera()->getCamera());

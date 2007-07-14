@@ -27,7 +27,7 @@ namespace EmberOgre {
 
 class EmberEntity;
 class EmberPhysicalEntity;
-class TerrainGenerator;
+// class TerrainGenerator;
 
 /**
  * This class will be responsible for making sure that entites moves
@@ -97,7 +97,7 @@ public:
 	 */
 	//void adjustHeightPositionForNode(Ogre::SceneNode* sceneNode);
 
-	void setTerrainGenerator(TerrainGenerator* generator);
+// 	void setTerrainGenerator(TerrainGenerator* generator);
 	
 	/**
 	 *    Gets info about the MotionManager.
@@ -152,7 +152,7 @@ private:
 	 */
 	std::set<EmberEntity*> mMotionSet;
 	
-	TerrainGenerator* mTerrainGenerator;
+// 	TerrainGenerator* mTerrainGenerator;
 	
 };
 

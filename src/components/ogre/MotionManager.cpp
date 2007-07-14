@@ -22,7 +22,7 @@
 #include "EmberOgre.h"
 #include "MathConverter.h"
 #include "MotionManager.h"
-#include "terrain/TerrainGenerator.h"
+// #include "terrain/TerrainGenerator.h"
 
 template<> EmberOgre::MotionManager* Ember::Singleton<EmberOgre::MotionManager>::ms_Singleton = 0;
 namespace EmberOgre {
@@ -198,9 +198,9 @@ void MotionManager::unpauseAnimation(Ogre::AnimationState* animationState)
 }
 
 
-void MotionManager::setTerrainGenerator(TerrainGenerator* generator) {
-	mTerrainGenerator = generator;
-}
+// void MotionManager::setTerrainGenerator(TerrainGenerator* generator) {
+// 	mTerrainGenerator = generator;
+// }
 
 
 }
