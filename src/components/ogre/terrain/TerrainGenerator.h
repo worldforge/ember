@@ -74,7 +74,7 @@ struct TerrainDefPoint
 
 /**
  * This class takes care of generating terrain for Ogre's scenemanager.
- * This involves getting terraing from Mercator, converting this to ogre
+ * This involves getting terrain from Mercator, converting this to ogre
  * format and creating materials to make it look good.
  * 
  * It works closely with EmberTerrainPageSource.

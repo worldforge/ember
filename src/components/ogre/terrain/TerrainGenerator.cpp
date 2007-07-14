@@ -568,7 +568,7 @@ void TerrainGenerator::updateFoliageVisibilty()
 		if (showFoliage) {
 			I->second->showFoliage();
 		} else {
-			I->second->destroyFoliage();
+			I->second->hideFoliage();
 		}
 	}
 }
