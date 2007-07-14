@@ -15,6 +15,7 @@ function Performance.buildWidget()
 	
 	Performance.widget:registerConsoleVisibilityToggleCommand("performance")
 	Performance.widget:enableCloseButton()
+	Performance.widget:hide()
 end
 
 function Performance.framestarted(timeSinceLastFrame)
