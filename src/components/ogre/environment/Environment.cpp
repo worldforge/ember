@@ -55,12 +55,14 @@ void Environment::runCommand(const std::string &command, const std::string &args
 // 		
 // 	} else 
 	if (SetFogDensity == command) {
-		Ember::Tokeniser tokeniser;
-		tokeniser.initTokens(args);
-		std::string densityString = tokeniser.nextToken();
-		
-		float density = ::Ogre::StringConverter::parseReal(densityString);
-		getFog()->setDensity( density);
+		if (getFog()) {
+			Ember::Tokeniser tokeniser;
+			tokeniser.initTokens(args);
+			std::string densityString = tokeniser.nextToken();
+			
+			float density = ::Ogre::StringConverter::parseReal(densityString);
+			getFog()->setDensity( density);
+		}
 		
 	} else if (SetAmbientLight == command)
 	{
