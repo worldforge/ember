@@ -10,7 +10,7 @@
 			<Property Name='UnifiedSize' Value='{{1,-8},{1,-20}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/StaticText' Name='EntityInfo'>
-				<Property Name='UnifiedPosition' Value='{{0.0},{0,0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 				<Property Name='UnifiedSize' Value='{{1,0},{0,30}}'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='Text' Value='test' />
