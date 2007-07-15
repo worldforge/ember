@@ -16,6 +16,9 @@ $pfile "OgreVector3.pkg"
 $pfile "OgreQuaternion.pkg"
 $pfile "OgreMath.pkg"
 $pfile "OgreEntity.pkg"
+$pfile "OgreNode.pkg"
+$pfile "OgreSceneNode.pkg"
+
 
 
 

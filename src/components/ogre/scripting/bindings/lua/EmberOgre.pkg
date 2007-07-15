@@ -97,11 +97,19 @@ class EmberOgre
 	sigc::signal<void, EmberOgre::AvatarEmberEntity*> EventCreatedAvatarEntity;
 	sigc::signal<void, EmberOgre::Jesus*> EventCreatedJesus;
 	
+	/**
+	 * returns the scenenode of the world entity
+	 * throws en exception if no such node has been created
+	 * @return 
+	 */
 	Ogre::SceneNode* getWorldSceneNode() const;
 	
 	
-	Ogre::SceneNode* getRootSceneNode() const;
-	
+	/**
+	 *    returns the root scene node
+	 * @return 
+	 */
+	Ogre::SceneNode* getRootSceneNode() const;	
 	
 	sigc::signal<void, EmberOgre::GUIManager&> EventGUIManagerCreated;
 	sigc::signal<void, EmberOgre::GUIManager&> EventGUIManagerInitialized;
