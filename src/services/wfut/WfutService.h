@@ -89,7 +89,7 @@ public:
 	The UpdatesCalculated is emitted when all local files and server side files have been calculated, and a list of those that needs updates have been put together.
 	@param the number of files to update
 	*/
-	sigc::signal<void, unsigned int> UpdatesCalculated;
+	sigc::signal<void, size_t> UpdatesCalculated;
 
 protected:
 	std::auto_ptr<WfutSession> mSession;
@@ -97,11 +97,11 @@ protected:
 	void wfutSession_DownloadComplete(const std::string &url, const std::string &filename);
 	void wfutSession_DownloadFailed(const std::string &url, const std::string &filename, const std::string &reason);
 	void wfutSession_ServerListDownloading(const std::string &url);
-	void wfutSession_UpdatesCalculated(unsigned int numberOfFilesToUpdate);
+	void wfutSession_UpdatesCalculated(size_t numberOfFilesToUpdate);
 	sigc::slot<void, const std::string&, const std::string&> mDownloadCompleteSlot;
 	sigc::slot<void, const std::string&, const std::string&, const std::string&> mDownloadFailureSlot;
 	sigc::slot<void, const std::string&> mServerListDownloadingSlot;
-	sigc::slot<void, unsigned int> mUpdatesCalculatedSlot;
+	sigc::slot<void, size_t> mUpdatesCalculatedSlot;
 };
 
 }

@@ -95,7 +95,7 @@ void WfutService::wfutSession_ServerListDownloading(const std::string &url)
 	DownloadingServerList.emit(url);
 }
 
-void WfutService::wfutSession_UpdatesCalculated(unsigned int numberOfFilesToUpdate)
+void WfutService::wfutSession_UpdatesCalculated(size_t numberOfFilesToUpdate)
 {
 	S_LOG_INFO("Wfut needs to download " << numberOfFilesToUpdate <<" updates.");
 	UpdatesCalculated.emit(numberOfFilesToUpdate);

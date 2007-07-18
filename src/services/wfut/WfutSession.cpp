@@ -45,7 +45,7 @@ static bool fileExists(const std::string& fileName)
 WfutSession::WfutSession(sigc::slot<void, const std::string&, const std::string&>& downloadCompleteSlot 
 , sigc::slot<void, const std::string&, const std::string&, const std::string&>& downloadFailedSlot
 , sigc::slot<void, const std::string&>& serverListDownloadingSlot
-, sigc::slot<void, unsigned int>& updatesCalculatedSlot
+, sigc::slot<void, size_t>& updatesCalculatedSlot
 ) 
 : mServerListDownloadingSlot(serverListDownloadingSlot)
 , mUpdatesCalculatedSlot(updatesCalculatedSlot)
