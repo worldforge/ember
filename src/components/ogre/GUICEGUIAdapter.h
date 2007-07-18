@@ -80,7 +80,7 @@ private:
 	bool Editbox_selectionChangedHandler(const CEGUI::EventArgs& args);
 	
 	const CEGUI::String* mSelectedText;
-	int mSelectionStart, mSelectionEnd;
+	size_t mSelectionStart, mSelectionEnd;
 };
 
 }

@@ -55,7 +55,7 @@ private:
 	WFUT::WFUTClient mWfutClient;
 	std::string mLocalWfut;
 	sigc::slot<void, const std::string&>& mServerListDownloadingSlot;
-	sigc::slot<void, unsigned int>& mUpdatesCalculatedSlot;
+	sigc::slot<void, size_t>& mUpdatesCalculatedSlot;
 };
 
 }

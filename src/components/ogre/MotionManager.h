@@ -43,9 +43,9 @@ public:
 	*/
 	struct MotionManagerInfo
 	{
-		int AnimatedEntities;
-		int MovingEntities;
-		int Animations;
+		size_t AnimatedEntities;
+		size_t MovingEntities;
+		size_t Animations;
 	};
 
 	MotionManager();
