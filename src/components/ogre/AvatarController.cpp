@@ -305,10 +305,12 @@ void AvatarController::moveToPoint(const Ogre::Vector3& point)
 		createDecal(point);
 	}
 	
-	///make sure it's at the correct height, since the visibility of it is determined by the bounding box
-	Ogre::Real height = EmberOgre::getSingleton().getTerrainGenerator()->getAdapter()->getHeightAt(point.x, point.z);
-	mDecalNode->setPosition(Ogre::Vector3(point.x, height, point.z));
-	mDecalNode->setVisible(true);
+	if (mDecalNode) {
+		///make sure it's at the correct height, since the visibility of it is determined by the bounding box
+		Ogre::Real height = EmberOgre::getSingleton().getTerrainGenerator()->getAdapter()->getHeightAt(point.x, point.z);
+		mDecalNode->setPosition(Ogre::Vector3(point.x, height, point.z));
+		mDecalNode->setVisible(true);
+	}
 	
 	WFMath::Vector<3> atlasVector = Ogre2Atlas_Vector3(point);
 	WFMath::Point<3> atlasPos(atlasVector.x(), atlasVector.y(), atlasVector.z());
@@ -327,29 +329,34 @@ void AvatarController::moveToPoint(const Ogre::Vector3& point)
 
 void AvatarController::createDecal(Ogre::Vector3 position)
 {
-	// Create object MeshDecal
-	Ogre::SceneManager* sceneManager = EmberOgre::getSingleton().getSceneManager();
-	Ogre::NameValuePairList params;
-	params["materialName"] = "/global/ember/terraindecal";
-	params["width"] = StringConverter::toString( 2 );
-	params["height"] = StringConverter::toString( 2 );
-	params["sceneMgrInstance"] = sceneManager->getName();
+	try {
+		// Create object MeshDecal
+		Ogre::SceneManager* sceneManager = EmberOgre::getSingleton().getSceneManager();
+		Ogre::NameValuePairList params;
+		params["materialName"] = "/global/ember/terraindecal";
+		params["width"] = StringConverter::toString( 2 );
+		params["height"] = StringConverter::toString( 2 );
+		params["sceneMgrInstance"] = sceneManager->getName();
 
-	mDecalObject = sceneManager->createMovableObject(
-		"AvatarControllerMoveToDecal",
-		"PagingLandScapeMeshDecal",
-		&params );
+		mDecalObject = sceneManager->createMovableObject(
+			"AvatarControllerMoveToDecal",
+			"PagingLandScapeMeshDecal",
+			&params );
 
-	// Add MeshDecal to Scene
-	mDecalNode = sceneManager->createSceneNode("AvatarControllerMoveToDecalNode");
-	///the decal code is a little shaky and relies on us setting the position of the node before we add the moveable object
-	EmberOgre::getSingleton().getWorldSceneNode()->addChild(mDecalNode);
-	mDecalNode->setPosition(position);
-	mDecalNode->attachObject(mDecalObject);
-// 	mDecalNode->showBoundingBox(true);
-	
-	
-	mPulsatingController = new Ogre::WaveformControllerFunction(Ogre::WFT_SINE, 1, 0.33, 0.25);
+		// Add MeshDecal to Scene
+		mDecalNode = sceneManager->createSceneNode("AvatarControllerMoveToDecalNode");
+		///the decal code is a little shaky and relies on us setting the position of the node before we add the moveable object
+		EmberOgre::getSingleton().getWorldSceneNode()->addChild(mDecalNode);
+		mDecalNode->setPosition(position);
+		mDecalNode->attachObject(mDecalObject);
+	// 	mDecalNode->showBoundingBox(true);
+		
+		
+		mPulsatingController = new Ogre::WaveformControllerFunction(Ogre::WFT_SINE, 1, 0.33, 0.25);
+	} catch (const Ogre::Exception& ex)
+	{
+		S_LOG_WARNING("Error when creating terrain decal: " << ex.what());
+	}
 }
 
 
