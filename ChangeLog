@@ -1,3 +1,80 @@
+2007-07-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/ogre/Ogre.pkg, src/components/ogre/scripting/bindings/lua/ogre/OgreNode.pkg, src/components/ogre/scripting/bindings/lua/ogre/OgreSceneNode.pkg, src/components/ogre/scripting/bindings/lua/ogre/lua_Ogre.cpp: updated bindings
+
+2007-07-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/Environment.cpp: check for null values
+
+2007-07-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityBrowser.layout, src/components/ogre/widgets/EntityBrowser.lua: added listing of all ogre scene nodes. even though you currently can't select any
+	* src/components/ogre/widgets/EntityEditor.layout: fixed invalid xml which caused random behaviour
+
+2007-07-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/base_scripts/base.material, media/materials/programs/All_In_Wonder.cg, media/materials/programs/Animation.cg, media/materials/programs/Common.program, media/materials/programs/Example_Basic.cg, media/materials/programs/Example_Basic.hlsl, media/materials/programs/Example_BumpMapping.cg, media/materials/programs/Example_Fresnel.cg, media/materials/programs/OffsetMapping.cg, media/materials/programs/OffsetMapping.hlsl, media/materials/programs/OffsetMappingFp.glsl, media/materials/programs/OffsetMappingVp.glsl, media/materials/scripts/vegetation.material: updated materials
+
+2007-07-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/main/Application.cpp, src/main/Ember.cpp: catch exceptions in a better way
+
+2007-07-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Widget.cpp: handle errors better
+
+2007-07-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/ServerBrowser.layout, src/components/ogre/widgets/ServerBrowser.lua: cleaned up the layout
+
+2007-07-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/FoliageArea.cpp: removed excessive logging
+
+2007-07-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Performance.lua: hide the performance widget by default
+
+2007-07-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainPage.cpp: fixed the calculation of where to put foliage, which had not worked since the redesign of how the terrain is created
+
+2007-07-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainGenerator.cpp, src/components/ogre/terrain/TerrainGenerator.h: only hide foliage when updateing the config value, no need to destroy it
+
+2007-07-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/Foliage.cpp, src/components/ogre/environment/Foliage.h, src/components/ogre/environment/FoliageArea.cpp, src/components/ogre/environment/FoliageArea.h: properly destroy foliage when shutting down, added a placeholder mesh (perhaps we should redesign how the we add foliage, there's no real need to keep an internal list), added more methods for placing grass
+
+2007-07-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/main/Ember.cpp: make sure that the application object is correctly destroyed before we exit
+
+2007-07-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/WorldEmberEntity.cpp: properly delete foliage when done, and initialize it in the correct order
+
+2007-07-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberOgre.cpp, src/components/ogre/MotionManager.cpp, src/components/ogre/MotionManager.h: there's no need for the motion manager to know anything about the terrain generator
+
+2007-07-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	 *src/components/ogre/AvatarController.cpp, src/components/ogre/AvatarController.h: added console command for moving the camera to a specific place when in free flying mode
+
+2007-07-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/AvatarController.cpp, src/components/ogre/AvatarController.h: the decal code is a little unstable and won't get the bounding box right unless it has recieved a render ops call, unless the position of the node is set correctly from the beginning
+
+2007-07-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeMeshDecal.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeMeshDecal.cpp: create the geometry when the node parent is updated, not when the instance is created
+
+2007-07-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManagerAdapter.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/EmberPagingSceneManagerAdapter.cpp, src/components/ogre/terrain/ISceneManagerAdapter.h: added method for getting the height of the terrain
+
 2007-07-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/GUIManager.cpp: disable entity picking when in movement mode
