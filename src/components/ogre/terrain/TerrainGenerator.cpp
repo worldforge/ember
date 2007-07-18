@@ -685,7 +685,7 @@ void TerrainGenerator::reloadTerrain(std::vector<TerrainPosition>& positions)
 void TerrainGenerator::updateHeightMapAndShaders(const std::set<TerrainPage*>& pagesToUpdate)
 {
 	///reload all shader textures of the affected pages
-	for (std::set<TerrainPage*>::iterator I = pagesToUpdate.begin(); I != pagesToUpdate.end(); ++I) {
+	for (std::set<TerrainPage*>::const_iterator I = pagesToUpdate.begin(); I != pagesToUpdate.end(); ++I) {
 		(*I)->update();
 		(*I)->updateAllShaderTextures();
 	}
