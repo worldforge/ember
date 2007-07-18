@@ -28,7 +28,7 @@
 #include "InspectWidget.h"
 #include "MakeEntityWidget.h"
 #include "IngameChatWidget.h"
-#include "ConsoleWidget.h"
+//#include "ConsoleWidget.h"
 #include "JesusEdit.h"
 #include "Help.h"
 #include "Quit.h"
@@ -48,7 +48,7 @@ WidgetDefinitions::WidgetDefinitions()
 	WidgetLoader::registerWidget("InspectWidget", &WidgetLoader::createWidgetInstance<InspectWidget>);
 	WidgetLoader::registerWidget("MakeEntityWidget", &WidgetLoader::createWidgetInstance<MakeEntityWidget>);
 	WidgetLoader::registerWidget("IngameChatWidget", &WidgetLoader::createWidgetInstance<IngameChatWidget>);
-	WidgetLoader::registerWidget("ConsoleWidget", &WidgetLoader::createWidgetInstance<ConsoleWidget>);
+	//WidgetLoader::registerWidget("ConsoleWidget", &WidgetLoader::createWidgetInstance<ConsoleWidget>);
 	WidgetLoader::registerWidget("JesusEdit", &WidgetLoader::createWidgetInstance<JesusEdit>);
 	WidgetLoader::registerWidget("Help", &WidgetLoader::createWidgetInstance<Help>);
 	WidgetLoader::registerWidget("Quit", &WidgetLoader::createWidgetInstance<Quit>);
