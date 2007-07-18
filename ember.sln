@@ -3,10 +3,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ember", "ember.vcproj", "{0
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "EmberSetup", "..\EmberSetup\EmberSetup.vdproj", "{DCD56731-247C-4569-9C2C-BC0ACBBF340E}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Atlas", "..\..\libs\Atlas-C++-0.6.0\Atlas.vcproj", "{2F985FB8-F9EA-4C2C-8C76-F53602C3EF3B}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
@@ -31,6 +27,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wfmath", "..\..\libs\wfmath
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libwfut", "..\..\libs\libwfut-0.1.0\libwfut.vcproj", "{2F985FB8-F9EA-4C2C-8C76-F53602C3EF3B}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -43,8 +43,10 @@ Global
 		{05D97D5C-9932-4EDD-9CC9-0988A2EC71BF}.Debug.Build.0 = Debug|Win32
 		{05D97D5C-9932-4EDD-9CC9-0988A2EC71BF}.Release.ActiveCfg = Release|Win32
 		{05D97D5C-9932-4EDD-9CC9-0988A2EC71BF}.Release.Build.0 = Release|Win32
-		{DCD56731-247C-4569-9C2C-BC0ACBBF340E}.Debug.ActiveCfg = Debug
-		{DCD56731-247C-4569-9C2C-BC0ACBBF340E}.Release.ActiveCfg = Release
+		{2F985FB8-F9EA-4C2C-8C76-F53602C3EF3B}.Debug.ActiveCfg = Debug|Win32
+		{2F985FB8-F9EA-4C2C-8C76-F53602C3EF3B}.Debug.Build.0 = Debug|Win32
+		{2F985FB8-F9EA-4C2C-8C76-F53602C3EF3B}.Release.ActiveCfg = Release|Win32
+		{2F985FB8-F9EA-4C2C-8C76-F53602C3EF3B}.Release.Build.0 = Release|Win32
 		{2F985FB8-F9EA-4C2C-8C76-F53602C3EF3B}.Debug.ActiveCfg = Debug|Win32
 		{2F985FB8-F9EA-4C2C-8C76-F53602C3EF3B}.Debug.Build.0 = Debug|Win32
 		{2F985FB8-F9EA-4C2C-8C76-F53602C3EF3B}.Release.ActiveCfg = Release|Win32

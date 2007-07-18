@@ -32,6 +32,7 @@ class ISoundProvider;
 //#include <AL/altypes.h>
 //Might need a proper preprocessor to handle different versions
 #include<AL/al.h>
+
 #include <wfmath/point.h>
 #include <wfmath/vector.h>
 #include <wfmath/quaternion.h>
@@ -90,8 +91,14 @@ friend class IScriptingProvider;
 
 	std::string soundsDirPath;
 	
-	int size,freq,bits,format;
+#ifdef _WIN32
+	unsigned int size, freq;
+#else
+	int size, freq;
+#endif
+	int bits,format;
 	void *data;
+	char loop;
 
 	/**
 	The Sound Provider

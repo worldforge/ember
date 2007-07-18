@@ -22,9 +22,15 @@
 #include "config.h"
 #endif
 
-#include <AL/al.h>
-#include <AL/alc.h>
-#include <AL/alut.h>
+#ifdef __WIN32__
+	#include <al.h>
+	#include <alc.h>
+	#include <AL/alut.h>
+#else
+	#include <AL/al.h>
+	#include <AL/alc.h>
+	#include <AL/alut.h>
+#endif
 
 #include "framework/Service.h"
 #include "framework/ConsoleObject.h"
@@ -219,22 +225,24 @@ namespace Ember
 
 	bool SoundService::LoadWAV(const char *fname,int buffer)
 	{
+		char* alName = new char[strlen(fname)];
+		strcpy(alName, fname);
+//#ifdef _WIN32 // Windows
+//
+//		alutLoadWAVFile(alName,&format,&data,&size,&freq, &loop); 	// Load WAV file
+//		alBufferData(buffer,format,data,size,freq); 			// Connect WAV to buffer
+//
+//#endif
+//
+//#ifdef _LINUX // Linux
+//
+//		alutLoadWAV(alName,&data,&format,&size,&bits,&freq);		// Load WAV file
+//		alBufferData(buffer,format,data,size,freq);				// Connect WAV to buffer
+//		S_LOG_INFO("Loading WAV and stuff")
+//
+//#endif
 
-#ifdef _WIN32 // Windows
-
-		alutLoadWAVFile(fname,&format,&data,&size,&freq); 	// Load WAV file
-		alBufferData(buffer,format,data,size,freq); 			// Connect WAV to buffer
-
-#endif
-
-#ifdef _LINUX // Linux
-
-		alutLoadWAV(fname,&data,&format,&size,&bits,&freq);		// Load WAV file
-		alBufferData(buffer,format,data,size,freq);				// Connect WAV to buffer
-		S_LOG_INFO("Loading WAV and stuff")
-
-#endif
-
+		delete[] alName;
 	return true;
 
 	}

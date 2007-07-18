@@ -43,7 +43,7 @@ Section "Ember (required)"
   File /oname=ogre.cfg etc\ember\ogre.cfg 
   File /oname=plugins.cfg etc\ember\plugins.cfg 
 
-  SetOutPath $APPDATA\Ember\ember-media-0.4.2
+  SetOutPath $APPDATA\Ember\ember-media-0.4.3
   File /r media\user\*.*
   
   ; Set output path to the installation directory.

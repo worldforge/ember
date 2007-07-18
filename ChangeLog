@@ -1,3 +1,30 @@
+2007-07-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/framework/IResourceProvider.h: include <memory>
+	* ember.nsi, ember.sln, ember.vcproj: update win32 project files
+	* ember.conf: also load the direct3d plugin on windows (on linux it will just fail and carry on)
+	* src/services/sound/SoundService.cpp|h: comment out buggy placeholder code since this isn't used anyway
+
+2007-07-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/GUICEGUIAdapter.h, src/components/ogre/MotionManager.h, src/services/wfut/WfutSession.h: use size_t where needed
+
+2007-07-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/AvatarController.cpp: handle missing media better when creating the decal (the decal code should be refactored into its own class)
+
+2007-07-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/StackableContainer.cpp: only disconnect the window destruction listener in the destructor, else we'll get segfaults when the cleanup method is called from within the destructor of a CEGUI::Window
+
+2007-07-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/WidgetDefinitions.cpp: removed references to ConsoleWidget since the Chat widget now has supplanted it
+
+2007-07-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainGenerator.cpp: properly use a const iterator
+
 2007-07-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/ogre/Ogre.pkg, src/components/ogre/scripting/bindings/lua/ogre/OgreNode.pkg, src/components/ogre/scripting/bindings/lua/ogre/OgreSceneNode.pkg, src/components/ogre/scripting/bindings/lua/ogre/lua_Ogre.cpp: updated bindings
