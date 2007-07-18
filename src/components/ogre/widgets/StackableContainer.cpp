@@ -40,6 +40,10 @@ StackableContainer::StackableContainer(CEGUI::Window* window)
 StackableContainer::~StackableContainer()
 {
 	cleanup();
+	if (mWindowDestructionConnection.isValid()) {	
+		mWindowDestructionConnection->disconnect();
+		mWindowDestructionConnection = CEGUI::Event::Connection();
+	}
 }
 
 void StackableContainer::cleanup()
@@ -48,10 +52,6 @@ void StackableContainer::cleanup()
 		I->second->disconnect();
 	}
 	mChildConnections.clear();
-	if (mWindowDestructionConnection.isValid()) {	
-		mWindowDestructionConnection->disconnect();
-		mWindowDestructionConnection = CEGUI::Event::Connection();
-	}
 	if (mChildRemovedConnection.isValid()) {	
 		mChildRemovedConnection->disconnect();
 		mChildRemovedConnection = CEGUI::Event::Connection();
