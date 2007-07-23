@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
 	<Window Type='EmberLook/FrameWindow' Name='Mainwindow'>
-		<Property Name='UnifiedSize' Value='{{0.00000,250.000000},{0.00000,400.000000}}'/>
+		<Property Name='UnifiedSize' Value='{{0.00000,350.000000},{0.00000,400.000000}}'/>
 		<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0,0.000000}}'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Entity browser'/>
@@ -31,7 +31,7 @@
 					</Window>
 					<Window Type='EmberLook/Listbox' Name='EntityList'>
 						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
-						<Property Name='UnifiedSize' Value='{{1,-4},{1,-70}}'/>
+						<Property Name='UnifiedSize' Value='{{0,200},{1,-70}}'/>
 						<Property Name='InheritsAlpha' Value='True'/>
 					</Window>
 				</Window>
@@ -39,7 +39,7 @@
 					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
 					<Property Name='Text' Value='Ogre'/>
 					<Property Name='InheritsAlpha' Value='false'/>
-					<Property Name='Visible' Value='true'/>
+					<Property Name='Visible' Value='false'/>
 					<Window Type='EmberLook/Editbox' Name='FilterSceneNodes'>
 						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-50}}'/>
 						<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
@@ -53,8 +53,17 @@
 					</Window>
 					<Window Type='EmberLook/Listbox' Name='SceneNodesList'>
 						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
-						<Property Name='UnifiedSize' Value='{{1,-4},{1,-70}}'/>
+						<Property Name='UnifiedSize' Value='{{0,250},{1,-70}}'/>
 						<Property Name='InheritsAlpha' Value='True'/>
+					</Window>
+					<Window Type='EmberLook/StaticText' Name='SceneNodeInfo'>
+						<Property Name='UnifiedPosition' Value='{{0,255},{0,4}}'/>
+						<Property Name='UnifiedSize' Value='{{1,-260},{1,-70}}'/>
+						<Property Name='Text' Value=''/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Property Name='ReadOnly' Value='true'/>
+						<Property Name='VertFormatting' Value='TopAligned'/>
+						<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
 					</Window>
 				</Window>
 			</Window>

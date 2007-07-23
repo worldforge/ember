@@ -6,6 +6,8 @@ EntityBrowser.listbox = nil
 
 EntityBrowser.sceneNodes = {}
 EntityBrowser.sceneNodes.listbox = nil
+EntityBrowser.sceneNodes.lookup = {}
+EntityBrowser.sceneNodes.lookupKey = 0
 
 function EntityBrowser.Refresh_MouseClick(args)
 	EntityBrowser.refresh()
@@ -27,6 +29,21 @@ function EntityBrowser.EntityList_SelectionChanged(args)
 	
 end
 
+function EntityBrowser.SceneNodesList_SelectionChanged(args)
+	local item = EntityBrowser.sceneNodes.listbox:getFirstSelectedItem()
+	if item ~= nil then
+		local index = item:getID()
+		console:pushMessage("index: " .. index)
+		local sceneNode = EntityBrowser.sceneNodes.lookup[index]
+--[[		tolua.cast(sceneNode, "const Ogre::Node")
+		inspectObject(sceneNode)]]
+		local positionInfo = "x: " .. sceneNode:getPosition().x .. " y: " .. sceneNode:getPosition().y .. " z: " .. sceneNode:getPosition().z
+		EntityBrowser.sceneNodes.nodeInfo:setText(positionInfo);
+	end
+end
+
+
+
 function EntityBrowser.refreshSceneNodes()
 	EntityBrowser.sceneNodes.listholder:resetList()
 	EntityBrowser.addSceneNode(emberOgre:getRootSceneNode(), 0)
@@ -39,8 +56,12 @@ function EntityBrowser.addSceneNode(sceneNode, level)
 			label = label .. " "
 		end	
 		label = label .. sceneNode:getName()
+		EntityBrowser.sceneNodes.lookupKey = EntityBrowser.sceneNodes.lookupKey + 1
+		local index = EntityBrowser.sceneNodes.lookupKey
+--[[		console:pushMessage("index: " .. index)]]
 		
-		local item = EmberOgre.Gui.ColouredListItem:new(label, 0, sceneNode)
+		local item = EmberOgre.Gui.ColouredListItem:new(label, index)
+		EntityBrowser.sceneNodes.lookup[index] = sceneNode
 		EntityBrowser.sceneNodes.listholder:addItem(item)
 	
 	
@@ -64,7 +85,7 @@ function EntityBrowser.addEntity(entity, level)
 		for i = 0, level  do
 			label = label .. " "
 		end	
-		label = label .. entity:getName()
+		label = label .. entity:getName() .. " (" .. entity:getType():getName() .. ")"
 		
 		local item = EmberOgre.Gui.ColouredListItem:new(label, entity:getId(), entity)
 		EntityBrowser.listholder:addItem(item)
@@ -95,6 +116,7 @@ function EntityBrowser.buildWidget()
 	--the ogre scene nodes part
 	EntityBrowser.sceneNodes.listbox = CEGUI.toListbox(EntityBrowser.widget:getWindow("SceneNodesList"))
 	EntityBrowser.sceneNodes.listbox:subscribeEvent("ItemSelectionChanged", "EntityBrowser.SceneNodesList_SelectionChanged")
+	EntityBrowser.sceneNodes.nodeInfo = EntityBrowser.widget:getWindow("SceneNodeInfo")
 	EntityBrowser.sceneNodes.filter = CEGUI.toEditbox(EntityBrowser.widget:getWindow("FilterSceneNodes"))
 	EntityBrowser.sceneNodes.listholder = EmberOgre.ListHolder:new_local(EntityBrowser.sceneNodes.listbox, EntityBrowser.sceneNodes.filter)
 	EntityBrowser.widget:getWindow("RefreshSceneNodes"):subscribeEvent("MouseClick", "EntityBrowser.RefreshSceneNodes_MouseClick")
