@@ -122,13 +122,36 @@ Ogre::Vector3 Sun::getSunDirection () const {
 	return mSunDirection;
 }
 
+/**
+"Normalizes" a colour value, i.e. makes sure that it stays within [0..1] range.
+*/
+Ogre::ColourValue& normalizeColour(Ogre::ColourValue& colour)
+{
+	Ogre::Real max = 0.0f;
+	max = std::max<Ogre::Real>(colour[0], max);
+	max = std::max<Ogre::Real>(colour[1], max);
+	max = std::max<Ogre::Real>(colour[2], max);
+	if (max > 1) {
+		Ogre::Real adjust = 1.0f / max;
+		colour[0] = adjust * colour[0];
+		colour[1] = adjust * colour[1];
+		colour[2] = adjust * colour[2];
+	}
+	return colour;
+}
+
 void Sun::setSunColour (Ogre::ColourValue colour) {
-	colour = colour * Ogre::ColourValue (1, 1, 0.9);
-	colour = colour * 3;
+ 	colour = Ogre::ColourValue (1, 1, 0.9);
+/*	colour = colour * Ogre::ColourValue (1, 1, 0.9);
+	colour = colour * 3;*/
+	///we need to normalize it because some shaders might not be able to cope with colours that go beyond 1
+//  	normalizeColour(colour);
 	mMainLight->setDiffuseColour (colour);
 	mMainLight->setSpecularColour (colour);
 
-	mSunMaterial->setSelfIllumination (colour + Ogre::ColourValue (.5, .4, .2));
+	colour += Ogre::ColourValue (.5, .4, .2);
+// 	normalizeColour(colour);
+	mSunMaterial->setSelfIllumination (colour);
 	
 	// Store this last colour
 	mSunColour = colour;
