@@ -77,6 +77,10 @@ material /global/environment/ground/dirt/dirt : /base/simple
 	set_texture_alias DiffuseMap 3d_objects/environment/ground/textures/dirt/dirt.png
 }
 
+material /global/environment/ground/sand/sand : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_objects/environment/ground/textures/sand/sand2.png
+}
 
 
 material /global/environment/water/simple
