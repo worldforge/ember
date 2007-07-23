@@ -124,6 +124,7 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	mWindow(window),
 	mViewPort(0),
 	mClosestPickingDistance(10000),
+	mLastPosition(Ogre::Vector3::ZERO),
 	mAdjustTerrainRaySceneQuery(0),
 	mCameraRaySceneQuery(0)
 //	mLastOrientationOfTheCamera(avatar->getOrientation())
@@ -547,14 +548,14 @@ bool AvatarCamera::frameStarted(const Ogre::FrameEvent& event)
 		adjustForTerrain();
 	}
 	mLastPosition = mCamera->getDerivedPosition();
-#ifndef WIN32
-	Ember::SoundService* mySoundService = Ember::EmberServices::getSingleton().getSoundService();
-	{
-		mySoundService->updateListenerPosition(
-			Ogre2Atlas(mCamera->getPosition()),
-			Ogre2Atlas(mCamera->getOrientation()));
-	}
-#endif
+// #ifndef WIN32
+// 	Ember::SoundService* mySoundService = Ember::EmberServices::getSingleton().getSoundService();
+// 	{
+// 		mySoundService->updateListenerPosition(
+// 			Ogre2Atlas(mCamera->getPosition()),
+// 			Ogre2Atlas(mCamera->getOrientation()));
+// 	}
+// #endif
 	return true;
 }
 
