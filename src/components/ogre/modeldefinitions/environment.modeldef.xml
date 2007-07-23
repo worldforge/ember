@@ -151,7 +151,56 @@
 		</submodels>
 	</model>
 	
+    <model name="iron_ore_node" usescaleof="all" scale="2.000000" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/environment/boulder/models/mossy_boulders/mossy_bouldersC.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/environment/ground/stone/weathered_granite" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+    </model>	
 	
+    <model name="iron_ore" usescaleof="all" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/environment/ground/models/rounded_heap/rounded_heap.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/building_primitives/rough_stone/floor_" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+    </model>
+	
+    <model name="ice_chunk" usescaleof="all" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/environment/boulder/models/mossy_boulders/mossy_bouldersB.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/items/building/mausoleum/dirty-st" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+    </model>
 	
 	<!-- non-physical entities -->
 	<model name="boundary" >

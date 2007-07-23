@@ -328,9 +328,28 @@
 		</entitymatch>
 	</modelmapping>
 	
+	
+	<!-- We'll use jayrs new oak for now -->
+	<modelmapping name="oak">
+		<entitymatch>
+			<case equals="oak">
+				<action type="display-model">oak_mk1</action>
+			</case>
+		</entitymatch>
+	</modelmapping> 	
+	
+	<modelmapping name="birch">
+		<entitymatch>
+			<case equals="birch">
+				<action type="display-model">birch_mk1</action>
+			</case>
+		</entitymatch>
+	</modelmapping> 	
+	
+	
 	<!-- We have three different types of oaks: large, young and saplings. The size (which we for simplicity assumes is a float) determines which of these we should show. Furthermore, the "style" attribute which variant of oak we should show (just as with the boulder).
 		 -->
-	<modelmapping name="oak">
+<!--	<modelmapping name="oak">
 		<entitymatch>
 			<case equals="oak">
 				<action type="display-model">oak</action>
@@ -380,20 +399,26 @@
 				</attributematch>
 			</case>
 		</entitymatch>
-	</modelmapping>
+	</modelmapping>-->
 	
-	<automodelmapping name="birch" />
+<!-- 	<automodelmapping name="birch" /> -->
 
 	
 	<!-- We'll use the "male" model for the entities of type "settler" or "butcher". Depending on what kind of entity is outfitted to the torso we'll show a shirt part. The shirts all belongs to the same group in the model, so only one will be shown at the same time.
 		-->
+<!--	<modelmapping name="humanoid">
+		<entitymatch>
+			<case equals="settler|merchant|mercenary|marshall|butcher">
+				<action type="display-model">humanoid</action>
+			</case>
+		</entitymatch>
+	</modelmapping>-->
 	<modelmapping name="human">
 		<entitymatch>
 			<case equals="settler|merchant|mercenary|marshall|butcher">
 				<action type="display-model">male</action>
 				<outfitmatch attachment="body">
 					<case equals="shirt" >
-						<!-- the default fallback if there's no other more suitable texture -->
 						<action type="display-part">clothes/burlap</action>
 						<attributematch attribute="style">
 							<case equals="burlap">

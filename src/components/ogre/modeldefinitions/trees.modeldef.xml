@@ -277,4 +277,59 @@
 		</submodels>
 		<actions />
 	</model>
+    <model name="oak_mk1" usescaleof="height" scale="2.000000" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/plants/tree/models/oak/mk1/trees.mesh">
+                <parts>
+                    <part name="trunk" show="true" group="trunk">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/tree/english_oak/bark" />
+                        </subentities>
+                    </part>
+                    <part name="leaves/summer" show="true" group="leaves">
+                        <subentities>
+                            <subentity index="1" material="/global/plants/tree/english_oak/branches/summer" />
+                        </subentities>
+                    </part>
+                    <part name="leaves/spring" show="false" group="leaves">
+                        <subentities>
+                            <subentity index="1" material="/global/plants/tree/english_oak/branches/spring" />
+                        </subentities>
+                    </part>
+                    <part name="leaves/fall" show="false" group="leaves">
+                        <subentities>
+                            <subentity index="1" material="/global/plants/tree/english_oak/branches/fall" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+    </model>
+	<!-- just a temporary version which uses the oak mesh -->
+    <model name="birch_mk1" usescaleof="height" scale="2.000000" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/plants/tree/models/oak/mk1/trees.mesh">
+                <parts>
+                    <part name="trunk" show="true" group="trunk">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/tree/birch/bark" />
+                        </subentities>
+                    </part>
+                    <part name="leaves" show="true" group="leaves">
+                        <subentities>
+                            <subentity index="1" material="/global/plants/tree/birch/branches" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+    </model>
 </models>
