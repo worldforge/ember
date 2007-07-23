@@ -74,7 +74,7 @@ bool TerrainArea::parseArea()
     }
        
     WFMath::Polygon<2> poly;
-    for (unsigned int p=0; p<pointsData.size(); ++p) {
+    for (size_t p=0; p<pointsData.size(); ++p) {
         if (!pointsData[p].isList()) {
             S_LOG_FAILURE("skipped malformed point in area");
             continue;

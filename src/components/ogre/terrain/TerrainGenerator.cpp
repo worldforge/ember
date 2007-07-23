@@ -193,7 +193,7 @@ ISceneManagerAdapter* TerrainGenerator::getAdapter() const
 
 TerrainShader* TerrainGenerator::createShader(const std::string& textureName, Mercator::Shader* mercatorShader)
 {
-	int index = mShaderMap.size();
+	size_t index = mShaderMap.size();
 	S_LOG_VERBOSE("Creating new shader for texture " << textureName <<" with index " << index);
     TerrainShader* shader = new TerrainShader(mTerrain, index, textureName, mercatorShader);
 
@@ -204,7 +204,7 @@ TerrainShader* TerrainGenerator::createShader(const std::string& textureName, Me
 
 TerrainShader* TerrainGenerator::createShader(Ogre::MaterialPtr material, Mercator::Shader* mercatorShader)
 {
-	int index = mShaderMap.size();
+	size_t index = mShaderMap.size();
 	S_LOG_VERBOSE("Creating new shader for material " << material->getName() <<" with index " << index);
     TerrainShader* shader = new TerrainShader(mTerrain, index, material, mercatorShader);
 
