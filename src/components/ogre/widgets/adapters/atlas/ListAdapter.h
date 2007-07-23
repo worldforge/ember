@@ -50,8 +50,8 @@ public:
     virtual ~ListAdapter();
     
 
-    unsigned int getSize();
-	const ::Atlas::Message::Element& valueOfAttr(unsigned int index) const;
+    size_t getSize();
+	const ::Atlas::Message::Element& valueOfAttr(size_t index) const;
 
 	/**
 	Updates the gui with new values.

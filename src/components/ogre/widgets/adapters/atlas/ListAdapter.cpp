@@ -45,13 +45,13 @@ ListAdapter::~ListAdapter()
 	removeAdapters();
 }
 
-unsigned int ListAdapter::getSize()
+size_t ListAdapter::getSize()
 {
 	return mAttributes.size();
 }
 
 
-const ::Atlas::Message::Element& ListAdapter::valueOfAttr(unsigned int index) const
+const ::Atlas::Message::Element& ListAdapter::valueOfAttr(size_t index) const
 {
 	static Element emptyElement;
     if (index > mAttributes.size())
