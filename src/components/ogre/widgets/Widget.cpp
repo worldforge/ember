@@ -36,7 +36,7 @@ namespace EmberOgre
 		if (mMainWindow) {
 			CEGUI::WindowManager::getSingleton().destroyWindow(mMainWindow);
 		}
-		mGuiManager->removeWidget(this);
+		//mGuiManager->removeWidget(this);
 	}
 	
 	void Widget::frameStarted(const Ogre::FrameEvent& evt)

@@ -82,11 +82,12 @@ public Ember::ConsoleObject
 {
 public:
 
+	friend class GUIManager;
+	friend class WidgetLoader;
+	
 	static const std::string DEFAULT_TAB_GROUP;
 	
 	
-	Widget();
-	virtual ~Widget();
 	
 	
 	/**
@@ -228,6 +229,8 @@ public:
 
 protected:
 
+	Widget();
+	virtual ~Widget();
 
 	bool MainWindow_CloseClick(const CEGUI::EventArgs& args);
 
