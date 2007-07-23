@@ -14,14 +14,16 @@ cd ${shared_dir}
 grep -rIE --no-filename "^[^/].*texture 3d"  ${original_media}/materials/scripts/*.material | sed -e 's/texture 3d_/3d_/g' > common_textures.list
 grep -rIE --no-filename "^[^/].*set_texture_alias DiffuseMap 3d"  ${original_media}/materials/scripts/*.material | sed -e 's/set_texture_alias DiffuseMap 3d_/3d_/g' >> common_textures.list
 grep -rIE --no-filename "^[^/].*set_texture_alias NormalMap 3d"  ${original_media}/materials/scripts/*.material | sed -e 's/set_texture_alias NormalMap 3d_/3d_/g' >> common_textures.list
+grep -rIE --no-filename "^[^/].*set_texture_alias NormalHeightMap 3d"  ${original_media}/materials/scripts/*.material | sed -e 's/set_texture_alias NormalHeightMap 3d_/3d_/g' >> common_textures.list
 
+sort --unique common_textures.list > common_textures_cleaned.list
 
 #first copy all textures
-cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_textures.list ` | ( cd ${shared_dir}/common; tar xvf -)
+cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_textures_cleaned.list ` | ( cd ${shared_dir}/common; tar xvf -)
 
 #then convert them to a little lower smaller
 echo "Converting images"
-for filename in `cat ${shared_dir}/common_textures.list `
+for filename in `cat ${shared_dir}/common_textures_cleaned.list `
 do
 	#'512x512>' will only convert if the image is larger in any dimension
 	convert ${shared_dir}/common/$filename -adaptive-resize '512x512>' ${shared_dir}/common/$filename
@@ -105,6 +107,7 @@ cp -a ${original_media}/LICENSING.txt .
 
 echo "Cleanup"
 rm -f ${shared_dir}/common_textures.list
+rm -f ${shared_dir}/common_textures_cleaned.list
 rm -f ${shared_dir}/common_meshes.list
 rm -f ${shared_dir}/shared_packs.list
 
