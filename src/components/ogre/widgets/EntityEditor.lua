@@ -302,6 +302,8 @@ function EntityEditor.createAdapterFromPrototype(element, prototype)
 			adapterWrapper = EntityEditor.createOrientationAdapter(element, prototype)
 		elseif prototype.type == 'points' then
 			adapterWrapper = EntityEditor.createPointsAdapter(element, prototype)
+		elseif prototype.type == 'point' then
+			adapterWrapper = EntityEditor.createPosition2DAdapter(element, prototype)
 		elseif prototype.type == "string" then
 			adapterWrapper = EntityEditor.createStringAdapter(element, prototype)
 		elseif prototype.type == "number" then
@@ -406,7 +408,9 @@ function EntityEditor.createPointsAdapter(element, prototype)
 	end
 	for i = 0, wrapper.adapter:getSize() - 1 do
 		local childElement = wrapper.adapter:valueOfAttr(i)
-		local adapterWrapper = EntityEditor.createPosition2DAdapter(childElement)
+		local childPrototype = EntityEditor.getPrototype("", childElement)
+		childPrototype.type = "point"
+		local adapterWrapper =EntityEditor.createAdapterFromPrototype(childElement, childPrototype)
 		if adapterWrapper ~= nil then
 			EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.container, adapterWrapper.prototype)
 			wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
