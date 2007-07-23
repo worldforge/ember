@@ -127,6 +127,8 @@ public:
 	const Ember::ConsoleCommandWrapper CharacterMoveUpwards;
 	const Ember::ConsoleCommandWrapper CharacterStrafeLeft;
 	const Ember::ConsoleCommandWrapper CharacterStrafeRight;
+/*	const Ember::ConsoleCommandWrapper CharacterRotateLeft;
+	const Ember::ConsoleCommandWrapper CharacterRotateRight;*/
 	
 	const Ember::ConsoleCommandWrapper MoveCameraTo;
 	
