@@ -32,8 +32,6 @@ class Widget
 {
 public:
 
-	~Widget();
-
 	/**
 	 *    Show the widget.
 	 */
