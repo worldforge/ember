@@ -13,12 +13,14 @@ cd ${shared_dir}
 #don't include lines starting with "/"
 grep -rIE --no-filename "^[^/].*texture 3d"  ${original_media}/materials/scripts/*.material | sed -e 's/texture 3d_/3d_/g' > common_textures.list
 grep -rIE --no-filename "^[^/].*set_texture_alias DiffuseMap 3d"  ${original_media}/materials/scripts/*.material | sed -e 's/set_texture_alias DiffuseMap 3d_/3d_/g' >> common_textures.list
+grep -rIE --no-filename "^[^/].*set_texture_alias NormalMap 3d"  ${original_media}/materials/scripts/*.material | sed -e 's/set_texture_alias NormalMap 3d_/3d_/g' >> common_textures.list
 
 
 #first copy all textures
-cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_textures.list ` | ( cd ${shared_dir}/common; tar xf -)
+cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_textures.list ` | ( cd ${shared_dir}/common; tar xvf -)
 
 #then convert them to a little lower smaller
+echo "Converting images"
 for filename in `cat ${shared_dir}/common_textures.list `
 do
 	#'512x512>' will only convert if the image is larger in any dimension
@@ -27,61 +29,69 @@ do
 done
 
 #copy all meshes in use
+echo "Copying meshes"
 cd ${shared_dir}
 grep -orIE --no-filename "mesh=\"3d.*\"" ${original_media}/modeldefinitions/*.modeldef | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' > common_meshes.list
 grep -orIE --no-filename "mesh=\"junk.*\"" ${original_media}/modeldefinitions/*.modeldef | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> common_meshes.list
 grep -orIE --no-filename "mesh=\"3d.*\"" ${original_media}/modeldefinitions/*.modeldef.xml | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> common_meshes.list
 grep -orIE --no-filename "mesh=\"junk.*\"" ${original_media}/modeldefinitions/*.modeldef.xml | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> common_meshes.list
-cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_meshes.list ` | ( cd ${shared_dir}/common; tar xf -)
+cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_meshes.list ` | ( cd ${shared_dir}/common; tar xvf -)
 mkdir -p ${shared_dir}/models
-cd ${original_media}/models ; tar cf - `find -L . -iname \*.mesh` | ( cd ${shared_dir}/models; tar xf -)
+cd ${original_media}/models ; tar cf - `find -L . -iname \*.mesh` | ( cd ${shared_dir}/models; tar xvf -)
 #it's harder to find out what skeletons are used, so we'll just copy them all
-cd ${original_media} ; tar cf - `find -L . -iname \*.skeleton` | ( cd ${shared_dir}; tar xf -)
+echo "Copying skeletons"
+cd ${original_media} ; tar cf - `find -L . -iname \*.skeleton` | ( cd ${shared_dir}; tar xvf -)
 
+echo "Copying sounds"
 mkdir -p ${shared_dir}/sounds
-cd ${original_media}/sounds; tar cf - `find . -iname \*.wav` | ( cd ${shared_dir}/sounds; tar xf -)
+cd ${original_media}/sounds; tar cf - `find . -iname \*.wav` | ( cd ${shared_dir}/sounds; tar xvf -)
 
+echo "Copying packs"
 cd ${shared_dir}
 grep -rIE --no-filename "Zip\[shared\]=.*" ${current}/src/components/ogre/resources.cfg | sed -e 's/Zip\[shared\]=//g' > shared_packs.list
-cd ${original_media} ; tar cf - `cat ${shared_dir}/shared_packs.list ` | ( cd ${shared_dir}/; tar xf -)
+cd ${original_media} ; tar cf - `cat ${shared_dir}/shared_packs.list ` | ( cd ${shared_dir}/; tar xvf -)
 
 
 
 #then get the user media
 
+echo "User media"
 cd ${user_dir}
 
 #get the theme media dir
 #mkdir -p ${current}/${media_dir}/media/common/themes/ember
-#cd ${current}/media/common/themes/ember ; tar cf - `find . -iname \*.png` | ( cd ${current}/${media_dir}/media/common/themes/ember; tar xf -)
-#cd ${current}/media/common/themes/ember ; tar cf - `find . -iname \*.tga` | ( cd ${current}/${media_dir}/media/common/themes/ember; tar xf -)
-#cd ${current}/media/common/themes/ember ; tar cf - `find . -iname \*.jpeg` | ( cd ${current}/${media_dir}/media/common/themes/ember; tar xf -)
-#cd ${current}/media/common/themes/ember ; tar cf - `find . -iname \*.jpg` | ( cd ${current}/${media_dir}/media/common/themes/ember; tar xf -)
+#cd ${current}/media/common/themes/ember ; tar cf - `find . -iname \*.png` | ( cd ${current}/${media_dir}/media/common/themes/ember; tar xvf -)
+#cd ${current}/media/common/themes/ember ; tar cf - `find . -iname \*.tga` | ( cd ${current}/${media_dir}/media/common/themes/ember; tar xvf -)
+#cd ${current}/media/common/themes/ember ; tar cf - `find . -iname \*.jpeg` | ( cd ${current}/${media_dir}/media/common/themes/ember; tar xvf -)
+#cd ${current}/media/common/themes/ember ; tar cf - `find . -iname \*.jpg` | ( cd ${current}/${media_dir}/media/common/themes/ember; tar xvf -)
 
+echo "Copying definitions"
 mkdir -p ${user_dir}/modeldefinitions
-cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modeldef` | ( cd ${user_dir}/modeldefinitions; tar xf -)
-cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modeldef.xml` | ( cd ${user_dir}/modeldefinitions; tar xf -)
-cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modelmap` | ( cd ${user_dir}/modeldefinitions; tar xf -)
-cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modelmap.xml` | ( cd ${user_dir}/modeldefinitions; tar xf -)
+cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modeldef` | ( cd ${user_dir}/modeldefinitions; tar xvf -)
+cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modeldef.xml` | ( cd ${user_dir}/modeldefinitions; tar xvf -)
+cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modelmap` | ( cd ${user_dir}/modeldefinitions; tar xvf -)
+cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modelmap.xml` | ( cd ${user_dir}/modeldefinitions; tar xvf -)
 
 
+echo "Copying materials"
 mkdir -p ${user_dir}/materials
-cd ${original_media}/materials ; tar cf - `find . -iname \*.png` | ( cd ${user_dir}/materials; tar xf -)
-cd ${original_media}/materials ; tar cf - `find . -iname \*.jpg` | ( cd ${user_dir}/materials; tar xf -)
-cd ${original_media}/materials ; tar cf - `find . -iname \*.cg` | ( cd ${user_dir}/materials; tar xf -)
-cd ${original_media}/materials ; tar cf - `find . -iname \*.program` | ( cd ${user_dir}/materials; tar xf -)
-cd ${original_media}/materials ; tar cf - `find . -iname \*.asm` | ( cd ${user_dir}/materials; tar xf -)
-cd ${original_media}/materials ; tar cf - `find . -iname \*.ps` | ( cd ${user_dir}/materials; tar xf -)
-cd ${original_media}/materials ; tar cf - `find . -iname \*.material` | ( cd ${user_dir}/materials; tar xf -)
+cd ${original_media}/materials ; tar cf - `find . -iname \*.png` | ( cd ${user_dir}/materials; tar xvf -)
+cd ${original_media}/materials ; tar cf - `find . -iname \*.jpg` | ( cd ${user_dir}/materials; tar xvf -)
+cd ${original_media}/materials ; tar cf - `find . -iname \*.cg` | ( cd ${user_dir}/materials; tar xvf -)
+cd ${original_media}/materials ; tar cf - `find . -iname \*.program` | ( cd ${user_dir}/materials; tar xvf -)
+cd ${original_media}/materials ; tar cf - `find . -iname \*.asm` | ( cd ${user_dir}/materials; tar xvf -)
+cd ${original_media}/materials ; tar cf - `find . -iname \*.ps` | ( cd ${user_dir}/materials; tar xvf -)
+cd ${original_media}/materials ; tar cf - `find . -iname \*.material` | ( cd ${user_dir}/materials; tar xvf -)
 
-#cd ${original_media}/models ; tar cf - `find . -iname \*.mesh` | ( cd ${user_dir}/models; tar xf -)
-#cd ${original_media}/models ; tar cf - `find . -iname \*.skeleton` | ( cd ${user_dir}/models; tar xf -)
+#cd ${original_media}/models ; tar cf - `find . -iname \*.mesh` | ( cd ${user_dir}/models; tar xvf -)
+#cd ${original_media}/models ; tar cf - `find . -iname \*.skeleton` | ( cd ${user_dir}/models; tar xvf -)
 mkdir -p ${user_dir}/particle
-cd ${original_media}/particle ; tar cf - `find . -iname \*.particle` | ( cd ${user_dir}/particle; tar xf -)
+cd ${original_media}/particle ; tar cf - `find . -iname \*.particle` | ( cd ${user_dir}/particle; tar xvf -)
 
+echo "Copying packs"
 cd ${user_dir}
 grep -rIE --no-filename "Zip\[user\]=.*" ${current}/src/components/ogre/resources.cfg | sed -e 's/Zip\[user\]=//g' > user_packs.list
-cd ${original_media} ; tar cf - `cat ${user_dir}/user_packs.list ` | ( cd ${user_dir}/; tar xf -)
+cd ${original_media} ; tar cf - `cat ${user_dir}/user_packs.list ` | ( cd ${user_dir}/; tar xvf -)
 
 
 
@@ -93,6 +103,7 @@ cd ${user_dir}
 cp -a ${original_media}/LICENSING.txt .
 
 
+echo "Cleanup"
 rm -f ${shared_dir}/common_textures.list
 rm -f ${shared_dir}/common_meshes.list
 rm -f ${shared_dir}/shared_packs.list
