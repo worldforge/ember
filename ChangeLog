@@ -1,5 +1,18 @@
 2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* configure.ac, make_dist_media.sh.in: updated media version
+
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* ember.conf: use 0.5.0 media
+	* make_dist_media.sh.in: fixed an error in getting the normal maps
+
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/base_scripts/base.material, media/materials/programs/OffsetMapping.cg, media/materials/scripts/vegetation.material: updated materials with some better offset mapping ones
+
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* Ember.kdevelop: updated project file
 
 2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
