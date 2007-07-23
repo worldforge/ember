@@ -1,3 +1,75 @@
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* Ember.kdevelop: updated project file
+
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/environment.modeldef.xml, src/components/ogre/modeldefinitions/items.modeldef.xml, src/components/ogre/modeldefinitions/modelmappings.modelmap.xml, src/components/ogre/modeldefinitions/tools.modeldef, src/components/ogre/modeldefinitions/trees.modeldef.xml: updated model definitions
+
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain.cfg: turn on vertex lightning even though it looks kinda strange (better than nothing)
+
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* make_dist_media.sh.in: output more info and also get normal maps
+
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* ember.conf: use jayrs sand texture
+
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/scripting/bindings/lua/Widget.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
+
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityBrowser.lua: keep a reference to the node in the list items instead of using a look up table
+
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Widget.cpp, src/components/ogre/widgets/Widget.h: make the constructor and destructor private so that only the GUIManager can handle their life cycle
+
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/GUIManager.cpp, src/components/ogre/GUIManager.h: added method for destroying widgets, making sure that the GUIManager handles their whole life cycle
+
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/AvatarController.cpp, src/components/ogre/AvatarController.h: added initial support for rotate commands, though we need some better way of setting them for constant rotation
+
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/AvatarCamera.cpp: initialize member and disable the hackish sound server code which isn't used anyway
+
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityEditor.lua: fixed a bug with areas
+
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityBrowser.layout, src/components/ogre/widgets/EntityBrowser.lua: added some simple info to show for ogre scene nodes
+
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/adapters/atlas/ListAdapter.cpp, src/components/ogre/widgets/adapters/atlas/ListAdapter.h, src/components/ogre/widgets/adapters/atlas/bindings/lua/ListAdapter.pkg: use size_t where suitable
+	
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainArea.cpp, src/components/ogre/terrain/TerrainGenerator.cpp: use size_t where suitable
+
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeOcclusion.cpp: make sure that mCam is null from start
+
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/caelum/src/Sun.cpp: use "normalized" colour values, else the shaders will go berserk
+
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/caelum/src/CaelumSystem.cpp: use linear fog
+
 2007-07-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/services/wfut/WfutSession.h, src/services/wfut/WfutSession.cpp, src/services/wfut/WfutService.h, src/services/wfut/WfutService.cpp: use size_t where needed

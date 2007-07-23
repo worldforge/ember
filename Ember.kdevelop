@@ -2,7 +2,7 @@
 <kdevelop>
   <general>
     <author>Erik Hjortsberg</author>
-    <email>erik@katastrof.nu</email>
+    <email>erik.hjortsberg@iteam.se</email>
     <version>$VERSION$</version>
     <projectmanagement>KDevAutoProject</projectmanagement>
     <primarylanguage>C++</primarylanguage>
@@ -13,23 +13,36 @@
     <secondaryLanguages/>
     <versioncontrol>kdevcvsservice</versioncontrol>
     <defaultencoding/>
+    <projectname>Ember</projectname>
   </general>
   <kdevautoproject>
     <general>
-      <activetarget>src/Ember</activetarget>
-      <useconfiguration>optimized</useconfiguration>
+      <activetarget>src/main/ember.bin</activetarget>
+      <useconfiguration>debug</useconfiguration>
     </general>
     <run>
-      <mainprogram>src/components/ogre/ember.bin</mainprogram>
+      <mainprogram>/home/erik/code/worldforge/forge/clients/ember/debug/src/components/ogre/ember.bin</mainprogram>
       <directoryradio>executable</directoryradio>
       <customdirectory>/home/erik/code/worldforge/forge_cvs/clients/ember/src/components/ogre/</customdirectory>
-      <programargs>--prefix $HOME/opt/worldforge --binrelocloading__ --home $HOME/ember/home</programargs>
+      <programargs>--prefix $HOME/opt/worldforge --binrelocloading__ ---home $HOME/ember/home ---home $HOME/.ember</programargs>
       <terminal>false</terminal>
       <autocompile>true</autocompile>
       <envvars/>
       <runarguments>
         <EmberOgre/>
+        <ember.bin>--prefix $HOME/opt/worldforge --binrelocloading__ --home $HOME/ember/home ---home $HOME/.ember</ember.bin>
       </runarguments>
+      <globaldebugarguments>--prefix $HOME/opt/worldforge --binrelocloading__ ---home $HOME/ember/home ---home $HOME/.ember</globaldebugarguments>
+      <globalcwd>/home/erik/code/worldforge/forge/clients/ember/debug</globalcwd>
+      <useglobalprogram>false</useglobalprogram>
+      <autoinstall>false</autoinstall>
+      <autokdesu>false</autokdesu>
+      <debugarguments>
+        <ember.bin>--prefix $HOME/opt/worldforge --binrelocloading__ --home $HOME/ember/home ---home $HOME/.ember</ember.bin>
+      </debugarguments>
+      <cwd>
+        <ember.bin>/home/erik/code/worldforge/forge/clients/ember/debug/</ember.bin>
+      </cwd>
     </run>
     <configurations>
       <optimized>
@@ -39,7 +52,7 @@
         <f77compiler>kdevpghpfoptions</f77compiler>
         <cxxflags>-O2 -g0</cxxflags>
         <envvars/>
-        <configargs>--prefix=$HOME/opt/worldforge --enable-lua=yes --enable-final=yes</configargs>
+        <configargs>--prefix=$HOME/opt/worldforge --enable-final=yes</configargs>
         <topsourcedir/>
         <cppflags/>
         <ldflags/>
@@ -50,14 +63,14 @@
         <f77flags/>
       </optimized>
       <debug>
-        <configargs>--enable-debug=full --prefix=$HOME/opt/worldforge --enable-lua=yes</configargs>
+        <configargs>--enable-debug=full --prefix=$HOME/opt/worldforge</configargs>
         <builddir>debug</builddir>
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevpghpfoptions</f77compiler>
-        <cxxflags>-O0 -g3</cxxflags>
+        <cxxflags>-O0 -g3 -Wall</cxxflags>
         <envvars>
-          <envvar value="/home/erik/opt/ogre_v1.2rc1/lib/pkgconfig:$PKG_CONFIG_PATH" name="_PKG_CONFIG_PATH" />
+          <envvar value="/home/erik/opt/ogre_1.4.0/lib/pkgconfig:/home/erik/opt/cegui_0.5.0/lib/pkgconfig:/home/erik/opt/worldforge/lib/pkgconfig:$PKG_CONFIG_PATH" name="PKG_CONFIG_PATH" />
         </envvars>
         <topsourcedir/>
         <cppflags/>
@@ -154,7 +167,7 @@
     <general>
       <dbgshell>libtool</dbgshell>
       <programargs>--prefix $HOME/opt/worldforge --binrelocloading__  --home $HOME/ember/home</programargs>
-      <gdbpath/>
+      <gdbpath>gdb</gdbpath>
       <configGdbScript/>
       <runShellScript/>
       <runGdbScript/>
@@ -230,9 +243,7 @@
     <revertoptions>-C</revertoptions>
   </kdevcvsservice>
   <kdevcppsupport>
-    <references>
-      <pcs>local</pcs>
-    </references>
+    <references/>
     <codecompletion>
       <includeGlobalFunctions>true</includeGlobalFunctions>
       <includeTypes>true</includeTypes>
@@ -244,6 +255,21 @@
       <codeCompletionDelay>250</codeCompletionDelay>
       <argumentsHintDelay>400</argumentsHintDelay>
       <headerCompletionDelay>250</headerCompletionDelay>
+      <showOnlyAccessibleItems>false</showOnlyAccessibleItems>
+      <completionBoxItemOrder>0</completionBoxItemOrder>
+      <howEvaluationContextMenu>true</howEvaluationContextMenu>
+      <showCommentWithArgumentHint>true</showCommentWithArgumentHint>
+      <statusBarTypeEvaluation>false</statusBarTypeEvaluation>
+      <namespaceAliases>std=_GLIBCXX_STD;__gnu_cxx=std</namespaceAliases>
+      <processPrimaryTypes>true</processPrimaryTypes>
+      <processFunctionArguments>false</processFunctionArguments>
+      <preProcessAllHeaders>false</preProcessAllHeaders>
+      <parseMissingHeaders>false</parseMissingHeaders>
+      <resolveIncludePaths>true</resolveIncludePaths>
+      <alwaysParseInBackground>true</alwaysParseInBackground>
+      <usePermanentCaching>true</usePermanentCaching>
+      <alwaysIncludeNamespaces>false</alwaysIncludeNamespaces>
+      <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
       <prefixGet>get</prefixGet>
@@ -257,10 +283,15 @@
       <used>false</used>
       <version>3</version>
       <root>/usr/lib/qt3/</root>
+      <includestyle>3</includestyle>
+      <designerintegration>EmbeddedKDevDesigner</designerintegration>
+      <qmake>/usr/lib/qt3//bin/qmake</qmake>
+      <designer>/usr/bin/designer-qt3</designer>
+      <designerpluginpaths/>
     </qt>
     <splitheadersource>
       <enabled>true</enabled>
-      <synchronize>true</synchronize>
+      <synchronize>false</synchronize>
       <orientation>Vertical</orientation>
     </splitheadersource>
   </kdevcppsupport>
@@ -271,7 +302,7 @@
       <hidenonlocation>false</hidenonlocation>
     </groups>
     <tree>
-      <hidepatterns>*.o,*.lo,CVS,*~,*CVS*,Entries,Root,Repository,Makefile.in</hidepatterns>
+      <hidepatterns>*.o,*.lo,CVS,*~,CVS,Entries,Root,Repository,Makefile.in</hidepatterns>
       <showvcsfields>false</showvcsfields>
       <hidenonprojectfiles>false</hidenonprojectfiles>
     </tree>
