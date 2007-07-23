@@ -6,8 +6,6 @@ EntityBrowser.listbox = nil
 
 EntityBrowser.sceneNodes = {}
 EntityBrowser.sceneNodes.listbox = nil
-EntityBrowser.sceneNodes.lookup = {}
-EntityBrowser.sceneNodes.lookupKey = 0
 
 function EntityBrowser.Refresh_MouseClick(args)
 	EntityBrowser.refresh()
@@ -32,11 +30,9 @@ end
 function EntityBrowser.SceneNodesList_SelectionChanged(args)
 	local item = EntityBrowser.sceneNodes.listbox:getFirstSelectedItem()
 	if item ~= nil then
-		local index = item:getID()
-		console:pushMessage("index: " .. index)
-		local sceneNode = EntityBrowser.sceneNodes.lookup[index]
---[[		tolua.cast(sceneNode, "const Ogre::Node")
-		inspectObject(sceneNode)]]
+		--we've stored the sceneNode in the user data (we should perhaps store the key instead, and then do a look up, in case the scene node has been removed in the interim)
+		local sceneNode = item:getUserData()
+		sceneNode = tolua.cast(sceneNode, "Ogre::Node")
 		local positionInfo = "x: " .. sceneNode:getPosition().x .. " y: " .. sceneNode:getPosition().y .. " z: " .. sceneNode:getPosition().z
 		EntityBrowser.sceneNodes.nodeInfo:setText(positionInfo);
 	end
@@ -53,15 +49,11 @@ function EntityBrowser.addSceneNode(sceneNode, level)
 --	if entity ~= nil then
 		local label = ""
 		for i = 0, level  do
-			label = label .. " "
+			label = label .. "-"
 		end	
 		label = label .. sceneNode:getName()
-		EntityBrowser.sceneNodes.lookupKey = EntityBrowser.sceneNodes.lookupKey + 1
-		local index = EntityBrowser.sceneNodes.lookupKey
---[[		console:pushMessage("index: " .. index)]]
 		
-		local item = EmberOgre.Gui.ColouredListItem:new(label, index)
-		EntityBrowser.sceneNodes.lookup[index] = sceneNode
+		local item = EmberOgre.Gui.ColouredListItem:new(label, 0, sceneNode)
 		EntityBrowser.sceneNodes.listholder:addItem(item)
 	
 	
@@ -83,7 +75,7 @@ function EntityBrowser.addEntity(entity, level)
 --	if entity ~= nil then
 		local label = ""
 		for i = 0, level  do
-			label = label .. " "
+			label = label .. "-"
 		end	
 		label = label .. entity:getName() .. " (" .. entity:getType():getName() .. ")"
 		
