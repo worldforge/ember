@@ -216,6 +216,12 @@ public:
 	 * @return 
 	 */
 	Widget* createWidget(const std::string& name);
+	
+	/**
+	* Destroys a widget previously created by createWidget
+	* @param widget The widget to destroy.
+	*/
+	void destroyWidget(Widget* widget);
 
 	/**
 	 *    Gets the name of the default scheme used (such as "EmberLook" or "WindowsLook")

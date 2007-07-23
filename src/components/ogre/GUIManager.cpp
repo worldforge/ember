@@ -324,6 +324,17 @@ Widget* GUIManager::createWidget(const std::string& name)
 	return widget;
 }
 
+void GUIManager::destroyWidget(Widget* widget)
+{
+	if (!widget)
+	{
+		S_LOG_WARNING("Trying to destroy null widget.");
+		return;
+	}
+	removeWidget(widget);
+	delete widget;
+}
+
 
 void GUIManager::setDebugText(const std::string& text)
 {
