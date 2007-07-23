@@ -184,9 +184,10 @@ bool CaelumSystem::frameStarted (const Ogre::FrameEvent &e) {
 		if (mManageFog) {
 			// TODO: Fog stuff here!!!
 			if (mSkyColourModel) {
-				mSceneMgr->setFog (Ogre::FOG_EXP2,
+				mSceneMgr->setFog( Ogre::FOG_LINEAR, mSkyColourModel->getFogColour (mRelativeTime, mSun ? mSun->getSunDirection() : Ogre::Vector3::UNIT_Y) * 0.7, .001, 10, 600);
+/*				mSceneMgr->setFog (Ogre::FOG_EXP2,
 													mSkyColourModel->getFogColour (mRelativeTime, mSun ? mSun->getSunDirection() : Ogre::Vector3::UNIT_Y) * 0.7,
-													mSkyColourModel->getFogDensity (mRelativeTime, mSun ? mSun->getSunDirection() : Ogre::Vector3::UNIT_Y));
+													mSkyColourModel->getFogDensity (mRelativeTime, mSun ? mSun->getSunDirection() : Ogre::Vector3::UNIT_Y));*/
 			}
 		}
 
