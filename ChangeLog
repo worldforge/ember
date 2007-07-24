@@ -1,5 +1,13 @@
 2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapePageManager.cpp: if you created a new character on a world which had no terrain, you would get a segfault (but not the second time you visited). fixed now
+
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/base_scripts/base.material: fixed a problem with the ps_1 offset shader that resulted in assertion errors
+
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* src/components/ogre/OgreResourceLoader.cpp: added more verbose logging
 	* configure.ac: fixed silly incorrect media version
 	* NEWS: updated with release info

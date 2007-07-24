@@ -432,6 +432,11 @@ namespace Ogre
 	    //updateStats(pos);
 
 		bool need_touch = false;//(mTimePreLoaded < 0);
+		
+		if (mWidth == 0 && mHeight == 0) {
+			//just return if we haven't got any world yet
+			return;
+		}
 	
 	    if (cam->mLastCameraPos != pos
 			&& (mOptions->cameraThreshold < fabs (cam->mLastCameraPos.x - pos.x) ||
@@ -447,6 +452,10 @@ namespace Ogre
 			//gets page indices (if outside Terrain gets nearest page)
   			getPageIndices (pos.x, pos.z, i, j, true); 
 			PagingLandScapePage *p = getPage (i, j);
+			
+			if (!p) {
+				return;
+			}
 			makePageLoadedNow (p);
 
 			// update current Cam Page info 
