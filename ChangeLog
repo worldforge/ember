@@ -93,6 +93,10 @@
 
 	* src/components/ogre/environment/caelum/src/CaelumSystem.cpp: use linear fog
 
+2007-07-19 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/ogreopcode/src/Opcode/Opcode.cpp: don't write to it's own log file
+
 2007-07-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/services/wfut/WfutSession.h, src/services/wfut/WfutSession.cpp, src/services/wfut/WfutService.h, src/services/wfut/WfutService.cpp: use size_t where needed
