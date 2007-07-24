@@ -178,10 +178,12 @@ material /base/normalmap
 			{ 
 				param_indexed_auto 0 light_diffuse_colour 0 
 				param_indexed_auto 1 light_specular_colour 0 
-				param_indexed_auto 2 ambient_light_colour 0 
+				//TODO: update the shader to handle ambient light
+				//param_indexed_auto 2 ambient_light_colour 0 
 				// Parallax Height scale and bias/base/normalmap_example 
-				param_indexed 3 float4 0.04 -0.02 1 0 
-				param_indexed 4 float 0
+				param_indexed 2 float4 0.04 -0.02 1 0
+// 				param_indexed 3 float4 0.04 -0.02 1 0 
+// 				param_indexed 4 float 0
 			} 
 			
 			// Normal + height(alpha) map 
