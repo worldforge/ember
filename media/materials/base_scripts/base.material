@@ -177,13 +177,11 @@ material /base/normalmap
 			fragment_program_ref Examples/OffsetMappingPS 
 			{ 
 				param_indexed_auto 0 light_diffuse_colour 0 
-				param_indexed_auto 1 light_specular_colour 0 
-				//TODO: update the shader to handle ambient light
+				param_indexed 1 float3 0 0 0 
 				//param_indexed_auto 2 ambient_light_colour 0 
 				// Parallax Height scale and bias/base/normalmap_example 
-				param_indexed 2 float4 0.04 -0.02 1 0
-// 				param_indexed 3 float4 0.04 -0.02 1 0 
-// 				param_indexed 4 float 0
+				param_indexed 2 float4 0.04 -0.02 1 0 
+				//param_indexed 4 float 0
 			} 
 			
 			// Normal + height(alpha) map 
@@ -264,44 +262,44 @@ material /base/normalmap/specular
 
 	// This is the preferred technique which uses both vertex and 
 	// fragment programs, supports coloured lights 
-	technique NormalMappedOld
-	{ 
-		// do the lighting  and bump mapping with parallax pass 
-		pass Main
-		{ 
-		
-			// Vertex program reference 
-			vertex_program_ref Examples/OffsetMappingVP 
-			{ 
-				param_named_auto lightPosition light_position_object_space 0 
-				param_named_auto eyePosition camera_position_object_space 
-				param_named_auto worldViewProj worldviewproj_matrix 
-			} 
-	
-			// Fragment program 
-			fragment_program_ref Examples/OffsetMappingPS 
-			{ 
-				param_indexed_auto 0 light_diffuse_colour 0 
-				param_indexed_auto 1 light_specular_colour 0 
-				param_indexed_auto 2 ambient_light_colour 0 
-				// Parallax Height scale and bias/base/normalmap_example 
-				param_indexed 3 float4 0.04 -0.02 1 0 
-				param_indexed 4 float 1
-			} 
-			
-			// Normal + height(alpha) map 
-			texture_unit NormalHeightMap
-			{ 
-				tex_coord_set 0 
-			} 
-	
-			// Base diffuse texture map 
-			texture_unit DiffuseMap
-			{ 
-				tex_coord_set 1 
-			} 
-		} 
-	} 
+//	technique NormalMappedOld
+//	{ 
+//		// do the lighting  and bump mapping with parallax pass 
+//		pass Main
+//		{ 
+//		
+//			// Vertex program reference 
+//			vertex_program_ref Examples/OffsetMappingVP 
+//			{ 
+//				param_named_auto lightPosition light_position_object_space 0 
+//				param_named_auto eyePosition camera_position_object_space 
+//				param_named_auto worldViewProj worldviewproj_matrix 
+//			} 
+//	
+//			// Fragment program 
+//			fragment_program_ref Examples/OffsetMappingPS 
+//			{ 
+//				param_indexed_auto 0 light_diffuse_colour 0 
+//				param_indexed_auto 1 light_specular_colour 0 
+////				param_indexed_auto 2 ambient_light_colour 0 
+//				// Parallax Height scale and bias/base/normalmap_example 
+//				param_indexed 2 float4 0.04 -0.02 1 0 
+////				param_indexed 4 float 1
+//			} 
+//			
+//			// Normal + height(alpha) map 
+//			texture_unit NormalHeightMap
+//			{ 
+//				tex_coord_set 0 
+//			} 
+//	
+//			// Base diffuse texture map 
+//			texture_unit DiffuseMap
+//			{ 
+//				tex_coord_set 1 
+//			} 
+//		} 
+//	} 
 	
 	// Simple no-shader fallback
 	technique General

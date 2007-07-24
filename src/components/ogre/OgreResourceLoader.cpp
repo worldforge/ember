@@ -225,7 +225,11 @@ void OgreResourceLoader::loadSection(const std::string& sectionName)
 			try {
 				Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup(sectionName);
 			} catch (const Ogre::Exception& ex) {
-				S_LOG_FAILURE("An error occurred when loading media. Message:\n\t"<< ex.getFullDescription());
+				S_LOG_FAILURE("An error occurred when loading media from section '" << sectionName << "'. Message:\n\t"<< ex.getFullDescription());
+			} catch (const std::exception& ex) {
+				S_LOG_FAILURE("An error occurred when loading media from section '" << sectionName << "'. Message:\n\t"<< ex.what());
+			} catch (...) {
+				S_LOG_FAILURE("An unknown error occurred when loading media from section '" << sectionName << "'.");
 			}
 		}
 	}
