@@ -54,6 +54,7 @@ void OgreResourceLoader::initialize()
 // 	chdir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str());
     ///load the resource file
     const std::string configPath(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory() + "/resources.cfg");
+    S_LOG_VERBOSE("Loading resources definitions from " << configPath);
     mConfigFile.load(configPath);
 
 }
@@ -99,7 +100,9 @@ bool OgreResourceLoader::addUserMedia(const std::string& path, const std::string
 	
 	bool foundDir = false;
 	
+	S_LOG_VERBOSE("Looking for " << userMediaPath + path);
 	if (isExistingDir(userMediaPath + path)) {
+		S_LOG_VERBOSE("Adding dir " << userMediaPath + path);
 		try {
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
 				userMediaPath + path, type, section, recursive);
@@ -110,7 +113,9 @@ bool OgreResourceLoader::addUserMedia(const std::string& path, const std::string
 	}
 	
 	///try with ember-media
+	S_LOG_VERBOSE("Looking for " << emberMediaPath + path);
 	if (isExistingDir(emberMediaPath + path)) {
+		S_LOG_VERBOSE("Adding dir " << emberMediaPath + path);
 		try {
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
 				emberMediaPath + path, type, section, recursive);

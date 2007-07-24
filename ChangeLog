@@ -1,5 +1,15 @@
 2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* src/components/ogre/OgreResourceLoader.cpp: added more verbose logging
+	* configure.ac: fixed silly incorrect media version
+	* NEWS: updated with release info
+
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/scripts/environment.material: added reference to the sand texture
+
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* configure.ac, make_dist_media.sh.in: updated media version
 
 2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>

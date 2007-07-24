@@ -1,6 +1,6 @@
 ## Process this file with autoconf to produce a configure script.
 AC_INIT(Ember, 0.5.0, clients@worldforge.org)
-AC_DEFINE(MEDIA_VERSION, "0.5.5", [What media version to use.])
+AC_DEFINE(MEDIA_VERSION, "0.5.0", [What media version to use.])
 AC_SUBST(MEDIA_VERSION, "0.5.0")
 
 AC_CONFIG_SRCDIR(src)
