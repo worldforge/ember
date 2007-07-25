@@ -1,4 +1,4 @@
-Performance = {}
+Performance = {connectors={}}
 
 Performance.widget = guiManager:createWidget()
 Performance.mainText = nil
@@ -41,5 +41,5 @@ function Performance.framestarted(timeSinceLastFrame)
 end
 
 Performance.buildWidget()
-EmberOgre.LuaConnector:new(guiManager.EventFrameStarted):connect("Performance.framestarted")
+connect(Performance.connectors, guiManager.EventFrameStarted, "Performance.framestarted")
 

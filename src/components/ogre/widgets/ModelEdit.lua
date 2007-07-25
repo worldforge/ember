@@ -1,4 +1,4 @@
-ModelEdit = {}
+ModelEdit = {connectors={}}
 ModelEdit.zoomRatio = 10
 ModelEdit.modelContentsItems = {}
 
@@ -685,26 +685,26 @@ function ModelEdit.buildWidget()
 	ModelEdit.models:subscribeEvent("ItemSelectionChanged", "ModelEdit.models_SelectionChanged")
 	ModelEdit.modelsfilter = ModelEdit.widget:getWindow("FilterModels")
 	ModelEdit.modelsfilter = CEGUI.toEditbox(ModelEdit.modelsfilter)
-	ModelEdit.modelslistholder = EmberOgre.ListHolder:new(ModelEdit.models, ModelEdit.modelsfilter)
+	ModelEdit.modelslistholder = EmberOgre.ListHolder:new_local(ModelEdit.models, ModelEdit.modelsfilter)
 	
 	local xW = ModelEdit.widget:getWindow("ModelTranslate_x")
 	local yW = ModelEdit.widget:getWindow("ModelTranslate_y")
 	local zW = ModelEdit.widget:getWindow("ModelTranslate_z")
-	ModelEdit.translateAdapter = EmberOgre.Gui.Vector3Adapter:new(xW,yW ,zW)
-	EmberOgre.LuaConnector:new(ModelEdit.translateAdapter.EventValueChanged):connect("ModelEdit.translateAdapter_update")
+	ModelEdit.translateAdapter = EmberOgre.Gui.Vector3Adapter:new_local(xW,yW ,zW)
+	connect(ModelEdit.connectors, ModelEdit.translateAdapter.EventValueChanged, "ModelEdit.translateAdapter_update")
 	
 	local xW = ModelEdit.widget:getWindow("ModelContainedOffset_x")
 	local yW = ModelEdit.widget:getWindow("ModelContainedOffset_y")
 	local zW = ModelEdit.widget:getWindow("ModelContainedOffset_z")
-	ModelEdit.containedOffsetAdapter = EmberOgre.Gui.Vector3Adapter:new(xW,yW ,zW)
-	EmberOgre.LuaConnector:new(ModelEdit.containedOffsetAdapter.EventValueChanged):connect("ModelEdit.containedOffsetAdapter_update")
+	ModelEdit.containedOffsetAdapter = EmberOgre.Gui.Vector3Adapter:new_local(xW,yW ,zW)
+	connect(ModelEdit.connectors, ModelEdit.containedOffsetAdapter.EventValueChanged, "ModelEdit.containedOffsetAdapter_update")
 
 	local xW = ModelEdit.widget:getWindow("ModelRotation_x")
 	local yW = ModelEdit.widget:getWindow("ModelRotation_y")
 	local zW = ModelEdit.widget:getWindow("ModelRotation_z")
 	local degreeW = ModelEdit.widget:getWindow("ModelRotation_degrees")
-	ModelEdit.rotationAdapter = EmberOgre.Gui.QuaternionAdapter:new(degreeW, xW,yW ,zW)
-	EmberOgre.LuaConnector:new(ModelEdit.rotationAdapter.EventValueChanged):connect("ModelEdit.rotationAdapter_update")
+	ModelEdit.rotationAdapter = EmberOgre.Gui.QuaternionAdapter:new_local(degreeW, xW,yW ,zW)
+	connect(ModelEdit.connectors, ModelEdit.rotationAdapter.EventValueChanged, "ModelEdit.rotationAdapter_update")
 
 
 
@@ -729,7 +729,7 @@ function ModelEdit.buildWidget()
 	ModelEdit.contentparts.submeshInfo.materiallist:subscribeEvent("ItemSelectionChanged", "ModelEdit.submeshinfomaterials_SelectionChanged")
 	ModelEdit.contentparts.submeshInfo.filter = ModelEdit.widget:getWindow("FilterMaterials")
 	ModelEdit.contentparts.submeshInfo.filter = CEGUI.toEditbox(ModelEdit.contentparts.submeshInfo.filter)
-	ModelEdit.contentparts.submeshInfo.listholder = EmberOgre.ListHolder:new(ModelEdit.contentparts.submeshInfo.materiallist, ModelEdit.contentparts.submeshInfo.filter)
+	ModelEdit.contentparts.submeshInfo.listholder = EmberOgre.ListHolder:new_local(ModelEdit.contentparts.submeshInfo.materiallist, ModelEdit.contentparts.submeshInfo.filter)
 	
 	ModelEdit.contentparts.submeshInfo.removeSubMeshButton = ModelEdit.widget:getWindow("RemoveSubMeshButton")
 	ModelEdit.contentparts.submeshInfo.removeSubMeshButton:subscribeEvent("MouseClick", "ModelEdit.submeshinforemovesubmesh_MouseClick")
@@ -781,17 +781,17 @@ function ModelEdit.buildWidget()
 		
 	
 		
-	ModelEdit.renderer = EmberOgre.ModelRenderer:new(ModelEdit.renderImage)
+	ModelEdit.renderer = EmberOgre.ModelRenderer:new_local(ModelEdit.renderImage)
 	
 	local subMeshPreviewImage = ModelEdit.widget:getWindow("SubMeshPreviewImage")
 	--subMeshPreviewImage = CEGUI.toStaticImage(subMeshPreviewImage)
-	ModelEdit.subMeshPartRenderer = EmberOgre.OgreEntityRenderer:new(subMeshPreviewImage)
+	ModelEdit.subMeshPartRenderer = EmberOgre.OgreEntityRenderer:new_local(subMeshPreviewImage)
 	
 	local meshPreviewImage = ModelEdit.widget:getWindow("MeshPreviewImage")
 	--meshPreviewImage = CEGUI.toStaticImage(meshPreviewImage)
-	ModelEdit.submeshRenderer = EmberOgre.OgreEntityRenderer:new(meshPreviewImage)
+	ModelEdit.submeshRenderer = EmberOgre.OgreEntityRenderer:new_local(meshPreviewImage)
 	
-	--ModelEdit.contentparts.modelInfo.renderer = EmberOgre.ModelRenderer:new(ModelEdit.contentparts.modelInfo.renderImage)
+	--ModelEdit.contentparts.modelInfo.renderer = EmberOgre.ModelRenderer:new_local(ModelEdit.contentparts.modelInfo.renderImage)
 	
 	ModelEdit.zoomSlider  = ModelEdit.widget:getWindow("Zoom")
 	ModelEdit.zoomSlider = CEGUI.toSlider(ModelEdit.zoomSlider)

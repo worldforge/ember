@@ -3,13 +3,12 @@
 ----------------------------------------------------
 
 
-Chat = {}
+Chat = {connectors={}}
 Chat.widget = guiManager:createWidget()
 Chat.gameTextWindow = nil
 Chat.systemTextWindow = nil
 Chat.consoleAdapter = nil
 Chat.consoleInputWindow = nil
-Chat.connectors = {}
 
 --Set up the widget.
 function Chat.buildWidget()
@@ -25,17 +24,16 @@ function Chat.buildWidget()
 	Chat.consoleAdapter = EmberOgre.Gui.ConsoleAdapter:new_local(Chat.consoleInputWindow);
 	
 	
-	
-	Chat.connectors.appendIGChatLine = EmberOgre.LuaConnector:new_local(guiManager.AppendIGChatLine):connect("Chat.appendIGChatLine")
-	Chat.connectors.appendOOGChatLine = EmberOgre.LuaConnector:new_local(guiManager.AppendOOGChatLine):connect("Chat.appendIGChatLine")
-	Chat.connectors.appendAvatarImaginary = EmberOgre.LuaConnector:new_local(guiManager.AppendAvatarImaginary):connect("Chat.appendAvatarImaginary")
+	connect(Chat.connectors, guiManager.AppendIGChatLine, "Chat.appendIGChatLine")
+	connect(Chat.connectors, guiManager.AppendOOGChatLine, "Chat.appendIGChatLine")
+	connect(Chat.connectors, guiManager.AppendAvatarImaginary, "Chat.appendAvatarImaginary")
 	
 	--let's hide it to begin with
 --	Chat.widget:hide()
 	Chat.widget:show()
 	--and show if when the avatar has been created (though this disallows out of game chat)
 	Chat.connectors.createdAvatarEmberEntity = EmberOgre.LuaConnector:new_local(emberOgre.EventCreatedAvatarEntity):connect("Chat.createdAvatarEmberEntity")
-	Chat.connectors.consoleGotMessage = EmberOgre.LuaConnector:new_local(console.GotMessage):connect("Chat.consoleGotMessage")
+	connect(Chat.connectors, console.GotMessage, "Chat.consoleGotMessage")
 	
 	Chat.consoleObject = EmberOgre.LuaConsoleObject:new_local("console_focus", "Chat.console_focus")
 	

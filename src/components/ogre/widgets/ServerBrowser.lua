@@ -5,14 +5,14 @@
 -----------------------------------------
 -- Script Entry Point
 -----------------------------------------
-ServerBrowser = {}
+ServerBrowser = {connectors={}}
 
 
 function ServerBrowser.connectToMetaServer()
 	local metaServer = Ember.EmberServices:getSingleton():getMetaserverService():getMetaServer()
 	
 --    EmberOgre.LuaConnector:new(metaServer:Failure.connect, "MetaServer_Failure")
-    EmberOgre.LuaConnector:new(metaServer.ReceivedServerInfo):connect("ServerBrowser.MetaServer_ReceivedServerInfo")
+	connect(ServerBrowser.connectors, metaServer.ReceivedServerInfo, "ServerBrowser.MetaServer_ReceivedServerInfo")
 --    EmberOgre.LuaConnector:new(metaServer:CompletedServerList.connect, "MetaServer_CompletedServerList.connect")
     metaServer:refresh()
 end
@@ -41,9 +41,9 @@ function ServerBrowser.buildWidget()
 	
 	
 	local serverService = emberServices:getServerService()
-	EmberOgre.LuaConnector:new(serverService.GotConnection):connect("ServerBrowser.Server_GotConnection")
+	connect(ServerBrowser.connectors, serverService.GotConnection, "ServerBrowser.Server_GotConnection")
 	
-	ServerBrowser.connectToMetaServer()
+--	ServerBrowser.connectToMetaServer()
 	ServerBrowser.widget:show()
 	ServerBrowser.widget:getMainWindow():activate()
 

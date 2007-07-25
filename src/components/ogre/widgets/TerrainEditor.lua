@@ -1,4 +1,4 @@
-TerrainEditor = {}
+TerrainEditor = {connectors={}}
  
  
  
@@ -72,12 +72,12 @@ function TerrainEditor.buildWidget()
 	TerrainEditor.heightSpinner = CEGUI.toEditbox(TerrainEditor.heightSpinner)
 	
 	
-	TerrainEditor.editor = EmberOgre.TerrainEditor:new()
+	TerrainEditor.editor = EmberOgre.TerrainEditor:new_local()
 	TerrainEditor.editor:createOverlay()
 	TerrainEditor.editor:showOverlay()
 	
-	EmberOgre.LuaConnector:new(TerrainEditor.editor.EventPickedBasePoint):connect("TerrainEditor.pickedBasePoint")
-	EmberOgre.LuaConnector:new(TerrainEditor.editor.EventSelectedBasePointUpdatedPosition):connect("TerrainEditor.selectedBasePointUpdatedPosition")
+	connect(TerrainEditor.connectors, TerrainEditor.editor.EventPickedBasePoint, "TerrainEditor.pickedBasePoint")
+	connect(TerrainEditor.connectors, TerrainEditor.editor.EventSelectedBasePointUpdatedPosition, "TerrainEditor.selectedBasePointUpdatedPosition")
 	
 	--TerrainEditor.heightSpinner:subscribeEvent("ValueChanged", "TerrainEditor.HeightSpinner_ValueChanged")
 	

@@ -1,6 +1,6 @@
 --Allows the editing of entities
 
-EntityEditor = {}
+EntityEditor = {connectors={}}
 EntityEditor.instance = {}
 EntityEditor.instance.stackableContainers = {}
 EntityEditor.instance.entity = nil
@@ -67,7 +67,7 @@ function editEntity(id)
 end
 
 function EntityEditor.createStackableContainer(container)
-	local stackableContainer = EmberOgre.Gui.StackableContainer:new(container)
+	local stackableContainer = EmberOgre.Gui.StackableContainer:new_local(container)
 	stackableContainer:setInnerContainerWindow(container)
 	EntityEditor.instance.stackableContainers[container:getName()] = stackableContainer
 	return stackableContainer
@@ -125,7 +125,7 @@ function EntityEditor.editEntity(entity)
 	EntityEditor.instance.outercontainer = guiManager:createWindow("DefaultGUISheet")
 	local adapter = EntityEditor.factory:createMapAdapter(EntityEditor.instance.outercontainer, EntityEditor.instance.entity:getId(), EntityEditor.instance.entity)
 	EntityEditor.instance.rootMapAdapter = adapter
-	EntityEditor.instance.helper = EmberOgre.Gui.EntityEditor:new(entity, EntityEditor.instance.rootMapAdapter)
+	EntityEditor.instance.helper = EmberOgre.Gui.EntityEditor:new_local(entity, EntityEditor.instance.rootMapAdapter)
 	EntityEditor.attributesContainer:addChildWindow(EntityEditor.instance.outercontainer)
 	
 	local attributeNames = EntityEditor.instance.rootMapAdapter:getAttributeNames()
@@ -302,8 +302,6 @@ function EntityEditor.createAdapterFromPrototype(element, prototype)
 			adapterWrapper = EntityEditor.createOrientationAdapter(element, prototype)
 		elseif prototype.type == 'points' then
 			adapterWrapper = EntityEditor.createPointsAdapter(element, prototype)
-		elseif prototype.type == 'point' then
-			adapterWrapper = EntityEditor.createPosition2DAdapter(element, prototype)
 		elseif prototype.type == "string" then
 			adapterWrapper = EntityEditor.createStringAdapter(element, prototype)
 		elseif prototype.type == "number" then
@@ -408,9 +406,7 @@ function EntityEditor.createPointsAdapter(element, prototype)
 	end
 	for i = 0, wrapper.adapter:getSize() - 1 do
 		local childElement = wrapper.adapter:valueOfAttr(i)
-		local childPrototype = EntityEditor.getPrototype("", childElement)
-		childPrototype.type = "point"
-		local adapterWrapper =EntityEditor.createAdapterFromPrototype(childElement, childPrototype)
+		local adapterWrapper = EntityEditor.createPosition2DAdapter(childElement)
 		if adapterWrapper ~= nil then
 			EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.container, adapterWrapper.prototype)
 			wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
@@ -716,14 +712,14 @@ function EntityEditor.buildWidget()
 	EntityEditor.childListholder = EmberOgre.ListHolder:new_local(EntityEditor.childlistbox, EntityEditor.childlistFilter)
 	
 --[[	EntityEditor.modelTab.stackableWindow = EntityEditor.widget:getWindow("ModelPanelStackable")
-	EntityEditor.modelTab.stackableContainer = EmberOgre.Gui.StackableContainer:new(EntityEditor.modelTab.stackableWindow)
+	EntityEditor.modelTab.stackableContainer = EmberOgre.Gui.StackableContainer:new_local(EntityEditor.modelTab.stackableWindow)
 	EntityEditor.modelTab.stackableContainer:setInnerContainerWindow(EntityEditor.modelTab.stackableWindow)]]
 	EntityEditor.modelTab.showOgreBbox = CEGUI.toCheckbox(EntityEditor.widget:getWindow("ShowOgreBbox"))
 	EntityEditor.modelTab.showErisBbox = CEGUI.toCheckbox(EntityEditor.widget:getWindow("ShowErisBbox"))
 	EntityEditor.modelTab.modelInfo = EntityEditor.widget:getWindow("ModelInfo")
 	
 	
-	EmberOgre.LuaConnector:new(guiManager.EventEntityAction):connect("EntityEditor.handleAction")
+	connect(EntityEditor.connectors, guiManager.EventEntityAction, "EntityEditor.handleAction")
 	
 	
 	--EntityEditor.attributeStackableContainer = EmberOgre.Gui.StackableContainer:new_local(EntityEditor.attributesContainer)

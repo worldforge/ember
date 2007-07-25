@@ -1,11 +1,12 @@
 --Allows the editing of entities
 
-EntityBrowser = {}
-EntityBrowser.connectors = {}
+EntityBrowser = {connectors={}}
+--EntityBrowser.connectors = {}
 EntityBrowser.listbox = nil
 
 EntityBrowser.sceneNodes = {}
 EntityBrowser.sceneNodes.listbox = nil
+EntityBrowser.sceneNodes.selectedSceneNode = nil
 
 function EntityBrowser.Refresh_MouseClick(args)
 	EntityBrowser.refresh()
@@ -33,12 +34,25 @@ function EntityBrowser.SceneNodesList_SelectionChanged(args)
 		--we've stored the sceneNode in the user data (we should perhaps store the key instead, and then do a look up, in case the scene node has been removed in the interim)
 		local sceneNode = item:getUserData()
 		sceneNode = tolua.cast(sceneNode, "Ogre::Node")
-		local positionInfo = "x: " .. sceneNode:getPosition().x .. " y: " .. sceneNode:getPosition().y .. " z: " .. sceneNode:getPosition().z
-		EntityBrowser.sceneNodes.nodeInfo:setText(positionInfo);
+		EntityBrowser.sceneNodes.selectedSceneNode = sceneNode
+		EntityBrowser.updateSceneNodeInfo(sceneNode)
+--		local positionInfo = "x: " .. sceneNode:getPosition().x .. " y: " .. sceneNode:getPosition().y .. " z: " .. sceneNode:getPosition().z
+--		EntityBrowser.sceneNodes.nodeInfo:setText(positionInfo);
 	end
 end
 
+function EntityBrowser.updateSceneNodeInfo(sceneNode)
+	EntityBrowser.sceneNodes.positionAdapter:updateGui(sceneNode:getPosition())
+	EntityBrowser.sceneNodes.rotationAdapter:updateGui(sceneNode:getOrientation())
+end
 
+function EntityBrowser.sceneNodes_positionAdapter_changed()
+	EntityBrowser.sceneNodes.selectedSceneNode:setPosition(EntityBrowser.sceneNodes.positionAdapter:getValue())
+end
+
+function EntityBrowser.sceneNodes_rotationAdapter_changed()
+	EntityBrowser.sceneNodes.selectedSceneNode:setOrientation(EntityBrowser.sceneNodes.rotationAdapter:getValue())
+end
 
 function EntityBrowser.refreshSceneNodes()
 	EntityBrowser.sceneNodes.listholder:resetList()
@@ -117,6 +131,20 @@ function EntityBrowser.buildWidget()
 	EntityBrowser.widget:registerConsoleVisibilityToggleCommand("entityBrowser")
 	EntityBrowser.widget:enableCloseButton()
 	EntityBrowser.widget:hide()
+
+	local xW = EntityBrowser.widget:getWindow("SceneNodeInfo/Position/X")
+	local yW = EntityBrowser.widget:getWindow("SceneNodeInfo/Position/Y")
+	local zW = EntityBrowser.widget:getWindow("SceneNodeInfo/Position/Z")
+	EntityBrowser.sceneNodes.positionAdapter = EmberOgre.Gui.Vector3Adapter:new_local(xW, yW ,zW)
+	connect(EntityBrowser.connectors, EntityBrowser.sceneNodes.positionAdapter.EventValueChanged, "EntityBrowser.sceneNodes_positionAdapter_changed")
+	
+	local xW = EntityBrowser.widget:getWindow("SceneNodeInfo/Orientation/X")
+	local yW = EntityBrowser.widget:getWindow("SceneNodeInfo/Orientation/Y")
+	local zW = EntityBrowser.widget:getWindow("SceneNodeInfo/Orientation/Z")
+	local degreeW = EntityBrowser.widget:getWindow("SceneNodeInfo/Orientation/Scalar")
+	EntityBrowser.sceneNodes.rotationAdapter = EmberOgre.Gui.QuaternionAdapter:new_local(degreeW, xW, yW ,zW)
+	connect(EntityBrowser.connectors, EntityBrowser.sceneNodes.rotationAdapter.EventValueChanged, "EntityBrowser.sceneNodes_rotationAdapter_changed")
+
 
 end
 

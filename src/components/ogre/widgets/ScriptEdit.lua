@@ -6,7 +6,7 @@
 -- Script Entry Point
 -----------------------------------------
 
-ScriptEdit = {}
+ScriptEdit = {connectors={}}
 
 
 ScriptEdit.widget = guiManager:createWidget()
@@ -33,7 +33,7 @@ function ScriptEdit.buildWidget()
 	--subscribe event
 	ScriptEdit.execute:subscribeEvent("MouseClick", "ScriptEdit.executeClick")
 	ScriptEdit.inspect:subscribeEvent("MouseClick", "ScriptEdit.inspectClick")
-	EmberOgre.LuaConnector:new(scriptingService:getEventScriptError()):connect("ScriptEdit.scriptError")
+	connect(ScriptEdit.connectors, scriptingService:getEventScriptError(), "ScriptEdit.scriptError")
 	
 	ScriptEdit.dynamicBindings = CEGUI.toCheckbox(ScriptEdit.widget:getWindow("DynamicBindings"))
 	ScriptEdit.dynamicBindings:subscribeEvent("CheckStateChanged", "ScriptEdit.dynamicBindings_CheckStateChanged")

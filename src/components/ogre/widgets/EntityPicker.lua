@@ -7,7 +7,7 @@
 -----------------------------------------
 
 
-EntityPicker = {}
+EntityPicker = {connectors={}}
 
 --local EntityPicker.mainWindow
 EntityPicker.menuWindow = nil
@@ -22,10 +22,10 @@ EntityPicker.widget = guiManager:createWidget()
 function EntityPicker.buildWidget()
 
 	local entityPickListener = guiManager:getEntityPickListener()
-    EmberOgre.LuaConnector:new(entityPickListener.EventPickedEntity):connect("EntityPicker.pickedEntity")
-    --EmberOgre.LuaConnector:new(mousePicker.EventPickedNothing):connect("EntityPicker.pickedNothing")
+ 	connect(EntityPicker.connectors, entityPickListener.EventPickedEntity, "EntityPicker.pickedEntity")
+ 	--EmberOgre.LuaConnector:new(mousePicker.EventPickedNothing):connect("EntityPicker.pickedNothing")
     
-    EntityPicker.widget:loadMainSheet("EntityPicker.layout", "EntityPicker/")
+	EntityPicker.widget:loadMainSheet("EntityPicker.layout", "EntityPicker/")
 
 	
 	EntityPicker.menuWindow = EntityPicker.widget:getWindow("Menu")
@@ -61,7 +61,7 @@ function EntityPicker.buildWidget()
 		
 	EntityPicker.stackableContainer = EmberOgre.Gui.StackableContainer:new_local(EntityPicker.menuWindow)
 	EntityPicker.stackableContainer:setInnerContainerWindow(EntityPicker.menuWindow)
-    EmberOgre.LuaConnector:new(guiManager:getInput().EventMouseButtonReleased):connect("EntityPicker.input_MouseButtonReleased")
+    	connect(EntityPicker.connectors, guiManager:getInput().EventMouseButtonReleased, "EntityPicker.input_MouseButtonReleased")
 
 end
 

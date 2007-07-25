@@ -41,7 +41,7 @@
 					<Property Name='InheritsAlpha' Value='false'/>
 					<Property Name='Visible' Value='false'/>
 					<Window Type='EmberLook/Editbox' Name='FilterSceneNodes'>
-						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-50}}'/>
+						<Property Name='UnifiedPosition' Value='{{0,4},{1.0,-65}}'/>
 						<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
 						<Property Name='InheritsAlpha' Value='True'/>
 					</Window>
@@ -53,17 +53,53 @@
 					</Window>
 					<Window Type='EmberLook/Listbox' Name='SceneNodesList'>
 						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
-						<Property Name='UnifiedSize' Value='{{0,250},{1,-70}}'/>
+						<Property Name='UnifiedSize' Value='{{0,200},{1,-70}}'/>
 						<Property Name='InheritsAlpha' Value='True'/>
 					</Window>
 					<Window Type='EmberLook/StaticText' Name='SceneNodeInfo'>
-						<Property Name='UnifiedPosition' Value='{{0,255},{0,4}}'/>
-						<Property Name='UnifiedSize' Value='{{1,-260},{1,-70}}'/>
+						<Property Name='UnifiedPosition' Value='{{0,205},{0,4}}'/>
+						<Property Name='UnifiedSize' Value='{{1,-210},{1,-70}}'/>
 						<Property Name='Text' Value=''/>
 						<Property Name='InheritsAlpha' Value='True'/>
 						<Property Name='ReadOnly' Value='true'/>
 						<Property Name='VertFormatting' Value='TopAligned'/>
 						<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
+						<Window Type='DefaultGUISheet' Name='SceneNodeInfo/Position'>
+							<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+							<Property Name='UnifiedSize' Value='{{0,150},{0,25}}'/>
+							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Position/X'>
+								<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+							</Window>
+							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Position/Y'>
+								<Property Name='UnifiedPosition' Value='{{0,50},{0,0}}'/>
+								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+							</Window>
+							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Position/Z'>
+								<Property Name='UnifiedPosition' Value='{{0,100},{0,0}}'/>
+								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+							</Window>
+						</Window>
+						<Window Type='DefaultGUISheet' Name='SceneNodeInfo/Orientation'>
+							<Property Name='UnifiedPosition' Value='{{0,0},{0,30}}'/>
+							<Property Name='UnifiedSize' Value='{{0,200},{0,30}}'/>
+							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Orientation/X'>
+								<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+							</Window>
+							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Orientation/Y'>
+								<Property Name='UnifiedPosition' Value='{{0,50},{0,0}}'/>
+								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+							</Window>
+							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Orientation/Z'>
+								<Property Name='UnifiedPosition' Value='{{0,100},{0,0}}'/>
+								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+							</Window>
+							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Orientation/Scalar'>
+								<Property Name='UnifiedPosition' Value='{{0,150},{0,0}}'/>
+								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+							</Window>
+						</Window>
 					</Window>
 				</Window>
 			</Window>

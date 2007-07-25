@@ -1,6 +1,6 @@
 --Shows a simple help window when moving an entity.
 
-Mover = {}
+Mover = {connectors={}}
 
 function Mover.updateEntityText(entity)
 	--if the entity has a name, use it, else use the type name
@@ -33,9 +33,9 @@ function Mover.buildWidget()
 	Mover.widget = guiManager:createWidget()
 	Mover.widget:loadMainSheet("Mover.layout", "Mover/")
 	
-	EmberOgre.LuaConnector:new(emberOgre:getMoveManager().EventStartMoving):connect("Mover.StartMoving")
-	EmberOgre.LuaConnector:new(emberOgre:getMoveManager().EventFinishedMoving):connect("Mover.FinishedMoving")
-	EmberOgre.LuaConnector:new(emberOgre:getMoveManager().EventCancelledMoving):connect("Mover.CancelledMoving")
+	connect(Mover.connectors, emberOgre:getMoveManager().EventStartMoving, "Mover.StartMoving")
+	connect(Mover.connectors, emberOgre:getMoveManager().EventFinishedMoving, "Mover.FinishedMoving")
+	connect(Mover.connectors, emberOgre:getMoveManager().EventCancelledMoving, "Mover.CancelledMoving")
 	
 
 	Mover.widget:hide()

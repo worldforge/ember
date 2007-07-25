@@ -1,4 +1,4 @@
-Admin = {}
+Admin = {connectors={}}
 
 function Admin.buildWidget()
 	Admin.widget = guiManager:createWidget()
@@ -57,4 +57,4 @@ function Admin.createdAvatarEmberEntity(avatarEntity)
 end
 
 
-EmberOgre.LuaConnector:new(emberOgre.EventCreatedAvatarEntity):connect("Admin.createdAvatarEmberEntity")
+connect(Admin.connectors, emberOgre.EventCreatedAvatarEntity, "Admin.createdAvatarEmberEntity")

@@ -1,7 +1,6 @@
-Tasks = {}
+Tasks = {connectors={}}
 
 Tasks.currentTask = nil
-Tasks.connectors = {}
 
 --function Tasks.frameStarted(time)
 --	if Tasks.currentTask ~= nil then
@@ -65,8 +64,8 @@ function Tasks.TaskRemoved(task)
 end
 
 function Tasks.createdAvatarEmberEntity(avatarEntity)
-	Tasks.connectors.TaskAdded =  EmberOgre.LuaConnector:new_local(avatarEntity.TaskAdded):connect("Tasks.TaskAdded")
-	Tasks.connectors.TaskRemoved = EmberOgre.LuaConnector:new_local(avatarEntity.TaskRemoved):connect("Tasks.TaskRemoved")
+	connect(Tasks.connectors, avatarEntity.TaskAdded, "Tasks.TaskAdded")
+	connect(Tasks.connectors, avatarEntity.TaskRemoved, "Tasks.TaskRemoved")
 end
 
 function Tasks.StopButtonClicked(args)
@@ -86,7 +85,7 @@ function Tasks.buildWidget()
 	Tasks.widget:getWindow("StopButton"):subscribeEvent("MouseClick", "Tasks.StopButtonClicked")
 
 
-	EmberOgre.LuaConnector:new(emberOgre.EventCreatedAvatarEntity):connect("Tasks.createdAvatarEmberEntity")
+	connect(Tasks.connectors, emberOgre.EventCreatedAvatarEntity, "Tasks.createdAvatarEmberEntity")
 
 --	EmberOgre.LuaConnector:new(Tasks.widget:EventFrameStarted):connect("Tasks.frameStarted")
 

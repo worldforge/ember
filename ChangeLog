@@ -1,5 +1,11 @@
 2007-07-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* src/components/ogre/widgets/Bootstrap.lua: added a utility method for setting up a LuaConnector and storing it in a lua table
+	* src/components/ogre/widgets/Admin.lua, src/components/ogre/widgets/Chat.lua, src/components/ogre/widgets/EntityEditor.lua, src/components/ogre/widgets/EntityPicker.lua, src/components/ogre/widgets/Give.lua, src/components/ogre/widgets/ModelEdit.lua, src/components/ogre/widgets/Mover.lua, src/components/ogre/widgets/Performance.lua, src/components/ogre/widgets/ScriptEdit.lua, src/components/ogre/widgets/ServerBrowser.lua, src/components/ogre/widgets/Tasks.lua, src/components/ogre/widgets/TerrainEditor.lua: use the new connect method, also make sure that new and new_local are used correctly where they should be
+	* src/components/ogre/widgets/EntityBrowser.lua, src/components/ogre/widgets/EntityBrowser.layout: added support for updating the position and rotation of scene nodes
+
+2007-07-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* src/components/ogre/widgets/LoadingBar.cpp, src/components/ogre/widgets/LoadingBar.h: added support for a version text element
 	* src/components/ogre/EmberOgre.cpp: set the version text
 
