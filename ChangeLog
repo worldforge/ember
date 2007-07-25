@@ -1,3 +1,17 @@
+2007-07-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/LoadingBar.cpp, src/components/ogre/widgets/LoadingBar.h: added support for a version text element
+	* src/components/ogre/EmberOgre.cpp: set the version text
+
+2007-07-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/packs/EmberCore.zip, media/packs/EmberLoadingPanel.overlay: added text element for the version
+
+2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/base_scripts/base.material: disabled the old method since it caused asserts in windows
+	* src/components/ogre/OgreResourceLoader.cpp: catch errors when parsing scripts
+
 2007-07-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapePageManager.cpp: if you created a new character on a world which had no terrain, you would get a segfault (but not the second time you visited). fixed now

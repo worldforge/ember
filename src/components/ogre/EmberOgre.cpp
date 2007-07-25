@@ -366,6 +366,7 @@ bool EmberOgre::setup()
 	ResourceGroupLoadingBarSection resourceGroupSectionListener(resourceGroupSection, numberOfSections, (preloadMedia ? numberOfSections : 0 ), 0.7);
 	
 	loadingBar.start(mWindow);
+	loadingBar.setVersionText(std::string("Version ") + VERSION);
 	
 	/// Turn off rendering of everything except overlays
 	mSceneMgr->clearSpecialCaseRenderQueues();

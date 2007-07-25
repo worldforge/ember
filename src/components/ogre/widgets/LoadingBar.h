@@ -133,6 +133,7 @@ protected:
 	Ogre::OverlayElement* mLoadingBarElement;
 	Ogre::OverlayElement* mLoadingDescriptionElement;
 	Ogre::OverlayElement* mLoadingCommentElement;
+	Ogre::OverlayElement* mVersionElement;
 
 public:
 	LoadingBar();
@@ -159,6 +160,7 @@ public:
 	void setProgress(float progress); 
 	void setDescription(const std::string& description);
 	void setCaption(const std::string& caption);
+	void setVersionText(const std::string& versionText);
 
 
 };

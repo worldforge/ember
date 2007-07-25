@@ -42,8 +42,17 @@ namespace EmberOgre {
 	added to a resource group called 'Bootstrap' - this provides the basic 
 	resources required for the progress bar and will be loaded automatically.
 */
-	LoadingBar::LoadingBar() : mProgress(0) 
+	LoadingBar::LoadingBar() : 
+	mProgress(0) ,
+	mWindow(0),
+	mLoadOverlay(0),
+	mProgressBarScriptSize(0),
+	mLoadingBarElement(0),
+	mLoadingDescriptionElement(0),
+	mLoadingCommentElement(0),
+	mVersionElement(0)
 	{}
+
 	LoadingBar::~LoadingBar(){}
 
 	/** Show the loading bar and start listening.
@@ -75,6 +84,7 @@ namespace EmberOgre {
 			mLoadingBarElement = omgr.getOverlayElement("EmberCore/LoadPanel/Bar/Progress");
 			mLoadingCommentElement = omgr.getOverlayElement("EmberCore/LoadPanel/Comment");
 			mLoadingDescriptionElement = omgr.getOverlayElement("EmberCore/LoadPanel/Description");
+			mVersionElement = omgr.getOverlayElement("EmberCore/Splash/VersionInfo");
 	
 			//OverlayElement* barContainer = omgr.getOverlayElement("EmberCore/LoadPanel/Bar");
 			mProgressBarMaxSize = mLoadingBarElement->getWidth();
@@ -127,10 +137,12 @@ namespace EmberOgre {
 	
 	void LoadingBar::setProgress(float progress) 
 	{
-		///make the black blocking block a little bit smaller and move it to the right
-		mLoadingBarElement->setWidth(mProgressBarMaxSize * (1 - progress));
-		mLoadingBarElement->setLeft(mProgressBarMaxLeft + (mProgressBarMaxSize * progress));
-		mWindow->update();
+		if (mLoadingBarElement) {
+			///make the black blocking block a little bit smaller and move it to the right
+			mLoadingBarElement->setWidth(mProgressBarMaxSize * (1 - progress));
+			mLoadingBarElement->setLeft(mProgressBarMaxLeft + (mProgressBarMaxSize * progress));
+			mWindow->update();
+		}
 		mProgress = progress;
 	}
 	
@@ -141,11 +153,19 @@ namespace EmberOgre {
 	
 	void LoadingBar::setCaption(const std::string& caption)
 	{
-		mLoadingCommentElement->setCaption(caption);
-		mWindow->update();
+		if (mLoadingCommentElement) {
+			mLoadingCommentElement->setCaption(caption);
+			mWindow->update();
+		}
 	}
 
-	
+	void LoadingBar::setVersionText(const std::string& versionText)
+	{
+		if (mVersionElement) {
+			mVersionElement->setCaption(versionText);
+			mWindow->update();
+		}
+	}
 	
 	
 	
