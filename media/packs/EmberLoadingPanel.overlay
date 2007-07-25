@@ -6,13 +6,28 @@ EmberCore/LoadOverlay
         container Panel(EmberCore/Splash)
         {
                 metrics_mode pixels
-		vert_align center
-		horz_align center
+				vert_align center
+				horz_align center
                 left -400
                 top -300
                 width 800
                 height 400
                 material EmberCore/Splash
+				element TextArea(EmberCore/Splash/VersionInfo)
+				{
+					vert_align bottom
+					horz_align right
+					metrics_mode pixels
+					left -100
+					top -20
+					width 100
+					height 20
+					font_name TrebuchetMSBold
+					char_height 15
+					caption Version
+					colour_top 0.94 0.68 0.43
+					colour_bottom 0.9 0.82 0.74
+				}
         }
 	// Main panel block
 	container Panel(EmberCore/LoadPanel)
@@ -24,6 +39,7 @@ EmberCore/LoadOverlay
 		top 100
 		width 500
 		height 80
+
 
 		element TextArea(EmberCore/LoadPanel/Description)
 		{
