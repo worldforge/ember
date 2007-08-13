@@ -2,9 +2,28 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 	<xsd:element name="model">
 		<xsd:complexType>
-			<xsd:attribute name="name" type="xsd:string" use="required"/> 
-			<xsd:attribute name="rotation" type="xsd:string" use="optional"/> 
-			<xsd:attribute name="usescaleof" type="usescaleofEnum" use="optional"/> 
+			<xsd:attribute name="name" type="xsd:string" use="required">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">
+						The unique name of the model definition.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="rotation" type="xsd:string" use="optional"> 
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">
+						A rotation in degrees around the y axis. This allows you to optionally rotate the model.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="usescaleof" type="usescaleofEnum" use="optional"> 
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">
+						The client scales the model to fit with the data sent from the server. However, different models would be scaled differently. If this is omitted, the model will be scaled in all dimensions to fit with the bounding box sent from the server. This will in most cases result in a distorted model, and is not desired. Instead you often want to use "width", "height" or "depth". These will scale the model uniformly (no distortion) by using one of the axes as reference. Most character models for example are best suited to use the "height" scaling.
+						Using "none" will make sure that no scaling occurs: the model is unaffected by the data sent from the server. Note however that the attribute "scale" can still be used to scale the model.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
 			<xsd:attribute name="scale" type="xsd:float" use="optional"/> 
 			<xsd:attribute name="showcontained" type="xsd:boolean" use="optional"/> 
 			<xsd:attribute name="contentoffset" type="xsd:string" use="optional"/> 
