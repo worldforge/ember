@@ -233,7 +233,7 @@ namespace EmberOgre {
 		unsigned short numGroupsInit,
 		unsigned short numGroupsLoad,
 		Ogre::Real initProportion)
-	: mSection(section), mNumGroupsInit(numGroupsInit), mNumGroupsLoad(numGroupsLoad), mInitProportion(initProportion)
+	: mInitProportion(initProportion), mNumGroupsInit(numGroupsInit), mNumGroupsLoad(numGroupsLoad), mSection(section), mProgressBarInc(0)
 	{
 		// self is listener
 		ResourceGroupManager::getSingleton().addResourceGroupListener(this);

@@ -50,9 +50,12 @@ void Quit::buildWidget()
 	CEGUI::PushButton* yesButton = static_cast<CEGUI::PushButton*>(getWindow("YesButton"));
 	CEGUI::PushButton* noButton = static_cast<CEGUI::PushButton*>(getWindow("NoButton"));
 	
-	BIND_CEGUI_EVENT(noButton, CEGUI::ButtonBase::EventMouseClick,Quit::No_Click );
-	BIND_CEGUI_EVENT(yesButton, CEGUI::ButtonBase::EventMouseClick,Quit::Yes_Click );
-	
+	if (yesButton) {
+		BIND_CEGUI_EVENT(noButton, CEGUI::ButtonBase::EventMouseClick,Quit::No_Click );
+	}
+	if (noButton) {
+		BIND_CEGUI_EVENT(yesButton, CEGUI::ButtonBase::EventMouseClick,Quit::Yes_Click );
+	}
 	
 	registerConsoleVisibilityToggleCommand("quit");
 	enableCloseButton();
