@@ -68,6 +68,8 @@ protected:
 	const CEGUI::Image* mOriginalCursorImage;
 	
 	Widgets::IconBar mIconBar;
+
+	void EmberOgre_createdAvatarEmberEntity(AvatarEmberEntity* entity);
 	
 };
 

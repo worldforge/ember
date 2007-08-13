@@ -79,6 +79,8 @@ void StatusIconBar::buildWidget()
 	mMovementModeIcon = new IconBase("movementmode", background, mMovementImage_gui, borderinactive, borderactive);
 	mIconBar.addIcon(mMovementModeIcon);
 	mMovementModeIcon->getButton()->setTooltipText("This shows your current input mode.\nUse the right mouse button for movement mode.\nDouble click also switches modes. Press and hold shift to run.");
+	///start out with the movement mode icon hidden, only show it when the user has an avatar
+	mMovementModeIcon->getContainer()->setVisible(false);
 	
 	BIND_CEGUI_EVENT(mMovementModeIcon->getButton(), ButtonBase::EventMouseClick, StatusIconBar::movement_MouseClick);
 	
@@ -88,6 +90,9 @@ void StatusIconBar::buildWidget()
 	float height = mIconBar.getAbsoluteHeight();
 	mIconBar.getWindow()->setPosition(UVector2(UDim(0,0), UDim(1, -height)));
 	
+	
+	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(sigc::mem_fun(*this, &StatusIconBar::EmberOgre_createdAvatarEmberEntity));
+
 /*	
 	foreground = IconBase::loadImageFromFile("attack.png");
 	helpIconBase = new IconBase("attack", background, foreground, borderinactive, borderactive);
@@ -163,7 +168,10 @@ void StatusIconBar::checkMovementMode()
 	}
 }
 
-
+void StatusIconBar::EmberOgre_createdAvatarEmberEntity(AvatarEmberEntity* entity)
+{
+	mMovementModeIcon->getContainer()->setVisible(true);
+}
 
 
 }
