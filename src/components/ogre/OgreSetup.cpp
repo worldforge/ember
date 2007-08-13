@@ -148,11 +148,11 @@ bool OgreSetup::configure(void)
 	if(success)
     {
     
-    	try {
-    		///since we're nazi, we don't want the user to get any other resolution than 1024x768, so we'll simply override whatever option they choose
-			mRoot->getRenderSystem()->setConfigOption("Video Mode", "1024 x 768 @ 32-bit colour");
-			S_LOG_INFO("Forcing a resolution of 1024x768.");
-    	} catch(...) {}
+//     	try {
+//     		///since we're nazi, we don't want the user to get any other resolution than 1024x768, so we'll simply override whatever option they choose
+// 			mRoot->getRenderSystem()->setConfigOption("Video Mode", "1024 x 768 @ 32-bit colour");
+// 			S_LOG_INFO("Forcing a resolution of 1024x768.");
+//     	} catch(...) {}
     	
 		///this will only apply on DirectX
 		///it will force DirectX _not_ to set the FPU to single precision mode (since this will mess with mercator amongst others)
