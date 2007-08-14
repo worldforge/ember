@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='DefaultGUISheet' Name='MainWindow'>
+		<Property Name='UnifiedSize' Value='{{0.0000,150.000000},{0.0000,55.000000}}'/>
+		<Property Name='UnifiedPosition' Value='{{0,0.000000},{0,0.000000}}'/>
+		<Property Name='Visible' Value='true'/>
+		<Property Name='AlwaysOnTop' Value='true'/>
+		<Window Type='EmberLook/StaticImage' Name='CloseupBorder'>
+			<Property Name='UnifiedSize' Value='{{0,48},{0,48}}'/>
+			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+			<Property Name='InheritsAlpha' Value='true'/>
+			<Property Name='Image' Value='set:iconset_standard image:ring_over' />
+			<Property Name='BackgroundEnabled' Value='false'/>
+			<Property Name='FrameEnabled' Value='false'/>
+		</Window>
+		<Window Type='EmberLook/StaticText' Name='EntityName'>
+			<Property Name='UnifiedSize' Value='{{1.000000,-48.000000},{0.00000,25.000000}}'/>
+			<Property Name='UnifiedPosition' Value='{{0,48},{0,0}}'/>
+			<Property Name='InheritsAlpha' Value='true'/>
+			<Property Name='HorzFormatting' Value='HorzCentred'/>
+			<Property Name='BackgroundEnabled' Value='false'/>
+			<Property Name='FrameEnabled' Value='false'/>
+		</Window>
+		<Window Type='EmberLook/ProgressBar' Name='HealthBar'>
+			<Property Name='Text' Value='Health'/>
+			<Property Name='UnifiedPosition' Value='{{0,48},{0,25}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-48},{0,8}}'/>
+			<Property Name='BarColours' Value='tl:FFE01212 tr:FFE01212 bl:FFE01212 br:FFE01212'/>
+		</Window>
+		<Window Type='EmberLook/ProgressBar' Name='StaminaBar'>
+			<Property Name='Text' Value='Health'/>
+			<Property Name='UnifiedPosition' Value='{{0,48},{0,33}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-48},{0,8}}'/>
+		</Window>
+		<Window Type='EmberLook/ProgressBar' Name='StrengthBar'>
+			<Property Name='Text' Value='Health'/>
+			<Property Name='UnifiedPosition' Value='{{0,48},{0,41}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-48},{0,8}}'/>
+		</Window>
+	</Window>
+</GUILayout>
