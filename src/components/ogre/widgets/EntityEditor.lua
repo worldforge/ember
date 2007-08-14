@@ -93,9 +93,6 @@ function EntityEditor.clearEditing()
 		if EntityEditor.instance.entityChangeConnection ~= nil then
 			EntityEditor.instance.entityChangeConnection:disconnect()
 		end
-		if EntityEditor.instance.helper ~= nil then
-			EntityEditor.instance.helper:delete()
-		end
 		EntityEditor.instance = nil
 	end
 	EntityEditor.instance = {}
