@@ -1,8 +1,65 @@
 Status = {connectors={}}
 
+function Status.createStatusInstance(name)
+	local wrapper = {}
+	wrapper.widget = guiManager:createWidget()
+	wrapper.widget:loadMainSheet("Status.layout", "Status_" .. name .. "/")
+	
+	wrapper.healthBar = CEGUI.toProgressBar(wrapper.widget:getWindow("HealthBar"))
+	wrapper.staminaBar = CEGUI.toProgressBar(wrapper.widget:getWindow("StaminaBar"))
+	wrapper.strengthBar = CEGUI.toProgressBar(wrapper.widget:getWindow("StrengthBar"))
+	
+	wrapper.nameWindow = wrapper.widget:getWindow("EntityName")
+	
+	wrapper.entity = nil
+	
+	wrapper.updateStatus = function()
+		if wrapper.entity:hasAttr("status") then
+			local statusElement = wrapper.entity:valueOfAttr("status")
+			local status = 0
+			if statusElement:isFloat() then
+				status = statusElement:asFloat()
+			end
+			wrapper.healthBar:setProgress(status)
+			wrapper.healthBar:setTooltipText("Health: " .. status * 100 .. "/100")
+		end
+		if wrapper.entity:hasAttr("stamina") then
+			local element = wrapper.entity:valueOfAttr("stamina")
+			local value = 0
+			if element:isFloat() then
+				value = element:asFloat()
+			end
+			wrapper.staminaBar:setProgress(value)
+			wrapper.staminaBar:setTooltipText("Stamina: " .. value * 100 .. "/100")
+		end
+		if wrapper.entity:hasAttr("strength") then
+			local element = wrapper.entity:valueOfAttr("strength")
+			local value = 0
+			if element:isFloat() then
+				value = element:asFloat()
+			end
+			wrapper.strengthBar:setProgress(value)
+			wrapper.strengthBar:setTooltipText("Strength: " .. value * 100 .. "/100")
+		end
+	end
+	
+	wrapper.setEntity = function(entity)
+		wrapper.entity = entity
+		if entity == nil then
+			wrapper.widget:hide()
+		else
+			wrapper.nameWindow:setText(entity:getName())
+			wrapper.updateStatus()
+			wrapper.widget:show()
+		end
+	end
+	wrapper.widget:hide()
+	return wrapper
+end
+
 function Status.buildWidget()
 
-	Status.widget = guiManager:createWidget()
+--[[	Status.widget = guiManager:createWidget()
 	Status.widget:loadMainSheet("Status.layout", "Status/")
 	
 	Status.healthBar = CEGUI.toProgressBar(Status.widget:getWindow("HealthBar"))
@@ -12,7 +69,13 @@ function Status.buildWidget()
 -- 	Status.healthBar:setProgress(0.5)
 -- 	Status.staminaBar:setProgress(0.5)
 
-	Status.nameWindow = Status.widget:getWindow("EntityName")
+	Status.nameWindow = Status.widget:getWindow("EntityName")]]
+	
+	Status.avatarStatus = Status.createStatusInstance("avatar")
+	
+	Status.npcStatus = Status.createStatusInstance("npc")
+	local uPosition = CEGUI.UVector2:new_local(CEGUI.UDim(0,200), CEGUI.UDim(0,0))
+	Status.npcStatus.widget:getMainWindow():setPosition(uPosition )
 	
 	connect(Status.connectors, emberOgre.EventCreatedAvatarEntity, "Status.emberOgre_CreatedAvatarEntity")
 
@@ -22,41 +85,38 @@ end
 
 function Status.emberOgre_CreatedAvatarEntity(avatarEntity)
 --wire up the listening for status
+	connect(Status.connectors, guiManager.EventEntityAction, "Status.handleAction")
 	connect(Status.connectors, avatarEntity.Changed, "Status.entity_Changed")
-	Status.entity = avatarEntity
-	Status.nameWindow:setText(avatarEntity:getName())
-	Status.widget:show()
+	Status.avatarStatus.setEntity(avatarEntity)
+end
+
+function Status.handleAction(action, entity) 
+
+	if action == "use" then
+		Status.observerNpc(entity)
+	end
+end
+
+function Status.observerNpc(entity)
+	Status.npcStatus.setEntity(entity)
+	if Status.connectors.npcChangedConnector ~= nil then
+		Status.connectors.npcChangedConnector:disconnect()
+	end
+	if entity ~= nil then
+		Status.connectors.npcChangedConnector = EmberOgre.LuaConnector:new_local(entity.Changed):connect("Status.npc_Changed")
+		Status.connectors.npcConnector = EmberOgre.LuaConnector:new_local(entity.BeingDeleted):connect("Status.npc_BeingDeleted")
+	end
 end
 
 function Status.entity_Changed(keys)
-	if Status.entity:hasAttr("status") then
-		local statusElement = Status.entity:valueOfAttr("status")
-		local status = 0
-		if statusElement:isFloat() then
-			status = statusElement:asFloat()
-		end
-		Status.healthBar:setProgress(status)
-		Status.healthBar:setTooltipText("Health: " .. status)
-	end
-	if Status.entity:hasAttr("stamina") then
-		local element = Status.entity:valueOfAttr("stamina")
-		local value = 0
-		if element:isFloat() then
-			value = element:asFloat()
-		end
-		Status.staminaBar:setProgress(value)
-		Status.staminaBar:setTooltipText("Stamina: " .. value)
-	end
-	if Status.entity:hasAttr("strength") then
-		local element = Status.entity:valueOfAttr("strength")
-		local value = 0
-		if element:isFloat() then
-			value = element:asFloat()
-		end
-		Status.strengthBar:setProgress(value)
-		Status.strengthBar:setTooltipText("Strength: " .. value)
-	end
+	Status.avatarStatus.updateStatus()
 end
 
+function Status.npc_Changed(keys)
+	Status.npcStatus.updateStatus()
+end
 
+function Status.npc_BeingDeleted()
+	Status.observerNpc(nil)
+end
 Status.buildWidget()

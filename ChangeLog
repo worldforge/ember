@@ -1,3 +1,59 @@
+2007-08-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Status.lua: show one status instance for the avatar, and one for the entity the avatar interacts with (should actually be the one that the avatar performs a task on, but I couldn't see how to easily hook that up)
+
+2007-08-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Bootstrap.lua: allow for passing a null table
+
+2007-08-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Bootstrap.lua: load the status widget
+
+2007-08-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityEditor.lua: fixed a bug where the entityeditorhelper might be delted twice
+
+2007-08-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/ServerBrowser.layout: tighten up the layout
+
+2007-08-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Widget.cpp: trying to get a nonexistant window will now throw an exception, so catch that
+
+2007-08-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Status.layout, src/components/ogre/widgets/Status.lua: added a status widget which shows the status of the avatar (health, stamina and strength). It should also show a close up of the avatar's face, though it doesn't currently.
+
+2007-08-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/cegui/datafiles/looknfeel/EmberLook.looknfeel: added the ability to set the colour of the progressbar
+
+2007-08-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/cegui/datafiles/schemes/EmberLookSkin.scheme: make sure that the icon imagesets are loaded
+
+2007-08-13 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/modeldefinition.xsd: added comments to properties
+
+2007-08-13 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/OgreSetup.cpp: no need to always force a certain resolution anymore, the gui will adapt just fine
+
+2007-08-13 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberOgre.cpp: only print the version number
+
+2007-08-13 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/StatusIconBar.cpp, src/components/ogre/widgets/StatusIconBar.h: don't show the movement icon until an avatar is present
+
+2007-08-13 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/LoadingBar.cpp, src/components/ogre/widgets/Quit.cpp: code cleanup
+
 2007-07-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/widgets/Bootstrap.lua: added a utility method for setting up a LuaConnector and storing it in a lua table
