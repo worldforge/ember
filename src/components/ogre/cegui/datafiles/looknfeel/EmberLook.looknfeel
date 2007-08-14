@@ -2464,6 +2464,7 @@
     ***************************************************
     -->
     <WidgetLook name="EmberLook/ProgressBar">
+        <PropertyDefinition name="BarColours" initialValue="tl:FF2222FF tr:FF2222FF bl:FF2222FF br:FF2222FF" redrawOnWrite="true" />
         <NamedArea name="ProgressArea">
             <Area>
                 <Dim type="LeftEdge" >
@@ -2560,14 +2561,16 @@
         <StateImagery name="EnabledProgress">
             <Layer>
                 <Section section="progress_lights">
-                    <Colours topLeft="FF2222FF" topRight="FF2222FF" bottomLeft="FF2222FF" bottomRight="FF2222FF" />
+                    <ColourRectProperty name="BarColours" />
+                    <!-- Colours topLeft="FF2222FF" topRight="FF2222FF" bottomLeft="FF2222FF" bottomRight="FF2222FF" / -->
                 </Section>
             </Layer>
         </StateImagery>
         <StateImagery name="DisabledProgress">
             <Layer>
                 <Section section="progress_lights">
-                    <Colours topLeft="FF2222FF" topRight="FF2222FF" bottomLeft="FF2222FF" bottomRight="FF2222FF" />
+                   <ColourRectProperty name="BarColours" />
+                   <!-- Colours topLeft="FF2222FF" topRight="FF2222FF" bottomLeft="FF2222FF" bottomRight="FF2222FF" / -->
                 </Section>
             </Layer>
         </StateImagery>
