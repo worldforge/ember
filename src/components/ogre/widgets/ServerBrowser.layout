@@ -11,11 +11,11 @@
 			<Property Name='UnifiedSize' Value='{{1,-8},{1,-15}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/MultiColumnList' Name='ServerList'>
-				<Property Name='UnifiedPosition' Value='{{0.0,5},{0,0}}'/>
-				<Property Name='UnifiedSize' Value='{{1.000000,-10.000000},{1.000000,-30.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,1},{0,0}}'/>
+				<Property Name='UnifiedSize' Value='{{1.000000,-2.000000},{1.000000,-35.000000}}'/>
 				<Property Name='InheritsAlpha' Value='true'/>
 				<Property Name='SelectionMode' Value='RowSingle'/>
-				<Property Name='ColumnHeader' Value='text:Server Name width:{0.25, 0} id:0'/>
+				<Property Name='ColumnHeader' Value='text:Server Name width:{0.30, 0} id:0'/>
 				<Property Name='ColumnHeader' Value='text:Ping width:{0.1, 0} id:1'/>
 				<Property Name='ColumnHeader' Value='text:Clients width:{0.1, 0} id:2'/>
 				<Property Name='ColumnHeader' Value='text:Ruleset width:{0.1, 0} id:3'/>
