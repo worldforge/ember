@@ -48,8 +48,11 @@ end
 
 --creates a connection between the supplied event and a function, stores the connection object in the supplied table and returns it
 function connect(connectorTable, event, functionName)
-	connectorTable[functionName] = EmberOgre.LuaConnector:new_local(event):connect(functionName)
-	return connectorTable[functionName]
+	local connector = EmberOgre.LuaConnector:new_local(event):connect(functionName)
+	if connectorTable ~= nil then
+		connectorTable[functionName] = connector
+	end
+	return connector
 end
 
 
