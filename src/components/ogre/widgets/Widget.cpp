@@ -81,17 +81,22 @@ namespace EmberOgre
 
 	CEGUI::Window* Widget::getWindow(const std::string& windowName)
 	{
-		assert(mWindowManager && "You must call init() before you can call any other methods.");
-		if (!mMainWindow) {
-			S_LOG_WARNING("Trying to get a window ("+ windowName +") on widget that has no main sheet loaded (" << mPrefix << ").");
+		try {
+			assert(mWindowManager && "You must call init() before you can call any other methods.");
+			if (!mMainWindow) {
+				S_LOG_WARNING("Trying to get a window ("+ windowName +") on widget that has no main sheet loaded (" << mPrefix << ").");
+				return 0;
+			}
+			assert(mMainWindow && "You must call loadMainSheet(...) before you can call this method.");
+			CEGUI::Window* window = mWindowManager->getWindow(mPrefix + windowName);
+			if (!window) {
+				S_LOG_WARNING("The window with id " << mPrefix << windowName << " does not exist.");
+			}
+			return window;
+		} catch (const CEGUI::Exception&) {
+			S_LOG_WARNING("The window " << windowName << " doesn't exist.");
 			return 0;
 		}
-		assert(mMainWindow && "You must call loadMainSheet(...) before you can call this method.");
-		CEGUI::Window* window = mWindowManager->getWindow(mPrefix + windowName);
-		if (!window) {
-			S_LOG_WARNING("The window with id " << mPrefix << windowName << " does not exist.");
-		}
-		return 	window;
 
 	}
 
