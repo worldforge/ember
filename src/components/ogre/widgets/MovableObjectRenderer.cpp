@@ -227,6 +227,9 @@ bool MovableObjectRenderer::frameStarted(const Ogre::FrameEvent& event)
 	return true;
 }
 
-
+void MovableObjectRenderer::updateRender()
+{
+	mTexture->getRenderTexture()->update();
+}
 
 }

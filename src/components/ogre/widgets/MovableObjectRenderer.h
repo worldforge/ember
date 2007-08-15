@@ -143,6 +143,11 @@ public:
 	 * @param degrees The amount of degree to roll.
 	 */
     void roll(Ogre::Degree degrees);
+    
+    /**
+     * Updates the texture by rendering one frame manually.
+     */
+    void updateRender();
 	
 protected:
 
