@@ -407,6 +407,12 @@ bool PagingLandScapeTile::intersectSegmentFromAbove(const Vector3 & start,
 			(ray.z < bottomBorder))
 		{           
 			ray += dir;
+			//ember specific start
+			if (ray.y > mWorldBoundsExt.getMaximum().y) {
+				//there's no terrain above this point anyway
+				return false;
+			}
+			//ember specific end
 		}
 	}
 	else
@@ -432,7 +438,13 @@ bool PagingLandScapeTile::intersectSegmentFromAbove(const Vector3 & start,
 			(ray.z > topBorder) &&
 			(ray.z < bottomBorder))
 		{
-
+			//ember specific start
+			if (ray.y > mWorldBoundsExt.getMaximum().y) {
+				//there's no terrain above this point anyway
+				return false;
+			}
+			//ember specific end
+			
 			if (ray.y <= localMax) // until under the max possible for this page/tile
 			{
 				// adjust x and z to be local to page
