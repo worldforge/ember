@@ -1,5 +1,33 @@
 2007-08-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* src/components/ogre/scripting/bindings/lua/MovableObjectRenderer.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
+
+2007-08-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/adapters/atlas/Makefile.am: fixed installation problems
+
+2007-08-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/IngameChatWidget.cpp: don't show chat widgets for entities that aren't seen by the camera
+
+2007-08-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Status.layout, src/components/ogre/widgets/Status.lua: show a small static render of entity
+
+2007-08-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityCEGUITexture.cpp: default to transparent background, so that the status icons looks nice. We need a better way to set this though.
+
+2007-08-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/MovableObjectRenderer.cpp, src/components/ogre/widgets/MovableObjectRenderer.h: added method for forcing a render update
+
+2007-08-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeTile.cpp: changed a bug where looking directly down at the ground would cause an almost infinite loop
+
+2007-08-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* src/components/ogre/widgets/Status.lua: show one status instance for the avatar, and one for the entity the avatar interacts with (should actually be the one that the avatar performs a task on, but I couldn't see how to easily hook that up)
 
 2007-08-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>

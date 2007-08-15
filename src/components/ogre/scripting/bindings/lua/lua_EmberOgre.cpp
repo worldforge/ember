@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Mon Jul 16 23:44:11 2007.
+** Generated automatically by tolua++-1.0.92 on Wed Aug 15 01:07:17 2007.
 */
 
 #ifndef __cplusplus
@@ -13002,6 +13002,37 @@ static int tolua_EmberOgre_EmberOgre_MovableObjectRenderer_roll00(lua_State* tol
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: updateRender of class  EmberOgre::MovableObjectRenderer */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_MovableObjectRenderer_updateRender00
+static int tolua_EmberOgre_EmberOgre_MovableObjectRenderer_updateRender00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::MovableObjectRenderer",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::MovableObjectRenderer* self = (EmberOgre::MovableObjectRenderer*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'updateRender'",NULL);
+#endif
+  {
+   self->updateRender();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'updateRender'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: new of class  EmberOgre::OgreEntityRenderer */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_OgreEntityRenderer_new00
 static int tolua_EmberOgre_EmberOgre_OgreEntityRenderer_new00(lua_State* tolua_S)
@@ -18155,6 +18186,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"pitch",tolua_EmberOgre_EmberOgre_MovableObjectRenderer_pitch00);
     tolua_function(tolua_S,"yaw",tolua_EmberOgre_EmberOgre_MovableObjectRenderer_yaw00);
     tolua_function(tolua_S,"roll",tolua_EmberOgre_EmberOgre_MovableObjectRenderer_roll00);
+    tolua_function(tolua_S,"updateRender",tolua_EmberOgre_EmberOgre_MovableObjectRenderer_updateRender00);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"EmberOgre",0);
