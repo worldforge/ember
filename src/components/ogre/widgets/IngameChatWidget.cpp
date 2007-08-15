@@ -129,6 +129,7 @@ void IngameChatWidget::appendIGChatLine(const std::string& line, EmberEntity* en
 
 void IngameChatWidget::frameStarted( const Ogre::FrameEvent & event )
 {
+	Ogre::Camera* camera = EmberOgre::getSingletonPtr()->getMainCamera()->getCamera();
 	ActiveChatWindowMap::iterator I = mActiveChatWindows.begin();
 	ActiveChatWindowMap::iterator I_end = mActiveChatWindows.end();
 	std::vector<std::string> windowsToRemove;
@@ -141,10 +142,11 @@ void IngameChatWidget::frameStarted( const Ogre::FrameEvent & event )
 		Ogre::Vector3 entityWorldCoords = window->getEntity()->getWorldBoundingBox(true).getCenter();
 		
 		//Ogre::Vector3 entityWorldCoords = window->getEntity()->getSceneNode()->_getWorldAABB().getCenter();
-		Ogre::Vector3 cameraCoords = EmberOgre::getSingletonPtr()->getMainCamera()->getCamera()->getDerivedPosition();
+		Ogre::Vector3 cameraCoords = camera->getDerivedPosition();
 		Ogre::Vector3 diff = entityWorldCoords - cameraCoords;
 		
-		if (diff.length() > distanceShown) {
+		///remove the window if it's either too far away or not shown in the camera
+		if (diff.length() > distanceShown || !camera->isVisible(entityWorldCoords)) {
 			windowsToRemove.push_back(I->first);
 		} else {
 		
