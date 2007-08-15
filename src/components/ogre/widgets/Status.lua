@@ -9,6 +9,11 @@ function Status.createStatusInstance(name)
 	wrapper.staminaBar = CEGUI.toProgressBar(wrapper.widget:getWindow("StaminaBar"))
 	wrapper.strengthBar = CEGUI.toProgressBar(wrapper.widget:getWindow("StrengthBar"))
 	
+	wrapper.renderImage = wrapper.widget:getWindow("RenderImage")
+	wrapper.renderer = EmberOgre.ModelRenderer:new_local(wrapper.renderImage)
+	wrapper.renderer:setActive(false)
+	wrapper.renderer:setIsInputCatchingAllowed(false)
+	
 	wrapper.nameWindow = wrapper.widget:getWindow("EntityName")
 	
 	wrapper.entity = nil
@@ -48,9 +53,26 @@ function Status.createStatusInstance(name)
 		if entity == nil then
 			wrapper.widget:hide()
 		else
-			wrapper.nameWindow:setText(entity:getName())
+			if entity:getName() == "" then
+				wrapper.nameWindow:setText(entity:getType():getName())
+			else
+				wrapper.nameWindow:setText(entity:getName())
+			end
 			wrapper.updateStatus()
+			
+			--don't cast the world
+			--HACK: we need to refactor the entity classes so we don't have to do it like this
+			if entity:getId() ~= 0 then
+				local physEntity = tolua.cast(entity, "EmberOgre::EmberPhysicalEntity")
+				wrapper.renderer:showModel(physEntity:getModel():getDefinition():get():getName())
+				wrapper.renderer:setCameraDistance(0.75)
+			else 
+				wrapper.renderer:showModel("")
+			end
+			wrapper.renderer:updateRender()
+-- 			wrapper.renderer:pitch(Ogre.Degree:new_local(-45))
 			wrapper.widget:show()
+
 		end
 	end
 	wrapper.widget:hide()
@@ -92,7 +114,7 @@ end
 
 function Status.handleAction(action, entity) 
 
-	if action == "use" then
+	if action == "use" or action == "inspect" then
 		Status.observerNpc(entity)
 	end
 end
