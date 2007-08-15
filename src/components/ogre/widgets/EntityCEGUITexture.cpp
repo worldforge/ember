@@ -208,7 +208,7 @@ void EntityCEGUITexture::createImage(const std::string& imageSetName)
 	S_LOG_VERBOSE("Adding camera.");
 	Ogre::Viewport *v = mRenderTexture->addViewport(mCamera);
 	///this should preferrably be a transparent background, so that CEGUI could itself decide what to show behind it, but alas I couldn't get it to work, thus black
-	v->setBackgroundColour(Ogre::ColourValue::Black);
+	v->setBackgroundColour(Ogre::ColourValue::ZERO);
 	///don't show the CEGUI
 	v->setOverlaysEnabled(false);
 	///the cegui renderer wants a TexturePtr (not a RenderTexturePtr), so we just ask the texturemanager for texture we just created (rttex)
