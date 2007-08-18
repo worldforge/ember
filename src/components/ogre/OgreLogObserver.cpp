@@ -44,15 +44,16 @@ OgreLogObserver::~OgreLogObserver()
 			
 void OgreLogObserver::messageLogged( const String& message, LogMessageLevel lml, bool maskDebug, const String &logName )	
 {
+	static std::string ogre("(Ogre) ");
 	switch (lml) {
 		case Ogre::LML_TRIVIAL:
-			Ember::EmberServices::getSingletonPtr()->getLoggingService()->log("Ogre", Ember::LoggingService::VERBOSE,  message.c_str());
+			Ember::EmberServices::getSingletonPtr()->getLoggingService()->log("Ogre", Ember::LoggingService::VERBOSE,  (ogre + message).c_str());
 			break;
 		case Ogre::LML_NORMAL:
-			Ember::EmberServices::getSingletonPtr()->getLoggingService()->log("Ogre", Ember::LoggingService::INFO,  message.c_str());
+			Ember::EmberServices::getSingletonPtr()->getLoggingService()->log("Ogre", Ember::LoggingService::INFO,  (ogre + message).c_str());
 			break;
 		case Ogre::LML_CRITICAL:
-			Ember::EmberServices::getSingletonPtr()->getLoggingService()->log("Ogre", Ember::LoggingService::FAILURE,  message.c_str());
+			Ember::EmberServices::getSingletonPtr()->getLoggingService()->log("Ogre", Ember::LoggingService::FAILURE,  (ogre + message).c_str());
 			break;
 	}
 }
