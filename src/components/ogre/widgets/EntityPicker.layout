@@ -4,7 +4,6 @@
 		<Property Name='UnifiedSize' Value='{{0.0000,120.000000},{0.0000,300.000000}}'/>
 		<Property Name='UnifiedPosition' Value='{{0,0.000000},{0,0.000000}}'/>
 		<Property Name='Visible' Value='false'/>
-		<Property Name='Enabled' Value='false'/>
 		<Property Name='AlwaysOnTop' Value='true'/>
 		<Window Type='EmberLook/StaticText' Name='EntityName'>
 			<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.00000,25.000000}}'/>

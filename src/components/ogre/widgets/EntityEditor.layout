@@ -30,10 +30,6 @@
 						<Property Name='UnifiedSize' Value='{{1,0.000000},{1.00000,0.000000}}'/>
 						<Property Name='Text' Value=''/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Property Name='ReadOnly' Value='true'/>
-						<Property Name='VertFormatting' Value='TopAligned'/>
-						<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
-						<Property Name='VertScrollbar' Value='true'/>
 					</Window>
 				</Window>
 				<Window Type='DefaultGUISheet' Name='KnowledgePanel'>

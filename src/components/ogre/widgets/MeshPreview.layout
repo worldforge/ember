@@ -26,7 +26,6 @@
 				<Property Name='UnifiedPosition' Value='{{0.000000,355.000000},{0.000000,0.000000}}'/>
 				<Property Name='Text' Value='Create'/>
 				<Property Name='InheritsAlpha' Value='True'/>
-				<Property Name='Enabled' Value='False'/>
 			</Window>
 			<Window Type='EmberLook/StaticText' Name='Meshes'>
 				<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,25.000000}}'/>
@@ -40,7 +39,6 @@
 				<Property Name='UnifiedSize' Value='{{0.000000,150.000000},{0.000000,100.000000}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.000000,60.000000}}'/>
 				<Property Name='InheritsAlpha' Value='false'/>
-				<Property Name='SelectionMode' Value='RowSingle'/>
 			</Window>
 			<Window Type='EmberLook/StaticText' Name='ScaleText'>
 				<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,25.000000}}'/>
@@ -54,14 +52,13 @@
 				<Property Name='UnifiedSize' Value='{{0.000000,10.000000},{0.000000,120.000000}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.000000,160.000000},{0.000000,60.000000}}'/>
 				<Property Name='MaximumValue' Value='10'/>
-				<Property Name='Value' Value='1'/>
+				<Property Name='CurrentValue' Value='1'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='Remove'>
 				<Property Name='UnifiedSize' Value='{{0.000000,75.000000},{0.000000,25.000000}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.000000,165.000000}}'/>
 				<Property Name='Text' Value='Remove'/>
 				<Property Name='InheritsAlpha' Value='True'/>
-				<Property Name='Enabled' Value='False'/>
 			</Window>
 			<Window Type='EmberLook/StaticText' Name='AnimationsText'>
 				<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,25.000000}}'/>
@@ -75,27 +72,23 @@
 				<Property Name='UnifiedSize' Value='{{0.000000,150.000000},{0.000000,100.000000}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.000000,190.000000},{0.000000,60.000000}}'/>
 				<Property Name='InheritsAlpha' Value='false'/>
-				<Property Name='SelectionMode' Value='RowSingle'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='PlayAnimation'>
 				<Property Name='UnifiedSize' Value='{{0.000000,75.000000},{0.000000,25.000000}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.000000,350.000000},{0.000000,60.000000}}'/>
 				<Property Name='Text' Value='Play/Pause'/>
 				<Property Name='InheritsAlpha' Value='True'/>
-				<Property Name='Enabled' Value='False'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='ResetAnimation'>
 				<Property Name='UnifiedSize' Value='{{0.000000,75.000000},{0.000000,25.000000}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.000000,350.000000},{0.000000,90.000000}}'/>
 				<Property Name='Text' Value='Reset'/>
 				<Property Name='InheritsAlpha' Value='True'/>
-				<Property Name='Enabled' Value='False'/>
 			</Window>
 			<Window Type='EmberLook/Listbox' Name='AllMeshes'>
 				<Property Name='UnifiedSize' Value='{{0.000000,150.000000},{0.000000,100.000000}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.000000,200.000000},{0.000000,60.000000}}'/>
 				<Property Name='InheritsAlpha' Value='false'/>
-				<Property Name='SelectionMode' Value='RowSingle'/>
 				<Property Name='Visible' Value='false'/>
 			</Window>
 		</Window>

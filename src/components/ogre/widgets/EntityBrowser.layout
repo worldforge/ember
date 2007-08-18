@@ -61,7 +61,6 @@
 						<Property Name='UnifiedSize' Value='{{1,-210},{1,-70}}'/>
 						<Property Name='Text' Value=''/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Property Name='ReadOnly' Value='true'/>
 						<Property Name='VertFormatting' Value='TopAligned'/>
 						<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
 						<Window Type='DefaultGUISheet' Name='SceneNodeInfo/Position'>

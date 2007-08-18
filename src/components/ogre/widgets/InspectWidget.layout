@@ -13,7 +13,6 @@
 				<Property Name='UnifiedSize' Value='{{0.950000,0.000000},{0.600000,0.000000}}'/>
 				<Property Name='Text' Value=''/>
 				<Property Name='InheritsAlpha' Value='True'/>
-				<Property Name='ReadOnly' Value='true'/>
 				<Property Name='VertFormatting' Value='TopAligned'/>
 				<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
 				<Property Name='VertScrollbar' Value='true'/>

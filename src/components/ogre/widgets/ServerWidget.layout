@@ -13,7 +13,6 @@
 			<Window Type='EmberLook/StaticText' Name='Info'>
 				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.200000,0.000000}}'/>
 				<Property Name='InheritsAlpha' Value='false'/>
-				<Property Name='ReadOnly' Value='true'/>
 				<Property Name='VertFormatting' Value='TopAligned'/>
 				<Property Name='Text' Value='Server info'/>
 			</Window>
@@ -22,7 +21,6 @@
 				<Property Name='UnifiedSize' Value='{{1,-8},{0.75,0}}'/>
 				<Property Name='Text' Value='Login'/>
 				<Property Name='InheritsAlpha' Value='false'/>
-				<Property Name='ReadOnly' Value='true'/>
 				<Property Name='VertFormatting' Value='TopAligned'/>
 				<Window Type='EmberLook/StaticText' Name='LoginPanel/NameText'>
 					<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,20.000000}}'/>
@@ -106,7 +104,6 @@
 					<Window Type='EmberLook/Button' Name='ChooseCharacterPanel/Choose'>
 						<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,20.000000}}'/>
 						<Property Name='UnifiedPosition' Value='{{0.400000,0.000000},{0.800000,0.000000}}'/>
-						<Property Name='MaximumSize' Value='w:1 h:1'/>
 						<Property Name='Text' Value='Choose'/>
 						<Property Name='InheritsAlpha' Value='True'/>
 					</Window>
@@ -198,11 +195,9 @@
 					<Window Type='EmberLook/Button' Name='UseCreator'>
 						<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,20.000000}}'/>
 						<Property Name='UnifiedPosition' Value='{{0.000000,100.000000},{0.000000,250.0000}}'/>
-						<Property Name='MaximumSize' Value='w:1 h:1'/>
 						<Property Name='Text' Value='Use Creator'/>
 						<Property Name='InheritsAlpha' Value='True'/>
 						<Property Name='Visible' Value='false'/>
-						<Property Name='Enabled' Value='false'/>
 					</Window>
 					<Window Type='EmberLook/StaticImage' Name='CreateCharacterPanel/Image'>
 						<Property Name='UnifiedSize' Value='{{0.000000,150.000000},{0.000000,250.000000}}'/>
