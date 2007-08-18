@@ -12,7 +12,7 @@ ceguilooknfeeldir = $(datadir)/ember/media/shared/gui/cegui/datafiles/looknfeel
 ceguischemadir = $(datadir)/ember/media/shared/gui
 
 
-dist_ceguifonts_DATA = datafiles/fonts/Font.xsd datafiles/fonts/tahoma-14.xml datafiles/fonts/tahoma-10.xml datafiles/fonts/tahoma-8.xml datafiles/fonts/tahoma.ttf datafiles/fonts/vera-sans-14.xml datafiles/fonts/vera-sans-10.xml datafiles/fonts/vera-sans-8.xml datafiles/fonts/Vera.ttf
+dist_ceguifonts_DATA = datafiles/fonts/Font.xsd datafiles/fonts/vera-sans-14.xml datafiles/fonts/vera-sans-10.xml datafiles/fonts/vera-sans-8.xml datafiles/fonts/vera-sans-bold-8.xml datafiles/fonts/vera-sans-bold-10.xml datafiles/fonts/Vera.ttf datafiles/fonts/VeraBd.ttf
 dist_ceguiimagesets_DATA = datafiles/imagesets/Imageset.xsd datafiles/imagesets/iconset_standard.imageset datafiles/imagesets/iconset_mason.imageset datafiles/imagesets/EmberLook.imageset
 dist_ceguilayouts_DATA = datafiles/layouts/GUILayout.xsd
 dist_ceguischemes_DATA = datafiles/schemes/GUIScheme.xsd datafiles/schemes/EmberLookSkin.scheme
