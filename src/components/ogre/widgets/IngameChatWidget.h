@@ -23,94 +23,16 @@
 #ifndef EMBEROGREINTEGRATEDCHATWIDGET_H
 #define EMBEROGREINTEGRATEDCHATWIDGET_H
 
+#include "WidgetPool.h"
+
 namespace EmberOgre {
 
 class GUIManager;
 class Widget;
 class EmberPhysicalEntity;
 
+namespace Gui {
 
-template <typename T>
-class WidgetPool
-{
-	public:
-		typedef std::vector<T*> WidgetStore;
-		typedef std::stack<T*> WidgetStack;
-		class WidgetCreator
-		{
-			public:
-			virtual ~WidgetCreator() {}
-			virtual T* createWidget(unsigned int currentPoolSize) = 0;
-		};
-		WidgetPool(WidgetCreator& creator) : mCreator(creator) {}
-		T* checkoutWidget();
-		void returnWidget(T* widget);
-
-		void initializePool(unsigned int initialSize);
-		
-		std::vector<T*>& getUsedWidgets();
-		std::vector<T*>& getWidgetPool();
-		std::stack<T*>& getUnusedWidgets();
-	
-	protected:
-		WidgetCreator& mCreator;
-		
-		WidgetStore mUsedWidgets;
-		
-		WidgetStore mWidgetsPool;
-		WidgetStack mUnusedWidgets;
-};
-
-template <typename T>
-T* WidgetPool<T>::checkoutWidget()
-{
-	T* widget(0);
-	if (!mUnusedWidgets.size()) {
-		widget = mCreator.createWidget(mWidgetsPool.size());
-		mWidgetsPool.push_back(widget);
-	} else {
-		widget = mUnusedWidgets.top();
-		mUnusedWidgets.pop();
-	}
-	mUsedWidgets.push_back(widget);
-	return widget;
-}
-
-template <typename T>
-void WidgetPool<T>::returnWidget(T* widget)
-{
-	mUnusedWidgets.push(widget);
-// 	std::vector<T*>::iterator I = ;
-	if (std::find(mUsedWidgets.begin(), mUsedWidgets.end(), widget) != mUsedWidgets.end()) {
-		mUsedWidgets.erase(std::find(mUsedWidgets.begin(), mUsedWidgets.end(), widget));
-	}
-}
-
-template <typename T>
-void WidgetPool<T>::initializePool(unsigned int initialSize)
-{
-	for (unsigned int i = 0; i < initialSize; ++i) {
-		T* widget = mCreator.createWidget(mWidgetsPool.size());
-		mWidgetsPool.push_back(widget);
-		mUnusedWidgets.push(widget);
-	}
-}
-
-template <class T>
-std::vector<T*>& WidgetPool<T>::getUsedWidgets()
-{
-	return mUsedWidgets;
-}
-template <typename T>
-std::vector<T*>& WidgetPool<T>::getWidgetPool()
-{
-	return mWidgetsPool;
-}
-template <typename T>
-std::stack<T*>& WidgetPool<T>::getUnusedWidgets()
-{
-	return mUnusedWidgets;
-}
 
 
 /**
@@ -296,7 +218,7 @@ protected:
 
 
 };
-
+};
 };
 
 #endif

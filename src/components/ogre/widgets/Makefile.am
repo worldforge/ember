@@ -31,14 +31,14 @@ libWidgets_la_SOURCES = 			IngameChatWidget.cpp 			MovableObjectRenderer.cpp \
 	InspectWidget.cpp InventoryWidget.cpp JesusEdit.cpp ListHolder.cpp LoadingBar.cpp \
 	MakeEntityWidget.cpp MeshPreview.cpp ModelRenderer.cpp OgreEntityRenderer.cpp \
 	QuaternionAdapter.cpp Quit.cpp ServerWidget.cpp StackableContainer.cpp StatusIconBar.cpp \
-	Vector3Adapter.cpp Widget.cpp WidgetDefinitions.cpp
+	Vector3Adapter.cpp Widget.cpp WidgetDefinitions.cpp WidgetPool.cpp
 #TerrainEdit.cpp Map.cpp
 noinst_HEADERS = 		ListHolder.h ColouredListItem.h ConsoleAdapter.h \
 	ConsoleWidget.h EntityCEGUITexture.h EntityEditor.h Help.h IconBar.h IconBase.h \
-	IngameChatWidget.h InspectWidget.h InventoryWidget.h JesusEdit.h LoadingBar.h \
+	IngameChatWidget.h InspectWidget.h InventoryWidget.h JesusEdit.h ListHolder.h LoadingBar.h \
 	MakeEntityWidget.h MeshPreview.h ModelRenderer.h MovableObjectRenderer.h \
 	OgreEntityRenderer.h QuaternionAdapter.h Quit.h ServerWidget.h StackableContainer.h \
-	StatusIconBar.h Vector3Adapter.h Widget.h WidgetDefinitions.h
+	StatusIconBar.h Vector3Adapter.h Widget.h WidgetDefinitions.h WidgetPool.h
 #TerrainEdit.h Map.h
 SUBDIRS = adapters
 libWidgets_la_LIBADD = \

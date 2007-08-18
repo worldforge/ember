@@ -57,6 +57,7 @@
 
 using namespace CEGUI;
 namespace EmberOgre {
+namespace Gui {
 
 IngameChatWidget::IngameChatWidget()
 : mTimeShown(0), mDistanceShown(100), mCreator(*this), mLabelPool(mCreator)
@@ -587,5 +588,4 @@ IngameChatWidget::Label* IngameChatWidget::LabelCreator::createWidget(unsigned i
 }
 
 };
-
-
+};
