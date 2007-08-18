@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='EmberLook/StaticText' Name='EntityName'>
+		<Property Name='UnifiedSize' Value='{{000000,200.000000},{0.0000,25.000000}}'/>
+		<Property Name='InheritsAlpha' Value='true'/>
+		<Property Name='HorzFormatting' Value='WordWrapCentred'/>
+		<Property Name='VertFormatting' Value='TopAligned'/>
+		<Property Name='FrameEnabled' Value='false'/>
+		<Property Name='BackgroundEnabled' Value='false'/>
+		<Property Name='Font' Value='Vera-Sans-Bold-10'/>
+		<Property Name='TextColours' Value='tl:FFFFFFFF tr:FFFFFFFF bl:FFffc990 br:FFffc990'/>
+	</Window>
+</GUILayout>

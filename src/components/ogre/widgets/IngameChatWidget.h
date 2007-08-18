@@ -40,19 +40,56 @@ If the npc has a list of suggested responses these will be shown in a list of cl
 */
 class IngameChatWidget : public Widget {
 
+	class EntityObserver;
+	class Label;
+	class MovableObjectListener : public Ogre::MovableObject::Listener
+	{
+		public:
+			MovableObjectListener(EntityObserver& entityObserver, EmberPhysicalEntity* entity);
+			virtual ~MovableObjectListener();
+			
+			virtual bool objectRendering (const Ogre::MovableObject * movableObject, const Ogre::Camera * camera);
+			
+		private:
+			EntityObserver& mEntityObserver;
+			EmberPhysicalEntity* mEntity;
+	};
+	
+	class EntityObserver : public virtual sigc::trackable
+	{
+		public:
+			EntityObserver(IngameChatWidget& chatWidget, EmberPhysicalEntity* entity);
+			virtual ~EntityObserver();
+			void updateLabel(const Ogre::Camera * camera);
+			
+		protected:
+			IngameChatWidget& mChatWidget;
+			EmberPhysicalEntity* mEntity;
+			Label* mLabel;
+			MovableObjectListener mMovableObjectListener;
+			
+			void showLabel();
+			void hideLabel();
+			
+			void entity_VisibilityChanged(bool visible);
+			void entity_BeingDeleted();
+			void entity_Say(const Atlas::Objects::Root& talk);
+			
+		
+	};
 
 	/**
 	Holds the actual chat window and keeps track of fading, catching clicks etc.
 	*/
-	class ActiveChatWindow : public sigc::trackable
+	class Label : public sigc::trackable
 	{
 		public:
 			/**
 			
 			*/
-			ActiveChatWindow(CEGUI::Window* window, EmberEntity* entity, CEGUI::WindowManager* windowManager, IngameChatWidget& containerWidget);
+			Label(CEGUI::Window* window, CEGUI::WindowManager* windowManager, IngameChatWidget& containerWidget, const std::string& prefix);
 			
-			virtual ~ActiveChatWindow();
+			virtual ~Label();
 
 			/**
 			
@@ -67,10 +104,15 @@ class IngameChatWidget : public Widget {
 			void increaseElapsedTime(float timeSlice);
 			
 			/**
-			
 			gets the entity the window belongs to
 			*/
 			EmberEntity* getEntity();
+			
+			void setEntity(EmberEntity* entity);
+			
+			void setActive(bool active);
+			bool getActive() const;
+			void markForRender();
 			
 			CEGUI::Window* getWindow();
 			
@@ -79,12 +121,12 @@ class IngameChatWidget : public Widget {
 			*/
 			void frameStarted( const Ogre::FrameEvent & event );
 
-			
-		protected:
 			/**
 			positions the window on top of the entity
 			*/
 			void placeWindowOnEntity();
+			
+		protected:
 			
 			CEGUI::Window* mWindow;
 			float mElapsedTimeSinceLastUpdate;
@@ -93,38 +135,61 @@ class IngameChatWidget : public Widget {
 			CEGUI::WindowManager* mWindowManager;
 			IngameChatWidget& mContainerWidget;
 			
-			
 			bool buttonResponse_Click(const CEGUI::EventArgs& args);
 			
-			void entity_BeingDeleted();
+			bool mActive;
+			const std::string mPrefix;
+			bool mRenderNextFrame;
+// 			CEGUI::Window* mNameWidget;
 		
 	};
 
-typedef std::map<std::string, ActiveChatWindow*> ActiveChatWindowMap;
+typedef std::map<std::string, Label*> LabelMap;
+typedef std::vector<Label*> LabelStore;
+typedef std::stack<Label*> LabelStack;
+typedef std::vector<EntityObserver*> EntityObserverStore;
+typedef std::vector<Eris::TypeInfo*> TypeInfoStore;
+friend class IngameChatWidget::EntityObserver;
 public:
-
+	IngameChatWidget();
     virtual ~IngameChatWidget();
 	void buildWidget();
 	virtual void frameStarted(const Ogre::FrameEvent & event);
 	
 	void removeWidget(const std::string& windowName);
 	
+	Label* getLabel();
+	void returnLabel(Label* label);
+	
+	void removeEntityObserver(EntityObserver* observer);
+	
 protected:
 	void appendIGChatLine(const std::string& line, EmberEntity* entity);
 	//void placeWindowOnEntity( CEGUI::Window* window, EmberPhysicalEntity* entity);
-
-		
 	
-	/**
-	a map of all the active windows
-	*/
-	ActiveChatWindowMap mActiveChatWindows;
+	void initializePool();
+	
+	Label* createLabel(); 
+	
+	void View_EntitySeen(Eris::Entity* entity);
+	void ServerService_GotView(Eris::View* view);
+	
+
+	LabelStore mUsedLabels;
+	
+	LabelStore mLabelPool;
+	LabelStack mUnusedLabels;
+	
+	EntityObserverStore mEntityObservers;
+	
+	TypeInfoStore mLabelTypes;
 	
 	//the length in seconds a window should be shown after it has been activated
-	float timeShown;
+	float mTimeShown;
 	
 	//how far away, in meters, the window should be visible
-	float distanceShown;
+	float mDistanceShown;
+	
 	
 	
 
