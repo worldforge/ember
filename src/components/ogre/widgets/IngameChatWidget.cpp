@@ -59,7 +59,7 @@ using namespace CEGUI;
 namespace EmberOgre {
 
 IngameChatWidget::IngameChatWidget()
-: mTimeShown(0), mDistanceShown(100)
+: mTimeShown(0), mDistanceShown(100), mCreator(*this), mLabelPool(mCreator)
 {
 }
 
@@ -92,7 +92,7 @@ void IngameChatWidget::buildWidget()
 	
 	//mGuiManager->AppendIGChatLine.connect(sigc::mem_fun(*this, &IngameChatWidget::appendIGChatLine));
 	
-	initializePool();
+	mLabelPool.initializePool(15);
 	Ember::EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &IngameChatWidget::ServerService_GotView));
 	
 // 	Ogre::Root::getSingleton().addFrameListener(this);
@@ -130,6 +130,11 @@ void IngameChatWidget::removeEntityObserver(EntityObserver* observer)
 	delete observer;
 }
 
+WidgetPool<IngameChatWidget::Label>& IngameChatWidget::getLabelPool()
+{
+	return mLabelPool;
+}
+
 
 void IngameChatWidget::appendIGChatLine(const std::string& line, EmberEntity* entity)
 {
@@ -165,49 +170,49 @@ void IngameChatWidget::appendIGChatLine(const std::string& line, EmberEntity* en
 
 }
 
-void IngameChatWidget::initializePool()
-{
-	for (int i = 0; i < 15; ++i) {
-		Label* label = createLabel();
-		mLabelPool.push_back(label);
-		mUnusedLabels.push(label);
-	}
-}
+// void IngameChatWidget::initializePool()
+// {
+// 	for (int i = 0; i < 15; ++i) {
+// 		Label* label = createLabel();
+// 		mLabelPool.push_back(label);
+// 		mUnusedLabels.push(label);
+// 	}
+// }
 	
-IngameChatWidget::Label* IngameChatWidget::createLabel()
-{
-	Window* chatWindow;
-	//there is no chat window for this entity, let's create one
-	std::stringstream ss;
-	ss <<  "Label/" << mLabelPool.size() << "/";
-	chatWindow = WindowManager::getSingleton().loadWindowLayout(mGuiManager->getLayoutDir()+"Label.layout", ss.str());
+// IngameChatWidget::Label* IngameChatWidget::createLabel()
+// {
+// 	Window* chatWindow;
+// 	//there is no chat window for this entity, let's create one
+// 	std::stringstream ss;
+// 	ss <<  "Label/" << mLabelPool.size() << "/";
+// 	chatWindow = WindowManager::getSingleton().loadWindowLayout(mGuiManager->getLayoutDir()+"Label.layout", ss.str());
+// 
+// 	Label* label = new Label(chatWindow, mWindowManager, *this, ss.str());
+// 	return label;
+// }
 
-	Label* label = new Label(chatWindow, mWindowManager, *this, ss.str());
-	return label;
-}
-
-IngameChatWidget::Label* IngameChatWidget::getLabel()
-{
-	Label* label(0);
-	if (!mUnusedLabels.size()) {
-		label = createLabel();
-		mLabelPool.push_back(label);
-	} else {
-		label = mUnusedLabels.top();
-		mUnusedLabels.pop();
-	}
-	mUsedLabels.push_back(label);
-	return label;
-}
-
-void IngameChatWidget::returnLabel(Label* label)
-{
-	mUnusedLabels.push(label);
-	LabelStore::iterator I = std::find(mUsedLabels.begin(), mUsedLabels.end(), label);
-	if (I != mUsedLabels.end()) {
-		mUsedLabels.erase(I);
-	}
-}
+// IngameChatWidget::Label* IngameChatWidget::getLabel()
+// {
+// 	Label* label(0);
+// 	if (!mUnusedLabels.size()) {
+// 		label = createLabel();
+// 		mLabelPool.push_back(label);
+// 	} else {
+// 		label = mUnusedLabels.top();
+// 		mUnusedLabels.pop();
+// 	}
+// 	mUsedLabels.push_back(label);
+// 	return label;
+// }
+// 
+// void IngameChatWidget::returnLabel(Label* label)
+// {
+// 	mUnusedLabels.push(label);
+// 	LabelStore::iterator I = std::find(mUsedLabels.begin(), mUsedLabels.end(), label);
+// 	if (I != mUsedLabels.end()) {
+// 		mUsedLabels.erase(I);
+// 	}
+// }
 
 
 
@@ -217,7 +222,7 @@ void IngameChatWidget::returnLabel(Label* label)
 
 void IngameChatWidget::frameStarted( const Ogre::FrameEvent & event )
 {
-	for (LabelStore::iterator I = mUsedLabels.begin(); I != mUsedLabels.end(); ++I) {
+	for (WidgetPool<Label>::WidgetStore::iterator I = mLabelPool.getUsedWidgets().begin(); I != mLabelPool.getUsedWidgets().end(); ++I) {
 		(*I)->frameStarted(event);
 	}
 /*	Ogre::Camera* camera = getSingletonPtr()->getMainCamera()->getCamera();
@@ -361,14 +366,14 @@ void IngameChatWidget::EntityObserver::updateLabel(const Ogre::Camera * camera)
 void IngameChatWidget::EntityObserver::showLabel()
 {
 	if (!mLabel) {
-		mLabel = mChatWidget.getLabel();
+		mLabel = mChatWidget.getLabelPool().checkoutWidget();
 		mLabel->setEntity(mEntity);
 	}
 }
 void IngameChatWidget::EntityObserver::hideLabel()
 {
 	if (mLabel) {
-		mChatWidget.returnLabel(mLabel);
+		mChatWidget.getLabelPool().returnWidget(mLabel);
 		mLabel = 0;
 	}
 }
@@ -561,9 +566,25 @@ void IngameChatWidget::Label::updateText( const std::string & line )
 		//responseWidget->setText(ss.str());
 		
 	}
+	
 
 }
 
+IngameChatWidget::LabelCreator::LabelCreator(IngameChatWidget& ingameChatWidget)
+: mIngameChatWidget(ingameChatWidget)
+{
+}
+
+IngameChatWidget::Label* IngameChatWidget::LabelCreator::createWidget(unsigned int currentPoolSize)
+{
+	///there is no chat window for this entity, let's create one
+	std::stringstream ss;
+	ss <<  "Label/" << currentPoolSize << "/";
+	Window* window = WindowManager::getSingleton().loadWindowLayout(GUIManager::getSingleton().getLayoutDir()+"Label.layout", ss.str());
+
+	Label* label = new Label(window, CEGUI::WindowManager::getSingletonPtr(), mIngameChatWidget, ss.str());
+	return label;
+}
 
 };
 

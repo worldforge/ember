@@ -29,6 +29,90 @@ class GUIManager;
 class Widget;
 class EmberPhysicalEntity;
 
+
+template <typename T>
+class WidgetPool
+{
+	public:
+		typedef std::vector<T*> WidgetStore;
+		typedef std::stack<T*> WidgetStack;
+		class WidgetCreator
+		{
+			public:
+			virtual ~WidgetCreator() {}
+			virtual T* createWidget(unsigned int currentPoolSize) = 0;
+		};
+		WidgetPool(WidgetCreator& creator) : mCreator(creator) {}
+		T* checkoutWidget();
+		void returnWidget(T* widget);
+
+		void initializePool(unsigned int initialSize);
+		
+		std::vector<T*>& getUsedWidgets();
+		std::vector<T*>& getWidgetPool();
+		std::stack<T*>& getUnusedWidgets();
+	
+	protected:
+		WidgetCreator& mCreator;
+		
+		WidgetStore mUsedWidgets;
+		
+		WidgetStore mWidgetsPool;
+		WidgetStack mUnusedWidgets;
+};
+
+template <typename T>
+T* WidgetPool<T>::checkoutWidget()
+{
+	T* widget(0);
+	if (!mUnusedWidgets.size()) {
+		widget = mCreator.createWidget(mWidgetsPool.size());
+		mWidgetsPool.push_back(widget);
+	} else {
+		widget = mUnusedWidgets.top();
+		mUnusedWidgets.pop();
+	}
+	mUsedWidgets.push_back(widget);
+	return widget;
+}
+
+template <typename T>
+void WidgetPool<T>::returnWidget(T* widget)
+{
+	mUnusedWidgets.push(widget);
+// 	std::vector<T*>::iterator I = ;
+	if (std::find(mUsedWidgets.begin(), mUsedWidgets.end(), widget) != mUsedWidgets.end()) {
+		mUsedWidgets.erase(std::find(mUsedWidgets.begin(), mUsedWidgets.end(), widget));
+	}
+}
+
+template <typename T>
+void WidgetPool<T>::initializePool(unsigned int initialSize)
+{
+	for (unsigned int i = 0; i < initialSize; ++i) {
+		T* widget = mCreator.createWidget(mWidgetsPool.size());
+		mWidgetsPool.push_back(widget);
+		mUnusedWidgets.push(widget);
+	}
+}
+
+template <class T>
+std::vector<T*>& WidgetPool<T>::getUsedWidgets()
+{
+	return mUsedWidgets;
+}
+template <typename T>
+std::vector<T*>& WidgetPool<T>::getWidgetPool()
+{
+	return mWidgetsPool;
+}
+template <typename T>
+std::stack<T*>& WidgetPool<T>::getUnusedWidgets()
+{
+	return mUnusedWidgets;
+}
+
+
 /**
 
 Shows chat bubbles over npc's heads when they say something.
@@ -39,6 +123,9 @@ If the npc has a list of suggested responses these will be shown in a list of cl
 @author Erik Hjortsberg
 */
 class IngameChatWidget : public Widget {
+
+
+	
 
 	class EntityObserver;
 	class Label;
@@ -115,7 +202,6 @@ class IngameChatWidget : public Widget {
 			void markForRender();
 			
 			CEGUI::Window* getWindow();
-			
 			/**
 			call this each frame to update the window
 			*/
@@ -143,6 +229,16 @@ class IngameChatWidget : public Widget {
 // 			CEGUI::Window* mNameWidget;
 		
 	};
+	
+	class LabelCreator : public WidgetPool<IngameChatWidget::Label>::WidgetCreator
+	{
+		public:
+			LabelCreator(IngameChatWidget& ingameChatWidget);
+			virtual ~LabelCreator() {}
+			virtual IngameChatWidget::Label* createWidget(unsigned int currentPoolSize);
+		protected:
+			IngameChatWidget& mIngameChatWidget;
+	};
 
 typedef std::map<std::string, Label*> LabelMap;
 typedef std::vector<Label*> LabelStore;
@@ -158,27 +254,29 @@ public:
 	
 	void removeWidget(const std::string& windowName);
 	
-	Label* getLabel();
-	void returnLabel(Label* label);
+// 	Label* getLabel();
+// 	void returnLabel(Label* label);
 	
 	void removeEntityObserver(EntityObserver* observer);
+	
+	WidgetPool<Label>& getLabelPool();
 	
 protected:
 	void appendIGChatLine(const std::string& line, EmberEntity* entity);
 	//void placeWindowOnEntity( CEGUI::Window* window, EmberPhysicalEntity* entity);
 	
-	void initializePool();
+// 	void initializePool();
 	
-	Label* createLabel(); 
+// 	Label* createLabel(); 
 	
 	void View_EntitySeen(Eris::Entity* entity);
 	void ServerService_GotView(Eris::View* view);
 	
 
-	LabelStore mUsedLabels;
-	
-	LabelStore mLabelPool;
-	LabelStack mUnusedLabels;
+// 	LabelStore mUsedLabels;
+// 	
+// 	LabelStore mLabelPool;
+// 	LabelStack mUnusedLabels;
 	
 	EntityObserverStore mEntityObservers;
 	
@@ -189,6 +287,9 @@ protected:
 	
 	//how far away, in meters, the window should be visible
 	float mDistanceShown;
+	
+	LabelCreator mCreator;	
+	WidgetPool<Label> mLabelPool;
 	
 	
 	
