@@ -60,7 +60,7 @@ namespace EmberOgre {
 namespace Gui {
 
 IngameChatWidget::IngameChatWidget()
-: mTimeShown(0), mDistanceShown(100), mCreator(*this), mLabelPool(mCreator)
+: mTimeShown(0), mDistanceShown(100), mLabelCreator(*this), mLabelPool(mLabelCreator), mChatTextCreator(*this), mChatTextPool(mChatTextCreator)
 {
 }
 
@@ -94,6 +94,7 @@ void IngameChatWidget::buildWidget()
 	//mGuiManager->AppendIGChatLine.connect(sigc::mem_fun(*this, &IngameChatWidget::appendIGChatLine));
 	
 	mLabelPool.initializePool(15);
+	mChatTextPool.initializePool(5);
 	Ember::EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &IngameChatWidget::ServerService_GotView));
 	
 // 	Ogre::Root::getSingleton().addFrameListener(this);
@@ -134,6 +135,10 @@ void IngameChatWidget::removeEntityObserver(EntityObserver* observer)
 WidgetPool<IngameChatWidget::Label>& IngameChatWidget::getLabelPool()
 {
 	return mLabelPool;
+}
+WidgetPool<IngameChatWidget::ChatText>& IngameChatWidget::getChatTextPool()
+{
+	return mChatTextPool;
 }
 
 
@@ -308,6 +313,8 @@ IngameChatWidget::EntityObserver::EntityObserver(IngameChatWidget& chatWidget, E
 {
 	entity->VisibilityChanged.connect(sigc::mem_fun(*this, &EntityObserver::entity_VisibilityChanged));
 	entity->BeingDeleted.connect(sigc::mem_fun(*this, &EntityObserver::entity_BeingDeleted));
+	entity->Say.connect(sigc::mem_fun(*this, &EntityObserver::entity_Say));
+	
 }
 
 IngameChatWidget::EntityObserver::~EntityObserver()
@@ -388,13 +395,13 @@ void IngameChatWidget::EntityObserver::hideLabel()
 
 IngameChatWidget::Label::Label( Window * window, WindowManager * windowManager, IngameChatWidget& containerWidget, const std::string& prefix)
  : mWindow(window), 
- mElapsedTimeSinceLastUpdate(0.0f), 
  mEntity(0), 
  mWindowManager(windowManager), 
  mContainerWidget(containerWidget),
  mActive(false),
  mPrefix(prefix),
- mRenderNextFrame(false)
+ mRenderNextFrame(false),
+ mChatText(0)
 {
 // 	mNameWidget = mWindow->getChild(mPrefix + "EntityName");
 }
@@ -435,7 +442,7 @@ void IngameChatWidget::Label::frameStarted( const Ogre::FrameEvent & event )
 		mRenderNextFrame = false;
 // 		placeWindowOnEntity();
 		
-		increaseElapsedTime(event.timeSinceLastFrame);
+// 		increaseElapsedTime(event.timeSinceLastFrame);
 	} else {
 		setActive(false);
 	}
@@ -477,11 +484,6 @@ Window * IngameChatWidget::Label::getWindow( )
 	return mWindow;
 }
 
-void IngameChatWidget::Label::increaseElapsedTime( float timeSlice )
-{
-	mElapsedTimeSinceLastUpdate += timeSlice;
-}
-
 bool IngameChatWidget::Label::buttonResponse_Click(const EventArgs& args)
 {
 	const MouseEventArgs *mouseArgs = static_cast<const MouseEventArgs*>(&args);
@@ -496,8 +498,13 @@ bool IngameChatWidget::Label::buttonResponse_Click(const EventArgs& args)
 
 void IngameChatWidget::Label::updateText( const std::string & line )
 {
+	if (!mChatText) {
+		mChatText = mContainerWidget.getChatTextPool().checkoutWidget();
+		mChatText->attachToLabel(this);
+	}
+	mChatText->updateText(line);
 	return;
-	GUISheet* textWidget = static_cast<GUISheet*>(mWindow->getChild(mPrefix + "Text"));
+/*	GUISheet* textWidget = static_cast<GUISheet*>(mWindow->getChild(mPrefix + "Text"));
 	textWidget->setText(line);
 	mElapsedTimeSinceLastUpdate = 0;
 	
@@ -566,7 +573,7 @@ void IngameChatWidget::Label::updateText( const std::string & line )
 		}
 		//responseWidget->setText(ss.str());
 		
-	}
+	}*/
 	
 
 }
@@ -585,6 +592,129 @@ IngameChatWidget::Label* IngameChatWidget::LabelCreator::createWidget(unsigned i
 
 	Label* label = new Label(window, CEGUI::WindowManager::getSingletonPtr(), mIngameChatWidget, ss.str());
 	return label;
+}
+
+
+IngameChatWidget::ChatText::ChatText(CEGUI::Window* window, const std::string& prefix)
+: mLabel(0), mWindow(window), mTextWidget(0), mResponseWidget(0), mElapsedTimeSinceLastUpdate(0.0f), mPrefix(prefix)
+{
+	mTextWidget = WindowManager::getSingleton().getWindow(prefix + "Text");
+	mResponseWidget = WindowManager::getSingleton().getWindow(prefix + "ResponseList");
+}
+
+void IngameChatWidget::ChatText::frameStarted( const Ogre::FrameEvent & event )
+{
+	increaseElapsedTime(event.timeSinceLastFrame);
+}
+
+void IngameChatWidget::ChatText::increaseElapsedTime( float timeSlice )
+{
+	mElapsedTimeSinceLastUpdate += timeSlice;
+}
+
+void IngameChatWidget::ChatText::updateText(const std::string & line)
+{
+// 	GUISheet* textWidget = static_cast<GUISheet*>(mWindow->getChild(mPrefix + "Text"));
+	mTextWidget->setText(line);
+	mElapsedTimeSinceLastUpdate = 0;
+	
+	if (mLabel->getEntity()->hasSuggestedResponses())
+	{
+// 		Window* responseWidget = static_cast<Window*>(mWindow->getChild(mPrefix + "ResponseList"));
+			
+		
+		//remove all existing response windows
+		std::vector<Window*>::const_iterator responses_I = mResponseTextWidgets.begin();
+		std::vector<Window*>::const_iterator responses_I_end = mResponseTextWidgets.end();
+		for (; responses_I != responses_I_end; ++responses_I)
+		{
+			WindowManager::getSingleton().destroyWindow(*responses_I);
+		}
+		mResponseTextWidgets.clear();
+		
+
+		//for each response, create a button
+		const std::vector<std::string>& responses = mLabel->getEntity()->getSuggestedResponses();
+		std::vector<std::string>::const_iterator I = responses.begin();
+		std::vector<std::string>::const_iterator I_end = responses.end();
+		int i = 0;
+		std::stringstream ss;
+		
+		float heightSize = 1.0f;
+		if (responses.size() > 0) {
+			heightSize = 1.0f / responses.size();
+		}
+		
+		for (;I != I_end; ++I)
+		{
+			std::stringstream ss_;
+			ss_ << i;
+			PushButton* responseTextButton = static_cast<PushButton*>(WindowManager::getSingleton().createWindow(GUIManager::getSingleton().getDefaultScheme() + "/Button", mPrefix + "Response/" + ss_.str()));
+			GUISheet* responseText = static_cast<GUISheet*>(WindowManager::getSingleton().createWindow(GUIManager::getSingleton().getDefaultScheme() + "/StaticText", mPrefix + "ResponseText/" + ss_.str()));
+			
+			
+			
+			BIND_CEGUI_EVENT(responseTextButton, ButtonBase::EventMouseClick,IngameChatWidget::ChatText::buttonResponse_Click );
+			responseText->setText(*I);
+			responseText->setSize(UVector2(UDim(0.8f, 0), UDim(0.9f, 0)));
+			responseText->setPosition(UVector2(UDim(0.1f, 0), UDim(0.05f, 0)));
+			responseText->setProperty("HorzFormatting", "WordWrapLeftAligned");
+ 			responseText->setProperty("FrameEnabled", "false");
+ 			responseText->setProperty("BackgroundEnabled", "false");
+			responseText->setInheritsAlpha(true);
+			///we need to disable and deactivate it so it won't recieve any input (input should go to the button instead)
+			responseText->deactivate();
+			responseText->disable();
+			
+			
+			responseTextButton->setSize(UVector2(UDim(1.0f, 0), UDim(heightSize, 0.0f)));
+			responseTextButton->setPosition(UVector2(UDim(0.0f, 0),UDim(i * heightSize, 0.0f)));
+			responseTextButton->setInheritsAlpha(true);	
+			///hide the button
+			//responseTextButton->setAlpha(0.0f);	
+			responseTextButton->addChildWindow(responseText);
+			responseTextButton->setTooltipText(*I);
+			mResponseWidget->addChildWindow(responseTextButton);
+			mResponseTextWidgets.push_back(responseTextButton);
+			
+			++i;
+			
+// 			ss << *I << "\n";
+		}
+		//responseWidget->setText(ss.str());
+		
+	}
+	
+
+}
+
+bool IngameChatWidget::ChatText::buttonResponse_Click(const CEGUI::EventArgs& args)
+{
+	const MouseEventArgs *mouseArgs = static_cast<const MouseEventArgs*>(&args);
+	if (mouseArgs) {
+		///each button contains a static text window, which is the one containg the actual text
+		const String text = mouseArgs->window->getChild(0)->getText();
+		Ember::EmberServices::getSingletonPtr()->getServerService()->say(std::string(text.c_str()));
+	}
+	return true;
+}
+
+void IngameChatWidget::ChatText::attachToLabel(Label* label)
+{
+	mLabel = label;
+	mLabel->getWindow()->addChildWindow(mWindow);
+	mWindow->setClippedByParent(false);
+}
+
+IngameChatWidget::ChatText* IngameChatWidget::ChatTextCreator::createWidget(unsigned int currentPoolSize)
+{
+	///there is no chat window for this entity, let's create one
+	std::stringstream ss;
+	ss <<  "ChatText/" << currentPoolSize << "/";
+	Window* window = WindowManager::getSingleton().loadWindowLayout(GUIManager::getSingleton().getLayoutDir()+"IngameChatWidget.xml", ss.str());
+
+	ChatText* widget = new ChatText(window, ss.str());
+	return widget;
 }
 
 };

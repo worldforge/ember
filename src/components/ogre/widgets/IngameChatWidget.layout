@@ -11,14 +11,6 @@
 			<Property Name='VertFormatting' Value='TopAligned'/>
 			<Property Name='FrameEnabled' Value='True'/>
 		</Window>
-		<Window Type='EmberLook/StaticText' Name='EntityName'>
-			<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.150000,0.000000}}'/>
-			<Property Name='InheritsAlpha' Value='true'/>
-			<Property Name='HorzFormatting' Value='WordWrapCentred'/>
-			<Property Name='VertFormatting' Value='TopAligned'/>
-			<Property Name='FrameEnabled' Value='True'/>
-			<Property Name='BackgroundEnabled' Value='True'/>
-		</Window>
 		<Window Type='DefaultGUISheet' Name='ResponseList'>
 			<Property Name='UnifiedSize' Value='{{0.400000,0.000000},{0.850000,0.000000}}'/>
 			<Property Name='UnifiedPosition' Value='{{0.600000,0.000000},{0.150000,0.000000}}'/>

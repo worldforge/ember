@@ -47,7 +47,7 @@ WidgetDefinitions::WidgetDefinitions()
 	WidgetLoader::registerWidget("InventoryWidget", &WidgetLoader::createWidgetInstance<InventoryWidget>);
 	WidgetLoader::registerWidget("InspectWidget", &WidgetLoader::createWidgetInstance<InspectWidget>);
 	WidgetLoader::registerWidget("MakeEntityWidget", &WidgetLoader::createWidgetInstance<MakeEntityWidget>);
-	WidgetLoader::registerWidget("IngameChatWidget", &WidgetLoader::createWidgetInstance<IngameChatWidget>);
+	WidgetLoader::registerWidget("IngameChatWidget", &WidgetLoader::createWidgetInstance<Gui::IngameChatWidget>);
 	//WidgetLoader::registerWidget("ConsoleWidget", &WidgetLoader::createWidgetInstance<ConsoleWidget>);
 	WidgetLoader::registerWidget("JesusEdit", &WidgetLoader::createWidgetInstance<JesusEdit>);
 	WidgetLoader::registerWidget("Help", &WidgetLoader::createWidgetInstance<Help>);

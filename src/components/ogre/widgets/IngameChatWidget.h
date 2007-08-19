@@ -87,6 +87,7 @@ class IngameChatWidget : public Widget {
 		
 	};
 
+	class ChatText;
 	/**
 	Holds the actual chat window and keeps track of fading, catching clicks etc.
 	*/
@@ -105,12 +106,6 @@ class IngameChatWidget : public Widget {
 			*/
 			void updateText(const std::string& line);
 		
-			inline float getElapsedTimeSinceLastUpdate() { return mElapsedTimeSinceLastUpdate;}
-			
-			/**
-			increases the elapsed time with the supplied amount
-			*/
-			void increaseElapsedTime(float timeSlice);
 			
 			/**
 			gets the entity the window belongs to
@@ -137,7 +132,6 @@ class IngameChatWidget : public Widget {
 		protected:
 			
 			CEGUI::Window* mWindow;
-			float mElapsedTimeSinceLastUpdate;
 			EmberEntity* mEntity;
 			std::vector<CEGUI::Window*> mResponseTextWidgets;
 			CEGUI::WindowManager* mWindowManager;
@@ -148,6 +142,7 @@ class IngameChatWidget : public Widget {
 			bool mActive;
 			const std::string mPrefix;
 			bool mRenderNextFrame;
+			ChatText* mChatText;
 // 			CEGUI::Window* mNameWidget;
 		
 	};
@@ -161,7 +156,51 @@ class IngameChatWidget : public Widget {
 		protected:
 			IngameChatWidget& mIngameChatWidget;
 	};
-
+	
+	class ChatText : public sigc::trackable
+	{
+		public:
+			ChatText(CEGUI::Window* window, const std::string& prefix);
+			virtual ~ChatText() {}
+			
+			void updateText( const std::string & line);
+			
+			/**
+			call this each frame to update the window
+			*/
+			void frameStarted( const Ogre::FrameEvent & event );
+			
+			inline float getElapsedTimeSinceLastUpdate() { return mElapsedTimeSinceLastUpdate;}
+			
+			/**
+			increases the elapsed time with the supplied amount
+			*/
+			void increaseElapsedTime(float timeSlice);
+			
+			void attachToLabel(Label* label);
+			
+		protected:
+			std::vector<CEGUI::Window*> mResponseTextWidgets;
+			Label* mLabel;
+			CEGUI::Window* mWindow;
+			CEGUI::Window* mTextWidget;
+			CEGUI::Window* mResponseWidget;
+			float mElapsedTimeSinceLastUpdate;
+			std::string mPrefix;
+			
+			bool buttonResponse_Click(const CEGUI::EventArgs& args);
+	};
+	
+	class ChatTextCreator : public WidgetPool<IngameChatWidget::ChatText>::WidgetCreator
+	{
+		public:
+			ChatTextCreator(IngameChatWidget& ingameChatWidget) : mIngameChatWidget(ingameChatWidget) {}
+			virtual ~ChatTextCreator() {}
+			virtual IngameChatWidget::ChatText* createWidget(unsigned int currentPoolSize);
+		protected:
+			IngameChatWidget& mIngameChatWidget;
+	};
+	
 typedef std::map<std::string, Label*> LabelMap;
 typedef std::vector<Label*> LabelStore;
 typedef std::stack<Label*> LabelStack;
@@ -182,6 +221,7 @@ public:
 	void removeEntityObserver(EntityObserver* observer);
 	
 	WidgetPool<Label>& getLabelPool();
+	WidgetPool<ChatText>& getChatTextPool();
 	
 protected:
 	void appendIGChatLine(const std::string& line, EmberEntity* entity);
@@ -210,9 +250,11 @@ protected:
 	//how far away, in meters, the window should be visible
 	float mDistanceShown;
 	
-	LabelCreator mCreator;	
+	LabelCreator mLabelCreator;	
 	WidgetPool<Label> mLabelPool;
 	
+	ChatTextCreator mChatTextCreator;	
+	WidgetPool<ChatText> mChatTextPool;
 	
 	
 

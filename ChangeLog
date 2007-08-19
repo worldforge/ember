@@ -1,3 +1,56 @@
+2007-08-19 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/IngameChatWidget.cpp, src/components/ogre/widgets/IngameChatWidget.h, src/components/ogre/widgets/IngameChatWidget.xml: activate the chat text functionality
+	* src/components/ogre/widgets/WidgetDefinitions.cpp: fixed namespace (all widget stuff should be in EmberOgre::Gui eventually)
+
+2007-08-19 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/WidgetPool.cpp, src/components/ogre/widgets/WidgetPool.h: added some missing includes
+
+2007-08-19 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/cegui/datafiles/schemes/EmberLookSkin.scheme: include the bold 8 point Vera font also
+
+2007-08-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/IngameChatWidget.cpp, src/components/ogre/widgets/IngameChatWidget.h, src/components/ogre/widgets/Makefile.am, src/components/ogre/widgets/WidgetPool.cpp, src/components/ogre/widgets/WidgetPool.h: refactored the widget pool functionality into its own file
+
+2007-08-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/IngameChatWidget.cpp, src/components/ogre/widgets/IngameChatWidget.h: added a simple pooling systems for creating widgets and keeping them in a pool
+
+2007-08-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/cegui/datafiles/fonts/Vera.ttf: fixed incorrect font
+
+2007-08-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/IngameChatWidget.cpp, src/components/ogre/widgets/IngameChatWidget.h, src/components/ogre/widgets/Label.layout: show labels on all "characters". For now the talk bubbles are disabled, but they'll be back.
+
+2007-08-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityBrowser.layout, src/components/ogre/widgets/EntityEditor.layout, src/components/ogre/widgets/EntityPicker.layout, src/components/ogre/widgets/InspectWidget.xml, src/components/ogre/widgets/JesusEdit.widget, src/components/ogre/widgets/MeshPreview.widget, src/components/ogre/widgets/Quit.widget, src/components/ogre/widgets/ServerWidget.xml: fix various small bugs
+
+2007-08-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Status.layout: use a better font
+
+2007-08-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/OgreLogObserver.cpp: prefix ogre log messaged with "Ogre"
+
+2007-08-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/cegui/datafiles/fonts/tahoma.ttf: removed unused font
+	
+2007-08-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/cegui/datafiles/schemes/EmberLookSkin.scheme, src/components/ogre/cegui/Makefile.am: load the bold fonts
+
+2007-08-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/cegui/datafiles/fonts/COPYRIGHT.TXT, src/components/ogre/cegui/datafiles/fonts/VeraBd.ttf, src/components/ogre/cegui/datafiles/fonts/tahoma-10.xml, src/components/ogre/cegui/datafiles/fonts/tahoma-14.xml, src/components/ogre/cegui/datafiles/fonts/tahoma-8.xml, src/components/ogre/cegui/datafiles/fonts/vera-sans-bold-10.xml, src/components/ogre/cegui/datafiles/fonts/vera-sans-bold-8.xml: removed obsolete fonts and added bold versions of Vera
+
 2007-08-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/scripting/bindings/lua/MovableObjectRenderer.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
