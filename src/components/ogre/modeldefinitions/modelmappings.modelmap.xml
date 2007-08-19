@@ -165,6 +165,15 @@
 		</entitymatch>
 	</modelmapping>
 	
+	<!-- Use the shirt model as a placeholder -->
+	<modelmapping name="cloak">
+		<entitymatch>
+			<case equals="cloak">
+				<action type="display-model">shirt</action>
+			</case>
+		</entitymatch>
+	</modelmapping>
+
 	<automodelmapping name="boots" />
 	<automodelmapping name="wood" />
 
