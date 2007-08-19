@@ -129,6 +129,8 @@ class IngameChatWidget : public Widget {
 			*/
 			void placeWindowOnEntity();
 			
+			IngameChatWidget& getIngameChatWidget() { return mContainerWidget;}
+			
 		protected:
 			
 			CEGUI::Window* mWindow;
@@ -168,7 +170,7 @@ class IngameChatWidget : public Widget {
 			/**
 			call this each frame to update the window
 			*/
-			void frameStarted( const Ogre::FrameEvent & event );
+			bool frameStarted( const Ogre::FrameEvent & event );
 			
 			inline float getElapsedTimeSinceLastUpdate() { return mElapsedTimeSinceLastUpdate;}
 			
@@ -223,6 +225,10 @@ public:
 	WidgetPool<Label>& getLabelPool();
 	WidgetPool<ChatText>& getChatTextPool();
 	
+	float getTimeShown() {return mTimeShown;} 
+	
+	CEGUI::Window* getLabelSheet();
+	
 protected:
 	void appendIGChatLine(const std::string& line, EmberEntity* entity);
 	//void placeWindowOnEntity( CEGUI::Window* window, EmberPhysicalEntity* entity);
@@ -256,8 +262,9 @@ protected:
 	ChatTextCreator mChatTextCreator;	
 	WidgetPool<ChatText> mChatTextPool;
 	
+	CEGUI::Window* mLabelSheet;
 	
-
+	std::string mAvatarEntityId;
 
 };
 };

@@ -1,5 +1,13 @@
 2007-08-19 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* src/components/ogre/widgets/IngameChatWidget.cpp, src/components/ogre/widgets/IngameChatWidget.h, src/components/ogre/widgets/IngameChatWidget.xml: mark external entities, added better layout and handling of text bubbles
+
+2007-08-19 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/modelmappings.modelmap.xml: use the shirt model for the cloak
+
+2007-08-19 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* src/components/ogre/widgets/IngameChatWidget.cpp, src/components/ogre/widgets/IngameChatWidget.h, src/components/ogre/widgets/IngameChatWidget.xml: activate the chat text functionality
 	* src/components/ogre/widgets/WidgetDefinitions.cpp: fixed namespace (all widget stuff should be in EmberOgre::Gui eventually)
 

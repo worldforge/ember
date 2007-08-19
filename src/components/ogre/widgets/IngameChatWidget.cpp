@@ -39,6 +39,7 @@
 #include <Eris/TypeInfo.h>
 #include <Eris/TypeService.h>
 #include <Eris/Connection.h>
+#include <Eris/Avatar.h>
 #include "IngameChatWidget.h"
 
 #include "../EmberOgre.h"
@@ -60,7 +61,7 @@ namespace EmberOgre {
 namespace Gui {
 
 IngameChatWidget::IngameChatWidget()
-: mTimeShown(0), mDistanceShown(100), mLabelCreator(*this), mLabelPool(mLabelCreator), mChatTextCreator(*this), mChatTextPool(mChatTextCreator)
+: mTimeShown(0), mDistanceShown(100), mLabelCreator(*this), mLabelPool(mLabelCreator), mChatTextCreator(*this), mChatTextPool(mChatTextCreator), mAvatarEntityId("")
 {
 }
 
@@ -80,8 +81,12 @@ void IngameChatWidget::buildWidget()
 		mDistanceShown = (double)configSrv->getValue("ingamechatwidget", "distanceshown");
 	}
 	
+	mLabelSheet = mWindowManager->createWindow("DefaultGUISheet", "IngameChatWidget/LabelSheet");
+	mLabelSheet->setMousePassThroughEnabled(true);
+	mLabelSheet->setRiseOnClickEnabled(false);
+	getMainSheet()->addChildWindow(mLabelSheet);
 	//mMainWindow = WindowManager::getSingleton().loadWindowLayout((utf8*)"widgets/ChatWidget.xml", "Chat/");
-//	mMainWindow->setAlwaysOnTop(true);
+//	mMainWindow->setAlwaysOnTop(true);avatarEntityId
 /*	mMainWindow = mWindowManager->createWindow((utf8*)"DefaultGUISheet", (utf8*)"IngameChatWidget/MainWindow");
 	mMainWindow->setPosition(Point(0.0f, 0.0f));
 	mMainWindow->setSize(Size(1.0f, 1.0f));
@@ -101,12 +106,19 @@ void IngameChatWidget::buildWidget()
 	
 }
 
+Window* IngameChatWidget::getLabelSheet()
+{
+	return mLabelSheet;
+}
+
 void IngameChatWidget::ServerService_GotView(Eris::View* view)
 {
 	Eris::TypeService* typeService = Ember::EmberServices::getSingleton().getServerService()->getConnection()->getTypeService();	mLabelTypes.push_back(typeService->getTypeByName("character"));
 
 	view->EntitySeen.connect(sigc::mem_fun(*this, &IngameChatWidget::View_EntitySeen));
+	mAvatarEntityId = view->getAvatar()->getId();
 }
+
 
 
 void IngameChatWidget::View_EntitySeen(Eris::Entity* entity)
@@ -115,8 +127,10 @@ void IngameChatWidget::View_EntitySeen(Eris::Entity* entity)
 	if (physEntity) {
 		for (TypeInfoStore::iterator I = mLabelTypes.begin(); I != mLabelTypes.end(); ++I) {
 			if (entity->getType()->isA(*I)) {
-				EntityObserver* observer = new EntityObserver(*this, physEntity);
-				mEntityObservers.push_back(observer);
+				if (mAvatarEntityId != entity->getId()) {
+					EntityObserver* observer = new EntityObserver(*this, physEntity);
+					mEntityObservers.push_back(observer);
+				}
 				break;
 			}
 		}
@@ -440,6 +454,14 @@ void IngameChatWidget::Label::frameStarted( const Ogre::FrameEvent & event )
 {
 	if (mRenderNextFrame) {
 		mRenderNextFrame = false;
+		if (mChatText) {
+			bool keep = mChatText->frameStarted(event);
+			if (!keep) {
+				mChatText->attachToLabel(0);
+				mContainerWidget.getChatTextPool().returnWidget(mChatText);
+				mChatText = 0;
+			}
+		}
 // 		placeWindowOnEntity();
 		
 // 		increaseElapsedTime(event.timeSinceLastFrame);
@@ -452,8 +474,16 @@ void IngameChatWidget::Label::setEntity(EmberEntity* entity)
 {
 	mEntity = entity;
 	try {
+		std::string entityName(entity->getName());
 // 		Window* nameWidget = static_cast<Window*>(mWindow->getChild(mPrefix + "EntityName"));
-		mWindow->setText(entity->getName());
+		///if the entity is controlled by a player, mark that
+		if (entity->hasAttr("external")) {
+			const Atlas::Message::Element& externalAttr = entity->valueOfAttr("external");
+			if (externalAttr.isNum() && externalAttr.asNum() == 1) {
+				entityName = "!" + entity->getName() + "!";
+			}
+		}
+		mWindow->setText(entityName);
 	} catch (const Exception& ex) {
 		S_LOG_FAILURE("Could not get widget EntityName. Exception: " << ex.getMessage().c_str());
 	}
@@ -468,12 +498,12 @@ void IngameChatWidget::Label::setActive(bool active)
 {
 	if (active) {
 		if (!mActive) {
-			mContainerWidget.getMainSheet()->addChildWindow(mWindow);
+			mContainerWidget.getLabelSheet()->addChildWindow(mWindow);
 			mActive = active;
 		}
 	} else {
 		if (mActive) {
-			mContainerWidget.getMainSheet()->removeChildWindow(mWindow);
+			mContainerWidget.getLabelSheet()->removeChildWindow(mWindow);
 			mActive = active;
 		}
 	}
@@ -503,6 +533,7 @@ void IngameChatWidget::Label::updateText( const std::string & line )
 		mChatText->attachToLabel(this);
 	}
 	mChatText->updateText(line);
+	mWindow->moveToFront();
 	return;
 /*	GUISheet* textWidget = static_cast<GUISheet*>(mWindow->getChild(mPrefix + "Text"));
 	textWidget->setText(line);
@@ -602,9 +633,21 @@ IngameChatWidget::ChatText::ChatText(CEGUI::Window* window, const std::string& p
 	mResponseWidget = WindowManager::getSingleton().getWindow(prefix + "ResponseList");
 }
 
-void IngameChatWidget::ChatText::frameStarted( const Ogre::FrameEvent & event )
+bool IngameChatWidget::ChatText::frameStarted( const Ogre::FrameEvent & event )
 {
 	increaseElapsedTime(event.timeSinceLastFrame);
+	//unless timeShown is 0 windows will fade over time
+	float timeShown = mLabel->getIngameChatWidget().getTimeShown();
+	if (timeShown != 0) {
+		//make the windows fade over time
+		mWindow->setAlpha(1 - (getElapsedTimeSinceLastUpdate() / timeShown));
+		if (getElapsedTimeSinceLastUpdate() >= timeShown) {
+			return false;
+			//windowsToRemove.push_back(I->first);
+		}
+	}
+	return true;
+	
 }
 
 void IngameChatWidget::ChatText::increaseElapsedTime( float timeSlice )
@@ -661,6 +704,10 @@ void IngameChatWidget::ChatText::updateText(const std::string & line)
 			responseText->setProperty("HorzFormatting", "WordWrapLeftAligned");
  			responseText->setProperty("FrameEnabled", "false");
  			responseText->setProperty("BackgroundEnabled", "false");
+ 			responseText->setProperty("Font", "Vera-Sans-Bold-8");
+ 			responseText->setProperty("TextColours", "tl:FFFFFFFF tr:FFFFFFFF bl:FFffc990 br:FFffc990");
+			
+			
 			responseText->setInheritsAlpha(true);
 			///we need to disable and deactivate it so it won't recieve any input (input should go to the button instead)
 			responseText->deactivate();
@@ -702,8 +749,13 @@ bool IngameChatWidget::ChatText::buttonResponse_Click(const CEGUI::EventArgs& ar
 void IngameChatWidget::ChatText::attachToLabel(Label* label)
 {
 	mLabel = label;
-	mLabel->getWindow()->addChildWindow(mWindow);
-	mWindow->setClippedByParent(false);
+	if (label) {
+		mLabel->getWindow()->addChildWindow(mWindow);
+	} else {
+		if (mWindow->getParent()) {
+			mWindow->getParent()->removeChildWindow(mWindow);
+		}
+	}
 }
 
 IngameChatWidget::ChatText* IngameChatWidget::ChatTextCreator::createWidget(unsigned int currentPoolSize)
