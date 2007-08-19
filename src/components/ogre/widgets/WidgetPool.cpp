@@ -26,15 +26,6 @@ namespace EmberOgre {
 
 namespace Gui {
 
-WidgetPool::WidgetPool()
-{
-}
-
-
-WidgetPool::~WidgetPool()
-{
-}
-
 
 }
 

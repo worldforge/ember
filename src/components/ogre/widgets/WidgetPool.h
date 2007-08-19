@@ -23,6 +23,9 @@
 #ifndef EMBEROGRE_GUIWIDGETPOOL_H
 #define EMBEROGRE_GUIWIDGETPOOL_H
 
+#include "components/ogre/EmberOgrePrerequisites.h"
+#include <vector>
+#include <stack>
 namespace EmberOgre {
 
 namespace Gui {
