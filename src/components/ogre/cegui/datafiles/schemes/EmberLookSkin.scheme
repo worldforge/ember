@@ -4,6 +4,7 @@
 	<Font Name="Vera-Sans-10" Filename="cegui/datafiles/fonts/vera-sans-10.xml" />
 	<Font Name="Vera-Sans-8" Filename="cegui/datafiles/fonts/vera-sans-8.xml" />
 	<Font Name="Vera-Sans-Bold-10" Filename="cegui/datafiles/fonts/vera-sans-bold-10.xml" />
+	<Font Name="Vera-Sans-Bold-8" Filename="cegui/datafiles/fonts/vera-sans-bold-8.xml" />
 	<Imageset Name="EmberLook" Filename="cegui/datafiles/imagesets/EmberLook.imageset" />
 	<Imageset Name="iconset_standard" Filename="cegui/datafiles/imagesets/iconset_standard.imageset" />
 	<Imageset Name="iconset_mason" Filename="cegui/datafiles/imagesets/iconset_mason.imageset" />
