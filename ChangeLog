@@ -1,3 +1,16 @@
+2007-08-20 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/WidgetPool.h: properly clean up at destruction
+
+2007-08-20 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Status.lua: id is a string, not a number (fixed getting the status of the world)
+
+2007-08-20 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* configure.ac: added support for Lua 5.1
+	* src/components/ogre/scripting/LuaScriptingProvider.cpp: handle Lua 5.1 correctly
+
 2007-08-19 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/widgets/IngameChatWidget.cpp, src/components/ogre/widgets/IngameChatWidget.h, src/components/ogre/widgets/IngameChatWidget.xml: mark external entities, added better layout and handling of text bubbles

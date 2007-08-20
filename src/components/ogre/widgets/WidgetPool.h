@@ -46,6 +46,7 @@ class WidgetPool
 			virtual T* createWidget(unsigned int currentPoolSize) = 0;
 		};
 		WidgetPool(WidgetCreator& creator) : mCreator(creator) {}
+		virtual ~WidgetPool();
 		T* checkoutWidget();
 		void returnWidget(T* widget);
 
@@ -63,6 +64,15 @@ class WidgetPool
 		WidgetStore mWidgetsPool;
 		WidgetStack mUnusedWidgets;
 };
+
+template <typename T>
+WidgetPool<T>::~WidgetPool()
+{
+	for (typename std::vector<T*>::iterator I = mWidgetsPool.begin(); I != mWidgetsPool.end(); ++I) {
+		delete *I;
+	}
+}
+
 
 template <typename T>
 T* WidgetPool<T>::checkoutWidget()
@@ -90,9 +100,9 @@ template <typename T>
 void WidgetPool<T>::returnWidget(T* widget)
 {
 	mUnusedWidgets.push(widget);
-// 	std::vector<T*>::iterator I = ;
-	if (std::find(mUsedWidgets.begin(), mUsedWidgets.end(), widget) != mUsedWidgets.end()) {
-		mUsedWidgets.erase(std::find(mUsedWidgets.begin(), mUsedWidgets.end(), widget));
+	typename std::vector<T*>::iterator I = std::find(mUsedWidgets.begin(), mUsedWidgets.end(), widget);
+	if (I != mUsedWidgets.end()) {
+		mUsedWidgets.erase(I);
 	}
 }
 
