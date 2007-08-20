@@ -80,17 +80,37 @@ void LuaScriptingProvider::initialize()
 
 void LuaScriptingProvider::createState() 
 {
+#ifdef LUA51
+	static const luaL_Reg lualibs[] = {
+		{"", luaopen_base},
+		{LUA_LOADLIBNAME, luaopen_package},
+		{LUA_TABLIBNAME, luaopen_table},
+		{LUA_IOLIBNAME, luaopen_io},
+		{LUA_STRLIBNAME, luaopen_string},
+		{LUA_MATHLIBNAME, luaopen_math},
+		{NULL, NULL}
+		};
+#endif /* LUA51 */
+
 	mLuaState = lua_open();
 
 	// init all standard libraries
+#ifdef LUA51
+	const luaL_Reg *lib = lualibs;
+	for (; lib->func; lib++)
+	{
+		lua_pushcfunction(mLuaState, lib->func);
+		lua_pushstring(mLuaState, lib->name);
+		lua_call(mLuaState, 1, 0);
+	}
+#else /* LUA51 */
 	luaopen_base(mLuaState);
 	luaopen_io(mLuaState);
 	luaopen_string(mLuaState);
 	luaopen_table(mLuaState);
 	luaopen_math(mLuaState);
-// #if defined(DEBUG) || defined (_DEBUG)
-// 	luaopen_debug(d_state);
-// #endif
+#endif /* LUA51 */
+
 }
 
 lua_State* LuaScriptingProvider::getLuaState()
@@ -191,7 +211,11 @@ void LuaScriptingProvider::_registerWithService(Ember::ScriptingService* service
 
 void LuaScriptingProvider::forceGC()
 {
+#ifdef LUA51
+	lua_gc(mLuaState, LUA_GCCOLLECT, 0);
+#else
 	lua_setgcthreshold(mLuaState,0);
+#endif
 }
 
 
