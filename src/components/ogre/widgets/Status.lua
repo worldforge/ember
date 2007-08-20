@@ -62,7 +62,7 @@ function Status.createStatusInstance(name)
 			
 			--don't cast the world
 			--HACK: we need to refactor the entity classes so we don't have to do it like this
-			if entity:getId() ~= 0 then
+			if entity:getId() ~= "0" then
 				local physEntity = tolua.cast(entity, "EmberOgre::EmberPhysicalEntity")
 				wrapper.renderer:showModel(physEntity:getModel():getDefinition():get():getName())
 				wrapper.renderer:setCameraDistance(0.75)
