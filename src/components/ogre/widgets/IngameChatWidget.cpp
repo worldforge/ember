@@ -54,6 +54,7 @@
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 #include "services/server/ServerService.h"
+#include <sigc++/slot.h>
 
 
 using namespace CEGUI;
@@ -329,6 +330,9 @@ IngameChatWidget::EntityObserver::EntityObserver(IngameChatWidget& chatWidget, E
 	entity->BeingDeleted.connect(sigc::mem_fun(*this, &EntityObserver::entity_BeingDeleted));
 	entity->Say.connect(sigc::mem_fun(*this, &EntityObserver::entity_Say));
 	
+	mExternalSlot = sigc::mem_fun(*this, &IngameChatWidget::EntityObserver::entity_attributeChanged);
+	entity->observe("external", mExternalSlot);
+	entity->observe("name", mExternalSlot);
 }
 
 IngameChatWidget::EntityObserver::~EntityObserver()
@@ -363,6 +367,15 @@ void IngameChatWidget::EntityObserver::entity_Say(const Atlas::Objects::Root& ta
 	}
 	
 }
+
+void IngameChatWidget::EntityObserver::entity_attributeChanged(const std::string& attributeName, const Atlas::Message::Element& attributeValue)
+{
+	if (mLabel) {
+		mLabel->updateEntityName();
+	}
+}
+
+
 
 void IngameChatWidget::EntityObserver::updateLabel(const Ogre::Camera * camera)
 {
@@ -474,20 +487,26 @@ void IngameChatWidget::Label::setEntity(EmberEntity* entity)
 {
 	mEntity = entity;
 	try {
-		std::string entityName(entity->getName());
-// 		Window* nameWidget = static_cast<Window*>(mWindow->getChild(mPrefix + "EntityName"));
-		///if the entity is controlled by a player, mark that
-		if (entity->hasAttr("external")) {
-			const Atlas::Message::Element& externalAttr = entity->valueOfAttr("external");
-			if (externalAttr.isNum() && externalAttr.asNum() == 1) {
-				entityName = "!" + entity->getName() + "!";
-			}
-		}
-		mWindow->setText(entityName);
+		updateEntityName();
 	} catch (const Exception& ex) {
 		S_LOG_FAILURE("Could not get widget EntityName. Exception: " << ex.getMessage().c_str());
 	}
 }
+
+void IngameChatWidget::Label::updateEntityName()
+{
+	std::string entityName(mEntity->getName());
+//	Window* nameWidget = static_cast<Window*>(mWindow->getChild(mPrefix + "EntityName"));
+	///if the entity is controlled by a player, mark that
+	if (mEntity->hasAttr("external")) {
+		const Atlas::Message::Element& externalAttr = mEntity->valueOfAttr("external");
+		if (externalAttr.isNum() && externalAttr.asNum() == 1) {
+			entityName = "!" + mEntity->getName() + "!";
+		}
+	}
+	mWindow->setText(entityName);
+}
+
 
 EmberEntity * IngameChatWidget::Label::getEntity( )
 {

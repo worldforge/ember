@@ -76,6 +76,7 @@ class IngameChatWidget : public Widget {
 			EmberPhysicalEntity* mEntity;
 			Label* mLabel;
 			MovableObjectListener mMovableObjectListener;
+			Eris::Entity::AttrChangedSlot mExternalSlot; //, mNameSlot;
 			
 			void showLabel();
 			void hideLabel();
@@ -83,6 +84,7 @@ class IngameChatWidget : public Widget {
 			void entity_VisibilityChanged(bool visible);
 			void entity_BeingDeleted();
 			void entity_Say(const Atlas::Objects::Root& talk);
+			void entity_attributeChanged(const std::string& attributeName, const Atlas::Message::Element& attributeValue);
 			
 		
 	};
@@ -130,6 +132,8 @@ class IngameChatWidget : public Widget {
 			void placeWindowOnEntity();
 			
 			IngameChatWidget& getIngameChatWidget() { return mContainerWidget;}
+			
+			void updateEntityName();
 			
 		protected:
 			
