@@ -82,8 +82,8 @@ Application::Application(const std::string prefix, const std::string homeDir, co
 Application::~Application()
 {
 	EmberServices::getSingleton().getServerService()->stop(0);
-	mOgreView->shutdownGui();
 	EmberServices::getSingleton().getScriptingService()->stop(0);
+	mOgreView->shutdownGui();
 	delete mOgreView;
 	delete mServices;
 	LoggingService::getInstance()->removeObserver(mLogObserver);
