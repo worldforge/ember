@@ -177,6 +177,17 @@ protected:
 	void attachEntity(const std::string & attachPoint, const std::string & entityId);
 	
 	/**
+	Detaches all currently attached entities. Call this before the Model is resetted.
+	*/
+	void detachAllEntities();
+	
+	/**
+	Attaches all entities that aren't currently attached.
+	*/
+	void attachAllEntities();
+	
+	
+	/**
 	 *    Process wield ops, which means wielding and unwielding entities. This methos will in turn call the appropriate attachEntity and detachEntity methods.
 	 * @param wieldName the attachpoint to update
 	 * @param idElement the id of the entity to wield
@@ -257,6 +268,7 @@ protected:
 	void initFromModel();
 	
 	Model::Mapping::ModelMapping* mModelMapping;
+	
 	
 };
 

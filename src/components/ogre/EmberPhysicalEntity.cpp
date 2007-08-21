@@ -339,6 +339,7 @@ Model::Model* EmberPhysicalEntity::getModel() const
 void EmberPhysicalEntity::Model_Reloaded()
 {
 	initFromModel();
+	attachAllEntities();
 }
 
 void EmberPhysicalEntity::Model_Resetting()
@@ -347,6 +348,7 @@ void EmberPhysicalEntity::Model_Resetting()
 		delete getModel()->getUserObject();
 	}
 	getModel()->setUserObject(0);
+	detachAllEntities();
 }
 
 void EmberPhysicalEntity::processWield(const std::string& wieldName, const Atlas::Message::Element& idElement)
@@ -360,7 +362,6 @@ void EmberPhysicalEntity::processWield(const std::string& wieldName, const Atlas
 		detachEntity(wieldName);
 		attachEntity(wieldName, id);
 	}
-
 }
 
 void EmberPhysicalEntity::processOutfit(const Atlas::Message::MapType & outfitMap)
@@ -614,8 +615,27 @@ void EmberPhysicalEntity::attachEntity(const std::string & attachPoint, const st
 			entity->attachToPointOnModel(attachPoint, getModel());
 		}
 	}
-
 }
+
+void EmberPhysicalEntity::detachAllEntities()
+{
+	for(AttachedEntitiesStore::const_iterator I = mAttachedEntities.begin(); I != mAttachedEntities.end(); ++I) {
+		detachEntity(I->first);
+	}
+}
+
+void EmberPhysicalEntity::attachAllEntities()
+{
+//HACK: this should be data driven
+	if (hasAttr("right_hand_wield")) {
+		const Atlas::Message::Element& idElement = valueOfAttr("right_hand_wield");
+		attachEntity("right_hand_wield", idElement.asString());
+	} else if (hasAttr("left_hand_wield")) {
+		const Atlas::Message::Element& idElement = valueOfAttr("left_hand_wield");
+		attachEntity("left_hand_wield", idElement.asString());
+	}
+}
+
 
 void EmberPhysicalEntity::onBboxChanged()
 {
