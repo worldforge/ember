@@ -40,6 +40,10 @@ ScriptingService::ScriptingService()
 ScriptingService::~ScriptingService()
 {
 	stop(0);
+	for(ProviderStore::iterator I = mProviders.begin(); I != mProviders.end(); ++I) 
+	{
+		delete I->second;
+	}
 }
 
 void ScriptingService::stop(int code)
@@ -47,9 +51,8 @@ void ScriptingService::stop(int code)
 	Service::stop(code);
 	for(ProviderStore::iterator I = mProviders.begin(); I != mProviders.end(); ++I) 
 	{
-		delete I->second;
+		I->second->stop();
 	}
-	mProviders.clear();
 }
 
 Service::Status ScriptingService::start()

@@ -76,6 +76,12 @@ public:
 	 */
 	virtual void forceGC() = 0;
 
+// 	virtual void start() = 0;
+	/**
+	* Stops the scripting provider. This involves releasing all of the objects held in scripts, but not destroying the actual scripting environment (so that callbacks and similiar objects still can use it).
+	*/
+	virtual void stop() = 0;
+
 };
 
 }
