@@ -82,8 +82,9 @@ Application::Application(const std::string prefix, const std::string homeDir, co
 Application::~Application()
 {
 	EmberServices::getSingleton().getServerService()->stop(0);
+	///this will not destroy the scripting environments, since there are other components, such as windows in the gui, that depend on the scripting environment being available at destruction time
 	EmberServices::getSingleton().getScriptingService()->stop(0);
-	mOgreView->shutdownGui();
+// 	mOgreView->shutdownGui();
 	delete mOgreView;
 	delete mServices;
 	LoggingService::getInstance()->removeObserver(mLogObserver);
@@ -181,7 +182,10 @@ void Application::initializeServices()
 	}
 	
 	
-	chdir(EmberServices::getSingleton().getConfigService()->getHomeDirectory().c_str());
+	int result = chdir(EmberServices::getSingleton().getConfigService()->getHomeDirectory().c_str());
+	if (result) {
+		S_LOG_WARNING("Could not change directory to '"<< EmberServices::getSingleton().getConfigService()->getHomeDirectory().c_str() <<"'.");
+	}
 
 // 	const std::string& sharePath(EmberServices::getSingleton().getConfigService()->getSharedConfigDirectory());
 
