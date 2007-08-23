@@ -83,13 +83,18 @@ public:
 	 */
 	virtual void forceGC();
     
+// 	virtual void start();
+	virtual void stop();
+    
+    
     /**
      * Returns the scripting module 
      * @return 
      */
 //     CEGUI::ScriptModule& getScriptModule();
     
-    lua_State* getLuaState();
+	lua_State* getLuaState();
+	
 
 private:
 

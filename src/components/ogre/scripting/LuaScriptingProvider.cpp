@@ -63,6 +63,23 @@ LuaScriptingProvider::~LuaScriptingProvider()
 	lua_close(mLuaState);
 }
 
+// void LuaScriptingProvider::start()
+// {
+// 	initialize();
+// }
+
+void LuaScriptingProvider::stop()
+{
+	try {
+		///we want to clear up the lua environment without destroying it (lua_close destroys it)
+		std::string shutdownScript("for key,value in pairs(_G) do if key ~= \"_G\" and key ~= \"pairs\" then _G[key] = nil end end");
+		executeScript(shutdownScript);
+		forceGC();
+	} catch (...) {
+		S_LOG_WARNING("Error when stopping lua.");
+	}
+}
+
 void LuaScriptingProvider::initialize() 
 {
 	createState();
@@ -117,6 +134,7 @@ lua_State* LuaScriptingProvider::getLuaState()
 {
 	return mLuaState;
 }
+
 
 
 void LuaScriptingProvider::loadScript(Ember::ResourceWrapper& resWrapper)
