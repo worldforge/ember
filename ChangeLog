@@ -1,3 +1,43 @@
+2007-08-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/WorldEmberEntity.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/scripting/bindings/lua/required.h, src/components/ogre/scripting/bindings/lua/Environment.pkg: updated bindings
+
+2007-08-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/CaelumEnvironment.cpp, src/components/ogre/environment/CaelumEnvironment.h, src/components/ogre/environment/Environment.cpp, src/components/ogre/environment/Environment.h: expanded methods for setting the time
+
+2007-08-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/WorldEmberEntity.cpp, src/components/ogre/WorldEmberEntity.h: expose the Environment
+
+2007-08-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/main/Application.cpp, src/main/LogObserver.cpp, src/components/ogre/EmberOgre.cpp, src/components/ogre/GUIManager.cpp, src/components/ogre/OgreSetup.cpp: check return values and intialize variables correctly
+
+2007-08-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/main/Application.cpp: restructured the shut down phase. First do a "soft stop" of the scripting service, where all objects are unloaded but the environment is kept intact before shutting down the gameview. The will allow script hooks kept by the game view to still be valid and prevent segfaults.
+
+2007-08-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/scripting/LuaScriptingProvider.cpp, src/components/ogre/scripting/LuaScriptingProvider.h: implement a stop method, which executes lua code that will destroy all global objects and force a garbage collection cycle
+
+2007-08-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/framework/IScriptingProvider.h, src/services/scripting/ScriptingService.cpp: added a "stop" method to the scripting provider, so that when the service is stopped they also are stopped (opposed to being destroyed). This allows us to clean up the memory held by the scripting environment without destroying the environment (as it might be used by other object (callbacks and so on)) later on in the shutdown process.
+
+2007-08-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberPhysicalEntity.cpp, src/components/ogre/EmberPhysicalEntity.h: fixed a bug where reloading a model with attached entities would cause a crash
+
+2007-08-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/IngameChatWidget.cpp, src/components/ogre/widgets/IngameChatWidget.h: listen for updates to the name or the external status and update the label accordingly
+
+2007-08-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/main/Application.cpp: shut down the scripting before shutting down the gui
+
 2007-08-20 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/widgets/WidgetPool.h: properly clean up at destruction

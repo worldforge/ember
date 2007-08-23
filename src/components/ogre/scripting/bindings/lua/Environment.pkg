@@ -1,0 +1,92 @@
+//
+// C++ Interface: Environment
+//
+// Description: 
+//
+//
+// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2006
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
+//
+
+namespace EmberOgre {
+
+namespace Environment {
+
+class ISun
+{
+public:
+	virtual void setAmbientLight(const Ogre::ColourValue& colour) = 0;
+
+};
+
+class ISky
+{
+public:
+};
+
+class IFog
+{
+public:
+	virtual void setDensity(float density) = 0;
+	virtual float getDensity() const = 0;
+};
+
+class IWater
+{
+public:
+};
+
+
+
+/**
+	@author Erik Hjortsberg <erik@katastrof.nu>
+*/
+class Environment
+{
+
+   
+	inline EmberOgre::Environment::ISun* getSun();
+	inline EmberOgre::Environment::ISky* getSky();
+	inline EmberOgre::Environment::IFog* getFog();
+	inline EmberOgre::Environment::IWater* getWater();
+    
+    
+    void setTime(int hour, int minute, int second = 0);
+	void setTime(int seconds);
+    
+    
+	/**
+	 *    changes the ambient light
+	 * @param colour 
+	 */
+	void setAmbientLight(const Ogre::ColourValue& colour);
+    
+    
+   	/**
+	* emitted when the world ambient light is changed
+	*/
+	sigc::signal<void, const Ogre::ColourValue&> EventUpdatedAmbientLight;
+
+
+
+};
+
+
+}
+
+}
+
+

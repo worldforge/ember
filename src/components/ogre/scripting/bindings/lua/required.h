@@ -17,6 +17,8 @@
 #include "components/ogre/AvatarEmberEntity.h"
 #include "components/ogre/WorldEmberEntity.h"
 
+#include "components/ogre/environment/Environment.h"
+
 #include "components/ogre/MousePicker.h"
 
 #include "components/ogre/MotionManager.h"
