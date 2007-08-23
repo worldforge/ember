@@ -38,6 +38,8 @@ public:
 	virtual ~WorldEmberEntity();
 
 	virtual void adjustPositionForContainedNode(EmberEntity* const entity, const Ogre::Vector3& position);
+	
+	Environment::Environment* getEnvironment();
 
 protected:
 	virtual const Ogre::Vector3& getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity);

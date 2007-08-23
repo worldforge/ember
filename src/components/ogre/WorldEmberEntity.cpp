@@ -251,6 +251,11 @@ void WorldEmberEntity::addArea(TerrainArea* area)
 	mTerrainGenerator->addArea(area);
 }
 
+Environment::Environment* WorldEmberEntity::getEnvironment()
+{
+	return mEnvironment;
+}
+
 
 
 }
