@@ -406,7 +406,9 @@ bool EmberOgre::setup()
     
 	
 
-	chdir(configSrv->getHomeDirectory().c_str());
+	if (chdir(configSrv->getHomeDirectory().c_str())) {
+		S_LOG_WARNING("Failed to change directory to '"<< configSrv->getHomeDirectory() << "'");
+	}
 	
 	// Avatar
 	mAvatar = new Avatar();
@@ -469,7 +471,10 @@ EmberEntity* EmberOgre::getEmberEntity(const std::string & eid)
 
 void EmberOgre::checkForConfigFiles()
 {
-	chdir(Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory().c_str());
+	if (chdir(Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory().c_str())) {
+		S_LOG_WARNING("Failed to change directory to '"<< Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory() << "', will not copy config files.");
+		return;
+	}
 
 	const std::string& sharePath(Ember::EmberServices::getSingleton().getConfigService()->getSharedConfigDirectory());
 

@@ -48,7 +48,7 @@ void LogObserver::updateFromConfig()
 {
 	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("general", "logginglevel")) {
 		std::string loggingLevel = static_cast<std::string>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("general", "logginglevel"));
-		Ember::LoggingService::MessageImportance importance;
+		Ember::LoggingService::MessageImportance importance(Ember::LoggingService::INFO);
 		if (loggingLevel == "verbose") {
 			importance = Ember::LoggingService::VERBOSE;
 		} else if (loggingLevel == "info") {

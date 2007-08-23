@@ -95,7 +95,9 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		S_LOG_VERBOSE("Setting default scheme to "<< mDefaultScheme);
 	
 		Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
-		chdir(configSrv->getEmberDataDirectory().c_str());
+		if (chdir(configSrv->getEmberDataDirectory().c_str())) {
+			S_LOG_WARNING("Failed to change to the data directory. Gui loading might fail.");
+		}
 		
 		//use a macro from CEGUIFactoryModule
 		//DYNLIB_LOAD( "libCEGUIFalagardBase.so");

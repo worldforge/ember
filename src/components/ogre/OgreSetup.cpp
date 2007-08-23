@@ -69,7 +69,7 @@ void OgreSetup::shutdown()
 Ogre::Root* OgreSetup::createOgreSystem()
 {
 
-	const std::string& sharePath(Ember::EmberServices::getSingleton().getConfigService()->getSharedConfigDirectory());
+// 	const std::string& sharePath(Ember::EmberServices::getSingleton().getConfigService()->getSharedConfigDirectory());
 	std::string pluginExtension = ".so";
 	mRoot = new Ogre::Root("", "ogre.cfg", "");
 	

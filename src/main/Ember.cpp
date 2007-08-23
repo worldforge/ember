@@ -121,9 +121,13 @@ int main(int argc, char **argv)
 
 	if (exit_program) {
 		if (homeDir != "") {
-			chdir(homeDir.c_str());
+			if (chdir(homeDir.c_str())) {
+				std::cerr << "Could not set homedir to '" << homeDir << "'." << std::endl;
+			}
 		} else {
-			chdir("~/.ember");
+			if (chdir("~/.ember")) {
+				std::cerr << "Could not set homedir to '~/.ember'." << std::endl;
+			}
 		}
 		return 0;
 	}
@@ -186,9 +190,13 @@ int main(int argc, char **argv)
 	}
 
 	if (homeDir != "") {
-		chdir(homeDir.c_str());
+		if (chdir(homeDir.c_str())) {
+			std::cerr << "Could not set homedir to '" << homeDir << "'." << std::endl;
+		}
 	} else {
-		chdir("~/.ember");
+		if (chdir("~/.ember")) {
+			std::cerr << "Could not set homedir to '~/.ember'." << std::endl;
+		}
 	}
 	std::cout << "Ember shut down successfully." << std::endl;
     return 0;
