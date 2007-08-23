@@ -90,8 +90,12 @@ void Environment::initialize()
 
 void Environment::setTime(int hour, int minute, int second)
 {
-// 	mCaelumSystem->setLocalTime (3600 * hour + 60 * minute + second);
+	mProvider->setTime(hour, minute, second);
+}
 
+void Environment::setTime(int seconds)
+{
+	mProvider->setTime(seconds);
 }
 
 void Environment::setAmbientLight(const Ogre::ColourValue& colour) {

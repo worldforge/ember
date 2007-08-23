@@ -64,7 +64,8 @@ public:
 
 	const Ember::ConsoleCommandWrapper SetCaelumTime;
     
-    void setTime(int hour, int minute, int second = 0);
+    virtual void setTime(int hour, int minute, int second = 0);
+	virtual void setTime(int seconds);
 
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method

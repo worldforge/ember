@@ -205,6 +205,11 @@ void CaelumEnvironment::setTime(int hour, int minute, int second)
 	mCaelumSystem->setLocalTime (3600 * hour + 60 * minute + second);
 }
 
+void CaelumEnvironment::setTime(int seconds)
+{
+	mCaelumSystem->setLocalTime (seconds);
+}
+
 void CaelumEnvironment::runCommand(const std::string &command, const std::string &args)
 {
 	if (SetCaelumTime == command) {

@@ -68,6 +68,10 @@ public:
 	virtual ISky* getSky() = 0;
 	virtual IFog* getFog() = 0;
 	virtual IWater* getWater() = 0;
+
+    virtual void setTime(int hour, int minute, int second = 0) = 0;
+	virtual void setTime(int seconds) = 0;
+
 };
 
 /**
@@ -98,6 +102,7 @@ public:
     
     
     void setTime(int hour, int minute, int second = 0);
+	void setTime(int seconds);
     
     void initialize();
     
