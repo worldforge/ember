@@ -2,45 +2,52 @@
 <GUILayout>
 	<Window Type='EmberLook/FrameWindow' Name='BasePointEditor'>
 		<Property Name='TitlebarEnabled' Value='True'/>
-		<Property Name='UnifiedAreaRect' Value='{{0.717188,0.000000},{0.030941,0.000000},{0.992578,0.000000},{0.749492,0.000000}}'/>
-		<Property Name='UnifiedMaxSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
-		<Window Type='EmberLook/StaticText' Name='SelectedBasePointInfo'>
-			<Property Name='Text' Value='Selected basepoint:'/>
-			<Property Name='UnifiedAreaRect' Value='{{0.069504,0.000000},{0.058539,0.000000},{0.957800,0.000000},{0.108379,0.000000}}'/>
-			<Property Name='UnifiedMaxSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
-			<Property Name='BackgroundEnabled' Value='False'/>
-			<Property Name='FrameEnabled' Value='False'/>
-		</Window>
-		<Window Type='EmberLook/StaticText' Name='HeightText'>
-			<Property Name='Text' Value='Height:'/>
-			<Property Name='UnifiedAreaRect' Value='{{0.081560,0.000000},{0.120731,0.000000},{0.331560,0.000000},{0.167395,0.000000}}'/>
-			<Property Name='UnifiedMaxSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
-			<Property Name='BackgroundEnabled' Value='False'/>
-			<Property Name='FrameEnabled' Value='False'/>
-		</Window>
-		<Window Type='EmberLook/Editbox' Name='Height'>
-			<Property Name='UnifiedAreaRect' Value='{{0.365957,0.000000},{0.122240,0.000000},{0.815957,0.000000},{0.165727,0.000000}}'/>
-			<Property Name='UnifiedMaxSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
-		</Window>
-		<Window Type='EmberLook/Button' Name='RedoButton'>
-			<Property Name='Text' Value='Redo'/>
-			<Property Name='UnifiedAreaRect' Value='{{0.366666,0.000000},{0.201589,0.000000},{0.595390,0.000000},{0.251430,0.000000}}'/>
-			<Property Name='UnifiedMaxSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
-		</Window>
-		<Window Type='EmberLook/Button' Name='UndoButton'>
-			<Property Name='Text' Value='Undo'/>
-			<Property Name='UnifiedAreaRect' Value='{{0.118440,0.000000},{0.201589,0.000000},{0.347162,0.000000},{0.251430,0.000000}}'/>
-			<Property Name='UnifiedMaxSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
-		</Window>
-		<Window Type='EmberLook/Button' Name='SendToServerButton'>
-			<Property Name='Text' Value='Send to server'/>
-			<Property Name='UnifiedAreaRect' Value='{{0.104255,0.000000},{0.295314,0.000000},{0.517375,0.000000},{0.345155,0.000000}}'/>
-			<Property Name='UnifiedMaxSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
-		</Window>
-		<Window Type='EmberLook/Button' Name='ShowOverlayButton'>
-			<Property Name='Text' Value='Show overlay'/>
-			<Property Name='UnifiedAreaRect' Value='{{0.107801,0.000000},{0.357330,0.000000},{0.520921,0.000000},{0.407171,0.000000}}'/>
-			<Property Name='UnifiedMaxSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+		<Property Name='UnifiedPosition' Value='{{1,-200},{0,0}}'/>
+		<Property Name='UnifiedSize' Value='{{0,200},{0,200}}'/>
+		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
+			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,15}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-4},{1,-15}}'/>
+			<Property Name='InheritsAlpha' Value='True'/>
+			<Window Type='EmberLook/StaticText' Name='SelectedBasePointInfo'>
+				<Property Name='Text' Value='Selected basepoint:'/>
+				<Property Name='UnifiedPosition' Value='{{0,5},{0,5}}'/>
+				<Property Name='UnifiedSize' Value='{{0,150},{0,25}}'/>
+				<Property Name='UnifiedMaxSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+				<Property Name='BackgroundEnabled' Value='False'/>
+				<Property Name='FrameEnabled' Value='False'/>
+			</Window>
+			<Window Type='EmberLook/StaticText' Name='HeightText'>
+				<Property Name='Text' Value='Height:'/>
+				<Property Name='UnifiedPosition' Value='{{0,5},{0,35}}'/>
+				<Property Name='UnifiedSize' Value='{{0,50},{0,25}}'/>
+				<Property Name='BackgroundEnabled' Value='False'/>
+				<Property Name='FrameEnabled' Value='False'/>
+			</Window>
+			<Window Type='EmberLook/Editbox' Name='Height'>
+				<Property Name='UnifiedPosition' Value='{{0,55},{0,35}}'/>
+				<Property Name='UnifiedSize' Value='{{0,50},{0,25}}'/>
+				<Property Name='UnifiedMaxSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='RedoButton'>
+				<Property Name='Text' Value='Redo'/>
+				<Property Name='UnifiedPosition' Value='{{0,5},{0,65}}'/>
+				<Property Name='UnifiedSize' Value='{{0,50},{0,25}}'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='UndoButton'>
+				<Property Name='Text' Value='Undo'/>
+				<Property Name='UnifiedPosition' Value='{{0,60},{0,65}}'/>
+				<Property Name='UnifiedSize' Value='{{0,50},{0,25}}'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='SendToServerButton'>
+				<Property Name='Text' Value='Send to server'/>
+				<Property Name='UnifiedPosition' Value='{{0,5},{0,95}}'/>
+				<Property Name='UnifiedSize' Value='{{0,100},{0,25}}'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='ShowOverlayButton'>
+				<Property Name='Text' Value='Show overlay'/>
+				<Property Name='UnifiedPosition' Value='{{0,5},{0,125}}'/>
+				<Property Name='UnifiedSize' Value='{{0,100},{0,25}}'/>
+			</Window>
 		</Window>
 	</Window>
 </GUILayout>

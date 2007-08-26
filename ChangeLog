@@ -1,3 +1,23 @@
+2007-08-26 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/TerrainEditor.layout: better layout
+
+2007-08-26 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Widget.cpp: remove and attach windows when shown and hidden, in the hope that it will make for better performance
+
+2007-08-26 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/IngameChatWidget.cpp, src/components/ogre/widgets/IngameChatWidget.h: make sure that we only update for the main camera
+
+2007-08-26 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/CaelumEnvironment.cpp, src/components/ogre/environment/caelum/src/Sun.cpp: fixed the sun not being shown. It is now, though there's still some bugs which makes the movement of it over the sky seem erratic when the camera is moved
+
+2007-08-26 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/model/mapping/ModelMappingCreator.cpp, src/components/ogre/model/mapping/ModelMappingManager.cpp, src/components/ogre/model/mapping/XMLModelMappingDefinitionSerializer.cpp, src/components/ogre/model/mapping/Definitions/CaseDefinition.cpp, src/components/ogre/model/mapping/Definitions/CaseDefinition.h, src/components/ogre/modeldefinitions/modelmappings.modelmap.xml: updated the definition to conform to better xml
+
 2007-08-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/WorldEmberEntity.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/scripting/bindings/lua/required.h, src/components/ogre/scripting/bindings/lua/Environment.pkg: updated bindings
