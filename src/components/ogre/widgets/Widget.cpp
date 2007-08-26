@@ -162,14 +162,18 @@ namespace EmberOgre
 
 	void  Widget::show()
 	{
+		///removing and attaching the window is probably more efficient when it's hidden (i.e. it won't get any events at all and so on)
 		if (mMainWindow) {
+			getMainSheet()->addChildWindow(mMainWindow); 
 			mMainWindow->setVisible(true);
 		}
 	}
 	
 	void  Widget::hide()
 	{
+		///see comment in show()
 		if (mMainWindow) {
+			getMainSheet()->removeChildWindow(mMainWindow); 
 			mMainWindow->setVisible(false);
 		}
 	}
