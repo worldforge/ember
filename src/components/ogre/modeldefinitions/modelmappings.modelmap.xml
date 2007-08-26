@@ -23,7 +23,8 @@
 <!-- A simple case. We want the model "turnip" to be shown for the entity of type "turnip" -->
 	<modelmapping name="turnip">
 		<entitymatch>
-			<case equals="turnip">
+			<case>
+				<caseparam type="equals">turnip</caseparam>
 				<action type="display-model">turnip</action>
 			</case>
 		</entitymatch>
@@ -38,19 +39,24 @@
 	<!-- We want the model "boulder" to be used for the entity "boulder". However, there are four different boulder meshes, which the model defines as four different parts. Depending on attribute "style" a different part will be shown. We assume that "style" is one of "a", "b", "c" or "d". Since the parts in the model are defined to belong to the same group (not shown in this file), only one part will be shown at the same time. -->
 	<modelmapping name="boulder">
 		<entitymatch>
-			<case equals="boulder">
+			<case>
+				<caseparam type="equals">boulder</caseparam>
 				<action type="display-model">boulder</action>
 				<attributematch attribute="style" >
-					<case equals="a">
+					<case>
+						<caseparam type="equals">a</caseparam>
 						<action type="display-part">boulders_A</action>
 					</case>
-					<case equals="b">
+					<case>
+						<caseparam type="equals">b</caseparam>
 						<action type="display-part">boulders_B</action>
 					</case>
-					<case equals="c">
+					<case>
+						<caseparam type="equals">c</caseparam>
 						<action type="display-part">boulders_C</action>
 					</case>
-					<case equals="d">
+					<case>
+						<caseparam type="equals">d</caseparam>
 						<action type="display-part">boulders_D</action>
 					</case>
 				</attributematch>
@@ -108,56 +114,73 @@
 	<!-- This will only work if the trousers and shirt has the same parts defined -->
 	<modelmapping name="clothes">
 		<entitymatch>
-			<case equals="shirt|trousers">
+			<case>
+				<caseparam type="equals">shirt</caseparam>
+				<caseparam type="equals">trousers</caseparam>
 				<entitymatch>
-					<case equals="shirt">
+					<case>
+						<caseparam type="equals">shirt</caseparam>
 						<action type="display-model">shirt</action>
 					</case>
-					<case equals="trousers">
+					<case>
+						<caseparam type="equals">trousers</caseparam>
 						<action type="display-model">trousers</action>
 					</case>
 				</entitymatch>
 				<attributematch attribute="style">
-					<case equals="burlap">
+					<case>
+						<caseparam type="equals">burlap</caseparam>
 						<action type="display-part">clothes/burlap</action>
 						<attributematch attribute="colour">
-							<case equals="grey">
+							<case>
+								<caseparam type="equals">grey</caseparam>
 								<attributematch attribute="trimcolour">
-									<case equals="blue">
+									<case>
+										<caseparam type="equals">blue</caseparam>
 										<action type="display-part">clothes/burlap/grey_blue_trims</action>
 									</case>
-									<case equals="red">
+									<case>
+										<caseparam type="equals">red</caseparam>
 										<action type="display-part">clothes/burlap/grey_red_trims</action>
 									</case>
-									<case equals="yellow">
+									<case>
+										<caseparam type="equals">yellow</caseparam>
 										<action type="display-part">clothes/burlap/grey_yellow_trims</action>
 									</case>
-									<case equals="green">
+									<case>
+										<caseparam type="equals">green</caseparam>
 										<action type="display-part">clothes/burlap/grey_green_trims</action>
 									</case>
 								</attributematch>
 							</case>
-							<case equals="red">
+							<case>
+								<caseparam type="equals">red</caseparam>
 								<action type="display-part">clothes/burlap/red</action>
 							</case>
-							<case equals="yellow">
+							<case>
+								<caseparam type="equals">yellow</caseparam>
 								<action type="display-part">clothes/burlap/yellow</action>
 							</case>
-							<case equals="green">
+							<case>
+								<caseparam type="equals">green</caseparam>
 								<action type="display-part">clothes/burlap/green</action>
 							</case>
 						</attributematch>
 					</case>
-					<case equals="ragged">
+					<case>
+						<caseparam type="equals">ragged</caseparam>
 						<action type="display-part">clothes/ragged</action>
 					</case>
-					<case equals="dark_rags">
+					<case>
+						<caseparam type="equals">dark_rags</caseparam>
 						<action type="display-part">clothes/dark_rags</action>
 					</case>
-					<case equals="sun">
+					<case>
+						<caseparam type="equals">sun</caseparam>
 						<action type="display-part">clothes/sun</action>
 					</case>
-					<case equals="fine">
+					<case>
+						<caseparam type="equals">fine</caseparam>
 						<action type="display-part">clothes/fine</action>
 					</case>
 				</attributematch>
@@ -168,7 +191,8 @@
 	<!-- Use the shirt model as a placeholder -->
 	<modelmapping name="cloak">
 		<entitymatch>
-			<case equals="cloak">
+			<case>
+				<caseparam type="equals">cloak</caseparam>
 				<action type="display-model">shirt</action>
 			</case>
 		</entitymatch>
@@ -199,13 +223,16 @@
 					</case>
 				</entitymatch>
 			</case> -->
-			<case equals="gravestone">
+			<case>
+				<caseparam type="equals">gravestone</caseparam>
 				<action type="display-model">gravestone</action>
 				<attributematch attribute="style" >
-					<case equals="rounded">
+					<case>
+						<caseparam type="equals">rounded</caseparam>
 						<action type="display-part">rounded</action>
 					</case>
-					<case equals="stylish">
+					<case>
+						<caseparam type="equals">stylish</caseparam>
 						<action type="display-part">stylish</action>
 					</case>
 				</attributematch>
@@ -221,10 +248,12 @@
 	<automodelmapping name="armory" />
 	<modelmapping name="bailey">
 		<entitymatch>
-			<case equals="bailey1">
+			<case>
+				<caseparam type="equals">bailey1</caseparam>
 				<action type="display-model">bailey1</action>
 			</case>
-			<case equals="bailey2">
+			<case>
+				<caseparam type="equals">bailey2</caseparam>
 				<action type="display-model">bailey2</action>
 			</case>
 		</entitymatch>
@@ -235,16 +264,20 @@
 	<automodelmapping name="keep" />
 	<modelmapping name="castle_house">
 		<entitymatch>
-			<case equals="castle_house">
+			<case>
+				<caseparam type="equals">castle_house</caseparam>
 				<action type="display-model">cg_house</action>
 				<attributematch attribute="roof" >
-					<case equals="shingle">
+					<case>
+						<caseparam type="equals">shingle</caseparam>
 						<action type="display-part">roof_shingle</action>
 					</case>
-					<case equals="straw">
+					<case>
+						<caseparam type="equals">straw</caseparam>
 						<action type="display-part">roof_straw</action>
 					</case>
-					<case equals="shale">
+					<case>
+						<caseparam type="equals">shale</caseparam>
 						<action type="display-part">roof_shale</action>
 					</case>
 				</attributematch>
@@ -270,21 +303,25 @@
 	<automodelmapping name="pickaxe" />
 	<modelmapping name="pole">
 		<entitymatch>
-			<case equals="pole">
+			<case>
+				<caseparam type="equals">pole</caseparam>
 				<action type="display-model">lumber</action>
 			</case>
 		</entitymatch>
 	</modelmapping> 
 	<modelmapping name="spade">
 		<entitymatch>
-			<case equals="shovel|spade">
+			<case>
+				<caseparam type="equals">shovel</caseparam>
+				<caseparam type="equals">spade</caseparam>
 				<action type="display-model">spade</action>
 			</case>
 		</entitymatch>
 	</modelmapping> 
 	<modelmapping name="sword">
 		<entitymatch>
-			<case equals="sword">
+			<case>
+				<caseparam type="equals">sword</caseparam>
 				<action type="display-model">sword</action>
 			</case>
 		</entitymatch>
@@ -296,19 +333,24 @@
 
 	<modelmapping name="cart">
 		<entitymatch>
-			<case equals="cart">
+			<case>
+				<caseparam type="equals">cart</caseparam>
 				<action type="display-model">cart</action>
 				<attributematch attribute="style" >
-					<case equals="1">
+					<case>
+						<caseparam type="equals">1</caseparam>
 						<action type="display-part">1</action>
 					</case>
-					<case equals="2">
+					<case>
+						<caseparam type="equals">2</caseparam>
 						<action type="display-part">2</action>
 					</case>
-					<case equals="3">
+					<case>
+						<caseparam type="equals">3</caseparam>
 						<action type="display-part">3</action>
 					</case>
-					<case equals="4">
+					<case>
+						<caseparam type="equals">4</caseparam>
 						<action type="display-part">4</action>
 					</case>
 				</attributematch>
@@ -320,16 +362,20 @@
 	
 	<modelmapping name="fir">
 		<entitymatch>
-			<case equals="fir">
+			<case>
+				<caseparam type="equals">fir</caseparam>
 				<action type="display-model">evergreen_A1</action>
 				<attributematch attribute="style" >
-					<case equals="gnarly">
+					<case>
+						<caseparam type="equals">gnarly</caseparam>
 						<action type="display-model">evergreen_A1</action>
 					</case>
-					<case equals="knotted">
+					<case>
+						<caseparam type="equals">knotted</caseparam>
 						<action type="display-model">evergreen_B1</action>
 					</case>
-					<case equals="weathered">
+					<case>
+						<caseparam type="equals">weathered</caseparam>
 						<action type="display-model">evergreen_B3</action>
 					</case>
 				</attributematch>
@@ -341,7 +387,8 @@
 	<!-- We'll use jayrs new oak for now -->
 	<modelmapping name="oak">
 		<entitymatch>
-			<case equals="oak">
+			<case>
+				<caseparam type="equals">oak</caseparam>
 				<action type="display-model">oak_mk1</action>
 			</case>
 		</entitymatch>
@@ -349,7 +396,8 @@
 	
 	<modelmapping name="birch">
 		<entitymatch>
-			<case equals="birch">
+			<case>
+				<caseparam type="equals">birch</caseparam>
 				<action type="display-model">birch_mk1</action>
 			</case>
 		</entitymatch>
@@ -424,52 +472,71 @@
 	</modelmapping>-->
 	<modelmapping name="human">
 		<entitymatch>
-			<case equals="settler|merchant|mercenary|marshall|butcher">
+			<case>
+				<caseparam type="equals">settler</caseparam>
+				<caseparam type="equals">merchant</caseparam>
+				<caseparam type="equals">mercenary</caseparam>
+				<caseparam type="equals">marshall</caseparam>
+				<caseparam type="equals">butcher</caseparam>
 				<action type="display-model">male</action>
 				<outfitmatch attachment="body">
-					<case equals="shirt" >
+					<case>
+						<caseparam type="equals">shirt</caseparam>
 						<action type="display-part">clothes/burlap</action>
 						<attributematch attribute="style">
-							<case equals="burlap">
+							<case>
+								<caseparam type="equals">burlap</caseparam>
 								<action type="display-part">clothes/burlap</action>
 								<attributematch attribute="colour">
-									<case equals="grey">
+									<case>
+										<caseparam type="equals">grey</caseparam>
 										<attributematch attribute="trimcolour">
-											<case equals="blue">
+											<case>
+												<caseparam type="equals">blue</caseparam>
 												<action type="display-part">clothes/burlap/grey_blue_trims</action>
 											</case>
-											<case equals="red">
+											<case>
+												<caseparam type="equals">red</caseparam>
 												<action type="display-part">clothes/burlap/grey_red_trims</action>
 											</case>
-											<case equals="yellow">
+											<case>
+												<caseparam type="equals">yellow</caseparam>
 												<action type="display-part">clothes/burlap/grey_yellow_trims</action>
 											</case>
-											<case equals="green">
+											<case>
+												<caseparam type="equals">green</caseparam>
 												<action type="display-part">clothes/burlap/grey_green_trims</action>
 											</case>
 										</attributematch>
 									</case>
-									<case equals="red">
+									<case>
+										<caseparam type="equals">red</caseparam>
 										<action type="display-part">clothes/burlap/red</action>
 									</case>
-									<case equals="yellow">
+									<case>
+										<caseparam type="equals">yellow</caseparam>
 										<action type="display-part">clothes/burlap/yellow</action>
 									</case>
-									<case equals="green">
+									<case>
+										<caseparam type="equals">green</caseparam>
 										<action type="display-part">clothes/burlap/green</action>
 									</case>
 								</attributematch>
 							</case>
-							<case equals="ragged">
+							<case>
+								<caseparam type="equals">ragged</caseparam>
 								<action type="display-part">clothes/ragged</action>
 							</case>
-							<case equals="dark_rags">
+							<case>
+								<caseparam type="equals">dark_rags</caseparam>
 								<action type="display-part">clothes/dark_rags</action>
 							</case>
-							<case equals="sun">
+							<case>
+								<caseparam type="equals">sun</caseparam>
 								<action type="display-part">clothes/sun</action>
 							</case>
-							<case equals="fine">
+							<case>
+								<caseparam type="equals">fine</caseparam>
 								<action type="display-part">clothes/fine</action>
 							</case>
 						</attributematch>
@@ -493,10 +560,13 @@
 	<automodelmapping name="wolf" />
 	<modelmapping name="skeleton">
 		<entitymatch>
-			<case equals="skeleton|lych">
+			<case>
+				<caseparam type="equals">skeleton</caseparam>
+				<caseparam type="equals">lych</caseparam>
 				<action type="display-model">skeleton</action>
 				<entitymatch>
 					<case equals="lych">
+						<caseparam type="equals">lych</caseparam>
 						<action type="display-part">Cape</action>
 					</case>
 				</entitymatch>
@@ -511,10 +581,13 @@
 	<automodelmapping name="thigh" />
 	<modelmapping name="goblin">
 		<entitymatch>
-			<case equals="goblin|kobold">
+			<case>
+				<caseparam type="equals">goblin</caseparam>
+				<caseparam type="equals">kobold</caseparam>
 				<action type="display-model">goblin</action>
 				<entitymatch>
-					<case equals="kobold">
+					<case>
+						<caseparam type="equals">kobold</caseparam>
 						<action type="display-part">main_kobold</action>
 					</case>
 				</entitymatch>
@@ -529,7 +602,9 @@
 	<automodelmapping name="bread_cut" />
 	<modelmapping name="bread">
 		<entitymatch>
-			<case equals="bread|loaf">
+			<case>
+				<caseparam type="equals">bread</caseparam>
+				<caseparam type="equals">loaf</caseparam>
 				<action type="display-model">bread</action>
 			</case>
 		</entitymatch>

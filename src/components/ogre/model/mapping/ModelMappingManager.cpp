@@ -91,11 +91,16 @@ void ModelMappingManager::addDefinition(ModelMappingDefinition* definition)
 	
 	MatchDefinition::CaseStore::iterator endI = definition->getRoot().getCases().end();
 	for (MatchDefinition::CaseStore::iterator I = definition->getRoot().getCases().begin(); I != endI; ++I) {
-		const std::string& entityName = I->getProperties()["equals"];
+		for (CaseDefinition::ParameterStore::const_iterator J = I->getCaseParameters().begin(); J != I->getCaseParameters().end(); ++J) {
+			if (J->first == "equals") {
+				mEntityTypeMappings[J->second] = definition;
+			}
+		}
+/*		const std::string& entityName = I->getProperties()["equals"];
 		std::vector<std::string> splitNames = splitString(entityName, "|", 100);
 		for (std::vector<std::string>::const_iterator I = splitNames.begin(); I != splitNames.end(); ++I) {
 			mEntityTypeMappings[*I] = definition;
-		}
+		}*/
 	}
 }
 

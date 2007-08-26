@@ -63,7 +63,15 @@ using namespace Observers;
 using namespace Cases;
 using namespace AttributeComparers;
 
-
+static const CaseDefinition::ParameterEntry* findCaseParameter(const CaseDefinition::ParameterStore& parameters, const std::string& type)
+{
+	for (CaseDefinition::ParameterStore::const_iterator I = parameters.begin(); I != parameters.end(); ++I) {
+		if (I->first == type) {
+			return &(*I);
+		}
+	}
+	return 0;
+}
 
 ModelMappingCreator::ModelMappingCreator(ModelMappingDefinition* definition, Eris::Entity* entity, IActionCreator* actionCreator, Eris::TypeService* typeService) : mActionCreator(actionCreator), mEntity(entity), mModelMap(0), mDefinition(definition), mTypeService(typeService)
 {
@@ -95,11 +103,18 @@ void ModelMappingCreator::addEntityTypeCases(EntityTypeMatch* entityTypeMatch, M
 	for (MatchDefinition::CaseStore::iterator I = matchDefinition.getCases().begin(); I != endI; ++I) {
 		if (mTypeService) {
 			EntityTypeCase* aCase = new EntityTypeCase();
-			const std::string& entityName = I->getProperties()["equals"];
+			
+			for (CaseDefinition::ParameterStore::iterator J = I->getCaseParameters().begin(); J != I->getCaseParameters().end(); ++J) {
+				if (J->first == "equals") {
+					aCase->addEntityType(mTypeService->getTypeByName(J->second));
+				}
+			}
+			
+/*			const std::string& entityName = I->getProperties()["equals"];
 			std::vector<std::string> splitNames = ModelMappingManager::splitString(entityName, "|", 100);
 			for (std::vector<std::string>::const_iterator J = splitNames.begin(); J != splitNames.end(); ++J) {
 				aCase->addEntityType(mTypeService->getTypeByName(*J));
-			}
+			}*/
 			if (mActionCreator) {
 				mActionCreator->createActions(*mModelMap, aCase, *I);
 			}
@@ -120,11 +135,17 @@ void ModelMappingCreator::addOutfitCases(OutfitMatch* match, MatchDefinition& ma
 	for (MatchDefinition::CaseStore::iterator I = matchDefinition.getCases().begin(); I != endI; ++I) {
 		if (mTypeService) {
 			OutfitCase* aCase = new OutfitCase();
-			const std::string& entityName = I->getProperties()["equals"];
+			
+			for (CaseDefinition::ParameterStore::iterator J = I->getCaseParameters().begin(); J != I->getCaseParameters().end(); ++J) {
+				if (J->first == "equals") {
+					aCase->addEntityType(mTypeService->getTypeByName(J->second));
+				}
+			}
+/*			const std::string& entityName = I->getProperties()["equals"];
 			std::vector<std::string> splitNames = ModelMappingManager::splitString(entityName, "|", 100);
 			for (std::vector<std::string>::const_iterator J = splitNames.begin(); J != splitNames.end(); ++J) {
 				aCase->addEntityType(mTypeService->getTypeByName(*J));
-			}
+			}*/
 			if (mActionCreator) {
 				mActionCreator->createActions(*mModelMap, aCase, *I);
 			}
@@ -161,26 +182,28 @@ Cases::AttributeComparers::AttributeComparerWrapper* ModelMappingCreator::getAtt
 
 AttributeComparers::NumericComparer* ModelMappingCreator::createNumericComparer(CaseDefinition& caseDefinition)
 {
-	DefinitionBase::PropertiesMap::const_iterator value;
-	DefinitionBase::PropertiesMap::const_iterator end = caseDefinition.getProperties().end();
-	value = caseDefinition.getProperties().find("equals");
+	const CaseDefinition::ParameterEntry* param(0);
 	
-	if (value != end) {
-		return new AttributeComparers::NumericEqualsComparer(atof(value->second.c_str()));
+// 	DefinitionBase::PropertiesMap::const_iterator value;
+// 	DefinitionBase::PropertiesMap::const_iterator end = caseDefinition.getProperties().end();
+// 	value = caseDefinition.getProperties().find("equals");
+	
+	if (param = findCaseParameter(caseDefinition.getCaseParameters(), "equals")) {
+		return new AttributeComparers::NumericEqualsComparer(atof(param->second.c_str()));
 	}
 	
 	///If both a min and max value is set, it's a range comparer
 	AttributeComparers::NumericComparer *mMin(0), *mMax(0);
-	if ((value = caseDefinition.getProperties().find("lesser")) != end) {
-		mMin = new AttributeComparers::NumericLesserComparer(atof(value->second.c_str()));
-	} else if ((value = caseDefinition.getProperties().find("lesserequals")) != end) {
-		mMin = new AttributeComparers::NumericEqualsOrLesserComparer(atof(value->second.c_str()));
+	if (param = findCaseParameter(caseDefinition.getCaseParameters(), "lesser")) {
+		mMin = new AttributeComparers::NumericLesserComparer(atof(param->second.c_str()));
+	} else if (param = findCaseParameter(caseDefinition.getCaseParameters(), "lesserequals")) {
+		mMin = new AttributeComparers::NumericEqualsOrLesserComparer(atof(param->second.c_str()));
 	}
 	
-	if ((value = caseDefinition.getProperties().find("greater")) != end) {
-		mMax = new AttributeComparers::NumericGreaterComparer(atof(value->second.c_str()));
-	} else if ((value = caseDefinition.getProperties().find("greaterequals")) != end) {
-		mMax = new AttributeComparers::NumericEqualsOrGreaterComparer(atof(value->second.c_str()));
+	if (param = findCaseParameter(caseDefinition.getCaseParameters(), "greater")) {
+		mMax = new AttributeComparers::NumericGreaterComparer(atof(param->second.c_str()));
+	} else if (param = findCaseParameter(caseDefinition.getCaseParameters(), "greaterequals")) {
+		mMax = new AttributeComparers::NumericEqualsOrGreaterComparer(atof(param->second.c_str()));
 	}
 	
 	///check if we have both min and max set, and if so we should use a range comparer

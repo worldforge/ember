@@ -90,7 +90,7 @@ void XMLModelMappingDefinitionSerializer::parseScript(Ember::TiXmlDocument& xmlD
 			definition->getRoot().setType("entitytype");
 			CaseDefinition caseDef;
 			caseDef.setType("entitytypecase");
-			caseDef.getProperties()["equals"] = name;
+			caseDef.getCaseParameters().push_back(CaseDefinition::ParameterEntry("equals", name));
 			ActionDefinition actionDef;
 			actionDef.setType("display-model");
 			
@@ -166,6 +166,15 @@ void XMLModelMappingDefinitionSerializer::parseCaseElement(ModelMappingDefinitio
 				ActionDefinition actionDef;
 				parseActionElement(definition, actionDef, childElement);
 				caseDef.getActions().push_back(actionDef);
+			} else if (std::string(childElement->Value()) == std::string("caseparam")){
+				///it's a case parameter
+				if (const char* attributeValue = childElement->Attribute("type")) {
+					if (Ember::TiXmlNode* textNode =  childElement->FirstChild()) {
+						std::string type(attributeValue);
+						std::string value(textNode->Value());
+						caseDef.getCaseParameters().push_back(std::pair<std::string, std::string>(type, value));
+					}
+				}
 			} else {
 				///we'll assume it's a match 
 				MatchDefinition matchDef;

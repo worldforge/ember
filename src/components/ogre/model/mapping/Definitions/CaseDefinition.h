@@ -61,15 +61,20 @@ class CaseDefinition : public DefinitionBase
 public:
 	typedef std::vector<MatchDefinition> MatchStore;
 	typedef std::vector<ActionDefinition> ActionStore;
+	typedef std::pair<std::string, std::string> ParameterEntry;
+	typedef std::vector<ParameterEntry> ParameterStore;
 
 	MatchStore& getMatches();
 	const MatchStore& getMatches() const;
 	ActionStore& getActions();
 	const ActionStore& getActions() const;
+	ParameterStore& getCaseParameters();
+	const ParameterStore& getCaseParameters() const;
 
 protected:
 	MatchStore mMatches;
 	ActionStore mActions;
+	ParameterStore mParameters;
 };
 }
 

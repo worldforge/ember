@@ -50,6 +50,17 @@ const CaseDefinition::ActionStore& CaseDefinition::getActions() const
 	return mActions;
 }
 
+CaseDefinition::ParameterStore& CaseDefinition::getCaseParameters()
+{
+	return mParameters;
+}
+
+const CaseDefinition::ParameterStore& CaseDefinition::getCaseParameters() const
+{
+	return mParameters;
+}
+
+
 
 }
 
