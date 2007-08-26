@@ -31,6 +31,7 @@ Sun::Sun (Ogre::SceneManager *sceneMgr) {
 		///make it one unit in size
 		Ogre::Real scale = 1 / mSunEntity->getBoundingRadius ();
 		mSunNode->setScale(scale, scale, scale);
+// 		mSunNode->showBoundingBox(true);
 	}
 }
 
@@ -71,7 +72,8 @@ void Sun::notifyCameraChanged (Ogre::Camera *cam) {
 	}
 	sunRadius0 *= mRadius * Ogre::Math::Tan (Ogre::Degree (0.01));
 	mSunNode->setPosition (cam->getRealPosition () - mSunDirection * (mRadius + sunRadius0));
-	mSunNode->setScale (Ogre::Vector3::UNIT_SCALE * (mRadius + sunRadius0) * Ogre::Math::Tan (Ogre::Degree (0.01)));
+	//ember: we don't need to scale it
+	//mSunNode->setScale (Ogre::Vector3::UNIT_SCALE * (mRadius + sunRadius0) * Ogre::Math::Tan (Ogre::Degree (0.01)));
 }
 
 void Sun::setFarRadius (float radius) {

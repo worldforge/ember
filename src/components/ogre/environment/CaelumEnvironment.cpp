@@ -140,6 +140,7 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 
 	mCaelumSystem->getSkyDome()->setFarRadius(10000);
 	mCaelumSystem->getStarfield()->setFarRadius(10000);
+	mCaelumSystem->getSun()->setFarRadius(100);
 
 	// Register all to the render window
 	window->addListener (mCaelumSystem);
