@@ -269,6 +269,8 @@ protected:
 	CEGUI::Window* mLabelSheet;
 	
 	std::string mAvatarEntityId;
+	
+	Ogre::Camera* mMainCamera;
 
 };
 };

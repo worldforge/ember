@@ -379,21 +379,24 @@ void IngameChatWidget::EntityObserver::entity_attributeChanged(const std::string
 
 void IngameChatWidget::EntityObserver::updateLabel(const Ogre::Camera * camera)
 {
-// 	const Ogre::Vector3& entityWorldCoords = mEntity->getDerivedPosition();
-//	Ogre::Vector3 entityWorldCoords = mEntity->getWorldBoundingBox(true).getCenter();
-//	Ogre::Vector3 entityWorldCoords = window->getEntity()->getSceneNode()->_getWorldAABB().getCenter();
-// 	const Ogre::Vector3& cameraCoords = camera->getDerivedPosition();
-///getWorldPosition is faster than getting the center of the boundingbox...
-	Ogre::Vector3 diff = mEntity->getSceneNode()->getWorldPosition() - camera->getWorldPosition();
-	
-	///remove the window if it's either too far away
-	if (diff.length() > mChatWidget.mDistanceShown) {
-// 		mLabel->setActive(false);
-	} else {
-		mLabel->markForRender();
-		mLabel->placeWindowOnEntity();
-/*		mLabel->setActive(true);
-		mLabel->placeWindowOnEntity();*/
+	///only update when being rendered by the main camera
+	if (camera == mChatWidget.mMainCamera) {
+	// 	const Ogre::Vector3& entityWorldCoords = mEntity->getDerivedPosition();
+	//	Ogre::Vector3 entityWorldCoords = mEntity->getWorldBoundingBox(true).getCenter();
+	//	Ogre::Vector3 entityWorldCoords = window->getEntity()->getSceneNode()->_getWorldAABB().getCenter();
+	// 	const Ogre::Vector3& cameraCoords = camera->getDerivedPosition();
+	///getWorldPosition is faster than getting the center of the boundingbox...
+		Ogre::Vector3 diff = mEntity->getSceneNode()->getWorldPosition() - camera->getWorldPosition();
+		
+		///remove the window if it's either too far away
+		if (diff.length() > mChatWidget.mDistanceShown) {
+	// 		mLabel->setActive(false);
+		} else {
+			mLabel->markForRender();
+			mLabel->placeWindowOnEntity();
+	/*		mLabel->setActive(true);
+			mLabel->placeWindowOnEntity();*/
+		}
 	}
 	
 }
