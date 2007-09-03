@@ -64,6 +64,7 @@ namespace Gui {
 IngameChatWidget::IngameChatWidget()
 : mTimeShown(0), mDistanceShown(100), mLabelCreator(*this), mLabelPool(mLabelCreator), mChatTextCreator(*this), mChatTextPool(mChatTextCreator), mAvatarEntityId("")
 {
+	mMainCamera = EmberOgre::getSingleton().getMainCamera()->getCamera();
 }
 
 IngameChatWidget::~IngameChatWidget()
