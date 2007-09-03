@@ -64,6 +64,10 @@
 #include "components/ogre/manipulation/EntityMoveManager.h"
 
 #include "components/ogre/OgreInfo.h"
+
+#include "components/ogre/widgets/icons/Icon.h"
+#include "components/ogre/widgets/icons/IconManager.h"
+
 //#include "components/ogre/scripting/LuaConnector.h"
 //#include "LuaConnector.h"
 

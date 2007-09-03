@@ -30,6 +30,11 @@ $pfile "EntityEditor.pkg"
 $pfile "StackableContainer.pkg"
 $pfile "ConsoleAdapter.pkg"
 $pfile "ColouredListItem.pkg"
+$pfile "AssetsManager.pkg"
+
+
+$pfile "Icon.pkg"
+$pfile "IconManager.pkg"
 
 
 $pfile "Model.pkg"

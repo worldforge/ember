@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Ogre
-** Generated automatically by tolua++-1.0.92 on Sat Jul 14 20:26:56 2007.
+** Generated automatically by tolua++-1.0.92 on Sat Sep  1 23:40:05 2007.
 */
 
 #ifndef __cplusplus
@@ -95,6 +95,13 @@ static int tolua_collect_std__pair_bool_float_ (lua_State* tolua_S)
 	return 0;
 }
 
+static int tolua_collect_size_t (lua_State* tolua_S)
+{
+ size_t* self = (size_t*) tolua_tousertype(tolua_S,1,0);
+	delete self;
+	return 0;
+}
+
 static int tolua_collect_Ogre__MapIterator_Ogre__ResourceManager__ResourceHandleMap_ (lua_State* tolua_S)
 {
  Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>* self = (Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>*) tolua_tousertype(tolua_S,1,0);
@@ -164,9 +171,14 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Ogre::Vector4");
  tolua_usertype(tolua_S,"Ogre::SceneManager");
  tolua_usertype(tolua_S,"Ogre::AxisAlignedBox");
+ tolua_usertype(tolua_S,"Ogre::Image");
  tolua_usertype(tolua_S,"Ogre::MeshPtr");
+ tolua_usertype(tolua_S,"Ogre::TextureManager");
+ tolua_usertype(tolua_S,"size_t");
  tolua_usertype(tolua_S,"Ogre::Material");
  tolua_usertype(tolua_S,"Ogre::MaterialManager");
+ tolua_usertype(tolua_S,"Ogre::Texture");
+ tolua_usertype(tolua_S,"Ogre::TexturePtr");
  tolua_usertype(tolua_S,"Ogre::SceneNode");
  tolua_usertype(tolua_S,"Ogre::VisibleObjectsBoundsInfo");
  tolua_usertype(tolua_S,"Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>");
@@ -14237,6 +14249,1146 @@ static int tolua_Ogre_Ogre_SceneNode_flipVisibility00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: get of class  Ogre::TexturePtr */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_TexturePtr_get00
+static int tolua_Ogre_Ogre_TexturePtr_get00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::TexturePtr",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::TexturePtr* self = (Ogre::TexturePtr*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'get'",NULL);
+#endif
+  {
+   Ogre::Texture* tolua_ret = (Ogre::Texture*)  self->get();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::Texture");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'get'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setTextureType of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_setTextureType00
+static int tolua_Ogre_Ogre_Texture_setTextureType00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::Texture",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Texture* self = (Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+  Ogre::TextureType ttype = ((Ogre::TextureType) (int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setTextureType'",NULL);
+#endif
+  {
+   self->setTextureType(ttype);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setTextureType'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getTextureType of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_getTextureType00
+static int tolua_Ogre_Ogre_Texture_getTextureType00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::Texture",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Texture* self = (const Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getTextureType'",NULL);
+#endif
+  {
+   Ogre::TextureType tolua_ret = (Ogre::TextureType)  self->getTextureType();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getTextureType'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getNumMipmaps of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_getNumMipmaps00
+static int tolua_Ogre_Ogre_Texture_getNumMipmaps00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::Texture",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Texture* self = (const Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getNumMipmaps'",NULL);
+#endif
+  {
+   size_t tolua_ret = (size_t)  self->getNumMipmaps();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new size_t(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"size_t");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(size_t));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"size_t");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getNumMipmaps'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setNumMipmaps of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_setNumMipmaps00
+static int tolua_Ogre_Ogre_Texture_setNumMipmaps00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::Texture",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"size_t",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Texture* self = (Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+  size_t num = *((size_t*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setNumMipmaps'",NULL);
+#endif
+  {
+   self->setNumMipmaps(num);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setNumMipmaps'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getMipmapsHardwareGenerated of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_getMipmapsHardwareGenerated00
+static int tolua_Ogre_Ogre_Texture_getMipmapsHardwareGenerated00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::Texture",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Texture* self = (const Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMipmapsHardwareGenerated'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->getMipmapsHardwareGenerated();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getMipmapsHardwareGenerated'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getGamma of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_getGamma00
+static int tolua_Ogre_Ogre_Texture_getGamma00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::Texture",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Texture* self = (const Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getGamma'",NULL);
+#endif
+  {
+   float tolua_ret = (float)  self->getGamma();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getGamma'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setGamma of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_setGamma00
+static int tolua_Ogre_Ogre_Texture_setGamma00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::Texture",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Texture* self = (Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+  float g = ((float)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setGamma'",NULL);
+#endif
+  {
+   self->setGamma(g);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setGamma'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getHeight of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_getHeight00
+static int tolua_Ogre_Ogre_Texture_getHeight00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::Texture",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Texture* self = (const Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getHeight'",NULL);
+#endif
+  {
+   size_t tolua_ret = (size_t)  self->getHeight();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new size_t(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"size_t");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(size_t));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"size_t");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getHeight'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getWidth of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_getWidth00
+static int tolua_Ogre_Ogre_Texture_getWidth00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::Texture",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Texture* self = (const Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getWidth'",NULL);
+#endif
+  {
+   size_t tolua_ret = (size_t)  self->getWidth();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new size_t(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"size_t");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(size_t));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"size_t");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getWidth'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getDepth of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_getDepth00
+static int tolua_Ogre_Ogre_Texture_getDepth00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::Texture",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Texture* self = (const Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getDepth'",NULL);
+#endif
+  {
+   size_t tolua_ret = (size_t)  self->getDepth();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new size_t(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"size_t");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(size_t));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"size_t");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getDepth'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getSrcHeight of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_getSrcHeight00
+static int tolua_Ogre_Ogre_Texture_getSrcHeight00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::Texture",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Texture* self = (const Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getSrcHeight'",NULL);
+#endif
+  {
+   size_t tolua_ret = (size_t)  self->getSrcHeight();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new size_t(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"size_t");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(size_t));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"size_t");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getSrcHeight'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getSrcWidth of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_getSrcWidth00
+static int tolua_Ogre_Ogre_Texture_getSrcWidth00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::Texture",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Texture* self = (const Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getSrcWidth'",NULL);
+#endif
+  {
+   size_t tolua_ret = (size_t)  self->getSrcWidth();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new size_t(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"size_t");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(size_t));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"size_t");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getSrcWidth'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getSrcDepth of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_getSrcDepth00
+static int tolua_Ogre_Ogre_Texture_getSrcDepth00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::Texture",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Texture* self = (const Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getSrcDepth'",NULL);
+#endif
+  {
+   size_t tolua_ret = (size_t)  self->getSrcDepth();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new size_t(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"size_t");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(size_t));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"size_t");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getSrcDepth'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setHeight of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_setHeight00
+static int tolua_Ogre_Ogre_Texture_setHeight00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::Texture",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"size_t",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Texture* self = (Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+  size_t h = *((size_t*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setHeight'",NULL);
+#endif
+  {
+   self->setHeight(h);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setHeight'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setWidth of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_setWidth00
+static int tolua_Ogre_Ogre_Texture_setWidth00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::Texture",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"size_t",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Texture* self = (Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+  size_t w = *((size_t*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setWidth'",NULL);
+#endif
+  {
+   self->setWidth(w);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setWidth'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setDepth of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_setDepth00
+static int tolua_Ogre_Ogre_Texture_setDepth00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::Texture",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"size_t",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Texture* self = (Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+  size_t d = *((size_t*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setDepth'",NULL);
+#endif
+  {
+   self->setDepth(d);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setDepth'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getUsage of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_getUsage00
+static int tolua_Ogre_Ogre_Texture_getUsage00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::Texture",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Texture* self = (const Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getUsage'",NULL);
+#endif
+  {
+   int tolua_ret = (int)  self->getUsage();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getUsage'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setUsage of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_setUsage00
+static int tolua_Ogre_Ogre_Texture_setUsage00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::Texture",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Texture* self = (Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+  int u = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setUsage'",NULL);
+#endif
+  {
+   self->setUsage(u);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setUsage'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: copyToTexture of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_copyToTexture00
+static int tolua_Ogre_Ogre_Texture_copyToTexture00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::Texture",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Ogre::TexturePtr",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Texture* self = (Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+  Ogre::TexturePtr* target = ((Ogre::TexturePtr*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'copyToTexture'",NULL);
+#endif
+  {
+   self->copyToTexture(*target);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'copyToTexture'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: loadImage of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_loadImage00
+static int tolua_Ogre_Ogre_Texture_loadImage00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::Texture",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::Image",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Texture* self = (Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Image* img = ((const Ogre::Image*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'loadImage'",NULL);
+#endif
+  {
+   self->loadImage(*img);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'loadImage'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: hasAlpha of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_hasAlpha00
+static int tolua_Ogre_Ogre_Texture_hasAlpha00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::Texture",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Texture* self = (const Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'hasAlpha'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->hasAlpha();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'hasAlpha'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setDesiredIntegerBitDepth of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_setDesiredIntegerBitDepth00
+static int tolua_Ogre_Ogre_Texture_setDesiredIntegerBitDepth00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::Texture",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Texture* self = (Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+  unsigned short bits = ((unsigned short)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setDesiredIntegerBitDepth'",NULL);
+#endif
+  {
+   self->setDesiredIntegerBitDepth(bits);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setDesiredIntegerBitDepth'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getDesiredIntegerBitDepth of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_getDesiredIntegerBitDepth00
+static int tolua_Ogre_Ogre_Texture_getDesiredIntegerBitDepth00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::Texture",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Texture* self = (const Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getDesiredIntegerBitDepth'",NULL);
+#endif
+  {
+   unsigned short tolua_ret = (unsigned short)  self->getDesiredIntegerBitDepth();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getDesiredIntegerBitDepth'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setDesiredFloatBitDepth of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_setDesiredFloatBitDepth00
+static int tolua_Ogre_Ogre_Texture_setDesiredFloatBitDepth00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::Texture",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Texture* self = (Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+  unsigned short bits = ((unsigned short)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setDesiredFloatBitDepth'",NULL);
+#endif
+  {
+   self->setDesiredFloatBitDepth(bits);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setDesiredFloatBitDepth'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getDesiredFloatBitDepth of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_getDesiredFloatBitDepth00
+static int tolua_Ogre_Ogre_Texture_getDesiredFloatBitDepth00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::Texture",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Texture* self = (const Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getDesiredFloatBitDepth'",NULL);
+#endif
+  {
+   unsigned short tolua_ret = (unsigned short)  self->getDesiredFloatBitDepth();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getDesiredFloatBitDepth'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setDesiredBitDepths of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_setDesiredBitDepths00
+static int tolua_Ogre_Ogre_Texture_setDesiredBitDepths00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::Texture",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Texture* self = (Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+  unsigned short integerBits = ((unsigned short)  tolua_tonumber(tolua_S,2,0));
+  unsigned short floatBits = ((unsigned short)  tolua_tonumber(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setDesiredBitDepths'",NULL);
+#endif
+  {
+   self->setDesiredBitDepths(integerBits,floatBits);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setDesiredBitDepths'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setTreatLuminanceAsAlpha of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_setTreatLuminanceAsAlpha00
+static int tolua_Ogre_Ogre_Texture_setTreatLuminanceAsAlpha00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::Texture",0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Texture* self = (Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+  bool asAlpha = ((bool)  tolua_toboolean(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setTreatLuminanceAsAlpha'",NULL);
+#endif
+  {
+   self->setTreatLuminanceAsAlpha(asAlpha);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setTreatLuminanceAsAlpha'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getTreatLuminanceAsAlpha of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_getTreatLuminanceAsAlpha00
+static int tolua_Ogre_Ogre_Texture_getTreatLuminanceAsAlpha00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::Texture",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Texture* self = (const Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getTreatLuminanceAsAlpha'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->getTreatLuminanceAsAlpha();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getTreatLuminanceAsAlpha'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getNumFaces of class  Ogre::Texture */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_getNumFaces00
+static int tolua_Ogre_Ogre_Texture_getNumFaces00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::Texture",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Texture* self = (const Ogre::Texture*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getNumFaces'",NULL);
+#endif
+  {
+   size_t tolua_ret = (size_t)  self->getNumFaces();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new size_t(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"size_t");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(size_t));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"size_t");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getNumFaces'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setDefaultNumMipmaps of class  Ogre::TextureManager */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_TextureManager_setDefaultNumMipmaps00
+static int tolua_Ogre_Ogre_TextureManager_setDefaultNumMipmaps00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::TextureManager",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"size_t",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::TextureManager* self = (Ogre::TextureManager*)  tolua_tousertype(tolua_S,1,0);
+  size_t num = *((size_t*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setDefaultNumMipmaps'",NULL);
+#endif
+  {
+   self->setDefaultNumMipmaps(num);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setDefaultNumMipmaps'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getDefaultNumMipmaps of class  Ogre::TextureManager */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_TextureManager_getDefaultNumMipmaps00
+static int tolua_Ogre_Ogre_TextureManager_getDefaultNumMipmaps00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::TextureManager",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::TextureManager* self = (Ogre::TextureManager*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getDefaultNumMipmaps'",NULL);
+#endif
+  {
+   size_t tolua_ret = (size_t)  self->getDefaultNumMipmaps();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new size_t(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"size_t");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(size_t));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"size_t");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getDefaultNumMipmaps'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getSingleton of class  Ogre::TextureManager */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_TextureManager_getSingleton00
+static int tolua_Ogre_Ogre_TextureManager_getSingleton00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Ogre::TextureManager",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   Ogre::TextureManager& tolua_ret = (Ogre::TextureManager&)  Ogre::TextureManager::getSingleton();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"Ogre::TextureManager");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getSingleton'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* Open function */
 TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
 {
@@ -14856,6 +16008,69 @@ TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"getParentSceneNode",tolua_Ogre_Ogre_SceneNode_getParentSceneNode00);
     tolua_function(tolua_S,"setVisible",tolua_Ogre_Ogre_SceneNode_setVisible00);
     tolua_function(tolua_S,"flipVisibility",tolua_Ogre_Ogre_SceneNode_flipVisibility00);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"Ogre",0);
+  tolua_beginmodule(tolua_S,"Ogre");
+   tolua_constant(tolua_S,"TU_STATIC",Ogre::TU_STATIC);
+   tolua_constant(tolua_S,"TU_DYNAMIC",Ogre::TU_DYNAMIC);
+   tolua_constant(tolua_S,"TU_WRITE_ONLY",Ogre::TU_WRITE_ONLY);
+   tolua_constant(tolua_S,"TU_STATIC_WRITE_ONLY",Ogre::TU_STATIC_WRITE_ONLY);
+   tolua_constant(tolua_S,"TU_DYNAMIC_WRITE_ONLY",Ogre::TU_DYNAMIC_WRITE_ONLY);
+   tolua_constant(tolua_S,"TU_DYNAMIC_WRITE_ONLY_DISCARDABLE",Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE);
+   tolua_constant(tolua_S,"TU_AUTOMIPMAP",Ogre::TU_AUTOMIPMAP);
+   tolua_constant(tolua_S,"TU_RENDERTARGET",Ogre::TU_RENDERTARGET);
+   tolua_constant(tolua_S,"TU_DEFAULT",Ogre::TU_DEFAULT);
+   tolua_constant(tolua_S,"TEX_TYPE_1D",Ogre::TEX_TYPE_1D);
+   tolua_constant(tolua_S,"TEX_TYPE_2D",Ogre::TEX_TYPE_2D);
+   tolua_constant(tolua_S,"TEX_TYPE_3D",Ogre::TEX_TYPE_3D);
+   tolua_constant(tolua_S,"TEX_TYPE_CUBE_MAP",Ogre::TEX_TYPE_CUBE_MAP);
+   tolua_constant(tolua_S,"MIP_UNLIMITED",Ogre::MIP_UNLIMITED);
+   tolua_constant(tolua_S,"MIP_DEFAULT",Ogre::MIP_DEFAULT);
+   tolua_cclass(tolua_S,"TexturePtr","Ogre::TexturePtr","",NULL);
+   tolua_beginmodule(tolua_S,"TexturePtr");
+    tolua_function(tolua_S,"get",tolua_Ogre_Ogre_TexturePtr_get00);
+   tolua_endmodule(tolua_S);
+   tolua_cclass(tolua_S,"Texture","Ogre::Texture","Ogre::Resource",NULL);
+   tolua_beginmodule(tolua_S,"Texture");
+    tolua_function(tolua_S,"setTextureType",tolua_Ogre_Ogre_Texture_setTextureType00);
+    tolua_function(tolua_S,"getTextureType",tolua_Ogre_Ogre_Texture_getTextureType00);
+    tolua_function(tolua_S,"getNumMipmaps",tolua_Ogre_Ogre_Texture_getNumMipmaps00);
+    tolua_function(tolua_S,"setNumMipmaps",tolua_Ogre_Ogre_Texture_setNumMipmaps00);
+    tolua_function(tolua_S,"getMipmapsHardwareGenerated",tolua_Ogre_Ogre_Texture_getMipmapsHardwareGenerated00);
+    tolua_function(tolua_S,"getGamma",tolua_Ogre_Ogre_Texture_getGamma00);
+    tolua_function(tolua_S,"setGamma",tolua_Ogre_Ogre_Texture_setGamma00);
+    tolua_function(tolua_S,"getHeight",tolua_Ogre_Ogre_Texture_getHeight00);
+    tolua_function(tolua_S,"getWidth",tolua_Ogre_Ogre_Texture_getWidth00);
+    tolua_function(tolua_S,"getDepth",tolua_Ogre_Ogre_Texture_getDepth00);
+    tolua_function(tolua_S,"getSrcHeight",tolua_Ogre_Ogre_Texture_getSrcHeight00);
+    tolua_function(tolua_S,"getSrcWidth",tolua_Ogre_Ogre_Texture_getSrcWidth00);
+    tolua_function(tolua_S,"getSrcDepth",tolua_Ogre_Ogre_Texture_getSrcDepth00);
+    tolua_function(tolua_S,"setHeight",tolua_Ogre_Ogre_Texture_setHeight00);
+    tolua_function(tolua_S,"setWidth",tolua_Ogre_Ogre_Texture_setWidth00);
+    tolua_function(tolua_S,"setDepth",tolua_Ogre_Ogre_Texture_setDepth00);
+    tolua_function(tolua_S,"getUsage",tolua_Ogre_Ogre_Texture_getUsage00);
+    tolua_function(tolua_S,"setUsage",tolua_Ogre_Ogre_Texture_setUsage00);
+    tolua_function(tolua_S,"copyToTexture",tolua_Ogre_Ogre_Texture_copyToTexture00);
+    tolua_function(tolua_S,"loadImage",tolua_Ogre_Ogre_Texture_loadImage00);
+    tolua_function(tolua_S,"hasAlpha",tolua_Ogre_Ogre_Texture_hasAlpha00);
+    tolua_function(tolua_S,"setDesiredIntegerBitDepth",tolua_Ogre_Ogre_Texture_setDesiredIntegerBitDepth00);
+    tolua_function(tolua_S,"getDesiredIntegerBitDepth",tolua_Ogre_Ogre_Texture_getDesiredIntegerBitDepth00);
+    tolua_function(tolua_S,"setDesiredFloatBitDepth",tolua_Ogre_Ogre_Texture_setDesiredFloatBitDepth00);
+    tolua_function(tolua_S,"getDesiredFloatBitDepth",tolua_Ogre_Ogre_Texture_getDesiredFloatBitDepth00);
+    tolua_function(tolua_S,"setDesiredBitDepths",tolua_Ogre_Ogre_Texture_setDesiredBitDepths00);
+    tolua_function(tolua_S,"setTreatLuminanceAsAlpha",tolua_Ogre_Ogre_Texture_setTreatLuminanceAsAlpha00);
+    tolua_function(tolua_S,"getTreatLuminanceAsAlpha",tolua_Ogre_Ogre_Texture_getTreatLuminanceAsAlpha00);
+    tolua_function(tolua_S,"getNumFaces",tolua_Ogre_Ogre_Texture_getNumFaces00);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"Ogre",0);
+  tolua_beginmodule(tolua_S,"Ogre");
+   tolua_cclass(tolua_S,"TextureManager","Ogre::TextureManager","Ogre::ResourceManager",NULL);
+   tolua_beginmodule(tolua_S,"TextureManager");
+    tolua_function(tolua_S,"setDefaultNumMipmaps",tolua_Ogre_Ogre_TextureManager_setDefaultNumMipmaps00);
+    tolua_function(tolua_S,"getDefaultNumMipmaps",tolua_Ogre_Ogre_TextureManager_getDefaultNumMipmaps00);
+    tolua_function(tolua_S,"getSingleton",tolua_Ogre_Ogre_TextureManager_getSingleton00);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);

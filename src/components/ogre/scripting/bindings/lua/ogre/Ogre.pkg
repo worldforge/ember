@@ -18,6 +18,8 @@ $pfile "OgreMath.pkg"
 $pfile "OgreEntity.pkg"
 $pfile "OgreNode.pkg"
 $pfile "OgreSceneNode.pkg"
+$pfile "OgreTexture.pkg"
+$pfile "OgreTextureManager.pkg"
 
 
 
