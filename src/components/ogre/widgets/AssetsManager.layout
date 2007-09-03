@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='EmberLook/FrameWindow' Name='Mainwindow'>
+		<Property Name='UnifiedSize' Value='{{0.00000,450.000000},{0.00000,400.000000}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0,0.000000}}'/>
+		<Property Name='Alpha' Value='0.6'/>
+		<Property Name='Text' Value='Entity browser'/>
+		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
+			<Property Name='UnifiedPosition' Value='{{0.0,4},{0,15}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-8},{1,-20}}'/>
+			<Property Name='InheritsAlpha' Value='True'/>
+			<Window Type='EmberLook/TabControl' Name='MainTabControl'>
+				<Property Name='UnifiedSize' Value='{{1.000000,-8.000000},{1.00000,-8.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,4.000000},{0.0000,4.000000}}'/>
+				<Property Name='InheritsAlpha' Value='true'/>
+				<Window Type='DefaultGUISheet' Name='Textures'>
+					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='Text' Value='Eris'/>
+					<Property Name='InheritsAlpha' Value='false'/>
+					<Property Name='Visible' Value='true'/>
+					<Window Type='EmberLook/Editbox' Name='FilterTextures'>
+						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-50}}'/>
+						<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+					</Window>
+					<Window Type='EmberLook/Button' Name='Refresh'>
+						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-20}}'/>
+						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
+						<Property Name='Text' Value='Refresh'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Event Name="MouseClick" Function="AssetsManager.TexturesRefresh_Clicked" />
+					</Window>
+					<Window Type='EmberLook/Listbox' Name='TexturesList'>
+						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
+						<Property Name='UnifiedSize' Value='{{0,200},{1,-70}}'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Event Name="ItemSelectionChanged" Function="AssetsManager.TexturesList_ItemSelectionChanged" />
+					</Window>
+					<Window Type='EmberLook/StaticText' Name='TextureInfo'>
+						<Property Name='UnifiedPosition' Value='{{0,205},{0,4}}'/>
+						<Property Name='UnifiedSize' Value='{{1,-210},{1,-70}}'/>
+						<Property Name='Text' Value=''/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Property Name='VertFormatting' Value='TopAligned'/>
+						<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
+						<Window Type='EmberLook/StaticImage' Name='TextureInfo/Image'>
+							<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+							<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
+						</Window>
+					</Window>
+				</Window>
+			</Window>
+		</Window>
+	</Window>
+</GUILayout>
