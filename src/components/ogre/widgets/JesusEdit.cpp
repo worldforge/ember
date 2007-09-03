@@ -51,6 +51,7 @@
 #include "../jesus/XMLJesusSerializer.h"
 
 #include "EntityCEGUITexture.h"
+#include "../SimpleRenderContext.h"
 
 namespace EmberOgre {
 
@@ -565,7 +566,7 @@ JesusEditPreview::~JesusEditPreview()
 void JesusEditPreview::setVisible(bool visible)
 {
 	mPreviewWindow->setVisible(visible);
-	mTexture->setActive(visible);
+	mTexture->getRenderContext()->setActive(visible);
 }
 
 void JesusEditPreview::showBuildingBlock(const std::string & spec)
@@ -579,7 +580,7 @@ void JesusEditPreview::showBuildingBlock(const std::string & spec)
 	//delete mModelBlock;
 
 	mBlueprint = new Carpenter::BluePrint("preview", mJesus->getCarpenter());
-	mConstruction = new Construction(mBlueprint, mJesus, mTexture->getSceneNode());
+	mConstruction = new Construction(mBlueprint, mJesus, mTexture->getRenderContext()->getSceneNode());
 	
 	Carpenter::BuildingBlockDefinition def;
 	def.mName = "preview";
@@ -589,15 +590,15 @@ void JesusEditPreview::showBuildingBlock(const std::string & spec)
 	mModelBlock = mConstruction->createModelBlock(mBlock, true);
 	mModelBlock->select();
 	
-	mTexture->repositionCamera();
-	mTexture->showFull(mModelBlock->getModel());
+	mTexture->getRenderContext()->repositionCamera();
+	mTexture->getRenderContext()->showFull(mModelBlock->getModel());
 	
 
 }
 
 void JesusEditPreview::setZoom(float value)
 {
-	mTexture->setCameraDistance(mTexture->getDefaultCameraDistance() * value);
+	mTexture->getRenderContext()->setCameraDistance(mTexture->getRenderContext()->getDefaultCameraDistance() * value);
 /*	Ogre::Real newDistance = (mMaxCameraDistance * mMinCameraDistance) * value;
 	Ogre::Vector3 position = mTexture->getCamera()->getPosition();
 	position.z = -newDistance;
