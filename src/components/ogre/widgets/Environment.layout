@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='EmberLook/FrameWindow' Name='Mainwindow'>
+		<Property Name='UnifiedSize' Value='{{0,300.000000},{0,80.000000}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.400000,0.000000},{0.350000,0.000000}}'/>
+		<Property Name='Alpha' Value='0.6'/>
+		<Property Name='Text' Value='Environment'/>
+		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
+			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,15}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-4},{1,-15}}'/>
+			<Property Name='InheritsAlpha' Value='True'/>
+			<Window Type='EmberLook/StaticText' Name='Text'>
+				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.0000,25.000000}}'/>
+				<Property Name='InheritsAlpha' Value='false'/>
+				<Property Name='Text' Value='Time'/>
+				<Property Name='BackgroundEnabled' Value='False'/>
+				<Property Name='FrameEnabled' Value='False'/>
+			</Window>
+			<Window Type='EmberLook/Slider' Name='Time'>
+				<Property Name='UnifiedSize' Value='{{1.00000,-20.000000},{0.0000,15.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,10.000000},{0.0000,30.000000}}'/>
+				<Event Name="ValueChanged" Function="Environment.Time_ValueChanged" />
+			</Window>
+		</Window>
+	</Window>
+</GUILayout>
