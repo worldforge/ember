@@ -23,6 +23,7 @@
 #include "MovableObjectRenderer.h"
 
 #include "EntityCEGUITexture.h"
+#include "../SimpleRenderContext.h"
 
 #include <elements/CEGUIGUISheet.h>
 #include <CEGUIPropertyHelper.h>
@@ -73,10 +74,10 @@ bool MovableObjectRenderer::injectMouseMove(const MouseMotion& motion, bool& fre
 {
 	///rotate the modelnode
 	if (GUIManager::getSingleton().getInput().isKeyDown(SDLK_RCTRL) || GUIManager::getSingleton().getInput().isKeyDown(SDLK_LCTRL)) {
-		mTexture->roll(Ogre::Degree(motion.xRelativeMovement * 180));
+		mTexture->getRenderContext()->roll(Ogre::Degree(motion.xRelativeMovement * 180));
 	} else {
-		mTexture->yaw(Ogre::Degree(motion.xRelativeMovement * 180));
-		mTexture->pitch(Ogre::Degree(motion.yRelativeMovement * 180));
+		mTexture->getRenderContext()->yaw(Ogre::Degree(motion.xRelativeMovement * 180));
+		mTexture->getRenderContext()->pitch(Ogre::Degree(motion.yRelativeMovement * 180));
 	}
 	///we don't want to move the cursor
 	freezeMouse = true;
@@ -85,27 +86,27 @@ bool MovableObjectRenderer::injectMouseMove(const MouseMotion& motion, bool& fre
 
 Ogre::Quaternion MovableObjectRenderer::getEntityRotation()
 {
-	return mTexture->getEntityRotation();
+	return mTexture->getRenderContext()->getEntityRotation();
 }
 
 void MovableObjectRenderer::resetCameraOrientation()
 {
-	mTexture->resetCameraOrientation();
+	mTexture->getRenderContext()->resetCameraOrientation();
 }
 
 void MovableObjectRenderer::pitch(Ogre::Degree degrees)
 {
-	mTexture->pitch(degrees);
+	mTexture->getRenderContext()->pitch(degrees);
 }
 
 void MovableObjectRenderer::yaw(Ogre::Degree degrees)
 {
-	mTexture->yaw(degrees);
+	mTexture->getRenderContext()->yaw(degrees);
 }
 
 void MovableObjectRenderer::roll(Ogre::Degree degrees)
 {
-	mTexture->roll(degrees);
+	mTexture->getRenderContext()->roll(degrees);
 }
 
 
@@ -160,14 +161,14 @@ void MovableObjectRenderer::setAutoShowFull(bool showFull)
 void MovableObjectRenderer::showFull()
 {
 //	if (mModel) {
-		mTexture->showFull(getMovableObject());
+		mTexture->getRenderContext()->showFull(getMovableObject());
 //	}
 }
 
 void MovableObjectRenderer::setCameraDistance(float distance)
 {
 	
-	mTexture->setCameraDistance(mTexture->getDefaultCameraDistance() * distance);
+	mTexture->getRenderContext()->setCameraDistance(mTexture->getRenderContext()->getDefaultCameraDistance() * distance);
 /*	Ogre::Vector3 position = mTexture->getDefaultCameraPosition();
 	position.z *= distance;
 	mTexture->getCamera()->setPosition(position);*/
@@ -175,7 +176,7 @@ void MovableObjectRenderer::setCameraDistance(float distance)
 
 float MovableObjectRenderer::getCameraDistance()
 {
-	return  mTexture->getCameraDistance();
+	return  mTexture->getRenderContext()->getCameraDistance();
 }
 
 void MovableObjectRenderer::catchInput()
@@ -194,7 +195,7 @@ bool MovableObjectRenderer::image_MouseWheel(const CEGUI::EventArgs& args)
 	
 	if (mTexture) {
 		if (mouseArgs.wheelChange != 0.0f) {
-			float distance = mTexture->getCameraDistance();
+			float distance = mTexture->getRenderContext()->getCameraDistance();
 			distance += (mouseArgs.wheelChange * 0.1);
 			setCameraDistance(distance);
 		}
@@ -220,16 +221,16 @@ bool MovableObjectRenderer::frameStarted(const Ogre::FrameEvent& event)
 {
 //	S_LOG_VERBOSE(mImage->getName().c_str() << " visible: " << (mActive && mImage->isVisible()));
 	///if the window isn't shown, don't update the render texture
-	mTexture->setActive(mActive && mImage->isVisible());
+	mTexture->getRenderContext()->setActive(mActive && mImage->isVisible());
 	if (mActive && mImage->isVisible()) {
-		mTexture->getRenderTexture()->update();
+		mTexture->getRenderContext()->getRenderTexture()->update();
 	}
 	return true;
 }
 
 void MovableObjectRenderer::updateRender()
 {
-	mTexture->getRenderTexture()->update();
+	mTexture->getRenderContext()->getRenderTexture()->update();
 }
 
 }

@@ -23,6 +23,7 @@
 #include "ModelRenderer.h"
 
 #include "EntityCEGUITexture.h"
+#include "../SimpleRenderContext.h"
 
 #include <elements/CEGUIGUISheet.h>
 
@@ -49,12 +50,12 @@ ModelRenderer::~ModelRenderer()
 
 void ModelRenderer::setModel(Model::Model* model)
 {
-	Ogre::SceneNode* node = mTexture->getSceneNode();
+	Ogre::SceneNode* node = mTexture->getRenderContext()->getSceneNode();
 	
 	node->detachAllObjects();
 	if (model) {
 		node->attachObject(model);
-		mTexture->repositionCamera();
+		mTexture->getRenderContext()->repositionCamera();
 		if (mAutoShowFull) {
 			showFull();
 		}
@@ -74,15 +75,15 @@ void ModelRenderer::showModel(const std::string& modelName)
 		//delete mModel;
 	}
 	if (modelName != "") {
-		mModel = Model::Model::createModel(mTexture->getSceneManager(), modelName);
+		mModel = Model::Model::createModel(mTexture->getRenderContext()->getSceneManager(), modelName);
 // 		mModel->create(modelName);
 		///override the rendering distance from the model; we want to always show it in the preview
 		mModel->setRenderingDistance(0);
 		setModel(mModel);
-		mTexture->setActive(true);
+		mTexture->getRenderContext()->setActive(true);
 	} else {
 		setModel(0);
-		mTexture->setActive(false);
+		mTexture->getRenderContext()->setActive(false);
 	}
 }
 

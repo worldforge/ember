@@ -22,6 +22,7 @@
 //
 #include "OgreEntityRenderer.h"
 #include "EntityCEGUITexture.h"
+#include "../SimpleRenderContext.h"
 
 #include <elements/CEGUIGUISheet.h>
 
@@ -44,14 +45,14 @@ Ogre::Entity* OgreEntityRenderer::getEntity()
 void OgreEntityRenderer::showEntity(const std::string& mesh)
 {
 	if (mEntity) {
-		mTexture->getSceneNode()->getCreator()->destroyEntity(mEntity);
+		mTexture->getRenderContext()->getSceneNode()->getCreator()->destroyEntity(mEntity);
 	}
 	std::string meshName(mTexture->getImage()->getName().c_str());
 	meshName += "_entity";
 	try {
-		mEntity =  mTexture->getSceneNode()->getCreator()->createEntity(meshName , mesh);
+		mEntity =  mTexture->getRenderContext()->getSceneNode()->getCreator()->createEntity(meshName , mesh);
 		setEntity(mEntity);
-		mTexture->setActive(true);
+		mTexture->getRenderContext()->setActive(true);
 	} catch (const Ogre::Exception& ex) {
 		S_LOG_FAILURE("Error when creating entity. Message: " << ex.getFullDescription());
 	}
@@ -65,11 +66,11 @@ Ogre::MovableObject* OgreEntityRenderer::getMovableObject()
 
 void OgreEntityRenderer::setEntity(Ogre::Entity* entity)
 {
-	Ogre::SceneNode* node = mTexture->getSceneNode();
+	Ogre::SceneNode* node = mTexture->getRenderContext()->getSceneNode();
 	
 	node->detachAllObjects();
 	node->attachObject(entity);
-	mTexture->repositionCamera();
+	mTexture->getRenderContext()->repositionCamera();
 	if (mAutoShowFull) {
 		showFull();
 	}
