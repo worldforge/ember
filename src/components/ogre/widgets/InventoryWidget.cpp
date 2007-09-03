@@ -38,6 +38,7 @@
 #include <Eris/TypeInfo.h>
 
 #include <elements/CEGUIPushButton.h>
+#include <CEGUIPropertyHelper.h>
 
 
 namespace EmberOgre {
@@ -46,6 +47,10 @@ namespace EmberOgre {
 
 // template<> WidgetLoader WidgetLoaderHolder<InventoryWidget>::loader("InventoryWidget", &createWidgetInstance);
 
+InventoryWidget::InventoryWidget()
+: mIconsUsed(0)
+{
+}
 
 InventoryWidget::~InventoryWidget()
 {
@@ -70,7 +75,7 @@ void InventoryWidget::buildWidget()
 
 	enableCloseButton();
 	
-	
+	mIconManager = new Gui::Icons::IconManager();
 	
 }
 
@@ -86,20 +91,46 @@ void InventoryWidget::createdAvatarEmberEntity(AvatarEmberEntity* entity)
 	}
 
 }
-void InventoryWidget::addedEntity(EmberEntity* dimeEntity) {
+void InventoryWidget::addedEntity(EmberEntity* entity) {
+	static int iconSize(64);
+	CEGUI::String name(entity->getType()->getName() + " ("+ entity->getId() +" : "+entity->getName()+")");
+// 	CEGUI::ListboxItem* item = new Gui::ColouredListItem(name, atoi(entity->getId().c_str()), entity);
+// 	mListBoxMap.insert(std::map<EmberEntity*, CEGUI::ListboxItem*>::value_type(entity, item));
+// 	mListBox->addItem(item);
 	
-	CEGUI::String name(dimeEntity->getType()->getName() + " ("+ dimeEntity->getId() +" : "+dimeEntity->getName()+")");
-	CEGUI::ListboxItem* item = new Gui::ColouredListItem(name, atoi(dimeEntity->getId().c_str()), dimeEntity);
-	mListBoxMap.insert(std::map<EmberEntity*, CEGUI::ListboxItem*>::value_type(dimeEntity, item));
-	mListBox->addItem(item);
+	Gui::Icons::Icon* icon = mIconManager->getIcon(iconSize, entity->getType());
+	if (icon) {
+		int yPosition = mIcons.size() / 4;
+		int xPosition = mIcons.size() % 4;
+		
+		std::stringstream ss;
+		ss << "inventoryIcon_" << mIcons.size();
+		CEGUI::Window* iconWindow = createWindow("EmberLook/StaticImage", ss.str());
+		if (iconWindow) {
+			iconWindow->setSize(CEGUI::UVector2(CEGUI::UDim(0, iconSize), CEGUI::UDim(0, iconSize)));
+			iconWindow->setTooltipText(name);
+			iconWindow->setProperty("BackgroundEnabled", "false");
+			iconWindow->setProperty("FrameEnabled", "false");
+			EntityIcon entityIcon(iconWindow, icon);
+			mIcons.push_back(entityIcon);
+			iconWindow->setProperty("Image", CEGUI::PropertyHelper::imageToString(icon->getImage()));
+			CEGUI::Window* container = getWindow("IconContainer");
+			if (container) {
+				container->addChildWindow(iconWindow);
+				iconWindow->setPosition(CEGUI::UVector2(CEGUI::UDim(0, iconSize * xPosition), CEGUI::UDim(0, iconSize * yPosition)));
+			}
+		}
+		
+	}
+
 
 }
-void InventoryWidget::removedEntity(EmberEntity* dimeEntity) {
+void InventoryWidget::removedEntity(EmberEntity* entity) {
 //	CEGUI::ListboxItem* item = mListBox->getListboxItemFromIndex(atoi(dimeEntity->getId().c_str()));
-	CEGUI::ListboxItem* item = mListBoxMap[dimeEntity];
+	CEGUI::ListboxItem* item = mListBoxMap[entity];
 	if (item) {
 		mListBox->removeItem(item);
-		mListBoxMap.erase(mListBoxMap.find(dimeEntity));
+		mListBoxMap.erase(mListBoxMap.find(entity));
 	}
 }
 
@@ -125,6 +156,22 @@ bool InventoryWidget::Wield_Click(const CEGUI::EventArgs& args)
 		Ember::EmberServices::getSingletonPtr()->getServerService()->wield(entity);
 	}
 	return true;
+}
+
+
+EntityIcon::EntityIcon(CEGUI::Window* image, Gui::Icons::Icon* icon)
+: mImage(image), mIcon(icon)
+{
+}
+
+CEGUI::Window* EntityIcon::getImage()
+{
+	return mImage;
+}
+
+Gui::Icons::Icon* EntityIcon::getIcon()
+{
+	return mIcon;
 }
 
 

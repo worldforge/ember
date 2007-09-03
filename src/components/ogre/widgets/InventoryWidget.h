@@ -28,6 +28,9 @@
 #include <elements/CEGUIListboxTextItem.h> 
 #include <Eris/Entity.h>
 
+#include "icons/Icon.h"
+#include "icons/IconManager.h"
+
 
 
 namespace EmberOgre {
@@ -37,13 +40,26 @@ class Widget;
 class GUIManager;
 class EmberEntityFactory;
 
+class EntityIcon
+{
+public:
+	EntityIcon(CEGUI::Window* image, Gui::Icons::Icon* icon);
+	
+	CEGUI::Window* getImage();
+	Gui::Icons::Icon* getIcon();
+
+protected:
+	CEGUI::Window* mImage;
+	Gui::Icons::Icon* mIcon;
+};
+
 /**
 @author Erik Hjortsberg
 */
 class InventoryWidget : public Widget
 {
 public:
-
+    InventoryWidget();
     virtual ~InventoryWidget();
 	void buildWidget();
 
@@ -51,6 +67,7 @@ public:
 protected:
 	CEGUI::Listbox* mListBox;
 	std::map<EmberEntity*, CEGUI::ListboxItem*> mListBoxMap;
+	typedef std::vector<EntityIcon> IconStore;
 
 	void removedEntity(EmberEntity* emberEntity);
 	void addedEntity(EmberEntity* emberEntity);
@@ -58,9 +75,10 @@ protected:
 	bool Drop_Click(const CEGUI::EventArgs& args);
 	bool Wield_Click(const CEGUI::EventArgs& args);
 
-
-
+	Gui::Icons::IconManager* mIconManager;
+	int mIconsUsed;
 	
+	IconStore mIcons;
 	
 };
 
