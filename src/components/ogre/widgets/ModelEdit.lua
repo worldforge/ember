@@ -411,6 +411,13 @@ function ModelEdit.GetRotationFromPreviewButton_MouseClick(args)
 	ModelEdit.rotationAdapter:setValue(ModelEdit.renderer:getEntityRotation())
 end
 
+function ModelEdit.GetIconFromPreviewButton_MouseClick(args)
+	if ModelEdit.definition ~= nil then
+		local definition = ModelEdit.definition:createViewDefinition("icon")
+		definition.Rotation = ModelEdit.renderer:getEntityRotation():Inverse()
+	end
+end
+
 function ModelEdit.RemoveSubmodelButton_MouseClick(args)
 
 	local submodel = ModelEdit.getSelectedSubModel()

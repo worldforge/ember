@@ -285,13 +285,19 @@
 				</Window>
 				<Window Type='EmberLook/Button' Name='ReloadInstancesButton'>
 					<Property Name='Text' Value='Reload models'/>
-					<Property Name='UnifiedAreaRect' Value='{{0.703990,0.000000},{0.73,0.000000},{0.834608,0.000000},{0.82,0.000000}}'/>
-					<Property Name='UnifiedMaxSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='UnifiedPosition' Value='{{1,-250},{1,-30}}'/>
+					<Property Name='UnifiedSize' Value='{{0,120},{0,25}}'/>
 				</Window>
 				<Window Type='EmberLook/Button' Name='GetRotationFromPreviewButton'>
 					<Property Name='Text' Value='Rot. from preview'/>
-					<Property Name='UnifiedAreaRect' Value='{{0.844608,0.000000},{0.73,0.000000},{0.975226,0.000000},{0.82,0.000000}}'/>
-					<Property Name='UnifiedMaxSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='UnifiedPosition' Value='{{1,-125},{1,-30}}'/>
+					<Property Name='UnifiedSize' Value='{{0,120},{0,25}}'/>
+				</Window>
+				<Window Type='EmberLook/Button' Name='GetIconFromPreviewButton'>
+					<Property Name='Text' Value='Icon from preview'/>
+					<Property Name='UnifiedPosition' Value='{{1,-125},{1,-60}}'/>
+					<Property Name='UnifiedSize' Value='{{0,120},{0,25}}'/>
+					<Event Name="MouseClick" Function="ModelEdit.GetIconFromPreviewButton_MouseClick" />
 				</Window>
 			</Window>
 			<Window Type='DefaultWindow' Name='SubModelInfo'>
