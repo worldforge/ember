@@ -66,7 +66,8 @@ void EntityCEGUITexture::createImage(const std::string& imageSetName)
 	mImageSet = CEGUI::ImagesetManager::getSingleton().createImageset(imageSetName + "_EntityCEGUITextureImageset", mCeguiTexture);
 	
 	///we only want one element: the whole texture
-	mImageSet->defineImage("full_image", CEGUI::Rect(0,0,mWidth,mHeight), CEGUI::Point(0,0));
+	///the width and height of the texture differs from the supplied width of this instance since it will have been adjusted to a power-of-two size
+	mImageSet->defineImage("full_image", CEGUI::Rect(0, 0, texturePtr->getWidth(), texturePtr->getHeight()), CEGUI::Point(0,0));
 
 	///assign our image element to the StaticImage widget
 	mImage = &mImageSet->getImage("full_image");
