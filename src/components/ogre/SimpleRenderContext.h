@@ -138,6 +138,8 @@ public:
     
     Ogre::TexturePtr getTexture();
     
+    Ogre::SceneNode* getCameraRootNode() const;
+    
 private:
 
 	/**

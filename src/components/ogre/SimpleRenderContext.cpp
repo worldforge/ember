@@ -161,6 +161,11 @@ void SimpleRenderContext::resetCameraOrientation()
 
 }
 
+Ogre::SceneNode* SimpleRenderContext::getCameraRootNode() const
+{
+	return mCameraNode;
+}
+
 Ogre::TexturePtr SimpleRenderContext::getTexture()
 {
 	return mTexture;
