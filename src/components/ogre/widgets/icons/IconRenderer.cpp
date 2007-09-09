@@ -25,6 +25,7 @@
 #include "IconImageStore.h"
 
 #include "../../model/Model.h"
+#include "../../model/ModelDefinition.h"
 #include "../../SimpleRenderContext.h"
 
 namespace EmberOgre {
@@ -51,9 +52,22 @@ void IconRenderer::render(Model::Model* model, Icon* icon)
 	if (model) {
 		node->detachAllObjects();
 		node->attachObject(model);
-		mRenderContext->repositionCamera();
-		mRenderContext->showFull(model);
-		mRenderContext->setCameraDistance(mRenderContext->getDefaultCameraDistance() * 0.75);
+		
+		///check for a defined "icon" view and use that if available, else just reposition the camera
+		const Model::ViewDefinitionStore::const_iterator I = model->getDefinition()->getViewDefinitions().find("icon");
+		if (I != model->getDefinition()->getViewDefinitions().end()) {
+			mRenderContext->resetCameraOrientation();
+			mRenderContext->repositionCamera();
+			mRenderContext->showFull(model);
+			Ogre::Camera* camera = mRenderContext->getCamera();
+			mRenderContext->getCameraRootNode()->setOrientation(I->second->Rotation);
+		} else {
+			mRenderContext->resetCameraOrientation();
+			mRenderContext->repositionCamera();
+			mRenderContext->showFull(model);
+			mRenderContext->setCameraDistance(mRenderContext->getDefaultCameraDistance() * 0.75);
+ 		}
+		
 // 		mRenderContext->setCameraDistance(0.75);
 		mRenderContext->getRenderTexture()->update();
 		
