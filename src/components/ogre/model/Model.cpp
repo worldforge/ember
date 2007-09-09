@@ -178,7 +178,7 @@ bool Model::createFromDefn()
 			if (mMasterModel->getRenderingDistance()) {
 				entity->setRenderingDistance(mMasterModel->getRenderingDistance());
 			}
-//  			entity->setNormaliseNormals(true);
+			entity->setNormaliseNormals(true);
 
 // 			//for convenience, if it's a new mesh, check if there's a skeleton file in the same directory
 // 			//if so, use that
@@ -671,41 +671,30 @@ bool Model::hasAttachPoint(const std::string& attachPoint) const
 
 Ogre::AnimationState* Model::getAnimationState(const Ogre::String& name)
 {
-	if (mSubmodels.size()) {
-		if (mSkeletonOwnerEntity) {
-			return mSkeletonOwnerEntity->getAnimationState(name);
-		} else {
-			return 0;
-		}
+	if (mSubmodels.size() && mSkeletonOwnerEntity) {
+		return mSkeletonOwnerEntity->getAnimationState(name);
+	} else {
+		return 0;
 	}
-	OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::getAnimationState");		
-	
 }
 
 Ogre::AnimationStateSet* Model::getAllAnimationStates()
 {
-	if (mSubmodels.size()) {
-		if (mSkeletonOwnerEntity) {
-			return mSkeletonOwnerEntity->getAllAnimationStates();
-		} else {
-			return 0;
-		}
+	if (mSubmodels.size() && mSkeletonOwnerEntity) {
+		return mSkeletonOwnerEntity->getAllAnimationStates();
+	} else {
+		return 0;
 	}
-	OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::getAllAnimationStates");		
-	
 }
 
 
 Ogre::SkeletonInstance * Model::getSkeleton ()
 {
-	if (mSubmodels.size()) {
-		if (mSkeletonOwnerEntity) {
-			return mSkeletonOwnerEntity->getSkeleton();
-		} else {
-			return 0;
-		}
+	if (mSubmodels.size() && mSkeletonOwnerEntity) {
+		return mSkeletonOwnerEntity->getSkeleton();
+	} else {
+		return 0;
 	}
-	OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::getSkeleton");		
 }
 
 Ogre::TagPoint* Model::attachObjectToBone (const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation, const Ogre::Vector3 &offsetPosition)
@@ -732,7 +721,7 @@ Ogre::TagPoint* Model::attachObjectToBone (const Ogre::String &boneName, Ogre::M
 
 
 	} else {
-		OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::attachObjectToBone");		
+		OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There are no entities loaded!", "Model::attachObjectToBone");		
 	}	
 }
 
@@ -754,7 +743,7 @@ Ogre::MovableObject * Model::detachObjectFromBone (const Ogre::String &movableNa
 		return mSkeletonOwnerEntity->detachObjectFromBone(movableName);
 
 	} else {
-		OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::detachObjectFromBone");	
+		OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There are no entities loaded!", "Model::detachObjectFromBone");	
 	}	
 	
 }
@@ -768,7 +757,7 @@ void Model::detachAllObjectsFromBone(void)
 		mAttachPoints = std::auto_ptr<AttachPointWrapperStore>(0);
 
 	} else {
-		OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There's no entities loaded!", "Model::detachAllObjectsFromBone");		
+		OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There are no entities loaded!", "Model::detachAllObjectsFromBone");		
 	}	
 }
 
