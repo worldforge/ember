@@ -101,13 +101,52 @@ bool ModelDefinition::isValid(void)
 {
 	return mIsValid;
 }
-	
+
+ViewDefinition* ModelDefinition::createViewDefinition(const std::string& viewname)
+{
+	if (mViews.find(viewname) != mViews.end()) {
+		return mViews.find(viewname)->second;
+	} else {
+		ViewDefinition* def = new ViewDefinition();
+		def->Name = viewname;
+		mViews.insert(ViewDefinitionStore::value_type(viewname, def));
+		return def;
+	}
+}
+
+const ViewDefinitionStore& ModelDefinition::getViewDefinitions()
+{
+	return mViews;
+}
+
+void ModelDefinition::removeViewDefinition(const std::string name)
+{
+	mViews.erase(name);
+// 	for (ViewDefinitionStore::iterator I = mViews.begin(); I != mViews.end(); ++I) {
+// 		if (I->second == def) {
+// 		
+// 		}
+// 	}
+	//ViewDefinitionStore::iterator I = 
+// 	ModelDefinition::removeDefinition(def, mViews);
+/*	SubModelDefinitionsStore::iterator I;
+	for (I = mSubModels.begin(); I != mSubModels.end(); ++I) {
+		if (*I == def)
+			break;
+	}
+	if (I != mSubModels.end()) {
+		mSubModels.erase(I);
+	}*/
+}
+
+
+
 const Ogre::Vector3& ModelDefinition::getTranslate() const
 {
 	return mTranslate;
 }
 	
-void  ModelDefinition::setTranslate(const Ogre::Vector3 translate)
+void ModelDefinition::setTranslate(const Ogre::Vector3 translate)
 {
 	mTranslate = translate;
 }
@@ -204,11 +243,7 @@ void ModelDefinition::removeActionDefinition(ActionDefinition* def)
 template <typename T, typename T1>
 void ModelDefinition::removeDefinition(T* def, T1& store) 
 {
-	typename T1::iterator I;
-	for (I = store.begin(); I != store.end(); ++I) {
-		if (*I == def)
-			break;
-	}
+	typename T1::iterator I = std::find(store.begin(), store.end(), def);
 	if (I != store.end()) {
 		store.erase(I);
 	}

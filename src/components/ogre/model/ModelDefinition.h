@@ -42,6 +42,7 @@ struct SoundDefinition;
 class AnimationDefinition;
 struct AnimationPartDefinition;
 struct AttachPointDefinition;
+struct ViewDefinition;
 
 typedef std::map<std::string, Model*> ModelInstanceStore;
 
@@ -53,6 +54,7 @@ typedef std::vector<AnimationPartDefinition*> AnimationPartDefinitionsStore;
 typedef std::vector<SoundDefinition*> SoundDefinitionsStore;
 typedef std::vector<ActionDefinition*> ActionDefinitionsStore;
 typedef std::vector<AttachPointDefinition> AttachPointDefinitionStore;
+typedef std::map<std::string, ViewDefinition*> ViewDefinitionStore;
 
 class SubEntityDefinition
 {
@@ -130,7 +132,26 @@ private:
 	ModelDefinition& mModelDef;
 };
 
-
+/**
+A simple struct for defining a certain view of the Model. These settings needs to be applied to the camera rendering the Model.
+*/
+struct ViewDefinition
+{
+	/**
+	The name of the view.
+	*/
+	std::string Name;
+	
+	/**
+	The rotation of the camera related to the Model.
+	*/
+	Ogre::Quaternion Rotation;
+	
+	/**
+	The distance of the camera from the Model.
+	*/
+	float Distance;
+};
 
 struct AttachPointDefinition
 {
@@ -303,6 +324,7 @@ public:
 	 * @return 
 	 */
 	const Ogre::Quaternion& getRotation() const;
+	
 	/**
 	 *    Sets the rotation of the model.
 	 * @param rotation 
@@ -311,16 +333,71 @@ public:
 	
 	
 	
+	/**
+	 *    Creates and returns a new sub model definition for the supplied mesh name.
+	 * @param meshname The name of the mesh to base the new sub model on. Must be a valid mesh.
+	 * @return 
+	 */
 	SubModelDefinition* createSubModelDefinition(const std::string& meshname);
+	
+	/**
+	 *    Returns all SubModelDefinitions defined.
+	 * @return The SubModelDefinitions store.
+	 */
 	const SubModelDefinitionsStore& getSubModelDefinitions();
+	
+	/**
+	 *    Removes a certain SubModelDefinition.
+	 * @param def The definition to remove.
+	 */
 	void removeSubModelDefinition(SubModelDefinition* def);
 	
+	/**
+	 * Creates and returns a new ActionDefintion with the given name.
+	 * @param actionname The name of the new ActionDefinition.
+	 * @return A pointer to the new ActionDefinition.
+	 */
 	ActionDefinition* createActionDefinition(const std::string& actionname);
+	
+	/**
+	 *    Returns all ActionDefinitions defined.
+	 * @return 
+	 */
 	const ActionDefinitionsStore& getActionDefinitions();
+	
+	/**
+	 *    Removes a certain ActionDefinition.
+	 * @param def The definition to remove.
+	 */
 	void removeActionDefinition(ActionDefinition* def);
 	
 	const AttachPointDefinitionStore& getAttachPointsDefinitions();
 
+	/**
+	Creates and returns a new ViewDefinition with the supplied name.
+	@param viewname The name of the view
+	@return A pointer to the new view.
+	*/
+	ViewDefinition* createViewDefinition(const std::string& viewname);
+	
+	/**
+	 * Returns all views defined.
+	 * @return 
+	 */
+	const ViewDefinitionStore& getViewDefinitions();
+	
+	/**
+	 * Removed a named view. If no view can be found, no exception will be thrown.
+	 * @param name The name of the view to to remove.
+	 */
+	void removeViewDefinition(const std::string name);
+	
+	
+	/**
+	 * Utility method for removing a defintion from a non-associative stores (vector, list etc.)
+	 * @param def The defintion to remove.
+	 * @param store The store to remove from.
+	 */
 	template <typename T, typename T1>
 	static void removeDefinition(T* def, T1& store);
 	
@@ -329,6 +406,7 @@ public:
 	 *    Reloads all the Model instances that uses this definition.
 	 */
 	void reloadAllInstances();
+	
 
 
 private:
@@ -405,6 +483,8 @@ private:
 	Ogre::Vector3 mTranslate;
 	
 	bool mIsValid;
+	
+	ViewDefinitionStore mViews;
 	
 };
 
@@ -509,6 +589,9 @@ int AnimationDefinition::getIterations() const
 {
 	return mIterations;
 }
+
+
+
 
 
 }

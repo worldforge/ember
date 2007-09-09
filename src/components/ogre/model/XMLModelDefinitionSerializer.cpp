@@ -158,6 +158,11 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, Ember:
 	if (elem)
 		readParticleSystems(modelDef, elem);
 		
+	//views
+	elem = modelNode->FirstChildElement("views");
+	if (elem)
+		readViews(modelDef, elem);
+
 	elem = modelNode->FirstChildElement("translate");
 	if (elem)
 	{
@@ -176,6 +181,8 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, Ember:
 		Ogre::Vector3 offset = fillVector3FromElement(elem);
 		modelDef->setContentOffset(offset);
 	}
+	
+	
 	
 }
 
@@ -538,6 +545,44 @@ void XMLModelDefinitionSerializer::readParticleSystemsBindings(ModelDefinition::
 
 }
 
+void XMLModelDefinitionSerializer::readViews(ModelDefinitionPtr modelDef, Ember::TiXmlElement* viewsNode)
+{
+	Ember::TiXmlElement* elem;
+	
+	const char* tmp = 0;
+
+	for (Ember::TiXmlElement* viewElem = viewsNode->FirstChildElement();
+            viewElem != 0; viewElem = viewElem->NextSiblingElement())
+	{
+
+		// name
+		tmp =  viewElem->Attribute("name");
+		if (tmp) {
+			std::string name(tmp);
+			
+			ViewDefinition* def = modelDef->createViewDefinition(name);
+			
+			S_LOG_VERBOSE( " Add View  : "+ def->Name );
+	
+			elem = viewElem->FirstChildElement("rotation");
+			if (elem) {
+				def->Rotation = fillQuaternionFromElement(elem);
+			} else {
+				def->Rotation = Ogre::Quaternion::IDENTITY;
+			}
+			
+			elem = viewElem->FirstChildElement("distance");
+			if (elem) {
+				def->Distance = Ogre::StringConverter::parseReal(elem->GetText());
+			} else {
+				def->Distance = 0;
+			}
+			
+		}
+	}
+}
+
+
 Ogre::Vector3 XMLModelDefinitionSerializer::fillVector3FromElement(Ember::TiXmlElement* elem)
 {
 	Ogre::Real x=0.0f, y=0.0f, z=0.0f;
@@ -683,6 +728,8 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		
 		exportAttachPoints(modelDef, modelElem);
 		
+		exportViews(modelDef, modelElem);
+		
 		elem.InsertEndChild(modelElem);
 		
 		xmlDoc.InsertEndChild(elem);
@@ -695,6 +742,29 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 	}
 		
 
+}
+
+void XMLModelDefinitionSerializer::exportViews(ModelDefinitionPtr modelDef, Ember::TiXmlElement& modelElem)
+{
+	Ember::TiXmlElement viewsElem("views");
+	
+	for (ViewDefinitionStore::const_iterator I = modelDef->getViewDefinitions().begin(); I != modelDef->getViewDefinitions().end(); ++I) {
+		Ember::TiXmlElement viewElem("view");
+		viewElem.SetAttribute("name", I->second->Name.c_str());
+		
+		Ember::TiXmlElement distanceElem("distance");
+		std::stringstream ss;
+		ss << I->second->Distance;
+		distanceElem.SetValue(ss.str().c_str());
+		viewElem.InsertEndChild(distanceElem);
+
+		Ember::TiXmlElement rotation("rotation");
+		fillElementFromQuaternion(rotation, I->second->Rotation);
+		viewElem.InsertEndChild(rotation);
+
+		viewsElem.InsertEndChild(viewElem);
+	}
+	modelElem.InsertEndChild(viewsElem);
 }
 
 void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, Ember::TiXmlElement& modelElem)

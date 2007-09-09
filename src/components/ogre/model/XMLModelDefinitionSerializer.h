@@ -62,6 +62,7 @@ private:
 	void readAttachPoints(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mAnimPartNode);
 	void readParticleSystems(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mParticleSystemsNode);
 	void readParticleSystemsBindings(ModelDefinition::ParticleSystemDefinition& def, Ember::TiXmlElement* mParticleSystemsNode);
+	void readViews(ModelDefinitionPtr modelDef, Ember::TiXmlElement* viewsNode);
 
 	Ogre::Vector3 fillVector3FromElement(Ember::TiXmlElement* elem);
 	void fillElementFromVector3(Ember::TiXmlElement& elem, Ogre::Vector3 vector);
@@ -72,6 +73,7 @@ private:
 	void exportSubModels(ModelDefinitionPtr modelDef, Ember::TiXmlElement& modelElem);
 	void exportActions(ModelDefinitionPtr modelDef, Ember::TiXmlElement& modelElem);
 	void exportAttachPoints(ModelDefinitionPtr modelDef, Ember::TiXmlElement& modelElem);
+	void exportViews(ModelDefinitionPtr modelDef, Ember::TiXmlElement& modelElem);
 
 };
 
