@@ -75,6 +75,8 @@ loadScript("EntityEditor.lua")
 loadScript("EntityBrowser.lua")
 loadScript("Status.lua")
 
+loadScript("Environment.lua")
+loadScript("AssetsManager.lua")
 --loadScript("TerrainEditor.lua")
 
 

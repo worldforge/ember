@@ -4,7 +4,7 @@
 		<Property Name='UnifiedSize' Value='{{0.00000,450.000000},{0.00000,400.000000}}'/>
 		<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0,0.000000}}'/>
 		<Property Name='Alpha' Value='0.6'/>
-		<Property Name='Text' Value='Entity browser'/>
+		<Property Name='Text' Value='Assets manager'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
 			<Property Name='UnifiedPosition' Value='{{0.0,4},{0,15}}'/>
 			<Property Name='UnifiedSize' Value='{{1,-8},{1,-20}}'/>
@@ -15,7 +15,7 @@
 				<Property Name='InheritsAlpha' Value='true'/>
 				<Window Type='DefaultGUISheet' Name='Textures'>
 					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
-					<Property Name='Text' Value='Eris'/>
+					<Property Name='Text' Value='Textures'/>
 					<Property Name='InheritsAlpha' Value='false'/>
 					<Property Name='Visible' Value='true'/>
 					<Window Type='EmberLook/Editbox' Name='FilterTextures'>
