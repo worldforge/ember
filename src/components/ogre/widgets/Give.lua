@@ -13,7 +13,7 @@ function Give.buildWidget()
 	
 	Give.widget:loadMainSheet("Give.layout", "Give/")
 	
-	Give.widget:getMainWindow():setVisible(false)
+	Give.widget:hide()
 	
 	connect(Give.connectors, emberOgre.EventCreatedAvatarEntity, "Give.createdAvatarEmberEntity")
 	

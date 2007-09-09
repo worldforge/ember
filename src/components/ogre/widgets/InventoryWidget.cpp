@@ -38,6 +38,7 @@
 #include <Eris/TypeInfo.h>
 
 #include <elements/CEGUIPushButton.h>
+#include <elements/CEGUIDragContainer.h>
 #include <CEGUIPropertyHelper.h>
 
 
@@ -97,30 +98,49 @@ void InventoryWidget::addedEntity(EmberEntity* entity) {
 // 	CEGUI::ListboxItem* item = new Gui::ColouredListItem(name, atoi(entity->getId().c_str()), entity);
 // 	mListBoxMap.insert(std::map<EmberEntity*, CEGUI::ListboxItem*>::value_type(entity, item));
 // 	mListBox->addItem(item);
+	CEGUI::Window* container = getWindow("IconContainer");
+	if (container) {
 	
-	Gui::Icons::Icon* icon = mIconManager->getIcon(iconSize, entity->getType());
-	if (icon) {
-		int yPosition = mIcons.size() / 4;
-		int xPosition = mIcons.size() % 4;
-		
-		std::stringstream ss;
-		ss << "inventoryIcon_" << mIcons.size();
-		CEGUI::Window* iconWindow = createWindow("EmberLook/StaticImage", ss.str());
-		if (iconWindow) {
-			iconWindow->setSize(CEGUI::UVector2(CEGUI::UDim(0, iconSize), CEGUI::UDim(0, iconSize)));
-			iconWindow->setTooltipText(name);
-			iconWindow->setProperty("BackgroundEnabled", "false");
-			iconWindow->setProperty("FrameEnabled", "false");
-			EntityIcon entityIcon(iconWindow, icon);
-			mIcons.push_back(entityIcon);
-			iconWindow->setProperty("Image", CEGUI::PropertyHelper::imageToString(icon->getImage()));
-			CEGUI::Window* container = getWindow("IconContainer");
-			if (container) {
-				container->addChildWindow(iconWindow);
-				iconWindow->setPosition(CEGUI::UVector2(CEGUI::UDim(0, iconSize * xPosition), CEGUI::UDim(0, iconSize * yPosition)));
+		Gui::Icons::Icon* icon = mIconManager->getIcon(iconSize, entity->getType());
+		if (icon) {
+			int yPosition = mIcons.size() / 4;
+			int xPosition = mIcons.size() % 4;
+			
+			std::stringstream ss3;
+			ss3 << "inventoryContainer_" << mIcons.size();
+			
+			CEGUI::Window* iconContainer = createWindow("DefaultGUISheet", ss3.str());
+			if (iconContainer) {
+			
+				iconContainer->setSize(CEGUI::UVector2(CEGUI::UDim(0, iconSize), CEGUI::UDim(0, iconSize)));
+				iconContainer->setPosition(CEGUI::UVector2(CEGUI::UDim(0, iconSize * xPosition), CEGUI::UDim(0, iconSize * yPosition)));
+				container->addChildWindow(iconContainer);
+			
+			
+				std::stringstream ss1;
+				ss1 << "inventoryDraggableContainer_" << mIcons.size();
+				CEGUI::DragContainer* item = static_cast<CEGUI::DragContainer*>(createWindow("DragContainer", ss1.str()));
+				
+				if (item) {
+					item->setSize(CEGUI::UVector2(CEGUI::UDim(0, iconSize), CEGUI::UDim(0, iconSize)));
+					item->setTooltipText(name);
+					iconContainer->addChildWindow(item);
+					
+					std::stringstream ss2;
+					ss2 << "inventoryIcon_" << mIcons.size();
+					CEGUI::Window* iconWindow = createWindow("EmberLook/StaticImage", ss2.str());
+					if (iconWindow) {
+						iconWindow->setProperty("BackgroundEnabled", "false");
+						iconWindow->disable();
+			// 			iconWindow->setProperty("FrameEnabled", "false");
+						item->addChildWindow(iconWindow);
+						EntityIcon entityIcon(iconWindow, icon);
+						mIcons.push_back(entityIcon);
+						iconWindow->setProperty("Image", CEGUI::PropertyHelper::imageToString(icon->getImage()));
+					}
+				}
 			}
 		}
-		
 	}
 
 
