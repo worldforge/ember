@@ -32,8 +32,8 @@ const Ogre::String EmberEntityUserObject::s_TypeName = "EmberEntityPickerObject"
 
 
 EmberEntityUserObject::EmberEntityUserObject(EmberEntity* emberEntity,  Model::Model* model, ICollisionDetector* collisionDetector)
-: mModel(model),
-mEmberEntity(emberEntity),
+: mEmberEntity(emberEntity),
+mModel(model),
 mCollisionDetector(collisionDetector)
 // mCollisionObjects(collisionObjects),
 {

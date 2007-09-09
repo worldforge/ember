@@ -58,7 +58,7 @@ namespace EmberOgre {
 
 
 JesusEdit::JesusEdit()
- : Widget(), mInJesusMode(false), mCurrentConstruction(0), mCurrentlySelectedBlock(0), mCurrentlySelectedAttachPointNode(0), mJesus(0), mFile(0), mPreview(0)
+ : Widget(), mJesus(0), mInJesusMode(false), mCurrentConstruction(0), mCurrentlySelectedBlock(0), mCurrentlySelectedAttachPointNode(0), mPreview(0), mFile(0)
 {
 
 
@@ -548,7 +548,14 @@ Construction* JesusEdit::createNewConstructionFromBlueprint(Carpenter::BluePrint
 }
 
 JesusEditPreview::JesusEditPreview(GUIManager* guiManager, Jesus* jesus)
-: mGuiManager(guiManager), mBlueprint(0), mConstruction(0), mJesus(jesus), mSelectedAttachPointNode(0),mMinCameraDistance(0.5), mMaxCameraDistance(40)
+: 
+mJesus(jesus), 
+mConstruction(0), 
+mGuiManager(guiManager), 
+mBlueprint(0), 
+mMinCameraDistance(0.5), 
+mMaxCameraDistance(40),
+mSelectedAttachPointNode(0)
 {
 	mPreviewWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout(mGuiManager->getLayoutDir() + "JesusEditPreview.widget", "JesusEditPreview/");
 	
