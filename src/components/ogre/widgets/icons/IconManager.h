@@ -39,6 +39,7 @@ namespace Gui {
 
 namespace Icons {
 
+
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
