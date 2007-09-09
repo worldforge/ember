@@ -13,6 +13,10 @@ function Environment.buildWidget()
 	Environment.timeSlider = Environment.widget:getWindow("Time")
 	Environment.timeSlider = CEGUI.toSlider(Environment.timeSlider)
 	
+	Environment.widget:registerConsoleVisibilityToggleCommand("environment")
+	Environment.widget:enableCloseButton()
+	Environment.widget:hide()
+	
 end
 
 function ModelEdit_zoom_ValueChanged(args)
