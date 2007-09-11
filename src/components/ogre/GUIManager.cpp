@@ -40,17 +40,16 @@
 
 #include "EmberEntity.h"
 #include "EmberPhysicalEntity.h"
-// #include "PersonEmberEntity.h"
 #include "AvatarEmberEntity.h"
 
 #include "framework/IScriptingProvider.h"
 
-//#include "GUIScriptManager.h"
 #include "components/ogre/scripting/LuaScriptingProvider.h"
 
 #include "GUICEGUIAdapter.h"
 
-// #include <SDL.h>
+#include "widgets/icons/IconManager.h"
+
 
 #ifdef __WIN32__
 #include <windows.h>
@@ -82,6 +81,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 , mGuiSystem(0)
 , mGuiRenderer(0)
 , mLuaScriptModule(0)
+, mIconManager(0)
 {
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI );
 
@@ -235,30 +235,43 @@ void GUIManager::initialize()
 		throw e;
 	}
 	try {
-		//this should be defined in some kind of text file, which should be different depending on what game you're playing (like mason)
-		try {
-		//load the bootstrap script which will load all other scripts
-			Ember::EmberServices::getSingleton().getScriptingService()->loadScript("lua/Bootstrap.lua");
-		} catch (const Ogre::Exception& ex)
-		{
-			S_LOG_FAILURE("Error when loading bootstrap script. Error message: " << ex.getFullDescription());
-		}
-		
-		createWidget("StatusIconBar");
-		createWidget("IngameChatWidget");
-		createWidget("InventoryWidget");
-		createWidget("InspectWidget");
-		createWidget("MakeEntityWidget");
-		createWidget("JesusEdit");
-		createWidget("ServerWidget");
-		createWidget("Help");
-		createWidget("MeshPreview");
-
+		mIconManager = new Gui::Icons::IconManager();
 	} catch (const std::exception& e) {
-		S_LOG_FAILURE("GUIManager - error when initializing widgets: " << e.what());
-
+		S_LOG_FAILURE("GUIManager - error when creating icon manager: " << e.what());
 	} catch (const CEGUI::Exception& e) {
-		S_LOG_FAILURE("GUIManager - error when initializing widgets: " << e.getMessage().c_str());
+		S_LOG_FAILURE("GUIManager - error when creating icon manager: " << e.getMessage().c_str());
+	}
+	
+	std::vector<std::string> widgetsToLoad;
+	widgetsToLoad.push_back("StatusIconBar");
+	widgetsToLoad.push_back("IngameChatWidget");
+	widgetsToLoad.push_back("InventoryWidget");
+	widgetsToLoad.push_back("InspectWidget");
+	widgetsToLoad.push_back("MakeEntityWidget");
+	widgetsToLoad.push_back("JesusEdit");
+	widgetsToLoad.push_back("ServerWidget");
+	widgetsToLoad.push_back("Help");
+	widgetsToLoad.push_back("MeshPreview");
+	
+	///this should be defined in some kind of text file, which should be different depending on what game you're playing (like mason)
+	try {
+	///load the bootstrap script which will load all other scripts
+		Ember::EmberServices::getSingleton().getScriptingService()->loadScript("lua/Bootstrap.lua");
+	} catch (const std::exception& e) {
+		S_LOG_FAILURE("Error when loading bootstrap script. Error message: " << e.what());
+	} catch (const CEGUI::Exception& e) {
+		S_LOG_FAILURE("Error when loading bootstrap script. Error message: " << e.getMessage().c_str());
+	}	
+	
+	for (std::vector<std::string>::iterator I = widgetsToLoad.begin(); I != widgetsToLoad.end(); ++I) {
+		try {
+			S_LOG_VERBOSE("Loading widget " << *I);
+			createWidget(*I);
+		} catch (const std::exception& e) {
+			S_LOG_FAILURE("Error when initializing widget " << *I << " : " << e.what());
+		} catch (const CEGUI::Exception& e) {
+			S_LOG_FAILURE("Error when initializing widget " << *I << " : " << e.getMessage().c_str());
+		}
 	}
 	
 }
@@ -540,6 +553,11 @@ const std::string& GUIManager::getDefaultScheme() const
 EntityWorldPickListener* GUIManager::getEntityPickListener() const
 {
 	return mEntityWorldPickListener;
+}
+
+Gui::Icons::IconManager* GUIManager::getIconManager()
+{
+	return mIconManager;
 }
 
 

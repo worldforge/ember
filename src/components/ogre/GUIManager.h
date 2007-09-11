@@ -61,6 +61,12 @@ class GUICEGUIAdapter;
 class EntityWorldPickListener;
 class AvatarController;
 
+namespace Gui {
+namespace Icons {
+class IconManager;
+}
+}
+
 /**
  * This class will be responsible for all the GUI related things
  */
@@ -234,6 +240,8 @@ public:
 	const Ember::ConsoleCommandWrapper ToggleInputMode;
 	const Ember::ConsoleCommandWrapper ReloadGui;
 	
+	Gui::Icons::IconManager* getIconManager();
+	
 protected:
 
 	/**
@@ -297,6 +305,8 @@ protected:
 	CEGUI::LuaScriptModule* mLuaScriptModule;
 
 	void scriptingServiceStopping();
+	
+	Gui::Icons::IconManager* mIconManager;
 };
 }
 
