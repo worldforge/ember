@@ -1,3 +1,135 @@
+2007-09-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/scripting/bindings/lua/GUIManager.pkg, src/components/ogre/scripting/bindings/lua/ModelDefinition.pkg, src/components/ogre/scripting/bindings/lua/MovableObjectRenderer.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
+
+2007-09-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/InventoryWidget.cpp, src/components/ogre/widgets/InventoryWidget.h: more prototyping to get the inventory working
+
+2007-09-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/environment.modeldef.xml, src/components/ogre/modeldefinitions/items.modeldef.xml, src/components/ogre/modeldefinitions/tools.modeldef: updated definitions
+
+2007-09-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/ModelEdit.lua: also set the camera distance
+
+2007-09-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/MovableObjectRenderer.cpp, src/components/ogre/widgets/MovableObjectRenderer.h: added method for the absolute camera distance
+
+2007-09-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/InventoryWidget.cpp, src/components/ogre/widgets/InventoryWidget.h: fixed a possible segfault if the entity wasn't visible when recieving updates
+
+2007-09-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/icons/IconRenderer.cpp: use the distance specified in the ViewDefinition
+
+2007-09-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/icons/IconImageStore.cpp, src/components/ogre/widgets/icons/IconStore.cpp: clean up at destruction
+
+2007-09-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/model/ModelDefinition.cpp, src/components/ogre/model/XMLModelDefinitionSerializer.cpp: fixed some problems with how views were saved and made sure that they get sane default values when created
+
+2007-09-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/SimpleRenderContext.cpp, src/components/ogre/SimpleRenderContext.h: added accessor for the absolute camera distance, which could be used for implementing the Model::ViewDefinitions better
+
+2007-09-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/GUIManager.cpp, src/components/ogre/GUIManager.h: keep a reference of the IconManager here for all other UI functions to use. Also refactored the widget creation code into something more robust. We should try to move as much of these C++ widgets over to Lua however, though only those that are suited.
+
+2007-09-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/WorldEmberEntity.cpp, src/components/ogre/WorldEmberEntity.h, src/components/ogre/terrain/TerrainGenerator.cpp, src/components/ogre/terrain/TerrainGenerator.h: if there's a "surfaces" attribute defined, use that for determining what surfaces to use. Also move all terrain parsing to its own class.
+
+2007-09-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/model/Model.cpp: 
+		* fixed a crash when using a model which only has a particle system and no entities
+		* force hardware recalculating of normals, since most models are scaled. This means that non-scaled models will also have their normals recalculated though. With Ogre 1.6 this will be improved since Ogre then will take care of all this.
+
+2007-09-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Give.lua: use the correct hide method
+	* src/components/ogre/widgets/InventoryWidget.cpp: continued on prototyping for movable icons
+
+2007-09-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/AssetsManager.layout: fixed incorrect naming of the window and tabs
+	* src/components/ogre/widgets/Bootstrap.lua: load the assets manager and the environment widget at startup
+
+2007-09-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Environment.lua: hide the widget by default
+
+2007-09-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* configure.ac: added the icon dir
+
+2007-09-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberEntityUserObject.cpp, src/components/ogre/widgets/JesusEdit.cpp: fixed some nagging comiler warnings
+
+2007-09-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/SimpleRenderContext.cpp, src/components/ogre/SimpleRenderContext.h: added accessor for the camera node
+
+2007-09-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/ModelEdit.layout, src/components/ogre/widgets/ModelEdit.lua: added simple support for saving the current camera setting as an icon view
+
+2007-09-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityCEGUITexture.cpp: fixed a bug where the original size instead of the power-of-two-adjusted one was used, resulting in incomplete images being defined
+
+2007-09-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/icons/IconManager.cpp, src/components/ogre/widgets/icons/IconManager.h: when rendering an eris type, use a dummy entity to allow the modelmapping engine to decide which model to show
+
+2007-09-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/icons/IconRenderer.cpp: if a view named "icon" is defined for the model, use that
+
+2007-09-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/model/ModelDefinition.cpp, src/components/ogre/model/ModelDefinition.h, src/components/ogre/model/XMLModelDefinitionSerializer.cpp, src/components/ogre/model/XMLModelDefinitionSerializer.h: added support for Views, which are simple camera settings
+
+2007-09-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/scripting/bindings/lua/AssetsManager.pkg, src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/Icon.pkg, src/components/ogre/scripting/bindings/lua/IconManager.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/scripting/bindings/lua/required.h, src/components/ogre/scripting/bindings/lua/ogre/Ogre.pkg, src/components/ogre/scripting/bindings/lua/ogre/OgreTexture.pkg, src/components/ogre/scripting/bindings/lua/ogre/OgreTextureManager.pkg, src/components/ogre/scripting/bindings/lua/ogre/lua_Ogre.cpp: updated bindings
+
+2007-09-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/JesusEdit.cpp: adapt to changes in the MoveableObjectRenderer
+
+2007-09-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/InventoryWidget.cpp, src/components/ogre/widgets/InventoryWidget.h, src/components/ogre/widgets/InventoryWidget.xml: initial experimental support for icons
+
+2007-09-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/IngameChatWidget.cpp: fixed a bug where the camera reference never was set
+
+2007-09-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Environment.layout, src/components/ogre/widgets/Environment.lua: added a simple environment widget for changing environment values. Currently it only allows for setting the time, but the idea is to allow for it to override all environment aspects such as sun, sky, lightning, fog and so on.
+
+2007-09-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/AssetsManager.cpp, src/components/ogre/widgets/AssetsManager.h, src/components/ogre/widgets/AssetsManager.layout, src/components/ogre/widgets/AssetsManager.lua, src/components/ogre/widgets/Makefile.am: added an assets manager which allows for browsing through all assets in the system. Currently it only supports textures.
+
+2007-09-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/icons/Icon.cpp, src/components/ogre/widgets/icons/Icon.h, src/components/ogre/widgets/icons/IconImageStore.cpp, src/components/ogre/widgets/icons/IconImageStore.h, src/components/ogre/widgets/icons/IconManager.cpp, src/components/ogre/widgets/icons/IconManager.h, src/components/ogre/widgets/icons/IconRenderer.cpp, src/components/ogre/widgets/icons/IconRenderer.h, src/components/ogre/widgets/icons/IconStore.cpp, src/components/ogre/widgets/icons/IconStore.h, src/components/ogre/widgets/icons/Makefile.am: added an icon management framework which keeps track of and renders all icons
+
+2007-09-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/Makefile.am, src/components/ogre/SimpleRenderContext.cpp, src/components/ogre/SimpleRenderContext.h, src/components/ogre/widgets/EntityCEGUITexture.cpp, src/components/ogre/widgets/EntityCEGUITexture.h, src/components/ogre/widgets/ModelRenderer.cpp, src/components/ogre/widgets/MovableObjectRenderer.cpp, src/components/ogre/widgets/OgreEntityRenderer.cpp: refactored the rendering component into its own class separate from the EntityCEGUITexture so that it can be reused in other contexts
+
 2007-08-26 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/widgets/TerrainEditor.layout: better layout

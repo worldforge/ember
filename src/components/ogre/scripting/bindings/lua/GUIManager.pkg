@@ -73,5 +73,7 @@ class GUIManager
 
 	EmberOgre::EntityWorldPickListener* getEntityPickListener() const;
 
+	EmberOgre::Gui::Icons::IconManager* getIconManager();
+
 };
 }

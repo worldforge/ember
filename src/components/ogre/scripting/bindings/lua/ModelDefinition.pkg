@@ -5,6 +5,29 @@ typedef std::vector<EmberOgre::Model::SubModelDefinition*> SubModelDefinitionsSt
 typedef std::vector<EmberOgre::Model::PartDefinition*> PartDefinitionsStore;
 typedef std::vector<EmberOgre::Model::SubEntityDefinition*> SubEntityDefinitionsStore;
 typedef std::vector<EmberOgre::Model::AttachPointDefinition> AttachPointDefinitionStore;
+typedef std::map<std::string, EmberOgre::Model::ViewDefinition*> ViewDefinitionStore;
+
+
+/**
+A simple struct for defining a certain view of the Model. These settings needs to be applied to the camera rendering the Model.
+*/
+struct ViewDefinition
+{
+	/**
+	The name of the view.
+	*/
+	std::string Name;
+	
+	/**
+	The rotation of the camera related to the Model.
+	*/
+	Ogre::Quaternion Rotation;
+	
+	/**
+	The distance of the camera from the Model.
+	*/
+	float Distance;
+};
 
 struct AttachPointDefinition
 {
@@ -142,6 +165,24 @@ class ModelDefinition : public Ogre::Resource {
 	
 	const std::vector<EmberOgre::Model::AttachPointDefinition>& getAttachPointsDefinitions();
 
+	/**
+	Creates and returns a new ViewDefinition with the supplied name.
+	@param viewname The name of the view
+	@return A pointer to the new view.
+	*/
+	ViewDefinition* createViewDefinition(const std::string& viewname);
+	
+	/**
+	 * Returns all views defined.
+	 * @return 
+	 */
+	const ViewDefinitionStore& getViewDefinitions();
+	
+	/**
+	 * Removed a named view. If no view can be found, no exception will be thrown.
+	 * @param name The name of the view to to remove.
+	 */
+	void removeViewDefinition(const std::string name);
 	
 	/**
 	 *    Reloads all the Model instances that uses this definition.
