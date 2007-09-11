@@ -59,6 +59,9 @@ void IconRenderer::render(Model::Model* model, Icon* icon)
 			mRenderContext->resetCameraOrientation();
 			mRenderContext->repositionCamera();
 			mRenderContext->showFull(model);
+			if (I->second->Distance) {
+				mRenderContext->setCameraDistance(I->second->Distance);
+			}
 			Ogre::Camera* camera = mRenderContext->getCamera();
 			mRenderContext->getCameraRootNode()->setOrientation(I->second->Rotation);
 		} else {
