@@ -34,6 +34,7 @@
 #include "../EmberOgre.h"
 #include "../Avatar.h"
 #include "../MathConverter.h"
+#include "../GUIManager.h"
 #include "InventoryWidget.h"
 #include <Eris/TypeInfo.h>
 
@@ -41,7 +42,7 @@
 #include <elements/CEGUIDragContainer.h>
 #include <CEGUIPropertyHelper.h>
 
-
+using namespace CEGUI;
 namespace EmberOgre {
 
 
@@ -49,7 +50,7 @@ namespace EmberOgre {
 // template<> WidgetLoader WidgetLoaderHolder<InventoryWidget>::loader("InventoryWidget", &createWidgetInstance);
 
 InventoryWidget::InventoryWidget()
-: mIconsUsed(0)
+: mIconsUsed(0), mEntityIconManager(0)
 {
 }
 
@@ -76,7 +77,21 @@ void InventoryWidget::buildWidget()
 
 	enableCloseButton();
 	
-	mIconManager = new Gui::Icons::IconManager();
+	mIconManager = mGuiManager->getIconManager();
+	mEntityIconManager = new EntityIconManager(*mGuiManager);
+	CEGUI::Window* container = getWindow("IconContainer");
+	
+	int iconSize(64);
+	for (int i = 0; i < 8; ++i) {
+		int yPosition = mSlots.size() / 4;
+		int xPosition = mSlots.size() % 4;
+		
+		EntityIconSlot* slot = mEntityIconManager->createSlot();
+		slot->getWindow()->setPosition(CEGUI::UVector2(CEGUI::UDim(0, iconSize * xPosition), CEGUI::UDim(0, iconSize * yPosition)));
+		container->addChildWindow(slot->getWindow());
+		mSlots.push_back(slot);
+	
+	}
 	
 }
 
@@ -103,13 +118,17 @@ void InventoryWidget::addedEntity(EmberEntity* entity) {
 	
 		Gui::Icons::Icon* icon = mIconManager->getIcon(iconSize, entity->getType());
 		if (icon) {
-			int yPosition = mIcons.size() / 4;
-			int xPosition = mIcons.size() % 4;
+			int yPosition = mSlots.size() / 4;
+			int xPosition = mSlots.size() % 4;
 			
-			std::stringstream ss3;
-			ss3 << "inventoryContainer_" << mIcons.size();
+			EntityIconSlot* slot = mEntityIconManager->createSlot();
+			slot->getWindow()->setPosition(CEGUI::UVector2(CEGUI::UDim(0, iconSize * xPosition), CEGUI::UDim(0, iconSize * yPosition)));
+			container->addChildWindow(slot->getWindow());
+			EntityIcon* entityIcon = mEntityIconManager->createIcon(icon);
+			slot->addEntityIcon(entityIcon);
+			mSlots.push_back(slot);
 			
-			CEGUI::Window* iconContainer = createWindow("DefaultGUISheet", ss3.str());
+/*			CEGUI::Window* iconContainer = createWindow("DefaultGUISheet", ss3.str());
 			if (iconContainer) {
 			
 				iconContainer->setSize(CEGUI::UVector2(CEGUI::UDim(0, iconSize), CEGUI::UDim(0, iconSize)));
@@ -139,7 +158,7 @@ void InventoryWidget::addedEntity(EmberEntity* entity) {
 						iconWindow->setProperty("Image", CEGUI::PropertyHelper::imageToString(icon->getImage()));
 					}
 				}
-			}
+			}*/
 		}
 	}
 
@@ -179,9 +198,10 @@ bool InventoryWidget::Wield_Click(const CEGUI::EventArgs& args)
 }
 
 
-EntityIcon::EntityIcon(CEGUI::Window* image, Gui::Icons::Icon* icon)
-: mImage(image), mIcon(icon)
+EntityIcon::EntityIcon(EntityIconManager& manager, CEGUI::DragContainer* dragContainer, CEGUI::Window* image, Gui::Icons::Icon* icon)
+: mManager(manager), mDragContainer(dragContainer), mImage(image), mIcon(icon), mUserData(*this), mCurrentSlot(0)
 {
+	mDragContainer->setUserData(&mUserData);
 }
 
 CEGUI::Window* EntityIcon::getImage()
@@ -194,5 +214,175 @@ Gui::Icons::Icon* EntityIcon::getIcon()
 	return mIcon;
 }
 
+CEGUI::DragContainer* EntityIcon::getDragContainer()
+{
+	return mDragContainer;
+}
+
+void EntityIcon::setSlot(EntityIconSlot* slot)
+{
+	if (mCurrentSlot) {
+		mCurrentSlot->notifyIconRemoved();
+	}
+	mCurrentSlot = slot;
+}
+
+EntityIconSlot* EntityIcon::getSlot()
+{
+	return mCurrentSlot;
+}
+
+
+
+EntityIconUserData::EntityIconUserData(EntityIcon& entityIcon)
+: mEntityIcon(entityIcon)
+{
+}
+
+EntityIcon& EntityIconUserData::getEntityIcon()
+{
+	return mEntityIcon;
+}
+
+
+
+
+
+
+
+EntityIconSlot::EntityIconSlot(EntityIconManager& manager, CEGUI::Window* container)
+: mManager(manager), mContainer(container), mContainedIcon(0)
+{
+	BIND_CEGUI_EVENT(container, CEGUI::Window::EventDragDropItemEnters, EntityIconSlot::handleDragEnter)
+	BIND_CEGUI_EVENT(container, CEGUI::Window::EventDragDropItemLeaves, EntityIconSlot::handleDragLeave)
+	BIND_CEGUI_EVENT(container, CEGUI::Window::EventDragDropItemDropped, EntityIconSlot::handleDragDropped)
+}
+
+EntityIconSlot::~EntityIconSlot()
+{
+}
+
+
+bool EntityIconSlot::addEntityIcon(EntityIcon* icon)
+{
+	if (!mContainedIcon) {
+		mContainedIcon = icon;
+		mContainer->addChildWindow(icon->getDragContainer()); 
+		icon->setSlot(this);
+	} else {
+		S_LOG_WARNING("Trying to add entity icon to slot that already has one icon contained.");
+	}
+	return true;
+}
+
+EntityIcon* EntityIconSlot::removeEntityIcon()
+{
+	if (mContainedIcon) {
+		mContainer->removeChildWindow(mContainedIcon->getDragContainer());
+		EntityIcon* icon = mContainedIcon;
+		icon->setSlot(0);
+		return icon;
+	} else {
+		return 0;
+	}
+}
+
+void EntityIconSlot::notifyIconRemoved()
+{
+	mContainedIcon = 0;
+}
+
+CEGUI::Window* EntityIconSlot::getWindow()
+{
+	return mContainer;
+}
+
+bool EntityIconSlot::handleDragEnter(const CEGUI::EventArgs& args)
+{
+	return true;
+}
+bool EntityIconSlot::handleDragLeave(const CEGUI::EventArgs& args)
+{
+	return true;
+}
+bool EntityIconSlot::handleDragDropped(const CEGUI::EventArgs& args)
+{
+	const DragDropEventArgs& ddea = static_cast<const DragDropEventArgs&>(args);
+	DragContainer* container = ddea.dragDropItem;
+	if (container) {
+		EntityIconUserData* mUserData = static_cast<EntityIconUserData*>(container->getUserData());
+		if (mUserData) {
+			EntityIcon& entityIcon = mUserData->getEntityIcon();
+			addEntityIcon(&entityIcon);
+		}
+	}
+	return true;
+}
+
+
+
+EntityIconManager::EntityIconManager(GUIManager& guiManager)
+: mGuiManager(guiManager), mIconsCounter(0), mSlotsCounter(0)
+{
+}
+
+
+EntityIconSlot* EntityIconManager::createSlot()
+{
+	std::stringstream ss;
+	ss << "entityIconSlot" << mSlotsCounter++;
+	
+	CEGUI::Window* container = mGuiManager.createWindow("DefaultGUISheet", ss.str());
+	container->setSize(CEGUI::UVector2(CEGUI::UDim(0, 64), CEGUI::UDim(0, 64)));
+	EntityIconSlot* slot = new EntityIconSlot(*this, container);
+	mSlots.push_back(slot);
+	return slot;
+}
+
+EntityIcon* EntityIconManager::createIcon(Gui::Icons::Icon* icon)
+{
+	std::stringstream ss;
+	ss << "entityIcon" << mIconsCounter++;
+	
+	CEGUI::DragContainer* item = static_cast<CEGUI::DragContainer*>(mGuiManager.createWindow("DragContainer", ss.str()));
+	
+	if (item) {
+		item->setSize(CEGUI::UVector2(CEGUI::UDim(0, 64), CEGUI::UDim(0, 64)));
+		//item->setTooltipText(name);
+		
+		ss << "Image" ;
+		CEGUI::Window* iconWindow = mGuiManager.createWindow("EmberLook/StaticImage", ss.str());
+		if (iconWindow) {
+			iconWindow->setProperty("BackgroundEnabled", "false");
+			iconWindow->disable();
+// 			iconWindow->setProperty("FrameEnabled", "false");
+			iconWindow->setProperty("Image", CEGUI::PropertyHelper::imageToString(icon->getImage()));
+			item->addChildWindow(iconWindow);
+			
+			EntityIcon* entityIcon = new EntityIcon(*this, item, iconWindow, icon);
+			mIcons.push_back(entityIcon);
+			return entityIcon;
+		}
+	}
+	return 0;
+}
+
+void EntityIconManager::destroyIcon(EntityIcon* icon)
+{
+	EntityIconStore::iterator I = std::find(mIcons.begin(), mIcons.end(), icon);
+	if (I != mIcons.end()) {
+		mIcons.erase(I);
+		delete icon;
+	}
+}
+
+void EntityIconManager::destroySlot(EntityIconSlot* slot)
+{
+	EntityIconSlotStore::iterator I = std::find(mSlots.begin(), mSlots.end(), slot);
+	if (I != mSlots.end()) {
+		mSlots.erase(I);
+		delete slot;
+	}
+}
 
 };

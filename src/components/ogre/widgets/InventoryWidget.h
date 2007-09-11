@@ -31,6 +31,9 @@
 #include "icons/Icon.h"
 #include "icons/IconManager.h"
 
+namespace CEGUI {
+class DragContainer;
+}
 
 
 namespace EmberOgre {
@@ -39,18 +42,90 @@ class AvatarEmberEntity;
 class Widget;
 class GUIManager;
 class EmberEntityFactory;
+class EntityIconManager;
+class EntityIconSlot;
+class EntityIcon;
+class EntityIconUserData;
+
+class EntityIconSlot
+{
+friend class EntityIconManager;
+public:
+	
+	bool addEntityIcon(EntityIcon* icon);
+	EntityIcon* removeEntityIcon();
+	
+	CEGUI::Window* getWindow();
+	
+	void notifyIconRemoved();
+protected:
+	EntityIconSlot(EntityIconManager& manager, CEGUI::Window* container);
+	virtual ~EntityIconSlot();
+	
+	EntityIconManager& mManager;
+	CEGUI::Window* mContainer;
+	EntityIcon* mContainedIcon;
+	
+	bool handleDragEnter(const CEGUI::EventArgs& args);
+	bool handleDragLeave(const CEGUI::EventArgs& args);
+	bool handleDragDropped(const CEGUI::EventArgs& args);
+	
+
+};
+
+class EntityIconUserData
+{
+public:
+	EntityIconUserData(EntityIcon& entityIcon);
+	
+	EntityIcon& getEntityIcon();
+private:
+	EntityIcon& mEntityIcon;
+};
 
 class EntityIcon
 {
+friend class EntityIconManager;
 public:
-	EntityIcon(CEGUI::Window* image, Gui::Icons::Icon* icon);
 	
 	CEGUI::Window* getImage();
+	CEGUI::DragContainer* getDragContainer();
 	Gui::Icons::Icon* getIcon();
+	void setSlot(EntityIconSlot* slot);
+	EntityIconSlot* getSlot();
 
 protected:
+	EntityIcon(EntityIconManager& manager, CEGUI::DragContainer* dragContainer, CEGUI::Window* image, Gui::Icons::Icon* icon);
+	
+	EntityIconManager& mManager;
+	CEGUI::DragContainer* mDragContainer;
 	CEGUI::Window* mImage;
 	Gui::Icons::Icon* mIcon;
+	EntityIconUserData mUserData;
+	EntityIconSlot* mCurrentSlot;
+};
+
+
+
+class EntityIconManager
+{
+public:
+typedef std::vector<EntityIconSlot*> EntityIconSlotStore;
+typedef std::vector<EntityIcon*> EntityIconStore;
+
+EntityIconManager(GUIManager& guiManager);
+
+EntityIconSlot* createSlot();
+void destroySlot(EntityIconSlot* slot);
+
+EntityIcon* createIcon(Gui::Icons::Icon* icon);
+void destroyIcon(EntityIcon* icon);
+
+protected:
+EntityIconSlotStore mSlots;
+EntityIconStore mIcons;
+GUIManager& mGuiManager;
+int mIconsCounter, mSlotsCounter;
 };
 
 /**
@@ -67,7 +142,7 @@ public:
 protected:
 	CEGUI::Listbox* mListBox;
 	std::map<EmberEntity*, CEGUI::ListboxItem*> mListBoxMap;
-	typedef std::vector<EntityIcon> IconStore;
+	typedef std::vector<EntityIconSlot*> IconSlotStore;
 
 	void removedEntity(EmberEntity* emberEntity);
 	void addedEntity(EmberEntity* emberEntity);
@@ -78,7 +153,8 @@ protected:
 	Gui::Icons::IconManager* mIconManager;
 	int mIconsUsed;
 	
-	IconStore mIcons;
+	IconSlotStore mSlots;
+	EntityIconManager* mEntityIconManager;
 	
 };
 
