@@ -58,10 +58,12 @@ class IngameChatWidget : public Widget {
 			virtual ~MovableObjectListener();
 			
 			virtual bool objectRendering (const Ogre::MovableObject * movableObject, const Ogre::Camera * camera);
+			void setObserving(bool isObserving);
 			
 		private:
 			EntityObserver& mEntityObserver;
 			EmberPhysicalEntity* mEntity;
+			bool mIsObserving;
 	};
 	
 	class EntityObserver : public virtual sigc::trackable

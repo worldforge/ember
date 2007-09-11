@@ -305,16 +305,25 @@ void IngameChatWidget::removeWidget(const std::string& windowName)
 
 
 IngameChatWidget::MovableObjectListener::MovableObjectListener(EntityObserver& entityObserver, EmberPhysicalEntity* entity)
-: mEntityObserver(entityObserver), mEntity(entity)
+: mEntityObserver(entityObserver), mEntity(entity), mIsObserving(false)
 {
-///TODO: make sure that this doesn't interfere with other listeners
-	mEntity->getModel()->setListener(this);
 }
 
 IngameChatWidget::MovableObjectListener::~MovableObjectListener()
 {
-	mEntity->getModel()->setListener(0);
+	setObserving(false);
 }
+
+void IngameChatWidget::MovableObjectListener::setObserving(bool isObserving)
+{
+	if (isObserving) {
+		///TODO: make sure that this doesn't interfere with other listeners
+		mEntity->getModel()->setListener(this);
+	} else {
+		mEntity->getModel()->setListener(0);
+	}
+}
+
 
 bool IngameChatWidget::MovableObjectListener::objectRendering (const Ogre::MovableObject * movableObject, const Ogre::Camera * camera)
 {
@@ -408,6 +417,7 @@ void IngameChatWidget::EntityObserver::showLabel()
 		mLabel = mChatWidget.getLabelPool().checkoutWidget();
 		mLabel->setEntity(mEntity);
 	}
+	mMovableObjectListener.setObserving(true);
 }
 void IngameChatWidget::EntityObserver::hideLabel()
 {
@@ -415,6 +425,7 @@ void IngameChatWidget::EntityObserver::hideLabel()
 		mChatWidget.getLabelPool().returnWidget(mLabel);
 		mLabel = 0;
 	}
+	mMovableObjectListener.setObserving(false);
 }
 
 
