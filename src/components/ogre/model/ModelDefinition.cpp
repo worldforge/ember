@@ -58,6 +58,9 @@ ModelDefinition::~ModelDefinition()
 	for (ActionDefinitionsStore::iterator I = mActions.begin(); I != mActions.end(); ++I) {
 		delete *I;
 	}
+	for (ViewDefinitionStore::iterator I = mViews.begin(); I != mViews.end(); ++I) {
+		delete I->second;
+	}
 //	delete(mContentOffset);
     // have to call this here reather than in Resource destructor
     // since calling virtual methods in base destructors causes crash
@@ -109,6 +112,8 @@ ViewDefinition* ModelDefinition::createViewDefinition(const std::string& viewnam
 	} else {
 		ViewDefinition* def = new ViewDefinition();
 		def->Name = viewname;
+		def->Distance = 0;
+		def->Rotation = Ogre::Quaternion::IDENTITY;
 		mViews.insert(ViewDefinitionStore::value_type(viewname, def));
 		return def;
 	}

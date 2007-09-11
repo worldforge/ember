@@ -755,7 +755,7 @@ void XMLModelDefinitionSerializer::exportViews(ModelDefinitionPtr modelDef, Embe
 		Ember::TiXmlElement distanceElem("distance");
 		std::stringstream ss;
 		ss << I->second->Distance;
-		distanceElem.SetValue(ss.str().c_str());
+		distanceElem.InsertEndChild(Ember::TiXmlText(ss.str().c_str()));
 		viewElem.InsertEndChild(distanceElem);
 
 		Ember::TiXmlElement rotation("rotation");
