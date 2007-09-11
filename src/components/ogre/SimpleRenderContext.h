@@ -118,6 +118,17 @@ public:
 	 */
 	float getCameraDistance() const;
 	
+	/**
+	 *    Sets the absolute distance of the camera.
+	 * @param distance 
+	 */
+// 	void setCameraAbsoluteDistance(Ogre::Real distance);
+	
+	/**
+	 *    Gets the absolute distance in world units.
+	 * @return 
+	 */
+	float getAbsoluteCameraDistance() const;
 	
 	/**
 	 *    Gets the rotation of the entity.

@@ -149,6 +149,17 @@ void SimpleRenderContext::setCameraDistance(Ogre::Real distance)
 	mCamera->setPosition(pos);
 }
 
+// void SimpleRenderContext::setCameraAbsoluteDistance(Ogre::Real distance)
+// {
+// 	Ogre::Vector3 pos(0,0,distance);
+// 	mCamera->setPosition(pos);
+// }
+
+float SimpleRenderContext::getAbsoluteCameraDistance() const
+{
+	return mCamera->getPosition().z;
+}
+
 Ogre::Quaternion SimpleRenderContext::getEntityRotation()
 {
 	return mCamera->getDerivedOrientation().Inverse();
