@@ -11,15 +11,13 @@
 	</model>
 	
 	<model name="fire">
-		<ParticleSystems>
-			<ParticleSystem script="Examples/Smoke">
-				<Bindings>
-					<Binding emittervar="emission_rate" atlasattribute="status" />
-				</Bindings>
-				
-			</ParticleSystem>
-			
-		</ParticleSystems>
+		<particlesystems>
+			<particlesystem script="Examples/Smoke">
+				<bindings>
+					<binding emittervar="emission_rate" atlasattribute="status" />
+				</bindings>
+			</particlesystem>
+		</particlesystems>
 	</model>	
 	
 	<model name="lumber">

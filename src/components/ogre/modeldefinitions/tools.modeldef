@@ -16,6 +16,12 @@
         </submodels>
         <actions />
         <attachpoints />
+        <views>
+            <view name="icon">
+                <1.46732e-33 />
+                <rotation x="-0.577350" y="0.577350" z="-0.577350" degrees="120.000008" />
+            </view>
+        </views>
     </model>
     	
     <model name="hammer" usescaleof="all" showcontained="true">
@@ -133,6 +139,11 @@
             </submodel>
         </submodels>
         <actions />
+        <views>
+            <view name="icon">
+                <rotation x="0.000000" y="0.000000" z="-1.000000" degrees="180.000015" />
+            </view>
+        </views>
     </model>
     <model name="trowel" usescaleof="none" scale="1.000000" showcontained="true">
         <translate x="0.000000" y="0.100000" z="0.000000" />
