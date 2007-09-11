@@ -66,6 +66,14 @@ public:
      */
     float getCameraDistance();
     
+	/**
+	 *    Gets the distance of the camera from the model in world units.
+	 * @return 
+	 */
+	float getAbsoluteCameraDistance();
+	
+   
+    
     
     /**
      * Returns whether input catching (and also rotation of the model) is allowed.

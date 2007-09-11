@@ -179,6 +179,11 @@ float MovableObjectRenderer::getCameraDistance()
 	return  mTexture->getRenderContext()->getCameraDistance();
 }
 
+float MovableObjectRenderer::getAbsoluteCameraDistance()
+{
+	return  mTexture->getRenderContext()->getAbsoluteCameraDistance();
+}
+
 void MovableObjectRenderer::catchInput()
 {
 	GUIManager::getSingleton().getInput().addAdapter(this);
