@@ -27,6 +27,24 @@ class Environment;
 class Foliage;
 }
 
+class TerrainParser
+{
+public:
+	TerrainParser(TerrainGenerator* terrainGenerator);
+	
+	/**
+	 *    Extracts terrain updates from the element and updates the terrain.
+	 * @param v 
+	 */
+	void updateTerrain(const Atlas::Message::Element& terrain);
+	
+	void createShaders(const Atlas::Message::Element& surfaces);
+	void createDefaultShaders();
+
+private:
+	TerrainGenerator* mTerrainGenerator;
+};
+
 class EmberEntity;
 class TerrainGenerator;
 
@@ -58,16 +76,11 @@ protected:
 
 	void addArea(TerrainArea* area);
 	
-	/**
-	 *    Extracts terrain updates from the element and updates the terrain.
-	 * @param v 
-	 */
-	void updateTerrain(const Atlas::Message::Element& terrain);
-	
-		
 	Environment::Foliage* mFoliage;
 	
 	Environment::Environment* mEnvironment;
+	
+	std::auto_ptr<TerrainParser> mTerrainParser;
 };
 
 }

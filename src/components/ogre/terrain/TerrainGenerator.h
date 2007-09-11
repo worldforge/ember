@@ -200,6 +200,14 @@ public:
 	 */
 	TerrainShader* getFoliageShader() const;
 
+
+	/**
+	 *    Sets the shader to be used for foliage shading. This will be used for lookup where to place foliage.
+	 * @param shader 
+	 */
+	void setFoliageShader(TerrainShader* shader);
+
+
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method
 	 * @param command 
@@ -235,6 +243,18 @@ public:
 	ISceneManagerAdapter* getAdapter() const;
 	
 	inline const TerrainPagestore& getTerrainPages() const;
+	
+	void createDefaultShaders();
+	
+	/**
+	 * Create and registers a new texture shader.
+	 * @param textureName 
+	 * @param mercatorShader 
+	 * @return 
+	 */
+	TerrainShader* createShader(const std::string& textureName, Mercator::Shader* mercatorShader);
+	
+	TerrainShader* createShader(Ogre::MaterialPtr material, Mercator::Shader* mercatorShader);
 	
 protected:
 
@@ -305,15 +325,6 @@ protected:
 	*/
 	std::list<TerrainShader*> mBaseShaders;
 	 
-	/**
-	 * Create and registers a new texture shader.
-	 * @param textureName 
-	 * @param mercatorShader 
-	 * @return 
-	 */
-	TerrainShader* createShader(const std::string& textureName, Mercator::Shader* mercatorShader);
-	
-	TerrainShader* createShader(Ogre::MaterialPtr material, Mercator::Shader* mercatorShader);
 	
 	void reloadTerrain(std::vector<TerrainPosition>& positions);
 	void updateHeightMapAndShaders(const std::set<TerrainPage*>& pagesToUpdate);

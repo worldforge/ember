@@ -83,26 +83,10 @@ TerrainGenerator::TerrainGenerator(ISceneManagerAdapter* adapter)
     loadTerrainOptions();
 	mTerrainInfo.setPageIndicesSize(adapter->getPageSize());
 	mTerrain = new Mercator::Terrain(Mercator::Terrain::SHADED); //, mOptions.pageSize - 1);
-
-  
+	
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 
-	
-	
-    createShader(std::string(configSrv->getValue("shadertextures", "rock")), new Mercator::FillShader());
-	
-    createShader(std::string(configSrv->getValue("shadertextures", "sand")), new Mercator::BandShader(-2.f, 1.5f)); // Sandy beach
- 
- 	mGrassShader = createShader(std::string(configSrv->getValue("shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f)); // Grass
-
-
-
-
-//      createShader(std::string(configSrv->getValue("shadertextures", "snow")), new Mercator::HighShader(110.f)); // Snow
-//      createShader(std::string(configSrv->getValue("shadertextures", "seabottom")), new Mercator::DepthShader(0.f, -10.f)); // Underwater
-
-
-//    this->addShader(new TerrainShader(std::string(configSrv->getVariable("Shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f))); // Grass
+  
    
 	
 //	mTerrainPageSource = new EmberTerrainPageSource(this);
@@ -360,6 +344,39 @@ void TerrainGenerator::buildHeightmap()
 		}
 	}
 }
+
+void TerrainGenerator::createDefaultShaders()
+{
+	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
+
+	
+	
+    createShader(std::string(configSrv->getValue("shadertextures", "rock")), new Mercator::FillShader());
+	
+    createShader(std::string(configSrv->getValue("shadertextures", "sand")), new Mercator::BandShader(-2.f, 1.5f)); // Sandy beach
+ 
+ 	mGrassShader = createShader(std::string(configSrv->getValue("shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f)); // Grass
+
+
+
+
+//      createShader(std::string(configSrv->getValue("shadertextures", "snow")), new Mercator::HighShader(110.f)); // Snow
+//      createShader(std::string(configSrv->getValue("shadertextures", "seabottom")), new Mercator::DepthShader(0.f, -10.f)); // Underwater
+
+
+//    this->addShader(new TerrainShader(std::string(configSrv->getVariable("Shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f))); // Grass
+
+}
+
+// void TerrainGenerator::createShaders(WorldEmberEntity* worldEntity)
+// {
+// 	if (worldEntity) {
+// 		if (worldEntity->hasAttr("surfaces")) {
+// 			
+// 		}
+// 	}
+// }
+
 
 void TerrainGenerator::registerSceneManagerAdapter(ISceneManagerAdapter* adapter)
 {
@@ -734,6 +751,10 @@ TerrainShader* TerrainGenerator::getFoliageShader() const
 	return mGrassShader;
 }
 
+void TerrainGenerator::setFoliageShader(TerrainShader* shader)
+{
+	mGrassShader = shader;
+}
 
 
 void TerrainGenerator::runCommand(const std::string &command, const std::string &args)

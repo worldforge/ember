@@ -24,6 +24,7 @@
 #include "EmberEntity.h"
 #include "model/Model.h"
 #include "terrain/TerrainGenerator.h"
+#include "terrain/TerrainShader.h"
 #include "WorldEmberEntity.h"
 #include "environment/Foliage.h"
 #include "environment/Environment.h"
@@ -34,6 +35,10 @@
 
 //#include "components/ogre/EmberSceneManager/include/EmberTerrainSceneManager.h"
 #include <Mercator/Area.h>
+#include <Mercator/FillShader.h>
+#include <Mercator/ThresholdShader.h>
+#include <Mercator/DepthShader.h>
+#include <Mercator/GrassShader.h>
 
 namespace EmberOgre {
 WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, TerrainGenerator* terrainGenerator) : 
@@ -58,6 +63,32 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
  	
 	EmberEntity::init(ge, fromCreateOp);
 	
+	
+	mTerrainParser = std::auto_ptr<TerrainParser>(new TerrainParser(mTerrainGenerator));
+	
+	
+	bool hasValidShaders = false;
+	if (hasAttr("terrain")) {
+		const Atlas::Message::Element& terrainElement = valueOfAttr("terrain");
+		if (terrainElement.isMap()) {
+			const Atlas::Message::MapType& terrainMap(terrainElement.asMap());
+			if (terrainMap.count("surfaces")) {
+				const Atlas::Message::Element& surfaceElement(terrainMap.find("surfaces")->second);
+				mTerrainParser->createShaders(surfaceElement);
+				hasValidShaders = true;
+			}
+		}
+		if (!hasValidShaders) {
+			mTerrainParser->createDefaultShaders();
+			hasValidShaders = true;
+		}
+		mTerrainParser->updateTerrain(terrainElement);
+	}
+	if (!hasValidShaders) {
+		mTerrainParser->createDefaultShaders();
+		hasValidShaders = true;
+	}
+	
 	mEnvironment = new Environment::Environment(new Environment::CaelumEnvironment( EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), EmberOgre::getSingleton().getMainCamera()->getCamera()));
 	
 	
@@ -76,12 +107,20 @@ void WorldEmberEntity::onAttrChanged(const std::string& str, const Atlas::Messag
 {
 	///check for terrain updates
     if (str == "terrain") {
-    	updateTerrain(v);
+    	if (mTerrainParser.get()) {
+    		mTerrainParser->updateTerrain(v);
+    	}
 	}
 	Entity::onAttrChanged(str, v);
 }
 
-void WorldEmberEntity::updateTerrain(const Atlas::Message::Element& terrain)
+TerrainParser::TerrainParser(TerrainGenerator* terrainGenerator)
+: mTerrainGenerator(terrainGenerator)
+{
+}
+
+
+void TerrainParser::updateTerrain(const Atlas::Message::Element& terrain)
 {
 	//_fpreset();
     if (!terrain.isMap()) {
@@ -187,6 +226,105 @@ void WorldEmberEntity::updateTerrain(const Atlas::Message::Element& terrain)
     }
 	mTerrainGenerator->updateTerrain(pointStore);
 }
+
+float extractFloat(const Atlas::Message::ListType& params, size_t position) {
+	if (params.size() > position) {
+		const Atlas::Message::Element& elem(params[position]);
+		if (elem.isNum()) {
+			return elem.asNum();
+		}
+	}
+	return 0;
+}
+
+void TerrainParser::createShaders(const Atlas::Message::Element& surfaces)
+{
+	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
+	bool isValid = false;
+	if (surfaces.isList()) {
+        // Legacy support for old list format.
+        const Atlas::Message::ListType & slist(surfaces.asList());
+        for(Atlas::Message::ListType::const_iterator I = slist.begin(); I != slist.end(); ++I) {
+        	if (I->isMap()) {
+	        	std::string name;
+	        	std::string pattern;
+        		const Atlas::Message::MapType& surfaceMap(I->asMap());
+        		if (surfaceMap.count("name")) {
+        			const Atlas::Message::Element& nameElem(surfaceMap.find("name")->second);
+        			if (nameElem.isString()) {
+        				name = nameElem.asString();
+        			}
+        		} else {
+        			continue;
+        		}
+        		if (surfaceMap.count("pattern")) {
+        			const Atlas::Message::Element& patternElem(surfaceMap.find("pattern")->second);
+        			if (patternElem.isString()) {
+        				pattern = patternElem.asString();
+        			}
+        		} else {
+        			continue;
+        		}
+        		
+        		Atlas::Message::ListType paramsList;
+        		if (surfaceMap.count("params")) {
+        			const Atlas::Message::Element& paramsElem(surfaceMap.find("params")->second);
+        			if (paramsElem.isList()) {
+		         		paramsList = paramsElem.asList();
+        			}
+        		}
+        		
+        		Mercator::Shader* shader(0);
+        		if (pattern == "fill") {
+        			shader = new Mercator::FillShader();
+        		} else if (pattern == "band") {
+        			shader = new Mercator::BandShader(extractFloat(paramsList, 0), extractFloat(paramsList, 1));
+        		} else if (pattern == "grass") {
+        			shader = new Mercator::GrassShader(extractFloat(paramsList, 0), extractFloat(paramsList, 1), extractFloat(paramsList, 2));
+        		} else if (pattern == "depth") {
+//         			shader = new Mercator::HighShader(extractFloat(paramsList, 0));
+        		} else if (pattern == "high") {
+//         			shader = new Mercator::DepthShader(extractFloat(paramsList, 0), extractFloat(paramsList, 1));
+        		}
+        		
+        		if (shader) {
+        			std::string texture(configSrv->getValue("shadertextures", name));
+        			if (texture != "") {
+	        			isValid = true;
+        				mTerrainGenerator->createShader(texture, shader);
+        			}
+        		}
+        	}
+        }
+    }
+    if (!isValid) {
+    	createDefaultShaders();
+    }
+}
+
+void TerrainParser::createDefaultShaders()
+{
+	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
+
+    mTerrainGenerator->createShader(std::string(configSrv->getValue("shadertextures", "rock")), new Mercator::FillShader());
+	
+    mTerrainGenerator->createShader(std::string(configSrv->getValue("shadertextures", "sand")), new Mercator::BandShader(-2.f, 1.5f)); // Sandy beach
+ 
+ 	TerrainShader* grassShader = mTerrainGenerator->createShader(std::string(configSrv->getValue("shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f)); // Grass
+ 	mTerrainGenerator->setFoliageShader(grassShader);
+
+
+
+
+//      createShader(std::string(configSrv->getValue("shadertextures", "snow")), new Mercator::HighShader(110.f)); // Snow
+//      createShader(std::string(configSrv->getValue("shadertextures", "seabottom")), new Mercator::DepthShader(0.f, -10.f)); // Underwater
+
+
+//    this->addShader(new TerrainShader(std::string(configSrv->getVariable("Shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f))); // Grass
+
+
+}
+
 
 void WorldEmberEntity::adjustPositionForContainedNode(EmberEntity* const entity, const Ogre::Vector3& position)
 {
