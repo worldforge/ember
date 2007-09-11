@@ -415,6 +415,10 @@ function ModelEdit.GetIconFromPreviewButton_MouseClick(args)
 	if ModelEdit.definition ~= nil then
 		local definition = ModelEdit.definition:createViewDefinition("icon")
 		definition.Rotation = ModelEdit.renderer:getEntityRotation():Inverse()
+		--only set the camera distance if it has been moved from the optimal position
+		if ModelEdit.renderer:getCameraDistance() ~= 1 then
+			definition.Distance = ModelEdit.renderer:getAbsoluteCameraDistance()
+		end
 	end
 end
 
