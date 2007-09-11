@@ -38,6 +38,12 @@ IconStore::IconStore()
 
 IconStore::~IconStore()
 {
+	for (IconMap::iterator I = mIcons.begin(); I != mIcons.end(); ++I) {
+		delete I->second;
+	}
+	for (IconImageStoreStore::iterator I = mIconImageStores.begin(); I != mIconImageStores.end(); ++I) {
+		delete *I;
+	}
 }
 
 Icon* IconStore::createIcon(const std::string& key)

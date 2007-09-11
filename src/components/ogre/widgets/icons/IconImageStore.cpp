@@ -78,7 +78,7 @@ Ogre::TexturePtr IconImageStoreEntry::getTexture()
 }
 
 IconImageStore::IconImageStore(const std::string& imagesetName)
-: mImagesetName(imagesetName), mImageSize(256), mIconSize(64)
+: mImagesetName(imagesetName), mIconSize(64), mImageSize(256)
 {
 	createImageset();
 	createEntries();
