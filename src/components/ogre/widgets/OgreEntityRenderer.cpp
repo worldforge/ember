@@ -27,6 +27,7 @@
 #include <elements/CEGUIGUISheet.h>
 
 namespace EmberOgre {
+namespace Gui {
 
 OgreEntityRenderer::OgreEntityRenderer(CEGUI::Window* image) : MovableObjectRenderer(image), mEntity(0)
 {
@@ -76,5 +77,5 @@ void OgreEntityRenderer::setEntity(Ogre::Entity* entity)
 	}
 	
 }
-
+}
 }

@@ -10,7 +10,7 @@ function Status.createStatusInstance(name)
 	wrapper.strengthBar = CEGUI.toProgressBar(wrapper.widget:getWindow("StrengthBar"))
 	
 	wrapper.renderImage = wrapper.widget:getWindow("RenderImage")
-	wrapper.renderer = EmberOgre.ModelRenderer:new_local(wrapper.renderImage)
+	wrapper.renderer = EmberOgre.Gui.ModelRenderer:new_local(wrapper.renderImage)
 	wrapper.renderer:setActive(false)
 	wrapper.renderer:setIsInputCatchingAllowed(false)
 	

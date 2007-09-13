@@ -109,7 +109,7 @@ function AssetsManager.buildWidget()
 	AssetsManager.textures.controls.listbox = CEGUI.toListbox(AssetsManager.widget:getWindow("TexturesList"))
 -- 	AssetsManager.sceneNodes.nodeInfo = AssetsManager.widget:getWindow("SceneNodeInfo")
 	AssetsManager.textures.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterTextures"))
-	AssetsManager.textures.listholder = EmberOgre.ListHolder:new_local(AssetsManager.textures.controls.listbox, AssetsManager.textures.controls.filter)
+	AssetsManager.textures.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.textures.controls.listbox, AssetsManager.textures.controls.filter)
 	AssetsManager.textures.controls.textureView = AssetsManager.widget:getWindow("TextureInfo/Image")
 
 	AssetsManager.helper = EmberOgre.Gui.AssetsManager:new_local()

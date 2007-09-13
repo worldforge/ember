@@ -52,8 +52,6 @@ namespace EmberOgre {
 class EmberEntity;
 class TerrainGenerator;
 class CEGUI::Window;
-class Widget;
-class ConsoleWidget;
 class MousePicker;
 class Input;
 class AvatarEmberEntity;
@@ -62,6 +60,7 @@ class EntityWorldPickListener;
 class AvatarController;
 
 namespace Gui {
+class Widget;
 namespace Icons {
 class IconManager;
 }
@@ -78,7 +77,7 @@ public Ember::ConsoleObject
 {
 public:
 
-	typedef std::vector<Widget*> WidgetStore;
+	typedef std::vector<Gui::Widget*> WidgetStore;
 
 	static const std::string SCREENSHOT;
 	static const std::string TOGGLEINPUTMODE;
@@ -109,13 +108,13 @@ public:
 	 *    Removed a widget from the system.
 	 * @param widget 
 	 */
-	void removeWidget(Widget* widget);
+	void removeWidget(Gui::Widget* widget);
 	
 	/**
 	 *    Adds a new widget to the system. This means it will recieve FrameStarted events.
 	 * @param widget 
 	 */
-	void addWidget(Widget* widget);
+	void addWidget(Gui::Widget* widget);
 
 	/**
 	 *    Called by Ogre each frame.
@@ -213,7 +212,7 @@ public:
 	 *    Creates a new Widget
 	 * @return 
 	 */
-	Widget* createWidget();
+	Gui::Widget* createWidget();
 	
 	/**
 	 *    creates a widget 
@@ -221,13 +220,13 @@ public:
 	 * @param name the type of widget to create
 	 * @return 
 	 */
-	Widget* createWidget(const std::string& name);
+	Gui::Widget* createWidget(const std::string& name);
 	
 	/**
 	* Destroys a widget previously created by createWidget
 	* @param widget The widget to destroy.
 	*/
-	void destroyWidget(Widget* widget);
+	void destroyWidget(Gui::Widget* widget);
 
 	/**
 	 *    Gets the name of the default scheme used (such as "EmberLook" or "WindowsLook")
@@ -258,8 +257,6 @@ protected:
 	CEGUI::Window* mSheet;
 	CEGUI::WindowManager* mWindowManager;
 	CEGUI::GUISheet* mDebugText;
-	
-	ConsoleWidget* mConsoleWidget;
 	
 	Ogre::RenderWindow* mWindow;
 	CEGUI::System* mGuiSystem;

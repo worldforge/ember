@@ -13,8 +13,9 @@
 #include "framework/ConsoleBackend.h"
 
 using namespace CEGUI;
-namespace EmberOgre
-{
+namespace EmberOgre {
+namespace Gui {
+
 	const std::string Widget::DEFAULT_TAB_GROUP("default");
 	
 	Widget::Widget() : mCommandSuffix(""), mMainWindow(0), mActiveWindowIsOpaque(true), mFirstTabWindow(0), mLastTabWindow(0)
@@ -309,4 +310,5 @@ namespace EmberOgre
 // 	}
 	
 
+}
 }

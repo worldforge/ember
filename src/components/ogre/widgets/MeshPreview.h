@@ -28,6 +28,7 @@
 #include <sigc++/signal.h>
 
 namespace EmberOgre {
+namespace Gui {
 
 typedef std::vector<Ogre::Entity*> EntityStore;
 
@@ -240,7 +241,7 @@ private:
 	StringStore mAnimationNames;
 
 };
-
+}
 }
 
 #endif

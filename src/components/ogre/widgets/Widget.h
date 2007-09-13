@@ -35,6 +35,8 @@ Utility define for binding CEGUI elements to methods.
 
 
 class GUIManager;
+namespace Gui {
+
 class WidgetLoader;
 class Widget;
 
@@ -82,7 +84,7 @@ public Ember::ConsoleObject
 {
 public:
 
-	friend class GUIManager;
+	friend class ::EmberOgre::GUIManager;
 	friend class WidgetLoader;
 	
 	static const std::string DEFAULT_TAB_GROUP;
@@ -326,9 +328,7 @@ public:
 
 };
 
-
-
-
+}
 
 }
 

@@ -696,7 +696,7 @@ function ModelEdit.buildWidget()
 	ModelEdit.models:subscribeEvent("ItemSelectionChanged", "ModelEdit.models_SelectionChanged")
 	ModelEdit.modelsfilter = ModelEdit.widget:getWindow("FilterModels")
 	ModelEdit.modelsfilter = CEGUI.toEditbox(ModelEdit.modelsfilter)
-	ModelEdit.modelslistholder = EmberOgre.ListHolder:new_local(ModelEdit.models, ModelEdit.modelsfilter)
+	ModelEdit.modelslistholder = EmberOgre.Gui.ListHolder:new_local(ModelEdit.models, ModelEdit.modelsfilter)
 	
 	local xW = ModelEdit.widget:getWindow("ModelTranslate_x")
 	local yW = ModelEdit.widget:getWindow("ModelTranslate_y")
@@ -740,7 +740,7 @@ function ModelEdit.buildWidget()
 	ModelEdit.contentparts.submeshInfo.materiallist:subscribeEvent("ItemSelectionChanged", "ModelEdit.submeshinfomaterials_SelectionChanged")
 	ModelEdit.contentparts.submeshInfo.filter = ModelEdit.widget:getWindow("FilterMaterials")
 	ModelEdit.contentparts.submeshInfo.filter = CEGUI.toEditbox(ModelEdit.contentparts.submeshInfo.filter)
-	ModelEdit.contentparts.submeshInfo.listholder = EmberOgre.ListHolder:new_local(ModelEdit.contentparts.submeshInfo.materiallist, ModelEdit.contentparts.submeshInfo.filter)
+	ModelEdit.contentparts.submeshInfo.listholder = EmberOgre.Gui.ListHolder:new_local(ModelEdit.contentparts.submeshInfo.materiallist, ModelEdit.contentparts.submeshInfo.filter)
 	
 	ModelEdit.contentparts.submeshInfo.removeSubMeshButton = ModelEdit.widget:getWindow("RemoveSubMeshButton")
 	ModelEdit.contentparts.submeshInfo.removeSubMeshButton:subscribeEvent("MouseClick", "ModelEdit.submeshinforemovesubmesh_MouseClick")
@@ -792,17 +792,17 @@ function ModelEdit.buildWidget()
 		
 	
 		
-	ModelEdit.renderer = EmberOgre.ModelRenderer:new_local(ModelEdit.renderImage)
+	ModelEdit.renderer = EmberOgre.Gui.ModelRenderer:new_local(ModelEdit.renderImage)
 	
 	local subMeshPreviewImage = ModelEdit.widget:getWindow("SubMeshPreviewImage")
 	--subMeshPreviewImage = CEGUI.toStaticImage(subMeshPreviewImage)
-	ModelEdit.subMeshPartRenderer = EmberOgre.OgreEntityRenderer:new_local(subMeshPreviewImage)
+	ModelEdit.subMeshPartRenderer = EmberOgre.Gui.OgreEntityRenderer:new_local(subMeshPreviewImage)
 	
 	local meshPreviewImage = ModelEdit.widget:getWindow("MeshPreviewImage")
 	--meshPreviewImage = CEGUI.toStaticImage(meshPreviewImage)
-	ModelEdit.submeshRenderer = EmberOgre.OgreEntityRenderer:new_local(meshPreviewImage)
+	ModelEdit.submeshRenderer = EmberOgre.Gui.OgreEntityRenderer:new_local(meshPreviewImage)
 	
-	--ModelEdit.contentparts.modelInfo.renderer = EmberOgre.ModelRenderer:new_local(ModelEdit.contentparts.modelInfo.renderImage)
+	--ModelEdit.contentparts.modelInfo.renderer = EmberOgre.Gui.ModelRenderer:new_local(ModelEdit.contentparts.modelInfo.renderImage)
 	
 	ModelEdit.zoomSlider  = ModelEdit.widget:getWindow("Zoom")
 	ModelEdit.zoomSlider = CEGUI.toSlider(ModelEdit.zoomSlider)

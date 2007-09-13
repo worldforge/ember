@@ -27,6 +27,7 @@
 #include <CEGUI.h>
 
 namespace EmberOgre {
+namespace Gui {
 
 /**
 Use this class as base for more advanced buttons where you want a "roll over" effect.
@@ -64,7 +65,7 @@ protected:
 	CEGUI::Window* mContainer;
 	CEGUI::PushButton* mButton;
 };
-
+}
 }
 
 #endif

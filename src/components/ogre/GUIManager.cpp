@@ -29,7 +29,6 @@
 #include <elements/CEGUIGUISheet.h>
 
 #include "widgets/Widget.h"
-#include "widgets/ConsoleWidget.h"
 #include "MousePicker.h"
 
 #include "AvatarCamera.h"
@@ -61,6 +60,7 @@
 template<> EmberOgre::GUIManager* Ember::Singleton<EmberOgre::GUIManager>::ms_Singleton = 0;
 
 using namespace CEGUI;
+using namespace EmberOgre::Gui;
 
 namespace EmberOgre {
 
@@ -76,7 +76,6 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 , mSheet(0)
 , mWindowManager(0)
 , mDebugText(0)
-, mConsoleWidget(0)
 , mWindow(window)
 , mGuiSystem(0)
 , mGuiRenderer(0)

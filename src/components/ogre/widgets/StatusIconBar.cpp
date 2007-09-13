@@ -34,6 +34,7 @@
 
 using namespace CEGUI;
 namespace EmberOgre {
+namespace Gui {
 
 StatusIconBar::StatusIconBar() : mOriginalCursorImage(0), mIconBar("statusIcons")
 {
@@ -173,5 +174,5 @@ void StatusIconBar::EmberOgre_createdAvatarEmberEntity(AvatarEmberEntity* entity
 	mMovementModeIcon->getContainer()->setVisible(true);
 }
 
-
+}
 }

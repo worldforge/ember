@@ -60,6 +60,7 @@
 
 using namespace CEGUI;
 namespace EmberOgre {
+namespace Gui {
 
 
 
@@ -422,11 +423,13 @@ void ServerWidget::createPreviewTexture()
 
 }
 
-
-};
-
-bool EmberOgre::NewCharacter::isValid( ) const
+bool NewCharacter::isValid( ) const
 {
 	return name != "" && gender != "" && type != "";
 }
+
+
+};
+};
+
 

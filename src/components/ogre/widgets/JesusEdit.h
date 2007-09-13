@@ -65,6 +65,8 @@ class ModelBlock;
 class AttachPointNode;
 class Construction;
 class Jesus;
+namespace Gui {
+
 class JesusEdit;
 
 class EntityCEGUITexture;
@@ -413,7 +415,7 @@ protected:
 // 	AttachPointHolder(const Carpenter::AttachPoint* attachPoint);
 // 	const Carpenter::AttachPoint* mAttachPoint;
 // };
-
+}
 }
 
 #endif

@@ -30,6 +30,7 @@
 
 
 namespace EmberOgre {
+namespace Gui {
 
 ListHolder::ListHolder(CEGUI::Listbox* listbox, CEGUI::Editbox* filterEditbox)
 : mListbox(listbox), mFilterEditbox(filterEditbox)
@@ -160,5 +161,5 @@ void ListHolder::resetList()
 	mItems.clear();
 }
 
-
+}
 }

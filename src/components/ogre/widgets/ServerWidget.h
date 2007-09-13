@@ -36,6 +36,10 @@
 
 namespace EmberOgre {
 
+
+class GUIManager;
+namespace Gui {
+
 class NewCharacter
 {
 public:
@@ -48,7 +52,7 @@ public:
 	
 };
 
-class GUIManager;
+
 class Widget;
 class ModelRenderer;
 /**
@@ -145,7 +149,7 @@ protected:
 	void showServerInfo();
 	
 };
-
+};
 };
 
 #endif

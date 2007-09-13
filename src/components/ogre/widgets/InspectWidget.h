@@ -27,6 +27,8 @@
 namespace EmberOgre {
 
 class GUIManager;
+namespace Gui {
+
 class Widget;
 /**
 @author Erik Hjortsberg
@@ -135,7 +137,7 @@ class IAttributeTextHandler
 public:
 	void handle(const Eris::Entity::AttrMap& attrMap);
 };
-
+};
 };
 
 #endif

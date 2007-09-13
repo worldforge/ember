@@ -62,6 +62,7 @@
 #include <Mercator/Area.h>
 
 namespace EmberOgre {
+namespace Gui {
 
 /*template<> WidgetLoader WidgetLoaderHolder<MakeEntityWidget>::loader("MakeEntityWidget", &createWidgetInstance);*/
 //WidgetLoader Widget::loader("MakeEntityWidget", &createWidgetInstance<MakeEntityWidget>);
@@ -345,6 +346,6 @@ void MakeEntityWidget::createEntityOfType(Eris::TypeInfo* typeinfo)
 	S_LOG_INFO("Try to create entity of type " << typeinfo->getName() << " at position " << ss.str() );
 
 }
-
+}
 
 };

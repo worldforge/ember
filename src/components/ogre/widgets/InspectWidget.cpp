@@ -46,6 +46,7 @@
 #include "framework/ConsoleBackend.h"
 
 namespace EmberOgre {
+namespace Gui {
 
 
 class Decoder : public Atlas::Message::DecoderBase {
@@ -452,5 +453,5 @@ void AttributeTextBuilder::parseMap(const std::string& key, const Atlas::Message
 
 
 
-
+}
 };

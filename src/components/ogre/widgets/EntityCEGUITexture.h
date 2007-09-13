@@ -40,6 +40,8 @@ namespace Model {
 	class Model;
 }
 
+namespace Gui {
+
 /**
 @author Erik Hjortsberg
 
@@ -99,7 +101,7 @@ private:
 };
 
 
-
+}
 }
 
 #endif

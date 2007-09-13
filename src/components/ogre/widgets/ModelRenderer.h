@@ -38,6 +38,8 @@ namespace Model {
 	class Model;
 }
 
+namespace Gui {
+
 /**
 
 Renders a single Model to a CEGUI texture. Useful for stuff like inventory or preview of models.
@@ -93,7 +95,7 @@ protected:
 	virtual Ogre::MovableObject* getMovableObject();
 
 };
-
+}
 }
 
 #endif

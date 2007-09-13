@@ -30,11 +30,10 @@
 #include "../AvatarController.h"
 
 namespace EmberOgre {
-class IconBase;
+namespace Gui {
 
-namespace Widgets {
+class IconBase;
 class IconBar;
-}
 
 /**
 @author Erik Hjortsberg
@@ -67,12 +66,12 @@ protected:
 	
 	const CEGUI::Image* mOriginalCursorImage;
 	
-	Widgets::IconBar mIconBar;
+	IconBar mIconBar;
 
 	void EmberOgre_createdAvatarEmberEntity(AvatarEmberEntity* entity);
 	
 };
-
+}
 }
 
 #endif

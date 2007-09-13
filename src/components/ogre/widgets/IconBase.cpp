@@ -30,6 +30,7 @@
 
 using namespace CEGUI;
 namespace EmberOgre {
+namespace Gui {
 
 IconBase::IconBase(const std::string& name, const Image* background, const Image* foreground, const Image* borderInactive, const Image* borderActive)
 {
@@ -97,6 +98,6 @@ const Image* IconBase::loadImageFromImageset(const std::string & imagesetName, c
 	return &imageSet->getImage(image);
 
 }
-
+}
 
 }

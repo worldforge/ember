@@ -35,6 +35,7 @@
 
 
 namespace EmberOgre {
+namespace Gui {
 
 ModelRenderer::ModelRenderer(CEGUI::Window* image) 
 : MovableObjectRenderer(image), mModel(0) 
@@ -92,11 +93,5 @@ Ogre::MovableObject* ModelRenderer::getMovableObject()
 {
 	return mModel;
 }
-
-
-
-
-
-
-
+}
 }

@@ -54,6 +54,7 @@
 #include "../SimpleRenderContext.h"
 
 namespace EmberOgre {
+namespace Gui {
 
 
 
@@ -802,12 +803,5 @@ bool JesusEdit::File_Click(const CEGUI::EventArgs& args)
 	return true;
 }
 	
-
 }
-
-
-
-
-
-
-
+}

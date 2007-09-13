@@ -27,6 +27,7 @@ the basic resources required for the progress bar and will be loaded automatical
 #include "../EmberOgrePrerequisites.h"
 
 namespace EmberOgre {
+namespace Gui {
 
 class LoadingBar;
 
@@ -164,7 +165,7 @@ public:
 
 
 };
-
+}
 }
 
 #endif

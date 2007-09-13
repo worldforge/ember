@@ -34,6 +34,7 @@
 #include "../GUIManager.h"
 
 namespace EmberOgre {
+namespace Gui {
 
 MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image)
 : mTexture(0), mIsInputCatchingAllowed(true), mAutoShowFull(true), mImage(image), mActive(true)
@@ -237,5 +238,5 @@ void MovableObjectRenderer::updateRender()
 {
 	mTexture->getRenderContext()->getRenderTexture()->update();
 }
-
+}
 }

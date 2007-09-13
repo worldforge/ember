@@ -34,6 +34,7 @@ class GUISheet;
 }
 
 namespace EmberOgre {
+namespace Gui {
 
 class EntityCEGUITexture;
 
@@ -205,7 +206,7 @@ protected:
 	bool mActive;
 
 };
-
+}
 }
 
 #endif

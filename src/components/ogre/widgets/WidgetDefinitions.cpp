@@ -39,12 +39,13 @@
 #include "Widget.h"
 namespace EmberOgre
 {
+namespace Gui {
 
 WidgetDefinitions::WidgetDefinitions()
 {
 	WidgetLoader::registerWidget("Widget", &WidgetLoader::createWidgetInstance<Widget>);
 	WidgetLoader::registerWidget("ServerWidget", &WidgetLoader::createWidgetInstance<ServerWidget>);
-	WidgetLoader::registerWidget("InventoryWidget", &WidgetLoader::createWidgetInstance<InventoryWidget>);
+	WidgetLoader::registerWidget("InventoryWidget", &WidgetLoader::createWidgetInstance<Gui::InventoryWidget>);
 	WidgetLoader::registerWidget("InspectWidget", &WidgetLoader::createWidgetInstance<InspectWidget>);
 	WidgetLoader::registerWidget("MakeEntityWidget", &WidgetLoader::createWidgetInstance<MakeEntityWidget>);
 	WidgetLoader::registerWidget("IngameChatWidget", &WidgetLoader::createWidgetInstance<Gui::IngameChatWidget>);
@@ -64,5 +65,5 @@ WidgetDefinitions::~WidgetDefinitions()
 {
 }
 
-
+}
 }

@@ -35,6 +35,7 @@
 
 
 namespace EmberOgre {
+namespace Gui {
 
 
 
@@ -84,5 +85,5 @@ SimpleRenderContext* EntityCEGUITexture::getRenderContext()
 
 
 
-
+}
 }

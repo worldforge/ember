@@ -27,6 +27,7 @@ the basic resources required for the progress bar and will be loaded automatical
 
 using namespace Ogre;
 namespace EmberOgre {
+namespace Gui {
 
 /** Defines an example loading progress bar which you can use during 
 	startup, level changes etc to display loading progress. 
@@ -373,6 +374,6 @@ namespace EmberOgre {
 		mNumberOfFilesToUpdate = numberOfFilesToUpdate;
 	}
 	
-
+}
 }
 

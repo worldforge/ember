@@ -30,8 +30,9 @@
 
 namespace EmberOgre {
 class GUIManager;
-class Widget;
 class AvatarEmberEntity;
+namespace Gui {
+class Widget;
 
 /**
 @author Erik Hjortsberg
@@ -70,7 +71,7 @@ protected:
 	void EmberOgre_CreatedAvatarEntity(AvatarEmberEntity* entity);
 
 };
-
+};
 };
 
 #endif

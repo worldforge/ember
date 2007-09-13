@@ -30,6 +30,7 @@
 #include "../input/Input.h"
 
 namespace EmberOgre {
+namespace Gui {
 
 Quit::Quit() : SoftQuit("softquit", this, "Display a quit confirmation window.")
 {
@@ -113,5 +114,5 @@ void Quit::runCommand(const std::string &command, const std::string &args)
 	}
 
 }
-
+}
 };

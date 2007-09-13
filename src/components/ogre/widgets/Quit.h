@@ -26,6 +26,7 @@
 #include "Widget.h"
 
 namespace EmberOgre {
+namespace Gui {
 
 /**
 @author Erik Hjortsberg
@@ -58,7 +59,7 @@ protected:
 	void softquit();
 
 };
-
+};
 };
 
 #endif

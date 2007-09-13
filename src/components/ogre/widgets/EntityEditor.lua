@@ -706,7 +706,7 @@ function EntityEditor.buildWidget()
 	--EntityBrowser.childlistbox:subscribeEvent("ItemSelectionChanged", "EntityBrowser.EntityList_SelectionChanged")
 	
 	EntityEditor.childlistFilter = CEGUI.toEditbox(EntityEditor.widget:getWindow("FilterChildren"))
-	EntityEditor.childListholder = EmberOgre.ListHolder:new_local(EntityEditor.childlistbox, EntityEditor.childlistFilter)
+	EntityEditor.childListholder = EmberOgre.Gui.ListHolder:new_local(EntityEditor.childlistbox, EntityEditor.childlistFilter)
 	
 --[[	EntityEditor.modelTab.stackableWindow = EntityEditor.widget:getWindow("ModelPanelStackable")
 	EntityEditor.modelTab.stackableContainer = EmberOgre.Gui.StackableContainer:new_local(EntityEditor.modelTab.stackableWindow)

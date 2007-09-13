@@ -28,7 +28,7 @@ using namespace CEGUI;
 
 namespace EmberOgre {
 
-namespace Widgets {
+namespace Gui {
 
 IconBar::IconBar(const std::string& name)
 : mIconPadding(0)

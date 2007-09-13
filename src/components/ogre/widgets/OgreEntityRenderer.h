@@ -26,6 +26,7 @@
 #include "MovableObjectRenderer.h"
 
 namespace EmberOgre {
+namespace Gui {
 
 /**
 Renders a single Ogre::Entity to a EntityCEGUITexture.
@@ -60,7 +61,7 @@ protected:
 
 
 };
-
+}
 }
 
 #endif

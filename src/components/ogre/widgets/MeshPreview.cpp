@@ -39,6 +39,7 @@
 #include "framework/Exception.h"
 
 namespace EmberOgre {
+namespace Gui {
 
 
 MeshPreviewHandler::MeshPreviewHandler() : mEntityCounter(0)
@@ -433,6 +434,6 @@ bool MeshPreview::createdMeshes_EventSelectionChanged(const CEGUI::EventArgs& ar
 	return true;
 
 }
-
+}
 
 }

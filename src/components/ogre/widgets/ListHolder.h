@@ -34,6 +34,7 @@ namespace CEGUI
 }
 
 namespace EmberOgre {
+namespace Gui {
 
 /**
 
@@ -111,7 +112,7 @@ protected:
 	
 
 };
-
+}
 }
 
 #endif

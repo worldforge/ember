@@ -24,6 +24,7 @@
 #define WIDGETDEFINITIONS_H
 
 namespace EmberOgre {
+namespace Gui {
 
 class Widget;
 typedef Widget* (*FactoryFunc)();
@@ -43,7 +44,7 @@ public:
 
 
 };
-
+}
 }
 
 #endif

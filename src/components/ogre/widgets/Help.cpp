@@ -44,6 +44,7 @@
 
 using namespace CEGUI;
 namespace EmberOgre {
+namespace Gui {
 
 
 Help::Help()
@@ -153,5 +154,5 @@ void Help::frameStarted(const Ogre::FrameEvent& evt)
 		}
 	}
 }
-
+}
 };

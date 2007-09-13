@@ -32,9 +32,9 @@ class Window;
 
 namespace EmberOgre {
 
-class IconBase;
 
-namespace Widgets {
+namespace Gui {
+class IconBase;
 
 /**
 	@author Erik Hjortsberg <erik@katastrof.nu>

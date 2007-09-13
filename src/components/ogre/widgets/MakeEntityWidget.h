@@ -37,6 +37,8 @@ namespace Eris
 namespace EmberOgre {
 
 class AvatarEmberEntity;
+namespace Gui {
+
 class ModelRenderer;
 /**
 @author Erik Hjortsberg
@@ -101,7 +103,7 @@ protected:
 	void updatePreview();
 
 };
-
+};
 };
 
 #endif

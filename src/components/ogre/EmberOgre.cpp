@@ -354,16 +354,16 @@ bool EmberOgre::setup()
 	mGeneralCommandMapper->bindToInput(*mInput);
 	
 	///we need a nice loading bar to show the user how far the setup has progressed
-	LoadingBar loadingBar;
+	Gui::LoadingBar loadingBar;
 	
-	LoadingBarSection wfutSection(loadingBar, 0.2, "Media update");
+	Gui::LoadingBarSection wfutSection(loadingBar, 0.2, "Media update");
 	loadingBar.addSection(&wfutSection);
-	WfutLoadingBarSection wfutLoadingBarSection(wfutSection);
+	Gui::WfutLoadingBarSection wfutLoadingBarSection(wfutSection);
 	
-	LoadingBarSection resourceGroupSection(loadingBar, 0.8, "Resource loading");
+	Gui::LoadingBarSection resourceGroupSection(loadingBar, 0.8, "Resource loading");
 	loadingBar.addSection(&resourceGroupSection);
 	unsigned int numberOfSections = ogreResourceLoader.numberOfSections() - 1; ///remove bootstrap since that's already loaded
-	ResourceGroupLoadingBarSection resourceGroupSectionListener(resourceGroupSection, numberOfSections, (preloadMedia ? numberOfSections : 0 ), 0.7);
+	Gui::ResourceGroupLoadingBarSection resourceGroupSectionListener(resourceGroupSection, numberOfSections, (preloadMedia ? numberOfSections : 0 ), 0.7);
 	
 	loadingBar.start(mWindow);
 	loadingBar.setVersionText(std::string("Version ") + VERSION );
