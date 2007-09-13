@@ -23,6 +23,7 @@
 
 namespace EmberOgre {
 
+namespace Gui {
 
 /**
 Class used for rendering a single Ogre::MovableObject to a EntityCEGUITexture
@@ -120,7 +121,7 @@ class MovableObjectRenderer
      */
     void updateRender();    
 };
-
+}
 }
 
 

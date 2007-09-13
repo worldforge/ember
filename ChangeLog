@@ -1,3 +1,19 @@
+2007-09-13 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/scripting/bindings/lua/GUIManager.pkg, src/components/ogre/scripting/bindings/lua/IconBar.pkg, src/components/ogre/scripting/bindings/lua/IconBase.pkg, src/components/ogre/scripting/bindings/lua/ListHolder.pkg, src/components/ogre/scripting/bindings/lua/ModelRenderer.pkg, src/components/ogre/scripting/bindings/lua/MovableObjectRenderer.pkg, src/components/ogre/scripting/bindings/lua/OgreEntityRenderer.pkg, src/components/ogre/scripting/bindings/lua/Widget.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
+
+2007-09-13 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityIcon.cpp, src/components/ogre/widgets/EntityIcon.h, src/components/ogre/widgets/EntityIconManager.cpp, src/components/ogre/widgets/EntityIconManager.h, src/components/ogre/widgets/EntityIconSlot.cpp, src/components/ogre/widgets/EntityIconSlot.h, src/components/ogre/widgets/InventoryWidget.cpp, src/components/ogre/widgets/InventoryWidget.h: moved the entity icons classes to their own files and added some better signalling
+
+2007-09-13 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/ConsoleWidget.h, src/components/ogre/widgets/ConsoleWidget.cpp: removed obsolete class
+	
+2007-09-13 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/AssetsManager.lua, src/components/ogre/widgets/EntityBrowser.lua, src/components/ogre/widgets/EntityCEGUITexture.cpp, src/components/ogre/widgets/EntityCEGUITexture.h, src/components/ogre/widgets/EntityEditor.lua, src/components/ogre/widgets/Help.cpp, src/components/ogre/widgets/Help.h, src/components/ogre/widgets/IconBar.cpp, src/components/ogre/widgets/IconBar.h, src/components/ogre/widgets/IconBase.cpp, src/components/ogre/widgets/IconBase.h,, src/components/ogre/widgets/InspectWidget.cpp, src/components/ogre/widgets/InspectWidget.h, src/components/ogre/widgets/JesusEdit.cpp, src/components/ogre/widgets/JesusEdit.h, src/components/ogre/widgets/ListHolder.cpp, src/components/ogre/widgets/ListHolder.h, src/components/ogre/widgets/LoadingBar.cpp, src/components/ogre/widgets/LoadingBar.h, src/components/ogre/widgets/MakeEntityWidget.cpp, src/components/ogre/widgets/MakeEntityWidget.h, src/components/ogre/widgets/Makefile.am, src/components/ogre/widgets/MeshPreview.cpp, src/components/ogre/widgets/MeshPreview.h, src/components/ogre/widgets/ModelEdit.lua, src/components/ogre/widgets/ModelRenderer.cpp, src/components/ogre/widgets/ModelRenderer.h, src/components/ogre/widgets/MovableObjectRenderer.cpp, src/components/ogre/widgets/MovableObjectRenderer.h, src/components/ogre/widgets/OgreEntityRenderer.cpp, src/components/ogre/widgets/OgreEntityRenderer.h, src/components/ogre/widgets/Quit.cpp, src/components/ogre/widgets/Quit.h, src/components/ogre/widgets/ServerWidget.cpp, src/components/ogre/widgets/ServerWidget.h, src/components/ogre/widgets/Status.lua, src/components/ogre/widgets/StatusIconBar.cpp, src/components/ogre/widgets/StatusIconBar.h, src/components/ogre/widgets/Widget.cpp, src/components/ogre/widgets/Widget.h, src/components/ogre/widgets/WidgetDefinitions.cpp, src/components/ogre/widgets/WidgetDefinitions.h, src/components/ogre/EmberOgre.cpp, src/components/ogre/GUIManager.cpp, src/components/ogre/GUIManager.h: placed all classes under the correct namespace and removed the references to the obsolete ConsoleWidget
+
 2007-09-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/scripting/bindings/lua/GUIManager.pkg, src/components/ogre/scripting/bindings/lua/ModelDefinition.pkg, src/components/ogre/scripting/bindings/lua/MovableObjectRenderer.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings

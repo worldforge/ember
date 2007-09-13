@@ -22,6 +22,7 @@
 //
 
 namespace EmberOgre {
+namespace Gui {
 
 /**
 
@@ -29,7 +30,7 @@ Renders a single Model to a CEGUI texture. Useful for stuff like inventory or pr
 
 @author Erik Hjortsberg
 */
-class ModelRenderer : public EmberOgre::MovableObjectRenderer
+class ModelRenderer : public EmberOgre::Gui::MovableObjectRenderer
 {
 public:
 
@@ -61,5 +62,5 @@ public:
     Model::Model* getModel();
 
 };
-
+}
 }

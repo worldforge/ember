@@ -24,7 +24,7 @@
 namespace EmberOgre {
 
 
-namespace Widgets {
+namespace Gui {
 
 /**
 	@author Erik Hjortsberg <erik@katastrof.nu>

@@ -16,8 +16,8 @@ class GUIManager
 	
 
 	
-	void removeWidget(Widget* widget);
-	void addWidget(Widget* widget);
+	void removeWidget(EmberOgre::Gui::Widget* widget);
+	void addWidget(EmberOgre::Gui::Widget* widget);
 
 	void EmitEntityAction(const std::string& action, EmberOgre::EmberEntity* entity);
 
@@ -55,7 +55,7 @@ class GUIManager
 	 *    Creates a new Widget
 	 * @return 
 	 */
-	Widget* createWidget();
+	EmberOgre::Gui::Widget* createWidget();
 	
 	/**
 	 *    creates a widget 
@@ -63,7 +63,7 @@ class GUIManager
 	 * @param name the type of widget to create
 	 * @return 
 	 */
-	Widget* createWidget(const std::string& name);
+	EmberOgre::Gui::Widget* createWidget(const std::string& name);
 
 	/**
 	 *    Gets the name of the default scheme used (such as "EmberLook" or "WindowsLook")
