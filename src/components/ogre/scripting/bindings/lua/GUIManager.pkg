@@ -73,7 +73,16 @@ class GUIManager
 
 	EmberOgre::EntityWorldPickListener* getEntityPickListener() const;
 
+	/**
+	 *    Accessor for the IconManager which handles low level icons.
+	 * @return The main IconManager
+	 */
 	EmberOgre::Gui::Icons::IconManager* getIconManager();
-
+	
+	/**
+	 *    Accessor for the EntityIconManager, which handles entity icons and slots.
+	 * @return The main EntityIconManager
+	 */
+	EmberOgre::Gui::EntityIconManager* getEntityIconManager();
 };
 }

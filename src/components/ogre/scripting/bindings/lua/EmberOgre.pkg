@@ -36,6 +36,10 @@ $pfile "AssetsManager.pkg"
 $pfile "Icon.pkg"
 $pfile "IconManager.pkg"
 
+$pfile "EntityIconSlot.pkg"
+$pfile "EntityIcon.pkg"
+$pfile "EntityIconManager.pkg"
+
 
 $pfile "Model.pkg"
 $pfile "SubModel.pkg"

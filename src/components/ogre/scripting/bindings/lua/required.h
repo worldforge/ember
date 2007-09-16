@@ -68,6 +68,10 @@
 #include "components/ogre/widgets/icons/Icon.h"
 #include "components/ogre/widgets/icons/IconManager.h"
 
+#include "components/ogre/widgets/EntityIconSlot.h"
+#include "components/ogre/widgets/EntityIcon.h"
+#include "components/ogre/widgets/EntityIconManager.h"
+
 //#include "components/ogre/scripting/LuaConnector.h"
 //#include "LuaConnector.h"
 
