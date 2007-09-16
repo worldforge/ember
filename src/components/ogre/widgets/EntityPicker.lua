@@ -46,6 +46,9 @@ function EntityPicker.buildWidget()
 	EntityPicker.buttons.move:subscribeEvent("MouseButtonUp", "EntityPicker.buttonMove_Click")
 	EntityPicker.buttons.edit = EntityPicker.widget:getWindow("EditButton")
 	EntityPicker.buttons.edit:subscribeEvent("MouseButtonUp", "EntityPicker.editButton_Click")
+	EntityPicker.buttons.attack = EntityPicker.widget:getWindow("AttackButton")
+	EntityPicker.buttons.attack:subscribeEvent("MouseButtonUp", "EntityPicker.attackButton_Click")
+	
 	
 	--get a couple of use buttons to allow for different use actions
 	EntityPicker.useButtons[1] = EntityPicker.widget:getWindow("UseButton1")
@@ -61,7 +64,7 @@ function EntityPicker.buildWidget()
 		
 	EntityPicker.stackableContainer = EmberOgre.Gui.StackableContainer:new_local(EntityPicker.menuWindow)
 	EntityPicker.stackableContainer:setInnerContainerWindow(EntityPicker.menuWindow)
-    	connect(EntityPicker.connectors, guiManager:getInput().EventMouseButtonReleased, "EntityPicker.input_MouseButtonReleased")
+	connect(EntityPicker.connectors, guiManager:getInput().EventMouseButtonReleased, "EntityPicker.input_MouseButtonReleased")
 
 end
 
@@ -94,9 +97,11 @@ function EntityPicker.pickedEntity(result, args)
 		if (EntityPicker.entity:getId() == '0') then
 			EntityPicker.buttons.move:setVisible(false)
 			EntityPicker.buttons.take:setVisible(false)
+			EntityPicker.buttons.attack:setVisible(false)
 		else 
 			EntityPicker.buttons.move:setVisible(true)
 			EntityPicker.buttons.take:setVisible(true)
+			EntityPicker.buttons.attack:setVisible(true)
 		end
 		
 		EntityPicker.checkUse()
@@ -189,6 +194,11 @@ function EntityPicker.editButton_Click(args)
 	EntityPickerWidget_removeMenu()
 end
 
+function EntityPicker.attackButton_Click(args)
+	emberServices:getServerService():attack(EntityPicker.entity)
+	guiManager:EmitEntityAction("attack", EntityPicker.entity)
+	EntityPickerWidget_removeMenu()
+end
 
 function EntityPickerWidget_removeMenu()
 	

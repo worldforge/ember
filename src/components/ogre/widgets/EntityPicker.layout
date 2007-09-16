@@ -62,6 +62,13 @@
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='Tooltip' Value='Edit the entity.'/>
 			</Window>
+			<Window Type='EmberLook/Button' Name='AttackButton'>
+				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.64,0.000000}}'/>
+				<Property Name='Text' Value='Attack'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Tooltip' Value='Attack the entity.'/>
+			</Window>
 			<Window Type='EmberLook/Button' Name='UseButton1'>
 				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.800000,0.000000}}'/>
