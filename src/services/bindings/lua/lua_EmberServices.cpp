@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberServices
-** Generated automatically by tolua++-1.0.92 on Tue May 15 07:40:33 2007.
+** Generated automatically by tolua++-1.0.92 on Sun Sep 16 19:08:14 2007.
 */
 
 #ifndef __cplusplus
@@ -981,12 +981,43 @@ static int tolua_EmberServices_Ember_ServerService_drop00(lua_State* tolua_S)
  if (
      !tolua_isusertype(tolua_S,1,"Ember::ServerService",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"Eris::Entity",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ember::ServerService* self = (Ember::ServerService*)  tolua_tousertype(tolua_S,1,0);
+  Eris::Entity* entity = ((Eris::Entity*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'drop'",NULL);
+#endif
+  {
+   self->drop(entity);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'drop'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: drop of class  Ember::ServerService */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_ServerService_drop01
+static int tolua_EmberServices_Ember_ServerService_drop01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ember::ServerService",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Eris::Entity",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,3,"const WFMath::Vector<3>",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
  else
-#endif
  {
   Ember::ServerService* self = (Ember::ServerService*)  tolua_tousertype(tolua_S,1,0);
   Eris::Entity* entity = ((Eris::Entity*)  tolua_tousertype(tolua_S,2,0));
@@ -999,11 +1030,8 @@ static int tolua_EmberServices_Ember_ServerService_drop00(lua_State* tolua_S)
   }
  }
  return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'drop'.",&tolua_err);
- return 0;
-#endif
+tolua_lerror:
+ return tolua_EmberServices_Ember_ServerService_drop00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
@@ -2071,6 +2099,7 @@ TOLUA_API int tolua_EmberServices_open (lua_State* tolua_S)
     tolua_function(tolua_S,"say",tolua_EmberServices_Ember_ServerService_say00);
     tolua_function(tolua_S,"touch",tolua_EmberServices_Ember_ServerService_touch00);
     tolua_function(tolua_S,"drop",tolua_EmberServices_Ember_ServerService_drop00);
+    tolua_function(tolua_S,"drop",tolua_EmberServices_Ember_ServerService_drop01);
     tolua_function(tolua_S,"place",tolua_EmberServices_Ember_ServerService_place00);
     tolua_function(tolua_S,"wield",tolua_EmberServices_Ember_ServerService_wield00);
     tolua_function(tolua_S,"take",tolua_EmberServices_Ember_ServerService_take00);
