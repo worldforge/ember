@@ -114,7 +114,7 @@ end
 
 function Status.handleAction(action, entity) 
 
-	if action == "use" or action == "inspect" then
+	if action == "use" or action == "inspect" or action == "attack" then
 		Status.observerNpc(entity)
 	end
 end
