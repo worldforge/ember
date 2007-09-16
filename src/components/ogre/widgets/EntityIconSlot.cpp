@@ -52,6 +52,7 @@ bool EntityIconSlot::addEntityIcon(EntityIcon* icon)
 		icon->setSlot(this);
 	} else {
 		S_LOG_WARNING("Trying to add entity icon to slot that already has one icon contained.");
+		return false;
 	}
 	return true;
 }
@@ -61,6 +62,7 @@ EntityIcon* EntityIconSlot::removeEntityIcon()
 	if (mContainedIcon) {
 		mContainer->removeChildWindow(mContainedIcon->getDragContainer());
 		EntityIcon* icon = mContainedIcon;
+		mContainedIcon = 0;
 		icon->setSlot(0);
 		return icon;
 	} else {
@@ -68,8 +70,15 @@ EntityIcon* EntityIconSlot::removeEntityIcon()
 	}
 }
 
+EntityIcon* EntityIconSlot::getEntityIcon()
+{
+	return mContainedIcon;
+}
+
+
 void EntityIconSlot::notifyIconRemoved()
 {
+	removeEntityIcon();
 	mContainedIcon = 0;
 }
 

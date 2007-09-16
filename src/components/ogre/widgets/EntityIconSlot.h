@@ -44,14 +44,31 @@ class EntityIconManager;
 class EntityIconSlot
 {
 friend class EntityIconManager;
+friend class EntityIcon;
 public:
 	
+	/**
+	 *    Adds an EntityIcon to the slot. If the slot already contains an icon, the method will return false and an error will be logged.
+	 * @param icon 
+	 * @return true if successful, else false
+	 */
+	
 	bool addEntityIcon(EntityIcon* icon);
+	
+	/**
+	 *    Removes and returns the contained EntityIcon. If none is contained, nothing will happen.
+	 * @return The contained EntityIcon or null if none contained.
+	 */
 	EntityIcon* removeEntityIcon();
+	
+	/**
+	 *    Gets the contained EntityIcon
+	 * @return 
+	 */
+	EntityIcon* getEntityIcon();
 	
 	CEGUI::Window* getWindow();
 	
-	void notifyIconRemoved();
 	
 	sigc::signal<void, EntityIcon*> EventIconEntered;
 	sigc::signal<void, EntityIcon*> EventIconLeaves;
@@ -68,6 +85,10 @@ protected:
 	bool handleDragLeave(const CEGUI::EventArgs& args);
 	bool handleDragDropped(const CEGUI::EventArgs& args);
 	
+	/**
+	 *    Internal method called by the EntityIcon when it's removed from the slot.
+	 */
+	void notifyIconRemoved();
 
 };
 
