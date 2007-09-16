@@ -116,40 +116,22 @@ Icon* IconManager::getIcon(int pixelWidth, Eris::TypeInfo* erisType)
 					Eris::Entity dummyEntity("-1", erisType, view);
 					IconActionCreator actionCreator(dummyEntity);
 					std::auto_ptr<Model::Mapping::ModelMapping> modelMapping(::EmberOgre::Model::Mapping::EmberModelMappingManager::getSingleton().getManager().createMapping(&dummyEntity, &actionCreator));
+					std::string modelName;
 					if (modelMapping.get()) {
 						modelMapping->initialize();
-						const std::string& modelName(actionCreator.getModelName());
-						if (modelName != "") {
-							///update the model preview window
-							Model::Model* model = Model::Model::createModel(mIconRenderer.getRenderContext()->getSceneManager(), modelName);
-							mIconRenderer.render(model, icon);
-							mIconRenderer.getRenderContext()->getSceneManager()->destroyMovableObject(model);
-						}
+						modelName = actionCreator.getModelName();
 					}
+					///if there's no model defined for this use the placeholder model
+					if (modelName == "") {
+						modelName = "placeholder";
+					}
+					///update the model preview window
+					Model::Model* model = Model::Model::createModel(mIconRenderer.getRenderContext()->getSceneManager(), modelName);
+					mIconRenderer.render(model, icon);
+					mIconRenderer.getRenderContext()->getSceneManager()->destroyMovableObject(model);
+					
 					dummyEntity.shutdown();
 				}
-/*				
-
-				
-			const Model::Mapping::Definitions::ModelMappingDefinition* definition = Model::Mapping::EmberModelMappingManager::getSingleton().getManager().getDefinitionForType(erisType);
-			if (definition) {
-				Model::Mapping::Definitions::MatchDefinition::CaseStore::const_iterator first = definition->getRoot().getCases().begin();
-				if (first != definition->getRoot().getCases().end()) {
-					const Model::Mapping::Definitions::CaseDefinition& firstCase = *first;
-					if (firstCase.getActions().begin() != firstCase.getActions().end()) {
-						const Model::Mapping::Definitions::ActionDefinition& firstAction = *firstCase.getActions().begin();
-						if (firstAction.getType() == "display-model") {
-							///update the model preview window
-							std::string modelName(firstAction.getValue());
-							if (modelName != "") {
-								Model::Model* model = Model::Model::createModel(mIconRenderer.getRenderContext()->getSceneManager(), modelName);
-								mIconRenderer.render(model, icon);
-								mIconRenderer.getRenderContext()->getSceneManager()->destroyMovableObject(model);
-								
-							}
-						}
-					}*/
-// 				}
 			}
 		}
 		return icon;
