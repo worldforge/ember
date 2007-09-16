@@ -24,12 +24,14 @@
 #define EMBEROGREINTEGRATEDCHATWIDGET_H
 
 #include "WidgetPool.h"
+#include <Eris/Entity.h>
 
 namespace EmberOgre {
 
 class GUIManager;
 class Widget;
 class EmberPhysicalEntity;
+class EmberEntity;
 
 namespace Gui {
 

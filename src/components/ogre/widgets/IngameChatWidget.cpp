@@ -422,6 +422,7 @@ void IngameChatWidget::EntityObserver::showLabel()
 void IngameChatWidget::EntityObserver::hideLabel()
 {
 	if (mLabel) {
+		mLabel->setActive(false);
 		mChatWidget.getLabelPool().returnWidget(mLabel);
 		mLabel = 0;
 	}
