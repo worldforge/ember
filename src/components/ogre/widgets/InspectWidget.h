@@ -23,9 +23,10 @@
 #ifndef DIMEOGREINSPECTWIDGET_H
 #define DIMEOGREINSPECTWIDGET_H
 
+#include <Eris/Entity.h>
 
 namespace EmberOgre {
-
+class EmberEntity;
 class GUIManager;
 namespace Gui {
 

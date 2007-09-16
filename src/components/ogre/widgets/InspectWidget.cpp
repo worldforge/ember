@@ -68,7 +68,9 @@ class Decoder : public Atlas::Message::DecoderBase {
 
 
 
-InspectWidget::InspectWidget() : mCurrentEntity(0), Inspect("inspect", this, "Inspect an entity.")
+InspectWidget::InspectWidget() : 
+Inspect("inspect", this, "Inspect an entity."),
+mCurrentEntity(0)
 {
 
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotView.connect(sigc::mem_fun(*this, &InspectWidget::Server_GotView));
