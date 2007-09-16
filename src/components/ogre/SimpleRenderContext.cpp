@@ -252,5 +252,10 @@ Ogre::RenderTexture* SimpleRenderContext::getRenderTexture()
 	return mRenderTexture;
 }
 
+Ogre::Light* SimpleRenderContext::getLight()
+{
+	return mMainLight;
+}
+
 
 }

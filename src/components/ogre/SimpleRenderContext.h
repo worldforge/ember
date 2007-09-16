@@ -151,6 +151,8 @@ public:
     
     Ogre::SceneNode* getCameraRootNode() const;
     
+    Ogre::Light* getLight();
+    
 private:
 
 	/**
