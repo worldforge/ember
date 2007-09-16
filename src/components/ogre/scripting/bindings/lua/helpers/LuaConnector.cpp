@@ -472,5 +472,13 @@ LuaConnector::LuaConnector(sigc::signal<void, const std::set<std::string>&>& sig
 	mConnector = new LuaConnectors::ConnectorOne<void, const std::set<std::string>&>(signal, luaTypes);
 }
 
+LuaConnector::LuaConnector(sigc::signal<void, EmberOgre::Gui::EntityIcon*>& signal)
+{
+	LuaTypeStore luaTypes;
+	luaTypes.push_back("EmberOgre::Gui::EntityIcon");
+	mConnector = new LuaConnectors::ConnectorOne<void, EmberOgre::Gui::EntityIcon*>(signal, luaTypes);
+}
+
+
 
 };

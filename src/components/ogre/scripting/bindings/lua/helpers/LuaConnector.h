@@ -54,7 +54,9 @@ class TerrainEditAction;
 
 typedef std::vector<std::string> LuaTypeStore;
 
-
+namespace Gui {
+class EntityIcon;
+}
 //template<> void ConnectorBase::callLuaMethod(std::string t0, std::string t1, Empty t2, Empty t3);
 
 namespace LuaConnectors {
@@ -246,7 +248,7 @@ public:
  	LuaConnector(sigc::signal<void, TerrainEditAction*>& signal);
  	LuaConnector(sigc::signal<void, Eris::Task*>& signal);
  	LuaConnector(sigc::signal<void, const std::set<std::string>&>& signal);
-   
+ 	LuaConnector(sigc::signal<void, EmberOgre::Gui::EntityIcon*>& signal);
    
    
     ~LuaConnector();
