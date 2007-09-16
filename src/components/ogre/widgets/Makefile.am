@@ -25,10 +25,10 @@ uninstall-local:
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src
 METASOURCES = AUTO
 noinst_LTLIBRARIES = libWidgets.la
-libWidgets_la_SOURCES = IngameChatWidget.cpp 			MovableObjectRenderer.cpp \
+libWidgets_la_SOURCES = IngameChatWidget.cpp MovableObjectRenderer.cpp \
 	AssetsManager.cpp ColouredListItem.cpp ConsoleAdapter.cpp EntityCEGUITexture.cpp \
 	EntityEditor.cpp EntityIcon.cpp EntityIconManager.cpp EntityIconSlot.cpp Help.cpp \
-	IconBar.cpp IconBase.cpp IngameChatWidget.cpp InspectWidget.cpp InventoryWidget.cpp \
+	IconBar.cpp IconBase.cpp IngameChatWidget.cpp InspectWidget.cpp \
 	JesusEdit.cpp ListHolder.cpp LoadingBar.cpp MakeEntityWidget.cpp MeshPreview.cpp \
 	ModelRenderer.cpp OgreEntityRenderer.cpp QuaternionAdapter.cpp Quit.cpp ServerWidget.cpp \
 	StackableContainer.cpp StatusIconBar.cpp Vector3Adapter.cpp Widget.cpp WidgetDefinitions.cpp \
@@ -37,7 +37,7 @@ libWidgets_la_SOURCES = IngameChatWidget.cpp 			MovableObjectRenderer.cpp \
 noinst_HEADERS = ListHolder.h AssetsManager.h ColouredListItem.h \
 	ConsoleAdapter.h EntityCEGUITexture.h EntityEditor.h EntityIcon.h EntityIconManager.h \
 	EntityIconSlot.h Help.h IconBar.h IconBase.h IngameChatWidget.h InspectWidget.h \
-	InventoryWidget.h JesusEdit.h ListHolder.h LoadingBar.h MakeEntityWidget.h MeshPreview.h \
+	JesusEdit.h ListHolder.h LoadingBar.h MakeEntityWidget.h MeshPreview.h \
 	ModelRenderer.h MovableObjectRenderer.h OgreEntityRenderer.h QuaternionAdapter.h Quit.h \
 	ServerWidget.h StackableContainer.h StatusIconBar.h Vector3Adapter.h Widget.h \
 	WidgetDefinitions.h WidgetPool.h

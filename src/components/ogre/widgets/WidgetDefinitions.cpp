@@ -24,7 +24,7 @@
 #include "WidgetDefinitions.h"
 
 #include "ServerWidget.h"
-#include "InventoryWidget.h"
+// #include "InventoryWidget.h"
 #include "InspectWidget.h"
 #include "MakeEntityWidget.h"
 #include "IngameChatWidget.h"
@@ -45,7 +45,7 @@ WidgetDefinitions::WidgetDefinitions()
 {
 	WidgetLoader::registerWidget("Widget", &WidgetLoader::createWidgetInstance<Widget>);
 	WidgetLoader::registerWidget("ServerWidget", &WidgetLoader::createWidgetInstance<ServerWidget>);
-	WidgetLoader::registerWidget("InventoryWidget", &WidgetLoader::createWidgetInstance<Gui::InventoryWidget>);
+// 	WidgetLoader::registerWidget("InventoryWidget", &WidgetLoader::createWidgetInstance<Gui::InventoryWidget>);
 	WidgetLoader::registerWidget("InspectWidget", &WidgetLoader::createWidgetInstance<InspectWidget>);
 	WidgetLoader::registerWidget("MakeEntityWidget", &WidgetLoader::createWidgetInstance<MakeEntityWidget>);
 	WidgetLoader::registerWidget("IngameChatWidget", &WidgetLoader::createWidgetInstance<Gui::IngameChatWidget>);

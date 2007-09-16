@@ -133,7 +133,7 @@ void InventoryWidget::addedEntity(EmberEntity* entity) {
 		if (icon) {
 			EntityIconSlot* slot = addSlot();
 			
-			EntityIcon* entityIcon = mEntityIconManager->createIcon(icon);
+			EntityIcon* entityIcon = mEntityIconManager->createIcon(icon, entity);
 			mIcons.push_back(entityIcon);
 			entityIcon->setTooltipText(name);
 			slot->addEntityIcon(entityIcon);
