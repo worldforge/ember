@@ -61,6 +61,7 @@ class AvatarController;
 
 namespace Gui {
 class Widget;
+class EntityIconManager;
 namespace Icons {
 class IconManager;
 }
@@ -236,10 +237,28 @@ public:
 	
 	EntityWorldPickListener* getEntityPickListener() const;
 	
+	/**
+	Command for toggling between the input modes.
+	*/
 	const Ember::ConsoleCommandWrapper ToggleInputMode;
+	
+	/**
+	Command for reloading the gui.
+	*/
 	const Ember::ConsoleCommandWrapper ReloadGui;
 	
+	
+	/**
+	 *    Accessor for the IconManager which handles low level icons.
+	 * @return The main IconManager
+	 */
 	Gui::Icons::IconManager* getIconManager();
+	
+	/**
+	 *    Accessor for the EntityIconManager, which handles entity icons and slots.
+	 * @return The main EntityIconManager
+	 */
+	Gui::EntityIconManager* getEntityIconManager();
 	
 protected:
 
@@ -304,6 +323,7 @@ protected:
 	void scriptingServiceStopping();
 	
 	Gui::Icons::IconManager* mIconManager;
+	Gui::EntityIconManager* mEntityIconManager;
 };
 }
 

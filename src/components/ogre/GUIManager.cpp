@@ -48,6 +48,7 @@
 #include "GUICEGUIAdapter.h"
 
 #include "widgets/icons/IconManager.h"
+#include "widgets/EntityIconManager.h"
 
 
 #ifdef __WIN32__
@@ -190,6 +191,8 @@ GUIManager::~GUIManager()
 		delete *I;
 	}
 	
+	delete mEntityIconManager;
+	delete mIconManager;
 	
 	delete mGuiSystem;
 	Ogre::Root::getSingleton().removeFrameListener(this);
@@ -241,10 +244,19 @@ void GUIManager::initialize()
 		S_LOG_FAILURE("GUIManager - error when creating icon manager: " << e.getMessage().c_str());
 	}
 	
+	try {
+		mEntityIconManager = new Gui::EntityIconManager(*this);
+	} catch (const std::exception& e) {
+		S_LOG_FAILURE("GUIManager - error when creating entity icon manager: " << e.what());
+	} catch (const CEGUI::Exception& e) {
+		S_LOG_FAILURE("GUIManager - error when creating entity icon manager: " << e.getMessage().c_str());
+	}
+	
+	
 	std::vector<std::string> widgetsToLoad;
 	widgetsToLoad.push_back("StatusIconBar");
 	widgetsToLoad.push_back("IngameChatWidget");
-	widgetsToLoad.push_back("InventoryWidget");
+// 	widgetsToLoad.push_back("InventoryWidget");
 	widgetsToLoad.push_back("InspectWidget");
 	widgetsToLoad.push_back("MakeEntityWidget");
 	widgetsToLoad.push_back("JesusEdit");
@@ -557,6 +569,11 @@ EntityWorldPickListener* GUIManager::getEntityPickListener() const
 Gui::Icons::IconManager* GUIManager::getIconManager()
 {
 	return mIconManager;
+}
+
+Gui::EntityIconManager* GUIManager::getEntityIconManager()
+{
+	return mEntityIconManager;
 }
 
 
