@@ -27,7 +27,7 @@
 #include <vector>
 
 namespace EmberOgre {
-
+class EmberEntity;
 class GUIManager;
 namespace Gui {
 
@@ -53,7 +53,7 @@ typedef std::vector<EntityIcon*> EntityIconStore;
 	EntityIconSlot* createSlot();
 	void destroySlot(EntityIconSlot* slot);
 	
-	EntityIcon* createIcon(Gui::Icons::Icon* icon);
+	EntityIcon* createIcon(Gui::Icons::Icon* icon, EmberEntity* entity);
 	void destroyIcon(EntityIcon* icon);
 	
 	sigc::signal<void, EntityIcon*> EventIconDragStart;

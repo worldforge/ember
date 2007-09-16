@@ -34,7 +34,7 @@ class EventArgs;
 }
 
 namespace EmberOgre {
-
+class EmberEntity;
 namespace Gui {
 
 class EntityIconSlot;
@@ -64,10 +64,11 @@ public:
 	void setSlot(EntityIconSlot* slot);
 	EntityIconSlot* getSlot();
 	void setTooltipText(const std::string& text);
-	
+	EmberEntity* getEntity();
 
 protected:
-	EntityIcon(EntityIconManager& manager, CEGUI::DragContainer* dragContainer, CEGUI::Window* image, Gui::Icons::Icon* icon);
+	EntityIcon(EntityIconManager& manager, CEGUI::DragContainer* dragContainer, CEGUI::Window* image, Gui::Icons::Icon* icon, EmberEntity* entity);
+	virtual ~EntityIcon();
 	
 	EntityIconManager& mManager;
 	CEGUI::DragContainer* mDragContainer;
@@ -75,6 +76,7 @@ protected:
 	Gui::Icons::Icon* mIcon;
 	EntityIconUserData mUserData;
 	EntityIconSlot* mCurrentSlot;
+	EmberEntity* mEntity;
 	
 	bool dragContainer_DragStarted(const CEGUI::EventArgs& args);
 	bool dragContainer_DragStopped(const CEGUI::EventArgs& args);

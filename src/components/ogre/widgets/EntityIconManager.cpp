@@ -49,8 +49,12 @@ EntityIconSlot* EntityIconManager::createSlot()
 	return slot;
 }
 
-EntityIcon* EntityIconManager::createIcon(Gui::Icons::Icon* icon)
+EntityIcon* EntityIconManager::createIcon(Gui::Icons::Icon* icon, EmberEntity* entity)
 {
+	if (!icon) {
+		S_LOG_WARNING("Trying to create an EntityIcon with an invalid Icon.");
+		return 0;
+	}
 	std::stringstream ss;
 	ss << "entityIcon" << mIconsCounter++;
 	
@@ -64,12 +68,13 @@ EntityIcon* EntityIconManager::createIcon(Gui::Icons::Icon* icon)
 		CEGUI::Window* iconWindow = mGuiManager.createWindow("EmberLook/StaticImage", ss.str());
 		if (iconWindow) {
 			iconWindow->setProperty("BackgroundEnabled", "false");
+ 			iconWindow->setProperty("FrameEnabled", "false");
 			iconWindow->disable();
 // 			iconWindow->setProperty("FrameEnabled", "false");
 			iconWindow->setProperty("Image", CEGUI::PropertyHelper::imageToString(icon->getImage()));
 			item->addChildWindow(iconWindow);
 			
-			EntityIcon* entityIcon = new EntityIcon(*this, item, iconWindow, icon);
+			EntityIcon* entityIcon = new EntityIcon(*this, item, iconWindow, icon, entity);
 			mIcons.push_back(entityIcon);
 			return entityIcon;
 		}

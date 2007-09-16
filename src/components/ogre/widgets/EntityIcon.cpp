@@ -28,10 +28,17 @@ namespace EmberOgre {
 
 namespace Gui {
 
-EntityIcon::EntityIcon(EntityIconManager& manager, CEGUI::DragContainer* dragContainer, CEGUI::Window* image, Gui::Icons::Icon* icon)
-: mManager(manager), mDragContainer(dragContainer), mImage(image), mIcon(icon), mUserData(*this), mCurrentSlot(0)
+EntityIcon::EntityIcon(EntityIconManager& manager, CEGUI::DragContainer* dragContainer, CEGUI::Window* image, Gui::Icons::Icon* icon, EmberEntity* entity)
+: mManager(manager), mDragContainer(dragContainer), mImage(image), mIcon(icon), mUserData(*this), mCurrentSlot(0), mEntity(entity)
 {
 	mDragContainer->setUserData(&mUserData);
+}
+
+EntityIcon::~EntityIcon()
+{
+	if (mCurrentSlot) {
+		mCurrentSlot->removeEntityIcon();
+	}
 }
 
 CEGUI::Window* EntityIcon::getImage()
@@ -77,6 +84,11 @@ bool EntityIcon::dragContainer_DragStopped(const CEGUI::EventArgs& args)
 {
 	mManager.EventIconDragStop.emit(this);
 	return true;
+}
+
+EmberEntity* EntityIcon::getEntity()
+{
+	return mEntity;
 }
 
 
