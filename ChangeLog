@@ -1,3 +1,75 @@
+2007-09-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* configure.ac: added support for lua on ubuntu (since it uses differently named .pc files)
+
+2007-09-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* ember.conf: added correctly named setting for the silt terrain layer
+
+2007-09-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/services/server/ServerService.h, src/services/bindings/lua/ServerService.pkg, src/services/bindings/lua/lua_EmberServices.cpp: added default position to the drop method
+
+2007-09-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/EntityIcon.pkg, src/components/ogre/scripting/bindings/lua/EntityIconManager.pkg, src/components/ogre/scripting/bindings/lua/EntityIconSlot.pkg, src/components/ogre/scripting/bindings/lua/GUIManager.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/scripting/bindings/lua/required.h: updated bindings
+
+2007-09-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.cpp, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.h: added connector for EntityIcon events
+
+2007-09-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Inventory.layout, src/components/ogre/widgets/Inventory.lua, src/components/ogre/widgets/Bootstrap.lua: moved the inventory code into lua, and use the entity icon system. Icons can be dragged and dropped (for now only within the inventory, but they should be draggable onto the world, onto wield and outfit slots on a doll for the avatar, to quickbars etc.). By clicking on the icon a menu will pop up for some basic use cases.
+
+2007-09-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/InspectWidget.cpp, src/components/ogre/widgets/InspectWidget.h: cleaned up code
+
+2007-09-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/SimpleRenderContext.cpp, src/components/ogre/SimpleRenderContext.h: added accessor for the light
+
+2007-09-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/GUIManager.cpp, src/components/ogre/GUIManager.h: hold a reference to an instance of the EntityIconManager which can be used by any widget in the system
+
+2007-09-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/InventoryWidget.cpp, src/components/ogre/widgets/Makefile.am, src/components/ogre/widgets/WidgetDefinitions.cpp: removed the obsolete InventoryWidget
+
+2007-09-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Status.lua: show status when the attack entity action is emitted
+
+2007-09-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/icons/IconManager.cpp: if no model can be found, show a placeholder. We need some better model/graphics for this.
+
+2007-09-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/icons/IconRenderer.cpp: increase the default light in the scene
+
+2007-09-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/IngameChatWidget.cpp, src/components/ogre/widgets/IngameChatWidget.h: fixed a bug where the label wasn't removed for entities that are destroyed
+
+2007-09-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/AssetsManager.layout, src/components/ogre/widgets/AssetsManager.lua: added a tab for all the cegui windows in the system, with simple information for now, but that will be expanded as the need arises
+
+2007-09-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityPicker.layout, src/components/ogre/widgets/EntityPicker.lua: added an attack option, though I'm not so sure it's needed. The menu is starting to get quite long so we need to think of something better (radial menu with icons?)
+
+2007-09-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityIconSlot.cpp, src/components/ogre/widgets/EntityIconSlot.h: added accessor for the current EntityIcon and fixed a bug when removing the icon from the slot
+
+2007-09-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityIcon.cpp, src/components/ogre/widgets/EntityIcon.h, src/components/ogre/widgets/EntityIconManager.cpp, src/components/ogre/widgets/EntityIconManager.h: let the EntityIcons keep a reference to the entity
+
 2007-09-13 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/scripting/bindings/lua/GUIManager.pkg, src/components/ogre/scripting/bindings/lua/IconBar.pkg, src/components/ogre/scripting/bindings/lua/IconBase.pkg, src/components/ogre/scripting/bindings/lua/ListHolder.pkg, src/components/ogre/scripting/bindings/lua/ModelRenderer.pkg, src/components/ogre/scripting/bindings/lua/MovableObjectRenderer.pkg, src/components/ogre/scripting/bindings/lua/OgreEntityRenderer.pkg, src/components/ogre/scripting/bindings/lua/Widget.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
