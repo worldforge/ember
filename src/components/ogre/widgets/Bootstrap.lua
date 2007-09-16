@@ -77,6 +77,7 @@ loadScript("Status.lua")
 
 loadScript("Environment.lua")
 loadScript("AssetsManager.lua")
+loadScript("Inventory.lua")
 --loadScript("TerrainEditor.lua")
 
 
