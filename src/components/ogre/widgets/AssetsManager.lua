@@ -1,10 +1,8 @@
 --Lists all of the graphical resources available
 
-AssetsManager = {connectors={}, }
+AssetsManager = {connectors={}, textures = {controls = {}, listbox = nil,selectedTexture = nil}, windows = {controls = {}, listbox = nil, selectedWindow = nil} }
 
-AssetsManager.textures = {controls = {}}
-AssetsManager.textures.listbox = nil
-AssetsManager.textures.selectedTexture = nil
+
 
 function AssetsManager.TexturesRefresh_Clicked(args)
 	AssetsManager.textures.refresh()
@@ -37,6 +35,55 @@ function AssetsManager.TexturesList_ItemSelectionChanged(args)
 	end
 	
 end
+
+function AssetsManager.RefreshWindows_Clicked(args)
+	AssetsManager.windows.refresh()
+end
+
+function AssetsManager.WindowsList_ItemSelectionChanged(args)
+	local item = AssetsManager.windows.controls.listbox:getFirstSelectedItem()
+	if item ~= nil then
+		local window = item:getUserData()
+		AssetsManager.windows.selectedWindow = tolua.cast(window, "CEGUI::Window")
+		AssetsManager.windows.controls.visibleCheckbox:setSelected(AssetsManager.windows.selectedWindow:isVisible())
+		local info = ""
+		info = "Position: " .. CEGUI.PropertyHelper:uvector2ToString(AssetsManager.windows.selectedWindow:getPosition()) .. "\n"
+		info = info .."Size: " .. CEGUI.PropertyHelper:uvector2ToString(AssetsManager.windows.selectedWindow:getSize()) .. "\n"
+		AssetsManager.windows.controls.infoText:setText(info)
+	end
+end
+
+function AssetsManager.WindowsList_CheckStateChanged(args)
+	if AssetsManager.windows.selectedWindow ~= nil then
+		AssetsManager.windows.selectedWindow:setVisible(AssetsManager.windows.controls.visibleCheckbox:isSelected())
+	end
+end
+
+function AssetsManager.windows.refresh()
+	AssetsManager.windows.listholder:resetList()
+	
+	AssetsManager.windows.addWindow(CEGUI.System:getSingleton():getGUISheet(), 0)
+
+end
+
+function AssetsManager.windows.addWindow(window, depth)
+	if window ~= nil then
+		local label = ""
+		for i = 0, depth  do
+			label = label .. "-"
+		end	
+		label = label .. window:getName()
+		local item = EmberOgre.Gui.ColouredListItem:new(label, window:getID(), window)
+		AssetsManager.windows.listholder:addItem(item)
+		if window:getChildCount() > 0 then
+			for i = 0, window:getChildCount() - 1 do
+				local childWindow = window:getChildAtIdx(i)
+				AssetsManager.windows.addWindow(childWindow, depth + 1)
+			end
+		end
+	end
+end
+
 
 function AssetsManager.SceneNodesList_SelectionChanged(args)
 	local item = AssetsManager.sceneNodes.listbox:getFirstSelectedItem()
@@ -111,6 +158,14 @@ function AssetsManager.buildWidget()
 	AssetsManager.textures.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterTextures"))
 	AssetsManager.textures.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.textures.controls.listbox, AssetsManager.textures.controls.filter)
 	AssetsManager.textures.controls.textureView = AssetsManager.widget:getWindow("TextureInfo/Image")
+	
+	--the windows part
+	AssetsManager.windows.controls.listbox = CEGUI.toListbox(AssetsManager.widget:getWindow("WindowsList"))
+	AssetsManager.windows.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterWindows"))
+	AssetsManager.windows.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.windows.controls.listbox, AssetsManager.windows.controls.filter)
+	AssetsManager.windows.controls.visibleCheckbox = CEGUI.toCheckbox(AssetsManager.widget:getWindow("WindowInfo/Visible"))
+	AssetsManager.windows.controls.infoText = AssetsManager.widget:getWindow("WindowInfo/Text")
+	
 
 	AssetsManager.helper = EmberOgre.Gui.AssetsManager:new_local()
 
