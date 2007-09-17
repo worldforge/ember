@@ -1,5 +1,9 @@
 2007-09-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* src/components/ogre/terrain/TerrainPage.cpp, src/services/time/TimeService.h: fix build warnings
+
+2007-09-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* configure.ac: added support for lua on ubuntu (since it uses differently named .pc files)
 
 2007-09-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>

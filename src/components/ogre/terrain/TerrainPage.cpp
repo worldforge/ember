@@ -455,8 +455,8 @@ void EmberOgre::TerrainPage::prepareFoliage()
 			//we could not find any grass surface
 			continue;
 		}
-		int segmentStartX = worldUnitsStartOfPage.x() + (I->pos.x() * 64);
-		int segmentStartY = worldUnitsStartOfPage.y() + (I->pos.y() * 64) - pageSizeInMeters;
+		int segmentStartX = static_cast<int>(worldUnitsStartOfPage.x() + (I->pos.x() * 64));
+		int segmentStartY = static_cast<int>(worldUnitsStartOfPage.y() + (I->pos.y() * 64) - pageSizeInMeters);
 		std::stringstream ss;
 		ss << "Adding grass to the area between x: " << segmentStartX << " to  " <<  (segmentStartX + 64) << " and y: " << segmentStartY << " to " << (segmentStartY + 64);
 		S_LOG_VERBOSE(ss.str());

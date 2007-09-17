@@ -36,12 +36,16 @@ namespace Services {
 	
 	Provides time services.
 */
-class TimeService : public Service, public sigc::trackable
+class TimeService : public Service
 {
 public:
     TimeService();
 
-    ~TimeService();
+    virtual ~TimeService();
+    
+//     int getHours();
+//     int getMinutes();
+//     int getSeconds();
 
 };
 
