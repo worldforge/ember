@@ -68,6 +68,12 @@ void ConnectorBase::connect(const std::string & luaMethod)
 	mLuaMethod = luaMethod;
 }
 
+void ConnectorBase::connect(int luaMethod)
+{
+	mLuaFunctionIndex = luaMethod;
+}
+
+
 void ConnectorBase::pushNamedFunction(lua_State* state)
 {
 	LuaConnectorHelper::pushNamedFunction(state, mLuaMethod);
@@ -326,6 +332,21 @@ lua_State* LuaConnector::getState()
 LuaConnector* LuaConnector::connect(const std::string& luaMethod)
 {
 	mConnector->connect(luaMethod);
+	return this;
+}
+
+LuaConnector* LuaConnector::connect(int luaMethod)
+{
+	///we need to get the correct lua function
+	int luaType = lua_type(sState,-1);
+    if (luaType == LUA_TFUNCTION)
+    {
+        int index = luaL_ref(sState, LUA_REGISTRYINDEX);
+		mConnector->connect(index);
+    } else {
+    	S_LOG_WARNING("No valid lua function sent as argument to LuaConnector::connect");
+    }
+
 	return this;
 }
 

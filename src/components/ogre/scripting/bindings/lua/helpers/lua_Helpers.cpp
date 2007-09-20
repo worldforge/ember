@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Helpers
-** Generated automatically by tolua++-1.0.92 on Fri May 25 08:22:02 2007.
+** Generated automatically by tolua++-1.0.92 on Thu Sep 20 00:59:27 2007.
 */
 
 #ifndef __cplusplus
@@ -18,16 +18,16 @@ TOLUA_API int  tolua_Helpers_open (lua_State* tolua_S);
 /* function to release collected object via destructor */
 #ifdef __cplusplus
 
-static int tolua_collect_EmberOgre__LuaConsoleObject (lua_State* tolua_S)
+static int tolua_collect_EmberOgre__LuaConnector (lua_State* tolua_S)
 {
- EmberOgre::LuaConsoleObject* self = (EmberOgre::LuaConsoleObject*) tolua_tousertype(tolua_S,1,0);
+ EmberOgre::LuaConnector* self = (EmberOgre::LuaConnector*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
 
-static int tolua_collect_EmberOgre__LuaConnector (lua_State* tolua_S)
+static int tolua_collect_EmberOgre__LuaConsoleObject (lua_State* tolua_S)
 {
- EmberOgre::LuaConnector* self = (EmberOgre::LuaConnector*) tolua_tousertype(tolua_S,1,0);
+ EmberOgre::LuaConsoleObject* self = (EmberOgre::LuaConsoleObject*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -47,8 +47,9 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"sigc::signal<void,const std::string&,const std::string&>");
  tolua_usertype(tolua_S,"SigC::Signal1<void,const Eris::ServerInfo&>");
  tolua_usertype(tolua_S,"Ogre::Mesh");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntity*>");
  tolua_usertype(tolua_S,"EmberOgre::OgreUtils");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntity*>");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Gui::EntityIcon*>");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::AvatarEmberEntity*>");
  tolua_usertype(tolua_S,"sigc::signal<void,const std::string&>");
  tolua_usertype(tolua_S,"sigc::signal<void,const std::set<std::string>&>");
@@ -70,12 +71,43 @@ static int tolua_Helpers_EmberOgre_LuaConnector_connect00(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"EmberOgre::LuaConnector",0,&tolua_err) ||
-     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
+ {
+  EmberOgre::LuaConnector* self = (EmberOgre::LuaConnector*)  tolua_tousertype(tolua_S,1,0);
+  lua_Object luaMethod = ((lua_Object)  tolua_tovalue(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'connect'",NULL);
+#endif
+  {
+   EmberOgre::LuaConnector* tolua_ret = (EmberOgre::LuaConnector*)  self->connect(luaMethod);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::LuaConnector");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'connect'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: connect of class  EmberOgre::LuaConnector */
+#ifndef TOLUA_DISABLE_tolua_Helpers_EmberOgre_LuaConnector_connect01
+static int tolua_Helpers_EmberOgre_LuaConnector_connect01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::LuaConnector",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
  {
   EmberOgre::LuaConnector* self = (EmberOgre::LuaConnector*)  tolua_tousertype(tolua_S,1,0);
   const std::string luaMethod = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
@@ -89,11 +121,8 @@ static int tolua_Helpers_EmberOgre_LuaConnector_connect00(lua_State* tolua_S)
   }
  }
  return 2;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'connect'.",&tolua_err);
- return 0;
-#endif
+tolua_lerror:
+ return tolua_Helpers_EmberOgre_LuaConnector_connect00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
@@ -1088,6 +1117,56 @@ tolua_lerror:
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: new of class  EmberOgre::LuaConnector */
+#ifndef TOLUA_DISABLE_tolua_Helpers_EmberOgre_LuaConnector_new19
+static int tolua_Helpers_EmberOgre_LuaConnector_new19(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"EmberOgre::LuaConnector",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::Gui::EntityIcon*>",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  sigc::signal<void,EmberOgre::Gui::EntityIcon*>* signal = ((sigc::signal<void,EmberOgre::Gui::EntityIcon*>*)  tolua_tousertype(tolua_S,2,0));
+  {
+   EmberOgre::LuaConnector* tolua_ret = (EmberOgre::LuaConnector*)  new EmberOgre::LuaConnector(*signal);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::LuaConnector");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Helpers_EmberOgre_LuaConnector_new18(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  EmberOgre::LuaConnector */
+#ifndef TOLUA_DISABLE_tolua_Helpers_EmberOgre_LuaConnector_new19_local
+static int tolua_Helpers_EmberOgre_LuaConnector_new19_local(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"EmberOgre::LuaConnector",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::Gui::EntityIcon*>",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  sigc::signal<void,EmberOgre::Gui::EntityIcon*>* signal = ((sigc::signal<void,EmberOgre::Gui::EntityIcon*>*)  tolua_tousertype(tolua_S,2,0));
+  {
+   EmberOgre::LuaConnector* tolua_ret = (EmberOgre::LuaConnector*)  new EmberOgre::LuaConnector(*signal);
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::LuaConnector");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Helpers_EmberOgre_LuaConnector_new18_local(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: new of class  EmberOgre::LuaConsoleObject */
 #ifndef TOLUA_DISABLE_tolua_Helpers_EmberOgre_LuaConsoleObject_new00
 static int tolua_Helpers_EmberOgre_LuaConsoleObject_new00(lua_State* tolua_S)
@@ -1297,6 +1376,7 @@ TOLUA_API int tolua_Helpers_open (lua_State* tolua_S)
    #endif
    tolua_beginmodule(tolua_S,"LuaConnector");
     tolua_function(tolua_S,"connect",tolua_Helpers_EmberOgre_LuaConnector_connect00);
+    tolua_function(tolua_S,"connect",tolua_Helpers_EmberOgre_LuaConnector_connect01);
     tolua_function(tolua_S,"disconnect",tolua_Helpers_EmberOgre_LuaConnector_disconnect00);
     tolua_function(tolua_S,"new",tolua_Helpers_EmberOgre_LuaConnector_new00);
     tolua_function(tolua_S,"new_local",tolua_Helpers_EmberOgre_LuaConnector_new00_local);
@@ -1355,6 +1435,9 @@ TOLUA_API int tolua_Helpers_open (lua_State* tolua_S)
     tolua_function(tolua_S,"new",tolua_Helpers_EmberOgre_LuaConnector_new18);
     tolua_function(tolua_S,"new_local",tolua_Helpers_EmberOgre_LuaConnector_new18_local);
     tolua_function(tolua_S,".call",tolua_Helpers_EmberOgre_LuaConnector_new18_local);
+    tolua_function(tolua_S,"new",tolua_Helpers_EmberOgre_LuaConnector_new19);
+    tolua_function(tolua_S,"new_local",tolua_Helpers_EmberOgre_LuaConnector_new19_local);
+    tolua_function(tolua_S,".call",tolua_Helpers_EmberOgre_LuaConnector_new19_local);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"EmberOgre",0);

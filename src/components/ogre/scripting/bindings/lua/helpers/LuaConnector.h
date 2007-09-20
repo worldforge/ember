@@ -77,9 +77,17 @@ namespace LuaConnectors {
 			virtual ~ConnectorBase();
 			
 			/**
-			Connects to a specified lua method.
-			*/
+			 * Connects to a specified lua method.
+			 * @param luaMethod The fully qualified name of the method.
+			 */
 			void connect(const std::string & luaMethod);
+			
+			/**
+			 * Connects to a specified lua method.
+			 * @param luaMethod The lua method
+			 */
+			void connect(int luaMethod);
+
 			
 			/**
 			Disconnects from the signal.
@@ -253,7 +261,19 @@ public:
    
     ~LuaConnector();
     
+	/**
+	 *    Connects to the named lua method.
+	 * @param luaMethod The fully qualified name of the method.
+	 * @return 
+	 */
 	LuaConnector* connect(const std::string& luaMethod);
+	
+	/**
+	 *    Connects to the lua method.
+	 * @param luaMethod The lua method.
+	 * @return 
+	 */
+	LuaConnector* connect(int luaMethod);
 	
 	/**
 	Disconnects from the signal.
