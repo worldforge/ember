@@ -50,10 +50,10 @@ typedef std::vector<EntityIcon*> EntityIconStore;
 
 	EntityIconManager(GUIManager& guiManager);
 	
-	EntityIconSlot* createSlot();
+	EntityIconSlot* createSlot(unsigned int pixelSize = 64);
 	void destroySlot(EntityIconSlot* slot);
 	
-	EntityIcon* createIcon(Gui::Icons::Icon* icon, EmberEntity* entity);
+	EntityIcon* createIcon(Gui::Icons::Icon* icon, EmberEntity* entity, unsigned int pixelSize = 64);
 	void destroyIcon(EntityIcon* icon);
 	
 	sigc::signal<void, EntityIcon*> EventIconDragStart;

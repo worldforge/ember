@@ -37,19 +37,19 @@ EntityIconManager::EntityIconManager(GUIManager& guiManager)
 }
 
 
-EntityIconSlot* EntityIconManager::createSlot()
+EntityIconSlot* EntityIconManager::createSlot(unsigned int pixelSize)
 {
 	std::stringstream ss;
 	ss << "entityIconSlot" << mSlotsCounter++;
 	
 	CEGUI::Window* container = mGuiManager.createWindow("DefaultGUISheet", ss.str());
-	container->setSize(CEGUI::UVector2(CEGUI::UDim(0, 64), CEGUI::UDim(0, 64)));
+	container->setSize(CEGUI::UVector2(CEGUI::UDim(0, pixelSize), CEGUI::UDim(0, pixelSize)));
 	EntityIconSlot* slot = new EntityIconSlot(*this, container);
 	mSlots.push_back(slot);
 	return slot;
 }
 
-EntityIcon* EntityIconManager::createIcon(Gui::Icons::Icon* icon, EmberEntity* entity)
+EntityIcon* EntityIconManager::createIcon(Gui::Icons::Icon* icon, EmberEntity* entity, unsigned int pixelSize)
 {
 	if (!icon) {
 		S_LOG_WARNING("Trying to create an EntityIcon with an invalid Icon.");
@@ -61,7 +61,7 @@ EntityIcon* EntityIconManager::createIcon(Gui::Icons::Icon* icon, EmberEntity* e
 	CEGUI::DragContainer* item = static_cast<CEGUI::DragContainer*>(mGuiManager.createWindow("DragContainer", ss.str()));
 	
 	if (item) {
-		item->setSize(CEGUI::UVector2(CEGUI::UDim(0, 64), CEGUI::UDim(0, 64)));
+		item->setSize(CEGUI::UVector2(CEGUI::UDim(0, pixelSize), CEGUI::UDim(0, pixelSize)));
 		//item->setTooltipText(name);
 		
 		ss << "Image" ;

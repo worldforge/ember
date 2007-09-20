@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Sun Sep 16 20:12:15 2007.
+** Generated automatically by tolua++-1.0.92 on Thu Sep 20 23:55:20 2007.
 */
 
 #ifndef __cplusplus
@@ -9275,18 +9275,20 @@ static int tolua_EmberOgre_EmberOgre_Gui_EntityIconManager_createSlot00(lua_Stat
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::EntityIconManager",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
+     !tolua_isnumber(tolua_S,2,1,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
   EmberOgre::Gui::EntityIconManager* self = (EmberOgre::Gui::EntityIconManager*)  tolua_tousertype(tolua_S,1,0);
+  unsigned int pixelSize = ((unsigned int)  tolua_tonumber(tolua_S,2,64));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'createSlot'",NULL);
 #endif
   {
-   EmberOgre::Gui::EntityIconSlot* tolua_ret = (EmberOgre::Gui::EntityIconSlot*)  self->createSlot();
+   EmberOgre::Gui::EntityIconSlot* tolua_ret = (EmberOgre::Gui::EntityIconSlot*)  self->createSlot(pixelSize);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Gui::EntityIconSlot");
   }
  }
@@ -9342,7 +9344,8 @@ static int tolua_EmberOgre_EmberOgre_Gui_EntityIconManager_createIcon00(lua_Stat
      !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::EntityIconManager",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"EmberOgre::Gui::Icons::Icon",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,3,"EmberOgre::EmberEntity",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,4,&tolua_err)
+     !tolua_isnumber(tolua_S,4,1,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
  )
   goto tolua_lerror;
  else
@@ -9351,11 +9354,12 @@ static int tolua_EmberOgre_EmberOgre_Gui_EntityIconManager_createIcon00(lua_Stat
   EmberOgre::Gui::EntityIconManager* self = (EmberOgre::Gui::EntityIconManager*)  tolua_tousertype(tolua_S,1,0);
   EmberOgre::Gui::Icons::Icon* icon = ((EmberOgre::Gui::Icons::Icon*)  tolua_tousertype(tolua_S,2,0));
   EmberOgre::EmberEntity* entity = ((EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,3,0));
+  unsigned int pixelSize = ((unsigned int)  tolua_tonumber(tolua_S,4,64));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'createIcon'",NULL);
 #endif
   {
-   EmberOgre::Gui::EntityIcon* tolua_ret = (EmberOgre::Gui::EntityIcon*)  self->createIcon(icon,entity);
+   EmberOgre::Gui::EntityIcon* tolua_ret = (EmberOgre::Gui::EntityIcon*)  self->createIcon(icon,entity,pixelSize);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Gui::EntityIcon");
   }
  }
