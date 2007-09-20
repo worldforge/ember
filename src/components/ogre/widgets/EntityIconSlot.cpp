@@ -120,7 +120,7 @@ bool EntityIconSlot::handleDragDropped(const CEGUI::EventArgs& args)
 		if (mUserData) {
 			EntityIcon& entityIcon = mUserData->getEntityIcon();
 			EventIconDropped.emit(&entityIcon);
-			addEntityIcon(&entityIcon);
+// 			addEntityIcon(&entityIcon);
 		}
 	}
 	return true;

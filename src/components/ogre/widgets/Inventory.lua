@@ -2,7 +2,7 @@
 
 
 -----------------------------------------
-Inventory = {connectors={}, iconsize = 64, columns = 4, iconcounter = 0, slotcounter = 0, icons = {}, slots = {}, menu = {menuShown = false, activeEntityWrapper = nil}}
+Inventory = {connectors={}, iconsize = 32, columns = 4, iconcounter = 0, slotcounter = 0, icons = {}, slots = {}, menu = {menuShown = false, activeEntityWrapper = nil}}
 
 function Inventory.CreatedAvatarEntity(avatarEntity)
 	
@@ -18,7 +18,8 @@ end
 function Inventory.AddedEntityToInventory(entity)
 	local entityIconWrapper = Inventory.createIcon(entity)
 	if entityIconWrapper ~= nil then
-		local slot = Inventory.getFreeSlot()
+		local slotWrapper = Inventory.getFreeSlot()
+		local slot = slotWrapper.slot
 		slot:addEntityIcon(entityIconWrapper.entityIcon)
 		local entityIconBucket = {}
 		if Inventory.icons[entity:getId()] == nil then
@@ -46,7 +47,7 @@ end
 function Inventory.getFreeSlot()
 	--see if there's any free slots
 	for k,v in pairs(Inventory.slots) do 
-		if v:getEntityIcon() == nil then
+		if v.slot:getEntityIcon() == nil then
 			return v
 		end
 	end
@@ -60,11 +61,17 @@ function Inventory.addSlot()
 	
 	Inventory.slotcounter = Inventory.slotcounter + 1
 	
-	local slot = Inventory.entityIconManager:createSlot()
+	local slot = Inventory.entityIconManager:createSlot(Inventory.iconsize)
 	slot:getWindow():setPosition(CEGUI.UVector2(CEGUI.UDim(0, Inventory.iconsize * xPosition), CEGUI.UDim(0, Inventory.iconsize * yPosition)))
 	Inventory.iconContainer:addChildWindow(slot:getWindow())
-	table.insert(Inventory.slots, slot)
-	return slot
+	local slotWrapper = {slot = slot}
+	table.insert(Inventory.slots, slotWrapper)
+	slotWrapper.entityIconDropped = function(entityIcon)
+		slotWrapper.slot:addEntityIcon(entityIcon)
+	end
+	slotWrapper.entityIconDropped_connector = EmberOgre.LuaConnector:new_local(slot.EventIconDropped):connect(slotWrapper.entityIconDropped)
+	
+	return slotWrapper
 end
 
 function Inventory.showMenu(args, entityIconWrapper)
@@ -92,7 +99,7 @@ function Inventory.createIcon(entity)
 	if icon ~= nil then
 		local name = entity:getType():getName() .. " (" .. entity:getId() .. " : " .. entity:getName() .. ")"
 		local entityIconWrapper = {}
-		entityIconWrapper.entityIcon = Inventory.entityIconManager:createIcon(icon, entity)
+		entityIconWrapper.entityIcon = Inventory.entityIconManager:createIcon(icon, entity, Inventory.iconsize)
 		entityIconWrapper.entityIcon:setTooltipText(name)
 		entityIconWrapper.entity = entity
 		entityIconWrapper.mouseEnters = function(args)
