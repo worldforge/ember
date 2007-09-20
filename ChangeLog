@@ -1,3 +1,23 @@
+2007-09-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* configure.ac, ember.conf: bump the media version
+
+2007-09-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityIconSlot.cpp, src/components/ogre/widgets/Inventory.lua: removed the automatic attachment to the slot the icon is dropped on, instead it's up to the scripting code to decide what to do when a dropped event is emitted
+
+2007-09-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityIconManager.cpp, src/components/ogre/widgets/EntityIconManager.h, src/components/ogre/scripting/bindings/lua/EntityIconManager.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: added a pixel size option to the createSlot and createIcon methods
+
+2007-09-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.cpp, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.h, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.pkg, src/components/ogre/scripting/bindings/lua/helpers/lua_Helpers.cpp: added the ability to connect directly to a lua method instead of always having to specify the name
+
+2007-09-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/scripts/valuables.material: use the high def coin texture
+
 2007-09-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/terrain/TerrainPage.cpp, src/services/time/TimeService.h: fix build warnings
