@@ -615,7 +615,7 @@ void ServerService::logoutComplete(bool clean) {
 		mServerAdapter->deleteEntity(entity);
 	}
 	
-	void ServerService::setAttributes(Eris::Entity* entity, std::map<std::string, Atlas::Message::Element>& attributes)
+	void ServerService::setAttributes(Eris::Entity* entity, Atlas::Message::MapType& attributes)
 	{
 		mServerAdapter->setAttributes(entity, attributes);
 	}

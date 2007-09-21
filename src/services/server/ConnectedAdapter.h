@@ -56,7 +56,7 @@ public:
 	virtual void useStop();
 	virtual void attack(Eris::Entity* entity);
 	virtual void deleteEntity(Eris::Entity* entity);
-	virtual void setAttributes(Eris::Entity* entity, std::map<std::string, Atlas::Message::Element>& elements);
+	virtual void setAttributes(Eris::Entity* entity, Atlas::Message::MapType& elements);
    
 private:
 	Eris::Avatar* mAvatar;

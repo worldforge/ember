@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberServices
-** Generated automatically by tolua++-1.0.92 on Sun Sep 16 19:08:14 2007.
+** Generated automatically by tolua++-1.0.92 on Fri Sep 21 21:14:11 2007.
 */
 
 #ifndef __cplusplus
@@ -65,7 +65,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"sigc::signal<void,Eris::Account*>");
  tolua_usertype(tolua_S,"Ember::LoggingService");
  tolua_usertype(tolua_S,"sigc::signal<void,Eris::View*>");
- tolua_usertype(tolua_S,"std::map<std::string,Atlas::Message::Element>");
+ tolua_usertype(tolua_S,"Atlas::Message::MapType");
 }
 
 /* method: getInstance of class  Ember::LoggingService */
@@ -1305,7 +1305,7 @@ static int tolua_EmberServices_Ember_ServerService_setAttributes00(lua_State* to
  if (
      !tolua_isusertype(tolua_S,1,"Ember::ServerService",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"Eris::Entity",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"std::map<std::string,Atlas::Message::Element>",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"Atlas::Message::MapType",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
@@ -1314,7 +1314,7 @@ static int tolua_EmberServices_Ember_ServerService_setAttributes00(lua_State* to
  {
   Ember::ServerService* self = (Ember::ServerService*)  tolua_tousertype(tolua_S,1,0);
   Eris::Entity* entity = ((Eris::Entity*)  tolua_tousertype(tolua_S,2,0));
-  std::map<std::string,Atlas::Message::Element>* attributes = ((std::map<std::string,Atlas::Message::Element>*)  tolua_tousertype(tolua_S,3,0));
+  Atlas::Message::MapType* attributes = ((Atlas::Message::MapType*)  tolua_tousertype(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setAttributes'",NULL);
 #endif

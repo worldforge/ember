@@ -247,12 +247,12 @@ void ConnectedAdapter::deleteEntity(Eris::Entity* entity)
 	}
 }
 	
-void ConnectedAdapter::setAttributes(Eris::Entity* entity, std::map<std::string, Atlas::Message::Element>& elements)
+void ConnectedAdapter::setAttributes(Eris::Entity* entity, Atlas::Message::MapType& elements)
 {
 	try {
 		Atlas::Objects::Entity::Anonymous what;
 		what->setId(entity->getId());
-		for(std::map<std::string, Atlas::Message::Element>::iterator I = elements.begin(); I != elements.end(); ++I) {
+		for(Atlas::Message::MapType::iterator I = elements.begin(); I != elements.end(); ++I) {
 			what->setAttr(I->first, I->second);			
 		}
 		

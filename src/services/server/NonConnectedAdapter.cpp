@@ -104,7 +104,7 @@ void NonConnectedAdapter::deleteEntity(Eris::Entity* entity)
 {
 }
 
-void NonConnectedAdapter::setAttributes(Eris::Entity* entity, std::map<std::string, Atlas::Message::Element>& attributes)
+void NonConnectedAdapter::setAttributes(Eris::Entity* entity, Atlas::Message::MapType& attributes)
 {
 }
 
