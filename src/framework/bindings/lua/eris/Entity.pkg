@@ -34,7 +34,7 @@ class Entity {
 	
     WFMath::Point<3> getPosition() const;
     
-    const std::map<std::string, Atlas::Message::Element>& getAttributes() const;
+    const Atlas::Message::MapType& getAttributes() const;
     
     bool isMoving() const;
         

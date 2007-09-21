@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Atlas
-** Generated automatically by tolua++-1.0.92 on Sun Apr 15 20:10:17 2007.
+** Generated automatically by tolua++-1.0.92 on Fri Sep 21 22:23:51 2007.
 */
 
 #ifndef __cplusplus
@@ -18,9 +18,23 @@ TOLUA_API int  tolua_Atlas_open (lua_State* tolua_S);
 /* function to release collected object via destructor */
 #ifdef __cplusplus
 
+static int tolua_collect_Atlas__Message__MapType (lua_State* tolua_S)
+{
+ Atlas::Message::MapType* self = (Atlas::Message::MapType*) tolua_tousertype(tolua_S,1,0);
+	delete self;
+	return 0;
+}
+
 static int tolua_collect_Atlas__Message__Element (lua_State* tolua_S)
 {
  Atlas::Message::Element* self = (Atlas::Message::Element*) tolua_tousertype(tolua_S,1,0);
+	delete self;
+	return 0;
+}
+
+static int tolua_collect_Atlas__Message__MapType__iterator (lua_State* tolua_S)
+{
+ Atlas::Message::MapType::iterator* self = (Atlas::Message::MapType::iterator*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -30,9 +44,11 @@ static int tolua_collect_Atlas__Message__Element (lua_State* tolua_S)
 /* function to register type */
 static void tolua_reg_types (lua_State* tolua_S)
 {
+ tolua_usertype(tolua_S,"Atlas::Message::MapType::value_type");
+ tolua_usertype(tolua_S,"Atlas::Message::MapType");
  tolua_usertype(tolua_S,"std::vector<Atlas::Message::Element>");
  tolua_usertype(tolua_S,"Atlas::Message::Element");
- tolua_usertype(tolua_S,"std::map<std::string,Atlas::Message::Element>");
+ tolua_usertype(tolua_S,"Atlas::Message::MapType::iterator");
 }
 
 /* method: new of class  Atlas::Message::Element */
@@ -579,13 +595,13 @@ static int tolua_Atlas_Atlas_Message_Element_new10(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"Atlas::Message::Element",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"const std::map<std::string,Atlas::Message::Element>",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Atlas::Message::MapType",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  const std::map<std::string,Atlas::Message::Element>* v = ((const std::map<std::string,Atlas::Message::Element>*)  tolua_tousertype(tolua_S,2,0));
+  const Atlas::Message::MapType* v = ((const Atlas::Message::MapType*)  tolua_tousertype(tolua_S,2,0));
   {
    Atlas::Message::Element* tolua_ret = (Atlas::Message::Element*)  new Atlas::Message::Element(*v);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"Atlas::Message::Element");
@@ -604,13 +620,13 @@ static int tolua_Atlas_Atlas_Message_Element_new10_local(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"Atlas::Message::Element",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"const std::map<std::string,Atlas::Message::Element>",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Atlas::Message::MapType",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  const std::map<std::string,Atlas::Message::Element>* v = ((const std::map<std::string,Atlas::Message::Element>*)  tolua_tousertype(tolua_S,2,0));
+  const Atlas::Message::MapType* v = ((const Atlas::Message::MapType*)  tolua_tousertype(tolua_S,2,0));
   {
    Atlas::Message::Element* tolua_ret = (Atlas::Message::Element*)  new Atlas::Message::Element(*v);
    tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Atlas::Message::Element");
@@ -859,14 +875,14 @@ static int tolua_Atlas_Atlas_Message_Element__eq06(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"const Atlas::Message::Element",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"const std::map<std::string,Atlas::Message::Element>",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Atlas::Message::MapType",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
   const Atlas::Message::Element* self = (const Atlas::Message::Element*)  tolua_tousertype(tolua_S,1,0);
-  const std::map<std::string,Atlas::Message::Element>* v = ((const std::map<std::string,Atlas::Message::Element>*)  tolua_tousertype(tolua_S,2,0));
+  const Atlas::Message::MapType* v = ((const Atlas::Message::MapType*)  tolua_tousertype(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator=='",NULL);
 #endif
@@ -1495,8 +1511,8 @@ static int tolua_Atlas_Atlas_Message_Element_asMap00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'asMap'",NULL);
 #endif
   {
-   const std::map<std::string,Atlas::Message::Element>& tolua_ret = (const std::map<std::string,Atlas::Message::Element>&)  self->asMap();
-   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const std::map<std::string,Atlas::Message::Element>");
+   const Atlas::Message::MapType& tolua_ret = (const Atlas::Message::MapType&)  self->asMap();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const Atlas::Message::MapType");
   }
  }
  return 1;
@@ -1525,8 +1541,8 @@ static int tolua_Atlas_Atlas_Message_Element_asMap01(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'asMap'",NULL);
 #endif
   {
-   std::map<std::string,Atlas::Message::Element>& tolua_ret = (std::map<std::string,Atlas::Message::Element>&)  self->asMap();
-   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"std::map<std::string,Atlas::Message::Element>");
+   Atlas::Message::MapType& tolua_ret = (Atlas::Message::MapType&)  self->asMap();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"Atlas::Message::MapType");
   }
  }
  return 1;
@@ -1554,8 +1570,8 @@ static int tolua_Atlas_Atlas_Message_Element_Map00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Map'",NULL);
 #endif
   {
-   const std::map<std::string,Atlas::Message::Element>& tolua_ret = (const std::map<std::string,Atlas::Message::Element>&)  self->Map();
-   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const std::map<std::string,Atlas::Message::Element>");
+   const Atlas::Message::MapType& tolua_ret = (const Atlas::Message::MapType&)  self->Map();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const Atlas::Message::MapType");
   }
  }
  return 1;
@@ -1584,8 +1600,8 @@ static int tolua_Atlas_Atlas_Message_Element_Map01(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Map'",NULL);
 #endif
   {
-   std::map<std::string,Atlas::Message::Element>& tolua_ret = (std::map<std::string,Atlas::Message::Element>&)  self->Map();
-   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"std::map<std::string,Atlas::Message::Element>");
+   Atlas::Message::MapType& tolua_ret = (Atlas::Message::MapType&)  self->Map();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"Atlas::Message::MapType");
   }
  }
  return 1;
@@ -1712,6 +1728,346 @@ tolua_lerror:
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* get function: first of class  value_type */
+#ifndef TOLUA_DISABLE_tolua_get_Atlas__Message__MapType__value_type_first
+static int tolua_get_Atlas__Message__MapType__value_type_first(lua_State* tolua_S)
+{
+  Atlas::Message::MapType::value_type* self = (Atlas::Message::MapType::value_type*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'first'",NULL);
+#endif
+  tolua_pushcppstring(tolua_S,(const char*)self->first);
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: second of class  value_type */
+#ifndef TOLUA_DISABLE_tolua_get_Atlas__Message__MapType__value_type_second_ref
+static int tolua_get_Atlas__Message__MapType__value_type_second_ref(lua_State* tolua_S)
+{
+  Atlas::Message::MapType::value_type* self = (Atlas::Message::MapType::value_type*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'second'",NULL);
+#endif
+  tolua_pushusertype(tolua_S,(void*)&self->second,"Atlas::Message::Element");
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: second of class  value_type */
+#ifndef TOLUA_DISABLE_tolua_set_Atlas__Message__MapType__value_type_second_ref
+static int tolua_set_Atlas__Message__MapType__value_type_second_ref(lua_State* tolua_S)
+{
+  Atlas::Message::MapType::value_type* self = (Atlas::Message::MapType::value_type*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'second'",NULL);
+  if (!tolua_isusertype(tolua_S,2,"Atlas::Message::Element",0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->second = ((Atlas::Message::Element*)  tolua_tousertype(tolua_S,2,0))
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: operator* of class  iterator */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_MapType_iterator__mul00
+static int tolua_Atlas_Atlas_Message_MapType_iterator__mul00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Atlas::Message::MapType::iterator",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Atlas::Message::MapType::iterator* self = (Atlas::Message::MapType::iterator*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator*'",NULL);
+#endif
+  {
+   Atlas::Message::MapType::value_type& tolua_ret = (Atlas::Message::MapType::value_type&)  self->operator*();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"Atlas::Message::MapType::value_type");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.mul'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: operator== of class  iterator */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_MapType_iterator__eq00
+static int tolua_Atlas_Atlas_Message_MapType_iterator__eq00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Atlas::Message::MapType::iterator",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Atlas::Message::MapType::iterator",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Atlas::Message::MapType::iterator* self = (Atlas::Message::MapType::iterator*)  tolua_tousertype(tolua_S,1,0);
+  const Atlas::Message::MapType::iterator* value = ((const Atlas::Message::MapType::iterator*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator=='",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->operator==(*value);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.eq'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: clear of class  Atlas::Message::MapType */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_MapType_clear00
+static int tolua_Atlas_Atlas_Message_MapType_clear00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Atlas::Message::MapType",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Atlas::Message::MapType* self = (Atlas::Message::MapType*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'clear'",NULL);
+#endif
+  {
+   self->clear();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'clear'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: size of class  Atlas::Message::MapType */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_MapType_size00
+static int tolua_Atlas_Atlas_Message_MapType_size00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Atlas::Message::MapType",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Atlas::Message::MapType* self = (const Atlas::Message::MapType*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'size'",NULL);
+#endif
+  {
+   int tolua_ret = (int)  self->size();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'size'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: find of class  Atlas::Message::MapType */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_MapType_find00
+static int tolua_Atlas_Atlas_Message_MapType_find00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Atlas::Message::MapType",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Atlas::Message::MapType* self = (Atlas::Message::MapType*)  tolua_tousertype(tolua_S,1,0);
+  const std::string index = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'find'",NULL);
+#endif
+  {
+   Atlas::Message::MapType::iterator tolua_ret = (Atlas::Message::MapType::iterator)  self->find(index);
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new Atlas::Message::MapType::iterator(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Atlas::Message::MapType::iterator");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Atlas::Message::MapType::iterator));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Atlas::Message::MapType::iterator");
+#endif
+   }
+   tolua_pushcppstring(tolua_S,(const char*)index);
+  }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'find'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: end of class  Atlas::Message::MapType */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_MapType_theEnd00
+static int tolua_Atlas_Atlas_Message_MapType_theEnd00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Atlas::Message::MapType",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Atlas::Message::MapType* self = (Atlas::Message::MapType*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'end'",NULL);
+#endif
+  {
+   Atlas::Message::MapType::iterator tolua_ret = (Atlas::Message::MapType::iterator)  self->end();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new Atlas::Message::MapType::iterator(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Atlas::Message::MapType::iterator");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Atlas::Message::MapType::iterator));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Atlas::Message::MapType::iterator");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'theEnd'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new of class  Atlas::Message::MapType */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_MapType_new00
+static int tolua_Atlas_Atlas_Message_MapType_new00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Atlas::Message::MapType",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   Atlas::Message::MapType* tolua_ret = (Atlas::Message::MapType*)  new Atlas::Message::MapType();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Atlas::Message::MapType");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  Atlas::Message::MapType */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_MapType_new00_local
+static int tolua_Atlas_Atlas_Message_MapType_new00_local(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Atlas::Message::MapType",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   Atlas::Message::MapType* tolua_ret = (Atlas::Message::MapType*)  new Atlas::Message::MapType();
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Atlas::Message::MapType");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: delete of class  Atlas::Message::MapType */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_MapType_delete00
+static int tolua_Atlas_Atlas_Message_MapType_delete00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Atlas::Message::MapType",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Atlas::Message::MapType* self = (Atlas::Message::MapType*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'delete'",NULL);
+#endif
+  delete self;
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'delete'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* Open function */
 TOLUA_API int tolua_Atlas_open (lua_State* tolua_S)
 {
@@ -1807,6 +2163,35 @@ TOLUA_API int tolua_Atlas_open (lua_State* tolua_S)
      tolua_function(tolua_S,"asList",tolua_Atlas_Atlas_Message_Element_asList01);
      tolua_function(tolua_S,"List",tolua_Atlas_Atlas_Message_Element_List00);
      tolua_function(tolua_S,"List",tolua_Atlas_Atlas_Message_Element_List01);
+    tolua_endmodule(tolua_S);
+    #ifdef __cplusplus
+    tolua_cclass(tolua_S,"MapType","Atlas::Message::MapType","",tolua_collect_Atlas__Message__MapType);
+    #else
+    tolua_cclass(tolua_S,"MapType","Atlas::Message::MapType","",NULL);
+    #endif
+    tolua_beginmodule(tolua_S,"MapType");
+     tolua_cclass(tolua_S,"value_type","Atlas::Message::MapType::value_type","",NULL);
+     tolua_beginmodule(tolua_S,"value_type");
+      tolua_variable(tolua_S,"first",tolua_get_Atlas__Message__MapType__value_type_first,NULL);
+      tolua_variable(tolua_S,"second",tolua_get_Atlas__Message__MapType__value_type_second_ref,tolua_set_Atlas__Message__MapType__value_type_second_ref);
+     tolua_endmodule(tolua_S);
+     #ifdef __cplusplus
+     tolua_cclass(tolua_S,"iterator","Atlas::Message::MapType::iterator","",tolua_collect_Atlas__Message__MapType__iterator);
+     #else
+     tolua_cclass(tolua_S,"iterator","Atlas::Message::MapType::iterator","",NULL);
+     #endif
+     tolua_beginmodule(tolua_S,"iterator");
+      tolua_function(tolua_S,".mul",tolua_Atlas_Atlas_Message_MapType_iterator__mul00);
+      tolua_function(tolua_S,".eq",tolua_Atlas_Atlas_Message_MapType_iterator__eq00);
+     tolua_endmodule(tolua_S);
+     tolua_function(tolua_S,"clear",tolua_Atlas_Atlas_Message_MapType_clear00);
+     tolua_function(tolua_S,"size",tolua_Atlas_Atlas_Message_MapType_size00);
+     tolua_function(tolua_S,"find",tolua_Atlas_Atlas_Message_MapType_find00);
+     tolua_function(tolua_S,"theEnd",tolua_Atlas_Atlas_Message_MapType_theEnd00);
+     tolua_function(tolua_S,"new",tolua_Atlas_Atlas_Message_MapType_new00);
+     tolua_function(tolua_S,"new_local",tolua_Atlas_Atlas_Message_MapType_new00_local);
+     tolua_function(tolua_S,".call",tolua_Atlas_Atlas_Message_MapType_new00_local);
+     tolua_function(tolua_S,"delete",tolua_Atlas_Atlas_Message_MapType_delete00);
     tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);

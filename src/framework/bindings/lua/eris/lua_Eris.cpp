@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Eris
-** Generated automatically by tolua++-1.0.92 on Fri May 25 08:01:59 2007.
+** Generated automatically by tolua++-1.0.92 on Fri Sep 21 21:13:55 2007.
 */
 
 #ifndef __cplusplus
@@ -32,13 +32,6 @@ static int tolua_collect_WFMath__Point_3_ (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_WFMath__Quaternion (lua_State* tolua_S)
-{
- WFMath::Quaternion* self = (WFMath::Quaternion*) tolua_tousertype(tolua_S,1,0);
-	delete self;
-	return 0;
-}
-
 static int tolua_collect_sigc__connection (lua_State* tolua_S)
 {
  sigc::connection* self = (sigc::connection*) tolua_tousertype(tolua_S,1,0);
@@ -49,6 +42,13 @@ static int tolua_collect_sigc__connection (lua_State* tolua_S)
 static int tolua_collect_WFMath__Vector_3_ (lua_State* tolua_S)
 {
  WFMath::Vector<3>* self = (WFMath::Vector<3>*) tolua_tousertype(tolua_S,1,0);
+	delete self;
+	return 0;
+}
+
+static int tolua_collect_WFMath__Quaternion (lua_State* tolua_S)
+{
+ WFMath::Quaternion* self = (WFMath::Quaternion*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -67,7 +67,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Eris::TypeInfo");
  tolua_usertype(tolua_S,"Eris::View");
  tolua_usertype(tolua_S,"sigc::signal<void,bool>");
- tolua_usertype(tolua_S,"std::map<std::string,Atlas::Message::Element>");
+ tolua_usertype(tolua_S,"Atlas::Message::MapType");
  tolua_usertype(tolua_S,"sigc::connection");
  tolua_usertype(tolua_S,"sigc::signal<void,Eris::Entity*>");
  tolua_usertype(tolua_S,"Eris::Connection");
@@ -490,8 +490,8 @@ static int tolua_Eris_Eris_Entity_getAttributes00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getAttributes'",NULL);
 #endif
   {
-   const std::map<std::string,Atlas::Message::Element>& tolua_ret = (const std::map<std::string,Atlas::Message::Element>&)  self->getAttributes();
-   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const std::map<std::string,Atlas::Message::Element>");
+   const Atlas::Message::MapType& tolua_ret = (const Atlas::Message::MapType&)  self->getAttributes();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const Atlas::Message::MapType");
   }
  }
  return 1;

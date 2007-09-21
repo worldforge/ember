@@ -86,8 +86,8 @@ class Element
 
     /// Set type to std::string, and value to v.
     Element(const std::string& v);
-    /// Set type to std::map<std::string, Atlas::Message::Element>, and value to v.
-    Element(const std::map<std::string, Atlas::Message::Element>& v);
+    /// Set type to Atlas::Message::MapType, and value to v.
+    Element(const Atlas::Message::MapType& v);
     /// Set type to std::vector<Atlas::Message::Element>, and value to v.
     Element(const std::vector<Atlas::Message::Element>& v);
 
@@ -114,8 +114,8 @@ class Element
     /// Check for equality with a std::string.
     bool operator==(const std::string& v) const;
 
-    /// Check for equality with a std::map<std::string, Atlas::Message::Element>.
-    bool operator==(const std::map<std::string, Atlas::Message::Element>& v) const;
+    /// Check for equality with a Atlas::Message::MapMapTypeType.
+    bool operator==(const Atlas::Message::MapType& v) const;
 
     /// Check for equality with a std::vector<Atlas::Message::Element>.
     bool operator==(const std::vector<Atlas::Message::Element>& v) const;
@@ -134,7 +134,7 @@ class Element
     bool isNum() const;
     /// Check whether the current type is std::string.
     bool isString() const;
-    /// Check whether the current type is std::map<std::string, Atlas::Message::Element>.
+    /// Check whether the current type is Atlas::Message::MapType.
     bool isMap() const;
     /// Check whether the current type is std::vector<Atlas::Message::Element>.
     bool isList() const;
@@ -156,12 +156,12 @@ class Element
     std::string& asString() ;
     const std::string& String() const;
     std::string& String();
-    /// Retrieve the current value as a const std::map<std::string, Atlas::Message::Element> reference.
-    const std::map<std::string, Atlas::Message::Element>& asMap() const ;
-    /// Retrieve the current value as a non-const std::map<std::string, Atlas::Message::Element> reference.
-    std::map<std::string, Atlas::Message::Element>& asMap();
-    const std::map<std::string, Atlas::Message::Element>& Map() const;
-    std::map<std::string, Atlas::Message::Element>& Map();
+    /// Retrieve the current value as a const Atlas::Message::MapType reference.
+    const Atlas::Message::MapType& asMap() const ;
+    /// Retrieve the current value as a non-const Atlas::Message::MapType reference.
+    Atlas::Message::MapType& asMap();
+    const Atlas::Message::MapType& Map() const;
+    Atlas::Message::MapType& Map();
     /// Retrieve the current value as a const std::vector<Atlas::Message::Element> reference.
     const std::vector<Atlas::Message::Element>& asList() const;
     /// Retrieve the current value as a non-const std::vector<Atlas::Message::Element> reference.
@@ -174,8 +174,33 @@ class Element
 
 };
 
+class MapType {
+class value_type {
+	const std::string& first;
+	Atlas::Message::Element& second;
+};
+
+class iterator {
+public:
+	value_type& operator*();
+	bool operator==(const Atlas::Message::MapType::iterator& value);
+};
+public:
+	void clear();
+	int size() const;
+	
+	
+	Atlas::Message::MapType::iterator find(const std::string& index);
+	Atlas::Message::MapType::iterator end @ theEnd();
+	
+//	const Atlas::Message::Element& operator[] @ get(const std::string& index) const;
+//	Atlas::Message::Element& operator[] @ get(const std::string& index);
+
+	MapType();
+	~MapType();
+};
+
 } 
 } // namespace Atlas::Message
-
 
 
