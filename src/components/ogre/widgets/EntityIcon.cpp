@@ -32,6 +32,9 @@ EntityIcon::EntityIcon(EntityIconManager& manager, CEGUI::DragContainer* dragCon
 : mManager(manager), mDragContainer(dragContainer), mImage(image), mIcon(icon), mUserData(*this), mCurrentSlot(0), mEntity(entity)
 {
 	mDragContainer->setUserData(&mUserData);
+	mDragContainer->subscribeEvent(CEGUI::DragContainer::EventDragStarted, CEGUI::Event::Subscriber(& EntityIcon::dragContainer_DragStarted, this)); 
+	mDragContainer->subscribeEvent(CEGUI::DragContainer::EventDragEnded, CEGUI::Event::Subscriber(& EntityIcon::dragContainer_DragStopped, this)); 
+
 }
 
 EntityIcon::~EntityIcon()
