@@ -352,7 +352,7 @@ AttributeTextBuilder::AttributeTextBuilder(): mLevel(0)
 
 std::string AttributeTextBuilder::parseAttributes(const Eris::Entity::AttrMap& map)
 {
-	for (std::map<std::string, Atlas::Message::Element>::const_iterator I = map.begin(); I != map.end(); ++I) {
+	for (Atlas::Message::MapType::const_iterator I = map.begin(); I != map.end(); ++I) {
 		parseElement(I->first, I->second);
 	}
 	return mMainText.str();
