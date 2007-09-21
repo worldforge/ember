@@ -11,6 +11,7 @@ function Inventory.CreatedAvatarEntity(avatarEntity)
 	
 	Inventory.widget:registerConsoleVisibilityToggleCommand("inventory")
 	if avatarEntity:getAvatar():isAdmin() == false then
+		Inventory.setupDoll(avatarEntity)
 		Inventory.widget:show()
 	end
 end
@@ -214,9 +215,92 @@ function Inventory.buildWidget()
 	Inventory.menu.container:setVisible(true)
 -- 	connect(Inventory.connectors, guiManager:getInput().EventMouseButtonReleased, "Inventory.input_MouseButtonReleased")
 --	guiManager:getMainSheet():addChildWindow(Inventory.menu.container)
-	
 
 	
+end
+
+function Inventory.setupDoll(avatarEntity)
+	Inventory.doll = {}
+	
+	Inventory.doll.image = Inventory.widget:getWindow("DollImage")
+	Inventory.doll.renderer = EmberOgre.Gui.ModelRenderer:new_local(Inventory.doll.image)
+	Inventory.doll.renderer:setActive(false)
+	Inventory.doll.renderer:setIsInputCatchingAllowed(false)
+	
+	Inventory.doll.renderer:showModel(avatarEntity:getModel():getDefinition():get():getName())
+	Inventory.doll.renderer:setCameraDistance(0.75)
+	Inventory.doll.renderer:updateRender()
+	
+	
+	Inventory.doll.righHand = {}
+	Inventory.doll.righHand.slot = Inventory.entityIconManager:createSlot(Inventory.iconsize)
+	Inventory.doll.righHand.container = Inventory.widget:getWindow("Doll/RightHand")
+	Inventory.doll.righHand.container:addChildWindow(Inventory.doll.righHand.slot:getWindow())
+	Inventory.doll.righHand.entityIconDropped = function(entityIcon)
+		emberServices:getServerService():wield(entityIcon:getEntity())
+		Inventory.doll.righHand.slot:addEntityIcon(entityIcon)
+	end
+	Inventory.doll.righHand.entityIconDropped_connector = EmberOgre.LuaConnector:new_local(Inventory.doll.righHand.slot.EventIconDropped):connect(Inventory.doll.righHand.entityIconDropped)
+	
+	Inventory.doll.torso = Inventory.createDollSlot("body", Inventory.widget:getWindow("Doll/Torso"), "Drop an entity here to attach it to the torso.")
+	
+	Inventory.doll.torso.entityIconDropped = function(entityIcon)
+		if Inventory.doll.torso.isValidDrop(entityIcon) then
+			emberServices:getServerService():wield(entityIcon:getEntity())
+			Inventory.doll.torso.slot:addEntityIcon(entityIcon)
+		end
+	end
+	Inventory.doll.torso.entityIconDropped_connector = EmberOgre.LuaConnector:new_local(Inventory.doll.torso.slot.EventIconDropped):connect(Inventory.doll.torso.entityIconDropped)
+
+	Inventory.doll.legs = Inventory.createDollSlot("legs", Inventory.widget:getWindow("Doll/Legs"), "Drop an entity here to attach it to the legs.")
+	Inventory.doll.legs.entityIconDropped = function(entityIcon)
+		if Inventory.doll.legs.isValidDrop(entityIcon) then
+			emberServices:getServerService():wield(entityIcon:getEntity())
+			Inventory.doll.legs.slot:addEntityIcon(entityIcon)
+		end
+	end
+	Inventory.doll.legs.entityIconDropped_connector = EmberOgre.LuaConnector:new_local(Inventory.doll.legs.slot.EventIconDropped):connect(Inventory.doll.legs.entityIconDropped)
+end
+
+function Inventory.createDollSlot(outfitPlacement, containerWindow, tooltipText)
+	local dollSlot = {}
+	dollSlot.slot = Inventory.entityIconManager:createSlot(Inventory.iconsize)
+	dollSlot.container = containerWindow
+	dollSlot.container:addChildWindow(dollSlot.slot:getWindow())
+	dollSlot.container:setTooltipText(tooltipText)
+	dollSlot.outfitPlacement = outfitPlacement
+	
+	dollSlot.isValidDrop = function(entityIcon)
+		if dollSlot.outfitPlacement == "" then
+			return true
+		end
+		if entityIcon:getEntity():hasAttr("worn") then
+			local wornElement = entityIcon:getEntity():valueOfAttr("worn")
+			if wornElement:isString() then
+				local worn = wornElement:asString()
+				if worn == dollSlot.outfitPlacement then
+					return true
+				end
+			end
+		end
+		return false
+	end
+	
+	dollSlot.entityIconDragStart = function(entityIcon)
+		if dollSlot.isValidDrop(entityIcon) then
+		else
+			dollSlot.container:setProperty("FrameEnabled", "false")
+		end
+	end
+	
+	dollSlot.entityIconDragStop = function(entityIcon)
+		dollSlot.container:setProperty("FrameEnabled", "true")
+	end
+	
+	dollSlot.entityIconDragStart_connector = EmberOgre.LuaConnector:new_local(Inventory.entityIconManager.EventIconDragStart):connect(dollSlot.entityIconDragStart)
+	dollSlot.entityIconDragStop_connector = EmberOgre.LuaConnector:new_local(Inventory.entityIconManager.EventIconDragStop):connect(dollSlot.entityIconDragStop)
+
+	return dollSlot
 end
 
 

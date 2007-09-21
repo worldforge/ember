@@ -10,9 +10,29 @@
 			<Property Name='UnifiedSize' Value='{{1,-4},{1,-15}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/ScrollablePane' Name='IconContainer'>
-				<Property Name='UnifiedSize' Value='{{1.0,0},{1.0,0}}'/>
+				<Property Name='UnifiedSize' Value='{{0,128},{1.0,0}}'/>
 				<Property Name='Text' Value=''/>
 				<Property Name='InheritsAlpha' Value='True'/>
+			</Window>
+			<Window Type='EmberLook/StaticImage' Name='DollImage'>
+				<Property Name='UnifiedPosition' Value='{{0.0,128},{0,0}}'/>
+				<Property Name='UnifiedSize' Value='{{1,-128},{1.0,0}}'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Window Type='EmberLook/StaticImage' Name='Doll/RightHand'>
+					<Property Name='UnifiedPosition' Value='{{0.10,0},{0.45,0}}'/>
+					<Property Name='UnifiedSize' Value='{{0,32},{0,32}}'/>
+					<Property Name='BackgroundEnabled' Value='false'/>
+				</Window>
+				<Window Type='EmberLook/StaticImage' Name='Doll/Torso'>
+					<Property Name='UnifiedPosition' Value='{{0.5,-16},{0.3,0}}'/>
+					<Property Name='UnifiedSize' Value='{{0,32},{0,32}}'/>
+					<Property Name='BackgroundEnabled' Value='false'/>
+				</Window>
+				<Window Type='EmberLook/StaticImage' Name='Doll/Legs'>
+					<Property Name='UnifiedPosition' Value='{{0.5,-16},{0.6,0}}'/>
+					<Property Name='UnifiedSize' Value='{{0,32},{0,32}}'/>
+					<Property Name='BackgroundEnabled' Value='false'/>
+				</Window>
 			</Window>
 		</Window>
 	</Window>
