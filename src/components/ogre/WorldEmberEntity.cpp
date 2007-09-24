@@ -39,6 +39,7 @@
 #include <Mercator/ThresholdShader.h>
 #include <Mercator/DepthShader.h>
 #include <Mercator/GrassShader.h>
+#include <Mercator/ShaderFactory.h>
 
 namespace EmberOgre {
 WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, TerrainGenerator* terrainGenerator) : 
@@ -239,64 +240,56 @@ float extractFloat(const Atlas::Message::ListType& params, size_t position) {
 
 void TerrainParser::createShaders(const Atlas::Message::Element& surfaces)
 {
+
+
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 	bool isValid = false;
 	if (surfaces.isList()) {
-        // Legacy support for old list format.
         const Atlas::Message::ListType & slist(surfaces.asList());
         for(Atlas::Message::ListType::const_iterator I = slist.begin(); I != slist.end(); ++I) {
         	if (I->isMap()) {
 	        	std::string name;
 	        	std::string pattern;
         		const Atlas::Message::MapType& surfaceMap(I->asMap());
-        		if (surfaceMap.count("name")) {
-        			const Atlas::Message::Element& nameElem(surfaceMap.find("name")->second);
-        			if (nameElem.isString()) {
-        				name = nameElem.asString();
-        			}
-        		} else {
-        			continue;
-        		}
-        		if (surfaceMap.count("pattern")) {
-        			const Atlas::Message::Element& patternElem(surfaceMap.find("pattern")->second);
-        			if (patternElem.isString()) {
-        				pattern = patternElem.asString();
-        			}
-        		} else {
-        			continue;
-        		}
+				Mercator::Shader::Parameters params;
+				if (surfaceMap.count("params")) {
+					const Atlas::Message::Element& paramsElem(surfaceMap.find("params")->second);
+					if (paramsElem.isMap()) {
+						for (Atlas::Message::MapType::const_iterator J = paramsElem.asMap().begin(); J != paramsElem.asMap().end(); ++J) {
+							if (J->second.isNum()) {
+								params[J->first] = J->second.asNum();
+							}
+						}
+					}
+				}
         		
-        		Atlas::Message::ListType paramsList;
-        		if (surfaceMap.count("params")) {
-        			const Atlas::Message::Element& paramsElem(surfaceMap.find("params")->second);
-        			if (paramsElem.isList()) {
-		         		paramsList = paramsElem.asList();
-        			}
-        		}
-        		
-        		Mercator::Shader* shader(0);
-        		if (pattern == "fill") {
-        			shader = new Mercator::FillShader();
-        		} else if (pattern == "band") {
-        			shader = new Mercator::BandShader(extractFloat(paramsList, 0), extractFloat(paramsList, 1));
-        		} else if (pattern == "grass") {
-        			shader = new Mercator::GrassShader(extractFloat(paramsList, 0), extractFloat(paramsList, 1), extractFloat(paramsList, 2));
-        		} else if (pattern == "depth") {
-//         			shader = new Mercator::HighShader(extractFloat(paramsList, 0));
-        		} else if (pattern == "high") {
-//         			shader = new Mercator::DepthShader(extractFloat(paramsList, 0), extractFloat(paramsList, 1));
-        		}
-        		
-        		if (shader) {
-        			std::string texture(configSrv->getValue("shadertextures", name));
-        			if (texture != "") {
-	        			isValid = true;
-        				mTerrainGenerator->createShader(texture, shader);
-        			}
-        		}
-        	}
-        }
-    }
+				if (surfaceMap.count("name")) {
+					const Atlas::Message::Element& nameElem(surfaceMap.find("name")->second);
+					if (nameElem.isString()) {
+						const std::string& name = nameElem.asString();
+						///hack to remove the snow shader
+/*						if (name == "snow") {
+							continue;
+						}*/
+						std::string texture(configSrv->getValue("shadertextures", name));
+						if (texture != "") {
+							if (surfaceMap.count("pattern")) {
+								const Atlas::Message::Element& patternElem(surfaceMap.find("pattern")->second);
+								if (patternElem.isString()) {
+									const std::string& pattern = patternElem.asString();
+									Mercator::Shader* shader = Mercator::ShaderFactories::instance().newShader(pattern, params);
+									if (shader) {
+										isValid = true;
+										mTerrainGenerator->createShader(texture, shader);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
     if (!isValid) {
     	createDefaultShaders();
     }
