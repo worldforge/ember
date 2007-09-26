@@ -1,3 +1,11 @@
+2007-09-27 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* make_dist_media.sh.in: also copy the gui files
+
+2007-09-27 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Help.cpp, src/components/ogre/widgets/IngameChatWidget.cpp, src/components/ogre/widgets/InspectWidget.cpp, src/components/ogre/widgets/InventoryWidget.cpp, src/components/ogre/widgets/JesusEdit.cpp, src/components/ogre/widgets/MakeEntityWidget.cpp, src/components/ogre/widgets/MeshPreview.cpp, src/components/ogre/widgets/Quit.cpp, src/components/ogre/widgets/ServerWidget.cpp: updated all references from .xml and .widget to .layout
+
 2007-09-26 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* ember.conf: bumped version

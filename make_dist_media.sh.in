@@ -30,6 +30,7 @@ do
 	echo "Converted $filename to max 512x512"
 done
 
+
 #copy all meshes in use
 echo "Copying meshes"
 cd ${shared_dir}
@@ -59,6 +60,15 @@ cd ${original_media} ; tar cf - `cat ${shared_dir}/shared_packs.list ` | ( cd ${
 
 echo "User media"
 cd ${user_dir}
+
+#get the gui files
+mkdir -p ${shared_dir}/gui/cegui
+mkdir -p ${shared_dir}/gui/icons
+cp -a ${original_media}/common/themes/ember/gui/cegui/EmberLook.png ${shared_dir}/gui/cegui
+cp -a ${original_media}/common/themes/ember/gui/icons/ember.png ${shared_dir}/gui/icons
+cp -a ${original_media}/common/themes/ember/gui/icons/iconset_mason.png ${shared_dir}/gui/icons
+cp -a ${original_media}/common/themes/ember/gui/icons/iconset_standard.png ${shared_dir}/gui/icons
+
 
 #get the theme media dir
 #mkdir -p ${current}/${media_dir}/media/common/themes/ember
