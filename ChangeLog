@@ -1,3 +1,43 @@
+2007-09-26 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* ember.conf: bumped version
+
+2007-09-26 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/EntityIcon.pkg, src/components/ogre/scripting/bindings/lua/EntityIconDragDropTarget.pkg, src/components/ogre/scripting/bindings/lua/EntityIconSlot.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/scripting/bindings/lua/required.h: updated bindings
+
+2007-09-26 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityIcon.cpp, src/components/ogre/widgets/EntityIcon.h, src/components/ogre/widgets/EntityIconDragDropTarget.cpp, src/components/ogre/widgets/EntityIconDragDropTarget.h, src/components/ogre/widgets/EntityIconSlot.cpp, src/components/ogre/widgets/EntityIconSlot.h, src/components/ogre/widgets/Inventory.lua, src/components/ogre/widgets/Makefile.am: separated the functionality for recieving entity icon drag and drop actions to its own file, made both the slots and the icons inherit it, so that icons can be dropped on other icons
+
+2007-09-26 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/cegui/datafiles/fonts/Font.xsd, src/components/ogre/cegui/datafiles/imagesets/Imageset.xsd, src/components/ogre/cegui/datafiles/looknfeel/EmberLook.looknfeel, src/components/ogre/cegui/datafiles/looknfeel/Falagard.xsd, src/components/ogre/cegui/datafiles/schemes/GUIScheme.xsd: updated with correct definitions
+
+2007-09-24 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/WorldEmberEntity.cpp: use the ShaderFactories for creating shaders, thus letting Mercator take care of all selection and logic
+
+2007-09-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Inventory.layout, src/components/ogre/widgets/Inventory.lua: use common code for doll slots, when dragging icons, only show those slots where it can be dragged
+
+2007-09-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/InspectWidget.cpp: use the atlas types
+
+2007-09-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityIcon.cpp: added correct bindings for the drag start and stop events
+
+2007-09-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/adapters/atlas/AdapterFactory.h, src/components/ogre/widgets/adapters/atlas/bindings/lua/AdapterFactory.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/bindings.cpp, src/framework/bindings/lua/atlas/lua_Atlas.cpp, src/framework/bindings/lua/atlas/Message/Element.pkg, src/framework/bindings/lua/eris/Entity.pkg, src/framework/bindings/lua/eris/lua_Eris.cpp: added support in lua for the MapType
+
+2007-09-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/services/server/ConnectedAdapter.cpp, src/services/server/ConnectedAdapter.h, src/services/server/IServerAdapter.h, src/services/server/NonConnectedAdapter.cpp, src/services/server/NonConnectedAdapter.h, src/services/server/ServerService.cpp, src/services/server/ServerService.h, src/services/bindings/lua/ServerService.pkg, src/services/bindings/lua/lua_EmberServices.cpp: use the atlas types
+
 2007-09-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* configure.ac, ember.conf: bump the media version
