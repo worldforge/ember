@@ -94,7 +94,7 @@ void InspectWidget::buildWidget()
 {
 	
 
-	loadMainSheet("InspectWidget.xml", "InspectWidget/");
+	loadMainSheet("InspectWidget.layout", "InspectWidget/");
 	mMainWindow->setVisible(false);
 //	mMainWindow->setAlwaysOnTop(true);
 	

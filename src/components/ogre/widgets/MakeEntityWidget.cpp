@@ -83,7 +83,7 @@ MakeEntityWidget::~MakeEntityWidget()
 void MakeEntityWidget::buildWidget()
 {
 
-	loadMainSheet("MakeEntityWidget.xml", "MakeEntity/");
+	loadMainSheet("MakeEntityWidget.layout", "MakeEntity/");
 	
 	mTypeList = static_cast<CEGUI::Listbox*>(getWindow("TypeList"));
 	mName = static_cast<CEGUI::Editbox*>(getWindow("Name"));

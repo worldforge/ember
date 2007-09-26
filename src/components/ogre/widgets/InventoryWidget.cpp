@@ -67,7 +67,7 @@ void InventoryWidget::buildWidget()
 {
 	
 
-	loadMainSheet("InventoryWidget.xml", "Inventory/");
+	loadMainSheet("InventoryWidget.layout", "Inventory/");
 	mMainWindow->setVisible(false);
 	
 	mListBox = static_cast<CEGUI::Listbox*>(getWindow("ListBox"));

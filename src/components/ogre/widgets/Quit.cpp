@@ -44,7 +44,7 @@ Quit::~Quit()
 void Quit::buildWidget()
 {
 	
-	loadMainSheet("Quit.widget", "Quit/");
+	loadMainSheet("Quit.layout", "Quit/");
 	
 	Ember::Application::getSingleton().EventRequestQuit.connect(sigc::mem_fun(*this, &Quit::EmberOgre_RequestQuit));
 	

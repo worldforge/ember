@@ -221,7 +221,7 @@ MeshPreview::~MeshPreview()
 void MeshPreview::buildWidget()
 {
 
-	loadMainSheet("MeshPreview.widget", "MeshPreview/");
+	loadMainSheet("MeshPreview.layout", "MeshPreview/");
 	registerConsoleVisibilityToggleCommand("meshpreview");
 	enableCloseButton();
 	

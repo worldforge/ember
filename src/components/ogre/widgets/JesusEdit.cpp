@@ -74,7 +74,7 @@ JesusEdit::~JesusEdit()
 void JesusEdit::buildWidget()
 {
 
-	loadMainSheet("JesusEdit.widget", "JesusEdit/");
+	loadMainSheet("JesusEdit.layout", "JesusEdit/");
 	mMainWindow->setVisible(false);
 	
 	
@@ -558,7 +558,7 @@ mMinCameraDistance(0.5),
 mMaxCameraDistance(40),
 mSelectedAttachPointNode(0)
 {
-	mPreviewWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout(mGuiManager->getLayoutDir() + "JesusEditPreview.widget", "JesusEditPreview/");
+	mPreviewWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout(mGuiManager->getLayoutDir() + "JesusEditPreview.layout", "JesusEditPreview/");
 	
 	guiManager->getMainSheet()->addChildWindow(mPreviewWindow);
 	createPreviewTexture();
@@ -657,7 +657,7 @@ void JesusEditPreview::createPreviewTexture()
 
 JesusEditFile::JesusEditFile(GUIManager* guiManager, JesusEdit* jesusEdit, Jesus* jesus) : mJesusEdit(jesusEdit), mJesus(jesus)
 {
-	mWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout(guiManager->getLayoutDir() + "JesusEditFile.widget", "JesusEditFile/");
+	mWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout(guiManager->getLayoutDir() + "JesusEditFile.layout", "JesusEditFile/");
 
 	mBluePrintList = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditFile/Blueprints"));
 /*	BIND_CEGUI_EVENT(mBluePrintList, CEGUI::Listbox::EventSelectionChanged, JesusEditFile::BluePrintList_SelectionChanged)

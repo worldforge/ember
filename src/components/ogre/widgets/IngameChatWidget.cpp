@@ -798,7 +798,7 @@ IngameChatWidget::ChatText* IngameChatWidget::ChatTextCreator::createWidget(unsi
 	///there is no chat window for this entity, let's create one
 	std::stringstream ss;
 	ss <<  "ChatText/" << currentPoolSize << "/";
-	Window* window = WindowManager::getSingleton().loadWindowLayout(GUIManager::getSingleton().getLayoutDir()+"IngameChatWidget.xml", ss.str());
+	Window* window = WindowManager::getSingleton().loadWindowLayout(GUIManager::getSingleton().getLayoutDir()+"IngameChatWidget.layout", ss.str());
 
 	ChatText* widget = new ChatText(window, ss.str());
 	return widget;

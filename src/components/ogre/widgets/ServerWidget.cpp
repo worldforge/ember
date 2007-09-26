@@ -81,7 +81,7 @@ void ServerWidget::buildWidget()
 {
 
 
-	loadMainSheet("ServerWidget.xml", "Server/");
+	loadMainSheet("ServerWidget.layout", "Server/");
 	mMainWindow->setVisible(false);
 
 	CEGUI::PushButton* login = static_cast<CEGUI::PushButton*>(getWindow("LoginPanel/Login"));

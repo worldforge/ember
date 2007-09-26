@@ -66,7 +66,7 @@ Help::~Help()
 void Help::buildWidget()
 {
 
-	loadMainSheet("HelpWidget.xml", "Help/");
+	loadMainSheet("HelpWidget.layout", "Help/");
 	
 	enableCloseButton();
 	
