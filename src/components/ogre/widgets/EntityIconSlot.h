@@ -24,6 +24,7 @@
 #define EMBEROGRE_GUIENTITYICONSLOT_H
 
 #include <sigc++/signal.h>
+#include "EntityIconDragDropTarget.h"
 
 namespace CEGUI {
 class DragContainer;
@@ -41,7 +42,7 @@ class EntityIconManager;
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
-class EntityIconSlot
+class EntityIconSlot : public EntityIconDragDropTarget
 {
 friend class EntityIconManager;
 friend class EntityIcon;
@@ -70,9 +71,6 @@ public:
 	CEGUI::Window* getWindow();
 	
 	
-	sigc::signal<void, EntityIcon*> EventIconEntered;
-	sigc::signal<void, EntityIcon*> EventIconLeaves;
-	sigc::signal<void, EntityIcon*> EventIconDropped;
 protected:
 	EntityIconSlot(EntityIconManager& manager, CEGUI::Window* container);
 	virtual ~EntityIconSlot();
@@ -80,11 +78,7 @@ protected:
 	EntityIconManager& mManager;
 	CEGUI::Window* mContainer;
 	EntityIcon* mContainedIcon;
-	
-	bool handleDragEnter(const CEGUI::EventArgs& args);
-	bool handleDragLeave(const CEGUI::EventArgs& args);
-	bool handleDragDropped(const CEGUI::EventArgs& args);
-	
+		
 	/**
 	 *    Internal method called by the EntityIcon when it's removed from the slot.
 	 */

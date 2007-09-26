@@ -24,12 +24,13 @@
 #include "EntityIconSlot.h"
 #include <elements/CEGUIDragContainer.h>
 
+using namespace CEGUI;
 namespace EmberOgre {
 
 namespace Gui {
 
 EntityIcon::EntityIcon(EntityIconManager& manager, CEGUI::DragContainer* dragContainer, CEGUI::Window* image, Gui::Icons::Icon* icon, EmberEntity* entity)
-: mManager(manager), mDragContainer(dragContainer), mImage(image), mIcon(icon), mUserData(*this), mCurrentSlot(0), mEntity(entity)
+: EntityIconDragDropTarget(dragContainer), mManager(manager), mDragContainer(dragContainer), mImage(image), mIcon(icon), mUserData(*this), mCurrentSlot(0), mEntity(entity)
 {
 	mDragContainer->setUserData(&mUserData);
 	mDragContainer->subscribeEvent(CEGUI::DragContainer::EventDragStarted, CEGUI::Event::Subscriber(& EntityIcon::dragContainer_DragStarted, this)); 
@@ -94,6 +95,31 @@ EmberEntity* EntityIcon::getEntity()
 	return mEntity;
 }
 
+bool EntityIcon::handleDragEnter(const CEGUI::EventArgs& args, EntityIcon* icon)
+{
+	EntityIconDragDropTarget::handleDragEnter(args, icon);
+	if (mCurrentSlot) {
+		return mCurrentSlot->handleDragEnter(args, icon);
+	}
+	return true;
+}
+bool EntityIcon::handleDragLeave(const CEGUI::EventArgs& args, EntityIcon* icon)
+{
+	EntityIconDragDropTarget::handleDragLeave(args, icon);
+	if (mCurrentSlot) {
+		return mCurrentSlot->handleDragLeave(args, icon);
+	}
+	return true;
+}
+bool EntityIcon::handleDragDropped(const CEGUI::EventArgs& args, EntityIcon* icon)
+{
+	EntityIconDragDropTarget::handleDragDropped(args, icon);
+	if (mCurrentSlot) {
+		return mCurrentSlot->handleDragDropped(args, icon);
+	}
+	return true;
+
+}
 
 
 EntityIconUserData::EntityIconUserData(EntityIcon& entityIcon)

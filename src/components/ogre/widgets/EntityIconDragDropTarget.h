@@ -1,5 +1,5 @@
 //
-// C++ Interface: EntityIcon
+// C++ Interface: EntityIconDragDropTarget
 //
 // Description: 
 //
@@ -20,76 +20,45 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBEROGRE_GUIENTITYICON_H
-#define EMBEROGRE_GUIENTITYICON_H
+#ifndef EMBEROGRE_GUIENTITYICONDRAGDROPTARGET_H
+#define EMBEROGRE_GUIENTITYICONDRAGDROPTARGET_H
 
+#include <sigc++/signal.h>
 
-#include "icons/Icon.h"
-#include "EntityIconManager.h"
-#include "EntityIconDragDropTarget.h"
-
-namespace CEGUI {
-class DragContainer;
-class Window;
-class EventArgs;
+namespace CEGUI
+{
+	class Window;
+	class EventArgs;
 }
 
 namespace EmberOgre {
-class EmberEntity;
+
 namespace Gui {
 
-class EntityIconSlot;
 class EntityIcon;
-
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
-class EntityIconUserData
+class EntityIconDragDropTarget
 {
 public:
-	EntityIconUserData(EntityIcon& entityIcon);
-	
-	EntityIcon& getEntityIcon();
-private:
-	EntityIcon& mEntityIcon;
-};
-
-
-
-class EntityIcon : public EntityIconDragDropTarget
-{
-friend class EntityIconManager;
-public:
-	
-	CEGUI::Window* getImage();
-	CEGUI::DragContainer* getDragContainer();
-	Gui::Icons::Icon* getIcon();
-	void setSlot(EntityIconSlot* slot);
-	EntityIconSlot* getSlot();
-	void setTooltipText(const std::string& text);
-	EmberEntity* getEntity();
+	EntityIconDragDropTarget(CEGUI::Window* container);
+	virtual ~EntityIconDragDropTarget();
 
 	sigc::signal<void, EntityIcon*> EventIconEntered;
 	sigc::signal<void, EntityIcon*> EventIconLeaves;
 	sigc::signal<void, EntityIcon*> EventIconDropped;
 protected:
-	EntityIcon(EntityIconManager& manager, CEGUI::DragContainer* dragContainer, CEGUI::Window* image, Gui::Icons::Icon* icon, EmberEntity* entity);
-	virtual ~EntityIcon();
-	
-	EntityIconManager& mManager;
-	CEGUI::DragContainer* mDragContainer;
-	CEGUI::Window* mImage;
-	Gui::Icons::Icon* mIcon;
-	EntityIconUserData mUserData;
-	EntityIconSlot* mCurrentSlot;
-	EmberEntity* mEntity;
-	
-	bool dragContainer_DragStarted(const CEGUI::EventArgs& args);
-	bool dragContainer_DragStopped(const CEGUI::EventArgs& args);
-	
 	virtual bool handleDragEnter(const CEGUI::EventArgs& args, EntityIcon* icon);
 	virtual bool handleDragLeave(const CEGUI::EventArgs& args, EntityIcon* icon);
 	virtual bool handleDragDropped(const CEGUI::EventArgs& args, EntityIcon* icon);
+
+private:
+	bool dragContainer_DragEnter(const CEGUI::EventArgs& args);
+	bool dragContainer_DragLeave(const CEGUI::EventArgs& args);
+	bool dragContainer_DragDropped(const CEGUI::EventArgs& args);
+	
+	EntityIcon* parseIcon(const CEGUI::EventArgs& args);
 
 };
 

@@ -238,6 +238,11 @@ function Inventory.setupDoll(avatarEntity)
 	Inventory.doll.righHand.container:addChildWindow(Inventory.doll.righHand.slot:getWindow())
 	Inventory.doll.righHand.entityIconDropped = function(entityIcon)
 		emberServices:getServerService():wield(entityIcon:getEntity())
+		local icon = Inventory.doll.righHand.slot:getEntityIcon()
+		if icon ~= null then
+			local slot = Inventory.getFreeSlot()
+			slot:addEntityIcon(icon)
+		end
 		Inventory.doll.righHand.slot:addEntityIcon(entityIcon)
 	end
 	Inventory.doll.righHand.entityIconDropped_connector = EmberOgre.LuaConnector:new_local(Inventory.doll.righHand.slot.EventIconDropped):connect(Inventory.doll.righHand.entityIconDropped)
@@ -247,6 +252,11 @@ function Inventory.setupDoll(avatarEntity)
 	Inventory.doll.torso.entityIconDropped = function(entityIcon)
 		if Inventory.doll.torso.isValidDrop(entityIcon) then
 			emberServices:getServerService():wield(entityIcon:getEntity())
+			local icon = Inventory.doll.torso.slot:getEntityIcon()
+			if icon ~= null then
+				local slot = Inventory.getFreeSlot()
+				slot:addEntityIcon(icon)
+			end
 			Inventory.doll.torso.slot:addEntityIcon(entityIcon)
 		end
 	end
@@ -256,6 +266,11 @@ function Inventory.setupDoll(avatarEntity)
 	Inventory.doll.legs.entityIconDropped = function(entityIcon)
 		if Inventory.doll.legs.isValidDrop(entityIcon) then
 			emberServices:getServerService():wield(entityIcon:getEntity())
+			local icon = Inventory.doll.legs.slot:getEntityIcon()
+			if icon ~= null then
+				local slot = Inventory.getFreeSlot()
+				slot:addEntityIcon(icon)
+			end
 			Inventory.doll.legs.slot:addEntityIcon(entityIcon)
 		end
 	end
