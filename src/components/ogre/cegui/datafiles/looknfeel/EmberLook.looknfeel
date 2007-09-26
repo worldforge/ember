@@ -4729,10 +4729,10 @@
     -->
     <WidgetLook name="EmberLook/BorderIconButton">
         <PropertyDefinition name="DisabledColour" initialValue="FF888888" redrawOnWrite="true" />
-		<PropertyDefinition name="BackImage" redrawOnWrite="true" defaultValue="set:iconset_standard image:background_A" />
+		<PropertyDefinition name="BackImage" redrawOnWrite="true" initialValue="set:iconset_standard image:background_A" />
         <PropertyDefinition name="FrontImage" redrawOnWrite="true"/>
-		<PropertyDefinition name="BorderNormalImage" redrawOnWrite="true" defaultValue="set:iconset_standard image:ring"  />
-		<PropertyDefinition name="BorderHoverImage" redrawOnWrite="true" defaultValue="set:iconset_standard image:ring_over"  />
+		<PropertyDefinition name="BorderNormalImage" redrawOnWrite="true" initialValue="set:iconset_standard image:ring"  />
+		<PropertyDefinition name="BorderHoverImage" redrawOnWrite="true" initialValue="set:iconset_standard image:ring_over"  />
         <ImagerySection name="back">
             <ImageryComponent>
                 <Area>
