@@ -1,5 +1,5 @@
 //
-// C++ Interface: EntityIconSlot
+// C++ Interface: EntityIconDragDropTarget
 //
 // Description: 
 //
@@ -28,35 +28,16 @@ namespace Gui {
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
-class EntityIconSlot : public EntityIconDragDropTarget
+class EntityIconDragDropTarget
 {
 public:
-	
-	/**
-	 *    Adds an EntityIcon to the slot. If the slot already contains an icon, the method will return false and an error will be logged.
-	 * @param icon 
-	 * @return true if successful, else false
-	 */
-	
-	bool addEntityIcon(EmberOgre::Gui::EntityIcon* icon);
-	
-	/**
-	 *    Removes and returns the contained EntityIcon. If none is contained, nothing will happen.
-	 * @return The contained EntityIcon or null if none contained.
-	 */
-	EmberOgre::Gui::EntityIcon* removeEntityIcon();
-	
-	/**
-	 *    Gets the contained EntityIcon
-	 * @return 
-	 */
-	EmberOgre::Gui::EntityIcon* getEntityIcon();
-		
-	
-	CEGUI::Window* getWindow();
+	sigc::signal<void, EntityIcon*> EventIconEntered;
+	sigc::signal<void, EntityIcon*> EventIconLeaves;
+	sigc::signal<void, EntityIcon*> EventIconDropped;
 
 };
 
 }
 
 }
+
