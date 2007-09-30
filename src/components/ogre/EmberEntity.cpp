@@ -540,6 +540,26 @@ void EmberEntity::onModeChanged(MovementMode newMode)
 	mMovementMode = newMode;
 }
 
+void EmberEntity::setVisualize(const std::string& visualization, bool visualize)
+{
+	if (visualization == "OgreBBox") {
+		showOgreBoundingBox(visualize);
+	} else if (visualization == "ErisBBox") {
+		showErisBoundingBox(visualize);
+	}
+}
+
+bool EmberEntity::getVisualize(const std::string& visualization) const
+{
+	if (visualization == "OgreBBox") {
+		return getShowOgreBoundingBox();
+	} else if (visualization == "ErisBBox") {
+		return getShowErisBoundingBox();
+	}
+	return false;
+}
+
+
 void EmberEntity::showOgreBoundingBox(bool show)
 {
 	getSceneNode()->showBoundingBox(show);
