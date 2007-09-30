@@ -23,15 +23,26 @@
 #ifndef EMBEROGREOPCODECOLLISIONDETECTOR_H
 #define EMBEROGREOPCODECOLLISIONDETECTOR_H
 
-#include "EmberOgrePrerequisites.h"
 #include "EmberEntityUserObject.h"
 
 namespace OgreOpcode
 {
 	class CollisionObject;
+	namespace Details 
+	{
+		class OgreOpcodeDebugger;
+	}
 };
 
 namespace EmberOgre {
+
+class OpcodeCollisionDetector;
+class OpcodeCollisionDetectorVisualizerInstance;
+
+namespace Model
+{
+class Model;
+}
 
 /**
 	@author Erik Hjortsberg <erik@katastrof.nu>
@@ -40,19 +51,27 @@ class OpcodeCollisionDetector
 : public ICollisionDetector
 {
 public:
+	friend class OpcodeCollisionDetectorVisualizerInstance;
 	
 	OpcodeCollisionDetector(Model::Model* model);
 	virtual ~OpcodeCollisionDetector();
 	
 	virtual void testCollision(Ogre::Ray& ray, CollisionResult& result);
 	virtual void refit();
+	/**
+	 *    Called when the entity changes, such as a subentity being hidden or shown. Implementations must reload the collision data.
+	 */
+	virtual void reload();	
+	
+	virtual void setVisualize(bool visualize);
+	virtual bool getVisualize() const;
 private:
 	typedef std::vector<OgreOpcode::CollisionObject*> CollisionObjectStore;
 	void buildCollisionObjects();
 	void destroyCollisionObjects();
-	CollisionObjectStore   mCollisionObjects;
+	CollisionObjectStore mCollisionObjects;
 	Model::Model* mModel;
-
+	OpcodeCollisionDetectorVisualizerInstance* mVisualizer;
 };
 }
 

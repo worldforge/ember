@@ -25,11 +25,16 @@
 #include "ogreopcode/include/OgreEntityCollisionShape.h"
 #include "ogreopcode/include/OgreCollisionObject.h"
 
+#include "EmberOgrePrerequisites.h"
+#include "EmberEntityUserObject.h"
+
+#include "OpcodeCollisionDetectorVisualizer.h"
+
 #include "model/Model.h"
 #include "model/SubModel.h"
 namespace EmberOgre {
 
-OpcodeCollisionDetector::OpcodeCollisionDetector(Model::Model* model) : mModel(model)
+OpcodeCollisionDetector::OpcodeCollisionDetector(Model::Model* model) : mModel(model), mVisualizer(0)
 {
 	buildCollisionObjects();
 }
@@ -37,6 +42,12 @@ OpcodeCollisionDetector::OpcodeCollisionDetector(Model::Model* model) : mModel(m
 OpcodeCollisionDetector::~OpcodeCollisionDetector()
 {
 	destroyCollisionObjects();
+}
+
+void OpcodeCollisionDetector::reload()
+{
+	destroyCollisionObjects();
+	buildCollisionObjects();
 }
 
 
@@ -59,18 +70,21 @@ void OpcodeCollisionDetector::buildCollisionObjects()
 	const Model::Model::SubModelSet& submodels = mModel->getSubmodels();
 	for (Model::Model::SubModelSet::const_iterator I = submodels.begin(); I != submodels.end(); ++I)
 	{
-		std::string collideShapeName(std::string("entity_") + (*I)->getEntity()->getName());
-		OgreOpcode::EntityCollisionShape *collideShape = OgreOpcode::CollisionManager::getSingletonPtr()->createEntityCollisionShape(collideShapeName.c_str());
-// 		if (!collideShape->isInitialized()) {
-			collideShape->load((*I)->getEntity());
+		Ogre::Entity* entity = (*I)->getEntity();
+// 		if (entity->isVisible()) {
+			std::string collideShapeName(std::string("entity_") + entity->getName());
+			OgreOpcode::EntityCollisionShape *collideShape = OgreOpcode::CollisionManager::getSingletonPtr()->createEntityCollisionShape(collideShapeName.c_str());
+	// 		if (!collideShape->isInitialized()) {
+				collideShape->load(entity);
+	// 		}
+			OgreOpcode::CollisionObject* collideObject = collideContext->createObject(collideShapeName);
+			
+			collideObject->setShape(collideShape);
+			
+			collideContext->addObject(collideObject);
+			
+			mCollisionObjects.push_back(collideObject);
 // 		}
-		OgreOpcode::CollisionObject* collideObject = collideContext->createObject(collideShapeName);
-		
-		collideObject->setShape(collideShape);
-		
-		collideContext->addObject(collideObject);
-		
-		mCollisionObjects.push_back(collideObject);
 // 			collideObject->setDebug(true, false, false, false);
 	/*		collideShape->setDebug(true);
 			collideShape->visualize();*/
@@ -103,7 +117,24 @@ void OpcodeCollisionDetector::testCollision(Ogre::Ray& ray, CollisionResult& res
 			return;
 		}
 	}
-
 }
+
+void OpcodeCollisionDetector::setVisualize(bool visualize)
+{
+	if (visualize) {
+		if (!mVisualizer) {
+			mVisualizer = new OpcodeCollisionDetectorVisualizerInstance(*this);
+		}
+	} else {
+		delete mVisualizer;
+		mVisualizer = 0;
+	}
+}
+
+bool OpcodeCollisionDetector::getVisualize() const
+{
+	return mVisualizer != 0;
+}
+
 
 }
