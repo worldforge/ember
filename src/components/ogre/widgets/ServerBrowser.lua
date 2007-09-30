@@ -43,7 +43,7 @@ function ServerBrowser.buildWidget()
 	local serverService = emberServices:getServerService()
 	connect(ServerBrowser.connectors, serverService.GotConnection, "ServerBrowser.Server_GotConnection")
 	
---	ServerBrowser.connectToMetaServer()
+	ServerBrowser.connectToMetaServer()
 	ServerBrowser.widget:show()
 	ServerBrowser.widget:getMainWindow():activate()
 
