@@ -66,12 +66,6 @@ mModel(0),
 mScaleNode(0),
 mModelMapping(0)
 {
-// 	mModel = static_cast<Model::Model*>(getScaleNode()->getAttachedObject(0));
-
-	///make a copy of the original bbox 	
-// 	mDefaultOgreBoundingBox = mModel->getBoundingBox();
-
-//	loadAnimationsFromModel();
 }
 
 EmberPhysicalEntity::~EmberPhysicalEntity()
@@ -169,6 +163,35 @@ void EmberPhysicalEntity::setModel(const std::string& modelName)
 	mScaleNode->attachObject(mModel);
 }
 
+
+void EmberPhysicalEntity::showModelPart(const std::string& partName) 
+{
+	Model::Model* model = getModel();
+	if (model) {
+		model->showPart(partName);
+		
+		///if we already have set up a collision object we must reload it
+		EmberEntityUserObject* userObject = static_cast<EmberEntityUserObject*>(getModel()->getUserObject());
+		if (userObject && userObject->getCollisionDetector()) {
+			userObject->getCollisionDetector()->reload();
+		}
+	}
+}
+
+void EmberPhysicalEntity::hideModelPart(const std::string& partName) 
+{
+	Model::Model* model = getModel();
+	if (model) {
+		model->hidePart(partName);
+		
+		///if we already have set up a collision object we must reload it
+		EmberEntityUserObject* userObject = static_cast<EmberEntityUserObject*>(getModel()->getUserObject());
+		if (userObject && userObject->getCollisionDetector()) {
+			userObject->getCollisionDetector()->reload();
+		}
+	}
+}
+
 void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
 	///first we need to create the scale node
@@ -264,33 +287,14 @@ void EmberPhysicalEntity::createModelMapping()
 
 void EmberPhysicalEntity::connectEntities()
 {
-	if (getModel()->getUserObject()) {
-		delete getModel()->getUserObject();
+	if (getModel()) {
+		if (getModel()->getUserObject()) {
+			delete getModel()->getUserObject();
+		}
+		ICollisionDetector* collisionDetector = new OpcodeCollisionDetector(getModel());
+		EmberEntityUserObject* userObject = new EmberEntityUserObject(this, getModel(),  collisionDetector);
+		getModel()->setUserObject(userObject);
 	}
-	ICollisionDetector* collisionDetector = new OpcodeCollisionDetector(getModel());
-	EmberEntityUserObject* userObject = new EmberEntityUserObject(this, getModel(),  collisionDetector);
-	getModel()->setUserObject(userObject);
-		
-/*		OgreOpcode::CollisionContext* collideContext = OgreOpcode::CollisionManager::getSingletonPtr()->getDefaultContext();
-		const Model::Model::SubModelSet& submodels = getModel()->getSubmodels();
-		EmberEntityUserObject::CollisionObjectStore collisionObjects;
-		for (Model::Model::SubModelSet::const_iterator I = submodels.begin(); I != submodels.end(); ++I)
-		{
-			std::string collideShapeName(std::string("entity_") + (*I)->getEntity()->getName());
-			OgreOpcode::MeshCollisionShape *collideShape = OgreOpcode::CollisionManager::getSingletonPtr()->createMeshCollisionShape(collideShapeName.c_str());
-			collideShape->load((*I)->getEntity());
-			OgreOpcode::CollisionObject* collideObject = collideContext->newObject(collideShapeName);
-			collideObject->setShape(collideShape);
-			
-			collideContext->addObject(collideObject);
-			
-			collisionObjects.push_back(collideObject);
-// 			collideObject->setDebug(true, false, false, false);
-		
-		}*/
-		
-// 	}
-
 }
 
 
@@ -693,6 +697,35 @@ void EmberPhysicalEntity::onAction(const Atlas::Objects::Operation::RootOperatio
 
 bool EmberPhysicalEntity::allowVisibilityOfMember(EmberEntity* entity) {
 	return mModel->getDefinition()->getShowContained();
+}
+
+void EmberPhysicalEntity::setVisualize(const std::string& visualization, bool visualize)
+{
+	if (visualization == "CollisionObject") {
+		if (getModel()) {
+			EmberEntityUserObject* userObject = static_cast<EmberEntityUserObject*>(getModel()->getUserObject());
+			if (userObject && userObject->getCollisionDetector()) {
+				userObject->getCollisionDetector()->setVisualize(visualize);
+			}
+		}
+	} else {
+		EmberEntity::setVisualize(visualization, visualize);
+	}
+}
+
+bool EmberPhysicalEntity::getVisualize(const std::string& visualization) const
+{
+	if (visualization == "CollisionObject") {
+		if (getModel()) {
+			EmberEntityUserObject* userObject = static_cast<EmberEntityUserObject*>(getModel()->getUserObject());
+			if (userObject && userObject->getCollisionDetector()) {
+				return userObject->getCollisionDetector()->getVisualize();
+			}
+		}
+		return false;
+	} else {
+		return EmberEntity::getVisualize(visualization);
+	}
 }
 
 /*
