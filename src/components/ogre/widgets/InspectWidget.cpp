@@ -105,14 +105,17 @@ void InspectWidget::buildWidget()
 	mGuiManager->EventEntityAction.connect(sigc::mem_fun(*this, &InspectWidget::handleAction));
 	enableCloseButton();
 
-	CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(getWindow("ShowOgreBoundingBox"));
-	BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick, InspectWidget::ShowOgreBoundingBox_Click)
+	if (CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(getWindow("ShowOgreBoundingBox"))) {
+		BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick, InspectWidget::ShowOgreBoundingBox_Click);
+	}
 	
-	button = static_cast<CEGUI::PushButton*>(getWindow("ShowErisBoundingBox"));
-	BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick, InspectWidget::ShowErisBoundingBox_Click);
+	if (CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(getWindow("ShowErisBoundingBox"))) {
+		BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick, InspectWidget::ShowErisBoundingBox_Click);
+	}
 	
-	button = static_cast<CEGUI::PushButton*>(getWindow("MoveEntity"));
-	BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick, InspectWidget::MoveEntity_Click);
+	if (CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(getWindow("ShowCollision"))) {
+		BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick, InspectWidget::ShowCollision_Click);
+	}
 	
 }
 
@@ -316,10 +319,11 @@ void InspectWidget::entity_Changed(const Eris::StringSet& attributes)
 }
 
 
-bool InspectWidget::MoveEntity_Click(const CEGUI::EventArgs& args)
+bool InspectWidget::ShowCollision_Click(const CEGUI::EventArgs& args)
 {
-	mGuiManager->EmitEntityAction("move", mCurrentEntity);
-
+	if (mCurrentEntity) {
+		mCurrentEntity->setVisualize("CollisionObject", !mCurrentEntity->getVisualize("CollisionObject"));
+	}
 	return true;
 }
 

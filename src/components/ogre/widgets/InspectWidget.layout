@@ -22,22 +22,25 @@
 				<Property Name='UnifiedSize' Value='{{1.0,0},{0.4,-25}}'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>
-			<Window Type='EmberLook/Button' Name='MoveEntity'>
+			<Window Type='EmberLook/Button' Name='ShowCollision'>
 				<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-25}}'/>
 				<Property Name='UnifiedSize' Value='{{0.3,0},{0,25}}'/>
-				<Property Name='Text' Value='Move'/>
+				<Property Name='Text' Value='Collision'/>
+				<Property Name='Tooltip' Value='Show the collision mesh.'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='ShowOgreBoundingBox'>
 				<Property Name='UnifiedPosition' Value='{{0.3,0},{1.0,-25}}'/>
 				<Property Name='UnifiedSize' Value='{{0.3,0},{0,25}}'/>
 				<Property Name='Text' Value='Ogre bbox'/>
+				<Property Name='Tooltip' Value='Show the Ogre AABB.'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='ShowErisBoundingBox'>
 				<Property Name='UnifiedPosition' Value='{{0.6,0},{1.0,-25}}'/>
 				<Property Name='UnifiedSize' Value='{{0.3,0},{0,25}}'/>
 				<Property Name='Text' Value='Eris bbox'/>
+				<Property Name='Tooltip' Value='Show the Eris OOBB.'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>
 		</Window>

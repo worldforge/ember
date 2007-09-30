@@ -81,7 +81,7 @@ protected:
 	void handleAction(const std::string& action, EmberEntity* entity);
 	bool ShowOgreBoundingBox_Click(const CEGUI::EventArgs& args);
 	bool ShowErisBoundingBox_Click(const CEGUI::EventArgs& args);
-	bool MoveEntity_Click(const CEGUI::EventArgs& args);
+	bool ShowCollision_Click(const CEGUI::EventArgs& args);
 
 	EmberEntity* mCurrentEntity;
 
