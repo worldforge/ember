@@ -58,7 +58,9 @@ end
 
 function Inventory.addSlot()
 	local yPosition = math.floor(Inventory.slotcounter / Inventory.columns)
-	local xPosition = Inventory.slotcounter % Inventory.columns
+	local xPosition = Inventory.slotcounter - math.floor(Inventory.slotcounter/Inventory.columns)*Inventory.columns  --lua 5.0 can't do modulus, in 5.1 we would have done: Inventory.slotcounter % Inventory.columns
+	
+	
 	
 	Inventory.slotcounter = Inventory.slotcounter + 1
 	
