@@ -109,6 +109,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "model/mapping/EmberModelMappingManager.h"
 
 #include "ogreopcode/include/OgreCollisionManager.h"
+#include "OpcodeCollisionDetectorVisualizer.h"
 
 // ------------------------------
 // Include Ember header files
@@ -183,13 +184,15 @@ mKeepOnRunning(true),
 mJesus(0),
 mLogObserver(0), 
 mMaterialEditor(0),
-mCollisionManager(0)
+mCollisionManager(0),
+mCollisionDetectorVisualizer(0)
 {
 	Ember::Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
 }
 
 EmberOgre::~EmberOgre()
 {
+	delete mCollisionDetectorVisualizer;
 	delete mCollisionManager;
 	delete mMaterialEditor;
 	delete mJesus;
@@ -259,7 +262,7 @@ bool EmberOgre::frameEnded(const Ogre::FrameEvent & evt)
 
 bool EmberOgre::frameStarted(const Ogre::FrameEvent & evt)
 {
-	
+	//OgreOpcode::CollisionManager::getSingletonPtr()->getDefaultContext()->visualize(true, false, false, false, true, true);
 	if (!mKeepOnRunning)
 		S_LOG_INFO( "Shutting down Ember.");
 	return mKeepOnRunning;
@@ -381,7 +384,7 @@ bool EmberOgre::setup()
 	
 	///create the collision manager
 	mCollisionManager = new OgreOpcode::CollisionManager(mSceneMgr);
-	
+	mCollisionDetectorVisualizer = new OpcodeCollisionDetectorVisualizer();
 	
 	ogreResourceLoader.loadGui();
 	ogreResourceLoader.loadGeneral();

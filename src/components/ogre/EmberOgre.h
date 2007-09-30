@@ -110,6 +110,7 @@ class MaterialEditor;
 class OgreSetup;
 
 class OgreResourceProvider;
+class OpcodeCollisionDetectorVisualizer;
 
 /** 
 
@@ -407,6 +408,7 @@ protected:
 	std::auto_ptr<OgreResourceProvider> mScriptingResourceProvider;
 	
 	OgreOpcode::CollisionManager* mCollisionManager;
+	OpcodeCollisionDetectorVisualizer* mCollisionDetectorVisualizer;
 	
 };
 
