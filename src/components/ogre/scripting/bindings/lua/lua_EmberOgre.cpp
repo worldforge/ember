@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Tue Sep 25 01:09:31 2007.
+** Generated automatically by tolua++-1.0.92 on Sun Sep 30 01:36:52 2007.
 */
 
 #ifndef __cplusplus
@@ -3718,6 +3718,77 @@ static int tolua_EmberOgre_EmberOgre_EmberEntity_getDefaultUseOperators00(lua_St
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'getDefaultUseOperators'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setVisualize of class  EmberOgre::EmberEntity */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EmberEntity_setVisualize00
+static int tolua_EmberOgre_EmberOgre_EmberEntity_setVisualize00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::EmberEntity",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::EmberEntity* self = (EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,1,0);
+  const std::string visualization = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  bool visualize = ((bool)  tolua_toboolean(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setVisualize'",NULL);
+#endif
+  {
+   self->setVisualize(visualization,visualize);
+   tolua_pushcppstring(tolua_S,(const char*)visualization);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setVisualize'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getVisualize of class  EmberOgre::EmberEntity */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EmberEntity_getVisualize00
+static int tolua_EmberOgre_EmberOgre_EmberEntity_getVisualize00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::EmberEntity",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::EmberEntity* self = (const EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,1,0);
+  const std::string visualization = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getVisualize'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->getVisualize(visualization);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+   tolua_pushcppstring(tolua_S,(const char*)visualization);
+  }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getVisualize'.",&tolua_err);
  return 0;
 #endif
 }
@@ -19316,6 +19387,8 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"getShowErisBoundingBox",tolua_EmberOgre_EmberOgre_EmberEntity_getShowErisBoundingBox00);
     tolua_function(tolua_S,"getWorldBoundingBox",tolua_EmberOgre_EmberOgre_EmberEntity_getWorldBoundingBox00);
     tolua_function(tolua_S,"getDefaultUseOperators",tolua_EmberOgre_EmberOgre_EmberEntity_getDefaultUseOperators00);
+    tolua_function(tolua_S,"setVisualize",tolua_EmberOgre_EmberOgre_EmberEntity_setVisualize00);
+    tolua_function(tolua_S,"getVisualize",tolua_EmberOgre_EmberOgre_EmberEntity_getVisualize00);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"EmberOgre",0);
