@@ -167,8 +167,14 @@ Cases::AttributeComparers::AttributeComparerWrapper* ModelMappingCreator::getAtt
 	
 	if ((matchType == "") || (matchType == "string")) {
 		///default is string comparison
+		if (const CaseDefinition::ParameterEntry* param = findCaseParameter(caseDefinition.getCaseParameters(), "equals")) {
+			return new AttributeComparers::StringComparerWrapper(new AttributeComparers::StringComparer(param->second));
+		} else {
+			return new AttributeComparers::StringComparerWrapper(new AttributeComparers::StringComparer(""));
+		}
+/*		
 		const std::string& attributeValue = caseDefinition.getProperties()["equals"];
-		return new AttributeComparers::StringComparerWrapper(new AttributeComparers::StringComparer(attributeValue));
+		return new AttributeComparers::StringComparerWrapper(new AttributeComparers::StringComparer(attributeValue));*/
 	} else if (matchType == "numeric") {
 		return new AttributeComparers::NumericComparerWrapper(createNumericComparer(caseDefinition));
 	} else if (matchType == "function") {
@@ -188,21 +194,21 @@ AttributeComparers::NumericComparer* ModelMappingCreator::createNumericComparer(
 // 	DefinitionBase::PropertiesMap::const_iterator end = caseDefinition.getProperties().end();
 // 	value = caseDefinition.getProperties().find("equals");
 	
-	if (param = findCaseParameter(caseDefinition.getCaseParameters(), "equals")) {
+	if ((param = findCaseParameter(caseDefinition.getCaseParameters(), "equals"))) {
 		return new AttributeComparers::NumericEqualsComparer(atof(param->second.c_str()));
 	}
 	
 	///If both a min and max value is set, it's a range comparer
 	AttributeComparers::NumericComparer *mMin(0), *mMax(0);
-	if (param = findCaseParameter(caseDefinition.getCaseParameters(), "lesser")) {
+	if ((param = findCaseParameter(caseDefinition.getCaseParameters(), "lesser"))) {
 		mMin = new AttributeComparers::NumericLesserComparer(atof(param->second.c_str()));
-	} else if (param = findCaseParameter(caseDefinition.getCaseParameters(), "lesserequals")) {
+	} else if ((param = findCaseParameter(caseDefinition.getCaseParameters(), "lesserequals"))) {
 		mMin = new AttributeComparers::NumericEqualsOrLesserComparer(atof(param->second.c_str()));
 	}
 	
-	if (param = findCaseParameter(caseDefinition.getCaseParameters(), "greater")) {
+	if ((param = findCaseParameter(caseDefinition.getCaseParameters(), "greater"))) {
 		mMax = new AttributeComparers::NumericGreaterComparer(atof(param->second.c_str()));
-	} else if (param = findCaseParameter(caseDefinition.getCaseParameters(), "greaterequals")) {
+	} else if ((param = findCaseParameter(caseDefinition.getCaseParameters(), "greaterequals"))) {
 		mMax = new AttributeComparers::NumericEqualsOrGreaterComparer(atof(param->second.c_str()));
 	}
 	
