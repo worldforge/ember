@@ -206,9 +206,9 @@ void AvatarCamera::createNodesForCamera()
 /*		//NOTE: this won't currently work with the sky
 		mCamera->setFarClipDistance(0);*/
 		
-		mCamera->setFarClipDistance(1000000);
+		mCamera->setFarClipDistance(10000);
 	} else {
-		mCamera->setFarClipDistance(1000000);
+		mCamera->setFarClipDistance(10000);
 	}
 	
 	//create the nodes for the camera
@@ -378,6 +378,7 @@ void AvatarCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const Mouse
 
 	mCameraRaySceneQuery->setRay(cameraRay);
 	mCameraRaySceneQuery->execute(); 
+	
 	
 	///now check the entity picking
 	Ogre::RaySceneQueryResult& queryResult = mCameraRaySceneQuery->getLastResults(); 
