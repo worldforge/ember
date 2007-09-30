@@ -338,7 +338,7 @@ namespace OgreOpcode
 
 					for (attached_list_iterator i = attached_list.begin(); i != attached_list.end(); ++i)
 					{
-						if( (*i)->hasCollisions() || (*i)->hasCheckCollisions() )
+// 						if( (*i)->hasCollisions() || (*i)->hasCheckCollisions() )
 							(*i)->getShape()->visualize(mVisualDebugger);
 					}
 					//mVisualDebugger->endShapes();

@@ -194,7 +194,7 @@ namespace OgreOpcode
 	//	getMinMax(vA,vB);
 	//	mIceABB->SetMinMax(IceMaths::Point(vA.x, vA.y, vA.z), IceMaths::Point(vB.x, vB.y, vB.z));
 	//}
-	
+
 	//------------------------------------------------------------------------
 	//IceMaths::AABB* ICollisionShape::getIceABB(void) const
 	//{
@@ -390,7 +390,7 @@ namespace OgreOpcode
 				collInfo.other_tri_verts[0] = vOther0;
 				collInfo.other_tri_verts[1] = vOther1;
 				collInfo.other_tri_verts[2] = vOther2;
-				
+
 				collPair.collInfos.push_back(collInfo);
 
 				if(0 == i) // if this is the first contact
@@ -696,9 +696,9 @@ namespace OgreOpcode
 
 /////////////////////////////
 
-	void ICollisionShape::sphereEdgeCheck(Ogre::Vector3 &velocity, 
-		Ogre::Vector3 &edge, Ogre::Vector3 &baseToVertex, 
-		Ogre::Real &t, bool &foundCollision, 
+	void ICollisionShape::sphereEdgeCheck(Ogre::Vector3 &velocity,
+		Ogre::Vector3 &edge, Ogre::Vector3 &baseToVertex,
+		Ogre::Real &t, bool &foundCollision,
 		Ogre::Vector3 &collisionPoint, Ogre::Vector3 &pnt)
 	{
 		Ogre::Real newT, a,b,c;
@@ -710,7 +710,7 @@ namespace OgreOpcode
 		// calculate parameters for equation
 		Ogre::Real velocitySqaredLength = velocity.squaredLength();
 
-		a = edgeSqaredLength* -velocitySqaredLength + 
+		a = edgeSqaredLength* -velocitySqaredLength +
 			edgeDotVelocity*edgeDotVelocity;
 		b = edgeSqaredLength* (2*velocity.dotProduct(baseToVertex)) -
 			2.0f*edgeDotVelocity*edgeDotBaseToVertex;
@@ -767,8 +767,8 @@ namespace OgreOpcode
 
 			// calculate signed distance from sphere position to triangle plane
 			Ogre::Real signedDistToTrianglePlane = trianglePlane.getDistance(position);
-				
-			Ogre::Real normalDotVelocity = trianglePlane.normal.dotProduct(movementVector);			
+
+			Ogre::Real normalDotVelocity = trianglePlane.normal.dotProduct(movementVector);
 
 			if (normalDotVelocity == 0.0f)
 			{
@@ -832,11 +832,11 @@ namespace OgreOpcode
 			}
 
 			// if we havent found a collision already we will have to sweep
-			// the sphere against points and edges of the triangle. Note: A 
-			// collision inside the triangle will always happen before a 
-			// vertex or edge collision. 
+			// the sphere against points and edges of the triangle. Note: A
+			// collision inside the triangle will always happen before a
+			// vertex or edge collision.
 
-			// DAVE: is checking against points really necessary if we are checking against edges? 
+			// DAVE: is checking against points really necessary if we are checking against edges?
 			// Shouldn't the edges take care of that?
 
 			if (!foundCollision)
@@ -865,7 +865,7 @@ namespace OgreOpcode
 					collisionPoint = triangle.point(0);
 				}
 
-				// p2 
+				// p2
 				if (!foundCollision)
 				{
 					b = 2.0f * (velocity.dotProduct(base - triangle.point(1)));
@@ -899,20 +899,20 @@ namespace OgreOpcode
 				edge = triangle.point(1) - triangle.point(0);
 				baseToVertex = triangle.point(0) - position;
 
-				Ogre::Vector3 aPoint = triangle.point(0);
-				sphereEdgeCheck(velocity, edge, baseToVertex, t, foundCollision, collisionPoint, aPoint);
+				Vector3 point = triangle.point(0);
+				sphereEdgeCheck(velocity, edge, baseToVertex, t, foundCollision, collisionPoint, point);
 
 				edge = triangle.point(2) - triangle.point(1);
 				baseToVertex = triangle.point(1) - position;
 
-				aPoint = triangle.point(1);
-				sphereEdgeCheck(velocity, edge, baseToVertex, t, foundCollision, collisionPoint, aPoint);
+				point = triangle.point(1);
+				sphereEdgeCheck(velocity, edge, baseToVertex, t, foundCollision, collisionPoint, point);
 
 				edge = triangle.point(0) - triangle.point(2);
 				baseToVertex = triangle.point(2) - position;
 
-				aPoint = triangle.point(2);
-				sphereEdgeCheck(velocity, edge, baseToVertex, t, foundCollision, collisionPoint, aPoint);
+				point = triangle.point(2);
+				sphereEdgeCheck(velocity, edge, baseToVertex, t, foundCollision, collisionPoint, point);
 
 			}// end no collision found
 
@@ -926,7 +926,7 @@ namespace OgreOpcode
 				Ogre::Real distToCollision = (Ogre::Real)(t*movementVector.length() * radius);
 
 				// does this triangle qualify for closest hit?
-				if (distToCollision	<= cp->distance) 
+				if (distToCollision	<= cp->distance)
 				{
 					cp->distance = distToCollision;
 					cp->contact = collisionPoint * radius;
@@ -1192,7 +1192,7 @@ namespace OgreOpcode
 			mParentNode->attachObject(mDebugObject);
 
 		mDebugObject->begin("OgreOpcodeDebug/Shapes", Ogre::RenderOperation::OT_LINE_LIST);
-		
+
 		mActiveDebugger = activeDebugger;
 
 

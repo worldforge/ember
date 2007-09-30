@@ -81,7 +81,7 @@ namespace OgreOpcode
 		old_pos = new_pos;
 		new_matrix = m;
 
-		new_pos = getShape()->getParentSceneNode()->getWorldPosition();
+		new_pos = getShape()->getParentSceneNode()->_getDerivedPosition();
 		// Get center in world space.
 		Vector3 lMin,lMax;
 		getShape()->getMinMax(lMin,lMax);

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
-///  @file OgreTriangle.h
-///  @brief This class represents a Triangle, which is composed by
+///  @file OgreBroadPhase.h
+///  @brief 
 ///
 ///  @author The OgreOpcode Team
 ///

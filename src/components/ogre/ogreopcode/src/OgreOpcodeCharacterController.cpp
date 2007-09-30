@@ -1,3 +1,29 @@
+///////////////////////////////////////////////////////////////////////////////
+///  @file OgreOpcodeCharacterController.cpp
+///
+///  @author The OgreOpcode Team
+///
+///////////////////////////////////////////////////////////////////////////////
+///
+///  This file is part of OgreOpcode.
+///
+///  A lot of the code is based on the Nebula Opcode Collision module, see docs/Nebula_license.txt
+///
+///  OgreOpcode is free software; you can redistribute it and/or
+///  modify it under the terms of the GNU Lesser General Public
+///  License as published by the Free Software Foundation; either
+///  version 2.1 of the License, or (at your option) any later version.
+///
+///  OgreOpcode is distributed in the hope that it will be useful,
+///  but WITHOUT ANY WARRANTY; without even the implied warranty of
+///  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+///  Lesser General Public License for more details.
+///
+///  You should have received a copy of the GNU Lesser General Public
+///  License along with OgreOpcode; if not, write to the Free Software
+///  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+///
+///////////////////////////////////////////////////////////////////////////////
 #include "OgreOpcodeCharacterController.h"
 
 namespace OgreOpcode
@@ -54,7 +80,7 @@ namespace OgreOpcode
 	Ogre::Vector3 CharacterController::_collideWithWorld(int recursionDepth, const Ogre::Vector3& pos, const Ogre::Vector3& vel, CollisionPacket& colData, bool gravityStep, const Ogre::Degree& slopeSlideThresold)
 	{
 		// do we need to worry?
-		if (recursionDepth > 5) 
+		if (recursionDepth > 5)
 			return pos;
 
 		// Ok, we need to worry:
@@ -101,7 +127,7 @@ namespace OgreOpcode
 		slidePlaneNormal.normalise();
 		Ogre::Plane slidingPlane(slidePlaneNormal, slidePlaneOrigin);
 
-		Ogre::Vector3 newDestinationPoint = destinationPoint - 
+		Ogre::Vector3 newDestinationPoint = destinationPoint -
 			slidingPlane.getDistance(destinationPoint) *
 			slidePlaneNormal;
 
@@ -133,10 +159,10 @@ namespace OgreOpcode
 	{
 		Ogre::Vector3 pos_R3 = colData.basePoint * colData.eRadius;
 		Ogre::Vector3 vel_R3 = colData.velocity * colData.eRadius;
-		
+
 		OgreOpcode::CollisionPair** reports;
 
-		// TODO: sweptSphereCheck does not support ellipsoids, 
+		// TODO: sweptSphereCheck does not support ellipsoids,
 		// so we must use only one dimension!!!
 		Ogre::Real radius = colData.eRadius.x;
 
@@ -150,7 +176,7 @@ namespace OgreOpcode
 		int count = OgreOpcode::CollisionManager::getSingletonPtr()->getDefaultContext()->
 			sweptSphereCheck(pos_R3, vel_R3 + offset, radius, collClass, reports);
 
-		if (count) 
+		if (count)
 		{
 			// search for closest distance collision
 			int closest = 0;
