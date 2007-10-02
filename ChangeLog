@@ -1,3 +1,63 @@
+2007-10-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/OgreSetup.cpp: shut down SDL properly when the app exits though an SIGABRT or SIGSEGV to avoid messing up the desktop
+
+2007-09-30 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/scripting/bindings/lua/EmberEntity.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
+
+2007-09-30 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Inventory.lua: since we support lua 5.0 we can't use the "%" mod function which only exists in 5.1
+
+2007-09-30 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/IngameChatWidget.cpp: don't move chat windows to the top when the text is updated since this will also bring the focus to them
+
+2007-09-30 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+	
+	* src/components/ogre/widgets/InspectWidget.cpp, src/components/ogre/widgets/InspectWidget.h, src/components/ogre/widgets/InspectWidget.layout: remove the move button and instead make it into a button for switching collision visualization on and off
+
+2007-09-30 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/ServerBrowser.lua: turn on the meta server service which for some reason was turned off
+
+2007-09-30 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberOgre.cpp, src/components/ogre/EmberOgre.h: manage the collision visualizer
+
+2007-09-30 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/Makefile.am: added new files
+
+2007-09-30 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberEntityPartAction.cpp, src/components/ogre/EmberPhysicalEntity.cpp, src/components/ogre/EmberPhysicalEntity.h: reload collision data when the model parts changes, also implement the new general visualization interface from EmberEntity
+
+2007-09-30 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberEntityUserObject.h: added signatures to the ICollisionDetector for setting and getting visualization state as well as reloading the collision data.
+
+2007-09-30 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/OpcodeCollisionDetector.cpp, src/components/ogre/OpcodeCollisionDetector.h, src/components/ogre/OpcodeCollisionDetectorVisualizer.cpp, src/components/ogre/OpcodeCollisionDetectorVisualizer.h: refactored the visualizator into it's own class and make it much more efficient
+
+2007-09-30 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/AvatarCamera.cpp: decrease the far clipping distance to remove z-fighting artifacts
+
+2007-09-30 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberEntity.cpp, src/components/ogre/EmberEntity.h: added a more generic interface for turning on and off visualizations
+
+2007-09-30 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/ogreopcode/include/OgreBroadPhase.h, src/components/ogre/ogreopcode/include/OgreOpcodeCharacterController.h, src/components/ogre/ogreopcode/src/IOgreCollisionShape.cpp, src/components/ogre/ogreopcode/src/OgreCollisionContext.cpp, src/components/ogre/ogreopcode/src/OgreCollisionObject.cpp, src/components/ogre/ogreopcode/src/OgreEntityCollisionShape.cpp, src/components/ogre/ogreopcode/src/OgreOpcodeCharacterController.cpp: upgrade to a newer version, make the visualization of shapes show even for those without collisions and altered the way the EntityCollisionShape works to only build collision data for those subentities that are visible.
+
+2007-09-30 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/model/mapping/ModelMappingCreator.cpp: fixed a bug where the attribute string cases weren't correctly parsed and created
+
 2007-09-27 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* make_dist_media.sh.in: also copy the gui files
