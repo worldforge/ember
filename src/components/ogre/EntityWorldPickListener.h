@@ -26,12 +26,14 @@
 #include "EmberOgrePrerequisites.h"
 #include "IWorldPickListener.h"
 #include <sigc++/signal.h>
+#include "framework/ConsoleObject.h"
 
 
 namespace EmberOgre {
 
 
 class EmberEntity;
+class EntityWorldPickListener;
 /**
  * Struct used for returning the result of a mouse pick.
  */
@@ -43,9 +45,24 @@ struct EntityPickResult
 };
 
 /**
+Visualizes the picking operation by placing a large ball at the picked position.
+*/
+class EntityWorldPickListenerVisualizer : public virtual sigc::trackable
+{
+public:
+	EntityWorldPickListenerVisualizer(EntityWorldPickListener& pickListener);
+	virtual ~EntityWorldPickListenerVisualizer();
+
+private:
+	Ogre::Entity* mEntity;
+	Ogre::SceneNode* mDebugNode;
+	void picker_EventPickedEntity(const EntityPickResult& result, const MousePickerArgs& mouseArgs);
+};
+
+/**
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
-class EntityWorldPickListener : public IWorldPickListener
+class EntityWorldPickListener : public IWorldPickListener, public Ember::ConsoleObject
 {
 public:
     EntityWorldPickListener();
@@ -61,9 +78,21 @@ public:
 
 	sigc::signal<void, const EntityPickResult&, const MousePickerArgs&> EventPickedEntity;
 	
+	const Ember::ConsoleCommandWrapper VisualizePicking;
+	
+	/**
+	 *    Reimplements the ConsoleObject::runCommand method
+	 * @param command 
+	 * @param args 
+	 */
+	virtual	void runCommand(const std::string &command, const std::string &args);
+	
 protected:
 	float mClosestPickingDistance, mFurthestPickingDistance;
 	EntityPickResult mResult;
+	
+	std::auto_ptr<EntityWorldPickListenerVisualizer> mVisualizer;
+	
 };
 
 }

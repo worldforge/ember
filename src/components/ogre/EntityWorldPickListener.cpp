@@ -24,19 +24,48 @@
 #include "EmberOgre.h"
 #include "EmberEntityUserObject.h"
 
-/*#include "ogreopcode/include/OgreCollisionObject.h"
-#include "ogreopcode/include/OgreCollisionManager.h"
-#include "ogreopcode/include/IOgreCollisionShape.h"*/
 #include "model/Model.h"
 #include "EmberEntityFactory.h"
 
 #include "EmberEntity.h"
 #include "WorldEmberEntity.h"
 
+#include "MousePicker.h"
+
 namespace EmberOgre {
 
+EntityWorldPickListenerVisualizer::EntityWorldPickListenerVisualizer(EntityWorldPickListener& pickListener)
+: mEntity(0), mDebugNode(0)
+{
+	mDebugNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
+	Ogre::Entity* mEntity = EmberOgre::getSingleton().getSceneManager()->createEntity("pickerDebugObject", "fireball.mesh");
+	///start out with a normal material
+	mEntity->setMaterialName("BasePointMarkerMaterial");
+	mEntity->setRenderingDistance(300);
+	mEntity->setQueryFlags(MousePicker::CM_NONPICKABLE);
+	mDebugNode->attachObject(mEntity);
+	
+	pickListener.EventPickedEntity.connect(sigc::mem_fun(*this, &EntityWorldPickListenerVisualizer::picker_EventPickedEntity));
+}
+
+EntityWorldPickListenerVisualizer::~EntityWorldPickListenerVisualizer()
+{
+	EmberOgre::getSingleton().getSceneManager()->destroyEntity(mEntity);
+	EmberOgre::getSingleton().getSceneManager()->destroySceneNode(mDebugNode->getName());
+}
+
+void EntityWorldPickListenerVisualizer::picker_EventPickedEntity(const EntityPickResult& result, const MousePickerArgs& mouseArgs)
+{
+	mDebugNode->setPosition(result.position);
+}
+
+
+
 EntityWorldPickListener::EntityWorldPickListener()
-: mClosestPickingDistance(0), mFurthestPickingDistance(0)
+: VisualizePicking("visualize_picking", this, "Visualize mouse pickings.")
+, mClosestPickingDistance(0)
+, mFurthestPickingDistance(0)
+, mVisualizer(0)
 {
 }
 
@@ -66,7 +95,9 @@ void EntityWorldPickListener::endPickingContext(const MousePickerArgs& mousePick
 }
 
 
-void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs)
+
+
+void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs) 
 {
 
 	if (entry.worldFragment) {
@@ -154,5 +185,15 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 
 }
 
+void EntityWorldPickListener::runCommand(const std::string &command, const std::string &args)
+{
+	if(VisualizePicking == command) {
+		if (mVisualizer.get()) {
+			mVisualizer.reset();
+		} else {
+			mVisualizer = std::auto_ptr<EntityWorldPickListenerVisualizer>(new EntityWorldPickListenerVisualizer(*this));
+		}
+	}
+}
 
 }
