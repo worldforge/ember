@@ -97,7 +97,9 @@ end
 -- end
 
 function Inventory.createIcon(entity)
-	local icon = guiManager:getIconManager():getIcon(Inventory.iconsize, entity:getType())
+	--return nil
+--	local icon = guiManager:getIconManager():getIcon(Inventory.iconsize, entity:getType())
+	local icon = guiManager:getIconManager():getIcon(Inventory.iconsize, entity)
 	
 	if icon ~= nil then
 		local name = entity:getType():getName() .. " (" .. entity:getId() .. " : " .. entity:getName() .. ")"
