@@ -39,7 +39,7 @@ public:
 
     ~IconManager();
     
-    Icon* getIcon(int pixelWidth, EmberOgre::EmberPhysicalEntity* entity);
+    Icon* getIcon(int pixelWidth, EmberOgre::EmberEntity* entity);
     Icon* getIcon(int pixelWidth, Eris::TypeInfo* erisType);
 
 };

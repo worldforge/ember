@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Sun Sep 30 01:36:52 2007.
+** Generated automatically by tolua++-1.0.92 on Thu Oct  4 23:41:27 2007.
 */
 
 #ifndef __cplusplus
@@ -8834,7 +8834,7 @@ static int tolua_EmberOgre_EmberOgre_Gui_Icons_IconManager_getIcon00(lua_State* 
  if (
      !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::Icons::IconManager",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"EmberOgre::EmberPhysicalEntity",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"EmberOgre::EmberEntity",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
@@ -8843,7 +8843,7 @@ static int tolua_EmberOgre_EmberOgre_Gui_Icons_IconManager_getIcon00(lua_State* 
  {
   EmberOgre::Gui::Icons::IconManager* self = (EmberOgre::Gui::Icons::IconManager*)  tolua_tousertype(tolua_S,1,0);
   int pixelWidth = ((int)  tolua_tonumber(tolua_S,2,0));
-  EmberOgre::EmberPhysicalEntity* entity = ((EmberOgre::EmberPhysicalEntity*)  tolua_tousertype(tolua_S,3,0));
+  EmberOgre::EmberEntity* entity = ((EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getIcon'",NULL);
 #endif
