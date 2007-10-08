@@ -87,16 +87,36 @@ IconManager::~IconManager()
 {
 }
 
-Icon* IconManager::getIcon(int pixelWidth, EmberPhysicalEntity* entity)
+Icon* IconManager::getIcon(int pixelWidth, EmberEntity* entity)
 {
-	std::string key = "entity_" + entity->getId();
-	if (mIconStore.hasIcon(key)) {
-		return mIconStore.getIcon(key);
-	} else {
-		Icon* icon = mIconStore.createIcon(key);
-		mIconRenderer.render(entity->getModel(), icon);
-		return icon;
+	EmberPhysicalEntity* physEntity = dynamic_cast<EmberPhysicalEntity*>(entity);
+	if (physEntity) {
+		std::string key = "entity_" + physEntity->getId();
+		if (mIconStore.hasIcon(key)) {
+			return mIconStore.getIcon(key);
+		} else {
+			Icon* icon = mIconStore.createIcon(key);
+			if (icon) {
+				IconActionCreator actionCreator(*entity);
+				std::auto_ptr<Model::Mapping::ModelMapping> modelMapping(::EmberOgre::Model::Mapping::EmberModelMappingManager::getSingleton().getManager().createMapping(entity, &actionCreator));
+				std::string modelName;
+				if (modelMapping.get()) {
+					modelMapping->initialize();
+					modelName = actionCreator.getModelName();
+				}
+				///if there's no model defined for this use the placeholder model
+				if (modelName == "") {
+					modelName = "placeholder";
+				}
+				///update the model preview window
+				Model::Model* model = Model::Model::createModel(mIconRenderer.getRenderContext()->getSceneManager(), modelName);
+				mIconRenderer.render(model, icon);
+				mIconRenderer.getRenderContext()->getSceneManager()->destroyMovableObject(model);
+			}
+			return icon;
+		}
 	}
+	return 0;
 }
 
 Icon* IconManager::getIcon(int pixelWidth, Eris::TypeInfo* erisType)

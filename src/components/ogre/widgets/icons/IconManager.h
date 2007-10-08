@@ -33,7 +33,7 @@ namespace Eris
 
 namespace EmberOgre {
 
-	class EmberPhysicalEntity;
+	class EmberEntity;
 
 namespace Gui {
 
@@ -50,7 +50,7 @@ public:
 
     ~IconManager();
     
-    Icon* getIcon(int pixelWidth, EmberPhysicalEntity* entity);
+    Icon* getIcon(int pixelWidth, EmberEntity* entity);
     Icon* getIcon(int pixelWidth, Eris::TypeInfo* erisType);
 protected:
 

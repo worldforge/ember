@@ -48,9 +48,10 @@ IconRenderer::~IconRenderer()
 
 void IconRenderer::render(Model::Model* model, Icon* icon)
 {
-	Ogre::SceneNode* node = mRenderContext->getSceneNode();
 	
 	if (model) {
+		Ogre::SceneNode* node = mRenderContext->getSceneNode();
+		
 		node->detachAllObjects();
 		node->attachObject(model);
 		
@@ -82,7 +83,9 @@ void IconRenderer::render(Model::Model* model, Icon* icon)
 		
 		dstBuffer->blit(srcBuffer, sourceBox, icon->getImageStoreEntry()->getBox());
 		node->detachAllObjects();
+		
 	}
+	
 	
 }
     
