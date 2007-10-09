@@ -41,8 +41,8 @@ public:
     virtual ~ListAdapter();
     
 
-    size_t getSize();
-	const Atlas::Message::Element& valueOfAttr(size_t index) const;
+    int getSize();
+	const Atlas::Message::Element& valueOfAttr(int index) const;
 
 //     void addAttributeAdapter(int index, Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow);
     void addAttributeAdapter(EmberOgre::Gui::Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow);
