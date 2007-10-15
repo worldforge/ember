@@ -1,5 +1,9 @@
 2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* configure.ac: use the correct name for the lualib
+
+2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* configure.ac: ubuntu apparently needs bot lua and lualib. I don't know the name of the 5.1 .pc file though so that's probably broken though.
 
 2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
