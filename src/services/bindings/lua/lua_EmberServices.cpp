@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberServices
-** Generated automatically by tolua++-1.0.92 on Fri Sep 21 21:14:11 2007.
+** Generated automatically by tolua++-1.0.92 on Mon Oct 15 18:27:30 2007.
 */
 
 #ifndef __cplusplus
@@ -1263,6 +1263,39 @@ static int tolua_EmberServices_Ember_ServerService_attack00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: eat of class  Ember::ServerService */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_ServerService_eat00
+static int tolua_EmberServices_Ember_ServerService_eat00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ember::ServerService",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Eris::Entity",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ember::ServerService* self = (Ember::ServerService*)  tolua_tousertype(tolua_S,1,0);
+  Eris::Entity* entity = ((Eris::Entity*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'eat'",NULL);
+#endif
+  {
+   self->eat(entity);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'eat'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: deleteEntity of class  Ember::ServerService */
 #ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_ServerService_deleteEntity00
 static int tolua_EmberServices_Ember_ServerService_deleteEntity00(lua_State* tolua_S)
@@ -2107,6 +2140,7 @@ TOLUA_API int tolua_EmberServices_open (lua_State* tolua_S)
     tolua_function(tolua_S,"use",tolua_EmberServices_Ember_ServerService_use01);
     tolua_function(tolua_S,"useStop",tolua_EmberServices_Ember_ServerService_useStop00);
     tolua_function(tolua_S,"attack",tolua_EmberServices_Ember_ServerService_attack00);
+    tolua_function(tolua_S,"eat",tolua_EmberServices_Ember_ServerService_eat00);
     tolua_function(tolua_S,"deleteEntity",tolua_EmberServices_Ember_ServerService_deleteEntity00);
     tolua_function(tolua_S,"setAttributes",tolua_EmberServices_Ember_ServerService_setAttributes00);
     tolua_variable(tolua_S,"GotAvatar",tolua_get_Ember__ServerService_GotAvatar,tolua_set_Ember__ServerService_GotAvatar);

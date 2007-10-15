@@ -288,7 +288,32 @@ void ConnectedAdapter::attack(Eris::Entity* entity)
 	{
 		S_LOG_WARNING("Got unknown error on attack: " << except.what());
 	}
-}   
+}
+
+void ConnectedAdapter::eat(Eris::Entity* entity)
+{
+	try {
+		Atlas::Objects::Entity::Anonymous what;
+		what->setId(entity->getId());
+		
+		Atlas::Objects::Operation::Generic op;
+		op->setType("eat", -1);
+		op->setFrom(mAvatar->getEntity()->getId());
+		op->setArgs1(what);
+		
+		S_LOG_INFO("Eating entity with id " << entity->getId() << ", named " << entity->getName());
+		mConnection->send(op);	
+	}
+	catch (const Eris::BaseException& except)
+	{
+		S_LOG_WARNING("Got Eris error on eating entity: " << except._msg);
+	}
+	catch (const std::runtime_error& except)
+	{
+		S_LOG_WARNING("Got unknown error on eating entity: " << except.what());
+	}
+}
+
 		
 void ConnectedAdapter::say(const std::string &message) 
 {

@@ -94,7 +94,12 @@ void NonConnectedAdapter::attack(Eris::Entity* entity)
 {
 
 }   
-		
+
+void NonConnectedAdapter::eat(Eris::Entity* entity)
+{
+}
+
+
 void NonConnectedAdapter::say(const std::string &message) 
 {
 

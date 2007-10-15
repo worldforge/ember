@@ -153,6 +153,7 @@ class ServerService : public Service, public ConsoleObject
 	void use(Eris::Entity* entity, WFMath::Point<3> pos = WFMath::Point<3>(0,0,0));
 	void useStop();
 	void attack(Eris::Entity* entity);
+	void eat(Eris::Entity* entity);
 	void deleteEntity(Eris::Entity* entity);
 	void setAttributes(Eris::Entity* entity, Atlas::Message::MapType& attributes);
 	//void use(Eris::Entity* entity);

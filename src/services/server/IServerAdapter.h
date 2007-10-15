@@ -56,6 +56,7 @@ public:
 	virtual void use(Eris::Entity* entity, WFMath::Point<3> pos = WFMath::Point<3>(0,0,0)) = 0;
 	virtual void useStop() = 0;
 	virtual void attack(Eris::Entity* entity) = 0;
+	virtual void eat(Eris::Entity* entity) = 0;
 	virtual void deleteEntity(Eris::Entity* entity) = 0;
 	virtual void setAttributes(Eris::Entity* entity, Atlas::Message::MapType& attributes) = 0;
 };

@@ -606,6 +606,11 @@ void ServerService::logoutComplete(bool clean) {
 		mServerAdapter->attack(entity);
 	}   
 
+	void ServerService::eat(Eris::Entity* entity)
+	{
+		mServerAdapter->eat(entity);
+	}
+
 	void ServerService::say(const std::string &message) {
 		mServerAdapter->say(message);
 	}
