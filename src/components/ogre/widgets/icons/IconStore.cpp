@@ -44,6 +44,9 @@ IconStore::~IconStore()
 	for (IconImageStoreStore::iterator I = mIconImageStores.begin(); I != mIconImageStores.end(); ++I) {
 		delete *I;
 	}
+	for (IconImageStoreMap::iterator I = mPremadeIconImageStores.begin(); I != mPremadeIconImageStores.end(); ++I) {
+		delete I->second;
+	}
 }
 
 Icon* IconStore::createIcon(const std::string& key)
@@ -54,6 +57,19 @@ Icon* IconStore::createIcon(const std::string& key)
 	mIcons.insert(IconMap::value_type(key, icon));
 	return icon;
 }
+
+Icon* IconStore::createIcon(const std::string& key, Ogre::TexturePtr texPtr)
+{
+	IconImageStore* store = new IconImageStore(key, texPtr);
+	mPremadeIconImageStores.insert(IconImageStoreMap::value_type(key, store));
+	IconImageStoreEntry* imageStoreEntry = store->claimImageEntry();
+	
+	Icon* icon = new Icon(key, imageStoreEntry);
+	
+	mIcons.insert(IconMap::value_type(key, icon));
+	return icon;
+}
+
 
 Icon* IconStore::getIcon(const std::string& key)
 {

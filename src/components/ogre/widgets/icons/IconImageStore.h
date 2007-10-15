@@ -82,13 +82,40 @@ public:
 	//typedef std::map<int, IconImageStoreEntry*> IconImageStoreEntryMap;
 	typedef std::stack<IconImageStoreEntry*> IconImageStoreEntryStack;
 	typedef std::vector<IconImageStoreEntry*> IconImageStoreEntryStore;
+	
+	/**
+	 *    Ctor. Creates a new empty imageset into which dynamic icons can be rendered.
+	 * @param imagesetName The name of the imageset to create.
+	 */
     IconImageStore(const std::string& imagesetName);
+    /**
+     * Ctor. Creates a new imageset from an alreay existing texture. The whole texture will be used for a single icon.
+     * Use this when you already have an icon.
+     * @param imagesetName The name of the imageset to create.
+     * @param texPtr The texture to use.
+     */
+    IconImageStore(const std::string& imagesetName, Ogre::TexturePtr texPtr);
     virtual ~IconImageStore();
     
+    
+    /**
+     * Gets the number of icons in this store that haven't been claimed yet.
+     * @return 
+     */
     size_t getNumberOfUnclaimedIcons();
     
+    
+    /**
+     * Claims an icon from the store.
+     * @return An entry or null if there are no unclaimed left.
+     */
     IconImageStoreEntry* claimImageEntry();
-    void reclaimImageEntry(IconImageStoreEntry* imageEntry);
+    
+    /**
+     * Returns an already claimed entry to the store, so that it can be reused by other icons.
+     * @param imageEntry 
+     */
+    void returnImageEntry(IconImageStoreEntry* imageEntry);
     
 //     Ogre::TexturePtr getTexture();
     

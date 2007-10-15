@@ -27,6 +27,7 @@
 #include <Eris/TypeInfo.h>
 #include <Eris/View.h>
 #include "components/ogre/model/Model.h"
+#include "components/ogre/model/ModelDefinitionManager.h"
 #include "components/ogre/model/mapping/ModelMappingManager.h"
 #include "components/ogre/model/mapping/EmberModelMappingManager.h"
 #include "components/ogre/model/mapping/ModelMapping.h"
@@ -95,19 +96,37 @@ Icon* IconManager::getIcon(int pixelWidth, EmberEntity* entity)
 		if (mIconStore.hasIcon(key)) {
 			return mIconStore.getIcon(key);
 		} else {
+			IconActionCreator actionCreator(*entity);
+			std::auto_ptr<Model::Mapping::ModelMapping> modelMapping(::EmberOgre::Model::Mapping::EmberModelMappingManager::getSingleton().getManager().createMapping(entity, &actionCreator));
+			std::string modelName;
+			if (modelMapping.get()) {
+				modelMapping->initialize();
+				modelName = actionCreator.getModelName();
+			}
+			///if there's no model defined for this use the placeholder model
+			if (modelName == "") {
+				modelName = "placeholder";
+			}
+			Ogre::ResourcePtr modelDefPtr = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
+			if (!modelDefPtr.isNull()) {
+				Model::ModelDefinition* modelDef = static_cast< Model::ModelDefinition*>(modelDefPtr.get());
+				const std::string& iconPath(modelDef->getIconPath());
+				if (iconPath != "") {
+				
+					Ogre::TexturePtr texPtr = static_cast<Ogre::TexturePtr>(Ogre::TextureManager::getSingleton().getByName(iconPath));
+					if (texPtr.isNull()) {
+						texPtr = Ogre::TextureManager::getSingleton().load(iconPath, "Gui");
+					}
+					if (!texPtr.isNull()) {
+						Icon* icon = mIconStore.createIcon(key, texPtr);
+						return icon;
+					}
+				}
+			}
 			Icon* icon = mIconStore.createIcon(key);
 			if (icon) {
-				IconActionCreator actionCreator(*entity);
-				std::auto_ptr<Model::Mapping::ModelMapping> modelMapping(::EmberOgre::Model::Mapping::EmberModelMappingManager::getSingleton().getManager().createMapping(entity, &actionCreator));
-				std::string modelName;
-				if (modelMapping.get()) {
-					modelMapping->initialize();
-					modelName = actionCreator.getModelName();
-				}
-				///if there's no model defined for this use the placeholder model
-				if (modelName == "") {
-					modelName = "placeholder";
-				}
+
+				
 				///update the model preview window
 				Model::Model* model = Model::Model::createModel(mIconRenderer.getRenderContext()->getSceneManager(), modelName);
 				mIconRenderer.render(model, icon);

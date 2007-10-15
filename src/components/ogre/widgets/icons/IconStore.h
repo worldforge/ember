@@ -25,6 +25,7 @@
 
 #include <map>
 #include <vector>
+#include <OgreTexture.h>
 
 namespace EmberOgre {
 
@@ -43,11 +44,13 @@ class IconStore{
 public:
 	typedef std::map<std::string, Icon*> IconMap;
 	typedef std::vector<IconImageStore*> IconImageStoreStore;
+	typedef std::map<std::string, IconImageStore*> IconImageStoreMap;
     IconStore();
 
     ~IconStore();
     
     Icon* createIcon(const std::string& key);
+    Icon* createIcon(const std::string& key, Ogre::TexturePtr texPtr);
     Icon* getIcon(const std::string& key);
     bool hasIcon(const std::string& key);
     void destroyIcon(Icon* icon);
@@ -55,6 +58,7 @@ public:
 protected:
 	IconMap mIcons;
 	IconImageStoreStore mIconImageStores;
+	IconImageStoreMap mPremadeIconImageStores;
 	
 	IconImageStoreEntry* getImageStoreEntry();
 
