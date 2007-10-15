@@ -42,10 +42,14 @@ material /global/items/box/craftsman_wood/box_craftsman_wood : /base/simple
 {
   set_texture_alias DiffuseMap 3d_objects/items/box/textures/craftsman_wood/box_craftsman_wood.png
 }
-material /global/items/box/craftsman_wood/crate_aged : /base/simple
+
+material /global/items/box/craftsman_wood/crate_aged : /base/normalmap/specular/nonculled/alpharejected
 {
-  set_texture_alias DiffuseMap 3d_objects/items/box/textures/craftsman_wood/crate_aged.png
+	set_texture_alias DiffuseMap 3d_objects/items/box/textures/craftsman_wood/crate_agedD.png
+	set_texture_alias NormalHeightMap 3d_objects/items/box/textures/craftsman_wood/crate_agedN.png
+	set_texture_alias SpecularMap 3d_objects/items/box/textures/craftsman_wood/crate_agedS.png
 }
+
 
 material /global/items/sheet/parchment/front : /base/simple/nonculled
 {
@@ -57,3 +61,21 @@ material /global/items/sheet/parchment/back : /base/simple/nonculled
   set_texture_alias DiffuseMap 3d_objects/items/sheet/textures/parchment/low/sheet_back.png
 }
 
+material /global/items/tools/hatchet : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/items/tool/textures/hatchet/hatchetD.png
+	set_texture_alias NormalHeightMap 3d_objects/items/tool/textures/hatchet/hatchetN.tga
+	set_texture_alias SpecularMap 3d_objects/items/tool/textures/hatchet/hatchetS.png
+}
+material /global/items/tools/trowel : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/items/tool/textures/trowel/trowelD.png
+	set_texture_alias NormalHeightMap 3d_objects/items/tool/textures/trowel/trowelN.png
+	set_texture_alias SpecularMap 3d_objects/items/tool/textures/trowel/trowelS.png
+}
+material /global/items/containers/tinderbox : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/items/containers/textures/tinderboxD.png
+	set_texture_alias NormalHeightMap 3d_objects/items/containers/textures/tinderboxN.png
+	set_texture_alias SpecularMap 3d_objects/items/containers/textures/tinderboxS.png
+}

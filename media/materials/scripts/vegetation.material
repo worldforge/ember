@@ -372,3 +372,15 @@ material /global/plants/field/teardrops : /base/wavinggrass
 {
 	set_texture_alias DiffuseMap 3d_objects/plants/field/textures/teardrops/field.png
 }
+
+material /global/plants/fern :  /base/normalmap/specular/nonculled/alpharejected
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/fern/textures/fernD.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/fern/textures/fernN.png
+	set_texture_alias SpecularMap 3d_objects/plants/fern/textures/fernS.png
+}
+
+
+
+
+
