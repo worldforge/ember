@@ -272,8 +272,15 @@ void ServerWidget::gotAllCharacters(Eris::Account* account)
 	
 		for(;I != I_end; ++I) {
 			const Atlas::Objects::Entity::RootEntity& entity = (*I).second;
-			const Atlas::Message::Element& nameElement = entity->getAttr("name");
-			Gui::ColouredListItem* item = new Gui::ColouredListItem(nameElement.asString());
+			
+			std::string itemText("");
+			if (entity->hasAttr("name")) {
+				const Atlas::Message::Element& nameElement = entity->getAttr("name");
+				if (nameElement.isString()) {
+					itemText += nameElement.asString();
+				}
+			}
+			Gui::ColouredListItem* item = new Gui::ColouredListItem(itemText);
 			std::string* id = new std::string(entity->getId());
 			item->setUserData(id);
 			mCharacterList->addItem(item);
