@@ -1,5 +1,21 @@
 2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* src/components/ogre/OgreSetup.cpp: hook into some more signals that will be emitted at crash time and clean up properly
+
+2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityPicker.layout, src/components/ogre/widgets/EntityPicker.lua, src/components/ogre/widgets/Inventory.lua: added an eat option to the inventory menu. First also added to the entity picker menu, but it seems like one can only eat entities that are in the inventory.
+
+2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/services/server/ConnectedAdapter.cpp, src/services/server/ConnectedAdapter.h, src/services/server/IServerAdapter.h, src/services/server/NonConnectedAdapter.cpp, src/services/server/NonConnectedAdapter.h, src/services/server/ServerService.cpp, src/services/server/ServerService.h, src/services/bindings/lua/ServerService.pkg, src/services/bindings/lua/lua_EmberServices.cpp: added an "eat" method (components calling this should first check if there's a "biomass" attribute though)
+
+2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/services/wfut/WfutSession.cpp: fixed a bug where the local wfut.xml file never was updated with correct values. This way (saving the file list from the server) is however not completely safe since if the system fails to download a file, that file needs to be purged from the list of saved files (i.e. we need to do a copy of the server list and remove those files that fail, or start with the local list and add all files that succeed and then save that list).
+
+2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* configure.ac: use the correct name for the lualib
 
 2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>

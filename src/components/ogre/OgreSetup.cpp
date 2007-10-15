@@ -257,6 +257,9 @@ bool OgreSetup::configure(void)
  		atexit(SDL_Quit);
  		signal(SIGSEGV, shutdownHandler);
  		signal(SIGABRT, shutdownHandler);
+ 		signal(SIGBUS, shutdownHandler);
+ 		signal(SIGILL, shutdownHandler);
+ 		
 		
 		///set the window size
 //        int flags = SDL_OPENGL | SDL_HWPALETTE | SDL_RESIZABLE | SDL_HWSURFACE;
