@@ -56,6 +56,30 @@ AvatarControllerMovement::AvatarControllerMovement() :
 {
 }
 
+
+
+AvatarControllerInputListener::AvatarControllerInputListener(AvatarController& controller)
+: mController(controller)
+{
+	Input::getSingleton().EventMouseButtonPressed.connect(sigc::mem_fun(*this, &AvatarControllerInputListener::input_MouseButtonPressed));
+	Input::getSingleton().EventMouseButtonReleased.connect(sigc::mem_fun(*this, &AvatarControllerInputListener::input_MouseButtonReleased));
+
+}
+
+void AvatarControllerInputListener::input_MouseButtonPressed(Input::MouseButton button, Input::InputMode mode)
+{
+	if (mode == Input::IM_MOVEMENT && button == Input::MouseButtonLeft) {
+		mController.mMovementDirection.x = 1;
+	}
+}
+
+void AvatarControllerInputListener::input_MouseButtonReleased(Input::MouseButton button, Input::InputMode mode)
+{
+	if (mode == Input::IM_MOVEMENT && button == Input::MouseButtonLeft) {
+		mController.mMovementDirection.x = 0;
+	}
+}
+
 AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, GUIManager* guiManager, Ogre::Camera* camera) 
 : RunToggle("+run", this, "Toggle running mode.")
 , ToggleCameraAttached("toggle_cameraattached", this, "Toggle between the camera being attached to the avatar and free flying.")
@@ -80,6 +104,7 @@ AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, G
 , mMovementDirection(Ogre::Vector3::ZERO)
 , mDecalObject(0)
 , mDecalNode(0)
+, mControllerInputListener(*this)
 {
 
 	mMovementCommandMapper.restrictToInputMode(Input::IM_MOVEMENT );

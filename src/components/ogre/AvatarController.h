@@ -72,22 +72,39 @@ struct AvatarControllerMovement
 	Ogre::Quaternion cameraOrientation;
 };
 
+/**
+Listens for left mouse button pressed in movement mode and moves the character forward.
+*/
+class AvatarControllerInputListener
+{
+public:
+	AvatarControllerInputListener(AvatarController& controller);
+
+protected:
+
+	void input_MouseButtonPressed(Input::MouseButton button, Input::InputMode mode);
+	void input_MouseButtonReleased(Input::MouseButton button, Input::InputMode mode);
+	AvatarController& mController;
+};
+
+/**
+Controls the avatar. All avatar movement is handled by an instance of this class.
+*/
 class AvatarController
 : public Ogre::FrameListener, 
 public sigc::trackable,
 public Ember::ConsoleObject
 {
 public:
-    
-    
+    friend class AvatarControllerInputListener;
 
-    
-    
     AvatarController(Avatar* avatar, Ogre::RenderWindow* window, GUIManager* guiManager, Ogre::Camera* camera);
 
 	virtual ~AvatarController();
 
-
+	/**
+	Each frame we check if we should update the avatar.
+	*/
 	virtual bool frameStarted(const Ogre::FrameEvent & event);
 	
 	
@@ -100,6 +117,10 @@ public:
 
 	void createAvatarCameras(Ogre::SceneNode* avatarSceneNode);
 	
+	/**
+	 * Gets the AvatarCamera.
+	 * @return 
+	 */
 	AvatarCamera* getAvatarCamera() const;
 
 	/**
@@ -195,6 +216,8 @@ protected:
 	Ogre::MovableObject* mDecalObject;
 	Ogre::SceneNode* mDecalNode;
 	Ogre::WaveformControllerFunction* mPulsatingController;
+	
+	AvatarControllerInputListener mControllerInputListener;
 };
 
 
