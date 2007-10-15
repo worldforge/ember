@@ -50,19 +50,27 @@ AssetsManager::~AssetsManager()
 {
 }
 
-void AssetsManager::showTexture(const std::string textureName)
+bool AssetsManager::showTexture(const std::string textureName)
 {
 // 	if (!mOgreCEGUITexture) {
 // 		S_LOG_WARNING("You must first create a valid OgreCEGUITexture instance.");
 // 		return;
 // 	}
 	if (Ogre::TextureManager::getSingleton().resourceExists(textureName)) {
-		Ogre::TexturePtr texturePtr =  static_cast<Ogre::TexturePtr>(Ogre::TextureManager::getSingleton().getByName(textureName));
+		Ogre::TexturePtr texturePtr = static_cast<Ogre::TexturePtr>(Ogre::TextureManager::getSingleton().getByName(textureName));
 		if (!texturePtr.isNull()) {
+			try {
+				texturePtr->load();
+			} catch (...) {
+				S_LOG_WARNING("Error when loading " << textureName << ". This texture will not be shown.");
+				return false;
+			}
 			createTextureImage(texturePtr);
+			return true;
 // 			mOgreCEGUITexture->setOgreTexture(texturePtr);
 		}
 	}
+	return false;
 	
 }
 

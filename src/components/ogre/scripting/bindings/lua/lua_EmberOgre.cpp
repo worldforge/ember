@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Thu Oct  4 23:41:27 2007.
+** Generated automatically by tolua++-1.0.92 on Mon Oct 15 14:33:41 2007.
 */
 
 #ifndef __cplusplus
@@ -8669,10 +8669,11 @@ static int tolua_EmberOgre_EmberOgre_Gui_AssetsManager_showTexture00(lua_State* 
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'showTexture'",NULL);
 #endif
   {
-   self->showTexture(textureName);
+   bool tolua_ret = (bool)  self->showTexture(textureName);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
   }
  }
- return 0;
+ return 1;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'showTexture'.",&tolua_err);

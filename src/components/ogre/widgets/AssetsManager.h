@@ -49,7 +49,7 @@ public:
     
     const CEGUI::Image* getCEGUIImage();
     
-    void showTexture(const std::string textureName);
+    bool showTexture(const std::string textureName);
     
 private:
 

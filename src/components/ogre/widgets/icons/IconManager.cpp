@@ -113,9 +113,19 @@ Icon* IconManager::getIcon(int pixelWidth, EmberEntity* entity)
 				const std::string& iconPath(modelDef->getIconPath());
 				if (iconPath != "") {
 				
-					Ogre::TexturePtr texPtr = static_cast<Ogre::TexturePtr>(Ogre::TextureManager::getSingleton().getByName(iconPath));
-					if (texPtr.isNull()) {
-						texPtr = Ogre::TextureManager::getSingleton().load(iconPath, "Gui");
+					Ogre::TexturePtr texPtr;
+					try {
+						if (Ogre::TextureManager::getSingleton().resourceExists(iconPath)) {
+							texPtr = static_cast<Ogre::TexturePtr>(Ogre::TextureManager::getSingleton().getByName(iconPath));
+							///try to load it to make sure that's it a working image
+							texPtr->load();
+						}
+						if (texPtr.isNull()) {
+							texPtr = Ogre::TextureManager::getSingleton().load(iconPath, "Gui");
+						}
+					} catch (...) {
+						S_LOG_WARNING("Error when trying to load the icon " << iconPath <<". The icon will be rendered dynamically.");
+						texPtr.setNull();
 					}
 					if (!texPtr.isNull()) {
 						Icon* icon = mIconStore.createIcon(key, texPtr);

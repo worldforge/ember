@@ -34,8 +34,9 @@ function AssetsManager.TexturesList_ItemSelectionChanged(args)
 	local item = AssetsManager.textures.controls.listbox:getFirstSelectedItem()
 	if item ~= nil then
 		local textureName = item:getText()
-		AssetsManager.helper:showTexture(textureName)
-		AssetsManager.textures.controls.textureView:setProperty("Image", CEGUI.PropertyHelper:imageToString(AssetsManager.helper:getCEGUIImage()))
+		if AssetsManager.helper:showTexture(textureName) then 
+			AssetsManager.textures.controls.textureView:setProperty("Image", CEGUI.PropertyHelper:imageToString(AssetsManager.helper:getCEGUIImage()))
+		end
 	end
 	
 end
