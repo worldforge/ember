@@ -88,7 +88,7 @@ class IngameChatWidget : public Widget {
 			void entity_VisibilityChanged(bool visible);
 			void entity_BeingDeleted();
 			void entity_Say(const Atlas::Objects::Root& talk);
-			void entity_attributeChanged(const std::string& attributeName, const Atlas::Message::Element& attributeValue);
+			void entity_attributeChanged(const Atlas::Message::Element& attributeValue);
 			
 		
 	};

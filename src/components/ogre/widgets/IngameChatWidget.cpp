@@ -378,7 +378,7 @@ void IngameChatWidget::EntityObserver::entity_Say(const Atlas::Objects::Root& ta
 	
 }
 
-void IngameChatWidget::EntityObserver::entity_attributeChanged(const std::string& attributeName, const Atlas::Message::Element& attributeValue)
+void IngameChatWidget::EntityObserver::entity_attributeChanged(const Atlas::Message::Element& attributeValue)
 {
 	if (mLabel) {
 		mLabel->updateEntityName();
