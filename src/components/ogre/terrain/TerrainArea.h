@@ -57,7 +57,7 @@ protected:
 	EmberEntity* mEntity;
 	Eris::Entity::AttrChangedSlot mAttrChangedSlot;
 	
-	void attributeChanged(const std::string& attributeName, const Atlas::Message::Element& attributeValue);
+	void attributeChanged(const Atlas::Message::Element& attributeValue);
 	void entity_Moved();
 	void observeEntity();
 	bool parseArea();

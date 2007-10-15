@@ -111,7 +111,7 @@ bool TerrainArea::parseArea()
 	return true;
 }
 
-void TerrainArea::attributeChanged(const std::string& attributeName, const Atlas::Message::Element& attributeValue)
+void TerrainArea::attributeChanged(const Atlas::Message::Element& attributeValue)
 {
 	if (parseArea()) {
 		EventAreaChanged(this);
