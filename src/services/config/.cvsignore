@@ -1,3 +1,7 @@
 .deps
 Makefile
+Makefile.in.libs
+ConfigService.lo
+libConfigService.la
+.libs
 Makefile.in

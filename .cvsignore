@@ -11,4 +11,12 @@ install-sh
 libtool
 ltmain.sh
 missing
-var
+varMakefile
+config.status
+ember
+ember-media.spec
+ember.dox
+ember.spec
+make_dist_media.sh
+mkinstalldirs
+Makefile

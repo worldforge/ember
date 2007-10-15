@@ -1,3 +1,10 @@
 .deps
 Makefile
+Makefile.in.libs
+ConnectedAdapter.lo
+NonConnectedAdapter.lo
+OOGChat.lo
+ServerService.lo
+libServerService.la
+.libs
 Makefile.in

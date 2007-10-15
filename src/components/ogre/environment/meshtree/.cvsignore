@@ -1,1 +1,8 @@
 Makefile.in
+.deps
+.libs
+Makefile
+MeshTree.lo
+TParameters.lo
+TStem.lo
+libMeshTree.la

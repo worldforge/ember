@@ -1,3 +1,7 @@
+2007-10-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* Update existing .cvsignore files.
+
 2007-10-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/OgreSetup.cpp: shut down SDL properly when the app exits though an SIGABRT or SIGSEGV to avoid messing up the desktop
