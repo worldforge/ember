@@ -96,7 +96,7 @@ function Status.buildWidget()
 	Status.avatarStatus = Status.createStatusInstance("avatar")
 	
 	Status.npcStatus = Status.createStatusInstance("npc")
-	local uPosition = CEGUI.UVector2:new_local(CEGUI.UDim(0,200), CEGUI.UDim(0,0))
+	local uPosition = CEGUI.UVector2:new_local(CEGUI.UDim(0,150), CEGUI.UDim(0,0))
 	Status.npcStatus.widget:getMainWindow():setPosition(uPosition )
 	
 	connect(Status.connectors, emberOgre.EventCreatedAvatarEntity, "Status.emberOgre_CreatedAvatarEntity")
