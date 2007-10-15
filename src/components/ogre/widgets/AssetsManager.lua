@@ -1,6 +1,10 @@
 --Lists all of the graphical resources available
 
-AssetsManager = {connectors={}, textures = {controls = {}, listbox = nil,selectedTexture = nil}, windows = {controls = {}, listbox = nil, selectedWindow = nil} }
+AssetsManager = {connectors={}, 
+textures = {controls = {}, listbox = nil,selectedTexture = nil}, 
+images = {controls = {}, listbox = nil,selectedTexture = nil}, 
+windows = {controls = {}, listbox = nil, selectedWindow = nil} 
+}
 
 
 
@@ -35,6 +39,43 @@ function AssetsManager.TexturesList_ItemSelectionChanged(args)
 	end
 	
 end
+
+function AssetsManager.RefreshImages_Clicked(args)
+	AssetsManager.images.refresh()
+end
+
+function AssetsManager.images.refresh()
+	AssetsManager.images.listholder:resetList()
+	
+	manager = CEGUI.ImagesetManager:getSingleton()
+	local I = manager:getIterator()
+	while I:isAtEnd() == false do
+		local value = I:value()
+		local J = value:getIterator()
+		while J:isAtEnd() == false do
+			local name = J:key();
+			local item = EmberOgre.Gui.ColouredListItem:new(name, 0, J:value())
+			AssetsManager.images.listholder:addItem(item)
+			J:next();
+		end
+		
+		I:next();
+	end
+
+end
+
+function AssetsManager.ImagesList_ItemSelectionChanged(args)
+	local item = AssetsManager.images.controls.listbox:getFirstSelectedItem()
+	if item ~= nil then
+		local image = item:getUserData()
+		image = tolua.cast(image, "CEGUI::Image")
+		AssetsManager.images.controls.textureView:setProperty("Image", CEGUI.PropertyHelper:imageToString(image))
+	end
+
+end
+
+
+
 
 function AssetsManager.RefreshWindows_Clicked(args)
 	AssetsManager.windows.refresh()
@@ -158,6 +199,13 @@ function AssetsManager.buildWidget()
 	AssetsManager.textures.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterTextures"))
 	AssetsManager.textures.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.textures.controls.listbox, AssetsManager.textures.controls.filter)
 	AssetsManager.textures.controls.textureView = AssetsManager.widget:getWindow("TextureInfo/Image")
+	
+	--the images part
+	AssetsManager.images.controls.listbox = CEGUI.toListbox(AssetsManager.widget:getWindow("ImagesList"))
+-- 	AssetsManager.sceneNodes.nodeInfo = AssetsManager.widget:getWindow("SceneNodeInfo")
+	AssetsManager.images.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterImages"))
+	AssetsManager.images.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.images.controls.listbox, AssetsManager.images.controls.filter)
+	AssetsManager.images.controls.textureView = AssetsManager.widget:getWindow("ImagesInfo/Image")
 	
 	--the windows part
 	AssetsManager.windows.controls.listbox = CEGUI.toListbox(AssetsManager.widget:getWindow("WindowsList"))
