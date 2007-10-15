@@ -92,7 +92,8 @@ material /base/normalmap_
 			texture_unit DiffuseMap
 			{ 
 		        texture_alias DiffuseMap
-					//filtering trilinear
+					
+//filtering trilinear
 			} 
 					
 		}
@@ -134,13 +135,13 @@ material /base/normalmap
 			fragment_program_ref Examples/OffsetMappingFP
 			{ 
 				param_named_auto lightDiffuse light_diffuse_colour 0 
-				param_named_auto lightSpecular light_specular_colour 0 
+				param_named lightSpecular 0 
 				param_named_auto lightAmbient ambient_light_colour 0 
-				param_named_auto fogparams fog_params 0
-				param_named_auto fogcolor fog_colour 0
+ 				param_named_auto fogparams fog_params 0
+ 				param_named_auto fogcolor fog_colour 0
 				// Parallax Height scale and bias 
 				param_named scaleBias float4 0.04 -0.02 1 0 
-				param_named specularBias float 0
+// 				param_named specularBias float 0
 			} 
 			
 			// Normal + height(alpha) map 
@@ -241,7 +242,7 @@ material /base/normalmap/specular
 				param_named_auto fogcolor fog_colour 0
 				// Parallax Height scale and bias 
 				param_named scaleBias float4 0.04 -0.02 1 0 
-				param_named specularBias float 1
+// 				param_named specularBias float 1
 				
 				
 			} 
@@ -314,6 +315,45 @@ material /base/normalmap/specular
 		}
 	}
 
+}
+
+material /base/normalmap/specular/nonculled : /base/normalmap/specular
+{
+  technique NormalMapped
+  {
+    pass Main
+    {
+     cull_hardware none 
+     cull_software none
+    }
+  }
+  
+  technique General
+  {
+    pass Main
+    {
+     cull_hardware none 
+     cull_software none
+    }
+  }
+}
+
+material /base/normalmap/specular/nonculled/alpharejected : /base/normalmap/specular/nonculled
+{
+  technique NormalMapped
+  {
+    pass Main
+    {
+     alpha_rejection greater_equal 64
+    }
+  }
+  technique General
+  {
+    pass Main
+    {
+     alpha_rejection greater_equal 64
+    }
+  }
 }
 
 //Base material for waving grass

@@ -14,10 +14,10 @@ void main_vp(float4 position   : POSITION,
               out float4 oPosition    : POSITION, 
               out float2 oUv          : TEXCOORD0, 
               out float3 oLightDir    : TEXCOORD1, // tangent space 
-              out float3 oEyeDir       : TEXCOORD2, // tangent space 
-              out float3 oHalfAngle    : TEXCOORD3, // 
- 			  out float oFog       : FOG,
-              // parameters 
+             out float3 oEyeDir       : TEXCOORD2, // tangent space 
+             out float3 oHalfAngle    : TEXCOORD3, // 
+			  out float oFog       : FOG,
+               // parameters 
               uniform float4 lightPosition, // object space 
               uniform float3 eyePosition,   // object space 
               uniform float4x4 worldViewProj) 
@@ -49,7 +49,6 @@ void main_vp(float4 position   : POSITION,
    oLightDir = lightDir; 
    oEyeDir = eyeDir; 
    oHalfAngle = normalize(eyeDir + lightDir); 
-//   oFog = 20;
 	oFog = oPosition.z;
 }
 
@@ -70,9 +69,9 @@ void main_fp(float2 uv : TEXCOORD0,
 	uniform float3 lightSpecular,
 	uniform float3 lightAmbient,
 	uniform float4 scaleBias,
-	uniform float specularBias,
 	uniform sampler2D normalHeightMap,
 	uniform sampler2D diffuseMap,
+	uniform sampler2D specularMap,
 	uniform float4 fogparams,
 	uniform float3 fogcolor,
 	out float4 oColor : COLOR)
@@ -96,24 +95,19 @@ void main_fp(float2 uv : TEXCOORD0,
 	float3 normal = expand(tex2D(normalHeightMap, newTexCoord).xyz);
 	float3 diffuse = tex2D(diffuseMap, newTexCoord).xyz;
 	
-	float3 specular = pow(saturate(dot(normal, halfAngle)), 32) * lightSpecular * specularBias;
-	float3 col = diffuse * saturate(dot(normal, lightDir)) * lightDiffuse + specular + diffuse*lightAmbient;
+	float3 specular = pow(saturate(dot(normal, halfAngle)), 32) * lightSpecular * tex2D(specularMap, newTexCoord).x;
+	float3 col = diffuse * saturate(dot(normal, lightDir)) * lightDiffuse + diffuse * lightAmbient;
 	
+	//check if we should apply any fog
 	if (fog < fogparams.z) {
 		float f = (fogparams.z - fog)/(fogparams.z - fogparams.y);
-		col = lerp(col, fogcolor, 1- f);
-	} else {
+		col = lerp(col, fogcolor, 1 - f);
+	} else if (fogparams.z != 0) {
 		col = fogcolor;
 	}
-
-//	col = col*f + fogcolor*(1 - f); 
-// 	float f = (fog - fogparams.y)/(fogparams.z - fogparams.y);
-// 	col = col + fogcolor*(1 - f); 
-
-	//set the alpha
 	oColor = float4(col, tex2D(diffuseMap, newTexCoord).w);
-	//oColor.w = ;
 }
+
 
 void mainsplat_fp(float2 uv : TEXCOORD0,
 	float3 lightDir : TEXCOORD1,
@@ -159,3 +153,4 @@ void mainsplat_fp(float2 uv : TEXCOORD0,
 		oColor.w = splat;
 	}
 }
+
