@@ -1,5 +1,9 @@
 2007-10-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* Add new missing .cvsignore files.
+
+2007-10-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* Update existing .cvsignore files.
 
 2007-10-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>

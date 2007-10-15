@@ -1,0 +1,7 @@
+.deps
+.libs
+Makefile
+Makefile.in
+WfutService.lo
+WfutSession.lo
+libWfut.la

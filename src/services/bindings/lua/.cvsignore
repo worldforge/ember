@@ -1,0 +1,6 @@
+.deps
+.libs
+Makefile
+Makefile.in
+liblua_EmberServices.la
+lua_EmberServices.lo
