@@ -137,6 +137,11 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, Ember:
 		modelDef->setRenderingDistance(Ogre::StringConverter::parseReal(tmp));
 	}
 	
+	tmp = modelNode->Attribute("icon");
+	if (tmp) {
+		modelDef->mIconPath = tmp;
+	}
+
 	
 	//submodels
 	elem = modelNode->FirstChildElement("submodels");
@@ -718,7 +723,7 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		fillElementFromQuaternion(rotation, modelDef->getRotation());
 		modelElem.InsertEndChild(rotation);
 		
-		
+		modelElem.SetAttribute("icon", modelDef->getIconPath().c_str());
 		
 		//start with submodels
 		exportSubModels(modelDef, modelElem);

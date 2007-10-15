@@ -332,6 +332,12 @@ public:
 	void setRotation(const Ogre::Quaternion rotation);
 	
 	
+	/**
+	 *    Gets a path to an icon resource, if defined.
+	 * @return a path to an image which can be used as an icon for the model
+	 */
+	inline const std::string& getIconPath() const;
+	
 	
 	/**
 	 *    Creates and returns a new sub model definition for the supplied mesh name.
@@ -486,6 +492,11 @@ private:
 	
 	ViewDefinitionStore mViews;
 	
+	/**
+	A path to an image resource which can be shown as an icon for the model.
+	*/
+	std::string mIconPath;
+	
 };
 
 /** Specialisation of SharedPtr to allow SharedPtr to be assigned to ModelDefnPtr 
@@ -585,11 +596,15 @@ void ModelDefinition::setRenderingDistance(float distance)
 	mRenderingDistance = distance;
 }
 	
+const std::string& ModelDefinition::getIconPath() const
+{
+	return mIconPath;
+}
+
 int AnimationDefinition::getIterations() const
 {
 	return mIterations;
 }
-
 
 
 
