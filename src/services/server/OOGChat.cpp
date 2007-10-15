@@ -43,16 +43,16 @@ namespace Ember {
 	  myLobby = new Eris::Lobby(account);
 
       // Specfic to lobby Callbacks setup
-      myLobby->SightPerson.connect(SigC::slot(*this,&OOGChat::sightPerson));
-      myLobby->PrivateTalk.connect(SigC::slot(*this,&OOGChat::privateTalk));
+      myLobby->SightPerson.connect(sigc::mem_fun(*this,&OOGChat::sightPerson));
+      myLobby->PrivateTalk.connect(sigc::mem_fun(*this,&OOGChat::privateTalk));
       //myLobby->LoggedIn.connect(SigC::slot(*this,&OOGChat::loggedIn));
 
       // Ordinary rooms callbacks
-      myLobby->Entered.connect(SigC::slot(*this,&OOGChat::entered));
-      myLobby->Speech.connect(SigC::slot(*this,&OOGChat::talk));
-      myLobby->Emote.connect(SigC::slot(*this,&OOGChat::emote));
-      myLobby->Appearance.connect(SigC::slot(*this,&OOGChat::appearance));
-      myLobby->Disappearance.connect(SigC::slot(*this,&OOGChat::disappearance));
+      myLobby->Entered.connect(sigc::mem_fun(*this,&OOGChat::entered));
+      myLobby->Speech.connect(sigc::mem_fun(*this,&OOGChat::talk));
+      myLobby->Emote.connect(sigc::mem_fun(*this,&OOGChat::emote));
+      myLobby->Appearance.connect(sigc::mem_fun(*this,&OOGChat::appearance));
+      myLobby->Disappearance.connect(sigc::mem_fun(*this,&OOGChat::disappearance));
 //      myLobby->Changed.connect(SigC::bind(SigC::slot(*this,&OOGChat::changed),myLobby));
 
 /*      ConsoleBackend::getMainConsole()->registerCommand( CMD_TALK, this );

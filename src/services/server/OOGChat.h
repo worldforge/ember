@@ -57,7 +57,7 @@ namespace Ember {
  * NOTE: Add other related classes here, doxygen will create links to them.
  */
 
-class OOGChat : virtual public SigC::Object, public ConsoleObject
+class OOGChat : public ConsoleObject
 {
     //======================================================================
     // Inner Classes, Typedefs, and Enums
