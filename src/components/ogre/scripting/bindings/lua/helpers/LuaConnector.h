@@ -134,11 +134,11 @@ template <typename Treturn>
 	{
 		public:
 			ConnectorZero(sigc::signal<Treturn>& signal);
-			ConnectorZero(SigC::Signal0<Treturn>& signal);
+// 			ConnectorZero(SigC::Signal0<Treturn>& signal);
 			
 		private:
 			sigc::signal<Treturn> mSignal;
-			SigC::Signal0<Treturn> mSignal_old;
+// 			SigC::Signal0<Treturn> mSignal_old;
 			Treturn signal_recieve();
 	};
 
@@ -148,11 +148,11 @@ template <typename Treturn, typename T0>
 	{
 		public:
 			ConnectorOne(sigc::signal<Treturn, T0>& signal,  const LuaTypeStore& luaTypeNames);
-			ConnectorOne(SigC::Signal1<Treturn, T0>& signal, const LuaTypeStore& luaTypeNames);
+// 			ConnectorOne(SigC::Signal1<Treturn, T0>& signal, const LuaTypeStore& luaTypeNames);
 			
 		private:
 			sigc::signal<Treturn, T0> mSignal;
-			SigC::Signal1<Treturn, T0> mSignal_old;
+// 			SigC::Signal1<Treturn, T0> mSignal_old;
 			Treturn signal_recieve(T0 t0);
 	
 	};
@@ -240,7 +240,7 @@ public:
  	LuaConnector(sigc::signal<void>& signal);
 	LuaConnector(sigc::signal<void, const std::string&, EmberEntity*>& signal);
 	LuaConnector(sigc::signal<void, Eris::Connection*>& signal);
-	LuaConnector(SigC::Signal1<void, const Eris::ServerInfo&>& signal);
+	LuaConnector(sigc::signal<void, const Eris::ServerInfo&>& signal);
  	LuaConnector(sigc::signal<void, float>& signal);
  	LuaConnector(sigc::signal<void, const EntityPickResult&, const MousePickerArgs&>& signal);
 	LuaConnector(sigc::signal<void, const MousePickerArgs&>& signal);

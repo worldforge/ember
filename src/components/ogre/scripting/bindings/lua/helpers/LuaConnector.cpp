@@ -181,12 +181,12 @@ ConnectorOne<Treturn, T0>::ConnectorOne(sigc::signal<Treturn, T0>& signal, const
 	mConnection = mSignal.connect(sigc::mem_fun(*this, &ConnectorOne<Treturn, T0>::signal_recieve));
 }
 
-template <typename Treturn, typename T0> 
-ConnectorOne<Treturn, T0>::ConnectorOne(SigC::Signal1<Treturn, T0>& signal, const LuaTypeStore& luaTypeNames) :
- ConnectorBase(luaTypeNames), mSignal_old(signal)
-{
-	mConnection = mSignal_old.connect(sigc::mem_fun(*this, &ConnectorOne<Treturn, T0>::signal_recieve));
-}
+// template <typename Treturn, typename T0> 
+// ConnectorOne<Treturn, T0>::ConnectorOne(SigC::Signal1<Treturn, T0>& signal, const LuaTypeStore& luaTypeNames) :
+//  ConnectorBase(luaTypeNames), mSignal_old(signal)
+// {
+// 	mConnection = mSignal_old.connect(sigc::mem_fun(*this, &ConnectorOne<Treturn, T0>::signal_recieve));
+// }
 
 template <typename Treturn, typename T0, typename T1> 
 ConnectorTwo<Treturn, T0, T1>::ConnectorTwo(sigc::signal<Treturn, T0, T1>& signal, const LuaTypeStore& luaTypeNames) :  ConnectorBase(luaTypeNames), mSignal(signal)
@@ -381,7 +381,7 @@ LuaConnector::LuaConnector(sigc::signal<void, Eris::Connection*>& signal)
 	mConnector = new LuaConnectors::ConnectorOne<void, Eris::Connection*>(signal, luaTypes);
 }
 
-LuaConnector::LuaConnector(SigC::Signal1<void, const Eris::ServerInfo&>& signal)
+LuaConnector::LuaConnector(sigc::signal<void, const Eris::ServerInfo&>& signal)
 {
 	LuaTypeStore luaTypes;
 	luaTypes.push_back("Eris::ServerInfo");
