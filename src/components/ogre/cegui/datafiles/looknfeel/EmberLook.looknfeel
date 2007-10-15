@@ -2463,6 +2463,56 @@
         EmberLook/ProgressBar
     ***************************************************
     -->
+    <WidgetLook name="EmberLook/ProgressBarNoframe">
+        <PropertyDefinition name="BarColours" initialValue="tl:FF2222FF tr:FF2222FF bl:FF2222FF br:FF2222FF" redrawOnWrite="true" />
+        <NamedArea name="ProgressArea">
+            <Area>
+				<Dim type="LeftEdge" ><AbsoluteDim value="0" /></Dim>
+				<Dim type="TopEdge" ><AbsoluteDim value="0" /></Dim>
+				<Dim type="Width" ><UnifiedDim scale="1" type="Width" /></Dim>
+				<Dim type="Height" ><UnifiedDim scale="1" type="Height" /></Dim>
+            </Area>
+        </NamedArea>
+        <ImagerySection name="progress_lights" >
+            <ImageryComponent>
+                <Area>
+                    <Dim type="LeftEdge" ><AbsoluteDim value="0" /></Dim>
+                    <Dim type="TopEdge" ><AbsoluteDim value="0" /></Dim>
+                    <Dim type="Width" ><UnifiedDim scale="1" type="Width" /></Dim>
+                    <Dim type="Height" ><UnifiedDim scale="1" type="Height" /></Dim>
+                </Area>
+                <Image imageset="EmberLook" image="Background" />
+                <VertFormat type="Stretched" />
+                <HorzFormat type="Stretched" />
+            </ImageryComponent>
+        </ImagerySection>
+        <StateImagery name="Enabled">
+        </StateImagery>
+        <StateImagery name="Disabled">
+        </StateImagery>
+        <StateImagery name="EnabledProgress">
+            <Layer>
+                <Section section="progress_lights">
+                    <ColourRectProperty name="BarColours" />
+                    <!-- Colours topLeft="FF2222FF" topRight="FF2222FF" bottomLeft="FF2222FF" bottomRight="FF2222FF" / -->
+                </Section>
+            </Layer>
+        </StateImagery>
+        <StateImagery name="DisabledProgress">
+            <Layer>
+                <Section section="progress_lights">
+                   <ColourRectProperty name="BarColours" />
+                   <!-- Colours topLeft="FF2222FF" topRight="FF2222FF" bottomLeft="FF2222FF" bottomRight="FF2222FF" / -->
+                </Section>
+            </Layer>
+        </StateImagery>
+    </WidgetLook>
+
+    <!--
+    ***************************************************
+        EmberLook/ProgressBar
+    ***************************************************
+    -->
     <WidgetLook name="EmberLook/ProgressBar">
         <PropertyDefinition name="BarColours" initialValue="tl:FF2222FF tr:FF2222FF bl:FF2222FF br:FF2222FF" redrawOnWrite="true" />
         <NamedArea name="ProgressArea">
@@ -2575,8 +2625,6 @@
             </Layer>
         </StateImagery>
     </WidgetLook>
-
-
     <!--
     ***************************************************
         EmberLook/RadioButton
