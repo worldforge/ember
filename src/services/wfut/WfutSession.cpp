@@ -161,7 +161,7 @@ int WfutSession::poll()
 	int result = mWfutClient.poll();
 	if (!result) {
 		/// Save the completed download list
-		mWfutClient.saveLocalList(mLocal, mLocalWfut);
+		mWfutClient.saveLocalList(mServer, mLocalWfut);
 	}
 	return result;
 }
