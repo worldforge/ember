@@ -1,12 +1,22 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <models>
-	<model name="placeholder" >
-		<submodels>
-			<submodel mesh="placeholder.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>
+    <model name="placeholder" usescaleof="all" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="placeholder.mesh">
+                <parts>
+                    <part name="main" show="true" />
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views>
+            <view name="icon">
+                <distance>0</distance>
+                <rotation x="0.000000" y="0.000000" z="-1.000000" degrees="180.000015" />
+            </view>
+        </views>
+    </model>
 </models>

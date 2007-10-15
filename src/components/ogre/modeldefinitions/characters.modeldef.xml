@@ -195,6 +195,13 @@
 					</animation>
 				</animations>
 			</action>
+			<action name="attack" speed="1.000000">
+				<animations>
+					<animation>
+						<animationpart name="wf_humanoid-offense_punch" weight="1.000000" />
+					</animation>
+				</animations>
+			</action>
 			<action name="default_action" speed="1.000000">
 				<animations>
 					<animation>

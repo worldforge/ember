@@ -1,42 +1,82 @@
 <models>
-	<model name="ham" usescaleof="none" scale="1">
-		<submodels>
-			<submodel mesh="3d_objects/items/food/models/ham/food_ham.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>	
+    <model name="ham" usescaleof="none" scale="1.000000" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/food/models/ham/food_ham.mesh">
+                <parts>
+                    <part name="main" show="true" />
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views>
+            <view name="icon">
+                <distance>0</distance>
+                <rotation x="-0.678598" y="-0.678598" z="-0.281085" degrees="62.799435" />
+            </view>
+        </views>
+    </model>
 
 	
-	<model name="bread">
-		<submodels>
-			<submodel mesh="3d_objects/items/food/models/country_bread/country_bread.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>			
+    <model name="bread" usescaleof="all" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/food/models/country_bread/country_bread.mesh">
+                <parts>
+                    <part name="main" show="true" />
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views>
+            <view name="icon">
+                <distance>0</distance>
+                <rotation x="-0.678598" y="-0.678598" z="-0.281085" degrees="62.799435" />
+            </view>
+        </views>
+    </model>			
 	
-	<model name="breadslice" scale="1">
-		<submodels>
-			<submodel mesh="3d_objects/items/food/models/country_bread/country_bread_slize.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>			
+    <model name="breadslice" usescaleof="all" scale="1.000000" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/food/models/country_bread/country_bread_slize.mesh">
+                <parts>
+                    <part name="main" show="true" />
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views>
+            <view name="icon">
+                <distance>0</distance>
+                <rotation x="1.000000" y="0.000000" z="0.000000" degrees="90.000008" />
+            </view>
+        </views>
+    </model>			
 	
-	<model name="bread_cut">
-		<submodels>
-			<submodel mesh="3d_objects/items/food/models/country_bread/country_bread_cut.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>			
+    <model name="bread_cut" usescaleof="all" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/food/models/country_bread/country_bread_cut.mesh">
+                <parts>
+                    <part name="main" show="true" />
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views>
+            <view name="icon">
+                <distance>0</distance>
+                <rotation x="-0.678598" y="-0.678598" z="-0.281085" degrees="62.799435" />
+            </view>
+        </views>
+    </model>		
 </models> 

@@ -316,18 +316,25 @@
 			</submodel>
 		</submodels>
 	</model>	
-	<model name="skull" usescaleof="width" showcontained="true">
-		<translate x="0.000000" y="0.000000" z="0.000000" />
-		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
-		<submodels>
-			<submodel mesh="junkyard/models/skeleton/skull.mesh">
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-		<actions />
-	</model>
+    <model name="skull" usescaleof="width" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="junkyard/models/skeleton/skull.mesh">
+                <parts>
+                    <part name="main" show="true" />
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views>
+            <view name="icon">
+                <distance>36.0695</distance>
+                <rotation x="0.361903" y="-0.586539" z="0.724568" degrees="259.492615" />
+            </view>
+        </views>
+    </model>
 	<model name="shin">
 		<submodels>
 			<submodel mesh="junkyard/models/skeleton/shin.mesh" >
@@ -415,6 +422,13 @@
 				</animations>
 			</action>
 			<action name="taunt">
+				<animations>
+					<animation iterations="1">
+						<animationpart name="taunt" weight="1.0" />
+					</animation>
+				</animations>
+			</action>
+			<action name="attack">
 				<animations>
 					<animation iterations="1">
 						<animationpart name="taunt" weight="1.0" />

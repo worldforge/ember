@@ -129,15 +129,23 @@
 		</submodels>
 	</model>
 	
-	<model name="grass">
-		<submodels>
-			<submodel mesh="3d_objects/plants/tussock/models/small_plant/simplegrass.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>
+    <model name="grass" usescaleof="height" showcontained="true">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/plants/tussock/models/small_plant/simplegrass.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/field/bittergrass" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+    </model>
 	
 	<model name="sun">
 		<submodels>
@@ -198,6 +206,25 @@
             </submodel>
         </submodels>
         <actions />
+    </model>
+	
+    <model name="fern" usescaleof="all" showcontained="false">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/plants/fern/models/fern.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/fern" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
     </model>
 	
 	<!-- non-physical entities -->

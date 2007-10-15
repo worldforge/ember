@@ -36,6 +36,15 @@
 <!-- The automodelmapping element also has an optional "modelname" attribute, which allows you to select a different model to map to the entity type. -->
 	<automodelmapping name="carrot" />
 	
+	<modelmapping name="fern">
+		<entitymatch>
+			<case>
+				<caseparam type="equals">fern</caseparam>
+				<action type="display-model">fern</action>
+			</case>
+		</entitymatch>
+	</modelmapping>	
+	
 	<!-- We want the model "boulder" to be used for the entity "boulder". However, there are four different boulder meshes, which the model defines as four different parts. Depending on attribute "style" a different part will be shown. We assume that "style" is one of "a", "b", "c" or "d". Since the parts in the model are defined to belong to the same group (not shown in this file), only one part will be shown at the same time. -->
 	<modelmapping name="boulder">
 		<entitymatch>
@@ -295,11 +304,26 @@
 	
 <!-- tools -->	
 	<automodelmapping name="trowel" />
-	<automodelmapping name="axe" />
+	<modelmapping name="axe">
+		<entitymatch>
+			<case>
+				<caseparam type="equals">axe</caseparam>
+				<action type="display-model">hatchet</action>
+			</case>
+		</entitymatch>
+	</modelmapping> 
+	<!-- automodelmapping name="axe" / -->
 	<automodelmapping name="hammer" />
 	<automodelmapping name="scythe" />
 	<automodelmapping name="bucksaw" />
-	<automodelmapping name="tinderbox" />
+	<modelmapping name="tinderbox">
+		<entitymatch>
+			<case>
+				<caseparam type="equals">tinderbox</caseparam>
+				<action type="display-model">tinderboxB</action>
+			</case>
+		</entitymatch>
+	</modelmapping> 
 	<automodelmapping name="pickaxe" />
 	<modelmapping name="pole">
 		<entitymatch>

@@ -23,6 +23,31 @@
             </view>
         </views>
     </model>
+    
+    <model name="hatchet" usescaleof="none" scale="0.100000" showcontained="false" icon="3d_objects/items/tool/textures/hatchet/hatchetI.png">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/tool/models/hatchet/hatchet.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/items/tools/hatchet" />
+                            <subentity index="1" material="/global/items/tools/hatchet" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views>
+            <view name="icon">
+                <distance>7.43626</distance>
+                <rotation x="0.357407" y="-0.862856" z="-0.357407" degrees="98.421059" />
+            </view>
+        </views>
+    </model>    
     	
     <model name="hammer" usescaleof="all" showcontained="true">
         <translate x="0.000000" y="0.000000" z="0.000000" />
@@ -114,16 +139,62 @@
         </submodels>
         <actions />
     </model>
-	<model name="tinderbox" usescaleof="height">
-		<submodels>
-			<submodel mesh="3d_objects/items/box/models/tinderbox/tinderbox.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>			
-    <model name="pickaxe" usescaleof="none" scale="1.000000" showcontained="true">
+    <model name="tinderbox" usescaleof="height" showcontained="true" icon="3d_objects/items/containers/textures/tinderboxI.png">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/box/models/tinderbox/tinderbox.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/items/containers/tinderbox" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+    <model name="tinderboxA" usescaleof="height" showcontained="true" icon="3d_objects/items/containers/textures/tinderboxI.png">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/box/models/tinderbox/tinderboxA.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/items/containers/tinderbox" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+    <model name="tinderboxB" usescaleof="height" showcontained="true" icon="3d_objects/items/containers/textures/tinderboxI.png">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/box/models/tinderbox/tinderboxB.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/items/containers/tinderbox" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+        
+        <model name="pickaxe" usescaleof="none" scale="1.000000" showcontained="true">
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
@@ -152,10 +223,6 @@
             <submodel mesh="3d_objects/items/tool/models/trowel/trowel.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/items/tool/settler_tools/tool_handle" />
-                            <subentity index="1" material="/global/items/tool/settler_tools/tool_head" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>
