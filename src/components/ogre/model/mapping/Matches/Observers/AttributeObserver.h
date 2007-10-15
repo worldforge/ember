@@ -61,7 +61,7 @@ public:
 protected:
 	Eris::Entity::AttrChangedSlot mSlot;
 	
-	void attributeChanged(const std::string& attributeName, const Atlas::Message::Element& attributeValue);
+	void attributeChanged(const Atlas::Message::Element& attributeValue);
 	
 	AttributeDependentMatch* mMatch;
 	

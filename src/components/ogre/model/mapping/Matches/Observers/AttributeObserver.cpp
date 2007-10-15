@@ -48,7 +48,7 @@ AttributeObserver::AttributeObserver(Matches::AttributeMatch* match)
 {
 }
 
-void AttributeObserver::attributeChanged(const std::string& attributeName, const Atlas::Message::Element& attributeValue)
+void AttributeObserver::attributeChanged( const Atlas::Message::Element& attributeValue)
 {
 	mMatch->testAttribute(attributeValue, true);
 }
