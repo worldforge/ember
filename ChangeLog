@@ -1,3 +1,19 @@
+2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* configure.ac: ubuntu apparently needs bot lua and lualib. I don't know the name of the 5.1 .pc file though so that's probably broken though.
+
+2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberEntity.cpp, src/components/ogre/EmberEntity.h: use the atlas xml encorder instead of our own hacked together methods. This should be moved into an EntitySerializer class though.
+
+2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/characters.modeldef.xml, src/components/ogre/modeldefinitions/creatures.modeldef.xml, src/components/ogre/modeldefinitions/edibles.modeldef, src/components/ogre/modeldefinitions/environment.modeldef.xml, src/components/ogre/modeldefinitions/furniture.modeldef, src/components/ogre/modeldefinitions/modelmappings.modelmap.xml, src/components/ogre/modeldefinitions/placeholder.modeldef.xml, src/components/ogre/modeldefinitions/tools.modeldef: updated models
+
+2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/AssetsManager.cpp, src/components/ogre/widgets/AssetsManager.h, src/components/ogre/widgets/AssetsManager.lua, src/components/ogre/widgets/icons/IconManager.cpp, src/components/ogre/scripting/bindings/lua/AssetsManager.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: handle non-existing textures without crashing
+
 2007-10-15  Al Riddoch  <alriddoch@zepler.org>
 
 	* Add new missing .cvsignore files.

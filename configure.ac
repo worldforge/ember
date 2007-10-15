@@ -248,7 +248,7 @@ PKG_CHECK_MODULES(LUA, lua >= 5.0 lua < 5.1,
 	AC_MSG_NOTICE([Lua version = 5.0])
 ],
 [
-	PKG_CHECK_MODULES(LUA, lua50 >= 5.0 lua50 < 5.1,
+	PKG_CHECK_MODULES(LUA, lua50 >= 5.0 lua50 < 5.1 liblua50 >= 5.0 liblua50 <= 5.1,
 	[
 		CXXFLAGS="$CXXFLAGS $LUA_CFLAGS"
 		LDFLAGS="$LDFLAGS $LUA_LIBS -lCEGUILuaScriptModule -lCEGUItoluapp"
