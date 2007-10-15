@@ -37,6 +37,7 @@ SimpleRenderContext::SimpleRenderContext(const std::string& prefix, int width, i
 
 	S_LOG_VERBOSE("Creating new SimpleRenderContext for prefix " << prefix  << " with w:" << mWidth << " h:" << mHeight);
 	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, prefix + "_sceneManager");
+	mSceneManager->setFog(Ogre::FOG_NONE, Ogre::ColourValue::ZERO, 0, 0, 0);
 
 	mRootNode = mSceneManager->getRootSceneNode();
 	
