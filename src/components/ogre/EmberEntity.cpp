@@ -36,7 +36,11 @@
 //#include <Atlas/Objects/ObjectsFwd.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/View.h>
-
+#include <Atlas/Formatter.h>
+#include <Atlas/Objects/Decoder.h>
+#include <Atlas/Codecs/XML.h>
+#include <Atlas/Message/MEncoder.h>
+#include <Atlas/Message/QueuedDecoder.h>
 
 
 #include "model/Model.h"
@@ -687,16 +691,29 @@ static void dumpElement(const std::string &prefix, const std::string &name, cons
   }
 }
 
-void EmberEntity::dumpAttributes(std::ostream& outstream, std::ostream& logOutstream) const 
+void EmberEntity::dumpAttributes(std::iostream& outstream, std::ostream& logOutstream) const 
 {
   logOutstream << "Dumping attributes for entity " << getId() << "(" << getName() << ")" << std::endl;
-  const Eris::Entity::AttrMap &attribs = getAttributes();
+  
+  Atlas::Message::QueuedDecoder decoder;
+  //std::fstream file;
+   
+   Atlas::Codecs::XML codec(outstream, decoder);
+	Atlas::Formatter formatter(outstream, codec);
+	Atlas::Message::Encoder encoder(formatter);
+        formatter.streamBegin();
+	encoder.streamMessageElement(getAttributes());
+        
+        formatter.streamEnd();
+  
+  
+//   const Eris::Entity::AttrMap &attribs = getAttributes();
 
-  Eris::Entity::AttrMap::const_iterator itr = attribs.begin();
-  Eris::Entity::AttrMap::const_iterator end = attribs.end();
-  for (; itr != end; ++itr) {
-    dumpElement("",itr->first, itr->second, outstream, logOutstream);
-  }
+//   Eris::Entity::AttrMap::const_iterator itr = attribs.begin();
+//   Eris::Entity::AttrMap::const_iterator end = attribs.end();
+//   for (; itr != end; ++itr) {
+//     dumpElement("",itr->first, itr->second, outstream, logOutstream);
+//   }
 }
 
 }

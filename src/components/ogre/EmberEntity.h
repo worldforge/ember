@@ -222,7 +222,7 @@ public:
 	/**
 	Dumps all of this entity's attributes to the supplied outstream.
 	*/
-	void dumpAttributes(std::ostream& outstream, std::ostream& logOutstream) const;
+	void dumpAttributes(std::iostream& outstream, std::ostream& logOutstream) const;
 	
 	/**
 	 * General method for turning on and off debug visualizations. Subclasses might support more types of visualizations than the ones defined here.
