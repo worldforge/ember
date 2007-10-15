@@ -13,7 +13,7 @@ class Entity {
 
     bool hasAttr(const std::string &p) const;
 
-    typedef sigc::slot<void, const std::string&, const Atlas::Message::Element&> AttrChangedSlot;
+    typedef sigc::slot<void, const Atlas::Message::Element&> AttrChangedSlot;
 
     /** setup an observer so that the specified slot is fired when the
     named attribue's value changes */
