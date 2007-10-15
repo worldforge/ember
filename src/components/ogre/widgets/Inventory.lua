@@ -85,6 +85,14 @@ function Inventory.showMenu(args, entityIconWrapper)
 	Inventory.menu.innercontainer:setYPosition(CEGUI.UDim(1, -(Inventory.iconsize + Inventory.menu.innercontainer:getHeight():asAbsolute(0))))
 	Inventory.menu.container:setHeight(CEGUI.UDim(0, Inventory.iconsize + Inventory.menu.innercontainer:getHeight():asAbsolute(0) + 10))
 	Inventory.menu.container:setYPosition(CEGUI.UDim(1, -Inventory.menu.container:getHeight():asAbsolute(0)))
+	
+	--only show the eat button if the entity has biomass (and thus is edible)
+	if entityIconWrapper.entity:hasAttr("biomass") then
+		Inventory.menu.eatButton:setVisible(true)
+	else
+		Inventory.menu.eatButton:setVisible(false)
+	end
+	
 
 	--Inventory.menu.container:setPosition()
 end
@@ -144,7 +152,7 @@ function Inventory.buildWidget()
 	Inventory.menu.container:setClippedByParent(false)
 	
 	Inventory.menu.innercontainer = guiManager:createWindow("DefaultGUISheet")
-	Inventory.menu.innercontainer:setSize(CEGUI.UVector2(CEGUI.UDim(0, 80), CEGUI.UDim(0, 200)))
+	Inventory.menu.innercontainer:setSize(CEGUI.UVector2(CEGUI.UDim(0, 50), CEGUI.UDim(0, 200)))
 	Inventory.menu.innercontainer:setClippedByParent(false)
 	Inventory.menu.stackableContainer = EmberOgre.Gui.StackableContainer:new_local(Inventory.menu.innercontainer)
 	Inventory.menu.stackableContainer:setInnerContainerWindow(Inventory.menu.innercontainer)
@@ -169,6 +177,21 @@ function Inventory.buildWidget()
 	
 	
 	--add default buttons
+	
+	Inventory.menu.eatButton = guiManager:createWindow("EmberLook/Button")
+	Inventory.menu.eatButton:setSize(CEGUI.UVector2(CEGUI.UDim(1, 0), CEGUI.UDim(0, 25)))
+	Inventory.menu.eatButton:setText("eat")
+	Inventory.menu.eatButton_MouseClick = function(args)
+		if Inventory.menu.activeEntityWrapper ~= nil then
+			if Inventory.menu.activeEntityWrapper.entity ~= nil then
+				emberServices:getServerService():eat(Inventory.menu.activeEntityWrapper.entity)
+			end
+		end
+		Inventory.menu.hide()
+	end
+	Inventory.menu.eatButton:subscribeEvent("MouseClick", Inventory.menu.eatButton_MouseClick)
+	Inventory.menu.innercontainer:addChildWindow(Inventory.menu.eatButton)
+	
 	
 	Inventory.menu.dropButton = guiManager:createWindow("EmberLook/Button")
 	Inventory.menu.dropButton:setSize(CEGUI.UVector2(CEGUI.UDim(1, 0), CEGUI.UDim(0, 25)))

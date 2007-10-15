@@ -48,6 +48,10 @@ function EntityPicker.buildWidget()
 	EntityPicker.buttons.edit:subscribeEvent("MouseButtonUp", "EntityPicker.editButton_Click")
 	EntityPicker.buttons.attack = EntityPicker.widget:getWindow("AttackButton")
 	EntityPicker.buttons.attack:subscribeEvent("MouseButtonUp", "EntityPicker.attackButton_Click")
+	--we can't eat stuff that aren't in our inventory (yet)
+--[[	EntityPicker.buttons.eat = EntityPicker.widget:getWindow("EatButton")
+	EntityPicker.buttons.eat:subscribeEvent("MouseButtonUp", "EntityPicker.eatButton_Click")]]
+	
 	
 	
 	--get a couple of use buttons to allow for different use actions
@@ -104,6 +108,13 @@ function EntityPicker.pickedEntity(result, args)
 			EntityPicker.buttons.attack:setVisible(true)
 		end
 		
+		--only show the eat button if the entity has biomass (and thus is edible)
+-- 		if result.entity:hasAttr("biomass") then
+-- 			EntityPicker.buttons.eat:setVisible(true)
+-- 		else
+-- 			EntityPicker.buttons.eat:setVisible(false)
+-- 		end
+			
 		EntityPicker.checkUse()
 		EntityPicker.showMenu(point)
 		local name
@@ -199,6 +210,13 @@ function EntityPicker.attackButton_Click(args)
 	guiManager:EmitEntityAction("attack", EntityPicker.entity)
 	EntityPickerWidget_removeMenu()
 end
+
+-- function EntityPicker.eatButton_Click(args)
+-- 	emberServices:getServerService():use(EntityPicker.entity, EmberOgre.Ogre2Atlas(EntityPicker.position))
+-- 	guiManager:EmitEntityAction("eat", EntityPicker.entity)
+-- 	EntityPickerWidget_removeMenu()
+-- end
+
 
 function EntityPickerWidget_removeMenu()
 	
