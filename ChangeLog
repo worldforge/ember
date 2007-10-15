@@ -6,6 +6,90 @@
 
 	* Update existing .cvsignore files.
 
+2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/SimpleRenderContext.cpp: disable fog
+
+2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/AvatarController.cpp, src/components/ogre/AvatarController.h: if the left mouse is pressed when in movement mode, the avatar should move forward. This should perhaps be better handled by the inputmapping system though.
+
+2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Status.layout, src/components/ogre/widgets/Status.lua: use jayrs new status widget
+
+2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/ServerWidget.cpp: added some extra checks for valid data
+
+2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/IngameChatWidget.cpp, src/components/ogre/widgets/IngameChatWidget.h: adapt to changes in the Entity AttributeChanged signature
+
+2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/AssetsManager.layout, src/components/ogre/widgets/AssetsManager.lua: added support for CEGUI images
+
+2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/icons/IconImageStore.cpp, src/components/ogre/widgets/icons/IconImageStore.h, src/components/ogre/widgets/icons/IconManager.cpp, src/components/ogre/widgets/icons/IconStore.cpp, src/components/ogre/widgets/icons/IconStore.h: Added option for using the predefined icon in the model definition, at which point a new IconImageStore is created using the specified texture, with only a single icon defined.
+
+2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainArea.cpp, src/components/ogre/terrain/TerrainArea.h: removed the old SigC signatures
+
+2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.cpp, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.h, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.pkg, src/components/ogre/scripting/bindings/lua/helpers/lua_Helpers.cpp: removed obsolete SigC variants
+
+2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/model/ModelDefinition.h, src/components/ogre/model/XMLModelDefinitionSerializer.cpp, src/components/ogre/modeldefinitions/modeldefinition.xsd: added an optional "icon" parameter which allows one to define a prerendered icon for a specific model
+
+2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/model/mapping/Matches/Observers/AttributeObserver.cpp, src/components/ogre/model/mapping/Matches/Observers/AttributeObserver.h: adapt to changes in the Entity AttributeChanged signature
+
+2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/cegui/Makefile.am, src/components/ogre/cegui/datafiles/imagesets/status_main.imageset, src/components/ogre/cegui/datafiles/looknfeel/EmberLook.looknfeel, src/components/ogre/cegui/datafiles/schemes/EmberLookSkin.scheme: added a frameless progressbar and a status widget imageset made by jayr
+
+2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/framework/bindings/lua/eris/Entity.pkg, src/framework/bindings/lua/eris/Metaserver.pkg, src/framework/bindings/lua/eris/lua_Eris.cpp: update to latest eris cvs where SigC has been removed
+
+2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/services/server/OOGChat.cpp, src/services/server/OOGChat.h: removed the old SigC signatures
+
+2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/scripts/tools.material, media/materials/scripts/vegetation.material: added new materials using jayr's excellent normal maps
+
+2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/base_scripts/base.material, media/materials/programs/OffsetMapping.cg: fixed a problem with offset mapping and updated the base scripts, adding specular, nonculled and alpharejected versions
+
+2007-10-08 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/adapters/atlas/bindings/lua/ListAdapter.pkg, src/components/ogre/widgets/adapters/atlas/bindings/lua/bindings.cpp, src/components/ogre/widgets/adapters/atlas/bindings/lua/update.sh: changed the size_t to an int since lua will choke on the former and think it's an undefined object. This will fix the bug with the non-working entity editor
+
+2007-10-08 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/scripting/bindings/lua/IconManager.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
+
+2007-10-08 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Inventory.lua: use the existing entity to get the entity icon. This is because Eris currently won't allow for us to create entities that aren't part of the View
+
+2007-10-08 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/icons/IconManager.cpp, src/components/ogre/widgets/icons/IconManager.h, src/components/ogre/widgets/icons/IconRenderer.cpp: implement a method for getting an icon from an existing entity
+
+2007-10-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EntityWorldPickListener.cpp, src/components/ogre/EntityWorldPickListener.h: added class for visualizing the pick operation by placing a big ball where we've picked, this is all activated by the command /visualize_picking
+
 2007-10-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/OgreSetup.cpp: shut down SDL properly when the app exits though an SIGABRT or SIGSEGV to avoid messing up the desktop
@@ -9922,20 +10006,3 @@ BIG GAP HERE DUE TO DEVELOPER LAZINESS sorry!
 2002-01-12 13:54  zzorn
 
 	* README: Adding initial README for dime
-
-l README for dime
-
-ate header
-	document
-
-2002-01-12 16:43  nikal
-
-	* src/main/: Makefile, application.cpp, application.h, dime.cpp:
-	adding the skeleton Application and a basic int main()
-
-2002-01-12 13:54  zzorn
-
-	* README: Adding initial README for dime
-
-l README for dime
-
