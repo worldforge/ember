@@ -43,13 +43,15 @@ EntityIconSlot::~EntityIconSlot()
 
 bool EntityIconSlot::addEntityIcon(EntityIcon* icon)
 {
-	if (!mContainedIcon) {
-		mContainedIcon = icon;
-		mContainer->addChildWindow(icon->getDragContainer()); 
-		icon->setSlot(this);
-	} else {
-		S_LOG_WARNING("Trying to add entity icon to slot that already has one icon contained.");
-		return false;
+	if (icon) {
+		if (!mContainedIcon) {
+			mContainedIcon = icon;
+			mContainer->addChildWindow(icon->getDragContainer()); 
+			icon->setSlot(this);
+		} else {
+			S_LOG_WARNING("Trying to add entity icon to slot that already has one icon contained.");
+			return false;
+		}
 	}
 	return true;
 }
