@@ -32,6 +32,12 @@
 
 #include "components/ogre/input/Input.h"
 
+namespace Atlas {
+namespace Message {
+class Element;
+}
+}
+
 namespace Eris {
 
 class Connection;
@@ -235,6 +241,7 @@ public:
 	static void pushValue(const Input::MouseButton& theValue, const std::string& luaTypename);
 	static void pushValue(const Input::InputMode& theValue, const std::string& luaTypename);
 	static void pushValue(const std::set<std::string>& theValue, const std::string& luaTypename);
+	static void pushValue(const Atlas::Message::Element& theValue, const std::string& luaTypename);
 	
 	
  	LuaConnector(sigc::signal<void>& signal);
@@ -257,7 +264,7 @@ public:
  	LuaConnector(sigc::signal<void, Eris::Task*>& signal);
  	LuaConnector(sigc::signal<void, const std::set<std::string>&>& signal);
  	LuaConnector(sigc::signal<void, EmberOgre::Gui::EntityIcon*>& signal);
-   
+ 	LuaConnector(sigc::signal<void, const Atlas::Message::Element&>& signal);
    
     ~LuaConnector();
     

@@ -311,6 +311,11 @@ void LuaConnector::pushValue(const std::set<std::string>& theValue, const std::s
 	tolua_pushusertype(EmberOgre::LuaConnector::getState(),(void*)&theValue, luaTypename.c_str());
 }
 
+void LuaConnector::pushValue(const Atlas::Message::Element& theValue, const std::string& luaTypename)
+{
+	tolua_pushusertype(EmberOgre::LuaConnector::getState(),(void*)&theValue, luaTypename.c_str());
+}
+
 
 LuaConnector::~LuaConnector()
 {
@@ -500,6 +505,11 @@ LuaConnector::LuaConnector(sigc::signal<void, EmberOgre::Gui::EntityIcon*>& sign
 	mConnector = new LuaConnectors::ConnectorOne<void, EmberOgre::Gui::EntityIcon*>(signal, luaTypes);
 }
 
-
+LuaConnector::LuaConnector(sigc::signal<void, const Atlas::Message::Element&>& signal)
+{
+	LuaTypeStore luaTypes;
+	luaTypes.push_back("Atlas::Message::Element");
+	mConnector = new LuaConnectors::ConnectorOne<void, const Atlas::Message::Element&>(signal, luaTypes);
+}
 
 };
