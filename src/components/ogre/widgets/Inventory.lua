@@ -11,9 +11,17 @@ function Inventory.CreatedAvatarEntity(avatarEntity)
 	
 	Inventory.widget:registerConsoleVisibilityToggleCommand("inventory")
 	if avatarEntity:getAvatar():isAdmin() == false then
+		Inventory.avatarEntity = avatarEntity
 		Inventory.setupDoll(avatarEntity)
+		connect(Inventory.connectors, avatarEntity.Changed, "Inventory.avatarEntity_Changed")
 		Inventory.widget:show()
 	end
+	
+	
+end
+
+function Inventory.avatarEntity_Changed(keys)
+	Inventory.updateDoll()
 end
 
 function Inventory.AddedEntityToInventory(entity)
@@ -263,11 +271,31 @@ function Inventory.setupDoll(avatarEntity)
 	Inventory.doll.righHand.slot = Inventory.entityIconManager:createSlot(Inventory.iconsize)
 	Inventory.doll.righHand.container = Inventory.widget:getWindow("Doll/RightHand")
 	Inventory.doll.righHand.container:addChildWindow(Inventory.doll.righHand.slot:getWindow())
+	Inventory.doll.righHand.observer = EmberOgre.AttributeObserver:new_local(avatarEntity, "right_hand_wield")
+	Inventory.doll.righHand.attributeChanged = function(element)
+		if element:isString() then
+			local entityBucket = Inventory.icons[element:asString()]
+			if entityBucket ~= nil then
+				local icon = entityBucket[1].entityIcon
+				local oldIcon = Inventory.doll.righHand.slot:removeEntityIcon()
+				Inventory.doll.righHand.slot:addEntityIcon(icon)
+				if oldIcon ~= nil then
+					local slotWrapper = Inventory.getFreeSlot()
+					local slot = slotWrapper.slot
+					slot:addEntityIcon(oldIcon)
+				end
+			end
+
+		end
+	end
+	Inventory.doll.righHand.attributeChanged_connector = EmberOgre.LuaConnector:new_local(Inventory.doll.righHand.observer.EventChanged):connect(Inventory.doll.righHand.attributeChanged)
+	
 	Inventory.doll.righHand.entityIconDropped = function(entityIcon)
 		emberServices:getServerService():wield(entityIcon:getEntity())
 		local icon = Inventory.doll.righHand.slot:getEntityIcon()
 		if icon ~= null then
-			local slot = Inventory.getFreeSlot()
+			local slotWrapper = Inventory.getFreeSlot()
+			local slot = slotWrapper.slot
 			slot:addEntityIcon(icon)
 		end
 		Inventory.doll.righHand.slot:addEntityIcon(entityIcon)
@@ -303,6 +331,13 @@ function Inventory.setupDoll(avatarEntity)
 	end
 	Inventory.doll.legs.entityIconDropped_connector = EmberOgre.LuaConnector:new_local(Inventory.doll.legs.slot.EventIconDropped):connect(Inventory.doll.legs.entityIconDropped)
 end
+
+function Inventory.updateDoll()
+	if Inventory.avatarEntity:hasAttr("right_hand_wield") then
+		
+	end
+end
+
 
 function Inventory.createDollSlot(outfitPlacement, containerWindow, tooltipText)
 	local dollSlot = {}
