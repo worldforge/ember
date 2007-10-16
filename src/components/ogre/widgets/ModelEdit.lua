@@ -656,9 +656,28 @@ end
 function ModelEdit.showSubModel(contentItem)
 	ModelEdit.hideAllContentParts()
 	ModelEdit.contentparts.submodelInfo:setVisible(true)
-	local submodel = ModelEdit.getSelectedSubModel()
+	local submodelDef = ModelEdit.getSelectedSubModel()
 	
-	ModelEdit.widget:getWindow("SubModelName"):setText(submodel:getMeshName())
+	ModelEdit.widget:getWindow("SubModelName"):setText(submodelDef:getMeshName())
+	
+	local sizeWidget = ModelEdit.widget:getWindow("SubModelSize")
+	
+	local model = ModelEdit.renderer:getModel()
+	if model ~= nil then
+		local submodel = model:getSubModel(0)
+		if submodel ~= nil then
+			local bbox = submodel:getEntity():getMesh():get():getBounds()
+			local minPos = bbox:getMinimum()
+			local maxPos = bbox:getMaximum()
+			
+			local totalX = maxPos.x - minPos.x
+			local totalY = maxPos.y - minPos.y
+			local totalZ =  maxPos.z - minPos.z
+			
+			local sizeString = string.format("min: %.3f %.3f %.3f\nmax: %.3f %.3f %.3f\ntotal: %.3f %.3f %.3f", minPos.x, minPos.y, minPos.z, maxPos.x, maxPos.y, maxPos.z, totalX, totalY, totalZ)
+			sizeWidget:setText(sizeString)
+		end
+	end
 end
 
 function ModelEdit.showPart(contentItem)
