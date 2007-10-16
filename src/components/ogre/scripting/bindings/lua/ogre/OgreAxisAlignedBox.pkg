@@ -1,0 +1,265 @@
+/*
+-----------------------------------------------------------------------------
+This source file is part of OGRE
+(Object-oriented Graphics Rendering Engine)
+For the latest info, see http://www.ogre3d.org/
+
+Copyright (c) 2000-2006 Torus Knot Software Ltd
+Also see acknowledgements in Readme.html
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the Free Software
+Foundation; either version 2 of the License, or (at your option) any later
+version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place - Suite 330, Boston, MA 02111-1307, USA, or go to
+http://www.gnu.org/copyleft/lesser.txt.
+
+You may alternatively use this source under the terms of a specific version of
+the OGRE Unrestricted License provided you have obtained such a license from
+Torus Knot Software Ltd.
+-----------------------------------------------------------------------------
+*/
+
+
+namespace Ogre {
+
+	/** A 3D box aligned with the x/y/z axes.
+	@remarks
+	This class represents a simple box which is aligned with the
+	axes. Internally it only stores 2 points as the extremeties of
+	the box, one which is the minima of all 3 axes, and the other
+	which is the maxima of all 3 axes. This class is typically used
+	for an axis-aligned bounding box (AABB) for collision and
+	visibility determination.
+	*/
+	class AxisAlignedBox
+	{
+
+		/*
+		1-----2
+		/|    /|
+		/ |   / |
+		5-----4  |
+		|  0--|--3
+		| /   | /
+		|/    |/
+		6-----7
+		*/
+		typedef enum {
+			FAR_LEFT_BOTTOM = 0,
+			FAR_LEFT_TOP = 1,
+			FAR_RIGHT_TOP = 2,
+			FAR_RIGHT_BOTTOM = 3,
+			NEAR_RIGHT_BOTTOM = 7,
+			NEAR_LEFT_BOTTOM = 6,
+			NEAR_LEFT_TOP = 5,
+			NEAR_RIGHT_TOP = 4
+		} CornerEnum;
+		
+		AxisAlignedBox();
+
+		AxisAlignedBox(const Ogre::AxisAlignedBox & rkBox) ;
+
+		AxisAlignedBox(const Ogre::Vector3& min, const Ogre::Vector3& max);
+
+		AxisAlignedBox(
+			float mx, float my, float mz,
+			float Mx, float My, float Mz );
+
+
+		~AxisAlignedBox();
+
+
+		/** Gets the minimum corner of the box.
+		*/
+		const Ogre::Vector3& getMinimum(void) const;
+
+		/** Gets a modifiable version of the minimum
+		corner of the box.
+		*/
+		Ogre::Vector3& getMinimum(void);
+
+		/** Gets the maximum corner of the box.
+		*/
+		const Ogre::Vector3& getMaximum(void) const;
+
+		/** Gets a modifiable version of the maximum
+		corner of the box.
+		*/
+		Ogre::Vector3& getMaximum(void);
+
+
+		/** Sets the minimum corner of the box.
+		*/
+		void setMinimum( const Ogre::Vector3& vec );
+
+		void setMinimum( float x, float y, float z );
+
+		/** Changes one of the components of the minimum corner of the box
+		used to resize only one dimension of the box
+		*/
+		void setMinimumX(float x);
+
+		void setMinimumY(float y);
+
+		void setMinimumZ(float z);
+
+		/** Sets the maximum corner of the box.
+		*/
+		void setMaximum(const Ogre::Vector3& vec);
+
+		void setMaximum(float x, float y, float z);
+
+		/** Changes one of the components of the maximum corner of the box
+		used to resize only one dimension of the box
+		*/
+		void setMaximumX(float x);
+
+		void setMaximumY(float y);
+
+		void setMaximumZ(float z);
+
+		/** Sets both minimum and maximum extents at once.
+		*/
+		void setExtents( const Ogre::Vector3& min, const Ogre::Vector3& max );
+
+		void setExtents(
+			float mx, float my, float mz,
+			float Mx, float My, float Mz);
+
+		/** Returns a pointer to an array of 8 corner points, useful for
+		collision vs. non-aligned objects.
+		@remarks
+		If the order of these corners is important, they are as
+		follows: The 4 points of the minimum Z face (note that
+		because Ogre uses right-handed coordinates, the minimum Z is
+		at the 'back' of the box) starting with the minimum point of
+		all, then anticlockwise around this face (if you are looking
+		onto the face from outside the box). Then the 4 points of the
+		maximum Z face, starting with maximum point of all, then
+		anticlockwise around this face (looking onto the face from
+		outside the box). Like this:
+		<pre>
+		1-----2
+		/|    /|
+		/ |   / |
+		5-----4  |
+		|  0--|--3
+		| /   | /
+		|/    |/
+		6-----7
+		</pre>
+		@remarks as this implementation uses a static member, make sure to use your own copy !
+		*/
+		//const Ogre::Vector3* getAllCorners() const;
+
+		/** gets the position of one of the corners
+		*/
+		Ogre::Vector3 getCorner(Ogre::AxisAlignedBox::CornerEnum cornerToGet) const;
+
+		//std::ostream& operator<<(std::ostream& o, const AxisAlignedBox aab);
+
+		/** Merges the passed in box into the current box. The result is the
+		box which encompasses both.
+		*/
+		void merge(const Ogre::AxisAlignedBox& rhs );
+
+		/** Extends the box to encompass the specified point (if needed).
+		*/
+		void merge(const Ogre::Vector3& point );
+
+		/** Transforms the box according to the matrix supplied.
+		@remarks
+		By calling this method you get the axis-aligned box which
+		surrounds the transformed version of this box. Therefore each
+		corner of the box is transformed by the matrix, then the
+		extents are mapped back onto the axes to produce another
+		AABB. Useful when you have a local AABB for an object which
+		is then transformed.
+		*/
+		void transform( const Ogre::Matrix4& matrix );
+
+		/** Transforms the box according to the affine matrix supplied.
+		@remarks
+		By calling this method you get the axis-aligned box which
+		surrounds the transformed version of this box. Therefore each
+		corner of the box is transformed by the matrix, then the
+		extents are mapped back onto the axes to produce another
+		AABB. Useful when you have a local AABB for an object which
+		is then transformed.
+		@note
+		The matrix must be an affine matrix. @see Matrix4::isAffine.
+		*/
+		void transformAffine(const Ogre::Matrix4& m);
+
+		/** Sets the box to a 'null' value i.e. not a box.
+		*/
+		void setNull();
+
+		/** Returns true if the box is null i.e. empty.
+		*/
+		bool isNull() const;
+
+		/** Returns true if the box is finite.
+		*/
+		bool isFinite() const;
+
+		/** Sets the box to 'infinite'
+		*/
+		void setInfinite();
+
+		/** Returns true if the box is infinite.
+		*/
+		bool isInfinite() const;
+
+		/** Returns whether or not this box intersects another. */
+		bool intersects(const Ogre::AxisAlignedBox& b2) const;
+
+		/// Calculate the area of intersection of this box and another
+		Ogre::AxisAlignedBox intersection(const Ogre::AxisAlignedBox& b2) const;
+
+		/// Calculate the volume of this box
+		float volume() const;
+
+		/** Scales the AABB by the vector given. */
+		void scale(const Ogre::Vector3& s);
+
+		/** Tests whether this box intersects a sphere. */
+		bool intersects(const Ogre::Sphere& s) const;
+		/** Tests whether this box intersects a plane. */
+		bool intersects(const Ogre::Plane& p) const;
+		/** Tests whether the vector point is within this box. */
+		bool intersects(const Ogre::Vector3& v) const;
+		/// Gets the centre of the box
+		Ogre::Vector3 getCenter(void) const;
+		/// Gets the size of the box
+		Ogre::Vector3 getSize(void) const;
+		/// Gets the half-size of the box
+		Ogre::Vector3 getHalfSize(void) const;
+
+        /** Tests whether the given point contained by this box.
+        */
+        bool contains(const Ogre::Vector3& v) const;
+
+        /** Tests whether another box contained by this box.
+        */
+        bool contains(const Ogre::AxisAlignedBox& other) const;
+
+        /** Tests 2 boxes for equality.
+        */
+        //bool operator== (const Ogre::AxisAlignedBox& rhs) const;
+
+        /** Tests 2 boxes for inequality.
+        */
+        //bool operator!= (const Ogre::AxisAlignedBox& rhs) const;
+
+	};
+
+} 

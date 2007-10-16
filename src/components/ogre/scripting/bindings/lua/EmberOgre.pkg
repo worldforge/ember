@@ -72,7 +72,7 @@ $pfile "QuaternionAdapter.pkg"
 
 
 $pfile "OgreInfo.pkg"
-
+$pfile "AttributeObserver.pkg"
 
 //$pfile "EntityCEGUITexture.pkg"
 

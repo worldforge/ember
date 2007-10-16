@@ -155,7 +155,7 @@ namespace Ogre {
 
         /** Get the axis-aligned bounding box for this mesh.
         */
-//         const AxisAlignedBox& getBounds(void) const;
+         const Ogre::AxisAlignedBox& getBounds() const;
 
 		/** Gets the radius of the bounding sphere surrounding this mesh. */
 // 		Real getBoundingSphereRadius(void) const;
@@ -543,6 +543,7 @@ namespace Ogre {
     class MeshPtr
     {
     	Ogre::Mesh* get();
+    	Ogre::Mesh* get() const;
 //     public:
 //         MeshPtr() : SharedPtr<Mesh>() {}
 //         explicit MeshPtr(Mesh* rep) : SharedPtr<Mesh>(rep) {}

@@ -73,6 +73,8 @@
 #include "components/ogre/widgets/EntityIconManager.h"
 #include "components/ogre/widgets/EntityIconDragDropTarget.h"
 
+#include "components/ogre/AttributeObserver.h"
+
 //#include "components/ogre/scripting/LuaConnector.h"
 //#include "LuaConnector.h"
 

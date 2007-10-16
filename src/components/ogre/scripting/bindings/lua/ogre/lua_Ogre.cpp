@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Ogre
-** Generated automatically by tolua++-1.0.92 on Sat Sep  1 23:40:05 2007.
+** Generated automatically by tolua++-1.0.92 on Mon Oct 15 23:52:14 2007.
 */
 
 #ifndef __cplusplus
@@ -185,7 +185,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Ogre::SubEntity");
  tolua_usertype(tolua_S,"Ogre::MeshManager");
  tolua_usertype(tolua_S,"Ogre::Matrix3");
- tolua_usertype(tolua_S,"Ogre::Sphere");
+ tolua_usertype(tolua_S,"std::vector<Ogre::Plane>");
  tolua_usertype(tolua_S,"Ogre::RenderTarget::FrameStats");
  tolua_usertype(tolua_S,"Ogre::Math");
  tolua_usertype(tolua_S,"Ogre::Plane");
@@ -196,14 +196,14 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"std::list<Ogre::Plane>");
  tolua_usertype(tolua_S,"Ogre::Resource");
  tolua_usertype(tolua_S,"Ogre::TagPoint");
- tolua_usertype(tolua_S,"std::pair<bool,float>");
+ tolua_usertype(tolua_S,"Ogre::Sphere");
  tolua_usertype(tolua_S,"Ogre::Quaternion");
  tolua_usertype(tolua_S,"Ogre::ResourceManager");
  tolua_usertype(tolua_S,"std::set<Ogre::Entity*>");
  tolua_usertype(tolua_S,"Ogre::MaterialPtr");
  tolua_usertype(tolua_S,"ushort");
  tolua_usertype(tolua_S,"Ogre::Degree");
- tolua_usertype(tolua_S,"std::vector<Ogre::Plane>");
+ tolua_usertype(tolua_S,"std::pair<bool,float>");
  tolua_usertype(tolua_S,"Ogre::ResourcePtr");
  tolua_usertype(tolua_S,"Ogre::ResourceManager::ResourceHandleMap::mapped_type");
  tolua_usertype(tolua_S,"Ogre::Matrix4");
@@ -2037,6 +2037,38 @@ static int tolua_Ogre_Ogre_Mesh_getSubMesh00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: getBounds of class  Ogre::Mesh */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Mesh_getBounds00
+static int tolua_Ogre_Ogre_Mesh_getBounds00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::Mesh",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Mesh* self = (const Ogre::Mesh*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getBounds'",NULL);
+#endif
+  {
+   const Ogre::AxisAlignedBox& tolua_ret = (const Ogre::AxisAlignedBox&)  self->getBounds();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const Ogre::AxisAlignedBox");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getBounds'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: hasSkeleton of class  Ogre::Mesh */
 #ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Mesh_hasSkeleton00
 static int tolua_Ogre_Ogre_Mesh_hasSkeleton00(lua_State* tolua_S)
@@ -2170,6 +2202,33 @@ static int tolua_Ogre_Ogre_MeshPtr_get00(lua_State* tolua_S)
  tolua_error(tolua_S,"#ferror in function 'get'.",&tolua_err);
  return 0;
 #endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: get of class  Ogre::MeshPtr */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_MeshPtr_get01
+static int tolua_Ogre_Ogre_MeshPtr_get01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::MeshPtr",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  const Ogre::MeshPtr* self = (const Ogre::MeshPtr*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'get'",NULL);
+#endif
+  {
+   Ogre::Mesh* tolua_ret = (Ogre::Mesh*)  self->get();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::Mesh");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_MeshPtr_get00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
@@ -15389,6 +15448,1522 @@ static int tolua_Ogre_Ogre_TextureManager_getSingleton00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: new of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_new00
+static int tolua_Ogre_Ogre_AxisAlignedBox_new00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   Ogre::AxisAlignedBox* tolua_ret = (Ogre::AxisAlignedBox*)  new Ogre::AxisAlignedBox();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::AxisAlignedBox");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_new00_local
+static int tolua_Ogre_Ogre_AxisAlignedBox_new00_local(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   Ogre::AxisAlignedBox* tolua_ret = (Ogre::AxisAlignedBox*)  new Ogre::AxisAlignedBox();
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Ogre::AxisAlignedBox");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_new01
+static int tolua_Ogre_Ogre_AxisAlignedBox_new01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  const Ogre::AxisAlignedBox* rkBox = ((const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,2,0));
+  {
+   Ogre::AxisAlignedBox* tolua_ret = (Ogre::AxisAlignedBox*)  new Ogre::AxisAlignedBox(*rkBox);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::AxisAlignedBox");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_AxisAlignedBox_new00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_new01_local
+static int tolua_Ogre_Ogre_AxisAlignedBox_new01_local(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  const Ogre::AxisAlignedBox* rkBox = ((const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,2,0));
+  {
+   Ogre::AxisAlignedBox* tolua_ret = (Ogre::AxisAlignedBox*)  new Ogre::AxisAlignedBox(*rkBox);
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Ogre::AxisAlignedBox");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_AxisAlignedBox_new00_local(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_new02
+static int tolua_Ogre_Ogre_AxisAlignedBox_new02(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::Vector3",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"const Ogre::Vector3",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  const Ogre::Vector3* min = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::Vector3* max = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,3,0));
+  {
+   Ogre::AxisAlignedBox* tolua_ret = (Ogre::AxisAlignedBox*)  new Ogre::AxisAlignedBox(*min,*max);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::AxisAlignedBox");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_AxisAlignedBox_new01(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_new02_local
+static int tolua_Ogre_Ogre_AxisAlignedBox_new02_local(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::Vector3",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"const Ogre::Vector3",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  const Ogre::Vector3* min = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::Vector3* max = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,3,0));
+  {
+   Ogre::AxisAlignedBox* tolua_ret = (Ogre::AxisAlignedBox*)  new Ogre::AxisAlignedBox(*min,*max);
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Ogre::AxisAlignedBox");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_AxisAlignedBox_new01_local(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_new03
+static int tolua_Ogre_Ogre_AxisAlignedBox_new03(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,6,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,7,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,8,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  float mx = ((float)  tolua_tonumber(tolua_S,2,0));
+  float my = ((float)  tolua_tonumber(tolua_S,3,0));
+  float mz = ((float)  tolua_tonumber(tolua_S,4,0));
+  float Mx = ((float)  tolua_tonumber(tolua_S,5,0));
+  float My = ((float)  tolua_tonumber(tolua_S,6,0));
+  float Mz = ((float)  tolua_tonumber(tolua_S,7,0));
+  {
+   Ogre::AxisAlignedBox* tolua_ret = (Ogre::AxisAlignedBox*)  new Ogre::AxisAlignedBox(mx,my,mz,Mx,My,Mz);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::AxisAlignedBox");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_AxisAlignedBox_new02(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_new03_local
+static int tolua_Ogre_Ogre_AxisAlignedBox_new03_local(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,6,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,7,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,8,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  float mx = ((float)  tolua_tonumber(tolua_S,2,0));
+  float my = ((float)  tolua_tonumber(tolua_S,3,0));
+  float mz = ((float)  tolua_tonumber(tolua_S,4,0));
+  float Mx = ((float)  tolua_tonumber(tolua_S,5,0));
+  float My = ((float)  tolua_tonumber(tolua_S,6,0));
+  float Mz = ((float)  tolua_tonumber(tolua_S,7,0));
+  {
+   Ogre::AxisAlignedBox* tolua_ret = (Ogre::AxisAlignedBox*)  new Ogre::AxisAlignedBox(mx,my,mz,Mx,My,Mz);
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Ogre::AxisAlignedBox");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_AxisAlignedBox_new02_local(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: delete of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_delete00
+static int tolua_Ogre_Ogre_AxisAlignedBox_delete00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::AxisAlignedBox* self = (Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'delete'",NULL);
+#endif
+  delete self;
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'delete'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getMinimum of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_getMinimum00
+static int tolua_Ogre_Ogre_AxisAlignedBox_getMinimum00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::AxisAlignedBox* self = (const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMinimum'",NULL);
+#endif
+  {
+   const Ogre::Vector3& tolua_ret = (const Ogre::Vector3&)  self->getMinimum();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const Ogre::Vector3");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getMinimum'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getMinimum of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_getMinimum01
+static int tolua_Ogre_Ogre_AxisAlignedBox_getMinimum01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  Ogre::AxisAlignedBox* self = (Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMinimum'",NULL);
+#endif
+  {
+   Ogre::Vector3& tolua_ret = (Ogre::Vector3&)  self->getMinimum();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"Ogre::Vector3");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_AxisAlignedBox_getMinimum00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getMaximum of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_getMaximum00
+static int tolua_Ogre_Ogre_AxisAlignedBox_getMaximum00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::AxisAlignedBox* self = (const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMaximum'",NULL);
+#endif
+  {
+   const Ogre::Vector3& tolua_ret = (const Ogre::Vector3&)  self->getMaximum();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const Ogre::Vector3");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getMaximum'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getMaximum of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_getMaximum01
+static int tolua_Ogre_Ogre_AxisAlignedBox_getMaximum01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  Ogre::AxisAlignedBox* self = (Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMaximum'",NULL);
+#endif
+  {
+   Ogre::Vector3& tolua_ret = (Ogre::Vector3&)  self->getMaximum();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"Ogre::Vector3");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_AxisAlignedBox_getMaximum00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setMinimum of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_setMinimum00
+static int tolua_Ogre_Ogre_AxisAlignedBox_setMinimum00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::Vector3",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::AxisAlignedBox* self = (Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Vector3* vec = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMinimum'",NULL);
+#endif
+  {
+   self->setMinimum(*vec);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setMinimum'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setMinimum of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_setMinimum01
+static int tolua_Ogre_Ogre_AxisAlignedBox_setMinimum01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  Ogre::AxisAlignedBox* self = (Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+  float x = ((float)  tolua_tonumber(tolua_S,2,0));
+  float y = ((float)  tolua_tonumber(tolua_S,3,0));
+  float z = ((float)  tolua_tonumber(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMinimum'",NULL);
+#endif
+  {
+   self->setMinimum(x,y,z);
+  }
+ }
+ return 0;
+tolua_lerror:
+ return tolua_Ogre_Ogre_AxisAlignedBox_setMinimum00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setMinimumX of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_setMinimumX00
+static int tolua_Ogre_Ogre_AxisAlignedBox_setMinimumX00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::AxisAlignedBox* self = (Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+  float x = ((float)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMinimumX'",NULL);
+#endif
+  {
+   self->setMinimumX(x);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setMinimumX'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setMinimumY of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_setMinimumY00
+static int tolua_Ogre_Ogre_AxisAlignedBox_setMinimumY00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::AxisAlignedBox* self = (Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+  float y = ((float)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMinimumY'",NULL);
+#endif
+  {
+   self->setMinimumY(y);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setMinimumY'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setMinimumZ of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_setMinimumZ00
+static int tolua_Ogre_Ogre_AxisAlignedBox_setMinimumZ00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::AxisAlignedBox* self = (Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+  float z = ((float)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMinimumZ'",NULL);
+#endif
+  {
+   self->setMinimumZ(z);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setMinimumZ'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setMaximum of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_setMaximum00
+static int tolua_Ogre_Ogre_AxisAlignedBox_setMaximum00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::Vector3",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::AxisAlignedBox* self = (Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Vector3* vec = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMaximum'",NULL);
+#endif
+  {
+   self->setMaximum(*vec);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setMaximum'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setMaximum of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_setMaximum01
+static int tolua_Ogre_Ogre_AxisAlignedBox_setMaximum01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  Ogre::AxisAlignedBox* self = (Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+  float x = ((float)  tolua_tonumber(tolua_S,2,0));
+  float y = ((float)  tolua_tonumber(tolua_S,3,0));
+  float z = ((float)  tolua_tonumber(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMaximum'",NULL);
+#endif
+  {
+   self->setMaximum(x,y,z);
+  }
+ }
+ return 0;
+tolua_lerror:
+ return tolua_Ogre_Ogre_AxisAlignedBox_setMaximum00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setMaximumX of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_setMaximumX00
+static int tolua_Ogre_Ogre_AxisAlignedBox_setMaximumX00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::AxisAlignedBox* self = (Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+  float x = ((float)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMaximumX'",NULL);
+#endif
+  {
+   self->setMaximumX(x);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setMaximumX'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setMaximumY of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_setMaximumY00
+static int tolua_Ogre_Ogre_AxisAlignedBox_setMaximumY00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::AxisAlignedBox* self = (Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+  float y = ((float)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMaximumY'",NULL);
+#endif
+  {
+   self->setMaximumY(y);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setMaximumY'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setMaximumZ of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_setMaximumZ00
+static int tolua_Ogre_Ogre_AxisAlignedBox_setMaximumZ00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::AxisAlignedBox* self = (Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+  float z = ((float)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMaximumZ'",NULL);
+#endif
+  {
+   self->setMaximumZ(z);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setMaximumZ'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setExtents of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_setExtents00
+static int tolua_Ogre_Ogre_AxisAlignedBox_setExtents00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::Vector3",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"const Ogre::Vector3",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::AxisAlignedBox* self = (Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Vector3* min = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::Vector3* max = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setExtents'",NULL);
+#endif
+  {
+   self->setExtents(*min,*max);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setExtents'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setExtents of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_setExtents01
+static int tolua_Ogre_Ogre_AxisAlignedBox_setExtents01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,6,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,7,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,8,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  Ogre::AxisAlignedBox* self = (Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+  float mx = ((float)  tolua_tonumber(tolua_S,2,0));
+  float my = ((float)  tolua_tonumber(tolua_S,3,0));
+  float mz = ((float)  tolua_tonumber(tolua_S,4,0));
+  float Mx = ((float)  tolua_tonumber(tolua_S,5,0));
+  float My = ((float)  tolua_tonumber(tolua_S,6,0));
+  float Mz = ((float)  tolua_tonumber(tolua_S,7,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setExtents'",NULL);
+#endif
+  {
+   self->setExtents(mx,my,mz,Mx,My,Mz);
+  }
+ }
+ return 0;
+tolua_lerror:
+ return tolua_Ogre_Ogre_AxisAlignedBox_setExtents00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getCorner of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_getCorner00
+static int tolua_Ogre_Ogre_AxisAlignedBox_getCorner00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::AxisAlignedBox* self = (const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+  Ogre::AxisAlignedBox::CornerEnum cornerToGet = ((Ogre::AxisAlignedBox::CornerEnum) (int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getCorner'",NULL);
+#endif
+  {
+   Ogre::Vector3 tolua_ret = (Ogre::Vector3)  self->getCorner(cornerToGet);
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new Ogre::Vector3(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector3");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Vector3));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector3");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getCorner'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: merge of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_merge00
+static int tolua_Ogre_Ogre_AxisAlignedBox_merge00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::AxisAlignedBox* self = (Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::AxisAlignedBox* rhs = ((const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'merge'",NULL);
+#endif
+  {
+   self->merge(*rhs);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'merge'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: merge of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_merge01
+static int tolua_Ogre_Ogre_AxisAlignedBox_merge01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::Vector3",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  Ogre::AxisAlignedBox* self = (Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Vector3* point = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'merge'",NULL);
+#endif
+  {
+   self->merge(*point);
+  }
+ }
+ return 0;
+tolua_lerror:
+ return tolua_Ogre_Ogre_AxisAlignedBox_merge00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: transform of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_transform00
+static int tolua_Ogre_Ogre_AxisAlignedBox_transform00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::Matrix4",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::AxisAlignedBox* self = (Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Matrix4* matrix = ((const Ogre::Matrix4*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'transform'",NULL);
+#endif
+  {
+   self->transform(*matrix);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'transform'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: transformAffine of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_transformAffine00
+static int tolua_Ogre_Ogre_AxisAlignedBox_transformAffine00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::Matrix4",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::AxisAlignedBox* self = (Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Matrix4* m = ((const Ogre::Matrix4*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'transformAffine'",NULL);
+#endif
+  {
+   self->transformAffine(*m);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'transformAffine'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setNull of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_setNull00
+static int tolua_Ogre_Ogre_AxisAlignedBox_setNull00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::AxisAlignedBox* self = (Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setNull'",NULL);
+#endif
+  {
+   self->setNull();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setNull'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: isNull of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_isNull00
+static int tolua_Ogre_Ogre_AxisAlignedBox_isNull00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::AxisAlignedBox* self = (const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'isNull'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->isNull();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'isNull'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: isFinite of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_isFinite00
+static int tolua_Ogre_Ogre_AxisAlignedBox_isFinite00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::AxisAlignedBox* self = (const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'isFinite'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->isFinite();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'isFinite'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setInfinite of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_setInfinite00
+static int tolua_Ogre_Ogre_AxisAlignedBox_setInfinite00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::AxisAlignedBox* self = (Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setInfinite'",NULL);
+#endif
+  {
+   self->setInfinite();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setInfinite'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: isInfinite of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_isInfinite00
+static int tolua_Ogre_Ogre_AxisAlignedBox_isInfinite00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::AxisAlignedBox* self = (const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'isInfinite'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->isInfinite();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'isInfinite'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: intersects of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_intersects00
+static int tolua_Ogre_Ogre_AxisAlignedBox_intersects00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::AxisAlignedBox* self = (const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::AxisAlignedBox* b2 = ((const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'intersects'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->intersects(*b2);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'intersects'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: intersection of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_intersection00
+static int tolua_Ogre_Ogre_AxisAlignedBox_intersection00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::AxisAlignedBox* self = (const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::AxisAlignedBox* b2 = ((const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'intersection'",NULL);
+#endif
+  {
+   Ogre::AxisAlignedBox tolua_ret = (Ogre::AxisAlignedBox)  self->intersection(*b2);
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new Ogre::AxisAlignedBox(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::AxisAlignedBox");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::AxisAlignedBox));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::AxisAlignedBox");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'intersection'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: volume of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_volume00
+static int tolua_Ogre_Ogre_AxisAlignedBox_volume00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::AxisAlignedBox* self = (const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'volume'",NULL);
+#endif
+  {
+   float tolua_ret = (float)  self->volume();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'volume'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: scale of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_scale00
+static int tolua_Ogre_Ogre_AxisAlignedBox_scale00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::Vector3",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::AxisAlignedBox* self = (Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Vector3* s = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'scale'",NULL);
+#endif
+  {
+   self->scale(*s);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'scale'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: intersects of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_intersects01
+static int tolua_Ogre_Ogre_AxisAlignedBox_intersects01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::Sphere",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  const Ogre::AxisAlignedBox* self = (const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Sphere* s = ((const Ogre::Sphere*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'intersects'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->intersects(*s);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_AxisAlignedBox_intersects00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: intersects of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_intersects02
+static int tolua_Ogre_Ogre_AxisAlignedBox_intersects02(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::Plane",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  const Ogre::AxisAlignedBox* self = (const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Plane* p = ((const Ogre::Plane*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'intersects'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->intersects(*p);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_AxisAlignedBox_intersects01(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: intersects of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_intersects03
+static int tolua_Ogre_Ogre_AxisAlignedBox_intersects03(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::Vector3",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  const Ogre::AxisAlignedBox* self = (const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Vector3* v = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'intersects'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->intersects(*v);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_AxisAlignedBox_intersects02(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getCenter of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_getCenter00
+static int tolua_Ogre_Ogre_AxisAlignedBox_getCenter00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::AxisAlignedBox* self = (const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getCenter'",NULL);
+#endif
+  {
+   Ogre::Vector3 tolua_ret = (Ogre::Vector3)  self->getCenter();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new Ogre::Vector3(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector3");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Vector3));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector3");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getCenter'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getSize of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_getSize00
+static int tolua_Ogre_Ogre_AxisAlignedBox_getSize00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::AxisAlignedBox* self = (const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getSize'",NULL);
+#endif
+  {
+   Ogre::Vector3 tolua_ret = (Ogre::Vector3)  self->getSize();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new Ogre::Vector3(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector3");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Vector3));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector3");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getSize'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getHalfSize of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_getHalfSize00
+static int tolua_Ogre_Ogre_AxisAlignedBox_getHalfSize00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::AxisAlignedBox* self = (const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getHalfSize'",NULL);
+#endif
+  {
+   Ogre::Vector3 tolua_ret = (Ogre::Vector3)  self->getHalfSize();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new Ogre::Vector3(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector3");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Vector3));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Vector3");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getHalfSize'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: contains of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_contains00
+static int tolua_Ogre_Ogre_AxisAlignedBox_contains00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::Vector3",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::AxisAlignedBox* self = (const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Vector3* v = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'contains'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->contains(*v);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'contains'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: contains of class  Ogre::AxisAlignedBox */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_AxisAlignedBox_contains01
+static int tolua_Ogre_Ogre_AxisAlignedBox_contains01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::AxisAlignedBox",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  const Ogre::AxisAlignedBox* self = (const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::AxisAlignedBox* other = ((const Ogre::AxisAlignedBox*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'contains'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->contains(*other);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_AxisAlignedBox_contains00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* Open function */
 TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
 {
@@ -15528,6 +17103,7 @@ TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
    tolua_beginmodule(tolua_S,"Mesh");
     tolua_function(tolua_S,"getNumSubMeshes",tolua_Ogre_Ogre_Mesh_getNumSubMeshes00);
     tolua_function(tolua_S,"getSubMesh",tolua_Ogre_Ogre_Mesh_getSubMesh00);
+    tolua_function(tolua_S,"getBounds",tolua_Ogre_Ogre_Mesh_getBounds00);
     tolua_function(tolua_S,"hasSkeleton",tolua_Ogre_Ogre_Mesh_hasSkeleton00);
     tolua_function(tolua_S,"getSkeletonName",tolua_Ogre_Ogre_Mesh_getSkeletonName00);
     tolua_function(tolua_S,"getNumLodLevels",tolua_Ogre_Ogre_Mesh_getNumLodLevels00);
@@ -15539,6 +17115,7 @@ TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
    #endif
    tolua_beginmodule(tolua_S,"MeshPtr");
     tolua_function(tolua_S,"get",tolua_Ogre_Ogre_MeshPtr_get00);
+    tolua_function(tolua_S,"get",tolua_Ogre_Ogre_MeshPtr_get01);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"Ogre",0);
@@ -16071,6 +17648,75 @@ TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"setDefaultNumMipmaps",tolua_Ogre_Ogre_TextureManager_setDefaultNumMipmaps00);
     tolua_function(tolua_S,"getDefaultNumMipmaps",tolua_Ogre_Ogre_TextureManager_getDefaultNumMipmaps00);
     tolua_function(tolua_S,"getSingleton",tolua_Ogre_Ogre_TextureManager_getSingleton00);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"Ogre",0);
+  tolua_beginmodule(tolua_S,"Ogre");
+   #ifdef __cplusplus
+   tolua_cclass(tolua_S,"AxisAlignedBox","Ogre::AxisAlignedBox","",tolua_collect_Ogre__AxisAlignedBox);
+   #else
+   tolua_cclass(tolua_S,"AxisAlignedBox","Ogre::AxisAlignedBox","",NULL);
+   #endif
+   tolua_beginmodule(tolua_S,"AxisAlignedBox");
+    tolua_constant(tolua_S,"FAR_LEFT_BOTTOM",Ogre::AxisAlignedBox::FAR_LEFT_BOTTOM);
+    tolua_constant(tolua_S,"FAR_LEFT_TOP",Ogre::AxisAlignedBox::FAR_LEFT_TOP);
+    tolua_constant(tolua_S,"FAR_RIGHT_TOP",Ogre::AxisAlignedBox::FAR_RIGHT_TOP);
+    tolua_constant(tolua_S,"FAR_RIGHT_BOTTOM",Ogre::AxisAlignedBox::FAR_RIGHT_BOTTOM);
+    tolua_constant(tolua_S,"NEAR_RIGHT_BOTTOM",Ogre::AxisAlignedBox::NEAR_RIGHT_BOTTOM);
+    tolua_constant(tolua_S,"NEAR_LEFT_BOTTOM",Ogre::AxisAlignedBox::NEAR_LEFT_BOTTOM);
+    tolua_constant(tolua_S,"NEAR_LEFT_TOP",Ogre::AxisAlignedBox::NEAR_LEFT_TOP);
+    tolua_constant(tolua_S,"NEAR_RIGHT_TOP",Ogre::AxisAlignedBox::NEAR_RIGHT_TOP);
+    tolua_function(tolua_S,"new",tolua_Ogre_Ogre_AxisAlignedBox_new00);
+    tolua_function(tolua_S,"new_local",tolua_Ogre_Ogre_AxisAlignedBox_new00_local);
+    tolua_function(tolua_S,".call",tolua_Ogre_Ogre_AxisAlignedBox_new00_local);
+    tolua_function(tolua_S,"new",tolua_Ogre_Ogre_AxisAlignedBox_new01);
+    tolua_function(tolua_S,"new_local",tolua_Ogre_Ogre_AxisAlignedBox_new01_local);
+    tolua_function(tolua_S,".call",tolua_Ogre_Ogre_AxisAlignedBox_new01_local);
+    tolua_function(tolua_S,"new",tolua_Ogre_Ogre_AxisAlignedBox_new02);
+    tolua_function(tolua_S,"new_local",tolua_Ogre_Ogre_AxisAlignedBox_new02_local);
+    tolua_function(tolua_S,".call",tolua_Ogre_Ogre_AxisAlignedBox_new02_local);
+    tolua_function(tolua_S,"new",tolua_Ogre_Ogre_AxisAlignedBox_new03);
+    tolua_function(tolua_S,"new_local",tolua_Ogre_Ogre_AxisAlignedBox_new03_local);
+    tolua_function(tolua_S,".call",tolua_Ogre_Ogre_AxisAlignedBox_new03_local);
+    tolua_function(tolua_S,"delete",tolua_Ogre_Ogre_AxisAlignedBox_delete00);
+    tolua_function(tolua_S,"getMinimum",tolua_Ogre_Ogre_AxisAlignedBox_getMinimum00);
+    tolua_function(tolua_S,"getMinimum",tolua_Ogre_Ogre_AxisAlignedBox_getMinimum01);
+    tolua_function(tolua_S,"getMaximum",tolua_Ogre_Ogre_AxisAlignedBox_getMaximum00);
+    tolua_function(tolua_S,"getMaximum",tolua_Ogre_Ogre_AxisAlignedBox_getMaximum01);
+    tolua_function(tolua_S,"setMinimum",tolua_Ogre_Ogre_AxisAlignedBox_setMinimum00);
+    tolua_function(tolua_S,"setMinimum",tolua_Ogre_Ogre_AxisAlignedBox_setMinimum01);
+    tolua_function(tolua_S,"setMinimumX",tolua_Ogre_Ogre_AxisAlignedBox_setMinimumX00);
+    tolua_function(tolua_S,"setMinimumY",tolua_Ogre_Ogre_AxisAlignedBox_setMinimumY00);
+    tolua_function(tolua_S,"setMinimumZ",tolua_Ogre_Ogre_AxisAlignedBox_setMinimumZ00);
+    tolua_function(tolua_S,"setMaximum",tolua_Ogre_Ogre_AxisAlignedBox_setMaximum00);
+    tolua_function(tolua_S,"setMaximum",tolua_Ogre_Ogre_AxisAlignedBox_setMaximum01);
+    tolua_function(tolua_S,"setMaximumX",tolua_Ogre_Ogre_AxisAlignedBox_setMaximumX00);
+    tolua_function(tolua_S,"setMaximumY",tolua_Ogre_Ogre_AxisAlignedBox_setMaximumY00);
+    tolua_function(tolua_S,"setMaximumZ",tolua_Ogre_Ogre_AxisAlignedBox_setMaximumZ00);
+    tolua_function(tolua_S,"setExtents",tolua_Ogre_Ogre_AxisAlignedBox_setExtents00);
+    tolua_function(tolua_S,"setExtents",tolua_Ogre_Ogre_AxisAlignedBox_setExtents01);
+    tolua_function(tolua_S,"getCorner",tolua_Ogre_Ogre_AxisAlignedBox_getCorner00);
+    tolua_function(tolua_S,"merge",tolua_Ogre_Ogre_AxisAlignedBox_merge00);
+    tolua_function(tolua_S,"merge",tolua_Ogre_Ogre_AxisAlignedBox_merge01);
+    tolua_function(tolua_S,"transform",tolua_Ogre_Ogre_AxisAlignedBox_transform00);
+    tolua_function(tolua_S,"transformAffine",tolua_Ogre_Ogre_AxisAlignedBox_transformAffine00);
+    tolua_function(tolua_S,"setNull",tolua_Ogre_Ogre_AxisAlignedBox_setNull00);
+    tolua_function(tolua_S,"isNull",tolua_Ogre_Ogre_AxisAlignedBox_isNull00);
+    tolua_function(tolua_S,"isFinite",tolua_Ogre_Ogre_AxisAlignedBox_isFinite00);
+    tolua_function(tolua_S,"setInfinite",tolua_Ogre_Ogre_AxisAlignedBox_setInfinite00);
+    tolua_function(tolua_S,"isInfinite",tolua_Ogre_Ogre_AxisAlignedBox_isInfinite00);
+    tolua_function(tolua_S,"intersects",tolua_Ogre_Ogre_AxisAlignedBox_intersects00);
+    tolua_function(tolua_S,"intersection",tolua_Ogre_Ogre_AxisAlignedBox_intersection00);
+    tolua_function(tolua_S,"volume",tolua_Ogre_Ogre_AxisAlignedBox_volume00);
+    tolua_function(tolua_S,"scale",tolua_Ogre_Ogre_AxisAlignedBox_scale00);
+    tolua_function(tolua_S,"intersects",tolua_Ogre_Ogre_AxisAlignedBox_intersects01);
+    tolua_function(tolua_S,"intersects",tolua_Ogre_Ogre_AxisAlignedBox_intersects02);
+    tolua_function(tolua_S,"intersects",tolua_Ogre_Ogre_AxisAlignedBox_intersects03);
+    tolua_function(tolua_S,"getCenter",tolua_Ogre_Ogre_AxisAlignedBox_getCenter00);
+    tolua_function(tolua_S,"getSize",tolua_Ogre_Ogre_AxisAlignedBox_getSize00);
+    tolua_function(tolua_S,"getHalfSize",tolua_Ogre_Ogre_AxisAlignedBox_getHalfSize00);
+    tolua_function(tolua_S,"contains",tolua_Ogre_Ogre_AxisAlignedBox_contains00);
+    tolua_function(tolua_S,"contains",tolua_Ogre_Ogre_AxisAlignedBox_contains01);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
