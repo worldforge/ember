@@ -24,6 +24,7 @@
 #define EMBEROGRE_GUICONSOLEADAPTER_H
 
 #include <CEGUIEventArgs.h>
+#include <sigc++/signal.h>
 
 namespace CEGUI {
 class Editbox;
@@ -45,6 +46,13 @@ public:
     ConsoleAdapter(CEGUI::Editbox* inputBox);
 
     ~ConsoleAdapter();
+    
+    /**
+    Emitted when a command has executed.
+    @param the command that was executed
+    */
+    sigc::signal<void, const std::string&> EventCommandExecuted;
+    
 protected:
 	CEGUI::Editbox* mInputBox;
 	Ember::ConsoleBackend* mBackend;

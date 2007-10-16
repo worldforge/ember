@@ -210,6 +210,7 @@ bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 				mBackend->pushMessage(("> " + consoleText).c_str());
 				// run the command
 				mBackend->runCommand(consoleText.c_str());
+				EventCommandExecuted.emit(consoleText.c_str());
 			}
 		
 			break;
