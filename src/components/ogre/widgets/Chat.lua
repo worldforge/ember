@@ -27,6 +27,9 @@ function Chat.buildWidget()
 	connect(Chat.connectors, guiManager.AppendIGChatLine, "Chat.appendIGChatLine")
 	connect(Chat.connectors, guiManager.AppendOOGChatLine, "Chat.appendIGChatLine")
 	connect(Chat.connectors, guiManager.AppendAvatarImaginary, "Chat.appendAvatarImaginary")
+	connect(Chat.connectors, Chat.consoleAdapter.EventCommandExecuted, "Chat.consoleAdapter_CommandExecuted")
+	
+	
 	
 	--let's hide it to begin with
 --	Chat.widget:hide()
@@ -40,7 +43,18 @@ function Chat.buildWidget()
 
 end
 
+function Chat.consoleAdapter_CommandExecuted(command)
+	--if the user presses enter with nothing entered, toggle to movement mode. This will allow for easy switching between chat and movement
+	if command == "" then
+		--remove focus from the console
+		Chat.widget:getMainWindow():deactivate()
+		guiManager:getInput():setInputMode(EmberOgre.Input.IM_MOVEMENT)
+	end
+end
+
 function Chat.console_focus()
+	--switch to gui mode, so that this command can be called even when the user is in movement mode
+	guiManager:getInput():setInputMode(EmberOgre.Input.IM_GUI)
 	Chat.consoleInputWindow:activate()
 end
 
