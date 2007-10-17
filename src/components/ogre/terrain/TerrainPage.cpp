@@ -399,7 +399,9 @@ void EmberOgre::TerrainPage::showFoliage()
 	if (!mFoliageArea) {
 		prepareFoliage();
 	}
-	mFoliageArea->setVisible(true);
+	if (mFoliageArea) {
+		mFoliageArea->setVisible(true);
+	}
 //  	}
 	
 }
@@ -427,6 +429,10 @@ void EmberOgre::TerrainPage::prepareFoliage()
 {
 	TerrainShader* grassShader = mGenerator->getFoliageShader();
 	
+	if (!grassShader) {
+		S_LOG_FAILURE("Could not create foliage since there's no grass shader registered.");
+		return;
+	}
 	if (!mFoliageArea) {
 		mFoliageArea = Foliage::getSingleton().createArea();
 	} else {
@@ -515,7 +521,7 @@ void EmberOgre::TerrainPage::prepareFoliage()
 	}
 	mFoliageArea->build();
 	mFoliageArea->setVisible(false);
-
+	return;
 	
 }
 

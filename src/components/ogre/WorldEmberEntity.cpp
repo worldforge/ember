@@ -280,7 +280,10 @@ void TerrainParser::createShaders(const Atlas::Message::Element& surfaces)
 									Mercator::Shader* shader = Mercator::ShaderFactories::instance().newShader(pattern, params);
 									if (shader) {
 										isValid = true;
-										mTerrainGenerator->createShader(texture, shader);
+										TerrainShader* terrainShader = mTerrainGenerator->createShader(texture, shader);
+										if (name == "grass") {
+											mTerrainGenerator->setFoliageShader(terrainShader);
+										}
 									}
 								}
 							}

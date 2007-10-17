@@ -1,3 +1,39 @@
+2007-10-16 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainPage.cpp, src/components/ogre/WorldEmberEntity.cpp: fixed the foliage which had been broken since we switched to relying on mercator for all surface info
+
+2007-10-16 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/scripting/bindings/lua/AttributeObserver.pkg, src/components/ogre/scripting/bindings/lua/ConsoleAdapter.pkg, src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/scripting/bindings/lua/required.h, src/components/ogre/scripting/bindings/lua/ogre/Ogre.pkg, src/components/ogre/scripting/bindings/lua/ogre/OgreAxisAlignedBox.pkg, src/components/ogre/scripting/bindings/lua/ogre/OgreMesh.pkg, src/components/ogre/scripting/bindings/lua/ogre/lua_Ogre.cpp: updated bindings
+
+2007-10-16 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.cpp, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.h, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.pkg, src/components/ogre/scripting/bindings/lua/helpers/lua_Helpers.cpp: extended with more signals
+
+2007-10-16 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Chat.lua, ember.conf: added some usability features suggested by Al Riddoch. When executing the command /console_focus automatically switch to gui mode, and when executing an empty command switch to movement mode and deactivate the console
+
+2007-10-16 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/ConsoleAdapter.cpp, src/components/ogre/widgets/ConsoleAdapter.h: added an signal which is emitted when a command is executed
+
+2007-10-16 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/ModelEdit.layout, src/components/ogre/widgets/ModelEdit.lua: added some useful info about the size of submodels
+
+2007-10-16 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Inventory.lua: added initial implementation of observing the wield and outfit attributes of the entity and updating the doll accordingly, though there seems to be some issues currently with how the draggable containers are updated when moved in code
+
+2007-10-16 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityIconSlot.cpp: handle null pointers better
+
+2007-10-16 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/AttributeObserver.cpp, src/components/ogre/AttributeObserver.h, src/components/ogre/Makefile.am: added a simple observer class that observes changes to a specific attribute on an entity and emits a signal. This is mainly useful for the scripting environment since some of the template magic of sigc++ is hard to access directly from lua.
+
 2007-10-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/OgreSetup.cpp: hook into some more signals that will be emitted at crash time and clean up properly
