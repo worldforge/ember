@@ -464,21 +464,21 @@ void EmberOgre::TerrainPage::prepareFoliage()
 		int segmentStartX = static_cast<int>(worldUnitsStartOfPage.x() + (I->pos.x() * 64));
 		int segmentStartY = static_cast<int>(worldUnitsStartOfPage.y() + (I->pos.y() * 64) - pageSizeInMeters);
 		std::stringstream ss;
-		ss << "Adding grass to the area between x: " << segmentStartX << " to  " <<  (segmentStartX + 64) << " and y: " << segmentStartY << " to " << (segmentStartY + 64);
-		S_LOG_VERBOSE(ss.str());
+/*		ss << "Adding grass to the area between x: " << segmentStartX << " to  " <<  (segmentStartX + 64) << " and y: " << segmentStartY << " to " << (segmentStartY + 64);
+		S_LOG_VERBOSE(ss.str());*/
 		for (int x = 0; x < 64; ++x) {
 			for (int y = 0; y < 64; ++y) {
 				//some random offset
-				Ogre::Real x_offset = Ogre::Math::RangeRandom(-1, 1);
-				Ogre::Real y_offset = Ogre::Math::RangeRandom(-1, 1);
+				Ogre::Real x_offset = Ogre::Math::RangeRandom(-0.5, 0.5);
+				Ogre::Real y_offset = Ogre::Math::RangeRandom(-0.5, 0.5);
 				TerrainPosition position(segmentStartX + x + x_offset, segmentStartY + y + y_offset);
 				float height = mGenerator->getHeight(position);
 				
 				if (height > 0) {
 					bool blocked = false;
-					for (ShaderMap::iterator I = mShaderMap.begin(); I != mShaderMap.end(); ++I) {
-						if (I->second && I->second != grassShader  && I->second->getTerrainIndex()) {
-							Mercator::Surface* blockingSurface = I->second->getSurfaceForSegment(segment);
+					for (std::list<TerrainShader*>::iterator J = mUsedShaders.begin(); J != mUsedShaders.end(); ++J) {
+						if (*J && *J != grassShader  && (*J)->getTerrainIndex()) {
+							Mercator::Surface* blockingSurface = (*J)->getSurfaceForSegment(segment);
 							if (blockingSurface && blockingSurface->isValid()) {
 								unsigned char blockingAmount = ((*blockingSurface)(x, y, 0));
 								if (blockingAmount > 10) {
@@ -494,7 +494,7 @@ void EmberOgre::TerrainPage::prepareFoliage()
 						//first check if this is a good spot for grass (the more "green", the greater chance of grass
 						//then check with grassChanceThreshold if we should do grass
 						unsigned char cover = (*surface)(x, y, 0);
-						unsigned char coverChance = static_cast<unsigned char>( Ogre::Math::RangeRandom(0, 255));
+						unsigned char coverChance = static_cast<unsigned char>( Ogre::Math::RangeRandom(0, 260));
  						if (cover > coverChance) {
 							Ogre::Real grassChance = Ogre::Math::UnitRandom();
 							if (grassChanceThreshold > grassChance) {
