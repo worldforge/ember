@@ -674,7 +674,16 @@ function ModelEdit.showSubModel(contentItem)
 			local totalY = maxPos.y - minPos.y
 			local totalZ =  maxPos.z - minPos.z
 			
-			local sizeString = string.format("min: %.3f %.3f %.3f\nmax: %.3f %.3f %.3f\ntotal: %.3f %.3f %.3f", minPos.x, minPos.y, minPos.z, maxPos.x, maxPos.y, maxPos.z, totalX, totalY, totalZ)
+			local theLargest = 0
+			if totalX > totalY and totalX > totalZ then
+				theLargest = totalX
+			elseif totalY > totalZ and totalY > totalZ then
+				theLargest = totalY
+			else
+				theLargest = totalZ
+			end
+			
+			local sizeString = string.format("min: %.3f   %.3f   %.3f\nmax: %.3f   %.3f   %.3f\ntotal: %.3f   %.3f   %.3f\nprop.: %.3f   %.3f   %.3f ", minPos.x, minPos.y, minPos.z, maxPos.x, maxPos.y, maxPos.z, totalX, totalY, totalZ, totalX / theLargest, totalY / theLargest, totalZ / theLargest)
 			sizeWidget:setText(sizeString)
 		end
 	end
