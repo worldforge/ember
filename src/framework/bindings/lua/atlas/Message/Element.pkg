@@ -193,8 +193,8 @@ public:
 	Atlas::Message::MapType::iterator find(const std::string& index);
 	Atlas::Message::MapType::iterator end @ theEnd();
 	
-//	const Atlas::Message::Element& operator[] @ get(const std::string& index) const;
-//	Atlas::Message::Element& operator[] @ get(const std::string& index);
+	tolua_outside const Atlas::Message::Element& _MapType_findInMap @ get(const std::string& index) const;
+	Atlas::Message::Element& __operator_index @ get(const std::string& index);
 
 	MapType();
 	~MapType();

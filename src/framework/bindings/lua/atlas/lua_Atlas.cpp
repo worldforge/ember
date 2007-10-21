@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Atlas
-** Generated automatically by tolua++-1.0.92 on Fri Sep 21 22:23:51 2007.
+** Generated automatically by tolua++-1.0.92 on Sat Oct 20 23:43:39 2007.
 */
 
 #ifndef __cplusplus
@@ -1983,6 +1983,71 @@ static int tolua_Atlas_Atlas_Message_MapType_theEnd00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: findInMap of class  Atlas::Message::MapType */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_MapType_get00
+static int tolua_Atlas_Atlas_Message_MapType_get00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Atlas::Message::MapType",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Atlas::Message::MapType* self = (const Atlas::Message::MapType*)  tolua_tousertype(tolua_S,1,0);
+  const std::string index = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'findInMap'",NULL);
+#endif
+  {
+    const Atlas::Message::Element& tolua_ret = (const Atlas::Message::Element&)  _MapType_findInMap(self,index);
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const Atlas::Message::Element");
+   tolua_pushcppstring(tolua_S,(const char*)index);
+  }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'get'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: __operator_index of class  Atlas::Message::MapType */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_MapType_get01
+static int tolua_Atlas_Atlas_Message_MapType_get01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Atlas::Message::MapType",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  Atlas::Message::MapType* self = (Atlas::Message::MapType*)  tolua_tousertype(tolua_S,1,0);
+  const std::string index = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function '__operator_index'",NULL);
+#endif
+  {
+   Atlas::Message::Element& tolua_ret = (Atlas::Message::Element&)  self->__operator_index(index);
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"Atlas::Message::Element");
+   tolua_pushcppstring(tolua_S,(const char*)index);
+  }
+ }
+ return 2;
+tolua_lerror:
+ return tolua_Atlas_Atlas_Message_MapType_get00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: new of class  Atlas::Message::MapType */
 #ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_MapType_new00
 static int tolua_Atlas_Atlas_Message_MapType_new00(lua_State* tolua_S)
@@ -2188,6 +2253,8 @@ TOLUA_API int tolua_Atlas_open (lua_State* tolua_S)
      tolua_function(tolua_S,"size",tolua_Atlas_Atlas_Message_MapType_size00);
      tolua_function(tolua_S,"find",tolua_Atlas_Atlas_Message_MapType_find00);
      tolua_function(tolua_S,"theEnd",tolua_Atlas_Atlas_Message_MapType_theEnd00);
+     tolua_function(tolua_S,"get",tolua_Atlas_Atlas_Message_MapType_get00);
+     tolua_function(tolua_S,"get",tolua_Atlas_Atlas_Message_MapType_get01);
      tolua_function(tolua_S,"new",tolua_Atlas_Atlas_Message_MapType_new00);
      tolua_function(tolua_S,"new_local",tolua_Atlas_Atlas_Message_MapType_new00_local);
      tolua_function(tolua_S,".call",tolua_Atlas_Atlas_Message_MapType_new00_local);
