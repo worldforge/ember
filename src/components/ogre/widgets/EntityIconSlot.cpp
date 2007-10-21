@@ -48,6 +48,8 @@ bool EntityIconSlot::addEntityIcon(EntityIcon* icon)
 			mContainedIcon = icon;
 			mContainer->addChildWindow(icon->getDragContainer()); 
 			icon->setSlot(this);
+			///we have to notify the container that things have changed else it won't update itself when we add the entity without dragging (cegui bug?)
+			mContainer->notifyScreenAreaChanged();
 		} else {
 			S_LOG_WARNING("Trying to add entity icon to slot that already has one icon contained.");
 			return false;
@@ -63,6 +65,8 @@ EntityIcon* EntityIconSlot::removeEntityIcon()
 		EntityIcon* icon = mContainedIcon;
 		mContainedIcon = 0;
 		icon->setSlot(0);
+		///we have to notify the container that things have changed else it won't update itself when we remove the entity without dragging (cegui bug?)		
+		mContainer->notifyScreenAreaChanged();
 		return icon;
 	} else {
 		return 0;
