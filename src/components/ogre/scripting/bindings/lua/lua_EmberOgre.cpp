@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Tue Oct 16 21:46:08 2007.
+** Generated automatically by tolua++-1.0.92 on Sun Oct 21 12:44:13 2007.
 */
 
 #ifndef __cplusplus
@@ -9059,6 +9059,69 @@ static int tolua_EmberOgre_EmberOgre_Gui_EntityIconSlot_getWindow00(lua_State* t
  tolua_error(tolua_S,"#ferror in function 'getWindow'.",&tolua_err);
  return 0;
 #endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: notifyIconDraggedOff of class  EmberOgre::Gui::EntityIconSlot */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_EntityIconSlot_notifyIconDraggedOff00
+static int tolua_EmberOgre_EmberOgre_Gui_EntityIconSlot_notifyIconDraggedOff00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::EntityIconSlot",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"EmberOgre::Gui::EntityIcon",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Gui::EntityIconSlot* self = (EmberOgre::Gui::EntityIconSlot*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::Gui::EntityIcon* entityIcon = ((EmberOgre::Gui::EntityIcon*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'notifyIconDraggedOff'",NULL);
+#endif
+  {
+   self->notifyIconDraggedOff(entityIcon);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'notifyIconDraggedOff'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: EventIconDraggedOff of class  EmberOgre::Gui::EntityIconSlot */
+#ifndef TOLUA_DISABLE_tolua_get_EmberOgre__Gui__EntityIconSlot_EventIconDraggedOff
+static int tolua_get_EmberOgre__Gui__EntityIconSlot_EventIconDraggedOff(lua_State* tolua_S)
+{
+  EmberOgre::Gui::EntityIconSlot* self = (EmberOgre::Gui::EntityIconSlot*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventIconDraggedOff'",NULL);
+#endif
+  tolua_pushusertype(tolua_S,(void*)&self->EventIconDraggedOff,"sigc::signal<void,EmberOgre::Gui::EntityIcon*>");
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: EventIconDraggedOff of class  EmberOgre::Gui::EntityIconSlot */
+#ifndef TOLUA_DISABLE_tolua_set_EmberOgre__Gui__EntityIconSlot_EventIconDraggedOff
+static int tolua_set_EmberOgre__Gui__EntityIconSlot_EventIconDraggedOff(lua_State* tolua_S)
+{
+  EmberOgre::Gui::EntityIconSlot* self = (EmberOgre::Gui::EntityIconSlot*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventIconDraggedOff'",NULL);
+  if (!tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::Gui::EntityIcon*>",0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->EventIconDraggedOff = *((sigc::signal<void,EmberOgre::Gui::EntityIcon*>*)  tolua_tousertype(tolua_S,2,0))
+;
+ return 0;
 }
 #endif //#ifndef TOLUA_DISABLE
 
@@ -19954,6 +20017,8 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"removeEntityIcon",tolua_EmberOgre_EmberOgre_Gui_EntityIconSlot_removeEntityIcon00);
      tolua_function(tolua_S,"getEntityIcon",tolua_EmberOgre_EmberOgre_Gui_EntityIconSlot_getEntityIcon00);
      tolua_function(tolua_S,"getWindow",tolua_EmberOgre_EmberOgre_Gui_EntityIconSlot_getWindow00);
+     tolua_function(tolua_S,"notifyIconDraggedOff",tolua_EmberOgre_EmberOgre_Gui_EntityIconSlot_notifyIconDraggedOff00);
+     tolua_variable(tolua_S,"EventIconDraggedOff",tolua_get_EmberOgre__Gui__EntityIconSlot_EventIconDraggedOff,tolua_set_EmberOgre__Gui__EntityIconSlot_EventIconDraggedOff);
     tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);

@@ -91,7 +91,11 @@ function Inventory.addSlot()
 	local slotWrapper = {slot = slot}
 	table.insert(Inventory.slots, slotWrapper)
 	slotWrapper.entityIconDropped = function(entityIcon)
+		local oldSlot = entityIcon:getSlot()
 		slotWrapper.slot:addEntityIcon(entityIcon)
+		if oldSlot ~= nil then
+			oldSlot:notifyIconDraggedOff(entityIcon)
+		end
 	end
 	slotWrapper.entityIconDropped_connector = EmberOgre.LuaConnector:new_local(slot.EventIconDropped):connect(slotWrapper.entityIconDropped)
 	
@@ -169,7 +173,7 @@ function Inventory.buildWidget()
 	connect(Inventory.connectors, emberOgre.EventCreatedAvatarEntity, "Inventory.CreatedAvatarEntity")
 	
 	Inventory.menu.container = guiManager:createWindow("DefaultGUISheet")
-	Inventory.menu.container:setSize(CEGUI.UVector2(CEGUI.UDim(0, 100), CEGUI.UDim(0, 200)))
+	Inventory.menu.container:setSize(CEGUI.UVector2(CEGUI.UDim(0, 50), CEGUI.UDim(0, 200)))
 	Inventory.menu.container:setClippedByParent(false)
 	
 	Inventory.menu.innercontainer = guiManager:createWindow("DefaultGUISheet")
@@ -307,8 +311,12 @@ function Inventory.createOutfitSlot(avatarEntity, dollSlot, outfitPartName)
 			end
 		end
 	end
-	
 	dollSlot.attributeChanged_connector = EmberOgre.LuaConnector:new_local(dollSlot.observer.EventChanged):connect(dollSlot.attributeChanged)
+	
+	dollSlot.iconDraggedOff = function(entityIcon)
+		--do unwield stuff
+	end
+	dollSlot.iconDraggedOff_connector = EmberOgre.LuaConnector:new_local(dollSlot.slot.EventIconDraggedOff):connect(dollSlot.iconDraggedOff)
 	
 	dollSlot.newEntityCreated = function(newEntity)
 		dollSlot.attributeChanged(avatarEntity:valueOfAttr("outfit"))
@@ -399,6 +407,7 @@ function Inventory.createDollSlot(outfitPlacement, containerWindow, tooltipText)
 	dollSlot.slot = Inventory.entityIconManager:createSlot(Inventory.iconsize)
 	dollSlot.container = containerWindow
 	dollSlot.container:addChildWindow(dollSlot.slot:getWindow())
+	dollSlot.slot:getWindow():setInheritsTooltipText(true)
 	dollSlot.container:setTooltipText(tooltipText)
 	dollSlot.outfitPlacement = outfitPlacement
 	

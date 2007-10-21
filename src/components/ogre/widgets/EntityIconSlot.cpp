@@ -90,6 +90,12 @@ CEGUI::Window* EntityIconSlot::getWindow()
 	return mContainer;
 }
 
+void EntityIconSlot::notifyIconDraggedOff(EntityIcon* entityIcon)
+{
+	EventIconDraggedOff.emit(entityIcon);
+}
+
+
 // bool EntityIconSlot::handleDragEnter(const CEGUI::EventArgs& args, EntityIcon* icon)
 // {
 // 	const DragDropEventArgs& ddea = static_cast<const DragDropEventArgs&>(args);

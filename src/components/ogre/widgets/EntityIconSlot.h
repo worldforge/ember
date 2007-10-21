@@ -70,6 +70,17 @@ public:
 	
 	CEGUI::Window* getWindow();
 	
+	/**
+	Call this from the gui code whenever an icon is dragged away from the slot.
+	*/
+	void notifyIconDraggedOff(EntityIcon* entityIcon);
+	
+	/**
+	Emitted when an icon has been dragged away from the slot as a result of an user action.
+	*/
+	sigc::signal<void, EntityIcon*> EventIconDraggedOff;
+
+	
 	
 protected:
 	EntityIconSlot(EntityIconManager& manager, CEGUI::Window* container);

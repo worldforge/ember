@@ -1,5 +1,9 @@
 2007-10-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* src/components/ogre/scripting/bindings/lua/EntityIconSlot.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/widgets/EntityIconSlot.cpp, src/components/ogre/widgets/EntityIconSlot.h, src/components/ogre/widgets/Inventory.lua: added an event which is triggered by UI code whenever an icon by the user is dragged away from a slot. This will allow us to listen for when the user wants to unequip a certain entity by dragging it from the doll to the inventory.
+
+2007-10-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* make_dist_media.sh.in: handle added media types
 
 2007-10-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
