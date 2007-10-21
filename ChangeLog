@@ -1,3 +1,39 @@
+2007-10-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* make_dist_media.sh.in: handle added media types
+
+2007-10-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/ModelEdit.layout, src/components/ogre/widgets/ModelEdit.lua: output proportions for submodels
+
+2007-10-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Inventory.layout, src/components/ogre/widgets/Inventory.lua: set the correct icons at startup and handle more slots
+
+2007-10-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/AvatarCamera.cpp: listen dynamically for changes to the config
+
+2007-10-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/AttributeObserver.cpp: check for null values
+
+2007-10-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/OgreSetup.cpp: print to cerr when crashing
+
+2007-10-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/framework/bindings/lua/atlas/lua_Atlas.cpp, src/framework/bindings/lua/atlas/required.h, src/framework/bindings/lua/atlas/Message/Element.pkg: added index accessors to the MapType, and hacked together one that will also work with const MapTypes
+
+2007-10-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityIconSlot.cpp: fixed a bug where the icons wouldn't be updated when set from code
+
+2007-10-20 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainPage.cpp: use the correct shader list, which fixes the bug where the foliage on areas wasn't removed as it should be
+
 2007-10-16 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/terrain/TerrainPage.cpp, src/components/ogre/WorldEmberEntity.cpp: fixed the foliage which had been broken since we switched to relying on mercator for all surface info
