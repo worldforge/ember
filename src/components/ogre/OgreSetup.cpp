@@ -142,6 +142,7 @@ Shut down SDL correctly, else if run in full screen the display might be messed 
 */
 void shutdownHandler(int signal)
 {
+	std::cerr << "Crashed, will try to shut down SDL gracefully.";
 	SDL_Quit();
 }
 
