@@ -2,7 +2,17 @@
 
 
 -----------------------------------------
-Inventory = {connectors={}, iconsize = 32, columns = 4, iconcounter = 0, slotcounter = 0, icons = {}, slots = {}, menu = {menuShown = false, activeEntityWrapper = nil}}
+Inventory = {
+connectors={},
+iconsize = 32,
+columns = 4,
+iconcounter = 0,
+slotcounter = 0,
+icons = {},
+slots = {},
+menu = {menuShown = false, activeEntityWrapper = nil},
+newEntityListeners = {}
+}
 
 function Inventory.CreatedAvatarEntity(avatarEntity)
 	
@@ -37,6 +47,9 @@ function Inventory.AddedEntityToInventory(entity)
 			entityIconBucket = Inventory.icons[entity:getId()]
 		end
 		table.insert(entityIconBucket, entityIconWrapper)
+		for k,v in pairs(Inventory.newEntityListeners) do
+			v(entity)
+		end
 	end
 end
 
@@ -254,6 +267,58 @@ function Inventory.buildWidget()
 	
 end
 
+function Inventory.createOutfitSlot(avatarEntity, dollSlot, outfitPartName)
+-- 	Inventory.doll.torso = Inventory.createDollSlot("body", Inventory.widget:getWindow("Doll/Torso"), "Drop an entity here to attach it to the torso.")
+	dollSlot.droppedHandler = function(entityIcon)
+		if dollSlot.isValidDrop(entityIcon) then
+			emberServices:getServerService():wield(entityIcon:getEntity())
+			local icon = dollSlot.slot:getEntityIcon()
+			if icon ~= null then
+				local slot = Inventory.getFreeSlot()
+				slot:addEntityIcon(icon)
+			end
+			dollSlot.slot:addEntityIcon(entityIcon)
+		end
+	end
+	dollSlot.entityIconDropped_connector = EmberOgre.LuaConnector:new_local(dollSlot.slot.EventIconDropped):connect(dollSlot.droppedHandler)
+	dollSlot.observer = EmberOgre.AttributeObserver:new_local(avatarEntity, "outfit")
+	dollSlot.attributeChanged = function(outFitElement)
+		if outFitElement ~= nil and outFitElement:isMap() then
+			local element = outFitElement:asMap():get(outfitPartName)
+			if element ~= nil then
+				if element:isString() then
+					local entityBucket = Inventory.icons[element:asString()]
+					if entityBucket ~= nil then
+						local icon = entityBucket[1].entityIcon
+						if icon ~= nil then
+							--check that we've not already have added the icon to this slot
+							if dollSlot.slot:getEntityIcon() ~= icon then
+								local oldIcon = dollSlot.slot:removeEntityIcon()
+								dollSlot.slot:addEntityIcon(icon)
+								if oldIcon ~= nil then
+									local slotWrapper = Inventory.getFreeSlot()
+									local slot = slotWrapper.slot
+									slot:addEntityIcon(oldIcon)
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	
+	dollSlot.attributeChanged_connector = EmberOgre.LuaConnector:new_local(dollSlot.observer.EventChanged):connect(dollSlot.attributeChanged)
+	
+	dollSlot.newEntityCreated = function(newEntity)
+		dollSlot.attributeChanged(avatarEntity:valueOfAttr("outfit"))
+	end
+	
+	table.insert(Inventory.newEntityListeners, dollSlot.newEntityCreated)
+	
+-- 	dollSlot.attributeChanged(avatarEntity:valueOfAttr("outfit"))
+end
+
 function Inventory.setupDoll(avatarEntity)
 	Inventory.doll = {}
 	
@@ -277,19 +342,19 @@ function Inventory.setupDoll(avatarEntity)
 			local entityBucket = Inventory.icons[element:asString()]
 			if entityBucket ~= nil then
 				local icon = entityBucket[1].entityIcon
-				local oldIcon = Inventory.doll.righHand.slot:removeEntityIcon()
-				Inventory.doll.righHand.slot:addEntityIcon(icon)
-				if oldIcon ~= nil then
-					local slotWrapper = Inventory.getFreeSlot()
-					local slot = slotWrapper.slot
-					slot:addEntityIcon(oldIcon)
+				if icon ~= Inventory.doll.righHand.slot:getEntityIcon() then
+					local oldIcon = Inventory.doll.righHand.slot:removeEntityIcon()
+					Inventory.doll.righHand.slot:addEntityIcon(icon)
+					if oldIcon ~= nil then
+						local slotWrapper = Inventory.getFreeSlot()
+						local slot = slotWrapper.slot
+						slot:addEntityIcon(oldIcon)
+					end
 				end
 			end
-
 		end
 	end
 	Inventory.doll.righHand.attributeChanged_connector = EmberOgre.LuaConnector:new_local(Inventory.doll.righHand.observer.EventChanged):connect(Inventory.doll.righHand.attributeChanged)
-	
 	Inventory.doll.righHand.entityIconDropped = function(entityIcon)
 		emberServices:getServerService():wield(entityIcon:getEntity())
 		local icon = Inventory.doll.righHand.slot:getEntityIcon()
@@ -302,34 +367,24 @@ function Inventory.setupDoll(avatarEntity)
 	end
 	Inventory.doll.righHand.entityIconDropped_connector = EmberOgre.LuaConnector:new_local(Inventory.doll.righHand.slot.EventIconDropped):connect(Inventory.doll.righHand.entityIconDropped)
 	
-	Inventory.doll.torso = Inventory.createDollSlot("body", Inventory.widget:getWindow("Doll/Torso"), "Drop an entity here to attach it to the torso.")
-	
-	Inventory.doll.torso.entityIconDropped = function(entityIcon)
-		if Inventory.doll.torso.isValidDrop(entityIcon) then
-			emberServices:getServerService():wield(entityIcon:getEntity())
-			local icon = Inventory.doll.torso.slot:getEntityIcon()
-			if icon ~= null then
-				local slot = Inventory.getFreeSlot()
-				slot:addEntityIcon(icon)
-			end
-			Inventory.doll.torso.slot:addEntityIcon(entityIcon)
-		end
+	Inventory.doll.righHand.newEntityCreated = function(newEntity)
+		Inventory.doll.righHand.attributeChanged(avatarEntity:valueOfAttr("right_hand_wield"))
 	end
-	Inventory.doll.torso.entityIconDropped_connector = EmberOgre.LuaConnector:new_local(Inventory.doll.torso.slot.EventIconDropped):connect(Inventory.doll.torso.entityIconDropped)
+	table.insert(Inventory.newEntityListeners, Inventory.doll.righHand.newEntityCreated)	
+	
+	
+	Inventory.doll.torso = Inventory.createDollSlot("body", Inventory.widget:getWindow("Doll/Torso"), "Drop an entity here to attach it to the torso.")
+	Inventory.doll.torsoOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.torso, "body")
+	
+	Inventory.doll.head = Inventory.createDollSlot("head", Inventory.widget:getWindow("Doll/Head"), "Drop an entity here to attach it to the head.")
+	Inventory.doll.headOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.head, "head")
 
 	Inventory.doll.legs = Inventory.createDollSlot("legs", Inventory.widget:getWindow("Doll/Legs"), "Drop an entity here to attach it to the legs.")
-	Inventory.doll.legs.entityIconDropped = function(entityIcon)
-		if Inventory.doll.legs.isValidDrop(entityIcon) then
-			emberServices:getServerService():wield(entityIcon:getEntity())
-			local icon = Inventory.doll.legs.slot:getEntityIcon()
-			if icon ~= null then
-				local slot = Inventory.getFreeSlot()
-				slot:addEntityIcon(icon)
-			end
-			Inventory.doll.legs.slot:addEntityIcon(entityIcon)
-		end
-	end
-	Inventory.doll.legs.entityIconDropped_connector = EmberOgre.LuaConnector:new_local(Inventory.doll.legs.slot.EventIconDropped):connect(Inventory.doll.legs.entityIconDropped)
+	Inventory.doll.legsOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.legs, "legs")
+	
+	Inventory.doll.feet = Inventory.createDollSlot("feet", Inventory.widget:getWindow("Doll/Feet"), "Drop an entity here to attach it to the feet.")
+	Inventory.doll.feetOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.feet, "feet")
+	
 end
 
 function Inventory.updateDoll()

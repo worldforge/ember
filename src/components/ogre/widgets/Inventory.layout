@@ -23,13 +23,23 @@
 					<Property Name='UnifiedSize' Value='{{0,32},{0,32}}'/>
 					<Property Name='BackgroundEnabled' Value='false'/>
 				</Window>
+				<Window Type='EmberLook/StaticImage' Name='Doll/Head'>
+					<Property Name='UnifiedPosition' Value='{{0.5,-16},{0.1,0}}'/>
+					<Property Name='UnifiedSize' Value='{{0,32},{0,32}}'/>
+					<Property Name='BackgroundEnabled' Value='true'/>
+				</Window>
 				<Window Type='EmberLook/StaticImage' Name='Doll/Torso'>
 					<Property Name='UnifiedPosition' Value='{{0.5,-16},{0.3,0}}'/>
 					<Property Name='UnifiedSize' Value='{{0,32},{0,32}}'/>
-					<Property Name='BackgroundEnabled' Value='false'/>
+					<Property Name='BackgroundEnabled' Value='true'/>
 				</Window>
 				<Window Type='EmberLook/StaticImage' Name='Doll/Legs'>
 					<Property Name='UnifiedPosition' Value='{{0.5,-16},{0.6,0}}'/>
+					<Property Name='UnifiedSize' Value='{{0,32},{0,32}}'/>
+					<Property Name='BackgroundEnabled' Value='true'/>
+				</Window>
+				<Window Type='EmberLook/StaticImage' Name='Doll/Feet'>
+					<Property Name='UnifiedPosition' Value='{{0.5,-16},{0.8,0}}'/>
 					<Property Name='UnifiedSize' Value='{{0,32},{0,32}}'/>
 					<Property Name='BackgroundEnabled' Value='false'/>
 				</Window>
