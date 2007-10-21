@@ -26,13 +26,18 @@
 
 #include "AttributeObserver.h"
 #include <Eris/Entity.h>
+#include "services/logging/LoggingService.h"
 
 namespace EmberOgre {
 
 AttributeObserver::AttributeObserver(Eris::Entity* entity, const std::string& attributeName)
 : mSlot(sigc::mem_fun(*this, &AttributeObserver::attributeChanged))
 {
-	entity->observe(attributeName, mSlot);
+	if (entity) {
+		entity->observe(attributeName, mSlot);
+	} else {
+		S_LOG_WARNING("Tried to observer the attribute " << attributeName << " or a null entity.");
+	}
 }
 
 AttributeObserver::~AttributeObserver()
