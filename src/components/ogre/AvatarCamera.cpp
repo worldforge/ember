@@ -141,11 +141,6 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 		mGUIManager->getInput().EventMouseMoved.connect(sigc::mem_fun(*this, &AvatarCamera::Input_MouseMoved));
 	}
 
-	
-	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("input", "cameradegreespersecond")) {
-		mDegreeOfPitchPerSecond = mDegreeOfYawPerSecond = (double)Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("input", "cameradegreespersecond");
-	}
-	
 	Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &AvatarCamera::ConfigService_EventChangedConfigItem));
 	
 	updateValuesFromConfig();
@@ -532,12 +527,16 @@ void AvatarCamera::updateValuesFromConfig()
 	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("input", "invertcamera")) {
 		mInvertCamera = static_cast<bool>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("input", "invertcamera"));
 	}
+	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("input", "cameradegreespersecond")) {
+		mDegreeOfPitchPerSecond = mDegreeOfYawPerSecond = (double)Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("input", "cameradegreespersecond");
+	}
+	
 }
 	
 void AvatarCamera::ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key)
 {
 	if (section == "input") {
-		if (key == "invertcamera") {
+		if (key == "invertcamera" || key == "cameradegreespersecond") {
 			updateValuesFromConfig();
 		}
 	}
