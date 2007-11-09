@@ -1,19 +1,14 @@
-material /global/items/cylinder/wood_boards : /base/simple
+material /global/items/containers/wood_boards/cylinder : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_objects/items/cylinder/textures/wood_boards/low/cylinder.png
+	set_texture_alias DiffuseMap 3d_objects/items/containers/textures/wood_boards/cylinder.png
 }
 
-material plants/tree/gnarly : /base/simple
+material /global/items/containers/earthenware/cylinder  : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_objects/items/cylinder/textures/wood_boards/low/cylinder.png
+	set_texture_alias DiffuseMap 3d_objects/items/containers/textures/earthenware/cylinder.png
 }
 
-material /global/items/cylinder/earthenware : /base/simple
+material /global/items/containers/bottle/vodka : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_objects/items/cylinder/textures/earthenware/low/cylinder.png
-}
-
-material /global/items/cylinder/bottle_vodka : /base/simple
-{
-	set_texture_alias DiffuseMap 3d_objects/items/cylinder/textures/earthenware/low/cylinder.png
+	set_texture_alias DiffuseMap 3d_objects/items/containers/textures/bottle/vodka.png
 }

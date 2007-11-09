@@ -25,30 +25,30 @@ material /global/creature/squirrel/skin : /base/simple
 //make it alpha blended so that the scales will blend
 material /global/creature/tubular/fish/scaly_brown_white : /base/simple/nonculled/alphablended
 {
-	set_texture_alias DiffuseMap 3d_objects/creatures/tubular/textures/scaly_brown_white/low/tubular.png
+	set_texture_alias DiffuseMap 3d_objects/creatures/tubular/textures/scaly_brown_white/tubular.png
 }
 material /global/creature/chicken : /base/simple/nonculled
 {
-	set_texture_alias DiffuseMap 3d_objects/creatures/avian/textures/redchicken/low/chickentex.png
+	set_texture_alias DiffuseMap 3d_objects/creatures/avian/textures/redchicken/chickentex_1024.png
 }
 material /global/creature/deer : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_objects/creatures/quadruped_v2/textures/deer/low/quadruped_v2.png
+	set_texture_alias DiffuseMap 3d_objects/creatures/quadruped_v2/textures/deer/quadruped_v2.png
 }
 
 material /global/creature/dog : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_objects/creatures/quadruped/textures/white_fur/low/quadruped.png
+	set_texture_alias DiffuseMap 3d_objects/creatures/quadruped/textures/white_fur/quadruped.png
 }
 
 material /global/creature/insect/emerald : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_objects/creatures/insect/textures/emerald/low/insect.png
+	set_texture_alias DiffuseMap 3d_objects/creatures/insect/textures/emerald/insect.png
 }
 
 material /global/creature/insect/carrion : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_objects/creatures/insect/textures/carrion/low/insect.png
+	set_texture_alias DiffuseMap 3d_objects/creatures/insect/textures/carrion/insect.png
 }
 
 material /global/body_parts/skeleton/bone/skeleton : /base/simple

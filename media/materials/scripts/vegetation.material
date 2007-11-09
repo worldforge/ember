@@ -1,26 +1,21 @@
-
-material /global/plants/tree/fir/branch
+material /global/plants/trees/evergreen/fir : /base/normalmap/nonculled/alpharejected
 {
-	receive_shadows off
-	technique
+	set_texture_alias DiffuseMap 3d_objects/plants/trees/textures/evergreen/firD.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/trees/textures/evergreen/firN.png
+	technique NormalMapped
 	{
-		pass
+		pass Main
 		{
-			//scene_blend alpha_blend 
-			cull_hardware none 
-			cull_software none
-			alpha_rejection greater_equal 64
-			texture_unit
-			{
-				texture 3d_objects/plants/fir/textures/common_fir/low/fir_branch_normal_01_hh.png
-			}
+			alpha_rejection greater_equal 160
 		}
 	}
-}
-
-material /global/plants/tree/evergreen/evergreen_fir : /base/simple/nonculled/alpharejected
-{
-	set_texture_alias DiffuseMap 3d_objects/plants/tree/textures/evergreen/evergreen_fir.png
+	technique NormalMappedOld
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 160
+		}
+	}
 	technique General
 	{
 		pass Main
@@ -29,9 +24,24 @@ material /global/plants/tree/evergreen/evergreen_fir : /base/simple/nonculled/al
 		}
 	}
 }
-material /global/plants/tree/evergreen/evergreen_pine : /base/simple/nonculled/alpharejected
+material /global/plants/trees/evergreen/pine : /base/normalmap/nonculled/alpharejected
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/tree/textures/evergreen/evergreen_pine.png
+	set_texture_alias DiffuseMap 3d_objects/plants/trees/textures/evergreen/pineD.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/trees/textures/evergreen/pineN.png
+	technique NormalMapped
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 160
+		}
+	}
+	technique NormalMappedOld
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 160
+		}
+	}
 	technique General
 	{
 		pass Main
@@ -40,9 +50,24 @@ material /global/plants/tree/evergreen/evergreen_pine : /base/simple/nonculled/a
 		}
 	}
 }
-material /global/plants/tree/evergreen/evergreen_snow : /base/simple/nonculled/alpharejected
+material /global/plants/trees/evergreen/pine_snow : /base/normalmap/nonculled/alpharejected
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/tree/textures/evergreen/evergreen_snow.png
+	set_texture_alias DiffuseMap 3d_objects/plants/trees/textures/evergreen/pine_snowD.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/trees/textures/evergreen/pine_snowN.png
+	technique NormalMapped
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 160
+		}
+	}
+	technique NormalMappedOld
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 160
+		}
+	}
 	technique General
 	{
 		pass Main
@@ -53,10 +78,27 @@ material /global/plants/tree/evergreen/evergreen_snow : /base/simple/nonculled/a
 }
 
 
-material /global/plants/fruitable/acorn/matte : /base/simple
+material /global/plants/fruit/acorn : /base/normalmap/specular
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/fruitable/textures/acorn/low/fruitable.png
+	set_texture_alias DiffuseMap 3d_objects/plants/fruit/textures/acorn/acornD.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/fruit/textures/acorn/acornN.png
+	set_texture_alias SpecularMap 3d_objects/plants/fruit/textures/acorn/acornS.png
 }
+
+material /global/plants/fruit/carrot : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/fruit/textures/carrot/carrotD.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/fruit/textures/carrot/carrotN.png
+	set_texture_alias SpecularMap 3d_objects/plants/fruit/textures/carrot/carrotS.png
+}
+
+material /global/plants/fruit/carrot/nonculled : /base/normalmap/specular/nonculled/alpharejected
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/fruit/textures/carrot/carrotD.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/fruit/textures/carrot/carrotN.png
+	set_texture_alias SpecularMap 3d_objects/plants/fruit/textures/carrot/carrotS.png
+}
+
 
 material /global/plants/mushroom/amanita : /base/simple
 {
@@ -74,95 +116,60 @@ material /global/plants/fruitable/green_apple : /base/simple
 		}
 	}
 }
-material /global/plants/fruitable/acorn/shiny : /base/simple
-{
-	set_texture_alias DiffuseMap 3d_objects/plants/fruitable/textures/acorn/low/fruitable.png
-	technique General
-	{
-		pass Main
-		{
-			specular 0.898039 0.898039 0.898039 10.0
-		}
-	}
-}
-material /global/plants/tree/fir/bark : /base/simple
-{
-	set_texture_alias DiffuseMap 3d_objects/plants/fir/textures/common_fir/low/bark_small.png
-}
-
-material /global/plants/tree/oak : /base/simple/nonculled/alpharejected
-{
-	set_texture_alias DiffuseMap 3d_objects/plants/tree/textures/oak/oak.png
-}
-
-material /global/plants/tree/oak_
-{
-//	set_texture_alias DiffuseMap 3d_objects/plants/tree/textures/gnarly/high/tree.png
-  receive_shadows off
-  technique
-  {
-    pass
-    {
-        // scene_blend alpha_blend 
-		alpha_rejection greater_equal 230
-         cull_hardware none 
-         cull_software none
-         texture_unit
-	{
-//		texture 3d_objects/plants/tree/textures/gnarly/low/tree.png
-		texture 3d_objects/plants/tree/textures/oak/oak.png
-	}
-    }
-  }
-}
 
 
-material /global/plants/tree/oak/bark : /base/simple
+
+material /global/plants/trees/oak : /base/normalmap/specular
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/tree/textures/oak/bark/wf_treebark.tga
+	set_texture_alias DiffuseMap 3d_objects/plants/trees/textures/oak/oak.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/trees/textures/oak/oakN.png
+	set_texture_alias SpecularMap 3d_objects/plants/trees/textures/oak/oakS.png
+}
+
+material /global/plants/trees/oak/nonculled : /base/normalmap/specular/nonculled/alpharejected
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/trees/textures/oak/oak.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/trees/textures/oak/oakN.png
+	set_texture_alias SpecularMap 3d_objects/plants/trees/textures/oak/oakS.png
+}
+
+material /global/plants/trees/bark/birch : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/trees/textures/bark/birch_barkD.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/trees/textures/bark/birch_barkN.png
+	set_texture_alias SpecularMap 3d_objects/plants/trees/textures/bark/birch_barkS.png
 } 
 
-material /global/plants/tree/oak/branches : /base/simple/nonculled/alpharejected
+material /global/plants/trees/bark/birch_bark_white : /base/normalmap
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/tree/textures/oak/foliage/branches.tga
-	technique General
-	{
-		pass Main
-		{
-			alpha_rejection greater_equal 200
-		}
-	}
+	set_texture_alias DiffuseMap 3d_objects/plants/trees/textures/bark/birch_bark_whiteD.tga
+	set_texture_alias NormalHeightMap 3d_objects/plants/trees/textures/bark/birch_bark_whiteN.tga
 } 
 
-
-material /global/plants/tree/birch/bark : /base/normalmap
+material /global/plants/trees/bark/fir_bark : /base/normalmap/specular
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/tree/textures/birch/bark/birch_bark.tga
-	set_texture_alias NormalHeightMap 3d_objects/plants/tree/textures/birch/bark/birch_bark_n.tga
+	set_texture_alias DiffuseMap 3d_objects/plants/trees/textures/bark/fir_BarkD.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/trees/textures/bark/fir_barkN.png
+	set_texture_alias SpecularMap 3d_objects/plants/trees/textures/bark/fir_BarkS.png
 } 
 
-material /global/plants/tree/birch/branches : /base/simple/nonculled/alpharejected
+material /global/plants/trees/branches/birch : /base/normalmap/specular
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/tree/textures/birch/foliage/birch_billboard.png
-	technique General
-	{
-		pass Main
-		{
-			alpha_rejection greater_equal 200
-		}
-	}
-}
-
-material /global/plants/tree/english_oak/bark : /base/normalmap
-{
-	set_texture_alias DiffuseMap 3d_objects/plants/tree/textures/oak/bark/wf_treebark.tga
-	set_texture_alias NormalHeightMap 3d_objects/plants/tree/textures/oak/bark/wf_treebark_n.tga
+	set_texture_alias DiffuseMap 3d_objects/plants/trees/textures/branches/birch_branchesD.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/trees/textures/branches/birch_branchesN.png
+	set_texture_alias SpecularMap 3d_objects/plants/trees/textures/branches/birch_branchesS.png
 } 
 
-material /global/plants/tree/english_oak/branches/summer : /base/simple/nonculled/alpharejected
+material /global/plants/trees/english_oak/bark : /base/normalmap
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/tree/textures/oak/foliage/english_oak_summer.png
-	set_texture_alias NormalHeightMap 3d_objects/plants/tree/textures/oak/foliage/english_oak_n.tga
+	set_texture_alias DiffuseMap 3d_objects/plants/trees/textures/oak/bark/wf_treebark.tga
+	set_texture_alias NormalHeightMap 3d_objects/plants/trees/textures/oak/bark/wf_treebark_n.tga
+} 
+
+material /global/plants/trees/english_oak/branches/summer : /base/simple/nonculled/alpharejected
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/trees/textures/oak/foliage/english_oak_summer.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/trees/textures/oak/foliage/english_oak_n.tga
 	technique NormalMapped
 	{
 		pass Main
@@ -171,6 +178,7 @@ material /global/plants/tree/english_oak/branches/summer : /base/simple/nonculle
 			cull_hardware none
 			cull_software none
 		}
+		
 	}
 	technique NormalMappedOld
 	{
@@ -193,9 +201,23 @@ material /global/plants/tree/english_oak/branches/summer : /base/simple/nonculle
 }
 
 
-material /global/plants/tree/english_oak/branches/summer_ : /base/simple/nonculled/alpharejected
+material /global/plants/trees/english_oak/branches/summer_ : /base/simple/nonculled/alpharejected
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/tree/textures/oak/foliage/english_oak_summer.png
+	set_texture_alias DiffuseMap 3d_objects/plants/trees/textures/oak/foliage/english_oak_summer.png
+	technique NormalMapped
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 200
+		}
+	}
+	technique NormalMappedOld
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 200
+		}
+	}
 	technique General
 	{
 		pass Main
@@ -205,17 +227,15 @@ material /global/plants/tree/english_oak/branches/summer_ : /base/simple/noncull
 	}
 }
 
-material /global/plants/tree/english_oak/branches/fall :  /base/simple/nonculled/alpharejected
+material /global/plants/trees/foliage/oak :  /base/normalmap/specular/nonculled/alpharejected
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/tree/textures/oak/foliage/english_oak_fall.png
-	set_texture_alias NormalHeightMap 3d_objects/plants/tree/textures/oak/foliage/english_oak_n.tga
+	set_texture_alias DiffuseMap 3d_objects/plants/trees/textures/foliage/oak_foliageD.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/trees/textures/foliage/oak_foliageN.png
 	technique NormalMapped
 	{
 		pass Main
 		{
 			alpha_rejection greater_equal 200
-			cull_hardware none
-			cull_software none
 		}
 	}
 	technique NormalMappedOld
@@ -223,8 +243,6 @@ material /global/plants/tree/english_oak/branches/fall :  /base/simple/nonculled
 		pass Main
 		{
 			alpha_rejection greater_equal 200
-			cull_hardware none
-			cull_software none
 		}
 	}
 	technique General
@@ -232,23 +250,19 @@ material /global/plants/tree/english_oak/branches/fall :  /base/simple/nonculled
 		pass Main
 		{
 			alpha_rejection greater_equal 200
-			cull_hardware none
-			cull_software none
 		}
 	}
 }
 
-material /global/plants/tree/english_oak/branches/spring : /base/simple/nonculled/alpharejected
+material /global/plants/trees/foliage/oak_fall :  /base/normalmap/specular/nonculled/alpharejected
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/tree/textures/oak/foliage/oak_spring.png
-	set_texture_alias NormalHeightMap 3d_objects/plants/tree/textures/oak/foliage/english_oak_n.tga
+	set_texture_alias DiffuseMap 3d_objects/plants/trees/textures/foliage/oak_fall_foliageD.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/trees/textures/foliage/oak_foliageN.png
 	technique NormalMapped
 	{
 		pass Main
 		{
 			alpha_rejection greater_equal 200
-			cull_hardware none
-			cull_software none
 		}
 	}
 	technique NormalMappedOld
@@ -256,8 +270,6 @@ material /global/plants/tree/english_oak/branches/spring : /base/simple/nonculle
 		pass Main
 		{
 			alpha_rejection greater_equal 200
-			cull_hardware none
-			cull_software none
 		}
 	}
 	technique General
@@ -265,33 +277,70 @@ material /global/plants/tree/english_oak/branches/spring : /base/simple/nonculle
 		pass Main
 		{
 			alpha_rejection greater_equal 200
-			cull_hardware none
-			cull_software none
 		}
 	}
-} 
+}
 
-
-
-material /global/plants/tree/gnarly : /base/simple/nonculled/alpharejected
+material /global/plants/trees/foliage/oak_spring :  /base/normalmap/specular/nonculled/alpharejected
 {
-//	set_texture_alias DiffuseMap 3d_objects/plants/tree/textures/gnarly/high/tree.png
-  receive_shadows off
-  technique
-  {
-    pass
-    {
-        // scene_blend alpha_blend 
-		alpha_rejection greater_equal 32
-         cull_hardware none 
-         cull_software none
-         texture_unit
+	set_texture_alias DiffuseMap 3d_objects/plants/trees/textures/foliage/oak_spring_foliageD.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/trees/textures/foliage/oak_spring_foliageN.png
+	technique NormalMapped
 	{
-//		texture 3d_objects/plants/tree/textures/gnarly/low/tree.png
-		texture 3d_objects/plants/tree/textures/gnarly/high/tree.png
+		pass Main
+		{
+			alpha_rejection greater_equal 200
+		}
 	}
-    }
-  }
+	technique NormalMappedOld
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 200
+		}
+	}
+	technique General
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 200
+		}
+	}
+}
+
+material /global/plants/trees/foliage/oak_summer :  /base/normalmap/specular/nonculled/alpharejected
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/trees/textures/foliage/oak_summer_foliageD.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/trees/textures/foliage/oak_summer_foliageN.png
+	technique NormalMapped
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 200
+		}
+	}
+	technique NormalMappedOld
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 200
+		}
+	}
+	technique General
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 200
+		}
+	}
+}
+
+
+material /global/plants/trees/gnarly :  /base/normalmap/specular/nonculled/alpharejected
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/trees/textures/gnarly/treeD.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/trees/textures/gnarly/treeN.png
+	set_texture_alias SpecularMap 3d_objects/plants/trees/textures/gnarly/treeS.png
 }
 
 material /global/environment/ground/leaf_covered
@@ -373,13 +422,33 @@ material /global/plants/field/teardrops : /base/wavinggrass
 	set_texture_alias DiffuseMap 3d_objects/plants/field/textures/teardrops/field.png
 }
 
-material /global/plants/fern :  /base/normalmap/specular/nonculled/alpharejected
+material /global/plants/shrubs/fern :  /base/normalmap/specular/nonculled/alpharejected
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/fern/textures/fernD.png
-	set_texture_alias NormalHeightMap 3d_objects/plants/fern/textures/fernN.png
-	set_texture_alias SpecularMap 3d_objects/plants/fern/textures/fernS.png
+	set_texture_alias DiffuseMap 3d_objects/plants/shrubs/textures/fern/fernD.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/shrubs/textures/fern/fernN.png
+	set_texture_alias SpecularMap 3d_objects/plants/shrubs/textures/fern/fernS.png
 }
 
+material /global/plants/fruit/beet :  /base/normalmap/specular/nonculled/alpharejected
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/fruit/textures/beet/beetD.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/fruit/textures/beet/beetN.png
+	set_texture_alias SpecularMap 3d_objects/plants/fruit/textures/beet/beetS.png
+}
+
+material /global/plants/shrubs/leaf :  /base/normalmap/specular/nonculled/alpharejected
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/shrubs/textures/leaf/leafD.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/shrubs/textures/leaf/leafN.png
+	set_texture_alias SpecularMap 3d_objects/plants/shrubs/textures/leaf/leafS.png
+}
+
+
+material /global/plants/flowers/camellia :  /base/normalmap/specular/nonculled/alpharejected
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/flowers/textures/camelliaD.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/flowers/textures/camelliaN.png
+}
 
 
 

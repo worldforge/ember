@@ -11,9 +11,10 @@ material /global/items/furniture/avalon : /base/simple
   
 }
 
-material /global/items/canvas/red_white_stripes/main : /base/simple/nonculled
+
+material /global/items/building_element/marketstall/canvas_main : /base/simple/nonculled
 {
-  set_texture_alias DiffuseMap 3d_objects/items/canvas/textures/red_white_stripes/low/canvas_main.png
+  set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/marketstall/canvas_main.png
   technique General
   {
     pass Main
@@ -23,9 +24,9 @@ material /global/items/canvas/red_white_stripes/main : /base/simple/nonculled
   }
 }
 
-material /global/items/canvas/red_white_stripes/details : /base/simple/nonculled
+material /global/items/building_element/marketstall/canvas_details : /base/simple/nonculled
 {
-  set_texture_alias DiffuseMap 3d_objects/items/canvas/textures/red_white_stripes/low/canvas_details.png
+  set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/marketstall/canvas_details.png
   technique General
   {
     pass Main
@@ -35,9 +36,10 @@ material /global/items/canvas/red_white_stripes/details : /base/simple/nonculled
   }
 }
 
-material /global/items/canvas/blue_green_stripes/main : /base/simple/nonculled
+
+material /global/items/building_element/marketstall/blue_green_canvas_main : /base/simple/nonculled
 {
-  set_texture_alias DiffuseMap 3d_objects/items/canvas/textures/blue_green_stripes/low/canvas_main.png
+  set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/marketstall/blue_green_canvas_main.png
   technique General
   {
     pass Main
@@ -47,9 +49,9 @@ material /global/items/canvas/blue_green_stripes/main : /base/simple/nonculled
   }
 }
 
-material /global/items/canvas/blue_green_stripes/details : /base/simple/nonculled
+material /global/items/building_element/marketstall/blue_green_canvas_details : /base/simple/nonculled
 {
-  set_texture_alias DiffuseMap 3d_objects/items/canvas/textures/blue_green_stripes/low/canvas_details.png
+  set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/marketstall/blue_green_canvas_details.png
   technique General
   {
     pass Main
@@ -59,9 +61,9 @@ material /global/items/canvas/blue_green_stripes/details : /base/simple/nonculle
   }
 }
 
-material /global/items/canvas/red/main : /base/simple/nonculled
+material /global/items/building_element/marketstall/red_canvas_main : /base/simple/nonculled
 {
-  set_texture_alias DiffuseMap 3d_objects/items/canvas/textures/red_canvas/low/red_canvas_main_512.png
+  set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/marketstall/red_canvas_main_512.png
   technique General
   {
     pass Main
@@ -71,9 +73,9 @@ material /global/items/canvas/red/main : /base/simple/nonculled
   }
 }
 
-material /global/items/canvas/red/details : /base/simple/nonculled
+material /global/items/building_element/marketstall/red_canvas_details : /base/simple/nonculled
 {
-  set_texture_alias DiffuseMap 3d_objects/items/canvas/textures/red_canvas/low/red_canvas_details_512.png
+  set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/marketstall/red_canvas_details_512.png
   technique General
   {
     pass Main

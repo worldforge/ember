@@ -1,9 +1,9 @@
-material /global/items/coin/moraf_coin/front : /base/simple/nonculled/alpharejected
+material /global/items/valuables/moraf_coin/coin_front : /base/simple/nonculled/alpharejected
 {
-	set_texture_alias DiffuseMap 3d_objects/items/coin/textures/moraf_coin/coin_front.png
+	set_texture_alias DiffuseMap 3d_objects/items/valuables/textures/moraf_coin/coin_front.png
 }
 
-material /global/items/coin/moraf_coin/back : /base/simple/nonculled/alpharejected
+material /global/items/valuables/moraf_coin/coin_back : /base/simple/nonculled/alpharejected
 {
-	set_texture_alias DiffuseMap 3d_objects/items/coin/textures/moraf_coin/coin_back.png
+	set_texture_alias DiffuseMap 3d_objects/items/valuables/textures/moraf_coin/coin_back.png
 }

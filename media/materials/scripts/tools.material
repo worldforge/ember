@@ -38,18 +38,18 @@ material /global/items/saddle/brownleather : /base/simple
   set_texture_alias DiffuseMap 3d_objects/items/saddle/textures/brownleather/brownleathersaddle_256.png
 }
 
-material /global/items/box/craftsman_wood/box_craftsman_wood : /base/simple
+material /global/items/containers/craftsman_wood/box_craftsman : /base/simple
 {
-  set_texture_alias DiffuseMap 3d_objects/items/box/textures/craftsman_wood/box_craftsman_wood.png
+  set_texture_alias DiffuseMap 3d_objects/items/containers/textures/craftsman_wood/box_craftsmanD.png
 }
 
-material /global/items/box/craftsman_wood/crate_aged : /base/normalmap/specular/nonculled/alpharejected
-{
-	set_texture_alias DiffuseMap 3d_objects/items/box/textures/craftsman_wood/crate_agedD.png
-	set_texture_alias NormalHeightMap 3d_objects/items/box/textures/craftsman_wood/crate_agedN.png
-	set_texture_alias SpecularMap 3d_objects/items/box/textures/craftsman_wood/crate_agedS.png
-}
 
+material /global/items/containers/craftsman_wood/crate_aged : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/items/containers/textures/craftsman_wood/crate_agedD.png
+	set_texture_alias NormalHeightMap 3d_objects/items/containers/textures/craftsman_wood/crate_agedN.png
+	set_texture_alias SpecularMap 3d_objects/items/containers/textures/craftsman_wood/crate_agedS.png
+}
 
 material /global/items/sheet/parchment/front : /base/simple/nonculled
 {
@@ -73,9 +73,10 @@ material /global/items/tools/trowel : /base/normalmap/specular
 	set_texture_alias NormalHeightMap 3d_objects/items/tool/textures/trowel/trowelN.png
 	set_texture_alias SpecularMap 3d_objects/items/tool/textures/trowel/trowelS.png
 }
+
 material /global/items/containers/tinderbox : /base/normalmap/specular
 {
-	set_texture_alias DiffuseMap 3d_objects/items/containers/textures/tinderboxD.png
-	set_texture_alias NormalHeightMap 3d_objects/items/containers/textures/tinderboxN.png
-	set_texture_alias SpecularMap 3d_objects/items/containers/textures/tinderboxS.png
+	set_texture_alias DiffuseMap 3d_objects/items/containers/textures/tinderbox/tinderboxD.png
+	set_texture_alias NormalHeightMap 3d_objects/items/containers/textures/tinderbox/tinderboxN.png
+	set_texture_alias SpecularMap 3d_objects/items/containers/textures/tinderbox/tinderboxS.png
 }
