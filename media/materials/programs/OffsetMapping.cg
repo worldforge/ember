@@ -96,7 +96,7 @@ void main_fp(float2 uv : TEXCOORD0,
 	float3 diffuse = tex2D(diffuseMap, newTexCoord).xyz;
 	
 	float3 specular = pow(saturate(dot(normal, halfAngle)), 32) * lightSpecular * tex2D(specularMap, newTexCoord).x;
-	float3 col = diffuse * saturate(dot(normal, lightDir)) * lightDiffuse + diffuse * lightAmbient;
+	float3 col = (diffuse * saturate(dot(normal, lightDir)) * lightDiffuse + diffuse * lightAmbient) + specular;
 	
 	//check if we should apply any fog
 	if (fog < fogparams.z) {
