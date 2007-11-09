@@ -55,61 +55,61 @@ material /base/simple/nonculled/alpharejected : /base/simple/nonculled
   }
 } 
 
-material /base/normalmap_
-{
-	technique NormalMapped
-	{
-		pass Main
-		{
-			// Vertex program reference
-			vertex_program_ref WonderShader_Lim3_Fast_Vert
-			{
-				param_named scale float 1
-			}
-
-			// Fragment program
-			fragment_program_ref WonderShader_Lim3_Fast_Frag
-			{
-				param_named exponent0 float 127
-		//           param_named exponent1 float 127
-		//           param_named exponent2 float 127
-				//If changed, needs adjusting in Fragshader's every lit!!!!!
-
-				param_named scaleBias float4 0.04 -0.02 1 0 
-
- 				param_named ambient float4 0.1 0.1 0.1 1.0
-			}
-			
-			// Base bump map
-			texture_unit NormalHeightMap
-			{ 
-				texture_alias NormalHeightMap
-//					texture CC-slateb_NH.dds
-					//filtering trilinear
-			} 
-	
-			// Base diffuse texture map 
-			texture_unit DiffuseMap
-			{ 
-		        texture_alias DiffuseMap
-					
-//filtering trilinear
-			} 
-					
-		}
-	}
-  
-  technique General
-  {
-    pass Main
-    {
-	  texture_unit DiffuseMap
-      {
-        texture_alias DiffuseMap
-      }
-    }
-  }
-}
+// material /base/normalmap_
+// {
+// 	technique NormalMapped
+// 	{
+// 		pass Main
+// 		{
+// 			// Vertex program reference
+// 			vertex_program_ref WonderShader_Lim3_Fast_Vert
+// 			{
+// 				param_named scale float 1
+// 			}
+// 
+// 			// Fragment program
+// 			fragment_program_ref WonderShader_Lim3_Fast_Frag
+// 			{
+// 				param_named exponent0 float 127
+// 		//           param_named exponent1 float 127
+// 		//           param_named exponent2 float 127
+// 				//If changed, needs adjusting in Fragshader's every lit!!!!!
+// 
+// 				param_named scaleBias float4 0.04 -0.02 1 0 
+// 
+//  				param_named ambient float4 0.1 0.1 0.1 1.0
+// 			}
+// 			
+// 			// Base bump map
+// 			texture_unit NormalHeightMap
+// 			{ 
+// 				texture_alias NormalHeightMap
+// //					texture CC-slateb_NH.dds
+// 					//filtering trilinear
+// 			} 
+// 	
+// 			// Base diffuse texture map 
+// 			texture_unit DiffuseMap
+// 			{ 
+// 		        texture_alias DiffuseMap
+// 					
+// //filtering trilinear
+// 			} 
+// 					
+// 		}
+// 	}
+//   
+//   technique General
+//   {
+//     pass Main
+//     {
+// 	  texture_unit DiffuseMap
+//       {
+//         texture_alias DiffuseMap
+//       }
+//     }
+//   }
+// }
 
 
 
@@ -134,9 +134,9 @@ material /base/normalmap
 			// Fragment program 
 			fragment_program_ref Examples/OffsetMappingFP
 			{ 
-				param_named_auto lightDiffuse light_diffuse_colour 0 
-				param_named lightSpecular 0 
-				param_named_auto lightAmbient ambient_light_colour 0 
+				param_named_auto lightDiffuse light_diffuse_colour 0
+				param_named lightSpecular float3 0 0 0
+				param_named_auto lightAmbient ambient_light_colour 0
  				param_named_auto fogparams fog_params 0
  				param_named_auto fogcolor fog_colour 0
 				// Parallax Height scale and bias 
@@ -317,6 +317,27 @@ material /base/normalmap/specular
 
 }
 
+material /base/normalmap/nonculled : /base/normalmap
+{
+  technique NormalMapped
+  {
+    pass Main
+    {
+     cull_hardware none 
+     cull_software none
+    }
+  }
+  
+  technique General
+  {
+    pass Main
+    {
+     cull_hardware none 
+     cull_software none
+    }
+  }
+}
+
 material /base/normalmap/specular/nonculled : /base/normalmap/specular
 {
   technique NormalMapped
@@ -338,6 +359,24 @@ material /base/normalmap/specular/nonculled : /base/normalmap/specular
   }
 }
 
+material /base/normalmap/nonculled/alpharejected : /base/normalmap/nonculled
+{
+  technique NormalMapped
+  {
+    pass Main
+    {
+     alpha_rejection greater_equal 64
+    }
+  }
+  technique General
+  {
+    pass Main
+    {
+     alpha_rejection greater_equal 64
+    }
+  }
+}
+
 material /base/normalmap/specular/nonculled/alpharejected : /base/normalmap/specular/nonculled
 {
   technique NormalMapped
@@ -355,6 +394,26 @@ material /base/normalmap/specular/nonculled/alpharejected : /base/normalmap/spec
     }
   }
 }
+
+material /base/normalmap/specular/nonculled/alphablended : /base/normalmap/specular/nonculled
+{
+  technique NormalMapped
+  {
+    pass Main
+    {
+     scene_blend alpha_blend 
+    }
+  }
+  technique General
+  {
+    pass Main
+    {
+     scene_blend alpha_blend 
+    }
+  }
+}
+
+
 
 //Base material for waving grass
 material /base/wavinggrass
