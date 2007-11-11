@@ -174,6 +174,11 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 		mSceneMgr->setSkyPlane (true, Ogre::Plane (Ogre::Vector3::NEGATIVE_UNIT_Y, -1000), cloudMaterialName, 1000, 1, false, .1, 10, 10, caelum::RESOURCE_GROUP_NAME);
 		mCaelumSystem->addListener (new CloudsUpdater (time, mat));
 	}
+	
+	Ogre::FrameEvent ev;
+	ev.timeSinceLastEvent = 0;
+	ev.timeSinceLastFrame = 0;
+	mCaelumSystem->frameStarted(ev);
 
 /*	sceneMgr->setSkyPlane (true, Ogre::Plane (Ogre::Vector3::NEGATIVE_UNIT_Y, -100), "Altocumulus", 1000, 10, false);
 	mCaelumSystem->addListener (new CloudsUpdater ());*/

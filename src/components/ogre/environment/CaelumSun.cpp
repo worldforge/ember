@@ -22,6 +22,7 @@
 //
 #include "CaelumSun.h"
 #include "components/ogre/EmberOgre.h"
+#include "caelum/include/Sun.h"
 
 namespace EmberOgre {
 
@@ -41,6 +42,10 @@ void CaelumSun::setAmbientLight(const Ogre::ColourValue& colour) {
 	EmberOgre::getSingleton().getSceneManager()->setAmbientLight(colour);
 }
 
+Ogre::Vector3 CaelumSun::getSunDirection() const
+{
+	return mSun->getSunDirection();
+}
 
 }
 
