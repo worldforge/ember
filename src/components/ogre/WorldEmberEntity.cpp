@@ -59,10 +59,17 @@ WorldEmberEntity::~WorldEmberEntity()
 
 void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
+	
 	///create the foliage
  	mFoliage = new Environment::Foliage(EmberOgre::getSingleton().getSceneManager());
  	
 	EmberEntity::init(ge, fromCreateOp);
+	
+	///set the position to always 0, 0, 0
+	mOgreNode->setPosition(Ogre::Vector3(0, 0, 0));
+	
+	mEnvironment = new Environment::Environment(new Environment::CaelumEnvironment( EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), EmberOgre::getSingleton().getMainCamera()->getCamera()));
+	mEnvironment->initialize();
 	
 	
 	mTerrainParser = std::auto_ptr<TerrainParser>(new TerrainParser(mTerrainGenerator));
@@ -90,17 +97,13 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 		hasValidShaders = true;
 	}
 	
-	mEnvironment = new Environment::Environment(new Environment::CaelumEnvironment( EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), EmberOgre::getSingleton().getMainCamera()->getCamera()));
 	
 	
 	///prepare all the segments in advance
 	mTerrainGenerator->prepareAllSegments();
 	//mTerrainGenerator->prepareSegments(0,0,1,true);
 	
-	///set the position to always 0, 0, 0
-	mOgreNode->setPosition(Ogre::Vector3(0, 0, 0));
 	
-	mEnvironment->initialize();
 	
 }
 
