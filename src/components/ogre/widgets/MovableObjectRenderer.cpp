@@ -238,5 +238,17 @@ void MovableObjectRenderer::updateRender()
 {
 	mTexture->getRenderContext()->getRenderTexture()->update();
 }
+
+void MovableObjectRenderer::setBackgroundColour(const Ogre::ColourValue& colour)
+{
+	mTexture->getRenderContext()->setBackgroundColour(colour);
+}
+    
+void MovableObjectRenderer::setBackgroundColour(float red, float green, float blue, float alpha)
+{
+	mTexture->getRenderContext()->setBackgroundColour(red, green, blue, alpha);
+}
+
+
 }
 }

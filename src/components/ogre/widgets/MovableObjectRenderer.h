@@ -157,6 +157,21 @@ public:
      * Updates the texture by rendering one frame manually.
      */
     void updateRender();
+    
+    /**
+     * Sets the background colour.
+     * @param colour 
+     */
+    void setBackgroundColour(const Ogre::ColourValue& colour);
+    /**
+     * Sets the background colour.
+     * @param red 
+     * @param green 
+     * @param blue 
+     * @param  
+     */
+    void setBackgroundColour(float red, float green, float blue, float alpha);
+    
 	
 protected:
 
