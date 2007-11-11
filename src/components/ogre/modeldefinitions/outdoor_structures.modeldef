@@ -64,12 +64,12 @@
 		<!-- we want contained items to lay on the table of the stall -->
 		<contentoffset y="0.8" />
 		<submodels>
-			<submodel mesh="3d_objects/items/canvas/models/marketstall/marketstall_canvas_1.mesh" >
+			<submodel mesh="3d_objects/items/building_element/models/marketstall/marketstall_canvas_1.mesh" >
 				<parts>
 					<part name="canvas" show="true" />
 				</parts>
 			</submodel>
-			<submodel mesh="3d_objects/items/building_primitives/models/marketstall/marketstall_frame_1.mesh" >
+			<submodel mesh="3d_objects/items/building_element/models/marketstall/marketstall_frame_1.mesh" >
 				<parts>
 					<part name="frame" show="true" />
 				</parts>

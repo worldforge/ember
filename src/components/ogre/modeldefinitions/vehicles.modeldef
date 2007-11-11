@@ -3,7 +3,7 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/items/vehicle/cart/models/cart.mesh">
+            <submodel mesh="3d_objects/items/vehicle/models/cart.mesh">
                 <parts>
                     <part name="1" show="true" group="main">
                         <subentities>
@@ -12,7 +12,7 @@
                     </part>
                 </parts>
             </submodel>
-            <submodel mesh="3d_objects/items/vehicle/cart/models/cart2.mesh">
+            <submodel mesh="3d_objects/items/vehicle/models/cart2.mesh">
                 <parts>
                     <part name="2" show="false" group="main">
                         <subentities>
@@ -21,7 +21,7 @@
                     </part>
                 </parts>
             </submodel>
-            <submodel mesh="3d_objects/items/vehicle/cart/models/cart3.mesh">
+            <submodel mesh="3d_objects/items/vehicle/models/cart3.mesh">
                 <parts>
                     <part name="3" show="false" group="main">
                         <subentities>
@@ -30,7 +30,7 @@
                     </part>
                 </parts>
             </submodel>
-            <submodel mesh="3d_objects/items/vehicle/cart/models/cart4.mesh">
+            <submodel mesh="3d_objects/items/vehicle/models/cart4.mesh">
                 <parts>
                     <part name="4" show="false" group="main">
                         <subentities>

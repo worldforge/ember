@@ -2,7 +2,7 @@
 <models>
 	<model name="acorn" scale="10">
 		<submodels>
-			<submodel mesh="3d_objects/plants/fruitable/models/acorn/acorn.mesh" >
+			<submodel mesh="3d_objects/plants/fructus/models/acorn/acorn.mesh" >
 			<parts>
 				<part name="main" show="true" />
 			</parts>
@@ -40,9 +40,9 @@
 		</submodels>
 	</model>	
 	
-	<model name="turnip" scale="1" renderingdistance="30" >
+	<model name="turnip" scale="1" renderingdistance="30" icon="3d_objects/plants/fructus/textures/beet/beetI.png" >
 		<submodels>
-			<submodel mesh="3d_objects/plants/fruitable/models/leafy_round_rooth_growth/leafy_round_rooth_growth.mesh">
+			<submodel mesh="3d_objects/plants/fructus/models/beet/beet.mesh">
 				<parts>
 					<part name="main" show="true" />
 				</parts>
@@ -52,7 +52,7 @@
 	
 	<model name="carrot" scale="1" renderingdistance="30">
 		<submodels>
-			<submodel mesh="3d_objects/plants/fruitable/models/leafy_long_rooth_growth/leafy_long_rooth_growth.mesh">
+			<submodel mesh="3d_objects/plants/fructus/models/carrot/carrot.mesh">
 				<parts>
 					<part name="main" show="true" />
 				</parts>
@@ -106,7 +106,7 @@
 	
 	<model name="apple" scale="10">
 		<submodels>
-			<submodel mesh="3d_objects/plants/fruitable/models/acorn/acorn.mesh" >
+			<submodel mesh="3d_objects/plants/fructus/models/acorn/acorn.mesh" >
 				<parts>
 						<part name="main" show="true" >
 							<subentities>
@@ -133,7 +133,7 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/plants/tussock/models/small_plant/simplegrass.mesh">
+            <submodel mesh="3d_objects/environment/field/models/small_plant/simplegrass.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
@@ -208,15 +208,15 @@
         <actions />
     </model>
 	
-    <model name="fern" usescaleof="all" showcontained="false">
+    <model name="fern" usescaleof="width" showcontained="false">
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/plants/fern/models/fern.mesh">
+            <submodel mesh="3d_objects/plants/shrubs/models/fern/fern.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/fern" />
+                            <subentity index="0" material="/global/plants/shrub/fern" />
                         </subentities>
                     </part>
                 </parts>

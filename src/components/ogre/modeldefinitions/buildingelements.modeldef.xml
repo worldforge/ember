@@ -33,7 +33,7 @@
 	
 	<model name="fencegate">
 		<submodels>
-			<submodel mesh="3d_objects/items/building_primitives/models/wooden_fence/fence_gate.mesh">
+			<submodel mesh="3d_objects/items/building_element/models/wooden_fence2/fence_gate.mesh">
 			<parts>
 				<part name="main" show="true" />
 			</parts>
@@ -43,7 +43,7 @@
 	
 	<model name="fencepole">
 		<submodels>
-			<submodel mesh="3d_objects/items/building_primitives/models/wooden_fence/fence_pole.mesh">
+			<submodel mesh="3d_objects/items/building_element/models/wooden_fence2/fence_pole.mesh">
 			<parts>
 				<part name="main" show="true" />
 			</parts>
@@ -53,7 +53,7 @@
 	
 	<model name="fencesection">
 		<submodels>
-			<submodel mesh="3d_objects/items/building_primitives/models/wooden_fence/fence_section.mesh">
+			<submodel mesh="3d_objects/items/building_element/models/wooden_fence2/fence_section.mesh">
 			<parts>
 				<part name="main" show="true" />
 			</parts>
@@ -114,7 +114,7 @@
 	<model name="butcher_house" rotation="-90">
 		<rotation x="0" y="1" z="0" degrees="-90" />
 		<submodels>
-			<submodel mesh="3d_objects/items/building_primitives/models/butchers_house/butchers_house.mesh" >
+			<submodel mesh="3d_objects/items/building_element/models/butchers_house/butchers_house.mesh" >
 			<parts>
 				<part name="main" show="true" />
 			</parts>

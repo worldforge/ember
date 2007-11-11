@@ -130,7 +130,7 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/items/box/models/crate/craftsman_wood_crate_closed.mesh">
+            <submodel mesh="3d_objects/items/containers/models/crate/craftsman_wood_crate_closed.mesh">
                 <parts>
                     <part name="open" show="true" group="main">
                         <subentities>
@@ -139,7 +139,7 @@
                     </part>
                 </parts>
             </submodel>
-            <submodel mesh="3d_objects/items/box/models/crate/craftsman_wood_crate_open.mesh">
+            <submodel mesh="3d_objects/items/containers/models/crate/craftsman_wood_crate_open.mesh">
                 <parts>
                     <part name="closed" show="false" group="main">
                         <subentities>
@@ -155,7 +155,7 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/items/box/models/crate/craftsman_wood_crate_lid.mesh">
+            <submodel mesh="3d_objects/items/containers/models/crate/craftsman_wood_crate_lid.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
@@ -171,7 +171,7 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/items/box/models/open_crate/open_crate.mesh">
+            <submodel mesh="3d_objects/items/containers/models/open_crate/open_crate.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>

@@ -320,7 +320,7 @@
 		<entitymatch>
 			<case>
 				<caseparam type="equals">tinderbox</caseparam>
-				<action type="display-model">tinderboxB</action>
+				<action type="display-model">tinderboxA</action>
 			</case>
 		</entitymatch>
 	</modelmapping> 
@@ -388,19 +388,19 @@
 		<entitymatch>
 			<case>
 				<caseparam type="equals">fir</caseparam>
-				<action type="display-model">evergreen_A1</action>
+				<action type="display-model">pineA</action>
 				<attributematch attribute="style" >
 					<case>
 						<caseparam type="equals">gnarly</caseparam>
-						<action type="display-model">evergreen_A1</action>
+						<action type="display-model">pineB</action>
 					</case>
 					<case>
 						<caseparam type="equals">knotted</caseparam>
-						<action type="display-model">evergreen_B1</action>
+						<action type="display-model">pineC</action>
 					</case>
 					<case>
 						<caseparam type="equals">weathered</caseparam>
-						<action type="display-model">evergreen_B3</action>
+						<action type="display-model">pineD</action>
 					</case>
 				</attributematch>
 			</case>
@@ -630,9 +630,18 @@
 				<caseparam type="equals">bread</caseparam>
 				<caseparam type="equals">loaf</caseparam>
 				<action type="display-model">bread</action>
+				<!-- If someone has eaten off the bread show the cut version -->
+				<attributematch attribute="status" >
+					<case lesser="0.8">
+						<action type="display-model">bread_cut</action>
+					</case>
+				</attributematch>
 			</case>
 		</entitymatch>
 	</modelmapping>	
 
 	
+	<automodelmapping name="fencepole" />
+	<automodelmapping name="fencesection" />
+	<automodelmapping name="fencegate" />
 </modelmappings>

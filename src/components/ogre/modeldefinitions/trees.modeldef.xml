@@ -2,7 +2,7 @@
 <models>
 	<model name="birch" usescaleof="height" scale="2" renderingdistance="200" >
 		<submodels>
-			<submodel mesh="3d_objects/plants/tree/models/Straight_up_tree/Straight_up_tree.mesh" >
+			<submodel mesh="3d_objects/plants/trees/models/Straight_up_trees/Straight_up_tree.mesh" >
 				<parts>
 					<part name="main" show="true" />
 				</parts>
@@ -10,157 +10,376 @@
 		</submodels>
 	</model>
 	
-	<model name="evergreen_A1" usescaleof="height" scale="2.000000" showcontained="true">
-		<translate x="0.000000" y="0.000000" z="0.000000" />
-		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
-		<submodels>
-			<submodel mesh="3d_objects/plants/tree/models/evergreen/evergreen_A1.mesh">
-				<parts>
-					<part name="fir" group="main" show="false">
-						<subentities>
-							<subentity index="0" material="/global/plants/tree/evergreen/evergreen_fir" />
-							<subentity index="1" material="/global/plants/tree/evergreen/evergreen_fir" />
-						</subentities>
-					</part>
-					<part name="pine" group="main" show="true">
-						<subentities>
-							<subentity index="0" material="/global/plants/tree/evergreen/evergreen_pine" />
-							<subentity index="1" material="/global/plants/tree/evergreen/evergreen_pine" />
-						</subentities>
-					</part>
-					<part name="snow" group="main" show="false">
-						<subentities>
-							<subentity index="0" material="/global/plants/tree/evergreen/evergreen_snow" />
-							<subentity index="1" material="/global/plants/tree/evergreen/evergreen_snow" />
-						</subentities>
-					</part>
-				</parts>
-			</submodel>
-		</submodels>
-		<actions />
+    <model name="pine" usescaleof="height" showcontained="true" scale="2.000000"  icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/plants/trees/models/pine/pine.mesh">
+                <parts>
+                    <part name="pine" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                        </subentities>
+                    </part>
+                    <part name="pine_snow" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                        </subentities>
+                    </part>
+                    <part name="fir" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
     </model>
-	<model name="evergreen_B1" usescaleof="height" scale="2.000000" showcontained="true">
-		<translate x="0.000000" y="0.000000" z="0.000000" />
-		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
-		<submodels>
-			<submodel mesh="3d_objects/plants/tree/models/evergreen/evergreen_B1.mesh">
-				<parts>
-					<part name="fir" show="true" group="main">
-						<subentities>
-							<subentity index="0" material="/global/plants/tree/evergreen/evergreen_fir" />
-							<subentity index="1" material="/global/plants/tree/evergreen/evergreen_fir" />
-						</subentities>
-					</part>
-					<part name="pine" show="false" group="main">
-						<subentities>
-							<subentity index="0" material="/global/plants/tree/evergreen/evergreen_pine" />
-							<subentity index="1" material="/global/plants/tree/evergreen/evergreen_pine" />
-						</subentities>
-					</part>
-					<part name="snow" show="false" group="main">
-						<subentities>
-							<subentity index="0" material="/global/plants/tree/evergreen/evergreen_snow" />
-							<subentity index="1" material="/global/plants/tree/evergreen/evergreen_snow" />
-						</subentities>
-					</part>
-				</parts>
-			</submodel>
-		</submodels>
-		<actions />
-	</model>
-	<model name="evergreen_B2" usescaleof="height" scale="2.000000" showcontained="true">
-		<translate x="0.000000" y="0.000000" z="0.000000" />
-		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
-		<submodels>
-			<submodel mesh="3d_objects/plants/tree/models/evergreen/evergreen_B02.mesh">
-				<parts>
-					<part name="fir" show="true" group="main">
-						<subentities>
-							<subentity index="0" material="/global/plants/tree/evergreen/evergreen_fir" />
-							<subentity index="1" material="/global/plants/tree/evergreen/evergreen_fir" />
-						</subentities>
-					</part>
-					<part name="pine" show="false" group="main">
-						<subentities>
-							<subentity index="0" material="/global/plants/tree/evergreen/evergreen_pine" />
-							<subentity index="1" material="/global/plants/tree/evergreen/evergreen_pine" />
-						</subentities>
-					</part>
-					<part name="snow" show="false" group="main">
-						<subentities>
-							<subentity index="0" material="/global/plants/tree/evergreen/evergreen_snow" />
-							<subentity index="1" material="/global/plants/tree/evergreen/evergreen_snow" />
-						</subentities>
-					</part>
-				</parts>
-			</submodel>
-		</submodels>
-		<actions />
-	</model>
-	<model name="evergreen_B3" usescaleof="height" scale="2.000000" showcontained="true">
-		<translate x="0.000000" y="0.000000" z="0.000000" />
-		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
-		<submodels>
-			<submodel mesh="3d_objects/plants/tree/models/evergreen/evergreen_B03.mesh">
-				<parts>
-					<part name="fir" show="true" group="main">
-						<subentities>
-							<subentity index="0" material="/global/plants/tree/evergreen/evergreen_fir" />
-							<subentity index="1" material="/global/plants/tree/evergreen/evergreen_fir" />
-						</subentities>
-					</part>
-					<part name="pine" show="false" group="main">
-						<subentities>
-							<subentity index="0" material="/global/plants/tree/evergreen/evergreen_pine" />
-							<subentity index="1" material="/global/plants/tree/evergreen/evergreen_pine" />
-						</subentities>
-					</part>
-					<part name="snow" show="false" group="main">
-						<subentities>
-							<subentity index="0" material="/global/plants/tree/evergreen/evergreen_snow" />
-							<subentity index="1" material="/global/plants/tree/evergreen/evergreen_snow" />
-						</subentities>
-					</part>
-				</parts>
-			</submodel>
-		</submodels>
-		<actions />
-	</model>
-	<model name="evergreen_B4" usescaleof="height" scale="2.000000" showcontained="true">
-		<translate x="0.000000" y="0.000000" z="0.000000" />
-		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
-		<submodels>
-			<submodel mesh="3d_objects/plants/tree/models/evergreen/evergreen_B04.mesh">
-				<parts>
-					<part name="fir" show="true" group="main">
-						<subentities>
-							<subentity index="0" material="/global/plants/tree/evergreen/evergreen_fir" />
-							<subentity index="1" material="/global/plants/tree/evergreen/evergreen_fir" />
-						</subentities>
-					</part>
-					<part name="pine" show="false" group="main">
-						<subentities>
-							<subentity index="0" material="/global/plants/tree/evergreen/evergreen_pine" />
-							<subentity index="1" material="/global/plants/tree/evergreen/evergreen_pine" />
-						</subentities>
-					</part>
-					<part name="snow" show="false" group="main">
-						<subentities>
-							<subentity index="0" material="/global/plants/tree/evergreen/evergreen_snow" />
-							<subentity index="1" material="/global/plants/tree/evergreen/evergreen_snow" />
-						</subentities>
-					</part>
-				</parts>
-			</submodel>
-		</submodels>
-		<actions />
-	</model>
+    <model name="pineA" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/plants/trees/models/pine/pineA.mesh">
+                <parts>
+                    <part name="pine" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                        </subentities>
+                    </part>
+                    <part name="pine_snow" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                        </subentities>
+                    </part>
+                    <part name="fir" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+    <model name="pineB" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/plants/trees/models/pine/pineB.mesh">
+                <parts>
+                    <part name="pine" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                        </subentities>
+                    </part>
+                    <part name="pine_snow" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                        </subentities>
+                    </part>
+                    <part name="fir" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+    <model name="pineC" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/plants/trees/models/pine/pineC.mesh">
+                <parts>
+                    <part name="pine" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                        </subentities>
+                    </part>
+                    <part name="pine_snow" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                        </subentities>
+                    </part>
+                    <part name="fir" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+    <model name="pineD" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/plants/trees/models/pine/pineD.mesh">
+                <parts>
+                    <part name="pine" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                        </subentities>
+                    </part>
+                    <part name="pine_snow" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                        </subentities>
+                    </part>
+                    <part name="fir" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+    <model name="pineE" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/plants/trees/models/pine/pineE.mesh">
+                <parts>
+                    <part name="pine" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                        </subentities>
+                    </part>
+                    <part name="pine_snow" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                        </subentities>
+                    </part>
+                    <part name="fir" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+    <model name="pineF" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/plants/trees/models/pine/pineF.mesh">
+                <parts>
+                    <part name="pine" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                        </subentities>
+                    </part>
+                    <part name="pine_snow" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                        </subentities>
+                    </part>
+                    <part name="fir" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+    <model name="pineG" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/plants/trees/models/pine/pineG.mesh">
+                <parts>
+                    <part name="pine" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                        </subentities>
+                    </part>
+                    <part name="pine_snow" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                        </subentities>
+                    </part>
+                    <part name="fir" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+    <model name="pineH" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/plants/trees/models/pine/pineH.mesh">
+                <parts>
+                    <part name="pine" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                        </subentities>
+                    </part>
+                    <part name="pine_snow" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                        </subentities>
+                    </part>
+                    <part name="fir" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+    <model name="pineI" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/plants/trees/models/pine/pineI.mesh">
+                <parts>
+                    <part name="pine" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                        </subentities>
+                    </part>
+                    <part name="pine_snow" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                        </subentities>
+                    </part>
+                    <part name="fir" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+    <model name="pineJ" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/plants/trees/models/pine/pineJ.mesh">
+                <parts>
+                    <part name="pine" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                        </subentities>
+                    </part>
+                    <part name="pine_snow" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                        </subentities>
+                    </part>
+                    <part name="fir" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+    <model name="pineK" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/plants/trees/models/pine/pineK.mesh">
+                <parts>
+                    <part name="pine" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                        </subentities>
+                    </part>
+                    <part name="pine_snow" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                        </subentities>
+                    </part>
+                    <part name="fir" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+    <model name="pineL" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/plants/trees/models/pine/pineL.mesh">
+                <parts>
+                    <part name="pine" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                        </subentities>
+                    </part>
+                    <part name="pine_snow" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                        </subentities>
+                    </part>
+                    <part name="fir" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
 	
 	<model name="oak" usescaleof="height" renderingdistance="200.000000" scale="2.000000" showcontained="true">
 		<translate x="0.000000" y="-1.500000" z="0.000000" />
 		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
 		<submodels>
-			<submodel mesh="3d_objects/plants/tree/models/oak/oakA.mesh">
+			<submodel mesh="3d_objects/plants/trees/models/oak/oakA.mesh">
 				<parts>
 					<part name="A" group="main" show="true">
 						<subentities>
@@ -170,7 +389,7 @@
 					</part>
 				</parts>
 			</submodel>
-			<submodel mesh="3d_objects/plants/tree/models/oak/oakB.mesh">
+			<submodel mesh="3d_objects/plants/trees/models/oak/oakB.mesh">
 				<parts>
 					<part name="B" group="main" show="false">
 						<subentities>
@@ -180,7 +399,7 @@
 					</part>
 				</parts>
 			</submodel>
-			<submodel mesh="3d_objects/plants/tree/models/oak/oakC.mesh">
+			<submodel mesh="3d_objects/plants/trees/models/oak/oakC.mesh">
 				<parts>
 					<part name="C" group="main" show="false">
 						<subentities>
@@ -197,7 +416,7 @@
 		<translate x="0.000000" y="0.000000" z="0.000000" />
 		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
 		<submodels>
-			<submodel mesh="3d_objects/plants/tree/models/oak/oak_saplingA.mesh">
+			<submodel mesh="3d_objects/plants/trees/models/oak/oak_saplingA.mesh">
 				<parts>
 					<part name="A" group="main" show="true">
 						<subentities>
@@ -207,7 +426,7 @@
 					</part>
 				</parts>
 			</submodel>
-			<submodel mesh="3d_objects/plants/tree/models/oak/oak_saplingB.mesh">
+			<submodel mesh="3d_objects/plants/trees/models/oak/oak_saplingB.mesh">
 				<parts>
 					<part name="B" group="main" show="false">
 						<subentities>
@@ -217,7 +436,7 @@
 					</part>
 				</parts>
 			</submodel>
-			<submodel mesh="3d_objects/plants/tree/models/oak/oak_saplingC.mesh">
+			<submodel mesh="3d_objects/plants/trees/models/oak/oak_saplingC.mesh">
 				<parts>
 					<part name="C" group="main" show="false">
 						<subentities>
@@ -227,7 +446,7 @@
 					</part>
 				</parts>
 			</submodel>
-			<submodel mesh="3d_objects/plants/tree/models/oak/oak_saplingD.mesh">
+			<submodel mesh="3d_objects/plants/trees/models/oak/oak_saplingD.mesh">
 				<parts>
 					<part name="D" group="main" show="false">
 						<subentities>
@@ -244,7 +463,7 @@
 		<translate x="0.000000" y="0.000000" z="0.000000" />
 		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
 		<submodels>
-			<submodel mesh="3d_objects/plants/tree/models/oak/oak_youngA.mesh">
+			<submodel mesh="3d_objects/plants/trees/models/oak/oak_youngA.mesh">
 				<parts>
 					<part name="A" group="main" show="true">
 						<subentities>
@@ -254,7 +473,7 @@
 					</part>
 				</parts>
 			</submodel>
-			<submodel mesh="3d_objects/plants/tree/models/oak/oak_youngB.mesh">
+			<submodel mesh="3d_objects/plants/trees/models/oak/oak_youngB.mesh">
 				<parts>
 					<part name="B" group="main" show="false">
 						<subentities>
@@ -264,7 +483,7 @@
 					</part>
 				</parts>
 			</submodel>
-			<submodel mesh="3d_objects/plants/tree/models/oak/oak_youngC.mesh">
+			<submodel mesh="3d_objects/plants/trees/models/oak/oak_youngC.mesh">
 				<parts>
 					<part name="C" group="main" show="false">
 						<subentities>
@@ -281,26 +500,26 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/plants/tree/models/oak/mk1/trees.mesh">
+            <submodel mesh="3d_objects/plants/trees/models/oak/mk1/trees.mesh">
                 <parts>
                     <part name="trunk" show="true" group="trunk">
                         <subentities>
-                            <subentity index="0" material="/global/plants/tree/english_oak/bark" />
+                            <subentity index="0" material="/global/plants/trees/bark/fir_bark" />
                         </subentities>
                     </part>
                     <part name="leaves/summer" show="true" group="leaves">
                         <subentities>
-                            <subentity index="1" material="/global/plants/tree/english_oak/branches/summer" />
+                            <subentity index="1" material="/global/plants/trees/english_oak/branches/summer" />
                         </subentities>
                     </part>
                     <part name="leaves/spring" show="false" group="leaves">
                         <subentities>
-                            <subentity index="1" material="/global/plants/tree/english_oak/branches/spring" />
+                            <subentity index="1" material="/global/plants/trees/english_oak/branches/spring" />
                         </subentities>
                     </part>
                     <part name="leaves/fall" show="false" group="leaves">
                         <subentities>
-                            <subentity index="1" material="/global/plants/tree/english_oak/branches/fall" />
+                            <subentity index="1" material="/global/plants/trees/english_oak/branches/fall" />
                         </subentities>
                     </part>
                 </parts>
@@ -314,16 +533,16 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/plants/tree/models/oak/mk1/trees.mesh">
+            <submodel mesh="3d_objects/plants/trees/models/oak/mk1/trees.mesh">
                 <parts>
                     <part name="trunk" show="true" group="trunk">
                         <subentities>
-                            <subentity index="0" material="/global/plants/tree/birch/bark" />
+                            <subentity index="0" material="/global/plants/trees/bark/birch_bark_white" />
                         </subentities>
                     </part>
                     <part name="leaves" show="true" group="leaves">
                         <subentities>
-                            <subentity index="1" material="/global/plants/tree/birch/branches" />
+                            <subentity index="1" material="/global/plants/trees/birch/branches" />
                         </subentities>
                     </part>
                 </parts>
