@@ -57,6 +57,8 @@
 
 #include "../AvatarCamera.h"
 
+#include "../environment/Environment.h"
+
 #include <sigc++/object_slot.h>
 
 #ifdef WIN32
@@ -73,7 +75,10 @@ namespace EmberOgre {
 
 
 TerrainGenerator::TerrainGenerator(ISceneManagerAdapter* adapter)
-: mGrassShader(0), hasTerrainInfo(false)
+: 
+UpdateShadows("update_shadows", this, "Updates shadows in the terrain."),
+mGrassShader(0),
+hasTerrainInfo(false)
 {
 
 	registerSceneManagerAdapter( adapter);
@@ -565,10 +570,12 @@ TerrainPage* TerrainGenerator::createPage(const TerrainPosition& pos)
 		page->addShader(*I);
 	}
 	
+	page->createShadow(EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection());
 	page->generateTerrainMaterials();
 	if (showFoliage && mGrassShader) {
 		page->showFoliage();
 	}
+	
 
 		
 	return page;
@@ -623,6 +630,16 @@ float TerrainGenerator::getHeight(const TerrainPosition& point) const
 ///make undefined ground be one meter below the water
 	return -1;
 	
+}
+
+void TerrainGenerator::updateShadows()
+{
+	Ogre::Vector3 sunDirection = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection();
+
+	PageStore::iterator I = mPages.begin();
+	for(;I != mPages.end(); ++I) {
+		I->second->updateShadow(sunDirection);
+	}
 }
 
 
@@ -701,10 +718,13 @@ void TerrainGenerator::reloadTerrain(std::vector<TerrainPosition>& positions)
 }
 void TerrainGenerator::updateHeightMapAndShaders(const std::set<TerrainPage*>& pagesToUpdate)
 {
+	const Ogre::Vector3& sunDirection = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection();
+
 	///reload all shader textures of the affected pages
 	for (std::set<TerrainPage*>::const_iterator I = pagesToUpdate.begin(); I != pagesToUpdate.end(); ++I) {
 		(*I)->update();
 		(*I)->updateAllShaderTextures();
+		(*I)->updateShadow(sunDirection);
 	}
 }
 
@@ -770,7 +790,9 @@ void TerrainGenerator::runCommand(const std::string &command, const std::string 
 		{
 			S_LOG_FAILURE(ex.getFullDescription());
 		}
-	} 
+	} else if (UpdateShadows == command) {
+		updateShadows();
+	}
 }
 }
 

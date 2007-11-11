@@ -256,6 +256,11 @@ public:
 	
 	TerrainShader* createShader(Ogre::MaterialPtr material, Mercator::Shader* mercatorShader);
 	
+	void updateShadows();
+	
+	const Ember::ConsoleCommandWrapper UpdateShadows;
+
+
 protected:
 
 	/**

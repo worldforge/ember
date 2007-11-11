@@ -136,7 +136,7 @@ Ogre::Pass* TerrainShader::addPassToTechnique(Ogre::Technique* technique, const 
 	S_LOG_VERBOSE("Adding new pass (" << mTextureName << ") to technique for material " << technique->getParent()->getName() << ". Number of passes in this technique: " << technique->getNumPasses());
 	
  	pass->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
-	//pass->setLightingEnabled(false);
+	pass->setLightingEnabled(false);
 	
 	
 	Ogre::TextureUnitState * textureUnitStateSplat = pass->createTextureUnitState();
