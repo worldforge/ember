@@ -21,8 +21,6 @@ $pfile "OgreSceneNode.pkg"
 $pfile "OgreTexture.pkg"
 $pfile "OgreTextureManager.pkg"
 $pfile "OgreAxisAlignedBox.pkg"
-
-
-
+$pfile "OgreColourValue.pkg"
 
 

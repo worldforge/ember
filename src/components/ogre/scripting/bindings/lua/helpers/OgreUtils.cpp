@@ -32,12 +32,13 @@ namespace EmberOgre {
  */
 const std::string& OgreUtils::getSubMeshName(Ogre::Mesh* mesh, unsigned int subMeshIndex)
 {
-		
-	for(Ogre::Mesh::SubMeshNameMap::const_iterator I = mesh->getSubMeshNameMap().begin(); I != mesh->getSubMeshNameMap().end(); ++I) {
-		if (subMeshIndex == I->second) {
-			return I->first;
+	if (mesh) {	
+		for(Ogre::Mesh::SubMeshNameMap::const_iterator I = mesh->getSubMeshNameMap().begin(); I != mesh->getSubMeshNameMap().end(); ++I) {
+			if (subMeshIndex == I->second) {
+				return I->first;
+			}
 		}
-	} 
+	}
 	static const std::string noneFound("");
 	return noneFound;
 }

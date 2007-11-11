@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Sun Oct 21 12:44:13 2007.
+** Generated automatically by tolua++-1.0.92 on Wed Nov  7 22:11:24 2007.
 */
 
 #ifndef __cplusplus
@@ -14919,6 +14919,73 @@ static int tolua_EmberOgre_EmberOgre_Gui_MovableObjectRenderer_updateRender00(lu
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: setBackgroundColour of class  EmberOgre::Gui::MovableObjectRenderer */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_MovableObjectRenderer_setBackgroundColour00
+static int tolua_EmberOgre_EmberOgre_Gui_MovableObjectRenderer_setBackgroundColour00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::MovableObjectRenderer",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::ColourValue",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Gui::MovableObjectRenderer* self = (EmberOgre::Gui::MovableObjectRenderer*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::ColourValue* colour = ((const Ogre::ColourValue*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setBackgroundColour'",NULL);
+#endif
+  {
+   self->setBackgroundColour(*colour);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setBackgroundColour'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setBackgroundColour of class  EmberOgre::Gui::MovableObjectRenderer */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_MovableObjectRenderer_setBackgroundColour01
+static int tolua_EmberOgre_EmberOgre_Gui_MovableObjectRenderer_setBackgroundColour01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::MovableObjectRenderer",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  EmberOgre::Gui::MovableObjectRenderer* self = (EmberOgre::Gui::MovableObjectRenderer*)  tolua_tousertype(tolua_S,1,0);
+  float red = ((float)  tolua_tonumber(tolua_S,2,0));
+  float green = ((float)  tolua_tonumber(tolua_S,3,0));
+  float blue = ((float)  tolua_tonumber(tolua_S,4,0));
+  float alpha = ((float)  tolua_tonumber(tolua_S,5,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setBackgroundColour'",NULL);
+#endif
+  {
+   self->setBackgroundColour(red,green,blue,alpha);
+  }
+ }
+ return 0;
+tolua_lerror:
+ return tolua_EmberOgre_EmberOgre_Gui_MovableObjectRenderer_setBackgroundColour00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: new of class  EmberOgre::Gui::OgreEntityRenderer */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_OgreEntityRenderer_new00
 static int tolua_EmberOgre_EmberOgre_Gui_OgreEntityRenderer_new00(lua_State* tolua_S)
@@ -20367,6 +20434,8 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"yaw",tolua_EmberOgre_EmberOgre_Gui_MovableObjectRenderer_yaw00);
      tolua_function(tolua_S,"roll",tolua_EmberOgre_EmberOgre_Gui_MovableObjectRenderer_roll00);
      tolua_function(tolua_S,"updateRender",tolua_EmberOgre_EmberOgre_Gui_MovableObjectRenderer_updateRender00);
+     tolua_function(tolua_S,"setBackgroundColour",tolua_EmberOgre_EmberOgre_Gui_MovableObjectRenderer_setBackgroundColour00);
+     tolua_function(tolua_S,"setBackgroundColour",tolua_EmberOgre_EmberOgre_Gui_MovableObjectRenderer_setBackgroundColour01);
     tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);

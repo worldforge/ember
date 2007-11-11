@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Ogre
-** Generated automatically by tolua++-1.0.92 on Mon Oct 15 23:52:14 2007.
+** Generated automatically by tolua++-1.0.92 on Wed Nov  7 22:01:47 2007.
 */
 
 #ifndef __cplusplus
@@ -95,6 +95,13 @@ static int tolua_collect_std__pair_bool_float_ (lua_State* tolua_S)
 	return 0;
 }
 
+static int tolua_collect_Ogre__ColourValue (lua_State* tolua_S)
+{
+ Ogre::ColourValue* self = (Ogre::ColourValue*) tolua_tousertype(tolua_S,1,0);
+	delete self;
+	return 0;
+}
+
 static int tolua_collect_size_t (lua_State* tolua_S)
 {
  size_t* self = (size_t*) tolua_tousertype(tolua_S,1,0);
@@ -173,6 +180,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Ogre::AxisAlignedBox");
  tolua_usertype(tolua_S,"Ogre::Image");
  tolua_usertype(tolua_S,"Ogre::MeshPtr");
+ tolua_usertype(tolua_S,"Ogre::ColourValue");
  tolua_usertype(tolua_S,"Ogre::TextureManager");
  tolua_usertype(tolua_S,"size_t");
  tolua_usertype(tolua_S,"Ogre::Material");
@@ -16964,6 +16972,783 @@ tolua_lerror:
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* get function: ZERO of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_get_Ogre__ColourValue_ZERO
+static int tolua_get_Ogre__ColourValue_ZERO(lua_State* tolua_S)
+{
+  tolua_pushusertype(tolua_S,(void*)&Ogre::ColourValue::ZERO,"const Ogre::ColourValue");
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: Black of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_get_Ogre__ColourValue_Black
+static int tolua_get_Ogre__ColourValue_Black(lua_State* tolua_S)
+{
+  tolua_pushusertype(tolua_S,(void*)&Ogre::ColourValue::Black,"const Ogre::ColourValue");
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: White of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_get_Ogre__ColourValue_White
+static int tolua_get_Ogre__ColourValue_White(lua_State* tolua_S)
+{
+  tolua_pushusertype(tolua_S,(void*)&Ogre::ColourValue::White,"const Ogre::ColourValue");
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: Red of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_get_Ogre__ColourValue_Red
+static int tolua_get_Ogre__ColourValue_Red(lua_State* tolua_S)
+{
+  tolua_pushusertype(tolua_S,(void*)&Ogre::ColourValue::Red,"const Ogre::ColourValue");
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: Green of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_get_Ogre__ColourValue_Green
+static int tolua_get_Ogre__ColourValue_Green(lua_State* tolua_S)
+{
+  tolua_pushusertype(tolua_S,(void*)&Ogre::ColourValue::Green,"const Ogre::ColourValue");
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: Blue of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_get_Ogre__ColourValue_Blue
+static int tolua_get_Ogre__ColourValue_Blue(lua_State* tolua_S)
+{
+  tolua_pushusertype(tolua_S,(void*)&Ogre::ColourValue::Blue,"const Ogre::ColourValue");
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ColourValue_new00
+static int tolua_Ogre_Ogre_ColourValue_new00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Ogre::ColourValue",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,1,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,1,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,1,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,1,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  float red = ((float)  tolua_tonumber(tolua_S,2,1.0f));
+  float green = ((float)  tolua_tonumber(tolua_S,3,1.0f));
+  float blue = ((float)  tolua_tonumber(tolua_S,4,1.0f));
+  float alpha = ((float)  tolua_tonumber(tolua_S,5,1.0f));
+  {
+   Ogre::ColourValue* tolua_ret = (Ogre::ColourValue*)  new Ogre::ColourValue(red,green,blue,alpha);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::ColourValue");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ColourValue_new00_local
+static int tolua_Ogre_Ogre_ColourValue_new00_local(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Ogre::ColourValue",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,1,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,1,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,1,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,1,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  float red = ((float)  tolua_tonumber(tolua_S,2,1.0f));
+  float green = ((float)  tolua_tonumber(tolua_S,3,1.0f));
+  float blue = ((float)  tolua_tonumber(tolua_S,4,1.0f));
+  float alpha = ((float)  tolua_tonumber(tolua_S,5,1.0f));
+  {
+   Ogre::ColourValue* tolua_ret = (Ogre::ColourValue*)  new Ogre::ColourValue(red,green,blue,alpha);
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Ogre::ColourValue");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: r of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_get_Ogre__ColourValue_r
+static int tolua_get_Ogre__ColourValue_r(lua_State* tolua_S)
+{
+  Ogre::ColourValue* self = (Ogre::ColourValue*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'r'",NULL);
+#endif
+  tolua_pushnumber(tolua_S,(lua_Number)self->r);
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: r of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_set_Ogre__ColourValue_r
+static int tolua_set_Ogre__ColourValue_r(lua_State* tolua_S)
+{
+  Ogre::ColourValue* self = (Ogre::ColourValue*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'r'",NULL);
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->r = ((float)  tolua_tonumber(tolua_S,2,0))
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: g of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_get_Ogre__ColourValue_g
+static int tolua_get_Ogre__ColourValue_g(lua_State* tolua_S)
+{
+  Ogre::ColourValue* self = (Ogre::ColourValue*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'g'",NULL);
+#endif
+  tolua_pushnumber(tolua_S,(lua_Number)self->g);
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: g of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_set_Ogre__ColourValue_g
+static int tolua_set_Ogre__ColourValue_g(lua_State* tolua_S)
+{
+  Ogre::ColourValue* self = (Ogre::ColourValue*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'g'",NULL);
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->g = ((float)  tolua_tonumber(tolua_S,2,0))
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: b of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_get_Ogre__ColourValue_b
+static int tolua_get_Ogre__ColourValue_b(lua_State* tolua_S)
+{
+  Ogre::ColourValue* self = (Ogre::ColourValue*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'b'",NULL);
+#endif
+  tolua_pushnumber(tolua_S,(lua_Number)self->b);
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: b of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_set_Ogre__ColourValue_b
+static int tolua_set_Ogre__ColourValue_b(lua_State* tolua_S)
+{
+  Ogre::ColourValue* self = (Ogre::ColourValue*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'b'",NULL);
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->b = ((float)  tolua_tonumber(tolua_S,2,0))
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: a of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_get_Ogre__ColourValue_a
+static int tolua_get_Ogre__ColourValue_a(lua_State* tolua_S)
+{
+  Ogre::ColourValue* self = (Ogre::ColourValue*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'a'",NULL);
+#endif
+  tolua_pushnumber(tolua_S,(lua_Number)self->a);
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: a of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_set_Ogre__ColourValue_a
+static int tolua_set_Ogre__ColourValue_a(lua_State* tolua_S)
+{
+  Ogre::ColourValue* self = (Ogre::ColourValue*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'a'",NULL);
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->a = ((float)  tolua_tonumber(tolua_S,2,0))
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getAsRGBA of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ColourValue_getAsRGBA00
+static int tolua_Ogre_Ogre_ColourValue_getAsRGBA00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::ColourValue",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::ColourValue* self = (const Ogre::ColourValue*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getAsRGBA'",NULL);
+#endif
+  {
+   unsigned int tolua_ret = (unsigned int)  self->getAsRGBA();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getAsRGBA'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getAsARGB of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ColourValue_getAsARGB00
+static int tolua_Ogre_Ogre_ColourValue_getAsARGB00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::ColourValue",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::ColourValue* self = (const Ogre::ColourValue*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getAsARGB'",NULL);
+#endif
+  {
+   unsigned int tolua_ret = (unsigned int)  self->getAsARGB();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getAsARGB'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getAsBGRA of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ColourValue_getAsBGRA00
+static int tolua_Ogre_Ogre_ColourValue_getAsBGRA00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::ColourValue",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::ColourValue* self = (const Ogre::ColourValue*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getAsBGRA'",NULL);
+#endif
+  {
+   unsigned int tolua_ret = (unsigned int)  self->getAsBGRA();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getAsBGRA'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getAsABGR of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ColourValue_getAsABGR00
+static int tolua_Ogre_Ogre_ColourValue_getAsABGR00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::ColourValue",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::ColourValue* self = (const Ogre::ColourValue*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getAsABGR'",NULL);
+#endif
+  {
+   unsigned int tolua_ret = (unsigned int)  self->getAsABGR();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getAsABGR'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setAsRGBA of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ColourValue_setAsRGBA00
+static int tolua_Ogre_Ogre_ColourValue_setAsRGBA00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::ColourValue",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::ColourValue* self = (Ogre::ColourValue*)  tolua_tousertype(tolua_S,1,0);
+  unsigned const int val = ((unsigned const int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setAsRGBA'",NULL);
+#endif
+  {
+   self->setAsRGBA(val);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setAsRGBA'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setAsARGB of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ColourValue_setAsARGB00
+static int tolua_Ogre_Ogre_ColourValue_setAsARGB00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::ColourValue",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::ColourValue* self = (Ogre::ColourValue*)  tolua_tousertype(tolua_S,1,0);
+  unsigned const int val = ((unsigned const int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setAsARGB'",NULL);
+#endif
+  {
+   self->setAsARGB(val);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setAsARGB'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setAsBGRA of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ColourValue_setAsBGRA00
+static int tolua_Ogre_Ogre_ColourValue_setAsBGRA00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::ColourValue",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::ColourValue* self = (Ogre::ColourValue*)  tolua_tousertype(tolua_S,1,0);
+  unsigned const int val = ((unsigned const int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setAsBGRA'",NULL);
+#endif
+  {
+   self->setAsBGRA(val);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setAsBGRA'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setAsABGR of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ColourValue_setAsABGR00
+static int tolua_Ogre_Ogre_ColourValue_setAsABGR00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::ColourValue",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::ColourValue* self = (Ogre::ColourValue*)  tolua_tousertype(tolua_S,1,0);
+  unsigned const int val = ((unsigned const int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setAsABGR'",NULL);
+#endif
+  {
+   self->setAsABGR(val);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setAsABGR'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: saturate of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ColourValue_saturate00
+static int tolua_Ogre_Ogre_ColourValue_saturate00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::ColourValue",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::ColourValue* self = (Ogre::ColourValue*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'saturate'",NULL);
+#endif
+  {
+   self->saturate();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'saturate'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: saturateCopy of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ColourValue_saturateCopy00
+static int tolua_Ogre_Ogre_ColourValue_saturateCopy00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::ColourValue",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::ColourValue* self = (const Ogre::ColourValue*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'saturateCopy'",NULL);
+#endif
+  {
+   Ogre::ColourValue tolua_ret = (Ogre::ColourValue)  self->saturateCopy();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new Ogre::ColourValue(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ColourValue");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::ColourValue));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ColourValue");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'saturateCopy'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: operator+ of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ColourValue__add00
+static int tolua_Ogre_Ogre_ColourValue__add00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::ColourValue",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::ColourValue",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::ColourValue* self = (const Ogre::ColourValue*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::ColourValue* rkVector = ((const Ogre::ColourValue*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator+'",NULL);
+#endif
+  {
+   Ogre::ColourValue tolua_ret = (Ogre::ColourValue)  self->operator+(*rkVector);
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new Ogre::ColourValue(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ColourValue");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::ColourValue));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ColourValue");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.add'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: operator- of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ColourValue__sub00
+static int tolua_Ogre_Ogre_ColourValue__sub00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::ColourValue",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::ColourValue",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::ColourValue* self = (const Ogre::ColourValue*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::ColourValue* rkVector = ((const Ogre::ColourValue*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator-'",NULL);
+#endif
+  {
+   Ogre::ColourValue tolua_ret = (Ogre::ColourValue)  self->operator-(*rkVector);
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new Ogre::ColourValue(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ColourValue");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::ColourValue));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ColourValue");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.sub'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: operator/ of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ColourValue__div00
+static int tolua_Ogre_Ogre_ColourValue__div00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::ColourValue",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::ColourValue",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::ColourValue* self = (const Ogre::ColourValue*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::ColourValue* rhs = ((const Ogre::ColourValue*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator/'",NULL);
+#endif
+  {
+   Ogre::ColourValue tolua_ret = (Ogre::ColourValue)  self->operator/(*rhs);
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new Ogre::ColourValue(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ColourValue");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::ColourValue));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ColourValue");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.div'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: operator/ of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ColourValue__div01
+static int tolua_Ogre_Ogre_ColourValue__div01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::ColourValue",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  const Ogre::ColourValue* self = (const Ogre::ColourValue*)  tolua_tousertype(tolua_S,1,0);
+  const float fScalar = ((const float)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator/'",NULL);
+#endif
+  {
+   Ogre::ColourValue tolua_ret = (Ogre::ColourValue)  self->operator/(fScalar);
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new Ogre::ColourValue(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ColourValue");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::ColourValue));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ColourValue");
+#endif
+   }
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_ColourValue__div00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setHSB of class  Ogre::ColourValue */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ColourValue_setHSB00
+static int tolua_Ogre_Ogre_ColourValue_setHSB00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::ColourValue",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::ColourValue* self = (Ogre::ColourValue*)  tolua_tousertype(tolua_S,1,0);
+  float hue = ((float)  tolua_tonumber(tolua_S,2,0));
+  float saturation = ((float)  tolua_tonumber(tolua_S,3,0));
+  float brightness = ((float)  tolua_tonumber(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setHSB'",NULL);
+#endif
+  {
+   self->setHSB(hue,saturation,brightness);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setHSB'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* Open function */
 TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
 {
@@ -17717,6 +18502,44 @@ TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"getHalfSize",tolua_Ogre_Ogre_AxisAlignedBox_getHalfSize00);
     tolua_function(tolua_S,"contains",tolua_Ogre_Ogre_AxisAlignedBox_contains00);
     tolua_function(tolua_S,"contains",tolua_Ogre_Ogre_AxisAlignedBox_contains01);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"Ogre",0);
+  tolua_beginmodule(tolua_S,"Ogre");
+   #ifdef __cplusplus
+   tolua_cclass(tolua_S,"ColourValue","Ogre::ColourValue","",tolua_collect_Ogre__ColourValue);
+   #else
+   tolua_cclass(tolua_S,"ColourValue","Ogre::ColourValue","",NULL);
+   #endif
+   tolua_beginmodule(tolua_S,"ColourValue");
+    tolua_variable(tolua_S,"ZERO",tolua_get_Ogre__ColourValue_ZERO,NULL);
+    tolua_variable(tolua_S,"Black",tolua_get_Ogre__ColourValue_Black,NULL);
+    tolua_variable(tolua_S,"White",tolua_get_Ogre__ColourValue_White,NULL);
+    tolua_variable(tolua_S,"Red",tolua_get_Ogre__ColourValue_Red,NULL);
+    tolua_variable(tolua_S,"Green",tolua_get_Ogre__ColourValue_Green,NULL);
+    tolua_variable(tolua_S,"Blue",tolua_get_Ogre__ColourValue_Blue,NULL);
+    tolua_function(tolua_S,"new",tolua_Ogre_Ogre_ColourValue_new00);
+    tolua_function(tolua_S,"new_local",tolua_Ogre_Ogre_ColourValue_new00_local);
+    tolua_function(tolua_S,".call",tolua_Ogre_Ogre_ColourValue_new00_local);
+    tolua_variable(tolua_S,"r",tolua_get_Ogre__ColourValue_r,tolua_set_Ogre__ColourValue_r);
+    tolua_variable(tolua_S,"g",tolua_get_Ogre__ColourValue_g,tolua_set_Ogre__ColourValue_g);
+    tolua_variable(tolua_S,"b",tolua_get_Ogre__ColourValue_b,tolua_set_Ogre__ColourValue_b);
+    tolua_variable(tolua_S,"a",tolua_get_Ogre__ColourValue_a,tolua_set_Ogre__ColourValue_a);
+    tolua_function(tolua_S,"getAsRGBA",tolua_Ogre_Ogre_ColourValue_getAsRGBA00);
+    tolua_function(tolua_S,"getAsARGB",tolua_Ogre_Ogre_ColourValue_getAsARGB00);
+    tolua_function(tolua_S,"getAsBGRA",tolua_Ogre_Ogre_ColourValue_getAsBGRA00);
+    tolua_function(tolua_S,"getAsABGR",tolua_Ogre_Ogre_ColourValue_getAsABGR00);
+    tolua_function(tolua_S,"setAsRGBA",tolua_Ogre_Ogre_ColourValue_setAsRGBA00);
+    tolua_function(tolua_S,"setAsARGB",tolua_Ogre_Ogre_ColourValue_setAsARGB00);
+    tolua_function(tolua_S,"setAsBGRA",tolua_Ogre_Ogre_ColourValue_setAsBGRA00);
+    tolua_function(tolua_S,"setAsABGR",tolua_Ogre_Ogre_ColourValue_setAsABGR00);
+    tolua_function(tolua_S,"saturate",tolua_Ogre_Ogre_ColourValue_saturate00);
+    tolua_function(tolua_S,"saturateCopy",tolua_Ogre_Ogre_ColourValue_saturateCopy00);
+    tolua_function(tolua_S,".add",tolua_Ogre_Ogre_ColourValue__add00);
+    tolua_function(tolua_S,".sub",tolua_Ogre_Ogre_ColourValue__sub00);
+    tolua_function(tolua_S,".div",tolua_Ogre_Ogre_ColourValue__div00);
+    tolua_function(tolua_S,".div",tolua_Ogre_Ogre_ColourValue__div01);
+    tolua_function(tolua_S,"setHSB",tolua_Ogre_Ogre_ColourValue_setHSB00);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
