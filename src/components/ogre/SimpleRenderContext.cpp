@@ -32,7 +32,7 @@
 namespace EmberOgre {
 
 SimpleRenderContext::SimpleRenderContext(const std::string& prefix, int width, int height)
-: mMainLight(0), mSceneManager(0), mWidth(width), mHeight(height), mRenderTexture(0), mCameraNode(0), mCameraPitchNode(0), mEntityNode(0), mRootNode(0), mCamera(0)
+: mMainLight(0), mSceneManager(0), mWidth(width), mHeight(height), mRenderTexture(0), mCameraNode(0), mCameraPitchNode(0), mEntityNode(0), mRootNode(0), mCamera(0), mViewPort(0)
 {
 
 	S_LOG_VERBOSE("Creating new SimpleRenderContext for prefix " << prefix  << " with w:" << mWidth << " h:" << mHeight);
@@ -218,15 +218,28 @@ void SimpleRenderContext::createImage(const std::string& prefix)
 	mCamera->setAspectRatio(aspectRatio);
 	///make sure the camera renders into this new texture
 	S_LOG_VERBOSE("Adding camera.");
-	Ogre::Viewport *v = mRenderTexture->addViewport(mCamera);
+	mViewPort = mRenderTexture->addViewport(mCamera);
 	///this should preferrably be a transparent background, so that CEGUI could itself decide what to show behind it, but alas I couldn't get it to work, thus black
-	v->setBackgroundColour(Ogre::ColourValue::ZERO);
+	mViewPort->setBackgroundColour(Ogre::ColourValue::Black);
+//	mViewPort->setBackgroundColour(Ogre::ColourValue::ZERO);
 	///don't show the CEGUI
-	v->setOverlaysEnabled(false);
+	mViewPort->setOverlaysEnabled(false);
 	///the cegui renderer wants a TexturePtr (not a RenderTexturePtr), so we just ask the texturemanager for texture we just created (rttex)
 	
 
 }
+
+void SimpleRenderContext::setBackgroundColour(const Ogre::ColourValue& colour)
+{
+	mViewPort->setBackgroundColour(colour);
+}
+
+void SimpleRenderContext::setBackgroundColour(float red, float green, float blue, float alpha)
+{
+	mViewPort->setBackgroundColour(Ogre::ColourValue(red, green, blue, alpha));
+}
+
+
 
 void SimpleRenderContext::showFull(const Ogre::MovableObject* object)
 {

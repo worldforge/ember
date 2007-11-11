@@ -151,7 +151,26 @@ public:
     
     Ogre::SceneNode* getCameraRootNode() const;
     
+    /**
+     * Gets the main light.
+     * @return 
+     */
     Ogre::Light* getLight();
+    
+    
+    /**
+     * Sets the background colour.
+     * @param colour 
+     */
+    void setBackgroundColour(const Ogre::ColourValue& colour);
+    /**
+     * Sets the background colour.
+     * @param red 
+     * @param green 
+     * @param blue 
+     * @param  
+     */
+    void setBackgroundColour(float red, float green, float blue, float alpha);
     
 private:
 
@@ -213,6 +232,8 @@ private:
 	Ogre::Camera* mCamera;
 	
 	Ogre::TexturePtr mTexture;
+	
+	Ogre::Viewport* mViewPort;
 
 };
 
