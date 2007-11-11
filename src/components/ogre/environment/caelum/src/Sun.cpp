@@ -9,6 +9,7 @@ Sun::Sun (Ogre::SceneManager *sceneMgr) {
 	mSunColour = Ogre::ColourValue::White;
 	mAutoRadius = true;
 	mSunPositionModel = 0;
+	mSunDirection = -Ogre::Vector3::UNIT_Z;
 
 	mMainLight = sceneMgr->createLight ("CaelumSun");
 	mMainLight->setType (Ogre::Light::LT_DIRECTIONAL);
