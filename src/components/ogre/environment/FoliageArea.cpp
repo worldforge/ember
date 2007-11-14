@@ -137,7 +137,7 @@ void FoliageArea::placeGrass(const std::string& type, const TerrainPosition& pos
 
 void FoliageArea::placeGrass(const std::string& type, const TerrainPosition& position, const Ogre::Vector3& scale)
 {
-	TerrainGenerator* terrain = EmberOgre::getSingleton().getTerrainGenerator();
+	Terrain::TerrainGenerator* terrain = EmberOgre::getSingleton().getTerrainGenerator();
 	Ogre::Vector3 ogrePosition = Atlas2Ogre(position);
 	ogrePosition.y = terrain->getHeight(position);
 	placeGrass(type, ogrePosition, scale);	

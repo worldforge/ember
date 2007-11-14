@@ -42,7 +42,7 @@
 #include <Mercator/ShaderFactory.h>
 
 namespace EmberOgre {
-WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, TerrainGenerator* terrainGenerator) : 
+WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Terrain::TerrainGenerator* terrainGenerator) : 
 EmberEntity(id, ty, vw, sceneManager)
 , mTerrainGenerator(terrainGenerator)
 , mFoliage(0)
@@ -118,7 +118,7 @@ void WorldEmberEntity::onAttrChanged(const std::string& str, const Atlas::Messag
 	Entity::onAttrChanged(str, v);
 }
 
-TerrainParser::TerrainParser(TerrainGenerator* terrainGenerator)
+TerrainParser::TerrainParser(Terrain::TerrainGenerator* terrainGenerator)
 : mTerrainGenerator(terrainGenerator)
 {
 }
@@ -137,7 +137,7 @@ void TerrainParser::updateTerrain(const Atlas::Message::Element& terrain)
 		S_LOG_FAILURE( "No terrain points" );
     }
 
-	TerrainGenerator::TerrainDefPointStore pointStore;
+	Terrain::TerrainGenerator::TerrainDefPointStore pointStore;
 	if (I->second.isList()) {
         // Legacy support for old list format.
         const Atlas::Message::ListType & plist = I->second.asList();
@@ -155,7 +155,7 @@ void TerrainParser::updateTerrain(const Atlas::Message::Element& terrain)
             //int x = (int)point[0].asNum();
             //int y = (int)point[1].asNum();
 
-			TerrainDefPoint defPoint((int)point[0].asNum(),(int)point[1].asNum(),(int)point[3].asNum());
+			Terrain::TerrainDefPoint defPoint((int)point[0].asNum(),(int)point[1].asNum(),(int)point[3].asNum());
 			pointStore.push_back(defPoint);
 			//mTerrain->setBasePoint(x,y,point[2].asNum());
         }
@@ -176,7 +176,7 @@ void TerrainParser::updateTerrain(const Atlas::Message::Element& terrain)
             int x = (int)point[0].asNum();
             int y = (int)point[1].asNum();
             float z = point[2].asNum();
-			TerrainDefPoint defPoint(x,y,z);
+			Terrain::TerrainDefPoint defPoint(x,y,z);
 			pointStore.push_back(defPoint);
 
 			
@@ -283,7 +283,7 @@ void TerrainParser::createShaders(const Atlas::Message::Element& surfaces)
 									Mercator::Shader* shader = Mercator::ShaderFactories::instance().newShader(pattern, params);
 									if (shader) {
 										isValid = true;
-										TerrainShader* terrainShader = mTerrainGenerator->createShader(texture, shader);
+										Terrain::TerrainShader* terrainShader = mTerrainGenerator->createShader(texture, shader);
 										if (name == "grass") {
 											mTerrainGenerator->setFoliageShader(terrainShader);
 										}
@@ -309,7 +309,7 @@ void TerrainParser::createDefaultShaders()
 	
     mTerrainGenerator->createShader(std::string(configSrv->getValue("shadertextures", "sand")), new Mercator::BandShader(-2.f, 1.5f)); // Sandy beach
  
- 	TerrainShader* grassShader = mTerrainGenerator->createShader(std::string(configSrv->getValue("shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f)); // Grass
+ 	Terrain::TerrainShader* grassShader = mTerrainGenerator->createShader(std::string(configSrv->getValue("shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f)); // Grass
  	mTerrainGenerator->setFoliageShader(grassShader);
 
 
@@ -383,7 +383,7 @@ const Ogre::Vector3& WorldEmberEntity::getOffsetForContainedNode(const Ogre::Vec
  	Eris::Entity::onLocationChanged(oldLocation);
  }
  
-void WorldEmberEntity::addArea(TerrainArea* area)
+void WorldEmberEntity::addArea(Terrain::TerrainArea* area)
 {
 	mTerrainGenerator->addArea(area);
 }

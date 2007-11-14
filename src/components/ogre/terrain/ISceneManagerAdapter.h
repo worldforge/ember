@@ -28,6 +28,7 @@ class Camera;
 }
 
 namespace EmberOgre {
+namespace Terrain {
 
 class ISceneManagerAdapter
 {
@@ -54,5 +55,5 @@ public:
 	virtual void reloadAllPages() = 0;
 	virtual void reloadPage(unsigned int x, unsigned int z) = 0;
 };
-
+}
 }

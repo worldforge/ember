@@ -30,6 +30,7 @@
 
 
 namespace EmberOgre {
+namespace Terrain {
 
 /**
 	@author Erik Hjortsberg <erik@katastrof.nu>
@@ -81,7 +82,7 @@ private:
 	int mPageIndicesSize;
 
 };
-
+}
 }
 
 #endif

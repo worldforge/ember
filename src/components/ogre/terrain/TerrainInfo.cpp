@@ -23,6 +23,7 @@
 #include "TerrainInfo.h"
 
 namespace EmberOgre {
+namespace Terrain {
 
 
 TerrainInfo::TerrainInfo()
@@ -128,5 +129,5 @@ void TerrainInfo::setPageIndicesSize(int size)
 	mPageIndicesSize = size;
 }
 
-
+}
 }

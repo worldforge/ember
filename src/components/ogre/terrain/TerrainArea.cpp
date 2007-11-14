@@ -26,6 +26,7 @@
 #include <Mercator/Area.h>
 
 namespace EmberOgre {
+namespace Terrain {
 
 TerrainArea::TerrainArea(EmberEntity* entity) : mArea(0), mEntity(entity)
 {
@@ -135,4 +136,5 @@ void TerrainArea::observeEntity()
 	}
 }
 
-};
+}
+}

@@ -35,7 +35,7 @@ namespace EmberOgre {
 
 class EmberPagingSceneManager;
 
-class EmberPagingSceneManagerAdapter : public ISceneManagerAdapter
+class EmberPagingSceneManagerAdapter : public Terrain::ISceneManagerAdapter
 {
 
 public:

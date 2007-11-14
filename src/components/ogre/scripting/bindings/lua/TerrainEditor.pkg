@@ -25,7 +25,7 @@
 
 
 namespace EmberOgre {
-
+namespace Terrain {
 
 
 class BasePointUserObject
@@ -63,7 +63,7 @@ class TerrainEditAction
 {
 public:
 
-typedef std::vector<EmberOgre::TerrainEditBasePointMovement> MovementStore;
+typedef std::vector<EmberOgre::Terrain::TerrainEditBasePointMovement> MovementStore;
 const MovementStore& getMovements() const;
 MovementStore& getMovements();
 
@@ -110,15 +110,15 @@ public:
 	
     
     
-    void commitAction(const EmberOgre::TerrainEditAction& action);
+    void commitAction(const EmberOgre::Terrain::TerrainEditAction& action);
     
-    sigc::signal<void, EmberOgre::BasePointUserObject*> EventPickedBasePoint;
-    sigc::signal<void, const EmberOgre::TerrainEditAction*> EventActionCreated;
+    sigc::signal<void, EmberOgre::Terrain::BasePointUserObject*> EventPickedBasePoint;
+    sigc::signal<void, const EmberOgre::Terrain::TerrainEditAction*> EventActionCreated;
     
 	/**
 	Emitted when the position of the selected base point has been updated
 	*/
-	sigc::signal<void, EmberOgre::BasePointUserObject*> EventSelectedBasePointUpdatedPosition;
+	sigc::signal<void, EmberOgre::Terrain::BasePointUserObject*> EventSelectedBasePointUpdatedPosition;
    
 
 	
@@ -126,7 +126,7 @@ public:
 	 *    returns the currently selected base point user object, if any
 	 * @return 
 	 */
-	EmberOgre::BasePointUserObject* getCurrentBasePointUserObject() const;
+	EmberOgre::Terrain::BasePointUserObject* getCurrentBasePointUserObject() const;
     
     void sendChangesToServer();
 
@@ -150,6 +150,7 @@ public:
 	
 };
 
+}
 }
 
 #endif

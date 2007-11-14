@@ -49,18 +49,21 @@ namespace Mercator
 }
 
 namespace EmberOgre {
+class EmberEntity;
+class EmberEntityFactory;
+class EmberPagingSceneManager;
+
+namespace Terrain {
 	
 class TerrainShader;
 
 class TerrainPage;
 class TerrainArea;
 
-class EmberPagingSceneManager;
 
 class ISceneManagerAdapter;
 
-class EmberEntity;
-class EmberEntityFactory;
+
 
 struct TerrainDefPoint
 {
@@ -369,7 +372,7 @@ const TerrainGenerator::TerrainPagestore& TerrainGenerator::getTerrainPages() co
 	return mTerrainPages;
 }
 
-
+}
 }
 
 

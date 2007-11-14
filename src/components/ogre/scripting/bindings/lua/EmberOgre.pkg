@@ -129,7 +129,7 @@ class EmberOgre
 	sigc::signal<void, EmberOgre::MotionManager&> EventMotionManagerCreated;
 	
 	
-	sigc::signal<void, EmberOgre::TerrainGenerator&> EventTerrainGeneratorCreated;
+	sigc::signal<void, EmberOgre::Terrain::TerrainGenerator&> EventTerrainGeneratorCreated;
 	
 	sigc::signal<void, EmberOgre::AvatarController&> EventAvatarControllerCreated;
 	

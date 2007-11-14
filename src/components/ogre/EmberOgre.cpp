@@ -419,7 +419,7 @@ bool EmberOgre::setup()
 	mAvatarController = new AvatarController(mAvatar, mWindow, mGUIManager, camera);
 	EventAvatarControllerCreated.emit(*mAvatarController);
 	
-	mTerrainGenerator = new TerrainGenerator(new EmberPagingSceneManagerAdapter(mSceneMgr));
+	mTerrainGenerator = new Terrain::TerrainGenerator(new EmberPagingSceneManagerAdapter(mSceneMgr));
 	EventTerrainGeneratorCreated.emit(*mTerrainGenerator);
 	mMotionManager = new MotionManager();
 // 	mMotionManager->setTerrainGenerator(mTerrainGenerator);
@@ -643,7 +643,7 @@ Ogre::SceneManager* EmberOgre::getSceneManager() const
 	return mSceneMgr;
 }
 
-TerrainGenerator* EmberOgre::getTerrainGenerator() const
+Terrain::TerrainGenerator* EmberOgre::getTerrainGenerator() const
 {
 	return mTerrainGenerator;
 }

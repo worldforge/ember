@@ -72,6 +72,7 @@
 
 using namespace Ogre;
 namespace EmberOgre {
+namespace Terrain {
 
 
 TerrainGenerator::TerrainGenerator(ISceneManagerAdapter* adapter)
@@ -794,11 +795,10 @@ void TerrainGenerator::runCommand(const std::string &command, const std::string 
 		updateShadows();
 	}
 }
-}
-
-const EmberOgre::TerrainInfo & EmberOgre::TerrainGenerator::getTerrainInfo( ) const
+const TerrainInfo & TerrainGenerator::getTerrainInfo( ) const
 {
 	return mTerrainInfo;
 }
 
-
+}
+}

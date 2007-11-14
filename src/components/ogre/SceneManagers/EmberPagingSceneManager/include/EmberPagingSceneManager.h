@@ -30,8 +30,9 @@
 
 
 namespace EmberOgre {
-
+namespace Terrain {
 class TerrainGenerator;
+}
 class EmberPagingSceneManager;
 
 namespace Model {

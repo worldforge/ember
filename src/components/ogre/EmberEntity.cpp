@@ -147,7 +147,7 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 	S_LOG_VERBOSE( ss.str());
 	
 	if (hasAttr("area")) {
-		mTerrainArea = std::auto_ptr<TerrainArea>(new TerrainArea(this));
+		mTerrainArea = std::auto_ptr<Terrain::TerrainArea>(new Terrain::TerrainArea(this));
 		if (mTerrainArea->init()) {
 			addArea(mTerrainArea.get());
 		}
@@ -491,7 +491,7 @@ bool EmberEntity::hasSuggestedResponses( ) const
 }
 
 
-void EmberEntity::addArea(TerrainArea* area)
+void EmberEntity::addArea(Terrain::TerrainArea* area)
 {
 ///just pass it on to the parent until we get to someone who knows how to handle this (preferrably the terrain)
 	if (getEmberLocation()) {

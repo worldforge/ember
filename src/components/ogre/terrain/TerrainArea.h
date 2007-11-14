@@ -35,6 +35,8 @@ namespace EmberOgre {
 
 class EmberEntity;
 
+namespace Terrain {
+
 /**
 @author Erik Hjortsberg
 */
@@ -67,7 +69,7 @@ protected:
 Mercator::Area* TerrainArea::getArea() const { return mArea; }
 void TerrainArea::setArea(Mercator::Area* area) { mArea = area; }
 
-
+}
 };
 
 #endif

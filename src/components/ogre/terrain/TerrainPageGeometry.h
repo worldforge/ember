@@ -24,6 +24,7 @@
 #define EMBEROGRETERRAINPAGEGEOMETRY_H
 
 namespace EmberOgre {
+namespace Terrain {
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
@@ -35,7 +36,7 @@ public:
     ~TerrainPageGeometry();
 
 };
-
+}
 }
 
 #endif

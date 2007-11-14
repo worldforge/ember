@@ -49,6 +49,7 @@
 
 
 namespace EmberOgre {
+namespace Terrain {
 
 const std::string BasePointUserObject::s_TypeName("BasePointMarker");
 	
@@ -566,5 +567,5 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 
 
 
-
+}
 }

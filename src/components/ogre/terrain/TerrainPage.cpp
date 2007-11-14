@@ -65,6 +65,7 @@
 using namespace EmberOgre::Environment;
 
 namespace EmberOgre {
+namespace Terrain {
 
 TerrainPage::TerrainPage(TerrainPosition position, const std::map<const Mercator::Shader*, TerrainShader*> shaderMap, TerrainGenerator* generator) 
 : mFoliageArea(0)
@@ -198,6 +199,7 @@ void TerrainPage::updateShadow(const Ogre::Vector3& lightDirection)
 Ogre::MaterialPtr TerrainPage::generateTerrainMaterials() {
 
 	mTerrainSurface->recompileMaterial();
+	mTerrainSurface->getMaterial()->load();
 	return mTerrainSurface->getMaterial();
 // 	//Ogre::ushort numberOfTextureUnitsOnCard = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits();
 // 
@@ -441,11 +443,10 @@ void TerrainPage::createHeightData(Ogre::Real* heightData)
 // }
 
 
-}
 
 
 
-// void EmberOgre::TerrainPage::fillAlphaLayer(unsigned char* finalImagePtr, unsigned char* wfImagePtr, unsigned int channel, int startX, int startY, unsigned short numberOfChannels) {
+// void TerrainPage::fillAlphaLayer(unsigned char* finalImagePtr, unsigned char* wfImagePtr, unsigned int channel, int startX, int startY, unsigned short numberOfChannels) {
 // 
 //     int width = 64;
 //  	int finalImageWidth = getAlphaTextureSize( );
@@ -471,7 +472,7 @@ void TerrainPage::createHeightData(Ogre::Real* heightData)
 //     }
 // }
 
-void EmberOgre::TerrainPage::showFoliage()
+void TerrainPage::showFoliage()
 {
 //  	if (mPosition.x() == 0 && mPosition.y() == 0) {
 	if (!mFoliageArea) {
@@ -484,7 +485,7 @@ void EmberOgre::TerrainPage::showFoliage()
 	
 }
 
-void EmberOgre::TerrainPage::hideFoliage()
+void TerrainPage::hideFoliage()
 {
 	if (!mFoliageArea) {
 		return;
@@ -492,7 +493,7 @@ void EmberOgre::TerrainPage::hideFoliage()
 	mFoliageArea->setVisible(false);
 }
 
-void EmberOgre::TerrainPage::destroyFoliage()
+void TerrainPage::destroyFoliage()
 {
 	if (!mFoliageArea) {
 		return;
@@ -503,7 +504,7 @@ void EmberOgre::TerrainPage::destroyFoliage()
 
 
 
-void EmberOgre::TerrainPage::prepareFoliage()
+void TerrainPage::prepareFoliage()
 {
 	TerrainShader* grassShader = mGenerator->getFoliageShader();
 	
@@ -603,10 +604,11 @@ void EmberOgre::TerrainPage::prepareFoliage()
 	
 }
 
-void EmberOgre::TerrainPage::addShader(TerrainShader* shader)
+void TerrainPage::addShader(TerrainShader* shader)
 {
 	TerrainPageSurfaceLayer* layer = mTerrainSurface->createSurfaceLayer(shader->getTerrainIndex(), shader->getShader());
 	layer->setDiffuseTextureName(shader->getTextureName());
+	layer->setScale(shader->getScale());
 	layer->updateCoverageImage();
 
 /*	mUsedShaders.push_back(shader);
@@ -620,7 +622,7 @@ void EmberOgre::TerrainPage::addShader(TerrainShader* shader)
 
 
 
-// void EmberOgre::TerrainPage::generateTerrainTechniqueComplexAtlas( Ogre::Technique* technique)
+// void TerrainPage::generateTerrainTechniqueComplexAtlas( Ogre::Technique* technique)
 // { 
 //  
 // 	Ogre::Pass* pass = technique->getPass(0);
@@ -767,7 +769,7 @@ void EmberOgre::TerrainPage::addShader(TerrainShader* shader)
 // 
 
 
-// void EmberOgre::TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* technique)
+// void TerrainPage::generateTerrainTechniqueComplex( Ogre::Technique* technique)
 // { 
 //  
 // 	S_LOG_VERBOSE("Entered generateTerrainTechniqueComplex.");
@@ -948,7 +950,7 @@ void EmberOgre::TerrainPage::addShader(TerrainShader* shader)
 //  
 //  }
 //  
-// void EmberOgre::TerrainPage::generateTerrainTechniqueDebug()
+// void TerrainPage::generateTerrainTechniqueDebug()
 // {
 // 	for (int i = 1; i < 5; ++i) {
 // 		Ogre::Technique *tech = mMaterial->createTechnique();
@@ -963,7 +965,7 @@ void EmberOgre::TerrainPage::addShader(TerrainShader* shader)
 // 	}
 // }
 // 
-// void EmberOgre::TerrainPage::generateTerrainTechniqueSimple( Ogre::Technique* technique)
+// void TerrainPage::generateTerrainTechniqueSimple( Ogre::Technique* technique)
 // {
 // 	S_LOG_VERBOSE("Entered generateTerrainTechniqueSimple.");
 // 
@@ -1022,7 +1024,7 @@ void EmberOgre::TerrainPage::addShader(TerrainShader* shader)
 // }
 
 
-void EmberOgre::TerrainPage::populateSurfaces()
+void TerrainPage::populateSurfaces()
 {
  //   _fpreset();
 	//_controlfp(_PC_64, _MCW_PC);
@@ -1035,7 +1037,7 @@ void EmberOgre::TerrainPage::populateSurfaces()
 //	fesetround(FE_DOWNWARD);
 }
 
-void EmberOgre::TerrainPage::updateAllShaderTextures()
+void TerrainPage::updateAllShaderTextures()
 {
 	TerrainPageSurface::TerrainPageSurfaceLayerStore::const_iterator I = mTerrainSurface->getLayers().begin();
 
@@ -1046,7 +1048,7 @@ void EmberOgre::TerrainPage::updateAllShaderTextures()
 	}
 }
 
-void EmberOgre::TerrainPage::updateShaderTexture(TerrainShader* shader)
+void TerrainPage::updateShaderTexture(TerrainShader* shader)
 {
 
 	if (mTerrainSurface->getLayers().find(shader->getTerrainIndex()) == mTerrainSurface->getLayers().end()) {
@@ -1132,7 +1134,7 @@ void EmberOgre::TerrainPage::updateShaderTexture(TerrainShader* shader)
 
 
 
-// void EmberOgre::TerrainPage::addShaderToSimpleTechnique(Ogre::Technique* technique, TerrainShader* shader)
+// void TerrainPage::addShaderToSimpleTechnique(Ogre::Technique* technique, TerrainShader* shader)
 // {
 // 	Mercator::Surface* surface;
 // 	
@@ -1209,4 +1211,5 @@ void EmberOgre::TerrainPage::updateShaderTexture(TerrainShader* shader)
 		
 
 // }
-
+}
+}

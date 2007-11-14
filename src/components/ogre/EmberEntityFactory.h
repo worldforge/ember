@@ -38,12 +38,16 @@ namespace Eris
 
 namespace EmberOgre {
 
+namespace Terrain
+{
+class TerrainGenerator;
+}
+
 class AvatarEmberEntity;
 class EmberTerrainPageSource;
 class EmberPhysicalEntity;
 class EmberEntity;
 class ViewEmberEntity;
-class TerrainGenerator;
 class WorldEmberEntity;
 
 /**
@@ -65,7 +69,7 @@ public:
 	/**
 	Default constructor. This should be instantiated by EmberOgre or similiar high level object. Note that Eris upon shutdown will delete all registered factories, so don't delete an instance of this yourself.
 	*/
-	EmberEntityFactory(Eris::View* view, TerrainGenerator* terrainGenerator, Eris::TypeService* typeService);
+	EmberEntityFactory(Eris::View* view, Terrain::TerrainGenerator* terrainGenerator, Eris::TypeService* typeService);
 	virtual ~EmberEntityFactory();
 
 	/**
@@ -134,7 +138,7 @@ protected:
 
 
 
-	TerrainGenerator* mTerrainGenerator;
+	Terrain::TerrainGenerator* mTerrainGenerator;
 	Eris::TypeService* mTypeService;
 	Eris::TypeInfo* mTerrainType;
 	

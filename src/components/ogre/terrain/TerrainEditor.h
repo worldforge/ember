@@ -37,9 +37,11 @@ class BasePoint;
 
 namespace EmberOgre {
 
+class EmberEntity;
+
+namespace Terrain {
 class TerrainEditor;
 class TerrainEditBasePointMovement;
-class EmberEntity;
 class BasePointUserObject;
 
 /**
@@ -357,5 +359,5 @@ private:
 };
 
 }
-
+}
 #endif

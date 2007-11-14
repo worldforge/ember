@@ -27,10 +27,15 @@ class Environment;
 class Foliage;
 }
 
+namespace Terrain {
+class TerrainGenerator;
+class TerrainArea;
+}
+
 class TerrainParser
 {
 public:
-	TerrainParser(TerrainGenerator* terrainGenerator);
+	TerrainParser(Terrain::TerrainGenerator* terrainGenerator);
 	
 	/**
 	 *    Extracts terrain updates from the element and updates the terrain.
@@ -42,17 +47,17 @@ public:
 	void createDefaultShaders();
 
 private:
-	TerrainGenerator* mTerrainGenerator;
+	Terrain::TerrainGenerator* mTerrainGenerator;
 };
 
 class EmberEntity;
-class TerrainGenerator;
+
 
 class WorldEmberEntity : public EmberEntity {
 public:
 
 
-	WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, TerrainGenerator* terrainGenerator);
+	WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Terrain::TerrainGenerator* terrainGenerator);
 	virtual ~WorldEmberEntity();
 
 	virtual void adjustPositionForContainedNode(EmberEntity* const entity, const Ogre::Vector3& position);
@@ -61,7 +66,7 @@ public:
 
 protected:
 	virtual const Ogre::Vector3& getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity);
-	TerrainGenerator* mTerrainGenerator;
+	Terrain::TerrainGenerator* mTerrainGenerator;
 	
     virtual void init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp);
 
@@ -74,7 +79,7 @@ protected:
 	virtual void onVisibilityChanged(bool vis);
 	virtual void onLocationChanged(Eris::Entity *oldLocation);
 
-	void addArea(TerrainArea* area);
+	void addArea(Terrain::TerrainArea* area);
 	
 	Environment::Foliage* mFoliage;
 	

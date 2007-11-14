@@ -5,6 +5,7 @@ namespace Mercator
 
 
 namespace EmberOgre {
+namespace Terrain {
 class TerrainArea{
     TerrainArea(EmberEntity* entity);
 	bool init();
@@ -13,4 +14,5 @@ class TerrainArea{
 	inline void setArea(Mercator::Area* area) { mArea = area; }
 
 };
+}
 }

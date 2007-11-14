@@ -72,7 +72,7 @@ function TerrainEditor.buildWidget()
 	TerrainEditor.heightSpinner = CEGUI.toEditbox(TerrainEditor.heightSpinner)
 	
 	
-	TerrainEditor.editor = EmberOgre.TerrainEditor:new_local()
+	TerrainEditor.editor = EmberOgre.Terrain.TerrainEditor:new_local()
 	TerrainEditor.editor:createOverlay()
 	TerrainEditor.editor:showOverlay()
 	

@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Wed Nov  7 22:11:24 2007.
+** Generated automatically by tolua++-1.0.92 on Sun Nov 11 19:13:59 2007.
 */
 
 #ifndef __cplusplus
@@ -48,9 +48,9 @@ static int tolua_collect_EmberOgre__AttachPointNode (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_EmberOgre__TerrainEditor (lua_State* tolua_S)
+static int tolua_collect_Carpenter__AttachPair (lua_State* tolua_S)
 {
- EmberOgre::TerrainEditor* self = (EmberOgre::TerrainEditor*) tolua_tousertype(tolua_S,1,0);
+ Carpenter::AttachPair* self = (Carpenter::AttachPair*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -69,9 +69,9 @@ static int tolua_collect_EmberOgre__Gui__Icons__IconManager (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_EmberOgre__TerrainArea (lua_State* tolua_S)
+static int tolua_collect_std__vector_const_Carpenter__AttachPoint__ (lua_State* tolua_S)
 {
- EmberOgre::TerrainArea* self = (EmberOgre::TerrainArea*) tolua_tousertype(tolua_S,1,0);
+ std::vector<const Carpenter::AttachPoint*>* self = (std::vector<const Carpenter::AttachPoint*>*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -174,9 +174,9 @@ static int tolua_collect_EmberOgre__Gui__Vector3Adapter (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_EmberOgre__Gui__AssetsManager (lua_State* tolua_S)
+static int tolua_collect_WFMath__Point_3_ (lua_State* tolua_S)
 {
- EmberOgre::Gui::AssetsManager* self = (EmberOgre::Gui::AssetsManager*) tolua_tousertype(tolua_S,1,0);
+ WFMath::Point<3>* self = (WFMath::Point<3>*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -223,9 +223,9 @@ static int tolua_collect_Ogre__Quaternion (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_std__vector_const_Carpenter__AttachPoint__ (lua_State* tolua_S)
+static int tolua_collect_EmberOgre__Gui__StackableContainer (lua_State* tolua_S)
 {
- std::vector<const Carpenter::AttachPoint*>* self = (std::vector<const Carpenter::AttachPoint*>*) tolua_tousertype(tolua_S,1,0);
+ EmberOgre::Gui::StackableContainer* self = (EmberOgre::Gui::StackableContainer*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -251,16 +251,16 @@ static int tolua_collect_WFMath__Vector_3_ (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_Carpenter__AttachPair (lua_State* tolua_S)
+static int tolua_collect_EmberOgre__Terrain__TerrainArea (lua_State* tolua_S)
 {
- Carpenter::AttachPair* self = (Carpenter::AttachPair*) tolua_tousertype(tolua_S,1,0);
+ EmberOgre::Terrain::TerrainArea* self = (EmberOgre::Terrain::TerrainArea*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
 
-static int tolua_collect_WFMath__Point_3_ (lua_State* tolua_S)
+static int tolua_collect_EmberOgre__Gui__IconBar (lua_State* tolua_S)
 {
- WFMath::Point<3>* self = (WFMath::Point<3>*) tolua_tousertype(tolua_S,1,0);
+ EmberOgre::Gui::IconBar* self = (EmberOgre::Gui::IconBar*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -286,9 +286,9 @@ static int tolua_collect_std__vector_Eris__Task__ (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_EmberOgre__Gui__IconBar (lua_State* tolua_S)
+static int tolua_collect_EmberOgre__Gui__AssetsManager (lua_State* tolua_S)
 {
- EmberOgre::Gui::IconBar* self = (EmberOgre::Gui::IconBar*) tolua_tousertype(tolua_S,1,0);
+ EmberOgre::Gui::AssetsManager* self = (EmberOgre::Gui::AssetsManager*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -349,9 +349,9 @@ static int tolua_collect_Atlas__Message__Element (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_EmberOgre__Gui__StackableContainer (lua_State* tolua_S)
+static int tolua_collect_EmberOgre__Terrain__TerrainEditor (lua_State* tolua_S)
 {
- EmberOgre::Gui::StackableContainer* self = (EmberOgre::Gui::StackableContainer*) tolua_tousertype(tolua_S,1,0);
+ EmberOgre::Terrain::TerrainEditor* self = (EmberOgre::Terrain::TerrainEditor*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -362,13 +362,13 @@ static int tolua_collect_EmberOgre__Gui__StackableContainer (lua_State* tolua_S)
 static void tolua_reg_types (lua_State* tolua_S)
 {
  tolua_usertype(tolua_S,"std::vector<EmberOgre::Model::SubModelDefinition*>");
- tolua_usertype(tolua_S,"std::vector<EmberOgre::TerrainEditBasePointMovement>");
+ tolua_usertype(tolua_S,"std::set<std::string>");
  tolua_usertype(tolua_S,"EmberOgre::AttachPointNode");
  tolua_usertype(tolua_S,"std::map<const std::string,Carpenter::BlockSpec>");
  tolua_usertype(tolua_S,"Ogre::Billboard");
  tolua_usertype(tolua_S,"Eris::TypeInfo");
  tolua_usertype(tolua_S,"Ogre::SceneManager");
- tolua_usertype(tolua_S,"Mercator::BasePoint");
+ tolua_usertype(tolua_S,"Ogre::ControllerValue<Ogre::Real>");
  tolua_usertype(tolua_S,"Ogre::Degree");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Gui::EntityIcon*>");
  tolua_usertype(tolua_S,"std::vector<EmberOgre::Model::ActionDefinition*>");
@@ -377,21 +377,21 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::GUIManager&>");
  tolua_usertype(tolua_S,"Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>");
  tolua_usertype(tolua_S,"EmberOgre::MovableObjectRenderer");
- tolua_usertype(tolua_S,"sigc::signal<void,const EmberOgre::EntityPickResult&,const EmberOgre::MousePickerArgs&>");
+ tolua_usertype(tolua_S,"EmberOgre::Terrain::BasePointUserObject");
  tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::MapAdapter");
  tolua_usertype(tolua_S,"EmberOgre::Model::Action");
- tolua_usertype(tolua_S,"EmberOgre::Gui::AssetsManager");
- tolua_usertype(tolua_S,"Carpenter::BuildingBlockBinding");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntity*>");
+ tolua_usertype(tolua_S,"sigc::signal<void,const EmberOgre::Terrain::TerrainEditAction*>");
  tolua_usertype(tolua_S,"EmberOgre::Gui::EntityIconSlot");
  tolua_usertype(tolua_S,"EmberOgre::TerrainPosition");
  tolua_usertype(tolua_S,"EmberOgre::ModelBlock");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::AvatarMovementMode::Mode>");
  tolua_usertype(tolua_S,"Atlas::Message::Element");
- tolua_usertype(tolua_S,"EmberOgre::Gui::StackableContainer");
+ tolua_usertype(tolua_S,"std::vector<EmberOgre::Terrain::TerrainEditBasePointMovement>");
  tolua_usertype(tolua_S,"WFMath::Point<3>");
  tolua_usertype(tolua_S,"WFMath::AxisBox<3>");
  tolua_usertype(tolua_S,"EmberOgre::Gui::IconBar");
- tolua_usertype(tolua_S,"EmberOgre::TerrainEditor");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Terrain::BasePointUserObject*>");
  tolua_usertype(tolua_S,"Ogre::AxisAlignedBox");
  tolua_usertype(tolua_S,"EmberOgre::Gui::EntityIconManager");
  tolua_usertype(tolua_S,"EmberOgre::Gui::Icons::IconManager");
@@ -416,7 +416,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"std::vector<Eris::Task*>");
  tolua_usertype(tolua_S,"sigc::signal<void,const std::string&>");
  tolua_usertype(tolua_S,"EmberOgre::EmberEntityFactory");
- tolua_usertype(tolua_S,"sigc::signal<void,const EmberOgre::TerrainEditAction*>");
+ tolua_usertype(tolua_S,"Ogre::Entity");
  tolua_usertype(tolua_S,"Ogre::Vector3");
  tolua_usertype(tolua_S,"EmberOgre::Gui::EntityIconDragDropTarget");
  tolua_usertype(tolua_S,"Carpenter::Carpenter");
@@ -431,43 +431,43 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"std::vector<std::string>");
  tolua_usertype(tolua_S,"EmberOgre::AvatarCamera");
  tolua_usertype(tolua_S,"EmberOgre::MouseMotion");
- tolua_usertype(tolua_S,"EmberOgre::BasePointUserObject");
+ tolua_usertype(tolua_S,"EmberOgre::AvatarController");
  tolua_usertype(tolua_S,"EmberOgre::Model::Model");
  tolua_usertype(tolua_S,"EmberOgre::MousePickerArgs");
- tolua_usertype(tolua_S,"EmberOgre::Gui::ConsoleAdapter");
+ tolua_usertype(tolua_S,"std::map<const std::string,Carpenter::BluePrint>");
  tolua_usertype(tolua_S,"Ogre::AnimationState");
  tolua_usertype(tolua_S,"std::vector<EmberOgre::Model::SubEntityDefinition*>");
  tolua_usertype(tolua_S,"sigc::signal<void,Ogre::Camera*>");
  tolua_usertype(tolua_S,"std::vector<EmberOgre::Model::AttachPointDefinition>");
  tolua_usertype(tolua_S,"EmberOgre::Environment::ISky");
  tolua_usertype(tolua_S,"Ogre::Resource");
- tolua_usertype(tolua_S,"EmberOgre::GUIManager");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::TerrainGenerator&>");
+ tolua_usertype(tolua_S,"Ogre::BillboardSet");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Terrain::TerrainGenerator&>");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::MotionManager&>");
  tolua_usertype(tolua_S,"EmberOgre::Gui::MovableObjectRenderer");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntityFactory*>");
  tolua_usertype(tolua_S,"std::map<std::string,EmberOgre::Model::ViewDefinition*>");
  tolua_usertype(tolua_S,"sigc::signal<void,const EmberOgre::MouseMotion&,EmberOgre::Input::InputMode>");
  tolua_usertype(tolua_S,"Ogre::RenderWindow");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Input::InputMode>");
+ tolua_usertype(tolua_S,"CEGUI::ListboxItem");
  tolua_usertype(tolua_S,"sigc::signal<void,const Atlas::Message::Element&>");
  tolua_usertype(tolua_S,"EmberOgre::Model::SubEntityDefinition");
- tolua_usertype(tolua_S,"std::vector<EmberOgre::Model::PartDefinition*>");
+ tolua_usertype(tolua_S,"EmberOgre::AvatarControllerMovement");
  tolua_usertype(tolua_S,"EmberOgre::OgreInfo");
  tolua_usertype(tolua_S,"EmberOgre::Gui::QuaternionAdapter");
- tolua_usertype(tolua_S,"EmberOgre::AvatarEmberEntity");
- tolua_usertype(tolua_S,"std::set<std::string>");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntity*>");
+ tolua_usertype(tolua_S,"std::vector<EmberOgre::AttachPointNode*>");
+ tolua_usertype(tolua_S,"EmberOgre::Model::SubModelDefinition");
+ tolua_usertype(tolua_S,"std::vector<EmberOgre::Model::PartDefinition*>");
  tolua_usertype(tolua_S,"EmberOgre::AttributeObserver");
- tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefnPtr");
  tolua_usertype(tolua_S,"Ogre;;ResourceManager");
  tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefinitionManager");
- tolua_usertype(tolua_S,"Ogre::Camera");
+ tolua_usertype(tolua_S,"sigc::signal<void,const EmberOgre::EntityPickResult&,const EmberOgre::MousePickerArgs&>");
+ tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainEditor");
  tolua_usertype(tolua_S,"Mercator::Area");
  tolua_usertype(tolua_S,"EmberOgre::EmberEntity");
  tolua_usertype(tolua_S,"EmberOgre::EntityWorldPickListener");
  tolua_usertype(tolua_S,"EmberOgre::Construction");
- tolua_usertype(tolua_S,"EmberOgre::TerrainArea");
+ tolua_usertype(tolua_S,"Mercator::BasePoint");
  tolua_usertype(tolua_S,"EmberOgre::Gui::ListHolder");
  tolua_usertype(tolua_S,"EmberOgre::ModelMapping");
  tolua_usertype(tolua_S,"EmberOgre::Gui::ModelRenderer");
@@ -476,56 +476,56 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"WFMath::Quaternion");
  tolua_usertype(tolua_S,"Ogre::Vector2");
  tolua_usertype(tolua_S,"Carpenter::BuildingBlockSpec");
- tolua_usertype(tolua_S,"EmberOgre::MotionManager");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::AssetsManager");
  tolua_usertype(tolua_S,"EmberOgre::EntityPickResult");
  tolua_usertype(tolua_S,"CEGUI::PushButton");
  tolua_usertype(tolua_S,"EmberOgre::Gui::Widget");
  tolua_usertype(tolua_S,"EmberOgre::Gui::Vector3Adapter");
+ tolua_usertype(tolua_S,"EmberOgre::AvatarEmberEntity");
  tolua_usertype(tolua_S,"Carpenter::BluePrint");
- tolua_usertype(tolua_S,"std::vector<EmberOgre::AttachPointNode*>");
+ tolua_usertype(tolua_S,"sigc::signal<void,const SDL_keysym&,EmberOgre::Input::InputMode>");
  tolua_usertype(tolua_S,"Carpenter::AttachPair");
- tolua_usertype(tolua_S,"std::map<const std::string,Carpenter::BluePrint>");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::AvatarController&>");
- tolua_usertype(tolua_S,"Ogre::BillboardSet");
+ tolua_usertype(tolua_S,"EmberOgre::GUIManager");
  tolua_usertype(tolua_S,"CEGUI::Listbox");
- tolua_usertype(tolua_S,"Ogre::ControllerValue<Ogre::Real>");
  tolua_usertype(tolua_S,"std::map<std::string,Carpenter::BluePrint*>");
+ tolua_usertype(tolua_S,"EmberOgre::Jesus");
  tolua_usertype(tolua_S,"Carpenter::BuildingBlockDefinition");
  tolua_usertype(tolua_S,"CEGUI::ListboxTextItem");
- tolua_usertype(tolua_S,"EmberOgre::Jesus");
- tolua_usertype(tolua_S,"CEGUI::ListboxItem");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::ConsoleAdapter");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Input::InputMode>");
  tolua_usertype(tolua_S,"EmberOgre::EmberOgre");
- tolua_usertype(tolua_S,"EmberOgre::AvatarController");
- tolua_usertype(tolua_S,"Carpenter::BuildingBlockSpecDefinition");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Input::MouseButton,EmberOgre::Input::InputMode>");
- tolua_usertype(tolua_S,"EmberOgre::Model::ViewDefinition");
+ tolua_usertype(tolua_S,"Carpenter::BuildingBlockSpecDefinition");
  tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefinition::AreaDefinition");
- tolua_usertype(tolua_S,"EmberOgre::TerrainEditBasePointMovement");
- tolua_usertype(tolua_S,"sigc::signal<void,const SDL_keysym&,EmberOgre::Input::InputMode>");
- tolua_usertype(tolua_S,"Ogre::Real");
- tolua_usertype(tolua_S,"EmberOgre::Gui::IconBase");
- tolua_usertype(tolua_S,"EmberOgre::Gui::EntityIcon");
+ tolua_usertype(tolua_S,"EmberOgre::Model::ViewDefinition");
  tolua_usertype(tolua_S,"EmberOgre::Input");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::IconBase");
+ tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefnPtr");
+ tolua_usertype(tolua_S,"Ogre::Real");
+ tolua_usertype(tolua_S,"EmberOgre::Model::ActionDefinition");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::EntityIcon");
+ tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainArea");
  tolua_usertype(tolua_S,"EmberOgre::MotionManager::MotionManagerInfo");
  tolua_usertype(tolua_S,"Ogre::Quaternion");
  tolua_usertype(tolua_S,"EmberOgre::EntityMoveManager");
- tolua_usertype(tolua_S,"EmberOgre::Model::ActionDefinition");
- tolua_usertype(tolua_S,"EmberOgre::AvatarControllerMovement");
+ tolua_usertype(tolua_S,"Carpenter::BuildingBlockBinding");
+ tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainEditAction");
  tolua_usertype(tolua_S,"Eris::Task");
- tolua_usertype(tolua_S,"EmberOgre::Model::SubModelDefinition");
- tolua_usertype(tolua_S,"Ogre::Entity");
+ tolua_usertype(tolua_S,"sigc::signal<void>");
+ tolua_usertype(tolua_S,"Ogre::Camera");
  tolua_usertype(tolua_S,"EmberOgre::Environment::IWater");
  tolua_usertype(tolua_S,"Ogre::ColourValue");
  tolua_usertype(tolua_S,"EmberOgre::Model::SubModel");
  tolua_usertype(tolua_S,"EmberOgre::Environment::Environment");
  tolua_usertype(tolua_S,"CEGUI::DragContainer");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::BasePointUserObject*>");
+ tolua_usertype(tolua_S,"EmberOgre::MotionManager");
  tolua_usertype(tolua_S,"EmberOgre::WorldEmberEntity");
- tolua_usertype(tolua_S,"EmberOgre::TerrainEditAction");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::StackableContainer");
  tolua_usertype(tolua_S,"Carpenter::AttachPoint");
  tolua_usertype(tolua_S,"EmberOgre::AvatarMovementState");
  tolua_usertype(tolua_S,"EmberOgre::Gui::ColouredListItem");
- tolua_usertype(tolua_S,"sigc::signal<void>");
+ tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainEditBasePointMovement");
  tolua_usertype(tolua_S,"Ogre::SceneNode");
 }
 
@@ -5131,14 +5131,14 @@ static int tolua_EmberOgre_EmberOgre_GUIManager_getEntityIconManager00(lua_State
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: new of class  EmberOgre::TerrainArea */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_TerrainArea_new00
-static int tolua_EmberOgre_EmberOgre_TerrainArea_new00(lua_State* tolua_S)
+/* method: new of class  EmberOgre::Terrain::TerrainArea */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainArea_new00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainArea_new00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertable(tolua_S,1,"EmberOgre::TerrainArea",0,&tolua_err) ||
+     !tolua_isusertable(tolua_S,1,"EmberOgre::Terrain::TerrainArea",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"EmberOgre::EmberEntity",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
@@ -5148,8 +5148,8 @@ static int tolua_EmberOgre_EmberOgre_TerrainArea_new00(lua_State* tolua_S)
  {
   EmberOgre::EmberEntity* entity = ((EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,2,0));
   {
-   EmberOgre::TerrainArea* tolua_ret = (EmberOgre::TerrainArea*)  new EmberOgre::TerrainArea(entity);
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::TerrainArea");
+   EmberOgre::Terrain::TerrainArea* tolua_ret = (EmberOgre::Terrain::TerrainArea*)  new EmberOgre::Terrain::TerrainArea(entity);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Terrain::TerrainArea");
   }
  }
  return 1;
@@ -5161,14 +5161,14 @@ static int tolua_EmberOgre_EmberOgre_TerrainArea_new00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: new_local of class  EmberOgre::TerrainArea */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_TerrainArea_new00_local
-static int tolua_EmberOgre_EmberOgre_TerrainArea_new00_local(lua_State* tolua_S)
+/* method: new_local of class  EmberOgre::Terrain::TerrainArea */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainArea_new00_local
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainArea_new00_local(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertable(tolua_S,1,"EmberOgre::TerrainArea",0,&tolua_err) ||
+     !tolua_isusertable(tolua_S,1,"EmberOgre::Terrain::TerrainArea",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"EmberOgre::EmberEntity",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
@@ -5178,8 +5178,8 @@ static int tolua_EmberOgre_EmberOgre_TerrainArea_new00_local(lua_State* tolua_S)
  {
   EmberOgre::EmberEntity* entity = ((EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,2,0));
   {
-   EmberOgre::TerrainArea* tolua_ret = (EmberOgre::TerrainArea*)  new EmberOgre::TerrainArea(entity);
-   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::TerrainArea");
+   EmberOgre::Terrain::TerrainArea* tolua_ret = (EmberOgre::Terrain::TerrainArea*)  new EmberOgre::Terrain::TerrainArea(entity);
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::Terrain::TerrainArea");
   }
  }
  return 1;
@@ -5191,21 +5191,21 @@ static int tolua_EmberOgre_EmberOgre_TerrainArea_new00_local(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: init of class  EmberOgre::TerrainArea */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_TerrainArea_init00
-static int tolua_EmberOgre_EmberOgre_TerrainArea_init00(lua_State* tolua_S)
+/* method: init of class  EmberOgre::Terrain::TerrainArea */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainArea_init00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainArea_init00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::TerrainArea",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Terrain::TerrainArea",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  EmberOgre::TerrainArea* self = (EmberOgre::TerrainArea*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::Terrain::TerrainArea* self = (EmberOgre::Terrain::TerrainArea*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'init'",NULL);
 #endif
@@ -5223,21 +5223,21 @@ static int tolua_EmberOgre_EmberOgre_TerrainArea_init00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: getArea of class  EmberOgre::TerrainArea */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_TerrainArea_getArea00
-static int tolua_EmberOgre_EmberOgre_TerrainArea_getArea00(lua_State* tolua_S)
+/* method: getArea of class  EmberOgre::Terrain::TerrainArea */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainArea_getArea00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainArea_getArea00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"const EmberOgre::TerrainArea",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Terrain::TerrainArea",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  const EmberOgre::TerrainArea* self = (const EmberOgre::TerrainArea*)  tolua_tousertype(tolua_S,1,0);
+  const EmberOgre::Terrain::TerrainArea* self = (const EmberOgre::Terrain::TerrainArea*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getArea'",NULL);
 #endif
@@ -5255,14 +5255,14 @@ static int tolua_EmberOgre_EmberOgre_TerrainArea_getArea00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: setArea of class  EmberOgre::TerrainArea */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_TerrainArea_setArea00
-static int tolua_EmberOgre_EmberOgre_TerrainArea_setArea00(lua_State* tolua_S)
+/* method: setArea of class  EmberOgre::Terrain::TerrainArea */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainArea_setArea00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainArea_setArea00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::TerrainArea",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Terrain::TerrainArea",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"Mercator::Area",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
@@ -5270,7 +5270,7 @@ static int tolua_EmberOgre_EmberOgre_TerrainArea_setArea00(lua_State* tolua_S)
  else
 #endif
  {
-  EmberOgre::TerrainArea* self = (EmberOgre::TerrainArea*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::Terrain::TerrainArea* self = (EmberOgre::Terrain::TerrainArea*)  tolua_tousertype(tolua_S,1,0);
   Mercator::Area* area = ((Mercator::Area*)  tolua_tousertype(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setArea'",NULL);
@@ -5288,21 +5288,21 @@ static int tolua_EmberOgre_EmberOgre_TerrainArea_setArea00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: getBasePoint of class  EmberOgre::BasePointUserObject */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_BasePointUserObject_getBasePoint00
-static int tolua_EmberOgre_EmberOgre_BasePointUserObject_getBasePoint00(lua_State* tolua_S)
+/* method: getBasePoint of class  EmberOgre::Terrain::BasePointUserObject */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_BasePointUserObject_getBasePoint00
+static int tolua_EmberOgre_EmberOgre_Terrain_BasePointUserObject_getBasePoint00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"const EmberOgre::BasePointUserObject",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Terrain::BasePointUserObject",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  const EmberOgre::BasePointUserObject* self = (const EmberOgre::BasePointUserObject*)  tolua_tousertype(tolua_S,1,0);
+  const EmberOgre::Terrain::BasePointUserObject* self = (const EmberOgre::Terrain::BasePointUserObject*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getBasePoint'",NULL);
 #endif
@@ -5320,21 +5320,21 @@ static int tolua_EmberOgre_EmberOgre_BasePointUserObject_getBasePoint00(lua_Stat
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: getBasePointMarkerNode of class  EmberOgre::BasePointUserObject */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_BasePointUserObject_getBasePointMarkerNode00
-static int tolua_EmberOgre_EmberOgre_BasePointUserObject_getBasePointMarkerNode00(lua_State* tolua_S)
+/* method: getBasePointMarkerNode of class  EmberOgre::Terrain::BasePointUserObject */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_BasePointUserObject_getBasePointMarkerNode00
+static int tolua_EmberOgre_EmberOgre_Terrain_BasePointUserObject_getBasePointMarkerNode00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"const EmberOgre::BasePointUserObject",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Terrain::BasePointUserObject",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  const EmberOgre::BasePointUserObject* self = (const EmberOgre::BasePointUserObject*)  tolua_tousertype(tolua_S,1,0);
+  const EmberOgre::Terrain::BasePointUserObject* self = (const EmberOgre::Terrain::BasePointUserObject*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getBasePointMarkerNode'",NULL);
 #endif
@@ -5352,21 +5352,21 @@ static int tolua_EmberOgre_EmberOgre_BasePointUserObject_getBasePointMarkerNode0
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: getPosition of class  EmberOgre::BasePointUserObject */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_BasePointUserObject_getPosition00
-static int tolua_EmberOgre_EmberOgre_BasePointUserObject_getPosition00(lua_State* tolua_S)
+/* method: getPosition of class  EmberOgre::Terrain::BasePointUserObject */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_BasePointUserObject_getPosition00
+static int tolua_EmberOgre_EmberOgre_Terrain_BasePointUserObject_getPosition00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"const EmberOgre::BasePointUserObject",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Terrain::BasePointUserObject",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  const EmberOgre::BasePointUserObject* self = (const EmberOgre::BasePointUserObject*)  tolua_tousertype(tolua_S,1,0);
+  const EmberOgre::Terrain::BasePointUserObject* self = (const EmberOgre::Terrain::BasePointUserObject*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getPosition'",NULL);
 #endif
@@ -5384,21 +5384,21 @@ static int tolua_EmberOgre_EmberOgre_BasePointUserObject_getPosition00(lua_State
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: getHeight of class  EmberOgre::BasePointUserObject */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_BasePointUserObject_getHeight00
-static int tolua_EmberOgre_EmberOgre_BasePointUserObject_getHeight00(lua_State* tolua_S)
+/* method: getHeight of class  EmberOgre::Terrain::BasePointUserObject */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_BasePointUserObject_getHeight00
+static int tolua_EmberOgre_EmberOgre_Terrain_BasePointUserObject_getHeight00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"const EmberOgre::BasePointUserObject",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Terrain::BasePointUserObject",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  const EmberOgre::BasePointUserObject* self = (const EmberOgre::BasePointUserObject*)  tolua_tousertype(tolua_S,1,0);
+  const EmberOgre::Terrain::BasePointUserObject* self = (const EmberOgre::Terrain::BasePointUserObject*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getHeight'",NULL);
 #endif
@@ -5416,14 +5416,14 @@ static int tolua_EmberOgre_EmberOgre_BasePointUserObject_getHeight00(lua_State* 
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: translate of class  EmberOgre::BasePointUserObject */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_BasePointUserObject_translate00
-static int tolua_EmberOgre_EmberOgre_BasePointUserObject_translate00(lua_State* tolua_S)
+/* method: translate of class  EmberOgre::Terrain::BasePointUserObject */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_BasePointUserObject_translate00
+static int tolua_EmberOgre_EmberOgre_Terrain_BasePointUserObject_translate00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::BasePointUserObject",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Terrain::BasePointUserObject",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
@@ -5431,7 +5431,7 @@ static int tolua_EmberOgre_EmberOgre_BasePointUserObject_translate00(lua_State* 
  else
 #endif
  {
-  EmberOgre::BasePointUserObject* self = (EmberOgre::BasePointUserObject*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::Terrain::BasePointUserObject* self = (EmberOgre::Terrain::BasePointUserObject*)  tolua_tousertype(tolua_S,1,0);
   float verticalMovement = ((float)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'translate'",NULL);
@@ -5449,11 +5449,11 @@ static int tolua_EmberOgre_EmberOgre_BasePointUserObject_translate00(lua_State* 
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* get function: EventUpdatedPosition of class  EmberOgre::BasePointUserObject */
-#ifndef TOLUA_DISABLE_tolua_get_EmberOgre__BasePointUserObject_EventUpdatedPosition
-static int tolua_get_EmberOgre__BasePointUserObject_EventUpdatedPosition(lua_State* tolua_S)
+/* get function: EventUpdatedPosition of class  EmberOgre::Terrain::BasePointUserObject */
+#ifndef TOLUA_DISABLE_tolua_get_EmberOgre__Terrain__BasePointUserObject_EventUpdatedPosition
+static int tolua_get_EmberOgre__Terrain__BasePointUserObject_EventUpdatedPosition(lua_State* tolua_S)
 {
-  EmberOgre::BasePointUserObject* self = (EmberOgre::BasePointUserObject*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::Terrain::BasePointUserObject* self = (EmberOgre::Terrain::BasePointUserObject*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventUpdatedPosition'",NULL);
 #endif
@@ -5462,11 +5462,11 @@ static int tolua_get_EmberOgre__BasePointUserObject_EventUpdatedPosition(lua_Sta
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* set function: EventUpdatedPosition of class  EmberOgre::BasePointUserObject */
-#ifndef TOLUA_DISABLE_tolua_set_EmberOgre__BasePointUserObject_EventUpdatedPosition
-static int tolua_set_EmberOgre__BasePointUserObject_EventUpdatedPosition(lua_State* tolua_S)
+/* set function: EventUpdatedPosition of class  EmberOgre::Terrain::BasePointUserObject */
+#ifndef TOLUA_DISABLE_tolua_set_EmberOgre__Terrain__BasePointUserObject_EventUpdatedPosition
+static int tolua_set_EmberOgre__Terrain__BasePointUserObject_EventUpdatedPosition(lua_State* tolua_S)
 {
-  EmberOgre::BasePointUserObject* self = (EmberOgre::BasePointUserObject*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::Terrain::BasePointUserObject* self = (EmberOgre::Terrain::BasePointUserObject*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventUpdatedPosition'",NULL);
@@ -5479,27 +5479,27 @@ static int tolua_set_EmberOgre__BasePointUserObject_EventUpdatedPosition(lua_Sta
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: getMovements of class  EmberOgre::TerrainEditAction */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_TerrainEditAction_getMovements00
-static int tolua_EmberOgre_EmberOgre_TerrainEditAction_getMovements00(lua_State* tolua_S)
+/* method: getMovements of class  EmberOgre::Terrain::TerrainEditAction */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainEditAction_getMovements00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditAction_getMovements00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"const EmberOgre::TerrainEditAction",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Terrain::TerrainEditAction",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  const EmberOgre::TerrainEditAction* self = (const EmberOgre::TerrainEditAction*)  tolua_tousertype(tolua_S,1,0);
+  const EmberOgre::Terrain::TerrainEditAction* self = (const EmberOgre::Terrain::TerrainEditAction*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMovements'",NULL);
 #endif
   {
-    const std::vector<EmberOgre::TerrainEditBasePointMovement>& tolua_ret = (  const std::vector<EmberOgre::TerrainEditBasePointMovement>&)  self->getMovements();
-   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const std::vector<EmberOgre::TerrainEditBasePointMovement>");
+    const std::vector<EmberOgre::Terrain::TerrainEditBasePointMovement>& tolua_ret = (  const std::vector<EmberOgre::Terrain::TerrainEditBasePointMovement>&)  self->getMovements();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const std::vector<EmberOgre::Terrain::TerrainEditBasePointMovement>");
   }
  }
  return 1;
@@ -5511,48 +5511,48 @@ static int tolua_EmberOgre_EmberOgre_TerrainEditAction_getMovements00(lua_State*
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: getMovements of class  EmberOgre::TerrainEditAction */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_TerrainEditAction_getMovements01
-static int tolua_EmberOgre_EmberOgre_TerrainEditAction_getMovements01(lua_State* tolua_S)
+/* method: getMovements of class  EmberOgre::Terrain::TerrainEditAction */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainEditAction_getMovements01
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditAction_getMovements01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::TerrainEditAction",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Terrain::TerrainEditAction",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  EmberOgre::TerrainEditAction* self = (EmberOgre::TerrainEditAction*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::Terrain::TerrainEditAction* self = (EmberOgre::Terrain::TerrainEditAction*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMovements'",NULL);
 #endif
   {
-    std::vector<EmberOgre::TerrainEditBasePointMovement>& tolua_ret = (  std::vector<EmberOgre::TerrainEditBasePointMovement>&)  self->getMovements();
-   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"std::vector<EmberOgre::TerrainEditBasePointMovement>");
+    std::vector<EmberOgre::Terrain::TerrainEditBasePointMovement>& tolua_ret = (  std::vector<EmberOgre::Terrain::TerrainEditBasePointMovement>&)  self->getMovements();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"std::vector<EmberOgre::Terrain::TerrainEditBasePointMovement>");
   }
  }
  return 1;
 tolua_lerror:
- return tolua_EmberOgre_EmberOgre_TerrainEditAction_getMovements00(tolua_S);
+ return tolua_EmberOgre_EmberOgre_Terrain_TerrainEditAction_getMovements00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: getVerticalMovement of class  EmberOgre::TerrainEditBasePointMovement */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_TerrainEditBasePointMovement_getVerticalMovement00
-static int tolua_EmberOgre_EmberOgre_TerrainEditBasePointMovement_getVerticalMovement00(lua_State* tolua_S)
+/* method: getVerticalMovement of class  EmberOgre::Terrain::TerrainEditBasePointMovement */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainEditBasePointMovement_getVerticalMovement00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditBasePointMovement_getVerticalMovement00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"const EmberOgre::TerrainEditBasePointMovement",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Terrain::TerrainEditBasePointMovement",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  const EmberOgre::TerrainEditBasePointMovement* self = (const EmberOgre::TerrainEditBasePointMovement*)  tolua_tousertype(tolua_S,1,0);
+  const EmberOgre::Terrain::TerrainEditBasePointMovement* self = (const EmberOgre::Terrain::TerrainEditBasePointMovement*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getVerticalMovement'",NULL);
 #endif
@@ -5570,21 +5570,21 @@ static int tolua_EmberOgre_EmberOgre_TerrainEditBasePointMovement_getVerticalMov
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: getPosition of class  EmberOgre::TerrainEditBasePointMovement */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_TerrainEditBasePointMovement_getPosition00
-static int tolua_EmberOgre_EmberOgre_TerrainEditBasePointMovement_getPosition00(lua_State* tolua_S)
+/* method: getPosition of class  EmberOgre::Terrain::TerrainEditBasePointMovement */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainEditBasePointMovement_getPosition00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditBasePointMovement_getPosition00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"const EmberOgre::TerrainEditBasePointMovement",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Terrain::TerrainEditBasePointMovement",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  const EmberOgre::TerrainEditBasePointMovement* self = (const EmberOgre::TerrainEditBasePointMovement*)  tolua_tousertype(tolua_S,1,0);
+  const EmberOgre::Terrain::TerrainEditBasePointMovement* self = (const EmberOgre::Terrain::TerrainEditBasePointMovement*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getPosition'",NULL);
 #endif
@@ -5602,14 +5602,14 @@ static int tolua_EmberOgre_EmberOgre_TerrainEditBasePointMovement_getPosition00(
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: new of class  EmberOgre::TerrainEditor */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_TerrainEditor_new00
-static int tolua_EmberOgre_EmberOgre_TerrainEditor_new00(lua_State* tolua_S)
+/* method: new of class  EmberOgre::Terrain::TerrainEditor */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_new00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_new00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertable(tolua_S,1,"EmberOgre::TerrainEditor",0,&tolua_err) ||
+     !tolua_isusertable(tolua_S,1,"EmberOgre::Terrain::TerrainEditor",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
@@ -5617,8 +5617,8 @@ static int tolua_EmberOgre_EmberOgre_TerrainEditor_new00(lua_State* tolua_S)
 #endif
  {
   {
-   EmberOgre::TerrainEditor* tolua_ret = (EmberOgre::TerrainEditor*)  new EmberOgre::TerrainEditor();
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::TerrainEditor");
+   EmberOgre::Terrain::TerrainEditor* tolua_ret = (EmberOgre::Terrain::TerrainEditor*)  new EmberOgre::Terrain::TerrainEditor();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Terrain::TerrainEditor");
   }
  }
  return 1;
@@ -5630,14 +5630,14 @@ static int tolua_EmberOgre_EmberOgre_TerrainEditor_new00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: new_local of class  EmberOgre::TerrainEditor */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_TerrainEditor_new00_local
-static int tolua_EmberOgre_EmberOgre_TerrainEditor_new00_local(lua_State* tolua_S)
+/* method: new_local of class  EmberOgre::Terrain::TerrainEditor */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_new00_local
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_new00_local(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertable(tolua_S,1,"EmberOgre::TerrainEditor",0,&tolua_err) ||
+     !tolua_isusertable(tolua_S,1,"EmberOgre::Terrain::TerrainEditor",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
@@ -5645,8 +5645,8 @@ static int tolua_EmberOgre_EmberOgre_TerrainEditor_new00_local(lua_State* tolua_
 #endif
  {
   {
-   EmberOgre::TerrainEditor* tolua_ret = (EmberOgre::TerrainEditor*)  new EmberOgre::TerrainEditor();
-   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::TerrainEditor");
+   EmberOgre::Terrain::TerrainEditor* tolua_ret = (EmberOgre::Terrain::TerrainEditor*)  new EmberOgre::Terrain::TerrainEditor();
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::Terrain::TerrainEditor");
   }
  }
  return 1;
@@ -5658,21 +5658,21 @@ static int tolua_EmberOgre_EmberOgre_TerrainEditor_new00_local(lua_State* tolua_
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: delete of class  EmberOgre::TerrainEditor */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_TerrainEditor_delete00
-static int tolua_EmberOgre_EmberOgre_TerrainEditor_delete00(lua_State* tolua_S)
+/* method: delete of class  EmberOgre::Terrain::TerrainEditor */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_delete00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_delete00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::TerrainEditor",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Terrain::TerrainEditor",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  EmberOgre::TerrainEditor* self = (EmberOgre::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::Terrain::TerrainEditor* self = (EmberOgre::Terrain::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'delete'",NULL);
 #endif
@@ -5687,21 +5687,21 @@ static int tolua_EmberOgre_EmberOgre_TerrainEditor_delete00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: showOverlay of class  EmberOgre::TerrainEditor */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_TerrainEditor_showOverlay00
-static int tolua_EmberOgre_EmberOgre_TerrainEditor_showOverlay00(lua_State* tolua_S)
+/* method: showOverlay of class  EmberOgre::Terrain::TerrainEditor */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_showOverlay00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_showOverlay00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::TerrainEditor",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Terrain::TerrainEditor",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  EmberOgre::TerrainEditor* self = (EmberOgre::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::Terrain::TerrainEditor* self = (EmberOgre::Terrain::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'showOverlay'",NULL);
 #endif
@@ -5718,21 +5718,21 @@ static int tolua_EmberOgre_EmberOgre_TerrainEditor_showOverlay00(lua_State* tolu
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: hideOverlay of class  EmberOgre::TerrainEditor */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_TerrainEditor_hideOverlay00
-static int tolua_EmberOgre_EmberOgre_TerrainEditor_hideOverlay00(lua_State* tolua_S)
+/* method: hideOverlay of class  EmberOgre::Terrain::TerrainEditor */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_hideOverlay00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_hideOverlay00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::TerrainEditor",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Terrain::TerrainEditor",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  EmberOgre::TerrainEditor* self = (EmberOgre::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::Terrain::TerrainEditor* self = (EmberOgre::Terrain::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'hideOverlay'",NULL);
 #endif
@@ -5749,21 +5749,21 @@ static int tolua_EmberOgre_EmberOgre_TerrainEditor_hideOverlay00(lua_State* tolu
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: createOverlay of class  EmberOgre::TerrainEditor */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_TerrainEditor_createOverlay00
-static int tolua_EmberOgre_EmberOgre_TerrainEditor_createOverlay00(lua_State* tolua_S)
+/* method: createOverlay of class  EmberOgre::Terrain::TerrainEditor */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_createOverlay00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_createOverlay00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::TerrainEditor",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Terrain::TerrainEditor",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  EmberOgre::TerrainEditor* self = (EmberOgre::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::Terrain::TerrainEditor* self = (EmberOgre::Terrain::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'createOverlay'",NULL);
 #endif
@@ -5780,21 +5780,21 @@ static int tolua_EmberOgre_EmberOgre_TerrainEditor_createOverlay00(lua_State* to
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: isOverlayShown of class  EmberOgre::TerrainEditor */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_TerrainEditor_isOverlayShown00
-static int tolua_EmberOgre_EmberOgre_TerrainEditor_isOverlayShown00(lua_State* tolua_S)
+/* method: isOverlayShown of class  EmberOgre::Terrain::TerrainEditor */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_isOverlayShown00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_isOverlayShown00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"const EmberOgre::TerrainEditor",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Terrain::TerrainEditor",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  const EmberOgre::TerrainEditor* self = (const EmberOgre::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
+  const EmberOgre::Terrain::TerrainEditor* self = (const EmberOgre::Terrain::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'isOverlayShown'",NULL);
 #endif
@@ -5812,23 +5812,23 @@ static int tolua_EmberOgre_EmberOgre_TerrainEditor_isOverlayShown00(lua_State* t
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: commitAction of class  EmberOgre::TerrainEditor */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_TerrainEditor_commitAction00
-static int tolua_EmberOgre_EmberOgre_TerrainEditor_commitAction00(lua_State* tolua_S)
+/* method: commitAction of class  EmberOgre::Terrain::TerrainEditor */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_commitAction00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_commitAction00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::TerrainEditor",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"const EmberOgre::TerrainEditAction",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Terrain::TerrainEditor",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const EmberOgre::Terrain::TerrainEditAction",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  EmberOgre::TerrainEditor* self = (EmberOgre::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
-  const EmberOgre::TerrainEditAction* action = ((const EmberOgre::TerrainEditAction*)  tolua_tousertype(tolua_S,2,0));
+  EmberOgre::Terrain::TerrainEditor* self = (EmberOgre::Terrain::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
+  const EmberOgre::Terrain::TerrainEditAction* action = ((const EmberOgre::Terrain::TerrainEditAction*)  tolua_tousertype(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'commitAction'",NULL);
 #endif
@@ -5845,117 +5845,117 @@ static int tolua_EmberOgre_EmberOgre_TerrainEditor_commitAction00(lua_State* tol
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* get function: EventPickedBasePoint of class  EmberOgre::TerrainEditor */
-#ifndef TOLUA_DISABLE_tolua_get_EmberOgre__TerrainEditor_EventPickedBasePoint
-static int tolua_get_EmberOgre__TerrainEditor_EventPickedBasePoint(lua_State* tolua_S)
+/* get function: EventPickedBasePoint of class  EmberOgre::Terrain::TerrainEditor */
+#ifndef TOLUA_DISABLE_tolua_get_EmberOgre__Terrain__TerrainEditor_EventPickedBasePoint
+static int tolua_get_EmberOgre__Terrain__TerrainEditor_EventPickedBasePoint(lua_State* tolua_S)
 {
-  EmberOgre::TerrainEditor* self = (EmberOgre::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::Terrain::TerrainEditor* self = (EmberOgre::Terrain::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventPickedBasePoint'",NULL);
 #endif
-  tolua_pushusertype(tolua_S,(void*)&self->EventPickedBasePoint,"sigc::signal<void,EmberOgre::BasePointUserObject*>");
+  tolua_pushusertype(tolua_S,(void*)&self->EventPickedBasePoint,"sigc::signal<void,EmberOgre::Terrain::BasePointUserObject*>");
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* set function: EventPickedBasePoint of class  EmberOgre::TerrainEditor */
-#ifndef TOLUA_DISABLE_tolua_set_EmberOgre__TerrainEditor_EventPickedBasePoint
-static int tolua_set_EmberOgre__TerrainEditor_EventPickedBasePoint(lua_State* tolua_S)
+/* set function: EventPickedBasePoint of class  EmberOgre::Terrain::TerrainEditor */
+#ifndef TOLUA_DISABLE_tolua_set_EmberOgre__Terrain__TerrainEditor_EventPickedBasePoint
+static int tolua_set_EmberOgre__Terrain__TerrainEditor_EventPickedBasePoint(lua_State* tolua_S)
 {
-  EmberOgre::TerrainEditor* self = (EmberOgre::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::Terrain::TerrainEditor* self = (EmberOgre::Terrain::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventPickedBasePoint'",NULL);
-  if (!tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::BasePointUserObject*>",0,&tolua_err))
+  if (!tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::Terrain::BasePointUserObject*>",0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->EventPickedBasePoint = *((sigc::signal<void,EmberOgre::BasePointUserObject*>*)  tolua_tousertype(tolua_S,2,0))
+  self->EventPickedBasePoint = *((sigc::signal<void,EmberOgre::Terrain::BasePointUserObject*>*)  tolua_tousertype(tolua_S,2,0))
 ;
  return 0;
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* get function: EventActionCreated of class  EmberOgre::TerrainEditor */
-#ifndef TOLUA_DISABLE_tolua_get_EmberOgre__TerrainEditor_EventActionCreated
-static int tolua_get_EmberOgre__TerrainEditor_EventActionCreated(lua_State* tolua_S)
+/* get function: EventActionCreated of class  EmberOgre::Terrain::TerrainEditor */
+#ifndef TOLUA_DISABLE_tolua_get_EmberOgre__Terrain__TerrainEditor_EventActionCreated
+static int tolua_get_EmberOgre__Terrain__TerrainEditor_EventActionCreated(lua_State* tolua_S)
 {
-  EmberOgre::TerrainEditor* self = (EmberOgre::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::Terrain::TerrainEditor* self = (EmberOgre::Terrain::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventActionCreated'",NULL);
 #endif
-  tolua_pushusertype(tolua_S,(void*)&self->EventActionCreated,"sigc::signal<void,const EmberOgre::TerrainEditAction*>");
+  tolua_pushusertype(tolua_S,(void*)&self->EventActionCreated,"sigc::signal<void,const EmberOgre::Terrain::TerrainEditAction*>");
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* set function: EventActionCreated of class  EmberOgre::TerrainEditor */
-#ifndef TOLUA_DISABLE_tolua_set_EmberOgre__TerrainEditor_EventActionCreated
-static int tolua_set_EmberOgre__TerrainEditor_EventActionCreated(lua_State* tolua_S)
+/* set function: EventActionCreated of class  EmberOgre::Terrain::TerrainEditor */
+#ifndef TOLUA_DISABLE_tolua_set_EmberOgre__Terrain__TerrainEditor_EventActionCreated
+static int tolua_set_EmberOgre__Terrain__TerrainEditor_EventActionCreated(lua_State* tolua_S)
 {
-  EmberOgre::TerrainEditor* self = (EmberOgre::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::Terrain::TerrainEditor* self = (EmberOgre::Terrain::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventActionCreated'",NULL);
-  if (!tolua_isusertype(tolua_S,2,"sigc::signal<void,const EmberOgre::TerrainEditAction*>",0,&tolua_err))
+  if (!tolua_isusertype(tolua_S,2,"sigc::signal<void,const EmberOgre::Terrain::TerrainEditAction*>",0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->EventActionCreated = *((sigc::signal<void,const EmberOgre::TerrainEditAction*>*)  tolua_tousertype(tolua_S,2,0))
+  self->EventActionCreated = *((sigc::signal<void,const EmberOgre::Terrain::TerrainEditAction*>*)  tolua_tousertype(tolua_S,2,0))
 ;
  return 0;
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* get function: EventSelectedBasePointUpdatedPosition of class  EmberOgre::TerrainEditor */
-#ifndef TOLUA_DISABLE_tolua_get_EmberOgre__TerrainEditor_EventSelectedBasePointUpdatedPosition
-static int tolua_get_EmberOgre__TerrainEditor_EventSelectedBasePointUpdatedPosition(lua_State* tolua_S)
+/* get function: EventSelectedBasePointUpdatedPosition of class  EmberOgre::Terrain::TerrainEditor */
+#ifndef TOLUA_DISABLE_tolua_get_EmberOgre__Terrain__TerrainEditor_EventSelectedBasePointUpdatedPosition
+static int tolua_get_EmberOgre__Terrain__TerrainEditor_EventSelectedBasePointUpdatedPosition(lua_State* tolua_S)
 {
-  EmberOgre::TerrainEditor* self = (EmberOgre::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::Terrain::TerrainEditor* self = (EmberOgre::Terrain::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventSelectedBasePointUpdatedPosition'",NULL);
 #endif
-  tolua_pushusertype(tolua_S,(void*)&self->EventSelectedBasePointUpdatedPosition,"sigc::signal<void,EmberOgre::BasePointUserObject*>");
+  tolua_pushusertype(tolua_S,(void*)&self->EventSelectedBasePointUpdatedPosition,"sigc::signal<void,EmberOgre::Terrain::BasePointUserObject*>");
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* set function: EventSelectedBasePointUpdatedPosition of class  EmberOgre::TerrainEditor */
-#ifndef TOLUA_DISABLE_tolua_set_EmberOgre__TerrainEditor_EventSelectedBasePointUpdatedPosition
-static int tolua_set_EmberOgre__TerrainEditor_EventSelectedBasePointUpdatedPosition(lua_State* tolua_S)
+/* set function: EventSelectedBasePointUpdatedPosition of class  EmberOgre::Terrain::TerrainEditor */
+#ifndef TOLUA_DISABLE_tolua_set_EmberOgre__Terrain__TerrainEditor_EventSelectedBasePointUpdatedPosition
+static int tolua_set_EmberOgre__Terrain__TerrainEditor_EventSelectedBasePointUpdatedPosition(lua_State* tolua_S)
 {
-  EmberOgre::TerrainEditor* self = (EmberOgre::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::Terrain::TerrainEditor* self = (EmberOgre::Terrain::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventSelectedBasePointUpdatedPosition'",NULL);
-  if (!tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::BasePointUserObject*>",0,&tolua_err))
+  if (!tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::Terrain::BasePointUserObject*>",0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->EventSelectedBasePointUpdatedPosition = *((sigc::signal<void,EmberOgre::BasePointUserObject*>*)  tolua_tousertype(tolua_S,2,0))
+  self->EventSelectedBasePointUpdatedPosition = *((sigc::signal<void,EmberOgre::Terrain::BasePointUserObject*>*)  tolua_tousertype(tolua_S,2,0))
 ;
  return 0;
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: getCurrentBasePointUserObject of class  EmberOgre::TerrainEditor */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_TerrainEditor_getCurrentBasePointUserObject00
-static int tolua_EmberOgre_EmberOgre_TerrainEditor_getCurrentBasePointUserObject00(lua_State* tolua_S)
+/* method: getCurrentBasePointUserObject of class  EmberOgre::Terrain::TerrainEditor */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_getCurrentBasePointUserObject00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_getCurrentBasePointUserObject00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"const EmberOgre::TerrainEditor",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Terrain::TerrainEditor",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  const EmberOgre::TerrainEditor* self = (const EmberOgre::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
+  const EmberOgre::Terrain::TerrainEditor* self = (const EmberOgre::Terrain::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getCurrentBasePointUserObject'",NULL);
 #endif
   {
-   EmberOgre::BasePointUserObject* tolua_ret = (EmberOgre::BasePointUserObject*)  self->getCurrentBasePointUserObject();
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::BasePointUserObject");
+   EmberOgre::Terrain::BasePointUserObject* tolua_ret = (EmberOgre::Terrain::BasePointUserObject*)  self->getCurrentBasePointUserObject();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Terrain::BasePointUserObject");
   }
  }
  return 1;
@@ -5967,21 +5967,21 @@ static int tolua_EmberOgre_EmberOgre_TerrainEditor_getCurrentBasePointUserObject
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: sendChangesToServer of class  EmberOgre::TerrainEditor */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_TerrainEditor_sendChangesToServer00
-static int tolua_EmberOgre_EmberOgre_TerrainEditor_sendChangesToServer00(lua_State* tolua_S)
+/* method: sendChangesToServer of class  EmberOgre::Terrain::TerrainEditor */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_sendChangesToServer00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_sendChangesToServer00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::TerrainEditor",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Terrain::TerrainEditor",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  EmberOgre::TerrainEditor* self = (EmberOgre::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::Terrain::TerrainEditor* self = (EmberOgre::Terrain::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'sendChangesToServer'",NULL);
 #endif
@@ -5998,14 +5998,14 @@ static int tolua_EmberOgre_EmberOgre_TerrainEditor_sendChangesToServer00(lua_Sta
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: createAction of class  EmberOgre::TerrainEditor */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_TerrainEditor_createAction00
-static int tolua_EmberOgre_EmberOgre_TerrainEditor_createAction00(lua_State* tolua_S)
+/* method: createAction of class  EmberOgre::Terrain::TerrainEditor */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_createAction00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_createAction00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::TerrainEditor",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Terrain::TerrainEditor",0,&tolua_err) ||
      !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
@@ -6013,7 +6013,7 @@ static int tolua_EmberOgre_EmberOgre_TerrainEditor_createAction00(lua_State* tol
  else
 #endif
  {
-  EmberOgre::TerrainEditor* self = (EmberOgre::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::Terrain::TerrainEditor* self = (EmberOgre::Terrain::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
   bool alsoCommit = ((bool)  tolua_toboolean(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'createAction'",NULL);
@@ -6031,21 +6031,21 @@ static int tolua_EmberOgre_EmberOgre_TerrainEditor_createAction00(lua_State* tol
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: undoLastAction of class  EmberOgre::TerrainEditor */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_TerrainEditor_undoLastAction00
-static int tolua_EmberOgre_EmberOgre_TerrainEditor_undoLastAction00(lua_State* tolua_S)
+/* method: undoLastAction of class  EmberOgre::Terrain::TerrainEditor */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_undoLastAction00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_undoLastAction00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::TerrainEditor",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Terrain::TerrainEditor",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  EmberOgre::TerrainEditor* self = (EmberOgre::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::Terrain::TerrainEditor* self = (EmberOgre::Terrain::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'undoLastAction'",NULL);
 #endif
@@ -6063,21 +6063,21 @@ static int tolua_EmberOgre_EmberOgre_TerrainEditor_undoLastAction00(lua_State* t
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: redoAction of class  EmberOgre::TerrainEditor */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_TerrainEditor_redoAction00
-static int tolua_EmberOgre_EmberOgre_TerrainEditor_redoAction00(lua_State* tolua_S)
+/* method: redoAction of class  EmberOgre::Terrain::TerrainEditor */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_redoAction00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_redoAction00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::TerrainEditor",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Terrain::TerrainEditor",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  EmberOgre::TerrainEditor* self = (EmberOgre::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::Terrain::TerrainEditor* self = (EmberOgre::Terrain::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'redoAction'",NULL);
 #endif
@@ -19343,7 +19343,7 @@ static int tolua_get_EmberOgre__EmberOgre_EventTerrainGeneratorCreated(lua_State
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventTerrainGeneratorCreated'",NULL);
 #endif
-  tolua_pushusertype(tolua_S,(void*)&self->EventTerrainGeneratorCreated,"sigc::signal<void,EmberOgre::TerrainGenerator&>");
+  tolua_pushusertype(tolua_S,(void*)&self->EventTerrainGeneratorCreated,"sigc::signal<void,EmberOgre::Terrain::TerrainGenerator&>");
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
@@ -19356,10 +19356,10 @@ static int tolua_set_EmberOgre__EmberOgre_EventTerrainGeneratorCreated(lua_State
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventTerrainGeneratorCreated'",NULL);
-  if (!tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::TerrainGenerator&>",0,&tolua_err))
+  if (!tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::Terrain::TerrainGenerator&>",0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->EventTerrainGeneratorCreated = *((sigc::signal<void,EmberOgre::TerrainGenerator&>*)  tolua_tousertype(tolua_S,2,0))
+  self->EventTerrainGeneratorCreated = *((sigc::signal<void,EmberOgre::Terrain::TerrainGenerator&>*)  tolua_tousertype(tolua_S,2,0))
 ;
  return 0;
 }
@@ -19784,64 +19784,70 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"EmberOgre",0);
   tolua_beginmodule(tolua_S,"EmberOgre");
-   #ifdef __cplusplus
-   tolua_cclass(tolua_S,"TerrainArea","EmberOgre::TerrainArea","",tolua_collect_EmberOgre__TerrainArea);
-   #else
-   tolua_cclass(tolua_S,"TerrainArea","EmberOgre::TerrainArea","",NULL);
-   #endif
-   tolua_beginmodule(tolua_S,"TerrainArea");
-    tolua_function(tolua_S,"new",tolua_EmberOgre_EmberOgre_TerrainArea_new00);
-    tolua_function(tolua_S,"new_local",tolua_EmberOgre_EmberOgre_TerrainArea_new00_local);
-    tolua_function(tolua_S,".call",tolua_EmberOgre_EmberOgre_TerrainArea_new00_local);
-    tolua_function(tolua_S,"init",tolua_EmberOgre_EmberOgre_TerrainArea_init00);
-    tolua_function(tolua_S,"getArea",tolua_EmberOgre_EmberOgre_TerrainArea_getArea00);
-    tolua_function(tolua_S,"setArea",tolua_EmberOgre_EmberOgre_TerrainArea_setArea00);
+   tolua_module(tolua_S,"Terrain",0);
+   tolua_beginmodule(tolua_S,"Terrain");
+    #ifdef __cplusplus
+    tolua_cclass(tolua_S,"TerrainArea","EmberOgre::Terrain::TerrainArea","",tolua_collect_EmberOgre__Terrain__TerrainArea);
+    #else
+    tolua_cclass(tolua_S,"TerrainArea","EmberOgre::Terrain::TerrainArea","",NULL);
+    #endif
+    tolua_beginmodule(tolua_S,"TerrainArea");
+     tolua_function(tolua_S,"new",tolua_EmberOgre_EmberOgre_Terrain_TerrainArea_new00);
+     tolua_function(tolua_S,"new_local",tolua_EmberOgre_EmberOgre_Terrain_TerrainArea_new00_local);
+     tolua_function(tolua_S,".call",tolua_EmberOgre_EmberOgre_Terrain_TerrainArea_new00_local);
+     tolua_function(tolua_S,"init",tolua_EmberOgre_EmberOgre_Terrain_TerrainArea_init00);
+     tolua_function(tolua_S,"getArea",tolua_EmberOgre_EmberOgre_Terrain_TerrainArea_getArea00);
+     tolua_function(tolua_S,"setArea",tolua_EmberOgre_EmberOgre_Terrain_TerrainArea_setArea00);
+    tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"EmberOgre",0);
   tolua_beginmodule(tolua_S,"EmberOgre");
-   tolua_cclass(tolua_S,"BasePointUserObject","EmberOgre::BasePointUserObject","",NULL);
-   tolua_beginmodule(tolua_S,"BasePointUserObject");
-    tolua_function(tolua_S,"getBasePoint",tolua_EmberOgre_EmberOgre_BasePointUserObject_getBasePoint00);
-    tolua_function(tolua_S,"getBasePointMarkerNode",tolua_EmberOgre_EmberOgre_BasePointUserObject_getBasePointMarkerNode00);
-    tolua_function(tolua_S,"getPosition",tolua_EmberOgre_EmberOgre_BasePointUserObject_getPosition00);
-    tolua_function(tolua_S,"getHeight",tolua_EmberOgre_EmberOgre_BasePointUserObject_getHeight00);
-    tolua_function(tolua_S,"translate",tolua_EmberOgre_EmberOgre_BasePointUserObject_translate00);
-    tolua_variable(tolua_S,"EventUpdatedPosition",tolua_get_EmberOgre__BasePointUserObject_EventUpdatedPosition,tolua_set_EmberOgre__BasePointUserObject_EventUpdatedPosition);
-   tolua_endmodule(tolua_S);
-   tolua_cclass(tolua_S,"TerrainEditAction","EmberOgre::TerrainEditAction","",NULL);
-   tolua_beginmodule(tolua_S,"TerrainEditAction");
-    tolua_function(tolua_S,"getMovements",tolua_EmberOgre_EmberOgre_TerrainEditAction_getMovements00);
-    tolua_function(tolua_S,"getMovements",tolua_EmberOgre_EmberOgre_TerrainEditAction_getMovements01);
-   tolua_endmodule(tolua_S);
-   tolua_cclass(tolua_S,"TerrainEditBasePointMovement","EmberOgre::TerrainEditBasePointMovement","",NULL);
-   tolua_beginmodule(tolua_S,"TerrainEditBasePointMovement");
-    tolua_function(tolua_S,"getVerticalMovement",tolua_EmberOgre_EmberOgre_TerrainEditBasePointMovement_getVerticalMovement00);
-    tolua_function(tolua_S,"getPosition",tolua_EmberOgre_EmberOgre_TerrainEditBasePointMovement_getPosition00);
-   tolua_endmodule(tolua_S);
-   #ifdef __cplusplus
-   tolua_cclass(tolua_S,"TerrainEditor","EmberOgre::TerrainEditor","",tolua_collect_EmberOgre__TerrainEditor);
-   #else
-   tolua_cclass(tolua_S,"TerrainEditor","EmberOgre::TerrainEditor","",NULL);
-   #endif
-   tolua_beginmodule(tolua_S,"TerrainEditor");
-    tolua_function(tolua_S,"new",tolua_EmberOgre_EmberOgre_TerrainEditor_new00);
-    tolua_function(tolua_S,"new_local",tolua_EmberOgre_EmberOgre_TerrainEditor_new00_local);
-    tolua_function(tolua_S,".call",tolua_EmberOgre_EmberOgre_TerrainEditor_new00_local);
-    tolua_function(tolua_S,"delete",tolua_EmberOgre_EmberOgre_TerrainEditor_delete00);
-    tolua_function(tolua_S,"showOverlay",tolua_EmberOgre_EmberOgre_TerrainEditor_showOverlay00);
-    tolua_function(tolua_S,"hideOverlay",tolua_EmberOgre_EmberOgre_TerrainEditor_hideOverlay00);
-    tolua_function(tolua_S,"createOverlay",tolua_EmberOgre_EmberOgre_TerrainEditor_createOverlay00);
-    tolua_function(tolua_S,"isOverlayShown",tolua_EmberOgre_EmberOgre_TerrainEditor_isOverlayShown00);
-    tolua_function(tolua_S,"commitAction",tolua_EmberOgre_EmberOgre_TerrainEditor_commitAction00);
-    tolua_variable(tolua_S,"EventPickedBasePoint",tolua_get_EmberOgre__TerrainEditor_EventPickedBasePoint,tolua_set_EmberOgre__TerrainEditor_EventPickedBasePoint);
-    tolua_variable(tolua_S,"EventActionCreated",tolua_get_EmberOgre__TerrainEditor_EventActionCreated,tolua_set_EmberOgre__TerrainEditor_EventActionCreated);
-    tolua_variable(tolua_S,"EventSelectedBasePointUpdatedPosition",tolua_get_EmberOgre__TerrainEditor_EventSelectedBasePointUpdatedPosition,tolua_set_EmberOgre__TerrainEditor_EventSelectedBasePointUpdatedPosition);
-    tolua_function(tolua_S,"getCurrentBasePointUserObject",tolua_EmberOgre_EmberOgre_TerrainEditor_getCurrentBasePointUserObject00);
-    tolua_function(tolua_S,"sendChangesToServer",tolua_EmberOgre_EmberOgre_TerrainEditor_sendChangesToServer00);
-    tolua_function(tolua_S,"createAction",tolua_EmberOgre_EmberOgre_TerrainEditor_createAction00);
-    tolua_function(tolua_S,"undoLastAction",tolua_EmberOgre_EmberOgre_TerrainEditor_undoLastAction00);
-    tolua_function(tolua_S,"redoAction",tolua_EmberOgre_EmberOgre_TerrainEditor_redoAction00);
+   tolua_module(tolua_S,"Terrain",0);
+   tolua_beginmodule(tolua_S,"Terrain");
+    tolua_cclass(tolua_S,"BasePointUserObject","EmberOgre::Terrain::BasePointUserObject","",NULL);
+    tolua_beginmodule(tolua_S,"BasePointUserObject");
+     tolua_function(tolua_S,"getBasePoint",tolua_EmberOgre_EmberOgre_Terrain_BasePointUserObject_getBasePoint00);
+     tolua_function(tolua_S,"getBasePointMarkerNode",tolua_EmberOgre_EmberOgre_Terrain_BasePointUserObject_getBasePointMarkerNode00);
+     tolua_function(tolua_S,"getPosition",tolua_EmberOgre_EmberOgre_Terrain_BasePointUserObject_getPosition00);
+     tolua_function(tolua_S,"getHeight",tolua_EmberOgre_EmberOgre_Terrain_BasePointUserObject_getHeight00);
+     tolua_function(tolua_S,"translate",tolua_EmberOgre_EmberOgre_Terrain_BasePointUserObject_translate00);
+     tolua_variable(tolua_S,"EventUpdatedPosition",tolua_get_EmberOgre__Terrain__BasePointUserObject_EventUpdatedPosition,tolua_set_EmberOgre__Terrain__BasePointUserObject_EventUpdatedPosition);
+    tolua_endmodule(tolua_S);
+    tolua_cclass(tolua_S,"TerrainEditAction","EmberOgre::Terrain::TerrainEditAction","",NULL);
+    tolua_beginmodule(tolua_S,"TerrainEditAction");
+     tolua_function(tolua_S,"getMovements",tolua_EmberOgre_EmberOgre_Terrain_TerrainEditAction_getMovements00);
+     tolua_function(tolua_S,"getMovements",tolua_EmberOgre_EmberOgre_Terrain_TerrainEditAction_getMovements01);
+    tolua_endmodule(tolua_S);
+    tolua_cclass(tolua_S,"TerrainEditBasePointMovement","EmberOgre::Terrain::TerrainEditBasePointMovement","",NULL);
+    tolua_beginmodule(tolua_S,"TerrainEditBasePointMovement");
+     tolua_function(tolua_S,"getVerticalMovement",tolua_EmberOgre_EmberOgre_Terrain_TerrainEditBasePointMovement_getVerticalMovement00);
+     tolua_function(tolua_S,"getPosition",tolua_EmberOgre_EmberOgre_Terrain_TerrainEditBasePointMovement_getPosition00);
+    tolua_endmodule(tolua_S);
+    #ifdef __cplusplus
+    tolua_cclass(tolua_S,"TerrainEditor","EmberOgre::Terrain::TerrainEditor","",tolua_collect_EmberOgre__Terrain__TerrainEditor);
+    #else
+    tolua_cclass(tolua_S,"TerrainEditor","EmberOgre::Terrain::TerrainEditor","",NULL);
+    #endif
+    tolua_beginmodule(tolua_S,"TerrainEditor");
+     tolua_function(tolua_S,"new",tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_new00);
+     tolua_function(tolua_S,"new_local",tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_new00_local);
+     tolua_function(tolua_S,".call",tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_new00_local);
+     tolua_function(tolua_S,"delete",tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_delete00);
+     tolua_function(tolua_S,"showOverlay",tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_showOverlay00);
+     tolua_function(tolua_S,"hideOverlay",tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_hideOverlay00);
+     tolua_function(tolua_S,"createOverlay",tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_createOverlay00);
+     tolua_function(tolua_S,"isOverlayShown",tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_isOverlayShown00);
+     tolua_function(tolua_S,"commitAction",tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_commitAction00);
+     tolua_variable(tolua_S,"EventPickedBasePoint",tolua_get_EmberOgre__Terrain__TerrainEditor_EventPickedBasePoint,tolua_set_EmberOgre__Terrain__TerrainEditor_EventPickedBasePoint);
+     tolua_variable(tolua_S,"EventActionCreated",tolua_get_EmberOgre__Terrain__TerrainEditor_EventActionCreated,tolua_set_EmberOgre__Terrain__TerrainEditor_EventActionCreated);
+     tolua_variable(tolua_S,"EventSelectedBasePointUpdatedPosition",tolua_get_EmberOgre__Terrain__TerrainEditor_EventSelectedBasePointUpdatedPosition,tolua_set_EmberOgre__Terrain__TerrainEditor_EventSelectedBasePointUpdatedPosition);
+     tolua_function(tolua_S,"getCurrentBasePointUserObject",tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_getCurrentBasePointUserObject00);
+     tolua_function(tolua_S,"sendChangesToServer",tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_sendChangesToServer00);
+     tolua_function(tolua_S,"createAction",tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_createAction00);
+     tolua_function(tolua_S,"undoLastAction",tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_undoLastAction00);
+     tolua_function(tolua_S,"redoAction",tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_redoAction00);
+    tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"EmberOgre",0);

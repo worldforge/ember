@@ -27,6 +27,7 @@
 #include "TerrainPageGeometry.h"
 
 namespace EmberOgre {
+namespace Terrain {
 
 TerrainPageGeometry::TerrainPageGeometry()
 {
@@ -37,5 +38,5 @@ TerrainPageGeometry::~TerrainPageGeometry()
 {
 }
 
-
+}
 }

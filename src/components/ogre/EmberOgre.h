@@ -60,6 +60,11 @@ class CollisionManager;
 
 namespace EmberOgre {
 
+namespace Terrain
+{
+class TerrainGenerator;
+}
+
 namespace Model {
 	class ModelDefinitionManager;
 	namespace Mapping {
@@ -82,8 +87,6 @@ class AvatarEmberEntity;
 class EmberEntityFactory;
 
 class EmberPagingSceneManager;
-
-class TerrainGenerator;
 
 class MotionManager;
 
@@ -154,7 +157,7 @@ public:
 	// perhaps refactoring stuff
 	Avatar* getAvatar() const;
 	Ogre::SceneManager* getSceneManager() const;
-	TerrainGenerator* getTerrainGenerator() const;
+	Terrain::TerrainGenerator* getTerrainGenerator() const;
 	MotionManager* getMotionManager() const;
 	Ogre::Root* getOgreRoot() const;
 	EmberEntityFactory* getEntityFactory() const;
@@ -220,7 +223,7 @@ public:
 	/**
 	Emitted after the TerrainGenerator has been created
 	*/
-	sigc::signal<void, TerrainGenerator&> EventTerrainGeneratorCreated;
+	sigc::signal<void, Terrain::TerrainGenerator&> EventTerrainGeneratorCreated;
 	
 	/**
 	Emitted after the AvatarController has been created
@@ -341,7 +344,7 @@ protected:
 	/**
 	Responsible for handling of terrain.
 	*/
-	TerrainGenerator* mTerrainGenerator;
+	Terrain::TerrainGenerator* mTerrainGenerator;
 	
 	/**
 	Responsible for updating motions and animations of entities.

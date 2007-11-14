@@ -48,8 +48,12 @@ namespace Model {
 	class Model;
 }
 
+namespace Terrain
+{
+	class TerrainArea;
+}
+
 class EmberEntityFactory;
-class TerrainArea;
 /**
  * A representation of an Eris::Entity, ie. a world entity.
  * Note that most entities in the game world will be of type EmberPhysicalEntity
@@ -276,7 +280,7 @@ protected:
     virtual void onImaginary(const Atlas::Objects::Root& act);
 	virtual void onSoundAction(const Atlas::Objects::Operation::RootOperation& op);
 	
-	virtual void addArea(TerrainArea* area);
+	virtual void addArea(Terrain::TerrainArea* area);
 	virtual void onAttrChanged(const std::string& str, const Atlas::Message::Element& v);
 	
 	
@@ -332,7 +336,7 @@ protected:
 	/**
 	If there's a terrainarea belonging to this entity, that's stored here.
 	*/
-	std::auto_ptr<TerrainArea> mTerrainArea;
+	std::auto_ptr<Terrain::TerrainArea> mTerrainArea;
 
 		
 	/**

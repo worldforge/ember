@@ -30,7 +30,9 @@
 
 namespace EmberOgre
 {
+namespace Terrain {
 	class TerrainPage;
+}
 /**
 	 * A specialized class for loading 2D Data from Mercator, through an EmberOgre::TerrainPage class..
  */
@@ -58,7 +60,7 @@ namespace EmberOgre
 			virtual void _unload( void );
 
 		private:
-			TerrainPage* mTerrainPage;
+			Terrain::TerrainPage* mTerrainPage;
 	};
 
 }
