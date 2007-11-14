@@ -88,6 +88,32 @@ material /global/creature/humanoid/kobold : /base/simple
 }
 
 
+material /global/bipeds/bearded_male/bearded_male2 : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/textures/bearded_male/bearded_maleD.png
+}
+material /global/bipeds/male/male : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/textures/male/male.png
+}
 
+material /global/bipeds/drystan_archer/drystan_archer_footwear : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/textures/drystan_archer/drystan_archer_footwearD.png
+	set_texture_alias NormalHeightMap 3d_skeletons/bipeds/textures/drystan_archer/drystan_archer_footwearN.png
+	set_texture_alias SpecularMap 3d_skeletons/bipeds/textures/drystan_archer/drystan_archer_footwearS.png
+}
 
+material /global/bipeds/drystan_archer/drystan_archer_shirt : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/textures/drystan_archer/drystan_archer_shirtD.png
+	set_texture_alias NormalHeightMap 3d_skeletons/bipeds/textures/drystan_archer/drystan_archer_shirtN.png
+	set_texture_alias SpecularMap 3d_skeletons/bipeds/textures/drystan_archer/drystan_archer_shirtS.png
+}
 
+material /global/bipeds/drystan_archer/drystan_archer_pants : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/textures/drystan_archer/drystan_archer_pantsD.png
+	set_texture_alias NormalHeightMap 3d_skeletons/bipeds/textures/drystan_archer/drystan_archer_pantsN.png
+	set_texture_alias SpecularMap 3d_skeletons/bipeds/textures/drystan_archer/drystan_archer_pantsS.png
+}

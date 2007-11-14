@@ -418,9 +418,32 @@ material /global/items/building_element/chopping_block : /base/normalmap/specula
 	set_texture_alias SpecularMap 3d_objects/items/building_element/textures/chopping_block/chopping_blockS.png 
 }
 
+material /global/items/ossyja/rough_post : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/ossyja/rough_postD.png
+	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/ossyja/rough_postN.png
+	set_texture_alias SpecularMap 3d_objects/items/building_element/textures/ossyja/rough_postS.png
+}
 
+material /global/items/ossyja/old_wood_planks : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/ossyja/old_wood_planksD.png
+	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/ossyja/old_wood_planksN.png
+	set_texture_alias SpecularMap 3d_objects/items/building_element/textures/ossyja/old_wood_planksS.png
+}
 
+material /global/items/ossyja/foundation_brick : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/ossyja/foundation_brickD.png
+	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/ossyja/foundation_brickN.png
+	set_texture_alias SpecularMap 3d_objects/items/building_element/textures/ossyja/foundation_brickS.png
+}
 
+material /global/items/ossyja/floor_plank : /base/normalmap
+{
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/ossyja/floor_plankD.png
+	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/ossyja/floor_plankN.png
+}
 
 
 
@@ -475,14 +498,6 @@ material /global/items/building_element/chopping_block : /base/normalmap/specula
 // }
 
 
-
-
-
-
-
-
-
-
 material carpenter/flare
 {
         technique
@@ -502,16 +517,4 @@ material carpenter/flare
                 }
         }
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
