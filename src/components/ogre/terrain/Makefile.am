@@ -5,7 +5,8 @@ libTerrain_la_SOURCES = TerrainArea.cpp TerrainArea.h TerrainEditor.cpp \
 	TerrainEditor.cpp	TerrainEditor.h TerrainEditor.h TerrainGenerator.cpp TerrainGenerator.h TerrainInfo.cpp \
 	TerrainPage.cpp TerrainPage.cpp	TerrainPage.h TerrainPage.h TerrainPageGeometry.cpp \
 	TerrainPageShadow.cpp TerrainPageSurface.cpp TerrainPageSurfaceCompiler.cpp \
+	TerrainPageSurfaceCompilerTechniqueShader.cpp TerrainPageSurfaceCompilerTechniqueSimple.cpp \
 	TerrainPageSurfaceLayer.cpp TerrainShader.cpp TerrainShader.h
 noinst_HEADERS = ISceneManagerAdapter.h TerrainInfo.h TerrainPageGeometry.h \
 	TerrainPageShadow.h TerrainPageSurface.h TerrainPageSurfaceCompiler.h \
-	TerrainPageSurfaceLayer.h
+	TerrainPageSurfaceCompilerTechniqueShader.h TerrainPageSurfaceCompilerTechniqueSimple.h TerrainPageSurfaceLayer.h

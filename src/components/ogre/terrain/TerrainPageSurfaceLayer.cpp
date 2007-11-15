@@ -32,6 +32,7 @@
 #include <Mercator/Shader.h>
 
 namespace EmberOgre {
+namespace Terrain {
 
 TerrainPageSurfaceLayer::TerrainPageSurfaceLayer(TerrainPageSurface& terrainPageSurface, int surfaceIndex, Mercator::Shader* shader)
 : mTerrainPageSurface(terrainPageSurface)
@@ -97,6 +98,18 @@ unsigned int TerrainPageSurfaceLayer::getPixelWidth() const
 {
 	return mTerrainPageSurface.getPixelWidth();
 }
+
+float TerrainPageSurfaceLayer::getScale() const
+{
+	return mScale;
+}
+
+void TerrainPageSurfaceLayer::setScale(float scale)
+{
+	mScale = scale;
+}
+
+
 
 void TerrainPageSurfaceLayer::updateCoverageImage()
 {
@@ -184,6 +197,6 @@ int TerrainPageSurfaceLayer::getSurfaceIndex()
 {
 	return mSurfaceIndex;
 }
-
+}
 
 }

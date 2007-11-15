@@ -49,13 +49,14 @@ namespace Ogre
 }
 
 namespace EmberOgre {
-
-class TerrainShader;
-class TerrainGenerator;
-class TerrainPageSurface;
 namespace Environment {
 class FoliageArea;
 }
+namespace Terrain {
+class TerrainShader;
+class TerrainGenerator;
+class TerrainPageSurface;
+
 
 // TYPEDEF_STL_VECTOR(Mercator::Segment*, SegmentVector);
 TYPEDEF_STL_MAP(const Mercator::Shader*, TerrainShader*, ShaderMap);
@@ -311,7 +312,7 @@ inline int TerrainPage::getAlphaTextureSize( ) const
 	return (getPageSize() - 1);
 
 }
-
+}
 };
 
 #endif

@@ -36,6 +36,7 @@ class Segment;
 }
 
 namespace EmberOgre {
+namespace Terrain {
 
 class TerrainPageSurfaceLayer;
 class TerrainPage;
@@ -89,5 +90,5 @@ protected:
 };
 
 }
-
+}
 #endif

@@ -39,6 +39,7 @@ class Image;
 
 
 namespace EmberOgre {
+namespace Terrain {
 
 class TerrainPageSurface;
 
@@ -71,6 +72,9 @@ public:
 	int getSurfaceIndex();
 	Mercator::Surface* getSurfaceForSegment(Mercator::Segment* segment) const;
 
+	float getScale() const;
+	void setScale(float scale);
+
 protected:
 	TerrainPageSurface& mTerrainPageSurface;
 	Mercator::Shader* mShader;
@@ -85,6 +89,8 @@ protected:
 	Ogre::DataStreamPtr mCoverageDataStreamPtr;
 	int mSurfaceIndex;
 	
+	float mScale;
+	
 
 	void fillAlphaLayer(unsigned char* finalImagePtr, unsigned char* wfImagePtr, unsigned int channel, int startX, int startY, unsigned short numberOfChannels);
 
@@ -95,6 +101,7 @@ Ogre::Image* TerrainPageSurfaceLayer::getCoverageImage()
 	return mCoverageImage;
 }
 
+}
 }
 
 #endif

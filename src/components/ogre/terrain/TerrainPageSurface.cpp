@@ -30,6 +30,7 @@
 #include "TerrainPageSurfaceCompiler.h"
 
 namespace EmberOgre {
+namespace Terrain {
 
 TerrainPageSurface::TerrainPageSurface(TerrainPage& terrainPage)
 : mTerrainPage(terrainPage), mSurfaceCompiler(new TerrainPageSurfaceCompiler())
@@ -94,7 +95,7 @@ Ogre::MaterialPtr TerrainPageSurface::getMaterial()
 	
 void TerrainPageSurface::recompileMaterial()
 {
-	mSurfaceCompiler->compileMaterial(mMaterial, mLayers, mShadow);
+	mSurfaceCompiler->compileMaterial(mMaterial, mLayers, mShadow, mTerrainPage);
 	mMaterial->load();
 }
 
@@ -109,6 +110,6 @@ TerrainPageSurfaceLayer* TerrainPageSurface::createSurfaceLayer(int surfaceIndex
 	mLayers.insert(TerrainPageSurfaceLayerStore::value_type(surfaceIndex, terrainSurface));
 	return terrainSurface;
 }
-
+}
 
 }

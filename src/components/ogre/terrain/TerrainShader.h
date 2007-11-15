@@ -28,6 +28,7 @@
 
 
 namespace EmberOgre {
+namespace Terrain {
 	
 class TerrainShader{
 public:
@@ -66,6 +67,9 @@ public:
 	 */
 	Mercator::Surface* getSurfaceForSegment(Mercator::Segment* segment) const;
 	
+	inline float getScale() const;
+	inline void setScale(float scale);
+	
 protected:
 	const Ogre::String mTextureName;
 	Mercator::Shader* mShader;
@@ -74,10 +78,21 @@ protected:
 	Ogre::MaterialPtr mMaterial;
 	
 	Ogre::ushort getMaxTextureUnits() const;
+	float mScale;
 	
 	//const Model::ModelDefinition::AreaDefinition& mAreaDefinition;
 };
 
+float TerrainShader::getScale() const
+{
+	return mScale;
+}
+void TerrainShader::setScale(float scale)
+{
+	mScale = scale;
+}
+
+}
 }
 
 #endif // TERRAINSHADER_H

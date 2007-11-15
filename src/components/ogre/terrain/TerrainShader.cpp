@@ -19,6 +19,7 @@
 #include "TerrainShader.h"
 #include <OgreIteratorWrappers.h>
 namespace EmberOgre {
+namespace Terrain {
 
 TerrainShader::TerrainShader(Mercator::Terrain* terrain, int terrainIndex,  const Ogre::String& textureName, Mercator::Shader* shader)
 : mTextureName(textureName)
@@ -26,6 +27,7 @@ TerrainShader::TerrainShader(Mercator::Terrain* terrain, int terrainIndex,  cons
 , mTerrain(terrain)
 , mTerrainIndex(terrainIndex)
 , mMaterial(0)
+, mScale(32)
 {
 
 	mTerrain->addShader(shader, mTerrainIndex);
@@ -240,5 +242,5 @@ Mercator::Surface* TerrainShader::getSurfaceForSegment(Mercator::Segment* segmen
 	return surface;
 }
 
-
+}
 }

@@ -91,7 +91,7 @@ void main_fp
 
 void fog_linear_vp
 (
-	uniform float4x4   worldViewProj,
+	uniform float4x4   iWorldViewProj,
     float4             iPosition           : POSITION,
 	float2             iCoverage           : TEXCOORD0,
 	float2             iTexcoord           : TEXCOORD1,
@@ -103,34 +103,19 @@ void fog_linear_vp
 	out float4         oPosition           : POSITION,
 	out float2         oCoverage           : TEXCOORD0,
 	out float2         oTexcoord           : TEXCOORD1,
-	out float          oFog                : TEXCOORD2,
-	out float          oFogFade                : TEXCOORD3,
+	out float          oFog                : FOG,
+	out float          oFogFade                : TEXCOORD2,
 	out float4         oColour    : COLOR
 
 )
 {
-
-	
-	//iFogStart = 192;
-	//iFogMax = 256;
-	oPosition  = mul(worldViewProj,iPosition);
+	oPosition  = mul(iWorldViewProj,iPosition);
 	oCoverage = iCoverage;
 	oTexcoord = iCoverage;
 	oColour = iColor;
 // 	oFogFade = 1;
-	
-	//this is truly an assfaced way to do this. If you know a better way to do it, feel free to change the code.
-	//starting at the distance of 192 meters, fade out vertices until the distance of 256 meters, where they should be transparent
-	if (oPosition.z >= iFogStart) {
-		oFog =  ((oPosition.z  - iFogStart)   / (iFogMax - iFogStart));
-/*		if (oPosition.z > 300) {
-			oFogFade = ((600 - oPosition.z ) / 300);
-		}*/
-	} else {
-		oFog = 0;
-	}
+	oFog = oPosition.z;
 }
-
 
 
 // Fragment program for automatic terrain texture generation
@@ -138,41 +123,66 @@ void splat_fp
 (
     float2              iCoverage	: TEXCOORD0,
     float2              iTexcoord	: TEXCOORD1,
-	//how much fog to apply. 0..1, where 0 = zero fog and 1 = full fog
-	float				iFog 		: TEXCOORD2,
+	float				iFog 		: FOG,
 // 	float				iFogFade	: TEXCOORD3,
 	
-	//the colour of the fog
-	uniform float4				iFogColour,
-	
-	//how much to tile the texture
-	uniform float tile,
+	uniform float3 lightDiffuse,
+	uniform float3 lightSpecular,
+	uniform float3 lightAmbient,
+	uniform float4 iFogParams,
+	uniform float3 iFogColour,
 
 	out float4          oColor		: COLOR,
 	
-    uniform sampler2D   textureUnit0,
-    uniform sampler2D   textureUnit1,
-    uniform sampler2D   textureUnit2,
-    uniform sampler2D   textureUnit3
+    uniform sampler2D   coverageTexture: TEXUNIT0,
+    uniform sampler2D   shadowTexture: TEXUNIT1,
+    uniform sampler2D   baseTextureDiffuse: TEXUNIT2,
+    uniform sampler2D   splat1TextureDiffuse: TEXUNIT3,
+    uniform sampler2D   splat2TextureDiffuse: TEXUNIT4,
+    uniform sampler2D   splat3TextureDiffuse: TEXUNIT5,
+    uniform sampler2D   splat4TextureDiffuse: TEXUNIT6,
+    uniform float4   iScales[4],
+    uniform float iNumberOfLayers //the number of layers NOTE: this is very inefficient, much better to have many different shaders for the different amount of layers, but we'll do it like this for now while we're developing
 )
 {
+	//tile = 0.0025;
 //	float fogFactor   = exp2(-abs(iFog));
+
 	//only do lerp if we can see the pixels (i.e. not when in full fog
-	if (iFog < 1.0) {
-		iTexcoord *= tile;
+	if (iFog < iFogParams.z) {
+		//iTexcoord = iTexcoord * 16.0f;
 		
-		oColor = tex2D(textureUnit1, iTexcoord.xy);
-		oColor = (lerp(oColor, tex2D(textureUnit2, iTexcoord.xy) , tex2D(textureUnit0, iCoverage.xy).w));
-		oColor = (lerp(oColor, tex2D(textureUnit3, iTexcoord.xy), tex2D(textureUnit0, iCoverage.xy).x));
-		//only apply fog if there is any
-		if (iFog > 0) {
-			oColor = lerp(iFogColour, oColor, 1- iFog);
-//			oColor = lerp(fogColor, oColor, iFog);
+		oColor = tex2D(baseTextureDiffuse, iTexcoord.xy * iScales[0].x);
+		if (iNumberOfLayers > 1) {
+			oColor = (lerp(oColor, tex2D(splat1TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture, iCoverage.xy).w));
 		}
+		if (iNumberOfLayers > 2) {
+			oColor = (lerp(oColor, tex2D(splat2TextureDiffuse, iTexcoord.xy * iScales[0].z), tex2D(coverageTexture, iCoverage.xy).x));
+		}
+		if (iNumberOfLayers > 3) {
+			oColor = (lerp(oColor, tex2D(splat3TextureDiffuse, iTexcoord.xy * iScales[0].w), tex2D(coverageTexture, iCoverage.xy).y));
+		}
+		if (iNumberOfLayers > 4) {
+ 			oColor = (lerp(oColor, tex2D(splat4TextureDiffuse, iTexcoord.xy * iScales[1].x), tex2D(coverageTexture, iCoverage.xy).z));
+ 		}
+ 		
+ 		//shadow
+ 		oColor *= tex2D(shadowTexture, iCoverage.xy).x;
+ 		
+		float f = (iFogParams.z - iFog)/(iFogParams.z - iFogParams.y);
+		oColor = lerp(oColor, float4(iFogColour, 1), 1 - f);
 	} else {
-		oColor = iFogColour;
-// 		oColor.w = iFogFade;
-	}
+		oColor = float4(iFogColour, 1);
+	} 		
+		//only apply fog if there is any
+// 		if (iFog > 0) {
+// 			oColor = lerp(iFogColour, oColor, 1- iFog);
+// //			oColor = lerp(fogColor, oColor, iFog);
+// 		}
+// 	} else {
+// 		oColor = iFogColour;
+// // 		oColor.w = iFogFade;
+// 	}
 		 
 
 }

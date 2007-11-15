@@ -25,6 +25,7 @@
 #include "../EmberOgrePrerequisites.h"
 
 namespace EmberOgre {
+namespace Terrain {
 
 class TerrainPage;
 class TerrainGenerator;
@@ -76,6 +77,7 @@ protected:
 	
 };
 
+}
 }
 
 #endif

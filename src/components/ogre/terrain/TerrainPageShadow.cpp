@@ -33,6 +33,7 @@
 #include <wfmath/stream.h>
 
 namespace EmberOgre {
+namespace Terrain {
 
 
 void SimpleTerrainPageShadowTechnique::createShadowData(TerrainPage& page, TerrainGenerator* generator, unsigned char* data, const Ogre::Vector3& lightDirection, const Ogre::ColourValue& lightColour)
@@ -163,5 +164,5 @@ void TerrainPageShadow::setShadowTechnique(ITerrainPageShadowTechnique* shadowTe
 }
 
 
-
+}
 }
