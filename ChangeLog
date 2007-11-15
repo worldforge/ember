@@ -1,3 +1,75 @@
+2007-11-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/programs/OffsetMapping.cg: better formal syntax
+
+2007-11-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain.cfg: disable vertex lightning as we now use a texture shadow map
+
+2007-11-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/Makefile.am, src/components/ogre/terrain/TerrainPage.h, src/components/ogre/terrain/TerrainPageShadow.cpp, src/components/ogre/terrain/TerrainPageShadow.h, src/components/ogre/terrain/TerrainPageSurface.cpp, src/components/ogre/terrain/TerrainPageSurface.h, src/components/ogre/terrain/TerrainPageSurfaceCompiler.cpp, src/components/ogre/terrain/TerrainPageSurfaceCompiler.h, src/components/ogre/terrain/TerrainPageSurfaceCompilerTechniqueShader.cpp, src/components/ogre/terrain/TerrainPageSurfaceCompilerTechniqueShader.h, src/components/ogre/terrain/TerrainPageSurfaceCompilerTechniqueSimple.cpp, src/components/ogre/terrain/TerrainPageSurfaceCompilerTechniqueSimple.h, src/components/ogre/terrain/TerrainPageSurfaceLayer.cpp, src/components/ogre/terrain/TerrainPageSurfaceLayer.h, src/components/ogre/terrain/TerrainShader.cpp, src/components/ogre/terrain/TerrainShader.h, media/materials/splatting/Splat.cg: the shader terrain material is now fully functioning
+
+2007-11-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingLandScapeData2D_HeightField.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManagerAdapter.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/EmberPagingLandScapeData2D_HeightField.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/EmberPagingLandScapeTexture.cpp, src/components/ogre/environment/FoliageArea.cpp, src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/TerrainArea.pkg, src/components/ogre/scripting/bindings/lua/TerrainEditor.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/terrain/ISceneManagerAdapter.h, src/components/ogre/terrain/TerrainArea.cpp, src/components/ogre/terrain/TerrainArea.h, src/components/ogre/terrain/TerrainEditor.cpp, src/components/ogre/terrain/TerrainEditor.h, src/components/ogre/terrain/TerrainGenerator.cpp, src/components/ogre/terrain/TerrainGenerator.h, src/components/ogre/terrain/TerrainInfo.cpp, src/components/ogre/terrain/TerrainInfo.h, src/components/ogre/terrain/TerrainPage.cpp, src/components/ogre/terrain/TerrainPage.h, src/components/ogre/terrain/TerrainPageGeometry.cpp, src/components/ogre/terrain/TerrainPageGeometry.h, src/components/ogre/terrain/TerrainPageShadow.cpp, src/components/ogre/terrain/TerrainPageShadow.h, src/components/ogre/widgets/TerrainEditor.lua, src/components/ogre/EmberEntity.cpp, src/components/ogre/EmberEntity.h, src/components/ogre/EmberEntityFactory.cpp, src/components/ogre/EmberEntityFactory.h, src/components/ogre/EmberOgre.cpp, src/components/ogre/EmberOgre.h, src/components/ogre/WorldEmberEntity.cpp, src/components/ogre/WorldEmberEntity.h: put the terrain classes under the Terrain namespace
+
+2007-11-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/scripts/buildings.material, media/materials/scripts/creatures.material: add support for new textures added by jayr
+
+2007-11-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/scripting/bindings/lua/MovableObjectRenderer.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/scripting/bindings/lua/helpers/OgreUtils.cpp, src/components/ogre/scripting/bindings/lua/ogre/Ogre.pkg, src/components/ogre/scripting/bindings/lua/ogre/OgreColourValue.pkg, src/components/ogre/scripting/bindings/lua/ogre/lua_Ogre.cpp: updated bindings
+
+2007-11-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/WorldEmberEntity.cpp: make sure that the environment is set up before we create the terrain
+
+2007-11-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/icons/IconRenderer.cpp: set the background to transparent
+
+2007-11-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/MovableObjectRenderer.cpp, src/components/ogre/widgets/MovableObjectRenderer.h:  added a method for setting the background colour
+
+2007-11-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/SimpleRenderContext.cpp, src/components/ogre/SimpleRenderContext.h: added a method for setting the background colour
+
+2007-11-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/Makefile.am, src/components/ogre/terrain/TerrainGenerator.cpp, src/components/ogre/terrain/TerrainGenerator.h, src/components/ogre/terrain/TerrainPage.cpp, src/components/ogre/terrain/TerrainPage.h, src/components/ogre/terrain/TerrainPageGeometry.cpp, src/components/ogre/terrain/TerrainPageGeometry.h, src/components/ogre/terrain/TerrainPageShadow.cpp, src/components/ogre/terrain/TerrainPageShadow.h, src/components/ogre/terrain/TerrainPageSurface.cpp, src/components/ogre/terrain/TerrainPageSurface.h, src/components/ogre/terrain/TerrainPageSurfaceCompiler.cpp, src/components/ogre/terrain/TerrainPageSurfaceCompiler.h, src/components/ogre/terrain/TerrainPageSurfaceLayer.cpp, src/components/ogre/terrain/TerrainPageSurfaceLayer.h, src/components/ogre/terrain/TerrainShader.cpp: refactored the whole terrain system into a better structure where each terrain layer is handled by instances of TerrainPageSurfaceLayer, and compiled into a material by the TerrainPageSurfaceCompiler
+
+2007-11-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/buildingelements.modeldef.xml, src/components/ogre/modeldefinitions/buildings.modeldef, src/components/ogre/modeldefinitions/environment.modeldef.xml, src/components/ogre/modeldefinitions/furniture.modeldef, src/components/ogre/modeldefinitions/modelmappings.modelmap.xml, src/components/ogre/modeldefinitions/outdoor_structures.modeldef, src/components/ogre/modeldefinitions/trees.modeldef.xml, src/components/ogre/modeldefinitions/vehicles.modeldef: updated models after jayr's restructuring
+
+2007-11-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/CaelumEnvironment.cpp, src/components/ogre/environment/CaelumSun.cpp, src/components/ogre/environment/CaelumSun.h, src/components/ogre/environment/Environment.h: added a method for getting the sun direction
+
+2007-11-11 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/caelum/src/Sun.cpp: start out with the sun shining directly down
+
+2007-11-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/scripts/buildings.material, media/materials/scripts/creatures.material, media/materials/scripts/cylinder.material, media/materials/scripts/furniture.material, media/materials/scripts/tools.material, media/materials/scripts/valuables.material, media/materials/scripts/vegetation.material: overhauled all materials after jayr's restructuring as well as made them use the new normal and specular maps
+
+2007-11-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/base_scripts/base.material: added a couple of more base materials
+
+2007-11-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/programs/All_In_Wonder.cg, media/materials/programs/All_In_Wonder.program, media/materials/programs/OffsetMapping.cg: cleaned up errors in the shaders
+
+2007-11-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* ember.in: added a --debug option which will start Ember in gdb
+
 2007-10-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/scripting/bindings/lua/EntityIconSlot.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp, src/components/ogre/widgets/EntityIconSlot.cpp, src/components/ogre/widgets/EntityIconSlot.h, src/components/ogre/widgets/Inventory.lua: added an event which is triggered by UI code whenever an icon by the user is dragged away from a slot. This will allow us to listen for when the user wants to unequip a certain entity by dragging it from the doll to the inventory.
