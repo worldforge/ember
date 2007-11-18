@@ -99,12 +99,14 @@ void fog_linear_vp
 	
 	uniform float              iFogStart,
 	uniform float              iFogMax,
+	uniform float4 iFogParams,
+// 	uniform float3 iFogColour,
 
 	out float4         oPosition           : POSITION,
 	out float2         oCoverage           : TEXCOORD0,
 	out float2         oTexcoord           : TEXCOORD1,
 	out float          oFog                : FOG,
-	out float          oFogFade                : TEXCOORD2,
+// 	out float          oFogFade                : TEXCOORD2,
 	out float4         oColour    : COLOR
 
 )
@@ -114,7 +116,8 @@ void fog_linear_vp
 	oTexcoord = iCoverage;
 	oColour = iColor;
 // 	oFogFade = 1;
-	oFog = oPosition.z;
+// 	oFog = oPosition.z;
+	oFog = 1 - ((iFogParams.z - oPosition.z)/(iFogParams.z - iFogParams.y));
 }
 
 
@@ -129,27 +132,27 @@ void splat_fp
 	uniform float3 lightDiffuse,
 	uniform float3 lightSpecular,
 	uniform float3 lightAmbient,
-	uniform float4 iFogParams,
-	uniform float3 iFogColour,
+// 	uniform float4 iFogParams,
+	uniform float4 iFogColour,
 
 	out float4          oColor		: COLOR,
 	
+    uniform float4   iScales[4],
+    uniform float iNumberOfLayers, //the number of layers NOTE: this is very inefficient, much better to have many different shaders for the different amount of layers, but we'll do it like this for now while we're developing
     uniform sampler2D   coverageTexture: TEXUNIT0,
     uniform sampler2D   shadowTexture: TEXUNIT1,
     uniform sampler2D   baseTextureDiffuse: TEXUNIT2,
     uniform sampler2D   splat1TextureDiffuse: TEXUNIT3,
     uniform sampler2D   splat2TextureDiffuse: TEXUNIT4,
     uniform sampler2D   splat3TextureDiffuse: TEXUNIT5,
-    uniform sampler2D   splat4TextureDiffuse: TEXUNIT6,
-    uniform float4   iScales[4],
-    uniform float iNumberOfLayers //the number of layers NOTE: this is very inefficient, much better to have many different shaders for the different amount of layers, but we'll do it like this for now while we're developing
+    uniform sampler2D   splat4TextureDiffuse: TEXUNIT6
 )
 {
 	//tile = 0.0025;
 //	float fogFactor   = exp2(-abs(iFog));
 
 	//only do lerp if we can see the pixels (i.e. not when in full fog
-	if (iFog < iFogParams.z) {
+ 	if (iFog < 1) {
 		//iTexcoord = iTexcoord * 16.0f;
 		
 		oColor = tex2D(baseTextureDiffuse, iTexcoord.xy * iScales[0].x);
@@ -169,11 +172,13 @@ void splat_fp
  		//shadow
  		oColor *= tex2D(shadowTexture, iCoverage.xy).x;
  		
-		float f = (iFogParams.z - iFog)/(iFogParams.z - iFogParams.y);
-		oColor = lerp(oColor, float4(iFogColour, 1), 1 - f);
+// 		float f = (iFogParams.z - iFog)/(iFogParams.z - iFogParams.y);
+// 		oColor = lerp(oColor, float4(iFogColour, 1), 1 - f);
+		oColor = lerp(oColor, iFogColour, iFog);
 	} else {
-		oColor = float4(iFogColour, 1);
-	} 		
+		oColor = iFogColour;
+	}
+	
 		//only apply fog if there is any
 // 		if (iFog > 0) {
 // 			oColor = lerp(iFogColour, oColor, 1- iFog);
