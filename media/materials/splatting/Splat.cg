@@ -171,19 +171,19 @@ void splat_fp
 			oColor = (lerp(oColor, tex2D(splat3TextureDiffuse, iTexcoord.xy * iScales[0].w), tex2D(coverageTexture1, iCoverage.xy).y));
 		}
 		if (iNumberOfLayers > 4) {
- 			oColor = (lerp(oColor, tex2D(splat4TextureDiffuse, iTexcoord.xy * iScales[1].x), tex2D(coverageTexture1, iCoverage.xy).z));
+ 			oColor = (lerp(oColor, tex2D(splat4TextureDiffuse, iTexcoord.xy * iScales[0].x), tex2D(coverageTexture1, iCoverage.xy).z));
  		}
 		if (iNumberOfLayers > 5) {
-			oColor = (lerp(oColor, tex2D(splat5TextureDiffuse, iTexcoord.xy * iScales[1].y), tex2D(coverageTexture2, iCoverage.xy).w));
+			oColor = (lerp(oColor, tex2D(splat5TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture2, iCoverage.xy).w));
 		}
 		if (iNumberOfLayers > 6) {
-			oColor = (lerp(oColor, tex2D(splat6TextureDiffuse, iTexcoord.xy * iScales[1].z), tex2D(coverageTexture2, iCoverage.xy).x));
+			oColor = (lerp(oColor, tex2D(splat6TextureDiffuse, iTexcoord.xy * iScales[0].z), tex2D(coverageTexture2, iCoverage.xy).x));
 		}
 		if (iNumberOfLayers > 7) {
-			oColor = (lerp(oColor, tex2D(splat7TextureDiffuse, iTexcoord.xy * iScales[1].w), tex2D(coverageTexture2, iCoverage.xy).y));
+			oColor = (lerp(oColor, tex2D(splat7TextureDiffuse, iTexcoord.xy * iScales[0].w), tex2D(coverageTexture2, iCoverage.xy).y));
 		}
 		if (iNumberOfLayers > 8) {
- 			oColor = (lerp(oColor, tex2D(splat8TextureDiffuse, iTexcoord.xy * iScales[2].x), tex2D(coverageTexture2, iCoverage.xy).z));
+ 			oColor = (lerp(oColor, tex2D(splat8TextureDiffuse, iTexcoord.xy * iScales[0].x), tex2D(coverageTexture2, iCoverage.xy).z));
  		} 		
  		//shadow
  		oColor *= tex2D(shadowTexture, iCoverage.xy).x;
