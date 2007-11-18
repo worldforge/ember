@@ -1,3 +1,15 @@
+2007-11-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/splatting/Splat.cg, media/materials/splatting/splat.program, src/components/ogre/terrain/TerrainPageSurfaceCompilerTechniqueShader.cpp, src/components/ogre/terrain/TerrainPageSurfaceCompilerTechniqueShader.h: expanded the support for multiple combined coverage textures in one pass
+
+2007-11-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainPageSurfaceCompiler.cpp, src/components/ogre/terrain/TerrainPageSurfaceCompiler.h, src/components/ogre/terrain/TerrainPageSurfaceCompilerTechniqueShader.cpp, src/components/ogre/terrain/TerrainPageSurfaceCompilerTechniqueShader.h, src/components/ogre/terrain/TerrainPageSurfaceCompilerTechniqueSimple.cpp, src/components/ogre/terrain/TerrainPageSurfaceCompilerTechniqueSimple.h: made the techniques better aware of the page that they're on, and added preliminary support for multiple coverage images in one pass, as well as many passes in one technique
+	
+2007-11-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+	
+	* media/materials/splatting/Splat.cg: better handling of fog
+
 2007-11-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* media/materials/programs/OffsetMapping.cg: better formal syntax

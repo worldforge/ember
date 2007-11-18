@@ -54,7 +54,7 @@ vertex_program fog_linear_vp cg
 	profiles vs_2_0 arbvp1 
 }
 
-fragment_program splat_cg cg
+fragment_program splatting_fragment_dynamic cg
 {
 	source Splat.cg
 	entry_point splat_fp

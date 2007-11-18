@@ -34,14 +34,47 @@ namespace Terrain {
 
 class TerrainPageSurfaceLayer;
 class TerrainPageShadow;
+class TerrainPageSurfaceCompilerShaderPass;
+
+typedef std::vector<TerrainPageSurfaceLayer*> LayerStore;
+
+class TerrainPageSurfaceCompilerShaderPassCoverageBatch
+{
+public:
+	TerrainPageSurfaceCompilerShaderPassCoverageBatch(TerrainPageSurfaceCompilerShaderPass& shaderPass, Ogre::TexturePtr combinedCoverageTexture);
+	virtual ~TerrainPageSurfaceCompilerShaderPassCoverageBatch();
+	
+	void addLayer(TerrainPageSurfaceLayer* layer);
+	
+	std::vector<TerrainPageSurfaceLayer*>& getLayers();
+	Ogre::TexturePtr getCombinedCoverageTexture();
+	
+	void finalize();
+	
+protected:
+	TerrainPageSurfaceCompilerShaderPass& mShaderPass;
+	
+	Ogre::TexturePtr mCombinedCoverageTexture;
+	Ogre::Image* mCombinedCoverageImage;
+	Ogre::MemoryDataStream* mCombinedCoverageDataStream;
+	Ogre::DataStreamPtr mCombinedCoverageDataStreamPtr;
+	LayerStore mLayers;
+
+	void assignCombinedCoverageTexture();
+	void addCoverage(Ogre::Image* coverage, unsigned int channel, unsigned short numberOfChannels);
+
+};
+
 
 class TerrainPageSurfaceCompilerShaderPass
 {
 public:
-	TerrainPageSurfaceCompilerShaderPass(Ogre::Pass* pass, Ogre::TexturePtr combinedCoverageTexture);
+friend class TerrainPageSurfaceCompilerShaderPassCoverageBatch;
+	TerrainPageSurfaceCompilerShaderPass(Ogre::Pass* pass, TerrainPage& page);
+	virtual ~TerrainPageSurfaceCompilerShaderPass();
 	
 	void addLayer(TerrainPageSurfaceLayer* layer);
-	void addBaseLayer(TerrainPageSurfaceLayer* layer);
+	void setBaseLayer(TerrainPageSurfaceLayer* layer);
 	void addShadowLayer(TerrainPageShadow* terrainPageShadow);
 	
 	bool hasRoomForLayer(TerrainPageSurfaceLayer* layer);
@@ -53,21 +86,21 @@ public:
 	void finalize();
 	
 protected:
-	Ogre::Image* mCombinedCoverageImage;
-	Ogre::MemoryDataStream* mCombinedCoverageDataStream;
-	Ogre::DataStreamPtr mCombinedCoverageDataStreamPtr;
+	typedef std::vector<TerrainPageSurfaceCompilerShaderPassCoverageBatch*> CoverageBatchStore;
 	
 	Ogre::Pass* mPass;
-	Ogre::TexturePtr mCombinedCoverageTexture;
 	unsigned int mCurrentLayerIndex;
 	
-	void addCoverage(Ogre::Image* coverage, unsigned int channel, unsigned short numberOfChannels);
 	void assignCombinedCoverageTexture();
+	TerrainPageSurfaceCompilerShaderPassCoverageBatch* getCurrentBatch();
 
 	unsigned int getCoveragePixelWidth() const;
 	float mScales[16];
-	Ogre::TexturePtr getCombinedCoverageTexture(size_t passIndex);
-
+	Ogre::TexturePtr getCombinedCoverageTexture(size_t passIndex, size_t batchIndex);
+	CoverageBatchStore mCoverageBatches;
+	LayerStore mLayers;
+	TerrainPageSurfaceLayer* mBaseLayer;
+	TerrainPage& mPage;
 };
 
 /**
@@ -77,7 +110,6 @@ class TerrainPageSurfaceCompilerTechniqueShader : public TerrainPageSurfaceCompi
 {
 public:
     TerrainPageSurfaceCompilerTechniqueShader();
-
     virtual ~TerrainPageSurfaceCompilerTechniqueShader();
     
 	virtual void compileMaterial(Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow);
@@ -88,7 +120,6 @@ protected:
 	typedef std::vector<TerrainPageSurfaceCompilerShaderPass*> PassStore;
 	
 	TerrainPage* mPage;
-	Ogre::TexturePtr getCombinedCoverageTexture(size_t passIndex);
 	TerrainPageSurfaceCompilerShaderPass* addPass(Ogre::Technique* technique);
 	PassStore mPasses;
 	
