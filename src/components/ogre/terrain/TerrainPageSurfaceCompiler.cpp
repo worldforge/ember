@@ -45,12 +45,14 @@ TerrainPageSurfaceCompiler::~TerrainPageSurfaceCompiler()
 
 void TerrainPageSurfaceCompiler::compileMaterial(Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow, TerrainPage& page)
 {
-	mTechnique->compileMaterial(material, terrainPageSurfaces, terrainPageShadow, page);
+	mTechnique->setPage(&page);
+	mTechnique->compileMaterial(material, terrainPageSurfaces, terrainPageShadow);
 }
 
 void TerrainPageSurfaceCompiler::selectTechnique()
 {
 	mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueShader());
+	
 //	mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueSimple());
 }
 

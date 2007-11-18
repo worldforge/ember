@@ -31,7 +31,7 @@ namespace EmberOgre {
 
 namespace Terrain {
 
-void TerrainPageSurfaceCompilerTechniqueSimple::compileMaterial(Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow, TerrainPage& page)
+void TerrainPageSurfaceCompilerTechniqueSimple::compileMaterial(Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow)
 {
 	material->removeAllTechniques();
 	Ogre::Technique* technique = material->createTechnique();
@@ -71,6 +71,11 @@ void TerrainPageSurfaceCompilerTechniqueSimple::addShadow(Ogre::Technique* techn
     textureUnitStateSplat->setTextureCoordSet(0);
     textureUnitStateSplat->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 	textureUnitStateSplat->setTextureFiltering(Ogre::TFO_ANISOTROPIC);
+}
+
+void TerrainPageSurfaceCompilerTechniqueSimple::setPage(TerrainPage* page)
+{
+	mPage = page;
 }
 
 

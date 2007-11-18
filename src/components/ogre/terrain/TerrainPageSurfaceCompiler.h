@@ -36,26 +36,11 @@ class TerrainPageSurfaceCompilerTechnique
 {
 public:
 	virtual ~TerrainPageSurfaceCompilerTechnique() {}
-    virtual void compileMaterial(Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow, TerrainPage& page) = 0;
+    virtual void compileMaterial(Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow) = 0;
+    virtual void setPage(TerrainPage* page) = 0;
 
 protected:
 };
-
-
-
-
-// class TerrainPageSurfaceCompilerTechniqueShader : public TerrainPageSurfaceCompilerTechnique
-// {
-// public:
-// 
-//     virtual void compileMaterial(Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow, TerrainPage& page);
-// 
-// protected:
-// 	Ogre::Pass* addPassToTechnique(Ogre::Technique* technique, TerrainPageSurfaceLayer* layer);
-// 	void addShadow(Ogre::Technique* technique, TerrainPageShadow* terrainPageShadow);
-// 
-// };
-
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
