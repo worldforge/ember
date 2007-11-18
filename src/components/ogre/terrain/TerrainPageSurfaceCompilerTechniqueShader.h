@@ -85,11 +85,13 @@ friend class TerrainPageSurfaceCompilerShaderPassCoverageBatch;
 	 */
 	void finalize();
 	
+	LayerStore& getLayers();
+	
 protected:
 	typedef std::vector<TerrainPageSurfaceCompilerShaderPassCoverageBatch*> CoverageBatchStore;
 	
 	Ogre::Pass* mPass;
-	unsigned int mCurrentLayerIndex;
+// 	unsigned int mCurrentLayerIndex;
 	
 	void assignCombinedCoverageTexture();
 	TerrainPageSurfaceCompilerShaderPassCoverageBatch* getCurrentBatch();
@@ -126,6 +128,7 @@ protected:
 	void addBaseLayer(Ogre::Pass* pass, TerrainPageSurfaceLayer* layer);
 	void addLayer(Ogre::Pass* pass, TerrainPageSurfaceLayer* layer);
 	
+	void reset();
 
 };
 

@@ -44,7 +44,7 @@ TerrainPageSurfaceLayer::TerrainPageSurfaceLayer(TerrainPageSurface& terrainPage
 {
 	///we need an unique name for our alpha texture
 	std::stringstream splatTextureNameSS;
-	splatTextureNameSS << terrainPageSurface.getWFPosition().x() << "_" << terrainPageSurface.getWFPosition().y() << "_" << surfaceIndex;
+	splatTextureNameSS << "terrain_" << terrainPageSurface.getWFPosition().x() << "_" << terrainPageSurface.getWFPosition().y() << "_" << surfaceIndex;
 	const Ogre::String splatTextureName(splatTextureNameSS.str());
 	
 	mTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(splatTextureName, "General", Ogre::TEX_TYPE_2D, getPixelWidth(), getPixelWidth(), 1, Ogre::PF_A8);
