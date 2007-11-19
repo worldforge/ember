@@ -644,4 +644,13 @@
 	<automodelmapping name="fencepole" />
 	<automodelmapping name="fencesection" />
 	<automodelmapping name="fencegate" />
+	
+	<modelmapping name="theodolite">
+		<entitymatch>
+			<case>
+				<caseparam type="equals">theodolite</caseparam>
+				<action type="display-model">placeholder</action>
+			</case>
+		</entitymatch>
+	</modelmapping> 	
 </modelmappings>
