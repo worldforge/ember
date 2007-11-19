@@ -29,16 +29,16 @@
 
 namespace EmberOgre {
 namespace Terrain {
-	
+class TerrainLayerDefinition;
 class TerrainShader{
 public:
 
-	TerrainShader(Mercator::Terrain* terrain, int terrainIndex, const Ogre::String& textureName, Mercator::Shader* shader);
-	TerrainShader(Mercator::Terrain* terrain, int terrainIndex,  Ogre::MaterialPtr material, Mercator::Shader* shader);
+	TerrainShader(Mercator::Terrain* terrain, int terrainIndex, const TerrainLayerDefinition* layerDef, Mercator::Shader* shader);
+// 	TerrainShader(Mercator::Terrain* terrain, int terrainIndex,  Ogre::MaterialPtr material, Mercator::Shader* shader);
 	virtual ~TerrainShader();
 	
 	Mercator::Shader* getShader() const;
-	const Ogre::String& getTextureName() const;
+// 	const Ogre::String& getTextureName() const;
 
 	/*
 	 * Adds a texture unit with a splatting alpha texture to the supplied pass.
@@ -67,30 +67,33 @@ public:
 	 */
 	Mercator::Surface* getSurfaceForSegment(Mercator::Segment* segment) const;
 	
-	inline float getScale() const;
-	inline void setScale(float scale);
+/*	inline float getScale() const;
+	inline void setScale(float scale);*/
+	
+	const TerrainLayerDefinition* getLayerDefinition() const;
 	
 protected:
-	const Ogre::String mTextureName;
+	const TerrainLayerDefinition* mLayerDef;
+// 	const Ogre::String mTextureName;
 	Mercator::Shader* mShader;
 	Mercator::Terrain* mTerrain;
 	int mTerrainIndex;
-	Ogre::MaterialPtr mMaterial;
+// 	Ogre::MaterialPtr mMaterial;
 	
 	Ogre::ushort getMaxTextureUnits() const;
-	float mScale;
+// 	float mScale;
 	
 	//const Model::ModelDefinition::AreaDefinition& mAreaDefinition;
 };
 
-float TerrainShader::getScale() const
-{
-	return mScale;
-}
-void TerrainShader::setScale(float scale)
-{
-	mScale = scale;
-}
+// float TerrainShader::getScale() const
+// {
+// 	return mScale;
+// }
+// void TerrainShader::setScale(float scale)
+// {
+// 	mScale = scale;
+// }
 
 }
 }

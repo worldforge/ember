@@ -59,7 +59,7 @@ class TerrainShader;
 
 class TerrainPage;
 class TerrainArea;
-
+class TerrainLayerDefinition;
 
 class ISceneManagerAdapter;
 
@@ -247,7 +247,7 @@ public:
 	
 	inline const TerrainPagestore& getTerrainPages() const;
 	
-	void createDefaultShaders();
+// 	void createDefaultShaders();
 	
 	/**
 	 * Create and registers a new texture shader.
@@ -255,9 +255,9 @@ public:
 	 * @param mercatorShader 
 	 * @return 
 	 */
-	TerrainShader* createShader(const std::string& textureName, Mercator::Shader* mercatorShader);
+	TerrainShader* createShader(const TerrainLayerDefinition* layerDef, Mercator::Shader* mercatorShader);
 	
-	TerrainShader* createShader(Ogre::MaterialPtr material, Mercator::Shader* mercatorShader);
+// 	TerrainShader* createShader(Ogre::MaterialPtr material, Mercator::Shader* mercatorShader);
 	
 	void updateShadows();
 	
