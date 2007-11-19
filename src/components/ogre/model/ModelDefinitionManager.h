@@ -56,14 +56,6 @@ public:
 	void exportScript(ModelDefnPtr definition);
 	
 	/**
-	 *    Gets the AreaDefinition for a certain layer.
-	 *    TODO: this should be moved out from here and to a better place
-	 * @param layer 
-	 * @return 
-	 */
-	const ModelDefinition::AreaDefinition* getAreaDefinition(int layer) const;
-	
-	/**
 	 *    Gets a vector of all mesh names.
 	 * @return 
 	 */
@@ -87,9 +79,6 @@ protected:
         const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, 
         const Ogre::NameValuePairList* createParams);
 	
-	typedef std::map<int, ModelDefinition::AreaDefinition> AreaDefinitionStore;
-	AreaDefinitionStore mAreaDefinitions;
-	void loadAreas();
 	/**
 	Determines whether models should be shown.
 	*/

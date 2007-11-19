@@ -244,16 +244,6 @@ public:
 		MODEL_HEIGHT = 4
 	};
 
-	/**
-	A struct for simple bindings between areas and materials/textures.
-	*/
-	struct AreaDefinition
-	{
-		int Id;
-		std::string TextureName;
-		std::string MaterialName;
-		float TextureScale;
-	};
 	
     //th ModelDefinition(const Ogre::String& name, const Ogre::String& path);
 

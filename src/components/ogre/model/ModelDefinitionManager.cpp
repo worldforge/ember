@@ -36,19 +36,7 @@ namespace EmberOgre
 {
 namespace Model {
 
-    //-----------------------------------------------------------------------
-/*    ModelDefinitionManager* ModelDefinitionManager::getSingletonPtr(void)
-    {
-        return ms_Singleton;
-    }
-    ModelDefinitionManager& ModelDefinitionManager::getSingleton(void)
-    {  
-        assert( ms_Singleton );  return ( *ms_Singleton );  
-    }*/
-    //-----------------------------------------------------------------------
-
-
-ModelDefinitionManager::ModelDefinitionManager() :  mShowModels(true)
+ModelDefinitionManager::ModelDefinitionManager() : mShowModels(true)
 {
     mLoadOrder = 300.0f;
     mResourceType = "ModelDefinition";
@@ -59,7 +47,6 @@ ModelDefinitionManager::ModelDefinitionManager() :  mShowModels(true)
 
 	Ogre::ResourceGroupManager::getSingleton()._registerResourceManager(mResourceType, this);
 	
-	loadAreas();
 	
 	///register factories
 	ModelFactory* modelFactory = new ModelFactory();
@@ -95,37 +82,7 @@ const Ogre::NameValuePairList* createParams)
     }
     S_LOG_FAILURE("ModelDefinition with name " << name << " already exists.");
     return Ogre::ResourcePtr();
-//    return ret;
 
-}
-
-void ModelDefinitionManager::loadAreas() {
-
-	//TODO: this is heinous and should be done in xml or anything not as dumb /ehj
-	ModelDefinition::AreaDefinition def;
-	def.Id = 6; //oak
-	def.TextureName = "3d_objects/environment/ground/textures/leaf_covered/medium/ground.png";
-	mAreaDefinitions[def.Id] = def;
-	
-	def = ModelDefinition::AreaDefinition();
-	def.Id = 8; //ploughed field
-	def.MaterialName = "/global/environment/ground/ploughed_field";
-	mAreaDefinitions[def.Id] = def;
-	
-	def = ModelDefinition::AreaDefinition();
-	def.Id = 7; //sty
-	def.TextureName = "3d_objects/environment/ground/textures/dirt/dirt.png";
-	mAreaDefinitions[def.Id] = def;
-}
-
-const ModelDefinition::AreaDefinition* ModelDefinitionManager::getAreaDefinition(int layer) const
-{
-
-	AreaDefinitionStore::const_iterator I = mAreaDefinitions.find(layer);
-	if (I != mAreaDefinitions.end()) {
-		return &(I->second);
-	}
-	return 0;
 }
 
 void ModelDefinitionManager::parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName)
