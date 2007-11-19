@@ -25,6 +25,8 @@
 #include "model/Model.h"
 #include "terrain/TerrainGenerator.h"
 #include "terrain/TerrainShader.h"
+#include "terrain/TerrainLayerDefinition.h"
+#include "terrain/TerrainLayerDefinitionManager.h"
 #include "WorldEmberEntity.h"
 #include "environment/Foliage.h"
 #include "environment/Environment.h"
@@ -245,7 +247,8 @@ void TerrainParser::createShaders(const Atlas::Message::Element& surfaces)
 {
 
 
-	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
+	Terrain::TerrainLayerDefinitionManager& terrainManager = Terrain::TerrainLayerDefinitionManager::getSingleton();
+// 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 	bool isValid = false;
 	if (surfaces.isList()) {
         const Atlas::Message::ListType & slist(surfaces.asList());
@@ -274,8 +277,8 @@ void TerrainParser::createShaders(const Atlas::Message::Element& surfaces)
 /*						if (name == "snow") {
 							continue;
 						}*/
-						std::string texture(configSrv->getValue("shadertextures", name));
-						if (texture != "") {
+						Terrain::TerrainLayerDefinition* def(terrainManager.getDefinitionForShader(name));
+						if (def) {
 							if (surfaceMap.count("pattern")) {
 								const Atlas::Message::Element& patternElem(surfaceMap.find("pattern")->second);
 								if (patternElem.isString()) {
@@ -283,7 +286,7 @@ void TerrainParser::createShaders(const Atlas::Message::Element& surfaces)
 									Mercator::Shader* shader = Mercator::ShaderFactories::instance().newShader(pattern, params);
 									if (shader) {
 										isValid = true;
-										Terrain::TerrainShader* terrainShader = mTerrainGenerator->createShader(texture, shader);
+										Terrain::TerrainShader* terrainShader = mTerrainGenerator->createShader(def, shader);
 										if (name == "grass") {
 											mTerrainGenerator->setFoliageShader(terrainShader);
 										}
@@ -303,17 +306,19 @@ void TerrainParser::createShaders(const Atlas::Message::Element& surfaces)
 
 void TerrainParser::createDefaultShaders()
 {
-	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
-
-    mTerrainGenerator->createShader(std::string(configSrv->getValue("shadertextures", "rock")), new Mercator::FillShader());
-	
-    mTerrainGenerator->createShader(std::string(configSrv->getValue("shadertextures", "sand")), new Mercator::BandShader(-2.f, 1.5f)); // Sandy beach
+	Terrain::TerrainLayerDefinitionManager& terrainManager = Terrain::TerrainLayerDefinitionManager::getSingleton();
+	Terrain::TerrainLayerDefinition* def(0);
+	if (def = terrainManager.getDefinitionForShader("rock")) {
+    	mTerrainGenerator->createShader(def, new Mercator::FillShader());
+    }
+	if (def = terrainManager.getDefinitionForShader("sand")) {
+    	mTerrainGenerator->createShader(def,  new Mercator::BandShader(-2.f, 1.5f));
+    }	
  
- 	Terrain::TerrainShader* grassShader = mTerrainGenerator->createShader(std::string(configSrv->getValue("shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f)); // Grass
- 	mTerrainGenerator->setFoliageShader(grassShader);
-
-
-
+	if (def = terrainManager.getDefinitionForShader("grass")) {
+		Terrain::TerrainShader* grassShader = mTerrainGenerator->createShader(def,   new Mercator::GrassShader(1.f, 80.f, .5f, 1.f));
+		mTerrainGenerator->setFoliageShader(grassShader);
+    }	
 
 //      createShader(std::string(configSrv->getValue("shadertextures", "snow")), new Mercator::HighShader(110.f)); // Snow
 //      createShader(std::string(configSrv->getValue("shadertextures", "seabottom")), new Mercator::DepthShader(0.f, -10.f)); // Underwater
