@@ -11,7 +11,7 @@ public:
 	static ModelDefinitionManager& getSingleton();
 	
 	
-	const EmberOgre::Model::ModelDefinition::AreaDefinition* getAreaDefinition(int layer) const;
+//	const EmberOgre::Model::ModelDefinition::AreaDefinition* getAreaDefinition(int layer) const;
 
 	void exportScript(EmberOgre::Model::ModelDefnPtr definition);
 

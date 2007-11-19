@@ -97,12 +97,12 @@ class ModelDefinition : public Ogre::Resource {
 	/**
 	A struct for simple bindings between areas and materials/textures.
 	*/
-	struct AreaDefinition
-	{
-		int Id;
-		std::string TextureName;
-		std::string MaterialName;
-	};
+//	struct AreaDefinition
+//	{
+//		int Id;
+//		std::string TextureName;
+//		std::string MaterialName;
+//	};
 	
  
     bool isValid(void);
