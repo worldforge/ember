@@ -63,6 +63,7 @@ namespace EmberOgre {
 namespace Terrain
 {
 class TerrainGenerator;
+class TerrainLayerDefinitionManager;
 }
 
 namespace Model {
@@ -365,6 +366,8 @@ protected:
 	Handles all model mappings.
 	*/
 	Model::Mapping::EmberModelMappingManager* mModelMappingManager;
+	
+	Terrain::TerrainLayerDefinitionManager* mTerrainLayerManager;
 	
 	/**
 	Responsible for allowing movement of entities in the world by the user.

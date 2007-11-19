@@ -80,6 +80,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 // Include OGRE Ember client files
 // ------------------------------
 #include "terrain/TerrainGenerator.h"
+#include "terrain/TerrainLayerDefinitionManager.h"
 
 
 #include "ConsoleObjectImpl.h"
@@ -179,6 +180,7 @@ mMotionManager(0),
 mGUIManager(0),
 mModelDefinitionManager(0),
 mModelMappingManager(0),
+mTerrainLayerManager(0),
 mMoveManager(0),
 mKeepOnRunning(true),
 mJesus(0),
@@ -211,7 +213,7 @@ EmberOgre::~EmberOgre()
 
 	delete mGUIManager;
 
-
+	delete mTerrainLayerManager;
 	delete mModelMappingManager;
 
 	///we need to make sure that all Models are destroyed before Ogre begins destroying other movable objects (such as Entities)
@@ -318,6 +320,8 @@ bool EmberOgre::setup()
 	mModelDefinitionManager = new Model::ModelDefinitionManager();
 	
 	mModelMappingManager = new Model::Mapping::EmberModelMappingManager();
+	
+	mTerrainLayerManager = new Terrain::TerrainLayerDefinitionManager();
 	
 	///Create a resource loader which loads all the resources we need.
 	OgreResourceLoader ogreResourceLoader;
