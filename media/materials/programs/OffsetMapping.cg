@@ -6,50 +6,51 @@
 
 /* Vertex program that moves light and eye vectors into texture tangent space at vertex */ 
 
-void main_vp(float4 position   : POSITION, 
-              float3 normal      : NORMAL, 
-              float2 uv         : TEXCOORD0, 
-              float3 tangent     : TANGENT0, 
-              // outputs 
-              out float4 oPosition    : POSITION, 
-              out float2 oUv          : TEXCOORD0, 
-              out float3 oLightDir    : TEXCOORD1, // tangent space 
-             out float3 oEyeDir       : TEXCOORD2, // tangent space 
-             out float3 oHalfAngle    : TEXCOORD3, // 
-			  out float oFog       : FOG,
-               // parameters 
-              uniform float4 lightPosition, // object space 
-              uniform float3 eyePosition,   // object space 
-              uniform float4x4 worldViewProj) 
+void main_vp(	float4 position	: POSITION, 
+				float3 normal	: NORMAL, 
+				float2 uv		: TEXCOORD0, 
+				float3 tangent	: TANGENT0, 
+				// outputs 
+				out float4 oPosition	: POSITION, 
+				out float2 oUv			: TEXCOORD0, 
+				out float3 oLightDir	: TEXCOORD1, // tangent space 
+				out float3 oEyeDir		: TEXCOORD2, // tangent space 
+				out float3 oHalfAngle	: TEXCOORD3, // 
+				out float oFog			: FOG,
+				// parameters 
+				uniform float4 lightPosition, // object space 
+				uniform float3 eyePosition,   // object space 
+				uniform float4x4 worldViewProj,
+				uniform float4 iFogParams)
 {  
-   // calculate output position 
-   oPosition = mul(worldViewProj, position); 
-
-   // pass the main uvs straight through unchanged 
-   oUv = uv; 
-
-   // calculate tangent space light vector 
-   // Get object space light direction 
-   float3 lightDir = normalize(lightPosition.xyz -  (position * lightPosition.w));
-   float3 eyeDir = eyePosition - position.xyz; 
-    
-   // Calculate the binormal (NB we assume both normal and tangent are 
-   // already normalised) 
-   // NB looks like nvidia cross params are BACKWARDS to what you'd expect 
-   // this equates to NxT, not TxN 
-   float3 binormal = cross(tangent, normal); 
-    
-   // Form a rotation matrix out of the vectors 
-   float3x3 rotation = float3x3(tangent, binormal, normal); 
-    
-   // Transform the light vector according to this matrix 
-   lightDir = normalize(mul(rotation, lightDir)); 
-   eyeDir = normalize(mul(rotation, eyeDir)); 
-
-   oLightDir = lightDir; 
-   oEyeDir = eyeDir; 
-   oHalfAngle = normalize(eyeDir + lightDir); 
-	oFog = oPosition.z;
+	// calculate output position 
+	oPosition = mul(worldViewProj, position); 
+	
+	// pass the main uvs straight through unchanged 
+	oUv = uv; 
+	
+	// calculate tangent space light vector 
+	// Get object space light direction 
+	float3 lightDir = normalize(lightPosition.xyz -  (position * lightPosition.w));
+	float3 eyeDir = eyePosition - position.xyz; 
+		
+	// Calculate the binormal (NB we assume both normal and tangent are 
+	// already normalised) 
+	// NB looks like nvidia cross params are BACKWARDS to what you'd expect 
+	// this equates to NxT, not TxN 
+	float3 binormal = cross(tangent, normal); 
+		
+	// Form a rotation matrix out of the vectors 
+	float3x3 rotation = float3x3(tangent, binormal, normal); 
+		
+	// Transform the light vector according to this matrix 
+	lightDir = normalize(mul(rotation, lightDir)); 
+	eyeDir = normalize(mul(rotation, eyeDir)); 
+	
+	oLightDir = lightDir; 
+	oEyeDir = eyeDir; 
+	oHalfAngle = normalize(eyeDir + lightDir); 
+	oFog = 1 - ((iFogParams.z - oPosition.z)/(iFogParams.z - iFogParams.y));
 }
 
 // General functions
@@ -64,7 +65,7 @@ void main_fp(float2 uv : TEXCOORD0,
 	float3 lightDir : TEXCOORD1,
 	float3 eyeDir : TEXCOORD2,
 	float3 halfAngle : TEXCOORD3,
-	float fog : FOG,
+	float iFog : FOG,
 	uniform float3 lightDiffuse,
 	uniform float3 lightSpecular,
 	uniform float3 lightAmbient,
@@ -72,40 +73,39 @@ void main_fp(float2 uv : TEXCOORD0,
 	uniform sampler2D normalHeightMap: TEXUNIT0,
 	uniform sampler2D diffuseMap: TEXUNIT1,
 	uniform sampler2D specularMap: TEXUNIT2,
-	uniform float4 fogparams,
-	uniform float3 fogcolor,
-	out float4 oColor : COLOR)
+	uniform float3 iFogColour,
+	out float4 oColour : COLOR)
 {
-	// get the height using the tex coords
-	float height = tex2D(normalHeightMap, uv).a;
-
-	// scale and bias factors	
-	float scale = scaleBias.x;
-	float bias = scaleBias.y;
-
-	// calculate displacement	
-	float displacement = (height * scale) + bias;
+ 	if (iFog < 1) {
 	
-	float3 uv2 = float3(uv, 1);
+		// get the height using the tex coords
+		float height = tex2D(normalHeightMap, uv).a;
 	
-	// calculate the new tex coord to use for normal and diffuse
-	float2 newTexCoord = ((eyeDir * displacement) + uv2).xy;
+		// scale and bias factors	
+		float scale = scaleBias.x;
+		float bias = scaleBias.y;
 	
-	// get the new normal and diffuse values
-	float3 normal = expand(tex2D(normalHeightMap, newTexCoord).xyz);
-	float3 diffuse = tex2D(diffuseMap, newTexCoord).xyz;
-	
-	float3 specular = pow(saturate(dot(normal, halfAngle)), 32) * lightSpecular * tex2D(specularMap, newTexCoord).x;
-	float3 col = (diffuse * saturate(dot(normal, lightDir)) * lightDiffuse + diffuse * lightAmbient) + specular;
-	
-	//check if we should apply any fog
-	if (fog < fogparams.z) {
-		float f = (fogparams.z - fog)/(fogparams.z - fogparams.y);
-		col = lerp(col, fogcolor, 1 - f);
-	} else if (fogparams.z != 0) {
-		col = fogcolor;
+		// calculate displacement	
+		float displacement = (height * scale) + bias;
+		
+		float3 uv2 = float3(uv, 1);
+		
+		// calculate the new tex coord to use for normal and diffuse
+		float2 newTexCoord = ((eyeDir * displacement) + uv2).xy;
+		
+		// get the new normal and diffuse values
+		float3 normal = expand(tex2D(normalHeightMap, newTexCoord).xyz);
+		float3 diffuse = tex2D(diffuseMap, newTexCoord).xyz;
+		
+		float3 specular = pow(saturate(dot(normal, halfAngle)), 32) * lightSpecular * tex2D(specularMap, newTexCoord).x;
+		float3 col = (diffuse * saturate(dot(normal, lightDir)) * lightDiffuse + diffuse * lightAmbient) + specular;
+		
+		col = lerp(col, iFogColour, iFog);
+		oColour = float4(col, tex2D(diffuseMap, newTexCoord).w);
+	} else {
+		oColour = float4(iFogColour, tex2D(diffuseMap, uv).w);
 	}
-	oColor = float4(col, tex2D(diffuseMap, newTexCoord).w);
+
 }
 
 
@@ -121,7 +121,7 @@ void mainsplat_fp(float2 uv : TEXCOORD0,
 	uniform sampler2D splatMap,
 	uniform sampler2D normalHeightMap,
 	uniform sampler2D diffuseMap,
-	out float4 oColor : COLOR)
+	out float4 oColour : COLOR)
 	
 {
 	float splat = tex2D(splatMap, uv).w;
@@ -149,8 +149,8 @@ void mainsplat_fp(float2 uv : TEXCOORD0,
 //		float3 col = diffuse * saturate(dot(normal, lightDir)) * lightDiffuse + specular;
 		float3 col = diffuse * saturate(dot(normal, lightDir)) * lightDiffuse * lightAmbient;
 			
-		oColor = float4(col, 1);
-		oColor.w = splat;
+		oColour = float4(col, 1);
+		oColour.w = splat;
 	}
 }
 
