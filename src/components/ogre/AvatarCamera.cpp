@@ -126,14 +126,15 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	mClosestPickingDistance(10000),
 	mLastPosition(Ogre::Vector3::ZERO),
 	mAdjustTerrainRaySceneQuery(0),
-	mCameraRaySceneQuery(0)
+	mCameraRaySceneQuery(0),
+	mIsAdjustedToTerrain(true)
 //	mLastOrientationOfTheCamera(avatar->getOrientation())
 {
 	createNodesForCamera();
 	createViewPort();
 	setAvatarNode(avatarNode);
 
-	// Register this as a frame listener
+	/// Register this as a frame listener
 	Ogre::Root::getSingleton().addFrameListener(this);
 
 	
@@ -149,6 +150,7 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 
 AvatarCamera::~AvatarCamera()
 {
+	Ogre::Root::getSingleton().removeFrameListener(this);
 	EmberOgre::getSingleton().getSceneManager()->destroyQuery(mAdjustTerrainRaySceneQuery);
 	EmberOgre::getSingleton().getSceneManager()->destroyQuery(mCameraRaySceneQuery);
 }
@@ -530,13 +532,15 @@ void AvatarCamera::updateValuesFromConfig()
 	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("input", "cameradegreespersecond")) {
 		mDegreeOfPitchPerSecond = mDegreeOfYawPerSecond = (double)Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("input", "cameradegreespersecond");
 	}
-	
+	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("input", "adjusttoterrain")) {
+		mIsAdjustedToTerrain = static_cast<bool>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("input", "adjusttoterrain"));
+	}	
 }
 	
 void AvatarCamera::ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key)
 {
 	if (section == "input") {
-		if (key == "invertcamera" || key == "cameradegreespersecond") {
+		if (key == "invertcamera" || key == "cameradegreespersecond" || "key" == "adjusttoterrain") {
 			updateValuesFromConfig();
 		}
 	}
@@ -544,8 +548,10 @@ void AvatarCamera::ConfigService_EventChangedConfigItem(const std::string& secti
 
 bool AvatarCamera::frameStarted(const Ogre::FrameEvent& event)
 {
-	if (mCamera->getDerivedPosition() != mLastPosition) {
-		adjustForTerrain();
+	if (mIsAdjustedToTerrain) {
+		if (mCamera->getDerivedPosition() != mLastPosition) {
+			adjustForTerrain();
+		}
 	}
 	mLastPosition = mCamera->getDerivedPosition();
 // #ifndef WIN32

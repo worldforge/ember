@@ -284,6 +284,8 @@ protected:
 	
 	Ogre::RaySceneQuery *mAdjustTerrainRaySceneQuery, *mCameraRaySceneQuery;
 	Ogre::Ray mAdjustTerrainRay;
+	
+	bool mIsAdjustedToTerrain;
 
 	void Input_MouseMoved(const MouseMotion& motion, Input::InputMode mode);
 
@@ -453,7 +455,7 @@ class AvatarCameraMount : ICameraMount
 	void setCameraDistance(Ogre::Real distance);
 
 	const Ember::ConsoleCommandWrapper SetCameraDistance;
-
+	
 };
 
 class FreeFlyingMount : ICameraMount
