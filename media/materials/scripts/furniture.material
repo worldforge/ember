@@ -1,6 +1,6 @@
 material /global/items/furniture/avalon : /base/simple
 {
-  set_texture_alias DiffuseMap 3d_objects/items/furniture/textures/avalon/low/avalon.png
+  set_texture_alias DiffuseMap 3d_objects/items/furniture/textures/avalon/avalon.png
   technique General
   {
     pass Main
@@ -12,58 +12,38 @@ material /global/items/furniture/avalon : /base/simple
 }
 
 
-material /global/items/building_element/marketstall/canvas_main : /base/simple/nonculled
+material /global/items/building_element/marketstall/blue_green_canvas_details : /base/normalmap/nonculled/alpharejected
 {
-  set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/marketstall/canvas_main.png
-  technique General
-  {
-    pass Main
-    {
-		alpha_rejection greater_equal 10 
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/marketstall/blue_green_canvas_detailsD.png
+	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/marketstall/blue_green_canvas_detailsN.png
+	set_texture_alias SpecularMap 3d_objects/items/building_element/textures/marketstall/blue_green_canvas_detailsS.png
 }
 
-material /global/items/building_element/marketstall/canvas_details : /base/simple/nonculled
+material /global/items/building_element/marketstall/blue_green_canvas_main : /base/normalmap/nonculled/alpharejected
 {
-  set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/marketstall/canvas_details.png
-  technique General
-  {
-    pass Main
-    {
-		alpha_rejection greater_equal 10 
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/marketstall/blue_green_canvas_mainD.png
+	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/marketstall/blue_green_canvas_mainN.png
+	set_texture_alias SpecularMap 3d_objects/items/building_element/textures/marketstall/blue_green_canvas_mainS.png
 }
 
-
-material /global/items/building_element/marketstall/blue_green_canvas_main : /base/simple/nonculled
+material /global/items/building_element/marketstall/canvas_details : /base/normalmap/nonculled/alpharejected
 {
-  set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/marketstall/blue_green_canvas_main.png
-  technique General
-  {
-    pass Main
-    {
-		alpha_rejection greater_equal 10 
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/marketstall/canvas_details.png
+	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/marketstall/blue_green_canvas_mainN.png
+	set_texture_alias SpecularMap 3d_objects/items/building_element/textures/marketstall/blue_green_canvas_mainS.png
 }
 
-material /global/items/building_element/marketstall/blue_green_canvas_details : /base/simple/nonculled
+material /global/items/building_element/marketstall/canvas_main : /base/normalmap/nonculled/alpharejected
 {
-  set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/marketstall/blue_green_canvas_details.png
-  technique General
-  {
-    pass Main
-    {
-		alpha_rejection greater_equal 10 
-    }
-  }
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/marketstall/canvas_mainD.png
+	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/marketstall/canvas_mainN.png
+	set_texture_alias SpecularMap 3d_objects/items/building_element/textures/marketstall/canvas_mainS.png
 }
+
 
 material /global/items/building_element/marketstall/red_canvas_main : /base/simple/nonculled
 {
-  set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/marketstall/red_canvas_main_512.png
+  set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/marketstall/red_canvas_main.png
   technique General
   {
     pass Main
@@ -75,7 +55,7 @@ material /global/items/building_element/marketstall/red_canvas_main : /base/simp
 
 material /global/items/building_element/marketstall/red_canvas_details : /base/simple/nonculled
 {
-  set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/marketstall/red_canvas_details_512.png
+  set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/marketstall/red_canvas_details.png
   technique General
   {
     pass Main
