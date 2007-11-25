@@ -1,3 +1,63 @@
+2007-11-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* ember.conf: added some new settings for disabling the terrain checking for the camera as well as selecting the preferred terrain technique
+
+2007-11-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* AUTHORS: updated email info
+
+2007-11-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* make_dist_media.sh.in: updated copying scrit
+
+2007-11-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/ModelEdit.layout, src/components/ogre/widgets/ModelEdit.lua: added a mesh filter
+
+2007-11-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Makefile.am: removed obsolete copying
+
+2007-11-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/marketstall_canvasA.modeldef, src/components/ogre/modeldefinitions/marketstall_canvasB.modeldef, src/components/ogre/modeldefinitions/marketstall_canvasC.modeldef, src/components/ogre/modeldefinitions/modelmappings.modelmap.xml, src/components/ogre/modeldefinitions/stall.modeldef: updated definitions
+
+2007-11-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/acorn.modeldef, src/components/ogre/modeldefinitions/apple.modeldef, src/components/ogre/modeldefinitions/armory.modeldef, src/components/ogre/modeldefinitions/bailey1.modeldef, src/components/ogre/modeldefinitions/bailey2.modeldef, src/components/ogre/modeldefinitions/barrel.modeldef, src/components/ogre/modeldefinitions/bearded_male.modeldef, src/components/ogre/modeldefinitions/bed.modeldef, src/components/ogre/modeldefinitions/birchA.modeldef, src/components/ogre/modeldefinitions/birchB.modeldef, src/components/ogre/modeldefinitions/birch_mk1.modeldef, src/components/ogre/modeldefinitions/boat.modeldef, src/components/ogre/modeldefinitions/bottle.modeldef, src/components/ogre/modeldefinitions/buildingelements.modeldef.xml, src/components/ogre/modeldefinitions/buildings.modeldef, src/components/ogre/modeldefinitions/camelia.modeldef, src/components/ogre/modeldefinitions/campfire.modeldef, src/components/ogre/modeldefinitions/carrot.modeldef, src/components/ogre/modeldefinitions/castle_outer_wall.modeldef, src/components/ogre/modeldefinitions/cg_house.modeldef, src/components/ogre/modeldefinitions/choppingblock.modeldef, src/components/ogre/modeldefinitions/choppingblockA.modeldef, src/components/ogre/modeldefinitions/choppingblockB.modeldef, src/components/ogre/modeldefinitions/coin.modeldef, src/components/ogre/modeldefinitions/crate.modeldef, src/components/ogre/modeldefinitions/crate_lid.modeldef, src/components/ogre/modeldefinitions/don_jon.modeldef, src/components/ogre/modeldefinitions/door.modeldef, src/components/ogre/modeldefinitions/drystan_archer.modeldef, src/components/ogre/modeldefinitions/environment.modeldef.xml, src/components/ogre/modeldefinitions/fencegate.modeldef, src/components/ogre/modeldefinitions/fencepole.modeldef, src/components/ogre/modeldefinitions/fencesection.modeldef, src/components/ogre/modeldefinitions/fern.modeldef, src/components/ogre/modeldefinitions/furniture.modeldef, src/components/ogre/modeldefinitions/gallows.modeldef, src/components/ogre/modeldefinitions/gateway.modeldef, src/components/ogre/modeldefinitions/house3.modeldef, src/components/ogre/modeldefinitions/humanoid.modeldef, src/components/ogre/modeldefinitions/items.modeldef.xml, src/components/ogre/modeldefinitions/jetty.modeldef, src/components/ogre/modeldefinitions/jug.modeldef, src/components/ogre/modeldefinitions/keep.modeldef, src/components/ogre/modeldefinitions/leaf.modeldef, src/components/ogre/modeldefinitions/lumber.modeldef, src/components/ogre/modeldefinitions/male.modeldef, src/components/ogre/modeldefinitions/mushroom.modeldef, src/components/ogre/modeldefinitions/oak.modeldef, src/components/ogre/modeldefinitions/oakB.modeldef, src/components/ogre/modeldefinitions/oakC.modeldef, src/components/ogre/modeldefinitions/oak_mk1.modeldef, src/components/ogre/modeldefinitions/oak_sapling.modeldef, src/components/ogre/modeldefinitions/oak_young.modeldef, src/components/ogre/modeldefinitions/open_crate.modeldef, src/components/ogre/modeldefinitions/outdoor_structures.modeldef, src/components/ogre/modeldefinitions/outerwall.modeldef, src/components/ogre/modeldefinitions/palissade.modeldef, src/components/ogre/modeldefinitions/palissade_circle.modeldef, src/components/ogre/modeldefinitions/palissade_entry.modeldef, src/components/ogre/modeldefinitions/palissade_unit.modeldef, src/components/ogre/modeldefinitions/stake.modeldef, src/components/ogre/modeldefinitions/stall.modeldef, src/components/ogre/modeldefinitions/sty.modeldef, src/components/ogre/modeldefinitions/tinderbox.modeldef, src/components/ogre/modeldefinitions/tinderboxA.modeldef, src/components/ogre/modeldefinitions/tinderboxB.modeldef, src/components/ogre/modeldefinitions/tools.modeldef, src/components/ogre/modeldefinitions/tower.modeldef, src/components/ogre/modeldefinitions/trees.modeldef.xml, src/components/ogre/modeldefinitions/trowel.modeldef, src/components/ogre/modeldefinitions/turnip.modeldef, src/components/ogre/modeldefinitions/vehicles.modeldef: updated model definitions, moved a lot of them to their own files since it's easier to update when they are edited using the Model Editor in game
+
+2007-11-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingLandScapeData2D_HeightField.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/EmberPagingLandScapeData2D_HeightField.cpp: activate the normal calc method, though it's just a pass through right now
+
+2007-11-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/scripts/furniture.material: updated materials
+
+2007-11-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/splatting/Splat.cg, media/materials/splatting/splat.program: added normal mapping splat shader
+
+2007-11-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/programs/OffsetMapping.cg: put the fog calculation in the vertex shader to speed it up
+
+2007-11-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/services/server/ConnectedAdapter.cpp, src/services/server/ConnectedAdapter.h, src/services/server/IServerAdapter.h, src/services/server/NonConnectedAdapter.cpp, src/services/server/NonConnectedAdapter.h, src/services/server/ServerService.cpp, src/services/server/ServerService.h: added command (/admin_tell) which allows admins to directly tell entities commands
+
+2007-11-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/AvatarCamera.cpp, src/components/ogre/AvatarCamera.h: added option to disable the adjustment for the terrain
+
+2007-11-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainPage.cpp, src/components/ogre/terrain/TerrainPageSurfaceCompiler.cpp, src/components/ogre/terrain/TerrainPageSurfaceCompilerTechniqueShader.cpp, src/components/ogre/terrain/TerrainPageSurfaceCompilerTechniqueShader.h: added a normal mapped technique and implemented some handling of exceptions by falling back to the simple technique
+
+2007-11-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/base_scripts/base.material: use a simpler technique for larger distances since we won't see the normal mapped goodness anyway
+
 2007-11-20 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/widgets/AssetsManager.layout: put it a little lower so it isn't occluded by the status widget
