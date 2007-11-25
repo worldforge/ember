@@ -13,11 +13,12 @@ cd ${shared_dir}
 #don't include lines starting with "/"
 grep -rIE --no-filename "^[^/].*texture 3d"  ${original_media}/materials/scripts/*.material | sed -e 's/texture 3d_/3d_/g' > common_textures.list
 grep -rIE --no-filename "^[^/].*set_texture_alias DiffuseMap 3d"  ${original_media}/materials/scripts/*.material | sed -e 's/set_texture_alias DiffuseMap 3d_/3d_/g' >> common_textures.list
-grep -rIE --no-filename "^[^/].*set_texture_alias NormalMap 3d"  ${original_media}/materials/scripts/*.material | sed -e 's/set_texture_alias NormalMap 3d_/3d_/g' >> common_textures.list
+# grep -rIE --no-filename "^[^/].*set_texture_alias NormalMap 3d"  ${original_media}/materials/scripts/*.material | sed -e 's/set_texture_alias NormalMap 3d_/3d_/g' >> common_textures.list
 grep -rIE --no-filename "^[^/].*set_texture_alias NormalHeightMap 3d"  ${original_media}/materials/scripts/*.material | sed -e 's/set_texture_alias NormalHeightMap 3d_/3d_/g' >> common_textures.list
 grep -rIE --no-filename "^[^/].*set_texture_alias SpecularMap 3d"  ${original_media}/materials/scripts/*.material | sed -e 's/set_texture_alias SpecularMap 3d_/3d_/g' >> common_textures.list
 grep -orIE --no-filename "icon=\"3d.*\"" ${original_media}/modeldefinitions/*.modeldef | sed -e 's/icon=\"//g' | sed -e 's/\"//g' > common_textures.list
 
+#remove all duplicates
 sort --unique common_textures.list > common_textures_cleaned.list
 
 #first copy all textures
@@ -111,9 +112,6 @@ cd ${original_media} ; tar cf - `cat ${user_dir}/user_packs.list ` | ( cd ${user
 
 cd ${user_dir}
 cp -a ${original_media}/README .
-cp -a ${original_media}/LICENSING.txt .
-
-cd ${user_dir}
 cp -a ${original_media}/LICENSING.txt .
 
 
