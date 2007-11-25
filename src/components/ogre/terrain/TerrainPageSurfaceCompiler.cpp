@@ -30,6 +30,9 @@
 #include "TerrainPageSurfaceCompilerTechniqueShader.h"
 #include "TerrainPageSurfaceCompilerTechniqueSimple.h"
 
+#include "services/EmberServices.h"
+#include "services/config/ConfigService.h"
+
 namespace EmberOgre {
 namespace Terrain {
 
@@ -45,13 +48,30 @@ TerrainPageSurfaceCompiler::~TerrainPageSurfaceCompiler()
 
 void TerrainPageSurfaceCompiler::compileMaterial(Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow, TerrainPage& page)
 {
-	mTechnique->setPage(&page);
-	mTechnique->compileMaterial(material, terrainPageSurfaces, terrainPageShadow);
+	try {
+		mTechnique->setPage(&page);
+		mTechnique->compileMaterial(material, terrainPageSurfaces, terrainPageShadow);
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Error when creating terrain material, falling back to safe technique. Error message: " << ex.what());
+		mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueSimple());
+		mTechnique->setPage(&page);
+		mTechnique->compileMaterial(material, terrainPageSurfaces, terrainPageShadow);
+	}
 }
 
 void TerrainPageSurfaceCompiler::selectTechnique()
 {
-	mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueShader());
+	std::string preferredTech("");
+	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("terrain", "preferredtechnique")) {
+		preferredTech = static_cast<std::string>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("terrain", "preferredtechnique"));
+	}
+	if (preferredTech == "ShaderNormalMapped") {
+		mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueShaderNormalMapped());
+	} else if (preferredTech == "Shader") {
+		mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueShader());
+	} else {
+	}
+// 	
 	
 //	mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueSimple());
 }

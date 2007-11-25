@@ -49,7 +49,7 @@ public:
 	std::vector<TerrainPageSurfaceLayer*>& getLayers();
 	Ogre::TexturePtr getCombinedCoverageTexture();
 	
-	void finalize();
+	virtual void finalize();
 	
 protected:
 	TerrainPageSurfaceCompilerShaderPass& mShaderPass;
@@ -73,19 +73,21 @@ friend class TerrainPageSurfaceCompilerShaderPassCoverageBatch;
 	TerrainPageSurfaceCompilerShaderPass(Ogre::Pass* pass, TerrainPage& page);
 	virtual ~TerrainPageSurfaceCompilerShaderPass();
 	
-	void addLayer(TerrainPageSurfaceLayer* layer);
-	void setBaseLayer(TerrainPageSurfaceLayer* layer);
+	virtual void addLayer(TerrainPageSurfaceLayer* layer);
+	virtual void setBaseLayer(TerrainPageSurfaceLayer* layer);
 	void addShadowLayer(TerrainPageShadow* terrainPageShadow);
 	
-	bool hasRoomForLayer(TerrainPageSurfaceLayer* layer);
+	virtual bool hasRoomForLayer(TerrainPageSurfaceLayer* layer);
 	
 	
 	/**
 	 *    Creates the combined final coverage textures and sets the shader params. Be sure to call this before you load the material.
 	 */
-	void finalize();
+	virtual void finalize();
 	
 	LayerStore& getLayers();
+	
+	Ogre::Pass* getPass();
 	
 protected:
 	typedef std::vector<TerrainPageSurfaceCompilerShaderPassCoverageBatch*> CoverageBatchStore;
@@ -95,6 +97,7 @@ protected:
 	
 	void assignCombinedCoverageTexture();
 	TerrainPageSurfaceCompilerShaderPassCoverageBatch* getCurrentBatch();
+	virtual TerrainPageSurfaceCompilerShaderPassCoverageBatch* createNewBatch();
 
 	unsigned int getCoveragePixelWidth() const;
 	float mScales[16];
@@ -122,13 +125,57 @@ protected:
 	typedef std::vector<TerrainPageSurfaceCompilerShaderPass*> PassStore;
 	
 	TerrainPage* mPage;
-	TerrainPageSurfaceCompilerShaderPass* addPass(Ogre::Technique* technique);
+	virtual TerrainPageSurfaceCompilerShaderPass* addPass(Ogre::Technique* technique);
 	PassStore mPasses;
 	
 	void addBaseLayer(Ogre::Pass* pass, TerrainPageSurfaceLayer* layer);
 	void addLayer(Ogre::Pass* pass, TerrainPageSurfaceLayer* layer);
 	
 	void reset();
+
+};
+
+
+class TerrainPageSurfaceCompilerShaderNormalMappedPassCoverageBatch : public TerrainPageSurfaceCompilerShaderPassCoverageBatch
+{
+public:
+ 	TerrainPageSurfaceCompilerShaderNormalMappedPassCoverageBatch(TerrainPageSurfaceCompilerShaderPass& shaderPass, Ogre::TexturePtr combinedCoverageTexture);
+	virtual ~TerrainPageSurfaceCompilerShaderNormalMappedPassCoverageBatch() {}
+	
+	virtual void finalize();
+	
+protected:
+
+};
+
+class TerrainPageSurfaceCompilerShaderNormalMappedPass : public TerrainPageSurfaceCompilerShaderPass
+{
+public:
+ 	TerrainPageSurfaceCompilerShaderNormalMappedPass(Ogre::Pass* pass, TerrainPage& page);
+	virtual ~TerrainPageSurfaceCompilerShaderNormalMappedPass() {}
+	
+// 	virtual void addLayer(TerrainPageSurfaceLayer* layer);
+// 	virtual void setBaseLayer(TerrainPageSurfaceLayer* layer);
+	
+	virtual bool hasRoomForLayer(TerrainPageSurfaceLayer* layer);
+	
+	
+	/**
+	 *    Creates the combined final coverage textures and sets the shader params. Be sure to call this before you load the material.
+	 */
+	virtual void finalize();
+	
+	
+protected:
+	virtual TerrainPageSurfaceCompilerShaderPassCoverageBatch* createNewBatch();
+
+};
+
+class TerrainPageSurfaceCompilerTechniqueShaderNormalMapped : public TerrainPageSurfaceCompilerTechniqueShader
+{
+public:
+protected:
+	virtual TerrainPageSurfaceCompilerShaderPass* addPass(Ogre::Technique* technique);
 
 };
 
