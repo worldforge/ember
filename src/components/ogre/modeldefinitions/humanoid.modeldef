@@ -1,0 +1,155 @@
+<models>
+    <model name="humanoid" usescaleof="height" showcontained="false">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="humanoid.mesh">
+                <parts>
+                    <part name="hips" show="false">
+                        <subentities>
+                            <subentity index="11" material="/jayr/creatures/humanoid/humanoid" />
+                        </subentities>
+                    </part>
+                    <part name="belt" show="true">
+                        <subentities>
+                            <subentity index="0" material="/jayr/clothes/dress/cloth" />
+                            <subentity index="1" material="/jayr/clothes/dress/cloth" />
+                        </subentities>
+                    </part>
+                    <part name="pants" show="true" group="lowerbody">
+                        <subentities>
+                            <subentity index="2" material="/jayr/clothes/dress/cloth" />
+                        </subentities>
+                    </part>
+                    <part name="shirt" show="true" group="upperbody">
+                        <subentities>
+                            <subentity index="3" material="/jayr/clothes/dress/cloth" />
+                            <subentity index="4" material="/jayr/clothes/dress/cloth" />
+                        </subentities>
+                    </part>
+                    <part name="feet" show="true">
+                        <subentities>
+                            <subentity index="9" material="/jayr/creatures/humanoid/humanoid" />
+                        </subentities>
+                    </part>
+                    <part name="lower_body" show="false" group="lowerbody">
+                        <subentities>
+                            <subentity index="5" material="/jayr/creatures/humanoid/humanoid" />
+                            <subentity index="12" material="/jayr/creatures/humanoid/humanoid" />
+                            <subentity index="15" material="/jayr/creatures/humanoid/humanoid" />
+                        </subentities>
+                    </part>
+                    <part name="chest" show="false" group="upperbody">
+                        <subentities>
+                            <subentity index="6" material="/jayr/creatures/humanoid/humanoid" />
+                            <subentity index="14" material="/jayr/creatures/humanoid/humanoid" />
+                        </subentities>
+                    </part>
+                    <part name="hands" show="true">
+                        <subentities>
+                            <subentity index="10" material="/jayr/creatures/humanoid/humanoid" />
+                        </subentities>
+                    </part>
+                    <part name="arms" show="false">
+                        <subentities>
+                            <subentity index="7" material="/jayr/creatures/humanoid/humanoid" />
+                            <subentity index="8" material="/jayr/creatures/humanoid/humanoid" />
+                            <subentity index="13" material="/jayr/creatures/humanoid/humanoid" />
+                        </subentities>
+                    </part>
+                    <part name="head" show="true">
+                        <subentities>
+                            <subentity index="16" material="/jayr/creatures/humanoid/bearded_male" />
+                            <subentity index="17" material="/jayr/creatures/humanoid/bearded_male" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+		<actions>
+			<action name="__movement_idle" speed="1.000000">
+				<animations>
+					<animation iterations="10">
+						<animationpart name="wf_humanoid-idle_Clip" weight="1" />
+					</animation>
+					<animation iterations="1">
+						<animationpart name="wf_humanoid-idle_knuckles_crack_Clip" weight="1" />
+					</animation>
+					<animation iterations="11">
+						<animationpart name="wf_humanoid-idle_Clip" weight="1" />
+					</animation>
+					<animation iterations="1">
+						<animationpart name="wf_humanoid-idle_neck_adjust_Clip" weight="1" />
+					</animation>
+					<animation iterations="14">
+						<animationpart name="wf_humanoid-idle_Clip" weight="1" />
+					</animation>
+					<animation iterations="1">
+						<animationpart name="wf_humanoid-idle_stretch_back_xsi_Clip" weight="1" />
+					</animation> 
+				</animations>
+			</action>
+			<action name="__movement_walk" speed="1.000000">
+				<animations>
+					<animation>
+						<animationpart name="wf_humanoid_walk_Clip" weight="1.000000" />
+					</animation>
+				</animations>
+			</action>
+			<action name="__movement_swim" speed="1.000000">
+				<animations>
+					<animation>
+						<animationpart name="wf_humanoid_walk_Clip" weight="1.000000" />
+					</animation>
+				</animations>
+			</action>
+			<action name="__movement_run" speed="1.000000">
+				<animations>
+					<animation>
+						<animationpart name="wf_humanoid_run_Clip" weight="1.000000" />
+					</animation>
+				</animations>
+			</action>
+			<action name="pickup" speed="1.000000">
+				<animations>
+					<animation>
+						<animationpart name="wf_humanoid-pick-up_Clip" weight="1.000000" />
+					</animation>
+				</animations>
+			</action>
+			<action name="drop" speed="1.000000">
+				<animations>
+					<animation>
+						<animationpart name="wf_humanoid-pick-up_Clip" weight="1.000000" />
+					</animation>
+				</animations>
+			</action>
+			<action name="cut" speed="1.000000">
+				<animations>
+					<animation>
+						<animationpart name="wf_humanoid-offense_punch_Clip" weight="1.000000" />
+					</animation>
+				</animations>
+			</action>
+			<action name="attack" speed="1.000000">
+				<animations>
+					<animation>
+						<animationpart name="wf_humanoid-offense_punch_Clip" weight="1.000000" />
+					</animation>
+				</animations>
+			</action>
+			<action name="default_action" speed="1.000000">
+				<animations>
+					<animation>
+						<animationpart name="wf_humanoid-fletching_Clip" weight="1.000000" />
+					</animation>
+				</animations>
+			</action>
+		</actions>
+		<attachpoints>
+			<attachpoint name="right_hand_wield" bone="RMiddleRoot">
+				<!-- rotation x="1" y="0" z="0" degrees="45.000000" / -->
+			</attachpoint>
+		</attachpoints>
+    </model>
+</models>

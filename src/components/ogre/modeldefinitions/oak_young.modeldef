@@ -1,0 +1,41 @@
+<models>
+    <model name="oak_young" usescaleof="height" scale="1.500000" showcontained="true" icon="">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/plants/trees/models/oak/oak_youngA.mesh">
+                <parts>
+                    <part name="A" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/oak/nonculled" />
+                            <subentity index="1" material="/global/plants/trees/oak" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+            <submodel mesh="3d_objects/plants/trees/models/oak/oak_youngB.mesh">
+                <parts>
+                    <part name="B" group="main" show="false">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/oak/nonculled" />
+                            <subentity index="1" material="/global/plants/trees/oak" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+            <submodel mesh="3d_objects/plants/trees/models/oak/oak_youngC.mesh">
+                <parts>
+                    <part name="C" group="main" show="false">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/oak/nonculled" />
+                            <subentity index="1" material="/global/plants/trees/oak" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+</models>

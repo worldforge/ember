@@ -42,16 +42,4 @@
         </submodels>
         <actions />
     </model>
-    <model name="boat" usescaleof="none" showcontained="true" scale="0.4">
-        <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
-        <submodels>
-            <submodel mesh="3d_objects/items/building_primitives/models/goatboat/goatboat.mesh">
-                <parts>
-                    <part name="main" show="true" />
-                </parts>
-            </submodel>
-        </submodels>
-        <actions />
-    </model>
 </models>

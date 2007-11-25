@@ -1,0 +1,21 @@
+<models>
+    <model name="apple" usescaleof="all" scale="10.000000" showcontained="true" icon="">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/plants/fruit/models/acorn/acorn.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/fruitable/green_apple" />
+                            <subentity index="1" material="/global/plants/fruitable/green_apple" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+</models>

@@ -13,7 +13,7 @@
 	
 	<model name="column_fractured_3">
 		<submodels>
-			<submodel mesh="3d_objects/items/building_element/models/blocky_corner_pillar/pillar_fractured.mesh">
+			<submodel mesh="3d_objects/items/building_element/models/columns/pillar_fractured.mesh">
 			<parts>
 				<part name="main" show="true" />
 			</parts>
@@ -23,37 +23,7 @@
 	
 	<model name="column_segmented_3">
 		<submodels>
-			<submodel mesh="3d_objects/items/building_element/models/blocky_corner_pillar/pillar_segmented.mesh">
-			<parts>
-				<part name="main" show="true" />
-			</parts>
-			</submodel>
-		</submodels>
-	</model>
-	
-	<model name="fencegate">
-		<submodels>
-			<submodel mesh="3d_objects/items/building_element/models/wooden_fence2/fence_gate.mesh">
-			<parts>
-				<part name="main" show="true" />
-			</parts>
-			</submodel>
-		</submodels>
-	</model>
-	
-	<model name="fencepole">
-		<submodels>
-			<submodel mesh="3d_objects/items/building_element/models/wooden_fence2/fence_pole.mesh">
-			<parts>
-				<part name="main" show="true" />
-			</parts>
-			</submodel>
-		</submodels>
-	</model>
-	
-	<model name="fencesection">
-		<submodels>
-			<submodel mesh="3d_objects/items/building_element/models/wooden_fence2/fence_section.mesh">
+			<submodel mesh="3d_objects/items/building_element/models/columns/pillar_segmented.mesh">
 			<parts>
 				<part name="main" show="true" />
 			</parts>
@@ -83,7 +53,7 @@
 	
 	<model name="floor_3_stone">
 		<submodels>
-			<submodel mesh="3d_objects/items/building_primitives/models/wall_blocks/floor_3x3x0_3.mesh">
+			<submodel mesh="3d_objects/items/building_element/models/wall_blocks/floor_3x3x0_3.mesh">
 			<parts>
 				<part name="main" show="true" />
 			</parts>
@@ -122,17 +92,6 @@
 		</submodels>
 	</model>
 	
-	<model name="house3"  usescaleof="depth" rotation="-90" scale="1.1">
-		<rotation x="0" y="1" z="0" degrees="-90" />
-		<submodels>
-			<submodel mesh="3d_objects/items/building_primitives/models/2_room_house/2_room_house.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>
-	
 	<model name="block_house"  usescaleof="depth">
 		<submodels>
 			<submodel mesh="junkyard/models/blockhouse/blockhouse.mesh" >
@@ -142,7 +101,6 @@
 			</submodel>
 		</submodels>
 	</model>
-	
 	
 
 	<model name="roof">
@@ -167,7 +125,7 @@
 	
 	<model name="wall_1_5">
 		<submodels>
-			<submodel mesh="3d_objects/items/building_primitives/models/wall_blocks/wall_1_5x3x0_3.mesh">
+			<submodel mesh="3d_objects/items/building_element/models/wall_blocks/wall_1_5x3x0_3.mesh">
 			<parts>
 				<part name="main" show="true" />
 			</parts>
@@ -177,7 +135,7 @@
 	
 	<model name="wall_3" scale="1">
 		<submodels>
-			<submodel mesh="3d_objects/items/building_primitives/models/wall_blocks/wall_3x3x0_3.mesh">
+			<submodel mesh="3d_objects/items/building_element/models/wall_blocks/wall_3x3x0_3.mesh">
 			<parts>
 				<part name="main" show="true" />
 			</parts>

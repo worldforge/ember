@@ -1,0 +1,20 @@
+<models>
+    <model name="palissade_entry" usescaleof="all" showcontained="true" icon="">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="-0.862856" y="-0.357407" z="-0.357407" degrees="98.421089" />
+        <submodels>
+            <submodel mesh="3d_objects/items/building_element/models/palissade/pallisade_entry.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/items/building_element/sharpened_log" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+</models>

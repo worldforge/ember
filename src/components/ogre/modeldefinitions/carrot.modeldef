@@ -1,0 +1,26 @@
+<models>
+    <model name="carrot" usescaleof="all" renderingdistance="30.000000" scale="1.000000" showcontained="true" icon="">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="-1.000000" y="-0.000000" z="-0.000000" degrees="90.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/plants/fruit/models/carrot/carrot.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/fruit/carrot" />
+                            <subentity index="1" material="/global/plants/fruit/carrot/nonculled" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views>
+            <view name="icon">
+                <distance>0</distance>
+                <rotation x="1.000000" y="0.000000" z="0.000000" degrees="89.999992" />
+            </view>
+        </views>
+    </model>
+</models>

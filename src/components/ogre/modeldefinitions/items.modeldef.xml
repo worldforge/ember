@@ -1,32 +1,8 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <models>
 
-	<model name="barrel" usescaleof="height"  >
-		<translate x="0.000000" y="1.000000" z="0.000000" />
-		<submodels>
-			<submodel mesh="3d_objects/items/cylinder/models/barrel/cylinder_barrel_closed.mesh" >
-			<parts>
-				<part name="main" show="true" />
-			</parts>
-			</submodel>
-		</submodels>
-	</model>
 
 
-	<model name="coin" usescaleof="none" scale="5"  >
-		<submodels>
-			<submodel mesh="3d_objects/items/coin/models/lowpoly_coin/lowpoly_coin.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-		<views>
-            <view name="icon">
-                <rotation x="1.000000" y="0.000000" z="0.000000" degrees="270.000000" />
-            </view>
-        </views>
-	</model>			
 	
     <model name="torch" usescaleof="none" scale="1.000000" showcontained="true">
         <translate x="0.000000" y="0.000000" z="0.000000" />
@@ -56,24 +32,6 @@
 			</submodel>
 		</submodels>
 	</model>	
-	
-	<model name="bottle" usescaleof="all" showcontained="true">
-		<translate x="0.000000" y="0.000000" z="0.000000" />
-		<rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
-		<submodels>
-			<submodel mesh="3d_objects/items/cylinder/models/bottle/simple_bottle.mesh">
-				<parts>
-					<part name="main" show="true">
-						<subentities>
-							<subentity index="0" material="/global/items/cylinder/earthenware" />
-							<subentity index="1" material="/global/items/cylinder/earthenware" />
-						</subentities>
-					</part>
-				</parts>
-			</submodel>
-		</submodels>
-		<actions />
-	</model>
 	
 	<model name="shirt" usescaleof="width" scale="2.000000" showcontained="true">
 		<translate x="0.000000" y="0.050000" z="0.000000" />

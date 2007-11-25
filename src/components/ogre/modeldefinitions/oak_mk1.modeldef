@@ -1,0 +1,35 @@
+<models>
+    <model name="oak_mk1" usescaleof="height" scale="2.000000" showcontained="true" icon="">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/plants/trees/models/oak/mk1/trees.mesh">
+                <parts>
+                    <part name="trunk" group="trunk" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/trees/bark/fir_bark" />
+                        </subentities>
+                    </part>
+                    <part name="leaves/summer" group="leaves" show="true">
+                        <subentities>
+                            <subentity index="1" material="/global/plants/trees/foliage/oak_summer" />
+                        </subentities>
+                    </part>
+                    <part name="leaves/spring" group="leaves" show="false">
+                        <subentities>
+                            <subentity index="1" material="/global/plants/trees/foliage/oak_spring" />
+                        </subentities>
+                    </part>
+                    <part name="leaves/fall" group="leaves" show="false">
+                        <subentities>
+                            <subentity index="1" material="/global/plants/trees/foliage/oak_fall" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+</models>

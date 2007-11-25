@@ -1,15 +1,6 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <models>
-	<model name="acorn" scale="10">
-		<submodels>
-			<submodel mesh="3d_objects/plants/fructus/models/acorn/acorn.mesh" >
-			<parts>
-				<part name="main" show="true" />
-			</parts>
-			</submodel>
-		</submodels>
-	</model>
-	
+
 	<model name="fire">
 		<particlesystems>
 			<particlesystem script="Examples/Smoke">
@@ -19,46 +10,9 @@
 			</particlesystem>
 		</particlesystems>
 	</model>	
+
 	
-	<model name="lumber">
-		<submodels>
-			<submodel mesh="3d_objects/plants/tree/models/log/tree_log.mesh" >
-			<parts>
-				<part name="main" show="true" />
-			</parts>
-			</submodel>
-		</submodels>
-	</model>	
-	
-	<model name="mushroom" scale="3">
-		<submodels>
-			<submodel mesh="3d_objects/plants/mushroom/models/round_mushroom/mushroom.mesh">
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>	
-	
-	<model name="turnip" scale="1" renderingdistance="30" icon="3d_objects/plants/fructus/textures/beet/beetI.png" >
-		<submodels>
-			<submodel mesh="3d_objects/plants/fructus/models/beet/beet.mesh">
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>	
-	
-	<model name="carrot" scale="1" renderingdistance="30">
-		<submodels>
-			<submodel mesh="3d_objects/plants/fructus/models/carrot/carrot.mesh">
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>	
+
 	
 	<model name="boulder" usescaleof="all" showcontained="true">
 		<translate x="0.000000" y="0.000000" z="0.000000" />
@@ -104,21 +58,7 @@
 		<actions />
     </model>
 	
-	<model name="apple" scale="10">
-		<submodels>
-			<submodel mesh="3d_objects/plants/fructus/models/acorn/acorn.mesh" >
-				<parts>
-						<part name="main" show="true" >
-							<subentities>
-								<subentity name="top" material="/global/plants/fruitable/green_apple"  />
-								<subentity name="bottom" material="/global/plants/fruitable/green_apple"  />
-							</subentities>
-						</part>  
-				</parts>
-			</submodel>
-		</submodels>
-	</model>
-	
+
 	<model name="pile">
 		<submodels>
 			<submodel mesh="3d_objects/environment/ground/models/rounded_heap/rounded_heap.mesh" >
@@ -206,25 +146,6 @@
             </submodel>
         </submodels>
         <actions />
-    </model>
-	
-    <model name="fern" usescaleof="width" showcontained="false">
-        <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
-        <submodels>
-            <submodel mesh="3d_objects/plants/shrubs/models/fern/fern.mesh">
-                <parts>
-                    <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/plants/shrub/fern" />
-                        </subentities>
-                    </part>
-                </parts>
-            </submodel>
-        </submodels>
-        <actions />
-        <attachpoints />
-        <views />
     </model>
 	
 	<!-- non-physical entities -->

@@ -1,0 +1,25 @@
+<models>
+    <model name="house3" usescaleof="depth" scale="1.100000" showcontained="true" icon="">
+        <translate x="8.800000" y="0.000000" z="0.600000" />
+        <rotation x="1.000000" y="-0.000000" z="-0.000000" degrees="270.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/building_element/models/two_room_house/two_room_house.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/items/building_element/rough_timber/timber_roof" />
+                            <subentity index="1" material="/global/items/building_element/rough_timber/rough_timber_roof_bottom" />
+                            <subentity index="2" material="/global/items/building_element/rough_stone/floor" />
+                            <subentity index="3" material="/global/items/building_element/rough_stone/floor" />
+                            <subentity index="4" material="/global/items/building_element/rough_timber/rough_timber_wall" />
+                            <subentity index="5" material="/global/items/building_element/rough_timber/rough_timber_beam" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+</models>

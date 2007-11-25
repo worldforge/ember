@@ -1,0 +1,34 @@
+<models>
+    <model name="stall" usescaleof="none" scale="1.000000" showcontained="true" icon="">
+        <contentoffset x="0.000000" y="0.800000" z="0.000000" />
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="-0.000000" y="-1.000000" z="-0.000000" degrees="90.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/building_element/models/marketstall/marketstall_canvas_1.mesh">
+                <parts>
+                    <part name="canvas" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/items/building_element/marketstall/canvas_main" />
+                            <subentity index="1" material="/global/items/building_element/marketstall/canvas_details" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+            <submodel mesh="3d_objects/items/building_element/models/marketstall/marketstall_frame_1.mesh">
+                <parts>
+                    <part name="frame" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/items/building_element/rough_timber/rough_timber_beam" />
+                            <subentity index="1" material="/global/items/building_element/rough_timber/rough_timber_beam_end" />
+                            <subentity index="2" material="/global/items/building_element/rough_timber/rough_timber_beam" />
+                            <subentity index="3" material="/global/items/building_element/rough_timber/rough_timber_beam_end" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+</models>
