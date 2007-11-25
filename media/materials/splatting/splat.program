@@ -61,6 +61,13 @@ fragment_program splatting_fragment_dynamic cg
 	profiles ps_2_0 arbfp1
 }
 
+fragment_program splatting_fragment_normalmapped_dynamic cg
+{
+	source Splat.cg
+	entry_point splat_normalmapped_fp
+	profiles ps_2_0 arbfp1
+}
+
 fragment_program splatatlas_cg cg
 {
 	source Splat.cg

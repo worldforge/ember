@@ -58,8 +58,8 @@ void main_vp__
     oCoverage.z = clamp (oCoverage.z + rock_factor, 0.0, 1.0);
 
     //float fog = clamp(( oPosition.z - fogSettings[0] ) / (fogSettings[1] - fogSettings[0]),0.0,1.0) * fogSettings[2];
-    //oColor0 = (1.0 - fog) * (color * (1.0 - rock_factor));
-    //oColor1 = (1.0 - fog) * (color * rock_factor);
+    //oColour0 = (1.0 - fog) * (color * (1.0 - rock_factor));
+    //oColour1 = (1.0 - fog) * (color * rock_factor);
     //oFog = fogColour * fog;
 
 
@@ -76,7 +76,7 @@ void main_fp
     float4              iCoverage	: TEXCOORD1,
     float4              iScaled	    : TEXCOORD2,
 
-	out float4          oColor		: COLOR,
+	out float4          oColour		: COLOR,
 
     uniform sampler2D   textureUnit0,
     uniform sampler2D   textureUnit1,
@@ -84,7 +84,7 @@ void main_fp
     uniform sampler2D   textureUnit3
 )
 {
-	oColor = (tex2D(textureUnit0, iScaled.xy) * iCoverage.x) + (tex2D(textureUnit1, iScaled.xy) * iCoverage.y) + (tex2D(textureUnit2, iScaled.xy) *  iCoverage.z) + (tex2D(textureUnit3, iScaled.xy) *  iCoverage.w);
+	oColour = (tex2D(textureUnit0, iScaled.xy) * iCoverage.x) + (tex2D(textureUnit1, iScaled.xy) * iCoverage.y) + (tex2D(textureUnit2, iScaled.xy) *  iCoverage.z) + (tex2D(textureUnit3, iScaled.xy) *  iCoverage.w);
 
 }
 
@@ -127,15 +127,13 @@ void splat_fp
     float2              iCoverage	: TEXCOORD0,
     float2              iTexcoord	: TEXCOORD1,
 	float				iFog 		: FOG,
-// 	float				iFogFade	: TEXCOORD3,
 	
 	uniform float3 lightDiffuse,
 	uniform float3 lightSpecular,
 	uniform float3 lightAmbient,
-// 	uniform float4 iFogParams,
 	uniform float4 iFogColour,
 
-	out float4          oColor		: COLOR,
+	out float4          oColour		: COLOR,
 	
     uniform float4   iScales[4],
     uniform float iNumberOfLayers, //the number of layers NOTE: this is very inefficient, much better to have many different shaders for the different amount of layers, but we'll do it like this for now while we're developing
@@ -150,7 +148,11 @@ void splat_fp
     uniform sampler2D   splat5TextureDiffuse: TEXUNIT8,
     uniform sampler2D   splat6TextureDiffuse: TEXUNIT9,
     uniform sampler2D   splat7TextureDiffuse: TEXUNIT10,
-    uniform sampler2D   splat8TextureDiffuse: TEXUNIT11
+    uniform sampler2D   splat8TextureDiffuse: TEXUNIT11,
+    uniform sampler2D   coverageTexture3: TEXUNIT12,
+    uniform sampler2D   splat9TextureDiffuse: TEXUNIT13,
+    uniform sampler2D   splat10TextureDiffuse: TEXUNIT14,
+    uniform sampler2D   splat11TextureDiffuse: TEXUNIT15
 )
 {
 	//tile = 0.0025;
@@ -160,51 +162,145 @@ void splat_fp
  	if (iFog < 1) {
 		//iTexcoord = iTexcoord * 16.0f;
 		
-		oColor = tex2D(baseTextureDiffuse, iTexcoord.xy * iScales[0].x);
+		oColour = tex2D(baseTextureDiffuse, iTexcoord.xy * iScales[0].x);
 		if (iNumberOfLayers > 1) {
-			oColor = (lerp(oColor, tex2D(splat1TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture1, iCoverage.xy).w));
+			oColour = (lerp(oColour, tex2D(splat1TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture1, iCoverage.xy).w));
 		}
 		if (iNumberOfLayers > 2) {
-			oColor = (lerp(oColor, tex2D(splat2TextureDiffuse, iTexcoord.xy * iScales[0].z), tex2D(coverageTexture1, iCoverage.xy).x));
+			oColour = (lerp(oColour, tex2D(splat2TextureDiffuse, iTexcoord.xy * iScales[0].z), tex2D(coverageTexture1, iCoverage.xy).x));
 		}
 		if (iNumberOfLayers > 3) {
-			oColor = (lerp(oColor, tex2D(splat3TextureDiffuse, iTexcoord.xy * iScales[0].w), tex2D(coverageTexture1, iCoverage.xy).y));
+			oColour = (lerp(oColour, tex2D(splat3TextureDiffuse, iTexcoord.xy * iScales[0].w), tex2D(coverageTexture1, iCoverage.xy).y));
 		}
 		if (iNumberOfLayers > 4) {
- 			oColor = (lerp(oColor, tex2D(splat4TextureDiffuse, iTexcoord.xy * iScales[0].x), tex2D(coverageTexture1, iCoverage.xy).z));
+ 			oColour = (lerp(oColour, tex2D(splat4TextureDiffuse, iTexcoord.xy * iScales[0].x), tex2D(coverageTexture1, iCoverage.xy).z));
  		}
 		if (iNumberOfLayers > 5) {
-			oColor = (lerp(oColor, tex2D(splat5TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture2, iCoverage.xy).w));
+			oColour = (lerp(oColour, tex2D(splat5TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture2, iCoverage.xy).w));
 		}
 		if (iNumberOfLayers > 6) {
-			oColor = (lerp(oColor, tex2D(splat6TextureDiffuse, iTexcoord.xy * iScales[0].z), tex2D(coverageTexture2, iCoverage.xy).x));
+			oColour = (lerp(oColour, tex2D(splat6TextureDiffuse, iTexcoord.xy * iScales[0].z), tex2D(coverageTexture2, iCoverage.xy).x));
 		}
 		if (iNumberOfLayers > 7) {
-			oColor = (lerp(oColor, tex2D(splat7TextureDiffuse, iTexcoord.xy * iScales[0].w), tex2D(coverageTexture2, iCoverage.xy).y));
+			oColour = (lerp(oColour, tex2D(splat7TextureDiffuse, iTexcoord.xy * iScales[0].w), tex2D(coverageTexture2, iCoverage.xy).y));
 		}
 		if (iNumberOfLayers > 8) {
- 			oColor = (lerp(oColor, tex2D(splat8TextureDiffuse, iTexcoord.xy * iScales[0].x), tex2D(coverageTexture2, iCoverage.xy).z));
+ 			oColour = (lerp(oColour, tex2D(splat8TextureDiffuse, iTexcoord.xy * iScales[0].x), tex2D(coverageTexture2, iCoverage.xy).z));
  		} 		
- 		//shadow
- 		oColor *= tex2D(shadowTexture, iCoverage.xy).x;
- 		
-// 		float f = (iFogParams.z - iFog)/(iFogParams.z - iFogParams.y);
-// 		oColor = lerp(oColor, float4(iFogColour, 1), 1 - f);
-		oColor = lerp(oColor, iFogColour, iFog);
+		if (iNumberOfLayers > 9) {
+ 			oColour = (lerp(oColour, tex2D(splat9TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture3, iCoverage.xy).w));
+ 		} 		
+		if (iNumberOfLayers > 10) {
+ 			oColour = (lerp(oColour, tex2D(splat10TextureDiffuse, iTexcoord.xy * iScales[0].z), tex2D(coverageTexture3, iCoverage.xy).x));
+ 		} 		
+		if (iNumberOfLayers > 11) {
+ 			oColour = (lerp(oColour, tex2D(splat11TextureDiffuse, iTexcoord.xy * iScales[0].w), tex2D(coverageTexture3, iCoverage.xy).y));
+ 		} 		
+		//shadow
+		oColour *= tex2D(shadowTexture, iCoverage.xy).x;
+		
+		oColour = lerp(oColour, iFogColour, iFog);
 	} else {
-		oColor = iFogColour;
+		oColour = iFogColour;
 	}
+
+}
+
+// Expand a range-compressed vector
+float3 expand(float3 v)
+{
+	return (v - 0.5) * 2;
+}
+
+float4 getNormalMappedColour(float2 uv : TEXCOORD0,
+	float3 lightDir : TEXCOORD1,
+	float3 eyeDir : TEXCOORD2,
+	float3 halfAngle : TEXCOORD3,
+	float3 lightDiffuse,
+// 	float3 lightSpecular,
+	float3 lightAmbient,
+	float4 scaleBias,
+	sampler2D normalHeightMap: TEXUNIT0,
+	sampler2D diffuseMap: TEXUNIT1
+/*	uniform sampler2D specularMap: TEXUNIT2,*/
+)
+{
+	// get the height using the tex coords
+	float height = tex2D(normalHeightMap, uv).a;
+
+	// scale and bias factors	
+	float scale = scaleBias.x;
+	float bias = scaleBias.y;
+
+	// calculate displacement	
+	float displacement = (height * scale) + bias;
 	
-		//only apply fog if there is any
-// 		if (iFog > 0) {
-// 			oColor = lerp(iFogColour, oColor, 1- iFog);
-// //			oColor = lerp(fogColor, oColor, iFog);
-// 		}
-// 	} else {
-// 		oColor = iFogColour;
-// // 		oColor.w = iFogFade;
-// 	}
-		 
+	float3 uv2 = float3(uv, 1);
+	
+	// calculate the new tex coord to use for normal and diffuse
+	float2 newTexCoord = ((eyeDir * displacement) + uv2).xy;
+	
+	// get the new normal and diffuse values
+	float3 normal = expand(tex2D(normalHeightMap, newTexCoord).xyz);
+	float3 diffuse = tex2D(diffuseMap, newTexCoord).xyz;
+	
+// 	float3 specular = pow(saturate(dot(normal, halfAngle)), 32) * lightSpecular * tex2D(specularMap, newTexCoord).x;
+	return float4(diffuse * saturate(dot(normal, lightDir)) * lightDiffuse + diffuse * lightAmbient, 1); // + specular;
+}
+
+void splat_normalmapped_fp(float2 iTexcoord : TEXCOORD0,
+	float3 lightDir : TEXCOORD1,
+	float3 eyeDir : TEXCOORD2,
+	float3 halfAngle : TEXCOORD3,
+	float iFog : FOG,
+	uniform float3 lightDiffuse,
+// 	uniform float3 lightSpecular,
+	uniform float3 lightAmbient,
+	uniform float3 iFogColour,
+	uniform float4 scaleBias,
+    uniform float4 iScales[4],
+    uniform float iNumberOfLayers, //the number of layers NOTE: this is very inefficient, much better to have many different shaders for the different amount of layers, but we'll do it like this for now while we're developing
+    uniform sampler2D   shadowTexture: TEXUNIT0,
+    uniform sampler2D   baseTextureDiffuse: TEXUNIT1,
+    uniform sampler2D   baseTextureNormal: TEXUNIT2,
+    uniform sampler2D   coverageTexture1: TEXUNIT3,
+    uniform sampler2D   splat1TextureDiffuse: TEXUNIT4,
+    uniform sampler2D   splat1TextureNormal: TEXUNIT5,
+    uniform sampler2D   splat2TextureDiffuse: TEXUNIT6,
+    uniform sampler2D   splat2TextureNormal: TEXUNIT7,
+    uniform sampler2D   splat3TextureDiffuse: TEXUNIT8,
+    uniform sampler2D   splat3TextureNormal: TEXUNIT9,
+    uniform sampler2D   splat4TextureDiffuse: TEXUNIT10,
+    uniform sampler2D   splat4TextureNormal: TEXUNIT11,
+    uniform sampler2D   coverageTexture2: TEXUNIT12,
+    uniform sampler2D   splat5TextureDiffuse: TEXUNIT13,
+    uniform sampler2D   splat5TextureNormal: TEXUNIT14,
+	out float4 oColour : COLOR)
+{
+	if (iFog < 1) {
+		oColour = getNormalMappedColour(iTexcoord.xy * iScales[0].x, lightDir, eyeDir, halfAngle, lightDiffuse, lightAmbient, scaleBias, baseTextureNormal, baseTextureDiffuse);
+		if (iNumberOfLayers > 1) {
+			oColour = (lerp(oColour, getNormalMappedColour(iTexcoord.xy * iScales[0].y, lightDir, eyeDir, halfAngle, lightDiffuse, lightAmbient, scaleBias, splat1TextureNormal, splat1TextureDiffuse), tex2D(coverageTexture1, iTexcoord.xy).w));
+		}
+		if (iNumberOfLayers > 2) {
+			oColour = (lerp(oColour, getNormalMappedColour(iTexcoord.xy * iScales[0].z, lightDir, eyeDir, halfAngle, lightDiffuse, lightAmbient, scaleBias, splat2TextureNormal, splat2TextureDiffuse), tex2D(coverageTexture1, iTexcoord.xy).x));
+		}
+		if (iNumberOfLayers > 3) {
+			oColour = (lerp(oColour, getNormalMappedColour(iTexcoord.xy * iScales[0].w, lightDir, eyeDir, halfAngle, lightDiffuse, lightAmbient, scaleBias, splat3TextureNormal, splat3TextureDiffuse), tex2D(coverageTexture1, iTexcoord.xy).y));
+		}
+		if (iNumberOfLayers > 4) {
+ 			oColour = (lerp(oColour, getNormalMappedColour(iTexcoord.xy * iScales[0].x, lightDir, eyeDir, halfAngle, lightDiffuse, lightAmbient, scaleBias, splat4TextureNormal, splat4TextureDiffuse), tex2D(coverageTexture1, iTexcoord.xy).z));
+ 		}
+		if (iNumberOfLayers > 5) {
+			oColour = (lerp(oColour, getNormalMappedColour(iTexcoord.xy * iScales[0].y, lightDir, eyeDir, halfAngle, lightDiffuse, lightAmbient, scaleBias, splat5TextureNormal, splat5TextureDiffuse), tex2D(coverageTexture2, iTexcoord.xy).w));
+		}	
+		//shadow
+		oColour *= tex2D(shadowTexture, iTexcoord.xy).x;
+		
+		oColour = lerp(oColour, float4(iFogColour, 1), iFog);
+	} else {
+		oColour = float4(iFogColour, 1);
+	}
 
 }
 
@@ -214,7 +310,7 @@ void splatatlas_fp
     float4              iCoverage	: TEXCOORD0,
     float4              iTexcoord	: TEXCOORD1,
 
-	out float4          oColor		: COLOR,
+	out float4          oColour		: COLOR,
 
     uniform sampler2D   textureUnit0,
     uniform sampler2D   textureUnit1,
@@ -222,12 +318,144 @@ void splatatlas_fp
     uniform sampler2D   textureUnit3
 )
 {
-	oColor = tex2D(textureUnit1, float2(iTexcoord.x, (int(iTexcoord.y * 100000) % 100000) * 0.000002));
+	oColour = tex2D(textureUnit1, float2(iTexcoord.x, (int(iTexcoord.y * 100000) % 100000) * 0.000002));
 	
-	oColor = (lerp(oColor, tex2D(textureUnit1, float2(iTexcoord.x, ((int(iTexcoord.y * 100000) % 100000) * 0.000002) + 0.2)), tex2D(textureUnit0, iCoverage.xy).w));
-	oColor = (lerp(oColor, tex2D(textureUnit1, float2(iTexcoord.x, ((int(iTexcoord.y * 100000) % 100000) * 0.000002) + 0.4)), tex2D(textureUnit0, iCoverage.xy).x));
-	oColor = (lerp(oColor, tex2D(textureUnit1, float2(iTexcoord.x, ((int(iTexcoord.y * 100000) % 100000) * 0.000002) + 0.6)), tex2D(textureUnit0, iCoverage.xy).y));
-	oColor = (lerp(oColor, tex2D(textureUnit1, float2(iTexcoord.x, ((int(iTexcoord.y * 100000) % 100000) * 0.000002) + 0.8)), tex2D(textureUnit0, iCoverage.xy).z));
+	oColour = (lerp(oColour, tex2D(textureUnit1, float2(iTexcoord.x, ((int(iTexcoord.y * 100000) % 100000) * 0.000002) + 0.2)), tex2D(textureUnit0, iCoverage.xy).w));
+	oColour = (lerp(oColour, tex2D(textureUnit1, float2(iTexcoord.x, ((int(iTexcoord.y * 100000) % 100000) * 0.000002) + 0.4)), tex2D(textureUnit0, iCoverage.xy).x));
+	oColour = (lerp(oColour, tex2D(textureUnit1, float2(iTexcoord.x, ((int(iTexcoord.y * 100000) % 100000) * 0.000002) + 0.6)), tex2D(textureUnit0, iCoverage.xy).y));
+	oColour = (lerp(oColour, tex2D(textureUnit1, float2(iTexcoord.x, ((int(iTexcoord.y * 100000) % 100000) * 0.000002) + 0.8)), tex2D(textureUnit0, iCoverage.xy).z));
 	 
 
 }
+
+
+
+
+// // adapt this to Cg
+// 
+// 
+// 
+// //
+// //   SplattingShaderParallax_1_4.hlsl for PLSM2
+// //   Xavier Verguín González
+// //   October 2007
+// //
+// //   - 2 Coverage maps
+// //   - 1 Parallax splatting texture / 4 diffuse splatting textures
+// //   - 1 pass
+// //
+// 
+// void main_vp(// IN
+//              float4 iPosition         : POSITION,
+//              float3 iNormal           : NORMAL,
+//              float2 iUv               : TEXCOORD0,
+//              // OUT
+//              out float4 oPosition     : POSITION,
+//              out float2 oUv           : TEXCOORD0,
+//              out float3 oLightDir     : TEXCOORD1,
+//              out float3 oEyeDir       : TEXCOORD2,
+//              out float3 oHalfAngle    : TEXCOORD3,
+//              // UNIFORM
+//              uniform float4           uLightPosition,
+//              uniform float3           uEyePosition,
+//              uniform float4x4         uWorldViewProj)
+// {
+//    oPosition = mul(uWorldViewProj, iPosition);
+// 
+//    oUv = iUv;
+// 
+//    float3 lightDir = normalize(uLightPosition.xyz -  (iPosition * uLightPosition.w));
+//    float3 eyeDir   = uEyePosition - iPosition.xyz;
+// 
+//    float3 binormal = cross(float3(1,0,0), iNormal);
+//    float3 tangent  = cross(iNormal, binormal);
+// 
+//    float3x3 rotation = float3x3(tangent, binormal, iNormal);
+// 
+//    lightDir   = normalize(mul(rotation, lightDir));
+//    eyeDir     = normalize(mul(rotation, eyeDir));
+// 
+//    oLightDir  = lightDir;
+//    oEyeDir    = eyeDir;
+//    oHalfAngle = normalize(eyeDir + lightDir);
+// }
+// 
+// // Expand a range-compressed vector
+// float3 expand(float3 v)
+// {
+//    return (v - 0.5) * 2;
+// }
+// 
+// void main_fp(// IN
+//              float2 iUv           : TEXCOORD0,
+//             float3 iLightDir     : TEXCOORD1,
+//             float3 iEyeDir       : TEXCOORD2,
+//             float3 iHalfAngle    : TEXCOORD3,
+//             // OUT
+//             out float4 oColor    : COLOR,
+//             // UNIFORM
+//             uniform float3       uLightDiffuse,
+//             uniform float3       uLightSpecular,
+//             uniform float4       uScaleBias,
+//              uniform float3       uAmbient,
+//              uniform sampler2D    uCoverage1         : register(s0),
+//              uniform sampler2D    uCoverage2         : register(s1),
+//              uniform sampler2D    uSplatting0        : register(s2),
+//              uniform sampler2D    uSplatting1        : register(s3),
+//              uniform sampler2D    uSplatting2        : register(s4),
+//              uniform sampler2D    uSplatting3        : register(s5),
+//             uniform sampler2D    uNormalHeightMap   : register(s6),
+//             uniform sampler2D    uDiffuseMap        : register(s7))
+// {
+//     // Get coverage values
+//     float4 Coverage1 = tex2D(uCoverage1, iUv);
+//     float  Coverage2 = tex2D(uCoverage2, iUv).y;
+// 
+//     // Scale UV coord
+//    float2 texscale = float2(80,80);
+//    iUv *= texscale;
+// 
+//    float4 col = float4(0,0,0,0);
+// 
+//     if(Coverage1.x>0)
+//     {
+//        // Get the height from the alpha channel of normal-height tex.
+//        float height = tex2D(uNormalHeightMap, iUv).a;
+// 
+//        // Scale and bias factors
+//        float scale = uScaleBias.x;
+//        float bias = uScaleBias.y;
+// 
+//        // Calculate displacement
+//        float displacement = (height * scale) + bias;
+// 
+//        float3 uv2 = float3(iUv, 1);
+// 
+//        // Calculate the new tex coord to use for normal and diffuse
+//        float2 newTexCoord = ((iEyeDir * displacement) + uv2).xy;
+// 
+//        // Get the new normal and diffuse values
+//        float3 normal = expand(tex2D(uNormalHeightMap, newTexCoord).xyz);
+//        float3 diffuse = tex2D(uDiffuseMap, newTexCoord).xyz;
+// 
+//         // Calculate specular and final pixel colour
+//        float3 specular = pow(saturate(dot(normal, iHalfAngle)), 32) * uLightSpecular;
+//        col = float4(diffuse * saturate(dot(normal, iLightDir)) * uLightDiffuse + specular, 1);
+// 
+//         // Adjust the ambient value
+//         float3 diffuse2 = diffuse*uAmbient;
+//         if(col.x < diffuse2.x)
+//             col.x += (diffuse2.x-col.x);
+//         if(col.y < diffuse2.y)
+//             col.y += (diffuse2.y-col.y);
+//         if(col.z < diffuse2.z)
+//             col.z += (diffuse2.z-col.z);
+//     }
+// 
+//     // Final pixel colour
+//    oColor = col*Coverage1.x
+//           + (tex2D(uSplatting0, iUv) * Coverage1.y
+//           +  tex2D(uSplatting1, iUv) * Coverage1.z
+//           +  tex2D(uSplatting2, iUv) * Coverage1.w
+//           +  tex2D(uSplatting3, iUv) * Coverage2) * float4(uAmbient, 1);
+// }
