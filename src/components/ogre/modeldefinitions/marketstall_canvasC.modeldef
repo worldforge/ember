@@ -1,0 +1,34 @@
+<models>
+    <model name="marketstall_canvasC" usescaleof="width" scale="1.000000" showcontained="true" icon="">
+        <contentoffset x="0.000000" y="0.800000" z="0.000000" />
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="-0.577350" y="-0.577350" z="-0.577350" degrees="120.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/building_element/models/marketstall/marketstall_canvasC.mesh">
+                <parts>
+                    <part name="frame" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/items/ossyja/old_wood_planks" />
+                            <subentity index="3" material="/global/items/ossyja/old_wood_planks" />
+                        </subentities>
+                    </part>
+                    <part name="canvas_blue_green" show="true" group="canvas">
+                        <subentities>
+                            <subentity index="1" material="/global/items/building_element/marketstall/blue_green_canvas_details" />
+                            <subentity index="2" material="/global/items/building_element/marketstall/blue_green_canvas_main" />
+                        </subentities>
+                    </part>
+                    <part name="canvas" show="false" group="canvas">
+                        <subentities>
+                            <subentity index="1" material="/global/items/building_element/marketstall/canvas_details" />
+                            <subentity index="2" material="/global/items/building_element/marketstall/canvas_main" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+</models>

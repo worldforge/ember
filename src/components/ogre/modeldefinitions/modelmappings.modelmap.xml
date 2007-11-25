@@ -215,7 +215,34 @@
 	<automodelmapping name="palissade_earth" />
 	<automodelmapping name="stake" />
 	<automodelmapping name="sty" />
-	<automodelmapping name="stall" />
+	<modelmapping name="stall">
+		<entitymatch>
+			<case>
+				<caseparam type="equals">stall</caseparam>
+				<action type="display-model">marketstall_canvasA</action>
+				<attributematch attribute="style" >
+					<case>
+						<caseparam type="equals">B</caseparam>
+						<action type="display-model">marketstall_canvasB</action>
+					</case>
+					<case>
+						<caseparam type="equals">C</caseparam>
+						<action type="display-model">marketstall_canvasC</action>
+					</case>
+				</attributematch>
+				<attributematch attribute="fabric" >
+					<case>
+						<caseparam type="equals">blue_green</caseparam>
+						<action type="display-part">canvas_blue_green</action>
+					</case>
+					<case>
+						<caseparam type="equals">plain</caseparam>
+						<action type="display-part">canvas</action>
+					</case>
+				</attributematch>
+			</case>
+		</entitymatch>
+	</modelmapping>	
 	<automodelmapping name="jetty" />
 	<automodelmapping name="campfire" />
 	<automodelmapping name="choppingblock" />
