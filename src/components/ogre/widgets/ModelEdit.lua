@@ -71,7 +71,8 @@ function ModelEdit.fillMeshList()
 	for i = 0, meshes:size() - 1 do
 		local name = meshes[i]
 		local item = EmberOgre.Gui.ColouredListItem:new(name, i)
-		ModelEdit.contentparts.modelInfo.meshlist:addItem(item)
+		ModelEdit.contentparts.modelInfo.meshlistlistholder:addItem(item)
+--		ModelEdit.contentparts.modelInfo.meshlist:addItem(item)
 		
 	end	
 end
@@ -762,6 +763,10 @@ function ModelEdit.buildWidget()
 	ModelEdit.contentparts.modelInfo.meshlist = ModelEdit.widget:getWindow("MeshList")
 	ModelEdit.contentparts.modelInfo.meshlist = CEGUI.toListbox(ModelEdit.contentparts.modelInfo.meshlist)
 	ModelEdit.contentparts.modelInfo.meshlist:subscribeEvent("ItemSelectionChanged", "ModelEdit.modelinfoMeshlist_SelectionChanged")
+	
+	ModelEdit.contentparts.modelInfo.meshlistfilter =  CEGUI.toEditbox(ModelEdit.widget:getWindow("MeshListFilter"))
+	ModelEdit.contentparts.modelInfo.meshlistlistholder = EmberOgre.Gui.ListHolder:new_local(ModelEdit.contentparts.modelInfo.meshlist, ModelEdit.contentparts.modelInfo.meshlistfilter)
+	
 	
 	ModelEdit.contentparts.submeshInfo.materiallist = ModelEdit.widget:getWindow("Materials")
 	ModelEdit.contentparts.submeshInfo.materiallist = CEGUI.toListbox(ModelEdit.contentparts.submeshInfo.materiallist)

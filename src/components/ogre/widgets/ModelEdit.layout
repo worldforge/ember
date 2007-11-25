@@ -161,10 +161,15 @@
 					<Property Name='UnifiedMaxSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
 				</Window>
 				<Window Type='EmberLook/Listbox' Name='MeshList'>
-					<Property Name='UnifiedAreaRect' Value='{{0.025152,0.000000},{0.276664,0.000000},{0.402921,0.000000},{0.859195,0.000000}}'/>
+					<Property Name='UnifiedAreaRect' Value='{{0.025152,0.000000},{0.276664,0.000000},{0.402921,0.000000},{0.809195,0.000000}}'/>
 					<Property Name='UnifiedMaxSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
 				</Window>
-				<Window Type='EmberLook/StaticImage' Name='MeshPreviewImage'>
+				<Window Type='EmberLook/Editbox' Name='MeshListFilter'>
+					<Property Name='UnifiedPosition' Value='{{0,20},{1,-60}}'/>
+					<Property Name='UnifiedSize' Value='{{0,150},{0,25}}'/>
+				</Window>
+				
+			<Window Type='EmberLook/StaticImage' Name='MeshPreviewImage'>
 					<Property Name='UnifiedAreaRect' Value='{{0.463087,0.000000},{0.201645,0.000000},{0.656145,0.000000},{0.855863,0.000000}}'/>
 					<Property Name='UnifiedMaxSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
 				</Window>
