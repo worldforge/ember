@@ -156,6 +156,7 @@ class ServerService : public Service, public ConsoleObject
 	void eat(Eris::Entity* entity);
 	void deleteEntity(Eris::Entity* entity);
 	void setAttributes(Eris::Entity* entity, Atlas::Message::MapType& attributes);
+	void adminTell(const std::string& entityId, const std::string& attribute, const std::string &value);
 	//void use(Eris::Entity* entity);
 
     //----------------------------------------------------------------------
@@ -218,6 +219,7 @@ class ServerService : public Service, public ConsoleObject
 	const Ember::ConsoleCommandWrapper ListChars;
 	const Ember::ConsoleCommandWrapper Say;
 	const Ember::ConsoleCommandWrapper Delete;
+	const Ember::ConsoleCommandWrapper AdminTell;
 	
 	IServerAdapter* mServerAdapter;
 };

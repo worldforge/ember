@@ -53,6 +53,7 @@ public:
 	virtual void eat(Eris::Entity* entity);
 	virtual void deleteEntity(Eris::Entity* entity);
 	virtual void setAttributes(Eris::Entity* entity, Atlas::Message::MapType& attributes);
+	virtual void adminTell(const std::string& entityId, const std::string& attribute, const std::string &value);
 
 };
 

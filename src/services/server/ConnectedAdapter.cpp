@@ -335,4 +335,33 @@ void ConnectedAdapter::say(const std::string &message)
 	}	
 }
 
+void ConnectedAdapter::adminTell(const std::string& entityId, const std::string& attribute, const std::string &value) 
+{
+	try {
+		
+		Atlas::Objects::Entity::Anonymous what;
+		what->setAttr(attribute, value);
+		Atlas::Objects::Operation::Talk talk;
+		talk->setFrom(entityId);
+		talk->setTo(entityId);
+		talk->setArgs1(what);
+		
+		Atlas::Objects::Operation::Sound sound;
+		sound->setFrom(mAvatar->getEntity()->getId());
+		sound->setTo(entityId);
+		sound->setArgs1(talk);
+		
+		mConnection->send(sound);
+		
+	}
+	catch (const Eris::BaseException& except)
+	{
+		S_LOG_WARNING("Got Eris error on admin_tell: " << except._msg);
+	}
+	catch (const std::runtime_error& except)
+	{
+		S_LOG_WARNING("Got unknown error on admin_tell: " << except.what());
+	}	
+}
+
 }

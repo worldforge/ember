@@ -76,6 +76,7 @@ ServerService::ServerService() :
 	ListChars("list", this, "List you available characters on the server."),
 	Say("say", this, "Say something."),
 	Delete("delete", this, "Deletes an entity."),
+	AdminTell("admin_tell", this, "Uses admin mode to directly tell a NPC something. Usage: /admin_tell <entityid> <key> <value>"),
 	mServerAdapter(new NonConnectedAdapter())
 {
 	setName("Server Service");
@@ -499,7 +500,21 @@ void ServerService::logoutComplete(bool clean) {
 			touch->setArgsAsList(Atlas::Message::ListType(1, opargs));
 	
 			mConn->send(touch);*/
-		}	
+		} else if (AdminTell == command) 
+		{
+			Tokeniser tokeniser = Tokeniser();
+			tokeniser.initTokens(args);
+			std::string entityId = tokeniser.nextToken();
+			if (entityId != "") {
+				std::string key = tokeniser.nextToken();
+				if (key != "") {
+					std::string value = tokeniser.nextToken();
+					if (value != "") {
+						adminTell(entityId, key, value);
+					}
+				}
+			}
+		}
 	}
 	
 	bool ServerService::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description)
@@ -624,5 +639,11 @@ void ServerService::logoutComplete(bool clean) {
 	{
 		mServerAdapter->setAttributes(entity, attributes);
 	}
+	
+	void ServerService::adminTell(const std::string& entityId, const std::string& attribute, const std::string &value)
+	{
+		mServerAdapter->adminTell(entityId, attribute, value);
+	}
+	
  
 } // namespace Ember

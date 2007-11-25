@@ -113,4 +113,9 @@ void NonConnectedAdapter::setAttributes(Eris::Entity* entity, Atlas::Message::Ma
 {
 }
 
+void NonConnectedAdapter::adminTell(const std::string& entityId, const std::string& attribute, const std::string &value)
+{
+}
+
+
 }
