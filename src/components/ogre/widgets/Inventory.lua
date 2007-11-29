@@ -319,7 +319,9 @@ function Inventory.createOutfitSlot(avatarEntity, dollSlot, outfitPartName)
 	dollSlot.iconDraggedOff_connector = EmberOgre.LuaConnector:new_local(dollSlot.slot.EventIconDraggedOff):connect(dollSlot.iconDraggedOff)
 	
 	dollSlot.newEntityCreated = function(newEntity)
-		dollSlot.attributeChanged(avatarEntity:valueOfAttr("outfit"))
+		if avatarEntity:hasAttr("outfit") then
+			dollSlot.attributeChanged(avatarEntity:valueOfAttr("outfit"))
+		end
 	end
 	
 	table.insert(Inventory.newEntityListeners, dollSlot.newEntityCreated)
