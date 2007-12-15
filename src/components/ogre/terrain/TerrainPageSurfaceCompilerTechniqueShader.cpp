@@ -88,22 +88,22 @@ void TerrainPageSurfaceCompilerShaderPassCoverageBatch::finalize()
 {
 	///add our coverage textures first
 	assignCombinedCoverageTexture();
-	Ogre::TextureUnitState * textureUnitState = mShaderPass.mPass->createTextureUnitState();
-	textureUnitState->setTextureScale(1, 1);
-	textureUnitState->setTextureName(getCombinedCoverageTexture()->getName());
-	textureUnitState->setTextureCoordSet(0);
-	textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+	Ogre::TextureUnitState * coverageTUS = mShaderPass.mPass->createTextureUnitState();
+	coverageTUS->setTextureScale(1, 1);
+	coverageTUS->setTextureName(getCombinedCoverageTexture()->getName());
+	coverageTUS->setTextureCoordSet(0);
+	coverageTUS->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 	
 	for (LayerStore::iterator I = mLayers.begin(); I != mLayers.end(); ++I) {
 		TerrainPageSurfaceLayer* layer(*I);
 		///add the layer textures
 		S_LOG_VERBOSE("Adding new layer with diffuse texture " << layer->getDiffuseTextureName());	
 		///add the first layer of the terrain, no alpha or anything
-		Ogre::TextureUnitState * textureUnitState = mShaderPass.mPass->createTextureUnitState();
+		Ogre::TextureUnitState * diffuseTUS = mShaderPass.mPass->createTextureUnitState();
 		//textureUnitState->setTextureScale(0.025, 0.025);
-		textureUnitState->setTextureName(layer->getDiffuseTextureName());
-		textureUnitState->setTextureCoordSet(0);
-		textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);	
+		diffuseTUS->setTextureName(layer->getDiffuseTextureName());
+		diffuseTUS->setTextureCoordSet(0);
+		diffuseTUS->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);	
 	}
 }
 
@@ -378,11 +378,11 @@ void TerrainPageSurfaceCompilerShaderNormalMappedPassCoverageBatch::finalize()
 {
 	///add our coverage textures first
 	assignCombinedCoverageTexture();
-	Ogre::TextureUnitState * textureUnitState = mShaderPass.getPass()->createTextureUnitState();
-	textureUnitState->setTextureScale(1, 1);
-	textureUnitState->setTextureName(getCombinedCoverageTexture()->getName());
-	textureUnitState->setTextureCoordSet(0);
-	textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+	Ogre::TextureUnitState * coverageTUS = mShaderPass.getPass()->createTextureUnitState();
+	coverageTUS->setTextureScale(1, 1);
+	coverageTUS->setTextureName(getCombinedCoverageTexture()->getName());
+	coverageTUS->setTextureCoordSet(0);
+	coverageTUS->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 	
 	for (LayerStore::iterator I = mLayers.begin(); I != mLayers.end(); ++I) {
 		TerrainPageSurfaceLayer* layer(*I);
@@ -397,7 +397,7 @@ void TerrainPageSurfaceCompilerShaderNormalMappedPassCoverageBatch::finalize()
 		Ogre::TextureUnitState * normalMapTextureUnitState = mShaderPass.getPass()->createTextureUnitState();
 		normalMapTextureUnitState->setTextureName(layer->getNormalTextureName());
 		normalMapTextureUnitState->setTextureCoordSet(0);
-		normalMapTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+		normalMapTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 	}
 }
 
@@ -477,7 +477,7 @@ void TerrainPageSurfaceCompilerShaderNormalMappedPass::finalize()
 	}
 	
 	///add vertex shader for fog	
-	mPass->setVertexProgram("Examples/OffsetMappingVP");
+	mPass->setVertexProgram("splatting_vertex_normalmapped");
 	try {
 		Ogre::GpuProgramParametersSharedPtr fpParams = mPass->getVertexProgramParameters();
 		fpParams->setNamedAutoConstant("lightPosition", Ogre::GpuProgramParameters::ACT_LIGHT_POSITION_OBJECT_SPACE);
