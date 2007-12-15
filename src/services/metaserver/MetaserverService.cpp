@@ -56,7 +56,7 @@ namespace Ember
     setDescription("Service for Metaserver session");
     // TODO(zzorn, 2002-01-19): Set the status of the service to OK.
     //        setStatus( Service::Status::OK );
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Metaserver Service created" << ENDM;
+   S_LOG_INFO("Metaserver Service created");
   }
 
   /* dtor */
@@ -114,20 +114,20 @@ namespace Ember
   void MetaserverService::receivedServerInfo(const Eris::ServerInfo& sInfo)
   {
 
-    S_LOG_INFO("Got serverinfo:\n\r"
+    S_LOG_VERBOSE("Got serverinfo:\n"
       << "Hostname: " <<sInfo.getHostname()
-      << "\n\rServerName: "<<sInfo.getServername()
-      << "\n\rRuleset: "<<sInfo.getRuleset()
-      << "\n\rServer Type: "<<sInfo.getServer()
-      << "\n\rClients: "<<sInfo.getNumClients()
-      << " Ping: "<< sInfo.getPing()
-      << " Uptime: "<< (int)sInfo.getUptime());
+      << "\nServerName: "<<sInfo.getServername()
+      << "\nRuleset: "<<sInfo.getRuleset()
+      << "\nServer Type: "<<sInfo.getServer()
+      << "\nClients: "<<sInfo.getNumClients()
+      << "\nPing: "<< sInfo.getPing()
+      << "\nUptime: "<< (int)sInfo.getUptime());
   }
 
   void MetaserverService::completedServerList(int count)
   {
     S_LOG_INFO("Server List completed.");
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)<< "Servers: " << count << ENDM;
+    S_LOG_INFO("Servers: " << count);
 	
 //     stringstream out;
 //     out << "Listing hostnames..." << endl;
