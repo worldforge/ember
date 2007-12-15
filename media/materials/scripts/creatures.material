@@ -94,7 +94,7 @@ material /global/bipeds/bearded_male/bearded_male2 : /base/simple
 }
 material /global/bipeds/male/male : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_skeletons/bipeds/textures/male/male.png
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/textures/male/maleD.png
 }
 
 material /global/bipeds/drystan_archer/drystan_archer_footwear : /base/normalmap/specular

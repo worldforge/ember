@@ -32,7 +32,7 @@ material /global/fire
 			alpha_rejection greater_equal 128
 			texture_unit
 			{
-				texture 3d_objects/items/fire/textures/flame/low/flame.png
+				texture 3d_objects/items/fire/textures/flame/flame.png
 			}
 		}
 	}
@@ -40,7 +40,7 @@ material /global/fire
 
 material /global/environment/boulder/moraf_rock : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_objects/environment/boulder/textures/moraf_rock/low/boulder.png
+	set_texture_alias DiffuseMap 3d_objects/environment/boulder/textures/moraf_rock/boulder.png
 }
 
 material /global/environment/boulder/mossy_boulder : /base/simple
@@ -62,10 +62,13 @@ material /global/environment/ground/straw_and_mud : /base/simple
 	set_texture_alias DiffuseMap 3d_objects/environment/ground/textures/straw_and_mud/low/ground.png
 }
 
-material /global/environment/ground/grass/green_grass : /base/simple
+material /global/environment/ground/grass/grass : /base/normalmap/specular
 {
-	set_texture_alias DiffuseMap 3d_objects/environment/ground/textures/grass/green_grass_tile.png
+	set_texture_alias DiffuseMap 3d_objects/environment/ground/textures/grass/grassD.png
+	set_texture_alias NormalHeightMap 3d_objects/environment/ground/textures/grass/grassN.png
+	set_texture_alias SpecularMap 3d_objects/environment/ground/textures/grass/grassS.png
 }
+
 
 material /global/environment/ground/stone/weathered_granite : /base/simple
 {
@@ -77,11 +80,11 @@ material /global/environment/ground/dirt/dirt : /base/simple
 	set_texture_alias DiffuseMap 3d_objects/environment/ground/textures/dirt/dirt.png
 }
 
-material /global/environment/ground/sand/sand : /base/simple
+material /global/environment/ground/sand/sand :  base/normalmap
 {
-	set_texture_alias DiffuseMap 3d_objects/environment/ground/textures/sand/sand2.png
+	set_texture_alias DiffuseMap 3d_objects/environment/ground/textures/sand/sand_AD.png
+	set_texture_alias NormalHeightMap 3d_objects/environment/ground/textures/sand/sand_AN.png
 }
-
 
 material /global/environment/water/simple
 {

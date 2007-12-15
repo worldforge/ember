@@ -93,17 +93,6 @@ material /global/items/building_element/rough_timber/normal_slope_wall : /base/n
 //--------------- templates -------------
 
 
-material /global/building_primitives/template/wall_edges : /base/simple
-{
-	set_texture_alias DiffuseMap 3d_objects/items/building_primitives/textures/template/wall_edges.png
-}
-
-material /global/building_primitives/template/floor : /base/simple
-{
-	set_texture_alias DiffuseMap 3d_objects/items/building_primitives/textures/template/floor.png
-}
-
-
 //--------------- rough stone -------------
 
 
@@ -171,15 +160,14 @@ material /global/items/building_element/rough_stone/roof_top : /base/normalmap/s
 material /global/items/building_element/rough_stone/small_ceiling : /base/normalmap/specular
 {
 	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/rough_stone/small_ceilingD.png
-	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/rough_stone/ssmall_ceilingN.png
+	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/rough_stone/small_ceilingN.png
 	set_texture_alias SpecularMap 3d_objects/items/building_element/textures/rough_stone/small_ceilingS.png
 }
 
-material /global/items/building_element/rough_stone/small_floor : /base/normalmap/specular
+material /global/items/building_element/rough_stone/small_floor : /base/normalmap
 {
 	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/rough_stone/small_floorD.png
 	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/rough_stone/small_floorN.png
-	set_texture_alias SpecularMap 3d_objects/items/building_element/textures/rough_stone/small_floorS.png
 }
 
 material /global/items/building_element/rough_stone/small_floor_east_west_side : /base/normalmap/specular
@@ -250,47 +238,47 @@ material /global/items/building_element/timber_frame/beam_end : /base/simple
 
 material /global/items/building/mausoleum/floor : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_objects/items/building/models/mausoleum/floor.jpg
+	set_texture_alias DiffuseMap art/3d_objects/items/building_element/textures/mausoleum/floor.jpg
 }
 
 material /global/items/building/mausoleum/dirty-st : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_objects/items/building/models/mausoleum/dirty-st.jpg
+	set_texture_alias DiffuseMap art/3d_objects/items/building_element/textures/mausoleum/dirty-st.jpg
 }
 
 material /global/items/building/mausoleum/colonne : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_objects/items/building/models/mausoleum/colonne.jpg
+	set_texture_alias DiffuseMap art/3d_objects/items/building_element/textures/mausoleum/colonne.jpg
 }
 
 material /global/items/building/mausoleum/colonne- : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_objects/items/building/models/mausoleum/colonne-.jpg
+	set_texture_alias DiffuseMap art/3d_objects/items/building_element/textures/mausoleum/colonne-.jpg
 }
 
 material /global/items/building/mausoleum/triangle : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_objects/items/building/models/mausoleum/triangle.jpg
+	set_texture_alias DiffuseMap art/3d_objects/items/building_element/textures/mausoleum/triangle.jpg
 }
 
 material /global/items/building/mausoleum/wall : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_objects/items/building/models/mausoleum/wall.jpg
+	set_texture_alias DiffuseMap art/3d_objects/items/building_element/textures/mausoleum/wall.jpg
 }
 
-material /global/items/building/mausoleum/bordure : /base/simple
+material /global/items/building_element/mausoleum/bordure : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_objects/items/building/models/mausoleum/bordure.jpg
+	set_texture_alias DiffuseMap art/3d_objects/items/building_element/textures/mausoleum/bordure.jpg
 }
 
 material /global/items/building/mausoleum/roof : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_objects/items/building/models/mausoleum/roof.jpg
+	set_texture_alias DiffuseMap art/3d_objects/items/building_element/textures/mausoleum/roof.jpg
 }
 
 material /global/items/building/mausoleum/panel : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_objects/items/building/models/mausoleum/panel.jpg
+	set_texture_alias DiffuseMap art/3d_objects/items/building_element/textures/mausoleum/panel.jpg
 }
 
 //--------------- castle -------------
@@ -304,7 +292,7 @@ material /global/items/building_element/cg_curtainwall/curtain_wall_shale : /bas
 material /global/items/building_element/cg_curtainwall/curtain_wall_straw : /base/normalmap/specular
 {
 	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/cg_curtainwall/curtain_wall_straw_diffuse.png
-	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/cg_curtainwall/curtain_wall_straw_N.png
+	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/cg_curtainwall/curtain_wall_strawN.png
 	set_texture_alias SpecularMap 3d_objects/items/building_element/textures/cg_curtainwall/curtain_wall_straw_specular.png
 }
 

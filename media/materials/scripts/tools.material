@@ -35,7 +35,7 @@ material /global/items/tool/settler_tools/tool_head : /base/simple/nonculled
 
 material /global/items/saddle/brownleather : /base/simple
 {
-  set_texture_alias DiffuseMap 3d_objects/items/saddle/textures/brownleather/brownleathersaddle_256.png
+  set_texture_alias DiffuseMap 3d_objects/items/tool/textures/saddle/brownleather/brownleathersaddle_256.png
 }
 
 material /global/items/containers/craftsman_wood/box_craftsman : /base/simple
