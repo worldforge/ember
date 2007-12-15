@@ -99,7 +99,11 @@ const Real EmberPagingLandScapeData2D_HeightField::getShadow (const Real mX, con
     //-----------------------------------------------------------------------
 const Vector3 EmberPagingLandScapeData2D_HeightField::getNormal (const Real x, const Real z)
 {
-	return Ogre::PagingLandScapeData2D::getNormal(x, z);
+	float height;
+	WFMath::Vector<3> normal;
+	EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getHeightAndNormal(x, -z, height, normal);
+	return Atlas2Ogre(normal);
+// 	return Ogre::PagingLandScapeData2D::getNormal(x, z);
 }
     //-----------------------------------------------------------------------
 void EmberPagingLandScapeData2D_HeightField::_save()
