@@ -1,4 +1,5 @@
 #! /bin/sh
+textureSize=$1
 current=${PWD}
 original_media=${PWD}/media
 media_dir=${current}/ember-media-@MEDIA_VERSION@
@@ -13,10 +14,11 @@ cd ${shared_dir}
 #don't include lines starting with "/"
 grep -rIE --no-filename "^[^/].*texture 3d"  ${original_media}/materials/scripts/*.material | sed -e 's/texture 3d_/3d_/g' > common_textures.list
 grep -rIE --no-filename "^[^/].*set_texture_alias DiffuseMap 3d"  ${original_media}/materials/scripts/*.material | sed -e 's/set_texture_alias DiffuseMap 3d_/3d_/g' >> common_textures.list
+grep -rIE --no-filename "^[^/].*set_texture_alias DiffuseMap art\/3d"  ${original_media}/materials/scripts/*.material | sed -e 's/set_texture_alias DiffuseMap art\/3d_/art\/3d_/g' >> common_textures.list
 # grep -rIE --no-filename "^[^/].*set_texture_alias NormalMap 3d"  ${original_media}/materials/scripts/*.material | sed -e 's/set_texture_alias NormalMap 3d_/3d_/g' >> common_textures.list
 grep -rIE --no-filename "^[^/].*set_texture_alias NormalHeightMap 3d"  ${original_media}/materials/scripts/*.material | sed -e 's/set_texture_alias NormalHeightMap 3d_/3d_/g' >> common_textures.list
 grep -rIE --no-filename "^[^/].*set_texture_alias SpecularMap 3d"  ${original_media}/materials/scripts/*.material | sed -e 's/set_texture_alias SpecularMap 3d_/3d_/g' >> common_textures.list
-grep -orIE --no-filename "icon=\"3d.*\"" ${original_media}/modeldefinitions/*.modeldef | sed -e 's/icon=\"//g' | sed -e 's/\"//g' > common_textures.list
+grep -orIE --no-filename "icon=\"3d.*\"" ${original_media}/modeldefinitions/*.modeldef | sed -e 's/icon=\"//g' | sed -e 's/\"//g' >> common_textures.list
 
 #remove all duplicates
 sort --unique common_textures.list > common_textures_cleaned.list
@@ -29,8 +31,10 @@ echo "Converting images"
 for filename in `cat ${shared_dir}/common_textures_cleaned.list `
 do
 	#'512x512>' will only convert if the image is larger in any dimension
-	convert ${shared_dir}/common/$filename -adaptive-resize '512x512>' ${shared_dir}/common/$filename
-	echo "Converted $filename to max 512x512"
+	# -quality 95 is suitable for photos
+	# -depth 8 guarantees that the pixeldepth is 8: we don't have any floating point textures yet
+	convert ${shared_dir}/common/$filename -quality 95 -depth 8 -resize "${textureSize}x${textureSize}>" ${shared_dir}/common/$filename
+	echo "Converted $filename to max ${textureSize}x${textureSize}"
 done
 
 
@@ -62,6 +66,7 @@ cd ${original_media} ; tar cf - `cat ${shared_dir}/shared_packs.list ` | ( cd ${
 #then get the user media
 
 echo "User media"
+mkdir -p ${user_dir}
 cd ${user_dir}
 
 #get the gui files
@@ -71,6 +76,7 @@ cp -a ${original_media}/common/themes/ember/gui/cegui/EmberLook.png ${shared_dir
 cp -a ${original_media}/common/themes/ember/gui/icons/ember.png ${shared_dir}/gui/icons
 cp -a ${original_media}/common/themes/ember/gui/icons/iconset_mason.png ${shared_dir}/gui/icons
 cp -a ${original_media}/common/themes/ember/gui/icons/iconset_standard.png ${shared_dir}/gui/icons
+cp -a ${original_media}/common/themes/ember/gui/status ${shared_dir}/gui/status
 
 
 #get the theme media dir
@@ -86,6 +92,7 @@ cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modeldef` | (
 cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modeldef.xml` | ( cd ${user_dir}/modeldefinitions; tar xvf -)
 cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modelmap` | ( cd ${user_dir}/modeldefinitions; tar xvf -)
 cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modelmap.xml` | ( cd ${user_dir}/modeldefinitions; tar xvf -)
+cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.terrain` | ( cd ${user_dir}/modeldefinitions; tar xvf -)
 
 
 echo "Copying materials"
