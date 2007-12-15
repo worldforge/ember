@@ -49,6 +49,48 @@
 						</Window>
 					</Window>
 				</Window>
+				<Window Type='DefaultGUISheet' Name='Meshes'>
+					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='Text' Value='Meshes'/>
+					<Property Name='InheritsAlpha' Value='false'/>
+					<Property Name='Visible' Value='false'/>
+					<Window Type='EmberLook/Editbox' Name='FilterMeshes'>
+						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-50}}'/>
+						<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+					</Window>
+					<Window Type='EmberLook/Button' Name='MeshesRefresh'>
+						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-20}}'/>
+						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
+						<Property Name='Text' Value='Refresh'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Event Name="MouseClick" Function="AssetsManager.MeshesRefresh_Clicked" />
+					</Window>
+					<Window Type='EmberLook/Listbox' Name='MeshesList'>
+						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
+						<Property Name='UnifiedSize' Value='{{0,200},{1,-70}}'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Event Name="ItemSelectionChanged" Function="AssetsManager.MeshesList_ItemSelectionChanged" />
+					</Window>
+					<Window Type='EmberLook/StaticText' Name='MeshInfo'>
+						<Property Name='UnifiedPosition' Value='{{0,205},{0,4}}'/>
+						<Property Name='UnifiedSize' Value='{{1,-210},{1,-70}}'/>
+						<Property Name='Text' Value=''/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Property Name='VertFormatting' Value='TopAligned'/>
+						<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
+						<Window Type='EmberLook/StaticImage' Name='MeshInfo/Preview'>
+							<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+							<Property Name='UnifiedSize' Value='{{1,0},{1,-30}}'/>
+						</Window>
+						<Window Type='EmberLook/Combobox' Name='MeshesAnimations'>
+							<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
+							<Property Name='UnifiedSize' Value='{{0,100},{1,100}}'/>
+							<Property Name='InheritsAlpha' Value='True'/>
+							<Event Name="ItemSelectionChanged" Function="AssetsManager.MeshesList_ItemSelectionChanged" />
+						</Window>
+					</Window>
+				</Window>
 				<Window Type='DefaultGUISheet' Name='Images'>
 					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
 					<Property Name='Text' Value='Images'/>

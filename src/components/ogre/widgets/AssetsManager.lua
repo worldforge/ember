@@ -3,7 +3,8 @@
 AssetsManager = {connectors={}, 
 textures = {controls = {}, listbox = nil,selectedTexture = nil}, 
 images = {controls = {}, listbox = nil,selectedTexture = nil}, 
-windows = {controls = {}, listbox = nil, selectedWindow = nil} 
+windows = {controls = {}, listbox = nil, selectedWindow = nil},
+meshes = {controls = {}, listbox = nil, selectedWindow = nil}
 }
 
 
@@ -75,6 +76,24 @@ function AssetsManager.ImagesList_ItemSelectionChanged(args)
 
 end
 
+
+
+function AssetsManager.meshes.refresh()
+	AssetsManager.meshes.listholder:resetList()
+
+	local manager = EmberOgre.Model.ModelDefinitionManager:getSingleton()
+	local meshes = manager:getAllMeshes()
+	
+	for i = 0, meshes:size() - 1 do
+		local name = meshes[i]
+		local item = EmberOgre.Gui.ColouredListItem:new(name, i)
+		AssetsManager.meshes.listholder:addItem(item)
+	end	
+end
+
+function AssetsManager.MeshesRefresh_Clicked(args)
+	AssetsManager.meshes.refresh()
+end
 
 
 
@@ -215,6 +234,13 @@ function AssetsManager.buildWidget()
 	AssetsManager.windows.controls.visibleCheckbox = CEGUI.toCheckbox(AssetsManager.widget:getWindow("WindowInfo/Visible"))
 	AssetsManager.windows.controls.infoText = AssetsManager.widget:getWindow("WindowInfo/Text")
 	
+	--the meshes part
+	AssetsManager.meshes.controls.listbox = CEGUI.toListbox(AssetsManager.widget:getWindow("MeshesList"))
+-- 	AssetsManager.sceneNodes.nodeInfo = AssetsManager.widget:getWindow("SceneNodeInfo")
+	AssetsManager.meshes.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterMeshes"))
+	AssetsManager.meshes.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.meshes.controls.listbox, AssetsManager.meshes.controls.filter)
+	AssetsManager.meshes.controls.textureView = AssetsManager.widget:getWindow("MeshInfo/Preview")
+
 
 	AssetsManager.helper = EmberOgre.Gui.AssetsManager:new_local()
 

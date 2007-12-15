@@ -109,6 +109,11 @@ const CEGUI::Image* AssetsManager::getCEGUIImage()
 	return mTextureImage;
 }
 
+// bool AssetsManager::exportTexture(Ogre::TexturePtr texturePtr)
+// {
+//  getRenderTarget()->writeContentsToFile();
+// }
+
 
 }
 
