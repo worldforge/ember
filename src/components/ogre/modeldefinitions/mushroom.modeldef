@@ -5,10 +5,28 @@
         <submodels>
             <submodel mesh="3d_objects/plants/fruit/models/mushrooms/mushroom.mesh">
                 <parts>
-                    <part name="main" show="true">
+                    <part name="amanita" show="true" group="main">
                         <subentities>
-                            <subentity index="0" material="/global/plants/mushroom/amanita" />
-                            <subentity index="1" material="/global/plants/mushroom/amanita" />
+                            <subentity index="0" material="/global/plants/fruit/mushrooms/amanita" />
+                            <subentity index="1" material="/global/plants/fruit/mushrooms/amanita" />
+                        </subentities>
+                    </part>
+                    <part name="galerina" show="false" group="main">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/fruit/mushrooms/galerina" />
+                            <subentity index="1" material="/global/plants/fruit/mushrooms/galerina" />
+                        </subentities>
+                    </part>
+                    <part name="blue" show="false" group="main">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/fruit/mushrooms/blue" />
+                            <subentity index="1" material="/global/plants/fruit/mushrooms/blue" />
+                        </subentities>
+                    </part>
+                    <part name="silkfoot" show="false" group="main">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/fruit/mushrooms/silkfoot" />
+                            <subentity index="1" material="/global/plants/fruit/mushrooms/silkfoot" />
                         </subentities>
                     </part>
                 </parts>

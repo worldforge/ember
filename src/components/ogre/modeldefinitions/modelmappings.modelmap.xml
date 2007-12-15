@@ -98,7 +98,35 @@
 	
 	<automodelmapping name="fire" />
 	<automodelmapping name="lumber" />
-	<automodelmapping name="mushroom" />
+	
+	<modelmapping name="mushroom">
+		<entitymatch>
+			<case>
+				<caseparam type="equals">mushroom</caseparam>
+				<action type="display-model">mushroom</action>
+				<attributematch attribute="style">
+					<case>
+						<caseparam type="equals">amanita</caseparam>
+						<action type="display-part">amanita</action>
+					</case>
+					<case>
+						<caseparam type="equals">galerina</caseparam>
+						<action type="display-part">galerina</action>
+					</case>
+					<case>
+						<caseparam type="equals">blue</caseparam>
+						<action type="display-part">blue</action>
+					</case>
+					<case>
+						<caseparam type="equals">silkfoot</caseparam>
+						<action type="display-part">silkfoot</action>
+					</case>
+				</attributematch>
+			</case>
+		</entitymatch>
+	</modelmapping>	
+	
+	
 	<automodelmapping name="apple" />
 	<automodelmapping name="pile" />
 	<automodelmapping name="grass" />
