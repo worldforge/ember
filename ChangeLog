@@ -1,3 +1,55 @@
+2007-12-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* README.lyx: added some text about the components used
+
+2007-12-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* make_dist_media.sh.in: expanded the dist media script
+
+2007-12-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* configure.ac: bump eris version
+
+2007-12-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/resources.cfg: fixed erronous placement of the splatting dir
+
+2007-12-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/AssetsManager.cpp, src/components/ogre/widgets/AssetsManager.layout, src/components/ogre/widgets/AssetsManager.lua: added mesh resource view
+
+2007-12-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainPageSurfaceCompilerTechniqueShader.cpp: activated normal mapping and cleaned up naming
+
+2007-12-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/src/EmberPagingLandScapeData2D_HeightField.cpp: get the normals from mercator
+
+2007-12-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/modelmappings.modelmap.xml, src/components/ogre/modeldefinitions/mushroom.modeldef: updated mushrooms
+
+2007-12-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/services/metaserver/MetaserverService.cpp: removed extra line breaks in logging
+
+2007-12-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/models/placeholder.mesh: updated mesh
+
+2007-12-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/splatting/Splat.cg, media/materials/splatting/splat.program: added an experimental normal mapped terrain material
+
+2007-12-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/scripts/buildings.material, media/materials/scripts/creatures.material, media/materials/scripts/environment.material, media/materials/scripts/tools.material, media/materials/scripts/vegetation.material: cleaned up media scripts
+
+2007-11-29 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Inventory.lua: check for the existance of the attribute before trying to get it
+
 2007-11-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* ember.conf: added some new settings for disabling the terrain checking for the camera as well as selecting the preferred terrain technique
