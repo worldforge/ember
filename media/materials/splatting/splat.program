@@ -61,6 +61,12 @@ fragment_program splatting_fragment_dynamic cg
 	profiles ps_2_0 arbfp1
 }
 
+vertex_program splatting_vertex_normalmapped cg
+{
+	source Splat.cg
+	entry_point SplattingShaderParallax_vp
+	profiles vs_2_0 arbvp1
+}
 fragment_program splatting_fragment_normalmapped_dynamic cg
 {
 	source Splat.cg

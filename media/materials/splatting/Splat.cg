@@ -221,7 +221,8 @@ float4 getNormalMappedColour(float2 uv : TEXCOORD0,
 	float3 lightAmbient,
 	float4 scaleBias,
 	sampler2D normalHeightMap: TEXUNIT0,
-	sampler2D diffuseMap: TEXUNIT1
+	sampler2D diffuseMap: TEXUNIT1,
+	sampler2D shadowTexture: TEXUNIT2
 /*	uniform sampler2D specularMap: TEXUNIT2,*/
 )
 {
@@ -244,8 +245,11 @@ float4 getNormalMappedColour(float2 uv : TEXCOORD0,
 	float3 normal = expand(tex2D(normalHeightMap, newTexCoord).xyz);
 	float3 diffuse = tex2D(diffuseMap, newTexCoord).xyz;
 	
+	float shadow = tex2D(shadowTexture, newTexCoord.xy).x;
+	
 // 	float3 specular = pow(saturate(dot(normal, halfAngle)), 32) * lightSpecular * tex2D(specularMap, newTexCoord).x;
 	return float4(diffuse * saturate(dot(normal, lightDir)) * lightDiffuse + diffuse * lightAmbient, 1); // + specular;
+// 	return float4(diffuse * shadow * lightDiffuse + diffuse * lightAmbient, 1); // + specular;
 }
 
 void splat_normalmapped_fp(float2 iTexcoord : TEXCOORD0,
@@ -277,30 +281,30 @@ void splat_normalmapped_fp(float2 iTexcoord : TEXCOORD0,
     uniform sampler2D   splat5TextureNormal: TEXUNIT14,
 	out float4 oColour : COLOR)
 {
-	if (iFog < 1) {
-		oColour = getNormalMappedColour(iTexcoord.xy * iScales[0].x, lightDir, eyeDir, halfAngle, lightDiffuse, lightAmbient, scaleBias, baseTextureNormal, baseTextureDiffuse);
+ 	if (iFog < 100) {
+		oColour = getNormalMappedColour(iTexcoord.xy * iScales[0].x, lightDir, eyeDir, halfAngle, lightDiffuse, lightAmbient, scaleBias, baseTextureNormal, baseTextureDiffuse, shadowTexture);
 		if (iNumberOfLayers > 1) {
-			oColour = (lerp(oColour, getNormalMappedColour(iTexcoord.xy * iScales[0].y, lightDir, eyeDir, halfAngle, lightDiffuse, lightAmbient, scaleBias, splat1TextureNormal, splat1TextureDiffuse), tex2D(coverageTexture1, iTexcoord.xy).w));
+			oColour = (lerp(oColour, getNormalMappedColour(iTexcoord.xy * iScales[0].y, lightDir, eyeDir, halfAngle, lightDiffuse, lightAmbient, scaleBias, splat1TextureNormal, splat1TextureDiffuse, shadowTexture), tex2D(coverageTexture1, iTexcoord.xy).w));
 		}
 		if (iNumberOfLayers > 2) {
-			oColour = (lerp(oColour, getNormalMappedColour(iTexcoord.xy * iScales[0].z, lightDir, eyeDir, halfAngle, lightDiffuse, lightAmbient, scaleBias, splat2TextureNormal, splat2TextureDiffuse), tex2D(coverageTexture1, iTexcoord.xy).x));
+			oColour = (lerp(oColour, getNormalMappedColour(iTexcoord.xy * iScales[0].z, lightDir, eyeDir, halfAngle, lightDiffuse, lightAmbient, scaleBias, splat2TextureNormal, splat2TextureDiffuse, shadowTexture), tex2D(coverageTexture1, iTexcoord.xy).x));
 		}
 		if (iNumberOfLayers > 3) {
-			oColour = (lerp(oColour, getNormalMappedColour(iTexcoord.xy * iScales[0].w, lightDir, eyeDir, halfAngle, lightDiffuse, lightAmbient, scaleBias, splat3TextureNormal, splat3TextureDiffuse), tex2D(coverageTexture1, iTexcoord.xy).y));
+			oColour = (lerp(oColour, getNormalMappedColour(iTexcoord.xy * iScales[0].w, lightDir, eyeDir, halfAngle, lightDiffuse, lightAmbient, scaleBias, splat3TextureNormal, splat3TextureDiffuse, shadowTexture), tex2D(coverageTexture1, iTexcoord.xy).y));
 		}
-		if (iNumberOfLayers > 4) {
- 			oColour = (lerp(oColour, getNormalMappedColour(iTexcoord.xy * iScales[0].x, lightDir, eyeDir, halfAngle, lightDiffuse, lightAmbient, scaleBias, splat4TextureNormal, splat4TextureDiffuse), tex2D(coverageTexture1, iTexcoord.xy).z));
- 		}
-		if (iNumberOfLayers > 5) {
-			oColour = (lerp(oColour, getNormalMappedColour(iTexcoord.xy * iScales[0].y, lightDir, eyeDir, halfAngle, lightDiffuse, lightAmbient, scaleBias, splat5TextureNormal, splat5TextureDiffuse), tex2D(coverageTexture2, iTexcoord.xy).w));
-		}	
+// 		if (iNumberOfLayers > 4) {
+//  			oColour = (lerp(oColour, getNormalMappedColour(iTexcoord.xy * iScales[0].x, lightDir, eyeDir, halfAngle, lightDiffuse, lightAmbient, scaleBias, splat4TextureNormal, splat4TextureDiffuse, shadowTexture), tex2D(coverageTexture1, iTexcoord.xy).z));
+//  		}
+// 		if (iNumberOfLayers > 5) {
+// 			oColour = (lerp(oColour, getNormalMappedColour(iTexcoord.xy * iScales[0].y, lightDir, eyeDir, halfAngle, lightDiffuse, lightAmbient, scaleBias, splat5TextureNormal, splat5TextureDiffuse, shadowTexture), tex2D(coverageTexture2, iTexcoord.xy).w));
+// 		}	
 		//shadow
-		oColour *= tex2D(shadowTexture, iTexcoord.xy).x;
+// 		oColour *= tex2D(shadowTexture, iTexcoord.xy).x;
 		
-		oColour = lerp(oColour, float4(iFogColour, 1), iFog);
-	} else {
+// 		oColour = lerp(oColour, float4(iFogColour, 1), iFog);
+ 	} else {
 		oColour = float4(iFogColour, 1);
-	}
+ 	}
 
 }
 
@@ -329,7 +333,43 @@ void splatatlas_fp
 }
 
 
+void SplattingShaderParallax_vp(// IN
+             float4 iPosition         : POSITION,
+             float3 iNormal           : NORMAL,
+             float2 iUv               : TEXCOORD0,
+             // OUT
+             out float4 oPosition     : POSITION,
+             out float2 oUv           : TEXCOORD0,
+             out float3 oLightDir     : TEXCOORD1,
+             out float3 oEyeDir       : TEXCOORD2,
+             out float3 oHalfAngle    : TEXCOORD3,
+				out float oFog			: FOG,
+             // UNIFORM
+             uniform float4           lightPosition,
+             uniform float3           eyePosition,
+             uniform float4x4         worldViewProj,
+				uniform float4 iFogParams)
+{
+   oPosition = mul(worldViewProj, iPosition);
 
+   oUv = iUv;
+
+   float3 lightDir = normalize(lightPosition.xyz -  (iPosition * lightPosition.w));
+   float3 eyeDir   = eyePosition - iPosition.xyz;
+
+   float3 binormal = cross(float3(1,0,0), iNormal);
+   float3 tangent  = cross(iNormal, binormal);
+
+   float3x3 rotation = float3x3(tangent, binormal, iNormal);
+
+   lightDir   = normalize(mul(rotation, lightDir));
+   eyeDir     = normalize(mul(rotation, eyeDir));
+
+   oLightDir  = lightDir;
+   oEyeDir    = eyeDir;
+   oHalfAngle = normalize(eyeDir + lightDir);
+	oFog = 1 - ((iFogParams.z - oPosition.z)/(iFogParams.z - iFogParams.y));
+}
 
 // // adapt this to Cg
 // 
@@ -356,16 +396,16 @@ void splatatlas_fp
 //              out float3 oEyeDir       : TEXCOORD2,
 //              out float3 oHalfAngle    : TEXCOORD3,
 //              // UNIFORM
-//              uniform float4           uLightPosition,
-//              uniform float3           uEyePosition,
-//              uniform float4x4         uWorldViewProj)
+//              uniform float4           lightPosition,
+//              uniform float3           eyePosition,
+//              uniform float4x4         worldViewProj)
 // {
-//    oPosition = mul(uWorldViewProj, iPosition);
+//    oPosition = mul(worldViewProj, iPosition);
 // 
 //    oUv = iUv;
 // 
-//    float3 lightDir = normalize(uLightPosition.xyz -  (iPosition * uLightPosition.w));
-//    float3 eyeDir   = uEyePosition - iPosition.xyz;
+//    float3 lightDir = normalize(lightPosition.xyz -  (iPosition * lightPosition.w));
+//    float3 eyeDir   = eyePosition - iPosition.xyz;
 // 
 //    float3 binormal = cross(float3(1,0,0), iNormal);
 //    float3 tangent  = cross(iNormal, binormal);
