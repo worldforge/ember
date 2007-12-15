@@ -306,7 +306,7 @@ PKG_CHECK_MODULES(FREEALUT, freealut >= $FREEALUT_VERSION,
 
 
 # Check for the WorldForge libs
-PKG_CHECK_MODULES(WF, [eris-1.3 >= 1.3.12 \
+PKG_CHECK_MODULES(WF, [eris-1.3 >= 1.3.13 \
  varconf-1.0 >= 0.6.5 mercator-0.2 >= 0.2.5 atlascpp-0.6 >= 0.6.0 wfmath-0.3 >= 0.3.5 libwfut-0.1 >= 0.0.1],
 	[
 		CXXFLAGS="$CXXFLAGS $WF_CFLAGS"
