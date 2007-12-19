@@ -80,7 +80,7 @@ material /global/environment/ground/dirt/dirt : /base/simple
 	set_texture_alias DiffuseMap 3d_objects/environment/ground/textures/dirt/dirt.png
 }
 
-material /global/environment/ground/sand/sand :  base/normalmap
+material /global/environment/ground/sand/sand :  /base/normalmap
 {
 	set_texture_alias DiffuseMap 3d_objects/environment/ground/textures/sand/sand_AD.png
 	set_texture_alias NormalHeightMap 3d_objects/environment/ground/textures/sand/sand_AN.png
