@@ -36,7 +36,7 @@ class TerrainPageSurfaceCompilerTechnique
 {
 public:
 	virtual ~TerrainPageSurfaceCompilerTechnique() {}
-    virtual void compileMaterial(Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow) = 0;
+    virtual bool compileMaterial(Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow) = 0;
     virtual void setPage(TerrainPage* page) = 0;
 
 protected:
@@ -56,6 +56,7 @@ public:
 private:
 
 	void selectTechnique();
+	void fallback(Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow, TerrainPage& page);
 	std::auto_ptr<TerrainPageSurfaceCompilerTechnique> mTechnique;
 
 };

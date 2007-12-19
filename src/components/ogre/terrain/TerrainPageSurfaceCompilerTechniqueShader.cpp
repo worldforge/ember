@@ -159,7 +159,7 @@ void TerrainPageSurfaceCompilerTechniqueShader::reset()
 }
 
 
-void TerrainPageSurfaceCompilerTechniqueShader::compileMaterial(Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow)
+bool TerrainPageSurfaceCompilerTechniqueShader::compileMaterial(Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow)
 {
 	reset();
 	material->removeAllTechniques();
@@ -181,8 +181,12 @@ void TerrainPageSurfaceCompilerTechniqueShader::compileMaterial(Ogre::MaterialPt
 				//handle new pass
 			}
 		}
-		shaderPass->finalize();
+		if (!shaderPass->finalize())
+		{
+			return false;
+		}
 	}
+	return true;
 // 	if (terrainPageShadow) {
 // 		addShadow(technique, terrainPageShadow);
 // 	}
@@ -259,7 +263,7 @@ LayerStore& TerrainPageSurfaceCompilerShaderPass::getLayers()
 	return mLayers;
 }
 
-void TerrainPageSurfaceCompilerShaderPass::finalize()
+bool TerrainPageSurfaceCompilerShaderPass::finalize()
 {
 	//TODO: add shadow here
 	
@@ -302,6 +306,7 @@ void TerrainPageSurfaceCompilerShaderPass::finalize()
 		fpParams->setNamedConstant("iScales", mScales, 4); //4*4=16
 	} catch (const Ogre::Exception& ex) {
 		S_LOG_WARNING("Error when setting fragment program parameters. Message:\n" << ex.what());
+		return false;
 	}
 	
 	///add vertex shader for fog	
@@ -312,7 +317,9 @@ void TerrainPageSurfaceCompilerShaderPass::finalize()
 		fpParams->setNamedAutoConstant("iWorldViewProj", Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX );
 	} catch (const Ogre::Exception& ex) {
 		S_LOG_WARNING("Error when setting fragment program parameters. Message:\n" << ex.what());
+		return false;
 	}
+	return true;
 }
 
 bool TerrainPageSurfaceCompilerShaderPass::hasRoomForLayer(TerrainPageSurfaceLayer* layer)
@@ -427,7 +434,7 @@ bool TerrainPageSurfaceCompilerShaderNormalMappedPass::hasRoomForLayer(TerrainPa
 	return (numberOfTextureUnitsOnCard - takenUnits) >= 2;
 }
 
-void TerrainPageSurfaceCompilerShaderNormalMappedPass::finalize()
+bool TerrainPageSurfaceCompilerShaderNormalMappedPass::finalize()
 {
 	//TODO: add shadow here
 	
@@ -474,6 +481,7 @@ void TerrainPageSurfaceCompilerShaderNormalMappedPass::finalize()
 		fpParams->setNamedConstant("iScales", mScales, 4); //4*4=16
 	} catch (const Ogre::Exception& ex) {
 		S_LOG_WARNING("Error when setting fragment program parameters. Message:\n" << ex.what());
+		return false;
 	}
 	
 	///add vertex shader for fog	
@@ -486,7 +494,9 @@ void TerrainPageSurfaceCompilerShaderNormalMappedPass::finalize()
 		fpParams->setNamedAutoConstant("worldViewProj", Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX );
 	} catch (const Ogre::Exception& ex) {
 		S_LOG_WARNING("Error when setting fragment program parameters. Message:\n" << ex.what());
+		return false;
 	}
+	return true;
 }
 
 TerrainPageSurfaceCompilerShaderPass* TerrainPageSurfaceCompilerTechniqueShaderNormalMapped::addPass(Ogre::Technique* technique)

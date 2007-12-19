@@ -38,7 +38,7 @@ class TerrainPageSurfaceCompilerTechniqueSimple : public TerrainPageSurfaceCompi
 {
 public:
 
-    virtual void compileMaterial(Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow);
+    virtual bool compileMaterial(Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow);
     virtual void setPage(TerrainPage* page);
 
 

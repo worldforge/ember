@@ -32,6 +32,7 @@
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
+#include <Ogre.h>
 
 namespace EmberOgre {
 namespace Terrain {
@@ -48,15 +49,25 @@ TerrainPageSurfaceCompiler::~TerrainPageSurfaceCompiler()
 
 void TerrainPageSurfaceCompiler::compileMaterial(Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow, TerrainPage& page)
 {
+	bool result = true;
 	try {
 		mTechnique->setPage(&page);
-		mTechnique->compileMaterial(material, terrainPageSurfaces, terrainPageShadow);
+		result = mTechnique->compileMaterial(material, terrainPageSurfaces, terrainPageShadow);
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when creating terrain material, falling back to safe technique. Error message: " << ex.what());
-		mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueSimple());
-		mTechnique->setPage(&page);
-		mTechnique->compileMaterial(material, terrainPageSurfaces, terrainPageShadow);
+		fallback(material, terrainPageSurfaces, terrainPageShadow, page);
 	}
+	if (!result) {
+		S_LOG_FAILURE("Error when creating terrain material, falling back to safe technique.");
+		fallback(material, terrainPageSurfaces, terrainPageShadow, page);
+	}
+}
+
+void TerrainPageSurfaceCompiler::fallback(Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow, TerrainPage& page)
+{
+	mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueSimple());
+	mTechnique->setPage(&page);
+	mTechnique->compileMaterial(material, terrainPageSurfaces, terrainPageShadow);
 }
 
 void TerrainPageSurfaceCompiler::selectTechnique()
@@ -65,11 +76,27 @@ void TerrainPageSurfaceCompiler::selectTechnique()
 	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("terrain", "preferredtechnique")) {
 		preferredTech = static_cast<std::string>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("terrain", "preferredtechnique"));
 	}
-	if (preferredTech == "ShaderNormalMapped") {
+	
+	bool shaderSupport = false;
+	const Ogre::RenderSystemCapabilities* caps = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities();
+	if (caps->hasCapability(Ogre::RSC_VERTEX_PROGRAM) && (caps->hasCapability(Ogre::RSC_FRAGMENT_PROGRAM)))
+	{
+		if ((Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("ps_2_0") &&
+			Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("vs_2_0")) ||
+			(Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("arbfp1") &&
+			Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("arbvp1"))
+			)
+		{
+			shaderSupport = true;
+		}
+	}
+	
+	if (preferredTech == "ShaderNormalMapped" && shaderSupport) {
 		mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueShaderNormalMapped());
-	} else if (preferredTech == "Shader") {
+	} else if (preferredTech == "Shader" && shaderSupport) {
 		mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueShader());
 	} else {
+		mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueSimple());
 	}
 // 	
 	

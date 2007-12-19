@@ -83,7 +83,7 @@ friend class TerrainPageSurfaceCompilerShaderPassCoverageBatch;
 	/**
 	 *    Creates the combined final coverage textures and sets the shader params. Be sure to call this before you load the material.
 	 */
-	virtual void finalize();
+	virtual bool finalize();
 	
 	LayerStore& getLayers();
 	
@@ -117,7 +117,7 @@ public:
     TerrainPageSurfaceCompilerTechniqueShader();
     virtual ~TerrainPageSurfaceCompilerTechniqueShader();
     
-	virtual void compileMaterial(Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow);
+	virtual bool compileMaterial(Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow);
     
     virtual void setPage(TerrainPage* page);
 
@@ -163,7 +163,7 @@ public:
 	/**
 	 *    Creates the combined final coverage textures and sets the shader params. Be sure to call this before you load the material.
 	 */
-	virtual void finalize();
+	virtual bool finalize();
 	
 	
 protected:
