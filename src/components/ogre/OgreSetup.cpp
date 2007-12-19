@@ -44,7 +44,9 @@
 // #include "image/OgreILCodecs.h"
 #include "framework/Tokeniser.h"
 
+extern "C" {
 #include <signal.h>    /* signal name macros, and the signal() prototype */
+}
 
 namespace EmberOgre {
 
@@ -140,10 +142,11 @@ Ogre::Root* OgreSetup::createOgreSystem()
 /**
 Shut down SDL correctly, else if run in full screen the display might be messed up.
 */
-void shutdownHandler(int signal)
+extern "C" void shutdownHandler(int signal)
 {
-	std::cerr << "Crashed, will try to shut down SDL gracefully.";
+	std::cerr << "Crashed with signal " << signal << ", will try to shut down SDL gracefully." << std::endl;
 	SDL_Quit();
+	exit(signal);
 }
 
 
