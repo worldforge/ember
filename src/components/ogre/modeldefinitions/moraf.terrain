@@ -11,7 +11,7 @@
 		</layer>
 		<layer shadername="silt" diffusetexture="dark.png" normalmaptexture="" tilesize="8">
 		</layer>
-		<layer areaindex="6" diffusetexture="3d_objects/environment/ground/textures/leaf_covered/medium/ground.png" normalmaptexture="3d_objects/environment/ground/textures/leaf_covered/ground_normals.png" tilesize="8">
+		<layer areaindex="6" diffusetexture="3d_objects/environment/ground/textures/leaf_covered/ground.png" normalmaptexture="3d_objects/environment/ground/textures/leaf_covered/ground_normals.png" tilesize="8">
 		</layer>
 		<layer areaindex="7" diffusetexture="3d_objects/environment/ground/textures/dirt/dirt.png" normalmaptexture="3d_objects/environment/ground/textures/dirt/dirt_bump.png" tilesize="8">
 		</layer>
