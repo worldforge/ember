@@ -1,3 +1,15 @@
+2007-12-20 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* NEWS: mark new release
+
+2007-12-20 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain.cfg: activate normals for normal mapping
+
+2007-12-20 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/moraf.terrain: fixed path for texture
+
 2007-12-19 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* ember.conf: added example plugin line for windows and removed the coverage scaling (since it's currently broken)
