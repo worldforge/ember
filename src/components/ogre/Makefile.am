@@ -25,9 +25,10 @@ libEmberOgre_la_SOURCES = AttributeObserver.cpp Avatar.cpp AvatarCamera.cpp \
 	EmberEntity.cpp EmberEntityActionCreator.cpp EmberEntityFactory.cpp \
 	EmberEntityModelAction.cpp EmberEntityPartAction.cpp EmberEntityUserObject.cpp EmberOgre.cpp \
 	EmberPhysicalEntity.cpp EntityWorldPickListener.cpp GUICEGUIAdapter.cpp GUIManager.cpp \
-	MediaUpdater.cpp MotionManager.cpp MousePicker.cpp OgreInfo.cpp OgreLogObserver.cpp \
-	OgreResourceLoader.cpp OgreResourceProvider.cpp OgreSetup.cpp OpcodeCollisionDetector.cpp \
-	OpcodeCollisionDetectorVisualizer.cpp SimpleRenderContext.cpp WorldEmberEntity.cpp XMLHelper.cpp
+	MediaUpdater.cpp MeshCollisionDetector.cpp MotionManager.cpp MousePicker.cpp \
+	OgreInfo.cpp OgreLogObserver.cpp OgreResourceLoader.cpp OgreResourceProvider.cpp \
+	OgreSetup.cpp OpcodeCollisionDetector.cpp OpcodeCollisionDetectorVisualizer.cpp \
+	SimpleRenderContext.cpp WorldEmberEntity.cpp XMLHelper.cpp
 
 confdir = $(sysconfdir)/ember/
 dist_conf_DATA = ogre.cfg resources.cfg terrain.cfg
@@ -38,9 +39,9 @@ noinst_HEADERS = AttributeObserver.h Avatar.h AvatarCamera.h AvatarController.h 
 	EmberEntityActionCreator.h EmberEntityFactory.h EmberEntityModelAction.h EmberEntityPartAction.h \
 	EmberEntityUserObject.h EmberOgre.h EmberOgrePrerequisites.h EmberPhysicalEntity.h \
 	EntityWorldPickListener.h GUICEGUIAdapter.h GUIManager.h IWorldPickListener.h MathConverter.h \
-	MediaUpdater.h MotionManager.h MousePicker.h OgreIncludes.h OgreInfo.h \
-	OgreLogObserver.h OgreResourceLoader.h OgreResourceProvider.h OgreSetup.h \
-	OpcodeCollisionDetector.h OpcodeCollisionDetectorVisualizer.h SimpleRenderContext.h \
-	WorldEmberEntity.h XMLHelper.h
+	MediaUpdater.h MeshCollisionDetector.h MotionManager.h MousePicker.h OgreIncludes.h \
+	OgreInfo.h OgreLogObserver.h OgreResourceLoader.h OgreResourceProvider.h \
+	OgreSetup.h OpcodeCollisionDetector.h OpcodeCollisionDetectorVisualizer.h \
+	SimpleRenderContext.h WorldEmberEntity.h XMLHelper.h
 	
 #libEmberOgre_la_LDFLAGS = -no-undefined
