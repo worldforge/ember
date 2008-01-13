@@ -540,7 +540,7 @@ void AvatarCamera::updateValuesFromConfig()
 void AvatarCamera::ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key)
 {
 	if (section == "input") {
-		if (key == "invertcamera" || key == "cameradegreespersecond" || "key" == "adjusttoterrain") {
+		if (key == "invertcamera" || key == "cameradegreespersecond" || key == "adjusttoterrain") {
 			updateValuesFromConfig();
 		}
 	}
