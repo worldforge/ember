@@ -295,6 +295,8 @@ function EntityEditor.createAdapterFromPrototype(element, prototype)
 			adapterWrapper = EntityEditor.createSizeAdapter(element, prototype)
 		elseif prototype.type == 'pos' then
 			adapterWrapper = EntityEditor.createPositionAdapter(element, prototype)
+		elseif prototype.type == 'pos2d' then
+			adapterWrapper = EntityEditor.createPosition2DAdapter(element, prototype)
 		elseif prototype.type == 'orientation' then
 			adapterWrapper = EntityEditor.createOrientationAdapter(element, prototype)
 		elseif prototype.type == 'points' then
@@ -374,6 +376,7 @@ function EntityEditor.createListAdapter(element, prototype)
 	for i = 0, wrapper.adapter:getSize() - 1 do
 		local childElement = wrapper.adapter:valueOfAttr(i)
 		local childPrototype = EntityEditor.getPrototype("", childElement)
+		--if the prototype for the list have it marked as nodelete, mark the childelements too
 		if prototype.readonly ~= nil then
 			childPrototype.readonly = true
 			childPrototype.nodelete = true
@@ -403,7 +406,8 @@ function EntityEditor.createPointsAdapter(element, prototype)
 	end
 	for i = 0, wrapper.adapter:getSize() - 1 do
 		local childElement = wrapper.adapter:valueOfAttr(i)
-		local adapterWrapper = EntityEditor.createPosition2DAdapter(childElement)
+		local childPrototype = {type = "pos2d"}
+		local adapterWrapper = EntityEditor.createAdapterFromPrototype(childElement, childPrototype)
 		if adapterWrapper ~= nil then
 			EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.container, adapterWrapper.prototype)
 			wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
