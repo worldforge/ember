@@ -308,14 +308,14 @@ void TerrainParser::createDefaultShaders()
 {
 	Terrain::TerrainLayerDefinitionManager& terrainManager = Terrain::TerrainLayerDefinitionManager::getSingleton();
 	Terrain::TerrainLayerDefinition* def(0);
-	if (def = terrainManager.getDefinitionForShader("rock")) {
+	if ((def = terrainManager.getDefinitionForShader("rock"))) {
     	mTerrainGenerator->createShader(def, new Mercator::FillShader());
     }
-	if (def = terrainManager.getDefinitionForShader("sand")) {
+	if ((def = terrainManager.getDefinitionForShader("sand"))) {
     	mTerrainGenerator->createShader(def,  new Mercator::BandShader(-2.f, 1.5f));
     }	
  
-	if (def = terrainManager.getDefinitionForShader("grass")) {
+	if ((def = terrainManager.getDefinitionForShader("grass"))) {
 		Terrain::TerrainShader* grassShader = mTerrainGenerator->createShader(def,   new Mercator::GrassShader(1.f, 80.f, .5f, 1.f));
 		mTerrainGenerator->setFoliageShader(grassShader);
     }	
