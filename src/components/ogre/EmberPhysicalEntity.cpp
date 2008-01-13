@@ -40,6 +40,8 @@
 
 #include "EmberEntityUserObject.h"
 #include "OpcodeCollisionDetector.h"
+#include "MeshCollisionDetector.h"
+
 
 #include <Eris/Entity.h>
 #include <Eris/View.h>
@@ -291,7 +293,8 @@ void EmberPhysicalEntity::connectEntities()
 		if (getModel()->getUserObject()) {
 			delete getModel()->getUserObject();
 		}
-		ICollisionDetector* collisionDetector = new OpcodeCollisionDetector(getModel());
+//		ICollisionDetector* collisionDetector = new OpcodeCollisionDetector(getModel());
+		ICollisionDetector* collisionDetector = new MeshCollisionDetector(getModel());
 		EmberEntityUserObject* userObject = new EmberEntityUserObject(this, getModel(),  collisionDetector);
 		getModel()->setUserObject(userObject);
 	}
