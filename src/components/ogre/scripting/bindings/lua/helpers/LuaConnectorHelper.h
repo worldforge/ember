@@ -26,7 +26,7 @@
 #ifndef EMBEROGRE_LUACONNECTORSLUACONNECTORHELPER_H
 #define EMBEROGRE_LUACONNECTORSLUACONNECTORHELPER_H
 
-#include "tolua++.h"
+#include <tolua++.h>
 #include <string>
 #include <vector>
 

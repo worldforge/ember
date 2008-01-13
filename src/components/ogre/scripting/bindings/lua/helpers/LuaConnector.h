@@ -23,7 +23,7 @@
 #ifndef EMBEROGRELUACONNECTORS_H
 #define EMBEROGRELUACONNECTORS_H
 
-#include "tolua++.h"
+#include <tolua++.h>
 #include <sigc++/signal.h>
 #include <sigc++/trackable.h>
 #include <sigc++/connection.h>

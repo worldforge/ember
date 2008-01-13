@@ -30,6 +30,7 @@
 
 #include "components/ogre/MousePicker.h"
 #include "components/ogre/EntityWorldPickListener.h"
+#include "components/ogre/scripting/LuaHelper.h"
 
 #include <Eris/Task.h>
 
@@ -109,8 +110,13 @@ template <typename Treturn, typename T0, typename T1, typename T2, typename T3> 
 		if (I != mLuaTypeNames.end()) 
 			EmberOgre::LuaConnector::pushValue(t3, (*I++));
 			
+		///push our error handling method before calling the code
+		int error_index = lua_gettop(state) - numberOfArguments;
+		lua_pushcfunction(state, ::EmberOgre::Scripting::LuaHelper::luaErrorHandler);
+		lua_insert(state, error_index);
+		
 		/// call it
-		int error = lua_pcall(state,numberOfArguments,LUA_MULTRET,0);
+		int error = lua_pcall(state,numberOfArguments,LUA_MULTRET,error_index);
 			
 		/// handle errors
 		if ( error )

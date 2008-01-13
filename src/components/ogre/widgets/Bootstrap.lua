@@ -42,7 +42,7 @@ function loadScript(scriptname)
 end
 
 --simple debug method, prints the string representation of the object to the console
-function debug(object)
+function debugObject(object)
 	console:pushMessage(tostring(object))
 end
 

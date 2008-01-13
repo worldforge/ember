@@ -28,8 +28,9 @@
 #include <CEGUIExceptions.h>
 
 #include "framework/Exception.h"
+#include "services/EmberServices.h"
+#include "services/config/ConfigService.h"
 
-// include Lua libs and tolua++
 // include Lua libs and tolua++
 extern "C" {
 #include "lua.h"
@@ -38,6 +39,7 @@ extern "C" {
 }
 //#include <lua.hpp>
 #include <tolua++.h>
+#include "LuaHelper.h"
 
 TOLUA_API int tolua_Ogre_open (lua_State* tolua_S);
 TOLUA_API int tolua_Eris_open (lua_State* tolua_S);
@@ -97,6 +99,15 @@ void LuaScriptingProvider::initialize()
 
 void LuaScriptingProvider::createState() 
 {
+	bool loadDebugLib = true;
+	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("lua", "debug")) {
+		loadDebugLib = static_cast<bool>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("lua", "debug"));
+	}
+	if (loadDebugLib) {
+		S_LOG_VERBOSE("Loading lua debug library.");
+	}
+
+
 #ifdef LUA51
 	static const luaL_Reg lualibs[] = {
 		{"", luaopen_base},
@@ -107,13 +118,23 @@ void LuaScriptingProvider::createState()
 		{LUA_MATHLIBNAME, luaopen_math},
 		{NULL, NULL}
 		};
+	static const luaL_Reg lualibsDebug[] = {
+		{"", luaopen_base},
+		{LUA_LOADLIBNAME, luaopen_package},
+		{LUA_TABLIBNAME, luaopen_table},
+		{LUA_IOLIBNAME, luaopen_io},
+		{LUA_STRLIBNAME, luaopen_string},
+		{LUA_MATHLIBNAME, luaopen_math},
+		{LUA_DBLIBNAME, luaopen_debug},
+		{NULL, NULL}
+		};		
 #endif /* LUA51 */
 
 	mLuaState = lua_open();
 
 	// init all standard libraries
 #ifdef LUA51
-	const luaL_Reg *lib = lualibs;
+	const luaL_Reg *lib = loadDebugLib ? lualibsDebug : lualibs;
 	for (; lib->func; lib++)
 	{
 		lua_pushcfunction(mLuaState, lib->func);
@@ -126,6 +147,9 @@ void LuaScriptingProvider::createState()
 	luaopen_string(mLuaState);
 	luaopen_table(mLuaState);
 	luaopen_math(mLuaState);
+	if (loadDebugLib) {
+		luaopen_debug(mLuaState);
+	}
 #endif /* LUA51 */
 
 }
@@ -149,11 +173,16 @@ void LuaScriptingProvider::loadScript(Ember::ResourceWrapper& resWrapper)
 		{
 			std::string errMsg(lua_tostring(mLuaState,-1));
 			lua_settop(mLuaState,top);
-			throw Ember::Exception("Unable to execute Lua script file: '"+resWrapper.getName()+"'\n\n"+errMsg+"\n");
+			throw Ember::Exception("Unable to load Lua script file: '"+resWrapper.getName()+"'\n\n"+errMsg+"\n");
 		}
 		
+		///push our error handling method before calling the code
+		int error_index = lua_gettop(mLuaState);
+		lua_pushcfunction(mLuaState, ::EmberOgre::Scripting::LuaHelper::luaErrorHandler);
+		lua_insert(mLuaState, error_index);
+
 		// call it
-		if (lua_pcall(mLuaState,0,0,0))
+		if (lua_pcall(mLuaState,0,0,error_index))
 		{
 			std::string errMsg(lua_tostring(mLuaState,-1));
 			lua_settop(mLuaState,top);
@@ -184,8 +213,23 @@ void LuaScriptingProvider::executeScript(const std::string& scriptCode)
 	try {
 		int top = lua_gettop(mLuaState);
 	
-		// load code into lua and call it
-		int error =	luaL_loadbuffer(mLuaState, scriptCode.c_str(), scriptCode.length(), scriptCode.c_str()) || lua_pcall(mLuaState,0,0,0);
+	
+		int loaderr = luaL_loadbuffer(mLuaState, scriptCode.c_str(), scriptCode.length(), scriptCode.c_str());
+		
+		if (loaderr)
+		{
+			std::string errMsg(lua_tostring(mLuaState,-1));
+			lua_settop(mLuaState,top);
+			throw Ember::Exception("Unable to load Lua script: '" + scriptCode + "'\n\n"+errMsg+"\n");
+		}
+		
+		///push our error handling method before calling the code
+		int error_index = lua_gettop(mLuaState);
+		lua_pushcfunction(mLuaState, ::EmberOgre::Scripting::LuaHelper::luaErrorHandler);
+		lua_insert(mLuaState, error_index);
+		
+		/// load code into lua and call it
+		int error = lua_pcall(mLuaState,0,0,error_index);
 	
 		// handle errors
 		if (error)
@@ -235,6 +279,35 @@ void LuaScriptingProvider::forceGC()
 	lua_setgcthreshold(mLuaState,0);
 #endif
 }
+
+
+
+
+// int32_t LuaScriptInterface::callFunction(uint32_t nParams)
+// {
+// 	int32_t result = LUA_NO_ERROR;
+// 
+// 	int size0 = lua_gettop(m_luaState);
+// 	
+// 	int error_index = lua_gettop(m_luaState) - nParams;
+// 	lua_pushcfunction(m_luaState, luaErrorHandler);
+// 	lua_insert(m_luaState, error_index);
+// 
+// 	if(lua_pcall(m_luaState, nParams, 1, error_index) != 0){
+// 		LuaScriptInterface::reportError(NULL, std::string(LuaScriptInterface::popString(m_luaState)));
+// 		result = LUA_ERROR;
+// 	} else {
+// 		result = (int32_t)LuaScriptInterface::popNumber(m_luaState);
+// 	}
+// 	lua_remove(m_luaState, error_index);
+// 
+// 	if((lua_gettop(m_luaState) + (int)nParams  + 1) != size0){
+// 		LuaScriptInterface::reportError(NULL, "Stack size changed!");
+// 	}
+// 
+// 	return result;
+// }
+
 
 
 // CEGUI::ScriptModule& LuaScriptingProvider::getScriptModule()
