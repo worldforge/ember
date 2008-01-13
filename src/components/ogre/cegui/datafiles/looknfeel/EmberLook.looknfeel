@@ -3600,7 +3600,7 @@
 				<Image type="TopEdge" imageset="EmberLook" image="VerticalSliderTrackTop" />
 				<Image type="BottomEdge" imageset="EmberLook" image="VerticalSliderTrackBottom" />
 				<Image type="Background" imageset="EmberLook" image="VerticalSlidertrackMiddle" />
-				<VertFormat type="Tiled" />
+				<VertFormat type="Stretched" />
 				<HorzFormat type="Stretched" />
 			</FrameComponent>
 		</ImagerySection>
