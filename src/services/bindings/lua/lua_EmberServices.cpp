@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberServices
-** Generated automatically by tolua++-1.0.92 on Mon Oct 15 18:27:30 2007.
+** Generated automatically by tolua++-1.0.92 on Sun Jan 13 01:10:05 2008.
 */
 
 #ifndef __cplusplus
@@ -194,6 +194,47 @@ static int tolua_EmberServices_Ember_ConfigService_setValue00(lua_State* tolua_S
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'setValue'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: isItemSet of class  Ember::ConfigService */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_ConfigService_isItemSet00
+static int tolua_EmberServices_Ember_ConfigService_isItemSet00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ember::ConfigService",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ember::ConfigService* self = (const Ember::ConfigService*)  tolua_tousertype(tolua_S,1,0);
+  const std::string section = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  const std::string key = ((const std::string)  tolua_tocppstring(tolua_S,3,0));
+  const std::string value = ((const std::string)  tolua_tocppstring(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'isItemSet'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->isItemSet(section,key,value);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+   tolua_pushcppstring(tolua_S,(const char*)section);
+   tolua_pushcppstring(tolua_S,(const char*)key);
+   tolua_pushcppstring(tolua_S,(const char*)value);
+  }
+ }
+ return 4;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'isItemSet'.",&tolua_err);
  return 0;
 #endif
 }
@@ -2096,6 +2137,7 @@ TOLUA_API int tolua_EmberServices_open (lua_State* tolua_S)
     tolua_variable(tolua_S,"GETVALUE",tolua_get_Ember__ConfigService_GETVALUE,NULL);
     tolua_function(tolua_S,"getValue",tolua_EmberServices_Ember_ConfigService_getValue00);
     tolua_function(tolua_S,"setValue",tolua_EmberServices_Ember_ConfigService_setValue00);
+    tolua_function(tolua_S,"isItemSet",tolua_EmberServices_Ember_ConfigService_isItemSet00);
     tolua_function(tolua_S,"itemExists",tolua_EmberServices_Ember_ConfigService_itemExists00);
     tolua_function(tolua_S,"deleteItem",tolua_EmberServices_Ember_ConfigService_deleteItem00);
     tolua_function(tolua_S,"loadSavedConfig",tolua_EmberServices_Ember_ConfigService_loadSavedConfig00);

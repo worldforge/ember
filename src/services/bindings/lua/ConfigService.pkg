@@ -34,6 +34,11 @@ class ConfigService
     // Methods
     //----------------------------------------------------------------------
 
+	/**
+	Returns true if the item is set to the supplied value.
+	*/
+	bool isItemSet(const std::string& section, const std::string& key, const std::string& value) const;
+
     /**
      * Returns true if the key exists in the section given.
      *

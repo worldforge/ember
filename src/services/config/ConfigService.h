@@ -154,6 +154,11 @@ class ConfigService: public Service, public Ember::ConsoleObject
      */
     bool itemExists(const std::string& section, const std::string& key) const;
 
+	/**
+	Returns true if the item is set to the supplied value.
+	*/
+	bool isItemSet(const std::string& section, const std::string& key, const std::string& value) const;
+
     /**
      * Returns true if the key exists in the section give but is successfully
      * removed.

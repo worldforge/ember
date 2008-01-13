@@ -93,6 +93,11 @@ namespace Ember
     {
 		varconf::Config::inst()->setItem(section, key, value);
     }
+    
+	bool ConfigService::isItemSet(const std::string& section, const std::string& key, const std::string& value) const
+	{
+		return (itemExists(section, key) && getValue(section, key) == value);
+	}
 
     Service::Status ConfigService::start()
     {
