@@ -9,12 +9,15 @@ ServerBrowser = {connectors={}}
 
 
 function ServerBrowser.connectToMetaServer()
-	local metaServer = Ember.EmberServices:getSingleton():getMetaserverService():getMetaServer()
+	local metaServer = emberServices:getMetaserverService():getMetaServer()
 	
 --    EmberOgre.LuaConnector:new(metaServer:Failure.connect, "MetaServer_Failure")
 	connect(ServerBrowser.connectors, metaServer.ReceivedServerInfo, "ServerBrowser.MetaServer_ReceivedServerInfo")
 --    EmberOgre.LuaConnector:new(metaServer:CompletedServerList.connect, "MetaServer_CompletedServerList.connect")
-    metaServer:refresh()
+	--only refresh if it's enabled in the config
+	if emberServices:getConfigService():isItemSet("metaserver", "enabled", "true") then
+    	metaServer:refresh()
+    end
 end
 
 

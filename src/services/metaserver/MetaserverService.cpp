@@ -74,8 +74,8 @@ namespace Ember
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 
 	std::string metaserverHostname;
-	if (configSrv->itemExists("servers", "metaserver")) {
-		metaserverHostname = std::string(configSrv->getValue("servers", "metaserver"));
+	if (configSrv->itemExists("metaserver", "server")) {
+		metaserverHostname = std::string(configSrv->getValue("metaserver", "server"));
 	} else {
 		metaserverHostname = "metaserver.worldforge.org";
 	}
