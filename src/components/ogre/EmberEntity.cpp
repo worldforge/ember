@@ -193,6 +193,10 @@ void EmberEntity::updateMotion(Ogre::Real timeSlice)
 	if (mErisEntityBoundingBox) {
 		mErisEntityBoundingBox->getParentSceneNode()->setPosition(getSceneNode()->getPosition());
 		mErisEntityBoundingBox->getParentSceneNode()->setOrientation(getSceneNode()->getOrientation());
+		///rotate node to fit with WF space
+		///perhaps this is something to put in MathConverter.h instead
+		mErisEntityBoundingBox->getParentSceneNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
+
 	}
 
 }
@@ -581,11 +585,15 @@ void EmberEntity::showErisBoundingBox(bool show)
 		mErisEntityBoundingBox->setMaterial(BboxMaterialName);
 		Ogre::SceneNode* boundingBoxNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
 		boundingBoxNode->attachObject(mErisEntityBoundingBox);
+		
 		Ogre::AxisAlignedBox aabb = Atlas2Ogre(getBBox());
 		mErisEntityBoundingBox->setupBoundingBox(aabb);
 		
 		boundingBoxNode->setPosition(Atlas2Ogre(getPredictedPos()));
 		boundingBoxNode->setOrientation(Atlas2Ogre(getOrientation()));
+		///rotate node to fit with WF space
+		///perhaps this is something to put in MathConverter.h instead
+		boundingBoxNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
 	}
 	mErisEntityBoundingBox->setVisible(show);
 	

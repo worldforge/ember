@@ -1,3 +1,63 @@
+2008-01-13 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberEntity.cpp: rotate the eris bbox to fit with the WF coords. Perhaps we need to alter the convert method in MathConverter instead though...
+
+2008-01-13 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityEditor.lua: fixed a bug with editing entities with unnamed lists (such as an area)
+
+2008-01-13 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/scripting/LuaHelper.cpp, src/components/ogre/scripting/LuaHelper.h, src/components/ogre/scripting/LuaScriptingProvider.cpp, src/components/ogre/scripting/Makefile.am, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.cpp, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.h, src/components/ogre/scripting/bindings/lua/helpers/LuaConnectorHelper.h, src/components/ogre/widgets/Bootstrap.lua, ember.conf: added support for stack traces in lua, through the lua debug library. These require that the lua:debug value in the config is set to true. Lua methods called from CEGUI will not have stack traces in their error messages though.
+
+2008-01-13 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/cegui/datafiles/looknfeel/EmberLook.looknfeel: increase performance
+
+2008-01-13 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/services/metaserver/MetaserverService.cpp, src/components/ogre/widgets/ServerBrowser.lua, ember.conf: added ability to disable the meta server at startup
+
+2008-01-13 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/services/bindings/lua/ConfigService.pkg, src/services/bindings/lua/lua_EmberServices.cpp, src/services/config/ConfigService.cpp, src/services/config/ConfigService.h: added method for testing whether a certain value is set
+
+2008-01-13 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/main/Ember.cpp: print out different exit status at exit and disable switching to home directory on win32
+
+2008-01-13 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/WorldEmberEntity.cpp: make the intent of the code more clear
+
+2008-01-13 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/OgreSetup.cpp: at crash time, write out the link to the bug reporting system
+
+2008-01-13 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/AvatarCamera.cpp: fixed incorrect comparison
+
+2008-01-13 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberPhysicalEntity.cpp: use the MeshCollisionDetector
+
+2008-01-13 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/MeshCollisionDetector.h, src/components/ogre/MeshCollisionDetector.cpp, src/components/ogre/Makefile.am: added a collision detector which iterates through all vertices and checks for collision, since the Opcode collider isn't working as it should
+
+2008-01-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* ember.ico: added windows icon
+
+2008-01-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* Ember.nsi: update installer script
+
+2008-01-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/ogre.cfg: provide sane DirectX values
+
 2007-12-20 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* NEWS: mark new release
