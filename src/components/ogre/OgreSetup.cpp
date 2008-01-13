@@ -144,7 +144,7 @@ Shut down SDL correctly, else if run in full screen the display might be messed 
 */
 extern "C" void shutdownHandler(int signal)
 {
-	std::cerr << "Crashed with signal " << signal << ", will try to shut down SDL gracefully." << std::endl;
+	std::cerr << "Crashed with signal " << signal << ", will try to shut down SDL gracefully. Please report bugs at https://bugs.launchpad.net/ember" << std::endl;
 	SDL_Quit();
 	exit(signal);
 }
