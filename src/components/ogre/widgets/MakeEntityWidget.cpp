@@ -113,8 +113,9 @@ void MakeEntityWidget::show()
 {
 	if (mIsReady)
 	{
-		if (mMainWindow) 
-			mMainWindow->setVisible(true);
+		if (mMainWindow) {
+			Widget::show();
+		}
 		S_LOG_INFO("Showing entity creator window.");
 	} else {
 		S_LOG_FAILURE("Can't show entity creator window before we have taken an avatar.");
