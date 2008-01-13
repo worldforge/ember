@@ -56,6 +56,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
 int main(int argc, char **argv)
 #endif
 {
+	int exitStatus(0);
 	bool exit_program = false;
 	std::string prefix("");
 	std::string homeDir("");
@@ -186,9 +187,11 @@ int main(int argc, char **argv)
 		} catch (const std::exception& ex)
 		{
 			std::cerr << "Unexpected error, aborting.\n\r" << ex.what();
+			exitStatus = 1;
 		}
 	}
 
+#ifndef __WIN32__
 	if (homeDir != "") {
 		if (chdir(homeDir.c_str())) {
 			std::cerr << "Could not set homedir to '" << homeDir << "'." << std::endl;
@@ -198,6 +201,7 @@ int main(int argc, char **argv)
 			std::cerr << "Could not set homedir to '~/.ember'." << std::endl;
 		}
 	}
+#endif
 	std::cout << "Ember shut down successfully." << std::endl;
-    return 0;
+    return exitStatus;
 }
