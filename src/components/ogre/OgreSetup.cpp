@@ -155,7 +155,8 @@ bool OgreSetup::configure(void)
 {
 ///for non-windows systems don't show any config option
 #ifndef __WIN32__
-	bool success = mRoot->restoreConfig();
+	bool success = mRoot->showConfigDialog();
+//	bool success = mRoot->restoreConfig();
 #else
 	///but do for windows. We need a better way to do this though
 	bool success = mRoot->showConfigDialog();
