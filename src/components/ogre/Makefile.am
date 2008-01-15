@@ -30,7 +30,7 @@ libEmberOgre_la_SOURCES = AttributeObserver.cpp Avatar.cpp AvatarCamera.cpp \
 	OgreSetup.cpp OpcodeCollisionDetector.cpp OpcodeCollisionDetectorVisualizer.cpp \
 	SimpleRenderContext.cpp WorldEmberEntity.cpp XMLHelper.cpp
 
-confdir = $(sysconfdir)/ember/
+confdir = $(sysconfdir)/ember
 dist_conf_DATA = ogre.cfg resources.cfg terrain.cfg
 
 

@@ -4,7 +4,7 @@ SUBDIRS = src media
 bin_SCRIPTS = ember
 dist_bin_SCRIPTS = ember
 
-confdir = $(sysconfdir)/ember/
+confdir = $(sysconfdir)/ember
 dist_conf_DATA = ember.conf
 
 
