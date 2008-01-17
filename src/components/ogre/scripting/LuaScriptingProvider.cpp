@@ -178,8 +178,14 @@ void LuaScriptingProvider::loadScript(Ember::ResourceWrapper& resWrapper)
 		
 		///push our error handling method before calling the code
 		int error_index = lua_gettop(mLuaState);
+		#if LUA51
 		lua_pushcfunction(mLuaState, ::EmberOgre::Scripting::LuaHelper::luaErrorHandler);
-		lua_insert(mLuaState, error_index);
+		#else
+		lua_pushliteral(L, "_TRACEBACK");
+		lua_rawget(L, LUA_GLOBALSINDEX);  /* get traceback function */
+		#endif
+		lua_insert(mLuaState, error_index);/* put it under chunk and args */
+
 
 		// call it
 		if (lua_pcall(mLuaState,0,0,error_index))

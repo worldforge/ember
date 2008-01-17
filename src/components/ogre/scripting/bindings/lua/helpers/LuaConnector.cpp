@@ -109,11 +109,16 @@ template <typename Treturn, typename T0, typename T1, typename T2, typename T3> 
 			EmberOgre::LuaConnector::pushValue(t2, (*I++));
 		if (I != mLuaTypeNames.end()) 
 			EmberOgre::LuaConnector::pushValue(t3, (*I++));
-			
+		
 		///push our error handling method before calling the code
 		int error_index = lua_gettop(state) - numberOfArguments;
+		#if LUA51
 		lua_pushcfunction(state, ::EmberOgre::Scripting::LuaHelper::luaErrorHandler);
-		lua_insert(state, error_index);
+		#else
+		lua_pushliteral(L, "_TRACEBACK");
+		lua_rawget(L, LUA_GLOBALSINDEX);  /* get traceback function */
+		#endif
+		lua_insert(state, error_index);/* put it under chunk and args */
 		
 		/// call it
 		int error = lua_pcall(state,numberOfArguments,LUA_MULTRET,error_index);
