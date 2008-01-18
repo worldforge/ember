@@ -115,8 +115,8 @@ template <typename Treturn, typename T0, typename T1, typename T2, typename T3> 
 		#if LUA51
 		lua_pushcfunction(state, ::EmberOgre::Scripting::LuaHelper::luaErrorHandler);
 		#else
-		lua_pushliteral(L, "_TRACEBACK");
-		lua_rawget(L, LUA_GLOBALSINDEX);  /* get traceback function */
+		lua_pushliteral(state, "_TRACEBACK");
+		lua_rawget(state, LUA_GLOBALSINDEX);  /* get traceback function */
 		#endif
 		lua_insert(state, error_index);/* put it under chunk and args */
 		

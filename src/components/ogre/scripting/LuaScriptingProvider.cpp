@@ -181,8 +181,8 @@ void LuaScriptingProvider::loadScript(Ember::ResourceWrapper& resWrapper)
 		#if LUA51
 		lua_pushcfunction(mLuaState, ::EmberOgre::Scripting::LuaHelper::luaErrorHandler);
 		#else
-		lua_pushliteral(L, "_TRACEBACK");
-		lua_rawget(L, LUA_GLOBALSINDEX);  /* get traceback function */
+		lua_pushliteral(mLuaState, "_TRACEBACK");
+		lua_rawget(mLuaState, LUA_GLOBALSINDEX);  /* get traceback function */
 		#endif
 		lua_insert(mLuaState, error_index);/* put it under chunk and args */
 
