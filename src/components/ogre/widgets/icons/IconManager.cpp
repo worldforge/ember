@@ -137,11 +137,9 @@ Icon* IconManager::getIcon(int pixelWidth, EmberEntity* entity)
 			}
 			Icon* icon = mIconStore.createIcon(key);
 			if (icon) {
-
-				
 				///update the model preview window
-				Model::Model* model = Model::Model::createModel(mIconRenderer.getRenderContext()->getSceneManager(), modelName);
-				mIconRenderer.render(model, icon);
+// 				Model::Model* model = Model::Model::createModel(mIconRenderer.getRenderContext()->getSceneManager(), modelName);
+				mIconRenderer.render(modelName, icon);
 // 				mIconRenderer.getRenderContext()->getSceneManager()->destroyMovableObject(model);
 			}
 			return icon;
@@ -177,8 +175,8 @@ Icon* IconManager::getIcon(int pixelWidth, Eris::TypeInfo* erisType)
 						modelName = "placeholder";
 					}
 					///update the model preview window
-					Model::Model* model = Model::Model::createModel(mIconRenderer.getRenderContext()->getSceneManager(), modelName);
-					mIconRenderer.render(model, icon);
+// 					Model::Model* model = Model::Model::createModel(mIconRenderer.getRenderContext()->getSceneManager(), modelName);
+					mIconRenderer.render(modelName, icon);
 // 					mIconRenderer.getRenderContext()->getSceneManager()->destroyMovableObject(model);
 					
 					dummyEntity.shutdown();

@@ -1,3 +1,23 @@
+2008-01-20 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/icons/IconManager.cpp, src/components/ogre/widgets/icons/IconRenderer.cpp, src/components/ogre/widgets/icons/IconRenderer.h: make sure that the ownership of the Model is properly defined, and that it's properly destroyed after it's been rendered.
+
+2008-01-20 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/icons/IconImageStore.cpp, src/components/ogre/widgets/icons/IconImageStore.h, src/components/ogre/widgets/icons/IconManager.cpp, src/components/ogre/widgets/icons/IconRenderer.cpp, src/components/ogre/widgets/icons/IconRenderer.h: refactored the icon framework to handle delayed rendering. This is to deal with GPUs without support for FBO where the rendering might occur some frames after the render op has been issued, and we can't copy from the render buffer until that's been done
+
+2008-01-20 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.cpp, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.h, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.pkg, src/components/ogre/scripting/bindings/lua/helpers/lua_Helpers.cpp: fixed incorrect namespaces which broke the terrain editor
+	
+2008-01-20 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/framework/bindings/lua/atlas/required.h: remove a compilation warning
+
+2008-01-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/scripting/LuaHelper.cpp, src/components/ogre/scripting/LuaScriptingProvider.cpp, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.cpp: fixed lua 5.0 compilation errors
+
 2008-01-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/scripting/LuaScriptingProvider.cpp, src/components/ogre/scripting/bindings/lua/helpers/LuaConnector.cpp: added a fix for lua 5.0

@@ -50,7 +50,7 @@ class DelayedIconRendererEntry
 {
 public:
 	DelayedIconRendererEntry(DelayedIconRendererWorker& renderer, Model::Model* model, Icon* icon);
-	
+	virtual ~DelayedIconRendererEntry();
 	/**
 	 *    Accessor for the model which will be rendered.
 	 * @return 
@@ -84,15 +84,16 @@ protected:
 
 /**
 The abstract class which performs the actual rendering.
+Note that it's the responsibility of this class to make sure that the Model supplied in the render method is properly destroyed.
 */
 class IconRenderWorker
 {
 public:
 	IconRenderWorker(IconRenderer& renderer);
-	
+	virtual ~IconRenderWorker();
     /**
      * Starts the process of rendering the model onto the icon. Depending on the implementation the actual blitting and rendering might be delayed some frames.
-     * @param model 
+     * @param model The model to render. Note that it's the responsibility of this class to make sure that's it's properly destroyed after use.
      * @param icon 
      */
     virtual void render(Model::Model* model, Icon* icon) = 0;
@@ -122,6 +123,8 @@ public:
 
 
 protected:
+
+	IconRenderer& getRenderer();
 	
 	/**
 	 *    Method to be called by the contained entries when they want to perform the actual rendering operation.
@@ -152,6 +155,8 @@ class DirectRendererWorker : public IconRenderWorker
 {
 public:
 	DirectRendererWorker(IconRenderer& renderer);
+	virtual ~DirectRendererWorker();
+
     /**
      * Starts the process of rendering a model onto an icon. The blitting will occur in the same frame as the rendering.
      * @param model 
@@ -181,12 +186,19 @@ public:
     ~IconRenderer();
     
     /**
-     * Renders the Model onto the Icon. Note that depending on the IconRenderWorker used this might not occur on the same frame.
-     * Make sure to call setWorker before calling this method.
-     * @param model 
-     * @param icon 
+     * Renders a model by the specified name to the icon.
+     * @param modelName The name of the model to render.
+     * @param icon The icon it should be rendered to.
      */
-    void render(Model::Model* model, Icon* icon);
+    void render(const std::string& modelName, Icon* icon);
+    
+	/**
+	* Renders the Model onto the Icon. Note that depending on the IconRenderWorker used this might not occur on the same frame.
+	* Make sure to call setWorker before calling this method.
+	* @param model The Model to render. Note that after calling this ownership of the Model is transferred to this instance, which takes care of the proper destruction of it.
+	* @param icon The icon to render to.
+	*/
+	void render(Model::Model* model, Icon* icon);
     
     /**
      * Gets the SimpleRenderContext used for the rendering.
@@ -216,6 +228,7 @@ public:
     void blitRenderToIcon(Icon* icon);
     
 protected:
+
     
 	int mPixelWidth;
 	std::auto_ptr<SimpleRenderContext> mRenderContext;

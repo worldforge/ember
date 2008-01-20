@@ -56,6 +56,13 @@ void IconRenderer::setWorker(IconRenderWorker* worker)
 	mWorker = worker;
 }
 
+void IconRenderer::render(const std::string& modelName, Icon* icon)
+{
+	Model::Model* model = Model::Model::createModel(getRenderContext()->getSceneManager(), modelName);
+	if (model) {
+		render(model, icon);
+	}
+}
 
 void IconRenderer::render(Model::Model* model, Icon* icon)
 {
@@ -80,7 +87,7 @@ void IconRenderer::performRendering(Model::Model* model, Icon* icon)
 			if (I->second->Distance) {
 				mRenderContext->setCameraDistance(I->second->Distance);
 			}
-			Ogre::Camera* camera = mRenderContext->getCamera();
+// 			Ogre::Camera* camera = mRenderContext->getCamera();
 			mRenderContext->getCameraRootNode()->setOrientation(I->second->Rotation);
 		} else {
 			mRenderContext->resetCameraOrientation();
@@ -167,8 +174,17 @@ IconRenderWorker::IconRenderWorker(IconRenderer& renderer) : mRenderer(renderer)
 {
 }
 
+IconRenderWorker::~IconRenderWorker()
+{
+}
+
+
 DirectRendererWorker::DirectRendererWorker(IconRenderer& renderer)
 : IconRenderWorker(renderer)
+{
+}
+
+DirectRendererWorker::~DirectRendererWorker()
 {
 }
 
@@ -176,12 +192,18 @@ void DirectRendererWorker::render(Model::Model* model, Icon* icon)
 {
 	mRenderer.performRendering(model, icon);
 	mRenderer.blitRenderToIcon(icon);
+	mRenderer.getRenderContext()->getSceneManager()->destroyMovableObject(model);
 }
 
 
 DelayedIconRendererEntry::DelayedIconRendererEntry(DelayedIconRendererWorker& renderer, Model::Model* model, Icon* icon)
 : mRenderer(renderer), mModel(model), mIcon(icon), mFrames(0)
 {
+}
+
+DelayedIconRendererEntry::~DelayedIconRendererEntry()
+{
+	//mRenderer.getRenderer().getRenderContext()->getSceneManager()->destroyMovableObject(mModel);
 }
 
 Model::Model* DelayedIconRendererEntry::getModel()
@@ -230,6 +252,12 @@ bool DelayedIconRendererWorker::frameStarted(const Ogre::FrameEvent& event)
 	return true;
 }
 
+IconRenderer& DelayedIconRendererWorker::getRenderer()
+{
+	return mRenderer;
+}
+
+
 void DelayedIconRendererWorker::performRendering(DelayedIconRendererEntry& entry)
 {
 	mRenderer.performRendering(entry.getModel(), entry.getIcon());
@@ -239,6 +267,7 @@ void DelayedIconRendererWorker::performRendering(DelayedIconRendererEntry& entry
 void DelayedIconRendererWorker::finalizeRendering(DelayedIconRendererEntry& entry)
 {
 	mRenderer.blitRenderToIcon(entry.getIcon());
+	mRenderer.getRenderContext()->getSceneManager()->destroyMovableObject(entry.getModel());
 	entries.pop();
 }
 
