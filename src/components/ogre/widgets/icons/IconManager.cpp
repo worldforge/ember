@@ -81,6 +81,8 @@ std::string mModelName;
 IconManager::IconManager()
 : mIconRenderer("IconManager", 64)
 {
+// 	mIconRenderer.setWorker(new DirectRendererWorker(mIconRenderer));
+	mIconRenderer.setWorker(new DelayedIconRendererWorker(mIconRenderer));
 }
 
 
@@ -140,7 +142,7 @@ Icon* IconManager::getIcon(int pixelWidth, EmberEntity* entity)
 				///update the model preview window
 				Model::Model* model = Model::Model::createModel(mIconRenderer.getRenderContext()->getSceneManager(), modelName);
 				mIconRenderer.render(model, icon);
-				mIconRenderer.getRenderContext()->getSceneManager()->destroyMovableObject(model);
+// 				mIconRenderer.getRenderContext()->getSceneManager()->destroyMovableObject(model);
 			}
 			return icon;
 		}
@@ -177,7 +179,7 @@ Icon* IconManager::getIcon(int pixelWidth, Eris::TypeInfo* erisType)
 					///update the model preview window
 					Model::Model* model = Model::Model::createModel(mIconRenderer.getRenderContext()->getSceneManager(), modelName);
 					mIconRenderer.render(model, icon);
-					mIconRenderer.getRenderContext()->getSceneManager()->destroyMovableObject(model);
+// 					mIconRenderer.getRenderContext()->getSceneManager()->destroyMovableObject(model);
 					
 					dummyEntity.shutdown();
 				}

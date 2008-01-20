@@ -28,6 +28,8 @@
 #include "../../model/ModelDefinition.h"
 #include "../../SimpleRenderContext.h"
 
+// #include <SDL.h>
+
 namespace EmberOgre {
 
 namespace Gui {
@@ -35,7 +37,7 @@ namespace Gui {
 namespace Icons {
 
 IconRenderer::IconRenderer(const std::string& prefix, int pixelWidth)
-: mPixelWidth(pixelWidth), mRenderContext(new SimpleRenderContext(prefix, pixelWidth, pixelWidth))
+: mPixelWidth(pixelWidth), mRenderContext(new SimpleRenderContext(prefix, pixelWidth, pixelWidth)), mWorker(0)
 {
 	mRenderContext->getSceneManager()->setAmbientLight(Ogre::ColourValue(0.7, 0.7, 0.7));
 	mRenderContext->setBackgroundColour(Ogre::ColourValue::ZERO);
@@ -45,9 +47,22 @@ IconRenderer::IconRenderer(const std::string& prefix, int pixelWidth)
 
 IconRenderer::~IconRenderer()
 {
+	delete mWorker;
 }
 
+
+void IconRenderer::setWorker(IconRenderWorker* worker)
+{
+	mWorker = worker;
+}
+
+
 void IconRenderer::render(Model::Model* model, Icon* icon)
+{
+	mWorker->render(model, icon);
+}
+
+void IconRenderer::performRendering(Model::Model* model, Icon* icon)
 {
 	
 	if (model) {
@@ -75,20 +90,51 @@ void IconRenderer::render(Model::Model* model, Icon* icon)
  		}
 		
 // 		mRenderContext->setCameraDistance(0.75);
+		
+		///the problem with PBuffer and Copy might be that we need to wait a little before we try to blit, since it's not guaranteed that the content will be correctly rendered (since the render ops are queued to the GPU)
+		///thus we need to create some kind of frame listener callback mechanism
+
 		mRenderContext->getRenderTexture()->update();
 		
-		Ogre::HardwarePixelBufferSharedPtr srcBuffer = mRenderContext->getTexture()->getBuffer();
-		Ogre::HardwarePixelBufferSharedPtr dstBuffer = icon->getImageStoreEntry()->getTexture()->getBuffer();
+// 		SDL_Delay(1000);
+// 		blitRenderToIcon(icon);
 		
-		Ogre::Box sourceBox(0, 0, mRenderContext->getRenderTexture()->getWidth(), mRenderContext->getRenderTexture()->getHeight());
-		
-		dstBuffer->blit(srcBuffer, sourceBox, icon->getImageStoreEntry()->getBox());
 		node->detachAllObjects();
 		
 	}
-	
-	
 }
+
+void IconRenderer::blitRenderToIcon(Icon* icon)
+{
+	Ogre::HardwarePixelBufferSharedPtr srcBuffer = mRenderContext->getTexture()->getBuffer();
+	Ogre::HardwarePixelBufferSharedPtr dstBuffer = icon->getImageStoreEntry()->getTexture()->getBuffer();
+	
+	Ogre::Box sourceBox(0, 0, mRenderContext->getRenderTexture()->getWidth(), mRenderContext->getRenderTexture()->getHeight());
+// 	Ogre::PixelBox sourceLockedBox = srcBuffer->lock(sourceBox, Ogre::HardwareBuffer::HBL_READ_ONLY);
+	
+	Ogre::Box dstBox = icon->getImageStoreEntry()->getBox();
+// 	Ogre::PixelBox dstLockedBox = dstBuffer->lock(dstBox, Ogre::HardwareBuffer::HBL_NORMAL);
+	
+	Ogre::MemoryDataStream* dataStream = new Ogre::MemoryDataStream(sourceBox.getWidth() * sourceBox.getHeight() * 4, true);
+	Ogre::DataStreamPtr imageDataStreamPtr(dataStream);
+	
+	
+/*	Ogre::Image image;
+	image.loadRawData(imageDataStreamPtr, sourceBox.getWidth(), sourceBox.getHeight(), Ogre::PF_A8R8G8B8);*/
+	
+ 	srcBuffer->blitToMemory(icon->getImageStoreEntry()->getImagePixelBox());
+ 	dstBuffer->blitFromMemory(icon->getImageStoreEntry()->getImagePixelBox(), dstBox);
+//  	static int counter(0);
+//  	std::stringstream ss;
+//  	ss << "/home/erik/skit/temp_" << counter++ << ".jpg";
+// 	image.save(ss.str());
+	
+//	dstBuffer->blit(srcBuffer, sourceBox, dstBox);
+	
+// 	srcBuffer->unlock();
+// 	dstBuffer->unlock();
+}
+
     
 // void IconRenderer::showModel(const std::string& modelName)
 // {
@@ -114,6 +160,93 @@ SimpleRenderContext* IconRenderer::getRenderContext()
 {
 	return mRenderContext.get();
 }
+
+
+
+IconRenderWorker::IconRenderWorker(IconRenderer& renderer) : mRenderer(renderer)
+{
+}
+
+DirectRendererWorker::DirectRendererWorker(IconRenderer& renderer)
+: IconRenderWorker(renderer)
+{
+}
+
+void DirectRendererWorker::render(Model::Model* model, Icon* icon)
+{
+	mRenderer.performRendering(model, icon);
+	mRenderer.blitRenderToIcon(icon);
+}
+
+
+DelayedIconRendererEntry::DelayedIconRendererEntry(DelayedIconRendererWorker& renderer, Model::Model* model, Icon* icon)
+: mRenderer(renderer), mModel(model), mIcon(icon), mFrames(0)
+{
+}
+
+Model::Model* DelayedIconRendererEntry::getModel()
+{
+	return mModel;
+}
+
+Icon* DelayedIconRendererEntry::getIcon()
+{
+	return mIcon;
+}
+
+void DelayedIconRendererEntry::frameStarted()
+{
+	///on the first frame we'll do the rendering, and then do the blitting on the second frame
+	if (mFrames == 0) {
+		///do render
+		mRenderer.performRendering(*this);
+		mFrames++;
+	} else  {
+		///do blit
+		mRenderer.finalizeRendering(*this);
+		///we can't do anything here, since the call to finalizeRendering will delete this instance
+	}
+	
+}
+
+
+DelayedIconRendererWorker::DelayedIconRendererWorker(IconRenderer& renderer)
+: IconRenderWorker(renderer)
+{
+	Ogre::Root::getSingleton().addFrameListener(this);
+}
+
+void DelayedIconRendererWorker::render(Model::Model* model, Icon* icon)
+{
+	DelayedIconRendererEntry entry(*this, model, icon);
+	entries.push(entry);
+}
+
+bool DelayedIconRendererWorker::frameStarted(const Ogre::FrameEvent& event)
+{
+	if (entries.size()) {
+		entries.front().frameStarted();
+	}
+	return true;
+}
+
+void DelayedIconRendererWorker::performRendering(DelayedIconRendererEntry& entry)
+{
+	mRenderer.performRendering(entry.getModel(), entry.getIcon());
+}
+
+
+void DelayedIconRendererWorker::finalizeRendering(DelayedIconRendererEntry& entry)
+{
+	mRenderer.blitRenderToIcon(entry.getIcon());
+	entries.pop();
+}
+
+
+
+
+
+
 
 }
 

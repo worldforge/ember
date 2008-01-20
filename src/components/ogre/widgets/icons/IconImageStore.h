@@ -63,6 +63,9 @@ public:
 	
 	Ogre::Image::Box getBox();
     Ogre::TexturePtr getTexture();
+    Ogre::PixelBox getImagePixelBox();
+    
+//     Ogre::Image::PixelBox getImageBox();
 	
 protected:
 	void createImage();
@@ -117,22 +120,27 @@ public:
      */
     void returnImageEntry(IconImageStoreEntry* imageEntry);
     
+    Ogre::Image& getImage();
+    
 //     Ogre::TexturePtr getTexture();
     
 private:
 	void createImageset();
 	void createEntries();
 
-	CEGUI::Texture* mCeguiTexture;
-	CEGUI::Imageset* mImageset;
 	std::string mImagesetName;
+	int mIconSize;
+	int mImageSize;
 	//Ogre::Image* mOgreImage;
 	Ogre::TexturePtr mTexPtr;
+	Ogre::MemoryDataStream* mImageDataStream;
+	Ogre::DataStreamPtr mImageDataStreamPtr;
+	Ogre::Image mImage;
+	CEGUI::Texture* mCeguiTexture;
+	CEGUI::Imageset* mImageset;
 	
 	IconImageStoreEntryStore mIconImages;
 	IconImageStoreEntryStack mUnclaimedIconImages;
-	int mIconSize;
-	int mImageSize;
 
 };
 

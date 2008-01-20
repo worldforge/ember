@@ -75,6 +75,12 @@ Ogre::TexturePtr IconImageStoreEntry::getTexture()
 	return mIconImageStore.mTexPtr;
 }
 
+Ogre::PixelBox IconImageStoreEntry::getImagePixelBox()
+{
+	return mIconImageStore.getImage().getPixelBox().getSubVolume(getBox());
+}
+
+
 Ogre::Image::Box IconImageStoreEntry::getBox()
 {
 	Ogre::Image::Box box(mPixelPosInImageset.first, mPixelPosInImageset.second, mPixelPosInImageset.first + mIconImageStore.mIconSize, mPixelPosInImageset.second + mIconImageStore.mIconSize);
@@ -82,14 +88,28 @@ Ogre::Image::Box IconImageStoreEntry::getBox()
 }
 
 IconImageStore::IconImageStore(const std::string& imagesetName)
-: mImagesetName(imagesetName), mIconSize(64), mImageSize(256)
+: mImagesetName(imagesetName)
+, mIconSize(64)
+, mImageSize(256)
+, mImageDataStream(new Ogre::MemoryDataStream(mImageSize * mImageSize * 4, true))
+, mImageDataStreamPtr(mImageDataStream)
+, mCeguiTexture(0)
+, mImageset(0)
 {
 	createImageset();
 	createEntries();
 }
 
+/**
+Constructor for when we already have a texture of the whole icon.
+*/
 IconImageStore::IconImageStore(const std::string& imagesetName, Ogre::TexturePtr texPtr)
-: mImagesetName(imagesetName), mTexPtr(texPtr)
+: mImagesetName(imagesetName)
+, mTexPtr(texPtr)
+, mImageDataStream(0)
+, mImageDataStreamPtr(mImageDataStream)
+, mCeguiTexture(0)
+, mImageset(0)
 {
 	mCeguiTexture = GUIManager::getSingleton().getGuiRenderer()->createTexture(mTexPtr);
 	
@@ -107,16 +127,25 @@ IconImageStore::IconImageStore(const std::string& imagesetName, Ogre::TexturePtr
 
 IconImageStore::~IconImageStore()
 {
+///the stream will be destroyed by the mImageDataStreamPtr pointer
+// 	delete mImageDataStream;
 }
 
 void IconImageStore::createImageset()
 {
+	///reset the image
+	memset(mImageDataStream->getPtr(), '\0', mImageDataStream->size());
+	mImage.loadRawData(mImageDataStreamPtr, mImageSize, mImageSize, Ogre::PF_A8R8G8B8);
 
-	mTexPtr = Ogre::TextureManager::getSingleton().createManual(mImagesetName, "Gui", Ogre::TEX_TYPE_2D, mImageSize, mImageSize, 0, Ogre::PF_A8R8G8B8,Ogre::TU_DYNAMIC);
+// 	mTexPtr = Ogre::TextureManager::getSingleton().createManual(mImagesetName, "Gui", Ogre::TEX_TYPE_2D, mImageSize, mImageSize, 0, Ogre::PF_A8R8G8B8,Ogre::TU_DYNAMIC_WRITE_ONLY);
+	mTexPtr = Ogre::TextureManager::getSingleton().loadImage(mImagesetName, "Gui", mImage);
+// 	mTexPtr = Ogre::TextureManager::getSingleton().loadRawData(mImagesetName, "Gui", mImageDataStreamPtr, mImageSize, mImageSize,Ogre::PF_A8R8G8B8, Ogre::TEX_TYPE_2D, 0);
 	if (mTexPtr.isNull()) {
 		S_LOG_WARNING("Could not create a texture.");
 		return;
 	}
+	
+
 	
 	mCeguiTexture = GUIManager::getSingleton().getGuiRenderer()->createTexture(mTexPtr);
 	
@@ -169,6 +198,10 @@ void IconImageStore::returnImageEntry(IconImageStoreEntry* imageEntry)
 }
 
 
+Ogre::Image& IconImageStore::getImage()
+{
+	return mImage;
+}
 
 // Ogre::TexturePtr IconImageStore::getTexture()
 // {
