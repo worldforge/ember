@@ -33,6 +33,8 @@ const Atlas::Message::Element& _MapType_findInMap(const Atlas::Message::MapType*
 	if (I != map->end()) {
 		return I->second;
 	} else {
-		return (Atlas::Message::Element)0;
+		///we'll avoid compiler warnings by doing it this way
+		static Atlas::Message::Element* element(0);
+		return *element;
 	}
 }
