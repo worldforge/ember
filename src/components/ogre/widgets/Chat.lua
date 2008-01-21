@@ -3,12 +3,14 @@
 ----------------------------------------------------
 
 
-Chat = {connectors={}}
-Chat.widget = guiManager:createWidget()
-Chat.gameTextWindow = nil
-Chat.systemTextWindow = nil
-Chat.consoleAdapter = nil
-Chat.consoleInputWindow = nil
+Chat = {
+connectors={}, 
+widget = guiManager:createWidget(), 
+gameTextWindow = nil,
+systemTextWindow = nil,
+consoleAdapter = nil,
+consoleInputWindow = nil
+}
 
 --Set up the widget.
 function Chat.buildWidget()
@@ -53,9 +55,9 @@ function Chat.consoleAdapter_CommandExecuted(command)
 end
 
 function Chat.console_focus()
+	Chat.consoleInputWindow:activate()
 	--switch to gui mode, so that this command can be called even when the user is in movement mode
 	guiManager:getInput():setInputMode(EmberOgre.Input.IM_GUI)
-	Chat.consoleInputWindow:activate()
 end
 
 function Chat.createdAvatarEmberEntity(avatarEntity)
