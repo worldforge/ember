@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Ogre
-** Generated automatically by tolua++-1.0.92 on Wed Nov  7 22:01:47 2007.
+** Generated automatically by tolua++-1.0.92 on Mon Jan 21 23:19:54 2008.
 */
 
 #ifndef __cplusplus
@@ -14,6 +14,7 @@
 TOLUA_API int  tolua_Ogre_open (lua_State* tolua_S);
 
 #include "required.h"
+#include <OgreRoot.h>
 
 /* function to release collected object via destructor */
 #ifdef __cplusplus
@@ -172,6 +173,7 @@ static void tolua_reg_types (lua_State* tolua_S)
 {
  tolua_usertype(tolua_S,"Ogre::Vector2");
  tolua_usertype(tolua_S,"Ogre::RenderTarget");
+ tolua_usertype(tolua_S,"Ogre::Timer");
  tolua_usertype(tolua_S,"Ogre::Radian");
  tolua_usertype(tolua_S,"Ogre::RenderWindow");
  tolua_usertype(tolua_S,"Ogre::ResourceManager::ResourceHandleMap::key_type");
@@ -179,6 +181,8 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Ogre::SceneManager");
  tolua_usertype(tolua_S,"Ogre::AxisAlignedBox");
  tolua_usertype(tolua_S,"Ogre::Image");
+ tolua_usertype(tolua_S,"Ogre::FrameListener");
+ tolua_usertype(tolua_S,"Ogre::Root");
  tolua_usertype(tolua_S,"Ogre::MeshPtr");
  tolua_usertype(tolua_S,"Ogre::ColourValue");
  tolua_usertype(tolua_S,"Ogre::TextureManager");
@@ -17749,6 +17753,425 @@ static int tolua_Ogre_Ogre_ColourValue_setHSB00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: saveConfig of class  Ogre::Root */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Root_saveConfig00
+static int tolua_Ogre_Ogre_Root_saveConfig00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::Root",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Root* self = (Ogre::Root*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'saveConfig'",NULL);
+#endif
+  {
+   self->saveConfig();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'saveConfig'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: restoreConfig of class  Ogre::Root */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Root_restoreConfig00
+static int tolua_Ogre_Ogre_Root_restoreConfig00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::Root",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Root* self = (Ogre::Root*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'restoreConfig'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->restoreConfig();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'restoreConfig'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: showConfigDialog of class  Ogre::Root */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Root_showConfigDialog00
+static int tolua_Ogre_Ogre_Root_showConfigDialog00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::Root",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Root* self = (Ogre::Root*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'showConfigDialog'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->showConfigDialog();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'showConfigDialog'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: isInitialised of class  Ogre::Root */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Root_isInitialised00
+static int tolua_Ogre_Ogre_Root_isInitialised00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::Root",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Root* self = (const Ogre::Root*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'isInitialised'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->isInitialised();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'isInitialised'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getTextureManager of class  Ogre::Root */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Root_getTextureManager00
+static int tolua_Ogre_Ogre_Root_getTextureManager00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::Root",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Root* self = (Ogre::Root*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getTextureManager'",NULL);
+#endif
+  {
+   Ogre::TextureManager* tolua_ret = (Ogre::TextureManager*)  self->getTextureManager();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::TextureManager");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getTextureManager'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getMeshManager of class  Ogre::Root */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Root_getMeshManager00
+static int tolua_Ogre_Ogre_Root_getMeshManager00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::Root",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Root* self = (Ogre::Root*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMeshManager'",NULL);
+#endif
+  {
+   Ogre::MeshManager* tolua_ret = (Ogre::MeshManager*)  self->getMeshManager();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::MeshManager");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getMeshManager'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getErrorDescription of class  Ogre::Root */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Root_getErrorDescription00
+static int tolua_Ogre_Ogre_Root_getErrorDescription00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::Root",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Root* self = (Ogre::Root*)  tolua_tousertype(tolua_S,1,0);
+  long errorNumber = ((long)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getErrorDescription'",NULL);
+#endif
+  {
+   std::string tolua_ret = (std::string)  self->getErrorDescription(errorNumber);
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getErrorDescription'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: addFrameListener of class  Ogre::Root */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Root_addFrameListener00
+static int tolua_Ogre_Ogre_Root_addFrameListener00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::Root",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Ogre::FrameListener",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Root* self = (Ogre::Root*)  tolua_tousertype(tolua_S,1,0);
+  Ogre::FrameListener* newListener = ((Ogre::FrameListener*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addFrameListener'",NULL);
+#endif
+  {
+   self->addFrameListener(newListener);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addFrameListener'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: removeFrameListener of class  Ogre::Root */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Root_removeFrameListener00
+static int tolua_Ogre_Ogre_Root_removeFrameListener00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::Root",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Ogre::FrameListener",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Root* self = (Ogre::Root*)  tolua_tousertype(tolua_S,1,0);
+  Ogre::FrameListener* oldListener = ((Ogre::FrameListener*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'removeFrameListener'",NULL);
+#endif
+  {
+   self->removeFrameListener(oldListener);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'removeFrameListener'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: convertColourValue of class  Ogre::Root */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Root_convertColourValue00
+static int tolua_Ogre_Ogre_Root_convertColourValue00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::Root",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::ColourValue",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Root* self = (Ogre::Root*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::ColourValue* colour = ((const Ogre::ColourValue*)  tolua_tousertype(tolua_S,2,0));
+  unsigned int pDest = ((unsigned int)  tolua_tonumber(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'convertColourValue'",NULL);
+#endif
+  {
+   self->convertColourValue(*colour,&pDest);
+   tolua_pushnumber(tolua_S,(lua_Number)pDest);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'convertColourValue'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getTimer of class  Ogre::Root */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Root_getTimer00
+static int tolua_Ogre_Ogre_Root_getTimer00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::Root",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Root* self = (Ogre::Root*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getTimer'",NULL);
+#endif
+  {
+   Ogre::Timer* tolua_ret = (Ogre::Timer*)  self->getTimer();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::Timer");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getTimer'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getCurrentFrameNumber of class  Ogre::Root */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Root_getCurrentFrameNumber00
+static int tolua_Ogre_Ogre_Root_getCurrentFrameNumber00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::Root",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Root* self = (const Ogre::Root*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getCurrentFrameNumber'",NULL);
+#endif
+  {
+   unsigned long tolua_ret = (unsigned long)  self->getCurrentFrameNumber();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getCurrentFrameNumber'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getSingleton of class  Ogre::Root */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Root_getSingleton00
+static int tolua_Ogre_Ogre_Root_getSingleton00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Ogre::Root",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   Ogre::Root& tolua_ret = (Ogre::Root&)  Ogre::Root::getSingleton();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"Ogre::Root");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getSingleton'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* Open function */
 TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
 {
@@ -18540,6 +18963,25 @@ TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
     tolua_function(tolua_S,".div",tolua_Ogre_Ogre_ColourValue__div00);
     tolua_function(tolua_S,".div",tolua_Ogre_Ogre_ColourValue__div01);
     tolua_function(tolua_S,"setHSB",tolua_Ogre_Ogre_ColourValue_setHSB00);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"Ogre",0);
+  tolua_beginmodule(tolua_S,"Ogre");
+   tolua_cclass(tolua_S,"Root","Ogre::Root","",NULL);
+   tolua_beginmodule(tolua_S,"Root");
+    tolua_function(tolua_S,"saveConfig",tolua_Ogre_Ogre_Root_saveConfig00);
+    tolua_function(tolua_S,"restoreConfig",tolua_Ogre_Ogre_Root_restoreConfig00);
+    tolua_function(tolua_S,"showConfigDialog",tolua_Ogre_Ogre_Root_showConfigDialog00);
+    tolua_function(tolua_S,"isInitialised",tolua_Ogre_Ogre_Root_isInitialised00);
+    tolua_function(tolua_S,"getTextureManager",tolua_Ogre_Ogre_Root_getTextureManager00);
+    tolua_function(tolua_S,"getMeshManager",tolua_Ogre_Ogre_Root_getMeshManager00);
+    tolua_function(tolua_S,"getErrorDescription",tolua_Ogre_Ogre_Root_getErrorDescription00);
+    tolua_function(tolua_S,"addFrameListener",tolua_Ogre_Ogre_Root_addFrameListener00);
+    tolua_function(tolua_S,"removeFrameListener",tolua_Ogre_Ogre_Root_removeFrameListener00);
+    tolua_function(tolua_S,"convertColourValue",tolua_Ogre_Ogre_Root_convertColourValue00);
+    tolua_function(tolua_S,"getTimer",tolua_Ogre_Ogre_Root_getTimer00);
+    tolua_function(tolua_S,"getCurrentFrameNumber",tolua_Ogre_Ogre_Root_getCurrentFrameNumber00);
+    tolua_function(tolua_S,"getSingleton",tolua_Ogre_Ogre_Root_getSingleton00);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
