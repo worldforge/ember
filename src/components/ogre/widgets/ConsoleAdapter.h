@@ -58,11 +58,13 @@ protected:
 	Ember::ConsoleBackend* mBackend;
 
 	bool consoleInputBox_KeyUp(const CEGUI::EventArgs& args);
+	bool consoleInputBox_KeyDown(const CEGUI::EventArgs& args);
 	
 	// the text of the current command line saved when browsing the history
 	std::string mCommandLine;
 	bool mTabPressed;
 	int mSelected;
+	bool mReturnKeyDown;
 
 };
 

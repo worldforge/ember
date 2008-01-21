@@ -29,15 +29,25 @@ namespace EmberOgre {
 namespace Gui {
 
 ConsoleAdapter::ConsoleAdapter(CEGUI::Editbox* inputBox)
-: mInputBox(inputBox)
+: mInputBox(inputBox), mReturnKeyDown(false)
 {
 	mBackend = Ember::ConsoleBackend::getMainConsole();
 	mInputBox->subscribeEvent(CEGUI::Editbox::EventKeyUp, CEGUI::Event::Subscriber(&ConsoleAdapter::consoleInputBox_KeyUp, this)); 
+	mInputBox->subscribeEvent(CEGUI::Editbox::EventKeyDown, CEGUI::Event::Subscriber(&ConsoleAdapter::consoleInputBox_KeyDown, this)); 
 }
 
 
 ConsoleAdapter::~ConsoleAdapter()
 {
+}
+
+bool ConsoleAdapter::consoleInputBox_KeyDown(const CEGUI::EventArgs& args)
+{
+	const CEGUI::KeyEventArgs& keyargs = static_cast<const CEGUI::KeyEventArgs&>(args);
+	if (keyargs.scancode == CEGUI::Key::Return || keyargs.scancode == CEGUI::Key::NumpadEnter) {
+		mReturnKeyDown = true;
+	}
+	return true;
 }
 
 bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
@@ -194,23 +204,26 @@ bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 		case CEGUI::Key::Return:
 		case CEGUI::Key::NumpadEnter:
 		{
-			if(mInputBox->getSelectionLength() > 0)
-			{
-				unsigned long ulSelectionEnd(mInputBox->getSelectionEndIndex());
-				
-				mInputBox->setText(mInputBox->getText() + ' ');
-				mInputBox->setCaratIndex(ulSelectionEnd + 1);
-				mInputBox->setSelection(mInputBox->getCaratIndex(), mInputBox->getCaratIndex());
-			}
-			else
-			{
-				const CEGUI::String consoleText(mInputBox->getText());
-				
-				mInputBox->setText(CEGUI::String(""));	
-				mBackend->pushMessage(("> " + consoleText).c_str());
-				// run the command
-				mBackend->runCommand(consoleText.c_str());
-				EventCommandExecuted.emit(consoleText.c_str());
+			if (mReturnKeyDown) {
+				mReturnKeyDown = false;
+				if(mInputBox->getSelectionLength() > 0)
+				{
+					unsigned long ulSelectionEnd(mInputBox->getSelectionEndIndex());
+					
+					mInputBox->setText(mInputBox->getText() + ' ');
+					mInputBox->setCaratIndex(ulSelectionEnd + 1);
+					mInputBox->setSelection(mInputBox->getCaratIndex(), mInputBox->getCaratIndex());
+				}
+				else
+				{
+					const CEGUI::String consoleText(mInputBox->getText());
+					
+					mInputBox->setText(CEGUI::String(""));	
+					mBackend->pushMessage(("> " + consoleText).c_str());
+					// run the command
+					mBackend->runCommand(consoleText.c_str());
+					EventCommandExecuted.emit(consoleText.c_str());
+				}
 			}
 		
 			break;
