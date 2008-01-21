@@ -1,20 +1,12 @@
 [Desktop Entry]
-Categories=Application;Game;
-Comment=
-Comment[sv]=
+Type=Application
 Encoding=UTF-8
-Exec=ember
-GenericName=3d client for Worldforge MMORPGs
-GenericName[sv]=3d klient för Worldforge MMORPGs
-Icon=ember
-MimeType=
 Name=Ember
 Name[sv]=Ember
-Path=
-StartupNotify=true
+GenericName=3d client for Worldforge MMORPGs
+GenericName[sv]=3d klient för Worldforge MMORPGs
+GenericName[tr]=Worldforge MMORPG için 3B İstemci
+Icon=ember
+Exec=ember
 Terminal=false
-Type=Application
-X-DCOP-ServiceType=
-X-KDE-StartupNotify=true
-X-KDE-SubstituteUID=false
-X-KDE-Username=
+Categories=Application;Game;

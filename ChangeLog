@@ -1,3 +1,31 @@
+2008-01-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* ember.desktop: merge changes from the Pardus project
+
+2008-01-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/OgreSetup.cpp: shut down ogre before we shut down SDL to avoid crashes and such
+
+2008-01-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/JesusEdit.cpp: code cleanup
+
+2008-01-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/ConsoleAdapter.cpp, src/components/ogre/widgets/ConsoleAdapter.h: make sure that a command only is entered when the enter button is pressed and released, so to avoid the problem where we switch from movement mode by pressing enter and then only have it switch back since it tried to enter an empty command
+
+2008-01-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Chat.lua: restructured
+
+2008-01-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/scripting/bindings/lua/ogre/Ogre.pkg, src/components/ogre/scripting/bindings/lua/ogre/OgreRoot.pkg, src/components/ogre/scripting/bindings/lua/ogre/lua_Ogre.cpp: added bindings for Ogre Root class
+
+2008-01-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/gui/ActiveWidgetHandler.cpp, src/components/ogre/gui/ActiveWidgetHandler.h, src/components/ogre/gui/Makefile.am, src/components/ogre/GUIManager.cpp, src/components/ogre/GUIManager.h, src/components/ogre/Makefile.am, configure.ac: added a class which makes sure that the current active input window is deactivated when we switch to movement mode, and reactivated when we switch back
+	
 2008-01-20 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/widgets/icons/IconManager.cpp, src/components/ogre/widgets/icons/IconRenderer.cpp, src/components/ogre/widgets/icons/IconRenderer.h: make sure that the ownership of the Model is properly defined, and that it's properly destroyed after it's been rendered.
