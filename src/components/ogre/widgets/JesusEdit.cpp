@@ -778,7 +778,8 @@ bool JesusEdit::CreateNew_Click( const CEGUI::EventArgs & args )
 	definition.mBuildingBlockSpec = getNewBuildingBlockSpec()->getName();
 	
 	
-	Carpenter::BuildingBlock* bblock = blueprint->createBuildingBlock(definition);
+// 	Carpenter::BuildingBlock* bblock = 
+	blueprint->createBuildingBlock(definition);
 	blueprint->setStartingBlock(definition.mName);
 	blueprint->compile();
 		
