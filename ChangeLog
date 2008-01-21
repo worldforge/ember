@@ -1,5 +1,9 @@
 2008-01-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* ember.conf: pressing enter while in movement mode will now switch to input mode and make the chat edit box active
+
+2008-01-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* ember.desktop: merge changes from the Pardus project
 
 2008-01-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
