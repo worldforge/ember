@@ -34,6 +34,7 @@
 #include "AvatarCamera.h"
 #include "EmberOgre.h"
 #include "input/Input.h"
+#include "gui/ActiveWidgetHandler.h"
 
 #include "widgets/WidgetDefinitions.h"
 
@@ -82,6 +83,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 , mGuiRenderer(0)
 , mLuaScriptModule(0)
 , mIconManager(0)
+, mActiveWidgetHandler(0)
 {
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI );
 
@@ -169,6 +171,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		///connect to the creation of the avatar, since we want to switch to movement mode when that happens
 		EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(sigc::mem_fun(*this, &GUIManager::EmberOgre_CreatedAvatarEntity));
 		
+		mActiveWidgetHandler = new Gui::ActiveWidgetHandler(*this);
+		
 		Ogre::Root::getSingleton().addFrameListener(this);
 		
 	
@@ -191,6 +195,7 @@ GUIManager::~GUIManager()
 		delete *I;
 	}
 	
+	delete mActiveWidgetHandler;
 	delete mEntityIconManager;
 	delete mIconManager;
 	

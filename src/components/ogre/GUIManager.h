@@ -62,6 +62,7 @@ class AvatarController;
 namespace Gui {
 class Widget;
 class EntityIconManager;
+class ActiveWidgetHandler;
 namespace Icons {
 class IconManager;
 }
@@ -324,6 +325,7 @@ protected:
 	
 	Gui::Icons::IconManager* mIconManager;
 	Gui::EntityIconManager* mEntityIconManager;
+	Gui::ActiveWidgetHandler* mActiveWidgetHandler;
 };
 }
 

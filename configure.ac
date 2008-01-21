@@ -1,5 +1,5 @@
 ## Process this file with autoconf to produce a configure script.
-AC_INIT(Ember, 0.5.1, clients@worldforge.org)
+AC_INIT(Ember, 0.5.2, clients@worldforge.org)
 AC_DEFINE(MEDIA_VERSION, "0.5.1", [What media version to use.])
 AC_SUBST(MEDIA_VERSION, "0.5.1")
 
@@ -463,6 +463,7 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/ogreopcode/include/Makefile
 		 src/components/ogre/ogreopcode/include/Opcode/Makefile
 		 src/components/ogre/Makefile
+		 src/components/ogre/gui/Makefile
 		 src/components/ogre/cegui/Makefile
 		 src/components/ogre/widgets/Makefile
 		 src/components/ogre/widgets/adapters/Makefile
