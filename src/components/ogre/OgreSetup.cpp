@@ -63,10 +63,10 @@ OgreSetup::~OgreSetup()
 
 void OgreSetup::shutdown()
 {
-	SDL_Quit();
 //	Ogre::ILCodecs::deleteCodecs();
 	delete mRoot;
 	mRoot = 0;
+	SDL_Quit();
 }
 
 
