@@ -20,3 +20,7 @@ ember.spec
 make_dist_media.sh
 mkinstalldirs
 Makefile
+optimized
+debug
+home
+var
