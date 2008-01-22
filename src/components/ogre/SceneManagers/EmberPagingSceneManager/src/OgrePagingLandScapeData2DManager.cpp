@@ -39,19 +39,19 @@
 #include "OgrePagingLandScapeData2D.h"
 
 // Data loaders implementations
-#include "OgrePagingLandScapeData2D_HeightField.h"
-#include "OgrePagingLandScapeData2D_HeightFieldTC.h"
-
-#include "OgrePagingLandScapeData2D_HeightFieldN.h"
-#include "OgrePagingLandScapeData2D_HeightFieldNTC.h"
-
-#include "OgrePagingLandScapeData2D_HeightFieldRaw.h"
-#include "OgrePagingLandScapeData2D_HeightFieldRawTC.h"
-
-#include "OgrePagingLandScapeData2D_Spline.h"
-
-// load heights from texture.
-#include "OgrePagingLandScapeData2D_HeightFieldBlendNeighbor.h"
+// #include "OgrePagingLandScapeData2D_HeightField.h"
+// #include "OgrePagingLandScapeData2D_HeightFieldTC.h"
+// 
+// #include "OgrePagingLandScapeData2D_HeightFieldN.h"
+// #include "OgrePagingLandScapeData2D_HeightFieldNTC.h"
+// 
+// #include "OgrePagingLandScapeData2D_HeightFieldRaw.h"
+// #include "OgrePagingLandScapeData2D_HeightFieldRawTC.h"
+// 
+// #include "OgrePagingLandScapeData2D_Spline.h"
+// 
+// // load heights from texture.
+// #include "OgrePagingLandScapeData2D_HeightFieldBlendNeighbor.h"
 
 // needed to get RenderLevel for RealHeight
 #include "OgrePagingLandScapeRenderable.h"
@@ -77,17 +77,17 @@ namespace Ogre
         mMaxHeight (0),
         mPageManager (0)
     {
-        // Add default texture Types.
-        registerDataType (new PagingLandScapeData2D_HeightField (this));
-        registerDataType (new PagingLandScapeData2D_HeightFieldRaw(this));
-        registerDataType (new PagingLandScapeData2D_HeightFieldTC(this));
-#ifndef _MAPSPLITTER
-        registerDataType (new PagingLandScapeData2D_HeightFieldN(this));
-        registerDataType (new PagingLandScapeData2D_HeightFieldRawTC(this));
-        registerDataType (new PagingLandScapeData2D_HeightFieldNTC(this));
-        registerDataType (new PagingLandScapeData2D_HeightFieldBlendNeighbor(this));
-#endif //_MAPSPLITTER
-        registerDataType (new PagingLandScapeData2D_Spline(this));
+//         // Add default texture Types.
+//         registerDataType (new PagingLandScapeData2D_HeightField (this));
+//         registerDataType (new PagingLandScapeData2D_HeightFieldRaw(this));
+//         registerDataType (new PagingLandScapeData2D_HeightFieldTC(this));
+// #ifndef _MAPSPLITTER
+//         registerDataType (new PagingLandScapeData2D_HeightFieldN(this));
+//         registerDataType (new PagingLandScapeData2D_HeightFieldRawTC(this));
+//         registerDataType (new PagingLandScapeData2D_HeightFieldNTC(this));
+//         registerDataType (new PagingLandScapeData2D_HeightFieldBlendNeighbor(this));
+// #endif //_MAPSPLITTER
+//         registerDataType (new PagingLandScapeData2D_Spline(this));
     }
     //-----------------------------------------------------------------------
     PagingLandScapeData2D *PagingLandScapeData2DManager::allocateData2D() const

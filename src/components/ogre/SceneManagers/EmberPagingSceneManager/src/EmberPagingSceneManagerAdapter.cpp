@@ -50,12 +50,16 @@ namespace EmberOgre {
 	}
 
 	
-	void EmberPagingSceneManagerAdapter::setWorldPagesDimensions(int numberOfPagesHeight, int numberOfPagesWidth)
+	void EmberPagingSceneManagerAdapter::setWorldPagesDimensions(int numberOfPagesHeight, int numberOfPagesWidth, int heightOffsetInPages, int widthOffsetInPages)
 	{
+		///in order position (0,0) to be aligned to the centre of the terrain we must offset the position of the terrain a bit
+		getOptions()->position.z = ((numberOfPagesHeight * 0.5f) - heightOffsetInPages) * getOptions()->PageSize;
+		getOptions()->position.x = ((numberOfPagesWidth * 0.5f) - widthOffsetInPages) * getOptions()->PageSize;
+	
 		getOptions()->world_height = numberOfPagesHeight;
 		getOptions()->world_width = numberOfPagesWidth;
 	
-		//update the options
+		///update the options
 		getOptions()->NumPages = getOptions()->world_height * getOptions()->world_width;
 		getOptions()->maxUnScaledZ = getOptions()->world_height * (getOptions()->PageSize - 1) * 0.5f;
 		getOptions()->maxUnScaledX = getOptions()->world_width  * (getOptions()->PageSize - 1) * 0.5f;

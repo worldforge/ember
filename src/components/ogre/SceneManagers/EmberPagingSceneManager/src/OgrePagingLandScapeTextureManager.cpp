@@ -31,10 +31,10 @@
 // Texture loaders implementations
 #include "OgrePagingLandScapeTexture.h"
 
-#include "OgrePagingLandScapeTexture_Image.h"
-
-#include "OgrePagingLandScapeTexture_BaseTexture.h"
-#include "OgrePagingLandScapeTexture_Splatting.h"
+// #include "OgrePagingLandScapeTexture_Image.h"
+// 
+// #include "OgrePagingLandScapeTexture_BaseTexture.h"
+// #include "OgrePagingLandScapeTexture_Splatting.h"
 
 #include "OgrePagingLandScapeTileInfo.h"
 

@@ -39,7 +39,7 @@ public:
 	virtual int getPageSize() = 0;
 	virtual Ogre::Real getHeightAt(const Ogre::Real x, const Ogre::Real z) = 0;
 	
-	virtual void setWorldPagesDimensions(int numberOfPagesHeight, int numberOfPagesWidth) = 0;
+	virtual void setWorldPagesDimensions(int numberOfPagesHeight, int numberOfPagesWidth, int heightOffsetInPages, int widthOffsetInPages) = 0;
 
 	virtual void setCamera(Ogre::Camera* camera) = 0;
 	virtual void setResourceGroupName(const std::string& groupName) = 0;

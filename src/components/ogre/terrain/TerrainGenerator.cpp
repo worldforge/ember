@@ -412,7 +412,7 @@ void TerrainGenerator::prepareAllSegments()
 // 		return;
 // 	}
 	
-	getAdapter()->setWorldPagesDimensions( mTerrainInfo.getTotalNumberOfPagesX(), mTerrainInfo.getTotalNumberOfPagesY());
+	getAdapter()->setWorldPagesDimensions( mTerrainInfo.getTotalNumberOfPagesX(), mTerrainInfo.getTotalNumberOfPagesY(), mTerrainInfo.getPageOffsetX(), mTerrainInfo.getPageOffsetY());
 	
 
 		
@@ -426,6 +426,7 @@ void TerrainGenerator::prepareAllSegments()
 	getAdapter()->resize(worldBox ,16);
 	
 	S_LOG_INFO("Pages: X: " << mTerrainInfo.getTotalNumberOfPagesX() << " Y: " << mTerrainInfo.getTotalNumberOfPagesY() << " Total: " <<  mTerrainInfo.getTotalNumberOfPagesX() *  mTerrainInfo.getTotalNumberOfPagesY());
+	S_LOG_INFO("Page offset: X" << mTerrainInfo.getPageOffsetX() << " Y: " << mTerrainInfo.getPageOffsetY());
 
 	
 }
@@ -497,7 +498,7 @@ TerrainPage* TerrainGenerator::getTerrainPage(const Ogre::Vector2& ogreIndexPosi
 	//_fpreset();
 	//S_LOG_INFO("Requesting page at ogre position x: " << ogreIndexPosition.x << " y: " << ogreIndexPosition.y);
 	
-	Ogre::Vector2 adjustedOgrePos(ogreIndexPosition.x - mTerrainInfo.getPageOffsetX(), ogreIndexPosition.y - mTerrainInfo.getPageOffsetY());
+	Ogre::Vector2 adjustedOgrePos(ogreIndexPosition.x - mTerrainInfo.getPageOffsetY(), ogreIndexPosition.y - mTerrainInfo.getPageOffsetX());
 	
 	TerrainPosition pos(Ogre2Atlas(adjustedOgrePos));
 	

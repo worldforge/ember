@@ -1,5 +1,17 @@
 2008-01-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* src/components/ogre/terrain.cfg, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManagerAdapter.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/EmberPagingSceneManagerAdapter.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/Makefile.am, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeData2DManager.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeTextureManager.cpp, src/components/ogre/terrain/ISceneManagerAdapter.h, src/components/ogre/terrain/TerrainGenerator.cpp: fixed problems with showing irregular sized terrain, also updated the terrain settings to be a little bit more sane (hopefully). Also removed some obsolete files from the build.
+
+2008-01-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* ember.desktop: removed obsolete value
+
+2008-01-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/.cvsignore, .cvsignore: added some development folders
+
+2008-01-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* ember.conf: pressing enter while in movement mode will now switch to input mode and make the chat edit box active
 
 2008-01-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
