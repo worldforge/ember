@@ -166,6 +166,13 @@ public:
 	A terrain decal will be shown.
 	*/
 	void moveToPoint(const Ogre::Vector3& point);
+	
+	/**
+	 *    Teleports the avatar to the specified point.
+	 * @param point 
+	 * @param locationEntity 
+	 */
+	void teleportTo(const Ogre::Vector3& point, EmberEntity* locationEntity);
 
 protected:
 

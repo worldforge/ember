@@ -358,6 +358,17 @@ void AvatarController::moveToPoint(const Ogre::Vector3& point)
 	Ember::EmberServices::getSingletonPtr()->getServerService()->moveToPoint(atlasPos);
 }
 
+
+void AvatarController::teleportTo(const Ogre::Vector3& point, EmberEntity* locationEntity)
+{
+	WFMath::Vector<3> atlasVector = Ogre2Atlas_Vector3(point);
+	WFMath::Point<3> atlasPos(atlasVector.x(), atlasVector.y(), atlasVector.z());
+	
+	
+	Ember::EmberServices::getSingletonPtr()->getServerService()->place(mAvatar->getAvatarEmberEntity(), locationEntity, atlasPos);
+}
+
+
 void AvatarController::createDecal(Ogre::Vector3 position)
 {
 	try {
