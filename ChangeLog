@@ -1,3 +1,11 @@
+2008-01-24 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainPage.cpp, src/components/ogre/terrain/TerrainPageSurface.cpp, src/components/ogre/terrain/TerrainPageSurface.h: Ogre (at least 1.4.6) can get assertion errors and crash due to Passes not being properly destroyed when modifiying materials. Thus we need to add a little fix for that.
+
+2008-01-24 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/input/IInputAdapter.h, src/components/ogre/input/Input.cpp, src/components/ogre/input/Input.h, src/components/ogre/input/InputCommandMapper.cpp, src/components/ogre/input/InputCommandMapper.h, src/components/ogre/EmberOgre.cpp: refactored the input system to be fully independent of Ogre. Also added a check to see if the window is active, and if it's not don't do any rendering.
+
 2008-01-22 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/terrain.cfg, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManagerAdapter.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/EmberPagingSceneManagerAdapter.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/Makefile.am, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeData2DManager.cpp, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeTextureManager.cpp, src/components/ogre/terrain/ISceneManagerAdapter.h, src/components/ogre/terrain/TerrainGenerator.cpp: fixed problems with showing irregular sized terrain, also updated the terrain settings to be a little bit more sane (hopefully). Also removed some obsolete files from the build.
