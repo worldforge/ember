@@ -1,3 +1,7 @@
+2008-01-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/SimpleRenderContext.cpp, src/components/ogre/SimpleRenderContext.h: provide a ManualResourceLoader which makes sure to rerender the texture when the it's being reloaded (such as when switching between full screen and desktop and back on Windows)
+
 2008-01-24 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/scripting/bindings/lua/AvatarController.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings

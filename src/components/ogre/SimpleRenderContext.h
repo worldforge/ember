@@ -27,6 +27,30 @@
 
 namespace EmberOgre {
 
+class SimpleRenderContext;
+
+/**
+Responsible for making sure that the texture is rerendered when the texture resource needs to be reloaded.
+*/
+class SimpleRenderContextResourceLoader : public Ogre::ManualResourceLoader
+{
+public:
+	/**
+	 *    Ctor.
+	 * @param renderContext The SimpleRenderContext to which this instance belongs.
+	 */
+	SimpleRenderContextResourceLoader(SimpleRenderContext& renderContext);
+	
+	
+	/**
+	 *    At load time the texture will be rerendered.
+	 * @param resource 
+	 */
+	virtual void loadResource (Ogre::Resource *resource);
+protected:
+	SimpleRenderContext& mRenderContext;
+};
+
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 
@@ -234,6 +258,8 @@ private:
 	Ogre::TexturePtr mTexture;
 	
 	Ogre::Viewport* mViewPort;
+	
+	SimpleRenderContextResourceLoader mResourceLoader;
 
 };
 

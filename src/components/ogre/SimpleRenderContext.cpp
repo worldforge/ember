@@ -31,8 +31,21 @@
 
 namespace EmberOgre {
 
+SimpleRenderContextResourceLoader::SimpleRenderContextResourceLoader(SimpleRenderContext& renderContext)
+: mRenderContext(renderContext)
+{
+}
+
+void SimpleRenderContextResourceLoader::loadResource (Ogre::Resource *resource)
+{
+	if (resource->getLoadingState() == Ogre::Resource::LOADSTATE_UNLOADED) {
+		mRenderContext.getRenderTexture()->update();
+	}
+}
+
+
 SimpleRenderContext::SimpleRenderContext(const std::string& prefix, int width, int height)
-: mMainLight(0), mSceneManager(0), mWidth(width), mHeight(height), mRenderTexture(0), mCameraNode(0), mCameraPitchNode(0), mEntityNode(0), mRootNode(0), mCamera(0), mViewPort(0)
+: mMainLight(0), mSceneManager(0), mWidth(width), mHeight(height), mRenderTexture(0), mCameraNode(0), mCameraPitchNode(0), mEntityNode(0), mRootNode(0), mCamera(0), mViewPort(0), mResourceLoader(*this)
 {
 
 	S_LOG_VERBOSE("Creating new SimpleRenderContext for prefix " << prefix  << " with w:" << mWidth << " h:" << mHeight);
@@ -200,7 +213,7 @@ void SimpleRenderContext::createImage(const std::string& prefix)
 	
 	///first, create a RenderTexture to which the Ogre renderer should render the image
 	S_LOG_VERBOSE("Creating new rendertexture " << (prefix + "_SimpleRenderContextRenderTexture") << " with w:" << mWidth << " h:" << mHeight);
-	mTexture = Ogre::TextureManager::getSingleton().createManual(prefix + "_SimpleRenderContextRenderTexture", "Gui", Ogre::TEX_TYPE_2D, mWidth, mHeight, 0, Ogre::PF_A8R8G8B8,Ogre::TU_RENDERTARGET);
+	mTexture = Ogre::TextureManager::getSingleton().createManual(prefix + "_SimpleRenderContextRenderTexture", "Gui", Ogre::TEX_TYPE_2D, mWidth, mHeight, 0, Ogre::PF_A8R8G8B8,Ogre::TU_RENDERTARGET, &mResourceLoader);
 	if (mTexture.isNull()) {
 		S_LOG_WARNING("Could not create a texture.");
 		return;
