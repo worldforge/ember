@@ -200,7 +200,6 @@ void TerrainPage::updateShadow(const Ogre::Vector3& lightDirection)
 Ogre::MaterialPtr TerrainPage::generateTerrainMaterials() {
 
 	mTerrainSurface->recompileMaterial();
-	mTerrainSurface->getMaterial()->load();
 	return mTerrainSurface->getMaterial();
 // 	//Ogre::ushort numberOfTextureUnitsOnCard = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits();
 // 

@@ -82,6 +82,8 @@ public:
 	
 protected:
 
+	void updateSceneManagersAfterMaterialsChange();
+
 	Ogre::MaterialPtr mMaterial;
 	TerrainPage& mTerrainPage;
 	TerrainPageSurfaceLayerStore mLayers;
