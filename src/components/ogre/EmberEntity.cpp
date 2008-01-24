@@ -294,6 +294,7 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
 
 void EmberEntity::onSoundAction( const Atlas::Objects::Operation::RootOperation & op )
 {
+	Eris::Entity::onSoundAction(op);
 }
 
 
@@ -461,7 +462,7 @@ void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act)
 	if (I == p.end()) return;
 	
 	const std::string& name = *I;
-	std::string message = getName() + " performs a " + name;
+	std::string message = getName() + " performs a " + name + ".";
 	
 	Ember::ConsoleBackend::getMainConsole()->pushMessage(message);
 	
@@ -472,11 +473,16 @@ void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act)
 void EmberEntity::onImaginary(const Atlas::Objects::Root& act)
 {
     Atlas::Message::Element attr;
-    if (act->copyAttr("description", attr) != 0 || !attr.isString()) {
-        return;
-    }
+    if (act->copyAttr("description", attr) && attr.isString()) {
+		std::string message = getName() + " " + attr.asString() + ".";
 		
-	S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") imaginary: " << attr.String());
+		Ember::ConsoleBackend::getMainConsole()->pushMessage(message);
+			
+		S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") imaginary: " << attr.String());
+    }
+
+	Entity::onImaginary(act);
+
 }
 
 
