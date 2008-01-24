@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberServices
-** Generated automatically by tolua++-1.0.92 on Sun Jan 13 01:10:05 2008.
+** Generated automatically by tolua++-1.0.92 on Thu Jan 24 21:43:03 2008.
 */
 
 #ifndef __cplusplus
@@ -1008,6 +1008,40 @@ static int tolua_EmberServices_Ember_ServerService_touch00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'touch'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: emote of class  Ember::ServerService */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_ServerService_emote00
+static int tolua_EmberServices_Ember_ServerService_emote00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ember::ServerService",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ember::ServerService* self = (Ember::ServerService*)  tolua_tousertype(tolua_S,1,0);
+  const std::string emote = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'emote'",NULL);
+#endif
+  {
+   self->emote(emote);
+   tolua_pushcppstring(tolua_S,(const char*)emote);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'emote'.",&tolua_err);
  return 0;
 #endif
 }
@@ -2173,6 +2207,7 @@ TOLUA_API int tolua_EmberServices_open (lua_State* tolua_S)
     tolua_function(tolua_S,"moveInDirection",tolua_EmberServices_Ember_ServerService_moveInDirection01);
     tolua_function(tolua_S,"say",tolua_EmberServices_Ember_ServerService_say00);
     tolua_function(tolua_S,"touch",tolua_EmberServices_Ember_ServerService_touch00);
+    tolua_function(tolua_S,"emote",tolua_EmberServices_Ember_ServerService_emote00);
     tolua_function(tolua_S,"drop",tolua_EmberServices_Ember_ServerService_drop00);
     tolua_function(tolua_S,"drop",tolua_EmberServices_Ember_ServerService_drop01);
     tolua_function(tolua_S,"place",tolua_EmberServices_Ember_ServerService_place00);

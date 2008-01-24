@@ -75,6 +75,7 @@ ServerService::ServerService() :
 	TakeChar("take", this, "Take control of one of your characters."),
 	ListChars("list", this, "List you available characters on the server."),
 	Say("say", this, "Say something."),
+	Emote("me", this, "Emotes something."),
 	Delete("delete", this, "Deletes an entity."),
 	AdminTell("admin_tell", this, "Uses admin mode to directly tell a NPC something. Usage: /admin_tell <entityid> <key> <value>"),
 	mServerAdapter(new NonConnectedAdapter())
@@ -469,6 +470,8 @@ void ServerService::logoutComplete(bool clean) {
 		// Say (In-Game chat) Command
 		} else if (Say == command) {
 			say(args);
+		} else if (Emote == command) {
+			emote(args);
 		} else if (Delete == command) {
 			Tokeniser tokeniser = Tokeniser();
 			tokeniser.initTokens(args);
@@ -573,6 +576,12 @@ void ServerService::logoutComplete(bool clean) {
 	void ServerService::moveInDirection(const WFMath::Vector<3>& velocity) {
 		mServerAdapter->moveInDirection(velocity);
 	}
+	
+// 	void ServerService::teleportTo(const WFMath::Point<3>& dest)
+// 	{
+// 		mServerAdapter->teleportTo(dest);
+// 	}
+
 
 
 	void ServerService::touch(Eris::Entity* entity) 
@@ -628,6 +637,10 @@ void ServerService::logoutComplete(bool clean) {
 
 	void ServerService::say(const std::string &message) {
 		mServerAdapter->say(message);
+	}	
+	
+	void ServerService::emote(const std::string &message) {
+		mServerAdapter->emote(message);
 	}
 	
 	void ServerService::deleteEntity(Eris::Entity* entity)

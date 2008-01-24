@@ -53,7 +53,6 @@ void NonConnectedAdapter::touch(Eris::Entity* entity)
 
 }   		
 
-
 void NonConnectedAdapter::take(Eris::Entity* entity) 
 {
 

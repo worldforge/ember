@@ -140,11 +140,45 @@ class ServerService : public Service, public ConsoleObject
 
     inline Eris::View* getView();
       
+	/**
+	 *    Tells the server to try to move the user to the specified point.
+	 * @param dest 
+	 */
 	void moveToPoint(const WFMath::Point<3>& dest); 
+	/**
+	 *    Moves the user.
+	 * @param velocity The velocity with which to move the user.
+	 * @param orientation The user's orientation.
+	 */
 	void moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation);
+	/**
+	 *    Moves the user.
+	 * @param velocity The velocity with which to move the user.
+	 */
 	void moveInDirection(const WFMath::Vector<3>& velocity);
+	/**
+	 *    Teleports the avatar to the specified location.
+	 *    NOTE: This will only work if the user is logged in as admin.
+	 * @param dest The destination coords.
+	 * @param entity The location entity. In most cases this will be the world entity.
+	 */
+// 	void teleportTo(const WFMath::Point<3>& dest, Eris::Entity* entity);
+	/**
+	 *    Say something out loud.
+	 * @param message 
+	 */
 	void say(const std::string &message);
+	/**
+	 *    Touch another entity.
+	 * @param entity 
+	 */
 	void touch(Eris::Entity* entity);
+	
+	/**
+	 *    Emotes something.
+	 * @param entity 
+	 */
+	void emote(const std::string& emote);
 	void drop(Eris::Entity* entity, const WFMath::Vector<3>& offset = WFMath::Vector<3>(0,0,0));
 	void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos = WFMath::Point<3>(0, 0, 0));
 	void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orient);
@@ -218,6 +252,7 @@ class ServerService : public Service, public ConsoleObject
 	const Ember::ConsoleCommandWrapper TakeChar;
 	const Ember::ConsoleCommandWrapper ListChars;
 	const Ember::ConsoleCommandWrapper Say;
+	const Ember::ConsoleCommandWrapper Emote;
 	const Ember::ConsoleCommandWrapper Delete;
 	const Ember::ConsoleCommandWrapper AdminTell;
 	

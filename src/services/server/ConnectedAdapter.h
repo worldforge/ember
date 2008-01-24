@@ -45,8 +45,10 @@ public:
 	virtual void moveToPoint(const WFMath::Point<3>& dest); 
 	virtual void moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation);
 	virtual void moveInDirection(const WFMath::Vector<3>& velocity);
+// 	virtual void teleportTo(const WFMath::Point<3>& dest);
 	virtual void say(const std::string &message);
 	virtual void touch(Eris::Entity* entity);
+	virtual void emote(const std::string& emote);
 	virtual void drop(Eris::Entity* entity, const WFMath::Vector<3>& offset);
 	virtual void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos = WFMath::Point<3>(0, 0, 0));
 	virtual void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orient);

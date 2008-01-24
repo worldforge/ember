@@ -89,6 +89,11 @@ void ConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity) {
 	}
 }
 
+// void ConnectedAdapter::teleportTo(const WFMath::Point<3>& dest)
+// {
+// 
+// }
+
 
 void ConnectedAdapter::touch(Eris::Entity* entity) 
 {
@@ -104,7 +109,21 @@ void ConnectedAdapter::touch(Eris::Entity* entity)
 		S_LOG_WARNING("Got unknown error on touching: " << except.what());
 	}
 }   		
-
+ 
+void ConnectedAdapter::emote(const std::string& emote)
+{
+	try {
+		mAvatar->emote(emote);
+	}
+	catch (const Eris::BaseException& except)
+	{
+		S_LOG_WARNING("Got Eris error on emoting: " << except._msg);
+	}
+	catch (const std::runtime_error& except)
+	{
+		S_LOG_WARNING("Got unknown error on emoting: " << except.what());
+	}
+}
 
 void ConnectedAdapter::take(Eris::Entity* entity) 
 {
