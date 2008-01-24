@@ -23,8 +23,6 @@
 #ifndef EMBEROGREIINPUTADAPTOR_H
 #define EMBEROGREIINPUTADAPTOR_H
 
-#include "../EmberOgrePrerequisites.h"
-
 #include "Input.h"
 
 #include <SDL.h>

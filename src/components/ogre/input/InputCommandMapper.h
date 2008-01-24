@@ -24,9 +24,9 @@
 #ifndef EMBEROGREINPUTCOMMANDMAPPER_H
 #define EMBEROGREINPUTCOMMANDMAPPER_H
 
-#include "../EmberOgrePrerequisites.h"
 #include <SDL.h>
 #include "Input.h"
+#include <vector>
 
 namespace EmberOgre {
 

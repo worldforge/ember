@@ -258,21 +258,25 @@ EmberOgre::~EmberOgre()
 
 bool EmberOgre::frameEnded(const Ogre::FrameEvent & evt)
 {
-	mInput->processInput(evt);
 	return true;
 }
 
 bool EmberOgre::frameStarted(const Ogre::FrameEvent & evt)
 {
 	//OgreOpcode::CollisionManager::getSingletonPtr()->getDefaultContext()->visualize(true, false, false, false, true, true);
-	if (!mKeepOnRunning)
-		S_LOG_INFO( "Shutting down Ember.");
-	return mKeepOnRunning;
+// 	if (!mKeepOnRunning)
+// 		S_LOG_INFO( "Shutting down Ember.");
+// 	return mKeepOnRunning;
+	return true;
 }
 
 bool EmberOgre::renderOneFrame()
 {
-	return mRoot->renderOneFrame();
+	mInput->processInput();
+	if (mInput->isApplicationVisible()) {
+		return mRoot->renderOneFrame();
+	}
+	return true;
 }
 
 void EmberOgre::shutdownGui()

@@ -25,6 +25,7 @@
 #include "framework/ConsoleBackend.h"
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
+#include "services/logging/LoggingService.h"
 
 namespace EmberOgre {
 

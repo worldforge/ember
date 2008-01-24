@@ -23,22 +23,24 @@
 #ifndef EMBEROGREINPUT_H
 #define EMBEROGREINPUT_H
 
-#include "../EmberOgrePrerequisites.h"
+// #include "../EmberOgrePrerequisites.h"
 #include <sigc++/slot.h>
 #include <sigc++/signal.h>
 #include <SDL_events.h>
 #include "framework/ConsoleObject.h"
 #include "framework/Singleton.h"
 
-
+#include <set>
+#include <list>
+#include <map>
 
 namespace EmberOgre {
 
 class IInputAdapter;
 class InputCommandMapper;
 
-TYPEDEF_STL_SET(SDLKey, KeysSet);
-TYPEDEF_STL_LIST(IInputAdapter*, IInputAdapterStore);
+typedef std::set<SDLKey> KeysSet;
+typedef std::list<IInputAdapter*> IInputAdapterStore;
 
 
 
@@ -55,15 +57,15 @@ struct MouseMotion
 	/**
 	the relative movement measures as percentage of the total with of the window
 	*/
-	Ogre::Real xRelativeMovement; 
-	Ogre::Real yRelativeMovement;
+	float xRelativeMovement; 
+	float yRelativeMovement;
 	
 	/**
 	the relative movement in pixels	
 	*/
 	int xRelativeMovementInPixels; 
 	int yRelativeMovementInPixels;
-	Ogre::Real timeSinceLastMovement;
+	float timeSinceLastMovement;
 };
 
 /**
@@ -134,7 +136,9 @@ public:
 	 * starts processing all input for a frame
 	 * @param evt 
 	 */
-	void processInput(const Ogre::FrameEvent& evt);
+	void processInput();
+	
+	bool isApplicationVisible();
 	
 	/**emitted when a key has been pressed in movement mode
 	@param the key event
@@ -176,6 +180,11 @@ public:
 		@param the new input mode
 	*/
 	sigc::signal<void, InputMode> EventChangedInputMode;
+	
+	/** 
+	Emitted when the window is minimized or un-mininized.
+	*/
+	sigc::signal<void, bool> EventWindowActive;
 	
 	/**
 	 * returns true if the supplied key is down 
@@ -277,8 +286,8 @@ protected:
 	 * polls all input for the mouse
 	 * @param evt 
 	 */
-	void pollMouse(const Ogre::FrameEvent& evt);
-	void pollKeyboard(const Ogre::FrameEvent& evt);
+	void pollMouse(float secondsSinceLast);
+	void pollEvents(float secondsSinceLast);
 	
 	void keyChanged(const SDL_KeyboardEvent &keyEvent);
 	
@@ -311,8 +320,9 @@ protected:
 	the amount of time since the last right mouse click
 	used for detecting double clicks
 	*/
-	Ogre::Real mTimeSinceLastRightMouseClick;
+	uint32_t mTimeSinceLastRightMouseClick;
 	
+	uint32_t mLastTick;
 
 	/**
 	 *    gets the text in the clipboard and pastes it to the gui system

@@ -30,6 +30,7 @@
 
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
+#include "services/logging/LoggingService.h"
 
 template<> EmberOgre::Input* Ember::Singleton<EmberOgre::Input>::ms_Singleton = 0;
 
@@ -69,7 +70,7 @@ mCurrentInputMode(IM_GUI)
 	mNonCharKeys.insert(SDLK_DELETE);
 
 
-	
+	mLastTick = SDL_GetTicks();
 	
 }
 
@@ -167,23 +168,31 @@ void Input::deregisterCommandMapper(InputCommandMapper* mapper)
 }
 
 
-void Input::processInput(const Ogre::FrameEvent& evt)
+bool Input::isApplicationVisible()
 {
-	
-	pollMouse(evt);
-	pollKeyboard(evt);
+	return SDL_GetAppState() & SDL_APPACTIVE;
+}
+
+void Input::processInput()
+{
+	uint32_t ticks = SDL_GetTicks();
+	float secondsSinceLast = (ticks - mLastTick) * 1000.0f;
+	mLastTick = ticks;
+	pollMouse(secondsSinceLast);
+	pollEvents(secondsSinceLast);
     SDL_PumpEvents();
 }
 
 
-void Input::pollMouse(const Ogre::FrameEvent& evt)
+
+void Input::pollMouse(float secondsSinceLast)
 {
 	int mouseX, mouseY;
 	unsigned int mouseState;
 	
 	mouseState = SDL_GetMouseState( &mouseX, &mouseY );
 	
-	mTimeSinceLastRightMouseClick += evt.timeSinceLastFrame;
+	mTimeSinceLastRightMouseClick += secondsSinceLast;
 	
 
 	if (mouseState & SDL_BUTTON_RMASK) {
@@ -268,7 +277,7 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 	
 			//we'll calculate the mouse movement difference and send the values to those
 			//listening to the MouseMoved event
-			Ogre::Real diffX, diffY;
+			float diffX, diffY;
 			diffX =  (mMouseX - mouseX) / mScreenWidth;
 			diffY = (mMouseY - mouseY) / mScreenHeight;
 			MouseMotion motion;
@@ -278,7 +287,7 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 			motion.yRelativeMovement = diffY;
 			motion.xRelativeMovementInPixels = mMouseX - mouseX;
 			motion.yRelativeMovementInPixels = mMouseY - mouseY;
-			motion.timeSinceLastMovement = evt.timeSinceLastFrame;
+			motion.timeSinceLastMovement = secondsSinceLast;
 			
 			EventMouseMoved.emit(motion, mCurrentInputMode);
 			
@@ -310,7 +319,7 @@ void Input::pollMouse(const Ogre::FrameEvent& evt)
 
 
 
-void Input::pollKeyboard(const Ogre::FrameEvent& evt)
+void Input::pollEvents(float secondsSinceLast)
 {
 #if __WIN32__
 	//on windows, we need to let the os have some time to do input gathering
@@ -343,6 +352,11 @@ void Input::pollKeyboard(const Ogre::FrameEvent& evt)
 							if (!(*I)->injectMouseButtonDown(Input::MouseWheelDown)) break;
 						}
 					}
+				}
+				break;
+			case SDL_ACTIVEEVENT:
+				if (event.active.state & SDL_APPACTIVE) {
+					EventWindowActive.emit(event.active.gain);
 				}
 				break;
 		}
