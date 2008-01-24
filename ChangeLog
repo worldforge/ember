@@ -1,5 +1,13 @@
 2008-01-24 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* src/components/ogre/Avatar.cpp, src/components/ogre/Avatar.h: fixed a problem when changing location (such as entering and exiting buildings) while moving
+
+2008-01-24 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* ember.conf: bump version
+
+2008-01-24 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* src/components/ogre/terrain/TerrainPage.cpp, src/components/ogre/terrain/TerrainPageSurface.cpp, src/components/ogre/terrain/TerrainPageSurface.h: Ogre (at least 1.4.6) can get assertion errors and crash due to Passes not being properly destroyed when modifiying materials. Thus we need to add a little fix for that.
 
 2008-01-24 Erik Hjortsberg  <erik.hjortsberg@iteam.se>

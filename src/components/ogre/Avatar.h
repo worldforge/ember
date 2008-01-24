@@ -74,23 +74,53 @@ public Ogre::FrameListener
 	virtual ~Avatar();
 
 
+	/**
+	 *    Gets the avatar camera.
+	 * @return 
+	 */
 	AvatarCamera* getAvatarCamera() const;
 	
+	/**
+	 *    Gets the scene node which the avatar is attached to.
+	 * @return 
+	 */
 	inline Ogre::SceneNode* getAvatarSceneNode() const;
 	
+	/**
+	 *    Called each frame.
+	 * @param event 
+	 * @return 
+	 */
 	virtual bool frameStarted(const Ogre::FrameEvent & event);
-
 	
-	
+	/**
+	 *    Call this when the Eris::Entity representing the avatar has been created.
+	 * @param EmberEntity 
+	 */
 	void createdAvatarEmberEntity(AvatarEmberEntity *EmberEntity);
 	
+	/**
+	 *    Call this when the avatar entity has moved in the world.
+	 */
 	void movedInWorld();
 	
 	
+	/**
+	 *    Called each frame.
+	 * @param movement 
+	 */
 	void updateFrame(AvatarControllerMovement& movement);
 	
+	/**
+	 *    Sets the controller object responsible for controlling the avatar.
+	 * @param avatarController 
+	 */
 	void setAvatarController(AvatarController* avatarController);
 	
+	/**
+	 *    Access for the Eris::Entity which represents the Avatar.
+	 * @return 
+	 */
 	AvatarEmberEntity* getAvatarEmberEntity();
 	
 	
@@ -102,7 +132,14 @@ public Ogre::FrameListener
 	 */
 	void setMinIntervalOfRotationChanges(Ogre::Real milliseconds);
 
+	/**
+	Emitted when an entity is added to the inventory.
+	*/
 	sigc::signal<void, EmberEntity* > EventAddedEntityToInventory;
+	
+	/**
+	Emitted when an entity is removed from the inventory.
+	*/
 	sigc::signal<void, EmberEntity* > EventRemovedEntityFromInventory;
 
 	/**
@@ -126,9 +163,25 @@ protected:
 	 * a small deviation direction during an already begun movement to the server.
 	 */
 	bool isOkayToSendRotationMovementChangeToServer();
+	
+	/**
+	Time in milliseconds since we last sent an movement update to the server.
+	*/
 	Ogre::Real mTimeSinceLastServerMessage;
+	
+	/**
+	In milliseconds, the minimum time we must wait between sending updates to the server. Set this higher to avoid spamming the server.
+	*/
 	Ogre::Real mMinIntervalOfRotationChanges;
+	
+	/**
+	In degrees the minimum amount of degrees we can yaw the camera until we need to send an update to the server of our new position.
+	*/
 	Ogre::Real mThresholdDegreesOfYawForAvatarRotation;
+	
+	/**
+	In degrees the accumulated yaw movement since we last sent an update to the server. If this exceeds mThresholdDegreesOfYawForAvatarRotation we need to send an update to the server.
+	*/
 	float mAccumulatedHorizontalRotation;
 	
 	/**
@@ -178,7 +231,6 @@ protected:
 	 */
 	void createAvatarCameras(Ogre::SceneNode* avatarSceneNode);
 
-	
 	/**
 	 * How many meters per second the avatar can walk.
 	 * This should be set through some kind of rule checking with the server
@@ -193,13 +245,12 @@ protected:
 	 */
 	float mRunSpeed;
 	
-	
-	/*
-	 * The main avatar entity
+	/**
+	 * The main avatar model
 	 */
 	Model::Model* mAvatarModel;
 	
-	/* 
+	/** 
 	 * The main avatar scenenode
 	 */
 	Ogre::SceneNode* mAvatarNode;
@@ -212,6 +263,9 @@ protected:
 	*/
 	Ogre::SceneNode* mAvatarModelNode;
 
+	/**
+	The Eris::Entity which represents the Avatar.
+	*/
 	AvatarEmberEntity* mErisAvatarEntity;
 
 	/**
@@ -221,9 +275,19 @@ protected:
 	AvatarMovementState mMovementStateAtBeginningOfMovement; //this is perhaps not needed
 	AvatarMovementState mMovementStateAtLastServerMessage;
 
+	/**
+	The instance responsible for listening for movement updates and sending those to the server.
+	*/
 	AvatarController* mAvatarController;
 
+	/**
+	Keep a temporary list of entities that needs to be added to the inventory.
+	*/
 	std::set<Eris::Entity*> mEntitiesToBeAddedToInventory;
+	
+	/**
+	Keep a temporary list of entities that needs to be removed from the inventory.
+	*/
 	std::set<Eris::Entity*> mEntitiesToBeRemovedFromInventory;
 	
 	
@@ -233,6 +297,12 @@ protected:
 	 * @param key 
 	 */
 	void ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key);
+	
+	/**
+	 * Listen for location changes, since after a location change we need to honour the onMoved updates even if we're in movement mode.
+	 * @param entity 
+	 */
+	void avatar_LocationChanged(Eris::Entity* entity);
 
 	/**
 	*	updates values from the configuration
@@ -243,6 +313,11 @@ protected:
 	True if the current user have admin rights, i.e. is a "creator".
 	*/
 	bool mIsAdmin;
+	
+	/**
+	If set to true, the avatar has just changed location, so the next onMoved operation will contain the new orientation and position information for the new location.
+	*/
+	bool mHasChangedLocation;
 
 	
 }; //End of class declaration

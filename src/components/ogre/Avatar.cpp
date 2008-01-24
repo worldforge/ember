@@ -52,7 +52,7 @@ namespace EmberOgre {
 
 
 Avatar::Avatar()  
-: mErisAvatarEntity(0)
+: mErisAvatarEntity(0), mHasChangedLocation(false)
 {
 	mTimeSinceLastServerMessage = 0;
 	setMinIntervalOfRotationChanges(1000); //milliseconds
@@ -322,13 +322,17 @@ void Avatar::setAvatarController(AvatarController* avatarController)
 
 void Avatar::movedInWorld()
 {
-	if (!mCurrentMovementState.isMoving) 
+	///only snap the avatar to the postiion and orientation sent from the server if we're not moving or if we're not recently changed location
+	///The main reason when moving is that we don't want to have the avatar snapping back in the case of lag
+	///However, if we've just recently changed location, we need to also update the orientation to work with the new location.
+	if (!mCurrentMovementState.isMoving || mHasChangedLocation) 
 	{
 		mAvatarNode->setPosition(Atlas2Ogre(mErisAvatarEntity->getPosition()));
 		const WFMath::Quaternion& orient = mErisAvatarEntity->getOrientation();
 		mAvatarNode->setOrientation(Atlas2Ogre(orient));
 		///we must set this, else ember will think that we've rotated the avatar ourselves and try to send an update to the server
 		mMovementStateAtLastServerMessage.orientation = mAvatarNode->getOrientation();
+		mHasChangedLocation = false;
 	}
 
 /*
@@ -340,6 +344,12 @@ void Avatar::movedInWorld()
 		mySoundService->playAvatarSound();
 	}
 */
+}
+
+void Avatar::avatar_LocationChanged(Eris::Entity* entity)
+{
+	///if we've changed location, we need to update the orientation. This is done on the next onMoved event, which is why we must honour the updated values on next onMoved event, even though we might be moving.
+	mHasChangedLocation = true;
 }
 
 
@@ -375,6 +385,8 @@ void Avatar::createdAvatarEmberEntity(AvatarEmberEntity *emberEntity)
 		
 	EmberOgre::getSingleton().getSceneManager()->destroySceneNode(oldAvatar->getName());
 	Input::getSingleton().setMovementModeEnabled(true);
+	
+	mErisAvatarEntity->LocationChanged.connect(sigc::mem_fun(*this, &Avatar::avatar_LocationChanged));
 
 }
 
