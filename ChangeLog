@@ -1,5 +1,25 @@
 2008-01-24 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* src/components/ogre/scripting/bindings/lua/AvatarController.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
+
+2008-01-24 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityPicker.layout, src/components/ogre/widgets/EntityPicker.lua: when logged in as admin, show a teleport option
+
+2008-01-24 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/AvatarController.cpp, src/components/ogre/AvatarController.h: added a teleport method. This is only useable for admins.
+
+2008-01-24 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberEntity.cpp: handle emotes better and also cleaned up some other on* methods
+
+2008-01-24 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/services/bindings/lua/ServerService.pkg, src/services/bindings/lua/lua_EmberServices.cpp, src/services/server/ConnectedAdapter.cpp, src/services/server/ConnectedAdapter.h, src/services/server/IServerAdapter.h, src/services/server/NonConnectedAdapter.cpp, src/services/server/NonConnectedAdapter.h, src/services/server/ServerService.cpp, src/services/server/ServerService.h: added support for emotes (such as "/me jumps up and down")
+
+2008-01-24 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* src/components/ogre/Avatar.cpp, src/components/ogre/Avatar.h: fixed a problem when changing location (such as entering and exiting buildings) while moving
 
 2008-01-24 Erik Hjortsberg  <erik.hjortsberg@iteam.se>

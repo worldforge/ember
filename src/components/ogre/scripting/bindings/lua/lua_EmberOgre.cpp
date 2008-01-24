@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Mon Nov 19 22:35:29 2007.
+** Generated automatically by tolua++-1.0.92 on Thu Jan 24 21:43:18 2008.
 */
 
 #ifndef __cplusplus
@@ -2857,6 +2857,41 @@ static int tolua_EmberOgre_EmberOgre_AvatarController_moveToPoint00(lua_State* t
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'moveToPoint'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: teleportTo of class  EmberOgre::AvatarController */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_AvatarController_teleportTo00
+static int tolua_EmberOgre_EmberOgre_AvatarController_teleportTo00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::AvatarController",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::Vector3",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"EmberOgre::EmberEntity",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::AvatarController* self = (EmberOgre::AvatarController*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Vector3* point = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+  EmberOgre::EmberEntity* locationEntity = ((EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'teleportTo'",NULL);
+#endif
+  {
+   self->teleportTo(*point,locationEntity);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'teleportTo'.",&tolua_err);
  return 0;
 #endif
 }
@@ -19501,6 +19536,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"attachCamera",tolua_EmberOgre_EmberOgre_AvatarController_attachCamera00);
     tolua_function(tolua_S,"getCurrentMovement",tolua_EmberOgre_EmberOgre_AvatarController_getCurrentMovement00);
     tolua_function(tolua_S,"moveToPoint",tolua_EmberOgre_EmberOgre_AvatarController_moveToPoint00);
+    tolua_function(tolua_S,"teleportTo",tolua_EmberOgre_EmberOgre_AvatarController_teleportTo00);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"EmberOgre",0);
