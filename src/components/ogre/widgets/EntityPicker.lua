@@ -34,6 +34,8 @@ function EntityPicker.buildWidget()
 
 	EntityPicker.buttons.moveto = EntityPicker.widget:getWindow("MoveToButton")
 	EntityPicker.buttons.moveto:subscribeEvent("MouseButtonUp", "EntityPicker.buttonMoveto_Click")
+	EntityPicker.buttons.teleportto = EntityPicker.widget:getWindow("TeleportToButton")
+	EntityPicker.buttons.teleportto:subscribeEvent("MouseButtonUp", "EntityPicker.buttonTeleportto_Click")
 	EntityPicker.buttons.touch = EntityPicker.widget:getWindow("TouchButton")
 	EntityPicker.buttons.touch:subscribeEvent("MouseButtonUp", "EntityPicker.buttonTouch_Click")
 	EntityPicker.buttons.take = EntityPicker.widget:getWindow("TakeButton")
@@ -75,11 +77,13 @@ end
 function EntityPicker.showMenu(position)
 	EntityPicker.widget:show()
 	
-	--disble the edit button if we're not admin
+	--disble the edit and teleport buttons if we're not admin
 	if emberOgre:getAvatar():isAdmin() then
 		EntityPicker.buttons.edit:setVisible(true)
+		EntityPicker.buttons.teleportto:setVisible(true)
 	else
 		EntityPicker.buttons.edit:setVisible(false)
+		EntityPicker.buttons.teleportto:setVisible(false)
 	end	
 	
 	position.x = position.x - EntityPicker.widget:getMainWindow():getWidth():asAbsolute(0) * 0.5
@@ -164,6 +168,10 @@ function EntityPicker.buttonMoveto_Click(args)
 	EntityPickerWidget_removeMenu()
 end
 
+function EntityPicker.buttonTeleportto_Click(args)
+	emberOgre:getAvatarController():teleportTo(EntityPicker.position, EntityPicker.entity)
+	EntityPickerWidget_removeMenu()
+end
 
 function EntityPicker.buttonTouch_Click(args)
 	--print("Type: ", tolua.type(EntityPicker.position))

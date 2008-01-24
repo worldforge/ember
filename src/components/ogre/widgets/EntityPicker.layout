@@ -21,6 +21,12 @@
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='Tooltip' Value='Move to this point.'/>
 			</Window>
+			<Window Type='EmberLook/Button' Name='TeleportToButton'>
+				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
+				<Property Name='Text' Value='Teleport to'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Tooltip' Value='Teleport to this point.'/>
+			</Window>
 			<Window Type='EmberLook/Button' Name='TouchButton'>
 				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
 				<Property Name='Text' Value='Touch'/>
