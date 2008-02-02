@@ -77,6 +77,8 @@ TerrainPage::TerrainPage(TerrainPosition position, const std::map<const Mercator
 , mTerrainSurface(new TerrainPageSurface(*this))
 , mShadow(*this)
 , mShadowTechnique(0)
+, mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), (mPosition.y() - 1) * (getPageSize() - 1)), WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), (mPosition.y()) * (getPageSize() - 1))
+)
 {
 
 	S_LOG_VERBOSE("Creating TerrainPage at position " << position.x() << ":" << position.y());
@@ -474,15 +476,12 @@ void TerrainPage::createHeightData(Ogre::Real* heightData)
 
 void TerrainPage::showFoliage()
 {
-//  	if (mPosition.x() == 0 && mPosition.y() == 0) {
 	if (!mFoliageArea) {
 		prepareFoliage();
 	}
 	if (mFoliageArea) {
 		mFoliageArea->setVisible(true);
 	}
-//  	}
-	
 }
 
 void TerrainPage::hideFoliage()
@@ -512,94 +511,109 @@ void TerrainPage::prepareFoliage()
 		S_LOG_FAILURE("Could not create foliage since there's no grass shader registered.");
 		return;
 	}
+	std::stringstream ss;
+	ss << "Extents of page at position " << mPosition << ": " << mExtent;
+	S_LOG_VERBOSE(ss.str());
 	if (!mFoliageArea) {
-		mFoliageArea = Foliage::getSingleton().createArea();
+		mFoliageArea = Foliage::getSingleton().createArea(mExtent);
 	} else {
 		return;
 	}
-	double grassSpacing = Foliage::getSingleton().getGrassSpacing();
 	
-	//for each 1 m^2, how big chance is there of grass? [0,1.0]
-	Ogre::Real grassChanceThreshold = 1.0 / grassSpacing; 
-	
-	int pageSizeInVertices = getPageSize();
-	int pageSizeInMeters = pageSizeInVertices - 1;
-	
-	///since Ogre uses a different coord system than WF, we have to do some conversions here
-	TerrainPosition worldUnitsStartOfPage(mPosition);
-	///start in one of the corners...
-	worldUnitsStartOfPage[0] = (mPosition[0] * (pageSizeInMeters));
-	worldUnitsStartOfPage[1] = (mPosition[1] * (pageSizeInMeters));
-	
-	
-	//for now, just check with the grass shader
-	for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
-		Mercator::Segment* segment = I->segment;
-		Mercator::Surface* surface = grassShader->getSurfaceForSegment(segment);
-		if (!surface || !surface->isValid()) {
-			//we could not find any grass surface
-			continue;
-		}
-		int segmentStartX = static_cast<int>(worldUnitsStartOfPage.x() + (I->pos.x() * 64));
-		int segmentStartY = static_cast<int>(worldUnitsStartOfPage.y() + (I->pos.y() * 64) - pageSizeInMeters);
-		std::stringstream ss;
-/*		ss << "Adding grass to the area between x: " << segmentStartX << " to  " <<  (segmentStartX + 64) << " and y: " << segmentStartY << " to " << (segmentStartY + 64);
-		S_LOG_VERBOSE(ss.str());*/
-		for (int x = 0; x < 64; ++x) {
-			for (int y = 0; y < 64; ++y) {
-				//some random offset
-				Ogre::Real x_offset = Ogre::Math::RangeRandom(-0.5, 0.5);
-				Ogre::Real y_offset = Ogre::Math::RangeRandom(-0.5, 0.5);
-				TerrainPosition position(segmentStartX + x + x_offset, segmentStartY + y + y_offset);
-				float height = mGenerator->getHeight(position);
-				
-				if (height > 0) {
-					bool blocked = false;
-					for (TerrainPageSurface::TerrainPageSurfaceLayerStore::const_iterator J = mTerrainSurface->getLayers().begin(); J != mTerrainSurface->getLayers().end(); ++J) {
-						if (J->second->getShader() != grassShader->getShader()  && J->first) {
-							Mercator::Surface* blockingSurface = J->second->getSurfaceForSegment(segment);
-							if (blockingSurface && blockingSurface->isValid()) {
-								unsigned char blockingAmount = ((*blockingSurface)(x, y, 0));
-								if (blockingAmount > 10) {
-									blocked = true;
-									break;
-								}
-							}
-						}
-					}
-					//blocked = false;
-					if (!blocked) {
-				
-						//first check if this is a good spot for grass (the more "green", the greater chance of grass
-						//then check with grassChanceThreshold if we should do grass
-						unsigned char cover = (*surface)(x, y, 0);
-						unsigned char coverChance = static_cast<unsigned char>( Ogre::Math::RangeRandom(0, 260));
- 						if (cover > coverChance) {
-							Ogre::Real grassChance = Ogre::Math::UnitRandom();
-							if (grassChanceThreshold > grassChance) {
- 								const Ogre::Vector3 scale(1, Ogre::Math::RangeRandom(0.5, 0.8), 1);
-
-//								std::string type("placeholder");
-								std::string type("bittergrass");
-								Ogre::Vector3 ogrePosition = Atlas2Ogre(position);
-								ogrePosition.y = height;
-								if (Ogre::Math::UnitRandom() > 0.95) {
-									type = "heartblood";
-								}
-								if (height > 1000 || height < -1000) {
-									S_LOG_WARNING("Incorrect height (" << height << ") set for foliage position x: " << position.x() << " y: " << position.y());
-								} else {
-									mFoliageArea->placeGrass(type, ogrePosition, scale);
-								}
-							}
-						}
-					}
-				}
-			}
+	TerrainPageSurfaceLayer* grassLayer(0);
+	for (TerrainPageSurface::TerrainPageSurfaceLayerStore::const_iterator I = mTerrainSurface->getLayers().begin(); I != mTerrainSurface->getLayers().end(); ++I) {
+		if (I->second->getSurfaceIndex() == mGenerator->getFoliageShader()->getTerrainIndex()) {
+			grassLayer = I->second;
+			break;
 		}
 	}
-	mFoliageArea->build();
-	mFoliageArea->setVisible(false);
+	
+	if (grassLayer) {
+		mFoliageArea->init(mExtent, static_cast<Ogre::TexturePtr>(Ogre::TextureManager::getSingleton().getByName(grassLayer->getCoverageTextureName())), mShadow.getTexture());
+	}
+// 	double grassSpacing = Foliage::getSingleton().getGrassSpacing();
+	
+// 	//for each 1 m^2, how big chance is there of grass? [0,1.0]
+// 	Ogre::Real grassChanceThreshold = 1.0 / grassSpacing; 
+// 	
+// 	int pageSizeInVertices = getPageSize();
+// 	int pageSizeInMeters = pageSizeInVertices - 1;
+// 	
+// 	///since Ogre uses a different coord system than WF, we have to do some conversions here
+// 	TerrainPosition worldUnitsStartOfPage(mPosition);
+// 	///start in one of the corners...
+// 	worldUnitsStartOfPage[0] = (mPosition[0] * (pageSizeInMeters));
+// 	worldUnitsStartOfPage[1] = (mPosition[1] * (pageSizeInMeters));
+// 	
+// 	
+// 	//for now, just check with the grass shader
+// 	for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
+// 		Mercator::Segment* segment = I->segment;
+// 		Mercator::Surface* surface = grassShader->getSurfaceForSegment(segment);
+// 		if (!surface || !surface->isValid()) {
+// 			//we could not find any grass surface
+// 			continue;
+// 		}
+// 		int segmentStartX = static_cast<int>(worldUnitsStartOfPage.x() + (I->pos.x() * 64));
+// 		int segmentStartY = static_cast<int>(worldUnitsStartOfPage.y() + (I->pos.y() * 64) - pageSizeInMeters);
+// 		std::stringstream ss;
+// /*		ss << "Adding grass to the area between x: " << segmentStartX << " to  " <<  (segmentStartX + 64) << " and y: " << segmentStartY << " to " << (segmentStartY + 64);
+// 		S_LOG_VERBOSE(ss.str());*/
+// 		for (int x = 0; x < 64; ++x) {
+// 			for (int y = 0; y < 64; ++y) {
+// 				//some random offset
+// 				Ogre::Real x_offset = Ogre::Math::RangeRandom(-0.5, 0.5);
+// 				Ogre::Real y_offset = Ogre::Math::RangeRandom(-0.5, 0.5);
+// 				TerrainPosition position(segmentStartX + x + x_offset, segmentStartY + y + y_offset);
+// 				float height = mGenerator->getHeight(position);
+// 				
+// 				if (height > 0) {
+// 					bool blocked = false;
+// 					for (TerrainPageSurface::TerrainPageSurfaceLayerStore::const_iterator J = mTerrainSurface->getLayers().begin(); J != mTerrainSurface->getLayers().end(); ++J) {
+// 						if (J->second->getShader() != grassShader->getShader()  && J->first) {
+// 							Mercator::Surface* blockingSurface = J->second->getSurfaceForSegment(segment);
+// 							if (blockingSurface && blockingSurface->isValid()) {
+// 								unsigned char blockingAmount = ((*blockingSurface)(x, y, 0));
+// 								if (blockingAmount > 10) {
+// 									blocked = true;
+// 									break;
+// 								}
+// 							}
+// 						}
+// 					}
+// 					//blocked = false;
+// 					if (!blocked) {
+// 				
+// 						//first check if this is a good spot for grass (the more "green", the greater chance of grass
+// 						//then check with grassChanceThreshold if we should do grass
+// 						unsigned char cover = (*surface)(x, y, 0);
+// 						unsigned char coverChance = static_cast<unsigned char>( Ogre::Math::RangeRandom(0, 260));
+//  						if (cover > coverChance) {
+// 							Ogre::Real grassChance = Ogre::Math::UnitRandom();
+// 							if (grassChanceThreshold > grassChance) {
+//  								const Ogre::Vector3 scale(1, Ogre::Math::RangeRandom(0.5, 0.8), 1);
+// 
+// //								std::string type("placeholder");
+// 								std::string type("bittergrass");
+// 								Ogre::Vector3 ogrePosition = Atlas2Ogre(position);
+// 								ogrePosition.y = height;
+// 								if (Ogre::Math::UnitRandom() > 0.95) {
+// 									type = "heartblood";
+// 								}
+// 								if (height > 1000 || height < -1000) {
+// 									S_LOG_WARNING("Incorrect height (" << height << ") set for foliage position x: " << position.x() << " y: " << position.y());
+// 								} else {
+// 									mFoliageArea->placeGrass(type, ogrePosition, scale);
+// 								}
+// 							}
+// 						}
+// 					}
+// 				}
+// 			}
+// 		}
+// 	}
+// 	mFoliageArea->build();
+// 	mFoliageArea->setVisible(false);
 	return;
 	
 }

@@ -188,21 +188,17 @@ public:
 	inline int getAlphaTextureSize() const;
 	
 	SegmentVector& getValidSegments();
+	
+	/**
+	 *    Gets the extent of this page in meters, in worldforge space.
+	 * @return 
+	 */
+	const WFMath::AxisBox<2> getExtent() const;
 
 private:
 
-
-// 	void addShaderToSimpleTechnique(Ogre::Technique* technique, TerrainShader* shader);
-
-// 	typedef std::map<TerrainShader*, Ogre::TexturePtr> ShaderTextureMap;
-// 	ShaderTextureMap mShaderTextures;
-	
 	SegmentVector mValidSegments;
 
-	/**
-	a list of the shaders to be used on the page
-	*/
-// 	std::list<TerrainShader*> mUsedShaders;
 	
 	::EmberOgre::Environment::FoliageArea* mFoliageArea;
 
@@ -218,7 +214,6 @@ private:
 	Internal position
 	*/
 	TerrainPosition mPosition;
-// 	Ogre::MaterialPtr mMaterial;
 	
 	
 	/**
@@ -230,63 +225,7 @@ private:
 	Mercator::Segment* getSegment(int x, int y) const;
 	
 
-	/**
-	Not really used
-	*/
-// 	std::string mMaterialName;
 
-	/**
-	 * We can't use the alphamaps generated from WF. Thus we need to convert them first.
-	 * Which is done by this method.
-	 * 
-	 * @param dataStart 
-	 * @param factor 
-	 * @return 
-	 */
-// 	Ogre::MemoryDataStreamPtr convertWFAlphaTerrainToOgreFormat(Ogre::uchar* dataStart, short factor);
-	
-	
-	/**
-	 * Method used when the mapping between mercator segments and ogre pages is 1:1
-	 * @return 
-	 */
-// 	void generateTerrainTechniqueSimple(Ogre::Technique* technique);
-	
-	
-	/**
-	 *    generates the techniques for debug material
-	 */
-// 	void generateTerrainTechniqueDebug();
-	/**
-	 * Method used when the mapping between mercator segments and ogre pages isn't 1:1
-	 * @return 
-	 */
-// 	void generateTerrainTechniqueComplex(Ogre::Technique* technique);
-	
-// 	void generateTerrainTechniqueComplexAtlas(Ogre::Technique* technique);
-	
-	/**
-	EmberOgre::Shaders used for this page
-	*/
-// 	ShaderMap mShaderMap;
-	
-	/**
-	 *    Creates an alpha texture for the supplied surface.
-	 * @param name name of the new texture
-	 * @param surface the surface used
-	 * @return 
-	 */
-// 	Ogre::TexturePtr createAlphaTexture(Ogre::String name, Mercator::Surface* surface);
-	
-// 	inline const Ogre::TerrainOptions& getTerrainOptions() const;
-	
-	/**
-	 * Prints the supplied image (as a dataChunk) to a image file.
-	 */
-// 	void printTextureToImage(Ogre::MemoryDataStreamPtr dataChunk, const Ogre::String name, Ogre::PixelFormat pixelFormat, int width, int height);
-
-	
-// 	const unsigned int mBytesPerPixel;
 	
 	/**
 	* How much to scale the alpha map. This is done to avoid pixelated terrain (a blur filter is applied).
@@ -294,12 +233,15 @@ private:
 	*/
 	unsigned int getAlphaMapScale() const;
 
-// 	void fillAlphaLayer(unsigned char* imagePtr, unsigned char* wfImagePtr, unsigned int channel, int startX, int startY, unsigned short numberOfChannels);
-
 	std::auto_ptr<TerrainPageSurface> mTerrainSurface;
 	TerrainPageShadow mShadow;
 	ITerrainPageShadowTechnique* mShadowTechnique;
 	void setupShadowTechnique();
+	
+	/**
+	The extent of this page in meters, in WF space.
+	*/
+	const WFMath::AxisBox<2> mExtent;
 // 	void updateShadow();
 // 	
 // 	void createShadow();
