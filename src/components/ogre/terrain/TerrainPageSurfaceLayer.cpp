@@ -47,7 +47,7 @@ TerrainPageSurfaceLayer::TerrainPageSurfaceLayer(TerrainPageSurface& terrainPage
 	splatTextureNameSS << "terrain_" << terrainPageSurface.getWFPosition().x() << "_" << terrainPageSurface.getWFPosition().y() << "_" << surfaceIndex;
 	const Ogre::String splatTextureName(splatTextureNameSS.str());
 	
-	mTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(splatTextureName, "General", Ogre::TEX_TYPE_2D, getPixelWidth(), getPixelWidth(), 1, Ogre::PF_A8);
+	mTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(splatTextureName, "General", Ogre::TEX_TYPE_2D, getPixelWidth(), getPixelWidth(), 1, Ogre::PF_L8);
 
 }
 
@@ -133,7 +133,7 @@ void TerrainPageSurfaceLayer::updateCoverageImage()
 		}
 	}
 		
-	mCoverageImage->loadRawData(mCoverageDataStreamPtr, getPixelWidth(), getPixelWidth(), Ogre::PF_A8);
+	mCoverageImage->loadRawData(mCoverageDataStreamPtr, getPixelWidth(), getPixelWidth(), Ogre::PF_L8);
 	mTexture->loadImage(*mCoverageImage);
 	
 	///if it's alreay loaded we need to blit directly to the hardware buffer to make sure it's updated
