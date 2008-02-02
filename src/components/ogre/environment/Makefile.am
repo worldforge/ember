@@ -1,14 +1,14 @@
-SUBDIRS = meshtree caelum
+SUBDIRS = caelum meshtree pagedgeometry
 
 INCLUDES = -I$(top_srcdir)/src -I$(top_builddir)/src
 
 noinst_LTLIBRARIES = libEnvironment.la
 
-libEnvironment_la_SOURCES = Foliage.cpp Sun.cpp Water.cpp Tree.cpp \
-			FoliageArea.cpp LensFlare.cpp CaelumSky.cpp CaelumSun.cpp Environment.cpp \
-	CaelumEnvironment.cpp
+libEnvironment_la_SOURCES = CaelumEnvironment.cpp CaelumSky.cpp CaelumSun.cpp \
+	Environment.cpp Foliage.cpp FoliageArea.cpp  LensFlare.cpp Sun.cpp \
+	Tree.cpp Water.cpp
 
-libEnvironment_la_LIBADD = meshtree/libMeshTree.la caelum/libCaelum.la
+libEnvironment_la_LIBADD = meshtree/libMeshTree.la caelum/libCaelum.la pagedgeometry/libpagedgeometry.la
 
-noinst_HEADERS = LensFlare.h Foliage.h Sun.h Water.h Tree.h Water.h \
-			FoliageArea.h CaelumSky.h CaelumSun.h Environment.h CaelumEnvironment.h
+noinst_HEADERS = CaelumEnvironment.h CaelumSky.h CaelumSun.h Environment.h \
+	Foliage.h FoliageArea.h  LensFlare.h Sun.h Tree.h Water.h

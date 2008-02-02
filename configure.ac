@@ -471,6 +471,7 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/widgets/icons/Makefile
 		 src/components/ogre/environment/meshtree/Makefile
 		 src/components/ogre/environment/caelum/Makefile
+		 src/components/ogre/environment/pagedgeometry/Makefile
 		 src/components/ogre/environment/Makefile
 		 src/components/ogre/model/Makefile
 		 src/components/ogre/model/mapping/Makefile
