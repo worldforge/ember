@@ -1,3 +1,31 @@
+2008-02-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/WorldEmberEntity.cpp: load the grass at page init
+
+2008-02-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/Foliage.cpp, src/components/ogre/environment/Foliage.h, src/components/ogre/environment/FoliageArea.cpp, src/components/ogre/environment/FoliageArea.h: use the paged geometry engine
+
+2008-02-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainPage.cpp, src/components/ogre/terrain/TerrainPage.h: added an extent member variable which shows the extent of the page, also use the new foliage system, which means that we're temporarily disabling some of the grass placement code. We'll renable it again as we extend the paged geometry code.
+
+2008-02-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainPageSurfaceLayer.cpp: don't specify the texture as an alpha texture since it really isn't, and the paged geometry engine expects a colour texture
+
+2008-02-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberEntity.cpp: removed hacks to get the eris bbox correctly rotated now that we've fixed the underlying bug in MathConverter.h
+
+2008-02-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/MathConverter.h: fixed erronous conversion of Axisboxes and added convert methods for 2d axis boxes
+
+2008-02-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/Makefile.am, src/components/ogre/environment/pagedgeometry/GettingStarted.txt, src/components/ogre/environment/pagedgeometry/Makefile.am, src/components/ogre/environment/pagedgeometry/include/BatchPage.h, src/components/ogre/environment/pagedgeometry/include/BatchedGeometry.h, src/components/ogre/environment/pagedgeometry/include/GrassLoader.h, src/components/ogre/environment/pagedgeometry/include/ImpostorPage.h, src/components/ogre/environment/pagedgeometry/include/PagedGeometry.h, src/components/ogre/environment/pagedgeometry/include/PropertyMaps.h, src/components/ogre/environment/pagedgeometry/include/StaticBillboardSet.h, src/components/ogre/environment/pagedgeometry/include/TreeLoader2D.h, src/components/ogre/environment/pagedgeometry/include/TreeLoader3D.h, src/components/ogre/environment/pagedgeometry/source/BatchPage.cpp, src/components/ogre/environment/pagedgeometry/source/BatchedGeometry.cpp, src/components/ogre/environment/pagedgeometry/source/GrassLoader.cpp, src/components/ogre/environment/pagedgeometry/source/ImpostorPage.cpp, src/components/ogre/environment/pagedgeometry/source/PagedGeometry.cpp, src/components/ogre/environment/pagedgeometry/source/PropertyMaps.cpp, src/components/ogre/environment/pagedgeometry/source/StaticBillboardSet.cpp, src/components/ogre/environment/pagedgeometry/source/TreeLoader2D.cpp, src/components/ogre/environment/pagedgeometry/source/TreeLoader3D.cpp, configure.ac: added paging geometry enging, to be used for grass and trees and other parts of the the environment which will benefit from imposters and batching
+
 2008-01-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/SimpleRenderContext.cpp, src/components/ogre/SimpleRenderContext.h: provide a ManualResourceLoader which makes sure to rerender the texture when the it's being reloaded (such as when switching between full screen and desktop and back on Windows)

@@ -105,6 +105,7 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 	mTerrainGenerator->prepareAllSegments();
 	//mTerrainGenerator->prepareSegments(0,0,1,true);
 	
+	mFoliage->createGrass();
 	
 	
 }
