@@ -20,17 +20,19 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef DIMEOGREFOLIAGE_H
-#define DIMEOGREFOLIAGE_H
+#ifndef EMBEROGREFOLIAGE_H
+#define EMBEROGREFOLIAGE_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "framework/Singleton.h"
+#include <wfmath/axisbox.h>
 
 namespace EmberOgre {
 
 namespace Environment {
 
 class FoliageArea;
+class FoliageImpl;
 
 //class GroundCover;
 /**
@@ -51,7 +53,7 @@ public:
 	 *    Creates a new Foliage area, ready to be populated
 	 * @return 
 	 */
-	FoliageArea* createArea();	
+	FoliageArea* createArea(const WFMath::AxisBox<2>& extent);
 	
 	
 	/**
@@ -65,6 +67,8 @@ public:
 	Ogre::Entity* getEntity(const std::string& name);
 	
 	inline double getGrassSpacing() const {return mGrassSpacing;}
+	
+	void createGrass();
 
 protected:
 	EntityStore mEntities;
@@ -77,6 +81,8 @@ protected:
 
 	double mGrassSpacing;	
 	Ogre::SceneManager* mSceneMgr;
+	
+	FoliageImpl* mImpl;
 
 };
 

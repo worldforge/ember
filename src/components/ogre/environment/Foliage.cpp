@@ -26,6 +26,7 @@
 
 #include "Foliage.h"
 #include "FoliageArea.h"
+// #include "FoliageImpl.h"
 
 //#include "GroundCover.h"
 #include "components/ogre/EmberOgre.h"
@@ -49,46 +50,49 @@ Foliage::Foliage( Ogre::SceneManager* sceneMgr)
 :  mSceneMgr(sceneMgr)
 {
 	S_LOG_INFO("Setting up foliage system.");
-	createGrassMesh();
-
-	Ogre::Entity* e = mSceneMgr->createEntity("1", GRASS_MESH_NAME);
-	mEntities["grass"] = e;
-
-	Ogre::Entity* entity;
-	 
-	try {
-		entity = mSceneMgr->createEntity("environment/field/placeholder", "placeholder.mesh");
-		mEntities["placeholder"] = entity;
-	} 
-	catch (const Ogre::Exception& e) {}
-	try {
-		entity = mSceneMgr->createEntity("environment/field/heartblood", "environment/field/small_plant/heartblood/normal.mesh");
-		mEntities["heartblood"] = entity;
-	} 
-	catch (const Ogre::Exception& e) {}
-	try {
-		entity = mSceneMgr->createEntity("environment/field/teardrops", "environment/field/small_plant/teardrops/normal.mesh");
-		mEntities["teardrops"] = entity;
-	} 
-	catch (const Ogre::Exception& e) {}
-	try {
-		entity = mSceneMgr->createEntity("environment/field/thingrass", "environment/field/small_plant/thingrass/normal.mesh");
-		mEntities["thingrass"] = entity;
-	} 
-	catch (const Ogre::Exception& e) {}
-	try {
-		entity = mSceneMgr->createEntity("environment/field/bittergrass", "3d_objects/plants/tussock/models/small_plant/simplegrass.mesh");
-		mEntities["bittergrass"] = entity;
-	} 
-	catch (const Ogre::Exception& e) {}
 	
+// 	mImpl = new FoliageImpl();
 	
-	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
-	//mSubmeshSize = (int)configSrv->getValue("foliage", "submeshsize");
-	mGrassSpacing = (double)configSrv->getValue("foliage", "spacing_grass");
-// 	double bushSpacing = (double)configSrv->getValue("foliage", "spacing_bushes");
-// 	double cullDistance = (double)configSrv->getValue("foliage", "cullingdistance");
-
+// 	createGrassMesh();
+// 
+// 	Ogre::Entity* e = mSceneMgr->createEntity("1", GRASS_MESH_NAME);
+// 	mEntities["grass"] = e;
+// 
+// 	Ogre::Entity* entity;
+// 	 
+// 	try {
+// 		entity = mSceneMgr->createEntity("environment/field/placeholder", "placeholder.mesh");
+// 		mEntities["placeholder"] = entity;
+// 	} 
+// 	catch (const Ogre::Exception& e) {}
+// 	try {
+// 		entity = mSceneMgr->createEntity("environment/field/heartblood", "environment/field/small_plant/heartblood/normal.mesh");
+// 		mEntities["heartblood"] = entity;
+// 	} 
+// 	catch (const Ogre::Exception& e) {}
+// 	try {
+// 		entity = mSceneMgr->createEntity("environment/field/teardrops", "environment/field/small_plant/teardrops/normal.mesh");
+// 		mEntities["teardrops"] = entity;
+// 	} 
+// 	catch (const Ogre::Exception& e) {}
+// 	try {
+// 		entity = mSceneMgr->createEntity("environment/field/thingrass", "environment/field/small_plant/thingrass/normal.mesh");
+// 		mEntities["thingrass"] = entity;
+// 	} 
+// 	catch (const Ogre::Exception& e) {}
+// 	try {
+// 		entity = mSceneMgr->createEntity("environment/field/bittergrass", "3d_objects/plants/tussock/models/small_plant/simplegrass.mesh");
+// 		mEntities["bittergrass"] = entity;
+// 	} 
+// 	catch (const Ogre::Exception& e) {}
+// 	
+// 	
+// 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
+// 	//mSubmeshSize = (int)configSrv->getValue("foliage", "submeshsize");
+// 	mGrassSpacing = (double)configSrv->getValue("foliage", "spacing_grass");
+// // 	double bushSpacing = (double)configSrv->getValue("foliage", "spacing_bushes");
+// // 	double cullDistance = (double)configSrv->getValue("foliage", "cullingdistance");
+// 
 	Ogre::Root::getSingleton().addFrameListener(this);
 
 }
@@ -97,33 +101,40 @@ Foliage::Foliage( Ogre::SceneManager* sceneMgr)
 Foliage::~Foliage()
 {
 	S_LOG_INFO("Shutting down foliage system.");
-	for (FoliageAreaStore::iterator I = mFoliageAreas.begin(); I != mFoliageAreas.end(); ++I) {
-		delete *I;
-	}
 	
+// 	delete mImpl;
+	
+// 	for (FoliageAreaStore::iterator I = mFoliageAreas.begin(); I != mFoliageAreas.end(); ++I) {
+// 		delete *I;
+// 	}
+// 	
 	Ogre::Root::getSingleton().removeFrameListener(this);
-	for (EntityStore::iterator I = mEntities.begin(); I != mEntities.end(); ++I) {
-		mSceneMgr->destroyMovableObject(I->second);
-	}
+// 	for (EntityStore::iterator I = mEntities.begin(); I != mEntities.end(); ++I) {
+// 		mSceneMgr->destroyMovableObject(I->second);
+// 	}
+}
+
+
+void Foliage::createGrass()
+{
+// 	mImpl->createGrass();
 }
 
 Ogre::Entity* Foliage::getEntity(const std::string& name)
 {
-	EntityStore::iterator I = mEntities.find(name);
-	if (I != mEntities.end()) {
-		return I->second;
-	}
+// 	EntityStore::iterator I = mEntities.find(name);
+// 	if (I != mEntities.end()) {
+// 		return I->second;
+// 	}
 	return 0;
 }
 
-FoliageArea* Foliage::createArea()
+FoliageArea* Foliage::createArea(const WFMath::AxisBox<2>& extent)
 {
-	
-	FoliageArea* area = new FoliageArea();
-	mFoliageAreas.push_back(area);
 	std::stringstream ss;
 	ss << mFoliageAreas.size();
-	area->init(this, mSceneMgr, std::string("foliage_") + ss.str());
+	FoliageArea* area = new FoliageArea(*this, *mSceneMgr, std::string("foliage_") + ss.str());
+	mFoliageAreas.push_back(area);
 	return area;
 }
 
@@ -140,115 +151,116 @@ void Foliage::destroyArea(FoliageArea* area)
 
 void Foliage::createGrassMesh()
 {
-	// Each grass section is 3 planes at 60 degrees to each other
-	// Normals point straight up to simulate correct lighting
-	Ogre::MeshPtr msh = Ogre::MeshManager::getSingleton().createManual(GRASS_MESH_NAME, 
-		Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-	Ogre::SubMesh* sm = msh->createSubMesh();
-	sm->useSharedVertices = false;
-	sm->vertexData = new Ogre::VertexData();
-	sm->vertexData->vertexStart = 0;
-	sm->vertexData->vertexCount = 12;
-	Ogre::VertexDeclaration* dcl = sm->vertexData->vertexDeclaration;
-	size_t offset = 0;
-	dcl->addElement(0, offset, Ogre::VET_FLOAT3, Ogre::VES_POSITION);
-	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
-	dcl->addElement(0, offset, Ogre::VET_FLOAT3, Ogre::VES_NORMAL);
-	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
-	dcl->addElement(0, offset, Ogre::VET_FLOAT2, Ogre::VES_TEXTURE_COORDINATES);
-	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT2);
-
-	Ogre::HardwareVertexBufferSharedPtr vbuf = Ogre::HardwareBufferManager::getSingleton()
-		.createVertexBuffer(
-			offset, 12, Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
-	float* pReal = static_cast<float*>(vbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD));
-	Ogre::Vector3 baseVec(GRASS_WIDTH/2, 0, 0);
-	Ogre::Vector3 vec = baseVec;
-	Ogre::Quaternion rot;
-	rot.FromAngleAxis(Ogre::Degree(60), Ogre::Vector3::UNIT_Y);
-	int i;
-	for (i = 0; i < 3; ++i)
-	{
-		// position
-		*pReal++ = -vec.x;
-		*pReal++ = GRASS_HEIGHT;
-		*pReal++ = -vec.z;
-		// normal
-		*pReal++ = 0;
-		*pReal++ = 1;
-		*pReal++ = 0;
-		// uv
-		*pReal++ = 0;
-		*pReal++ = 0;
-
-		// position
-		*pReal++ = vec.x;
-		*pReal++ = GRASS_HEIGHT;
-		*pReal++ = vec.z;
-		// normal
-		*pReal++ = 0;
-		*pReal++ = 1;
-		*pReal++ = 0;
-		// uv
-		*pReal++ = 1;
-		*pReal++ = 0;
-
-		// position
-		*pReal++ = -vec.x;
-		*pReal++ = 0;
-		*pReal++ = -vec.z;
-		// normal
-		*pReal++ = 0;
-		*pReal++ = 1;
-		*pReal++ = 0;
-		// uv
-		*pReal++ = 0;
-		*pReal++ = 1;
-
-		// position
-		*pReal++ = vec.x;
-		*pReal++ = 0;
-		*pReal++ = vec.z;
-		// normal
-		*pReal++ = 0;
-		*pReal++ = 1;
-		*pReal++ = 0;
-		// uv
-		*pReal++ = 1;
-		*pReal++ = 1;
-
-		vec = rot * vec;
-	}
-	vbuf->unlock();
-	sm->vertexData->vertexBufferBinding->setBinding(0, vbuf);
-	sm->indexData->indexCount = 6*3;
-	sm->indexData->indexBuffer = Ogre::HardwareBufferManager::getSingleton()
-		.createIndexBuffer(Ogre::HardwareIndexBuffer::IT_16BIT, 6*3,
-			Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
-	Ogre::uint16* pI = static_cast<Ogre::uint16*>(
-		sm->indexData->indexBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD));
-	for (i = 0; i < 3; ++i)
-	{
-		int off = i*4;
-		*pI++ = 0 + off;
-		*pI++ = 3 + off;
-		*pI++ = 1 + off;
-
-		*pI++ = 0 + off;
-		*pI++ = 2 + off;
-		*pI++ = 3 + off;
-	}
-
-	sm->indexData->indexBuffer->unlock();
-
-	sm->setMaterialName(GRASS_MATERIAL);
-	msh->load();
+// 	// Each grass section is 3 planes at 60 degrees to each other
+// 	// Normals point straight up to simulate correct lighting
+// 	Ogre::MeshPtr msh = Ogre::MeshManager::getSingleton().createManual(GRASS_MESH_NAME, 
+// 		Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+// 	Ogre::SubMesh* sm = msh->createSubMesh();
+// 	sm->useSharedVertices = false;
+// 	sm->vertexData = new Ogre::VertexData();
+// 	sm->vertexData->vertexStart = 0;
+// 	sm->vertexData->vertexCount = 12;
+// 	Ogre::VertexDeclaration* dcl = sm->vertexData->vertexDeclaration;
+// 	size_t offset = 0;
+// 	dcl->addElement(0, offset, Ogre::VET_FLOAT3, Ogre::VES_POSITION);
+// 	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
+// 	dcl->addElement(0, offset, Ogre::VET_FLOAT3, Ogre::VES_NORMAL);
+// 	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
+// 	dcl->addElement(0, offset, Ogre::VET_FLOAT2, Ogre::VES_TEXTURE_COORDINATES);
+// 	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT2);
+// 
+// 	Ogre::HardwareVertexBufferSharedPtr vbuf = Ogre::HardwareBufferManager::getSingleton()
+// 		.createVertexBuffer(
+// 			offset, 12, Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
+// 	float* pReal = static_cast<float*>(vbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD));
+// 	Ogre::Vector3 baseVec(GRASS_WIDTH/2, 0, 0);
+// 	Ogre::Vector3 vec = baseVec;
+// 	Ogre::Quaternion rot;
+// 	rot.FromAngleAxis(Ogre::Degree(60), Ogre::Vector3::UNIT_Y);
+// 	int i;
+// 	for (i = 0; i < 3; ++i)
+// 	{
+// 		// position
+// 		*pReal++ = -vec.x;
+// 		*pReal++ = GRASS_HEIGHT;
+// 		*pReal++ = -vec.z;
+// 		// normal
+// 		*pReal++ = 0;
+// 		*pReal++ = 1;
+// 		*pReal++ = 0;
+// 		// uv
+// 		*pReal++ = 0;
+// 		*pReal++ = 0;
+// 
+// 		// position
+// 		*pReal++ = vec.x;
+// 		*pReal++ = GRASS_HEIGHT;
+// 		*pReal++ = vec.z;
+// 		// normal
+// 		*pReal++ = 0;
+// 		*pReal++ = 1;
+// 		*pReal++ = 0;
+// 		// uv
+// 		*pReal++ = 1;
+// 		*pReal++ = 0;
+// 
+// 		// position
+// 		*pReal++ = -vec.x;
+// 		*pReal++ = 0;
+// 		*pReal++ = -vec.z;
+// 		// normal
+// 		*pReal++ = 0;
+// 		*pReal++ = 1;
+// 		*pReal++ = 0;
+// 		// uv
+// 		*pReal++ = 0;
+// 		*pReal++ = 1;
+// 
+// 		// position
+// 		*pReal++ = vec.x;
+// 		*pReal++ = 0;
+// 		*pReal++ = vec.z;
+// 		// normal
+// 		*pReal++ = 0;
+// 		*pReal++ = 1;
+// 		*pReal++ = 0;
+// 		// uv
+// 		*pReal++ = 1;
+// 		*pReal++ = 1;
+// 
+// 		vec = rot * vec;
+// 	}
+// 	vbuf->unlock();
+// 	sm->vertexData->vertexBufferBinding->setBinding(0, vbuf);
+// 	sm->indexData->indexCount = 6*3;
+// 	sm->indexData->indexBuffer = Ogre::HardwareBufferManager::getSingleton()
+// 		.createIndexBuffer(Ogre::HardwareIndexBuffer::IT_16BIT, 6*3,
+// 			Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
+// 	Ogre::uint16* pI = static_cast<Ogre::uint16*>(
+// 		sm->indexData->indexBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD));
+// 	for (i = 0; i < 3; ++i)
+// 	{
+// 		int off = i*4;
+// 		*pI++ = 0 + off;
+// 		*pI++ = 3 + off;TerrainPageSurface
+// 		*pI++ = 1 + off;
+// 
+// 		*pI++ = 0 + off;
+// 		*pI++ = 2 + off;
+// 		*pI++ = 3 + off;
+// 	}
+// 
+// 	sm->indexData->indexBuffer->unlock();
+// 
+// 	sm->setMaterialName(GRASS_MATERIAL);
+// 	msh->load();
 
 }
 
 
 bool Foliage::frameStarted(const Ogre::FrameEvent & evt)
 {	
+// 	mImpl->update();
 	for (FoliageAreaStore::iterator I = mFoliageAreas.begin(); I != mFoliageAreas.end(); ++I) {
 		(*I)->frameStarted(evt.timeSinceLastFrame);
 	}

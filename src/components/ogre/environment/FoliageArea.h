@@ -25,6 +25,9 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "components/ogre/MathConverter.h"
 
+class PagedGeometry;
+class GrassLoader;
+
 namespace EmberOgre {
 
 namespace Environment {
@@ -40,11 +43,11 @@ Once that's done, call the build method, which will create the static geometry. 
 */
 class FoliageArea  {
 public:
-    FoliageArea();
+    FoliageArea(Foliage& foliage, Ogre::SceneManager& sceneManager, const std::string name);
 
     ~FoliageArea();
 
-	void init(Foliage* foliage, Ogre::SceneManager* sceneManager, const std::string& name);
+	void init(const WFMath::AxisBox<2>& extent, Ogre::TexturePtr densityMap, Ogre::TexturePtr shadowMap);
 
 	
 	/**
@@ -55,10 +58,10 @@ public:
 
 	void frameStarted(const Ogre::Real & timeElapsed);
 	
-	void placeGrass(const std::string& type, const TerrainPosition& position);
+/*	void placeGrass(const std::string& type, const TerrainPosition& position);
 	void placeGrass(const std::string& type, const TerrainPosition& position, const Ogre::Vector3& scale);
 	void placeGrass(const std::string& type, const Ogre::Vector3& position, const Ogre::Vector3& scale);
-	void placeGrass(const std::string& type, const Ogre::Vector3& position, const Ogre::Vector3& scale, const Ogre::Quaternion& orientation);
+	void placeGrass(const std::string& type, const Ogre::Vector3& position, const Ogre::Vector3& scale, const Ogre::Quaternion& orientation);*/
 	
 	
 	/**
@@ -74,20 +77,29 @@ protected:
 	static Ogre::Real mZinc;
 	Ogre::Real mXpos;
 	Ogre::Real mZpos;
+	const std::string& mName;
 	
-	Ogre::SceneManager* mSceneMgr;
+	WFMath::AxisBox<2> mExtent;
+	
+	Ogre::SceneManager& mSceneMgr;
 
-	Foliage* mFoliage;
+	Foliage& mFoliage;
 
 	bool mVisible;
 
-	void waveGrass(Ogre::Real timeElapsed);
+// 	void waveGrass(Ogre::Real timeElapsed);
 
 	TerrainPosition mExtentMin, mExtentMax;
 
-	Ogre::StaticGeometry* mStaticGeom;
+// 	Ogre::StaticGeometry* mStaticGeom;
 
+	PagedGeometry *mGrass, *mGrass2;
+	GrassLoader *mGrassLoader, *mGrassLoader2;
+
+	void createGrass(Ogre::TexturePtr densityMap, Ogre::TexturePtr shadowMap);
 };
+
+float getTerrainHeight(const float x, const float z, void *userData = 0);
 
 }
 
