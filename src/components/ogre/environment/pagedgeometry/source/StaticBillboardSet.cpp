@@ -39,6 +39,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include "OgreEntity.h"
 using namespace Ogre;
 
+namespace PagedGeometry {
 
 //-------------------------------------------------------------------------------------
 
@@ -703,4 +704,5 @@ SBMaterialRef::SBMaterialRef(Material *mat, Ogre::BillboardOrigin o)
 	material = mat;
 	origin = o;
 	refCount = 1;
+}
 }

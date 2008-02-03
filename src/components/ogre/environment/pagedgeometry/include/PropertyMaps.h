@@ -17,6 +17,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include "OgreRoot.h"
 #include "OgreRenderSystem.h"
 
+namespace PagedGeometry {
 
 /** \brief Specifies which color channel(s) to extract from an image */
 enum MapChannel {
@@ -239,6 +240,6 @@ private:
 	Ogre::TRect<Ogre::Real> mapBounds;
 };
 
-
+}
 
 #endif

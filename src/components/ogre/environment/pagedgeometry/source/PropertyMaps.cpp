@@ -21,6 +21,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include "OgreStringConverter.h"
 using namespace Ogre;
 
+namespace PagedGeometry {
 
 std::map<Ogre::String, DensityMap*> DensityMap::selfList;
 
@@ -378,4 +379,5 @@ uint32 ColorMap::_getColorAt_Bilinear(float x, float z)
 	uint32 val = _interpolateColor(val1, val2, zRatio, zRatioInv);
 
 	return val;
+}
 }

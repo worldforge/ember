@@ -34,6 +34,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include "OgreMaterial.h"
 using namespace Ogre;
 
+namespace PagedGeometry {
 
 //-------------------------------------------------------------------------------------
 
@@ -649,6 +650,8 @@ const Ogre::LightList& BatchedGeometry::SubBatch::getLights(void) const
 const Ogre::LightList& BatchedGeometry::SubBatch::getLights(void) const
 {
 	return parent->queryLights();
+}
+
 }
 
 #endif

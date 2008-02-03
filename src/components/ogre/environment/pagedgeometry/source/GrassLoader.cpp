@@ -36,6 +36,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include "OgreHighLevelGpuProgramManager.h"
 using namespace Ogre;
 
+namespace PagedGeometry {
 
 unsigned long GrassLoader::GUID = 0;
 
@@ -1148,4 +1149,5 @@ void GrassPage::setVisible(bool visible)
 		SceneNode *node = *i;
 		node->setVisible(visible);
 	}
+}
 }

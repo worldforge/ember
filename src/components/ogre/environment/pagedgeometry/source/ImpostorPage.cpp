@@ -25,6 +25,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include "OgreHardwarePixelBuffer.h"
 using namespace Ogre;
 
+namespace PagedGeometry {
 
 //-------------------------------------------------------------------------------------
 
@@ -360,7 +361,7 @@ void ImpostorTexture::updateMaterials()
 			Material *m = material[i][o].getPointer();
 			Pass *p = m->getTechnique(0)->getPass(0);       
 
-			int x = p->getNumTextureUnitStates();
+// 			int x = p->getNumTextureUnitStates();
 			TextureUnitState *t = p->getTextureUnitState(0);
 
 			t->setTextureName(texture->getName());
@@ -443,6 +444,10 @@ void ImpostorTexture::renderTextures(bool force)
 	//Set up scene node
 	SceneNode* node = sceneMgr->getSceneNode("ImpostorPage::renderNode");
 	
+	Ogre::SceneNode* oldSceneNode = entity->getParentSceneNode();
+	if (oldSceneNode) {
+		oldSceneNode->detachObject(entity);
+	}
 	node->attachObject(entity);
 	node->setPosition(-entityCenter);
 	
@@ -542,7 +547,9 @@ void ImpostorTexture::renderTextures(bool force)
 	
 	//Delete scene node
 	node->detachAllObjects();
-
+	if (oldSceneNode) {
+		oldSceneNode->attachObject(entity);
+	}
 	//Delete RTT texture
 	assert(!renderTexture.isNull());
 	String texName2(renderTexture->getName());
@@ -603,4 +610,5 @@ ImpostorTexture *ImpostorTexture::getTexture(ImpostorPage *group, Entity *entity
 			return NULL;
 		}
 	}
+}
 }

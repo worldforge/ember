@@ -20,6 +20,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include "OgreStringConverter.h"
 using namespace Ogre;
 
+namespace PagedGeometry {
 
 TreeLoader2D::TreeLoader2D(PagedGeometry *geom, const TRect<Real> &bounds)
 {
@@ -390,4 +391,5 @@ void TreeIterator2D::_readTree()
 
 	//Get entity
 	currentTreeDat.entity = currentGrid->first;
+}
 }

@@ -19,6 +19,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include "OgrePixelFormat.h"
 #include "OgreStringConverter.h"
 
+namespace PagedGeometry {
 
 class GrassLayer;
 
@@ -544,4 +545,5 @@ private:
 	}
 };
 
+}
 #endif

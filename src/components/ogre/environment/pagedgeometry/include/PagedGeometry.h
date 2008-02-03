@@ -102,6 +102,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include "OgreVector3.h"
 #include "OgreTimer.h"
 
+namespace PagedGeometry {
 
 class GeometryPageManager;
 class PageLoader;
@@ -1382,5 +1383,6 @@ template <class PageType> inline void GeometryPageManager::initPages(const TBoun
 			_setGridPage(x, z, page);
 		}
 	}
+}
 }
 #endif

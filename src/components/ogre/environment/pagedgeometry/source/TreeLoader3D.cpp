@@ -18,6 +18,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include "OgreQuaternion.h"
 using namespace Ogre;
 
+namespace PagedGeometry {
 
 TreeLoader3D::TreeLoader3D(PagedGeometry *geom, const TRect<Real> &bounds)
 {
@@ -369,4 +370,5 @@ void TreeIterator3D::_readTree()
 
 	//Get entity
 	currentTreeDat.entity = currentGrid->first;
+}
 }

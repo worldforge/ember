@@ -26,6 +26,8 @@ Permission is granted to anyone to use this software for any purpose, including 
 #define IMPOSTOR_YAW_ANGLES 8
 #define IMPOSTOR_PITCH_ANGLES 4
 
+namespace PagedGeometry {
+
 class ImpostorBatch;
 class ImpostorTexture;
 
@@ -316,6 +318,6 @@ void ImpostorBatch::addBillboard(const Ogre::Vector3 &position, const Ogre::Quat
 							tex->entityDiameter * scale.y, color,
 							texCoordIndx);
 }
-
+}
 
 #endif
