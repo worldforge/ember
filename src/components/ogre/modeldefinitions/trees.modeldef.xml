@@ -1,6 +1,7 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <models>
 	<model name="birch" usescaleof="height" scale="2" renderingdistance="200" >
+    	<rendering scheme="forest" />
 		<submodels>
 			<submodel mesh="3d_objects/plants/tree/models/Straight_up_tree/Straight_up_tree.mesh" >
 				<parts>
@@ -11,6 +12,7 @@
 	</model>
 	
     <model name="pine" usescaleof="height" showcontained="true" scale="2.000000"  icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+    	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
@@ -39,6 +41,7 @@
         <views />
     </model>
     <model name="pineA" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+    	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
@@ -67,7 +70,8 @@
         <views />
     </model>
     <model name="pineB" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
-        <translate x="0.000000" y="0.000000" z="0.000000" />
+     	<rendering scheme="forest" />
+       <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
             <submodel mesh="3d_objects/plants/trees/models/pine/pineB.mesh">
@@ -95,6 +99,7 @@
         <views />
     </model>
     <model name="pineC" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+    	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
@@ -123,6 +128,7 @@
         <views />
     </model>
     <model name="pineD" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+    	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
@@ -151,6 +157,7 @@
         <views />
     </model>
     <model name="pineE" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+    	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
@@ -179,6 +186,7 @@
         <views />
     </model>
     <model name="pineF" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+    	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
@@ -207,6 +215,7 @@
         <views />
     </model>
     <model name="pineG" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+    	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
@@ -235,6 +244,7 @@
         <views />
     </model>
     <model name="pineH" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+    	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
@@ -263,6 +273,7 @@
         <views />
     </model>
     <model name="pineI" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+    	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
@@ -291,6 +302,7 @@
         <views />
     </model>
     <model name="pineJ" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+    	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
@@ -319,6 +331,7 @@
         <views />
     </model>
     <model name="pineK" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+    	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
@@ -347,6 +360,7 @@
         <views />
     </model>
     <model name="pineL" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+    	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
@@ -376,6 +390,7 @@
     </model>
 	
 	<model name="oak_" usescaleof="height" renderingdistance="200.000000" scale="2.000000" showcontained="true">
+    	<rendering scheme="forest" />
 		<translate x="0.000000" y="-1.500000" z="0.000000" />
 		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
 		<submodels>
@@ -413,6 +428,7 @@
 		<actions />
 	</model>
 	<model name="oak_sapling_" usescaleof="all" showcontained="true" scale="1.500000">
+    	<rendering scheme="forest" />
 		<translate x="0.000000" y="0.000000" z="0.000000" />
 		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
 		<submodels>
@@ -460,6 +476,7 @@
 		<actions />
 	</model>
 	<model name="oak_young_" usescaleof="height" showcontained="true" scale="1.500000">
+    	<rendering scheme="forest" />
 		<translate x="0.000000" y="0.000000" z="0.000000" />
 		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
 		<submodels>
@@ -497,6 +514,7 @@
 		<actions />
 	</model>
     <model name="oak_mk1_" usescaleof="height" scale="2.000000" showcontained="true">
+    	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
@@ -530,6 +548,7 @@
     </model>
 	<!-- just a temporary version which uses the oak mesh -->
     <model name="birch_mk1_" usescaleof="height" scale="2.000000" showcontained="true">
+    	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>

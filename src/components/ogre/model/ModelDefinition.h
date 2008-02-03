@@ -55,6 +55,37 @@ typedef std::vector<SoundDefinition*> SoundDefinitionsStore;
 typedef std::vector<ActionDefinition*> ActionDefinitionsStore;
 typedef std::vector<AttachPointDefinition> AttachPointDefinitionStore;
 typedef std::map<std::string, ViewDefinition*> ViewDefinitionStore;
+typedef std::map<std::string, std::string> StringParamStore;
+
+/**
+A rendering definition. This allows you to specify a different render method than the default one (regular Model).
+All of this requires that you create functionality for implementing the different schemes that might be specified.
+*/
+class RenderingDefinition
+{
+friend class XMLModelDefinitionSerializer;
+public:
+
+/**
+ * Gets the scheme which will be used.
+ * @return 
+ */
+const std::string& getScheme() const;
+/**
+ * Sets the scheme.
+ * @param scheme 
+ */
+void setScheme(const std::string& scheme);
+/**
+ * Gets a collection of parameters for the rendering scheme.
+ * @return 
+ */
+const StringParamStore& getParameters() const;
+
+private:
+StringParamStore mParams;
+std::string mScheme;
+};
 
 class SubEntityDefinition
 {
@@ -403,7 +434,11 @@ public:
 	 */
 	void reloadAllInstances();
 	
-
+	/**
+	 *    Gets a pointer to the rendering scheme definition, or null if none specified.
+	 * @return 
+	 */
+	const RenderingDefinition* getRenderingDefinition() const;
 
 private:
 
@@ -486,6 +521,8 @@ private:
 	A path to an image resource which can be shown as an icon for the model.
 	*/
 	std::string mIconPath;
+	
+	RenderingDefinition* mRenderingDef;
 	
 };
 

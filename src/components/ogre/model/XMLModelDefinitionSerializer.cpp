@@ -187,7 +187,23 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, Ember:
 		modelDef->setContentOffset(offset);
 	}
 	
-	
+	elem = modelNode->FirstChildElement("rendering");
+	if (elem)
+	{
+		modelDef->mRenderingDef = new RenderingDefinition();
+		tmp = elem->Attribute("scheme");
+		if (tmp) {
+			modelDef->mRenderingDef->setScheme(tmp);
+		}
+		for (Ember::TiXmlElement* paramElem = elem->FirstChildElement("param");
+				paramElem != 0; paramElem = paramElem->NextSiblingElement())
+		{
+			tmp = paramElem->Attribute("key");
+			if (tmp) {
+				modelDef->mRenderingDef->mParams.insert(StringParamStore::value_type(tmp, paramElem->GetText()));
+			}
+		}
+	}	
 	
 }
 
@@ -724,6 +740,16 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		modelElem.InsertEndChild(rotation);
 		
 		modelElem.SetAttribute("icon", modelDef->getIconPath().c_str());
+		
+		if (modelDef->getRenderingDefinition()) {
+			Ember::TiXmlElement rendering("rendering");
+			rendering.SetAttribute("scheme", modelDef->getRenderingDefinition()->getScheme().c_str());
+			for (StringParamStore::const_iterator I = modelDef->getRenderingDefinition()->getParameters().begin(); I != modelDef->getRenderingDefinition()->getParameters().end(); ++I) {
+				Ember::TiXmlElement param("param");
+				param.SetAttribute("key", I->first.c_str());
+				param.SetValue(I->second.c_str());
+			}
+		}
 		
 		//start with submodels
 		exportSubModels(modelDef, modelElem);

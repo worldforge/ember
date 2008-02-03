@@ -25,8 +25,23 @@
 				</xsd:annotation>
 			</xsd:attribute>
 			<xsd:attribute name="scale" type="xsd:float" use="optional"/> 
-			<xsd:attribute name="showcontained" type="xsd:boolean" use="optional"/> 
-			<xsd:attribute name="contentoffset" type="xsd:string" use="optional"/> 
+			<xsd:attribute name="showcontained" type="xsd:boolean" use="optional"> 
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">
+						If true, contained entities will be rendered also. This is the default. Setting this to false might be useful for character entities, which are expected to carry with them an inventory, which we don't want to render.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xdf:attribute>
+			<xsd:element name="contentoffset" use="optional"> 
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">
+						Allows you to specify how much contained entities should be offset from their initial position. This is useful for tables, where you want contained entities to lie on the table, or for instance a bridge where you want contained entities to appear to walk on the bridge.
+					</xsd:documentation>
+				</xsd:annotation>
+				<xsd:attribute name="x" type="xsd:string" use="required"/> 
+				<xsd:attribute name="y" type="xsd:string" use="required"/> 
+				<xsd:attribute name="z" type="xsd:string" use="required"/> 
+			</xsd:element>
 			<xsd:attribute name="renderingdistance" type="xsd:float" use="optional"/> 
 			<xsd:attribute name="icon" type="xsd:string" use="optional"/> 
 			<xsd:element name="rotation" use="optional">
@@ -36,6 +51,14 @@
 				<!-- how do we specify that at least one of the following must be present, but not both? -->
 				<xsd:attribute name="degrees" type="xsd:float" use="optional"/> 
 				<xsd:attribute name="radians" type="xsd:boolean" use="optional"/> 
+			</xsd:element>
+			<xsd:element name="rendering" use="optional">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">
+						By default all models are rendered as they are, but with some parts of the world this might not be efficient enough. This element allows you to specify an alternative scheme of rendering. An example could be "forest" for forest rendering, where trees are batched together and used with impostors.
+					</xsd:documentation>
+				</xsd:annotation>
+				<xsd:attribute name="scheme" type="xsd:string" use="required"/> 
 			</xsd:element>
 			<xsd:element name="submodels">
 				<xsd:complexType>
@@ -67,7 +90,6 @@
 																<xsd:element name="light">
 																	<xsd:attribute name="name" type="xsd:string" use="required"/> 
 																	<xsd:attribute name="bone" type="xsd:string" use="required"/> 
-																	
 																	<xsd:attribute name="material" type="xsd:string" use="optional"/> 
 																</xsd:element>
 															</xsd:sequence>

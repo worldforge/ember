@@ -43,6 +43,7 @@ ModelDefinition::ModelDefinition(Ogre::ResourceManager* creator, const Ogre::Str
     , mShowContained(true)
     , mTranslate(0,0,0)
     , mIsValid(false)
+    , mRenderingDef(0)
 {
     if (createParamDictionary("ModelDefinition"))
     {
@@ -61,6 +62,7 @@ ModelDefinition::~ModelDefinition()
 	for (ViewDefinitionStore::iterator I = mViews.begin(); I != mViews.end(); ++I) {
 		delete I->second;
 	}
+	delete mRenderingDef;
 //	delete(mContentOffset);
     // have to call this here reather than in Resource destructor
     // since calling virtual methods in base destructors causes crash
@@ -178,6 +180,13 @@ void ModelDefinition::setRotation(const Ogre::Quaternion rotation)
 {
 	mRotation = rotation;
 }
+
+const RenderingDefinition* ModelDefinition::getRenderingDefinition() const
+{
+	return mRenderingDef;
+}
+
+
 
 void ModelDefinition::reloadAllInstances()
 {
@@ -511,6 +520,20 @@ const std::string& ActionDefinition::getName() const
 {
 	return mName;
 }
+
+const std::string& RenderingDefinition::getScheme() const
+{
+	return mScheme;
+}
+void RenderingDefinition::setScheme(const std::string& scheme)
+{
+	mScheme = scheme;
+}
+const StringParamStore& RenderingDefinition::getParameters() const
+{
+	return mParams;
+}
+
 
 
 };
