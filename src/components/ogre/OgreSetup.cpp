@@ -153,33 +153,30 @@ extern "C" void shutdownHandler(int signal)
 /** Configures the application - returns false if the user chooses to abandon configuration. */
 bool OgreSetup::configure(void)
 {
-///for non-windows systems don't show any config option
-#ifndef __WIN32__
-	bool success = mRoot->showConfigDialog();
-//	bool success = mRoot->restoreConfig();
-#else
-	///but do for windows. We need a better way to do this though
-	bool success = mRoot->showConfigDialog();
-#endif    
+	bool suppressConfig = false;
+	bool success = false;
+	if (Ember::EmberServices::getSingleton().getConfigService()->itemExists("ogre", "suppressconfigdialog")) {
+		suppressConfig = static_cast<bool>(Ember::EmberServices::getSingleton().getConfigService()->getValue("ogre", "suppressconfigdialog"));
+	}
+	if (suppressConfig) {
+		success = mRoot->restoreConfig();
+	} else {
+		success = mRoot->showConfigDialog();
+	}
+
 	if(success)
     {
-    
-//     	try {
-//     		///since we're nazi, we don't want the user to get any other resolution than 1024x768, so we'll simply override whatever option they choose
-// 			mRoot->getRenderSystem()->setConfigOption("Video Mode", "1024 x 768 @ 32-bit colour");
-// 			S_LOG_INFO("Forcing a resolution of 1024x768.");
-//     	} catch(...) {}
-    	
-		///this will only apply on DirectX
-		///it will force DirectX _not_ to set the FPU to single precision mode (since this will mess with mercator amongst others)
-		try {
-			mRoot->getRenderSystem()->setConfigOption("Floating-point mode", "Consistent");
-			
-		} catch (const Ogre::Exception&) 
-		{
-			///we don't know what kind of render system is used, so we'll just swallow the error since it doesn't affect anything else than DirectX
-		}
 #if __WIN32__
+	///this will only apply on DirectX
+	///it will force DirectX _not_ to set the FPU to single precision mode (since this will mess with mercator amongst others)
+	try {
+		mRoot->getRenderSystem()->setConfigOption("Floating-point mode", "Consistent");
+		
+	} catch (const Ogre::Exception&) 
+	{
+		///we don't know what kind of render system is used, so we'll just swallow the error since it doesn't affect anything else than DirectX
+	}
+   
    
     mRenderWindow = mRoot->initialise(true, "Ember");
    
