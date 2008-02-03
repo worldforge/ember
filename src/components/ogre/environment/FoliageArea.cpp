@@ -36,8 +36,8 @@
 #include "../terrain/TerrainGenerator.h"
 #include "../terrain/ISceneManagerAdapter.h"
 
-
-#define OFFSET_PARAM 999
+using namespace PagedGeometry;
+// #define OFFSET_PARAM 999
 
 namespace EmberOgre {
 
@@ -154,7 +154,7 @@ void FoliageArea::createGrass(Ogre::TexturePtr densityMap, Ogre::TexturePtr shad
 	//-------------------------------------- LOAD GRASS --------------------------------------
 	//Create and configure a new PagedGeometry instance for grass
 	
-	mGrass = new PagedGeometry(camera, 32);
+	mGrass = new ::PagedGeometry::PagedGeometry(camera, 32);
 	mGrass->setBounds(bounds);
 	mGrass->addDetailLevel<GrassPage>(100);
 	
@@ -176,7 +176,7 @@ void FoliageArea::createGrass(Ogre::TexturePtr densityMap, Ogre::TexturePtr shad
 	l->setSwaySpeed(0.5f);				//Sway 1/2 a cycle every second
 	l->setDensity(1.5f);				//Relatively dense grass
 	l->setFadeTechnique(FADETECH_GROW);	//Distant grass should slowly raise out of the ground when coming in range
-	l->setRenderTechnique(GRASSTECH_QUAD);	//Draw grass as scattered quads
+	l->setRenderTechnique(GRASSTECH_SPRITE);	//Draw grass as scattered quads
 
 	l->setHeightRange(0.001f);
 	

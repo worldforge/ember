@@ -25,8 +25,11 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "components/ogre/MathConverter.h"
 
+namespace PagedGeometry {
+
 class PagedGeometry;
 class GrassLoader;
+}
 
 namespace EmberOgre {
 
@@ -93,8 +96,8 @@ protected:
 
 // 	Ogre::StaticGeometry* mStaticGeom;
 
-	PagedGeometry *mGrass, *mGrass2;
-	GrassLoader *mGrassLoader, *mGrassLoader2;
+	PagedGeometry::PagedGeometry *mGrass, *mGrass2;
+	PagedGeometry::GrassLoader *mGrassLoader, *mGrassLoader2;
 
 	void createGrass(Ogre::TexturePtr densityMap, Ogre::TexturePtr shadowMap);
 };
