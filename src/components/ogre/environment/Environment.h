@@ -30,6 +30,8 @@ namespace EmberOgre {
 
 namespace Environment {
 
+class Forest;
+
 class ISun
 {
 public:
@@ -100,6 +102,7 @@ public:
 	inline ISky* getSky();
 	inline IFog* getFog();
 	inline IWater* getWater();
+	inline Forest* getForest();
     
     
     void setTime(int hour, int minute, int second = 0);
@@ -122,6 +125,7 @@ public:
 private:
 
 	IEnvironmentProvider* mProvider;
+	Forest* mForest;
 // 	ISun* mSun;
 // 	ISky* mSky;
 // 	IFog* mFog;
@@ -149,7 +153,10 @@ IWater* Environment::getWater()
 	return mProvider->getWater();
 }
 
-
+Forest* Environment::getForest()
+{
+	return mForest;
+}
 
 }
 

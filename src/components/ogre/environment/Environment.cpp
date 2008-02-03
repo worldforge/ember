@@ -23,6 +23,7 @@
 
 #include "Environment.h"
 #include "framework/Tokeniser.h"
+#include "Forest.h"
 
 namespace EmberOgre {
 
@@ -33,12 +34,15 @@ Environment::Environment(IEnvironmentProvider* provider):
 , SetFogDensity("set_fogdensity",this, "Sets the fog density.")
 , SetAmbientLight("setambientlight", this, "Set the ambient light of the world: <red> <green> <blue>")
 , mProvider(provider)
+, mForest(new Forest())
 {
 }
 
 
 Environment::~Environment()
 {
+	delete mProvider;
+	delete mForest;
 }
 
 void Environment::runCommand(const std::string &command, const std::string &args)
