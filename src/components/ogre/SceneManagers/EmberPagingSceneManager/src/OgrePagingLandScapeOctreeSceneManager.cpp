@@ -590,7 +590,6 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeOctreeSceneManager::destroyCamera(Camera *cam)
     {
-        unregisterCamera (static_cast <PagingLandScapeOctreeCamera *> (cam));
         SceneManager::destroyCamera(cam);
     }
     //-----------------------------------------------------------------------
@@ -600,7 +599,8 @@ namespace Ogre
        CameraList::iterator i = mCameras.find(name);
        if (i != mCameras.end())
 	   {
-          destroyCamera (i->second);
+			unregisterCamera (static_cast <PagingLandScapeOctreeCamera *> (i->second));
+          SceneManager::destroyCamera (name);
        }                  
     }
     //-----------------------------------------------------------------------
