@@ -22,6 +22,7 @@
 #include "framework/ConsoleBackend.h"
 #include "MotionManager.h"
 #include "model/Model.h"
+#include "model/ModelDefinition.h"
 #include "model/SubModel.h"
 #include "model/ParticleSystemBinding.h"
 #include "model/Action.h"
@@ -29,6 +30,12 @@
 #include "model/mapping/EmberModelMappingManager.h"
 #include "model/mapping/ModelMapping.h"
 #include "model/mapping/ModelMappingManager.h"
+
+#include "environment/Environment.h"
+#include "environment/Forest.h"
+#include "EmberEntityFactory.h"
+#include "WorldEmberEntity.h"
+
 
 #include "EmberEntityActionCreator.h"
 
@@ -277,6 +284,21 @@ void EmberPhysicalEntity::initFromModel()
 	getScaleNode()->translate(getModel()->getDefinition()->getTranslate());
 
 	connectEntities();
+	
+	const Model::RenderingDefinition* renderingDef = mModel->getDefinition()->getRenderingDefinition();
+	if (renderingDef && renderingDef->getScheme() == "forest") {
+		Environment::Forest* forest = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getForest();
+		for (Model::Model::SubModelSet::const_iterator I = mModel->getSubmodels().begin(); I != mModel->getSubmodels().end(); ++I) {
+// 			if ((*I)->getEntity()->isVisible()) {
+				(*I)->getEntity()->setVisible(true);
+				forest->addTree((*I)->getEntity(), getScaleNode()->getWorldPosition(), getScaleNode()->getWorldOrientation().getYaw(), 	getScaleNode()->getScale().y);
+// 			}
+		}
+		mModel->setRenderingDistance(100);
+// 		getScaleNode()->detachObject(mModel);
+// 		getSceneNode()->removeChild(getScaleNode());
+// 		getScaleNode()->setVisible(false);
+	}
 
 }
 
