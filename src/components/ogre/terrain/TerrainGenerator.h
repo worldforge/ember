@@ -53,6 +53,11 @@ class EmberEntity;
 class EmberEntityFactory;
 class EmberPagingSceneManager;
 
+namespace Environment
+{
+	class Environment;
+}
+
 namespace Terrain {
 	
 class TerrainShader;
@@ -263,7 +268,6 @@ public:
 	
 	const Ember::ConsoleCommandWrapper UpdateShadows;
 
-
 protected:
 
 	/**
@@ -323,10 +327,11 @@ protected:
 	TerrainPage* createPage(const TerrainPosition& pos);
 
 	
+	typedef std::map<const Mercator::Shader*, TerrainShader*> ShaderStore;
 	/**
 	 * This holds a map of the TerrainShaders
 	 */
-	std::map<const Mercator::Shader*, TerrainShader*> mShaderMap;
+	ShaderStore mShaderMap;
 	
 	/**
 	a list of the shaders, which will all be used on all Pages
@@ -365,6 +370,7 @@ protected:
 	void TerrainArea_Changed(TerrainArea* terrainArea);
 	
 	ISceneManagerAdapter* mSceneManagerAdapter;
+
 };
 
 const TerrainGenerator::TerrainPagestore& TerrainGenerator::getTerrainPages() const

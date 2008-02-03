@@ -38,6 +38,7 @@
 #include <OgreRenderSystemCapabilities.h>
 #include "TerrainShader.h"
 #include "../environment/Foliage.h"
+#include "../environment/Forest.h"
 #include "ISceneManagerAdapter.h"
 
 
@@ -113,6 +114,16 @@ hasTerrainInfo(false)
 
 TerrainGenerator::~TerrainGenerator()
 {
+
+	for (PageStore::iterator J = mPages.begin(); J != mPages.end(); ++J) {
+		delete J->second;
+	}
+	
+	for (ShaderStore::iterator J = mShaderMap.begin(); J != mShaderMap.end(); ++J) {
+		delete J->second;
+	}
+	
+			
 	delete mTerrain;
 	//delete mTerrainPageSource;
 	
@@ -172,16 +183,6 @@ ISceneManagerAdapter* TerrainGenerator::getAdapter() const
 {
 	return mSceneManagerAdapter;
 }
-
-// // EmberPagingSceneManager* TerrainGenerator::getEmberSceneManager()
-// // {
-// // 	return static_cast<EmberPagingSceneManager*>(EmberOgre::getSingleton().getSceneManager());
-// // }
-// // 
-// // const EmberPagingSceneManager* TerrainGenerator::getEmberSceneManager() const
-// // {
-// // 	return static_cast<const EmberPagingSceneManager*>(EmberOgre::getSingleton().getSceneManager());
-// // }
 
 TerrainShader* TerrainGenerator::createShader(const TerrainLayerDefinition* layerDef, Mercator::Shader* mercatorShader)
 {
@@ -428,27 +429,9 @@ void TerrainGenerator::prepareAllSegments()
 	S_LOG_INFO("Pages: X: " << mTerrainInfo.getTotalNumberOfPagesX() << " Y: " << mTerrainInfo.getTotalNumberOfPagesY() << " Total: " <<  mTerrainInfo.getTotalNumberOfPagesX() *  mTerrainInfo.getTotalNumberOfPagesY());
 	S_LOG_INFO("Page offset: X" << mTerrainInfo.getPageOffsetX() << " Y: " << mTerrainInfo.getPageOffsetY());
 
+	EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getForest()->initialize();	
 	
 }
-
-// void TerrainInfo::setNewXMax(int xMax)
-// {
-// }
-// 
-// void TerrainInfo::setNewXMin(int xMin)
-// {
-// }
-// 
-// void TerrainInfo::setNewYMax(int yMax)
-// {
-// }
-// 
-// void TerrainInfo::setNewYMin(int yMin)
-// {
-// }
-
-
-
 
 
 bool TerrainGenerator::isValidTerrainAt(const TerrainPosition& position)
@@ -468,29 +451,11 @@ TerrainPage* TerrainGenerator::getTerrainPage(const TerrainPosition& worldPositi
 	int xRemainder = static_cast<int>(getMin().x()) % (getPageSize() - 1);
 	int yRemainder = static_cast<int>(getMin().y()) % (getPageSize() - 1);
 	
-// 	int xRelativePosition = worldPosition.x() - getMin().x();
-// 	int xUnadjustedIndex = 0;
-// 	if (xRelativePosition != 0) {
-// 		xUnadjustedIndex /=  (getPageSize() - 1);
-// 	} 
-// 	
  	int xIndex = static_cast<int>(floor((worldPosition.x() + xRemainder)/ (getPageSize() - 1.0f)));
  	int yIndex = static_cast<int>(ceil((worldPosition.y() + yRemainder) / (getPageSize() - 1.0f)));
  	
-/* 	std::stringstream ss;
- 	ss << worldPosition;
- 	S_LOG_VERBOSE("worldpos: " << ss.str() << " x:" << xIndex << " y:" << yIndex);*/
-	
-	//TerrainPosition pageIndexPos(xIndex, yIndex);
 	
 	return mTerrainPages[xIndex][yIndex];
-	/*	double worldSizeX = getMax().x() - getMin().x();
-	int totalNumberOfPagesX = static_cast<int>( worldSizeX / (getPageSize() - 1));
-	int pageOffsetX = totalNumberOfPagesX / 2;
-	double worldSizeY = getMax().y() - getMin().y();
-	int totalNumberOfPagesY = static_cast<int>( worldSizeY / (getPageSize() - 1));
-	int pageOffsetY = totalNumberOfPagesY / 2;*/
-// 
 }
 
 TerrainPage* TerrainGenerator::getTerrainPage(const Ogre::Vector2& ogreIndexPosition, bool createIfMissing)
@@ -525,7 +490,7 @@ TerrainPage* TerrainGenerator::createPage(const TerrainPosition& pos)
 	bool showFoliage = isFoliageShown();
 	
 	
-	//since we initialized all terrain in initTerrain we can count on all terrain segments being created and populated already
+	///since we initialized all terrain in initTerrain we can count on all terrain segments being created and populated already
 	
 	
 	TerrainPage* page = new TerrainPage(TerrainPosition(pos), mShaderMap, this);
