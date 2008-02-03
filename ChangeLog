@@ -1,3 +1,40 @@
+2008-02-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* ember.conf: added option to suppress the ogre config dialog
+
+2008-02-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberPhysicalEntity.cpp: added functionality for using the Forest rendering scheme, which uses the PagedGeometry plugin to render forests with imposters
+
+2008-02-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/OgreSetup.cpp: added option to suppress the ogre config dialog
+
+2008-02-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainGenerator.cpp, src/components/ogre/terrain/TerrainGenerator.h: properly clean up pages, added forest initalizing code
+
+2008-02-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/SceneManagers/EmberPagingSceneManager/src/OgrePagingLandScapeOctreeSceneManager.cpp: fixed a bug where deleting a camera would end up in a never ending loop
+
+2008-02-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/model/ModelDefinition.cpp, src/components/ogre/model/ModelDefinition.h, src/components/ogre/model/XMLModelDefinitionSerializer.cpp, src/components/ogre/modeldefinitions/modeldefinition.xsd,  src/components/ogre/modeldefinitions/oak_mk1.modeldef, src/components/ogre/modeldefinitions/trees.modeldef.xml: added the ability to specify different render schemes for different models. This can be useful for rendering forests and other situations where the normal model rendering might be too inefficient.
+
+2008-02-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/FoliageArea.cpp, src/components/ogre/environment/FoliageArea.h: use sprites for the grass, though this doesn't look good when viewed from above.
+
+2008-02-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/Environment.cpp, src/components/ogre/environment/Environment.h, src/components/ogre/environment/Forest.cpp, src/components/ogre/environment/Forest.h, src/components/ogre/environment/Makefile.am: added a forest class which can be used for rendering forests.
+
+2008-02-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/pagedgeometry/Makefile.am, src/components/ogre/environment/pagedgeometry/include/BatchPage.h, src/components/ogre/environment/pagedgeometry/include/BatchedGeometry.h, src/components/ogre/environment/pagedgeometry/include/DummyPage.h, src/components/ogre/environment/pagedgeometry/include/GrassLoader.h, src/components/ogre/environment/pagedgeometry/include/ImpostorPage.h, src/components/ogre/environment/pagedgeometry/include/PagedGeometry.h, src/components/ogre/environment/pagedgeometry/include/PropertyMaps.h, src/components/ogre/environment/pagedgeometry/include/StaticBillboardSet.h, src/components/ogre/environment/pagedgeometry/include/TreeLoader2D.h, src/components/ogre/environment/pagedgeometry/include/TreeLoader3D.h, src/components/ogre/environment/pagedgeometry/source/BatchPage.cpp, src/components/ogre/environment/pagedgeometry/source/BatchedGeometry.cpp, src/components/ogre/environment/pagedgeometry/source/DummyPage.cpp, src/components/ogre/environment/pagedgeometry/source/GrassLoader.cpp, src/components/ogre/environment/pagedgeometry/source/ImpostorPage.cpp, src/components/ogre/environment/pagedgeometry/source/PagedGeometry.cpp, src/components/ogre/environment/pagedgeometry/source/PropertyMaps.cpp, src/components/ogre/environment/pagedgeometry/source/StaticBillboardSet.cpp, src/components/ogre/environment/pagedgeometry/source/TreeLoader2D.cpp, src/components/ogre/environment/pagedgeometry/source/TreeLoader3D.cpp: put it under the PagedGeometry namespace, fixed an issue where an entity connected to a scene node couldn't be used with impostors. Also added a DummyPage class which won't render anything.
+
+
 2008-02-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/WorldEmberEntity.cpp: load the grass at page init
