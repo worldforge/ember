@@ -24,11 +24,13 @@
 #define EMBEROGREFOLIAGEAREA_H
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "components/ogre/MathConverter.h"
+#include "pagedgeometry/include/GrassLoader.h"
 
 namespace PagedGeometry {
 
 class PagedGeometry;
-class GrassLoader;
+// class GrassLoader<GrassLayer>;
+// class GrassLayer;
 }
 
 namespace EmberOgre {
@@ -97,7 +99,7 @@ protected:
 // 	Ogre::StaticGeometry* mStaticGeom;
 
 	PagedGeometry::PagedGeometry *mGrass, *mGrass2;
-	PagedGeometry::GrassLoader *mGrassLoader, *mGrassLoader2;
+	PagedGeometry::GrassLoader<PagedGeometry::GrassLayer> *mGrassLoader, *mGrassLoader2;
 
 	void createGrass(Ogre::TexturePtr densityMap, Ogre::TexturePtr shadowMap);
 };

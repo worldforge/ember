@@ -27,7 +27,6 @@
 #include "services/config/ConfigService.h"
 #include "Foliage.h"
 #include "pagedgeometry/include/PagedGeometry.h"
-#include "pagedgeometry/include/GrassLoader.h"
 #include "pagedgeometry/include/BatchPage.h"
 #include "pagedgeometry/include/BatchedGeometry.h"
 
@@ -159,7 +158,7 @@ void FoliageArea::createGrass(Ogre::TexturePtr densityMap, Ogre::TexturePtr shad
 	mGrass->addDetailLevel<GrassPage>(100);
 	
 	//Create a GrassLoader object
-	mGrassLoader = new GrassLoader(mGrass);
+	mGrassLoader = new GrassLoader<GrassLayer>(mGrass);
 	mGrass->setPageLoader(mGrassLoader);	//Assign the "treeLoader" to be used to load geometry for the PagedGeometry instance
 
 	mGrassLoader->setHeightFunction(&getTerrainHeight);

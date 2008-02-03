@@ -18,10 +18,36 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include "OgreMaterial.h"
 #include "OgrePixelFormat.h"
 #include "OgreStringConverter.h"
+#include "OgreMeshManager.h"
+
+
+#include "OgreRoot.h"
+#include "OgreTimer.h"
+#include "OgreCamera.h"
+#include "OgreVector3.h"
+#include "OgreQuaternion.h"
+#include "OgreEntity.h"
+#include "OgreString.h"
+#include "OgreStringConverter.h"
+#include "OgreMaterialManager.h"
+#include "OgreMaterial.h"
+#include "OgreHardwareBufferManager.h"
+#include "OgreHardwareBuffer.h"
+#include "OgreMeshManager.h"
+#include "OgreMesh.h"
+#include "OgreSubMesh.h"
+#include "OgreLogManager.h"
+#include "OgreTextureManager.h"
+#include "OgreHardwarePixelBuffer.h"
+#include "OgreRenderSystem.h"
+#include "OgreRenderSystemCapabilities.h"
+#include "OgreHighLevelGpuProgram.h"
+#include "OgreHighLevelGpuProgramManager.h"
 
 namespace PagedGeometry {
 
 class GrassLayer;
+class GrassLayerBase;
 
 /** \brief A PageLoader-derived object you can use with PagedGeometry to produce realistic grass. 
 
@@ -44,12 +70,13 @@ the TreeLoader2D::setHeightFunction() documentation for more information.
 keep in mind that calculating the height of Ogre's built-in terrain this way can
 be VERY slow if not done properly, and may cause stuttering due to long paging delays.
 */
+template <typename TGrassLayer>
 class GrassLoader: public PageLoader
 {
 public:
 	/** \brief Creates a new GrassLoader object. 
 	\param geom The PagedGeometry object that this GrassLoader will be assigned to.*/
-	GrassLoader(PagedGeometry *geom);
+	inline GrassLoader(PagedGeometry *geom);
 	~GrassLoader();
 
 	/** \brief Adds a grass layer to the scene.
@@ -65,18 +92,18 @@ public:
 	functions to vary grass size and density levels as desired.
 
 	\see GrassLayer class for more information. */
-	GrassLayer *addLayer(const Ogre::String &material);
+	TGrassLayer *addLayer(const Ogre::String &material);
 
 	/** \brief Removes and deletes a grass layer from the scene
 
 	This function simply deletes a GrassLayer previously created with addLayer(). */
-	void deleteLayer(GrassLayer *layer);
+	void deleteLayer(TGrassLayer *layer);
 
 	/** \brief Returns a list of added grass layers.
 	
 	This function returns a std::list<GrassLayer*> reference, which contains all grass
 	layers which have been added to this GrassLoader. */
-	inline std::list<GrassLayer*> &getLayerList() { return layerList; }
+	inline std::list<TGrassLayer*> &getLayerList() { return layerList; }
 
 	/** \brief Sets the global wind direction for this GrassLoader.
 
@@ -180,12 +207,12 @@ private:
 	friend class GrassLayer;
 
 	//Helper functions
-	Ogre::Mesh *generateGrass_QUAD(PageInfo &page, GrassLayer *layer, float *grassPositions, unsigned int grassCount);
-	Ogre::Mesh *generateGrass_CROSSQUADS(PageInfo &page, GrassLayer *layer, float *grassPositions, unsigned int grassCount);
-	Ogre::Mesh *generateGrass_SPRITE(PageInfo &page, GrassLayer *layer, float *grassPositions, unsigned int grassCount);
+	Ogre::Mesh *generateGrass_QUAD(PageInfo &page, TGrassLayer *layer, float *grassPositions, unsigned int grassCount);
+	Ogre::Mesh *generateGrass_CROSSQUADS(PageInfo &page, TGrassLayer *layer, float *grassPositions, unsigned int grassCount);
+	Ogre::Mesh *generateGrass_SPRITE(PageInfo &page, TGrassLayer *layer, float *grassPositions, unsigned int grassCount);
 
 	//List of grass types
-	std::list<GrassLayer*> layerList;
+	std::list<TGrassLayer*> layerList;
 
 	//Height data
 	Ogre::Real (*heightFunction)(Ogre::Real x, Ogre::Real z, void *userData);	//Pointer to height function
@@ -207,6 +234,9 @@ private:
 		return "GrassLDR" + Ogre::StringConverter::toString(++GUID);
 	}
 };
+
+
+
 
 
 /** \brief A technique used to render grass. Passed to GrassLayer::setRenderTechnique(). */
@@ -231,6 +261,127 @@ enum FadeTechnique
 	FADETECH_ALPHAGROW
 };
 
+class GrassLayerBase
+{
+public:
+	/** \brief Sets the material that is applied to all grass billboards/quads */
+	void setMaterialName(const Ogre::String &matName);
+
+	/** \brief Sets the minimum size that grass quads/billboards will be */
+	void setMinimumSize(float width, float height);
+
+	/** \brief Sets the maximum size that grass quads/billboards will be */
+	void setMaximumSize(float width, float height);
+	
+	/** \brief Sets the technique used to render this grass layer
+	\param style The GrassTechnique style used to display grass.
+	\param blendBase Whether or not grass base blending is enabled.
+	
+	The "style" setting allows you to choose from various construction methods, such as
+	sprite-style grass quads, plain 3D quads, etc. See the GrassTechnique documentation
+	for more information about this option. GRASSTECH_QUAD is used by default.
+
+	Setting "blendBase" to true will enable grass base blending, a technique which helps
+	reduce the unnatural flat appearance of grass quads near the camera. Since the flatness
+	is most obvious where the grass intersects the terrain, this technique attempts to
+	smoothly blend the base of near-by grass into the terrain.
+
+	\note Base blending does not work well with alpha-rejected textures.
+	*/
+	void setRenderTechnique(GrassTechnique style, bool blendBase = false);
+
+	/** \brief Sets the technique used when fading out distant grass
+	\param style The FadeTechnique style used to fade grass.
+	
+	This "style" setting allows you to choose from various fade techniques. Depending on
+	your scene, certain techniques may look better than others. The most compatible method
+	is FADETECH_ALPHA (used by default), although better results can usually be achieved
+	with other methods. See the FadeTechnique documentation for more information.
+	*/
+	void setFadeTechnique(FadeTechnique style);
+
+	/** \brief Enables/disables animation on this layer
+	
+	Always use this function to disable animation, rather than setting SwayLength or SwaySpeed
+	to 0. This function will use a different vertex shader which means improved performance
+	when animation is disabled.
+	*/
+	void setAnimationEnabled(bool enabled);
+
+	/** \brief Sets how far grass should sway back and forth
+
+	\note Since this is measured in world units, you may have to adjust this depending on
+	the size of your grass as set by setMinimumSize() and setMaximumSize().*/
+	void setSwayLength(float mag) { animMag = mag; }
+
+	/** \brief Sets the sway speed of the grass (measured in "sways-per-second") */
+	void setSwaySpeed(float speed) { animSpeed = speed; }
+
+	/** \brief Sets the smooth distribution (positional phase shift) of the grass swaying animation
+
+	If you set this to 0, grass animation will look very unnatural, since all the grass sway motions
+	will be in perfect synchronization (everything sways to the right, then everything sways to the
+	left, etc.) This sets the "positional phase shift", which gives the grass a "wave" like phase
+	distribution. The higher this value is, the more "chaotic" the wind will appear. Lower values give
+	a smoother breeze appearance, but values too high can look unrealistic.
+	*/
+	void setSwayDistribution(float freq) { animFreq = freq; }
+	
+	/** \brief Sets the boundaries of the density/color maps
+	\param bounds The map boundary
+
+	By default, the GrassLayer has no knowledge of your terrain/world boundaries, so you must
+	use this function to specify a rectangular/square area of your world, otherwise density/color maps
+	won't work properly. The boundary given to this function defines the area where density/color
+	maps take effect. Normally this is set to your terrain's bounds so the density/color map is aligned
+	to your heightmap, but you could apply it anywhere you want.
+	
+	\note The grass system is infinite, so there's no need to worry about using too expansive
+	boundaries. This setting simply configures the behavior of density and color maps. */
+	virtual void setMapBounds(const Ogre::TRect<Ogre::Real> &bounds)
+	{
+		mapBounds = bounds;
+	}
+	
+	
+	/**
+	 *    Calculates the max number of grass instances for this layer.
+	 * @param densityFactor The density factor set on the grass loader
+	 * @param volume The volume, in world units, to fill
+	 * @return The max number of grass instances to create.
+	 */
+	virtual unsigned int calculateMaxGrassCount(float densityFactor, float volume) = 0;
+	
+protected: 
+
+	//Used by GrassLoader::loadPage() - populates an array with grass.
+	//Returns the final number of grasses, which will always be <= grassCount
+	virtual unsigned int _populateGrassList(PageInfo page, float *posBuff, unsigned int grassCount) = 0;
+
+	//Updates the vertex shader used by this layer based on the animate enable status
+	void _updateShaders();
+	
+	//Grass material/shape properties
+	Ogre::MaterialPtr material;
+	float minWidth, maxWidth;
+	float minHeight, maxHeight;
+	
+	FadeTechnique fadeTechnique;
+	GrassTechnique renderTechnique;
+
+	//Property maps
+	Ogre::TRect<Ogre::Real> mapBounds;
+	
+	//Grass shader properties
+	bool animate, blend, shaderNeedsUpdate;
+	float animMag, animSpeed, animFreq;
+
+	//Current frame of animation for this layer
+	float waveCount;
+
+	PagedGeometry *geom;
+	
+};
 
 
 /** \brief A data structure giving you full control over grass properties.
@@ -243,17 +394,9 @@ Remember that you cannot create or delete layers directly. Layers can only be cr
 with GrassLoader::addLayer(), and may not be deleted manually (they will be deleted when
 the associated GrassLoader is deleted).
 */
-class GrassLayer
+class GrassLayer : public GrassLayerBase
 {
 public:
-	/** \brief Sets the material that is applied to all grass billboards/quads */
-	void setMaterialName(const Ogre::String &matName);
-
-	/** \brief Sets the minimum size that grass quads/billboards will be */
-	void setMinimumSize(float width, float height);
-
-	/** \brief Sets the maximum size that grass quads/billboards will be */
-	void setMaximumSize(float width, float height);
 
 	/** \brief Sets the maximum density (measured in grass quads/billboards per square unit) of grass */
 	void setDensity(float density) { this->density = density; }
@@ -360,26 +503,6 @@ public:
 	*/
 	void setColorMapFilter(MapFilter filter);
 
-	/** \brief Sets the boundaries of the density/color maps
-	\param bounds The map boundary
-
-	By default, the GrassLayer has no knowledge of your terrain/world boundaries, so you must
-	use this function to specify a rectangular/square area of your world, otherwise density/color maps
-	won't work properly. The boundary given to this function defines the area where density/color
-	maps take effect. Normally this is set to your terrain's bounds so the density/color map is aligned
-	to your heightmap, but you could apply it anywhere you want.
-	
-	\note The grass system is infinite, so there's no need to worry about using too expansive
-	boundaries. This setting simply configures the behavior of density and color maps. */
-	void setMapBounds(const Ogre::TRect<Ogre::Real> &bounds)
-	{
-		mapBounds = bounds;
-		if (densityMap)
-			densityMap->setMapBounds(mapBounds);
-		if (colorMap)
-			colorMap->setMapBounds(mapBounds);
-	}
-
 	/** \brief Gets a pointer to the density map being used
 
 	You can use this function to access the internal density map object used by the GrassLoader.
@@ -402,72 +525,48 @@ public:
 	don't, the grass you see will remain unchanged. */
 	ColorMap *getColorMap() { return colorMap; }
 
-	/** \brief Sets the technique used to render this grass layer
-	\param style The GrassTechnique style used to display grass.
-	\param blendBase Whether or not grass base blending is enabled.
+
+	/** \brief Sets the boundaries of the density/color maps
+	\param bounds The map boundary
+
+	By default, the GrassLayer has no knowledge of your terrain/world boundaries, so you must
+	use this function to specify a rectangular/square area of your world, otherwise density/color maps
+	won't work properly. The boundary given to this function defines the area where density/color
+	maps take effect. Normally this is set to your terrain's bounds so the density/color map is aligned
+	to your heightmap, but you could apply it anywhere you want.
 	
-	The "style" setting allows you to choose from various construction methods, such as
-	sprite-style grass quads, plain 3D quads, etc. See the GrassTechnique documentation
-	for more information about this option. GRASSTECH_QUAD is used by default.
-
-	Setting "blendBase" to true will enable grass base blending, a technique which helps
-	reduce the unnatural flat appearance of grass quads near the camera. Since the flatness
-	is most obvious where the grass intersects the terrain, this technique attempts to
-	smoothly blend the base of near-by grass into the terrain.
-
-	\note Base blending does not work well with alpha-rejected textures.
-	*/
-	void setRenderTechnique(GrassTechnique style, bool blendBase = false);
-
-	/** \brief Sets the technique used when fading out distant grass
-	\param style The FadeTechnique style used to fade grass.
+	\note The grass system is infinite, so there's no need to worry about using too expansive
+	boundaries. This setting simply configures the behavior of density and color maps. */
+	virtual void setMapBounds(const Ogre::TRect<Ogre::Real> &bounds)
+	{
+		GrassLayerBase::setMapBounds(bounds);
+		if (densityMap)
+			densityMap->setMapBounds(mapBounds);
+		if (colorMap)
+			colorMap->setMapBounds(mapBounds);
+	}
 	
-	This "style" setting allows you to choose from various fade techniques. Depending on
-	your scene, certain techniques may look better than others. The most compatible method
-	is FADETECH_ALPHA (used by default), although better results can usually be achieved
-	with other methods. See the FadeTechnique documentation for more information.
-	*/
-	void setFadeTechnique(FadeTechnique style);
-
-	/** \brief Enables/disables animation on this layer
+	/**
+	 *    Calculates the max number of grass instances for this layer.
+	 * @param densityFactor The density factor set on the grass loader
+	 * @param volume The volume, in world units, to fill
+	 * @return The max number of grass instances to create.
+	 */
+	virtual unsigned int calculateMaxGrassCount(float densityFactor, float volume);
 	
-	Always use this function to disable animation, rather than setting SwayLength or SwaySpeed
-	to 0. This function will use a different vertex shader which means improved performance
-	when animation is disabled.
-	*/
-	void setAnimationEnabled(bool enabled);
-
-	/** \brief Sets how far grass should sway back and forth
-
-	\note Since this is measured in world units, you may have to adjust this depending on
-	the size of your grass as set by setMinimumSize() and setMaximumSize().*/
-	void setSwayLength(float mag) { animMag = mag; }
-
-	/** \brief Sets the sway speed of the grass (measured in "sways-per-second") */
-	void setSwaySpeed(float speed) { animSpeed = speed; }
-
-	/** \brief Sets the smooth distribution (positional phase shift) of the grass swaying animation
-
-	If you set this to 0, grass animation will look very unnatural, since all the grass sway motions
-	will be in perfect synchronization (everything sways to the right, then everything sways to the
-	left, etc.) This sets the "positional phase shift", which gives the grass a "wave" like phase
-	distribution. The higher this value is, the more "chaotic" the wind will appear. Lower values give
-	a smoother breeze appearance, but values too high can look unrealistic.
-	*/
-	void setSwayDistribution(float freq) { animFreq = freq; }
-
 private:
-	friend class GrassLoader;
+	friend class GrassLoader<GrassLayer>;
 
 	/** \brief Do not create a GrassLayer directly - use GrassLoader->addLayer() */
-	GrassLayer(PagedGeometry *geom, GrassLoader *ldr);
+	GrassLayer(PagedGeometry *geom, GrassLoader<GrassLayer> *ldr);
 
 	/** \brief Do not delete a GrassLayer yourself - the GrassLoader will do this automatically when it's deleted */
 	~GrassLayer();
 
-	//Updates the vertex shader used by this layer based on the animate enable status
-	void _updateShaders();
-
+	//Used by GrassLoader::loadPage() - populates an array with grass.
+	//Returns the final number of grasses, which will always be <= grassCount
+	virtual unsigned int _populateGrassList(PageInfo page, float *posBuff, unsigned int grassCount);
+	
 	//Used by GrassLoader::loadPage() - populates an array with a uniform distribution of grass
 	//Returns the final number of grasses, which will always be <= grassCount
 	unsigned int _populateGrassList_Uniform(PageInfo page, float *posBuff, unsigned int grassCount);
@@ -481,21 +580,13 @@ private:
 	unsigned int _populateGrassList_BilinearDM(PageInfo page, float *posBuff, unsigned int grassCount);
 
 
-	GrassLoader *parent;
+	GrassLoader<GrassLayer> *parent;
 
 	//Grass material/shape properties
-	Ogre::MaterialPtr material;
 	float density;
-	float minWidth, maxWidth;
-	float minHeight, maxHeight;
 
 	float minY, maxY;
 
-	FadeTechnique fadeTechnique;
-	GrassTechnique renderTechnique;
-
-	//Property maps
-	Ogre::TRect<Ogre::Real> mapBounds;
 
 	DensityMap *densityMap;
 	MapFilter densityMapFilter;
@@ -503,14 +594,6 @@ private:
 	ColorMap *colorMap;
 	MapFilter colorMapFilter;
 
-	//Grass shader properties
-	bool animate, blend, shaderNeedsUpdate;
-	float animMag, animSpeed, animFreq;
-
-	//Current frame of animation for this layer
-	float waveCount;
-
-	PagedGeometry *geom;
 };
 
 
@@ -544,6 +627,646 @@ private:
 		return "GrassPage" + Ogre::StringConverter::toString(++GUID);
 	}
 };
+
+
+// class IGrassPopulator
+// {
+// public:
+// 	//Used by GrassLoader::loadPage() - populates an array with a uniform distribution of grass
+// 	//Returns the final number of grasses, which will always be <= grassCount
+// 	virtual unsigned int populateGrassList(PageInfo page, float *posBuff, unsigned int grassCount) = 0;
+// };
+// 
+// class GrassPopulatorUniform : public IGrassPopulator
+// {
+// public:
+// 	//Used by GrassLoader::loadPage() - populates an array with a uniform distribution of grass
+// 	//Returns the final number of grasses, which will always be <= grassCount
+// 	virtual unsigned int populateGrassList(PageInfo page, float *posBuff, unsigned int grassCount);
+// };
+// 
+// class GrassPopulatorUnfilteredDM : public IGrassPopulator
+// {
+// public:
+// 	//Used by GrassLoader::loadPage() - populates an array with a uniform distribution of grass
+// 	//Returns the final number of grasses, which will always be <= grassCount
+// 	virtual unsigned int populateGrassList(PageInfo page, float *posBuff, unsigned int grassCount);
+// };
+// 
+// class GrassPopulatorBilinearDM : public IGrassPopulator
+// {
+// public:
+// 	//Used by GrassLoader::loadPage() - populates an array with a uniform distribution of grass
+// 	//Returns the final number of grasses, which will always be <= grassCount
+// 	virtual unsigned int populateGrassList(PageInfo page, float *posBuff, unsigned int grassCount);
+// };
+
+template <class TGrassLayer>
+GrassLoader<TGrassLayer>::GrassLoader(PagedGeometry *geom)
+{
+	GrassLoader<TGrassLayer>::geom = geom;
+	
+	heightFunction = NULL;
+	heightFunctionUserData = NULL;
+
+	windDir = Ogre::Vector3::UNIT_X;
+	densityFactor = 1.0f;
+	renderQueue = Ogre::RENDER_QUEUE_6;
+
+	windTimer.reset();
+	lastTime = 0;
+}
+
+template <class TGrassLayer>
+GrassLoader<TGrassLayer>::~GrassLoader()
+{
+	typename std::list<TGrassLayer*>::iterator it;
+	for (it = layerList.begin(); it != layerList.end(); ++it){
+		delete *it;
+	}
+	layerList.clear();
+}
+
+template <class TGrassLayer>
+TGrassLayer *GrassLoader<TGrassLayer>::addLayer(const Ogre::String &material)
+{
+	TGrassLayer *layer = new TGrassLayer(geom, this);
+	layer->setMaterialName(material);
+	layerList.push_back(layer);
+
+	return layer;
+}
+
+template <class TGrassLayer>
+void GrassLoader<TGrassLayer>::deleteLayer(TGrassLayer *layer)
+{
+	layerList.remove(layer);
+	delete layer;
+}
+
+template <class TGrassLayer>
+void GrassLoader<TGrassLayer>::frameUpdate()
+{
+	unsigned long currentTime = windTimer.getMilliseconds();
+	unsigned long ellapsedTime = currentTime - lastTime;
+	lastTime = currentTime;
+
+	float ellapsed = ellapsedTime / 1000.0f;
+	
+	//Update the vertex shader parameters
+	typename std::list<TGrassLayer*>::iterator it;
+	for (it = layerList.begin(); it != layerList.end(); ++it){
+		TGrassLayer *layer = *it;
+
+		layer->_updateShaders();
+
+		Ogre::GpuProgramParametersSharedPtr params = layer->material->getTechnique(0)->getPass(0)->getVertexProgramParameters();
+		if (layer->animate){
+			//Increment animation frame
+			layer->waveCount += ellapsed * (layer->animSpeed * Ogre::Math::PI);
+			if (layer->waveCount > Ogre::Math::PI*2) layer->waveCount -= Ogre::Math::PI*2;
+
+			//Set vertex shader parameters
+			params->setNamedConstant("time", layer->waveCount);
+			params->setNamedConstant("frequency", layer->animFreq);
+
+			Ogre::Vector3 direction = windDir * layer->animMag;
+			params->setNamedConstant("direction", Ogre::Vector4(direction.x, direction.y, direction.z, 0));
+
+		}
+	}
+}
+
+template <class TGrassLayer>
+void GrassLoader<TGrassLayer>::loadPage(PageInfo &page)
+{
+	//Seed random number generator based on page indexes
+	Ogre::uint16 xSeed = static_cast<Ogre::uint16>(page.xIndex % 0xFFFF);
+	Ogre::uint16 zSeed = static_cast<Ogre::uint16>(page.zIndex % 0xFFFF);
+	Ogre::uint32 seed = (xSeed << 16) | zSeed;
+	srand(seed);
+
+	typename std::list<TGrassLayer*>::iterator it;
+	for (it = layerList.begin(); it != layerList.end(); ++it){
+		TGrassLayer *layer = *it;
+
+		//Calculate how much grass needs to be added
+		float volume = page.bounds.width() * page.bounds.height();
+		unsigned int grassCount = layer->calculateMaxGrassCount(densityFactor, volume);
+
+		//The vertex buffer can't be allocated until the exact number of polygons is known,
+		//so the locations of all grasses in this page must be precalculated.
+
+		//Precompute grass locations into an array of floats. A plain array is used for speed;
+		//there's no need to use a dynamic sized array since a maximum size is known.
+		float *position = new float[grassCount*2];
+		grassCount = layer->_populateGrassList(page, position, grassCount);
+
+		//Don't build a mesh unless it contains something
+		if (grassCount != 0){
+			Ogre::Mesh *mesh = NULL;
+			switch (layer->renderTechnique){
+				case GRASSTECH_QUAD:
+					mesh = generateGrass_QUAD(page, layer, position, grassCount);
+					break;
+				case GRASSTECH_CROSSQUADS:
+					mesh = generateGrass_CROSSQUADS(page, layer, position, grassCount);
+					break;
+				case GRASSTECH_SPRITE:
+					mesh = generateGrass_SPRITE(page, layer, position, grassCount);
+					break;
+			}
+			assert(mesh);
+
+			//Add the mesh to PagedGeometry
+			Ogre::Entity *entity = geom->getCamera()->getSceneManager()->createEntity(getUniqueID(), mesh->getName());
+			entity->setRenderQueueGroup(renderQueue);
+			entity->setCastShadows(false);
+			addEntity(entity, page.centerPoint, Ogre::Quaternion::IDENTITY, Ogre::Vector3::UNIT_SCALE);
+			geom->getSceneManager()->destroyEntity(entity);
+
+			//Store the mesh pointer
+			page.userData = mesh;
+		} else {
+			//No mesh
+			page.userData = NULL;
+		}
+
+		//Delete the position list
+		delete[] position;
+	}
+}
+
+template <class TGrassLayer>
+void GrassLoader<TGrassLayer>::unloadPage(const PageInfo &page)
+{
+	//Unload mesh
+	Ogre::Mesh *mesh = (Ogre::Mesh*)page.userData;
+	if (mesh)
+		Ogre::MeshManager::getSingleton().remove(mesh->getName());
+}
+template <class TGrassLayer>
+Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_QUAD(PageInfo &page, TGrassLayer *layer, float *grassPositions, unsigned int grassCount)
+{
+	//Calculate the number of quads to be added
+	unsigned int quadCount;
+	quadCount = grassCount;
+
+	//Create manual mesh to store grass quads
+	Ogre::MeshPtr mesh = Ogre::MeshManager::getSingleton().createManual(getUniqueID(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	Ogre::SubMesh *subMesh = mesh->createSubMesh();
+	subMesh->useSharedVertices = false;
+
+	//Setup vertex format information
+	subMesh->vertexData = new Ogre::VertexData;
+	subMesh->vertexData->vertexStart = 0;
+	subMesh->vertexData->vertexCount = 4 * quadCount;
+
+	Ogre::VertexDeclaration* dcl = subMesh->vertexData->vertexDeclaration;
+	size_t offset = 0;
+	dcl->addElement(0, offset, Ogre::VET_FLOAT3, Ogre::VES_POSITION);
+	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
+	dcl->addElement(0, offset, Ogre::VET_COLOUR, Ogre::VES_DIFFUSE);
+	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_COLOUR);
+	dcl->addElement(0, offset, Ogre::VET_FLOAT2, Ogre::VES_TEXTURE_COORDINATES);
+	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT2);
+
+	//Populate a new vertex buffer with grass
+	Ogre::HardwareVertexBufferSharedPtr vbuf = Ogre::HardwareBufferManager::getSingleton()
+		.createVertexBuffer(offset, subMesh->vertexData->vertexCount, Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY, false);
+	float* pReal = static_cast<float*>(vbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD));
+
+	//Calculate size variance
+	float rndWidth = layer->maxWidth - layer->minWidth;
+	float rndHeight = layer->maxHeight - layer->minHeight;
+
+	float minY = Ogre::Math::POS_INFINITY, maxY = Ogre::Math::NEG_INFINITY;
+	float *posPtr = grassPositions;	//Position array "iterator"
+	for (Ogre::uint16 i = 0; i < grassCount; ++i)
+	{
+		//Get the x and z positions from the position array
+		float x = *posPtr++;
+		float z = *posPtr++;
+
+		//Get the color at the grass position
+		Ogre::uint32 color;
+		if (layer->colorMap)
+			color = layer->colorMap->getColorAt(x, z);
+		else
+			color = 0xFFFFFFFF;
+
+		//Calculate size
+		float rnd = Ogre::Math::UnitRandom();	//The same rnd value is used for width and height to maintain aspect ratio
+		float halfScaleX = (layer->minWidth + rndWidth * rnd) * 0.5f;
+		float scaleY = (layer->minHeight + rndHeight * rnd);
+
+		//Calculate rotation
+		float angle = Ogre::Math::RangeRandom(0, Ogre::Math::TWO_PI);
+		float xTrans = Ogre::Math::Cos(angle) * halfScaleX;
+		float zTrans = Ogre::Math::Sin(angle) * halfScaleX;
+
+		//Calculate heights and edge positions
+		float x1 = x - xTrans, z1 = z - zTrans;
+		float x2 = x + xTrans, z2 = z + zTrans;
+
+		float y1, y2;
+		if (heightFunction){
+			y1 = heightFunction(x1, z1, heightFunctionUserData);
+			y2 = heightFunction(x2, z2, heightFunctionUserData);
+		} else {
+			y1 = 0;
+			y2 = 0;
+		}
+
+		//Add vertices
+		*pReal++ = (x1 - page.centerPoint.x); *pReal++ = (y1 + scaleY); *pReal++ = (z1 - page.centerPoint.z);	//pos
+		*((Ogre::uint32*)pReal++) = color;							//color
+		*pReal++ = 0; *pReal++ = 0;								//uv
+
+		*pReal++ = (x2 - page.centerPoint.x); *pReal++ = (y2 + scaleY); *pReal++ = (z2 - page.centerPoint.z);	//pos
+		*((Ogre::uint32*)pReal++) = color;							//color
+		*pReal++ = 1; *pReal++ = 0;								//uv
+
+		*pReal++ = (x1 - page.centerPoint.x); *pReal++ = (y1); *pReal++ = (z1 - page.centerPoint.z);			//pos
+		*((Ogre::uint32*)pReal++) = color;							//color
+		*pReal++ = 0; *pReal++ = 1;								//uv
+
+		*pReal++ = (x2 - page.centerPoint.x); *pReal++ = (y2); *pReal++ = (z2 - page.centerPoint.z);			//pos
+		*((Ogre::uint32*)pReal++) = color;							//color
+		*pReal++ = 1; *pReal++ = 1;								//uv
+
+		//Update bounds
+		if (y1 < minY) minY = y1;
+		if (y2 < minY) minY = y2;
+		if (y1 + scaleY > maxY) maxY = y1 + scaleY;
+		if (y2 + scaleY > maxY) maxY = y2 + scaleY;
+	}
+
+	vbuf->unlock();
+	subMesh->vertexData->vertexBufferBinding->setBinding(0, vbuf);
+
+	//Populate index buffer
+	subMesh->indexData->indexStart = 0;
+	subMesh->indexData->indexCount = 6 * quadCount;
+	subMesh->indexData->indexBuffer = Ogre::HardwareBufferManager::getSingleton()
+		.createIndexBuffer(Ogre::HardwareIndexBuffer::IT_16BIT, subMesh->indexData->indexCount, Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
+	Ogre::uint16* pI = static_cast<Ogre::uint16*>(subMesh->indexData->indexBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD));
+	for (Ogre::uint16 i = 0; i < quadCount; ++i)
+	{
+		Ogre::uint16 offset = i * 4;
+
+		*pI++ = 0 + offset;
+		*pI++ = 2 + offset;
+		*pI++ = 1 + offset;
+
+		*pI++ = 1 + offset;
+		*pI++ = 2 + offset;
+		*pI++ = 3 + offset;
+	}
+
+	subMesh->indexData->indexBuffer->unlock();
+
+	//Finish up mesh
+	Ogre::AxisAlignedBox bounds(page.bounds.left - page.centerPoint.x, minY, page.bounds.top - page.centerPoint.z,
+		page.bounds.right - page.centerPoint.x, maxY, page.bounds.bottom - page.centerPoint.z);
+	mesh->_setBounds(bounds);
+	Ogre::Vector3 temp = bounds.getMaximum() - bounds.getMinimum();
+	mesh->_setBoundingSphereRadius(temp.length() * 0.5f);
+
+	Ogre::LogManager::getSingleton().setLogDetail(static_cast<Ogre::LoggingLevel>(0));
+	mesh->load();
+	Ogre::LogManager::getSingleton().setLogDetail(Ogre::LL_NORMAL);
+
+	//Apply grass material to mesh
+	subMesh->setMaterialName(layer->material->getName());
+
+	//Return the mesh
+	return mesh.getPointer();
+}
+
+template <class TGrassLayer>
+Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, TGrassLayer *layer, float *grassPositions, unsigned int grassCount)
+{
+	//Calculate the number of quads to be added
+	unsigned int quadCount;
+	quadCount = grassCount * 2;
+
+	//Create manual mesh to store grass quads
+	Ogre::MeshPtr mesh = Ogre::MeshManager::getSingleton().createManual(getUniqueID(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	Ogre::SubMesh *subMesh = mesh->createSubMesh();
+	subMesh->useSharedVertices = false;
+
+	//Setup vertex format information
+	subMesh->vertexData = new Ogre::VertexData;
+	subMesh->vertexData->vertexStart = 0;
+	subMesh->vertexData->vertexCount = 4 * quadCount;
+
+	Ogre::VertexDeclaration* dcl = subMesh->vertexData->vertexDeclaration;
+	size_t offset = 0;
+	dcl->addElement(0, offset, Ogre::VET_FLOAT3, Ogre::VES_POSITION);
+	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
+	dcl->addElement(0, offset, Ogre::VET_COLOUR, Ogre::VES_DIFFUSE);
+	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_COLOUR);
+	dcl->addElement(0, offset, Ogre::VET_FLOAT2, Ogre::VES_TEXTURE_COORDINATES);
+	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT2);
+
+	//Populate a new vertex buffer with grass
+	Ogre::HardwareVertexBufferSharedPtr vbuf = Ogre::HardwareBufferManager::getSingleton()
+		.createVertexBuffer(offset, subMesh->vertexData->vertexCount, Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY, false);
+	float* pReal = static_cast<float*>(vbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD));
+
+	//Calculate size variance
+	float rndWidth = layer->maxWidth - layer->minWidth;
+	float rndHeight = layer->maxHeight - layer->minHeight;
+
+	float minY = Ogre::Math::POS_INFINITY, maxY = Ogre::Math::NEG_INFINITY;
+	float *posPtr = grassPositions;	//Position array "iterator"
+	for (Ogre::uint16 i = 0; i < grassCount; ++i)
+	{
+		//Get the x and z positions from the position array
+		float x = *posPtr++;
+		float z = *posPtr++;
+
+		//Get the color at the grass position
+		Ogre::uint32 color;
+		if (layer->colorMap)
+			color = layer->colorMap->getColorAt(x, z);
+		else
+			color = 0xFFFFFFFF;
+
+		//Calculate size
+		float rnd = Ogre::Math::UnitRandom();	//The same rnd value is used for width and height to maintain aspect ratio
+		float halfScaleX = (layer->minWidth + rndWidth * rnd) * 0.5f;
+		float scaleY = (layer->minHeight + rndHeight * rnd);
+
+		//Calculate rotation
+		float angle = Ogre::Math::RangeRandom(0, Ogre::Math::TWO_PI);
+		float xTrans = Ogre::Math::Cos(angle) * halfScaleX;
+		float zTrans = Ogre::Math::Sin(angle) * halfScaleX;
+
+		//Calculate heights and edge positions
+		float x1 = x - xTrans, z1 = z - zTrans;
+		float x2 = x + xTrans, z2 = z + zTrans;
+
+		float y1, y2;
+		if (heightFunction){
+			y1 = heightFunction(x1, z1, heightFunctionUserData);
+			y2 = heightFunction(x2, z2, heightFunctionUserData);
+		} else {
+			y1 = 0;
+			y2 = 0;
+		}
+
+		//Add vertices
+		*pReal++ = (x1 - page.centerPoint.x); *pReal++ = (y1 + scaleY); *pReal++ = (z1 - page.centerPoint.z);	//pos
+		*((Ogre::uint32*)pReal++) = color;							//color
+		*pReal++ = 0; *pReal++ = 0;								//uv
+
+		*pReal++ = (x2 - page.centerPoint.x); *pReal++ = (y2 + scaleY); *pReal++ = (z2 - page.centerPoint.z);	//pos
+		*((Ogre::uint32*)pReal++) = color;							//color
+		*pReal++ = 1; *pReal++ = 0;								//uv
+
+		*pReal++ = (x1 - page.centerPoint.x); *pReal++ = (y1); *pReal++ = (z1 - page.centerPoint.z);			//pos
+		*((Ogre::uint32*)pReal++) = color;							//color
+		*pReal++ = 0; *pReal++ = 1;								//uv
+
+		*pReal++ = (x2 - page.centerPoint.x); *pReal++ = (y2); *pReal++ = (z2 - page.centerPoint.z);			//pos
+		*((Ogre::uint32*)pReal++) = color;							//color
+		*pReal++ = 1; *pReal++ = 1;								//uv
+
+		//Update bounds
+		if (y1 < minY) minY = y1;
+		if (y2 < minY) minY = y2;
+		if (y1 + scaleY > maxY) maxY = y1 + scaleY;
+		if (y2 + scaleY > maxY) maxY = y2 + scaleY;
+
+		//Calculate heights and edge positions
+		float x3 = x + zTrans, z3 = z - xTrans;
+		float x4 = x - zTrans, z4 = z + xTrans;
+
+		float y3, y4;
+		if (heightFunction){
+			y3 = heightFunction(x3, z3, heightFunctionUserData);
+			y4 = heightFunction(x4, z4, heightFunctionUserData);
+		} else {
+			y3 = 0;
+			y4 = 0;
+		}
+
+		//Add vertices
+		*pReal++ = (x3 - page.centerPoint.x); *pReal++ = (y3 + scaleY); *pReal++ = (z3 - page.centerPoint.z);	//pos
+		*((Ogre::uint32*)pReal++) = color;							//color
+		*pReal++ = 0; *pReal++ = 0;								//uv
+
+		*pReal++ = (x4 - page.centerPoint.x); *pReal++ = (y4 + scaleY); *pReal++ = (z4 - page.centerPoint.z);	//pos
+		*((Ogre::uint32*)pReal++) = color;							//color
+		*pReal++ = 1; *pReal++ = 0;								//uv
+
+		*pReal++ = (x3 - page.centerPoint.x); *pReal++ = (y3); *pReal++ = (z3 - page.centerPoint.z);			//pos
+		*((Ogre::uint32*)pReal++) = color;							//color
+		*pReal++ = 0; *pReal++ = 1;								//uv
+
+		*pReal++ = (x4 - page.centerPoint.x); *pReal++ = (y4); *pReal++ = (z4 - page.centerPoint.z);			//pos
+		*((Ogre::uint32*)pReal++) = color;							//color
+		*pReal++ = 1; *pReal++ = 1;								//uv
+
+		//Update bounds
+		if (y3 < minY) minY = y1;
+		if (y4 < minY) minY = y2;
+		if (y3 + scaleY > maxY) maxY = y3 + scaleY;
+		if (y4 + scaleY > maxY) maxY = y4 + scaleY;
+	}
+
+	vbuf->unlock();
+	subMesh->vertexData->vertexBufferBinding->setBinding(0, vbuf);
+
+	//Populate index buffer
+	subMesh->indexData->indexStart = 0;
+	subMesh->indexData->indexCount = 6 * quadCount;
+	subMesh->indexData->indexBuffer = Ogre::HardwareBufferManager::getSingleton()
+		.createIndexBuffer(Ogre::HardwareIndexBuffer::IT_16BIT, subMesh->indexData->indexCount, Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
+	Ogre::uint16* pI = static_cast<Ogre::uint16*>(subMesh->indexData->indexBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD));
+	for (Ogre::uint16 i = 0; i < quadCount; ++i)
+	{
+		Ogre::uint16 offset = i * 4;
+
+		*pI++ = 0 + offset;
+		*pI++ = 2 + offset;
+		*pI++ = 1 + offset;
+
+		*pI++ = 1 + offset;
+		*pI++ = 2 + offset;
+		*pI++ = 3 + offset;
+	}
+
+	subMesh->indexData->indexBuffer->unlock();
+
+	//Finish up mesh
+	Ogre::AxisAlignedBox bounds(page.bounds.left - page.centerPoint.x, minY, page.bounds.top - page.centerPoint.z,
+		page.bounds.right - page.centerPoint.x, maxY, page.bounds.bottom - page.centerPoint.z);
+	mesh->_setBounds(bounds);
+	Ogre::Vector3 temp = bounds.getMaximum() - bounds.getMinimum();
+	mesh->_setBoundingSphereRadius(temp.length() * 0.5f);
+
+	Ogre::LogManager::getSingleton().setLogDetail(static_cast<Ogre::LoggingLevel>(0));
+	mesh->load();
+	Ogre::LogManager::getSingleton().setLogDetail(Ogre::LL_NORMAL);
+
+	//Apply grass material to mesh
+	subMesh->setMaterialName(layer->material->getName());
+
+	//Return the mesh
+	return mesh.getPointer();
+}
+
+template <class TGrassLayer>
+Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_SPRITE(PageInfo &page, TGrassLayer *layer, float *grassPositions, unsigned int grassCount)
+{
+	//Calculate the number of quads to be added
+	unsigned int quadCount;
+	quadCount = grassCount;
+
+	//Create manual mesh to store grass quads
+	Ogre::MeshPtr mesh = Ogre::MeshManager::getSingleton().createManual(getUniqueID(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	Ogre::SubMesh *subMesh = mesh->createSubMesh();
+	subMesh->useSharedVertices = false;
+
+	//Setup vertex format information
+	subMesh->vertexData = new Ogre::VertexData;
+	subMesh->vertexData->vertexStart = 0;
+	subMesh->vertexData->vertexCount = 4 * quadCount;
+
+	Ogre::VertexDeclaration* dcl = subMesh->vertexData->vertexDeclaration;
+	size_t offset = 0;
+	dcl->addElement(0, offset, Ogre::VET_FLOAT3, Ogre::VES_POSITION);
+	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
+	dcl->addElement(0, offset, Ogre::VET_FLOAT4, Ogre::VES_NORMAL);
+	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT4);
+	dcl->addElement(0, offset, Ogre::VET_COLOUR, Ogre::VES_DIFFUSE);
+	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_COLOUR);
+	dcl->addElement(0, offset, Ogre::VET_FLOAT2, Ogre::VES_TEXTURE_COORDINATES);
+	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT2);
+
+	//Populate a new vertex buffer with grass
+	Ogre::HardwareVertexBufferSharedPtr vbuf = Ogre::HardwareBufferManager::getSingleton()
+		.createVertexBuffer(offset, subMesh->vertexData->vertexCount, Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY, false);
+	float* pReal = static_cast<float*>(vbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD));
+
+	//Calculate size variance
+	float rndWidth = layer->maxWidth - layer->minWidth;
+	float rndHeight = layer->maxHeight - layer->minHeight;
+
+	float minY = Ogre::Math::POS_INFINITY, maxY = Ogre::Math::NEG_INFINITY;
+	float *posPtr = grassPositions;	//Position array "iterator"
+	for (Ogre::uint16 i = 0; i < grassCount; ++i)
+	{
+		//Get the x and z positions from the position array
+		float x = *posPtr++;
+		float z = *posPtr++;
+
+		//Calculate height
+		float y;
+		if (heightFunction){
+			y = heightFunction(x, z, heightFunctionUserData);
+		} else {
+			y = 0;
+		}
+
+		float x1 = (x - page.centerPoint.x);
+		float z1 = (z - page.centerPoint.z);
+
+		//Get the color at the grass position
+		Ogre::uint32 color;
+		if (layer->colorMap)
+			color = layer->colorMap->getColorAt(x, z);
+		else
+			color = 0xFFFFFFFF;
+
+		//Calculate size
+		float rnd = Ogre::Math::UnitRandom();	//The same rnd value is used for width and height to maintain aspect ratio
+		float halfXScale = (layer->minWidth + rndWidth * rnd) * 0.5f;
+		float scaleY = (layer->minHeight + rndHeight * rnd);
+
+		//Randomly mirror grass textures
+		float uvLeft, uvRight;
+		if (Ogre::Math::UnitRandom() > 0.5f){
+			uvLeft = 0;
+			uvRight = 1;
+		} else {
+			uvLeft = 1;
+			uvRight = 0;
+		}
+
+		//Add vertices
+		*pReal++ = x1; *pReal++ = y; *pReal++ = z1;					//center position
+		*pReal++ = -halfXScale; *pReal++ = scaleY; *pReal++ = 0; *pReal++ = 0;	//normal (used to store relative corner positions)
+		*((Ogre::uint32*)pReal++) = color;								//color
+		*pReal++ = uvLeft; *pReal++ = 0;							//uv
+
+		*pReal++ = x1; *pReal++ = y; *pReal++ = z1;					//center position
+		*pReal++ = +halfXScale; *pReal++ = scaleY; *pReal++ = 0; *pReal++ = 0;	//normal (used to store relative corner positions)
+		*((Ogre::uint32*)pReal++) = color;								//color
+		*pReal++ = uvRight; *pReal++ = 0;							//uv
+
+		*pReal++ = x1; *pReal++ = y; *pReal++ = z1;					//center position
+		*pReal++ = -halfXScale; *pReal++ = 0.0f; *pReal++ = 0; *pReal++ = 0;		//normal (used to store relative corner positions)
+		*((Ogre::uint32*)pReal++) = color;								//color
+		*pReal++ = uvLeft; *pReal++ = 1;							//uv
+
+		*pReal++ = x1; *pReal++ = y; *pReal++ = z1;					//center position
+		*pReal++ = +halfXScale; *pReal++ = 0.0f; *pReal++ = 0; *pReal++ = 0;		//normal (used to store relative corner positions)
+		*((Ogre::uint32*)pReal++) = color;								//color
+		*pReal++ = uvRight; *pReal++ = 1;							//uv
+
+		//Update bounds
+		if (y < minY) minY = y;
+		if (y + scaleY > maxY) maxY = y + scaleY;
+	}
+
+	vbuf->unlock();
+	subMesh->vertexData->vertexBufferBinding->setBinding(0, vbuf);
+
+	//Populate index buffer
+	subMesh->indexData->indexStart = 0;
+	subMesh->indexData->indexCount = 6 * quadCount;
+	subMesh->indexData->indexBuffer = Ogre::HardwareBufferManager::getSingleton()
+		.createIndexBuffer(Ogre::HardwareIndexBuffer::IT_16BIT, subMesh->indexData->indexCount, Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
+	Ogre::uint16* pI = static_cast<Ogre::uint16*>(subMesh->indexData->indexBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD));
+	for (Ogre::uint16 i = 0; i < quadCount; ++i)
+	{
+		Ogre::uint16 offset = i * 4;
+
+		*pI++ = 0 + offset;
+		*pI++ = 2 + offset;
+		*pI++ = 1 + offset;
+
+		*pI++ = 1 + offset;
+		*pI++ = 2 + offset;
+		*pI++ = 3 + offset;
+	}
+
+	subMesh->indexData->indexBuffer->unlock();
+
+	//Finish up mesh
+	Ogre::AxisAlignedBox bounds(page.bounds.left - page.centerPoint.x, minY, page.bounds.top - page.centerPoint.z,
+		page.bounds.right - page.centerPoint.x, maxY, page.bounds.bottom - page.centerPoint.z);
+	mesh->_setBounds(bounds);
+	Ogre::Vector3 temp = bounds.getMaximum() - bounds.getMinimum();
+	mesh->_setBoundingSphereRadius(temp.length() * 0.5f);
+
+	Ogre::LogManager::getSingleton().setLogDetail(static_cast<Ogre::LoggingLevel>(0));
+	mesh->load();
+	Ogre::LogManager::getSingleton().setLogDetail(Ogre::LL_NORMAL);
+
+	//Apply grass material to mesh
+	subMesh->setMaterialName(layer->material->getName());
+
+	//Return the mesh
+	return mesh.getPointer();
+}
+
+template <class TGrassLayer>
+unsigned long GrassLoader<TGrassLayer>::GUID = 0;
 
 }
 #endif
