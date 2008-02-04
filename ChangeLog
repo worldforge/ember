@@ -1,3 +1,11 @@
+2008-02-04 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/input/Input.cpp, src/components/ogre/input/Input.h, src/components/ogre/GUIManager.cpp: added the ability to copy and paste from Ember to the system clipboard
+
+2008-02-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/FoliageArea.cpp, src/components/ogre/environment/FoliageArea.h, src/components/ogre/environment/pagedgeometry/include/GrassLoader.h, src/components/ogre/environment/pagedgeometry/source/GrassLoader.cpp: refactored the grass loader. The idea is to separate out the functionality for building the grass from the functionality for populating the page, thus better allowing us to use our own populating techniques.
+
 2008-02-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* ember.conf: added option to suppress the ogre config dialog
