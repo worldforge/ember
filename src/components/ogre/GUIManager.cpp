@@ -27,6 +27,9 @@
 #include <CEGUIFactoryModule.h>
 #include <elements/CEGUIPushButton.h>
 #include <elements/CEGUIGUISheet.h>
+#include <elements/CEGUIMultiLineEditbox.h>
+#include <elements/CEGUIEditbox.h>
+
 
 #include "widgets/Widget.h"
 #include "MousePicker.h"
@@ -514,6 +517,43 @@ const bool GUIManager::isInGUIMode() const {
 
 void GUIManager::pressedKey(const SDL_keysym& key, Input::InputMode inputMode)
 {
+	if ((key.mod & KMOD_CTRL || key.mod & KMOD_LCTRL || key.mod & KMOD_RCTRL) && (key.sym == SDLK_c || key.sym == SDLK_x)) {
+
+		bool cut = (key.sym == SDLK_x);
+		CEGUI::Window* active = mSheet->getActiveChild();
+		if (!active) return;
+	
+		CEGUI::String seltext;
+		const CEGUI::String& type = active->getType();
+	
+		if (type.find("/MultiLineEditbox") != CEGUI::String::npos) {
+			CEGUI::MultiLineEditbox* edit = static_cast<CEGUI::MultiLineEditbox*>(active);
+			CEGUI::String::size_type beg = edit->getSelectionStartIndex();
+			CEGUI::String::size_type len = edit->getSelectionLength();
+			seltext = edit->getText().substr( beg, len ).c_str();
+	
+			// are we cutting or just copying?
+			if (cut) {
+				if (edit->isReadOnly()) return;
+				CEGUI::String newtext = edit->getText();
+				edit->setText( newtext.erase( beg, len ) );
+			}
+	
+		} else if (type.find("/Editbox") != CEGUI::String::npos) {
+			CEGUI::Editbox* edit = static_cast<CEGUI::Editbox*>(active);
+			CEGUI::String::size_type beg = edit->getSelectionStartIndex();
+			CEGUI::String::size_type len = edit->getSelectionLength();
+			seltext = edit->getText().substr( beg, len ).c_str();
+	
+			// are we cutting or just copying?
+			if (cut) {
+				if (edit->isReadOnly()) return;
+				CEGUI::String newtext = edit->getText();
+				edit->setText( newtext.erase( beg, len ) );
+			}
+		}
+		getInput().writeToClipboard( seltext.c_str() ); 
+	}
 }
 
 

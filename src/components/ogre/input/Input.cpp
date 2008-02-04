@@ -156,6 +156,14 @@ void Input::setMovementModeEnabled(bool value)
 	mMovementModeEnabled = value;
 }
 
+void Input::writeToClipboard(const std::string& text)
+{
+	char basicString[text.length() + 1];
+	strcpy (basicString,text.c_str());
+	put_scrap(T('T','E','X','T'), text.length(), basicString);
+}
+
+
 
 void Input::registerCommandMapper(InputCommandMapper* mapper)
 {

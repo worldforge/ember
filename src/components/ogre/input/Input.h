@@ -258,6 +258,12 @@ public:
 	Sets whether the movement mode is enabled, at which all mouse right click events will toggle between movement mode and mouse mode.
 	*/
 	void setMovementModeEnabled(bool value);
+	
+	/**
+	 *    Writes the supplied text to the system clipboard.
+	 * @param text 
+	 */
+	void writeToClipboard(const std::string& text);
 
 protected:
 
