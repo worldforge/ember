@@ -417,15 +417,21 @@ void ImpostorTexture::regenerateAll()
 
 void ImpostorTexture::renderTextures(bool force)
 {
+#if IMPOSTOR_FILE_SAVE
 	TexturePtr renderTexture;
+#else
+	TexturePtr renderTexture(texture);
+#endif
 	RenderTexture *renderTarget;
 	Camera *renderCamera;
 	Viewport *renderViewport;
 
 	//Set up RTT texture
 	unsigned int textureSize = ImpostorPage::impostorResolution;
-	renderTexture = TextureManager::getSingleton().createManual(getUniqueID("ImpostorTexture"), "Impostors",
+	if (renderTexture.isNull()) {
+		renderTexture = TextureManager::getSingleton().createManual(getUniqueID("ImpostorTexture"), "Impostors",
 				TEX_TYPE_2D, textureSize * IMPOSTOR_YAW_ANGLES, textureSize * IMPOSTOR_PITCH_ANGLES, 0, PF_A8R8G8B8, TU_RENDERTARGET);
+	}
 	renderTexture->setNumMipmaps(MIP_UNLIMITED);
 	
 	//Set up render target
@@ -480,17 +486,23 @@ void ImpostorTexture::renderTextures(bool force)
 	sceneMgr->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_INCLUDE); 
 	sceneMgr->addSpecialCaseRenderQueue(RENDER_QUEUE_6);
 
-	//uint8 oldRenderQueueGroup = entity->getRenderQueueGroup();
+	uint8 oldRenderQueueGroup = entity->getRenderQueueGroup();
 	entity->setRenderQueueGroup(RENDER_QUEUE_6);
+	bool oldVisible = entity->getVisible();
+	entity->setVisible(true);
+	float oldMaxDistance = entity->getRenderingDistance();
+	entity->setRenderingDistance(0);
 
-	//Calculate the filename used to identity this render
-	ResourceGroupManager::getSingleton().addResourceLocation(".", "FileSystem", "BinFolder");
+	bool needsRegen = true;
 	String fileName = "Impostor." + removeInvalidCharacters(entity->getMesh()->getGroup())
 		+ '.' + removeInvalidCharacters(entityKey)
 		+ '.' + StringConverter::toString(textureSize) + ".png";
+#if IMPOSTOR_FILE_SAVE
+	//Calculate the filename used to identity this render
+	ResourceGroupManager::getSingleton().addResourceLocation(".", "FileSystem", "BinFolder");
 
 	//Attempt to load the pre-render file if allowed
-	bool needsRegen = force;
+	needsRegen = force;
 	if (!needsRegen){
 		try{
 			texture = TextureManager::getSingleton().load(fileName, "BinFolder", TEX_TYPE_2D, MIP_UNLIMITED);
@@ -499,6 +511,7 @@ void ImpostorTexture::renderTextures(bool force)
 			needsRegen = true;
 		}
 	}
+#endif
 
 	if (needsRegen){
 		//If this has not been pre-rendered, do so now
@@ -523,15 +536,21 @@ void ImpostorTexture::renderTextures(bool force)
 			}
 		}
 		
+#if IMPOSTOR_FILE_SAVE
 		//Save RTT to file
 		renderTarget->writeContentsToFile(fileName);
 
 		//Load the render into the appropriate texture view
 		texture = TextureManager::getSingleton().load(fileName, "BinFolder", TEX_TYPE_2D, MIP_UNLIMITED);
+#else
+		texture = renderTexture;
+#endif
 	}
 	
 
-	//entity->setRenderQueueGroup(oldRenderQueueGroup);
+	entity->setVisible(oldVisible);
+	entity->setRenderQueueGroup(oldRenderQueueGroup);
+	entity->setRenderingDistance(oldMaxDistance);
 	sceneMgr->removeSpecialCaseRenderQueue(RENDER_QUEUE_6);
 	sceneMgr->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_EXCLUDE); 
 
@@ -550,6 +569,7 @@ void ImpostorTexture::renderTextures(bool force)
 	if (oldSceneNode) {
 		oldSceneNode->attachObject(entity);
 	}
+#if IMPOSTOR_FILE_SAVE
 	//Delete RTT texture
 	assert(!renderTexture.isNull());
 	String texName2(renderTexture->getName());
@@ -557,6 +577,7 @@ void ImpostorTexture::renderTextures(bool force)
 	renderTexture.setNull();
 	if (TextureManager::getSingletonPtr())
 		TextureManager::getSingleton().remove(texName2);
+#endif
 }
 
 String ImpostorTexture::removeInvalidCharacters(String s)
