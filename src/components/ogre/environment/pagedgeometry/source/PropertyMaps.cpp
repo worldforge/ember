@@ -61,7 +61,7 @@ void DensityMap::unload()
 DensityMap::~DensityMap()
 {
 	assert(pixels);
-	delete[] pixels->data;
+	delete[] static_cast<uint8*>(pixels->data);
 	delete pixels;
 
 	//Remove self from selfList
@@ -115,7 +115,7 @@ DensityMap::DensityMap(Texture *map, MapChannel channel)
 		}
 
 		//Finally, delete the temporary PF_R8G8B8A8 pixel buffer
-		delete[] tmpPixels.data;
+		delete[] static_cast<uint8*>(tmpPixels.data);
 	}
 }
 
@@ -223,7 +223,7 @@ void ColorMap::unload()
 ColorMap::~ColorMap()
 {
 	assert(pixels);
-	delete[] pixels->data;
+	delete[] static_cast<uint8*>(pixels->data);
 	delete pixels;
 
 	//Remove self from selfList
@@ -297,7 +297,7 @@ ColorMap::ColorMap(Texture *map, MapChannel channel)
 		}
 
 		//Finally, delete the temporary PF_R8G8B8A8 pixel buffer
-		delete[] tmpPixels.data;
+		delete[] static_cast<uint8*>(tmpPixels.data);
 	}
 }
 
