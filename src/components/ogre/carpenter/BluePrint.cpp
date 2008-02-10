@@ -184,7 +184,7 @@ void BluePrint::compile()
 
 	mAttachedBlocks.clear();
 
-	BuildingBlock* baseBlock = mStartingBlock;
+// 	BuildingBlock* baseBlock = mStartingBlock;
 	mStartingBlock->mAttached = true;
 	mAttachedBlocks.push_back(mStartingBlock);
 	doBindingsForBlock(mStartingBlock);
