@@ -554,6 +554,14 @@ public:
 	 */
 	virtual unsigned int calculateMaxGrassCount(float densityFactor, float volume);
 	
+	inline Ogre::uint32 getColorAt(float x, float z)
+	{
+		if (colorMap)
+			return colorMap->getColorAt(x, z);
+		else
+			return 0xFFFFFFFF;
+	}
+
 private:
 	friend class GrassLoader<GrassLayer>;
 
@@ -988,11 +996,12 @@ Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, T
 		float z = *posPtr++;
 
 		//Get the color at the grass position
-		Ogre::uint32 color;
-		if (layer->colorMap)
-			color = layer->colorMap->getColorAt(x, z);
-		else
-			color = 0xFFFFFFFF;
+		Ogre::uint32 color(layer->getColorAt(x, z));
+		
+// 		if (layer->colorMap)
+// 			color = layer->colorMap->getColorAt(x, z);
+// 		else
+// 			color = 0xFFFFFFFF;
 
 		//Calculate size
 		float rnd = Ogre::Math::UnitRandom();	//The same rnd value is used for width and height to maintain aspect ratio
