@@ -38,12 +38,16 @@
 #include <OgreTextureManager.h>
 #include <OgreCommon.h>
 
-#include <IL/il.h>
-#include <IL/ilu.h>
+// #include <IL/il.h>
+// #include <IL/ilu.h>
 
 #include "../environment/Foliage.h"
 #include "../environment/FoliageArea.h"
 #include "TerrainGenerator.h"
+#include "TerrainPageSurfaceLayer.h"
+#include "TerrainPageSurface.h"
+#include "TerrainLayerDefinition.h"
+#include "TerrainPageFoliage.h"
 #include "ISceneManagerAdapter.h"
 
 #include <Mercator/Segment.h>
@@ -57,9 +61,6 @@
 
 #include "framework/osdir.h"
 
-#include "TerrainPageSurfaceLayer.h"
-#include "TerrainPageSurface.h"
-#include "TerrainLayerDefinition.h"
 
 //#include <fenv.h>
 
@@ -67,6 +68,9 @@ using namespace EmberOgre::Environment;
 
 namespace EmberOgre {
 namespace Terrain {
+
+
+
 
 TerrainPage::TerrainPage(TerrainPosition position, const std::map<const Mercator::Shader*, TerrainShader*> shaderMap, TerrainGenerator* generator) 
 : mFoliageArea(0)
@@ -79,6 +83,7 @@ TerrainPage::TerrainPage(TerrainPosition position, const std::map<const Mercator
 , mShadowTechnique(0)
 , mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), (mPosition.y() - 1) * (getPageSize() - 1)), WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), (mPosition.y()) * (getPageSize() - 1))
 )
+, mPageFoliage(new TerrainPageFoliage(*mGenerator, *this))
 {
 
 	S_LOG_VERBOSE("Creating TerrainPage at position " << position.x() << ":" << position.y());
@@ -505,32 +510,96 @@ void TerrainPage::destroyFoliage()
 
 void TerrainPage::prepareFoliage()
 {
-	TerrainShader* grassShader = mGenerator->getFoliageShader();
+	mPageFoliage->generatePlantPositions();
+	mPageFoliage->generateCoverageMap();
+
+// 	TerrainShader* grassShader = mGenerator->getFoliageShader();
+// 	
+// 	if (!grassShader) {
+// 		S_LOG_FAILURE("Could not create foliage since there's no grass shader registered.");
+// 		return;
+// 	}
+// 	std::stringstream ss;
+// 	ss << "Extents of page at position " << mPosition << ": " << mExtent;
+// 	S_LOG_VERBOSE(ss.str());
+// // 	if (!mFoliageArea) {
+// // 		mFoliageArea = Foliage::getSingleton().createArea(mExtent);
+// // 	} else {
+// // 		return;
+// // 	}
+// 	
+// 	size_t foliageBufferSize =  mFoliageCoverageDataStream->size();
+// 	TerrainPageSurfaceLayer* grassLayer(0);
+// 	for (TerrainPageSurface::TerrainPageSurfaceLayerStore::const_iterator I = mTerrainSurface->getLayers().begin(); I != mTerrainSurface->getLayers().end(); ++I) {
+// // 		if (grassLayer) {
+// // 			Ogre::Image* layerImage(I->second->getCoverageImage());
+// // 			if (foliageBufferSize == layerImage->getSize()) {
+// //  				unsigned char* layerData = layerImage->getData();
+// // 				unsigned char* grassLayerData = mFoliageCoverageDataStream->getPtr();
+// // 				for (size_t i = 0; i < foliageBufferSize; ++i) {
+// // 					if (*layerData) {
+// // 						*grassLayerData -= std::min<unsigned char>(*layerData, *grassLayerData);
+// // 					}
+// // 					layerData++;
+// // 					grassLayerData++;
+// // 				}
+// // 			}
+// // 		}
+// 		if (!grassLayer && I->second->getSurfaceIndex() == mGenerator->getFoliageShader()->getTerrainIndex()) {
+// 			if (I->second->getCoverageImage()->getSize() == foliageBufferSize) {
+// 				grassLayer = I->second;
+// 				memcpy(mFoliageCoverageDataStream->getPtr(), grassLayer->getCoverageImage()->getData(), foliageBufferSize);
+// 			}
+// 		}
+// 	}
+// 	
+// // 	mTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(splatTextureName, "General", Ogre::TEX_TYPE_2D, getPixelWidth(), getPixelWidth(), 1, Ogre::PF_L8);
+// 	
+// 	if (grassLayer && mFoliageArea) {
+// 		std::string textureName = grassLayer->getCoverageTextureName();
+// 		mFoliageArea->init(mExtent, static_cast<Ogre::TexturePtr>(Ogre::TextureManager::getSingleton().getByName(textureName)), mShadow.getTexture());
+// 	}
+// 	
+// 	
+// 	float minClusterRadius = 2;
+// 	float maxClusterRadius = 10;
+// 	unsigned int clustersPerPage = 400;
+// 	float density = 2.0f;
+// 	float falloff = 0.3;
+// 	
+// 	mPlants.clear();
+// 	
+// 	
+// 	for (unsigned int i = 0; i < clustersPerPage; ++i) {
+// 		///Pick a random position for our cluster
+// /*		float clusterX = Ogre::Math::RangeRandom(mExtent.lowCorner().x(), mExtent.highCorner().x());
+// 		float clusterY = Ogre::Math::RangeRandom(mExtent.lowCorner().y(), mExtent.highCorner().y());*/
+// 		float clusterX = Ogre::Math::RangeRandom(0, getAlphaTextureSize());
+// 		float clusterY = Ogre::Math::RangeRandom(0, getAlphaTextureSize());
+// 		float clusterRadius = Ogre::Math::RangeRandom(minClusterRadius, maxClusterRadius);
+// 		
+// 		float volume = (clusterRadius * clusterRadius) * Ogre::Math::PI;
+// 		unsigned int instancesInEachCluster = volume / density;
+// 
+// 		///place one cluster
+// 		for (unsigned int j = 0; j < instancesInEachCluster; ++j) {
+// 			float plantX = Ogre::Math::RangeRandom(-clusterRadius, clusterRadius) + clusterX;
+// 			float plantY = Ogre::Math::RangeRandom(-clusterRadius, clusterRadius) + clusterY;
+// 			
+// 			if (plantX >= 0 && plantX < getAlphaTextureSize() && plantY >= 0 && plantY < getAlphaTextureSize()) {
+// 				float val = mFoliageCoverageDataStream->getPtr()[static_cast<size_t>((getAlphaTextureSize() * plantX) + plantY)] / 255.0f;
+// 				if (Ogre::Math::UnitRandom() < val) {
+// 					mPlants.push_back(TerrainPosition(plantX, plantY));
+// 				}
+// 			}
+// 		}
+// 	}
+/*	S_LOG_VERBOSE("Placed " << mPlants.size() << " plants.");*/
 	
-	if (!grassShader) {
-		S_LOG_FAILURE("Could not create foliage since there's no grass shader registered.");
-		return;
-	}
-	std::stringstream ss;
-	ss << "Extents of page at position " << mPosition << ": " << mExtent;
-	S_LOG_VERBOSE(ss.str());
-	if (!mFoliageArea) {
-		mFoliageArea = Foliage::getSingleton().createArea(mExtent);
-	} else {
-		return;
-	}
 	
-	TerrainPageSurfaceLayer* grassLayer(0);
-	for (TerrainPageSurface::TerrainPageSurfaceLayerStore::const_iterator I = mTerrainSurface->getLayers().begin(); I != mTerrainSurface->getLayers().end(); ++I) {
-		if (I->second->getSurfaceIndex() == mGenerator->getFoliageShader()->getTerrainIndex()) {
-			grassLayer = I->second;
-			break;
-		}
-	}
 	
-	if (grassLayer) {
-		mFoliageArea->init(mExtent, static_cast<Ogre::TexturePtr>(Ogre::TextureManager::getSingleton().getByName(grassLayer->getCoverageTextureName())), mShadow.getTexture());
-	}
+	
+	
 // 	double grassSpacing = Foliage::getSingleton().getGrassSpacing();
 	
 // 	//for each 1 m^2, how big chance is there of grass? [0,1.0]
@@ -617,6 +686,27 @@ void TerrainPage::prepareFoliage()
 	return;
 	
 }
+
+const WFMath::AxisBox<2>& TerrainPage::getExtent() const
+{
+	return mExtent;
+}
+
+// const TerrainPage::PlantsStore& TerrainPage::getPlants() const
+// {
+// 	return mPlants;
+// }
+
+TerrainPageSurface* TerrainPage::getSurface() const
+{
+	return mTerrainSurface.get();
+}
+
+TerrainPageFoliage* TerrainPage::getPageFoliage() const
+{
+	return mPageFoliage.get();
+}
+
 
 void TerrainPage::addShader(TerrainShader* shader)
 {

@@ -56,10 +56,12 @@ namespace Terrain {
 class TerrainShader;
 class TerrainGenerator;
 class TerrainPageSurface;
-
+class TerrainPage;
+class TerrainPageFoliage;
 
 // TYPEDEF_STL_VECTOR(Mercator::Segment*, SegmentVector);
 TYPEDEF_STL_MAP(const Mercator::Shader*, TerrainShader*, ShaderMap);
+
 
 
 
@@ -74,6 +76,11 @@ class TerrainPage{
 friend class TerrainPageShadow;
 friend class ITerrainPageShadowTechnique;
 public:
+	/**
+	A store of plant positions. We keep this in ogre space for performance reasons.
+	*/
+// 	typedef std::vector<Ogre::Vector2> PlantsStore;
+
     TerrainPage(TerrainPosition position, const std::map<const Mercator::Shader*, TerrainShader*> shaderMap, TerrainGenerator* generator);
 
     ~TerrainPage();
@@ -193,7 +200,13 @@ public:
 	 *    Gets the extent of this page in meters, in worldforge space.
 	 * @return 
 	 */
-	const WFMath::AxisBox<2> getExtent() const;
+	const WFMath::AxisBox<2>& getExtent() const;
+	
+// 	const PlantsStore& getPlants() const;
+	
+	TerrainPageSurface* getSurface() const;
+	
+	TerrainPageFoliage* getPageFoliage() const;
 
 private:
 
@@ -201,6 +214,7 @@ private:
 
 	
 	::EmberOgre::Environment::FoliageArea* mFoliageArea;
+	
 
 	/**
 	this holds a map of the area, to be used in a map widget etc.
@@ -242,6 +256,9 @@ private:
 	The extent of this page in meters, in WF space.
 	*/
 	const WFMath::AxisBox<2> mExtent;
+	std::auto_ptr<TerrainPageFoliage> mPageFoliage;
+	
+	
 // 	void updateShadow();
 // 	
 // 	void createShadow();
