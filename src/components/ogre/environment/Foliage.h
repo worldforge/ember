@@ -27,10 +27,19 @@
 #include "framework/Singleton.h"
 #include <wfmath/axisbox.h>
 
+#include "pagedgeometry/include/GrassLoader.h"
+
+namespace PagedGeometry {
+
+class PagedGeometry;
+// class GrassLoader<GrassLayer>;
+// class GrassLayer;
+}
 namespace EmberOgre {
 
 namespace Environment {
 
+class FoliageLayer;
 class FoliageArea;
 class FoliageImpl;
 
@@ -83,7 +92,8 @@ protected:
 	Ogre::SceneManager* mSceneMgr;
 	
 	FoliageImpl* mImpl;
-
+	::PagedGeometry::PagedGeometry* mGrass;
+	::PagedGeometry::GrassLoader<FoliageLayer>* mGrassLoader;
 };
 
 }

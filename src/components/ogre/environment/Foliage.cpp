@@ -26,11 +26,23 @@
 
 #include "Foliage.h"
 #include "FoliageArea.h"
+#include "FoliageLayer.h"
 // #include "FoliageImpl.h"
 
 //#include "GroundCover.h"
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/terrain/TerrainGenerator.h"
+
+
+#include "../AvatarCamera.h"
+#include "../EmberOgre.h"
+#include "../terrain/TerrainGenerator.h"
+#include "../terrain/ISceneManagerAdapter.h"
+
+#include "pagedgeometry/include/PagedGeometry.h"
+#include "pagedgeometry/include/BatchPage.h"
+#include "pagedgeometry/include/GrassLoader.h"
+
 
 template<> EmberOgre::Environment::Foliage* Ember::Singleton<EmberOgre::Environment::Foliage>::ms_Singleton = 0;
 
@@ -48,6 +60,8 @@ namespace Environment {
 
 Foliage::Foliage( Ogre::SceneManager* sceneMgr)
 :  mSceneMgr(sceneMgr)
+, mGrass(0)
+, mGrassLoader(0)
 {
 	S_LOG_INFO("Setting up foliage system.");
 	
@@ -102,6 +116,10 @@ Foliage::~Foliage()
 {
 	S_LOG_INFO("Shutting down foliage system.");
 	
+	
+	delete mGrassLoader;
+	delete mGrass;
+	
 // 	delete mImpl;
 	
 // 	for (FoliageAreaStore::iterator I = mFoliageAreas.begin(); I != mFoliageAreas.end(); ++I) {
@@ -117,6 +135,35 @@ Foliage::~Foliage()
 
 void Foliage::createGrass()
 {
+// 	return;
+	Ogre::Camera* camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
+	mGrass = new ::PagedGeometry::PagedGeometry(camera, 32);
+	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainInfo().getWorldSizeInIndices();	mGrass->setBounds(Atlas2Ogre(worldSize));
+	mGrass->addDetailLevel<PagedGeometry::GrassPage>(100);
+	
+	//Create a GrassLoader object
+	mGrassLoader = new ::PagedGeometry::GrassLoader<FoliageLayer>(mGrass);
+ 	mGrass->setPageLoader(mGrassLoader);	//Assign the "treeLoader" to be used to load 
+	mGrassLoader->setHeightFunction(&getTerrainHeight);
+
+	//Add some grass to the scene with GrassLoader::addLayer()
+	FoliageLayer *l = mGrassLoader->addLayer("grass");
+	
+	//Configure the grass layer properties (size, density, animation properties, fade settings, etc.)
+	l->setMinimumSize(1.0f, 1.0f);
+	l->setMaximumSize(1.5f, 1.5f);
+	l->setAnimationEnabled(true);		//Enable animations
+	l->setSwayDistribution(10.0f);		//Sway fairly unsynchronized
+	l->setSwayLength(0.5f);				//Sway back and forth 0.5 units in length
+	l->setSwaySpeed(0.5f);				//Sway 1/2 a cycle every second
+// 	l->setDensity(1.5f);				//Relatively dense grass
+	l->setFadeTechnique(::PagedGeometry::FADETECH_GROW);	//Distant grass should slowly raise out of the ground when coming in range
+	l->setRenderTechnique(::PagedGeometry::GRASSTECH_CROSSQUADS);	//Draw grass as scattered quads
+
+// 	l->setHeightRange(0.001f);
+	l->setMapBounds(Atlas2Ogre(worldSize));	//(0,0)-(1500,1500) is the full boundaries of the terrain
+
+
 // 	mImpl->createGrass();
 }
 
@@ -131,6 +178,7 @@ Ogre::Entity* Foliage::getEntity(const std::string& name)
 
 FoliageArea* Foliage::createArea(const WFMath::AxisBox<2>& extent)
 {
+	return 0;
 	std::stringstream ss;
 	ss << mFoliageAreas.size();
 	FoliageArea* area = new FoliageArea(*this, *mSceneMgr, std::string("foliage_") + ss.str());
@@ -264,6 +312,18 @@ bool Foliage::frameStarted(const Ogre::FrameEvent & evt)
 	for (FoliageAreaStore::iterator I = mFoliageAreas.begin(); I != mFoliageAreas.end(); ++I) {
 		(*I)->frameStarted(evt.timeSinceLastFrame);
 	}
+	
+	
+	if (mGrass) {
+		try {
+			mGrass->update();
+		} catch (const Ogre::Exception& ex)
+		{
+			S_LOG_FAILURE("Error when updating grass. Will disable grass.\n"<< ex.what());
+			delete mGrassLoader;
+			delete mGrass;
+		}
+	}	
 	return true;
 
 }
