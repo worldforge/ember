@@ -84,7 +84,12 @@ void Forest::addTree(Ogre::Entity *entity, const Ogre::Vector3 &position, Ogre::
 	if (mTreeLoader)
 	{
 		S_LOG_VERBOSE("Adding tree of entity type " << entity->getMesh()->getName() << " to position x: " << position.x << " y: " << position.y << " z: " << position.z << " and scale " << scale);
-		mTreeLoader->addTree(entity, position, yaw, scale);
+		try {
+			mTreeLoader->addTree(entity, position, yaw, scale);
+		} catch (const std::exception& ex)
+		{
+			S_LOG_FAILURE("Error when adding tree: " << ex.what());
+		}
 	} else {
 		S_LOG_WARNING("Could not add tree before the forest has been initialized.");
 	}

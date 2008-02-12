@@ -42,6 +42,12 @@ namespace EmberOgre {
 
 namespace Environment {
 
+
+
+
+
+
+
 // 	Ogre::Real FoliageArea::mXinc = Ogre::Math::PI * 0.004;
 // 	Ogre::Real FoliageArea::mZinc = Ogre::Math::PI * 0.0055;
 
@@ -155,7 +161,7 @@ void FoliageArea::createGrass(Ogre::TexturePtr densityMap, Ogre::TexturePtr shad
 	
 	mGrass = new ::PagedGeometry::PagedGeometry(camera, 32);
 	mGrass->setBounds(bounds);
-	mGrass->addDetailLevel<GrassPage>(100);
+	mGrass->addDetailLevel<GrassPage>(96);
 	
 	//Create a GrassLoader object
 	mGrassLoader = new GrassLoader<GrassLayer>(mGrass);
