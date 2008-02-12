@@ -1,3 +1,35 @@
+2008-02-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/MathConverter.h: added more conversion methods
+
+2008-02-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/pagedgeometry/include/GrassLoader.h: make the call to getColorAt a template method so that it can be reimplemented in other GrassLayerBase implementations
+
+2008-02-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/Forest.cpp, src/components/ogre/environment/FoliageArea.cpp: handle exceptions better and some code cleanup
+
+2008-02-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/Foliage.cpp, src/components/ogre/environment/Foliage.h, src/components/ogre/environment/FoliageLayer.cpp, src/components/ogre/environment/FoliageLayer.h, src/components/ogre/environment/Makefile.am: added a FoliageLayer class which is a subclass of PagedGeometry and thus hooks into the paged geometry engine, providing grass locations. Instead of as before having separate paged geometry instances for each page, we now have a single instance which instead knows how to interface with the terrain classes.
+
+2008-02-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/Makefile.am, src/components/ogre/terrain/TerrainPage.cpp, src/components/ogre/terrain/TerrainPage.h, src/components/ogre/terrain/TerrainPageFoliage.cpp, src/components/ogre/terrain/TerrainPageFoliage.h: added a TerrainPageFoliage class which is responsible for handling foliage for the terrain page. Currently we generate this ourselves, but the idea is to use Mercator for this later on. We currently use a cluster approach, where a couple of randomized grass clusters are placed in the world.
+
+2008-02-10 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/pagedgeometry/source/PropertyMaps.cpp: properly cast when deleting the data
+
+2008-02-10 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/pagedgeometry/include/ImpostorPage.h, src/components/ogre/environment/pagedgeometry/source/ImpostorPage.cpp: added a preprocessor directive which turns off disc saving and loading of the imposter textures. We however now need to deal with the textures being unloaded and thus how to reload the resource.
+
+2008-02-10 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/carpenter/BluePrint.cpp: fixed compile warnings
+
 2008-02-04 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/input/Input.cpp, src/components/ogre/input/Input.h, src/components/ogre/GUIManager.cpp: added the ability to copy and paste from Ember to the system clipboard

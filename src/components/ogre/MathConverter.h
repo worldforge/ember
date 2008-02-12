@@ -60,7 +60,7 @@ Description:	Point, Vector and Quaternion converter
 	^ o.y			^ a.z
 	|			|
 	|     o.x		|      a.x
-	(o.z)--->		(-a.y)--->
+	(o.z)--->		(-a.y)--->http://mandriva.com/en/community/start
 
 	The math is:
 
@@ -192,6 +192,9 @@ inline WFMath::AxisBox<3> Ogre2Atlas(const Ogre::AxisAlignedBox& axisBox){
 	return WFMath::AxisBox<3>(WFMath::Point<3>(axisBox.getMinimum().x, axisBox.getMinimum().z, -axisBox.getMaximum().y), WFMath::Point<3>(axisBox.getMaximum().x, axisBox.getMaximum().z, -axisBox.getMinimum().y));
 }
 
+inline WFMath::AxisBox<2> Ogre2Atlas(const Ogre::TRect<Ogre::Real>& bounds){
+	return WFMath::AxisBox<2>(WFMath::Point<2>(bounds.left, -bounds.top), WFMath::Point<2>(bounds.right, -bounds.bottom));
+}
 
 }
 
