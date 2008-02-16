@@ -158,6 +158,12 @@ Ogre::TexturePtr TerrainPageShadow::getTexture()
 	return mTexture;
 }
 
+Ogre::Image* TerrainPageShadow::getImage() const
+{
+	return mImage;
+}
+
+
 void TerrainPageShadow::setShadowTechnique(ITerrainPageShadowTechnique* shadowTechnique)
 {
 	mShadowTechnique = shadowTechnique;

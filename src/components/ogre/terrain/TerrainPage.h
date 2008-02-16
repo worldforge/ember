@@ -207,6 +207,8 @@ public:
 	TerrainPageSurface* getSurface() const;
 	
 	TerrainPageFoliage* getPageFoliage() const;
+	
+	TerrainPageShadow& getPageShadow();
 
 private:
 

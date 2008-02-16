@@ -707,6 +707,12 @@ TerrainPageFoliage* TerrainPage::getPageFoliage() const
 	return mPageFoliage.get();
 }
 
+TerrainPageShadow& TerrainPage::getPageShadow()
+{
+	return mShadow;
+}
+
+
 
 void TerrainPage::addShader(TerrainShader* shader)
 {

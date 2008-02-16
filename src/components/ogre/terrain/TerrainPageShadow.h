@@ -65,6 +65,8 @@ public:
     Ogre::TexturePtr getTexture();
 	void updateShadow();
 	void createImage();
+	
+	Ogre::Image* getImage() const;
    
 protected:
 	TerrainPage& mTerrainPage;
