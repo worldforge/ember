@@ -50,7 +50,7 @@ void OgreLogObserver::messageLogged( const String& message, LogMessageLevel lml,
 {
 	static std::string ogre("(Ogre) ");
 	///if there's a problem setting material name, log as verbose as these messages are quite common and not necessarily errors since the Model format in many cases overrides the material defined in the mesh
-	if (logName == "SubEntity.setMaterialName") {
+	if (Ogre::StringUtil::startsWith(message, "Can't assign material", false)) {
 		lml = Ogre::LML_TRIVIAL;
 	}
 	switch (lml) {

@@ -1,5 +1,13 @@
 2008-02-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* src/components/ogre/OgreLogObserver.cpp: log material assignments problem as verbose since they in most cases doesn't indicate a problem as we often override the default material in the modeldef
+
+2008-02-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/FoliageLayer.cpp, src/components/ogre/terrain/TerrainPageShadow.cpp: properly cast
+
+2008-02-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* pretty much every source file in the project: include config.h if available and fix up licensing and headers
 
 2008-02-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
