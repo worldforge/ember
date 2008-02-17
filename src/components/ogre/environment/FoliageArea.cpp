@@ -354,7 +354,7 @@ void FoliageArea::frameStarted(const Ogre::Real & timeElapsed)
 //there's no need for extra data other than the x/z coordinates.
 float getTerrainHeight(const float x, const float z, void *userData){
 //	return 1;
-	return EmberOgre::getSingleton().getTerrainGenerator()->getAdapter()->getHeightAt(x, z);
+	return EmberOgre::getSingleton().getTerrainGenerator()->getHeight(TerrainPosition(x, -z));
 }
 
 }
