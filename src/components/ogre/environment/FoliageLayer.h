@@ -60,7 +60,6 @@ protected:
 	//Returns the final number of grasses, which will always be <= grassCount
 	virtual unsigned int _populateGrassList(PagedGeometry::PageInfo page, float *posBuff, unsigned int grassCount);
 	PagedGeometry::GrassLoader<FoliageLayer> *parent;
-	PagedGeometry::ColorMap *colorMap;
 
 };
 }

@@ -1,3 +1,20 @@
+
+2008-02-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/FoliageLayer.h: removed unused coverage map
+
+2008-02-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/pagedgeometry/include/GrassLoader.h, src/components/ogre/environment/pagedgeometry/source/GrassLoader.cpp: clean up code and added comments
+
+2008-02-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainPageFoliage.cpp, src/components/ogre/terrain/TerrainPageFoliage.h: when calculating the position in the bitmap, make sure to cast away the remainder for the y value first, else that will be multiplied resulting in incorrect indices for far away positions. Also added ability to create an ingame texture of the coverage map (useful for debugging).
+	
+2008-02-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/FoliageArea.cpp: get the height from Mercator instead of from the scene manager since the former is always guaranteed to exist and be exact
+
 2008-02-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/OgreLogObserver.cpp: log material assignments problem as verbose since they in most cases doesn't indicate a problem as we often override the default material in the modeldef
