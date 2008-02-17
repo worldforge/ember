@@ -20,6 +20,10 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "OpcodeCollisionDetectorVisualizer.h"
 #include "ogreopcode/include/OgreOpcodeDebugObject.h"
 #include "ogreopcode/include/OgreCollisionManager.h"
@@ -91,11 +95,16 @@ OpcodeCollisionDetectorVisualizerInstance::~OpcodeCollisionDetectorVisualizerIns
 
 void OpcodeCollisionDetectorVisualizerInstance::visualize(OgreOpcode::Details::OgreOpcodeDebugger* debugger)
 {
+	debugger->beginAABBs();
 	for (OpcodeCollisionDetector::CollisionObjectStore::iterator I = mDetector.mCollisionObjects.begin(); I != mDetector.mCollisionObjects.end(); ++I)
 	{
+	
+	
 		(*I)->getShape()->clearViz();
-		(*I)->getShape()->visualize(debugger);
+		(*I)->getShape()->visualizeAABBs(debugger);
+		//(*I)->getShape()->visualize(debugger);
 	}
+	debugger->endAABBs();
 }
 
 

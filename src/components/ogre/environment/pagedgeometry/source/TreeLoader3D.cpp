@@ -153,6 +153,11 @@ void TreeLoader3D::deleteTrees(const Ogre::Vector3 &position, Real radius, Entit
 	int maxPageZ = Math::Floor(((pos.z+radius) - gridBounds.top) / pageSize);
 	Real radiusSq = radius * radius;
 
+	if (minPageX < 0) minPageX = 0; else if (minPageX >= pageGridX) minPageX = pageGridX-1;
+	if (minPageZ < 0) minPageZ = 0; else if (minPageZ >= pageGridZ) minPageZ = pageGridZ-1;
+	if (maxPageX < 0) maxPageX = 0; else if (maxPageX >= pageGridX) maxPageX = pageGridX-1;
+	if (maxPageZ < 0) maxPageZ = 0; else if (maxPageZ >= pageGridZ) maxPageZ = pageGridZ-1;
+
 	PageGridListIterator it, end;
 	if (type == NULL){
 		//Scan all entity types
@@ -175,16 +180,16 @@ void TreeLoader3D::deleteTrees(const Ogre::Vector3 &position, Real radius, Entit
 
 				//Scan all trees in grid block
 				std::vector<TreeDef> &treeList = _getGridPage(pageGrid, tileX, tileZ);
-				std::vector<TreeDef>::iterator i;
-				for (i = treeList.begin(); i != treeList.end(); ){
+				unsigned int i = 0;
+				while (i < treeList.size()){
 					//Get tree distance
-					float distX = (gridBounds.left + (tileX * pageSize) + ((Real)i->xPos / 65535) * pageSize) - pos.x;
-					float distZ = (gridBounds.top + (tileZ * pageSize) + ((Real)i->zPos / 65535) * pageSize) - pos.z;
+					float distX = (gridBounds.left + (tileX * pageSize) + ((Real)treeList[i].xPos / 65535) * pageSize) - pos.x;
+					float distZ = (gridBounds.top + (tileZ * pageSize) + ((Real)treeList[i].zPos / 65535) * pageSize) - pos.z;
 					float distSq = distX * distX + distZ * distZ;
 
 					if (distSq <= radiusSq){
 						//If it's within the radius, delete it
-						*i = treeList.back();
+						treeList[i] = treeList.back();
 						treeList.pop_back();
 						modified = true;
 					}
@@ -327,8 +332,9 @@ void TreeIterator3D::moveNext()
 	//Preserve the last tree
 	prevTreeDat = currentTreeDat;
 
-	//Incriment iterators to the next tree
-	++currentTree;
+	//Increment iterators to the next tree
+	if (currentTree != currentTreeList->end())
+		++currentTree;
 	while (currentTree == currentTreeList->end()){
 		if (++currentX >= trees->pageGridX){
 			currentX = 0;

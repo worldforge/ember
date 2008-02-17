@@ -23,6 +23,7 @@
 #ifndef EMBEROGREINTEGRATEDCHATWIDGET_H
 #define EMBEROGREINTEGRATEDCHATWIDGET_H
 
+#include "Widget.h"
 #include "WidgetPool.h"
 #include <Eris/Entity.h>
 

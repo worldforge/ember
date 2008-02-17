@@ -20,10 +20,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef DIMEOGREINSPECTWIDGET_H
-#define DIMEOGREINSPECTWIDGET_H
+#ifndef EMBEROGREINSPECTWIDGET_H
+#define EMBEROGREINSPECTWIDGET_H
 
 #include <Eris/Entity.h>
+#include "Widget.h"
 
 namespace EmberOgre {
 class EmberEntity;

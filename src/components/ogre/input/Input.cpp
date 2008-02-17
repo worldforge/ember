@@ -20,6 +20,10 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "Input.h"
 // #include "../EmberOgre.h"
 #include "InputCommandMapper.h"
@@ -44,7 +48,7 @@ Input::Input()
 :
 mCurrentInputMode(IM_GUI)
 , mMouseState(0)
-, mTimeSinceLastRightMouseClick(1000)
+, mTimeSinceLastRightMouseClick(0)
 , mSuppressForCurrentEvent(false)
 , mMovementModeEnabled(false)
 {
@@ -223,7 +227,7 @@ void Input::pollMouse(float secondsSinceLast)
 			toggleInputMode();
 			
 		}*/
-		mTimeSinceLastRightMouseClick = 0;
+		mTimeSinceLastRightMouseClick = 0.0f;
 		//toggleInputMode();
 		EventMouseButtonReleased.emit(MouseButtonRight, mCurrentInputMode);
 	} 

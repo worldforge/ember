@@ -20,13 +20,17 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#include "Widget.h"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "InspectWidget.h"
+
 #include "ColouredListItem.h"
 #include "../GUIManager.h"
 #include "../EmberEntity.h"
 
 
-#include "InspectWidget.h"
 #include "../EmberOgre.h"
 
 #include <CEGUIWindowManager.h>

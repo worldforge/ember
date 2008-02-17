@@ -78,7 +78,7 @@ Ogre::Resource* TerrainLayerDefinitionManager::createImpl(const Ogre::String& na
 	return 0;
 }
 
-TerrainLayerDefinition* TerrainLayerDefinitionManager::getDefinitionForArea(int areaIndex)
+TerrainLayerDefinition* TerrainLayerDefinitionManager::getDefinitionForArea(unsigned int areaIndex)
 {
 	for (DefinitionStore::iterator I = mDefinitions.begin(); I != mDefinitions.end(); ++I) {
 		if ((*I)->getAreaId() == areaIndex) {

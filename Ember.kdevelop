@@ -21,7 +21,7 @@
       <useconfiguration>debug</useconfiguration>
     </general>
     <run>
-      <mainprogram>/home/erik/code/worldforge/forge/clients/ember/debug/src/components/ogre/ember.bin</mainprogram>
+      <mainprogram>/home/erik/code/worldforge/forge/clients/ember/optimized</mainprogram>
       <directoryradio>executable</directoryradio>
       <customdirectory>/home/erik/code/worldforge/forge_cvs/clients/ember/src/components/ogre/</customdirectory>
       <programargs>--prefix $HOME/opt/worldforge --binrelocloading__ ---home $HOME/ember/home ---home $HOME/.ember</programargs>
@@ -51,7 +51,9 @@
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevpghpfoptions</f77compiler>
         <cxxflags>-O2 -g0</cxxflags>
-        <envvars/>
+        <envvars>
+          <envvar value="/home/erik/opt/ogre_1.4.0/lib/pkgconfig:/home/erik/opt/cegui_0.5.0/lib/pkgconfig:/home/erik/opt/worldforge/lib/pkgconfig:$PKG_CONFIG_PATH" name="PKG_CONFIG_PATH" />
+        </envvars>
         <configargs>--prefix=$HOME/opt/worldforge --enable-final=yes</configargs>
         <topsourcedir/>
         <cppflags/>
@@ -70,7 +72,7 @@
         <f77compiler>kdevpghpfoptions</f77compiler>
         <cxxflags>-O0 -g3 -Wall</cxxflags>
         <envvars>
-          <envvar value="/home/erik/opt/ogre_1.4.0/lib/pkgconfig:/home/erik/opt/cegui_0.5.0/lib/pkgconfig:/home/erik/opt/worldforge/lib/pkgconfig:$PKG_CONFIG_PATH" name="PKG_CONFIG_PATH" />
+          <envvar value="/home/erik/opt/worldforge/lib/pkgconfig:$PKG_CONFIG_PATH" name="PKG_CONFIG_PATH" />
         </envvars>
         <topsourcedir/>
         <cppflags/>
@@ -174,6 +176,7 @@
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
+      <raiseGDBOnStart>false</raiseGDBOnStart>
     </general>
     <display>
       <staticmembers>false</staticmembers>
@@ -243,7 +246,9 @@
     <revertoptions>-C</revertoptions>
   </kdevcvsservice>
   <kdevcppsupport>
-    <references/>
+    <references>
+      <pcs>all</pcs>
+    </references>
     <codecompletion>
       <includeGlobalFunctions>true</includeGlobalFunctions>
       <includeTypes>true</includeTypes>
@@ -259,22 +264,24 @@
       <completionBoxItemOrder>0</completionBoxItemOrder>
       <howEvaluationContextMenu>true</howEvaluationContextMenu>
       <showCommentWithArgumentHint>true</showCommentWithArgumentHint>
-      <statusBarTypeEvaluation>false</statusBarTypeEvaluation>
+      <statusBarTypeEvaluation>true</statusBarTypeEvaluation>
       <namespaceAliases>std=_GLIBCXX_STD;__gnu_cxx=std</namespaceAliases>
       <processPrimaryTypes>true</processPrimaryTypes>
-      <processFunctionArguments>false</processFunctionArguments>
-      <preProcessAllHeaders>false</preProcessAllHeaders>
+      <processFunctionArguments>true</processFunctionArguments>
+      <preProcessAllHeaders>true</preProcessAllHeaders>
       <parseMissingHeaders>false</parseMissingHeaders>
       <resolveIncludePaths>true</resolveIncludePaths>
       <alwaysParseInBackground>true</alwaysParseInBackground>
       <usePermanentCaching>true</usePermanentCaching>
       <alwaysIncludeNamespaces>false</alwaysIncludeNamespaces>
       <includePaths>.;</includePaths>
+      <parseMissingHeadersExperimental>false</parseMissingHeadersExperimental>
+      <resolveIncludePathsUsingMakeExperimental>false</resolveIncludePathsUsingMakeExperimental>
     </codecompletion>
     <creategettersetter>
       <prefixGet>get</prefixGet>
       <prefixSet>set</prefixSet>
-      <prefixVariable>m,_</prefixVariable>
+      <prefixVariable>m</prefixVariable>
       <parameterName>theValue</parameterName>
       <inlineGet>true</inlineGet>
       <inlineSet>true</inlineSet>

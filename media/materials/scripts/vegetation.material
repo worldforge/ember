@@ -334,25 +334,40 @@ material /global/environment/ground/leaf_covered/ground :  /base/normalmap
 	set_texture_alias NormalHeightMap 3d_objects/environment/ground/textures/leaf_covered/ground_normals.png
 }
 
-material /global/plants/field/heartblood : /base/wavinggrass
+material /global/plants/grass/heartblood : /base/wavinggrass
 {
 	set_texture_alias DiffuseMap 3d_objects/plants/grass/textures/heartblood/heartblood.png
 }
 
-material /global/plants/field/bittergrass : /base/wavinggrass
+material /global/plants/grass/bittergrass : /base/wavinggrass
 {
 	set_texture_alias DiffuseMap 3d_objects/plants/grass/textures/bittergrass/bittergrass.png
 }
 
-material /global/plants/field/thingrass : /base/wavinggrass
+material /global/plants/grass/bittergrass/single : /base/simple/nonculled/alphablended
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/grass/textures/bittergrass/bittergrass_single.png
+	technique
+	{
+		pass
+		{
+			alpha_rejection greater_equal 128
+			//depth_write off
+		}
+	}
+}
+
+
+material /global/plants/grass/thingrass : /base/wavinggrass
 {
 	set_texture_alias DiffuseMap 3d_objects/plants/grass/textures/thingrass/thingrass.png
 }
 
-material /global/plants/field/teardrops : /base/wavinggrass
+material /global/plants/grass/teardrops : /base/wavinggrass
 {
 	set_texture_alias DiffuseMap 3d_objects/plants/grass/textures/teardrops/teardrops.png
 }
+
 
 material /global/plants/shrubs/fern :  /base/normalmap/specular/nonculled/alpharejected
 {

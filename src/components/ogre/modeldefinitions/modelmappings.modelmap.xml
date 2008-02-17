@@ -350,7 +350,14 @@
 	</modelmapping>	
 	<automodelmapping name="inn" />
 	<automodelmapping name="outerwall" />
-	<automodelmapping name="mausoleum" />
+	<modelmapping name="mausoleum">
+		<entitymatch>
+			<case>
+				<caseparam type="equals">mausoleum</caseparam>
+				<action type="display-model">temple</action>
+			</case>
+		</entitymatch>
+	</modelmapping> 
 	<automodelmapping name="tower" />
 	<automodelmapping name="gallows" />
 

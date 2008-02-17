@@ -20,6 +20,10 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "OgreResourceLoader.h"
 #include "services/EmberServices.h"
 #include "services/logging/LoggingService.h"
@@ -224,6 +228,14 @@ void OgreResourceLoader::loadSection(const std::string& sectionName)
 		if (mediaAdded) {
 			try {
 				Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup(sectionName);
+/*			} catch (const Ogre::ItemIdentityException& ex) {
+				if (ex.getNumber() == Ogre::ERR_DUPLICATE_ITEM) {
+					const std::string& message(ex.getDescription());
+					size_t pos = std::string("Resource with the name ").length();
+					std::string resourceName = message.substr(pos, message.find_first_of(' ', pos) - pos);
+					
+				}
+				*/
 			} catch (const Ogre::Exception& ex) {
 				S_LOG_FAILURE("An error occurred when loading media from section '" << sectionName << "'. Message:\n\t"<< ex.getFullDescription());
 			} catch (const std::exception& ex) {

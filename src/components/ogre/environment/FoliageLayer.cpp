@@ -32,6 +32,7 @@
 #include "../terrain/TerrainGenerator.h"
 #include "../terrain/TerrainPageFoliage.h"
 #include "../terrain/TerrainPage.h"
+#include "../terrain/TerrainPageShadow.h"
 #include "services/EmberServices.h"
 #include "services/logging/LoggingService.h"
 #include <wfmath/intersect.h>
@@ -98,8 +99,24 @@ unsigned int FoliageLayer::_populateGrassList(PageInfo page, float *posBuff, uns
 	return finalGrassCount;
 }
 
-Ogre::uint32 FoliageLayer::_getColorAt(float x, float z)
+Ogre::uint32 FoliageLayer::getColorAt(float x, float z)
 {
+	//TODO: add caching of the last fetched terrain page and first check if the position isn't at that page, since we'll in most cass will call this method with positions that are close to eachother
+	TerrainPosition wfPos(x, -z);
+	TerrainPage* terrainPage = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(wfPos);
+	TerrainPageShadow& terrainShadow = terrainPage->getPageShadow();
+	Ogre::Image* image = terrainShadow.getImage();
+	if (image) {
+		Ogre::TRect<float> ogrePageExtent = Atlas2Ogre(terrainPage->getExtent());
+		unsigned int adjustedX = static_cast<unsigned int>(x - ogrePageExtent.left);
+		unsigned int adjustedZ = static_cast<unsigned int>(z - ogrePageExtent.top);
+		unsigned char val(image->getData()[static_cast<size_t>((image->getWidth() * adjustedZ) + adjustedX)]);
+		
+		Ogre::uint8 aVal[4] = {val, val, val, 0xFF}; ///use full alpha
+		return *aVal;
+	}
+	return 0;
+
 }
 
 

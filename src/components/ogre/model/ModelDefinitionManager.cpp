@@ -22,7 +22,9 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
-//perhaps this will make it build in debug mode without getting memory manager compile errors...
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include "ModelDefinitionManager.h"
 #include "ModelDefinition.h"

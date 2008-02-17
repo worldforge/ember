@@ -1,5 +1,6 @@
 /*
     Copyright (C) 2002  Miguel Guzman Miranda [Aglanor]
+    Copyright (C) 2005	Erik Hjortsberg
     Based on YUP::Metacmd code by Adam Wendt
 
     This program is free software; you can redistribute it and/or modify
@@ -16,6 +17,10 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include "MetaserverService.h"
 

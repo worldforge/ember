@@ -4,6 +4,7 @@
 		<layer shadername="sand" diffusetexture="3d_objects/environment/ground/textures/sand/sand_AD.png" normalmaptexture="3d_objects/environment/ground/textures/sand/sand_AN.png" tilesize="8">
 		</layer>
 		<layer shadername="grass" diffusetexture="3d_objects/environment/ground/textures/grass/grassD.png" normalmaptexture="3d_objects/environment/ground/textures/grass/grassN.png" tilesize="8">
+			<foliage material="grass" />
 		</layer>
 		<layer shadername="snow" diffusetexture="snow.png" normalmaptexture="" tilesize="8">
 		</layer>
@@ -13,7 +14,7 @@
 		</layer>
 		<layer areaindex="6" diffusetexture="3d_objects/environment/ground/textures/leaf_covered/ground.png" normalmaptexture="3d_objects/environment/ground/textures/leaf_covered/ground_normals.png" tilesize="8">
 		</layer>
-		<layer areaindex="7" diffusetexture="3d_objects/environment/ground/textures/dirt/dirt.png" normalmaptexture="3d_objects/environment/ground/textures/dirt/dirt_bump.png" tilesize="8">
+		<layer areaindex="7" diffusetexture="3d_objects/environment/ground/textures/dirt/super_dry_dirt.png" normalmaptexture="3d_objects/environment/ground/textures/dirt/dirt_bump.png" tilesize="4">
 		</layer>
 		<layer areaindex="8" diffusetexture="3d_objects/environment/ground/textures/plowed_field/low/plowed_field_diffuse.png" normalmaptexture="3d_objects/environment/ground/textures/plowed_field/plowed_field_normals.png" tilesize="8">
 		</layer>

@@ -20,6 +20,10 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "OgreLogObserver.h"
 
 #include "services/EmberServices.h"
@@ -45,6 +49,10 @@ OgreLogObserver::~OgreLogObserver()
 void OgreLogObserver::messageLogged( const String& message, LogMessageLevel lml, bool maskDebug, const String &logName )	
 {
 	static std::string ogre("(Ogre) ");
+	///if there's a problem setting material name, log as verbose as these messages are quite common and not necessarily errors since the Model format in many cases overrides the material defined in the mesh
+	if (logName == "SubEntity.setMaterialName") {
+		lml = Ogre::LML_TRIVIAL;
+	}
 	switch (lml) {
 		case Ogre::LML_TRIVIAL:
 			Ember::EmberServices::getSingletonPtr()->getLoggingService()->log("Ogre", Ember::LoggingService::VERBOSE,  (ogre + message).c_str());

@@ -23,6 +23,14 @@
 #ifndef EMBEROGRE_TERRAINTERRAINPAGEFOLIAGE_H
 #define EMBEROGRE_TERRAINTERRAINPAGEFOLIAGE_H
 
+#include <vector>
+#include <OgreCommon.h>
+namespace Ogre
+{
+class MemoryDataStream;
+class Vector2;
+}
+
 namespace EmberOgre {
 
 namespace Terrain {

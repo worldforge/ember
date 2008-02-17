@@ -51,13 +51,7 @@ public:
 	 */
 	virtual unsigned int calculateMaxGrassCount(float densityFactor, float volume);
 	
-	inline Ogre::uint32 getColorAt(float x, float z)
-	{
-/*		if (colorMap)
-			return colorMap->getColorAt(x, z);
-		else*/
-			return 0xFFFFFFFF;
-	}	
+	Ogre::uint32 getColorAt(float x, float z);
 	
 protected: 
 	friend class PagedGeometry::GrassLoader<FoliageLayer>;
@@ -67,7 +61,6 @@ protected:
 	virtual unsigned int _populateGrassList(PagedGeometry::PageInfo page, float *posBuff, unsigned int grassCount);
 	PagedGeometry::GrassLoader<FoliageLayer> *parent;
 	PagedGeometry::ColorMap *colorMap;
-	Ogre::uint32 _getColorAt(float x, float z);
 
 };
 }

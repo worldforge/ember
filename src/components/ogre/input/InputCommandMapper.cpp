@@ -21,6 +21,10 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "InputCommandMapper.h"
 #include "framework/ConsoleBackend.h"
 #include "services/EmberServices.h"

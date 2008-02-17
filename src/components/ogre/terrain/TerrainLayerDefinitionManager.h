@@ -54,7 +54,7 @@ public:
     
     const DefinitionStore& getDefinitions() const;
     
-    TerrainLayerDefinition* getDefinitionForArea(int areaIndex);
+    TerrainLayerDefinition* getDefinitionForArea(unsigned int areaIndex);
     TerrainLayerDefinition* getDefinitionForShader(const std::string& shaderType);
     
 protected:

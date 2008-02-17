@@ -1,5 +1,6 @@
 /*-------------------------------------------------------------------------------------
 Copyright (c) 2006 John Judnich
+Modified 2008 by Erik Hjortsberg (erik.hjortsberg@iteam.se)
 
 This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
 Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
@@ -857,11 +858,7 @@ Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_QUAD(PageInfo &page, TGrassL
 		float z = *posPtr++;
 
 		//Get the color at the grass position
-		Ogre::uint32 color;
-		if (layer->colorMap)
-			color = layer->colorMap->getColorAt(x, z);
-		else
-			color = 0xFFFFFFFF;
+		Ogre::uint32 color(layer->getColorAt(x, z));
 
 		//Calculate size
 		float rnd = Ogre::Math::UnitRandom();	//The same rnd value is used for width and height to maintain aspect ratio
@@ -1185,11 +1182,7 @@ Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_SPRITE(PageInfo &page, TGras
 		float z1 = (z - page.centerPoint.z);
 
 		//Get the color at the grass position
-		Ogre::uint32 color;
-		if (layer->colorMap)
-			color = layer->colorMap->getColorAt(x, z);
-		else
-			color = 0xFFFFFFFF;
+		Ogre::uint32 color(layer->getColorAt(x, z));
 
 		//Calculate size
 		float rnd = Ogre::Math::UnitRandom();	//The same rnd value is used for width and height to maintain aspect ratio

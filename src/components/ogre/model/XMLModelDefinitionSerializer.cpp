@@ -22,6 +22,10 @@
 -------------------------------------------------------------------------------
 */
 // Includes
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "XMLModelDefinitionSerializer.h"
 #include "ModelDefinition.h"
 #include "Model.h"

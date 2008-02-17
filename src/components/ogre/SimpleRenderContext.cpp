@@ -20,6 +20,10 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "SimpleRenderContext.h"
 
 #include "EmberOgre.h"
@@ -65,11 +69,17 @@ SimpleRenderContext::SimpleRenderContext(const std::string& prefix, int width, i
 	createCamera(prefix);
 	createImage(prefix);
 	//setVisible(false);
+	Ogre::ColourValue colour(0.5, 0.5, 0.5);
 	mMainLight = mSceneManager->createLight("MainLight");
   	mMainLight->setType(Ogre::Light::LT_DIRECTIONAL);
 	mMainLight->setDirection(Ogre::Vector3(-1,0,0));
-	mSceneManager->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
-	mCameraPitchNode->attachObject(mMainLight);
+	mMainLight->setPowerScale (10);	// REALLY bright.
+	mMainLight->setDiffuseColour (colour);
+	mMainLight->setSpecularColour (colour);
+	mMainLight->setVisible(true);
+
+	mSceneManager->setAmbientLight(colour);
+// 	mCameraPitchNode->attachObject(mMainLight);
 	
 	resetCameraOrientation();
 }

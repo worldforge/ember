@@ -353,11 +353,29 @@ material /global/items/building_element/cg_roof/thached_roof_straw : /base/simpl
 }
 
 
+material /global/items/building_element/temple/Temple_Base : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/temple/Temple_BaseD.png
+	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/temple/Temple_BaseN.png
+	set_texture_alias SpecularMap 3d_objects/items/building_element/textures/temple/Temple_BaseS.png
+}
+
+material /global/items/building_element/temple/Temple_Main : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/temple/Temple_MainD.png
+	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/temple/Temple_MainN.png
+	set_texture_alias SpecularMap 3d_objects/items/building_element/textures/temple/Temple_MainS.png
+}
+
+material /global/items/building_element/temple/Temple_Roof : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/temple/Temple_RoofD.png
+	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/temple/Temple_RoofN.png
+	set_texture_alias SpecularMap 3d_objects/items/building_element/textures/temple/Temple_RoofS.png
+}
 
 
-
-
-
+file:///home/erik/ember/media/common/3d_objects/items/building_element/textures/temple/Temple_BaseD.png
 
 
 

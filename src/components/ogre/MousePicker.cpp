@@ -21,6 +21,10 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "EmberEntity.h"
 #include "EmberOgre.h"
 //#include "EmberPhysicalEntity.h"

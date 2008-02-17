@@ -20,6 +20,10 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "OpcodeCollisionDetector.h"
 #include "ogreopcode/include/OgreCollisionManager.h"
 #include "ogreopcode/include/OgreEntityCollisionShape.h"
@@ -110,7 +114,12 @@ void OpcodeCollisionDetector::testCollision(Ogre::Ray& ray, CollisionResult& res
 		OgreOpcode::ICollisionShape* collisionShape = (*I)->getShape();
 		OgreOpcode::CollisionPair pick_result;
 		
-		if (collisionShape->rayCheck(OgreOpcode::COLLTYPE_QUICK, mModel->_getParentNodeFullTransform(), ray, 1000.0f, pick_result, false)) {
+// 		(*I)->update(1);
+		//collisionShape->setTransform( mModel->_getParentNodeFullTransform());
+		if (collisionShape->rayCheck(OgreOpcode::COLLTYPE_CONTACT, (*I)->getTransform(), ray, 1000.0f, pick_result, false)) {
+		
+		
+/*		if (collisionShape->rayCheck(OgreOpcode::COLLTYPE_CONTACT, mModel->_getParentNodeFullTransform(), ray, 1000.0f, pick_result, false)) {*/
 			result.collided = true;
 			result.distance = pick_result.distance;
 			result.position = pick_result.contact;

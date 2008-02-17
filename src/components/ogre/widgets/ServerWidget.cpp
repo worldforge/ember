@@ -20,6 +20,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "ServerWidget.h"
 
 #include "services/server/ServerService.h"
 #include <Eris/Metaserver.h>
@@ -29,11 +34,9 @@
 #include <Eris/TypeService.h>
 #include "services/EmberServices.h"
 
-#include "Widget.h"
 #include "ColouredListItem.h"
 #include "../GUIManager.h"
 
-#include "ServerWidget.h"
 
 #include <elements/CEGUIListbox.h> 
 #include <elements/CEGUIListboxItem.h> 

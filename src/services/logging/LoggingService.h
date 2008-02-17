@@ -1,5 +1,6 @@
 /*
 	Copyright (C) 2002  Tim Enderling
+    Copyright (C) 2005	Erik Hjortsberg
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by

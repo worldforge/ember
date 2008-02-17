@@ -1,5 +1,6 @@
 /*-------------------------------------------------------------------------------------
 Copyright (c) 2006 John Judnich
+Modified 2008 by Erik Hjortsberg (erik.hjortsberg@iteam.se)
 
 This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
 Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
@@ -484,22 +485,31 @@ void ImpostorTexture::renderTextures(bool force)
 	
 	//Only render the entity
 	sceneMgr->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_INCLUDE); 
-	sceneMgr->addSpecialCaseRenderQueue(RENDER_QUEUE_6);
+	sceneMgr->addSpecialCaseRenderQueue(RENDER_QUEUE_6 + 1);
 
 	uint8 oldRenderQueueGroup = entity->getRenderQueueGroup();
-	entity->setRenderQueueGroup(RENDER_QUEUE_6);
+	entity->setRenderQueueGroup(RENDER_QUEUE_6 + 1);
 	bool oldVisible = entity->getVisible();
 	entity->setVisible(true);
 	float oldMaxDistance = entity->getRenderingDistance();
 	entity->setRenderingDistance(0);
 
 	bool needsRegen = true;
-	String fileName = "Impostor." + removeInvalidCharacters(entity->getMesh()->getGroup())
-		+ '.' + removeInvalidCharacters(entityKey)
-		+ '.' + StringConverter::toString(textureSize) + ".png";
 #if IMPOSTOR_FILE_SAVE
-	//Calculate the filename used to identity this render
+	//Calculate the filename used to uniquely identity this render
+	String strKey = entityKey;
+	char key[32] = {0};
+	unsigned int i = 0;
+	for (String::const_iterator it = entityKey.begin(); it != entityKey.end(); ++it)
+	{
+		key[i] ^= *it;
+		i = (i+1) % sizeof(key);
+	}
+	for (i = 0; i < sizeof(key); ++i)
+		key[i] = (key[i] % 26) + 'A';
+
 	ResourceGroupManager::getSingleton().addResourceLocation(".", "FileSystem", "BinFolder");
+	String fileName = "Impostor." + String(key, sizeof(key)) + '.' + StringConverter::toString(textureSize) + ".png";
 
 	//Attempt to load the pre-render file if allowed
 	needsRegen = force;
@@ -551,7 +561,7 @@ void ImpostorTexture::renderTextures(bool force)
 	entity->setVisible(oldVisible);
 	entity->setRenderQueueGroup(oldRenderQueueGroup);
 	entity->setRenderingDistance(oldMaxDistance);
-	sceneMgr->removeSpecialCaseRenderQueue(RENDER_QUEUE_6);
+	sceneMgr->removeSpecialCaseRenderQueue(RENDER_QUEUE_6 + 1);
 	sceneMgr->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_EXCLUDE); 
 
 	//Re-enable mipmapping

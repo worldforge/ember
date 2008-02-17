@@ -3,10 +3,6 @@
 //
 // Description: 
 //
-//#include "TerrainPageSurfaceLayer.h"
-#include "TerrainPageSurface.h"
-#include "TerrainLayerDefinition.h"
-
 // Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2008
 //
 // This program is free software; you can redistribute it and/or modify

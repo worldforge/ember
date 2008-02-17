@@ -20,6 +20,10 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "services/EmberServices.h"
 #include "services/logging/LoggingService.h"
 #include "services/config/ConfigService.h"
@@ -147,7 +151,7 @@ void Foliage::createGrass()
 	mGrassLoader->setHeightFunction(&getTerrainHeight);
 
 	//Add some grass to the scene with GrassLoader::addLayer()
-	FoliageLayer *l = mGrassLoader->addLayer("grass");
+	FoliageLayer *l = mGrassLoader->addLayer("/global/plants/grass/bittergrass/single");
 	
 	//Configure the grass layer properties (size, density, animation properties, fade settings, etc.)
 	l->setMinimumSize(1.0f, 1.0f);

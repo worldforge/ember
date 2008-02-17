@@ -20,6 +20,10 @@ IMPORTANT: Note that this progress bar relies on you having the OgreCore.zip
 package already added to a resource group called 'Bootstrap' - this provides
 the basic resources required for the progress bar and will be loaded automatically.
 */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "LoadingBar.h"
 
 #include "services/EmberServices.h"

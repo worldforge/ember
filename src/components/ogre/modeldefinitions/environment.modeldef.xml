@@ -77,7 +77,7 @@
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/field/bittergrass" />
+                            <subentity index="0" material="/global/plants/grass/bittergrass" />
                         </subentities>
                     </part>
                 </parts>

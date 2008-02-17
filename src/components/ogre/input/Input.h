@@ -326,7 +326,7 @@ protected:
 	the amount of time since the last right mouse click
 	used for detecting double clicks
 	*/
-	uint32_t mTimeSinceLastRightMouseClick;
+	float mTimeSinceLastRightMouseClick;
 	
 	uint32_t mLastTick;
 

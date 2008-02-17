@@ -1,3 +1,11 @@
+2008-02-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* pretty much every source file in the project: include config.h if available and fix up licensing and headers
+
+2008-02-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainPage.cpp, src/components/ogre/terrain/TerrainPage.h, src/components/ogre/terrain/TerrainPageShadow.cpp, src/components/ogre/terrain/TerrainPageShadow.h: added better methods for accessing the shadow information
+
 2008-02-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/MathConverter.h: added more conversion methods

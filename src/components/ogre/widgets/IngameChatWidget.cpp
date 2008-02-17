@@ -21,9 +21,12 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
+#include "IngameChatWidget.h"
 
-#include "Widget.h"
 #include "../GUIManager.h"
 #include "../EmberEntity.h"
 
@@ -34,13 +37,11 @@
 #include <elements/CEGUIListboxTextItem.h> 
 #include <elements/CEGUIPushButton.h>
 #include <elements/CEGUIGUISheet.h>
-#include <Eris/Entity.h>
 #include <Eris/View.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/TypeService.h>
 #include <Eris/Connection.h>
 #include <Eris/Avatar.h>
-#include "IngameChatWidget.h"
 
 #include "../EmberOgre.h"
 #include "../AvatarCamera.h"
