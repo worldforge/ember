@@ -70,7 +70,7 @@ FoliageLayer::~FoliageLayer()
 
 unsigned int FoliageLayer::calculateMaxGrassCount(float densityFactor, float volume)
 {
-	return densityFactor * volume;
+	return static_cast<unsigned int>(densityFactor * volume);
 }
 
 unsigned int FoliageLayer::_populateGrassList(PageInfo page, float *posBuff, unsigned int grassCount)
@@ -112,8 +112,9 @@ Ogre::uint32 FoliageLayer::getColorAt(float x, float z)
 		unsigned int adjustedZ = static_cast<unsigned int>(z - ogrePageExtent.top);
 		unsigned char val(image->getData()[static_cast<size_t>((image->getWidth() * adjustedZ) + adjustedX)]);
 		
+		///construct a 32 bit value from an array of four 8 chars
 		Ogre::uint8 aVal[4] = {val, val, val, 0xFF}; ///use full alpha
-		return *aVal;
+		return *((Ogre::uint32*)aVal);
 	}
 	return 0;
 

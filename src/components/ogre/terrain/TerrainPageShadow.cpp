@@ -71,7 +71,7 @@ void SimpleTerrainPageShadowTechnique::createShadowData(TerrainPage& page, Terra
 // 				}
 				
 				/// if the dotProduct is > 0, the face is looking away from the sun
-				*data = (1.0f - ((dotProduct + 1.0f) * 0.5f)) * 255;
+				*data = static_cast<unsigned char>((1.0f - ((dotProduct + 1.0f) * 0.5f)) * 255);
 
 
 			} else {
