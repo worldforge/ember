@@ -55,8 +55,16 @@ class GrassLayerBase;
 Using a GrassLoader is simple - simply create an instance, attach it to your PagedGeometry object
 with PagedGeometry::setPageLoader(), and add your grass. Important: For best performance, it is
 recommended that you use GrassPage (included in GrassLoader.h) to display geometry loaded by GrassLoader.
+
 This page type is designed for best performance with this grass system. BatchPage
 will work, although performance will be reduced slightly, and ImpostorPage will run extremely slow.
+
+When creating a GrassLoader you must specify the class which will be used for creating layers. By default a GrassLayer class is provided, which can be used as this:
+\code
+	::PagedGeometry::GrassLoader<GrassLayer> loader = new ::PagedGeometry::GrassLoader<GrassLayer>(grass);
+\endcode
+It's also possible for you to provide your own GrassLayer implementation by overriding the class GrassLayerBase. This will allow you to have much more control over how the grass is placed.
+
 
 To add grass, just call addLayer(). addLayer() returns a GrassLayer object pointer, which you should
 use to further configure your newly added grass. Properties like size, density, color, animation, etc.
@@ -555,6 +563,13 @@ public:
 	 */
 	virtual unsigned int calculateMaxGrassCount(float densityFactor, float volume);
 	
+	
+	/**
+	 *    If there's a colormap registered use that for lookup, else return fullbright.
+	 * @param x 
+	 * @param z 
+	 * @return 
+	 */
 	inline Ogre::uint32 getColorAt(float x, float z)
 	{
 		if (colorMap)
@@ -636,39 +651,6 @@ private:
 		return "GrassPage" + Ogre::StringConverter::toString(++GUID);
 	}
 };
-
-
-// class IGrassPopulator
-// {
-// public:
-// 	//Used by GrassLoader::loadPage() - populates an array with a uniform distribution of grass
-// 	//Returns the final number of grasses, which will always be <= grassCount
-// 	virtual unsigned int populateGrassList(PageInfo page, float *posBuff, unsigned int grassCount) = 0;
-// };
-// 
-// class GrassPopulatorUniform : public IGrassPopulator
-// {
-// public:
-// 	//Used by GrassLoader::loadPage() - populates an array with a uniform distribution of grass
-// 	//Returns the final number of grasses, which will always be <= grassCount
-// 	virtual unsigned int populateGrassList(PageInfo page, float *posBuff, unsigned int grassCount);
-// };
-// 
-// class GrassPopulatorUnfilteredDM : public IGrassPopulator
-// {
-// public:
-// 	//Used by GrassLoader::loadPage() - populates an array with a uniform distribution of grass
-// 	//Returns the final number of grasses, which will always be <= grassCount
-// 	virtual unsigned int populateGrassList(PageInfo page, float *posBuff, unsigned int grassCount);
-// };
-// 
-// class GrassPopulatorBilinearDM : public IGrassPopulator
-// {
-// public:
-// 	//Used by GrassLoader::loadPage() - populates an array with a uniform distribution of grass
-// 	//Returns the final number of grasses, which will always be <= grassCount
-// 	virtual unsigned int populateGrassList(PageInfo page, float *posBuff, unsigned int grassCount);
-// };
 
 template <class TGrassLayer>
 GrassLoader<TGrassLayer>::GrassLoader(PagedGeometry *geom)

@@ -84,9 +84,9 @@ unsigned int GrassLayer::_populateGrassList(PageInfo page, float *posBuff, unsig
 			return _populateGrassList_UnfilteredDM(page, posBuff, grassCount);
 		else if (densityMap->getFilter() == MAPFILTER_BILINEAR)
 			return _populateGrassList_BilinearDM(page, posBuff, grassCount);
-	} else {
-		return _populateGrassList_Uniform(page, posBuff, grassCount);
 	}
+	return _populateGrassList_Uniform(page, posBuff, grassCount);
+	
 }
 
 void GrassLayerBase::setMaterialName(const String &matName)
