@@ -48,7 +48,7 @@ TerrainPageFoliage::TerrainPageFoliage(TerrainGenerator& generator, TerrainPage&
 
 TerrainPageFoliage::~TerrainPageFoliage()
 {
-	delete mFoliageCoverageDataStream;
+// 	delete mFoliageCoverageDataStream;
 }
 
 
@@ -96,6 +96,7 @@ void TerrainPageFoliage::generateCoverageMap()
 {
 	if (!mFoliageCoverageDataStream) {
 		mFoliageCoverageDataStream = new Ogre::MemoryDataStream(mTerrainPage.getAlphaTextureSize() * mTerrainPage.getAlphaTextureSize() * 1, true);
+		mFoliageCoverageDataStreamPtr = Ogre::DataStreamPtr(mFoliageCoverageDataStream);
 	}
 	
 	size_t foliageBufferSize =  mFoliageCoverageDataStream->size();
@@ -122,6 +123,14 @@ void TerrainPageFoliage::generateCoverageMap()
 			}
 		}
 	}
+	
+///activate this if you want to see the texture in game (to get debug information etc.)
+#if 0
+	std::stringstream ss;
+	ss << "terrain_" << mTerrainPage.getWFPosition().x() << "_" << mTerrainPage.getWFPosition().y() << "_plantCoverage";
+	const Ogre::String textureName(ss.str());
+	Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(textureName, "General", mFoliageCoverageDataStreamPtr, mTerrainPage.getAlphaTextureSize(), mTerrainPage.getAlphaTextureSize(), Ogre::PF_L8, Ogre::TEX_TYPE_2D, 0);
+#endif
 }
 
 
@@ -135,7 +144,8 @@ void TerrainPageFoliage::getPlantsForArea(Ogre::TRect<float> area, TerrainPageFo
 	unsigned char threshold = 100;
 	for (PlantStore::iterator I = mPlants.begin(); I != mPlants.end(); ++I) {
 		if (I->x >= area.left && I->x <= area.right && I->y >= area.top && I->y <= area.bottom) {
-			unsigned char val(mFoliageCoverageDataStream->getPtr()[static_cast<size_t>((mTerrainPage.getAlphaTextureSize() * I->y) + I->x)]);
+			size_t position = static_cast<size_t>((mTerrainPage.getAlphaTextureSize() * static_cast<unsigned int>(I->y)) + static_cast<unsigned int>(I->x));
+			unsigned char val(mFoliageCoverageDataStream->getPtr()[position]);
 			if (val >= threshold) {
 				store.push_back(*I);
 			}

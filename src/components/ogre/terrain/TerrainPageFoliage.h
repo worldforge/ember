@@ -25,6 +25,9 @@
 
 #include <vector>
 #include <OgreCommon.h>
+#include <OgreSharedPtr.h>
+#include <OgreDataStream.h>
+
 namespace Ogre
 {
 class MemoryDataStream;
@@ -68,6 +71,7 @@ protected:
 	*we need to create a new lookup image for where grass should be placed. This should be based on the core grass coverage image, but with all layers that are above it substracted. Thus grass won't show up on roads and fields
 	*/
 	Ogre::MemoryDataStream* mFoliageCoverageDataStream;
+	Ogre::DataStreamPtr mFoliageCoverageDataStreamPtr;
 
 };
 
