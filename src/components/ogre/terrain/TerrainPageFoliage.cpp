@@ -77,13 +77,16 @@ TerrainPageFoliage::~TerrainPageFoliage()
 void TerrainPageFoliage::generatePlantPositions()
 {
 	
+	std::string plantType("grass");
+	PlantStore& plants = mPlantStores[plantType];
+
 	float minClusterRadius = 2;
 	float maxClusterRadius = 10;
 	unsigned int clustersPerPage = 400;
 	float density = 2.0f;
 	float falloff = 0.3;
 	
-	mPlants.clear();
+	plants.clear();
 	
 	
 	for (unsigned int i = 0; i < clustersPerPage; ++i) {
@@ -103,11 +106,11 @@ void TerrainPageFoliage::generatePlantPositions()
 			float plantY = Ogre::Math::RangeRandom(-clusterRadius, clusterRadius) + clusterY;
 			
 			if (plantX >= 0 && plantX < mCoverageMapPixelWidth && plantY >= 0 && plantY < mCoverageMapPixelWidth) {
-				mPlants.push_back(Ogre::Vector2(plantX, plantY));
+				plants.push_back(Ogre::Vector2(plantX, plantY));
 			}
 		}
 	}
-	S_LOG_VERBOSE("Placed " << mPlants.size() << " plants.");
+	S_LOG_VERBOSE("Placed " << plants.size() << " plants.");
 }
 
 void TerrainPageFoliage::generateCoverageMap()
@@ -159,16 +162,17 @@ void TerrainPageFoliage::generateCoverageMap()
 }
 
 
-const TerrainPageFoliage::PlantStore& TerrainPageFoliage::getPlants() const
+const TerrainPageFoliage::PlantStoreMap& TerrainPageFoliage::getPlants() const
 {
-	return mPlants;
+	return mPlantStores;
 }
 
-void TerrainPageFoliage::getPlantsForArea(Ogre::TRect<float> area, TerrainPageFoliage::PlantStore& store)
+void TerrainPageFoliage::getPlantsForArea(const std::string& plantType, Ogre::TRect<float> area, TerrainPageFoliage::PlantStore& store)
 {
 	unsigned char threshold = 100;
 	TerrainPosition localPositionInSegment;
-	for (PlantStore::iterator I = mPlants.begin(); I != mPlants.end(); ++I) {
+	PlantStore& plants = mPlantStores[plantType];
+	for (PlantStore::iterator I = plants.begin(); I != plants.end(); ++I) {
 		if (I->x >= area.left && I->x <= area.right && I->y >= area.top && I->y <= area.bottom) {
 			
 			#if 1
@@ -186,13 +190,13 @@ void TerrainPageFoliage::getPlantsForArea(Ogre::TRect<float> area, TerrainPageFo
 				if (grassLayer) {
 					Mercator::Surface* surface = J->second->getSurfaceForSegment(segment);
 					if (surface && surface->isValid()) {
-						unsigned char localCoverage((*surface)(localPositionInSegment.x(), localPositionInSegment.y(), 0));
+						unsigned char localCoverage((*surface)(static_cast<unsigned int>(localPositionInSegment.x()), static_cast<unsigned int>(localPositionInSegment.y()), 0));
 						combinedCoverage -= std::min<unsigned char>(localCoverage, combinedCoverage);
 					}
 				} else if (!grassLayer && J->second->getSurfaceIndex() == mGenerator.getFoliageShader()->getTerrainIndex()) {
 					Mercator::Surface* surface = J->second->getSurfaceForSegment(segment);
 					if (surface && surface->isValid()) {
-						combinedCoverage = (*surface)(localPositionInSegment.x(), localPositionInSegment.y(), 0);
+						combinedCoverage = (*surface)(static_cast<unsigned int>(localPositionInSegment.x()), static_cast<unsigned int>(localPositionInSegment.y()), 0);
 						if (combinedCoverage >= threshold) {
 							grassLayer = J->second;
 						} else {

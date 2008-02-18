@@ -58,18 +58,36 @@ public:
 	TerrainPageFoliage(TerrainGenerator& generator, TerrainPage& page);
 	virtual ~TerrainPageFoliage();
 
+
+	/**
+	 *    Generates the plant positions for all registered plant types.
+	 */
 	void generatePlantPositions();
+	
+	
+	/**
+	 *    Regenerates the coverage map which can be used for quick lookup for plant probability.
+	 */
 	void generateCoverageMap();
 	
-	const PlantStore& getPlants() const;
-	void getPlantsForArea(Ogre::TRect<float> area, PlantStore& store);
+	/**
+	 *    Gets all plants.
+	 * @return 
+	 */
+	const PlantStoreMap& getPlants() const;
+	
+	/**
+	 *    Place the plants for the supplied area in the supplied store.
+	 * @param plantType The plant type.
+	 * @param area The enclosing area.
+	 * @param store The store in which to place the plants.
+	 */
+	void getPlantsForArea(const std::string& plantType, Ogre::TRect<float> area, PlantStore& store);
 	
 protected:
 	/**
 	The positions of the plants. These are precalulcated and not changed.
 	*/
-	PlantStore mPlants;
-	
 	PlantStoreMap mPlantStores;
 	
 	TerrainGenerator& mGenerator;
