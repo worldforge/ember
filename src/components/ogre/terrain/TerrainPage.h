@@ -209,6 +209,22 @@ public:
 	TerrainPageFoliage* getPageFoliage() const;
 	
 	TerrainPageShadow& getPageShadow();
+	
+	/**
+	 *    Gets the segment positioned at the supplied position in local space.
+	 * @param pos A Wordforge position in local space, i.e. > 0 && < [width in meters of the page]
+	 * @return A pointer to Mercator::Segment or null.
+	 */
+	Mercator::Segment* getSegmentAtLocalPosition(const TerrainPosition& pos) const;
+	
+	/**
+	 *    Gets the segment positioned at the supplied position in local space and also translates the supplied position into a local position in the returned segment.
+	 * @param pos A Wordforge position in local space, i.e. > 0 && < [width in meters of the page]
+	 * @param localPositionInSegment The resulting position in the segment space.
+	 * @return A pointer to Mercator::Segment or null.
+	 */
+	Mercator::Segment* getSegmentAtLocalPosition(const TerrainPosition& pos, TerrainPosition& localPositionInSegment) const;
+
 
 private:
 
@@ -238,7 +254,7 @@ private:
 	 * @param y 
 	 * @return 
 	 */
-	Mercator::Segment* getSegment(int x, int y) const;
+	Mercator::Segment* getSegmentAtLocalIndex(int indexX, int indexY) const;
 	
 
 
@@ -260,7 +276,11 @@ private:
 	const WFMath::AxisBox<2> mExtent;
 	std::auto_ptr<TerrainPageFoliage> mPageFoliage;
 	
-	
+	/**
+	A local copy of the segments for fast lookup. This will also include nonvalid segments.
+	The keys will be the local indices.
+	*/
+	Mercator::Terrain::Segmentstore mLocalSegments;
 // 	void updateShadow();
 // 	
 // 	void createShadow();

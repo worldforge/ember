@@ -65,6 +65,21 @@
 
 #include "framework/osdir.h"
 
+#ifdef HAVE_LRINTF
+    #define I_ROUND(_x) (::lrintf(_x)) 
+#elif defined(HAVE_RINTF)
+    #define I_ROUND(_x) ((int)::rintf(_x)) 
+#elif defined(HAVE_RINT)
+    #define I_ROUND(_x) ((int)::rint(_x)) 
+#else
+    #define I_ROUND(_x) ((int)(_x)) 
+#endif
+
+#ifdef HAVE_FABSF
+    #define F_ABS(_x) (::fabsf(_x))
+#else
+    #define F_ABS(_x) (::fabs(_x))
+#endif
 
 //#include <fenv.h>
 
@@ -93,7 +108,7 @@ TerrainPage::TerrainPage(TerrainPosition position, const std::map<const Mercator
 	S_LOG_VERBOSE("Creating TerrainPage at position " << position.x() << ":" << position.y());
 	for (int y = 0; y < getNumberOfSegmentsPerAxis(); ++y) {
 		for (int x = 0; x < getNumberOfSegmentsPerAxis(); ++x) {
-			Mercator::Segment* segment = getSegment(x,y);
+			Mercator::Segment* segment = getSegmentAtLocalIndex(x,y);
 			if (segment && segment->isValid()) {
  				//S_LOG_VERBOSE("Segment is valid.");
 				PageSegment pageSegment;
@@ -101,6 +116,7 @@ TerrainPage::TerrainPage(TerrainPosition position, const std::map<const Mercator
 				pageSegment.segment = segment;
 				mValidSegments.push_back(pageSegment);
 			}
+			mLocalSegments[x][y] = segment;
 		}
 	}
 	S_LOG_VERBOSE("Number of valid segments: " << mValidSegments.size());
@@ -113,20 +129,56 @@ TerrainPage::~TerrainPage()
 	delete mShadowTechnique;
 }
 
-Mercator::Segment* TerrainPage::getSegment(int x, int y) const
+Mercator::Segment* TerrainPage::getSegmentAtLocalIndex(int indexX, int indexY) const
 {
 // 	const TerrainInfo& info = mGenerator->getTerrainInfo();
 	int segmentsPerAxis = getNumberOfSegmentsPerAxis();
 	//the mPosition is in the middle of the page, so we have to use an offset to get the real segment position
 	//int segmentOffset = static_cast<int>(info.getWorldSizeInSegments(). x() * 0.5);
 	int segmentOffset = segmentsPerAxis;
-	int segX = (int)((mPosition.x() * segmentsPerAxis) + x);
-	int segY = (int)((mPosition.y() * segmentsPerAxis) + y) - segmentOffset;
+	int segX = (int)((mPosition.x() * segmentsPerAxis) + indexX);
+	int segY = (int)((mPosition.y() * segmentsPerAxis) + indexY) - segmentOffset;
 	
 	//S_LOG_VERBOSE("Added segment with position " << segX << ":" << segY);
 
 	return mGenerator->getTerrain().getSegment(segX, segY);
 }
+
+Mercator::Segment* TerrainPage::getSegmentAtLocalPosition(const TerrainPosition& pos) const
+{
+	int ix = I_ROUND(floor(pos.x() / 64));
+	int iy = I_ROUND(floor(pos.y() / 64));
+    
+    Mercator::Terrain::Segmentstore::const_iterator I = mLocalSegments.find(ix);
+    if (I == mLocalSegments.end()) {
+        return 0;
+    }
+    Mercator::Terrain::Segmentcolumn::const_iterator J = I->second.find(iy);
+    if (J == I->second.end()) {
+        return 0;
+    }
+    return J->second;
+}
+
+Mercator::Segment* TerrainPage::getSegmentAtLocalPosition(const TerrainPosition& pos, TerrainPosition& localPositionInSegment) const
+{
+	int ix = I_ROUND(floor(pos.x() / 64));
+	int iy = I_ROUND(floor(pos.y() / 64));
+	
+	localPositionInSegment.x() = pos.x() - (ix * 64);
+	localPositionInSegment.y() = pos.y() - (iy * 64);
+    
+    Mercator::Terrain::Segmentstore::const_iterator I = mLocalSegments.find(ix);
+    if (I == mLocalSegments.end()) {
+        return 0;
+    }
+    Mercator::Terrain::Segmentcolumn::const_iterator J = I->second.find(iy);
+    if (J == I->second.end()) {
+        return 0;
+    }
+    return J->second;	
+}
+
 
 int TerrainPage::getPageSize() const 
 {
@@ -1163,6 +1215,7 @@ void TerrainPage::updateAllShaderTextures()
 	for (; I != mTerrainSurface->getLayers().end(); ++I) {
 		mTerrainSurface->updateLayer(I->first);
 	}
+	mPageFoliage->generateCoverageMap();
 }
 
 void TerrainPage::updateShaderTexture(TerrainShader* shader)
@@ -1175,6 +1228,7 @@ void TerrainPage::updateShaderTexture(TerrainShader* shader)
 		mTerrainSurface->updateLayer(shader->getTerrainIndex());
 		mTerrainSurface->recompileMaterial();
 	}
+	mPageFoliage->generateCoverageMap();
 	
 	///check if at least one surface intersects, else continue
 // 	bool intersects = false;
