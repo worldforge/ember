@@ -1,3 +1,10 @@
+2008-02-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainPageFoliage.cpp, src/components/ogre/terrain/TerrainPageFoliage.h: changed how we calculate plant visibility. Instead of keeping a local foliage coverage bitmap we now just recalculate through Mercator on the fly since that's faster anyway (so far)
+
+2008-02-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainPage.cpp, src/components/ogre/terrain/TerrainPage.h: added methods for getting segments through local positions
 
 2008-02-17 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 

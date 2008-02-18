@@ -53,6 +53,7 @@ public:
 	A store of plant positions. We keep this in ogre space for performance reasons.
 	*/
 	typedef std::vector<Ogre::Vector2> PlantStore;
+	typedef std::map<std::string, PlantStore> PlantStoreMap;
 
 	TerrainPageFoliage(TerrainGenerator& generator, TerrainPage& page);
 	virtual ~TerrainPageFoliage();
@@ -64,14 +65,23 @@ public:
 	void getPlantsForArea(Ogre::TRect<float> area, PlantStore& store);
 	
 protected:
+	/**
+	The positions of the plants. These are precalulcated and not changed.
+	*/
 	PlantStore mPlants;
+	
+	PlantStoreMap mPlantStores;
+	
 	TerrainGenerator& mGenerator;
 	TerrainPage& mTerrainPage;
 	/**
-	*we need to create a new lookup image for where grass should be placed. This should be based on the core grass coverage image, but with all layers that are above it substracted. Thus grass won't show up on roads and fields
+	*we need to create a new lookup image for where grass should be placed. This should be based on the core grass coverage image, but with all layers that are above it substracted. Thus grass won't show up on roads and fields.
+	Note that this currently is disabled since it's faster to do the lookups through Mercator instead.
 	*/
 	Ogre::MemoryDataStream* mFoliageCoverageDataStream;
 	Ogre::DataStreamPtr mFoliageCoverageDataStreamPtr;
+	
+	unsigned int mCoverageMapPixelWidth;
 
 };
 

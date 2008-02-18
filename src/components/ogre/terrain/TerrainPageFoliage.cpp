@@ -35,6 +35,26 @@
 #include "services/logging/LoggingService.h"
 #include "services/config/ConfigService.h"
 
+#include <Mercator/Surface.h>
+#include <Mercator/Segment.h>
+#include <Mercator/Terrain.h>
+
+#ifdef HAVE_LRINTF
+    #define I_ROUND(_x) (::lrintf(_x)) 
+#elif defined(HAVE_RINTF)
+    #define I_ROUND(_x) ((int)::rintf(_x)) 
+#elif defined(HAVE_RINT)
+    #define I_ROUND(_x) ((int)::rint(_x)) 
+#else
+    #define I_ROUND(_x) ((int)(_x)) 
+#endif
+
+#ifdef HAVE_FABSF
+    #define F_ABS(_x) (::fabsf(_x))
+#else
+    #define F_ABS(_x) (::fabs(_x))
+#endif
+
 namespace EmberOgre {
 
 namespace Terrain {
@@ -43,18 +63,19 @@ TerrainPageFoliage::TerrainPageFoliage(TerrainGenerator& generator, TerrainPage&
 : mGenerator(generator)
 , mTerrainPage(page)
 , mFoliageCoverageDataStream(0)
+, mCoverageMapPixelWidth(mTerrainPage.getAlphaTextureSize())
 {
 }
 
 TerrainPageFoliage::~TerrainPageFoliage()
 {
+///no need to delete the stream since that will be taken care of by the mFoliageCoverageDataStreamPtr instance
 // 	delete mFoliageCoverageDataStream;
 }
 
 
 void TerrainPageFoliage::generatePlantPositions()
 {
-// 	TerrainShader* grassShader = mGenerator.getFoliageShader();
 	
 	float minClusterRadius = 2;
 	float maxClusterRadius = 10;
@@ -69,8 +90,8 @@ void TerrainPageFoliage::generatePlantPositions()
 		///Pick a random position for our cluster
 /*		float clusterX = Ogre::Math::RangeRandom(mExtent.lowCorner().x(), mExtent.highCorner().x());
 		float clusterY = Ogre::Math::RangeRandom(mExtent.lowCorner().y(), mExtent.highCorner().y());*/
-		float clusterX = Ogre::Math::RangeRandom(0, mTerrainPage.getAlphaTextureSize());
-		float clusterY = Ogre::Math::RangeRandom(0, mTerrainPage.getAlphaTextureSize());
+		float clusterX = Ogre::Math::RangeRandom(0, mCoverageMapPixelWidth);
+		float clusterY = Ogre::Math::RangeRandom(0, mCoverageMapPixelWidth);
 		float clusterRadius = Ogre::Math::RangeRandom(minClusterRadius, maxClusterRadius);
 		
 		float volume = (clusterRadius * clusterRadius) * Ogre::Math::PI;
@@ -81,11 +102,8 @@ void TerrainPageFoliage::generatePlantPositions()
 			float plantX = Ogre::Math::RangeRandom(-clusterRadius, clusterRadius) + clusterX;
 			float plantY = Ogre::Math::RangeRandom(-clusterRadius, clusterRadius) + clusterY;
 			
-			if (plantX >= 0 && plantX < mTerrainPage.getAlphaTextureSize() && plantY >= 0 && plantY < mTerrainPage.getAlphaTextureSize()) {
-/*				float val = mFoliageCoverageDataStream->getPtr()[static_cast<size_t>((getAlphaTextureSize() * plantX) + plantY)] / 255.0f;
-				if (Ogre::Math::UnitRandom() < val) {*/
-					mPlants.push_back(Ogre::Vector2(plantX, plantY));
-// 				}
+			if (plantX >= 0 && plantX < mCoverageMapPixelWidth && plantY >= 0 && plantY < mCoverageMapPixelWidth) {
+				mPlants.push_back(Ogre::Vector2(plantX, plantY));
 			}
 		}
 	}
@@ -94,28 +112,32 @@ void TerrainPageFoliage::generatePlantPositions()
 
 void TerrainPageFoliage::generateCoverageMap()
 {
+	///we've disable the functionality for keeping a coverage map since it's faster to do the checkups through Mercator
+	return;
+	
+	S_LOG_VERBOSE("Starting generation of foliage coverage map for page at position x: " << mTerrainPage.getWFPosition().x() << " y: " << mTerrainPage.getWFPosition().y() << ".");
 	if (!mFoliageCoverageDataStream) {
-		mFoliageCoverageDataStream = new Ogre::MemoryDataStream(mTerrainPage.getAlphaTextureSize() * mTerrainPage.getAlphaTextureSize() * 1, true);
+		mFoliageCoverageDataStream = new Ogre::MemoryDataStream(mCoverageMapPixelWidth * mCoverageMapPixelWidth * 1, true);
 		mFoliageCoverageDataStreamPtr = Ogre::DataStreamPtr(mFoliageCoverageDataStream);
 	}
 	
 	size_t foliageBufferSize =  mFoliageCoverageDataStream->size();
 	TerrainPageSurfaceLayer* grassLayer(0);
 	for (TerrainPageSurface::TerrainPageSurfaceLayerStore::const_iterator I = mTerrainPage.getSurface()->getLayers().begin(); I != mTerrainPage.getSurface()->getLayers().end(); ++I) {
-// 		if (grassLayer) {
-// 			Ogre::Image* layerImage(I->second->getCoverageImage());
-// 			if (foliageBufferSize == layerImage->getSize()) {
-//  				unsigned char* layerData = layerImage->getData();
-// 				unsigned char* grassLayerData = mFoliageCoverageDataStream->getPtr();
-// 				for (size_t i = 0; i < foliageBufferSize; ++i) {
-// 					if (*layerData) {
-// 						*grassLayerData -= std::min<unsigned char>(*layerData, *grassLayerData);
-// 					}
-// 					layerData++;
-// 					grassLayerData++;
-// 				}
-// 			}
-// 		}
+		if (grassLayer) {
+			Ogre::Image* layerImage(I->second->getCoverageImage());
+			if (foliageBufferSize == layerImage->getSize()) {
+ 				unsigned char* layerData = layerImage->getData();
+				unsigned char* grassLayerData = mFoliageCoverageDataStream->getPtr();
+				for (size_t i = 0; i < foliageBufferSize; ++i) {
+					if (*layerData) {
+						*grassLayerData -= std::min<unsigned char>(*layerData, *grassLayerData);
+					}
+					layerData++;
+					grassLayerData++;
+				}
+			}
+		}
 		if (!grassLayer && I->second->getSurfaceIndex() == mGenerator.getFoliageShader()->getTerrainIndex()) {
 			if (I->second->getCoverageImage()->getSize() == foliageBufferSize) {
 				grassLayer = I->second;
@@ -129,8 +151,11 @@ void TerrainPageFoliage::generateCoverageMap()
 	std::stringstream ss;
 	ss << "terrain_" << mTerrainPage.getWFPosition().x() << "_" << mTerrainPage.getWFPosition().y() << "_plantCoverage";
 	const Ogre::String textureName(ss.str());
-	Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(textureName, "General", mFoliageCoverageDataStreamPtr, mTerrainPage.getAlphaTextureSize(), mTerrainPage.getAlphaTextureSize(), Ogre::PF_L8, Ogre::TEX_TYPE_2D, 0);
+	Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(textureName, "General", mFoliageCoverageDataStreamPtr, mCoverageMapPixelWidth, mCoverageMapPixelWidth, Ogre::PF_L8, Ogre::TEX_TYPE_2D, 0);
 #endif
+
+	S_LOG_VERBOSE("Ending generation of foliage coverage map.");
+
 }
 
 
@@ -142,13 +167,57 @@ const TerrainPageFoliage::PlantStore& TerrainPageFoliage::getPlants() const
 void TerrainPageFoliage::getPlantsForArea(Ogre::TRect<float> area, TerrainPageFoliage::PlantStore& store)
 {
 	unsigned char threshold = 100;
+	TerrainPosition localPositionInSegment;
 	for (PlantStore::iterator I = mPlants.begin(); I != mPlants.end(); ++I) {
 		if (I->x >= area.left && I->x <= area.right && I->y >= area.top && I->y <= area.bottom) {
-			size_t position = static_cast<size_t>((mTerrainPage.getAlphaTextureSize() * static_cast<unsigned int>(I->y)) + static_cast<unsigned int>(I->x));
+			
+			#if 1
+			unsigned char combinedCoverage(0);
+			float x = I->x;
+			float y = mCoverageMapPixelWidth - I->y;
+		
+			Mercator::Segment* segment = mTerrainPage.getSegmentAtLocalPosition(TerrainPosition(x, y), localPositionInSegment);
+			if ((segment == 0) || (!segment->isValid())) {
+				continue;
+			}
+			
+			TerrainPageSurfaceLayer* grassLayer(0);
+			for (TerrainPageSurface::TerrainPageSurfaceLayerStore::const_iterator J = mTerrainPage.getSurface()->getLayers().begin(); J != mTerrainPage.getSurface()->getLayers().end(); ++J) {
+				if (grassLayer) {
+					Mercator::Surface* surface = J->second->getSurfaceForSegment(segment);
+					if (surface && surface->isValid()) {
+						unsigned char localCoverage((*surface)(localPositionInSegment.x(), localPositionInSegment.y(), 0));
+						combinedCoverage -= std::min<unsigned char>(localCoverage, combinedCoverage);
+					}
+				} else if (!grassLayer && J->second->getSurfaceIndex() == mGenerator.getFoliageShader()->getTerrainIndex()) {
+					Mercator::Surface* surface = J->second->getSurfaceForSegment(segment);
+					if (surface && surface->isValid()) {
+						combinedCoverage = (*surface)(localPositionInSegment.x(), localPositionInSegment.y(), 0);
+						if (combinedCoverage >= threshold) {
+							grassLayer = J->second;
+						} else {
+							break;
+						}
+					} else {
+						break;
+					}
+				}
+			}
+			if (combinedCoverage >= threshold) {
+				store.push_back(*I);
+			}
+			
+			#endif
+			
+			
+			#if 0
+			///use the combined coverage map
+			size_t position = static_cast<size_t>((mCoverageMapPixelWidth * static_cast<unsigned int>(I->y)) + static_cast<unsigned int>(I->x));
 			unsigned char val(mFoliageCoverageDataStream->getPtr()[position]);
 			if (val >= threshold) {
 				store.push_back(*I);
 			}
+			#endif
 		}
 	}
 }
