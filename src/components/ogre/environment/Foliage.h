@@ -37,11 +37,18 @@ class PagedGeometry;
 }
 namespace EmberOgre {
 
+namespace Terrain
+{
+class TerrainFoliageDefinition;
+class TerrainLayerDefinition;
+}
+
 namespace Environment {
 
 class FoliageLayer;
 class FoliageArea;
 class FoliageImpl;
+class FoliageBase;
 
 //class GroundCover;
 /**
@@ -54,6 +61,7 @@ public:
 
 	typedef std::list<FoliageArea*> FoliageAreaStore;
 	typedef std::map<const std::string, Ogre::Entity* > EntityStore;
+	typedef std::vector<FoliageBase*> FoliageStore;
     Foliage( Ogre::SceneManager* mSceneMgr);
 
     ~Foliage();
@@ -77,7 +85,7 @@ public:
 	
 	inline double getGrassSpacing() const {return mGrassSpacing;}
 	
-	void createGrass();
+	void initialize();
 
 protected:
 	EntityStore mEntities;
@@ -94,7 +102,58 @@ protected:
 	FoliageImpl* mImpl;
 	::PagedGeometry::PagedGeometry* mGrass;
 	::PagedGeometry::GrassLoader<FoliageLayer>* mGrassLoader;
+	
+	FoliageStore mFoliages;
 };
+
+
+class FoliageBase
+{
+public:
+	FoliageBase(const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition);
+	virtual ~FoliageBase();
+	
+	virtual void frameStarted(const Ogre::FrameEvent & evt) {};
+	
+	virtual void initialize() = 0;
+
+protected:
+
+	const Terrain::TerrainLayerDefinition& mTerrainLayerDefinition;
+	const Terrain::TerrainFoliageDefinition& mFoliageDefinition;
+
+};
+
+class GrassFoliage : public FoliageBase
+{
+public:
+	GrassFoliage(const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition);
+	virtual ~GrassFoliage();
+	
+	virtual void initialize();
+	virtual void frameStarted(const Ogre::FrameEvent & evt);
+
+protected:
+	
+	::PagedGeometry::PagedGeometry* mGrass;
+	::PagedGeometry::GrassLoader<FoliageLayer>* mGrassLoader;
+
+};
+
+// class ShrubberyFoliage : public FoliageBase
+// {
+// public:
+// 	GrassFoliage(const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition foliageDefinition);
+// 	virtual ~GrassFoliage();
+// 
+// protected:
+// 	virtual void frameStarted(const Ogre::FrameEvent & evt);
+// 	
+// 	virtual void initialize();
+// 	::PagedGeometry::PagedGeometry* mShrubbery;
+// // 	::PagedGeometry::GrassLoader<FoliageLayer>* mGrassLoader;
+// 
+// };
 
 }
 

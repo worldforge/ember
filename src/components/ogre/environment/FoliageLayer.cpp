@@ -33,6 +33,7 @@
 #include "../terrain/TerrainPageFoliage.h"
 #include "../terrain/TerrainPage.h"
 #include "../terrain/TerrainPageShadow.h"
+#include "../terrain/TerrainLayerDefinition.h"
 #include "services/EmberServices.h"
 #include "services/logging/LoggingService.h"
 #include <wfmath/intersect.h>
@@ -45,6 +46,7 @@ namespace EmberOgre {
 namespace Environment {
 
 FoliageLayer::FoliageLayer(::PagedGeometry::PagedGeometry *geom, GrassLoader<FoliageLayer> *ldr)
+: mTerrainLayerDefinition(0), mFoliageDefinition(0)
 {
 	FoliageLayer::geom = geom;
 	FoliageLayer::parent = ldr;
@@ -68,6 +70,13 @@ FoliageLayer::~FoliageLayer()
 {
 }
 
+void FoliageLayer::configure(const Terrain::TerrainLayerDefinition* terrainLayerDefinition, const Terrain::TerrainFoliageDefinition* foliageDefinition)
+{
+	mTerrainLayerDefinition = terrainLayerDefinition;
+	mFoliageDefinition = foliageDefinition;
+}
+
+
 unsigned int FoliageLayer::calculateMaxGrassCount(float densityFactor, float volume)
 {
 	return static_cast<unsigned int>(densityFactor * volume);
@@ -82,7 +91,7 @@ unsigned int FoliageLayer::_populateGrassList(PageInfo page, float *posBuff, uns
 		Ogre::TRect<float> ogrePageExtent = Atlas2Ogre(terrainPage->getExtent());
 		Ogre::TRect<float> adjustedBounds = Ogre::TRect<float>(page.bounds.left - ogrePageExtent.left, page.bounds.top - ogrePageExtent.top, page.bounds.right - ogrePageExtent.left, page.bounds.bottom - ogrePageExtent.top);
 		TerrainPageFoliage::PlantStore plants;
-		terrainPage->getPageFoliage()->getPlantsForArea("grass", adjustedBounds, plants);
+		terrainPage->getPageFoliage()->getPlantsForArea(*mTerrainLayerDefinition, mFoliageDefinition->getPlantType(), adjustedBounds, plants);
 // 		WFMath::AxisBox<2> wfBounds = Ogre2Atlas(page.bounds);
 		for (TerrainPageFoliage::PlantStore::const_iterator I = plants.begin(); I != plants.end(); ++I) {
 // 			TerrainPosition posInWorld;
