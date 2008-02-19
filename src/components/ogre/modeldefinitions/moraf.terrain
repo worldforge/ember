@@ -4,7 +4,22 @@
 		<layer shadername="sand" diffusetexture="3d_objects/environment/ground/textures/sand/sand_AD.png" normalmaptexture="3d_objects/environment/ground/textures/sand/sand_AN.png" tilesize="8">
 		</layer>
 		<layer shadername="grass" diffusetexture="3d_objects/environment/ground/textures/grass/grassD.png" normalmaptexture="3d_objects/environment/ground/textures/grass/grassN.png" tilesize="8">
-			<foliage material="grass" />
+			<foliage planttype="grass" populationtechnique="cluster">
+				<param key="minClusterRadius">2</param>
+				<param key="maxClusterRadius">10</param>
+				<param key="clusterDistance">25</param>
+				<param key="density">2</param>
+				<param key="falloff">0.3</param>
+				<param key="material">/global/plants/grass/bittergrass/single</param>
+			</foliage>
+			<foliage planttype="shrubbery" populationtechnique="cluster">
+				<param key="model">fern</param>
+				<param key="minClusterRadius">2</param>
+				<param key="maxClusterRadius">10</param>
+				<param key="clusterDistance">25</param>
+				<param key="density">2</param>
+				<param key="falloff">0.3</param>
+			</foliage>
 		</layer>
 		<layer shadername="snow" diffusetexture="snow.png" normalmaptexture="" tilesize="8">
 		</layer>

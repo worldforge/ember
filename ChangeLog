@@ -1,3 +1,23 @@
+2008-02-20 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/moraf.terrain: add foliage definitions
+
+2008-02-20 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/WorldEmberEntity.cpp: adapt to changed signature
+
+2008-02-20 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/Foliage.cpp, src/components/ogre/environment/Foliage.h, src/components/ogre/environment/FoliageLayer.cpp, src/components/ogre/environment/FoliageLayer.h: create different foliage layers depending on settings in the TerrainLayerDefinition
+
+2008-02-20 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainLayerDefinition.cpp, src/components/ogre/terrain/TerrainLayerDefinition.h, src/components/ogre/terrain/TerrainPage.cpp, src/components/ogre/terrain/TerrainPageFoliage.cpp, src/components/ogre/terrain/TerrainPageFoliage.h, src/components/ogre/terrain/TerrainPageSurface.cpp, src/components/ogre/terrain/TerrainPageSurface.h, src/components/ogre/terrain/TerrainPageSurfaceLayer.cpp, src/components/ogre/terrain/TerrainPageSurfaceLayer.h, src/components/ogre/terrain/XMLLayerDefinitionSerializer.cpp: added support for defining foliage in the .terrain forma. Also always attach a layer definition to the TerrainPageSurfaceLayer instance.
+
+2008-02-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainPageFoliage.cpp, src/components/ogre/terrain/TerrainPageFoliage.h, src/components/ogre/environment/FoliageLayer.cpp: allow for different plant stores for different plant types
+
 2008-02-18 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/terrain/TerrainPageFoliage.cpp, src/components/ogre/terrain/TerrainPageFoliage.h: changed how we calculate plant visibility. Instead of keeping a local foliage coverage bitmap we now just recalculate through Mercator on the fly since that's faster anyway (so far)
