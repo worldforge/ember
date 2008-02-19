@@ -82,13 +82,31 @@ void XMLLayerDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, cons
 						definition->setTileSize(tileSize);
 					}
 					
+					for (Ember::TiXmlElement* foliageElem = smElem->FirstChildElement("foliage");
+							foliageElem != 0; foliageElem = foliageElem->NextSiblingElement("foliage"))
+					{
+						TerrainFoliageDefinition foliageDef;
+						foliageDef.setPlantType(foliageElem->Attribute("planttype"));
+						foliageDef.setPopulationTechnique(foliageElem->Attribute("populationtechnique"));
+						for (Ember::TiXmlElement* paramElem = foliageElem->FirstChildElement("param");
+								paramElem != 0; paramElem = paramElem->NextSiblingElement())
+						{
+							tmp = paramElem->Attribute("key");
+							if (tmp) {
+								foliageDef.getParameters().insert(TerrainLayerDefinition::StringParamStore::value_type(tmp, paramElem->GetText()));
+							}
+						}
+						definition->getFoliages().push_back(foliageDef);
+					}
+					
 					mManager.addDefinition(definition);
-				} catch (std::exception ex) {
+				} catch (const std::exception& ex) {
 					S_LOG_FAILURE(ex.what());
 				} catch (...) {
 					S_LOG_FAILURE("Error when reading terrain layer definition.");
 				}			
 			}
+
 		}
 	}
 }

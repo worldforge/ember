@@ -42,13 +42,14 @@ namespace EmberOgre {
 namespace Terrain {
 
 class TerrainPageSurface;
+class TerrainLayerDefinition;
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
 class TerrainPageSurfaceLayer{
 public:
-    TerrainPageSurfaceLayer(TerrainPageSurface& terrainPageSurface, int surfaceIndex, Mercator::Shader* shader);
+    TerrainPageSurfaceLayer(TerrainPageSurface& terrainPageSurface, const TerrainLayerDefinition& definition, int surfaceIndex, Mercator::Shader* shader);
 
     virtual ~TerrainPageSurfaceLayer();
     
@@ -75,6 +76,9 @@ public:
 	float getScale() const;
 	void setScale(float scale);
 
+	const TerrainLayerDefinition& getDefinition() const;
+	
+
 protected:
 	TerrainPageSurface& mTerrainPageSurface;
 	Mercator::Shader* mShader;
@@ -91,6 +95,7 @@ protected:
 	
 	float mScale;
 	
+	const TerrainLayerDefinition& mDefinition;
 
 	void fillAlphaLayer(unsigned char* finalImagePtr, unsigned char* wfImagePtr, unsigned int channel, int startX, int startY, unsigned short numberOfChannels);
 

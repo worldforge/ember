@@ -42,6 +42,8 @@ class TerrainPageSurfaceLayer;
 class TerrainPage;
 class TerrainPageSurfaceCompiler;
 class TerrainPageShadow;
+class TerrainLayerDefinition;
+
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
@@ -68,7 +70,7 @@ public:
 	 */
 	int getNumberOfSegmentsPerAxis() const;	
 	
-	TerrainPageSurfaceLayer* createSurfaceLayer(int surfaceIndex, Mercator::Shader* shader);
+	TerrainPageSurfaceLayer* createSurfaceLayer(const TerrainLayerDefinition& definition, int surfaceIndex, Mercator::Shader* shader);
 	
 	Ogre::MaterialPtr getMaterial();
 	

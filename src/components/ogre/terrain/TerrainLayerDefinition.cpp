@@ -85,7 +85,64 @@ float TerrainLayerDefinition::getTileSize() const
 	return mTileSize;
 }
 
+const TerrainLayerDefinition::StringParamStore& TerrainFoliageDefinition::getParameters() const
+{
+	return mParameters;
+}
+
+TerrainLayerDefinition::StringParamStore& TerrainFoliageDefinition::getParameters()
+{
+	return mParameters;
+}
+
+
+const std::string& TerrainFoliageDefinition::getPlantType() const
+{
+	return mPlantType;
+}
+
+
+void TerrainFoliageDefinition::setPlantType ( const std::string& theValue )
+{
+	mPlantType = theValue;
+}
+
+
+const TerrainLayerDefinition::TerrainFoliageDefinitionStore& TerrainLayerDefinition::getFoliages() const
+{
+	return mFoliages;
+}
+
+TerrainLayerDefinition::TerrainFoliageDefinitionStore& TerrainLayerDefinition::getFoliages()
+{
+	return mFoliages;
+}
 
 }
 
+}
+
+
+
+
+
+const std::string& EmberOgre::Terrain::TerrainFoliageDefinition::getPopulationTechnique() const
+{
+	return mPopulationTechnique;
+}
+
+
+void EmberOgre::Terrain::TerrainFoliageDefinition::setPopulationTechnique ( const std::string& theValue )
+{
+	mPopulationTechnique = theValue;
+}
+
+const std::string & EmberOgre::Terrain::TerrainFoliageDefinition::getParameter(const std::string & key) const
+{
+	static std::string empty("");
+	EmberOgre::Terrain::TerrainLayerDefinition::StringParamStore::const_iterator I = mParameters.find(key);
+	if (I != mParameters.end()) {
+		return I->second;
+	}
+	return empty;
 }

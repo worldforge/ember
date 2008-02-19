@@ -27,6 +27,7 @@
 #include "TerrainPage.h"
 #include "TerrainPageSurfaceLayer.h"
 #include "TerrainPageSurface.h"
+#include "TerrainLayerDefinition.h"
 #include <Mercator/Surface.h>
 #include <Mercator/Segment.h>
 #include <Mercator/Shader.h>
@@ -34,13 +35,14 @@
 namespace EmberOgre {
 namespace Terrain {
 
-TerrainPageSurfaceLayer::TerrainPageSurfaceLayer(TerrainPageSurface& terrainPageSurface, int surfaceIndex, Mercator::Shader* shader)
+TerrainPageSurfaceLayer::TerrainPageSurfaceLayer(TerrainPageSurface& terrainPageSurface, const TerrainLayerDefinition& definition, int surfaceIndex, Mercator::Shader* shader)
 : mTerrainPageSurface(terrainPageSurface)
 , mShader(shader)
 , mCoverageImage(new Ogre::Image())
 , mCoverageDataStream(new Ogre::MemoryDataStream(terrainPageSurface.getPixelWidth() * terrainPageSurface.getPixelWidth() * 1, false))
 , mCoverageDataStreamPtr(mCoverageDataStream)
 , mSurfaceIndex(surfaceIndex)
+, mDefinition(definition)
 {
 	///we need an unique name for our alpha texture
 	std::stringstream splatTextureNameSS;
@@ -196,6 +198,11 @@ Mercator::Shader* TerrainPageSurfaceLayer::getShader()
 int TerrainPageSurfaceLayer::getSurfaceIndex()
 {
 	return mSurfaceIndex;
+}
+
+const TerrainLayerDefinition& TerrainPageSurfaceLayer::getDefinition() const
+{
+	return mDefinition;
 }
 }
 

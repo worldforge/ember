@@ -23,15 +23,22 @@
 #ifndef EMBEROGRE_TERRAINTERRAINLAYERDEFINITION_H
 #define EMBEROGRE_TERRAINTERRAINLAYERDEFINITION_H
 #include <string>
+#include <map>
+#include <vector>
 namespace EmberOgre {
 
 namespace Terrain {
+
+class TerrainFoliageDefinition;
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
 class TerrainLayerDefinition{
 public:
+	typedef std::map<std::string, std::string> StringParamStore;
+	typedef std::vector<TerrainFoliageDefinition> TerrainFoliageDefinitionStore;
+    
     TerrainLayerDefinition();
 
     ~TerrainLayerDefinition();
@@ -51,6 +58,10 @@ public:
     void setTileSize(float tileSize);
     float getTileSize() const;
 
+	const TerrainFoliageDefinitionStore& getFoliages() const;
+	TerrainFoliageDefinitionStore& getFoliages();
+	
+
 protected:
 
 	unsigned int mAreaId;
@@ -58,7 +69,30 @@ protected:
 	std::string mNormalMapTextureName;
 	std::string mShaderName;
 	float mTileSize;
+	
+	TerrainFoliageDefinitionStore mFoliages;
 
+};
+
+class TerrainFoliageDefinition
+{
+public:
+	const TerrainLayerDefinition::StringParamStore& getParameters() const;
+	TerrainLayerDefinition::StringParamStore& getParameters();
+	const std::string& getParameter(const std::string& key) const;
+
+	void setPlantType ( const std::string& theValue );
+	const std::string& getPlantType() const;
+
+	void setPopulationTechnique ( const std::string& theValue );
+	const std::string& getPopulationTechnique() const;
+	
+	
+protected:
+	TerrainLayerDefinition::StringParamStore mParameters;
+	std::string mPlantType;
+	std::string mPopulationTechnique;
+	
 };
 
 }

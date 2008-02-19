@@ -76,8 +76,26 @@ TerrainPageFoliage::~TerrainPageFoliage()
 
 void TerrainPageFoliage::generatePlantPositions()
 {
+	///use only the grass layer for now
+	const TerrainLayerDefinition* layerDef = mGenerator.getFoliageShader()->getLayerDefinition();
+	for (TerrainLayerDefinition::TerrainFoliageDefinitionStore::const_iterator I = layerDef->getFoliages().begin(); I != layerDef->getFoliages().end(); ++I) {
+		PlantStore& plants = mPlantStores[I->getPlantType()];
+
+		if (I->getPopulationTechnique() == "cluster") {
+			ClusterPopulator populator(*this);
+			populator.setClusterDistance(atof(I->getParameter("clusterDistance").c_str()));
+			populator.setMinClusterRadius(atof(I->getParameter("minClusterRadius").c_str()));
+			populator.setMaxClusterRadius(atof(I->getParameter("maxClusterRadius").c_str()));
+			populator.setDensity(atof(I->getParameter("density").c_str()));
+			populator.setFalloff(atof(I->getParameter("falloff").c_str()));
+			
+			populator.populate(plants);
+		}
+	}
 	
-	std::string plantType("grass");
+	
+	
+/*	std::string plantType("grass");
 	PlantStore& plants = mPlantStores[plantType];
 
 	float minClusterRadius = 2;
@@ -91,8 +109,6 @@ void TerrainPageFoliage::generatePlantPositions()
 	
 	for (unsigned int i = 0; i < clustersPerPage; ++i) {
 		///Pick a random position for our cluster
-/*		float clusterX = Ogre::Math::RangeRandom(mExtent.lowCorner().x(), mExtent.highCorner().x());
-		float clusterY = Ogre::Math::RangeRandom(mExtent.lowCorner().y(), mExtent.highCorner().y());*/
 		float clusterX = Ogre::Math::RangeRandom(0, mCoverageMapPixelWidth);
 		float clusterY = Ogre::Math::RangeRandom(0, mCoverageMapPixelWidth);
 		float clusterRadius = Ogre::Math::RangeRandom(minClusterRadius, maxClusterRadius);
@@ -110,7 +126,7 @@ void TerrainPageFoliage::generatePlantPositions()
 			}
 		}
 	}
-	S_LOG_VERBOSE("Placed " << plants.size() << " plants.");
+	S_LOG_VERBOSE("Placed " << plants.size() << " plants.");*/
 }
 
 void TerrainPageFoliage::generateCoverageMap()
@@ -167,7 +183,7 @@ const TerrainPageFoliage::PlantStoreMap& TerrainPageFoliage::getPlants() const
 	return mPlantStores;
 }
 
-void TerrainPageFoliage::getPlantsForArea(const std::string& plantType, Ogre::TRect<float> area, TerrainPageFoliage::PlantStore& store)
+void TerrainPageFoliage::getPlantsForArea(const TerrainLayerDefinition& layerDef, const std::string& plantType, Ogre::TRect<float> area, TerrainPageFoliage::PlantStore& store)
 {
 	unsigned char threshold = 100;
 	TerrainPosition localPositionInSegment;
@@ -187,13 +203,14 @@ void TerrainPageFoliage::getPlantsForArea(const std::string& plantType, Ogre::TR
 			
 			TerrainPageSurfaceLayer* grassLayer(0);
 			for (TerrainPageSurface::TerrainPageSurfaceLayerStore::const_iterator J = mTerrainPage.getSurface()->getLayers().begin(); J != mTerrainPage.getSurface()->getLayers().end(); ++J) {
+				const TerrainLayerDefinition& currentLayerDef = J->second->getDefinition();
 				if (grassLayer) {
 					Mercator::Surface* surface = J->second->getSurfaceForSegment(segment);
 					if (surface && surface->isValid()) {
 						unsigned char localCoverage((*surface)(static_cast<unsigned int>(localPositionInSegment.x()), static_cast<unsigned int>(localPositionInSegment.y()), 0));
 						combinedCoverage -= std::min<unsigned char>(localCoverage, combinedCoverage);
 					}
-				} else if (!grassLayer && J->second->getSurfaceIndex() == mGenerator.getFoliageShader()->getTerrainIndex()) {
+				} else if (!grassLayer && &currentLayerDef == &layerDef) {
 					Mercator::Surface* surface = J->second->getSurfaceForSegment(segment);
 					if (surface && surface->isValid()) {
 						combinedCoverage = (*surface)(static_cast<unsigned int>(localPositionInSegment.x()), static_cast<unsigned int>(localPositionInSegment.y()), 0);
@@ -229,4 +246,126 @@ void TerrainPageFoliage::getPlantsForArea(const std::string& plantType, Ogre::TR
 
 }
 
+}
+
+
+float EmberOgre::Terrain::ClusterPopulator::getMinClusterRadius() const
+{
+	return mMinClusterRadius;
+}
+
+
+void EmberOgre::Terrain::ClusterPopulator::setMinClusterRadius ( float theValue )
+{
+	mMinClusterRadius = theValue;
+}
+
+
+float EmberOgre::Terrain::ClusterPopulator::getMaxClusterRadius() const
+{
+	return mMaxClusterRadius;
+}
+
+
+void EmberOgre::Terrain::ClusterPopulator::setMaxClusterRadius ( float theValue )
+{
+	mMaxClusterRadius = theValue;
+}
+
+
+float EmberOgre::Terrain::ClusterPopulator::getDensity() const
+{
+	return mDensity;
+}
+
+
+void EmberOgre::Terrain::ClusterPopulator::setDensity ( float theValue )
+{
+	mDensity = theValue;
+}
+
+
+float EmberOgre::Terrain::ClusterPopulator::getFalloff() const
+{
+	return mFalloff;
+}
+
+
+void EmberOgre::Terrain::ClusterPopulator::setFalloff ( float theValue )
+{
+	mFalloff = theValue;
+}
+
+
+float EmberOgre::Terrain::ClusterPopulator::getClusterDistance() const
+{
+	return mClusterDistance;
+}
+
+
+void EmberOgre::Terrain::ClusterPopulator::setClusterDistance ( float theValue )
+{
+	mClusterDistance = theValue;
+}
+
+EmberOgre::Terrain::PlantPopulator::PlantPopulator(TerrainPageFoliage & terrainPageFoliage)
+: mTerrainPageFoliage(terrainPageFoliage)
+{
+	
+}
+
+EmberOgre::Terrain::PlantPopulator::~ PlantPopulator()
+{
+}
+
+EmberOgre::Terrain::ClusterPopulator::ClusterPopulator(TerrainPageFoliage & terrainPageFoliage)
+: EmberOgre::Terrain::ClusterPopulator::PlantPopulator(terrainPageFoliage)
+{
+}
+
+EmberOgre::Terrain::ClusterPopulator::~ ClusterPopulator()
+{
+}
+
+void EmberOgre::Terrain::ClusterPopulator::populate(EmberOgre::Terrain::TerrainPageFoliage::PlantStore & plantStore)
+{
+	unsigned int coverageMapPixelWidth(mTerrainPageFoliage.getCoverageMapPixelWidth());
+	float clustersPersAxis(coverageMapPixelWidth / mClusterDistance);
+	unsigned int clustersPerPage(static_cast<unsigned int>(clustersPersAxis * clustersPersAxis));
+
+	
+	
+	for (unsigned int i = 0; i < clustersPerPage; ++i) {
+		///Pick a random position for our cluster
+		float clusterX(Ogre::Math::RangeRandom(0, coverageMapPixelWidth));
+		float clusterY(Ogre::Math::RangeRandom(0, coverageMapPixelWidth));
+		float clusterRadius(Ogre::Math::RangeRandom(mMinClusterRadius, mMaxClusterRadius));
+		
+		float volume = (clusterRadius * clusterRadius) * Ogre::Math::PI;
+		unsigned int instancesInEachCluster = volume / mDensity;
+
+		///place one cluster
+		for (unsigned int j = 0; j < instancesInEachCluster; ++j) {
+			float plantX = Ogre::Math::RangeRandom(-clusterRadius, clusterRadius) + clusterX;
+			float plantY = Ogre::Math::RangeRandom(-clusterRadius, clusterRadius) + clusterY;
+			
+			if (plantX >= 0 && plantX < coverageMapPixelWidth && plantY >= 0 && plantY < coverageMapPixelWidth) {
+				plantStore.push_back(Ogre::Vector2(plantX, plantY));
+			}
+		}
+	}
+	S_LOG_VERBOSE("Placed " << plantStore.size() << " plants.");
+}
+
+
+EmberOgre::Terrain::TerrainPage& EmberOgre::Terrain::TerrainPageFoliage::getTerrainPage() const
+{
+	return mTerrainPage;
+}
+
+
+
+unsigned int EmberOgre::Terrain::TerrainPageFoliage::getCoverageMapPixelWidth() const
+{
+	return mCoverageMapPixelWidth;
 }

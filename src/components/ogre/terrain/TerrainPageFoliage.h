@@ -42,6 +42,8 @@ class TerrainShader;
 class TerrainGenerator;
 class TerrainPageSurface;
 class TerrainPage;
+class TerrainPageFoliage;
+class TerrainLayerDefinition;
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
@@ -78,11 +80,16 @@ public:
 	
 	/**
 	 *    Place the plants for the supplied area in the supplied store.
+	 * @param layer The layer which we should use as base for determining what plants to get.
 	 * @param plantType The plant type.
 	 * @param area The enclosing area.
 	 * @param store The store in which to place the plants.
 	 */
-	void getPlantsForArea(const std::string& plantType, Ogre::TRect<float> area, PlantStore& store);
+	void getPlantsForArea(const TerrainLayerDefinition& layerDef, const std::string& plantType, Ogre::TRect<float> area, PlantStore& store);
+
+	TerrainPage& getTerrainPage() const;
+
+	unsigned int getCoverageMapPixelWidth() const;
 	
 protected:
 	/**
@@ -100,6 +107,54 @@ protected:
 	Ogre::DataStreamPtr mFoliageCoverageDataStreamPtr;
 	
 	unsigned int mCoverageMapPixelWidth;
+
+};
+
+class PlantPopulator
+{
+public:
+
+	PlantPopulator(TerrainPageFoliage& terrainPageFoliage);
+	virtual ~PlantPopulator();
+	
+	virtual void populate(TerrainPageFoliage::PlantStore& plantStore) = 0;
+
+protected:
+
+	TerrainPageFoliage& mTerrainPageFoliage;
+
+};
+
+class ClusterPopulator : public PlantPopulator
+{
+public:
+	ClusterPopulator(TerrainPageFoliage& terrainPageFoliage);
+	virtual ~ClusterPopulator();
+	
+	virtual void populate(TerrainPageFoliage::PlantStore& plantStore);
+
+	void setMinClusterRadius ( float theValue );
+	float getMinClusterRadius() const;
+
+	void setMaxClusterRadius ( float theValue );
+	float getMaxClusterRadius() const;
+
+	void setDensity ( float theValue );
+	float getDensity() const;
+
+	void setFalloff ( float theValue );
+	float getFalloff() const;
+
+	void setClusterDistance ( float theValue );
+	float getClusterDistance() const;
+
+protected:
+
+	float mMinClusterRadius;
+	float mMaxClusterRadius;
+	float mClusterDistance;
+	float mDensity;
+	float mFalloff;
 
 };
 
