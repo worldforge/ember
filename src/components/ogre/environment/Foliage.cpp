@@ -31,6 +31,9 @@
 #include "Foliage.h"
 #include "FoliageArea.h"
 #include "FoliageLayer.h"
+#include "FoliageBase.h"
+#include "GrassFoliage.h"
+#include "ShrubberyFoliage.h"
 // #include "FoliageImpl.h"
 
 //#include "GroundCover.h"
@@ -72,7 +75,7 @@ Foliage::Foliage( Ogre::SceneManager* sceneMgr)
 {
 	S_LOG_INFO("Setting up foliage system.");
 	
-// 	mImpl = new FoliageImpl();
+// 	mImpl = new FoliageImpl();GrassFoliage
 	
 // 	createGrassMesh();
 // 
@@ -148,8 +151,12 @@ void Foliage::initialize()
 		const TerrainLayerDefinition* layerDef = *I;
 		for (TerrainLayerDefinition::TerrainFoliageDefinitionStore::const_iterator J = layerDef->getFoliages().begin(); J != layerDef->getFoliages().end(); ++J) {
 			try {
-				if (J->getPlantType() == "grass") {
+				if (J->getRenderTechnique() == "grass") {
 					GrassFoliage* foliage = new GrassFoliage(*layerDef, *J);
+					foliage->initialize();
+					mFoliages.push_back(foliage);
+				} else if (J->getRenderTechnique() == "shrubbery") {
+					ShrubberyFoliage* foliage = new ShrubberyFoliage(*layerDef, *J);
 					foliage->initialize();
 					mFoliages.push_back(foliage);
 				}
@@ -358,77 +365,6 @@ bool Foliage::frameStarted(const Ogre::FrameEvent & evt)
 	return true;
 
 }
-
-FoliageBase::FoliageBase(const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition)
-: mTerrainLayerDefinition(terrainLayerDefinition)
-, mFoliageDefinition(foliageDefinition)
-{
-}
-
-FoliageBase::~FoliageBase()
-{
-}
-
-GrassFoliage::GrassFoliage(const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition)
-: FoliageBase(terrainLayerDefinition, foliageDefinition)
-, mGrass(0)
-, mGrassLoader(0)
-{
-}
-
-GrassFoliage::~GrassFoliage()
-{
-	delete mGrassLoader;
-	delete mGrass;
-}
-
-void GrassFoliage::initialize()
-{
-	Ogre::Camera* camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
-	mGrass = new ::PagedGeometry::PagedGeometry(camera, 32);
-	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainInfo().getWorldSizeInIndices();	mGrass->setBounds(Atlas2Ogre(worldSize));
-	mGrass->addDetailLevel<PagedGeometry::GrassPage>(96);
-	
-	//Create a GrassLoader object
-	mGrassLoader = new ::PagedGeometry::GrassLoader<FoliageLayer>(mGrass);
- 	mGrass->setPageLoader(mGrassLoader);	//Assign the "treeLoader" to be used to load 
-	mGrassLoader->setHeightFunction(&getTerrainHeight);
-
-	//Add some grass to the scene with GrassLoader::addLayer()
-	FoliageLayer *l = mGrassLoader->addLayer(mFoliageDefinition.getParameter("material"));
-	
-	l->configure(&mTerrainLayerDefinition, &mFoliageDefinition);
-	//Configure the grass layer properties (size, density, animation properties, fade settings, etc.)
-	l->setMinimumSize(1.0f, 1.0f);
-	l->setMaximumSize(1.5f, 1.5f);
-	l->setAnimationEnabled(true);		//Enable animations
-	l->setSwayDistribution(10.0f);		//Sway fairly unsynchronized
-	l->setSwayLength(0.5f);				//Sway back and forth 0.5 units in length
-	l->setSwaySpeed(0.5f);				//Sway 1/2 a cycle every second
-// 	l->setDensity(1.5f);				//Relatively dense grass
-	l->setFadeTechnique(::PagedGeometry::FADETECH_GROW);	//Distant grass should slowly raise out of the ground when coming in range
-	l->setRenderTechnique(::PagedGeometry::GRASSTECH_CROSSQUADS);	//Draw grass as scattered quads
-
-// 	l->setHeightRange(0.001f);
-	l->setMapBounds(Atlas2Ogre(worldSize));	//(0,0)-(1500,1500) is the full boundaries of the terrain
-}
-
-void GrassFoliage::frameStarted(const Ogre::FrameEvent & evt)
-{	
-	
-	if (mGrass) {
-		try {
-			mGrass->update();
-		} catch (const Ogre::Exception& ex)
-		{
-			S_LOG_FAILURE("Error when updating grass. Will disable grass.\n"<< ex.what());
-			delete mGrassLoader;
-			delete mGrass;
-		}
-	}	
-}
-
-
 }
 }
 

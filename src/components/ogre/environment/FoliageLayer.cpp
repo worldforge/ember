@@ -74,12 +74,13 @@ void FoliageLayer::configure(const Terrain::TerrainLayerDefinition* terrainLayer
 {
 	mTerrainLayerDefinition = terrainLayerDefinition;
 	mFoliageDefinition = foliageDefinition;
+	mDensity = atof(foliageDefinition->getParameter("density").c_str());
 }
 
 
 unsigned int FoliageLayer::calculateMaxGrassCount(float densityFactor, float volume)
 {
-	return static_cast<unsigned int>(densityFactor * volume);
+	return static_cast<unsigned int>(densityFactor * volume * mDensity);
 }
 
 unsigned int FoliageLayer::_populateGrassList(PageInfo page, float *posBuff, unsigned int grassCount)
@@ -94,6 +95,9 @@ unsigned int FoliageLayer::_populateGrassList(PageInfo page, float *posBuff, uns
 		terrainPage->getPageFoliage()->getPlantsForArea(*mTerrainLayerDefinition, mFoliageDefinition->getPlantType(), adjustedBounds, plants);
 // 		WFMath::AxisBox<2> wfBounds = Ogre2Atlas(page.bounds);
 		for (TerrainPageFoliage::PlantStore::const_iterator I = plants.begin(); I != plants.end(); ++I) {
+			if (finalGrassCount == grassCount) {
+				break;
+			}
 // 			TerrainPosition posInWorld;
 /*			posInWorld.x() = (*I).x() + (terrainPage->getExtent().lowCorner().x());
 			posInWorld.y() = (*I).y() + (terrainPage->getExtent().lowCorner().y());
@@ -110,23 +114,14 @@ unsigned int FoliageLayer::_populateGrassList(PageInfo page, float *posBuff, uns
 
 Ogre::uint32 FoliageLayer::getColorAt(float x, float z)
 {
-	//TODO: add caching of the last fetched terrain page and first check if the position isn't at that page, since we'll in most cass will call this method with positions that are close to eachother
-	TerrainPosition wfPos(x, -z);
-	TerrainPage* terrainPage = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(wfPos);
-	TerrainPageShadow& terrainShadow = terrainPage->getPageShadow();
-	Ogre::Image* image = terrainShadow.getImage();
-	if (image) {
-		Ogre::TRect<float> ogrePageExtent = Atlas2Ogre(terrainPage->getExtent());
-		unsigned int adjustedX = static_cast<unsigned int>(x - ogrePageExtent.left);
-		unsigned int adjustedZ = static_cast<unsigned int>(z - ogrePageExtent.top);
-		unsigned char val(image->getData()[static_cast<size_t>((image->getWidth() * adjustedZ) + adjustedX)]);
-		
-		///construct a 32 bit value from an array of four 8 chars
-		Ogre::uint8 aVal[4] = {val, val, val, 0xFF}; ///use full alpha
-		return *((Ogre::uint32*)aVal);
-	}
-	return 0;
-
+	///make these static for fast lookup
+	static Ogre::Vector2 pos;
+	static Ogre::uint32 colour;
+	static Terrain::TerrainGenerator* terrainGenerator(EmberOgre::getSingleton().getTerrainGenerator());
+	pos.x = x;
+	pos.y = z;
+	terrainGenerator->getShadowColourAt(pos, colour);
+	return colour;
 }
 
 

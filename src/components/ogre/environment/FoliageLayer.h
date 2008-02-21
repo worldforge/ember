@@ -73,7 +73,8 @@ protected:
 	
 	const Terrain::TerrainLayerDefinition* mTerrainLayerDefinition;
 	const Terrain::TerrainFoliageDefinition* mFoliageDefinition;
-
+	float mDensity;
+	
 };
 }
 
