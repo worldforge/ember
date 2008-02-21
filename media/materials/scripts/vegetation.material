@@ -369,11 +369,20 @@ material /global/plants/grass/teardrops : /base/wavinggrass
 }
 
 
-material /global/plants/shrubs/fern :  /base/normalmap/specular/nonculled/alpharejected
+// material /global/plants/shrubs/fern :  /base/normalmap/specular/nonculled/alpharejected
+material /global/plants/shrubs/fern :  /base/simple/nonculled/alphablended
 {
 	set_texture_alias DiffuseMap 3d_objects/plants/shrubs/textures/fern/fernD.png
 	set_texture_alias NormalHeightMap 3d_objects/plants/shrubs/textures/fern/fernN.png
 	set_texture_alias SpecularMap 3d_objects/plants/shrubs/textures/fern/fernS.png
+	technique
+	{
+		pass
+		{
+			alpha_rejection greater_equal 128
+			//depth_write off
+		}
+	}
 }
 
 material /global/plants/fruit/beet :  /base/normalmap/specular/nonculled/alpharejected
@@ -383,18 +392,37 @@ material /global/plants/fruit/beet :  /base/normalmap/specular/nonculled/alphare
 	set_texture_alias SpecularMap 3d_objects/plants/fruit/textures/beet/beetS.png
 }
 
-material /global/plants/shrubs/leaf :  /base/normalmap/specular/nonculled/alpharejected
+// material /global/plants/shrubs/leaf :  /base/normalmap/specular/nonculled/alpharejected
+material /global/plants/shrubs/leaf :  /base/simple/nonculled/alphablended
 {
 	set_texture_alias DiffuseMap 3d_objects/plants/shrubs/textures/leaf/leafD.png
 	set_texture_alias NormalHeightMap 3d_objects/plants/shrubs/textures/leaf/leafN.png
 	set_texture_alias SpecularMap 3d_objects/plants/shrubs/textures/leaf/leafS.png
+	technique
+	{
+		pass
+		{
+			alpha_rejection greater_equal 128
+			//depth_write off
+		}
+	}
 }
 
-
-material /global/plants/flowers/camellia :  /base/normalmap/specular/nonculled/alpharejected
+ 
+// material /global/plants/flowers/camellia :  /base/normalmap/specular/nonculled/alpharejected
+material /global/plants/flowers/camellia : /base/simple/nonculled/alphablended
 {
 	set_texture_alias DiffuseMap 3d_objects/plants/flowers/textures/camelliaD.png
 	set_texture_alias NormalHeightMap 3d_objects/plants/flowers/textures/camelliaN.png
+	technique
+	{
+		pass
+		{ 
+			lighting off
+			alpha_rejection greater_equal 128
+			//depth_write off
+		}
+	}
 }
 
 

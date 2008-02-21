@@ -117,3 +117,17 @@ material /global/bipeds/drystan_archer/drystan_archer_pants : /base/normalmap/sp
 	set_texture_alias NormalHeightMap 3d_skeletons/bipeds/textures/drystan_archer/drystan_archer_pantsN.png
 	set_texture_alias SpecularMap 3d_skeletons/bipeds/textures/drystan_archer/drystan_archer_pantsS.png
 }
+
+material /global/bipeds/male_body : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/textures/male_body/male_bodyD.png
+	set_texture_alias NormalHeightMap 3d_skeletons/bipeds/textures/male_body/male_bodyN.png
+	set_texture_alias SpecularMap 3d_skeletons/bipeds/textures/male_body/male_body_S.png
+}
+
+material /global/bipeds/male_head : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/textures/male_head/male_headD.png
+	set_texture_alias NormalHeightMap 3d_skeletons/bipeds/textures/male_head/male_headN.png
+	set_texture_alias SpecularMap 3d_skeletons/bipeds/textures/male_head/male_headS.png
+}
