@@ -342,15 +342,23 @@ void EmberOgre::Terrain::ClusterPopulator::populate(EmberOgre::Terrain::TerrainP
 		float clusterRadius(Ogre::Math::RangeRandom(mMinClusterRadius, mMaxClusterRadius));
 		
 		float volume = (clusterRadius * clusterRadius) * Ogre::Math::PI;
-		unsigned int instancesInEachCluster = volume / mDensity;
+		unsigned int instancesInEachCluster = volume * mDensity;
 
 		///place one cluster
 		for (unsigned int j = 0; j < instancesInEachCluster; ++j) {
-			float plantX = Ogre::Math::RangeRandom(-clusterRadius, clusterRadius) + clusterX;
-			float plantY = Ogre::Math::RangeRandom(-clusterRadius, clusterRadius) + clusterY;
-			
-			if (plantX >= 0 && plantX < coverageMapPixelWidth && plantY >= 0 && plantY < coverageMapPixelWidth) {
-				plantStore.push_back(Ogre::Vector2(plantX, plantY));
+			float offsetX(Ogre::Math::RangeRandom(-clusterRadius, clusterRadius));
+			float offsetY(Ogre::Math::RangeRandom(-clusterRadius, clusterRadius));
+			float distanceFromCenter = Ogre::Vector2(offsetX, offsetY).length();
+			if (distanceFromCenter < clusterRadius) {
+				float chance(1.0f - (mFalloff * (distanceFromCenter / clusterRadius)));
+				if (Ogre::Math::UnitRandom() < chance) {
+					float plantX = offsetX + clusterX;
+					float plantY = offsetY + clusterY;
+					
+					if (plantX >= 0 && plantX < coverageMapPixelWidth && plantY >= 0 && plantY < coverageMapPixelWidth) {
+						plantStore.push_back(Ogre::Vector2(plantX, plantY));
+					}
+				}
 			}
 		}
 	}
