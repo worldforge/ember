@@ -88,6 +88,7 @@ void XMLLayerDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, cons
 						TerrainFoliageDefinition foliageDef;
 						foliageDef.setPlantType(foliageElem->Attribute("planttype"));
 						foliageDef.setPopulationTechnique(foliageElem->Attribute("populationtechnique"));
+						foliageDef.setRenderTechnique(foliageElem->Attribute("rendertechnique"));
 						for (Ember::TiXmlElement* paramElem = foliageElem->FirstChildElement("param");
 								paramElem != 0; paramElem = paramElem->NextSiblingElement())
 						{

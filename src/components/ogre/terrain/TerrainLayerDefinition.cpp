@@ -122,20 +122,26 @@ TerrainLayerDefinition::TerrainFoliageDefinitionStore& TerrainLayerDefinition::g
 
 }
 
-
-
-
-
 const std::string& EmberOgre::Terrain::TerrainFoliageDefinition::getPopulationTechnique() const
 {
 	return mPopulationTechnique;
 }
 
-
 void EmberOgre::Terrain::TerrainFoliageDefinition::setPopulationTechnique ( const std::string& theValue )
 {
 	mPopulationTechnique = theValue;
 }
+
+const std::string& EmberOgre::Terrain::TerrainFoliageDefinition::getRenderTechnique() const
+{
+	return mRenderTechnique;
+}
+
+void EmberOgre::Terrain::TerrainFoliageDefinition::setRenderTechnique ( const std::string& theValue )
+{
+	mRenderTechnique = theValue;
+}
+
 
 const std::string & EmberOgre::Terrain::TerrainFoliageDefinition::getParameter(const std::string & key) const
 {

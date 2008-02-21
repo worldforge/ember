@@ -87,11 +87,14 @@ public:
 	void setPopulationTechnique ( const std::string& theValue );
 	const std::string& getPopulationTechnique() const;
 	
+	void setRenderTechnique ( const std::string& theValue );
+	const std::string& getRenderTechnique() const;
 	
 protected:
 	TerrainLayerDefinition::StringParamStore mParameters;
 	std::string mPlantType;
 	std::string mPopulationTechnique;
+	std::string mRenderTechnique;
 	
 };
 
