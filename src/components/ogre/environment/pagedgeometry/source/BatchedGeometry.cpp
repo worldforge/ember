@@ -235,7 +235,15 @@ BatchedGeometry::SubBatch::SubBatch(BatchedGeometry *parent, SubEntity *ent)
 	built = false;
 
 	Material *origMat = ((MaterialPtr)MaterialManager::getSingleton().getByName(ent->getMaterialName())).getPointer();
-	material = MaterialManager::getSingleton().getByName(getMaterialClone(origMat)->getName());
+	if (origMat) {
+		material = MaterialManager::getSingleton().getByName(getMaterialClone(origMat)->getName());
+	} else {
+		MaterialManager::ResourceCreateOrRetrieveResult result = MaterialManager::getSingleton().createOrRetrieve("PagedGeometry_Batched_Material", "General");
+		if (result.first.isNull()) {
+			OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "BatchedGeometry failed to create a material for entity with invalid material.", "BatchedGeometry::SubBatch::SubBatch(BatchedGeometry *parent, SubEntity *ent)");
+		}
+		material = result.first;
+	}
 
 	//Setup vertex/index data structure
 	vertexData = meshType->vertexData->clone(false);
