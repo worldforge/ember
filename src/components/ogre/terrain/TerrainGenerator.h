@@ -267,6 +267,15 @@ public:
 	void updateShadows();
 	
 	const Ember::ConsoleCommandWrapper UpdateShadows;
+	
+	
+	/**
+	 *    Gets the shadow colour at the supplied position.
+	 * @param position The position in the world.
+	 */
+	 void getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour);
+	 void getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour);
+
 
 protected:
 
