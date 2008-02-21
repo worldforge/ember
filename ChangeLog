@@ -1,3 +1,31 @@
+2008-02-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/moraf.terrain: update terrain defs
+
+2008-02-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/scripts/creatures.material, media/materials/scripts/vegetation.material: disable the shader support in some of the vegetation materials since they need some modifications to properly work with the paged geometry 
+
+2008-02-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainPageFoliage.cpp: try to make the clusters more natural
+
+2008-02-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainGenerator.cpp, src/components/ogre/terrain/TerrainGenerator.h: added methods for quickly getting colour values from the shadows
+
+2008-02-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainLayerDefinition.cpp, src/components/ogre/terrain/TerrainLayerDefinition.h, src/components/ogre/terrain/XMLLayerDefinitionSerializer.cpp: expanded with the ability to both set render method and population method
+
+2008-02-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/Foliage.cpp, src/components/ogre/environment/Foliage.h, src/components/ogre/environment/FoliageBase.cpp, src/components/ogre/environment/FoliageBase.h, src/components/ogre/environment/FoliageLayer.cpp, src/components/ogre/environment/FoliageLayer.h, src/components/ogre/environment/FoliageLoader.cpp, src/components/ogre/environment/FoliageLoader.h, src/components/ogre/environment/GrassFoliage.cpp, src/components/ogre/environment/GrassFoliage.h, src/components/ogre/environment/Makefile.am, src/components/ogre/environment/ShrubberyFoliage.cpp, src/components/ogre/environment/ShrubberyFoliage.h: separated out the rendering techniques to different classes, which all inherits from FoliageBase. We support Grass and Shrubbery by default. The first on auto generates the grass meshes, and animates it, while the latter uses pre existing meshes.
+
+2008-02-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/pagedgeometry/source/BatchedGeometry.cpp: handle invalid materials without crashing, instead trying to create a new material
+
 2008-02-20 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/modeldefinitions/moraf.terrain: add foliage definitions

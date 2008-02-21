@@ -4,7 +4,7 @@
 		<layer shadername="sand" diffusetexture="3d_objects/environment/ground/textures/sand/sand_AD.png" normalmaptexture="3d_objects/environment/ground/textures/sand/sand_AN.png" tilesize="8">
 		</layer>
 		<layer shadername="grass" diffusetexture="3d_objects/environment/ground/textures/grass/grassD.png" normalmaptexture="3d_objects/environment/ground/textures/grass/grassN.png" tilesize="8">
-			<foliage planttype="grass" populationtechnique="cluster">
+			<foliage planttype="grass" populationtechnique="cluster" rendertechnique="grass">
 				<param key="minClusterRadius">2</param>
 				<param key="maxClusterRadius">10</param>
 				<param key="clusterDistance">25</param>
@@ -12,13 +12,38 @@
 				<param key="falloff">0.3</param>
 				<param key="material">/global/plants/grass/bittergrass/single</param>
 			</foliage>
-			<foliage planttype="shrubbery" populationtechnique="cluster">
-				<param key="model">fern</param>
-				<param key="minClusterRadius">2</param>
-				<param key="maxClusterRadius">10</param>
-				<param key="clusterDistance">25</param>
+			<foliage planttype="fern" populationtechnique="cluster" rendertechnique="shrubbery">
+				<param key="mesh">3d_objects/plants/shrubs/models/fern/fern.mesh</param>
+				<param key="minScale">0.7</param>
+				<param key="maxScale">2.0</param>
+				
+				<param key="minClusterRadius">1</param>
+				<param key="maxClusterRadius">3</param>
+				<param key="clusterDistance">30</param>
 				<param key="density">2</param>
-				<param key="falloff">0.3</param>
+				<param key="falloff">0.7</param>
+			</foliage>
+			<foliage planttype="camelia" populationtechnique="cluster" rendertechnique="shrubbery">
+				<param key="mesh">3d_objects/plants/flowers/models/camellia.mesh</param>
+				<param key="minScale">2</param>
+				<param key="maxScale">5</param>
+				
+				<param key="minClusterRadius">2</param>
+				<param key="maxClusterRadius">5</param>
+				<param key="clusterDistance">40</param>
+				<param key="density">1</param>
+				<param key="falloff">0.7</param>
+			</foliage>
+			<foliage planttype="leaves" populationtechnique="cluster" rendertechnique="shrubbery">
+				<param key="mesh">3d_objects/plants/shrubs/models/leaf/leaves.mesh</param>
+				<param key="minScale">0.5</param>
+				<param key="maxScale">1.2</param>
+				
+				<param key="minClusterRadius">2</param>
+				<param key="maxClusterRadius">5</param>
+				<param key="clusterDistance">35</param>
+				<param key="density">2</param>
+				<param key="falloff">0.7</param>
 			</foliage>
 		</layer>
 		<layer shadername="snow" diffusetexture="snow.png" normalmaptexture="" tilesize="8">
