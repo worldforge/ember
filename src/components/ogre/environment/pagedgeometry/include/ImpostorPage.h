@@ -27,7 +27,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #define IMPOSTOR_YAW_ANGLES 8
 #define IMPOSTOR_PITCH_ANGLES 4
 //If set to 1, imposter textures will be read and saved to disc; if set to 0 they will stay in memory and need to be regenerated each time the application is run.
-#define IMPOSTOR_FILE_SAVE 0
+#define IMPOSTOR_FILE_SAVE 1
 namespace PagedGeometry {
 
 class ImpostorBatch;
@@ -246,6 +246,27 @@ protected:
 	}
 };
 
+//-------------------------------------------------------------------------------------
+//Responsible for making sure that the texture is rerendered when the texture resource needs to //be reloaded.
+//
+class ImpostorTextureResourceLoader : public Ogre::ManualResourceLoader
+{
+public:
+	/**
+	 *    Ctor.
+	 * @param renderContext The ImpostorTexture to which this instance belongs.
+	 */
+	ImpostorTextureResourceLoader(ImpostorTexture& impostorTexture);
+	
+	
+	/**
+	 *    At load time the texture will be rerendered.
+	 * @param resource 
+	 */
+	virtual void loadResource (Ogre::Resource *resource);
+protected:
+	ImpostorTexture& texture;
+};
 
 //-------------------------------------------------------------------------------------
 //This is used internally by ImpostorPage. An ImpostorTexture is actually multiple
@@ -255,6 +276,7 @@ protected:
 class ImpostorTexture
 {
 	friend class ImpostorBatch;
+	friend class ImpostorTextureResourceLoader;
 
 public:
 	/** Returns a pointer to an ImpostorTexture for the specified entity. If one does not
@@ -299,6 +321,9 @@ protected:
 	{
 		return prefix + Ogre::StringConverter::toString(++GUID);
 	}
+	
+	//This will only be used when IMPOSTOR_FILE_SAVE is set to 0
+	std::auto_ptr<ImpostorTextureResourceLoader> loader;
 };
 
 

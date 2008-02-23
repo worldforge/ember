@@ -1,3 +1,31 @@
+2008-02-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/pagedgeometry/include/ImpostorPage.h, src/components/ogre/environment/pagedgeometry/source/ImpostorPage.cpp: provide a resource loader which will be used when the render texture is unloaded
+
+2008-02-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* configure.ac: bump media version
+
+2008-02-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/moraf.terrain: update definition
+
+2008-02-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainPageFoliage.cpp, src/components/ogre/terrain/TerrainPageFoliage.h: use the WFMath::MTRand class to ensure that we get the same results each time, also let calling methods specify the threshold to use when getting plant positions
+
+2008-02-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainGenerator.cpp, src/components/ogre/terrain/TerrainPageShadow.cpp, src/components/ogre/terrain/TerrainPageShadow.h: moved lookup methods to the shadow
+
+2008-02-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/FoliageLayer.cpp, src/components/ogre/environment/FoliageLoader.cpp: use the threshold value specified in the foliage definition
+
+2008-02-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/pagedgeometry/include/BatchPage.h, src/components/ogre/environment/pagedgeometry/include/BatchedGeometry.h, src/components/ogre/environment/pagedgeometry/include/GrassLoader.h, src/components/ogre/environment/pagedgeometry/include/ImpostorPage.h, src/components/ogre/environment/pagedgeometry/include/PagedGeometry.h, src/components/ogre/environment/pagedgeometry/include/PropertyMaps.h, src/components/ogre/environment/pagedgeometry/include/StaticBillboardSet.h, src/components/ogre/environment/pagedgeometry/include/TreeLoader2D.h, src/components/ogre/environment/pagedgeometry/include/TreeLoader3D.h, src/components/ogre/environment/pagedgeometry/source/BatchPage.cpp, src/components/ogre/environment/pagedgeometry/source/BatchedGeometry.cpp, src/components/ogre/environment/pagedgeometry/source/GrassLoader.cpp, src/components/ogre/environment/pagedgeometry/source/ImpostorPage.cpp, src/components/ogre/environment/pagedgeometry/source/PagedGeometry.cpp, src/components/ogre/environment/pagedgeometry/source/PropertyMaps.cpp, src/components/ogre/environment/pagedgeometry/source/StaticBillboardSet.cpp, src/components/ogre/environment/pagedgeometry/source/TreeLoader2D.cpp, src/components/ogre/environment/pagedgeometry/source/TreeLoader3D.cpp: fixed include directives
+
 2008-02-21 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/modeldefinitions/moraf.terrain: update terrain defs

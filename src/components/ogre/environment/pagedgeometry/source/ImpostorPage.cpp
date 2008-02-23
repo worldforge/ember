@@ -295,12 +295,29 @@ String ImpostorBatch::generateEntityKey(Entity *entity)
 
 //-------------------------------------------------------------------------------------
 
+
+ImpostorTextureResourceLoader::ImpostorTextureResourceLoader(ImpostorTexture& impostorTexture)
+: texture(impostorTexture)
+{
+}
+
+void ImpostorTextureResourceLoader::loadResource (Ogre::Resource *resource)
+{
+	if (resource->getLoadingState() == Ogre::Resource::LOADSTATE_UNLOADED) {
+		texture.regenerate();
+	}
+}
+
+//-------------------------------------------------------------------------------------
+
+
 std::map<String, ImpostorTexture *> ImpostorTexture::selfList;
 unsigned long ImpostorTexture::GUID = 0;
 
 //Do not use this constructor yourself - instead, call getTexture()
 //to get/create an ImpostorTexture for an Entity.
 ImpostorTexture::ImpostorTexture(ImpostorPage *group, Entity *entity)
+: loader(0)
 {
 	//Store scene manager and entity
 	ImpostorTexture::sceneMgr = group->sceneMgr;
@@ -422,6 +439,8 @@ void ImpostorTexture::renderTextures(bool force)
 	TexturePtr renderTexture;
 #else
 	TexturePtr renderTexture(texture);
+	//if we're not using a file image we need to set up a resource loader, so that the texture is regenerated if it's ever unloaded (such as switching between fullscreen and the desktop in win32)
+	loader = std::auto_ptr<ImpostorTextureResourceLoader>(new ImpostorTextureResourceLoader(*this));
 #endif
 	RenderTexture *renderTarget;
 	Camera *renderCamera;
@@ -431,7 +450,7 @@ void ImpostorTexture::renderTextures(bool force)
 	unsigned int textureSize = ImpostorPage::impostorResolution;
 	if (renderTexture.isNull()) {
 		renderTexture = TextureManager::getSingleton().createManual(getUniqueID("ImpostorTexture"), "Impostors",
-				TEX_TYPE_2D, textureSize * IMPOSTOR_YAW_ANGLES, textureSize * IMPOSTOR_PITCH_ANGLES, 0, PF_A8R8G8B8, TU_RENDERTARGET);
+				TEX_TYPE_2D, textureSize * IMPOSTOR_YAW_ANGLES, textureSize * IMPOSTOR_PITCH_ANGLES, 0, PF_A8R8G8B8, TU_RENDERTARGET, loader.get());
 	}
 	renderTexture->setNumMipmaps(MIP_UNLIMITED);
 	
