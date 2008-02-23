@@ -92,7 +92,12 @@ unsigned int FoliageLayer::_populateGrassList(PageInfo page, float *posBuff, uns
 		Ogre::TRect<float> ogrePageExtent = Atlas2Ogre(terrainPage->getExtent());
 		Ogre::TRect<float> adjustedBounds = Ogre::TRect<float>(page.bounds.left - ogrePageExtent.left, page.bounds.top - ogrePageExtent.top, page.bounds.right - ogrePageExtent.left, page.bounds.bottom - ogrePageExtent.top);
 		TerrainPageFoliage::PlantStore plants;
-		terrainPage->getPageFoliage()->getPlantsForArea(*mTerrainLayerDefinition, mFoliageDefinition->getPlantType(), adjustedBounds, plants);
+		unsigned char threshold(100);
+		if (mFoliageDefinition->getParameter("threshold") != "") {
+			threshold = static_cast<unsigned char>(atoi(mFoliageDefinition->getParameter("threshold").c_str()));
+		}
+		
+		terrainPage->getPageFoliage()->getPlantsForArea(*mTerrainLayerDefinition, threshold, mFoliageDefinition->getPlantType(), adjustedBounds, plants);
 // 		WFMath::AxisBox<2> wfBounds = Ogre2Atlas(page.bounds);
 		for (TerrainPageFoliage::PlantStore::const_iterator I = plants.begin(); I != plants.end(); ++I) {
 			if (finalGrassCount == grassCount) {

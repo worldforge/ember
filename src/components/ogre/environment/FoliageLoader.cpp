@@ -77,7 +77,13 @@ void FoliageLoader::loadPage(::PagedGeometry::PageInfo &page)
 		Ogre::TRect<float> ogrePageExtent = Atlas2Ogre(terrainPage->getExtent());
 		Ogre::TRect<float> adjustedBounds = Ogre::TRect<float>(page.bounds.left - ogrePageExtent.left, page.bounds.top - ogrePageExtent.top, page.bounds.right - ogrePageExtent.left, page.bounds.bottom - ogrePageExtent.top);
 		TerrainPageFoliage::PlantStore plants;
-		terrainPage->getPageFoliage()->getPlantsForArea(mTerrainLayerDefinition, mFoliageDefinition.getPlantType(), adjustedBounds, plants);
+		
+		unsigned char threshold(100);
+		if (mFoliageDefinition.getParameter("threshold") != "") {
+			threshold = static_cast<unsigned char>(atoi(mFoliageDefinition.getParameter("threshold").c_str()));
+		}
+		
+		terrainPage->getPageFoliage()->getPlantsForArea(mTerrainLayerDefinition, threshold, mFoliageDefinition.getPlantType(), adjustedBounds, plants);
 		for (TerrainPageFoliage::PlantStore::const_iterator I = plants.begin(); I != plants.end(); ++I) {
 			Ogre::Vector3 pos(I->x + ogrePageExtent.left, EmberOgre::getSingleton().getTerrainGenerator()->getHeight(TerrainPosition(I->x + ogrePageExtent.left, -(I->y + ogrePageExtent.top))), I->y + ogrePageExtent.top);
 			
