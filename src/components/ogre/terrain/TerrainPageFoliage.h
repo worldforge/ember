@@ -45,6 +45,13 @@ class TerrainPage;
 class TerrainPageFoliage;
 class TerrainLayerDefinition;
 
+// struct PlantPosition
+// {
+// 	Ogre::Vector2 pos;
+// 	unsigned char rotation;
+// 	float scale;
+// };
+
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
@@ -85,7 +92,7 @@ public:
 	 * @param area The enclosing area.
 	 * @param store The store in which to place the plants.
 	 */
-	void getPlantsForArea(const TerrainLayerDefinition& layerDef, const std::string& plantType, Ogre::TRect<float> area, PlantStore& store);
+	void getPlantsForArea(const TerrainLayerDefinition& layerDef, unsigned char threshold, const std::string& plantType, Ogre::TRect<float> area, PlantStore& store);
 
 	TerrainPage& getTerrainPage() const;
 
@@ -117,7 +124,7 @@ public:
 	PlantPopulator(TerrainPageFoliage& terrainPageFoliage);
 	virtual ~PlantPopulator();
 	
-	virtual void populate(TerrainPageFoliage::PlantStore& plantStore) = 0;
+	virtual void populate(TerrainPageFoliage::PlantStore& plantStore, int plantIndex) = 0;
 
 protected:
 
@@ -131,7 +138,7 @@ public:
 	ClusterPopulator(TerrainPageFoliage& terrainPageFoliage);
 	virtual ~ClusterPopulator();
 	
-	virtual void populate(TerrainPageFoliage::PlantStore& plantStore);
+	virtual void populate(TerrainPageFoliage::PlantStore& plantStore, int plantIndex);
 
 	void setMinClusterRadius ( float theValue );
 	float getMinClusterRadius() const;
