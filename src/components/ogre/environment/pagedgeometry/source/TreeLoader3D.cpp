@@ -12,10 +12,10 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include "PagedGeometry.h"
 #include "PropertyMaps.h"
 
-#include "OgreRoot.h"
-#include "OgreException.h"
-#include "OgreVector3.h"
-#include "OgreQuaternion.h"
+#include <OgreRoot.h>
+#include <OgreException.h>
+#include <OgreVector3.h>
+#include <OgreQuaternion.h>
 using namespace Ogre;
 
 namespace PagedGeometry {

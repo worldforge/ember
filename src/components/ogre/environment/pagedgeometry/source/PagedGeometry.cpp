@@ -15,10 +15,10 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include "PagedGeometry.h"
 #include "StaticBillboardSet.h"
 
-#include "OgreRoot.h"
-#include "OgreTimer.h"
-#include "OgreCamera.h"
-#include "OgreVector3.h"
+#include <OgreRoot.h>
+#include <OgreTimer.h>
+#include <OgreCamera.h>
+#include <OgreVector3.h>
 using namespace Ogre;
 
 namespace PagedGeometry {

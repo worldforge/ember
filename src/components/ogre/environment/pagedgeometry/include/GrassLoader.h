@@ -15,35 +15,35 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include "PagedGeometry.h"
 #include "PropertyMaps.h"
 
-#include "OgrePrerequisites.h"
-#include "OgreMaterial.h"
-#include "OgrePixelFormat.h"
-#include "OgreStringConverter.h"
-#include "OgreMeshManager.h"
+#include <OgrePrerequisites.h>
+#include <OgreMaterial.h>
+#include <OgrePixelFormat.h>
+#include <OgreStringConverter.h>
+#include <OgreMeshManager.h>
 
 
-#include "OgreRoot.h"
-#include "OgreTimer.h"
-#include "OgreCamera.h"
-#include "OgreVector3.h"
-#include "OgreQuaternion.h"
-#include "OgreEntity.h"
-#include "OgreString.h"
-#include "OgreStringConverter.h"
-#include "OgreMaterialManager.h"
-#include "OgreMaterial.h"
-#include "OgreHardwareBufferManager.h"
-#include "OgreHardwareBuffer.h"
-#include "OgreMeshManager.h"
-#include "OgreMesh.h"
-#include "OgreSubMesh.h"
-#include "OgreLogManager.h"
-#include "OgreTextureManager.h"
-#include "OgreHardwarePixelBuffer.h"
-#include "OgreRenderSystem.h"
-#include "OgreRenderSystemCapabilities.h"
-#include "OgreHighLevelGpuProgram.h"
-#include "OgreHighLevelGpuProgramManager.h"
+#include <OgreRoot.h>
+#include <OgreTimer.h>
+#include <OgreCamera.h>
+#include <OgreVector3.h>
+#include <OgreQuaternion.h>
+#include <OgreEntity.h>
+#include <OgreString.h>
+#include <OgreStringConverter.h>
+#include <OgreMaterialManager.h>
+#include <OgreMaterial.h>
+#include <OgreHardwareBufferManager.h>
+#include <OgreHardwareBuffer.h>
+#include <OgreMeshManager.h>
+#include <OgreMesh.h>
+#include <OgreSubMesh.h>
+#include <OgreLogManager.h>
+#include <OgreTextureManager.h>
+#include <OgreHardwarePixelBuffer.h>
+#include <OgreRenderSystem.h>
+#include <OgreRenderSystemCapabilities.h>
+#include <OgreHighLevelGpuProgram.h>
+#include <OgreHighLevelGpuProgramManager.h>
 
 namespace PagedGeometry {
 

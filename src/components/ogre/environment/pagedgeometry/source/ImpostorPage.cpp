@@ -16,14 +16,14 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include "ImpostorPage.h"
 #include "StaticBillboardSet.h"
 
-#include "OgreRoot.h"
-#include "OgreTimer.h"
-#include "OgreCamera.h"
-#include "OgreVector3.h"
-#include "OgreQuaternion.h"
-#include "OgreEntity.h"
-#include "OgreSubEntity.h"
-#include "OgreHardwarePixelBuffer.h"
+#include <OgreRoot.h>
+#include <OgreTimer.h>
+#include <OgreCamera.h>
+#include <OgreVector3.h>
+#include <OgreQuaternion.h>
+#include <OgreEntity.h>
+#include <OgreSubEntity.h>
+#include <OgreHardwarePixelBuffer.h>
 using namespace Ogre;
 
 namespace PagedGeometry {

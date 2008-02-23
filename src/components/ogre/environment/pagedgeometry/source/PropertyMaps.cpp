@@ -10,15 +10,15 @@ Permission is granted to anyone to use this software for any purpose, including 
 
 #include "PropertyMaps.h"
 
-#include "OgreRoot.h"
-#include "OgrePrerequisites.h"
-#include "OgrePixelFormat.h"
-#include "OgreTexture.h"
-#include "OgreTextureManager.h"
-#include "OgreHardwarePixelBuffer.h"
-#include "OgreRenderSystem.h"
-#include "OgreString.h"
-#include "OgreStringConverter.h"
+#include <OgreRoot.h>
+#include <OgrePrerequisites.h>
+#include <OgrePixelFormat.h>
+#include <OgreTexture.h>
+#include <OgreTextureManager.h>
+#include <OgreHardwarePixelBuffer.h>
+#include <OgreRenderSystem.h>
+#include <OgreString.h>
+#include <OgreStringConverter.h>
 using namespace Ogre;
 
 namespace PagedGeometry {

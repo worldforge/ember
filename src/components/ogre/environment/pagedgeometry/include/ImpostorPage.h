@@ -19,9 +19,9 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include "PagedGeometry.h"
 #include "StaticBillboardSet.h"
 
-#include "OgrePrerequisites.h"
-#include "OgreTextureManager.h"
-#include "OgreRenderTexture.h"
+#include <OgrePrerequisites.h>
+#include <OgreTextureManager.h>
+#include <OgreRenderTexture.h>
 
 
 #define IMPOSTOR_YAW_ANGLES 8

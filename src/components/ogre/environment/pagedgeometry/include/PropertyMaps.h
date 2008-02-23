@@ -11,11 +11,11 @@ Permission is granted to anyone to use this software for any purpose, including 
 #ifndef __PropertyMaps_H__
 #define __PropertyMaps_H__
 
-#include "OgrePrerequisites.h"
-#include "OgrePixelFormat.h"
-#include "OgreColourValue.h"
-#include "OgreRoot.h"
-#include "OgreRenderSystem.h"
+#include <OgrePrerequisites.h>
+#include <OgrePixelFormat.h>
+#include <OgreColourValue.h>
+#include <OgreRoot.h>
+#include <OgreRenderSystem.h>
 
 namespace PagedGeometry {
 

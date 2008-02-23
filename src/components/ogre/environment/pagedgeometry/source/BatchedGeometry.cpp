@@ -15,23 +15,23 @@ Permission is granted to anyone to use this software for any purpose, including 
 
 #include "BatchedGeometry.h"
 
-#include "OgreRoot.h"
-#include "OgreRenderSystem.h"
-#include "OgreCamera.h"
-#include "OgreVector3.h"
-#include "OgreQuaternion.h"
-#include "OgreSceneNode.h"
-#include "OgreString.h"
-#include "OgreStringConverter.h"
-#include "OgreEntity.h"
-#include "OgreSubMesh.h"
-#include "OgreSubEntity.h"
-#include "OgreMesh.h"
-#include "OgreMeshManager.h"
-#include "OgreHardwareBufferManager.h"
-#include "OgreHardwareBuffer.h"
-#include "OgreMaterialManager.h"
-#include "OgreMaterial.h"
+#include <OgreRoot.h>
+#include <OgreRenderSystem.h>
+#include <OgreCamera.h>
+#include <OgreVector3.h>
+#include <OgreQuaternion.h>
+#include <OgreSceneNode.h>
+#include <OgreString.h>
+#include <OgreStringConverter.h>
+#include <OgreEntity.h>
+#include <OgreSubMesh.h>
+#include <OgreSubEntity.h>
+#include <OgreMesh.h>
+#include <OgreMeshManager.h>
+#include <OgreHardwareBufferManager.h>
+#include <OgreHardwareBuffer.h>
+#include <OgreMaterialManager.h>
+#include <OgreMaterial.h>
 using namespace Ogre;
 
 namespace PagedGeometry {

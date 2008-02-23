@@ -14,7 +14,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include "PagedGeometry.h"
 #include "PropertyMaps.h"
 
-#include "OgrePrerequisites.h"
+#include <OgrePrerequisites.h>
 
 namespace PagedGeometry {
 
