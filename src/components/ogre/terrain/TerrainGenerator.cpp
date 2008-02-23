@@ -744,23 +744,10 @@ void TerrainGenerator::getShadowColourAt(const Ogre::Vector2& position, Ogre::ui
 	TerrainPosition wfPos(Ogre2Atlas(position));
 	TerrainPage* terrainPage = getTerrainPage(wfPos);
 	TerrainPageShadow& terrainShadow = terrainPage->getPageShadow();
-	Ogre::Image* image = terrainShadow.getImage();
-	if (image) {
-		Ogre::TRect<float> ogrePageExtent = Atlas2Ogre(terrainPage->getExtent());
-		unsigned int adjustedX = static_cast<unsigned int>(position.x - ogrePageExtent.left);
-		unsigned int adjustedZ = static_cast<unsigned int>(position.y - ogrePageExtent.top);
-		unsigned char val(image->getData()[static_cast<size_t>((image->getWidth() * adjustedZ) + adjustedX)]);
-		
-		Ogre::uint8* aVal((Ogre::uint8*)&colour);
-		aVal[0] = val;
-		aVal[1] = val;
-		aVal[2] = val;
-		aVal[3] = 0xFF;
-/*		return Ogre::ColourValue(val, val, val, 1.0);
-		///construct a 32 bit value from an array of four 8 chars
-		Ogre::uint8 aVal[4] = {val, val, val, 0xFF}; ///use full alpha
-		return *((Ogre::uint32*)aVal);*/
-	}
+	
+	Ogre::TRect<float> ogrePageExtent = Atlas2Ogre(terrainPage->getExtent());
+	terrainShadow.getShadowColourAt(Ogre::Vector2(position.x - ogrePageExtent.left, position.y - ogrePageExtent.top), colour);
+
 }
 
 void TerrainGenerator::getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour)
@@ -769,18 +756,8 @@ void TerrainGenerator::getShadowColourAt(const Ogre::Vector2& position, Ogre::Co
 	TerrainPosition wfPos(Ogre2Atlas(position));
 	TerrainPage* terrainPage = getTerrainPage(wfPos);
 	TerrainPageShadow& terrainShadow = terrainPage->getPageShadow();
-	Ogre::Image* image = terrainShadow.getImage();
-	if (image) {
-		Ogre::TRect<float> ogrePageExtent = Atlas2Ogre(terrainPage->getExtent());
-		unsigned int adjustedX = static_cast<unsigned int>(position.x - ogrePageExtent.left);
-		unsigned int adjustedZ = static_cast<unsigned int>(position.y - ogrePageExtent.top);
-		float val(image->getData()[static_cast<size_t>((image->getWidth() * adjustedZ) + adjustedX)] / 255.0f);
-		
-		colour.r = val;
-		colour.g = val;
-		colour.b = val;
-		colour.a = 1.0f;
-	}
+	Ogre::TRect<float> ogrePageExtent = Atlas2Ogre(terrainPage->getExtent());
+	terrainShadow.getShadowColourAt(Ogre::Vector2(position.x - ogrePageExtent.left, position.y - ogrePageExtent.top), colour);
 }
 
 }

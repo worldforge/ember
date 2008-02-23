@@ -68,6 +68,10 @@ public:
 	
 	Ogre::Image* getImage() const;
    
+	void getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour);
+	void getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour);
+  
+   
 protected:
 	TerrainPage& mTerrainPage;
 	Ogre::Vector3 mLightDirection;

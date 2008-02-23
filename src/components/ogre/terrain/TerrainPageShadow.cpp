@@ -77,7 +77,7 @@ void SimpleTerrainPageShadowTechnique::createShadowData(TerrainPage& page, Terra
 			} else {
 				*data = 0;
 			}
-			data++;
+			data++;http://erikhjortsberg.blogspot.com/
 			position[0] = position[0] + 1;
 		}
 	}
@@ -167,6 +167,31 @@ Ogre::Image* TerrainPageShadow::getImage() const
 void TerrainPageShadow::setShadowTechnique(ITerrainPageShadowTechnique* shadowTechnique)
 {
 	mShadowTechnique = shadowTechnique;
+}
+
+void TerrainPageShadow::getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour)
+{
+	if (mImage) {
+		unsigned char val(mImage->getData()[static_cast<size_t>((mImage->getWidth() * static_cast<unsigned int>(position.y)) + static_cast<unsigned int>(position.x))]);
+		
+		Ogre::uint8* aVal((Ogre::uint8*)&colour);
+		aVal[0] = val;
+		aVal[1] = val;
+		aVal[2] = val;
+		aVal[3] = 0xFF;
+	}
+}
+
+void TerrainPageShadow::getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour)
+{
+	if (mImage) {
+		float val(mImage->getData()[static_cast<size_t>((mImage->getWidth() * static_cast<unsigned int>(position.y)) + static_cast<unsigned int>(position.x))] / 255.0f);
+		
+		colour.r = val;
+		colour.g = val;
+		colour.b = val;
+		colour.a = 1.0f;
+	}
 }
 
 
