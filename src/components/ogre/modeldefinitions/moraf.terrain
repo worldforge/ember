@@ -9,13 +9,14 @@
 				<param key="maxClusterRadius">10</param>
 				<param key="clusterDistance">25</param>
 				<param key="density">2</param>
-				<param key="falloff">0.3</param>
+				<param key="falloff">0.6</param>
 				<param key="material">/global/plants/grass/bittergrass/single</param>
 			</foliage>
 			<foliage planttype="fern" populationtechnique="cluster" rendertechnique="shrubbery">
 				<param key="mesh">3d_objects/plants/shrubs/models/fern/fern.mesh</param>
 				<param key="minScale">0.7</param>
 				<param key="maxScale">2.0</param>
+				<param key="threshold">70</param>
 				
 				<param key="minClusterRadius">1</param>
 				<param key="maxClusterRadius">3</param>
@@ -27,6 +28,7 @@
 				<param key="mesh">3d_objects/plants/flowers/models/camellia.mesh</param>
 				<param key="minScale">2</param>
 				<param key="maxScale">5</param>
+				<param key="threshold">150</param>
 				
 				<param key="minClusterRadius">2</param>
 				<param key="maxClusterRadius">5</param>
@@ -38,6 +40,7 @@
 				<param key="mesh">3d_objects/plants/shrubs/models/leaf/leaves.mesh</param>
 				<param key="minScale">0.5</param>
 				<param key="maxScale">1.2</param>
+				<param key="threshold">150</param>
 				
 				<param key="minClusterRadius">2</param>
 				<param key="maxClusterRadius">5</param>
