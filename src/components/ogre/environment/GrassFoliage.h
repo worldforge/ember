@@ -64,8 +64,6 @@ protected:
 	
 	::PagedGeometry::PagedGeometry* mGrass;
 	::PagedGeometry::GrassLoader<FoliageLayer>* mGrassLoader;
-	
-	void TerrainGenerator_LayerUpdated(Terrain::TerrainShader* shader, std::vector<Terrain::TerrainArea*>* areas);
 };
 
 }

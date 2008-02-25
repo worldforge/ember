@@ -90,9 +90,7 @@ void GrassFoliage::initialize()
 
 // 	l->setHeightRange(0.001f);
 	l->setMapBounds(Atlas2Ogre(worldSize));	//(0,0)-(1500,1500) is the full boundaries of the terrain
-	
-	EmberOgre::getSingleton().getTerrainGenerator()->EventLayerUpdated.connect(sigc::mem_fun(*this, &GrassFoliage::TerrainGenerator_LayerUpdated));
-	
+		
 }
 
 void GrassFoliage::frameStarted(const Ogre::FrameEvent & evt)
@@ -110,16 +108,6 @@ void GrassFoliage::frameStarted(const Ogre::FrameEvent & evt)
 			mPagedGeometry = 0;
 		}
 	}	
-}
-
-void GrassFoliage::TerrainGenerator_LayerUpdated(Terrain::TerrainShader* shader, std::vector<Terrain::TerrainArea*>* areas)
-{
-	if (mPagedGeometry) {
-/*		if (areas) {
-		} else {*/
-			mPagedGeometry->reloadGeometry();
-// 		}	
-	}
 }
 
 }
