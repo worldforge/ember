@@ -58,12 +58,14 @@ const TerrainPageSurface::TerrainPageSurfaceLayerStore& TerrainPageSurface::getL
 	return mLayers;
 }
 
-void TerrainPageSurface::updateLayer(int layerIndex)
+TerrainPageSurfaceLayer* TerrainPageSurface::updateLayer(int layerIndex)
 {
 	TerrainPageSurfaceLayerStore::iterator I = mLayers.find(layerIndex);
 	if (I != mLayers.end()) {
 		I->second->updateCoverageImage();
+		return I->second;
 	}
+	return 0;
 }
 
 	

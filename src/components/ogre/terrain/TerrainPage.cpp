@@ -31,6 +31,7 @@
 #include <OgreStringConverter.h>
 #include <OgreRenderSystemCapabilities.h>
 #include "TerrainShader.h"
+#include "TerrainPageSurfaceLayer.h"
 
 #include "../EmberOgre.h"
 
@@ -770,7 +771,7 @@ TerrainPageShadow& TerrainPage::getPageShadow()
 
 
 
-void TerrainPage::addShader(TerrainShader* shader)
+TerrainPageSurfaceLayer* TerrainPage::addShader(TerrainShader* shader)
 {
 	TerrainPageSurfaceLayer* layer = mTerrainSurface->createSurfaceLayer(*shader->getLayerDefinition(), shader->getTerrainIndex(), shader->getShader());
 	layer->setDiffuseTextureName(shader->getLayerDefinition()->getDiffuseTextureName());
@@ -779,6 +780,7 @@ void TerrainPage::addShader(TerrainShader* shader)
 	float scale = getAlphaTextureSize() / shader->getLayerDefinition()->getTileSize();
 	layer->setScale(scale);
 	layer->updateCoverageImage();
+	return layer;
 
 /*	mUsedShaders.push_back(shader);
 	///if the material already has been created, add the shader instantly, else wait until the generateTerrainMaterials method is called
@@ -1218,169 +1220,19 @@ void TerrainPage::updateAllShaderTextures()
 	mPageFoliage->generateCoverageMap();
 }
 
-void TerrainPage::updateShaderTexture(TerrainShader* shader)
+TerrainPageSurfaceLayer* TerrainPage::updateShaderTexture(TerrainShader* shader)
 {
-
+	TerrainPageSurfaceLayer* layer;
 	if (mTerrainSurface->getLayers().find(shader->getTerrainIndex()) == mTerrainSurface->getLayers().end()) {
-		addShader(shader);
+		layer = addShader(shader);
 		mTerrainSurface->recompileMaterial();
 	} else {
-		mTerrainSurface->updateLayer(shader->getTerrainIndex());
+		layer = mTerrainSurface->updateLayer(shader->getTerrainIndex());
 		mTerrainSurface->recompileMaterial();
 	}
 	mPageFoliage->generateCoverageMap();
-	
-	///check if at least one surface intersects, else continue
-// 	bool intersects = false;
-// 	for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
-// 		if (shader->getShader()->checkIntersect(*I->segment)) {
-// 			intersects = true;
-// 			break;
-// 		}
-// 	}
-// 	if (!intersects) {
-// 		return;
-// 	}	
-// 	
-// 	bool found = false;
-// 	for (std::list<TerrainShader*>::iterator I = mUsedShaders.begin(); I != mUsedShaders.end(); ++I) {
-// 		if (*I == shader) {
-// 			found = true;
-// 			break;
-// 		}
-// 	}
-// 	if (!found) {
-// 		addShader(shader);
-// 	} else if (mShaderTextures.find(shader) == mShaderTextures.end()) {
-// 		addShaderToSimpleTechnique(mMaterial->getTechnique(0), shader);
-// 	} else {
-// 	
-// 	
-// 		//update the alpha texture
-// 		//we do this by first creating a new, empty data chunk
-// 		//we fill this chunk with the correct alpha values through the fillAlphaLayer method
-// 		//from this chunk we'll then create a temporary image
-// 		//we'll then blit from the image directly to the hardware buffer
-// 		//and when we go out of scope the temporary image is deleted along with the data chunk
-// 	
-// 		Ogre::TexturePtr texture = mShaderTextures.find(shader)->second;
-// 		
-// 		Mercator::Surface* surface;
-// 		
-// 		///Create a new image. This image is temporary (since it will be blitted into the hardware memory) and destruction of it will be taken care of by the enveloping DataStreamPtr.
-// 		Ogre::MemoryDataStream* splatChunk = new Ogre::MemoryDataStream(getAlphaTextureSize() * getAlphaTextureSize() * 1, true);
-// 		Ogre::DataStreamPtr dataStreamPtr(splatChunk);
-// 		Ogre::Image image; ///the image to hold the data
-// 
-// 		///make sure we clear the image
-// 		memset( splatChunk->getPtr(), '\0', splatChunk->size());
-// 		for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
-// 			Mercator::Segment* segment = I->segment;
-// 			if (shader->getShader()->checkIntersect(*segment)) {
-// 				surface = shader->getSurfaceForSegment(segment);
-// 				if (surface && surface->isValid()) {
-// 					
-// 					int alphaChannel = 0;
-// 					//use only one channel
-// 					fillAlphaLayer(splatChunk->getPtr(), surface->getData(), alphaChannel, (int)I->pos.x() * 64, (getNumberOfSegmentsPerAxis() - (int)I->pos.y() - 1) * 64, 1);
-// 				}
-// 			}
-// 		}
-// 		
-// 		Ogre::HardwarePixelBufferSharedPtr hardwareBuffer = texture->getBuffer();
-// 		
-// 		image.loadRawData(dataStreamPtr, getAlphaTextureSize(), getAlphaTextureSize(), Ogre::PF_A8);
-// 		//image->save(std::string("/home/erik/tempimages/") + texture->getName()  + "_temp" + std::string(".png"));
-// 		
-// 		
-// 		///blit the whole image to the hardware buffer
-// 		Ogre::PixelBox sourceBox = image.getPixelBox();
-// 		//Ogre::Box targetBox(0,0, texture->getWidth(), texture->getHeight());
-// 		hardwareBuffer->blitFromMemory(sourceBox);
-// 		
-// 	}
+	return layer;
 	
 }
-	
-
-
-
-// void TerrainPage::addShaderToSimpleTechnique(Ogre::Technique* technique, TerrainShader* shader)
-// {
-// 	Mercator::Surface* surface;
-// 	
-// 	///check if at least one surface intersects, else continue
-// 	bool intersects = false;
-// //	for(std::vector<std::list<Mercator::Surface*>::iterator>::iterator I = surfaceListIterators.begin(); I != surfaceListIterators.end(); ++I) {
-// 	for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
-// 		if (shader->getShader()->checkIntersect(*I->segment)) {
-// 			intersects = true;
-// 		}
-// 	}
-// 	if (!intersects) {
-// 		return;
-// 	}
-// 	
-// 	Ogre::MemoryDataStream* splatChunk = new Ogre::MemoryDataStream(getAlphaTextureSize() * getAlphaTextureSize() * 1, false);
-// 	
-// 	memset( splatChunk->getPtr(), '\0', splatChunk->size());
-// 	
-// 	///we need an unique name for our alpha texture
-// 	std::stringstream splatTextureNameSS;
-// 	splatTextureNameSS << mMaterialName << "_" << shader->getTerrainIndex();
-// 	const Ogre::String splatTextureName(splatTextureNameSS.str());
-// 	
-// 			
-// /*		SegmentVector::iterator I = segmentI_begin;*/
-// 	
-// 	for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
-// 		if (shader->getShader()->checkIntersect(*I->segment)) {
-// 			surface = shader->getSurfaceForSegment(I->segment);
-// 			if (surface && surface->isValid()) {
-// 			
-// 				int alphaChannel = 0;
-// 				///use only one channel
-// 				fillAlphaLayer(splatChunk->getPtr(), surface->getData(), alphaChannel, (int)I->pos.x() * 64, (getNumberOfSegmentsPerAxis() - (int)I->pos.y() - 1) * 64, 1);
-// 	
-// 			}
-// 		}
-// 	}
-// 		
-// 	Ogre::DataStreamPtr dataStreamPtr(splatChunk);
-// 		
-// 	Ogre::Image* image = new Ogre::Image();
-// 	image->loadRawData(dataStreamPtr, getAlphaTextureSize(), getAlphaTextureSize(), Ogre::PF_A8);
-// 	//image->save(std::string("~/tempimages/") + splatTextureName + "_temp" + std::string(".png"));
-// 	
-// //	Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, "General", dataStreamPtr, getAlphaTextureSize(), getAlphaTextureSize(), Ogre::PF_B8G8R8A8);
-// //	Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, "General", dataStreamPtr, getAlphaTextureSize(), getAlphaTextureSize(), Ogre::PF_A8);
-// 	
-// //		Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadRawData(splatTextureName, "General", dataStreamPtr, getAlphaTextureSize(), getAlphaTextureSize(), Ogre::PF_B8G8R8A8);
-// 	Ogre::TexturePtr splatTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(splatTextureName, "General", Ogre::TEX_TYPE_2D, getAlphaTextureSize(), getAlphaTextureSize(), 1, Ogre::PF_A8);
-// 	splatTexture->loadImage(*image);
-// 		
-// /*	char name[100];
-// 	strcpy(name, (std::string("/home/erik/tempimages/") + splatTextureName + "_temp" + std::string(".png")).c_str());
-// 	ilSaveImage(name);			*/
-// 		
-// 	mShaderTextures[shader] = splatTexture;
-// 
-// 	shader->addSplatToTechnique(technique, splatTextureName);
-/*
-* 	TODO: implement this in a more efficient manner
-			if (pass->getNumTextureUnitStates() < numberOfTextureUnitsOnCard - 1) {
-				//there's room for two more texture unit states
-				shader->addTextureUnitsToPass(pass, splatTextureName);
-			} else {
-				//we need to use a new pass, else we would run out of texture units
-				pass = shader->addPassToTechnique(material->getTechnique(0), splatTextureName);
-			}
-*/			
-
-
-		
-		
-
-// }
 }
 }

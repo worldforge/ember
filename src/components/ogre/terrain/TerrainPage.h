@@ -58,6 +58,7 @@ class TerrainGenerator;
 class TerrainPageSurface;
 class TerrainPage;
 class TerrainPageFoliage;
+class TerrainPageSurfaceLayer;
 
 // TYPEDEF_STL_VECTOR(Mercator::Segment*, SegmentVector);
 TYPEDEF_STL_MAP(const Mercator::Shader*, TerrainShader*, ShaderMap);
@@ -164,13 +165,13 @@ public:
 	 *    this adds a shader to the page, meaning that it will be used in rendering 
 	 * @param shader 
 	 */
-	void addShader(TerrainShader* shader);
+	TerrainPageSurfaceLayer* addShader(TerrainShader* shader);
 	
 	/**
 	 *    Updates the shader texture for the specific shader
 	 * @param shader 
 	 */
-	void updateShaderTexture(TerrainShader* shader);
+	TerrainPageSurfaceLayer* updateShaderTexture(TerrainShader* shader);
 	
 	/**
 	 *    Updates all the shader textures of the page.

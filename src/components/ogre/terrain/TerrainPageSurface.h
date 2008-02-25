@@ -80,7 +80,7 @@ public:
 	
 	const TerrainPageSurfaceLayerStore& getLayers() const;
 	
-	void updateLayer(int layerIndex);
+	TerrainPageSurfaceLayer* updateLayer(int layerIndex);
 	
 protected:
 

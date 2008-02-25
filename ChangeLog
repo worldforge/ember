@@ -1,3 +1,15 @@
+2008-02-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainPage.cpp, src/components/ogre/terrain/TerrainPage.h, src/components/ogre/terrain/TerrainPageSurface.cpp, src/components/ogre/terrain/TerrainPageSurface.h: return the newly created TerrainPageSurfaceLayer when creating or updating
+
+2008-02-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainGenerator.cpp, src/components/ogre/terrain/TerrainGenerator.h: added an event which is emitted when a layer is updated, and moved the layer update code to frameEnded to prevent it from colliding with the frameStarted method in PagedGeometry
+
+2008-02-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/FoliageBase.cpp, src/components/ogre/environment/FoliageBase.h, src/components/ogre/environment/GrassFoliage.cpp, src/components/ogre/environment/GrassFoliage.h, src/components/ogre/environment/ShrubberyFoliage.cpp, src/components/ogre/environment/ShrubberyFoliage.h: moved some functionality to FoliageBase and added extra checks for when layers are updated, so as to only update when there are relevant changes, and only update the areas needed
+
 2008-02-23 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/environment/pagedgeometry/include/ImpostorPage.h, src/components/ogre/environment/pagedgeometry/source/ImpostorPage.cpp: provide a resource loader which will be used when the render texture is unloaded
