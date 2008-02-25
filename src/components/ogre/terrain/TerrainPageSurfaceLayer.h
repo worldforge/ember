@@ -78,6 +78,8 @@ public:
 
 	const TerrainLayerDefinition& getDefinition() const;
 	
+	void populate();
+	
 
 protected:
 	TerrainPageSurface& mTerrainPageSurface;

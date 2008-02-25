@@ -267,17 +267,20 @@ bool TerrainGenerator::frameEnded(const Ogre::FrameEvent & evt)
 {
 	//update shaders that needs updating
 	if (mShadersToUpdate.size()) {
-		for (PageStore::iterator J = mPages.begin(); J != mPages.end(); ++J) {
-			J->second->populateSurfaces();
-		}	
+// 		for (PageStore::iterator J = mPages.begin(); J != mPages.end(); ++J) {
+// 			J->second->populateSurfaces();
+// 		}	
 		
-		for (ShaderSet::iterator I = mShadersToUpdate.begin(); I != mShadersToUpdate.end(); ++I) {
+		///use a reverse iterator, since we need to update top most layers first, since lower layers might depend on them for their foliage positions
+		for (ShaderSet::reverse_iterator I = mShadersToUpdate.rbegin(); I != mShadersToUpdate.rend(); ++I) {
 			for (PageStore::iterator J = mPages.begin(); J != mPages.end(); ++J) {
-				J->second->updateShaderTexture(*I);
+				///repopulate the layer
+				J->second->updateShaderTexture(*I, true);
 			}
 			TerrainAreaMap::iterator areaI = mChangedTerrainAreas.find(*I);
 			std::vector<TerrainArea*>* areas(0);
 			if (areaI != mChangedTerrainAreas.end()) {
+				///only send areas if the update actually affects only areas
 				areas = &(areaI->second);
 			}
 			EventLayerUpdated.emit(*I, areas);

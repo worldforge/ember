@@ -204,6 +204,17 @@ const TerrainLayerDefinition& TerrainPageSurfaceLayer::getDefinition() const
 {
 	return mDefinition;
 }
+
+void TerrainPageSurfaceLayer::populate()
+{
+	for (SegmentVector::iterator I = mTerrainPageSurface.getValidSegments().begin(); I != mTerrainPageSurface.getValidSegments().end(); ++I) {
+		Mercator::Surface* surface(getSurfaceForSegment(I->segment));
+		if (surface) {
+			surface->populate();
+		}
+	}
+}
+
 }
 
 }

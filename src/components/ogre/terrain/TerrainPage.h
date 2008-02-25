@@ -171,15 +171,17 @@ public:
 	 *    Updates the shader texture for the specific shader
 	 * @param shader 
 	 */
-	TerrainPageSurfaceLayer* updateShaderTexture(TerrainShader* shader);
+	TerrainPageSurfaceLayer* updateShaderTexture(TerrainShader* shader, bool repopulate = true);
 	
 	/**
 	 *    Updates all the shader textures of the page.
 	 *    You should usually call this after you've made a change to the terrain and already have called populateSurfaces()
 	 */
-	void updateAllShaderTextures();
+	void updateAllShaderTextures(bool repopulate = true);
 
 	void populateSurfaces();
+	
+	void populateSurface(TerrainShader* shader);
 	
 	int getPageSize() const ;
 	
