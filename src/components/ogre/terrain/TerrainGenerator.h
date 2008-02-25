@@ -65,7 +65,7 @@ class TerrainShader;
 class TerrainPage;
 class TerrainArea;
 class TerrainLayerDefinition;
-
+class TerrainPageSurfaceLayer;
 class ISceneManagerAdapter;
 
 
@@ -120,6 +120,8 @@ public:
 	 * @return 
 	 */
 	virtual bool frameStarted(const Ogre::FrameEvent & evt);
+	virtual bool frameEnded(const Ogre::FrameEvent & evt);
+
 	
     void setBasePoint(int x, int y, float z) {mTerrain->setBasePoint(x,y,z);}
 	void prepareSegments(long segmentXStart, long segmentZStart, long numberOfSegments, bool alsoPushOntoTerrain);
@@ -177,8 +179,7 @@ public:
 	 * @param area 
 	 */
 	void addArea(TerrainArea* terrainArea);
-	
-//	TerrainPage* getTerrainPage(uint x, uint z);
+
 	
 	/**
 	 *    Returns a TerrainPage. 
@@ -222,17 +223,6 @@ public:
 	 * @param args 
 	 */
 	virtual	void runCommand(const std::string &command, const std::string &args);
-
-	/**
-	 *    Accessor for the scene manager.
-	 * @return 
-	 */
-// 	EmberPagingSceneManager* getEmberSceneManager();
-	/**
-	 *    Accessor for the scene manager.
-	 * @return 
-	 */
-// 	const EmberPagingSceneManager* getEmberSceneManager() const;
 	
 	/**
 	 *    Rebuilds the height map, effectively regenerating the terrain
@@ -252,8 +242,6 @@ public:
 	
 	inline const TerrainPagestore& getTerrainPages() const;
 	
-// 	void createDefaultShaders();
-	
 	/**
 	 * Create and registers a new texture shader.
 	 * @param textureName 
@@ -261,9 +249,7 @@ public:
 	 * @return 
 	 */
 	TerrainShader* createShader(const TerrainLayerDefinition* layerDef, Mercator::Shader* mercatorShader);
-	
-// 	TerrainShader* createShader(Ogre::MaterialPtr material, Mercator::Shader* mercatorShader);
-	
+		
 	void updateShadows();
 	
 	const Ember::ConsoleCommandWrapper UpdateShadows;
@@ -276,6 +262,7 @@ public:
 	 void getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour);
 	 void getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour);
 
+	sigc::signal<void, TerrainShader*, std::vector<TerrainArea*>* > EventLayerUpdated;
 
 protected:
 
@@ -287,13 +274,16 @@ protected:
 	typedef std::map<int,TerrainShader*> AreaShaderstore;
   	AreaShaderstore mAreaShaders;
 
-	void markShaderForUpdate(TerrainShader* shader);
+	void markShaderForUpdate(TerrainShader* shader, TerrainArea* terrainArea = 0);
 	
 	typedef std::set<TerrainShader*> ShaderSet;
 	ShaderSet mShadersToUpdate;
 	
 	typedef std::map<std::string, TerrainPage*> PageStore;
 	PageStore mPages;
+	
+	typedef std::map<TerrainShader*, std::vector<TerrainArea*> > TerrainAreaMap;
+	TerrainAreaMap mChangedTerrainAreas;
 	
 	TerrainPagestore mTerrainPages;
 	

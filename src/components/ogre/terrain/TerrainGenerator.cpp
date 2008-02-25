@@ -59,6 +59,7 @@
 
 #include "TerrainLayerDefinitionManager.h"
 #include "TerrainLayerDefinition.h"
+#include "TerrainPageSurfaceLayer.h"
 // #include "../model/ModelDefinition.h"
 // #include "../model/ModelDefinitionManager.h"
 
@@ -237,7 +238,7 @@ void TerrainGenerator::addArea(TerrainArea* terrainArea)
 	if (mAreaShaders.count(area->getLayer())) {
 		///mark the shader for update
 		///we'll not update immediately, we try to batch many area updates and then only update once per frame
-		markShaderForUpdate(mAreaShaders[area->getLayer()]);
+		markShaderForUpdate(mAreaShaders[area->getLayer()], terrainArea);
 	}
 }
 
@@ -247,23 +248,23 @@ void TerrainGenerator::TerrainArea_Changed(TerrainArea* terrainArea)
 	if (mAreaShaders.count(area->getLayer())) {
 		///mark the shader for update
 		///we'll not update immediately, we try to batch many area updates and then only update once per frame
-		markShaderForUpdate(mAreaShaders[area->getLayer()]);
+		markShaderForUpdate(mAreaShaders[area->getLayer()], terrainArea);
 	}
 }
 
-void TerrainGenerator::markShaderForUpdate(TerrainShader* shader)
+void TerrainGenerator::markShaderForUpdate(TerrainShader* shader, TerrainArea* terrainArea)
 {
 	mShadersToUpdate.insert(shader);
+	if (terrainArea) {
+		mChangedTerrainAreas[shader].push_back(terrainArea);
+	}
 }
-
 bool TerrainGenerator::frameStarted(const Ogre::FrameEvent & evt)
 {
-	//PagingLandScapeCamera * cam = static_cast<PagingLandScapeCamera *>(EmberOgre::getSingleton().getMainCamera()->getCamera());
-	
-	
-/*	std::stringstream ss;
-	ss << "X: " << cam->mCurrentCameraPageX << " Z: " << cam->mCurrentCameraPageZ;
-	GUIManager::getSingleton().setDebugText(ss.str());*/
+}
+
+bool TerrainGenerator::frameEnded(const Ogre::FrameEvent & evt)
+{
 	//update shaders that needs updating
 	if (mShadersToUpdate.size()) {
 		for (PageStore::iterator J = mPages.begin(); J != mPages.end(); ++J) {
@@ -274,10 +275,17 @@ bool TerrainGenerator::frameStarted(const Ogre::FrameEvent & evt)
 			for (PageStore::iterator J = mPages.begin(); J != mPages.end(); ++J) {
 				J->second->updateShaderTexture(*I);
 			}
+			TerrainAreaMap::iterator areaI = mChangedTerrainAreas.find(*I);
+			std::vector<TerrainArea*>* areas(0);
+			if (areaI != mChangedTerrainAreas.end()) {
+				areas = &(areaI->second);
+			}
+			EventLayerUpdated.emit(*I, areas);
 		}	
 	}
 	
 	mShadersToUpdate.clear();
+	mChangedTerrainAreas.clear();
 	return true;
 
 }
