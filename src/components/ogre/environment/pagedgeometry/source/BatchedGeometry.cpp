@@ -58,7 +58,7 @@ BatchedGeometry::~BatchedGeometry()
 void BatchedGeometry::addEntity(Entity *ent, const Vector3 &position, const Quaternion &orientation, const Vector3 &scale, const Ogre::ColourValue &color)
 {
 	//For each subentity
-	for (Ogre::uint i = 0; i < ent->getNumSubEntities(); ++i){
+	for (uint32 i = 0; i < ent->getNumSubEntities(); ++i){
 		//Get the subentity
 		SubEntity *subEntity = ent->getSubEntity(i);
 		SubMesh *subMesh = subEntity->getSubMesh();
@@ -236,7 +236,7 @@ BatchedGeometry::SubBatch::SubBatch(BatchedGeometry *parent, SubEntity *ent)
 
 	Material *origMat = ((MaterialPtr)MaterialManager::getSingleton().getByName(ent->getMaterialName())).getPointer();
 	if (origMat) {
-		material = MaterialManager::getSingleton().getByName(getMaterialClone(origMat)->getName());
+	material = MaterialManager::getSingleton().getByName(getMaterialClone(origMat)->getName());
 	} else {
 		MaterialManager::ResourceCreateOrRetrieveResult result = MaterialManager::getSingleton().createOrRetrieve("PagedGeometry_Batched_Material", "General");
 		if (result.first.isNull()) {

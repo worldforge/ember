@@ -63,7 +63,7 @@ TreeLoader2D::~TreeLoader2D()
 	pageGridList.clear();
 }
 
-void TreeLoader2D::addTree(Entity *entity, const Vector3 &position, Degree yaw, Real scale)
+void TreeLoader2D::addTree(Entity *entity, const Vector3 &position, Degree yaw, Real scale, void* userData)
 {
 	//First convert the coordinate to PagedGeometry's local system
 	#ifdef PAGEDGEOMETRY_ALTERNATE_COORDSYSTEM
@@ -127,6 +127,10 @@ void TreeLoader2D::addTree(Entity *entity, const Vector3 &position, Degree yaw, 
 	tree.rotation = 255 * (yaw.valueDegrees() / 360.0f);
 	tree.scale = 255 * ((scale - minimumScale) / maximumScale);
 
+#ifdef PAGEDGEOMETRY_USER_DATA
+	tree.userData = userData;
+#endif
+
 	//Add it to the tree list
 	treeList.push_back(tree);
 
@@ -134,7 +138,12 @@ void TreeLoader2D::addTree(Entity *entity, const Vector3 &position, Degree yaw, 
 	geom->reloadGeometryPage(Vector3(x, 0, z));
 }
 
-void TreeLoader2D::deleteTrees(const Ogre::Vector3 &position, Real radius, Entity *type)
+#ifdef PAGEDGEOMETRY_USER_DATA
+   std::vector<void*>
+#else
+   void
+#endif
+TreeLoader2D::deleteTrees(const Ogre::Vector3 &position, Real radius, Entity *type)
 {
 	//First convert the coordinate to PagedGeometry's local system
 	#ifdef PAGEDGEOMETRY_ALTERNATE_COORDSYSTEM
@@ -142,6 +151,11 @@ void TreeLoader2D::deleteTrees(const Ogre::Vector3 &position, Real radius, Entit
 	#else
 	Vector3 pos = position;
 	#endif
+
+#ifdef PAGEDGEOMETRY_USER_DATA
+	//Keep a list of user-defined data associated with deleted trees
+	std::vector<void*> deletedUserData;
+#endif
 
 	//If the position is slightly out of bounds, fix it
 	if (pos.x < actualBounds.left)
@@ -201,6 +215,9 @@ void TreeLoader2D::deleteTrees(const Ogre::Vector3 &position, Real radius, Entit
 					if (distSq <= radiusSq){
 						//If it's within the radius, delete it
 						treeList[i] = treeList.back();
+#ifdef PAGEDGEOMETRY_USER_DATA
+						deletedUserData.push_back(treeList.back().userData);
+#endif
 						treeList.pop_back();
 						modified = true;
 					}
@@ -218,6 +235,10 @@ void TreeLoader2D::deleteTrees(const Ogre::Vector3 &position, Real radius, Entit
 
 		++it;
 	}
+
+#ifdef PAGEDGEOMETRY_USER_DATA
+	return deletedUserData;
+#endif
 }
 
 void TreeLoader2D::setColorMap(const Ogre::String &mapFile, MapChannel channel)

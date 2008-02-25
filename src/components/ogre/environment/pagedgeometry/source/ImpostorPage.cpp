@@ -287,7 +287,7 @@ String ImpostorBatch::generateEntityKey(Entity *entity)
 {
 	StringUtil::StrStreamType entityKey;
 	entityKey << entity->getMesh()->getName();
-	for (Ogre::uint i = 0; i < entity->getNumSubEntities(); ++i){
+	for (uint32 i = 0; i < entity->getNumSubEntities(); ++i){
 		entityKey << "-" << entity->getSubEntity(i)->getMaterialName();
 	}
 	return entityKey.str();
@@ -449,7 +449,7 @@ void ImpostorTexture::renderTextures(bool force)
 	//Set up RTT texture
 	unsigned int textureSize = ImpostorPage::impostorResolution;
 	if (renderTexture.isNull()) {
-		renderTexture = TextureManager::getSingleton().createManual(getUniqueID("ImpostorTexture"), "Impostors",
+	renderTexture = TextureManager::getSingleton().createManual(getUniqueID("ImpostorTexture"), "Impostors",
 				TEX_TYPE_2D, textureSize * IMPOSTOR_YAW_ANGLES, textureSize * IMPOSTOR_PITCH_ANGLES, 0, PF_A8R8G8B8, TU_RENDERTARGET, loader.get());
 	}
 	renderTexture->setNumMipmaps(MIP_UNLIMITED);
