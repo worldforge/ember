@@ -54,7 +54,7 @@ SimpleRenderContext::SimpleRenderContext(const std::string& prefix, int width, i
 
 	S_LOG_VERBOSE("Creating new SimpleRenderContext for prefix " << prefix  << " with w:" << mWidth << " h:" << mHeight);
 	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, prefix + "_sceneManager");
-	mSceneManager->setFog(Ogre::FOG_NONE, Ogre::ColourValue::ZERO, 0, 0, 0);
+	mSceneManager->setFog(Ogre::FOG_NONE, Ogre::ColourValue(1,1,1,1), 0.0f, 10000000.0f, 100000001.0f);
 
 	mRootNode = mSceneManager->getRootSceneNode();
 	
@@ -79,7 +79,7 @@ SimpleRenderContext::SimpleRenderContext(const std::string& prefix, int width, i
 	mMainLight->setVisible(true);
 
 	mSceneManager->setAmbientLight(colour);
-// 	mCameraPitchNode->attachObject(mMainLight);
+	mCameraPitchNode->attachObject(mMainLight);
 	
 	resetCameraOrientation();
 }
