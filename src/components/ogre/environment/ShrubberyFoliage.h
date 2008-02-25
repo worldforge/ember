@@ -36,6 +36,8 @@ namespace Terrain
 {
 class TerrainFoliageDefinition;
 class TerrainLayerDefinition;
+class TerrainShader;
+class TerrainArea;
 }
 
 namespace Environment {
@@ -56,7 +58,6 @@ public:
 	virtual void initialize();
 
 protected:
-	::PagedGeometry::PagedGeometry* mShrubbery;
 	FoliageLoader* mLoader;
 
 };

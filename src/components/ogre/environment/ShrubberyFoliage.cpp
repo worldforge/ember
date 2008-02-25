@@ -42,6 +42,9 @@
 #include "../EmberOgre.h"
 #include "../terrain/TerrainGenerator.h"
 #include "../terrain/TerrainLayerDefinition.h"
+#include "../terrain/TerrainArea.h"
+#include "../terrain/TerrainShader.h"
+
 #include "../terrain/ISceneManagerAdapter.h"
 
 #include "pagedgeometry/include/PagedGeometry.h"
@@ -54,7 +57,6 @@ namespace Environment {
 
 ShrubberyFoliage::ShrubberyFoliage(const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition)
 : FoliageBase(terrainLayerDefinition, foliageDefinition)
-, mShrubbery(0)
 , mLoader(0)
 {
 }
@@ -62,38 +64,37 @@ ShrubberyFoliage::ShrubberyFoliage(const Terrain::TerrainLayerDefinition& terrai
 ShrubberyFoliage::~ShrubberyFoliage()
 {
 	delete mLoader;
-	delete mShrubbery;
 }
 
 void ShrubberyFoliage::initialize()
 {
 	Ogre::Camera* camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
-	mShrubbery = new ::PagedGeometry::PagedGeometry(camera, 32);
-	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainInfo().getWorldSizeInIndices();	mShrubbery->setBounds(Atlas2Ogre(worldSize));
+	mPagedGeometry = new ::PagedGeometry::PagedGeometry(camera, 32);
+	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainInfo().getWorldSizeInIndices();	mPagedGeometry->setBounds(Atlas2Ogre(worldSize));
 	
-	mShrubbery->addDetailLevel<PagedGeometry::BatchPage>(64, 32);
+	mPagedGeometry->addDetailLevel<PagedGeometry::BatchPage>(64, 32);
 	
-	//Create a GrassLoader object
 	mLoader = new FoliageLoader(mTerrainLayerDefinition, mFoliageDefinition);
- 	mShrubbery->setPageLoader(mLoader);	//Assign the "treeLoader" to be used to load 
+ 	mPagedGeometry->setPageLoader(mLoader);
 }
 
 void ShrubberyFoliage::frameStarted(const Ogre::FrameEvent & evt)
 {	
 	
-	if (mShrubbery) {
+	if (mPagedGeometry) {
 		try {
-			mShrubbery->update();
+			mPagedGeometry->update();
 		} catch (const Ogre::Exception& ex)
 		{
 			S_LOG_FAILURE("Error when updating grass. Will disable grass.\n"<< ex.what());
+			delete mPagedGeometry;
 			delete mLoader;
-			delete mShrubbery;
-			mShrubbery = 0;
+			mPagedGeometry = 0;
 			mLoader = 0;
 		}
 	}	
 }
+
 
 
 }

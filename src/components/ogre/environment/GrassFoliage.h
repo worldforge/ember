@@ -36,6 +36,14 @@ class PagedGeometry;
 
 namespace EmberOgre {
 
+namespace Terrain
+{
+class TerrainFoliageDefinition;
+class TerrainLayerDefinition;
+class TerrainShader;
+class TerrainArea;
+}
+
 namespace Environment {
 
 class FoliageLayer;
@@ -56,7 +64,8 @@ protected:
 	
 	::PagedGeometry::PagedGeometry* mGrass;
 	::PagedGeometry::GrassLoader<FoliageLayer>* mGrassLoader;
-
+	
+	void TerrainGenerator_LayerUpdated(Terrain::TerrainShader* shader, std::vector<Terrain::TerrainArea*>* areas);
 };
 
 }

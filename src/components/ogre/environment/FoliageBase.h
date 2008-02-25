@@ -25,12 +25,18 @@
 
 #include <OgreFrameListener.h>
 
+namespace PagedGeometry {
+class PagedGeometry;
+}
+
 namespace EmberOgre {
 
 namespace Terrain
 {
 class TerrainFoliageDefinition;
 class TerrainLayerDefinition;
+class TerrainShader;
+class TerrainArea;
 }
 
 namespace Environment {
@@ -41,6 +47,8 @@ namespace Environment {
 class FoliageBase
 {
 public:
+	typedef std::vector<const Terrain::TerrainLayerDefinition*> TerrainLayerDefinitionStore;
+
 	FoliageBase(const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition);
 	virtual ~FoliageBase();
 	
@@ -52,6 +60,12 @@ protected:
 
 	const Terrain::TerrainLayerDefinition& mTerrainLayerDefinition;
 	const Terrain::TerrainFoliageDefinition& mFoliageDefinition;
+	::PagedGeometry::PagedGeometry* mPagedGeometry;
+	
+	TerrainLayerDefinitionStore mDependentDefinitions;
+	
+	void initializeDependentLayers();
+	void TerrainGenerator_LayerUpdated(Terrain::TerrainShader* shader, std::vector<Terrain::TerrainArea*>* areas);
 
 };
 

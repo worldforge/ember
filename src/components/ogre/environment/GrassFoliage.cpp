@@ -52,7 +52,6 @@ namespace Environment {
 
 GrassFoliage::GrassFoliage(const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition)
 : FoliageBase(terrainLayerDefinition, foliageDefinition)
-, mGrass(0)
 , mGrassLoader(0)
 {
 }
@@ -60,19 +59,18 @@ GrassFoliage::GrassFoliage(const Terrain::TerrainLayerDefinition& terrainLayerDe
 GrassFoliage::~GrassFoliage()
 {
 	delete mGrassLoader;
-	delete mGrass;
 }
 
 void GrassFoliage::initialize()
 {
 	Ogre::Camera* camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
-	mGrass = new ::PagedGeometry::PagedGeometry(camera, 32);
-	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainInfo().getWorldSizeInIndices();	mGrass->setBounds(Atlas2Ogre(worldSize));
-	mGrass->addDetailLevel<PagedGeometry::GrassPage>(96);
+	mPagedGeometry = new ::PagedGeometry::PagedGeometry(camera, 32);
+	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainInfo().getWorldSizeInIndices();	mPagedGeometry->setBounds(Atlas2Ogre(worldSize));
+	mPagedGeometry->addDetailLevel<PagedGeometry::GrassPage>(96);
 	
 	//Create a GrassLoader object
-	mGrassLoader = new ::PagedGeometry::GrassLoader<FoliageLayer>(mGrass);
- 	mGrass->setPageLoader(mGrassLoader);	//Assign the "treeLoader" to be used to load 
+	mGrassLoader = new ::PagedGeometry::GrassLoader<FoliageLayer>(mPagedGeometry);
+ 	mPagedGeometry->setPageLoader(mGrassLoader);	//Assign the "treeLoader" to be used to load 
 	mGrassLoader->setHeightFunction(&getTerrainHeight);
 
 	//Add some grass to the scene with GrassLoader::addLayer()
@@ -92,23 +90,37 @@ void GrassFoliage::initialize()
 
 // 	l->setHeightRange(0.001f);
 	l->setMapBounds(Atlas2Ogre(worldSize));	//(0,0)-(1500,1500) is the full boundaries of the terrain
+	
+	EmberOgre::getSingleton().getTerrainGenerator()->EventLayerUpdated.connect(sigc::mem_fun(*this, &GrassFoliage::TerrainGenerator_LayerUpdated));
+	
 }
 
 void GrassFoliage::frameStarted(const Ogre::FrameEvent & evt)
 {	
 	
-	if (mGrass) {
+	if (mPagedGeometry) {
 		try {
-			mGrass->update();
+			mPagedGeometry->update();
 		} catch (const Ogre::Exception& ex)
 		{
 			S_LOG_FAILURE("Error when updating grass. Will disable grass.\n"<< ex.what());
 			delete mGrassLoader;
-			delete mGrass;
+			delete mPagedGeometry;
+			mGrassLoader = 0;
+			mPagedGeometry = 0;
 		}
 	}	
 }
 
+void GrassFoliage::TerrainGenerator_LayerUpdated(Terrain::TerrainShader* shader, std::vector<Terrain::TerrainArea*>* areas)
+{
+	if (mPagedGeometry) {
+/*		if (areas) {
+		} else {*/
+			mPagedGeometry->reloadGeometry();
+// 		}	
+	}
+}
 
 }
 
