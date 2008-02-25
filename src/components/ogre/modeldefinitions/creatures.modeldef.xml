@@ -375,7 +375,7 @@
 	<model name="goblin" usescaleof="height" showcontained="false">
 		<translate x="0" y="0" z="0" />
 		<submodels>
-			<submodel mesh="3d_skeletons/alpha_goblin/goblin.mesh">
+			<submodel mesh="3d_skeletons/bipeds/models/goblin/goblin.mesh">
 				<parts>
 					<part name="main_goblin" show="true" group="main">
 						<subentities>

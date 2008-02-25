@@ -233,54 +233,6 @@ material /global/items/building_element/timber_frame/beam_end : /base/simple
 }
 
 
-//--------------- mausoleum -------------
-
-
-material /global/items/building/mausoleum/floor : /base/simple
-{
-	set_texture_alias DiffuseMap art/3d_objects/items/building_element/textures/mausoleum/floor.jpg
-}
-
-material /global/items/building/mausoleum/dirty-st : /base/simple
-{
-	set_texture_alias DiffuseMap art/3d_objects/items/building_element/textures/mausoleum/dirty-st.jpg
-}
-
-material /global/items/building/mausoleum/colonne : /base/simple
-{
-	set_texture_alias DiffuseMap art/3d_objects/items/building_element/textures/mausoleum/colonne.jpg
-}
-
-material /global/items/building/mausoleum/colonne- : /base/simple
-{
-	set_texture_alias DiffuseMap art/3d_objects/items/building_element/textures/mausoleum/colonne-.jpg
-}
-
-material /global/items/building/mausoleum/triangle : /base/simple
-{
-	set_texture_alias DiffuseMap art/3d_objects/items/building_element/textures/mausoleum/triangle.jpg
-}
-
-material /global/items/building/mausoleum/wall : /base/simple
-{
-	set_texture_alias DiffuseMap art/3d_objects/items/building_element/textures/mausoleum/wall.jpg
-}
-
-material /global/items/building_element/mausoleum/bordure : /base/simple
-{
-	set_texture_alias DiffuseMap art/3d_objects/items/building_element/textures/mausoleum/bordure.jpg
-}
-
-material /global/items/building/mausoleum/roof : /base/simple
-{
-	set_texture_alias DiffuseMap art/3d_objects/items/building_element/textures/mausoleum/roof.jpg
-}
-
-material /global/items/building/mausoleum/panel : /base/simple
-{
-	set_texture_alias DiffuseMap art/3d_objects/items/building_element/textures/mausoleum/panel.jpg
-}
-
 //--------------- castle -------------
 
 

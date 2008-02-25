@@ -20,7 +20,7 @@ material /global/creature/greyhair : /base/simple
 
 material /global/creature/squirrel/skin : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_objects/creatures/quadruped/textures/simple_squirrel/simple_squirrel_small.png
+	set_texture_alias DiffuseMap 3d_objects/creatures/quadruped/textures/simple_squirrel/quadruped.png
 }
 //make it alpha blended so that the scales will blend
 material /global/creature/tubular/fish/scaly_brown_white : /base/simple/nonculled/alphablended
@@ -76,10 +76,14 @@ material /global/creatures/humanoid/humanoid : /base/simple
 	set_texture_alias DiffuseMap 3d_objects/creatures/humanoid/textures/humanoid/humanoid_body.png
 }
 
-
-material /global/creature/humanoid/goblin : /base/simple
+material /global/bipeds/goblin/body : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_objects/creatures/humanoid/textures/goblin/low/goblin.png
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/textures/goblin/body.png
+}
+
+material /global/bipeds/goblin/head : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/textures/goblin/head.png
 }
 
 material /global/creature/humanoid/kobold : /base/simple

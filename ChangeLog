@@ -1,3 +1,27 @@
+2008-02-26 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/creatures.modeldef.xml, media/materials/scripts/buildings.material, media/materials/scripts/creatures.material: updated materials and definitions
+
+2008-02-26 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainGenerator.cpp, src/components/ogre/terrain/TerrainPage.cpp, src/components/ogre/terrain/TerrainPage.h, src/components/ogre/terrain/TerrainPageSurface.cpp, src/components/ogre/terrain/TerrainPageSurface.h, src/components/ogre/terrain/TerrainPageSurfaceLayer.cpp, src/components/ogre/terrain/TerrainPageSurfaceLayer.h: when updating a layer, only populate that specific layer
+
+2008-02-26 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/SimpleRenderContext.cpp: we had all kinds of problem with getting the shaders to understand that the fog was set to 0.0, so we'll just set it to something really large instead
+
+2008-02-26 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/buildings.modeldef: use the new temple mesh instead of the old mausoleum
+
+2008-02-26 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/pagedgeometry/include/PagedGeometry.h, src/components/ogre/environment/pagedgeometry/include/TreeLoader2D.h, src/components/ogre/environment/pagedgeometry/include/TreeLoader3D.h, src/components/ogre/environment/pagedgeometry/source/BatchedGeometry.cpp, src/components/ogre/environment/pagedgeometry/source/ImpostorPage.cpp, src/components/ogre/environment/pagedgeometry/source/TreeLoader2D.cpp, src/components/ogre/environment/pagedgeometry/source/TreeLoader3D.cpp: sync with upstreams
+
+2008-02-26 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/GrassFoliage.cpp, src/components/ogre/environment/GrassFoliage.h: removed update listener since the FoliageBase takes care of it
+
 2008-02-25 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/terrain/TerrainPage.cpp, src/components/ogre/terrain/TerrainPage.h, src/components/ogre/terrain/TerrainPageSurface.cpp, src/components/ogre/terrain/TerrainPageSurface.h: return the newly created TerrainPageSurfaceLayer when creating or updating
