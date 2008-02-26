@@ -7,7 +7,29 @@ windows = {controls = {}, listbox = nil, selectedWindow = nil},
 meshes = {controls = {}, listbox = nil, selectedWindow = nil}
 }
 
+--Reloads a resource
+function AssetsManager.reloadResource(manager, resourceName)
+	local resourcePtr = manager:getByName(resourceName)
+	if (resourcePtr:isNull() == false) then
+		local resource = resourcePtr:get()
+		resource:reload();
+	end
+end
 
+
+--Reloads the currently selected resource in the supplied listbox
+function AssetsManager.reloadResourceFromList(listbox, manager)
+	local item = listbox:getFirstSelectedItem()
+	if item ~= nil then
+		local name = item:getText()
+		AssetsManager.reloadResource(manager, name)
+	end
+end
+
+
+function AssetsManager.TexturesReload_Clicked(args)
+	AssetsManager.reloadResourceFromList(AssetsManager.textures.controls.listbox, Ogre.TextureManager:getSingleton())
+end
 
 function AssetsManager.TexturesRefresh_Clicked(args)
 	AssetsManager.textures.refresh()
@@ -16,7 +38,7 @@ end
 function AssetsManager.textures.refresh()
 	AssetsManager.textures.listholder:resetList()
 	
-	manager = Ogre.TextureManager:getSingleton()
+	local manager = Ogre.TextureManager:getSingleton()
 	local I = manager:getResourceIterator()
 	local i = 0
 	while I:hasMoreElements() do

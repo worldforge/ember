@@ -30,6 +30,13 @@
 						<Property Name='InheritsAlpha' Value='True'/>
 						<Event Name="MouseClick" Function="AssetsManager.TexturesRefresh_Clicked" />
 					</Window>
+					<Window Type='EmberLook/Button' Name='Reload'>
+						<Property Name='UnifiedPosition' Value='{{0,75},{1.0,-20}}'/>
+						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
+						<Property Name='Text' Value='Reload'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Event Name="MouseClick" Function="AssetsManager.TexturesReload_Clicked" />
+					</Window>
 					<Window Type='EmberLook/Listbox' Name='TexturesList'>
 						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
 						<Property Name='UnifiedSize' Value='{{0,200},{1,-70}}'/>
