@@ -313,6 +313,7 @@ namespace Ogre {
     {
     public:
 		Ogre::Texture* get();
+		bool isNull();
 
     };
 

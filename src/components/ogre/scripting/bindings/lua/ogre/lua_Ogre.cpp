@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Ogre
-** Generated automatically by tolua++-1.0.92 on Mon Jan 21 23:19:54 2008.
+** Generated automatically by tolua++-1.0.92 on Tue Feb 26 20:46:25 2008.
 */
 
 #ifndef __cplusplus
@@ -975,6 +975,70 @@ static int tolua_Ogre_Ogre_Resource_getOrigin00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'getOrigin'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: get of class  Ogre::ResourcePtr */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ResourcePtr_get00
+static int tolua_Ogre_Ogre_ResourcePtr_get00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::ResourcePtr",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::ResourcePtr* self = (Ogre::ResourcePtr*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'get'",NULL);
+#endif
+  {
+   Ogre::Resource* tolua_ret = (Ogre::Resource*)  self->get();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::Resource");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'get'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: isNull of class  Ogre::ResourcePtr */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ResourcePtr_isNull00
+static int tolua_Ogre_Ogre_ResourcePtr_isNull00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::ResourcePtr",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::ResourcePtr* self = (Ogre::ResourcePtr*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'isNull'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->isNull();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'isNull'.",&tolua_err);
  return 0;
 #endif
 }
@@ -14352,6 +14416,38 @@ static int tolua_Ogre_Ogre_TexturePtr_get00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: isNull of class  Ogre::TexturePtr */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_TexturePtr_isNull00
+static int tolua_Ogre_Ogre_TexturePtr_isNull00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::TexturePtr",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::TexturePtr* self = (Ogre::TexturePtr*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'isNull'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->isNull();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'isNull'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: setTextureType of class  Ogre::Texture */
 #ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Texture_setTextureType00
 static int tolua_Ogre_Ogre_Texture_setTextureType00(lua_State* tolua_S)
@@ -18239,6 +18335,15 @@ TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"getGroup",tolua_Ogre_Ogre_Resource_getGroup00);
     tolua_function(tolua_S,"getOrigin",tolua_Ogre_Ogre_Resource_getOrigin00);
    tolua_endmodule(tolua_S);
+   #ifdef __cplusplus
+   tolua_cclass(tolua_S,"ResourcePtr","Ogre::ResourcePtr","",tolua_collect_Ogre__ResourcePtr);
+   #else
+   tolua_cclass(tolua_S,"ResourcePtr","Ogre::ResourcePtr","",NULL);
+   #endif
+   tolua_beginmodule(tolua_S,"ResourcePtr");
+    tolua_function(tolua_S,"get",tolua_Ogre_Ogre_ResourcePtr_get00);
+    tolua_function(tolua_S,"isNull",tolua_Ogre_Ogre_ResourcePtr_isNull00);
+   tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"Ogre",0);
   tolua_beginmodule(tolua_S,"Ogre");
@@ -18815,6 +18920,7 @@ TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
    tolua_cclass(tolua_S,"TexturePtr","Ogre::TexturePtr","",NULL);
    tolua_beginmodule(tolua_S,"TexturePtr");
     tolua_function(tolua_S,"get",tolua_Ogre_Ogre_TexturePtr_get00);
+    tolua_function(tolua_S,"isNull",tolua_Ogre_Ogre_TexturePtr_isNull00);
    tolua_endmodule(tolua_S);
    tolua_cclass(tolua_S,"Texture","Ogre::Texture","Ogre::Resource",NULL);
    tolua_beginmodule(tolua_S,"Texture");
