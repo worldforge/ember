@@ -27,7 +27,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #define IMPOSTOR_YAW_ANGLES 8
 #define IMPOSTOR_PITCH_ANGLES 4
 //If set to 1, imposter textures will be read and saved to disc; if set to 0 they will stay in memory and need to be regenerated each time the application is run.
-#define IMPOSTOR_FILE_SAVE 1
+#define IMPOSTOR_FILE_SAVE 0
 namespace PagedGeometry {
 
 class ImpostorBatch;
