@@ -208,10 +208,16 @@ const TerrainLayerDefinition& TerrainPageSurfaceLayer::getDefinition() const
 void TerrainPageSurfaceLayer::populate()
 {
 	for (SegmentVector::iterator I = mTerrainPageSurface.getValidSegments().begin(); I != mTerrainPageSurface.getValidSegments().end(); ++I) {
+		#if 0
+		//the current Mercator code works such that whenever an Area is added to Terrain, _all_ surfaces for the affected segments are invalidated, thus requiering a total repopulation of the segment
+		//If however that code was changed to only invalidate the affected surface the code below would be very much handy
 		Mercator::Surface* surface(getSurfaceForSegment(I->segment));
 		if (surface) {
 			surface->populate();
 		}
+		#else
+		I->segment->populateSurfaces();
+		#endif
 	}
 }
 
