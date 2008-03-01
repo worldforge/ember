@@ -261,6 +261,7 @@ void TerrainGenerator::markShaderForUpdate(TerrainShader* shader, TerrainArea* t
 }
 bool TerrainGenerator::frameStarted(const Ogre::FrameEvent & evt)
 {
+	return true;
 }
 
 bool TerrainGenerator::frameEnded(const Ogre::FrameEvent & evt)
