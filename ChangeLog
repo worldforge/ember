@@ -1,3 +1,47 @@
+2008-03-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* ember.conf: bump media version for wfut
+
+2008-03-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberPhysicalEntity.cpp: updates for the new Forest api
+
+2008-03-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/EmberPhysicalEntity.cpp: check for the existance of a parent node so to avoid a segfault
+
+2008-03-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainPageFoliage.cpp: use a better way of getting a random seed for each page
+
+2008-03-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainGenerator.cpp: return true in the frameStarted method since that is expected
+
+2008-03-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/model/Model.cpp: only render entities that are visible. This is to help with the PagedGeometry additions, since that only handles Ogre::Entities.
+
+2008-03-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/Forest.cpp, src/components/ogre/environment/Forest.h: use the EmberEntityLoader together with the PassiveEntityPage to provide better support for EmberEntities. We should remove the addTree methods though.
+
+2008-03-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/GrassFoliage.cpp: formatting
+
+2008-03-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/EmberEntityLoader.cpp, src/components/ogre/environment/EmberEntityLoader.h, src/components/ogre/environment/Makefile.am: added an EmberEntity page loader. It needs some space partitioning and listners for entity changes though, but it's usable.
+
+2008-03-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/pagedgeometry/include/PassiveEntityPage.h, src/components/ogre/environment/pagedgeometry/source/PassiveEntityPage.cpp: added a page type which just renders entities as they are
+
+2008-03-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/pagedgeometry/include/ImpostorPage.h: disable file usage
+
 2008-02-27 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* make_dist_media.sh.in: get diffuse and normal textures from the .terrain files too
