@@ -74,7 +74,7 @@ void MeshCollisionDetector::testCollision(Ogre::Ray& ray, CollisionResult& resul
 	for (Model::Model::SubModelSet::const_iterator I = submodels.begin(); I != submodels.end(); ++I)
 	{
 		Ogre::Entity* pentity = (*I)->getEntity();
-		if (pentity->isVisible()) {
+		if (pentity->isVisible() && pentity->getParentNode()) {
 			// mesh data to retrieve         
 			size_t vertex_count;
 			size_t index_count;
