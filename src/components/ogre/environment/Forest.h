@@ -38,7 +38,11 @@ namespace Ogre
 }
 namespace EmberOgre {
 
+class EmberPhysicalEntity;
+
 namespace Environment {
+
+class EmberEntityLoader;
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
@@ -54,6 +58,10 @@ public:
     
 	void addTree(Ogre::Entity *entity, const Ogre::Vector3 &position, Ogre::Degree yaw = Ogre::Degree(0), Ogre::Real scale = 1.0f);
     
+    void addEmberEntity(EmberPhysicalEntity* entity);    
+    void removeEmberEntity(EmberPhysicalEntity* entity);
+
+    
 	bool frameStarted(const Ogre::FrameEvent & evt);
 
 protected:
@@ -61,6 +69,7 @@ protected:
 
 	PagedGeometry::PagedGeometry *mTrees;
 	PagedGeometry::TreeLoader3D *mTreeLoader;
+	EmberEntityLoader* mEntityLoader;
 
 };
 

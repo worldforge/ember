@@ -25,6 +25,7 @@
 #endif
 
 #include "Forest.h"
+#include "EmberEntityLoader.h"
 
 #include "services/EmberServices.h"
 #include "services/logging/LoggingService.h"
@@ -34,6 +35,7 @@
 #include "pagedgeometry/include/BatchPage.h"
 #include "pagedgeometry/include/ImpostorPage.h"
 #include "pagedgeometry/include/DummyPage.h"
+#include "pagedgeometry/include/PassiveEntityPage.h"
 #include "pagedgeometry/include/BatchedGeometry.h"
 
 #include "../AvatarCamera.h"
@@ -48,6 +50,7 @@ namespace Environment {
 Forest::Forest()
 : mTrees(0)
 , mTreeLoader(0)
+, mEntityLoader(0)
 {
 	Ogre::Root::getSingleton().addFrameListener(this);
 }
@@ -55,6 +58,7 @@ Forest::Forest()
 
 Forest::~Forest()
 {
+	delete mEntityLoader;
 	delete mTreeLoader;
 	delete mTrees;
 	Ogre::Root::getSingleton().removeFrameListener(this);
@@ -69,19 +73,22 @@ void Forest::initialize()
 	mTrees = new PagedGeometry::PagedGeometry();
 	mTrees->setCamera(camera);	//Set the camera so PagedGeometry knows how to calculate LODs
 	mTrees->setPageSize(64);	//Set the size of each page of geometry
-	mTrees->setInfinite();		//Use infinite paging mode
+	mTrees->setBounds(Atlas2Ogre(worldSize));
 // 	mTrees->addDetailLevel<PagedGeometry::BatchPage>(150, 50);		//Use batches up to 150 units away, and fade for 30 more units
- 	mTrees->addDetailLevel<PagedGeometry::DummyPage>(100, 0);		//Use batches up to 150 units away, and fade for 30 more units
+//  mTrees->addDetailLevel<PagedGeometry::DummyPage>(100, 0);		//Use batches up to 150 units away, and fade for 30 more units 	
+	mTrees->addDetailLevel<PagedGeometry::PassiveEntityPage>(150, 0);		//Use standard entities up to 150 units away, and don't fade since the PassiveEntityPage doesn't support this (yet)
 	mTrees->addDetailLevel<PagedGeometry::ImpostorPage>(500, 50);	//Use impostors up to 400 units, and for for 50 more units
 
 	//Create a new TreeLoader2D object
-	mTreeLoader = new PagedGeometry::TreeLoader3D(mTrees, Atlas2Ogre(worldSize));
-	mTrees->setPageLoader(mTreeLoader);	//Assign the "treeLoader" to be used to load geometry for the PagedGeometry instance	
+	mEntityLoader = new EmberEntityLoader(mTrees);
+// 	mTreeLoader = new PagedGeometry::TreeLoader3D(mTrees, Atlas2Ogre(worldSize));
+	mTrees->setPageLoader(mEntityLoader);	//Assign the "treeLoader" to be used to load geometry for the PagedGeometry instance	
 }
 
 void Forest::addTree(Ogre::Entity *entity, const Ogre::Vector3 &position, Ogre::Degree yaw, Ogre::Real scale)
 {
-	if (mTreeLoader)
+	return;
+	if (mTreeLoader && mTrees)
 	{
 		S_LOG_VERBOSE("Adding tree of entity type " << entity->getMesh()->getName() << " to position x: " << position.x << " y: " << position.y << " z: " << position.z << " and scale " << scale);
 		try {
@@ -104,12 +111,32 @@ bool Forest::frameStarted(const Ogre::FrameEvent & evt)
 		{
 			S_LOG_FAILURE("Error when updating forest. Will disable forest.\n"<< ex.what());
 			delete mTreeLoader;
+			delete mEntityLoader;
 			delete mTrees;
+			mTrees = 0;
+			mTreeLoader = 0;
+			mEntityLoader = 0;
 		}
 	}
 	return true;
 }
 
+void Forest::addEmberEntity(EmberPhysicalEntity * entity)
+{
+	if (mEntityLoader) {
+		mEntityLoader->addEmberEntity(entity);
+	}
+}
+
+void Forest::removeEmberEntity(EmberPhysicalEntity * entity)
+{
+	if (mEntityLoader) {
+		mEntityLoader->removeEmberEntity(entity);
+	}
 }
 
 }
+
+}
+
+
