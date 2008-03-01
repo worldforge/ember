@@ -874,7 +874,9 @@ void Model::_updateRenderQueue(Ogre::RenderQueue* queue)
 		SubModelSet::const_iterator I = mSubmodels.begin();
 		SubModelSet::const_iterator I_end = mSubmodels.end();
 		for (; I != I_end; ++I) {
-			(*I)->getEntity()->_updateRenderQueue(queue);
+			if ((*I)->getEntity()->isVisible()) {
+				(*I)->getEntity()->_updateRenderQueue(queue);
+			}
 		}
 		
 		if (getSkeleton() != 0) {
