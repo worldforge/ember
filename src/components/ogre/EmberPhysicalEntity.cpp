@@ -131,6 +131,27 @@ EmberEntity* EmberPhysicalEntity::getEntityAttachedToPoint(const std::string& at
 void EmberPhysicalEntity::setVisible(bool visible)
 {
 	EmberEntity::setVisible(visible);
+	
+	const Model::RenderingDefinition* renderingDef = mModel->getDefinition()->getRenderingDefinition();
+	if (renderingDef && renderingDef->getScheme() == "forest" && mModel) {
+		Environment::Forest* forest = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getForest();
+		if (visible) {
+			forest->addEmberEntity(this);
+		} else {
+			forest->removeEmberEntity(this);
+		}
+/*		for (Model::Model::SubModelSet::const_iterator I = mModel->getSubmodels().begin(); I != mModel->getSubmodels().end(); ++I) {
+// 			if ((*I)->getEntity()->isVisible()) {
+				(*I)->getEntity()->setVisible(true);
+				forest->addTree((*I)->getEntity(), getScaleNode()->getWorldPosition(), getScaleNode()->getWorldOrientation().getYaw(), 	getScaleNode()->getScale().y);
+// 			}
+		}
+		mModel->setRenderingDistance(100);*/
+// 		getScaleNode()->detachObject(mModel);
+// 		getSceneNode()->removeChild(getScaleNode());
+// 		getScaleNode()->setVisible(false);
+	}
+	
 // 	if (!visible) {
 // 		if (getScaleNode()->getParent()) {
 // 			mOgreNode->removeChild(getScaleNode());
@@ -290,20 +311,21 @@ void EmberPhysicalEntity::initFromModel()
 	connectEntities();
 	
 	const Model::RenderingDefinition* renderingDef = mModel->getDefinition()->getRenderingDefinition();
-	if (renderingDef && renderingDef->getScheme() == "forest") {
+	if (renderingDef && renderingDef->getScheme() == "forest" && mModel) {
 		Environment::Forest* forest = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getForest();
-		for (Model::Model::SubModelSet::const_iterator I = mModel->getSubmodels().begin(); I != mModel->getSubmodels().end(); ++I) {
+		forest->addEmberEntity(this);
+/*		for (Model::Model::SubModelSet::const_iterator I = mModel->getSubmodels().begin(); I != mModel->getSubmodels().end(); ++I) {
 // 			if ((*I)->getEntity()->isVisible()) {
 				(*I)->getEntity()->setVisible(true);
 				forest->addTree((*I)->getEntity(), getScaleNode()->getWorldPosition(), getScaleNode()->getWorldOrientation().getYaw(), 	getScaleNode()->getScale().y);
 // 			}
 		}
-		mModel->setRenderingDistance(100);
+		mModel->setRenderingDistance(100);*/
 // 		getScaleNode()->detachObject(mModel);
 // 		getSceneNode()->removeChild(getScaleNode());
 // 		getScaleNode()->setVisible(false);
 	}
-
+	
 }
 
 void EmberPhysicalEntity::createModelMapping()
