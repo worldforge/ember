@@ -26,7 +26,7 @@
 
 #include "TerrainPageSurfaceCompilerTechniqueShader.h"
 #include "TerrainPageSurfaceLayer.h"
-
+#include "../EmberOgre.h"
 namespace EmberOgre {
 
 namespace Terrain {
@@ -292,11 +292,12 @@ bool TerrainPageSurfaceCompilerShaderPass::finalize()
 	std::string fragmentProgramName(ss.str());
 	
 	mPass->setLightingEnabled(false);
-	mPass->setFog(true, Ogre::FOG_NONE);
+// 	mPass->setFog(true, Ogre::FOG_NONE);
 	
 			
 	///add fragment shader for splatting
 	mPass->setFragmentProgram("splatting_fragment_dynamic");
+
 // 	mPass->setFragmentProgram(fragmentProgramName);
 	try {
 		Ogre::GpuProgramParametersSharedPtr fpParams = mPass->getFragmentProgramParameters();
@@ -310,7 +311,11 @@ bool TerrainPageSurfaceCompilerShaderPass::finalize()
 	}
 	
 	///add vertex shader for fog	
-	mPass->setVertexProgram("fog_linear_vp");
+	if (EmberOgre::getSingleton().getSceneManager()->getFogMode() == Ogre::FOG_EXP2) {
+		mPass->setVertexProgram("fog_exp2_vp");
+	} else {
+		mPass->setVertexProgram("fog_linear_vp");
+	}
 	try {
 		Ogre::GpuProgramParametersSharedPtr fpParams = mPass->getVertexProgramParameters();
 		fpParams->setNamedAutoConstant("iFogParams", Ogre::GpuProgramParameters::ACT_FOG_PARAMS);
@@ -464,7 +469,7 @@ bool TerrainPageSurfaceCompilerShaderNormalMappedPass::finalize()
 	std::string fragmentProgramName(ss.str());
 	
 	mPass->setLightingEnabled(false);
-	mPass->setFog(true, Ogre::FOG_NONE);
+// 	mPass->setFog(true, Ogre::FOG_NONE);
 	
 	///add fragment shader for splatting
 	mPass->setFragmentProgram("splatting_fragment_normalmapped_dynamic");
@@ -485,7 +490,12 @@ bool TerrainPageSurfaceCompilerShaderNormalMappedPass::finalize()
 	}
 	
 	///add vertex shader for fog	
-	mPass->setVertexProgram("splatting_vertex_normalmapped");
+	if (EmberOgre::getSingleton().getSceneManager()->getFogMode() == Ogre::FOG_EXP2) {
+		mPass->setVertexProgram("splatting_vertex_normalmapped_exp2");
+	} else {
+		mPass->setVertexProgram("splatting_vertex_normalmapped");
+	}
+	
 	try {
 		Ogre::GpuProgramParametersSharedPtr fpParams = mPass->getVertexProgramParameters();
 		fpParams->setNamedAutoConstant("lightPosition", Ogre::GpuProgramParameters::ACT_LIGHT_POSITION_OBJECT_SPACE);
