@@ -1,3 +1,39 @@
+2008-03-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/packs/Caelum.zip: added Caelum media pack
+
+2008-03-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/main/Application.h: keep an instance of the main console here since the Singleton that we now use isn't self hosting
+
+2008-03-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainPageSurfaceCompilerTechniqueShader.cpp: check for fogging method and choose the appropriate shader
+
+2008-03-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+	
+	* media/materials/scripts/buildings.material: clean up
+
+2008-03-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/programs/OffsetMapping.cg, media/materials/splatting/Splat.cg, media/materials/splatting/splat.program: added exp2 fogging methods since Caelum now uses that
+
+2008-03-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/AvatarCamera.cpp, src/components/ogre/AvatarEmberEntity.cpp, src/components/ogre/ConsoleObjectImpl.cpp, src/components/ogre/EmberEntity.cpp, src/components/ogre/EmberEntityFactory.cpp, src/components/ogre/EmberPhysicalEntity.cpp, src/components/ogre/input/Input.cpp, src/components/ogre/input/InputCommandMapper.cpp, src/components/ogre/manipulation/EntityMoveManager.cpp, src/components/ogre/terrain/TerrainGenerator.cpp, src/components/ogre/widgets/Bootstrap.lua, src/components/ogre/widgets/ConsoleAdapter.cpp, src/components/ogre/widgets/InspectWidget.cpp, src/components/ogre/widgets/MakeEntityWidget.cpp, src/components/ogre/widgets/StatusIconBar.cpp, src/components/ogre/widgets/Widget.cpp, src/framework/ConsoleBackend.cpp, src/framework/ConsoleBackend.h, src/framework/ConsoleCommandWrapper.cpp, src/framework/bindings/lua/ConsoleBackend.pkg, src/framework/bindings/lua/lua_Framework.cpp, src/framework/bindings/lua/required.h, src/services/config/ConfigService.cpp, src/services/server/ConnectedAdapter.cpp, src/services/server/OOGChat.cpp, src/services/server/ServerService.cpp, src/services/sound/SoundService.cpp: all singleton classes should use the common Singleton class, so we've changed ConsoleBackend to use that instead of it's own getMainConsole method
+
+2008-03-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/CaelumEnvironment.cpp, src/components/ogre/environment/CaelumSky.cpp: adapt to updated caelum version
+
+2008-03-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/caelum/Makefile.am, src/components/ogre/environment/caelum/include/Astronomy.h, src/components/ogre/environment/caelum/include/Caelum.h, src/components/ogre/environment/caelum/include/CaelumExceptions.h, src/components/ogre/environment/caelum/include/CaelumListener.h, src/components/ogre/environment/caelum/include/CaelumPrecompiled.h, src/components/ogre/environment/caelum/include/CaelumPrerequisites.h, src/components/ogre/environment/caelum/include/CaelumSystem.h, src/components/ogre/environment/caelum/include/CameraBoundElement.h, src/components/ogre/environment/caelum/include/GeometryFactory.h, src/components/ogre/environment/caelum/include/GroundFog.h, src/components/ogre/environment/caelum/include/ImageHelper.h, src/components/ogre/environment/caelum/include/LayeredClouds.h, src/components/ogre/environment/caelum/include/SimpleSunPositionModel.h, src/components/ogre/environment/caelum/include/SkyColourModel.h, src/components/ogre/environment/caelum/include/SkyDome.h, src/components/ogre/environment/caelum/include/SolarSystemModel.h, src/components/ogre/environment/caelum/include/Starfield.h, src/components/ogre/environment/caelum/include/StoredImageElvBasedSkyColourModel.h, src/components/ogre/environment/caelum/include/StoredImageSkyColourModel.h, src/components/ogre/environment/caelum/include/Sun.h, src/components/ogre/environment/caelum/include/SunPositionModel.h, src/components/ogre/environment/caelum/include/UniversalClock.h, src/components/ogre/environment/caelum/src/Astronomy.cpp, src/components/ogre/environment/caelum/src/CaelumPrecompiled.cpp, src/components/ogre/environment/caelum/src/CaelumSystem.cpp, src/components/ogre/environment/caelum/src/CameraBoundElement.cpp, src/components/ogre/environment/caelum/src/GeometryFactory.cpp, src/components/ogre/environment/caelum/src/GroundFog.cpp, src/components/ogre/environment/caelum/src/ImageHelper.cpp, src/components/ogre/environment/caelum/src/LayeredClouds.cpp, src/components/ogre/environment/caelum/src/SimpleSunPositionModel.cpp, src/components/ogre/environment/caelum/src/SkyColourModel.cpp, src/components/ogre/environment/caelum/src/SkyDome.cpp, src/components/ogre/environment/caelum/src/SolarSystemModel.cpp, src/components/ogre/environment/caelum/src/Starfield.cpp, src/components/ogre/environment/caelum/src/StoredImageElvBasedSkyColourModel.cpp, src/components/ogre/environment/caelum/src/StoredImageSkyColourModel.cpp, src/components/ogre/environment/caelum/src/Sun.cpp, src/components/ogre/environment/caelum/src/UniversalClock.cpp: update caelum to latest trunk version
+
+2008-03-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainPageSurfaceLayer.cpp: adding an area to Mercator::Terrain invalidates _all_ surfaces currently, so we can't only populate the affected surface, we need to repopulate the whole segment
+
 2008-03-01 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* ember.conf: bump media version for wfut
