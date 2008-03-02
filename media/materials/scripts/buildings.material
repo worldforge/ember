@@ -327,11 +327,6 @@ material /global/items/building_element/temple/Temple_Roof : /base/normalmap/spe
 }
 
 
-file:///home/erik/ember/media/common/3d_objects/items/building_element/textures/temple/Temple_BaseD.png
-
-
-
-
 material /global/items/wood_weathered/boards : /base/simple
 {
   set_texture_alias DiffuseMap 3d_objects/items/material/textures/wood_weathered/low/boards.png
