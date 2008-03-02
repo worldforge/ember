@@ -301,25 +301,25 @@ material Examples/FresnelReflectionRefraction
 			{
 				param_named_auto worldViewProjMatrix worldviewproj_matrix
 				param_named_auto eyePosition camera_position_object_space
-				param_named fresnelBias float -0.3 
-				param_named fresnelScale float 1.1
-				param_named fresnelPower float 16  
 				param_named_auto timeVal time 0.05
 				param_named scroll float 1  
-				param_named scale float 4 
+				param_named scale float 1 
 				param_named noise float 1 
 				// scroll and noisePos will need updating per frame
 			}
 			fragment_program_ref Examples/FresnelRefractReflectFP
 			{
-				param_named distortionRange float 0.025 
-				param_named tintColour float4 0 0 0 1
+				param_named fresnelBias float -0.1 
+				param_named fresnelScale float 1.8 
+				param_named fresnelPower float 8  
+				param_named tintColour float4 0 0.0.05 0.05 1
+				param_named noiseScale float 0.05 
 			}
 			// Noise
 			texture_unit
 			{
 				// Perlin noise volume
-				texture perlinvolume.dds 3d
+				texture waves2.dds
 				// min / mag filtering, no mip
 				filtering linear linear none
 			}
@@ -351,14 +351,14 @@ material Examples/FresnelReflectionRefraction
 	{
 		pass
 		{
-			vertex_program_ref Examples/FresnelRefractReflectVP
+			vertex_program_ref Examples/FresnelRefractReflectVPold
 			{
 				param_named_auto worldViewProjMatrix worldviewproj_matrix
 				param_named_auto eyePosition camera_position_object_space
 				param_named fresnelBias float -0.3
-				param_named fresnelScale float 1.1
-				param_named fresnelPower float 16
-				param_named_auto timeVal time 0.05
+				param_named fresnelScale float 1.4
+				param_named fresnelPower float 8
+				param_named_auto timeVal time_0_1 20
 				param_named scroll float 1 
 				param_named scale float 4 
 				param_named noise float 1
