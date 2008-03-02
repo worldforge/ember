@@ -19,6 +19,8 @@
 
 #include "services/EmberServices.h"
 #include "framework/ConsoleObject.h"
+#include "framework/ConsoleBackend.h"
+
 
 #include <sigc++/signal.h>
 
@@ -167,6 +169,8 @@ namespace Ember
 	std::auto_ptr<std::ofstream> mLogOutStream;
 	
 	ConfigMap mConfigSettings;
+	
+	ConsoleBackend mConsoleBackend;
 
 };//class Application
 }//namespace Ember
