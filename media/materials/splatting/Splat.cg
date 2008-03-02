@@ -88,6 +88,40 @@ void main_fp
 
 }
 
+float fogExp (float z, float density) {
+	return 1 - clamp (pow (2.71828, -z * density), 0, 1);
+}
+
+void fog_exp2_vp
+(
+	uniform float4x4   iWorldViewProj,
+    float4             iPosition           : POSITION,
+	float2             iCoverage           : TEXCOORD0,
+	float2             iTexcoord           : TEXCOORD1,
+    float4             iColor             : COLOR,
+	
+	uniform float              iFogStart,
+	uniform float              iFogMax,
+	uniform float4 iFogParams,
+// 	uniform float3 iFogColour,
+
+	out float4         oPosition           : POSITION,
+	out float2         oCoverage           : TEXCOORD0,
+	out float2         oTexcoord           : TEXCOORD1,
+	out float          oFog                : FOG,
+// 	out float          oFogFade                : TEXCOORD2,
+	out float4         oColour    : COLOR
+
+)
+{
+	oPosition  = mul(iWorldViewProj,iPosition);
+	oCoverage = iCoverage;
+	oTexcoord = iCoverage;
+	oColour = iColor;
+	oFog = fogExp(oPosition.z, iFogParams.x);
+	
+}
+
 
 void fog_linear_vp
 (
@@ -115,9 +149,8 @@ void fog_linear_vp
 	oCoverage = iCoverage;
 	oTexcoord = iCoverage;
 	oColour = iColor;
-// 	oFogFade = 1;
-// 	oFog = oPosition.z;
-	oFog = 1 - ((iFogParams.z - oPosition.z)/(iFogParams.z - iFogParams.y));
+ 	oFog = 1 - ((iFogParams.z - oPosition.z)/(iFogParams.z - iFogParams.y));
+	
 }
 
 
@@ -332,6 +365,44 @@ void splatatlas_fp
 
 }
 
+
+void SplattingShaderParallaxExp2_vp(// IN
+             float4 iPosition         : POSITION,
+             float3 iNormal           : NORMAL,
+             float2 iUv               : TEXCOORD0,
+             // OUT
+             out float4 oPosition     : POSITION,
+             out float2 oUv           : TEXCOORD0,
+             out float3 oLightDir     : TEXCOORD1,
+             out float3 oEyeDir       : TEXCOORD2,
+             out float3 oHalfAngle    : TEXCOORD3,
+				out float oFog			: FOG,
+             // UNIFORM
+             uniform float4           lightPosition,
+             uniform float3           eyePosition,
+             uniform float4x4         worldViewProj,
+				uniform float4 iFogParams)
+{
+   oPosition = mul(worldViewProj, iPosition);
+
+   oUv = iUv;
+
+   float3 lightDir = normalize(lightPosition.xyz -  (iPosition * lightPosition.w));
+   float3 eyeDir   = eyePosition - iPosition.xyz;
+
+   float3 binormal = cross(float3(1,0,0), iNormal);
+   float3 tangent  = cross(iNormal, binormal);
+
+   float3x3 rotation = float3x3(tangent, binormal, iNormal);
+
+   lightDir   = normalize(mul(rotation, lightDir));
+   eyeDir     = normalize(mul(rotation, eyeDir));
+
+   oLightDir  = lightDir;
+   oEyeDir    = eyeDir;
+   oHalfAngle = normalize(eyeDir + lightDir);
+	oFog = fogExp(oPosition.z, iFogParams.x);
+}
 
 void SplattingShaderParallax_vp(// IN
              float4 iPosition         : POSITION,

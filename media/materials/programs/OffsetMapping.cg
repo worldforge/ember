@@ -4,6 +4,12 @@
    with parallax offset effect. 
 */ 
 
+
+float fogExp (float z, float density) {
+	return 1 - clamp (pow (2.71828, -z * density), 0, 1);
+}
+
+
 /* Vertex program that moves light and eye vectors into texture tangent space at vertex */ 
 
 void main_vp(	float4 position	: POSITION, 
@@ -50,7 +56,9 @@ void main_vp(	float4 position	: POSITION,
 	oLightDir = lightDir; 
 	oEyeDir = eyeDir; 
 	oHalfAngle = normalize(eyeDir + lightDir); 
-	oFog = 1 - ((iFogParams.z - oPosition.z)/(iFogParams.z - iFogParams.y));
+	oFog = fogExp(oPosition.z, iFogParams.x);
+
+	//oFog = 1 - ((iFogParams.z - oPosition.z)/(iFogParams.z - iFogParams.y));
 }
 
 // General functions
@@ -60,6 +68,7 @@ float3 expand(float3 v)
 {
 	return (v - 0.5) * 2;
 }
+
 
 void main_fp(float2 uv : TEXCOORD0,
 	float3 lightDir : TEXCOORD1,

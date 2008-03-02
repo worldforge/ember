@@ -54,6 +54,13 @@ vertex_program fog_linear_vp cg
 	profiles vs_2_0 arbvp1 
 }
 
+vertex_program fog_exp2_vp cg
+{
+	source Splat.cg
+	entry_point fog_exp2_vp
+	profiles vs_2_0 arbvp1 
+}
+
 fragment_program splatting_fragment_dynamic cg
 {
 	source Splat.cg
@@ -67,6 +74,13 @@ vertex_program splatting_vertex_normalmapped cg
 	entry_point SplattingShaderParallax_vp
 	profiles vs_2_0 arbvp1
 }
+vertex_program splatting_vertex_normalmapped_exp2 cg
+{
+	source Splat.cg
+	entry_point SplattingShaderParallaxExp2_vp
+	profiles vs_2_0 arbvp1
+}
+
 fragment_program splatting_fragment_normalmapped_dynamic cg
 {
 	source Splat.cg
