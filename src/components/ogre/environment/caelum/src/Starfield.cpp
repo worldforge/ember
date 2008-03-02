@@ -1,22 +1,43 @@
+/*
+This file is part of Caelum.
+See http://www.ogre3d.org/wiki/index.php/Caelum 
+
+Copyright (c) 2006-2007 Caelum team. See Contributors.txt for details.
+
+Caelum is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Caelum is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with Caelum. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "CaelumPrecompiled.h"
 #include "Starfield.h"
-#include "CaelumSystem.h"
 #include "GeometryFactory.h"
 
 namespace caelum {
 
-const Ogre::String Starfield::mStarfieldDomeResourceName = "CaelumStarfieldDome";
+const Ogre::String Starfield::STARFIELD_DOME_NAME = "CaelumStarfieldDome";
+
 const Ogre::String Starfield::STARFIELD_MATERIAL_NAME = "CaelumStarfieldMaterial";
 
-Starfield::Starfield (Ogre::SceneManager *sceneMgr) {
-	mAutoRadius = true;
+Starfield::Starfield (Ogre::SceneManager *sceneMgr, const Ogre::String &textureName) {
 	mInclination = Ogre::Degree (0);
 
 	createStarfieldMaterial ();
+    setTexture (textureName);
 
-	GeometryFactory::generateSphericDome (mStarfieldDomeResourceName, 32, GeometryFactory::DT_STARFIELD);
-	Ogre::Entity *ent = sceneMgr->createEntity ("StarfieldDome", mStarfieldDomeResourceName);
+	GeometryFactory::generateSphericDome (STARFIELD_DOME_NAME, 32, GeometryFactory::DT_STARFIELD);
+	Ogre::Entity *ent = sceneMgr->createEntity ("StarfieldDome", STARFIELD_DOME_NAME);
 	ent->setMaterialName (STARFIELD_MATERIAL_NAME);
-	ent->setRenderQueueGroup (Ogre::RENDER_QUEUE_SKIES_EARLY + 1);
+	ent->setRenderQueueGroup (CAELUM_RENDER_QUEUE_STARFIELD);
 	ent->setCastShadows (false);
 
 	mNode = sceneMgr->getRootSceneNode ()->createChildSceneNode ();
@@ -38,23 +59,13 @@ Starfield::~Starfield () {
 }
 
 void Starfield::notifyCameraChanged (Ogre::Camera *cam) {
+    CameraBoundElement::notifyCameraChanged (cam);
 	mNode->setPosition (cam->getRealPosition ());
-	if (mAutoRadius) {
-		if (cam->getFarClipDistance () > 0)
-			mNode->setScale (Ogre::Vector3::UNIT_SCALE * (cam->getFarClipDistance () - CAMERA_DISTANCE_MODIFIER));
-		else
-			mNode->setScale (Ogre::Vector3::UNIT_SCALE * (cam->getNearClipDistance () + CAMERA_DISTANCE_MODIFIER));
-	}
 }
 
-void Starfield::setFarRadius (float radius) {
-	if (radius > 0) {
-		mNode->setScale (Ogre::Vector3::UNIT_SCALE * radius);
-		mAutoRadius = false;
-	}
-	else {
-		mAutoRadius = true;
-	}
+void Starfield::setFarRadius (Ogre::Real radius) {
+    CameraBoundElement::setFarRadius(radius);
+	mNode->setScale (Ogre::Vector3::UNIT_SCALE * radius);
 }
 
 void Starfield::setInclination (Ogre::Degree inc) {
@@ -69,7 +80,7 @@ void Starfield::update (const float time) {
 	mNode->setOrientation (orientation);
 }
 
-void Starfield::updateMaterial (const Ogre::String &mapName) {
+void Starfield::setTexture (const Ogre::String &mapName) {
 	// Update the starfield material
 	mStarfieldMaterial->getBestTechnique ()->getPass (0)->getTextureUnitState (0)->setTextureName (mapName);
 }

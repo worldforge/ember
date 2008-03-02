@@ -1,39 +1,52 @@
+/*
+This file is part of Caelum.
+See http://www.ogre3d.org/wiki/index.php/Caelum 
+
+Copyright (c) 2006-2007 Caelum team. See Contributors.txt for details.
+
+Caelum is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Caelum is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with Caelum. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "CaelumPrecompiled.h"
 #include "Sun.h"
-#include "CaelumSystem.h"
 
 namespace caelum {
 
 const Ogre::String Sun::SUN_MATERIAL_NAME = "CaelumSunMaterial";
 
-Sun::Sun (Ogre::SceneManager *sceneMgr) {
-	mSunColour = Ogre::ColourValue::White;
-	mAutoRadius = true;
-	mSunPositionModel = 0;
-	mSunDirection = -Ogre::Vector3::UNIT_Z;
+Sun::Sun (Ogre::SceneManager *sceneMgr): mScene(sceneMgr) {
+	mSunSphereColour = Ogre::ColourValue::White;
+	mSunLightColour = Ogre::ColourValue::White;
+
+	mDiffuseMultiplier = Ogre::ColourValue(1, 1, 0.9);
+	mSpecularMultiplier = Ogre::ColourValue(1, 1, 1);
+	mAmbientMultiplier = Ogre::ColourValue(0.2, 0.2, 0.2);
+	mManageAmbientLight = false;
 
 	mMainLight = sceneMgr->createLight ("CaelumSun");
 	mMainLight->setType (Ogre::Light::LT_DIRECTIONAL);
-	mMainLight->setPowerScale (10);	// REALLY bright.
+	// HDR power scale, REALLY bright:
+	mMainLight->setPowerScale (10);
 
 	createSunMaterial ();
 
-	if (sceneMgr->hasSceneNode("SunNode")) {
-		mSunNode = sceneMgr->getSceneNode( "SunNode");
-	} else {
-		mSunNode = sceneMgr->getRootSceneNode ()->createChildSceneNode("SunNode");
-	}
-	mSunEntity = sceneMgr->createEntity ("CaelumSun", "3d_objects/environment/sky/models/sphere/sphere.mesh");
+	mSunEntity = sceneMgr->createEntity ("CaelumSun", "sphere.mesh");
 	mSunEntity->setMaterialName (SUN_MATERIAL_NAME);
 	mSunEntity->setCastShadows (false);
-	mSunEntity->setRenderQueueGroup (Ogre::RENDER_QUEUE_SKIES_EARLY + 3);
+	mSunEntity->setRenderQueueGroup (CAELUM_RENDER_QUEUE_SUN);
+	mSunNode = sceneMgr->getRootSceneNode ()->createChildSceneNode ();
 	mSunNode->attachObject (mSunEntity);
-	mSunNode->_update(true, false);
-	if (mSunEntity->getBoundingRadius ()) {
-		///make it one unit in size
-		Ogre::Real scale = 1 / mSunEntity->getBoundingRadius ();
-		mSunNode->setScale(scale, scale, scale);
-// 		mSunNode->showBoundingBox(true);
-	}
 }
 
 Sun::~Sun () {
@@ -53,115 +66,106 @@ Sun::~Sun () {
 		mMainLight->_getManager ()->destroyLight (mMainLight);
 		mMainLight = 0;
 	}
-
-	if (mSunPositionModel) {
-		delete mSunPositionModel;
-	}
 }
 
 void Sun::notifyCameraChanged (Ogre::Camera *cam) {
-	float sunRadius0;
-	if (mAutoRadius) {
-		if (cam->getFarClipDistance () > 0) {
-			mRadius = (cam->getFarClipDistance () - CAMERA_DISTANCE_MODIFIER) * 0.5;
-			sunRadius0 = -1;
-		}
-		else {
-			mRadius = (cam->getNearClipDistance () + CAMERA_DISTANCE_MODIFIER) * 2;
-			sunRadius0 = 1;
-		}
-	}
-	sunRadius0 *= mRadius * Ogre::Math::Tan (Ogre::Degree (0.01));
-	mSunNode->setPosition (cam->getRealPosition () - mSunDirection * (mRadius + sunRadius0));
-	//ember: we don't need to scale it
-	//mSunNode->setScale (Ogre::Vector3::UNIT_SCALE * (mRadius + sunRadius0) * Ogre::Math::Tan (Ogre::Degree (0.01)));
+    // This calls setFarRadius
+    CameraBoundElement::notifyCameraChanged(cam);
+
+    // Set sun position.
+    Ogre::Real sunRadius = -mRadius * Ogre::Math::Tan (Ogre::Degree (0.01));
+	mSunNode->setPosition (cam->getRealPosition () - mSunDirection * (mRadius + sunRadius));
+
+    // Set sun scaling.
+    float factor = 2 - mSunSphereColour.b / 3;
+    float scale = factor * (mRadius + sunRadius) * Ogre::Math::Tan (Ogre::Degree (0.01));
+    mSunNode->setScale (Ogre::Vector3::UNIT_SCALE * scale);
 }
 
-void Sun::setFarRadius (float radius) {
-	if (radius > 0) {
-		mRadius = radius;
-		mAutoRadius = false;
-	}
-	else {
-		mAutoRadius = true;
-	}
+void Sun::setFarRadius (Ogre::Real radius) {
+    CameraBoundElement::setFarRadius(radius);
+	mRadius = radius;
 }
 
-void Sun::update (const float time) {
-	Ogre::Vector3 dir = Ogre::Vector3::NEGATIVE_UNIT_Y;
-
-	if (mSunPositionModel) {
-		dir = mSunPositionModel->update (time);
-	}
-
-	// Update the main light direction
-	if (mMainLight != 0) {
-		mMainLight->setDirection (dir);
-		///hide the sun if it's below the horizon
-		if (dir.y > 0) {
-			mMainLight->setVisible(false);
-		} else {
-			mMainLight->setVisible(true);
-		}
-	}
-
-	// Store the latest sun direction.
-	mSunDirection = dir;
-}
-
-SunPositionModel *Sun::setSunPositionModel (SunPositionModel *model) {
-	SunPositionModel *temp = mSunPositionModel;
-
-	mSunPositionModel = model;
-
-	return temp;
-}
-
-SunPositionModel *Sun::getSunPositionModel () const {
-	return mSunPositionModel;
+void Sun::update (
+        const Ogre::Vector3& sunDirection,
+        const Ogre::ColourValue &sunLightColour,
+        const Ogre::ColourValue &sunSphereColour)
+{
+    setSunDirection(sunDirection);
+    setSunLightColour(sunLightColour);
+    setSunSphereColour(sunSphereColour);
 }
 
 Ogre::Vector3 Sun::getSunDirection () const {
 	return mSunDirection;
 }
 
-/**
-"Normalizes" a colour value, i.e. makes sure that it stays within [0..1] range.
-*/
-Ogre::ColourValue& normalizeColour(Ogre::ColourValue& colour)
-{
-	Ogre::Real max = 0.0f;
-	max = std::max<Ogre::Real>(colour[0], max);
-	max = std::max<Ogre::Real>(colour[1], max);
-	max = std::max<Ogre::Real>(colour[2], max);
-	if (max > 1) {
-		Ogre::Real adjust = 1.0f / max;
-		colour[0] = adjust * colour[0];
-		colour[1] = adjust * colour[1];
-		colour[2] = adjust * colour[2];
+void Sun::setSunDirection (const Ogre::Vector3 &dir) {
+	mSunDirection = dir;
+	if (mMainLight != 0) {
+		mMainLight->setDirection (dir);
 	}
-	return colour;
 }
 
-void Sun::setSunColour (Ogre::ColourValue colour) {
- 	colour = Ogre::ColourValue (1, 1, 0.9);
-/*	colour = colour * Ogre::ColourValue (1, 1, 0.9);
-	colour = colour * 3;*/
-	///we need to normalize it because some shaders might not be able to cope with colours that go beyond 1
-//  	normalizeColour(colour);
-	mMainLight->setDiffuseColour (colour);
-	mMainLight->setSpecularColour (colour);
-
-	colour += Ogre::ColourValue (.5, .4, .2);
-// 	normalizeColour(colour);
-	mSunMaterial->setSelfIllumination (colour);
-	
+void Sun::setSunSphereColour (const Ogre::ColourValue &colour) {
 	// Store this last colour
-	mSunColour = colour;
+	mSunSphereColour = colour;
+
+	// Set sun material colour.
+	mSunMaterial->setSelfIllumination (colour);
 }
 
-Ogre::ColourValue Sun::getSunColour () {
-	return mSunColour;
+Ogre::ColourValue Sun::getSunSphereColour () {
+	return mSunSphereColour;
+}
+
+void Sun::setSunLightColour (const Ogre::ColourValue &colour) {
+	// Store this last colour
+	mSunLightColour = colour;
+
+	// Set light colours.
+	mMainLight->setDiffuseColour (colour * mDiffuseMultiplier);
+	mMainLight->setSpecularColour (colour * mSpecularMultiplier);
+	if (isManagingAmbientLight()) {
+		mScene->setAmbientLight(colour * mAmbientMultiplier);
+	}
+}
+
+Ogre::ColourValue Sun::getSunLightColour () {
+	return mSunLightColour;
+}
+
+void Sun::setDiffuseMultiplier (const Ogre::ColourValue &diffuse) {
+	mDiffuseMultiplier = diffuse;
+}
+
+Ogre::ColourValue Sun::getDiffuseMultiplier () {
+	return mDiffuseMultiplier;
+}
+
+void Sun::setSpecularMultiplier (const Ogre::ColourValue &specular) {
+	mSpecularMultiplier = specular;
+}
+
+Ogre::ColourValue Sun::getSpecularMultiplier () {
+	return mSpecularMultiplier;
+}
+
+void Sun::setAmbientMultiplier (const Ogre::ColourValue &ambient) {
+	mAmbientMultiplier = ambient;
+}
+
+Ogre::ColourValue Sun::getAmbientMultiplier () {
+	return mAmbientMultiplier;
+}
+
+void Sun::setManageAmbientLight (bool manage) {
+	mManageAmbientLight = manage;
+}
+
+bool Sun::isManagingAmbientLight () {
+	return mManageAmbientLight;
 }
 
 void Sun::createSunMaterial () {
@@ -174,6 +178,7 @@ void Sun::createSunMaterial () {
 		mat->setReceiveShadows (false);
 		LOG ("\t\tMaterial [OK]");
 		Ogre::Pass *pass = mat->getTechnique (0)->getPass (0);
+        pass->setSceneBlending (Ogre::SBT_TRANSPARENT_COLOUR);
 		pass->setDepthCheckEnabled (false);
 		pass->setDepthWriteEnabled (false);
 //		pass->setLightingEnabled (false);

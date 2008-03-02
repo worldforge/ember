@@ -1,3 +1,23 @@
+/*
+This file is part of Caelum.
+See http://www.ogre3d.org/wiki/index.php/Caelum 
+
+Copyright (c) 2006-2007 Caelum team. See Contributors.txt for details.
+
+Caelum is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Caelum is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with Caelum. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef CAELUMLISTENER_H
 #define CAELUMLISTENER_H
 
@@ -19,9 +39,9 @@ class CaelumSystem;
 class DllExport CaelumListener {
 // Methods --------------------------------------------------------------------
 	public: 
-	
-		virtual ~CaelumListener() {}
-	
+		/** Destructor.
+		 */
+		virtual ~CaelumListener () {};
 		/** Trigger fired just before Caelum is about to do its work.
 			@param e The Ogre FrameEvent object, in case it's desired to use this as a 
 			FrameListener as well.

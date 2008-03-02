@@ -1,3 +1,23 @@
+/*
+This file is part of Caelum.
+See http://www.ogre3d.org/wiki/index.php/Caelum 
+
+Copyright (c) 2006-2007 Caelum team. See Contributors.txt for details.
+
+Caelum is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Caelum is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with Caelum. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef STARFIELD_H
 #define STARFIELD_H
 
@@ -7,7 +27,7 @@
 namespace caelum {
 
 /** Starfield dome class.
-	@author JesÃºs Alonso Abad
+	@author Jesús Alonso Abad
  */
 class DllExport Starfield : public CameraBoundElement {
 // Attributes -----------------------------------------------------------------
@@ -18,7 +38,7 @@ class DllExport Starfield : public CameraBoundElement {
 
 		/** Name of the spheric dome resource.
 		 */
-		static const Ogre::String mStarfieldDomeResourceName;
+		static const Ogre::String STARFIELD_DOME_NAME;
 
 		/** Name of the starfield material.
 		 */
@@ -37,21 +57,15 @@ class DllExport Starfield : public CameraBoundElement {
 		/** Constructor.
 			@param sceneMgr The scene manager this dome will belong to.
 		 */
-		Starfield (Ogre::SceneManager *sceneMgr);
+		Starfield (
+                Ogre::SceneManager *sceneMgr,
+                const Ogre::String &textureName = "Starfield.jpg");
 
 		/** Destructor.
 		 */
 		virtual ~Starfield ();
 
-		/** @copydoc CameraBoundElement::notifyCameraChanged().
-		 */
-		void notifyCameraChanged (Ogre::Camera *cam);
-
-		/** @copydoc CameraBoundElement::setFarRadius().
-		 */
-		void setFarRadius (float radius);
-
-		/** Sets the starfield inclination.
+		/** Sets the starfield inclination. This inclination is the angle between the starfield rotation axis and the horizon plane.
 			@param inc The starfield inclination in degrees.
 		 */
 		void setInclination (Ogre::Degree inc);
@@ -64,7 +78,7 @@ class DllExport Starfield : public CameraBoundElement {
 		/** Updates the starfield material.
 			@param mapName The new starfield texture map name.
 		 */
-		void updateMaterial (const Ogre::String &mapName);
+		void setTexture (const Ogre::String &mapName);
 
 	private:
 		/** Internal method to create the starfield material.
@@ -74,6 +88,14 @@ class DllExport Starfield : public CameraBoundElement {
 		/** Internal method to destroy the starfield material.
 		 */
 		void destroyStarfieldMaterial ();
+
+    public:
+		/// Handle camera change.
+		virtual void notifyCameraChanged (Ogre::Camera *cam);
+
+    protected:
+        /// Handle far radius.
+	    virtual void setFarRadius (Ogre::Real radius);
 };
 
 } // namespace caelum;

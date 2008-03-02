@@ -2,7 +2,7 @@
 This file is part of Caelum.
 See http://www.ogre3d.org/wiki/index.php/Caelum 
 
-Copyright (c) 2006-2008 Caelum team. See Contributors.txt for details.
+Copyright (c) 2006-2007 Caelum team. See Contributors.txt for details.
 
 Caelum is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published
@@ -18,22 +18,24 @@ You should have received a copy of the GNU Lesser General Public License
 along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CAELUM_H
-#define CAELUM_H
+#ifndef CAELUMEXCEPTIONS_H
+#define CAELUMEXCEPTIONS_H
 
 #include "CaelumPrerequisites.h"
 
-#include "CaelumExceptions.h"
-#include "CaelumListener.h"
-#include "CaelumSystem.h"
-#include "CameraBoundElement.h"
-#include "GeometryFactory.h"
-#include "SkyColourModel.h"
-#include "SkyDome.h"
-#include "Sun.h"
-#include "LayeredClouds.h"
-#include "UniversalClock.h"
-#include "SolarSystemModel.h"
-#include "Astronomy.h"
+namespace caelum {
 
-#endif //CAELUM_H
+/** Exception class for unsupported features.
+ * @author Jesús Alonso Abad.
+ */
+class DllExport UnsupportedException : public Ogre::Exception {
+	public:
+		/** Constructor.
+		 */
+		UnsupportedException (int number, const Ogre::String &description, const Ogre::String &source, const char *file, long line)
+						: Ogre::Exception (number, description, source, "UnsupportedException", file, line) { }
+};
+
+} // namespace caelum
+
+#endif // CAELUMEXCEPTIONS_H

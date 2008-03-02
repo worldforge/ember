@@ -1,50 +1,101 @@
+/*
+This file is part of Caelum.
+See http://www.ogre3d.org/wiki/index.php/Caelum 
+
+Copyright (c) 2006-2008 Caelum team. See Contributors.txt for details.
+
+Caelum is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Caelum is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with Caelum. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "CaelumPrecompiled.h"
 #include "CaelumSystem.h"
 
 namespace caelum {
 
-CaelumSystem::CaelumSystem (Ogre::Root *root, 
-															Ogre::SceneManager *sceneMgr, 
-															bool manageResGroup, 
-															const Ogre::String &resGroupName, 
-															bool createSkyDome, bool createSun, bool createStarfield) {
+// Default resource group name is Caelum
+Ogre::String RESOURCE_GROUP_NAME = "Caelum";
+				
+CaelumSystem::CaelumSystem
+(
+    Ogre::Root *root, 
+	Ogre::SceneManager *sceneMgr, 
+	CaelumComponent componentsToCreate/* = CAELUM_COMPONENTS_DEFAULT*/, 
+	bool manageResGroup/* = true*/, 
+	const Ogre::String &resGroupName/* = RESOURCE_GROUP_NAME*/
+):
+    mCleanup(false)
+{
 	LOG ("Initialising Caelum system...");
 	mOgreRoot = root;
 	mSceneMgr = sceneMgr;
 
+	mCleanup = false;
 	RESOURCE_GROUP_NAME = resGroupName;
 
 	// Create resource group
 	if (manageResGroup) {
-		mManageResourceGroup = true;
-		Ogre::ResourceGroupManager::getSingleton ().createResourceGroup (RESOURCE_GROUP_NAME);
-		LOG (Ogre::String ("Created Caelum resource group (") + RESOURCE_GROUP_NAME + ")");
-	}
-	else
+		// Search for the resource group
+		Ogre::StringVector resGroups = Ogre::ResourceGroupManager::getSingleton ().getResourceGroups ();
+		Ogre::StringVector::iterator it = resGroups.begin (), iend = resGroups.end ();
+        while (it != iend && *it != resGroupName) {
+			++it;
+        }
+
+		if (it == iend) {
+			Ogre::ResourceGroupManager::getSingleton ().createResourceGroup (RESOURCE_GROUP_NAME);
+			mManageResourceGroup = true;
+			LOG (Ogre::String ("Created Caelum resource group (") + RESOURCE_GROUP_NAME + ")");
+		} else {
+			mManageResourceGroup = false;
+		}
+	} else {
 		mManageResourceGroup = false;
+	}
+
+	// Clock
+	mUniversalClock = new UniversalClock ();
 
 	// Set-up attributes
-	mUpdateRate = 0;
-	mTimeSinceLastUpdate = 0;
+	mManageSceneFog = false;
+	mGlobalFogDensityMultiplier = 1;
+	mSceneFogDensityMultiplier = 1;
+	mGroundFogDensityMultiplier = 1;
 
-	mTotalDayTime = 86396.0; // 23h59m56s
-	mTimeScale = 1.0f;
-	mLocalTime = 0.0f;
-	mRelativeTime = 0.0f;
-
-	mManageFog = false;
-
-	mSkyDome = 0;
-	mSun = 0;
-	mStarfield = 0;
 	LOG ("System attributes set up.");
 
-	// Create basic elements
-	if (createSkyDome)
-		this->createSkyDome ();
-	if (createSun)
-		this->createSun ();
-	if (createStarfield)
-		this->createStarfield ();
+	// Create default components; as requested.
+    if (componentsToCreate & CAELUM_COMPONENT_SKY_COLOUR_MODEL) {
+        this->setSkyColourModel (new SkyColourModel ());
+    }
+    if (componentsToCreate & CAELUM_COMPONENT_SKY_DOME) {
+		this->setSkyDome (new SkyDome (mSceneMgr));
+    }
+    if (componentsToCreate & CAELUM_COMPONENT_SOLAR_SYSTEM_MODEL) {
+        this->setSolarSystemModel (new SolarSystemModel ());
+    }
+    if (componentsToCreate & CAELUM_COMPONENT_SUN) {
+		this->setSun (new Sun (mSceneMgr));
+    }
+    if (componentsToCreate & CAELUM_COMPONENT_STARFIELD) {
+		this->setStarfield (new Starfield (mSceneMgr));
+    }
+    if (componentsToCreate & CAELUM_COMPONENT_CLOUDS) {
+		this->setClouds (new LayeredClouds (mSceneMgr));
+    }
+    if (componentsToCreate & CAELUM_COMPONENT_GROUND_FOG) {
+		this->setGroundFog (new GroundFog (mSceneMgr));
+    }
 
 	// Auto-register itself as a frame listener
 	mOgreRoot->addFrameListener (this);
@@ -53,6 +104,10 @@ CaelumSystem::CaelumSystem (Ogre::Root *root,
 }
 
 CaelumSystem::~CaelumSystem () {
+	LOG ("Caelum system destroyed.");
+}
+
+void CaelumSystem::shutdown (const bool cleanup) {
 	LOG ("Shutting down Caelum system...");
 	// Remove itself as a frame listener
 	mOgreRoot->removeFrameListener (this);
@@ -61,9 +116,18 @@ CaelumSystem::~CaelumSystem () {
 	mListeners.clear ();
 
 	// Destroy the elements
-	destroySkyDome ();
-	destroySun ();
-	destroyStarfield ();
+	setSkyDome (0);
+	setSun (0);
+	setStarfield (0);
+	setClouds (0);
+    setGroundFog (0);
+    setSkyColourModel (0);
+
+	// Destroy the clock
+	if (mUniversalClock) {
+		delete mUniversalClock;
+		mUniversalClock = 0;
+	}
 
 	// Remove resource group
 	if (mManageResourceGroup) {
@@ -71,7 +135,11 @@ CaelumSystem::~CaelumSystem () {
 		LOG ("Destroyed Caelum resource group");
 	}
 
-	LOG ("DONE");
+    if (cleanup) {
+		delete this;
+    } else {
+		mCleanup = true;
+    }
 }
 
 void CaelumSystem::addListener (CaelumListener *listener) {
@@ -85,207 +153,150 @@ void CaelumSystem::removeListener (CaelumListener *listener) {
 void CaelumSystem::preViewportUpdate (const Ogre::RenderTargetViewportEvent &e) {
 	Ogre::Camera *cam = e.source->getCamera ();
 	
-	if (mSkyDome) {
-		mSkyDome->notifyCameraChanged (cam);
+	if (getSkyDome ()) {
+		getSkyDome ()->notifyCameraChanged (cam);
 	}
 
-	if (mSun) {
-		mSun->notifyCameraChanged (cam);
+	if (getSun ()) {
+		getSun ()->notifyCameraChanged (cam);
 	}
 
-	if (mStarfield) {
-		mStarfield->notifyCameraChanged (cam);
+	if (getStarfield ()) {
+		getStarfield ()->notifyCameraChanged (cam);
 	}
+
+	if (getClouds ()) {
+		getClouds ()->notifyCameraChanged (cam);
+	}
+
+	if (getGroundFog ()) {
+		getGroundFog ()->notifyCameraChanged (cam);
+    }
 }
 
-void CaelumSystem::setUpdateRate (float rate) {
-	if (rate < 0)
-		rate = 0;
-
-	mUpdateRate = rate;
-
-	// Force an update when changing this
-	forceUpdate ();
+UniversalClock *CaelumSystem::getUniversalClock () const {
+	return mUniversalClock;
 }
-
-float CaelumSystem::getUpdateRate () {
-	return mUpdateRate;
-}
-
-void CaelumSystem::setTimeScale (const float scale) {
-	mTimeScale = scale;
-}
-
-float CaelumSystem::getTimeScale () const {
-	return mTimeScale;
-}
-
-void CaelumSystem::setLocalTime (const float time) {
-	mLocalTime = time;
-
-	// Force an update when changing this
-	forceUpdate ();
-}
-
-float CaelumSystem::getLocalTime () const {
-	return mLocalTime;
-}
-
-void CaelumSystem::setTotalDayTime (const float time) {
-	mTotalDayTime = time;
-
-	if (mTotalDayTime <= 0)
-		mTotalDayTime = 86396;	// 23h59m56s
-
-	// Force an update when changing this
-	forceUpdate ();
-}
-
-float CaelumSystem::getTotalDayTime () const {
-	return mTotalDayTime;
-}
-
+				
 bool CaelumSystem::frameStarted (const Ogre::FrameEvent &e) {
-	// Update local time
-	mLocalTime += e.timeSinceLastFrame * mTimeScale;
-	if (mLocalTime > mTotalDayTime) {
-		clampLocalTime ();
+	// First of all, check if a cleanup has been requested or not, and if so, self-destruction
+	if (mCleanup) {
+		delete this;
+		return true;
 	}
 
-	// Update only if required
-	mTimeSinceLastUpdate += (e.timeSinceLastFrame * Ogre::Math::Abs (mTimeScale)) / mTotalDayTime;
-	if (mTimeSinceLastUpdate > mUpdateRate) {
-		// Do it this way so we don't lose any seconds and the updates doesn't queue
-		if (mUpdateRate != 0)
-			mTimeSinceLastUpdate -= mUpdateRate * Ogre::Math::Floor (mTimeSinceLastUpdate / mUpdateRate);
-		else
-			mTimeSinceLastUpdate = 0;
-
-		mRelativeTime = mLocalTime / mTotalDayTime;
-
+	if (mUniversalClock->update (e.timeSinceLastFrame)) {
 		// Call every listener before doing anything
-		if (!fireStartedEvent (e))
+        if (!fireStartedEvent (e)) {
 			return false;
+        }
 
-		if (mSun) {
-			mSun->update (mRelativeTime);
+        // Get current julian day.
+        LongReal julDay = mUniversalClock->getJulianDay ();
+        LongReal relDayTime = fmod(julDay, 1);
+
+        // Get the sun's direction.
+        Ogre::Vector3 sunDir;
+        if (getSolarSystemModel ()) {
+            sunDir = getSolarSystemModel ()->getSunDirection(julDay);
+        } else {
+            sunDir = Ogre::Vector3::UNIT_Y;
+        }
+
+        // Update starfield
+		if (getStarfield ()) {
+			getStarfield ()->update (relDayTime);
 		}
 
-		if (mStarfield) {
-			mStarfield->update (mRelativeTime);
+        // Update skydome.
+		if (getSkyDome ()) {
+			getSkyDome ()->setSunDirection (sunDir);
 		}
 
-		if (mSkyDome) {
-			mSkyDome->updateSkyDomeMaterialTime (mSkyColourModel, mRelativeTime, mSun);
+        // Init various properties from sky colour model.
+        double fogDensity;
+        Ogre::ColourValue fogColour;
+        Ogre::ColourValue sunLightColour;
+        Ogre::ColourValue sunSphereColour;
+        if (getSkyColourModel ()) {
+            fogDensity = getSkyColourModel ()->getFogDensity (relDayTime, sunDir);
+            fogDensity *= mGlobalFogDensityMultiplier;
+            fogColour = mSkyColourModel->getFogColour (relDayTime, sunDir);
+            sunLightColour = getSkyColourModel ()->getSunLightColour (relDayTime, sunDir);
+            sunSphereColour = getSkyColourModel ()->getSunSphereColour (relDayTime, sunDir);
+        } else {
+            fogDensity = 0;
+            fogColour = Ogre::ColourValue::Black;
+            sunLightColour = sunSphereColour = Ogre::ColourValue::White;
+        }
 
-			mSkyDome->setSunDirection (mSun->getSunDirection ());
+        // Update scene fog.
+        if (getManageSceneFog ()) {
+			mSceneMgr->setFog (Ogre::FOG_EXP2,
+                    fogColour * 0.7,
+                    fogDensity * mSceneFogDensityMultiplier);
+        }
+
+        // Update ground fog.
+        if (getGroundFog ()) {
+			getGroundFog ()->setColour (fogColour);
+		    getGroundFog ()->setDensity (fogDensity * mGroundFogDensityMultiplier);
 		}
 
-		if (mManageFog) {
-			// TODO: Fog stuff here!!!
-			if (mSkyColourModel) {
-				mSceneMgr->setFog( Ogre::FOG_LINEAR, mSkyColourModel->getFogColour (mRelativeTime, mSun ? mSun->getSunDirection() : Ogre::Vector3::UNIT_Y) * 0.7, .001, 10, 600);
-/*				mSceneMgr->setFog (Ogre::FOG_EXP2,
-													mSkyColourModel->getFogColour (mRelativeTime, mSun ? mSun->getSunDirection() : Ogre::Vector3::UNIT_Y) * 0.7,
-													mSkyColourModel->getFogDensity (mRelativeTime, mSun ? mSun->getSunDirection() : Ogre::Vector3::UNIT_Y));*/
-			}
+        // Update sun
+		if (getSun () && getSkyColourModel ()) {
+			mSun->update (sunDir, sunLightColour, sunSphereColour);
 		}
 
-		if (mSun) {
-			if (mSkyColourModel)
-				mSun->setSunColour (mSkyColourModel->getSunColour (mRelativeTime, mSun->getSunDirection ()));
-			else
-				mSun->setSunColour (mSceneMgr->getFogColour ());
-		}
+        // Update clouds
+        if (getClouds()) {
+            mClouds->update (mUniversalClock->getJulianSecondDifference(),
+				    sunDir, sunLightColour, fogColour);
+	    }
 
 		// Call every listener before quiting
-		if (!fireFinishedEvent (e))
+        if (!fireFinishedEvent (e)) {
 			return false;
+        }
 	}
 
 	return true;
 }
 
-SkyDome *CaelumSystem::createSkyDome () {
-	if (!mSkyDome) {
-		mSkyDome = new SkyDome (mSceneMgr);
-		LOG ("Sky Dome created.");
-	}
-
-	return mSkyDome;
+void CaelumSystem::setManageSceneFog (bool value) {
+	mManageSceneFog = value;
+    // Prevent having some stale values around.
+    if (!value) {
+        mSceneMgr->setFog (Ogre::FOG_NONE);
+    }
 }
 
-SkyDome *CaelumSystem::getSkyDome () const {
-	return mSkyDome;
+bool CaelumSystem::getManageSceneFog () const {
+	return mManageSceneFog;
 }
 
-void CaelumSystem::destroySkyDome () {
-	if (mSkyDome) {
-		delete mSkyDome;
-		mSkyDome = 0;
-		LOG ("Sky Dome destroyed.");
-	}
+void CaelumSystem::setSceneFogDensityMultiplier (double value) {
+    mSceneFogDensityMultiplier = value;
 }
 
-Sun *CaelumSystem::createSun () {
-	if (!mSun) {
-		mSun = new Sun (mSceneMgr);
-		LOG ("Sun created.");
-	}
-
-	return mSun;
+double  CaelumSystem::getSceneFogDensityMultiplier () const {
+    return mSceneFogDensityMultiplier;
 }
 
-Sun *CaelumSystem::getSun () const {
-	return mSun;
+void CaelumSystem::setGroundFogDensityMultiplier (double value) {
+    mGroundFogDensityMultiplier = value;
 }
 
-void CaelumSystem::destroySun () {
-	if (mSun) {
-		delete mSun;
-		mSun = 0;
-		LOG ("Sun destroyed.");
-	}
+double  CaelumSystem::getGroundFogDensityMultiplier () const {
+    return mGroundFogDensityMultiplier;
 }
 
-Starfield *CaelumSystem::createStarfield (const Ogre::String &mapName) {
-	if (!mStarfield) {
-		mStarfield = new Starfield (mSceneMgr);
-		LOG ("Starfield created.");
-	}
-
-	mStarfield->updateMaterial (mapName);
-
-	return mStarfield;
+void CaelumSystem::setGlobalFogDensityMultiplier (double value) {
+    mGlobalFogDensityMultiplier = value;
 }
 
-Starfield *CaelumSystem::getStarfield () const {
-	return mStarfield;
-}
-
-void CaelumSystem::destroyStarfield () {
-	if (mStarfield) {
-		delete mStarfield;
-		mStarfield = 0;
-		LOG ("Starfield destroyed.");
-	}
-}
-
-void CaelumSystem::setSkyColourModel (SkyColourModel *model) {
-	mSkyColourModel = model;
-	if (mSkyDome) {
-		Ogre::TextureUnitState *temp = mSkyDome->getTextureUnitState ();
-		if (temp)
-			mSkyColourModel->setSkyGradientsTextureUnitState (temp);
-	}
-}
-
-void CaelumSystem::setManageFog (bool manage) {
-	mManageFog = manage;
-}
-
-bool CaelumSystem::isFogManaged () const {
-	return mManageFog;
+double  CaelumSystem::getGlobalFogDensityMultiplier () const {
+    return mGlobalFogDensityMultiplier;
 }
 
 bool CaelumSystem::fireStartedEvent (const Ogre::FrameEvent &e) {
@@ -316,21 +327,6 @@ bool CaelumSystem::fireFinishedEvent (const Ogre::FrameEvent &e) {
 	}
 
 	return flag;
-}
-
-void CaelumSystem::clampLocalTime () {
-	if (mLocalTime < 0) {
-		int ratio = (int )(mTotalDayTime / -mLocalTime);
-		mLocalTime += mTotalDayTime * ratio;
-	}
-	if (mLocalTime > mTotalDayTime) {
-		int ratio = (int )(mTotalDayTime / mLocalTime);
-		mLocalTime -= mTotalDayTime * ratio;
-	}
-}
-
-void CaelumSystem::forceUpdate () {
-	mTimeSinceLastUpdate = mUpdateRate + 1;
 }
 
 } // namespace caelum

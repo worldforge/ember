@@ -1,19 +1,63 @@
+/*
+This file is part of Caelum.
+See http://www.ogre3d.org/wiki/index.php/Caelum 
+
+Copyright (c) 2006-2007 Caelum team. See Contributors.txt for details.
+
+Caelum is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Caelum is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with Caelum. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef CAELUMSYSTEM_H
 #define CAELUMSYSTEM_H
 
 #include "CaelumPrerequisites.h"
 
+#include "UniversalClock.h"
 #include "CaelumListener.h"
 #include "SkyColourModel.h"
 #include "SkyDome.h"
 #include "Starfield.h"
+#include "LayeredClouds.h"
+#include "SolarSystemModel.h"
+#include "GroundFog.h"
 #include "Sun.h"
 
 namespace caelum {
 
 /** Root of the Caelum system.
-	This class is the root of the Caelum system.
-	@author JesÃºs Alonso Abad
+    
+    Caelum is built from several classes for different sky elements (the sun,
+    clouds, etc). Those classes know very little about each other and are 
+    connected through the main CaelumSystem class. This class is responsible
+    for tracking and updating sub-components. It "owns" all of the components,
+    using std::auto_ptr members.
+
+    The constructor will create a standard set of components but you can
+    disable some or change others. When you do something like setXxx(new Xxx())
+    CaelumSystem takes control of the object's lifetime.
+
+    This class is also reponsible for doing all per-frame and per-RenderTarget
+    updates. It's better to keep that logic here instead of coupling components
+    together.
+
+    It's difficult to build a CaelumSystem class which will work for any
+    combination of sky elements. It might be a good idea to have different
+    classes for vastly different sky systems. Alternatively the update logic
+    from Caelum could be refactor to only transfer a number of "common sky
+    parameter" around; but that is a lot harder and ultimately less flexible.
+
+	@author Jesús Alonso Abad
  */
 class DllExport CaelumSystem : public Ogre::FrameListener, public Ogre::RenderTargetListener {
 // Attributes -----------------------------------------------------------------
@@ -26,6 +70,10 @@ class DllExport CaelumSystem : public Ogre::FrameListener, public Ogre::RenderTa
 		 */
 		Ogre::SceneManager *mSceneMgr;
 
+		/** Cleanup requested flag.
+		 */
+		bool mCleanup;
+
 		/** Flag to let Caelum manage the creation and destruction of the resource group.
 		 */
 		bool mManageResourceGroup;
@@ -34,75 +82,108 @@ class DllExport CaelumSystem : public Ogre::FrameListener, public Ogre::RenderTa
 		 */
 		std::set<CaelumListener *> mListeners;
 
-		/** Updating rate.
-		 */
-		float mUpdateRate;
+		/// Reference to the universal clock.
+		UniversalClock *mUniversalClock;
 
-		/** Time since the last update.
-		 */
-		float mTimeSinceLastUpdate;
+        /// Flag to indicate if Caelum manages standard Ogre::Scene fog.
+		bool mManageSceneFog;
 
-		/** The time scale factor.
-		 */
-		float mTimeScale;
+        /// Global fog density multiplier.
+        double mGlobalFogDensityMultiplier;
 
-		/** The local time in seconds.
-		 */
-		float mLocalTime;
+        /// Scene fog density multiplier.
+        double mSceneFogDensityMultiplier;
 
-		/** The total day time in seconds.
-		 */
-		float mTotalDayTime;
+        /// Ground fog density multiplier.
+        double mGroundFogDensityMultiplier;
+		
+		/// Reference to the sky colour model, if enabled.
+        std::auto_ptr<SkyColourModel> mSkyColourModel;
+        
+		/// Reference to the sky dome, if enabled.
+        std::auto_ptr<SkyDome> mSkyDome;
 
-		/** The relative time, as a value in the range [0, 1], meaning the relation between the current 
-				time and the total day time.
-		 */
-		float mRelativeTime;
+		/// Reference to the solar system model, if enabled.
+        std::auto_ptr<SolarSystemModel> mSolarSystemModel;
+        
+		/// Reference to the sun, if enabled.
+        std::auto_ptr<Sun> mSun;
 
-		/** The sky dome.
-		 */
-		SkyDome *mSkyDome;
+		/// Reference to the starfield, if enabled.
+        std::auto_ptr<Starfield> mStarfield;
 
-		/** Reference to the sky colour model in use.
-		 */
-		SkyColourModel *mSkyColourModel;
+		/// Reference to the clouds, if enabled.
+        std::auto_ptr<LayeredClouds> mClouds;
 
-		/** Flag to indicate if Caelum should manage the fog or not.
-		 */
-		bool mManageFog;
-
-		/** Reference to the sun.
-		 */
-		Sun *mSun;
-
-		/** Reference to the starfield.
-		 */
-		Starfield *mStarfield;
+		/// Reference to ground fog, if enabled.
+        std::auto_ptr<GroundFog> mGroundFog;
 
 // Methods --------------------------------------------------------------------
 	public:
+        /** Flags enumeration for caelum components.
+         *  This is an enumeration for the components to create by default in
+         *  Caelum's constructor. You can still pass 0 and create everything
+         *  by hand.
+         * 
+         *  CaelumSystem's constructor used to take a number of bools but now
+         *  there are too many components and this is nicer.
+         * 
+         *  CAELUM_COMPONENT_ members are for individual components.
+         *  CAELUM_COMPONENTS_ are standard bitmasks.
+         *  CAELUM_COMPONENTS_DEFAULT picks elements that don't require
+         *  modifications to external materials (right now it excludes ground fog).
+         */
+        enum CaelumComponent
+        {
+            CAELUM_COMPONENT_SKY_COLOUR_MODEL   = 1 << 0,
+            CAELUM_COMPONENT_SKY_DOME           = 1 << 1,
+            CAELUM_COMPONENT_SOLAR_SYSTEM_MODEL = 1 << 2,
+            CAELUM_COMPONENT_SUN                = 1 << 3,
+            // TODO: CAELUM_COMPONENT_MOON      = 1 << 4,
+            CAELUM_COMPONENT_STARFIELD          = 1 << 5,
+            CAELUM_COMPONENT_CLOUDS             = 1 << 6,
+
+            // These have nasty dependencies on materials.
+            CAELUM_COMPONENT_GROUND_FOG         = 1 << (16 + 0),
+            // TODO: CAELUM_COMPONENT_HAZE      = 1 << (16 + 1),
+
+            CAELUM_COMPONENTS_NONE              = 0x00000000,
+            CAELUM_COMPONENTS_DEFAULT           = 0x0000007F,
+            CAELUM_COMPONENTS_ALL               = 0x0002007F,
+        };
+    
 		/** Constructor.
 			Registers itself in the Ogre engine and initialises the system.
-			@param root The Ogre rool.
-			@param sceneMgr The Ogre scene manager.
-			@param manageResGroup Tells the system if the resource group has been created externally (true) or if it's to be managed by the system.
-			@param resGroupName The resource group name, if it's desired to use an existing one or just a different name.
-			@param createSkyDome Whether if the sky dome should be created or not.
-			@param createSun Whether if the sun should be created or not.
-			@param createStarfield Whether if the starfield should be created or not.
+            It can also initialize a bunch of default components.
+
+			@param root The Ogre root.
+			@param scene The Ogre scene manager.
+            @param compoment The components to create.
+			@param manageResGroup Tells the system if the resource group has
+            been created externally (true) or if it's to be managed by the system.
+			@param resGroupName The resource group name, if it's desired to
+            use an existing one or just a different name.
 		 */
-		CaelumSystem (Ogre::Root *root, 
-										Ogre::SceneManager *sceneMgr, 
-										bool manageResGroup = true, 
-										const Ogre::String &resGroupName = RESOURCE_GROUP_NAME,
-										bool createSkyDome = true, bool createSun = true, bool createStarfield = true);
+		CaelumSystem (
+                Ogre::Root *root, 
+				Ogre::SceneManager *sceneMgr, 
+				CaelumComponent componentsToCreate = CAELUM_COMPONENTS_DEFAULT, 
+				bool manageResGroup = true, 
+				const Ogre::String &resGroupName = RESOURCE_GROUP_NAME
+        );
 
 		/** Destructor.
-			Shuts down the system and detaches itself from the Ogre engine.
-			@remarks The model used in this system <b>won't be deleted here</b>.
 		 */
 		~CaelumSystem ();
 
+		/** Shuts down the system and detaches itself from the Ogre engine.
+			@param cleanup True if we want the shutdown to also delete the system. It's dangerous if 
+				it's intended to be rendered another frame later on, and thus turned off by default.
+			@remarks The model used in this system <b>won't be deleted here</b>.
+			This is the shutdown function to be called, and not the destructor itself.
+		 */
+		void shutdown (const bool cleanup = false);
+		
 		/** Registers a listener in the system.
 			This listener will be called each frame, before and after Caelum does its work.
 			@param listener The listener to register.
@@ -121,117 +202,161 @@ class DllExport CaelumSystem : public Ogre::FrameListener, public Ogre::RenderTa
 		 */
 		void preViewportUpdate (const Ogre::RenderTargetViewportEvent &e);
 
-		/** Sets the updating rate.
-			Allows to tell how much <b>relative daytime [0, 1]</b> can pass without being updated. 
-			For instance, in a 24hrs day, setting an update rate of 1/24 means that Caelum will update its state each hour. 
-			@param rate The updating rate.
+		/** Gets the universal clock.
+		 * @return A reference to the universal clock attached to this system.
 		 */
-		void setUpdateRate (float rate);
-
-		/** Gets the updating rate.
-			@return The updating rate.
-		 */
-		float getUpdateRate ();
-
-		/** Sets the time scale.
-			This scale will determine at which speed the time will advance, relative to the real time.
-			@param scale The time scale.
-		 */
-		void setTimeScale (const float scale);
-
-		/** Gets the time scale.
-			@return The time scale.
-		 */
-		float getTimeScale () const;
-
-		/** Sets the local time.
-			@param time The local time in seconds.
-		 */
-		void setLocalTime (const float time);
-
-		/** Gets the local time.
-			@return The local time in seconds.
-		 */
-		float getLocalTime () const;
-
-		/** Sets the total day time.
-			By default the total day time is stablished as 23h 59m 56s.
-			@param time The total day time in seconds (values lesser or equal than 0 will be set to the
-				default day time).
-		 */
-		void setTotalDayTime (const float time);
-
-		/** Gets the total day time.
-			@return The total day time in seconds.
-		 */
-		float getTotalDayTime () const;
-
+		UniversalClock *getUniversalClock () const;
+		
 		/** Updates the system.
 			@param e The frame event (contains the elapsed time since the last update).
 		 */
 		bool frameStarted (const Ogre::FrameEvent &e);
 
-		/** Creates the sky dome, or returns the existing one if any yet.
+		/** Set the skydome.
+         *  @param dome A new dome or null to disable.
 		 */
-		SkyDome *createSkyDome ();
+        inline void setSkyDome (SkyDome *dome) {
+            mSkyDome.reset(dome);
+        }
 
 		/** Returns the current sky dome.
-			@return The current sky dome.
 		 */
-		SkyDome *getSkyDome () const;
+        SkyDome *getSkyDome () const {
+            return mSkyDome.get();
+        }
 
-		/** Destroys the sky dome.
-			@remarks Remember to detach the sky dome from every viewport it is attached to before destroying it!
+		/** Set the sun.
+         *  @param sun A new sun or null to disable.
 		 */
-		void destroySkyDome ();
-
-
-		/** Creates the sun.
-			@return The sun.
-		 */
-		Sun *createSun ();
+        inline void setSun (Sun* sun) {
+            mSun.reset(sun);
+        }
 
 		/** Gets the current sun.
 			@return The sun in use.
 		 */
-		Sun *getSun () const;
+        Sun* getSun () const {
+            return mSun.get();
+        }
 
-		/** Destroys the sun.
-		 */
-		void destroySun ();
+		/** Set the starfield.
+         *  @param starfield A new starfield or null to disable.
+         */
+        inline void setStarfield (Starfield* starfield) {
+            mStarfield.reset(starfield);
+        }
 
-		/** Create the starfield.
-			@note Returns the existing one if there's one already in use.
-			@note The old texture will be replaced by the passed one.
-			@param mapName Name of the starfield texture bitmap.
-			@return The new or current starfield.
-		 */
-		Starfield *createStarfield (const Ogre::String &mapName = "Starfield.jpg");
+		/** Gets the current starfield.
+         */
+        inline Starfield* getStarfield () const {
+            return mStarfield.get();
+        }
 
-		/** Gets the starfield.
-			@return The starfield.
-		 */
-		Starfield *getStarfield () const;
+		/** Set the cloud system
+         *  @param clouds A new cloud system or null to disable.
+         */
+        inline void setClouds (LayeredClouds* clouds) {
+            mClouds.reset(clouds);
+        }
 
-		/** Destroys the current starfield.
-			@remark Remember to detach it from every viewport before deleting!
-		 */
-		void destroyStarfield ();
+		/** Get the current cloud system.
+         */
+        inline LayeredClouds* getClouds () const {
+            return mClouds.get();
+        }
 
 		/** Sets the sky colour model to be used.
-			@param model The sky colour model.
+		 *	@param model The sky colour model, or null to disable
 		 */
-		void setSkyColourModel (SkyColourModel *model);
+        inline void setSkyColourModel (SkyColourModel *model) {
+            mSkyColourModel.reset(model);
+        }
 
-		/** Enables/disables the Caelum fog management.
-			@param manage True if you want Caelum to manage the fog for you.
+		/** Get the current sky colour model.
 		 */
-		void setManageFog (bool manage);
+        inline SkyColourModel* getSkyColourModel () const {
+            return mSkyColourModel.get();
+        }
+
+		/// Set the solar system model to use, or null to disable.
+        inline void setSolarSystemModel (SolarSystemModel *model) {
+            mSolarSystemModel.reset(model);
+        }
+
+		/// Set the current solar system model.
+        inline SolarSystemModel* getSolarSystemModel () const {
+            return mSolarSystemModel.get();
+        }
+
+		/** Sets ground fog system.
+		 *	@param model The sky colour model, or null to disable
+		 */
+        inline void setGroundFog (GroundFog *model) {
+            mGroundFog.reset(model);
+        }
+
+		/** Get ground fog; if any.
+		 */
+        inline GroundFog* getGroundFog () const {
+            return mGroundFog.get();
+        }
+
+		/** Enables/disables Caelum managing standard Ogre::Scene fog.
+            This makes CaelumSystem control standard Ogre::Scene fogging. It
+            will use EXP2 fog with density from SkyColourModel.
+
+            Fog density multipliers are used; final scene fog density is:
+            SceneMultiplier * GlobalMultiplier * SkyColourModel.GetFogDensity
+
+            When this is set to false it also disables all scene fog (but you
+            control it afterwards).
+
+            @param value New value
+		 */
+		void setManageSceneFog (bool value);
 
 		/** Tells if Caelum is managing the fog or not.
-			@return True if Caelum manages the fog.
+			@return The value set in setManageSceneFog.
 		 */
-		bool isFogManaged () const;
+		bool getManageSceneFog () const;
+
+        /** Multiplier for scene fog density (default 1).
+            This is an additional multiplier for Ogre::Scene fog density.
+            This has no effect if getManagerSceneFog is false.
+
+            Final scene fog density is:
+            SceneMultiplier * GlobalMultiplier * SkyColourModel.GetFogDensity
+         */
+        void setSceneFogDensityMultiplier (double value);
+
+        /** Get the value set by setSceneFogDensityMultiplier.
+         */
+        double getSceneFogDensityMultiplier () const;
+
+        /** Multiplier for ground fog density (default 1).
+            This is an additional multiplier for Caelum::GroundFog density.
+            This has no effect if GroundFog is not used.
+
+            Final ground fog density is:
+            GroundFogMultipler * GlobalMultiplier * SkyColourModel.GetFogDensity
+         */
+        void setGroundFogDensityMultiplier (double value);
+
+        /** Get the value set by setGroundFogDensityMultiplier.
+         */
+        double getGroundFogDensityMultiplier () const;
+
+        /** Multiplier for global fog density (default 1).
+            This is an additional multiplier for fog density as received from
+            SkyColourModel. There are other multipliers you can tweak for
+            individual kinds of fog; but this is what you should change from
+            whatever "game logic" you might have.
+         */
+        void setGlobalFogDensityMultiplier (double value);
+
+        /** Get the value set by setSceneFogDensityMultiplier.
+         */
+        double getGlobalFogDensityMultiplier () const;
 
 	private:
 		/** Fires the start event to all the registered listeners.
@@ -245,14 +370,6 @@ class DllExport CaelumSystem : public Ogre::FrameListener, public Ogre::RenderTa
 			@return True if all the listeners returned true.
 		 */
 		bool fireFinishedEvent (const Ogre::FrameEvent &e);
-
-		/** Clamps the local day time to the total day time range.
-		 */
-		void clampLocalTime ();
-
-		/** Forces an update.
-		 */
-		void forceUpdate ();
 };
 
 } // namespace caelum

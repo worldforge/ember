@@ -1,9 +1,29 @@
+/*
+This file is part of Caelum.
+See http://www.ogre3d.org/wiki/index.php/Caelum 
+
+Copyright (c) 2006-2007 Caelum team. See Contributors.txt for details.
+
+Caelum is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Caelum is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with Caelum. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "CaelumPrecompiled.h"
 #include "GeometryFactory.h"
-#include "CaelumSystem.h"
 
 namespace caelum {
 
-void GeometryFactory::generateSphericDome (const Ogre::String &name, const unsigned int segments, DomeType type) {
+void GeometryFactory::generateSphericDome (const Ogre::String &name, int segments, DomeType type) {
 	// Return now if already exists
 	if (Ogre::MeshManager::getSingleton ().resourceExists (name))
 		return;
@@ -86,16 +106,16 @@ void GeometryFactory::generateSphericDome (const Ogre::String &name, const unsig
 	LOG ("DONE");
 }
 
-void GeometryFactory::fillGradientsDomeBuffers (float *pVertex, unsigned short *pIndices, unsigned int segments) {
+void GeometryFactory::fillGradientsDomeBuffers (float *pVertex, unsigned short *pIndices, int segments) {
 	const float deltaLatitude = Ogre::Math::PI / (float )segments;
 	const float deltaLongitude = Ogre::Math::PI * 2.0 / (float )segments;
 
 	// Generate the rings
-	for (unsigned int i = 1; i < segments; i++) {
+	for (int i = 1; i < segments; i++) {
 		float r0 = Ogre::Math::Sin (Ogre::Radian (i * deltaLatitude));
 		float y0 = Ogre::Math::Cos (Ogre::Radian (i * deltaLatitude));
 
-		for (unsigned int j = 0; j < segments; j++) {
+		for (int j = 0; j < segments; j++) {
 			float x0 = r0 * Ogre::Math::Sin (Ogre::Radian (j * deltaLongitude));
 			float z0 = r0 * Ogre::Math::Cos (Ogre::Radian (j * deltaLongitude));
 
@@ -133,8 +153,8 @@ void GeometryFactory::fillGradientsDomeBuffers (float *pVertex, unsigned short *
 	*pVertex++ = 2;
 
 	// Generate the mid segments
-	for (unsigned int i = 0; i < segments - 2; i++) {
-		for (unsigned int j = 0; j < segments; j++) {
+	for (int i = 0; i < segments - 2; i++) {
+		for (int j = 0; j < segments; j++) {
 			*pIndices++ = segments * i + j;
 			*pIndices++ = segments * i + (j + 1) % segments;
 			*pIndices++ = segments * (i + 1) + (j + 1) % segments;
@@ -145,30 +165,30 @@ void GeometryFactory::fillGradientsDomeBuffers (float *pVertex, unsigned short *
 	}
 
 	// Generate the upper cap
-	for (unsigned int i = 0; i < segments; i++) {
+	for (int i = 0; i < segments; i++) {
 		*pIndices++ = segments * (segments - 1);
 		*pIndices++ = (i + 1) % segments;
 		*pIndices++ = i;
 	}
 
 	// Generate the lower cap
-	for (unsigned int i = 0; i < segments; i++) {
+	for (int i = 0; i < segments; i++) {
 		*pIndices++ = segments * (segments - 1) + 1;
 		*pIndices++ = segments * (segments - 2) + i;
 		*pIndices++ = segments * (segments - 2) + (i + 1) % segments;
 	}
 }
 
-void GeometryFactory::fillStarfieldDomeBuffers (float *pVertex, unsigned short *pIndices, unsigned int segments) {
+void GeometryFactory::fillStarfieldDomeBuffers (float *pVertex, unsigned short *pIndices, int segments) {
 	const float deltaLatitude = Ogre::Math::PI / (float )segments;
 	const float deltaLongitude = Ogre::Math::PI * 2.0 / (float )segments;
 
 	// Generate the rings
-	for (unsigned int i = 0; i <= segments; i++) {
+	for (int i = 0; i <= segments; i++) {
 		float r0 = Ogre::Math::Sin (Ogre::Radian (i * deltaLatitude));
 		float y0 = Ogre::Math::Cos (Ogre::Radian (i * deltaLatitude));
 
-		for (unsigned int j = 0; j <= segments; j++) {
+		for (int j = 0; j <= segments; j++) {
 			float x0 = r0 * Ogre::Math::Sin (Ogre::Radian (j * deltaLongitude));
 			float z0 = r0 * Ogre::Math::Cos (Ogre::Radian (j * deltaLongitude));
 
@@ -186,8 +206,8 @@ void GeometryFactory::fillStarfieldDomeBuffers (float *pVertex, unsigned short *
 	}
 
 	// Generate the mid segments
-	for (unsigned int i = 0; i <= segments; i++) {
-		for (unsigned int j = 0; j < segments; j++) {
+	for (int i = 0; i <= segments; i++) {
+		for (int j = 0; j < segments; j++) {
 			*pIndices++ = segments * i + j;
 			*pIndices++ = segments * i + (j + 1) % segments;
 			*pIndices++ = segments * (i + 1) + (j + 1) % segments;
