@@ -466,7 +466,7 @@ void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act)
 	const std::string& name = *I;
 	std::string message = getName() + " performs a " + name + ".";
 	
-	Ember::ConsoleBackend::getMainConsole()->pushMessage(message);
+	Ember::ConsoleBackend::getSingletonPtr()->pushMessage(message);
 	
 	S_LOG_VERBOSE( "Entity: " << this->getId() << " (" << this->getName() << ") action: " << name);
 	Entity::onAction(act);
@@ -478,7 +478,7 @@ void EmberEntity::onImaginary(const Atlas::Objects::Root& act)
     if (act->copyAttr("description", attr) && attr.isString()) {
 		std::string message = getName() + " " + attr.asString() + ".";
 		
-		Ember::ConsoleBackend::getMainConsole()->pushMessage(message);
+		Ember::ConsoleBackend::getSingletonPtr()->pushMessage(message);
 			
 		S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") imaginary: " << attr.String());
     }

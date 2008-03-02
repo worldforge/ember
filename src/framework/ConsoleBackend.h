@@ -1,5 +1,6 @@
 /*
  Copyright (C) 2002  Martin Pollard, Simon
+ Copyright (C) 2005 Erik Hjortsberg <erik.hjortsberg@iteam.se>
 	
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -21,12 +22,11 @@
 
 // Included headers from the current project
 #include "ConsoleObject.h"
-#include "Tokeniser.h"
 
 // Included custom library headers
 
 #include <sigc++/signal.h>
-#include <sigc++/object_slot.h>
+// #include <sigc++/object_slot.h>
 
 // Included system headers
 #include <deque>
@@ -34,6 +34,8 @@
 #include <map>
 #include <set>
 #include <string>
+
+#include "framework/Singleton.h"
 
 namespace Ember {
 
@@ -61,7 +63,7 @@ namespace Ember {
  *
  */
 
-class ConsoleBackend : public ConsoleObject
+class ConsoleBackend : public ConsoleObject, public Ember::Singleton<ConsoleBackend>
 {
     //======================================================================
     // Inner Classes, Typedefs, and Enums
@@ -96,11 +98,6 @@ class ConsoleBackend : public ConsoleObject
     // Private Variables
     //======================================================================/
     private:
-
-    /**
-     * Instance variable for singleton main Ember console.
-     */
-    static ConsoleBackend* theMainConsole;
 
     /**
      * Mapping of registered commands to associated object.
@@ -162,11 +159,6 @@ class ConsoleBackend : public ConsoleObject
 
     //----------------------------------------------------------------------
     // Getters
-
-    /**
-     * Gets an instance of the main Ember console
-     */
-    inline static ConsoleBackend* getMainConsole();
 
     inline const std::list<std::string>& getConsoleMessages() const;
 
@@ -266,13 +258,6 @@ class ConsoleBackend : public ConsoleObject
 
 
 }; // End of ConsoleBackend
-
-ConsoleBackend* ConsoleBackend::getMainConsole()
-{
-	if ( !theMainConsole )
-	theMainConsole = new ConsoleBackend();
-	return theMainConsole;
-}
 
 const std::list<std::string>& ConsoleBackend::getConsoleMessages() const
 {

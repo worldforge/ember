@@ -78,7 +78,7 @@ void EntityMoveManager::runCommand(const std::string &command, const std::string
 				startMove(entity);
 			}
 		} else {
-			Ember::ConsoleBackend::getMainConsole()->pushMessage("You must specifify a valid entity id to move.");
+			Ember::ConsoleBackend::getSingletonPtr()->pushMessage("You must specifify a valid entity id to move.");
 		}
 		
 	}

@@ -648,9 +648,9 @@ void AvatarCamera::takeScreenshot()
 	try {
 		const std::string& result = _takeScreenshot();
 		S_LOG_INFO(result);
-		Ember::ConsoleBackend::getMainConsole()->pushMessage("Wrote image: " + result);
+		Ember::ConsoleBackend::getSingletonPtr()->pushMessage("Wrote image: " + result);
 	} catch (const Ember::Exception& ex) {
-		Ember::ConsoleBackend::getMainConsole()->pushMessage("Error when saving screenshot: " + ex.getError());
+		Ember::ConsoleBackend::getSingletonPtr()->pushMessage("Error when saving screenshot: " + ex.getError());
 	}
 }
 

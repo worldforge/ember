@@ -345,7 +345,7 @@ void ConnectedAdapter::say(const std::string &message)
 		
 		std::string msg;
 		msg = "Saying: [" + message + "]. ";
-		ConsoleBackend::getMainConsole()->pushMessage(msg);
+		ConsoleBackend::getSingletonPtr()->pushMessage(msg);
 		S_LOG_VERBOSE( msg);
 	}
 	catch (const Eris::BaseException& except)

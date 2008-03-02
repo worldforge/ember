@@ -33,7 +33,13 @@ class ConsoleBackend
     /**
      * Gets an instance of the main Ember console
      */
-    static Ember::ConsoleBackend* getMainConsole();
+    static Ember::ConsoleBackend* getSingletonPtr();
+
+    /**
+     * Gets an instance of the main Ember console
+     */
+    static Ember::ConsoleBackend& getSingleton();
+
 
     /**
      * This is the method the determines what object the pass the command onto

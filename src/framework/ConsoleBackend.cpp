@@ -1,5 +1,6 @@
 /*
     Copyright (C) 2002  Martin Pollard (Xmp), Simon Goodall
+    Copyright (C) 2005 Erik Hjortsberg <erik.hjortsberg@iteam.se>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,6 +28,7 @@
 
 #include "ConsoleBackend.h"
 #include "services/logging/LoggingService.h"
+#include "Tokeniser.h"
 
 #include <sstream>
 
@@ -35,8 +37,8 @@ namespace Ember {
 // List of ConsoleBackend's console commands
 const char * const ConsoleBackend::LIST_CONSOLE_COMMANDS = "list_commands";
 const unsigned int ConsoleBackend::MAX_MESSAGES = 7;
+template<> Ember::ConsoleBackend* Ember::Singleton<Ember::ConsoleBackend>::ms_Singleton = 0;
 
-Ember::ConsoleBackend *Ember::ConsoleBackend::theMainConsole = 0;
 
 ConsoleBackend::ConsoleBackend(void) :
 	myRegisteredCommands(ConsoleObjectEntryStore()),
@@ -99,13 +101,13 @@ const std::string& ConsoleBackend::getHistoryString()
 
 
 void ConsoleBackend::pushMessage(const std::string &message) {
-  //only save message if onGotMessage returns true
-  if (!onGotMessage(message)) {
-  // If we have reached our message limit, remove the oldest message
-	if (myConsoleMessages.size() >= MAX_MESSAGES)
-	myConsoleMessages.erase(myConsoleMessages.begin());
-	myConsoleMessages.push_back(message);
-  }
+	//only save message if onGotMessage returns true
+	if (!onGotMessage(message)) {
+	// If we have reached our message limit, remove the oldest message
+		if (myConsoleMessages.size() >= MAX_MESSAGES)
+		myConsoleMessages.erase(myConsoleMessages.begin());
+		myConsoleMessages.push_back(message);
+	}
 }
 
 bool ConsoleBackend::onGotMessage(const std::string &message)
@@ -135,70 +137,70 @@ void ConsoleBackend::deregisterCommand(const std::string &command)
 {
 	S_LOG_INFO("Deregistering: " << command);
 
-  // Delete from the map
-  myRegisteredCommands.erase(myRegisteredCommands.find(command));
+	// Delete from the map
+	myRegisteredCommands.erase(myRegisteredCommands.find(command));
 }
 
 void ConsoleBackend::runCommand(const std::string &command, bool addToHistory)
 {
-  if (command.empty()) return; // Ignore empty string
-
-  // Grab first character of command string
-  char c = command.c_str()[0];
-
-  // Check to see if command is a command, or a speech string
-  if ((c != '/' && c != '+' && c != '-')) {
-    // Its a speech string, so SAY it
-    // FIXME /say is not always available!
-    runCommand(std::string("/say ") + command, addToHistory);
-    return; 
-  }
-
-  // If command has a leading /, remove it
-  std::string command_string = (c == '/')? command.substr(1) : command;
-
-  // Split string into command / arguments pair
-  Tokeniser tokeniser = Tokeniser();
-  tokeniser.initTokens(command_string);
-  std::string cmd = tokeniser.nextToken();
-  std::string args = tokeniser.remainingTokens();
-
-  //Grab object registered to the command
-  ConsoleObjectEntryStore::iterator I = myRegisteredCommands.find(cmd);
-  
-  // Print all commands to the console
-  // pushMessage(command_string);
-
-	if (addToHistory) {
-		mHistory.push_front(command);
-		mHistoryPosition = 0;
+	if (command.empty()) return; // Ignore empty string
+	
+	// Grab first character of command string
+	char c = command.c_str()[0];
+	
+	// Check to see if command is a command, or a speech string
+	if ((c != '/' && c != '+' && c != '-')) {
+		// Its a speech string, so SAY it
+		// FIXME /say is not always available!
+		runCommand(std::string("/say ") + command, addToHistory);
+		return; 
 	}
-  // If object exists, run the command
-	if (I != myRegisteredCommands.end() && I->second.Object != 0) {
-		I->second.Object->runCommand(cmd, args);
+	
+	// If command has a leading /, remove it
+	std::string command_string = (c == '/')? command.substr(1) : command;
+	
+	// Split string into command / arguments pair
+	Tokeniser tokeniser = Tokeniser();
+	tokeniser.initTokens(command_string);
+	std::string cmd = tokeniser.nextToken();
+	std::string args = tokeniser.remainingTokens();
+	
+	//Grab object registered to the command
+	ConsoleObjectEntryStore::iterator I = myRegisteredCommands.find(cmd);
+	
+	// Print all commands to the console
+	// pushMessage(command_string);
+	
+		if (addToHistory) {
+			mHistory.push_front(command);
+			mHistoryPosition = 0;
+		}
+	// If object exists, run the command
+		if (I != myRegisteredCommands.end() && I->second.Object != 0) {
+			I->second.Object->runCommand(cmd, args);
+		}
+	else { // Else print error message
+		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Unknown command:"<<command<< ENDM;
+		pushMessage(std::string("Unknown command ") + command);
 	}
-  else { // Else print error message
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Unknown command:"<<command<< ENDM;
-    pushMessage(std::string("Unknown command ") + command);
-  }
 }
 
 void ConsoleBackend::runCommand(const std::string &command, const std::string &args)
 {
-  std::ostringstream temp;
-
-  // This commands prints all currently registers commands to the Log File
-  if (command == LIST_CONSOLE_COMMANDS) {
-    for (ConsoleObjectEntryStore::const_iterator I = myRegisteredCommands.begin(); I != myRegisteredCommands.end(); I++) {
-      // TODO - should we check to see if I->second is valid?
-      temp << I->first<< " : " << I->second.Description << std::endl;
-    }
-  }
-
-  S_LOG_VERBOSE(temp.str());
-  temp<< std::ends;
-
-  pushMessage(temp.str());
+	std::ostringstream temp;
+	
+	// This commands prints all currently registers commands to the Log File
+	if (command == LIST_CONSOLE_COMMANDS) {
+		for (ConsoleObjectEntryStore::const_iterator I = myRegisteredCommands.begin(); I != myRegisteredCommands.end(); I++) {
+		// TODO - should we check to see if I->second is valid?
+		temp << I->first<< " : " << I->second.Description << std::endl;
+		}
+	}
+	
+	S_LOG_VERBOSE(temp.str());
+	temp<< std::ends;
+	
+	pushMessage(temp.str());
 }
 
 const std::set< std::string > & ConsoleBackend::getPrefixes(const std::string & prefix) const

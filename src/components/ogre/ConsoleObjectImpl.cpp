@@ -54,7 +54,7 @@ ConsoleObjectImpl::~ConsoleObjectImpl()
 void ConsoleObjectImpl::runCommand(const std::string &command, const std::string &args)
 {
 	if(command == Quit.getCommand()) {
-		Ember::ConsoleBackend::getMainConsole()->pushMessage("Bye");
+		Ember::ConsoleBackend::getSingletonPtr()->pushMessage("Bye");
 		quit();
 	} else if (ToggleErisPolling == command){
 		Ember::Application::getSingleton().setErisPolling(!Ember::Application::getSingleton().getErisPolling());

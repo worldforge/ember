@@ -74,7 +74,7 @@ MakeEntityWidget::MakeEntityWidget()
  : Widget(), CreateEntity("createentity", this, "Create an entity."), Make("make", this, "Create an entity."), mIsReady(false), mModelPreviewRenderer(0)
 {
 
-	Ember::ConsoleBackend::getMainConsole()->registerCommand("testarea",this);
+	Ember::ConsoleBackend::getSingletonPtr()->registerCommand("testarea",this);
 
 }
 

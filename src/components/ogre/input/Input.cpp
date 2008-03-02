@@ -95,8 +95,8 @@ void Input::initialize(int width, int height)
 		S_LOG_FAILURE("Couldn't init clipboard: \n" << SDL_GetError());
 	}
 	
-	Ember::ConsoleBackend::getMainConsole()->registerCommand(BINDCOMMAND,this);
-	Ember::ConsoleBackend::getMainConsole()->registerCommand(UNBINDCOMMAND,this);
+	Ember::ConsoleBackend::getSingletonPtr()->registerCommand(BINDCOMMAND,this);
+	Ember::ConsoleBackend::getSingletonPtr()->registerCommand(UNBINDCOMMAND,this);
 	
 	setGeometry(width, height);
 	

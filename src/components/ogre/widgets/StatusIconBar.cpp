@@ -119,13 +119,13 @@ void StatusIconBar::buildWidget()
 
 bool StatusIconBar::help_MouseClick(const EventArgs& args)
 {
-	Ember::ConsoleBackend::getMainConsole()->runCommand("/help");
+	Ember::ConsoleBackend::getSingletonPtr()->runCommand("/help");
 	return true;
 }
 
 bool StatusIconBar::close_MouseClick(const EventArgs& args)
 {
-	Ember::ConsoleBackend::getMainConsole()->runCommand("/softquit");
+	Ember::ConsoleBackend::getSingletonPtr()->runCommand("/softquit");
 	return true;
 }
 

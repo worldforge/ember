@@ -169,10 +169,10 @@ namespace Ember
 
 		// Register service commands with the console
 		S_LOG_VERBOSE("Registering Sound Service commands");
-		ConsoleBackend::getMainConsole()->registerCommand(PLAYSOUND,this);
-		ConsoleBackend::getMainConsole()->registerCommand(PLAYMUSIC,this);
-		ConsoleBackend::getMainConsole()->registerCommand(PLAYFILE,this);
-		ConsoleBackend::getMainConsole()->registerCommand(PLAYSPEECH,this);
+		ConsoleBackend::getSingletonPtr()->registerCommand(PLAYSOUND,this);
+		ConsoleBackend::getSingletonPtr()->registerCommand(PLAYMUSIC,this);
+		ConsoleBackend::getSingletonPtr()->registerCommand(PLAYFILE,this);
+		ConsoleBackend::getSingletonPtr()->registerCommand(PLAYSPEECH,this);
 
 		// Service initialized successfully
 		setRunning( true );

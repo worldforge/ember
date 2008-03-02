@@ -59,24 +59,24 @@ namespace Ember {
       myLobby->Disappearance.connect(sigc::mem_fun(*this,&OOGChat::disappearance));
 //      myLobby->Changed.connect(SigC::bind(SigC::slot(*this,&OOGChat::changed),myLobby));
 
-/*      ConsoleBackend::getMainConsole()->registerCommand( CMD_TALK, this );
-      ConsoleBackend::getMainConsole()->registerCommand( CMD_EMOTE, this );
-      ConsoleBackend::getMainConsole()->registerCommand( CMD_ME, this );
-      ConsoleBackend::getMainConsole()->registerCommand( CMD_JOIN, this );
-      ConsoleBackend::getMainConsole()->registerCommand( CMD_PART, this );
-      ConsoleBackend::getMainConsole()->registerCommand( CMD_MSG, this );*/
+/*      ConsoleBackend::getSingletonPtr()->registerCommand( CMD_TALK, this );
+      ConsoleBackend::getSingletonPtr()->registerCommand( CMD_EMOTE, this );
+      ConsoleBackend::getSingletonPtr()->registerCommand( CMD_ME, this );
+      ConsoleBackend::getSingletonPtr()->registerCommand( CMD_JOIN, this );
+      ConsoleBackend::getSingletonPtr()->registerCommand( CMD_PART, this );
+      ConsoleBackend::getSingletonPtr()->registerCommand( CMD_MSG, this );*/
     }
 
     OOGChat::~OOGChat()
     {
       // TODO: Free any allocated resources here.
       // Deregister our console commands
-/*      ConsoleBackend::getMainConsole()->deregisterCommand( CMD_TALK );
-      ConsoleBackend::getMainConsole()->deregisterCommand( CMD_EMOTE );
-      ConsoleBackend::getMainConsole()->deregisterCommand( CMD_ME );
-      ConsoleBackend::getMainConsole()->deregisterCommand( CMD_JOIN );
-      ConsoleBackend::getMainConsole()->deregisterCommand( CMD_PART );
-      ConsoleBackend::getMainConsole()->deregisterCommand( CMD_MSG );*/
+/*      ConsoleBackend::getSingletonPtr()->deregisterCommand( CMD_TALK );
+      ConsoleBackend::getSingletonPtr()->deregisterCommand( CMD_EMOTE );
+      ConsoleBackend::getSingletonPtr()->deregisterCommand( CMD_ME );
+      ConsoleBackend::getSingletonPtr()->deregisterCommand( CMD_JOIN );
+      ConsoleBackend::getSingletonPtr()->deregisterCommand( CMD_PART );
+      ConsoleBackend::getSingletonPtr()->deregisterCommand( CMD_MSG );*/
     }
 
 
@@ -98,14 +98,14 @@ namespace Ember {
 #if 0 // not new sstream
     temp<<std::ends;
 #endif
-    ConsoleBackend::getMainConsole()->pushMessage(temp.str());
+    ConsoleBackend::getSingletonPtr()->pushMessage(temp.str());
   }
 
   void OOGChat::loggedIn( const Atlas::Objects::Entity::Player& player)
   {
     // Xmp's Notes
     // Erm dunno what this function is for eris's doxygen doesn't explain
-    ConsoleBackend::getMainConsole()->pushMessage("Logged In eris msg received");
+    ConsoleBackend::getSingletonPtr()->pushMessage("Logged In eris msg received");
   }
 
   void OOGChat::runCommand(const std::string &command, const std::string &args)
@@ -140,7 +140,7 @@ namespace Ember {
 #if 0 //not new stream
     temp<<std::ends;
 #endif
-    ConsoleBackend::getMainConsole()->pushMessage(temp.str());
+    ConsoleBackend::getSingletonPtr()->pushMessage(temp.str());
   }
 
   void OOGChat::talk(Eris::Room *room, Eris::Person* person, const std::string& msg)
@@ -150,7 +150,7 @@ namespace Ember {
     temp << "["<< room->getName()<<"] "<<person->getName()<<" says: "<<msg;
     LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << temp.str() << ENDM;
     temp<<std::ends;
-    ConsoleBackend::getMainConsole()->pushMessage(temp.str());
+    ConsoleBackend::getSingletonPtr()->pushMessage(temp.str());
   }
 
   void OOGChat::emote(Eris::Room *room, Eris::Person* person, const std::string& msg)
@@ -162,7 +162,7 @@ namespace Ember {
 #if 0 // not new sstream
     temp<<std::ends;
 #endif
-    ConsoleBackend::getMainConsole()->pushMessage(temp.str());
+    ConsoleBackend::getSingletonPtr()->pushMessage(temp.str());
   }
 
   void OOGChat::appearance(Eris::Room *room,  Eris::Person* person)
@@ -174,7 +174,7 @@ namespace Ember {
 #if 0 // not new sstream
     temp<<std::ends;
 #endif
-    ConsoleBackend::getMainConsole()->pushMessage(temp.str());
+    ConsoleBackend::getSingletonPtr()->pushMessage(temp.str());
   }
 
   void OOGChat::disappearance(Eris::Room* room,  Eris::Person* person)
@@ -186,7 +186,7 @@ namespace Ember {
 #if 0 // if not new sstream
     temp<<std::ends;
 #endif
-    ConsoleBackend::getMainConsole()->pushMessage(temp.str());
+    ConsoleBackend::getSingletonPtr()->pushMessage(temp.str());
   }
 
   void OOGChat::changed(const Eris::StringSet& sset, Eris::Room *room)

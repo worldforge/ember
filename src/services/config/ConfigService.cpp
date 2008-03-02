@@ -120,14 +120,14 @@ namespace Ember
 
     void ConfigService::deregisterConsoleCommands()
     {
-		Ember::ConsoleBackend::getMainConsole()->deregisterCommand(SETVALUE);
-		Ember::ConsoleBackend::getMainConsole()->deregisterCommand(GETVALUE);
+		Ember::ConsoleBackend::getSingletonPtr()->deregisterCommand(SETVALUE);
+		Ember::ConsoleBackend::getSingletonPtr()->deregisterCommand(GETVALUE);
 	}
     
     void ConfigService::registerConsoleCommands()
     {
-		Ember::ConsoleBackend::getMainConsole()->registerCommand(SETVALUE, this, "Sets a value in the configuration. Usage: set_value <section> <key> <value>");
-		Ember::ConsoleBackend::getMainConsole()->registerCommand(GETVALUE, this, "Gets a value from the configuration. Usage: get_value <section> <key>");
+		Ember::ConsoleBackend::getSingletonPtr()->registerCommand(SETVALUE, this, "Sets a value in the configuration. Usage: set_value <section> <key> <value>");
+		Ember::ConsoleBackend::getSingletonPtr()->registerCommand(GETVALUE, this, "Gets a value from the configuration. Usage: get_value <section> <key>");
 	}
 	
     bool ConfigService::itemExists(const std::string& section, const std::string& key) const
@@ -165,10 +165,10 @@ namespace Ember
 			std::string value(tokeniser.remainingTokens());
 			
 			if (section == "" || key == "" || value == "") {
-				Ember::ConsoleBackend::getMainConsole()->pushMessage("Usage: set_value <section> <key> <value>");
+				Ember::ConsoleBackend::getSingletonPtr()->pushMessage("Usage: set_value <section> <key> <value>");
 			} else {
 				setValue(section, key, value);
-				Ember::ConsoleBackend::getMainConsole()->pushMessage("New value set, section: " +  section + " key: " + key + " value: " + value);
+				Ember::ConsoleBackend::getSingletonPtr()->pushMessage("New value set, section: " +  section + " key: " + key + " value: " + value);
 			}
 		
 		}
@@ -180,13 +180,13 @@ namespace Ember
 			std::string key(tokeniser.nextToken());
 			
 			if (section == "" || key == "") {
-				Ember::ConsoleBackend::getMainConsole()->pushMessage("Usage: get_value <section> <key>");
+				Ember::ConsoleBackend::getSingletonPtr()->pushMessage("Usage: get_value <section> <key>");
 			} else {
 				if (!itemExists(section, key)) {
-					Ember::ConsoleBackend::getMainConsole()->pushMessage("No such value.");
+					Ember::ConsoleBackend::getSingletonPtr()->pushMessage("No such value.");
 				} else {
 					varconf::Variable value = getValue(section, key);
-					Ember::ConsoleBackend::getMainConsole()->pushMessage(std::string("Value: ") + static_cast<std::string>(value));
+					Ember::ConsoleBackend::getSingletonPtr()->pushMessage(std::string("Value: ") + static_cast<std::string>(value));
 				}
 			}
 		}

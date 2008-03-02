@@ -35,7 +35,7 @@ namespace Gui {
 ConsoleAdapter::ConsoleAdapter(CEGUI::Editbox* inputBox)
 : mInputBox(inputBox), mReturnKeyDown(false)
 {
-	mBackend = Ember::ConsoleBackend::getMainConsole();
+	mBackend = Ember::ConsoleBackend::getSingletonPtr();
 	mInputBox->subscribeEvent(CEGUI::Editbox::EventKeyUp, CEGUI::Event::Subscriber(&ConsoleAdapter::consoleInputBox_KeyUp, this)); 
 	mInputBox->subscribeEvent(CEGUI::Editbox::EventKeyDown, CEGUI::Event::Subscriber(&ConsoleAdapter::consoleInputBox_KeyDown, this)); 
 }

@@ -23,6 +23,7 @@
 #include "EmberPhysicalEntity.h"
 // #include "PersonEmberEntity.h"
 #include "framework/ConsoleBackend.h"
+#include "framework/Tokeniser.h"
 #include "Avatar.h"
 #include "GUIManager.h"
 #include "model/Model.h"
@@ -113,7 +114,7 @@ void AvatarEmberEntity::handleTalk(const std::string &msg)
 	message.append(msg);
 	GUIManager::getSingleton().AppendIGChatLine.emit(message);
 	std::cout << "TRACE - AVATAR SAYS: [" << message << "]\n" << std::endl;
-	Ember::ConsoleBackend::getMainConsole()->pushMessage(message);
+	Ember::ConsoleBackend::getSingletonPtr()->pushMessage(message);
 }
 */
 /*

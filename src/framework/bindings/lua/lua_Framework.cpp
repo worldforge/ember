@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Framework
-** Generated automatically by tolua++-1.0.92 on Sun May 27 17:32:42 2007.
+** Generated automatically by tolua++-1.0.92 on Sat Mar  1 23:39:12 2008.
 */
 
 #ifndef __cplusplus
@@ -32,14 +32,14 @@ static int tolua_collect_Ember__Tokeniser (lua_State* tolua_S)
 static void tolua_reg_types (lua_State* tolua_S)
 {
  tolua_usertype(tolua_S,"sigc::signal<bool,const std::string&>");
- tolua_usertype(tolua_S,"Ember::ConsoleBackend");
- tolua_usertype(tolua_S,"Ember::IScriptingProvider");
  tolua_usertype(tolua_S,"Ember::Tokeniser");
+ tolua_usertype(tolua_S,"Ember::IScriptingProvider");
+ tolua_usertype(tolua_S,"Ember::ConsoleBackend");
 }
 
-/* method: getMainConsole of class  Ember::ConsoleBackend */
-#ifndef TOLUA_DISABLE_tolua_Framework_Ember_ConsoleBackend_getMainConsole00
-static int tolua_Framework_Ember_ConsoleBackend_getMainConsole00(lua_State* tolua_S)
+/* method: getSingletonPtr of class  Ember::ConsoleBackend */
+#ifndef TOLUA_DISABLE_tolua_Framework_Ember_ConsoleBackend_getSingletonPtr00
+static int tolua_Framework_Ember_ConsoleBackend_getSingletonPtr00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -52,14 +52,42 @@ static int tolua_Framework_Ember_ConsoleBackend_getMainConsole00(lua_State* tolu
 #endif
  {
   {
-   Ember::ConsoleBackend* tolua_ret = (Ember::ConsoleBackend*)  Ember::ConsoleBackend::getMainConsole();
+   Ember::ConsoleBackend* tolua_ret = (Ember::ConsoleBackend*)  Ember::ConsoleBackend::getSingletonPtr();
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ember::ConsoleBackend");
   }
  }
  return 1;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getMainConsole'.",&tolua_err);
+ tolua_error(tolua_S,"#ferror in function 'getSingletonPtr'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getSingleton of class  Ember::ConsoleBackend */
+#ifndef TOLUA_DISABLE_tolua_Framework_Ember_ConsoleBackend_getSingleton00
+static int tolua_Framework_Ember_ConsoleBackend_getSingleton00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Ember::ConsoleBackend",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   Ember::ConsoleBackend& tolua_ret = (Ember::ConsoleBackend&)  Ember::ConsoleBackend::getSingleton();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"Ember::ConsoleBackend");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getSingleton'.",&tolua_err);
  return 0;
 #endif
 }
@@ -523,7 +551,8 @@ TOLUA_API int tolua_Framework_open (lua_State* tolua_S)
   tolua_beginmodule(tolua_S,"Ember");
    tolua_cclass(tolua_S,"ConsoleBackend","Ember::ConsoleBackend","",NULL);
    tolua_beginmodule(tolua_S,"ConsoleBackend");
-    tolua_function(tolua_S,"getMainConsole",tolua_Framework_Ember_ConsoleBackend_getMainConsole00);
+    tolua_function(tolua_S,"getSingletonPtr",tolua_Framework_Ember_ConsoleBackend_getSingletonPtr00);
+    tolua_function(tolua_S,"getSingleton",tolua_Framework_Ember_ConsoleBackend_getSingleton00);
     tolua_function(tolua_S,"runCommand",tolua_Framework_Ember_ConsoleBackend_runCommand00);
     tolua_function(tolua_S,"pushMessage",tolua_Framework_Ember_ConsoleBackend_pushMessage00);
     tolua_function(tolua_S,"runCommand",tolua_Framework_Ember_ConsoleBackend_runCommand01);

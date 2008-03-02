@@ -788,7 +788,7 @@ void EmberPhysicalEntity::handleTalk(const std::string &msg)
     message.append("> ");
     message.append(msg);
 	std::cout << "TRACE - ENTITY SAYS: [" << message << "]\n" << std::endl;
-	Ember::ConsoleBackend::getMainConsole()->pushMessage(message);
+	Ember::ConsoleBackend::getSingletonPtr()->pushMessage(message);
 }
 */
 

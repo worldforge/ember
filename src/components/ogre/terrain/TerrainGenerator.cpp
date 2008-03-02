@@ -113,7 +113,7 @@ hasTerrainInfo(false)
 	
 	configSrv->EventChangedConfigItem.connect(sigc::mem_fun(*this, &TerrainGenerator::ConfigService_EventChangedConfigItem));
 	
-	Ember::ConsoleBackend::getMainConsole()->registerCommand("exportterrainmaterial",this);
+	Ember::ConsoleBackend::getSingletonPtr()->registerCommand("exportterrainmaterial",this);
 
 }
 

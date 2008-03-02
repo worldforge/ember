@@ -29,7 +29,7 @@ emberServices = Ember.EmberServices:getSingleton()
 scriptingService = emberServices:getScriptingService()
 
 --The console can be used for debug output.
-console = Ember.ConsoleBackend:getMainConsole()
+console = Ember.ConsoleBackend:getSingleton()
 
 --loads a lua script
 function loadScript(scriptname)

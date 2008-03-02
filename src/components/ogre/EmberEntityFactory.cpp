@@ -46,6 +46,7 @@
 
 
 #include "framework/ConsoleBackend.h"
+#include "framework/Tokeniser.h"
 #include "terrain/TerrainGenerator.h"
 
 #include "Avatar.h"
@@ -201,7 +202,7 @@ void EmberEntityFactory::dumpAttributesOfEntity(const std::string& entityId) con
 	
 		S_LOG_INFO("Dumping attributes to " << fileName);
 		entity->dumpAttributes(exportFile, std::cout);
-		Ember::ConsoleBackend::getMainConsole()->pushMessage(std::string("Dumped attributes to ") + fileName);
+		Ember::ConsoleBackend::getSingletonPtr()->pushMessage(std::string("Dumped attributes to ") + fileName);
 	}
 }
 

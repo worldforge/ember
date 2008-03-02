@@ -59,7 +59,7 @@ namespace Gui {
 	Widget::~Widget()
 	{
 		if (mCommandSuffix != "") {
-			Ember::ConsoleBackend::getMainConsole()->deregisterCommand("show_" + mCommandSuffix);
+			Ember::ConsoleBackend::getSingletonPtr()->deregisterCommand("show_" + mCommandSuffix);
 		}
 		if (mMainWindow) {
 			CEGUI::WindowManager::getSingleton().destroyWindow(mMainWindow);
@@ -171,8 +171,8 @@ namespace Gui {
 	void Widget::registerConsoleVisibilityToggleCommand(const std::string & commandSuffix)
 	{
 		mCommandSuffix = commandSuffix;
-		Ember::ConsoleBackend::getMainConsole()->registerCommand("show_" + commandSuffix, this, std::string("Shows the ") + mCommandSuffix + " window.");
-		Ember::ConsoleBackend::getMainConsole()->registerCommand("hide_" + commandSuffix, this, std::string("Hides the ") + mCommandSuffix + " window.");
+		Ember::ConsoleBackend::getSingletonPtr()->registerCommand("show_" + commandSuffix, this, std::string("Shows the ") + mCommandSuffix + " window.");
+		Ember::ConsoleBackend::getSingletonPtr()->registerCommand("hide_" + commandSuffix, this, std::string("Hides the ") + mCommandSuffix + " window.");
 	
 	}
 
