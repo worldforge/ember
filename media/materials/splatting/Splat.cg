@@ -229,8 +229,8 @@ void splat_fp
 		if (iNumberOfLayers > 11) {
  			oColour = (lerp(oColour, tex2D(splat11TextureDiffuse, iTexcoord.xy * iScales[0].w), tex2D(coverageTexture3, iCoverage.xy).y));
  		} 		
-		//shadow
-		oColour *= tex2D(shadowTexture, iCoverage.xy).x;
+		//shadow, we'll multiply by two to make it a little shinier
+		oColour *= (tex2D(shadowTexture, iCoverage.xy).x * 2);
 		
 		oColour = lerp(oColour, iFogColour, iFog);
 	} else {
