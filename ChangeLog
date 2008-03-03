@@ -1,3 +1,39 @@
+2008-03-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* ember.conf: remove obsolete settings and add some caelum settings
+
+2008-03-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/creatures.modeldef.xml: update for wolf
+
+2008-03-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/Environment.cpp: check for null
+
+2008-03-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/CaelumSun.cpp, src/components/ogre/environment/CaelumSun.h: moved the setting of default values from CaelumEnvironment and implement ConfigListenerContainer to automatically listen for config changes, and update the sun accordingly
+
+2008-03-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/CaelumEnvironment.cpp: clean up and move some functionality to CaelumSun
+
+2008-03-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/services/config/ConfigListener.cpp, src/services/config/ConfigListener.h, src/services/config/Makefile.am: added a config change listener class as well as a container base class. Classes which want to use this functionality for easier config change updating should inherit from the container base class.
+
+2008-03-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/packs/Caelum.zip: fixed file naming which didn't work on linux (upper and lower case)
+
+2008-03-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/splatting/Splat.cg: experiment with saturating the colours to make the world a little brighter. This should however be in a more central place, so it can be applied to all shaders
+
+2008-03-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/scripts/environment.material: update from latest Ogre to fit with changes in the shaders
+
 2008-03-02 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* media/packs/Caelum.zip: added Caelum media pack
