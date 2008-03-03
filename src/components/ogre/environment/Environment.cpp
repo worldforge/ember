@@ -107,8 +107,10 @@ void Environment::setTime(int seconds)
 }
 
 void Environment::setAmbientLight(const Ogre::ColourValue& colour) {
-	getSun()->setAmbientLight(colour);
-	EventUpdatedAmbientLight.emit(colour);
+	if (getSun()) {
+		getSun()->setAmbientLight(colour);
+		EventUpdatedAmbientLight.emit(colour);
+	}
 }
 
 }
