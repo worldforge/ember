@@ -36,34 +36,6 @@ namespace EmberOgre {
 
 namespace Environment {
 
-// class CloudsUpdater : public caelum::CaelumListener {
-// 	protected:
-// 		float mTime;
-// 		Ogre::MaterialPtr mMaterial;
-// 
-// 	public:
-// 		CloudsUpdater (float time, Ogre::MaterialPtr material) : mTime (time), mMaterial(material) { }
-// 		bool caelumStarted (const Ogre::FrameEvent &e, caelum::CaelumSystem *sys) {
-// 			Ogre::Technique* tech = mMaterial->getBestTechnique ();
-// 			if (tech) {
-// 				Ogre::Pass* pass = tech->getPass(0);
-// 				if (pass) {
-// 					mTime += e.timeSinceLastFrame * 30;
-// 					if (pass->hasVertexProgram()) {
-// 						pass->getVertexProgramParameters ()->setNamedConstant ("sunDirection", sys->getSun ()->getSunDirection ());
-// 					}
-// 					if (pass->hasFragmentProgram()) {
-// 						pass->getFragmentProgramParameters ()->setNamedConstant ("sunDirection", sys->getSun ()->getSunDirection ());
-// 						pass->getFragmentProgramParameters ()->setNamedConstant ("sunColour", sys->getSun ()->getSunColour ());
-// 						pass->getFragmentProgramParameters ()->setNamedConstant ("time", mTime);
-// 					}
-// 					return true;
-// 				}
-// 			}
-// 			return true;
-// 		}
-// };
-
 
 CaelumEnvironment::CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera* camera)
 : 
@@ -120,7 +92,8 @@ void CaelumEnvironment::setupWater()
 void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sceneMgr, ::Ogre::RenderWindow* window, ::Ogre::Camera* camera)
 {
 	
-	// Pick components to use
+	/// Pick components to use
+	///We'll skip the ground fog for now...
 	caelum::CaelumSystem::CaelumComponent componentMask = 
 			static_cast<caelum::CaelumSystem::CaelumComponent> (
 			caelum::CaelumSystem::CAELUM_COMPONENT_SKY_COLOUR_MODEL |
@@ -133,58 +106,38 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 			0);	
 	mCaelumSystem = new caelum::CaelumSystem (root, sceneMgr, componentMask, false);
 
-// 	caelum::SunPositionModel *spm = new caelum::SimpleSunPositionModel (Ogre::Degree (13));
-// 	mCaelumSystem->getSun ()->setSunPositionModel (spm);
-
-	// Create and configure the sky colours model to use
-	
-// 	mCaelumModel = new caelum::StoredImageElvBasedSkyColourModel ();
-// 	mCaelumSystem->setSkyColourModel (mCaelumModel);	// Call this before changing the gradients image!!
-// 	static_cast<caelum::StoredImageElvBasedSkyColourModel *>(mCaelumModel)->setSkyGradientsImage ("EarthClearSky2.png");
 
 	mCaelumSystem->setManageSceneFog (true);
-// 	static_cast<caelum::StoredImageSkyColourModel *>(mCaelumModel)->setFogColoursImage ("EarthClearSkyFog.png");
 	mCaelumSystem->setSceneFogDensityMultiplier (0.005);
 
-	// Create a sky dome
-//	mDome = mCaelumSystem->createSkyDome ();
+	///Get the sky dome for  Create a sky dome CaelumSky
 	mDome = mCaelumSystem->getSkyDome();
 	
-
-	// Create a starfield
-//	window->addListener (mCaelumSystem->createStarfield ("Starfield.jpg"));
+	/// Set up some star field options
 	mCaelumSystem->getStarfield ()->setInclination (::Ogre::Degree (13));
 
-// 	mCaelumSystem->getSkyDome()->setFarRadius(10000);
-// 	mCaelumSystem->getStarfield()->setFarRadius(10000);
-// 	mCaelumSystem->getSun()->setFarRadius(100);
-
-	// Setup sun options
+	/// Setup sun options
 	if (mCaelumSystem->getSun ()) {
-		mCaelumSystem->getSun ()->setAmbientMultiplier (Ogre::ColourValue(0.5, 0.5, 0.5));
-		mCaelumSystem->getSun ()->setDiffuseMultiplier (Ogre::ColourValue(3, 3, 2.7));
-		// For green terrain:
-		//mCaelumSystem->getSun ()->setDiffuseMultiplier (Ogre::ColourValue(0.1, 3, 0.1));
-		mCaelumSystem->getSun ()->setSpecularMultiplier (Ogre::ColourValue(5, 5, 5));
-		mCaelumSystem->getSun ()->setManageAmbientLight (true);
+		mSun = new CaelumSun(*this, mCaelumSystem->getSun());
 	}
 
-	// Setup cloud options.
-	// Tweak these settings to make the demo look pretty.
+	/// Setup cloud options.
 	if (mCaelumSystem->getClouds ()) {
 		mCaelumSystem->getClouds ()->setCloudSpeed(Ogre::Vector2(0.0005, -0.0009));
 		mCaelumSystem->getClouds ()->setCloudBlendTime(3600 * 24);
 		mCaelumSystem->getClouds ()->setCloudCover(0.3);
 	}
 
-	// Register all to the render window
+	/// Register all to the render window
 	window->addListener (mCaelumSystem);
 	
 	
-	// Set time acceleration.
+	/// Set time acceleration to fit with real world time
 	mCaelumSystem->getUniversalClock ()->setTimeScale (1);
 
-	// Set some time parameters
+	/// Set some time parameters
+	///TODO: use the time from the server
+	///Currently we use the local time
 	time_t t = time (&t);
 	struct tm *t2 = localtime (&t);
 	int hour = t2->tm_hour;
@@ -194,13 +147,9 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 	} else if (t2->tm_hour > 16) {
 		hour = 15;
 	}
-
-	
-
-	///Use the time from the server
 	mCaelumSystem->getUniversalClock ()->setGregorianDateTime (t2->tm_year, t2->tm_mon, t2->tm_mday, hour, t2->tm_min, t2->tm_sec);
 	
-	///stockholm
+	///greenwich
 	mCaelumSystem->getSolarSystemModel ()->setObserverLatitude  (Ogre::Degree(0));
 	mCaelumSystem->getSolarSystemModel ()->setObserverLongitude(Ogre::Degree(0));
 	
@@ -211,25 +160,12 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 //  	mCaelumSystem->getUniversalClock()->setUpdateRate( 1 / (24 * 60)); //update every minute
 	
 	mSky = new CaelumSky(*this, mCaelumModel, mDome);
-	mSun = new CaelumSun(*this, mCaelumSystem->getSun());
 	
-// 	std::string cloudMaterialName = "Cirrus";
-// 	Ogre::MaterialPtr mat = static_cast<Ogre::MaterialPtr >(Ogre::MaterialManager::getSingleton ().getByName (cloudMaterialName));
-
-// 	// Register our cloud updater
-// 	if (!mat.isNull()) {
-// 		mSceneMgr->setSkyPlane (true, Ogre::Plane (Ogre::Vector3::NEGATIVE_UNIT_Y, -1000), cloudMaterialName, 1000, 1, false, .1, 10, 10, caelum::RESOURCE_GROUP_NAME);
-// 		mCaelumSystem->addListener (new CloudsUpdater (time, mat));
-// 	}
-// 	
+	///advance it one second to force it to do initial updating, since other subsystems such as the terrain rendering depends on the sun postions etc.
 	Ogre::FrameEvent ev;
-	ev.timeSinceLastEvent = 0;
-	ev.timeSinceLastFrame = 0;
+	ev.timeSinceLastEvent = 1;
+	ev.timeSinceLastFrame = 1;
 	mCaelumSystem->frameStarted(ev);
-
-/*	sceneMgr->setSkyPlane (true, Ogre::Plane (Ogre::Vector3::NEGATIVE_UNIT_Y, -100), "Altocumulus", 1000, 10, false);
-	mCaelumSystem->addListener (new CloudsUpdater ());*/
-	
 }
 	
 ISun* CaelumEnvironment::getSun()
@@ -255,24 +191,19 @@ IWater* CaelumEnvironment::getWater()
 
 void CaelumEnvironment::setTime(int hour, int minute, int second)
 {
-	// Set some time parameters
+	///use the local year, month and day
 	time_t t = time (&t);
 	struct tm *t2 = localtime (&t);
 	
-	// Winter dawn in the southern hemisphere, looking north
 	mCaelumSystem->getUniversalClock ()->setGregorianDateTime (t2->tm_year, t2->tm_mon, t2->tm_mday, hour, minute, second);
-
-
-// 	mCaelumSystem->setLocalTime (3600 * hour + 60 * minute + second);
 }
 
 void CaelumEnvironment::setTime(int seconds)
 {
-	// Set some time parameters
+	///use the local year, month and day
 	time_t t = time (&t);
 	struct tm *t2 = localtime (&t);
 	
-	// Winter dawn in the southern hemisphere, looking north
 	mCaelumSystem->getUniversalClock ()->setGregorianDateTime (t2->tm_year, t2->tm_mon, t2->tm_mday, 0, 0, seconds);
 }
 
@@ -287,9 +218,7 @@ void CaelumEnvironment::runCommand(const std::string &command, const std::string
 		int hour = ::Ogre::StringConverter::parseInt( hourString);
 		int minute = ::Ogre::StringConverter::parseInt( minuteString);
 		setTime(hour, minute);
-		
 	}
-	
 }
 
 
