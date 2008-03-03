@@ -25,6 +25,7 @@
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "CaelumEnvironment.h"
+#include "services/config/ConfigListener.h"
 
 namespace EmberOgre {
 
@@ -36,10 +37,10 @@ namespace Environment {
 */
 class CaelumSky
 : CaelumEnvironmentComponent
-,public IFog,public ISky
+,public IFog,public ISky, Ember::ConfigListenerContainer
 {
 public:
-    CaelumSky(CaelumEnvironment& environment, caelum::SkyColourModel *caelumModel, caelum::SkyDome *dome);
+    CaelumSky(CaelumEnvironment& environment);
 
     virtual ~CaelumSky();
     
@@ -50,17 +51,12 @@ public:
 	
 	virtual bool frameEnded(const Ogre::FrameEvent & event);
     
-private:
+protected:
 
+	void Config_CloudSpeed(const std::string& section, const std::string& key, varconf::Variable& variable);
+	void Config_CloudBlendTime(const std::string& section, const std::string& key, varconf::Variable& variable);
+	void Config_CloudCover(const std::string& section, const std::string& key, varconf::Variable& variable);
 
-	// Caelum system
-	caelum::CaelumSystem *mCaelumSystem;
-	// Caelum model
-	caelum::SkyColourModel *mCaelumModel;
-	
-	caelum::SkyDome *mDome;
-	
-//	LensFlare mLensFlare;
 
 };
 

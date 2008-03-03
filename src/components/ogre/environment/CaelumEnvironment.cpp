@@ -41,7 +41,6 @@ CaelumEnvironment::CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderW
 : 
  SetCaelumTime("set_caelumtime",this, "Sets the caelum time. parameters: <hour> <minute>")
 , mCaelumSystem(0)
-, mCaelumModel(0)
 , mSceneMgr(sceneMgr)
 , mWindow(window)
 , mCamera(camera)
@@ -68,7 +67,6 @@ CaelumEnvironment::~CaelumEnvironment()
 	delete mSky;
 	delete mSun;
 	delete mWater;
-	delete mCaelumModel;
 	delete mCaelumSystem;
 }
 
@@ -121,12 +119,8 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 		mSun = new CaelumSun(*this, mCaelumSystem->getSun());
 	}
 
-	/// Setup cloud options.
-	if (mCaelumSystem->getClouds ()) {
-		mCaelumSystem->getClouds ()->setCloudSpeed(Ogre::Vector2(0.0005, -0.0009));
-		mCaelumSystem->getClouds ()->setCloudBlendTime(3600 * 24);
-		mCaelumSystem->getClouds ()->setCloudCover(0.3);
-	}
+	mSky = new CaelumSky(*this);
+
 
 	/// Register all to the render window
 	window->addListener (mCaelumSystem);
@@ -159,7 +153,6 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 	
 //  	mCaelumSystem->getUniversalClock()->setUpdateRate( 1 / (24 * 60)); //update every minute
 	
-	mSky = new CaelumSky(*this, mCaelumModel, mDome);
 	
 	///advance it one second to force it to do initial updating, since other subsystems such as the terrain rendering depends on the sun postions etc.
 	Ogre::FrameEvent ev;

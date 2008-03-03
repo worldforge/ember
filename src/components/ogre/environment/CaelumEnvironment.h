@@ -30,7 +30,6 @@
 namespace caelum
 {
 	class CaelumSystem;
-	class SkyColourModel;
 	class SkyDome;
 	class Sun;
 }
@@ -93,8 +92,6 @@ private:
 	
 	// Caelum system
 	caelum::CaelumSystem *mCaelumSystem;
-	// Caelum model
-	caelum::SkyColourModel *mCaelumModel;
 	
 	caelum::SkyDome *mDome;
 	
@@ -116,8 +113,12 @@ caelum::CaelumSystem* CaelumEnvironment::getCaelumSystem() const
 class CaelumEnvironmentComponent
 {
 protected:
-	CaelumEnvironmentComponent(CaelumEnvironment& environment) : mEnvironment(environment) {}
+	CaelumEnvironmentComponent(CaelumEnvironment& environment) : mEnvironment(environment), mCaelumSystem(environment.getCaelumSystem()) {}
 	CaelumEnvironment& mEnvironment;
+	
+	/// Caelum system
+	caelum::CaelumSystem *mCaelumSystem;
+	
 };
 
 }

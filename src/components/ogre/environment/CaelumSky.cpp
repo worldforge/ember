@@ -33,15 +33,52 @@ namespace EmberOgre {
 
 namespace Environment {
 
-CaelumSky::CaelumSky(CaelumEnvironment& environment, caelum::SkyColourModel *caelumModel, caelum::SkyDome *dome)
-: CaelumEnvironmentComponent( environment), mCaelumModel(caelumModel), mDome(dome)
+CaelumSky::CaelumSky(CaelumEnvironment& environment)
+: CaelumEnvironmentComponent(environment)
 {
+	/// Setup cloud options.
+	if (mCaelumSystem->getClouds ()) {
+		mCaelumSystem->getClouds ()->setCloudSpeed(Ogre::Vector2(0.0005, -0.0009));
+		mCaelumSystem->getClouds ()->setCloudBlendTime(3600 * 24);
+		mCaelumSystem->getClouds ()->setCloudCover(0.3);
+	}
+	
+	registerConfigListener("caelum", "cloudspeed", sigc::mem_fun(*this, &CaelumSky::Config_CloudSpeed));
+	registerConfigListener("caelum", "cloudblendtime", sigc::mem_fun(*this, &CaelumSky::Config_CloudBlendTime));
+	registerConfigListener("caelum", "cloudcover", sigc::mem_fun(*this, &CaelumSky::Config_CloudCover));
+	
 }
 
 
 CaelumSky::~CaelumSky()
 {
 }
+
+void CaelumSky::Config_CloudSpeed(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	if (variable.is_string() && mCaelumSystem->getClouds()) {
+		Ogre::Vector2 vector;
+		Ember::Tokeniser tokeniser(variable);
+		vector.x = atof(tokeniser.nextToken().c_str());
+		vector.y = atof(tokeniser.nextToken().c_str());
+		mCaelumSystem->getClouds ()->setCloudSpeed(vector);
+	}
+}
+
+void CaelumSky::Config_CloudBlendTime(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	if (variable.is_double() && mCaelumSystem->getClouds()) {
+		mCaelumSystem->getClouds ()->setCloudBlendTime(static_cast<double>(variable));
+	}
+}
+void CaelumSky::Config_CloudCover(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	if (variable.is_double() && mCaelumSystem->getClouds()) {
+		mCaelumSystem->getClouds ()->setCloudCover(static_cast<double>(variable));
+	}
+}
+
+
 
 void CaelumSky::setDensity(float density)
 {
