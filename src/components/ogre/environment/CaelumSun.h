@@ -24,15 +24,28 @@
 #define EMBEROGRECAELUMSUN_H
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "CaelumEnvironment.h"
+#include "services/config/ConfigListener.h"
+
+namespace Ember
+{
+class ConfigListener;
+}
+
+namespace varconf
+{
+class Variable;
+}
 
 namespace EmberOgre {
+
+
 
 namespace Environment {
 
 /**
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
-class CaelumSun :  CaelumEnvironmentComponent, public ISun
+class CaelumSun :  public CaelumEnvironmentComponent, public ISun, public Ember::ConfigListenerContainer
 {
 public:
     CaelumSun(CaelumEnvironment& environment, caelum::Sun* sun);
@@ -46,7 +59,33 @@ public:
 private:
 
 	caelum::Sun* mSun;
-
+	
+	
+	/**
+	 *    Listend for changes to the config.
+	 * @param section 
+	 * @param key 
+	 * @param variable 
+	 */
+	void Config_SunAmbientMultiplier(const std::string& section, const std::string& key, varconf::Variable& variable);
+	/**
+	 *    Listend for changes to the config.
+	 * @param section 
+	 * @param key 
+	 * @param variable 
+	 */
+	void Config_SunDiffuseMultiplier(const std::string& section, const std::string& key, varconf::Variable& variable);
+	/**
+	 *    Listend for changes to the config.
+	 * @param section 
+	 * @param key 
+	 * @param variable 
+	 */
+	void Config_SunSpecularMultiplier(const std::string& section, const std::string& key, varconf::Variable& variable);
+	
+	
+	
+	bool parse(varconf::Variable& variable, Ogre::ColourValue& colour);
 };
 
 }
