@@ -161,9 +161,9 @@ void splat_fp
     float2              iTexcoord	: TEXCOORD1,
 	float				iFog 		: FOG,
 	
-	uniform float3 lightDiffuse,
-	uniform float3 lightSpecular,
-	uniform float3 lightAmbient,
+	uniform float4 iLightDiffuse,
+	uniform float4 iLightSpecular,
+	uniform float4 iLightAmbient,
 	uniform float4 iFogColour,
 
 	out float4          oColour		: COLOR,
@@ -230,7 +230,7 @@ void splat_fp
  			oColour = (lerp(oColour, tex2D(splat11TextureDiffuse, iTexcoord.xy * iScales[0].w), tex2D(coverageTexture3, iCoverage.xy).y));
  		} 		
 		//shadow, we'll multiply by two to make it a little shinier
-		oColour *= (tex2D(shadowTexture, iCoverage.xy).x * 2);
+		oColour *= (tex2D(shadowTexture, iCoverage.xy).x * iLightDiffuse);
 		
 		oColour = lerp(oColour, iFogColour, iFog);
 	} else {
@@ -290,9 +290,9 @@ void splat_normalmapped_fp(float2 iTexcoord : TEXCOORD0,
 	float3 eyeDir : TEXCOORD2,
 	float3 halfAngle : TEXCOORD3,
 	float iFog : FOG,
-	uniform float3 lightDiffuse,
+	uniform float3 iLightDiffuse,
 // 	uniform float3 lightSpecular,
-	uniform float3 lightAmbient,
+	uniform float3 iLightAmbient,
 	uniform float3 iFogColour,
 	uniform float4 scaleBias,
     uniform float4 iScales[4],
@@ -315,21 +315,21 @@ void splat_normalmapped_fp(float2 iTexcoord : TEXCOORD0,
 	out float4 oColour : COLOR)
 {
  	if (iFog < 100) {
-		oColour = getNormalMappedColour(iTexcoord.xy * iScales[0].x, lightDir, eyeDir, halfAngle, lightDiffuse, lightAmbient, scaleBias, baseTextureNormal, baseTextureDiffuse, shadowTexture);
+		oColour = getNormalMappedColour(iTexcoord.xy * iScales[0].x, lightDir, eyeDir, halfAngle, iLightDiffuse, iLightAmbient, scaleBias, baseTextureNormal, baseTextureDiffuse, shadowTexture);
 		if (iNumberOfLayers > 1) {
-			oColour = (lerp(oColour, getNormalMappedColour(iTexcoord.xy * iScales[0].y, lightDir, eyeDir, halfAngle, lightDiffuse, lightAmbient, scaleBias, splat1TextureNormal, splat1TextureDiffuse, shadowTexture), tex2D(coverageTexture1, iTexcoord.xy).w));
+			oColour = (lerp(oColour, getNormalMappedColour(iTexcoord.xy * iScales[0].y, lightDir, eyeDir, halfAngle, iLightDiffuse, iLightAmbient, scaleBias, splat1TextureNormal, splat1TextureDiffuse, shadowTexture), tex2D(coverageTexture1, iTexcoord.xy).w));
 		}
 		if (iNumberOfLayers > 2) {
-			oColour = (lerp(oColour, getNormalMappedColour(iTexcoord.xy * iScales[0].z, lightDir, eyeDir, halfAngle, lightDiffuse, lightAmbient, scaleBias, splat2TextureNormal, splat2TextureDiffuse, shadowTexture), tex2D(coverageTexture1, iTexcoord.xy).x));
+			oColour = (lerp(oColour, getNormalMappedColour(iTexcoord.xy * iScales[0].z, lightDir, eyeDir, halfAngle, iLightDiffuse, iLightAmbient, scaleBias, splat2TextureNormal, splat2TextureDiffuse, shadowTexture), tex2D(coverageTexture1, iTexcoord.xy).x));
 		}
 		if (iNumberOfLayers > 3) {
-			oColour = (lerp(oColour, getNormalMappedColour(iTexcoord.xy * iScales[0].w, lightDir, eyeDir, halfAngle, lightDiffuse, lightAmbient, scaleBias, splat3TextureNormal, splat3TextureDiffuse, shadowTexture), tex2D(coverageTexture1, iTexcoord.xy).y));
+			oColour = (lerp(oColour, getNormalMappedColour(iTexcoord.xy * iScales[0].w, lightDir, eyeDir, halfAngle, iLightDiffuse, iLightAmbient, scaleBias, splat3TextureNormal, splat3TextureDiffuse, shadowTexture), tex2D(coverageTexture1, iTexcoord.xy).y));
 		}
 // 		if (iNumberOfLayers > 4) {
-//  			oColour = (lerp(oColour, getNormalMappedColour(iTexcoord.xy * iScales[0].x, lightDir, eyeDir, halfAngle, lightDiffuse, lightAmbient, scaleBias, splat4TextureNormal, splat4TextureDiffuse, shadowTexture), tex2D(coverageTexture1, iTexcoord.xy).z));
+//  			oColour = (lerp(oColour, getNormalMappedColour(iTexcoord.xy * iScales[0].x, lightDir, eyeDir, halfAngle, iLightDiffuse, iLightAmbient, scaleBias, splat4TextureNormal, splat4TextureDiffuse, shadowTexture), tex2D(coverageTexture1, iTexcoord.xy).z));
 //  		}
 // 		if (iNumberOfLayers > 5) {
-// 			oColour = (lerp(oColour, getNormalMappedColour(iTexcoord.xy * iScales[0].y, lightDir, eyeDir, halfAngle, lightDiffuse, lightAmbient, scaleBias, splat5TextureNormal, splat5TextureDiffuse, shadowTexture), tex2D(coverageTexture2, iTexcoord.xy).w));
+// 			oColour = (lerp(oColour, getNormalMappedColour(iTexcoord.xy * iScales[0].y, lightDir, eyeDir, halfAngle, iLightDiffuse, iLightAmbient, scaleBias, splat5TextureNormal, splat5TextureDiffuse, shadowTexture), tex2D(coverageTexture2, iTexcoord.xy).w));
 // 		}	
 		//shadow
 // 		oColour *= tex2D(shadowTexture, iTexcoord.xy).x;

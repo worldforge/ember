@@ -301,10 +301,14 @@ bool TerrainPageSurfaceCompilerShaderPass::finalize()
 // 	mPass->setFragmentProgram(fragmentProgramName);
 	try {
 		Ogre::GpuProgramParametersSharedPtr fpParams = mPass->getFragmentProgramParameters();
+		fpParams->setIgnoreMissingParams(true);
 		fpParams->setNamedAutoConstant("iFogColour", Ogre::GpuProgramParameters::ACT_FOG_COLOUR);
 		fpParams->setNamedConstant("iNumberOfLayers", (float)mLayers.size()); //4*4=16
 		///set how much the texture should tile
 		fpParams->setNamedConstant("iScales", mScales, 4); //4*4=16
+		
+		fpParams->setNamedAutoConstant("iLightAmbient", Ogre::GpuProgramParameters::ACT_AMBIENT_LIGHT_COLOUR);
+		fpParams->setNamedAutoConstant("iLightDiffuse", Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR);
 	} catch (const Ogre::Exception& ex) {
 		S_LOG_WARNING("Error when setting fragment program parameters. Message:\n" << ex.what());
 		return false;
@@ -318,6 +322,7 @@ bool TerrainPageSurfaceCompilerShaderPass::finalize()
 	}
 	try {
 		Ogre::GpuProgramParametersSharedPtr fpParams = mPass->getVertexProgramParameters();
+		fpParams->setIgnoreMissingParams(true);
 		fpParams->setNamedAutoConstant("iFogParams", Ogre::GpuProgramParameters::ACT_FOG_PARAMS);
 		fpParams->setNamedAutoConstant("iWorldViewProj", Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX );
 	} catch (const Ogre::Exception& ex) {
@@ -476,8 +481,8 @@ bool TerrainPageSurfaceCompilerShaderNormalMappedPass::finalize()
 // 	mPass->setFragmentProgram(fragmentProgramName);
 	try {
 		Ogre::GpuProgramParametersSharedPtr fpParams = mPass->getFragmentProgramParameters();
-		fpParams->setNamedAutoConstant("lightDiffuse", Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR);
-		fpParams->setNamedAutoConstant("lightAmbient", Ogre::GpuProgramParameters::ACT_AMBIENT_LIGHT_COLOUR);
+		fpParams->setNamedAutoConstant("iLightDiffuse", Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR);
+		fpParams->setNamedAutoConstant("iLightAmbient", Ogre::GpuProgramParameters::ACT_AMBIENT_LIGHT_COLOUR);
 		fpParams->setNamedAutoConstant("iFogColour", Ogre::GpuProgramParameters::ACT_FOG_COLOUR);
 		float theValues[4] = {0.04, -0.02, 1, 0};
 		fpParams->setNamedConstant("scaleBias", theValues, 4); //4*4=16
@@ -502,6 +507,8 @@ bool TerrainPageSurfaceCompilerShaderNormalMappedPass::finalize()
 		fpParams->setNamedAutoConstant("eyePosition", Ogre::GpuProgramParameters::ACT_CAMERA_POSITION_OBJECT_SPACE);
 		fpParams->setNamedAutoConstant("iFogParams", Ogre::GpuProgramParameters::ACT_FOG_PARAMS);
 		fpParams->setNamedAutoConstant("worldViewProj", Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX );
+		fpParams->setNamedAutoConstant("iLightAmbient", Ogre::GpuProgramParameters::ACT_AMBIENT_LIGHT_COLOUR);
+		fpParams->setNamedAutoConstant("iLightDiffuse", Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR);
 	} catch (const Ogre::Exception& ex) {
 		S_LOG_WARNING("Error when setting fragment program parameters. Message:\n" << ex.what());
 		return false;
