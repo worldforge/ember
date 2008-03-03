@@ -74,7 +74,7 @@ Ogre::Vector3 CaelumSun::getSunDirection() const
 void CaelumSun::Config_SunAmbientMultiplier(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
 	Ogre::ColourValue colour;
-	if (parse(variable, colour)) {
+	if (parse(variable, colour) && mSun) {
 		mSun->setAmbientMultiplier(colour);
 	}
 }
@@ -82,7 +82,7 @@ void CaelumSun::Config_SunAmbientMultiplier(const std::string& section, const st
 void CaelumSun::Config_SunDiffuseMultiplier(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
 	Ogre::ColourValue colour;
-	if (parse(variable, colour)) {
+	if (parse(variable, colour) && mSun) {
 		mSun->setDiffuseMultiplier(colour);
 	}
 }
@@ -90,14 +90,14 @@ void CaelumSun::Config_SunDiffuseMultiplier(const std::string& section, const st
 void CaelumSun::Config_SunSpecularMultiplier(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
 	Ogre::ColourValue colour;
-	if (parse(variable, colour)) {
+	if (parse(variable, colour) && mSun) {
 		mSun->setSpecularMultiplier(colour);
 	}
 }
 
 bool CaelumSun::parse(varconf::Variable& variable, Ogre::ColourValue& colour)
 {
-	if (variable.is_string() && mSun) {
+	if (variable.is_string()) {
 		Ember::Tokeniser tokeniser(variable);
 		colour.r = atof(tokeniser.nextToken().c_str());
 		colour.g = atof(tokeniser.nextToken().c_str());
