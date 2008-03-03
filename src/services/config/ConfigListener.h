@@ -45,6 +45,8 @@ public:
 	typedef sigc::slot<void, const std::string&, const std::string&, varconf::Variable&> SettingChangedSlot;
 
     ~ConfigListener();
+    
+    void evaluate();
 protected:
     ConfigListener(const std::string& section, const std::string& key, SettingChangedSlot slot);
 
@@ -76,9 +78,10 @@ protected:
 	 * @param section The config section to listen to.
 	 * @param key The config key to listen to.
 	 * @param slot The slot to execute when a change has occurred.
+	 * @param evaluateNow If true, the listener will be evaluated instantly, possibly triggering a call to the signal. Defaults to true.
 	 * @return A pointer to the newly created listener instance.
 	 */
-	ConfigListener* registerConfigListener(const std::string& section, const std::string& key, ConfigListener::SettingChangedSlot slot);
+	ConfigListener* registerConfigListener(const std::string& section, const std::string& key, ConfigListener::SettingChangedSlot slot, bool evaluateNow = true);
 
 private:
 	/**

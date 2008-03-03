@@ -1,5 +1,9 @@
 2008-03-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* src/services/config/ConfigListener.cpp, src/services/config/ConfigListener.h: by default new listeners are now evaluated when they are created and registered
+
+2008-03-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* ember.conf: remove obsolete settings and add some caelum settings
 
 2008-03-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>

@@ -54,16 +54,28 @@ void ConfigListener::ConfigService_EventChangedConfigItem(const std::string& sec
 	}
 }
 
+void ConfigListener::evaluate()
+{
+	if (Ember::EmberServices::getSingleton().getConfigService()->itemExists(mSection, mKey)) {
+		varconf::Variable variable = Ember::EmberServices::getSingleton().getConfigService()->getValue(mSection, mKey);
+		mSlot(mSection, mKey, variable);
+	}
+}
+
+
 ConfigListenerContainer::~ConfigListenerContainer() {
 	for (std::vector<Ember::ConfigListener*>::iterator I = mConfigListeners.begin(); I != mConfigListeners.end(); ++I) {
 		delete *I;
 	}
 }
 
-ConfigListener* ConfigListenerContainer::registerConfigListener(const std::string& section, const std::string& key, ConfigListener::SettingChangedSlot slot)
+ConfigListener* ConfigListenerContainer::registerConfigListener(const std::string& section, const std::string& key, ConfigListener::SettingChangedSlot slot, bool evaluateNow)
 {
 	ConfigListener* listener = new ConfigListener(section, key, slot);
 	mConfigListeners.push_back(listener);
+	if (evaluateNow) {
+		listener->evaluate();
+	}
 	return listener;
 }
 
