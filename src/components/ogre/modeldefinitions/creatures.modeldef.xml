@@ -258,7 +258,7 @@
 	
 	<model name="wolf" usescaleof="height" showcontained="false" >
 		<submodels>
-			<submodel mesh="3d_objects/creatures/quadruped_v2/models/wolf/normal_wolf/normal_wolf.mesh" >
+			<submodel mesh="3d_objects/creatures/quadruped_v2/models/wolf/normal_wolf.mesh" >
 			<parts>
 				<part name="main" show="true" />
 			</parts>
