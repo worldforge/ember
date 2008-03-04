@@ -118,6 +118,11 @@ TerrainLayerDefinition::TerrainFoliageDefinitionStore& TerrainLayerDefinition::g
 	return mFoliages;
 }
 
+bool TerrainFoliageDefinition::hasParameter(const std::string& key) const
+{
+	return mParameters.find(key) != mParameters.end();
+}
+
 }
 
 }
@@ -143,7 +148,7 @@ void EmberOgre::Terrain::TerrainFoliageDefinition::setRenderTechnique ( const st
 }
 
 
-const std::string & EmberOgre::Terrain::TerrainFoliageDefinition::getParameter(const std::string & key) const
+const std::string& EmberOgre::Terrain::TerrainFoliageDefinition::getParameter(const std::string & key) const
 {
 	static std::string empty("");
 	EmberOgre::Terrain::TerrainLayerDefinition::StringParamStore::const_iterator I = mParameters.find(key);
@@ -152,3 +157,6 @@ const std::string & EmberOgre::Terrain::TerrainFoliageDefinition::getParameter(c
 	}
 	return empty;
 }
+
+
+

@@ -80,6 +80,7 @@ public:
 	const TerrainLayerDefinition::StringParamStore& getParameters() const;
 	TerrainLayerDefinition::StringParamStore& getParameters();
 	const std::string& getParameter(const std::string& key) const;
+	bool hasParameter(const std::string& key) const;
 
 	void setPlantType ( const std::string& theValue );
 	const std::string& getPlantType() const;
