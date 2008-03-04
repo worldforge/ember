@@ -2,6 +2,20 @@
 <terrain>
 	<layers>
 		<layer shadername="sand" diffusetexture="3d_objects/environment/ground/textures/sand/sand_AD.png" normalmaptexture="3d_objects/environment/ground/textures/sand/sand_AN.png" tilesize="8">
+			<foliage planttype="grass" populationtechnique="cluster" rendertechnique="grass">
+				<param key="minClusterRadius">2</param>
+				<param key="maxClusterRadius">10</param>
+				<param key="clusterDistance">25</param>
+				<param key="density">2</param>
+				<param key="falloff">0.6</param>
+				<param key="material">/global/plants/grass/ducktail/single</param>
+				<param key="minHeight">2.0</param>
+				<param key="maxHeight">2.5</param>
+				<param key="minWidth">1.0</param>
+				<param key="maxWidth">1.5</param>
+				<param key="swayLength">0.25</param>
+				<param key="renderTech">quad</param>
+			</foliage>
 		</layer>
 		<layer shadername="grass" diffusetexture="3d_objects/environment/ground/textures/grass/grassD.png" normalmaptexture="3d_objects/environment/ground/textures/grass/grassN.png" tilesize="8">
 			<foliage planttype="grass" populationtechnique="cluster" rendertechnique="grass">
@@ -11,6 +25,10 @@
 				<param key="density">2</param>
 				<param key="falloff">0.6</param>
 				<param key="material">/global/plants/grass/bittergrass/single</param>
+				<param key="minHeight">1.0</param>
+				<param key="maxHeight">1.5</param>
+				<param key="minWidth">1.0</param>
+				<param key="maxWidth">1.5</param>
 			</foliage>
 			<foliage planttype="fern" populationtechnique="cluster" rendertechnique="shrubbery">
 				<param key="mesh">3d_objects/plants/shrubs/models/fern/fern.mesh</param>

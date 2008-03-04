@@ -1,3 +1,23 @@
+2008-03-05 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/moraf.terrain: added ducktails to the shore line
+
+2008-03-05 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/scripts/vegetation.material: added a ducktails material
+
+2008-03-05 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/GrassFoliage.cpp, src/components/ogre/environment/GrassFoliage.h, src/components/ogre/environment/ShrubberyFoliage.cpp: get more settings from the foliage config
+
+2008-03-05 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainGenerator.cpp, src/components/ogre/terrain/TerrainGenerator.h, src/components/ogre/terrain/TerrainPageFoliage.cpp, src/components/ogre/terrain/TerrainPageFoliage.h: use batches which can be directly queried by the TerrainPageFoliage for better performance.
+
+2008-03-05 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainLayerDefinition.cpp, src/components/ogre/terrain/TerrainLayerDefinition.h: added method for checking for a certain parameter
+
 2008-03-03 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* ember.conf: add sky config values
