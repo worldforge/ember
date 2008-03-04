@@ -53,7 +53,23 @@ namespace Environment {
 GrassFoliage::GrassFoliage(const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition)
 : FoliageBase(terrainLayerDefinition, foliageDefinition)
 , mGrassLoader(0)
+, mMinHeight(1.0f)
+, mMinWidth(1.0f)
+, mMaxHeight(1.5f)
+, mMaxWidth(1.5f)
 {
+	if (mFoliageDefinition.hasParameter("minHeight")) {
+		mMinHeight = atof(mFoliageDefinition.getParameter("minHeight").c_str());
+	}
+	if (mFoliageDefinition.hasParameter("maxHeight")) {
+		mMaxHeight = atof(mFoliageDefinition.getParameter("maxHeight").c_str());
+	}
+	if (mFoliageDefinition.hasParameter("minWidth")) {
+		mMinWidth = atof(mFoliageDefinition.getParameter("minWidth").c_str());
+	}
+	if (mFoliageDefinition.hasParameter("maxWidth")) {
+		mMaxWidth = atof(mFoliageDefinition.getParameter("maxWidth").c_str());
+	}
 }
 
 GrassFoliage::~GrassFoliage()
@@ -64,7 +80,7 @@ GrassFoliage::~GrassFoliage()
 void GrassFoliage::initialize()
 {
 	Ogre::Camera* camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
-	mPagedGeometry = new ::PagedGeometry::PagedGeometry(camera, 32);
+	mPagedGeometry = new ::PagedGeometry::PagedGeometry(camera, EmberOgre::getSingleton().getTerrainGenerator()->getFoliageBatchSize());
 	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainInfo().getWorldSizeInIndices();	
 	mPagedGeometry->setBounds(Atlas2Ogre(worldSize));
 	mPagedGeometry->addDetailLevel<PagedGeometry::GrassPage>(96);
@@ -79,18 +95,53 @@ void GrassFoliage::initialize()
 	
 	l->configure(&mTerrainLayerDefinition, &mFoliageDefinition);
 	//Configure the grass layer properties (size, density, animation properties, fade settings, etc.)
-	l->setMinimumSize(1.0f, 1.0f);
-	l->setMaximumSize(1.5f, 1.5f);
+	l->setMinimumSize(mMinWidth, mMinHeight);
+	l->setMaximumSize(mMaxWidth, mMaxHeight);
 	l->setAnimationEnabled(true);		//Enable animations
-	l->setSwayDistribution(10.0f);		//Sway fairly unsynchronized
-	l->setSwayLength(0.5f);				//Sway back and forth 0.5 units in length
-	l->setSwaySpeed(0.5f);				//Sway 1/2 a cycle every second
+	if (mFoliageDefinition.hasParameter("swayDistribution")) {
+		l->setSwayDistribution(atof(mFoliageDefinition.getParameter("swayDistribution").c_str()));
+	} else {
+		l->setSwayDistribution(10.0f);		//Sway fairly unsynchronized
+	}
+	if (mFoliageDefinition.hasParameter("swayLength")) {
+		l->setSwayLength(atof(mFoliageDefinition.getParameter("swayLength").c_str()));
+	} else {
+		l->setSwayLength(0.5f);				//Sway back and forth 0.5 units in length
+	}	
+	
+	if (mFoliageDefinition.hasParameter("swaySpeed")) {
+		l->setSwaySpeed(atof(mFoliageDefinition.getParameter("swaySpeed").c_str()));
+	} else {
+		l->setSwaySpeed(0.5f);				//Sway 1/2 a cycle every second
+	}	
+	
+	if (mFoliageDefinition.hasParameter("fadeTech")) {
+		const std::string& fadeTech(mFoliageDefinition.getParameter("fadeTech"));
+		if (fadeTech == "alphagrow") {
+			l->setFadeTechnique(::PagedGeometry::FADETECH_ALPHAGROW);	//Distant grass should slowly fade in
+		} else if (fadeTech == "grow") {
+			l->setFadeTechnique(::PagedGeometry::FADETECH_GROW);	//Distant grass should slowly fade in
+		} else {
+			l->setFadeTechnique(::PagedGeometry::FADETECH_ALPHA);	//Distant grass should slowly fade in
+		}
+	} else {
+		l->setFadeTechnique(::PagedGeometry::FADETECH_ALPHA);	//Distant grass should slowly fade in
+	}	
 // 	l->setDensity(1.5f);				//Relatively dense grass
-	l->setFadeTechnique(::PagedGeometry::FADETECH_GROW);	//Distant grass should slowly raise out of the ground when coming in range
-	l->setRenderTechnique(::PagedGeometry::GRASSTECH_CROSSQUADS);	//Draw grass as scattered quads
+	if (mFoliageDefinition.hasParameter("renderTech")) {
+		const std::string& renderTech(mFoliageDefinition.getParameter("renderTech"));
+		if (renderTech == "quad") {
+			l->setRenderTechnique(::PagedGeometry::GRASSTECH_QUAD);
+		} else if (renderTech == "sprite") {
+			l->setRenderTechnique(::PagedGeometry::GRASSTECH_SPRITE);
+		} else {
+			l->setRenderTechnique(::PagedGeometry::GRASSTECH_CROSSQUADS);	//Draw grass as scattered quads
+		}
+	} else {
+		l->setRenderTechnique(::PagedGeometry::GRASSTECH_CROSSQUADS);	//Draw grass as scattered quads
+	}	
 
-// 	l->setHeightRange(0.001f);
-	l->setMapBounds(Atlas2Ogre(worldSize));	//(0,0)-(1500,1500) is the full boundaries of the terrain
+	l->setMapBounds(Atlas2Ogre(worldSize));	
 		
 }
 

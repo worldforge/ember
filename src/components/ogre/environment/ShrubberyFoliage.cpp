@@ -69,7 +69,7 @@ ShrubberyFoliage::~ShrubberyFoliage()
 void ShrubberyFoliage::initialize()
 {
 	Ogre::Camera* camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
-	mPagedGeometry = new ::PagedGeometry::PagedGeometry(camera, 32);
+	mPagedGeometry = new ::PagedGeometry::PagedGeometry(camera, EmberOgre::getSingleton().getTerrainGenerator()->getFoliageBatchSize());
 	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainInfo().getWorldSizeInIndices();	mPagedGeometry->setBounds(Atlas2Ogre(worldSize));
 	
 	mPagedGeometry->addDetailLevel<PagedGeometry::BatchPage>(64, 32);

@@ -64,6 +64,14 @@ protected:
 	
 	::PagedGeometry::PagedGeometry* mGrass;
 	::PagedGeometry::GrassLoader<FoliageLayer>* mGrassLoader;
+	
+	float mMinHeight;
+	float mMaxHeight;
+	float mMinWidth;
+	float mMaxWidth;
+
+	
+	
 };
 
 }
