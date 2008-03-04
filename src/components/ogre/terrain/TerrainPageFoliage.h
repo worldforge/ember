@@ -62,7 +62,9 @@ public:
 	A store of plant positions. We keep this in ogre space for performance reasons.
 	*/
 	typedef std::vector<Ogre::Vector2> PlantStore;
-	typedef std::map<std::string, PlantStore> PlantStoreMap;
+	typedef std::map<int, PlantStore> PlantBatchColumn;
+	typedef std::map<int, PlantBatchColumn> PlantBatchStore;
+	typedef std::map<std::string, PlantBatchStore> PlantStoreMap;
 
 	TerrainPageFoliage(TerrainGenerator& generator, TerrainPage& page);
 	virtual ~TerrainPageFoliage();
@@ -114,7 +116,9 @@ protected:
 	Ogre::DataStreamPtr mFoliageCoverageDataStreamPtr;
 	
 	unsigned int mCoverageMapPixelWidth;
-
+	
+	void setupBatches();
+	
 };
 
 class PlantPopulator
@@ -124,7 +128,7 @@ public:
 	PlantPopulator(TerrainPageFoliage& terrainPageFoliage);
 	virtual ~PlantPopulator();
 	
-	virtual void populate(TerrainPageFoliage::PlantStore& plantStore, int plantIndex) = 0;
+	virtual void populate(TerrainPageFoliage::PlantBatchStore& plantBatchStore, int plantIndex, unsigned int batchSize) = 0;
 
 protected:
 
@@ -138,7 +142,7 @@ public:
 	ClusterPopulator(TerrainPageFoliage& terrainPageFoliage);
 	virtual ~ClusterPopulator();
 	
-	virtual void populate(TerrainPageFoliage::PlantStore& plantStore, int plantIndex);
+	virtual void populate(TerrainPageFoliage::PlantBatchStore& plantBatchStore, int plantIndex, unsigned int batchSize);
 
 	void setMinClusterRadius ( float theValue );
 	float getMinClusterRadius() const;

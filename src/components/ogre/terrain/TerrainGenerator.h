@@ -263,6 +263,12 @@ public:
 	 void getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour);
 
 	sigc::signal<void, TerrainShader*, std::vector<TerrainArea*>* > EventLayerUpdated;
+	
+	/**
+	 *    Gets the size of each foliage batch. This is used by the foliage system for setting up batch system for performance.
+	 * @return 
+	 */
+	inline unsigned int getFoliageBatchSize() const;
 
 protected:
 
@@ -369,12 +375,19 @@ protected:
 	void TerrainArea_Changed(TerrainArea* terrainArea);
 	
 	ISceneManagerAdapter* mSceneManagerAdapter;
+	
+	unsigned int mFoliageBatchSize;
 
 };
 
 const TerrainGenerator::TerrainPagestore& TerrainGenerator::getTerrainPages() const
 {
 	return mTerrainPages;
+}
+
+unsigned int TerrainGenerator::getFoliageBatchSize() const
+{
+	return mFoliageBatchSize;
 }
 
 }

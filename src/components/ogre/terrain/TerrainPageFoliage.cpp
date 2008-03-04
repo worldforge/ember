@@ -85,7 +85,7 @@ void TerrainPageFoliage::generatePlantPositions()
 	for (TerrainLayerDefinitionManager::DefinitionStore::const_iterator I = TerrainLayerDefinitionManager::getSingleton().getDefinitions().begin(); I != TerrainLayerDefinitionManager::getSingleton().getDefinitions().end(); ++I) {
 		const TerrainLayerDefinition* layerDef = *I;
 		for (TerrainLayerDefinition::TerrainFoliageDefinitionStore::const_iterator I = layerDef->getFoliages().begin(); I != layerDef->getFoliages().end(); ++I) {
-			PlantStore& plants = mPlantStores[I->getPlantType()];
+			PlantBatchStore& plants = mPlantStores[I->getPlantType()];
 	
 			if (I->getPopulationTechnique() == "cluster") {
 				ClusterPopulator populator(*this);
@@ -95,7 +95,7 @@ void TerrainPageFoliage::generatePlantPositions()
 				populator.setDensity(atof(I->getParameter("density").c_str()));
 				populator.setFalloff(atof(I->getParameter("falloff").c_str()));
 				
-				populator.populate(plants, index++);
+				populator.populate(plants, index++, mGenerator.getFoliageBatchSize());
 			}
 		}
 	}
@@ -157,8 +157,13 @@ const TerrainPageFoliage::PlantStoreMap& TerrainPageFoliage::getPlants() const
 
 void TerrainPageFoliage::getPlantsForArea(const TerrainLayerDefinition& layerDef, unsigned char threshold, const std::string& plantType, Ogre::TRect<float> area, TerrainPageFoliage::PlantStore& store)
 {
+	PlantBatchStore& plantBatchStore = mPlantStores[plantType];
 	TerrainPosition localPositionInSegment;
-	PlantStore& plants = mPlantStores[plantType];
+	const int batchX = Ogre::Math::Floor(area.left / mGenerator.getFoliageBatchSize());
+	const int batchY = Ogre::Math::Floor(area.top / mGenerator.getFoliageBatchSize());
+	PlantStore& plants = plantBatchStore[batchX][batchY];
+	store.reserve(plants.size());
+	
 	for (PlantStore::iterator I = plants.begin(); I != plants.end(); ++I) {
 		if (I->x >= area.left && I->x <= area.right && I->y >= area.top && I->y <= area.bottom) {
 			
@@ -215,6 +220,11 @@ void TerrainPageFoliage::getPlantsForArea(const TerrainLayerDefinition& layerDef
 		}
 	}
 }
+
+void TerrainPageFoliage::setupBatches()
+{
+}
+
 
 
 }
@@ -300,7 +310,7 @@ EmberOgre::Terrain::ClusterPopulator::~ ClusterPopulator()
 {
 }
 
-void EmberOgre::Terrain::ClusterPopulator::populate(EmberOgre::Terrain::TerrainPageFoliage::PlantStore & plantStore, int plantIndex)
+void EmberOgre::Terrain::ClusterPopulator::populate(EmberOgre::Terrain::TerrainPageFoliage::PlantBatchStore & plantBatchStore, int plantIndex, unsigned int batchSize)
 {
 	unsigned int coverageMapPixelWidth(mTerrainPageFoliage.getCoverageMapPixelWidth());
 	float clustersPersAxis(coverageMapPixelWidth / mClusterDistance);
@@ -311,7 +321,7 @@ void EmberOgre::Terrain::ClusterPopulator::populate(EmberOgre::Terrain::TerrainP
 // 	((mTerrainPageFoliage.getTerrainPage().getWFPosition().x() * mTerrainPageFoliage.getTerrainPage().getWFPosition().x()) + (mTerrainPageFoliage.getTerrainPage().getWFPosition().y() * mTerrainPageFoliage.getTerrainPage().getWFPosition().y() + mTerrainPageFoliage.getTerrainPage().getWFPosition().y())) * (plantIndex * plantIndex * plantIndex * plantIndex) );
 	WFMath::MTRand rng(seed);
 	
-	
+	unsigned int plantCount(0);
 	for (unsigned int i = 0; i < clustersPerPage; ++i) {
 		///Pick a random position for our cluster
 		float clusterX(rng.rand(coverageMapPixelWidth));
@@ -334,13 +344,18 @@ void EmberOgre::Terrain::ClusterPopulator::populate(EmberOgre::Terrain::TerrainP
 					float plantY = offsetY + clusterY;
 					
 					if (plantX >= 0 && plantX < coverageMapPixelWidth && plantY >= 0 && plantY < coverageMapPixelWidth) {
+						const int batchX = Ogre::Math::Floor(plantX / batchSize);
+						const int batchY = Ogre::Math::Floor(plantY / batchSize);
+						EmberOgre::Terrain::TerrainPageFoliage::PlantStore& plantStore = plantBatchStore[batchX][batchY];
+						
 						plantStore.push_back(Ogre::Vector2(plantX, plantY));
+						plantCount++;
 					}
 				}
 			}
 		}
 	}
-	S_LOG_VERBOSE("Placed " << plantStore.size() << " plants.");
+	S_LOG_VERBOSE("Placed " << plantCount << " plants.");
 }
 
 

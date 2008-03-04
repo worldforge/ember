@@ -87,7 +87,8 @@ TerrainGenerator::TerrainGenerator(ISceneManagerAdapter* adapter)
 : 
 UpdateShadows("update_shadows", this, "Updates shadows in the terrain."),
 mGrassShader(0),
-hasTerrainInfo(false)
+hasTerrainInfo(false),
+mFoliageBatchSize(32)
 {
 
 	registerSceneManagerAdapter( adapter);
