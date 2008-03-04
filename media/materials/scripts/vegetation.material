@@ -368,6 +368,18 @@ material /global/plants/grass/teardrops : /base/wavinggrass
 	set_texture_alias DiffuseMap 3d_objects/plants/grass/textures/teardrops/teardrops.png
 }
 
+material /global/plants/grass/ducktail/single : /base/simple/nonculled/alphablended
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/grass/textures/ducktail/ducktail_single.png
+	technique
+	{
+		pass
+		{
+			alpha_rejection greater_equal 128
+			//depth_write off
+		}
+	}
+}
 
 // material /global/plants/shrubs/fern :  /base/normalmap/specular/nonculled/alpharejected
 material /global/plants/shrubs/fern :  /base/simple/nonculled/alphablended
