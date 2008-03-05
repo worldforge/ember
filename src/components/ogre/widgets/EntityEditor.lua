@@ -614,7 +614,9 @@ function EntityEditor.Submit_MouseClick(args)
 end
 
 function EntityEditor.DeleteButton_MouseClick(args)
-	emberServices:getServerService():deleteEntity(EntityEditor.instance.entity)
+	local entity = EntityEditor.instance.entity
+	EntityEditor.clearEditing()
+	emberServices:getServerService():deleteEntity(entity)
 	return true
 end
 
