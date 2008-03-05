@@ -25,10 +25,10 @@
 				<param key="density">2</param>
 				<param key="falloff">0.6</param>
 				<param key="material">/global/plants/grass/bittergrass/single</param>
-				<param key="minHeight">1.0</param>
-				<param key="maxHeight">1.5</param>
-				<param key="minWidth">1.0</param>
-				<param key="maxWidth">1.5</param>
+				<param key="minHeight">0.75</param>
+				<param key="maxHeight">1.25</param>
+				<param key="minWidth">0.75</param>
+				<param key="maxWidth">1.25</param>
 			</foliage>
 			<foliage planttype="fern" populationtechnique="cluster" rendertechnique="shrubbery">
 				<param key="mesh">3d_objects/plants/shrubs/models/fern/fern.mesh</param>
