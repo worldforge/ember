@@ -7,6 +7,7 @@ EntityEditor.instance.entity = nil
 EntityEditor.instance.rootMapAdapter = nil
 EntityEditor.instance.helper = nil
 EntityEditor.instance.newElements = {}
+EntityEditor.instance.deleteListener = nil
 EntityEditor.factory = nil
 EntityEditor.attributesContainer = nil
 EntityEditor.prototypes = 
@@ -90,6 +91,9 @@ function EntityEditor.clearEditing()
 		if EntityEditor.instance.outercontainer ~= nil then
 			windowManager:destroyWindow(EntityEditor.instance.outercontainer)
 		end
+		if EntityEditor.instance.deleteListener ~= nil then
+			EntityEditor.instance.deleteListener:disconnect()
+		end
 		if EntityEditor.instance.entityChangeConnection ~= nil then
 			EntityEditor.instance.entityChangeConnection:disconnect()
 		end
@@ -113,6 +117,9 @@ function EntityEditor.editEntity(entity)
 	--show the bounding boxes by default when editing
 	EntityEditor.instance.entity:showOgreBoundingBox(false)
 	EntityEditor.instance.entity:showErisBoundingBox(true)
+	
+	EntityEditor.instance.deleteListener = EmberOgre.LuaConnector:new_local(entity.BeingDeleted):connect("EntityEditor.Entity_BeingDeleted")
+	
 	
 	EntityEditor.refreshChildren(entity)
 	EntityEditor.refreshModelInfo(entity)
@@ -615,7 +622,7 @@ end
 
 function EntityEditor.DeleteButton_MouseClick(args)
 	local entity = EntityEditor.instance.entity
-	EntityEditor.clearEditing()
+-- 	EntityEditor.clearEditing()
 	emberServices:getServerService():deleteEntity(entity)
 	return true
 end
@@ -695,6 +702,11 @@ function EntityEditor.Entity_Changed(attributes)
 		EntityEditor.listenForChanges = false
 		EntityEditor.editEntity(EntityEditor.instance.entity)
 	end
+end
+
+--we need to clean up when the entity is deleted, so we don't cause segfaults when trying to access a null ref
+function EntityEditor.Entity_BeingDeleted()
+	EntityEditor.clearEditing()
 end
 
 

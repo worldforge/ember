@@ -1,5 +1,17 @@
 2008-03-05 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* src/components/ogre/widgets/EntityEditor.lua: listen for the delete event instead to guarantee that we never try to use a deleted object
+
+2008-03-05 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/moraf.terrain: tweak the foliage
+
+2008-03-05 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/EntityEditor.lua: clear after deleting to avoid segfaults when refreshing
+
+2008-03-05 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* src/components/ogre/modeldefinitions/moraf.terrain: added ducktails to the shore line
 
 2008-03-05 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
