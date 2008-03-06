@@ -1,3 +1,15 @@
+2008-03-07 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/FoliageBase.cpp, src/components/ogre/environment/FoliageBase.h: listen for when new shaders are added and reload the foliage if so. This will fix a problem where foliage wasn't reloaded when new paths were added.
+
+2008-03-07 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/EmberEntityLoader.cpp, src/components/ogre/environment/EmberEntityLoader.h, src/components/ogre/environment/Forest.cpp: added support for batching entities together for faster lookup, though we need to do some benchmark to see whether this really speeds things up
+
+2008-03-07 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainGenerator.cpp, src/components/ogre/terrain/TerrainGenerator.h: added an event for when a new TerrainShader is created. This will be useful for foliage, which needs to be updated when new areas are added
+
 2008-03-05 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/widgets/EntityEditor.lua: listen for the delete event instead to guarantee that we never try to use a deleted object

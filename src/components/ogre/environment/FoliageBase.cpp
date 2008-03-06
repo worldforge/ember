@@ -58,7 +58,8 @@ FoliageBase::FoliageBase(const Terrain::TerrainLayerDefinition& terrainLayerDefi
 {
 	initializeDependentLayers();
 	
- 	EmberOgre::getSingleton().getTerrainGenerator()->EventLayerUpdated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainGenerator_LayerUpdated));
+	EmberOgre::getSingleton().getTerrainGenerator()->EventLayerUpdated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainGenerator_LayerUpdated));
+	EmberOgre::getSingleton().getTerrainGenerator()->EventShaderCreated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainGenerator_EventShaderCreated));
 	
 }
 
@@ -110,6 +111,13 @@ void FoliageBase::TerrainGenerator_LayerUpdated(Terrain::TerrainShader* shader, 
 			}	
 		}
 	}
+}
+
+void FoliageBase::TerrainGenerator_EventShaderCreated(Terrain::TerrainShader* shader)
+{
+	///we'll assume that all shaders that are created after this foliage has been created will affect it, so we'll add it to the dependent layers and reload the geometry
+	mDependentDefinitions.push_back(shader->getLayerDefinition());
+	mPagedGeometry->reloadGeometry();
 }
 
 }

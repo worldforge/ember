@@ -66,6 +66,7 @@ protected:
 	
 	void initializeDependentLayers();
 	void TerrainGenerator_LayerUpdated(Terrain::TerrainShader* shader, std::vector<Terrain::TerrainArea*>* areas);
+	void TerrainGenerator_EventShaderCreated(Terrain::TerrainShader* shader);
 
 };
 
