@@ -256,13 +256,22 @@ public:
 	
 	
 	/**
-	 *    Gets the shadow colour at the supplied position.
-	 * @param position The position in the world.
-	 */
-	 void getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour);
-	 void getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour);
+	*    Gets the shadow colour at the supplied position.
+	* @param position The position in the world.
+	*/
+	void getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour);
+	void getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour);
 
+	/**
+	Emitted when a layer is updated.
+	The vector parameter is either null if the update can't be constrained to any areas, or an vector of areas if it can.
+	*/
 	sigc::signal<void, TerrainShader*, std::vector<TerrainArea*>* > EventLayerUpdated;
+	
+	/**
+	Emitted when a new shader is created.
+	*/
+	sigc::signal<void, TerrainShader*> EventShaderCreated;
 	
 	/**
 	 *    Gets the size of each foliage batch. This is used by the foliage system for setting up batch system for performance.

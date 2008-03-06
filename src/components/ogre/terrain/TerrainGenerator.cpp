@@ -198,6 +198,7 @@ TerrainShader* TerrainGenerator::createShader(const TerrainLayerDefinition* laye
 
 	mBaseShaders.push_back(shader);
 	mShaderMap[shader->getShader()] = shader;
+	EventShaderCreated.emit(shader);
 	return shader;
 }
 
