@@ -25,11 +25,16 @@
 
 #include "pagedgeometry/include/PagedGeometry.h"
 
+//if set to 1 batches will be used
+//this will speed up the process of getting trees, but will add overhead to adding or removing
+#define USEBATCH 0
+
 namespace EmberOgre {
 
 class EmberPhysicalEntity;
 
 namespace Environment {
+
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
@@ -38,7 +43,11 @@ class EmberEntityLoader : public ::PagedGeometry::PageLoader
 {
 public:
 	typedef std::map<std::string, EmberPhysicalEntity*> EntityMap;
-    EmberEntityLoader(::PagedGeometry::PagedGeometry *geom);
+	typedef std::map<int, EntityMap> EntityColumn;
+	typedef std::map<int, EntityColumn> EntityStore;
+	typedef std::map<EmberPhysicalEntity*, std::pair<int, int> > EntityLookup;
+	
+    EmberEntityLoader(::PagedGeometry::PagedGeometry *geom, unsigned int batchSize);
 
     virtual ~EmberEntityLoader();
     
@@ -48,9 +57,16 @@ public:
 	virtual void loadPage(::PagedGeometry::PageInfo &page);
    
 protected:
-	::PagedGeometry::PagedGeometry *mGeom;
+#if USEBATCH
+	EntityStore mEntities;
+	EntityLookup mEntityLookup;
+#else
 	EntityMap mEntities;
+#endif
+	
+	::PagedGeometry::PagedGeometry *mGeom;
 
+	unsigned int mBatchSize;
 };
 
 }

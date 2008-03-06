@@ -38,8 +38,8 @@ namespace EmberOgre {
 
 namespace Environment {
 
-EmberEntityLoader::EmberEntityLoader(::PagedGeometry::PagedGeometry *geom)
-: mGeom(geom)
+EmberEntityLoader::EmberEntityLoader(::PagedGeometry::PagedGeometry *geom, unsigned int batchSize)
+: mGeom(geom), mBatchSize(batchSize)
 {
 }
 
@@ -50,24 +50,53 @@ EmberEntityLoader::~EmberEntityLoader()
 
 void EmberEntityLoader::addEmberEntity(EmberPhysicalEntity * entity)
 {
-	mEntities[entity->getId()] = entity;
-// 	entity->setVisible(false);
-	//Rebuild geometry if necessary
-	mGeom->reloadGeometryPage(entity->getSceneNode()->getWorldPosition());
+	Ogre::Vector3 position(entity->getSceneNode()->getWorldPosition());
+#if USEBATCH
+	const int batchX = Ogre::Math::Floor(position.x / mBatchSize);
+	const int batchY = Ogre::Math::Floor(position.y / mBatchSize);
+	mEntityLookup[entity] = std::pair<int, int>(batchX, batchY);
+	
+	EntityMap& entities(mEntities[batchX][batchY]);
+#else
+	EntityMap& entities(mEntities);
+#endif
+	
+	entities[entity->getId()] = entity;
+
+	///Rebuild geometry if necessary
+	mGeom->reloadGeometryPage(position);
+
 
 }
 
 void EmberEntityLoader::removeEmberEntity(EmberPhysicalEntity * entity)
 {
+#if USEBATCH
+	EntityLookup::iterator I = mEntityLookup.find(entity);
+	if (I != mEntityLookup.end()) {
+		mEntities[I->second.first][I->second.second].erase(entity->getId());
+	}
+#else
 	mEntities.erase(entity->getId());
-	//Rebuild geometry if necessary
+#endif
+	///Rebuild geometry if necessary
 	mGeom->reloadGeometryPage(entity->getSceneNode()->getWorldPosition());
 }
 
 void EmberEntityLoader::loadPage(::PagedGeometry::PageInfo & page)
 {
 	static Ogre::ColourValue colour(1,1,1,1);
-	for (EntityMap::iterator I = mEntities.begin(); I != mEntities.end(); ++I) {
+	
+	const int batchX = Ogre::Math::Floor(page.bounds.left/ mBatchSize);
+	const int batchY = Ogre::Math::Floor(page.bounds.top / mBatchSize);
+	
+#if USEBATCH
+	EntityMap& entities(mEntities[batchX][batchY]);
+#else
+	EntityMap& entities(mEntities);
+#endif
+	
+	for (EntityMap::iterator I = entities.begin(); I != entities.end(); ++I) {
 		EmberPhysicalEntity* emberEntity(I->second);
 		Ogre::SceneNode* sceneNode(emberEntity->getSceneNode());
 		const Ogre::Vector3& pos(sceneNode->getWorldPosition());
