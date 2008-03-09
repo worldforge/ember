@@ -1,7 +1,5 @@
 ## Process this file with autoconf to produce a configure script.
 AC_INIT(Ember, 0.5.2, clients@worldforge.org)
-AC_DEFINE(MEDIA_VERSION, "0.5.2", [What media version to use.])
-AC_SUBST(MEDIA_VERSION, "0.5.2")
 
 AC_CONFIG_SRCDIR(src)
 
@@ -495,7 +493,18 @@ AC_MSG_RESULT([
 
 		**************************************
 		* Finished.  Run make to compile Ember.
-		* Note that you also need to install the media which is distributed in a separate archive.
+		* Note that you also need to install the media. This can be gotten in a couple of different ways.
+		* The easiest way is to use the rsync make target (which uses the rsync program to update the media.).
+		* If you're compiling from cvs and want to use the development version, do:
+		*
+		* make devmedia
+		*
+		* If you're using a release version, you should however instead do:
+		*
+		* make releasemediarsync
+		*
+		* A third way is to get the media tarball directly. This only works for release versions however.
+		* You can find these media tarballs at http://amber.worldforge.org/WFUT .
 		* The media should be installed to PREFIX/share/ember/media
 		* so that you get PREFIX/share/ember/media/user and PREFIX/share/ember/media/shared.
 		* More information can be found at the Ember page at http://www.worldforge.org
