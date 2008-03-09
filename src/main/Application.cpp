@@ -158,7 +158,7 @@ void Application::initializeServices()
 	mLogOutStream = std::auto_ptr<std::ofstream>(new std::ofstream(filename.c_str()));
 	
 	///write to the log the version number
-	*mLogOutStream << "Ember version " << VERSION << ", using media version " << MEDIA_VERSION << std::endl;
+	*mLogOutStream << "Ember version " << VERSION << std::endl;
 	
 	mLogObserver = new LogObserver(*mLogOutStream);
 	logging->addObserver(mLogObserver);
@@ -192,6 +192,7 @@ void Application::initializeServices()
 	///make sure that there are files 
 	///assureConfigFile("ember.conf", sharePath);
 
+	///load the config file. Note that this will load the shared config file, and then the user config file if available (~/.ember/ember.conf)
 	EmberServices::getSingleton().getConfigService()->loadSavedConfig("ember.conf");
 	///after loading the config from file, override with command time settings
 	for (ConfigMap::iterator I = mConfigSettings.begin(); I != mConfigSettings.end(); ++I) {
@@ -200,6 +201,9 @@ void Application::initializeServices()
 		}
 	}
 
+	S_LOG_INFO("Using media from " << EmberServices::getSingleton().getConfigService()->getEmberMediaDirectory());
+
+///the sound service is currently disable since it's incomplete
 // #ifndef WIN32
 // 	/// Initialize the SoundService
 // 	if (EmberServices::getSingleton().getSoundService()->start() == Ember::Service::OK) {
