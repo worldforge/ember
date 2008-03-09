@@ -69,6 +69,7 @@ public:
      * @return 
      */
     SimpleRenderContext(const std::string& prefix, int width, int height);
+    SimpleRenderContext(const std::string& prefix, Ogre::TexturePtr texturePtr);
 
     ~SimpleRenderContext();
     
@@ -175,6 +176,8 @@ public:
     
     Ogre::SceneNode* getCameraRootNode() const;
     
+    Ogre::Viewport* getViewport() const;
+    
     /**
      * Gets the main light.
      * @return 
@@ -196,6 +199,7 @@ public:
      */
     void setBackgroundColour(float red, float green, float blue, float alpha);
     
+    void setTexture(Ogre::TexturePtr texture);
 private:
 
 	/**
@@ -234,6 +238,8 @@ private:
 	 * @param imageSetName 
 	 */
 	void createCamera(const std::string& prefix);
+	
+	void setupScene(const std::string& prefix);
 	
 	/**
 	The node to which the camera is attached.

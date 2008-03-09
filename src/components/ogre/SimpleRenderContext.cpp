@@ -52,38 +52,17 @@ SimpleRenderContext::SimpleRenderContext(const std::string& prefix, int width, i
 : mMainLight(0), mSceneManager(0), mWidth(width), mHeight(height), mRenderTexture(0), mCameraNode(0), mCameraPitchNode(0), mEntityNode(0), mRootNode(0), mCamera(0), mViewPort(0), mResourceLoader(*this)
 {
 
-	S_LOG_VERBOSE("Creating new SimpleRenderContext for prefix " << prefix  << " with w:" << mWidth << " h:" << mHeight);
-	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, prefix + "_sceneManager");
-	mSceneManager->setFog(Ogre::FOG_NONE, Ogre::ColourValue(1,1,1,1), 0.0f, 10000000.0f, 100000001.0f);
-
-	mRootNode = mSceneManager->getRootSceneNode();
-	
-	
-	mEntityNode = mRootNode->createChildSceneNode();
-
-	///make the cameranode a child of the main entity node
-	mCameraNode = mRootNode->createChildSceneNode();
-	
-	mCameraPitchNode = mCameraNode->createChildSceneNode();
-	
-	createCamera(prefix);
+	setupScene(prefix);
 	createImage(prefix);
-	//setVisible(false);
-	Ogre::ColourValue colour(0.5, 0.5, 0.5);
-	mMainLight = mSceneManager->createLight("MainLight");
-  	mMainLight->setType(Ogre::Light::LT_DIRECTIONAL);
-	mMainLight->setDirection(Ogre::Vector3(-1,0,0));
-	mMainLight->setPowerScale (10);	// REALLY bright.
-	mMainLight->setDiffuseColour (colour);
-	mMainLight->setSpecularColour (colour);
-	mMainLight->setVisible(true);
-
-	mSceneManager->setAmbientLight(colour);
-	mCameraPitchNode->attachObject(mMainLight);
-	
-	resetCameraOrientation();
 }
 
+SimpleRenderContext::SimpleRenderContext(const std::string& prefix, Ogre::TexturePtr texture)
+: mMainLight(0), mSceneManager(0), mWidth(texture->getWidth()), mHeight(texture->getHeight()), mRenderTexture(0), mCameraNode(0), mCameraPitchNode(0), mEntityNode(0), mRootNode(0), mCamera(0), mViewPort(0), mResourceLoader(*this)
+{
+
+	setupScene(prefix);
+	setTexture(texture);
+}
 
 SimpleRenderContext::~SimpleRenderContext()
 {
@@ -100,6 +79,40 @@ SimpleRenderContext::~SimpleRenderContext()
 	mSceneManager->destroyAllMovableObjectsByType(Model::Model::sMovableType);
 	Ogre::Root::getSingleton().destroySceneManager(mSceneManager);
 }
+
+void SimpleRenderContext::setupScene(const std::string& prefix)
+{
+	S_LOG_VERBOSE("Creating new SimpleRenderContext for prefix " << prefix  << " with w:" << mWidth << " h:" << mHeight);
+	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, prefix + "_sceneManager");
+	mSceneManager->setFog(Ogre::FOG_NONE, Ogre::ColourValue(1,1,1,1), 0.0f, 10000000.0f, 100000001.0f);
+
+	mRootNode = mSceneManager->getRootSceneNode();
+	
+	
+	mEntityNode = mRootNode->createChildSceneNode();
+
+	///make the cameranode a child of the main entity node
+	mCameraNode = mRootNode->createChildSceneNode();
+	
+	mCameraPitchNode = mCameraNode->createChildSceneNode();
+	
+	createCamera(prefix);
+	//setVisible(false);
+	Ogre::ColourValue colour(0.5, 0.5, 0.5);
+	mMainLight = mSceneManager->createLight("MainLight");
+  	mMainLight->setType(Ogre::Light::LT_DIRECTIONAL);
+	mMainLight->setDirection(Ogre::Vector3(-1,0,0));
+	mMainLight->setPowerScale (10);	// REALLY bright.
+	mMainLight->setDiffuseColour (colour);
+	mMainLight->setSpecularColour (colour);
+	mMainLight->setVisible(true);
+
+	mSceneManager->setAmbientLight(colour);
+	mCameraPitchNode->attachObject(mMainLight);
+	
+	resetCameraOrientation();
+}
+
 
 Ogre::SceneNode* SimpleRenderContext::getSceneNode() const
 {
@@ -206,6 +219,11 @@ Ogre::TexturePtr SimpleRenderContext::getTexture()
 	return mTexture;
 }
 
+Ogre::Viewport* SimpleRenderContext::getViewport() const
+{
+	return mViewPort;
+}
+
 
 void SimpleRenderContext::createImage(const std::string& prefix)
 {
@@ -216,6 +234,9 @@ void SimpleRenderContext::createImage(const std::string& prefix)
 	
 	Ogre::Real aspectRatio = static_cast<float>(mWidth) / static_cast<float>(mHeight);
 	
+	S_LOG_VERBOSE("Setting aspect ratio of camera to " << aspectRatio);
+	mCamera->setAspectRatio(aspectRatio);
+	
 	///the width and height needs to be multipes of 2
 	mWidth = Ogre::Bitwise::firstPO2From(mWidth); 
 	mHeight = Ogre::Bitwise::firstPO2From(mHeight); 
@@ -223,32 +244,35 @@ void SimpleRenderContext::createImage(const std::string& prefix)
 	
 	///first, create a RenderTexture to which the Ogre renderer should render the image
 	S_LOG_VERBOSE("Creating new rendertexture " << (prefix + "_SimpleRenderContextRenderTexture") << " with w:" << mWidth << " h:" << mHeight);
-	mTexture = Ogre::TextureManager::getSingleton().createManual(prefix + "_SimpleRenderContextRenderTexture", "Gui", Ogre::TEX_TYPE_2D, mWidth, mHeight, 0, Ogre::PF_A8R8G8B8,Ogre::TU_RENDERTARGET, &mResourceLoader);
-	if (mTexture.isNull()) {
+	Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().createManual(prefix + "_SimpleRenderContextRenderTexture", "Gui", Ogre::TEX_TYPE_2D, mWidth, mHeight, 0, Ogre::PF_A8R8G8B8,Ogre::TU_RENDERTARGET, &mResourceLoader);
+	if (texture.isNull()) {
 		S_LOG_WARNING("Could not create a texture.");
 		return;
 	}
 	
-	
-	mRenderTexture = mTexture->getBuffer()->getRenderTarget();
+	setTexture(texture);
+}
+
+void SimpleRenderContext::setTexture(Ogre::TexturePtr texture)
+{
+	if (mRenderTexture) {
+		mRenderTexture->removeAllViewports();
+	}
+	mTexture = texture;
+	mRenderTexture = texture->getBuffer()->getRenderTarget();
 	mRenderTexture->setAutoUpdated(false);
-	
-	S_LOG_VERBOSE("Removing viewports.");
-	mRenderTexture->removeAllViewports();
 	///initially deactivate it until setActive(true) is called
 	mRenderTexture->setActive(false);
-	S_LOG_VERBOSE("Setting aspect ratio of camera to " << aspectRatio);
-	mCamera->setAspectRatio(aspectRatio);
-	///make sure the camera renders into this new texture
+	
 	S_LOG_VERBOSE("Adding camera.");
 	mViewPort = mRenderTexture->addViewport(mCamera);
+	///make sure the camera renders into this new texture
 	///this should preferrably be a transparent background, so that CEGUI could itself decide what to show behind it, but alas I couldn't get it to work, thus black
 	mViewPort->setBackgroundColour(Ogre::ColourValue::Black);
 //	mViewPort->setBackgroundColour(Ogre::ColourValue::ZERO);
 	///don't show the CEGUI
 	mViewPort->setOverlaysEnabled(false);
 	///the cegui renderer wants a TexturePtr (not a RenderTexturePtr), so we just ask the texturemanager for texture we just created (rttex)
-	
 
 }
 
