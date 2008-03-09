@@ -372,7 +372,7 @@
 		</submodels>
 	</model>	
 	
-	<model name="goblin" usescaleof="height" showcontained="false">
+	<!--<model name="goblin" usescaleof="height" showcontained="false">
 		<translate x="0" y="0" z="0" />
 		<submodels>
 			<submodel mesh="3d_skeletons/bipeds/models/goblin/goblin.mesh">
@@ -439,7 +439,7 @@
 		<attachpoints>
 			<attachpoint name="right_hand_wield" bone="RightHand" />
 		</attachpoints>
-	</model>
+	</model>-->
 
 	
 	<model name="horse" usescaleof="height" showcontained="true">

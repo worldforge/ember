@@ -12,13 +12,13 @@
                             <subentity index="3" material="/global/items/ossyja/old_wood_planks" />
                         </subentities>
                     </part>
-                    <part name="canvas_blue_green" show="true" group="canvas">
+                    <part name="canvas_blue_green" group="canvas" show="true">
                         <subentities>
                             <subentity index="1" material="/global/items/building_element/marketstall/blue_green_canvas_details" />
                             <subentity index="2" material="/global/items/building_element/marketstall/blue_green_canvas_main" />
                         </subentities>
                     </part>
-                    <part name="canvas" show="false" group="canvas">
+                    <part name="canvas" group="canvas" show="false">
                         <subentities>
                             <subentity index="1" material="/global/items/building_element/marketstall/canvas_details" />
                             <subentity index="2" material="/global/items/building_element/marketstall/canvas_main" />
@@ -29,6 +29,11 @@
         </submodels>
         <actions />
         <attachpoints />
-        <views />
+        <views>
+            <view name="icon">
+                <distance>0</distance>
+                <rotation x="0.201969" y="-0.547916" z="-0.811786" degrees="141.141754" />
+            </view>
+        </views>
     </model>
 </models>

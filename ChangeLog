@@ -1,3 +1,39 @@
+2008-03-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/cg_house.modeldef, src/components/ogre/modeldefinitions/creatures.modeldef.xml, src/components/ogre/modeldefinitions/goblin.modeldef, src/components/ogre/modeldefinitions/house3.modeldef, src/components/ogre/modeldefinitions/marketstall_canvasA.modeldef, src/components/ogre/modeldefinitions/marketstall_canvasB.modeldef, src/components/ogre/modeldefinitions/marketstall_canvasC.modeldef: updated model definitions
+
+2008-03-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/SimpleRenderContext.cpp, src/components/ogre/SimpleRenderContext.h: allow the specification of an external render target. This will be useful for optimizations of the icon rendering.
+
+2008-03-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* configure.ac:  don't use the MEDIA_VERSION variable anymore and added some info about the new media installation make targets
+
+2008-03-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* Makefile.am: added scripts for automatically updating the media through rsync
+
+2008-03-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* make_dist_media.sh.in: expand the script with functionality for specifying destination directoy as well as some bug fixes
+
+2008-03-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* ember.in: don't use the MEDIA_VERSION variable anymore
+
+2008-03-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* ember.conf: use the ember-dev channel by default, since this is most suited for developers. At release time we must remember to switch to the release version channel
+
+2008-03-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/main/Application.cpp: don't use the MEDIA_VERSION variable anymore
+
+2008-03-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/services/config/ConfigService.cpp: don't use the MEDIA_VERSION variable anymore, instead use the wfut:channel variable to determine what media to use, and fall back to VERSION. Also, check for existence of a user config file to avoid getting log error when trying to open it (confuses users).
+
 2008-03-07 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/environment/FoliageBase.cpp, src/components/ogre/environment/FoliageBase.h: listen for when new shaders are added and reload the foliage if so. This will fix a problem where foliage wasn't reloaded when new paths were added.

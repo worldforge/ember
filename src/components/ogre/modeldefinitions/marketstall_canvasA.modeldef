@@ -29,6 +29,11 @@
         </submodels>
         <actions />
         <attachpoints />
-        <views />
+        <views>
+            <view name="icon">
+                <distance>0</distance>
+                <rotation x="0.201969" y="-0.547916" z="-0.811786" degrees="141.141754" />
+            </view>
+        </views>
     </model>
 </models>
