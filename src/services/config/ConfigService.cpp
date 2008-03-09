@@ -37,6 +37,8 @@
 #include <shlwapi.h>
 #endif
 
+// #include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -144,8 +146,21 @@ namespace Ember
     {
 		S_LOG_INFO("Loading shared config file from " << getSharedConfigDirectory() + "/"+ filename << ".");
 		bool success = varconf::Config::inst()->readFromFile(getSharedConfigDirectory() + "/"+ filename, varconf::GLOBAL);
-    	S_LOG_INFO("Loading user config file from "<< getHomeDirectory() + "/" + filename <<".");
-		success = varconf::Config::inst()->readFromFile(getHomeDirectory() + "/" + filename, varconf::USER) || success;
+		std::string userConfigPath(getHomeDirectory() + "/" + filename);
+		std::ifstream file(userConfigPath.c_str());
+		if (!file.fail()) {
+			S_LOG_INFO("Loading user config file from "<< getHomeDirectory() + "/" + filename <<".");
+			try {
+				varconf::Config::inst()->parseStream(file, varconf::USER);
+			} catch (varconf::ParseError p) {
+			    std::string p_str(p);
+				S_LOG_FAILURE("Error loading user config file: " << p_str);
+				return false;
+			}
+		} else {
+			S_LOG_INFO("Could not find any user config file.");
+		}
+
 		return success;
     }
 
@@ -288,7 +303,13 @@ namespace Ember
 
 	const std::string& ConfigService::getEmberMediaDirectory() const
 	{
-		static std::string path(getEmberDataDirectory() + "/ember-media-" + std::string(MEDIA_VERSION) + "/");
+		static std::string path;
+		///look for a media channel key in the config, and if found use that, else use the version of ember as a standard path
+		if (itemExists("wfut", "channel")) {
+			path = getEmberDataDirectory() + "/" + static_cast<std::string>(getValue("wfut", "channel")) + "/";
+		} else {
+			path = getEmberDataDirectory() + "/ember-media-" + std::string(VERSION) + "/";
+		}
 		return path;
 	}
 
