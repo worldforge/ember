@@ -75,7 +75,7 @@ case "$1" in
   ;;
 esac
 
-media_dir="${homedata}/ember-media-@MEDIA_VERSION@"
+media_dir="${homedata}/ember-media-@VERSION@"
 
 
 # Create dir if required 
@@ -98,6 +98,7 @@ else
 	fi
 fi
 
+#TODO: move this from here into the ember executable
 if [ ! -d $media_dir ] ; then
 	echo "Copying dynamic data to user directory"
 	cp -dpR $media_user_dir $media_dir
