@@ -1,8 +1,14 @@
 #! /bin/sh
-textureSize=$1
+
+#automates the creation of the needed media
+#usage: ./make_dist_media.sh <local directory> <image pixel max with/height>
+#example: ./make_dist_media.sh media-dev 256
+#note that the script must be run in the ember source root dir
+
 current=${PWD}
+media_dir=${current}/$1
+textureSize=$2
 original_media=${PWD}/media
-media_dir=${current}/ember-media-@MEDIA_VERSION@
 user_dir=${media_dir}/media/user
 shared_dir=${media_dir}/media/shared
 
@@ -60,7 +66,7 @@ cd ${original_media}/sounds; tar cf - `find . -iname \*.wav` | ( cd ${shared_dir
 
 echo "Copying packs"
 cd ${shared_dir}
-grep -rIE --no-filename "Zip\[shared\]=.*" ${current}/src/components/ogre/resources.cfg | sed -e 's/Zip\[shared\]=//g' > shared_packs.list
+grep -rIE --no-filename "^Zip\[shared\]=.*" ${current}/src/components/ogre/resources.cfg | sed -e 's/Zip\[shared\]=//g' > shared_packs.list
 cd ${original_media} ; tar cf - `cat ${shared_dir}/shared_packs.list ` | ( cd ${shared_dir}/; tar xvf -)
 
 
@@ -114,7 +120,7 @@ cd ${original_media}/particle ; tar cf - `find . -iname \*.particle` | ( cd ${us
 
 echo "Copying packs"
 cd ${user_dir}
-grep -rIE --no-filename "Zip\[user\]=.*" ${current}/src/components/ogre/resources.cfg | sed -e 's/Zip\[user\]=//g' > user_packs.list
+grep -rIE --no-filename "^Zip\[user\]=.*" ${current}/src/components/ogre/resources.cfg | sed -e 's/Zip\[user\]=//g' > user_packs.list
 cd ${original_media} ; tar cf - `cat ${user_dir}/user_packs.list ` | ( cd ${user_dir}/; tar xvf -)
 
 
