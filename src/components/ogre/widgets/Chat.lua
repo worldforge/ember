@@ -15,7 +15,7 @@ consoleInputWindow = nil
 --Set up the widget.
 function Chat.buildWidget()
 	Chat.widget:loadMainSheet("Chat.layout", "Chat/")
-	Chat.widget:registerConsoleVisibilityToggleCommand("chat")
+-- 	Chat.widget:registerConsoleVisibilityToggleCommand("chat")
 	Chat.widget:enableCloseButton();
 	
 	Chat.gameTextWindow = CEGUI.toMultiLineEditbox(Chat.widget:getWindow("GameTextBox"))
