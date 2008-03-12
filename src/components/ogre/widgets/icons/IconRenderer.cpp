@@ -32,8 +32,6 @@
 #include "../../model/ModelDefinition.h"
 #include "../../SimpleRenderContext.h"
 
-// #include <SDL.h>
-
 namespace EmberOgre {
 
 namespace Gui {
@@ -70,13 +68,15 @@ void IconRenderer::render(const std::string& modelName, Icon* icon)
 
 void IconRenderer::render(Model::Model* model, Icon* icon)
 {
-	mWorker->render(model, icon);
+	mWorker->render(model, icon, icon->getImageStoreEntry());
 }
 
 void IconRenderer::performRendering(Model::Model* model, Icon* icon)
 {
 	
 	if (model) {
+// 		icon->getImageStoreEntry()->getTexture()->get
+	
 		Ogre::SceneNode* node = mRenderContext->getSceneNode();
 		
 		node->detachAllObjects();
@@ -104,8 +104,7 @@ void IconRenderer::performRendering(Model::Model* model, Icon* icon)
 		
 		///the problem with PBuffer and Copy might be that we need to wait a little before we try to blit, since it's not guaranteed that the content will be correctly rendered (since the render ops are queued to the GPU)
 		///thus we need to create some kind of frame listener callback mechanism
-
-		mRenderContext->getRenderTexture()->update();
+ 		mRenderContext->getViewport()->update();
 		
 // 		SDL_Delay(1000);
 // 		blitRenderToIcon(icon);
@@ -192,10 +191,15 @@ DirectRendererWorker::~DirectRendererWorker()
 {
 }
 
-void DirectRendererWorker::render(Model::Model* model, Icon* icon)
+void DirectRendererWorker::render(Model::Model* model, Icon* icon, IconImageStoreEntry* imageStoreEntry)
 {
+	///set the viewport to render into the icon texture
+	mRenderer.getRenderContext()->setTexture(imageStoreEntry->getTexture());
+	Ogre::TRect<float> iconBox(imageStoreEntry->getRelativeBox());
+	mRenderer.getRenderContext()->getViewport()->setDimensions(iconBox.left, iconBox.top, iconBox.right - iconBox.left, iconBox.bottom - iconBox.top);
+
 	mRenderer.performRendering(model, icon);
-	mRenderer.blitRenderToIcon(icon);
+// 	mRenderer.blitRenderToIcon(icon);
 	mRenderer.getRenderContext()->getSceneManager()->destroyMovableObject(model);
 }
 
@@ -242,7 +246,7 @@ DelayedIconRendererWorker::DelayedIconRendererWorker(IconRenderer& renderer)
 	Ogre::Root::getSingleton().addFrameListener(this);
 }
 
-void DelayedIconRendererWorker::render(Model::Model* model, Icon* icon)
+void DelayedIconRendererWorker::render(Model::Model* model, Icon* icon, IconImageStoreEntry* imageStoreEntry)
 {
 	DelayedIconRendererEntry entry(*this, model, icon);
 	entries.push(entry);

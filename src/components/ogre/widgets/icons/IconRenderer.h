@@ -41,6 +41,7 @@ namespace Icons {
 
 class Icon;
 class IconRenderer;
+class IconImageStoreEntry;
 class DelayedIconRendererWorker;
 
 /**
@@ -96,9 +97,10 @@ public:
      * @param model The model to render. Note that it's the responsibility of this class to make sure that's it's properly destroyed after use.
      * @param icon 
      */
-    virtual void render(Model::Model* model, Icon* icon) = 0;
+    virtual void render(Model::Model* model, Icon* icon, IconImageStoreEntry* imageStoreEntry) = 0;
 protected:
 	IconRenderer& mRenderer;
+	IconImageStoreEntry* mImageStoreEntry;
 };
 
 /**
@@ -119,7 +121,7 @@ public:
      * @param model 
      * @param icon 
      */
-    void render(Model::Model* model, Icon* icon);
+    void render(Model::Model* model, Icon* icon, IconImageStoreEntry* imageStoreEntry);
 
 
 protected:
@@ -162,7 +164,7 @@ public:
      * @param model 
      * @param icon 
      */
-     void render(Model::Model* model, Icon* icon);
+     void render(Model::Model* model, Icon* icon, IconImageStoreEntry* imageStoreEntry);
 };
 
 /**

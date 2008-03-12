@@ -85,8 +85,10 @@ std::string mModelName;
 IconManager::IconManager()
 : mIconRenderer("IconManager", 64)
 {
+//if the direct renderer is activated you must also update IconImageStore so that a RenderTarget texture is used
 // 	mIconRenderer.setWorker(new DirectRendererWorker(mIconRenderer));
-	mIconRenderer.setWorker(new DelayedIconRendererWorker(mIconRenderer));
+
+ 	mIconRenderer.setWorker(new DelayedIconRendererWorker(mIconRenderer));
 }
 
 

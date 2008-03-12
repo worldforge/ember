@@ -91,6 +91,18 @@ Ogre::Image::Box IconImageStoreEntry::getBox()
 	return box;
 }
 
+Ogre::TRect<float> IconImageStoreEntry::getRelativeBox()
+{
+/*	float width(mIconImageStore.getImage()->getWidth());
+	float height(mIconImageStore.getImage()->getHeight());*/
+	
+	float imageSize = static_cast<float>(mIconImageStore.mImageSize);
+	
+	Ogre::TRect<float> box(static_cast<float>(mPixelPosInImageset.first) / imageSize, static_cast<float>(mPixelPosInImageset.second) / imageSize, static_cast<float>(mPixelPosInImageset.first + mIconImageStore.mIconSize) / imageSize, static_cast<float>(mPixelPosInImageset.second + mIconImageStore.mIconSize) / imageSize);
+	return box;
+}
+
+
 IconImageStore::IconImageStore(const std::string& imagesetName)
 : mImagesetName(imagesetName)
 , mIconSize(64)
@@ -137,6 +149,8 @@ IconImageStore::~IconImageStore()
 
 void IconImageStore::createImageset()
 {
+// 	mTexPtr = Ogre::TextureManager::getSingleton().createManual(mImagesetName, "Gui", Ogre::TEX_TYPE_2D, mImageSize, mImageSize, 0, Ogre::PF_A8R8G8B8,Ogre::TU_RENDERTARGET);
+
 	///reset the image
 	memset(mImageDataStream->getPtr(), '\0', mImageDataStream->size());
 	mImage.loadRawData(mImageDataStreamPtr, mImageSize, mImageSize, Ogre::PF_A8R8G8B8);
