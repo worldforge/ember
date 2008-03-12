@@ -266,6 +266,8 @@ private:
 	Ogre::Viewport* mViewPort;
 	
 	SimpleRenderContextResourceLoader mResourceLoader;
+	
+	Ogre::ColourValue mBackgroundColour;
 
 };
 

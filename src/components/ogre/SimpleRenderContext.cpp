@@ -49,7 +49,7 @@ void SimpleRenderContextResourceLoader::loadResource (Ogre::Resource *resource)
 
 
 SimpleRenderContext::SimpleRenderContext(const std::string& prefix, int width, int height)
-: mMainLight(0), mSceneManager(0), mWidth(width), mHeight(height), mRenderTexture(0), mCameraNode(0), mCameraPitchNode(0), mEntityNode(0), mRootNode(0), mCamera(0), mViewPort(0), mResourceLoader(*this)
+: mMainLight(0), mSceneManager(0), mWidth(width), mHeight(height), mRenderTexture(0), mCameraNode(0), mCameraPitchNode(0), mEntityNode(0), mRootNode(0), mCamera(0), mViewPort(0), mResourceLoader(*this), mBackgroundColour(Ogre::ColourValue::Black)
 {
 
 	setupScene(prefix);
@@ -57,7 +57,7 @@ SimpleRenderContext::SimpleRenderContext(const std::string& prefix, int width, i
 }
 
 SimpleRenderContext::SimpleRenderContext(const std::string& prefix, Ogre::TexturePtr texture)
-: mMainLight(0), mSceneManager(0), mWidth(texture->getWidth()), mHeight(texture->getHeight()), mRenderTexture(0), mCameraNode(0), mCameraPitchNode(0), mEntityNode(0), mRootNode(0), mCamera(0), mViewPort(0), mResourceLoader(*this)
+: mMainLight(0), mSceneManager(0), mWidth(texture->getWidth()), mHeight(texture->getHeight()), mRenderTexture(0), mCameraNode(0), mCameraPitchNode(0), mEntityNode(0), mRootNode(0), mCamera(0), mViewPort(0), mResourceLoader(*this), mBackgroundColour(Ogre::ColourValue::Black)
 {
 
 	setupScene(prefix);
@@ -255,35 +255,40 @@ void SimpleRenderContext::createImage(const std::string& prefix)
 
 void SimpleRenderContext::setTexture(Ogre::TexturePtr texture)
 {
-	if (mRenderTexture) {
+	if (texture != mTexture) {
+		if (mRenderTexture) {
+			mRenderTexture->removeAllViewports();
+		}
+		mTexture = texture;
+		mRenderTexture = texture->getBuffer()->getRenderTarget();
 		mRenderTexture->removeAllViewports();
+		
+		mRenderTexture->setAutoUpdated(false);
+		///initially deactivate it until setActive(true) is called
+		mRenderTexture->setActive(false);
+		
+		S_LOG_VERBOSE("Adding camera.");
+		mViewPort = mRenderTexture->addViewport(mCamera);
+		///make sure the camera renders into this new texture
+		///this should preferrably be a transparent background, so that CEGUI could itself decide what to show behind it, but alas I couldn't get it to work, thus black
+		mViewPort->setBackgroundColour(mBackgroundColour);
+	//	mViewPort->setBackgroundColour(Ogre::ColourValue::ZERO);
+		///don't show the CEGUI
+		mViewPort->setOverlaysEnabled(false);
+		///the cegui renderer wants a TexturePtr (not a RenderTexturePtr), so we just ask the texturemanager for texture we just created (rttex)
 	}
-	mTexture = texture;
-	mRenderTexture = texture->getBuffer()->getRenderTarget();
-	mRenderTexture->setAutoUpdated(false);
-	///initially deactivate it until setActive(true) is called
-	mRenderTexture->setActive(false);
-	
-	S_LOG_VERBOSE("Adding camera.");
-	mViewPort = mRenderTexture->addViewport(mCamera);
-	///make sure the camera renders into this new texture
-	///this should preferrably be a transparent background, so that CEGUI could itself decide what to show behind it, but alas I couldn't get it to work, thus black
-	mViewPort->setBackgroundColour(Ogre::ColourValue::Black);
-//	mViewPort->setBackgroundColour(Ogre::ColourValue::ZERO);
-	///don't show the CEGUI
-	mViewPort->setOverlaysEnabled(false);
-	///the cegui renderer wants a TexturePtr (not a RenderTexturePtr), so we just ask the texturemanager for texture we just created (rttex)
-
 }
 
 void SimpleRenderContext::setBackgroundColour(const Ogre::ColourValue& colour)
 {
+	mBackgroundColour = colour;
 	mViewPort->setBackgroundColour(colour);
 }
 
 void SimpleRenderContext::setBackgroundColour(float red, float green, float blue, float alpha)
 {
-	mViewPort->setBackgroundColour(Ogre::ColourValue(red, green, blue, alpha));
+	mBackgroundColour = Ogre::ColourValue(red, green, blue, alpha);
+	mViewPort->setBackgroundColour(mBackgroundColour);
 }
 
 
