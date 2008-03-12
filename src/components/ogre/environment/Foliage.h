@@ -27,8 +27,6 @@
 #include "framework/Singleton.h"
 #include <wfmath/axisbox.h>
 
-#include "pagedgeometry/include/GrassLoader.h"
-
 namespace PagedGeometry {
 
 class PagedGeometry;
@@ -82,9 +80,7 @@ public:
 	bool frameStarted(const Ogre::FrameEvent & evt);
 
 	Ogre::Entity* getEntity(const std::string& name);
-	
-	inline double getGrassSpacing() const {return mGrassSpacing;}
-	
+		
 	void initialize();
 
 protected:
@@ -96,12 +92,9 @@ protected:
 	void createGrassMesh();
 	
 
-	double mGrassSpacing;	
 	Ogre::SceneManager* mSceneMgr;
 	
 	FoliageImpl* mImpl;
-	::PagedGeometry::PagedGeometry* mGrass;
-	::PagedGeometry::GrassLoader<FoliageLayer>* mGrassLoader;
 	
 	FoliageStore mFoliages;
 };

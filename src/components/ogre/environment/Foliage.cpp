@@ -70,13 +70,7 @@ namespace Environment {
 
 Foliage::Foliage( Ogre::SceneManager* sceneMgr)
 :  mSceneMgr(sceneMgr)
-, mGrass(0)
-, mGrassLoader(0)
 {
-	S_LOG_INFO("Setting up foliage system.");
-	
-// 	mImpl = new FoliageImpl();GrassFoliage
-	
 // 	createGrassMesh();
 // 
 // 	Ogre::Entity* e = mSceneMgr->createEntity("1", GRASS_MESH_NAME);
@@ -110,13 +104,6 @@ Foliage::Foliage( Ogre::SceneManager* sceneMgr)
 // 	} 
 // 	catch (const Ogre::Exception& e) {}
 // 	
-// 	
-// 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
-// 	//mSubmeshSize = (int)configSrv->getValue("foliage", "submeshsize");
-// 	mGrassSpacing = (double)configSrv->getValue("foliage", "spacing_grass");
-// // 	double bushSpacing = (double)configSrv->getValue("foliage", "spacing_bushes");
-// // 	double cullDistance = (double)configSrv->getValue("foliage", "cullingdistance");
-// 
 	Ogre::Root::getSingleton().addFrameListener(this);
 
 }
@@ -129,15 +116,7 @@ Foliage::~Foliage()
 	for (FoliageStore::iterator I = mFoliages.begin(); I != mFoliages.end(); ++I) {
 		delete *I;
 	}
-	delete mGrassLoader;
-	delete mGrass;
-	
-// 	delete mImpl;
-	
-// 	for (FoliageAreaStore::iterator I = mFoliageAreas.begin(); I != mFoliageAreas.end(); ++I) {
-// 		delete *I;
-// 	}
-// 	
+
 	Ogre::Root::getSingleton().removeFrameListener(this);
 // 	for (EntityStore::iterator I = mEntities.begin(); I != mEntities.end(); ++I) {
 // 		mSceneMgr->destroyMovableObject(I->second);
@@ -147,6 +126,7 @@ Foliage::~Foliage()
 void Foliage::initialize()
 {
 
+	S_LOG_INFO("Initializing foliage system.");
 	for (TerrainLayerDefinitionManager::DefinitionStore::const_iterator I = TerrainLayerDefinitionManager::getSingleton().getDefinitions().begin(); I != TerrainLayerDefinitionManager::getSingleton().getDefinitions().end(); ++I) {
 		const TerrainLayerDefinition* layerDef = *I;
 		for (TerrainLayerDefinition::TerrainFoliageDefinitionStore::const_iterator J = layerDef->getFoliages().begin(); J != layerDef->getFoliages().end(); ++J) {
@@ -168,40 +148,6 @@ void Foliage::initialize()
 	}
 }
 
-
-// void Foliage::createGrass()
-// {
-// // 	return;
-// 	Ogre::Camera* camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
-// 	mGrass = new ::PagedGeometry::PagedGeometry(camera, 32);
-// 	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainInfo().getWorldSizeInIndices();	mGrass->setBounds(Atlas2Ogre(worldSize));
-// 	mGrass->addDetailLevel<PagedGeometry::GrassPage>(100);
-// 	
-// 	//Create a GrassLoader object
-// 	mGrassLoader = new ::PagedGeometry::GrassLoader<FoliageLayer>(mGrass);
-//  	mGrass->setPageLoader(mGrassLoader);	//Assign the "treeLoader" to be used to load 
-// 	mGrassLoader->setHeightFunction(&getTerrainHeight);
-// 
-// 	//Add some grass to the scene with GrassLoader::addLayer()
-// 	FoliageLayer *l = mGrassLoader->addLayer("/global/plants/grass/bittergrass/single");
-// 	
-// 	//Configure the grass layer properties (size, density, animation properties, fade settings, etc.)
-// 	l->setMinimumSize(1.0f, 1.0f);
-// 	l->setMaximumSize(1.5f, 1.5f);
-// 	l->setAnimationEnabled(true);		//Enable animations
-// 	l->setSwayDistribution(10.0f);		//Sway fairly unsynchronized
-// 	l->setSwayLength(0.5f);				//Sway back and forth 0.5 units in length
-// 	l->setSwaySpeed(0.5f);				//Sway 1/2 a cycle every second
-// // 	l->setDensity(1.5f);				//Relatively dense grass
-// 	l->setFadeTechnique(::PagedGeometry::FADETECH_GROW);	//Distant grass should slowly raise out of the ground when coming in range
-// 	l->setRenderTechnique(::PagedGeometry::GRASSTECH_CROSSQUADS);	//Draw grass as scattered quads
-// 
-// // 	l->setHeightRange(0.001f);
-// 	l->setMapBounds(Atlas2Ogre(worldSize));	//(0,0)-(1500,1500) is the full boundaries of the terrain
-// 
-// 
-// // 	mImpl->createGrass();
-// }
 
 Ogre::Entity* Foliage::getEntity(const std::string& name)
 {
@@ -344,24 +290,10 @@ void Foliage::createGrassMesh()
 
 bool Foliage::frameStarted(const Ogre::FrameEvent & evt)
 {	
-// 	mImpl->update();
-// 	for (FoliageAreaStore::iterator I = mFoliageAreas.begin(); I != mFoliageAreas.end(); ++I) {
-// 		(*I)->frameStarted(evt.timeSinceLastFrame);
-// 	}
 	for (FoliageStore::iterator I = mFoliages.begin(); I != mFoliages.end(); ++I) {
 		(*I)->frameStarted(evt);
 	}	
 	
-	if (mGrass) {
-		try {
-			mGrass->update();
-		} catch (const Ogre::Exception& ex)
-		{
-			S_LOG_FAILURE("Error when updating grass. Will disable grass.\n"<< ex.what());
-			delete mGrassLoader;
-			delete mGrass;
-		}
-	}	
 	return true;
 
 }
