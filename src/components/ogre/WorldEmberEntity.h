@@ -19,6 +19,11 @@
 #ifndef WORLDDIMEENTITY_H
 #define WORLDDIMEENTITY_H
 
+namespace Eris
+{
+class Timeout;
+class View;
+}
 
 namespace EmberOgre {
 
@@ -31,6 +36,7 @@ namespace Terrain {
 class TerrainGenerator;
 class TerrainArea;
 }
+class DelayedFoliageInitializer;
 
 class TerrainParser
 {
@@ -62,7 +68,29 @@ public:
 
 	virtual void adjustPositionForContainedNode(EmberEntity* const entity, const Ogre::Vector3& position);
 	
-	Environment::Environment* getEnvironment();
+	/**
+	 *    Gets the main Environment object of the world.
+	 * @return An environment object, or null if none has been created yet.
+	 */
+	Environment::Environment* getEnvironment() const;
+	
+	/**
+	 *    Gets the main Foliage object of the world. Note that the initialization of the foliage might be delayed.
+	 * @return A foliage object, or null if none created.
+	 */
+	Environment::Foliage* getFoliage() const;
+	
+	/**
+	Emitted when the foliage has been created.
+	*/
+	sigc::signal<void> EventFoliageCreated;
+	
+	/**
+	Emitted when the environment has been created.
+	*/
+	sigc::signal<void> EventEnvironmentCreated;
+
+
 
 protected:
 	virtual const Ogre::Vector3& getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity);
@@ -79,13 +107,70 @@ protected:
 	virtual void onVisibilityChanged(bool vis);
 	virtual void onLocationChanged(Eris::Entity *oldLocation);
 
+	
+	/**
+	 *    Adds an area to the world. This method will in turn interface with the TerrainGenerator.
+	 * @param area 
+	 */
 	void addArea(Terrain::TerrainArea* area);
 	
+	/**
+	The foliage system which provides different foliage functions.
+	*/
 	Environment::Foliage* mFoliage;
 	
+	/**
+	The main environment object. There should only be one in the system, and it's kept here.
+	*/
 	Environment::Environment* mEnvironment;
 	
+	/**
+	Parses terrain information from the Atlas data sent from the server.
+	*/
 	std::auto_ptr<TerrainParser> mTerrainParser;
+	
+	/**
+	Takes care of delaying the initialization of the foliage.
+	*/
+	std::auto_ptr<DelayedFoliageInitializer> mFoliageInitializer;
+
+
+	
+};
+
+/**
+Alows for a delayed initialization of the foliage.
+The initialization will occrur when either the sight queue is empty, or a certain time has elapsed.
+The main reason for doing this is that whenever a new area is added to the world, the foliage is invalidated and reloaded.
+As a result when the user first enters the world and is getting sent all the surrounding entities, there's a great chance that some of these entities will be areas. If the foliage then already has been initialized it will lead to the foliage being reloaded a couple of time.
+By delaying the loading of the foliage we can avoid this.
+*/
+class DelayedFoliageInitializer
+{
+public:
+	/**
+	 *    Ctor.
+	 * @param foliage The foliage object.
+	 * @param view The Eris::View object of the world. This will be used for querying about the size of the Sight queue.
+	 * @param intervalMs In milliseconds how often to check if the queue is empty or time has elapsed. Defaults to 1 second.
+	 * @param maxTimeMs In missiseconds the max time to wait until we initialize the foliage anyway.
+	 */
+	DelayedFoliageInitializer(Environment::Foliage* foliage, Eris::View* view, unsigned int intervalMs = 1000, unsigned int maxTimeMs = 15000);
+	virtual ~DelayedFoliageInitializer();
+protected:
+	Environment::Foliage* mFoliage;
+	Eris::View* mView;
+	unsigned int mIntervalMs;
+	unsigned int mMaxTimeMs;
+	
+	std::auto_ptr<Eris::Timeout> mTimeout;
+	unsigned int mTotalElapsedTime;
+	
+	/**
+	 *    Called when the time out has expired. We'll check for if either the set max time has elapsed, or if there's no more entities in the sight queue, and if so initialize the foliage. If not we'll just extend the waiting time.
+	 */
+	void timout_Expired();
+	
 };
 
 }

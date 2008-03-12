@@ -24,6 +24,9 @@
 #include "services/config/ConfigService.h"
 
 
+#include <Eris/Timeout.h>
+#include <Eris/View.h>
+
 
 #include "EmberEntity.h"
 #include "model/Model.h"
@@ -53,6 +56,7 @@ EmberEntity(id, ty, vw, sceneManager)
 , mTerrainGenerator(terrainGenerator)
 , mFoliage(0)
 , mEnvironment(0)
+, mFoliageInitializer(0)
 {
 	sceneManager->getRootSceneNode()->addChild(getSceneNode());
 }
@@ -63,11 +67,14 @@ WorldEmberEntity::~WorldEmberEntity()
 	delete mEnvironment;
 }
 
+
+
 void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
 	
 	///create the foliage
  	mFoliage = new Environment::Foliage(EmberOgre::getSingleton().getSceneManager());
+ 	EventFoliageCreated.emit();
  	
 	EmberEntity::init(ge, fromCreateOp);
 	
@@ -75,6 +82,7 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 	mOgreNode->setPosition(Ogre::Vector3(0, 0, 0));
 	
 	mEnvironment = new Environment::Environment(new Environment::CaelumEnvironment( EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), EmberOgre::getSingleton().getMainCamera()->getCamera()));
+	EventEnvironmentCreated.emit();
 	mEnvironment->initialize();
 	
 	
@@ -110,7 +118,8 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 	
 	//mTerrainGenerator->prepareSegments(0,0,1,true);
 	
-	mFoliage->initialize();
+	mFoliageInitializer = std::auto_ptr<DelayedFoliageInitializer>(new DelayedFoliageInitializer(mFoliage, getView(), 1000, 15000));
+// 	mFoliage->initialize();
 	
 	
 }
@@ -399,9 +408,47 @@ void WorldEmberEntity::addArea(Terrain::TerrainArea* area)
 	mTerrainGenerator->addArea(area);
 }
 
-Environment::Environment* WorldEmberEntity::getEnvironment()
+Environment::Environment* WorldEmberEntity::getEnvironment() const
 {
 	return mEnvironment;
+}
+
+Environment::Foliage* WorldEmberEntity::getFoliage() const
+{
+	return mFoliage;
+}
+
+DelayedFoliageInitializer::DelayedFoliageInitializer(Environment::Foliage* foliage, Eris::View* view, unsigned int intervalMs, unsigned int maxTimeMs)
+: mFoliage(foliage)
+, mView(view)
+, mIntervalMs(intervalMs)
+, mMaxTimeMs(maxTimeMs)
+, mTimeout(new Eris::Timeout(intervalMs))
+, mTotalElapsedTime(0)
+{
+	///don't load the foliage directly, instead wait some seconds for all terrain areas to load
+	///the main reason is that new terrain areas will invalidate the foliage causing a reload
+	///by delaying the foliage we can thus in most cases avoid those reloads
+	///wait three seconds
+	mTimeout->Expired.connect(sigc::mem_fun(this, &DelayedFoliageInitializer::timout_Expired));
+
+}
+
+DelayedFoliageInitializer::~DelayedFoliageInitializer()
+{
+}
+
+void DelayedFoliageInitializer::timout_Expired()
+{
+	///load the foliage if either all queues entities have been loaded, or 15 seconds has elapsed
+	if (mView->lookQueueSize() == 0 || mTotalElapsedTime > mMaxTimeMs) {
+		if (mFoliage) {
+			mFoliage->initialize();
+		}
+	} else {
+		mTotalElapsedTime += mIntervalMs;
+		mTimeout->reset(mIntervalMs);
+	}
 }
 
 
