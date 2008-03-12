@@ -158,6 +158,7 @@ void BatchPage::_updateShaders()
 				"	float4 iPosition : POSITION, \n"
 				"	float4 iColor    : COLOR, \n"
 				"	float2 iUV       : TEXCOORD0,	\n"
+				"	uniform float4 iFogParams,	\n"
 
 				"	out float4 oPosition : POSITION, \n"
 				"	out float4 oColor : COLOR, \n"
@@ -194,9 +195,15 @@ void BatchPage::_updateShaders()
 
 			vertexProgSource +=
 				"	oUV = iUV;	\n"
-				"	oPosition = mul(worldViewProj, iPosition);  \n"
-				"	oFog.x = oPosition.z; \n"
-				"}"; 
+				"	oPosition = mul(worldViewProj, iPosition);  \n";
+			if (sceneMgr->getFogMode() == Ogre::FOG_EXP2) {
+				vertexProgSource += 
+					"	oFog.x = 1 - clamp (pow (2.71828, -oPosition.z * iFogParams.x), 0, 1); \n";
+			} else {
+				vertexProgSource += 
+					"	oFog.x = oPosition.z; \n";
+			}
+			vertexProgSource += "}"; 
 
 			HighLevelGpuProgramPtr vertexShader = HighLevelGpuProgramManager::getSingleton().createProgram(
 				vertexProgName,
@@ -240,6 +247,7 @@ void BatchPage::_updateShaders()
 						params->setNamedAutoConstant("objSpaceLight", GpuProgramParameters::ACT_LIGHT_POSITION_OBJECT_SPACE);
 						params->setNamedAutoConstant("lightDiffuse", GpuProgramParameters::ACT_DERIVED_LIGHT_DIFFUSE_COLOUR);
 						params->setNamedAutoConstant("lightAmbient", GpuProgramParameters::ACT_DERIVED_AMBIENT_LIGHT_COLOUR);
+						params->setNamedAutoConstant("iFogParams", GpuProgramParameters::ACT_FOG_PARAMS);
 
 						params->setNamedAutoConstant("matAmbient", GpuProgramParameters::ACT_SURFACE_AMBIENT_COLOUR);
 						params->setNamedAutoConstant("worldViewProj", GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
