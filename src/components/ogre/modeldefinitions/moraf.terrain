@@ -29,6 +29,16 @@
 				<param key="maxHeight">1.25</param>
 				<param key="minWidth">0.75</param>
 				<param key="maxWidth">1.25</param>
+				<param key="renderTech">crossquad</param> 
+				<!-- small grass
+				<param key="minHeight">0.25</param>
+				<param key="maxHeight">0.35</param>
+				<param key="minWidth">0.25</param>
+				<param key="maxWidth">0.35</param>
+				<param key="swayLength">0.05</param>
+				<param key="renderTech">crossquad</param> 
+				-->
+				
 			</foliage>
 			<foliage planttype="fern" populationtechnique="cluster" rendertechnique="shrubbery">
 				<param key="mesh">3d_objects/plants/shrubs/models/fern/fern.mesh</param>
