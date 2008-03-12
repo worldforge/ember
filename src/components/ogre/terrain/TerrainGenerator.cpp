@@ -446,6 +446,9 @@ void TerrainGenerator::prepareAllSegments()
 	
 	S_LOG_INFO("Pages: X: " << mTerrainInfo.getTotalNumberOfPagesX() << " Y: " << mTerrainInfo.getTotalNumberOfPagesY() << " Total: " <<  mTerrainInfo.getTotalNumberOfPagesX() *  mTerrainInfo.getTotalNumberOfPagesY());
 	S_LOG_INFO("Page offset: X" << mTerrainInfo.getPageOffsetX() << " Y: " << mTerrainInfo.getPageOffsetY());
+	
+	///load the first page, thus bypassing the normal paging system. This is to prevent the user from floating in the thin air while the paging system waits for a suitable time to load the first page.
+	getAdapter()->loadFirstPage();
 
 	EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getForest()->initialize();	
 	
