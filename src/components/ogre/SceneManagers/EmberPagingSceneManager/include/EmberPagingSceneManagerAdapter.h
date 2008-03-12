@@ -60,6 +60,8 @@ public:
 	virtual Ogre::SceneManager* getSceneManager() const;
 	virtual void reloadAllPages();
 	virtual void reloadPage(unsigned int x, unsigned int z);
+	
+	virtual void loadFirstPage();
 
 private:
 	EmberPagingSceneManager* mSceneManager;

@@ -130,5 +130,13 @@ namespace EmberOgre {
 			page->load();
 		}
 	}
+	
+	void EmberPagingSceneManagerAdapter::loadFirstPage()
+	{
+		if (mSceneManager->getOptions()->primaryCamera) {
+			mSceneManager->getPageManager()->LoadFirstPage(mSceneManager->getOptions()->primaryCamera);
+		}
+	}
+
 
 }

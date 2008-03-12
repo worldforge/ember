@@ -54,6 +54,13 @@ public:
 	
 	virtual void reloadAllPages() = 0;
 	virtual void reloadPage(unsigned int x, unsigned int z) = 0;
+	
+	
+	/**
+	 *    Force the loading of the first page. Call this just after the terrain has been set up to load the current page the camera is on. 
+	 This is to prevent an empty world as the pages are loaded.
+	 */
+	virtual void loadFirstPage() = 0;
 };
 }
 }
