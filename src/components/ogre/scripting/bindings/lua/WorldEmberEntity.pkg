@@ -1,8 +1,31 @@
+
+
 namespace EmberOgre {
 
 class WorldEmberEntity : public EmberEntity {
 
-	EmberOgre::Environment::Environment* getEnvironment();
+	/**
+	 *    Gets the main Environment object of the world.
+	 * @return An environment object, or null if none has been created yet.
+	 */
+	EmberOgre::Environment::Environment* getEnvironment() const;
+	
+	/**
+	 *    Gets the main Foliage object of the world. Note that the initialization of the foliage might be delayed.
+	 * @return A foliage object, or null if none created.
+	 */
+	EmberOgre::Environment::Foliage* getFoliage() const;
+	
+	/**
+	Emitted when the foliage has been created.
+	*/
+	sigc::signal<void> EventFoliageCreated;
+	
+	/**
+	Emitted when the environment has been created.
+	*/
+	sigc::signal<void> EventEnvironmentCreated;
+
 
 };
 }
