@@ -50,7 +50,7 @@ end
 function connect(connectorTable, event, functionName)
 	local connector = EmberOgre.LuaConnector:new_local(event):connect(functionName)
 	if connectorTable ~= nil then
-		connectorTable[functionName] = connector
+		table.insert(connectorTable, connector)
 	end
 	return connector
 end
