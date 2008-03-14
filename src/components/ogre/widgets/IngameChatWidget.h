@@ -26,6 +26,7 @@
 #include "Widget.h"
 #include "WidgetPool.h"
 #include <Eris/Entity.h>
+#include "services/config/ConfigListener.h"
 
 namespace EmberOgre {
 
@@ -47,7 +48,7 @@ If the npc has a list of suggested responses these will be shown in a list of cl
 
 @author Erik Hjortsberg
 */
-class IngameChatWidget : public Widget {
+class IngameChatWidget : public Widget, public Ember::ConfigListenerContainer {
 
 
 	
@@ -239,22 +240,15 @@ public:
 	CEGUI::Window* getLabelSheet();
 	
 protected:
-	void appendIGChatLine(const std::string& line, EmberEntity* entity);
-	//void placeWindowOnEntity( CEGUI::Window* window, EmberPhysicalEntity* entity);
-	
-// 	void initializePool();
-	
-// 	Label* createLabel(); 
 	
 	void View_EntitySeen(Eris::Entity* entity);
 	void ServerService_GotView(Eris::View* view);
-	
 
-// 	LabelStore mUsedLabels;
-// 	
-// 	LabelStore mLabelPool;
-// 	LabelStack mUnusedLabels;
-	
+	void Config_TimeShown(const std::string& section, const std::string& key, varconf::Variable& variable);
+	void Config_DistanceShown(const std::string& section, const std::string& key, varconf::Variable& variable);
+
+		
+		
 	EntityObserverStore mEntityObservers;
 	
 	TypeInfoStore mLabelTypes;

@@ -66,48 +66,40 @@ IngameChatWidget::IngameChatWidget()
 : mTimeShown(0), mDistanceShown(100), mLabelCreator(*this), mLabelPool(mLabelCreator), mChatTextCreator(*this), mChatTextPool(mChatTextCreator), mAvatarEntityId("")
 {
 	mMainCamera = EmberOgre::getSingleton().getMainCamera()->getCamera();
+	
+	registerConfigListener("ingamechatwidget", "timeshown", sigc::mem_fun(*this, &IngameChatWidget::Config_TimeShown));	registerConfigListener("ingamechatwidget", "distanceshown", sigc::mem_fun(*this, &IngameChatWidget::Config_DistanceShown));
+
+
 }
 
 IngameChatWidget::~IngameChatWidget()
 {
-// 	Ogre::Root::getSingleton().removeFrameListener(this);
 }
 
 void IngameChatWidget::buildWidget()
 {
-	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
-	if (configSrv->itemExists("ingamechatwidget", "timeshown")) {
-		mTimeShown = (double)configSrv->getValue("ingamechatwidget", "timeshown");
-	}
-	
-	if (configSrv->itemExists("ingamechatwidget", "distanceshown")) {
-		mDistanceShown = (double)configSrv->getValue("ingamechatwidget", "distanceshown");
-	}
 	
 	mLabelSheet = mWindowManager->createWindow("DefaultGUISheet", "IngameChatWidget/LabelSheet");
 	mLabelSheet->setMousePassThroughEnabled(true);
 	mLabelSheet->setRiseOnClickEnabled(false);
 	getMainSheet()->addChildWindow(mLabelSheet);
-	//mMainWindow = WindowManager::getSingleton().loadWindowLayout((utf8*)"widgets/ChatWidget.xml", "Chat/");
-//	mMainWindow->setAlwaysOnTop(true);avatarEntityId
-/*	mMainWindow = mWindowManager->createWindow((utf8*)"DefaultGUISheet", (utf8*)"IngameChatWidget/MainWindow");
-	mMainWindow->setPosition(Point(0.0f, 0.0f));
-	mMainWindow->setSize(Size(1.0f, 1.0f));
-	mMainWindow->setVisible(true);
-	mMainWindow->setEnabled(true);
-	
-//	mChatTextBox = static_cast<MultiLineEditbox*>(WindowManager::getSingleton().getWindow((utf8*)"Chat/TextBox"));
-	getMainSheet()->addChildWindow(mMainWindow); */
-	
-	//mGuiManager->AppendIGChatLine.connect(sigc::mem_fun(*this, &IngameChatWidget::appendIGChatLine));
 	
 	mLabelPool.initializePool(15);
 	mChatTextPool.initializePool(5);
 	Ember::EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &IngameChatWidget::ServerService_GotView));
-	
-// 	Ogre::Root::getSingleton().addFrameListener(this);
-	
+		
 }
+
+void IngameChatWidget::Config_TimeShown(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	mTimeShown = static_cast<double>(variable);
+}
+
+void IngameChatWidget::Config_DistanceShown(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	mDistanceShown = static_cast<double>(variable);
+}
+
 
 Window* IngameChatWidget::getLabelSheet()
 {
@@ -159,87 +151,7 @@ WidgetPool<IngameChatWidget::ChatText>& IngameChatWidget::getChatTextPool()
 }
 
 
-void IngameChatWidget::appendIGChatLine(const std::string& line, EmberEntity* entity)
-{
-// 	//don't show anything if it's the avatar
-// 	AvatarEmberEntity* avatarEntity = getSingleton().getAvatar()->getAvatarEmberEntity();
-// 	if (avatarEntity == entity) {
-// 		return;
-// 	}
-// 	
-// 
-// 	Window* chatWindow;
-// 	LabelMap::iterator I = mLabels.find(entity->getId());
-// 	if (I == mLabels.end()) {
-// 		Ogre::Vector3 entityWorldCoords = entity->getWorldBoundingBox(true).getCenter();
-// 		Ogre::Vector3 cameraCoords = getSingletonPtr()->getMainCamera()->getCamera()->getDerivedPosition();
-// 		Ogre::Vector3 diff = entityWorldCoords - cameraCoords;
-// 		
-// 		if (diff.length() <= distanceShown) {
-// 		
-// 			//there is no chat window for this entity, let's create one
-// 			chatWindow = WindowManager::getSingleton().loadWindowLayout(mGuiManager->getLayoutDir()+"IngameChatWidget.xml", std::string("IngameChatWidget/") + entity->getId() + "/");
-// 			getMainSheet()->addChildWindow(chatWindow);
-// 			
-// 			Label* activeWindow = new Label(chatWindow, entity, mWindowManager, *this);
-// 			
-// 			mLabels[entity->getId()] = activeWindow;
-// 			
-// 			mLabels[entity->getId()]->updateText(line);
-// 		}
-// 	} else {
-// 		I->second->updateText(line);
-// 	}
-
-}
-
-// void IngameChatWidget::initializePool()
-// {
-// 	for (int i = 0; i < 15; ++i) {
-// 		Label* label = createLabel();
-// 		mLabelPool.push_back(label);
-// 		mUnusedLabels.push(label);
-// 	}
-// }
-	
-// IngameChatWidget::Label* IngameChatWidget::createLabel()
-// {
-// 	Window* chatWindow;
-// 	//there is no chat window for this entity, let's create one
-// 	std::stringstream ss;
-// 	ss <<  "Label/" << mLabelPool.size() << "/";
-// 	chatWindow = WindowManager::getSingleton().loadWindowLayout(mGuiManager->getLayoutDir()+"Label.layout", ss.str());
-// 
-// 	Label* label = new Label(chatWindow, mWindowManager, *this, ss.str());
-// 	return label;
-// }
-
-// IngameChatWidget::Label* IngameChatWidget::getLabel()
-// {
-// 	Label* label(0);
-// 	if (!mUnusedLabels.size()) {
-// 		label = createLabel();
-// 		mLabelPool.push_back(label);
-// 	} else {
-// 		label = mUnusedLabels.top();
-// 		mUnusedLabels.pop();
-// 	}
-// 	mUsedLabels.push_back(label);
-// 	return label;
-// }
-// 
-// void IngameChatWidget::returnLabel(Label* label)
-// {
-// 	mUnusedLabels.push(label);
-// 	LabelStore::iterator I = std::find(mUsedLabels.begin(), mUsedLabels.end(), label);
-// 	if (I != mUsedLabels.end()) {
-// 		mUsedLabels.erase(I);
-// 	}
-// }
-
-
-
-
+//---------------------------------------------------
 
 
 
@@ -248,58 +160,14 @@ void IngameChatWidget::frameStarted( const Ogre::FrameEvent & event )
 	for (WidgetPool<Label>::WidgetStore::iterator I = mLabelPool.getUsedWidgets().begin(); I != mLabelPool.getUsedWidgets().end(); ++I) {
 		(*I)->frameStarted(event);
 	}
-/*	Ogre::Camera* camera = getSingletonPtr()->getMainCamera()->getCamera();
-	LabelMap::iterator I = mLabels.begin();
-	LabelMap::iterator I_end = mLabels.end();
-	std::vector<std::string> windowsToRemove;
-	
-	for (;I != I_end; ++I) {
-		Label* window = I->second;
-		window->frameStarted(event );
 
-	
-		Ogre::Vector3 entityWorldCoords = window->getEntity()->getWorldBoundingBox(true).getCenter();
-		
-		//Ogre::Vector3 entityWorldCoords = window->getEntity()->getSceneNode()->_getWorldAABB().getCenter();
-		Ogre::Vector3 cameraCoords = camera->getDerivedPosition();
-		Ogre::Vector3 diff = entityWorldCoords - cameraCoords;
-		
-		///remove the window if it's either too far away or not shown in the camera
-		if (diff.length() > distanceShown || !camera->isVisible(entityWorldCoords)) {
-			windowsToRemove.push_back(I->first);
-		} else {
-		
-			//unless timeShown is 0 windows will fade over time
-			if (timeShown != 0) {
-				//make the windows fade over time
-				window->getWindow()->setAlpha(1 - (window->getElapsedTimeSinceLastUpdate() / timeShown));
-				if (window->getElapsedTimeSinceLastUpdate() >= timeShown) {
-					windowsToRemove.push_back(I->first);
-				}
-			}
-		}
-	}
-	
-	std::vector<std::string>::iterator J = windowsToRemove.begin();
-	std::vector<std::string>::iterator J_end = windowsToRemove.end();
-	for (;J != J_end; ++J) {
-//		mWindowManager->destroyWindow(mLabels[*J].window);
-		removeWidget(*J);
-	}	*/
-	
 }
 
 void IngameChatWidget::removeWidget(const std::string& windowName)
 {
-/*	delete mLabels[windowName];
-	mLabels.erase(windowName);*/
 }
 
-// void IngameChatWidget::removeWidget(Label* window)
-// {
-// 	delete mLabels[window];
-// 	mLabels.erase(window);
-// }
+
 
 
 
