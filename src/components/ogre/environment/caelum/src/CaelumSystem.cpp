@@ -88,13 +88,19 @@ CaelumSystem::CaelumSystem
 		this->setSun (new Sun (mSceneMgr));
     }
     if (componentsToCreate & CAELUM_COMPONENT_STARFIELD) {
-		this->setStarfield (new Starfield (mSceneMgr));
+    	try {
+			this->setStarfield (new Starfield (mSceneMgr));
+		} catch (const Ogre::Exception& ex) {}
     }
     if (componentsToCreate & CAELUM_COMPONENT_CLOUDS) {
-		this->setClouds (new LayeredClouds (mSceneMgr));
+    	try {
+			this->setClouds (new LayeredClouds (mSceneMgr));
+		} catch (const Ogre::Exception& ex) {}
     }
     if (componentsToCreate & CAELUM_COMPONENT_GROUND_FOG) {
-		this->setGroundFog (new GroundFog (mSceneMgr));
+    	try {
+			this->setGroundFog (new GroundFog (mSceneMgr));
+		} catch (const Ogre::Exception& ex) {}
     }
 
 	// Auto-register itself as a frame listener

@@ -69,7 +69,7 @@ namespace caelum
 				Ogre::MaterialManager::getSingleton().getByName(materialName));
 		mMaterial->load();
 		if (mMaterial->getBestTechnique() == 0) {
-			throw new UnsupportedException (0, "Layered cloud material not supported.",
+			throw UnsupportedException (0, "Layered cloud material not supported.",
 					"LayeredClouds", "LayeredClouds.cpp", -1);
 		}
 		getFpParams()->setIgnoreMissingParams(true);

@@ -69,15 +69,21 @@ void SkyDome::setSunDirection (Ogre::Vector3 sunDir) {
     float elevation = sunDir.dotProduct (Ogre::Vector3::UNIT_Y);
     elevation = elevation * 0.5 + 0.5;
 
-	Ogre::GpuProgramParametersSharedPtr vpParams = 
-			mMaterial->getBestTechnique()->getPass(0)->getVertexProgramParameters();
-	Ogre::GpuProgramParametersSharedPtr fpParams = 
-			mMaterial->getBestTechnique()->getPass(0)->getFragmentProgramParameters();
+	Ogre::Pass* pass = mMaterial->getBestTechnique()->getPass(0);
+	if (pass->hasVertexProgram()) {
+		Ogre::GpuProgramParametersSharedPtr vpParams = 
+				pass->getVertexProgramParameters();
+		vpParams->setNamedConstant ("sunDirection", sunDir);
+	}
+	
+	if (pass->hasFragmentProgram()) {
+		Ogre::GpuProgramParametersSharedPtr fpParams = 
+				pass->getFragmentProgramParameters();
+    	fpParams->setNamedConstant ("offset", elevation);
+	}
+	
     Ogre::TextureUnitState* gradientsTus = 
-			mMaterial->getBestTechnique()->getPass(0)->getTextureUnitState(0);
-
-	vpParams->setNamedConstant ("sunDirection", sunDir);
-    fpParams->setNamedConstant ("offset", elevation);
+			pass->getTextureUnitState(0);
     gradientsTus->setTextureUScroll (elevation);
 }
 
@@ -87,9 +93,12 @@ void SkyDome::setLightAbsorption (float absorption) const {
 	else if (absorption < 0)
 		absorption = 0;
 
-	Ogre::GpuProgramParametersSharedPtr vpParams = 
-			mMaterial->getBestTechnique()->getPass(0)->getVertexProgramParameters();
-	vpParams->setNamedConstant ("lightAbsorption", absorption);
+	Ogre::Pass* pass = mMaterial->getBestTechnique()->getPass(0);
+	if (pass->hasVertexProgram()) {
+		Ogre::GpuProgramParametersSharedPtr vpParams = 
+				pass->getVertexProgramParameters();
+		vpParams->setNamedConstant ("lightAbsorption", absorption);
+	}
 }
 
 void SkyDome::setLightScattering (float scattering) const {
@@ -114,8 +123,13 @@ void SkyDome::setAtmosphereHeight (float height) const {
 }
 
 void SkyDome::setSkyGradientsImage (const Ogre::String& gradients) {
-    Ogre::TextureUnitState* gradientsTus =
-            mMaterial->getTechnique (0)->getPass (0)->getTextureUnitState(0);
+
+	Ogre::TextureUnitState* gradientsTus;
+	if (mMaterial->isLoaded()) {
+    	gradientsTus = mMaterial->getBestTechnique()->getPass (0)->getTextureUnitState(0);
+    } else {
+    	gradientsTus = mMaterial->getTechnique(0)->getPass (0)->getTextureUnitState(0);
+    }
 
 	gradientsTus->setTextureAddressingMode (Ogre::TextureUnitState::TAM_CLAMP);
 
@@ -129,8 +143,13 @@ void SkyDome::setSkyGradientsImage (const Ogre::String& gradients) {
 }
 
 void SkyDome::setAtmosphereDepthImage (const Ogre::String& atmosphereDepth) {
-    Ogre::TextureUnitState* atmosphereTus =
-            mMaterial->getTechnique (0)->getPass (0)->getTextureUnitState(1);
+	
+	Ogre::TextureUnitState* atmosphereTus;
+	if (mMaterial->isLoaded()) {
+		atmosphereTus = mMaterial->getBestTechnique()->getPass (0)->getTextureUnitState(1);
+	} else {
+		atmosphereTus = mMaterial->getTechnique(0)->getPass (0)->getTextureUnitState(1);
+	}
 
 	atmosphereTus->setTextureName (atmosphereDepth, Ogre::TEX_TYPE_1D);
 	atmosphereTus->setTextureAddressingMode (Ogre::TextureUnitState::TAM_CLAMP, Ogre::TextureUnitState::TAM_WRAP, Ogre::TextureUnitState::TAM_WRAP);
@@ -140,10 +159,10 @@ void SkyDome::createSkyDomeMaterial () {
 	// Check shader support.
     // It would be nice to check supported profiles in detail.
 	if (!Ogre::Root::getSingleton ().getRenderSystem ()->getCapabilities ()->hasCapability (Ogre::RSC_FRAGMENT_PROGRAM)) {
-		throw new UnsupportedException (0, "The card doesn't support fragment programs for the sky dome material.", "SkyDome", "SkyDome.cpp", -1);
+		throw UnsupportedException (0, "The card doesn't support fragment programs for the sky dome material.", "SkyDome", "SkyDome.cpp", -1);
 	}
 	if (!Ogre::Root::getSingleton ().getRenderSystem ()->getCapabilities ()->hasCapability (Ogre::RSC_VERTEX_PROGRAM)) {
-		throw new UnsupportedException (0, "The card doesn't support vertex programs for the sky dome material.", "SkyDome", "SkyDome.cpp", -1);
+		throw UnsupportedException (0, "The card doesn't support vertex programs for the sky dome material.", "SkyDome", "SkyDome.cpp", -1);
 	}
 
 	LOG ("Generating sky dome material...");
@@ -159,6 +178,21 @@ void SkyDome::createSkyDomeMaterial () {
 		pass->setDepthWriteEnabled (false);
 		pass->setLightingEnabled (false);
 		pass->setFog (true);
+
+        // Create first texture unit; gradients image.
+		pass->createTextureUnitState ();
+        setSkyGradientsImage("EarthClearSky2.png");
+		LOG ("\t\tTextureUnit - Sky gradient [OK]");
+
+        // Create second texture unit; atmosphere depth image.
+		pass->createTextureUnitState ();
+        setAtmosphereDepthImage("AtmosphereDepth.png");
+		LOG ("\t\tTextureUnit - Atmosphere depth [OK]");
+		
+		// clone the current technique so we have something to fall back to if there's something wrong with the shaders
+		Ogre::Technique* fallbackTech = mMaterial->createTechnique();
+		*fallbackTech = *mMaterial->getTechnique(0);
+
 
         // Bind fragment program.
 		if (Ogre::Root::getSingleton ().getRenderSystem ()->getCapabilities ()->hasCapability (Ogre::RSC_FRAGMENT_PROGRAM)) {
@@ -187,15 +221,6 @@ void SkyDome::createSkyDomeMaterial () {
 		}
 		LOG ("\t\tPass [OK]");
 
-        // Create first texture unit; gradients image.
-		pass->createTextureUnitState ();
-        setSkyGradientsImage("EarthClearSky2.png");
-		LOG ("\t\tTextureUnit - Sky gradient [OK]");
-
-        // Create second texture unit; atmosphere depth image.
-		pass->createTextureUnitState ();
-        setAtmosphereDepthImage("AtmosphereDepth.png");
-		LOG ("\t\tTextureUnit - Atmosphere depth [OK]");
 
 		mMaterial->load ();
 		LOG ("\tDONE");

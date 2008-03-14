@@ -48,7 +48,7 @@ namespace caelum {
 				Ogre::MaterialManager::getSingleton().getByName(domeMaterialName));
 		mDomeMaterial->load();
 		if (mDomeMaterial->getBestTechnique() == 0) {
-			throw new UnsupportedException (0, "GroundFog dome material not supported.",
+			throw UnsupportedException (0, "GroundFog dome material not supported.",
 					"GroundFog", "GroundFog.cpp", -1);
 		}
         mDomeMaterial->getBestTechnique()->getPass(0)->getFragmentProgramParameters()->setIgnoreMissingParams(true);

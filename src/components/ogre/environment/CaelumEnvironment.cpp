@@ -117,6 +117,8 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 	/// Setup sun options
 	if (mCaelumSystem->getSun ()) {
 		mSun = new CaelumSun(*this, mCaelumSystem->getSun());
+	} else {
+		///use a simple sun object
 	}
 
 	mSky = new CaelumSky(*this);
