@@ -1,10 +1,10 @@
 //
-// C++ Interface: TimeService
+// C++ Interface: TimeImpl
 //
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2006
+// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2008
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,45 +20,30 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBER_SERVICESTIMESERVICE_H
-#define EMBER_SERVICESTIMESERVICE_H
+#ifndef EMBER_SERVICESTIMEIMPL_H
+#define EMBER_SERVICESTIMEIMPL_H
 
-#include "framework/Service.h"
+#include <memory>
 
-///include the EmberServices here, since you always need that anyway whenever you need to access the service
-#include "../EmberServices.h"
+namespace Eris
+{
+class Calendar;
+class Avatar;
+}
 
 namespace Ember {
 
 namespace Services {
 
-class TimeImpl;
-
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
-	
-	Provides time services, both for local time and server time.
 */
-class Time : public Service
-{
+class TimeImpl{
 public:
-    Time();
+    TimeImpl();
 
-    virtual ~Time();
-    
-    /**
-     * Starts ConfigService.  Returns status.
-     *
-     */
-    Service::Status start(void);
+    ~TimeImpl();
 
-    /**
-     * Stops ConfigService.
-     *
-     * @param stop code.
-     */
-    void stop(int code);    
-    
 	/**
 	 *    Gets the local time of the client machine.
 	 * @param year 
@@ -82,12 +67,13 @@ public:
 	 */
 	bool getServerTime(int& year, int& month, int& day, int& hour, int& minute, int& second);
 	
+	void initialize();
+	
 protected:
-
-	/**
-	The actual implementation.
-	*/
-	std::auto_ptr<TimeImpl> mImpl;
+	std::auto_ptr<Eris::Calendar> mCalendar;
+	
+	void Server_GotAvatar(Eris::Avatar* avatar);
+	void createCalendar(Eris::Avatar* avatar);
 
 };
 

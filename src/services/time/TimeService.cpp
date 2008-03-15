@@ -26,11 +26,16 @@
 
 #include "TimeService.h"
 
+#include "TimeImpl.h"
+
+
+
 namespace Ember {
 
 namespace Services {
 
 Time::Time()
+: mImpl(new TimeImpl())
 {
 }
 
@@ -41,7 +46,7 @@ Time::~Time()
 
 Service::Status Time::start()
 {
-
+	mImpl->initialize();
 	return Service::OK;
 }
 
@@ -49,6 +54,17 @@ void Time::stop(int code)
 {
 
 }
+
+void Time::getLocalTime(int& year, int& month, int& day, int& hour, int& minute, int& second)
+{
+	mImpl->getLocalTime(year, month, day, hour, minute, second);
+}
+
+bool Time::getServerTime(int& year, int& month, int& day, int& hour, int& minute, int& second)
+{
+	return mImpl->getServerTime(year, month, day, hour, minute, second);
+}
+
 
 }
 
