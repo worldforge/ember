@@ -28,7 +28,7 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 namespace caelum {
 
 /** A sky dome element.
-	@author Jesús Alonso Abad
+	@author Jesï¿½s Alonso Abad
  */
 class DllExport SkyDome : public CameraBoundElement {
 // Attributes -----------------------------------------------------------------
@@ -47,6 +47,9 @@ class DllExport SkyDome : public CameraBoundElement {
 
 		/// Reference to the sky dome material.
 		Ogre::MaterialPtr mMaterial;
+
+        /// If haze is enabled.
+        bool mHazeEnabled;
 
 // Methods --------------------------------------------------------------------
 	public:
@@ -85,6 +88,12 @@ class DllExport SkyDome : public CameraBoundElement {
 
         /// Set the atmosphere depthh gradient image.
         void setAtmosphereDepthImage (const Ogre::String& gradients);
+
+        /// If skydome haze is enabled.
+        bool getHazeEnabled () const;
+
+        /// Enable or disable skydome haze. This makes the sky darker.
+        void setHazeEnabled (bool value);
 
 	private:
 		/** Internal method to create the sky dome material.

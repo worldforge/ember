@@ -160,10 +160,10 @@ namespace caelum
 
 	void LayeredClouds::setCloudBlendTime(const Ogre::Real cloudBlendTime) {
 		static const Ogre::String animTextures1[4] = {
-			"Noise1.png", "Noise2.png", "Noise3.png", "Noise4.png"
+			"noise1.png", "noise2.png", "noise3.png", "noise4.png"
 		};
 		static const Ogre::String animTextures2[4] = {
-			"Noise2.png", "Noise3.png", "Noise4.png", "Noise1.png"
+			"noise2.png", "noise3.png", "noise4.png", "noise1.png"
 		};
 
 		Ogre::Pass* pass = mMaterial->getBestTechnique()->getPass(0);

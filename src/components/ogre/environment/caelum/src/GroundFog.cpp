@@ -64,6 +64,8 @@ namespace caelum {
 	}
 
 	GroundFog::~GroundFog() {
+        // Disable passes.
+        setDensity(0);
 		mDomeNode->detachObject(mDomeEntity);
 		mScene->destroyEntity(mDomeEntity);
 		mDomeEntity = 0;
