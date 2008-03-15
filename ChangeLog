@@ -1,5 +1,45 @@
 2008-03-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
+	* src/components/ogre/environment/CaelumEnvironment.cpp: use the server time
+
+2008-03-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/WorldEmberEntity.cpp, src/components/ogre/WorldEmberEntity.h: due to how Eris::Calendar works we have to delay the initialization of the terrain and environment until after the entity has been fully created. By not acting until we've got a onVisibilityChanged call we can ensure proper behaviour.
+
+2008-03-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/main/Application.cpp: initialize the time server at startup
+
+2008-03-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/services/server/ServerService.h: added helpful method for getting the Avatar instance
+
+2008-03-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/services/time/Makefile.am, src/services/time/TimeImpl.cpp, src/services/time/TimeImpl.h, src/services/time/TimeService.cpp, src/services/time/TimeService.h: added methods for getting both local and server time. If the server time can't be retrieved for some reason, fall back to local time.
+
+2008-03-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/Sky.h, src/components/ogre/environment/Sun.h, src/components/ogre/environment/Water.h,rc/components/ogre/AvatarEmberEntity.h, src/components/ogre/EmberEntity.h, src/components/ogre/EmberPhysicalEntity.h, src/components/ogre/MousePicker.h, src/components/ogre/PersonEmberEntity.h, src/components/ogre/WorldEmberEntity.h, src/components/ogre/widgets/InventoryWidget.h, src/components/ogre/widgets/MakeEntityWidget.h, src/components/ogre/widgets/ServerWidget.h, src/services/input/EmberKey.h: removed confusing references to dime
+
+2008-03-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainPageShadow.cpp: code cleanup
+
+2008-03-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/services/time/TimeService.cpp, src/services/time/TimeService.h, src/services/EmberServices.cpp, src/services/EmberServices.h: activate the time service. The idea is that it should provide time based services, both for local time and server time.
+
+2008-03-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/services/config/ConfigService.cpp, src/services/config/ConfigService.h: cleaned up code and added a nifty getItem method which returns true if the item exists, and put the value in a by ref submitted variable. Also renamed itemExists to hasItem to make it more readable. We now also include the header for EmberServices in the ConfigService header, since you always must include that anyway whenever you want to use it.
+
+2008-03-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/framework/Makefile.am: removed obsolete file
+
+2008-03-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
 	* media/packs/Caelum.zip: update Caelum media
 
 2008-03-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
@@ -4360,7 +4400,6 @@
 
 	* src/components/ogre/OgreSetup.cpp: make it work on win32
 
->>>>>>> 1.543
 2006-08-14 Erik Hjortsberg  <erik@katastrof.nu>
 
 	* src/components/ogre/OgreResourceLoader.cpp: don't increase the iterator until needed
@@ -8713,7 +8752,6 @@ src/components/ogre/cegui/datafiles/imagesets/iconset_mason.imageset,  src/compo
 	* configure.ac: changed libxml to pkg-config check - untested so if
 	it breaks, please fix.
 
->>>>>>> 1.51
 2003-09-07 Miguel Guzman <aglanor [at] telefonica [dot] net>
 	* ServerService: added touch operation
 

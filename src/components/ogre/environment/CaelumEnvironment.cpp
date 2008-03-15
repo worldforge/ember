@@ -32,6 +32,8 @@
 #include "framework/Tokeniser.h"
 //#include "caelum/include/CaelumSystem.h"
 
+#include "services/time/TimeService.h"
+
 namespace EmberOgre {
 
 namespace Environment {
@@ -131,19 +133,22 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 	/// Set time acceleration to fit with real world time
 	mCaelumSystem->getUniversalClock ()->setTimeScale (1);
 
-	/// Set some time parameters
-	///TODO: use the time from the server
-	///Currently we use the local time
-	time_t t = time (&t);
-	struct tm *t2 = localtime (&t);
-	int hour = t2->tm_hour;
+	int year, month, day, hour, minute, second;
+	bool usingServerTime = Ember::EmberServices::getSingleton().getTimeService()->getServerTime(year, month, day, hour, minute, second);
+	
+	if (!usingServerTime) {
+		S_LOG_WARNING("Could not get server time, using local time for environment.");
+	}
+	
 	///little hack here. We of course want to use the server time, but currently when you log in when it's dark, you won't see much, so in order to show the world in it's full glory we'll try to set the time to day time
-	if (t2->tm_hour < 6) {
+	if (hour < 6) {
 		hour = 6;
-	} else if (t2->tm_hour > 16) {
+	} else if (hour > 16) {
 		hour = 15;
 	}
-	mCaelumSystem->getUniversalClock ()->setGregorianDateTime (t2->tm_year, t2->tm_mon, t2->tm_mday, hour, t2->tm_min, t2->tm_sec);
+	
+	
+	mCaelumSystem->getUniversalClock ()->setGregorianDateTime (year, month, day, hour, minute, second);
 	
 	///greenwich
 	mCaelumSystem->getSolarSystemModel ()->setObserverLatitude  (Ogre::Degree(0));
