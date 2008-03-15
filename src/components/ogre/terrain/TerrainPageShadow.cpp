@@ -77,7 +77,7 @@ void SimpleTerrainPageShadowTechnique::createShadowData(TerrainPage& page, Terra
 			} else {
 				*data = 0;
 			}
-			data++;http://erikhjortsberg.blogspot.com/
+			data++;
 			position[0] = position[0] + 1;
 		}
 	}
