@@ -1,3 +1,67 @@
+2008-03-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/packs/Caelum.zip: update Caelum media
+
+2008-03-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/caelum/include/SkyDome.h, src/components/ogre/environment/caelum/src/GroundFog.cpp, src/components/ogre/environment/caelum/src/ImageHelper.cpp, src/components/ogre/environment/caelum/src/LayeredClouds.cpp, src/components/ogre/environment/caelum/src/SkyDome.cpp: sync with trunk
+
+2008-03-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/CaelumEnvironment.cpp, src/components/ogre/environment/caelum/src/CaelumSystem.cpp, src/components/ogre/environment/caelum/src/GroundFog.cpp, src/components/ogre/environment/caelum/src/LayeredClouds.cpp, src/components/ogre/environment/caelum/src/SkyDome.cpp: make it at least not segfault or otherwise crash if there's no Cg plugin available
+
+2008-03-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Bootstrap.lua: don't store with the function's name as the key, as there might be many connections to the same function, and this would cause connections to be dropped by mistake as the gc collects them. This fixes a bug with the console where in game chat messages wouldn't be shown sometimes.
+
+2008-03-14 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/IngameChatWidget.cpp, src/components/ogre/widgets/IngameChatWidget.h: use the ConfigListener frameworkd for reacting to config changes (all components that can be updated at run time should use this from now one)
+
+2008-03-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/scripting/bindings/lua/WorldEmberEntity.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
+
+2008-03-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/packs/Caelum.zip: updated caelum media
+
+2008-03-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/WorldEmberEntity.cpp, src/components/ogre/WorldEmberEntity.h: delay the initialization of the foliage until either a certain time has elapsed (15 sec) or all entities in the sight queue have been loaded. This is to avoid reloading the foliage multiple times as new areas are added to the world when the player logs on.
+
+2008-03-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/SimpleRenderContext.cpp, src/components/ogre/SimpleRenderContext.h: allow the usage of an already created render texture
+
+2008-03-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Chat.lua: removed the show/hide commands since when the console is hidden, then there's no easy way to make it appear again (since there's no place to enter any console commands)
+
+2008-03-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/icons/IconImageStore.cpp, src/components/ogre/widgets/icons/IconImageStore.h, src/components/ogre/widgets/icons/IconManager.cpp, src/components/ogre/widgets/icons/IconRenderer.cpp, src/components/ogre/widgets/icons/IconRenderer.h: added suport for an icon renderer which renders directly to a subpart of a viewport. This had some issues however with how the render texture was overwritten wit data at every full frame render, so it's currently disabled.
+
+2008-03-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/TerrainGenerator.cpp: force the loading of the closest page at start up to avoid having entities without any ground
+
+2008-03-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/ISceneManagerAdapter.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManagerAdapter.h, src/components/ogre/SceneManagers/EmberPagingSceneManager/src/EmberPagingSceneManagerAdapter.cpp: added a method for force the loading of the current page, so as to avoid having no ground while the terrain is paged in
+
+2008-03-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/modeldefinitions/moraf.terrain: tries out some quite smaller grass plants, but didn't activate it
+
+2008-03-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/Foliage.cpp, src/components/ogre/environment/Foliage.h: cleaned up
+
+2008-03-12 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/pagedgeometry/source/BatchPage.cpp: added support for exp2 fog
+
 2008-03-09 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/modeldefinitions/cg_house.modeldef, src/components/ogre/modeldefinitions/creatures.modeldef.xml, src/components/ogre/modeldefinitions/goblin.modeldef, src/components/ogre/modeldefinitions/house3.modeldef, src/components/ogre/modeldefinitions/marketstall_canvasA.modeldef, src/components/ogre/modeldefinitions/marketstall_canvasB.modeldef, src/components/ogre/modeldefinitions/marketstall_canvasC.modeldef: updated model definitions
