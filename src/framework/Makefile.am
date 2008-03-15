@@ -13,7 +13,7 @@ libFramework_la_SOURCES = Tokeniser.cpp ConsoleBackend.cpp StreamLogObserver.cpp
 
 noinst_HEADERS = ConsoleBackend.h \
 	ConsoleCommandWrapper.h ConsoleObject.h Exception.h IGameView.h IResourceProvider.h \
-	IScriptingProvider.h ISoundProvider.h Service.h ServiceManager.h Singleton.h \
+	IScriptingProvider.h ISoundProvider.h Service.h Singleton.h \
 	StreamLogObserver.h Tokeniser.h binreloc.h float_cast.h osdir.h \
 	scrap.h tinyxml/tinystr.h tinyxml/tinyxml.h
 libFramework_la_LDFLAGS = -no-undefined
