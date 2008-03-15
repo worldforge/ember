@@ -24,7 +24,7 @@
 #define EMBER_SERVICESTIMESERVICE_H
 
 #include "framework/Service.h"
-#include <sigc++/object.h>
+#include "../EmberServices.h"
 
 
 namespace Ember {
@@ -36,12 +36,25 @@ namespace Services {
 	
 	Provides time services.
 */
-class TimeService : public Service
+class Time : public Service
 {
 public:
-    TimeService();
+    Time();
 
-    virtual ~TimeService();
+    virtual ~Time();
+    
+    /**
+     * Starts ConfigService.  Returns status.
+     *
+     */
+    Service::Status start(void);
+
+    /**
+     * Stops ConfigService.
+     *
+     * @param stop code.
+     */
+    void stop(int code);    
     
 //     int getHours();
 //     int getMinutes();

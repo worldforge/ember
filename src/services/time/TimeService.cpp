@@ -30,15 +30,25 @@ namespace Ember {
 
 namespace Services {
 
-TimeService::TimeService()
+Time::Time()
 {
 }
 
 
-TimeService::~TimeService()
+Time::~Time()
 {
 }
 
+Service::Status Time::start()
+{
+
+	return Service::OK;
+}
+
+void Time::stop(int code)
+{
+
+}
 
 }
 

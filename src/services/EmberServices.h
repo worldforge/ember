@@ -17,8 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef DIME_SERVICES_H
-#define DIME_SERVICES_H
+#ifndef EMBER_EMBERSERVICES_H
+#define EMBER_EMBERSERVICES_H
 
 #include "framework/Singleton.h"
 #include <memory>
@@ -26,24 +26,25 @@
 
 namespace Ember {
 
-  // some forward declarations before we start
-  class LoggingService;
-  class ConfigService;
-  class InputService;
-  //class GuiService;
-  class MetaserverService;
-  class ServerService;
-  class SoundService;
-  class TestService;
-  class ScriptingService;
-  class WfutService;
-  
-
+	// some forward declarations before we start
+	class LoggingService;
+	class ConfigService;
+	class InputService;
+	//class GuiService;
+	class MetaserverService;
+	class ServerService;
+	class SoundService;
+	class TestService;
+	class ScriptingService;
+	class WfutService;
+	namespace Services {
+		class Time;
+	}
 
 
 template <typename T>
-  class UninitializedInnerServiceContainer;
-  
+class UninitializedInnerServiceContainer;
+
 template <typename T>
 class IInnerServiceContainer
 {
@@ -86,7 +87,7 @@ private:
 	std::auto_ptr<IInnerServiceContainer<T> > mInnerContainer;
 };
 
-  
+
 template <typename T>
 class InitializedInnerServiceContainer : public IInnerServiceContainer<T>
 {
@@ -109,12 +110,12 @@ public:
 	virtual bool hasService()
 	{
 		return true;
-	} 
+	}
 	
 private:
 	std::auto_ptr<T> mService;
-};  
-  
+};
+
 template <typename T>
 class UninitializedInnerServiceContainer : public IInnerServiceContainer<T>
 {
@@ -125,7 +126,7 @@ public:
 
 	virtual T* getService()
 	{
-		//since the call to setInnerContainer will result in this current object actually getting deleted, we have to save the reference of the container on the stack, else we'll get segfaults if the memory holding mContainer is claimed by something else
+		///since the call to setInnerContainer will result in this current object actually getting deleted, we have to save the reference of the container on the stack, else we'll get segfaults if the memory holding mContainer is claimed by something else
 		ServiceContainer<T>* tempContainer = mContainer;
 		tempContainer->setInnerContainer(new InitializedInnerServiceContainer<T>());
 		return tempContainer->getService();
@@ -162,84 +163,87 @@ private:
  */
 class EmberServices : public Ember::Singleton<EmberServices>
 {
-
-
-    public:
-
-    EmberServices();
-
-    /**
-     * Deletes a EmberServices instance.
-     */
-    virtual ~EmberServices();
-    
-    /**
-     * Returns an instance of the TestService.
-     */
-    Ember::TestService *getTestService();
-    
-
-    /**
-     * Returns an instance of the LoggingService
-     */
-    Ember::LoggingService *getLoggingService();
-
-    /**
-     * Returns an instance of the ConfigService
-     */
-    Ember::ConfigService *getConfigService();
-
-    /**
-     * Returns an instance of the InputService
-     */
-    Ember::InputService *getInputService();
+public:
 	
-    /**
-     * Returns an instance of the GuiService
-     */
-    //Ember::GuiService *getGuiService();
-
-    /**
-     * Returns an instance of the MetaserverService
-     */
-     Ember::MetaserverService *getMetaserverService();
-
-    /**
-     * Returns an instance of the ServerService
-     */
-    Ember::ServerService *getServerService();
-
-    /**
-     * Returns an instance of the SoundService
-     */
-    Ember::SoundService *getSoundService();
-
-    /**
-     * Returns an instance of the ScriptingService
-     */
-    Ember::ScriptingService *getScriptingService();
-
-    /**
-     * Returns an instance of the ScriptingService
-     */
-    Ember::WfutService *getWfutService();
-
-    //----------------------------------------------------------------------
-    // Setters
-
-    //======================================================================
-    // Disabled constructors and operators
-    //======================================================================
-    private:
-
-
-
-    /**
-     * Copy constructor not provided.
-     */
-    EmberServices( const EmberServices &source )
-    {
-    }
+	EmberServices();
+	
+	/**
+	* Deletes a EmberServices instance.
+	*/
+	virtual ~EmberServices();
+	
+	/**
+	* Returns an instance of the TestService.
+	*/
+	Ember::TestService *getTestService();
+	
+	
+	/**
+	* Returns an instance of the LoggingService
+	*/
+	Ember::LoggingService *getLoggingService();
+	
+	/**
+	* Returns an instance of the ConfigService
+	*/
+	Ember::ConfigService *getConfigService();
+	
+	/**
+	* Returns an instance of the InputService
+	*/
+	Ember::InputService *getInputService();
+	
+	/**
+	* Returns an instance of the GuiService
+	*/
+	//Ember::GuiService *getGuiService();
+	
+	/**
+	* Returns an instance of the MetaserverService
+	*/
+	Ember::MetaserverService *getMetaserverService();
+	
+	/**
+	* Returns an instance of the ServerService
+	*/
+	Ember::ServerService *getServerService();
+	
+	/**
+		* Returns an instance of the SoundService
+		*/
+	Ember::SoundService *getSoundService();
+	
+	/**
+	* Returns an instance of the ScriptingService
+	*/
+	Ember::ScriptingService *getScriptingService();
+	
+	/**
+	* Returns an instance of the wfut service
+	*/
+	Ember::WfutService *getWfutService();
+	
+	/**
+	* Returns an instance of the time service
+	*/
+	Ember::Services::Time* getTimeService();
+	
+	//----------------------------------------------------------------------
+	// Setters
+	
+	//======================================================================
+	// Disabled constructors and operators
+	//======================================================================
+	private:
+	
+	
+	
+	/**
+	* Copy constructor not provided.
+	*/
+	EmberServices( const EmberServices &source )
+	{
+	}
 
 
 	/**
@@ -259,7 +263,7 @@ private:
 //     std::auto_ptr<ServiceContainer<InputService> > mInputService;
 	std::auto_ptr<ServiceContainer<WfutService> > mWfutService;
 	std::auto_ptr<ServiceContainer<ConfigService> > mConfigService;
-
+	std::auto_ptr<ServiceContainer<Services::Time> > mTimeService;
 
 };
 }
