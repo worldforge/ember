@@ -16,8 +16,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef PERSONDIMEENTITY_H
-#define PERSONDIMEENTITY_H
+#ifndef PERSONEMBERENTITY_H
+#define PERSONEMBERENTITY_H
 #include "EmberOgrePrerequisites.h"
 
 namespace EmberOgre {
@@ -38,4 +38,4 @@ protected:
 };
 
 }
-#endif // PERSONDIMEENTITY_H
+#endif // PERSONEMBERENTITY_H

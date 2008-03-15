@@ -16,8 +16,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef DIMEENTITY_H
-#define DIMEENTITY_H
+#ifndef EMBEROGRE_EMBERENTITY_H
+#define EMBEROGRE_EMBERENTITY_H
 
 #include "EmberOgrePrerequisites.h"
 
@@ -369,4 +369,4 @@ protected:
 
 }
 
-#endif // DIMEENTITY_H
+#endif // EMBEROGRE_EMBERENTITY_H

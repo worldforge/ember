@@ -16,8 +16,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef DIMEKEY_H
-#define DIMEKEY_H
+#ifndef EMBERKEY_H
+#define EMBERKEY_H
 
 
 #include <SDL/SDL_keysym.h>

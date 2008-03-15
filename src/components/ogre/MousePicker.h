@@ -20,8 +20,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef DIMEOGREMOUSEPICKER_H
-#define DIMEOGREMOUSEPICKER_H
+#ifndef EMBEROGRE_MOUSEPICKER_H
+#define EMBEROGRE_MOUSEPICKER_H
 
 #include <sigc++/signal.h>
 

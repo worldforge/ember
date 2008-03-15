@@ -17,8 +17,8 @@
 */
 
 
-#ifndef AVATARDIMEENTITY_H
-#define AVATARDIMEENTITY_H
+#ifndef AVATAREMBERENTITY_H
+#define AVATAREMBERENTITY_H
 
 namespace Eris
 {
@@ -113,4 +113,4 @@ Eris::Avatar* AvatarEmberEntity::getErisAvatar()
 
 }
 
-#endif // AVATARDIMEENTITY_H
+#endif // AVATAREMBERENTITY_H

@@ -17,8 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef DIMEPHYSICALENTITY_H
-#define DIMEPHYSICALENTITY_H
+#ifndef EMBEROGRE_EMBERPHYSICALENTITY_H
+#define EMBEROGRE_EMBERPHYSICALENTITY_H
 
 #include "EmberOgrePrerequisites.h"
 
@@ -299,4 +299,4 @@ Ogre::SceneNode* EmberPhysicalEntity::getScaleNode() const
 
 
 }
-#endif // DIMEPHYSICALENTITY_H
+#endif // EMBEROGRE_EMBERPHYSICALENTITY_H

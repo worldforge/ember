@@ -20,8 +20,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef DIMEOGRESERVERWIDGET_H
-#define DIMEOGRESERVERWIDGET_H
+#ifndef EMBEROGRE_SERVERWIDGET_H
+#define EMBEROGRE_SERVERWIDGET_H
 
 #include <Eris/ServerInfo.h>
 #include <Eris/Connection.h>

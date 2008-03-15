@@ -20,8 +20,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef DIMEOGREINVENTORYWIDGET_H
-#define DIMEOGREINVENTORYWIDGET_H
+#ifndef EMBEROGRE_INVENTORYWIDGET_H
+#define EMBEROGRE_INVENTORYWIDGET_H
 
 #include "Widget.h"
 

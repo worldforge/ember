@@ -16,8 +16,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef WORLDDIMEENTITY_H
-#define WORLDDIMEENTITY_H
+#ifndef WORLDEMBER_ENTITY_H
+#define WORLDEMBER_ENTITY_H
 
 namespace Eris
 {
@@ -175,4 +175,4 @@ protected:
 
 }
 
-#endif // WORLDDIMEENTITY_H
+#endif // WORLDEMBER_ENTITY_H

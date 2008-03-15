@@ -20,8 +20,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef DIMEOGRESUN_H
-#define DIMEOGRESUN_H
+#ifndef EMBEROGRE_SUN_H
+#define EMBEROGRE_SUN_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 

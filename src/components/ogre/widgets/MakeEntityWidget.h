@@ -20,8 +20,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef DIMEOGREMAKEENTITYWIDGET_H
-#define DIMEOGREMAKEENTITYWIDGET_H
+#ifndef EMBEROGRE_MAKEENTITYWIDGET_H
+#define EMBEROGRE_MAKEENTITYWIDGET_H
 
 #include "Widget.h"
 
