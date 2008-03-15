@@ -138,7 +138,9 @@ class ServerService : public Service, public ConsoleObject
 
     void runCommand(const std::string &, const std::string &);
 
-    inline Eris::View* getView();
+	inline Eris::View* getView();
+	inline Eris::Avatar* getAvatar();
+
       
 	/**
 	 *    Tells the server to try to move the user to the specified point.
@@ -267,6 +269,11 @@ bool ServerService::isConnected() const
 inline Eris::View* ServerService::getView()
 {
 	return mView;
+}
+
+inline Eris::Avatar* ServerService::getAvatar()
+{
+	return mAvatar;
 }
 
 
