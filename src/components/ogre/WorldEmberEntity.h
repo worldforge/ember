@@ -133,6 +133,8 @@ protected:
 	Takes care of delaying the initialization of the foliage.
 	*/
 	std::auto_ptr<DelayedFoliageInitializer> mFoliageInitializer;
+	
+	bool mHasBeenInitialized;
 
 
 	

@@ -56,7 +56,9 @@ EmberEntity(id, ty, vw, sceneManager)
 , mTerrainGenerator(terrainGenerator)
 , mFoliage(0)
 , mEnvironment(0)
+, mTerrainParser(0)
 , mFoliageInitializer(0)
+, mHasBeenInitialized(false)
 {
 	sceneManager->getRootSceneNode()->addChild(getSceneNode());
 }
@@ -83,43 +85,8 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 	
 	mEnvironment = new Environment::Environment(new Environment::CaelumEnvironment( EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), EmberOgre::getSingleton().getMainCamera()->getCamera()));
 	EventEnvironmentCreated.emit();
-	mEnvironment->initialize();
 	
-	
-	mTerrainParser = std::auto_ptr<TerrainParser>(new TerrainParser(mTerrainGenerator));
-	
-	
-	bool hasValidShaders = false;
-	if (hasAttr("terrain")) {
-		const Atlas::Message::Element& terrainElement = valueOfAttr("terrain");
-		if (terrainElement.isMap()) {
-			const Atlas::Message::MapType& terrainMap(terrainElement.asMap());
-			if (terrainMap.count("surfaces")) {
-				const Atlas::Message::Element& surfaceElement(terrainMap.find("surfaces")->second);
-				mTerrainParser->createShaders(surfaceElement);
-				hasValidShaders = true;
-			}
-		}
-		if (!hasValidShaders) {
-			mTerrainParser->createDefaultShaders();
-			hasValidShaders = true;
-		}
-		mTerrainParser->updateTerrain(terrainElement);
-	}
-	if (!hasValidShaders) {
-		mTerrainParser->createDefaultShaders();
-		hasValidShaders = true;
-	}
-	
-	
-	
-	///prepare all the segments in advance
-	mTerrainGenerator->prepareAllSegments();
-	
-	//mTerrainGenerator->prepareSegments(0,0,1,true);
-	
-	mFoliageInitializer = std::auto_ptr<DelayedFoliageInitializer>(new DelayedFoliageInitializer(mFoliage, getView(), 1000, 15000));
-// 	mFoliage->initialize();
+	///we will wait with creating the terrain and initialing the environment until we've got a onVisibilityChanged call, since the Eris::Calendar functionality depends on the world entity object to be fully constructed and initialized to work. By waiting until onVisibilityChanged is called we guarantee that the Calendar will get the correct server time
 	
 	
 }
@@ -394,14 +361,52 @@ const Ogre::Vector3& WorldEmberEntity::getOffsetForContainedNode(const Ogre::Vec
 //  	Eris::Entity::onTalk(talk);
 //  }
 //	virtual void setContainer(Entity *pr);
- void WorldEmberEntity::onVisibilityChanged(bool vis)
- {
- 	Eris::Entity::onVisibilityChanged(vis);
- }
- void WorldEmberEntity::onLocationChanged(Eris::Entity *oldLocation)
- {
- 	Eris::Entity::onLocationChanged(oldLocation);
- }
+void WorldEmberEntity::onVisibilityChanged(bool vis)
+{
+	///we do our initialization of the terrain and environment here instead of at onInit since that way we can guarantee that Eris::Calendar will work as it should (which is used to get the correct server time)
+	if (!mHasBeenInitialized) {
+		mEnvironment->initialize();
+		mTerrainParser = std::auto_ptr<TerrainParser>(new TerrainParser(mTerrainGenerator));
+		bool hasValidShaders = false;
+		if (hasAttr("terrain")) {
+			const Atlas::Message::Element& terrainElement = valueOfAttr("terrain");
+			if (terrainElement.isMap()) {
+				const Atlas::Message::MapType& terrainMap(terrainElement.asMap());
+				if (terrainMap.count("surfaces")) {
+					const Atlas::Message::Element& surfaceElement(terrainMap.find("surfaces")->second);
+					mTerrainParser->createShaders(surfaceElement);
+					hasValidShaders = true;
+				}
+			}
+			if (!hasValidShaders) {
+				mTerrainParser->createDefaultShaders();
+				hasValidShaders = true;
+			}
+			mTerrainParser->updateTerrain(terrainElement);
+		}
+		if (!hasValidShaders) {
+			mTerrainParser->createDefaultShaders();
+			hasValidShaders = true;
+		}
+		
+		
+		
+		///prepare all the segments in advance
+		mTerrainGenerator->prepareAllSegments();
+		
+		//mTerrainGenerator->prepareSegments(0,0,1,true);
+		
+		mFoliageInitializer = std::auto_ptr<DelayedFoliageInitializer>(new DelayedFoliageInitializer(mFoliage, getView(), 1000, 15000));
+	// 	mFoliage->initialize();
+		mHasBeenInitialized = true;
+	}
+
+	Eris::Entity::onVisibilityChanged(vis);
+}
+void WorldEmberEntity::onLocationChanged(Eris::Entity *oldLocation)
+{
+	Eris::Entity::onLocationChanged(oldLocation);
+}
  
 void WorldEmberEntity::addArea(Terrain::TerrainArea* area)
 {
