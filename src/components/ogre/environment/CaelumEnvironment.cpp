@@ -191,20 +191,18 @@ IWater* CaelumEnvironment::getWater()
 
 void CaelumEnvironment::setTime(int hour, int minute, int second)
 {
-	///use the local year, month and day
-	time_t t = time (&t);
-	struct tm *t2 = localtime (&t);
+	int year, month, day, _hour, _minute, _second;
+	Ember::EmberServices::getSingleton().getTimeService()->getServerTime(year, month, day, _hour, _minute, _second);
 	
-	mCaelumSystem->getUniversalClock ()->setGregorianDateTime (t2->tm_year, t2->tm_mon, t2->tm_mday, hour, minute, second);
+	mCaelumSystem->getUniversalClock ()->setGregorianDateTime(year, month, day, hour, minute, second);
 }
 
 void CaelumEnvironment::setTime(int seconds)
 {
-	///use the local year, month and day
-	time_t t = time (&t);
-	struct tm *t2 = localtime (&t);
+	int year, month, day, _hour, _minute, _second;
+	Ember::EmberServices::getSingleton().getTimeService()->getServerTime(year, month, day, _hour, _minute, _second);
 	
-	mCaelumSystem->getUniversalClock ()->setGregorianDateTime (t2->tm_year, t2->tm_mon, t2->tm_mday, 0, 0, seconds);
+	mCaelumSystem->getUniversalClock ()->setGregorianDateTime(year, month, day, 0, 0, seconds);
 }
 
 void CaelumEnvironment::runCommand(const std::string &command, const std::string &args)
