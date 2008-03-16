@@ -1,10 +1,12 @@
+$#include "components/ogre/terrain/Map.h"
+
 //
-// C++ Interface: AssetsManager
+// C++ Interface: Map
 //
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2007
+// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2008
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,45 +23,37 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
-$#include "components/ogre/widgets/AssetsManager.h"
-
 
 namespace EmberOgre {
 
-namespace Gui {
-
-class TexturePair
-{
-public:
-	TexturePair(Ogre::TexturePtr mOgreTexture, const CEGUI::Image* mTextureImage, CEGUI::Imageset* mTextureImageset);
-	TexturePair();
-	
-	Ogre::TexturePtr getOgreTexture() const;
-// 	CEGUI::Texture* getOgreCEGUITexture() const;
-	const CEGUI::Image* getTextureImage() const;
-	CEGUI::Imageset* getTextureImageset() const;
-	
-	bool hasData();
-
-};
+namespace Terrain {
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
-class AssetsManager{
+class Map{
 public:
-    AssetsManager();
+    Map();
 
-    ~AssetsManager();
-
-    TexturePair showTexture(const std::string textureName);
+    virtual ~Map();
     
-	TexturePair createTextureImage(Ogre::TexturePtr texturePtr, const std::string& imageSetName);
-
+    void initialize();
+    
+    Ogre::TexturePtr getTexture();
+    
+    void render();
+    void reposition(Ogre::Vector2 pos);
+    void reposition(float x, float y);
+   
+	void setDistance(float distance);
+	float getDistance() const;
 
 };
 
-}
+
 
 }
 
+}
+
+#endif

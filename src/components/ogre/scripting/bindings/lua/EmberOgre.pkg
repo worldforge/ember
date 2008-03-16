@@ -70,6 +70,8 @@ $pfile "stdlib.pkg"
 $pfile "Vector3Adapter.pkg"
 $pfile "QuaternionAdapter.pkg"
 
+$pfile "Map.pkg"
+
 
 $pfile "OgreInfo.pkg"
 $pfile "AttributeObserver.pkg"
