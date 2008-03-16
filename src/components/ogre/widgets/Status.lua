@@ -4,6 +4,7 @@ function Status.createStatusInstance(name)
 	local wrapper = {}
 	wrapper.widget = guiManager:createWidget()
 	wrapper.widget:loadMainSheet("Status.layout", "Status_" .. name .. "/")
+	wrapper.widget:setIsActiveWindowOpaque(false)
 	
 	wrapper.healthBar = CEGUI.toProgressBar(wrapper.widget:getWindow("HealthBar"))
 	wrapper.staminaBar = CEGUI.toProgressBar(wrapper.widget:getWindow("StaminaBar"))
