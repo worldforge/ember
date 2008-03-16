@@ -38,6 +38,26 @@ namespace EmberOgre {
 
 namespace Gui {
 
+class TexturePair
+{
+public:
+	TexturePair(Ogre::TexturePtr mOgreTexture, const CEGUI::Image* mTextureImage, CEGUI::Imageset* mTextureImageset);
+	TexturePair();
+	
+	Ogre::TexturePtr getOgreTexture() const;
+// 	CEGUI::Texture* getOgreCEGUITexture() const;
+	const CEGUI::Image* getTextureImage() const;
+	CEGUI::Imageset* getTextureImageset() const;
+	
+	bool hasData();
+
+protected:
+	Ogre::TexturePtr mOgreTexture;
+// 	CEGUI::Texture* mOgreCEGUITexture;
+	const CEGUI::Image* mTextureImage;
+	CEGUI::Imageset* mTextureImageset;
+};
+
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
@@ -46,18 +66,14 @@ public:
     AssetsManager();
 
     ~AssetsManager();
+
+    TexturePair showTexture(const std::string textureName);
     
-    const CEGUI::Image* getCEGUIImage();
-    
-    bool showTexture(const std::string textureName);
-    
+	TexturePair createTextureImage(Ogre::TexturePtr texturePtr, const std::string& imageSetName);
+
 private:
 
-	void createTextureImage(Ogre::TexturePtr texturePtr);
 
-	CEGUI::Texture* mOgreCEGUITexture;
-	const CEGUI::Image* mTextureImage;
-	CEGUI::Imageset* mTextureImageset;
 };
 
 }

@@ -44,7 +44,6 @@ namespace EmberOgre {
 namespace Gui {
 
 AssetsManager::AssetsManager()
-: mOgreCEGUITexture(0), mTextureImage(0), mTextureImageset(0)
 {
 // 	createTextureImage();
 }
@@ -54,7 +53,7 @@ AssetsManager::~AssetsManager()
 {
 }
 
-bool AssetsManager::showTexture(const std::string textureName)
+TexturePair AssetsManager::showTexture(const std::string textureName)
 {
 // 	if (!mOgreCEGUITexture) {
 // 		S_LOG_WARNING("You must first create a valid OgreCEGUITexture instance.");
@@ -63,60 +62,104 @@ bool AssetsManager::showTexture(const std::string textureName)
 	if (Ogre::TextureManager::getSingleton().resourceExists(textureName)) {
 		Ogre::TexturePtr texturePtr = static_cast<Ogre::TexturePtr>(Ogre::TextureManager::getSingleton().getByName(textureName));
 		if (!texturePtr.isNull()) {
-			try {
-				texturePtr->load();
-			} catch (...) {
-				S_LOG_WARNING("Error when loading " << textureName << ". This texture will not be shown.");
-				return false;
+			if (!texturePtr->isLoaded()) {
+				try {
+					texturePtr->load();
+				} catch (...) {
+					S_LOG_WARNING("Error when loading " << textureName << ". This texture will not be shown.");
+					return TexturePair();
+				}
 			}
-			createTextureImage(texturePtr);
-			return true;
+			std::string textureName (texturePtr->getName());
+			std::string imageSetName(textureName + "_AssetsManager");
+
+			return createTextureImage(texturePtr, imageSetName);
 // 			mOgreCEGUITexture->setOgreTexture(texturePtr);
 		}
 	}
-	return false;
+	return TexturePair();
 	
 }
 
 
-void AssetsManager::createTextureImage(Ogre::TexturePtr texturePtr)
+TexturePair AssetsManager::createTextureImage(Ogre::TexturePtr texturePtr, const std::string& imageSetName)
 {
-	std::string textureName (texturePtr->getName());
 // 	if (mOgreCEGUITexture) {
 // 		GUIManager::getSingleton().getGuiRenderer()->destroyTexture(mOgreCEGUITexture);
 // 		mOgreCEGUITexture = 0;
 // 	}
 	
-	std::string imageSetName(textureName + "_AssetsManager");
+	
+	CEGUI::Imageset* textureImageset;
 	
 	if (CEGUI::ImagesetManager::getSingleton().isImagesetPresent(imageSetName)) {
-		mTextureImageset = CEGUI::ImagesetManager::getSingleton().getImageset(imageSetName);
+		textureImageset = CEGUI::ImagesetManager::getSingleton().getImageset(imageSetName);
 	} else {
 		///create a CEGUI texture from our Ogre texture
 		S_LOG_VERBOSE("Creating new CEGUI texture from Ogre texture.");
-		mOgreCEGUITexture = GUIManager::getSingleton().getGuiRenderer()->createTexture(texturePtr);
+		CEGUI::Texture* ogreCEGUITexture = GUIManager::getSingleton().getGuiRenderer()->createTexture(texturePtr);
 		
 		///we need a imageset in order to create GUI elements from the ceguiTexture
 		S_LOG_VERBOSE("Creating new CEGUI imageset with name " << imageSetName);
-		mTextureImageset = CEGUI::ImagesetManager::getSingleton().createImageset(imageSetName , mOgreCEGUITexture);
+		textureImageset = CEGUI::ImagesetManager::getSingleton().createImageset(imageSetName , ogreCEGUITexture);
 		
 		///we only want one element: the whole texture
-		mTextureImageset->defineImage("full_image", CEGUI::Rect(0, 0, texturePtr->getWidth(), texturePtr->getHeight()), CEGUI::Point(0,0));
+		textureImageset->defineImage("full_image", CEGUI::Rect(0, 0, texturePtr->getWidth(), texturePtr->getHeight()), CEGUI::Point(0,0));
 	}
 	///assign our image element to the StaticImage widget
-	mTextureImage = &mTextureImageset->getImage("full_image");
+	const CEGUI::Image* textureImage = &textureImageset->getImage("full_image");
+	
+	return TexturePair(texturePtr, textureImage, textureImageset);
 
 }
 
-const CEGUI::Image* AssetsManager::getCEGUIImage()
-{
-	return mTextureImage;
-}
 
 // bool AssetsManager::exportTexture(Ogre::TexturePtr texturePtr)
 // {
 //  getRenderTarget()->writeContentsToFile();
 // }
+
+
+TexturePair::TexturePair(Ogre::TexturePtr ogreTexture, const CEGUI::Image* textureImage, CEGUI::Imageset* textureImageset)
+: mOgreTexture(ogreTexture)
+// , mOgreCEGUITexture(ogreCEGUITexture)
+, mTextureImage(textureImage)
+, mTextureImageset(textureImageset)
+{
+}
+	
+TexturePair::TexturePair()
+: mOgreTexture(0)
+// , mOgreCEGUITexture(0)
+, mTextureImage(0)
+, mTextureImageset(0)
+{
+}
+	
+Ogre::TexturePtr TexturePair::getOgreTexture() const
+{
+	return mOgreTexture;
+}
+
+// CEGUI::Texture* TexturePair::getOgreCEGUITexture() const
+// {
+// 	return OgreCEGUITexture;
+// }
+
+const CEGUI::Image* TexturePair::getTextureImage() const
+{
+	return mTextureImage;
+}
+
+CEGUI::Imageset* TexturePair::getTextureImageset() const
+{
+	return mTextureImageset;
+}
+
+bool TexturePair::hasData()
+{
+	return mTextureImageset != 0;
+}
 
 
 }
