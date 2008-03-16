@@ -1,3 +1,31 @@
+2008-03-16 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* media/materials/splatting/Splat.cg: don't apply any alpha on the final result since that will mess up the mini map
+
+2008-03-16 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/scripting/bindings/lua/AssetsManager.pkg, src/components/ogre/scripting/bindings/lua/EmberOgre.pkg, src/components/ogre/scripting/bindings/lua/Map.pkg, src/components/ogre/scripting/bindings/lua/lua_EmberOgre.cpp: updated bindings
+
+2008-03-16 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Status.lua: don't fade if inactive
+
+2008-03-16 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/Bootstrap.lua, src/components/ogre/widgets/Compass.layout, src/components/ogre/widgets/Compass.lua: added a compass widget, which is a combination of the overhead mini map and regular compass functionality. currently not very functional though
+
+2008-03-16 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/widgets/AssetsManager.cpp, src/components/ogre/widgets/AssetsManager.h, src/components/ogre/widgets/AssetsManager.lua: made the methods for binding an ogre texture to a cegui image more generic so that they can be used in other situations as well. (should we really keep this in this class then?)
+
+2008-03-16 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/terrain/Makefile.am, src/components/ogre/terrain/Map.cpp, src/components/ogre/terrain/Map.h: added a class for generating an overhead map
+
+2008-03-16 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
+
+	* src/components/ogre/environment/CaelumEnvironment.cpp: use the time service
+
 2008-03-15 Erik Hjortsberg  <erik.hjortsberg@iteam.se>
 
 	* src/components/ogre/environment/CaelumEnvironment.cpp: use the server time
