@@ -71,6 +71,11 @@ public:
 	void getLocalTime(int& year, int& month, int& day, int& hour, int& minute, int& second);
 	
 	/**
+	 * utility method to get a string of the current time
+	 */
+	std::string getLocalTimeStr(void);
+	
+	/**
 	 *    Gets the server time. If we for some reason can't get the server time, local time is returned.
 	 * @param year 
 	 * @param month 
@@ -81,6 +86,8 @@ public:
 	 * @return True if we successfully got the server time, else false (we then used the local time).
 	 */
 	bool getServerTime(int& year, int& month, int& day, int& hour, int& minute, int& second);
+	
+	
 	
 protected:
 

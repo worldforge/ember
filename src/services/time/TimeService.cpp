@@ -28,7 +28,7 @@
 
 #include "TimeImpl.h"
 
-
+#include <sstream>
 
 namespace Ember {
 
@@ -58,6 +58,19 @@ void Time::stop(int code)
 void Time::getLocalTime(int& year, int& month, int& day, int& hour, int& minute, int& second)
 {
 	mImpl->getLocalTime(year, month, day, hour, minute, second);
+}
+
+std::string Time::getLocalTimeStr()
+{
+	int year,month,day,hour,minute,second;
+	std::stringstream s;
+	
+	mImpl->getLocalTime(year, month, day, hour, minute, second);
+	
+	// YYYY-MM-DD HH:MM:SS
+	s << (1900+year) << "-" << month << "-" << day << " " << hour << ":" << minute << ":" << second;  
+	return s.str();
+		
 }
 
 bool Time::getServerTime(int& year, int& month, int& day, int& hour, int& minute, int& second)
