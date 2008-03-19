@@ -29,6 +29,7 @@
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
+#include "services/time/TimeService.h"
 // #include "services/sound/SoundService.h"
 
 
@@ -73,10 +74,11 @@ Avatar::Avatar()
 	Ogre::Root::getSingleton().addFrameListener(this);
 	
 	Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &Avatar::ConfigService_EventChangedConfigItem));
-	
+
 	///update values from the config
 	updateFromConfig();
 
+	GUIManager::getSingleton().AppendIGChatLine.connect(sigc::mem_fun(*this,&Avatar::GUIManager_AppendIGChatLine));
 }
 
 Avatar::~Avatar()
@@ -422,6 +424,24 @@ void Avatar::updateFromConfig()
 
 }
 
+void Avatar::GUIManager_AppendIGChatLine(const std::string& message, EmberEntity* entity)
+{
+	if(Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("general","logchatmessages")) {
+		if((bool)Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("general","logchatmessages")) {
+			// chat logging is set to true
+			if(mChatLogFile.empty()) {
+				// if the logfile is not initialized yet, then perform setup of the stream
+				mChatLogFile = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/"+ 
+				getAvatarEmberEntity()->getName() + "_chatlog.log";
+				mChatLogger = std::auto_ptr<std::ofstream>(new std::ofstream(mChatLogFile.c_str(),std::ios::app));
+				S_LOG_VERBOSE("Chat Logging set to be [ " << mChatLogFile << " ]");
+				*mChatLogger << "Chat Logging Initialized" << std::endl;
+			}
+			*mChatLogger << "[" << Ember::EmberServices::getSingleton().getTimeService()->getLocalTimeStr() << "] <" 
+			             <<  entity->getName() << "> says: " << message << std::endl;
+		}
+	}
+} 
 
 // void Avatar::touch(EmberEntity* entity)
 // {

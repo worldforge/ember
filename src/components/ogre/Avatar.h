@@ -25,7 +25,7 @@
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
 	
-
+#include "GUIManager.h"
 #include "framework/Singleton.h"
 
 namespace Eris {
@@ -146,6 +146,11 @@ public Ogre::FrameListener
 	True if the current user have admin rights, i.e. is a "creator".
 	*/
 	inline bool isAdmin() const;
+	
+	/**
+	  Catch messages to be displayed in the chat window, and log them if required	  
+	 */
+	void GUIManager_AppendIGChatLine(const std::string& message, EmberEntity* entity);
 
 protected:
 	
@@ -319,6 +324,11 @@ protected:
 	*/
 	bool mHasChangedLocation;
 
+	/**
+	 * chat logging 
+	 */
+	std::auto_ptr<std::ofstream> mChatLogger;
+	std::string mChatLogFile;
 	
 }; //End of class declaration
 
