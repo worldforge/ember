@@ -21,7 +21,7 @@ libEmberOgre_la_LIBADD = \
 
 
 libEmberOgre_la_SOURCES = AttributeObserver.cpp Avatar.cpp AvatarCamera.cpp \
-	AvatarController.cpp AvatarEmberEntity.cpp CameraMount.cpp ConsoleObjectImpl.cpp \
+	AvatarController.cpp AvatarEmberEntity.cpp AvatarLogger.cpp CameraMount.cpp ConsoleObjectImpl.cpp \
 	EmberEntity.cpp EmberEntityActionCreator.cpp EmberEntityFactory.cpp \
 	EmberEntityModelAction.cpp EmberEntityPartAction.cpp EmberEntityUserObject.cpp EmberOgre.cpp \
 	EmberPhysicalEntity.cpp EntityWorldPickListener.cpp GUICEGUIAdapter.cpp GUIManager.cpp \
@@ -35,7 +35,7 @@ dist_conf_DATA = ogre.cfg resources.cfg terrain.cfg
 
 
 noinst_HEADERS = AttributeObserver.h Avatar.h AvatarCamera.h AvatarController.h \
-	AvatarEmberEntity.h CameraMount.h ConsoleObjectImpl.h EmberEntity.h \
+	AvatarEmberEntity.h AvatarLogger.h CameraMount.h ConsoleObjectImpl.h EmberEntity.h \
 	EmberEntityActionCreator.h EmberEntityFactory.h EmberEntityModelAction.h EmberEntityPartAction.h \
 	EmberEntityUserObject.h EmberOgre.h EmberOgrePrerequisites.h EmberPhysicalEntity.h \
 	EntityWorldPickListener.h GUICEGUIAdapter.h GUIManager.h IWorldPickListener.h MathConverter.h \

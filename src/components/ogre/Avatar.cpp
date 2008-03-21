@@ -37,6 +37,7 @@
 #include "EmberPhysicalEntity.h"
 #include "AvatarController.h"
 #include "AvatarCamera.h"
+#include "AvatarLogger.h"
 
 #include "AvatarEmberEntity.h"
 #include "model/Model.h"
@@ -53,7 +54,9 @@ namespace EmberOgre {
 
 
 Avatar::Avatar()  
-: mErisAvatarEntity(0), mHasChangedLocation(false)
+: mErisAvatarEntity(0)
+, mHasChangedLocation(false)
+, mChatLoggerParent(0)
 {
 	mTimeSinceLastServerMessage = 0;
 	setMinIntervalOfRotationChanges(1000); //milliseconds
@@ -77,8 +80,9 @@ Avatar::Avatar()
 
 	///update values from the config
 	updateFromConfig();
+	
+	registerConfigListener("general","logchatmessages", sigc::mem_fun(*this, &Avatar::Config_LogChatMessages));
 
-	GUIManager::getSingleton().AppendIGChatLine.connect(sigc::mem_fun(*this,&Avatar::GUIManager_AppendIGChatLine));
 }
 
 Avatar::~Avatar()
@@ -390,6 +394,7 @@ void Avatar::createdAvatarEmberEntity(AvatarEmberEntity *emberEntity)
 	
 	mErisAvatarEntity->LocationChanged.connect(sigc::mem_fun(*this, &Avatar::avatar_LocationChanged));
 
+	EventCreatedAvatarEntity.emit(emberEntity);
 }
 
 void Avatar::ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key)
@@ -424,24 +429,15 @@ void Avatar::updateFromConfig()
 
 }
 
-void Avatar::GUIManager_AppendIGChatLine(const std::string& message, EmberEntity* entity)
+void Avatar::Config_LogChatMessages(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
-	if(Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("general","logchatmessages")) {
-		if((bool)Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("general","logchatmessages")) {
-			// chat logging is set to true
-			if(mChatLogFile.empty()) {
-				// if the logfile is not initialized yet, then perform setup of the stream
-				mChatLogFile = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/"+ 
-				getAvatarEmberEntity()->getName() + "_chatlog.log";
-				mChatLogger = std::auto_ptr<std::ofstream>(new std::ofstream(mChatLogFile.c_str(),std::ios::app));
-				S_LOG_VERBOSE("Chat Logging set to be [ " << mChatLogFile << " ]");
-				*mChatLogger << "Chat Logging Initialized" << std::endl;
-			}
-			*mChatLogger << "[" << Ember::EmberServices::getSingleton().getTimeService()->getLocalTimeStr() << "] <" 
-			             <<  entity->getName() << "> says: " << message << std::endl;
-		}
+	if (static_cast<bool>(variable)) {
+		mChatLoggerParent = std::auto_ptr<AvatarLoggerParent>(new AvatarLoggerParent(*this));
+	} else {
+		mChatLoggerParent.reset();
 	}
-} 
+}
+
 
 // void Avatar::touch(EmberEntity* entity)
 // {

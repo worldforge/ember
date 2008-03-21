@@ -27,6 +27,7 @@
 	
 #include "GUIManager.h"
 #include "framework/Singleton.h"
+#include "services/config/ConfigListener.h"
 
 namespace Eris {
 	class Entity;
@@ -43,6 +44,8 @@ class EmberEntity;
 class AvatarCamera;
 class AvatarController;
 class AvatarEmberEntity;
+class AvatarLogger;
+class AvatarLoggerParent;
 struct AvatarControllerMovement;
 
 struct AvatarMovementState
@@ -63,14 +66,22 @@ public:
  */
 class Avatar : 
 public sigc::trackable, 
-public Ogre::FrameListener
+public Ogre::FrameListener,
+public Ember::ConfigListenerContainer
 {
 	friend class AvatarController;
 	friend class AvatarEmberEntity;
 
     public:
 
+	/**
+	 *    Ctor.
+	 */
 	Avatar();
+	
+	/**
+	 *    Dtor.
+	 */
 	virtual ~Avatar();
 
 
@@ -143,14 +154,16 @@ public Ogre::FrameListener
 	sigc::signal<void, EmberEntity* > EventRemovedEntityFromInventory;
 
 	/**
+	Emitted when the avatar entity has been created.
+	*/
+	sigc::signal<void, AvatarEmberEntity*> EventCreatedAvatarEntity;
+
+	/**
 	True if the current user have admin rights, i.e. is a "creator".
 	*/
 	inline bool isAdmin() const;
 	
-	/**
-	  Catch messages to be displayed in the chat window, and log them if required	  
-	 */
-	void GUIManager_AppendIGChatLine(const std::string& message, EmberEntity* entity);
+	
 
 protected:
 	
@@ -324,11 +337,19 @@ protected:
 	*/
 	bool mHasChangedLocation;
 
+	
 	/**
-	 * chat logging 
+	 *    Listen for the changing of the general:logchatmessages config key and create and destroy an intance of AvatarLogger (actually AvatarLoggerParent) accordingly.
+	 * @param section 
+	 * @param key 
+	 * @param variable 
 	 */
-	std::auto_ptr<std::ofstream> mChatLogger;
-	std::string mChatLogFile;
+	void Config_LogChatMessages(const std::string& section, const std::string& key, varconf::Variable& variable);
+	
+	/**
+	Holds the objects which logs ingame messages to a file. We don't hold a AvatarLogger instance directly, instead using the AvatarLoggerParent class, since we can't really create an instance of AvatarLogger until we've gotten an AvatarEmberEntity, and the AvatarLoggerParent class will take care of all that.
+	*/
+	std::auto_ptr<AvatarLoggerParent> mChatLoggerParent;
 	
 }; //End of class declaration
 
