@@ -31,6 +31,11 @@ namespace Terrain {
 
 class Map;
 
+/**
+	Responsible for handling the camera used to render the terrain overhead map.
+	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+
+*/
 class MapCamera
 {
 public:
@@ -55,7 +60,40 @@ protected:
 	float mDistance;
 };
 
+
 /**
+	Represents a sub view of the map.
+	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+
+*/
+class MapView
+{
+public:
+	MapView(Map& map, MapCamera& mapCamera);
+	
+	bool reposition(Ogre::Vector2 pos);
+	
+	const Ogre::TRect<float>& getRelativeViewBounds() const;
+	const Ogre::Vector2& getRelativeViewPosition() const;
+
+protected:
+
+	
+	Ogre::TRect<int> mFullBounds;
+	Ogre::TRect<float> mVisibleRelativeBounds;
+	Ogre::Vector2 mRelativeViewPosition;
+	
+	Map& mMap;
+	MapCamera& mMapCamera;
+	
+	float mViewSize;
+	int mViewSizeMeters;
+	
+
+};
+
+/**
+	An overhead map of the terrain, rendered into a texture.
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
 class Map{
@@ -74,6 +112,11 @@ public:
     
 	void setDistance(float distance);
 	float getDistance() const;
+	
+	float getResolution() const;
+	float getResolutionMeters() const;
+	
+	MapView& getView();
     
     
 protected:
@@ -81,13 +124,23 @@ protected:
 	void setupCamera();
 	void createTexture();
 
-	MapCamera mCamera;
 	
 	Ogre::TexturePtr mTexture;
 	Ogre::RenderTexture* mRenderTexture;
+	
+	unsigned int mResolutionMeters;
+	unsigned int mTexturePixelSize;
+	
+	MapCamera mCamera;
+	MapView mView;
+
 };
 
 
+/**
+	By using an instance of this every time you want to alter the scene manager for a certain render operation, you can make sure that the scene manager is returned to its initial state after the render operation is complete, even if something goes wrong.
+	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+*/
 class RenderingInstance
 {
 public:
