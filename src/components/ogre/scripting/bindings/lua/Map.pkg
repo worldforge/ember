@@ -48,9 +48,26 @@ public:
 	void setDistance(float distance);
 	float getDistance() const;
 
+	float getResolution() const;
+	float getResolutionMeters() const;
+	
+	MapView& getView();
 };
 
+/**
+	Represents a sub view of the map.
+	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 
+*/
+class MapView
+{
+public:
+
+	bool reposition(Ogre::Vector2 pos);
+	
+	const Ogre::TRect<float>& getRelativeViewBounds() const;
+
+};
 
 }
 
