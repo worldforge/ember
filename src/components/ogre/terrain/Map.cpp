@@ -226,6 +226,8 @@ MapCamera::MapCamera(Map& map, Ogre::SceneManager* manager)
 	mCamera->setPosition(Ogre::Vector3(0, 0, 0));
 	///look down
 	mCamera->pitch(Ogre::Degree(-90));
+	///we want really low LOD on this camera
+	mCamera->setLodBias(0.0001f);
 	setDistance(mDistance);
 	
 // 	mCamera->setFOVy(Ogre::Degree(30));
