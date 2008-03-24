@@ -66,22 +66,22 @@ material /global/clothes/footwear/metal_shoes : /base/simple
 
 material /global/clothes/dress/ragged : /base/simple/nonculled/alpharejected
 {
-  set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/ragged/low/dress.png
+  set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/ragged/dress.png
 }
 
 material /global/clothes/dress/sun : /base/simple/nonculled/alpharejected
 {
-  set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/sun/low/dress.png
+  set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/sun/dress.png
 }
 
 material /global/clothes/dress/dark_rags : /base/simple/nonculled/alpharejected
 {
-  set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/dark_rags/low/dress.png
+  set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/dark_rags/dress.png
 }
 
 material /global/clothes/dress/fine : /base/simple/nonculled/alpharejected
 {
-  set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/fine/low/dress.png
+  set_texture_alias DiffuseMap 3d_objects/clothes/dress/textures/fine/dress.png
 }
 
 
