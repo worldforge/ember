@@ -237,7 +237,7 @@ void splat_fp
 		oColour = iFogColour;
 	}
 	//remove alpha so we can show terrain in the mini map...we might need to be able to disable this for other passes than the first one
-	oColour.w = 1.0;
+// 	oColour.w = 1.0;
 
 }
 
