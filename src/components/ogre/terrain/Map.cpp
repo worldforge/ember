@@ -61,7 +61,8 @@ void Map::setupCamera()
 
 void Map::createTexture()
 {
-	mTexture = Ogre::TextureManager::getSingleton().createManual("TerrainMap", "Gui", Ogre::TEX_TYPE_2D, mTexturePixelSize, mTexturePixelSize, 0, Ogre::PF_A8R8G8B8,Ogre::TU_RENDERTARGET);
+	///don't use alpha for our map texture
+	mTexture = Ogre::TextureManager::getSingleton().createManual("TerrainMap", "Gui", Ogre::TEX_TYPE_2D, mTexturePixelSize, mTexturePixelSize, 0, Ogre::PF_R8G8B8,Ogre::TU_RENDERTARGET);
 	mRenderTexture = mTexture->getBuffer()->getRenderTarget();
 	mRenderTexture->removeAllViewports();
 	
@@ -222,13 +223,17 @@ MapCamera::MapCamera(Map& map, Ogre::SceneManager* manager)
 : mMap(map), mViewport(0), mDistance(400)
 {
 	mCamera = manager->createCamera("TerrainMapCamera");
+	mCamera->setPosition(Ogre::Vector3(0, 0, 0));
 	///look down
 	mCamera->pitch(Ogre::Degree(-90));
+	setDistance(mDistance);
+	
 // 	mCamera->setFOVy(Ogre::Degree(30));
 // 	mCamera->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
 
 	mCamera->setNearClipDistance(1);
 	mCamera->setFarClipDistance(mDistance * 200);
+	///use orthographic projection and then alter the projectionmatrix to make it render only the intended area
 	mCamera->setProjectionType(Ogre::PT_ORTHOGRAPHIC );
 	int halfRes = mMap.getResolutionMeters() / 2;
 	mCamera->setCustomProjectionMatrix(true,makeOrtho2D(-halfRes,halfRes,-halfRes,halfRes,1,1000));
