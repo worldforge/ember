@@ -3,13 +3,35 @@ connectors={},
 map = nil,
 widget = nil,
 renderImage = nil,
-helper = nil
+helper = nil,
+previousPosX = 0,
+previousPosY = 0
 }
 
 function Compass.Refresh_Clicked(args)
+	Compass.repositionAtAvatar()
+	Compass.helper:getMap():render()
+end
+
+
+function Compass.repositionAtAvatar()
 	local pos = emberOgre:getAvatar():getAvatarSceneNode():getPosition()
-	Compass.helper:reposition(pos.x, pos.z)
--- 	Compass.map:render()
+-- 	local pos = emberOgre:getAvatar():getAvatarEmberEntity():getSceneNode():getPosition()
+	if pos.x ~= previousPosX or pos.z ~= previousPosY then
+		Compass.helper:reposition(pos.x, pos.z)
+		Compass.renderImage:requestRedraw()
+		previousPosX = pos.x
+		previousPosY = pos.z
+	end
+-- 	console:pushMessage("x: " .. pos.x .. "y: " .. pos.z)
+end
+
+function Compass.framestarted(timeSinceLastFrame)
+	Compass.repositionAtAvatar()
+end
+
+function Compass.CreatedAvatarEntity(avatarEntity)
+	connect(Compass.connectors, guiManager.EventFrameStarted, "Compass.framestarted")
 end
 
 function Compass.buildWidget()
@@ -29,6 +51,8 @@ function Compass.buildWidget()
 -- 	if texturePair:hasData() then 
 -- 		Compass.renderImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(texturePair:getTextureImage()))
 -- 	end
+
+	connect(Compass.connectors, emberOgre.EventCreatedAvatarEntity, "Compass.CreatedAvatarEntity")
 
 end
 

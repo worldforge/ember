@@ -34,6 +34,8 @@
 
 #include "../terrain/Map.h"
 
+#include "services/logging/LoggingService.h"
+
 using namespace EmberOgre::Terrain;
 
 namespace EmberOgre {
@@ -63,6 +65,7 @@ Terrain::Map& Compass::getMap()
 
 void Compass::reposition(float x, float y)
 {
+// 	S_LOG_VERBOSE("pos x: " << x << " y: " << y);
 	mMap->getView().reposition(Ogre::Vector2(x, y));
 	const Ogre::TRect<float>& viewBounds(mMap->getView().getRelativeViewBounds());
 	CEGUI::Rect& rect = const_cast<CEGUI::Rect&>(mViewImage->getSourceTextureArea());
