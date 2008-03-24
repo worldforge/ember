@@ -251,14 +251,16 @@ void SkyDome::createSkyDomeMaterial () {
 }
 
 void SkyDome::destroySkyDomeMaterial () {
-	LOG ("Removing sky dome material...");
+	LOG ("Removing sky dome materials...");
 	if ((Ogre::HighLevelGpuProgramManager::getSingletonPtr()->resourceExists("SkyDomeFP"))) {
-		LOG ("Removing sky dome SkyDomeFP...");
 		Ogre::HighLevelGpuProgramManager::getSingletonPtr()->remove("SkyDomeFP");
 	}
 
+	if ((Ogre::HighLevelGpuProgramManager::getSingletonPtr()->resourceExists("SkyDomeFP_NoHaze"))) {
+		Ogre::HighLevelGpuProgramManager::getSingletonPtr()->remove("SkyDomeFP_NoHaze");
+	}
+
 	if ((Ogre::HighLevelGpuProgramManager::getSingletonPtr()->resourceExists("SkyDomeVP"))) {
-		LOG ("Removing sky dome SkyDomeVP...");
 		Ogre::HighLevelGpuProgramManager::getSingletonPtr()->remove("SkyDomeVP");
 	}
 
