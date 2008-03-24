@@ -28,7 +28,10 @@
 
 #include "TimeImpl.h"
 
+// for the stringstream 
 #include <sstream>
+#include <iomanip>
+
 
 namespace Ember {
 
@@ -68,7 +71,20 @@ std::string Time::getLocalTimeStr()
 	mImpl->getLocalTime(year, month, day, hour, minute, second);
 	
 	// YYYY-MM-DD HH:MM:SS
-	s << (1900+year) << "-" << month << "-" << day << " " << hour << ":" << minute << ":" << second;  
+	// TODO: see if there is a better way to do this
+	s.fill('0');
+	s << std::setw(4) << (1900+year);
+	s << "-";
+	s << std::setw(2) << month;
+	s << "-";
+	s << std::setw(2) << day;
+	s << " ";
+	s << std::setw(2) << hour;
+	s << ":";
+	s << std::setw(2) << minute;
+	s << ":";
+	s << std::setw(2) << second;
+			
 	return s.str();
 		
 }

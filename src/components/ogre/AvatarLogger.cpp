@@ -46,8 +46,11 @@ AvatarLogger::AvatarLogger(AvatarEmberEntity& avatarEntity)
 	std::stringstream logFileSS;
 	logFileSS << Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory() << "/" << avatarEntity.getName() << "_chatlog.log";
 	mChatLogger = std::auto_ptr<std::ofstream>(new std::ofstream(logFileSS.str().c_str(), std::ios::app));
-	S_LOG_VERBOSE("Chat Logging set to be [ " << logFileSS.str() << " ]");
+	S_LOG_VERBOSE("Chat Logging set to write in [ " << logFileSS.str() << " ]");
+	
+	*mChatLogger << "-------------------------------------------------------" << std::endl;
 	*mChatLogger << "Chat Logging Initialized at " <<  Ember::EmberServices::getSingleton().getTimeService()->getLocalTimeStr() << std::endl;
+	*mChatLogger << "-------------------------------------------------------" << std::endl;
 	
 	GUIManager::getSingleton().AppendIGChatLine.connect(sigc::mem_fun(*this, &AvatarLogger::GUIManager_AppendIGChatLine));
 }
@@ -55,7 +58,9 @@ AvatarLogger::AvatarLogger(AvatarEmberEntity& avatarEntity)
 
 AvatarLogger::~AvatarLogger()
 {
+	*mChatLogger << "-------------------------------------------------------" << std::endl;
 	*mChatLogger << "Chat Logging Ended at " <<  Ember::EmberServices::getSingleton().getTimeService()->getLocalTimeStr() << std::endl;
+	*mChatLogger << "-------------------------------------------------------" << std::endl;
 }
 
 void AvatarLogger::GUIManager_AppendIGChatLine(const std::string& message, EmberEntity* entity)
