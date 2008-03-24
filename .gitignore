@@ -11,7 +11,6 @@ install-sh
 libtool
 ltmain.sh
 missing
-varMakefile
 config.status
 ember
 ember-media.spec
@@ -24,3 +23,11 @@ optimized
 debug
 home
 var
+# Ignore objects and archives.
+*.[oa]
+# Ignore temporary files
+*~
+# Ignore desktop files
+.directory
+# Ignore password file used to rsync update amber
+rsyncpasswd
