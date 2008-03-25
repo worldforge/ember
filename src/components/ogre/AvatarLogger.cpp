@@ -39,8 +39,7 @@
 namespace EmberOgre {
 
 AvatarLogger::AvatarLogger(AvatarEmberEntity& avatarEntity)
-: mChatLogger(0),
-  ToggleChatLogging("toggle_chatlogging", this, "Toggle character chat logging.")
+: mChatLogger(0)
 {
 	assert(&avatarEntity);
 	///perform setup of the stream
@@ -68,36 +67,6 @@ void AvatarLogger::GUIManager_AppendIGChatLine(const std::string& message, Ember
 {
 	*mChatLogger << "[" << Ember::EmberServices::getSingleton().getTimeService()->getLocalTimeStr() << "] <" <<  entity->getName() << "> says: " << message << std::endl;
 } 
-
-void AvatarLogger::runCommand(const std::string &command, const std::string &args)
-{
-	if( ToggleChatLogging == command) {
-		S_LOG_VERBOSE("Toggle Chat Logging");
-		toggleChatLogging();
-	} 
-}
-void AvatarLogger::toggleChatLogging()
-{
-	if(Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("general", "logchatmessages")) {
-		S_LOG_VERBOSE("general:logchatmessages exists");
-		if(static_cast<bool>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("general","logchatmessages")))
-		{
-			S_LOG_VERBOSE("general:logchatmessages was true, setting to false");
-			// chat config is set to true, turn it off
-			Ember::EmberServices::getSingletonPtr()->getConfigService()->setValue("general","logchatmessages",false);
-		} 
-		else
-	    {
-			S_LOG_VERBOSE("general:logchatmessages was false, setting to true");
-			// chat was set to false, turn it on
-			Ember::EmberServices::getSingletonPtr()->getConfigService()->setValue("general","logchatmessages",true);
-	    }
-	} else {
-		S_LOG_VERBOSE("general:logchatmessages does not exist, adding");
-		// if the config key doesn't exist, we assume off and turn it on.
-		Ember::EmberServices::getSingletonPtr()->getConfigService()->setValue("general","logchatmessages",true);
-	}
-}
 
 AvatarLoggerParent::AvatarLoggerParent(Avatar& avatar)
 {

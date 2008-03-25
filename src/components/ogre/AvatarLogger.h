@@ -44,28 +44,12 @@ class AvatarEmberEntity;
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
 class AvatarLogger
-: public  sigc::trackable,
-  public Ember::ConsoleObject
+: public  sigc::trackable
 {
 public:
     AvatarLogger(AvatarEmberEntity& avatarEntity);
     virtual ~AvatarLogger();
     
-    /**
-     *    toggle the chat logging in the config service 
-     */
-    void toggleChatLogging();
-    
-	/**
-	 *    Reimplements the ConsoleObject::runCommand method
-	 * @param command 
-	 * @param args 
-	 */
-	virtual	void runCommand(const std::string &command, const std::string &args);
-
-    const Ember::ConsoleCommandWrapper ToggleChatLogging;
-    
-
 protected:
 	
 	/**
