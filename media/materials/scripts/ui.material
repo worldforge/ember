@@ -1,0 +1,24 @@
+material /ui/compass
+{
+  technique General
+  {
+    pass Main
+    {
+		scene_blend alpha_blend
+		ambient 1.0 1.0 1.0
+		diffuse 1.0 1.0 1.0
+	  texture_unit Background
+      {
+        texture_alias Background
+		scale 2 2
+      }
+	  texture_unit AlphaMap
+      {
+        texture themes/ember/gui/compass/inner_alpha.png 2d 0 alpha
+// 		colour_op_ex blend_diffuse_alpha  src_current src_texture
+		colour_op_ex blend_texture_alpha  src_current src_texture
+		
+      }
+    }
+  }
+}
