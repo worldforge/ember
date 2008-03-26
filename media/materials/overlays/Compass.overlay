@@ -1,0 +1,14 @@
+CompassOverlay
+{
+	container BorderPanel(CompassOverlayPanel)
+	{
+		metrics_mode pixels
+		vert_align top
+		horz_align right
+		left -133 
+		top 5
+		width 128
+		height 128
+		material /ui/compass
+	}
+}
