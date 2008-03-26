@@ -27,6 +27,7 @@ namespace EmberOgre {
 
 namespace Gui {
 
+class ICompassImpl;
 /**
 Helper class for the compass widget.
 
@@ -35,16 +36,38 @@ Helper class for the compass widget.
 class Compass
 {
 public:
-    Compass();
+    Compass(EmberOgre::Gui::ICompassImpl* compassImpl);
 
     ~Compass();
     
     EmberOgre::Terrain::Map& getMap();
     
     void reposition(float x, float y);
+    void rotate(const Ogre::Degree& degree);
+    void rotate(const Ogre::Radian& radian);
 
+};
+
+class CEGUICompassImpl : ICompassImpl
+{
+public:
+	CEGUICompassImpl();
+	virtual ~CEGUICompassImpl();
     const CEGUI::Image* getViewImage();
+    
+    virtual void reposition(float x, float y) ;
+    virtual void rotate(const Ogre::Degree& degree);
+};
 
+class OverlayCompassImpl : ICompassImpl
+{
+public:
+	OverlayCompassImpl();
+	virtual ~OverlayCompassImpl();
+	
+    virtual void reposition(float x, float y);
+    virtual void rotate(const Ogre::Degree& degree);
+	
 };
 
 }
