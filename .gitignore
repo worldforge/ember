@@ -31,3 +31,6 @@ var
 .directory
 # Ignore password file used to rsync update amber
 rsyncpasswd
+#Ignore IDE user specific files
+*.kdevses
+*.pcs
