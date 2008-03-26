@@ -3,11 +3,26 @@ material /global/creature/pig/skin : /base/simple
 	set_texture_alias DiffuseMap 3d_objects/creatures/quadruped_v2/textures/pink_pig/low/quadruped_v2.png
 }
 
-material /global/creature/cow : /base/simple
+material /global/creature/cow : /base/normalmap/specular
 {
-	set_texture_alias DiffuseMap 3d_objects/creatures/quadruped_v2/textures/cow/cow_256.png
+	set_texture_alias DiffuseMap 3d_skeletons/quadrapeds/textures/cow/cowD.tga
+	set_texture_alias NormalHeightMap 3d_skeletons/quadrapeds/textures/cow/cowN.tga
+	set_texture_alias SpecularMap 3d_skeletons/quadrapeds/textures/cow/cowS.tga
 }
 
+material /global/creature/horse : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_skeletons/quadrapeds/textures/horse/horseD.tga
+	set_texture_alias NormalHeightMap 3d_skeletons/quadrapeds/textures/horse/horseN.tga
+	set_texture_alias SpecularMap 3d_skeletons/quadrapeds/textures/horse/horseS.tga
+}
+
+material /global/creature/rabbit : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_skeletons/quadrapeds/textures/rabbit/rabbitD.tga
+	set_texture_alias NormalHeightMap 3d_skeletons/quadrapeds/textures/rabbit/rabbitN.tga
+	set_texture_alias SpecularMap 3d_skeletons/quadrapeds/textures/rabbit/rabbitS.tga
+}
 
 material /global/creature/mottled_oker : /base/simple
 {
@@ -134,4 +149,71 @@ material /global/bipeds/male_head : /base/normalmap/specular
 	set_texture_alias DiffuseMap 3d_skeletons/bipeds/textures/male_head/male_headD.png
 	set_texture_alias NormalHeightMap 3d_skeletons/bipeds/textures/male_head/male_headN.png
 	set_texture_alias SpecularMap 3d_skeletons/bipeds/textures/male_head/male_headS.png
+}
+
+
+
+
+
+
+
+material /global/bipeds/races/human/male/body/base : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/races/human/male/body/base/D.tga
+	set_texture_alias NormalHeightMap 3d_skeletons/bipeds/races/human/male/body/base/N.tga
+	set_texture_alias SpecularMap 3d_skeletons/bipeds/races/human/male/body/base/S.tga
+}
+
+material /global/bipeds/races/universal/eyes/blue : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/races/universal/eyes/blue/D.png
+}
+
+material /global/bipeds/races/universal/eyes/brown : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/races/universal/eyes/brown/D.png
+}
+
+material /global/bipeds/races/universal/eyes/green : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/races/universal/eyes/green/D.png
+}
+
+material /global/bipeds/races/universal/eyes/hazel : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/races/universal/eyes/hazel/D.png
+}
+
+
+material /global/bipeds/races/human/male/head/bearded_male : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/races/human/male/head/bearded_male/D.png
+}
+
+material /global/bipeds/races/human/male/head/middle_aged : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/races/human/male/head/middle_aged/D.tga
+	set_texture_alias NormalHeightMap 3d_skeletons/bipeds/races/human/male/head/middle_aged/N.tga
+	set_texture_alias SpecularMap 3d_skeletons/bipeds/races/human/male/head/middle_aged/S.tga
+}
+
+material /global/bipeds/races/human/male/attire/drystan_archer/footwear : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/races/human/male/attire/drystan_archer/footwear/D.png
+	set_texture_alias NormalHeightMap 3d_skeletons/bipeds/races/human/male/attire/drystan_archer/footwear/N.png
+	set_texture_alias SpecularMap 3d_skeletons/bipeds/races/human/male/attire/drystan_archer/footwear/S.png
+}
+
+material /global/bipeds/races/human/male/attire/drystan_archer/pants : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/races/human/male/attire/drystan_archer/pants/D.png
+	set_texture_alias NormalHeightMap 3d_skeletons/bipeds/races/human/male/attire/drystan_archer/pants/N.png
+	set_texture_alias SpecularMap 3d_skeletons/bipeds/races/human/male/attire/drystan_archer/pants/S.png
+}
+
+material /global/bipeds/races/human/male/attire/drystan_archer/shirt : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/races/human/male/attire/drystan_archer/shirt/D.png
+	set_texture_alias NormalHeightMap 3d_skeletons/bipeds/races/human/male/attire/drystan_archer/shirt/N.png
+	set_texture_alias SpecularMap 3d_skeletons/bipeds/races/human/male/attire/drystan_archer/shirt/S.png
 }

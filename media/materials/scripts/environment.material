@@ -59,7 +59,7 @@ material /global/environment/stone/stone_boulder_mossy : /base/simple
 
 material /global/environment/ground/straw_and_mud : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_objects/environment/ground/textures/straw_and_mud/low/ground.png
+	set_texture_alias DiffuseMap 3d_objects/environment/ground/textures/straw_and_mud/ground.png
 }
 
 material /global/environment/ground/grass/grass : /base/normalmap/specular

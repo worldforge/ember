@@ -5,7 +5,7 @@ material /global/items/tool/rusty_tools/old_tool_handle : /base/simple/nonculled
 
 material /global/items/tool/settler_tools/tool_handle : /base/simple
 {
-  set_texture_alias DiffuseMap 3d_objects/items/tool/textures/settler_tools/low/tool_handle.png
+  set_texture_alias DiffuseMap 3d_objects/items/tool/textures/settler_tools/tool_handle.png
 }
 
 
@@ -23,7 +23,7 @@ material /global/items/tool/rusty_tools/rusted_tool_head: /base/simple/nonculled
 
 material /global/items/tool/settler_tools/tool_head : /base/simple/nonculled
 {
-	set_texture_alias DiffuseMap 3d_objects/items/tool/textures/settler_tools/low/tool_head.png
+	set_texture_alias DiffuseMap 3d_objects/items/tool/textures/settler_tools/tool_head.png
 // 	technique General
 // 	{
 // 		pass Main
@@ -53,12 +53,12 @@ material /global/items/containers/craftsman_wood/crate_aged : /base/normalmap/sp
 
 material /global/items/sheet/parchment/front : /base/simple/nonculled
 {
-  set_texture_alias DiffuseMap 3d_objects/items/sheet/textures/parchment/low/sheet_texture_small.png
+  set_texture_alias DiffuseMap 3d_objects/items/sheet/textures/parchment/sheet_texture_small.png
 }
 
 material /global/items/sheet/parchment/back : /base/simple/nonculled
 {
-  set_texture_alias DiffuseMap 3d_objects/items/sheet/textures/parchment/low/sheet_back.png
+  set_texture_alias DiffuseMap 3d_objects/items/sheet/textures/parchment/sheet_back.png
 }
 
 material /global/items/tools/hatchet : /base/normalmap/specular

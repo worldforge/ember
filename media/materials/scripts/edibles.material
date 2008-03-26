@@ -1,9 +1,9 @@
 material /global/items/food/country_bread : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_objects/items/food/textures/country_bread/low/food.png
+	set_texture_alias DiffuseMap 3d_objects/items/food/textures/country_bread/food.png
 }
 
 material /global/items/food/meat : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_objects/items/food/textures/meat/low/food_meat.png
+	set_texture_alias DiffuseMap 3d_objects/items/food/textures/meat/food_meat.png
 }
