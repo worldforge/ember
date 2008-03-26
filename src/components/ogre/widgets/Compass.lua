@@ -19,15 +19,20 @@ function Compass.repositionAtAvatar()
 -- 	local pos = emberOgre:getAvatar():getAvatarEmberEntity():getSceneNode():getPosition()
 	if pos.x ~= previousPosX or pos.z ~= previousPosY then
 		Compass.helper:reposition(pos.x, pos.z)
-		Compass.renderImage:requestRedraw()
+-- 		Compass.renderImage:requestRedraw()
 		previousPosX = pos.x
 		previousPosY = pos.z
 	end
 -- 	console:pushMessage("x: " .. pos.x .. "y: " .. pos.z)
 end
 
+function Compass.rotate()
+	Compass.helper:rotate(emberOgre:getMainCamera():getOrientation():getYaw())
+end
+
 function Compass.framestarted(timeSinceLastFrame)
 	Compass.repositionAtAvatar()
+	Compass.rotate()
 end
 
 function Compass.CreatedAvatarEntity(avatarEntity)
@@ -35,15 +40,16 @@ function Compass.CreatedAvatarEntity(avatarEntity)
 end
 
 function Compass.buildWidget()
-	Compass.helper = EmberOgre.Gui.Compass:new_local()
+	Compass.helperImpl = EmberOgre.Gui.OverlayCompassImpl:new_local()
+	Compass.helper = EmberOgre.Gui.Compass:new_local(Compass.helperImpl)
 	Compass.map = Compass.helper:getMap()
 	
-	Compass.widget = guiManager:createWidget()
+--[[	Compass.widget = guiManager:createWidget()
 	Compass.widget:loadMainSheet("Compass.layout", "Compass/")
 	Compass.widget:setIsActiveWindowOpaque(false)
 	Compass.renderImage = Compass.widget:getWindow("RenderImage")
 	
-	Compass.renderImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(Compass.helper:getViewImage()))
+	Compass.renderImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(Compass.helper:getViewImage()))]]
 	
 -- 	local assetManager = EmberOgre.Gui.AssetsManager:new_local()
 -- 	

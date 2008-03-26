@@ -25,6 +25,7 @@
 
 #include <memory>
 #include "AssetsManager.h"
+#include <OgreMaterial.h>
 
 namespace EmberOgre {
 
@@ -36,6 +37,8 @@ class MapView;
 
 namespace Gui {
 
+
+class ICompassImpl;
 /**
 Helper class for the compass widget.
 
@@ -44,22 +47,75 @@ Helper class for the compass widget.
 class Compass
 {
 public:
-    Compass();
+    Compass(ICompassImpl* compassImpl);
 
     ~Compass();
     
     Terrain::Map& getMap();
     
     void reposition(float x, float y);
+    void rotate(const Ogre::Degree& degree);
+    void rotate(const Ogre::Radian& radian);
     
-    const CEGUI::Image* getViewImage();
     
 protected:
 
 	std::auto_ptr<Terrain::Map> mMap;
-	TexturePair mTexturePair;
-	const CEGUI::Image* mViewImage;
+	ICompassImpl* mCompassImpl;
 };
+
+class ICompassImpl
+{
+friend class Compass;
+public:
+	ICompassImpl();
+    virtual void reposition(float x, float y) = 0;
+    virtual void rotate(const Ogre::Degree& degree) = 0;
+
+protected:
+
+	Terrain::Map* mMap;
+	
+	void setCompass(Compass* compass);
+	
+	virtual void _setCompass(Compass* compass) = 0;
+
+	Compass* mCompass;
+};
+
+class CEGUICompassImpl : ICompassImpl
+{
+public:
+	CEGUICompassImpl();
+	virtual ~CEGUICompassImpl();
+    const CEGUI::Image* getViewImage();
+    
+    virtual void reposition(float x, float y) ;
+    virtual void rotate(const Ogre::Degree& degree);
+    
+protected:
+	const CEGUI::Image* mViewImage;
+	TexturePair mTexturePair;
+	virtual void _setCompass(Compass* compass);
+};
+
+class OverlayCompassImpl : ICompassImpl
+{
+public:
+	OverlayCompassImpl();
+	virtual ~OverlayCompassImpl();
+	
+    virtual void reposition(float x, float y);
+    virtual void rotate(const Ogre::Degree& degree);
+    
+protected:
+
+	Ogre::Overlay* mCompassOverlay;
+	Ogre::MaterialPtr mCompassMaterial;
+	virtual void _setCompass(Compass* compass);
+	
+};
+
 
 }
 

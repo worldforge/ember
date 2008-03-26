@@ -35,6 +35,9 @@
 #include "../terrain/Map.h"
 
 #include "services/logging/LoggingService.h"
+#include "../EmberOgre.h"
+#include "../Avatar.h"
+#include "../AvatarCamera.h"
 
 using namespace EmberOgre::Terrain;
 
@@ -42,15 +45,13 @@ namespace EmberOgre {
 
 namespace Gui {
 
-Compass::Compass()
-: mMap(new Map()), mViewImage(0)
+Compass::Compass(ICompassImpl* compassImpl)
+: mMap(new Map()), mCompassImpl(compassImpl)
 {
 	mMap->initialize();
-	AssetsManager assetsManager;
-	mTexturePair = assetsManager.createTextureImage(mMap->getTexture(), "CompassMap");
-	int halfOffset = mMap->getTexture()->getWidth() * 0.25;
-	mTexturePair.getTextureImageset()->defineImage("view",  CEGUI::Rect(halfOffset, halfOffset, mMap->getTexture()->getWidth() - halfOffset, mMap->getTexture()->getWidth() - halfOffset), CEGUI::Point(0,0));
-	mViewImage = &mTexturePair.getTextureImageset()->getImage("view");
+	if (compassImpl) {
+		compassImpl->setCompass(this);
+	}
 }
 
 
@@ -65,21 +66,156 @@ Terrain::Map& Compass::getMap()
 
 void Compass::reposition(float x, float y)
 {
+	if (mCompassImpl) {
+		mCompassImpl->reposition(x, y);
+	}
+// 	S_LOG_VERBOSE("pos x: " << x << " y: " << y);
+// 	mMap->getView().reposition(Ogre::Vector2(x, y));
+// 	const Ogre::TRect<float>& viewBounds(mMap->getView().getRelativeViewBounds());
+// 	CEGUI::Rect& rect = const_cast<CEGUI::Rect&>(mViewImage->getSourceTextureArea());
+// 	int textureWidth = mTexturePair.getOgreTexture()->getWidth();
+// 	rect.setSize(CEGUI::Size(textureWidth * 0.5, textureWidth * 0.5));
+// 	const Ogre::TRect<float> viewRect(mMap->getView().getRelativeViewBounds());
+// // 	const Ogre::Vector2& viewPos(mMap->getView().getRelativeViewPosition());
+// 	rect.setPosition(CEGUI::Point(textureWidth * viewRect.left, textureWidth * viewRect.top));
+// 	
+// 	
+// 	Ogre::MaterialPtr material((Ogre::MaterialPtr)Ogre::MaterialManager::getSingleton().getByName("/ui/compass"));
+//  	Ogre::TextureUnitState* tus(material->getTechnique(0)->getPass(0)->getTextureUnitState(0));
+//  	const Ogre::Vector2& relPosition(mMap->getView().getRelativeViewPosition());
+//  	tus->setTextureScroll(-0.5f + relPosition.x, -0.5f + relPosition.y);
+ 	
+// 	Ogre::OverlayManager& omgr = Ogre::OverlayManager::getSingleton();
+// 	Ogre::Overlay* compassOverlay = (Ogre::Overlay*)omgr.getByName("CompassOverlay");
+// 	if (compassOverlay)
+// 	{
+// 		compassOverlay->setRotate(EmberOgre::getSingleton().getAvatar()->getAvatarSceneNode()->getOrientation().getYaw());
+// 	}
+ 	
+ 	
+}
+
+void Compass::rotate(const Ogre::Degree& degree)
+{
+	if (mCompassImpl) {
+		mCompassImpl->rotate(degree);
+	}
+//  	tus->setTextureRotate(EmberOgre::getSingleton().getAvatarCamera()->getAvatarSceneNode()->getOrientation().getYaw());
+}
+
+///Note: duplicate method to make it easier for scripts interacting with the code
+void Compass::rotate(const Ogre::Radian& radian)
+{
+	rotate(Ogre::Degree(radian));
+}
+
+ICompassImpl::ICompassImpl()
+: mCompass(0)
+, mMap(0)
+{
+}
+
+void ICompassImpl::setCompass(Compass* compass)
+{
+	mCompass = compass;
+	mMap = &compass->getMap();
+	_setCompass(compass);
+}
+
+
+CEGUICompassImpl::CEGUICompassImpl()
+: mViewImage(0)
+{
+}
+
+CEGUICompassImpl::~CEGUICompassImpl()
+{
+}
+
+const CEGUI::Image* CEGUICompassImpl::getViewImage() 
+{
+	return mViewImage;
+}
+
+void CEGUICompassImpl::reposition(float x, float y)
+{
 // 	S_LOG_VERBOSE("pos x: " << x << " y: " << y);
 	mMap->getView().reposition(Ogre::Vector2(x, y));
 	const Ogre::TRect<float>& viewBounds(mMap->getView().getRelativeViewBounds());
 	CEGUI::Rect& rect = const_cast<CEGUI::Rect&>(mViewImage->getSourceTextureArea());
 	int textureWidth = mTexturePair.getOgreTexture()->getWidth();
 	rect.setSize(CEGUI::Size(textureWidth * 0.5, textureWidth * 0.5));
-	const Ogre::TRect<float> viewRect(mMap->getView().getRelativeViewBounds());
 // 	const Ogre::Vector2& viewPos(mMap->getView().getRelativeViewPosition());
-	rect.setPosition(CEGUI::Point(textureWidth * viewRect.left, textureWidth * viewRect.top));
+	rect.setPosition(CEGUI::Point(textureWidth * viewBounds.left, textureWidth * viewBounds.top));
 }
 
-const CEGUI::Image* Compass::getViewImage() 
+void CEGUICompassImpl::rotate(const Ogre::Degree& degree)
 {
-	return mViewImage;
+	///we can't rotate CEGUI windows so we won't do anything
 }
+
+void CEGUICompassImpl::_setCompass(Compass* compass)
+{
+	AssetsManager assetsManager;
+	mTexturePair = assetsManager.createTextureImage(mMap->getTexture(), "CompassMap");
+	int halfOffset = mMap->getTexture()->getWidth() * 0.25;
+	mTexturePair.getTextureImageset()->defineImage("view",  CEGUI::Rect(halfOffset, halfOffset, mMap->getTexture()->getWidth() - halfOffset, mMap->getTexture()->getWidth() - halfOffset), CEGUI::Point(0,0));
+	mViewImage = &mTexturePair.getTextureImageset()->getImage("view");
+	
+}
+
+
+
+
+
+OverlayCompassImpl::OverlayCompassImpl()
+: mCompassOverlay(0)
+{
+	Ogre::OverlayManager& omgr = Ogre::OverlayManager::getSingleton();
+	mCompassOverlay = (Ogre::Overlay*)omgr.getByName("CompassOverlay");
+}
+
+OverlayCompassImpl::~OverlayCompassImpl()
+{
+	if (mCompassOverlay) {
+		Ogre::OverlayManager& omgr = Ogre::OverlayManager::getSingleton();
+		omgr.destroy(mCompassOverlay);
+	}
+
+}
+
+void OverlayCompassImpl::_setCompass(Compass* compass)
+{
+	if (mCompassOverlay)
+	{
+ 		mCompassMaterial = (Ogre::MaterialPtr)Ogre::MaterialManager::getSingleton().getByName("/ui/compass");
+ 		mCompassMaterial->getBestTechnique()->getPass(0)->getTextureUnitState(0)->setTextureName(mMap->getTexture()->getName());
+		mCompassOverlay->show();
+	}
+}
+
+void OverlayCompassImpl::reposition(float x, float y)
+{
+	mMap->getView().reposition(Ogre::Vector2(x, y));
+	
+	if (!mCompassMaterial.isNull()) {
+		Ogre::TextureUnitState* tus(mCompassMaterial->getBestTechnique()->getPass(0)->getTextureUnitState(0));
+		const Ogre::Vector2& relPosition(mMap->getView().getRelativeViewPosition());
+		tus->setTextureScroll(-0.5f + relPosition.x, -0.5f + relPosition.y);
+	}
+}
+
+void OverlayCompassImpl::rotate(const Ogre::Degree& degree)
+{
+	if (!mCompassMaterial.isNull()) {
+		Ogre::TextureUnitState* tus(mCompassMaterial->getBestTechnique()->getPass(0)->getTextureUnitState(0));
+ 		tus->setTextureRotate(degree);
+		
+//  		tus->setTextureRotate(EmberOgre::getSingleton().getMainCamera()->getYaw());
+ 	}
+}
+
+
 
 
 }
