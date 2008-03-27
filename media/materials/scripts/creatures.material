@@ -78,7 +78,7 @@ material /global/body_parts/skeleton/bone/skeleton : /base/simple
 
 material /global/creatures/humanoid/young_male : /base/simple
 {
-  set_texture_alias DiffuseMap 3d_objects/creatures/humanoid/textures/young_male/low/young_male.png
+  set_texture_alias DiffuseMap 3d_objects/creatures/humanoid/textures/young_male/young_male.png
 }
 
 material /global/creatures/humanoid/bearded_male : /base/simple
@@ -107,10 +107,6 @@ material /global/creature/humanoid/kobold : /base/simple
 }
 
 
-material /global/bipeds/bearded_male/bearded_male2 : /base/simple
-{
-	set_texture_alias DiffuseMap 3d_skeletons/bipeds/textures/bearded_male/bearded_maleD.png
-}
 material /global/bipeds/male/male : /base/simple
 {
 	set_texture_alias DiffuseMap 3d_skeletons/bipeds/textures/male/maleD.png
@@ -141,7 +137,7 @@ material /global/bipeds/male_body : /base/normalmap/specular
 {
 	set_texture_alias DiffuseMap 3d_skeletons/bipeds/textures/male_body/male_bodyD.png
 	set_texture_alias NormalHeightMap 3d_skeletons/bipeds/textures/male_body/male_bodyN.png
-	set_texture_alias SpecularMap 3d_skeletons/bipeds/textures/male_body/male_body_S.png
+	set_texture_alias SpecularMap 3d_skeletons/bipeds/textures/male_body/male_bodyS.png
 }
 
 material /global/bipeds/male_head : /base/normalmap/specular
