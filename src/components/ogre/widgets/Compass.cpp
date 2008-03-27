@@ -69,30 +69,6 @@ void Compass::reposition(float x, float y)
 	if (mCompassImpl) {
 		mCompassImpl->reposition(x, y);
 	}
-// 	S_LOG_VERBOSE("pos x: " << x << " y: " << y);
-// 	mMap->getView().reposition(Ogre::Vector2(x, y));
-// 	const Ogre::TRect<float>& viewBounds(mMap->getView().getRelativeViewBounds());
-// 	CEGUI::Rect& rect = const_cast<CEGUI::Rect&>(mViewImage->getSourceTextureArea());
-// 	int textureWidth = mTexturePair.getOgreTexture()->getWidth();
-// 	rect.setSize(CEGUI::Size(textureWidth * 0.5, textureWidth * 0.5));
-// 	const Ogre::TRect<float> viewRect(mMap->getView().getRelativeViewBounds());
-// // 	const Ogre::Vector2& viewPos(mMap->getView().getRelativeViewPosition());
-// 	rect.setPosition(CEGUI::Point(textureWidth * viewRect.left, textureWidth * viewRect.top));
-// 	
-// 	
-// 	Ogre::MaterialPtr material((Ogre::MaterialPtr)Ogre::MaterialManager::getSingleton().getByName("/ui/compass"));
-//  	Ogre::TextureUnitState* tus(material->getTechnique(0)->getPass(0)->getTextureUnitState(0));
-//  	const Ogre::Vector2& relPosition(mMap->getView().getRelativeViewPosition());
-//  	tus->setTextureScroll(-0.5f + relPosition.x, -0.5f + relPosition.y);
- 	
-// 	Ogre::OverlayManager& omgr = Ogre::OverlayManager::getSingleton();
-// 	Ogre::Overlay* compassOverlay = (Ogre::Overlay*)omgr.getByName("CompassOverlay");
-// 	if (compassOverlay)
-// 	{
-// 		compassOverlay->setRotate(EmberOgre::getSingleton().getAvatar()->getAvatarSceneNode()->getOrientation().getYaw());
-// 	}
- 	
- 	
 }
 
 void Compass::rotate(const Ogre::Degree& degree)
@@ -100,7 +76,6 @@ void Compass::rotate(const Ogre::Degree& degree)
 	if (mCompassImpl) {
 		mCompassImpl->rotate(degree);
 	}
-//  	tus->setTextureRotate(EmberOgre::getSingleton().getAvatarCamera()->getAvatarSceneNode()->getOrientation().getYaw());
 }
 
 ///Note: duplicate method to make it easier for scripts interacting with the code
@@ -178,8 +153,9 @@ OverlayCompassImpl::OverlayCompassImpl()
 OverlayCompassImpl::~OverlayCompassImpl()
 {
 	if (mCompassOverlay) {
-		Ogre::OverlayManager& omgr = Ogre::OverlayManager::getSingleton();
-		omgr.destroy(mCompassOverlay);
+		mCompassOverlay->hide();
+/*		Ogre::OverlayManager& omgr = Ogre::OverlayManager::getSingleton();
+		omgr.destroy(mCompassOverlay);*/
 	}
 
 }
@@ -213,6 +189,55 @@ void OverlayCompassImpl::rotate(const Ogre::Degree& degree)
 		
 //  		tus->setTextureRotate(EmberOgre::getSingleton().getMainCamera()->getYaw());
  	}
+}
+
+CompassAnchor::CompassAnchor(Compass& compass, const Ogre::Vector3& position, const Ogre::Quaternion& orientation)
+: mCompass(compass)
+, mPreviousX(0)
+, mPreviousZ(0)
+, mPosition(position)
+, mOrientation(orientation)
+{
+	/// Register this as a frame listener
+	Ogre::Root::getSingleton().addFrameListener(this);
+}
+
+CompassAnchor::~CompassAnchor()
+{
+	Ogre::Root::getSingleton().removeFrameListener(this);
+}
+
+bool CompassAnchor::frameStarted(const Ogre::FrameEvent& event)
+{
+	mCompass.rotate(-mOrientation.getYaw());
+	if (mPosition.x != mPreviousX || mPosition.z != mPreviousZ) {
+		mCompass.reposition(mPosition.x, mPosition.z);
+	}
+	return true;
+}
+
+
+
+
+CompassCameraAnchor::CompassCameraAnchor(Compass& compass, Ogre::Camera* camera)
+: mAnchor(compass, camera->getDerivedPosition(), camera->getDerivedOrientation())
+, mCamera(camera)
+{
+}
+
+CompassCameraAnchor::~CompassCameraAnchor()
+{
+}
+
+
+CompassSceneNodeAnchor::CompassSceneNodeAnchor(Compass& compass, Ogre::SceneNode* sceneNode)
+: mAnchor(compass, sceneNode->getWorldPosition(), sceneNode->getWorldOrientation())
+, mSceneNode(sceneNode)
+{
+}
+
+CompassSceneNodeAnchor::~CompassSceneNodeAnchor()
+{
 }
 
 

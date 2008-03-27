@@ -27,7 +27,8 @@ function Compass.repositionAtAvatar()
 end
 
 function Compass.rotate()
-	Compass.helper:rotate(emberOgre:getMainCamera():getOrientation():getYaw())
+	local cameraOrientation = emberOgre:getMainCamera():getOrientation():getYaw()
+	Compass.helper:rotate(-cameraOrientation)
 end
 
 function Compass.framestarted(timeSinceLastFrame)
@@ -36,7 +37,8 @@ function Compass.framestarted(timeSinceLastFrame)
 end
 
 function Compass.CreatedAvatarEntity(avatarEntity)
-	connect(Compass.connectors, guiManager.EventFrameStarted, "Compass.framestarted")
+	Compass.anchor = EmberOgre.Gui.CompassCameraAnchor:new_local(Compass.helper, emberOgre:getMainCamera():getCamera())
+-- 	connect(Compass.connectors, guiManager.EventFrameStarted, "Compass.framestarted")
 end
 
 function Compass.buildWidget()

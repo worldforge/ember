@@ -26,6 +26,7 @@
 #include <memory>
 #include "AssetsManager.h"
 #include <OgreMaterial.h>
+#include <OgreFrameListener.h>
 
 namespace EmberOgre {
 
@@ -49,7 +50,7 @@ class Compass
 public:
     Compass(ICompassImpl* compassImpl);
 
-    ~Compass();
+    virtual ~Compass();
     
     Terrain::Map& getMap();
     
@@ -114,6 +115,59 @@ protected:
 	Ogre::MaterialPtr mCompassMaterial;
 	virtual void _setCompass(Compass* compass);
 	
+};
+
+
+class CompassAnchor
+: public Ogre::FrameListener
+{
+friend class CompassCameraAnchor;
+friend class CompassSceneNodeAnchor;
+public:
+
+	
+	virtual ~CompassAnchor();
+
+	/**
+	 * Methods from Ogre::FrameListener
+	 */
+	bool frameStarted(const Ogre::FrameEvent& event);
+
+protected:
+	CompassAnchor(Compass& compass, const Ogre::Vector3& position, const Ogre::Quaternion& orientation);
+	
+	Compass& mCompass;
+	float mPreviousX, mPreviousZ;
+	const Ogre::Vector3& mPosition;
+	const Ogre::Quaternion& mOrientation;
+};
+
+class CompassCameraAnchor
+{
+public:
+
+	CompassCameraAnchor(Compass& compass, Ogre::Camera* camera);
+	
+	virtual ~CompassCameraAnchor();
+
+protected:
+
+	CompassAnchor mAnchor;
+	Ogre::Camera* mCamera;
+};
+
+
+class CompassSceneNodeAnchor
+{
+public:
+
+	CompassSceneNodeAnchor(Compass& compass, Ogre::SceneNode* sceneNode);
+	
+	virtual ~CompassSceneNodeAnchor();
+
+protected:
+	CompassAnchor mAnchor;
+	Ogre::SceneNode* mSceneNode;
 };
 
 
