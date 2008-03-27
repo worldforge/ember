@@ -64,7 +64,7 @@ STATIC_LIBSTDCPP=
 STATIC_LIBGCC=
 
 AC_ARG_ENABLE(static_build,
-  [  --enable-static-build	enable static link of some libs [default=no]],
+  [AS_HELP_STRING([--enable-static-build],[enable static link of some libs (default=no)])],
   [
     if test "$enableval" = "yes"; then
       link_static="true"
@@ -79,6 +79,18 @@ AC_ARG_ENABLE(static_build,
 )
 AM_CONDITIONAL(BUILD_STATIC, test x"$link_static" = xtrue)
 
+AC_ARG_ENABLE(freeimage_check,
+  [  AS_HELP_STRING([--disable-freeimage-check], [disable the check for if Ogre is built with FreeImage. Disable this only if you're absolutly sure that libraries in FreeImage won't clash with other system libraries (default is enabled)])],
+  [
+    if test "$enableval" = "yes"; then
+      freeimage_check="true"
+    else
+      freeimage_check="false"
+    fi
+  ],[
+    freeimage_check="true"
+  ]
+)
 
 AC_MSG_RESULT([
 
@@ -238,6 +250,17 @@ see why the tests failed, and fix it.])
 #LDFLAGS="$LDFLAGS -lCEGUIOgreRenderer"
 AC_DEFINE(OGRE_DEBUG_MEMORY_MANAGER, 0, [disable Ogre memory manager])
 
+if test "$freeimage_check" = "true"; then 
+	AC_CHECK_DECLS(OGRE_NO_FREEIMAGE
+	, , [AC_MSG_ERROR([You've compiled Ogre with FreeImage support. Due to the way FreeImage includes its own versions of common image libraries such as libpng this will clash with other system libs such as DevIL, leading to random crashes. Please compile Ogre with FreeImage disabled (by using the --disable-freeimage configure switch). Ogre will then use DevIL instead.])]
+	)
+else
+	AC_MSG_RESULT(
+	[********
+You've chosen to disable the FreeImage tests. Proceed on your own risk.
+********])
+fi
+
 #check for lua
 PKG_CHECK_MODULES(LUA, lua >= 5.0 lua < 5.1,
 [
@@ -267,7 +290,7 @@ PKG_CHECK_MODULES(LUA, lua >= 5.0 lua < 5.1,
 				AC_MSG_NOTICE([Lua version => 5.1, make sure that CEGUI also has been compiled for this version (requires a patch for 0.5.0)])
 			],
 			[
-				AC_MSG_ERROR([Couldn't find Lua or tests failed. Error: $LUA_PKG_ERRORS. Please go to http://www.lua.org to get the latest, or check config.log to see why the tests failed, and fix it.])
+				AC_MSG_ERROR([Couldn't find Lua or tests failed. Error: $LUA_PKG_ERRORS. Please go to http://www.lua.org to get the latest, or check config.log to see why the tests failed, and fix it. Also make sure that CEGUI is built with Lua support.])
 			])
 		])
 	])
@@ -322,33 +345,33 @@ CXXFLAGS="$CXXFLAGS -DATLAS_ELEMENT_TYPEDEF_PRIVATE"
 
 # Cppunit check
  
-AC_ARG_ENABLE(cppunit,[  --enable-cppunit     enables cppunit tests [default=yes]],
-[ 
-   if test x$enableval = xno; then 
-		ac_use_cppunit="no"	
-   else 
-		ac_use_cppunit="yes"
-   fi
-], [ac_use_cppunit="yes"])
+#AC_ARG_ENABLE(cppunit,[  --enable-cppunit     enables cppunit tests [default=yes]],
+#[ 
+#   if test x$enableval = xno; then 
+#		ac_use_cppunit="no"	
+#   else 
+#		ac_use_cppunit="yes"
+#   fi
+#], [ac_use_cppunit="yes"])
 
-found_cppunit=no
+#found_cppunit=no
 
-if test "$ac_use_cppunit" = "yes"; then
-AM_PATH_CPPUNIT(1.8.0, [
-  AC_MSG_RESULT([
-*** Found CppUnit
-*** Setting up make check to run tests...])
-	CXXFLAGS="$CXXFLAGS -DUSE_CPP_UNIT"
-	LIBS="$LIBS $CPPUNIT_LIBS"
-], 
-  AC_MSG_RESULT([
-
-*** Unable to find a recent enough CppUnit
-*** Will not run unit testing!!
-*** 
-*** To get CppUnit see http://cppunit.sourceforge.net
-]))
-fi
+#if test "$ac_use_cppunit" = "yes"; then
+#AM_PATH_CPPUNIT(1.8.0, [
+#  AC_MSG_RESULT([
+#*** Found CppUnit
+#*** Setting up make check to run tests...])
+#	CXXFLAGS="$CXXFLAGS -DUSE_CPP_UNIT"
+#	LIBS="$LIBS $CPPUNIT_LIBS"
+#], 
+#  AC_MSG_RESULT([
+#
+#*** Unable to find a recent enough CppUnit
+#*** Will not run unit testing!!
+#*** 
+#*** To get CppUnit see http://cppunit.sourceforge.net
+#]))
+#fi
 
 
 # debugging option
