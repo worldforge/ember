@@ -28,7 +28,7 @@ namespace Ogre
 {
     /** Wrapper class which indicates a given angle value is in Radians.
     @remarks
-        Radian values are interchangeable with Degree values, and conversions
+        Radian values are interchangeable with Ogre::Degree values, and conversions
         will be done automatically between them.
     */
 	class Radian
@@ -36,24 +36,24 @@ namespace Ogre
 
 
 		explicit Radian ( float r=0 );
-		Radian ( const Degree& d );
+	 	Radian ( const Ogre::Degree& d );
 // 		const Ogre::Radian& operator = ( const float& f ) { mRad = f; return *this; }
 // 		const Ogre::Radian& operator = ( const Ogre::Radian& r ) { mRad = r.mRad; return *this; }
-// 		const Ogre::Radian& operator = ( const Degree& d );
+// 		const Ogre::Radian& operator = ( const Ogre::Degree& d );
 
 		float valueDegrees() const; // see bottom of this file
 		float valueRadians() const;
 		float valueAngleUnits() const;
 
 		Ogre::Radian operator + ( const Ogre::Radian& r ) const;
-		Ogre::Radian operator + ( const Degree& d ) const;
+		Ogre::Radian operator + ( const Ogre::Degree& d ) const;
 /*		Ogre::Radian& operator += ( const Ogre::Radian& r );
-		Ogre::Radian& operator += ( const Degree& d );*/
+		Ogre::Radian& operator += ( const Ogre::Degree& d );*/
 		Ogre::Radian operator - () ;
 		Ogre::Radian operator - ( const Ogre::Radian& r ) const ;
-		Ogre::Radian operator - ( const Degree& d ) const;
+		Ogre::Radian operator - ( const Ogre::Degree& d ) const;
 /*		Ogre::Radian& operator -= ( const Ogre::Radian& r );
-		Ogre::Radian& operator -= ( const Degree& d );*/
+		Ogre::Radian& operator -= ( const Ogre::Degree& d );*/
 		Ogre::Radian operator * ( float f ) const;
         Ogre::Radian operator * ( const Ogre::Radian& f ) const;
 /*		Ogre::Radian& operator *= ( float f );*/
@@ -67,11 +67,8 @@ namespace Ogre
 /*		bool operator >= ( const Ogre::Radian& r ) const ;
 		bool operator >  ( const Ogre::Radian& r ) const ;*/
 		
-	 Radian ( const Ogre::Degree& d );
 // 	 const Ogre::Radian& operator = ( const Ogre::Degree& d ) ;
-	 Ogre::Radian operator + ( const Ogre::Degree& d ) const;
 // 	 Ogre::Radian& operator += ( const Ogre::Degree& d );
-	 Ogre::Radian operator - ( const Ogre::Degree& d ) const ;
 // 	 Ogre::Radian& operator -= ( const Ogre::Degree& d ) ;
 		
 	};
@@ -97,7 +94,7 @@ namespace Ogre
 		Ogre::Degree operator + ( const Ogre::Radian& r ) const ;
 /*		Ogre::Degree& operator += ( const Ogre::Degree& d ) ;
 		Ogre::Degree& operator += ( const Ogre::Radian& r ) ;*/
-		Ogre::Degree operator - () { return Ogre::Degree(-mDeg); }
+		Ogre::Degree operator - ();
 		Ogre::Degree operator - ( const Ogre::Degree& d ) const ;
 		Ogre::Degree operator - ( const Ogre::Radian& r ) const ;
 /*		Ogre::Degree& operator -= ( const Ogre::Degree& d );
@@ -491,13 +488,13 @@ namespace Ogre
 // 	 float Radian::valueDegrees() const;
 // 	 float Radian::valueAngleUnits() const;
 // 
-// 	 float Degree::valueRadians() const;
+// 	 float Ogre::Degree::valueRadians() const;
 // 
-// 	 float Degree::valueAngleUnits() const;
+// 	 float Ogre::Degree::valueAngleUnits() const;
 
 // 	 Angle::operator Radian();
 // 
-// 	 Angle::operator Degree();
+// 	 Angle::operator Ogre::Degree();
 
 // 	 Ogre::Radian operator * ( float a, const Ogre::Radian& b );
 // 

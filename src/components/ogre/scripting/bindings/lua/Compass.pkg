@@ -70,6 +70,28 @@ public:
 	
 };
 
+
+class CompassCameraAnchor
+{
+public:
+
+	CompassCameraAnchor(EmberOgre::Gui::Compass& compass, Ogre::Camera* camera);
+	
+	virtual ~CompassCameraAnchor();
+
+};
+
+
+class CompassSceneNodeAnchor
+{
+public:
+
+	CompassSceneNodeAnchor(EmberOgre::Gui::Compass& compass, Ogre::SceneNode* sceneNode);
+	
+	virtual ~CompassSceneNodeAnchor();
+
+};
+
 }
 
 }

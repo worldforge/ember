@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Ogre
-** Generated automatically by tolua++-1.0.92 on Tue Feb 26 20:46:25 2008.
+** Generated automatically by tolua++-1.0.92 on Thu Mar 27 19:19:18 2008.
 */
 
 #ifndef __cplusplus
@@ -6327,130 +6327,6 @@ static int tolua_Ogre_Ogre_Radian__eq00(lua_State* tolua_S)
  tolua_error(tolua_S,"#ferror in function '.eq'.",&tolua_err);
  return 0;
 #endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: new of class  Ogre::Radian */
-#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Radian_new02
-static int tolua_Ogre_Ogre_Radian_new02(lua_State* tolua_S)
-{
- tolua_Error tolua_err;
- if (
-     !tolua_isusertable(tolua_S,1,"Ogre::Radian",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"const Ogre::Degree",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
- {
-  const Ogre::Degree* d = ((const Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
-  {
-   Ogre::Radian* tolua_ret = (Ogre::Radian*)  new Ogre::Radian(*d);
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::Radian");
-  }
- }
- return 1;
-tolua_lerror:
- return tolua_Ogre_Ogre_Radian_new01(tolua_S);
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: new_local of class  Ogre::Radian */
-#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Radian_new02_local
-static int tolua_Ogre_Ogre_Radian_new02_local(lua_State* tolua_S)
-{
- tolua_Error tolua_err;
- if (
-     !tolua_isusertable(tolua_S,1,"Ogre::Radian",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"const Ogre::Degree",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
- {
-  const Ogre::Degree* d = ((const Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
-  {
-   Ogre::Radian* tolua_ret = (Ogre::Radian*)  new Ogre::Radian(*d);
-   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Ogre::Radian");
-  }
- }
- return 1;
-tolua_lerror:
- return tolua_Ogre_Ogre_Radian_new01_local(tolua_S);
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: operator+ of class  Ogre::Radian */
-#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Radian__add02
-static int tolua_Ogre_Ogre_Radian__add02(lua_State* tolua_S)
-{
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"const Ogre::Radian",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"const Ogre::Degree",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
- {
-  const Ogre::Radian* self = (const Ogre::Radian*)  tolua_tousertype(tolua_S,1,0);
-  const Ogre::Degree* d = ((const Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator+'",NULL);
-#endif
-  {
-   Ogre::Radian tolua_ret = (Ogre::Radian)  self->operator+(*d);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new Ogre::Radian(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Radian));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
-#endif
-   }
-  }
- }
- return 1;
-tolua_lerror:
- return tolua_Ogre_Ogre_Radian__add01(tolua_S);
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: operator- of class  Ogre::Radian */
-#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Radian__sub03
-static int tolua_Ogre_Ogre_Radian__sub03(lua_State* tolua_S)
-{
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"const Ogre::Radian",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"const Ogre::Degree",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
- {
-  const Ogre::Radian* self = (const Ogre::Radian*)  tolua_tousertype(tolua_S,1,0);
-  const Ogre::Degree* d = ((const Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator-'",NULL);
-#endif
-  {
-   Ogre::Radian tolua_ret = (Ogre::Radian)  self->operator-(*d);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new Ogre::Radian(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Radian));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::Radian");
-#endif
-   }
-  }
- }
- return 1;
-tolua_lerror:
- return tolua_Ogre_Ogre_Radian__sub02(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
@@ -18600,11 +18476,6 @@ TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
     tolua_function(tolua_S,".lt",tolua_Ogre_Ogre_Radian__lt00);
     tolua_function(tolua_S,".le",tolua_Ogre_Ogre_Radian__le00);
     tolua_function(tolua_S,".eq",tolua_Ogre_Ogre_Radian__eq00);
-    tolua_function(tolua_S,"new",tolua_Ogre_Ogre_Radian_new02);
-    tolua_function(tolua_S,"new_local",tolua_Ogre_Ogre_Radian_new02_local);
-    tolua_function(tolua_S,".call",tolua_Ogre_Ogre_Radian_new02_local);
-    tolua_function(tolua_S,".add",tolua_Ogre_Ogre_Radian__add02);
-    tolua_function(tolua_S,".sub",tolua_Ogre_Ogre_Radian__sub03);
    tolua_endmodule(tolua_S);
    #ifdef __cplusplus
    tolua_cclass(tolua_S,"Degree","Ogre::Degree","",tolua_collect_Ogre__Degree);
