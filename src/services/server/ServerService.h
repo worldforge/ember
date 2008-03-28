@@ -186,8 +186,19 @@ class ServerService : public Service, public ConsoleObject
 	void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orient);
 	void wield(Eris::Entity* entity);
 	void take(Eris::Entity* entity);
-	void use(Eris::Entity* entity, WFMath::Point<3> pos = WFMath::Point<3>(0,0,0));
+	/**
+	 *    Uses the currently wielded entity on the supplied entity.
+	 * @param entity The entity on which the currently wielded entity will be used.
+	 * @param pos The position on the entity to perform the action. In some cases this won't matter, whereas in others (such as digging on the world entity) it will.
+	 * @param operation The operation to perform. If left blank the default will be used.
+	 */
+	void use(Eris::Entity* entity, WFMath::Point<3> pos = WFMath::Point<3>(0,0,0), const std::string& operation = "");
+	/**
+	 *    Stops the current use operation.
+	 */
 	void useStop();
+	
+	void actuate(Eris::Entity* entity,  const std::string& action);
 	void attack(Eris::Entity* entity);
 	void eat(Eris::Entity* entity);
 	void deleteEntity(Eris::Entity* entity);

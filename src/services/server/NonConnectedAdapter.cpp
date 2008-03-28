@@ -82,7 +82,7 @@ void NonConnectedAdapter::wield(Eris::Entity* entity)
 
 }   		
 
-void NonConnectedAdapter::use(Eris::Entity* entity, WFMath::Point<3> pos)
+void NonConnectedAdapter::use(Eris::Entity* entity, WFMath::Point<3> pos, const std::string& operation)
 {
 
 }   		
@@ -91,6 +91,10 @@ void NonConnectedAdapter::useStop()
 {
 
 }   
+	
+void NonConnectedAdapter::actuate(Eris::Entity* entity, const std::string& action)
+{
+}
 	
 	
 void NonConnectedAdapter::attack(Eris::Entity* entity)

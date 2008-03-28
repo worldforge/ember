@@ -216,10 +216,10 @@ void ConnectedAdapter::wield(Eris::Entity* entity)
 	}
 }   		
 
-void ConnectedAdapter::use(Eris::Entity* entity, WFMath::Point<3> pos)
+void ConnectedAdapter::use(Eris::Entity* entity, WFMath::Point<3> pos, const std::string& operation)
 {
 	try {
-		mAvatar->useOn(entity, pos, "");
+		mAvatar->useOn(entity, pos, operation);
 	}
 	catch (const Eris::BaseException& except)
 	{
@@ -245,7 +245,34 @@ void ConnectedAdapter::useStop()
 		S_LOG_WARNING("Got unknown error on stopping using: " << except.what());
 	}
 }   
+
+void ConnectedAdapter::actuate(Eris::Entity* entity, const std::string& action)
+{
+
+	Atlas::Objects::Entity::Anonymous what;
+	what->setId(entity->getId());
+// 	what->setObjtype("obj");
 	
+	Atlas::Objects::Operation::RootOperation actionOp;
+	actionOp->setObjtype("op");
+	actionOp->setArgs1(what);
+	std::list<std::string> actionParents;
+	actionParents.push_back(action);
+	actionOp->setParents(actionParents);
+	
+	Atlas::Objects::Operation::RootOperation actuateOp;
+	actuateOp->setObjtype("op");
+	actuateOp->setArgs1(actionOp);
+	std::list<std::string> actuateParents;
+	actuateParents.push_back("actuate");
+	actuateOp->setParents(actuateParents);
+	actuateOp->setFrom(mAvatar->getEntity()->getId());
+
+
+	S_LOG_INFO("Actuating entity with id " << entity->getId() << ", named " << entity->getName() << " with action '" << action << "'.");
+	mConnection->send(actuateOp);	
+}
+
 void ConnectedAdapter::deleteEntity(Eris::Entity* entity)
 {
 	try {

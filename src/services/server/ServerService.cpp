@@ -614,14 +614,19 @@ void ServerService::logoutComplete(bool clean) {
 		mServerAdapter->wield(entity);
 	}
 
-	void ServerService::use(Eris::Entity* entity, WFMath::Point<3> pos)
+	void ServerService::use(Eris::Entity* entity, WFMath::Point<3> pos, const std::string& operation)
 	{
-		mServerAdapter->use(entity, pos);
+		mServerAdapter->use(entity, pos, operation);
 	}
 
 	void ServerService::useStop()
 	{
 		mServerAdapter->useStop();
+	}
+	
+	void ServerService::actuate(Eris::Entity* entity, const std::string& action)
+	{
+		mServerAdapter->actuate(entity, action);
 	}
 
 

@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberServices
-** Generated automatically by tolua++-1.0.92 on Thu Jan 24 21:43:03 2008.
+** Generated automatically by tolua++-1.0.92 on Fri Mar 28 00:22:04 2008.
 */
 
 #ifndef __cplusplus
@@ -1274,6 +1274,39 @@ tolua_lerror:
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: use of class  Ember::ServerService */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_ServerService_use02
+static int tolua_EmberServices_Ember_ServerService_use02(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ember::ServerService",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Eris::Entity",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"WFMath::Point<3>",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  Ember::ServerService* self = (Ember::ServerService*)  tolua_tousertype(tolua_S,1,0);
+  Eris::Entity* entity = ((Eris::Entity*)  tolua_tousertype(tolua_S,2,0));
+  WFMath::Point<3> pos = *((WFMath::Point<3>*)  tolua_tousertype(tolua_S,3,0));
+  const std::string operation = ((const std::string)  tolua_tocppstring(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'use'",NULL);
+#endif
+  {
+   self->use(entity,pos,operation);
+   tolua_pushcppstring(tolua_S,(const char*)operation);
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_EmberServices_Ember_ServerService_use01(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: useStop of class  Ember::ServerService */
 #ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_ServerService_useStop00
 static int tolua_EmberServices_Ember_ServerService_useStop00(lua_State* tolua_S)
@@ -1300,6 +1333,42 @@ static int tolua_EmberServices_Ember_ServerService_useStop00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'useStop'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: actuate of class  Ember::ServerService */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_ServerService_actuate00
+static int tolua_EmberServices_Ember_ServerService_actuate00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ember::ServerService",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Eris::Entity",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ember::ServerService* self = (Ember::ServerService*)  tolua_tousertype(tolua_S,1,0);
+  Eris::Entity* entity = ((Eris::Entity*)  tolua_tousertype(tolua_S,2,0));
+  const std::string action = ((const std::string)  tolua_tocppstring(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'actuate'",NULL);
+#endif
+  {
+   self->actuate(entity,action);
+   tolua_pushcppstring(tolua_S,(const char*)action);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'actuate'.",&tolua_err);
  return 0;
 #endif
 }
@@ -2215,7 +2284,9 @@ TOLUA_API int tolua_EmberServices_open (lua_State* tolua_S)
     tolua_function(tolua_S,"take",tolua_EmberServices_Ember_ServerService_take00);
     tolua_function(tolua_S,"use",tolua_EmberServices_Ember_ServerService_use00);
     tolua_function(tolua_S,"use",tolua_EmberServices_Ember_ServerService_use01);
+    tolua_function(tolua_S,"use",tolua_EmberServices_Ember_ServerService_use02);
     tolua_function(tolua_S,"useStop",tolua_EmberServices_Ember_ServerService_useStop00);
+    tolua_function(tolua_S,"actuate",tolua_EmberServices_Ember_ServerService_actuate00);
     tolua_function(tolua_S,"attack",tolua_EmberServices_Ember_ServerService_attack00);
     tolua_function(tolua_S,"eat",tolua_EmberServices_Ember_ServerService_eat00);
     tolua_function(tolua_S,"deleteEntity",tolua_EmberServices_Ember_ServerService_deleteEntity00);

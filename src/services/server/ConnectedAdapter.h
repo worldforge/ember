@@ -54,8 +54,9 @@ public:
 	virtual void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orient);
 	virtual void wield(Eris::Entity* entity);
 	virtual void take(Eris::Entity* entity);
-	virtual void use(Eris::Entity* entity, WFMath::Point<3> pos = WFMath::Point<3>(0,0,0));
+	virtual void use(Eris::Entity* entity, WFMath::Point<3> pos, const std::string& operation);
 	virtual void useStop();
+	virtual void actuate(Eris::Entity* entity, const std::string& action);
 	virtual void attack(Eris::Entity* entity);
 	virtual void eat(Eris::Entity* entity);
 	virtual void deleteEntity(Eris::Entity* entity);
