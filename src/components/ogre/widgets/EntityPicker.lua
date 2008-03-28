@@ -57,21 +57,29 @@ function EntityPicker.buildWidget()
 	
 	
 	--get a couple of use buttons to allow for different use actions
-	EntityPicker.useButtons[1] = EntityPicker.widget:getWindow("UseButton1")
-	EntityPicker.useButtons[1]:subscribeEvent("MouseButtonUp", "EntityPicker.buttonUse_Click")
-	EntityPicker.useButtons[2] = EntityPicker.widget:getWindow("UseButton2")
-	EntityPicker.useButtons[2]:subscribeEvent("MouseButtonUp", "EntityPicker.buttonUse_Click")
-	EntityPicker.useButtons[3] = EntityPicker.widget:getWindow("UseButton3")
-	EntityPicker.useButtons[3]:subscribeEvent("MouseButtonUp", "EntityPicker.buttonUse_Click")
-	EntityPicker.useButtons[4] = EntityPicker.widget:getWindow("UseButton4")
-	EntityPicker.useButtons[4]:subscribeEvent("MouseButtonUp", "EntityPicker.buttonUse_Click")
-	EntityPicker.useButtons[5] = EntityPicker.widget:getWindow("UseButton5")
-	EntityPicker.useButtons[5]:subscribeEvent("MouseButtonUp", "EntityPicker.buttonUse_Click")
+
+	EntityPicker.addButton("UseButton1")
+	EntityPicker.addButton("UseButton2")
+	EntityPicker.addButton("UseButton3")
+	EntityPicker.addButton("UseButton4")
+	EntityPicker.addButton("UseButton5")
 		
 	EntityPicker.stackableContainer = EmberOgre.Gui.StackableContainer:new_local(EntityPicker.menuWindow)
 	EntityPicker.stackableContainer:setInnerContainerWindow(EntityPicker.menuWindow)
 	connect(EntityPicker.connectors, guiManager:getInput().EventMouseButtonReleased, "EntityPicker.input_MouseButtonReleased")
 
+end
+
+function EntityPicker.addButton(buttonName)
+	local buttonWrapper = {}
+	buttonWrapper.button = EntityPicker.widget:getWindow(buttonName)
+	buttonWrapper.clicked = function(args)
+		buttonWrapper.clickedHandler()
+	end
+	buttonWrapper.button:subscribeEvent("MouseButtonUp", buttonWrapper.clicked)
+	local i = table.getn(EntityPicker.useButtons)
+	EntityPicker.useButtons[i + 1] = buttonWrapper
+	
 end
 
 function EntityPicker.showMenu(position)
@@ -136,27 +144,64 @@ end
 function EntityPicker.checkUse()
 	--try to find the default operation for the wielded entity
 	for i,v in ipairs(EntityPicker.useButtons) do
-		v:setVisible(false)
+		v.button:setVisible(false)
 	end
 	
+	local currentButtonIndex = 0
 	
+	--first fill up with actions defined for the entity being picked
+	local actionList = EntityPicker.entity:getActions();
+	if actionList:size() > 0 then 
+		for i = 0, actionList:size() - 1 do
+			currentButtonIndex = currentButtonIndex + 1
+			local action = actionList[i]
+			local currentButton = EntityPicker.useButtons[currentButtonIndex]
+			EntityPicker.addAction(currentButton, EntityPicker.entity, action)
+		end
+	end	
+	
+	--then fill up with operations that can be performed with the currently wielded entity
 	local wieldedEntity = emberOgre:getAvatar():getAvatarEmberEntity():getEntityAttachedToPoint("right_hand_wield")
 	if wieldedEntity then
 		local operatorList = wieldedEntity:getDefaultUseOperators();
 		if operatorList:size() > 0 then 
 			for i = 0, operatorList:size() - 1 do
+				currentButtonIndex = currentButtonIndex + 1
 				local defaultOp = operatorList[i]
-				EntityPicker.useButtons[i+1]:setVisible(true)
-				if defaultOp == "" then
-					EntityPicker.useButtons[i+1]:setText("Use with " .. wieldedEntity:getType():getName())
-				else
-					EntityPicker.useButtons[i+1]:setText(defaultOp .. " with " .. wieldedEntity:getType():getName())
-				end
+				local currentButton = EntityPicker.useButtons[currentButtonIndex]
+				EntityPicker.addUse(currentButton, EntityPicker.entity, wieldedEntity, defaultOp)
 			end
 		end
 	end
 end
 
+function EntityPicker.addUse(buttonWrapper, entity, wieldedEntity, operation)
+	buttonWrapper.clickedHandler = function()
+		emberServices:getServerService():use(EntityPicker.entity, EmberOgre.Ogre2Atlas(EntityPicker.position), operation)
+		guiManager:EmitEntityAction("use", EntityPicker.entity)
+		EntityPickerWidget_removeMenu()
+	end	
+	
+	local button = buttonWrapper.button
+	button:setVisible(true)
+	if operation == "" then
+		button:setText("Use with " .. wieldedEntity:getType():getName())
+	else
+		button:setText(operation .. " with " .. wieldedEntity:getType():getName())
+	end
+end
+
+function EntityPicker.addAction(buttonWrapper, entity, action)
+	buttonWrapper.clickedHandler = function()
+		emberServices:getServerService():actuate(EntityPicker.entity, action)
+		guiManager:EmitEntityAction("actuate", EntityPicker.entity)
+		EntityPickerWidget_removeMenu()
+	end	
+	
+	local button = buttonWrapper.button
+	button:setVisible(true)
+	button:setText(action)
+end
 --function EntityPicker.pickedNothing(args)
 --	if EntityPicker.widget:getMainWindow():isVisible() then
 --		EntityPickerWidget_removeMenu()
