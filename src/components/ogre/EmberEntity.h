@@ -218,6 +218,12 @@ public:
 	
 	
 	/**
+	 *    Returns a list of actions that can be performed on this entity, if any.
+	 * @return A vector of actions, as strings.
+	 */
+	std::vector<std::string> getActions();
+	
+	/**
 	 *    Synchronizes the position and orientation of the entity with the server.
 	 */
 	void synchronizeWithServer();
