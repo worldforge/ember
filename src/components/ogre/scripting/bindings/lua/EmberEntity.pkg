@@ -38,7 +38,18 @@ class EmberEntity : public Eris::Entity {
 
 	virtual const Ogre::AxisAlignedBox& getWorldBoundingBox(bool derive = true) const;
 	
+	/**
+	 *    Returns a list of the default use operators that can be used with this entity.
+	 For example, an axe would have a list of operators such as "chop" and "sharpen".
+	 * @return 
+	 */
 	std::vector<std::string> getDefaultUseOperators();
+	
+	/**
+	 *    Returns a list of actions that can be performed on this entity, if any.
+	 * @return A vector of actions, as strings.
+	 */
+	std::vector<std::string> getActions();	
 	
 	/**
 	 * General method for turning on and off debug visualizations. Subclasses might support more types of visualizations than the ones defined here.
