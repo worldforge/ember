@@ -25,7 +25,7 @@ namespace caelum {
 
 const Ogre::String Sun::SUN_MATERIAL_NAME = "CaelumSunMaterial";
 
-Sun::Sun (Ogre::SceneManager *sceneMgr): mScene(sceneMgr) {
+Sun::Sun (Ogre::SceneManager *sceneMgr, Ogre::SceneNode *caelumRootNode, const Ogre::String &meshName): mScene(sceneMgr) {
 	mSunSphereColour = Ogre::ColourValue::White;
 	mSunLightColour = Ogre::ColourValue::White;
 
@@ -41,11 +41,11 @@ Sun::Sun (Ogre::SceneManager *sceneMgr): mScene(sceneMgr) {
 
 	createSunMaterial ();
 
-	mSunEntity = sceneMgr->createEntity ("CaelumSun", "sphere.mesh");
+	mSunEntity = sceneMgr->createEntity ("CaelumSun", meshName);
 	mSunEntity->setMaterialName (SUN_MATERIAL_NAME);
 	mSunEntity->setCastShadows (false);
 	mSunEntity->setRenderQueueGroup (CAELUM_RENDER_QUEUE_SUN);
-	mSunNode = sceneMgr->getRootSceneNode ()->createChildSceneNode ();
+	mSunNode = caelumRootNode->createChildSceneNode ();
 	mSunNode->attachObject (mSunEntity);
 }
 
@@ -74,7 +74,7 @@ void Sun::notifyCameraChanged (Ogre::Camera *cam) {
 
     // Set sun position.
     Ogre::Real sunRadius = -mRadius * Ogre::Math::Tan (Ogre::Degree (0.01));
-	mSunNode->setPosition (cam->getRealPosition () - mSunDirection * (mRadius + sunRadius));
+	mSunNode->setPosition(-mSunDirection * (mRadius + sunRadius));
 
     // Set sun scaling.
     float factor = 2 - mSunSphereColour.b / 3;
@@ -104,7 +104,7 @@ Ogre::Vector3 Sun::getSunDirection () const {
 void Sun::setSunDirection (const Ogre::Vector3 &dir) {
 	mSunDirection = dir;
 	if (mMainLight != 0) {
-		mMainLight->setDirection (dir);
+		mMainLight->setDirection (mSunNode->getWorldOrientation() * dir);
 	}
 }
 

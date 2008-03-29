@@ -46,6 +46,7 @@ class DllExport GroundFog: public CameraBoundElement {
 		/** Constructor.
 		 */
 		GroundFog (Ogre::SceneManager *scene,
+			Ogre::SceneNode *caelumRootNode,
 			const Ogre::String &domeMaterialName = "CaelumGroundFogDome",
 			const Ogre::String &domeEntityName = "CaelumGroundFogDome");
 

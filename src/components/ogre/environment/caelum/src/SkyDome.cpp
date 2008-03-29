@@ -28,7 +28,7 @@ namespace caelum {
 const Ogre::String SkyDome::SPHERIC_DOME_NAME = "CaelumSphericDome";
 const Ogre::String SkyDome::SKY_DOME_MATERIAL_NAME = "CaelumSkyDomeMaterial";
 
-SkyDome::SkyDome (Ogre::SceneManager *sceneMgr) {
+SkyDome::SkyDome (Ogre::SceneManager *sceneMgr, Ogre::SceneNode *caelumRootNode) {
 	createSkyDomeMaterial ();
 
 	GeometryFactory::generateSphericDome (SPHERIC_DOME_NAME, 32);
@@ -37,7 +37,7 @@ SkyDome::SkyDome (Ogre::SceneManager *sceneMgr) {
 	ent->setRenderQueueGroup (CAELUM_RENDER_QUEUE_SKYDOME);
 	ent->setCastShadows (false);
 
-	mNode = sceneMgr->getRootSceneNode ()->createChildSceneNode ();
+	mNode = caelumRootNode->createChildSceneNode ();
 	mNode->attachObject (ent);
 }
 
@@ -57,7 +57,6 @@ SkyDome::~SkyDome () {
 
 void SkyDome::notifyCameraChanged (Ogre::Camera *cam) {
     CameraBoundElement::notifyCameraChanged (cam);
-	mNode->setPosition (cam->getRealPosition ());
 }
 
 void SkyDome::setFarRadius (Ogre::Real radius) {
@@ -203,14 +202,14 @@ void SkyDome::createSkyDomeMaterial () {
                     "SkyDomeFP", RESOURCE_GROUP_NAME, "cg", Ogre::GPT_FRAGMENT_PROGRAM);
 			fp->setSourceFile ("CaelumSkyDome.cg");
 			fp->setParameter ("entry_point", "SkyDome_fp");
-            fp->setParameter("compile_arguments", "-DHAZE=1");
+            fp->setParameter("compile_arguments", "-DHAZE");
 			fp->setParameter ("profiles", "ps_2_0 arbfp1");
 
 			fp = Ogre::HighLevelGpuProgramManager::getSingleton().createProgram (
                     "SkyDomeFP_NoHaze", RESOURCE_GROUP_NAME, "cg", Ogre::GPT_FRAGMENT_PROGRAM);
 			fp->setSourceFile ("CaelumSkyDome.cg");
 			fp->setParameter ("entry_point", "SkyDome_fp");
-            fp->setParameter ("compile_arguments", "-DHAZE=0");
+            fp->setParameter ("compile_arguments", "");
 			fp->setParameter ("profiles", "ps_2_0 arbfp1");
         }
 
@@ -245,6 +244,7 @@ void SkyDome::createSkyDomeMaterial () {
 		LOG ("\tDONE");
 	} else {
 		mMaterial = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton ().getByName (SKY_DOME_MATERIAL_NAME));
+		mMaterial->load ();
 	}
 
 	LOG ("DONE");

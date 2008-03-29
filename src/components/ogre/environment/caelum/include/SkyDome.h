@@ -57,7 +57,7 @@ class DllExport SkyDome : public CameraBoundElement {
          *  This will setup some nice defaults.
 		 *  @param sceneMgr The scene manager where this sky dome will be created.
 		 */
-		SkyDome (Ogre::SceneManager *sceneMgr);
+		SkyDome (Ogre::SceneManager *sceneMgr, Ogre::SceneNode *caelumRootNode);
 
 		/** Destructor
 		 */

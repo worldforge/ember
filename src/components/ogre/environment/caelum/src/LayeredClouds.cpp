@@ -23,7 +23,7 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 #include "CaelumExceptions.h"
 #include "ImageHelper.h"
 
-namespace
+namespace caelum
 {
 	/** Extend a Vector2 to a Vector3 by appending a 0
 	 */
@@ -38,13 +38,14 @@ namespace caelum
 	LayeredClouds::LayeredClouds
 	(
 			Ogre::SceneManager* scene,
+			Ogre::SceneNode *caelumRootNode,
 			const Ogre::String &resourceGroupName,
 			const Ogre::String &materialName,
 			const Ogre::String &meshName,
 			const Ogre::String &entityName
 	):
-			mSceneMgr(scene),
-            mCloudCoverLookup(0)
+            mCloudCoverLookup(0),
+			mSceneMgr(scene)
 	{
 		// Create cloud plane mesh if it doesn't exist.
 		if (Ogre::MeshManager::getSingleton ().getByName (meshName).isNull ()) {
@@ -60,7 +61,7 @@ namespace caelum
         mEntity->setCastShadows(false);
 		mEntity->setRenderQueueGroup (CAELUM_RENDER_QUEUE_CLOUDS);
 
-		mNode = mSceneMgr->getRootSceneNode ()->createChildSceneNode ();
+		mNode = caelumRootNode->createChildSceneNode ();
 		mNode->attachObject (mEntity);
 
 		// It would be better to create the material at runtime instead.
@@ -100,7 +101,6 @@ namespace caelum
 
 	void LayeredClouds::notifyCameraChanged (Ogre::Camera *cam) {
         CameraBoundElement::notifyCameraChanged (cam);
-		mNode->setPosition (cam->getRealPosition ());
     }
 
 	void LayeredClouds::setFarRadius (Ogre::Real radius) {

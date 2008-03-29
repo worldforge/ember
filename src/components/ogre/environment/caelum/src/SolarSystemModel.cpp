@@ -49,9 +49,9 @@ namespace caelum
 
         // Ogre direction.
         Ogre::Vector3 res;
-        res.x = Math::Sin (azimuth);  // East
+        res.x =  Math::Sin (azimuth) * Math::Cos (altitude);  // East
         res.y = -Math::Sin (altitude); // Zenith
-        res.z = -Math::Cos (azimuth);  // North
+        res.z = -Math::Cos (azimuth) * Math::Cos (altitude);  // North 
 
         Astronomy::restoreFloatingPointMode(fpmode);
 

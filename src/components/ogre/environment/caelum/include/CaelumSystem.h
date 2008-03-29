@@ -57,7 +57,7 @@ namespace caelum {
     from Caelum could be refactor to only transfer a number of "common sky
     parameter" around; but that is a lot harder and ultimately less flexible.
 
-	@author Jesús Alonso Abad
+	@author Jesï¿½s Alonso Abad
  */
 class DllExport CaelumSystem : public Ogre::FrameListener, public Ogre::RenderTargetListener {
 // Attributes -----------------------------------------------------------------
@@ -69,6 +69,10 @@ class DllExport CaelumSystem : public Ogre::FrameListener, public Ogre::RenderTa
 		/** Scene manager.
 		 */
 		Ogre::SceneManager *mSceneMgr;
+
+		/** Caelum root scene node.
+		 */
+		Ogre::SceneNode *mCaelumRootNode;
 
 		/** Cleanup requested flag.
 		 */
@@ -207,6 +211,10 @@ class DllExport CaelumSystem : public Ogre::FrameListener, public Ogre::RenderTa
 		 */
 		UniversalClock *getUniversalClock () const;
 		
+		/** Gets caelum root scene node.
+		 */
+        Ogre::SceneNode* getRootNode(void) const { return mCaelumRootNode; }
+
 		/** Updates the system.
 			@param e The frame event (contains the elapsed time since the last update).
 		 */

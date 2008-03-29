@@ -27,7 +27,7 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 namespace caelum {
 
 /** Starfield dome class.
-	@author Jesús Alonso Abad
+	@author Jesï¿½s Alonso Abad
  */
 class DllExport Starfield : public CameraBoundElement {
 // Attributes -----------------------------------------------------------------
@@ -59,6 +59,7 @@ class DllExport Starfield : public CameraBoundElement {
 		 */
 		Starfield (
                 Ogre::SceneManager *sceneMgr,
+				Ogre::SceneNode *caelumRootNode,
                 const Ogre::String &textureName = "Starfield.jpg");
 
 		/** Destructor.

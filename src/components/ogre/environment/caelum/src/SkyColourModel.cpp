@@ -29,8 +29,8 @@ SkyColourModel::SkyColourModel
         const Ogre::String &gradients,
         const Ogre::String &sunColours
 ):
-        mSunColoursImage(0),
-        mSkyGradientsImage(0)
+        mSkyGradientsImage(0),
+        mSunColoursImage(0)
 {
 	mSkyGradientsImage = 0;
     mFogDensityMultiplier = 1;

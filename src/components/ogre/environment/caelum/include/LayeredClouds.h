@@ -45,6 +45,7 @@ class DllExport LayeredClouds: public CameraBoundElement {
 		 */
 		LayeredClouds (
                 Ogre::SceneManager* scene,
+				Ogre::SceneNode *caelumRootNode,
 				const Ogre::String &resourceGroupName="Caelum",
 				const Ogre::String &materialName="CaelumLayeredClouds",
 				const Ogre::String &meshName="CaelumLayeredClouds",

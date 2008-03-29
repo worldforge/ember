@@ -39,6 +39,7 @@ CaelumSystem::CaelumSystem
 	LOG ("Initialising Caelum system...");
 	mOgreRoot = root;
 	mSceneMgr = sceneMgr;
+	mCaelumRootNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("CaelumRoot");
 
 	mCleanup = false;
 	RESOURCE_GROUP_NAME = resGroupName;
@@ -79,27 +80,27 @@ CaelumSystem::CaelumSystem
         this->setSkyColourModel (new SkyColourModel ());
     }
     if (componentsToCreate & CAELUM_COMPONENT_SKY_DOME) {
-		this->setSkyDome (new SkyDome (mSceneMgr));
+		this->setSkyDome (new SkyDome (mSceneMgr, mCaelumRootNode));
     }
     if (componentsToCreate & CAELUM_COMPONENT_SOLAR_SYSTEM_MODEL) {
         this->setSolarSystemModel (new SolarSystemModel ());
     }
     if (componentsToCreate & CAELUM_COMPONENT_SUN) {
-		this->setSun (new Sun (mSceneMgr));
+		this->setSun (new Sun (mSceneMgr, mCaelumRootNode));
     }
     if (componentsToCreate & CAELUM_COMPONENT_STARFIELD) {
     	try {
-			this->setStarfield (new Starfield (mSceneMgr));
+			this->setStarfield (new Starfield (mSceneMgr, mCaelumRootNode));
 		} catch (const Ogre::Exception& ex) {}
     }
     if (componentsToCreate & CAELUM_COMPONENT_CLOUDS) {
     	try {
-			this->setClouds (new LayeredClouds (mSceneMgr));
+			this->setClouds (new LayeredClouds (mSceneMgr, mCaelumRootNode));
 		} catch (const Ogre::Exception& ex) {}
     }
     if (componentsToCreate & CAELUM_COMPONENT_GROUND_FOG) {
     	try {
-			this->setGroundFog (new GroundFog (mSceneMgr));
+			this->setGroundFog (new GroundFog (mSceneMgr, mCaelumRootNode));
 		} catch (const Ogre::Exception& ex) {}
     }
 
@@ -141,6 +142,10 @@ void CaelumSystem::shutdown (const bool cleanup) {
 		LOG ("Destroyed Caelum resource group");
 	}
 
+	static_cast<Ogre::SceneNode*>(mCaelumRootNode->getParent())->
+		removeAndDestroyChild(mCaelumRootNode->getName());
+	mCaelumRootNode = 0;
+
     if (cleanup) {
 		delete this;
     } else {
@@ -159,6 +164,9 @@ void CaelumSystem::removeListener (CaelumListener *listener) {
 void CaelumSystem::preViewportUpdate (const Ogre::RenderTargetViewportEvent &e) {
 	Ogre::Camera *cam = e.source->getCamera ();
 	
+	// Move root node.
+	mCaelumRootNode->setPosition(cam->getRealPosition());
+
 	if (getSkyDome ()) {
 		getSkyDome ()->notifyCameraChanged (cam);
 	}

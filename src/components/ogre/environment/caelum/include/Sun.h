@@ -28,7 +28,7 @@ namespace caelum {
 
 /** Class representing the sun.
 	It calculates the sun light direction, position, colour...
-	@author Jesús Alonso Abad
+	@author Jesï¿½s Alonso Abad
  */
 class DllExport Sun : public CameraBoundElement {
 // Attributes -----------------------------------------------------------------
@@ -83,7 +83,9 @@ class DllExport Sun : public CameraBoundElement {
 		/** Constructor.
 			@param sceneMgr The scene manager where the lights will be created.
 		 */
-		Sun (Ogre::SceneManager *sceneMgr);
+		Sun (Ogre::SceneManager *sceneMgr,
+			Ogre::SceneNode *caelumRootNode,
+			const Ogre::String &meshName = "sphere.mesh");
 
 		/** Destructor.
 			@note If a sun position model is in use, it will be deleted.
