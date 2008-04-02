@@ -124,11 +124,6 @@ void ServerWidget::buildWidget()
 
 	CEGUI::Window* nameBox = getWindow("LoginPanel/NameEdit");
 	CEGUI::Window* passwordBox = getWindow("LoginPanel/PasswordEdit");
-	/*std::string savedUser = "";
-	std::string savedPass = "";
-	if (fetchCredentials(savedUser,savedPass) ) {
-		nameBox->setText(savedUser);
-	}*/
 	
 	BIND_CEGUI_EVENT(nameBox, CEGUI::Window::EventTextChanged, ServerWidget::nameBox_TextChanged);
 	BIND_CEGUI_EVENT(passwordBox, CEGUI::Window::EventTextChanged, ServerWidget::passwordBox_TextChanged);
