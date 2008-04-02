@@ -51,6 +51,11 @@
 					<Property Name='MaskText' Value='True'/>
 					<Property Name='InheritsAlpha' Value='True'/>
 				</Window>
+				<Window Type='EmberLook/Checkbox' Name='LoginPanel/SavePassCheck'>
+					<Property Name='UnifiedPosition' Value='{{0.000000,30.000000},{0.000000,150.000000}}'/>
+					<Property Name='UnifiedSize' Value='{{0.000000,250.000000},{0.000000,20.000000}}'/>
+					<Property Name='Text' Value='Save Server Credentials'/>
+				</Window>
 				<Window Type='EmberLook/StaticText' Name='LoginPanel/HelpText'>
 					<Property Name='UnifiedSize' Value='{{0.000000,300.000000},{0.000000,150.000000}}'/>
 					<Property Name='UnifiedPosition' Value='{{0.000000,30.000000},{0.000000,200.000000}}'/>
@@ -63,14 +68,14 @@
 				</Window>
 				<Window Type='EmberLook/Button' Name='LoginPanel/Login'>
 					<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,20.000000}}'/>
-					<Property Name='UnifiedPosition' Value='{{0.000000,30.000000},{0.000000,160.000000}}'/>
+					<Property Name='UnifiedPosition' Value='{{0.000000,30.000000},{0.000000,170.000000}}'/>
 					<Property Name='Text' Value='Login'/>
 					<Property Name='InheritsAlpha' Value='True'/>
 					<Property Name='Tooltip' Value='Login with an already existing account.'/>
 				</Window>
 				<Window Type='EmberLook/Button' Name='LoginPanel/CreateAcc'>
 					<Property Name='UnifiedSize' Value='{{0.000000,100.000000},{0.000000,20.000000}}'/>
-					<Property Name='UnifiedPosition' Value='{{0.000000,140.000000},{0.000000,160.000000}}'/>
+					<Property Name='UnifiedPosition' Value='{{0.000000,140.000000},{0.000000,170.000000}}'/>
 					<Property Name='Text' Value='Create'/>
 					<Property Name='InheritsAlpha' Value='True'/>
 					<Property Name='Tooltip' Value='Create a new account on the server.'/>

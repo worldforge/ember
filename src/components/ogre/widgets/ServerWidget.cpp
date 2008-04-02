@@ -27,12 +27,15 @@
 #include "ServerWidget.h"
 
 #include "services/server/ServerService.h"
+#include "services/config/ConfigService.h"
 #include <Eris/Metaserver.h>
 #include <Eris/ServerInfo.h>
 #include <Eris/Connection.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/TypeService.h>
 #include "services/EmberServices.h"
+#include <varconf/varconf.h>
+#include <fstream>
 
 #include "ColouredListItem.h"
 #include "../GUIManager.h"
@@ -45,6 +48,7 @@
 #include <elements/CEGUIEditbox.h> 
 #include <elements/CEGUIMultiLineEditbox.h>
 #include <elements/CEGUIRadioButton.h>
+#include <elements/CEGUICheckbox.h>
 #include <elements/CEGUIComboDropList.h> 
 #include <elements/CEGUICombobox.h> 
 #include <elements/CEGUITabControl.h> 
@@ -120,11 +124,17 @@ void ServerWidget::buildWidget()
 
 	CEGUI::Window* nameBox = getWindow("LoginPanel/NameEdit");
 	CEGUI::Window* passwordBox = getWindow("LoginPanel/PasswordEdit");
+	/*std::string savedUser = "";
+	std::string savedPass = "";
+	if (fetchCredentials(savedUser,savedPass) ) {
+		nameBox->setText(savedUser);
+	}*/
+	
 	BIND_CEGUI_EVENT(nameBox, CEGUI::Window::EventTextChanged, ServerWidget::nameBox_TextChanged);
 	BIND_CEGUI_EVENT(passwordBox, CEGUI::Window::EventTextChanged, ServerWidget::passwordBox_TextChanged);
 	
 		
-	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &ServerWidget::connection_GotConnection));
+	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &ServerWidget::connection_GotConnection));	
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotAccount.connect(sigc::mem_fun(*this, &ServerWidget::createdAccount));
 	Ember::EmberServices::getSingletonPtr()->getServerService()->LoginSuccess.connect(sigc::mem_fun(*this, &ServerWidget::loginSuccess));
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotAvatar.connect(sigc::mem_fun(*this, &ServerWidget::gotAvatar));
@@ -133,6 +143,7 @@ void ServerWidget::buildWidget()
 	
 	addTabbableWindow(getWindow("LoginPanel/NameEdit"));
 	addTabbableWindow(getWindow("LoginPanel/PasswordEdit"));
+	
 	addEnterButton(login);
 /*	addTabbableWindow(login);
 	addTabbableWindow(createAcc);*/
@@ -161,7 +172,7 @@ void ServerWidget::connection_GotServerInfo()
 void ServerWidget::connection_GotConnection(Eris::Connection* connection)
 {
 	connection->GotServerInfo.connect(sigc::mem_fun(*this, &ServerWidget::connection_GotServerInfo));
-	connection->refreshServerInfo();
+	connection->refreshServerInfo();	
 }
 
 
@@ -188,10 +199,168 @@ void ServerWidget::showServerInfo()
 		ss << "Uptime: " << static_cast<int>(sInfo.getUptime() / (60*60*24)) << " days\n";
 		ss << "Number of clients: " << sInfo.getNumClients() << "\n";
 		info->setText(ss.str());
+		
+		/*
+		 * Since we're using the server getHostname as a section name
+		 * we must wait until there is a connection before we can fetch
+		 * the credentials
+		 */
+		CEGUI::Window* nameBox = getWindow("LoginPanel/NameEdit");
+		CEGUI::Window* passwordBox = getWindow("LoginPanel/PasswordEdit");
+		std::string savedUser = "";
+		std::string savedPass = "";
+		if (fetchCredentials(savedUser,savedPass) ) {
+			nameBox->setText(savedUser);
+			passwordBox->setText(savedPass);
+		}
+		
 	} catch (...) {
 		S_LOG_WARNING("Error when getting the server info window.");
 		return;
 	}
+}
+
+bool ServerWidget::fetchCredentials(std::string& user, std::string& pass)
+{
+	S_LOG_VERBOSE("Enter [ServerWidget::fetchCredentials]");
+
+	// check the main account is good, and fetch server info	
+	assert(mAccount);
+	Eris::ServerInfo sInfo;
+	mAccount->getConnection()->getServerInfo(sInfo);
+	std::string sname = sInfo.getHostname();
+	std::string cacheFile;
+	std::string homeDir = Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory();
+	
+	// fetch the configuration file                                                 
+	if (Ember::EmberServices::getSingleton().getConfigService()->hasItem("general","serverauthenticationcache"))
+	{
+		cacheFile = homeDir + "/" + (std::string)Ember::EmberServices::getSingleton().getConfigService()->getValue("general","serverauthenticationcache");
+		S_LOG_VERBOSE("Server Cache File [ " << cacheFile << " ]");
+	} 
+	else 
+	{
+		// default fallback value
+		cacheFile = homeDir + "/.servercache";
+		S_LOG_VERBOSE("Default Server Cache [ " << cacheFile << "]. Config general:serverauthenticationcache is not present. ");
+	}
+	
+	std::string psection = sname.c_str();
+	std::ifstream file ( cacheFile.c_str() );
+	 
+	// create an empty config
+	varconf::Config* serverCache = new varconf::Config();
+	 
+	// If an existing cachefile is present, then read it in.
+	if(! file.fail()) {
+		// read in file
+		serverCache->readFromFile(cacheFile.c_str(),varconf::GLOBAL);
+		S_LOG_VERBOSE ( "Loading existing server cache [ " << cacheFile << " ]");
+		try 
+		{
+			 // make sure it is well formed
+			 serverCache->parseStream ( file, varconf::GLOBAL );
+		}
+		catch ( varconf::ParseError p )
+		{
+			 std::string p_str ( p );
+			 S_LOG_FAILURE ( "Error loading server cache file: " << p_str );
+			 return false;
+		}
+		file.close();
+		
+		S_LOG_VERBOSE("psection pre-clean [ " << psection << " ]");
+		serverCache->clean(psection);
+		S_LOG_VERBOSE("psection post-clean [ " << psection << " ]");
+		if ( serverCache->findSection(psection) ) {
+			// we have a file, it's loaded, and we have a section that matches the server
+			user = (std::string)serverCache->getItem(psection,"username");
+			pass = (std::string)serverCache->getItem(psection,"password");
+			if ( !user.empty() && !pass.empty() ) {
+				S_LOG_VERBOSE("Fetched Credentials for server [" << psection << "]" << " and user [" << user << "]");
+				return true;
+			}
+			S_LOG_VERBOSE("username or password was empty");
+			return false;
+		}
+		S_LOG_VERBOSE("Did not find section [ " << psection << " ]");
+	 } 
+
+	 user = "";
+	 pass = "";
+	 S_LOG_VERBOSE("Exit [ServerWidget::fetchCredentials]");
+	 return false;
+}
+
+bool ServerWidget::saveCredentials()
+{
+	S_LOG_VERBOSE("Enter [ServerWidget::saveCredentials]");
+
+	// check the main account is good, and fetch server info	
+	assert(mAccount);
+	Eris::ServerInfo sInfo;
+	mAccount->getConnection()->getServerInfo(sInfo);
+			
+	// pull widget references
+	CEGUI::Window* nameBox = getWindow("LoginPanel/NameEdit");
+	CEGUI::Window* passwordBox = getWindow("LoginPanel/PasswordEdit");
+	CEGUI::Checkbox* saveBox = static_cast<CEGUI::Checkbox*>(getWindow("LoginPanel/SavePassCheck"));
+	
+	// fetch info from widgets
+	CEGUI::String name = nameBox->getText();
+	CEGUI::String password = passwordBox->getText();
+	std::string sname = sInfo.getHostname();
+	std::string homeDir = Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory();
+	std::string cacheFile;
+	if (Ember::EmberServices::getSingleton().getConfigService()->hasItem("general","serverauthenticationcache"))
+	{
+		cacheFile = homeDir + "/" + (std::string)Ember::EmberServices::getSingleton().getConfigService()->getValue("general","serverauthenticationcache");
+		S_LOG_VERBOSE("Server Cache File [ " << cacheFile << " ]");
+	} 
+	else 
+	{
+		// default fallback value
+		cacheFile = homeDir + "/.servercache";
+		S_LOG_VERBOSE("Default Server Cache [ " << cacheFile << "]. Config general:serverauthenticationcache is not present. ");
+	}
+
+	/*
+	  * Create a structure that looks like:
+	  * [server]
+	  * 
+	  * username=<user>
+	  * password=<pass>
+	 */
+	 std::string psection = sname.c_str();
+	 std::ifstream file ( cacheFile.c_str() );
+	 
+	 // create an empty config
+	 varconf::Config* serverCache = new varconf::Config();
+	 
+	 // If an existing cachefile is present, then read it in.
+	 if(! file.fail()) {
+		 // read in file
+		 serverCache->readFromFile(cacheFile.c_str(),varconf::INSTANCE);
+		 S_LOG_VERBOSE ( "Loading existing server cache [ " << cacheFile << " ]");
+		 try 
+		 {
+			 // make sure it is well formed
+			 serverCache->parseStream ( file, varconf::INSTANCE );
+		 }
+		 catch ( varconf::ParseError p )
+		 {
+			 std::string p_str ( p );
+			 S_LOG_FAILURE ( "Error loading server cache file: " << p_str );
+			 return false;
+		 }
+		 file.close();	 
+	  } 
+	 
+	  // rea
+	  serverCache->setItem ( psection, "username" , name.c_str() );
+	  serverCache->setItem ( psection, "password" , password.c_str() );
+	  serverCache->writeToFile ( cacheFile , varconf::INSTANCE );
+	  S_LOG_VERBOSE("Exit [ServerWidget::saveCredentials]");
 }
 
 void ServerWidget::loginSuccess(Eris::Account* account) 
@@ -200,6 +369,11 @@ void ServerWidget::loginSuccess(Eris::Account* account)
 	getWindow("CharacterTabControl")->setVisible(true);
 	account->refreshCharacterInfo();
 	fillAllowedCharacterTypes(account);
+	
+	CEGUI::Checkbox* saveBox = static_cast<CEGUI::Checkbox*>(getWindow("LoginPanel/SavePassCheck"));
+	if ( saveBox->isSelected() ) {
+		saveCredentials();
+	}
 	
 }
 
