@@ -53,6 +53,7 @@
 #include <elements/CEGUICombobox.h> 
 #include <elements/CEGUITabControl.h> 
 #include <elements/CEGUIGUISheet.h> 
+#include <CEGUIExceptions.h>
 
 #include "ModelRenderer.h"
 
@@ -204,7 +205,7 @@ void ServerWidget::showServerInfo()
 		CEGUI::Window* passwordBox = getWindow("LoginPanel/PasswordEdit");
 		std::string savedUser = "";
 		std::string savedPass = "";
-		if (fetchCredentials(savedUser,savedPass) ) {
+		if (fetchCredentials(savedUser, savedPass) ) {
 			nameBox->setText(savedUser);
 			passwordBox->setText(savedPass);
 		}
@@ -217,7 +218,7 @@ void ServerWidget::showServerInfo()
 
 bool ServerWidget::fetchCredentials(std::string& user, std::string& pass)
 {
-	S_LOG_VERBOSE("Enter [ServerWidget::fetchCredentials]");
+	S_LOG_VERBOSE("Fetching saved credentials.");
 
 	// check the main account is good, and fetch server info	
 	assert(mAccount);
@@ -241,37 +242,37 @@ bool ServerWidget::fetchCredentials(std::string& user, std::string& pass)
 	}
 	
 	std::string psection = sname.c_str();
-	std::ifstream file ( cacheFile.c_str() );
+	std::ifstream file(cacheFile.c_str());
 	 
 	// create an empty config
-	varconf::Config* serverCache = new varconf::Config();
+	varconf::Config serverCache;
 	 
 	// If an existing cachefile is present, then read it in.
-	if(! file.fail()) {
+	if(!file.fail()) {
 		// read in file
-		serverCache->readFromFile(cacheFile.c_str(),varconf::GLOBAL);
+// 		serverCache.readFromFile(cacheFile.c_str(),varconf::GLOBAL);
 		S_LOG_VERBOSE ( "Loading existing server cache [ " << cacheFile << " ]");
 		try 
 		{
 			 // make sure it is well formed
-			 serverCache->parseStream ( file, varconf::GLOBAL );
+			 serverCache.parseStream(file, varconf::GLOBAL);
 		}
-		catch ( varconf::ParseError p )
+		catch (varconf::ParseError p)
 		{
-			 std::string p_str ( p );
+			 std::string p_str(p);
 			 S_LOG_FAILURE ( "Error loading server cache file: " << p_str );
 			 return false;
 		}
 		file.close();
 		
 		S_LOG_VERBOSE("psection pre-clean [ " << psection << " ]");
-		serverCache->clean(psection);
+		serverCache.clean(psection);
 		S_LOG_VERBOSE("psection post-clean [ " << psection << " ]");
-		if ( serverCache->findSection(psection) ) {
+		if (serverCache.findSection(psection)) {
 			// we have a file, it's loaded, and we have a section that matches the server
-			user = (std::string)serverCache->getItem(psection,"username");
-			pass = (std::string)serverCache->getItem(psection,"password");
-			if ( !user.empty() && !pass.empty() ) {
+			user = static_cast<std::string>(serverCache.getItem(psection,"username"));
+			pass = static_cast<std::string>(serverCache.getItem(psection,"password"));
+			if (!user.empty() && !pass.empty()) {
 				S_LOG_VERBOSE("Fetched Credentials for server [" << psection << "]" << " and user [" << user << "]");
 				return true;
 			}
@@ -283,13 +284,12 @@ bool ServerWidget::fetchCredentials(std::string& user, std::string& pass)
 
 	 user = "";
 	 pass = "";
-	 S_LOG_VERBOSE("Exit [ServerWidget::fetchCredentials]");
 	 return false;
 }
 
 bool ServerWidget::saveCredentials()
 {
-	S_LOG_VERBOSE("Enter [ServerWidget::saveCredentials]");
+	S_LOG_VERBOSE("Saving credantials.");
 
 	// check the main account is good, and fetch server info	
 	assert(mAccount);
@@ -297,65 +297,75 @@ bool ServerWidget::saveCredentials()
 	mAccount->getConnection()->getServerInfo(sInfo);
 			
 	// pull widget references
-	CEGUI::Window* nameBox = getWindow("LoginPanel/NameEdit");
-	CEGUI::Window* passwordBox = getWindow("LoginPanel/PasswordEdit");
-	CEGUI::Checkbox* saveBox = static_cast<CEGUI::Checkbox*>(getWindow("LoginPanel/SavePassCheck"));
-	
-	// fetch info from widgets
-	CEGUI::String name = nameBox->getText();
-	CEGUI::String password = passwordBox->getText();
-	std::string sname = sInfo.getHostname();
-	std::string homeDir = Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory();
-	std::string cacheFile;
-	if (Ember::EmberServices::getSingleton().getConfigService()->hasItem("general","serverauthenticationcache"))
-	{
-		cacheFile = homeDir + "/" + (std::string)Ember::EmberServices::getSingleton().getConfigService()->getValue("general","serverauthenticationcache");
-		S_LOG_VERBOSE("Server Cache File [ " << cacheFile << " ]");
-	} 
-	else 
-	{
-		// default fallback value
-		cacheFile = homeDir + "/.servercache";
-		S_LOG_VERBOSE("Default Server Cache [ " << cacheFile << "]. Config general:serverauthenticationcache is not present. ");
+	CEGUI::Window* nameBox(0);
+	CEGUI::Window* passwordBox(0);
+	CEGUI::Checkbox* saveBox(0);
+	try {
+		nameBox = getWindow("LoginPanel/NameEdit");
+		passwordBox = getWindow("LoginPanel/PasswordEdit");
+		saveBox = static_cast<CEGUI::Checkbox*>(getWindow("LoginPanel/SavePassCheck"));
+	} catch (const CEGUI::Exception& ex) {
+		S_LOG_FAILURE("Error when getting windows from CEGUI: " << ex.getMessage().c_str());
+		return false;
 	}
-
-	/*
-	  * Create a structure that looks like:
-	  * [server]
-	  * 
-	  * username=<user>
-	  * password=<pass>
-	 */
-	 std::string psection = sname.c_str();
-	 std::ifstream file ( cacheFile.c_str() );
-	 
-	 // create an empty config
-	 varconf::Config* serverCache = new varconf::Config();
-	 
-	 // If an existing cachefile is present, then read it in.
-	 if(! file.fail()) {
-		 // read in file
-		 serverCache->readFromFile(cacheFile.c_str(),varconf::INSTANCE);
-		 S_LOG_VERBOSE ( "Loading existing server cache [ " << cacheFile << " ]");
-		 try 
-		 {
-			 // make sure it is well formed
-			 serverCache->parseStream ( file, varconf::INSTANCE );
-		 }
-		 catch ( varconf::ParseError p )
-		 {
-			 std::string p_str ( p );
-			 S_LOG_FAILURE ( "Error loading server cache file: " << p_str );
-			 return false;
-		 }
-		 file.close();	 
-	  } 
-	 
-	  // rea
-	  serverCache->setItem ( psection, "username" , name.c_str() );
-	  serverCache->setItem ( psection, "password" , password.c_str() );
-	  serverCache->writeToFile ( cacheFile , varconf::INSTANCE );
-	  S_LOG_VERBOSE("Exit [ServerWidget::saveCredentials]");
+	
+	if (nameBox && passwordBox && saveBox) {
+	
+		// fetch info from widgets
+		CEGUI::String name = nameBox->getText();
+		CEGUI::String password = passwordBox->getText();
+		std::string sname = sInfo.getHostname();
+		std::string homeDir = Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory();
+		std::string cacheFile;
+		if (Ember::EmberServices::getSingleton().getConfigService()->hasItem("general","serverauthenticationcache"))
+		{
+			cacheFile = homeDir + "/" + (std::string)Ember::EmberServices::getSingleton().getConfigService()->getValue("general","serverauthenticationcache");
+			S_LOG_VERBOSE("Server Cache File [ " << cacheFile << " ]");
+		} 
+		else 
+		{
+			// default fallback value
+			cacheFile = homeDir + "/.servercache";
+			S_LOG_VERBOSE("Default Server Cache [ " << cacheFile << "]. Config general:serverauthenticationcache is not present. ");
+		}
+	
+		/*
+		* Create a structure that looks like:
+		* [server]
+		* 
+		* username=<user>
+		* password=<pass>
+		*/
+		std::string psection = sname.c_str();
+		std::ifstream file(cacheFile.c_str());
+		
+		// create an empty config
+		varconf::Config serverCache;
+		
+		// If an existing cachefile is present, then read it in.
+		if(!file.fail()) {
+			// read in file
+// 			serverCache.readFromFile(cacheFile.c_str(),varconf::INSTANCE);
+			S_LOG_VERBOSE ( "Loading existing server cache [ " << cacheFile << " ]");
+			try 
+			{
+				// make sure it is well formed
+				serverCache.parseStream(file, varconf::INSTANCE );
+			}
+			catch (varconf::ParseError p)
+			{
+				std::string p_str(p);
+				S_LOG_FAILURE ( "Error loading server cache file: " << p_str );
+				return false;
+			}
+			file.close();	 
+		} 
+		
+		// rea
+		serverCache.setItem(psection, "username", name.c_str());
+		serverCache.setItem(psection, "password", password.c_str());
+		serverCache.writeToFile(cacheFile, varconf::INSTANCE);
+	}
 }
 
 void ServerWidget::loginSuccess(Eris::Account* account) 
@@ -367,7 +377,14 @@ void ServerWidget::loginSuccess(Eris::Account* account)
 	
 	CEGUI::Checkbox* saveBox = static_cast<CEGUI::Checkbox*>(getWindow("LoginPanel/SavePassCheck"));
 	if ( saveBox->isSelected() ) {
-		saveCredentials();
+		try {
+			saveCredentials();
+		} catch (const std::exception& ex)
+		{
+			S_LOG_FAILURE("Error when saving password: "<< ex.what());
+		} catch (...) {
+			S_LOG_FAILURE("Unspecified error when saving password.");
+		}
 	}
 	
 }
