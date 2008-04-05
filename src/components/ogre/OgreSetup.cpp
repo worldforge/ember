@@ -46,6 +46,8 @@
 
 extern "C" {
 #include <signal.h>    /* signal name macros, and the signal() prototype */
+
+sighandler_t oldSignals[_NSIG];
 }
 
 namespace EmberOgre {
@@ -146,7 +148,7 @@ extern "C" void shutdownHandler(int signal)
 {
 	std::cerr << "Crashed with signal " << signal << ", will try to shut down SDL gracefully. Please report bugs at https://bugs.launchpad.net/ember" << std::endl;
 	SDL_Quit();
-	exit(signal);
+	oldSignals[signal](signal);
 }
 
 
@@ -257,10 +259,10 @@ bool OgreSetup::configure(void)
 		
 		///this is a failsafe which guarantees that SDL is correctly shut down (returning the screen to correct resolution, releasing mouse etc.) if there's a crash.
  		atexit(SDL_Quit);
- 		signal(SIGSEGV, shutdownHandler);
- 		signal(SIGABRT, shutdownHandler);
- 		signal(SIGBUS, shutdownHandler);
- 		signal(SIGILL, shutdownHandler);
+ 		oldSignals[SIGSEGV] = signal(SIGSEGV, shutdownHandler);
+ 		oldSignals[SIGABRT] = signal(SIGABRT, shutdownHandler);
+ 		oldSignals[SIGBUS] = signal(SIGBUS, shutdownHandler);
+ 		oldSignals[SIGILL] = signal(SIGILL, shutdownHandler);
  		
 		
 		///set the window size
