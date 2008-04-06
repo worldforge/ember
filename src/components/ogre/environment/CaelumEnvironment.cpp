@@ -81,6 +81,7 @@ void CaelumEnvironment::createEnvironment()
 		setupCaelum( Ogre::Root::getSingletonPtr(), mSceneMgr, mWindow, mCamera);
 	} catch (const Ogre::Exception& ex) {
 		S_LOG_FAILURE("Could not load caelum. Message: " << ex.getFullDescription());
+		throw;
 	}
 	setupWater();
 	
