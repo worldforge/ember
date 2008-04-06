@@ -89,19 +89,13 @@ CaelumSystem::CaelumSystem
 		this->setSun (new SpriteSun (mSceneMgr, mCaelumRootNode));
     }
     if (componentsToCreate & CAELUM_COMPONENT_STARFIELD) {
-    	try {
 		this->setStarfield (new Starfield (mSceneMgr, mCaelumRootNode));
-		} catch (const Ogre::Exception& ex) {}
     }
     if (componentsToCreate & CAELUM_COMPONENT_CLOUDS) {
-    	try {
 		this->setClouds (new LayeredClouds (mSceneMgr, mCaelumRootNode));
-		} catch (const Ogre::Exception& ex) {}
     }
     if (componentsToCreate & CAELUM_COMPONENT_GROUND_FOG) {
-    	try {
 		this->setGroundFog (new GroundFog (mSceneMgr, mCaelumRootNode));
-		} catch (const Ogre::Exception& ex) {}
     }
 
 	LOG ("DONE");
