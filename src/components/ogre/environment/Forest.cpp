@@ -68,21 +68,23 @@ void Forest::initialize()
 {
 	S_LOG_INFO("Initializing forest.");
 	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainInfo().getWorldSizeInIndices();
-	Ogre::Camera* camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
+	if (worldSize.upperBound(0) - worldSize.lowerBound(0) > 0 && worldSize.upperBound(1) - worldSize.lowerBound(1) > 0) {
+		Ogre::Camera* camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
+		
+		mTrees = new PagedGeometry::PagedGeometry();
+		mTrees->setCamera(camera);	//Set the camera so PagedGeometry knows how to calculate LODs
+		mTrees->setPageSize(64);	//Set the size of each page of geometry
+		mTrees->setBounds(Atlas2Ogre(worldSize));
+	// 	mTrees->addDetailLevel<PagedGeometry::BatchPage>(150, 50);		//Use batches up to 150 units away, and fade for 30 more units
+	//  mTrees->addDetailLevel<PagedGeometry::DummyPage>(100, 0);		//Use batches up to 150 units away, and fade for 30 more units 	
+		mTrees->addDetailLevel<PagedGeometry::PassiveEntityPage>(150, 0);		//Use standard entities up to 150 units away, and don't fade since the PassiveEntityPage doesn't support this (yet)
+		mTrees->addDetailLevel<PagedGeometry::ImpostorPage>(500, 50);	//Use impostors up to 400 units, and for for 50 more units
 	
-	mTrees = new PagedGeometry::PagedGeometry();
-	mTrees->setCamera(camera);	//Set the camera so PagedGeometry knows how to calculate LODs
-	mTrees->setPageSize(64);	//Set the size of each page of geometry
-	mTrees->setBounds(Atlas2Ogre(worldSize));
-// 	mTrees->addDetailLevel<PagedGeometry::BatchPage>(150, 50);		//Use batches up to 150 units away, and fade for 30 more units
-//  mTrees->addDetailLevel<PagedGeometry::DummyPage>(100, 0);		//Use batches up to 150 units away, and fade for 30 more units 	
-	mTrees->addDetailLevel<PagedGeometry::PassiveEntityPage>(150, 0);		//Use standard entities up to 150 units away, and don't fade since the PassiveEntityPage doesn't support this (yet)
-	mTrees->addDetailLevel<PagedGeometry::ImpostorPage>(500, 50);	//Use impostors up to 400 units, and for for 50 more units
-
-	//Create a new TreeLoader2D object
-	mEntityLoader = new EmberEntityLoader(mTrees, 64);
-// 	mTreeLoader = new PagedGeometry::TreeLoader3D(mTrees, Atlas2Ogre(worldSize));
-	mTrees->setPageLoader(mEntityLoader);	//Assign the "treeLoader" to be used to load geometry for the PagedGeometry instance	
+		//Create a new TreeLoader2D object
+		mEntityLoader = new EmberEntityLoader(mTrees, 64);
+	// 	mTreeLoader = new PagedGeometry::TreeLoader3D(mTrees, Atlas2Ogre(worldSize));
+		mTrees->setPageLoader(mEntityLoader);	//Assign the "treeLoader" to be used to load geometry for the PagedGeometry instance	
+	}
 }
 
 void Forest::addTree(Ogre::Entity *entity, const Ogre::Vector3 &position, Ogre::Degree yaw, Ogre::Real scale)

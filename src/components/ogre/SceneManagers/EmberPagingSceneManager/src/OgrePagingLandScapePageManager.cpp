@@ -262,8 +262,10 @@ namespace Ogre
 		// update the camera page position
         // does modify mIniX, mFinX, mIniZ, mFinZ
 
-		PagingLandScapePage *p = getPage (i, j);
-		makePageLoadedNow (p);
+		PagingLandScapePage *p = getPage (i, j, false);
+		if (p) {
+			makePageLoadedNow (p);
+		}
 	}
 	//-----------------------------------------------------------------------
 	void PagingLandScapePageManager::makePageLoadedNow(PagingLandScapePage * p)
