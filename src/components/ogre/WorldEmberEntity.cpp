@@ -38,6 +38,7 @@
 #include "environment/Foliage.h"
 #include "environment/Environment.h"
 #include "environment/CaelumEnvironment.h"
+#include "environment/SimpleEnvironment.h"
 #include "EmberOgre.h"
 #include "Avatar.h"
 #include "AvatarCamera.h"
@@ -83,7 +84,7 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 	///set the position to always 0, 0, 0
 	mOgreNode->setPosition(Ogre::Vector3(0, 0, 0));
 	
-	mEnvironment = new Environment::Environment(new Environment::CaelumEnvironment( EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), EmberOgre::getSingleton().getMainCamera()->getCamera()));
+	mEnvironment = new Environment::Environment(new Environment::CaelumEnvironment( EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), EmberOgre::getSingleton().getMainCamera()->getCamera()), new Environment::SimpleEnvironment(EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), EmberOgre::getSingleton().getMainCamera()->getCamera()));
 	EventEnvironmentCreated.emit();
 	
 	///we will wait with creating the terrain and initialing the environment until we've got a onVisibilityChanged call, since the Eris::Calendar functionality depends on the world entity object to be fully constructed and initialized to work. By waiting until onVisibilityChanged is called we guarantee that the Calendar will get the correct server time
