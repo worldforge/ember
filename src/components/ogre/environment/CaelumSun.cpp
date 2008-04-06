@@ -38,7 +38,7 @@ namespace EmberOgre {
 
 namespace Environment {
 
-CaelumSun::CaelumSun(CaelumEnvironment& environment, caelum::Sun* sun)
+CaelumSun::CaelumSun(CaelumEnvironment& environment, caelum::BaseSun* sun)
 : CaelumEnvironmentComponent( environment), mSun(sun) 
 {
 	sun->setAmbientMultiplier (Ogre::ColourValue(0.7, 0.7, 0.7));
