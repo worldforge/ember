@@ -24,7 +24,6 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 #include "CaelumPrerequisites.h"
 
 #include "CaelumExceptions.h"
-#include "CaelumListener.h"
 #include "CaelumSystem.h"
 #include "CameraBoundElement.h"
 #include "GeometryFactory.h"

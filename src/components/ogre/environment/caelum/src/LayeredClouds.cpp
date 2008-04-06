@@ -55,6 +55,8 @@ namespace caelum
 					false, 1, 1, 1, Ogre::Vector3::UNIT_Z);
 		}
 
+		mSceneMgr->getRenderQueue()->getQueueGroup(CAELUM_RENDER_QUEUE_CLOUDS)->setShadowsEnabled(false);
+
 		// Create cloud plane entity.
 		mEntity = mSceneMgr->createEntity(entityName, meshName);
         mEntity->setMaterialName(materialName);

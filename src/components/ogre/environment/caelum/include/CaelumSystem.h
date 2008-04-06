@@ -24,7 +24,6 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 #include "CaelumPrerequisites.h"
 
 #include "UniversalClock.h"
-#include "CaelumListener.h"
 #include "SkyColourModel.h"
 #include "SkyDome.h"
 #include "Starfield.h"
@@ -82,10 +81,6 @@ class DllExport CaelumSystem : public Ogre::FrameListener, public Ogre::RenderTa
 		 */
 		bool mManageResourceGroup;
 
-		/** List of listeners registered.
-		 */
-		std::set<CaelumListener *> mListeners;
-
 		/// Reference to the universal clock.
 		UniversalClock *mUniversalClock;
 
@@ -111,7 +106,7 @@ class DllExport CaelumSystem : public Ogre::FrameListener, public Ogre::RenderTa
         std::auto_ptr<SolarSystemModel> mSolarSystemModel;
         
 		/// Reference to the sun, if enabled.
-        std::auto_ptr<Sun> mSun;
+        std::auto_ptr<BaseSun> mSun;
 
 		/// Reference to the starfield, if enabled.
         std::auto_ptr<Starfield> mStarfield;
@@ -181,31 +176,16 @@ class DllExport CaelumSystem : public Ogre::FrameListener, public Ogre::RenderTa
 		~CaelumSystem ();
 
 		/** Shuts down the system and detaches itself from the Ogre engine.
-			@param cleanup True if we want the shutdown to also delete the system. It's dangerous if 
-				it's intended to be rendered another frame later on, and thus turned off by default.
-			@remarks The model used in this system <b>won't be deleted here</b>.
-			This is the shutdown function to be called, and not the destructor itself.
+         *
+         *  shutdown(true) is equivalent to deleting CaelumSystem yourself.
+         *  shutdown(false) delays destruction to the next time caelum is called as
+         *  a frame listener. This makes it safe to shutdown Caelum from inside
+         *  another frame listener.
+         *
+         *  @param cleanup If this is true then detach and destroy the CaelumSystem instantly.
 		 */
-		void shutdown (const bool cleanup = false);
+		void shutdown (bool cleanup);
 		
-		/** Registers a listener in the system.
-			This listener will be called each frame, before and after Caelum does its work.
-			@param listener The listener to register.
-		 */
-		void addListener (CaelumListener *listener);
-
-		/** Unregisters a listener in the system.
-			@note The listener must be destroyed out of Caelum.
-			@param listener The listener to be removed.
-		 */
-		void removeListener (CaelumListener *listener);
-
-		/** Event trigger called just before rendering a viewport in a render target Caelum is attached to.
-			Useful to make objects follow every camera that renders a viewport in a certain render target.
-			@param e The viewport event, containing the viewport (and camera) to be rendered right now.
-		 */
-		void preViewportUpdate (const Ogre::RenderTargetViewportEvent &e);
-
 		/** Gets the universal clock.
 		 * @return A reference to the universal clock attached to this system.
 		 */
@@ -215,10 +195,11 @@ class DllExport CaelumSystem : public Ogre::FrameListener, public Ogre::RenderTa
 		 */
         Ogre::SceneNode* getRootNode(void) const { return mCaelumRootNode; }
 
-		/** Updates the system.
-			@param e The frame event (contains the elapsed time since the last update).
-		 */
-		bool frameStarted (const Ogre::FrameEvent &e);
+        /** Update the whole system manually. You have to call this if you don't
+         *  register CaelumSystem as an ogre frame listener.
+         *  @param timeSinceLastFrame: Time passed since last frame.
+         */
+        void updateSubcomponents (double timeSinceLastFrame);
 
 		/** Set the skydome.
          *  @param dome A new dome or null to disable.
@@ -236,14 +217,14 @@ class DllExport CaelumSystem : public Ogre::FrameListener, public Ogre::RenderTa
 		/** Set the sun.
          *  @param sun A new sun or null to disable.
 		 */
-        inline void setSun (Sun* sun) {
+        inline void setSun (BaseSun* sun) {
             mSun.reset(sun);
         }
 
 		/** Gets the current sun.
 			@return The sun in use.
 		 */
-        Sun* getSun () const {
+        BaseSun* getSun () const {
             return mSun.get();
         }
 
@@ -366,20 +347,23 @@ class DllExport CaelumSystem : public Ogre::FrameListener, public Ogre::RenderTa
          */
         double getGlobalFogDensityMultiplier () const;
 
-	private:
-		/** Fires the start event to all the registered listeners.
-			@param e The Ogre FrameEvent object passed this frame.
-			@return True if all the listeners returned true.
+    protected:
+		/** Handle FrameListener::frameStarted to call updateSubcomponents every frame.
+         *  If you don't register CaelumSystem as a an ogre frame listener you have to
+         *  call updateSubcomponents yourself.
 		 */
-		bool fireStartedEvent (const Ogre::FrameEvent &e);
+		virtual bool frameStarted (const Ogre::FrameEvent &e);
 
-		/** Fires the finish event to all the registered listeners.
-			@param e The Ogre FrameEvent object passed this frame.
-			@return True if all the listeners returned true.
+		/** Event trigger called just before rendering a viewport in a render target Caelum is attached to.
+			Useful to make objects follow every camera that renders a viewport in a certain render target.
+			@param e The viewport event, containing the viewport (and camera) to be rendered right now.
 		 */
-		bool fireFinishedEvent (const Ogre::FrameEvent &e);
+		virtual void preViewportUpdate (const Ogre::RenderTargetViewportEvent &e);
+
+    private:
+        /// Free all subcomponents, but not CaelumSystem itself. Can be called multiple times.
+        void destroySubcomponents();
 };
-
 } // namespace caelum
 
 #endif //CAELUMSYSTEM_H

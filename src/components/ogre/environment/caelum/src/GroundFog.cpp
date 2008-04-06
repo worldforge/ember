@@ -32,6 +32,8 @@ namespace caelum {
 			const Ogre::String &domeEntityName):
 			mScene(scene)
 	{
+		scene->getRenderQueue()->getQueueGroup(CAELUM_RENDER_QUEUE_GROUND_FOG)->setShadowsEnabled(false);
+		
 		// Create dome entity, using a prefab sphere.
         // The prefab sphere has a radius of 50 units.
         // If this changes in future version of ogre this might break.
@@ -180,7 +182,7 @@ namespace caelum {
 		// Send camera height to shader.
 		Ogre::GpuProgramParametersSharedPtr params = 
 			mDomeMaterial->getBestTechnique()->getPass(0)->getFragmentProgramParameters();
-		params->setNamedConstant("cameraHeight", cam->getDerivedPosition().dotProduct(mDomeNode->getWorldOrientation() * Ogre::Vector3::UNIT_Y));
+		params->setNamedConstant("cameraHeight", cam->getDerivedPosition().dotProduct(mDomeNode->_getDerivedOrientation() * Ogre::Vector3::UNIT_Y));
     }
 
     void GroundFog::setFarRadius (Ogre::Real radius)

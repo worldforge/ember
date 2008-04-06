@@ -67,7 +67,7 @@ class DllExport Starfield : public CameraBoundElement {
 		virtual ~Starfield ();
 
 		/** Sets the starfield inclination. This inclination is the angle between the starfield rotation axis and the horizon plane.
-			@param inc The starfield inclination in degrees.
+			@param inc The starfield inclination in degrees. It`s equal to observer latitude taken with opposite sign.
 		 */
 		void setInclination (Ogre::Degree inc);
 

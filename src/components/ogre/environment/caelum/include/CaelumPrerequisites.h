@@ -39,6 +39,8 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 			#define DllExport __declspec (dllimport)
 		#endif
 	#endif
+#elif OGRE_PLATFORM == OGRE_PLATFORM_APPLE
+	#define DllExport __attribute__ ((visibility("default")))
 #else
 	#define DllExport
 #endif

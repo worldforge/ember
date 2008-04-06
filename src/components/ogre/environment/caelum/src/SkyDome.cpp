@@ -31,6 +31,8 @@ const Ogre::String SkyDome::SKY_DOME_MATERIAL_NAME = "CaelumSkyDomeMaterial";
 SkyDome::SkyDome (Ogre::SceneManager *sceneMgr, Ogre::SceneNode *caelumRootNode) {
 	createSkyDomeMaterial ();
 
+	sceneMgr->getRenderQueue()->getQueueGroup(CAELUM_RENDER_QUEUE_SKYDOME)->setShadowsEnabled(false);
+
 	GeometryFactory::generateSphericDome (SPHERIC_DOME_NAME, 32);
 	Ogre::Entity *ent = sceneMgr->createEntity ("Dome", SPHERIC_DOME_NAME);
 	ent->setMaterialName (SKY_DOME_MATERIAL_NAME);
@@ -180,6 +182,18 @@ void SkyDome::createSkyDomeMaterial () {
 		pass->setLightingEnabled (false);
 		pass->setFog (true);
 
+        // Bind fragment program.
+        mHazeEnabled = true;
+        pass->setFragmentProgram ("CaelumSkyDomeFP");
+        Ogre::GpuProgramParametersSharedPtr fpParams = pass->getFragmentProgramParameters();
+        fpParams->setIgnoreMissingParams(true);
+
+        // Bind vertex program.
+        pass->setVertexProgram ("CaelumSkyDomeVP");
+        Ogre::GpuProgramParametersSharedPtr vpParams = pass->getVertexProgramParameters();
+        vpParams->setIgnoreMissingParams(true);
+		LOG ("\t\tPass [OK]");
+
         // Create first texture unit; gradients image.
 		pass->createTextureUnitState ();
         setSkyGradientsImage("EarthClearSky2.png");
@@ -188,57 +202,7 @@ void SkyDome::createSkyDomeMaterial () {
         // Create second texture unit; atmosphere depth image.
 		pass->createTextureUnitState ();
         setAtmosphereDepthImage("AtmosphereDepth.png");
-		LOG ("\t\tTextureUnit - Atmosphere depth [OK]");	
-			
-		// clone the current technique so we have something to fall back to if there's something wrong with the shaders
-		Ogre::Technique* fallbackTech = mMaterial->createTechnique();
-		*fallbackTech = *mMaterial->getTechnique(0);        
-        
-        // Create fragment programs(s)
-		if (Ogre::Root::getSingleton ().getRenderSystem ()->getCapabilities ()->hasCapability (Ogre::RSC_FRAGMENT_PROGRAM)) {
-			Ogre::HighLevelGpuProgramPtr fp;
-            
-            fp = Ogre::HighLevelGpuProgramManager::getSingleton().createProgram (
-                    "SkyDomeFP", RESOURCE_GROUP_NAME, "cg", Ogre::GPT_FRAGMENT_PROGRAM);
-			fp->setSourceFile ("CaelumSkyDome.cg");
-			fp->setParameter ("entry_point", "SkyDome_fp");
-            fp->setParameter("compile_arguments", "-DHAZE");
-			fp->setParameter ("profiles", "ps_2_0 arbfp1");
-
-			fp = Ogre::HighLevelGpuProgramManager::getSingleton().createProgram (
-                    "SkyDomeFP_NoHaze", RESOURCE_GROUP_NAME, "cg", Ogre::GPT_FRAGMENT_PROGRAM);
-			fp->setSourceFile ("CaelumSkyDome.cg");
-			fp->setParameter ("entry_point", "SkyDome_fp");
-            fp->setParameter ("compile_arguments", "");
-			fp->setParameter ("profiles", "ps_2_0 arbfp1");
-        }
-
-        // Bind fragment program.
-		if (Ogre::Root::getSingleton ().getRenderSystem ()->getCapabilities ()->hasCapability (Ogre::RSC_FRAGMENT_PROGRAM)) {
-            // Haze enabled by default.
-            mHazeEnabled = true;
-    		pass->setFragmentProgram ("SkyDomeFP");
-			Ogre::GpuProgramParametersSharedPtr parameters = pass->getFragmentProgramParameters();
-            parameters->setIgnoreMissingParams(true);
-			parameters->setNamedConstant ("offset", 0.0f);
-			parameters->setNamedAutoConstant ("hazeColour", Ogre::GpuProgramParameters::ACT_FOG_COLOUR);
-        } else {
-            mHazeEnabled = false;
-        }
-
-        // Bind vertex program.
-		if (Ogre::Root::getSingleton ().getRenderSystem ()->getCapabilities ()->hasCapability (Ogre::RSC_VERTEX_PROGRAM)) {
-			Ogre::HighLevelGpuProgramPtr vp = Ogre::HighLevelGpuProgramManager::getSingleton().createProgram ("SkyDomeVP", RESOURCE_GROUP_NAME, "cg", Ogre::GPT_VERTEX_PROGRAM);
-			vp->setSourceFile ("CaelumSkyDome.cg");
-			vp->setParameter ("entry_point", "SkyDome_vp");
-			vp->setParameter ("profiles", "vs_2_0 arbvp1");
-			pass->setVertexProgram ("SkyDomeVP");
-			Ogre::GpuProgramParametersSharedPtr parameters = pass->getVertexProgramParameters();
-            parameters->setIgnoreMissingParams(true);
-			parameters->setNamedAutoConstant ("worldViewProj", Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
-			parameters->setNamedConstant ("sunDirection", Ogre::Vector3 (1, 0, 0));
-		}
-		LOG ("\t\tPass [OK]");
+		LOG ("\t\tTextureUnit - Atmosphere depth [OK]");
 
 		mMaterial->load ();
 		LOG ("\tDONE");
@@ -252,21 +216,9 @@ void SkyDome::createSkyDomeMaterial () {
 
 void SkyDome::destroySkyDomeMaterial () {
 	LOG ("Removing sky dome materials...");
-	if ((Ogre::HighLevelGpuProgramManager::getSingletonPtr()->resourceExists("SkyDomeFP"))) {
-		Ogre::HighLevelGpuProgramManager::getSingletonPtr()->remove("SkyDomeFP");
-	}
-
-	if ((Ogre::HighLevelGpuProgramManager::getSingletonPtr()->resourceExists("SkyDomeFP_NoHaze"))) {
-		Ogre::HighLevelGpuProgramManager::getSingletonPtr()->remove("SkyDomeFP_NoHaze");
-	}
-
-	if ((Ogre::HighLevelGpuProgramManager::getSingletonPtr()->resourceExists("SkyDomeVP"))) {
-		Ogre::HighLevelGpuProgramManager::getSingletonPtr()->remove("SkyDomeVP");
-	}
-
-	if (!Ogre::MaterialManager::getSingleton ().resourceExists (SKY_DOME_MATERIAL_NAME)) {
+    if (mMaterial.unique()) {
 		Ogre::MaterialManager::getSingleton ().remove (SKY_DOME_MATERIAL_NAME);
-	}
+    }
 	mMaterial.setNull ();
 	LOG ("DONE");
 }
@@ -283,9 +235,9 @@ void SkyDome::setHazeEnabled (bool value) {
 
 	Ogre::Pass *pass = mMaterial->getTechnique (0)->getPass (0);
     if (value) {
-        pass->setFragmentProgram("SkyDomeFP");
+        pass->setFragmentProgram("CaelumSkyDomeFP");
     } else {
-        pass->setFragmentProgram("SkyDomeFP_NoHaze");
+        pass->setFragmentProgram("CaelumSkyDomeFP_NoHaze");
     }
     Ogre::GpuProgramParametersSharedPtr params = pass->getFragmentProgramParameters();
     params->setIgnoreMissingParams(true);

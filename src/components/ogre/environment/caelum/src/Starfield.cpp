@@ -34,6 +34,8 @@ Starfield::Starfield (Ogre::SceneManager *sceneMgr, Ogre::SceneNode *caelumRootN
 	createStarfieldMaterial ();
     setTexture (textureName);
 
+	sceneMgr->getRenderQueue()->getQueueGroup(CAELUM_RENDER_QUEUE_STARFIELD)->setShadowsEnabled(false);
+
 	GeometryFactory::generateSphericDome (STARFIELD_DOME_NAME, 32, GeometryFactory::DT_STARFIELD);
 	Ogre::Entity *ent = sceneMgr->createEntity ("StarfieldDome", STARFIELD_DOME_NAME);
 	ent->setMaterialName (STARFIELD_MATERIAL_NAME);

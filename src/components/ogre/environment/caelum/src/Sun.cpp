@@ -23,9 +23,11 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 
 namespace caelum {
 
-const Ogre::String Sun::SUN_MATERIAL_NAME = "CaelumSunMaterial";
+//========================================================================================================================
+// Base Sun
+//========================================================================================================================
 
-Sun::Sun (Ogre::SceneManager *sceneMgr, Ogre::SceneNode *caelumRootNode, const Ogre::String &meshName): mScene(sceneMgr) {
+BaseSun::BaseSun (Ogre::SceneManager *sceneMgr, Ogre::SceneNode *caelumRootNode): mScene(sceneMgr) {
 	mSunSphereColour = Ogre::ColourValue::White;
 	mSunLightColour = Ogre::ColourValue::White;
 
@@ -39,28 +41,16 @@ Sun::Sun (Ogre::SceneManager *sceneMgr, Ogre::SceneNode *caelumRootNode, const O
 	// HDR power scale, REALLY bright:
 	mMainLight->setPowerScale (10);
 
-	createSunMaterial ();
+	sceneMgr->getRenderQueue()->getQueueGroup(CAELUM_RENDER_QUEUE_SUN)->setShadowsEnabled(false);
 
-	mSunEntity = sceneMgr->createEntity ("CaelumSun", meshName);
-	mSunEntity->setMaterialName (SUN_MATERIAL_NAME);
-	mSunEntity->setCastShadows (false);
-	mSunEntity->setRenderQueueGroup (CAELUM_RENDER_QUEUE_SUN);
 	mSunNode = caelumRootNode->createChildSceneNode ();
-	mSunNode->attachObject (mSunEntity);
 }
 
-Sun::~Sun () {
+BaseSun::~BaseSun () {
 	if (mSunNode) {
-		mSunNode->detachObject (mSunEntity);
 		static_cast<Ogre::SceneNode *>(mSunNode->getParent ())->removeAndDestroyChild (mSunNode->getName ());
 		mSunNode = 0;
 	}
-	if (mSunEntity) {
-		mSunEntity->_getManager ()->destroyEntity (mSunEntity);
-		mSunEntity = 0;
-	}
-
-	destroySunMaterial ();
 
 	if (mMainLight) {
 		mMainLight->_getManager ()->destroyLight (mMainLight);
@@ -68,26 +58,12 @@ Sun::~Sun () {
 	}
 }
 
-void Sun::notifyCameraChanged (Ogre::Camera *cam) {
-    // This calls setFarRadius
-    CameraBoundElement::notifyCameraChanged(cam);
-
-    // Set sun position.
-    Ogre::Real sunRadius = -mRadius * Ogre::Math::Tan (Ogre::Degree (0.01));
-	mSunNode->setPosition(-mSunDirection * (mRadius + sunRadius));
-
-    // Set sun scaling.
-    float factor = 2 - mSunSphereColour.b / 3;
-    float scale = factor * (mRadius + sunRadius) * Ogre::Math::Tan (Ogre::Degree (0.01));
-    mSunNode->setScale (Ogre::Vector3::UNIT_SCALE * scale);
-}
-
-void Sun::setFarRadius (Ogre::Real radius) {
+void BaseSun::setFarRadius (Ogre::Real radius) {
     CameraBoundElement::setFarRadius(radius);
 	mRadius = radius;
 }
 
-void Sun::update (
+void BaseSun::update (
         const Ogre::Vector3& sunDirection,
         const Ogre::ColourValue &sunLightColour,
         const Ogre::ColourValue &sunSphereColour)
@@ -97,33 +73,34 @@ void Sun::update (
     setSunSphereColour(sunSphereColour);
 }
 
-Ogre::Vector3 Sun::getSunDirection () const {
+const Ogre::Vector3& BaseSun::getSunDirection () const {
 	return mSunDirection;
 }
 
-void Sun::setSunDirection (const Ogre::Vector3 &dir) {
+void BaseSun::setSunDirection (const Ogre::Vector3 &dir) {
 	mSunDirection = dir;
 	if (mMainLight != 0) {
-		mMainLight->setDirection (mSunNode->getWorldOrientation() * dir);
+		mMainLight->setDirection (mSunNode->_getDerivedOrientation() * dir);
 	}
 }
 
-void Sun::setSunSphereColour (const Ogre::ColourValue &colour) {
+void BaseSun::setSunSphereColour (const Ogre::ColourValue &colour) {
 	// Store this last colour
 	mSunSphereColour = colour;
-
-	// Set sun material colour.
-	mSunMaterial->setSelfIllumination (colour);
 }
 
-Ogre::ColourValue Sun::getSunSphereColour () {
+Ogre::ColourValue BaseSun::getSunSphereColour () const {
 	return mSunSphereColour;
 }
 
-void Sun::setSunLightColour (const Ogre::ColourValue &colour) {
+void BaseSun::setSunLightColour (const Ogre::ColourValue &colour) {
 	// Store this last colour
 	mSunLightColour = colour;
+	// Apply change
+	setMainLightColour(colour);
+}
 
+void BaseSun::setMainLightColour (const Ogre::ColourValue &colour) {
 	// Set light colours.
 	mMainLight->setDiffuseColour (colour * mDiffuseMultiplier);
 	mMainLight->setSpecularColour (colour * mSpecularMultiplier);
@@ -132,79 +109,162 @@ void Sun::setSunLightColour (const Ogre::ColourValue &colour) {
 	}
 }
 
-Ogre::ColourValue Sun::getSunLightColour () {
+Ogre::ColourValue BaseSun::getSunLightColour () const {
 	return mSunLightColour;
 }
 
-void Sun::setDiffuseMultiplier (const Ogre::ColourValue &diffuse) {
+void BaseSun::setDiffuseMultiplier (const Ogre::ColourValue &diffuse) {
 	mDiffuseMultiplier = diffuse;
 }
 
-Ogre::ColourValue Sun::getDiffuseMultiplier () {
+Ogre::ColourValue BaseSun::getDiffuseMultiplier () const {
 	return mDiffuseMultiplier;
 }
 
-void Sun::setSpecularMultiplier (const Ogre::ColourValue &specular) {
+void BaseSun::setSpecularMultiplier (const Ogre::ColourValue &specular) {
 	mSpecularMultiplier = specular;
 }
 
-Ogre::ColourValue Sun::getSpecularMultiplier () {
+Ogre::ColourValue BaseSun::getSpecularMultiplier () const {
 	return mSpecularMultiplier;
 }
 
-void Sun::setAmbientMultiplier (const Ogre::ColourValue &ambient) {
+void BaseSun::setAmbientMultiplier (const Ogre::ColourValue &ambient) {
 	mAmbientMultiplier = ambient;
 }
 
-Ogre::ColourValue Sun::getAmbientMultiplier () {
+Ogre::ColourValue BaseSun::getAmbientMultiplier () const {
 	return mAmbientMultiplier;
 }
 
-void Sun::setManageAmbientLight (bool manage) {
+void BaseSun::setManageAmbientLight (bool manage) {
 	mManageAmbientLight = manage;
 }
 
-bool Sun::isManagingAmbientLight () {
+bool BaseSun::isManagingAmbientLight () const {
 	return mManageAmbientLight;
 }
 
-void Sun::createSunMaterial () {
-	Ogre::MaterialPtr mat;
-
-	LOG ("Generating sun material...");
-	if (!Ogre::MaterialManager::getSingleton ().resourceExists (SUN_MATERIAL_NAME)) {
-		LOG ("\tMaterial not found; creating...");
-		mat = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton ().create (SUN_MATERIAL_NAME, RESOURCE_GROUP_NAME));
-		mat->setReceiveShadows (false);
-		LOG ("\t\tMaterial [OK]");
-		Ogre::Pass *pass = mat->getTechnique (0)->getPass (0);
-        pass->setSceneBlending (Ogre::SBT_TRANSPARENT_COLOUR);
-		pass->setDepthCheckEnabled (false);
-		pass->setDepthWriteEnabled (false);
-//		pass->setLightingEnabled (false);
-		pass->setFog (true);
-		pass->setAmbient (Ogre::ColourValue::Black);
-		pass->setDiffuse (Ogre::ColourValue::Black);
-		pass->setSpecular (Ogre::ColourValue::Black);
-		LOG ("\t\tPass [OK]");
-		mat->load ();
-		LOG ("\tDONE");
-	}
-	else {
-		mat = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton ().getByName (SUN_MATERIAL_NAME));
-	}
-	LOG ("DONE");
-
-	mSunMaterial = mat;
+Ogre::Light* BaseSun::getMainLight() const {
+	return mMainLight;
 }
 
-void Sun::destroySunMaterial () {
-	LOG ("Removing sun material...");
-	if (Ogre::MaterialManager::getSingleton ().resourceExists (SUN_MATERIAL_NAME)) {
-		Ogre::MaterialManager::getSingleton ().remove (SUN_MATERIAL_NAME);
+//========================================================================================================================
+// Sphere Sun - deprecated, use Sprite Sun instead
+//========================================================================================================================
+
+const Ogre::String SphereSun::SUN_MATERIAL_NAME = "CaelumSphereSun";
+
+SphereSun::SphereSun (Ogre::SceneManager *sceneMgr, Ogre::SceneNode *caelumRootNode, const Ogre::String &meshName) : BaseSun(sceneMgr, caelumRootNode) {
+    mSunMaterial = Ogre::MaterialManager::getSingletonPtr()->getByName(SUN_MATERIAL_NAME);
+    mSunMaterial->load();
+	mSunEntity = sceneMgr->createEntity ("CaelumSun", meshName);
+	mSunEntity->setMaterialName (SUN_MATERIAL_NAME);
+	mSunEntity->setCastShadows (false);
+	mSunEntity->setRenderQueueGroup (CAELUM_RENDER_QUEUE_SUN);
+	mSunNode->attachObject (mSunEntity);
+}
+
+SphereSun::~SphereSun () {
+	if (mSunNode) {
+		mSunNode->detachObject (mSunEntity);
 	}
-	mSunMaterial.setNull ();
-	LOG ("DONE");
+	if (mSunEntity) {
+		mSunEntity->_getManager ()->destroyEntity (mSunEntity);
+		mSunEntity = 0;
+	}
+}
+
+void SphereSun::setSunSphereColour (const Ogre::ColourValue &colour) {
+	BaseSun::setSunSphereColour(colour);
+
+	// Set sun material colour.
+	mSunMaterial->setSelfIllumination (colour);
+}
+
+void SphereSun::notifyCameraChanged (Ogre::Camera *cam) {
+    // This calls setFarRadius
+    CameraBoundElement::notifyCameraChanged(cam);
+
+    // Set sun position.
+    Ogre::Real sunDistance = mRadius - mRadius * Ogre::Math::Tan (Ogre::Degree (0.01));
+	mSunNode->setPosition(-mSunDirection * sunDistance);
+
+    // Set sun scaling  in [1.6(6) ~ 2.0] range.
+    float factor = 2 - mSunSphereColour.b / 3;
+    float scale = factor * sunDistance * Ogre::Math::Tan (Ogre::Degree (0.01));
+    mSunNode->setScale (Ogre::Vector3::UNIT_SCALE * scale);
+}
+
+//========================================================================================================================
+// Sprite Sun
+//========================================================================================================================
+
+const Ogre::String SpriteSun::SUN_MATERIAL_NAME = "CaelumSpriteSun";
+
+SpriteSun::SpriteSun (	Ogre::SceneManager *sceneMgr,
+						Ogre::SceneNode *caelumRootNode, 
+						const Ogre::String &sunTextureName,
+						const Ogre::Degree& sunTextureAngularSize) 
+	: BaseSun(sceneMgr, caelumRootNode)
+	, mSunTextureAngularSize(sunTextureAngularSize)
+{
+    mSunMaterial = Ogre::MaterialManager::getSingletonPtr()->getByName(SUN_MATERIAL_NAME);
+    mSunMaterial->load();
+    assert(!mSunMaterial.isNull());
+    setSunTexture(sunTextureName);
+
+	mSunBillboardSet = sceneMgr->createBillboardSet("CaelumSpriteSun", 2);
+	mSunBillboardSet->setMaterialName (SUN_MATERIAL_NAME);
+	mSunBillboardSet->setCastShadows (false);
+	mSunBillboardSet->setRenderQueueGroup (CAELUM_RENDER_QUEUE_SUN);
+	mSunBillboardSet->setDefaultDimensions(1.0f, 1.0f);
+	mSunBillboardSet->createBillboard(Ogre::Vector3::ZERO);
+
+	mSunNode->attachObject (mSunBillboardSet);
+}
+
+SpriteSun::~SpriteSun () {
+	if (mSunNode) {
+		mSunNode->detachObject (mSunBillboardSet);
+	}
+	if (mSunBillboardSet) {
+		mSunBillboardSet->_getManager ()->destroyBillboardSet (mSunBillboardSet);
+		mSunBillboardSet = 0;
+	}
+}
+
+void SpriteSun::setSunSphereColour (const Ogre::ColourValue &colour) {
+	BaseSun::setSunSphereColour(colour);
+
+	// Set sun material colour.
+	mSunBillboardSet->getBillboard(0)->setColour(colour);
+}
+
+void SpriteSun::setSunTexture (const Ogre::String &textureName) {
+	// Update the sun material
+	assert(mSunMaterial->getBestTechnique ());
+	assert(mSunMaterial->getBestTechnique ()->getPass (0));
+	assert(mSunMaterial->getBestTechnique ()->getPass (0)->getTextureUnitState (0));
+	mSunMaterial->getBestTechnique ()->getPass (0)->getTextureUnitState (0)->setTextureName (textureName);
+}
+
+void SpriteSun::setSunTextureAngularSize(const Ogre::Degree& sunTextureAngularSize){
+	mSunTextureAngularSize = sunTextureAngularSize;
+}
+
+void SpriteSun::notifyCameraChanged (Ogre::Camera *cam) {
+    // This calls setFarRadius
+    BaseSun::notifyCameraChanged(cam);
+
+    // Set sun position.
+    Ogre::Real sunDistance = mRadius - mRadius * Ogre::Math::Tan(mSunTextureAngularSize);
+	mSunNode->setPosition(-mSunDirection * sunDistance);
+
+    // Set sun scaling in [1.0 ~ 1.2] range
+    float factor = 1.2f - mSunSphereColour.b * 0.2f;
+    float scale = factor * sunDistance * Ogre::Math::Tan(mSunTextureAngularSize);
+    mSunNode->setScale (Ogre::Vector3::UNIT_SCALE * scale);
 }
 
 } // namespace caelum
