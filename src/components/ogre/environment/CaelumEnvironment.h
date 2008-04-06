@@ -31,7 +31,7 @@ namespace caelum
 {
 	class CaelumSystem;
 	class SkyDome;
-	class Sun;
+	class BaseSun;
 }
 
 namespace EmberOgre {

@@ -69,7 +69,10 @@ CaelumEnvironment::~CaelumEnvironment()
 	delete mSky;
 	delete mSun;
 	delete mWater;
-	delete mCaelumSystem;
+	if (mCaelumSystem) {
+		mCaelumSystem->shutdown(true);
+// 		delete mCaelumSystem; //calling shutdown() will delete the instance, so no need to do it again
+	}
 }
 
 void CaelumEnvironment::createEnvironment()
@@ -165,7 +168,9 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 	Ogre::FrameEvent ev;
 	ev.timeSinceLastEvent = 1;
 	ev.timeSinceLastFrame = 1;
-	mCaelumSystem->frameStarted(ev);
+	mCaelumSystem->updateSubcomponents(1000);
+	
+	Ogre::Root::getSingleton().addFrameListener(mCaelumSystem);
 }
 	
 ISun* CaelumEnvironment::getSun()
