@@ -83,7 +83,7 @@ public:
 class Environment : public Ember::ConsoleObject
 {
 public:
-    Environment(IEnvironmentProvider* provider);
+    Environment(IEnvironmentProvider* provider, IEnvironmentProvider* fallbackProvider = 0);
 
     ~Environment();
  	
@@ -124,7 +124,7 @@ public:
 
 private:
 
-	IEnvironmentProvider* mProvider;
+	IEnvironmentProvider* mProvider, *mFallbackProvider;
 	Forest* mForest;
 // 	ISun* mSun;
 // 	ISky* mSky;

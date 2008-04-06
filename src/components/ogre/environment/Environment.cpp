@@ -28,16 +28,18 @@
 #include "Environment.h"
 #include "framework/Tokeniser.h"
 #include "Forest.h"
+#include "SimpleEnvironment.h"
 
 namespace EmberOgre {
 
 namespace Environment {
 
-Environment::Environment(IEnvironmentProvider* provider):
+Environment::Environment(IEnvironmentProvider* provider, IEnvironmentProvider* fallbackProvider):
  SetTime("set_time",this, "Sets the time. parameters: <hour> <minute>")
 , SetFogDensity("set_fogdensity",this, "Sets the fog density.")
 , SetAmbientLight("setambientlight", this, "Set the ambient light of the world: <red> <green> <blue>")
 , mProvider(provider)
+, mFallbackProvider(fallbackProvider)
 , mForest(new Forest())
 {
 }
@@ -46,6 +48,7 @@ Environment::Environment(IEnvironmentProvider* provider):
 Environment::~Environment()
 {
 	delete mProvider;
+	delete mFallbackProvider;
 	delete mForest;
 }
 
@@ -93,7 +96,20 @@ void Environment::runCommand(const std::string &command, const std::string &args
 
 void Environment::initialize()
 {
-	mProvider->createEnvironment();
+	try {
+		mProvider->createEnvironment();
+	} catch (...) {
+		if (mFallbackProvider) {
+			S_LOG_FAILURE("Error when creating environment, trying with fallback provider.");
+			delete mProvider;
+			mProvider = mFallbackProvider;
+			mFallbackProvider = 0;
+			mProvider->createEnvironment();
+		} else {
+			S_LOG_FAILURE("Error when creating environment. There's no fallback provider to use however, so we have to abort.");
+			throw;
+		}
+	}
 }
 
 void Environment::setTime(int hour, int minute, int second)
