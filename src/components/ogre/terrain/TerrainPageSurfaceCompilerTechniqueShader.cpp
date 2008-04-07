@@ -186,6 +186,9 @@ bool TerrainPageSurfaceCompilerTechniqueShader::compileMaterial(Ogre::MaterialPt
 			return false;
 		}
 	}
+	if (material->getNumSupportedTechniques() == 0) {
+		return false;
+	}
 	return true;
 // 	if (terrainPageShadow) {
 // 		addShadow(technique, terrainPageShadow);
