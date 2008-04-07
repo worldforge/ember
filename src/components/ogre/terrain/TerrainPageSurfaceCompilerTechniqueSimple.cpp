@@ -157,6 +157,12 @@ Ogre::Pass* TerrainPageSurfaceCompilerTechniqueSimple::addPassToTechnique(Ogre::
 	pass->setLightingEnabled(false);
 	
 	
+	Ogre::TextureUnitState * textureUnitState = pass->createTextureUnitState();
+    textureUnitState->setTextureName(layer->getDiffuseTextureName());
+    textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
+    textureUnitState->setTextureCoordSet(0);
+	textureUnitState->setTextureScale(1.0f / layer->getScale(), 1.0f / layer->getScale());		
+	
 	Ogre::TextureUnitState * textureUnitStateSplat = pass->createTextureUnitState();
     textureUnitStateSplat->setTextureName(layer->getCoverageTextureName());
      
@@ -165,13 +171,13 @@ Ogre::Pass* TerrainPageSurfaceCompilerTechniqueSimple::addPassToTechnique(Ogre::
     textureUnitStateSplat->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 	textureUnitStateSplat->setTextureFiltering(Ogre::TFO_ANISOTROPIC);
 //	textureUnitStateSplat->setAlphaOperation(Ogre::LBX_SOURCE1, Ogre::LBS_TEXTURE, Ogre::LBS_TEXTURE);
-	textureUnitStateSplat->setColourOperationEx(Ogre::LBX_BLEND_DIFFUSE_ALPHA, Ogre::LBS_CURRENT, Ogre::LBS_TEXTURE);
+	textureUnitStateSplat->setAlphaOperation(Ogre::LBX_BLEND_DIFFUSE_COLOUR, Ogre::LBS_TEXTURE, Ogre::LBS_CURRENT);
+	textureUnitStateSplat->setColourOperationEx(Ogre::LBX_SOURCE1, Ogre::LBS_CURRENT, Ogre::LBS_CURRENT);
+	
 
-	Ogre::TextureUnitState * textureUnitState = pass->createTextureUnitState();
-    textureUnitState->setTextureName(layer->getDiffuseTextureName());
-    textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
-    textureUnitState->setTextureCoordSet(0);
-	textureUnitState->setTextureScale(1.0f / layer->getScale(), 1.0f / layer->getScale());
+	
+
+
 
     
     return pass; 
