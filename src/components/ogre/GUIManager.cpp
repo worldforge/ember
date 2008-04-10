@@ -77,6 +77,7 @@ unsigned long GUIManager::msAutoGenId(0);
 
 GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr) 
 : ToggleInputMode("toggle_inputmode", this, "Toggle the input mode.")
+, ToggleGui("toggle_gui", this, "Toggle the gui display")
 , ReloadGui("reloadgui", this, "Reloads the gui.")
 , mGuiCommandMapper("gui", "key_bindings_gui")
 , mPicker(0)
@@ -565,6 +566,16 @@ void GUIManager::runCommand(const std::string &command, const std::string &args)
 {
 	if (command == ToggleInputMode.getCommand()) {
 		getInput().toggleInputMode();
+	} else if (command == ToggleGui.getCommand()) {
+		if (mWindow->getViewport(0)->getOverlaysEnabled()) {
+			// disable gui
+			mWindow->getViewport(0)->setOverlaysEnabled(false);
+			S_LOG_VERBOSE("Disabling GUI");
+		} else {
+			// enable gui
+			mWindow->getViewport(0)->setOverlaysEnabled(true);
+			S_LOG_VERBOSE("Disabling GUI");
+		}
 	} else if (command == ReloadGui.getCommand()) {
 		Ogre::TextureManager* texMgr = Ogre::TextureManager::getSingletonPtr();
 		Ogre::ResourcePtr resource = texMgr->getByName("cegui/" + getDefaultScheme() + ".png");

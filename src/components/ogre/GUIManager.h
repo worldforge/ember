@@ -248,6 +248,11 @@ public:
 	*/
 	const Ember::ConsoleCommandWrapper ReloadGui;
 	
+	/**
+	 * Command for Hiding/Showing the gui
+	 */
+	const Ember::ConsoleCommandWrapper ToggleGui;
+	
 	
 	/**
 	 *    Accessor for the IconManager which handles low level icons.
