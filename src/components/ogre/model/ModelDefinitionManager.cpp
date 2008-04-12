@@ -82,7 +82,8 @@ const Ogre::NameValuePairList* createParams)
     {
     	return Ogre::ResourceManager::create(name, group, isManual, loader, createParams);
     }
-    S_LOG_FAILURE("ModelDefinition with name " << name << " already exists.");
+    ///Report this. We count on this happening a lot (user media overriding shared media for example), so we will not consider it a failure.
+    S_LOG_INFO("ModelDefinition with name " << name << " already exists.");
     return Ogre::ResourcePtr();
 
 }
