@@ -73,8 +73,7 @@ void GeometryFactory::generateSphericDome (const Ogre::String &name, int segment
 			sub->indexData->indexCount = 2 * segments * (segments - 1) * 3;
 			break;
 		case DT_STARFIELD:
-			// TODO
-			sub->indexData->indexCount = 2 * (segments + 1) * segments * 3;
+			sub->indexData->indexCount = 2 * (segments - 1) * segments * 3;
 			break;
 	};
 	sub->indexData->indexBuffer = Ogre::HardwareBufferManager::getSingleton ().createIndexBuffer (Ogre::HardwareIndexBuffer::IT_16BIT, sub->indexData->indexCount, Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY, false);
@@ -206,14 +205,16 @@ void GeometryFactory::fillStarfieldDomeBuffers (float *pVertex, unsigned short *
 	}
 
 	// Generate the mid segments
-	for (int i = 0; i <= segments; i++) {
+	int vRowSize = segments + 1;
+	for (int i = 1; i < segments; i++) {
 		for (int j = 0; j < segments; j++) {
-			*pIndices++ = segments * i + j;
-			*pIndices++ = segments * i + (j + 1) % segments;
-			*pIndices++ = segments * (i + 1) + (j + 1) % segments;
-			*pIndices++ = segments * i + j;
-			*pIndices++ = segments * (i + 1) + (j + 1) % segments;
-			*pIndices++ = segments * (i + 1) + j;
+			int baseIdx = vRowSize * i + j;
+			*pIndices++ = baseIdx;
+			*pIndices++ = baseIdx + 1;
+			*pIndices++ = baseIdx + vRowSize + 1;
+			*pIndices++ = baseIdx + 1;
+			*pIndices++ = baseIdx;
+			*pIndices++ = baseIdx - vRowSize;
 		}
 	}
 }

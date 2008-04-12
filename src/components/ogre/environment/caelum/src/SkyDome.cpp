@@ -29,7 +29,8 @@ const Ogre::String SkyDome::SPHERIC_DOME_NAME = "CaelumSphericDome";
 const Ogre::String SkyDome::SKY_DOME_MATERIAL_NAME = "CaelumSkyDomeMaterial";
 
 SkyDome::SkyDome (Ogre::SceneManager *sceneMgr, Ogre::SceneNode *caelumRootNode) {
-	createSkyDomeMaterial ();
+	mMaterial = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton ().getByName (SKY_DOME_MATERIAL_NAME));
+	mMaterial->load ();
 
 	sceneMgr->getRenderQueue()->getQueueGroup(CAELUM_RENDER_QUEUE_SKYDOME)->setShadowsEnabled(false);
 
@@ -53,8 +54,6 @@ SkyDome::~SkyDome () {
 		static_cast<Ogre::SceneNode *>(mNode->getParent ())->removeAndDestroyChild (mNode->getName ());
 		mNode = 0;
 	}
-
-	destroySkyDomeMaterial ();
 }
 
 void SkyDome::notifyCameraChanged (Ogre::Camera *cam) {
@@ -69,22 +68,13 @@ void SkyDome::setFarRadius (Ogre::Real radius) {
 void SkyDome::setSunDirection (Ogre::Vector3 sunDir) {
     float elevation = sunDir.dotProduct (Ogre::Vector3::UNIT_Y);
     elevation = elevation * 0.5 + 0.5;
-
 	Ogre::Pass* pass = mMaterial->getBestTechnique()->getPass(0);
-	if (pass->hasVertexProgram()) {
-	Ogre::GpuProgramParametersSharedPtr vpParams = 
-				pass->getVertexProgramParameters();
+	Ogre::GpuProgramParametersSharedPtr vpParams = pass->getVertexProgramParameters();
+	Ogre::GpuProgramParametersSharedPtr fpParams = pass->getFragmentProgramParameters();
+	Ogre::TextureUnitState* gradientsTus = pass->getTextureUnitState(0);
+
 	vpParams->setNamedConstant ("sunDirection", sunDir);
-	}
-	
-	if (pass->hasFragmentProgram()) {
-		Ogre::GpuProgramParametersSharedPtr fpParams = 
-				pass->getFragmentProgramParameters();
     fpParams->setNamedConstant ("offset", elevation);
-	}
-	
-    Ogre::TextureUnitState* gradientsTus = 
-			pass->getTextureUnitState(0);
     gradientsTus->setTextureUScroll (elevation);
 }
 
@@ -95,12 +85,9 @@ void SkyDome::setLightAbsorption (float absorption) const {
 		absorption = 0;
     }
 
-	Ogre::Pass* pass = mMaterial->getBestTechnique()->getPass(0);
-	if (pass->hasVertexProgram()) {
 	Ogre::GpuProgramParametersSharedPtr vpParams =
-				pass->getVertexProgramParameters();
+            mMaterial->getBestTechnique()->getPass(0)->getVertexProgramParameters();
 	vpParams->setNamedConstant ("lightAbsorption", absorption);
-	}
 }
 
 void SkyDome::setLightScattering (float scattering) const {
@@ -126,13 +113,8 @@ void SkyDome::setAtmosphereHeight (float height) const {
 }
 
 void SkyDome::setSkyGradientsImage (const Ogre::String& gradients) {
-
-	Ogre::TextureUnitState* gradientsTus;
-	if (mMaterial->isLoaded()) {
-    	gradientsTus = mMaterial->getBestTechnique()->getPass (0)->getTextureUnitState(0);
-    } else {
-    	gradientsTus = mMaterial->getTechnique(0)->getPass (0)->getTextureUnitState(0);
-    }
+    Ogre::TextureUnitState* gradientsTus =
+            mMaterial->getTechnique (0)->getPass (0)->getTextureUnitState(0);
 
 	gradientsTus->setTextureAddressingMode (Ogre::TextureUnitState::TAM_CLAMP);
 
@@ -146,81 +128,11 @@ void SkyDome::setSkyGradientsImage (const Ogre::String& gradients) {
 }
 
 void SkyDome::setAtmosphereDepthImage (const Ogre::String& atmosphereDepth) {
-	
-	Ogre::TextureUnitState* atmosphereTus;
-	if (mMaterial->isLoaded()) {
-		atmosphereTus = mMaterial->getBestTechnique()->getPass (0)->getTextureUnitState(1);
-	} else {
-		atmosphereTus = mMaterial->getTechnique(0)->getPass (0)->getTextureUnitState(1);
-	}
+    Ogre::TextureUnitState* atmosphereTus =
+            mMaterial->getTechnique (0)->getPass (0)->getTextureUnitState(1);
 
 	atmosphereTus->setTextureName (atmosphereDepth, Ogre::TEX_TYPE_1D);
 	atmosphereTus->setTextureAddressingMode (Ogre::TextureUnitState::TAM_CLAMP, Ogre::TextureUnitState::TAM_WRAP, Ogre::TextureUnitState::TAM_WRAP);
-}
-
-void SkyDome::createSkyDomeMaterial () {
-	// Check shader support.
-    // It would be nice to check supported profiles in detail.
-	if (!Ogre::Root::getSingleton ().getRenderSystem ()->getCapabilities ()->hasCapability (Ogre::RSC_FRAGMENT_PROGRAM)) {
-		throw UnsupportedException (0, "The card doesn't support fragment programs for the sky dome material.", "SkyDome", "SkyDome.cpp", -1);
-	}
-	if (!Ogre::Root::getSingleton ().getRenderSystem ()->getCapabilities ()->hasCapability (Ogre::RSC_VERTEX_PROGRAM)) {
-		throw UnsupportedException (0, "The card doesn't support vertex programs for the sky dome material.", "SkyDome", "SkyDome.cpp", -1);
-	}
-
-	LOG ("Generating sky dome material...");
-	if (!Ogre::MaterialManager::getSingleton ().resourceExists (SKY_DOME_MATERIAL_NAME)) {
-		LOG ("\tMaterial not found; creating...");
-		mMaterial = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton ().create (SKY_DOME_MATERIAL_NAME, RESOURCE_GROUP_NAME));
-		mMaterial->setReceiveShadows (false);
-		LOG ("\t\tMaterial [OK]");
-
-		Ogre::Pass *pass = mMaterial->getTechnique (0)->getPass (0);
-		pass->setSceneBlending (Ogre::SBT_TRANSPARENT_ALPHA);
-		pass->setDepthCheckEnabled (false);
-		pass->setDepthWriteEnabled (false);
-		pass->setLightingEnabled (false);
-		pass->setFog (true);
-
-        // Bind fragment program.
-        mHazeEnabled = true;
-        pass->setFragmentProgram ("CaelumSkyDomeFP");
-        Ogre::GpuProgramParametersSharedPtr fpParams = pass->getFragmentProgramParameters();
-        fpParams->setIgnoreMissingParams(true);
-
-        // Bind vertex program.
-        pass->setVertexProgram ("CaelumSkyDomeVP");
-        Ogre::GpuProgramParametersSharedPtr vpParams = pass->getVertexProgramParameters();
-        vpParams->setIgnoreMissingParams(true);
-		LOG ("\t\tPass [OK]");
-
-        // Create first texture unit; gradients image.
-		pass->createTextureUnitState ();
-        setSkyGradientsImage("EarthClearSky2.png");
-		LOG ("\t\tTextureUnit - Sky gradient [OK]");
-
-        // Create second texture unit; atmosphere depth image.
-		pass->createTextureUnitState ();
-        setAtmosphereDepthImage("AtmosphereDepth.png");
-		LOG ("\t\tTextureUnit - Atmosphere depth [OK]");
-
-		mMaterial->load ();
-		LOG ("\tDONE");
-	} else {
-		mMaterial = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton ().getByName (SKY_DOME_MATERIAL_NAME));
-		mMaterial->load ();
-	}
-
-	LOG ("DONE");
-}
-
-void SkyDome::destroySkyDomeMaterial () {
-	LOG ("Removing sky dome materials...");
-    if (mMaterial.unique()) {
-		Ogre::MaterialManager::getSingleton ().remove (SKY_DOME_MATERIAL_NAME);
-    }
-	mMaterial.setNull ();
-	LOG ("DONE");
 }
 
 bool SkyDome::getHazeEnabled () const {

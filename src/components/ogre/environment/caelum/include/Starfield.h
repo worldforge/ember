@@ -81,15 +81,6 @@ class DllExport Starfield : public CameraBoundElement {
 		 */
 		void setTexture (const Ogre::String &mapName);
 
-	private:
-		/** Internal method to create the starfield material.
-		 */
-		void createStarfieldMaterial ();
-
-		/** Internal method to destroy the starfield material.
-		 */
-		void destroyStarfieldMaterial ();
-
     public:
 		/// Handle camera change.
 		virtual void notifyCameraChanged (Ogre::Camera *cam);

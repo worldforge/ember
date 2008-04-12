@@ -95,16 +95,6 @@ class DllExport SkyDome : public CameraBoundElement {
         /// Enable or disable skydome haze. This makes the sky darker.
         void setHazeEnabled (bool value);
 
-	private:
-		/** Internal method to create the sky dome material.
-		 * @throws UnsupportedException if the material isn't supported.
-		 */
-		void createSkyDomeMaterial ();
-
-		/** Internal method to destroy the sky dome material.
-		 */
-		void destroySkyDomeMaterial ();
-
     public:
 		/// Handle camera change.
 		virtual void notifyCameraChanged (Ogre::Camera *cam);

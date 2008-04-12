@@ -45,8 +45,35 @@
 		</entitymatch>
 	</modelmapping>	
 	
-	<!-- We want the model "boulder" to be used for the entity "boulder". However, there are four different boulder meshes, which the model defines as four different parts. Depending on attribute "style" a different part will be shown. We assume that "style" is one of "a", "b", "c" or "d". Since the parts in the model are defined to belong to the same group (not shown in this file), only one part will be shown at the same time. -->
+	
 	<modelmapping name="boulder">
+		<entitymatch>
+			<case>
+				<caseparam type="equals">boulder</caseparam>
+				<action type="display-model">graniteA</action>
+				<attributematch attribute="style" >
+					<case>
+						<caseparam type="equals">a</caseparam>
+						<action type="display-model">graniteA</action>
+					</case>
+					<case>
+						<caseparam type="equals">b</caseparam>
+						<action type="display-model">graniteB</action>
+					</case>
+					<case>
+						<caseparam type="equals">c</caseparam>
+						<action type="display-model">graniteC</action>
+					</case>
+					<case>
+						<caseparam type="equals">d</caseparam>
+						<action type="display-model">graniteD</action>
+					</case>
+				</attributematch>
+			</case>
+		</entitymatch>
+	</modelmapping>	
+	<!-- We want the model "boulder" to be used for the entity "boulder". However, there are four different boulder meshes, which the model defines as four different parts. Depending on attribute "style" a different part will be shown. We assume that "style" is one of "a", "b", "c" or "d". Since the parts in the model are defined to belong to the same group (not shown in this file), only one part will be shown at the same time. -->
+<!--	<modelmapping name="boulder">
 		<entitymatch>
 			<case>
 				<caseparam type="equals">boulder</caseparam>
@@ -71,7 +98,7 @@
 				</attributematch>
 			</case>
 		</entitymatch>
-	</modelmapping>
+	</modelmapping>-->
 	
 	<!-- An alternative to the previous boulder mapping is to instead have each boulder mesh in its own model file. The mapping would then be like this. -->
 	<!--	<modelmapping name="boulder">
@@ -549,13 +576,21 @@
 	
 	<!-- We'll use the "male" model for the entities of type "settler" or "butcher". Depending on what kind of entity is outfitted to the torso we'll show a shirt part. The shirts all belongs to the same group in the model, so only one will be shown at the same time.
 		-->
-<!--	<modelmapping name="humanoid">
+	
+<!--	<modelmapping name="human">
 		<entitymatch>
-			<case equals="settler|merchant|mercenary|marshall|butcher">
-				<action type="display-model">humanoid</action>
+			<case>
+				<caseparam type="equals">settler</caseparam>
+				<caseparam type="equals">merchant</caseparam>
+				<caseparam type="equals">mercenary</caseparam>
+				<caseparam type="equals">marshall</caseparam>
+				<caseparam type="equals">butcher</caseparam>
+				<action type="display-model">male__</action>
 			</case>
 		</entitymatch>
-	</modelmapping>-->
+	</modelmapping>		-->	
+	
+	
 	<modelmapping name="human">
 		<entitymatch>
 			<case>
