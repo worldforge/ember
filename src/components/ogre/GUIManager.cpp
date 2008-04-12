@@ -108,13 +108,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 			S_LOG_WARNING("Failed to change to the data directory. Gui loading might fail.");
 		}
 		
-		//use a macro from CEGUIFactoryModule
-		//DYNLIB_LOAD( "libCEGUIFalagardBase.so");
-		
-		
-		
-		mGuiRenderer = new CEGUI::OgreCEGUIRenderer(window, Ogre::RENDER_QUEUE_OVERLAY, false, 0, sceneMgr);
-//		mScriptManager = new GUIScriptManager();
+		///The OgreCEGUIRenderer is the main interface between Ogre and CEGUI. Note that the third argument tells the renderer to render the gui after all of the regular render queues have been processed, thus making sure that the gui always is on top.
+		mGuiRenderer = new CEGUI::OgreCEGUIRenderer(window, Ogre::RENDER_QUEUE_OVERLAY, true, 0, sceneMgr);
 		CEGUI::ResourceProvider* resourceProvider = mGuiRenderer->createResourceProvider();
 		resourceProvider->setDefaultResourceGroup("Gui");
 		
@@ -133,7 +128,6 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		mWindowManager = &CEGUI::WindowManager::getSingleton();
 
 
-			
 		try {
 			mGuiSystem->setDefaultMouseCursor(getDefaultScheme(), "MouseArrow");
 		} catch (const CEGUI::Exception& ex) {
@@ -152,7 +146,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		BIND_CEGUI_EVENT(mSheet, CEGUI::Window::EventInputCaptureLost, GUIManager::mSheet_CaptureLost);
 		BIND_CEGUI_EVENT(mSheet, CEGUI::ButtonBase::EventMouseDoubleClick, GUIManager::mSheet_MouseDoubleClick);
 			
-		//set a default tool tip
+		///set a default tool tip
 		CEGUI::System::getSingleton().setDefaultTooltip(getDefaultScheme() + "/Tooltip");
 		
 		S_LOG_INFO("CEGUI system set up");
@@ -169,7 +163,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		getInput().EventKeyPressed.connect(sigc::mem_fun(*this, &GUIManager::pressedKey));
 		getInput().setInputMode(Input::IM_GUI);
 		
-		///add adapter for CEGUI
+		///add adapter for CEGUI, this will route input event to the gui
 		mCEGUIAdapter = new GUICEGUIAdapter(mGuiSystem, mGuiRenderer);
 		getInput().addAdapter(mCEGUIAdapter);
 		
