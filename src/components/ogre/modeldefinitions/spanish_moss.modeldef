@@ -1,0 +1,26 @@
+<models>
+    <model name="spanish_moss" usescaleof="all" showcontained="true" icon="">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/environment/spanish_moss/models/spanish_moss.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/environment/spanish_moss" />
+                            <subentity index="1" material="/global/environment/spanish_moss" />
+                            <subentity index="2" material="/global/environment/spanish_moss" />
+                            <subentity index="3" material="/global/environment/spanish_moss" />
+                            <subentity index="4" material="/global/environment/spanish_moss" />
+                            <subentity index="5" material="/global/environment/spanish_moss" />
+                            <subentity index="6" material="/global/environment/spanish_moss" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+</models>
