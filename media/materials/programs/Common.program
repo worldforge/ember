@@ -32,6 +32,14 @@ vertex_program Examples/OffsetMappingVP cg
    source OffsetMapping.cg 
    entry_point main_vp 
    profiles vs_1_1 arbvp1 
+
+	default_params
+	{
+		param_named_auto lightPosition light_position_object_space 0 
+		param_named_auto eyePosition camera_position_object_space 
+		param_named_auto worldViewProj worldviewproj_matrix 
+		param_named_auto iFogParams fog_params 0
+	}
 } 
 
 // Bump map with parallax fragment program 
@@ -40,6 +48,15 @@ fragment_program Examples/OffsetMappingFP cg
    source OffsetMapping.cg
    entry_point main_fp
    profiles ps_2_0 arbfp1
+
+	default_params
+	{
+		param_named_auto lightDiffuse light_diffuse_colour 0
+		param_named_auto lightAmbient ambient_light_colour 0
+		param_named_auto iFogColour fog_colour 0
+ 		param_named scaleBias float4 0.0004 -0.002 1 0 
+	}
+
 } 
 
 // Bump map with parallax fragment program 
