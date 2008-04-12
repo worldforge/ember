@@ -91,14 +91,14 @@ material /global/creatures/humanoid/humanoid : /base/simple
 	set_texture_alias DiffuseMap 3d_objects/creatures/humanoid/textures/humanoid/humanoid_body.png
 }
 
-material /global/bipeds/goblin/body : /base/simple
+material /global/bipeds/races/goblin/male/body : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_skeletons/bipeds/textures/goblin/body.png
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/races/goblin/male/body/D.png
 }
 
-material /global/bipeds/goblin/head : /base/simple
+material /global/bipeds/races/goblin/male/head : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_skeletons/bipeds/textures/goblin/head.png
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/races/goblin/male/head/D.png
 }
 
 material /global/creature/humanoid/kobold : /base/simple
@@ -110,27 +110,6 @@ material /global/creature/humanoid/kobold : /base/simple
 material /global/bipeds/male/male : /base/simple
 {
 	set_texture_alias DiffuseMap 3d_skeletons/bipeds/textures/male/maleD.png
-}
-
-material /global/bipeds/drystan_archer/drystan_archer_footwear : /base/normalmap/specular
-{
-	set_texture_alias DiffuseMap 3d_skeletons/bipeds/textures/drystan_archer/drystan_archer_footwearD.png
-	set_texture_alias NormalHeightMap 3d_skeletons/bipeds/textures/drystan_archer/drystan_archer_footwearN.png
-	set_texture_alias SpecularMap 3d_skeletons/bipeds/textures/drystan_archer/drystan_archer_footwearS.png
-}
-
-material /global/bipeds/drystan_archer/drystan_archer_shirt : /base/normalmap/specular
-{
-	set_texture_alias DiffuseMap 3d_skeletons/bipeds/textures/drystan_archer/drystan_archer_shirtD.png
-	set_texture_alias NormalHeightMap 3d_skeletons/bipeds/textures/drystan_archer/drystan_archer_shirtN.png
-	set_texture_alias SpecularMap 3d_skeletons/bipeds/textures/drystan_archer/drystan_archer_shirtS.png
-}
-
-material /global/bipeds/drystan_archer/drystan_archer_pants : /base/normalmap/specular
-{
-	set_texture_alias DiffuseMap 3d_skeletons/bipeds/textures/drystan_archer/drystan_archer_pantsD.png
-	set_texture_alias NormalHeightMap 3d_skeletons/bipeds/textures/drystan_archer/drystan_archer_pantsN.png
-	set_texture_alias SpecularMap 3d_skeletons/bipeds/textures/drystan_archer/drystan_archer_pantsS.png
 }
 
 material /global/bipeds/male_body : /base/normalmap/specular

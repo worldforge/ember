@@ -53,6 +53,33 @@ material /global/environment/stone/stone_boulder_mossy : /base/simple
 	set_texture_alias DiffuseMap 3d_objects/environment/stone/textures/stone_boulder_mossy/stone.png
 }
 
+material /global/environment/boulder/felsite : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/environment/boulder/textures/felsite/D.png
+	set_texture_alias NormalHeightMap 3d_objects/environment/boulder/textures/felsite/N.png
+	set_texture_alias SpecularMap 3d_objects/environment/boulder/textures/felsite/S.png
+}
+
+material /global/environment/boulder/felsite_face : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/environment/boulder/textures/felsite_face/D.png
+	set_texture_alias NormalHeightMap 3d_objects/environment/boulder/textures/felsite_face/N.png
+	set_texture_alias SpecularMap 3d_objects/environment/boulder/textures/felsite_face/S.png
+}
+
+material /global/environment/boulder/granite : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/environment/boulder/textures/granite/D.png
+	set_texture_alias NormalHeightMap 3d_objects/environment/boulder/textures/granite/N.png
+	set_texture_alias SpecularMap 3d_objects/environment/boulder/textures/granite/S.png
+}
+
+material /global/environment/boulder/moraf : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/environment/boulder/textures/moraf/D.png
+	set_texture_alias NormalHeightMap 3d_objects/environment/boulder/textures/moraf/N.png
+	set_texture_alias SpecularMap 3d_objects/environment/boulder/textures/moraf/S.png
+}
 
 
 
@@ -85,6 +112,99 @@ material /global/environment/ground/sand/sand :  /base/normalmap
 	set_texture_alias DiffuseMap 3d_objects/environment/ground/textures/sand/sand_AD.png
 	set_texture_alias NormalHeightMap 3d_objects/environment/ground/textures/sand/sand_AN.png
 }
+
+material /global/environment/cave : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/environment/cave/textures/D.png
+	set_texture_alias NormalHeightMap 3d_objects/environment/cave/textures/N.png
+	set_texture_alias SpecularMap 3d_objects/environment/cave/textures/S.png
+}
+
+material /global/environment/spanish_moss : /base/normalmap/specular/nonculled/alpharejected
+{
+	set_texture_alias DiffuseMap 3d_objects/environment/spanish_moss/textures/D.png
+	set_texture_alias NormalHeightMap 3d_objects/environment/spanish_moss/textures/N.png
+	set_texture_alias SpecularMap 3d_objects/environment/spanish_moss/textures/S.png
+	technique NormalMapped
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 160
+		}
+	}
+	technique NormalMappedOld
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 160
+		}
+	}
+	technique General
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 160
+		}
+	}
+	technique GeneralDistance
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 160
+		}
+	}
+}
+
+material /global/environment/roots : /base/normalmap/specular/nonculled/alpharejected
+{
+	set_texture_alias DiffuseMap 3d_objects/environment/roots/textures/D.png
+	set_texture_alias NormalHeightMap 3d_objects/environment/roots/textures/N.png
+	set_texture_alias SpecularMap 3d_objects/environment/roots/textures/S.png
+	technique NormalMapped
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 160
+		}
+	}
+	technique NormalMappedOld
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 160
+		}
+	}
+	technique General
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 160
+		}
+	}
+	technique GeneralDistance
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 160
+		}
+	}
+}
+
+material /global/environment/stalactites : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/environment/stalactites/textures/D.png
+	set_texture_alias NormalHeightMap 3d_objects/environment/stalactites/textures/N.png
+	set_texture_alias SpecularMap 3d_objects/environment/stalactites/textures/S.png
+}
+
+
+
+
+
+
+
+
+
 
 material /global/environment/water/simple
 {

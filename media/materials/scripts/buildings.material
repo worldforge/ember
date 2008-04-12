@@ -398,6 +398,27 @@ material /global/items/ossyja/floor_plank : /base/normalmap
 	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/ossyja/floor_plankN.png
 }
 
+material /global/items/building_element/foundation_brick : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/foundation_brick/D.png
+	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/foundation_brick/N.png
+	set_texture_alias SpecularMap 3d_objects/items/building_element/textures/foundation_brick/S.png
+}
+
+material /global/items/building_element/rezpa_column : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/rezpa_column/D.png
+	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/rezpa_column/N.png
+	set_texture_alias SpecularMap 3d_objects/items/building_element/textures/rezpa_column/S.png
+}
+
+material /global/items/building_element/ozark_brick : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/ozark_brick/D.png
+	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/ozark_brick/N.png
+	set_texture_alias SpecularMap 3d_objects/items/building_element/textures/ozark_brick/S.png
+}
+
 
 
 // material /global/items/building/castle/foundation
