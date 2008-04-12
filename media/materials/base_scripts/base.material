@@ -87,7 +87,9 @@ material /base/normalmap
 				param_named_auto lightAmbient ambient_light_colour 0
 				param_named_auto iFogColour fog_colour 0
 				// Parallax Height scale and bias 
-				param_named scaleBias float4 0.04 -0.02 1 0 
+ 				param_named scaleBias float4 0.0004 -0.002 1 0 
+// 				param_named scaleBias float4 0.0 0.0 0.0 0.0
+// 				param_named scaleBias float4 0.04 -0.02 1 0 
 // 				param_named specularBias float 0
 			} 
 			
@@ -129,7 +131,9 @@ material /base/normalmap
 				param_indexed 1 float3 0 0 0 
 				//param_indexed_auto 2 ambient_light_colour 0 
 				// Parallax Height scale and bias/base/normalmap_example 
-				param_indexed 2 float4 0.04 -0.02 1 0 
+ 				param_indexed 2 float4 0.0004 -0.002 1 0 
+// 				param_indexed 2 float4 0.0 0.0 0.0 0.0
+// 				param_indexed 2 float4 0.04 -0.02 1 0 
 				//param_indexed 4 float 0
 			} 
 			
@@ -207,7 +211,9 @@ material /base/normalmap/specular
 				param_named_auto lightAmbient ambient_light_colour 0 
 				param_named_auto iFogColour fog_colour 0
 				// Parallax Height scale and bias 
-				param_named scaleBias float4 0.04 -0.02 1 0 
+ 				param_named scaleBias float4 0.0004 -0.002 1 0 
+// 				param_named scaleBias float4 0.0 0.0 0.0 0.0
+// 				param_named scaleBias float4 0.04 -0.02 1 0 
 // 				param_named specularBias float 1
 				
 				
