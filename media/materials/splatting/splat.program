@@ -64,9 +64,105 @@ vertex_program fog_exp2_vp cg
 fragment_program splatting_fragment_dynamic cg
 {
 	source Splat.cg
-	entry_point splat_fp
+	entry_point splat_fp_dynamic
 	profiles ps_2_0 arbfp1
 }
+
+fragment_program splatting_fragment_1 cg
+{
+	source Splat.cg
+	entry_point splat_fp_1
+	profiles ps_2_0 arbfp1
+}
+
+fragment_program splatting_fragment_2 cg
+{
+	source Splat.cg
+	entry_point splat_fp_2
+	profiles ps_2_0 arbfp1
+}
+
+fragment_program splatting_fragment_3 cg
+{
+	source Splat.cg
+	entry_point splat_fp_3
+	profiles ps_2_0 arbfp1
+}
+
+fragment_program splatting_fragment_4 cg
+{
+	source Splat.cg
+	entry_point splat_fp_4
+	profiles ps_2_0 arbfp1
+}
+
+fragment_program splatting_fragment_5 cg
+{
+	source Splat.cg
+	entry_point splat_fp_5
+	profiles ps_2_0 arbfp1
+}
+
+fragment_program splatting_fragment_6 cg
+{
+	source Splat.cg
+	entry_point splat_fp_6
+	profiles ps_2_0 arbfp1
+}
+
+fragment_program splatting_fragment_7 cg
+{
+	source Splat.cg
+	entry_point splat_fp_7
+	profiles ps_2_0 arbfp1
+}
+
+fragment_program splatting_fragment_8 cg
+{
+	source Splat.cg
+	entry_point splat_fp_8
+	profiles ps_2_0 arbfp1
+}
+
+fragment_program splatting_fragment_9 cg
+{
+	source Splat.cg
+	entry_point splat_fp_9
+	profiles ps_2_0 arbfp1
+}
+
+fragment_program splatting_fragment_10 cg
+{
+	source Splat.cg
+	entry_point splat_fp_10
+	profiles ps_2_0 arbfp1
+}
+
+fragment_program splatting_fragment_11 cg
+{
+	source Splat.cg
+	entry_point splat_fp_11
+	profiles ps_2_0 arbfp1
+}
+
+fragment_program splatting_fragment_12 cg
+{
+	source Splat.cg
+	entry_point splat_fp_12
+	profiles ps_2_0 arbfp1
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 vertex_program splatting_vertex_normalmapped cg
 {

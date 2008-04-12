@@ -155,7 +155,7 @@ void fog_linear_vp
 
 
 // Fragment program for automatic terrain texture generation
-void splat_fp
+void splat_fp_dynamic
 (
     float2              iCoverage	: TEXCOORD0,
     float2              iTexcoord	: TEXCOORD1,
@@ -240,6 +240,683 @@ void splat_fp
 // 	oColour.w = 1.0;
 
 }
+
+void splat_fp_1
+(
+    float2              iCoverage	: TEXCOORD0,
+    float2              iTexcoord	: TEXCOORD1,
+	float				iFog 		: FOG,
+	
+	uniform float4 iLightDiffuse,
+	uniform float4 iLightSpecular,
+	uniform float4 iLightAmbient,
+	uniform float4 iFogColour,
+
+	out float4          oColour		: COLOR,
+	
+    uniform float4   iScales[4],
+    uniform sampler2D   shadowTexture: TEXUNIT0,
+    uniform sampler2D   baseTextureDiffuse: TEXUNIT1
+)
+{
+	//tile = 0.0025;
+//	float fogFactor   = exp2(-abs(iFog));
+
+	//only do lerp if we can see the pixels (i.e. not when in full fog
+ 	if (iFog < 1) {
+		//iTexcoord = iTexcoord * 16.0f;
+		
+		oColour = tex2D(baseTextureDiffuse, iTexcoord.xy * iScales[0].x);
+		
+		//shadow, we'll multiply by the diffuse light
+		oColour *= (tex2D(shadowTexture, iCoverage.xy).x * iLightDiffuse);
+		
+		oColour = lerp(oColour, iFogColour, iFog);
+	} else {
+		oColour = iFogColour;
+	}
+}
+
+
+
+void splat_fp_2
+(
+    float2              iCoverage	: TEXCOORD0,
+    float2              iTexcoord	: TEXCOORD1,
+	float				iFog 		: FOG,
+	
+	uniform float4 iLightDiffuse,
+	uniform float4 iLightSpecular,
+	uniform float4 iLightAmbient,
+	uniform float4 iFogColour,
+
+	out float4          oColour		: COLOR,
+	
+    uniform float4   iScales[4],
+    uniform sampler2D   shadowTexture: TEXUNIT0,
+    uniform sampler2D   baseTextureDiffuse: TEXUNIT1,
+    uniform sampler2D   coverageTexture1: TEXUNIT2,
+    uniform sampler2D   splat1TextureDiffuse: TEXUNIT3,
+    uniform sampler2D   splat2TextureDiffuse: TEXUNIT4,
+    uniform sampler2D   splat3TextureDiffuse: TEXUNIT5,
+    uniform sampler2D   splat4TextureDiffuse: TEXUNIT6,
+    uniform sampler2D   coverageTexture2: TEXUNIT7,
+    uniform sampler2D   splat5TextureDiffuse: TEXUNIT8,
+    uniform sampler2D   splat6TextureDiffuse: TEXUNIT9,
+    uniform sampler2D   splat7TextureDiffuse: TEXUNIT10,
+    uniform sampler2D   splat8TextureDiffuse: TEXUNIT11,
+    uniform sampler2D   coverageTexture3: TEXUNIT12,
+    uniform sampler2D   splat9TextureDiffuse: TEXUNIT13,
+    uniform sampler2D   splat10TextureDiffuse: TEXUNIT14,
+    uniform sampler2D   splat11TextureDiffuse: TEXUNIT15
+)
+{
+	//tile = 0.0025;
+//	float fogFactor   = exp2(-abs(iFog));
+
+	//only do lerp if we can see the pixels (i.e. not when in full fog
+ 	if (iFog < 1) {
+		//iTexcoord = iTexcoord * 16.0f;
+		
+		oColour = tex2D(baseTextureDiffuse, iTexcoord.xy * iScales[0].x);
+		oColour = (lerp(oColour, tex2D(splat1TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture1, iCoverage.xy).w));
+		
+		//shadow, we'll multiply by the diffuse light
+		oColour *= (tex2D(shadowTexture, iCoverage.xy).x * iLightDiffuse);
+		
+		oColour = lerp(oColour, iFogColour, iFog);
+	} else {
+		oColour = iFogColour;
+	}
+}
+
+
+
+void splat_fp_3
+(
+    float2              iCoverage	: TEXCOORD0,
+    float2              iTexcoord	: TEXCOORD1,
+	float				iFog 		: FOG,
+	
+	uniform float4 iLightDiffuse,
+	uniform float4 iLightSpecular,
+	uniform float4 iLightAmbient,
+	uniform float4 iFogColour,
+
+	out float4          oColour		: COLOR,
+	
+    uniform float4   iScales[4],
+    uniform sampler2D   shadowTexture: TEXUNIT0,
+    uniform sampler2D   baseTextureDiffuse: TEXUNIT1,
+    uniform sampler2D   coverageTexture1: TEXUNIT2,
+    uniform sampler2D   splat1TextureDiffuse: TEXUNIT3,
+    uniform sampler2D   splat2TextureDiffuse: TEXUNIT4,
+    uniform sampler2D   splat3TextureDiffuse: TEXUNIT5,
+    uniform sampler2D   splat4TextureDiffuse: TEXUNIT6,
+    uniform sampler2D   coverageTexture2: TEXUNIT7,
+    uniform sampler2D   splat5TextureDiffuse: TEXUNIT8,
+    uniform sampler2D   splat6TextureDiffuse: TEXUNIT9,
+    uniform sampler2D   splat7TextureDiffuse: TEXUNIT10,
+    uniform sampler2D   splat8TextureDiffuse: TEXUNIT11,
+    uniform sampler2D   coverageTexture3: TEXUNIT12,
+    uniform sampler2D   splat9TextureDiffuse: TEXUNIT13,
+    uniform sampler2D   splat10TextureDiffuse: TEXUNIT14,
+    uniform sampler2D   splat11TextureDiffuse: TEXUNIT15
+)
+{
+	//tile = 0.0025;
+//	float fogFactor   = exp2(-abs(iFog));
+
+	//only do lerp if we can see the pixels (i.e. not when in full fog
+ 	if (iFog < 1) {
+		//iTexcoord = iTexcoord * 16.0f;
+		
+		oColour = tex2D(baseTextureDiffuse, iTexcoord.xy * iScales[0].x);
+		oColour = (lerp(oColour, tex2D(splat1TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture1, iCoverage.xy).w));
+		oColour = (lerp(oColour, tex2D(splat2TextureDiffuse, iTexcoord.xy * iScales[0].z), tex2D(coverageTexture1, iCoverage.xy).x));
+		
+		//shadow, we'll multiply by the diffuse light
+		oColour *= (tex2D(shadowTexture, iCoverage.xy).x * iLightDiffuse);
+		
+		oColour = lerp(oColour, iFogColour, iFog);
+	} else {
+		oColour = iFogColour;
+	}
+}
+
+
+
+void splat_fp_4
+(
+    float2              iCoverage	: TEXCOORD0,
+    float2              iTexcoord	: TEXCOORD1,
+	float				iFog 		: FOG,
+	
+	uniform float4 iLightDiffuse,
+	uniform float4 iLightSpecular,
+	uniform float4 iLightAmbient,
+	uniform float4 iFogColour,
+
+	out float4          oColour		: COLOR,
+	
+    uniform float4   iScales[4],
+    uniform sampler2D   shadowTexture: TEXUNIT0,
+    uniform sampler2D   baseTextureDiffuse: TEXUNIT1,
+    uniform sampler2D   coverageTexture1: TEXUNIT2,
+    uniform sampler2D   splat1TextureDiffuse: TEXUNIT3,
+    uniform sampler2D   splat2TextureDiffuse: TEXUNIT4,
+    uniform sampler2D   splat3TextureDiffuse: TEXUNIT5,
+    uniform sampler2D   splat4TextureDiffuse: TEXUNIT6,
+    uniform sampler2D   coverageTexture2: TEXUNIT7,
+    uniform sampler2D   splat5TextureDiffuse: TEXUNIT8,
+    uniform sampler2D   splat6TextureDiffuse: TEXUNIT9,
+    uniform sampler2D   splat7TextureDiffuse: TEXUNIT10,
+    uniform sampler2D   splat8TextureDiffuse: TEXUNIT11,
+    uniform sampler2D   coverageTexture3: TEXUNIT12,
+    uniform sampler2D   splat9TextureDiffuse: TEXUNIT13,
+    uniform sampler2D   splat10TextureDiffuse: TEXUNIT14,
+    uniform sampler2D   splat11TextureDiffuse: TEXUNIT15
+)
+{
+	//tile = 0.0025;
+//	float fogFactor   = exp2(-abs(iFog));
+
+	//only do lerp if we can see the pixels (i.e. not when in full fog
+ 	if (iFog < 1) {
+		//iTexcoord = iTexcoord * 16.0f;
+		
+		oColour = tex2D(baseTextureDiffuse, iTexcoord.xy * iScales[0].x);
+		oColour = (lerp(oColour, tex2D(splat1TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture1, iCoverage.xy).w));
+		oColour = (lerp(oColour, tex2D(splat2TextureDiffuse, iTexcoord.xy * iScales[0].z), tex2D(coverageTexture1, iCoverage.xy).x));
+		oColour = (lerp(oColour, tex2D(splat3TextureDiffuse, iTexcoord.xy * iScales[0].w), tex2D(coverageTexture1, iCoverage.xy).y));
+		
+		//shadow, we'll multiply by the diffuse light
+		oColour *= (tex2D(shadowTexture, iCoverage.xy).x * iLightDiffuse);
+		
+		oColour = lerp(oColour, iFogColour, iFog);
+	} else {
+		oColour = iFogColour;
+	}
+}
+
+
+
+void splat_fp_5
+(
+    float2              iCoverage	: TEXCOORD0,
+    float2              iTexcoord	: TEXCOORD1,
+	float				iFog 		: FOG,
+	
+	uniform float4 iLightDiffuse,
+	uniform float4 iLightSpecular,
+	uniform float4 iLightAmbient,
+	uniform float4 iFogColour,
+
+	out float4          oColour		: COLOR,
+	
+    uniform float4   iScales[4],
+    uniform sampler2D   shadowTexture: TEXUNIT0,
+    uniform sampler2D   baseTextureDiffuse: TEXUNIT1,
+    uniform sampler2D   coverageTexture1: TEXUNIT2,
+    uniform sampler2D   splat1TextureDiffuse: TEXUNIT3,
+    uniform sampler2D   splat2TextureDiffuse: TEXUNIT4,
+    uniform sampler2D   splat3TextureDiffuse: TEXUNIT5,
+    uniform sampler2D   splat4TextureDiffuse: TEXUNIT6
+)
+{
+	//tile = 0.0025;
+//	float fogFactor   = exp2(-abs(iFog));
+
+	//only do lerp if we can see the pixels (i.e. not when in full fog
+ 	if (iFog < 1) {
+		//iTexcoord = iTexcoord * 16.0f;
+		
+		oColour = tex2D(baseTextureDiffuse, iTexcoord.xy * iScales[0].x);
+		oColour = (lerp(oColour, tex2D(splat1TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture1, iCoverage.xy).w));
+		oColour = (lerp(oColour, tex2D(splat2TextureDiffuse, iTexcoord.xy * iScales[0].z), tex2D(coverageTexture1, iCoverage.xy).x));
+		oColour = (lerp(oColour, tex2D(splat3TextureDiffuse, iTexcoord.xy * iScales[0].w), tex2D(coverageTexture1, iCoverage.xy).y));
+		oColour = (lerp(oColour, tex2D(splat4TextureDiffuse, iTexcoord.xy * iScales[0].x), tex2D(coverageTexture1, iCoverage.xy).z));
+		
+		//shadow, we'll multiply by the diffuse light
+		oColour *= (tex2D(shadowTexture, iCoverage.xy).x * iLightDiffuse);
+		
+		oColour = lerp(oColour, iFogColour, iFog);
+	} else {
+		oColour = iFogColour;
+	}
+}
+
+
+
+void splat_fp_6
+(
+    float2              iCoverage	: TEXCOORD0,
+    float2              iTexcoord	: TEXCOORD1,
+	float				iFog 		: FOG,
+	
+	uniform float4 iLightDiffuse,
+	uniform float4 iLightSpecular,
+	uniform float4 iLightAmbient,
+	uniform float4 iFogColour,
+
+	out float4          oColour		: COLOR,
+	
+    uniform float4   iScales[4],
+    uniform sampler2D   shadowTexture: TEXUNIT0,
+    uniform sampler2D   baseTextureDiffuse: TEXUNIT1,
+    uniform sampler2D   coverageTexture1: TEXUNIT2,
+    uniform sampler2D   splat1TextureDiffuse: TEXUNIT3,
+    uniform sampler2D   splat2TextureDiffuse: TEXUNIT4,
+    uniform sampler2D   splat3TextureDiffuse: TEXUNIT5,
+    uniform sampler2D   splat4TextureDiffuse: TEXUNIT6,
+    uniform sampler2D   coverageTexture2: TEXUNIT7,
+    uniform sampler2D   splat5TextureDiffuse: TEXUNIT8,
+    uniform sampler2D   splat6TextureDiffuse: TEXUNIT9,
+    uniform sampler2D   splat7TextureDiffuse: TEXUNIT10,
+    uniform sampler2D   splat8TextureDiffuse: TEXUNIT11,
+    uniform sampler2D   coverageTexture3: TEXUNIT12,
+    uniform sampler2D   splat9TextureDiffuse: TEXUNIT13,
+    uniform sampler2D   splat10TextureDiffuse: TEXUNIT14,
+    uniform sampler2D   splat11TextureDiffuse: TEXUNIT15
+)
+{
+	//tile = 0.0025;
+//	float fogFactor   = exp2(-abs(iFog));
+
+	//only do lerp if we can see the pixels (i.e. not when in full fog
+ 	if (iFog < 1) {
+		//iTexcoord = iTexcoord * 16.0f;
+		
+		oColour = tex2D(baseTextureDiffuse, iTexcoord.xy * iScales[0].x);
+		oColour = (lerp(oColour, tex2D(splat1TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture1, iCoverage.xy).w));
+		oColour = (lerp(oColour, tex2D(splat2TextureDiffuse, iTexcoord.xy * iScales[0].z), tex2D(coverageTexture1, iCoverage.xy).x));
+		oColour = (lerp(oColour, tex2D(splat3TextureDiffuse, iTexcoord.xy * iScales[0].w), tex2D(coverageTexture1, iCoverage.xy).y));
+		oColour = (lerp(oColour, tex2D(splat4TextureDiffuse, iTexcoord.xy * iScales[0].x), tex2D(coverageTexture1, iCoverage.xy).z));
+		oColour = (lerp(oColour, tex2D(splat5TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture2, iCoverage.xy).w));
+		
+		//shadow, we'll multiply by the diffuse light
+		oColour *= (tex2D(shadowTexture, iCoverage.xy).x * iLightDiffuse);
+		
+		oColour = lerp(oColour, iFogColour, iFog);
+	} else {
+		oColour = iFogColour;
+	}
+}
+
+
+
+void splat_fp_7
+(
+    float2              iCoverage	: TEXCOORD0,
+    float2              iTexcoord	: TEXCOORD1,
+	float				iFog 		: FOG,
+	
+	uniform float4 iLightDiffuse,
+	uniform float4 iLightSpecular,
+	uniform float4 iLightAmbient,
+	uniform float4 iFogColour,
+
+	out float4          oColour		: COLOR,
+	
+    uniform float4   iScales[4],
+    uniform sampler2D   shadowTexture: TEXUNIT0,
+    uniform sampler2D   baseTextureDiffuse: TEXUNIT1,
+    uniform sampler2D   coverageTexture1: TEXUNIT2,
+    uniform sampler2D   splat1TextureDiffuse: TEXUNIT3,
+    uniform sampler2D   splat2TextureDiffuse: TEXUNIT4,
+    uniform sampler2D   splat3TextureDiffuse: TEXUNIT5,
+    uniform sampler2D   splat4TextureDiffuse: TEXUNIT6,
+    uniform sampler2D   coverageTexture2: TEXUNIT7,
+    uniform sampler2D   splat5TextureDiffuse: TEXUNIT8,
+    uniform sampler2D   splat6TextureDiffuse: TEXUNIT9,
+    uniform sampler2D   splat7TextureDiffuse: TEXUNIT10,
+    uniform sampler2D   splat8TextureDiffuse: TEXUNIT11,
+    uniform sampler2D   coverageTexture3: TEXUNIT12,
+    uniform sampler2D   splat9TextureDiffuse: TEXUNIT13,
+    uniform sampler2D   splat10TextureDiffuse: TEXUNIT14,
+    uniform sampler2D   splat11TextureDiffuse: TEXUNIT15
+)
+{
+	//tile = 0.0025;
+//	float fogFactor   = exp2(-abs(iFog));
+
+	//only do lerp if we can see the pixels (i.e. not when in full fog
+ 	if (iFog < 1) {
+		//iTexcoord = iTexcoord * 16.0f;
+		
+		oColour = tex2D(baseTextureDiffuse, iTexcoord.xy * iScales[0].x);
+		oColour = (lerp(oColour, tex2D(splat1TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture1, iCoverage.xy).w));
+		oColour = (lerp(oColour, tex2D(splat2TextureDiffuse, iTexcoord.xy * iScales[0].z), tex2D(coverageTexture1, iCoverage.xy).x));
+		oColour = (lerp(oColour, tex2D(splat3TextureDiffuse, iTexcoord.xy * iScales[0].w), tex2D(coverageTexture1, iCoverage.xy).y));
+		oColour = (lerp(oColour, tex2D(splat4TextureDiffuse, iTexcoord.xy * iScales[0].x), tex2D(coverageTexture1, iCoverage.xy).z));
+		oColour = (lerp(oColour, tex2D(splat5TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture2, iCoverage.xy).w));
+		oColour = (lerp(oColour, tex2D(splat6TextureDiffuse, iTexcoord.xy * iScales[0].z), tex2D(coverageTexture2, iCoverage.xy).x));
+		
+		//shadow, we'll multiply by the diffuse light
+		oColour *= (tex2D(shadowTexture, iCoverage.xy).x * iLightDiffuse);
+		
+		oColour = lerp(oColour, iFogColour, iFog);
+	} else {
+		oColour = iFogColour;
+	}
+}
+
+
+
+void splat_fp_8
+(
+    float2              iCoverage	: TEXCOORD0,
+    float2              iTexcoord	: TEXCOORD1,
+	float				iFog 		: FOG,
+	
+	uniform float4 iLightDiffuse,
+	uniform float4 iLightSpecular,
+	uniform float4 iLightAmbient,
+	uniform float4 iFogColour,
+
+	out float4          oColour		: COLOR,
+	
+    uniform float4   iScales[4],
+    uniform sampler2D   shadowTexture: TEXUNIT0,
+    uniform sampler2D   baseTextureDiffuse: TEXUNIT1,
+    uniform sampler2D   coverageTexture1: TEXUNIT2,
+    uniform sampler2D   splat1TextureDiffuse: TEXUNIT3,
+    uniform sampler2D   splat2TextureDiffuse: TEXUNIT4,
+    uniform sampler2D   splat3TextureDiffuse: TEXUNIT5,
+    uniform sampler2D   splat4TextureDiffuse: TEXUNIT6,
+    uniform sampler2D   coverageTexture2: TEXUNIT7,
+    uniform sampler2D   splat5TextureDiffuse: TEXUNIT8,
+    uniform sampler2D   splat6TextureDiffuse: TEXUNIT9,
+    uniform sampler2D   splat7TextureDiffuse: TEXUNIT10,
+    uniform sampler2D   splat8TextureDiffuse: TEXUNIT11,
+    uniform sampler2D   coverageTexture3: TEXUNIT12,
+    uniform sampler2D   splat9TextureDiffuse: TEXUNIT13,
+    uniform sampler2D   splat10TextureDiffuse: TEXUNIT14,
+    uniform sampler2D   splat11TextureDiffuse: TEXUNIT15
+)
+{
+	//tile = 0.0025;
+//	float fogFactor   = exp2(-abs(iFog));
+
+	//only do lerp if we can see the pixels (i.e. not when in full fog
+ 	if (iFog < 1) {
+		//iTexcoord = iTexcoord * 16.0f;
+		
+		oColour = tex2D(baseTextureDiffuse, iTexcoord.xy * iScales[0].x);
+		oColour = (lerp(oColour, tex2D(splat1TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture1, iCoverage.xy).w));
+		oColour = (lerp(oColour, tex2D(splat2TextureDiffuse, iTexcoord.xy * iScales[0].z), tex2D(coverageTexture1, iCoverage.xy).x));
+		oColour = (lerp(oColour, tex2D(splat3TextureDiffuse, iTexcoord.xy * iScales[0].w), tex2D(coverageTexture1, iCoverage.xy).y));
+		oColour = (lerp(oColour, tex2D(splat4TextureDiffuse, iTexcoord.xy * iScales[0].x), tex2D(coverageTexture1, iCoverage.xy).z));
+		oColour = (lerp(oColour, tex2D(splat5TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture2, iCoverage.xy).w));
+		oColour = (lerp(oColour, tex2D(splat6TextureDiffuse, iTexcoord.xy * iScales[0].z), tex2D(coverageTexture2, iCoverage.xy).x));
+		oColour = (lerp(oColour, tex2D(splat7TextureDiffuse, iTexcoord.xy * iScales[0].w), tex2D(coverageTexture2, iCoverage.xy).y));
+		
+		//shadow, we'll multiply by the diffuse light
+		oColour *= (tex2D(shadowTexture, iCoverage.xy).x * iLightDiffuse);
+		
+		oColour = lerp(oColour, iFogColour, iFog);
+	} else {
+		oColour = iFogColour;
+	}
+}
+
+
+
+void splat_fp_9
+(
+    float2              iCoverage	: TEXCOORD0,
+    float2              iTexcoord	: TEXCOORD1,
+	float				iFog 		: FOG,
+	
+	uniform float4 iLightDiffuse,
+	uniform float4 iLightSpecular,
+	uniform float4 iLightAmbient,
+	uniform float4 iFogColour,
+
+	out float4          oColour		: COLOR,
+	
+    uniform float4   iScales[4],
+    uniform sampler2D   shadowTexture: TEXUNIT0,
+    uniform sampler2D   baseTextureDiffuse: TEXUNIT1,
+    uniform sampler2D   coverageTexture1: TEXUNIT2,
+    uniform sampler2D   splat1TextureDiffuse: TEXUNIT3,
+    uniform sampler2D   splat2TextureDiffuse: TEXUNIT4,
+    uniform sampler2D   splat3TextureDiffuse: TEXUNIT5,
+    uniform sampler2D   splat4TextureDiffuse: TEXUNIT6,
+    uniform sampler2D   coverageTexture2: TEXUNIT7,
+    uniform sampler2D   splat5TextureDiffuse: TEXUNIT8,
+    uniform sampler2D   splat6TextureDiffuse: TEXUNIT9,
+    uniform sampler2D   splat7TextureDiffuse: TEXUNIT10,
+    uniform sampler2D   splat8TextureDiffuse: TEXUNIT11,
+    uniform sampler2D   coverageTexture3: TEXUNIT12,
+    uniform sampler2D   splat9TextureDiffuse: TEXUNIT13,
+    uniform sampler2D   splat10TextureDiffuse: TEXUNIT14,
+    uniform sampler2D   splat11TextureDiffuse: TEXUNIT15
+)
+{
+	//tile = 0.0025;
+//	float fogFactor   = exp2(-abs(iFog));
+
+	//only do lerp if we can see the pixels (i.e. not when in full fog
+ 	if (iFog < 1) {
+		//iTexcoord = iTexcoord * 16.0f;
+		
+		oColour = tex2D(baseTextureDiffuse, iTexcoord.xy * iScales[0].x);
+		oColour = (lerp(oColour, tex2D(splat1TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture1, iCoverage.xy).w));
+		oColour = (lerp(oColour, tex2D(splat2TextureDiffuse, iTexcoord.xy * iScales[0].z), tex2D(coverageTexture1, iCoverage.xy).x));
+		oColour = (lerp(oColour, tex2D(splat3TextureDiffuse, iTexcoord.xy * iScales[0].w), tex2D(coverageTexture1, iCoverage.xy).y));
+		oColour = (lerp(oColour, tex2D(splat4TextureDiffuse, iTexcoord.xy * iScales[0].x), tex2D(coverageTexture1, iCoverage.xy).z));
+		oColour = (lerp(oColour, tex2D(splat5TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture2, iCoverage.xy).w));
+		oColour = (lerp(oColour, tex2D(splat6TextureDiffuse, iTexcoord.xy * iScales[0].z), tex2D(coverageTexture2, iCoverage.xy).x));
+		oColour = (lerp(oColour, tex2D(splat7TextureDiffuse, iTexcoord.xy * iScales[0].w), tex2D(coverageTexture2, iCoverage.xy).y));
+		oColour = (lerp(oColour, tex2D(splat8TextureDiffuse, iTexcoord.xy * iScales[0].x), tex2D(coverageTexture2, iCoverage.xy).z));
+		
+		//shadow, we'll multiply by the diffuse light
+		oColour *= (tex2D(shadowTexture, iCoverage.xy).x * iLightDiffuse);
+		
+		oColour = lerp(oColour, iFogColour, iFog);
+	} else {
+		oColour = iFogColour;
+	}
+}
+
+
+
+void splat_fp_10
+(
+    float2              iCoverage	: TEXCOORD0,
+    float2              iTexcoord	: TEXCOORD1,
+	float				iFog 		: FOG,
+	
+	uniform float4 iLightDiffuse,
+	uniform float4 iLightSpecular,
+	uniform float4 iLightAmbient,
+	uniform float4 iFogColour,
+
+	out float4          oColour		: COLOR,
+	
+    uniform float4   iScales[4],
+    uniform sampler2D   shadowTexture: TEXUNIT0,
+    uniform sampler2D   baseTextureDiffuse: TEXUNIT1,
+    uniform sampler2D   coverageTexture1: TEXUNIT2,
+    uniform sampler2D   splat1TextureDiffuse: TEXUNIT3,
+    uniform sampler2D   splat2TextureDiffuse: TEXUNIT4,
+    uniform sampler2D   splat3TextureDiffuse: TEXUNIT5,
+    uniform sampler2D   splat4TextureDiffuse: TEXUNIT6,
+    uniform sampler2D   coverageTexture2: TEXUNIT7,
+    uniform sampler2D   splat5TextureDiffuse: TEXUNIT8,
+    uniform sampler2D   splat6TextureDiffuse: TEXUNIT9,
+    uniform sampler2D   splat7TextureDiffuse: TEXUNIT10,
+    uniform sampler2D   splat8TextureDiffuse: TEXUNIT11,
+    uniform sampler2D   coverageTexture3: TEXUNIT12,
+    uniform sampler2D   splat9TextureDiffuse: TEXUNIT13,
+    uniform sampler2D   splat10TextureDiffuse: TEXUNIT14,
+    uniform sampler2D   splat11TextureDiffuse: TEXUNIT15
+)
+{
+	//tile = 0.0025;
+//	float fogFactor   = exp2(-abs(iFog));
+
+	//only do lerp if we can see the pixels (i.e. not when in full fog
+ 	if (iFog < 1) {
+		//iTexcoord = iTexcoord * 16.0f;
+		
+		oColour = tex2D(baseTextureDiffuse, iTexcoord.xy * iScales[0].x);
+		oColour = (lerp(oColour, tex2D(splat1TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture1, iCoverage.xy).w));
+		oColour = (lerp(oColour, tex2D(splat2TextureDiffuse, iTexcoord.xy * iScales[0].z), tex2D(coverageTexture1, iCoverage.xy).x));
+		oColour = (lerp(oColour, tex2D(splat3TextureDiffuse, iTexcoord.xy * iScales[0].w), tex2D(coverageTexture1, iCoverage.xy).y));
+		oColour = (lerp(oColour, tex2D(splat4TextureDiffuse, iTexcoord.xy * iScales[0].x), tex2D(coverageTexture1, iCoverage.xy).z));
+		oColour = (lerp(oColour, tex2D(splat5TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture2, iCoverage.xy).w));
+		oColour = (lerp(oColour, tex2D(splat6TextureDiffuse, iTexcoord.xy * iScales[0].z), tex2D(coverageTexture2, iCoverage.xy).x));
+		oColour = (lerp(oColour, tex2D(splat7TextureDiffuse, iTexcoord.xy * iScales[0].w), tex2D(coverageTexture2, iCoverage.xy).y));
+		oColour = (lerp(oColour, tex2D(splat8TextureDiffuse, iTexcoord.xy * iScales[0].x), tex2D(coverageTexture2, iCoverage.xy).z));
+		oColour = (lerp(oColour, tex2D(splat9TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture3, iCoverage.xy).w));
+		
+		//shadow, we'll multiply by the diffuse light
+		oColour *= (tex2D(shadowTexture, iCoverage.xy).x * iLightDiffuse);
+		
+		oColour = lerp(oColour, iFogColour, iFog);
+	} else {
+		oColour = iFogColour;
+	}
+}
+
+
+
+
+void splat_fp_11
+(
+    float2              iCoverage	: TEXCOORD0,
+    float2              iTexcoord	: TEXCOORD1,
+	float				iFog 		: FOG,
+	
+	uniform float4 iLightDiffuse,
+	uniform float4 iLightSpecular,
+	uniform float4 iLightAmbient,
+	uniform float4 iFogColour,
+
+	out float4          oColour		: COLOR,
+	
+    uniform float4   iScales[4],
+    uniform sampler2D   shadowTexture: TEXUNIT0,
+    uniform sampler2D   baseTextureDiffuse: TEXUNIT1,
+    uniform sampler2D   coverageTexture1: TEXUNIT2,
+    uniform sampler2D   splat1TextureDiffuse: TEXUNIT3,
+    uniform sampler2D   splat2TextureDiffuse: TEXUNIT4,
+    uniform sampler2D   splat3TextureDiffuse: TEXUNIT5,
+    uniform sampler2D   splat4TextureDiffuse: TEXUNIT6,
+    uniform sampler2D   coverageTexture2: TEXUNIT7,
+    uniform sampler2D   splat5TextureDiffuse: TEXUNIT8,
+    uniform sampler2D   splat6TextureDiffuse: TEXUNIT9,
+    uniform sampler2D   splat7TextureDiffuse: TEXUNIT10,
+    uniform sampler2D   splat8TextureDiffuse: TEXUNIT11,
+    uniform sampler2D   coverageTexture3: TEXUNIT12,
+    uniform sampler2D   splat9TextureDiffuse: TEXUNIT13,
+    uniform sampler2D   splat10TextureDiffuse: TEXUNIT14,
+    uniform sampler2D   splat11TextureDiffuse: TEXUNIT15
+)
+{
+	//tile = 0.0025;
+//	float fogFactor   = exp2(-abs(iFog));
+
+	//only do lerp if we can see the pixels (i.e. not when in full fog
+ 	if (iFog < 1) {
+		//iTexcoord = iTexcoord * 16.0f;
+		
+		oColour = tex2D(baseTextureDiffuse, iTexcoord.xy * iScales[0].x);
+		oColour = (lerp(oColour, tex2D(splat1TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture1, iCoverage.xy).w));
+		oColour = (lerp(oColour, tex2D(splat2TextureDiffuse, iTexcoord.xy * iScales[0].z), tex2D(coverageTexture1, iCoverage.xy).x));
+		oColour = (lerp(oColour, tex2D(splat3TextureDiffuse, iTexcoord.xy * iScales[0].w), tex2D(coverageTexture1, iCoverage.xy).y));
+		oColour = (lerp(oColour, tex2D(splat4TextureDiffuse, iTexcoord.xy * iScales[0].x), tex2D(coverageTexture1, iCoverage.xy).z));
+		oColour = (lerp(oColour, tex2D(splat5TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture2, iCoverage.xy).w));
+		oColour = (lerp(oColour, tex2D(splat6TextureDiffuse, iTexcoord.xy * iScales[0].z), tex2D(coverageTexture2, iCoverage.xy).x));
+		oColour = (lerp(oColour, tex2D(splat7TextureDiffuse, iTexcoord.xy * iScales[0].w), tex2D(coverageTexture2, iCoverage.xy).y));
+		oColour = (lerp(oColour, tex2D(splat8TextureDiffuse, iTexcoord.xy * iScales[0].x), tex2D(coverageTexture2, iCoverage.xy).z));
+		oColour = (lerp(oColour, tex2D(splat9TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture3, iCoverage.xy).w));
+		oColour = (lerp(oColour, tex2D(splat10TextureDiffuse, iTexcoord.xy * iScales[0].z), tex2D(coverageTexture3, iCoverage.xy).x));
+		
+		//shadow, we'll multiply by the diffuse light
+		oColour *= (tex2D(shadowTexture, iCoverage.xy).x * iLightDiffuse);
+		
+		oColour = lerp(oColour, iFogColour, iFog);
+	} else {
+		oColour = iFogColour;
+	}
+}
+
+
+void splat_fp_12
+(
+    float2              iCoverage	: TEXCOORD0,
+    float2              iTexcoord	: TEXCOORD1,
+	float				iFog 		: FOG,
+	
+	uniform float4 iLightDiffuse,
+	uniform float4 iLightSpecular,
+	uniform float4 iLightAmbient,
+	uniform float4 iFogColour,
+
+	out float4          oColour		: COLOR,
+	
+    uniform float4   iScales[4],
+    uniform sampler2D   shadowTexture: TEXUNIT0,
+    uniform sampler2D   baseTextureDiffuse: TEXUNIT1,
+    uniform sampler2D   coverageTexture1: TEXUNIT2,
+    uniform sampler2D   splat1TextureDiffuse: TEXUNIT3,
+    uniform sampler2D   splat2TextureDiffuse: TEXUNIT4,
+    uniform sampler2D   splat3TextureDiffuse: TEXUNIT5,
+    uniform sampler2D   splat4TextureDiffuse: TEXUNIT6,
+    uniform sampler2D   coverageTexture2: TEXUNIT7,
+    uniform sampler2D   splat5TextureDiffuse: TEXUNIT8,
+    uniform sampler2D   splat6TextureDiffuse: TEXUNIT9,
+    uniform sampler2D   splat7TextureDiffuse: TEXUNIT10,
+    uniform sampler2D   splat8TextureDiffuse: TEXUNIT11,
+    uniform sampler2D   coverageTexture3: TEXUNIT12,
+    uniform sampler2D   splat9TextureDiffuse: TEXUNIT13,
+    uniform sampler2D   splat10TextureDiffuse: TEXUNIT14,
+    uniform sampler2D   splat11TextureDiffuse: TEXUNIT15
+)
+{
+	//tile = 0.0025;
+//	float fogFactor   = exp2(-abs(iFog));
+
+	//only do lerp if we can see the pixels (i.e. not when in full fog
+ 	if (iFog < 1) {
+		//iTexcoord = iTexcoord * 16.0f;
+		
+		oColour = tex2D(baseTextureDiffuse, iTexcoord.xy * iScales[0].x);
+		oColour = (lerp(oColour, tex2D(splat1TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture1, iCoverage.xy).w));
+		oColour = (lerp(oColour, tex2D(splat2TextureDiffuse, iTexcoord.xy * iScales[0].z), tex2D(coverageTexture1, iCoverage.xy).x));
+		oColour = (lerp(oColour, tex2D(splat3TextureDiffuse, iTexcoord.xy * iScales[0].w), tex2D(coverageTexture1, iCoverage.xy).y));
+		oColour = (lerp(oColour, tex2D(splat4TextureDiffuse, iTexcoord.xy * iScales[0].x), tex2D(coverageTexture1, iCoverage.xy).z));
+		oColour = (lerp(oColour, tex2D(splat5TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture2, iCoverage.xy).w));
+		oColour = (lerp(oColour, tex2D(splat6TextureDiffuse, iTexcoord.xy * iScales[0].z), tex2D(coverageTexture2, iCoverage.xy).x));
+		oColour = (lerp(oColour, tex2D(splat7TextureDiffuse, iTexcoord.xy * iScales[0].w), tex2D(coverageTexture2, iCoverage.xy).y));
+		oColour = (lerp(oColour, tex2D(splat8TextureDiffuse, iTexcoord.xy * iScales[0].x), tex2D(coverageTexture2, iCoverage.xy).z));
+		oColour = (lerp(oColour, tex2D(splat9TextureDiffuse, iTexcoord.xy * iScales[0].y), tex2D(coverageTexture3, iCoverage.xy).w));
+		oColour = (lerp(oColour, tex2D(splat10TextureDiffuse, iTexcoord.xy * iScales[0].z), tex2D(coverageTexture3, iCoverage.xy).x));
+		oColour = (lerp(oColour, tex2D(splat11TextureDiffuse, iTexcoord.xy * iScales[0].w), tex2D(coverageTexture3, iCoverage.xy).y));
+		
+		//shadow, we'll multiply by the diffuse light
+		oColour *= (tex2D(shadowTexture, iCoverage.xy).x * iLightDiffuse);
+		
+		oColour = lerp(oColour, iFogColour, iFog);
+	} else {
+		oColour = iFogColour;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Expand a range-compressed vector
 float3 expand(float3 v)

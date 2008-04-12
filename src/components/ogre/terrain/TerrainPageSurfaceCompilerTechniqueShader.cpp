@@ -178,7 +178,7 @@ bool TerrainPageSurfaceCompilerTechniqueShader::compileMaterial(Ogre::MaterialPt
 					}
 				}
 			} else {
-				//handle new pass
+				///TODO: handle new pass
 			}
 		}
 		if (!shaderPass->finalize())
@@ -186,7 +186,10 @@ bool TerrainPageSurfaceCompilerTechniqueShader::compileMaterial(Ogre::MaterialPt
 			return false;
 		}
 	}
+	///we need to load it before we can see how many techniques are supported
+	material->load();
 	if (material->getNumSupportedTechniques() == 0) {
+		S_LOG_WARNING("The material '" << material->getName() << "' has no supported techniques. The reason for this is: \n" << material->getUnsupportedTechniquesExplanation());
 		return false;
 	}
 	return true;
@@ -290,6 +293,7 @@ bool TerrainPageSurfaceCompilerShaderPass::finalize()
 
 
 	
+	///we provide different fragment programs for different amounts of textures used, so we need to determine which one to use. They all have the form of "splatting_fragment_*"
 	std::stringstream ss;
 	ss << "splatting_fragment_" << mLayers.size();
 	std::string fragmentProgramName(ss.str());
@@ -299,14 +303,20 @@ bool TerrainPageSurfaceCompilerShaderPass::finalize()
 	
 			
 	///add fragment shader for splatting
-	mPass->setFragmentProgram("splatting_fragment_dynamic");
-
-// 	mPass->setFragmentProgram(fragmentProgramName);
+// 	mPass->setFragmentProgram("splatting_fragment_dynamic");
+	try {
+		S_LOG_VERBOSE("Using fragment program " << fragmentProgramName << " for terrain page.");
+		mPass->setFragmentProgram(fragmentProgramName);
+// 		mPass->setFragmentProgram("splatting_fragment_dynamic");
+	} catch (const Ogre::Exception& ex) {
+		S_LOG_WARNING("Error when setting fragment program '" << fragmentProgramName << "'. Message:\n" << ex.what());
+		return false;
+	}
 	try {
 		Ogre::GpuProgramParametersSharedPtr fpParams = mPass->getFragmentProgramParameters();
 		fpParams->setIgnoreMissingParams(true);
 		fpParams->setNamedAutoConstant("iFogColour", Ogre::GpuProgramParameters::ACT_FOG_COLOUR);
-		fpParams->setNamedConstant("iNumberOfLayers", (float)mLayers.size()); //4*4=16
+		fpParams->setNamedConstant("iNumberOfLayers", (float)mLayers.size()); ///this will only apply to the splatting_fragment_dynamic material
 		///set how much the texture should tile
 		fpParams->setNamedConstant("iScales", mScales, 4); //4*4=16
 		
