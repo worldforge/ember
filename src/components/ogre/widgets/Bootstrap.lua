@@ -78,7 +78,9 @@ loadScript("Status.lua")
 loadScript("Environment.lua")
 loadScript("AssetsManager.lua")
 loadScript("Inventory.lua")
-loadScript("Compass.lua")
+
+--disable for 0.5.2 release
+--loadScript("Compass.lua")
 --loadScript("TerrainEditor.lua")
 
 
