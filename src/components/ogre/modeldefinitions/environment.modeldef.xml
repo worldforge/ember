@@ -22,7 +22,7 @@
 				<parts>
 					<part name="boulders_A" group="main" show="true">
 						<subentities>
-							<subentity index="0" material="/global/environment/boulder/mossy_boulder" />
+							<subentity index="0" material="/global/environment/boulder/moraf" />
 						</subentities>
 					</part>
 				</parts>
@@ -31,7 +31,7 @@
 				<parts>
 					<part name="boulders_B" group="main" show="false">
 						<subentities>
-							<subentity index="0" material="/global/environment/boulder/mossy_boulder" />
+							<subentity index="0" material="/global/environment/boulder/moraf" />
 						</subentities>
 					</part>
 				</parts>
@@ -40,7 +40,7 @@
 				<parts>
 					<part name="boulders_C" group="main" show="false">
 						<subentities>
-							<subentity index="0" material="/global/environment/boulder/mossy_boulder" />
+							<subentity index="0" material="/global/environment/boulder/moraf" />
 						</subentities>
 					</part>
 				</parts>
@@ -49,7 +49,7 @@
 				<parts>
 					<part name="boulders_D" group="main" show="false">
 						<subentities>
-							<subentity index="0" material="/global/environment/boulder/mossy_boulder" />
+							<subentity index="0" material="/global/environment/boulder/moraf" />
 						</subentities>
 					</part>
 				</parts>

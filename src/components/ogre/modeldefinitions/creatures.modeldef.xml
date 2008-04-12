@@ -163,7 +163,7 @@
 	
 	<model name="pig" usescaleof="height" showcontained="false">
 		<submodels>
-			<submodel mesh="3d_skeletons/pig/pig.mesh" >
+			<submodel mesh="3d_skeletons/quadrapeds/pig/pig.mesh" >
 				<parts>
 					<part name="main" show="true" />
 				</parts>
@@ -202,32 +202,41 @@
 		</actions>
 	</model>	
 	
-	<model name="cow" usescaleof="height" showcontained="false">
-		<rotation x="1" y="0" z="0" degrees="-90" />
-		<submodels>
-			<submodel mesh="3d_objects/creatures/quadruped_v2/models/cow/Cow.mesh" >
-			<parts>
-				<part name="main" show="true" />
-			</parts>
-			</submodel>
-		</submodels>
-		<actions>
-			<action name="__movement_walk">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="Walk" weight="1" />
-					</animation>
-				</animations>
-			</action>
-			<action name="__movement_idle">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="Stand" weight="1" />
-					</animation>
-				</animations>
-			</action>
-		</actions>
-	</model>	
+    <model name="cow" usescaleof="height" showcontained="false" icon="">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="-1.000000" y="-0.000000" z="-0.000000" degrees="90.000000" />
+        <submodels>
+            <submodel mesh="3d_skeletons/quadrapeds/models/cow/cow.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/creature/cow" />
+                            <subentity index="1" material="/global/creature/cow" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions>
+            <action name="__movement_walk" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="Walk" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="__movement_idle" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="Stand" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+        </actions>
+        <attachpoints />
+        <views />
+    </model>	
+
 	
 	<model name="rabbit" usescaleof="height" showcontained="false" >
 		<submodels>
@@ -307,22 +316,35 @@
 	</model>	
 		
 	
-	<model name="arm">
-		<submodels>
-			<submodel mesh="junkyard/models/skeleton/arm.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>	
-    <model name="skull" usescaleof="width" showcontained="true">
+    <model name="arm" usescaleof="all" showcontained="true" icon="">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="junkyard/models/skeleton/arm.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/bipeds/races/skeleton/body/white" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+    <model name="skull" usescaleof="width" showcontained="true" icon="">
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
             <submodel mesh="junkyard/models/skeleton/skull.mesh">
                 <parts>
-                    <part name="main" show="true" />
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/bipeds/races/skeleton/body/white" />
+                        </subentities>
+                    </part>
                 </parts>
             </submodel>
         </submodels>
@@ -331,47 +353,82 @@
         <views>
             <view name="icon">
                 <distance>36.0695</distance>
-                <rotation x="0.361903" y="-0.586539" z="0.724568" degrees="259.492615" />
+                <rotation x="0.361903" y="-0.586539" z="0.724568" degrees="259.492584" />
             </view>
         </views>
     </model>
-	<model name="shin">
-		<submodels>
-			<submodel mesh="junkyard/models/skeleton/shin.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>	
-	<model name="pelvis">
-		<submodels>
-			<submodel mesh="junkyard/models/skeleton/pelvis.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>	
-	<model name="ribcage">
-		<submodels>
-			<submodel mesh="junkyard/models/skeleton/ribcage.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>	
-	<model name="thigh">
-		<submodels>
-			<submodel mesh="junkyard/models/skeleton/thigh.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>	
-	
+    <model name="shin" usescaleof="all" showcontained="true" icon="">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="junkyard/models/skeleton/shin.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/bipeds/races/skeleton/body/white" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+    <model name="pelvis" usescaleof="all" showcontained="true" icon="">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="junkyard/models/skeleton/pelvis.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/bipeds/races/skeleton/body/white" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+    <model name="ribcage" usescaleof="all" showcontained="true" icon="">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="junkyard/models/skeleton/ribcage.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/bipeds/races/skeleton/body/white" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+    <model name="thigh" usescaleof="all" showcontained="true" icon="">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="junkyard/models/skeleton/thigh.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/bipeds/races/skeleton/body/white" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>	
 	<!--<model name="goblin" usescaleof="height" showcontained="false">
 		<translate x="0" y="0" z="0" />
 		<submodels>
