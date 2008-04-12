@@ -1,6 +1,6 @@
 CompassOverlay
 {
-	container BorderPanel(CompassOverlayPanel)
+	container Panel(CompassOverlayPanel)
 	{
 		metrics_mode pixels
 		vert_align top
