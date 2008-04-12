@@ -38,15 +38,6 @@ material /global/fire
 	}
 }
 
-material /global/environment/boulder/moraf_rock : /base/simple
-{
-	set_texture_alias DiffuseMap 3d_objects/environment/boulder/textures/moraf_rock/boulder.png
-}
-
-material /global/environment/boulder/mossy_boulder : /base/simple
-{
-	set_texture_alias DiffuseMap 3d_objects/environment/boulder/textures/mossy_boulder/mossy_boulder.png
-}
 
 material /global/environment/stone/stone_boulder_mossy : /base/simple
 {

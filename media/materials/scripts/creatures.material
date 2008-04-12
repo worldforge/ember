@@ -66,12 +66,10 @@ material /global/creature/insect/carrion : /base/simple
 	set_texture_alias DiffuseMap 3d_objects/creatures/insect/textures/carrion/insect.png
 }
 
-material /global/body_parts/skeleton/bone/skeleton : /base/simple
+material /global/bipeds/races/skeleton/body/white : /base/simple
 {
-	set_texture_alias DiffuseMap 3d_objects/body_parts/skeleton/textures/bone/skeleton.png
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/races/skeleton/body/textures/white/D.png
 }
-
-
 
 //----------------
 //---- Humanoid creatures
