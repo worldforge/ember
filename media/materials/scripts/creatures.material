@@ -134,9 +134,9 @@ material /global/bipeds/male_head : /base/normalmap/specular
 
 material /global/bipeds/races/human/male/body/base : /base/normalmap/specular
 {
-	set_texture_alias DiffuseMap 3d_skeletons/bipeds/races/human/male/body/base/D.tga
-	set_texture_alias NormalHeightMap 3d_skeletons/bipeds/races/human/male/body/base/N.tga
-	set_texture_alias SpecularMap 3d_skeletons/bipeds/races/human/male/body/base/S.tga
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/races/human/male/body/base/D.png
+	set_texture_alias NormalHeightMap 3d_skeletons/bipeds/races/human/male/body/base/N.png
+	set_texture_alias SpecularMap 3d_skeletons/bipeds/races/human/male/body/base/S.png
 }
 
 material /global/bipeds/races/universal/eyes/blue : /base/simple
@@ -167,9 +167,9 @@ material /global/bipeds/races/human/male/head/bearded_male : /base/simple
 
 material /global/bipeds/races/human/male/head/middle_aged : /base/normalmap/specular
 {
-	set_texture_alias DiffuseMap 3d_skeletons/bipeds/races/human/male/head/middle_aged/D.tga
-	set_texture_alias NormalHeightMap 3d_skeletons/bipeds/races/human/male/head/middle_aged/N.tga
-	set_texture_alias SpecularMap 3d_skeletons/bipeds/races/human/male/head/middle_aged/S.tga
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/races/human/male/head/middle_aged/D.png
+	set_texture_alias NormalHeightMap 3d_skeletons/bipeds/races/human/male/head/middle_aged/N.png
+	set_texture_alias SpecularMap 3d_skeletons/bipeds/races/human/male/head/middle_aged/S.png
 }
 
 material /global/bipeds/races/human/male/attire/drystan_archer/footwear : /base/normalmap/specular
