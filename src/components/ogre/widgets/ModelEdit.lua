@@ -205,6 +205,9 @@ function ModelEdit.updateModelInfo()
 	
 	ModelEdit.scaleTypes:clearAllSelections()
 	ModelEdit.scaleTypes:setItemSelectState(ModelEdit.definition:getUseScaleOf(), true)
+	
+	ModelEdit.zoomSlider:setCurrentValue(ModelEdit.renderer:getCameraDistance())
+
 end
 
 function ModelEdit.translateAdapter_update()
