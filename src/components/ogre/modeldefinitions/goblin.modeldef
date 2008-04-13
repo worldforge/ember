@@ -3,18 +3,18 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="-1.000000" y="-0.000000" z="-0.000000" degrees="90.000000" />
         <submodels>
-            <submodel mesh="3d_skeletons/bipeds/models/goblin/goblin.mesh">
+            <submodel mesh="3d_skeletons/bipeds/races/goblin/male/goblin.mesh">
                 <parts>
                     <part name="body" group="main" show="true">
                         <subentities>
-                            <subentity index="1" material="/global/bipeds/goblin/body" />
+                            <subentity index="1" material="/global/bipeds/races/goblin/male/body" />
                         </subentities>
                     </part>
                     <part name="head" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/bipeds/goblin/head" />
-                            <subentity index="2" material="/global/bipeds/goblin/head" />
-                            <subentity index="3" material="/global/bipeds/goblin/head" />
+                            <subentity index="0" material="/global/bipeds/races/goblin/male/head" />
+                            <subentity index="2" material="/global/bipeds/races/goblin/male/head" />
+                            <subentity index="3" material="/global/bipeds/races/goblin/male/head" />
                         </subentities>
                     </part>
                 </parts>
