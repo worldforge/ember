@@ -5,24 +5,25 @@ material /global/creature/pig/skin : /base/simple
 
 material /global/creature/cow : /base/normalmap/specular
 {
-	set_texture_alias DiffuseMap 3d_skeletons/quadrapeds/textures/cow/cowD.tga
-	set_texture_alias NormalHeightMap 3d_skeletons/quadrapeds/textures/cow/cowN.tga
-	set_texture_alias SpecularMap 3d_skeletons/quadrapeds/textures/cow/cowS.tga
+	set_texture_alias DiffuseMap 3d_skeletons/quadrapeds/cow/cowD.png
+	set_texture_alias NormalHeightMap 3d_skeletons/quadrapeds/cow/cowN.png
+	set_texture_alias SpecularMap 3d_skeletons/quadrapeds/cow/cowS.png
 }
 
 material /global/creature/horse : /base/normalmap/specular
 {
-	set_texture_alias DiffuseMap 3d_skeletons/quadrapeds/textures/horse/horseD.tga
-	set_texture_alias NormalHeightMap 3d_skeletons/quadrapeds/textures/horse/horseN.tga
-	set_texture_alias SpecularMap 3d_skeletons/quadrapeds/textures/horse/horseS.tga
+	set_texture_alias DiffuseMap 3d_skeletons/quadrapeds/horse/horseD.png
+	set_texture_alias NormalHeightMap 3d_skeletons/quadrapeds/horse/horseN.png
+	set_texture_alias SpecularMap 3d_skeletons/quadrapeds/horse/horseS.png
 }
 
 material /global/creature/rabbit : /base/normalmap/specular
 {
-	set_texture_alias DiffuseMap 3d_skeletons/quadrapeds/textures/rabbit/rabbitD.tga
-	set_texture_alias NormalHeightMap 3d_skeletons/quadrapeds/textures/rabbit/rabbitN.tga
-	set_texture_alias SpecularMap 3d_skeletons/quadrapeds/textures/rabbit/rabbitS.tga
+	set_texture_alias DiffuseMap 3d_skeletons/quadrapeds/rabbit/rabbitD.png
+	set_texture_alias NormalHeightMap 3d_skeletons/quadrapeds/rabbit/rabbitN.png
+	set_texture_alias SpecularMap 3d_skeletons/quadrapeds/rabbit/rabbitS.png
 }
+
 
 material /global/creature/mottled_oker : /base/simple
 {
