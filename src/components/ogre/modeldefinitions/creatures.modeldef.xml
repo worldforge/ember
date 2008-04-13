@@ -293,7 +293,7 @@
 	
 	<model name="skeleton" usescaleof="height" showcontained="false" >
 		<submodels>
-			<submodel mesh="3d_skeletons/gen_humanoid/skeleton.mesh" >
+			<submodel mesh="junkyard/models/skeleton/skeleton.mesh" >
 				<parts>
 					<part name="Body" show="true" >
 						<subentities>
@@ -302,7 +302,7 @@
 					</part>      
 					<part name="Eyes" show="true" >
 						<subentities>
-							<subentity name="eyes" />
+                            <subentity name="eyes" material="/global/bipeds/races/universal/eyes/brown" />
 						</subentities>
 					</part>      
 					<part name="Cape" show="false" >
