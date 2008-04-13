@@ -293,14 +293,17 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 void EmberPhysicalEntity::initFromModel()
 {
 	
-	///make a copy of the original bbox
-	mDefaultOgreBoundingBox = mModel->getBoundingBox();
 	
 	getScaleNode()->setOrientation(Ogre::Quaternion::IDENTITY);
 	///rotate node to fit with WF space
 	///perhaps this is something to put in the model spec instead?
 	getScaleNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
 	getScaleNode()->rotate(getModel()->getRotation());
+	
+	///make a copy of the original bbox
+	mDefaultOgreBoundingBox = mModel->getBoundingBox();
+	///apply any rotation required first so the bounding box we use as reference represents the way to mesh is adjusted through rotations set in the model definition
+	mDefaultOgreBoundingBox.transform(Ogre::Matrix4(getScaleNode()->getOrientation()));
 	
 	scaleNode();
 	
