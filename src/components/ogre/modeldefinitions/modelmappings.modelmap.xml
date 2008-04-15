@@ -685,12 +685,12 @@
 				<caseparam type="equals">skeleton</caseparam>
 				<caseparam type="equals">lych</caseparam>
 				<action type="display-model">skeleton</action>
-				<entitymatch>
+<!--				<entitymatch>
 					<case equals="lych">
 						<caseparam type="equals">lych</caseparam>
 						<action type="display-part">Cape</action>
 					</case>
-				</entitymatch>
+				</entitymatch>-->
 			</case>
 		</entitymatch>
 	</modelmapping>	
