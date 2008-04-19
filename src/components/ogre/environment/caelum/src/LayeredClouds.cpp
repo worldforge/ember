@@ -68,6 +68,10 @@ namespace caelum
 
 		mMaterial = static_cast<Ogre::MaterialPtr>(
 				Ogre::MaterialManager::getSingleton().getByName(materialName));
+		if (mMaterial.isNull()) {
+			throw UnsupportedException (0, std::string("Layered cloud material not found (") + materialName + ").",
+					"LayeredClouds", "LayeredClouds.cpp", -1);
+		}
 		mMaterial->load();
 		if (mMaterial->getBestTechnique() == 0) {
 			throw UnsupportedException (0, "Layered cloud material not supported.",

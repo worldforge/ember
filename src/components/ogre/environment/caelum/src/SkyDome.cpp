@@ -30,6 +30,10 @@ const Ogre::String SkyDome::SKY_DOME_MATERIAL_NAME = "CaelumSkyDomeMaterial";
 
 SkyDome::SkyDome (Ogre::SceneManager *sceneMgr, Ogre::SceneNode *caelumRootNode) {
 	mMaterial = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton ().getByName (SKY_DOME_MATERIAL_NAME));
+	if (mMaterial.isNull()) {
+		throw UnsupportedException (0, std::string("Could not find sky dome material (") + SKY_DOME_MATERIAL_NAME + ").",
+				"SkyDome", "SkyDome.cpp", -1);
+	}
 	mMaterial->load ();
 	mShadersEnabled = mMaterial->getBestTechnique()->getPass(0)->isProgrammable();
 

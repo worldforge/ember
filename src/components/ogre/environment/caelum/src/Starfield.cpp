@@ -21,6 +21,7 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 #include "CaelumPrecompiled.h"
 #include "Starfield.h"
 #include "GeometryFactory.h"
+#include "CaelumExceptions.h"
 
 namespace caelum {
 
@@ -32,6 +33,10 @@ Starfield::Starfield (Ogre::SceneManager *sceneMgr, Ogre::SceneNode *caelumRootN
 	mInclination = Ogre::Degree (0);
 
 	mStarfieldMaterial = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton ().getByName (STARFIELD_MATERIAL_NAME));
+	if (mStarfieldMaterial.isNull()) {
+		throw UnsupportedException (0, std::string("Could not find star field material (") + STARFIELD_MATERIAL_NAME + ").",
+				"Starfield", "Starfield.cpp", -1);
+	}
 	mStarfieldMaterial->load();
     setTexture (textureName);
 

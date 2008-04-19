@@ -47,6 +47,10 @@ namespace caelum {
 
 		mDomeMaterial = static_cast<Ogre::MaterialPtr>(
 				Ogre::MaterialManager::getSingleton().getByName(domeMaterialName));
+		if (mDomeMaterial.isNull()) {
+			throw UnsupportedException (0, std::string("GroundFog dome material not found (") + domeMaterialName+ ").",
+					"GroundFog", "GroundFog.cpp", -1);
+		}
 		mDomeMaterial->load();
 		if (mDomeMaterial->getBestTechnique() == 0) {
 			throw UnsupportedException (0, "GroundFog dome material not supported.",
