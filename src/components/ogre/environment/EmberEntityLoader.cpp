@@ -87,10 +87,10 @@ void EmberEntityLoader::loadPage(::PagedGeometry::PageInfo & page)
 {
 	static Ogre::ColourValue colour(1,1,1,1);
 	
-	const int batchX = Ogre::Math::Floor(page.bounds.left/ mBatchSize);
-	const int batchY = Ogre::Math::Floor(page.bounds.top / mBatchSize);
 	
 #if USEBATCH
+	const int batchX = static_cast<int>(Ogre::Math::Floor(page.bounds.left/ mBatchSize));
+	const int batchY = static_cast<int>(Ogre::Math::Floor(page.bounds.top / mBatchSize));
 	EntityMap& entities(mEntities[batchX][batchY]);
 #else
 	EntityMap& entities(mEntities);

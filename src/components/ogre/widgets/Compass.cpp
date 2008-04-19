@@ -85,8 +85,8 @@ void Compass::rotate(const Ogre::Radian& radian)
 }
 
 ICompassImpl::ICompassImpl()
-: mCompass(0)
-, mMap(0)
+: mMap(0)
+, mCompass(0)
 {
 }
 
@@ -133,7 +133,7 @@ void CEGUICompassImpl::_setCompass(Compass* compass)
 {
 	AssetsManager assetsManager;
 	mTexturePair = assetsManager.createTextureImage(mMap->getTexture(), "CompassMap");
-	int halfOffset = mMap->getTexture()->getWidth() * 0.25;
+	int halfOffset = static_cast<int>(mMap->getTexture()->getWidth() * 0.25f);
 	mTexturePair.getTextureImageset()->defineImage("view",  CEGUI::Rect(halfOffset, halfOffset, mMap->getTexture()->getWidth() - halfOffset, mMap->getTexture()->getWidth() - halfOffset), CEGUI::Point(0,0));
 	mViewImage = &mTexturePair.getTextureImageset()->getImage("view");
 	
@@ -183,6 +183,15 @@ void OverlayCompassImpl::reposition(float x, float y)
 
 void OverlayCompassImpl::rotate(const Ogre::Degree& degree)
 {
+// 	Point<2> center = Ogre2Atlas(mMap->getView().getRelativeViewPosition());
+// 	Vector<2> dimensions(0.5, 0.5);
+// 	Quaternion qRot;
+// 	qRot = qRot.rotation(2, degree);
+// 	
+// 	RotBox<2> rotbox(center, dimensions, qRot);
+
+
+
 	if (!mCompassMaterial.isNull()) {
 		Ogre::TextureUnitState* tus(mCompassMaterial->getBestTechnique()->getPass(0)->getTextureUnitState(0));
  		tus->setTextureRotate(degree);

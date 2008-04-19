@@ -126,7 +126,7 @@ MapView::MapView(Map& map, MapCamera& mapCamera)
 : mMap(map)
 , mMapCamera(mapCamera)
 , mViewSize(0.5)
-, mViewSizeMeters(mViewSize * map.getResolutionMeters())
+, mViewSizeMeters(static_cast<int>(mViewSize * map.getResolutionMeters()))
 {
 	///set it to invalid values so we'll force an update when it's repositioned
 	mFullBounds.left = 1;
@@ -144,10 +144,10 @@ bool MapView::reposition(Ogre::Vector2 pos)
 		mMapCamera.reposition(pos);
 		mMapCamera.render();
 		
-		mFullBounds.left = pos.x - (mMap.getResolutionMeters() / 2);
-		mFullBounds.right = pos.x + (mMap.getResolutionMeters() / 2);
-		mFullBounds.top = pos.y - (mMap.getResolutionMeters() / 2);
-		mFullBounds.bottom = pos.y + (mMap.getResolutionMeters() / 2);
+		mFullBounds.left = static_cast<int>(pos.x - (mMap.getResolutionMeters() / 2));
+		mFullBounds.right = static_cast<int>(pos.x + (mMap.getResolutionMeters() / 2));
+		mFullBounds.top = static_cast<int>(pos.y - (mMap.getResolutionMeters() / 2));
+		mFullBounds.bottom = static_cast<int>(pos.y + (mMap.getResolutionMeters() / 2));
 		
 		
 		
@@ -228,6 +228,7 @@ MapCamera::MapCamera(Map& map, Ogre::SceneManager* manager)
 	mCamera->pitch(Ogre::Degree(-90));
 	///we want really low LOD on this camera
 	mCamera->setLodBias(0.0001f);
+	
 	setDistance(mDistance);
 	
 // 	mCamera->setFOVy(Ogre::Degree(30));
@@ -237,7 +238,7 @@ MapCamera::MapCamera(Map& map, Ogre::SceneManager* manager)
 	mCamera->setFarClipDistance(mDistance * 200);
 	///use orthographic projection and then alter the projectionmatrix to make it render only the intended area
 	mCamera->setProjectionType(Ogre::PT_ORTHOGRAPHIC );
-	int halfRes = mMap.getResolutionMeters() / 2;
+	int halfRes = static_cast<int>(mMap.getResolutionMeters() / 2.0f);
 	mCamera->setCustomProjectionMatrix(true,makeOrtho2D(-halfRes,halfRes,-halfRes,halfRes,1,1000));
 	mCamera->setAspectRatio(1.0);
 	
