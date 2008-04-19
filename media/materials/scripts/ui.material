@@ -20,5 +20,15 @@ material /ui/compass
 		
       }
     }
+    pass Overlay
+    {
+		scene_blend alpha_blend
+		ambient 1.0 1.0 1.0
+		diffuse 1.0 1.0 1.0
+	  texture_unit Overlay
+      {
+        texture themes/ember/gui/compass/outer_ring.png 2d 0
+      }
+    }
   }
 }
