@@ -31,6 +31,7 @@ const Ogre::String SkyDome::SKY_DOME_MATERIAL_NAME = "CaelumSkyDomeMaterial";
 SkyDome::SkyDome (Ogre::SceneManager *sceneMgr, Ogre::SceneNode *caelumRootNode) {
 	mMaterial = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton ().getByName (SKY_DOME_MATERIAL_NAME));
 	mMaterial->load ();
+	mShadersEnabled = mMaterial->getBestTechnique()->getPass(0)->isProgrammable();
 
 	sceneMgr->getRenderQueue()->getQueueGroup(CAELUM_RENDER_QUEUE_SKYDOME)->setShadowsEnabled(false);
 
@@ -69,16 +70,21 @@ void SkyDome::setSunDirection (Ogre::Vector3 sunDir) {
     float elevation = sunDir.dotProduct (Ogre::Vector3::UNIT_Y);
     elevation = elevation * 0.5 + 0.5;
 	Ogre::Pass* pass = mMaterial->getBestTechnique()->getPass(0);
-	Ogre::GpuProgramParametersSharedPtr vpParams = pass->getVertexProgramParameters();
-	Ogre::GpuProgramParametersSharedPtr fpParams = pass->getFragmentProgramParameters();
-	Ogre::TextureUnitState* gradientsTus = pass->getTextureUnitState(0);
-
-	vpParams->setNamedConstant ("sunDirection", sunDir);
-    fpParams->setNamedConstant ("offset", elevation);
-    gradientsTus->setTextureUScroll (elevation);
+	if(mShadersEnabled)	{
+		Ogre::GpuProgramParametersSharedPtr vpParams = pass->getVertexProgramParameters();
+		Ogre::GpuProgramParametersSharedPtr fpParams = pass->getFragmentProgramParameters();
+		vpParams->setNamedConstant ("sunDirection", sunDir);
+		fpParams->setNamedConstant ("offset", elevation);
+	} else {
+		Ogre::TextureUnitState* gradientsTus = pass->getTextureUnitState(0);
+		gradientsTus->setTextureUScroll (elevation);
+	}
 }
 
 void SkyDome::setLightAbsorption (float absorption) const {
+	if(!mShadersEnabled)
+		return;
+
     if (absorption > 1) {
 		absorption = 1;
     } else if (absorption < 0) {
@@ -91,6 +97,9 @@ void SkyDome::setLightAbsorption (float absorption) const {
 }
 
 void SkyDome::setLightScattering (float scattering) const {
+	if(!mShadersEnabled)
+		return;
+
     if (scattering <= 0) {
 		scattering = 0.00001;
     }
@@ -101,6 +110,9 @@ void SkyDome::setLightScattering (float scattering) const {
 }
 
 void SkyDome::setAtmosphereHeight (float height) const {
+	if(!mShadersEnabled)
+		return;
+
     if (height <= 0) {
 		height = 0.00001;
     } else if (height > 1) {
@@ -128,6 +140,9 @@ void SkyDome::setSkyGradientsImage (const Ogre::String& gradients) {
 }
 
 void SkyDome::setAtmosphereDepthImage (const Ogre::String& atmosphereDepth) {
+	if(!mShadersEnabled)
+		return;
+
     Ogre::TextureUnitState* atmosphereTus =
             mMaterial->getTechnique (0)->getPass (0)->getTextureUnitState(1);
 
@@ -144,6 +159,9 @@ void SkyDome::setHazeEnabled (bool value) {
         return;
     }
     mHazeEnabled = value;
+
+	if(!mShadersEnabled)
+		return;
 
 	Ogre::Pass *pass = mMaterial->getTechnique (0)->getPass (0);
     if (value) {

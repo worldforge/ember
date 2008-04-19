@@ -66,8 +66,6 @@ namespace caelum
 		mNode = caelumRootNode->createChildSceneNode ();
 		mNode->attachObject (mEntity);
 
-		// It would be better to create the material at runtime instead.
-		// More consistent with the rest of Caelum.
 		mMaterial = static_cast<Ogre::MaterialPtr>(
 				Ogre::MaterialManager::getSingleton().getByName(materialName));
 		mMaterial->load();
@@ -75,8 +73,12 @@ namespace caelum
 			throw UnsupportedException (0, "Layered cloud material not supported.",
 					"LayeredClouds", "LayeredClouds.cpp", -1);
 		}
-		getFpParams()->setIgnoreMissingParams(true);
-		getVpParams()->setIgnoreMissingParams(true);
+		mShadersEnabled = mMaterial->getBestTechnique()->getPass(0)->isProgrammable();
+		
+		if(mShadersEnabled) {
+			getFpParams()->setIgnoreMissingParams(true);
+			getVpParams()->setIgnoreMissingParams(true);
+		}
 
 		// Default parameter values
         assert(mCloudCoverLookup.get() == 0);
@@ -118,6 +120,10 @@ namespace caelum
 		return mMaterial->getBestTechnique()->getPass(0)->getFragmentProgramParameters();
 	}
 
+	Ogre::TextureUnitState* LayeredClouds::getTUS(unsigned short num) {
+		return mMaterial->getBestTechnique()->getPass(0)->getTextureUnitState(num);
+	}
+	
 	void LayeredClouds::update(Ogre::Real timePassed,
 			const Ogre::Vector3 &sunDirection,
 			const Ogre::ColourValue &sunColour,
@@ -180,20 +186,31 @@ namespace caelum
 	}
 
 	void LayeredClouds::setSunDirection(const Ogre::Vector3 &sunDirection) {
-		getVpParams()->setNamedConstant("sunDirection", sunDirection);
-		getFpParams()->setNamedConstant("sunDirection", sunDirection);
+		if(mShadersEnabled) {
+			getVpParams()->setNamedConstant("sunDirection", sunDirection);
+		}
 	}
 
 	void LayeredClouds::setSunColour(const Ogre::ColourValue &sunColour) {
-		getFpParams()->setNamedConstant("sunColour", sunColour);
+		if(mShadersEnabled) {
+			getFpParams()->setNamedConstant("sunColour", sunColour);
+		}
 	}
 
 	void LayeredClouds::setFogColour(const Ogre::ColourValue &fogColour) {
-		getFpParams()->setNamedConstant("fogColour", fogColour);
+		if(mShadersEnabled) {
+			getFpParams()->setNamedConstant("fogColour", fogColour);
+		}
 	}
 
 	void LayeredClouds::setCloudMassOffset(const Ogre::Vector2 &cloudMassOffset) {
-		getFpParams()->setNamedConstant("cloudMassOffset", extend(mCloudMassOffset = cloudMassOffset));
+		mCloudMassOffset = cloudMassOffset;
+		if(mShadersEnabled) {
+			getFpParams()->setNamedConstant("cloudMassOffset", extend(cloudMassOffset));
+		} else {
+			getTUS(0)->setTextureScroll(cloudMassOffset.x, cloudMassOffset.y);
+			getTUS(1)->setTextureScroll(cloudMassOffset.x, cloudMassOffset.y);
+		}
 	}
 
 	Ogre::Vector2 LayeredClouds::getCloudMassOffset() const {
@@ -201,7 +218,12 @@ namespace caelum
 	}
 
 	void LayeredClouds::setCloudMassBlend(const Ogre::Real cloudMassBlend) {
-		getFpParams()->setNamedConstant("cloudMassBlend", mCloudMassBlend = cloudMassBlend);
+		mCloudMassBlend = cloudMassBlend;
+		if(mShadersEnabled) {
+			getFpParams()->setNamedConstant("cloudMassBlend", cloudMassBlend);
+		} else {
+			getTUS(1)->setColourOperationEx(Ogre::LBX_BLEND_MANUAL, Ogre::LBS_TEXTURE, Ogre::LBS_CURRENT, Ogre::ColourValue::White, Ogre::ColourValue::White, cloudMassBlend);
+		}
 	}
 
 	Ogre::Real LayeredClouds::getCloudMassBlend() const {
@@ -209,7 +231,10 @@ namespace caelum
 	}
 
 	void LayeredClouds::setCloudDetailOffset(const Ogre::Vector2 &cloudDetailOffset) {
-		getFpParams()->setNamedConstant("cloudDetailOffset", extend(mCloudDetailOffset = cloudDetailOffset));
+		mCloudDetailOffset = cloudDetailOffset;
+		if(mShadersEnabled) {
+			getFpParams()->setNamedConstant("cloudDetailOffset", extend(cloudDetailOffset));
+		}
 	}
 
 	Ogre::Vector2 LayeredClouds::getCloudDetailOffset() const {
@@ -218,13 +243,19 @@ namespace caelum
 
 	void LayeredClouds::setCloudCover(const Ogre::Real cloudCover) {
         mCloudCover = cloudCover;
-        float cloudCoverageThreshold = 0;
-        if (mCloudCoverLookup.get() != 0) {
-            cloudCoverageThreshold = getInterpolatedColour(cloudCover, 1, mCloudCoverLookup.get(), false).r;
-        } else {
-            cloudCoverageThreshold = 1 - cloudCover;
-        }
-        getFpParams()->setNamedConstant("cloudCoverageThreshold", cloudCoverageThreshold);
+
+		if(mShadersEnabled)	{
+			float cloudCoverageThreshold = 0;
+			if (mCloudCoverLookup.get() != 0) {
+				cloudCoverageThreshold = getInterpolatedColour(cloudCover, 1, mCloudCoverLookup.get(), false).r;
+			} else {
+				cloudCoverageThreshold = 1 - cloudCover;
+			}
+			getFpParams()->setNamedConstant("cloudCoverageThreshold", cloudCoverageThreshold);
+		}
+		else {
+			getTUS(2)->setColourOperationEx(Ogre::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, Ogre::ColourValue(cloudCover, cloudCover, cloudCover));
+		}
 	}
 
 	Ogre::Real LayeredClouds::getCloudCover() const {

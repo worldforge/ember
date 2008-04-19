@@ -48,6 +48,9 @@ class DllExport SkyDome : public CameraBoundElement {
 		/// Reference to the sky dome material.
 		Ogre::MaterialPtr mMaterial;
 
+		/// True if selected technique has shaders.
+		bool mShadersEnabled;
+
         /// If haze is enabled.
         bool mHazeEnabled;
 

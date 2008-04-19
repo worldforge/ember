@@ -45,8 +45,6 @@ namespace caelum {
 		mDomeNode = caelumRootNode->createChildSceneNode ();
 		mDomeNode->attachObject (mDomeEntity);
 
-		// Maybe it would be better to create the material at runtime instead.
-		// More consistent with the rest of Caelum.
 		mDomeMaterial = static_cast<Ogre::MaterialPtr>(
 				Ogre::MaterialManager::getSingleton().getByName(domeMaterialName));
 		mDomeMaterial->load();

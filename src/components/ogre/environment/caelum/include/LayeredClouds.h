@@ -156,6 +156,9 @@ class DllExport LayeredClouds: public CameraBoundElement {
 		/// Shortcut function for fragment program parameters
 		Ogre::GpuProgramParametersSharedPtr getVpParams();
 
+		/// Shortcut function for texture unit state parameters
+		Ogre::TextureUnitState* getTUS(unsigned short num);
+		
 		/// Set the sunDirection parameter in the shaders.
 		void setSunDirection(const Ogre::Vector3 &sunDirection);
 
@@ -202,6 +205,9 @@ class DllExport LayeredClouds: public CameraBoundElement {
 
 		/// Cloud material
 		Ogre::MaterialPtr mMaterial;
+
+		/// True if selected technique has shaders.
+		bool mShadersEnabled;
 
 		/// Cloud plane mesh
 		Ogre::SceneNode *mNode;
