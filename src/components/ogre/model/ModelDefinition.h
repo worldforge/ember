@@ -201,6 +201,7 @@ class AnimationDefinition
 {
 friend class ActionDefinition;
 public:
+	~AnimationDefinition();
 	AnimationPartDefinition* createAnimationPartDefinition(const std::string& ogreAnimationName, Ogre::Real weight = 1);
 	const AnimationPartDefinitionsStore& getAnimationPartDefinitions();
 	void removeAnimationPartDefinition(AnimationPartDefinition* def);

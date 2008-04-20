@@ -55,6 +55,12 @@ namespace EmberOgre {
 
 
 OgreSetup::OgreSetup()
+: 
+mRoot(0),
+mRenderWindow(0),
+mIconSurface(0), 
+mSceneManagerFactory(0), 
+mMainVideoSurface(0)
 {
 }
 
@@ -66,8 +72,28 @@ OgreSetup::~OgreSetup()
 void OgreSetup::shutdown()
 {
 //	Ogre::ILCodecs::deleteCodecs();
+	if (mRoot) {
+		if (mSceneManagerFactory) {
+			mRoot->removeSceneManagerFactory(mSceneManagerFactory);
+			delete mSceneManagerFactory;
+			mSceneManagerFactory = 0;
+		}
+		
+		if (mRenderWindow) {
+			mRoot->getRenderSystem()->destroyRenderWindow(mRenderWindow->getName());
+			mRenderWindow = 0;
+		}
+	}
 	delete mRoot;
 	mRoot = 0;
+	if (mIconSurface) {
+		SDL_FreeSurface(mIconSurface);
+		mIconSurface = 0;
+	}
+	if (mMainVideoSurface) {
+		SDL_FreeSurface(mMainVideoSurface);
+		mMainVideoSurface = 0;
+	}
 	SDL_Quit();
 }
 
@@ -279,7 +305,7 @@ bool OgreSetup::configure(void)
         if (fullscreen)
             flags |= SDL_FULLSCREEN;
 		
-		SDL_SetVideoMode(width, height,0, flags); // create an SDL window
+		mMainVideoSurface = SDL_SetVideoMode(width, height,0, flags); // create an SDL window
 	
 		SDL_WM_SetCaption("Ember","ember");
 	
@@ -693,10 +719,10 @@ static struct {
 
 
 ///We'll use the emberIcon struct
-	SDL_Surface * iconSurface = SDL_CreateRGBSurfaceFrom(emberIcon.pixel_data, 64, 64, 24, 64*3, 
+	mIconSurface = SDL_CreateRGBSurfaceFrom(emberIcon.pixel_data, 64, 64, 24, 64*3, 
                                       rmask, gmask, bmask, 0);
-	if (iconSurface) {
-		SDL_WM_SetIcon(iconSurface, 0);
+	if (mIconSurface) {
+		SDL_WM_SetIcon(mIconSurface, 0);
 	}
 
 
@@ -731,10 +757,10 @@ void OgreSetup::setStandardValues()
 EmberPagingSceneManager* OgreSetup::chooseSceneManager()
 {
     /// Create new scene manager factory
-    EmberPagingSceneManagerFactory* sceneManagerFactory = new EmberPagingSceneManagerFactory();
+    mSceneManagerFactory = new EmberPagingSceneManagerFactory();
 
     /// Register our factory
-    Ogre::Root::getSingleton().addSceneManagerFactory(sceneManagerFactory);
+    Ogre::Root::getSingleton().addSceneManagerFactory(mSceneManagerFactory);
 	
 	EmberPagingSceneManager* sceneMgr = static_cast<EmberPagingSceneManager*>(mRoot->createSceneManager(Ogre::ST_EXTERIOR_REAL_FAR, "EmberPagingSceneManager"));
 	

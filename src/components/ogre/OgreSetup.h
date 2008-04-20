@@ -25,9 +25,12 @@
 
 #include "EmberOgrePrerequisites.h"
 
+struct SDL_Surface;
+
 namespace EmberOgre {
 
 class EmberPagingSceneManager;
+class EmberPagingSceneManagerFactory;
 
 /**
 	A class used for setting up Ogre. Instead of creating the Ogre root object and the main render window direclty, use this to guarantee that everything is set up correctly.
@@ -102,6 +105,18 @@ private:
 	*/
 	void setStandardValues();
 	
+	/**
+	The icon shown in the top of the window.
+	*/
+	SDL_Surface* mIconSurface;
+	
+	/**
+	We'll use our own scene manager factory.
+	*/
+	EmberPagingSceneManagerFactory* mSceneManagerFactory;
+	
+	SDL_Surface* mMainVideoSurface;
+
 };
 
 Ogre::Root* OgreSetup::getRoot() const { return mRoot;}

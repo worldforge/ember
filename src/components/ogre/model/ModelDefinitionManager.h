@@ -33,6 +33,8 @@
 namespace EmberOgre {
 namespace Model {
 
+class ModelFactory;
+
 /**
 @author Erik Hjortsberg
 */
@@ -83,6 +85,11 @@ protected:
 	Determines whether models should be shown.
 	*/
 	bool mShowModels;
+	
+	/**
+	An instance of our own model factory which we register with the ogre root object.
+	*/
+	ModelFactory* mModelFactory;
 
 };
 

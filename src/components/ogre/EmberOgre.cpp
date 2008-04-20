@@ -230,7 +230,7 @@ EmberOgre::~EmberOgre()
 	
 	if (mOgreSetup.get()) {
 		mOgreSetup->shutdown();
-		mOgreSetup.release();
+		mOgreSetup.reset();
 	}
 	
 	

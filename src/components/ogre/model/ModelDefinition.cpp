@@ -445,6 +445,14 @@ AnimationDefinition::AnimationDefinition(int iterations) : mIterations(iteration
 {
 }
 
+AnimationDefinition::~AnimationDefinition()
+{
+	for (AnimationPartDefinitionsStore::iterator I = mAnimationParts.begin(); I != mAnimationParts.end(); ++I) {
+		delete *I;
+	}
+}
+
+
 AnimationPartDefinition* AnimationDefinition::createAnimationPartDefinition(const std::string& ogreAnimationName, Ogre::Real weight)
 {
 	AnimationPartDefinition* def = new AnimationPartDefinition();

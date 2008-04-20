@@ -38,7 +38,7 @@ namespace EmberOgre
 {
 namespace Model {
 
-ModelDefinitionManager::ModelDefinitionManager() : mShowModels(true)
+ModelDefinitionManager::ModelDefinitionManager() : mShowModels(true), mModelFactory(0)
 {
     mLoadOrder = 300.0f;
     mResourceType = "ModelDefinition";
@@ -51,8 +51,8 @@ ModelDefinitionManager::ModelDefinitionManager() : mShowModels(true)
 	
 	
 	///register factories
-	ModelFactory* modelFactory = new ModelFactory();
-	Ogre::Root::getSingleton().addMovableObjectFactory(modelFactory);
+	mModelFactory = new ModelFactory();
+	Ogre::Root::getSingleton().addMovableObjectFactory(mModelFactory);
 	
 }
 
@@ -68,6 +68,12 @@ ModelDefinitionManager::~ModelDefinitionManager()
 	while (sceneManagerIterator.hasMoreElements()) {
 		sceneManagerIterator.getNext()->destroyAllMovableObjectsByType(Model::sMovableType);
 	}
+	
+	if (mModelFactory) {
+		Ogre::Root::getSingleton().removeMovableObjectFactory(mModelFactory);
+		delete mModelFactory;
+	}
+	
 }
 
 
