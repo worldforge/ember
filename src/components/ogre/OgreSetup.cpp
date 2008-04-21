@@ -90,10 +90,11 @@ void OgreSetup::shutdown()
 		SDL_FreeSurface(mIconSurface);
 		mIconSurface = 0;
 	}
-	if (mMainVideoSurface) {
-		SDL_FreeSurface(mMainVideoSurface);
-		mMainVideoSurface = 0;
-	}
+///we should clean up after us, but the surface seems to be destroyed when the render window is destroyed, so this won't be needed	
+// 	if (mMainVideoSurface) {
+// 		SDL_FreeSurface(mMainVideoSurface);
+// 		mMainVideoSurface = 0;
+// 	}
 	SDL_Quit();
 }
 

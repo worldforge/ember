@@ -115,6 +115,9 @@ private:
 	*/
 	EmberPagingSceneManagerFactory* mSceneManagerFactory;
 	
+	/**
+	The main video surface. Since we use SDL for input we need SDL to handle it too.
+	*/
 	SDL_Surface* mMainVideoSurface;
 
 };
