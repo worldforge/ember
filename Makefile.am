@@ -20,7 +20,7 @@ dist_doc_DATA = README COPYING AUTHORS NEWS
 devmedia:
 	echo "I will now use rsync to update the development media from amber.worldforge.org."
 	mkdir -p $(datadir)/ember/media/
-	rsync -rptvzu amber.worldforge.org::media-dev $(datadir)/ember/media/
+	rsync -rtvzu amber.worldforge.org::media-dev $(datadir)/ember/media/
 	
 # releasemedia:
 # 	echo "I will now try to download the release media from sourceforge. If this doesn't work, consider using the releasemediarsync make target instead."
@@ -39,4 +39,4 @@ devmedia:
 releasemediarsync:
 	echo "I will now use rsync to update the release media from amber.worldforge.org. If this doesn't work, consider getting the release media yourself from http://sourceforge.net/project/showfiles.php?group_id=11799."
 	mkdir -p $(datadir)/ember/media/
-	rsync -rptvzu amber.worldforge.org::media-$(VERSION) $(datadir)/ember/media/
+	rsync -rtvzu amber.worldforge.org::media-$(VERSION) $(datadir)/ember/media/
