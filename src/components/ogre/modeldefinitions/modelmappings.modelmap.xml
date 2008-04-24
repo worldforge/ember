@@ -268,6 +268,22 @@
 <!-- outdoor structures -->
 	<automodelmapping name="palissade" />
 	<automodelmapping name="palissade_earth" />
+	<modelmapping name="stone_palisade">
+		<entitymatch>
+			<case>
+				<caseparam type="equals">stone_palisade</caseparam>
+				<action type="display-model">stone_palisade</action>
+				<attributematch attribute="style" >
+					<case>
+						<caseparam type="equals">broken</caseparam>
+						<action type="display-part">broken</action>
+					</case>
+				</attributematch>
+			</case>
+		</entitymatch>
+	</modelmapping>	
+	
+	
 	<automodelmapping name="stake" />
 	<automodelmapping name="sty" />
 	<modelmapping name="stall">

@@ -92,8 +92,8 @@ namespace Ember
 		ALfloat listenerPos[3]={0.0,0.0,0.0};	// listener position
 		ALfloat listenerVel[3]={0.0,0.0,0.0};	// listener velocity
 		ALfloat listenerOri[6]={0.0,0.0,1.0,0.0,1.0,0.0};	// listener orientation
-		ALfloat sourcePos[3]={ 0.0, 10.0, 0.0};	// source position
-		ALfloat sourceVel[3]={ 0.0, 0.0, 1.0};	// source velocity
+// 		ALfloat sourcePos[3]={ 0.0, 10.0, 0.0};	// source position
+// 		ALfloat sourceVel[3]={ 0.0, 0.0, 1.0};	// source velocity
 
 		data=NULL;
 
