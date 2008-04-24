@@ -52,10 +52,11 @@ namespace Environment {
 
 GrassFoliage::GrassFoliage(const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition)
 : FoliageBase(terrainLayerDefinition, foliageDefinition)
+, mGrass(0)
 , mGrassLoader(0)
 , mMinHeight(1.0f)
-, mMinWidth(1.0f)
 , mMaxHeight(1.5f)
+, mMinWidth(1.0f)
 , mMaxWidth(1.5f)
 {
 	if (mFoliageDefinition.hasParameter("minHeight")) {

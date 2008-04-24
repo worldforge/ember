@@ -77,8 +77,8 @@ unsigned long GUIManager::msAutoGenId(0);
 
 GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr) 
 : ToggleInputMode("toggle_inputmode", this, "Toggle the input mode.")
-, ToggleGui("toggle_gui", this, "Toggle the gui display")
 , ReloadGui("reloadgui", this, "Reloads the gui.")
+, ToggleGui("toggle_gui", this, "Toggle the gui display")
 , mGuiCommandMapper("gui", "key_bindings_gui")
 , mPicker(0)
 , mEntityWorldPickListener(0)

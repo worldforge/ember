@@ -21,7 +21,9 @@
 namespace Ogre {
 
 inline int Round(const Real fValue)
-{  return fValue<0 ?  lrintf(fValue-0.5) : lrintf(fValue+0.5);}
+{
+  return fValue<0 ?  lrintf(fValue-0.5) : lrintf(fValue+0.5);
+}
 
 inline int Trunc(const Real fValue)
 {
@@ -42,7 +44,7 @@ TStem::TStem(Tree *pTree)
 
 TStem::~TStem()
 {
-  int i, j;
+  unsigned int i, j;
 
   // Destroy all elements in the vectors;
   for (i=0; i<mVectorOfSections.size(); i++)

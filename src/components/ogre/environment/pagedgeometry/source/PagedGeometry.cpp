@@ -278,9 +278,9 @@ void PagedGeometry::_addDetailLevel(GeometryPageManager *mgr, Real maxRange, Rea
 
 GeometryPageManager::GeometryPageManager(PagedGeometry *mainGeom)
 : mainGeom(mainGeom)
-	, cacheTimer(0) // Reset the cache timer
-	, scrollBuffer(NULL)
 	, geomGrid(NULL)
+	, scrollBuffer(NULL)
+	, cacheTimer(0) // Reset the cache timer
 {
 	//Use default cache speeds
 	setCacheSpeed();
