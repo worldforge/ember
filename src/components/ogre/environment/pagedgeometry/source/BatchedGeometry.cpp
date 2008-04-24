@@ -39,13 +39,13 @@ namespace PagedGeometry {
 //-------------------------------------------------------------------------------------
 
 BatchedGeometry::BatchedGeometry(SceneManager *mgr, SceneNode *rootSceneNode)
- :	withinFarDistance(0),
-	minDistanceSquared(0),
-	sceneNode(NULL),
+ :	boundsUndefined(true),
 	sceneMgr(mgr),
-	built(false),
-	boundsUndefined(true),
-	parentSceneNode(rootSceneNode)
+	sceneNode(NULL),
+	parentSceneNode(rootSceneNode),
+	minDistanceSquared(0),
+	withinFarDistance(0),
+	built(false)
 {
 	clear();
 }
