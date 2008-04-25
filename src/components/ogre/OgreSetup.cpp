@@ -171,11 +171,22 @@ Ogre::Root* OgreSetup::createOgreSystem()
 /**
 Shut down SDL correctly, else if run in full screen the display might be messed up.
 */
-extern "C" void shutdownHandler(int signal)
+extern "C" void shutdownHandler(int sig)
 {
-	std::cerr << "Crashed with signal " << signal << ", will try to shut down SDL gracefully. Please report bugs at https://bugs.launchpad.net/ember" << std::endl;
+	std::cerr << "Crashed with signal " << sig << ", will try to shut down SDL gracefully. Please report bugs at https://bugs.launchpad.net/ember" << std::endl;
 	SDL_Quit();
-	oldSignals[signal](signal);
+
+	if (oldSignals[sig] != SIG_DFL && oldSignals[sig] != SIG_IGN)
+	{
+		/* Call saved signal handler. */
+		oldSignals[sig](sig);
+	}
+	else
+	{
+		/* Reraise the signal. */
+		signal(sig, SIG_DFL);
+		raise(sig);
+	}
 }
 
 
