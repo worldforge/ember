@@ -191,3 +191,10 @@ material /global/bipeds/races/human/male/attire/drystan_archer/shirt : /base/nor
 	set_texture_alias NormalHeightMap 3d_skeletons/bipeds/races/human/male/attire/drystan_archer/shirt/N.png
 	set_texture_alias SpecularMap 3d_skeletons/bipeds/races/human/male/attire/drystan_archer/shirt/S.png
 }
+
+material /global/items/monster_skeleton : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/items/monster_skeleton/textures/D.png
+	set_texture_alias NormalHeightMap 3d_objects/items/monster_skeleton/textures/N.png
+	set_texture_alias SpecularMap 3d_objects/items/monster_skeleton/textures/S.png
+}
