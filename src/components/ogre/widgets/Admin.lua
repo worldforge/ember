@@ -6,12 +6,14 @@ function Admin.buildWidget()
 	Admin.widget:loadMainSheet("Admin.layout", "Admin/")
 	
 	local innerWindow = Admin.widget:getWindow("InnerWindow")
+--[[
 	if innerWindow ~= nil then
 		Admin.stackableContainer = EmberOgre.Gui.StackableContainer:new_local(innerWindow)
 		Admin.stackableContainer:setInnerContainerWindow(innerWindow)
 		Admin.stackableContainer:setFlowDirection(EmberOgre.Gui.StackableContainer.Horizontal)
 		Admin.stackableContainer:repositionWindows()
 	end
+]]--
 	
 -- 	Admin.widget:getWindow("ModelEditor"):subscribeEvent("MouseClick", "Admin.ModelEditor_Click")
 -- 	Admin.widget:getWindow("TerrainEditor"):subscribeEvent("MouseClick", "Admin.TerrainEditor_Click")

@@ -6,47 +6,47 @@
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Admin'/>
 		<Window Type='DefaultGUISheet' Name='InnerWindow'>
-			<Property Name='UnifiedSize' Value='{{1.00000,-8.000000},{1.00000,-20.000000}}'/>
+			<Property Name='UnifiedSize' Value='{{1.00000,-8.000000},{1.00000,-24.000000}}'/>
 			<Property Name='UnifiedPosition' Value='{{0.00000,4.000000},{0.0000,20.000000}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/Button' Name='ModelEditor'>
 				<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-				<Property Name='UnifiedSize' Value='{{0,70},{0,25}}'/>
+				<Property Name='UnifiedSize' Value='{{0.16666,-1},{1,0}}'/>
 				<Property Name='Text' Value='Model editor'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Event Name="MouseClick" Function="Admin.ModelEditor_Click" />
 			</Window>
 			<Window Type='EmberLook/Button' Name='TerrainEditor'>
-				<Property Name='UnifiedPosition' Value='{{0,70},{0,0}}'/>
-				<Property Name='UnifiedSize' Value='{{0,80},{0,25}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.16666,0},{0,0}}'/>
+				<Property Name='UnifiedSize' Value='{{0.16667,-1},{1,0}}'/>
 				<Property Name='Text' Value='Terrain editor'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Event Name="MouseClick" Function="Admin.TerrainEditor_Click" />
 			</Window>
 			<Window Type='EmberLook/Button' Name='SwitchCamera'>
-				<Property Name='UnifiedPosition' Value='{{0,150},{0,0}}'/>
-				<Property Name='UnifiedSize' Value='{{0,100},{0,25}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.33333,0},{0,0}}'/>
+				<Property Name='UnifiedSize' Value='{{0.16667,-1},{1,0}}'/>
 				<Property Name='Text' Value='Switch camera'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Event Name="MouseClick" Function="Admin.SwitchCamera_Click" />
 			</Window>
 			<Window Type='EmberLook/Button' Name='EntityCreator'>
-				<Property Name='UnifiedPosition' Value='{{0,250},{0,0}}'/>
-				<Property Name='UnifiedSize' Value='{{0,80},{0,25}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.50000,0},{0,0}}'/>
+				<Property Name='UnifiedSize' Value='{{0.16666,-1},{1,0}}'/>
 				<Property Name='Text' Value='Entity creator'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Event Name="MouseClick" Function="Admin.EntityCreator_Click" />
 			</Window>
 			<Window Type='EmberLook/Button' Name='ScriptEditor'>
-				<Property Name='UnifiedPosition' Value='{{0,330},{0,0}}'/>
-				<Property Name='UnifiedSize' Value='{{0,80},{0,25}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.66666,0},{0,0}}'/>
+				<Property Name='UnifiedSize' Value='{{0.16667,-1},{1,0}}'/>
 				<Property Name='Text' Value='Script editor'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Event Name="MouseClick" Function="Admin.ScriptEditor_Click" />
 			</Window>
 			<Window Type='EmberLook/Button' Name='EntityBrowser'>
-				<Property Name='UnifiedPosition' Value='{{0,330},{0,0}}'/>
-				<Property Name='UnifiedSize' Value='{{0,80},{0,25}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.83333,0},{0,0}}'/>
+				<Property Name='UnifiedSize' Value='{{0.16667,0},{1,0}}'/>
 				<Property Name='Text' Value='Entity browser'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Event Name="MouseClick" Function="Admin.EntityBrowser_Click" />
