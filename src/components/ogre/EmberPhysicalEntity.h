@@ -43,7 +43,13 @@ typedef std::list<Model::Action*> ActionStore;
 	
 /**
  * Represents a Ember entity with a physical representation in the world.
- * This is represented by a an Ogre::Entity.
+ * This is presented by an instance of Model::Model, available through getModel().
+ * The Model instance is attached to an instance of Ogre::SceneNode which can be accessed through getScaleNode(). This in turn is attached to the Ogre::SceneNode held by EmberEntity. The reason for this is that we want to be able to scale the Model without affecting child nodes. As an example, a character holding a sword might be scaled without the sword being scaled.
+ * This means that child nodes will be children of the node held in EmberEntity, not children of the "scale node".
+ *
+ * When the node is created we use the Model::ModelMapping framework to determine what Model to show. This happens in the init(...) method. As data is updated the Model::ModelMapping framework might trigger certain parts of the Model to be hidden or shown, as well as a new model to be shown.
+ *
+ * This class also takes care of updating all actions that needs to be executed (for example animations and sounds) as the entity moves or performs actions.
  */
 class EmberPhysicalEntity : public EmberEntity
 {
@@ -51,6 +57,9 @@ friend class EmberEntityModelAction;
 friend class EmberEntityPartAction;
 public:
 
+	/**
+	Keep static references to the names of the special actions connected to movements.
+	*/
 	static const char * const ACTION_STAND;
 	static const char * const ACTION_RUN;
 	static const char * const ACTION_WALK;
@@ -60,7 +69,18 @@ public:
 
 
 
+	/**
+	 *    Ctor.
+	 * @param id 
+	 * @param ty 
+	 * @param vw 
+	 * @param sceneManager 
+	 */
 	EmberPhysicalEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager);
+	
+	/**
+	 *    Dtor.
+	 */
 	virtual ~EmberPhysicalEntity();
 	
 	
@@ -68,14 +88,22 @@ public:
 	/**
 	 * return the Model of this object
 	 */
-	Model::Model* getModel() const;
+	inline Model::Model* getModel() const;
 
+	/**
+	 *    Returns the "scale node", which is the Ogre::SceneNode to which the Model instance is attached. This is separate from the Ogre::SceneNode in EmberEntity since we want to be able to scale the node without also scaling the attached nodes (such as any wielded entity).
+	 * @return An Ogre::SceneNode, to which the Model::Model instance is attached.
+	 */
 	inline Ogre::SceneNode* getScaleNode() const;
 	
 
 
 	
 	
+	/**
+	 *    Override the default implementation to also handle different rendering techniques (like "forest" rendering).
+	 * @param visible 
+	 */
 	virtual void setVisible(bool visible);
 
 	virtual void attachToPointOnModel(const std::string& point, Model::Model* model);
@@ -83,11 +111,23 @@ public:
 	
 	virtual void updateMotion(Ogre::Real timeSlice);
 	
+	/**
+	 *    Updates the animation. This is normally called by MotionManager.
+	 * @param timeSlice time to update with.
+	 */
 	void updateAnimation(Ogre::Real timeSlice);
 
+	/**
+	 *    Sets whether the ogre axis aligned bounding box should be shown or not.
+	 * @param show whether to show the ogre bounding box
+	 */
 	virtual void showOgreBoundingBox(bool show);
 // 	virtual void showErisBoundingBox(bool show);
 
+	/**
+	 * Gets whether the ogre axis aligned bounding box should be shown or not.
+	 * @return true if the bounding box is shown
+	 */
 	virtual bool getShowOgreBoundingBox() const;
 // 	virtual bool getShowErisBoundingBox();
 	
@@ -128,9 +168,25 @@ public:
 
 protected: 
 
+	/**
+	 *    Tells the entity to use the model with the supplied name. This will trigger a creation of a Model::Model instance.
+	 *    This method is normally called by an instance of EmberEntityModelAction.
+	 * @param modelName The name of the model to use.
+	 */
 	void setModel(const std::string& modelName);
 	
+	/**
+	 *    Shows a certain part of the model.
+	 *    This method is normally called by an instance of EmberEntityPartAction.
+	 * @param partName The part to show.
+	 */
 	void showModelPart(const std::string& partName);
+	
+	/**
+	 *    Hides a certain part of the model.
+	 *    This method is normally called by an instance of EmberEntityPartAction.
+	 * @param partName The part to hide.
+	 */
 	void hideModelPart(const std::string& partName);
 
 	virtual const Ogre::Vector3& getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity);
@@ -141,7 +197,14 @@ protected:
 	 */
 	void connectEntities();
 	
+	/**
+	 *    Creates the model mapping for this entity. Call this once when initializing the entity.
+	 */
 	void createModelMapping();
+	
+	/**
+	 * Creates the scale node to which the Model instance will be attached. Call this once when initializing the entity.
+	 */
 	void createScaleNode();
 		
 		
@@ -175,7 +238,14 @@ protected:
 	*/
 	Model::Model* mModelAttachedTo;
 	
+	/**
+	We can't do attachments until the entity has been properly initialized, so sometimes we need to do delayed attachments. This will then hold the model to which this entity should be attached. Once the entity has been initialized we'll use mModelAttachedTo instead.
+	*/
 	Model::Model* mModelMarkedToAttachTo;
+	
+	/**
+	We can't do attachments until the entity has been properly initialized, so sometimes we need to do delayed attachments. This will then hold the name of the attach point to which this entity should be attached. Once the entity has been initialized we'll use mModelAttachedTo instead.
+	*/
 	std::string mAttachPointMarkedToAttachTo;
 
 	virtual void onChildAdded(Entity *e);
@@ -281,12 +351,26 @@ protected:
 	 */
 	Ogre::SceneNode* mScaleNode;
 	
+	
+	/**
+	 *    When the Model is reloaded we need to update with the new values.
+	 */
 	void Model_Reloaded();
 	
+	/**
+	 *    When the Model is reset we need to clean up and remove all attachments from it.
+	 */
 	void Model_Resetting();
 	
+	
+	/**
+	 *    Initialize position and scaling of the scale node with values from the Model, as well as set up any alternative rendering techniques.
+	 */
 	void initFromModel();
 	
+	/**
+	The model mapping used for this entity.
+	*/
 	Model::Mapping::ModelMapping* mModelMapping;
 	
 	
@@ -297,6 +381,10 @@ Ogre::SceneNode* EmberPhysicalEntity::getScaleNode() const
 	return mScaleNode;
 }	
 
+Model::Model* EmberPhysicalEntity::getModel() const
+{
+	return mModel;	
+}
 
 }
 #endif // EMBEROGRE_EMBERPHYSICALENTITY_H

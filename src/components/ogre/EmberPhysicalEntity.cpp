@@ -61,11 +61,11 @@
 
 namespace EmberOgre {
 
-const char * const EmberPhysicalEntity::ACTION_STAND = "__movement_idle";
-const char * const EmberPhysicalEntity::ACTION_RUN = "__movement_run";
-const char * const EmberPhysicalEntity::ACTION_WALK = "__movement_walk";
-const char * const EmberPhysicalEntity::ACTION_SWIM = "__movement_swim";
-const char * const EmberPhysicalEntity::ACTION_FLOAT = "__movement_float";
+const char * const EmberPhysicalEntity::ACTION_STAND("__movement_idle");
+const char * const EmberPhysicalEntity::ACTION_RUN("__movement_run");
+const char * const EmberPhysicalEntity::ACTION_WALK("__movement_walk");
+const char * const EmberPhysicalEntity::ACTION_SWIM("__movement_swim");
+const char * const EmberPhysicalEntity::ACTION_FLOAT("__movement_float");
 
 
 
@@ -161,7 +161,7 @@ void EmberPhysicalEntity::setVisible(bool visible)
 // 			mOgreNode->addChild(getScaleNode());
 // 		}
 // 	}
-	getScaleNode()->setVisible(visible && getLocation(), false);	
+// 	getScaleNode()->setVisible(visible && getLocation(), false);	
 	//getModel()->setVisible(visible);
 }
 
@@ -235,16 +235,18 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 	createModelMapping();
 	
 	assert(mModelMapping);
+	///calling this will result in a call to setModel(...)
 	mModelMapping->initialize();
+	
+	///if the model mapping framework couldn't produce a model to use, we'll fall back to the placeholder
 	if (!mModel) {
 		S_LOG_WARNING("Entity of type " << getType()->getName() << " have no default model, using placeholder.");
 		setModel("placeholder");
 	}
-	
-	///once we have that, we need which model to use and can create the model
-// 	createModel();
 
+	///start out with the default movement mode
 	onModeChanged(EmberEntity::MM_DEFAULT);
+	
 	EmberEntity::init(ge, fromCreateOp);
 	getModel()->setQueryFlags(MousePicker::CM_ENTITY);
 
@@ -255,13 +257,8 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 /*	if (!hasBBox()) {
 		scaleNode();
 	}*/
-	
-	//translate the scale node according to the translate defined in the model
-// 	getScaleNode()->translate(getModel()->getDefinition()->getTranslate());
+
 	initFromModel();
-	
-/*	EmberEntityUserObject* userObject = new EmberEntityUserObject(this, getModel(), 0, 0);
-	getModel()->setUserObject(userObject);*/
 	
 	/** If there's an idle animation, we'll randomize the entry value for that so we don't end up with too many similiar entities with synched animations (such as when you enter the world at origo and have 20 settlers doing the exact same motions. */ 
 	Model::Action* idleaction = mModel->getAction(ACTION_STAND);
@@ -270,19 +267,20 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 	}
 	
 	
-	//check if we should do delayed attachment
+	///check if we should do delayed attachment
 	if (mModelMarkedToAttachTo) {
 		attachToPointOnModel(mAttachPointMarkedToAttachTo, mModelMarkedToAttachTo);
 		mModelMarkedToAttachTo = 0;
 		mAttachPointMarkedToAttachTo = "";
 	}
 
-	//NOTE: for now, add all particle systems. we will want to add some visibility flag or something in the future
+	///NOTE: for now, add all particle systems. we will want to add some visibility flag or something in the future
 	for (Model::ParticleSystemSet::iterator I = mModel->getParticleSystems().begin(); I != mModel->getParticleSystems().end(); ++I) 
 	{
 		getScaleNode()->attachObject((*I)->getOgreParticleSystem());
 	}
 	
+	///listen for reload or reset events from the model. This allows us to alter model definitions at run time and have the in game entities update.
 	getModel()->Reloaded.connect(sigc::mem_fun(*this, &EmberPhysicalEntity::Model_Reloaded));
 	getModel()->Resetting.connect(sigc::mem_fun(*this, &EmberPhysicalEntity::Model_Resetting));
 	
@@ -307,12 +305,13 @@ void EmberPhysicalEntity::initFromModel()
 	
 	scaleNode();
 	
-	getScaleNode()->setPosition(Ogre::Vector3::ZERO);
 	///translate the scale node according to the translate defined in the model
+	getScaleNode()->setPosition(Ogre::Vector3::ZERO);
 	getScaleNode()->translate(getModel()->getDefinition()->getTranslate());
 
 	connectEntities();
 	
+	///see if we should use a rendering technique different from the default one (which is just using the Model::Model instance)
 	const Model::RenderingDefinition* renderingDef = mModel->getDefinition()->getRenderingDefinition();
 	if (renderingDef && renderingDef->getScheme() == "forest" && mModel) {
 		Environment::Forest* forest = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getForest();
@@ -334,6 +333,7 @@ void EmberPhysicalEntity::initFromModel()
 void EmberPhysicalEntity::createModelMapping()
 {
 	delete mModelMapping;
+	///the creator binds the model mapping and this instance together by creating instance of EmberEntityModelAction and EmberEntityPartAction which in turn calls the setModel(..) and show/hideModelPart(...) methods.
 	EmberEntityActionCreator creator(*this);
 	mModelMapping = ::EmberOgre::Model::Mapping::EmberModelMappingManager::getSingleton().getManager().createMapping(this, &creator);
 }
@@ -344,6 +344,7 @@ void EmberPhysicalEntity::connectEntities()
 		if (getModel()->getUserObject()) {
 			delete getModel()->getUserObject();
 		}
+		///we'll create an instance of ICollisionDetector and pass on the user object, which is then responsible for properly deleting it
 //		ICollisionDetector* collisionDetector = new OpcodeCollisionDetector(getModel());
 		ICollisionDetector* collisionDetector = new MeshCollisionDetector(getModel());
 		EmberEntityUserObject* userObject = new EmberEntityUserObject(this, getModel(),  collisionDetector);
@@ -354,7 +355,7 @@ void EmberPhysicalEntity::connectEntities()
 
 void EmberPhysicalEntity::attachToPointOnModel(const std::string& point, Model::Model* model)
 {
-	//if we're not initialized, delay attachment until after init
+	///if we're not initialized, delay attachment until after init
 	if (!isInitialized()) {
 		mModelMarkedToAttachTo = model;
 		mAttachPointMarkedToAttachTo = point;
@@ -387,11 +388,6 @@ void EmberPhysicalEntity::showOgreBoundingBox(bool show)
 bool EmberPhysicalEntity::getShowOgreBoundingBox() const
 {
 	return getScaleNode()->getShowBoundingBox();
-}
-
-Model::Model* EmberPhysicalEntity::getModel() const
-{
-	return mModel;	
 }
 
 void EmberPhysicalEntity::Model_Reloaded()
@@ -473,9 +469,17 @@ void EmberPhysicalEntity::onModeChanged(MovementMode newMode)
 			actionName = ACTION_STAND;
 		}
 		if (!mCurrentMovementAction || mCurrentMovementAction->getName() != actionName) {
+			
+			
 			///first disable the current action
 			if (mCurrentMovementAction) {
 				mCurrentMovementAction->getAnimations().reset();
+			}
+			
+			///also abort any current active action in favour of the movement action; this needs to be replaced with a better system where we can blend different animations together
+			if (mActiveAction) {
+				mActiveAction->getAnimations().reset();
+				mActiveAction = 0;
 			}
 			
 			Model::Action* newAction = mModel->getAction(actionName);

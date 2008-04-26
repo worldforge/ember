@@ -340,7 +340,7 @@ void EmberEntity::setVisible(bool visible)
 		}
 	}
 	
-	getSceneNode()->setVisible(visible && getLocation(), false);	
+// 	getSceneNode()->setVisible(visible && getLocation(), false);	
 }
 
 
@@ -730,20 +730,19 @@ static void dumpElement(const std::string &prefix, const std::string &name, cons
 
 void EmberEntity::dumpAttributes(std::iostream& outstream, std::ostream& logOutstream) const 
 {
-  logOutstream << "Dumping attributes for entity " << getId() << "(" << getName() << ")" << std::endl;
-  
-  Atlas::Message::QueuedDecoder decoder;
-  //std::fstream file;
-   
-   Atlas::Codecs::XML codec(outstream, decoder);
+	logOutstream << "Dumping attributes for entity " << getId() << "(" << getName() << ")" << std::endl;
+	
+	Atlas::Message::QueuedDecoder decoder;
+	//std::fstream file;
+	
+	Atlas::Codecs::XML codec(outstream, decoder);
 	Atlas::Formatter formatter(outstream, codec);
 	Atlas::Message::Encoder encoder(formatter);
-        formatter.streamBegin();
+	formatter.streamBegin();
 	encoder.streamMessageElement(getAttributes());
-        
-        formatter.streamEnd();
-  
-  
+		
+	formatter.streamEnd();
+
 //   const Eris::Entity::AttrMap &attribs = getAttributes();
 
 //   Eris::Entity::AttrMap::const_iterator itr = attribs.begin();
