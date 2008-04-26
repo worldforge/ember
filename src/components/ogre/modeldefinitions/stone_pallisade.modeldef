@@ -1,17 +1,17 @@
 <models>
-    <model name="stone_pallisade" usescaleof="all" showcontained="true" icon="">
+    <model name="stone_palisade" usescaleof="depth" showcontained="true" icon="">
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
             <submodel mesh="3d_objects/items/building_element/models/stone_palisade/stone_palisade.mesh">
                 <parts>
-                    <part name="broken" show="true">
+                    <part name="broken" show="false" group="main">
                         <subentities>
                             <subentity index="0" material="/global/items/building_element/ozark_brick" />
                             <subentity index="1" material="/global/items/building_element/rezpa_column" />
                         </subentities>
                     </part>
-                    <part name="whole" show="false">
+                    <part name="whole" show="true" group="main">
                         <subentities>
                             <subentity index="2" material="/global/items/building_element/ozark_brick" />
                             <subentity index="3" material="/global/items/building_element/rezpa_column" />
