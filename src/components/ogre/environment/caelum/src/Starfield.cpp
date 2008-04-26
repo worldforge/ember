@@ -21,7 +21,6 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 #include "CaelumPrecompiled.h"
 #include "Starfield.h"
 #include "GeometryFactory.h"
-#include "CaelumExceptions.h"
 
 namespace caelum {
 
@@ -32,11 +31,8 @@ const Ogre::String Starfield::STARFIELD_MATERIAL_NAME = "CaelumStarfieldMaterial
 Starfield::Starfield (Ogre::SceneManager *sceneMgr, Ogre::SceneNode *caelumRootNode, const Ogre::String &textureName) {
 	mInclination = Ogre::Degree (0);
 
-	mStarfieldMaterial = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton ().getByName (STARFIELD_MATERIAL_NAME));
-	if (mStarfieldMaterial.isNull()) {
-		throw UnsupportedException (0, std::string("Could not find star field material (") + STARFIELD_MATERIAL_NAME + ").",
-				"Starfield", "Starfield.cpp", -1);
-	}
+	mStarfieldMaterial = Ogre::MaterialManager::getSingleton().getByName(STARFIELD_MATERIAL_NAME);
+	mStarfieldMaterial = mStarfieldMaterial->clone(STARFIELD_MATERIAL_NAME + Ogre::StringConverter::toString((size_t)this));
 	mStarfieldMaterial->load();
     setTexture (textureName);
 
@@ -44,7 +40,7 @@ Starfield::Starfield (Ogre::SceneManager *sceneMgr, Ogre::SceneNode *caelumRootN
 
 	GeometryFactory::generateSphericDome (STARFIELD_DOME_NAME, 32, GeometryFactory::DT_STARFIELD);
 	Ogre::Entity *ent = sceneMgr->createEntity ("StarfieldDome", STARFIELD_DOME_NAME);
-	ent->setMaterialName (STARFIELD_MATERIAL_NAME);
+	ent->setMaterialName (mStarfieldMaterial->getName());
 	ent->setRenderQueueGroup (CAELUM_RENDER_QUEUE_STARFIELD);
 	ent->setCastShadows (false);
 
@@ -61,6 +57,8 @@ Starfield::~Starfield () {
 		// Destroy the node
 		static_cast<Ogre::SceneNode *>(mNode->getParent ())->removeAndDestroyChild (mNode->getName ());
 		mNode = 0;
+		
+		Ogre::MaterialManager::getSingletonPtr()->remove(mStarfieldMaterial->getHandle());
 	}
 }
 

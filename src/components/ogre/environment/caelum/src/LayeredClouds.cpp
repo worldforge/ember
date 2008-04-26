@@ -37,7 +37,7 @@ namespace caelum
 {
 	LayeredClouds::LayeredClouds
 	(
-			Ogre::SceneManager* scene,
+			Ogre::SceneManager* sceneMgr,
 			Ogre::SceneNode *caelumRootNode,
 			const Ogre::String &resourceGroupName,
 			const Ogre::String &materialName,
@@ -45,8 +45,23 @@ namespace caelum
 			const Ogre::String &entityName
 	):
             mCloudCoverLookup(0),
-			mSceneMgr(scene)
+			mSceneMgr(sceneMgr)
 	{
+		mMaterial = Ogre::MaterialManager::getSingleton().getByName(materialName);
+		mMaterial = mMaterial->clone(materialName + Ogre::StringConverter::toString((size_t)this));
+		mMaterial->load();
+		if (mMaterial->getBestTechnique() == 0) {
+			throw UnsupportedException (0, "Layered cloud material not supported.",
+					"LayeredClouds", "LayeredClouds.cpp", -1);
+		}
+		mShadersEnabled = mMaterial->getBestTechnique()->getPass(0)->isProgrammable();
+		
+		if(mShadersEnabled) {
+			getFpParams()->setIgnoreMissingParams(true);
+			getVpParams()->setIgnoreMissingParams(true);
+		}
+
+
 		// Create cloud plane mesh if it doesn't exist.
 		if (Ogre::MeshManager::getSingleton ().getByName (meshName).isNull ()) {
 			Ogre::Plane plane = Ogre::Plane(Ogre::Vector3::NEGATIVE_UNIT_Y, -0.1);
@@ -59,30 +74,12 @@ namespace caelum
 
 		// Create cloud plane entity.
 		mEntity = mSceneMgr->createEntity(entityName, meshName);
-        mEntity->setMaterialName(materialName);
+        mEntity->setMaterialName(mMaterial->getName());
         mEntity->setCastShadows(false);
 		mEntity->setRenderQueueGroup (CAELUM_RENDER_QUEUE_CLOUDS);
 
 		mNode = caelumRootNode->createChildSceneNode ();
 		mNode->attachObject (mEntity);
-
-		mMaterial = static_cast<Ogre::MaterialPtr>(
-				Ogre::MaterialManager::getSingleton().getByName(materialName));
-		if (mMaterial.isNull()) {
-			throw UnsupportedException (0, std::string("Layered cloud material not found (") + materialName + ").",
-					"LayeredClouds", "LayeredClouds.cpp", -1);
-		}
-		mMaterial->load();
-		if (mMaterial->getBestTechnique() == 0) {
-			throw UnsupportedException (0, "Layered cloud material not supported.",
-					"LayeredClouds", "LayeredClouds.cpp", -1);
-		}
-		mShadersEnabled = mMaterial->getBestTechnique()->getPass(0)->isProgrammable();
-		
-		if(mShadersEnabled) {
-			getFpParams()->setIgnoreMissingParams(true);
-			getVpParams()->setIgnoreMissingParams(true);
-		}
 
 		// Default parameter values
         assert(mCloudCoverLookup.get() == 0);
@@ -105,6 +102,7 @@ namespace caelum
 				removeAndDestroyChild(mNode->getName());
 		mNode = 0;
 		mSceneMgr = 0;
+		Ogre::MaterialManager::getSingletonPtr()->remove(mMaterial->getHandle());
 	}
 
 	void LayeredClouds::notifyCameraChanged (Ogre::Camera *cam) {

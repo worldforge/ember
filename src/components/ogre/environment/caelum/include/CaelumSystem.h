@@ -56,7 +56,7 @@ namespace caelum {
     from Caelum could be refactor to only transfer a number of "common sky
     parameter" around; but that is a lot harder and ultimately less flexible.
 
-	@author Jes�s Alonso Abad
+	@author Jes˙s Alonso Abad
  */
 class DllExport CaelumSystem : public Ogre::FrameListener, public Ogre::RenderTargetListener {
 // Attributes -----------------------------------------------------------------

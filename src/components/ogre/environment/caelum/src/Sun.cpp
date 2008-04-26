@@ -157,9 +157,10 @@ const Ogre::String SphereSun::SUN_MATERIAL_NAME = "CaelumSphereSun";
 
 SphereSun::SphereSun (Ogre::SceneManager *sceneMgr, Ogre::SceneNode *caelumRootNode, const Ogre::String &meshName) : BaseSun(sceneMgr, caelumRootNode) {
     mSunMaterial = Ogre::MaterialManager::getSingletonPtr()->getByName(SUN_MATERIAL_NAME);
+	mSunMaterial = mSunMaterial->clone(SUN_MATERIAL_NAME + Ogre::StringConverter::toString((size_t)this));
     mSunMaterial->load();
 	mSunEntity = sceneMgr->createEntity ("CaelumSun", meshName);
-	mSunEntity->setMaterialName (SUN_MATERIAL_NAME);
+	mSunEntity->setMaterialName (mSunMaterial->getName());
 	mSunEntity->setCastShadows (false);
 	mSunEntity->setRenderQueueGroup (CAELUM_RENDER_QUEUE_SUN);
 	mSunNode->attachObject (mSunEntity);
@@ -173,6 +174,7 @@ SphereSun::~SphereSun () {
 		mSunEntity->_getManager ()->destroyEntity (mSunEntity);
 		mSunEntity = 0;
 	}
+	Ogre::MaterialManager::getSingletonPtr()->remove(mSunMaterial->getHandle());
 }
 
 void SphereSun::setSunSphereColour (const Ogre::ColourValue &colour) {
@@ -210,12 +212,13 @@ SpriteSun::SpriteSun (	Ogre::SceneManager *sceneMgr,
 	, mSunTextureAngularSize(sunTextureAngularSize)
 {
     mSunMaterial = Ogre::MaterialManager::getSingletonPtr()->getByName(SUN_MATERIAL_NAME);
+	mSunMaterial = mSunMaterial->clone(SUN_MATERIAL_NAME + Ogre::StringConverter::toString((size_t)this));
     mSunMaterial->load();
     assert(!mSunMaterial.isNull());
     setSunTexture(sunTextureName);
 
 	mSunBillboardSet = sceneMgr->createBillboardSet("CaelumSpriteSun", 2);
-	mSunBillboardSet->setMaterialName (SUN_MATERIAL_NAME);
+	mSunBillboardSet->setMaterialName (mSunMaterial->getName());
 	mSunBillboardSet->setCastShadows (false);
 	mSunBillboardSet->setRenderQueueGroup (CAELUM_RENDER_QUEUE_SUN);
 	mSunBillboardSet->setDefaultDimensions(1.0f, 1.0f);
@@ -232,6 +235,7 @@ SpriteSun::~SpriteSun () {
 		mSunBillboardSet->_getManager ()->destroyBillboardSet (mSunBillboardSet);
 		mSunBillboardSet = 0;
 	}
+	Ogre::MaterialManager::getSingletonPtr()->remove(mSunMaterial->getHandle());
 }
 
 void SpriteSun::setSunSphereColour (const Ogre::ColourValue &colour) {

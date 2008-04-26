@@ -154,7 +154,7 @@ void CaelumSystem::preViewportUpdate (const Ogre::RenderTargetViewportEvent &e) 
 	Ogre::Camera *cam = e.source->getCamera ();
 	
 	// Move root node.
-	mCaelumRootNode->setPosition(cam->getRealPosition());
+	mCaelumRootNode->setPosition(cam->getDerivedPosition());
 
 	if (getSkyDome ()) {
 		getSkyDome ()->notifyCameraChanged (cam);

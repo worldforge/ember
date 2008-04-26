@@ -29,11 +29,8 @@ const Ogre::String SkyDome::SPHERIC_DOME_NAME = "CaelumSphericDome";
 const Ogre::String SkyDome::SKY_DOME_MATERIAL_NAME = "CaelumSkyDomeMaterial";
 
 SkyDome::SkyDome (Ogre::SceneManager *sceneMgr, Ogre::SceneNode *caelumRootNode) {
-	mMaterial = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton ().getByName (SKY_DOME_MATERIAL_NAME));
-	if (mMaterial.isNull()) {
-		throw UnsupportedException (0, std::string("Could not find sky dome material (") + SKY_DOME_MATERIAL_NAME + ").",
-				"SkyDome", "SkyDome.cpp", -1);
-	}
+	mMaterial = Ogre::MaterialManager::getSingleton().getByName(SKY_DOME_MATERIAL_NAME);
+	mMaterial = mMaterial->clone(SKY_DOME_MATERIAL_NAME + Ogre::StringConverter::toString((size_t)this));
 	mMaterial->load ();
 	mShadersEnabled = mMaterial->getBestTechnique()->getPass(0)->isProgrammable();
 
@@ -41,7 +38,7 @@ SkyDome::SkyDome (Ogre::SceneManager *sceneMgr, Ogre::SceneNode *caelumRootNode)
 
 	GeometryFactory::generateSphericDome (SPHERIC_DOME_NAME, 32);
 	Ogre::Entity *ent = sceneMgr->createEntity ("Dome", SPHERIC_DOME_NAME);
-	ent->setMaterialName (SKY_DOME_MATERIAL_NAME);
+	ent->setMaterialName (mMaterial->getName());
 	ent->setRenderQueueGroup (CAELUM_RENDER_QUEUE_SKYDOME);
 	ent->setCastShadows (false);
 
@@ -58,6 +55,8 @@ SkyDome::~SkyDome () {
 		// Destroy the node
 		static_cast<Ogre::SceneNode *>(mNode->getParent ())->removeAndDestroyChild (mNode->getName ());
 		mNode = 0;
+
+		Ogre::MaterialManager::getSingletonPtr()->remove(mMaterial->getHandle());
 	}
 }
 

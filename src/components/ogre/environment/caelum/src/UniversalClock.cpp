@@ -61,7 +61,10 @@ caelum::LongReal UniversalClock::getJulianDayDifference () const {
 }
 
 caelum::LongReal UniversalClock::getJulianSecond () const {
-    return mJulianDayBase * SECONDS_PER_DAY + mCurrentTime;
+    int fpmode = Astronomy::enterHighPrecissionFloatingPointMode ();
+    caelum::LongReal res = mJulianDayBase * SECONDS_PER_DAY + mCurrentTime;
+    Astronomy::restoreFloatingPointMode(fpmode);
+    return res;
 }
 
 caelum::LongReal UniversalClock::getJulianSecondDifference () const {

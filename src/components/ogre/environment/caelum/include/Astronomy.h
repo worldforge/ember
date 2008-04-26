@@ -34,28 +34,42 @@ namespace caelum
      *  moon are actually useful for caelum.
      *
      *  The formulas are isolated here in pure procedural code for easier
-     *  testing (Tests are done as assert in the demo).
+     *  testing (Tests are done as assertions in the demo).
      *
-     *  Precision is vital here, and this class should be converted to use
-     *  caelum::LongReal instead of Ogre::Real and Ogre::Degree.
+     *  Precision is vital here, so this class uses caelum::LongReal(double)
+     *  instead of Ogre::Real(float) for precission. All angles are in degrees
+     *  unless otherwise mentioned. Ogre::Degree and Ogre::Radian use
+     *  Ogre::Real and should be avoided here.
      */
     class DllExport Astronomy
     {
     private:
         Astronomy() {}
 
-    public:
+        static const LongReal PI;
+
         /** Normalize an angle to the 0, 360 range.
          *  @param x The angle to normalize
          */
-        static const Ogre::Degree normalizeAngle(Ogre::Degree x);
+        static LongReal normalizeDegrees (LongReal x);
 
+        /// Convert radians to degrees.
+        static LongReal radToDeg (LongReal x);
+
+        /// Convert degrees to radians.
+        static LongReal degToRad (LongReal x);
+
+        static LongReal sinDeg (LongReal x);
+        static LongReal cosDeg (LongReal x);
+        static LongReal atan2Deg (LongReal y, LongReal x);
+
+    public:
         static void convertRectangularToSpherical (
                 LongReal x, LongReal y, LongReal z,
-                Ogre::Degree &rasc, Ogre::Degree &decl, LongReal &dist);
+                LongReal &rasc, LongReal &decl, LongReal &dist);
 
         static void convertSphericalToRectangular (
-                Ogre::Degree rasc, Ogre::Degree decl, LongReal dist,
+                LongReal rasc, LongReal decl, LongReal dist,
                 LongReal &x, LongReal &y, LongReal &z);
 
         /** Convert from equatorial to horizontal coordinates.
@@ -71,9 +85,9 @@ namespace caelum
          */
         static void convertEquatorialToHorizontal (
                 LongReal jday,
-                Ogre::Degree longitude, Ogre::Degree latitude,
-                Ogre::Degree rasc,      Ogre::Degree decl,
-                Ogre::Degree &azimuth,  Ogre::Degree &altitude);
+                LongReal longitude, LongReal latitude,
+                LongReal rasc,      LongReal decl,
+                LongReal &azimuth,  LongReal &altitude);
 
         /** Get the sun's position in the sky in, relative to the horizon.
          *  @param jday Astronomical time as julian day.
@@ -82,6 +96,11 @@ namespace caelum
          *  @param azimuth Astronomical azimuth, measured clockwise from North = 0.
          *  @param altitude Astronomical altitude, elevation above the horizon.
          */
+        static void getHorizontalSunPosition (
+                LongReal jday,
+                LongReal longitude, LongReal latitude,
+                LongReal &azimuth, LongReal &altitude);
+
         static void getHorizontalSunPosition (
                 LongReal jday,
                 Ogre::Degree longitude, Ogre::Degree latitude,

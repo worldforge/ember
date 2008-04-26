@@ -23,12 +23,11 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 
 #include "CaelumPrerequisites.h"
 #include "CameraBoundElement.h"
-#include "Sun.h"
 
 namespace caelum {
 
 /** A sky dome element.
-	@author Jes�s Alonso Abad
+	@author Jes˙s Alonso Abad
  */
 class DllExport SkyDome : public CameraBoundElement {
 // Attributes -----------------------------------------------------------------

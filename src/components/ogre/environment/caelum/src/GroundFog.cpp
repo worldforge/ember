@@ -26,31 +26,14 @@ namespace caelum {
 	const Ogre::String GroundFog::DEFAULT_PASS_NAME = "CaelumGroundFog";
 
 	GroundFog::GroundFog(
-			Ogre::SceneManager *scene,
+			Ogre::SceneManager *sceneMgr,
 			Ogre::SceneNode *caelumRootNode,
 			const Ogre::String &domeMaterialName,
 			const Ogre::String &domeEntityName):
-			mScene(scene)
+			mScene(sceneMgr)
 	{
-		scene->getRenderQueue()->getQueueGroup(CAELUM_RENDER_QUEUE_GROUND_FOG)->setShadowsEnabled(false);
-		
-		// Create dome entity, using a prefab sphere.
-        // The prefab sphere has a radius of 50 units.
-        // If this changes in future version of ogre this might break.
-        mDomeEntity = mScene->createEntity(domeEntityName, Ogre::SceneManager::PT_SPHERE);
-        mDomeEntity->setMaterialName(domeMaterialName);
-        mDomeEntity->setCastShadows(false);
-        mDomeEntity->setRenderQueueGroup (CAELUM_RENDER_QUEUE_GROUND_FOG);
-
-		mDomeNode = caelumRootNode->createChildSceneNode ();
-		mDomeNode->attachObject (mDomeEntity);
-
-		mDomeMaterial = static_cast<Ogre::MaterialPtr>(
-				Ogre::MaterialManager::getSingleton().getByName(domeMaterialName));
-		if (mDomeMaterial.isNull()) {
-			throw UnsupportedException (0, std::string("GroundFog dome material not found (") + domeMaterialName+ ").",
-					"GroundFog", "GroundFog.cpp", -1);
-		}
+		mDomeMaterial = Ogre::MaterialManager::getSingleton().getByName(domeMaterialName);
+		mDomeMaterial = mDomeMaterial->clone(domeMaterialName + Ogre::StringConverter::toString((size_t)this));
 		mDomeMaterial->load();
 		if (mDomeMaterial->getBestTechnique() == 0) {
 			throw UnsupportedException (0, "GroundFog dome material not supported.",
@@ -58,6 +41,19 @@ namespace caelum {
 		}
         mDomeMaterial->getBestTechnique()->getPass(0)->getFragmentProgramParameters()->setIgnoreMissingParams(true);
         mDomeMaterial->getBestTechnique()->getPass(0)->getVertexProgramParameters()->setIgnoreMissingParams(true);
+
+		sceneMgr->getRenderQueue()->getQueueGroup(CAELUM_RENDER_QUEUE_GROUND_FOG)->setShadowsEnabled(false);
+		
+		// Create dome entity, using a prefab sphere.
+        // The prefab sphere has a radius of 50 units.
+        // If this changes in future version of ogre this might break.
+        mDomeEntity = mScene->createEntity(domeEntityName, Ogre::SceneManager::PT_SPHERE);
+        mDomeEntity->setMaterialName(mDomeMaterial->getName());
+        mDomeEntity->setCastShadows(false);
+        mDomeEntity->setRenderQueueGroup (CAELUM_RENDER_QUEUE_GROUND_FOG);
+
+		mDomeNode = caelumRootNode->createChildSceneNode ();
+		mDomeNode->attachObject (mDomeEntity);
 
 		// Initialize default fog parameters
 		mDensity = 0.1;
@@ -74,10 +70,10 @@ namespace caelum {
 		mDomeNode->detachObject(mDomeEntity);
 		mScene->destroyEntity(mDomeEntity);
 		mDomeEntity = 0;
-		static_cast<Ogre::SceneNode*>(mDomeNode->getParent())->
-				removeAndDestroyChild(mDomeNode->getName());
+		static_cast<Ogre::SceneNode*>(mDomeNode->getParent())->removeAndDestroyChild(mDomeNode->getName());
 		mDomeNode = 0;
 		mScene = 0;
+		Ogre::MaterialManager::getSingletonPtr()->remove(mDomeMaterial->getHandle());
 	}
 
 	GroundFog::PassSet& GroundFog::getPasses() {
