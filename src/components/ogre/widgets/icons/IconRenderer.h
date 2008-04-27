@@ -24,6 +24,7 @@
 #define EMBEROGRE_GUI_ICONSICONRENDERER_H
 
 #include <string>
+#include <memory>
 #include <Ogre.h>
 
 namespace EmberOgre {

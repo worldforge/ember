@@ -27,6 +27,7 @@
 // #include "framework/binreloc.h"
 
 #include <iostream>
+#include <cstdlib>
 #include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
 

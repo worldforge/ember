@@ -27,6 +27,7 @@
 #include <sigc++/trackable.h>
 #include <fstream>
 #include <string>
+#include <memory>
 #include "framework/ConsoleObject.h"
 
 

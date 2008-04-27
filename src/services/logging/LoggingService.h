@@ -28,6 +28,7 @@
 
 #include <ctime>
 #include <stdarg.h>
+#include <memory>
 
 
 namespace Ember
