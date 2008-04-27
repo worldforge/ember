@@ -45,6 +45,7 @@
 #include <list>
 #include <algorithm>
 */
+#include <cstring>
 #include <sstream>
 
 #include "SoundService.h"

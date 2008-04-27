@@ -24,6 +24,7 @@
 #include "config.h"
 #endif
 
+#include <cstdlib>
 #include "NumberAdapter.h"
 #include "../../ColouredListItem.h"
 

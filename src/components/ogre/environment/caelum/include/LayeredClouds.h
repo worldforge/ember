@@ -23,6 +23,7 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 
 #include "CaelumPrerequisites.h"
 #include "CameraBoundElement.h"
+#include <memory>
 
 namespace caelum {
 

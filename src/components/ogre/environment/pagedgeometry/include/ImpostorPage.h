@@ -23,6 +23,9 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreTextureManager.h>
 #include <OgreRenderTexture.h>
 
+#include <memory>
+
+#include <memory>
 
 #define IMPOSTOR_YAW_ANGLES 8
 #define IMPOSTOR_PITCH_ANGLES 4

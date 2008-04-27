@@ -25,6 +25,7 @@
 #include "config.h"
 #endif
 
+#include <algorithm>
 #include "InputCommandMapper.h"
 #include "framework/ConsoleBackend.h"
 #include "services/EmberServices.h"

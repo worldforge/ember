@@ -23,6 +23,7 @@
 #ifndef EMBEROGRE_MODEL_MAPPING_CASES_ATTRIBUTECOMPARERSSTRINGCOMPARERWRAPPER_H
 #define EMBEROGRE_MODEL_MAPPING_CASES_ATTRIBUTECOMPARERSSTRINGCOMPARERWRAPPER_H
 
+#include <memory>
 #include <Atlas/Message/Element.h>
 #include "StringComparer.h"
 #include "AttributeComparerWrapper.h"
