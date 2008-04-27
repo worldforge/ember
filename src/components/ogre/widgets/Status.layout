@@ -25,21 +25,18 @@
 			<Property Name='Text' Value='Health'/>
 			<Property Name='UnifiedPosition' Value='{{0,45},{0,15}}'/>
 			<Property Name='UnifiedSize' Value='{{0,77},{0,8}}'/>
-			<Property Name='FrameEnabled' Value='false'/>
 			<Property Name='BarColours' Value='tl:FFE01212 tr:FFE01212 bl:FF950d0d br:FF950d0d'/>
 		</Window>
 		<Window Type='EmberLook/ProgressBarNoframe' Name='StaminaBar'>
 			<Property Name='Text' Value='Health'/>
 			<Property Name='UnifiedPosition' Value='{{0,45},{0,25}}'/>
 			<Property Name='UnifiedSize' Value='{{0,77},{0,8}}'/>
-			<Property Name='FrameEnabled' Value='false'/>
 			<Property Name='BarColours' Value='tl:ff1a09b7 tr:ff1a09b7 bl:ff0d0464 br:ff0d0464'/>
 		</Window>
 		<Window Type='EmberLook/ProgressBarNoframe' Name='StrengthBar'>
 			<Property Name='Text' Value='Health'/>
 			<Property Name='UnifiedPosition' Value='{{0,45},{0,35}}'/>
 			<Property Name='UnifiedSize' Value='{{0,77},{0,8}}'/>
-			<Property Name='FrameEnabled' Value='false'/>
 			<Property Name='BarColours' Value='tl:fff9b023 tr:fff9b023 bl:ffbf8006 br:ffbf8006'/>
 		</Window>
 		<Window Type='EmberLook/StaticImage' Name='MainOverlay'>
