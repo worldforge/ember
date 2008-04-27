@@ -23,6 +23,8 @@
 #ifndef EMBEROGRE_GUIENTITYCREATOR_H
 #define EMBEROGRE_GUIENTITYCREATOR_H
 
+#include <string>
+
 namespace EmberOgre {
 
 namespace Gui {
@@ -41,6 +43,11 @@ public:
 	 * Destructor.
 	 */
 	~EntityCreator();
+
+	/**
+	 * Loads Atlas-Xml file.
+	 */
+	void loadAtlasFile(const std::string& filename);
 };
 
 }
