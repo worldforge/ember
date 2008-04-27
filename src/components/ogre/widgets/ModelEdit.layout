@@ -13,7 +13,7 @@
 				<Property Name='UnifiedAreaRect' Value='{{0.013230,0.000000},{0.055224,0.000000},{0.219481,0.000000},{0.414926,0.000000}}'/>
 				<Property Name='UnifiedMaxSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
 			</Window>
-			<Window Type='EmberLook/Listbox' Name='ModelContents'>
+			<Window Type='EmberLook/Tree' Name='ModelContentsTree'>
 				<Property Name='UnifiedAreaRect' Value='{{0.236621,0.000000},{0.058209,0.000000},{0.442871,0.000000},{0.458209,0.000000}}'/>
 				<Property Name='UnifiedMaxSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
 			</Window>

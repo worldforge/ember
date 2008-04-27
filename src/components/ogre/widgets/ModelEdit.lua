@@ -512,7 +512,7 @@ function ModelEdit.partShown_StateChanged(args)
 end
 
 function ModelEdit.modelcontents_SelectionChanged(args)
-	local item = ModelEdit.modelcontents:getFirstSelectedItem()
+	local item = ModelEdit.modelcontentstree:getFirstSelectedItem()
 	ModelEdit.showModelContent(item)
 end
 
@@ -543,7 +543,7 @@ end
 
 
 function ModelEdit.updateModelContentList()
-	ModelEdit.modelcontents:resetList()
+	ModelEdit.modelcontentstree:resetList()
 	--ModelEdit.modelcontents:clearAllSelections()
 	
 	ModelEdit.modelContentsItems = {}
@@ -569,8 +569,10 @@ function ModelEdit.updateModelContentList()
 		modelcontentItem.submodel = submodel
 		ModelEdit.modelContentsItems[table.getn(ModelEdit.modelContentsItems) + 1] = modelcontentItem
 		
-		local item = EmberOgre.Gui.ColouredListItem:new(name, table.getn(ModelEdit.modelContentsItems))
-		ModelEdit.modelcontents:addItem(item)
+		local treeItem = EmberOgre.Gui.ColouredTreeItem:new(name, table.getn(ModelEdit.modelContentsItems)) 
+		treeItem:toggleIsOpen()
+		treeItem:setTooltipText("Mesh '" .. name .. "'")
+		ModelEdit.modelcontentstree:addItem(treeItem)
 		
 		--add all parts
 		if submodel ~= nil then
@@ -591,9 +593,10 @@ function ModelEdit.updateModelContentList()
 				
 				ModelEdit.modelContentsItems[table.getn(ModelEdit.modelContentsItems) + 1] = modelcontentItem
 				
-				--prefix parts with "-"
-				local item = EmberOgre.Gui.ColouredListItem:new(" - " .. name .. partVisible, table.getn(ModelEdit.modelContentsItems))
-				ModelEdit.modelcontents:addItem(item)
+				local treeItem2 = EmberOgre.Gui.ColouredTreeItem:new(name .. partVisible, table.getn(ModelEdit.modelContentsItems))
+				treeItem2:toggleIsOpen()
+				treeItem2:setTooltipText("Part '" .. name .. "'")
+				treeItem:addItem(treeItem2)
 			
 				if part ~= nil then
 					local subentities = part:getSubEntityDefinitions()
@@ -609,9 +612,10 @@ function ModelEdit.updateModelContentList()
 						modelcontentItem.subentity = subentity
 						ModelEdit.modelContentsItems[table.getn(ModelEdit.modelContentsItems) + 1] = modelcontentItem
 						
-						--prefix subentities with " -- "
-						local item = EmberOgre.Gui.ColouredListItem:new(" -- " .. submeshname, table.getn(ModelEdit.modelContentsItems))
-						ModelEdit.modelcontents:addItem(item)
+						local treeItem3 = EmberOgre.Gui.ColouredTreeItem:new(submeshname, table.getn(ModelEdit.modelContentsItems))
+						treeItem3:toggleIsOpen()
+						treeItem3:setTooltipText("Submesh '" .. submeshname .. "'")
+						treeItem2:addItem(treeItem3)
 					end
 				end
 			end
@@ -621,7 +625,7 @@ end
 
 
 function ModelEdit.getCurrentModelContentItem()
-	local item = ModelEdit.modelcontents:getFirstSelectedItem()
+	local item = ModelEdit.modelcontentstree:getFirstSelectedItem()
 	if item ~= nil then
 		local itemId= item:getID()
 		local contentItem = ModelEdit.modelContentsItems[itemId]
@@ -814,11 +818,17 @@ function ModelEdit.buildWidget()
 --	ModelEdit.materials:subscribeEvent("ItemSelectionChanged", "ModelEdit.materials_SelectionChanged")
 	
 	
-	ModelEdit.modelcontents = ModelEdit.widget:getWindow("ModelContents")
-	ModelEdit.modelcontents = CEGUI.toListbox(ModelEdit.modelcontents)
-	ModelEdit.modelcontents:subscribeEvent("ItemSelectionChanged", "ModelEdit.modelcontents_SelectionChanged")
-	ModelEdit.modelcontents:subscribeEvent("ListItemsChanged", "ModelEdit.modelcontents_SelectionChanged")
+--[[	ModelEdit.modelcontents = ModelEdit.widget:getWindow("ModelContents")
+	ModelEdit.modelcontents = CEGUI.toListbox(ModelEdit.modelcontents)]]
+--[[	ModelEdit.modelcontents:subscribeEvent("ItemSelectionChanged", "ModelEdit.modelcontents_SelectionChanged")
+	ModelEdit.modelcontents:subscribeEvent("ListItemsChanged", "ModelEdit.modelcontents_SelectionChanged")]]
 	
+	
+	ModelEdit.modelcontentstree = ModelEdit.widget:getWindow("ModelContentsTree")
+	ModelEdit.modelcontentstree = tolua.cast(ModelEdit.modelcontentstree,"CEGUI::Tree")
+	ModelEdit.modelcontentstree:setMultiselectEnabled(false)
+	ModelEdit.modelcontentstree:subscribeEvent("ItemSelectionChanged", "ModelEdit.modelcontents_SelectionChanged")
+	ModelEdit.modelcontentstree:subscribeEvent("ListItemsChanged", "ModelEdit.modelcontents_SelectionChanged")
 	--ModelEdit.modelcontents:setMutedState(true)
 
 	
