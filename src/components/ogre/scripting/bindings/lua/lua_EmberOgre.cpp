@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Thu Mar 27 23:55:57 2008.
+** Generated automatically by tolua++-1.0.92 on Sun Apr 27 17:12:50 2008.
 */
 
 #ifndef __cplusplus
@@ -424,7 +424,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"EmberOgre::AttachPointNode");
  tolua_usertype(tolua_S,"std::map<const std::string,Carpenter::BlockSpec>");
  tolua_usertype(tolua_S,"Ogre::Billboard");
- tolua_usertype(tolua_S,"Eris::TypeInfo");
+ tolua_usertype(tolua_S,"CEGUI::TreeItem");
  tolua_usertype(tolua_S,"Ogre::SceneManager");
  tolua_usertype(tolua_S,"Mercator::BasePoint");
  tolua_usertype(tolua_S,"Ogre::Degree");
@@ -439,7 +439,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"EmberOgre::Terrain::BasePointUserObject");
  tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::MapAdapter");
  tolua_usertype(tolua_S,"EmberOgre::Gui::ICompassImpl");
- tolua_usertype(tolua_S,"EmberOgre::Model::Action");
+ tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainArea");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntity*>");
  tolua_usertype(tolua_S,"sigc::signal<void,const EmberOgre::Terrain::TerrainEditAction*>");
  tolua_usertype(tolua_S,"Ogre::TRect<float>");
@@ -490,15 +490,17 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Ogre::Radian");
  tolua_usertype(tolua_S,"CEGUI::Editbox");
  tolua_usertype(tolua_S,"const");
+ tolua_usertype(tolua_S,"Carpenter::AttachPair");
  tolua_usertype(tolua_S,"EmberOgre::Model::PartDefinition");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Input::MouseButton,EmberOgre::Input::InputMode>");
- tolua_usertype(tolua_S,"std::vector<std::string>");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Terrain::TerrainGenerator&>");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::MotionManager&>");
- tolua_usertype(tolua_S,"EmberOgre::Construction");
- tolua_usertype(tolua_S,"EmberOgre::AvatarCamera");
+ tolua_usertype(tolua_S,"std::vector<std::string>");
+ tolua_usertype(tolua_S,"Ogre::BillboardSet");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntityFactory*>");
  tolua_usertype(tolua_S,"Ogre::RenderWindow");
+ tolua_usertype(tolua_S,"EmberOgre::AvatarCamera");
+ tolua_usertype(tolua_S,"EmberOgre::Model::ActionDefinition");
+ tolua_usertype(tolua_S,"sigc::signal<void,const Atlas::Message::Element&>");
  tolua_usertype(tolua_S,"CEGUI::ListboxItem");
  tolua_usertype(tolua_S,"CEGUI::Imageset");
  tolua_usertype(tolua_S,"EmberOgre::AvatarController");
@@ -512,85 +514,85 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"std::vector<EmberOgre::Model::AttachPointDefinition>");
  tolua_usertype(tolua_S,"EmberOgre::Environment::ISky");
  tolua_usertype(tolua_S,"EmberOgre::Gui::IconBase");
- tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefnPtr");
- tolua_usertype(tolua_S,"sigc::signal<void,const Atlas::Message::Element&>");
- tolua_usertype(tolua_S,"EmberOgre::EntityWorldPickListener");
+ tolua_usertype(tolua_S,"EmberOgre::GUIManager");
  tolua_usertype(tolua_S,"EmberOgre::OgreInfo");
  tolua_usertype(tolua_S,"EmberOgre::Terrain::Map");
- tolua_usertype(tolua_S,"std::map<std::string,EmberOgre::Model::ViewDefinition*>");
- tolua_usertype(tolua_S,"sigc::signal<void,const EmberOgre::MouseMotion&,EmberOgre::Input::InputMode>");
  tolua_usertype(tolua_S,"EmberOgre::Gui::QuaternionAdapter");
  tolua_usertype(tolua_S,"EmberOgre::Gui::Widget");
- tolua_usertype(tolua_S,"CEGUI::DragContainer");
- tolua_usertype(tolua_S,"EmberOgre::Model::SubEntityDefinition");
+ tolua_usertype(tolua_S,"std::map<std::string,EmberOgre::Model::ViewDefinition*>");
+ tolua_usertype(tolua_S,"sigc::signal<void,const EmberOgre::MouseMotion&,EmberOgre::Input::InputMode>");
+ tolua_usertype(tolua_S,"EmberOgre::AvatarMovementState");
  tolua_usertype(tolua_S,"std::vector<Eris::Task*>");
  tolua_usertype(tolua_S,"std::vector<EmberOgre::Model::PartDefinition*>");
- tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainArea");
+ tolua_usertype(tolua_S,"EmberOgre::Model::SubEntityDefinition");
+ tolua_usertype(tolua_S,"CEGUI::DragContainer");
  tolua_usertype(tolua_S,"Ogre;;ResourceManager");
  tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefinitionManager");
  tolua_usertype(tolua_S,"sigc::signal<void,const EmberOgre::EntityPickResult&,const EmberOgre::MousePickerArgs&>");
+ tolua_usertype(tolua_S,"EmberOgre::EntityWorldPickListener");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::ConsoleAdapter");
  tolua_usertype(tolua_S,"EmberOgre::AttributeObserver");
- tolua_usertype(tolua_S,"std::map<std::string,Carpenter::BluePrint*>");
- tolua_usertype(tolua_S,"EmberOgre::GUIManager");
  tolua_usertype(tolua_S,"EmberOgre::Gui::ListHolder");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::ModelRenderer");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::OgreEntityRenderer");
  tolua_usertype(tolua_S,"Ogre::Camera");
  tolua_usertype(tolua_S,"EmberOgre::Gui::OverlayCompassImpl");
  tolua_usertype(tolua_S,"EmberOgre::EmberEntity");
- tolua_usertype(tolua_S,"EmberOgre::Gui::ModelRenderer");
- tolua_usertype(tolua_S,"EmberOgre::Gui::OgreEntityRenderer");
  tolua_usertype(tolua_S,"EmberOgre::Gui::MovableObjectRenderer");
  tolua_usertype(tolua_S,"WFMath::Quaternion");
- tolua_usertype(tolua_S,"EmberOgre::ModelMapping");
  tolua_usertype(tolua_S,"Ogre::Vector2");
  tolua_usertype(tolua_S,"EmberOgre::TerrainPosition");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Jesus*>");
+ tolua_usertype(tolua_S,"EmberOgre::ModelMapping");
+ tolua_usertype(tolua_S,"EmberOgre::Construction");
  tolua_usertype(tolua_S,"std::vector<EmberOgre::AttachPointNode*>");
- tolua_usertype(tolua_S,"Ogre::BillboardSet");
- tolua_usertype(tolua_S,"Carpenter::BuildingBlockSpec");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Jesus*>");
  tolua_usertype(tolua_S,"Ogre::ControllerValue<Ogre::Real>");
+ tolua_usertype(tolua_S,"std::map<std::string,Carpenter::BluePrint*>");
+ tolua_usertype(tolua_S,"Carpenter::BuildingBlockSpec");
+ tolua_usertype(tolua_S,"EmberOgre::Jesus");
  tolua_usertype(tolua_S,"EmberOgre::EntityPickResult");
  tolua_usertype(tolua_S,"CEGUI::PushButton");
- tolua_usertype(tolua_S,"EmberOgre::Jesus");
- tolua_usertype(tolua_S,"EmberOgre::Gui::Vector3Adapter");
- tolua_usertype(tolua_S,"EmberOgre::Gui::ConsoleAdapter");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Input::InputMode>");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::Vector3Adapter");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Input::MouseButton,EmberOgre::Input::InputMode>");
  tolua_usertype(tolua_S,"EmberOgre::AvatarEmberEntity");
  tolua_usertype(tolua_S,"Carpenter::BluePrint");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::AvatarController&>");
- tolua_usertype(tolua_S,"Carpenter::AttachPair");
- tolua_usertype(tolua_S,"CEGUI::Listbox");
  tolua_usertype(tolua_S,"sigc::signal<void,const SDL_keysym&,EmberOgre::Input::InputMode>");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::AvatarController&>");
  tolua_usertype(tolua_S,"EmberOgre::Input");
+ tolua_usertype(tolua_S,"CEGUI::Listbox");
+ tolua_usertype(tolua_S,"EmberOgre::MouseMotion");
+ tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefnPtr");
  tolua_usertype(tolua_S,"Carpenter::BuildingBlockDefinition");
  tolua_usertype(tolua_S,"CEGUI::ListboxTextItem");
  tolua_usertype(tolua_S,"EmberOgre::Environment::Foliage");
- tolua_usertype(tolua_S,"EmberOgre::MouseMotion");
- tolua_usertype(tolua_S,"EmberOgre::EmberOgre");
- tolua_usertype(tolua_S,"EmberOgre::Model::ActionDefinition");
- tolua_usertype(tolua_S,"Carpenter::BuildingBlockSpecDefinition");
- tolua_usertype(tolua_S,"Ogre::Resource");
- tolua_usertype(tolua_S,"EmberOgre::Model::ViewDefinition");
- tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainEditor");
  tolua_usertype(tolua_S,"EmberOgre::Model::SubModelDefinition");
+ tolua_usertype(tolua_S,"EmberOgre::EmberOgre");
+ tolua_usertype(tolua_S,"Ogre::Resource");
+ tolua_usertype(tolua_S,"Carpenter::BuildingBlockSpecDefinition");
+ tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainEditor");
+ tolua_usertype(tolua_S,"EmberOgre::Model::ViewDefinition");
  tolua_usertype(tolua_S,"Mercator::Area");
- tolua_usertype(tolua_S,"Ogre::Real");
- tolua_usertype(tolua_S,"EmberOgre::MotionManager");
- tolua_usertype(tolua_S,"EmberOgre::Gui::EntityIcon");
  tolua_usertype(tolua_S,"EmberOgre::Model::SubModel");
+ tolua_usertype(tolua_S,"EmberOgre::Model::Action");
+ tolua_usertype(tolua_S,"Ogre::Real");
+ tolua_usertype(tolua_S,"EmberOgre::AvatarControllerMovement");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::EntityIcon");
+ tolua_usertype(tolua_S,"Carpenter::BuildingBlockBinding");
  tolua_usertype(tolua_S,"EmberOgre::MotionManager::MotionManagerInfo");
  tolua_usertype(tolua_S,"Ogre::Quaternion");
  tolua_usertype(tolua_S,"EmberOgre::EntityMoveManager");
- tolua_usertype(tolua_S,"EmberOgre::AvatarControllerMovement");
- tolua_usertype(tolua_S,"Carpenter::BuildingBlockBinding");
- tolua_usertype(tolua_S,"Eris::Task");
+ tolua_usertype(tolua_S,"Eris::TypeInfo");
  tolua_usertype(tolua_S,"EmberOgre::Environment::IWater");
+ tolua_usertype(tolua_S,"Eris::Task");
  tolua_usertype(tolua_S,"EmberOgre::Gui::AssetsManager");
- tolua_usertype(tolua_S,"EmberOgre::AvatarMovementState");
- tolua_usertype(tolua_S,"Ogre::ColourValue");
  tolua_usertype(tolua_S,"Ogre::TexturePtr");
- tolua_usertype(tolua_S,"EmberOgre::Environment::Environment");
+ tolua_usertype(tolua_S,"EmberOgre::MotionManager");
+ tolua_usertype(tolua_S,"Ogre::ColourValue");
  tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainEditAction");
+ tolua_usertype(tolua_S,"EmberOgre::Environment::Environment");
  tolua_usertype(tolua_S,"EmberOgre::Gui::StackableContainer");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::ColouredTreeItem");
  tolua_usertype(tolua_S,"EmberOgre::WorldEmberEntity");
  tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainEditBasePointMovement");
  tolua_usertype(tolua_S,"Carpenter::AttachPoint");
@@ -8805,6 +8807,95 @@ static int tolua_EmberOgre_EmberOgre_Gui_ColouredListItem_new02(lua_State* tolua
  return 2;
 tolua_lerror:
  return tolua_EmberOgre_EmberOgre_Gui_ColouredListItem_new01(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: create of class  EmberOgre::Gui::ColouredTreeItem */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_ColouredTreeItem_new00
+static int tolua_EmberOgre_EmberOgre_Gui_ColouredTreeItem_new00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"EmberOgre::Gui::ColouredTreeItem",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const std::string text = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  {
+   CEGUI::TreeItem* tolua_ret = (CEGUI::TreeItem*)  EmberOgre::Gui::ColouredTreeItem::create(text);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"CEGUI::TreeItem");
+   tolua_pushcppstring(tolua_S,(const char*)text);
+  }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: create of class  EmberOgre::Gui::ColouredTreeItem */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_ColouredTreeItem_new01
+static int tolua_EmberOgre_EmberOgre_Gui_ColouredTreeItem_new01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"EmberOgre::Gui::ColouredTreeItem",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  const std::string text = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  unsigned int item_id = ((unsigned int)  tolua_tonumber(tolua_S,3,0));
+  {
+   CEGUI::TreeItem* tolua_ret = (CEGUI::TreeItem*)  EmberOgre::Gui::ColouredTreeItem::create(text,item_id);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"CEGUI::TreeItem");
+   tolua_pushcppstring(tolua_S,(const char*)text);
+  }
+ }
+ return 2;
+tolua_lerror:
+ return tolua_EmberOgre_EmberOgre_Gui_ColouredTreeItem_new00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: create of class  EmberOgre::Gui::ColouredTreeItem */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_ColouredTreeItem_new02
+static int tolua_EmberOgre_EmberOgre_Gui_ColouredTreeItem_new02(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"EmberOgre::Gui::ColouredTreeItem",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isuserdata(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  const std::string text = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  unsigned int item_id = ((unsigned int)  tolua_tonumber(tolua_S,3,0));
+  void* item_data = ((void*)  tolua_touserdata(tolua_S,4,0));
+  {
+   CEGUI::TreeItem* tolua_ret = (CEGUI::TreeItem*)  EmberOgre::Gui::ColouredTreeItem::create(text,item_id,item_data);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"CEGUI::TreeItem");
+   tolua_pushcppstring(tolua_S,(const char*)text);
+  }
+ }
+ return 2;
+tolua_lerror:
+ return tolua_EmberOgre_EmberOgre_Gui_ColouredTreeItem_new01(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
@@ -21630,6 +21721,12 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"new",tolua_EmberOgre_EmberOgre_Gui_ColouredListItem_new00);
      tolua_function(tolua_S,"new",tolua_EmberOgre_EmberOgre_Gui_ColouredListItem_new01);
      tolua_function(tolua_S,"new",tolua_EmberOgre_EmberOgre_Gui_ColouredListItem_new02);
+    tolua_endmodule(tolua_S);
+    tolua_cclass(tolua_S,"ColouredTreeItem","EmberOgre::Gui::ColouredTreeItem","CEGUI::TreeItem",NULL);
+    tolua_beginmodule(tolua_S,"ColouredTreeItem");
+     tolua_function(tolua_S,"new",tolua_EmberOgre_EmberOgre_Gui_ColouredTreeItem_new00);
+     tolua_function(tolua_S,"new",tolua_EmberOgre_EmberOgre_Gui_ColouredTreeItem_new01);
+     tolua_function(tolua_S,"new",tolua_EmberOgre_EmberOgre_Gui_ColouredTreeItem_new02);
     tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);

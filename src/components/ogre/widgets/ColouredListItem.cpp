@@ -25,6 +25,7 @@
 #endif
 
 #include "ColouredListItem.h"
+#include "services/logging/LoggingService.h"
 
 namespace EmberOgre {
 
@@ -51,8 +52,9 @@ void ColouredListItem::setColours()
 	setTextColours(CEGUI::colour(0,0,0));
 	try {
 		setSelectionBrushImage("EmberLook", "MultiListSelectionBrush");
-	} catch (...) {}
-
+	} catch (...) {
+		S_LOG_WARNING("Could not set selection brush image.");
+	}
 }
 
 CEGUI::ListboxItem* ColouredListItem::createColouredListItem(const CEGUI::String& text)
@@ -70,6 +72,60 @@ CEGUI::ListboxItem* ColouredListItem::createColouredListItem(const CEGUI::String
 	return new ColouredListItem(text, item_id, item_data);
 }
 
+
+
+
+
+
+
+
+ColouredTreeItem::ColouredTreeItem(const CEGUI::String& text)
+: TreeItem(text)
+{
+	setColours();
+}
+
+ColouredTreeItem::ColouredTreeItem(const CEGUI::String& text, unsigned int item_id)
+: TreeItem(text, item_id)
+{
+	setColours();
+}
+
+ColouredTreeItem::ColouredTreeItem(const CEGUI::String& text, unsigned int item_id, void *item_data)
+: TreeItem(text, item_id, item_data)
+{
+	setColours();
+}
+
+
+
+void ColouredTreeItem::setColours()
+{
+	setSelectionColours(CEGUI::colour(50,50,50));
+	setTextColours(CEGUI::colour(0,0,0));
+	try {
+		setSelectionBrushImage("EmberLook", "MultiListSelectionBrush");
+	} catch (...) {
+		S_LOG_WARNING("Could not set selection brush image.");
+	}
+
+}
+
+
+CEGUI::TreeItem* ColouredTreeItem::create(const CEGUI::String& text)
+{
+	return new ColouredTreeItem(text);
+}
+
+CEGUI::TreeItem* ColouredTreeItem::create(const CEGUI::String& text, unsigned int item_id)
+{
+	return new ColouredTreeItem(text, item_id);
+}
+
+CEGUI::TreeItem* ColouredTreeItem::create(const CEGUI::String& text, unsigned int item_id, void *item_data)
+{
+	return new ColouredTreeItem(text, item_id, item_data);
+}
 
 }
 

@@ -43,6 +43,23 @@ public:
 
 };
 
+/**
+	A standard CEGUI::TreeItem, with the exeption that the selection will be coloured.
+	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+*/
+class ColouredTreeItem : public CEGUI::TreeItem
+{
+public:
+	/* ColouredTreeItem(const CEGUI::String& text); 
+	ColouredTreeItem(const CEGUI::String& text, unsigned int item_id);
+	ColouredTreeItem(const CEGUI::String& text, unsigned int item_id, void *item_data); */
+
+	static CEGUI::TreeItem* create @ new(const std::string& text); 
+	static CEGUI::TreeItem* create @ new(const std::string& text, unsigned int item_id);
+	static CEGUI::TreeItem* create @ new(const std::string& text, unsigned int item_id, void *item_data);
+
+};
+
 }
 
 }

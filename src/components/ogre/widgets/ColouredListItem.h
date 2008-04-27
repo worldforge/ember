@@ -24,13 +24,14 @@
 #define EMBEROGRE_GUICOLOREDLISTITEM_H
 
 #include <elements/CEGUIListboxTextItem.h> 
+#include <elements/CEGUITreeItem.h> 
 
 namespace EmberOgre {
 
 namespace Gui {
 
 /**
-	A standard ListboxTextItem, with the exeption that the selection will be colored.
+	A standard ListboxTextItem, with the exeption that the selection will be coloured.
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
 class ColouredListItem : public CEGUI::ListboxTextItem
@@ -47,6 +48,26 @@ public:
 private:
 	void setColours();
 };
+
+/**
+	A standard CEGUI::TreeItem, with the exeption that the selection will be coloured.
+	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+*/
+class ColouredTreeItem : public CEGUI::TreeItem
+{
+public:
+	ColouredTreeItem(const CEGUI::String& text); 
+	ColouredTreeItem(const CEGUI::String& text, unsigned int item_id);
+	ColouredTreeItem(const CEGUI::String& text, unsigned int item_id, void *item_data);
+
+	static CEGUI::TreeItem* create(const CEGUI::String& text); 
+	static CEGUI::TreeItem* create(const CEGUI::String& text, unsigned int item_id);
+	static CEGUI::TreeItem* create(const CEGUI::String& text, unsigned int item_id, void *item_data);
+
+private:
+	void setColours();
+};
+
 
 }
 
