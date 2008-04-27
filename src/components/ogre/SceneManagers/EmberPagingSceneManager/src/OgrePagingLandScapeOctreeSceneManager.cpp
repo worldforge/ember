@@ -698,7 +698,7 @@ namespace Ogre
                                                                                  PagingLandScapeOctree *octant, 
                                                                                  int depth)
     {
-        const AxisAlignedBox bx = n->_getWorldAABB();
+        const AxisAlignedBox& bx(n->_getWorldAABB());
 
         //if the PagingLandScapeOctree is twice as big as the scene node,
         //we will add it to a child.
