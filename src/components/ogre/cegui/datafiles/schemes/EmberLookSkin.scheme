@@ -54,6 +54,7 @@
 
 	<FalagardMapping WindowType="EmberLook/ProgressBarNoframe"          TargetType="CEGUI/ProgressBar" Renderer="Falagard/ProgressBar" LookNFeel="EmberLook/ProgressBarNoframe" />
 	<FalagardMapping WindowType="EmberLook/BorderIconButton"      TargetType="CEGUI/PushButton"  Renderer="Falagard/Button"       LookNFeel="EmberLook/BorderIconButton" />
-	
+	<FalagardMapping WindowType="EmberLook/Tree" TargetType="CEGUI/Tree"   Renderer="Falagard/Tree"   LookNFeel="EmberLook/Tree" />
+
 	
 </GUIScheme>

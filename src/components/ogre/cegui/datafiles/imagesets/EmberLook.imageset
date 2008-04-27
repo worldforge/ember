@@ -173,4 +173,6 @@
 	<Image Name="PopupMenuArrowLeft" XPos="68" YPos="75" Width="5" Height="9" />
 
 	<Image Name="MultiListSelectionBrush" XPos="81" YPos="45" Width="2" Height="2" />
+	<Image Name="GenericBrush" XPos="6" YPos="6" Width="1" Height="1" />
+	
 </Imageset>

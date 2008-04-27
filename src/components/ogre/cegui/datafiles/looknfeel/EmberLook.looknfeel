@@ -3693,7 +3693,7 @@
                 <Image type="TopEdge" imageset="EmberLook" image="StaticFrameTop" />
                 <Image type="RightEdge" imageset="EmberLook" image="StaticFrameRight" />
                 <Image type="BottomEdge" imageset="EmberLook" image="StaticFrameBottom" />
-                <ColourRectProperty name="FrameColours" />
+                <!-- ColourRectProperty name="FrameColours" / -->
             </FrameComponent>
         </ImagerySection>
         <ImagerySection name="background">
@@ -4871,4 +4871,95 @@
             </Layer>
         </StateImagery>
     </WidgetLook>
+	
+	<!--
+	/**********************************************************************************************************
+		EmberLook/Tree
+	***********************************************************************************************************/
+	-->
+	<WidgetLook name="EmberLook/Tree">
+        <PropertyDefinition name="SelectionBrushImage" value="set:EmberLook image:MultiListSelectionBrush" />
+        <PropertyDefinition name="NormalTextColour" value="FF000000" />
+        <PropertyDefinition name="SelectedTextColour" value="FFFFFF55" />
+        <PropertyDefinition name="ActiveSelectionColour" value="FF607FFF" />
+        <PropertyDefinition name="InactiveSelectionColour" value="FF808080" />
+        <NamedArea name="ItemRenderingArea">
+            <Area>
+                <Dim type="LeftEdge" ><ImageDim imageset="EmberLook" image="StaticFrameLeft" dimension="Width" /></Dim>
+                <Dim type="TopEdge" ><ImageDim imageset="EmberLook" image="StaticFrameTop" dimension="Height" /></Dim>
+                <Dim type="RightEdge" >
+                    <UnifiedDim scale="1" type="RightEdge">
+                        <DimOperator op="Subtract">
+                            <ImageDim imageset="EmberLook" image="StaticFrameRight" dimension="Width" />
+                        </DimOperator>
+                    </UnifiedDim>
+                </Dim>
+                <Dim type="BottomEdge" >
+                    <UnifiedDim scale="1" type="BottomEdge">
+                        <DimOperator op="Subtract">
+                            <ImageDim imageset="EmberLook" image="StaticFrameBottom" dimension="Height" />
+                        </DimOperator>
+                    </UnifiedDim>
+                </Dim>
+            </Area>
+        </NamedArea>
+        <Child  type="EmberLook/HorizontalScrollbar" nameSuffix="__auto_hscrollbar__">
+            <Area>
+                <Dim type="LeftEdge" ><AbsoluteDim value="5" /></Dim>
+                <Dim type="TopEdge" ><AbsoluteDim value="0" /></Dim>
+                <Dim type="Width" ><UnifiedDim scale="1" offset="-25" type="Width" /></Dim>
+                <Dim type="Height" ><AbsoluteDim value="10" /></Dim>
+            </Area>
+            <VertAlignment type="BottomAligned" />
+        </Child>
+        <Child  type="EmberLook/VerticalScrollbar" nameSuffix="__auto_vscrollbar__">
+            <Area>
+                <Dim type="LeftEdge" ><AbsoluteDim value="-5" /></Dim>
+                <Dim type="TopEdge" ><AbsoluteDim value="5" /></Dim>
+                <Dim type="Width" ><AbsoluteDim value="10" /></Dim>
+                <Dim type="Height" ><UnifiedDim scale="1" offset="-10" type="Height" /></Dim>
+            </Area>
+            <HorzAlignment type="RightAligned" />
+        </Child>
+        <ImagerySection name="OpenTreeButton">
+            <ImageryComponent>
+                <Area>
+                    <Dim type="LeftEdge"><AbsoluteDim value="0" /></Dim>
+                    <Dim type="TopEdge"><AbsoluteDim value="0" /></Dim>
+                    <Dim type="RightEdge"><UnifiedDim scale="1" type="RightEdge" /></Dim>
+                    <Dim type="BottomEdge"><UnifiedDim scale="1" type="BottomEdge" /></Dim>
+                </Area>
+                <Image imageset="EmberLook" image="LargeRightArrow" />
+              <!--  <VertFormat type="Stretched" />
+                <HorzFormat type="Stretched" /> -->
+            </ImageryComponent>
+        </ImagerySection>
+        <ImagerySection name="CloseTreeButton">
+            <ImageryComponent>
+                <Area>
+                    <Dim type="LeftEdge"><AbsoluteDim value="0" /></Dim>
+                    <Dim type="TopEdge"><AbsoluteDim value="0" /></Dim>
+                    <Dim type="RightEdge"><UnifiedDim scale="1" type="RightEdge" /></Dim>
+                    <Dim type="BottomEdge"><UnifiedDim scale="1" type="BottomEdge" /></Dim>
+                </Area>
+                <Image imageset="EmberLook" image="LargeDownArrow" />
+                <VertFormat type="Stretched" />
+                <HorzFormat type="Stretched" />
+            </ImageryComponent>
+        </ImagerySection>
+        <StateImagery name="Enabled">
+            <Layer>
+                <Section look="EmberLook/StaticShared" section="frame">
+                    <Colours topLeft="FF7F7F7F" topRight="FF7F7F7F" bottomLeft="FF7F7F7F" bottomRight="FF7F7F7F" />
+                </Section>
+            </Layer>
+        </StateImagery>
+        <StateImagery name="Disabled">
+            <Layer>
+                <Section look="EmberLook/StaticShared" section="frame">
+                    <Colours topLeft="FF3F3F3F" topRight="FF3F3F3F" bottomLeft="FF3F3F3F" bottomRight="FF3F3F3F" />
+                </Section>
+            </Layer>
+        </StateImagery>
+    </WidgetLook>	
 </Falagard>
