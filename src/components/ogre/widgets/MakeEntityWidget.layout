@@ -8,9 +8,9 @@
 		<Property Name='Visible' Value='false'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
 			<Property Name='UnifiedSize' Value='{{1.0,-6.000000},{1.0,-16.000000}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.0000,3.000000},{0.00000,13.000000}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0000,3.000000},{0.00000,16.000000}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
-			<Window Type='EmberLook/Listbox' Name='TypeList'>
+			<Window Type='EmberLook/Tree' Name='TypeList'>
 				<Property Name='UnifiedSize' Value='{{1.00000,-10.000000},{1.00000,-160.000000}}'/>
 				<Property Name='InheritsAlpha' Value='false'/>
 			</Window>

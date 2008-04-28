@@ -59,6 +59,7 @@
 #include <elements/CEGUIEditbox.h> 
 #include <elements/CEGUIPushButton.h> 
 #include <elements/CEGUIGUISheet.h> 
+#include <elements/CEGUITree.h> 
 #include "framework/ConsoleBackend.h"
 
 #include "../terrain/TerrainGenerator.h"
@@ -67,11 +68,13 @@
 namespace EmberOgre {
 namespace Gui {
 
-/*template<> WidgetLoader WidgetLoaderHolder<MakeEntityWidget>::loader("MakeEntityWidget", &createWidgetInstance);*/
-//WidgetLoader Widget::loader("MakeEntityWidget", &createWidgetInstance<MakeEntityWidget>);
-
 MakeEntityWidget::MakeEntityWidget()
- : Widget(), CreateEntity("createentity", this, "Create an entity."), Make("make", this, "Create an entity."), mIsReady(false), mModelPreviewRenderer(0)
+ : Widget()
+ , CreateEntity("createentity", this, "Create an entity.")
+ , Make("make", this, "Create an entity.")
+ , mIsReady(false)
+ , mModelPreviewRenderer(0)
+ , mIsInitialized(false)
 {
 
 	Ember::ConsoleBackend::getSingletonPtr()->registerCommand("testarea",this);
@@ -88,13 +91,16 @@ void MakeEntityWidget::buildWidget()
 
 	loadMainSheet("MakeEntityWidget.layout", "MakeEntity/");
 	
-	mTypeList = static_cast<CEGUI::Listbox*>(getWindow("TypeList"));
+	mTypeTree = static_cast<CEGUI::Tree*>(getWindow("TypeList"));
+	mTypeTree->setItemTooltipsEnabled(true);
+	mTypeTree->setSortingEnabled(true);
+	
 	mName = static_cast<CEGUI::Editbox*>(getWindow("Name"));
 	
 	CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(getWindow("CreateButton"));
 	
 	BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick,MakeEntityWidget::createButton_Click );
-	BIND_CEGUI_EVENT(mTypeList, CEGUI::Listbox::EventSelectionChanged ,MakeEntityWidget::typeList_ItemSelectionChanged );
+	BIND_CEGUI_EVENT(mTypeTree, CEGUI::Tree::EventSelectionChanged ,MakeEntityWidget::typeTree_ItemSelectionChanged );
 
 	
 
@@ -117,6 +123,12 @@ void MakeEntityWidget::show()
 	if (mIsReady)
 	{
 		if (mMainWindow) {
+			if (!mIsInitialized) {
+				loadAllTypes();
+				mIsInitialized = true;
+				Eris::TypeService* typeservice = mConn->getTypeService();
+				typeservice->BoundType.connect(sigc::mem_fun(*this, &MakeEntityWidget::boundAType));
+			}
 			Widget::show();
 		}
 		S_LOG_INFO("Showing entity creator window.");
@@ -129,7 +141,6 @@ void MakeEntityWidget::show()
 
 void MakeEntityWidget::gotAvatar(Eris::Avatar* avatar)
 {
-// 	loadAllTypes();
 	mIsReady = true;
 }
 
@@ -140,90 +151,69 @@ void MakeEntityWidget::gotAvatar(Eris::Avatar* avatar)
 void MakeEntityWidget::loadAllTypes()
 {
 	Eris::TypeService* typeservice = mConn->getTypeService();
-	Eris::TypeInfo* typeInfo = typeservice->getTypeByName("game_entity");
-	addToList(typeInfo, 0);
-
+	if (typeservice) {
+		Eris::TypeInfo* typeInfo = typeservice->getTypeByName("game_entity");
+		if (typeInfo) {
+			if (typeInfo->hasUnresolvedChildren())
+				typeInfo->resolveChildren();
+			const Eris::TypeInfoSet children = typeInfo->getChildren();
+			Eris::TypeInfoSet::const_iterator I = children.begin();
+			Eris::TypeInfoSet::const_iterator I_end = children.end();
+			
+			for (;I != I_end; ++I)
+			{
+				addToTree(*I, 0, true);
+			}
+		}
+	}
 }
 
 void MakeEntityWidget::connectedToServer(Eris::Connection* conn)
 {
 	mConn = conn;
- 	Eris::TypeService* typeservice = conn->getTypeService();
- 	typeservice->BoundType.connect(sigc::mem_fun(*this, &MakeEntityWidget::boundAType));
-
 }
 
-void MakeEntityWidget::addToList(Eris::TypeInfo* typeInfo, int level)
+void MakeEntityWidget::addToTree(Eris::TypeInfo* typeInfo, CEGUI::TreeItem* parent, bool addRecursive)
 {
-	std::stringstream levelindicator;
-	for (int i = 0; i < level; ++i) {
-		levelindicator << "-";
-	}
-	CEGUI::ListboxTextItem* item = new CEGUI::ListboxTextItem(levelindicator.str() + typeInfo->getName());
-	item->setSelectionBrushImage(getDefaultScheme(), (CEGUI::utf8*)"MultiListSelectionBrush");
+
+	CEGUI::TreeItem* item = ColouredTreeItem::create(typeInfo->getName());
 	item->setUserData(typeInfo);
-	mTypeList->addItem(item);
+	item->toggleIsOpen();
+	if (!parent) {
+		mTypeTree->addItem(item);
+	} else {
+		parent->addItem(item);
+	}
+	mTypes[typeInfo] = item;
+
 	
-	if (typeInfo->hasUnresolvedChildren())
-		typeInfo->resolveChildren();
-	
-	const Eris::TypeInfoSet children = typeInfo->getChildren();
-	Eris::TypeInfoSet::const_iterator I = children.begin();
-	Eris::TypeInfoSet::const_iterator I_end = children.end();
-	
-	for (;I != I_end; ++I)
-	{
-		addToList(*I, level+1);
+	if (addRecursive) {
+		const Eris::TypeInfoSet children = typeInfo->getChildren();
+		Eris::TypeInfoSet::const_iterator I = children.begin();
+		Eris::TypeInfoSet::const_iterator I_end = children.end();
+		
+		for (;I != I_end; ++I)
+		{
+			addToTree(*I, item, addRecursive);
+		}
 	}
 	
 }
 
 void MakeEntityWidget::boundAType(Eris::TypeInfo* typeInfo)
 {
-	//make sure only entities inheriting from game_entity are shown
-	static Eris::TypeInfo* gameEntityType = 0;
-	if (typeInfo->getName() == "game_entity") {
-		gameEntityType = typeInfo;
-		if (typeInfo->hasUnresolvedChildren())
-			typeInfo->resolveChildren();
-		return;
-	}
+
+	Eris::TypeInfo* gameEntityType = mConn->getTypeService()->getTypeByName("game_entity");
 	
 	if (gameEntityType != 0 && typeInfo->isA(gameEntityType)) {
-		std::stringstream levelindicator;
-		Eris::TypeInfo* parentType;
 		if (typeInfo->getParents().size()) {
-			parentType = *typeInfo->getParents().begin();
-			while (parentType) {
-				//break before we hit the game_entity parent
-				if (parentType == gameEntityType) {
-					break;
-				}
-				levelindicator << "-";
-				if (parentType->getParents().size()) {
-					parentType = *parentType->getParents().begin();
-				} else {
-					parentType = 0;
-				}
-			}
+			Eris::TypeInfo* parentType = *typeInfo->getParents().begin();
+			CEGUI::TreeItem* parent = mTypeTree->findFirstItemWithText(parentType->getName());
+			addToTree(typeInfo, parent);
 		}
 		
-		CEGUI::ListboxTextItem* item = new Gui::ColouredListItem(levelindicator.str() + typeInfo->getName());
-		item->setUserData(typeInfo);
-		mTypes[typeInfo] = item;
-		
-		if (mTypes.size() == 0) {
-			mTypeList->addItem(item);
-		} else {
-			CEGUI::ListboxItem* parentListItem = mTypes[*typeInfo->getParents().begin()];
-			mTypeList->insertItem(item, parentListItem);
-		}
-		if (typeInfo->hasUnresolvedChildren())
-			typeInfo->resolveChildren();
 	}	
-	
-	//item->setSelectionBrushImage((CEGUI::utf8*)"EmberLook", (CEGUI::utf8*)"MultiListSelectionBrush");
-	
+
 }
 
 void MakeEntityWidget::runCommand(const std::string &command, const std::string &args)
@@ -274,7 +264,7 @@ void MakeEntityWidget::updatePreview()
 	}
 }
 
-bool MakeEntityWidget::typeList_ItemSelectionChanged(const CEGUI::EventArgs& args)
+bool MakeEntityWidget::typeTree_ItemSelectionChanged(const CEGUI::EventArgs& args)
 {
 	updatePreview();
 	return true;
@@ -292,7 +282,7 @@ bool MakeEntityWidget::createButton_Click(const CEGUI::EventArgs& args)
 
 Eris::TypeInfo* MakeEntityWidget::getSelectedTypeInfo()
 {
-	CEGUI::ListboxItem* item = mTypeList->getFirstSelectedItem();
+	CEGUI::TreeItem* item = mTypeTree->getFirstSelectedItem();
 	if (item) {
 		Eris::TypeInfo* typeinfo = static_cast<Eris::TypeInfo*>(item->getUserData());
 		return typeinfo;

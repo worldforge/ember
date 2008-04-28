@@ -25,7 +25,11 @@
 
 #include "Widget.h"
 
-
+namespace CEGUI
+{
+	class Tree;
+	class TreeItem;
+}
 
 namespace Eris
 {
@@ -42,6 +46,10 @@ namespace Gui {
 class ModelRenderer;
 /**
 @author Erik Hjortsberg
+A simple entity creator widget. All entity types are shown in a tree, allowing us to select one and instantiate it in the world.
+The tree is populated when the widget is shown, and after that it's updated every time a new type is discovered.
+
+This simplified entity creator will be supplemented by the more advanced one as part of GSoC 2008.
 */
 class MakeEntityWidget : public Widget
 {
@@ -66,12 +74,17 @@ protected:
 	*/
 	bool mIsReady;
 
-	std::map<Eris::TypeInfo*, CEGUI::ListboxItem*> mTypes;
-//	std::set<Eris::TypeInfo*> mTypes;
+	/**
+	Use a lookup map for the types and the corresponding tree item.
+	*/
+	std::map<Eris::TypeInfo*, CEGUI::TreeItem*> mTypes;
 	
-	CEGUI::Listbox* mTypeList;
+	CEGUI::Tree* mTypeTree;
 	CEGUI::Editbox* mName;
 	
+	/**
+	The main connection to the server.
+	*/
 	Eris::Connection* mConn;
 	
 	void gotAvatar(Eris::Avatar* avatar);
@@ -80,8 +93,12 @@ protected:
 	
 	bool createButton_Click(const CEGUI::EventArgs& args);
 	
-	bool typeList_ItemSelectionChanged(const CEGUI::EventArgs& args);
+	bool typeTree_ItemSelectionChanged(const CEGUI::EventArgs& args);
 	
+	/**
+	 *    Gets the currently selected type info.
+	 * @return 
+	 */
 	Eris::TypeInfo* getSelectedTypeInfo();
 	
 	
@@ -90,7 +107,13 @@ protected:
 	*/
 	void loadAllTypes();
 	
-	void addToList(Eris::TypeInfo* typeInfo, int level);
+	/**
+	 *    Adds a type info to the tree.
+	 * @param typeInfo The type info to add.
+	 * @param parent The parent of the type info, or 0 if we should add to the top.
+	 * @param addRecursive If true, all the current children of the type will be added as well.
+	 */
+	void addToTree(Eris::TypeInfo* typeInfo, CEGUI::TreeItem* parent, bool addRecursive = false);
 	
 	void createEntityOfType(Eris::TypeInfo* typeinfo);
 
@@ -101,6 +124,11 @@ protected:
 
 	void createPreviewTexture();
 	void updatePreview();
+	
+	/**
+	If true, the type tree has been initialized.
+	*/
+	bool mIsInitialized;
 
 };
 };
