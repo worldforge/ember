@@ -818,12 +818,7 @@ function ModelEdit.buildWidget()
 --	ModelEdit.materials:subscribeEvent("ItemSelectionChanged", "ModelEdit.materials_SelectionChanged")
 	
 	
---[[	ModelEdit.modelcontents = ModelEdit.widget:getWindow("ModelContents")
-	ModelEdit.modelcontents = CEGUI.toListbox(ModelEdit.modelcontents)]]
---[[	ModelEdit.modelcontents:subscribeEvent("ItemSelectionChanged", "ModelEdit.modelcontents_SelectionChanged")
-	ModelEdit.modelcontents:subscribeEvent("ListItemsChanged", "ModelEdit.modelcontents_SelectionChanged")]]
-	
-	
+
 	ModelEdit.modelcontentstree = ModelEdit.widget:getWindow("ModelContentsTree")
 	ModelEdit.modelcontentstree = tolua.cast(ModelEdit.modelcontentstree,"CEGUI::Tree")
 	ModelEdit.modelcontentstree:setMultiselectEnabled(false)

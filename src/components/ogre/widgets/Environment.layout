@@ -11,6 +11,7 @@
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/StaticText' Name='Text'>
 				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.0000,25.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 				<Property Name='InheritsAlpha' Value='false'/>
 				<Property Name='Text' Value='Time'/>
 				<Property Name='BackgroundEnabled' Value='False'/>
