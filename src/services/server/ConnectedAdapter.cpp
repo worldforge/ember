@@ -219,6 +219,7 @@ void ConnectedAdapter::wield(Eris::Entity* entity)
 void ConnectedAdapter::use(Eris::Entity* entity, WFMath::Point<3> pos, const std::string& operation)
 {
 	try {
+		S_LOG_VERBOSE("Using " << entity->getName() << " with operation '" << operation << "'.");
 		mAvatar->useOn(entity, pos, operation);
 	}
 	catch (const Eris::BaseException& except)
