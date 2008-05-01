@@ -43,10 +43,22 @@ material /global/creature/tubular/fish/scaly_brown_white : /base/simple/nonculle
 {
 	set_texture_alias DiffuseMap 3d_objects/creatures/tubular/textures/scaly_brown_white/tubular.png
 }
-material /global/creature/chicken : /base/simple/nonculled
+
+material /global/avian/redchicken : /base/simple/nonculled
 {
-	set_texture_alias DiffuseMap 3d_objects/creatures/avian/textures/redchicken/chickentex_1024.png
+	set_texture_alias DiffuseMap 3d_skeletons/avian/textures/redchicken/D.png
 }
+
+material /global/avian/buzzard : /base/simple/nonculled
+{
+	set_texture_alias DiffuseMap 3d_skeletons/avian/textures/buzzard/D.png
+}
+
+material /global/avian/greychicken : /base/simple/nonculled
+{
+	set_texture_alias DiffuseMap 3d_skeletons/avian/textures/greychicken/D.png
+}
+
 material /global/creature/deer : /base/simple
 {
 	set_texture_alias DiffuseMap 3d_objects/creatures/quadruped_v2/textures/deer/quadruped_v2.png
@@ -57,15 +69,21 @@ material /global/creature/dog : /base/simple
 	set_texture_alias DiffuseMap 3d_objects/creatures/quadruped/textures/white_fur/quadruped.png
 }
 
-material /global/creature/insect/emerald : /base/simple
+material /global/creature/insect/emerald :  /base/normalmap/specular
 {
-	set_texture_alias DiffuseMap 3d_objects/creatures/insect/textures/emerald/insect.png
+	set_texture_alias DiffuseMap 3d_skeletons/insects/textures/emerald/D.png
+	set_texture_alias NormalHeightMap 3d_skeletons/insects/textures/emerald/N.png
+	set_texture_alias SpecularMap 3d_skeletons/insects/textures/emerald/S.png
 }
 
-material /global/creature/insect/carrion : /base/simple
+material /global/creature/insect/carrion :  /base/normalmap/specular
 {
-	set_texture_alias DiffuseMap 3d_objects/creatures/insect/textures/carrion/insect.png
+	set_texture_alias DiffuseMap 3d_skeletons/insects/textures/carrion/D.png
+	set_texture_alias NormalHeightMap 3d_skeletons/insects/textures/carrion/N.png
+	set_texture_alias SpecularMap 3d_skeletons/insects/textures/carrion/S.png
 }
+
+
 
 material /global/bipeds/races/skeleton/body/white : /base/simple
 {
@@ -90,6 +108,8 @@ material /global/creatures/humanoid/humanoid : /base/simple
 	set_texture_alias DiffuseMap 3d_objects/creatures/humanoid/textures/humanoid/humanoid_body.png
 }
 
+
+
 material /global/bipeds/races/goblin/male/body : /base/simple
 {
 	set_texture_alias DiffuseMap 3d_skeletons/bipeds/races/goblin/male/body/D.png
@@ -100,10 +120,32 @@ material /global/bipeds/races/goblin/male/head : /base/simple
 	set_texture_alias DiffuseMap 3d_skeletons/bipeds/races/goblin/male/head/D.png
 }
 
+
+material /global/bipeds/races/kobold/male/body/green : /base/simple
+{
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/races/kobold/male/body/textures/green/goblin.png
+}
+
 material /global/creature/humanoid/kobold : /base/simple
 {
 	set_texture_alias DiffuseMap 3d_objects/creatures/humanoid/textures/kobold/low/kobold.png
 }
+
+material /global/bipeds/races/kobold/male/body/brown : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/races/kobold/male/body/textures/brown/D.png
+	set_texture_alias NormalHeightMap 3d_skeletons/bipeds/races/kobold/male/body/textures/brown/N.png
+	set_texture_alias SpecularMap 3d_skeletons/bipeds/races/kobold/male/body/textures/brown/S.png
+}
+
+material /global/bipeds/races/kobold/male/accessories/belt : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_skeletons/bipeds/races/kobold/male/accessories/belt/D.png
+	set_texture_alias NormalHeightMap 3d_skeletons/bipeds/races/kobold/male/accessories/belt/N.png
+	set_texture_alias SpecularMap 3d_skeletons/bipeds/races/kobold/male/accessories/belt/S.png
+}
+
+
 
 
 material /global/bipeds/male/male : /base/simple

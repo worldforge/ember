@@ -323,9 +323,9 @@ material /global/plants/trees/foliage/oak_summer :  /base/normalmap/specular/non
 
 material /global/plants/trees/gnarly :  /base/normalmap/specular/nonculled/alpharejected
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/trees/textures/gnarly/treeD.png
-	set_texture_alias NormalHeightMap 3d_objects/plants/trees/textures/gnarly/treeN.png
-	set_texture_alias SpecularMap 3d_objects/plants/trees/textures/gnarly/treeS.png
+	set_texture_alias DiffuseMap 3d_objects/plants/trees/textures/gnarly/D.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/trees/textures/gnarly/N.png
+	set_texture_alias SpecularMap 3d_objects/plants/trees/textures/gnarly/S.png
 }
 
 material /global/environment/ground/leaf_covered/ground :  /base/normalmap
@@ -357,6 +357,44 @@ material /global/plants/grass/bittergrass/single : /base/simple/nonculled/alphab
 	}
 }
 
+material /global/plants/grass/bittergrass_brown : /base/simple/nonculled/alphablended
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/grass/textures/bittergrass_brown/D.png
+	technique
+	{
+		pass
+		{
+			alpha_rejection greater_equal 128
+			//depth_write off
+		}
+	}
+}
+
+material /global/plants/grass/bittergrass_green : /base/simple/nonculled/alphablended
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/grass/textures/bittergrass_green/D.png
+	technique
+	{
+		pass
+		{
+			alpha_rejection greater_equal 128
+			//depth_write off
+		}
+	}
+}
+
+material /global/plants/grass/bittergrass_yellow : /base/simple/nonculled/alphablended
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/grass/textures/bittergrass_yellow/D.png
+	technique
+	{
+		pass
+		{
+			alpha_rejection greater_equal 128
+			//depth_write off
+		}
+	}
+}
 
 material /global/plants/grass/thingrass : /base/wavinggrass
 {
