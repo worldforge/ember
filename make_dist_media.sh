@@ -41,20 +41,26 @@ for filename in `cat ${shared_dir}/common_textures_cleaned.list `
 do
 	origfile="${original_media}/common/${filename}"
 	newfile="${shared_dir}/common/${filename}"
-	#only convert if the original image is newer
-	if [ $origfile -nt $newfile ]
+	if [ ! -e $origfile ]
 	then
-		mkdir -p `dirname ${newfile}`
-		#'512x512>' will only convert if the image is larger in any dimension
-		# -quality 95 is suitable for photos
-		# -depth 8 guarantees that the pixeldepth is 8: we don't have any floating point textures yet
-		#echo "convert $origfile -quality 95 -depth 8 -resize  $newfile"
-
- 		convert $origfile -quality 95 -depth 8 -resize "${textureSize}x${textureSize}>" $newfile
-		echo "Converted $filename to max ${textureSize}x${textureSize}"
+		echo "File $origfile does not exist!"
+	else
+		#only convert if the original image is newer
+		if [ $origfile -nt $newfile ]
+		then
+			mkdir -p `dirname ${newfile}`
+			#'512x512>' will only convert if the image is larger in any dimension
+			# -quality 95 is suitable for photos
+			# -depth 8 guarantees that the pixeldepth is 8: we don't have any floating point textures yet
+			#echo "convert $origfile -quality 95 -depth 8 -resize  $newfile"
+	
+			convert $origfile -quality 95 -depth 8 -resize "${textureSize}x${textureSize}>" $newfile
+			echo "Converted $filename to max ${textureSize}x${textureSize}"
+		fi
 	fi
+	
 done
-exit
+
 
 #copy all meshes in use
 echo "Copying meshes"
@@ -63,9 +69,10 @@ grep -orIE --no-filename "mesh=\"3d[^\"]*\"" ${original_media}/modeldefinitions/
 grep -orIE --no-filename "mesh=\"junk[^\"]*\"" ${original_media}/modeldefinitions/*.modeldef | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> ${shared_dir}/common_meshes.list
 grep -orIE --no-filename "mesh=\"3d[^\"]*\"" ${original_media}/modeldefinitions/*.modeldef.xml | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> ${shared_dir}/common_meshes.list
 grep -orIE --no-filename "mesh=\"junk[^\"]*\"" ${original_media}/modeldefinitions/*.modeldef.xml | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> ${shared_dir}/common_meshes.list
-cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_meshes.list ` | ( cd ${shared_dir}/common; tar xvf -)
+cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_meshes.list ` | ( cd ${shared_dir}/common; tar --keep-newer-files -xvf -) 2>  /dev/null
+# exit
 mkdir -p ${shared_dir}/models
-cd ${original_media}/models ; tar cf - `find -L . -iname \*.mesh` | ( cd ${shared_dir}/models; tar xvf -)
+cd ${original_media}/models ; tar cf - `find -L . -iname \*.mesh` | ( cd ${shared_dir}/models; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 
 echo "Copying skeletons"
@@ -74,7 +81,7 @@ for filename in `find ${shared_dir}/common -name "*.mesh"`
 do
 	meshmagick info 3d_skeletons/avian/models/chicken/chicken.mesh | grep -oE "skeletonfile.*.skeleton" | sed -e 's/skeletonfile //' >> ${shared_dir}/common_skeletons.list
 done
-cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_skeletons.list ` | ( cd ${shared_dir}/common; tar xvf -)
+cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_skeletons.list ` | ( cd ${shared_dir}/common; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 
 # echo "Copying sounds"
@@ -84,7 +91,7 @@ cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_skeletons.list 
 echo "Copying packs"
 cd ${shared_dir}
 grep -rIE --no-filename "^Zip\[shared\]=.*" ${current}/src/components/ogre/resources.cfg | sed -e 's/Zip\[shared\]=//g' > shared_packs.list
-cd ${original_media} ; tar cf - `cat ${shared_dir}/shared_packs.list ` | ( cd ${shared_dir}/; tar xvf -)
+cd ${original_media} ; tar cf - `cat ${shared_dir}/shared_packs.list ` | ( cd ${shared_dir}/; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 
 
@@ -113,33 +120,33 @@ cp -a ${original_media}/common/themes/ember/gui/status ${shared_dir}/gui/status
 
 echo "Copying definitions"
 mkdir -p ${user_dir}/modeldefinitions
-cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modeldef` | ( cd ${user_dir}/modeldefinitions; tar xvf -)
-cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modeldef.xml` | ( cd ${user_dir}/modeldefinitions; tar xvf -)
-cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modelmap` | ( cd ${user_dir}/modeldefinitions; tar xvf -)
-cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modelmap.xml` | ( cd ${user_dir}/modeldefinitions; tar xvf -)
-cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.terrain` | ( cd ${user_dir}/modeldefinitions; tar xvf -)
+cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modeldef` | ( cd ${user_dir}/modeldefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modeldef.xml` | ( cd ${user_dir}/modeldefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modelmap` | ( cd ${user_dir}/modeldefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modelmap.xml` | ( cd ${user_dir}/modeldefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.terrain` | ( cd ${user_dir}/modeldefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 
 echo "Copying materials"
 mkdir -p ${user_dir}/materials
-cd ${original_media}/materials ; tar cf - `find . -iname \*.png` | ( cd ${user_dir}/materials; tar xvf -)
-cd ${original_media}/materials ; tar cf - `find . -iname \*.jpg` | ( cd ${user_dir}/materials; tar xvf -)
-cd ${original_media}/materials ; tar cf - `find . -iname \*.cg` | ( cd ${user_dir}/materials; tar xvf -)
-cd ${original_media}/materials ; tar cf - `find . -iname \*.program` | ( cd ${user_dir}/materials; tar xvf -)
-cd ${original_media}/materials ; tar cf - `find . -iname \*.asm` | ( cd ${user_dir}/materials; tar xvf -)
-cd ${original_media}/materials ; tar cf - `find . -iname \*.ps` | ( cd ${user_dir}/materials; tar xvf -)
-cd ${original_media}/materials ; tar cf - `find . -iname \*.material` | ( cd ${user_dir}/materials; tar xvf -)
-cd ${original_media}/materials ; tar cf - `find . -iname \*.overlay` | ( cd ${user_dir}/materials; tar xvf -)
+cd ${original_media}/materials ; tar cf - `find . -iname \*.png` | ( cd ${user_dir}/materials; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${original_media}/materials ; tar cf - `find . -iname \*.jpg` | ( cd ${user_dir}/materials; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${original_media}/materials ; tar cf - `find . -iname \*.cg` | ( cd ${user_dir}/materials; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${original_media}/materials ; tar cf - `find . -iname \*.program` | ( cd ${user_dir}/materials; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${original_media}/materials ; tar cf - `find . -iname \*.asm` | ( cd ${user_dir}/materials; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${original_media}/materials ; tar cf - `find . -iname \*.ps` | ( cd ${user_dir}/materials; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${original_media}/materials ; tar cf - `find . -iname \*.material` | ( cd ${user_dir}/materials; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${original_media}/materials ; tar cf - `find . -iname \*.overlay` | ( cd ${user_dir}/materials; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 #cd ${original_media}/models ; tar cf - `find . -iname \*.mesh` | ( cd ${user_dir}/models; tar xvf -)
 #cd ${original_media}/models ; tar cf - `find . -iname \*.skeleton` | ( cd ${user_dir}/models; tar xvf -)
 mkdir -p ${user_dir}/particle
-cd ${original_media}/particle ; tar cf - `find . -iname \*.particle` | ( cd ${user_dir}/particle; tar xvf -)
+cd ${original_media}/particle ; tar cf - `find . -iname \*.particle` | ( cd ${user_dir}/particle; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 echo "Copying packs"
 cd ${user_dir}
 grep -rIE --no-filename "^Zip\[user\]=.*" ${current}/src/components/ogre/resources.cfg | sed -e 's/Zip\[user\]=//g' > user_packs.list
-cd ${original_media} ; tar cf - `cat ${user_dir}/user_packs.list ` | ( cd ${user_dir}/; tar xvf -)
+cd ${original_media} ; tar cf - `cat ${user_dir}/user_packs.list ` | ( cd ${user_dir}/; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 
 
@@ -157,4 +164,5 @@ rm -f ${shared_dir}/shared_packs.list
 
 rm -f ${user_dir}/user_packs.list
 
+echo "Done!"
 
