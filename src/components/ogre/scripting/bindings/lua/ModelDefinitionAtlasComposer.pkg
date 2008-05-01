@@ -20,10 +20,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBEROGRE_MODELMODELDEFINITIONATLASCOMPOSER_H
-#define EMBEROGRE_MODELMODELDEFINITIONATLASCOMPOSER_H
 
-#include <Atlas/Message/Element.h>
 
 namespace EmberOgre {
 
@@ -40,9 +37,9 @@ public:
 
     virtual ~ModelDefinitionAtlasComposer();
     
-    Atlas::Message::MapType compose(Model* model, const std::string& typeName, const std::string& parentTypeName, float scale);
-    void composeToStream(std::iostream& outstream, Model* model, const std::string& typeName, const std::string& parentTypeName, float scale);
-    void composeToFile(Model* model, const std::string& typeName, const std::string& parentTypeName, float scale);
+    Atlas::Message::MapType compose(EmberOgre::Model::Model* model, const std::string& typeName, const std::string& parentTypeName, float scale);
+    void composeToStream(std::iostream& outstream, EmberOgre::Model::Model* model, const std::string& typeName, const std::string& parentTypeName, float scale);
+    void composeToFile(EmberOgre::Model::Model* model, const std::string& typeName, const std::string& parentTypeName, float scale);
 
 };
 
@@ -50,4 +47,4 @@ public:
 
 }
 
-#endif
+

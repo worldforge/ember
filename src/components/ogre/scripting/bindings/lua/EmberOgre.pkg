@@ -61,6 +61,7 @@ $pfile "IWorldPickListener.pkg"
 $pfile "EntityWorldPickListener.pkg"
 
 $pfile "ModelDefinitionManager.pkg"
+$pfile "ModelDefinitionAtlasComposer.pkg"
 
 $pfile "EntityMoveManager.pkg"
 

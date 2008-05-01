@@ -57,6 +57,7 @@
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelDefinition.h"
 #include "components/ogre/model/ModelDefinitionManager.h"
+#include "components/ogre/model/ModelDefinitionAtlasComposer.h"
 
 #include "components/ogre/IWorldPickListener.h"
 #include "components/ogre/EntityWorldPickListener.h"
