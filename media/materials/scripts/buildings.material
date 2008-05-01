@@ -1,19 +1,11 @@
 //--------------- rough timber -------------
 
-material /global/items/building_element/rough_timber/rough_timber_beam : /base/normalmap/specular
-{
-	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/rough_timber/rough_timber_beamD.png
-	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/rough_timber/rough_timber_beamN.png
-	set_texture_alias SpecularMap 3d_objects/items/building_element/textures/rough_timber/rough_timber_beamS.png
-}
-
 material /global/items/building_element/beam_end : /base/normalmap/specular
 {
 	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/beam_end/D.png
 	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/beam_end/N.png
 	set_texture_alias SpecularMap 3d_objects/items/building_element/textures/beam_end/S.png
 }
-
 
 material /global/items/building_element/beam_timber : /base/normalmap/specular
 {
@@ -56,11 +48,11 @@ material /global/items/building_element/rough_timber/timber_roof : /base/normalm
 	set_texture_alias SpecularMap 3d_objects/items/building_element/textures/rough_timber/timber_roofS.png
 }
 
-material /global/items/building_element/moraf_wall_side : /base/normalmap/specular
+material /global/items/building_element/rough_timber/wall_side : /base/normalmap/specular
 {
-	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/moraf_wall_side/D.png
-	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/moraf_wall_side/N.png
-	set_texture_alias SpecularMap 3d_objects/items/building_element/textures/moraf_wall_side/S.png
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/rough_timber/wall_sideD.png
+	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/rough_timber/wall_sideN.png
+	set_texture_alias SpecularMap 3d_objects/items/building_element/textures/rough_timber/wall_sideS.png
 }
 
 material /global/items/building_element/rough_timber/timber_rough : /base/normalmap/specular
@@ -207,11 +199,11 @@ material /global/items/building_element/moraf_normal_wall : /base/normalmap/spec
 	set_texture_alias SpecularMap 3d_objects/items/building_element/textures/moraf_normal_wall/S.png
 }
 
-material /global/items/building_element/rough_stone/wall_side : /base/normalmap/specular
+material /global/items/building_element/moraf_wall_side : /base/normalmap/specular
 {
-	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/rough_stone/wall_sideD.png
-	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/rough_stone/wall_sideN.png
-	set_texture_alias SpecularMap 3d_objects/items/building_element/textures/rough_stone/wall_sideS.png
+	set_texture_alias DiffuseMap 3d_objects/items/building_element/textures/moraf_wall_side/D.png
+	set_texture_alias NormalHeightMap 3d_objects/items/building_element/textures/moraf_wall_side/N.png
+	set_texture_alias SpecularMap 3d_objects/items/building_element/textures/moraf_wall_side/S.png
 }
 
 material /global/items/building_element/rough_stone/wall_top : /base/normalmap/specular
