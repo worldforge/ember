@@ -183,6 +183,12 @@
 					<Property Name='UnifiedAreaRect' Value='{{0.022899,0.000000},{0.906906,0.000000},{0.114779,0.000000},{0.986423,0.000000}}'/>
 					<Property Name='UnifiedMaxSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
 				</Window>
+				<Window Type='EmberLook/Button' Name='ExportAsAtlasTypeButton'>
+					<Property Name='Text' Value='Export Atlas'/>
+					<Property Name='UnifiedSize' Value='{{0.000000,75.000000},{0.000000,25.000000}}'/>
+					<Property Name='UnifiedPosition' Value='{{0.000000,100.000000},{1.000000,-30.000000}}'/>
+					<Event Name="MouseClick" Function="ModelEdit.ExportAsAtlasTypeButton_MouseClick" />
+				</Window>
 				<Window Type='EmberLook/Checkbox' Name='ModelShowContent'>
 					<Property Name='Text' Value='Show content'/>
 					<Property Name='UnifiedAreaRect' Value='{{0.701041,0.000000},{0.177159,0.000000},{0.838708,0.000000},{0.270541,0.000000}}'/>

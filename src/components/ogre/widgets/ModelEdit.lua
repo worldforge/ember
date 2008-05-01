@@ -370,6 +370,14 @@ function ModelEdit.SaveModelButton_MouseClick(args)
 
 end
 
+function ModelEdit.ExportAsAtlasTypeButton_MouseClick(args)
+	local model = ModelEdit.renderer:getModel()
+	if model ~= nil then
+		local composer = EmberOgre.Model.ModelDefinitionAtlasComposer:new_local()
+		composer:composeToFile(model, ModelEdit.definition:getName(), "thing", 1)
+	end	
+end
+
 function ModelEdit.AddSubmodelButton_MouseClick(args)
 	
 	local item = ModelEdit.contentparts.modelInfo.meshlist:getFirstSelectedItem()
