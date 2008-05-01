@@ -33,33 +33,49 @@ grep -orIE --no-filename "normalmaptexture=\"3d[^\"]*\"" ${original_media}/model
 sort --unique common_textures.list > common_textures_cleaned.list
 
 #first copy all textures
-cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_textures_cleaned.list ` | ( cd ${shared_dir}/common; tar xvf -)
+# cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_textures_cleaned.list ` | ( cd ${shared_dir}/common; tar xvf -)
 
 #then convert them to a little lower smaller
 echo "Converting images"
 for filename in `cat ${shared_dir}/common_textures_cleaned.list `
 do
-	#'512x512>' will only convert if the image is larger in any dimension
-	# -quality 95 is suitable for photos
-	# -depth 8 guarantees that the pixeldepth is 8: we don't have any floating point textures yet
-	convert ${shared_dir}/common/$filename -quality 95 -depth 8 -resize "${textureSize}x${textureSize}>" ${shared_dir}/common/$filename
-	echo "Converted $filename to max ${textureSize}x${textureSize}"
-done
+	origfile="${original_media}/common/${filename}"
+	newfile="${shared_dir}/common/${filename}"
+	#only convert if the original image is newer
+	if [ $origfile -nt $newfile ]
+	then
+		mkdir -p `dirname ${newfile}`
+		#'512x512>' will only convert if the image is larger in any dimension
+		# -quality 95 is suitable for photos
+		# -depth 8 guarantees that the pixeldepth is 8: we don't have any floating point textures yet
+		#echo "convert $origfile -quality 95 -depth 8 -resize  $newfile"
 
+ 		convert $origfile -quality 95 -depth 8 -resize "${textureSize}x${textureSize}>" $newfile
+		echo "Converted $filename to max ${textureSize}x${textureSize}"
+	fi
+done
+exit
 
 #copy all meshes in use
 echo "Copying meshes"
 cd ${shared_dir}
-grep -orIE --no-filename "mesh=\"3d[^\"]*\"" ${original_media}/modeldefinitions/*.modeldef | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' > common_meshes.list
-grep -orIE --no-filename "mesh=\"junk[^\"]*\"" ${original_media}/modeldefinitions/*.modeldef | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> common_meshes.list
-grep -orIE --no-filename "mesh=\"3d[^\"]*\"" ${original_media}/modeldefinitions/*.modeldef.xml | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> common_meshes.list
-grep -orIE --no-filename "mesh=\"junk[^\"]*\"" ${original_media}/modeldefinitions/*.modeldef.xml | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> common_meshes.list
+grep -orIE --no-filename "mesh=\"3d[^\"]*\"" ${original_media}/modeldefinitions/*.modeldef | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' > ${shared_dir}/common_meshes.list
+grep -orIE --no-filename "mesh=\"junk[^\"]*\"" ${original_media}/modeldefinitions/*.modeldef | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> ${shared_dir}/common_meshes.list
+grep -orIE --no-filename "mesh=\"3d[^\"]*\"" ${original_media}/modeldefinitions/*.modeldef.xml | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> ${shared_dir}/common_meshes.list
+grep -orIE --no-filename "mesh=\"junk[^\"]*\"" ${original_media}/modeldefinitions/*.modeldef.xml | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> ${shared_dir}/common_meshes.list
 cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_meshes.list ` | ( cd ${shared_dir}/common; tar xvf -)
 mkdir -p ${shared_dir}/models
 cd ${original_media}/models ; tar cf - `find -L . -iname \*.mesh` | ( cd ${shared_dir}/models; tar xvf -)
-#it's harder to find out what skeletons are used, so we'll just copy them all
+
+
 echo "Copying skeletons"
-cd ${original_media} ; tar cf - `find -L . -iname \*.skeleton` | ( cd ${shared_dir}; tar xvf -)
+#use meshmagick to figure out the needed skeletons
+for filename in `find ${shared_dir}/common -name "*.mesh"`
+do
+	meshmagick info 3d_skeletons/avian/models/chicken/chicken.mesh | grep -oE "skeletonfile.*.skeleton" | sed -e 's/skeletonfile //' >> ${shared_dir}/common_skeletons.list
+done
+cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_skeletons.list ` | ( cd ${shared_dir}/common; tar xvf -)
+
 
 # echo "Copying sounds"
 # mkdir -p ${shared_dir}/sounds
@@ -136,6 +152,7 @@ echo "Cleanup"
 rm -f ${shared_dir}/common_textures.list
 rm -f ${shared_dir}/common_textures_cleaned.list
 rm -f ${shared_dir}/common_meshes.list
+rm -f ${shared_dir}/common_skeletons.list
 rm -f ${shared_dir}/shared_packs.list
 
 rm -f ${user_dir}/user_packs.list
