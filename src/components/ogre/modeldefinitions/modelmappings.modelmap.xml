@@ -686,12 +686,54 @@
 
 	<automodelmapping name="fish" />
 	<automodelmapping name="dog" />
-	<automodelmapping name="crab" />
+	<!-- use the spider mesh for the crab for now -->
+	<modelmapping name="spider">
+		<entitymatch>
+			<case>
+				<caseparam type="equals">crab</caseparam>
+				<caseparam type="equals">spider</caseparam>
+				<action type="display-model">spider</action>
+				<attributematch attribute="colour">
+					<case>
+						<caseparam type="equals">carrion</caseparam>
+						<action type="display-part">body/carrion</action>
+					</case>
+					<case>
+						<caseparam type="equals">emerald</caseparam>
+						<action type="display-part">body/emerald</action>
+					</case>
+				</attributematch>
+			</case>
+		</entitymatch>
+	</modelmapping>	
+
+	
+	
 	<automodelmapping name="deer" />
 	<automodelmapping name="squirrel" />
-	<automodelmapping name="chicken" />
+	<modelmapping name="chicken">
+		<entitymatch>
+			<case>
+				<caseparam type="equals">chicken</caseparam>
+				<action type="display-model">chicken</action>
+				<attributematch attribute="plumage">
+					<case>
+						<caseparam type="equals">red</caseparam>
+						<action type="display-part">redchicken</action>
+					</case>
+					<case>
+						<caseparam type="equals">grey</caseparam>
+						<action type="display-part">greychicken</action>
+					</case>
+					<case>
+						<caseparam type="equals">buzzard</caseparam>
+						<action type="display-part">buzzard</action>
+					</case>
+				</attributematch>
+			</case>
+		</entitymatch>
+	</modelmapping>		
 	<automodelmapping name="pig" />
-	<automodelmapping name="spider" />
 	<automodelmapping name="cow" />
 	<automodelmapping name="rabbit" />
 	<automodelmapping name="wolf" />
@@ -716,21 +758,33 @@
 	<automodelmapping name="pelvis" />
 	<automodelmapping name="ribcage" />
 	<automodelmapping name="thigh" />
-	<modelmapping name="goblin">
+<!--	<modelmapping name="goblin">
 		<entitymatch>
 			<case>
 				<caseparam type="equals">goblin</caseparam>
-				<caseparam type="equals">kobold</caseparam>
 				<action type="display-model">goblin</action>
-				<entitymatch>
-					<case>
-						<caseparam type="equals">kobold</caseparam>
-						<action type="display-part">main_kobold</action>
-					</case>
-				</entitymatch>
 			</case>
 		</entitymatch>
-	</modelmapping>	
+	</modelmapping>	-->
+	<modelmapping name="kobold">
+		<entitymatch>
+			<case>
+				<caseparam type="equals">goblin</caseparam>
+				<action type="display-model">kobold</action>
+				<attributematch attribute="skincolour">
+					<case>
+						<caseparam type="equals">brown</caseparam>
+						<action type="display-part">body/brown</action>
+					</case>
+					<case>
+						<caseparam type="equals">green</caseparam>
+						<action type="display-part">body/brown</action>
+					</case>
+				</attributematch>
+			</case>
+		</entitymatch>
+	</modelmapping>		
+	
 	<automodelmapping name="horse" />
 	
 <!-- edibled -->

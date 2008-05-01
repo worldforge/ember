@@ -28,24 +28,6 @@
 			</action>
 		</actions>
 	</model>	
-	<model name="crab" usescaleof="width" showcontained="false" >
-		<submodels>
-			<submodel mesh="3d_objects/creatures/insect/models/spider/spider.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-		<actions>
-			<action name="__movement_walk">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="_Walk_s.BAKED.002" weight="1" />
-					</animation>
-				</animations>
-			</action>
-		</actions>
-	</model>	
 	
 	<model name="deer" usescaleof="height" showcontained="false" >
 		<submodels>
@@ -115,46 +97,6 @@
 		</actions> 
 	</model>
 	
-	<model name="chicken" rotation="90" showcontained="false" >
-		<rotation x="0" y="1" z="0" degrees="90" />
-		<submodels>
-			<submodel mesh="3d_objects/creatures/avian/models/chicken/chicken.mesh">
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-		<actions>
-			<action name="__movement_idle">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="WingFold" weight="0.5" />
-						<animationpart name="Peck1" weight="0.5" />
-					</animation>
-				</animations>
-			</action>
-			<action name="__movement_walk">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="WingFold" weight="0.5" />
-						<animationpart name="Walk" weight="0.5" />
-					</animation>
-				</animations>
-			</action>
-			<action name="__movement_run">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="WingFold" weight="0.5" />
-						<animationpart name="Run" weight="0.5" />
-					</animation>
-				</animations>
-			</action>
-		</actions>
-	</model>	
-	
-	
-	
-	
 	
 
 	
@@ -182,25 +124,6 @@
 	
 	
 	
-	
-	<model name="spider" showcontained="false" >
-		<submodels>
-			<submodel mesh="3d_objects/creatures/insect/models/spider/spider.mesh" >
-			<parts>
-				<part name="main" show="true" />
-			</parts>
-			</submodel>
-		</submodels>
-		<actions>
-			<action name="__movement_walk">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="_Walk_s.BAKED.002" weight="1" />
-					</animation>
-				</animations>
-			</action>
-		</actions>
-	</model>	
 	
     <model name="cow" usescaleof="height" showcontained="false" icon="">
         <translate x="0.000000" y="0.000000" z="0.000000" />

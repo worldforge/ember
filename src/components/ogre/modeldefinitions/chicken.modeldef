@@ -1,0 +1,100 @@
+<models>
+    <model name="chicken" usescaleof="height" showcontained="false" icon="">
+        <translate x="0.000000" y="0.200000" z="0.000000" />
+        <rotation x="-1.000000" y="-0.000000" z="-0.000000" degrees="90.000000" />
+        <submodels>
+            <submodel mesh="3d_skeletons/avian/models/chicken/chicken.mesh">
+                <parts>
+                    <part name="redchicken" group="main" show="false">
+                        <subentities>
+                            <subentity index="0" material="/global/avian/buzzard" />
+                        </subentities>
+                    </part>
+                    <part name="greychicken" group="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/avian/greychicken" />
+                        </subentities>
+                    </part>
+                    <part name="buzzard" group="main" show="false">
+                        <subentities>
+                            <subentity index="0" material="/global/avian/buzzard" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions>
+            <action name="__movement_idle" speed="1.000000">
+                <animations>
+                    <animation iterations="4">
+                        <animationpart name="Stand" weight="1.000000" />
+                    </animation>
+                    <animation iterations="2">
+                        <animationpart name="@Peck" weight="1.000000" />
+                    </animation>
+                    <animation iterations="4">
+                        <animationpart name="Stand" weight="1.000000" />
+                    </animation>
+                    <animation iterations="1">
+                        <animationpart name="@Peck2" weight="1.000000" />
+                    </animation>
+                    <animation iterations="1">
+                        <animationpart name="Stand" weight="1.000000" />
+                    </animation>
+                    <animation iterations="1">
+                        <animationpart name="@Peck2" weight="1.000000" />
+                    </animation>
+                    <animation iterations="5">
+                        <animationpart name="Stand" weight="1.000000" />
+                    </animation>
+                    <animation iterations="1">
+                        <animationpart name="@ScratchL" weight="1.000000" />
+                    </animation>
+                    <animation iterations="6">
+                        <animationpart name="Stand" weight="1.000000" />
+                    </animation>
+                    <animation iterations="1">
+                        <animationpart name="@ScratchR" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="__movement_walk" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="Walk" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="__movement_run" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="Run" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="drink" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="@Drink" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="crow" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="@Crow" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="sit" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="@Sit" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+        </actions>
+        <attachpoints />
+        <views />
+    </model>
+</models>
