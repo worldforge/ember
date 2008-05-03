@@ -442,7 +442,6 @@
 		<entitymatch>
 			<case>
 				<caseparam type="equals">shovel</caseparam>
-				<caseparam type="equals">spade</caseparam>
 				<action type="display-model">spade</action>
 			</case>
 		</entitymatch>
@@ -614,7 +613,6 @@
 				<caseparam type="equals">merchant</caseparam>
 				<caseparam type="equals">mercenary</caseparam>
 				<caseparam type="equals">marshall</caseparam>
-				<caseparam type="equals">butcher</caseparam>
 				<action type="display-model">male</action>
 				<outfitmatch attachment="body">
 					<case>
@@ -799,7 +797,8 @@
 				<action type="display-model">bread</action>
 				<!-- If someone has eaten off the bread show the cut version -->
 				<attributematch attribute="status" >
-					<case lesser="0.8">
+					<case>
+						<caseparam type="lesser">0.8</caseparam>
 						<action type="display-model">bread_cut</action>
 					</case>
 				</attributematch>
