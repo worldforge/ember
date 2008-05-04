@@ -60,12 +60,33 @@ void ModelRenderer::setModel(Model::Model* model)
 	node->detachAllObjects();
 	if (model) {
 		node->attachObject(model);
+		repositionSceneNode();
 		mTexture->getRenderContext()->repositionCamera();
 		if (mAutoShowFull) {
 			showFull();
 		}
 	}
 	
+}
+
+void ModelRenderer::repositionSceneNode()
+{
+	if (mModel) {
+		Ogre::SceneNode* node = mTexture->getRenderContext()->getSceneNode();
+		if (node) {
+			node->setOrientation(Ogre::Quaternion::IDENTITY);
+			///rotate node to fit with WF space
+			///perhaps this is something to put in the model spec instead?
+// 			node->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
+			node->rotate(mModel->getRotation());
+			
+			///translate the scale node according to the translate defined in the model
+			node->setPosition(Ogre::Vector3::ZERO);
+			node->translate(mModel->getDefinition()->getTranslate());
+			
+		}
+	}
+
 }
 
 Model::Model* ModelRenderer::getModel()

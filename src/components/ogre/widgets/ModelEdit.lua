@@ -212,14 +212,17 @@ end
 
 function ModelEdit.translateAdapter_update()
 	ModelEdit.definition:setTranslate(ModelEdit.translateAdapter:getValue())
+	ModelEdit.renderer:repositionSceneNode()
 end
 
 function ModelEdit.containedOffsetAdapter_update()
 	ModelEdit.definition:setContentOffset(ModelEdit.containedOffsetAdapter:getValue())
+	ModelEdit.renderer:repositionSceneNode()
 end
 
 function ModelEdit.rotationAdapter_update()
 	ModelEdit.definition:setRotation(ModelEdit.rotationAdapter:getValue())
+	ModelEdit.renderer:repositionSceneNode()
 end
 
 

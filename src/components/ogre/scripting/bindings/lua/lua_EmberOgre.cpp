@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Fri May  2 01:28:28 2008.
+** Generated automatically by tolua++-1.0.92 on Fri May  2 15:07:50 2008.
 */
 
 #ifndef __cplusplus
@@ -16564,6 +16564,37 @@ static int tolua_EmberOgre_EmberOgre_Gui_ModelRenderer_getModel00(lua_State* tol
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: repositionSceneNode of class  EmberOgre::Gui::ModelRenderer */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_ModelRenderer_repositionSceneNode00
+static int tolua_EmberOgre_EmberOgre_Gui_ModelRenderer_repositionSceneNode00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::ModelRenderer",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Gui::ModelRenderer* self = (EmberOgre::Gui::ModelRenderer*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'repositionSceneNode'",NULL);
+#endif
+  {
+   self->repositionSceneNode();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'repositionSceneNode'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: new of class  EmberOgre::Gui::ListHolder */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_ListHolder_new00
 static int tolua_EmberOgre_EmberOgre_Gui_ListHolder_new00(lua_State* tolua_S)
@@ -22505,6 +22536,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"delete",tolua_EmberOgre_EmberOgre_Gui_ModelRenderer_delete00);
      tolua_function(tolua_S,"showModel",tolua_EmberOgre_EmberOgre_Gui_ModelRenderer_showModel00);
      tolua_function(tolua_S,"getModel",tolua_EmberOgre_EmberOgre_Gui_ModelRenderer_getModel00);
+     tolua_function(tolua_S,"repositionSceneNode",tolua_EmberOgre_EmberOgre_Gui_ModelRenderer_repositionSceneNode00);
     tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);

@@ -78,7 +78,10 @@ public:
     Model::Model* getModel();
     
     
-
+	/**
+	 *    Repositions the scene node using the settings of the Model instance.
+	 */
+	void repositionSceneNode();
     
     
 protected:
