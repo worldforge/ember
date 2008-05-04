@@ -101,49 +101,58 @@ material /global/plants/trees/evergreen/pine_snow : /base/normalmap/nonculled/al
 
 material /global/plants/fruit/acorn : /base/normalmap/specular
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/fruit/textures/acorn/acornD.png
-	set_texture_alias NormalHeightMap 3d_objects/plants/fruit/textures/acorn/acornN.png
-	set_texture_alias SpecularMap 3d_objects/plants/fruit/textures/acorn/acornS.png
+	set_texture_alias DiffuseMap 3d_objects/plants/fruit/acorn/D.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/fruit/acorn/N.png
+	set_texture_alias SpecularMap 3d_objects/plants/fruit/acorn/S.png
 }
 
 material /global/plants/fruit/carrot : /base/normalmap/specular
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/fruit/textures/carrot/carrotD.png
-	set_texture_alias NormalHeightMap 3d_objects/plants/fruit/textures/carrot/carrotN.png
-	set_texture_alias SpecularMap 3d_objects/plants/fruit/textures/carrot/carrotS.png
+	set_texture_alias DiffuseMap 3d_objects/plants/fruit/carrot/D.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/fruit/carrot/N.png
+	set_texture_alias SpecularMap 3d_objects/plants/fruit/carrot/S.png
 }
 
 material /global/plants/fruit/carrot/nonculled : /base/normalmap/specular/nonculled/alpharejected
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/fruit/textures/carrot/carrotD.png
-	set_texture_alias NormalHeightMap 3d_objects/plants/fruit/textures/carrot/carrotN.png
-	set_texture_alias SpecularMap 3d_objects/plants/fruit/textures/carrot/carrotS.png
+	set_texture_alias DiffuseMap 3d_objects/plants/fruit/carrot/D.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/fruit/carrot/N.png
+	set_texture_alias SpecularMap 3d_objects/plants/fruit/carrot/S.png
 }
 
+material /global/plants/mushrooms/amanita : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/mushrooms/amanita/D.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/mushrooms/amanita/N.png
+	set_texture_alias SpecularMap 3d_objects/plants/mushrooms/amanita/S.png
+}
+material /global/plants/mushrooms/galerina : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/mushrooms/galerina/D.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/mushrooms/galerina/N.png
+	set_texture_alias SpecularMap 3d_objects/plants/mushrooms/galerina/S.png
+}
+material /global/plants/mushrooms/blue_moon  : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/mushrooms/blue_moon/D.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/mushrooms/blue_moon/N.png
+	set_texture_alias SpecularMap 3d_objects/plants/mushrooms/blue_moon/S.png
+}
+material /global/plants/mushrooms/silkfoot : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/mushrooms/silkfoot/D.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/mushrooms/silkfoot/N.png
+	set_texture_alias SpecularMap 3d_objects/plants/mushrooms/silkfoot/S.png
+}
 
-material /global/plants/fruit/mushrooms/amanita : /base/simple
+material /global/plants/fruit/apple :/base/normalmap/specular
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/fruit/textures/mushrooms/amanita.png
-}
-material /global/plants/fruit/mushrooms/galerina : /base/simple
-{
-	set_texture_alias DiffuseMap 3d_objects/plants/fruit/textures/mushrooms/galerina.png
-}
-material /global/plants/fruit/mushrooms/mushroom_texture_blue_sa : /base/simple
-{
-	set_texture_alias DiffuseMap 3d_objects/plants/fruit/textures/mushrooms/mushroom_texture_blue_sa.png
-}
-material /global/plants/fruit/mushrooms/silkfoot : /base/simple
-{
-	set_texture_alias DiffuseMap 3d_objects/plants/fruit/textures/mushrooms/silkfoot.png
+	set_texture_alias DiffuseMap 3d_objects/plants/fruit/apple/D.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/fruit/apple/N.png
+	set_texture_alias SpecularMap 3d_objects/plants/fruit/apple/S.png
 }
 
-material /global/plants/fruit/apple : /base/simple
-{
-	set_texture_alias DiffuseMap 3d_objects/plants/fruit/textures/apple/appleD.png
-}
-
-material /global/plants/trees/oak : /base/normalmap/specular
+material /global/plants/trees/oak : 
 {
 	set_texture_alias DiffuseMap 3d_objects/plants/trees/textures/oak/oak.png
 	set_texture_alias NormalHeightMap 3d_objects/plants/trees/textures/oak/oakN.png
@@ -437,9 +446,9 @@ material /global/plants/shrubs/fern :  /base/simple/nonculled/alphablended
 
 material /global/plants/fruit/beet :  /base/normalmap/specular/nonculled/alpharejected
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/fruit/textures/beet/beetD.png
-	set_texture_alias NormalHeightMap 3d_objects/plants/fruit/textures/beet/beetN.png
-	set_texture_alias SpecularMap 3d_objects/plants/fruit/textures/beet/beetS.png
+	set_texture_alias DiffuseMap 3d_objects/plants/fruit/beet/D.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/fruit/beet/N.png
+	set_texture_alias SpecularMap 3d_objects/plants/fruit/beet/S.png
 }
 
 // material /global/plants/shrubs/leaf :  /base/normalmap/specular/nonculled/alpharejected
@@ -458,12 +467,10 @@ material /global/plants/shrubs/leaf :  /base/simple/nonculled/alphablended
 	}
 }
 
- 
-// material /global/plants/flowers/camellia :  /base/normalmap/specular/nonculled/alpharejected
 material /global/plants/flowers/camellia : /base/simple/nonculled/alphablended
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/flowers/textures/camelliaD.png
-	set_texture_alias NormalHeightMap 3d_objects/plants/flowers/textures/camelliaN.png
+	set_texture_alias DiffuseMap 3d_objects/plants/flowers/camellia/D.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/flowers/camellia/N.png
 	technique
 	{
 		pass

@@ -7,8 +7,8 @@
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/items/building_element/rough_timber/rough_timber_beam" />
-                            <subentity index="1" material="/global/items/building_element/rough_timber/rough_timber_beam_end" />
+                            <subentity index="0" material="/global/items/building_element/beam_timber" />
+                            <subentity index="1" material="/global/items/building_element/beam_end" />
                         </subentities>
                     </part>
                 </parts>

@@ -1,0 +1,40 @@
+<models>
+    <model name="mushroom_B" usescaleof="height" showcontained="true" icon="">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="-1.000000" y="-0.000000" z="-0.000000" degrees="90.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/plants/mushrooms/blue_moon/mushroom_B.mesh">
+                <parts>
+                    <part name="blue_moon" show="true" group="main">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/mushrooms/blue_moon" />
+                        </subentities>
+                    </part>
+                    <part name="galerina" show="false" group="main">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/mushrooms/galerina" />
+                        </subentities>
+                    </part>
+                    <part name="amanita" show="false" group="main">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/mushrooms/amanita" />
+                        </subentities>
+                    </part>
+                    <part name="silkfoot" show="false" group="main">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/mushrooms/silkfoot" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views>
+            <view name="icon">
+                <distance>0</distance>
+                <rotation x="1.000000" y="0.000000" z="0.000000" degrees="89.999992" />
+            </view>
+        </views>
+    </model>
+</models>

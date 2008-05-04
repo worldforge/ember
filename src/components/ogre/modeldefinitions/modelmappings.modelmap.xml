@@ -130,8 +130,19 @@
 		<entitymatch>
 			<case>
 				<caseparam type="equals">mushroom</caseparam>
-				<action type="display-model">mushroom</action>
+				<action type="display-model">mushroom_A</action>
 				<attributematch attribute="style">
+					<case>
+						<caseparam type="equals">stocky</caseparam>
+						<action type="display-model">mushroom_A</action>
+					</case>
+					<case>
+						<caseparam type="equals">pointy</caseparam>
+						<action type="display-model">mushroom_B</action>
+					</case>
+				</attributematch>
+				<!-- The parts are identical for both types of meshes. -->
+				<attributematch attribute="species">
 					<case>
 						<caseparam type="equals">amanita</caseparam>
 						<action type="display-part">amanita</action>
@@ -141,8 +152,8 @@
 						<action type="display-part">galerina</action>
 					</case>
 					<case>
-						<caseparam type="equals">blue</caseparam>
-						<action type="display-part">blue</action>
+						<caseparam type="equals">blue_moon</caseparam>
+						<action type="display-part">blue_moon</action>
 					</case>
 					<case>
 						<caseparam type="equals">silkfoot</caseparam>
@@ -174,6 +185,28 @@
 	<automodelmapping name="torch" />
 	<automodelmapping name="deed" />
 	<automodelmapping name="bottle" />
+	<modelmapping name="bowls">
+		<entitymatch>
+			<case>
+				<caseparam type="equals">bowl</caseparam>
+				<action type="display-model">bowls</action>
+				<attributematch attribute="style">
+					<case>
+						<caseparam type="equals">flat</caseparam>
+						<action type="display-part">flat</action>
+					</case>
+					<case>
+						<caseparam type="equals">medium</caseparam>
+						<action type="display-part">medium</action>
+					</case>
+					<case>
+						<caseparam type="equals">high</caseparam>
+						<action type="display-part">high</action>
+					</case>
+				</attributematch>
+			</case>
+		</entitymatch>
+	</modelmapping>		
 	
 	<!-- This will only work if the trousers and shirt has the same parts defined -->
 	<modelmapping name="clothes">

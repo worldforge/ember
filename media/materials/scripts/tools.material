@@ -80,3 +80,36 @@ material /global/items/containers/tinderbox : /base/normalmap/specular
 	set_texture_alias NormalHeightMap 3d_objects/items/containers/textures/tinderbox/tinderboxN.png
 	set_texture_alias SpecularMap 3d_objects/items/containers/textures/tinderbox/tinderboxS.png
 }
+
+material /global/containers/bowls : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/containers/bowls/D.png
+	set_texture_alias NormalHeightMap 3d_objects/containers/bowls/N.png
+	set_texture_alias SpecularMap 3d_objects/containers/bowls/S.png
+}
+material /global/containers/chest : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/containers/chest/D.png
+	set_texture_alias NormalHeightMap 3d_objects/containers/chest/N.png
+	set_texture_alias SpecularMap 3d_objects/containers/chest/S.png
+}
+material /global/containers/barrel : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/containers/barrel/D.png
+	set_texture_alias NormalHeightMap 3d_objects/containers/barrel/N.png
+	set_texture_alias SpecularMap 3d_objects/containers/barrel/S.png
+}
+material /global/containers/bottle/glass : /base/normalmap/specular/nonculled/alphablended_modulate
+{
+	set_texture_alias DiffuseMap 3d_objects/containers/bottle/D.png
+	set_texture_alias NormalHeightMap 3d_objects/containers/bottle/N.png
+	set_texture_alias SpecularMap 3d_objects/containers/bottle/S.png
+}
+
+material /global/containers/bottle/cork : /base/normalmap/specular
+{
+	set_texture_alias DiffuseMap 3d_objects/containers/bottle/D.png
+	set_texture_alias NormalHeightMap 3d_objects/containers/bottle/N.png
+	set_texture_alias SpecularMap 3d_objects/containers/bottle/S.png
+}
+

@@ -3,12 +3,12 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/items/containers/models/bottle/simple_bottle.mesh">
+            <submodel mesh="3d_objects/containers/bottle/bottle.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/items/containers/earthenware/cylinder" />
-                            <subentity index="1" material="/global/items/containers/earthenware/cylinder" />
+                            <subentity index="0" material="/global/containers/bottle/cork" />
+                            <subentity index="1" material="/global/containers/bottle/glass" />
                         </subentities>
                     </part>
                 </parts>

@@ -18,7 +18,7 @@
 			</foliage>
 		</layer>
 		<layer shadername="grass" diffusetexture="3d_objects/environment/ground/textures/grass/grassD.png" normalmaptexture="3d_objects/environment/ground/textures/grass/grassN.png" tilesize="8">
-			<foliage planttype="grass" populationtechnique="cluster" rendertechnique="grass">
+			<!--foliage planttype="grass" populationtechnique="cluster" rendertechnique="grass">
 				<param key="minClusterRadius">2</param>
 				<param key="maxClusterRadius">10</param>
 				<param key="clusterDistance">25</param>
@@ -30,16 +30,62 @@
 				<param key="minWidth">0.75</param>
 				<param key="maxWidth">1.25</param>
 				<param key="renderTech">crossquad</param> 
-				<!-- small grass
-				<param key="minHeight">0.25</param>
-				<param key="maxHeight">0.35</param>
-				<param key="minWidth">0.25</param>
-				<param key="maxWidth">0.35</param>
+				
+				
+				<param key="minHeight">0.45</param>
+				<param key="maxHeight">0.65</param>
+				<param key="minWidth">0.45</param>
+				<param key="maxWidth">0.65</param>
 				<param key="swayLength">0.05</param>
 				<param key="renderTech">crossquad</param> 
-				-->
 				
-			</foliage>
+				
+			</foliage-->
+			<foliage planttype="grass_green" populationtechnique="cluster" rendertechnique="grass">
+				<param key="minClusterRadius">2</param>
+				<param key="maxClusterRadius">10</param>
+				<param key="clusterDistance">25</param>
+				<param key="density">4</param>
+				<param key="falloff">0.6</param>
+				<param key="material">/global/plants/grass/bittergrass_green</param>
+
+				<param key="minHeight">0.45</param>
+				<param key="maxHeight">0.65</param>
+				<param key="minWidth">0.45</param>
+				<param key="maxWidth">0.65</param>
+				<param key="swayLength">0.05</param>
+				<param key="renderTech">crossquad</param> 
+			</foliage>			
+			<!-- foliage planttype="grass_brown" populationtechnique="cluster" rendertechnique="grass">
+				<param key="minClusterRadius">2</param>
+				<param key="maxClusterRadius">10</param>
+				<param key="clusterDistance">24</param>
+				<param key="density">2</param>
+				<param key="falloff">0.6</param>
+				<param key="material">/global/plants/grass/bittergrass_brown</param>
+
+				<param key="minHeight">0.45</param>
+				<param key="maxHeight">0.65</param>
+				<param key="minWidth">0.45</param>
+				<param key="maxWidth">0.65</param>
+				<param key="swayLength">0.05</param>
+				<param key="renderTech">crossquad</param> 
+			</foliage>			
+			<foliage planttype="grass_yellow" populationtechnique="cluster" rendertechnique="grass">
+				<param key="minClusterRadius">2</param>
+				<param key="maxClusterRadius">10</param>
+				<param key="clusterDistance">23</param>
+				<param key="density">2</param>
+				<param key="falloff">0.6</param>
+				<param key="material">/global/plants/grass/bittergrass_yellow</param>
+
+				<param key="minHeight">0.45</param>
+				<param key="maxHeight">0.65</param>
+				<param key="minWidth">0.45</param>
+				<param key="maxWidth">0.65</param>
+				<param key="swayLength">0.05</param>
+				<param key="renderTech">crossquad</param> 
+			</foliage -->			
 			<foliage planttype="fern" populationtechnique="cluster" rendertechnique="shrubbery">
 				<param key="mesh">3d_objects/plants/shrubs/models/fern/fern.mesh</param>
 				<param key="minScale">0.7</param>

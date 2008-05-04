@@ -64,8 +64,7 @@
                         <animationpart name="swim" weight="1.000000" />
                     </animation>
                 </animations>
-            </action>            
-            
+            </action>
             <action name="attack" speed="1.000000">
                 <animations>
                     <animation iterations="1">
@@ -86,7 +85,7 @@
                         <animationpart name="chop" weight="1.000000" />
                     </animation>
                 </animations>
-            </action>           
+            </action>
             <action name="jump" speed="1.000000">
                 <animations>
                     <animation iterations="1">
@@ -95,7 +94,11 @@
                 </animations>
             </action>
         </actions>
-        <attachpoints />
+        <attachpoints>
+            <attachpoint name="right_hand_wield" bone="lower_hand.R">
+                <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+            </attachpoint>
+        </attachpoints>
         <views />
     </model>
 </models>

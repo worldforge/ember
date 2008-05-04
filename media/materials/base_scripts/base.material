@@ -424,6 +424,36 @@ material /base/normalmap/specular/nonculled/alphablended : /base/normalmap/specu
   }
 }
 
+material /base/normalmap/specular/nonculled/alphablended_modulate : /base/normalmap/specular/nonculled/alphablended
+{
+  technique NormalMapped
+  {
+    pass Main
+    {
+     texture_unit DiffuseMap {
+     	colour_op modulate
+     }
+    }
+  }
+  technique General
+  {
+    pass Main
+    {
+     texture_unit DiffuseMap {
+     	colour_op modulate
+     }
+    }
+  }
+  technique GeneralDistance
+  {
+    pass Main
+    {
+     texture_unit DiffuseMap {
+     	colour_op modulate
+     }
+    }
+  }
+}
 
 
 //Base material for waving grass

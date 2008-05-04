@@ -7,9 +7,9 @@
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/items/building_element/rough_stone/wall" />
-                            <subentity index="1" material="/global/items/building_element/rough_stone/wall" />
-                            <subentity index="2" material="/global/items/building_element/rough_stone/wall" />
+                            <subentity index="0" material="/global/items/building_element/moraf_normal_wall" />
+                            <subentity index="1" material="/global/items/building_element/moraf_floor" />
+                            <subentity index="2" material="/global/items/building_element/moraf_wall_side" />
                         </subentities>
                     </part>
                 </parts>

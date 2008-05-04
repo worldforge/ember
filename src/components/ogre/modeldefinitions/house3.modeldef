@@ -9,10 +9,10 @@
                         <subentities>
                             <subentity index="0" material="/global/items/building_element/rough_timber/timber_roof" />
                             <subentity index="1" material="/global/items/building_element/rough_timber/rough_timber_roof_bottom" />
-                            <subentity index="2" material="/global/items/building_element/rough_stone/floor" />
-                            <subentity index="3" material="/global/items/building_element/rough_stone/floor" />
+                            <subentity index="2" material="/global/items/building_element/moraf_normal_wall" />
+                            <subentity index="3" material="/global/items/building_element/moraf_floor" />
                             <subentity index="4" material="/global/items/building_element/rough_timber/rough_timber_wall" />
-                            <subentity index="5" material="/global/items/building_element/rough_timber/rough_timber_beam" />
+                            <subentity index="5" material="/global/items/building_element/beam_timber" />
                         </subentities>
                     </part>
                 </parts>

@@ -44,17 +44,17 @@ material /global/creature/tubular/fish/scaly_brown_white : /base/simple/nonculle
 	set_texture_alias DiffuseMap 3d_objects/creatures/tubular/textures/scaly_brown_white/tubular.png
 }
 
-material /global/avian/redchicken : /base/simple/nonculled
+material /global/avian/redchicken : /base/simple/nonculled/alpharejected
 {
 	set_texture_alias DiffuseMap 3d_skeletons/avian/textures/redchicken/D.png
 }
 
-material /global/avian/buzzard : /base/simple/nonculled
+material /global/avian/buzzard : /base/simple/nonculled/alpharejected
 {
 	set_texture_alias DiffuseMap 3d_skeletons/avian/textures/buzzard/D.png
 }
 
-material /global/avian/greychicken : /base/simple/nonculled
+material /global/avian/greychicken : /base/simple/nonculled/alpharejected
 {
 	set_texture_alias DiffuseMap 3d_skeletons/avian/textures/greychicken/D.png
 }
