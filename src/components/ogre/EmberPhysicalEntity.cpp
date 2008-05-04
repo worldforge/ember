@@ -527,14 +527,14 @@ void EmberPhysicalEntity::scaleNode() {
 		
 	getScaleNode()->setScale(1, 1, 1);
 	
-	const Ogre::Vector3& ogreMax = mDefaultOgreBoundingBox.getMaximum();
-	const Ogre::Vector3& ogreMin = mDefaultOgreBoundingBox.getMinimum();
+	const Ogre::Vector3& ogreMax(mDefaultOgreBoundingBox.getMaximum());
+	const Ogre::Vector3& ogreMin(mDefaultOgreBoundingBox.getMinimum());
 	
 	if (hasBBox()) {
 
-		const WFMath::AxisBox<3>& wfBoundingBox = getBBox();	
-		const WFMath::Point<3>& wfMax = wfBoundingBox.highCorner();
-		const WFMath::Point<3>& wfMin = wfBoundingBox.lowCorner();
+		const WFMath::AxisBox<3>& wfBoundingBox(getBBox());	
+		const WFMath::Point<3>& wfMax(wfBoundingBox.highCorner());
+		const WFMath::Point<3>& wfMin(wfBoundingBox.lowCorner());
 		
 		Ogre::Real scaleX;		
 		Ogre::Real scaleY;		
@@ -590,7 +590,7 @@ void EmberPhysicalEntity::scaleNode() {
 const Ogre::Vector3& EmberPhysicalEntity::getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity)
 {
 	///if the model has an offset specified, use that, else just send to the base class
-	const Ogre::Vector3& offset = getModel()->getDefinition()->getContentOffset();
+	const Ogre::Vector3& offset(getModel()->getDefinition()->getContentOffset());
 	if (offset != Ogre::Vector3::ZERO) {
 		return offset;
 	} else {
