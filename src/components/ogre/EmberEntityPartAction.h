@@ -31,6 +31,7 @@
 namespace EmberOgre {
 
 /**
+	Show a certain part of a Model.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class EmberEntityPartAction : public Model::Mapping::Actions::Action

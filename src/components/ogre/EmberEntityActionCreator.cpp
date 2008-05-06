@@ -25,6 +25,7 @@
 #endif
 #include "EmberEntityActionCreator.h"
 #include "EmberEntityModelAction.h"
+#include "EmberEntityHideModelAction.h"
 #include "EmberEntityPartAction.h"
 #include "model/mapping/Cases/CaseBase.h"
 
@@ -51,6 +52,9 @@ void EmberEntityActionCreator::createActions(ModelMapping& modelMapping, Cases::
 			aCase->addAction(action);
 		} else if (J->getType() == "display-model") {
 			EmberEntityModelAction* action = new EmberEntityModelAction(mEntity, J->getValue());
+			aCase->addAction(action);
+		} else if (J->getType() == "hide-model") {
+			EmberEntityHideModelAction* action = new EmberEntityHideModelAction(mEntity);
 			aCase->addAction(action);
 		}
 	}

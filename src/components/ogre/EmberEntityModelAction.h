@@ -32,6 +32,7 @@
 namespace EmberOgre {
 
 /**
+	Show a certain Model.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class EmberEntityModelAction : public Model::Mapping::Actions::Action
