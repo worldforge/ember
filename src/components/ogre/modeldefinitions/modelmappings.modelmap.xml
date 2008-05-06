@@ -851,5 +851,15 @@
 				<action type="display-model">placeholder</action>
 			</case>
 		</entitymatch>
-	</modelmapping> 	
+	</modelmapping>
+	
+	<!--
+		Show a placeholder for all instances of game_entity, except for those that we want to exclude by adding a nomodel element for.
+		-->
+	<automodelmapping name="game_entity" modelname="placeholder" />
+	<nomodel name="boundary" />
+	<nomodel name="path" />
+	<nomodel name="ploughed_field" />
+	<nomodel name="wall" /> <!-- This is the invisble wall for the houses -->
+
 </modelmappings>
