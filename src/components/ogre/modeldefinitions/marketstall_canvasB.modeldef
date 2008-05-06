@@ -8,8 +8,8 @@
                 <parts>
                     <part name="frame" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/items/ossyja/old_wood_planks" />
-                            <subentity index="3" material="/global/items/ossyja/old_wood_planks" />
+                            <subentity index="0" material="/global/items/building_element/ossyja_post" />
+                            <subentity index="3" material="/global/items/building_element/ossyja_planks" />
                         </subentities>
                     </part>
                     <part name="canvas_blue_green" group="canvas" show="true">
@@ -32,7 +32,7 @@
         <views>
             <view name="icon">
                 <distance>0</distance>
-                <rotation x="0.201969" y="-0.547916" z="-0.811786" degrees="141.141754" />
+                <rotation x="0.201969" y="-0.547916" z="-0.811786" degrees="141.141739" />
             </view>
         </views>
     </model>

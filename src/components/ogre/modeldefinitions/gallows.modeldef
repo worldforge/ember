@@ -7,8 +7,8 @@
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/items/ossyja/rough_post" />
-                            <subentity index="1" material="/global/items/ossyja/old_wood_planks" />
+                            <subentity index="0" material="/global/items/building_element/ossyja_post" />
+                            <subentity index="1" material="/global/items/building_element/ossyja_planks" />
                         </subentities>
                     </part>
                 </parts>

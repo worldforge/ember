@@ -7,9 +7,9 @@
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/oak" />
-                            <subentity index="1" material="/global/plants/trees/oak" />
-                            <subentity index="2" material="/global/plants/trees/oak" />
+                            <subentity index="0" material="/global/plants/trees/gnarly" />
+                            <subentity index="1" material="/global/plants/trees/gnarly" />
+                            <subentity index="2" material="/global/plants/trees/gnarly" />
                         </subentities>
                     </part>
                 </parts>
