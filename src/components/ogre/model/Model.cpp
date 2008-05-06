@@ -521,6 +521,24 @@ void Model::setVisible(bool visible)
 	
 }
 
+void Model::setDisplaySkeleton(bool display)
+{
+	SubModelSet::const_iterator I = mSubmodels.begin();
+	SubModelSet::const_iterator I_end = mSubmodels.end();
+	for (; I != I_end; ++I) {
+		(*I)->getEntity()->setDisplaySkeleton(display);		
+	}
+}
+
+bool Model::getDisplaySkeleton(void) const
+{
+	SubModelSet::const_iterator I = mSubmodels.begin();
+	if (I != mSubmodels.end()) {
+		return (*I)->getEntity()->getDisplaySkeleton();
+	}
+	return false;
+}
+
 
 
 const Ogre::Real Model::getScale() const

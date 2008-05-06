@@ -266,6 +266,11 @@ public:
 	*/
 	const AttachPointWrapperStore* getAttachedPoints() const;
 	
+	
+	void setDisplaySkeleton(bool display);
+
+	bool getDisplaySkeleton(void) const;
+
 protected:
 
 	/**
