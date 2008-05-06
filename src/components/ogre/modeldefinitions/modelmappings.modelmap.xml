@@ -559,7 +559,7 @@
 		<entitymatch>
 			<case>
 				<caseparam type="equals">birch</caseparam>
-				<action type="display-model">birch_mk1</action>
+				<action type="display-model">birchA</action>
 			</case>
 		</entitymatch>
 	</modelmapping> 	

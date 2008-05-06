@@ -1,13 +1,13 @@
 <models>
-    <model name="fern" usescaleof="height" showcontained="false" icon="">
+    <model name="bush" usescaleof="all" showcontained="true" icon="">
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/plants/shrubs/fern/fern.mesh">
+            <submodel mesh="3d_objects/plants/shrubs/bush/bush.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/shrubs/fern" />
+                            <subentity index="0" />
                         </subentities>
                     </part>
                 </parts>

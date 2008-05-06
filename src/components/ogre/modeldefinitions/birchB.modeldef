@@ -1,16 +1,17 @@
 <models>
-    <model name="birchB" usescaleof="all" showcontained="true" icon="">
+    <model name="birchB" usescaleof="height" scale="2.000000" showcontained="true" icon="">
+    	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/plants/trees/models/brich/birchB.mesh">
+            <submodel mesh="3d_objects/plants/trees/brich/birchB.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/foliage/oak" />
-                            <subentity index="1" material="/global/plants/trees/foliage/oak" />
-                            <subentity index="2" material="/global/plants/trees/bark/birch" />
-                            <subentity index="3" material="/global/plants/trees/bark/birch" />
+                            <subentity index="0" material="/global/plants/trees/birch/leavesA" />
+                            <subentity index="1" material="/global/plants/trees/birch/leavesB" />
+                            <subentity index="2" material="/global/plants/trees/birch/branches" />
+                            <subentity index="3" material="/global/plants/trees/birch/bark" />
                         </subentities>
                     </part>
                 </parts>

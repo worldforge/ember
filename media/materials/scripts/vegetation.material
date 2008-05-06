@@ -166,18 +166,13 @@ material /global/plants/trees/oak/nonculled : /base/normalmap/specular/nonculled
 	set_texture_alias SpecularMap 3d_objects/plants/trees/textures/oak/oakS.png
 }
 
-material /global/plants/trees/bark/birch : /base/normalmap/specular
+material /global/plants/trees/birch/bark : /base/normalmap/specular
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/trees/textures/bark/birch_barkD.png
-	set_texture_alias NormalHeightMap 3d_objects/plants/trees/textures/bark/birch_barkN.png
-	set_texture_alias SpecularMap 3d_objects/plants/trees/textures/bark/birch_barkS.png
+	set_texture_alias DiffuseMap 3d_objects/plants/trees/brich/bark/D.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/trees/brich/bark/N.png
+	set_texture_alias SpecularMap 3d_objects/plants/trees/brich/bark/S.png
 } 
 
-material /global/plants/trees/bark/birch_bark_white : /base/normalmap
-{
-	set_texture_alias DiffuseMap 3d_objects/plants/trees/textures/bark/birch_bark_whiteD.tga
-	set_texture_alias NormalHeightMap 3d_objects/plants/trees/textures/bark/birch_bark_whiteN.tga
-} 
 
 material /global/plants/trees/bark/fir_bark : /base/normalmap/specular
 {
@@ -186,12 +181,112 @@ material /global/plants/trees/bark/fir_bark : /base/normalmap/specular
 	set_texture_alias SpecularMap 3d_objects/plants/trees/textures/bark/fir_BarkS.png
 } 
 
-material /global/plants/trees/branches/birch : /base/normalmap/specular
+material /global/plants/trees/birch/leavesA : /base/normalmap/specular/nonculled/alpharejected
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/trees/textures/branches/birch_branchesD.png
-	set_texture_alias NormalHeightMap 3d_objects/plants/trees/textures/branches/branches_N.png
-	set_texture_alias SpecularMap 3d_objects/plants/trees/textures/branches/birch_branchesS.png
+	set_texture_alias DiffuseMap 3d_objects/plants/trees/brich/leavesA/D.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/trees/brich/leavesA/N.png
+	set_texture_alias SpecularMap 3d_objects/plants/trees/brich/leavesA/S.png
+	technique NormalMapped
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 128
+		}
+	}
+	technique NormalMappedOld
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 128
+		}
+	}
+	technique General
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 128
+		}
+	}
+	technique GeneralDistance
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 128
+		}
+	}
 } 
+
+material /global/plants/trees/birch/leavesB : /base/normalmap/specular/nonculled/alpharejected
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/trees/brich/leavesB/D.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/trees/brich/leavesB/N.png
+	set_texture_alias SpecularMap 3d_objects/plants/trees/brich/leavesB/S.png
+	technique NormalMapped
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 128
+		}
+	}
+	technique NormalMappedOld
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 128
+		}
+	}
+	technique General
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 128
+		}
+	}
+	technique GeneralDistance
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 128
+		}
+	}
+} 
+
+material /global/plants/trees/birch/branches : /base/normalmap/specular/nonculled/alpharejected
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/trees/brich/branches/D.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/trees/brich/branches/N.png
+	set_texture_alias SpecularMap 3d_objects/plants/trees/brich/branches/S.png
+	technique NormalMapped
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 128
+		}
+	}
+	technique NormalMappedOld
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 128
+		}
+	}
+	technique General
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 128
+		}
+	}
+	technique GeneralDistance
+	{
+		pass Main
+		{
+			alpha_rejection greater_equal 128
+		}
+	}
+} 
+
+
 
 material /global/plants/trees/foliage/oak :  /base/normalmap/specular/nonculled/alpharejected
 {
@@ -343,19 +438,12 @@ material /global/environment/ground/leaf_covered/ground :  /base/normalmap
 	set_texture_alias NormalHeightMap 3d_objects/environment/ground/textures/leaf_covered/ground_normals.png
 }
 
-material /global/plants/grass/heartblood : /base/wavinggrass
-{
-	set_texture_alias DiffuseMap 3d_objects/plants/grass/textures/heartblood/heartblood.png
-}
 
-material /global/plants/grass/bittergrass : /base/wavinggrass
+material /global/plants/grass/tussock/bittergrass/green : /base/simple/nonculled/alphablended
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/grass/textures/bittergrass/bittergrass.png
-}
-
-material /global/plants/grass/bittergrass/single : /base/simple/nonculled/alphablended
-{
-	set_texture_alias DiffuseMap 3d_objects/plants/grass/textures/bittergrass/bittergrass_single.png
+	set_texture_alias DiffuseMap 3d_objects/plants/grass/tussock/bittergrass/green/D.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/grass/tussock/bittergrass/green/N.png
+	set_texture_alias SpecularMap 3d_objects/plants/grass/tussock/bittergrass/green/S.png
 	technique
 	{
 		pass
@@ -366,9 +454,11 @@ material /global/plants/grass/bittergrass/single : /base/simple/nonculled/alphab
 	}
 }
 
-material /global/plants/grass/bittergrass_brown : /base/simple/nonculled/alphablended
+material /global/plants/grass/tussock/bittergrass/brown : /base/simple/nonculled/alphablended
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/grass/textures/bittergrass_brown/D.png
+	set_texture_alias DiffuseMap 3d_objects/plants/grass/tussock/bittergrass/brown/D.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/grass/tussock/bittergrass/brown/N.png
+	set_texture_alias SpecularMap 3d_objects/plants/grass/tussock/bittergrass/brown/S.png
 	technique
 	{
 		pass
@@ -379,9 +469,11 @@ material /global/plants/grass/bittergrass_brown : /base/simple/nonculled/alphabl
 	}
 }
 
-material /global/plants/grass/bittergrass_green : /base/simple/nonculled/alphablended
+material /global/plants/grass/tussock/bittergrass/yellow : /base/simple/nonculled/alphablended
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/grass/textures/bittergrass_green/D.png
+	set_texture_alias DiffuseMap 3d_objects/plants/grass/tussock/bittergrass/yellow/D.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/grass/tussock/bittergrass/yellow/N.png
+	set_texture_alias SpecularMap 3d_objects/plants/grass/tussock/bittergrass/yellow/S.png
 	technique
 	{
 		pass
@@ -392,32 +484,12 @@ material /global/plants/grass/bittergrass_green : /base/simple/nonculled/alphabl
 	}
 }
 
-material /global/plants/grass/bittergrass_yellow : /base/simple/nonculled/alphablended
-{
-	set_texture_alias DiffuseMap 3d_objects/plants/grass/textures/bittergrass_yellow/D.png
-	technique
-	{
-		pass
-		{
-			alpha_rejection greater_equal 128
-			//depth_write off
-		}
-	}
-}
 
-material /global/plants/grass/thingrass : /base/wavinggrass
+material /global/plants/grass/tussock/ducktail : /base/simple/nonculled/alphablended
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/grass/textures/thingrass/thingrass.png
-}
-
-material /global/plants/grass/teardrops : /base/wavinggrass
-{
-	set_texture_alias DiffuseMap 3d_objects/plants/grass/textures/teardrops/teardrops.png
-}
-
-material /global/plants/grass/ducktail/single : /base/simple/nonculled/alphablended
-{
-	set_texture_alias DiffuseMap 3d_objects/plants/grass/textures/ducktail/ducktail_single.png
+	set_texture_alias DiffuseMap 3d_objects/plants/grass/tussock/ducktail/D.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/grass/tussock/ducktail/N.png
+	set_texture_alias SpecularMap 3d_objects/plants/grass/tussock/ducktail/S.png
 	technique
 	{
 		pass
@@ -431,9 +503,9 @@ material /global/plants/grass/ducktail/single : /base/simple/nonculled/alphablen
 // material /global/plants/shrubs/fern :  /base/normalmap/specular/nonculled/alpharejected
 material /global/plants/shrubs/fern :  /base/simple/nonculled/alphablended
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/shrubs/textures/fern/fernD.png
-	set_texture_alias NormalHeightMap 3d_objects/plants/shrubs/textures/fern/fernN.png
-	set_texture_alias SpecularMap 3d_objects/plants/shrubs/textures/fern/fernS.png
+	set_texture_alias DiffuseMap 3d_objects/plants/shrubs/fern/D.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/shrubs/fern/N.png
+	set_texture_alias SpecularMap 3d_objects/plants/shrubs/fern/S.png
 	technique
 	{
 		pass
@@ -443,6 +515,8 @@ material /global/plants/shrubs/fern :  /base/simple/nonculled/alphablended
 		}
 	}
 }
+
+
 
 material /global/plants/fruit/beet :  /base/normalmap/specular/nonculled/alpharejected
 {
@@ -454,9 +528,37 @@ material /global/plants/fruit/beet :  /base/normalmap/specular/nonculled/alphare
 // material /global/plants/shrubs/leaf :  /base/normalmap/specular/nonculled/alpharejected
 material /global/plants/shrubs/leaf :  /base/simple/nonculled/alphablended
 {
-	set_texture_alias DiffuseMap 3d_objects/plants/shrubs/textures/leaf/leafD.png
-	set_texture_alias NormalHeightMap 3d_objects/plants/shrubs/textures/leaf/leafN.png
-	set_texture_alias SpecularMap 3d_objects/plants/shrubs/textures/leaf/leafS.png
+	set_texture_alias DiffuseMap 3d_objects/plants/shrubs/leaf/D.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/shrubs/leaf/N.png
+	set_texture_alias SpecularMap 3d_objects/plants/shrubs/leaf/S.png
+	technique
+	{
+		pass
+		{
+			alpha_rejection greater_equal 128
+			//depth_write off
+		}
+	}
+}
+
+material /global/plants/shrubs/bush :  /base/simple/nonculled/alphablended
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/shrubs/bush/D.png
+	set_texture_alias NormalHeightMap 3d_objects/plants/shrubs/bush/N.png
+	set_texture_alias SpecularMap 3d_objects/plants/shrubs/bush/S.png
+	technique
+	{
+		pass
+		{
+			alpha_rejection greater_equal 128
+			//depth_write off
+		}
+	}
+}
+
+material /global/plants/shrubs/dreadblade :  /base/simple/nonculled/alphablended
+{
+	set_texture_alias DiffuseMap 3d_objects/plants/shrubs/dreadblade/dreadblade.png
 	technique
 	{
 		pass
@@ -471,6 +573,7 @@ material /global/plants/flowers/camellia : /base/simple/nonculled/alphablended
 {
 	set_texture_alias DiffuseMap 3d_objects/plants/flowers/camellia/D.png
 	set_texture_alias NormalHeightMap 3d_objects/plants/flowers/camellia/N.png
+	set_texture_alias SpecularMap 3d_objects/plants/flowers/camellia/S.png
 	technique
 	{
 		pass

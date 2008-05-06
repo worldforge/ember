@@ -1,5 +1,5 @@
 <models>
-    <model name="fencesection" usescaleof="height" showcontained="true" icon="">
+    <model name="fencesection" usescaleof="width" showcontained="true" icon="">
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="-1.000000" y="-0.000000" z="-0.000000" degrees="90.000000" />
         <submodels>
@@ -7,8 +7,8 @@
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/items/building_element/rough_timber/rough_timber_beam_end" />
-                            <subentity index="1" material="/global/items/building_element/rough_timber/rough_timber_beam" />
+                            <subentity index="0" material="/global/items/building_element/beam_end" />
+                            <subentity index="1" material="/global/items/building_element/beam_timber" />
                         </subentities>
                     </part>
                 </parts>

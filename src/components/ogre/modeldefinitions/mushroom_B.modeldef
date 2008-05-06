@@ -3,7 +3,7 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="-1.000000" y="-0.000000" z="-0.000000" degrees="90.000000" />
         <submodels>
-            <submodel mesh="3d_objects/plants/mushrooms/blue_moon/mushroom_B.mesh">
+            <submodel mesh="3d_objects/plants/mushrooms/mushroom_B.mesh">
                 <parts>
                     <part name="blue_moon" show="true" group="main">
                         <subentities>
