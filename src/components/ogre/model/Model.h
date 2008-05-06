@@ -267,8 +267,18 @@ public:
 	const AttachPointWrapperStore* getAttachedPoints() const;
 	
 	
+	
+	/**
+	 *    If set to true, Ogre will display each bone in the skeleton with an axis overlay. Defaults to false.
+	 * @param display Whether to display the debug bone overlay or not.
+	 */
 	void setDisplaySkeleton(bool display);
 
+	/**
+	 *    Whether the debug bone overlay for the skeleton is shown or not.
+	 * @param  
+	 * @return 
+	 */
 	bool getDisplaySkeleton(void) const;
 
 protected:
