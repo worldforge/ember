@@ -49,7 +49,7 @@ void SimpleRenderContextResourceLoader::loadResource (Ogre::Resource *resource)
 
 
 SimpleRenderContext::SimpleRenderContext(const std::string& prefix, int width, int height)
-: mMainLight(0), mSceneManager(0), mWidth(width), mHeight(height), mRenderTexture(0), mCameraNode(0), mCameraPitchNode(0), mEntityNode(0), mRootNode(0), mCamera(0), mViewPort(0), mResourceLoader(*this), mBackgroundColour(Ogre::ColourValue::Black)
+: mMainLight(0), mSceneManager(0), mWidth(width), mHeight(height), mRenderTexture(0), mCameraNode(0), mCameraPitchNode(0), mEntityNode(0), mRootNode(0), mCamera(0), mViewPort(0), mResourceLoader(*this), mBackgroundColour(Ogre::ColourValue::Black), mCameraPositionMode(CPM_OBJECTCENTER)
 {
 
 	setupScene(prefix);
@@ -135,10 +135,15 @@ void SimpleRenderContext::repositionCamera()
 {
 	mEntityNode->_update(true, true);
 	Ogre::AxisAlignedBox bbox = mEntityNode->_getWorldAABB();
-	if (!bbox.isInfinite() && !bbox.isNull()) {
-		Ogre::Vector3 center = bbox.getCenter();
-		Ogre::Vector3 localCenter =  center - mRootNode->getPosition();
-		mCameraNode->setPosition(localCenter);
+	if (mCameraPositionMode == CPM_OBJECTCENTER) {
+		if (!bbox.isInfinite() && !bbox.isNull()) {
+			Ogre::Vector3 center = bbox.getCenter();
+			Ogre::Vector3 localCenter =  center - mRootNode->getPosition();
+			mCameraNode->setPosition(localCenter);
+		}
+	} else if (mCameraPositionMode == CPM_WORLDCENTER) {
+		mCameraNode->setPosition(Ogre::Vector3::ZERO);
+	} else {
 	}
 }
 
@@ -277,6 +282,16 @@ void SimpleRenderContext::setTexture(Ogre::TexturePtr texture)
 		mViewPort->setOverlaysEnabled(false);
 		///the cegui renderer wants a TexturePtr (not a RenderTexturePtr), so we just ask the texturemanager for texture we just created (rttex)
 	}
+}
+
+SimpleRenderContext::CameraPositioningMode SimpleRenderContext::getCameraPositionMode() const
+{
+	return mCameraPositionMode;
+}
+	
+void SimpleRenderContext::setCameraPositionMode(SimpleRenderContext::CameraPositioningMode mode)
+{
+	mCameraPositionMode = mode;
 }
 
 void SimpleRenderContext::setBackgroundColour(const Ogre::ColourValue& colour)

@@ -62,6 +62,25 @@ class SimpleRenderContext
 public:
     
     /**
+    Specifices how the camera will be positioned.
+    */
+    enum CameraPositioningMode
+	{
+		/**
+		Centers the camera on the object.
+		*/
+		CPM_OBJECTCENTER = 0,
+		/**
+		Centers the camera on the center of the world.
+		*/
+		CPM_WORLDCENTER = 1,
+		/**
+		Allows free roaming.
+		*/
+		CPM_FREE = 2,
+	};
+    
+    /**
      * Constructor.
      * @param prefix A unique prefix for the scene manager.
      * @param width The width of the image created.
@@ -199,7 +218,23 @@ public:
      */
     void setBackgroundColour(float red, float green, float blue, float alpha);
     
+    /**
+    Sets the render texture to which the scene will be rendered. By default an instance of this class will create it's own Render Texture instance, but this allows you to use a preexisting one if you want.
+    */
     void setTexture(Ogre::TexturePtr texture);
+    
+	/**
+	 *    Gets the current camera positioning mode. The default is CPM_OBJECTCENTER which centers the camera on the current displayed object.
+	 * @return 
+	 */
+	CameraPositioningMode getCameraPositionMode() const;
+    
+	/**
+	 *    Sets the camera positioning mode. This determines how the camera behaves.
+	 * @param mode 
+	 */
+	void setCameraPositionMode(CameraPositioningMode mode);
+	
 private:
 
 	/**
@@ -267,7 +302,15 @@ private:
 	
 	SimpleRenderContextResourceLoader mResourceLoader;
 	
+	/**
+	The background colour of the scene.
+	*/
 	Ogre::ColourValue mBackgroundColour;
+	
+	/**
+	The current camera positioning mode.
+	*/
+	CameraPositioningMode mCameraPositionMode;
 
 };
 
