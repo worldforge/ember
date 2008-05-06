@@ -114,7 +114,7 @@ namespace Gui {
 		}
 
 		///we won't be needing the bootstrap resources for some while, so unload them
-		ResourceGroupManager::getSingleton().unloadResourceGroup("Bootstrap");
+// 		ResourceGroupManager::getSingleton().unloadResourceGroup("Bootstrap");
 
 	}
 
