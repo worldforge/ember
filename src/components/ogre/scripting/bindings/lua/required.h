@@ -66,6 +66,9 @@
 
 #include "components/ogre/OgreInfo.h"
 
+#include "components/ogre/SimpleRenderContext.h"
+
+
 #include "components/ogre/widgets/icons/Icon.h"
 #include "components/ogre/widgets/icons/IconManager.h"
 

@@ -51,6 +51,7 @@ $pfile "Jesus.pkg"
 $pfile "MathConverter.pkg"
 
 
+$pfile "SimpleRenderContext.pkg"
 $pfile "MovableObjectRenderer.pkg"
 $pfile "OgreEntityRenderer.pkg"
 $pfile "ModelRenderer.pkg"
