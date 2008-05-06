@@ -44,7 +44,6 @@ namespace Gui {
 ModelRenderer::ModelRenderer(CEGUI::Window* image) 
 : MovableObjectRenderer(image), mModel(0) 
 {
-
 }
 
 
@@ -102,11 +101,13 @@ void ModelRenderer::showModel(const std::string& modelName)
 	}
 	if (modelName != "") {
 		mModel = Model::Model::createModel(mTexture->getRenderContext()->getSceneManager(), modelName);
-// 		mModel->create(modelName);
-		///override the rendering distance from the model; we want to always show it in the preview
-		mModel->setRenderingDistance(0);
-		setModel(mModel);
-		mTexture->getRenderContext()->setActive(true);
+		if (mModel) {
+	// 		mModel->create(modelName);
+			///override the rendering distance from the model; we want to always show it in the preview
+			mModel->setRenderingDistance(0);
+			setModel(mModel);
+			mTexture->getRenderContext()->setActive(true);
+		}
 	} else {
 		setModel(0);
 		mTexture->getRenderContext()->setActive(false);
