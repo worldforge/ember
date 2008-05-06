@@ -102,8 +102,6 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Root
 {
 	
 	Eris::Entity* emberEntity(0);
-
- 	bool isPhysical = Model::Mapping::EmberModelMappingManager::getSingleton().getManager().getDefinitionForType(type) != 0;
     
     if (ge->getId() == getErisAvatar()->getId()) {
    	
@@ -114,16 +112,37 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Root
 
     	emberEntity = createWorld(ge, type, w);
 
-    } else if (!isPhysical) {
-    	S_LOG_VERBOSE("Creating immaterial entity.");
-
-    	///we don't want this to have any Ogre::Entity
-		emberEntity = new EmberEntity(ge->getId(), type, w, EmberOgre::getSingleton().getSceneManager());
-
     } else {
-
-    	emberEntity = createPhysicalEntity(ge, type, w);
- 
+		///assume that it's not physical until we have a model defintion which don't want to hide the model
+		///In the future we want to refactor the way we deal with EmberEntity and EmberPhysicalEntity, so that we only have one class (EmberEntity) which in turn holds a reference to a graphical representation instance. Until then we have to do with this though.
+		bool isPhysical = false;
+		Model::Mapping::Definitions::ModelMappingDefinition* mappingDef(Model::Mapping::EmberModelMappingManager::getSingleton().getManager().getDefinitionForType(type));
+		if (mappingDef) {
+			///we have a mapping defintion, so it's probably physical, lets just see that the first action isn't to hide the model
+			isPhysical = true;
+			const Model::Mapping::Definitions::MatchDefinition::CaseStore& cases(mappingDef->getRoot().getCases());
+			if (cases.begin() != cases.end()) {
+				const Model::Mapping::Definitions::CaseDefinition::ActionStore& actions(cases.begin()->getActions());
+				if (actions.begin() != actions.end()) {
+					if (actions.begin()->getType() == "hide-model") {
+						///ok, the first action is to hide the model, so we'll have to assume that it's a non physical type
+						isPhysical = false;
+					}
+				}
+			}
+		}
+			
+		if (!isPhysical) {
+			S_LOG_VERBOSE("Creating immaterial entity.");
+		
+			///we don't want this to have any Ogre::Entity
+			emberEntity = new EmberEntity(ge->getId(), type, w, EmberOgre::getSingleton().getSceneManager());
+		
+		} else {
+		
+			emberEntity = createPhysicalEntity(ge, type, w);
+		
+		}
     }
 
 	S_LOG_VERBOSE("Entity added to game view.");
