@@ -735,6 +735,22 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 			modelElem.InsertEndChild(contentOffset);
 		}
 		
+		const RenderingDefinition* renderingDef = modelDef->getRenderingDefinition();
+		if (renderingDef) {
+			Ember::TiXmlElement rendering("rendering");
+			rendering.SetAttribute("scheme", renderingDef->getScheme().c_str());
+			for (StringParamStore::const_iterator I  = renderingDef->getParameters().begin();
+					I != renderingDef->getParameters().end(); ++I)
+			{
+				Ember::TiXmlElement param("param");
+				param.SetAttribute("key", I->first.c_str());
+				param.SetValue(I->second.c_str());
+				rendering.InsertEndChild(param);
+			}
+			modelElem.InsertEndChild(rendering);
+		}
+
+		
 		Ember::TiXmlElement translate("translate");
 		fillElementFromVector3(translate, modelDef->getTranslate());
 		modelElem.InsertEndChild(translate);
