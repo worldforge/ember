@@ -55,6 +55,7 @@ class EmberPhysicalEntity : public EmberEntity
 {
 friend class EmberEntityModelAction;
 friend class EmberEntityPartAction;
+friend class EmberEntityHideModelAction;
 public:
 
 	/**
