@@ -190,6 +190,15 @@ TerrainEditor::TerrainEditor() : mPickListener(this), mCurrentUserObject(0),mOve
 
 TerrainEditor::~TerrainEditor()
 {
+	//TODO: also delete user objects
+	if (mOverlayNode) {
+		Ogre::SceneNode* parent = static_cast<Ogre::SceneNode*>(mOverlayNode->getParent());
+		if (parent) {
+			parent->removeAndDestroyChild(mOverlayNode->getName());
+		} else {
+			mOverlayNode->getCreator()->destroySceneNode(mOverlayNode->getName());
+		}
+	}
 }
 
 void TerrainEditor::showOverlay()
