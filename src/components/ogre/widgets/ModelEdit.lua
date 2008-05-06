@@ -845,6 +845,8 @@ function ModelEdit.buildWidget()
 	
 		
 	ModelEdit.renderer = EmberOgre.Gui.ModelRenderer:new_local(ModelEdit.renderImage)
+	ModelEdit.renderer:showAxis();
+	ModelEdit.renderer:setCameraPositionMode(EmberOgre.SimpleRenderContext.CPM_WORLDCENTER)
 	
 	local subMeshPreviewImage = ModelEdit.widget:getWindow("SubMeshPreviewImage")
 	--subMeshPreviewImage = CEGUI.toStaticImage(subMeshPreviewImage)
