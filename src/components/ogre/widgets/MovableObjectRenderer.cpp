@@ -41,7 +41,7 @@ namespace EmberOgre {
 namespace Gui {
 
 MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image)
-: mTexture(0), mIsInputCatchingAllowed(true), mAutoShowFull(true), mImage(image), mActive(true)
+: mTexture(0), mIsInputCatchingAllowed(true), mAutoShowFull(true), mImage(image), mActive(true), mAxisEntity(0), mAxesNode(0)
 {
 	std::string name(image->getName().c_str());
 	int width = static_cast<int>(image->getPixelRect().getWidth());
@@ -253,6 +253,45 @@ void MovableObjectRenderer::setBackgroundColour(float red, float green, float bl
 	mTexture->getRenderContext()->setBackgroundColour(red, green, blue, alpha);
 }
 
+void MovableObjectRenderer::showAxis()
+{
+	if (!mAxesNode) {
+		mAxesNode = mTexture->getRenderContext()->getSceneManager()->getRootSceneNode()->createChildSceneNode();
+	}
+	if (!mAxisEntity) {
+		std::string name(mImage->getName().c_str());
+		try {
+			mAxisEntity = mTexture->getRenderContext()->getSceneManager()->createEntity(name + "_axes", "axes.mesh");
+			if (mAxisEntity) {
+				try {
+					mAxesNode->attachObject(mAxisEntity);
+				} catch (const std::exception& ex) {
+					S_LOG_WARNING("Error when attaching axes mesh: "<< ex.what());
+				}
+			}
+		} catch (const std::exception& ex) {
+			S_LOG_WARNING("Error when loading axes mesh: "<< ex.what());
+		}
+	}
+	mAxesNode->setVisible(true);
+}
+
+void MovableObjectRenderer::hideAxis()
+{
+	if (mAxesNode) {
+		mAxesNode->setVisible(false);
+	}
+}
+
+SimpleRenderContext::CameraPositioningMode MovableObjectRenderer::getCameraPositionMode() const
+{
+	return mTexture->getRenderContext()->getCameraPositionMode();
+}
+	
+void MovableObjectRenderer::setCameraPositionMode(SimpleRenderContext::CameraPositioningMode mode)
+{
+	mTexture->getRenderContext()->setCameraPositionMode(mode);
+}
 
 }
 }

@@ -27,6 +27,7 @@
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "../input/IInputAdapter.h"
+#include "../SimpleRenderContext.h"
 
 namespace CEGUI
 {
@@ -172,7 +173,28 @@ public:
      */
     void setBackgroundColour(float red, float green, float blue, float alpha);
     
-	
+    /**
+     * Shows an axis mesh in the middle of the scene. Useful for authoring.
+     */
+    void showAxis();    
+    
+    /**
+     * Hides the axis mesh.
+     */
+    void hideAxis();      
+    
+	/**
+	 *    Gets the current camera positioning mode. The default is CPM_OBJECTCENTER which centers the camera on the current displayed object.
+	 * @return 
+	 */
+	SimpleRenderContext::CameraPositioningMode getCameraPositionMode() const;
+    
+	/**
+	 *    Sets the camera positioning mode. This determines how the camera behaves.
+	 * @param mode 
+	 */
+	void setCameraPositionMode(SimpleRenderContext::CameraPositioningMode mode);
+		
 protected:
 
 	/**
@@ -219,6 +241,9 @@ protected:
 	virtual Ogre::MovableObject* getMovableObject() = 0;
 	
 	bool mActive;
+	
+	Ogre::Entity* mAxisEntity;
+	Ogre::SceneNode* mAxesNode;
 
 };
 }
