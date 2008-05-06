@@ -1,0 +1,215 @@
+//
+// C++ Interface: SimpleRenderContext
+//
+// Description: 
+//
+//
+// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2007
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
+//
+
+
+namespace EmberOgre {
+
+
+/**
+	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+
+Useful class for rendering a single scene node.
+
+*/
+class SimpleRenderContext
+{
+public:
+    
+    /**
+    Specifices how the camera will be positioned.
+    */
+    enum CameraPositioningMode
+	{
+		/**
+		Centers the camera on the object.
+		*/
+		CPM_OBJECTCENTER = 0,
+		/**
+		Centers the camera on the center of the world.
+		*/
+		CPM_WORLDCENTER = 1,
+		/**
+		Allows free roaming.
+		*/
+		CPM_FREE = 2,
+	};
+    
+    /**
+     * Constructor.
+     * @param prefix A unique prefix for the scene manager.
+     * @param width The width of the image created.
+     * @param height The height of the image created.
+     * @return 
+     */
+    SimpleRenderContext(const std::string& prefix, int width, int height);
+    SimpleRenderContext(const std::string& prefix, Ogre::TexturePtr texturePtr);
+
+    /**
+     * Gets the scene node which is being rendered.
+     * @return 
+     */
+    Ogre::SceneNode* getSceneNode() const;
+    
+    
+    /**
+     * Gets the camera used for rendering.
+     * @return 
+     */
+    Ogre::Camera* getCamera() const;
+    
+    /**
+     * Gets the default distance of the camera from the base, most likely somewhere where the whole scene is shown
+     * @return 
+     */
+    inline float getDefaultCameraDistance() const;
+    
+    /**
+     * Sets whether the rendering should be active or not.
+     * @param active 
+     */
+    void setActive(bool active);
+    
+    /**
+     * Adjusts the camera distance so that the full scene is shown
+     */
+    void showFull(const Ogre::MovableObject* object);
+    
+    
+	/**
+	 *    After you've changed the target of the camera, i.e. the object attached to the base SceneNode,
+	      the camera has to be repositioned. Make sure to always call this method after updating the scene.
+	 */
+	void repositionCamera();
+	
+	
+	/**
+	 *    Pitches the camera.
+	 * @param degrees The amount of degrees to pitch.
+	 */
+	void pitch(Ogre::Degree degrees);
+	
+	/**
+	 *    Yaws the camera.
+	 * @param degrees The amount of degree to yaw.
+	 */
+	void yaw(Ogre::Degree degrees);
+    
+	/**
+	 *    Rolls the camera.
+	 * @param degrees The amount of degree to roll.
+	 */
+    void roll(Ogre::Degree degrees);
+
+    
+	/**
+	 * Sets the relative camera distance. Note that this is adjusted after calling repositionCamera(). A value of 1.0 indicates the most optimal distance for showing the complete mesh.
+	 * @param distance 
+	 */
+	void setCameraDistance(float distance);
+    
+    
+	/**
+	 *    Gets the relative distance. 1.0 being the most optimal distance for showing the complete mesh.
+	 * @return 
+	 */
+	float getCameraDistance() const;
+	
+	/**
+	 *    Sets the absolute distance of the camera.
+	 * @param distance 
+	 */
+// 	void setCameraAbsoluteDistance(Ogre::Real distance);
+	
+	/**
+	 *    Gets the absolute distance in world units.
+	 * @return 
+	 */
+	float getAbsoluteCameraDistance() const;
+	
+	/**
+	 *    Gets the rotation of the entity.
+	 * @return 
+	 */
+	Ogre::Quaternion getEntityRotation();
+	
+	
+	/**
+	 *    Resets the orientation of the camera.
+	 */
+	void resetCameraOrientation();
+    
+    
+    Ogre::SceneManager* getSceneManager() const;
+    
+    Ogre::RenderTexture* getRenderTexture();
+    
+    Ogre::TexturePtr getTexture();
+    
+    Ogre::SceneNode* getCameraRootNode() const;
+    
+    Ogre::Viewport* getViewport() const;
+    
+    /**
+     * Gets the main light.
+     * @return 
+     */
+    Ogre::Light* getLight();
+    
+    
+    /**
+     * Sets the background colour.
+     * @param colour 
+     */
+    void setBackgroundColour(const Ogre::ColourValue& colour);
+    /**
+     * Sets the background colour.
+     * @param red 
+     * @param green 
+     * @param blue 
+     * @param  
+     */
+    void setBackgroundColour(float red, float green, float blue, float alpha);
+    
+    /**
+    Sets the render texture to which the scene will be rendered. By default an instance of this class will create it's own Render Texture instance, but this allows you to use a preexisting one if you want.
+    */
+    void setTexture(Ogre::TexturePtr texture);
+    
+	/**
+	 *    Gets the current camera positioning mode. The default is CPM_OBJECTCENTER which centers the camera on the current displayed object.
+	 * @return 
+	 */
+	EmberOgre::SimpleRenderContext::CameraPositioningMode getCameraPositionMode() const;
+    
+	/**
+	 *    Sets the camera positioning mode. This determines how the camera behaves.
+	 * @param mode 
+	 */
+	void setCameraPositionMode(EmberOgre::SimpleRenderContext::CameraPositioningMode mode);
+	
+};
+
+
+}
+
+#endif
