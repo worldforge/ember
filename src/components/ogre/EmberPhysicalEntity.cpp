@@ -186,14 +186,14 @@ void EmberPhysicalEntity::setModel(const std::string& modelName)
 		S_LOG_FAILURE( "Could not find " << modelName << ", using placeholder.");
 		///add a placeholder model
 		Model::ModelDefnPtr modelDef = mModel->getDefinition();
-		modelDef->createSubModelDefinition("placeholder.mesh")->createPartDefinition("main")->setShow( true);
+		modelDef->createSubModelDefinition("3d_objects/primitives/models/box.mesh")->createPartDefinition("main")->setShow( true);
 		modelDef->setValid( true);
 		modelDef->reloadAllInstances();
 	}
 	///rotate node to fit with WF space
 	///perhaps this is something to put in the model spec instead?
 //  	scaleNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
-	
+
 	mScaleNode->attachObject(mModel);
 }
 
