@@ -80,21 +80,21 @@ Atlas::Message::MapType ModelDefinitionAtlasComposer::compose(Model* model, cons
 	
 	MapType bboxMap;
 
-	const Ogre::AxisAlignedBox& aabb(model->getBoundingBox());
+	Ogre::AxisAlignedBox aabb(model->getWorldBoundingBox(true));
 	const WFMath::AxisBox<3> wfmathAabb(Ogre2Atlas(aabb));
 	
 	bboxMap["default"] = wfmathAabb.toAtlas();
 	bboxMap["visibility"] = StringType("public");
 	attributesMap["bbox"] = bboxMap;
+	mainMap["attributes"] = attributesMap;
 	
-	attributesMap["objtype"] = StringType("class");
-	attributesMap["id"] = StringType(typeName);
+	mainMap["objtype"] = StringType("class");
+	mainMap["id"] = StringType(typeName);
 	
 	ListType parents;
 	parents.push_back(StringType(parentTypeName));
-	attributesMap["parents"] = parents;
+	mainMap["parents"] = parents;
 	
-	mainMap["attributes"] = attributesMap;
 	
 	return mainMap;
 }
