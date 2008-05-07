@@ -544,6 +544,8 @@
 		</entitymatch>
 	</modelmapping>
 	
+	<automodelmapping name="bush" />
+	
 	
 	<!-- We'll use jayrs new oak for now -->
 	<modelmapping name="oak">
@@ -560,6 +562,16 @@
 			<case>
 				<caseparam type="equals">birch</caseparam>
 				<action type="display-model">birchA</action>
+				<attributematch attribute="style" >
+					<case>
+						<caseparam type="equals">gnarly</caseparam>
+						<action type="display-model">birchA</action>
+					</case>
+					<case>
+						<caseparam type="equals">weathered</caseparam>
+						<action type="display-model">birchB</action>
+					</case>
+				</attributematch>
 			</case>
 		</entitymatch>
 	</modelmapping> 	
