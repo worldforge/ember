@@ -25,6 +25,8 @@
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 
+#include <Atlas/Message/Element.h>
+
 namespace EmberOgre {
 
 /**
@@ -60,6 +62,22 @@ public:
 	 * Implemented from Ogre::Resource.
 	 */
 	size_t calculateSize(void) const;
+
+protected:
+	/**
+	 * List of semi-atlas entity specs.
+	 */
+	std::list<Atlas::Message::MapType> mEntitySpec;
+
+	/**
+	 * GUI adapters bindings.
+	 */
+	void* mBindings;
+
+	/**
+	 * String that contains Lua script.
+	 */
+	std::string mScript;
 };
 
 /** Specialisation of SharedPtr to allow SharedPtr to be assigned to EntityRecipePtr 

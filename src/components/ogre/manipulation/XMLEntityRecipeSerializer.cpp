@@ -29,6 +29,12 @@
 #include "EntityRecipeManager.h"
 #include "components/ogre/XMLHelper.h"
 
+#include <iostream>
+#include <sstream>
+#include <Atlas/Message/QueuedDecoder.h>
+#include <Atlas/Codecs/XML.h>
+#include <Atlas/Message/Element.h>
+
 namespace EmberOgre {
 
 XMLEntityRecipeSerializer::XMLEntityRecipeSerializer()
@@ -51,7 +57,7 @@ void XMLEntityRecipeSerializer::parseScript(Ogre::DataStreamPtr& stream, const O
 
 	for (Ember::TiXmlElement* smElem = rootElem->FirstChildElement();
             smElem != 0; smElem = smElem->NextSiblingElement())
-    {
+	{
 		const char* tmp = smElem->Attribute("name");
 		std::string name;
 		if (!tmp) {
@@ -100,6 +106,37 @@ void XMLEntityRecipeSerializer::readRecipe(EntityRecipePtr entRecipe, Ember::TiX
 void XMLEntityRecipeSerializer::readEntitySpec(EntityRecipePtr entRecipe, Ember::TiXmlElement* entSpecNode)
 {
 	S_LOG_VERBOSE("Read entity spec.");
+
+	Ember::TiXmlPrinter printer;
+	printer.SetStreamPrinting();
+	entSpecNode->Accept( &printer );
+
+    std::stringstream strStream(printer.CStr(), std::ios::in);
+
+	// Create objects
+	Atlas::Message::QueuedDecoder decoder;
+	Atlas::Codecs::XML codec(strStream, decoder);
+
+	// Read whole file into decoder queue
+	while (!strStream.eof())
+	{
+		codec.poll();
+	}
+
+	// Read decoder queue
+	Atlas::Message::MapType m;
+	std::string str;
+	Atlas::Message::Element elem;
+	while (decoder.queueSize() > 0)
+	{
+		// Decoding map message
+		m = decoder.popMessage();
+		entRecipe->mEntitySpec.push_back(m);
+		for (Atlas::Message::MapType::const_iterator iter = m.begin(); iter != m.end(); iter++)
+		{
+			S_LOG_VERBOSE(" " << iter->first);
+		}
+	}
 }
 
 void XMLEntityRecipeSerializer::readBindings(EntityRecipePtr entRecipe, Ember::TiXmlElement* bindingsNode)
@@ -109,7 +146,8 @@ void XMLEntityRecipeSerializer::readBindings(EntityRecipePtr entRecipe, Ember::T
 
 void XMLEntityRecipeSerializer::readScript(EntityRecipePtr entRecipe, Ember::TiXmlElement* scriptNode)
 {
-	S_LOG_VERBOSE("Read script: " << scriptNode->GetText());
+	S_LOG_VERBOSE("Read script.");
+	entRecipe->mScript = scriptNode->GetText();
 }
 
 }

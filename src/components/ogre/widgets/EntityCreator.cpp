@@ -26,12 +26,7 @@
 
 #include "EntityCreator.h"
 
-#include <Atlas/Message/QueuedDecoder.h>
-#include <Atlas/Codecs/XML.h>
-#include <Atlas/Message/Element.h>
-
 #include <iostream>
-#include <fstream>
 
 namespace EmberOgre {
 
@@ -39,44 +34,12 @@ namespace Gui {
 
 EntityCreator::EntityCreator()
 {
-	std::cout << "Booo!" << std::endl;
-	loadAtlasFile("atlas.xml");
+
 }
 
 EntityCreator::~EntityCreator()
 {
 
-}
-
-void EntityCreator::loadAtlasFile(const std::string& filename)
-{
-	std::fstream file(filename.c_str(), std::ios::in);
-
-	// Create objects
-	Atlas::Message::QueuedDecoder decoder;
-	Atlas::Codecs::XML codec(file, decoder);
-
-	// Read whole file into decoder queue
-	while (!file.eof())
-	{
-		codec.poll();
-	}
-
-	// Read decoder queue
-	Atlas::Message::MapType m;
-	std::string str;
-	Atlas::Message::Element elem;
-	while (decoder.queueSize() > 0)
-	{
-		std::cout << "Whee!" << std::endl;
-
-		// Decoding map message
-		m = decoder.popMessage();
-		for (Atlas::Message::MapType::const_iterator iter = m.begin(); iter != m.end(); iter++)
-		{
-			std::cout << "* " << iter->first << std::endl;
-		}		
-	}
 }
 
 }

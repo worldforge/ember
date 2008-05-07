@@ -37,8 +37,6 @@ namespace EmberOgre
 
 EntityRecipeManager::EntityRecipeManager() : mXmlSerializer()
 {
-	std::cout << "Wheeee!" << std::endl;
-	
 	// Internal params for script loader
 	mLoadOrder = 300.0f;
 	mResourceType = "EntityRecipe";

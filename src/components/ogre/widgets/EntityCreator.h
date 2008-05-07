@@ -43,11 +43,6 @@ public:
 	 * Destructor.
 	 */
 	~EntityCreator();
-
-	/**
-	 * Loads Atlas-Xml file.
-	 */
-	void loadAtlasFile(const std::string& filename);
 };
 
 }
