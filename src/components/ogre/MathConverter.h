@@ -189,7 +189,7 @@ inline WFMath::AxisBox<3> Ogre2Atlas(const Ogre::AxisAlignedBox& axisBox){
 	if (axisBox.isNull() || axisBox.isInfinite()) {
 		return WFMath::AxisBox<3>();
 	}
-	return WFMath::AxisBox<3>(WFMath::Point<3>(axisBox.getMinimum().x, axisBox.getMinimum().z, -axisBox.getMaximum().y), WFMath::Point<3>(axisBox.getMaximum().x, axisBox.getMaximum().z, -axisBox.getMinimum().y));
+	return WFMath::AxisBox<3>(WFMath::Point<3>(axisBox.getMinimum().x, -axisBox.getMaximum().z, axisBox.getMinimum().y), WFMath::Point<3>(axisBox.getMaximum().x, -axisBox.getMinimum().z, axisBox.getMaximum().y));
 }
 
 inline WFMath::AxisBox<2> Ogre2Atlas(const Ogre::TRect<Ogre::Real>& bounds){
