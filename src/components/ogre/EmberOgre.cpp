@@ -112,6 +112,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "ogreopcode/include/OgreCollisionManager.h"
 #include "OpcodeCollisionDetectorVisualizer.h"
 
+#include "manipulation/EntityRecipeManager.h"
+
 // ------------------------------
 // Include Ember header files
 // ------------------------------
@@ -181,6 +183,7 @@ mGUIManager(0),
 mModelDefinitionManager(0),
 mModelMappingManager(0),
 mTerrainLayerManager(0),
+mEntityRecipeManager(0),
 mMoveManager(0),
 mKeepOnRunning(true),
 mJesus(0),
@@ -213,6 +216,7 @@ EmberOgre::~EmberOgre()
 
 	delete mGUIManager;
 
+	delete mEntityRecipeManager;
 	delete mTerrainLayerManager;
 	delete mModelMappingManager;
 
@@ -326,6 +330,8 @@ bool EmberOgre::setup()
 	mModelMappingManager = new Model::Mapping::EmberModelMappingManager();
 	
 	mTerrainLayerManager = new Terrain::TerrainLayerDefinitionManager();
+	
+	mEntityRecipeManager = new EntityRecipeManager();
 	
 	///Create a resource loader which loads all the resources we need.
 	OgreResourceLoader ogreResourceLoader;
