@@ -1,0 +1,111 @@
+//
+// C++ Interface: EntityRecipe
+//
+// Description: 
+//
+//
+// Author: Alexey Torkhov <atorkhov@gmail.com>, (C) 2008
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
+//
+#ifndef EMBEROGREENTITYRECIPE_H
+#define EMBEROGREENTITYRECIPE_H
+
+#include "components/ogre/EmberOgrePrerequisites.h"
+
+namespace EmberOgre {
+
+/**
+ * Resource that stores recipes for entity creator.
+ */
+class EntityRecipe : public Ogre::Resource {
+
+friend class XMLEntityRecipeSerializer;
+
+public:
+	/**
+	 * Constructor.
+	 */
+	EntityRecipe(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
+		const Ogre::String& group, bool isManual = false, Ogre::ManualResourceLoader* loader = 0);
+
+	/**
+	 * Destructor.
+	 */
+	virtual ~EntityRecipe();
+
+	/**
+	 * Implemented from Ogre::Resource.
+	 */
+ 	void loadImpl(void);
+
+	/**
+	 * Implemented from Ogre::Resource.
+	 */
+ 	void unloadImpl(void);
+
+	/**
+	 * Implemented from Ogre::Resource.
+	 */
+	size_t calculateSize(void) const;
+};
+
+/** Specialisation of SharedPtr to allow SharedPtr to be assigned to EntityRecipePtr 
+@note Has to be a subclass since we need operator=.
+We could templatise this instead of repeating per Resource subclass, 
+except to do so requires a form VC6 does not support i.e.
+ResourceSubclassPtr<T> : public SharedPtr<T>
+*/
+class EntityRecipePtr : public Ogre::SharedPtr<EntityRecipe> 
+{
+public:
+    EntityRecipePtr() : Ogre::SharedPtr<EntityRecipe>() {}
+    explicit EntityRecipePtr(EntityRecipe* rep) : Ogre::SharedPtr<EntityRecipe>(rep) {}
+    EntityRecipePtr(const EntityRecipePtr& r) : Ogre::SharedPtr<EntityRecipe>(r) {} 
+    EntityRecipePtr(const Ogre::ResourcePtr& r) : Ogre::SharedPtr<EntityRecipe>()
+    {
+		// lock & copy other mutex pointer
+		OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME)
+		OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME)
+        pRep = static_cast<EntityRecipe*>(r.getPointer());
+        pUseCount = r.useCountPointer();
+        if (pUseCount)
+        {
+            ++(*pUseCount);
+        }
+    }
+
+    /// Operator used to convert a ResourcePtr to a EntityRecipePtr
+    EntityRecipePtr& operator=(const Ogre::ResourcePtr& r)
+    {
+        if (pRep == static_cast<EntityRecipe*>(r.getPointer()))
+            return *this;
+        release();
+		// lock & copy other mutex pointer
+		OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME)
+		OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME)
+        pRep = static_cast<EntityRecipe*>(r.getPointer());
+        pUseCount = r.useCountPointer();
+        if (pUseCount)
+        {
+            ++(*pUseCount);
+        }
+        return *this;
+    }
+};
+
+}
+
+#endif

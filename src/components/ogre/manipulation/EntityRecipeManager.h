@@ -27,6 +27,7 @@
 
 #include <OgreResourceManager.h>
 #include "framework/Singleton.h"
+#include "XMLEntityRecipeSerializer.h"
 
 namespace EmberOgre {
 
@@ -59,6 +60,11 @@ public:
 	virtual void parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName);
 
 protected:
+	/**
+	Serializer for xml.
+	*/
+	XMLEntityRecipeSerializer mXmlSerializer;
+	
 	/**
 	 * Create a new resource instance compatible with this manager.
 	 */

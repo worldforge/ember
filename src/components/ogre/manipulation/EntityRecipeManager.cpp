@@ -26,6 +26,7 @@
 #endif
 
 #include "EntityRecipeManager.h"
+#include "EntityRecipe.h"
 #include "framework/tinyxml/tinyxml.h"
 #include "components/ogre/XMLHelper.h"
 
@@ -34,7 +35,7 @@ template<> EmberOgre::EntityRecipeManager* Ember::Singleton<EmberOgre::EntityRec
 namespace EmberOgre
 {
 
-EntityRecipeManager::EntityRecipeManager()
+EntityRecipeManager::EntityRecipeManager() : mXmlSerializer()
 {
 	std::cout << "Wheeee!" << std::endl;
 	
@@ -69,24 +70,14 @@ Ogre::ResourcePtr EntityRecipeManager::create(const Ogre::String& name, const Og
 
 void EntityRecipeManager::parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName)
 {
-	Ember::TiXmlDocument xmlDoc;
-	XMLHelper xmlHelper;
-	if (!xmlHelper.Load(xmlDoc, stream)) {
-		return;
-	}
-
-	Ember::TiXmlPrinter printer;
-	printer.SetStreamPrinting();
-	xmlDoc.Accept( &printer );
-
-	std::cout << "Loaded XML:" << std::endl << printer.CStr() << std::endl;
+	mXmlSerializer.parseScript(stream, groupName);
 }
 
 Ogre::Resource* EntityRecipeManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, 
     const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, 
     const Ogre::NameValuePairList* createParams)
 {
-	return 0;
+	return new EntityRecipe(this, name, handle, group, isManual, loader);
 }
 
 }
