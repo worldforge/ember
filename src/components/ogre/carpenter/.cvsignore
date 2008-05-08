@@ -1,7 +1,0 @@
-Makefile.in
-.deps
-.libs
-BluePrint.lo
-Carpenter.lo
-Makefile
-libCarpenter.la

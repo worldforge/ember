@@ -1,6 +1,0 @@
-.deps
-.libs
-Makefile
-Makefile.in
-liblua_Ogre.la
-lua_Ogre.lo

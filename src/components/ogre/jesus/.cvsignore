@@ -1,9 +1,0 @@
-Makefile.in
-.deps
-.libs
-Jesus.lo
-JesusMousePicker.lo
-JesusPickerObject.lo
-Makefile
-XMLJesusSerializer.lo
-libJesus.la
