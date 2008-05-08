@@ -29,7 +29,6 @@
 #include "EntityRecipeManager.h"
 #include "components/ogre/XMLHelper.h"
 
-#include <iostream>
 #include <sstream>
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/Codecs/XML.h>
@@ -111,7 +110,7 @@ void XMLEntityRecipeSerializer::readEntitySpec(EntityRecipePtr entRecipe, Ember:
 	printer.SetStreamPrinting();
 	entSpecNode->Accept( &printer );
 
-    std::stringstream strStream(printer.CStr(), std::ios::in);
+	std::stringstream strStream(printer.CStr(), std::ios::in);
 
 	// Create objects
 	Atlas::Message::QueuedDecoder decoder;

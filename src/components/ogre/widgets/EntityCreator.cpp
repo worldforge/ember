@@ -26,8 +26,6 @@
 
 #include "EntityCreator.h"
 
-#include <iostream>
-
 namespace EmberOgre {
 
 namespace Gui {
