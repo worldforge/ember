@@ -1,0 +1,15 @@
+Makefile.in
+.deps
+.libs
+CaelumEnvironment.lo
+CaelumSky.lo
+CaelumSun.lo
+Environment.lo
+Foliage.lo
+FoliageArea.lo
+LensFlare.lo
+Makefile
+Sun.lo
+Tree.lo
+Water.lo
+libEnvironment.la

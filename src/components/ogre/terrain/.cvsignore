@@ -1,0 +1,11 @@
+.deps
+.libs
+Makefile
+Makefile.in
+TerrainArea.lo
+TerrainEditor.lo
+TerrainGenerator.lo
+TerrainInfo.lo
+TerrainPage.lo
+TerrainShader.lo
+libTerrain.la

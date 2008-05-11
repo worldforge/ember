@@ -1,0 +1,10 @@
+.deps
+.libs
+LuaConnector.lo
+LuaConnectorHelper.lo
+LuaConsoleObject.lo
+Makefile
+Makefile.in
+OgreUtils.lo
+liblua_Helpers.la
+lua_Helpers.lo

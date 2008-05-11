@@ -1,0 +1,6 @@
+.deps
+.libs
+Makefile
+Makefile.in
+liblua_EmberOgre.la
+lua_EmberOgre.lo

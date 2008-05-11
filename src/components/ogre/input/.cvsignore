@@ -1,0 +1,7 @@
+Makefile.in
+.deps
+.libs
+Input.lo
+InputCommandMapper.lo
+Makefile
+libInput.la

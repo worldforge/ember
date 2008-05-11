@@ -1,0 +1,4 @@
+Makefile.in
+.libs
+Makefile
+libExtensions.la

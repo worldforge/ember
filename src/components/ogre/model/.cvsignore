@@ -1,0 +1,15 @@
+Makefile.in
+.deps
+.libs
+Action.lo
+AnimationSet.lo
+Makefile
+Model.lo
+ModelDefinition.lo
+ModelDefinitionManager.lo
+ParticleSystem.lo
+ParticleSystemBinding.lo
+SubModel.lo
+SubModelPart.lo
+XMLModelDefinitionSerializer.lo
+libModel.la
