@@ -377,7 +377,7 @@ function ModelEdit.ExportAsAtlasTypeButton_MouseClick(args)
 	local model = ModelEdit.renderer:getModel()
 	if model ~= nil then
 		local composer = EmberOgre.Model.ModelDefinitionAtlasComposer:new_local()
-		composer:composeToFile(model, ModelEdit.definition:getName(), "thing", 1)
+		composer:composeToFile(model, ModelEdit.definition:getName(), "thing", ModelEdit.definition:getScale())
 	end	
 end
 
