@@ -44,7 +44,7 @@ namespace Ogre
             bool load(const String &filename);
 
             void loadMap(const String& mapName);
-            void loadMapOptions(const String& mapName);
+            void loadMapOptions(DataStreamPtr &stream);
             void insertMap(const String& mapName);
 
             LandScapeFileNames* getLandScapeFileNames(void)

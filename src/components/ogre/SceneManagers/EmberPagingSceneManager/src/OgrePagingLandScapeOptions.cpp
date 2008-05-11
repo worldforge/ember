@@ -47,7 +47,7 @@ namespace Ogre
 
     //-----------------------------------------------------------------------
     PagingLandScapeOptions::PagingLandScapeOptions(PagingLandScapeSceneManager * scnMgr):
-        mScnMgr(scnMgr)
+        mScnMgr(scnMgr), mConfig(0)
     {
       cfgGroupName = "";
       primaryCamera = 0;
@@ -59,6 +59,7 @@ namespace Ogre
     PagingLandScapeOptions::~PagingLandScapeOptions()
     {
 		clearTileInfo();
+		delete mConfig;
 	}
 	//-----------------------------------------------------------------------
     void PagingLandScapeOptions::setDefault()
@@ -268,6 +269,7 @@ namespace Ogre
     //-----------------------------------------------------------------------
     bool  PagingLandScapeOptions::load(const String &filename, ConfigFile& config)
     {
+    	#if 0
         init();
 
 	    // Set up the options :  
@@ -379,6 +381,7 @@ namespace Ogre
                 return true;
             }
         }
+        #endif
 
         return false;
     }
@@ -483,6 +486,7 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void PagingLandScapeOptions::loadMap(const String& mapName)
     {
+    #if 0
         ConfigFile config;
         mConfig = &config;
         const String fileMapName (getMapFilename(mapName) + 
@@ -510,6 +514,7 @@ namespace Ogre
         }
         /* Set up the options For a Map*/
 	    loadMapOptions (fileMapName);
+	#endif
 	}
 	//-----------------------------------------------------------------------
 	const String &PagingLandScapeOptions::getMapFilename(const String &currMapName) const
@@ -597,7 +602,7 @@ namespace Ogre
         return false;
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapeOptions::loadMapOptions(const String& mapName)
+    void PagingLandScapeOptions::loadMapOptions(DataStreamPtr &stream)
     {
 		unsigned int i;
 		
@@ -606,9 +611,8 @@ namespace Ogre
 
 		///By Ember start
 	    // Set up the options For a Map
-	    ConfigFile config;
-	    config.load (mapName, cfgGroupName, String("="), true);
-        mConfig = &config;
+	    mConfig = new ConfigFile();
+	    mConfig->load (stream);
 		///By Ember end
 
 
@@ -690,6 +694,8 @@ namespace Ogre
         if (!setString (TerrainName, "TerrainName"))
             TerrainName = LandScape_filename;    
 
+		///By Ember start, we don't need this for Ember
+        #if 0
         //add Resources Group to Ogre if needed.
 		StringVector mResourceFilesystem =  mConfig->getMultiSetting("FileSystem");
         std::vector<Ogre::String>::iterator itFileSystem = mResourceFilesystem.begin();
@@ -728,7 +734,6 @@ namespace Ogre
                  FilePath + BasePath, "FileSystem", groupName);
         }
 
-
         StringVector mResourceZip =  mConfig->getMultiSetting("Zip");
         std::vector<Ogre::String>::iterator itZip = mResourceZip.begin();
         for(; itZip != mResourceZip.end(); ++itZip) 
@@ -741,6 +746,8 @@ namespace Ogre
                     resourceZip, "Zip", groupName);
             }
         }
+		#endif
+		///By Ember end
 
         if (!setString (LandScape_filename, "HeightMapFileName"))
             setString (LandScape_filename, "LandScapeFileName");

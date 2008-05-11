@@ -33,7 +33,9 @@
 #include "terrain/TerrainPage.h"
 #include "terrain/TerrainGenerator.h"
 
-
+#include <OgreCodec.h>
+#include <OgreImage.h>
+#include <OgreImageCodec.h>
 using namespace Ogre;
 namespace EmberOgre
 {
@@ -59,8 +61,31 @@ bool EmberPagingLandScapeData2D_HeightField::_load( const Ogre::uint x, const Og
 	assert(mTerrainPage);
 	
 	mTerrainPage->createHeightData(mHeightData);
-
 	
+// 	char imageHeightData[mMaxArrayPos];
+// 	for (unsigned int i = 0; i <= mMaxArrayPos;++i) {
+// 		imageHeightData[i] = static_cast<char>(mHeightData[i]+ 50);
+// 	}
+// 
+// Ogre::MemoryDataStreamPtr dataChunk(new Ogre::MemoryDataStream(imageHeightData, mMaxArrayPos));
+// 		const Ogre::String extension = "png";
+// 		
+// 		Ogre::ImageCodec::ImageData* imgData = new Ogre::ImageCodec::ImageData();
+// 		imgData->width = mSize;
+// 		imgData->height = mSize;
+// 		
+// 		imgData->depth =  1;
+// 		imgData->format = Ogre::PF_L8;	
+// 					
+// 		Ogre::Codec * pCodec = Ogre::Codec::getCodec(extension);
+// 		// Write out
+// 		Ogre::SharedPtr<Ogre::Codec::CodecData> temp(imgData);
+// 		
+// 		std::stringstream ss;
+// 		ss << "/home/erik/skit/" << x << "_"<< z <<"." << extension;
+// 		pCodec->codeToFile(dataChunk, ss.str(), temp);
+
+
 	///make sure it's not 0
 	mMaxheight = std::max<float>(mTerrainPage->getMaxHeight(), 1.0f);
 	mMax = static_cast <unsigned int> (mSize * mTerrainPage->getMaxHeight());
