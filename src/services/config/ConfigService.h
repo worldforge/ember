@@ -155,7 +155,7 @@ namespace Ember
 			 *
 			 * @param Section of config space to look in.
 			 * @param Key to look for.
-			 * @deprecated Use has item instead.
+			 * @deprecated Use hasItem instead.
 			 */
 			bool itemExists ( const std::string& section, const std::string& key ) const;
 

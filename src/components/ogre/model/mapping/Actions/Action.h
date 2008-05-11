@@ -37,9 +37,12 @@ namespace Mapping {
 namespace Actions {
 
 /**
-	Base class for actions. Applications are requested to implement their own subclasses.
+	@brief Base class for actions. Applications are requested to implement their own subclasses.
 	
-	@author Erik Hjortsberg <erik@katastrof.nu>
+	When an action is activated the model mapping engine will call activate(). If an already activated action is deactivated, as a result of another action being activated, the engine will first call deactivate() on the previous active action.
+	By extending this in a subclass and providing your own implementation of activate() and deactivate() you can provide application specific behaviour for entity changes.
+	
+	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
 class Action 
 {
@@ -47,18 +50,20 @@ public:
 	virtual ~Action() {};
 	
 	/**
-	Activate the action.
+	* Activate the action.
 	*/
 	virtual void activate() = 0;
 	
 	/**
-	Deactivate the action.
+	* Deactivate the action.
 	*/
 	virtual void deactivate() = 0;
 	
+
 	/**
-	Sets the case this action belongs to.
-	*/
+	 * Sets the case this action belongs to.
+	 * @param ownerCase The owning case.
+	 */
 	inline void setCase(Cases::CaseBase* ownerCase);
 	
 	/**

@@ -33,7 +33,7 @@ namespace Mapping {
 namespace Actions {
 
 /**
-	Dummy action for testing purposes.
+	@brief Dummy action for testing purposes.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class DummyAction : public Action
