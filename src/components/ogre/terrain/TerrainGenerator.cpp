@@ -176,7 +176,7 @@ void TerrainGenerator::loadTerrainOptions()
 
 	getAdapter()->setResourceGroupName("General" );
 
-	getAdapter()->loadOptions(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory() + "/terrain.cfg");
+	getAdapter()->loadOptions(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory() + "terrain.cfg");
 	
 	getAdapter()->setCamera( EmberOgre::getSingleton().getMainCamera()->getCamera());
 	
