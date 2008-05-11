@@ -88,7 +88,28 @@ namespace EmberOgre {
 	
 	void EmberPagingSceneManagerAdapter::loadOptions(const std::string& filePath)
 	{
-		mSceneManager->getOptions()->loadMapOptions(filePath);
+		struct stat theStat;
+   		int ret = stat(filePath.c_str(), &theStat);
+   		if (ret) {
+			S_LOG_FAILURE("Could not find file "<< filePath);
+			return;
+   		}
+		std::ifstream *filestream = new std::ifstream();
+		filestream->open(filePath.c_str(), std::ios::in);
+		
+		if (filestream->fail())
+		{
+			S_LOG_FAILURE("Could not open file "<< filePath);
+			delete filestream;
+			return;
+		}
+		
+		///this will envelope the file stream pointer and delete it when it's destroyed itself
+		Ogre::FileStreamDataStream* stream = new Ogre::FileStreamDataStream(filePath, filestream, theStat.st_size, true);
+
+		Ogre::DataStreamPtr dataPtr(stream);
+	
+		mSceneManager->getOptions()->loadMapOptions(dataPtr);
 		
 		mSceneManager->getOptions()->setTextureFormat("EmberTexture");
 	}
