@@ -81,7 +81,10 @@ Atlas::Message::MapType ModelDefinitionAtlasComposer::compose(Model* model, cons
 	MapType bboxMap;
 
 	Ogre::AxisAlignedBox aabb(model->getWorldBoundingBox(true));
-	const WFMath::AxisBox<3> wfmathAabb(Ogre2Atlas(aabb));
+	if (scale != 0 && scale != 1.0f) {
+		aabb.scale(Ogre::Vector3(scale, scale, scale));
+	}
+	WFMath::AxisBox<3> wfmathAabb(Ogre2Atlas(aabb));
 	
 	bboxMap["default"] = wfmathAabb.toAtlas();
 	bboxMap["visibility"] = StringType("public");
