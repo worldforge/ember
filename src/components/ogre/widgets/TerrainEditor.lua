@@ -64,6 +64,10 @@ function TerrainEditor.MainWindow_Hidden(args)
 	TerrainEditor.HideOverlay()
 end
 
+function TerrainEditor.Radius_ValueChanged(args)
+	TerrainEditor.editor:setRadius(TerrainEditor.radiusSlider:getCurrentValue() * 1024)
+end
+
 function TerrainEditor.buildWidget()
 	TerrainEditor.widget = guiManager:createWidget()
 	TerrainEditor.widget:loadMainSheet("TerrainEditor.layout", "TerrainEditor/")
@@ -71,6 +75,8 @@ function TerrainEditor.buildWidget()
 	TerrainEditor.heightSpinner = TerrainEditor.widget:getWindow("Height")
 	TerrainEditor.heightSpinner = CEGUI.toEditbox(TerrainEditor.heightSpinner)
 	
+	TerrainEditor.radiusSlider = TerrainEditor.widget:getWindow("Radius")
+	TerrainEditor.radiusSlider = CEGUI.toSlider(TerrainEditor.radiusSlider)
 	
 	TerrainEditor.editor = EmberOgre.Terrain.TerrainEditor:new_local()
 	TerrainEditor.editor:createOverlay()

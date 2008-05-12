@@ -48,6 +48,12 @@
 				<Property Name='UnifiedPosition' Value='{{0,5},{0,125}}'/>
 				<Property Name='UnifiedSize' Value='{{0,100},{0,25}}'/>
 			</Window>
+			<Window Type='EmberLook/Slider' Name='Radius'>
+				<Property Name='UnifiedSize' Value='{{1.00000,-20.000000},{0.0000,15.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.000000,10.000000},{0.0000,160.000000}}'/>
+				<Event Name="ValueChanged" Function="TerrainEditor.Radius_ValueChanged" />
+				<Property Name='TooltipText' Value='Sets the radius of the selection.'/>
+			</Window>
 		</Window>
 	</Window>
 </GUILayout>

@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Tue May  6 20:57:57 2008.
+** Generated automatically by tolua++-1.0.92 on Mon May 12 22:09:33 2008.
 */
 
 #ifndef __cplusplus
@@ -6359,6 +6359,136 @@ static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_redoAction00(lua_Stat
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'redoAction'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getRadius of class  EmberOgre::Terrain::TerrainEditor */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_getRadius00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_getRadius00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Terrain::TerrainEditor",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Terrain::TerrainEditor* self = (const EmberOgre::Terrain::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getRadius'",NULL);
+#endif
+  {
+   float tolua_ret = (float)  self->getRadius();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getRadius'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setRadius of class  EmberOgre::Terrain::TerrainEditor */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_setRadius00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_setRadius00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Terrain::TerrainEditor",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Terrain::TerrainEditor* self = (EmberOgre::Terrain::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
+  float radiusInMeters = ((float)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setRadius'",NULL);
+#endif
+  {
+   self->setRadius(radiusInMeters);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setRadius'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getFalloff of class  EmberOgre::Terrain::TerrainEditor */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_getFalloff00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_getFalloff00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Terrain::TerrainEditor",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Terrain::TerrainEditor* self = (const EmberOgre::Terrain::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getFalloff'",NULL);
+#endif
+  {
+   float tolua_ret = (float)  self->getFalloff();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getFalloff'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: seFalloff of class  EmberOgre::Terrain::TerrainEditor */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_seFalloff00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_seFalloff00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Terrain::TerrainEditor",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Terrain::TerrainEditor* self = (EmberOgre::Terrain::TerrainEditor*)  tolua_tousertype(tolua_S,1,0);
+  float falloff = ((float)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'seFalloff'",NULL);
+#endif
+  {
+   self->seFalloff(falloff);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'seFalloff'.",&tolua_err);
  return 0;
 #endif
 }
@@ -22968,6 +23098,10 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"createAction",tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_createAction00);
      tolua_function(tolua_S,"undoLastAction",tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_undoLastAction00);
      tolua_function(tolua_S,"redoAction",tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_redoAction00);
+     tolua_function(tolua_S,"getRadius",tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_getRadius00);
+     tolua_function(tolua_S,"setRadius",tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_setRadius00);
+     tolua_function(tolua_S,"getFalloff",tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_getFalloff00);
+     tolua_function(tolua_S,"seFalloff",tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_seFalloff00);
     tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);

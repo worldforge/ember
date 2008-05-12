@@ -162,6 +162,8 @@ const TerrainPosition& TerrainEditBasePointMovement::getPosition() const
 
 
 TerrainEditor::TerrainEditor() : mPickListener(this), mCurrentUserObject(0),mOverlayNode(0), mVisible(false)
+,mMovementRadiusInMeters(0)
+,mFalloff(0)
 {
 	///create a material which will be used for base points (this will be blue)
 	if (!Ogre::MaterialManager::getSingleton().resourceExists("BasePointMarkerMaterial")) {
@@ -295,8 +297,29 @@ void TerrainEditor::pickedBasePoint(BasePointUserObject* userObject)
 
 bool TerrainEditor::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
 {
+	float multiplier(15.0f);
+	///hard coded to allow the shift button to increase the speed
+	if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
+		multiplier *= 5;
+	}
 	assert(mCurrentUserObject);
-	mCurrentUserObject->translate(motion.yRelativeMovement * 15);
+	float translation(motion.yRelativeMovement * multiplier);
+	mCurrentUserObject->translate(translation);
+	
+	///should we also translate secondary objects?
+	if (mMovementRadiusInMeters > 1.0f) {
+// 		float squaredMovementRadius = mMovementRadiusInMeters * mMovementRadiusInMeters;
+		for (BasePointUserObjectStore::iterator I = mBasePointUserObjects.begin(); I != mBasePointUserObjects.end(); ++I) {
+			if (I->second != mCurrentUserObject) {
+				float distance = WFMath::SquaredDistance<2>((I->second)->getPosition(), mCurrentUserObject->getPosition()) * 64;
+				if (distance <= mMovementRadiusInMeters) {
+					float movement = 1.0f - (distance / mMovementRadiusInMeters);
+					I->second->translate(translation * movement);
+					mSecondaryUserObjects.insert(I->second);
+				}
+			}
+		}
+	}
 
 	EventSelectedBasePointUpdatedPosition.emit(mCurrentUserObject);
 	
@@ -358,6 +381,14 @@ void TerrainEditor::createAction(bool alsoCommit)
 			TerrainEditAction action;
 			action.getMovements().push_back(movement);
 			
+			for (BasePointUserObjectSet::iterator I = mSecondaryUserObjects.begin(); I != mSecondaryUserObjects.end(); ++I) {
+				distance = (*I)->getBasePointMarkerNode()->getPosition().y - (*I)->getBasePoint().height();
+				if (distance != 0) {
+					TerrainEditBasePointMovement movement(distance, (*I)->getPosition());
+					action.getMovements().push_back(movement);
+				}
+			}
+			
 			mActions.push_back(action);
 			
 			///when a new action is created the undo list must be emptied
@@ -372,6 +403,7 @@ void TerrainEditor::createAction(bool alsoCommit)
 			}
 		}
 	}
+	mSecondaryUserObjects.clear();
 }
 
 void TerrainEditor::sendChangesToServer()
@@ -466,6 +498,27 @@ bool TerrainEditor::redoAction()
 	}
 	return false;
 }
+
+float TerrainEditor::getRadius() const
+{
+	return mMovementRadiusInMeters;
+}
+	
+void TerrainEditor::setRadius(float radiusInMeters)
+{
+	mMovementRadiusInMeters = radiusInMeters;
+}
+
+float TerrainEditor::getFalloff() const
+{
+	return mFalloff;
+}
+
+void TerrainEditor::seFalloff(float falloff)
+{
+	mFalloff = falloff;
+}
+
 
 
 void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)

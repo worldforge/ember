@@ -148,6 +148,14 @@ public:
 	 */
 	bool redoAction();
 	
+	float getRadius() const;
+	void setRadius(float radiusInMeters);
+
+
+	float getFalloff() const;
+	void seFalloff(float falloff);
+	
+	
 };
 
 }

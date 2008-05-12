@@ -309,6 +309,13 @@ public:
 	 * @return true if there was an already undone action that could be redone, else false
 	 */
 	bool redoAction();
+	
+	float getRadius() const;
+	void setRadius(float radiusInMeters);
+
+
+	float getFalloff() const;
+	void seFalloff(float falloff);
 
 /**
 ---------Methods implemented from IInputAdapter
@@ -324,7 +331,7 @@ public:
 private:
 
 	typedef std::map<std::string, BasePointUserObject*> BasePointUserObjectStore;
-	
+	typedef std::set<BasePointUserObject*> BasePointUserObjectSet;
 	BasePointUserObjectStore mBasePointUserObjects;
 
 	BasePointPickListener mPickListener;
@@ -339,6 +346,7 @@ private:
 	 */
 	void releaseInput();
 	BasePointUserObject* mCurrentUserObject;
+	BasePointUserObjectSet mSecondaryUserObjects;
 	typedef std::list<TerrainEditAction> ActionStore;
 	ActionStore mActions;
 	ActionStore mUndoneActions;
@@ -355,6 +363,9 @@ private:
 	Updates the position of a single entity.
 	*/
 	void updateEntityPosition(EmberEntity* entity, const std::set<TerrainPage*>& pagesToUpdate);
+	
+	float mMovementRadiusInMeters;
+	float mFalloff;
 	
 };
 
