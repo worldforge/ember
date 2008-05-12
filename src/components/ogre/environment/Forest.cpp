@@ -69,12 +69,24 @@ void Forest::initialize()
 	S_LOG_INFO("Initializing forest.");
 	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainInfo().getWorldSizeInIndices();
 	if (worldSize.upperBound(0) - worldSize.lowerBound(0) > 0 && worldSize.upperBound(1) - worldSize.lowerBound(1) > 0) {
+		
 		Ogre::Camera* camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
 		
 		mTrees = new PagedGeometry::PagedGeometry();
 		mTrees->setCamera(camera);	//Set the camera so PagedGeometry knows how to calculate LODs
 		mTrees->setPageSize(64);	//Set the size of each page of geometry
-		mTrees->setBounds(Atlas2Ogre(worldSize));
+		
+		::PagedGeometry::TBounds ogreBounds(Atlas2Ogre(worldSize));
+		if (ogreBounds.width() != ogreBounds.height()) {
+			if (ogreBounds.width() > ogreBounds.height()) {
+				float difference = ogreBounds.width() - ogreBounds.height();
+				ogreBounds.bottom += difference;
+			} else {
+				float difference = ogreBounds.height() - ogreBounds.width();
+				ogreBounds.right += difference;
+			}
+		}
+		mTrees->setBounds(ogreBounds);
 	// 	mTrees->addDetailLevel<PagedGeometry::BatchPage>(150, 50);		//Use batches up to 150 units away, and fade for 30 more units
 	//  mTrees->addDetailLevel<PagedGeometry::DummyPage>(100, 0);		//Use batches up to 150 units away, and fade for 30 more units 	
 		mTrees->addDetailLevel<PagedGeometry::PassiveEntityPage>(150, 0);		//Use standard entities up to 150 units away, and don't fade since the PassiveEntityPage doesn't support this (yet)

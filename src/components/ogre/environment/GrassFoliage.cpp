@@ -83,7 +83,19 @@ void GrassFoliage::initialize()
 	Ogre::Camera* camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
 	mPagedGeometry = new ::PagedGeometry::PagedGeometry(camera, EmberOgre::getSingleton().getTerrainGenerator()->getFoliageBatchSize());
 	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainInfo().getWorldSizeInIndices();	
-	mPagedGeometry->setBounds(Atlas2Ogre(worldSize));
+	
+	::PagedGeometry::TBounds ogreBounds(Atlas2Ogre(worldSize));
+	if (ogreBounds.width() != ogreBounds.height()) {
+		if (ogreBounds.width() > ogreBounds.height()) {
+			float difference = ogreBounds.width() - ogreBounds.height();
+			ogreBounds.bottom += difference;
+		} else {
+			float difference = ogreBounds.height() - ogreBounds.width();
+			ogreBounds.right += difference;
+		}
+	}
+	mPagedGeometry->setBounds(ogreBounds);
+	
 	mPagedGeometry->addDetailLevel<PagedGeometry::GrassPage>(96);
 	
 	//Create a GrassLoader object
