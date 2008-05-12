@@ -40,3 +40,8 @@ releasemediarsync:
 	echo "I will now use rsync to update the release media from amber.worldforge.org. If this doesn't work, consider getting the release media yourself from http://sourceforge.net/project/showfiles.php?group_id=11799."
 	mkdir -p $(datadir)/ember/media/
 	rsync -rtvzu amber.worldforge.org::media-$(VERSION) $(datadir)/ember/media/
+	
+docs:
+	@echo "running doxygen..."
+	@doxygen ember.dox
+	@echo "documentation is in doc/."
