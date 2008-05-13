@@ -27,6 +27,8 @@
 
 namespace EmberOgre {
 
+class FileSystemArchiveFactory;
+
 /**
 @author Erik Hjortsberg
 */
@@ -60,6 +62,8 @@ protected:
 	void loadAllUnloadedSections();
 	
 	std::vector<std::string> mLoadedSections;
+	
+	::EmberOgre::FileSystemArchiveFactory* mFileSystemArchiveFactory;
 };
 
 }

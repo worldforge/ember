@@ -31,6 +31,8 @@
 #include "services/config/ConfigService.h"
 #include "model/ModelDefinitionManager.h"
 
+#include "EmberOgreFileSystem.h"
+
 #include "framework/osdir.h"
 #include <fstream>
 
@@ -38,11 +40,15 @@ namespace EmberOgre {
 
 OgreResourceLoader::OgreResourceLoader() : mLoadRecursive(false)
 {
+	mFileSystemArchiveFactory = new ::EmberOgre::FileSystemArchiveFactory();
+	Ogre::ArchiveManager::getSingleton().addArchiveFactory( mFileSystemArchiveFactory );
+
 }
 
 
 OgreResourceLoader::~OgreResourceLoader()
 {
+	delete mFileSystemArchiveFactory;
 }
 
 void OgreResourceLoader::initialize()
