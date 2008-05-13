@@ -187,7 +187,8 @@ mJesus(0),
 mLogObserver(0), 
 mMaterialEditor(0),
 mCollisionManager(0),
-mCollisionDetectorVisualizer(0)
+mCollisionDetectorVisualizer(0),
+mResourceLoader(0)
 {
 	Ember::Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
 }
@@ -232,6 +233,8 @@ EmberOgre::~EmberOgre()
 		mOgreSetup->shutdown();
 		mOgreSetup.reset();
 	}
+	///delete this first after Ogre has been shut down, since it then deletes the EmberOgreFileSystemFactory instance, and that can only be done once Ogre is shutdown
+	delete mResourceLoader;
 	
 	
 /*	delete mOgreResourceLoader;
@@ -328,8 +331,8 @@ bool EmberOgre::setup()
 	mTerrainLayerManager = new Terrain::TerrainLayerDefinitionManager();
 	
 	///Create a resource loader which loads all the resources we need.
-	OgreResourceLoader ogreResourceLoader;
-	ogreResourceLoader.initialize();
+	mResourceLoader = new OgreResourceLoader();
+	mResourceLoader->initialize();
 	
 	///check if we should preload the media
 	bool preloadMedia = configSrv->itemExists("media", "preloadmedia") && (bool)configSrv->getValue("media", "preloadmedia");
@@ -342,7 +345,7 @@ bool EmberOgre::setup()
 	
 	
 	///start with the bootstrap resources, after those are loaded we can show the LoadingBar
-	ogreResourceLoader.loadBootstrap();
+	mResourceLoader->loadBootstrap();
 	
 	
 	mSceneMgr = mOgreSetup->chooseSceneManager();
@@ -373,7 +376,7 @@ bool EmberOgre::setup()
 	
 	Gui::LoadingBarSection resourceGroupSection(loadingBar, 0.8, "Resource loading");
 	loadingBar.addSection(&resourceGroupSection);
-	unsigned int numberOfSections = ogreResourceLoader.numberOfSections() - 1; ///remove bootstrap since that's already loaded
+	unsigned int numberOfSections = mResourceLoader->numberOfSections() - 1; ///remove bootstrap since that's already loaded
 	Gui::ResourceGroupLoadingBarSection resourceGroupSectionListener(resourceGroupSection, numberOfSections, (preloadMedia ? numberOfSections : 0 ), 0.7);
 	
 	loadingBar.start(mWindow);
@@ -394,8 +397,8 @@ bool EmberOgre::setup()
 	mCollisionManager = new OgreOpcode::CollisionManager(mSceneMgr);
 	mCollisionDetectorVisualizer = new OpcodeCollisionDetectorVisualizer();
 	
-	ogreResourceLoader.loadGui();
-	ogreResourceLoader.loadGeneral();
+	mResourceLoader->loadGui();
+	mResourceLoader->loadGeneral();
 	
 	///add ourself as a frame listener
 	Ogre::Root::getSingleton().addFrameListener(this);
@@ -404,7 +407,7 @@ bool EmberOgre::setup()
 	if (preloadMedia)
 	{ 
 		S_LOG_INFO( "Begin preload.");
-		ogreResourceLoader.preloadMedia();
+		mResourceLoader->preloadMedia();
 		S_LOG_INFO( "End preload.");
 	}	
 	try {
@@ -626,14 +629,9 @@ void EmberOgre::Server_GotView(Eris::View* view)
 	mEmberEntityFactory = new EmberEntityFactory(view, mTerrainGenerator, Ember::EmberServices::getSingleton().getServerService()->getConnection()->getTypeService());
 }
 
-EmberEntity* EmberOgre::getEntity(const std::string & id)
-{
-	///this of course relies upon all entities being created by our factory
-	return static_cast<EmberEntity*>(getMainView()->getEntity(id));
-}
 
 
-void EmberOgre::connectedToServer(Eris::Connection* connection) 
+void EmberOgre::Server_GotConnection(Eris::Connection* connection) 
 {
 	//EventCreatedAvatarEntity.connect(sigc::mem_fun(*mAvatar, &Avatar::createdAvatarEmberEntity));
 	EventCreatedEmberEntityFactory.emit(mEmberEntityFactory);
@@ -720,7 +718,7 @@ void EmberOgre::initializeEmberServices(const std::string& prefix, const std::st
 
 void EmberOgre::Application_ServicesInitialized()
 {
-	Ember::EmberServices::getSingleton().getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EmberOgre::connectedToServer));
+	Ember::EmberServices::getSingleton().getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotConnection));
 	Ember::EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotView));
 	
 	mScriptingResourceProvider = std::auto_ptr<OgreResourceProvider>(new OgreResourceProvider("Scripting"));

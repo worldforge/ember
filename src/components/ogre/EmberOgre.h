@@ -116,9 +116,19 @@ class OgreSetup;
 class OgreResourceProvider;
 class OpcodeCollisionDetectorVisualizer;
 
-/** 
+/**
 
-The main class of ember. This functions as a hub for almost all subsystems. (Perhaps this should be refactored?)
+	@brief The main class of ember. This functions as a hub for almost all subsystems.
+	
+	This is the central class for the whole Ogre related part of Ember. It's quite large and could perhaps be refactored into smaller parts though.
+	It holds references to most subcomponents, and is instanciated at the start of Ember. A lot of different signals from different subsystems are routed through here. If you're not sure how to get access to a certain subsystem from another unrelated class, this is probably the first place you should look.
+	
+	It's a singleton so you can access it through
+	@code
+	EmberOgre::EmberOgre::getSingleton()
+	@endcode
+	
+	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 
 */
 class EmberOgre : public Ember::Singleton<EmberOgre>, 
@@ -150,8 +160,7 @@ public:
 	 */
 	void initializeEmberServices(const std::string& prefix, const std::string& homeDir);
 
- 	void Server_GotView(Eris::View* world);
-	void connectedToServer(Eris::Connection* connection);
+
 
 
 	// TODO: possibly we'd like to do the following in a different way,
@@ -168,17 +177,36 @@ public:
 // 	inline Input& getInput();
 	
 	/**
-	 * Gets the entity with the supplies id from the world.
+	 *    Finds and returns the entity with the given id, if it's available.
+	 * @param id The unique id for the entity.
+	 * @return An instance of EmberEntity or null if no entity with the specified id could be found.
 	 */
 	EmberEntity* getEmberEntity(const std::string & eid);
 	
+	/**
+	 *    Returns the main Jesus object, which should be used as the main entry into the Jesus subsystem.
+	 * @return The main Jesus instance.
+	 */
 	inline Jesus* getJesus() const;
 	
+	/**
+	 *    Gets the main render window.
+	 *    The system can contains many different render windows, but there's only one that's the main window.
+	 * @return The main render window.
+	 */
 	inline Ogre::RenderWindow* getRenderWindow() const;
 	
 	
 	sigc::signal<void, EmberEntityFactory*> EventCreatedEmberEntityFactory;
+	
+	/**
+	Emitted when the avatar entity has been created.
+	*/
 	sigc::signal<void, AvatarEmberEntity*> EventCreatedAvatarEntity;
+	
+	/**
+	Emitted when the Jesus subsystem has been created.
+	*/
 	sigc::signal<void, Jesus*> EventCreatedJesus;
 	
 	/**
@@ -192,24 +220,23 @@ public:
 // 	sigc::signal<void> EventEndErisPoll;
 	
 	/**
-	 * returns the scenenode of the world entity
-	 * throws en exception if no such node has been created
+	 * Returns the scenenode of the world entity.
+	 * Throws en exception if no such node has been created yet.
 	 * @return 
 	 */
-	Ogre::SceneNode* getWorldSceneNode() const;
-	
+	Ogre::SceneNode* getWorldSceneNode() const;	
 	
 	/**
-	 *    returns the root scene node
-	 * @return 
+	 *    Returns the root scene node, to which all other nodes are attached.
+	 * @return The Ogre root scene node.
 	 */
-	Ogre::SceneNode* getRootSceneNode() const;
-	
+	Ogre::SceneNode* getRootSceneNode() const;	
 	
 	/**
 	Emitted after the GUIManager has been created, but not yet initialized
 	*/
 	sigc::signal<void, GUIManager&> EventGUIManagerCreated;
+	
 	/**
 	Emitted after the GUIManager has been initilized
 	*/
@@ -236,7 +263,6 @@ public:
 	*/
 	sigc::signal<void> EventSceneCreated;
 	
-	EmberEntity* getEntity(const std::string & id);
 	
 	/**
 	 *    Call this to "soft quit" the app. This means that an signal will be emitted, which hopefully will be taken care of by some widget, which will show a confirmation window, asking the user if he/she wants to quit.
@@ -257,8 +283,9 @@ public:
 // 	bool getErisPolling() const;
 	
 	/**
-	Renders one frame.
-	*/
+	 * Renders one frame.
+	 * @return True if rendering should continue. False if the application should end.
+	 */
 	bool renderOneFrame();
 
     /**
@@ -270,6 +297,18 @@ public:
     void shutdownGui();
 
 protected:
+
+	/**
+	 * Sent from the server service when we've recieved a Eris::View instance from the server.
+	 * @param world 
+	 */
+	void Server_GotView(Eris::View* world);
+	
+	/**
+	 *    Sent from the server when we've successfully connected.
+	 * @param connection 
+	 */
+	void Server_GotConnection(Eris::Connection* connection);
 
 	/**
 	utility object for setting up and tearing down ogre
@@ -414,7 +453,16 @@ protected:
 	std::auto_ptr<OgreResourceProvider> mScriptingResourceProvider;
 	
 	OgreOpcode::CollisionManager* mCollisionManager;
+	
+	/**
+	Responsible for visualizing collisions.
+	*/
 	OpcodeCollisionDetectorVisualizer* mCollisionDetectorVisualizer;
+	
+	/**
+	Handles loading of resources. This will also take care of registering our own Ogre::ArchiveFactory instance, so it needs to be destroyed first after ogre is shutdown (since there's no way to remove an already added ArchiveFactory instance from Ogre).
+	*/
+	OgreResourceLoader* mResourceLoader;
 	
 };
 

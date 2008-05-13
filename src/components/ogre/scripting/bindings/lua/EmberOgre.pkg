@@ -140,7 +140,6 @@ class EmberOgre
 	
 	sigc::signal<void> EventSceneCreated;
 	
-	EmberEntity* getEntity(const std::string & id);
 	
 };
 

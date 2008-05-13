@@ -73,7 +73,7 @@ void EntityMoveManager::runCommand(const std::string &command, const std::string
 		tokeniser.initTokens(args);
 		std::string entityId = tokeniser.nextToken();
 		if (entityId != "") {
-			EmberEntity* entity = EmberOgre::getSingleton().getEntity(entityId);
+			EmberEntity* entity = EmberOgre::getSingleton().getEmberEntity(entityId);
 			if (entity != 0) {
 				startMove(entity);
 			}

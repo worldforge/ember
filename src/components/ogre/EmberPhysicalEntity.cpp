@@ -658,7 +658,7 @@ void EmberPhysicalEntity::detachEntity(const std::string & attachPoint)
 	if (entityId) {
 		if (hasChild(*entityId)) {
 			//we already have the entity, do the detachment
-			EmberEntity* entity = EmberOgre::getSingleton().getEntity(*entityId);
+			EmberEntity* entity = EmberOgre::getSingleton().getEmberEntity(*entityId);
 			if (entity) {
 				entity->detachFromModel();
 			}
@@ -672,7 +672,7 @@ void EmberPhysicalEntity::attachEntity(const std::string & attachPoint, const st
 	mAttachedEntities[entityId] = attachPoint;
 	if (hasChild(entityId)) {
 		//we already have the entity, do the attachment now, else we will just wait for the onChildAdded event
-		EmberEntity* entity = EmberOgre::getSingleton().getEntity(entityId);
+		EmberEntity* entity = EmberOgre::getSingleton().getEmberEntity(entityId);
 		if (entity) {
 			entity->attachToPointOnModel(attachPoint, getModel());
 		}
