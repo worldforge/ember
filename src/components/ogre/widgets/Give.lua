@@ -54,7 +54,7 @@ function Give.Give_Click(args)
 	local item = Give.listbox:getFirstSelectedItem()
 	while (item ~= nil) do
 		local entityId = item:getID()
-		local entity = emberOgre:getEntity(entityId);
+		local entity = emberOgre:getEmberEntity(entityId);
 		if (entity ~= nil) then
 			emberServices:getServerService():place(entity, Give.targetEntity)
 		end

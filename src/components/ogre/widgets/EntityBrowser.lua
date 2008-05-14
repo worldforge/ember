@@ -20,7 +20,7 @@ function EntityBrowser.EntityList_SelectionChanged(args)
 	local item = EntityBrowser.listbox:getFirstSelectedItem()
 	if item ~= nil then
 		local entityId = item:getID()
-		local entity = emberOgre:getEntity(entityId);
+		local entity = emberOgre:getEmberEntity(entityId);
 		if (entity ~= nil) then
 			guiManager:EmitEntityAction("inspect", entity)
 		end

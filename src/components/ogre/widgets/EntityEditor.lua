@@ -61,7 +61,7 @@ EntityEditor.modelTab = {}
 
 
 function editEntity(id)
-	local entity = emberOgre:getEntity(id)
+	local entity = emberOgre:getEmberEntity(id)
 	if entity ~= nil then
 		EntityEditor.editEntity(entity)
 	end

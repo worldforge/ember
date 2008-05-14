@@ -52,7 +52,7 @@
 				<Property Name='UnifiedSize' Value='{{1.00000,-20.000000},{0.0000,15.000000}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.000000,10.000000},{0.0000,160.000000}}'/>
 				<Event Name="ValueChanged" Function="TerrainEditor.Radius_ValueChanged" />
-				<Property Name='TooltipText' Value='Sets the radius of the selection.'/>
+				<Property Name='Tooltip' Value='Sets the radius of the selection.'/>
 			</Window>
 		</Window>
 	</Window>
