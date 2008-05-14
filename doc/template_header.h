@@ -34,45 +34,6 @@
 //  [if you find better options then tell me. ]
 //
 //---------------------------------------------------------------------------------------------------
-// MSVC coding needs
-//
-// - First always use the correct namespaces for items.  Such as SigC:: for libsigc++ items.
-//   Or std::string or std::list.
-//
-// - SINCE MSVC 6 is not supported anymore, the following is obsolete:
-//	 MSVC 6 and below doesn't handle partial instantiation of templates. So always do the full
-//   instanstiation.  such as: 
-//	
-//		SigC::Signal1<void, int> mySignal; is not good enough because
-//   
-//	 you need a marshal to have full instantiation.  Instead use:
-//
-//		SigC::Signal1<void, int, SigC::Marshal<void> > mySignal;  <- note: the space inbetween
-//		void> and > is VERY important...  otherwise the compiler interprets it as an operator.
-//
-// - Functions of non-void type should always return a value. So the following is illegal 
-//   (also for others than the above mentioned reason):
-//
-//	 bool isCodeMSVCCompatible(char version, bool isGNUPropertyOfMicrosoft)
-//	 { }
-//
-// - Don't rely on an initial value of non-class types. Though it would be very useful,
-//   MSVC generated code is NOT INITIALISING int's to 0. Instead it is using 0xCDCDCDCD,
-//	 but not in every case. So always set your int's to zero in the ctor! (Otherwise
-//	 this can lead to bugs, since the compiler is not complaining about missing 
-//   initialization),
-//
-// - Stay away from omitting parameters with default values, when calling a function that
-//   is part of a statically linked library. The linker of MSVC has some problems finding the
-//	 correct symbol. The same on the code in the libraries itself. So write:
-//	
-//		 socket->is_ready(0);
-//
-//   instead of just:
-//
-//		 socket->is_ready();
-//---------------------------------------------------------------------------------------------------
-//
 //
 //   Doxygen supports todos
 //   EXAMPLE:
@@ -118,6 +79,8 @@
 #ifndef <FILENAME>_H
 #define <FILENAME>_H
 
+#include "NameOfClass.h"
+
 // Included headers from the current project
 
 // Included custom library headers
@@ -128,7 +91,7 @@
 namespace applicationNamespace {
 
 /**
- * Short sentence with a general description of the class, ending in period.
+ * @brief Short sentence with a general description of the class, ending in period.
  *
  * More detailed description of the class, it's purpose, what it does,
  * how to use it and so on.
@@ -153,57 +116,7 @@ namespace applicationNamespace {
 class NameOfClass
 
 {
-    //======================================================================
-    // Inner Classes, Typedefs, and Enums
-    //======================================================================
     public:
-
-
-    //======================================================================
-    // Public Constants
-    //======================================================================
-    public:
-
-
-    //======================================================================
-    // Private Constants
-    //======================================================================
-    private:
-
-
-    //======================================================================
-    // Private Variables
-    //======================================================================/
-    private:
-
-    // NOTE: Class variables are prefixed with "my", static variables are
-    //       prefixed with "the".
-
-    /**
-     * NOTE: Variables can have a comment too.  You can use it to describe the
-     *       purpose of the varible, or wether certain invariants
-     *       should be enforced for it (parentConatiner* should newer be null, etc).
-     */
-    std::string  myExampleVariable;
-
-    /**
-     * Stores an unique name of this gizmo.
-     */
-    std::string myName;
-
-    /**
-     * This variable is used to keep track of the next free ID number for a new gizmo.
-     */
-    static int theNextId;
-
-
-    //======================================================================
-    // Public Methods
-    //======================================================================
-    public:
-
-    //----------------------------------------------------------------------
-    // Constructors
 
     /**
      * Cretaes a new NameOfClass using default values.
@@ -212,66 +125,9 @@ class NameOfClass
     {
     }
 
-
-    /**
-     * Copy constructor.
-     */
-    NameOfClass( const NameOfClass &source )
-    {
-        // Use assignment operator to do the copy
-        // NOTE: If you need to do custom initialization in the constructor this may not be enough.
-        *this = source;
-    }
-
-
-    /**
-     * Assignment operator.
-     */
-    NameOfClass &operator= ( const NameOfClass &source )
-    {
-        // Copy fields from source class to this class here.
-
-        // Return this object with new value
-        return *this;
-    }
-
-
-    //----------------------------------------------------------------------
-    // Destructor
-
-    /**
-     * Deletes a NameOfClass instance.
-     */
-    virtual ~NameOfClass()
-    {
-        // TODO: Free any allocated resources here.
-    }
-
-
-    //----------------------------------------------------------------------
-    // Getters
-
-    // Example of a getter method:
-
-    /**
-     * Returns the name of this gizmo.
-     * The name is guaranteed to be unique among all gizmos.
-     */
-    virtual std::string getName() const
-    {
-        return myName;
-        // NOTE: If we just read or set a local variable, the
-        //       getter/setter can be inline.  If more complex logic
-        //       is needed, it may be better to have the implementation in
-        //       the cpp file.
-    }
-
-
-    //----------------------------------------------------------------------
-    // Setters
+    virtual ~NameOfClass(){}
 
     // Example of a setter method:
-
     /**
      * Sets the name of this gizmo.
      * If there already is a gizmo with this name, a number will be
@@ -279,12 +135,18 @@ class NameOfClass
      *
      * @param name The new name of the gizmo.
      */
-    virtual void setName( std::string name );
+    virtual void setName(std::string name);
 
+    // Example of a getter method:
+    /**
+     * Returns the name of this gizmo.
+     * The name is guaranteed to be unique among all gizmos.
+     */
+    inline virtual std::string getName() const;
+    //inline methods are marked as such and implemented outside of the class declaration, but still in the .h file
 
     //----------------------------------------------------------------------
     // Other public methods
-    // NOTE: Group related public methods together and crate a separator comment like above for them.
 
     /**
      * NOTE: This is an example method declaration.
@@ -305,60 +167,45 @@ class NameOfClass
      *
      * @author Anonymous Coward
      */
-    virtual std::string createRepeatingString( std::string message, int repeatCount ) const;
+    virtual std::string createRepeatingString(std::string message, int repeatCount) const;
 
 
-    //======================================================================
-    // Protected Methods
-    //======================================================================
     protected:
 
 
-    //======================================================================
-    // Private Methods
-    //======================================================================
     private:
 
-
-    //======================================================================
-    // Disabled constructors and operators
-    //======================================================================
-    private:
-
-    // TODO: If you don't want to provide a copy constructor or some other
-    //       of the standard constructors/operators, then delete the one in
-    //       the public section at the start of the header.  Otherwise delete
-    //       the one in this section.
+    // NOTE: Class variables are prefixed with "m", static variables are
+    //       prefixed with "s".
 
     /**
-     * Constructor not provided.
+     * NOTE: Variables can have a comment too.  You can use it to describe the
+     *       purpose of the varible, or wether certain invariants
+     *       should be enforced for it (parentConatiner* should newer be null, etc).
      */
-    NameOfClass()
-    {
-    }
-
+    std::string  mExampleVariable;
 
     /**
-     * Copy constructor not provided.
+     * Stores an unique name of this gizmo.
      */
-    NameOfClass( const NameOfClass &source )
-    {
-    }
-
+    std::string mName;
 
     /**
-     * Assignment operator not provided.
+     * This variable is used to keep track of the next free ID number for a new gizmo.
      */
-    NameOfClass &operator= ( const NameOfClass &source )
-    {
-        return *this;
-    }
-
+    static int sNextId;
 
 }; // End of class
+
+inline virtual std::string NameOfClass::getName() const
+{
+	return mName;
+	// NOTE: If we just read or set a local variable, the
+	//       getter/setter can be inline.  If more complex logic
+	//       is needed, it may be better to have the implementation in
+	//       the cpp file.
+}
 
 } // End of application namespace
 
 #endif
-
-
