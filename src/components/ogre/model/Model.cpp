@@ -325,8 +325,7 @@ void Model::createParticles()
 		try {		
 			 ogreParticleSystem = _getManager()->createParticleSystem(name, I_particlesys->Script);
 		} catch (const Ogre::Exception& ex) {
-			S_LOG_FAILURE("Could not create particle system: " + name);
-			std::cerr << ex.getFullDescription() + "\n";
+			S_LOG_FAILURE("Could not create particle system: " << name << "\nMessage: " << ex.getFullDescription());
 			continue;
 		}
 		if (ogreParticleSystem) {
