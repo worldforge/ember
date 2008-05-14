@@ -27,6 +27,8 @@ AC_PROG_MAKE_SET
 AC_PROG_LIBTOOL
 dnl AM_PROG_LEX
 
+AC_PATH_PROG([XMLLINT], [xmllint], [true])
+
 
 # Check for C libraries:
 AC_LANG([C++])

@@ -1,142 +1,177 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
-	<xsd:element name="model">
+	<xsd:element name="models">
 		<xsd:complexType>
-			<xsd:attribute name="name" type="xsd:string" use="required">
-				<xsd:annotation>
-					<xsd:documentation xml:lang="en">
-						The unique name of the model definition.
-					</xsd:documentation>
-				</xsd:annotation>
-			</xsd:attribute>
-			<xsd:attribute name="rotation" type="xsd:string" use="optional"> 
-				<xsd:annotation>
-					<xsd:documentation xml:lang="en">
-						A rotation in degrees around the y axis. This allows you to optionally rotate the model.
-					</xsd:documentation>
-				</xsd:annotation>
-			</xsd:attribute>
-			<xsd:attribute name="usescaleof" type="usescaleofEnum" use="optional"> 
-				<xsd:annotation>
-					<xsd:documentation xml:lang="en">
-						The client scales the model to fit with the data sent from the server. However, different models would be scaled differently. If this is omitted, the model will be scaled in all dimensions to fit with the bounding box sent from the server. This will in most cases result in a distorted model, and is not desired. Instead you often want to use "width", "height" or "depth". These will scale the model uniformly (no distortion) by using one of the axes as reference. Most character models for example are best suited to use the "height" scaling.
-						Using "none" will make sure that no scaling occurs: the model is unaffected by the data sent from the server. Note however that the attribute "scale" can still be used to scale the model.
-					</xsd:documentation>
-				</xsd:annotation>
-			</xsd:attribute>
-			<xsd:attribute name="scale" type="xsd:float" use="optional"/> 
-			<xsd:attribute name="showcontained" type="xsd:boolean" use="optional"> 
-				<xsd:annotation>
-					<xsd:documentation xml:lang="en">
-						If true, contained entities will be rendered also. This is the default. Setting this to false might be useful for character entities, which are expected to carry with them an inventory, which we don't want to render.
-					</xsd:documentation>
-				</xsd:annotation>
-			</xsd:attribute>
-			<xsd:attribute name="renderingdistance" type="xsd:float" use="optional"/> 
-			<xsd:attribute name="icon" type="xsd:string" use="optional"/> 
 			<xsd:sequence>
-				<xsd:element name="contentoffset" use="optional"> 
-					<xsd:annotation>
-						<xsd:documentation xml:lang="en">
-							Allows you to specify how much contained entities should be offset from their initial position. This is useful for tables, where you want contained entities to lie on the table, or for instance a bridge where you want contained entities to appear to walk on the bridge.
-						</xsd:documentation>
-					</xsd:annotation>
-					<xsd:attribute name="x" type="xsd:string" use="required"/> 
-					<xsd:attribute name="y" type="xsd:string" use="required"/> 
-					<xsd:attribute name="z" type="xsd:string" use="required"/> 
-				</xsd:element>
-				<xsd:element name="rotation" use="optional">
-					<xsd:attribute name="x" type="xsd:string" use="required"/> 
-					<xsd:attribute name="y" type="xsd:string" use="required"/> 
-					<xsd:attribute name="z" type="xsd:string" use="required"/> 
-					<!-- how do we specify that at least one of the following must be present, but not both? -->
-					<xsd:attribute name="degrees" type="xsd:float" use="optional"/> 
-					<xsd:attribute name="radians" type="xsd:boolean" use="optional"/> 
-				</xsd:element>
-				<xsd:element name="rendering" use="optional">
-					<xsd:annotation>
-						<xsd:documentation xml:lang="en">
-							By default all models are rendered as they are, but with some parts of the world this might not be efficient enough. This element allows you to specify an alternative scheme of rendering. An example could be "forest" for forest rendering, where trees are batched together and used with impostors.
-						</xsd:documentation>
-					</xsd:annotation>
-					<xsd:attribute name="scheme" type="xsd:string" use="required"/> 
-				</xsd:element>
-				<xsd:element name="submodels">
+				<xsd:element name="model">
 					<xsd:complexType>
 						<xsd:sequence>
-							<xsd:element name="submodel">
-								<xsd:attribute name="mesh" type="xsd:string" use="required"/> 
+							<xsd:element name="contentoffset" type="vector3" minOccurs="0" maxOccurs="1"> 
+								<xsd:annotation>
+									<xsd:documentation xml:lang="en">
+										Allows you to specify how much contained entities should be offset from their initial position. This is useful for tables, where you want contained entities to lie on the table, or for instance a bridge where you want contained entities to appear to walk on the bridge.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="translate" type="vector3" minOccurs="0" maxOccurs="1"> 
+								<xsd:annotation>
+									<xsd:documentation xml:lang="en">
+										How much the mesh should be translated in 3d space. This allows you to shift the model without having to regenerate the original mesh.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="rotation" minOccurs="0" maxOccurs="1">
 								<xsd:complexType>
-									<xsd:element name="parts">
-										<xsd:complexType>
-											<xsd:sequence>
-												<xsd:element name="part">
-													<xsd:attribute name="name" type="xsd:string" use="required"/> 
-													<xsd:attribute name="show" type="xsd:boolean" use="required"/> 
-													<xsd:attribute name="group" type="xsd:string" use="optional"/> 
-													<xsd:complexType>
-														<xsd:element name="subentities">
-															<xsd:complexType>
-																<xsd:sequence>
-																	<xsd:element name="subentity">
-																		<xsd:attribute name="name" type="xsd:string" use="required"/> 
-																		<xsd:attribute name="material" type="xsd:string" use="optional"/> 
-																	</xsd:element>
-																</xsd:sequence>
-															</xsd:complexType>
-														</xsd:element>
-														<xsd:element name="lights">
-															<xsd:complexType>
-																<xsd:sequence>
-																	<xsd:element name="light">
-																		<xsd:attribute name="name" type="xsd:string" use="required"/> 
-																		<xsd:attribute name="bone" type="xsd:string" use="required"/> 
-																		<xsd:attribute name="material" type="xsd:string" use="optional"/> 
-																	</xsd:element>
-																</xsd:sequence>
-															</xsd:complexType>
-														</xsd:element>
-													</xsd:complexType>
-												</xsd:element>
-											</xsd:sequence>
-										</xsd:complexType>
-									</xsd:element>
+									<xsd:attribute name="x" type="xsd:string" use="required"/> 
+									<xsd:attribute name="y" type="xsd:string" use="required"/> 
+									<xsd:attribute name="z" type="xsd:string" use="required"/> 
+									<!-- how do we specify that at least one of the following must be present, but not both? -->
+									<xsd:attribute name="degrees" type="xsd:float" use="optional"/> 
+									<xsd:attribute name="radians" type="xsd:boolean" use="optional"/> 
 								</xsd:complexType>
 							</xsd:element>
-						</xsd:sequence>					
+							<xsd:element name="rendering" minOccurs="0" maxOccurs="1">
+								<xsd:annotation>
+									<xsd:documentation xml:lang="en">
+										By default all models are rendered as they are, but with some parts of the world this might not be efficient enough. This element allows you to specify an alternative scheme of rendering. An example could be "forest" for forest rendering, where trees are batched together and used with impostors.
+									</xsd:documentation>
+								</xsd:annotation>
+								<xsd:complexType>
+									<xsd:attribute name="scheme" type="xsd:string" use="required"/> 
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="submodels">
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="submodel">
+											<xsd:complexType>
+												<xsd:sequence>
+													<xsd:element name="parts">
+														<xsd:complexType>
+															<xsd:sequence>
+																<xsd:element name="part">
+																	<xsd:complexType>
+																		<xsd:sequence>
+																			<xsd:element name="subentities">
+																				<xsd:complexType>
+																					<xsd:sequence>
+																						<xsd:element name="subentity">
+																							<xsd:complexType>
+																								<xsd:attribute name="name" type="xsd:string" use="required"/> 
+																								<xsd:attribute name="material" type="xsd:string" use="optional"/> 
+																							</xsd:complexType>
+																						</xsd:element>
+																					</xsd:sequence>
+																				</xsd:complexType>
+																			</xsd:element>
+																			<xsd:element name="lights">
+																				<xsd:complexType>
+																					<xsd:sequence>
+																						<xsd:element name="light">
+																							<xsd:complexType>
+																								<xsd:attribute name="name" type="xsd:string" use="required"/> 
+																								<xsd:attribute name="bone" type="xsd:string" use="required"/> 
+																								<xsd:attribute name="material" type="xsd:string" use="optional"/> 
+																							</xsd:complexType>
+																						</xsd:element>
+																					</xsd:sequence>
+																				</xsd:complexType>
+																			</xsd:element>
+																		</xsd:sequence>
+																		<xsd:attribute name="name" type="xsd:string" use="required"/> 
+																		<xsd:attribute name="show" type="xsd:boolean" use="required"/> 
+																		<xsd:attribute name="group" type="xsd:string" use="optional"/> 
+																	</xsd:complexType>
+																</xsd:element>
+															</xsd:sequence>
+														</xsd:complexType>
+													</xsd:element>
+												</xsd:sequence>
+												<xsd:attribute name="mesh" type="xsd:string" use="required"/> 
+											</xsd:complexType>
+										</xsd:element>
+									</xsd:sequence>					
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="actions">
+								<xsd:complexType>
+									<xsd:sequence>					
+										<xsd:element name="action">
+											<xsd:complexType>
+												<xsd:sequence>					
+													<xsd:element name="animations">
+														<xsd:complexType>
+															<xsd:sequence>					
+																<xsd:element name="animationpart">
+																	<xsd:complexType>
+																		<xsd:attribute name="name" type="xsd:string" use="required"/> 
+																		<xsd:attribute name="weight" type="xsd:string" use="required"/> 
+																	</xsd:complexType>
+																</xsd:element>
+															</xsd:sequence>					
+														</xsd:complexType>
+													</xsd:element>
+												</xsd:sequence>
+												<xsd:attribute name="name" type="xsd:string" use="required"/> 
+												<xsd:attribute name="speed" type="xsd:float" use="optional"/> 
+											</xsd:complexType>
+										</xsd:element>
+									</xsd:sequence>					
+								</xsd:complexType>
+							</xsd:element>	
+						</xsd:sequence>
+						<xsd:attribute name="name" type="xsd:string" use="required">
+							<xsd:annotation>
+								<xsd:documentation xml:lang="en">
+									The unique name of the model definition.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
+						<xsd:attribute name="rotation" type="xsd:string" use="optional"> 
+							<xsd:annotation>
+								<xsd:documentation xml:lang="en">
+									A rotation in degrees around the y axis. This allows you to optionally rotate the model.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
+						<xsd:attribute name="usescaleof" type="usescaleofEnum" use="optional"> 
+							<xsd:annotation>
+								<xsd:documentation xml:lang="en">
+									The client scales the model to fit with the data sent from the server. However, different models would be scaled differently. If this is omitted, the model will be scaled in all dimensions to fit with the bounding box sent from the server. This will in most cases result in a distorted model, and is not desired. Instead you often want to use "width", "height" or "depth". These will scale the model uniformly (no distortion) by using one of the axes as reference. Most character models for example are best suited to use the "height" scaling.
+									Using "none" will make sure that no scaling occurs: the model is unaffected by the data sent from the server. Note however that the attribute "scale" can still be used to scale the model.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
+						<xsd:attribute name="scale" type="xsd:float" use="optional"/> 
+						<xsd:attribute name="showcontained" type="xsd:boolean" use="optional"> 
+							<xsd:annotation>
+								<xsd:documentation xml:lang="en">
+									If true, contained entities will be rendered also. This is the default. Setting this to false might be useful for character entities, which are expected to carry with them an inventory, which we don't want to render.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
+						<xsd:attribute name="renderingdistance" type="xsd:float" use="optional"/> 
+						<xsd:attribute name="icon" type="xsd:string" use="optional"/> 
 					</xsd:complexType>
 				</xsd:element>
-				<xsd:element name="actions">
-					<xsd:complexType>
-						<xsd:sequence>					
-							<xsd:element name="action">
-								<xsd:complexType>
-									<xsd:attribute name="name" type="xsd:string" use="required"/> 
-									<xsd:attribute name="speed" type="xsd:float" use="optional"/> 
-									<xsd:element name="animations">
-										<xsd:complexType>
-											<xsd:sequence>					
-												<xsd:element name="animationpart">
-													<xsd:attribute name="name" type="xsd:string" use="required"/> 
-													<xsd:attribute name="weight" type="xsd:string" use="required"/> 
-												</xsd:element>
-											</xsd:sequence>					
-										</xsd:complexType>
-									</xsd:element>
-								</xsd:complexType>
-							</xsd:element>
-						</xsd:sequence>					
-					</xsd:complexType>
-				</xsd:element>	
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
+			
+	
 	<xsd:simpleType name="usescaleofEnum">
 		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="all" />
 			<xsd:enumeration value="height" />
 			<xsd:enumeration value="width" />
 			<xsd:enumeration value="depth" />
 			<xsd:enumeration value="none" />
 		</xsd:restriction>
 	</xsd:simpleType>
+	<xsd:complexType name="vector3">
+		<xsd:attribute name="x" type="xsd:string" use="required"/> 
+		<xsd:attribute name="y" type="xsd:string" use="required"/> 
+		<xsd:attribute name="z" type="xsd:string" use="required"/> 
+	</xsd:complexType>
+	
 </xsd:schema>
