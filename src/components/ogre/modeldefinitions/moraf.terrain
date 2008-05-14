@@ -123,11 +123,11 @@
 				<param key="falloff">0.7</param>
 			</foliage>
 		</layer>
-		<layer shadername="snow" diffusetexture="snow.png" normalmaptexture="" tilesize="8">
+		<layer shadername="snow" diffusetexture="resources/ogre/textures/snow.png" normalmaptexture="" tilesize="8">
 		</layer>
 		<layer shadername="rock" diffusetexture="3d_objects/environment/ground/textures/stone/weathered_granite.png" normalmaptexture="" tilesize="8">
 		</layer>
-		<layer shadername="silt" diffusetexture="dark.png" normalmaptexture="" tilesize="8">
+		<layer shadername="silt" diffusetexture="resources/ogre/textures/dark.png" normalmaptexture="" tilesize="8">
 		</layer>
 		<layer areaindex="6" diffusetexture="3d_objects/environment/ground/textures/leaf_covered/ground.png" normalmaptexture="3d_objects/environment/ground/textures/leaf_covered/ground_normals.png" tilesize="8">
 		</layer>

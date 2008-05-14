@@ -1,9 +1,9 @@
 <models>
-    <model name="bush" usescaleof="height" scale="2.000000" showcontained="true" icon="">
+    <model name="shutters" usescaleof="all" showcontained="true" icon="">
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/plants/shrubs/bush/bush.mesh">
+            <submodel mesh="3d_objects/structures/castle_grad/shutters.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>

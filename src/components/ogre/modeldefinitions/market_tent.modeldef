@@ -1,0 +1,25 @@
+<models>
+    <model name="market_tent" usescaleof="all" showcontained="true" icon="">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/structures/market_tent/market_tent.mesh">
+                <parts>
+                    <part name="blue" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/structures/market_tent/blue" />
+                        </subentities>
+                    </part>
+                    <part name="red" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/structures/market_tent/red" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+</models>

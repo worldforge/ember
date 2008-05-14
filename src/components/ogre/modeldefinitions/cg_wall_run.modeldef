@@ -1,13 +1,14 @@
 <models>
-    <model name="bush" usescaleof="height" scale="2.000000" showcontained="true" icon="">
-        <translate x="0.000000" y="0.000000" z="0.000000" />
+    <model name="cg_wall_run" usescaleof="all" showcontained="true" icon="">
+        <translate x="-4.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/plants/shrubs/bush/bush.mesh">
+            <submodel mesh="3d_objects/structures/castle_grad/cg_wall_run.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
                             <subentity index="0" />
+                            <subentity index="1" />
                         </subentities>
                     </part>
                 </parts>

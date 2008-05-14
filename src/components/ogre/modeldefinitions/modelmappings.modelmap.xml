@@ -14,6 +14,8 @@
 	<automodelmapping name="" />
 	
 	<automodelmapping name="" modelname="" />
+	
+	<nomodel name="" />
 
 -->	
 	
@@ -852,9 +854,14 @@
 	</modelmapping>	
 
 	
-	<automodelmapping name="fencepole" />
-	<automodelmapping name="fencesection" />
-	<automodelmapping name="fencegate" />
+	
+	<automodelmapping name="crate" />
+	<automodelmapping name="open_crate" />
+	
+	
+	<automodelmapping name="fence_pole" />
+	<automodelmapping name="fence_section" modelname="wooden_fence" />
+	<automodelmapping name="fence_gate" modelname="wooden_gate" />
 	
 	<modelmapping name="theodolite">
 		<entitymatch>

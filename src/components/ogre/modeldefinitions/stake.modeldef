@@ -3,11 +3,11 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/items/building_element/models/sharpened_log/sharpened_log.mesh">
+            <submodel mesh="3d_objects/structures/sharpened_log/sharpened_log.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/items/building_element/sharpened_log" />
+                            <subentity index="0" material="/global/structures/sharpened_log" />
                         </subentities>
                     </part>
                 </parts>

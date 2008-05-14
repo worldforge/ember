@@ -3,11 +3,11 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/items/building_element/models/cg_house/cg_door_A.mesh">
+            <submodel mesh="3d_objects/structures/castle_grad/door.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/items/building_element/cg_ossyja_door/ossyja_door" />
+                            <subentity index="0" />
                         </subentities>
                     </part>
                 </parts>

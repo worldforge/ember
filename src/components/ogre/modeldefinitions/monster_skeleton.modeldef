@@ -3,11 +3,11 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/items/monster_skeleton/models/monster_skeleton.mesh">
+            <submodel mesh="3d_objects/environment/monster_skeleton/models/monster_skeleton.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/items/monster_skeleton" />
+                            <subentity index="0" material="/global/environment/monster_skeleton" />
                         </subentities>
                     </part>
                 </parts>
