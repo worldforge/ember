@@ -87,7 +87,7 @@ TerrainGenerator::TerrainGenerator(ISceneManagerAdapter* adapter)
 : 
 UpdateShadows("update_shadows", this, "Updates shadows in the terrain."),
 mGrassShader(0),
-hasTerrainInfo(false),
+mHasTerrainInfo(false),
 mFoliageBatchSize(32)
 {
 
@@ -637,8 +637,8 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 		EventWorldSizeChanged.emit();
 // 	}
 	
-	if (!hasTerrainInfo) {
-		hasTerrainInfo = true;
+	if (!mHasTerrainInfo) {
+		mHasTerrainInfo = true;
 	} else {
 		if (wasUpdate) {
 			///if it's an update, we need to reload all pages and adjust all entity positions
