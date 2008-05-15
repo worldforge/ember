@@ -1,9 +1,0 @@
-ps_1_1 // Pixel shader version.
-
-tex t0 // Texture register t0 is loaded from stage 0.
-tex t1 // Texture register t1 is loaded from stage 1.
-
-
-mov r1, t1 // Move texture t1 into output register r1.
-lrp r0, v0, t0, r1 // Linearly interpolate between t0 and r1
-// by a proportion specified in v0 (diffuse color).
