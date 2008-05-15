@@ -3,7 +3,7 @@
 // smoke
 Examples/Fire
 {
-    	material        	Examples/Fire
+    	material        	/global/environment/fire
     	particle_width  	0.1
     	particle_height 	0.1
     	cull_each       	false
@@ -37,7 +37,7 @@ Examples/Fire
 
 Examples/Smoke
 {
-    	material        	Examples/Smoke
+    	material        	/global/environment/smoke
     	particle_width  	0.5
     	particle_height 	0.5
     	cull_each       	false
@@ -57,7 +57,7 @@ Examples/Smoke
 
 	affector ColourImage
 	{
-		image		smokecolors.png
+		image		resources/ogre/textures/smokecolors.png
 	}
 
    	affector Rotator
