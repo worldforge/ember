@@ -159,24 +159,32 @@
         </submodels>
         <actions>
             <action name="__movement_idle" speed="1.000000">
-                <animationparts>
-                    <animationpart name="wf_humanoid_idle" weight="1.000000" />
-                </animationparts>
+            	<animations>
+					<animation>
+						<animationpart name="wf_humanoid_idle" weight="1.000000" />
+					</animation>
+            	</animations>
             </action>
             <action name="__movement_run" speed="1.000000">
-                <animationparts>
-                    <animationpart name="wf_humanoid_jog" weight="1.000000" />
-                </animationparts>
+            	<animations>
+					<animation>
+						<animationpart name="wf_humanoid_jog" weight="1.000000" />
+					</animation>
+            	</animations>
             </action>
             <action name="__movement_walk" speed="1.000000">
-                <animationparts>
-                    <animationpart name="wf_humanoid_walkF" weight="1.000000" />
-                </animationparts>
+            	<animations>
+					<animation>
+						<animationpart name="wf_humanoid_walkF" weight="1.000000" />
+					</animation>
+            	</animations>
             </action>
             <action name="__movement_swim" speed="1.000000">
-                <animationparts>
-                    <animationpart name="wf_humanoid_walkF" weight="1.000000" />
-                </animationparts>
+            	<animations>
+					<animation>
+						<animationpart name="wf_humanoid_walkF" weight="1.000000" />
+					</animation>
+            	</animations>
             </action>
         </actions>
 <!--        
