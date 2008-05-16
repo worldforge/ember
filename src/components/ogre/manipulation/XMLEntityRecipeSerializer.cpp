@@ -73,7 +73,7 @@ void XMLEntityRecipeSerializer::parseScript(Ogre::DataStreamPtr& stream, const O
 		} catch (const Ogre::Exception& ex) {
 			S_LOG_FAILURE(ex.getFullDescription());
 		}
-	}	
+	}
 }
 
 void XMLEntityRecipeSerializer::readRecipe(EntityRecipePtr entRecipe, Ember::TiXmlElement* recipeNode)
@@ -106,6 +106,7 @@ void XMLEntityRecipeSerializer::readEntitySpec(EntityRecipePtr entRecipe, Ember:
 {
 	S_LOG_VERBOSE("Read entity spec.");
 
+	// Print <entity> part of XML into string and wrap it with stream
 	Ember::TiXmlPrinter printer;
 	printer.SetStreamPrinting();
 	entSpecNode->Accept( &printer );
@@ -116,7 +117,7 @@ void XMLEntityRecipeSerializer::readEntitySpec(EntityRecipePtr entRecipe, Ember:
 	Atlas::Message::QueuedDecoder decoder;
 	Atlas::Codecs::XML codec(strStream, decoder);
 
-	// Read whole file into decoder queue
+	// Read whole stream into decoder queue
 	while (!strStream.eof())
 	{
 		codec.poll();

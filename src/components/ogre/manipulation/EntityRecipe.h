@@ -75,6 +75,11 @@ protected:
 	void* mBindings;
 
 	/**
+	 * GUI adapters bindings.
+	 */
+	void* mBindings;
+
+	/**
 	 * String that contains Lua script.
 	 */
 	std::string mScript;
