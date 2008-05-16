@@ -46,7 +46,7 @@ OgreSoundProvider::~OgreSoundProvider()
 
 void OgreSoundProvider::loadSound(const std::string& soundName)
 {
-	S_LOG_INFO("Loading sound")
+	S_LOG_INFO("Loading sound");
 }
 
 bool OgreSoundProvider::willLoadSound(const std::string& soundName)
