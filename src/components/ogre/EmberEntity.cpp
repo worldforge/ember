@@ -180,7 +180,7 @@ void EmberEntity::createSceneNode(Ogre::SceneManager* sceneManager)
 {
 	EmberEntity* container = getEmberLocation();
 	if (container == 0) {
-		//S_LOG_VERBOSE( "Entity created in limbo: "<< this->getId() << " (" << this->getName() << ")" )
+		//S_LOG_VERBOSE( "Entity created in limbo: "<< this->getId() << " (" << this->getName() << ")" );
 
 		mOgreNode = sceneManager->createSceneNode(getId());
 		
@@ -280,7 +280,7 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
 	message.append(type);
 	message.append("> ");
 	message.append(msg);
-	S_LOG_VERBOSE( "Entity says: [" << message << "]\n" )
+	S_LOG_VERBOSE( "Entity says: [" << message << "]\n" );
 
 	/// Make the message appear in the chat box
 	GUIManager::getSingleton().AppendIGChatLine.emit(msg, this);

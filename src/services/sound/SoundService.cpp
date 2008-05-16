@@ -163,7 +163,7 @@ namespace Ember
 		{
 			if (!alIsSource(worldSources[i]))
 			{
-			S_LOG_FAILURE("Error creating world sources")
+			S_LOG_FAILURE("Error creating world sources");
 				return Service::FAILURE;
 			}
 		}
@@ -204,7 +204,7 @@ namespace Ember
 		else if(command == PLAYMUSIC)
 		{
 			// TODO: play test music here
-			S_LOG_INFO(getName() << " I should be playing music")
+			S_LOG_INFO(getName() << " I should be playing music");
 		}
 		else if(command == PLAYFILE)
 		{
@@ -213,7 +213,7 @@ namespace Ember
 		else if(command == PLAYSPEECH)
 		{
 			// TODO: play test music here
-			S_LOG_INFO(getName() << " I should be playing speech")
+			S_LOG_INFO(getName() << " I should be playing speech");
 		}
 	}
 
@@ -239,7 +239,7 @@ namespace Ember
 //
 //		alutLoadWAV(alName,&data,&format,&size,&bits,&freq);		// Load WAV file
 //		alBufferData(buffer,format,data,size,freq);				// Connect WAV to buffer
-//		S_LOG_INFO("Loading WAV and stuff")
+//		S_LOG_INFO("Loading WAV and stuff");
 //
 //#endif
 
@@ -270,17 +270,17 @@ namespace Ember
 	void SoundService::TestPlatform(void)
 	{
 
-		S_LOG_INFO("Testing Platform")
+		S_LOG_INFO("Testing Platform");
 
 #ifdef _WIN32 //Windows
 
-		S_LOG_INFO("Windows Platform found")
+		S_LOG_INFO("Windows Platform found");
 
 #endif
 
 #ifdef _LINUX // Linux
 
-		S_LOG_INFO("Linux Platform found")
+		S_LOG_INFO("Linux Platform found");
 
 #endif
 
@@ -292,7 +292,7 @@ namespace Ember
 		int error = alGetError();
 		if(error != AL_NO_ERROR)
 		{
-			S_LOG_FAILURE("Error playing sound: " << error)
+			S_LOG_FAILURE("Error playing sound: " << error);
 		}
 	}
 */
@@ -300,7 +300,7 @@ namespace Ember
 	
 		std::stringstream gruntPath;
 		gruntPath << soundsDirPath << "pig_grunt.wav";
-		S_LOG_INFO( "Loading sound: [" << gruntPath.str() << "]" )
+		S_LOG_INFO( "Loading sound: [" << gruntPath.str() << "]" );
 		//alutLoadWAV(gruntPath.str().c_str(),&data,&format,&size,&bits,&freq);
 		
 		// Connect WAV to buffer
@@ -315,7 +315,7 @@ namespace Ember
 		{
 			char* errorStr = (char*)alGetString(error);
 			//std::string errorStr = alGetString(error);
-			S_LOG_FAILURE( "Error playing sound: " << errorStr )
+			S_LOG_FAILURE( "Error playing sound: " << errorStr );
 		}
 	}
 

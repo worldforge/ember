@@ -31,7 +31,7 @@
 ///include the Logging service, since we want logging available from most classes
 ///in most cases, use the S_LOG* defines
 ///such as:
-///S_LOG_INFO("some info")
+///S_LOG_INFO("some info");
 #include "services/logging/LoggingService.h"
 
 #include "framework/Exception.h"
