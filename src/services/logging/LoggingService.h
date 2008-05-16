@@ -46,16 +46,16 @@ class ErisLogReciever;
 // Short type macros
 //======================================================================
 
-#define ENDM Ember::LoggingService::END_MESSAGE;
-#define HEX_NUM(number) Ember::LoggingService::hexNumber(number)
+#define ENDM (Ember::LoggingService::END_MESSAGE)
+#define HEX_NUM(number) (Ember::LoggingService::hexNumber(number))
 	
 //Added by nikal 2002/10/22 For convenience. 
 //%TASK nikal,1: Perhaps a script to switch the macros to the actual function call would make code more readable?
-#define S_LOG_VERBOSE(message) Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, Ember::LoggingService::VERBOSE) << message << ENDM;
-#define S_LOG_INFO(message) Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, Ember::LoggingService::INFO) << message << ENDM;
-#define S_LOG_WARNING(message) Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, Ember::LoggingService::WARNING) << message << ENDM;
-#define S_LOG_FAILURE(message)Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, Ember::LoggingService::FAILURE) << message << ENDM;
-#define S_LOG_CRITICAL(message) Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, Ember::LoggingService::CRITICAL) << message << ENDM;
+#define S_LOG_VERBOSE(message) (Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, Ember::LoggingService::VERBOSE) << message << ENDM)
+#define S_LOG_INFO(message) (Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, Ember::LoggingService::INFO) << message << ENDM)
+#define S_LOG_WARNING(message) (Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, Ember::LoggingService::WARNING) << message << ENDM)
+#define S_LOG_FAILURE(message) (Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, Ember::LoggingService::FAILURE) << message << ENDM)
+#define S_LOG_CRITICAL(message) (Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, Ember::LoggingService::CRITICAL) << message << ENDM)
 
 
 //#define S_LOG_INFO(message) Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << message << ENDM;
