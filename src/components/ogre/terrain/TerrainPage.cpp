@@ -214,7 +214,8 @@ void TerrainPage::update()
 {
 	Ogre::Vector2 targetPage = Atlas2Ogre_Vector2(mPosition);
 	
-	Ogre::Vector2 adjustedOgrePos(targetPage.x + mGenerator->getTerrainInfo().getPageOffsetX(), targetPage.y + mGenerator->getTerrainInfo().getPageOffsetY());
+	///note that we've switched the x and y offset here, since the terraininfo is in WF coords, but we now want Ogre coords
+	Ogre::Vector2 adjustedOgrePos(targetPage.x + mGenerator->getTerrainInfo().getPageOffsetY(), targetPage.y + mGenerator->getTerrainInfo().getPageOffsetX());
 	
 	S_LOG_VERBOSE("Updating terrain page at position x: " << adjustedOgrePos.x << " y: " << adjustedOgrePos.y);
 	mGenerator->getAdapter()->reloadPage(static_cast<unsigned int>(adjustedOgrePos.x), static_cast<unsigned int>(adjustedOgrePos.y)); 
