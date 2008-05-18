@@ -87,6 +87,13 @@ void XMLEntityRecipeSerializer::readRecipe(EntityRecipePtr entRecipe, Ember::TiX
 		readEntitySpec(entRecipe, elem);
 	}
 
+	// GUI adapters
+	elem = recipeNode->FirstChildElement("adapters");
+	if (elem)
+	{
+		readAdapters(entRecipe, elem);
+	}
+
 	// Script bindings
 	elem = recipeNode->FirstChildElement("bindings");
 	if (elem)
@@ -136,6 +143,24 @@ void XMLEntityRecipeSerializer::readEntitySpec(EntityRecipePtr entRecipe, Ember:
 		{
 			S_LOG_VERBOSE(" " << iter->first);
 		}
+	}
+}
+
+void XMLEntityRecipeSerializer::readAdapters(EntityRecipePtr entRecipe, Ember::TiXmlElement* adaptersNode)
+{
+	S_LOG_VERBOSE("Read adapters.");
+	for (Ember::TiXmlElement* smElem = adaptersNode->FirstChildElement();
+            smElem != 0; smElem = smElem->NextSiblingElement())
+	{
+		const char* tmp = smElem->Attribute("name");
+		std::string name;
+		if (!tmp) {
+			continue;
+		} else {
+			name = tmp;
+		}
+
+		GUIAdapter* adapter = entRecipe->createGUIAdapter(name);
 	}
 }
 

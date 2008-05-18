@@ -41,6 +41,10 @@ EntityRecipe::EntityRecipe(Ogre::ResourceManager* creator, const Ogre::String& n
 
 EntityRecipe::~EntityRecipe()
 {
+	for (GUIAdaptersStore::iterator I = mGUIAdapters.begin(); I != mGUIAdapters.end(); ++I)
+	{
+		delete I->second;
+	}
 }
 
 void EntityRecipe::loadImpl(void)
@@ -57,5 +61,12 @@ size_t EntityRecipe::calculateSize(void) const
 	return 0; 
 }
 
+GUIAdapter* EntityRecipe::createGUIAdapter(std::string name)
+{
+	GUIAdapter* adapter;
+	adapter = new GUIAdapter(name);
+	mGUIAdapters[name] = adapter;
+	return adapter;
+}
 
 }

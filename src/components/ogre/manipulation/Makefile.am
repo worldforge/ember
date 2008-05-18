@@ -3,7 +3,9 @@ METASOURCES = AUTO
 noinst_LTLIBRARIES = libmanipulation.la
 libmanipulation_la_SOURCES = EntityMoveManager.cpp EntityMoveAdapter.cpp \
 			EntityMover.cpp EntityMoveAdjuster.cpp MaterialEditor.cpp \
-			EntityRecipe.cpp EntityRecipeManager.cpp XMLEntityRecipeSerializer.cpp
+			GUIAdapter.cpp EntityRecipe.cpp EntityRecipeManager.cpp \
+			XMLEntityRecipeSerializer.cpp
 noinst_HEADERS = EntityMoveManager.h EntityMoveAdapter.h IEntityMoveBridge.h \
 			EntityMover.h EntityMoveAdjuster.h MaterialEditor.h \
-			EntityRecipe.h EntityRecipeManager.h XMLEntityRecipeSerializer.h
+			GUIAdapter.h EntityRecipe.h EntityRecipeManager.h \
+			XMLEntityRecipeSerializer.h

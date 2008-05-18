@@ -32,7 +32,7 @@ namespace EmberOgre {
 
 /**
  * Serialize entity recipe from xml files. 
-*/
+ */
 class XMLEntityRecipeSerializer{
 public:
 	/**
@@ -62,7 +62,12 @@ protected:
 	void readEntitySpec(EntityRecipePtr entRecipe, Ember::TiXmlElement* entSpecNode);
 
 	/**
-	 * Parses xml GUI bindings.
+	 * Parses xml GUI adapters.
+	 */
+	void readAdapters(EntityRecipePtr entRecipe, Ember::TiXmlElement* adaptersNode);
+
+	/**
+	 * Parses xml script bindings.
 	 */
 	void readBindings(EntityRecipePtr entRecipe, Ember::TiXmlElement* bindingsNode);
 

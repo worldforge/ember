@@ -24,10 +24,13 @@
 #define EMBEROGREENTITYRECIPE_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
+#include "GUIAdapter.h"
 
 #include <Atlas/Message/Element.h>
 
 namespace EmberOgre {
+
+typedef std::map<std::string, GUIAdapter*> GUIAdaptersStore;
 
 /**
  * Resource that stores recipes for entity creator.
@@ -63,6 +66,11 @@ public:
 	 */
 	size_t calculateSize(void) const;
 
+	/**
+	 * Creates and returns GUI adapter.
+	 */
+	GUIAdapter* createGUIAdapter(std::string name);
+
 protected:
 	/**
 	 * List of semi-atlas entity specs.
@@ -70,12 +78,12 @@ protected:
 	std::list<Atlas::Message::MapType> mEntitySpec;
 
 	/**
-	 * GUI adapters bindings.
+	 * GUI adapters.
 	 */
-	void* mBindings;
+	GUIAdaptersStore mGUIAdapters;
 
 	/**
-	 * GUI adapters bindings.
+	 * Script bindings.
 	 */
 	void* mBindings;
 
