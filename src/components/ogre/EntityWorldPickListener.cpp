@@ -41,20 +41,28 @@ EntityWorldPickListenerVisualizer::EntityWorldPickListenerVisualizer(EntityWorld
 : mEntity(0), mDebugNode(0)
 {
 	mDebugNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
-	Ogre::Entity* mEntity = EmberOgre::getSingleton().getSceneManager()->createEntity("pickerDebugObject", "fireball.mesh");
-	///start out with a normal material
-	mEntity->setMaterialName("BasePointMarkerMaterial");
-	mEntity->setRenderingDistance(300);
-	mEntity->setQueryFlags(MousePicker::CM_NONPICKABLE);
-	mDebugNode->attachObject(mEntity);
+	try {
+		Ogre::Entity* mEntity = EmberOgre::getSingleton().getSceneManager()->createEntity("pickerDebugObject", "3d_objects/primitives/models/sphere.mesh");
+		///start out with a normal material
+		mEntity->setMaterialName("BasePointMarkerMaterial");
+		mEntity->setRenderingDistance(300);
+		mEntity->setQueryFlags(MousePicker::CM_NONPICKABLE);
+		mDebugNode->attachObject(mEntity);
+	} catch (const std::exception& ex) {
+		S_LOG_WARNING("Error when creating picking visualizer: " << ex.what());
+	}
 	
 	pickListener.EventPickedEntity.connect(sigc::mem_fun(*this, &EntityWorldPickListenerVisualizer::picker_EventPickedEntity));
 }
 
 EntityWorldPickListenerVisualizer::~EntityWorldPickListenerVisualizer()
 {
-	EmberOgre::getSingleton().getSceneManager()->destroyEntity(mEntity);
-	EmberOgre::getSingleton().getSceneManager()->destroySceneNode(mDebugNode->getName());
+	if (mEntity) {
+		EmberOgre::getSingleton().getSceneManager()->destroyEntity(mEntity);
+	}
+	if (mDebugNode) {
+		EmberOgre::getSingleton().getSceneManager()->destroySceneNode(mDebugNode->getName());
+	}
 }
 
 void EntityWorldPickListenerVisualizer::picker_EventPickedEntity(const EntityPickResult& result, const MousePickerArgs& mouseArgs)
