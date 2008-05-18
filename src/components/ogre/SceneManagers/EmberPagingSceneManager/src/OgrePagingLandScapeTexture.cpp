@@ -726,8 +726,11 @@ namespace Ogre
             assert (!mMaterial.isNull() && "PagingLandScapeTexture::unload");      
 			mMaterial->unload();
 			mMaterial.setNull();
-			MaterialManager::getSingleton().remove (resourceName);
-
+			///ember change start
+			///don't remove from the manager, since it's tricky to add it again it later on
+// 			MaterialManager::getSingleton().remove (resourceName);
+			///ember change stop
+			
 	        mIsLoaded = false;
         }
 
