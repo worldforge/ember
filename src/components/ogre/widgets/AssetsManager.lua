@@ -2,6 +2,7 @@
 
 AssetsManager = {connectors={}, 
 textures = {controls = {}, listbox = nil,selectedTexture = nil}, 
+materials = {controls = {}, listbox = nil,selectedTexture = nil}, 
 images = {controls = {}, listbox = nil,selectedTexture = nil}, 
 windows = {controls = {}, listbox = nil, selectedWindow = nil},
 meshes = {controls = {}, listbox = nil, selectedWindow = nil}
@@ -64,6 +65,41 @@ function AssetsManager.TexturesList_ItemSelectionChanged(args)
 	end
 	
 end
+
+function AssetsManager.MaterialsRefresh_Clicked(args)
+	AssetsManager.materials.refresh()
+end
+
+function AssetsManager.materials.refresh()
+	AssetsManager.materials.listholder:resetList()
+	
+	local manager = Ogre.MaterialManager:getSingleton()
+	local I = manager:getResourceIterator()
+	local i = 0
+	while I:hasMoreElements() do
+		local definitionPtr = I:getNext()
+		definitionPtr = tolua.cast(definitionPtr, "Ogre::MaterialPtr")
+		local definition = definitionPtr:get()
+		local name = definition:getName()
+		local item = EmberOgre.Gui.ColouredListItem:new(name, i)
+		AssetsManager.materials.listholder:addItem(item)
+		i = i + 1
+	end	
+end
+
+function AssetsManager.MaterialsList_ItemSelectionChanged(args)
+	local item = AssetsManager.materials.controls.listbox:getFirstSelectedItem()
+	if item ~= nil then
+		local manager = Ogre.MaterialManager:getSingleton()
+		local materialName = item:getText()
+		local res = manager:getByName(materialName)
+		res = tolua.cast(res, "Ogre::MaterialPtr")
+		local text = AssetsManager.helper:materialAsText(res)
+		AssetsManager.materials.controls.textWidget:setProperty("Text", text)
+	end
+	
+end
+
 
 function AssetsManager.RefreshImages_Clicked(args)
 	AssetsManager.images.refresh()
@@ -242,6 +278,14 @@ function AssetsManager.buildWidget()
 	AssetsManager.textures.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterTextures"))
 	AssetsManager.textures.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.textures.controls.listbox, AssetsManager.textures.controls.filter)
 	AssetsManager.textures.controls.textureView = AssetsManager.widget:getWindow("TextureInfo/Image")
+	
+	--the materials part
+	AssetsManager.materials.controls.listbox = CEGUI.toListbox(AssetsManager.widget:getWindow("MaterialsList"))
+-- 	AssetsManager.sceneNodes.nodeInfo = AssetsManager.widget:getWindow("SceneNodeInfo")
+	AssetsManager.materials.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterMaterials"))
+	AssetsManager.materials.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.materials.controls.listbox, AssetsManager.materials.controls.filter)
+	AssetsManager.materials.controls.textWidget = AssetsManager.widget:getWindow("MaterialInfo/Text")
+	
 	
 	--the images part
 	AssetsManager.images.controls.listbox = CEGUI.toListbox(AssetsManager.widget:getWindow("ImagesList"))

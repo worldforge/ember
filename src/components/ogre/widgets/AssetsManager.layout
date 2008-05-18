@@ -23,14 +23,14 @@
 						<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
 						<Property Name='InheritsAlpha' Value='True'/>
 					</Window>
-					<Window Type='EmberLook/Button' Name='Refresh'>
+					<Window Type='EmberLook/Button' Name='TexturesRefresh'>
 						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-20}}'/>
 						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 						<Property Name='Text' Value='Refresh'/>
 						<Property Name='InheritsAlpha' Value='True'/>
 						<Event Name="MouseClick" Function="AssetsManager.TexturesRefresh_Clicked" />
 					</Window>
-					<Window Type='EmberLook/Button' Name='Reload'>
+					<Window Type='EmberLook/Button' Name='TexturesReload'>
 						<Property Name='UnifiedPosition' Value='{{0,75},{1.0,-20}}'/>
 						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 						<Property Name='Text' Value='Reload'/>
@@ -51,6 +51,49 @@
 						<Property Name='VertFormatting' Value='TopAligned'/>
 						<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
 						<Window Type='EmberLook/StaticImage' Name='TextureInfo/Image'>
+							<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+							<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
+						</Window>
+					</Window>
+				</Window>
+				<Window Type='DefaultGUISheet' Name='Materials'>
+					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='Text' Value='Materials'/>
+					<Property Name='InheritsAlpha' Value='false'/>
+					<Property Name='Visible' Value='true'/>
+					<Window Type='EmberLook/Editbox' Name='FilterMaterials'>
+						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-50}}'/>
+						<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+					</Window>
+					<Window Type='EmberLook/Button' Name='MaterialsRefresh'>
+						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-20}}'/>
+						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
+						<Property Name='Text' Value='Refresh'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Event Name="MouseClick" Function="AssetsManager.MaterialsRefresh_Clicked" />
+					</Window>
+					<Window Type='EmberLook/Button' Name='MaterialsReload'>
+						<Property Name='UnifiedPosition' Value='{{0,75},{1.0,-20}}'/>
+						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
+						<Property Name='Text' Value='Reload'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Event Name="MouseClick" Function="AssetsManager.MaterialsReload_Clicked" />
+					</Window>
+					<Window Type='EmberLook/Listbox' Name='MaterialsList'>
+						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
+						<Property Name='UnifiedSize' Value='{{0,200},{1,-70}}'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Event Name="ItemSelectionChanged" Function="AssetsManager.MaterialsList_ItemSelectionChanged" />
+					</Window>
+					<Window Type='EmberLook/StaticText' Name='MaterialsInfo'>
+						<Property Name='UnifiedPosition' Value='{{0,205},{0,4}}'/>
+						<Property Name='UnifiedSize' Value='{{1,-210},{1,-70}}'/>
+						<Property Name='Text' Value=''/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Property Name='VertFormatting' Value='TopAligned'/>
+						<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
+						<Window Type='EmberLook/MultiLineEditbox' Name='MaterialInfo/Text'>
 							<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 							<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
 						</Window>
