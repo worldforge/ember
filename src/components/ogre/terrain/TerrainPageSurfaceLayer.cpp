@@ -216,7 +216,28 @@ void TerrainPageSurfaceLayer::populate()
 			surface->populate();
 		}
 		#else
-		I->segment->populateSurfaces();
+		
+		Mercator::Segment* segment(I->segment);
+		
+		segment->populate();
+// 		I->segment->populateNormals();
+		Mercator::Segment::Surfacestore::iterator I(segment->getSurfaces().find(mSurfaceIndex));
+		if (I == segment->getSurfaces().end()) {
+			///the segment doesn't contain this surface yet, lets add it
+            if (mShader->checkIntersect(*segment)) {
+            	S_LOG_VERBOSE("Adding new surface with id " << mSurfaceIndex << " to segment at x: " << segment->getXRef() << " y: " << segment->getYRef());
+				Mercator::Segment::Surfacestore & sss = segment->getSurfaces();
+				sss[mSurfaceIndex] = mShader->newSurface(*segment);
+				sss[mSurfaceIndex]->populate();
+            }
+		} else {
+			I->second->populate();
+		}
+// 		segment->populateSurfaces();
+		
+		for (Mercator::Segment::Surfacestore::const_iterator I = segment->getSurfaces().begin(); I!= segment->getSurfaces().end(); ++I) {
+			S_LOG_VERBOSE("Surface index: " << I->first);
+		}
 		#endif
 	}
 }
