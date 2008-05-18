@@ -81,6 +81,7 @@ struct TerrainDefPoint
 
 
 /**
+ * @brief Handles generation and updates of the terrain.
  * This class takes care of generating terrain for Ogre's scenemanager.
  * This involves getting terrain from Mercator, converting this to ogre
  * format and creating materials to make it look good.
@@ -139,43 +140,55 @@ public:
 	 */
 	virtual float getHeight(const TerrainPosition& atPosition) const;
 	
+	/**
+	 *    @brief Updates the terrain with new terrain points.
+	 * @param terrainPoints A list of terrain points.
+	 * @return True if successful.
+	 */
 	bool updateTerrain(const TerrainDefPointStore& terrainPoints);
 
 	/**
-	 * Return true if there is a valid piece of terrain at the supplied segment indices.
+	 * @brief Return true if there is a valid piece of terrain at the supplied segment indices.
 	 * By valid means a populated terrain-
+	 * @param pos A position in the world.
+	 * @return true if the terrain at the position is valid.
 	 */
 	bool isValidTerrainAt(const TerrainPosition& pos);
 	
-	//const Ogre::TerrainOptions& getTerrainOptions() const;
-
 	/**
-	 *    Provides access to the underlying Mercator::Terrain object.
-	 * @return 
+	 *    @brief Provides access to the underlying Mercator::Terrain object.
+	 * @return The main terrain object.
 	 */
 	Mercator::Terrain& getTerrain();
 	
 	/**
-	 *    Gets the max boundaries of the terrain.
+	 *    @brief Gets the max boundaries of the terrain.
 	 * @return 
 	 */
 	const TerrainPosition getMax() const;
+	
 	/**
-	 *    Gets the min boundaries of the terrain.
+	 *    @brief Gets the min boundaries of the terrain.
 	 * @return 
 	 */
 	const TerrainPosition getMin() const;
 	
 	/**
-	 *    the size of one terrain segment
+	 *   @brief Gets the size of one terrain segment.
 	 *	(note that this is different from Mercator segments, which always are of size 64)
 	 * @return 
 	 */
-	int getSegmentSize();
+	int getPageMetersSize();
 	
-	
+
 	/**
-	 *    Adds a new Mercator::Area to the terrain.
+	 * Gets the size of one page as indices.
+	 * @return 
+	 */
+	int getPageIndexSize() ;
+		
+	/**
+	 *    @brief Adds a new Mercator::Area to the terrain.
 	 * @param area 
 	 */
 	void addArea(TerrainArea* terrainArea);
@@ -197,11 +210,6 @@ public:
 	TerrainPage* getTerrainPage(const TerrainPosition& worldPosition);
 
 
-	/**
-	 * Gets the size of one page in world units
-	 * @return 
-	 */
-	int getPageSize() ;
 	
 	/**
 	 *    gets the shader used for determining where to place foliage
@@ -229,6 +237,10 @@ public:
 	 */
 	void buildHeightmap();
 	
+	/**
+	 *    @brief Accessor for the main terrain info instance.
+	 * @return An instance of TerrainInfo containing all relevant terrain info.
+	 */
 	const TerrainInfo& getTerrainInfo() const;
 	
 	/**
@@ -303,8 +315,6 @@ protected:
 	TerrainPagestore mTerrainPages;
 	
 	TerrainShader* mGrassShader;
-	typedef std::map<std::string, Ogre::Material*> MaterialStore;
-	MaterialStore materialStore;
 	Mercator::Terrain* mTerrain;
 	
 	Ogre::Real mHeightMax, mHeightMin;
@@ -330,7 +340,6 @@ protected:
 	true if we have some kind of terrain info, i.e. if mX* and mY* are valid
 	*/
 	bool mHasTerrainInfo;
-	//Ogre::TerrainOptions mOptions;
 	
 	
 

@@ -76,6 +76,7 @@
     #include <direct.h> // for _mkdir
 #endif
 #include "framework/ConsoleBackend.h"
+#include "framework/Tokeniser.h"
 
 
 using namespace Ogre;
@@ -114,8 +115,6 @@ mFoliageBatchSize(32)
 	
 	configSrv->EventChangedConfigItem.connect(sigc::mem_fun(*this, &TerrainGenerator::ConfigService_EventChangedConfigItem));
 	
-	Ember::ConsoleBackend::getSingletonPtr()->registerCommand("exportterrainmaterial",this);
-
 }
 
 TerrainGenerator::~TerrainGenerator()
@@ -327,14 +326,14 @@ void TerrainGenerator::prepareSegments(long segmentXStart, long segmentZStart, l
 	
 }
 
-int TerrainGenerator::getPageSize() 
+int TerrainGenerator::getPageIndexSize() 
 {
 	return mSceneManagerAdapter->getPageSize();
 }
 
-int TerrainGenerator::getSegmentSize() 
+int TerrainGenerator::getPageMetersSize() 
 {
-	return getPageSize() - 1;
+	return getPageIndexSize() - 1;
 }
 
 void TerrainGenerator::buildHeightmap()
@@ -469,11 +468,11 @@ TerrainPage* TerrainGenerator::getTerrainPage(const TerrainPosition& worldPositi
 {
 
 	
-	int xRemainder = static_cast<int>(getMin().x()) % (getPageSize() - 1);
-	int yRemainder = static_cast<int>(getMin().y()) % (getPageSize() - 1);
+	int xRemainder = static_cast<int>(getMin().x()) % (getPageMetersSize());
+	int yRemainder = static_cast<int>(getMin().y()) % (getPageMetersSize());
 	
- 	int xIndex = static_cast<int>(floor((worldPosition.x() + xRemainder)/ (getPageSize() - 1.0f)));
- 	int yIndex = static_cast<int>(ceil((worldPosition.y() + yRemainder) / (getPageSize() - 1.0f)));
+ 	int xIndex = static_cast<int>(floor((worldPosition.x() + xRemainder)/ (getPageMetersSize())));
+ 	int yIndex = static_cast<int>(ceil((worldPosition.y() + yRemainder) / (getPageMetersSize())));
  	
 	
 	return mTerrainPages[xIndex][yIndex];
@@ -518,7 +517,7 @@ TerrainPage* TerrainGenerator::createPage(const TerrainPosition& pos)
 	//mPages[ss.str()] = page;
 	
 	std::stringstream ss;
-	ss << pos;
+	ss << pos.x() << "x" << pos.y();
 	mPages[ss.str()] = page;
 	
 	//add the base shaders, this should probably be refactored into a server side thing in the future
@@ -678,9 +677,9 @@ void TerrainGenerator::updateHeightMapAndShaders(const std::set<TerrainPage*>& p
 
 	///reload all shader textures of the affected pages
 	for (std::set<TerrainPage*>::const_iterator I = pagesToUpdate.begin(); I != pagesToUpdate.end(); ++I) {
-		(*I)->update();
 		(*I)->updateAllShaderTextures();
 		(*I)->updateShadow(sunDirection);
+		(*I)->update();
 	}
 }
 
@@ -701,14 +700,6 @@ void TerrainGenerator::updateEntityPosition(EmberEntity* entity, const std::set<
 	}
 }
 
-// Ogre::Material* TerrainGenerator::getMaterialForSegment(TerrainPosition& atPosition)
-// {
-// 	long x = (long)atPosition.x();
-// 	long y = (long)atPosition.y();
-// 	std::stringstream ss;
-// 	ss << x <<":"<<y;
-// 	return materialStore[ss.str()];
-// }
 
 const TerrainPosition TerrainGenerator::getMax( ) const
 {
@@ -735,18 +726,7 @@ void TerrainGenerator::setFoliageShader(TerrainShader* shader)
 
 void TerrainGenerator::runCommand(const std::string &command, const std::string &args)
 {
-	if(command == "exportterrainmaterial") {
-	//disable for now
-		try {
-			Ogre::MaterialPtr materialPtr = mTerrainPages.begin()->second.begin()->second->getMaterial();
-			Ogre::MaterialSerializer serializer;
-			
-			serializer.exportMaterial(materialPtr, Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/terrain.material");
-		} catch (Ogre::Exception& ex) 
-		{
-			S_LOG_FAILURE(ex.getFullDescription());
-		}
-	} else if (UpdateShadows == command) {
+	if (UpdateShadows == command) {
 		updateShadows();
 	}
 }

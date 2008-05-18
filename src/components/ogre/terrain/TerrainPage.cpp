@@ -183,13 +183,13 @@ Mercator::Segment* TerrainPage::getSegmentAtLocalPosition(const TerrainPosition&
 
 int TerrainPage::getPageSize() const 
 {
-	return mGenerator->getPageSize();
+	return mGenerator->getPageIndexSize();
 }
 		
 
 int TerrainPage::getNumberOfSegmentsPerAxis() const
 {
-	return (getPageSize() -1) / 64;
+	return (getPageSize() - 1) / 64;
 }
 	
 float TerrainPage::getMaxHeight()
@@ -656,6 +656,7 @@ void TerrainPage::updateAllShaderTextures(bool repopulate)
 	for (; I != mTerrainSurface->getLayers().end(); ++I) {
 		mTerrainSurface->updateLayer(I->first, repopulate);
 	}
+	mTerrainSurface->recompileMaterial();
 	mPageFoliage->generateCoverageMap();
 }
 

@@ -101,8 +101,12 @@ Ogre::MaterialPtr TerrainPageSurface::getMaterial()
 	
 void TerrainPageSurface::recompileMaterial()
 {
+// 	if (!mMaterial.isNull()) {
+// 		mMaterial->unload();
+// 	}
 	mSurfaceCompiler->compileMaterial(mMaterial, mLayers, mShadow, mTerrainPage);
-	mMaterial->load();
+	//mMaterial->reload();
+	
 	updateSceneManagersAfterMaterialsChange();
 }
 
