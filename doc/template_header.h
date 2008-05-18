@@ -76,8 +76,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef <FILENAME>_H
-#define <FILENAME>_H
+#ifndef FILENAME_H
+#define FILENAME_H
 
 #include "NameOfClass.h"
 
@@ -114,87 +114,86 @@ namespace applicationNamespace {
  * NOTE: Add other related classes here, doxygen will create links to them.
  */
 class NameOfClass
-
 {
-    public:
-
-    /**
-     * Cretaes a new NameOfClass using default values.
-     */
-    NameOfClass()
-    {
-    }
-
-    virtual ~NameOfClass(){}
-
-    // Example of a setter method:
-    /**
-     * Sets the name of this gizmo.
-     * If there already is a gizmo with this name, a number will be
-     * appended to the name, and the naming will be attempted again.
-     *
-     * @param name The new name of the gizmo.
-     */
-    virtual void setName(std::string name);
-
-    // Example of a getter method:
-    /**
-     * Returns the name of this gizmo.
-     * The name is guaranteed to be unique among all gizmos.
-     */
-    inline virtual std::string getName() const;
-    //inline methods are marked as such and implemented outside of the class declaration, but still in the .h file
-
-    //----------------------------------------------------------------------
-    // Other public methods
-
-    /**
-     * NOTE: This is an example method declaration.
-     *
-     * Creates a new string that repeats a given string some number of times.
-     * There's no extra space added between the strings in the produced string.
-     * Null characters are handled correctly too.
-     *
-     * @param message The message string to repeat.
-     * @param repeatCount How many times to repeot the message in the produced String.
-     *                    Must be >= 0, an less than 2000.  If it is 0 then the produced string is empty.
-     *
-     * @return A string consisting of the specified number of the input strings,
-     *         or null if the character copier suffered a fatal error.
-     *
-     * @see OtherSubsystem::SomeOtherRelatedClass
-     * NOTE: Add other related classes here, doxygen will create links to them.
-     *
-     * @author Anonymous Coward
-     */
-    virtual std::string createRepeatingString(std::string message, int repeatCount) const;
-
-
-    protected:
-
-
-    private:
-
-    // NOTE: Class variables are prefixed with "m", static variables are
-    //       prefixed with "s".
-
-    /**
-     * NOTE: Variables can have a comment too.  You can use it to describe the
-     *       purpose of the varible, or wether certain invariants
-     *       should be enforced for it (parentConatiner* should newer be null, etc).
-     */
-    std::string  mExampleVariable;
-
-    /**
-     * Stores an unique name of this gizmo.
-     */
-    std::string mName;
-
-    /**
-     * This variable is used to keep track of the next free ID number for a new gizmo.
-     */
-    static int sNextId;
-
+	public:
+	
+	/**
+	* Cretaes a new NameOfClass using default values.
+	*/
+	NameOfClass()
+	{
+	}
+	
+	virtual ~NameOfClass(){}
+	
+	// Example of a setter method:
+	/**
+	* Sets the name of this gizmo.
+	* If there already is a gizmo with this name, a number will be
+	* appended to the name, and the naming will be attempted again.
+	*
+	* @param name The new name of the gizmo.
+	*/
+	virtual void setName(std::string name);
+	
+	// Example of a getter method:
+	/**
+	* Returns the name of this gizmo.
+	* The name is guaranteed to be unique among all gizmos.
+	*/
+	inline virtual std::string getName() const;
+	//inline methods are marked as such and implemented outside of the class declaration, but still in the .h file
+	
+	//----------------------------------------------------------------------
+	// Other public methods
+	
+	/**
+	* NOTE: This is an example method declaration.
+	*
+	* Creates a new string that repeats a given string some number of times.
+	* There's no extra space added between the strings in the produced string.
+	* Null characters are handled correctly too.
+	*
+	* @param message The message string to repeat.
+	* @param repeatCount How many times to repeot the message in the produced String.
+	*                    Must be >= 0, an less than 2000.  If it is 0 then the produced string is empty.
+	*
+	* @return A string consisting of the specified number of the input strings,
+	*         or null if the character copier suffered a fatal error.
+	*
+	* @see OtherSubsystem::SomeOtherRelatedClass
+	* NOTE: Add other related classes here, doxygen will create links to them.
+	*
+	* @author Anonymous Coward
+	*/
+	virtual std::string createRepeatingString(std::string message, int repeatCount) const;
+	
+	
+	protected:
+	
+	
+	private:
+	
+	// NOTE: Class variables are prefixed with "m", static variables are
+	//       prefixed with "s".
+	
+	/**
+	* NOTE: Variables can have a comment too.  You can use it to describe the
+	*       purpose of the varible, or wether certain invariants
+	*       should be enforced for it (parentConatiner* should newer be null, etc).
+	*/
+	std::string  mExampleVariable;
+	
+	/**
+	* Stores an unique name of this gizmo.
+	*/
+	std::string mName;
+	
+	/**
+	* This variable is used to keep track of the next free ID number for a new gizmo.
+	*/
+	static int sNextId;
+	
 }; // End of class
 
 inline virtual std::string NameOfClass::getName() const
