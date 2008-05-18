@@ -228,16 +228,13 @@ void TerrainPageSurfaceLayer::populate()
             	S_LOG_VERBOSE("Adding new surface with id " << mSurfaceIndex << " to segment at x: " << segment->getXRef() << " y: " << segment->getYRef());
 				Mercator::Segment::Surfacestore & sss = segment->getSurfaces();
 				sss[mSurfaceIndex] = mShader->newSurface(*segment);
-				sss[mSurfaceIndex]->populate();
+// 				sss[mSurfaceIndex]->populate();
             }
-		} else {
-			I->second->populate();
+/*		} else {
+			I->second->populate();*/
 		}
-// 		segment->populateSurfaces();
-		
-		for (Mercator::Segment::Surfacestore::const_iterator I = segment->getSurfaces().begin(); I!= segment->getSurfaces().end(); ++I) {
-			S_LOG_VERBOSE("Surface index: " << I->first);
-		}
+		///NOTE: we have to repopulate all surfaces mainly to get the foliage to work.
+		segment->populateSurfaces();		
 		#endif
 	}
 }
