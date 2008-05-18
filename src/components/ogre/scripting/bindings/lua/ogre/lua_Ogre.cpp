@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Ogre
-** Generated automatically by tolua++-1.0.92 on Thu Mar 27 19:19:18 2008.
+** Generated automatically by tolua++-1.0.92 on Sun May 18 16:13:06 2008.
 */
 
 #ifndef __cplusplus
@@ -103,6 +103,13 @@ static int tolua_collect_Ogre__ColourValue (lua_State* tolua_S)
 	return 0;
 }
 
+static int tolua_collect_Ogre__MaterialSerializer (lua_State* tolua_S)
+{
+ Ogre::MaterialSerializer* self = (Ogre::MaterialSerializer*) tolua_tousertype(tolua_S,1,0);
+	delete self;
+	return 0;
+}
+
 static int tolua_collect_size_t (lua_State* tolua_S)
 {
  size_t* self = (size_t*) tolua_tousertype(tolua_S,1,0);
@@ -124,16 +131,16 @@ static int tolua_collect_Ogre__Vector3 (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_Ogre__MeshPtr (lua_State* tolua_S)
+static int tolua_collect_Ogre__Vector4 (lua_State* tolua_S)
 {
- Ogre::MeshPtr* self = (Ogre::MeshPtr*) tolua_tousertype(tolua_S,1,0);
+ Ogre::Vector4* self = (Ogre::Vector4*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
 
-static int tolua_collect_Ogre__ResourceManager__ResourceHandleMap__mapped_type (lua_State* tolua_S)
+static int tolua_collect_Ogre__MeshPtr (lua_State* tolua_S)
 {
- Ogre::ResourceManager::ResourceHandleMap::mapped_type* self = (Ogre::ResourceManager::ResourceHandleMap::mapped_type*) tolua_tousertype(tolua_S,1,0);
+ Ogre::MeshPtr* self = (Ogre::MeshPtr*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -145,9 +152,9 @@ static int tolua_collect_uint (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_Ogre__Vector4 (lua_State* tolua_S)
+static int tolua_collect_Ogre__ResourceManager__ResourceHandleMap__mapped_type (lua_State* tolua_S)
 {
- Ogre::Vector4* self = (Ogre::Vector4*) tolua_tousertype(tolua_S,1,0);
+ Ogre::ResourceManager::ResourceHandleMap::mapped_type* self = (Ogre::ResourceManager::ResourceHandleMap::mapped_type*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -174,51 +181,53 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Ogre::Vector2");
  tolua_usertype(tolua_S,"Ogre::RenderTarget");
  tolua_usertype(tolua_S,"Ogre::Timer");
+ tolua_usertype(tolua_S,"Ogre::FrameListener");
+ tolua_usertype(tolua_S,"Ogre::Root");
  tolua_usertype(tolua_S,"Ogre::Radian");
  tolua_usertype(tolua_S,"Ogre::RenderWindow");
  tolua_usertype(tolua_S,"Ogre::ResourceManager::ResourceHandleMap::key_type");
  tolua_usertype(tolua_S,"Ogre::Vector4");
  tolua_usertype(tolua_S,"Ogre::SceneManager");
- tolua_usertype(tolua_S,"Ogre::AxisAlignedBox");
+ tolua_usertype(tolua_S,"Ogre::DataStreamPtr");
  tolua_usertype(tolua_S,"Ogre::Image");
- tolua_usertype(tolua_S,"Ogre::FrameListener");
- tolua_usertype(tolua_S,"Ogre::Root");
- tolua_usertype(tolua_S,"Ogre::MeshPtr");
  tolua_usertype(tolua_S,"Ogre::ColourValue");
+ tolua_usertype(tolua_S,"Ogre::AxisAlignedBox");
+ tolua_usertype(tolua_S,"Ogre::MeshPtr");
  tolua_usertype(tolua_S,"Ogre::TextureManager");
  tolua_usertype(tolua_S,"size_t");
+ tolua_usertype(tolua_S,"Ogre::Texture");
  tolua_usertype(tolua_S,"Ogre::Material");
  tolua_usertype(tolua_S,"Ogre::MaterialManager");
- tolua_usertype(tolua_S,"Ogre::Texture");
  tolua_usertype(tolua_S,"Ogre::TexturePtr");
  tolua_usertype(tolua_S,"Ogre::SceneNode");
  tolua_usertype(tolua_S,"Ogre::VisibleObjectsBoundsInfo");
+ tolua_usertype(tolua_S,"Ogre::MeshManager");
  tolua_usertype(tolua_S,"Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>");
  tolua_usertype(tolua_S,"Ogre::SubEntity");
- tolua_usertype(tolua_S,"Ogre::MeshManager");
+ tolua_usertype(tolua_S,"Ogre::Degree");
  tolua_usertype(tolua_S,"Ogre::Matrix3");
- tolua_usertype(tolua_S,"std::vector<Ogre::Plane>");
+ tolua_usertype(tolua_S,"Ogre::Node");
  tolua_usertype(tolua_S,"Ogre::RenderTarget::FrameStats");
  tolua_usertype(tolua_S,"Ogre::Math");
  tolua_usertype(tolua_S,"Ogre::Plane");
  tolua_usertype(tolua_S,"Ogre::SkeletonInstance");
- tolua_usertype(tolua_S,"Ogre::Node");
+ tolua_usertype(tolua_S,"Ogre::MaterialSerializer");
  tolua_usertype(tolua_S,"Ogre::MapIterator<Ogre::Entity::ChildObjectList>");
- tolua_usertype(tolua_S,"Ogre::AnimationState");
+ tolua_usertype(tolua_S,"Ogre::TagPoint");
  tolua_usertype(tolua_S,"std::list<Ogre::Plane>");
  tolua_usertype(tolua_S,"Ogre::Resource");
- tolua_usertype(tolua_S,"Ogre::TagPoint");
- tolua_usertype(tolua_S,"Ogre::Sphere");
+ tolua_usertype(tolua_S,"std::pair<bool,float>");
+ tolua_usertype(tolua_S,"Ogre::AnimationState");
  tolua_usertype(tolua_S,"Ogre::Quaternion");
  tolua_usertype(tolua_S,"Ogre::ResourceManager");
  tolua_usertype(tolua_S,"std::set<Ogre::Entity*>");
  tolua_usertype(tolua_S,"Ogre::MaterialPtr");
  tolua_usertype(tolua_S,"ushort");
- tolua_usertype(tolua_S,"Ogre::Degree");
- tolua_usertype(tolua_S,"std::pair<bool,float>");
+ tolua_usertype(tolua_S,"Ogre::Sphere");
+ tolua_usertype(tolua_S,"Ogre::Matrix4");
  tolua_usertype(tolua_S,"Ogre::ResourcePtr");
  tolua_usertype(tolua_S,"Ogre::ResourceManager::ResourceHandleMap::mapped_type");
- tolua_usertype(tolua_S,"Ogre::Matrix4");
+ tolua_usertype(tolua_S,"std::vector<Ogre::Plane>");
  tolua_usertype(tolua_S,"Ogre::SubMesh");
  tolua_usertype(tolua_S,"Ogre::Mesh");
  tolua_usertype(tolua_S,"Ogre::Entity");
@@ -1716,6 +1725,375 @@ static int tolua_Ogre_Ogre_MaterialPtr_get00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'get'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new of class  Ogre::MaterialSerializer */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_MaterialSerializer_new00
+static int tolua_Ogre_Ogre_MaterialSerializer_new00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Ogre::MaterialSerializer",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   Ogre::MaterialSerializer* tolua_ret = (Ogre::MaterialSerializer*)  new Ogre::MaterialSerializer();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::MaterialSerializer");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  Ogre::MaterialSerializer */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_MaterialSerializer_new00_local
+static int tolua_Ogre_Ogre_MaterialSerializer_new00_local(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Ogre::MaterialSerializer",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   Ogre::MaterialSerializer* tolua_ret = (Ogre::MaterialSerializer*)  new Ogre::MaterialSerializer();
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Ogre::MaterialSerializer");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: delete of class  Ogre::MaterialSerializer */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_MaterialSerializer_delete00
+static int tolua_Ogre_Ogre_MaterialSerializer_delete00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::MaterialSerializer",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::MaterialSerializer* self = (Ogre::MaterialSerializer*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'delete'",NULL);
+#endif
+  delete self;
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'delete'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: queueForExport of class  Ogre::MaterialSerializer */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_MaterialSerializer_queueForExport00
+static int tolua_Ogre_Ogre_MaterialSerializer_queueForExport00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::MaterialSerializer",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::MaterialPtr",0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,3,1,&tolua_err) ||
+     !tolua_isboolean(tolua_S,4,1,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::MaterialSerializer* self = (Ogre::MaterialSerializer*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::MaterialPtr* pMat = ((const Ogre::MaterialPtr*)  tolua_tousertype(tolua_S,2,0));
+  bool clearQueued = ((bool)  tolua_toboolean(tolua_S,3,false));
+  bool exportDefaults = ((bool)  tolua_toboolean(tolua_S,4,false));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'queueForExport'",NULL);
+#endif
+  {
+   self->queueForExport(*pMat,clearQueued,exportDefaults);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'queueForExport'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: exportQueued of class  Ogre::MaterialSerializer */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_MaterialSerializer_exportQueued00
+static int tolua_Ogre_Ogre_MaterialSerializer_exportQueued00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::MaterialSerializer",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,3,1,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::MaterialSerializer* self = (Ogre::MaterialSerializer*)  tolua_tousertype(tolua_S,1,0);
+  const std::string filename = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  const bool includeProgDef = ((const bool)  tolua_toboolean(tolua_S,3,false));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'exportQueued'",NULL);
+#endif
+  {
+   self->exportQueued(filename,includeProgDef);
+   tolua_pushcppstring(tolua_S,(const char*)filename);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'exportQueued'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: exportQueued of class  Ogre::MaterialSerializer */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_MaterialSerializer_exportQueued01
+static int tolua_Ogre_Ogre_MaterialSerializer_exportQueued01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::MaterialSerializer",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,3,0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  Ogre::MaterialSerializer* self = (Ogre::MaterialSerializer*)  tolua_tousertype(tolua_S,1,0);
+  const std::string filename = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  const bool includeProgDef = ((const bool)  tolua_toboolean(tolua_S,3,0));
+  const std::string programFilename = ((const std::string)  tolua_tocppstring(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'exportQueued'",NULL);
+#endif
+  {
+   self->exportQueued(filename,includeProgDef,programFilename);
+   tolua_pushcppstring(tolua_S,(const char*)filename);
+   tolua_pushcppstring(tolua_S,(const char*)programFilename);
+  }
+ }
+ return 2;
+tolua_lerror:
+ return tolua_Ogre_Ogre_MaterialSerializer_exportQueued00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: exportMaterial of class  Ogre::MaterialSerializer */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_MaterialSerializer_exportMaterial00
+static int tolua_Ogre_Ogre_MaterialSerializer_exportMaterial00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::MaterialSerializer",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::MaterialPtr",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,4,1,&tolua_err) ||
+     !tolua_isboolean(tolua_S,5,1,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::MaterialSerializer* self = (Ogre::MaterialSerializer*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::MaterialPtr* pMat = ((const Ogre::MaterialPtr*)  tolua_tousertype(tolua_S,2,0));
+  const std::string filename = ((const std::string)  tolua_tocppstring(tolua_S,3,0));
+  bool exportDefaults = ((bool)  tolua_toboolean(tolua_S,4,false));
+  const bool includeProgDef = ((const bool)  tolua_toboolean(tolua_S,5,false));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'exportMaterial'",NULL);
+#endif
+  {
+   self->exportMaterial(*pMat,filename,exportDefaults,includeProgDef);
+   tolua_pushcppstring(tolua_S,(const char*)filename);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'exportMaterial'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: exportMaterial of class  Ogre::MaterialSerializer */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_MaterialSerializer_exportMaterial01
+static int tolua_Ogre_Ogre_MaterialSerializer_exportMaterial01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::MaterialSerializer",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ogre::MaterialPtr",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,4,0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,5,0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,6,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,7,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  Ogre::MaterialSerializer* self = (Ogre::MaterialSerializer*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::MaterialPtr* pMat = ((const Ogre::MaterialPtr*)  tolua_tousertype(tolua_S,2,0));
+  const std::string filename = ((const std::string)  tolua_tocppstring(tolua_S,3,0));
+  bool exportDefaults = ((bool)  tolua_toboolean(tolua_S,4,0));
+  const bool includeProgDef = ((const bool)  tolua_toboolean(tolua_S,5,0));
+  const std::string programFilename = ((const std::string)  tolua_tocppstring(tolua_S,6,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'exportMaterial'",NULL);
+#endif
+  {
+   self->exportMaterial(*pMat,filename,exportDefaults,includeProgDef,programFilename);
+   tolua_pushcppstring(tolua_S,(const char*)filename);
+   tolua_pushcppstring(tolua_S,(const char*)programFilename);
+  }
+ }
+ return 2;
+tolua_lerror:
+ return tolua_Ogre_Ogre_MaterialSerializer_exportMaterial00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getQueuedAsString of class  Ogre::MaterialSerializer */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_MaterialSerializer_getQueuedAsString00
+static int tolua_Ogre_Ogre_MaterialSerializer_getQueuedAsString00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::MaterialSerializer",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::MaterialSerializer* self = (const Ogre::MaterialSerializer*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getQueuedAsString'",NULL);
+#endif
+  {
+   const std::string tolua_ret = (const std::string)  self->getQueuedAsString();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getQueuedAsString'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: clearQueue of class  Ogre::MaterialSerializer */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_MaterialSerializer_clearQueue00
+static int tolua_Ogre_Ogre_MaterialSerializer_clearQueue00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::MaterialSerializer",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::MaterialSerializer* self = (Ogre::MaterialSerializer*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'clearQueue'",NULL);
+#endif
+  {
+   self->clearQueue();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'clearQueue'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: parseScript of class  Ogre::MaterialSerializer */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_MaterialSerializer_parseScript00
+static int tolua_Ogre_Ogre_MaterialSerializer_parseScript00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::MaterialSerializer",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Ogre::DataStreamPtr",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::MaterialSerializer* self = (Ogre::MaterialSerializer*)  tolua_tousertype(tolua_S,1,0);
+  Ogre::DataStreamPtr* stream = ((Ogre::DataStreamPtr*)  tolua_tousertype(tolua_S,2,0));
+  const std::string groupName = ((const std::string)  tolua_tocppstring(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'parseScript'",NULL);
+#endif
+  {
+   self->parseScript(*stream,groupName);
+   tolua_pushcppstring(tolua_S,(const char*)groupName);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'parseScript'.",&tolua_err);
  return 0;
 #endif
 }
@@ -18263,6 +18641,28 @@ TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
    #endif
    tolua_beginmodule(tolua_S,"MaterialPtr");
     tolua_function(tolua_S,"get",tolua_Ogre_Ogre_MaterialPtr_get00);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"Ogre",0);
+  tolua_beginmodule(tolua_S,"Ogre");
+   #ifdef __cplusplus
+   tolua_cclass(tolua_S,"MaterialSerializer","Ogre::MaterialSerializer","",tolua_collect_Ogre__MaterialSerializer);
+   #else
+   tolua_cclass(tolua_S,"MaterialSerializer","Ogre::MaterialSerializer","",NULL);
+   #endif
+   tolua_beginmodule(tolua_S,"MaterialSerializer");
+    tolua_function(tolua_S,"new",tolua_Ogre_Ogre_MaterialSerializer_new00);
+    tolua_function(tolua_S,"new_local",tolua_Ogre_Ogre_MaterialSerializer_new00_local);
+    tolua_function(tolua_S,".call",tolua_Ogre_Ogre_MaterialSerializer_new00_local);
+    tolua_function(tolua_S,"delete",tolua_Ogre_Ogre_MaterialSerializer_delete00);
+    tolua_function(tolua_S,"queueForExport",tolua_Ogre_Ogre_MaterialSerializer_queueForExport00);
+    tolua_function(tolua_S,"exportQueued",tolua_Ogre_Ogre_MaterialSerializer_exportQueued00);
+    tolua_function(tolua_S,"exportQueued",tolua_Ogre_Ogre_MaterialSerializer_exportQueued01);
+    tolua_function(tolua_S,"exportMaterial",tolua_Ogre_Ogre_MaterialSerializer_exportMaterial00);
+    tolua_function(tolua_S,"exportMaterial",tolua_Ogre_Ogre_MaterialSerializer_exportMaterial01);
+    tolua_function(tolua_S,"getQueuedAsString",tolua_Ogre_Ogre_MaterialSerializer_getQueuedAsString00);
+    tolua_function(tolua_S,"clearQueue",tolua_Ogre_Ogre_MaterialSerializer_clearQueue00);
+    tolua_function(tolua_S,"parseScript",tolua_Ogre_Ogre_MaterialSerializer_parseScript00);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"Ogre",0);

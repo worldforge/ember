@@ -1,0 +1,87 @@
+/*
+-----------------------------------------------------------------------------
+This source file is part of OGRE
+    (Object-oriented Graphics Rendering Engine)
+For the latest info, see http://www.ogre3d.org/
+
+Copyright (c) 2000-2006 Torus Knot Software Ltd
+Also see acknowledgements in Readme.html
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the Free Software
+Foundation; either version 2 of the License, or (at your option) any later
+version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place - Suite 330, Boston, MA 02111-1307, USA, or go to
+http://www.gnu.org/copyleft/lesser.txt.
+
+You may alternatively use this source under the terms of a specific version of
+the OGRE Unrestricted License provided you have obtained such a license from
+Torus Knot Software Ltd.
+-----------------------------------------------------------------------------
+*/
+
+
+namespace Ogre {
+
+
+    /** Class for serializing Materials to / from a .material script.*/
+    class MaterialSerializer
+    {
+    public:
+		/** default constructor*/
+		MaterialSerializer();
+		/** default destructor*/
+		virtual ~MaterialSerializer();
+
+		/** Queue an in-memory Material to the internal buffer for export.
+		@param pMat Material pointer
+		@param clearQueued If true, any materials already queued will be removed
+		@param exportDefaults If true, attributes which are defaulted will be
+			included in the script exported, otherwise they will be omitted
+		*/
+        void queueForExport(const Ogre::MaterialPtr& pMat, bool clearQueued = false, 
+			bool exportDefaults = false);
+        /** Exports queued material(s) to a named material script file.
+        @param filename the file name of the material script to be exported
+		@param includeProgDef If true, vertex program and fragment program 
+			definitions will be written at the top of the material script
+        @param programFilename the file name of the vertex / fragment program 
+			script to be exported. This is only used if there are program definitions
+            to be exported and includeProgDef is false 
+			when calling queueForExport.
+        */
+		void exportQueued(const std::string& filename, const bool includeProgDef = false, const std::string& programFilename = "");
+        /** Exports a single in-memory Material to the named material script file.
+        @param exportDefaults if true then exports all values including defaults
+        @param includeProgDef if true includes Gpu shader program definitions in the
+            export material script otherwise if false then program definitions will
+            be exported to a seperate file with name programFilename if
+            programFilename is not empty
+        @param programFilename the file name of the vertex / fragment program 
+			script to be exported. This is only used if includeProgDef is false.
+        */
+        void exportMaterial(const Ogre::MaterialPtr& pMat, const std::string& filename, bool exportDefaults = false,
+            const bool includeProgDef = false, const std::string& programFilename = "");
+		/** Returns a std::string representing the parsed material(s) */
+		const std::string &getQueuedAsString() const;
+		/** Clears the internal buffer */
+		void clearQueue();
+
+        /** Parses a Material script file passed as a stream.
+        */
+        void parseScript(Ogre::DataStreamPtr& stream, const std::string& groupName);
+
+
+
+
+
+    };
+}
+
