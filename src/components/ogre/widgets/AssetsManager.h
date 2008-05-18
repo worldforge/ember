@@ -59,6 +59,11 @@ protected:
 };
 
 /**
+	@brief A helper class for the AssetManager, providing resource related methods.
+	
+	An instance of this is used whenever there's a need for asset and resource management functionality. It's used mainly by AssetsManager.lua, but other widgets and classes are free to use it as well.
+	The methods defined here are mainly basic resource handling methods that would be either redundant or too complicated to implement in Lua.
+	Whenever you want to do something in Lua related to resource management that you feel will be overly complicated, or will require a lot of additional lua bindings, this is a good place to place it.
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
 class AssetsManager{
@@ -67,9 +72,35 @@ public:
 
     ~AssetsManager();
 
+    /**
+     * @brief Shorthand for quickly creating a CEGUI::OmageSet for an Ogre::Texture.
+     *
+     * This will create a new CEGUI Imageset and Image for the Ogre Texture with the supplied name.
+     *
+     * @see createTextureImage
+     * @param textureName The name of the texture to create a CEGUI representation of.
+	 * @return A TexturePair struct, which basically just is a wrapper around both a Ogre::TexturePtr and a CEGUI::ImageSet amd a CEGUI::Image.
+     */
     TexturePair showTexture(const std::string textureName);
     
+	/**
+	 *    @brief Creates a CEGUI texture from an ogre image.
+	 *
+	 * This is mainly useful when you want to provide a way to view different Ogre images in a CEGUI context. It will create a new CEGUI::ImageSet from the supplied image, containing just one image.
+	 * @param texturePtr The Ogre texture which we want to view in CEGUI.
+	 * @param imageSetName The new name of the imageset which will be created. This must be unique and not already created.
+	 * @return A TexturePair struct, which basically just is a wrapper around both a Ogre::TexturePtr and a CEGUI::ImageSet amd a CEGUI::Image.
+	 */
 	TexturePair createTextureImage(Ogre::TexturePtr texturePtr, const std::string& imageSetName);
+	
+	/**
+	 *    @brief Returns a string representation of the material.
+	 *
+	 * Uses the Ogre::MaterialSerializer to serialize the material into a string definition, and returns it.
+	 * @param material A valid material pointer which you want to see the string representation for.
+	 * @return A string which is a representation of the material as defined in a .material file.
+	 */
+	std::string materialAsText(Ogre::MaterialPtr material);
 
 private:
 

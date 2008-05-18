@@ -27,6 +27,7 @@
 #include "AssetsManager.h"
 #include <OgreCEGUIRenderer.h>
 #include <OgreCEGUITexture.h>
+#include <OgreMaterialSerializer.h>
 #include "../EmberOgrePrerequisites.h"
 
 #include <CEGUIImagesetManager.h> 
@@ -111,6 +112,16 @@ TexturePair AssetsManager::createTextureImage(Ogre::TexturePtr texturePtr, const
 	
 	return TexturePair(texturePtr, textureImage, textureImageset);
 
+}
+
+std::string AssetsManager::materialAsText(Ogre::MaterialPtr material)
+{
+	if (material.isNull()) {
+		return "";
+	}
+	Ogre::MaterialSerializer serializer;
+	serializer.queueForExport(material, true, false);
+	return serializer.getQueuedAsString();
 }
 
 
