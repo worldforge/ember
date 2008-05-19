@@ -87,7 +87,6 @@ namespace Terrain {
 TerrainGenerator::TerrainGenerator(ISceneManagerAdapter* adapter)
 : 
 UpdateShadows("update_shadows", this, "Updates shadows in the terrain."),
-mGrassShader(0),
 mHasTerrainInfo(false),
 mFoliageBatchSize(32)
 {
@@ -383,52 +382,6 @@ void TerrainGenerator::prepareAllSegments()
 	//_controlfp(_PC_64, _MCW_PC);
 	//_controlfp(_RC_NEAR, _MCW_RC);
 
-	//buildHeightmap();
-	
-// 	int mercatorSegmentsPerPage =  getSegmentSize() / 64;
-// 	int xNumberOfPages = (int)ceil((mXmax - mXmin) / (double)mercatorSegmentsPerPage);
-// 	int yNumberOfPages = (int)ceil((mYmax - mYmin) / (double)mercatorSegmentsPerPage);
-// 	int xStart = (int)ceil(mXmin / (double)(mercatorSegmentsPerPage));
-// 	int yStart = (int)ceil(mYmin / (double)(mercatorSegmentsPerPage));
-// 	for (i = 0; i < xNumberOfPages; ++i) {
-// 		for (j = 0; j < yNumberOfPages; ++j) {
-// 			TerrainPosition pos(xStart + i, yStart + j);
-// 			std::stringstream ss;
-// 			ss << pos;
-// 			TerrainPage* page = new TerrainPage(pos, mShaderMap, this);
-// 			mPages[ss.str()] = page;
-// 			mTerrainPages[i][j] = page;
-// 			for (std::list<TerrainShader*>::iterator I = mBaseShaders.begin(); I != mBaseShaders.end(); ++I) {
-// 				page->addShader(*I);
-// 			}
-// 			page->generateTerrainMaterials();
-// 			if (showFoliage && mGrassShader) {
-// 				page->createFoliage(mGrassShader);
-// 			}
-// 			if (alsoPushOntoTerrain) {
-// //				mTerrainPageSource->addPage(page);
-// 			}
-// 		}
-// 	}
-	
-	
-// // 	Ogre::PagingLandScapeSceneManager * sceneManager = getEmberSceneManager();
-// 	Ogre::PagingLandScapeOptions* options = getEmberSceneManager()->getOptions();
-	
-	///update the terrain info
-/*	mTerrainInfo.worldSizeX = getMax().x() - getMin().x();
-	mTerrainInfo.totalNumberOfPagesX = static_cast<int>( ceil(mTerrainInfo.worldSizeX / (getPageSize() - 1)));*/
-//	mTerrainInfo.totalNumberOfPagesX = static_cast<int>( mTerrainInfo.worldSizeX / (getPageSize() - 1));
-// 	mTerrainInfo.pageOffsetX = mTerrainInfo.totalNumberOfPagesX / 2;
-/*	mTerrainInfo.worldSizeY = getMax().y() - getMin().y();
-	mTerrainInfo.totalNumberOfPagesY = static_cast<int>( ceil(mTerrainInfo.worldSizeY / (getPageSize() - 1)));*/
-//	mTerrainInfo.totalNumberOfPagesY = static_cast<int>( mTerrainInfo.worldSizeY / (getPageSize() - 1));
-// 	mTerrainInfo.pageOffsetY = mTerrainInfo.totalNumberOfPagesY / 2;
-	
-	//if the world is in effect non-existant, quit here
-// 	if (mTerrainInfo.totalNumberOfPagesX == 0 && mTerrainInfo.totalNumberOfPagesY == 0) {
-// 		return;
-// 	}
 	
 	getAdapter()->setWorldPagesDimensions( mTerrainInfo.getTotalNumberOfPagesX(), mTerrainInfo.getTotalNumberOfPagesY(), mTerrainInfo.getPageOffsetX(), mTerrainInfo.getPageOffsetY());
 	
@@ -527,7 +480,7 @@ TerrainPage* TerrainGenerator::createPage(const TerrainPosition& pos)
 	
 	page->createShadow(EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection());
 	page->generateTerrainMaterials();
-	if (showFoliage && mGrassShader) {
+	if (showFoliage) {
 		page->showFoliage();
 	}
 	
@@ -712,17 +665,6 @@ const TerrainPosition TerrainGenerator::getMin( ) const
 	return mTerrainInfo.getWorldSizeInIndices().lowCorner();
 // 	return TerrainPosition(mXmin * 64, mYmin * 64);
 }
-
-TerrainShader* TerrainGenerator::getFoliageShader() const
-{
-	return mGrassShader;
-}
-
-void TerrainGenerator::setFoliageShader(TerrainShader* shader)
-{
-	mGrassShader = shader;
-}
-
 
 void TerrainGenerator::runCommand(const std::string &command, const std::string &args)
 {

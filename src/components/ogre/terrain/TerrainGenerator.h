@@ -212,20 +212,6 @@ public:
 
 	
 	/**
-	 *    gets the shader used for determining where to place foliage
-	 * @return 
-	 */
-	TerrainShader* getFoliageShader() const;
-
-
-	/**
-	 *    Sets the shader to be used for foliage shading. This will be used for lookup where to place foliage.
-	 * @param shader 
-	 */
-	void setFoliageShader(TerrainShader* shader);
-
-
-	/**
 	 *    Reimplements the ConsoleObject::runCommand method
 	 * @param command 
 	 * @param args 
@@ -314,16 +300,9 @@ protected:
 	
 	TerrainPagestore mTerrainPages;
 	
-	TerrainShader* mGrassShader;
 	Mercator::Terrain* mTerrain;
 	
 	Ogre::Real mHeightMax, mHeightMin;
-
-	
-	
-	//static TerrainGenerator* _instance;
-
-//	float* getDataFromMercator(Ogre::TerrainOptions * options);
 	
 	WFMath::Point<3> mCurrentPosition;
 

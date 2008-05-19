@@ -120,6 +120,13 @@ void FoliageBase::TerrainGenerator_EventShaderCreated(Terrain::TerrainShader* sh
 	mPagedGeometry->reloadGeometry();
 }
 
+//Gets the height of the terrain at the specified x/z coordinate
+//The userData parameter isn't used in this implementation of a height function, since
+//there's no need for extra data other than the x/z coordinates.
+float getTerrainHeight(const float x, const float z, void *userData){
+//	return 1;
+	return EmberOgre::getSingleton().getTerrainGenerator()->getHeight(TerrainPosition(x, -z));
+}
 }
 
 }

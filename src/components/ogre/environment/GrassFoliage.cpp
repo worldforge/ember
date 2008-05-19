@@ -30,7 +30,6 @@
 #include "services/logging/LoggingService.h"
 
 #include "FoliageLayer.h"
-#include "FoliageArea.h"
 
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/terrain/TerrainGenerator.h"

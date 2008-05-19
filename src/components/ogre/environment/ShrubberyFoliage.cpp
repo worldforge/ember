@@ -31,7 +31,6 @@
 #include "services/config/ConfigService.h"
 
 #include "FoliageLayer.h"
-#include "FoliageArea.h"
 #include "FoliageLoader.h"
 
 #include "components/ogre/EmberOgre.h"

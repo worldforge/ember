@@ -70,6 +70,8 @@ protected:
 
 };
 
+float getTerrainHeight(const float x, const float z, void *userData = 0);
+
 }
 
 }

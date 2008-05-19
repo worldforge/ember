@@ -105,7 +105,7 @@ void TerrainPageFoliage::generateCoverageMap()
 {
 	///we've disable the functionality for keeping a coverage map since it's faster to do the checkups through Mercator
 	return;
-	
+#if 0	
 	S_LOG_VERBOSE("Starting generation of foliage coverage map for page at position x: " << mTerrainPage.getWFPosition().x() << " y: " << mTerrainPage.getWFPosition().y() << ".");
 	if (!mFoliageCoverageDataStream) {
 		mFoliageCoverageDataStream = new Ogre::MemoryDataStream(mCoverageMapPixelWidth * mCoverageMapPixelWidth * 1, true);
@@ -136,6 +136,7 @@ void TerrainPageFoliage::generateCoverageMap()
 			}
 		}
 	}
+#endif
 	
 ///activate this if you want to see the texture in game (to get debug information etc.)
 #if 0

@@ -44,7 +44,6 @@ class TerrainLayerDefinition;
 namespace Environment {
 
 class FoliageLayer;
-class FoliageArea;
 class FoliageImpl;
 class FoliageBase;
 
@@ -57,26 +56,12 @@ class Foliage : public Ember::Singleton<Foliage>, public Ogre::FrameListener
 
 public:
 
-	typedef std::list<FoliageArea*> FoliageAreaStore;
 	typedef std::map<const std::string, Ogre::Entity* > EntityStore;
 	typedef std::vector<FoliageBase*> FoliageStore;
-    Foliage( Ogre::SceneManager* mSceneMgr);
+    Foliage(Ogre::SceneManager* mSceneMgr);
 
     ~Foliage();
 	
-	/**
-	 *    Creates a new Foliage area, ready to be populated
-	 * @return 
-	 */
-	FoliageArea* createArea(const WFMath::AxisBox<2>& extent);
-	
-	
-	/**
-	 *    destroys a foliage area
-	 * @param area 
-	 */
-	void destroyArea(FoliageArea* area);
-
 	bool frameStarted(const Ogre::FrameEvent & evt);
 
 	Ogre::Entity* getEntity(const std::string& name);
@@ -86,11 +71,8 @@ public:
 protected:
 	EntityStore mEntities;
 
-	//GroundCover* mGround;
-	FoliageAreaStore mFoliageAreas;
-
 	void createGrassMesh();
-	
+
 
 	Ogre::SceneManager* mSceneMgr;
 	

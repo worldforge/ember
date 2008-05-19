@@ -269,10 +269,7 @@ void TerrainParser::createShaders(const Atlas::Message::Element& surfaces)
 									Mercator::Shader* shader = Mercator::ShaderFactories::instance().newShader(pattern, params);
 									if (shader) {
 										isValid = true;
-										Terrain::TerrainShader* terrainShader = mTerrainGenerator->createShader(def, shader);
-										if (name == "grass") {
-											mTerrainGenerator->setFoliageShader(terrainShader);
-										}
+										mTerrainGenerator->createShader(def, shader);
 									}
 								}
 							}
@@ -299,8 +296,7 @@ void TerrainParser::createDefaultShaders()
     }	
  
 	if ((def = terrainManager.getDefinitionForShader("grass"))) {
-		Terrain::TerrainShader* grassShader = mTerrainGenerator->createShader(def,   new Mercator::GrassShader(1.f, 80.f, .5f, 1.f));
-		mTerrainGenerator->setFoliageShader(grassShader);
+		mTerrainGenerator->createShader(def,   new Mercator::GrassShader(1.f, 80.f, .5f, 1.f));
     }	
 
 //      createShader(std::string(configSrv->getValue("shadertextures", "snow")), new Mercator::HighShader(110.f)); // Snow

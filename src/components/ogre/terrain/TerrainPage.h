@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2005
+// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2005
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -49,9 +49,6 @@ namespace Ogre
 }
 
 namespace EmberOgre {
-namespace Environment {
-class FoliageArea;
-}
 namespace Terrain {
 class TerrainShader;
 class TerrainGenerator;
@@ -60,7 +57,6 @@ class TerrainPage;
 class TerrainPageFoliage;
 class TerrainPageSurfaceLayer;
 
-// TYPEDEF_STL_VECTOR(Mercator::Segment*, SegmentVector);
 TYPEDEF_STL_MAP(const Mercator::Shader*, TerrainShader*, ShaderMap);
 
 
@@ -68,19 +64,20 @@ TYPEDEF_STL_MAP(const Mercator::Shader*, TerrainShader*, ShaderMap);
 
 /**
 
-This is a bridge class between one Ogre::TerrainPage instance and one or many Mercator::Segment.
+@brief Reprents one terrain page.
+
+This is a bridge class between one Ogre terrain page instance and one or many Mercator::Segment. Since each Segment is 64x64 meters, but one Ogre page often is much larger, we need to combine many Segments for every single Ogre page.
+
+Instances of this is created by TerrainGenerator.
+One terrain page is composed of both height data, a material, textures for the material and plant positions for the foliage system. This class handles all of these, some of them directly and some by other classes.
 
 
-@author Erik Hjortsberg
+@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
 class TerrainPage{
 friend class TerrainPageShadow;
 friend class ITerrainPageShadowTechnique;
 public:
-	/**
-	A store of plant positions. We keep this in ogre space for performance reasons.
-	*/
-// 	typedef std::vector<Ogre::Vector2> PlantsStore;
 
     TerrainPage(TerrainPosition position, const std::map<const Mercator::Shader*, TerrainShader*> shaderMap, TerrainGenerator* generator);
 
@@ -234,9 +231,6 @@ private:
 	SegmentVector mValidSegments;
 
 	
-	::EmberOgre::Environment::FoliageArea* mFoliageArea;
-	
-
 	/**
 	this holds a map of the area, to be used in a map widget etc.
 	*/
@@ -284,9 +278,6 @@ private:
 	The keys will be the local indices.
 	*/
 	Mercator::Terrain::Segmentstore mLocalSegments;
-// 	void updateShadow();
-// 	
-// 	void createShadow();
 
 
 };
