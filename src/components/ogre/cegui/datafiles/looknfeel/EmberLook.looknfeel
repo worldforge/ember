@@ -4878,11 +4878,11 @@
 	***********************************************************************************************************/
 	-->
 	<WidgetLook name="EmberLook/Tree">
-        <PropertyDefinition name="SelectionBrushImage" value="set:EmberLook image:MultiListSelectionBrush" />
-        <PropertyDefinition name="NormalTextColour" value="FF000000" />
-        <PropertyDefinition name="SelectedTextColour" value="FFFFFF55" />
-        <PropertyDefinition name="ActiveSelectionColour" value="FF607FFF" />
-        <PropertyDefinition name="InactiveSelectionColour" value="FF808080" />
+        <PropertyDefinition name="SelectionBrushImage" initialValue="set:EmberLook image:MultiListSelectionBrush" />
+        <PropertyDefinition name="NormalTextColour" initialValue="FF000000" />
+        <PropertyDefinition name="SelectedTextColour" initialValue="FFFFFF55" />
+        <PropertyDefinition name="ActiveSelectionColour" initialValue="FF607FFF" />
+        <PropertyDefinition name="InactiveSelectionColour" initialValue="FF808080" />
         <NamedArea name="ItemRenderingArea">
             <Area>
                 <Dim type="LeftEdge" ><ImageDim imageset="EmberLook" image="StaticFrameLeft" dimension="Width" /></Dim>
