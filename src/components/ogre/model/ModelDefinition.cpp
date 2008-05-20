@@ -113,8 +113,9 @@ bool ModelDefinition::isValid(void)
 
 ViewDefinition* ModelDefinition::createViewDefinition(const std::string& viewname)
 {
-	if (mViews.find(viewname) != mViews.end()) {
-		return mViews.find(viewname)->second;
+	ViewDefinitionStore::iterator view = mViews.find(viewname);
+	if (view != mViews.end()) {
+		return view->second;
 	} else {
 		ViewDefinition* def = new ViewDefinition();
 		def->Name = viewname;
