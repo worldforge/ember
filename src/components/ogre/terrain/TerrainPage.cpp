@@ -47,7 +47,6 @@
 // #include <IL/ilu.h>
 
 #include "../environment/Foliage.h"
-#include "../environment/FoliageArea.h"
 #include "TerrainGenerator.h"
 #include "TerrainPageSurfaceLayer.h"
 #include "TerrainPageSurface.h"
