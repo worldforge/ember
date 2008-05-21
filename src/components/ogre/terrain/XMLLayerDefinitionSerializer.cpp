@@ -46,17 +46,17 @@ XMLLayerDefinitionSerializer::~XMLLayerDefinitionSerializer()
 
 void XMLLayerDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName)
 {
-	Ember::TiXmlDocument xmlDoc;
+	TiXmlDocument xmlDoc;
 	XMLHelper xmlHelper;
 	if (!xmlHelper.Load(xmlDoc, stream)) {
 		return;
 	}
 
-	Ember::TiXmlElement* rootElem = xmlDoc.RootElement();
-	Ember::TiXmlElement* layersElem = rootElem->FirstChildElement("layers");
+	TiXmlElement* rootElem = xmlDoc.RootElement();
+	TiXmlElement* layersElem = rootElem->FirstChildElement("layers");
 	if (layersElem) {
 
-		for (Ember::TiXmlElement* smElem = layersElem->FirstChildElement("layer");
+		for (TiXmlElement* smElem = layersElem->FirstChildElement("layer");
 				smElem != 0; smElem = smElem->NextSiblingElement("layer"))
 		{
 			const char* tmp = smElem->Attribute("shadername");
@@ -78,18 +78,18 @@ void XMLLayerDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, cons
 					definition->setDiffuseTextureName(smElem->Attribute("diffusetexture"));
 					definition->setNormalMapTextureName(smElem->Attribute("normalmaptexture"));
 					float tileSize;
-					if (smElem->QueryFloatAttribute("tilesize", &tileSize) == Ember::TIXML_SUCCESS) { 
+					if (smElem->QueryFloatAttribute("tilesize", &tileSize) == TIXML_SUCCESS) { 
 						definition->setTileSize(tileSize);
 					}
 					
-					for (Ember::TiXmlElement* foliageElem = smElem->FirstChildElement("foliage");
+					for (TiXmlElement* foliageElem = smElem->FirstChildElement("foliage");
 							foliageElem != 0; foliageElem = foliageElem->NextSiblingElement("foliage"))
 					{
 						TerrainFoliageDefinition foliageDef;
 						foliageDef.setPlantType(foliageElem->Attribute("planttype"));
 						foliageDef.setPopulationTechnique(foliageElem->Attribute("populationtechnique"));
 						foliageDef.setRenderTechnique(foliageElem->Attribute("rendertechnique"));
-						for (Ember::TiXmlElement* paramElem = foliageElem->FirstChildElement("param");
+						for (TiXmlElement* paramElem = foliageElem->FirstChildElement("param");
 								paramElem != 0; paramElem = paramElem->NextSiblingElement())
 						{
 							tmp = paramElem->Attribute("key");

@@ -52,11 +52,11 @@ public:
     Parse the xml document and create definitions from the data.
     @param xmlDocument A valid xml document instance.
     */
-    void parseScript(Ember::TiXmlDocument& xmlDocument);
+    void parseScript(TiXmlDocument& xmlDocument);
 protected:
-	void parseMatchElement(Definitions::ModelMappingDefinition& definition, Definitions::MatchDefinition& matchDef, Ember::TiXmlElement* element);
-	void parseCaseElement(Definitions::ModelMappingDefinition& definition, Definitions::CaseDefinition& caseDef, Ember::TiXmlElement* element);
-	void parseActionElement(Definitions::ModelMappingDefinition& definition, Definitions::ActionDefinition& actionDef, Ember::TiXmlElement* element);
+	void parseMatchElement(Definitions::ModelMappingDefinition& definition, Definitions::MatchDefinition& matchDef, TiXmlElement* element);
+	void parseCaseElement(Definitions::ModelMappingDefinition& definition, Definitions::CaseDefinition& caseDef, TiXmlElement* element);
+	void parseActionElement(Definitions::ModelMappingDefinition& definition, Definitions::ActionDefinition& actionDef, TiXmlElement* element);
 
 	ModelMappingManager& mModelMappingManager;
 

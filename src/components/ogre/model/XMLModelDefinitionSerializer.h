@@ -49,31 +49,31 @@ public :
 	void exportScript(ModelDefinitionPtr modelDef, const std::string& filename);
 
 private:
-	//Ember::TiXmlDocument* _XMLDoc;
+	//TiXmlDocument* _XMLDoc;
 	//ModelDefinition* _pModelDef;
 
-	void readModel(ModelDefinitionPtr modelDef, Ember::TiXmlElement* modelNode);
-	void readSubModels(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mSubModelNode);
-	void readParts(Ember::TiXmlElement* mPartNode, SubModelDefinition* def);
-	void readSubEntities(Ember::TiXmlElement* mSubEntNode, PartDefinition* def);
-	void readActions(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mAnimNode);
-	void readAnimations(Ember::TiXmlElement* mAnimationsNode, ActionDefinition* action);
-	void readAnimationParts(Ember::TiXmlElement* mAnimPartNode, AnimationDefinition* animDef);
-	void readAttachPoints(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mAnimPartNode);
-	void readParticleSystems(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mParticleSystemsNode);
-	void readParticleSystemsBindings(ModelDefinition::ParticleSystemDefinition& def, Ember::TiXmlElement* mParticleSystemsNode);
-	void readViews(ModelDefinitionPtr modelDef, Ember::TiXmlElement* viewsNode);
+	void readModel(ModelDefinitionPtr modelDef, TiXmlElement* modelNode);
+	void readSubModels(ModelDefinitionPtr modelDef, TiXmlElement* mSubModelNode);
+	void readParts(TiXmlElement* mPartNode, SubModelDefinition* def);
+	void readSubEntities(TiXmlElement* mSubEntNode, PartDefinition* def);
+	void readActions(ModelDefinitionPtr modelDef, TiXmlElement* mAnimNode);
+	void readAnimations(TiXmlElement* mAnimationsNode, ActionDefinition* action);
+	void readAnimationParts(TiXmlElement* mAnimPartNode, AnimationDefinition* animDef);
+	void readAttachPoints(ModelDefinitionPtr modelDef, TiXmlElement* mAnimPartNode);
+	void readParticleSystems(ModelDefinitionPtr modelDef, TiXmlElement* mParticleSystemsNode);
+	void readParticleSystemsBindings(ModelDefinition::ParticleSystemDefinition& def, TiXmlElement* mParticleSystemsNode);
+	void readViews(ModelDefinitionPtr modelDef, TiXmlElement* viewsNode);
 
-	Ogre::Vector3 fillVector3FromElement(Ember::TiXmlElement* elem);
-	void fillElementFromVector3(Ember::TiXmlElement& elem, Ogre::Vector3 vector);
+	Ogre::Vector3 fillVector3FromElement(TiXmlElement* elem);
+	void fillElementFromVector3(TiXmlElement& elem, Ogre::Vector3 vector);
 
-	Ogre::Quaternion fillQuaternionFromElement(Ember::TiXmlElement* elem);
-	void fillElementFromQuaternion(Ember::TiXmlElement& elem, Ogre::Quaternion quaternion);
+	Ogre::Quaternion fillQuaternionFromElement(TiXmlElement* elem);
+	void fillElementFromQuaternion(TiXmlElement& elem, Ogre::Quaternion quaternion);
 
-	void exportSubModels(ModelDefinitionPtr modelDef, Ember::TiXmlElement& modelElem);
-	void exportActions(ModelDefinitionPtr modelDef, Ember::TiXmlElement& modelElem);
-	void exportAttachPoints(ModelDefinitionPtr modelDef, Ember::TiXmlElement& modelElem);
-	void exportViews(ModelDefinitionPtr modelDef, Ember::TiXmlElement& modelElem);
+	void exportSubModels(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
+	void exportActions(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
+	void exportAttachPoints(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
+	void exportViews(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
 
 };
 

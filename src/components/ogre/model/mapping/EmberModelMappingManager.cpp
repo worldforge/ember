@@ -70,7 +70,7 @@ EmberModelMappingManager::~EmberModelMappingManager()
 
 void EmberModelMappingManager::parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName)
 {
-	Ember::TiXmlDocument xmlDoc;
+	TiXmlDocument xmlDoc;
 	XMLHelper xmlHelper;
 	if (!xmlHelper.Load(xmlDoc, stream)) {
 		return;

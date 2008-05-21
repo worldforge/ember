@@ -57,7 +57,7 @@ bool XMLJesusSerializer::loadModelBlockMapping(const std::string& filename)
 		return false;
 	}
 
-	Ember::TiXmlDocument _XMLDoc;
+	TiXmlDocument _XMLDoc;
 	bool success = _XMLDoc.LoadFile(filename.c_str()); //load from data stream
 	
 	if (!success) {
@@ -71,9 +71,9 @@ bool XMLJesusSerializer::loadModelBlockMapping(const std::string& filename)
 	}
 	
 
-	Ember::TiXmlElement* rootElem = _XMLDoc.RootElement();
+	TiXmlElement* rootElem = _XMLDoc.RootElement();
 
-	for (Ember::TiXmlElement* smElem = rootElem->FirstChildElement();
+	for (TiXmlElement* smElem = rootElem->FirstChildElement();
 			smElem != 0; smElem = smElem->NextSiblingElement())
 	{
 		const char* tmp =  smElem->Attribute("model");
@@ -99,7 +99,7 @@ bool XMLJesusSerializer::loadModelBlockMapping(const std::string& filename)
 
 
 template <typename T>
-void XMLJesusSerializer::fillFromElement(Ember::TiXmlElement* elem, T& geometryObject)
+void XMLJesusSerializer::fillFromElement(TiXmlElement* elem, T& geometryObject)
 {
 	WFMath::CoordType x = atof(elem->Attribute("x"));
 	WFMath::CoordType y = atof(elem->Attribute("y"));
@@ -121,7 +121,7 @@ bool XMLJesusSerializer::loadBlockSpec(const std::string& filename)
 		return false;
 	}
 
-	Ember::TiXmlDocument _XMLDoc;
+	TiXmlDocument _XMLDoc;
 	bool success = _XMLDoc.LoadFile(filename.c_str()); //load from data stream
 	
 	if (!success) {
@@ -134,12 +134,12 @@ bool XMLJesusSerializer::loadBlockSpec(const std::string& filename)
 		return false;
 	}
 	
-	Ember::TiXmlElement* elem;
+	TiXmlElement* elem;
 
 
-	Ember::TiXmlElement* rootElem = _XMLDoc.RootElement();
+	TiXmlElement* rootElem = _XMLDoc.RootElement();
 
-	for (Ember::TiXmlElement* smElem = rootElem->FirstChildElement();
+	for (TiXmlElement* smElem = rootElem->FirstChildElement();
 			smElem != 0; smElem = smElem->NextSiblingElement())
 	{
 	
@@ -178,7 +178,7 @@ bool XMLJesusSerializer::loadBlockSpec(const std::string& filename)
 }
 		
 		
-Carpenter::AttachPoint* XMLJesusSerializer::readAttachPoint(Ember::TiXmlElement* elem)
+Carpenter::AttachPoint* XMLJesusSerializer::readAttachPoint(TiXmlElement* elem)
 {
 	const char* tmp = 0;
 	
@@ -188,7 +188,7 @@ Carpenter::AttachPoint* XMLJesusSerializer::readAttachPoint(Ember::TiXmlElement*
 	} 
 	std::string name(tmp);
 				
-	Ember::TiXmlElement* normalElem = elem->FirstChildElement("normal");
+	TiXmlElement* normalElem = elem->FirstChildElement("normal");
 		
 	tmp =  normalElem->Attribute("type");
 	if (!tmp) {
@@ -201,7 +201,7 @@ Carpenter::AttachPoint* XMLJesusSerializer::readAttachPoint(Ember::TiXmlElement*
 	}
 	WFMath::Vector<3> normal = mJesus->mNormalTypes.find(type)->second;
 
-	Ember::TiXmlElement* positionElem = elem->FirstChildElement("position");
+	TiXmlElement* positionElem = elem->FirstChildElement("position");
 	if (!positionElem) {
 		return 0;
 	} 
@@ -215,12 +215,12 @@ Carpenter::AttachPoint* XMLJesusSerializer::readAttachPoint(Ember::TiXmlElement*
 }
 
 	
-void XMLJesusSerializer::readAttachPairs(Carpenter::BlockSpec *blockSpec, Ember::TiXmlElement* parentElem)
+void XMLJesusSerializer::readAttachPairs(Carpenter::BlockSpec *blockSpec, TiXmlElement* parentElem)
 {
 
 	const char* tmp = 0;
 
-	for (Ember::TiXmlElement* elem = parentElem->FirstChildElement();
+	for (TiXmlElement* elem = parentElem->FirstChildElement();
 			elem != 0; elem = elem->NextSiblingElement())
 	{
 		tmp =  elem->Attribute("name");
@@ -237,7 +237,7 @@ void XMLJesusSerializer::readAttachPairs(Carpenter::BlockSpec *blockSpec, Ember:
 		std::string type(tmp); 
 	
 		
-		Ember::TiXmlElement* attachPointElem = elem->FirstChildElement("attachpoint");
+		TiXmlElement* attachPointElem = elem->FirstChildElement("attachpoint");
 		//make sure that there are two attach points
 		if (!attachPointElem->NextSiblingElement()) {
 			continue;
@@ -272,7 +272,7 @@ bool XMLJesusSerializer::loadBuildingBlockSpecDefinition(const std::string& file
 		return false;
 	}
 
-	Ember::TiXmlDocument _XMLDoc;
+	TiXmlDocument _XMLDoc;
 	bool success = _XMLDoc.LoadFile(filename.c_str()); //load from data stream
 	
 	if (!success) {
@@ -281,9 +281,9 @@ bool XMLJesusSerializer::loadBuildingBlockSpecDefinition(const std::string& file
 	}
 	
 
-	Ember::TiXmlElement* rootElem = _XMLDoc.RootElement();
+	TiXmlElement* rootElem = _XMLDoc.RootElement();
 
-	for (Ember::TiXmlElement* smElem = rootElem->FirstChildElement();
+	for (TiXmlElement* smElem = rootElem->FirstChildElement();
 			smElem != 0; smElem = smElem->NextSiblingElement())
 	{
 	
@@ -316,7 +316,7 @@ Carpenter::BluePrint* XMLJesusSerializer::loadBlueprint(const std::string& filen
 		return false;
 	}
 
-	Ember::TiXmlDocument _XMLDoc;
+	TiXmlDocument _XMLDoc;
 	bool success = _XMLDoc.LoadFile(filename.c_str()); //load from data stream
 	
 	if (!success) {
@@ -325,7 +325,7 @@ Carpenter::BluePrint* XMLJesusSerializer::loadBlueprint(const std::string& filen
 	}
 	
 
-	Ember::TiXmlElement* rootElem = _XMLDoc.RootElement();
+	TiXmlElement* rootElem = _XMLDoc.RootElement();
 	
 	const char* tmp;
 	 
@@ -344,10 +344,10 @@ Carpenter::BluePrint* XMLJesusSerializer::loadBlueprint(const std::string& filen
 	
 	Carpenter::BluePrint* blueprint = mJesus->getCarpenter()->createBlueprint(name);
 
-	for (Ember::TiXmlElement* bbElem = rootElem->FirstChildElement("buildingblocks");
+	for (TiXmlElement* bbElem = rootElem->FirstChildElement("buildingblocks");
 			bbElem != 0; bbElem = bbElem->NextSiblingElement())
 	{
-		for (Ember::TiXmlElement* smElem = bbElem->FirstChildElement("buildingblock");
+		for (TiXmlElement* smElem = bbElem->FirstChildElement("buildingblock");
 				   smElem != 0; smElem = smElem->NextSiblingElement())
 		{
 			tmp = smElem->Attribute("name");
@@ -375,10 +375,10 @@ Carpenter::BluePrint* XMLJesusSerializer::loadBlueprint(const std::string& filen
 		}
 	}
 	
-	for (Ember::TiXmlElement* bindingsElem = rootElem->FirstChildElement("bindings");
+	for (TiXmlElement* bindingsElem = rootElem->FirstChildElement("bindings");
 			bindingsElem != 0; bindingsElem = bindingsElem->NextSiblingElement())
 	{
-		for (Ember::TiXmlElement* smElem = bindingsElem->FirstChildElement("binding");
+		for (TiXmlElement* smElem = bindingsElem->FirstChildElement("binding");
 				smElem != 0; smElem = smElem->NextSiblingElement())
 		{
 			Carpenter::BuildingBlockBindingDefinition bindingDef;
@@ -420,7 +420,7 @@ void XMLJesusSerializer::saveBlueprintToFile(Carpenter::BluePrint* blueprint, co
 		return;
 	}
 
-	Ember::TiXmlDocument _XMLDoc;
+	TiXmlDocument _XMLDoc;
 	
 	
 	
@@ -446,11 +446,11 @@ void XMLJesusSerializer::saveBlueprintToFile(Carpenter::BluePrint* blueprint, co
 	
 	
 		
-		Ember::TiXmlElement elem("blueprint");
+		TiXmlElement elem("blueprint");
 		elem.SetAttribute("startingblock", blueprint->getStartingBlock()->getName().c_str());
 		elem.SetAttribute("name", name.c_str());
 		
-		Ember::TiXmlElement buildingBlocksElem("buildingblocks");
+		TiXmlElement buildingBlocksElem("buildingblocks");
 		//now iterate over all building blocks
 		
 		const std::vector< Carpenter::BuildingBlock*> bblocks = blueprint->getAttachedBlocks();
@@ -459,7 +459,7 @@ void XMLJesusSerializer::saveBlueprintToFile(Carpenter::BluePrint* blueprint, co
 		std::vector< Carpenter::BuildingBlock*>::const_iterator I_end = bblocks.end();
 		
 		for (;I != I_end; ++I) {
-			Ember::TiXmlElement buildingBlockElem("buildingblock");
+			TiXmlElement buildingBlockElem("buildingblock");
 			buildingBlockElem.SetAttribute("blocktype",  (*I)->getBuildingBlockSpec()->getName().c_str() );
 			buildingBlockElem.SetAttribute("name", (*I)->getName().c_str());
 			buildingBlocksElem.InsertEndChild(buildingBlockElem);
@@ -467,14 +467,14 @@ void XMLJesusSerializer::saveBlueprintToFile(Carpenter::BluePrint* blueprint, co
 		
 		
 		//iterate over the bindings
-		Ember::TiXmlElement bindingsElem("bindings");
+		TiXmlElement bindingsElem("bindings");
 		
 		const std::list< Carpenter::BuildingBlockBinding>* bindings = blueprint->getBindings();
 		std::list< Carpenter::BuildingBlockBinding>::const_iterator J = bindings->begin();
 		std::list< Carpenter::BuildingBlockBinding>::const_iterator J_end = bindings->end();
 		
 		for (;J != J_end; ++J) {
-			Ember::TiXmlElement bindingElem("binding");
+			TiXmlElement bindingElem("binding");
 			bindingElem.SetAttribute("block1", (*J).getBlock1()->getName().c_str());
 			bindingElem.SetAttribute("block2", (*J).getBlock2()->getName().c_str());
 			const Carpenter::AttachPoint* point1 = (*J).getAttachPoint1();

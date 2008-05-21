@@ -37,7 +37,7 @@ XMLHelper::~XMLHelper()
 {
 }
 
-bool XMLHelper::Load(Ember::TiXmlDocument& xmlDoc, Ogre::DataStreamPtr stream) 
+bool XMLHelper::Load(TiXmlDocument& xmlDoc, Ogre::DataStreamPtr stream) 
 {
 	size_t length(stream->size());
 
