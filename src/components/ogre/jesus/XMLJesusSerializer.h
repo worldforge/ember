@@ -90,15 +90,15 @@ public:
 private: 
 	Jesus* mJesus;
 
-	Carpenter::AttachPoint* readAttachPoint(Ember::TiXmlElement* elem);
-	void readAttachPairs(Carpenter::BlockSpec *blockSpec, Ember::TiXmlElement* parentElem);
+	Carpenter::AttachPoint* readAttachPoint(TiXmlElement* elem);
+	void readAttachPairs(Carpenter::BlockSpec *blockSpec, TiXmlElement* parentElem);
 	
 	/**
 	 *    Utility method to fill the supplied WFMath object (for example a Vector or a Point) with xyz values from the Xerces Node
 	 * @param  
 	 * @param  
 	 */
-	template <typename T> void fillFromElement(Ember::TiXmlElement* , T& );
+	template <typename T> void fillFromElement(TiXmlElement* , T& );
 
 
 };

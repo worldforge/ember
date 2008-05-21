@@ -65,15 +65,15 @@ void XMLModelDefinitionSerializer::importModelDefinition(Ogre::DataStreamPtr& st
 
 void XMLModelDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName)
 {
-	Ember::TiXmlDocument xmlDoc;
+	TiXmlDocument xmlDoc;
 	XMLHelper xmlHelper;
 	if (!xmlHelper.Load(xmlDoc, stream)) {
 		return;
 	}
 
-	Ember::TiXmlElement* rootElem = xmlDoc.RootElement();
+	TiXmlElement* rootElem = xmlDoc.RootElement();
 
-	for (Ember::TiXmlElement* smElem = rootElem->FirstChildElement();
+	for (TiXmlElement* smElem = rootElem->FirstChildElement();
             smElem != 0; smElem = smElem->NextSiblingElement())
     {
 		const char* tmp =  smElem->Attribute("name");
@@ -100,9 +100,9 @@ void XMLModelDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, cons
 	
 }
 
-void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, Ember::TiXmlElement* modelNode)
+void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, TiXmlElement* modelNode)
 {
-	Ember::TiXmlElement* elem;
+	TiXmlElement* elem;
 	//root elements
 	//scale
 	const char* tmp =  modelNode->Attribute("scale");
@@ -199,7 +199,7 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, Ember:
 		if (tmp) {
 			modelDef->mRenderingDef->setScheme(tmp);
 		}
-		for (Ember::TiXmlElement* paramElem = elem->FirstChildElement("param");
+		for (TiXmlElement* paramElem = elem->FirstChildElement("param");
 				paramElem != 0; paramElem = paramElem->NextSiblingElement())
 		{
 			tmp = paramElem->Attribute("key");
@@ -213,14 +213,14 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, Ember:
 
 
 
-void XMLModelDefinitionSerializer::readSubModels(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mSubModelNode)
+void XMLModelDefinitionSerializer::readSubModels(ModelDefinitionPtr modelDef, TiXmlElement* mSubModelNode)
 {
 	S_LOG_VERBOSE( "Read Submodels" );
 	const char* tmp = 0;
-	Ember::TiXmlElement* elem;
+	TiXmlElement* elem;
 	bool notfound = true;
 
-	for (Ember::TiXmlElement* smElem = mSubModelNode->FirstChildElement();
+	for (TiXmlElement* smElem = mSubModelNode->FirstChildElement();
             smElem != 0; smElem = smElem->NextSiblingElement())
     {
 		notfound = false;
@@ -260,13 +260,13 @@ void XMLModelDefinitionSerializer::readSubModels(ModelDefinitionPtr modelDef, Em
 	}
 }
 
-void XMLModelDefinitionSerializer::readParts(Ember::TiXmlElement* mPartNode, SubModelDefinition* def)
+void XMLModelDefinitionSerializer::readParts(TiXmlElement* mPartNode, SubModelDefinition* def)
 {
-	Ember::TiXmlElement* elem;
+	TiXmlElement* elem;
 	const char* tmp = 0;
 	bool notfound = true;
 
-	for (Ember::TiXmlElement* partElem = mPartNode->FirstChildElement();
+	for (TiXmlElement* partElem = mPartNode->FirstChildElement();
             partElem != 0; partElem = partElem->NextSiblingElement())
 	{
 
@@ -303,13 +303,13 @@ void XMLModelDefinitionSerializer::readParts(Ember::TiXmlElement* mPartNode, Sub
 	}
 }
 
-void XMLModelDefinitionSerializer::readSubEntities(Ember::TiXmlElement* mSubEntNode, PartDefinition* def)
+void XMLModelDefinitionSerializer::readSubEntities(TiXmlElement* mSubEntNode, PartDefinition* def)
 {
 
 	const char* tmp = 0;
 	bool notfound = true;
 
-	for (Ember::TiXmlElement* seElem = mSubEntNode->FirstChildElement();
+	for (TiXmlElement* seElem = mSubEntNode->FirstChildElement();
             seElem != 0; seElem = seElem->NextSiblingElement())
 	{
 		SubEntityDefinition* subEntityDef = 0;
@@ -350,14 +350,14 @@ void XMLModelDefinitionSerializer::readSubEntities(Ember::TiXmlElement* mSubEntN
 	}
 }
 
-void XMLModelDefinitionSerializer::readActions(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mAnimNode)
+void XMLModelDefinitionSerializer::readActions(ModelDefinitionPtr modelDef, TiXmlElement* mAnimNode)
 {
-	Ember::TiXmlElement* elem;
+	TiXmlElement* elem;
 	const char* tmp = 0;
 	bool notfound = true;
 	S_LOG_VERBOSE( "Read Actions" );
 
-	for (Ember::TiXmlElement* animElem = mAnimNode->FirstChildElement();
+	for (TiXmlElement* animElem = mAnimNode->FirstChildElement();
             animElem != 0; animElem = animElem->NextSiblingElement())
 	{
 		notfound=false;
@@ -408,13 +408,13 @@ void XMLModelDefinitionSerializer::readActions(ModelDefinitionPtr modelDef, Embe
 
 }
 	
-void XMLModelDefinitionSerializer::readAnimations(Ember::TiXmlElement* mAnimationsNode, ActionDefinition* action)
+void XMLModelDefinitionSerializer::readAnimations(TiXmlElement* mAnimationsNode, ActionDefinition* action)
 {
 	const char* tmp = 0;
 	bool nopartfound = true;
 	
 
-	for (Ember::TiXmlElement* animElem = mAnimationsNode->FirstChildElement();
+	for (TiXmlElement* animElem = mAnimationsNode->FirstChildElement();
             animElem != 0; animElem = animElem->NextSiblingElement())
 	{
 		int iterations(1);
@@ -437,12 +437,12 @@ void XMLModelDefinitionSerializer::readAnimations(Ember::TiXmlElement* mAnimatio
 
 }
 
-void XMLModelDefinitionSerializer::readAnimationParts(Ember::TiXmlElement* mAnimPartNode, AnimationDefinition* animDef)
+void XMLModelDefinitionSerializer::readAnimationParts(TiXmlElement* mAnimPartNode, AnimationDefinition* animDef)
 {
 	const char* tmp = 0;
 	bool nopartfound = true;
 	
-	for (Ember::TiXmlElement* apElem = mAnimPartNode->FirstChildElement();
+	for (TiXmlElement* apElem = mAnimPartNode->FirstChildElement();
             apElem != 0; apElem = apElem->NextSiblingElement())
 	{
 		std::string name;
@@ -472,14 +472,14 @@ void XMLModelDefinitionSerializer::readAnimationParts(Ember::TiXmlElement* mAnim
 }
 
 
-void XMLModelDefinitionSerializer::readAttachPoints(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mAnimPartNode)
+void XMLModelDefinitionSerializer::readAttachPoints(ModelDefinitionPtr modelDef, TiXmlElement* mAnimPartNode)
 {
 	AttachPointDefinitionStore & attachPoints = modelDef->mAttachPoints;
 	
 	const char* tmp = 0;
 	bool nopartfound = true;
 
-	for (Ember::TiXmlElement* apElem = mAnimPartNode->FirstChildElement();
+	for (TiXmlElement* apElem = mAnimPartNode->FirstChildElement();
             apElem != 0; apElem = apElem->NextSiblingElement())
 	{
 		AttachPointDefinition attachPointDef;
@@ -496,7 +496,7 @@ void XMLModelDefinitionSerializer::readAttachPoints(ModelDefinitionPtr modelDef,
 		if (tmp)
 			attachPointDef.BoneName = tmp;
 
-		Ember::TiXmlElement* elem = apElem->FirstChildElement("rotation");
+		TiXmlElement* elem = apElem->FirstChildElement("rotation");
 		if (elem)
 		{
 			attachPointDef.Rotation = fillQuaternionFromElement(elem);
@@ -509,15 +509,15 @@ void XMLModelDefinitionSerializer::readAttachPoints(ModelDefinitionPtr modelDef,
 
 }
 
-void  XMLModelDefinitionSerializer::readParticleSystems(ModelDefinitionPtr modelDef, Ember::TiXmlElement* mParticleSystemsNode)
+void  XMLModelDefinitionSerializer::readParticleSystems(ModelDefinitionPtr modelDef, TiXmlElement* mParticleSystemsNode)
 {
-	Ember::TiXmlElement* elem;
+	TiXmlElement* elem;
 	ModelDefinition::ParticleSystemSet& particleSystems = modelDef->mParticleSystems;
 	
 	const char* tmp = 0;
 	bool nopartfound = true;
 
-	for (Ember::TiXmlElement* apElem = mParticleSystemsNode->FirstChildElement();
+	for (TiXmlElement* apElem = mParticleSystemsNode->FirstChildElement();
             apElem != 0; apElem = apElem->NextSiblingElement())
 	{
 		ModelDefinition::ParticleSystemDefinition def;
@@ -538,12 +538,12 @@ void  XMLModelDefinitionSerializer::readParticleSystems(ModelDefinitionPtr model
 	}
 }
 
-void XMLModelDefinitionSerializer::readParticleSystemsBindings(ModelDefinition::ParticleSystemDefinition& def, Ember::TiXmlElement* mParticleSystemsNode)
+void XMLModelDefinitionSerializer::readParticleSystemsBindings(ModelDefinition::ParticleSystemDefinition& def, TiXmlElement* mParticleSystemsNode)
 {
 	const char* tmp = 0;
 // 	bool nopartfound = true;
 
-	for (Ember::TiXmlElement* apElem = mParticleSystemsNode->FirstChildElement();
+	for (TiXmlElement* apElem = mParticleSystemsNode->FirstChildElement();
             apElem != 0; apElem = apElem->NextSiblingElement())
 	{
 		ModelDefinition::BindingDefinition binding;
@@ -570,13 +570,13 @@ void XMLModelDefinitionSerializer::readParticleSystemsBindings(ModelDefinition::
 
 }
 
-void XMLModelDefinitionSerializer::readViews(ModelDefinitionPtr modelDef, Ember::TiXmlElement* viewsNode)
+void XMLModelDefinitionSerializer::readViews(ModelDefinitionPtr modelDef, TiXmlElement* viewsNode)
 {
-	Ember::TiXmlElement* elem;
+	TiXmlElement* elem;
 	
 	const char* tmp = 0;
 
-	for (Ember::TiXmlElement* viewElem = viewsNode->FirstChildElement();
+	for (TiXmlElement* viewElem = viewsNode->FirstChildElement();
             viewElem != 0; viewElem = viewElem->NextSiblingElement())
 	{
 
@@ -608,7 +608,7 @@ void XMLModelDefinitionSerializer::readViews(ModelDefinitionPtr modelDef, Ember:
 }
 
 
-Ogre::Vector3 XMLModelDefinitionSerializer::fillVector3FromElement(Ember::TiXmlElement* elem)
+Ogre::Vector3 XMLModelDefinitionSerializer::fillVector3FromElement(TiXmlElement* elem)
 {
 	Ogre::Real x=0.0f, y=0.0f, z=0.0f;
 	if (elem->Attribute("x")) {
@@ -625,14 +625,14 @@ Ogre::Vector3 XMLModelDefinitionSerializer::fillVector3FromElement(Ember::TiXmlE
 }
 
 
-void XMLModelDefinitionSerializer::fillElementFromVector3(Ember::TiXmlElement& elem, Ogre::Vector3 vector)
+void XMLModelDefinitionSerializer::fillElementFromVector3(TiXmlElement& elem, Ogre::Vector3 vector)
 {
 	elem.SetDoubleAttribute("x", vector.x);
 	elem.SetDoubleAttribute("y", vector.y);
 	elem.SetDoubleAttribute("z", vector.z);
 }
 
-Ogre::Quaternion XMLModelDefinitionSerializer::fillQuaternionFromElement(Ember::TiXmlElement* elem)
+Ogre::Quaternion XMLModelDefinitionSerializer::fillQuaternionFromElement(TiXmlElement* elem)
 {
 	Ogre::Vector3 vector = fillVector3FromElement(elem);
 	Ogre::Degree degrees;
@@ -648,7 +648,7 @@ Ogre::Quaternion XMLModelDefinitionSerializer::fillQuaternionFromElement(Ember::
 	
 }
 
-void XMLModelDefinitionSerializer::fillElementFromQuaternion(Ember::TiXmlElement& elem, Ogre::Quaternion quaternion)
+void XMLModelDefinitionSerializer::fillElementFromQuaternion(TiXmlElement& elem, Ogre::Quaternion quaternion)
 {
 	///split the quaternion into an axis and a degree (our format allows us to store the angle element as a radian too, but I prefer degrees)
 	Ogre::Degree degrees;
@@ -665,7 +665,7 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		return;
 	}
 
-	Ember::TiXmlDocument xmlDoc;
+	TiXmlDocument xmlDoc;
 	
 	try
 	{
@@ -695,8 +695,8 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 #endif
 		}
 		
-		Ember::TiXmlElement elem("models");
-		Ember::TiXmlElement modelElem("model");
+		TiXmlElement elem("models");
+		TiXmlElement modelElem("model");
 		modelElem.SetAttribute("name", modelDef->getName().c_str());
 		
 		std::string useScaleOf;
@@ -730,26 +730,26 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		modelElem.SetAttribute("showcontained", modelDef->getShowContained() ? "true" : "false");
 		
 		if (modelDef->getContentOffset() != Ogre::Vector3::ZERO) {
-			Ember::TiXmlElement contentOffset("contentoffset");
+			TiXmlElement contentOffset("contentoffset");
 			fillElementFromVector3(contentOffset, modelDef->getContentOffset());
 			modelElem.InsertEndChild(contentOffset);
 		}
 		
-		Ember::TiXmlElement translate("translate");
+		TiXmlElement translate("translate");
 		fillElementFromVector3(translate, modelDef->getTranslate());
 		modelElem.InsertEndChild(translate);
 		
-		Ember::TiXmlElement rotation("rotation");
+		TiXmlElement rotation("rotation");
 		fillElementFromQuaternion(rotation, modelDef->getRotation());
 		modelElem.InsertEndChild(rotation);
 		
 		modelElem.SetAttribute("icon", modelDef->getIconPath().c_str());
 		
 		if (modelDef->getRenderingDefinition()) {
-			Ember::TiXmlElement rendering("rendering");
+			TiXmlElement rendering("rendering");
 			rendering.SetAttribute("scheme", modelDef->getRenderingDefinition()->getScheme().c_str());
 			for (StringParamStore::const_iterator I = modelDef->getRenderingDefinition()->getParameters().begin(); I != modelDef->getRenderingDefinition()->getParameters().end(); ++I) {
-				Ember::TiXmlElement param("param");
+				TiXmlElement param("param");
 				param.SetAttribute("key", I->first.c_str());
 				param.SetValue(I->second.c_str());
 			}
@@ -779,21 +779,21 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 
 }
 
-void XMLModelDefinitionSerializer::exportViews(ModelDefinitionPtr modelDef, Ember::TiXmlElement& modelElem)
+void XMLModelDefinitionSerializer::exportViews(ModelDefinitionPtr modelDef, TiXmlElement& modelElem)
 {
-	Ember::TiXmlElement viewsElem("views");
+	TiXmlElement viewsElem("views");
 	
 	for (ViewDefinitionStore::const_iterator I = modelDef->getViewDefinitions().begin(); I != modelDef->getViewDefinitions().end(); ++I) {
-		Ember::TiXmlElement viewElem("view");
+		TiXmlElement viewElem("view");
 		viewElem.SetAttribute("name", I->second->Name.c_str());
 		
-		Ember::TiXmlElement distanceElem("distance");
+		TiXmlElement distanceElem("distance");
 		std::stringstream ss;
 		ss << I->second->Distance;
-		distanceElem.InsertEndChild(Ember::TiXmlText(ss.str().c_str()));
+		distanceElem.InsertEndChild(TiXmlText(ss.str().c_str()));
 		viewElem.InsertEndChild(distanceElem);
 
-		Ember::TiXmlElement rotation("rotation");
+		TiXmlElement rotation("rotation");
 		fillElementFromQuaternion(rotation, I->second->Rotation);
 		viewElem.InsertEndChild(rotation);
 
@@ -802,23 +802,23 @@ void XMLModelDefinitionSerializer::exportViews(ModelDefinitionPtr modelDef, Embe
 	modelElem.InsertEndChild(viewsElem);
 }
 
-void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, Ember::TiXmlElement& modelElem)
+void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, TiXmlElement& modelElem)
 {
-	Ember::TiXmlElement actionsElem("actions");
+	TiXmlElement actionsElem("actions");
 	
 	for (ActionDefinitionsStore::const_iterator I = modelDef->getActionDefinitions().begin(); I != modelDef->getActionDefinitions().end(); ++I) {
-		Ember::TiXmlElement actionElem("action");
+		TiXmlElement actionElem("action");
 		actionElem.SetAttribute("name", (*I)->getName().c_str());
 		actionElem.SetDoubleAttribute("speed", (*I)->getAnimationSpeed());
 		
 		if ((*I)->getAnimationDefinitions().size() > 0) {
-			Ember::TiXmlElement animationsElem("animations");
+			TiXmlElement animationsElem("animations");
 			for (AnimationDefinitionsStore::const_iterator J = (*I)->getAnimationDefinitions().begin(); J != (*I)->getAnimationDefinitions().end(); ++J) {
-				Ember::TiXmlElement animationElem("animation");
+				TiXmlElement animationElem("animation");
 				animationElem.SetAttribute("iterations", (*J)->getIterations());
 				
 				for (AnimationPartDefinitionsStore::const_iterator K = (*J)->getAnimationPartDefinitions().begin(); K != (*J)->getAnimationPartDefinitions().end(); ++K) {
-					Ember::TiXmlElement animationPartElem("animationpart");
+					TiXmlElement animationPartElem("animationpart");
 					animationPartElem.SetAttribute("name", (*K)->Name.c_str());
 					animationPartElem.SetDoubleAttribute("weight", (*K)->Weight);
 					animationElem.InsertEndChild(animationPartElem);
@@ -832,7 +832,7 @@ void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, Em
 		//for now, only allow one sound
 		if ((*I)->getSoundDefinitions().size() > 0) {
 			SoundDefinition* def = *(*I)->getSoundDefinitions().begin();
-			Ember::TiXmlElement soundElem("sound");
+			TiXmlElement soundElem("sound");
 			soundElem.SetAttribute("name", def->Name.c_str());
 			soundElem.SetAttribute("repeat", def->Repeat);
 			soundElem.SetDoubleAttribute("volume", def->Volume);
@@ -843,17 +843,17 @@ void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, Em
 	modelElem.InsertEndChild(actionsElem);
 }
 
-void XMLModelDefinitionSerializer::exportSubModels(ModelDefinitionPtr modelDef, Ember::TiXmlElement& modelElem)
+void XMLModelDefinitionSerializer::exportSubModels(ModelDefinitionPtr modelDef, TiXmlElement& modelElem)
 {
-	Ember::TiXmlElement submodelsElem("submodels");
+	TiXmlElement submodelsElem("submodels");
 	
 	for (SubModelDefinitionsStore::const_iterator I = modelDef->getSubModelDefinitions().begin(); I != modelDef->getSubModelDefinitions().end(); ++I) {
-		Ember::TiXmlElement submodelElem("submodel");
+		TiXmlElement submodelElem("submodel");
 		submodelElem.SetAttribute("mesh", (*I)->getMeshName().c_str());
-		Ember::TiXmlElement partsElem("parts");
+		TiXmlElement partsElem("parts");
 		
 		for (PartDefinitionsStore::const_iterator J = (*I)->getPartDefinitions().begin(); J != (*I)->getPartDefinitions().end(); ++J) {
-			Ember::TiXmlElement partElem("part");
+			TiXmlElement partElem("part");
 			partElem.SetAttribute("name", (*J)->getName().c_str());
 			if ((*J)->getGroup() != "") {
 				partElem.SetAttribute("group", (*J)->getGroup().c_str());
@@ -861,9 +861,9 @@ void XMLModelDefinitionSerializer::exportSubModels(ModelDefinitionPtr modelDef, 
 			partElem.SetAttribute("show", (*J)->getShow() ? "true" : "false");
 			
 			if ((*J)->getSubEntityDefinitions().size() > 0) {
-				Ember::TiXmlElement subentitiesElem("subentities");
+				TiXmlElement subentitiesElem("subentities");
 				for (SubEntityDefinitionsStore::const_iterator K = (*J)->getSubEntityDefinitions().begin(); K != (*J)->getSubEntityDefinitions().end(); ++K) {
-					Ember::TiXmlElement subentityElem("subentity");
+					TiXmlElement subentityElem("subentity");
 					if ((*K)->getSubEntityName() != "") {
 						subentityElem.SetAttribute("name", (*K)->getSubEntityName().c_str());
 					} else {
@@ -885,15 +885,15 @@ void XMLModelDefinitionSerializer::exportSubModels(ModelDefinitionPtr modelDef, 
 
 }
 
-void XMLModelDefinitionSerializer::exportAttachPoints(ModelDefinitionPtr modelDef, Ember::TiXmlElement& modelElem)
+void XMLModelDefinitionSerializer::exportAttachPoints(ModelDefinitionPtr modelDef, TiXmlElement& modelElem)
 {
-	Ember::TiXmlElement attachpointsElem("attachpoints");
+	TiXmlElement attachpointsElem("attachpoints");
 	
 	for (AttachPointDefinitionStore::const_iterator I = modelDef->getAttachPointsDefinitions().begin(); I != modelDef->getAttachPointsDefinitions().end(); ++I) {
-		Ember::TiXmlElement attachpointElem("attachpoint");
+		TiXmlElement attachpointElem("attachpoint");
 		attachpointElem.SetAttribute("name", I->Name.c_str());
 		attachpointElem.SetAttribute("bone", I->BoneName.c_str());
-		Ember::TiXmlElement rotationElem("rotation");
+		TiXmlElement rotationElem("rotation");
 		fillElementFromQuaternion(rotationElem, I->Rotation);
 		attachpointElem.InsertEndChild(rotationElem);
 		

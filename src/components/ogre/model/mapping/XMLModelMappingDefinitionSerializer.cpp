@@ -45,12 +45,12 @@ XMLModelMappingDefinitionSerializer::~XMLModelMappingDefinitionSerializer()
 {
 }
 
-void XMLModelMappingDefinitionSerializer::parseScript(Ember::TiXmlDocument& xmlDocument)
+void XMLModelMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocument)
 {
 
-	Ember::TiXmlElement* rootElem = xmlDocument.RootElement();
+	TiXmlElement* rootElem = xmlDocument.RootElement();
 
-	for (Ember::TiXmlElement* smElem = rootElem->FirstChildElement("modelmapping");
+	for (TiXmlElement* smElem = rootElem->FirstChildElement("modelmapping");
             smElem != 0; smElem = smElem->NextSiblingElement("modelmapping"))
     {
 		const char* tmp =  smElem->Attribute("name");
@@ -64,7 +64,7 @@ void XMLModelMappingDefinitionSerializer::parseScript(Ember::TiXmlDocument& xmlD
 		try {
 			ModelMappingDefinition* definition = new ModelMappingDefinition();
 			definition->setName(name);
-			Ember::TiXmlElement* matchElement = smElem->FirstChildElement();
+			TiXmlElement* matchElement = smElem->FirstChildElement();
 			parseMatchElement(*definition, definition->getRoot(), matchElement);
 			mModelMappingManager.addDefinition(definition);
 		} catch (std::exception ex) {
@@ -77,7 +77,7 @@ void XMLModelMappingDefinitionSerializer::parseScript(Ember::TiXmlDocument& xmlD
 	///Check for automodelmapping elements, which allow for a quick mapping between a entity type and a model.
 	///format: <automodelmapping name="oak">
 	///or: <automodelmapping name="oak" modelname="oak_1">
-	for (Ember::TiXmlElement* smElem = rootElem->FirstChildElement("automodelmapping");
+	for (TiXmlElement* smElem = rootElem->FirstChildElement("automodelmapping");
             smElem != 0; smElem = smElem->NextSiblingElement("automodelmapping"))
     {
 		const char* tmp =  smElem->Attribute("name");
@@ -118,7 +118,7 @@ void XMLModelMappingDefinitionSerializer::parseScript(Ember::TiXmlDocument& xmlD
 	}	
 }
 
-void XMLModelMappingDefinitionSerializer::parseMatchElement(ModelMappingDefinition& definition, MatchDefinition& matchDef, Ember::TiXmlElement* element)
+void XMLModelMappingDefinitionSerializer::parseMatchElement(ModelMappingDefinition& definition, MatchDefinition& matchDef, TiXmlElement* element)
 {
 	std::string caseType("");
 	if (std::string(element->Value()) == std::string("entitymatch")) {
@@ -135,14 +135,14 @@ void XMLModelMappingDefinitionSerializer::parseMatchElement(ModelMappingDefiniti
 		caseType = "outfitcase";
 	}
 	
-	for (Ember::TiXmlAttribute* attribute = element->FirstAttribute();
+	for (TiXmlAttribute* attribute = element->FirstAttribute();
             attribute != 0; attribute = attribute->Next())
     {
     	matchDef.getProperties()[attribute->Name()] = attribute->Value();
 	}
 	
 	if (!element->NoChildren()) {
-		for (Ember::TiXmlElement* childElement = element->FirstChildElement();
+		for (TiXmlElement* childElement = element->FirstChildElement();
 				childElement != 0; childElement = childElement->NextSiblingElement())
 		{
 			CaseDefinition caseDef;
@@ -153,9 +153,9 @@ void XMLModelMappingDefinitionSerializer::parseMatchElement(ModelMappingDefiniti
 	}
 }
 
-void XMLModelMappingDefinitionSerializer::parseCaseElement(ModelMappingDefinition& definition, CaseDefinition& caseDef, Ember::TiXmlElement* element)
+void XMLModelMappingDefinitionSerializer::parseCaseElement(ModelMappingDefinition& definition, CaseDefinition& caseDef, TiXmlElement* element)
 {
-	for (Ember::TiXmlAttribute* attribute = element->FirstAttribute();
+	for (TiXmlAttribute* attribute = element->FirstAttribute();
             attribute != 0; attribute = attribute->Next())
     {
     	caseDef.getProperties()[attribute->Name()] = attribute->Value();
@@ -163,7 +163,7 @@ void XMLModelMappingDefinitionSerializer::parseCaseElement(ModelMappingDefinitio
 	
 	
 	if (!element->NoChildren()) {
-		for (Ember::TiXmlElement* childElement = element->FirstChildElement();
+		for (TiXmlElement* childElement = element->FirstChildElement();
 				childElement != 0; childElement = childElement->NextSiblingElement())
 		{
 			if (std::string(childElement->Value()) == std::string("action")) {
@@ -173,7 +173,7 @@ void XMLModelMappingDefinitionSerializer::parseCaseElement(ModelMappingDefinitio
 			} else if (std::string(childElement->Value()) == std::string("caseparam")){
 				///it's a case parameter
 				if (const char* attributeValue = childElement->Attribute("type")) {
-					if (Ember::TiXmlNode* textNode =  childElement->FirstChild()) {
+					if (TiXmlNode* textNode =  childElement->FirstChild()) {
 						std::string type(attributeValue);
 						std::string value(textNode->Value());
 						caseDef.getCaseParameters().push_back(std::pair<std::string, std::string>(type, value));
@@ -189,15 +189,15 @@ void XMLModelMappingDefinitionSerializer::parseCaseElement(ModelMappingDefinitio
 	}
 }
 
-void XMLModelMappingDefinitionSerializer::parseActionElement(ModelMappingDefinition& definition, ActionDefinition& actionDef, Ember::TiXmlElement* element)
+void XMLModelMappingDefinitionSerializer::parseActionElement(ModelMappingDefinition& definition, ActionDefinition& actionDef, TiXmlElement* element)
 {
-	for (Ember::TiXmlAttribute* attribute = element->FirstAttribute();
+	for (TiXmlAttribute* attribute = element->FirstAttribute();
             attribute != 0; attribute = attribute->Next())
     {
     	actionDef.getProperties()[attribute->Name()] = attribute->Value();
 	}
 	actionDef.setType(element->Attribute("type" ));
-	Ember::TiXmlNode* textNode =  element->FirstChild();
+	TiXmlNode* textNode =  element->FirstChild();
 	if (textNode) {
 		actionDef.setValue(textNode->Value());
 	}

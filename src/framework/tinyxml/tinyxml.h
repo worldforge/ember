@@ -22,11 +22,33 @@ must not be misrepresented as being the original software.
 distribution.
 */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#ifdef HAVE_LIBTINYXML
+#include <tinyxml.h>
+#else
 
 #ifndef TINYXML_INCLUDED
 #define TINYXML_INCLUDED
 
 #define TIXML_USE_STL
+
+#define TiXmlAttribute Ember::TiXmlAttribute
+#define TiXmlBase Ember::TiXmlBase
+#define TiXmlComment Ember::TiXmlComment
+#define TiXmlDeclaration Ember::TiXmlDeclaration
+#define TiXmlElement Ember::TiXmlElement
+#define TiXmlDocument Ember::TiXmlDocument
+#define TiXmlNode Ember::TiXmlNode
+#define TiXmlPrinter Ember::TiXmlPrinter
+#define TiXmlText Ember::TiXmlText
+#define TiXmlUnknown Ember::TiXmlUnknown
+#define TiXmlVisitor Ember::TiXmlVisitor
+#define TIXML_SUCCESS Ember::TIXML_SUCCESS
+#define TIXML_NO_ATTRIBUTE Ember::TIXML_NO_ATTRIBUTE
+#define TIXML_WRONG_TYPE Ember::TIXML_WRONG_TYPE
 
 #ifdef _MSC_VER
 #pragma warning( push )
@@ -1777,3 +1799,4 @@ private:
 
 #endif
 
+#endif // HAVE_LIBTINYXML

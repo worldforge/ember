@@ -147,6 +147,20 @@ AM_BINRELOC
 # AC_MSG_ERROR(Couldn't find libxml)
 #)
 
+# Try to find system-wide installation of tinyxml
+# If found, add define to config.h, set LIBS and add automake conditional
+AC_CHECK_LIB(tinyxml, main,
+	[
+		AC_DEFINE(HAVE_LIBTINYXML, 1, [Define to 1 if you have the `tinyxml' library (-ltinyxml).])
+		LIBS="-ltinyxml $LIBS"
+		have_tinyxml=true
+	],
+	[
+		have_tinyxml=false
+	]
+)
+AM_CONDITIONAL(HAVE_LIBTINYXML, [test x$have_tinyxml = xtrue])
+
 # Check for the FreeType 2 library
 #
 # Get the cflags and libraries from the freetype-config script

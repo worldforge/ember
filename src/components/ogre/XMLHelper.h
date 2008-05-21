@@ -45,7 +45,7 @@ public:
 	 @param An opened and valid data stream
 	 @returns true if successful, else false
 	 */
-    bool Load(Ember::TiXmlDocument& xmlDoc, Ogre::DataStreamPtr stream);
+    bool Load(TiXmlDocument& xmlDoc, Ogre::DataStreamPtr stream);
 
 
 };
