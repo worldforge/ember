@@ -308,18 +308,8 @@ PKG_CHECK_MODULES(LUA, lua5.1 >= 5.1,
 	])
 ])
 
-# We have lua. Now, check for CEGUI lua module
-AC_CHECK_LIB(CEGUILuaScriptModule, main,
-    [
-        LIBS="-lCEGUILuaScriptModule $LIBS"
-    ],
-    [
-        AC_MSG_ERROR([Couldn't find Lua CEGUI module. Make sure that CEGUI compiled with Lua scripting support.])
-    ]
-)
-
 # Check for tolua++
-AC_CHECK_LIB(CEGUItoluapp, main,
+AC_CHECK_LIB([CEGUItoluapp], [main],
     [
         LIBS="-lCEGUItoluapp $LIBS"
     ],
@@ -334,6 +324,18 @@ AC_CHECK_LIB(CEGUItoluapp, main,
         )
     ]
 )
+
+# We have lua and tolua++. Now, check for CEGUI lua module
+AC_CHECK_LIB([CEGUILuaScriptModule], [main],
+    [
+        LIBS="-lCEGUILuaScriptModule $LIBS"
+    ],
+    [
+        AC_MSG_ERROR([Couldn't find Lua CEGUI module. Make sure that CEGUI compiled with Lua scripting support.])
+    ]
+)
+
+
 
 # Check for OpenAL
 OPENAL_VERSION=0.0.8
