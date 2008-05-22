@@ -365,7 +365,9 @@ bool ServerWidget::saveCredentials()
 		serverCache.setItem(psection, "username", name.c_str());
 		serverCache.setItem(psection, "password", password.c_str());
 		serverCache.writeToFile(cacheFile, varconf::INSTANCE);
+		return true;
 	}
+	return false;
 }
 
 void ServerWidget::loginSuccess(Eris::Account* account) 
