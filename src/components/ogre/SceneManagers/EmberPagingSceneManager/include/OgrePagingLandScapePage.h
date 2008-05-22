@@ -171,6 +171,8 @@ namespace Ogre
 			const AxisAlignedBox &getWorldBbox() const {return mBounds;};
 			const Vector3 &getCenter(void) const {return mWorldPosition;};
 			
+			void updateTerrain();
+			
         protected:
 	        SceneNode* mPageNode;
 

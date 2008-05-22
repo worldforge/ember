@@ -100,6 +100,7 @@ TerrainPage::TerrainPage(TerrainPosition position, const std::map<const Mercator
 , mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), (mPosition.y() - 1) * (getPageSize() - 1)), WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), (mPosition.y()) * (getPageSize() - 1))
 )
 , mPageFoliage(new TerrainPageFoliage(*mGenerator, *this))
+, mOgreHeightData(0)
 {
 
 	S_LOG_VERBOSE("Creating TerrainPage at position " << position.x() << ":" << position.y());
@@ -208,6 +209,7 @@ float TerrainPage::getMinHeight()
 
 void TerrainPage::update()
 {
+	updateOgreHeightData();
 	Ogre::Vector2 targetPage = Atlas2Ogre_Vector2(mPosition);
 	
 	///note that we've switched the x and y offset here, since the terraininfo is in WF coords, but we now want Ogre coords
@@ -283,32 +285,46 @@ unsigned int TerrainPage::getAlphaMapScale() const
 
 
 
-void TerrainPage::createHeightData(Ogre::Real* heightData)
+void TerrainPage::updateOgreHeightData()
 {
-	int pageSizeInVertices = getPageSize();
-	int pageSizeInMeters = pageSizeInVertices - 1;
-	
-	///since Ogre uses a different coord system than WF, we have to do some conversions here
-	TerrainPosition origPosition(mPosition);
-	///start in one of the corners...
-	origPosition[0] = (mPosition[0] * (pageSizeInMeters));
-	origPosition[1] = (mPosition[1] * (pageSizeInMeters));
-	
-	S_LOG_INFO("Page x:" << mPosition.x() << " y:" << mPosition.y() << " starts at x:" << origPosition.x() << " y:" << origPosition.y());
-	 
-	TerrainPosition position(origPosition);
-	
-	for (int i = 0; i < pageSizeInVertices; ++i) {
-		position = origPosition;
-		position[1] = position[1] - i;
-		for (int j = 0; j < pageSizeInVertices; ++j) {
-			Ogre::Real height = mGenerator->getHeight(position);
-			*(heightData++) = height;
-			position[0] = position[0] + 1;
+	if (mOgreHeightData) {
+		int pageSizeInVertices = getPageSize();
+		int pageSizeInMeters = pageSizeInVertices - 1;
+		
+		///since Ogre uses a different coord system than WF, we have to do some conversions here
+		TerrainPosition origPosition(mPosition);
+		///start in one of the corners...
+		origPosition[0] = (mPosition[0] * (pageSizeInMeters));
+		origPosition[1] = (mPosition[1] * (pageSizeInMeters));
+		
+		S_LOG_INFO("Page x:" << mPosition.x() << " y:" << mPosition.y() << " starts at x:" << origPosition.x() << " y:" << origPosition.y());
+		
+		TerrainPosition position(origPosition);
+		
+		Ogre::Real* heightData(mOgreHeightData);
+		
+		for (int i = 0; i < pageSizeInVertices; ++i) {
+			position = origPosition;
+			position[1] = position[1] - i;
+			for (int j = 0; j < pageSizeInVertices; ++j) {
+				Ogre::Real height = mGenerator->getHeight(position);
+				*(heightData++) = height;
+				position[0] = position[0] + 1;
+			}
 		}
-	}
-	
+	}	
 }
+
+void TerrainPage::bindToOgreHeightData(Ogre::Real* heightData)
+{
+	mOgreHeightData = heightData;
+}
+	
+void TerrainPage::unbindFromOgreHeightData()
+{
+	mOgreHeightData = 0;
+}
+
 
 void TerrainPage::showFoliage()
 {

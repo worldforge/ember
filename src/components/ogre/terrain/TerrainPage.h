@@ -112,10 +112,20 @@ public:
 	Ogre::MaterialPtr generateTerrainMaterials();
 	
 	/**
-	 *    Fills the supplied data buffer with height data. Make sure that the supplied buffer can take getVerticeCount() number of elements.
-	 * @param heightData 
+	 *    Fills the bound height data with height data. If no buffer has been bound nothing will be done.
 	 */
-	void createHeightData(Ogre::Real* heightData);
+	void updateOgreHeightData();
+	
+	/**
+	 *    Binds a bitmap which will be used by the terrain engine to generate the terrain meshes. The supplied height data must be large enough to fit all vertices in the page.
+	 * @param heightData A pointer to an initialized bitmap.
+	 */
+	void bindToOgreHeightData(Ogre::Real* heightData);
+	
+	/**
+	 *  Unbinds the Ogre height map bitmap. This must be called whenever the bitmap is destroyed.
+	 */
+	void unbindFromOgreHeightData();
 
 	/**
 	 *    The total number of vertices used for this page
@@ -278,6 +288,13 @@ private:
 	The keys will be the local indices.
 	*/
 	Mercator::Terrain::Segmentstore mLocalSegments;
+	
+	/**
+	@brief Ogre height data as a bitmap. This will be used by terrain engine to create the terrain meshes.
+	The data here is owned by the terrain engine, and not by this class.
+	Make sure to call @see unbindOgreHeightData() when the bitmap is destroyed.
+	*/
+	Ogre::Real* mOgreHeightData;
 
 
 };

@@ -530,6 +530,18 @@ namespace Ogre
             mIsTextureLoaded = false;
         }
     }
+    
+	void PagingLandScapePage::updateTerrain()
+	{
+		PagingLandScapeTiles::iterator iend = mTiles.end();
+		for (PagingLandScapeTiles::iterator it = mTiles.begin(); 
+			it != iend; 
+			++it)
+		{
+			std::for_each(it->begin (), it->end (), std::mem_fun(&PagingLandScapeTile::updateTerrain));
+		} 
+	}
+    
     //-----------------------------------------------------------------------
     void PagingLandScapePage::postUnload()
     {

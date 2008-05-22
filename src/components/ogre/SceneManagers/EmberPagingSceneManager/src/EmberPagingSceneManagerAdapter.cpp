@@ -27,6 +27,7 @@
 #include "OgrePagingLandScapeOptions.h"
 #include "OgrePagingLandScapePageManager.h"
 #include "OgrePagingLandScapePage.h"
+#include "OgrePagingLandScapeData2DManager.h"
 
 namespace EmberOgre {
 	
@@ -142,13 +143,19 @@ namespace EmberOgre {
 
 	void EmberPagingSceneManagerAdapter::reloadPage(unsigned int x, unsigned int z)
 	{
-		Ogre::Vector2 position(x,z);
-		setOption("PageUpdate", &position);
+// 		Ogre::Vector2 position(x,z);
+// 		setOption("PageUpdate", &position);
 		Ogre::PagingLandScapePage* page=  mSceneManager->getPageManager()->getPage(x, z, false);
 		if (page) {
 //			page->reload();
-			page->unload();
+//			mSceneManager->getData2DManager()->load();
+ 			//mSceneManager->getData2DManager()->reload(x, z);
+			page->updateTerrain();
+/*			page->unload();
 			page->load();
+			page->_updateLod();*/
+		} else {
+			S_LOG_WARNING("Trying to reload page which doesn't exist at position x: " << x << " y: " << z << ".");
 		}
 	}
 	

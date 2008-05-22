@@ -77,6 +77,7 @@ namespace Ogre
 		void setNeedUpdate(void)
 		{
 			mNeedReload = true;
+// 			mIsRectModified = true;
 		};
 		void adjustDeformationRectangle(unsigned int x, unsigned int z);
 

@@ -50,7 +50,7 @@ EmberPagingLandScapeData2D_HeightField::EmberPagingLandScapeData2D_HeightField(O
 	
 bool EmberPagingLandScapeData2D_HeightField::_load( const Ogre::uint x, const Ogre::uint z )
 {
-	assert(!mTerrainPage);
+// 	assert(!mTerrainPage);
 	Terrain::TerrainGenerator* terrainGenerator = EmberOgre::getSingleton().getTerrainGenerator();
 	mXDimension = mZDimension = terrainGenerator->getPageIndexSize();
 
@@ -60,7 +60,8 @@ bool EmberPagingLandScapeData2D_HeightField::_load( const Ogre::uint x, const Og
 	//should always return a TerrainPage*
 	assert(mTerrainPage);
 	
-	mTerrainPage->createHeightData(mHeightData);
+	mTerrainPage->bindToOgreHeightData(mHeightData);
+	mTerrainPage->updateOgreHeightData();
 	
 // 	char imageHeightData[mMaxArrayPos];
 // 	for (unsigned int i = 0; i <= mMaxArrayPos;++i) {
@@ -145,6 +146,10 @@ void EmberPagingLandScapeData2D_HeightField::_load()
 void EmberPagingLandScapeData2D_HeightField::_unload()
 {
 	S_LOG_VERBOSE("Unloading terrain page at x: " << mPageX << " z:" << mPageZ << ".");
+	if (mTerrainPage)
+	{
+		mTerrainPage->unbindFromOgreHeightData();
+	}
 	mTerrainPage = 0;
 }
 
