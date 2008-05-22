@@ -279,28 +279,28 @@ fi
 PKG_CHECK_MODULES(LUA, lua5.1 >= 5.1,
 [
 	CXXFLAGS="$CXXFLAGS $LUA_CFLAGS -DLUA51"
-	LDFLAGS="$LDFLAGS $LUA_LIBS -lCEGUILuaScriptModule -lCEGUItoluapp"
+	LDFLAGS="$LDFLAGS $LUA_LIBS"
 	AC_MSG_NOTICE([Lua version => 5.1, make sure that CEGUI also has been compiled for this version])
 ],
 [
 	PKG_CHECK_MODULES(LUA, lua >= 5.1,
 	[
 		CXXFLAGS="$CXXFLAGS $LUA_CFLAGS -DLUA51"
-		LDFLAGS="$LDFLAGS $LUA_LIBS -lCEGUILuaScriptModule -lCEGUItoluapp"
+		LDFLAGS="$LDFLAGS $LUA_LIBS"
 		AC_MSG_NOTICE([Lua version => 5.1, make sure that CEGUI also has been compiled for this version])
 	],
 	[
 		PKG_CHECK_MODULES(LUA, lua >= 5.0 lua < 5.1,
 		[
 			CXXFLAGS="$CXXFLAGS $LUA_CFLAGS -DLUA50"
-			LDFLAGS="$LDFLAGS $LUA_LIBS -lCEGUILuaScriptModule -lCEGUItoluapp"
+			LDFLAGS="$LDFLAGS $LUA_LIBS"
 			AC_MSG_NOTICE([Lua version = 5.0, make sure that CEGUI also has been compiled for this version])
 		],
 		[
 			PKG_CHECK_MODULES(LUA, lua50 >= 5.0 lua50 < 5.1 lualib50 >= 5.0 lualib50 <= 5.1,
 			[
 				CXXFLAGS="$CXXFLAGS $LUA_CFLAGS -DLUA50"
-				LDFLAGS="$LDFLAGS $LUA_LIBS -lCEGUILuaScriptModule -lCEGUItoluapp"
+				LDFLAGS="$LDFLAGS $LUA_LIBS"
 				AC_MSG_NOTICE([Lua version = 5.0, make sure that CEGUI also has been compiled for this version])
 			],
 			[
@@ -309,6 +309,33 @@ PKG_CHECK_MODULES(LUA, lua5.1 >= 5.1,
 		])
 	])
 ])
+
+# We have lua. Now, check for CEGUI lua module
+AC_CHECK_LIB(CEGUILuaScriptModule, main,
+    [
+        LIBS="-lCEGUILuaScriptModule $LIBS"
+    ],
+    [
+        AC_MSG_ERROR([Couldn't find Lua CEGUI module. Make sure that CEGUI compiled with Lua scripting support.])
+    ]
+)
+
+# Check for tolua++
+AC_CHECK_LIB(CEGUItoluapp, main,
+    [
+        LIBS="-lCEGUItoluapp $LIBS"
+    ],
+    [
+        AC_CHECK_LIB([tolua++], main,
+            [
+                LIBS="-ltolua++ $LIBS"
+            ],
+            [
+                AC_MSG_ERROR([Couldn't find tolua++. Make sure that CEGUI compiled with Lua scripting support.])
+            ]
+        )
+    ]
+)
 
 # Check for OpenAL
 OPENAL_VERSION=0.0.8
