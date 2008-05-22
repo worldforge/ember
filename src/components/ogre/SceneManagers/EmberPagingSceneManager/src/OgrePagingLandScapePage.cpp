@@ -533,12 +533,19 @@ namespace Ogre
     
 	void PagingLandScapePage::updateTerrain()
 	{
+		const PagingLandScapeOptions * const opt = mParent->getOptions();
 		PagingLandScapeTiles::iterator iend = mTiles.end();
 		for (PagingLandScapeTiles::iterator it = mTiles.begin(); 
 			it != iend; 
 			++it)
 		{
-			std::for_each(it->begin (), it->end (), std::mem_fun(&PagingLandScapeTile::updateTerrain));
+		
+			for (PagingLandScapeTileRow::iterator I = it->begin(); I != it->end(); ++I) {
+				///we need to adjust the deformation rectangle for the whole tile/renderable so to force a recalculation of the bounding box and the LOD calculation
+				(*I)->getRenderable()->adjustDeformationRectangle(0, 0);
+				(*I)->getRenderable()->adjustDeformationRectangle(opt->TileSize - 1, opt->TileSize - 1);
+				(*I)->updateTerrain();
+			}
 		} 
 	}
     
