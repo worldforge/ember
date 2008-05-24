@@ -20,17 +20,18 @@
 
 
 #include "OgrePagingLandScapePrerequisites.h"
+#include <OgreFrameListener.h>
 
 
 namespace Ogre
 {
-    
-    /** Represents a LandScape tile in terms of vertexes.
+
+    /** @brief Represents a LandScape tile in terms of vertexes.
 	@remarks
 	A LandScapeRenderable represents a tile used to render a
 	block of LandScape using the procedural terrain approach for LOD.
     */
-    class PagingLandScapeRenderable : public Renderable, public MovableObject
+    class PagingLandScapeRenderable : public Renderable, public MovableObject, public FrameListener
     {
     public:
 	
@@ -115,7 +116,7 @@ namespace Ogre
 		};
 		
 		/** Returns the bounding box of this TerrainRenderable */
-		const AxisAlignedBox& getBoundingBox(void) const
+		virtual const AxisAlignedBox& getBoundingBox(void) const
 		{
 			return mBounds;
 		};
@@ -169,6 +170,13 @@ namespace Ogre
         
         bool mQueued;
         PagingLandScapeTile *mParentTile;
+        
+		/**
+		* @brief Used for delayed updating after a reload.
+		* We can't update the bounding box of the scene node while within a load call, since it's happening during traversal of the node tree, so we have to delay it until after the traversal.
+		*/
+		bool frameStarted(const Ogre::FrameEvent& event);
+        
 
 
 	protected:	
@@ -248,6 +256,11 @@ namespace Ogre
             mutable bool mLightListDirty;
             /// Cached light list
             mutable LightList mLightList;
+            
+            /**
+            True if this instance is registered as a frame listener. If so, it needs to be deregistered from Root when it's destroyed.
+            */
+            bool mIsFrameListener;
 	};
 }
 

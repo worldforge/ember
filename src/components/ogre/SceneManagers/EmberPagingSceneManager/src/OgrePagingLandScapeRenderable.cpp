@@ -58,6 +58,8 @@ namespace Ogre
 {
 
 
+
+
 // Renderable Buffer definitions
 #define MAIN_BINDING	    0
 #define DELTA_BINDING       2
@@ -88,6 +90,7 @@ namespace Ogre
         mForcedMaxLod (false)
         ///Ember added start
         , mNeedReload(false)
+        , mIsFrameListener(false)
         ///Ember added stop
 
     {
@@ -184,6 +187,9 @@ namespace Ogre
     {
 	    delete mCurrVertexes;
         delete [] mDeltaBuffers;
+        if (mIsFrameListener) {
+        	Ogre::Root::getSingleton().removeFrameListener(this);
+        }
     }
 
     //------------------------------------------------------------------------
@@ -307,8 +313,8 @@ namespace Ogre
             mRect.bottom = tileSize;
 
             // Make sure we get a new min and max
-            min = mParent->getSceneManager()->getData2DManager()->getMaxHeight ();
-            max = 0.0f;
+            min = std::numeric_limits<Real>::max();
+            max = -std::numeric_limits<Real>::max();
         } 
         else 
         {            
@@ -360,8 +366,8 @@ namespace Ogre
             {
                 const Real height =  heightField[ i + K_heightFieldPos ];
 
-                min = std::min (height, min);  
-                max = std::max (height, max);  
+                min = std::min<Real>(height, min);  
+                max = std::max<Real>(height, max);  
      
                 // vertices are relative to the scene node
                 if (vs)
@@ -441,8 +447,8 @@ namespace Ogre
         } // if (!mIsRectModified) 
         else
         {
-            const Vector3 maxbound = mBounds.getMaximum();
-            const Vector3 minbound = mBounds.getMinimum();
+            const Vector3& maxbound(mBounds.getMaximum());
+            const Vector3& minbound(mBounds.getMinimum());
 	        mBounds.setExtents(minbound.x, min, minbound.z, 
                                maxbound.x, max,  maxbound.z);
         }
@@ -459,6 +465,7 @@ namespace Ogre
 
 		mMinLevelDistSqr = 0;
         _calculateMinLevelDist2(mParent->getOptions ()->CFactor);
+//         getWorldBoundingBox(true);
         if (!mIsLoaded)
         {
             mParent->getSceneManager()->getListenerManager()->fireTileLoaded (mInfo->mPageX, mInfo->mPageZ,
@@ -479,6 +486,13 @@ namespace Ogre
 		mVisible = false;
 		mChangedRenderLevel = false;
 		mIndex = 0;
+		///ember addition start
+		if (getParentSceneNode()) {
+			///we need to update the bounding box of the scene node, but we can't do it here since this method might be called from within a traversal of the node tree, and that will cause segfaults, so we need to delay it until the next FrameStarted round
+			Ogre::Root::getSingleton().addFrameListener(this);
+			mIsFrameListener = true;
+		}
+		///ember addition end
         return true;
     }
 
@@ -1260,4 +1274,20 @@ namespace Ogre
 	{
 		return  mParent->getOptions ()->TileSize * mParent->getOptions ()->TileSize  ;
 	} 
+	
+	///ember addition start
+	bool PagingLandScapeRenderable::frameStarted(const Ogre::FrameEvent& event)
+	{
+		///update the parent scene node and then remove ourselves as framelisteners
+		///this is needed because we can't update the scene node from within load() since that happens during a node traversal and it will cause strange behaviour
+		if (getParentSceneNode()) {
+			getParentSceneNode()->_updateBounds();
+		}
+		Ogre::Root::getSingleton().removeFrameListener(this);
+		mIsFrameListener = false;
+		return true;
+	}
+	///ember addition end
+	
+	
 } //namespace

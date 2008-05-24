@@ -151,12 +151,15 @@ namespace EmberOgre {
 //			mSceneManager->getData2DManager()->load();
  			//mSceneManager->getData2DManager()->reload(x, z);
 			page->updateTerrain();
+/*			page->getSceneNode()->_update(true, true);*/
 /*			page->unload();
 			page->load();
 			page->_updateLod();*/
 		} else {
 			S_LOG_WARNING("Trying to reload page which doesn't exist at position x: " << x << " y: " << z << ".");
 		}
+// 		mSceneManager->getRootSceneNode()->_update(true, true);
+// 		mSceneManager->PagingLandScapeOctreeResize();
 	}
 	
 	void EmberPagingSceneManagerAdapter::loadFirstPage()
