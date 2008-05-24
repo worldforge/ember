@@ -41,8 +41,7 @@ EntityRecipe::EntityRecipe(Ogre::ResourceManager* creator, const Ogre::String& n
 
 EntityRecipe::~EntityRecipe()
 {
-	for (GUIAdaptersStore::iterator I = mGUIAdapters.begin(); I != mGUIAdapters.end(); ++I)
-	{
+	for (GUIAdaptersStore::iterator I = mGUIAdapters.begin(); I != mGUIAdapters.end(); ++I) {
 		delete I->second;
 	}
 }
@@ -61,12 +60,30 @@ size_t EntityRecipe::calculateSize(void) const
 	return 0; 
 }
 
-GUIAdapter* EntityRecipe::createGUIAdapter(std::string name)
+GUIAdapter* EntityRecipe::createGUIAdapter(std::string name, std::string type)
 {
 	GUIAdapter* adapter;
-	adapter = new GUIAdapter(name);
+	adapter = new GUIAdapter(type);
 	mGUIAdapters[name] = adapter;
 	return adapter;
+}
+
+GUIAdapter* EntityRecipe::getGUIAdapter(std::string name)
+{
+	GUIAdaptersStore::iterator adapter;
+	if ((adapter = mGUIAdapters.find(name)) != mGUIAdapters.end()) {
+		return adapter->second;
+	} else {
+		return NULL;
+	}
+}
+
+GUIAdapterBindings* EntityRecipe::createGUIAdapterBindings(std::string name)
+{
+	GUIAdapterBindings* adapterBindings;
+	adapterBindings = new GUIAdapterBindings();
+	mBindings[name] = adapterBindings;
+	return adapterBindings;
 }
 
 }

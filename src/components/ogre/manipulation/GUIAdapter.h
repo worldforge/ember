@@ -27,6 +27,9 @@
 
 namespace EmberOgre {
 
+/**
+ * Base class for GUI adapter.
+ */
 class GUIAdapter
 {
 public:

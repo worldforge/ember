@@ -25,12 +25,14 @@
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "GUIAdapter.h"
+#include "GUIAdapterBindings.h"
 
 #include <Atlas/Message/Element.h>
 
 namespace EmberOgre {
 
 typedef std::map<std::string, GUIAdapter*> GUIAdaptersStore;
+typedef std::map<std::string, GUIAdapterBindings*> BindingsStore;
 
 /**
  * Resource that stores recipes for entity creator.
@@ -69,7 +71,17 @@ public:
 	/**
 	 * Creates and returns GUI adapter.
 	 */
-	GUIAdapter* createGUIAdapter(std::string name);
+	GUIAdapter* createGUIAdapter(std::string name, std::string type);
+
+	/**
+	 * Returns named GUI adapter.
+	 */
+	GUIAdapter* getGUIAdapter(std::string name);
+
+	/**
+	 * Creates and returns GUI adapter bindings.
+	 */
+	GUIAdapterBindings* createGUIAdapterBindings(std::string name);
 
 protected:
 	/**
@@ -85,7 +97,7 @@ protected:
 	/**
 	 * Script bindings.
 	 */
-	void* mBindings;
+	BindingsStore mBindings;
 
 	/**
 	 * String that contains Lua script.

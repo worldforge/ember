@@ -54,27 +54,32 @@ protected:
 	/**
 	 * Parses xml tree with entity recipe.
 	 */
-	void readRecipe(EntityRecipePtr entRecipe, Ember::TiXmlElement* recipeNode);
+	void readRecipe(EntityRecipePtr entRecipe, TiXmlElement* recipeNode);
 
 	/**
 	 * Parses xml entity specification.
 	 */
-	void readEntitySpec(EntityRecipePtr entRecipe, Ember::TiXmlElement* entSpecNode);
+	void readEntitySpec(EntityRecipePtr entRecipe, TiXmlElement* entSpecNode);
 
 	/**
 	 * Parses xml GUI adapters.
 	 */
-	void readAdapters(EntityRecipePtr entRecipe, Ember::TiXmlElement* adaptersNode);
+	void readAdapters(EntityRecipePtr entRecipe, TiXmlElement* adaptersNode);
 
 	/**
 	 * Parses xml script bindings.
 	 */
-	void readBindings(EntityRecipePtr entRecipe, Ember::TiXmlElement* bindingsNode);
+	void readBindings(EntityRecipePtr entRecipe, TiXmlElement* bindingsNode);
+
+	/**
+	 * Parses adapters in individual script binding.
+	 */
+	void readBindAdapters(EntityRecipePtr entRecipe, GUIAdapterBindings* bindings, TiXmlElement* bindAdaptersNode);
 
 	/**
 	 * Parses xml with Lua script.
 	 */
-	void readScript(EntityRecipePtr entRecipe, Ember::TiXmlElement* scriptNode);
+	void readScript(EntityRecipePtr entRecipe, TiXmlElement* scriptNode);
 };
 
 }

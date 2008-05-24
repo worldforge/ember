@@ -46,15 +46,15 @@ XMLEntityRecipeSerializer::~XMLEntityRecipeSerializer()
 
 void XMLEntityRecipeSerializer::parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName)
 {
-	Ember::TiXmlDocument xmlDoc;
+	TiXmlDocument xmlDoc;
 	XMLHelper xmlHelper;
 	if (!xmlHelper.Load(xmlDoc, stream)) {
 		return;
 	}
 
-	Ember::TiXmlElement* rootElem = xmlDoc.RootElement();
+	TiXmlElement* rootElem = xmlDoc.RootElement();
 
-	for (Ember::TiXmlElement* smElem = rootElem->FirstChildElement();
+	for (TiXmlElement* smElem = rootElem->FirstChildElement();
             smElem != 0; smElem = smElem->NextSiblingElement())
 	{
 		const char* tmp = smElem->Attribute("name");
@@ -76,9 +76,9 @@ void XMLEntityRecipeSerializer::parseScript(Ogre::DataStreamPtr& stream, const O
 	}
 }
 
-void XMLEntityRecipeSerializer::readRecipe(EntityRecipePtr entRecipe, Ember::TiXmlElement* recipeNode)
+void XMLEntityRecipeSerializer::readRecipe(EntityRecipePtr entRecipe, TiXmlElement* recipeNode)
 {
-	Ember::TiXmlElement* elem;
+	TiXmlElement* elem;
 
 	// Entity specification
 	elem = recipeNode->FirstChildElement("entity");
@@ -109,12 +109,12 @@ void XMLEntityRecipeSerializer::readRecipe(EntityRecipePtr entRecipe, Ember::TiX
 	}
 }
 
-void XMLEntityRecipeSerializer::readEntitySpec(EntityRecipePtr entRecipe, Ember::TiXmlElement* entSpecNode)
+void XMLEntityRecipeSerializer::readEntitySpec(EntityRecipePtr entRecipe, TiXmlElement* entSpecNode)
 {
 	S_LOG_VERBOSE("Read entity spec.");
 
 	// Print <entity> part of XML into string and wrap it with stream
-	Ember::TiXmlPrinter printer;
+	TiXmlPrinter printer;
 	printer.SetStreamPrinting();
 	entSpecNode->Accept( &printer );
 
@@ -146,30 +146,56 @@ void XMLEntityRecipeSerializer::readEntitySpec(EntityRecipePtr entRecipe, Ember:
 	}
 }
 
-void XMLEntityRecipeSerializer::readAdapters(EntityRecipePtr entRecipe, Ember::TiXmlElement* adaptersNode)
+void XMLEntityRecipeSerializer::readAdapters(EntityRecipePtr entRecipe, TiXmlElement* adaptersNode)
 {
 	S_LOG_VERBOSE("Read adapters.");
-	for (Ember::TiXmlElement* smElem = adaptersNode->FirstChildElement();
-            smElem != 0; smElem = smElem->NextSiblingElement())
+	for (TiXmlElement* smElem = adaptersNode->FirstChildElement("adapter");
+            smElem != 0; smElem = smElem->NextSiblingElement("adapter"))
 	{
-		const char* tmp = smElem->Attribute("name");
-		std::string name;
-		if (!tmp) {
-			continue;
-		} else {
-			name = tmp;
-		}
+		const std::string *name, *type;
 
-		GUIAdapter* adapter = entRecipe->createGUIAdapter(name);
+		if (!(name = smElem->Attribute(std::string("name"))))
+			continue;
+
+		if (!(type = smElem->Attribute(std::string("type"))))
+			continue;
+
+		GUIAdapter* adapter = entRecipe->createGUIAdapter(*name, *type);
 	}
 }
 
-void XMLEntityRecipeSerializer::readBindings(EntityRecipePtr entRecipe, Ember::TiXmlElement* bindingsNode)
+void XMLEntityRecipeSerializer::readBindings(EntityRecipePtr entRecipe, TiXmlElement* bindingsNode)
 {
 	S_LOG_VERBOSE("Read bindings.");
+	for (TiXmlElement* smElem = bindingsNode->FirstChildElement("bind");
+            smElem != 0; smElem = smElem->NextSiblingElement("bind"))
+	{
+		const std::string *name, *func;
+
+		if (!(name = smElem->Attribute(std::string("name"))))
+			continue;
+
+		GUIAdapterBindings* bindings = entRecipe->createGUIAdapterBindings(*name);
+
+		if ((func = smElem->Attribute(std::string("func"))))
+		{
+			bindings->setFunc(*func);
+		}
+
+		readBindAdapters(entRecipe, bindings, smElem);
+	}
 }
 
-void XMLEntityRecipeSerializer::readScript(EntityRecipePtr entRecipe, Ember::TiXmlElement* scriptNode)
+void XMLEntityRecipeSerializer::readBindAdapters(EntityRecipePtr entRecipe, GUIAdapterBindings* bindings, TiXmlElement* bindAdaptersNode)
+{
+	S_LOG_VERBOSE("  Reading bind adapters.");
+	for (TiXmlElement* elem = bindAdaptersNode->FirstChildElement();
+            elem != 0; elem = elem->NextSiblingElement())
+	{
+	}
+}
+
+void XMLEntityRecipeSerializer::readScript(EntityRecipePtr entRecipe, TiXmlElement* scriptNode)
 {
 	S_LOG_VERBOSE("Read script.");
 	entRecipe->mScript = scriptNode->GetText();
