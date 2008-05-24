@@ -32,6 +32,7 @@
 #include <OgreRenderSystemCapabilities.h>
 #include "TerrainShader.h"
 #include "TerrainPageSurfaceLayer.h"
+#include "ITerrainPageBridge.h"
 
 #include "../EmberOgre.h"
 
@@ -100,7 +101,7 @@ TerrainPage::TerrainPage(TerrainPosition position, const std::map<const Mercator
 , mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), (mPosition.y() - 1) * (getPageSize() - 1)), WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), (mPosition.y()) * (getPageSize() - 1))
 )
 , mPageFoliage(new TerrainPageFoliage(*mGenerator, *this))
-, mOgreHeightData(0)
+, mBridge(0)
 {
 
 	S_LOG_VERBOSE("Creating TerrainPage at position " << position.x() << ":" << position.y());
@@ -191,7 +192,7 @@ int TerrainPage::getNumberOfSegmentsPerAxis() const
 	
 float TerrainPage::getMaxHeight()
 {
-	float max = 0;
+	float max = -std::numeric_limits<float>::max();
 	for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
 		max = std::max<float>(max, I->segment->getMax());
 	}
@@ -200,7 +201,7 @@ float TerrainPage::getMaxHeight()
 	
 float TerrainPage::getMinHeight()
 {
-	float min = 0;
+	float min = std::numeric_limits<float>::max();
 	for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
 		min = std::min<float>(min, I->segment->getMin());
 	}
@@ -209,7 +210,10 @@ float TerrainPage::getMinHeight()
 
 void TerrainPage::update()
 {
-	updateOgreHeightData();
+	if (mBridge) {
+		mBridge->updateTerrain();
+	}
+	
 	Ogre::Vector2 targetPage = Atlas2Ogre_Vector2(mPosition);
 	
 	///note that we've switched the x and y offset here, since the terraininfo is in WF coords, but we now want Ogre coords
@@ -285,9 +289,9 @@ unsigned int TerrainPage::getAlphaMapScale() const
 
 
 
-void TerrainPage::updateOgreHeightData()
+void TerrainPage::updateOgreHeightData(Ogre::Real* heightData)
 {
-	if (mOgreHeightData) {
+	if (heightData) {
 		int pageSizeInVertices = getPageSize();
 		int pageSizeInMeters = pageSizeInVertices - 1;
 		
@@ -300,9 +304,7 @@ void TerrainPage::updateOgreHeightData()
 		S_LOG_INFO("Page x:" << mPosition.x() << " y:" << mPosition.y() << " starts at x:" << origPosition.x() << " y:" << origPosition.y());
 		
 		TerrainPosition position(origPosition);
-		
-		Ogre::Real* heightData(mOgreHeightData);
-		
+			
 		for (int i = 0; i < pageSizeInVertices; ++i) {
 			position = origPosition;
 			position[1] = position[1] - i;
@@ -312,17 +314,7 @@ void TerrainPage::updateOgreHeightData()
 				position[0] = position[0] + 1;
 			}
 		}
-	}	
-}
-
-void TerrainPage::bindToOgreHeightData(Ogre::Real* heightData)
-{
-	mOgreHeightData = heightData;
-}
-	
-void TerrainPage::unbindFromOgreHeightData()
-{
-	mOgreHeightData = 0;
+	}
 }
 
 
@@ -427,5 +419,18 @@ TerrainPageSurfaceLayer* TerrainPage::updateShaderTexture(TerrainShader* shader,
 	return layer;
 	
 }
+
+void TerrainPage::registerBridge(ITerrainPageBridge* bridge)
+{
+	mBridge = bridge;
+	mBridge->bindToTerrainPage(this);
+}
+	
+void TerrainPage::unregisterBridge()
+{
+	///we're not responsible for this one, so we don't destroy it here
+	mBridge = 0;
+}
+
 }
 }

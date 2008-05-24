@@ -9,7 +9,7 @@ libTerrain_la_SOURCES = TerrainArea.cpp TerrainArea.h TerrainEditor.cpp \
 	TerrainPageSurfaceCompilerTechniqueShader.cpp TerrainPageSurfaceCompilerTechniqueSimple.cpp \
 	TerrainPageSurfaceLayer.cpp TerrainShader.cpp TerrainShader.h XMLLayerDefinitionSerializer.cpp \
 	Map.cpp
-noinst_HEADERS = ISceneManagerAdapter.h TerrainInfo.h TerrainLayerDefinition.h \
+noinst_HEADERS = ISceneManagerAdapter.h ITerrainPageBridge.h TerrainInfo.h TerrainLayerDefinition.h \
 	TerrainLayerDefinitionManager.h TerrainPageFoliage.h TerrainPageGeometry.h TerrainPageShadow.h \
 	TerrainPageSurface.h TerrainPageSurfaceCompiler.h \
 	TerrainPageSurfaceCompilerTechniqueShader.h TerrainPageSurfaceCompilerTechniqueSimple.h TerrainPageSurfaceLayer.h \

@@ -28,6 +28,7 @@
 
 #include "EmberPagingLandScapeData2D_HeightField.h"
 #include "EmberPagingSceneManager.h"
+#include "EmberTerrainPageBridge.h"
 
 #include "EmberOgre.h"
 #include "terrain/TerrainPage.h"
@@ -59,9 +60,12 @@ bool EmberPagingLandScapeData2D_HeightField::_load( const Ogre::uint x, const Og
 	mTerrainPage = terrainGenerator->getTerrainPage(Ogre::Vector2(x,z));
 	//should always return a TerrainPage*
 	assert(mTerrainPage);
+	mBridge = new EmberTerrainPageBridge(*this);
+	mTerrainPage->registerBridge(mBridge);
+	mBridge->updateTerrain();	
 	
-	mTerrainPage->bindToOgreHeightData(mHeightData);
-	mTerrainPage->updateOgreHeightData();
+/*	mTerrainPage->bindToOgreHeightData(mHeightData);
+	mTerrainPage->updateOgreHeightData();*/
 	
 // 	char imageHeightData[mMaxArrayPos];
 // 	for (unsigned int i = 0; i <= mMaxArrayPos;++i) {
@@ -87,11 +91,25 @@ bool EmberPagingLandScapeData2D_HeightField::_load( const Ogre::uint x, const Og
 // 		pCodec->codeToFile(dataChunk, ss.str(), temp);
 
 
-	///make sure it's not 0
-	mMaxheight = std::max<float>(mTerrainPage->getMaxHeight(), 1.0f);
-	mMax = static_cast <unsigned int> (mSize * mTerrainPage->getMaxHeight());
 	return true;
 }
+
+EmberPagingLandScapeData2D_HeightField::~EmberPagingLandScapeData2D_HeightField( void )
+{
+	if (mBridge) {
+		mTerrainPage->unregisterBridge();
+		delete mBridge;
+	}
+};
+
+
+void EmberPagingLandScapeData2D_HeightField::setMaxHeight(float maxHeight)
+{
+	///make sure it's not 0
+	mMaxheight = std::max<float>(maxHeight, 1.0f);
+	mMax = static_cast <unsigned int> (mSize * maxHeight);
+}
+
 
 PagingLandScapeData2D* EmberPagingLandScapeData2D_HeightField::newPage( )
 {
@@ -146,10 +164,12 @@ void EmberPagingLandScapeData2D_HeightField::_load()
 void EmberPagingLandScapeData2D_HeightField::_unload()
 {
 	S_LOG_VERBOSE("Unloading terrain page at x: " << mPageX << " z:" << mPageZ << ".");
-	if (mTerrainPage)
+	if (mTerrainPage && mBridge)
 	{
-		mTerrainPage->unbindFromOgreHeightData();
+		mTerrainPage->unregisterBridge();
+		delete mBridge;
 	}
+	mBridge = 0;
 	mTerrainPage = 0;
 }
 

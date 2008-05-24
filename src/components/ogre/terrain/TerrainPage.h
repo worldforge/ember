@@ -56,6 +56,7 @@ class TerrainPageSurface;
 class TerrainPage;
 class TerrainPageFoliage;
 class TerrainPageSurfaceLayer;
+class ITerrainPageBridge;
 
 TYPEDEF_STL_MAP(const Mercator::Shader*, TerrainShader*, ShaderMap);
 
@@ -114,19 +115,8 @@ public:
 	/**
 	 *    Fills the bound height data with height data. If no buffer has been bound nothing will be done.
 	 */
-	void updateOgreHeightData();
+	void updateOgreHeightData(Ogre::Real* heightData);
 	
-	/**
-	 *    Binds a bitmap which will be used by the terrain engine to generate the terrain meshes. The supplied height data must be large enough to fit all vertices in the page.
-	 * @param heightData A pointer to an initialized bitmap.
-	 */
-	void bindToOgreHeightData(Ogre::Real* heightData);
-	
-	/**
-	 *  Unbinds the Ogre height map bitmap. This must be called whenever the bitmap is destroyed.
-	 */
-	void unbindFromOgreHeightData();
-
 	/**
 	 *    The total number of vertices used for this page
 	 * @return 
@@ -235,6 +225,20 @@ public:
 	 */
 	Mercator::Segment* getSegmentAtLocalPosition(const TerrainPosition& pos, TerrainPosition& localPositionInSegment) const;
 
+	
+	/**
+	 *    @brief Binds a bridge instance to this page.
+	 * The bridge will be responsible for updating the terrain engine after the Mercator terrain has changed.
+	 * This class won't take ownership of the bridge, so it's up to the calling class to make sure that it's properly destroyed, and when so also calling @see unregisterBridge()
+	 * @param bridge A vlid bridge instance.
+	 */
+	void registerBridge(ITerrainPageBridge* bridge);
+	
+	/**
+	 *    @brief Unregisters the current terrain bridge.
+	 * Make sure to call this when the bridge is destroyed, so as not to leave any dangling pointers. This won't however delete the bridge.
+	 */
+	void unregisterBridge();
 
 private:
 
@@ -290,11 +294,10 @@ private:
 	Mercator::Terrain::Segmentstore mLocalSegments;
 	
 	/**
-	@brief Ogre height data as a bitmap. This will be used by terrain engine to create the terrain meshes.
-	The data here is owned by the terrain engine, and not by this class.
-	Make sure to call @see unbindOgreHeightData() when the bitmap is destroyed.
+	@brief Bridge to the ogre terrain engine.
+	When the terrain data is changed we need to also update the actual ingame representation that the terrain engine provides. This instance will take care of that.
 	*/
-	Ogre::Real* mOgreHeightData;
+	ITerrainPageBridge* mBridge;
 
 
 };

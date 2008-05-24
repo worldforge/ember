@@ -33,16 +33,16 @@ namespace EmberOgre
 namespace Terrain {
 	class TerrainPage;
 }
+	class EmberTerrainPageBridge;
 /**
-	 * A specialized class for loading 2D Data from Mercator, through an EmberOgre::TerrainPage class..
- */
-
+* @brief A specialized class for loading 2D Data from Mercator, through an EmberOgre::TerrainPage class..
+*/
 	class EmberPagingLandScapeData2D_HeightField: public Ogre::PagingLandScapeData2D
 	{
 		public:
 			EmberPagingLandScapeData2D_HeightField(Ogre::PagingLandScapeData2DManager *pageMgr);
 			virtual Ogre::String getName() const {return Ogre::String("EmberHeightField");}
-			virtual ~EmberPagingLandScapeData2D_HeightField( void ) {};
+			virtual ~EmberPagingLandScapeData2D_HeightField( void );
 
 			virtual const Ogre::Vector3 getNormal( const Ogre::Real mX, const Ogre::Real mZ );
 			virtual const Ogre::ColourValue getBase( const Ogre::Real mX, const Ogre::Real mZ );
@@ -52,6 +52,8 @@ namespace Terrain {
 			virtual Ogre::PagingLandScapeData2D* newPage();
 		
 			virtual const Ogre::Real getMaxAbsoluteHeight(void) const;
+			
+			void setMaxHeight(float maxHeight);
 		protected:
 
 			virtual void _save( void );
@@ -61,6 +63,7 @@ namespace Terrain {
 
 		private:
 			Terrain::TerrainPage* mTerrainPage;
+			EmberTerrainPageBridge* mBridge;
 	};
 
 }
