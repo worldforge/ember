@@ -47,8 +47,11 @@ TerrainPageSurfaceCompilerShaderPassCoverageBatch::~TerrainPageSurfaceCompilerSh
 
 void TerrainPageSurfaceCompilerShaderPassCoverageBatch::addLayer(TerrainPageSurfaceLayer* layer)
 {
+	layer->createCoverageImage();
+	layer->updateCoverageImage();
 	addCoverage(layer->getCoverageImage(), mLayers.size(), 4);
 	mLayers.push_back(layer);
+	layer->destroyCoverageImage();
 }
 
 void TerrainPageSurfaceCompilerShaderPassCoverageBatch::addCoverage(Ogre::Image* coverage, unsigned int channel, unsigned short numberOfChannels) {

@@ -53,9 +53,39 @@ public:
 
     virtual ~TerrainPageSurfaceLayer();
     
+    
+    /**
+     * Updates the coverage image with data from Mercator. The image will only be updated if it has been created. If not, nothing will happen.
+     * @see createCoverageImage
+     */
     void updateCoverageImage();
     
-    inline Ogre::Image* getCoverageImage();
+    /**
+     * @brief Gets the Ogre Image instance which is the coverage image.
+     * If no image has been created, this will return a null reference.
+     * @see destroyCoverageImage()
+     * @see createCoverageImage()
+     * @return A pointer to an Ogre::Image or null if none created.
+     */
+    Ogre::Image* getCoverageImage();
+    
+    /**
+     * @brief Destroys the coverage Ogre::Image held by this instance.
+     * You can call this without problem even if no image has been created.
+     * @return true if an image existed, else false
+     */
+    bool destroyCoverageImage();
+    
+    /**
+     * @brief Creates a new Ogre::Image instance for the coverage image.
+     * @return True if no image existed beforehand and the creation succeeded. 
+     */
+    bool createCoverageImage();
+    
+    /**
+     * @brief Gets the name of the coverage texture name. If no texture has been created this will be an empty string.
+     * @return 
+     */
     const std::string& getCoverageTextureName() const;
     
     const std::string& getDiffuseTextureName() const;
@@ -67,6 +97,12 @@ public:
     
     unsigned int getPixelWidth() const;
     
+	/**
+	 *    @brief Checks whether this layer intersects the page to which it belongs.
+	 *
+	 * We only want to add surface layers which we know intersects the page, so always call this before adding a layer.
+	 * @return True if it intersects, else false.
+	 */
 	bool intersects();
 	
 	Mercator::Shader* getShader();
@@ -79,6 +115,9 @@ public:
 	const TerrainLayerDefinition& getDefinition() const;
 	
 	void populate();
+	
+	Ogre::TexturePtr createTexture();
+	bool unloadTexture();
 	
 
 protected:
@@ -103,10 +142,6 @@ protected:
 
 };
 
-Ogre::Image* TerrainPageSurfaceLayer::getCoverageImage()
-{
-	return mCoverageImage;
-}
 
 }
 }
