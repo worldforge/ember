@@ -66,7 +66,8 @@ template<> Ember::Application *Ember::Singleton<Ember::Application>::ms_Singleto
 
 
 Application::Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings)
-: mOgreView(0)
+: mLoggingService(new Ember::LoggingService())
+, mOgreView(0)
 , mShouldQuit(false)
 , mPrefix(prefix)
 , mHomeDir(homeDir)
@@ -75,6 +76,7 @@ Application::Application(const std::string prefix, const std::string homeDir, co
 , mWorldView(0)
 , mPollEris(true)
 , mConfigSettings(configSettings)
+, mConsoleBackend(0)
 {
 
 }
@@ -88,8 +90,10 @@ Application::~Application()
 // 	mOgreView->shutdownGui();
 	delete mOgreView;
 	delete mServices;
-	LoggingService::getInstance()->removeObserver(mLogObserver);
+	S_LOG_INFO("Ember shut down normally.");
+	LoggingService::getSingleton().removeObserver(mLogObserver);
 	delete mLogObserver;
+	mLoggingService->stop(0);
 }
 
 void Application::registerComponents()
@@ -144,8 +148,7 @@ void Application::initializeServices()
 	std::cout << "Initializing Ember services" << std::endl;
 
 	mServices = new EmberServices();
-	Ember::LoggingService *logging = EmberServices::getSingleton().getLoggingService();
-	
+	mConsoleBackend = std::auto_ptr<ConsoleBackend>(new ConsoleBackend());	
 	/// Initialize the Configuration Service
 	EmberServices::getSingleton().getConfigService()->start();
 	EmberServices::getSingleton().getConfigService()->setPrefix(mPrefix);
@@ -162,6 +165,7 @@ void Application::initializeServices()
 	*mLogOutStream << "Ember version " << VERSION << std::endl;
 	
 	mLogObserver = new LogObserver(*mLogOutStream);
+	Ember::LoggingService *logging = EmberServices::getSingleton().getLoggingService();
 	logging->addObserver(mLogObserver);
 	
 	///default to INFO, though this can be changed by the config file

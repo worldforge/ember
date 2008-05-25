@@ -99,9 +99,15 @@ namespace Ember {
         // Singleton
 
     /**
-     * Returns the LoggingService instance.
+     * Gets an instance of the LoggingService
      */
-        static LoggingService *getInstance ();
+    static Ember::LoggingService* getSingletonPtr();
+
+    /**
+     * Gets an instance of the LoggingService
+     */
+    static Ember::LoggingService& getSingleton();
+
 
     /**
      * Adds a message presented by various options, a format string and variable params like

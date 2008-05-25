@@ -23,6 +23,8 @@
 
 #include "LoggingService.h"
 #include "ErisLogReciever.h"
+#include "Observer.h"
+#include "FileObserver.h"
 
 // Include system headers here
 #include <string>
@@ -35,7 +37,8 @@
 
 namespace Ember {
 
-LoggingService* LoggingService::theInstance = NULL;
+template<> Ember::LoggingService* Ember::Singleton<Ember::LoggingService>::ms_Singleton = 0;
+
 
 Service::Status LoggingService::start ()
 {
@@ -43,6 +46,13 @@ Service::Status LoggingService::start ()
     setStatus (Service::OK);
     return Service::OK;
 }
+
+void LoggingService::stop(int code)
+{
+	slog(__FILE__, __LINE__, Ember::LoggingService::INFO) << "Shutting down logging service." << END_MESSAGE;
+	Service::stop(code);
+}
+
 
 
 void LoggingService::log (const char *message, ...)

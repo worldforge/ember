@@ -84,7 +84,7 @@ namespace Ember {
 
   void OOGChat::sightPerson(Eris::Person* person)
   {
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Sighted Person name:\""<< person->getName()<<"\" id:"<<person->getAccount()<< ENDM;    
+    LoggingService::getSingleton().slog(__FILE__, __LINE__, LoggingService::INFO) << "Sighted Person name:\""<< person->getName()<<"\" id:"<<person->getAccount()<< ENDM;    
   }
 
   void OOGChat::privateTalk(Eris::Person* person, const std::string& msg)
@@ -93,7 +93,7 @@ namespace Ember {
 
     temp << "PRIVMSG("<<person->getName()<<") says:"<<msg;
 
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO)<<temp.str()<<ENDM;
+    LoggingService::getSingleton().slog(__FILE__, __LINE__, LoggingService::INFO)<<temp.str()<<ENDM;
 
 #if 0 // not new sstream
     temp<<std::ends;
@@ -136,7 +136,7 @@ namespace Ember {
     std::ostringstream temp;
 
     temp << "Entry of "<< room->getName()<<" complete";
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << temp.str() << ENDM;
+    LoggingService::getSingleton().slog(__FILE__, __LINE__, LoggingService::VERBOSE) << temp.str() << ENDM;
 #if 0 //not new stream
     temp<<std::ends;
 #endif
@@ -148,7 +148,7 @@ namespace Ember {
     std::ostringstream temp;
 
     temp << "["<< room->getName()<<"] "<<person->getName()<<" says: "<<msg;
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << temp.str() << ENDM;
+    LoggingService::getSingleton().slog(__FILE__, __LINE__, LoggingService::VERBOSE) << temp.str() << ENDM;
     temp<<std::ends;
     ConsoleBackend::getSingletonPtr()->pushMessage(temp.str());
   }
@@ -158,7 +158,7 @@ namespace Ember {
     std::ostringstream temp;
 
     temp << "["<< room->getName()<<"] "<<person->getName()<<" "<<msg;
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << temp.str() << ENDM;
+    LoggingService::getSingleton().slog(__FILE__, __LINE__, LoggingService::VERBOSE) << temp.str() << ENDM;
 #if 0 // not new sstream
     temp<<std::ends;
 #endif
@@ -170,7 +170,7 @@ namespace Ember {
     std::ostringstream temp;
 
     temp << person->getName() << " appears in "<< room->getName();
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE) << temp.str() <<ENDM;
+    LoggingService::getSingleton().slog(__FILE__, __LINE__, LoggingService::VERBOSE) << temp.str() <<ENDM;
 #if 0 // not new sstream
     temp<<std::ends;
 #endif
@@ -182,7 +182,7 @@ namespace Ember {
     std::ostringstream temp;
 
     temp << person->getName() << " disappears from "<< room->getName();
-    LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::VERBOSE)<<temp.str()<<ENDM;
+    LoggingService::getSingleton().slog(__FILE__, __LINE__, LoggingService::VERBOSE)<<temp.str()<<ENDM;
 #if 0 // if not new sstream
     temp<<std::ends;
 #endif

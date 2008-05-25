@@ -21,6 +21,7 @@
 
 // Included headers from the current project
 #include "services/logging/LoggingService.h"
+#include "services/logging/Observer.h"
 
 // Included custom library headers
 
@@ -46,7 +47,7 @@ namespace Ember {
  * @see LoggingService::Observer
  */
 
-class StreamLogObserver : public Ember::LoggingService::Observer
+class StreamLogObserver : public Ember::Observer
 {
 
     //======================================================================

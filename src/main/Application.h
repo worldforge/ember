@@ -137,6 +137,8 @@ namespace Ember
     
     private:
     
+    std::auto_ptr<Ember::LoggingService> mLoggingService;
+    
      
 //	IGameView mGraphicalComponent;
 	EmberOgre::EmberOgre* mOgreView;
@@ -170,7 +172,7 @@ namespace Ember
 	
 	ConfigMap mConfigSettings;
 	
-	ConsoleBackend mConsoleBackend;
+	std::auto_ptr<ConsoleBackend> mConsoleBackend;
 
 };//class Application
 }//namespace Ember

@@ -161,12 +161,12 @@ bool ServerService::connect(const std::string& host, short port)
 //       }
 //     catch (const Eris::BaseException& except)
 //     {
-//         LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got error on reconnect:" << except._msg << ENDM;
+//         LoggingService::getSingleton().slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got error on reconnect:" << except._msg << ENDM;
 //         return;
 //     }
 //     catch (...)
 //       {
-//         LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on reconnect" << ENDM;
+//         LoggingService::getSingleton().slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on reconnect" << ENDM;
 //         return;
 //       }
 //   }
@@ -313,7 +313,7 @@ void ServerService::loginFailure(const std::string &msg)
 	std::ostringstream temp;
 
 	temp<< "Login Failure:"<<msg;
-	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << temp.str() << ENDM;
+	LoggingService::getSingleton().slog(__FILE__, __LINE__, LoggingService::WARNING) << temp.str() << ENDM;
 
 	ConsoleBackend::getSingletonPtr()->pushMessage(temp.str());
 	LoginFailure.emit(mAccount, msg);
@@ -322,7 +322,7 @@ void ServerService::loginFailure(const std::string &msg)
 void ServerService::loginSuccess(){
 	//mView = new Eris::View(mAccount, mConn);
 
-	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Login Success."<< ENDM;
+	LoggingService::getSingleton().slog(__FILE__, __LINE__, LoggingService::INFO) << "Login Success."<< ENDM;
 	ConsoleBackend::getSingletonPtr()->pushMessage("Login Successful");
 	LoginSuccess.emit(mAccount);
 }
@@ -359,7 +359,7 @@ void ServerService::logoutComplete(bool clean) {
 //     delete mView;
 	mView = 0;
 
-	LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << "Logout Complete cleanness="<<clean<< ENDM;
+	LoggingService::getSingleton().slog(__FILE__, __LINE__, LoggingService::INFO) << "Logout Complete cleanness="<<clean<< ENDM;
 	ConsoleBackend::getSingletonPtr()->pushMessage("Logged out from server");
 }
 
@@ -401,12 +401,12 @@ void ServerService::logoutComplete(bool clean) {
 			} 
 			catch (const Eris::BaseException& except)
 			{
-				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on account creation: " << except._msg << ENDM;
+				LoggingService::getSingleton().slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on account creation: " << except._msg << ENDM;
 				return;
 			}
 			catch (const std::runtime_error& except)
 			{
-				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on account creation: " << except.what() << ENDM;
+				LoggingService::getSingleton().slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on account creation: " << except.what() << ENDM;
 				return;
 			}      
 			
@@ -540,12 +540,12 @@ void ServerService::logoutComplete(bool clean) {
 			} 
 			catch (const Eris::BaseException& except)
 			{
-				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on character creation: " << except._msg << ENDM;
+				LoggingService::getSingleton().slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got Eris error on character creation: " << except._msg << ENDM;
 				return false;
 			}
 			catch (const std::runtime_error& except)
 			{
-				LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on character creation: " << except.what() << ENDM;
+				LoggingService::getSingleton().slog(__FILE__, __LINE__, LoggingService::WARNING) << "Got unknown error on character creation: " << except.what() << ENDM;
 				return false;
 			}
 			S_LOG_INFO("Done creating character.");

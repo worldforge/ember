@@ -180,7 +180,7 @@ void ConsoleBackend::runCommand(const std::string &command, bool addToHistory)
 			I->second.Object->runCommand(cmd, args);
 		}
 	else { // Else print error message
-		LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Unknown command:"<<command<< ENDM;
+		S_LOG_WARNING("Unknown command:" << command);
 		pushMessage(std::string("Unknown command ") + command);
 	}
 }

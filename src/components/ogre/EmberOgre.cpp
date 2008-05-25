@@ -226,13 +226,15 @@ EmberOgre::~EmberOgre()
 		mRoot->detachRenderTarget(mWindow);
 	}
 	
-	Ogre::LogManager::getSingleton().getDefaultLog()->removeListener(mLogObserver);
-	delete mLogObserver;
 	
 	if (mOgreSetup.get()) {
 		mOgreSetup->shutdown();
 		mOgreSetup.reset();
 	}
+	
+	///Ogre is destroyed already, so we can't deregister this: we'll just destroy it
+	delete mLogObserver;
+	
 	///delete this first after Ogre has been shut down, since it then deletes the EmberOgreFileSystemFactory instance, and that can only be done once Ogre is shutdown
 	delete mResourceLoader;
 	

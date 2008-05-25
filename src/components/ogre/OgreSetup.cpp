@@ -71,6 +71,7 @@ OgreSetup::~OgreSetup()
 
 void OgreSetup::shutdown()
 {
+	S_LOG_INFO("Shutting down Ogre.");
 //	Ogre::ILCodecs::deleteCodecs();
 	if (mRoot) {
 		if (mSceneManagerFactory) {
@@ -86,6 +87,8 @@ void OgreSetup::shutdown()
 	}
 	delete mRoot;
 	mRoot = 0;
+	S_LOG_INFO("Ogre shut down.");
+	
 	if (mIconSurface) {
 		SDL_FreeSurface(mIconSurface);
 		mIconSurface = 0;
@@ -95,7 +98,9 @@ void OgreSetup::shutdown()
 // 		SDL_FreeSurface(mMainVideoSurface);
 // 		mMainVideoSurface = 0;
 // 	}
+	S_LOG_INFO("Shutting down SDL.");
 	SDL_Quit();
+	S_LOG_INFO("SDL shut down.");
 }
 
 
