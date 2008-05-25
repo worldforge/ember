@@ -540,7 +540,7 @@ namespace Ogre
 			}
 
         }
-        return true;
+        return impact;
     } 
     //-------------------------------------------------------------------------
     void PagingLandScapeSceneManager::resizeCrater ()
