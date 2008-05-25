@@ -32,6 +32,9 @@ namespace EmberOgre {
 namespace Terrain {
 
 /**
+	@brief A simple technique, using only the fixed function pipeline.
+	This is suitable for older cards which don't have shader support. Note that memory usage will increase and performance will degrade compared to the shader enabled version.
+	
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
 class TerrainPageSurfaceCompilerTechniqueSimple : public TerrainPageSurfaceCompilerTechnique

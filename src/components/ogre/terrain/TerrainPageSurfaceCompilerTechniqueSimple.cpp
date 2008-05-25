@@ -148,11 +148,23 @@ Ogre::Pass* TerrainPageSurfaceCompilerTechniqueSimple::addPassToTechnique(Ogre::
 // 		
 // 	}
 	
+	///we need to create the image, update it and then destroy it again (to keep the memory usage down)
+	if (layer->getCoverageTextureName() == "") {
+		///no texture yet; let's create one
+		layer->createCoverageImage();
+		layer->updateCoverageImage();
+		layer->createTexture();
+		layer->destroyCoverageImage();
+	} else {
+		///a texture exists, so we just need to update the image
+		layer->createCoverageImage();
+		layer->updateCoverageImage(); ///calling this will also update the texture since the method will blit the image onto it
+		layer->destroyCoverageImage();
+	}
 	
 	Ogre::Pass* pass = technique->createPass();
 	
-// 	S_LOG_VERBOSE("Adding new pass (" << mTextureName << ") to technique for material " << technique->getParent()->getName() << ". Number of passes in this technique: " << technique->getNumPasses());
-	
+
  	pass->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
 	pass->setLightingEnabled(false);
 	
