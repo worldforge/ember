@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2006
+// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2006
 // Copyright (C) 2001 - 2005 Simon Goodall, University of Southampton
 //
 // This program is free software; you can redistribute it and/or modify
@@ -33,11 +33,11 @@ namespace EmberOgre {
 
 /**
 
-	Listens for input (key presses, mouse movements etc) and maps this input to commands that are then executed (such as +move_forward etc.)
+	@brief Listens for input (key presses, mouse movements etc) and maps this input to commands that are then executed (such as +move_forward etc.)
 	
 	It's expected that more than one instance of this should exists, one for each different game "state", such as "movement mode", "general" etc.
 
-	@author Erik Hjortsberg <erik@katastrof.nu>
+	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
 class InputCommandMapper : public sigc::trackable
 {

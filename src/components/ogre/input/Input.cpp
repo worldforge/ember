@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2005
+// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2005
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -47,7 +47,6 @@ const std::string Input::UNBINDCOMMAND("unbind");
 Input::Input()
 :
 mCurrentInputMode(IM_GUI)
-, mToggleInputModeLock(false)
 , mMouseState(0)
 , mTimeSinceLastRightMouseClick(0)
 , mSuppressForCurrentEvent(false)
@@ -118,7 +117,7 @@ void Input::runCommand(const std::string &command, const std::string &args)
 		std::string state("general");
 		std::string key = tokeniser.nextToken();
 		if (key != "") {
-			std::string command = tokeniser.nextToken();
+			std::string command(tokeniser.nextToken());
 			if (command != "") {
 				if (tokeniser.nextToken() != "") {
 					state = tokeniser.nextToken();
@@ -133,7 +132,7 @@ void Input::runCommand(const std::string &command, const std::string &args)
 		Ember::Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string state("general");
-		std::string key = tokeniser.nextToken();
+		std::string key(tokeniser.nextToken());
 		if (key != "") {
 			if (tokeniser.nextToken() != "") {
 				state = tokeniser.nextToken();
@@ -460,16 +459,8 @@ void Input::keyReleased (const SDL_KeyboardEvent &keyEvent)
 
 void Input::setInputMode(InputMode mode)
 {
-	if ( mToggleInputModeLock )
-	{
-		S_LOG_VERBOSE("setInputMode disable due to ToggleInputModeLock -- " << mode );
-	}
-	else
-	{
-		mCurrentInputMode = mode;
-		EventChangedInputMode.emit(mode);
-	}
-	
+	mCurrentInputMode = mode;
+	EventChangedInputMode.emit(mode);
 }
 	
 Input::InputMode Input::getInputMode() const
@@ -477,33 +468,16 @@ Input::InputMode Input::getInputMode() const
 	return mCurrentInputMode;
 }
 	
-bool Input::toggleInputModeLock(bool newmode)
-{
-	S_LOG_VERBOSE("mToggleInputModeLock -- " << newmode );
-	mToggleInputModeLock = newmode;
-	return mToggleInputModeLock;
-}
-	
 Input::InputMode Input::toggleInputMode()
 {
-	
-	//if ( ! mToggleInputModeLock )
-	//{
-		if (mCurrentInputMode == IM_GUI)
-		{
-			setInputMode(IM_MOVEMENT);
-			return IM_MOVEMENT;
-		} else {
-			setInputMode(IM_GUI);
-			return IM_GUI;
-		}
-	//} 
-	//else 
-	//{
-	//	S_LOG_VERBOSE("Input mode toggle request denied, toggle mode lock is in effect");
-	//	return mCurrentInputMode;
-	//}
-		
+	if (mCurrentInputMode == IM_GUI)
+	{
+		setInputMode(IM_MOVEMENT);
+		return IM_MOVEMENT;
+	} else {
+		setInputMode(IM_GUI);
+		return IM_GUI;
+	}
 }
 
 void Input::addAdapter(IInputAdapter* adapter)

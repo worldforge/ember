@@ -1,5 +1,6 @@
 /*
     Copyright (C) 2004  Miguel Guzman (Aglanor)
+    Copyright (C) 2006  Erik Hjortsberg <erik.hjortsberg@iteam.se>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -69,7 +70,13 @@ class IconManager;
 }
 
 /**
- * This class will be responsible for all the GUI related things
+ * @brief Responsible for all gui handling.
+ 
+ This acts as the base and hub for all gui handling. It's responsible for both handling all widgets, setting up the CEGUI system and routing input event to it.
+ 
+ It's a singleton so it can be accessed from all parts of the system.
+ The root window of the CEGUI system can be accessed by the @see getMainSheet method.
+ 
  */
 class GUIManager : 
 public Ember::Singleton<GUIManager>, 
@@ -95,14 +102,15 @@ public:
 	sigc::signal<void, const std::string&, EmberEntity*> EventEntityAction;
 	
 	/**
-	Emitted every frame.
+	@brief Emitted every frame.
 	*/
 	sigc::signal<void, float> EventFrameStarted;
 	
 	/**
-	 *    Emits an action for a certain entity.
-	 *    An action could be something like "touch" or "inspect".
-	 * @param action 
+	 *    @brief Emits an action for a certain entity.
+	 *    An action could be something like "touch" or "inspect". This is a rather undefined mechanism for easily letting different parts of the gui interact and react on common entity actions.
+	 * @param action The name of the action.
+	 * @param entity The entity for which we want to perform a certain action.
 	 */
 	void EmitEntityAction(const std::string& action, EmberEntity* entity);
 	
@@ -126,21 +134,22 @@ public:
 	bool frameStarted(const Ogre::FrameEvent& evt);
 
 	/**
-	 *    Gets the root sheet of the CEGUI windowing system.
+	 *    @brief Gets the root sheet of the CEGUI windowing system.
 	 * @return 
 	 */
 	CEGUI::Window* getMainSheet() const;
 	
 	
 	/**
-	 *    Called by EmberOgre at initialization.
+	 * @brief Initializes the gui system.
+	 * Be sure to call this before you use the gui system.
 	 */
 	void initialize();
 	
 	
 	/**
-	 *    sets a text to be shown somewhere on the screen, used for debugging purposes
-	 * @param text 
+	 * @brief Sets a text to be shown somewhere on the screen, used for debugging purposes.
+	 * @param text The text to show.
 	 */
 	void setDebugText(const std::string& text);
 
@@ -326,6 +335,10 @@ protected:
 	
 	CEGUI::LuaScriptModule* mLuaScriptModule;
 
+	/**
+	 * @brief Stops the CEGUI scripting service.
+	 * Be sure to call this when the gui system is shutting down in order to clean up the lua environment.
+	 */
 	void scriptingServiceStopping();
 	
 	Gui::Icons::IconManager* mIconManager;

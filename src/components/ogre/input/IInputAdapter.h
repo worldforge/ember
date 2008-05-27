@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2005
+// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2005
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -32,7 +32,9 @@ namespace EmberOgre {
 
 
 /**
-@author Erik Hjortsberg
+	@brief An adapter class which is used to listen to events from the Input class, when the system is in gui input mode.
+	Use instances of this if you want to hook into the input system and override the default gui handling.
+	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
 class IInputAdapter
 {

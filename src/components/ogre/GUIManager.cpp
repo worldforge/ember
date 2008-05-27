@@ -566,31 +566,18 @@ void GUIManager::runCommand(const std::string &command, const std::string &args)
 		
 		if (mWindow->getViewport(0)->getOverlaysEnabled()) {
 			// disable overlays so gui disappears
-			S_LOG_VERBOSE("--Disabling GUI");
+			S_LOG_INFO("Disabling GUI");
 			mWindow->getViewport(0)->setOverlaysEnabled(false);
 			
-			// put in movement mode 
-			S_LOG_VERBOSE("--Switching Input to IM_MOVEMENT");
-			getInput().setInputMode(Input::IM_MOVEMENT);
-			
-			// disable toggling while gui is "hidden"
-			S_LOG_VERBOSE("--Enable ToggleInputModeLock");
-			getInput().toggleInputModeLock(true);
+			getInput().removeAdapter(mCEGUIAdapter);
 			
 		} else {
 	
 			// enable overlays
-			S_LOG_VERBOSE("--Enabling GUI");
+			S_LOG_INFO("Enabling GUI");
 			mWindow->getViewport(0)->setOverlaysEnabled(true);
 			
-			// remove the gui toggle lock
-			S_LOG_VERBOSE("--Removing ToggleInputModeLock");
-			getInput().toggleInputModeLock(false);			
-			
-			// put back in gui mode 
-			S_LOG_VERBOSE("--Switching Input to IM_GUI");
-			getInput().setInputMode(Input::IM_GUI);
-			
+			getInput().addAdapter(mCEGUIAdapter);
 		}
 	} else if (command == ReloadGui.getCommand()) {
 		Ogre::TextureManager* texMgr = Ogre::TextureManager::getSingletonPtr();
