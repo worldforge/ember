@@ -462,7 +462,7 @@ void Input::setInputMode(InputMode mode)
 {
 	if ( mToggleInputModeLock )
 	{
-		S_LOG_VERBOSE("setInputMode disable due to ToggleInputModeLock");
+		S_LOG_VERBOSE("setInputMode disable due to ToggleInputModeLock -- " << mode );
 	}
 	else
 	{
@@ -479,7 +479,7 @@ Input::InputMode Input::getInputMode() const
 	
 bool Input::toggleInputModeLock(bool newmode)
 {
-	S_LOG_VERBOSE("mToggleInputModeLock");
+	S_LOG_VERBOSE("mToggleInputModeLock -- " << newmode );
 	mToggleInputModeLock = newmode;
 	return mToggleInputModeLock;
 }
@@ -487,8 +487,8 @@ bool Input::toggleInputModeLock(bool newmode)
 Input::InputMode Input::toggleInputMode()
 {
 	
-	if ( ! mToggleInputModeLock )
-	{
+	//if ( ! mToggleInputModeLock )
+	//{
 		if (mCurrentInputMode == IM_GUI)
 		{
 			setInputMode(IM_MOVEMENT);
@@ -497,12 +497,12 @@ Input::InputMode Input::toggleInputMode()
 			setInputMode(IM_GUI);
 			return IM_GUI;
 		}
-	} 
-	else 
-	{
-		S_LOG_VERBOSE("Input mode toggle request denied, toggle mode lock is in effect");
-		return mCurrentInputMode;
-	}
+	//} 
+	//else 
+	//{
+	//	S_LOG_VERBOSE("Input mode toggle request denied, toggle mode lock is in effect");
+	//	return mCurrentInputMode;
+	//}
 		
 }
 
