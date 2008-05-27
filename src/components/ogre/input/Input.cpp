@@ -47,6 +47,7 @@ const std::string Input::UNBINDCOMMAND("unbind");
 Input::Input()
 :
 mCurrentInputMode(IM_GUI)
+, mToggleInputModeLock(false)
 , mMouseState(0)
 , mTimeSinceLastRightMouseClick(0)
 , mSuppressForCurrentEvent(false)
@@ -459,8 +460,16 @@ void Input::keyReleased (const SDL_KeyboardEvent &keyEvent)
 
 void Input::setInputMode(InputMode mode)
 {
-	mCurrentInputMode = mode;
-	EventChangedInputMode.emit(mode);
+	if ( mToggleInputModeLock )
+	{
+		S_LOG_VERBOSE("setInputMode disable due to ToggleInputModeLock");
+	}
+	else
+	{
+		mCurrentInputMode = mode;
+		EventChangedInputMode.emit(mode);
+	}
+	
 }
 	
 Input::InputMode Input::getInputMode() const
@@ -468,17 +477,32 @@ Input::InputMode Input::getInputMode() const
 	return mCurrentInputMode;
 }
 	
+bool Input::toggleInputModeLock(bool newmode)
+{
+	S_LOG_VERBOSE("mToggleInputModeLock");
+	mToggleInputModeLock = newmode;
+	return mToggleInputModeLock;
+}
 	
 Input::InputMode Input::toggleInputMode()
 {
-	if (mCurrentInputMode == IM_GUI)
+	
+	if ( ! mToggleInputModeLock )
 	{
-		setInputMode(IM_MOVEMENT);
-		return IM_MOVEMENT;
-	} else {
-		setInputMode(IM_GUI);
-		return IM_GUI;
-	}		
+		if (mCurrentInputMode == IM_GUI)
+		{
+			setInputMode(IM_MOVEMENT);
+			return IM_MOVEMENT;
+		} else {
+			setInputMode(IM_GUI);
+			return IM_GUI;
+		}
+	} 
+	else 
+	{
+		S_LOG_VERBOSE("Input mode toggle request denied, toggle mode lock is in effect");
+		return mCurrentInputMode;
+	}
 		
 }
 

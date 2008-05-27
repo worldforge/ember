@@ -221,6 +221,15 @@ public:
 	 */
 	InputMode toggleInputMode();
 	
+	/**
+	 * Determine whether input mode toggle is allowed
+	 */
+	bool mToggleInputModeLock;
+	
+	/**
+	 * Toggle whether we can swap between IM_GUI and IM_MOVEMENT
+	 */
+	bool toggleInputModeLock(bool newmode);
 	
 	/**
 	 *    Adds an adaptor to which input event will be sent. Note that event will be sent to adapters added later first, allowing them to decide whether events should be sent to previous added adapters. This allows later added adapters to override current behaviour.
@@ -287,6 +296,7 @@ protected:
 	The current input mode.
 	*/
 	InputMode mCurrentInputMode;
+	
 	
 	/**
 	 * polls all input for the mouse
