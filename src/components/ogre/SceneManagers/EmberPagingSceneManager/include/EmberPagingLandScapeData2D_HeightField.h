@@ -35,7 +35,11 @@ namespace Terrain {
 }
 	class EmberTerrainPageBridge;
 /**
-* @brief A specialized class for loading 2D Data from Mercator, through an EmberOgre::TerrainPage class..
+* @brief A specialized class for loading 2D Data from Mercator, through an EmberOgre::TerrainPage class.
+
+Ember has its own system for generating the terrain. This class takes care of interfacing with Ember to fetch and update the heightfield.
+The PagingLandscape SceneManager comes with a whole set of different heightfield loading classes by default. However, we'll never use any of them and instead always use this in all instances.
+@author Erik Hjortsberg
 */
 	class EmberPagingLandScapeData2D_HeightField: public Ogre::PagingLandScapeData2D
 	{

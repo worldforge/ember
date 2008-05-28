@@ -383,13 +383,14 @@ void TerrainGenerator::prepareAllSegments()
 	//_controlfp(_RC_NEAR, _MCW_RC);
 
 	
-	getAdapter()->setWorldPagesDimensions( mTerrainInfo.getTotalNumberOfPagesX(), mTerrainInfo.getTotalNumberOfPagesY(), mTerrainInfo.getPageOffsetX(), mTerrainInfo.getPageOffsetY());
+	getAdapter()->setWorldPagesDimensions(mTerrainInfo.getTotalNumberOfPagesX(), mTerrainInfo.getTotalNumberOfPagesY(), mTerrainInfo.getPageOffsetX(), mTerrainInfo.getPageOffsetY());
 	
 
 		
 	getAdapter()->loadScene();
 	const WFMath::AxisBox<2>& worldSize = mTerrainInfo.getWorldSizeInIndices();
-	Ogre::AxisAlignedBox worldBox(worldSize.lowCorner().x(), mHeightMin, worldSize.lowCorner().y(), worldSize.highCorner().x(), mHeightMax, worldSize.highCorner().y());
+	Ogre::AxisAlignedBox worldBox(worldSize.lowCorner().x(), mHeightMin, -worldSize.highCorner().y(), worldSize.highCorner().x(), mHeightMax, -worldSize.lowCorner().y());
+	
 	std::stringstream ss;
 	ss << worldBox;
 	S_LOG_INFO("New size of the world: " << ss.str());

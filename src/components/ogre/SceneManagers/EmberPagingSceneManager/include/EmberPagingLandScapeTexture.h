@@ -30,7 +30,14 @@
 
 namespace EmberOgre
 {
-	
+
+/**
+Ember uses it's own system for generating the textures and materials needed for the terrain. This class takes care of interfacing with the Ember terrain engine and creating the correct material and textures.
+
+The PagingLandscape SceneManager comes with a whole set of different texture classes by default. However, we'll never use any of them and instead always use this in all instances.
+
+@author Erik Hjortsberg
+*/
 class EmberPagingLandScapeTexture : public Ogre::PagingLandScapeTexture
 {
 

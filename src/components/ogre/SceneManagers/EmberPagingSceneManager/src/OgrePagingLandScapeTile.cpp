@@ -398,6 +398,7 @@ bool PagingLandScapeTile::intersectSegmentFromAbove(const Vector3 & start,
 
 	PagingLandScapeData2DManager * const dataManager = mParent->getSceneManager()->getData2DManager();
 	PagingLandScapeData2D * const data = dataManager->getData2D (mInfo->mPageX, mInfo->mPageZ);
+	Real worldMaxHeight(dataManager->getMaxHeight ());
 	if (data == 0)
 	{
 		// just go until next tile.
@@ -408,7 +409,7 @@ bool PagingLandScapeTile::intersectSegmentFromAbove(const Vector3 & start,
 		{           
 			ray += dir;
 			//ember specific start
-			if (ray.y > mWorldBoundsExt.getMaximum().y) {
+			if (ray.y > worldMaxHeight) {
 				//there's no terrain above this point anyway
 				return false;
 			}
@@ -439,7 +440,7 @@ bool PagingLandScapeTile::intersectSegmentFromAbove(const Vector3 & start,
 			(ray.z < bottomBorder))
 		{
 			//ember specific start
-			if (ray.y > mWorldBoundsExt.getMaximum().y) {
+			if (ray.y > worldMaxHeight) {
 				//there's no terrain above this point anyway
 				return false;
 			}

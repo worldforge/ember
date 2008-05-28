@@ -32,7 +32,7 @@
 namespace EmberOgre {
 
 EmberTerrainPageBridge::EmberTerrainPageBridge(EmberPagingLandScapeData2D_HeightField& heightField)
-: mHeightField(heightField), ITerrainPageBridge()
+: ITerrainPageBridge(), mHeightField(heightField)
 {
 }
 

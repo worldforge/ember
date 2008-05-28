@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2006
+// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2006
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -35,6 +35,10 @@ namespace EmberOgre {
 
 class EmberPagingSceneManager;
 
+/**
+An adapter specific for the PagingLandscapeSceneManager.
+@author Erik Hjortsberg
+*/
 class EmberPagingSceneManagerAdapter : public Terrain::ISceneManagerAdapter
 {
 
@@ -46,7 +50,7 @@ public:
 	virtual int getPageSize();
 	virtual Ogre::Real getHeightAt(const Ogre::Real x, const Ogre::Real z);
 	
-	virtual void setWorldPagesDimensions(int numberOfPagesHeight, int numberOfPagesWidth, int heightOffsetInPages, int widthOffsetInPages);
+	virtual void setWorldPagesDimensions(int numberOfPagesWidth, int numberOfPagesHeight, int widthOffsetInPages, int heightOffsetInPages);
 	
 	virtual void setCamera(Ogre::Camera* camera);
 	virtual void setResourceGroupName(const std::string& groupName);

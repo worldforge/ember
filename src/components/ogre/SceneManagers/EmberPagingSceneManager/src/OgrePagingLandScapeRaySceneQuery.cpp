@@ -45,8 +45,8 @@ void PagingLandScapeRaySceneQuery::execute(RaySceneQueryListener* listener)
 	{
 		mWorldFrag.fragmentType = SceneQuery::WFT_SINGLE_INTERSECTION;
 
-		const Vector3& dir = mRay.getDirection();
-		const Vector3& origin = mRay.getOrigin();
+		const Vector3& dir(mRay.getDirection());
+		const Vector3& origin(mRay.getOrigin());
 
 		PagingLandScapeSceneManager* mSceneMgr = static_cast<PagingLandScapeSceneManager*>(mParentSceneMgr);
 		if (mWorldFragmentType & WFT_SINGLE_INTERSECTION)

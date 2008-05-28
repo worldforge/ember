@@ -51,22 +51,31 @@ namespace EmberOgre {
 	}
 
 	
-	void EmberPagingSceneManagerAdapter::setWorldPagesDimensions(int numberOfPagesHeight, int numberOfPagesWidth, int heightOffsetInPages, int widthOffsetInPages)
+	void EmberPagingSceneManagerAdapter::setWorldPagesDimensions(int numberOfPagesWidth, int numberOfPagesHeight, int widthOffsetInPages, int heightOffsetInPages)
 	{
-		///in order position (0,0) to be aligned to the centre of the terrain we must offset the position of the terrain a bit
-		getOptions()->position.z = ((numberOfPagesHeight * 0.5f) - heightOffsetInPages) * getOptions()->PageSize;
-		getOptions()->position.x = ((numberOfPagesWidth * 0.5f) - widthOffsetInPages) * getOptions()->PageSize;
+		///we don't want to shift the terrain half a page, so we have to make sure that the we have an even amount of pages
+		if ((numberOfPagesWidth % 2) != 0) {
+			numberOfPagesWidth++;
+		}
+		if ((numberOfPagesHeight % 2) != 0) {
+			numberOfPagesHeight++;
+		}
 	
-		getOptions()->world_height = numberOfPagesHeight;
-		getOptions()->world_width = numberOfPagesWidth;
+		Ogre::PagingLandScapeOptions* options(getOptions());
+		///in order position (0,0) to be aligned to the centre of the terrain we must offset the position of the terrain a bit
+		options->position.x = ((numberOfPagesHeight * 0.5f) - heightOffsetInPages) * options->PageSize;
+		options->position.z = ((numberOfPagesWidth * 0.5f) - widthOffsetInPages) * options->PageSize;
+	
+		options->world_height = numberOfPagesHeight;
+		options->world_width = numberOfPagesWidth;
 	
 		///update the options
-		getOptions()->NumPages = getOptions()->world_height * getOptions()->world_width;
-		getOptions()->maxUnScaledZ = getOptions()->world_height * (getOptions()->PageSize - 1) * 0.5f;
-		getOptions()->maxUnScaledX = getOptions()->world_width  * (getOptions()->PageSize - 1) * 0.5f;
+		options->NumPages = options->world_height * options->world_width;
+		options->maxUnScaledZ = options->world_height * (options->PageSize - 1) * 0.5f;
+		options->maxUnScaledX = options->world_width  * (options->PageSize - 1) * 0.5f;
 	
-		getOptions()->maxScaledZ = getOptions()->scale.z * getOptions()->maxUnScaledZ;
-		getOptions()->maxScaledX = getOptions()->scale.x * getOptions()->maxUnScaledX;
+		options->maxScaledZ = options->scale.z * options->maxUnScaledZ;
+		options->maxScaledX = options->scale.x * options->maxUnScaledX;
 
 	}
 	

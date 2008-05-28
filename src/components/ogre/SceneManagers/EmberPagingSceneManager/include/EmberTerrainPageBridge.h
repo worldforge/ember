@@ -34,6 +34,7 @@ namespace EmberOgre {
 class EmberPagingLandScapeData2D_HeightField;
 
 /**
+	Acts as a bridge between an instance of TerrainPage and EmberPagingLandScapeData2D_HeightField, making sure that the former is correctly updated when the terrain changes.
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
 class EmberTerrainPageBridge : public ::EmberOgre::Terrain::ITerrainPageBridge
