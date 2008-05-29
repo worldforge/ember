@@ -401,8 +401,13 @@ bool EmberOgre::setup()
 	///should media be preloaded?
 	if (preloadMedia)
 	{ 
+<<<<<<< HEAD:src/components/ogre/EmberOgre.cpp
 		S_LOG_INFO( "Begin preload.");
 		mResourceLoader->preloadMedia();
+=======
+		S_LOG_INFO( "Begin preload");
+		ogreResourceLoader.preloadMedia();
+>>>>>>> Experimenting with Ogre and modifiers. So far I've been able to get a modifier applied to a terrain segment, and I'm experimenting with a method for showing which segments have modifiers applied to them. So far it doesn't look like there is a function that will tell you if a given segment has a modifier applied to it, so Ember may need to keep a list of segments with modifiers. This may have been a good idea, anyway, since searching all of the segments in the world every time you wanted to know which ones had modifiers on them could get expensive, and may cause problems if we try to apply a modifier across multiple segments.:src/components/ogre/EmberOgre.cpp
 		S_LOG_INFO( "End preload.");
 	}	
 	try {

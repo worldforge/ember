@@ -57,6 +57,11 @@
 #include <Mercator/Surface.h>
 #include <Mercator/Matrix.h>
 
+#include <wfmath/intersect.h>
+#include <wfmath/axisbox.h>
+#include <wfmath/ball.h>
+#include <Mercator/TerrainMod.h>
+
 #include "TerrainLayerDefinitionManager.h"
 #include "TerrainLayerDefinition.h"
 #include "TerrainPageSurfaceLayer.h"
@@ -337,8 +342,10 @@ int TerrainGenerator::getPageMetersSize()
 
 void TerrainGenerator::buildHeightmap()
 {
-	mHeightMax = 0, mHeightMin = 0;
-	
+	mHeightMax = 0, mHeightMin = 0;							//tb  used for the call to addMod() below
+	const WFMath::Ball<3> myMathBall;						//tb
+	Mercator::CraterTerrainMod *myCrater = new Mercator::CraterTerrainMod(myMathBall); //tb
+
 	///initialize all terrain here, since we need to do that in order to get the correct height for placement even though the terrain might not show up in the SceneManager yet
 	
 	///note that we want to use int's here, since a call to getSegment(float, float) is very much different from a call to getSegment(int, int)
@@ -354,9 +361,13 @@ void TerrainGenerator::buildHeightmap()
 				segment->populateSurfaces();
 				mHeightMax = std::max(mHeightMax, segment->getMax());
 				mHeightMin = std::min(mHeightMin, segment->getMin());
+				
+				
+    				
 			}
 		}
 	}
+	mTerrain->getSegment(2,2)->addMod(myCrater); //tb
 }
 
 // void TerrainGenerator::createShaders(WorldEmberEntity* worldEntity)

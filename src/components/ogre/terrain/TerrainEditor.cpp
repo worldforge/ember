@@ -253,10 +253,31 @@ void TerrainEditor::createOverlay()
 				entity->setRenderingDistance(300);
 				entity->setQueryFlags(MousePicker::CM_UNDEFINED);
 				basepointNode->attachObject(entity);
+
+				// Begin test by Tamas
+				//  The following block of code produces a column of spheres above
+				//    the terrain segment at (2,2). I intend to expand on this so
+				//    that it produces a column of spheres above segments with
+				//    modifiers applied.
+				
+				Ogre::SceneNode* basepointNode2 = mOverlayNode->createChildSceneNode();
+				Ogre::Vector3 ogrepos2 = Atlas2Ogre(tPos);
+				ogrepos2.x = terrain.getSegment(2,2)->getXRef();
+				ogrepos2.y = terrain.getSegment(2,2)->getMax() + y;
+				ogrepos2.z = terrain.getSegment(2,2)->getYRef();
+				basepointNode2->setPosition(ogrepos2);
+				std::stringstream ss2;
+				ss2 << "terrainMod marker" << x << "_" << y  + 64;
+				Ogre::Entity* entity2 = EmberOgre::getSingleton().getSceneManager()->createEntity(ss2.str(), "3d_objects/primitives/models/sphere.mesh");
+				entity->setMaterialName("BasePointMarkerMaterial");
+				entity->setRenderingDistance(300);
+				basepointNode2->attachObject(entity2);
+		
 				BasePointUserObject* userObject = new BasePointUserObject(TerrainPosition(x,y), basepoint, basepointNode);
 				entity->setUserObject(userObject);
 				
-				
+				// End test	-tb		
+
 				///store the base point user object
 				std::stringstream ss_;
 				ss_ << x << "_" << y;
