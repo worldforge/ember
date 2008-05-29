@@ -203,7 +203,7 @@ public:
 	TerrainPage* getTerrainPage(const Ogre::Vector2& ogrePosition, bool createIfMissing = true);
 	
 	/**
-	 *    Gets the page at the specified position in the worl. If no page can be found, a null pointer is returned.
+	 *    Gets the page at the specified position in the world. If no page can be found, a null pointer is returned.
 	 * @param worldPosition 
 	 * @return 
 	 */
