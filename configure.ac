@@ -39,11 +39,20 @@ AC_HEADER_STDC
 AC_CHECK_HEADERS(stdlib.h)
 AC_CHECK_HEADERS(math.h)
 dnl Test for <math.h> header file
+AC_CHECK_HEADERS([signal.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_C_INLINE
 AC_STRUCT_TM
+
+# check sighandler_t in C++
+AC_LANG_PUSH([C++])
+AC_CHECK_TYPES([sighandler_t],[],[],[
+#ifdef HAVE_SIGNAL_H
+# include <signal.h>
+#endif])
+AC_LANG_POP([C++])
 
 # Checks for library functions.
 AC_FUNC_ERROR_AT_LINE
