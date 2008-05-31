@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2002  Miguel Guzman Miranda (Aglanor)
+    Copyright (C) 2008 Romulo Fernandes Machado (nightz)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,19 +19,20 @@
 #ifndef SOUNDSERVICE_H
 #define SOUNDSERVICE_H
 
-#define NUM_WORLD_SOURCES 16
-#define NUM_WORLD_BUFFERS 16
-
-
 class Service;
 class ISoundProvider;
 
 #include "framework/ConsoleObject.h"
 #include "framework/ISoundProvider.h"
 
-//#include <AL/altypes.h>
-//Might need a proper preprocessor to handle different versions
-#include<AL/al.h>
+#include <AL/al.h>
+#include <AL/alc.h>
+
+#ifndef __WIN32__
+#include <AL/alut.h>
+#else
+#include <ALUT/alut.h>
+#endif
 
 #include <wfmath/point.h>
 #include <wfmath/vector.h>
@@ -39,137 +40,97 @@ class ISoundProvider;
 
 namespace Ember {
 
+typedef enum
+{
+	SAMPLE_NONE, // Try To guess by file extension
+	SAMPLE_PCM,
+	SAMPLE_WAV,
+	SAMPLE_OGG
+} SoundSampleType;
+
+/**
+ * Sound Sample 
+ *
+ * Defines general properties of sound data
+ */
+class SoundSample
+{
+	private:
+		std::string filename;
+		
+		ALuint source;
+		ALuint buffer;
+		WFMath::Point<3> position;
+		WFMath::Point<3> velocity;
+
+	public:
+		SoundSample(const std::string &name);
+		~SoundSample();
+
+		// Data Writing
+		void setPosition(WFMath::Point<3> &pos);
+		void setVelocity(WFMath::Point<3> &vel);
+		void setBuffer(ALuint buf);
+		void setSource(ALuint src);
+
+		// Retrieval of Data
+		const std::string getFilename();
+		ALuint getSource();
+		ALuint* getSourcePtr();
+		ALuint getBuffer();
+		ALuint* getBufferPtr();
+};
+
 /**
  * Ember Sound Service
  *
- * @author Miguel Guzman Miranda (Aglanor)
+ * @author Romulo Fernandes Machado (nightz)
  *
  * @see Ember::Service
  * @see Ember::ConsoleObject
  */
 class SoundService: public Service, public ConsoleObject
 {
+	friend class IScriptingProvider;
 
-friend class IScriptingProvider;
+	private:
+		// All Allocated buffers
+		std::list<SoundSample*> samples;
 
-    //======================================================================
-    // Private Variables
-    //======================================================================
-    private:
+		// Allocation Functions
+		bool allocateWAVPCM(const std::string &filename); 
+		bool allocateOGG(const std::string &filename); 
 
-  //ALCdevice *device;  // device for the Audio Layer Context
-  //this should be a void* if it is enabled again.  It is not currently used
+	public:
+		SoundService();
+		~SoundService();
 
+		// Services
+		Service::Status start();
+		void stop(int code);
 
+		// ConsoleObject
+		void runCommand(const std::string &command, const std::string &args);
 
-	/** System source - this source will play system sounds, 
-	like user input request or program error. 
-	Will always remain in the same relative position to the listener. */
-	ALuint systemSource;
-	/** System buffer - buffer used to load system sounds files */
-	ALuint systemBuffer;
-	/** Music source - this source will play background music. 
-	Will always remain in the same relative position to the listener. */
-	ALuint musicSource;
-	/** Music buffer - buffer used to load background music files */
-	ALuint musicBuffer;
-	/** Avatar source - this source will play avatar sounds, 
-	which are more important than the same sounds for other entities
-	Example: avatar footsteps vs other people's footsteps
-	*/
-	ALuint avatarSource;
-	/** Avatar buffer - buffer used to load avatar sounds files */
-	ALuint avatarBuffer;
-	/** World sources - array of sources to play world sounds. 
-	They will be placed in 3D space. 
-	This field may change depending on the data model */
-	ALuint worldSources[NUM_WORLD_SOURCES];
-	/** Wold buffers - array of buffers for loading world sounds */
-	ALuint worldBuffers[NUM_WORLD_BUFFERS];
+		/**
+		 * Register(allocate) a new sound buffer
+		 */
+		bool registerSound(const std::string &filename, const SoundSampleType type = SAMPLE_NONE);
+		bool unRegisterSound(const std::string &filename);
 
-	ALuint getWorldSourceIndexForPlaying(int priority);
+		/**
+		 * Play Functions
+		 */
+		void playSound(const std::string &filename);
+		void stopSound(const std::string &filename);
 
-	std::string soundsDirPath;
-	
-#ifdef _WIN32
-	unsigned int size, freq;
-#else
-	int size, freq;
-#endif
-	int bits,format;
-	void *data;
-	char loop;
-
-	/**
-	The Sound Provider
-	*/
-	ISoundProvider* mProvider;
-
-    //----------------------------------------------------------------------
-    // Constructors & Destructor
-
-  public:
-
-    /** Creates a new SoundService using default values. */
-    SoundService();
-
-
-    /** Deletes a SoundService instance. */
-    ~SoundService();
-
-    //----------------------------------------------------------------------
-    // Getters & Setters
-
-    //----------------------------------------------------------------------
-    // Methods
-
-	Service::Status start();
-
-	void stop(int code);
-
-	void runCommand(const std::string &command, const std::string &args);
-
-	/**
-	 *    Registers a new sound provider.
-	 * @param provider 
-	 */
-	void registerSoundProvider(ISoundProvider* provider);
-
-	bool LoadWAV(const char *fname,int buffer);
-
-	bool UnloadWAV(void);
-
-	void TestPlatform(void);
-
-	//void playTestGYPH(void);
-	void playTestGrunt(void);
-	
-	void updateListenerPosition(
+		/**
+		 * Update the position (in world coordinates)
+		 * of the listener
+		 */
+		void updateListenerPosition(
 		const WFMath::Point<3>& position,
 		const WFMath::Quaternion& orientation);
-
-	/*
-	void SoundService::updateSourcePosition(
-		const WFMath::Point<3>& position,
-		const WFMath::Quaternion& orientation);
-	*/
-
-	void updateAvatarSourcePosition(
-		const WFMath::Point<3>& position,
-		const WFMath::Quaternion& orientation);
-
-	void playTestSound();
-	void playAvatarSound();
-	void playTalk(std::string message,
-		const WFMath::Point<3>& position,
-		const WFMath::Quaternion& orientation);
-	void playSystemSound(std::string soundFileName);
-
-	// List of SoundService's console commands
-	static const char * const PLAYSOUND;
-	static const char * const PLAYMUSIC;
-	static const char * const PLAYFILE;
-	static const char * const PLAYSPEECH;
 
 }; //SoundService
 
