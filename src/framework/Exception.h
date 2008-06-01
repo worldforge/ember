@@ -38,8 +38,8 @@
 
 // Included system headers
 #include <string>
-// #include <stdarg.h>
-// #include <stdio.h>
+#include <stdarg.h>
+#include <stdio.h>
 
 namespace Ember 
 {
@@ -116,8 +116,9 @@ public:
 		char buffer[EXCEPTION_TEXT_SIZE];
 		va_list va;
 		va_start (va, line);
-		vsprintf(buffer, error.c_str(), va);
+		vsnprintf(buffer, EXCEPTION_TEXT_SIZE, error.c_str(), va);
 		myError = buffer;
+		va_end (va);
     }
 
 
