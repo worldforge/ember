@@ -100,12 +100,35 @@ void ScriptingService::loadScript(const std::string& script)
 
 void ScriptingService::executeCode(const std::string& scriptCode, const std::string& scriptType)
 {
+	
 	ProviderStore::iterator I = mProviders.find(scriptType);
 	if (I == mProviders.end()) {
 		S_LOG_FAILURE("There is no scripting provider with the name \"" << scriptType << "\"");
 	} else {
 		try {
-			I->second->executeScript(scriptCode);
+			IScriptingCallContext callContext(I->second->createDefaultContext());
+			I->second->executeScript(callContext, scriptCode);
+		} catch (const Ember::Exception& ex) {
+			S_LOG_WARNING("Error when executing script\n" << scriptCode << "\nwith provider " << I->second->getName() << ". Message: " << ex.getError());
+			scriptError(ex.getError());
+		} catch (const std::exception& ex) {
+			S_LOG_WARNING("Error when executing script\n" << scriptCode << "\nwith provider " << I->second->getName() << ". Message: " << ex.what());
+			scriptError(ex.what());
+		} catch (...) {
+			S_LOG_WARNING("Got unknown script error when executing the script " << scriptCode);
+			scriptError("Unknown error executing script.");
+		}
+	}
+}
+
+void ScriptingService::executeCode(IScriptingCallContext& callContext, const std::string& scriptCode, const std::string& scriptType)
+{
+	ProviderStore::iterator I = mProviders.find(scriptType);
+	if (I == mProviders.end()) {
+		S_LOG_FAILURE("There is no scripting provider with the name \"" << scriptType << "\"");
+	} else {
+		try {
+			I->second->executeScript(callContext, scriptCode);
 		} catch (const Ember::Exception& ex) {
 			S_LOG_WARNING("Error when executing script\n" << scriptCode << "\nwith provider " << I->second->getName() << ". Message: " << ex.getError());
 			scriptError(ex.getError());

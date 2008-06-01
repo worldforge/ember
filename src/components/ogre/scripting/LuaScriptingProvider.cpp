@@ -79,7 +79,8 @@ void LuaScriptingProvider::stop()
 	try {
 		///we want to clear up the lua environment without destroying it (lua_close destroys it)
 		std::string shutdownScript("for key,value in pairs(_G) do if key ~= \"_G\" and key ~= \"pairs\" then _G[key] = nil end end");
-		executeScript(shutdownScript);
+		Ember::IScriptingCallContext callContext(createDefaultContext());
+		executeScript(callContext, shutdownScript);
 		forceGC();
 	} catch (...) {
 		S_LOG_WARNING("Error when stopping lua.");
@@ -218,9 +219,10 @@ void LuaScriptingProvider::loadScript(Ember::ResourceWrapper& resWrapper)
 	}*/
 }
 
-void LuaScriptingProvider::executeScript(const std::string& scriptCode)
+void LuaScriptingProvider::executeScript(Ember::IScriptingCallContext& callContext, const std::string& scriptCode)
 {
 	try {
+		LuaScriptingCallContext& luaCallContext(static_cast<LuaScriptingCallContext&>(callContext));
 		int top = lua_gettop(mLuaState);
 	
 	
@@ -248,6 +250,10 @@ void LuaScriptingProvider::executeScript(const std::string& scriptCode)
 			lua_settop(mLuaState,top);
 			throw Ember::Exception("Unable to execute Lua script string: '"+scriptCode+"'\n\n"+errMsg+"\n");
 		}
+		
+		fromStack fs(mLuaState);
+		LuaRef* luaRef = new LuaRef(fs);
+		luaCallContext.returnValue = luaRef;
 // 		getScriptModule().executeString(scriptCode);
 	} catch (const CEGUI::Exception& ex) {
 		throw Ember::Exception(ex.getMessage().c_str());
@@ -280,6 +286,12 @@ void LuaScriptingProvider::_registerWithService(Ember::ScriptingService* service
 {	
 	mService = service;
 }
+
+Ember::IScriptingCallContext LuaScriptingProvider::createDefaultContext()
+{
+	return LuaScriptingCallContext();
+}
+
 
 void LuaScriptingProvider::forceGC()
 {

@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Framework
-** Generated automatically by tolua++-1.0.92 on Sat Mar  1 23:39:12 2008.
+** Generated automatically by tolua++-1.0.92 on Sun Jun  1 13:07:11 2008.
 */
 
 #ifndef __cplusplus
@@ -14,7 +14,6 @@
 TOLUA_API int  tolua_Framework_open (lua_State* tolua_S);
 
 #include "required.h"
-#include "../../IScriptingProvider.h"
 
 /* function to release collected object via destructor */
 #ifdef __cplusplus
@@ -33,7 +32,6 @@ static void tolua_reg_types (lua_State* tolua_S)
 {
  tolua_usertype(tolua_S,"sigc::signal<bool,const std::string&>");
  tolua_usertype(tolua_S,"Ember::Tokeniser");
- tolua_usertype(tolua_S,"Ember::IScriptingProvider");
  tolua_usertype(tolua_S,"Ember::ConsoleBackend");
 }
 
@@ -408,138 +406,6 @@ static int tolua_Framework_Ember_Tokeniser_remainingTokens00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: executeScript of class  Ember::IScriptingProvider */
-#ifndef TOLUA_DISABLE_tolua_Framework_Ember_IScriptingProvider_executeScript00
-static int tolua_Framework_Ember_IScriptingProvider_executeScript00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"Ember::IScriptingProvider",0,&tolua_err) ||
-     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  Ember::IScriptingProvider* self = (Ember::IScriptingProvider*)  tolua_tousertype(tolua_S,1,0);
-  const std::string scriptCode = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'executeScript'",NULL);
-#endif
-  {
-   self->executeScript(scriptCode);
-   tolua_pushcppstring(tolua_S,(const char*)scriptCode);
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'executeScript'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: willLoadScript of class  Ember::IScriptingProvider */
-#ifndef TOLUA_DISABLE_tolua_Framework_Ember_IScriptingProvider_willLoadScript00
-static int tolua_Framework_Ember_IScriptingProvider_willLoadScript00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"Ember::IScriptingProvider",0,&tolua_err) ||
-     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  Ember::IScriptingProvider* self = (Ember::IScriptingProvider*)  tolua_tousertype(tolua_S,1,0);
-  const std::string scriptName = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'willLoadScript'",NULL);
-#endif
-  {
-   bool tolua_ret = (bool)  self->willLoadScript(scriptName);
-   tolua_pushboolean(tolua_S,(bool)tolua_ret);
-   tolua_pushcppstring(tolua_S,(const char*)scriptName);
-  }
- }
- return 2;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'willLoadScript'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: getName of class  Ember::IScriptingProvider */
-#ifndef TOLUA_DISABLE_tolua_Framework_Ember_IScriptingProvider_getName00
-static int tolua_Framework_Ember_IScriptingProvider_getName00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"const Ember::IScriptingProvider",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  const Ember::IScriptingProvider* self = (const Ember::IScriptingProvider*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getName'",NULL);
-#endif
-  {
-   const std::string tolua_ret = (const std::string)  self->getName();
-   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getName'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: forceGC of class  Ember::IScriptingProvider */
-#ifndef TOLUA_DISABLE_tolua_Framework_Ember_IScriptingProvider_forceGC00
-static int tolua_Framework_Ember_IScriptingProvider_forceGC00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"Ember::IScriptingProvider",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  Ember::IScriptingProvider* self = (Ember::IScriptingProvider*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'forceGC'",NULL);
-#endif
-  {
-   self->forceGC();
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'forceGC'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* Open function */
 TOLUA_API int tolua_Framework_open (lua_State* tolua_S)
 {
@@ -574,16 +440,6 @@ TOLUA_API int tolua_Framework_open (lua_State* tolua_S)
     tolua_function(tolua_S,"initTokens",tolua_Framework_Ember_Tokeniser_initTokens00);
     tolua_function(tolua_S,"nextToken",tolua_Framework_Ember_Tokeniser_nextToken00);
     tolua_function(tolua_S,"remainingTokens",tolua_Framework_Ember_Tokeniser_remainingTokens00);
-   tolua_endmodule(tolua_S);
-  tolua_endmodule(tolua_S);
-  tolua_module(tolua_S,"Ember",0);
-  tolua_beginmodule(tolua_S,"Ember");
-   tolua_cclass(tolua_S,"IScriptingProvider","Ember::IScriptingProvider","",NULL);
-   tolua_beginmodule(tolua_S,"IScriptingProvider");
-    tolua_function(tolua_S,"executeScript",tolua_Framework_Ember_IScriptingProvider_executeScript00);
-    tolua_function(tolua_S,"willLoadScript",tolua_Framework_Ember_IScriptingProvider_willLoadScript00);
-    tolua_function(tolua_S,"getName",tolua_Framework_Ember_IScriptingProvider_getName00);
-    tolua_function(tolua_S,"forceGC",tolua_Framework_Ember_IScriptingProvider_forceGC00);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);

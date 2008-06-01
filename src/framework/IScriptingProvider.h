@@ -31,6 +31,12 @@ namespace Ember {
 
 class ScriptingService;
 
+class IScriptingCallContext
+{
+public:
+protected:
+};
+
 /**
 @author Erik Hjortsberg
 */
@@ -38,6 +44,9 @@ class IScriptingProvider{
 public:
 	
 	virtual ~IScriptingProvider(){}
+	
+	virtual IScriptingCallContext createDefaultContext() = 0;
+	
 
 	/**
 	 *    Loads the script.
@@ -49,7 +58,7 @@ public:
 	 *    Executes the supplied string directly into the scripting environment.
 	 * @param scriptCode 
 	 */
-	virtual void executeScript(const std::string& scriptCode) = 0;
+	virtual void executeScript(IScriptingCallContext& callContext, const std::string& scriptCode) = 0;
 	
 	
 	/**
