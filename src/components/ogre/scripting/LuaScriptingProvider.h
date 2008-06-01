@@ -28,6 +28,8 @@
 #include <CEGUIScriptModule.h>
 #include <CEGUILua.h>
 
+#include "luaobject.h"
+
 struct lua_State;
 
 namespace Ember
@@ -36,6 +38,20 @@ namespace Ember
 }
 
 namespace EmberOgre {
+
+class LuaScriptingCallContext : public Ember::IScriptingCallContext
+{
+public:
+	LuaScriptingCallContext() : returnValue(0)
+	{
+	}
+	~LuaScriptingCallContext() 
+	{
+		delete returnValue;
+	}
+	LuaRef* returnValue;
+	
+};
 
 /**
 @author Erik Hjortsberg
@@ -47,6 +63,8 @@ public:
 
     virtual ~LuaScriptingProvider();
     
+    virtual Ember::IScriptingCallContext createDefaultContext();
+    
 	/**
 	 *    Loads the script.
 	 * @param scriptName 
@@ -57,7 +75,7 @@ public:
 	 *    Executes the supplied string directly into the scripting environment.
 	 * @param scriptCode 
 	 */
-	virtual void executeScript(const std::string& scriptCode);
+	virtual void executeScript(Ember::IScriptingCallContext& callContext, const std::string& scriptCode);
 	
 	/**
 	 *    Returns true if the provider will load the supplied script name. This is in most cases decided from the filename suffix.
