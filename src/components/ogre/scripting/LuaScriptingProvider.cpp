@@ -79,8 +79,10 @@ void LuaScriptingProvider::stop()
 	try {
 		///we want to clear up the lua environment without destroying it (lua_close destroys it)
 		std::string shutdownScript("for key,value in pairs(_G) do if key ~= \"_G\" and key ~= \"pairs\" then _G[key] = nil end end");
-		Ember::IScriptingCallContext callContext(createDefaultContext());
-		executeScript(callContext, shutdownScript);
+		{
+			Ember::IScriptingCallContext callContext(createDefaultContext());
+			executeScript(callContext, shutdownScript);
+		}
 		forceGC();
 	} catch (...) {
 		S_LOG_WARNING("Error when stopping lua.");
@@ -241,7 +243,7 @@ void LuaScriptingProvider::executeScript(Ember::IScriptingCallContext& callConte
 		lua_insert(mLuaState, error_index);
 		
 		/// load code into lua and call it
-		int error = lua_pcall(mLuaState,0,0,error_index);
+		int error = lua_pcall(mLuaState, 0, LUA_MULTRET, error_index);
 	
 		// handle errors
 		if (error)
