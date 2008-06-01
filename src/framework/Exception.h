@@ -38,8 +38,8 @@
 
 // Included system headers
 #include <string>
-// #include <stdarg.h>
-// #include <stdio.h>
+#include <stdarg.h>
+#include <stdio.h>
 
 namespace Ember 
 {

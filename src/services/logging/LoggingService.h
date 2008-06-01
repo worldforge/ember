@@ -25,6 +25,7 @@
 #include "framework/Singleton.h"
 
 // Include library headers here
+#include <memory>
 #include <sigc++/object.h>
 
 namespace Ember
