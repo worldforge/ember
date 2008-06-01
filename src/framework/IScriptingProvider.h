@@ -31,9 +31,24 @@ namespace Ember {
 
 class ScriptingService;
 
+// class IScriptingCallReturnValue
+// {
+// public:
+// 
+// 	virtual operator double() = 0;
+// 	virtual operator std::string() = 0;
+// 
+// 	template<typename Treturn> 
+// 	Treturn asObject();
+// protected:
+// };
+
 class IScriptingCallContext
 {
 public:
+	virtual ~IScriptingCallContext() {}
+// 	IScriptingCallReturnValue* getReturnValue() = 0;
+
 protected:
 };
 
