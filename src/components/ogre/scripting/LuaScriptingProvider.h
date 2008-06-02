@@ -42,28 +42,34 @@ namespace EmberOgre {
 class LuaScriptingCallContext : public Ember::IScriptingCallContext
 {
 public:
-	LuaScriptingCallContext() : mReturnValue(0)
-	{
-	}
-	~LuaScriptingCallContext() 
-	{
-		if (mReturnValue)
-			delete mReturnValue;
-	}
-	inline void setReturnValue(LuaRef* returnValue)
-	{
-		if (mReturnValue)
-			delete returnValue;
-		mReturnValue = returnValue;
-	}
-	inline LuaRef* getReturnValue()
-	{
-		return mReturnValue;
-	}
+	LuaScriptingCallContext();
+	~LuaScriptingCallContext();
+	inline void setReturnValue(LuaRef* returnValue);
+	inline LuaRef* getReturnValue();
 protected:
 	LuaRef* mReturnValue;
-	
 };
+
+LuaScriptingCallContext::LuaScriptingCallContext() : mReturnValue(0)
+{
+}
+
+LuaScriptingCallContext::~LuaScriptingCallContext()
+{
+	delete mReturnValue;
+}
+
+void LuaScriptingCallContext::setReturnValue(LuaRef* returnValue)
+{
+	delete returnValue;
+	mReturnValue = returnValue;
+}
+
+LuaRef* LuaScriptingCallContext::getReturnValue()
+{
+	return mReturnValue;
+}
+
 
 /**
 @author Erik Hjortsberg
