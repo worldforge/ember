@@ -259,7 +259,6 @@ void TerrainEditor::createOverlay()
 				//    the terrain segment at (2,2). I intend to expand on this so
 				//    that it produces a column of spheres above segments with
 				//    modifiers applied.
-				
 				Ogre::SceneNode* basepointNode2 = mOverlayNode->createChildSceneNode();
 				Ogre::Vector3 ogrepos2 = Atlas2Ogre(tPos);
 				ogrepos2.x = terrain.getSegment(2,2)->getXRef();
@@ -275,7 +274,6 @@ void TerrainEditor::createOverlay()
 		
 				BasePointUserObject* userObject = new BasePointUserObject(TerrainPosition(x,y), basepoint, basepointNode);
 				entity->setUserObject(userObject);
-				
 				// End test	-tb		
 
 				///store the base point user object
