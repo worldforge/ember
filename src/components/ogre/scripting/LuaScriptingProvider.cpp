@@ -255,7 +255,7 @@ void LuaScriptingProvider::executeScript(Ember::IScriptingCallContext& callConte
 		
 		fromStack fs(mLuaState);
 		LuaRef* luaRef = new LuaRef(fs);
-		luaCallContext.returnValue = luaRef;
+		luaCallContext.setReturnValue(luaRef);
 // 		getScriptModule().executeString(scriptCode);
 	} catch (const CEGUI::Exception& ex) {
 		throw Ember::Exception(ex.getMessage().c_str());
