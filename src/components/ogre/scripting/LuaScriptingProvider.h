@@ -93,7 +93,7 @@ public:
 	 *    Executes the supplied string directly into the scripting environment.
 	 * @param scriptCode 
 	 */
-	virtual void executeScript(Ember::IScriptingCallContext& callContext, const std::string& scriptCode);
+	virtual void executeScript(Ember::IScriptingCallContext* callContext, const std::string& scriptCode);
 	
 	/**
 	 *    Returns true if the provider will load the supplied script name. This is in most cases decided from the filename suffix.
