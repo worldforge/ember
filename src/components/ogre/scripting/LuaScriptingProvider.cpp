@@ -170,19 +170,24 @@ lua_State* LuaScriptingProvider::getLuaState()
 
 void LuaScriptingProvider::loadScript(Ember::ResourceWrapper& resWrapper)
 {
+	executeScript(0, std::string(resWrapper.getDataPtr(), resWrapper.getSize()), resWrapper.getName());
+}
+
+void LuaScriptingProvider::executeScript(Ember::IScriptingCallContext* callContext, const std::string& scriptCode, const std::string& scriptName = std::string(""))
+{
 	try {
-		
-		// load code into lua
+		LuaScriptingCallContext* luaCallContext = static_cast<LuaScriptingCallContext*>(callContext);
 		int top = lua_gettop(mLuaState);
-		int loaderr = luaL_loadbuffer(mLuaState, resWrapper.getDataPtr(), resWrapper.getSize(), resWrapper.getName().c_str());
-		
+		int loaderr = luaL_loadbuffer(mLuaState, scriptCode.c_str(), scriptCode.length(), scriptCode.c_str());
+
 		if (loaderr)
 		{
 			std::string errMsg(lua_tostring(mLuaState,-1));
 			lua_settop(mLuaState,top);
-			throw Ember::Exception("Unable to load Lua script file: '"+resWrapper.getName()+"'\n\n"+errMsg+"\n");
+			//throw Ember::Exception("Unable to load Lua script file: '"+resWrapper.getName()+"'\n\n"+errMsg+"\n");
+			throw Ember::Exception("Unable to load Lua script: '" + scriptCode + "'\n\n"+errMsg+"\n");
 		}
-		
+
 		///push our error handling method before calling the code
 		int error_index = lua_gettop(mLuaState);
 		#if LUA51
@@ -191,83 +196,47 @@ void LuaScriptingProvider::loadScript(Ember::ResourceWrapper& resWrapper)
 		lua_pushliteral(mLuaState, "_TRACEBACK");
 		lua_rawget(mLuaState, LUA_GLOBALSINDEX);  /* get traceback function */
 		#endif
-		lua_insert(mLuaState, error_index);/* put it under chunk and args */
-
-
-		// call it
-		if (lua_pcall(mLuaState,0,0,error_index))
-		{
-			std::string errMsg(lua_tostring(mLuaState,-1));
-			lua_settop(mLuaState,top);
-			throw Ember::Exception("Unable to execute Lua script file: '"+resWrapper.getName()+"'\n\n"+errMsg+"\n");
-		}
-	
-		lua_settop(mLuaState,top); // just in case :P
-		
-		
-// 		getScriptModule().executeScriptFile(scriptName);
-	} catch (const CEGUI::Exception& ex) {
-		throw Ember::Exception(ex.getMessage().c_str());
-	} catch( const CEGUI::String& str )
-	{
-		throw Ember::Exception(str.c_str());
-	} catch (const Ember::Exception& ex) {
-		throw ex;
-	} catch (...) {
-		throw Ember::Exception("Unknown error.");
-	}
-/*	} catch (const Ogre::Exception& ex) {
-		throw Ember::Exception("Error when loading script " + scriptName + ". Message: " + ex.get);
-	}*/
-}
-
-void LuaScriptingProvider::executeScript(Ember::IScriptingCallContext& callContext, const std::string& scriptCode)
-{
-	try {
-		LuaScriptingCallContext& luaCallContext(static_cast<LuaScriptingCallContext&>(callContext));
-		int top = lua_gettop(mLuaState);
-	
-	
-		int loaderr = luaL_loadbuffer(mLuaState, scriptCode.c_str(), scriptCode.length(), scriptCode.c_str());
-		
-		if (loaderr)
-		{
-			std::string errMsg(lua_tostring(mLuaState,-1));
-			lua_settop(mLuaState,top);
-			throw Ember::Exception("Unable to load Lua script: '" + scriptCode + "'\n\n"+errMsg+"\n");
-		}
-		
-		///push our error handling method before calling the code
-		int error_index = lua_gettop(mLuaState);
-		lua_pushcfunction(mLuaState, ::EmberOgre::Scripting::LuaHelper::luaErrorHandler);
 		lua_insert(mLuaState, error_index);
-		
+
 		/// load code into lua and call it
-		int error = lua_pcall(mLuaState, 0, LUA_MULTRET, error_index);
-	
+		int error, nresults;
+		int level = lua_gettop(L); // top of stack position
+		// if we have context to store return values, then get them
+		if (callContext)
+		{
+			error = lua_pcall(mLuaState, 0, LUA_MULTRET, error_index);
+			nresults = lua_gettop(L) - level; // number of results
+		}
+		else
+		{
+			error = lua_pcall(mLuaState, 0, 0, error_index);
+		}
+
 		// handle errors
 		if (error)
 		{
 			std::string errMsg(lua_tostring(mLuaState,-1));
 			lua_settop(mLuaState,top);
+			//throw Ember::Exception("Unable to load Lua script file: '"+resWrapper.getName()+"'\n\n"+errMsg+"\n");
 			throw Ember::Exception("Unable to execute Lua script string: '"+scriptCode+"'\n\n"+errMsg+"\n");
 		}
-		
+
 		fromStack fs(mLuaState);
 		LuaRef* luaRef = new LuaRef(fs);
 		luaCallContext.setReturnValue(luaRef);
+
+		lua_settop(mLuaState,top); // just in case :P - do we need it?
+
 // 		getScriptModule().executeString(scriptCode);
 	} catch (const CEGUI::Exception& ex) {
 		throw Ember::Exception(ex.getMessage().c_str());
-	} catch( const CEGUI::String& str )
-	{
+	} catch( const CEGUI::String& str ) {
 		throw Ember::Exception(str.c_str());
 	} catch (const Ember::Exception& ex) {
 		throw ex;
 	} catch (...) {
 		throw Ember::Exception("Unknown error.");
 	}
-
 }
 
 bool LuaScriptingProvider::willLoadScript(const std::string& scriptName)
