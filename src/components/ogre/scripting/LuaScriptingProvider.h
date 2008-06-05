@@ -43,9 +43,9 @@ class LuaScriptingCallContext;
 /**
 @brief A scripting provider for Lua.
 
-This acts as a bridge between Ember and the Lua scripting environment. Opon creation and destruction it will take care of setting up and tearing down the lua virtual machine. Remember to call @see stop() before deleting an instance of this to make sure that everyting is properly cleaned up.
+This acts as a bridge between Ember and the Lua scripting environment. Opon creation and destruction it will take care of setting up and tearing down the lua virtual machine. Remember to call stop() before deleting an instance of this to make sure that everything is properly cleaned up.
 
-If you want to inspect the return values from calls to lua scripts, pass a pointer to @see LuaScriptingCallContext to the executeScript methods.
+If you want to inspect the return values from calls to lua scripts, pass a pointer to LuaScriptingCallContext to the executeScript methods.
 @author Erik Hjortsberg
 */
 class LuaScriptingProvider : public Ember::IScriptingProvider
@@ -70,26 +70,26 @@ public:
 	virtual void executeScript(const std::string& scriptCode, Ember::IScriptingCallContext* callContext);
 	
 	/**
-	 *   @brief  Returns true if the provider will load the supplied script name. This is in most cases decided from the filename suffix.
-	 * @param scriptName 
-	 * @return 
+	 *   @brief Returns true if the provider will load the supplied script name. This is in most cases decided from the filename suffix.
+	 * @param scriptName The name of the script.
+	 * @return True if the script can be loaded, else false.
 	 */
 	virtual bool willLoadScript(const std::string& scriptName);
 	
 	/**
-	 *    @brief Gets the unique name of the scripting provider.
-	 * @return 
+	 *   @brief Gets the unique name of the scripting provider.
+	 * @return The name of the scripting provider.
 	 */
 	virtual const std::string& getName() const;
 	
 	/**
-	 *    @brief Register with  a service to allow for callbacks etc.
-	 * @param service 
+	 *   @brief Register with  a service to allow for callbacks etc.
+	 * @param service The service to register with.
 	 */
 	virtual void _registerWithService(Ember::ScriptingService* service);
 	
 	/**
-	 *    @brief Forces a full garbage collection.
+	 *   @brief Forces a full garbage collection.
 	 */
 	virtual void forceGC();
     
@@ -121,10 +121,27 @@ private:
 	 */
 	void executeScriptImpl(const std::string& scriptCode, LuaScriptingCallContext* luaCallContext, const std::string& scriptName = std::string(""));
 
+	/**
+	 *    Initializes the lua scripting environment. This entails creating a new Lua virtual machine/state,  making sure that the correct lua libraries are loaded and a calling tolua bindings registering hooks.
+	 If you add a new tolua bindings class, don't forget to alter this method to include a call to the method which registers all classes and structs.
+	 */
 	void initialize();
+	
+	
+	/**
+	 *    Creates a new Lua virtual machine/state.
+	 */
 	void createState();
 // 	std::auto_ptr<CEGUI::LuaScriptModule> mLuaScriptModule;
+	
+	/**
+	The main scripting service instance.
+	*/
 	Ember::ScriptingService* mService;
+	
+	/**
+	The main lua state. This is the sole entry into the lua virtual machine.
+	*/
 	lua_State* mLuaState;
 	
 };
