@@ -50,15 +50,6 @@ protected:
 	LuaRef* mReturnValue;
 };
 
-LuaScriptingCallContext::LuaScriptingCallContext() : mReturnValue(0)
-{
-}
-
-LuaScriptingCallContext::~LuaScriptingCallContext()
-{
-	delete mReturnValue;
-}
-
 void LuaScriptingCallContext::setReturnValue(LuaRef* returnValue)
 {
 	delete returnValue;
@@ -72,6 +63,9 @@ LuaRef* LuaScriptingCallContext::getReturnValue()
 
 
 /**
+@brief A scripting provider for Lua.
+
+This acts as a bridge between Ember and the Lua scripting environment. Opon creation and destruction it will take care of setting up and tearing down the lua virtual machine. Remember to call @see stop() before deleting an instance of this to make sure that everyting is properly cleaned up.
 @author Erik Hjortsberg
 */
 class LuaScriptingProvider : public Ember::IScriptingProvider
@@ -120,15 +114,19 @@ public:
 	virtual void forceGC();
     
 // 	virtual void start();
+
+
+	/**
+	 *    @brief Stops the lua environment, which mainly means that all objects are destroyed.
+	 * Call this before this object is destroyed to make sure that all held objects and references are properly released. If not, there's a risk of dangling pointers.
+	 */
 	virtual void stop();
     
     
-    /**
-     * Returns the scripting module 
-     * @return 
-     */
-//     CEGUI::ScriptModule& getScriptModule();
-    
+	/**
+	 *    Gets the current lua state. This will always return a valid lua virtual machine, but note that if @see stop() already has been called it will porbably be in an invalid state.
+	 * @return The current lua environment.
+	 */
 	lua_State* getLuaState();
 	
 

@@ -110,7 +110,7 @@ void ScriptingService::executeCode(IScriptingCallContext* callContext, const std
 		S_LOG_FAILURE("There is no scripting provider with the name \"" << scriptType << "\"");
 	} else {
 		try {
-			I->second->executeScript(0, scriptCode);
+			I->second->executeScript(callContext, scriptCode);
 		} catch (const Ember::Exception& ex) {
 			S_LOG_WARNING("Error when executing script\n" << scriptCode << "\nwith provider " << I->second->getName() << ". Message: " << ex.getError());
 			scriptError(ex.getError());
