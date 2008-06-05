@@ -98,19 +98,14 @@ void ScriptingService::loadScript(const std::string& script)
 	}
 }
 
-void ScriptingService::executeCode(const std::string& scriptCode, const std::string& scriptType)
-{
-	executeCode(0, scriptCode, scriptType);
-}
-
-void ScriptingService::executeCode(IScriptingCallContext* callContext, const std::string& scriptCode, const std::string& scriptType)
+void ScriptingService::executeCode(const std::string& scriptCode, const std::string& scriptType, IScriptingCallContext* callContext)
 {
 	ProviderStore::iterator I = mProviders.find(scriptType);
 	if (I == mProviders.end()) {
 		S_LOG_FAILURE("There is no scripting provider with the name \"" << scriptType << "\"");
 	} else {
 		try {
-			I->second->executeScript(callContext, scriptCode);
+			I->second->executeScript(scriptCode, callContext);
 		} catch (const Ember::Exception& ex) {
 			S_LOG_WARNING("Error when executing script\n" << scriptCode << "\nwith provider " << I->second->getName() << ". Message: " << ex.getError());
 			scriptError(ex.getError());

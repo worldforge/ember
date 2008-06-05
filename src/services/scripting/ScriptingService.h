@@ -76,8 +76,7 @@ public:
 	 * @param scriptCode 
 	 * @param scriptType 
 	 */
-	void executeCode(const std::string& scriptCode, const std::string& scriptType);
-	void executeCode(IScriptingCallContext* callContext, const std::string& scriptCode, const std::string& scriptType);
+	void executeCode(const std::string& scriptCode, const std::string& scriptType, IScriptingCallContext* callContext = 0);
 	
 	/**
 	 *    The EventScriptError signal will be emitted when there is an error in a script.
