@@ -73,7 +73,7 @@ public:
 	 *    Executes the supplied string directly into the scripting environment.
 	 * @param scriptCode 
 	 */
-	virtual void executeScript(IScriptingCallContext& callContext, const std::string& scriptCode) = 0;
+	virtual void executeScript(Ember::IScriptingCallContext* callContext, const std::string& scriptCode, const std::string& scriptName = std::string("")) = 0;
 	
 	
 	/**

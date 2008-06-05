@@ -80,8 +80,7 @@ void LuaScriptingProvider::stop()
 		///we want to clear up the lua environment without destroying it (lua_close destroys it)
 		std::string shutdownScript("for key,value in pairs(_G) do if key ~= \"_G\" and key ~= \"pairs\" then _G[key] = nil end end");
 		{
-			Ember::IScriptingCallContext callContext(createDefaultContext());
-			executeScript(callContext, shutdownScript);
+			executeScript(0, shutdownScript);
 		}
 		forceGC();
 	} catch (...) {
@@ -173,7 +172,7 @@ void LuaScriptingProvider::loadScript(Ember::ResourceWrapper& resWrapper)
 	executeScript(0, std::string(resWrapper.getDataPtr(), resWrapper.getSize()), resWrapper.getName());
 }
 
-void LuaScriptingProvider::executeScript(Ember::IScriptingCallContext* callContext, const std::string& scriptCode, const std::string& scriptName = std::string(""))
+void LuaScriptingProvider::executeScript(Ember::IScriptingCallContext* callContext, const std::string& scriptCode, const std::string& scriptName)
 {
 	try {
 		LuaScriptingCallContext* luaCallContext = static_cast<LuaScriptingCallContext*>(callContext);
@@ -184,8 +183,14 @@ void LuaScriptingProvider::executeScript(Ember::IScriptingCallContext* callConte
 		{
 			std::string errMsg(lua_tostring(mLuaState,-1));
 			lua_settop(mLuaState,top);
-			//throw Ember::Exception("Unable to load Lua script file: '"+resWrapper.getName()+"'\n\n"+errMsg+"\n");
-			throw Ember::Exception("Unable to load Lua script: '" + scriptCode + "'\n\n"+errMsg+"\n");
+			if (!scriptName.empty())
+			{
+				throw Ember::Exception("Unable to load Lua script file: '"+scriptName+"'\n\n"+errMsg+"\n");
+			}
+			else
+			{
+				throw Ember::Exception("Unable to load Lua script: '" + scriptCode + "'\n\n"+errMsg+"\n");
+			}
 		}
 
 		///push our error handling method before calling the code
@@ -200,12 +205,12 @@ void LuaScriptingProvider::executeScript(Ember::IScriptingCallContext* callConte
 
 		/// load code into lua and call it
 		int error, nresults;
-		int level = lua_gettop(L); // top of stack position
+		int level = lua_gettop(mLuaState); // top of stack position
 		// if we have context to store return values, then get them
 		if (callContext)
 		{
 			error = lua_pcall(mLuaState, 0, LUA_MULTRET, error_index);
-			nresults = lua_gettop(L) - level; // number of results
+			nresults = lua_gettop(mLuaState) - level; // number of results
 		}
 		else
 		{
@@ -217,13 +222,22 @@ void LuaScriptingProvider::executeScript(Ember::IScriptingCallContext* callConte
 		{
 			std::string errMsg(lua_tostring(mLuaState,-1));
 			lua_settop(mLuaState,top);
-			//throw Ember::Exception("Unable to load Lua script file: '"+resWrapper.getName()+"'\n\n"+errMsg+"\n");
-			throw Ember::Exception("Unable to execute Lua script string: '"+scriptCode+"'\n\n"+errMsg+"\n");
+			if (!scriptName.empty())
+			{
+				throw Ember::Exception("Unable to load Lua script file: '"+scriptName+"'\n\n"+errMsg+"\n");
+			}
+			else
+			{
+				throw Ember::Exception("Unable to load Lua script: '" + scriptCode + "'\n\n"+errMsg+"\n");
+			}
 		}
 
-		fromStack fs(mLuaState);
-		LuaRef* luaRef = new LuaRef(fs);
-		luaCallContext.setReturnValue(luaRef);
+		if (callContext)
+		{
+			fromStack fs(mLuaState);
+			LuaRef* luaRef = new LuaRef(fs);
+			luaCallContext->setReturnValue(luaRef);
+		}
 
 		lua_settop(mLuaState,top); // just in case :P - do we need it?
 
