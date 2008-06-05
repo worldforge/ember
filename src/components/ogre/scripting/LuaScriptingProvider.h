@@ -28,7 +28,6 @@
 #include <CEGUIScriptModule.h>
 #include <CEGUILua.h>
 
-#include "luaobject.h"
 
 struct lua_State;
 
@@ -39,28 +38,7 @@ namespace Ember
 
 namespace EmberOgre {
 
-class LuaScriptingCallContext : public Ember::IScriptingCallContext
-{
-public:
-	inline LuaScriptingCallContext();
-	inline ~LuaScriptingCallContext();
-	inline void setReturnValue(LuaRef* returnValue);
-	inline LuaRef* getReturnValue();
-protected:
-	LuaRef* mReturnValue;
-};
-
-void LuaScriptingCallContext::setReturnValue(LuaRef* returnValue)
-{
-	delete returnValue;
-	mReturnValue = returnValue;
-}
-
-LuaRef* LuaScriptingCallContext::getReturnValue()
-{
-	return mReturnValue;
-}
-
+class LuaScriptingCallContext;
 
 /**
 @brief A scripting provider for Lua.
