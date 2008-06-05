@@ -175,7 +175,7 @@ void LuaScriptingProvider::loadScript(Ember::ResourceWrapper& resWrapper)
 void LuaScriptingProvider::executeScript(Ember::IScriptingCallContext* callContext, const std::string& scriptCode, const std::string& scriptName)
 {
 	try {
-		LuaScriptingCallContext* luaCallContext = static_cast<LuaScriptingCallContext*>(callContext);
+		LuaScriptingCallContext* luaCallContext(static_cast<LuaScriptingCallContext*>(callContext));
 		int top = lua_gettop(mLuaState);
 		int loaderr = luaL_loadbuffer(mLuaState, scriptCode.c_str(), scriptCode.length(), scriptCode.c_str());
 
@@ -321,5 +321,15 @@ void LuaScriptingProvider::forceGC()
 // {
 // 	return mLuaScriptModule;
 // }
+
+
+LuaScriptingCallContext::LuaScriptingCallContext() : mReturnValue(0)
+{
+}
+
+LuaScriptingCallContext::~LuaScriptingCallContext()
+{
+	delete mReturnValue;
+}
 
 }
