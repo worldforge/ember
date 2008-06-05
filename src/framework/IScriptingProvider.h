@@ -43,6 +43,14 @@ class ScriptingService;
 // protected:
 // };
 
+
+/**
+@brief Base interface for a call into a scripting environment.
+Sometimes when you make a call into a scripting environment, from the C++ code, you want to be able to inspect and act upon the return values. However, different scripting languages handles these things differently, so instead of a common class we provide this very bare bone interface. It's then up to to each implementation of IScriptingProvider to make sure that it also provides a concrete implementation of this class and knows how to handle it.
+
+Whenever you then want to act on values returned from a call into a specific scripting environment you have to first create the suitable instance of a subclass of this, and then pass that onto a call to the ScriptingService::executeScript method.
+@author Erik Hjortsberg <erik.hjortsber@iteam.se>
+*/
 class IScriptingCallContext
 {
 public:
@@ -53,16 +61,19 @@ protected:
 };
 
 /**
-@author Erik Hjortsberg
+@brief A generic scripting provider.
+We want to support many different scripting environments, so the ScriptingService isn't bound to any one type and insteads deals with abstract implementations of this interface. Any implementation is then bound to a specific scripting environment, such as Lua or Python.
+
+Any implementation of this interface is expected to handle setup and teardown of the underlying scripting environment/virtual machine.
+Often you want to do it in two separate steps, where a call to stop() forces the scripting environment to unload all allocated objects and structs, and the desctructor then handles destroying the scripting environment completely.
+@author Erik Hjortsberg <erik.hjortsber@iteam.se>
 */
-class IScriptingProvider{
+class IScriptingProvider
+{
 public:
 	
 	virtual ~IScriptingProvider(){}
 	
-// 	virtual IScriptingCallContext createDefaultContext() = 0;
-	
-
 	/**
 	 *    @brief Loads the script from the wrapper.
 	 * @param resourceWrapper A resource wrapper pointing to a valid resource which can be loaded. This should contain a text file with the script contents.
@@ -80,20 +91,20 @@ public:
 	
 	/**
 	 *   @brief Returns true if the provider will load the supplied script name. This is in most cases decided from the filename suffix.
-	 * @param scriptName 
-	 * @return 
+	 * @param scriptName The name of the script.
+	 * @return True if the script can be loaded, else false.
 	 */
 	virtual bool willLoadScript(const std::string& scriptName) = 0;
 	
 	/**
 	 *   @brief Gets the unique name of the scripting provider.
-	 * @return 
+	 * @return The name of the scripting provider.
 	 */
 	virtual const std::string& getName() const = 0;
 	
 	/**
 	 *   @brief Register with  a service to allow for callbacks etc.
-	 * @param service 
+	 * @param service The service to register with.
 	 */
 	virtual void _registerWithService(ScriptingService* service) = 0;
 	
