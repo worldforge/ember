@@ -80,7 +80,7 @@ void LuaScriptingProvider::stop()
 		///we want to clear up the lua environment without destroying it (lua_close destroys it)
 		std::string shutdownScript("for key,value in pairs(_G) do if key ~= \"_G\" and key ~= \"pairs\" then _G[key] = nil end end");
 		{
-			executeScript(0, shutdownScript);
+			executeScript(shutdownScript, 0);
 		}
 		forceGC();
 	} catch (...) {
@@ -169,13 +169,18 @@ lua_State* LuaScriptingProvider::getLuaState()
 
 void LuaScriptingProvider::loadScript(Ember::ResourceWrapper& resWrapper)
 {
-	executeScript(0, std::string(resWrapper.getDataPtr(), resWrapper.getSize()), resWrapper.getName());
+	executeScriptImpl(std::string(resWrapper.getDataPtr(), resWrapper.getSize()), 0, resWrapper.getName());
 }
 
-void LuaScriptingProvider::executeScript(Ember::IScriptingCallContext* callContext, const std::string& scriptCode, const std::string& scriptName)
+void LuaScriptingProvider::executeScript(const std::string& scriptCode, Ember::IScriptingCallContext* callContext)
+{
+
+	executeScriptImpl(scriptCode, static_cast<LuaScriptingCallContext*>(callContext), "");
+}
+
+void LuaScriptingProvider::executeScriptImpl(const std::string& scriptCode, LuaScriptingCallContext* luaCallContext, const std::string& scriptName)
 {
 	try {
-		LuaScriptingCallContext* luaCallContext(static_cast<LuaScriptingCallContext*>(callContext));
 		int top = lua_gettop(mLuaState);
 		int loaderr = luaL_loadbuffer(mLuaState, scriptCode.c_str(), scriptCode.length(), scriptCode.c_str());
 
@@ -207,7 +212,7 @@ void LuaScriptingProvider::executeScript(Ember::IScriptingCallContext* callConte
 		int error, nresults;
 		int level = lua_gettop(mLuaState); // top of stack position
 		// if we have context to store return values, then get them
-		if (callContext)
+		if (luaCallContext)
 		{
 			error = lua_pcall(mLuaState, 0, LUA_MULTRET, error_index);
 			nresults = lua_gettop(mLuaState) - level; // number of results
@@ -232,7 +237,7 @@ void LuaScriptingProvider::executeScript(Ember::IScriptingCallContext* callConte
 			}
 		}
 
-		if (callContext)
+		if (luaCallContext)
 		{
 			fromStack fs(mLuaState);
 			LuaRef* luaRef = new LuaRef(fs);
@@ -270,11 +275,6 @@ const std::string& LuaScriptingProvider::getName() const
 void LuaScriptingProvider::_registerWithService(Ember::ScriptingService* service)
 {	
 	mService = service;
-}
-
-Ember::IScriptingCallContext LuaScriptingProvider::createDefaultContext()
-{
-	return LuaScriptingCallContext();
 }
 
 
