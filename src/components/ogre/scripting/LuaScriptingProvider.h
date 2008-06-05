@@ -42,8 +42,8 @@ namespace EmberOgre {
 class LuaScriptingCallContext : public Ember::IScriptingCallContext
 {
 public:
-	LuaScriptingCallContext();
-	~LuaScriptingCallContext();
+	inline LuaScriptingCallContext();
+	inline ~LuaScriptingCallContext();
 	inline void setReturnValue(LuaRef* returnValue);
 	inline LuaRef* getReturnValue();
 protected:
@@ -93,7 +93,7 @@ public:
 	 *    Executes the supplied string directly into the scripting environment.
 	 * @param scriptCode 
 	 */
-	virtual void executeScript(Ember::IScriptingCallContext* callContext, const std::string& scriptCode);
+	virtual void executeScript(Ember::IScriptingCallContext* callContext, const std::string& scriptCode, const std::string& scriptName = std::string(""));
 	
 	/**
 	 *    Returns true if the provider will load the supplied script name. This is in most cases decided from the filename suffix.
