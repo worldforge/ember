@@ -44,6 +44,7 @@ extern "C" {
 //#include <lua.hpp>
 #include <tolua++.h>
 #include "LuaHelper.h"
+#include "LuaScriptingCallContext.h"
 
 TOLUA_API int tolua_Ogre_open (lua_State* tolua_S);
 TOLUA_API int tolua_Eris_open (lua_State* tolua_S);
@@ -323,13 +324,6 @@ void LuaScriptingProvider::forceGC()
 // }
 
 
-LuaScriptingCallContext::LuaScriptingCallContext() : mReturnValue(0)
-{
-}
 
-LuaScriptingCallContext::~LuaScriptingCallContext()
-{
-	delete mReturnValue;
-}
 
 }
