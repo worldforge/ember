@@ -2,9 +2,11 @@
 
 
 -----------------------------------------
-Environment = {}
-Environment.timeSlider = nil
-Environment.widget = guiManager:createWidget()
+Environment = {
+timeSlider = nil
+, widget = guiManager:createWidget()
+}
+
 
 function Environment.buildWidget()
 	
@@ -12,6 +14,9 @@ function Environment.buildWidget()
 	
 	Environment.timeSlider = Environment.widget:getWindow("Time")
 	Environment.timeSlider = CEGUI.toSlider(Environment.timeSlider)
+	
+	Environment.fogDensitySlider = Environment.widget:getWindow("FogDistance")
+	Environment.fogDensitySlider = CEGUI.toSlider(Environment.fogDensitySlider)
 	
 	Environment.widget:registerConsoleVisibilityToggleCommand("environment")
 	Environment.widget:enableCloseButton()
@@ -37,6 +42,25 @@ function Environment.Time_ValueChanged(args)
 			end
 		end
 	end
+end
+
+function Environment.FogDistance_ValueChanged(args)
+	local densityValue = Environment.fogDensitySlider:getCurrentValue()
+	
+	local entityFactory = emberOgre:getEntityFactory()
+	if entityFactory ~= nil then
+		local worldEntity = entityFactory:getWorld()
+		if worldEntity ~= nil then
+			local environment = worldEntity:getEnvironment()
+			if environment ~= nil then
+				local fog = environment:getFog()
+				if fog ~= nil then
+					fog:setDensity(0.01 * densityValue)
+				end
+			end
+		end
+	end
+	
 end
 
 Environment.buildWidget()

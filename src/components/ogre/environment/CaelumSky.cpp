@@ -82,11 +82,11 @@ void CaelumSky::Config_CloudCover(const std::string& section, const std::string&
 
 void CaelumSky::setDensity(float density)
 {
-	mCaelumSystem->setSceneFogDensityMultiplier  (density);
+	mCaelumSystem->setGlobalFogDensityMultiplier  (density);
 }
 float CaelumSky::getDensity() const
 {
-	return mCaelumSystem->getSceneFogDensityMultiplier();
+	return mCaelumSystem->getGlobalFogDensityMultiplier();
 }
 
 bool CaelumSky::frameEnded(const Ogre::FrameEvent & event)

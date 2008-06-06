@@ -112,7 +112,7 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 
 
 	mCaelumSystem->setManageSceneFog (true);
-	mCaelumSystem->setSceneFogDensityMultiplier (0.005);
+	mCaelumSystem->setGlobalFogDensityMultiplier (0.005);
 
 	///Get the sky dome for  Create a sky dome CaelumSky
 	mDome = mCaelumSystem->getSkyDome();
@@ -186,7 +186,7 @@ ISky* CaelumEnvironment::getSky()
 
 IFog* CaelumEnvironment::getFog()
 {
-	return 0;
+	return mSky;
 	//return mFog;
 }
 
