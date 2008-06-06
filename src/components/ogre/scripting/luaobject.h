@@ -445,18 +445,16 @@ public:
 	}
 
 	// Return as an object
-	template<typename Treturn> 
-	Treturn asObject()
+	template<typename Treturn>
+	Treturn asObject(std::string className)
 	{
 		luaPop p(mL);
-		
+
 		push();
 
-		if( lua_isuserdata( mL, -1 ) ) {
-			return (Treturn)lua_touserdata( mL, -1 );
-		}
-		throw LuaException( mL, "LuaRef referenced object is not a userdata.", __FILE__, __LINE__ );
+		return static_cast<Treturn*>(luaL_checkudata(mL, -1, className.c_str()));
 	}
+
 	// The next few overloads of operator () allow calling a referenced Lua object (provided its a function),
 	// with the same syntax as calling a C++ function.  Only the types LuaVal has conversions for can be used.
 	// Upto 4 parameters, but more can be added.  Returns true on succesfull call.  No results are returned.
