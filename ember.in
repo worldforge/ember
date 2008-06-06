@@ -110,11 +110,9 @@ echo @VERSION@ > $homedata/latest_version
 if [ $debugging = 1 ] ; then
 	# Execute real ember binary
 	echo "Starting Ember in debugger...."
-	#we have to do the LD_PRELOAD thing, because else at least I get an error: libnvidia-tls.so.1: cannot handle TLS data /ehj
-	LD_PRELOAD=libGL.so.1 gdb --args $bindir/ember.bin --home $homedata $@
+	gdb --args $bindir/ember.bin --home $homedata $@
 else
 	# Execute real ember binary
 	echo "Starting Ember...."
-	#we have to do the LD_PRELOAD thing, because else at least I get an error: libnvidia-tls.so.1: cannot handle TLS data /ehj
-	LD_PRELOAD=libGL.so.1 $bindir/ember.bin --home $homedata $@
+	$bindir/ember.bin --home $homedata $@
 fi
