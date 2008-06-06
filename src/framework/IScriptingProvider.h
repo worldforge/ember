@@ -88,6 +88,7 @@ public:
 	 */
 	virtual void executeScript(const std::string& scriptCode, Ember::IScriptingCallContext* callContext) = 0;
 	
+	virtual void callFunction(const std::string& functionName, Ember::IScriptingCallContext* callContext) = 0;
 	
 	/**
 	 *   @brief Returns true if the provider will load the supplied script name. This is in most cases decided from the filename suffix.

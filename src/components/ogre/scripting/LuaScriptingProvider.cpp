@@ -175,8 +175,12 @@ void LuaScriptingProvider::loadScript(Ember::ResourceWrapper& resWrapper)
 
 void LuaScriptingProvider::executeScript(const std::string& scriptCode, Ember::IScriptingCallContext* callContext)
 {
-
 	executeScriptImpl(scriptCode, static_cast<LuaScriptingCallContext*>(callContext), "");
+}
+
+void LuaScriptingProvider::callFunction(const std::string& functionName, Ember::IScriptingCallContext* callContext)
+{
+	callFunctionImpl(functionName, static_cast<LuaScriptingCallContext*>(callContext));
 }
 
 void LuaScriptingProvider::executeScriptImpl(const std::string& scriptCode, LuaScriptingCallContext* luaCallContext, const std::string& scriptName)
@@ -236,6 +240,65 @@ void LuaScriptingProvider::executeScriptImpl(const std::string& scriptCode, LuaS
 			{
 				throw Ember::Exception("Unable to load Lua script: '" + scriptCode + "'\n\n"+errMsg+"\n");
 			}
+		}
+
+		if (luaCallContext)
+		{
+			fromStack fs(mLuaState);
+			LuaRef* luaRef = new LuaRef(fs);
+			luaCallContext->setReturnValue(luaRef);
+		}
+
+		lua_settop(mLuaState,top); // just in case :P - do we need it?
+
+// 		getScriptModule().executeString(scriptCode);
+	} catch (const CEGUI::Exception& ex) {
+		throw Ember::Exception(ex.getMessage().c_str());
+	} catch( const CEGUI::String& str ) {
+		throw Ember::Exception(str.c_str());
+	} catch (const Ember::Exception& ex) {
+		throw ex;
+	} catch (...) {
+		throw Ember::Exception("Unknown error.");
+	}
+}
+
+void LuaScriptingProvider::callFunctionImpl(const std::string& functionName, LuaScriptingCallContext* luaCallContext)
+{
+	try {
+		int top = lua_gettop(mLuaState);
+		lua_getfield(mLuaState, LUA_GLOBALSINDEX, functionName.c_str()); // check errors here?
+
+		///push our error handling method before calling the code
+		int error_index = lua_gettop(mLuaState);
+		#if LUA51
+		lua_pushcfunction(mLuaState, ::EmberOgre::Scripting::LuaHelper::luaErrorHandler);
+		#else
+		lua_pushliteral(mLuaState, "_TRACEBACK");
+		lua_rawget(mLuaState, LUA_GLOBALSINDEX);  /* get traceback function */
+		#endif
+		lua_insert(mLuaState, error_index);
+
+		/// load code into lua and call it
+		int error, nresults;
+		int level = lua_gettop(mLuaState); // top of stack position
+		// if we have context to store return values, then get them
+		if (luaCallContext)
+		{
+			error = lua_pcall(mLuaState, 0, LUA_MULTRET, error_index);
+			nresults = lua_gettop(mLuaState) - level; // number of results
+		}
+		else
+		{
+			error = lua_pcall(mLuaState, 0, 0, error_index);
+		}
+
+		// handle errors
+		if (error)
+		{
+			std::string errMsg(lua_tostring(mLuaState,-1));
+			lua_settop(mLuaState,top);
+			throw Ember::Exception("Unable to call Lua function '"+functionName+"'\n\n"+errMsg+"\n");
 		}
 
 		if (luaCallContext)
