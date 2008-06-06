@@ -68,7 +68,9 @@ public:
 	 * @param callContext An optional pointer to a scripting call context. This will be populated with return values and other info. If you don't have any need for such info, leave this empty.
 	 */
 	virtual void executeScript(const std::string& scriptCode, Ember::IScriptingCallContext* callContext);
-	
+
+	virtual void callFunction(const std::string& functionName, Ember::IScriptingCallContext* callContext);
+
 	/**
 	 *   @brief Returns true if the provider will load the supplied script name. This is in most cases decided from the filename suffix.
 	 * @param scriptName The name of the script.
@@ -120,6 +122,8 @@ private:
 	 * @param scriptName The name of the script, mainly used for debugging purpose.
 	 */
 	void executeScriptImpl(const std::string& scriptCode, LuaScriptingCallContext* luaCallContext, const std::string& scriptName = std::string(""));
+
+	void callFunctionImpl(const std::string& functionName, LuaScriptingCallContext* callContext);
 
 	/**
 	 *    Initializes the lua scripting environment. This entails creating a new Lua virtual machine/state,  making sure that the correct lua libraries are loaded and a calling tolua bindings registering hooks.

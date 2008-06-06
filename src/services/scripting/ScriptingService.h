@@ -74,10 +74,12 @@ public:
 	/**
 	 *    Executes the supplied code directly into the provider with the supplied name.
 	 * @param scriptCode 
-	 * @param scriptType 
+	 * @param scriptType  
 	 */
 	void executeCode(const std::string& scriptCode, const std::string& scriptType, IScriptingCallContext* callContext = 0);
-	
+
+	void callFunction(const std::string& functionName, const std::string& scriptType, Ember::IScriptingCallContext* callContext = 0);
+
 	/**
 	 *    The EventScriptError signal will be emitted when there is an error in a script.
 	 * @return 
