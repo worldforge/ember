@@ -59,7 +59,7 @@ protected:
 
 void LuaScriptingCallContext::setReturnValue(LuaRef* returnValue)
 {
-	delete returnValue;
+	delete mReturnValue;
 	mReturnValue = returnValue;
 }
 
