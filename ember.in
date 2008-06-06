@@ -110,9 +110,9 @@ echo @VERSION@ > $homedata/latest_version
 if [ $debugging = 1 ] ; then
 	# Execute real ember binary
 	echo "Starting Ember in debugger...."
-	gdb --args $bindir/ember.bin --home $homedata $@
+	gdb --args $bindir/ember.bin --home $homedata "$@"
 else
 	# Execute real ember binary
 	echo "Starting Ember...."
-	$bindir/ember.bin --home $homedata $@
+	$bindir/ember.bin --home $homedata "$@"
 fi
