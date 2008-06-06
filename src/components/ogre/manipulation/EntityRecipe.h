@@ -83,6 +83,11 @@ public:
 	 */
 	GUIAdapterBindings* createGUIAdapterBindings(std::string name);
 
+	/**
+	 * Does some test checking.
+	 */
+	void doTest();
+
 protected:
 	/**
 	 * List of semi-atlas entity specs.

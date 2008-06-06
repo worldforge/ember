@@ -26,17 +26,20 @@
 #endif
 
 #include "EntityRecipe.h"
+#include "components/ogre/scripting/LuaScriptingCallContext.h"
+#include "services/scripting/ScriptingService.h"
+#include "services/EmberServices.h"
 
 namespace EmberOgre {
 
 EntityRecipe::EntityRecipe(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
-    const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader) 
-    : Resource(creator, name, handle, group, isManual, loader)
+	const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader)
+	: Resource(creator, name, handle, group, isManual, loader)
 {
-    if (createParamDictionary("EntityRecipe"))
-    {
-        // no custom params
-    }
+	if (createParamDictionary("EntityRecipe"))
+	{
+		// no custom params
+	}
 }
 
 EntityRecipe::~EntityRecipe()
@@ -84,6 +87,21 @@ GUIAdapterBindings* EntityRecipe::createGUIAdapterBindings(std::string name)
 	adapterBindings = new GUIAdapterBindings();
 	mBindings[name] = adapterBindings;
 	return adapterBindings;
+}
+
+void EntityRecipe::doTest()
+{
+	S_LOG_VERBOSE("Doing test.");
+
+	LuaScriptingCallContext* callContext = new LuaScriptingCallContext();
+
+	// Loading code
+	Ember::EmberServices::getSingleton().getScriptingService()->executeCode(mScript, "LuaScriptingProvider");
+
+	// Calling test function
+	Ember::EmberServices::getSingleton().getScriptingService()->callFunction("fTest", "LuaScriptingProvider", callContext);
+
+	delete callContext;
 }
 
 }

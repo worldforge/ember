@@ -69,6 +69,7 @@ void XMLEntityRecipeSerializer::parseScript(Ogre::DataStreamPtr& stream, const O
 			EntityRecipePtr entRecipe = EntityRecipeManager::getSingleton().create(name, groupName);
 			if (!entRecipe.isNull()) {
 				readRecipe(entRecipe, smElem);
+				entRecipe->doTest();
 			}
 		} catch (const Ogre::Exception& ex) {
 			S_LOG_FAILURE(ex.getFullDescription());
