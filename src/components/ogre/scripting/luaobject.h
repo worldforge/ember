@@ -451,13 +451,20 @@ public:
 
 	// Return as an object
 	template<typename Treturn>
-	Treturn asObject(std::string className)
+	Treturn asObject(const char* className)
 	{
 		luaPop p(mL);
 
 		push();
 
-		return static_cast<Treturn*>(luaL_checkudata(mL, -1, className.c_str()));
+		return static_cast<Treturn*>(luaL_checkudata(mL, -1, className));
+	}
+
+	// Return as an object
+	template<typename Treturn>
+	Treturn asObject(std::string className)
+	{
+		return asObject<Treturn>(className.c_str());
 	}
 
 	// The next few overloads of operator () allow calling a referenced Lua object (provided its a function),
