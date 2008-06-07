@@ -101,6 +101,15 @@ void EntityRecipe::doTest()
 	// Calling test function
 	Ember::EmberServices::getSingleton().getScriptingService()->callFunction("fTest", "LuaScriptingProvider", callContext);
 
+	LuaRef returnValue( callContext->getReturnValue() );
+
+	S_LOG_VERBOSE(lua_typename(0, returnValue.type()));
+
+	Atlas::Message::Element returnObj;
+	returnObj = returnValue.asObject<Atlas::Message::Element>("Atlas::Message::Element");
+
+	S_LOG_VERBOSE(returnObj.asInt());
+
 	delete callContext;
 }
 
