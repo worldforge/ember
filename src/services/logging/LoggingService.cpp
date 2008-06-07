@@ -206,8 +206,7 @@ hexNumber (const int intDecimal)
     return intHex;
 }
 
-LoggingService & LoggingService::operator<< (const std::
-                                                         string & stringToAdd)
+LoggingService & LoggingService::operator<< (const std::string & stringToAdd)
 {
     myMessage += stringToAdd;
     return *this;
@@ -246,6 +245,15 @@ operator<< (const double doubleToAdd)
 	std::stringstream ss;
 	ss << doubleToAdd;
     myMessage += ss.str();
+    return *this;
+}
+
+LoggingService & LoggingService::operator<< (const long longToAdd)
+{
+	std::stringstream ss;
+	ss << longToAdd;
+    myMessage += ss.str();
+    
     return *this;
 }
 
