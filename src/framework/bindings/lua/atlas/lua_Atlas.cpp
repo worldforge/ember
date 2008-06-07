@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Atlas
-** Generated automatically by tolua++-1.0.92 on Sat Oct 20 23:43:39 2007.
+** Generated automatically by tolua++-1.0.92 on Sun Jun  8 00:24:27 2008.
 */
 
 #ifndef __cplusplus
@@ -1983,7 +1983,7 @@ static int tolua_Atlas_Atlas_Message_MapType_theEnd00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: findInMap of class  Atlas::Message::MapType */
+/* method: _MapType_findInMap of class  Atlas::Message::MapType */
 #ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_MapType_get00
 static int tolua_Atlas_Atlas_Message_MapType_get00(lua_State* tolua_S)
 {
@@ -2001,10 +2001,10 @@ static int tolua_Atlas_Atlas_Message_MapType_get00(lua_State* tolua_S)
   const Atlas::Message::MapType* self = (const Atlas::Message::MapType*)  tolua_tousertype(tolua_S,1,0);
   const std::string index = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'findInMap'",NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function '_MapType_findInMap'",NULL);
 #endif
   {
-    const Atlas::Message::Element& tolua_ret = (const Atlas::Message::Element&)  _MapType_findInMap(self,index);
+   tolua_outside  const Atlas::Message::Element& tolua_ret = (tolua_outside  const Atlas::Message::Element&)  _MapType_findInMap(self,index);
    tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const Atlas::Message::Element");
    tolua_pushcppstring(tolua_S,(const char*)index);
   }
