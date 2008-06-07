@@ -281,7 +281,8 @@ public:
 
 	LuaRef(const LuaRef &obj ) : mL( obj.mL )
 	{
-		push();
+		LuaRef& objRef = const_cast<LuaRef&>(obj);
+		objRef.push();
 		mRef = luaL_ref( mL, LUA_REGISTRYINDEX );
 	}
 
@@ -291,7 +292,7 @@ public:
 	}
 
 	// Place object on top of Lua stack.
-	void push()													
+	void push()
 	{
 		lua_rawgeti( mL, LUA_REGISTRYINDEX, mRef );
 	}
@@ -355,8 +356,9 @@ public:
 	// Reference an object referenced by "obj"
 	LuaRef & operator = ( LuaRef &obj )
 	{
-		obj.push();
+		luaL_unref( mL, LUA_REGISTRYINDEX, mRef );
 		mL = obj.mL;
+		obj.push();
 		mRef = luaL_ref( mL, LUA_REGISTRYINDEX );
 
 		return *this;
@@ -365,6 +367,7 @@ public:
 	// Reference a number as a new object.
 	double operator = ( double f )
 	{
+		luaL_unref( mL, LUA_REGISTRYINDEX, mRef );
 		lua_pushnumber( mL, f );
 		mRef = luaL_ref( mL, LUA_REGISTRYINDEX );
 		return f;
@@ -380,6 +383,7 @@ public:
 	// Reference a string.
 	const char * operator = ( const char *str )
 	{
+		luaL_unref( mL, LUA_REGISTRYINDEX, mRef );
 		
 		lua_pushstring( mL, str );
 		mRef = luaL_ref( mL, LUA_REGISTRYINDEX );		
@@ -389,6 +393,7 @@ public:
 	// Reference a function.
 	lua_CFunction operator = ( lua_CFunction func )
 	{
+		luaL_unref( mL, LUA_REGISTRYINDEX, mRef );
 		lua_pushcfunction( mL, func );
 		mRef = luaL_ref( mL, LUA_REGISTRYINDEX );
 		return func;
