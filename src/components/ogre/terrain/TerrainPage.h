@@ -28,6 +28,7 @@
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
 #include <Mercator/Surface.h>
+#include <Mercator/TerrainMod.h>
 #include "../MathConverter.h"
 
 namespace EmberOgre {
@@ -240,6 +241,18 @@ public:
 	 */
 	void unregisterBridge();
 
+	/**
+	 *    @brief Adds the specified modifier to the segment at (x,y)
+	 * This is currently called from TerrainGenerator -tb
+	 */
+	void addTerrainModifier(int x, int y, Mercator::TerrainMod *modifier);
+
+	/**
+	 *    @brief Returns the position of an applied modifier
+	 *
+	 */
+	TerrainPosition *getTerrainModifierPos(int modList_index);
+
 private:
 
 	SegmentVector mValidSegments;
@@ -299,7 +312,33 @@ private:
 	*/
 	ITerrainPageBridge* mBridge;
 
+/*
+	class terrainModEntry {
+	   public:
+		int	seg_x;
+		int	seg_y;
+		Mercator::TerrainMod *modifier;
 
+		terrainModEntry ()
+		{
+			seg_x = 0;
+			seg_y = 0;
+			modifier = NULL;
+		}
+
+		terrainModEntry (int x, int y, Mercator::TerrainMod *mod) 
+		{
+			seg_x = x;
+			seg_y = y;
+			modifier = mod;
+		}
+	};
+
+*/
+/*	typedef std::list<terrainModEntry *, std::allocator<terrainModEntry *> > terrainModList;
+
+	terrainModList mModList;
+*/
 };
 
 inline int TerrainPage::getAlphaTextureSize( ) const

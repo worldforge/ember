@@ -432,5 +432,20 @@ void TerrainPage::unregisterBridge()
 	mBridge = 0;
 }
 
+
+void TerrainPage::addTerrainModifier(int x, int y, Mercator::TerrainMod *modifier)
+{
+	//mModList[0] = terrainModEntry(x, y, modifier);
+	//mModList.assign(sizeof(terrainModEntry), terrainModEntry(x, y, modifier)); /* Add the new modifier to our list */
+	
+	//(*getSegmentAtLocalIndex(x, y)).addMod(modifier); /* add it to the segment at (x,y) */
+}
+
+TerrainPosition *TerrainPage::getTerrainModifierPos(int modList_index)
+{
+	//return new TerrainPosition(mModList[modList_index].seg_x, mModList[modList_index].seg_y);
+	return new TerrainPosition(2,2);
+}
+
 }
 }

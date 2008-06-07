@@ -367,7 +367,8 @@ void TerrainGenerator::buildHeightmap()
 			}
 		}
 	}
-	mTerrain->getSegment(2,2)->addMod(myCrater); //tb
+	getTerrainPage(TerrainPosition(2,2))->addTerrainModifier(2,2,myCrater);
+	//mTerrain->getSegment(2,2)->addMod(myCrater); //tb
 }
 
 // void TerrainGenerator::createShaders(WorldEmberEntity* worldEntity)
