@@ -1,2 +1,3 @@
 #! /bin/sh
-tolua++ -n Framework Framework.pkg | sed -e 's/const,/const /g' > lua_Framework.cpp
+#call our common bindings generating script
+../../../../../scripts/update_lua_bindings.sh Framework Framework.pkg lua_Framework.cpp

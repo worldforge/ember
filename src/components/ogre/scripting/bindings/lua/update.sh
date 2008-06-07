@@ -1,2 +1,3 @@
 #! /bin/sh
-tolua++ -n EmberOgre EmberOgre.pkg | sed -e 's/const,/const /g' > lua_EmberOgre.cpp
+#call our common bindings generating script
+../../../../../../scripts/update_lua_bindings.sh EmberOgre EmberOgre.pkg lua_EmberOgre.cpp

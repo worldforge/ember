@@ -1,2 +1,3 @@
 #! /bin/sh
-tolua++ -n Ogre Ogre.pkg | sed -e 's/const,/const /g' > lua_Ogre.cpp
+#call our common bindings generating script
+../../../../../../../scripts/update_lua_bindings.sh Ogre Ogre.pkg lua_Ogre.cpp

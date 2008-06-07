@@ -1,2 +1,3 @@
 #! /bin/sh
-tolua++ -n Atlas Atlas.pkg | sed -e 's/const,/const /g' > lua_Atlas.cpp
+#call our common bindings generating script
+../../../../../scripts/update_lua_bindings.sh Atlas Atlas.pkg lua_Atlas.cpp

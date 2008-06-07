@@ -1,2 +1,3 @@
 #! /bin/sh
-tolua++ -n Eris Eris.pkg | sed -e 's/const,/const /g' > lua_Eris.cpp
+#call our common bindings generating script
+../../../../../scripts/update_lua_bindings.sh Eris Eris.pkg lua_Eris.cpp
