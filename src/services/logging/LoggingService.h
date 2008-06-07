@@ -467,6 +467,8 @@ public:
 	
 	LoggingService & operator<< (const unsigned int uintToAdd);
 	
+	LoggingService & operator<< (const long longToAdd);
+
 	LoggingService & operator<< (const unsigned long ulongToAdd);
 
 	LoggingService & operator<< (const HexNumber & intHexToAdd);
