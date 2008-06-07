@@ -43,7 +43,7 @@ public:
 	 *    Gets the return value of the lua call.
 	 * @return 
 	 */
-	inline LuaRef* getReturnValue();
+	inline LuaRef getReturnValue();
 protected:
 	/**
 	 *    Sets the return value of the lua call. This is an internal method used only by the lua scripting provider.
@@ -63,9 +63,9 @@ void LuaScriptingCallContext::setReturnValue(LuaRef* returnValue)
 	mReturnValue = returnValue;
 }
 
-LuaRef* LuaScriptingCallContext::getReturnValue()
+LuaRef LuaScriptingCallContext::getReturnValue()
 {
-	return mReturnValue;
+	return *mReturnValue;
 }
 
 }
