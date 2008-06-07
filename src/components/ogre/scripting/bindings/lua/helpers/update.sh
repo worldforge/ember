@@ -1,2 +1,3 @@
 #! /bin/sh
-tolua++ -n Helpers Helpers.pkg | sed -e 's/const,/const /g' > lua_Helpers.cpp
+#call our common bindings generating script
+../../../../../../../scripts/update_lua_bindings.sh Helpers Helpers.pkg lua_Helpers.cpp

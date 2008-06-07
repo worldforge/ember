@@ -1,2 +1,3 @@
 #! /bin/sh
-tolua++ -n EmberServices EmberServices.pkg | sed -e 's/const,/const /g' > lua_EmberServices.cpp
+#call our common bindings generating script
+../../../../scripts/update_lua_bindings.sh EmberServices EmberServices.pkg lua_EmberServices.cpp
