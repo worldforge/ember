@@ -9,9 +9,21 @@ This class is also responsible for changing the look of the mouse pointer betwee
 ]]--
 
 
-MainIconBar = {connectors={}}
+MainIconBar = {connectors={}, images={}}
 
+--[[creates a new icon and adds it to the iconbar, using the default background and border images
+@param iconName The name of the icon.
+@param foregroundImage The CEGUI::Image to use as foreground image.
+@param tooltipText The text to use for tooltip text.
+@returns The newly created IconBase instance. This has already been added to the iconbar. Note that the iconbar is responsible for deleting the IconBase instance, so you don't have to do it yourself.
+]]--
+function MainIconBar.addIcon(iconName, foregroundImage, tooltipText)
+	local iconBase = EmberOgre.Gui.IconBase:new(iconName, MainIconBar.images.background, foregroundImage, MainIconBar.images.borderinactive, MainIconBar.images.borderactive)
+	MainIconBar.iconBar:addIcon(iconBase)
+	iconBase:getButton():setTooltipText(tooltipText)
+	return iconBase
 
+end
 
 function MainIconBar.buildWidget()
 
@@ -19,25 +31,21 @@ function MainIconBar.buildWidget()
 	guiManager:getMainSheet():addChildWindow(MainIconBar.iconBar:getWindow())
 	
 	--we'll use the same backgrounds for all icons
-	local background = EmberOgre.Gui.IconBase:loadImageFromImageset("iconset_standard", "background_A")
-	local borderactive = EmberOgre.Gui.IconBase:loadImageFromImageset("iconset_standard", "ring_over")
-	local borderinactive = EmberOgre.Gui.IconBase:loadImageFromImageset("iconset_standard", "ring")
+	MainIconBar.images.background = EmberOgre.Gui.IconBase:loadImageFromImageset("iconset_standard", "background_A")
+	MainIconBar.images.borderactive = EmberOgre.Gui.IconBase:loadImageFromImageset("iconset_standard", "ring_over")
+	MainIconBar.images.borderinactive = EmberOgre.Gui.IconBase:loadImageFromImageset("iconset_standard", "ring")
 	local foreground = nil
 	
 	local helpIconBase = nil
 	
 	--start with the close icon
 	foreground = EmberOgre.Gui.IconBase:loadImageFromImageset("iconset_standard", "close2")
-	helpIconBase = EmberOgre.Gui.IconBase:new("close2", background, foreground, borderinactive, borderactive)
-	MainIconBar.iconBar:addIcon(helpIconBase)
-	helpIconBase:getButton():setTooltipText("Click here to exit Ember.")
+	helpIconBase = MainIconBar.addIcon("close2", foreground, "Click here to exit Ember.")
 	helpIconBase:getButton():subscribeEvent("MouseClick", "MainIconBar.close_MouseClick")
 	
 	--then the help icon
 	foreground = EmberOgre.Gui.IconBase:loadImageFromImageset("iconset_standard", "question")
-	helpIconBase = EmberOgre.Gui.IconBase:new("help", background, foreground, borderinactive, borderactive)
-	MainIconBar.iconBar:addIcon(helpIconBase)
-	helpIconBase:getButton():setTooltipText("Click here to access the help.");
+	helpIconBase = MainIconBar.addIcon("help", foreground, "Click here to access the help.")
 	helpIconBase:getButton():subscribeEvent("MouseClick", "MainIconBar.help_MouseClick")
 	
 	--and the the movement icon
@@ -47,9 +55,7 @@ function MainIconBar.buildWidget()
 	MainIconBar.movementImage_run	= EmberOgre.Gui.IconBase:loadImageFromImageset("iconset_standard", "run")
 	MainIconBar.movementImage_gui	= EmberOgre.Gui.IconBase:loadImageFromImageset("iconset_standard", "abc")
 	
-	MainIconBar.movementModeIcon = EmberOgre.Gui.IconBase:new("movementmode", background, MainIconBar.movementImage_gui, borderinactive, borderactive)
-	MainIconBar.iconBar:addIcon(MainIconBar.movementModeIcon)
-	MainIconBar.movementModeIcon:getButton():setTooltipText("This shows your current input mode.\nUse the right mouse button for movement mode.\nDouble click also switches modes. Press and hold shift to run.")
+	MainIconBar.movementModeIcon = MainIconBar.addIcon("movementmode", MainIconBar.movementImage_gui, "This shows your current input mode.\nUse the right mouse button for movement mode.\nDouble click also switches modes. Press and hold shift to run.")
 	--start out with the movement mode icon hidden, only show it when the user has an avatar
 	MainIconBar.movementModeIcon:getContainer():setVisible(false)
 	
