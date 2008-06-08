@@ -27,6 +27,9 @@ class ISoundProvider;
 
 #include <AL/al.h>
 #include <AL/alc.h>
+#include <ogg/ogg.h>
+#include <vorbis/codec.h>
+#include <vorbis/vorbisfile.h>
 
 #ifndef __WIN32__
 #include <AL/alut.h>
@@ -37,6 +40,8 @@ class ISoundProvider;
 #include <wfmath/point.h>
 #include <wfmath/vector.h>
 #include <wfmath/quaternion.h>
+
+#define OGG_BUFFER_SIZE (4096 * 8)
 
 namespace Ember {
 
@@ -53,32 +58,123 @@ typedef enum
  *
  * Defines general properties of sound data
  */
-class SoundSample
+class BaseSoundSample
 {
-	private:
-		std::string filename;
+	protected:
+		std::string			mFilename;
+		std::string			mAction;
 		
-		ALuint source;
-		ALuint buffer;
-		WFMath::Point<3> position;
-		WFMath::Point<3> velocity;
+		ALuint 				mSource;
+		SoundSampleType	mType;
 
 	public:
-		SoundSample(const std::string &name);
-		~SoundSample();
+		virtual ~BaseSoundSample() {}
 
-		// Data Writing
+		// Set Variables
+		void setSource(ALuint src);
 		void setPosition(WFMath::Point<3> &pos);
 		void setVelocity(WFMath::Point<3> &vel);
-		void setBuffer(ALuint buf);
-		void setSource(ALuint src);
+		void setAction(const std::string &act);
 
-		// Retrieval of Data
+		// Get Variables
 		const std::string getFilename();
+		const std::string getAction();
+
 		ALuint getSource();
 		ALuint* getSourcePtr();
-		ALuint getBuffer();
-		ALuint* getBufferPtr();
+		SoundSampleType getType();
+		virtual ALuint* getBufferPtr() = 0;
+		virtual unsigned int getNumberOfBuffers() = 0;
+};
+
+class StaticSoundSample : public BaseSoundSample
+{
+	private:
+		ALuint mBuffer;
+	
+	public:
+		StaticSoundSample(const std::string &name);
+		~StaticSoundSample();
+
+		// Set Variables
+		void setBuffer(ALuint buf);
+
+		// Get Variables
+		ALuint	getBuffer();
+		ALuint*	getBufferPtr();
+		unsigned int getNumberOfBuffers();
+};
+
+class StreamedSoundSample : public BaseSoundSample
+{
+	private:
+		FILE*				mFile;
+		OggVorbis_File mStream;
+		ALuint			mBuffers[2];
+		ALuint			mSource;
+		ALenum			mFormat;
+		ALuint			mRate;
+		bool				mPlaying;
+
+		bool stream(ALuint buffer);
+
+	public:
+		StreamedSoundSample(const std::string &name);
+		~StreamedSoundSample();
+
+		// Set Variables
+		void setFile(FILE* ptr);
+		void setFormat(ALenum fmt);
+		void setRate(ALuint rate);
+		void setPlaying(bool play);
+
+		// Get Variables
+		ALuint*				getBufferPtr();
+		OggVorbis_File*	getStreamPtr();
+		bool					isPlaying();
+		unsigned int		getNumberOfBuffers();
+
+		// Common methods
+		void play();	
+		void cycle();				
+};
+
+/**
+ * Sound Object
+ *
+ * Objects contains samples that are played from 
+ * their position with their velocity
+ */
+class SoundObject
+{
+	private:
+		std::string mName;
+
+		WFMath::Point<3> mPosition;
+		WFMath::Point<3> mVelocity;
+
+		std::list<BaseSoundSample*> mSamples;
+
+	public:
+		SoundObject(const std::string& name);
+		~SoundObject();
+
+		// Set Variables
+		void setPosition(WFMath::Point<3> &pos);
+		void setVelocity(WFMath::Point<3> &vel);
+
+		// Get Variables
+		const std::string getName();
+		WFMath::Point<3> getPosition();
+		WFMath::Point<3> getVelocity();
+
+		// Register new Buffers
+		bool registerSound(const std::string &filename, const SoundSampleType type = SAMPLE_NONE);
+		bool unRegisterSound(const std::string &filename);
+
+		// Common methods
+		void playQueued();
+		void playAction(const std::string &name);
 };
 
 /**
@@ -95,7 +191,8 @@ class SoundService: public Service, public ConsoleObject
 
 	private:
 		// All Allocated buffers
-		std::list<SoundSample*> samples;
+		std::list<BaseSoundSample*> mSamples;
+		std::list<SoundObject*> mObjects;
 
 		// Allocation Functions
 		bool allocateWAVPCM(const std::string &filename); 
@@ -115,12 +212,15 @@ class SoundService: public Service, public ConsoleObject
 		/**
 		 * Register(allocate) a new sound buffer
 		 */
+		SoundObject* registerObject(const std::string &name);
 		bool registerSound(const std::string &filename, const SoundSampleType type = SAMPLE_NONE);
 		bool unRegisterSound(const std::string &filename);
 
 		/**
 		 * Play Functions
 		 */
+		void playObjSound(const std::string &obj, const std::string &action);
+		void stopObjSound(const std::string &obj, const std::string &action);
 		void playSound(const std::string &filename);
 		void stopSound(const std::string &filename);
 
@@ -131,6 +231,17 @@ class SoundService: public Service, public ConsoleObject
 		void updateListenerPosition(
 		const WFMath::Point<3>& position,
 		const WFMath::Quaternion& orientation);
+
+		/**
+		 * Streaming update
+		 */
+		void cycle();
+
+		/**
+		 * Allocated Entities
+		 */
+		BaseSoundSample* getSoundSample(const std::string &filename);
+		SoundObject* getSoundObject(const std::string &name);
 
 }; //SoundService
 

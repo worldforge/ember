@@ -36,63 +36,238 @@
 
 namespace Ember
 {
-	SoundSample::SoundSample(const std::string &name)
-	: filename(name)
+	void BaseSoundSample::setPosition(WFMath::Point<3> &pos)
 	{
+		alSource3f(mSource, AL_POSITION, pos.x(), pos.y(), pos.z());
 	}
 
-	SoundSample::~SoundSample()
+	void BaseSoundSample::setVelocity(WFMath::Point<3> &vel)
 	{
-		alDeleteBuffers(1, &buffer);
-		alDeleteSources(1, &source);
+		alSource3f(mSource, AL_VELOCITY, vel.x(), vel.y(), vel.z());
 	}
 
-	void SoundSample::setPosition(WFMath::Point<3> &pos)
+	void BaseSoundSample::setSource(ALuint src)
 	{
-		alSource3f(source, AL_POSITION, pos.x(), pos.y(), pos.z());
+		mSource = src;
 	}
 
-	void SoundSample::setVelocity(WFMath::Point<3> &vel)
+	const std::string BaseSoundSample::getFilename()
 	{
-		alSource3f(source, AL_VELOCITY, vel.x(), vel.y(), vel.z());
+		return mFilename;
+	}
+		
+	const std::string BaseSoundSample::getAction()
+	{
+		return mAction;
 	}
 
-	void SoundSample::setBuffer(ALuint buf)
+	ALuint BaseSoundSample::getSource()
 	{
-		buffer = buf;
+		return mSource;
 	}
 
-	void SoundSample::setSource(ALuint src)
+	ALuint* BaseSoundSample::getSourcePtr()
 	{
-		source = src;
+		return &mSource;
 	}
 
-	const std::string SoundSample::getFilename()
+	SoundSampleType BaseSoundSample::getType()
 	{
-		return filename;
+		return mType;
+	}
+	
+	void BaseSoundSample::setAction(const std::string &act)
+	{
+		mAction = act;
 	}
 
-	ALuint SoundSample::getSource()
+	// Static Sounds (PCM, WAV)
+	StaticSoundSample::StaticSoundSample(const std::string &name)
 	{
-		return source;
+		mFilename = name;
+		mType = SAMPLE_WAV;
 	}
 
-	ALuint* SoundSample::getSourcePtr()
+	StaticSoundSample::~StaticSoundSample()
 	{
-		return &source;
+		alDeleteBuffers(1, &mBuffer);
+		alDeleteSources(1, &mSource);
 	}
 
-	ALuint SoundSample::getBuffer()
+	ALuint StaticSoundSample::getBuffer()
 	{
-		return buffer;
+		return mBuffer;
 	}
 
-	ALuint* SoundSample::getBufferPtr()
+	ALuint* StaticSoundSample::getBufferPtr()
 	{
-		return &buffer;
+		return &mBuffer;
 	}
 
-	/* ctor */
+	void StaticSoundSample::setBuffer(ALuint buf)
+	{
+		mBuffer = buf;
+	}
+
+	unsigned int StaticSoundSample::getNumberOfBuffers()
+	{
+		return 1;
+	}
+
+	// Streamed (OGG)
+	StreamedSoundSample::StreamedSoundSample(const std::string& name)
+	{
+		mFilename = name;
+		mPlaying = false;
+		mType = SAMPLE_OGG;
+	}
+
+	StreamedSoundSample::~StreamedSoundSample()
+	{
+		alSourceStop(mSource);
+		alDeleteSources(1, &mSource);
+		alDeleteBuffers(2, mBuffers);
+
+		ov_clear(&mStream);
+	}
+
+	void StreamedSoundSample::setFile(FILE* ptr)
+	{
+		if (!ptr)
+		{
+			return;
+		}
+
+		mFile = ptr;
+	}
+
+	void StreamedSoundSample::setFormat(ALenum fmt)
+	{
+		mFormat = fmt;
+	}
+
+	void StreamedSoundSample::setRate(ALuint rate)
+	{
+		mRate = rate;
+	}
+
+	void StreamedSoundSample::setPlaying(bool play)
+	{
+		mPlaying = play;
+	}
+
+	OggVorbis_File* StreamedSoundSample::getStreamPtr()
+	{
+		return &mStream;
+	}
+
+	ALuint* StreamedSoundSample::getBufferPtr()
+	{
+		return mBuffers;
+	}
+
+	bool StreamedSoundSample::isPlaying()
+	{
+		return mPlaying;
+	}
+
+	unsigned int StreamedSoundSample::getNumberOfBuffers()
+	{
+		return 2;
+	}
+
+	void StreamedSoundSample::cycle()
+	{
+		int processed;
+		bool active = true;
+		
+		// Im not sure if i should use this, anyway
+		// if i dont need it (obviously performance side)
+		// just remove it.
+		#ifndef WIN32
+		usleep(1000);
+		#else
+		Sleep(1000);
+		#endif
+
+		alGetSourcei(mSource, AL_BUFFERS_PROCESSED, &processed);
+		while (processed--)
+		{
+			ALuint buffer;
+
+			alSourceUnqueueBuffers(mSource, 1, &buffer);
+
+			active = stream(buffer);
+
+			alSourceQueueBuffers(mSource, 1, &buffer);
+		}
+	}
+
+	bool StreamedSoundSample::stream(ALuint buffer)
+	{
+		char data[OGG_BUFFER_SIZE];
+		unsigned int size = 0;
+		int section;
+		int result;
+
+		while (size < OGG_BUFFER_SIZE)
+		{
+			#ifndef LITTLE_ENDIAN
+				result = ov_read(&mStream, data + size, OGG_BUFFER_SIZE - size, 1, 2, 1, &section);
+			#else
+				result = ov_read(&mStream, data + size, OGG_BUFFER_SIZE - size, 0, 2, 1, &section);
+			#endif
+
+			if (result > 0)
+			{
+				size += result;
+			}
+			else
+			{
+				if (result < 0)
+				{
+					S_LOG_FAILURE("Failed to read from ogg stream.");
+					return false;
+				}
+				else break;
+			}
+		}
+
+		// Stream is over
+		if (!size)
+		{
+			mPlaying = false;
+			return false;
+		}
+
+		alBufferData(buffer, mFormat, data, size, mRate);
+		return true;
+	}
+		
+	void StreamedSoundSample::play()
+	{
+		// Already Playing
+		if (isPlaying())
+		{
+			return;
+		}
+
+		if (!stream(mBuffers[0]))
+		{
+			return;
+		}
+
+		if (!stream(mBuffers[1]))
+		{
+			return;
+		}
+
+		mPlaying = true;
+		alSourceQueueBuffers(mSource, 2, mBuffers);
+		alSourcePlay(mSource);
+	}
+
+	/* Constructor */
 	SoundService::SoundService()
 	{
 		setName("Sound Service");
@@ -134,7 +309,8 @@ namespace Ember
 			return Service::FAILURE;
 		}
 		
-		samples.clear();
+		mSamples.clear();
+		mObjects.clear();
 		return Service::OK;
 	}
 
@@ -176,36 +352,60 @@ namespace Ember
 		}
 	}
 
+	void SoundService::playObjSound(const std::string &obj, const std::string &action)
+	{
+	}
+
+	void SoundService::stopObjSound(const std::string &obj, const std::string &action)
+	{
+	}
+
 	void SoundService::playSound(const std::string &filename)
 	{
-		std::list<SoundSample*>::iterator it;
-		for (it = samples.begin(); it != samples.end(); it++)
+		std::list<BaseSoundSample*>::iterator it;
+		for (it = mSamples.begin(); it != mSamples.end(); it++)
 		{
 			if ((*it)->getFilename() == filename)
-				alSourcePlay((*it)->getSource());
+			{
+				switch ((*it)->getType())
+				{
+					default:
+					case SAMPLE_PCM:
+					case SAMPLE_WAV:
+						alSourcePlay((*it)->getSource());
+						break;
+					case SAMPLE_OGG:
+						{
+							StreamedSoundSample* thisSample = dynamic_cast<StreamedSoundSample*>(*it);
+							thisSample->setPlaying(true);
+
+							alSourceQueueBuffers(thisSample->getSource(), 2, thisSample->getBufferPtr());
+							alSourcePlay(thisSample->getSource());
+						}
+						break;
+				}
+			}
 		}
 	}
 
 	void SoundService::stopSound(const std::string &filename)
 	{
-		std::list<SoundSample*>::iterator it;
-		for (it = samples.begin(); it != samples.end(); it++)
+		std::list<BaseSoundSample*>::iterator it;
+		for (it = mSamples.begin(); it != mSamples.end(); it++)
 		{
 			if ((*it)->getFilename() == filename)
+			{
 				alSourceStop((*it)->getSource());
+			}
 		}
 	}
 
 	bool SoundService::registerSound(const std::string &filename, const SoundSampleType type)
 	{
-		std::list<SoundSample*>::iterator it;
-		for (it = samples.begin(); it != samples.end(); it++)
+		if (getSoundSample(filename))
 		{
-			if ((*it)->getFilename() == filename)
-			{
-				S_LOG_INFO("Sound Sample (" + filename + ") already allocated.");
-				return false;
-			}
+			S_LOG_INFO("Sound Sample (" + filename + ") already allocated.");
+			return false;
 		}
 
 		switch (type)
@@ -221,10 +421,14 @@ namespace Ember
 						extension = filename.substr(filename.size()-3, 3);
 					
 						if (extension == "wav" || extension == "pcm")
+						{
 							return allocateWAVPCM(filename);
+						}
 						else
 						if (extension == "ogg")
+						{
 							return allocateOGG(filename);
+						}
 					}
 					return false;
 				}
@@ -239,16 +443,16 @@ namespace Ember
 
 	bool SoundService::unRegisterSound(const std::string &filename)
 	{
-		std::list<SoundSample*>::iterator it;
-		for (it = samples.begin(); it != samples.end(); )
+		std::list<BaseSoundSample*>::iterator it;
+		for (it = mSamples.begin(); it != mSamples.end(); )
 		{
 			if ((*it)->getFilename() == filename)
 			{
-				SoundSample* sample = dynamic_cast<SoundSample*>(*it);
+				BaseSoundSample* sample = dynamic_cast<BaseSoundSample*>(*it);
 				if (!sample)
 					return false;
 
-				it = samples.erase(it);
+				it = mSamples.erase(it);
 				delete sample;
 
 				return true;
@@ -268,9 +472,28 @@ namespace Ember
 		// alListener3f(AL_ORIENTATION, ListenerOri);
 	}
 
+	SoundObject* SoundService::registerObject(const std::string &name)
+	{
+		if (getSoundObject(name))
+		{
+			S_LOG_INFO("Sound Object (" + name + ") already allocated.");
+			return NULL;
+		}
+
+		SoundObject* newObject = new SoundObject(name);
+		if (!newObject)
+		{
+			S_LOG_FAILURE("Failed to allocate new sound object.");
+			return NULL;
+		}
+
+		mObjects.push_back(newObject);
+		return newObject;
+	}
+		
 	bool SoundService::allocateWAVPCM(const std::string &filename)
 	{
-		SoundSample* newSample = new SoundSample(filename);
+		StaticSoundSample* newSample = new StaticSoundSample(filename);
 		if (!newSample)
 		{
 			S_LOG_FAILURE("Failed to allocate a new sound sample.");
@@ -289,12 +512,9 @@ namespace Ember
 		}
 
 		ALboolean loop;
-		ALfloat SourcePos[] = { 0.0, 0.0, 0.0 };
-		ALfloat SourceVel[] = { 0.0, 0.0, 0.0 };
-	
 		newSample->setBuffer(alutCreateBufferFromFile(filename.c_str()));
 
-		if (newSample->getBuffer() == AL_NONE)
+		if (*(newSample->getBufferPtr()) == AL_NONE)
 		{
 			S_LOG_FAILURE("Failed to set buffer with file ("+ filename +") data.");
 			delete newSample;
@@ -316,8 +536,8 @@ namespace Ember
 		alSourcei (newSample->getSource(), AL_BUFFER, newSample->getBuffer());
 		alSourcef (newSample->getSource(), AL_PITCH, 1.0);
 		alSourcef (newSample->getSource(), AL_GAIN, 1.0);
-		alSourcefv(newSample->getSource(), AL_POSITION, SourcePos);
-		alSourcefv(newSample->getSource(), AL_VELOCITY, SourceVel);
+		alSource3f(newSample->getSource(), AL_POSITION, 0, 0, 0);
+		alSource3f(newSample->getSource(), AL_VELOCITY, 0, 0, 0);
 		alSourcei (newSample->getSource(), AL_LOOPING, loop);
 
 		if (alGetError() != AL_NO_ERROR)
@@ -328,13 +548,196 @@ namespace Ember
 			return false;
 		}
 
-		samples.push_back(newSample);
+		mSamples.push_back(newSample);
 		return true;
 	}
 
 	bool SoundService::allocateOGG(const std::string &filename)
 	{
-		//TODO
+		StreamedSoundSample* newSample = new StreamedSoundSample(filename);
+		if (!newSample)
+		{
+			S_LOG_FAILURE("Failed to allocate memory for a new sound source.");
+			return false;
+		}
+
+		// Should we handle this in Ogre or any other Resource Manager?
+		FILE* newFile = NULL;
+		if (!(newFile = fopen(filename.c_str(), "rb")))
+		{
+			S_LOG_FAILURE("Failed to open file.");
+			delete newSample;
+
+			return false;
+		}
+
+		newSample->setFile(newFile);
+
+		if (ov_open(newFile, newSample->getStreamPtr(), NULL, 0) < 0)
+		{
+Error0:
+			S_LOG_FAILURE("Failed to bind ogg stream to sound sample.");
+
+			fclose(newFile);
+			delete newSample;
+
+			return false;
+		}
+
+		vorbis_info* oggInfo = ov_info(newSample->getStreamPtr(), -1);
+		if (oggInfo->channels == 1)
+		{
+			newSample->setFormat(AL_FORMAT_MONO16);
+		}
+		else
+		{
+			newSample->setFormat(AL_FORMAT_STEREO16);
+		}
+
+		newSample->setRate(oggInfo->rate);
+
+		alGenBuffers(2, newSample->getBufferPtr());
+		if (alGetError() != AL_NO_ERROR)
+		{
+			goto Error0;
+		}
+
+		alGenSources(1, newSample->getSourcePtr());
+		if (alGetError() != AL_NO_ERROR)
+		{
+			goto Error0;
+		}
+
+		alSourcef (newSample->getSource(), AL_PITCH, 1.0);
+		alSourcef (newSample->getSource(), AL_GAIN, 1.0);
+		alSource3f(newSample->getSource(), AL_POSITION, 0, 0, 0);
+		alSource3f(newSample->getSource(), AL_VELOCITY, 0, 0, 0);
+		alSourcei (newSample->getSource(), AL_LOOPING, false);
+		alSourcef (newSample->getSource(), AL_ROLLOFF_FACTOR, 0.0);
+
+		mSamples.push_back(newSample);
+		return true;
+	}
+
+	BaseSoundSample* SoundService::getSoundSample(const std::string &filename)
+	{
+		std::list<BaseSoundSample*>::iterator it;
+		for (it = mSamples.begin(); it != mSamples.end(); it++)
+		{
+			BaseSoundSample* sample = dynamic_cast<BaseSoundSample*>(*it);
+
+			if (sample && sample->getFilename() == filename)
+			{
+				return sample;
+			}
+		}
+
+		return NULL;
+	}
+
+	void SoundService::cycle()
+	{
+		for (std::list<BaseSoundSample*>::iterator it = mSamples.begin(); 
+				it != mSamples.end(); it++)
+		{
+			BaseSoundSample* sample = dynamic_cast<BaseSoundSample*>(*it);
+			if (sample->getType() == SAMPLE_OGG)
+			{
+				StreamedSoundSample* ogg = dynamic_cast<StreamedSoundSample*>(*it);
+				if (ogg->isPlaying())
+				{
+					ogg->cycle();
+				}
+			}
+		}
+
+		for (std::list<SoundObject*>::iterator it = mObjects.begin();
+				it != mObjects.end(); it++)
+		{
+			SoundObject* object = dynamic_cast<SoundObject*>(*it);
+			object->playQueued();
+		}
+	}
+
+	SoundObject* SoundService::getSoundObject(const std::string &name)
+	{
+		std::list<SoundObject*>::iterator it;
+		for (it = mObjects.begin(); it != mObjects.end(); it++)
+		{
+			SoundObject* obj = dynamic_cast<SoundObject*>(*it);
+
+			if (obj && obj->getName() == name)
+			{
+				return obj;
+			}
+		}
+
+		return NULL;
+	}
+
+	SoundObject::SoundObject(const std::string &name)
+	{
+		mName = name;
+		mSamples.clear();
+	}
+
+	void SoundObject::setPosition(WFMath::Point<3> &pos)
+	{
+		mPosition = pos;
+	}
+
+	void SoundObject::setVelocity(WFMath::Point<3> &vel)
+	{
+		mVelocity = vel;
+	}
+
+	const std::string SoundObject::getName()
+	{
+		return mName;
+	}
+
+	WFMath::Point<3> SoundObject::getPosition()
+	{
+		return mPosition;
+	}
+
+	WFMath::Point<3> SoundObject::getVelocity()
+	{
+		return mVelocity;
+	}
+
+	void SoundObject::playQueued()
+	{
+		for (std::list<BaseSoundSample*>::iterator it = mSamples.begin(); 
+				it != mSamples.end(); it++)
+		{
+			BaseSoundSample* sample = dynamic_cast<BaseSoundSample*>(*it);
+			if (sample->getType() == SAMPLE_OGG)
+			{
+				StreamedSoundSample* ogg = dynamic_cast<StreamedSoundSample*>(*it);
+				if (ogg->isPlaying())
+				{
+					ogg->cycle();
+				}
+			}
+		}
+	}
+
+	void SoundObject::playAction(const std::string &name)
+	{
+		for (std::list<BaseSoundSample*>::iterator it = mSamples.begin(); 
+				it != mSamples.end(); it++)
+		{
+			BaseSoundSample* sample = dynamic_cast<BaseSoundSample*>(*it);
+			if (sample->getType() == SAMPLE_OGG)
+			{
+				StreamedSoundSample* ogg = dynamic_cast<StreamedSoundSample*>(*it);
+				if (ogg->isPlaying())
+				{
+					ogg->cycle();
+				}
+			}
+		}
 	}
 
 } // namespace Ember

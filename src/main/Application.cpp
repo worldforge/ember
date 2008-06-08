@@ -109,6 +109,7 @@ void Application::mainLoopStep()
 			EventEndErisPoll.emit();
 		}
 		mOgreView->renderOneFrame();
+		EmberServices::getSingleton().getSoundService()->cycle();
 	} catch (const Ember::Exception& ex) {
 		S_LOG_CRITICAL(ex.getError());
 		throw;
@@ -204,13 +205,8 @@ void Application::initializeServices()
 
 	S_LOG_INFO("Using media from " << EmberServices::getSingleton().getConfigService()->getEmberMediaDirectory());
 
-///the sound service is currently disable since it's incomplete
-// #ifndef WIN32
-// 	/// Initialize the SoundService
-// 	if (EmberServices::getSingleton().getSoundService()->start() == Ember::Service::OK) {
-// 		EmberServices::getSingleton().getSoundService()->registerSoundProvider(new OgreSoundProvider());
-// 	}
-// #endif
+	/// Initialize the Sound Service
+	EmberServices::getSingleton().getSoundService()->start();
 
 	/// Initialize and start the Metaserver Service.
 	S_LOG_INFO("Initializing metaserver service");
