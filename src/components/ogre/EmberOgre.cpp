@@ -131,7 +131,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 #include "widgets/LoadingBar.h"
 
-#include "sound/OgreSoundProvider.h"
+#include "sound/XMLSoundDefParser.h"
 
 #include "OgreSetup.h"
 
