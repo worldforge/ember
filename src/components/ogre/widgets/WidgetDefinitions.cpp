@@ -36,7 +36,6 @@
 #include "JesusEdit.h"
 #include "Help.h"
 #include "Quit.h"
-#include "StatusIconBar.h"
 #include "MeshPreview.h"
 
 
@@ -57,7 +56,6 @@ WidgetDefinitions::WidgetDefinitions()
 	WidgetLoader::registerWidget("JesusEdit", &WidgetLoader::createWidgetInstance<JesusEdit>);
 	WidgetLoader::registerWidget("Help", &WidgetLoader::createWidgetInstance<Help>);
 	WidgetLoader::registerWidget("Quit", &WidgetLoader::createWidgetInstance<Quit>);
-	WidgetLoader::registerWidget("StatusIconBar", &WidgetLoader::createWidgetInstance<StatusIconBar>);
 	WidgetLoader::registerWidget("MeshPreview", &WidgetLoader::createWidgetInstance<MeshPreview>);
 	
 

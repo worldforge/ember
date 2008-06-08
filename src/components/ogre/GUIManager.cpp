@@ -260,7 +260,6 @@ void GUIManager::initialize()
 	
 	
 	std::vector<std::string> widgetsToLoad;
-	widgetsToLoad.push_back("StatusIconBar");
 	widgetsToLoad.push_back("IngameChatWidget");
 // 	widgetsToLoad.push_back("InventoryWidget");
 	widgetsToLoad.push_back("InspectWidget");
