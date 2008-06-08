@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Atlas
-** Generated automatically by tolua++-1.0.92 on Sun Jun  8 00:24:27 2008.
+** Generated automatically by tolua++-1.0.92 on Sun Jun  8 10:04:44 2008.
 */
 
 #ifndef __cplusplus
@@ -2004,7 +2004,7 @@ static int tolua_Atlas_Atlas_Message_MapType_get00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function '_MapType_findInMap'",NULL);
 #endif
   {
-   tolua_outside  const Atlas::Message::Element& tolua_ret = (tolua_outside  const Atlas::Message::Element&)  _MapType_findInMap(self,index);
+     const Atlas::Message::Element& tolua_ret = (  const Atlas::Message::Element&)  _MapType_findInMap(self,index);
    tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const Atlas::Message::Element");
    tolua_pushcppstring(tolua_S,(const char*)index);
   }
