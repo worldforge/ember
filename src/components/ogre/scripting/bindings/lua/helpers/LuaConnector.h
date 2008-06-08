@@ -245,6 +245,7 @@ public:
 	static void pushValue(const Input::InputMode& theValue, const std::string& luaTypename);
 	static void pushValue(const std::set<std::string>& theValue, const std::string& luaTypename);
 	static void pushValue(const Atlas::Message::Element& theValue, const std::string& luaTypename);
+	static void pushValue(const EmberOgre::AvatarMovementMode::Mode& theValue, const std::string& luaTypename);
 	
 	
  	LuaConnector(sigc::signal<void>& signal);

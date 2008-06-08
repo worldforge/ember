@@ -331,6 +331,12 @@ void LuaConnector::pushValue(const Atlas::Message::Element& theValue, const std:
 	tolua_pushusertype(EmberOgre::LuaConnector::getState(),(void*)&theValue, luaTypename.c_str());
 }
 
+void LuaConnector::pushValue(const EmberOgre::AvatarMovementMode::Mode& theValue, const std::string& luaTypename)
+{
+	tolua_pushnumber(EmberOgre::LuaConnector::getState(), theValue);
+}
+
+
 
 LuaConnector::~LuaConnector()
 {
