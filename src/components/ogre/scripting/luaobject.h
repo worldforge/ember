@@ -77,7 +77,7 @@ public:
 	LuaVal( double n ) : mType( LUA_TNUMBER ), d( n ), obj(NULL)
 	{;}
 
-	LuaVal( std::string n ) : mType( LUA_TSTRING ), str( n ), obj(NULL)
+	LuaVal( const std::string& n ) : mType( LUA_TSTRING ), str( n ), obj(NULL)
 	{;}
 
 	LuaVal( const char *n ) : mType( LUA_TSTRING ), str( n ), obj(NULL)
@@ -113,8 +113,8 @@ public:
 		mL = L;
 	}
 
-	std::string getError() { return error; }
-	std::string getLuaError() { return luaError; }
+	const std::string& getError() { return error; }
+	const std::string& getLuaError() { return luaError; }
 	lua_State *getLuaState() { return mL; }
 	std::string getErrorForDisplay()
 	{
@@ -462,7 +462,7 @@ public:
 
 	// Return as an object
 	template<typename Treturn>
-	Treturn asObject(std::string className)
+	Treturn asObject(const std::string& className)
 	{
 		return asObject<Treturn>(className.c_str());
 	}
