@@ -351,180 +351,263 @@ lua_State* LuaConnector::getState()
 
 LuaConnector* LuaConnector::connect(const std::string& luaMethod)
 {
-	mConnector->connect(luaMethod);
+	if (!mConnector) {
+		S_LOG_WARNING("Tried to connect the lua method '" << luaMethod << "' to a non existent signal.");
+	} else {
+		mConnector->connect(luaMethod);
+	}
 	return this;
 }
 
 LuaConnector* LuaConnector::connect(int luaMethod)
 {
-	///we need to get the correct lua function
-	int luaType = lua_type(sState,-1);
-    if (luaType == LUA_TFUNCTION)
-    {
-        int index = luaL_ref(sState, LUA_REGISTRYINDEX);
-		mConnector->connect(index);
-    } else {
-    	S_LOG_WARNING("No valid lua function sent as argument to LuaConnector::connect");
-    }
+	if (!mConnector) {
+		S_LOG_WARNING("Tried to connect lua method to a non existent signal.");
+	} else {
+		///we need to get the correct lua function
+		int luaType = lua_type(sState,-1);
+		if (luaType == LUA_TFUNCTION)
+		{
+			int index = luaL_ref(sState, LUA_REGISTRYINDEX);
+			mConnector->connect(index);
+		} else {
+			S_LOG_WARNING("No valid lua function sent as argument to LuaConnector::connect");
+		}
+	}
 
 	return this;
 }
 
 void LuaConnector::disconnect()
 {
-	mConnector->disconnect();
+	if (mConnector) {
+		mConnector->disconnect();
+	}
 }
 
 
 
 
 
+bool LuaConnector::checkSignalExistence(void* signal) {
+	if (!signal) {
+		S_LOG_WARNING("Tried to connect lua to a non existent signal.");
+		mConnector = 0;
+		return false;
+	}
+	return true;
+	
+}
 
 
 LuaConnector::LuaConnector(sigc::signal<void>& signal)
 {
-	mConnector = new LuaConnectors::ConnectorZero<void>(signal);
+	if (checkSignalExistence(&signal)) {
+		mConnector = new LuaConnectors::ConnectorZero<void>(signal);
+	}
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, const std::string&, EmberEntity*> & signal)
 {
-	LuaTypeStore luaTypes;
-	luaTypes.push_back("string");
-	luaTypes.push_back("EmberOgre::EmberEntity");
-	mConnector = new LuaConnectors::ConnectorTwo<void, const std::string&, EmberEntity*>(signal, luaTypes);
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("string");
+		luaTypes.push_back("EmberOgre::EmberEntity");
+		mConnector = new LuaConnectors::ConnectorTwo<void, const std::string&, EmberEntity*>(signal, luaTypes);
+	}
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, Eris::Connection*>& signal)
 {
-	LuaTypeStore luaTypes;
-	luaTypes.push_back("Eris::Connection");
-	mConnector = new LuaConnectors::ConnectorOne<void, Eris::Connection*>(signal, luaTypes);
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("Eris::Connection");
+		mConnector = new LuaConnectors::ConnectorOne<void, Eris::Connection*>(signal, luaTypes);
+	}
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, const Eris::ServerInfo&>& signal)
 {
-	LuaTypeStore luaTypes;
-	luaTypes.push_back("Eris::ServerInfo");
-	mConnector = new LuaConnectors::ConnectorOne<void, const Eris::ServerInfo&>(signal, luaTypes);
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("Eris::ServerInfo");
+		mConnector = new LuaConnectors::ConnectorOne<void, const Eris::ServerInfo&>(signal, luaTypes);
+	}
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, float>& signal)
 {
-	LuaTypeStore luaTypes;
-	luaTypes.push_back("float");
-	mConnector = new LuaConnectors::ConnectorOne<void, float>(signal, luaTypes);
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("float");
+		mConnector = new LuaConnectors::ConnectorOne<void, float>(signal, luaTypes);
+	}
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, const EntityPickResult&, const MousePickerArgs&>& signal)
 {
-	LuaTypeStore luaTypes;
-	luaTypes.push_back("EmberOgre::EntityPickResult");
-	luaTypes.push_back("EmberOgre::MousePickerArgs");
-	mConnector = new LuaConnectors::ConnectorTwo<void, const EntityPickResult&, const MousePickerArgs&>(signal, luaTypes);
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("EmberOgre::EntityPickResult");
+		luaTypes.push_back("EmberOgre::MousePickerArgs");
+		mConnector = new LuaConnectors::ConnectorTwo<void, const EntityPickResult&, const MousePickerArgs&>(signal, luaTypes);
+	}
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, const MousePickerArgs&>& signal)
 {
-	LuaTypeStore luaTypes;
-	luaTypes.push_back("EmberOgre::MousePickerArgs");
-	mConnector = new LuaConnectors::ConnectorOne<void, const MousePickerArgs&>(signal, luaTypes);
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("EmberOgre::MousePickerArgs");
+		mConnector = new LuaConnectors::ConnectorOne<void, const MousePickerArgs&>(signal, luaTypes);
+	}
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, Input::MouseButton, Input::InputMode>& signal)
 {
-	LuaTypeStore luaTypes;
-	luaTypes.push_back("EmberOgre::Input::MouseButton");
-	luaTypes.push_back("EmberOgre::Input::InputMode");
-	mConnector = new LuaConnectors::ConnectorTwo<void, Input::MouseButton, Input::InputMode>(signal, luaTypes);
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("EmberOgre::Input::MouseButton");
+		luaTypes.push_back("EmberOgre::Input::InputMode");
+		mConnector = new LuaConnectors::ConnectorTwo<void, Input::MouseButton, Input::InputMode>(signal, luaTypes);
+	}
+}
+
+LuaConnector::LuaConnector(sigc::signal<void, Input::InputMode>& signal)
+{
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("EmberOgre::Input::InputMode");
+		mConnector = new LuaConnectors::ConnectorOne<void, Input::InputMode>(signal, luaTypes);
+	}
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, EmberEntityFactory*>& signal)
 {
-	LuaTypeStore luaTypes;
-	luaTypes.push_back("EmberOgre::EmberEntityFactory");
-	mConnector = new LuaConnectors::ConnectorOne<void, EmberEntityFactory*>(signal, luaTypes);
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("EmberOgre::EmberEntityFactory");
+		mConnector = new LuaConnectors::ConnectorOne<void, EmberEntityFactory*>(signal, luaTypes);
+	}
 }
 LuaConnector::LuaConnector(sigc::signal<void, AvatarEmberEntity*>& signal)
 {
-	LuaTypeStore luaTypes;
-	luaTypes.push_back("EmberOgre::AvatarEmberEntity");
-	mConnector = new LuaConnectors::ConnectorOne<void, AvatarEmberEntity*>(signal, luaTypes);
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("EmberOgre::AvatarEmberEntity");
+		mConnector = new LuaConnectors::ConnectorOne<void, AvatarEmberEntity*>(signal, luaTypes);
+	}
 }
 LuaConnector::LuaConnector(sigc::signal<void, Jesus*>& signal)
 {
-	LuaTypeStore luaTypes;
-	luaTypes.push_back("EmberOgre::Jesus");
-	mConnector = new LuaConnectors::ConnectorOne<void, Jesus*>(signal, luaTypes);
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("EmberOgre::Jesus");
+		mConnector = new LuaConnectors::ConnectorOne<void, Jesus*>(signal, luaTypes);
+	}
 }
 LuaConnector::LuaConnector(sigc::signal<void, EmberEntity*>& signal)
 {
-	LuaTypeStore luaTypes;
-	luaTypes.push_back("EmberOgre::EmberEntity");
-	mConnector = new LuaConnectors::ConnectorOne<void, EmberEntity*>(signal, luaTypes);
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("EmberOgre::EmberEntity");
+		mConnector = new LuaConnectors::ConnectorOne<void, EmberEntity*>(signal, luaTypes);
+	}
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, const std::string&>& signal)
 {
-	LuaTypeStore luaTypes;
-	luaTypes.push_back("string");
-	mConnector = new LuaConnectors::ConnectorOne<void, const std::string&>(signal, luaTypes);
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("string");
+		mConnector = new LuaConnectors::ConnectorOne<void, const std::string&>(signal, luaTypes);
+	}
 }
 
 LuaConnector::LuaConnector(sigc::signal<bool, const std::string&>& signal)
 {
-	LuaTypeStore luaTypes;
-	luaTypes.push_back("string");
-	mConnector = new LuaConnectors::ConnectorOne<bool, const std::string&>(signal, luaTypes);
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("string");
+		mConnector = new LuaConnectors::ConnectorOne<bool, const std::string&>(signal, luaTypes);
+	}
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, const std::string&, const std::string&>& signal)
 {
-	LuaTypeStore luaTypes;
-	luaTypes.push_back("string");
-	luaTypes.push_back("string");
-	mConnector = new LuaConnectors::ConnectorTwo<void, const std::string&, const std::string&>(signal, luaTypes);
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("string");
+		luaTypes.push_back("string");
+		mConnector = new LuaConnectors::ConnectorTwo<void, const std::string&, const std::string&>(signal, luaTypes);
+	}
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, Terrain::BasePointUserObject*>& signal)
 {
-	LuaTypeStore luaTypes;
-	luaTypes.push_back("EmberOgre::Terrain::BasePointUserObject");
-	mConnector = new LuaConnectors::ConnectorOne<void, Terrain::BasePointUserObject*>(signal, luaTypes);
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("EmberOgre::Terrain::BasePointUserObject");
+		mConnector = new LuaConnectors::ConnectorOne<void, Terrain::BasePointUserObject*>(signal, luaTypes);
+	}
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, Terrain::TerrainEditAction*>& signal)
 {
-	LuaTypeStore luaTypes;
-	luaTypes.push_back("EmberOgre::Terrain::TerrainEditAction");
-	mConnector = new LuaConnectors::ConnectorOne<void, Terrain::TerrainEditAction*>(signal, luaTypes);
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("EmberOgre::Terrain::TerrainEditAction");
+		mConnector = new LuaConnectors::ConnectorOne<void, Terrain::TerrainEditAction*>(signal, luaTypes);
+	}
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, Eris::Task*>& signal)
 {
-	LuaTypeStore luaTypes;
-	luaTypes.push_back("Eris::Task");
-	mConnector = new LuaConnectors::ConnectorOne<void, Eris::Task*>(signal, luaTypes);
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("Eris::Task");
+		mConnector = new LuaConnectors::ConnectorOne<void, Eris::Task*>(signal, luaTypes);
+	}
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, const std::set<std::string>&>& signal)
 {
-	LuaTypeStore luaTypes;
-	luaTypes.push_back("std::set<std::string>");
-	mConnector = new LuaConnectors::ConnectorOne<void, const std::set<std::string>&>(signal, luaTypes);
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("std::set<std::string>");
+		mConnector = new LuaConnectors::ConnectorOne<void, const std::set<std::string>&>(signal, luaTypes);
+	}
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, EmberOgre::Gui::EntityIcon*>& signal)
 {
-	LuaTypeStore luaTypes;
-	luaTypes.push_back("EmberOgre::Gui::EntityIcon");
-	mConnector = new LuaConnectors::ConnectorOne<void, EmberOgre::Gui::EntityIcon*>(signal, luaTypes);
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("EmberOgre::Gui::EntityIcon");
+		mConnector = new LuaConnectors::ConnectorOne<void, EmberOgre::Gui::EntityIcon*>(signal, luaTypes);
+	}
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, const Atlas::Message::Element&>& signal)
 {
-	LuaTypeStore luaTypes;
-	luaTypes.push_back("Atlas::Message::Element");
-	mConnector = new LuaConnectors::ConnectorOne<void, const Atlas::Message::Element&>(signal, luaTypes);
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("Atlas::Message::Element");
+		mConnector = new LuaConnectors::ConnectorOne<void, const Atlas::Message::Element&>(signal, luaTypes);
+	}
 }
+
+LuaConnector::LuaConnector(sigc::signal<void, EmberOgre::AvatarMovementMode::Mode>& signal)
+{
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("EmberOgre::AvatarMovementMode::Mode");
+		mConnector = new LuaConnectors::ConnectorOne<void, EmberOgre::AvatarMovementMode::Mode>(signal, luaTypes);
+	}
+}
+
+
+
+
 
 };

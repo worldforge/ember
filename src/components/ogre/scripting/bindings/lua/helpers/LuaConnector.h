@@ -31,6 +31,7 @@
 #include <vector>
 
 #include "components/ogre/input/Input.h"
+#include "components/ogre/AvatarController.h"
 
 namespace Atlas {
 namespace Message {
@@ -254,6 +255,7 @@ public:
  	LuaConnector(sigc::signal<void, const EntityPickResult&, const MousePickerArgs&>& signal);
 	LuaConnector(sigc::signal<void, const MousePickerArgs&>& signal);
 	LuaConnector(sigc::signal<void, Input::MouseButton, Input::InputMode>& signal);
+	LuaConnector(sigc::signal<void, Input::InputMode>& signal);
 	LuaConnector(sigc::signal<void, EmberEntityFactory*>& signal);
 	LuaConnector(sigc::signal<void, AvatarEmberEntity*>& signal);
 	LuaConnector(sigc::signal<void, Jesus*>& signal);
@@ -267,6 +269,8 @@ public:
  	LuaConnector(sigc::signal<void, const std::set<std::string>&>& signal);
  	LuaConnector(sigc::signal<void, EmberOgre::Gui::EntityIcon*>& signal);
  	LuaConnector(sigc::signal<void, const Atlas::Message::Element&>& signal);
+ 	LuaConnector(sigc::signal<void, EmberOgre::AvatarMovementMode::Mode>& signal);
+   
    
     ~LuaConnector();
     
@@ -291,6 +295,14 @@ public:
 	
 private:
 	LuaConnectors::ConnectorBase* mConnector;
+	
+	/**
+	 * Checks that the signal submitted isn't null. If so, mConnector will be set to null and no connection will occur.
+	 * @param signal A pointer to a signal.
+	 * @return True if the supplied signal isn't null.
+	 */
+	bool checkSignalExistence(void* signal);
+	
 };
 
 }
