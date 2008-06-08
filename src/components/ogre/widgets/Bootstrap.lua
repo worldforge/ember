@@ -79,6 +79,7 @@ loadScript("Status.lua")
 loadScript("Environment.lua")
 loadScript("AssetsManager.lua")
 loadScript("Inventory.lua")
+loadScript("PickingInfo.lua")
 
 
 --disable for 0.5.2 release
