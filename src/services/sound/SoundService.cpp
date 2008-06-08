@@ -38,6 +38,9 @@ namespace Ember
 {
 	void BaseSoundSample::setPosition(WFMath::Point<3> &pos)
 	{
+		if (mPlayPosition == PLAY_LOCAL)
+			return;
+
 		alSource3f(mSource, AL_POSITION, pos.x(), pos.y(), pos.z());
 	}
 
@@ -81,6 +84,10 @@ namespace Ember
 		mAction = act;
 	}
 
+	void BaseSoundSample::play()
+	{
+	}
+
 	// Static Sounds (PCM, WAV)
 	StaticSoundSample::StaticSoundSample(const std::string &name)
 	{
@@ -112,6 +119,11 @@ namespace Ember
 	unsigned int StaticSoundSample::getNumberOfBuffers()
 	{
 		return 1;
+	}
+
+	void StaticSoundSample::play()
+	{
+		alSourcePlay(mSource);
 	}
 
 	// Streamed (OGG)
@@ -352,38 +364,15 @@ namespace Ember
 		}
 	}
 
-	void SoundService::playObjSound(const std::string &obj, const std::string &action)
-	{
-	}
-
-	void SoundService::stopObjSound(const std::string &obj, const std::string &action)
-	{
-	}
-
 	void SoundService::playSound(const std::string &filename)
 	{
 		std::list<BaseSoundSample*>::iterator it;
 		for (it = mSamples.begin(); it != mSamples.end(); it++)
 		{
-			if ((*it)->getFilename() == filename)
+			BaseSoundSample* sound = dynamic_cast<BaseSoundSample*>(*it);
+			if (sound->getFilename() == filename)
 			{
-				switch ((*it)->getType())
-				{
-					default:
-					case SAMPLE_PCM:
-					case SAMPLE_WAV:
-						alSourcePlay((*it)->getSource());
-						break;
-					case SAMPLE_OGG:
-						{
-							StreamedSoundSample* thisSample = dynamic_cast<StreamedSoundSample*>(*it);
-							thisSample->setPlaying(true);
-
-							alSourceQueueBuffers(thisSample->getSource(), 2, thisSample->getBufferPtr());
-							alSourcePlay(thisSample->getSource());
-						}
-						break;
-				}
+				sound->play();	
 			}
 		}
 	}
@@ -400,7 +389,7 @@ namespace Ember
 		}
 	}
 
-	bool SoundService::registerSound(const std::string &filename, const SoundSampleType type)
+	bool SoundService::registerSound(const std::string &filename, bool playLocally, const SoundSampleType type)
 	{
 		if (getSoundSample(filename))
 		{
@@ -422,12 +411,12 @@ namespace Ember
 					
 						if (extension == "wav" || extension == "pcm")
 						{
-							return allocateWAVPCM(filename);
+							return allocateWAVPCM(filename, playLocally);
 						}
 						else
 						if (extension == "ogg")
 						{
-							return allocateOGG(filename);
+							return allocateOGG(filename, playLocally);
 						}
 					}
 					return false;
@@ -435,9 +424,9 @@ namespace Ember
 				break;
 			case SAMPLE_PCM:
 			case SAMPLE_WAV:
-				return allocateWAVPCM(filename);
+				return allocateWAVPCM(filename, playLocally);
 			case SAMPLE_OGG:
-				return allocateOGG(filename);
+				return allocateOGG(filename, playLocally);
 		};
 	}
 
@@ -491,7 +480,7 @@ namespace Ember
 		return newObject;
 	}
 		
-	bool SoundService::allocateWAVPCM(const std::string &filename)
+	bool SoundService::allocateWAVPCM(const std::string &filename, bool playsLocally)
 	{
 		StaticSoundSample* newSample = new StaticSoundSample(filename);
 		if (!newSample)
@@ -540,6 +529,9 @@ namespace Ember
 		alSource3f(newSample->getSource(), AL_VELOCITY, 0, 0, 0);
 		alSourcei (newSample->getSource(), AL_LOOPING, loop);
 
+		if (playsLocally == PLAY_LOCAL)
+			alSourcei(newSample->getSource(), AL_SOURCE_RELATIVE, true);
+
 		if (alGetError() != AL_NO_ERROR)
 		{
 			S_LOG_FAILURE("Failed to set sound sample attributes.");
@@ -552,7 +544,7 @@ namespace Ember
 		return true;
 	}
 
-	bool SoundService::allocateOGG(const std::string &filename)
+	bool SoundService::allocateOGG(const std::string &filename, bool playsLocally)
 	{
 		StreamedSoundSample* newSample = new StreamedSoundSample(filename);
 		if (!newSample)
@@ -613,7 +605,9 @@ Error0:
 		alSource3f(newSample->getSource(), AL_POSITION, 0, 0, 0);
 		alSource3f(newSample->getSource(), AL_VELOCITY, 0, 0, 0);
 		alSourcei (newSample->getSource(), AL_LOOPING, false);
-		alSourcef (newSample->getSource(), AL_ROLLOFF_FACTOR, 0.0);
+
+		if (playsLocally == PLAY_LOCAL)
+			alSourcei(newSample->getSource(), AL_SOURCE_RELATIVE, true);
 
 		mSamples.push_back(newSample);
 		return true;
@@ -729,14 +723,215 @@ Error0:
 				it != mSamples.end(); it++)
 		{
 			BaseSoundSample* sample = dynamic_cast<BaseSoundSample*>(*it);
-			if (sample->getType() == SAMPLE_OGG)
+		}
+	}
+
+	bool SoundObject::allocateWAVPCM(const std::string &filename, const std::string &action,
+			bool playsLocally)
+	{
+		StaticSoundSample* newSample = new StaticSoundSample(filename);
+		if (!newSample)
+		{
+			S_LOG_FAILURE("Failed to allocate a new sound sample.");
+			return false;
+		}
+
+		// Generate a new Buffer
+		alGenBuffers(1, newSample->getBufferPtr());
+	
+		if (alGetError() != AL_NO_ERROR)
+		{
+			S_LOG_FAILURE("Failed to generate a new sound buffer.");
+			delete newSample;
+
+			return false;
+		}
+
+		ALboolean loop;
+		newSample->setBuffer(alutCreateBufferFromFile(filename.c_str()));
+
+		if (*(newSample->getBufferPtr()) == AL_NONE)
+		{
+			S_LOG_FAILURE("Failed to set buffer with file ("+ filename +") data.");
+			delete newSample;
+
+			return false;
+		}
+
+		// Bind the buffer with the source.
+		alGenSources(1, newSample->getSourcePtr());
+
+		if (alGetError() != AL_NO_ERROR)
+		{
+			S_LOG_FAILURE("Failed to generate a new sound source.");
+			delete newSample;
+
+			return false;
+		}
+	
+		alSourcei (newSample->getSource(), AL_BUFFER, newSample->getBuffer());
+		alSourcef (newSample->getSource(), AL_PITCH, 1.0);
+		alSourcef (newSample->getSource(), AL_GAIN, 1.0);
+		alSource3f(newSample->getSource(), AL_POSITION, 0, 0, 0);
+		alSource3f(newSample->getSource(), AL_VELOCITY, 0, 0, 0);
+		alSourcei (newSample->getSource(), AL_LOOPING, loop);
+
+		if (playsLocally == PLAY_LOCAL)
+			alSourcei(newSample->getSource(), AL_SOURCE_RELATIVE, true);
+
+		if (alGetError() != AL_NO_ERROR)
+		{
+			S_LOG_FAILURE("Failed to set sound sample attributes.");
+			delete newSample;
+
+			return false;
+		}
+
+		newSample->setAction(action);
+		mSamples.push_back(newSample);
+		return true;
+	}
+
+	bool SoundObject::allocateOGG(const std::string &filename, const std::string &action,
+			bool playsLocally)
+	{
+		StreamedSoundSample* newSample = new StreamedSoundSample(filename);
+		if (!newSample)
+		{
+			S_LOG_FAILURE("Failed to allocate memory for a new sound source.");
+			return false;
+		}
+
+		// Should we handle this in Ogre or any other Resource Manager?
+		FILE* newFile = NULL;
+		if (!(newFile = fopen(filename.c_str(), "rb")))
+		{
+			S_LOG_FAILURE("Failed to open file.");
+			delete newSample;
+
+			return false;
+		}
+
+		newSample->setFile(newFile);
+
+		if (ov_open(newFile, newSample->getStreamPtr(), NULL, 0) < 0)
+		{
+Error0:
+			S_LOG_FAILURE("Failed to bind ogg stream to sound sample.");
+
+			fclose(newFile);
+			delete newSample;
+
+			return false;
+		}
+
+		vorbis_info* oggInfo = ov_info(newSample->getStreamPtr(), -1);
+		if (oggInfo->channels == 1)
+		{
+			newSample->setFormat(AL_FORMAT_MONO16);
+		}
+		else
+		{
+			newSample->setFormat(AL_FORMAT_STEREO16);
+		}
+
+		newSample->setRate(oggInfo->rate);
+
+		alGenBuffers(2, newSample->getBufferPtr());
+		if (alGetError() != AL_NO_ERROR)
+		{
+			goto Error0;
+		}
+
+		alGenSources(1, newSample->getSourcePtr());
+		if (alGetError() != AL_NO_ERROR)
+		{
+			goto Error0;
+		}
+
+		alSourcef (newSample->getSource(), AL_PITCH, 1.0);
+		alSourcef (newSample->getSource(), AL_GAIN, 1.0);
+		alSource3f(newSample->getSource(), AL_POSITION, 0, 0, 0);
+		alSource3f(newSample->getSource(), AL_VELOCITY, 0, 0, 0);
+		alSourcei (newSample->getSource(), AL_LOOPING, false);
+
+		if (playsLocally == PLAY_LOCAL)
+			alSourcei(newSample->getSource(), AL_SOURCE_RELATIVE, true);
+
+		newSample->setAction(action);
+
+		mSamples.push_back(newSample);
+		return true;
+	}
+
+	bool SoundObject::registerSound(const std::string &filename, const std::string &action, 
+			bool playLocally, const SoundSampleType type)
+	{
+		std::list<BaseSoundSample*>::iterator it;
+		for (it = mSamples.begin(); it != mSamples.end(); it++)
+		{
+			BaseSoundSample* sound = dynamic_cast<BaseSoundSample*>(*it);
+			if (sound->getFilename() == filename) 
 			{
-				StreamedSoundSample* ogg = dynamic_cast<StreamedSoundSample*>(*it);
-				if (ogg->isPlaying())
-				{
-					ogg->cycle();
-				}
+				S_LOG_INFO("Sound Sample (" + filename + ") already allocated.");
+				return false;
 			}
+			else
+			if (sound->getAction() == action)
+			{
+				S_LOG_INFO("Sound Object Action (" + action + ") already has a buffer allocated.");
+				return false;
+			}
+			else
+			{
+				// Can be allocated
+				switch (type)
+				{
+					default:
+					case SAMPLE_NONE:
+					{
+						std::string extension;
+
+						// Try to guess by extension
+						if (filename.size() > 4)
+						{
+							extension = filename.substr(filename.size()-3, 3);
+						
+							if (extension == "wav" || extension == "pcm")
+							{
+								return allocateWAVPCM(filename, action, playLocally);
+							}
+							else
+							if (extension == "ogg")
+							{
+								return allocateOGG(filename, action, playLocally);
+							}
+						}
+						return false;
+					}
+					break;
+				case SAMPLE_PCM:
+				case SAMPLE_WAV:
+					return allocateWAVPCM(filename, action, playLocally);
+				case SAMPLE_OGG:
+					return allocateOGG(filename, action, playLocally);
+				};
+			}
+		}
+	}
+
+	bool SoundObject::unRegisterSound(const std::string &filename)
+	{
+		std::list<BaseSoundSample*>::iterator it;
+		for (it = mSamples.begin(); it != mSamples.end(); )
+		{
+			BaseSoundSample* sound = dynamic_cast<BaseSoundSample*>(*it);
+			if (sound->getFilename() == filename) 
+			{
+				it = mSamples.erase(it);
+				delete sound;
+			}
+			else ++it;
 		}
 	}
 

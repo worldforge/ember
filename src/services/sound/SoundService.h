@@ -53,6 +53,9 @@ typedef enum
 	SAMPLE_OGG
 } SoundSampleType;
 
+#define PLAY_LOCAL false
+#define PLAY_WORLD true
+
 /**
  * Sound Sample 
  *
@@ -66,6 +69,7 @@ class BaseSoundSample
 		
 		ALuint 				mSource;
 		SoundSampleType	mType;
+		bool					mPlayPosition;
 
 	public:
 		virtual ~BaseSoundSample() {}
@@ -85,6 +89,9 @@ class BaseSoundSample
 		SoundSampleType getType();
 		virtual ALuint* getBufferPtr() = 0;
 		virtual unsigned int getNumberOfBuffers() = 0;
+
+		// Common Methods
+		virtual void play();
 };
 
 class StaticSoundSample : public BaseSoundSample
@@ -103,6 +110,9 @@ class StaticSoundSample : public BaseSoundSample
 		ALuint	getBuffer();
 		ALuint*	getBufferPtr();
 		unsigned int getNumberOfBuffers();
+
+		// Common methods
+		void play();
 };
 
 class StreamedSoundSample : public BaseSoundSample
@@ -155,6 +165,12 @@ class SoundObject
 
 		std::list<BaseSoundSample*> mSamples;
 
+		// Allocation Functions
+		bool allocateWAVPCM(const std::string &filename, const std::string &action, 
+				bool playsLocally); 
+		bool allocateOGG(const std::string &filename, const std::string &action, 
+				bool playsLocally); 
+
 	public:
 		SoundObject(const std::string& name);
 		~SoundObject();
@@ -169,7 +185,9 @@ class SoundObject
 		WFMath::Point<3> getVelocity();
 
 		// Register new Buffers
-		bool registerSound(const std::string &filename, const SoundSampleType type = SAMPLE_NONE);
+		bool registerSound(const std::string &filename, const std::string &action, bool playLocally,
+				const SoundSampleType type = SAMPLE_NONE);
+
 		bool unRegisterSound(const std::string &filename);
 
 		// Common methods
@@ -195,8 +213,8 @@ class SoundService: public Service, public ConsoleObject
 		std::list<SoundObject*> mObjects;
 
 		// Allocation Functions
-		bool allocateWAVPCM(const std::string &filename); 
-		bool allocateOGG(const std::string &filename); 
+		bool allocateWAVPCM(const std::string &filename, bool playsLocally); 
+		bool allocateOGG(const std::string &filename, bool playsLocally); 
 
 	public:
 		SoundService();
@@ -213,14 +231,13 @@ class SoundService: public Service, public ConsoleObject
 		 * Register(allocate) a new sound buffer
 		 */
 		SoundObject* registerObject(const std::string &name);
-		bool registerSound(const std::string &filename, const SoundSampleType type = SAMPLE_NONE);
+		bool registerSound(const std::string &filename, bool playLocally = PLAY_WORLD,
+				const SoundSampleType type = SAMPLE_NONE);
 		bool unRegisterSound(const std::string &filename);
 
 		/**
 		 * Play Functions
 		 */
-		void playObjSound(const std::string &obj, const std::string &action);
-		void stopObjSound(const std::string &obj, const std::string &action);
 		void playSound(const std::string &filename);
 		void stopSound(const std::string &filename);
 
