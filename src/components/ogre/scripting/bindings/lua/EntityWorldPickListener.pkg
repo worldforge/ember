@@ -33,7 +33,7 @@ struct EntityPickResult
 {
 	EmberOgre::EmberEntity* entity;
 	Ogre::Vector3 position;
-	Ogre::Real distance;
+	float distance;
 };
 
 

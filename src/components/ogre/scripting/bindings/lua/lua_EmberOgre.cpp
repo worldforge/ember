@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Sun May 18 16:36:39 2008.
+** Generated automatically by tolua++-1.0.92 on Sun Jun  8 22:54:15 2008.
 */
 
 #ifndef __cplusplus
@@ -18298,7 +18298,7 @@ static int tolua_get_EmberOgre__EntityPickResult_distance(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'distance'",NULL);
 #endif
-  tolua_pushusertype(tolua_S,(void*)&self->distance,"Ogre::Real");
+  tolua_pushnumber(tolua_S,(lua_Number)self->distance);
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
@@ -18311,10 +18311,10 @@ static int tolua_set_EmberOgre__EntityPickResult_distance(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'distance'",NULL);
-  if (!tolua_isusertype(tolua_S,2,"Ogre::Real",0,&tolua_err))
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->distance = *((Ogre::Real*)  tolua_tousertype(tolua_S,2,0))
+  self->distance = ((float)  tolua_tonumber(tolua_S,2,0))
 ;
  return 0;
 }
