@@ -60,6 +60,7 @@ end
 --They all reside in the same directory.
 --If you want another window to also load at start up, add it to the list here.
 
+loadScript("MainIconBar.lua")
 loadScript("Chat.lua")
 loadScript("ServerBrowser.lua")
 loadScript("Performance.lua")
@@ -78,7 +79,6 @@ loadScript("Status.lua")
 loadScript("Environment.lua")
 loadScript("AssetsManager.lua")
 loadScript("Inventory.lua")
-loadScript("MainIconBar.lua")
 
 
 --disable for 0.5.2 release
