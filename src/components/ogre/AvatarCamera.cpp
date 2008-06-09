@@ -159,6 +159,7 @@ AvatarCamera::~AvatarCamera()
 
 void AvatarCamera::createRayQueries()
 {
+  // SR: attempt to create a query to get back terrain coords
 	mAdjustTerrainRaySceneQuery = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery(mAdjustTerrainRay, Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
 	///only test for terrain
 	mAdjustTerrainRaySceneQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
