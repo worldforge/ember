@@ -262,17 +262,12 @@ void Application::start()
 		std::cout << "Error when setting up Ogre: " << ex.what() << std::endl;
 		S_LOG_CRITICAL("Error when setting up Ogre: " << ex.what());
 		return;
-	} catch (const Exception& ex) {
-		std::cout << "Error when setting up Ogre: " << ex.getError() << std::endl;
-		S_LOG_CRITICAL("Error when setting up Ogre: " << ex.getError());
-		return;
 	} catch (...) {
 		std::cout << "Unknown error when setting up Ogre." << std::endl;
 		S_LOG_CRITICAL("Unknown error when setting up Ogre.");
 		return;
 	}
 	mainLoop();
-	//mOgreView->go(mUseBinreloc);
 }
 
 bool Application::shouldQuit() 

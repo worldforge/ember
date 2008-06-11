@@ -7,7 +7,7 @@ noinst_LTLIBRARIES = libFramework.la
 libFramework_la_LIBADD = \
 	$(top_builddir)/src/framework/bindings/lua/atlas/liblua_Atlas.la $(top_builddir)/src/framework/bindings/lua/eris/liblua_Eris.la \
 	$(top_builddir)/src/framework/bindings/lua/liblua_Framework.la
-libFramework_la_SOURCES = Tokeniser.cpp ConsoleBackend.cpp StreamLogObserver.cpp \
+libFramework_la_SOURCES = Tokeniser.cpp ConsoleBackend.cpp Exception.cpp StreamLogObserver.cpp \
 		binreloc.c scrap.c ConsoleCommandWrapper.cpp
 
 noinst_HEADERS = ConsoleBackend.h \
