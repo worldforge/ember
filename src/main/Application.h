@@ -38,60 +38,86 @@ namespace Ember
 	class EmberServices;
 	class LogObserver;
 
+	/**
+	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+	
+	The main application class. There will only be one instance of this in the system, and this holds all other objects in the system. Ember is created and destroyed with this instance.
+	
+	After creating it, be sure to call these methods in order:
+	
+	registerComponents();
+	prepareComponents();
+	initializeServices();
+	
+	start();
+	
+	*/
     class Application : public ConsoleObject, public Ember::Singleton<Application>
     {
-        //======================================================================
-        // Inner Classes, Typedefs, and Enums
-        //======================================================================
-        
     public:
         typedef std::map<std::string, std::map<std::string, std::string> > ConfigMap;
-        //======================================================================
-        // Public Methods
-        //======================================================================
-         Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings);
+		Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings);
 
-        /**
-         * Dtor for Ember::Application.  Free the current surface.
-         *
-         */
-        ~Application();
-       
-        /**
-         * Main loop step.   Does one iteration of the mainloop. 
-         *
-         *
-         */
-        void mainLoopStep();
+	/**
+	* @brief At descructuib pretty much all game objects will be destroyed.
+	*/
+	~Application();
+	
+	/**
+	* @brief Performs one step of the main loop.
+	* You only need to call this each "frame" if you're not using mainLoop().
+	*/
+	void mainLoopStep();
 
-        /**
-         * the Main loop.  Returns when application has received an "exit" command
-         *
-         */
-        void mainLoop();
-       
-        /**
-         * return true if application has received an "exit" command else false.
-         *
-         * @return true if "shouldquit" else false
-         */
-        bool shouldQuit();
-        
-        void registerComponents();
-        void prepareComponents();
-        void initializeServices();
-        void start();
-        
-        sigc::signal<void> EventServicesInitialized;
-        
-        
+	/**
+	* @brief Enters the main loop.
+	* Will loop through the application until it exits. In most cases you want to call this for the main loop. However, if you want to handle all looping yourself you can call mainLoopStep() manually.
+	*/
+	void mainLoop();
+	
+	/**
+	* @brief Return true if application has received an "exit" command else false.
+	*
+	* @return true if "shouldquit" else false
+	*/
+	bool shouldQuit();
+	
+	/**
+	 *    @brief Registers all components with the system.
+	 * Make sure to call this before calling prepareComponents(). This will allow all components to register themselves with the system, but won't do anything more.
+	 */
+	void registerComponents();
+	
+	/**
+	 *    @brief Prepares all components.
+	 * Make sure to call this after you've called registerComponents(). This will tell all components to prepare themselves before the application and services are started. The reason this is separate from registerComponents() is that some components needs to know about the existence of others, which they might not properly do at the registerComponents() step.
+	 */
+	void prepareComponents();
+	
+	/**
+	 *    @brief Initializes all services.
+	 * Make sure to call this before calling start() and after calling registerComponents() and prepareComponents().
+	 */
+	void initializeServices();
+	
+	/**
+	 *    @brief Starts the application.
+	 * Calling this will make it first setup the graphical components and then enter the main loop.
+	 * @see mainLoop()
+	 */
+	void start();
+	
+	/**
+	@brief Emitted when all services have been initialized.
+	*/
+	sigc::signal<void> EventServicesInitialized;
 
 	/**
 	 * Causes the application to quit.
 	 */
 	void quit();
-	   
-		
+
+
 	/**
 	 * Callback for running Console Commands
 	 */
@@ -137,13 +163,33 @@ namespace Ember
     
     private:
     
+    /**
+    The logging service is a little special, so we need to hold a reference to it ourselves. Mainly we don't want it to shut down until the application is shut down.
+    NOTE: The logging mechanism needs to be redone, so it isn't dependent on a service being started.
+    */
     std::auto_ptr<Ember::LoggingService> mLoggingService;
     
      
 //	IGameView mGraphicalComponent;
+	/**
+	The main Ogre graphical view.
+	*/
 	EmberOgre::EmberOgre* mOgreView;
+	
+	/**
+	If set to true, Ember should quit before next loop step.
+	@see mainLoop()
+	*/
 	bool mShouldQuit;
+	/**
+	The file system prefix to where Ember has been installed.
+	*/
 	const std::string mPrefix;
+	
+	/**
+	The path to the Ember home directory, where all settings will be stored.
+	On Linux this is ~/.ember by default.
+	*/
 	const std::string mHomeDir;
 	
 	/**
@@ -168,13 +214,23 @@ namespace Ember
 	
 	void Server_GotView(Eris::View* view);
 
+	/**
+	We hold a pointer to the stream to which all logging messages are written.
+	*/
 	std::auto_ptr<std::ofstream> mLogOutStream;
 	
+	/**
+	A transient copy of command line set config settings. The settings here will be injected into the ConfigService when the services are started.
+	@see initializeServices()
+	*/
 	ConfigMap mConfigSettings;
 	
+	/**
+	The main console backend instance.
+	*/
 	std::auto_ptr<ConsoleBackend> mConsoleBackend;
 
-};//class Application
-}//namespace Ember
+};
+}
 
 #endif
