@@ -29,6 +29,7 @@
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
+#include "services/time/TimeService.h"
 #ifndef WIN32
 #include "services/sound/SoundService.h"
 #endif
@@ -363,6 +364,8 @@ void AvatarCamera::Input_MouseMoved(const MouseMotion& motion, Input::InputMode 
 		if (diffY.valueDegrees() || diffX.valueDegrees()) {
 			MovedCamera.emit(mCamera);
 		}
+	} else if (mode == Input::IM_GUI) {
+		S_LOG_VERBOSE("Mouse moved at : " << Ember::EmberServices::getSingletonPtr()->getTimeService()->currentTimeMillis() );
 	}
 }
 
