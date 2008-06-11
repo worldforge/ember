@@ -146,11 +146,7 @@ public:
 
 	virtual bool frameStarted(const Ogre::FrameEvent & evt);
 	virtual bool frameEnded(const Ogre::FrameEvent & evt);
-	
-    /**
-     * starts the main app
-     */
-    virtual void go();
+
 // 	void shutdown();
 
 	/**

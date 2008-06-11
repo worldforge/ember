@@ -290,13 +290,6 @@ void EmberOgre::shutdownGui()
 	mGUIManager = 0;
 }
 
-void EmberOgre::go()
-{
-	if (!setup())
-		return;
-}
-
-
     
 // These internal methods package up the stages in the startup process
 /** Sets up the application - returns false if the user chooses to abandon configuration. */
