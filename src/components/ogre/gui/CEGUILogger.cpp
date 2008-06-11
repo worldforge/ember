@@ -43,6 +43,7 @@ CEGUILogger::~CEGUILogger()
 
 void CEGUILogger::logEvent(const CEGUI::String& message, CEGUI::LoggingLevel level)
 {
+	///just reroute to the Ember logging service
 	static std::string ogre("(CEGUI) ");
 	switch (level) {
 		case CEGUI::Insane:
