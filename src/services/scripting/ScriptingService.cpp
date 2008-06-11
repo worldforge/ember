@@ -81,9 +81,6 @@ void ScriptingService::loadScript(const std::string& script)
 				S_LOG_INFO("Loading script: " << script << " with scripting provider " << I->second->getName() );
 				try {
 					I->second->loadScript(resWrapper);
-				} catch (const Ember::Exception& ex) {
-					S_LOG_WARNING("Error when loading script " << script << " with provider " << I->second->getName() << ". Message: " << ex.getError());
-					scriptError(ex.getError());
 				} catch (const std::exception& ex) {
 					S_LOG_WARNING("Error when loading script " << script << " with provider " << I->second->getName() << ". Message: " << ex.what());
 					scriptError(ex.what());
@@ -106,9 +103,6 @@ void ScriptingService::executeCode(const std::string& scriptCode, const std::str
 	} else {
 		try {
 			I->second->executeScript(scriptCode, callContext);
-		} catch (const Ember::Exception& ex) {
-			S_LOG_WARNING("Error when executing script\n" << scriptCode << "\nwith provider " << I->second->getName() << ". Message: " << ex.getError());
-			scriptError(ex.getError());
 		} catch (const std::exception& ex) {
 			S_LOG_WARNING("Error when executing script\n" << scriptCode << "\nwith provider " << I->second->getName() << ". Message: " << ex.what());
 			scriptError(ex.what());
@@ -127,9 +121,6 @@ void ScriptingService::callFunction(const std::string& functionName, const std::
 	} else {
 		try {
 			I->second->callFunction(functionName, callContext);
-		} catch (const Ember::Exception& ex) {
-			S_LOG_WARNING("Error when executing function '" << functionName << "' with provider " << I->second->getName() << ". Message: " << ex.getError());
-			scriptError(ex.getError());
 		} catch (const std::exception& ex) {
 			S_LOG_WARNING("Error when executing function '" << functionName << "' with provider " << I->second->getName() << ". Message: " << ex.what());
 			scriptError(ex.what());

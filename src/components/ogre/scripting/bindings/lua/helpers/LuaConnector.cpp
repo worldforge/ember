@@ -141,11 +141,6 @@ template <typename Treturn, typename T0, typename T1, typename T2, typename T3> 
 		//return returnValue;
 
 	}
-	catch(const Ember::Exception& ex )
-	{
-		lua_settop(state, top );
-		S_LOG_FAILURE("(LuaScriptModule) Unable to execute scripted event handler: " << mLuaMethod << "\n" << ex.getError());
-	}
 	catch( const CEGUI::String& str )
 	{
 		lua_settop(state, top );

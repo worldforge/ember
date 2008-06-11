@@ -113,9 +113,6 @@ void Application::mainLoopStep()
 			EventEndErisPoll.emit();
 		}
 		mOgreView->renderOneFrame();
-	} catch (const Ember::Exception& ex) {
-		S_LOG_CRITICAL(ex.getError());
-		throw;
 	} catch (const std::exception& ex)
 	{
 		S_LOG_CRITICAL("Got exception, shutting down. " << ex.what());

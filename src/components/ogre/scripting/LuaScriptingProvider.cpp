@@ -256,10 +256,10 @@ void LuaScriptingProvider::executeScriptImpl(const std::string& scriptCode, LuaS
 		throw Ember::Exception(ex.getMessage().c_str());
 	} catch( const CEGUI::String& str ) {
 		throw Ember::Exception(str.c_str());
-	} catch (const Ember::Exception& ex) {
-		throw ex;
+	} catch (const std::exception& ex) {
+		throw;
 	} catch (...) {
-		throw Ember::Exception("Unknown error.");
+		throw Ember::Exception("Unknown error when executing lua script.");
 	}
 }
 
@@ -315,10 +315,10 @@ void LuaScriptingProvider::callFunctionImpl(const std::string& functionName, Lua
 		throw Ember::Exception(ex.getMessage().c_str());
 	} catch( const CEGUI::String& str ) {
 		throw Ember::Exception(str.c_str());
-	} catch (const Ember::Exception& ex) {
-		throw ex;
+	} catch (const std::exception& ex) {
+		throw;
 	} catch (...) {
-		throw Ember::Exception("Unknown error.");
+		throw Ember::Exception("Unknown error when calling lua.");
 	}
 }
 
