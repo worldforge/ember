@@ -64,6 +64,7 @@ namespace Gui {
 class Widget;
 class EntityIconManager;
 class ActiveWidgetHandler;
+class CEGUILogger;
 namespace Icons {
 class IconManager;
 }
@@ -344,6 +345,12 @@ protected:
 	Gui::Icons::IconManager* mIconManager;
 	Gui::EntityIconManager* mEntityIconManager;
 	Gui::ActiveWidgetHandler* mActiveWidgetHandler;
+	
+	/**
+	We'll provide our own CEGUI logger instance, which will route all cegui log messages to the main ember log.
+	@note We will not delete this instance at desctruction, because the main CEGUI System instance will do that itself in its desctructor, even though it didn't create the instance itself.
+	*/
+	Gui::CEGUILogger* mCEGUILogger;
 };
 }
 

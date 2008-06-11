@@ -41,6 +41,7 @@
 #include "EmberOgre.h"
 #include "input/Input.h"
 #include "gui/ActiveWidgetHandler.h"
+#include "gui/CEGUILogger.h"
 
 #include "widgets/WidgetDefinitions.h"
 
@@ -91,6 +92,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 , mLuaScriptModule(0)
 , mIconManager(0)
 , mActiveWidgetHandler(0)
+, mCEGUILogger(new Gui::CEGUILogger()) ///by creating an instance here we'll indirectly tell CEGUI to use this one instead of trying to create one itself
 {
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI );
 
@@ -206,6 +208,7 @@ GUIManager::~GUIManager()
 	delete mIconManager;
 	
 	delete mGuiSystem;
+	///note that we normally would delete the mCEGUILogger here, but we don't have to since mGuiSystem will do that in it's desctructor, even though it doesn't own the logger
 	Ogre::Root::getSingleton().removeFrameListener(this);
 	delete mCEGUIAdapter;
 	
