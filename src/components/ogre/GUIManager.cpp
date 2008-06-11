@@ -124,6 +124,11 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		} else {
 			mGuiSystem = new CEGUI::System(mGuiRenderer, resourceProvider, 0, 0, "cegui/datafiles/configs/cegui.config"); 
 		}
+		CEGUI::SchemeManager::SchemeIterator schemeI(SchemeManager::getSingleton().getIterator());
+		if (schemeI.isAtEnd()) {
+// 			S_LOG_FAILURE("Could not load any CEGUI schemes. This means that there's something wromg with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
+			throw Ember::Exception("Could not load any CEGUI schemes. This means that there's something wromg with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
+		}
 		
 		mWindowManager = &CEGUI::WindowManager::getSingleton();
 
