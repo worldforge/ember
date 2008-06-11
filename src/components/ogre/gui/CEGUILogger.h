@@ -24,6 +24,7 @@
 #define EMBEROGRE_GUICEGUILOGGER_H
 
 #include <CEGUILogger.h>
+#include "services/config/ConfigListener.h"
 
 namespace EmberOgre {
 
@@ -36,7 +37,7 @@ namespace Gui {
 	@note When CEGUI::System is destroyed, it will automatically delete the system wide Logger instance, even though it didn't create it in the first place. That means that when you use this class, make sure to use a pointer (no auto_ptr, no regular, stack object allocation), and don't try to delete it yourself.
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
-class CEGUILogger : public CEGUI::Logger
+class CEGUILogger : public CEGUI::Logger, Ember::ConfigListenerContainer
 {
 public:
     CEGUILogger();
@@ -74,6 +75,10 @@ public:
         - false if the current contents of the file should be discarded.
      */
     virtual void setLogFilename(const CEGUI::String& filename, bool append = false) {}
+private:
+	void Config_MinimumLogLevel(const std::string& section, const std::string& key, varconf::Variable& variable);
+	
+
 };
 
 }

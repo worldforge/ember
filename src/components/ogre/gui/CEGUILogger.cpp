@@ -34,6 +34,7 @@ namespace Gui {
 
 CEGUILogger::CEGUILogger()
 {
+	registerConfigListener("cegui", "minimumlogginglevel", sigc::mem_fun(*this, &CEGUILogger::Config_MinimumLogLevel));
 }
 
 
@@ -45,29 +46,44 @@ void CEGUILogger::logEvent(const CEGUI::String& message, CEGUI::LoggingLevel lev
 {
 	///just reroute to the Ember logging service
 	static std::string ogre("(CEGUI) ");
-	switch (level) {
-		case CEGUI::Insane:
-			///we won't handle the insane level since it's mainly for internal CEGUI debugging
-			return;
-		case CEGUI::Informative:
-			///informative messages are a little too much to print out
-			return;
-/*			Ember::EmberServices::getSingletonPtr()->getLoggingService()->slog("CEGUI", Ember::LoggingService::VERBOSE) << ogre << message.c_str() << Ember::LoggingService::END_MESSAGE;
-			break;*/
-		case CEGUI::Standard:
-			Ember::EmberServices::getSingletonPtr()->getLoggingService()->slog("CEGUI", Ember::LoggingService::INFO) << ogre << message.c_str() << Ember::LoggingService::END_MESSAGE;
-			break;
-		case CEGUI::Warnings:
-			Ember::EmberServices::getSingletonPtr()->getLoggingService()->slog("CEGUI", Ember::LoggingService::WARNING) << ogre << message.c_str() << Ember::LoggingService::END_MESSAGE;
-			break;
-		case CEGUI::Errors:
-			Ember::EmberServices::getSingletonPtr()->getLoggingService()->slog("CEGUI", Ember::LoggingService::FAILURE) << ogre << message.c_str() << Ember::LoggingService::END_MESSAGE;
-			break;
-			
+	if (d_level >= level) {
+		switch (level) {
+			case CEGUI::Insane:
+				Ember::EmberServices::getSingletonPtr()->getLoggingService()->slog("CEGUI", Ember::LoggingService::VERBOSE) << ogre << message.c_str() << Ember::LoggingService::END_MESSAGE;
+				break;
+			case CEGUI::Informative:
+				Ember::EmberServices::getSingletonPtr()->getLoggingService()->slog("CEGUI", Ember::LoggingService::VERBOSE) << ogre << message.c_str() << Ember::LoggingService::END_MESSAGE;
+				break;
+			case CEGUI::Standard:
+				Ember::EmberServices::getSingletonPtr()->getLoggingService()->slog("CEGUI", Ember::LoggingService::INFO) << ogre << message.c_str() << Ember::LoggingService::END_MESSAGE;
+				break;
+			case CEGUI::Warnings:
+				Ember::EmberServices::getSingletonPtr()->getLoggingService()->slog("CEGUI", Ember::LoggingService::WARNING) << ogre << message.c_str() << Ember::LoggingService::END_MESSAGE;
+				break;
+			case CEGUI::Errors:
+				Ember::EmberServices::getSingletonPtr()->getLoggingService()->slog("CEGUI", Ember::LoggingService::FAILURE) << ogre << message.c_str() << Ember::LoggingService::END_MESSAGE;
+				break;
+		}
 	}
-
 }
 
+
+void CEGUILogger::Config_MinimumLogLevel(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	std::string newLogLevel(variable);
+	
+	if (newLogLevel == "insane") {
+		d_level = CEGUI::Insane;
+	} else if (newLogLevel == "informative") {
+		d_level = CEGUI::Informative;
+	} else if (newLogLevel == "standard") {
+		d_level = CEGUI::Standard;
+	} else if (newLogLevel == "warnings") {
+		d_level = CEGUI::Warnings;
+	} else if (newLogLevel == "errors") {
+		d_level = CEGUI::Errors;
+	} 
+}
 }
 
 }
