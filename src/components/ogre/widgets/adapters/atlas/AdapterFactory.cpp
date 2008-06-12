@@ -69,7 +69,7 @@ StringAdapter* AdapterFactory::createStringAdapter(CEGUI::Window* container, con
 	}
 	
 	if (!element.isString()) {
-		S_LOG_FAILURE("Incorrect element type.");
+		S_LOG_FAILURE("Incorrect element type, expected a string.");
 		return 0;
 	}
 	
@@ -98,7 +98,7 @@ NumberAdapter* AdapterFactory::createNumberAdapter(CEGUI::Window* container, con
 	}
 	
 	if (!element.isNum()) {
-		S_LOG_FAILURE("Incorrect element type.");
+		S_LOG_FAILURE("Incorrect element type, expected a number.");
 		return 0;
 	}
 	
@@ -128,7 +128,7 @@ SizeAdapter* AdapterFactory::createSizeAdapter(CEGUI::Window* container, const s
 	}
 	
 	if (!element.isList()) {
-		S_LOG_FAILURE("Incorrect element type.");
+		S_LOG_FAILURE("Incorrect element type, expected a list.");
 		return 0;
 	}
 	
@@ -163,7 +163,7 @@ OrientationAdapter* AdapterFactory::createOrientationAdapter(CEGUI::Window* cont
 	}
 	
 	if (!element.isList()) {
-		S_LOG_FAILURE("Incorrect element type.");
+		S_LOG_FAILURE("Incorrect element type, expected a list.");
 		return 0;
 	}
 	
@@ -194,7 +194,7 @@ PositionAdapter* AdapterFactory::createPositionAdapter(CEGUI::Window* container,
 	}
 	
 	if (!element.isList()) {
-		S_LOG_FAILURE("Incorrect element type.");
+		S_LOG_FAILURE("Incorrect element type, expected a list.");
 		return 0;
 	}
 	
@@ -224,7 +224,7 @@ Position2DAdapter* AdapterFactory::createPosition2DAdapter(CEGUI::Window* contai
 	}
 	
 	if (!element.isList()) {
-		S_LOG_FAILURE("Incorrect element type.");
+		S_LOG_FAILURE("Incorrect element type, expected a list.");
 		return 0;
 	}
 	
@@ -263,7 +263,7 @@ MapAdapter* AdapterFactory::createMapAdapter(CEGUI::Window* container, const std
 	}
 	
 	if (!element.isMap()) {
-		S_LOG_FAILURE("Incorrect element type.");
+		S_LOG_FAILURE("Incorrect element type, expected a map.");
 		return 0;
 	}
 	
@@ -290,7 +290,7 @@ ListAdapter* AdapterFactory::createListAdapter(CEGUI::Window* container, const s
 	}
 	
 	if (!element.isList()) {
-		S_LOG_FAILURE("Incorrect element type.");
+		S_LOG_FAILURE("Incorrect element type, expected a list.");
 		return 0;
 	}
 	
@@ -316,7 +316,7 @@ StaticAdapter* AdapterFactory::createStaticAdapter(CEGUI::Window* container, con
 	}
 	
 	if (!(element.isString() || element.isNum())) {
-		S_LOG_FAILURE("Incorrect element type.");
+		S_LOG_FAILURE("Incorrect element type, expected a string.");
 		return 0;
 	}
 	
@@ -344,10 +344,17 @@ CEGUI::Window* AdapterFactory::loadLayoutIntoContainer(CEGUI::Window* container,
 		ss << mPrefix << adapterPrefix << (msAutoGenId++);
 		mCurrentPrefix = ss.str();
 		CEGUI::Window* window = windowManager.loadWindowLayout(finalFileName, mCurrentPrefix);
-		container->addChildWindow(window); 
-		container->setHeight(window->getHeight());
-		container->setWidth(window->getWidth());
-		return window;
+		if (window) {
+			if (container) {
+				container->addChildWindow(window); 
+				container->setHeight(window->getHeight());
+				container->setWidth(window->getWidth());
+			}
+			return window;
+		} else {
+			S_LOG_FAILURE("Failed to create a new window from the layout in " << finalFileName << ".");
+			return 0;
+		}
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_FAILURE("Error when loading" << layoutfile <<": " << ex.getMessage().c_str());
 		return 0;
