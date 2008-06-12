@@ -59,7 +59,7 @@ PositionAdapter::~PositionAdapter()
 
 void PositionAdapter::updateGui(const ::Atlas::Message::Element& element)
 {
-	mSelfUpdate = true;
+	AdapterSelfUpdateContext context(*this);
 	WFMath::Vector<3> vector(element);
 // 	axisBox.fromAtlas(element.asList());
 	if (mXWindow) {
@@ -71,7 +71,6 @@ void PositionAdapter::updateGui(const ::Atlas::Message::Element& element)
 	if (mZWindow) {
 		mZWindow->setText(toString(vector.z())); 
 	}
-	mSelfUpdate = false;
 }
 
 bool PositionAdapter::window_TextChanged(const CEGUI::EventArgs& e)

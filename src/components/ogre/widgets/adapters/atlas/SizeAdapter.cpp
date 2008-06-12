@@ -72,7 +72,7 @@ SizeAdapter::~SizeAdapter()
 
 void SizeAdapter::updateGui(const ::Atlas::Message::Element& element)
 {
-	mSelfUpdate = true;
+	AdapterSelfUpdateContext context(*this);
 	WFMath::AxisBox<3> axisBox(element);
 // 	axisBox.fromAtlas(element.asList());
 	if (mLowerXWindow) {
@@ -96,7 +96,6 @@ void SizeAdapter::updateGui(const ::Atlas::Message::Element& element)
 	
 	updateInfo();
 	
-	mSelfUpdate = false;
 }
 
 bool SizeAdapter::window_TextChanged(const CEGUI::EventArgs& e)

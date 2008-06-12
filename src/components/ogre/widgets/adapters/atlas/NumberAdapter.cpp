@@ -55,13 +55,12 @@ NumberAdapter::~NumberAdapter()
 
 void NumberAdapter::updateGui(const ::Atlas::Message::Element& element)
 {
-	mSelfUpdate = true;
+	AdapterSelfUpdateContext context(*this);
 	if (mTextWindow) {
 		std::stringstream ss;
 		ss << element.asNum();
 		mTextWindow->setText(ss.str());
 	}
-	mSelfUpdate = false;
 }
 
 bool NumberAdapter::window_TextChanged(const CEGUI::EventArgs& e)

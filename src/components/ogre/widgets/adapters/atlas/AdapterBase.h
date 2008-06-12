@@ -65,6 +65,19 @@ struct AdapterWrapper
 };
 
 /**
+Use an instance of this whenever you need to update the gui from the adapter. In order to prevent endless loops we need to set the mSelfUpdate variable to true while we do the update. This will automate the setting of this, and the unsetting when it's destroyed.
+	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+*/
+class AdapterSelfUpdateContext
+{
+public:
+AdapterSelfUpdateContext(AdapterBase& adapter);
+~AdapterSelfUpdateContext();
+private:
+AdapterBase& mAdapter;
+};
+
+/**
 	Base class for all adapters. An adapter is a class which binds a series of gui elements to a Atlas::Message::Element. It acts like a bridge between the UI and the data in an application.
 	In MVC terms, the adapter is the controller, while the gui elements are the view and the Atlas::Message::Element is the model.
 	
@@ -89,6 +102,7 @@ struct AdapterWrapper
 */
 class AdapterBase
 {
+friend class AdapterSelfUpdateContext;
 public:
     /**
      * Ctor. Creates a new adapter and intializes it with the supplied value.

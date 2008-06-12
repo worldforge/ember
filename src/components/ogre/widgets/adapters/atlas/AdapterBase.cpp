@@ -34,6 +34,16 @@ namespace Adapters {
 
 namespace Atlas {
 
+AdapterSelfUpdateContext::AdapterSelfUpdateContext(AdapterBase& adapter)
+: mAdapter(adapter)
+{
+	mAdapter.mSelfUpdate = true;
+}
+
+AdapterSelfUpdateContext::~AdapterSelfUpdateContext()
+{
+	mAdapter.mSelfUpdate = false;
+}
 
 
 AdapterBase::AdapterBase(const ::Atlas::Message::Element& element)

@@ -55,7 +55,7 @@ Position2DAdapter::~Position2DAdapter()
 
 void Position2DAdapter::updateGui(const ::Atlas::Message::Element& element)
 {
-	mSelfUpdate = true;
+	AdapterSelfUpdateContext context(*this);
 	WFMath::Vector<2> vector(element);
 // 	axisBox.fromAtlas(element.asList());
 	if (mXWindow) {
@@ -64,7 +64,6 @@ void Position2DAdapter::updateGui(const ::Atlas::Message::Element& element)
 	if (mYWindow) {
 		mYWindow->setText(toString(vector.y())); 
 	}
-	mSelfUpdate = false;
 }
 
 bool Position2DAdapter::window_TextChanged(const CEGUI::EventArgs& e)

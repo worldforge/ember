@@ -54,11 +54,10 @@ StringAdapter::~StringAdapter()
 
 void StringAdapter::updateGui(const ::Atlas::Message::Element& element)
 {
-	mSelfUpdate = true;
+	AdapterSelfUpdateContext context(*this);
 	if (mTextWindow) {
 		mTextWindow->setText(element.asString());
 	}
-	mSelfUpdate = false;
 }
 
 bool StringAdapter::window_TextChanged(const CEGUI::EventArgs& e)

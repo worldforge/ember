@@ -63,7 +63,7 @@ OrientationAdapter::~OrientationAdapter()
 
 void OrientationAdapter::updateGui(const ::Atlas::Message::Element& element)
 {
-	mSelfUpdate = true;
+	AdapterSelfUpdateContext context(*this);
 	WFMath::Quaternion orientation(element);
 // 	axisBox.fromAtlas(element.asList());
 	if (mXWindow) {
@@ -79,7 +79,6 @@ void OrientationAdapter::updateGui(const ::Atlas::Message::Element& element)
 		mScalarWindow->setText(toString(orientation.scalar())); 
 	}
 
-	mSelfUpdate = false;
 }
 
 bool OrientationAdapter::window_TextChanged(const CEGUI::EventArgs& e)
