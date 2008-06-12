@@ -803,7 +803,8 @@
         <Property name="EWSizingCursorImage" value="set:EmberLook image:MouseEsWeCursor" />
         <Property name="NWSESizingCursorImage" value="set:EmberLook image:MouseNwSeCursor" />
         <Property name="NESWSizingCursorImage" value="set:EmberLook image:MouseNeSwCursor" />
-        <NamedArea name="ClientWithTitleWithFrame">
+	<Property name="UnifiedMinSize" value="{{0,50},{0,20}}" />
+	<NamedArea name="ClientWithTitleWithFrame">
             <Area>
                 <Dim type="LeftEdge">
                     <ImageDim imageset="EmberLook" image="WindowFrameLeft" dimension="Width" />
