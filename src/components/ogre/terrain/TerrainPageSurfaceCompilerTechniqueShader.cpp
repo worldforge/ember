@@ -35,7 +35,7 @@ TerrainPageSurfaceCompilerShaderPassCoverageBatch::TerrainPageSurfaceCompilerSha
 : mShaderPass(shaderPass)
 , mCombinedCoverageTexture(combinedCoverageTexture)
 , mCombinedCoverageImage(new Ogre::Image())
-, mCombinedCoverageDataStream(new Ogre::MemoryDataStream(combinedCoverageTexture->getWidth() * combinedCoverageTexture->getWidth() * 4, false))
+, mCombinedCoverageDataStream(new Ogre::MemoryDataStream(combinedCoverageTexture->getWidth() * combinedCoverageTexture->getWidth() * 4, true))
 , mCombinedCoverageDataStreamPtr(mCombinedCoverageDataStream)
 {
 	///reset the coverage image
@@ -43,6 +43,7 @@ TerrainPageSurfaceCompilerShaderPassCoverageBatch::TerrainPageSurfaceCompilerSha
 }
 TerrainPageSurfaceCompilerShaderPassCoverageBatch::~TerrainPageSurfaceCompilerShaderPassCoverageBatch()
 {
+	delete mCombinedCoverageImage;
 }
 
 void TerrainPageSurfaceCompilerShaderPassCoverageBatch::addLayer(TerrainPageSurfaceLayer* layer)
@@ -191,6 +192,7 @@ bool TerrainPageSurfaceCompilerTechniqueShader::compileMaterial(Ogre::MaterialPt
 	}
 	///we need to load it before we can see how many techniques are supported
 	material->load();
+	reset();
 	if (material->getNumSupportedTechniques() == 0) {
 		S_LOG_WARNING("The material '" << material->getName() << "' has no supported techniques. The reason for this is: \n" << material->getUnsupportedTechniquesExplanation());
 		return false;
@@ -389,7 +391,8 @@ void TerrainPageSurfaceCompilerTechniqueShader::setPage(TerrainPage* page)
 TerrainPageSurfaceCompilerShaderPass* TerrainPageSurfaceCompilerTechniqueShader::addPass(Ogre::Technique* technique)
 {
 	Ogre::Pass* pass = technique->createPass();
-	TerrainPageSurfaceCompilerShaderPass* shaderPass = new TerrainPageSurfaceCompilerShaderPass(pass, *mPage);
+	TerrainPageSurfaceCompilerShaderPass* shaderPass(new TerrainPageSurfaceCompilerShaderPass(pass, *mPage));
+	mPasses.push_back(shaderPass);
 	return shaderPass;
 }
 

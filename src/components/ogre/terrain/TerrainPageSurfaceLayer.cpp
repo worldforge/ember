@@ -39,7 +39,7 @@ TerrainPageSurfaceLayer::TerrainPageSurfaceLayer(TerrainPageSurface& terrainPage
 : mTerrainPageSurface(terrainPageSurface)
 , mShader(shader)
 , mCoverageImage(new Ogre::Image())
-, mCoverageDataStream(new Ogre::MemoryDataStream(terrainPageSurface.getPixelWidth() * terrainPageSurface.getPixelWidth() * 1, false))
+, mCoverageDataStream(new Ogre::MemoryDataStream(terrainPageSurface.getPixelWidth() * terrainPageSurface.getPixelWidth() * 1, true))
 , mCoverageDataStreamPtr(mCoverageDataStream)
 , mSurfaceIndex(surfaceIndex)
 , mDefinition(definition)
@@ -50,6 +50,7 @@ TerrainPageSurfaceLayer::TerrainPageSurfaceLayer(TerrainPageSurface& terrainPage
 
 TerrainPageSurfaceLayer::~TerrainPageSurfaceLayer()
 {
+	delete mCoverageImage;
 }
 
 Ogre::TexturePtr TerrainPageSurfaceLayer::createTexture()
@@ -134,7 +135,7 @@ bool TerrainPageSurfaceLayer::createCoverageImage()
 		return false;
 	}
 	mCoverageImage = new Ogre::Image();
-	mCoverageDataStream = new Ogre::MemoryDataStream(mTerrainPageSurface.getPixelWidth() * mTerrainPageSurface.getPixelWidth() * 1, false);
+	mCoverageDataStream = new Ogre::MemoryDataStream(mTerrainPageSurface.getPixelWidth() * mTerrainPageSurface.getPixelWidth() * 1, true);
 	mCoverageDataStreamPtr = Ogre::DataStreamPtr(mCoverageDataStream);
 	return true;
 	
