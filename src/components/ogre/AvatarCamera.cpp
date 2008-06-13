@@ -363,11 +363,9 @@ void AvatarCamera::Input_MouseMoved(const MouseMotion& motion, Input::InputMode 
 		if (diffY.valueDegrees() || diffX.valueDegrees()) {
 			MovedCamera.emit(mCamera);
 		}
-	} else if (mode == Input::IM_GUI) {
-				
-		mAvatarTerrainCursor.getTerrainCursorPosition(motion.xPosition,motion.yPosition);
-		S_LOG_VERBOSE("Mouse moved at : " << Ember::EmberServices::getSingletonPtr()->getTimeService()->currentTimeMillis() );
-	}
+	} 
+	mAvatarTerrainCursor.getTerrainCursorPosition(motion.xPosition,motion.yPosition);
+	
 }
 
 

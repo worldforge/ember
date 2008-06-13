@@ -40,6 +40,9 @@ namespace EmberOgre {
 		mTerrainCursorRayQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
 		mTerrainCursorRayQuery->setSortByDistance(true);
 		mTerrainCursorRayQuery->setQueryTypeMask(Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
+
+		mCamera = EmberOgre::getSingleton().getMainCamera()->getCamera();
+		mLastTerrainPosition = Ogre::Vector3(0,0,0);
 	}
 
 	AvatarTerrainCursor::~AvatarTerrainCursor()
@@ -63,24 +66,32 @@ namespace EmberOgre {
 	{
 		long now = Ember::EmberServices::getSingletonPtr()->getTimeService()->currentTimeMillis();
 		
+		long delta = now - mLastTerrainUpdated;
+		
 		// if enough time has lapsed, we'll update, otherwise we return the last known position
-		if( (now - mLastTerrainUpdated) >  mUpdatePositionThreshold )
+		if( delta >  mUpdatePositionThreshold )
 		{
-			// temporary filler until I get the ray query working
-			Ogre::Vector3 pos(0,0,0);
-			mLastTerrainPosition = pos;
-			S_LOG_VERBOSE("getTerrainCursorPosition : Update ( "<< mouseX << "," << mouseY << ")->" << Ogre::StringConverter::toString(pos));
-			/// Start a new ray query 
-			//Ogre::Camera* camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
-
-			//Ogre::Ray cameraRay = getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
-			//mTerrainCursorRayQuery->setRay(cameraRay);
-			//mTerrainCursorRayQuery->execute();
+			// mark update time
+			mLastTerrainUpdated = now;
 			
-			//Ogre::RaySceneQueryResult queryResult = mTerrainCursorRayQuery->getLastResults();
+			/// Start a new ray query 
+			
+			Ogre::Ray cameraRay = mCamera->getCameraToViewportRay( mouseX, mouseY ); 
+			mTerrainCursorRayQuery->setRay(cameraRay);
+			mTerrainCursorRayQuery->execute();
+			
+			// Can we avoid the iterator, and just use the result ?
+			Ogre::RaySceneQueryResult queryResult = mTerrainCursorRayQuery->getLastResults();
+			Ogre::RaySceneQueryResult::iterator rayIterator = queryResult.begin( );
+			Ogre::RaySceneQueryResultEntry& entry = *rayIterator;
+			
+			if (entry.worldFragment) {
+				mLastTerrainPosition = entry.worldFragment->singleIntersection;
+			}
+			
 			
 		}
-		
+		S_LOG_VERBOSE("getTerrainCursorPosition : (" << delta << ") Update ( "<< mouseX << "," << mouseY << ")->" << Ogre::StringConverter::toString(mLastTerrainPosition));		
 		return ( mLastTerrainPosition );
 	}
 

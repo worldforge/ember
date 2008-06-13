@@ -26,7 +26,6 @@
 
 
 #include "EmberOgrePrerequisites.h"
-#include "AvatarCamera.h"
 #include <sigc++/trackable.h>
 #include "input/Input.h"
 
@@ -38,7 +37,7 @@ namespace EmberOgre {
 		friend class AvatarCamera;
 		
 		/* default threshold in milliseconds */
-		const static int DEFAULT_THRESHOLD_MILLIS = 200;
+		const static int DEFAULT_THRESHOLD_MILLIS = 100;
 		
 		/* C and D */
 		AvatarTerrainCursor();
@@ -62,6 +61,9 @@ namespace EmberOgre {
 		
 		/* last mouse y position */
 		int mLastMouseY;
+		
+		/* reference to ogre camera */
+		Ogre::Camera* mCamera;
 		
 		/* the ray we will use to find the terrain intersection */
 		Ogre::Ray mTerrainCursorRay;
