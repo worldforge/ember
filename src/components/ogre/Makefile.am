@@ -20,7 +20,7 @@ libEmberOgre_la_LIBADD = \
         
 
 
-libEmberOgre_la_SOURCES = AttributeObserver.cpp Avatar.cpp AvatarCamera.cpp \
+libEmberOgre_la_SOURCES = AttributeObserver.cpp Avatar.cpp AvatarTerrainCursor.cpp AvatarCamera.cpp \
 	AvatarController.cpp AvatarEmberEntity.cpp AvatarLogger.cpp CameraMount.cpp ConsoleObjectImpl.cpp \
 	EmberEntity.cpp EmberEntityActionCreator.cpp EmberEntityFactory.cpp EmberEntityHideModelAction.cpp \
 	EmberEntityModelAction.cpp EmberEntityPartAction.cpp EmberEntityUserObject.cpp EmberOgre.cpp EmberOgreFileSystem.cpp \
@@ -34,7 +34,7 @@ confdir = $(sysconfdir)/ember
 dist_conf_DATA = ogre.cfg resources.cfg terrain.cfg
 
 
-noinst_HEADERS = AttributeObserver.h Avatar.h AvatarCamera.h AvatarController.h \
+noinst_HEADERS = AttributeObserver.h Avatar.h AvatarTerrainCursor.h AvatarCamera.h AvatarController.h \
 	AvatarEmberEntity.h AvatarLogger.h CameraMount.h ConsoleObjectImpl.h EmberEntity.h \
 	EmberEntityActionCreator.h EmberEntityFactory.h EmberEntityHideModelAction.h EmberEntityModelAction.h EmberEntityPartAction.h \
 	EmberEntityUserObject.h EmberOgre.h EmberOgreFileSystem.h EmberOgrePrerequisites.h EmberPhysicalEntity.h \

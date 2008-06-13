@@ -136,10 +136,9 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	createNodesForCamera();
 	createViewPort();
 	setAvatarNode(avatarNode);
-
+	
 	/// Register this as a frame listener
 	Ogre::Root::getSingleton().addFrameListener(this);
-
 	
 	if (mGUIManager) {
 		mGUIManager->getInput().EventMouseMoved.connect(sigc::mem_fun(*this, &AvatarCamera::Input_MouseMoved));
@@ -365,6 +364,8 @@ void AvatarCamera::Input_MouseMoved(const MouseMotion& motion, Input::InputMode 
 			MovedCamera.emit(mCamera);
 		}
 	} else if (mode == Input::IM_GUI) {
+				
+		mAvatarTerrainCursor.getTerrainCursorPosition(motion.xPosition,motion.yPosition);
 		S_LOG_VERBOSE("Mouse moved at : " << Ember::EmberServices::getSingletonPtr()->getTimeService()->currentTimeMillis() );
 	}
 }

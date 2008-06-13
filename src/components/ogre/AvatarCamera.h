@@ -27,6 +27,7 @@
 #define AVATARCAMERA_H
 
 #include "EmberOgrePrerequisites.h"
+#include "AvatarTerrainCursor.h"
 
 #include <sigc++/trackable.h>
 
@@ -46,6 +47,7 @@ struct MouseMotion;
 struct EntityPickResult;
 class IWorldPickListener;
 struct MousePickerArgs;
+class AvatarTerrainCursor;
 
 class Recorder :public Ogre::FrameListener
 {
@@ -257,6 +259,8 @@ protected:
 	
 	void createViewPort();
 	GUIManager* mGUIManager;
+	
+	AvatarTerrainCursor mAvatarTerrainCursor;
 	
 	
 	Ogre::Camera* mCamera;
