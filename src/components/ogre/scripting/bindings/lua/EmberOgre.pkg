@@ -65,6 +65,9 @@ $pfile "ModelDefinitionManager.pkg"
 
 $pfile "EntityMoveManager.pkg"
 
+$pfile "EntityRecipe.pkg"
+$pfile "EntityRecipeManager.pkg"
+
 $pfile "stdlib.pkg"
 
 
