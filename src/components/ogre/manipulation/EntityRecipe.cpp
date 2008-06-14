@@ -108,7 +108,7 @@ void EntityRecipe::doTest()
 	Atlas::Message::Element returnObj;
 	returnObj = returnValue.asObject<Atlas::Message::Element>("Atlas::Message::Element");
 
-	S_LOG_VERBOSE(returnObj.asInt());
+	S_LOG_VERBOSE(returnObj.getType() << " " << (returnObj.getType() == Atlas::Message::Element::TYPE_FLOAT));
 
 	delete callContext;
 }
