@@ -23,7 +23,9 @@ function EntityCreator.RecipesList_SelectionChanged(args)
 	if item ~= nil then
 		local name = item:getText()
 		local recipeMgr = EmberOgre.EntityRecipeManager:getSingleton()
-		local recipe = recipeMgr:getByName(name):get()
+		local recipePtr = recipeMgr:getByName(name)
+		recipePtr = tolua.cast(recipePtr, "EmberOgre::EntityRecipePtr")
+		local recipe = recipePtr:get()
 		EntityCreator.showRecipe(recipe)
 	end
 end

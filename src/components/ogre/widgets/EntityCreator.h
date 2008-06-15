@@ -48,7 +48,7 @@ public:
 	/**
 	 * Show adapters of specific recipe in container
 	 */
-	void showRecipe(EntityRecipe recipe, CEGUI::Window* container);
+	void showRecipe(EntityRecipe& recipe, CEGUI::Window* container);
 };
 
 }

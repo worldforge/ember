@@ -42,7 +42,7 @@ EntityCreator::~EntityCreator()
 
 }
 
-void EntityCreator::showRecipe(EmberOgre::EntityRecipe recipe, CEGUI::Window* container)
+void EntityCreator::showRecipe(EmberOgre::EntityRecipe& recipe, CEGUI::Window* container)
 {
 	EmberOgre::GUIManager& mGuiManager = EmberOgre::GUIManager::getSingleton();
 	EmberOgre::Gui::Adapters::Atlas::AdapterFactory factory("EntityCreator");
@@ -50,7 +50,8 @@ void EntityCreator::showRecipe(EmberOgre::EntityRecipe recipe, CEGUI::Window* co
 	Atlas::Message::Element* element = new Atlas::Message::Element("Booo!");
 	CEGUI::Window* window = mGuiManager.createWindow("DefaultGUISheet");
 
-	factory.createStaticAdapter(window, "testAdapter", element);
+	factory.createStaticAdapter(window, "testAdapter", *element);
+	container->addChildWindow(window);
 }
 
 }
