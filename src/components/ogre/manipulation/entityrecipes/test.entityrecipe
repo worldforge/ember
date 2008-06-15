@@ -14,8 +14,29 @@
         </map>
       </atlas>
     </entity>
+    <adapters>
+      <adapter name="value_of_a" type="list">
+        <item value="1">A is big</item>
+        <item value="2">A is small</item>
+      </adapter>
+      <adapter name="value_of_b" type="number">
+        <min>10</min>
+        <max>100</max>
+      </adapter>
+      <adapter name="value_of_c" type="color" />
+    </adapters>
     <bindings>
-      ... Bindings between scripts and GUI adapters ...
+      <bind name="foo" func="calc_foo">
+        <adapter name="value_of_a" />
+      </bind>
+      <bind name="meep" func="calc_meep">
+        <adapter name="value_of_b" />
+        <adapter name="value_of_c" />
+      </bind>
+      <bind name="bar" func="calc_bar">
+        <adapter name="value_of_a" />
+        <adapter name="value_of_c" />
+      </bind>
     </bindings>
     <script><![CDATA[
       function fTest ()
