@@ -1,0 +1,32 @@
+<entityrecipes>
+  <entityrecipe name="test">
+    <entity>
+      <atlas>
+        <map>
+          <int name="foo">13</int>
+          <float name="meep">1.5</float>
+          <string name="bar">hello</string>
+          <list name="args">
+            <int>1</int>
+            <int>2</int>
+            <float>3.0</float>
+          </list>
+        </map>
+      </atlas>
+    </entity>
+    <bindings>
+      ... Bindings between scripts and GUI adapters ...
+    </bindings>
+    <script><![CDATA[
+      function fTest ()
+        print("Yay!")
+        return Atlas.Message.Element(123)
+      end
+
+      function fTest_error ()
+        print("Yay!")
+        return Atlas.Message.IntElement(123)
+      end
+    ]]></script>
+  </entityrecipe>
+</entityrecipes>

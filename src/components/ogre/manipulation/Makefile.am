@@ -9,3 +9,5 @@ noinst_HEADERS = EntityMoveManager.h EntityMoveAdapter.h IEntityMoveBridge.h \
 			EntityMover.h EntityMoveAdjuster.h MaterialEditor.h \
 			GUIAdapter.h GUIAdapterBindings.h EntityRecipe.h \
 			EntityRecipeManager.h XMLEntityRecipeSerializer.h
+
+SUBDIRS = entityrecipes
