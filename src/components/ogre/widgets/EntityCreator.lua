@@ -1,5 +1,6 @@
 EntityCreator = {connectors={}}
 
+-- Fills recipes list at start
 function EntityCreator.fillRecipesList()
 	local list = EntityCreator.recipesList
 	list:resetList()
@@ -16,6 +17,7 @@ function EntityCreator.fillRecipesList()
 	end
 end
 
+-- Handles click on recipes list
 function EntityCreator.RecipesList_SelectionChanged(args)
     local item = EntityCreator.recipesList:getFirstSelectedItem()
 	if item ~= nil then
@@ -26,27 +28,38 @@ function EntityCreator.RecipesList_SelectionChanged(args)
 	end
 end
 
+-- Handles create button press
 function EntityCreator.Create_Click(args)
 	console:runCommand("/show_modelEdit")
 end
 
+-- Shows selected recipe
 function EntityCreator.showRecipe(recipe)
 	local element = Atlas.Message.Element("Booo!")
-	local container = EntityCreator.widget:getWindow("AdaptersContainer")
-	local adapter = EntityCreator.factory:createStaticAdapter(container, "testAdapter", element)
+	local window = guiManager:createWindow("DefaultGUISheet")
+	local adapter = EntityCreator.factory:createStaticAdapter(window, "testAdapter", element)
+	EntityCreator.container:addChildWindow(window)
 end
 
+-- Builds widget
 function EntityCreator.buildWidget()
+	-- Loading widget layout
 	EntityCreator.widget = guiManager:createWidget()
 	EntityCreator.widget:loadMainSheet("EntityCreator.layout", "EntityCreator/")
 
+	-- Initializing helper classes
 	EntityCreator.helper = EmberOgre.Gui.EntityCreator()
 	EntityCreator.factory = EmberOgre.Gui.Adapters.Atlas.AdapterFactory("EntityCreator")
 
-	EntityCreator.recipesList = CEGUI.toListbox(EntityCreator.widget:getWindow("RecipesList"))
+	-- Creating container for storing adapters
+	EntityCreator.container = EntityCreator.widget:getWindow("AdaptersContainer")
+	EntityCreator.stackableContainer = EmberOgre.Gui.StackableContainer(EntityCreator.container)
 
+	-- Filling list of recipes
+	EntityCreator.recipesList = CEGUI.toListbox(EntityCreator.widget:getWindow("RecipesList"))
 	EntityCreator.fillRecipesList()
 
+	-- Finalizing
 	EntityCreator.widget:registerConsoleVisibilityToggleCommand("advEntityCreator")
 	EntityCreator.widget:enableCloseButton()
 	EntityCreator.widget:hide()
