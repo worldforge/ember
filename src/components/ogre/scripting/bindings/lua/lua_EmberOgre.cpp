@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Sat Jun 14 17:32:02 2008.
+** Generated automatically by tolua++-1.0.92 on Sun Jun 15 23:08:29 2008.
 */
 
 #ifndef __cplusplus
@@ -10102,6 +10102,41 @@ static int tolua_EmberOgre_EmberOgre_Gui_EntityCreator_delete00(lua_State* tolua
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'delete'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: showRecipe of class  EmberOgre::Gui::EntityCreator */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_EntityCreator_showRecipe00
+static int tolua_EmberOgre_EmberOgre_Gui_EntityCreator_showRecipe00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::EntityCreator",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"EmberOgre::EntityRecipe",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"CEGUI::Window",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Gui::EntityCreator* self = (EmberOgre::Gui::EntityCreator*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::EntityRecipe recipe = *((EmberOgre::EntityRecipe*)  tolua_tousertype(tolua_S,2,0));
+  CEGUI::Window* container = ((CEGUI::Window*)  tolua_tousertype(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'showRecipe'",NULL);
+#endif
+  {
+   self->showRecipe(recipe,container);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'showRecipe'.",&tolua_err);
  return 0;
 #endif
 }
@@ -22381,6 +22416,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"new_local",tolua_EmberOgre_EmberOgre_Gui_EntityCreator_new00_local);
      tolua_function(tolua_S,".call",tolua_EmberOgre_EmberOgre_Gui_EntityCreator_new00_local);
      tolua_function(tolua_S,"delete",tolua_EmberOgre_EmberOgre_Gui_EntityCreator_delete00);
+     tolua_function(tolua_S,"showRecipe",tolua_EmberOgre_EmberOgre_Gui_EntityCreator_showRecipe00);
     tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);

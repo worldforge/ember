@@ -19,7 +19,7 @@ end
 
 -- Handles click on recipes list
 function EntityCreator.RecipesList_SelectionChanged(args)
-    local item = EntityCreator.recipesList:getFirstSelectedItem()
+	local item = EntityCreator.recipesList:getFirstSelectedItem()
 	if item ~= nil then
 		local name = item:getText()
 		local recipeMgr = EmberOgre.EntityRecipeManager:getSingleton()
@@ -35,10 +35,7 @@ end
 
 -- Shows selected recipe
 function EntityCreator.showRecipe(recipe)
-	local element = Atlas.Message.Element("Booo!")
-	local window = guiManager:createWindow("DefaultGUISheet")
-	local adapter = EntityCreator.factory:createStaticAdapter(window, "testAdapter", element)
-	EntityCreator.container:addChildWindow(window)
+	EntityCreator.helper:showRecipe(recipe, EntityCreator.container)
 end
 
 -- Builds widget

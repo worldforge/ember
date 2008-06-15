@@ -25,6 +25,8 @@
 #endif
 
 #include "EntityCreator.h"
+#include "../GUIManager.h"
+#include "components/ogre/widgets/adapters/atlas/AdapterFactory.h"
 
 namespace EmberOgre {
 
@@ -38,6 +40,17 @@ EntityCreator::EntityCreator()
 EntityCreator::~EntityCreator()
 {
 
+}
+
+void EntityCreator::showRecipe(EmberOgre::EntityRecipe recipe, CEGUI::Window* container)
+{
+	EmberOgre::GUIManager& mGuiManager = EmberOgre::GUIManager::getSingleton();
+	EmberOgre::Gui::Adapters::Atlas::AdapterFactory factory("EntityCreator");
+
+	Atlas::Message::Element* element = new Atlas::Message::Element("Booo!");
+	CEGUI::Window* window = mGuiManager.createWindow("DefaultGUISheet");
+
+	factory.createStaticAdapter(window, "testAdapter", element);
 }
 
 }

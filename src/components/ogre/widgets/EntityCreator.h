@@ -23,7 +23,8 @@
 #ifndef EMBEROGRE_GUIENTITYCREATOR_H
 #define EMBEROGRE_GUIENTITYCREATOR_H
 
-#include <string>
+#include "components/ogre/manipulation/EntityRecipe.h"
+#include <CEGUIWindow.h>
 
 namespace EmberOgre {
 
@@ -32,7 +33,7 @@ namespace Gui {
 /**
  * Helper class for Entity Creator.
  */
-class EntityCreator{
+class EntityCreator {
 public:
 	/**
 	 * Constructor.
@@ -43,6 +44,11 @@ public:
 	 * Destructor.
 	 */
 	~EntityCreator();
+
+	/**
+	 * Show adapters of specific recipe in container
+	 */
+	void showRecipe(EmberOgre::EntityRecipe recipe, CEGUI::Window* container);
 };
 
 }
