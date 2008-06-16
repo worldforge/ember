@@ -261,16 +261,19 @@ void TerrainEditor::createOverlay()
 				//    modifiers applied.
 				Ogre::SceneNode* basepointNode2 = mOverlayNode->createChildSceneNode();
 				Ogre::Vector3 ogrepos2 = Atlas2Ogre(tPos);
-				/*
-				ogrepos2.x = terrain.getSegment(2,2)->getXRef();
-				ogrepos2.y = terrain.getSegment(2,2)->getMax() + y;
-				ogrepos2.z = terrain.getSegment(2,2)->getYRef();
 				
-				TerrainPage *currentPage = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(x,y));
-				TerrainPosition *modPos = currentPage->getTerrainModifierPos(0);
+				//ogrepos2.x = terrain.getSegment(2,2)->getXRef();
+//				ogrepos2.x = terrain.getSegment(-2,-2)->getXRef();
+//				ogrepos2.y = terrain.getSegment(-2,-2)->getMax();
+//				ogrepos2.z = terrain.getSegment(-2,-2)->getYRef();
+				
+				TerrainPage *currentPage = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(tPos);
+				TerrainPosition *modPos = currentPage->mTModList.getTerrainModifierPos(0);
+
 				ogrepos2.x = modPos->x();
-				ogrepos2.y = modPos->y() + y;
+				ogrepos2.y = modPos->y();
 				ogrepos2.z = modPos->y();
+				S_LOG_INFO("Attempting to place mod marker at " << ogrepos2.x << "," << ogrepos2.y << "," << ogrepos2.z);
 				basepointNode2->setPosition(ogrepos2);
 				std::stringstream ss2;
 				ss2 << "terrainMod marker" << x << "_" << y  + 64;
@@ -278,7 +281,7 @@ void TerrainEditor::createOverlay()
 				entity->setMaterialName("BasePointMarkerMaterial");
 				entity->setRenderingDistance(300);
 				basepointNode2->attachObject(entity2);
-				*/// End test	-tb					
+				// End test	-tb					
 
 				BasePointUserObject* userObject = new BasePointUserObject(TerrainPosition(x,y), basepoint, basepointNode);
 				entity->setUserObject(userObject);

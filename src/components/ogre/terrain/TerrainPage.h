@@ -63,6 +63,16 @@ TYPEDEF_STL_MAP(const Mercator::Shader*, TerrainShader*, ShaderMap);
 
 
 
+class terrainModListEntry {
+	public:
+		terrainModListEntry();
+		void addTerrainModifier(int x, int y, Mercator::TerrainMod *modifier);
+		TerrainPosition *getTerrainModifierPos(int modList_index);
+	private:
+		int	seg_x;
+		int	seg_y;
+		Mercator::TerrainMod *modifier;
+};
 
 /**
 
@@ -72,7 +82,6 @@ This is a bridge class between one Ogre terrain page instance and one or many Me
 
 Instances of this is created by TerrainGenerator.
 One terrain page is composed of both height data, a material, textures for the material and plant positions for the foliage system. This class handles all of these, some of them directly and some by other classes.
-
 
 @author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
@@ -253,6 +262,8 @@ public:
 	 */
 	TerrainPosition *getTerrainModifierPos(int modList_index);
 
+	terrainModListEntry mTModList;	//this should be made private -tb
+
 private:
 
 	SegmentVector mValidSegments;
@@ -312,29 +323,7 @@ private:
 	*/
 	ITerrainPageBridge* mBridge;
 
-/*
-	class terrainModEntry {
-	   public:
-		int	seg_x;
-		int	seg_y;
-		Mercator::TerrainMod *modifier;
 
-		terrainModEntry ()
-		{
-			seg_x = 0;
-			seg_y = 0;
-			modifier = NULL;
-		}
-
-		terrainModEntry (int x, int y, Mercator::TerrainMod *mod) 
-		{
-			seg_x = x;
-			seg_y = y;
-			modifier = mod;
-		}
-	};
-
-*/
 /*	typedef std::list<terrainModEntry *, std::allocator<terrainModEntry *> > terrainModList;
 
 	terrainModList mModList;

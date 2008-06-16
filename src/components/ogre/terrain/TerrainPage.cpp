@@ -432,19 +432,26 @@ void TerrainPage::unregisterBridge()
 	mBridge = 0;
 }
 
-
-void TerrainPage::addTerrainModifier(int x, int y, Mercator::TerrainMod *modifier)
+	/** Used for the terrainModListEntry class **/
+terrainModListEntry::terrainModListEntry()
 {
-	//mModList[0] = terrainModEntry(x, y, modifier);
-	//mModList.assign(sizeof(terrainModEntry), terrainModEntry(x, y, modifier)); /* Add the new modifier to our list */
-	
-	//(*getSegmentAtLocalIndex(x, y)).addMod(modifier); /* add it to the segment at (x,y) */
+	seg_x = 0;
+	seg_y = 0;
+	modifier = NULL;
 }
 
-TerrainPosition *TerrainPage::getTerrainModifierPos(int modList_index)
+void terrainModListEntry::addTerrainModifier(int x, int y, Mercator::TerrainMod *newmod)
 {
-	//return new TerrainPosition(mModList[modList_index].seg_x, mModList[modList_index].seg_y);
-	return new TerrainPosition(2,2);
+	seg_x = x;
+	seg_y = y + 100;
+	modifier = newmod;
+	S_LOG_INFO("addTerrainModifier called with: " << seg_x << " " << seg_y);
+}
+
+TerrainPosition *terrainModListEntry::getTerrainModifierPos(int modList_index)
+{
+	S_LOG_INFO("Giving terrainModifier position at: " << seg_x << "," << seg_y);
+	return new TerrainPosition(seg_x,seg_y);
 }
 
 }
