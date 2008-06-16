@@ -295,6 +295,9 @@ void EmberOgre::shutdownGui()
 /** Sets up the application - returns false if the user chooses to abandon configuration. */
 bool EmberOgre::setup()
 {
+	if (mRoot) {
+		throw Ember::Exception("EmberOgre::setup has already been called.");
+	}
 	S_LOG_INFO("Compiled against ogre version " << OGRE_VERSION);
 
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingleton().getConfigService();
