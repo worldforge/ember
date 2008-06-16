@@ -84,6 +84,7 @@ MakeEntityWidget::MakeEntityWidget()
 	
 MakeEntityWidget::~MakeEntityWidget()
 {
+	delete mModelPreviewRenderer;
 }
 
 void MakeEntityWidget::buildWidget()
