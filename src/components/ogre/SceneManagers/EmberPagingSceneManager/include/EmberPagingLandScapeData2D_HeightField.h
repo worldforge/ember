@@ -66,7 +66,9 @@ The PagingLandscape SceneManager comes with a whole set of different heightfield
 			virtual void _unload( void );
 
 		private:
-			Terrain::TerrainPage* mTerrainPage;
+			/**
+			The bridge is the main interface to the TerrainPage to which this page is connected. It's owned by us, so we must make sure to delete it when an instance of this class is deleted or unloaded.
+			*/
 			EmberTerrainPageBridge* mBridge;
 	};
 

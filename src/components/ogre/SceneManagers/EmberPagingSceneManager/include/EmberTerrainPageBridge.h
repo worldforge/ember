@@ -48,6 +48,9 @@ public:
 
 protected:
 
+	/**
+	@brief The heightfield instance to which this bridge is connected.
+	*/
 	EmberPagingLandScapeData2D_HeightField& mHeightField;
 
 };

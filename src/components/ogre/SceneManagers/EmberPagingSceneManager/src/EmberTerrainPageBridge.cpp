@@ -39,6 +39,9 @@ EmberTerrainPageBridge::EmberTerrainPageBridge(EmberPagingLandScapeData2D_Height
 
 EmberTerrainPageBridge::~EmberTerrainPageBridge()
 {
+	if (mTerrainPage) {
+		mTerrainPage->unregisterBridge();
+	}
 }
 
 void EmberTerrainPageBridge::updateTerrain()

@@ -126,6 +126,9 @@ TerrainPage::TerrainPage(TerrainPosition position, const std::map<const Mercator
 TerrainPage::~TerrainPage()
 {
 	delete mShadowTechnique;
+	if (mBridge) {
+		mBridge->unbindFromTerrainPage();
+	}
 }
 
 Mercator::Segment* TerrainPage::getSegmentAtLocalIndex(int indexX, int indexY) const
