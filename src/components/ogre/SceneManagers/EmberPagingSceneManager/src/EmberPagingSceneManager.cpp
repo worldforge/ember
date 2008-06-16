@@ -90,5 +90,10 @@ namespace EmberOgre {
 	
 	}
 	
+	const Ogre::String& EmberPagingSceneManager::getTypeName(void) const
+	{
+		return EmberPagingSceneManagerFactory::FACTORY_TYPE_NAME;
+	}
+	
 }
 

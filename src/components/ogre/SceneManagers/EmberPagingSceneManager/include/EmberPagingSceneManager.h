@@ -124,6 +124,8 @@ public:
 									
 	void registerProvider(IPageDataProvider* provider);
 	
+	const Ogre::String& getTypeName(void) const;
+
 protected:
 
 	/* 
