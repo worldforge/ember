@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Sun Jun 15 23:08:29 2008.
+** Generated automatically by tolua++-1.0.92 on Mon Jun 16 00:43:50 2008.
 */
 
 #ifndef __cplusplus
@@ -10124,13 +10124,13 @@ static int tolua_EmberOgre_EmberOgre_Gui_EntityCreator_showRecipe00(lua_State* t
 #endif
  {
   EmberOgre::Gui::EntityCreator* self = (EmberOgre::Gui::EntityCreator*)  tolua_tousertype(tolua_S,1,0);
-  EmberOgre::EntityRecipe recipe = *((EmberOgre::EntityRecipe*)  tolua_tousertype(tolua_S,2,0));
+  EmberOgre::EntityRecipe* recipe = ((EmberOgre::EntityRecipe*)  tolua_tousertype(tolua_S,2,0));
   CEGUI::Window* container = ((CEGUI::Window*)  tolua_tousertype(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'showRecipe'",NULL);
 #endif
   {
-   self->showRecipe(recipe,container);
+   self->showRecipe(*recipe,container);
   }
  }
  return 0;

@@ -81,7 +81,8 @@ public:
 	/**
 	 * Returns iterator over adapters
 	 */
-	GUIAdaptersStore::iterator getGUIAdaptersIterator();
+	GUIAdaptersStore::iterator getGUIAdaptersIteratorBegin();
+	GUIAdaptersStore::iterator getGUIAdaptersIteratorEnd();
 
 	/**
 	 * Creates and returns GUI adapter bindings.

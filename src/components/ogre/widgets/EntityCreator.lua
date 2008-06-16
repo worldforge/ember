@@ -37,6 +37,10 @@ end
 
 -- Shows selected recipe
 function EntityCreator.showRecipe(recipe)
+--	local element = Atlas.Message.Element("Booo!")
+--	local container = EntityCreator.widget:getWindow("AdaptersContainer")
+--	local adapter = EntityCreator.factory:createStaticAdapter(container, "testAdapter", element)
+
 	EntityCreator.helper:showRecipe(recipe, EntityCreator.container)
 end
 

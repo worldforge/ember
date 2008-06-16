@@ -81,9 +81,14 @@ GUIAdapter* EntityRecipe::getGUIAdapter(std::string name)
 	}
 }
 
-GUIAdaptersStore::iterator EntityRecipe::getGUIAdaptersIterator()
+GUIAdaptersStore::iterator EntityRecipe::getGUIAdaptersIteratorBegin()
 {
 	return mGUIAdapters.begin();
+}
+
+GUIAdaptersStore::iterator EntityRecipe::getGUIAdaptersIteratorEnd()
+{
+	return mGUIAdapters.end();
 }
 
 GUIAdapterBindings* EntityRecipe::createGUIAdapterBindings(std::string name)

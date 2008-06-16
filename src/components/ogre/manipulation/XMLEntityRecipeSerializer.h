@@ -31,24 +31,24 @@
 namespace EmberOgre {
 
 /**
- * Serialize entity recipe from xml files. 
+ * Serialize entity recipe from xml files.
  */
 class XMLEntityRecipeSerializer{
 public:
 	/**
 	 * Constructor.
 	 */
-    XMLEntityRecipeSerializer();
-	
+	XMLEntityRecipeSerializer();
+
 	/**
 	 * Destructor.
 	 */
-    ~XMLEntityRecipeSerializer();
-    
-    /**
-     * Parse the xml document and create entity recipe from the data.
-     */
-    void parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName);
+	~XMLEntityRecipeSerializer();
+
+	/**
+	 * Parse the xml document and create entity recipe from the data.
+	 */
+	void parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName);
 
 protected:
 	/**
