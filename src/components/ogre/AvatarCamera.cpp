@@ -377,7 +377,7 @@ void AvatarCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const Mouse
 	S_LOG_INFO("Trying to pick an entity at mouse coords: "  << Ogre::StringConverter::toString(mouseX) << ":" << Ogre::StringConverter::toString(mouseY) << ".");
 
 	// get the terrain vector for mouse coords when a pick event happens
-	mAvatarTerrainCursor.getTerrainCursorPosition(mouseX,mouseY);
+	mAvatarTerrainCursor.getTerrainCursorPosition();
 	
 	/// Start a new ray query 
 	Ogre::Ray cameraRay = getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
