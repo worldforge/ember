@@ -130,7 +130,8 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	mLastPosition(Ogre::Vector3::ZERO),
 	mAdjustTerrainRaySceneQuery(0),
 	mCameraRaySceneQuery(0),
-	mIsAdjustedToTerrain(true)
+	mIsAdjustedToTerrain(true),
+	mAvatarTerrainCursor(this)
 //	mLastOrientationOfTheCamera(avatar->getOrientation())
 {
 	createNodesForCamera();
@@ -159,7 +160,7 @@ AvatarCamera::~AvatarCamera()
 
 void AvatarCamera::createRayQueries()
 {
-  // SR: attempt to create a query to get back terrain coords
+    // attempt to create a query to get back terrain coords
 	mAdjustTerrainRaySceneQuery = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery(mAdjustTerrainRay, Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
 	///only test for terrain
 	mAdjustTerrainRaySceneQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
@@ -364,7 +365,7 @@ void AvatarCamera::Input_MouseMoved(const MouseMotion& motion, Input::InputMode 
 			MovedCamera.emit(mCamera);
 		}
 	} 
-	mAvatarTerrainCursor.getTerrainCursorPosition(motion.xPosition,motion.yPosition);
+	
 	
 }
 
@@ -375,6 +376,9 @@ void AvatarCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const Mouse
 {
 	S_LOG_INFO("Trying to pick an entity at mouse coords: "  << Ogre::StringConverter::toString(mouseX) << ":" << Ogre::StringConverter::toString(mouseY) << ".");
 
+	// get the terrain vector for mouse coords when a pick event happens
+	mAvatarTerrainCursor.getTerrainCursorPosition(mouseX,mouseY);
+	
 	/// Start a new ray query 
 	Ogre::Ray cameraRay = getCamera()->getCameraToViewportRay( mouseX, mouseY ); 
 

@@ -262,7 +262,6 @@ protected:
 	
 	AvatarTerrainCursor mAvatarTerrainCursor;
 	
-	
 	Ogre::Camera* mCamera;
 	Ogre::SceneNode* mAvatarNode;
 	Ogre::SceneManager* mSceneManager;

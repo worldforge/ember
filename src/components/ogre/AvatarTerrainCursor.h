@@ -31,6 +31,8 @@
 
 namespace EmberOgre {
 
+	class AvatarCamera; // forward declaration
+
 	class AvatarTerrainCursor : public sigc::trackable
 	{
 	public:
@@ -40,13 +42,13 @@ namespace EmberOgre {
 		const static int DEFAULT_THRESHOLD_MILLIS = 100;
 		
 		/* C and D */
-		AvatarTerrainCursor();
+		AvatarTerrainCursor(AvatarCamera* ac);
 		virtual ~AvatarTerrainCursor();
 		
 		unsigned int getThreshold();
 		unsigned int setThreshold(unsigned int newThreshold);
 		
-		Ogre::Vector3 getTerrainCursorPosition(int mouseX, int mouseY);
+		Ogre::Vector3 getTerrainCursorPosition(Ogre::Real mX, Ogre::Real mY);
 		
 	protected:
 		
@@ -63,7 +65,7 @@ namespace EmberOgre {
 		int mLastMouseY;
 		
 		/* reference to ogre camera */
-		Ogre::Camera* mCamera;
+		AvatarCamera* mCamera;
 		
 		/* the ray we will use to find the terrain intersection */
 		Ogre::Ray mTerrainCursorRay;

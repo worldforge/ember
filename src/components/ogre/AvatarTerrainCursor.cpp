@@ -32,7 +32,7 @@
 
 namespace EmberOgre {
 
-	AvatarTerrainCursor::AvatarTerrainCursor()
+	AvatarTerrainCursor::AvatarTerrainCursor(AvatarCamera* ac)
 	{
 		mLastTerrainUpdated = 0;
 		mUpdatePositionThreshold = AvatarTerrainCursor::DEFAULT_THRESHOLD_MILLIS;
@@ -41,7 +41,7 @@ namespace EmberOgre {
 		mTerrainCursorRayQuery->setSortByDistance(true);
 		mTerrainCursorRayQuery->setQueryTypeMask(Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
 
-		mCamera = EmberOgre::getSingleton().getMainCamera()->getCamera();
+		mCamera = ac;
 		mLastTerrainPosition = Ogre::Vector3(0,0,0);
 	}
 
@@ -62,7 +62,7 @@ namespace EmberOgre {
 	}
 
 	
-	Ogre::Vector3 AvatarTerrainCursor::getTerrainCursorPosition(int mouseX, int mouseY )
+	Ogre::Vector3 AvatarTerrainCursor::getTerrainCursorPosition(Ogre::Real mX, Ogre::Real mY)
 	{
 		long now = Ember::EmberServices::getSingletonPtr()->getTimeService()->currentTimeMillis();
 		
@@ -75,8 +75,7 @@ namespace EmberOgre {
 			mLastTerrainUpdated = now;
 			
 			/// Start a new ray query 
-			
-			Ogre::Ray cameraRay = mCamera->getCameraToViewportRay( mouseX, mouseY ); 
+			Ogre::Ray cameraRay = mCamera->getCamera()->getCameraToViewportRay( mX, mY ); 
 			mTerrainCursorRayQuery->setRay(cameraRay);
 			mTerrainCursorRayQuery->execute();
 			
@@ -87,11 +86,12 @@ namespace EmberOgre {
 			
 			if (entry.worldFragment) {
 				mLastTerrainPosition = entry.worldFragment->singleIntersection;
+				S_LOG_VERBOSE("getTerrainCursorPosition : (" << delta << ") Update ("<< mX << "," << mY << ")->" << Ogre::StringConverter::toString(mLastTerrainPosition));	
 			}
 			
 			
 		}
-		S_LOG_VERBOSE("getTerrainCursorPosition : (" << delta << ") Update ( "<< mouseX << "," << mouseY << ")->" << Ogre::StringConverter::toString(mLastTerrainPosition));		
+		S_LOG_VERBOSE("getTerrainCursorPosition : return");	
 		return ( mLastTerrainPosition );
 	}
 
