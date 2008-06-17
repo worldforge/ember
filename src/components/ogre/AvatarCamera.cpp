@@ -131,7 +131,7 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	mAdjustTerrainRaySceneQuery(0),
 	mCameraRaySceneQuery(0),
 	mIsAdjustedToTerrain(true),
-	mAvatarTerrainCursor(this)
+	mAvatarTerrainCursor(*this)
 //	mLastOrientationOfTheCamera(avatar->getOrientation())
 {
 	createNodesForCamera();

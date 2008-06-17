@@ -32,17 +32,19 @@
 
 namespace EmberOgre {
 
-	AvatarTerrainCursor::AvatarTerrainCursor(AvatarCamera* ac)
+	AvatarTerrainCursor::AvatarTerrainCursor(AvatarCamera& ac)
+	: mLastTerrainUpdated(0)
+	, mLastTerrainPosition(Ogre::Vector3::ZERO)
+	, mLastMouseX(-1)
+	, mLastMouseY(-1)
+	, mCamera(ac)
+	, mUpdatePositionThreshold(AvatarTerrainCursor::DEFAULT_THRESHOLD_MILLIS)
 	{
-		mLastTerrainUpdated = 0;
-		mUpdatePositionThreshold = AvatarTerrainCursor::DEFAULT_THRESHOLD_MILLIS;
 		mTerrainCursorRayQuery = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery(mTerrainCursorRay, Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
 		mTerrainCursorRayQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
 		mTerrainCursorRayQuery->setSortByDistance(true);
 		mTerrainCursorRayQuery->setQueryTypeMask(Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
 
-		mCamera = ac;
-		mLastTerrainPosition = Ogre::Vector3(0,0,0);
 	}
 
 	AvatarTerrainCursor::~AvatarTerrainCursor()
@@ -57,7 +59,7 @@ namespace EmberOgre {
 	
 	unsigned int AvatarTerrainCursor::setThreshold(unsigned int newThreshold)
 	{
-		mUpdatePositionThreshold = 	newThreshold;
+		mUpdatePositionThreshold = newThreshold;
 		return ( mUpdatePositionThreshold );
 	}
 
@@ -75,12 +77,12 @@ namespace EmberOgre {
 			mLastTerrainUpdated = now;
 			
 			/// Start a new ray query 
-			Ogre::Ray cameraRay = mCamera->getCamera()->getCameraToViewportRay( mX, mY ); 
+			Ogre::Ray cameraRay(mCamera.getCamera()->getCameraToViewportRay( mX, mY )); 
 			mTerrainCursorRayQuery->setRay(cameraRay);
 			mTerrainCursorRayQuery->execute();
 			
 			// Can we avoid the iterator, and just use the result ?
-			Ogre::RaySceneQueryResult queryResult = mTerrainCursorRayQuery->getLastResults();
+			Ogre::RaySceneQueryResult queryResult(mTerrainCursorRayQuery->getLastResults());
 			Ogre::RaySceneQueryResult::iterator rayIterator = queryResult.begin( );
 			Ogre::RaySceneQueryResultEntry& entry = *rayIterator;
 			

@@ -42,7 +42,7 @@ namespace EmberOgre {
 		const static int DEFAULT_THRESHOLD_MILLIS = 100;
 		
 		/* C and D */
-		AvatarTerrainCursor(AvatarCamera* ac);
+		AvatarTerrainCursor(AvatarCamera& ac);
 		virtual ~AvatarTerrainCursor();
 		
 		unsigned int getThreshold();
@@ -65,7 +65,7 @@ namespace EmberOgre {
 		int mLastMouseY;
 		
 		/* reference to ogre camera */
-		AvatarCamera* mCamera;
+		AvatarCamera& mCamera;
 		
 		/* the ray we will use to find the terrain intersection */
 		Ogre::Ray mTerrainCursorRay;
