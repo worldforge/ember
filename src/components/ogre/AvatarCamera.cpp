@@ -19,6 +19,7 @@
 #include "config.h"
 #endif
 #include "AvatarCamera.h"
+#include "AvatarTerrainCursor.h"
 #include "Avatar.h"
 #include "GUIManager.h"
 #include "EmberOgre.h"
@@ -131,7 +132,7 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager* scen
 	mAdjustTerrainRaySceneQuery(0),
 	mCameraRaySceneQuery(0),
 	mIsAdjustedToTerrain(true),
-	mAvatarTerrainCursor(*this)
+	mAvatarTerrainCursor(new AvatarTerrainCursor(*this))
 //	mLastOrientationOfTheCamera(avatar->getOrientation())
 {
 	createNodesForCamera();
@@ -377,7 +378,7 @@ void AvatarCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const Mouse
 	S_LOG_INFO("Trying to pick an entity at mouse coords: "  << Ogre::StringConverter::toString(mouseX) << ":" << Ogre::StringConverter::toString(mouseY) << ".");
 
 	// get the terrain vector for mouse coords when a pick event happens
-	mAvatarTerrainCursor.getTerrainCursorPosition();
+// 	mAvatarTerrainCursor->getTerrainCursorPosition();
 	
 	/// Start a new ray query 
 	Ogre::Ray cameraRay = getCamera()->getCameraToViewportRay( mouseX, mouseY ); 

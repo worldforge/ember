@@ -27,7 +27,6 @@
 #define AVATARCAMERA_H
 
 #include "EmberOgrePrerequisites.h"
-#include "AvatarTerrainCursor.h"
 
 #include <sigc++/trackable.h>
 
@@ -224,6 +223,12 @@ public:
 	 */
 	void takeScreenshot();
 	
+	/**
+	 *    @brief Gets the terrain cursor, used for efficiently getting the position of the terrain currently under the cursor.
+	 * @return An object which can be used to get the terrain that intersects the terrain at the current cursor.
+	 */
+	inline AvatarTerrainCursor& getTerrainCursor();
+	
 protected:
 
 	typedef std::deque<IWorldPickListener*> WorldPickListenersStore;
@@ -260,8 +265,6 @@ protected:
 	void createViewPort();
 	GUIManager* mGUIManager;
 	
-	AvatarTerrainCursor mAvatarTerrainCursor;
-	
 	Ogre::Camera* mCamera;
 	Ogre::SceneNode* mAvatarNode;
 	Ogre::SceneManager* mSceneManager;
@@ -289,6 +292,7 @@ protected:
 	Ogre::Ray mAdjustTerrainRay;
 	
 	bool mIsAdjustedToTerrain;
+	std::auto_ptr<AvatarTerrainCursor> mAvatarTerrainCursor;
 
 	void Input_MouseMoved(const MouseMotion& motion, Input::InputMode mode);
 
@@ -322,6 +326,11 @@ protected:
 	}
 	Ogre::Camera* AvatarCamera::getCamera() const {
 		return mCamera;	
+	}
+
+	AvatarTerrainCursor& AvatarCamera::getTerrainCursor()
+	{
+		return *mAvatarTerrainCursor.get();
 	}
 
 
