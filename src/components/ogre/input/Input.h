@@ -292,6 +292,12 @@ public:
 	 * @param text The text to write.
 	 */
 	void writeToClipboard(const std::string& text);
+	
+	/**
+	 *    @brief Gets the current mouse position, expressed in pixels, with 0,0 being in the upper left.
+	 * @return A pair, where "first" denotes the x coordinate and "second" denotes the y coordinate.
+	 */
+	std::pair<int, int> getMousePosition() const;
 
 protected:
 

@@ -498,4 +498,10 @@ void Input::removeAdapter(IInputAdapter* adapter)
 	}
 }
 
+std::pair<int, int> Input::getMousePosition() const
+{
+	return std::pair<int, int>(mMouseX, mMouseY);
+}
+
+
 };
