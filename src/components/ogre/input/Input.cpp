@@ -48,8 +48,6 @@ Input::Input()
 :
 mCurrentInputMode(IM_GUI)
 , mMouseState(0)
-, mMouseX(-1)
-, mMouseY(-1)
 , mTimeSinceLastRightMouseClick(0)
 , mSuppressForCurrentEvent(false)
 , mMovementModeEnabled(false)
