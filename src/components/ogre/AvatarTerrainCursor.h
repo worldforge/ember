@@ -27,54 +27,106 @@
 
 #include "EmberOgrePrerequisites.h"
 #include <sigc++/trackable.h>
-#include "input/Input.h"
 
 namespace EmberOgre {
 
 	class AvatarCamera; // forward declaration
 
+	/**
+	Provides an easy way to get the terrain position currently under the cursor. An instance of this is usually held only by the AvatarCamera.
+	The class will take care of checking when either the mouse or camera has moved, and won't do a new ray check until any of those two has changed. This helps with keeping the performance up. It's therefore ok to call getTerrainCursorPosition every frame.
+	
+	If the mouse position has been updated a new ray check will always be executed, but if only the camera has been moved the update of the ray check will only happen after a certain interval, which can be set through setThreshold(unsigned int).
+	
+	@author Sean Ryan <sean@evercrack.com>
+	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+	*/
 	class AvatarTerrainCursor : public sigc::trackable
 	{
 	public:
 		friend class AvatarCamera;
 		
-		/* default threshold in milliseconds */
+		/**
+		@brief Default threshold in milliseconds.
+		*/
 		const static int DEFAULT_THRESHOLD_MILLIS = 100;
 		
 		/* C and D */
 		AvatarTerrainCursor(AvatarCamera& ac);
 		virtual ~AvatarTerrainCursor();
 		
+		/**
+		 * @brief Gets the minimum time, in milliseconds, that must elapse before a new raycheck is carried out if only the camera has changed.
+		 * @return 
+		 */
 		unsigned int getThreshold();
+		
+		/**
+		 * @brief Sets the minimum time, in milliseconds, that must elapse before a new raycheck is carried out if only the camera has changed.
+		 * @param newThreshold The time, in milliseconds.
+		 */
 		unsigned int setThreshold(unsigned int newThreshold);
 		
-		Ogre::Vector3 getTerrainCursorPosition(Ogre::Real mX, Ogre::Real mY);
+		/**
+		 *       @brief Gets the position of the terrain currently under the mouse cursor.
+		 * @return A position in world space where a ray shot directly from the cursor intersects with the terrain.
+		 */
+		const Ogre::Vector3& getTerrainCursorPosition();
 		
 	protected:
 		
-		/* when was the last time the terrain was updated */
-		long mLastTerrainUpdated;
+		/**
+		@brief The last time that the ray was updated.
+		This is used to determine it a new ray check should be executed in those instances where only the camera has moved.
+		*/
+		long mLastUpdated;
 		
-		/* what is the last currently known terrain position */
+		/** 
+		@brief The last known intersection with the terrain.
+		We keep a cache of this so we don't have to recalculate the position every frame.
+		*/
 		Ogre::Vector3 mLastTerrainPosition;
 		
-		/* last mouse x position */
+		/** 
+		@brief The last mouse x position.
+		*/
 		int mLastMouseX;
 		
-		/* last mouse y position */
+		/** 
+		@brief The last mouse y position.
+		*/
 		int mLastMouseY;
 		
-		/* reference to ogre camera */
+		/**
+		@brief Reference to main avatar camera.
+		*/
 		AvatarCamera& mCamera;
 		
-		/* the ray we will use to find the terrain intersection */
-		Ogre::Ray mTerrainCursorRay;
+		/** 
+		@brief The main ray query. 
 		
-		/* the ray needed to query */
+		This is expensive to create, so we'll keep a reference around during the whole lifetime.
+		*/
 		Ogre::RaySceneQuery *mTerrainCursorRayQuery;
 		
-		/* threshold for updates */
+		/**
+		@brief Threshold for updates in milliseconds.
+		*/
 		unsigned int mUpdatePositionThreshold;
+		
+		/**
+		@brief The last known camera position.
+		
+		Used to determine whether the camera has moved and whether we thus perhaps need to execute a new ray check.
+		*/
+		Ogre::Vector3 mLastCameraPosition;
+		
+		/**
+		@brief The last known camera orientation.
+		
+		Used to determine whether the camera has moved and whether we thus perhaps need to execute a new ray check.
+		*/
+		Ogre::Quaternion mLastCameraOrientation;
 		
 		
 	};
