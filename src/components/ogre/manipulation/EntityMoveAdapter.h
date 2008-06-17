@@ -31,14 +31,77 @@ namespace EmberOgre {
 
 class IEntityMoveBridge;
 class EntityMoveManager;
+class EntityMoveAdapter;
 
 /**
-	@author Erik Hjortsberg <erik@katastrof.nu>
+@brief Base class for all movement adapter worker classes.
+
+Implementations of this are responsible for the actual checking of input data to determine whether the bridge should be told to update or not.
+	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+*/
+class EntityMoveAdapterWorkerBase
+{
+public:
+	EntityMoveAdapterWorkerBase(EntityMoveAdapter& adapter);
+	virtual ~EntityMoveAdapterWorkerBase();
+	
+	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse) { return true;}
+
+protected:
+
+	/**
+	 *    Gets the movement bridge in use.
+	 * @return 
+	 */
+	IEntityMoveBridge* getBridge();
+	EntityMoveAdapter& mAdapter;
+
+};
+
+/**
+@brief An adapter worker implementation which will move the entity a fixed distance for each mouse movement.
+	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+*/
+class EntityMoveAdapterWorkerDiscrete : public EntityMoveAdapterWorkerBase
+{
+public:
+	EntityMoveAdapterWorkerDiscrete(EntityMoveAdapter& adapter);
+	
+	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
+
+protected:
+
+	float mMovementSpeed;
+
+};
+
+/**
+@brief An adapter worker implementation which will always position the entity where the mouse cursor intersects with the terrain.
+	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+*/
+class EntityMoveAdapterWorkerTerrainCursor : public EntityMoveAdapterWorkerBase, public Ogre::FrameListener
+{
+public:
+	EntityMoveAdapterWorkerTerrainCursor(EntityMoveAdapter& adapter);
+	virtual ~EntityMoveAdapterWorkerTerrainCursor();
+
+	/**
+	* Methods from Ogre::FrameListener
+	*/
+	bool frameStarted(const Ogre::FrameEvent& event);
+
+protected:
+
+};
+
+/**
+	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 	@author Lennart Sauerbeck
 
 	Provides an adapter for moving objects in the world.
 */
 class EntityMoveAdapter : public IInputAdapter {
+friend class EntityMoveAdapterWorkerBase;
 public:
 
 	EntityMoveAdapter(EntityMoveManager* manager);
@@ -77,8 +140,12 @@ private:
 	
 	
 	IEntityMoveBridge* mBridge;
-	float mMovementSpeed;
 	EntityMoveManager* mManager;
+	
+	/**
+	The worker instance which will listen for inputs and tell the bridge to update accordingly.
+	*/
+	EntityMoveAdapterWorkerBase* mWorker;
 	
 };
 

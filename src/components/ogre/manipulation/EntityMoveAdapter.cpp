@@ -29,6 +29,7 @@
 #include "IEntityMoveBridge.h"
 #include "EntityMoveManager.h"
 #include "../AvatarCamera.h"
+#include "../AvatarTerrainCursor.h"
 #include "../GUIManager.h"
 #include "../MathConverter.h"
 //#include "../input/Input.h"
@@ -37,8 +38,77 @@ using namespace WFMath;
 
 namespace EmberOgre {
 
+
+EntityMoveAdapterWorkerBase::EntityMoveAdapterWorkerBase(EntityMoveAdapter& adapter)
+: mAdapter(adapter)
+{
+}
+
+EntityMoveAdapterWorkerBase::~EntityMoveAdapterWorkerBase()
+{
+}
+
+IEntityMoveBridge* EntityMoveAdapterWorkerBase::getBridge()
+{
+	return mAdapter.mBridge;
+}
+
+
+EntityMoveAdapterWorkerDiscrete::EntityMoveAdapterWorkerDiscrete(EntityMoveAdapter& adapter)
+: EntityMoveAdapterWorkerBase(adapter), mMovementSpeed(10)
+{
+}
+
+bool EntityMoveAdapterWorkerDiscrete::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
+{
+	///this will move the entity instead of the mouse
+	
+	Vector<3> direction;
+	direction.zero();
+	direction.x() = -motion.xRelativeMovement;
+	direction.y() = motion.yRelativeMovement;
+	direction = direction * mMovementSpeed;
+	///hard coded to allow the shift button to increase the speed
+	if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
+		direction = direction * 5;
+	}
+	
+	///move it relative to the camera
+	direction = direction.rotate(Ogre2Atlas(EmberOgre::getSingleton().getMainCamera()->getOrientation()));
+	
+	getBridge()->move( direction);//move the entity a fixed distance for each mouse movement.
+	
+	///we don't want to move the cursor
+	freezeMouse = true;
+	
+	return false;
+
+}
+
+EntityMoveAdapterWorkerTerrainCursor::EntityMoveAdapterWorkerTerrainCursor(EntityMoveAdapter& adapter)
+: EntityMoveAdapterWorkerBase(adapter)
+{
+	/// Register this as a frame listener
+	Ogre::Root::getSingleton().addFrameListener(this);
+}
+
+EntityMoveAdapterWorkerTerrainCursor::~EntityMoveAdapterWorkerTerrainCursor()
+{
+	Ogre::Root::getSingleton().removeFrameListener(this);
+}
+
+bool EntityMoveAdapterWorkerTerrainCursor::frameStarted(const Ogre::FrameEvent& event)
+{
+	const Ogre::Vector3* position(0);
+	if (EmberOgre::getSingleton().getMainCamera()->getTerrainCursor().getTerrainCursorPosition(&position)) {
+		getBridge()->setPosition(Ogre2Atlas(*position));
+	}
+	return true;
+}
+
+
 EntityMoveAdapter::EntityMoveAdapter(EntityMoveManager* manager)
-: mBridge(0), mMovementSpeed(10), mManager(manager) 
+: mBridge(0), mManager(manager), mWorker(0)
 {}
 
 EntityMoveAdapter::~EntityMoveAdapter()
@@ -60,27 +130,10 @@ void EntityMoveAdapter::cancelMovement()
 
 bool EntityMoveAdapter::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
 {
-	///this will move the entity instead of the mouse
-	
-	Vector<3> direction;
-	direction.zero();
-	direction.x() = -motion.xRelativeMovement;
-	direction.y() = motion.yRelativeMovement;
-	direction = direction * mMovementSpeed;
-	///hard coded to allow the shift button to increase the speed
-	if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
-		direction = direction * 5;
+	if (mWorker) {
+		return mWorker->injectMouseMove(motion, freezeMouse);
 	}
-	
-	///move it relative to the camera
-	direction = direction.rotate(Ogre2Atlas(EmberOgre::getSingleton().getMainCamera()->getOrientation()));
-	
-	mBridge->move( direction);
-	
-	///we don't want to move the cursor
-	freezeMouse = true;
-
-	return false;
+	return true;
 }
 
 bool EntityMoveAdapter::injectMouseButtonUp(const Input::MouseButton& button)
@@ -168,11 +221,15 @@ void EntityMoveAdapter::detach()
 void EntityMoveAdapter::removeAdapter()
 {
 	GUIManager::getSingleton().getInput().removeAdapter(this);
+	delete mWorker;
+	mWorker = 0;
 }
 
 void EntityMoveAdapter::addAdapter()
 {
 	GUIManager::getSingleton().getInput().addAdapter(this);
+	///default to the terrain cursor positioning mode
+	mWorker = new EntityMoveAdapterWorkerTerrainCursor(*this);
 }
 
 }
