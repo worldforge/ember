@@ -579,11 +579,11 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 	
 	///for some yet undetermined reason we'll get blank segments seeminly at random in the terrain if we'll load it dynamically when requested by the scene manager, so avoid that we'll initialize everything now
 	///HACK: this is of course just a temporary fix
-	for (int i = 0; i < mTerrainInfo.getTotalNumberOfPagesX(); ++i) {
-		for (int j = 0; j < mTerrainInfo.getTotalNumberOfPagesY(); ++j) {
-			getTerrainPage(Ogre::Vector2(i, j), true);
-		}
-	}
+// 	for (int i = 0; i < mTerrainInfo.getTotalNumberOfPagesX(); ++i) {
+// 		for (int j = 0; j < mTerrainInfo.getTotalNumberOfPagesY(); ++j) {
+// 			getTerrainPage(Ogre::Vector2(i, j), true);
+// 		}
+// 	}
 	
 	///check if the size of the world has been changed
 // 	if (Xmin != mXmin || Xmax != mXmax || Ymin != mYmin || Ymax != mYmax) {
