@@ -536,39 +536,15 @@ ResourceSubclassPtr<T> : public SharedPtr<T>
 class ModelDefnPtr : public Ogre::SharedPtr<ModelDefinition> 
 {
 public:
-    ModelDefnPtr() : Ogre::SharedPtr<ModelDefinition>() {}
-    explicit ModelDefnPtr(ModelDefinition* rep) : Ogre::SharedPtr<ModelDefinition>(rep) {}
-    ModelDefnPtr(const ModelDefnPtr& r) : Ogre::SharedPtr<ModelDefinition>(r) {} 
-    ModelDefnPtr(const Ogre::ResourcePtr& r) : Ogre::SharedPtr<ModelDefinition>()
-    {
-		// lock & copy other mutex pointer
-		OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME)
-		OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME)
-        pRep = static_cast<ModelDefinition*>(r.getPointer());
-        pUseCount = r.useCountPointer();
-        if (pUseCount)
-        {
-            ++(*pUseCount);
-        }
-    }
-
-    /// Operator used to convert a ResourcePtr to a ModelDefnPtr
-    ModelDefnPtr& operator=(const Ogre::ResourcePtr& r)
-    {
-        if (pRep == static_cast<ModelDefinition*>(r.getPointer()))
-            return *this;
-        release();
-		// lock & copy other mutex pointer
-		OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME)
-		OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME)
-        pRep = static_cast<ModelDefinition*>(r.getPointer());
-        pUseCount = r.useCountPointer();
-        if (pUseCount)
-        {
-            ++(*pUseCount);
-        }
-        return *this;
-    }
+        ModelDefnPtr() : Ogre::SharedPtr<ModelDefinition>() {}
+        explicit ModelDefnPtr(ModelDefinition* rep) : Ogre::SharedPtr<ModelDefinition>(rep) {}
+        ModelDefnPtr(const ModelDefnPtr& r) : Ogre::SharedPtr<ModelDefinition>(r) {} 
+        ModelDefnPtr(const Ogre::ResourcePtr& r);
+        /// Operator used to convert a ResourcePtr to a ModelDefnPtr
+        ModelDefnPtr& operator=(const Ogre::ResourcePtr& r);
+    protected:
+        /// Override destroy since we need to delete Mesh after fully defined
+//         void destroy(void);
 };
 
 typedef ModelDefnPtr ModelDefinitionPtr;

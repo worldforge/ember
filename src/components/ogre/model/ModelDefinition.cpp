@@ -549,5 +549,54 @@ const StringParamStore& RenderingDefinition::getParameters() const
 
 
 
-};
-};
+ModelDefnPtr::ModelDefnPtr(const Ogre::ResourcePtr& r) : Ogre::SharedPtr<ModelDefinition>()
+{
+	// lock & copy other mutex pointer
+	OGRE_MUTEX_CONDITIONAL(r.OGRE_AUTO_MUTEX_NAME)
+	{
+		OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME)
+		OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME)
+		pRep = static_cast<ModelDefinition*>(r.getPointer());
+		pUseCount = r.useCountPointer();
+		if (pUseCount)
+		{
+			++(*pUseCount);
+		}
+	}
+}
+//-----------------------------------------------------------------------
+ModelDefnPtr& ModelDefnPtr::operator=(const Ogre::ResourcePtr& r)
+{
+	if (pRep == static_cast<ModelDefinition*>(r.getPointer()))
+		return *this;
+	release();
+	// lock & copy other mutex pointer
+	OGRE_MUTEX_CONDITIONAL(r.OGRE_AUTO_MUTEX_NAME)
+	{
+		OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME)
+		OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME)
+		pRep = static_cast<ModelDefinition*>(r.getPointer());
+		pUseCount = r.useCountPointer();
+		if (pUseCount)
+		{
+			++(*pUseCount);
+		}
+	}
+	else
+	{
+		// RHS must be a null pointer
+		assert(r.isNull() && "RHS must be null if it has no mutex!");
+		setNull();
+	}
+	return *this;
+}
+    //-----------------------------------------------------------------------
+//     void ModelDefnPtr::destroy(void)
+//     {
+//         // We're only overriding so that we can destroy after full definition of Mesh
+//         Ogre::SharedPtr<ModelDefinition>::destroy();
+//     }
+
+
+}
+}
