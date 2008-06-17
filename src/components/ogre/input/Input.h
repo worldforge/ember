@@ -45,6 +45,7 @@ typedef std::list<IInputAdapter*> IInputAdapterStore;
 
 /**
 @brief Struct for a mouse movement.
+@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
 struct MouseMotion
 {
@@ -87,16 +88,46 @@ struct MouseMotion
 };
 
 /**
-@author Erik Hjortsberg
+@brief Expresses the position of the mouse, both in terms of pixels and relative.
+
+Positions are from the upper left corner.
+@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+*/
+struct MousePosition
+{
+	/**
+	@brief The horizontal position of the mouse in pixels.
+	*/
+	int xPixelPosition; 
+	/**
+	@brief The vertical position of the mouse in pixels.
+	*/
+	int yPixelPosition;
+	
+	/**
+	@brief The relative horizontal position of the mouse.
+	0 is to the left, 1 is to the right.
+	*/
+	float xRelativePosition; 
+	/**
+	@brief The relative vertical position of the mouse.
+	0 is at the top, 1 is at the bottom.
+	*/
+	float yRelativePosition;
+	
+};
+
+/**
+@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 
 @brief This class takes care of all input and routes it to the correct place in Ember.
 Right now that means that when in GUI mode, all input will be routed to the registered list of @see IInputAdapter, and when in non-gui mode (ie. movement mode), all input will be routed directly to Ember, where it can be handled by the camera and movement system.
 
 Note that while keyboard input is buffered, mouse input is not.
 
-You can listen to input updates either by listening directly to the events, or by registering an instance of @see IInputAdapter through the @see addAdapter and @see removeAdapter methods.
+You can listen to input updates either by listening directly to the events, or by registering an instance of IInputAdapter through the addAdapter and removeAdapter methods.
 
-This class also provides some methods useful for standard windowing and event system integration, such as @see isApplicationVisible().
+This class also provides some methods useful for standard windowing and event system integration, such as isApplicationVisible().
 */
 class Input : public Ember::ConsoleObject, public Ember::Singleton<Input>
 {
@@ -146,8 +177,8 @@ public:
 	
 	/**
 	 * @brief Initializes the input object. Call this before you want to recieve input.
-	 * @param width 
-	 * @param heigh 
+	 * @param width The width of the window, in pixels.
+	 * @param heigh The height of the window, in pixels.
 	 */
 	void initialize(int width, int height);
 
@@ -294,10 +325,10 @@ public:
 	void writeToClipboard(const std::string& text);
 	
 	/**
-	 *    @brief Gets the current mouse position, expressed in pixels, with 0,0 being in the upper left.
-	 * @return A pair, where "first" denotes the x coordinate and "second" denotes the y coordinate.
+	 *    @brief Gets the current mouse position.
+	 * @return The last mouse position.
 	 */
-	std::pair<int, int> getMousePosition() const;
+	const MousePosition& getMousePosition() const;
 
 protected:
 
@@ -362,7 +393,7 @@ protected:
 	/**
 	@brief The last positions of the mouse.
 	*/
-	int mMouseY, mMouseX;
+	MousePosition mMousePosition;
 	
 	/**
 	@brief The amount of time since the last right mouse click.

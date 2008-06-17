@@ -286,21 +286,21 @@ void Input::pollMouse(float secondsSinceLast)
 	Uint8 appState = SDL_GetAppState();
 //	S_LOG_INFO((appState & SDL_APPMOUSEFOCUS));
 	if (appState & SDL_APPMOUSEFOCUS) {
-		if (mMouseX != mouseX || mMouseY != mouseY)
+		if (mMousePosition.xPixelPosition != mouseX || mMousePosition.yPixelPosition != mouseY)
 		{
 	
 			//we'll calculate the mouse movement difference and send the values to those
 			//listening to the MouseMoved event
 			float diffX, diffY;
-			diffX =  (mMouseX - mouseX) / mScreenWidth;
-			diffY = (mMouseY - mouseY) / mScreenHeight;
+			diffX =  (mMousePosition.xPixelPosition - mouseX) / mScreenWidth;
+			diffY = (mMousePosition.yPixelPosition - mouseY) / mScreenHeight;
 			MouseMotion motion;
 			motion.xPosition = mouseX;
 			motion.yPosition = mouseY;
 			motion.xRelativeMovement = diffX;
 			motion.yRelativeMovement = diffY;
-			motion.xRelativeMovementInPixels = mMouseX - mouseX;
-			motion.yRelativeMovementInPixels = mMouseY - mouseY;
+			motion.xRelativeMovementInPixels = mMousePosition.xPixelPosition - mouseX;
+			motion.yRelativeMovementInPixels = mMousePosition.yPixelPosition - mouseY;
 			motion.timeSinceLastMovement = secondsSinceLast;
 			
 			EventMouseMoved.emit(motion, mCurrentInputMode);
@@ -320,10 +320,12 @@ void Input::pollMouse(float secondsSinceLast)
 			
 			
 			if (freezeMouse) {
-				SDL_WarpMouse(mMouseX, mMouseY);
+				SDL_WarpMouse(mMousePosition.xPixelPosition, mMousePosition.yPixelPosition);
 			} else {
-				mMouseX = mouseX;
-				mMouseY = mouseY;
+				mMousePosition.xPixelPosition = mouseX;
+				mMousePosition.yPixelPosition = mouseY;
+				mMousePosition.xRelativePosition = mouseX / mScreenWidth;
+				mMousePosition.yRelativePosition = mouseY / mScreenHeight;
 			}
 		
 		}
@@ -498,9 +500,9 @@ void Input::removeAdapter(IInputAdapter* adapter)
 	}
 }
 
-std::pair<int, int> Input::getMousePosition() const
+const MousePosition& Input::getMousePosition() const
 {
-	return std::pair<int, int>(mMouseX, mMouseY);
+	return mMousePosition;
 }
 
 
