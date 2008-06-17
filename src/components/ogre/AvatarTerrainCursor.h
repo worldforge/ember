@@ -69,9 +69,10 @@ namespace EmberOgre {
 		
 		/**
 		 *       @brief Gets the position of the terrain currently under the mouse cursor.
-		 * @return A position in world space where a ray shot directly from the cursor intersects with the terrain.
-		 */
-		const Ogre::Vector3& getTerrainCursorPosition();
+		  * @param position A pointer to a pointer to a position in world space where a ray shot directly from the cursor intersects with the terrain. If the position has been changed this will point to the new position, else it will be left alone.
+		  * @return True if the position has been updated and we managed to intersect with the terrain.
+		  */
+		 bool getTerrainCursorPosition(const Ogre::Vector3** position);
 		
 	protected:
 		

@@ -68,13 +68,14 @@ namespace EmberOgre {
 	}
 
 	
-	const Ogre::Vector3& AvatarTerrainCursor::getTerrainCursorPosition()
+	bool AvatarTerrainCursor::getTerrainCursorPosition(const Ogre::Vector3** position)
 	{
 		bool shouldRecalculate = false;
+		bool updated = false;
 		
 		///first check if the mouse has moved even one pixel, and if so force an update
-		std::pair<int, int> mousePosition(Input::getSingleton().getMousePosition());
-		if (mousePosition.first != mLastMouseX || mousePosition.second != mLastMouseY) {
+		const MousePosition& mousePosition(Input::getSingleton().getMousePosition());
+		if (mousePosition.xPixelPosition != mLastMouseX || mousePosition.yPixelPosition != mLastMouseY) {
 			shouldRecalculate = true;
 		} else {
 			///the mouse hasn't moved, perhaps the camera has?
@@ -94,32 +95,34 @@ namespace EmberOgre {
 		{
 			// mark update time
 			mLastUpdated = Ember::EmberServices::getSingletonPtr()->getTimeService()->currentTimeMillis();
-			mLastMouseX = mousePosition.first;
-			mLastMouseY = mousePosition.second;
+			mLastMouseX = mousePosition.xPixelPosition;
+			mLastMouseY = mousePosition.yPixelPosition;
 			mLastCameraPosition = mCamera.getCamera()->getDerivedPosition();
 			mLastCameraOrientation = mCamera.getCamera()->getDerivedOrientation();
 			
 			/// Start a new ray query 
-			Ogre::Ray cameraRay(mCamera.getCamera()->getCameraToViewportRay(mLastMouseX, mLastMouseY)); 
+			Ogre::Ray cameraRay(mCamera.getCamera()->getCameraToViewportRay(mousePosition.xRelativePosition, mousePosition.yRelativePosition)); 
 			mTerrainCursorRayQuery->setRay(cameraRay);
 			mTerrainCursorRayQuery->execute();
 			
 			// Can we avoid the iterator, and just use the result ?
-			Ogre::RaySceneQueryResult queryResult(mTerrainCursorRayQuery->getLastResults());
-			Ogre::RaySceneQueryResult::iterator rayIterator(queryResult.begin());
+			const Ogre::RaySceneQueryResult& queryResult(mTerrainCursorRayQuery->getLastResults());
+			Ogre::RaySceneQueryResult::const_iterator rayIterator(queryResult.begin());
 			if (rayIterator != queryResult.end()) {
-				Ogre::RaySceneQueryResultEntry& entry = *rayIterator;
+				const Ogre::RaySceneQueryResultEntry& entry(*rayIterator);
 				
 				if (entry.worldFragment) {
 					mLastTerrainPosition = entry.worldFragment->singleIntersection;
-					S_LOG_VERBOSE("getTerrainCursorPosition : Update ("<< mLastMouseX << "," << mLastMouseY << ")->" << Ogre::StringConverter::toString(mLastTerrainPosition));	
+					updated = true;
+// 					S_LOG_VERBOSE("getTerrainCursorPosition : Update ("<< mLastMouseX << "," << mLastMouseY << ")->" << Ogre::StringConverter::toString(mLastTerrainPosition));	
 				} else {
 					S_LOG_WARNING("Picked something else than a world fragment even though we specified only terrain. Something is wrong with the ray check methods.");
 				}
 			}
 		}
-		S_LOG_VERBOSE("getTerrainCursorPosition : return");	
-		return ( mLastTerrainPosition );
+		*position = &mLastTerrainPosition;
+// 		S_LOG_VERBOSE("getTerrainCursorPosition : return");	
+		return updated;
 	}
 
 }
