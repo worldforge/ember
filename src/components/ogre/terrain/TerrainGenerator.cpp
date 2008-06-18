@@ -342,10 +342,9 @@ int TerrainGenerator::getPageMetersSize()
 
 void TerrainGenerator::buildHeightmap()
 {
-	mHeightMax = 0, mHeightMin = 0;							//tb  used for the call to addMod() below
 	const WFMath::Ball<3> myMathBall;						//tb
 	Mercator::CraterTerrainMod *myCrater = new Mercator::CraterTerrainMod(myMathBall); //tb
-
+	//mTerrain->getSegment(2,2)->addMod(myCrater); //tb
 	///initialize all terrain here, since we need to do that in order to get the correct height for placement even though the terrain might not show up in the SceneManager yet
 	
 	///note that we want to use int's here, since a call to getSegment(float, float) is very much different from a call to getSegment(int, int)
@@ -362,19 +361,24 @@ void TerrainGenerator::buildHeightmap()
 				mHeightMax = std::max(mHeightMax, segment->getMax());
 				mHeightMin = std::min(mHeightMin, segment->getMin());
 				
-				
-    				
+//				segment->addMod(myCrater);
+				if( i == 2)
+					segment->addMod(myCrater);
+
+				if( getTerrainPage(TerrainPosition(i,i)) != NULL )
+				{
+					getTerrainPage(TerrainPosition(i,i))->addTerrainModifier(i,i,myCrater);
+					S_LOG_INFO("Added modifier at " << i << "," << i);
+					TerrainPosition *newModPos = getTerrainPage(TerrainPosition(i,i))->getTerrainModifierPos();
+					S_LOG_INFO("New modifier's position: " << newModPos->x() << "," << newModPos->y());
+				}
 			}
 		}
 	}
-	if( getTerrainPage(TerrainPosition(2,2)) != NULL )
-	{
-		getTerrainPage(TerrainPosition(2,2))->addTerrainModifier(2,2,myCrater);
-		S_LOG_INFO("Added modifier at 2,2!");
-		TerrainPosition *newModPos = getTerrainPage(TerrainPosition(2,2))->getTerrainModifierPos();
-		S_LOG_INFO("New modifier's position: " << newModPos->x() << "," << newModPos->y());
-	}
-	mTerrain->getSegment(2,2)->addMod(myCrater); //tb
+
+	
+	
+	
 }
 
 // void TerrainGenerator::createShaders(WorldEmberEntity* worldEntity)
@@ -592,7 +596,9 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 		updatedPositions.push_back(I->position);
 	}
     mSegments = &mTerrain->getTerrain();
+
 	
+
 	buildHeightmap();
 	
 	///for some yet undetermined reason we'll get blank segments seeminly at random in the terrain if we'll load it dynamically when requested by the scene manager, so avoid that we'll initialize everything now
