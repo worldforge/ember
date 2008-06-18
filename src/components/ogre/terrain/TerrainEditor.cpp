@@ -276,10 +276,10 @@ void TerrainEditor::createOverlay()
 				S_LOG_INFO("Attempting to place mod marker at " << ogrepos2.x << "," << ogrepos2.y << "," << ogrepos2.z);
 				basepointNode2->setPosition(ogrepos2);
 				std::stringstream ss2;
-				ss2 << "terrainMod marker" << x << "_" << y  + 64;
+				ss2 << "terrainMod marker" << x << "_" << y;
 				Ogre::Entity* entity2 = EmberOgre::getSingleton().getSceneManager()->createEntity(ss2.str(), "3d_objects/primitives/models/sphere.mesh");
 				entity->setMaterialName("BasePointMarkerMaterial");
-				entity->setRenderingDistance(300);
+				entity->setRenderingDistance(900);
 				basepointNode2->attachObject(entity2);
 				// End test	-tb					
 

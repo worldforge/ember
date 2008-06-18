@@ -67,7 +67,6 @@ class terrainModListEntry {
 	public:
 		terrainModListEntry();
 		terrainModListEntry(int x, int y, Mercator::TerrainMod *modifier);
-		TerrainPosition *getTerrainModifierPos();
 
 		int X();
 		int Y();
@@ -338,7 +337,7 @@ private:
 
 
 
-	terrainModListEntry mTModList;	
+	std::list<terrainModListEntry> mTModList;
 
 };
 

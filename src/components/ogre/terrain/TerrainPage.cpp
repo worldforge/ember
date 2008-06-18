@@ -435,13 +435,13 @@ void TerrainPage::unregisterBridge()
 
 void TerrainPage::addTerrainModifier(int x, int y, Mercator::TerrainMod *newmod)
 {
-	mTModList = terrainModListEntry(x, y, newmod);
+	mTModList.push_back(terrainModListEntry(x, y, newmod));
 }
 
 TerrainPosition *TerrainPage::getTerrainModifierPos()
 {
-	S_LOG_INFO("Giving terrainModifier position at: " << mTModList.X() << "," << mTModList.Y()); 
-	return mTModList.Position();
+	S_LOG_INFO("Giving terrainModifier position at: " << mTModList.front().X() << "," << mTModList.front().Y()); 
+	return mTModList.front().Position();
 }
 
 	/** Used for the terrainModListEntry class **/
