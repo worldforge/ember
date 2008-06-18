@@ -66,8 +66,9 @@ TYPEDEF_STL_MAP(const Mercator::Shader*, TerrainShader*, ShaderMap);
 class terrainModListEntry {
 	public:
 		terrainModListEntry();
+		terrainModListEntry(int x, int y, Mercator::TerrainMod *modifier);
 		void addTerrainModifier(int x, int y, Mercator::TerrainMod *modifier);
-		TerrainPosition *getTerrainModifierPos(int modList_index);
+		TerrainPosition *getTerrainModifierPos();
 	private:
 		int	seg_x;
 		int	seg_y;

@@ -440,17 +440,25 @@ terrainModListEntry::terrainModListEntry()
 	modifier = NULL;
 }
 
+terrainModListEntry::terrainModListEntry(int x, int y, Mercator::TerrainMod *newmod)
+{
+	seg_x = x;
+	seg_y = y;
+	modifier = newmod;
+	S_LOG_INFO("Adding new terrain modifier at: " << seg_x << "," << seg_y);
+}
+
 void terrainModListEntry::addTerrainModifier(int x, int y, Mercator::TerrainMod *newmod)
 {
 	seg_x = x;
 	seg_y = y + 100;
 	modifier = newmod;
-	S_LOG_INFO("addTerrainModifier called with: " << seg_x << " " << seg_y);
+	S_LOG_INFO("Adding new terrain modifier at: " << seg_x << "," << seg_y);
 }
 
-TerrainPosition *terrainModListEntry::getTerrainModifierPos(int modList_index)
+TerrainPosition *terrainModListEntry::getTerrainModifierPos()
 {
-	S_LOG_INFO("Giving terrainModifier position at: " << seg_x << "," << seg_y);
+	S_LOG_INFO("Giving terrainModifier position at: " << seg_x << "," << seg_y); 
 	return new TerrainPosition(seg_x,seg_y);
 }
 
