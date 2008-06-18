@@ -432,6 +432,18 @@ void TerrainPage::unregisterBridge()
 	mBridge = 0;
 }
 
+
+void TerrainPage::addTerrainModifier(int x, int y, Mercator::TerrainMod *newmod)
+{
+	mTModList = terrainModListEntry(x, y, newmod);
+}
+
+TerrainPosition *TerrainPage::getTerrainModifierPos()
+{
+	S_LOG_INFO("Giving terrainModifier position at: " << mTModList.X() << "," << mTModList.Y()); 
+	return mTModList.Position();
+}
+
 	/** Used for the terrainModListEntry class **/
 terrainModListEntry::terrainModListEntry()
 {
@@ -448,18 +460,24 @@ terrainModListEntry::terrainModListEntry(int x, int y, Mercator::TerrainMod *new
 	S_LOG_INFO("Adding new terrain modifier at: " << seg_x << "," << seg_y);
 }
 
-void terrainModListEntry::addTerrainModifier(int x, int y, Mercator::TerrainMod *newmod)
+int terrainModListEntry::X()
 {
-	seg_x = x;
-	seg_y = y + 100;
-	modifier = newmod;
-	S_LOG_INFO("Adding new terrain modifier at: " << seg_x << "," << seg_y);
+	return seg_x;
 }
 
-TerrainPosition *terrainModListEntry::getTerrainModifierPos()
+int terrainModListEntry::Y()
 {
-	S_LOG_INFO("Giving terrainModifier position at: " << seg_x << "," << seg_y); 
-	return new TerrainPosition(seg_x,seg_y);
+	return seg_y;
+}
+
+Mercator::TerrainMod *terrainModListEntry::Modifier()
+{
+	return modifier;
+}
+
+TerrainPosition *terrainModListEntry::Position()
+{
+	return new TerrainPosition(seg_x, seg_y);
 }
 
 }

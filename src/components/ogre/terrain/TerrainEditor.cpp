@@ -268,7 +268,7 @@ void TerrainEditor::createOverlay()
 //				ogrepos2.z = terrain.getSegment(-2,-2)->getYRef();
 				
 				TerrainPage *currentPage = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(tPos);
-				TerrainPosition *modPos = currentPage->mTModList.getTerrainModifierPos(0);
+				TerrainPosition *modPos = currentPage->getTerrainModifierPos();
 
 				ogrepos2.x = modPos->x();
 				ogrepos2.y = modPos->y();

@@ -67,8 +67,13 @@ class terrainModListEntry {
 	public:
 		terrainModListEntry();
 		terrainModListEntry(int x, int y, Mercator::TerrainMod *modifier);
-		void addTerrainModifier(int x, int y, Mercator::TerrainMod *modifier);
 		TerrainPosition *getTerrainModifierPos();
+
+		int X();
+		int Y();
+		TerrainPosition *Position();
+		Mercator::TerrainMod *Modifier();
+		
 	private:
 		int	seg_x;
 		int	seg_y;
@@ -261,9 +266,10 @@ public:
 	 *    @brief Returns the position of an applied modifier
 	 *
 	 */
-	TerrainPosition *getTerrainModifierPos(int modList_index);
+	TerrainPosition *getTerrainModifierPos();
 
-	terrainModListEntry mTModList;	//this should be made private -tb
+	
+
 
 private:
 
@@ -329,6 +335,11 @@ private:
 
 	terrainModList mModList;
 */
+
+
+
+	terrainModListEntry mTModList;	
+
 };
 
 inline int TerrainPage::getAlphaTextureSize( ) const
