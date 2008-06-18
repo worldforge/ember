@@ -49,6 +49,7 @@ namespace EmberOgre {
 		mTerrainCursorRayQuery->setSortByDistance(true);
 		mTerrainCursorRayQuery->setQueryTypeMask(Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
 
+		registerConfigListener("input", "terraincheckinterval", sigc::mem_fun(*this, &AvatarTerrainCursor::Config_TerrainCheckInterval));
 	}
 
 	AvatarTerrainCursor::~AvatarTerrainCursor()
@@ -123,6 +124,13 @@ namespace EmberOgre {
 		*position = &mLastTerrainPosition;
 // 		S_LOG_VERBOSE("getTerrainCursorPosition : return");	
 		return updated;
+	}
+	
+	void AvatarTerrainCursor::Config_TerrainCheckInterval(const std::string& section, const std::string& key, varconf::Variable& variable)
+	{
+		if (variable.is_int()) {
+			mUpdatePositionThreshold = static_cast<unsigned int>(static_cast<int>(variable));
+		}
 	}
 
 }

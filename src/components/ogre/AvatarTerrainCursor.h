@@ -27,6 +27,7 @@
 
 #include "EmberOgrePrerequisites.h"
 #include <sigc++/trackable.h>
+#include "services/config/ConfigListener.h"
 
 namespace EmberOgre {
 
@@ -41,7 +42,7 @@ namespace EmberOgre {
 	@author Sean Ryan <sean@evercrack.com>
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 	*/
-	class AvatarTerrainCursor : public sigc::trackable
+	class AvatarTerrainCursor : public sigc::trackable, Ember::ConfigListenerContainer
 	{
 	public:
 		friend class AvatarCamera;
@@ -129,6 +130,7 @@ namespace EmberOgre {
 		*/
 		Ogre::Quaternion mLastCameraOrientation;
 		
+		void Config_TerrainCheckInterval(const std::string& section, const std::string& key, varconf::Variable& variable);
 		
 	};
 
