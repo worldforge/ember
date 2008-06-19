@@ -8,50 +8,15 @@ namespace EmberOgre {
 class EntityRecipe : public Ogre::Resource {
 
 public:
-	/**
-	 * Constructor.
-	 */
 	EntityRecipe(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
 		const Ogre::String& group, bool isManual = false, Ogre::ManualResourceLoader* loader = 0);
-
-	/**
-	 * Destructor.
-	 */
 	virtual ~EntityRecipe();
-
-	/**
-	 * Implemented from Ogre::Resource.
-	 */
  	void loadImpl(void);
-
-	/**
-	 * Implemented from Ogre::Resource.
-	 */
  	void unloadImpl(void);
-
-	/**
-	 * Implemented from Ogre::Resource.
-	 */
 	size_t calculateSize(void) const;
-
-	/**
-	 * Creates and returns GUI adapter.
-	 */
 //	GUIAdapter* createGUIAdapter(std::string name, std::string type);
-
-	/**
-	 * Returns named GUI adapter.
-	 */
 //	GUIAdapter* getGUIAdapter(std::string name);
-
-	/**
-	 * Creates and returns GUI adapter bindings.
-	 */
 //	GUIAdapterBindings* createGUIAdapterBindings(std::string name);
-
-	/**
-	 * Does some test checking.
-	 */
 	void doTest();
 };
 
