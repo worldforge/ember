@@ -103,7 +103,7 @@ void EntityRecipe::doTest()
 {
 	S_LOG_VERBOSE("Doing test.");
 
-	LuaScriptingCallContext* callContext = new LuaScriptingCallContext();
+	LuaScriptingCallContext callContext;
 
 	// Loading code
 	Ember::EmberServices::getSingleton().getScriptingService()->executeCode(mScript, "LuaScriptingProvider");
