@@ -342,9 +342,10 @@ int TerrainGenerator::getPageMetersSize()
 
 void TerrainGenerator::buildHeightmap()
 {
-	const WFMath::Ball<3> myMathBall;						//tb
+	const WFMath::Ball<3> myMathBall(WFMath::Point<3>(32,32,50), 12);		//tb
+	
 	Mercator::CraterTerrainMod *myCrater = new Mercator::CraterTerrainMod(myMathBall); //tb
-	//mTerrain->getSegment(2,2)->addMod(myCrater); //tb
+	
 	///initialize all terrain here, since we need to do that in order to get the correct height for placement even though the terrain might not show up in the SceneManager yet
 	
 	///note that we want to use int's here, since a call to getSegment(float, float) is very much different from a call to getSegment(int, int)
@@ -362,7 +363,7 @@ void TerrainGenerator::buildHeightmap()
 				mHeightMin = std::min(mHeightMin, segment->getMin());
 				
 //				segment->addMod(myCrater);
-				if( i == 2)
+				if( (i == 2) && (j == 2) )
 					segment->addMod(myCrater);
 
 				if( getTerrainPage(TerrainPosition(i,i)) != NULL )
