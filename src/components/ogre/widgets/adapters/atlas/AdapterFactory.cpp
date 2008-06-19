@@ -334,6 +334,29 @@ StaticAdapter* AdapterFactory::createStaticAdapter(CEGUI::Window* container, con
 	}
 }
 
+AdapterBase* AdapterFactory::createAdapterByType(std::string type, CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
+{
+	switch (type)
+	{
+	case "string":
+		return createStringAdapter(container, adapterPrefix, element);
+	case "number":
+		return createNumberAdapter(container, adapterPrefix, element);
+	case "size":
+		return createSizeAdapter(container, adapterPrefix, element);
+	case "position":
+		return createPositionAdapter(container, adapterPrefix, element);
+	case "position2d":
+		return createPosition2DAdapter(container, adapterPrefix, element);
+	case "number":
+		return createNumberAdapter(container, adapterPrefix, element);
+	case "number":
+		return createNumberAdapter(container, adapterPrefix, element);
+	case "static":
+		return createStaticAdapter(container, adapterPrefix, element);
+	}
+}
+
 CEGUI::Window* AdapterFactory::loadLayoutIntoContainer(CEGUI::Window* container, const std::string& adapterPrefix, const std::string& layoutfile)
 {
 	try {
