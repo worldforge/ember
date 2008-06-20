@@ -342,8 +342,7 @@ int TerrainGenerator::getPageMetersSize()
 
 void TerrainGenerator::buildHeightmap()
 {
-	const WFMath::Ball<3> myMathBall(WFMath::Point<3>(32,32,50), 12);		//tb
-	
+	const WFMath::Ball<3> myMathBall(WFMath::Point<3>(32,32,20), 32);		//tb
 	Mercator::CraterTerrainMod *myCrater = new Mercator::CraterTerrainMod(myMathBall); //tb
 	
 	///initialize all terrain here, since we need to do that in order to get the correct height for placement even though the terrain might not show up in the SceneManager yet
@@ -363,22 +362,20 @@ void TerrainGenerator::buildHeightmap()
 				mHeightMin = std::min(mHeightMin, segment->getMin());
 				
 //				segment->addMod(myCrater);
-				if( (i == 2) && (j == 2) )
-					segment->addMod(myCrater);
-
-				if( getTerrainPage(TerrainPosition(i,i)) != NULL )
-				{
-					getTerrainPage(TerrainPosition(i,i))->addTerrainModifier(i,i,myCrater);
-					S_LOG_INFO("Added modifier at " << i << "," << i);
-					TerrainPosition *newModPos = getTerrainPage(TerrainPosition(i,i))->getTerrainModifierPos();
-					S_LOG_INFO("New modifier's position: " << newModPos->x() << "," << newModPos->y());
-				}
+//				if( (i == 2) && (j == 2) )
+//					segment->addMod(myCrater);
 			}
 		}
 	}
 
-	
-	
+	mTerrain->getSegment(0,0)->addMod(myCrater);
+	if( getTerrainPage(TerrainPosition(2,2)) != NULL )
+	{
+		getTerrainPage(TerrainPosition(2,2))->addTerrainModifier(2,2,myCrater);
+		S_LOG_INFO("Added modifier at " << 2 << "," << 2);
+		TerrainPosition *newModPos = getTerrainPage(TerrainPosition(2,2))->getTerrainModifierPos();
+		S_LOG_INFO("New modifier's position: " << newModPos->x() << "," << newModPos->y());
+	}
 	
 }
 

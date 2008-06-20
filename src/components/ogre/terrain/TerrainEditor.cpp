@@ -228,6 +228,21 @@ bool TerrainEditor::isOverlayShown() const
 
 void TerrainEditor::createOverlay()
 {
+
+	const WFMath::Ball<3> myMathBall(WFMath::Point<3>(32,32,10), 32);		//tb
+	Mercator::CraterTerrainMod *myCrater = new Mercator::CraterTerrainMod(myMathBall); //tb
+	S_LOG_INFO("WOO1");
+	if( EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(2,2)) != NULL )
+	{
+		S_LOG_INFO("WOO2");
+		EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(2,2))->addTerrainModifier(2,2,myCrater);
+		S_LOG_INFO("Added modifier at " << 2 << "," << 2);
+		TerrainPosition *newModPos = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(2,2))->getTerrainModifierPos();
+		S_LOG_INFO("New modifier's position: " << newModPos->x() << "," << newModPos->y());
+	}
+	
+	S_LOG_INFO("WOO3");
+
 	if (!mOverlayNode) {
 		
 		mOverlayNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
@@ -271,7 +286,7 @@ void TerrainEditor::createOverlay()
 				TerrainPosition *modPos = currentPage->getTerrainModifierPos();
 
 				ogrepos2.x = modPos->x();
-				ogrepos2.y = modPos->y();
+				ogrepos2.y = 30; //modPos->y();
 				ogrepos2.z = modPos->y();
 				S_LOG_INFO("Attempting to place mod marker at " << ogrepos2.x << "," << ogrepos2.y << "," << ogrepos2.z);
 				basepointNode2->setPosition(ogrepos2);

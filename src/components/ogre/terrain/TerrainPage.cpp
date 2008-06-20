@@ -436,6 +436,7 @@ void TerrainPage::unregisterBridge()
 void TerrainPage::addTerrainModifier(int x, int y, Mercator::TerrainMod *newmod)
 {
 	mTModList.push_back(terrainModListEntry(x, y, newmod));
+	EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment(x,y)->addMod(newmod);
 }
 
 TerrainPosition *TerrainPage::getTerrainModifierPos()

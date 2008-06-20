@@ -255,6 +255,7 @@ public:
 	 */
 	void unregisterBridge();
 
+
 	/**
 	 *    @brief Adds the specified modifier to the segment at (x,y)
 	 * This is currently called from TerrainGenerator -tb
@@ -262,12 +263,14 @@ public:
 	void addTerrainModifier(int x, int y, Mercator::TerrainMod *modifier);
 
 	/**
-	 *    @brief Returns the position of an applied modifier
+	 *    @brief Returns the (2d) position of an applied modifier
 	 *
 	 */
 	TerrainPosition *getTerrainModifierPos();
 
-	
+	/**
+	 *    @brief 
+	 */	
 
 
 private:
