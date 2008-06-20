@@ -25,6 +25,7 @@ class ISoundProvider;
 #include "framework/ConsoleObject.h"
 #include "framework/ISoundProvider.h"
 
+#include <map>
 #include <AL/al.h>
 #include <AL/alc.h>
 #include <ogg/ogg.h>
@@ -64,7 +65,6 @@ typedef enum
 class BaseSoundSample
 {
 	protected:
-		std::string			mFilename;
 		std::string			mAction;
 		
 		ALuint 				mSource;
@@ -81,7 +81,6 @@ class BaseSoundSample
 		void setAction(const std::string &act);
 
 		// Get Variables
-		const std::string getFilename();
 		const std::string getAction();
 
 		ALuint getSource();
@@ -100,7 +99,7 @@ class StaticSoundSample : public BaseSoundSample
 		ALuint mBuffer;
 	
 	public:
-		StaticSoundSample(const std::string &name);
+		StaticSoundSample();
 		~StaticSoundSample();
 
 		// Set Variables
@@ -128,7 +127,7 @@ class StreamedSoundSample : public BaseSoundSample
 		bool stream(ALuint buffer);
 
 	public:
-		StreamedSoundSample(const std::string &name);
+		StreamedSoundSample();
 		~StreamedSoundSample();
 
 		// Set Variables
@@ -157,21 +156,17 @@ class StreamedSoundSample : public BaseSoundSample
 class SoundObject
 {
 	private:
-		std::string mName;
-
 		WFMath::Point<3> mPosition;
 		WFMath::Vector<3> mVelocity;
 
-		std::list<BaseSoundSample*> mSamples;
+		std::map<std::string, BaseSoundSample*> mSamples;
 
 		// Allocation Functions
-		bool allocateWAVPCM(const std::string &filename, const std::string &action, 
-				bool playsLocally); 
-		bool allocateOGG(const std::string &filename, const std::string &action, 
-				bool playsLocally); 
+		bool allocateWAVPCM(const std::string &filename, const std::string &action, bool playsLocally); 
+		bool allocateOGG(const std::string &filename, const std::string &action, bool playsLocally); 
 
 	public:
-		SoundObject(const std::string& name);
+		SoundObject();
 		~SoundObject();
 
 		// Set Variables
@@ -179,7 +174,6 @@ class SoundObject
 		void setVelocity(const WFMath::Vector<3> &vel);
 
 		// Get Variables
-		const std::string getName();
 		const WFMath::Point<3> getPosition();
 		const WFMath::Vector<3> getVelocity();
 
@@ -208,8 +202,8 @@ class SoundService: public Service, public ConsoleObject
 
 	private:
 		// All Allocated buffers
-		std::list<BaseSoundSample*> mSamples;
-		std::list<SoundObject*> mObjects;
+		std::map<std::string, BaseSoundSample*> mSamples;
+		std::map<std::string, SoundObject*> mObjects;
 
 		// Allocation Functions
 		bool allocateWAVPCM(const std::string &filename, bool playsLocally); 
