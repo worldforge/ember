@@ -168,6 +168,7 @@ namespace Ember
 	{
 		if (!ptr)
 		{
+			S_LOG_FAILURE("Invalid OGG file pointer");
 			return;
 		}
 
