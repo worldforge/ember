@@ -76,8 +76,8 @@ class BaseSoundSample
 
 		// Set Variables
 		void setSource(ALuint src);
-		void setPosition(WFMath::Point<3> &pos);
-		void setVelocity(WFMath::Point<3> &vel);
+		void setPosition(const WFMath::Point<3> &pos);
+		void setVelocity(const WFMath::Vector<3> &vel);
 		void setAction(const std::string &act);
 
 		// Get Variables
@@ -121,7 +121,6 @@ class StreamedSoundSample : public BaseSoundSample
 		FILE*				mFile;
 		OggVorbis_File mStream;
 		ALuint			mBuffers[2];
-		ALuint			mSource;
 		ALenum			mFormat;
 		ALuint			mRate;
 		bool				mPlaying;
@@ -161,7 +160,7 @@ class SoundObject
 		std::string mName;
 
 		WFMath::Point<3> mPosition;
-		WFMath::Point<3> mVelocity;
+		WFMath::Vector<3> mVelocity;
 
 		std::list<BaseSoundSample*> mSamples;
 
@@ -176,13 +175,13 @@ class SoundObject
 		~SoundObject();
 
 		// Set Variables
-		void setPosition(WFMath::Point<3> &pos);
-		void setVelocity(WFMath::Point<3> &vel);
+		void setPosition(const WFMath::Point<3> &pos);
+		void setVelocity(const WFMath::Vector<3> &vel);
 
 		// Get Variables
 		const std::string getName();
-		WFMath::Point<3> getPosition();
-		WFMath::Point<3> getVelocity();
+		const WFMath::Point<3> getPosition();
+		const WFMath::Vector<3> getVelocity();
 
 		// Register new Buffers
 		bool registerSound(const std::string &filename, const std::string &action, bool playLocally,

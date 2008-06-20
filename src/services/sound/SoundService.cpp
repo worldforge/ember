@@ -36,17 +36,29 @@
 
 namespace Ember
 {
-	void BaseSoundSample::setPosition(WFMath::Point<3> &pos)
+	void checkAlError()
+	{
+		ALenum error = alGetError();
+		if (error == AL_NO_ERROR)
+			return;
+
+		S_LOG_FAILURE(std::string("openAl error: ") + 
+				std::string(alutGetErrorString(error)));
+	}
+
+	void BaseSoundSample::setPosition(const WFMath::Point<3> &pos)
 	{
 		if (mPlayPosition == PLAY_LOCAL)
 			return;
 
 		alSource3f(mSource, AL_POSITION, pos.x(), pos.y(), pos.z());
+		checkAlError();
 	}
 
-	void BaseSoundSample::setVelocity(WFMath::Point<3> &vel)
+	void BaseSoundSample::setVelocity(const WFMath::Vector<3> &vel)
 	{
 		alSource3f(mSource, AL_VELOCITY, vel.x(), vel.y(), vel.z());
+		checkAlError();
 	}
 
 	void BaseSoundSample::setSource(ALuint src)
@@ -98,7 +110,10 @@ namespace Ember
 	StaticSoundSample::~StaticSoundSample()
 	{
 		alDeleteBuffers(1, &mBuffer);
+		checkAlError();
+
 		alDeleteSources(1, &mSource);
+		checkAlError();
 	}
 
 	ALuint StaticSoundSample::getBuffer()
@@ -124,6 +139,7 @@ namespace Ember
 	void StaticSoundSample::play()
 	{
 		alSourcePlay(mSource);
+		checkAlError();
 	}
 
 	// Streamed (OGG)
@@ -137,8 +153,13 @@ namespace Ember
 	StreamedSoundSample::~StreamedSoundSample()
 	{
 		alSourceStop(mSource);
+		checkAlError();
+
 		alDeleteSources(1, &mSource);
+		checkAlError();
+
 		alDeleteBuffers(2, mBuffers);
+		checkAlError();
 
 		ov_clear(&mStream);
 	}
@@ -190,28 +211,27 @@ namespace Ember
 
 	void StreamedSoundSample::cycle()
 	{
-		int processed;
+		ALint processed;
 		bool active = true;
 		
-		// Im not sure if i should use this, anyway
-		// if i dont need it (obviously performance side)
-		// just remove it.
-		#ifndef WIN32
-		usleep(1000);
-		#else
-		Sleep(1000);
-		#endif
-
 		alGetSourcei(mSource, AL_BUFFERS_PROCESSED, &processed);
-		while (processed--)
+		checkAlError();
+		while (processed > 0)
 		{
 			ALuint buffer;
 
 			alSourceUnqueueBuffers(mSource, 1, &buffer);
+			checkAlError();
 
 			active = stream(buffer);
+			if (!active)
+				break;
 
 			alSourceQueueBuffers(mSource, 1, &buffer);
+			checkAlError();
+
+			alGetSourcei(mSource, AL_BUFFERS_PROCESSED, &processed);
+			checkAlError();
 		}
 	}
 
@@ -253,6 +273,8 @@ namespace Ember
 		}
 
 		alBufferData(buffer, mFormat, data, size, mRate);
+		checkAlError();
+
 		return true;
 	}
 		
@@ -276,7 +298,10 @@ namespace Ember
 
 		mPlaying = true;
 		alSourceQueueBuffers(mSource, 2, mBuffers);
+		checkAlError();
+
 		alSourcePlay(mSource);
+		checkAlError();
 	}
 
 	/* Constructor */
@@ -313,13 +338,7 @@ namespace Ember
 			alcMakeContextCurrent(Context);
 		#endif
 		
-		if(int error = alGetError() != AL_NO_ERROR)
-		{
-			S_LOG_FAILURE("Sound Service failed to start: " + 
-					std::string(alutGetErrorString(error))); 
-
-			return Service::FAILURE;
-		}
+		checkAlError();
 		
 		mSamples.clear();
 		mObjects.clear();
@@ -369,7 +388,7 @@ namespace Ember
 		std::list<BaseSoundSample*>::iterator it;
 		for (it = mSamples.begin(); it != mSamples.end(); it++)
 		{
-			BaseSoundSample* sound = dynamic_cast<BaseSoundSample*>(*it);
+			BaseSoundSample* sound = *it;
 			if (sound->getFilename() == filename)
 			{
 				sound->play();	
@@ -385,6 +404,7 @@ namespace Ember
 			if ((*it)->getFilename() == filename)
 			{
 				alSourceStop((*it)->getSource());
+				checkAlError();
 			}
 		}
 	}
@@ -437,7 +457,7 @@ namespace Ember
 		{
 			if ((*it)->getFilename() == filename)
 			{
-				BaseSoundSample* sample = dynamic_cast<BaseSoundSample*>(*it);
+				BaseSoundSample* sample = *it;
 				if (!sample)
 					return false;
 
@@ -456,6 +476,7 @@ namespace Ember
 			const WFMath::Quaternion& ori)
 	{
 		alListener3f(AL_POSITION, pos.x(), pos.y(), pos.z());
+		checkAlError();
 
 		// TODO: Convert the quaternion to forward/up vectors
 		// alListener3f(AL_ORIENTATION, ListenerOri);
@@ -618,8 +639,7 @@ Error0:
 		std::list<BaseSoundSample*>::iterator it;
 		for (it = mSamples.begin(); it != mSamples.end(); it++)
 		{
-			BaseSoundSample* sample = dynamic_cast<BaseSoundSample*>(*it);
-
+			BaseSoundSample* sample = *it;
 			if (sample && sample->getFilename() == filename)
 			{
 				return sample;
@@ -634,7 +654,7 @@ Error0:
 		for (std::list<BaseSoundSample*>::iterator it = mSamples.begin(); 
 				it != mSamples.end(); it++)
 		{
-			BaseSoundSample* sample = dynamic_cast<BaseSoundSample*>(*it);
+			BaseSoundSample* sample = *it;
 			if (sample->getType() == SAMPLE_OGG)
 			{
 				StreamedSoundSample* ogg = dynamic_cast<StreamedSoundSample*>(*it);
@@ -648,7 +668,7 @@ Error0:
 		for (std::list<SoundObject*>::iterator it = mObjects.begin();
 				it != mObjects.end(); it++)
 		{
-			SoundObject* object = dynamic_cast<SoundObject*>(*it);
+			SoundObject* object = *it;
 			object->playQueued();
 		}
 	}
@@ -658,8 +678,7 @@ Error0:
 		std::list<SoundObject*>::iterator it;
 		for (it = mObjects.begin(); it != mObjects.end(); it++)
 		{
-			SoundObject* obj = dynamic_cast<SoundObject*>(*it);
-
+			SoundObject* obj = *it;
 			if (obj && obj->getName() == name)
 			{
 				return obj;
@@ -675,12 +694,12 @@ Error0:
 		mSamples.clear();
 	}
 
-	void SoundObject::setPosition(WFMath::Point<3> &pos)
+	void SoundObject::setPosition(const WFMath::Point<3> &pos)
 	{
 		mPosition = pos;
 	}
 
-	void SoundObject::setVelocity(WFMath::Point<3> &vel)
+	void SoundObject::setVelocity(const WFMath::Vector<3> &vel)
 	{
 		mVelocity = vel;
 	}
@@ -690,12 +709,12 @@ Error0:
 		return mName;
 	}
 
-	WFMath::Point<3> SoundObject::getPosition()
+	const WFMath::Point<3> SoundObject::getPosition()
 	{
 		return mPosition;
 	}
 
-	WFMath::Point<3> SoundObject::getVelocity()
+	const WFMath::Vector<3> SoundObject::getVelocity()
 	{
 		return mVelocity;
 	}
@@ -705,7 +724,7 @@ Error0:
 		for (std::list<BaseSoundSample*>::iterator it = mSamples.begin(); 
 				it != mSamples.end(); it++)
 		{
-			BaseSoundSample* sample = dynamic_cast<BaseSoundSample*>(*it);
+			BaseSoundSample* sample = *it;
 			if (sample->getType() == SAMPLE_OGG)
 			{
 				StreamedSoundSample* ogg = dynamic_cast<StreamedSoundSample*>(*it);
@@ -722,7 +741,9 @@ Error0:
 		for (std::list<BaseSoundSample*>::iterator it = mSamples.begin(); 
 				it != mSamples.end(); it++)
 		{
-			BaseSoundSample* sample = dynamic_cast<BaseSoundSample*>(*it);
+			BaseSoundSample* sample = *it;
+
+			// TODO
 		}
 	}
 
@@ -870,7 +891,7 @@ Error0:
 		std::list<BaseSoundSample*>::iterator it;
 		for (it = mSamples.begin(); it != mSamples.end(); it++)
 		{
-			BaseSoundSample* sound = dynamic_cast<BaseSoundSample*>(*it);
+			BaseSoundSample* sound = *it;
 			if (sound->getFilename() == filename) 
 			{
 				S_LOG_INFO("Sound Sample (" + filename + ") already allocated.");
@@ -925,7 +946,7 @@ Error0:
 		std::list<BaseSoundSample*>::iterator it;
 		for (it = mSamples.begin(); it != mSamples.end(); )
 		{
-			BaseSoundSample* sound = dynamic_cast<BaseSoundSample*>(*it);
+			BaseSoundSample* sound = *it;
 			if (sound->getFilename() == filename) 
 			{
 				it = mSamples.erase(it);
