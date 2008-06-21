@@ -121,6 +121,8 @@ TerrainPage::TerrainPage(TerrainPosition position, const std::map<const Mercator
 	S_LOG_VERBOSE("Number of valid segments: " << mValidSegments.size());
 	setupShadowTechnique();
 	mTerrainSurface->setShadow(&mShadow);
+
+	mNextMod = mTModList.begin();
 }
 
 TerrainPage::~TerrainPage()
@@ -433,16 +435,53 @@ void TerrainPage::unregisterBridge()
 }
 
 
-void TerrainPage::addTerrainModifier(int x, int y, Mercator::TerrainMod *newmod)
+void TerrainPage::addTerrainModifier(int sx, int sy, int mx, int my, int mz, Mercator::TerrainMod *newmod)
 {
-	mTModList.push_back(terrainModListEntry(x, y, newmod));
-	EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment(x,y)->addMod(newmod);
+	mTModList.push_back(terrainModListEntry(sx, sy, mx, my, mz, newmod));
+	EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment(sx,sy)->addMod(newmod);
+	
+	if(mBridge)
+		mBridge->updateTerrain();	// update the terrain data now; note that this does not update
+						//  the ogre data, so we won't be able to see the change yet.
 }
 
 TerrainPosition *TerrainPage::getTerrainModifierPos()
 {
 	S_LOG_INFO("Giving terrainModifier position at: " << mTModList.front().X() << "," << mTModList.front().Y()); 
-	return mTModList.front().Position();
+	//return mTModList.front().Position();
+	return NextModListEntry().Position();
+}
+
+int TerrainPage::getTerrainModifierZ()
+{
+	return mNextMod->Z();
+}
+
+terrainModListEntry TerrainPage::NextModListEntry()
+{
+	if(mNextMod == mTModList.end())
+	{
+		mNextMod = mTModList.begin();
+	} else {
+		mNextMod++;
+	}
+
+	return *mNextMod;
+}
+
+int TerrainPage::TerrainModifierSegX()
+{
+	return mNextMod->SegX();
+}
+
+int TerrainPage::TerrainModifierSegY()
+{
+	return mNextMod->SegY();
+}
+
+int TerrainPage::ModListSize()
+{
+	return mTModList.size();
 }
 
 	/** Used for the terrainModListEntry class **/
@@ -450,25 +489,48 @@ terrainModListEntry::terrainModListEntry()
 {
 	seg_x = 0;
 	seg_y = 0;
+	mod_x = 0;
+	mod_y = 0;
+	mod_z = 0;
 	modifier = NULL;
 }
 
-terrainModListEntry::terrainModListEntry(int x, int y, Mercator::TerrainMod *newmod)
+terrainModListEntry::terrainModListEntry(int sx, int sy, int mx, int my, int mz, Mercator::TerrainMod *newmod)
 {
-	seg_x = x;
-	seg_y = y;
+	seg_x = sx;
+	seg_y = sy;
+
+	mod_x = mx;
+	mod_y = my;
+	mod_z = mz;
+
 	modifier = newmod;
 	S_LOG_INFO("Adding new terrain modifier at: " << seg_x << "," << seg_y);
 }
 
-int terrainModListEntry::X()
+int terrainModListEntry::SegX()
 {
 	return seg_x;
 }
 
-int terrainModListEntry::Y()
+int terrainModListEntry::SegY()
 {
 	return seg_y;
+}
+
+int terrainModListEntry::X()
+{
+	return mod_x;
+}
+
+int terrainModListEntry::Y()
+{
+	return mod_y;
+}
+
+int terrainModListEntry::Z()
+{
+	return mod_z;
 }
 
 Mercator::TerrainMod *terrainModListEntry::Modifier()
@@ -478,7 +540,7 @@ Mercator::TerrainMod *terrainModListEntry::Modifier()
 
 TerrainPosition *terrainModListEntry::Position()
 {
-	return new TerrainPosition(seg_x, seg_y);
+	return new TerrainPosition(-seg_x*64 - mod_x, seg_y*64 + mod_y);
 }
 
 }

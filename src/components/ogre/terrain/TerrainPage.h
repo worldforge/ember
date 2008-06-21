@@ -66,16 +66,25 @@ TYPEDEF_STL_MAP(const Mercator::Shader*, TerrainShader*, ShaderMap);
 class terrainModListEntry {
 	public:
 		terrainModListEntry();
-		terrainModListEntry(int x, int y, Mercator::TerrainMod *modifier);
+		terrainModListEntry(int sx, int sy, int mx, int my, int mz, Mercator::TerrainMod *modifier);
 
 		int X();
 		int Y();
+		int Z();
 		TerrainPosition *Position();
+		int SegX();
+		int SegY();
 		Mercator::TerrainMod *Modifier();
 		
 	private:
+		 // Segment the modifier is applied to
 		int	seg_x;
 		int	seg_y;
+		 // Position of modifier relative to segment
+		int	mod_x;
+		int	mod_y;
+		int	mod_z;
+
 		Mercator::TerrainMod *modifier;
 };
 
@@ -260,7 +269,7 @@ public:
 	 *    @brief Adds the specified modifier to the segment at (x,y)
 	 * This is currently called from TerrainGenerator -tb
 	 */
-	void addTerrainModifier(int x, int y, Mercator::TerrainMod *modifier);
+	void addTerrainModifier(int sx, int sy, int mx, int my, int mz, Mercator::TerrainMod *modifier);
 
 	/**
 	 *    @brief Returns the (2d) position of an applied modifier
@@ -268,10 +277,28 @@ public:
 	 */
 	TerrainPosition *getTerrainModifierPos();
 
-	/**
-	 *    @brief 
-	 */	
+	int getTerrainModifierZ();
 
+	/**
+	 *    @brief Returns the X index of the segment a modifier is applied to
+	*/
+	int	TerrainModifierSegX();
+
+	/**
+	 *    @brief Returns the Y index of the segment a modifier is applied to
+	*/
+	int	TerrainModifierSegY();
+
+	/**
+	 *    @brief Returns a modifier from the list.
+	 *	Each call to this function will return a new modifier until the end of the list
+	 */	
+	terrainModListEntry NextModListEntry();
+
+	/**
+	 *    @brief Gives the size of mTModList
+	*/
+	int ModListSize();
 
 private:
 
@@ -341,6 +368,7 @@ private:
 
 
 	std::list<terrainModListEntry> mTModList;
+	std::list<terrainModListEntry>::iterator mNextMod;
 
 };
 

@@ -132,10 +132,8 @@ TerrainGenerator::~TerrainGenerator()
 		delete J->second;
 	}
 	
-			
 	delete mTerrain;
 	//delete mTerrainPageSource;
-	
 }
 
 Mercator::Terrain& TerrainGenerator::getTerrain()
@@ -368,10 +366,10 @@ void TerrainGenerator::buildHeightmap()
 		}
 	}
 
-	mTerrain->getSegment(0,0)->addMod(myCrater);
+//	mTerrain->getSegment(0,0)->addMod(myCrater);
 	if( getTerrainPage(TerrainPosition(2,2)) != NULL )
 	{
-		getTerrainPage(TerrainPosition(2,2))->addTerrainModifier(2,2,myCrater);
+		getTerrainPage(TerrainPosition(2,2))->addTerrainModifier(2,2,32,32,20,myCrater);
 		S_LOG_INFO("Added modifier at " << 2 << "," << 2);
 		TerrainPosition *newModPos = getTerrainPage(TerrainPosition(2,2))->getTerrainModifierPos();
 		S_LOG_INFO("New modifier's position: " << newModPos->x() << "," << newModPos->y());

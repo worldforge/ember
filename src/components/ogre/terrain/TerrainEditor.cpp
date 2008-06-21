@@ -231,20 +231,26 @@ void TerrainEditor::createOverlay()
 
 	const WFMath::Ball<3> myMathBall(WFMath::Point<3>(32,32,10), 32);		//tb
 	Mercator::CraterTerrainMod *myCrater = new Mercator::CraterTerrainMod(myMathBall); //tb
-	S_LOG_INFO("WOO1");
 	if( EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(2,2)) != NULL )
 	{
-		S_LOG_INFO("WOO2");
-		EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(2,2))->addTerrainModifier(2,2,myCrater);
+		EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(2,2))->addTerrainModifier(2,2,32,32,20,myCrater);
 		S_LOG_INFO("Added modifier at " << 2 << "," << 2);
 		TerrainPosition *newModPos = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(2,2))->getTerrainModifierPos();
 		S_LOG_INFO("New modifier's position: " << newModPos->x() << "," << newModPos->y());
 	}
 	
-	S_LOG_INFO("WOO3");
-
 	if (!mOverlayNode) {
-		
+
+		const WFMath::Ball<3> myMathBall(WFMath::Point<3>(32,32,20), 32);		//tb
+		Mercator::CraterTerrainMod *myCrater = new Mercator::CraterTerrainMod(myMathBall); //tb
+		if( EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(1,1)) != NULL )
+		{
+			EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(1,1))->addTerrainModifier(1,1,32,32,20,myCrater);
+			S_LOG_INFO("Added modifier at " << 1 << "," << 1);
+			TerrainPosition *newModPos = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(1,1))->getTerrainModifierPos();
+			S_LOG_INFO("New modifier's position: " << newModPos->x() << "," << newModPos->y());
+		}
+
 		mOverlayNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
 		
 		const Mercator::Terrain& terrain = EmberOgre::getSingleton().getTerrainGenerator()->getTerrain();
@@ -267,36 +273,7 @@ void TerrainEditor::createOverlay()
 				entity->setMaterialName("BasePointMarkerMaterial");
 				entity->setRenderingDistance(300);
 				entity->setQueryFlags(MousePicker::CM_UNDEFINED);
-				basepointNode->attachObject(entity);
-
-				// Begin test by Tamas
-				//  The following block of code produces a column of spheres above
-				//    the terrain segment at (2,2). I intend to expand on this so
-				//    that it produces a column of spheres above segments with
-				//    modifiers applied.
-				Ogre::SceneNode* basepointNode2 = mOverlayNode->createChildSceneNode();
-				Ogre::Vector3 ogrepos2 = Atlas2Ogre(tPos);
-				
-				//ogrepos2.x = terrain.getSegment(2,2)->getXRef();
-//				ogrepos2.x = terrain.getSegment(-2,-2)->getXRef();
-//				ogrepos2.y = terrain.getSegment(-2,-2)->getMax();
-//				ogrepos2.z = terrain.getSegment(-2,-2)->getYRef();
-				
-				TerrainPage *currentPage = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(tPos);
-				TerrainPosition *modPos = currentPage->getTerrainModifierPos();
-
-				ogrepos2.x = modPos->x();
-				ogrepos2.y = 30; //modPos->y();
-				ogrepos2.z = modPos->y();
-				S_LOG_INFO("Attempting to place mod marker at " << ogrepos2.x << "," << ogrepos2.y << "," << ogrepos2.z);
-				basepointNode2->setPosition(ogrepos2);
-				std::stringstream ss2;
-				ss2 << "terrainMod marker" << x << "_" << y;
-				Ogre::Entity* entity2 = EmberOgre::getSingleton().getSceneManager()->createEntity(ss2.str(), "3d_objects/primitives/models/sphere.mesh");
-				entity->setMaterialName("BasePointMarkerMaterial");
-				entity->setRenderingDistance(900);
-				basepointNode2->attachObject(entity2);
-				// End test	-tb					
+				basepointNode->attachObject(entity);				
 
 				BasePointUserObject* userObject = new BasePointUserObject(TerrainPosition(x,y), basepoint, basepointNode);
 				entity->setUserObject(userObject);
@@ -307,6 +284,58 @@ void TerrainEditor::createOverlay()
 				mBasePointUserObjects[ss_.str()] = userObject;
 			}
 		}
+
+		const TerrainGenerator::TerrainPagestore& pages = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPages();
+		TerrainPage *page = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(2,2));
+		int numMods = page->ModListSize();
+		TerrainPosition *modPos = page->getTerrainModifierPos();
+				S_LOG_INFO("NUMER OF MODS: " << numMods);
+				for(; numMods > 0; numMods--) {
+					Ogre::SceneNode* terrainModNode = mOverlayNode->createChildSceneNode();
+					Ogre::Vector3 ogrepos = Atlas2Ogre(TerrainPosition(2,2));
+					modPos = page->getTerrainModifierPos();
+					ogrepos.x = modPos->y();
+					ogrepos.y = page->getTerrainModifierZ();
+					ogrepos.z = modPos->x();
+					S_LOG_INFO("Attempting to place mod marker at " << ogrepos.x << "," << ogrepos.y << "," << ogrepos.z);
+					terrainModNode->setPosition(ogrepos);
+					std::stringstream ss2;
+					ss2 << "terrainMod marker" << ogrepos.x << "_" << ogrepos.y;
+					Ogre::Entity* entity = EmberOgre::getSingleton().getSceneManager()->createEntity(ss2.str(), "3d_objects/primitives/models/box.mesh");
+					entity->setMaterialName("BasePointMarkerMaterial");
+					entity->setRenderingDistance(900);
+					terrainModNode->attachObject(entity);
+				}
+/*		
+		for(TerrainGenerator::TerrainPagestore::const_iterator I = pages.begin(); I != pages.end(); ++I) {
+			x = I->first;
+			for (TerrainGenerator::TerrainPagecolumn::const_iterator J = I->second.begin(); J != I->second.end(); ++J) {
+				y = J->first;
+				TerrainPage *page = J->second;
+				
+				Ogre::SceneNode* terrainModNode = mOverlayNode->createChildSceneNode();
+				Ogre::Vector3 ogrepos = Atlas2Ogre(TerrainPosition(x,y));
+				
+				//page = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(x,y));
+				
+				int numMods = page->ModListSize();
+				//for(; numMods != 0; numMods--) {
+					TerrainPosition *modPos = page->getTerrainModifierPos();
+					ogrepos.x = modPos->x();
+					ogrepos.y = 30; //modPos->y();
+					ogrepos.z = modPos->y();
+					S_LOG_INFO("Attempting to place mod marker at " << ogrepos.x << "," << ogrepos.y << "," << ogrepos.z);
+					terrainModNode->setPosition(ogrepos);
+					std::stringstream ss2;
+					ss2 << "terrainMod marker" << x << "_" << y;
+					Ogre::Entity* entity = EmberOgre::getSingleton().getSceneManager()->createEntity(ss2.str(), "3d_objects/primitives/models/sphere.mesh");
+					entity->setMaterialName("BasePointMarkerMaterial");
+					entity->setRenderingDistance(900);
+					terrainModNode->attachObject(entity);
+				//}
+			}
+		}
+*/
 		///register the pick listener
 		EmberOgre::getSingleton().getMainCamera()->pushWorldPickListener(&mPickListener);
 	}
