@@ -334,26 +334,56 @@ StaticAdapter* AdapterFactory::createStaticAdapter(CEGUI::Window* container, con
 	}
 }
 
-AdapterBase* AdapterFactory::createAdapterByType(std::string type, CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
+AdapterBase* AdapterFactory::createAdapterByType(std::string type, CEGUI::Window* container, const std::string& adapterPrefix, ::Atlas::Message::Element& element)
 {
-	switch (type)
+	if (type == "string")
 	{
-	case "string":
+		if (element.isNone()) { element = ""; }
 		return createStringAdapter(container, adapterPrefix, element);
-	case "number":
+	}
+	else if (type == "number")
+	{
+		if (element.isNone()) { element = 0.0; }
 		return createNumberAdapter(container, adapterPrefix, element);
-	case "size":
+	}
+	else if (type == "size")
+	{
+		if (element.isNone()) { element = ::Atlas::Message::ListType(); }
 		return createSizeAdapter(container, adapterPrefix, element);
-	case "position":
+	}
+	else if (type == "position")
+	{
+		if (element.isNone()) { element = ::Atlas::Message::ListType(); }
 		return createPositionAdapter(container, adapterPrefix, element);
-	case "position2d":
+	}
+	else if (type == "position2d")
+	{
+		if (element.isNone()) { element = ::Atlas::Message::ListType(); }
 		return createPosition2DAdapter(container, adapterPrefix, element);
-	case "number":
+	}
+	else if (type == "map")
+	{
+		if (element.isNone()) { element = ::Atlas::Message::MapType();}
 		return createNumberAdapter(container, adapterPrefix, element);
-	case "number":
+	}
+	else if (type == "list")
+	{
+		if (element.isNone()) { element = ::Atlas::Message::ListType(); }
+		return createListAdapter(container, adapterPrefix, element);
+	}
+	else if (type == "orientation")
+	{
+		if (element.isNone()) { element = ::Atlas::Message::ListType(); }
 		return createNumberAdapter(container, adapterPrefix, element);
-	case "static":
+	}
+	else if (type == "static")
+	{
+		if (element.isNone()) { element = ""; }
 		return createStaticAdapter(container, adapterPrefix, element);
+	}
+	else
+	{
+		return 0;
 	}
 }
 
