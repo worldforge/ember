@@ -52,10 +52,10 @@ void EntityCreator::showRecipe(EmberOgre::EntityRecipe& recipe, CEGUI::Window* c
 	GUIAdaptersStore::iterator end = recipe.getGUIAdaptersIteratorEnd();
 	for (; I != end; I++)
 	{
-		Atlas::Message::Element* element = new Atlas::Message::Element(I->first);
+		Atlas::Message::Element* element = new Atlas::Message::Element();
 		CEGUI::Window* window = mGuiManager.createWindow("DefaultGUISheet");
 
-		factory.createStaticAdapter(window, "testAdapter", *element);
+		factory.createAdapterByType(I->second->getType(), window, "testAdapter", *element);
 		container->addChildWindow(window);
 	}
 }

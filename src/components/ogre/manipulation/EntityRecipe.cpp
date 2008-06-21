@@ -109,9 +109,9 @@ void EntityRecipe::doTest()
 	Ember::EmberServices::getSingleton().getScriptingService()->executeCode(mScript, "LuaScriptingProvider");
 
 	// Calling test function
-	Ember::EmberServices::getSingleton().getScriptingService()->callFunction("fTest", "LuaScriptingProvider", callContext);
+	Ember::EmberServices::getSingleton().getScriptingService()->callFunction("fTest", "LuaScriptingProvider", &callContext);
 
-	LuaRef returnValue( callContext->getReturnValue() );
+	LuaRef returnValue( callContext.getReturnValue() );
 
 	S_LOG_VERBOSE(lua_typename(0, returnValue.type()));
 
@@ -119,8 +119,6 @@ void EntityRecipe::doTest()
 	returnObj = returnValue.asObject<Atlas::Message::Element>("Atlas::Message::Element");
 
 	S_LOG_VERBOSE(returnObj.getType() << " " << (returnObj.getType() == Atlas::Message::Element::TYPE_FLOAT));
-
-	delete callContext;
 }
 
 }

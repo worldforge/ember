@@ -40,4 +40,9 @@ GUIAdapter::~GUIAdapter()
 
 }
 
+std::string GUIAdapter::getType()
+{
+	return mType;
+}
+
 }

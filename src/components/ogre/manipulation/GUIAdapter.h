@@ -43,6 +43,11 @@ public:
 	 */
 	virtual ~GUIAdapter();
 
+	/**
+	 * Returns adapter type.
+	 */
+	std::string getType();
+
 protected:
 	/**
 	 * Adapter type.
