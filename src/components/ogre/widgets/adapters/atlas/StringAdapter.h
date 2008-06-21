@@ -36,7 +36,7 @@ namespace Atlas {
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
-class StringAdapter : AdapterBase
+class StringAdapter : public AdapterBase
 {
 public:
 	StringAdapter(const ::Atlas::Message::Element& element, CEGUI::Combobox* textWindow);

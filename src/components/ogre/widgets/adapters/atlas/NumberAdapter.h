@@ -36,7 +36,7 @@ namespace Atlas {
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
-class NumberAdapter : AdapterBase
+class NumberAdapter : public AdapterBase
 {
 public:
     NumberAdapter(const ::Atlas::Message::Element& element, CEGUI::Combobox* textWindow);
