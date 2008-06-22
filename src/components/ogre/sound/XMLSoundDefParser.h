@@ -35,7 +35,7 @@ public :
 	XMLSoundDefParser();
 	~XMLSoundDefParser();
 
-	void parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName);
+	void parseScript(Ogre::DataStreamPtr stream);
 
 private:
 

@@ -35,7 +35,7 @@ XMLSoundDefParser::~XMLSoundDefParser()
 {
 }
 
-void XMLSoundDefParser::parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName)
+void XMLSoundDefParser::parseScript(Ogre::DataStreamPtr stream)
 {
 	TiXmlDocument xmlDoc;
 	XMLHelper xmlHelper;
@@ -113,7 +113,15 @@ void XMLSoundDefParser::readBuffer(Ember::SoundObject* obj, TiXmlElement* objNod
 		type = Ember::SAMPLE_OGG;
 	}
 
-	obj->registerSound(filename, action, playsReal, type);
+	#define resourceMgr Ogre::ResourceGroupManager::getSingleton()
+	Ogre::FileInfoListPtr files = resourceMgr.findResourceFileInfo("General", filename);
+	Ogre::FileInfoList::iterator I = files->begin();
+	if (I != files->end()) 
+	{
+		std::string finalName = I->path + I->filename;
+		obj->registerSound(finalName, action, playsReal, type);
+	}
+	#undef resourceMgr
 }
 
 }

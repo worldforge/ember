@@ -103,11 +103,17 @@ namespace Ember
 
 	StaticSoundSample::~StaticSoundSample()
 	{
-		alDeleteBuffers(1, &mBuffer);
-		checkAlError();
+		if (alIsBuffer(mBuffer))
+		{
+			alDeleteBuffers(1, &mBuffer);
+			checkAlError();
+		}
 
-		alDeleteSources(1, &mSource);
-		checkAlError();
+		if (alIsSource(mSource))
+		{
+			alDeleteSources(1, &mSource);
+			checkAlError();
+		}
 	}
 
 	ALuint StaticSoundSample::getBuffer()

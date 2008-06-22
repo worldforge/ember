@@ -4,7 +4,8 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2006
+// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2006,
+// Rômulo Fernandes <abra185@gmail.com>, (C) 2008
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -31,6 +32,7 @@ class FileSystemArchiveFactory;
 
 /**
 @author Erik Hjortsberg
+@author Rômulo Fernandes
 */
 class OgreResourceLoader{
 public:
@@ -53,6 +55,7 @@ protected:
 	Ogre::ConfigFile mConfigFile;
 	
 	void loadSection(const std::string& sectionName);
+	void allocateSounds();
 	
 	bool addUserMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive);
 	bool addSharedMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive);
