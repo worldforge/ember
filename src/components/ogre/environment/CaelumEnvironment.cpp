@@ -69,6 +69,7 @@ CaelumEnvironment::~CaelumEnvironment()
 	delete mSky;
 	delete mSun;
 	delete mWater;
+	mWindow->removeListener(mCaelumSystem);
 	if (mCaelumSystem) {
 		mCaelumSystem->shutdown(true);
 // 		delete mCaelumSystem; //calling shutdown() will delete the instance, so no need to do it again

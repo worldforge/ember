@@ -51,14 +51,18 @@ ListHolder::ListHolder(CEGUI::Listbox* listbox, CEGUI::Editbox* filterEditbox)
 
 ListHolder::~ListHolder()
 {
+	resetList();
+// 	for (ListItemStore::iterator I(mItems.begin()); I != mItems.end(); ++I) {
+// 		delete *I;
+// 	}
 }
 
 
 void ListHolder::addItem(CEGUI::ListboxItem* item)
 {
+	item->setAutoDeleted(false);
+	mItems.push_back(item);
 	if (mListbox) {
-		item->setAutoDeleted(false);
-		mItems.push_back(item);
 		if (isItemAllowed(item)) {
 			mListbox->addItem(item);
 		}
