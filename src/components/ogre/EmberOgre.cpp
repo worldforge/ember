@@ -209,6 +209,9 @@ EmberOgre::~EmberOgre()
 	///start with deleting the eris world, then shut down ogre
 // 	delete mWorldView;
 
+	if (mRoot) {
+		mRoot->removeFrameListener(mMotionManager);
+	}
 	delete mMotionManager;
 	delete mTerrainGenerator;
 
@@ -222,9 +225,9 @@ EmberOgre::~EmberOgre()
 	///by deleting the model manager we'll assure that 
 	delete mModelDefinitionManager;
 
-	if (mWindow) {
-		mRoot->detachRenderTarget(mWindow);
-	}
+// 	if (mWindow) {
+// 		mRoot->getRenderSystem()->destroyRenderTarget(mWindow->getName());
+// 	}
 	
 	
 	if (mOgreSetup.get()) {
@@ -234,6 +237,7 @@ EmberOgre::~EmberOgre()
 	
 	///Ogre is destroyed already, so we can't deregister this: we'll just destroy it
 	delete mLogObserver;
+	delete mOgreLogManager;
 	
 	///delete this first after Ogre has been shut down, since it then deletes the EmberOgreFileSystemFactory instance, and that can only be done once Ogre is shutdown
 	delete mResourceLoader;
@@ -310,7 +314,7 @@ bool EmberOgre::setup()
 	mLogObserver = new OgreLogObserver();
 	
 	///if we do this we will override the automatic creation of a LogManager and can thus route all logging from ogre to the ember log
-	new Ogre::LogManager();
+	mOgreLogManager = new Ogre::LogManager();
 	Ogre::LogManager::getSingleton().createLog("Ogre", true, false, true);
 	Ogre::LogManager::getSingleton().getDefaultLog()->addListener(mLogObserver);
 

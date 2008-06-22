@@ -218,6 +218,8 @@ GUIManager::~GUIManager()
 	delete mLuaScriptModule;
 	//delete mMousePicker;
 	//mMousePicker = 0;
+	
+	WidgetLoader::removeAllWidgetFactories();
 
 }
 

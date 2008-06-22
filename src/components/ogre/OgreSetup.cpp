@@ -80,10 +80,12 @@ void OgreSetup::shutdown()
 			mSceneManagerFactory = 0;
 		}
 		
-		if (mRenderWindow) {
-			mRoot->getRenderSystem()->destroyRenderWindow(mRenderWindow->getName());
-			mRenderWindow = 0;
-		}
+// 		if (mRenderWindow) {
+// // 			mRoot->getRenderSystem()->destroyRenderWindow(mRenderWindow->getName());
+// 			mRoot->detachRenderTarget(mRenderWindow);
+// 			delete mRenderWindow;
+// 			mRenderWindow = 0;
+// 		}
 	}
 	delete mRoot;
 	mRoot = 0;
@@ -99,6 +101,8 @@ void OgreSetup::shutdown()
 // 		mMainVideoSurface = 0;
 // 	}
 	S_LOG_INFO("Shutting down SDL.");
+	///there seems to be memory leaks in the SDL_Video subsystem. Perhaps shutting it down explictely will help?
+	SDL_VideoQuit();
 	SDL_Quit();
 	S_LOG_INFO("SDL shut down.");
 }

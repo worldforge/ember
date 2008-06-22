@@ -460,6 +460,8 @@ protected:
 	*/
 	OgreResourceLoader* mResourceLoader;
 	
+	Ogre::LogManager* mOgreLogManager;
+	
 };
 
 // Input& EmberOgre::getInput() 
