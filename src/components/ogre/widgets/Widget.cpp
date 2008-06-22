@@ -142,30 +142,38 @@ namespace Gui {
 	
 	Widget* WidgetLoader::createWidget(const std::string& name) {
 
-		if (GetFactories().find(name) == GetFactories().end()) {
+		if (getFactories().find(name) == getFactories().end()) {
 			return 0;
 		}
 		
-		Widget* widget = GetFactories()[name]();
+		Widget* widget = getFactories()[name]();
 		return widget;
 	}
 	
 	WidgetLoader::WidgetLoader(const std::string& name, FactoryFunc functor)
 	{
-		GetFactories().insert(WidgetFactoryMap::value_type(name, functor));
+		getFactories().insert(WidgetFactoryMap::value_type(name, functor));
 		
 	}
 
-	WidgetFactoryMap& WidgetLoader::GetFactories()
+	WidgetFactoryMap& WidgetLoader::getFactories()
 	{
 		static WidgetFactoryMap* factoryMap = new WidgetFactoryMap();
 		return *factoryMap;
 	}
 	
-	void WidgetLoader::registerWidget(const std::string& name, FactoryFunc functor)
+	void WidgetLoader::registerWidgetFactory(const std::string& name, FactoryFunc functor)
 	{
-		GetFactories().insert(WidgetFactoryMap::value_type(name, functor));
+		getFactories().insert(WidgetFactoryMap::value_type(name, functor));
+	}
 	
+	void WidgetLoader::removeAllWidgetFactories()
+	{
+		WidgetFactoryMap& factoryMap(getFactories());
+/*		for (WidgetFactoryMap::iterator I = factoryMap.begin(); I != factoryMap.end(); ++I) {
+			delete I->second;
+		}*/
+		factoryMap.clear();
 	}
 	
 	void Widget::registerConsoleVisibilityToggleCommand(const std::string & commandSuffix)

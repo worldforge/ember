@@ -46,17 +46,17 @@ namespace Gui {
 
 WidgetDefinitions::WidgetDefinitions()
 {
-	WidgetLoader::registerWidget("Widget", &WidgetLoader::createWidgetInstance<Widget>);
-	WidgetLoader::registerWidget("ServerWidget", &WidgetLoader::createWidgetInstance<ServerWidget>);
+	WidgetLoader::registerWidgetFactory("Widget", &WidgetLoader::createWidgetInstance<Widget>);
+	WidgetLoader::registerWidgetFactory("ServerWidget", &WidgetLoader::createWidgetInstance<ServerWidget>);
 // 	WidgetLoader::registerWidget("InventoryWidget", &WidgetLoader::createWidgetInstance<Gui::InventoryWidget>);
-	WidgetLoader::registerWidget("InspectWidget", &WidgetLoader::createWidgetInstance<InspectWidget>);
-	WidgetLoader::registerWidget("MakeEntityWidget", &WidgetLoader::createWidgetInstance<MakeEntityWidget>);
-	WidgetLoader::registerWidget("IngameChatWidget", &WidgetLoader::createWidgetInstance<Gui::IngameChatWidget>);
+	WidgetLoader::registerWidgetFactory("InspectWidget", &WidgetLoader::createWidgetInstance<InspectWidget>);
+	WidgetLoader::registerWidgetFactory("MakeEntityWidget", &WidgetLoader::createWidgetInstance<MakeEntityWidget>);
+	WidgetLoader::registerWidgetFactory("IngameChatWidget", &WidgetLoader::createWidgetInstance<Gui::IngameChatWidget>);
 	//WidgetLoader::registerWidget("ConsoleWidget", &WidgetLoader::createWidgetInstance<ConsoleWidget>);
-	WidgetLoader::registerWidget("JesusEdit", &WidgetLoader::createWidgetInstance<JesusEdit>);
-	WidgetLoader::registerWidget("Help", &WidgetLoader::createWidgetInstance<Help>);
-	WidgetLoader::registerWidget("Quit", &WidgetLoader::createWidgetInstance<Quit>);
-	WidgetLoader::registerWidget("MeshPreview", &WidgetLoader::createWidgetInstance<MeshPreview>);
+	WidgetLoader::registerWidgetFactory("JesusEdit", &WidgetLoader::createWidgetInstance<JesusEdit>);
+	WidgetLoader::registerWidgetFactory("Help", &WidgetLoader::createWidgetInstance<Help>);
+	WidgetLoader::registerWidgetFactory("Quit", &WidgetLoader::createWidgetInstance<Quit>);
+	WidgetLoader::registerWidgetFactory("MeshPreview", &WidgetLoader::createWidgetInstance<MeshPreview>);
 	
 
 

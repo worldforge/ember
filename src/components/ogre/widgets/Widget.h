@@ -305,7 +305,7 @@ public:
 	/**
 	map of all factories, we have to use a static function to avoid static initialization order fiasco
 	*/
-	static WidgetFactoryMap& GetFactories();
+	static WidgetFactoryMap& getFactories();
 	
 	/**creates and returns a widget associated to the submitted string
 	if no widget can be found, a null pointer is returned
@@ -317,7 +317,9 @@ public:
 	 * @param name The name of the widget, which can later be used in createWidget
 	 * @param functor A functor to a Widget, for example "&WidgetLoader::createWidgetInstance<Help>"
 	 */
-	static void registerWidget(const std::string& name, FactoryFunc functor );
+	static void registerWidgetFactory(const std::string& name, FactoryFunc functor );
+	
+	static void removeAllWidgetFactories();
 
 	
 	/**
