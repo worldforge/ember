@@ -360,13 +360,6 @@ private:
 	ITerrainPageBridge* mBridge;
 
 
-/*	typedef std::list<terrainModEntry *, std::allocator<terrainModEntry *> > terrainModList;
-
-	terrainModList mModList;
-*/
-
-
-
 	std::list<terrainModListEntry> mTModList;
 	std::list<terrainModListEntry>::iterator mNextMod;
 
