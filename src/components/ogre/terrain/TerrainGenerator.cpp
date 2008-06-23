@@ -87,11 +87,11 @@ namespace Terrain {
 TerrainGenerator::TerrainGenerator(ISceneManagerAdapter* adapter)
 : 
 UpdateShadows("update_shadows", this, "Updates shadows in the terrain."),
-mHasTerrainInfo(false),
-mFoliageBatchSize(32),
 mTerrain(0),
 mSegments(0),
-mSceneManagerAdapter(0)
+mHasTerrainInfo(false),
+mSceneManagerAdapter(0),
+mFoliageBatchSize(32)
 {
 
 	registerSceneManagerAdapter( adapter);
