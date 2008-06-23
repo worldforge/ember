@@ -131,7 +131,6 @@ protected:
 	std::string mNormalTextureName;
 	
 	Ogre::MemoryDataStream* mCoverageDataStream;
-	Ogre::DataStreamPtr mCoverageDataStreamPtr;
 	int mSurfaceIndex;
 	
 	float mScale;

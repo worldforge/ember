@@ -38,9 +38,8 @@ namespace Terrain {
 TerrainPageSurfaceLayer::TerrainPageSurfaceLayer(TerrainPageSurface& terrainPageSurface, const TerrainLayerDefinition& definition, int surfaceIndex, Mercator::Shader* shader)
 : mTerrainPageSurface(terrainPageSurface)
 , mShader(shader)
-, mCoverageImage(new Ogre::Image())
-, mCoverageDataStream(new Ogre::MemoryDataStream(terrainPageSurface.getPixelWidth() * terrainPageSurface.getPixelWidth() * 1, true))
-, mCoverageDataStreamPtr(mCoverageDataStream)
+, mCoverageImage(0)
+, mCoverageDataStream(0)
 , mSurfaceIndex(surfaceIndex)
 , mDefinition(definition)
 {
@@ -51,6 +50,7 @@ TerrainPageSurfaceLayer::TerrainPageSurfaceLayer(TerrainPageSurface& terrainPage
 TerrainPageSurfaceLayer::~TerrainPageSurfaceLayer()
 {
 	delete mCoverageImage;
+	delete mCoverageDataStream;
 }
 
 Ogre::TexturePtr TerrainPageSurfaceLayer::createTexture()
@@ -134,9 +134,9 @@ bool TerrainPageSurfaceLayer::createCoverageImage()
 	if (mCoverageImage) {
 		return false;
 	}
-	mCoverageImage = new Ogre::Image();
 	mCoverageDataStream = new Ogre::MemoryDataStream(mTerrainPageSurface.getPixelWidth() * mTerrainPageSurface.getPixelWidth() * 1, true);
-	mCoverageDataStreamPtr = Ogre::DataStreamPtr(mCoverageDataStream);
+	mCoverageImage = new Ogre::Image();
+	mCoverageImage->loadDynamicImage(mCoverageDataStream->getPtr(), getPixelWidth(), getPixelWidth(), 1, Ogre::PF_A8);
 	return true;
 	
 }
@@ -147,7 +147,7 @@ bool TerrainPageSurfaceLayer::destroyCoverageImage()
 	if (mCoverageImage) {
 		delete mCoverageImage;
 		mCoverageImage = 0;
-		mCoverageDataStreamPtr.setNull();
+		delete mCoverageDataStream;
 		mCoverageDataStream = 0;
 	}
 	return false;
@@ -176,7 +176,6 @@ void TerrainPageSurfaceLayer::updateCoverageImage()
 			}
 		}
 			
-		mCoverageImage->loadRawData(mCoverageDataStreamPtr, getPixelWidth(), getPixelWidth(), Ogre::PF_A8);
 		if (!mTexture.isNull()) {
 			mTexture->loadImage(*mCoverageImage);
 			///if it's alreay loaded we need to blit directly to the hardware buffer to make sure it's updated
