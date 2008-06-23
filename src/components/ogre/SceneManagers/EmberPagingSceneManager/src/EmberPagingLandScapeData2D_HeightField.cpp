@@ -52,6 +52,8 @@ EmberPagingLandScapeData2D_HeightField::EmberPagingLandScapeData2D_HeightField(O
 bool EmberPagingLandScapeData2D_HeightField::_load( const Ogre::uint x, const Ogre::uint z )
 {
 // 	assert(!mTerrainPage);
+	assert(!mHeightData);
+	assert(!mBridge);
 	Terrain::TerrainGenerator* terrainGenerator = EmberOgre::getSingleton().getTerrainGenerator();
 	mXDimension = mZDimension = terrainGenerator->getPageIndexSize();
 

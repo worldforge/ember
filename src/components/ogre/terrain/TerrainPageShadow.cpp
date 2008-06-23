@@ -102,8 +102,8 @@ TerrainPageShadow::TerrainPageShadow(TerrainPage& terrainPage)
 
 TerrainPageShadow::~TerrainPageShadow()
 {
-	delete mShadowChunk;
 	delete mImage;
+	delete mShadowChunk;
 }
 
 void TerrainPageShadow::setLightDirection(const Ogre::Vector3& lightDirection)
@@ -122,37 +122,31 @@ void TerrainPageShadow::createShadowData(unsigned char* data)
 
 void TerrainPageShadow::updateShadow()
 {
-	mShadowChunk = new Ogre::MemoryDataStream(mTerrainPage.getAlphaTextureSize() * mTerrainPage.getAlphaTextureSize() * 1, false);
-	///Create a new image. This image is temporary (since it will be blitted into the hardware memory) and destruction of it will be taken care of by the enveloping DataStreamPtr.
-	Ogre::DataStreamPtr dataStreamPtr(mShadowChunk);
-	Ogre::Image image; ///the image to hold the data
-
+	assert(mShadowChunk);
+	assert(mImage);
 	createShadowData(mShadowChunk->getPtr());
 
-	
 	Ogre::HardwarePixelBufferSharedPtr hardwareBuffer = mTexture->getBuffer();
 	
-	image.loadRawData(dataStreamPtr, mTerrainPage.getAlphaTextureSize(), mTerrainPage.getAlphaTextureSize(), Ogre::PF_L8);
-	
 	///blit the whole image to the hardware buffer
-	Ogre::PixelBox sourceBox = image.getPixelBox();
+	Ogre::PixelBox sourceBox = mImage->getPixelBox();
 	hardwareBuffer->blitFromMemory(sourceBox);
 }
 	
 
 void TerrainPageShadow::createImage()
 {
-	mShadowChunk = new Ogre::MemoryDataStream(mTerrainPage.getAlphaTextureSize() * mTerrainPage.getAlphaTextureSize() * 1, false);
+	assert(!mShadowChunk);
+	mShadowChunk = new Ogre::MemoryDataStream(mTerrainPage.getAlphaTextureSize() * mTerrainPage.getAlphaTextureSize() * 1, true);
 	
 	memset( mShadowChunk->getPtr(), '\0', mShadowChunk->size());
 	
 	
 	createShadowData(mShadowChunk->getPtr());
 	
-	Ogre::DataStreamPtr dataStreamPtr(mShadowChunk);
-		
+	
 	mImage = new Ogre::Image();
-	mImage->loadRawData(dataStreamPtr, mTerrainPage.getAlphaTextureSize(), mTerrainPage.getAlphaTextureSize(), Ogre::PF_L8);
+	mImage->loadDynamicImage(mShadowChunk->getPtr(), mTerrainPage.getAlphaTextureSize(), mTerrainPage.getAlphaTextureSize(), 1, Ogre::PF_L8);
 
 	mTexture->loadImage(*mImage);
 }
