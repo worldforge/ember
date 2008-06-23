@@ -64,7 +64,8 @@ namespace Ogre
 		mRenderable (0),
 		mInit (false),
 		mLoaded (false),
-		mLoading (false)
+		mLoading (false),
+		mTimeUntouched(0)
 {
 	for (unsigned int i = 0; i < 4; i++)
 	{

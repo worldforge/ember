@@ -34,7 +34,9 @@ namespace EmberOgre {
 namespace Terrain {
 
 TerrainPageSurface::TerrainPageSurface(TerrainPage& terrainPage)
-: mTerrainPage(terrainPage), mSurfaceCompiler(new TerrainPageSurfaceCompiler())
+: mTerrainPage(terrainPage)
+, mSurfaceCompiler(new TerrainPageSurfaceCompiler())
+, mShadow(0)
 {
 	///create a name for out material
 // 	S_LOG_INFO("Creating a material for the terrain.");
@@ -51,6 +53,10 @@ TerrainPageSurface::TerrainPageSurface(TerrainPage& terrainPage)
 
 TerrainPageSurface::~TerrainPageSurface()
 {
+	for (TerrainPageSurfaceLayerStore::iterator I(mLayers.begin()); I != mLayers.end(); ++I) 
+	{
+		delete I->second;
+	}
 }
 
 const TerrainPageSurface::TerrainPageSurfaceLayerStore& TerrainPageSurface::getLayers() const

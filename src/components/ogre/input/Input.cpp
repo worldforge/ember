@@ -52,7 +52,10 @@ mCurrentInputMode(IM_GUI)
 , mSuppressForCurrentEvent(false)
 , mMovementModeEnabled(false)
 {
-	
+	mMousePosition.xPixelPosition = 0;
+	mMousePosition.yPixelPosition = 0;
+	mMousePosition.xRelativePosition = 0.0f;
+	mMousePosition.yRelativePosition = 0.0f;
 	
 	//we don't want to send a injectChar to the gui for some keys, put them here
 	mNonCharKeys.insert(SDLK_ESCAPE);

@@ -82,6 +82,11 @@ Avatar::Avatar()
 	updateFromConfig();
 	
 	registerConfigListener("general","logchatmessages", sigc::mem_fun(*this, &Avatar::Config_LogChatMessages));
+	
+	mCurrentMovementState.isMoving = false;
+	mCurrentMovementState.velocity = Ogre::Vector3::ZERO;
+	mCurrentMovementState.orientation = Ogre::Quaternion::IDENTITY;
+	mCurrentMovementState.isRunning = false;
 
 }
 

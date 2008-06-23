@@ -34,7 +34,7 @@ namespace EmberOgre {
 namespace Gui {
 
 ActiveWidgetHandler::ActiveWidgetHandler(::EmberOgre::GUIManager& guiManager)
-: mGuiManager(guiManager)
+: mGuiManager(guiManager), mLastMode(Input::IM_GUI)
 {
 
 	///connect to the changing of input mode since we want to deactivate the current active input window when switching from gui mode to movement mode

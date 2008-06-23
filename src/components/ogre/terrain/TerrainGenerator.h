@@ -111,6 +111,10 @@ public:
 	typedef std::map<int, TerrainPagecolumn > TerrainPagestore;
 	
 	
+	/**
+	 * @brief Default ctor.
+	 * @param adapter An adapter which binds the terrain to a scene manager. The terrain generator will take ownership of the adapter and will destroy it upon it's destruction.
+	 */
 	TerrainGenerator(ISceneManagerAdapter* adapter);
 	virtual ~TerrainGenerator();
 
@@ -348,19 +352,19 @@ protected:
 
 	
 	/**
-	 *    returns whether the foliage should be shown or not
-	 *    note that if the GPU doesn't support the required shaders, this will return false even though it's set in the config
+	 *    @brief Whether the foliage should be shown or not.
+	 *    @note If the GPU doesn't support the required shaders, this will return false even though it's set in the config.
 	 * @return 
 	 */
 	bool isFoliageShown() const;
 	
 	/**
-	 *    Iterates through all TerrainPages and shows or hides the foliage.
+	 *    @brief Iterates through all TerrainPages and shows or hides the foliage.
 	 */
 	void updateFoliageVisibilty();
 
 	/**
-	 *    catch changes to the configuration
+	 *    @brief Catch changes to the configuration.
 	 * @param section 
 	 * @param key 
 	 */
@@ -371,6 +375,10 @@ protected:
 	*/
 	void TerrainArea_Changed(TerrainArea* terrainArea);
 	
+	/**
+	@brief An adapter class which allows us to access the Ogre scene manager.
+	Note that even though this is passed as a parameter in the constructor, this class is then responsible for its destruction.
+	*/
 	ISceneManagerAdapter* mSceneManagerAdapter;
 	
 	unsigned int mFoliageBatchSize;

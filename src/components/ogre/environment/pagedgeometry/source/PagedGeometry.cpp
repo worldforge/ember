@@ -26,6 +26,7 @@ namespace PagedGeometry {
 //-------------------------------------------------------------------------------------
 PagedGeometry::PagedGeometry(Camera* cam, const Real pageSize)
 {
+	lastSceneCam = 0;
 	//Setup camera, scene manager, and scene node
 	if (cam){
 		sceneCam = cam;

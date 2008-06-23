@@ -113,6 +113,7 @@ Eris::Entity(id, ty, vw)
 , mErisEntityBoundingBox(0)
 , mOgreNode(0)
 , mTerrainArea(0)
+, mMovementMode(MM_DEFAULT)
 {
 	createSceneNode(sceneManager);
 }

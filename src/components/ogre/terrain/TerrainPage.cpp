@@ -127,6 +127,7 @@ TerrainPage::~TerrainPage()
 {
 	delete mShadowTechnique;
 	if (mBridge) {
+		///we don't own the bridge, so we shouldn't delete it
 		mBridge->unbindFromTerrainPage();
 	}
 }

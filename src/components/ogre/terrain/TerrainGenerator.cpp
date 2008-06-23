@@ -88,7 +88,10 @@ TerrainGenerator::TerrainGenerator(ISceneManagerAdapter* adapter)
 : 
 UpdateShadows("update_shadows", this, "Updates shadows in the terrain."),
 mHasTerrainInfo(false),
-mFoliageBatchSize(32)
+mFoliageBatchSize(32),
+mTerrain(0),
+mSegments(0),
+mSceneManagerAdapter(0)
 {
 
 	registerSceneManagerAdapter( adapter);
@@ -127,7 +130,7 @@ TerrainGenerator::~TerrainGenerator()
 		delete J->second;
 	}
 	
-			
+	delete mSceneManagerAdapter;
 	delete mTerrain;
 	//delete mTerrainPageSource;
 	

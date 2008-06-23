@@ -88,6 +88,8 @@ void SimpleTerrainPageShadowTechnique::createShadowData(TerrainPage& page, Terra
 
 TerrainPageShadow::TerrainPageShadow(TerrainPage& terrainPage)
 : mTerrainPage(terrainPage)
+, mImage(0)
+, mShadowChunk(0)
 {
 	///we need an unique name for our alpha texture
 	std::stringstream shadowTextureNameSS;
@@ -100,6 +102,8 @@ TerrainPageShadow::TerrainPageShadow(TerrainPage& terrainPage)
 
 TerrainPageShadow::~TerrainPageShadow()
 {
+	delete mShadowChunk;
+	delete mImage;
 }
 
 void TerrainPageShadow::setLightDirection(const Ogre::Vector3& lightDirection)
