@@ -49,7 +49,7 @@ namespace Ember
 	const std::string ConfigService::SETVALUE ( "set_value" );
 	const std::string ConfigService::GETVALUE ( "get_value" );
 
-	ConfigService::ConfigService() : Service(), mHomeDir ( "" )
+	ConfigService::ConfigService() : Service(), mHomeDir ( "" ), mConfig(new varconf::Config())
 	{
 #ifdef __WIN32__
 		char cwd[512];
@@ -82,13 +82,13 @@ namespace Ember
 
 	const ConfigService::SectionMap& ConfigService::getSection ( const std::string& sectionName )
 	{
-		return varconf::Config::inst()->getSection ( sectionName );
+		return mConfig->getSection ( sectionName );
 	}
 
 
 	varconf::Variable ConfigService::getValue ( const std::string& section, const std::string& key ) const
 	{
-		return varconf::Config::inst()->getItem ( section, key );
+		return mConfig->getItem ( section, key );
 	}
 
 	bool ConfigService::getValue ( const std::string& section, const std::string& key, varconf::Variable& value ) const
@@ -103,7 +103,7 @@ namespace Ember
 
 	void ConfigService::setValue ( const std::string& section, const std::string& key, const varconf::Variable& value )
 	{
-		varconf::Config::inst()->setItem ( section, key, value );
+		mConfig->setItem ( section, key, value );
 	}
 
 	bool ConfigService::isItemSet ( const std::string& section, const std::string& key, const std::string& value ) const
@@ -113,8 +113,8 @@ namespace Ember
 
 	Service::Status ConfigService::start()
 	{
-		varconf::Config::inst()->sige.connect ( sigc::mem_fun ( *this, &ConfigService::configError ) );
-		varconf::Config::inst()->sigv.connect ( sigc::mem_fun ( *this, &ConfigService::updatedConfig ) );
+		mConfig->sige.connect ( sigc::mem_fun ( *this, &ConfigService::configError ) );
+		mConfig->sigv.connect ( sigc::mem_fun ( *this, &ConfigService::updatedConfig ) );
 		registerConsoleCommands();
 		setRunning ( true );
 		///can't do this since we must be the first thing initialized
@@ -148,18 +148,18 @@ namespace Ember
 	
 	bool ConfigService::hasItem ( const std::string& section, const std::string& key ) const
 	{
-		return varconf::Config::inst()->find ( section, key );
+		return mConfig->find ( section, key );
 	}
 
 	bool ConfigService::deleteItem ( const std::string& section, const std::string& key )
 	{
-		return varconf::Config::inst()->erase ( section, key );
+		return mConfig->erase ( section, key );
 	}
 
 	bool ConfigService::loadSavedConfig ( const std::string& filename )
 	{
 		S_LOG_INFO ( "Loading shared config file from " << getSharedConfigDirectory() + "/"+ filename << "." );
-		bool success = varconf::Config::inst()->readFromFile ( getSharedConfigDirectory() + "/"+ filename, varconf::GLOBAL );
+		bool success = mConfig->readFromFile ( getSharedConfigDirectory() + "/"+ filename, varconf::GLOBAL );
 		std::string userConfigPath ( getHomeDirectory() + "/" + filename );
 		std::ifstream file ( userConfigPath.c_str() );
 		if ( !file.fail() )
@@ -167,7 +167,7 @@ namespace Ember
 			S_LOG_INFO ( "Loading user config file from "<< getHomeDirectory() + "/" + filename <<"." );
 			try
 			{
-				varconf::Config::inst()->parseStream ( file, varconf::USER );
+				mConfig->parseStream ( file, varconf::USER );
 			}
 			catch ( varconf::ParseError p )
 			{
@@ -186,7 +186,7 @@ namespace Ember
 
 	bool ConfigService::saveConfig ( const std::string& filename )
 	{
-		return varconf::Config::inst()->writeToFile ( filename );
+		return mConfig->writeToFile ( filename );
 	}
 
 	void ConfigService::runCommand ( const std::string &command, const std::string &args )

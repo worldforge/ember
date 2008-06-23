@@ -37,7 +37,7 @@ namespace Ember
 	*
 	* If you want to provide functionality in your class for dynamically reacting to changes to the config you should use the ConfigLister classes instead of interfacing with this service directly.
 	*
-	* @author Erik Hjortsber (erik.hjortsberg@iteam.se)
+	* @author Erik Hjortsberg (erik.hjortsberg@iteam.se)
 	* @author Miguel Guzman Miranda [Aglanor]
 	* @author Joel Schander         [nullstar]
 	*
@@ -73,6 +73,13 @@ namespace Ember
 			void updatedConfig ( const std::string& section, const std::string& key );
 
 			void configError ( const char* error );
+			
+			/**
+			@brief The main configuration store.
+			
+			Even though varconf allows you to use a singleton we'll instead keep our own configuration store, so that we can properly discard of it when we're done.
+			*/
+			std::auto_ptr<varconf::Config> mConfig;
 
 
 		protected:
