@@ -53,6 +53,7 @@ TerrainShader::TerrainShader(Mercator::Terrain* terrain, int terrainIndex,  Ogre
 
 TerrainShader::~TerrainShader()
 {
+	delete mShader;
 	///not available yet
 	//mTerrain->removeShader(mShader)
 }

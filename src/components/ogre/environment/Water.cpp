@@ -269,6 +269,8 @@ public:
 	
 	Water::~Water()
 	{
+		delete mRefractionListener;
+		delete mReflectionListener;
 	}
 
 

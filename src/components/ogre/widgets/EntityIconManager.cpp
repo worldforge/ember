@@ -39,6 +39,18 @@ EntityIconManager::EntityIconManager(GUIManager& guiManager)
 : mGuiManager(guiManager), mIconsCounter(0), mSlotsCounter(0)
 {
 }
+	
+EntityIconManager::~EntityIconManager()
+{
+	for (EntityIconSlotStore::iterator I = mSlots.begin(); I != mSlots.end(); ++I) {
+		delete *I;
+	}
+	
+	for (EntityIconStore::iterator I = mIcons.begin(); I != mIcons.end(); ++I) {
+		delete *I;
+	}
+}
+
 
 
 EntityIconSlot* EntityIconManager::createSlot(unsigned int pixelSize)
@@ -52,6 +64,7 @@ EntityIconSlot* EntityIconManager::createSlot(unsigned int pixelSize)
 	mSlots.push_back(slot);
 	return slot;
 }
+
 
 EntityIcon* EntityIconManager::createIcon(Gui::Icons::Icon* icon, EmberEntity* entity, unsigned int pixelSize)
 {

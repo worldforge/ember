@@ -39,6 +39,7 @@ TerrainArea::TerrainArea(EmberEntity* entity) : mArea(0), mEntity(entity)
 
 TerrainArea::~TerrainArea()
 {
+	delete mArea;
 }
 
 bool TerrainArea::init() {

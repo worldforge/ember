@@ -143,6 +143,9 @@ IconImageStore::IconImageStore(const std::string& imagesetName, Ogre::TexturePtr
 
 IconImageStore::~IconImageStore()
 {
+	for (IconImageStoreEntryStore::iterator I(mIconImages.begin()); I != mIconImages.end(); ++I) {
+		delete *I;
+	}
 ///the stream will be destroyed by the mImageDataStreamPtr pointer
 // 	delete mImageDataStream;
 }

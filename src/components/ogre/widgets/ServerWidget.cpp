@@ -471,6 +471,7 @@ void ServerWidget::gotAllCharacters(Eris::Account* account)
 					itemText += nameElement.asString();
 				}
 			}
+			//TODO: prevent this from leaking memory. Granted, it isn't much, but it would be better if we didn't leak
 			Gui::ColouredListItem* item = new Gui::ColouredListItem(itemText);
 			std::string* id = new std::string(entity->getId());
 			item->setUserData(id);

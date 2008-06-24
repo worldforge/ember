@@ -128,7 +128,7 @@ TerrainGenerator::~TerrainGenerator()
 	
 	for (ShaderStore::iterator J = mShaderMap.begin(); J != mShaderMap.end(); ++J) {
 		delete J->second;
-	}
+	}	
 	
 	delete mSceneManagerAdapter;
 	delete mTerrain;

@@ -49,6 +49,7 @@ typedef std::vector<EntityIconSlot*> EntityIconSlotStore;
 typedef std::vector<EntityIcon*> EntityIconStore;
 
 	EntityIconManager(GUIManager& guiManager);
+	virtual ~EntityIconManager();
 	
 	EntityIconSlot* createSlot(unsigned int pixelSize = 64);
 	void destroySlot(EntityIconSlot* slot);

@@ -42,6 +42,7 @@ EntityIconSlot::EntityIconSlot(EntityIconManager& manager, CEGUI::Window* contai
 
 EntityIconSlot::~EntityIconSlot()
 {
+	removeEntityIcon();
 }
 
 
