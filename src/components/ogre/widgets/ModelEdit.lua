@@ -50,7 +50,7 @@ end
 
 function ModelEdit.fillMaterialList()
 	ModelEdit.contentparts.submeshInfo.listholder:resetList()
-	materialDefMgr = Ogre.MaterialManager:getSingleton()
+	local materialDefMgr = Ogre.MaterialManager:getSingleton()
 	local I = materialDefMgr:getResourceIterator()
 	local i = 0
 	while I:hasMoreElements() do

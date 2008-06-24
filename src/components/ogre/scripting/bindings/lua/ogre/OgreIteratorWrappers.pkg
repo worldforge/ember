@@ -77,39 +77,40 @@ namespace Ogre {
         iterator as a transient object, do NOT store it and try to use it repeatedly.
     */
 //     template <class T>
-    class MapIterator
-    {
-//         typedef typename T::mapped_type MappedType;
-//         typedef typename T::key_type KeyType;
-    TEMPLATE_BIND(T, Ogre::ResourceManager::ResourceHandleMap)
-
-        /** Constructor.
-        @remarks
-            Provide a start and end iterator to initialise.
-        */
-/*        MapIterator(typename T::iterator start, typename T::iterator end)
-            : mCurrent(start), mEnd(end)
-        {
-        }
-*/
-        /** Returns true if there are more items in the collection. */
-        bool hasMoreElements(void) const;
-
-        /** Returns the next value element in the collection, and advances to the next. */
-        T::mapped_type getNext(void);
-        /** Returns the next value element in the collection, without advancing to the next. */
-        T::mapped_type peekNextValue(void);
-        /** Returns the next key element in the collection, without advancing to the next. */
-        T::key_type peekNextKey(void);
-        /** Returns a pointer to the next value element in the collection, without 
-            advancing to the next afterwards. */
-//         typename T::pointer peekNextValuePtr(void);
-        /** Moves the iterator on one element. */
-        void moveNext(void);
-
-
-
-    };
+//     class MapIterator
+//     {
+// //         typedef typename T::mapped_type MappedType;
+// //         typedef typename T::key_type KeyType;
+//     TEMPLATE_BIND(T, Ogre::ResourceManager::ResourceHandleMap)
+// 
+//         /** Constructor.
+//         @remarks
+//             Provide a start and end iterator to initialise.
+//         */
+// /*        MapIterator(typename T::iterator start, typename T::iterator end)
+//             : mCurrent(start), mEnd(end)
+//         {
+//         }
+// */
+// 		~MapIterator();
+//         /** Returns true if there are more items in the collection. */
+//         bool hasMoreElements(void) const;
+// 
+//         /** Returns the next value element in the collection, and advances to the next. */
+//         T::mapped_type getNext(void);
+//         /** Returns the next value element in the collection, without advancing to the next. */
+//         T::mapped_type peekNextValue(void);
+//         /** Returns the next key element in the collection, without advancing to the next. */
+//         T::key_type peekNextKey(void);
+//         /** Returns a pointer to the next value element in the collection, without 
+//             advancing to the next afterwards. */
+// //         typename T::pointer peekNextValuePtr(void);
+//         /** Moves the iterator on one element. */
+//         void moveNext(void);
+// 
+// 
+// 
+//     };
     /** Wraps iteration over a const vector.
     @remarks
     This class is here just to allow clients to iterate over an internal

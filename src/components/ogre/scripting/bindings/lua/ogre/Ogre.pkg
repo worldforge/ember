@@ -3,7 +3,8 @@ $#include "required.h"
 
 $pfile "OgreRenderTarget.pkg"
 $pfile "OgreRenderWindow.pkg"
-$pfile "OgreIteratorWrappers.pkg"
+//using the IteratorWrappers is tricky since they use nested templates, so it's best to reimplement the iteratos where they appear, see OgreResourceManager.pkg
+//$pfile "OgreIteratorWrappers.pkg"
 $pfile "OgreResource.pkg"
 $pfile "OgreResourceManager.pkg"
 $pfile "OgreMaterialManager.pkg"

@@ -4,7 +4,7 @@ namespace Model {
 /**
 @author Erik Hjortsberg
 */
-class ModelDefinitionManager : public Ogre;;ResourceManager
+class ModelDefinitionManager : public Ogre::ResourceManager
 {
 public:
 	
@@ -16,11 +16,8 @@ public:
 	void exportScript(EmberOgre::Model::ModelDefnPtr definition);
 
     EmberOgre::Model::ModelDefnPtr create(const std::string& name, const std::string& group);
-	void remove(const std::string& name);
 	EmberOgre::Model::ModelDefnPtr getByName(const std::string& name);
-	bool resourceExists(const std::string& name);
 
-	Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap> getResourceIterator(void);
 	
 	/**
 	 *    Gets a vector of all mesh names.

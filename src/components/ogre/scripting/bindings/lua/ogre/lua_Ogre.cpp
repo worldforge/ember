@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Ogre
-** Generated automatically by tolua++-1.0.92 on Sun May 18 16:13:06 2008.
+** Generated automatically by tolua++-1.0.92 on Tue Jun 24 23:27:05 2008.
 */
 
 #ifndef __cplusplus
@@ -19,6 +19,13 @@ TOLUA_API int  tolua_Ogre_open (lua_State* tolua_S);
 /* function to release collected object via destructor */
 #ifdef __cplusplus
 
+static int tolua_collect_Ogre__ResourceManager__ResourceMapIterator (lua_State* tolua_S)
+{
+ Ogre::ResourceManager::ResourceMapIterator* self = (Ogre::ResourceManager::ResourceMapIterator*) tolua_tousertype(tolua_S,1,0);
+	delete self;
+	return 0;
+}
+
 static int tolua_collect_Ogre__Math (lua_State* tolua_S)
 {
  Ogre::Math* self = (Ogre::Math*) tolua_tousertype(tolua_S,1,0);
@@ -33,16 +40,16 @@ static int tolua_collect_Ogre__MapIterator_Ogre__Entity__ChildObjectList_ (lua_S
 	return 0;
 }
 
-static int tolua_collect_Ogre__Radian (lua_State* tolua_S)
+static int tolua_collect_Ogre__ResourceHandle (lua_State* tolua_S)
 {
- Ogre::Radian* self = (Ogre::Radian*) tolua_tousertype(tolua_S,1,0);
+ Ogre::ResourceHandle* self = (Ogre::ResourceHandle*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
 
-static int tolua_collect_Ogre__ResourceManager__ResourceHandleMap__key_type (lua_State* tolua_S)
+static int tolua_collect_Ogre__Radian (lua_State* tolua_S)
 {
- Ogre::ResourceManager::ResourceHandleMap::key_type* self = (Ogre::ResourceManager::ResourceHandleMap::key_type*) tolua_tousertype(tolua_S,1,0);
+ Ogre::Radian* self = (Ogre::Radian*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -96,13 +103,6 @@ static int tolua_collect_std__pair_bool_float_ (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_Ogre__ColourValue (lua_State* tolua_S)
-{
- Ogre::ColourValue* self = (Ogre::ColourValue*) tolua_tousertype(tolua_S,1,0);
-	delete self;
-	return 0;
-}
-
 static int tolua_collect_Ogre__MaterialSerializer (lua_State* tolua_S)
 {
  Ogre::MaterialSerializer* self = (Ogre::MaterialSerializer*) tolua_tousertype(tolua_S,1,0);
@@ -117,13 +117,6 @@ static int tolua_collect_size_t (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_Ogre__MapIterator_Ogre__ResourceManager__ResourceHandleMap_ (lua_State* tolua_S)
-{
- Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>* self = (Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>*) tolua_tousertype(tolua_S,1,0);
-	delete self;
-	return 0;
-}
-
 static int tolua_collect_Ogre__Vector3 (lua_State* tolua_S)
 {
  Ogre::Vector3* self = (Ogre::Vector3*) tolua_tousertype(tolua_S,1,0);
@@ -131,16 +124,16 @@ static int tolua_collect_Ogre__Vector3 (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_Ogre__Vector4 (lua_State* tolua_S)
+static int tolua_collect_Ogre__ColourValue (lua_State* tolua_S)
 {
- Ogre::Vector4* self = (Ogre::Vector4*) tolua_tousertype(tolua_S,1,0);
+ Ogre::ColourValue* self = (Ogre::ColourValue*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
 
-static int tolua_collect_Ogre__MeshPtr (lua_State* tolua_S)
+static int tolua_collect_Ogre__Matrix4 (lua_State* tolua_S)
 {
- Ogre::MeshPtr* self = (Ogre::MeshPtr*) tolua_tousertype(tolua_S,1,0);
+ Ogre::Matrix4* self = (Ogre::Matrix4*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -152,16 +145,16 @@ static int tolua_collect_uint (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_Ogre__ResourceManager__ResourceHandleMap__mapped_type (lua_State* tolua_S)
+static int tolua_collect_Ogre__MeshPtr (lua_State* tolua_S)
 {
- Ogre::ResourceManager::ResourceHandleMap::mapped_type* self = (Ogre::ResourceManager::ResourceHandleMap::mapped_type*) tolua_tousertype(tolua_S,1,0);
+ Ogre::MeshPtr* self = (Ogre::MeshPtr*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
 
-static int tolua_collect_Ogre__Matrix4 (lua_State* tolua_S)
+static int tolua_collect_Ogre__Vector4 (lua_State* tolua_S)
 {
- Ogre::Matrix4* self = (Ogre::Matrix4*) tolua_tousertype(tolua_S,1,0);
+ Ogre::Vector4* self = (Ogre::Vector4*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -181,53 +174,52 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Ogre::Vector2");
  tolua_usertype(tolua_S,"Ogre::RenderTarget");
  tolua_usertype(tolua_S,"Ogre::Timer");
- tolua_usertype(tolua_S,"Ogre::FrameListener");
- tolua_usertype(tolua_S,"Ogre::Root");
+ tolua_usertype(tolua_S,"Ogre::ResourceHandle");
  tolua_usertype(tolua_S,"Ogre::Radian");
  tolua_usertype(tolua_S,"Ogre::RenderWindow");
- tolua_usertype(tolua_S,"Ogre::ResourceManager::ResourceHandleMap::key_type");
+ tolua_usertype(tolua_S,"Ogre::FrameListener");
  tolua_usertype(tolua_S,"Ogre::Vector4");
  tolua_usertype(tolua_S,"Ogre::SceneManager");
  tolua_usertype(tolua_S,"Ogre::DataStreamPtr");
  tolua_usertype(tolua_S,"Ogre::Image");
+ tolua_usertype(tolua_S,"Ogre::Root");
  tolua_usertype(tolua_S,"Ogre::ColourValue");
- tolua_usertype(tolua_S,"Ogre::AxisAlignedBox");
  tolua_usertype(tolua_S,"Ogre::MeshPtr");
+ tolua_usertype(tolua_S,"Ogre::AxisAlignedBox");
  tolua_usertype(tolua_S,"Ogre::TextureManager");
  tolua_usertype(tolua_S,"size_t");
- tolua_usertype(tolua_S,"Ogre::Texture");
  tolua_usertype(tolua_S,"Ogre::Material");
  tolua_usertype(tolua_S,"Ogre::MaterialManager");
+ tolua_usertype(tolua_S,"Ogre::Texture");
  tolua_usertype(tolua_S,"Ogre::TexturePtr");
  tolua_usertype(tolua_S,"Ogre::SceneNode");
  tolua_usertype(tolua_S,"Ogre::VisibleObjectsBoundsInfo");
- tolua_usertype(tolua_S,"Ogre::MeshManager");
- tolua_usertype(tolua_S,"Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>");
+ tolua_usertype(tolua_S,"Ogre::MaterialSerializer");
  tolua_usertype(tolua_S,"Ogre::SubEntity");
- tolua_usertype(tolua_S,"Ogre::Degree");
+ tolua_usertype(tolua_S,"Ogre::Sphere");
  tolua_usertype(tolua_S,"Ogre::Matrix3");
  tolua_usertype(tolua_S,"Ogre::Node");
  tolua_usertype(tolua_S,"Ogre::RenderTarget::FrameStats");
  tolua_usertype(tolua_S,"Ogre::Math");
  tolua_usertype(tolua_S,"Ogre::Plane");
  tolua_usertype(tolua_S,"Ogre::SkeletonInstance");
- tolua_usertype(tolua_S,"Ogre::MaterialSerializer");
+ tolua_usertype(tolua_S,"Ogre::Degree");
  tolua_usertype(tolua_S,"Ogre::MapIterator<Ogre::Entity::ChildObjectList>");
  tolua_usertype(tolua_S,"Ogre::TagPoint");
  tolua_usertype(tolua_S,"std::list<Ogre::Plane>");
  tolua_usertype(tolua_S,"Ogre::Resource");
- tolua_usertype(tolua_S,"std::pair<bool,float>");
+ tolua_usertype(tolua_S,"Ogre::MeshManager");
  tolua_usertype(tolua_S,"Ogre::AnimationState");
  tolua_usertype(tolua_S,"Ogre::Quaternion");
  tolua_usertype(tolua_S,"Ogre::ResourceManager");
  tolua_usertype(tolua_S,"std::set<Ogre::Entity*>");
  tolua_usertype(tolua_S,"Ogre::MaterialPtr");
  tolua_usertype(tolua_S,"ushort");
- tolua_usertype(tolua_S,"Ogre::Sphere");
+ tolua_usertype(tolua_S,"std::vector<Ogre::Plane>");
  tolua_usertype(tolua_S,"Ogre::Matrix4");
  tolua_usertype(tolua_S,"Ogre::ResourcePtr");
- tolua_usertype(tolua_S,"Ogre::ResourceManager::ResourceHandleMap::mapped_type");
- tolua_usertype(tolua_S,"std::vector<Ogre::Plane>");
+ tolua_usertype(tolua_S,"std::pair<bool,float>");
+ tolua_usertype(tolua_S,"Ogre::ResourceManager::ResourceMapIterator");
  tolua_usertype(tolua_S,"Ogre::SubMesh");
  tolua_usertype(tolua_S,"Ogre::Mesh");
  tolua_usertype(tolua_S,"Ogre::Entity");
@@ -477,189 +469,6 @@ static int tolua_Ogre_Ogre_RenderTarget_getStatistics00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'getStatistics'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: hasMoreElements of class  Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap> */
-#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_MapIterator_Ogre__ResourceManager__ResourceHandleMap__hasMoreElements00
-static int tolua_Ogre_Ogre_MapIterator_Ogre__ResourceManager__ResourceHandleMap__hasMoreElements00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"const Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  const Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>* self = (const Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'hasMoreElements'",NULL);
-#endif
-  {
-   bool tolua_ret = (bool)  self->hasMoreElements();
-   tolua_pushboolean(tolua_S,(bool)tolua_ret);
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'hasMoreElements'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: getNext of class  Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap> */
-#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_MapIterator_Ogre__ResourceManager__ResourceHandleMap__getNext00
-static int tolua_Ogre_Ogre_MapIterator_Ogre__ResourceManager__ResourceHandleMap__getNext00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>* self = (Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getNext'",NULL);
-#endif
-  {
-   Ogre::ResourceManager::ResourceHandleMap::mapped_type tolua_ret = (Ogre::ResourceManager::ResourceHandleMap::mapped_type)  self->getNext();
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new Ogre::ResourceManager::ResourceHandleMap::mapped_type(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ResourceManager::ResourceHandleMap::mapped_type");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::ResourceManager::ResourceHandleMap::mapped_type));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ResourceManager::ResourceHandleMap::mapped_type");
-#endif
-   }
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getNext'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: peekNextValue of class  Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap> */
-#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_MapIterator_Ogre__ResourceManager__ResourceHandleMap__peekNextValue00
-static int tolua_Ogre_Ogre_MapIterator_Ogre__ResourceManager__ResourceHandleMap__peekNextValue00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>* self = (Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'peekNextValue'",NULL);
-#endif
-  {
-   Ogre::ResourceManager::ResourceHandleMap::mapped_type tolua_ret = (Ogre::ResourceManager::ResourceHandleMap::mapped_type)  self->peekNextValue();
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new Ogre::ResourceManager::ResourceHandleMap::mapped_type(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ResourceManager::ResourceHandleMap::mapped_type");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::ResourceManager::ResourceHandleMap::mapped_type));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ResourceManager::ResourceHandleMap::mapped_type");
-#endif
-   }
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'peekNextValue'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: peekNextKey of class  Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap> */
-#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_MapIterator_Ogre__ResourceManager__ResourceHandleMap__peekNextKey00
-static int tolua_Ogre_Ogre_MapIterator_Ogre__ResourceManager__ResourceHandleMap__peekNextKey00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>* self = (Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'peekNextKey'",NULL);
-#endif
-  {
-   Ogre::ResourceManager::ResourceHandleMap::key_type tolua_ret = (Ogre::ResourceManager::ResourceHandleMap::key_type)  self->peekNextKey();
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new Ogre::ResourceManager::ResourceHandleMap::key_type(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ResourceManager::ResourceHandleMap::key_type");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::ResourceManager::ResourceHandleMap::key_type));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ResourceManager::ResourceHandleMap::key_type");
-#endif
-   }
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'peekNextKey'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: moveNext of class  Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap> */
-#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_MapIterator_Ogre__ResourceManager__ResourceHandleMap__moveNext00
-static int tolua_Ogre_Ogre_MapIterator_Ogre__ResourceManager__ResourceHandleMap__moveNext00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>* self = (Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'moveNext'",NULL);
-#endif
-  {
-   self->moveNext();
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'moveNext'.",&tolua_err);
  return 0;
 #endif
 }
@@ -1192,6 +1001,65 @@ tolua_lerror:
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: remove of class  Ogre::ResourceManager */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ResourceManager_remove02
+static int tolua_Ogre_Ogre_ResourceManager_remove02(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::ResourceManager",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Ogre::ResourceHandle",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  Ogre::ResourceManager* self = (Ogre::ResourceManager*)  tolua_tousertype(tolua_S,1,0);
+  Ogre::ResourceHandle handle = *((Ogre::ResourceHandle*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'remove'",NULL);
+#endif
+  {
+   self->remove(handle);
+  }
+ }
+ return 0;
+tolua_lerror:
+ return tolua_Ogre_Ogre_ResourceManager_remove01(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: removeAll of class  Ogre::ResourceManager */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ResourceManager_removeAll00
+static int tolua_Ogre_Ogre_ResourceManager_removeAll00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::ResourceManager",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::ResourceManager* self = (Ogre::ResourceManager*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'removeAll'",NULL);
+#endif
+  {
+   self->removeAll();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'removeAll'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: getByName of class  Ogre::ResourceManager */
 #ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ResourceManager_getByName00
 static int tolua_Ogre_Ogre_ResourceManager_getByName00(lua_State* tolua_S)
@@ -1235,6 +1103,48 @@ static int tolua_Ogre_Ogre_ResourceManager_getByName00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: getByHandle of class  Ogre::ResourceManager */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ResourceManager_getByHandle00
+static int tolua_Ogre_Ogre_ResourceManager_getByHandle00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::ResourceManager",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Ogre::ResourceHandle",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::ResourceManager* self = (Ogre::ResourceManager*)  tolua_tousertype(tolua_S,1,0);
+  Ogre::ResourceHandle handle = *((Ogre::ResourceHandle*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getByHandle'",NULL);
+#endif
+  {
+   Ogre::ResourcePtr tolua_ret = (Ogre::ResourcePtr)  self->getByHandle(handle);
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new Ogre::ResourcePtr(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ResourcePtr");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::ResourcePtr));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ResourcePtr");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getByHandle'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: resourceExists of class  Ogre::ResourceManager */
 #ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ResourceManager_resourceExists00
 static int tolua_Ogre_Ogre_ResourceManager_resourceExists00(lua_State* tolua_S)
@@ -1270,6 +1180,67 @@ static int tolua_Ogre_Ogre_ResourceManager_resourceExists00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: resourceExists of class  Ogre::ResourceManager */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ResourceManager_resourceExists01
+static int tolua_Ogre_Ogre_ResourceManager_resourceExists01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::ResourceManager",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Ogre::ResourceHandle",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  Ogre::ResourceManager* self = (Ogre::ResourceManager*)  tolua_tousertype(tolua_S,1,0);
+  Ogre::ResourceHandle handle = *((Ogre::ResourceHandle*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'resourceExists'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->resourceExists(handle);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Ogre_Ogre_ResourceManager_resourceExists00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getResourceType of class  Ogre::ResourceManager */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ResourceManager_getResourceType00
+static int tolua_Ogre_Ogre_ResourceManager_getResourceType00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::ResourceManager",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::ResourceManager* self = (const Ogre::ResourceManager*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getResourceType'",NULL);
+#endif
+  {
+   const std::string tolua_ret = (const std::string)  self->getResourceType();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getResourceType'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: getResourceIterator of class  Ogre::ResourceManager */
 #ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ResourceManager_getResourceIterator00
 static int tolua_Ogre_Ogre_ResourceManager_getResourceIterator00(lua_State* tolua_S)
@@ -1289,14 +1260,14 @@ static int tolua_Ogre_Ogre_ResourceManager_getResourceIterator00(lua_State* tolu
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getResourceIterator'",NULL);
 #endif
   {
-   Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap> tolua_ret = (Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>)  self->getResourceIterator();
+   Ogre::ResourceManager::ResourceMapIterator tolua_ret = (Ogre::ResourceManager::ResourceMapIterator)  self->getResourceIterator();
    {
 #ifdef __cplusplus
-    void* tolua_obj = new Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>");
+    void* tolua_obj = new Ogre::ResourceManager::ResourceMapIterator(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ResourceManager::ResourceMapIterator");
 #else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>");
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::ResourceManager::ResourceMapIterator));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ResourceManager::ResourceMapIterator");
 #endif
    }
   }
@@ -1305,6 +1276,250 @@ static int tolua_Ogre_Ogre_ResourceManager_getResourceIterator00(lua_State* tolu
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'getResourceIterator'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: delete of class  ResourceMapIterator */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ResourceManager_ResourceMapIterator_delete00
+static int tolua_Ogre_Ogre_ResourceManager_ResourceMapIterator_delete00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::ResourceManager::ResourceMapIterator",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::ResourceManager::ResourceMapIterator* self = (Ogre::ResourceManager::ResourceMapIterator*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'delete'",NULL);
+#endif
+  delete self;
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'delete'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: hasMoreElements of class  ResourceMapIterator */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ResourceManager_ResourceMapIterator_hasMoreElements00
+static int tolua_Ogre_Ogre_ResourceManager_ResourceMapIterator_hasMoreElements00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::ResourceManager::ResourceMapIterator",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::ResourceManager::ResourceMapIterator* self = (const Ogre::ResourceManager::ResourceMapIterator*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'hasMoreElements'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->hasMoreElements();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'hasMoreElements'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getNext of class  ResourceMapIterator */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ResourceManager_ResourceMapIterator_getNext00
+static int tolua_Ogre_Ogre_ResourceManager_ResourceMapIterator_getNext00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::ResourceManager::ResourceMapIterator",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::ResourceManager::ResourceMapIterator* self = (Ogre::ResourceManager::ResourceMapIterator*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getNext'",NULL);
+#endif
+  {
+   Ogre::ResourcePtr tolua_ret = (Ogre::ResourcePtr)  self->getNext();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new Ogre::ResourcePtr(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ResourcePtr");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::ResourcePtr));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ResourcePtr");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getNext'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: peekNextValue of class  ResourceMapIterator */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ResourceManager_ResourceMapIterator_peekNextValue00
+static int tolua_Ogre_Ogre_ResourceManager_ResourceMapIterator_peekNextValue00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::ResourceManager::ResourceMapIterator",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::ResourceManager::ResourceMapIterator* self = (Ogre::ResourceManager::ResourceMapIterator*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'peekNextValue'",NULL);
+#endif
+  {
+   Ogre::ResourcePtr tolua_ret = (Ogre::ResourcePtr)  self->peekNextValue();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new Ogre::ResourcePtr(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ResourcePtr");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::ResourcePtr));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ResourcePtr");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'peekNextValue'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: peekNextKey of class  ResourceMapIterator */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ResourceManager_ResourceMapIterator_peekNextKey00
+static int tolua_Ogre_Ogre_ResourceManager_ResourceMapIterator_peekNextKey00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::ResourceManager::ResourceMapIterator",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::ResourceManager::ResourceMapIterator* self = (Ogre::ResourceManager::ResourceMapIterator*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'peekNextKey'",NULL);
+#endif
+  {
+   Ogre::ResourceHandle tolua_ret = (Ogre::ResourceHandle)  self->peekNextKey();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new Ogre::ResourceHandle(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ResourceHandle");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::ResourceHandle));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ResourceHandle");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'peekNextKey'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: peekNextValuePtr of class  ResourceMapIterator */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ResourceManager_ResourceMapIterator_peekNextValuePtr00
+static int tolua_Ogre_Ogre_ResourceManager_ResourceMapIterator_peekNextValuePtr00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::ResourceManager::ResourceMapIterator",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::ResourceManager::ResourceMapIterator* self = (Ogre::ResourceManager::ResourceMapIterator*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'peekNextValuePtr'",NULL);
+#endif
+  {
+   Ogre::ResourcePtr* tolua_ret = (Ogre::ResourcePtr*)  self->peekNextValuePtr();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::ResourcePtr");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'peekNextValuePtr'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: moveNext of class  ResourceMapIterator */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_ResourceManager_ResourceMapIterator_moveNext00
+static int tolua_Ogre_Ogre_ResourceManager_ResourceMapIterator_moveNext00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::ResourceManager::ResourceMapIterator",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::ResourceManager::ResourceMapIterator* self = (Ogre::ResourceManager::ResourceMapIterator*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'moveNext'",NULL);
+#endif
+  {
+   self->moveNext();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'moveNext'.",&tolua_err);
  return 0;
 #endif
 }
@@ -18561,21 +18776,6 @@ TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"Ogre",0);
   tolua_beginmodule(tolua_S,"Ogre");
-   #ifdef __cplusplus
-   tolua_cclass(tolua_S,"MapIterator_Ogre__ResourceManager__ResourceHandleMap_","Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>","",tolua_collect_Ogre__MapIterator_Ogre__ResourceManager__ResourceHandleMap_);
-   #else
-   tolua_cclass(tolua_S,"MapIterator_Ogre__ResourceManager__ResourceHandleMap_","Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap>","",NULL);
-   #endif
-   tolua_beginmodule(tolua_S,"MapIterator_Ogre__ResourceManager__ResourceHandleMap_");
-    tolua_function(tolua_S,"hasMoreElements",tolua_Ogre_Ogre_MapIterator_Ogre__ResourceManager__ResourceHandleMap__hasMoreElements00);
-    tolua_function(tolua_S,"getNext",tolua_Ogre_Ogre_MapIterator_Ogre__ResourceManager__ResourceHandleMap__getNext00);
-    tolua_function(tolua_S,"peekNextValue",tolua_Ogre_Ogre_MapIterator_Ogre__ResourceManager__ResourceHandleMap__peekNextValue00);
-    tolua_function(tolua_S,"peekNextKey",tolua_Ogre_Ogre_MapIterator_Ogre__ResourceManager__ResourceHandleMap__peekNextKey00);
-    tolua_function(tolua_S,"moveNext",tolua_Ogre_Ogre_MapIterator_Ogre__ResourceManager__ResourceHandleMap__moveNext00);
-   tolua_endmodule(tolua_S);
-  tolua_endmodule(tolua_S);
-  tolua_module(tolua_S,"Ogre",0);
-  tolua_beginmodule(tolua_S,"Ogre");
    tolua_cclass(tolua_S,"Resource","Ogre::Resource","",NULL);
    tolua_beginmodule(tolua_S,"Resource");
     tolua_function(tolua_S,"load",tolua_Ogre_Ogre_Resource_load00);
@@ -18607,9 +18807,28 @@ TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"reloadAll",tolua_Ogre_Ogre_ResourceManager_reloadAll00);
     tolua_function(tolua_S,"remove",tolua_Ogre_Ogre_ResourceManager_remove00);
     tolua_function(tolua_S,"remove",tolua_Ogre_Ogre_ResourceManager_remove01);
+    tolua_function(tolua_S,"remove",tolua_Ogre_Ogre_ResourceManager_remove02);
+    tolua_function(tolua_S,"removeAll",tolua_Ogre_Ogre_ResourceManager_removeAll00);
     tolua_function(tolua_S,"getByName",tolua_Ogre_Ogre_ResourceManager_getByName00);
+    tolua_function(tolua_S,"getByHandle",tolua_Ogre_Ogre_ResourceManager_getByHandle00);
     tolua_function(tolua_S,"resourceExists",tolua_Ogre_Ogre_ResourceManager_resourceExists00);
+    tolua_function(tolua_S,"resourceExists",tolua_Ogre_Ogre_ResourceManager_resourceExists01);
+    tolua_function(tolua_S,"getResourceType",tolua_Ogre_Ogre_ResourceManager_getResourceType00);
     tolua_function(tolua_S,"getResourceIterator",tolua_Ogre_Ogre_ResourceManager_getResourceIterator00);
+    #ifdef __cplusplus
+    tolua_cclass(tolua_S,"ResourceMapIterator","Ogre::ResourceManager::ResourceMapIterator","",tolua_collect_Ogre__ResourceManager__ResourceMapIterator);
+    #else
+    tolua_cclass(tolua_S,"ResourceMapIterator","Ogre::ResourceManager::ResourceMapIterator","",NULL);
+    #endif
+    tolua_beginmodule(tolua_S,"ResourceMapIterator");
+     tolua_function(tolua_S,"delete",tolua_Ogre_Ogre_ResourceManager_ResourceMapIterator_delete00);
+     tolua_function(tolua_S,"hasMoreElements",tolua_Ogre_Ogre_ResourceManager_ResourceMapIterator_hasMoreElements00);
+     tolua_function(tolua_S,"getNext",tolua_Ogre_Ogre_ResourceManager_ResourceMapIterator_getNext00);
+     tolua_function(tolua_S,"peekNextValue",tolua_Ogre_Ogre_ResourceManager_ResourceMapIterator_peekNextValue00);
+     tolua_function(tolua_S,"peekNextKey",tolua_Ogre_Ogre_ResourceManager_ResourceMapIterator_peekNextKey00);
+     tolua_function(tolua_S,"peekNextValuePtr",tolua_Ogre_Ogre_ResourceManager_ResourceMapIterator_peekNextValuePtr00);
+     tolua_function(tolua_S,"moveNext",tolua_Ogre_Ogre_ResourceManager_ResourceMapIterator_moveNext00);
+    tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"Ogre",0);

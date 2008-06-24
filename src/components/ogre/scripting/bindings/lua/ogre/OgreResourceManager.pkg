@@ -114,7 +114,7 @@ namespace Ogre {
             destruction of resources, try making sure you release all your
             shared pointers before you shutdown OGRE.
 		*/
-		//void remove(ResourceHandle handle);
+		void remove(Ogre::ResourceHandle handle);
 		/** Removes all resources.
 		@note
 			The word 'Destroy' is not used here, since
@@ -129,20 +129,20 @@ namespace Ogre {
             destruction of resources, try making sure you release all your
             shared pointers before you shutdown OGRE.
         */
-        //void removeAll(void);
+        void removeAll(void);
 
         /** Retrieves a pointer to a resource by name, or null if the resource does not exist.
         */
         Ogre::ResourcePtr getByName(const std::string& name);
         /** Retrieves a pointer to a resource by handle, or null if the resource does not exist.
         */
-        //Ogre::ResourcePtr getByHandle(ResourceHandle handle);
+        Ogre::ResourcePtr getByHandle(Ogre::ResourceHandle handle);
 		
 		/// Returns whether the named resource exists in this manager
 		bool resourceExists(const std::string& name);
 		
 		/// Returns whether a resource with the given handle exists in this manager
-		//bool resourceExists(Ogre::ResourceHandle handle);
+		bool resourceExists(Ogre::ResourceHandle handle);
 
 
 		/** Generic load method, used to create a Resource specific to this 
@@ -164,13 +164,36 @@ namespace Ogre {
 
 
 		/** Gets a string identifying the type of resource this manager handles. */
-		//const String& getResourceType(void) const { return mResourceType; }
+		const std::string& getResourceType(void) const;
 
-	Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap> getResourceIterator(void);
+	//Ogre::MapIterator<Ogre::ResourceManager::ResourceHandleMap> getResourceIterator(void);
+	ResourceMapIterator getResourceIterator(void);
 
     
+    //Note that we reimplement it here instead of trying to use the OgreIteratorWrappers.pkg file. The main reason is that it uses nested templates which are tricky and can lead to memory leaks as objects that are iterated over are never properly collected by Lua
+	class ResourceMapIterator
+    {
+
+		~ResourceMapIterator();
+        /** Returns true if there are more items in the collection. */
+        bool hasMoreElements(void) const;
+
+        /** Returns the next value element in the collection, and advances to the next. */
+        Ogre::ResourcePtr getNext(void);
+        /** Returns the next value element in the collection, without advancing to the next. */
+        Ogre::ResourcePtr peekNextValue(void);
+        /** Returns the next key element in the collection, without advancing to the next. */
+        Ogre::ResourceHandle peekNextKey(void);
+        /** Returns a pointer to the next value element in the collection, without 
+            advancing to the next afterwards. */
+        Ogre::ResourcePtr* peekNextValuePtr(void);
+        /** Moves the iterator on one element. */
+        void moveNext(void);
+
+    };    
 
     };
+    
 
 }
 
