@@ -125,8 +125,8 @@ void IconRenderer::blitRenderToIcon(Icon* icon)
 	Ogre::Box dstBox = icon->getImageStoreEntry()->getBox();
 // 	Ogre::PixelBox dstLockedBox = dstBuffer->lock(dstBox, Ogre::HardwareBuffer::HBL_NORMAL);
 	
-	Ogre::MemoryDataStream* dataStream = new Ogre::MemoryDataStream(sourceBox.getWidth() * sourceBox.getHeight() * 4, true);
-	Ogre::DataStreamPtr imageDataStreamPtr(dataStream);
+/*	Ogre::MemoryDataStream* dataStream = new Ogre::MemoryDataStream(sourceBox.getWidth() * sourceBox.getHeight() * 4, true);
+	Ogre::DataStreamPtr imageDataStreamPtr(dataStream);*/
 	
 	
 /*	Ogre::Image image;

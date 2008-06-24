@@ -63,7 +63,6 @@ protected:
 	Ogre::TexturePtr mCombinedCoverageTexture;
 	Ogre::Image* mCombinedCoverageImage;
 	Ogre::MemoryDataStream* mCombinedCoverageDataStream;
-	Ogre::DataStreamPtr mCombinedCoverageDataStreamPtr;
 	LayerStore mLayers;
 
 	void assignCombinedCoverageTexture();

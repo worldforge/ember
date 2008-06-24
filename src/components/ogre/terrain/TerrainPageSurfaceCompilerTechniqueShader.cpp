@@ -36,14 +36,15 @@ TerrainPageSurfaceCompilerShaderPassCoverageBatch::TerrainPageSurfaceCompilerSha
 , mCombinedCoverageTexture(combinedCoverageTexture)
 , mCombinedCoverageImage(new Ogre::Image())
 , mCombinedCoverageDataStream(new Ogre::MemoryDataStream(combinedCoverageTexture->getWidth() * combinedCoverageTexture->getWidth() * 4, true))
-, mCombinedCoverageDataStreamPtr(mCombinedCoverageDataStream)
 {
 	///reset the coverage image
 	memset(mCombinedCoverageDataStream->getPtr(), '\0', mCombinedCoverageDataStream->size());
 }
+
 TerrainPageSurfaceCompilerShaderPassCoverageBatch::~TerrainPageSurfaceCompilerShaderPassCoverageBatch()
 {
 	delete mCombinedCoverageImage;
+	delete mCombinedCoverageDataStream;
 }
 
 void TerrainPageSurfaceCompilerShaderPassCoverageBatch::addLayer(TerrainPageSurfaceLayer* layer)
@@ -73,13 +74,13 @@ std::vector<TerrainPageSurfaceLayer*>& TerrainPageSurfaceCompilerShaderPassCover
 }
 
 void TerrainPageSurfaceCompilerShaderPassCoverageBatch::assignCombinedCoverageTexture() {
-	mCombinedCoverageDataStreamPtr->seek(0);
-	mCombinedCoverageImage->loadRawData(mCombinedCoverageDataStreamPtr, mShaderPass.getCoveragePixelWidth(), mShaderPass.getCoveragePixelWidth(), Ogre::PF_B8G8R8A8);
+	mCombinedCoverageDataStream->seek(0);
+	mCombinedCoverageImage->loadDynamicImage(mCombinedCoverageDataStream->getPtr(), mShaderPass.getCoveragePixelWidth(), mShaderPass.getCoveragePixelWidth(), 1, Ogre::PF_B8G8R8A8);
 	mCombinedCoverageTexture->loadImage(*mCombinedCoverageImage);
 	
-	Ogre::HardwarePixelBufferSharedPtr hardwareBuffer = mCombinedCoverageTexture->getBuffer();
+	Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(mCombinedCoverageTexture->getBuffer());
 	///blit the whole image to the hardware buffer
-	Ogre::PixelBox sourceBox = mCombinedCoverageImage->getPixelBox();
+	Ogre::PixelBox sourceBox(mCombinedCoverageImage->getPixelBox());
 	hardwareBuffer->blitFromMemory(sourceBox);
 	
 }
