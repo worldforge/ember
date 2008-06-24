@@ -108,7 +108,6 @@ IconImageStore::IconImageStore(const std::string& imagesetName)
 , mIconSize(64)
 , mImageSize(256)
 , mImageDataStream(new Ogre::MemoryDataStream(mImageSize * mImageSize * 4, true))
-, mImageDataStreamPtr(mImageDataStream)
 , mCeguiTexture(0)
 , mImageset(0)
 {
@@ -123,7 +122,6 @@ IconImageStore::IconImageStore(const std::string& imagesetName, Ogre::TexturePtr
 : mImagesetName(imagesetName)
 , mTexPtr(texPtr)
 , mImageDataStream(0)
-, mImageDataStreamPtr(mImageDataStream)
 , mCeguiTexture(0)
 , mImageset(0)
 {
@@ -146,8 +144,7 @@ IconImageStore::~IconImageStore()
 	for (IconImageStoreEntryStore::iterator I(mIconImages.begin()); I != mIconImages.end(); ++I) {
 		delete *I;
 	}
-///the stream will be destroyed by the mImageDataStreamPtr pointer
-// 	delete mImageDataStream;
+	delete mImageDataStream;
 }
 
 void IconImageStore::createImageset()
@@ -156,7 +153,7 @@ void IconImageStore::createImageset()
 
 	///reset the image
 	memset(mImageDataStream->getPtr(), '\0', mImageDataStream->size());
-	mImage.loadRawData(mImageDataStreamPtr, mImageSize, mImageSize, Ogre::PF_A8R8G8B8);
+	mImage.loadDynamicImage(mImageDataStream->getPtr(), mImageSize, mImageSize, 1, Ogre::PF_A8R8G8B8);
 
 // 	mTexPtr = Ogre::TextureManager::getSingleton().createManual(mImagesetName, "Gui", Ogre::TEX_TYPE_2D, mImageSize, mImageSize, 0, Ogre::PF_A8R8G8B8,Ogre::TU_DYNAMIC_WRITE_ONLY);
 	mTexPtr = Ogre::TextureManager::getSingleton().loadImage(mImagesetName, "Gui", mImage);

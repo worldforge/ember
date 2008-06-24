@@ -133,10 +133,8 @@ private:
 	std::string mImagesetName;
 	int mIconSize;
 	int mImageSize;
-	//Ogre::Image* mOgreImage;
 	Ogre::TexturePtr mTexPtr;
 	Ogre::MemoryDataStream* mImageDataStream;
-	Ogre::DataStreamPtr mImageDataStreamPtr;
 	Ogre::Image mImage;
 	CEGUI::Texture* mCeguiTexture;
 	CEGUI::Imageset* mImageset;
