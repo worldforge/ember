@@ -67,6 +67,7 @@ LuaScriptingProvider::LuaScriptingProvider()
 
 LuaScriptingProvider::~LuaScriptingProvider()
 {
+	S_LOG_INFO("Shutting down lua environment.");
 	lua_close(mLuaState);
 }
 
