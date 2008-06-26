@@ -340,9 +340,6 @@ int TerrainGenerator::getPageMetersSize()
 
 void TerrainGenerator::buildHeightmap()
 {
-	const WFMath::Ball<3> myMathBall(WFMath::Point<3>(32,32,20), 32);		//tb
-	Mercator::CraterTerrainMod *myCrater = new Mercator::CraterTerrainMod(myMathBall); //tb
-	
 	///initialize all terrain here, since we need to do that in order to get the correct height for placement even though the terrain might not show up in the SceneManager yet
 	
 	///note that we want to use int's here, since a call to getSegment(float, float) is very much different from a call to getSegment(int, int)
@@ -366,15 +363,7 @@ void TerrainGenerator::buildHeightmap()
 		}
 	}
 
-//	mTerrain->getSegment(0,0)->addMod(myCrater);
-	if( getTerrainPage(TerrainPosition(2,2)) != NULL )
-	{
-		getTerrainPage(TerrainPosition(2,2))->addTerrainModifier(2,2,32,32,20,myCrater);
-		S_LOG_INFO("Added modifier at " << 2 << "," << 2);
-		TerrainPosition *newModPos = getTerrainPage(TerrainPosition(2,2))->getTerrainModifierPos();
-		S_LOG_INFO("New modifier's position: " << newModPos->x() << "," << newModPos->y());
-	}
-	
+
 }
 
 // void TerrainGenerator::createShaders(WorldEmberEntity* worldEntity)

@@ -229,23 +229,14 @@ bool TerrainEditor::isOverlayShown() const
 void TerrainEditor::createOverlay()
 {
 
-	const WFMath::Ball<2> wfBall_2d(WFMath::Point<2>(32,32), 32);
+	const WFMath::Ball<2> wfBall_2d(WFMath::Point<2>(42,42), 30);
 	Mercator::LevelTerrainMod<WFMath::Ball<2> > *TerrainMod_tester;
 	TerrainMod_tester = new Mercator::LevelTerrainMod<WFMath::Ball<2> >(60, wfBall_2d);
 	if( EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(2,2)) != NULL )
 	{
-		EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(2,2))->addTerrainModifier(2,2,32,32,20,TerrainMod_tester);
-		S_LOG_INFO("Added modifier at " << 2 << "," << 2);
-		TerrainPosition *newModPos = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(2,2))->getTerrainModifierPos();
-		S_LOG_INFO("New modifier's position: " << newModPos->x() << "," << newModPos->y());
-	}
-	const WFMath::Ball<3> wfBall_3d(WFMath::Point<3>(32,32,82), 30);		
-	Mercator::CraterTerrainMod *TerrainMod_tester_2 = new Mercator::CraterTerrainMod(wfBall_3d); 
-		if( EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(2,2)) != NULL )
-	{
-		EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(2,2))->addTerrainModifier(2,2,32,32,82,TerrainMod_tester_2);
-		S_LOG_INFO("Added modifier at " << 2 << "," << 2);
-		TerrainPosition *newModPos = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(2,2))->getTerrainModifierPos();
+		EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(1,1))->addTerrainModifier(1,1,42,42,60,TerrainMod_tester);
+		S_LOG_INFO("Added modifier at " << 1 << "," << 1);
+		TerrainPosition *newModPos = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(1,1))->getTerrainModifierPos();
 		S_LOG_INFO("New modifier's position: " << newModPos->x() << "," << newModPos->y());
 	}
 	
@@ -302,7 +293,7 @@ void TerrainEditor::createOverlay()
 				page = (*curPage).second;
 				int numMods = page->ModListSize();
 				TerrainPosition *modPos = page->getTerrainModifierPos(); //The first value never contains correct data
-				S_LOG_INFO("NUMER OF MODS: " << numMods);
+				
 				for(; numMods > 0; numMods--) {
 					Ogre::SceneNode* terrainModNode = mOverlayNode->createChildSceneNode();
 					Ogre::Vector3 ogrepos = Atlas2Ogre(TerrainPosition(2,2));
@@ -313,7 +304,7 @@ void TerrainEditor::createOverlay()
 					S_LOG_INFO("Attempting to place mod marker at " << ogrepos.x << "," << ogrepos.y << "," << ogrepos.z);
 					terrainModNode->setPosition(ogrepos);
 					std::stringstream ss2;
-					ss2 << "terrainMod marker" << ogrepos.x << "_" << ogrepos.y;
+					ss2 << "terrainMod marker" << numMods << "_" << ogrepos.x << "_" << ogrepos.y;
 					Ogre::Entity* entity = EmberOgre::getSingleton().getSceneManager()->createEntity(ss2.str(), "3d_objects/primitives/models/box.mesh");
 					entity->setMaterialName("BasePointMarkerMaterial");
 					entity->setRenderingDistance(900);
