@@ -1,0 +1,10 @@
+themes/ember/gui/ember_splash.png
+themes/ember/gui/ember_progress_bar_frame.png
+themes/ember/gui/ember_progress_bar.png
+resources/ogre/core/EmberCore.material
+resources/ogre/core/Ember.fontdef
+resources/ogre/core/EmberLoadingPanel.overlay
+3d_objects/primitives/models/axes.mesh
+3d_objects/primitives/textures/axes.png
+themes/ember/gui/fonts/COPYRIGHT.TXT
+themes/ember/gui/fonts/Vera.ttf

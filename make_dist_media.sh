@@ -88,15 +88,20 @@ do
 done
 cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_skeletons.list ` | ( cd ${shared_dir}/common; tar --keep-newer-files -xvf -) 2>  /dev/null
 
+cd ${shared_dir}
+cp -a ${original_media}/common/LICENSING.txt .
+cp -a ${original_media}/common/COPYING.txt .
 
 # echo "Copying sounds"
 # mkdir -p ${shared_dir}/sounds
 # cd ${original_media}/sounds; tar cf - `find . -iname \*.wav` | ( cd ${shared_dir}/sounds; tar xvf -)
 
-echo "Copying packs"
-cd ${shared_dir}
-grep -rIE --no-filename "^Zip\[shared\]=.*" ${current}/src/components/ogre/resources.cfg | sed -e 's/Zip\[shared\]=//g' > shared_packs.list
-cd ${original_media} ; tar cf - `cat ${shared_dir}/shared_packs.list ` | ( cd ${shared_dir}/; tar --keep-newer-files -xvf -) 2>  /dev/null
+
+
+# echo "Copying packs"
+# cd ${shared_dir}
+# grep -rIE --no-filename "^Zip\[shared\]=.*" ${current}/src/components/ogre/resources.cfg | sed -e 's/Zip\[shared\]=//g' > shared_packs.list
+# cd ${original_media} ; tar cf - `cat ${shared_dir}/shared_packs.list ` | ( cd ${shared_dir}/; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 
 
@@ -149,16 +154,26 @@ cd ${ogre_dir} ; tar cf - `find . -iname \*.overlay` | ( cd ${user_ogre_dir}; ta
 mkdir -p ${user_dir}/particle
 cd ${original_media}/particle ; tar cf - `find . -iname \*.particle` | ( cd ${user_dir}/particle; tar --keep-newer-files -xvf -) 2>  /dev/null
 
-echo "Copying packs"
-cd ${user_dir}
-grep -rIE --no-filename "^Zip\[user\]=.*" ${current}/src/components/ogre/resources.cfg | sed -e 's/Zip\[user\]=//g' > user_packs.list
-cd ${original_media} ; tar cf - `cat ${user_dir}/user_packs.list ` | ( cd ${user_dir}/; tar --keep-newer-files -xvf -) 2>  /dev/null
+
+echo "Copying core files"
+mkdir -p ${shared_dir}/core
+for filename in `cat ${original_media}/core/EmberCore.files `
+do
+	cp -uf ${original_media}/common/${filename} ${shared_dir}/core
+done
+
+
+# echo "Copying packs"
+# cd ${user_dir}
+# grep -rIE --no-filename "^Zip\[user\]=.*" ${current}/src/components/ogre/resources.cfg | sed -e 's/Zip\[user\]=//g' > user_packs.list
+# cd ${original_media} ; tar cf - `cat ${user_dir}/user_packs.list ` | ( cd ${user_dir}/; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 
 
 cd ${user_dir}
 cp -a ${original_media}/README .
-cp -a ${original_media}/LICENSING.txt .
+cp -a ${original_media}/common/LICENSING.txt .
+cp -a ${original_media}/common/COPYING.txt .
 
 echo "Cleanup"
 rm -f ${shared_dir}/common_textures.list
