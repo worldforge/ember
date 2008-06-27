@@ -247,7 +247,6 @@ int _findclose(long id)
     {
         long lHandle, res;
         struct _finddata_t tagData;
-// 
         // pattern can contain a directory name, separate it from mask
         size_t pos1 = pattern.rfind ('/');
         size_t pos2 = pattern.rfind ('\\');
@@ -256,6 +255,23 @@ int _findclose(long id)
         String directory;
         if (pos1 != pattern.npos)
             directory = pattern.substr (0, pos1 + 1);
+
+		String base_dir = mName;
+		if (!directory.empty ())
+		{
+			base_dir = concatenate_path(mName, directory);
+			// Remove the last '/'
+			base_dir.erase (base_dir.length () - 1);
+		}
+		
+		///if there's a file with the name "norecurse" we shouldn't recurse further
+		std::ifstream norecurseFile((base_dir + "/norecurse").c_str());
+		if (!norecurseFile.fail()) {
+			return;
+		}
+		
+		base_dir.append ("/*");
+
 
         String full_pattern = concatenate_path(mName, pattern);
 
@@ -294,22 +310,7 @@ int _findclose(long id)
         // Now find directories
         if (recursive)
         {
-            String base_dir = mName;
-            if (!directory.empty ())
-            {
-                base_dir = concatenate_path(mName, directory);
-                // Remove the last '/'
-                base_dir.erase (base_dir.length () - 1);
-            }
-            
-           	///if there's a file with the name "norecurse" we shouldn't recurse further
-        	lHandle = _findfirst((base_dir + "/norecurse").c_str(), &tagData);
-        	if (lHandle != -1) {
-                _findclose(lHandle);
-                return;
-        	}
-        	
-            base_dir.append ("/*");
+
 
             // Remove directory name from pattern
             String mask ("/");
