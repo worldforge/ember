@@ -484,18 +484,16 @@ void TerrainPage::addTerrainModifier(int sx, int sy, int mx, int my, int mz, Mer
 					h_y = I_ROUND(bbox.highCorner()[1]); 
 					if (h_y > terrain_res) h_y = terrain_res;
 
-					S_LOG_INFO("Hey yo: " << l_x << "," << l_y << " " << h_x << "," << h_y);	
-
 					for (int k=l_y; k<=h_y; k++) {
 						for (int l=l_x; l<=h_x; l++) {
 							newmod->apply(seg_heightpoints[k*seg_size + l], l + seg_xRef, k + seg_yRef);
-							mTModList.push_back(terrainModListEntry(i,j,k,l,seg_heightpoints[k*seg_size +l],newmod->clone(40)));
+							//mTModList.push_back(terrainModListEntry(i,j,k,l,seg_heightpoints[k*seg_size +l],newmod->clone()));
 
 						} // of x loop
 					} // of y loop
 					
-					//s->addMod(newmod->clone());
-					//mTModList.push_back(terrainModListEntry(i,j,mx,my,mz,newmod->clone()));
+					s->addMod(newmod->clone());
+					mTModList.push_back(terrainModListEntry(i,j,mx,my,mz,newmod->clone()));
 				}
 			}
         	} // of y loop
