@@ -465,6 +465,13 @@ TerrainPage* TerrainGenerator::getTerrainPage(const Ogre::Vector2& ogreIndexPosi
 	return mTerrainPages[x][y];
 }
 
+TerrainPage* TerrainGenerator::getTerrainPage(Terrain::terrainModListEntry& terrainMod)
+{
+	TerrainPosition* modPos = new TerrainPosition;
+	modPos = terrainMod.Position();
+	return getTerrainPage(*modPos);
+}
+
 TerrainPage* TerrainGenerator::createPage(const TerrainPosition& pos)
 {
 	

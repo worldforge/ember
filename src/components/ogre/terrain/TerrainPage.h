@@ -58,6 +58,7 @@ class TerrainPage;
 class TerrainPageFoliage;
 class TerrainPageSurfaceLayer;
 class ITerrainPageBridge;
+class terrainModListEntry;
 
 TYPEDEF_STL_MAP(const Mercator::Shader*, TerrainShader*, ShaderMap);
 

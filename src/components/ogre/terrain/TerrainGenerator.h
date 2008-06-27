@@ -67,7 +67,7 @@ class TerrainArea;
 class TerrainLayerDefinition;
 class TerrainPageSurfaceLayer;
 class ISceneManagerAdapter;
-
+class terrainModListEntry;
 
 
 struct TerrainDefPoint
@@ -209,7 +209,11 @@ public:
 	 */
 	TerrainPage* getTerrainPage(const TerrainPosition& worldPosition);
 
-
+	/**
+	 *    Gets the terrain page that owns the given terrain modifier
+	 * @param terrainModListEntry
+	 */
+	TerrainPage* getTerrainPage(Terrain::terrainModListEntry& terrainMod);
 	
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method
