@@ -79,9 +79,13 @@ public:
 	GUIAdapter* getGUIAdapter(std::string name);
 
 	/**
-	 * Returns iterator over adapters
+	 * Returns iterator over adapters.
 	 */
 	GUIAdaptersStore::iterator getGUIAdaptersIteratorBegin();
+
+	/**
+	 * Returns end iterator over adapters.
+	 */
 	GUIAdaptersStore::iterator getGUIAdaptersIteratorEnd();
 
 	/**

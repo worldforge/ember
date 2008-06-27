@@ -24,6 +24,8 @@
 #define EMBEROGREGUIADAPTER_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
+#include <Atlas/Message/Element.h>
+#include <CEGUIWindow.h>
 
 namespace EmberOgre {
 
@@ -48,11 +50,21 @@ public:
 	 */
 	std::string getType();
 
+	/**
+	 * Attaches adapter to window.
+	 */
+	void attach(CEGUI::Window* window);
+
 protected:
 	/**
 	 * Adapter type.
 	 */
 	std::string mType;
+
+	/**
+	 * Adapter value.
+	 */
+	Atlas::Message::Element element;
 };
 
 }

@@ -46,17 +46,17 @@ EntityCreator::~EntityCreator()
 void EntityCreator::showRecipe(EmberOgre::EntityRecipe& recipe, CEGUI::Window* container)
 {
 	EmberOgre::GUIManager& mGuiManager = EmberOgre::GUIManager::getSingleton();
-	EmberOgre::Gui::Adapters::Atlas::AdapterFactory factory("EntityCreator");
 
 	GUIAdaptersStore::iterator I = recipe.getGUIAdaptersIteratorBegin();
 	GUIAdaptersStore::iterator end = recipe.getGUIAdaptersIteratorEnd();
 	for (; I != end; I++)
 	{
-		Atlas::Message::Element* element = new Atlas::Message::Element();
-		CEGUI::Window* window = mGuiManager.createWindow("DefaultGUISheet");
+		S_LOG_VERBOSE("Creating adapter " << I->first << " of type " << I->second->getType());
 
-		factory.createAdapterByType(I->second->getType(), window, "testAdapter", *element);
+		CEGUI::Window* window = mGuiManager.createWindow("DefaultGUISheet");
 		container->addChildWindow(window);
+
+		I->second->attach(window);
 	}
 }
 

@@ -26,6 +26,7 @@
 #endif
 
 #include "GUIAdapter.h"
+#include "components/ogre/widgets/adapters/atlas/AdapterFactory.h"
 
 namespace EmberOgre {
 
@@ -43,6 +44,12 @@ GUIAdapter::~GUIAdapter()
 std::string GUIAdapter::getType()
 {
 	return mType;
+}
+
+void GUIAdapter::attach(CEGUI::Window* window)
+{
+	EmberOgre::Gui::Adapters::Atlas::AdapterFactory factory("EntityCreator");
+	factory.createAdapterByType(mType, window, "adapterPrefix", element);
 }
 
 }
