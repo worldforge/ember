@@ -292,23 +292,27 @@ void TerrainEditor::createOverlay()
 				//page = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(2,2));
 				page = (*curPage).second;
 				int numMods = page->ModListSize();
-				TerrainPosition *modPos = page->getTerrainModifierPos(); //The first value never contains correct data
+				//TerrainPosition *modPos = page->getTerrainModifierPos(); //The first value never contains correct data
+				terrainModListEntry cur_mod = page->NextModListEntry();
 				
 				for(; numMods > 0; numMods--) {
 					Ogre::SceneNode* terrainModNode = mOverlayNode->createChildSceneNode();
 					Ogre::Vector3 ogrepos = Atlas2Ogre(TerrainPosition(2,2));
-					modPos = page->getTerrainModifierPos();
+					TerrainPosition* modPos = cur_mod.Position();
 					ogrepos.x = modPos->y();
-					ogrepos.y = page->getTerrainModifierZ();
+					ogrepos.y = cur_mod.Z();
 					ogrepos.z = modPos->x();
 					S_LOG_INFO("Attempting to place mod marker at " << ogrepos.x << "," << ogrepos.y << "," << ogrepos.z);
 					terrainModNode->setPosition(ogrepos);
 					std::stringstream ss2;
-					ss2 << "terrainMod marker" << numMods << "_" << ogrepos.x << "_" << ogrepos.y;
+					ss2 << "terrainMod marker" << numMods << cur_mod.Id() << "_" << ogrepos.x << "_" << ogrepos.y;
 					Ogre::Entity* entity = EmberOgre::getSingleton().getSceneManager()->createEntity(ss2.str(), "3d_objects/primitives/models/box.mesh");
 					entity->setMaterialName("BasePointMarkerMaterial");
 					entity->setRenderingDistance(900);
 					terrainModNode->attachObject(entity);
+					
+					cur_mod = page->NextModListEntry();
+					S_LOG_INFO("mod marker " << ss2.str() << " placed successfully!");
 				}
 				++curPage;
 			}

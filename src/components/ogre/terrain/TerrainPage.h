@@ -76,8 +76,12 @@ class terrainModListEntry {
 		int SegX();
 		int SegY();
 		Mercator::TerrainMod *Modifier();
+
+		int Id();
 		
 	private:
+		 // A number to uniquely identify this entry
+		int	mId;
 		 // Segment the modifier is applied to
 		int	seg_x;
 		int	seg_y;
@@ -301,6 +305,13 @@ public:
 	*/
 	int ModListSize();
 
+	/**
+	 *    @brief Gives the total number of terrain mods added to this segment
+	*/
+	int getTerrainModCount();
+
+	int getModId();
+
 private:
 
 	SegmentVector mValidSegments;
@@ -353,7 +364,8 @@ private:
 	The keys will be the local indices.
 	*/
 	Mercator::Terrain::Segmentstore mLocalSegments;
-	
+		
+
 	/**
 	@brief Bridge to the ogre terrain engine.
 	When the terrain data is changed we need to also update the actual ingame representation that the terrain engine provides. This instance will take care of that.
@@ -363,6 +375,11 @@ private:
 
 	std::list<terrainModListEntry> mTModList;
 	std::list<terrainModListEntry>::iterator mNextMod;
+
+	/**
+	How many modifiers have been applied to this segment, total, including ones that have been deleted
+	*/
+	int mTerrainModCount;
 
 };
 

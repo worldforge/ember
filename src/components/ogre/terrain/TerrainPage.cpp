@@ -123,6 +123,7 @@ TerrainPage::TerrainPage(TerrainPosition position, const std::map<const Mercator
 	mTerrainSurface->setShadow(&mShadow);
 
 	mNextMod = mTModList.begin();
+	mTerrainModCount = 0;
 }
 
 TerrainPage::~TerrainPage()
@@ -440,6 +441,8 @@ void TerrainPage::unregisterBridge()
 
 void TerrainPage::addTerrainModifier(int sx, int sy, int mx, int my, int mz, Mercator::TerrainMod *newmod)
 {
+	++mTerrainModCount;
+	
 	int terrain_res = EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getResolution();
 
 	//EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().addMod(*newmod);
@@ -543,6 +546,16 @@ int TerrainPage::ModListSize()
 	return mTModList.size();
 }
 
+int TerrainPage::getTerrainModCount()
+{
+	return mTerrainModCount;
+}
+
+int TerrainPage::getModId()
+{
+	return mNextMod->Id();
+}
+
 	/** Used for the terrainModListEntry class **/
 terrainModListEntry::terrainModListEntry()
 {
@@ -552,6 +565,7 @@ terrainModListEntry::terrainModListEntry()
 	mod_y = 0;
 	mod_z = 0;
 	modifier = NULL;
+	mId = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(0,0))->getTerrainModCount();
 }
 
 terrainModListEntry::terrainModListEntry(int sx, int sy, int mx, int my, int mz, Mercator::TerrainMod *newmod)
@@ -564,6 +578,9 @@ terrainModListEntry::terrainModListEntry(int sx, int sy, int mx, int my, int mz,
 	mod_z = mz;
 
 	modifier = newmod;
+
+	mId = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(seg_x*64,seg_y*64))->getTerrainModCount();
+
 	S_LOG_INFO("Adding new terrain modifier to segment: " << seg_x << "," << seg_y);
 	S_LOG_INFO("Adding new terrain modifier to position: " << mod_x << "," << mod_y << "," << mod_z);
 }
@@ -601,6 +618,11 @@ Mercator::TerrainMod *terrainModListEntry::Modifier()
 TerrainPosition *terrainModListEntry::Position()
 {
 	return new TerrainPosition(-seg_x*64 - mod_x, seg_y*64 + mod_y);
+}
+
+int terrainModListEntry::Id()
+{
+	return mId;
 }
 
 }
