@@ -27,6 +27,7 @@
 #include "GUIAdapter.h"
 #include "GUIAdapterBindings.h"
 
+#include "framework/tinyxml/tinyxml.h"
 #include <Atlas/Message/Element.h>
 
 namespace EmberOgre {
@@ -94,6 +95,11 @@ public:
 	GUIAdapterBindings* createGUIAdapterBindings(std::string name);
 
 	/**
+	 * Associate each binding with correspondent placeholders (entity spec nodes)
+	 */
+	void associateBindings();
+
+	/**
 	 * Grabs current values from adapters, runs it through Lua function,
 	 * composes resulting Atlas message and creates entity.
 	 */
@@ -108,7 +114,7 @@ protected:
 	/**
 	 * List of semi-atlas entity specs.
 	 */
-	std::list<Atlas::Message::MapType> mEntitySpec;
+	TiXmlElement* mEntitySpec;
 
 	/**
 	 * GUI adapters.
@@ -124,6 +130,18 @@ protected:
 	 * String that contains Lua script.
 	 */
 	std::string mScript;
+
+	/**
+	 * Helper iterator over TinyXml nodes for associateBindings()
+	 */
+	class SpecIterator : public TiXmlVisitor
+	{
+	public:
+		SpecIterator(EntityRecipe* recipe);
+		virtual bool VisitEnter(const TiXmlElement& elem, const TiXmlAttribute* attr);
+	private:
+		EntityRecipe* mRecipe;
+	};
 };
 
 /** Specialisation of SharedPtr to allow SharedPtr to be assigned to EntityRecipePtr 

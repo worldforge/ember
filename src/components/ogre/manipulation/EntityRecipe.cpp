@@ -40,7 +40,8 @@ namespace EmberOgre {
 
 EntityRecipe::EntityRecipe(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
 	const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader)
-	: Resource(creator, name, handle, group, isManual, loader)
+	: Resource(creator, name, handle, group, isManual, loader),
+	  mEntitySpec(0)
 {
 	if (createParamDictionary("EntityRecipe"))
 	{
@@ -57,6 +58,8 @@ EntityRecipe::~EntityRecipe()
 	for (BindingsStore::iterator I = mBindings.begin(); I != mBindings.end(); ++I) {
 		delete I->second;
 	}
+
+	delete mEntitySpec;
 }
 
 void EntityRecipe::loadImpl(void)
@@ -109,6 +112,49 @@ GUIAdapterBindings* EntityRecipe::createGUIAdapterBindings(std::string name)
 	return adapterBindings;
 }
 
+void EntityRecipe::associateBindings()
+{
+	S_LOG_VERBOSE("Associating bindings.");
+	// Iterate over all entity spec XML nodes
+	EntityRecipe::SpecIterator iter(this);
+
+	TiXmlElement *elem = mEntitySpec->FirstChildElement("atlas");
+	if (elem)
+	{
+		elem->Accept(&iter);
+	}
+}
+
+EntityRecipe::SpecIterator::SpecIterator(EntityRecipe* recipe) : TiXmlVisitor(), mRecipe(recipe)
+{
+}
+
+bool EntityRecipe::SpecIterator::VisitEnter(const TiXmlElement& elem, const TiXmlAttribute* attr)
+{
+	S_LOG_VERBOSE("Iterating over " << elem.ValueStr());
+
+	const char* text = elem.GetText();
+	if (text)
+	{
+		// If text looks like placeholder, try to look up it in bindings and associate if found
+		if (text[0] == '$')
+		{
+			BindingsStore::iterator bindings = mRecipe->mBindings.find(text+1);
+			if (bindings != mRecipe->mBindings.end())
+			{
+				bindings->associateXmlElement(elem);
+				S_LOG_VERBOSE("Associated " << text);
+			}
+			else
+			{
+				S_LOG_WARNING("Binding for " << text << " not found.");
+			}
+		}
+	}
+
+	return true;
+}
+
 void EntityRecipe::createEntity()
 {
 	S_LOG_VERBOSE("Creating entity.");
@@ -119,6 +165,8 @@ void EntityRecipe::createEntity()
 	// Walking through adapter bindings
 	for (BindingsStore::iterator I = mBindings.begin(); I != mBindings.end(); ++I) {
 		const std::string& func = I->second->getFunc();
+
+		S_LOG_VERBOSE(" binding: " << I->first << " to func " << func);
 
 		// TODO: handle real functions
 		if (func.empty())

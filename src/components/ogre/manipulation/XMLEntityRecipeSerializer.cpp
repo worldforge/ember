@@ -114,6 +114,10 @@ void XMLEntityRecipeSerializer::readEntitySpec(EntityRecipePtr entRecipe, TiXmlE
 {
 	S_LOG_VERBOSE("Read entity spec.");
 
+	// Copy <entity> part of XML into recipe
+	entRecipe->mEntitySpec = entSpecNode->Clone()->ToElement();
+
+	/*
 	// Print <entity> part of XML into string and wrap it with stream
 	TiXmlPrinter printer;
 	printer.SetStreamPrinting();
@@ -145,6 +149,7 @@ void XMLEntityRecipeSerializer::readEntitySpec(EntityRecipePtr entRecipe, TiXmlE
 			S_LOG_VERBOSE(" " << iter->first);
 		}
 	}
+	*/
 }
 
 void XMLEntityRecipeSerializer::readAdapters(EntityRecipePtr entRecipe, TiXmlElement* adaptersNode)
@@ -187,6 +192,9 @@ void XMLEntityRecipeSerializer::readBindings(EntityRecipePtr entRecipe, TiXmlEle
 
 		readBindAdapters(entRecipe, bindings, smElem);
 	}
+
+	// Associating bindings with placeholders after parsing
+	entRecipe->associateBindings();
 }
 
 void XMLEntityRecipeSerializer::readBindAdapters(EntityRecipePtr entRecipe, GUIAdapterBindings* bindings, TiXmlElement* bindAdaptersNode)

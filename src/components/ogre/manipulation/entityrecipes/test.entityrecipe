@@ -5,7 +5,7 @@
         <map>
           <int name="foo">13</int>
           <float name="meep">1.5</float>
-          <string name="bar">hello</string>
+          <string name="bar">$hello</string>
           <list name="args">
             <int>1</int>
             <int>2</int>
@@ -26,8 +26,8 @@
       <adapter name="value_of_c" type="color" />
     </adapters>
     <bindings>
-      <bind name="foo" func="calc_foo">
-        <adapter name="value_of_a" />
+      <bind name="hello">
+        <adapter name="value_of_b" />
       </bind>
       <bind name="meep" func="calc_meep">
         <adapter name="value_of_b" />
