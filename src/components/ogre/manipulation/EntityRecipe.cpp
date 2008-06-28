@@ -29,6 +29,12 @@
 #include "components/ogre/scripting/LuaScriptingCallContext.h"
 #include "services/scripting/ScriptingService.h"
 #include "services/EmberServices.h"
+#include <Atlas/Formatter.h>
+#include <Atlas/Codecs/XML.h>
+#include <Atlas/Message/MEncoder.h>
+#include <Atlas/Message/QueuedDecoder.h>
+#include <Atlas/Message/Element.h>
+#include <strstream>
 
 namespace EmberOgre {
 
@@ -47,6 +53,10 @@ EntityRecipe::~EntityRecipe()
 	for (GUIAdaptersStore::iterator I = mGUIAdapters.begin(); I != mGUIAdapters.end(); ++I) {
 		delete I->second;
 	}
+
+	for (BindingsStore::iterator I = mBindings.begin(); I != mBindings.end(); ++I) {
+		delete I->second;
+	}
 }
 
 void EntityRecipe::loadImpl(void)
@@ -57,10 +67,10 @@ void EntityRecipe::unloadImpl(void)
 {
 }
 
-size_t EntityRecipe::calculateSize(void) const 
+size_t EntityRecipe::calculateSize(void) const
 {
 	//TODO:implement this
-	return 0; 
+	return 0;
 }
 
 GUIAdapter* EntityRecipe::createGUIAdapter(std::string name, std::string type)
@@ -97,6 +107,52 @@ GUIAdapterBindings* EntityRecipe::createGUIAdapterBindings(std::string name)
 	adapterBindings = new GUIAdapterBindings();
 	mBindings[name] = adapterBindings;
 	return adapterBindings;
+}
+
+void EntityRecipe::createEntity()
+{
+	S_LOG_VERBOSE("Creating entity.");
+
+	// Constructed Atlas message
+	Atlas::Message::MapType message;
+
+	// Walking through adapter bindings
+	for (BindingsStore::iterator I = mBindings.begin(); I != mBindings.end(); ++I) {
+		const std::string& func = I->second->getFunc();
+
+		// TODO: handle real functions
+		if (func.empty())
+		{
+			const std::vector<std::string>& adapters = I->second->getAdapters();
+
+			if (adapters.size() != 1)
+			{
+				S_LOG_WARNING("Wrong number of adapters.");
+			}
+			else
+			{
+				message[I->first] = mGUIAdapters[adapters[0]]->getValue();
+			}
+		}
+	}
+
+	std::strstream str;
+
+	Atlas::Message::Element element(message);
+
+	Atlas::Message::QueuedDecoder decoder;
+
+	Atlas::Codecs::XML codec(str, decoder);
+	Atlas::Formatter formatter(str, codec);
+	Atlas::Message::Encoder encoder(formatter);
+	formatter.streamBegin();
+	encoder.streamMessageElement(message);
+	formatter.streamEnd();
+
+	if (str.str())
+	{
+		S_LOG_VERBOSE("Composed entity: " << str.str());
+	}
 }
 
 void EntityRecipe::doTest()

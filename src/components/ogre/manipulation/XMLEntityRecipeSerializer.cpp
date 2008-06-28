@@ -161,6 +161,8 @@ void XMLEntityRecipeSerializer::readAdapters(EntityRecipePtr entRecipe, TiXmlEle
 		if (!(type = smElem->Attribute(std::string("type"))))
 			continue;
 
+		S_LOG_VERBOSE(" adapter '" << *name << "' of type " << *type);
+
 		GUIAdapter* adapter = entRecipe->createGUIAdapter(*name, *type);
 	}
 }
@@ -193,6 +195,12 @@ void XMLEntityRecipeSerializer::readBindAdapters(EntityRecipePtr entRecipe, GUIA
 	for (TiXmlElement* elem = bindAdaptersNode->FirstChildElement();
             elem != 0; elem = elem->NextSiblingElement())
 	{
+		const std::string *name;
+
+		if (!(name = elem->Attribute(std::string("name"))))
+			continue;
+
+		bindings->addAdapter(*name);
 	}
 }
 

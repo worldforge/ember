@@ -34,9 +34,24 @@ GUIAdapterBindings::~GUIAdapterBindings()
 
 }
 
+const std::string& GUIAdapterBindings::getFunc()
+{
+	return mFunc;
+}
+
 void GUIAdapterBindings::setFunc(std::string func)
 {
 	mFunc = func;
+}
+
+void GUIAdapterBindings::addAdapter(std::string adapterName)
+{
+	mAdapters.push_back(adapterName);
+}
+
+const std::vector<std::string>& GUIAdapterBindings::getAdapters()
+{
+	return mAdapters;
 }
 
 }

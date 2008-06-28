@@ -24,6 +24,7 @@
 #define EMBEROGREGUIADAPTER_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
+#include "components/ogre/widgets/adapters/atlas/AdapterBase.h"
 #include <Atlas/Message/Element.h>
 #include <CEGUIWindow.h>
 
@@ -55,11 +56,21 @@ public:
 	 */
 	void attach(CEGUI::Window* window);
 
+	/**
+	 * Returns adapter value.
+	 */
+	Atlas::Message::Element& getValue();
+
 protected:
 	/**
 	 * Adapter type.
 	 */
 	std::string mType;
+
+	/**
+	 * Adapter container.
+	 */
+	::EmberOgre::Gui::Adapters::Atlas::AdapterBase* adapter;
 
 	/**
 	 * Adapter value.

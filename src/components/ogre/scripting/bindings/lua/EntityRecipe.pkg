@@ -18,6 +18,7 @@ public:
 //	GUIAdapter* getGUIAdapter(std::string name);
 //	GUIAdapterBindings* createGUIAdapterBindings(std::string name);
 	void doTest();
+	void createEntity();
 };
 
 class EntityRecipePtr

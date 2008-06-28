@@ -25,14 +25,14 @@ function EntityCreator.RecipesList_SelectionChanged(args)
 		local recipeMgr = EmberOgre.EntityRecipeManager:getSingleton()
 		local recipePtr = recipeMgr:getByName(name)
 		recipePtr = tolua.cast(recipePtr, "EmberOgre::EntityRecipePtr")
-		local recipe = recipePtr:get()
-		EntityCreator.showRecipe(recipe)
+		EntityCreator.recipe = recipePtr:get()
+		EntityCreator.showRecipe(EntityCreator.recipe)
 	end
 end
 
 -- Handles create button press
 function EntityCreator.Create_Click(args)
-	console:runCommand("/show_modelEdit")
+	EntityCreator.recipe:createEntity()
 end
 
 -- Shows selected recipe

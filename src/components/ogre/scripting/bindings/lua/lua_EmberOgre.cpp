@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Mon Jun 16 00:43:50 2008.
+** Generated automatically by tolua++-1.0.92 on Sat Jun 28 18:38:03 2008.
 */
 
 #ifndef __cplusplus
@@ -17828,6 +17828,37 @@ static int tolua_EmberOgre_EmberOgre_EntityRecipe_doTest00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: createEntity of class  EmberOgre::EntityRecipe */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EntityRecipe_createEntity00
+static int tolua_EmberOgre_EmberOgre_EntityRecipe_createEntity00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::EntityRecipe",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::EntityRecipe* self = (EmberOgre::EntityRecipe*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'createEntity'",NULL);
+#endif
+  {
+   self->createEntity();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'createEntity'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: get of class  EmberOgre::EntityRecipePtr */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EntityRecipePtr_get00
 static int tolua_EmberOgre_EmberOgre_EntityRecipePtr_get00(lua_State* tolua_S)
@@ -22944,6 +22975,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"unloadImpl",tolua_EmberOgre_EmberOgre_EntityRecipe_unloadImpl00);
     tolua_function(tolua_S,"calculateSize",tolua_EmberOgre_EmberOgre_EntityRecipe_calculateSize00);
     tolua_function(tolua_S,"doTest",tolua_EmberOgre_EmberOgre_EntityRecipe_doTest00);
+    tolua_function(tolua_S,"createEntity",tolua_EmberOgre_EmberOgre_EntityRecipe_createEntity00);
    tolua_endmodule(tolua_S);
    tolua_cclass(tolua_S,"EntityRecipePtr","EmberOgre::EntityRecipePtr","",NULL);
    tolua_beginmodule(tolua_S,"EntityRecipePtr");

@@ -94,6 +94,12 @@ public:
 	GUIAdapterBindings* createGUIAdapterBindings(std::string name);
 
 	/**
+	 * Grabs current values from adapters, runs it through Lua function,
+	 * composes resulting Atlas message and creates entity.
+	 */
+	void createEntity();
+
+	/**
 	 * Does some test checking.
 	 */
 	void doTest();
