@@ -43,7 +43,6 @@
 #include "Avatar.h"
 #include "AvatarCamera.h"
 
-//#include "components/ogre/EmberSceneManager/include/EmberTerrainSceneManager.h"
 #include <Mercator/Area.h>
 #include <Mercator/FillShader.h>
 #include <Mercator/ThresholdShader.h>
@@ -76,9 +75,9 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 {
 	
 	///create the foliage
- 	mFoliage = new Environment::Foliage(EmberOgre::getSingleton().getSceneManager());
- 	EventFoliageCreated.emit();
- 	
+	mFoliage = new Environment::Foliage(EmberOgre::getSingleton().getSceneManager());
+	EventFoliageCreated.emit();
+
 	EmberEntity::init(ge, fromCreateOp);
 	
 	///set the position to always 0, 0, 0
@@ -95,10 +94,11 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 void WorldEmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::Element& v)
 {
 	///check for terrain updates
-    if (str == "terrain") {
-    	if (mTerrainParser.get()) {
-    		mTerrainParser->updateTerrain(v);
-    	}
+	if (str == "terrain")
+	{
+		if (mTerrainParser.get()) {
+			mTerrainParser->updateTerrain(v);
+		}
 	}
 	Entity::onAttrChanged(str, v);
 }
@@ -112,107 +112,60 @@ TerrainParser::TerrainParser(Terrain::TerrainGenerator* terrainGenerator)
 void TerrainParser::updateTerrain(const Atlas::Message::Element& terrain)
 {
 	//_fpreset();
-    if (!terrain.isMap()) {
-		S_LOG_FAILURE( "Terrain is not a map" );
-    }
-    const Atlas::Message::MapType & tmap = terrain.asMap();
-    Atlas::Message::MapType::const_iterator I = tmap.find("points");
-//     int xmin = 0, xmax = 0, ymin = 0, ymax = 0;
-    if (I == tmap.end()) {
-		S_LOG_FAILURE( "No terrain points" );
-    }
-
+	if (!terrain.isMap())
+	{
+		S_LOG_FAILURE("Terrain is not a map");
+	}
+	const Atlas::Message::MapType & tmap = terrain.asMap();
+	Atlas::Message::MapType::const_iterator I = tmap.find("points");
+	if (I == tmap.end())
+	{
+		S_LOG_FAILURE("No terrain points");
+	}
+	
 	Terrain::TerrainGenerator::TerrainDefPointStore pointStore;
-	if (I->second.isList()) {
-        // Legacy support for old list format.
-        const Atlas::Message::ListType & plist = I->second.asList();
-        Atlas::Message::ListType::const_iterator J = plist.begin();
-        for(; J != plist.end(); ++J) {
-            if (!J->isList()) {
-				S_LOG_INFO( "Non list in points" );
-                continue;
-            }
-            const Atlas::Message::ListType & point = J->asList();
-            if (point.size() != 3) {
-				S_LOG_INFO( "point without 3 nums" );
-                continue;
-            }
-            //int x = (int)point[0].asNum();
-            //int y = (int)point[1].asNum();
-
-			Terrain::TerrainDefPoint defPoint((int)point[0].asNum(),(int)point[1].asNum(),(int)point[3].asNum());
-			pointStore.push_back(defPoint);
-			//mTerrain->setBasePoint(x,y,point[2].asNum());
-        }
-    } else if (I->second.isMap()) {
-
-        const Atlas::Message::MapType & plist = I->second.asMap();
-        Atlas::Message::MapType::const_iterator J = plist.begin();
-        for(; J != plist.end(); ++J) {
-            if (!J->second.isList()) {
-				S_LOG_INFO( "Non list in points" );
-                continue;
-            }
-            const Atlas::Message::ListType & point = J->second.asList();
-            if (point.size() != 3) {
-				S_LOG_INFO( "point without 3 nums" );
-                continue;
-            }
-            int x = (int)point[0].asNum();
-            int y = (int)point[1].asNum();
-            float z = point[2].asNum();
-			Terrain::TerrainDefPoint defPoint(x,y,z);
-			pointStore.push_back(defPoint);
-
-			
-			
-/*	        Mercator::BasePoint bp;
-            if (mTerrain->getBasePoint(x, y, bp) && (z == bp.height())) {
-				S_LOG_INFO( "Point [" << x << "," << y << " unchanged");
-                continue;
-            }
-            xmin = std::min(xmin, x);
-            xmax = std::max(xmax, x);
-            ymin = std::min(ymin, y);
-            ymax = std::max(ymax, y);
-            bp.height() = z;
-            // FIXME Sort out roughness and falloff, and generally
-            // verify this code is the same as that in Terrain layer
-            mTerrain->setBasePoint(x, y, bp);*/
-            
-        }
+	if (I->second.isList())
+	{
+		// Legacy support for old list format.
+		const Atlas::Message::ListType& plist = I->second.asList();
+		Atlas::Message::ListType::const_iterator J = plist.begin();
+		for (; J != plist.end(); ++J) {
+			if (!J->isList()) {
+				S_LOG_INFO("Non list in points");
+				continue;
+			}
+			const Atlas::Message::ListType & point = J->asList();
+			if (point.size() != 3) {
+				S_LOG_INFO("Point without 3 nums.");
+				continue;
+			}
 	
-	
-/*        const Atlas::Message::MapType & plist = I->second.asMap();
-        Atlas::Message::MapType::const_iterator J = plist.begin();
-        for(; J != plist.end(); ++J) {
-            if (!J->second.isList()) {
-                std::cout << "Non list in points" << std::endl << std::flush;
-                continue;
-            }
-            const Atlas::Message::ListType & point = J->second.asList();
-            if (point.size() != 3) {
-                std::cout << "point without 3 nums" << std::endl << std::flush;
-                continue;
-            }
-            int x = (int)point[0].asNum();
-            int y = (int)point[1].asNum();
-            xmin = std::min(xmin, x);
-            xmax = std::max(xmax, x);
-            ymin = std::min(ymin, y);
-            ymax = std::max(ymax, y);
-          //  m_terrain.setBasePoint(x, y, point[2].asNum());
-			mTerrain->setBasePoint(x,y,point[2].asNum());
-//System::instance()->getGraphics()->getTerrainRenderer()->m_terrain.setBasePoint(x,y,point[2].asNum());
-//System::Instance()->getGraphics(x,y,point[2].asNum());
-        }*/
-
-      
-
-    } else {
-		S_LOG_FAILURE( "Terrain is the wrong type" );
-        return;
-    }
+			Terrain::TerrainDefPoint defPoint(static_cast<int>(point[0].asNum()), static_cast<int>(point[1].asNum()), static_cast<float>(point[3].asNum()));
+			pointStore.push_back(defPoint);
+		}
+	} else if (I->second.isMap()) {
+		const Atlas::Message::MapType& plist = I->second.asMap();
+		Atlas::Message::MapType::const_iterator J = plist.begin();
+		for (; J != plist.end(); ++J) {
+			if (!J->second.isList()) {
+				S_LOG_INFO("Non list in points.");
+				continue;
+			}
+			const Atlas::Message::ListType & point = J->second.asList();
+			if (point.size() != 3) {
+				S_LOG_INFO("Point without 3 nums.");
+				continue;
+			}
+			int x = static_cast<int>(point[0].asNum());
+			int y = static_cast<int>(point[1].asNum());
+			float z = point[2].asNum();
+			Terrain::TerrainDefPoint defPoint(x, y, z);
+			pointStore.push_back(defPoint);
+		}
+	} else {
+		S_LOG_FAILURE("Terrain is the wrong type");
+		return;
+	}
 	mTerrainGenerator->updateTerrain(pointStore);
 }
 
@@ -228,18 +181,16 @@ float extractFloat(const Atlas::Message::ListType& params, size_t position) {
 
 void TerrainParser::createShaders(const Atlas::Message::Element& surfaces)
 {
-
-
 	Terrain::TerrainLayerDefinitionManager& terrainManager = Terrain::TerrainLayerDefinitionManager::getSingleton();
-// 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 	bool isValid = false;
-	if (surfaces.isList()) {
-        const Atlas::Message::ListType & slist(surfaces.asList());
-        for(Atlas::Message::ListType::const_iterator I = slist.begin(); I != slist.end(); ++I) {
-        	if (I->isMap()) {
-	        	std::string name;
-	        	std::string pattern;
-        		const Atlas::Message::MapType& surfaceMap(I->asMap());
+	if (surfaces.isList())
+	{
+		const Atlas::Message::ListType & slist(surfaces.asList());
+		for (Atlas::Message::ListType::const_iterator I = slist.begin(); I != slist.end(); ++I) {
+			if (I->isMap()) {
+				std::string name;
+				std::string pattern;
+				const Atlas::Message::MapType& surfaceMap(I->asMap());
 				Mercator::Shader::Parameters params;
 				if (surfaceMap.count("params")) {
 					const Atlas::Message::Element& paramsElem(surfaceMap.find("params")->second);
@@ -251,15 +202,11 @@ void TerrainParser::createShaders(const Atlas::Message::Element& surfaces)
 						}
 					}
 				}
-        		
+	
 				if (surfaceMap.count("name")) {
 					const Atlas::Message::Element& nameElem(surfaceMap.find("name")->second);
 					if (nameElem.isString()) {
 						const std::string& name = nameElem.asString();
-						///hack to remove the snow shader
-/*						if (name == "snow") {
-							continue;
-						}*/
 						Terrain::TerrainLayerDefinition* def(terrainManager.getDefinitionForShader(name));
 						if (def) {
 							if (surfaceMap.count("pattern")) {
@@ -279,32 +226,36 @@ void TerrainParser::createShaders(const Atlas::Message::Element& surfaces)
 			}
 		}
 	}
-    if (!isValid) {
-    	createDefaultShaders();
-    }
+	if (!isValid)
+	{
+		createDefaultShaders();
+	}
 }
 
 void TerrainParser::createDefaultShaders()
 {
 	Terrain::TerrainLayerDefinitionManager& terrainManager = Terrain::TerrainLayerDefinitionManager::getSingleton();
 	Terrain::TerrainLayerDefinition* def(0);
-	if ((def = terrainManager.getDefinitionForShader("rock"))) {
-    	mTerrainGenerator->createShader(def, new Mercator::FillShader());
-    }
-	if ((def = terrainManager.getDefinitionForShader("sand"))) {
-    	mTerrainGenerator->createShader(def,  new Mercator::BandShader(-2.f, 1.5f));
-    }	
- 
-	if ((def = terrainManager.getDefinitionForShader("grass"))) {
+	if ((def = terrainManager.getDefinitionForShader("rock")))
+	{
+		mTerrainGenerator->createShader(def, new Mercator::FillShader());
+	}
+	if ((def = terrainManager.getDefinitionForShader("sand")))
+	{
+		mTerrainGenerator->createShader(def,  new Mercator::BandShader(-2.f, 1.5f));
+	}
+	
+	if ((def = terrainManager.getDefinitionForShader("grass")))
+	{
 		mTerrainGenerator->createShader(def,   new Mercator::GrassShader(1.f, 80.f, .5f, 1.f));
-    }	
-
-//      createShader(std::string(configSrv->getValue("shadertextures", "snow")), new Mercator::HighShader(110.f)); // Snow
-//      createShader(std::string(configSrv->getValue("shadertextures", "seabottom")), new Mercator::DepthShader(0.f, -10.f)); // Underwater
-
-
-//    this->addShader(new TerrainShader(std::string(configSrv->getVariable("Shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f))); // Grass
-
+	}
+	
+	//      createShader(std::string(configSrv->getValue("shadertextures", "snow")), new Mercator::HighShader(110.f)); // Snow
+	//      createShader(std::string(configSrv->getValue("shadertextures", "seabottom")), new Mercator::DepthShader(0.f, -10.f)); // Underwater
+	
+	
+	//    this->addShader(new TerrainShader(std::string(configSrv->getVariable("Shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f))); // Grass
+	
 
 }
 
@@ -350,9 +301,9 @@ const Ogre::Vector3& WorldEmberEntity::getOffsetForContainedNode(const Ogre::Vec
 }
 
 
- void WorldEmberEntity::onMoved(){
- 	Eris::Entity::onMoved();
- }
+void WorldEmberEntity::onMoved(){
+	Eris::Entity::onMoved();
+}
 //  void WorldEmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talk)
 //  {
 //  	Eris::Entity::onTalk(talk);
@@ -393,8 +344,8 @@ void WorldEmberEntity::onVisibilityChanged(bool vis)
 		
 		//mTerrainGenerator->prepareSegments(0,0,1,true);
 		
+		///wait a little with initializing the foliage
 		mFoliageInitializer = std::auto_ptr<DelayedFoliageInitializer>(new DelayedFoliageInitializer(mFoliage, getView(), 1000, 15000));
-	// 	mFoliage->initialize();
 		mHasBeenInitialized = true;
 	}
 
