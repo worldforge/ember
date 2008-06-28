@@ -558,7 +558,7 @@ void AvatarCamera::ConfigService_EventChangedConfigItem(const std::string& secti
 
 bool AvatarCamera::frameStarted(const Ogre::FrameEvent& event)
 {
-	if (mIsAdjustedToTerrain) {
+	if (mIsAdjustedToTerrain && mAvatarNode) {
 		if (mCamera->getDerivedPosition() != mLastPosition) {
 			adjustForTerrain();
 		}
