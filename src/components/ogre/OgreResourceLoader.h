@@ -55,7 +55,6 @@ protected:
 	Ogre::ConfigFile mConfigFile;
 	
 	void loadSection(const std::string& sectionName);
-	void allocateSounds();
 	
 	bool addUserMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive);
 	bool addSharedMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive);

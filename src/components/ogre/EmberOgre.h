@@ -66,6 +66,8 @@ class TerrainGenerator;
 class TerrainLayerDefinitionManager;
 }
 
+class SoundDefinitionManager;
+
 namespace Model {
 	class ModelDefinitionManager;
 	namespace Mapping {
@@ -385,6 +387,11 @@ protected:
 	Responsible for handling of terrain.
 	*/
 	Terrain::TerrainGenerator* mTerrainGenerator;
+
+	/**
+	Responsible for handling sound loading
+	*/
+	SoundDefinitionManager* mSoundManager;
 	
 	/**
 	Responsible for updating motions and animations of entities.

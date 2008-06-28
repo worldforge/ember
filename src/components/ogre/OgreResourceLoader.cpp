@@ -149,27 +149,11 @@ void OgreResourceLoader::loadGui()
 	loadSection("Gui");
 }
 
-void OgreResourceLoader::allocateSounds()
-{
-	#define resourceMgr Ogre::ResourceGroupManager::getSingleton()
-	XMLSoundDefParser soundParser;
-
-	Ogre::StringVectorPtr files = resourceMgr.findResourceNames("SoundDefinitions", "*");
-
-	for (Ogre::StringVector::iterator I = files->begin(); I != files->end(); ++I) 
-	{
-		soundParser.parseScript(resourceMgr.openResource(std::string(*I)));
-	}
-	#undef resourceMgr
-}
-
 void OgreResourceLoader::loadGeneral()
 {
 	loadSection("General");
 	loadSection("ModelDefinitions");
-
 	loadSection("SoundDefinitions");
-	allocateSounds();
 	
 	loadAllUnloadedSections();
 
