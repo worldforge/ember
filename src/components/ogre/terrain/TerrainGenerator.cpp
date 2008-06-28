@@ -45,7 +45,7 @@
 #include "../environment/Forest.h"
 #include "ISceneManagerAdapter.h"
 
-
+#include "TerrainModListEntry.h"
 #include "TerrainPage.h"
 #include "TerrainArea.h"
 #include <Mercator/Area.h>
