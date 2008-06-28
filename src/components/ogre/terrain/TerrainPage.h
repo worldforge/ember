@@ -43,6 +43,7 @@ typedef std::vector<PageSegment> SegmentVector;
 }
 
 #include "TerrainPageShadow.h"
+#include "TerrainModListEntry.h"
 
 namespace Ogre
 {
@@ -63,35 +64,6 @@ class terrainModListEntry;
 TYPEDEF_STL_MAP(const Mercator::Shader*, TerrainShader*, ShaderMap);
 
 
-
-class terrainModListEntry {
-	public:
-		terrainModListEntry();
-		terrainModListEntry(int sx, int sy, int mx, int my, int mz, Mercator::TerrainMod *modifier);
-
-		int X();
-		int Y();
-		int Z();
-		TerrainPosition *Position();
-		int SegX();
-		int SegY();
-		Mercator::TerrainMod *Modifier();
-
-		int Id();
-		
-	private:
-		 // A number to uniquely identify this entry
-		int	mId;
-		 // Segment the modifier is applied to
-		int	seg_x;
-		int	seg_y;
-		 // Position of modifier relative to segment
-		int	mod_x;
-		int	mod_y;
-		int	mod_z;
-
-		Mercator::TerrainMod *modifier;
-};
 
 /**
 

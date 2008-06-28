@@ -29,6 +29,7 @@
 #include "../EmberOgre.h"
 #include "../Avatar.h"
 #include "TerrainGenerator.h"
+#include "TerrainModListEntry.h"
 #include "../AvatarCamera.h"
 #include "../GUIManager.h"
 
@@ -232,6 +233,9 @@ void TerrainEditor::createOverlay()
 	const WFMath::Ball<2> wfBall_2d(WFMath::Point<2>(42,42), 30);
 	Mercator::LevelTerrainMod<WFMath::Ball<2> > *TerrainMod_tester;
 	TerrainMod_tester = new Mercator::LevelTerrainMod<WFMath::Ball<2> >(60, wfBall_2d);
+	//const WFMath::RotBox<2> wfBox_2d(WFMath::Point<2>(42,42), WFMath::Vector<2>(-20,-20), WFMath::RotMatrix<2>());
+	//Mercator::LevelTerrainMod<WFMath::RotBox<2> > *TerrainMod_tester;
+	//TerrainMod_tester = new Mercator::LevelTerrainMod<WFMath::RotBox<2> >(60, wfBox_2d);
 	if( EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(2,2)) != NULL )
 	{
 		EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition(1,1))->addTerrainModifier(1,1,42,42,60,TerrainMod_tester);

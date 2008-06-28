@@ -216,6 +216,147 @@ void TerrainParser::updateTerrain(const Atlas::Message::Element& terrain)
 	mTerrainGenerator->updateTerrain(pointStore);
 }
 
+void TerrainParser::updateTerrainModifiers(const Atlas::Message::Element& modifier)
+{
+
+    if (!modifier.isMap()) {
+		S_LOG_FAILURE( "Terrain is not a map" );
+    }
+    const Atlas::Message::MapType & modMap = modifier.asMap();
+
+    std::string modType;
+    std::string shapeType;
+    int shapeDim;
+    WFMath::Point<3> pos;
+    
+	// Get modifier type
+    if (modMap.count("type")) {
+	const Atlas::Message::Element& modTypeElem(modMap.find("type")->second);
+	if (modTypeElem.isString()) {
+		//const std::string& type = modTypeElem.asString();
+		modType = modTypeElem.asString();
+    	}
+    }
+
+	// Get modifier position
+    if (modMap.count("pos")) {
+    	const Atlas::Message::Element& modPosElem = modMap.find("pos")->second;
+    	if (modPosElem.isList()) {
+		const Atlas::Message::ListType& point = modPosElem.asList();
+		pos = WFMath::Point<3>((int)point[0].asNum(), (int)point[1].asNum(), (int)point[2].asNum());
+    	}
+    }
+
+	// Get modifier's shape
+    if (modMap.count("shape")) {
+	const Atlas::Message::Element& shapeElem(modMap.find("shape")->second);
+	if (shapeElem.isMap()) {
+		const Atlas::Message::MapType & shapeMap = shapeElem.asMap();
+			// Get shape's type
+		if (shapeMap.count("type")) {
+			const Atlas::Message::Element& shapeTypeElem(shapeMap.find("type")->second);
+			if (shapeTypeElem.isString()) {
+				shapeType = shapeTypeElem.asString();
+			}
+		}
+			// Get shape's dimension
+		if (shapeMap.count("dim")) {
+			const Atlas::Message::Element& shapeDimElem(shapeMap.find("dim")->second);
+			if (shapeDimElem.isInt()) {
+				shapeDim = (int)shapeDimElem.asNum();
+			}
+		}
+			// Get other shape parameters
+		if (shapeType == "ball" ) {
+			float shapeRadius;
+			// Get sphere's radius
+			if (shapeMap.count("radius")) {
+				const Atlas::Message::Element& shapeRadiusElem(shapeMap.find("radius")->second);
+				shapeRadius = shapeRadiusElem.asNum();
+			}
+
+			// Make sphere
+			WFMath::Ball<3> modShape = WFMath::Ball<3>(pos, shapeRadius); ///FIXME: assumes 3d ball...
+		} else if (shapeType == "rotbox") {
+			WFMath::Point<2> shapePoint;
+			WFMath::Vector<2> shapeVector;
+			// Get rotbox's position
+			if (shapeMap.count("point")) {
+				const Atlas::Message::Element& shapePointElem(shapeMap.find("point")->second);
+				if (shapePointElem.isList()) {
+					const Atlas::Message::ListType & pointList = shapePointElem.asList();
+					shapePoint = WFMath::Point<2>((int)pointList[0].asNum(), (int)pointList[1].asNum());
+				}
+			}
+			// Get rotbox's vector
+			if (shapeMap.count("vector")) {
+				const Atlas::Message::Element& shapeVectorElem(shapeMap.find("vector")->second);
+				if (shapeVectorElem.isList()) {
+					const Atlas::Message::ListType & vectorList = shapeVectorElem.asList();	
+					shapeVector = WFMath::Vector<2>((int)vectorList[0].asNum(), (int)vectorList[1].asNum());
+				}
+			}
+
+			// Make rotbox
+			WFMath::RotBox<2> modShape = WFMath::RotBox<2>(shapePoint, shapeVector, WFMath::RotMatrix<2>()); ///FIXME: needs to use shapeDim
+		}
+	} // end shape data
+
+	// Check for additional modifier parameters
+	if (modType == "slopemod") {
+		float dx, dy;
+		// Get slopes
+		if (modMap.count("slopes")) {
+    			const Atlas::Message::Element& modSlopeElem = modMap.find("slopes")->second;
+    			if (modSlopeElem.isList()) {
+				const Atlas::Message::ListType & slopes = modSlopeElem.asList();
+				dx = (int)slopes[0].asNum();
+				dy = (int)slopes[1].asNum();
+    			}
+    		}
+
+		// Make modifier
+			// Create a TerrainModListEntry instance
+			// Make a call to TerrainGenerator, which should handle finding which page
+			//  to apply the mod to, which should handle finding which segment(s) it affects.
+	
+	} else if (modType == "levelmod") {
+		float level;
+		// Get level
+		if (modMap.count("height")) {
+			const Atlas::Message::Element& modHeightElem = modMap.find("height")->second;
+			level = modHeightElem.asNum();
+		}
+		
+		// Make modifier
+			// Create a TerrainModListEntry instance
+			// Make a call to TerrainGenerator, which should handle finding which page
+			//  to apply the mod to, which should handle finding which segment(s) it affects.
+
+	} else if (modType == "adjustmod") {
+		float level;
+		// Get level
+		if (modMap.count("height")) {
+			const Atlas::Message::Element& modHeightElem = modMap.find("height")->second;
+			level = modHeightElem.asNum();
+		}
+		
+		// Make modifier
+			// Create a TerrainModListEntry instance
+			// Make a call to TerrainGenerator, which should handle finding which page
+			//  to apply the mod to, which should handle finding which segment(s) it affects.
+
+	} else if (modType == "cratermod") {
+		// Make modifier
+			// Create a TerrainModListEntry instance
+			// Make a call to TerrainGenerator, which should handle finding which page
+			//  to apply the mod to, which should handle finding which segment(s) it affects.
+	}
+
+    }
+	// Make a call to TerrainGenerator to update the terrain
+}
+
 float extractFloat(const Atlas::Message::ListType& params, size_t position) {
 	if (params.size() > position) {
 		const Atlas::Message::Element& elem(params[position]);

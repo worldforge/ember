@@ -27,6 +27,7 @@
 #endif
 
 #include "TerrainPage.h"
+#include "TerrainModListEntry.h"
 
 #include <OgreStringConverter.h>
 #include <OgreRenderSystemCapabilities.h>
@@ -557,6 +558,7 @@ int TerrainPage::getModId()
 }
 
 	/** Used for the terrainModListEntry class **/
+
 terrainModListEntry::terrainModListEntry()
 {
 	seg_x = 0;
@@ -624,6 +626,7 @@ int terrainModListEntry::Id()
 {
 	return mId;
 }
+
 
 }
 }
