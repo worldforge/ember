@@ -20,6 +20,8 @@
 #define EMBEROGRE_GUIADAPTERBINDINGS_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
+#include "framework/tinyxml/tinyxml.h"
+#include <Atlas/Message/Element.h>
 
 namespace EmberOgre {
 
@@ -59,6 +61,16 @@ public:
 	 */
 	const std::vector<std::string>& getAdapters();
 
+	/**
+	 * Associates this bindings with XML element
+	 */
+	void associateXmlElement(TiXmlElement& element);
+
+	/**
+	 * Sets value to associated element
+	 */
+	void setValue(Atlas::Message::Element& val);
+
 protected:
 	/**
 	 * Binded function name
@@ -69,6 +81,11 @@ protected:
 	 * List of binded adapters.
 	 */
 	std::vector<std::string> mAdapters;
+
+	/**
+	 * Associated element
+	 */
+	TiXmlElement* mElement;
 };
 
 }

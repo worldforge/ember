@@ -24,7 +24,7 @@
 
 namespace EmberOgre {
 
-GUIAdapterBindings::GUIAdapterBindings()
+GUIAdapterBindings::GUIAdapterBindings() : mElement(0)
 {
 
 }
@@ -52,6 +52,24 @@ void GUIAdapterBindings::addAdapter(std::string adapterName)
 const std::vector<std::string>& GUIAdapterBindings::getAdapters()
 {
 	return mAdapters;
+}
+
+void GUIAdapterBindings::associateXmlElement(TiXmlElement& element)
+{
+	mElement = &element;
+}
+
+void GUIAdapterBindings::setValue(Atlas::Message::Element& val)
+{
+	if (val.isNum())
+	{
+		// itoa in C++ :)
+		std::ostringstream out;
+		out << val.asNum();
+
+		TiXmlText* textNode = new TiXmlText(out.str());
+		mElement->LinkEndChild(textNode);
+	}
 }
 
 }

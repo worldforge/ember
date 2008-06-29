@@ -142,7 +142,7 @@ bool EntityRecipe::SpecIterator::VisitEnter(const TiXmlElement& elem, const TiXm
 			BindingsStore::iterator bindings = mRecipe->mBindings.find(text+1);
 			if (bindings != mRecipe->mBindings.end())
 			{
-				bindings->associateXmlElement(elem);
+				bindings->second->associateXmlElement(const_cast<TiXmlElement&>(elem));
 				S_LOG_VERBOSE("Associated " << text);
 			}
 			else
@@ -159,9 +159,6 @@ void EntityRecipe::createEntity()
 {
 	S_LOG_VERBOSE("Creating entity.");
 
-	// Constructed Atlas message
-	Atlas::Message::MapType message;
-
 	// Walking through adapter bindings
 	for (BindingsStore::iterator I = mBindings.begin(); I != mBindings.end(); ++I) {
 		const std::string& func = I->second->getFunc();
@@ -173,17 +170,18 @@ void EntityRecipe::createEntity()
 		{
 			const std::vector<std::string>& adapters = I->second->getAdapters();
 
-			if (adapters.size() != 1)
+			if (adapters.size() == 1)
 			{
-				S_LOG_WARNING("Wrong number of adapters.");
+				I->second->setValue( mGUIAdapters[adapters[0]]->getValue() );
 			}
 			else
 			{
-				message[I->first] = mGUIAdapters[adapters[0]]->getValue();
+				S_LOG_WARNING("Wrong number of adapters.");
 			}
 		}
 	}
 
+/*
 	std::strstream str;
 
 	Atlas::Message::Element element(message);
@@ -196,11 +194,14 @@ void EntityRecipe::createEntity()
 	formatter.streamBegin();
 	encoder.streamMessageElement(message);
 	formatter.streamEnd();
+*/
 
-	if (str.str())
-	{
-		S_LOG_VERBOSE("Composed entity: " << str.str());
-	}
+	// Print entity into string
+	TiXmlPrinter printer;
+	printer.SetStreamPrinting();
+	mEntitySpec->Accept( &printer );
+
+	S_LOG_VERBOSE("Composed entity: " << printer.Str());
 }
 
 void EntityRecipe::doTest()
