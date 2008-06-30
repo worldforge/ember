@@ -221,6 +221,8 @@ bool GUICEGUIAdapter::injectMouseButtonUp(const Input::MouseButton& button)
 		return false;
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
+	} catch (const std::exception& e) {
+		S_LOG_WARNING("Error in CEGUI: " << e.what());
 	} catch (...) {
 		S_LOG_WARNING("Unknown error in CEGUI.");
 	}

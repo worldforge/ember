@@ -21,6 +21,13 @@
 #endif
 
 #include "GUIAdapterBindings.h"
+#include <Atlas/Formatter.h>
+#include <Atlas/Codecs/XML.h>
+#include <Atlas/Message/MEncoder.h>
+#include <Atlas/Message/QueuedDecoder.h>
+#include <Atlas/Message/Element.h>
+#include <sstream>
+#include <stdexcept>
 
 namespace EmberOgre {
 
@@ -61,16 +68,66 @@ void GUIAdapterBindings::associateXmlElement(TiXmlNode& element)
 
 void GUIAdapterBindings::setValue(Atlas::Message::Element& val)
 {
-	if (val.isNum())
+	TiXmlNode* parent = mElement->Parent();
+	TiXmlNode* newNode;
+
+	if (val.isNone())
+	{
+		// Bah! None! Let's forge out something
+		newNode = new TiXmlText("");
+	}
+	else if (val.isInt())
 	{
 		// itoa in C++ :)
 		std::ostringstream out;
-		out << val.asNum();
-
-		TiXmlNode* parent = mElement->Parent();
-		TiXmlText textNode(out.str());
-		mElement = parent->ReplaceChild(mElement, textNode);
+		out << val.asInt();
+		newNode = new TiXmlText(out.str());
 	}
+	else if (val.isFloat())
+	{
+		std::ostringstream out;
+		out << val.asFloat();
+		newNode = new TiXmlText(out.str());
+	}
+	else if (val.isString())
+	{
+		newNode = new TiXmlText(val.asString());
+	}
+	else if (val.isMap())
+	{
+		newNode = convertAtlasToXml(val);
+	}
+	else
+	{
+		throw new std::logic_error("New unknown Atlas element type seen in the wild for the first time.");
+	}
+
+	mElement = parent->ReplaceChild(mElement, *newNode);
+	delete newNode;
+}
+
+TiXmlNode* GUIAdapterBindings::convertAtlasToXml(Atlas::Message::Element& val)
+{
+	// Print out Atlas node
+	std::stringstream data;
+
+	Atlas::Message::QueuedDecoder decoder;
+	Atlas::Codecs::XML codec(data, decoder);
+	Atlas::Formatter formatter(data, codec);
+	Atlas::Message::Encoder encoder(formatter);
+	formatter.streamBegin();
+	encoder.streamMessageElement(val.asMap());
+	formatter.streamEnd();
+
+	// Create TinyXml node
+	TiXmlDocument xmlDoc;
+	xmlDoc.Parse(data.str().c_str());
+	if (xmlDoc.Error())
+	{
+		throw std::logic_error("TinyXml unable to parse Atlas generated data.");
+	}
+	
+	return xmlDoc.RootElement()->Clone();
 }
 
 }

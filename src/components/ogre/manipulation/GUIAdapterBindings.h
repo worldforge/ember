@@ -71,6 +71,11 @@ public:
 	 */
 	void setValue(Atlas::Message::Element& val);
 
+	/**
+	 * Helper function, converting Atlas node into TinyXml node
+	 */
+	static TiXmlNode* convertAtlasToXml(Atlas::Message::Element& val);
+
 protected:
 	/**
 	 * Binded function name

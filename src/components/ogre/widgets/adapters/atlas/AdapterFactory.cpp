@@ -353,12 +353,25 @@ AdapterBase* AdapterFactory::createAdapterByType(std::string type, CEGUI::Window
 	}
 	else if (type == "position")
 	{
-		if (element.isNone()) { element = ::Atlas::Message::ListType(); }
+		if (element.isNone())
+		{
+			::Atlas::Message::ListType list;
+			list.push_back(::Atlas::Message::Element(0.0f));
+			list.push_back(::Atlas::Message::Element(0.0f));
+			list.push_back(::Atlas::Message::Element(0.0f));
+			element = list;
+		}
 		return createPositionAdapter(container, adapterPrefix, element);
 	}
 	else if (type == "position2d")
 	{
-		if (element.isNone()) { element = ::Atlas::Message::ListType(); }
+		if (element.isNone())
+		{
+			::Atlas::Message::ListType list;
+			list.push_back(::Atlas::Message::Element(0.0f));
+			list.push_back(::Atlas::Message::Element(0.0f));
+			element = list;
+		}
 		return createPosition2DAdapter(container, adapterPrefix, element);
 	}
 	else if (type == "map")

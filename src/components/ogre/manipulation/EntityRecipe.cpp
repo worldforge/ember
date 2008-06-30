@@ -29,12 +29,7 @@
 #include "components/ogre/scripting/LuaScriptingCallContext.h"
 #include "services/scripting/ScriptingService.h"
 #include "services/EmberServices.h"
-#include <Atlas/Formatter.h>
-#include <Atlas/Codecs/XML.h>
-#include <Atlas/Message/MEncoder.h>
-#include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/Message/Element.h>
-#include <strstream>
 
 namespace EmberOgre {
 
@@ -180,7 +175,7 @@ void EntityRecipe::createEntity()
 	}
 
 /*
-	std::strstream str;
+	std::stringstream str;
 
 	Atlas::Message::Element element(message);
 
