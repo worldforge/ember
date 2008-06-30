@@ -138,7 +138,7 @@ protected:
 	{
 	public:
 		SpecIterator(EntityRecipe* recipe);
-		virtual bool VisitEnter(const TiXmlElement& elem, const TiXmlAttribute* attr);
+		virtual bool Visit(const TiXmlText& elem);
 	private:
 		EntityRecipe* mRecipe;
 	};

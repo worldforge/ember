@@ -129,26 +129,22 @@ EntityRecipe::SpecIterator::SpecIterator(EntityRecipe* recipe) : TiXmlVisitor(),
 {
 }
 
-bool EntityRecipe::SpecIterator::VisitEnter(const TiXmlElement& elem, const TiXmlAttribute* attr)
+bool EntityRecipe::SpecIterator::Visit(const TiXmlText& textNode)
 {
-	S_LOG_VERBOSE("Iterating over " << elem.ValueStr());
+	std::string text = textNode.ValueStr();
 
-	const char* text = elem.GetText();
-	if (text)
+	// If text looks like placeholder, try to look up it in bindings and associate if found
+	if (!text.empty() && text.at(0) == '$')
 	{
-		// If text looks like placeholder, try to look up it in bindings and associate if found
-		if (text[0] == '$')
+		BindingsStore::iterator bindings = mRecipe->mBindings.find(text.substr(1));
+		if (bindings != mRecipe->mBindings.end())
 		{
-			BindingsStore::iterator bindings = mRecipe->mBindings.find(text+1);
-			if (bindings != mRecipe->mBindings.end())
-			{
-				bindings->second->associateXmlElement(const_cast<TiXmlElement&>(elem));
-				S_LOG_VERBOSE("Associated " << bindings->first << " with " << text);
-			}
-			else
-			{
-				S_LOG_WARNING("Binding for " << text << " not found.");
-			}
+			bindings->second->associateXmlElement(const_cast<TiXmlText&>(textNode));
+			S_LOG_VERBOSE("Associated " << bindings->first << " with " << text);
+		}
+		else
+		{
+			S_LOG_WARNING("Binding for " << text << " not found.");
 		}
 	}
 

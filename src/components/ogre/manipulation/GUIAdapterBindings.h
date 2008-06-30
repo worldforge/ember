@@ -64,7 +64,7 @@ public:
 	/**
 	 * Associates this bindings with XML element
 	 */
-	void associateXmlElement(TiXmlElement& element);
+	void associateXmlElement(TiXmlNode& element);
 
 	/**
 	 * Sets value to associated element
@@ -83,9 +83,9 @@ protected:
 	std::vector<std::string> mAdapters;
 
 	/**
-	 * Associated element
+	 * Associated XML element
 	 */
-	TiXmlElement* mElement;
+	TiXmlNode* mElement;
 };
 
 }

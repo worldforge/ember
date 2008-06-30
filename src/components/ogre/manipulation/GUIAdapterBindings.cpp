@@ -54,7 +54,7 @@ const std::vector<std::string>& GUIAdapterBindings::getAdapters()
 	return mAdapters;
 }
 
-void GUIAdapterBindings::associateXmlElement(TiXmlElement& element)
+void GUIAdapterBindings::associateXmlElement(TiXmlNode& element)
 {
 	mElement = &element;
 }
@@ -67,8 +67,9 @@ void GUIAdapterBindings::setValue(Atlas::Message::Element& val)
 		std::ostringstream out;
 		out << val.asNum();
 
-		TiXmlText* textNode = new TiXmlText(out.str());
-		mElement->LinkEndChild(textNode);
+		TiXmlNode* parent = mElement->Parent();
+		TiXmlText textNode(out.str());
+		mElement = parent->ReplaceChild(mElement, textNode);
 	}
 }
 
