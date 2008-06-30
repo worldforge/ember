@@ -99,7 +99,7 @@ void GUIAdapterBindings::setValue(Atlas::Message::Element& val)
 	}
 	else
 	{
-		throw new std::logic_error("New unknown Atlas element type seen in the wild for the first time.");
+		throw std::logic_error("New unknown Atlas element type seen in the wild for the first time.");
 	}
 
 	mElement = parent->ReplaceChild(mElement, *newNode);
@@ -126,7 +126,7 @@ TiXmlNode* GUIAdapterBindings::convertAtlasToXml(Atlas::Message::Element& val)
 	{
 		throw std::logic_error("TinyXml unable to parse Atlas generated data.");
 	}
-	
+
 	return xmlDoc.RootElement()->Clone();
 }
 
