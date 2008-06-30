@@ -31,14 +31,14 @@
 namespace EmberOgre {
 
 GUIAdapter::GUIAdapter(std::string type) :
-		mType(type), adapter(0)
+		mType(type), mAdapter(0)
 {
 
 }
 
 GUIAdapter::~GUIAdapter()
 {
-	delete adapter;
+	delete mAdapter;
 }
 
 std::string GUIAdapter::getType()
@@ -49,12 +49,12 @@ std::string GUIAdapter::getType()
 void GUIAdapter::attach(CEGUI::Window* window)
 {
 	EmberOgre::Gui::Adapters::Atlas::AdapterFactory factory("EntityCreator");
-	factory.createAdapterByType(mType, window, "adapterPrefix", element);
+	mAdapter = factory.createAdapterByType(mType, window, "adapterPrefix", mElement);
 }
 
 Atlas::Message::Element& GUIAdapter::getValue()
 {
-	return adapter->getValue();
+	return mAdapter->getValue();
 }
 
 }

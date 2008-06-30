@@ -70,12 +70,12 @@ protected:
 	/**
 	 * Adapter container.
 	 */
-	::EmberOgre::Gui::Adapters::Atlas::AdapterBase* adapter;
+	::EmberOgre::Gui::Adapters::Atlas::AdapterBase* mAdapter;
 
 	/**
 	 * Adapter value.
 	 */
-	Atlas::Message::Element element;
+	Atlas::Message::Element mElement;
 };
 
 }

@@ -143,7 +143,7 @@ bool EntityRecipe::SpecIterator::VisitEnter(const TiXmlElement& elem, const TiXm
 			if (bindings != mRecipe->mBindings.end())
 			{
 				bindings->second->associateXmlElement(const_cast<TiXmlElement&>(elem));
-				S_LOG_VERBOSE("Associated " << text);
+				S_LOG_VERBOSE("Associated " << bindings->first << " with " << text);
 			}
 			else
 			{
@@ -172,7 +172,9 @@ void EntityRecipe::createEntity()
 
 			if (adapters.size() == 1)
 			{
-				I->second->setValue( mGUIAdapters[adapters[0]]->getValue() );
+				std::string adapterName = adapters[0];
+				Atlas::Message::Element val = mGUIAdapters[adapterName]->getValue();
+				I->second->setValue(val);
 			}
 			else
 			{
