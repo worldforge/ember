@@ -126,6 +126,12 @@ EntityRecipe::SpecIterator::SpecIterator(EntityRecipe* recipe) : TiXmlVisitor(),
 
 bool EntityRecipe::SpecIterator::Visit(const TiXmlText& textNode)
 {
+	// We should be the only child of our parent
+	if (textNode.Parent()->FirstChild() != textNode.Parent()->LastChild())
+	{
+		return false;
+	}
+
 	std::string text = textNode.ValueStr();
 
 	// If text looks like placeholder, try to look up it in bindings and associate if found
@@ -134,7 +140,7 @@ bool EntityRecipe::SpecIterator::Visit(const TiXmlText& textNode)
 		BindingsStore::iterator bindings = mRecipe->mBindings.find(text.substr(1));
 		if (bindings != mRecipe->mBindings.end())
 		{
-			bindings->second->associateXmlElement(const_cast<TiXmlText&>(textNode));
+			bindings->second->associateXmlElement(const_cast<TiXmlNode&>(*textNode.Parent()));
 			S_LOG_VERBOSE("Associated " << bindings->first << " with " << text);
 		}
 		else

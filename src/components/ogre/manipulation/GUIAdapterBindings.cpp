@@ -69,8 +69,9 @@ void GUIAdapterBindings::associateXmlElement(TiXmlNode& element)
 void GUIAdapterBindings::setValue(Atlas::Message::Element& val)
 {
 	TiXmlNode* parent = mElement->Parent();
-	TiXmlNode* newNode;
 
+/*
+	TiXmlNode* newNode;
 	if (val.isNone())
 	{
 		// Bah! None! Let's forge out something
@@ -93,16 +94,42 @@ void GUIAdapterBindings::setValue(Atlas::Message::Element& val)
 	{
 		newNode = new TiXmlText(val.asString());
 	}
-	else if (val.isMap())
+	else if (val.isMap() || val.isList())
 	{
-		newNode = convertAtlasToXml(val);
 	}
 	else
 	{
 		throw std::logic_error("New unknown Atlas element type seen in the wild for the first time.");
 	}
+*/
 
-	mElement = parent->ReplaceChild(mElement, *newNode);
+	// Got Atlas XML representation of adapter value
+	TiXmlNode* xmlNode = convertAtlasToXml(val);
+
+	if (xmlNode->NoChildren())
+	{
+		throw std::logic_error("Empty result from adapter.");
+	}
+
+	// Checking node validity
+	TiXmlElement* newNode = xmlNode->ToElement()->FirstChildElement();
+	if (newNode && xmlNode->FirstChild() == xmlNode->LastChild())
+	{
+		const char* name = mElement->ToElement()->Attribute("name");
+
+		// Saving "name" attribute of old node, if any
+		if (name)
+		{
+			newNode->SetAttribute("name", name);
+		}
+
+		// Replacing placeholder node with received value
+		mElement = parent->ReplaceChild(mElement, *newNode);
+	}
+	else
+	{
+		throw std::logic_error("Adapter returns Atlas message with multiply elements.");
+	}
 	delete newNode;
 }
 
@@ -116,8 +143,10 @@ TiXmlNode* GUIAdapterBindings::convertAtlasToXml(Atlas::Message::Element& val)
 	Atlas::Formatter formatter(data, codec);
 	Atlas::Message::Encoder encoder(formatter);
 	formatter.streamBegin();
-	encoder.streamMessageElement(val.asMap());
+	encoder.listElementItem(val);
 	formatter.streamEnd();
+
+	S_LOG_VERBOSE("  got adapter value " << data.str());
 
 	// Create TinyXml node
 	TiXmlDocument xmlDoc;
