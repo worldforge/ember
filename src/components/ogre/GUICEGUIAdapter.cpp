@@ -187,16 +187,11 @@ bool GUICEGUIAdapter::Editbox_selectionChangedHandler(const CEGUI::EventArgs& ar
 	return true;
 }
 
-// bool GUICEGUIAdapter::selectionChangedHandler(const CEGUI::EventArgs& args)
-// {
-// 	S_LOG_VERBOSE("");
-// }
 
 bool GUICEGUIAdapter::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
 {
 	try {
-		CEGUI::MouseCursor::getSingleton().setPosition(CEGUI::Point((motion.xPosition), (motion.yPosition))); 
-		mGuiSystem->injectMouseMove(0.0f, 0.0f);
+		mGuiSystem->injectMousePosition(motion.xPosition, motion.yPosition);
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
 	}
@@ -266,13 +261,13 @@ bool GUICEGUIAdapter::injectMouseButtonDown(const Input::MouseButton& button)
 bool GUICEGUIAdapter::injectChar(char character)
 {
 	try {
-		//cegui can't handle tabs, so we have to convert it to a couple of spaces
+		///cegui can't handle tabs, so we have to convert it to a couple of spaces
 		if (character == '\t') {
 			mGuiSystem->injectChar(' ');
 			mGuiSystem->injectChar(' ');
 			mGuiSystem->injectChar(' ');
 			mGuiSystem->injectChar(' ');
-		//can't handle CR either really, insert a line break (0x0a) instead
+		///can't handle CR either really, insert a line break (0x0a) instead
 		} else if (character == '\r') {
  			//mGuiSystem->injectChar(0x0a);
  			mGuiSystem->injectKeyDown(CEGUI::Key::Return);
