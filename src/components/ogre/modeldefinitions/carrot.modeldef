@@ -1,9 +1,9 @@
 <models>
-    <model name="carrot" usescaleof="all" renderingdistance="30.000000" scale="1.000000" showcontained="true" icon="3d_objects/plants/fruit/carrot/I.png">
+    <model name="carrot" usescaleof="all" renderingdistance="30.000000" scale="1.000000" showcontained="true" icon="3d_objects/plants/fruit/textures/carrot/I.png">
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="-1.000000" y="-0.000000" z="-0.000000" degrees="90.000000" />
         <submodels>
-            <submodel mesh="3d_objects/plants/fruit/carrot/carrot.mesh">
+            <submodel mesh="3d_objects/plants/fruit/models/carrot/carrot.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>

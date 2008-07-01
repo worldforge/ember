@@ -11,7 +11,7 @@
 		</submodels>
 	</model>
 	
-    <model name="pine" usescaleof="height" showcontained="true" scale="2.000000"  icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+    <model name="pine" usescaleof="height" showcontained="true" scale="2.000000"  icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
     	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
@@ -20,17 +20,17 @@
                 <parts>
                     <part name="pine" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                            <subentity index="0" material="global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -40,7 +40,7 @@
         <attachpoints />
         <views />
     </model>
-    <model name="pineA" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+    <model name="pineA" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
     	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
@@ -49,17 +49,17 @@
                 <parts>
                     <part name="pine" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                            <subentity index="0" material="global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -69,7 +69,7 @@
         <attachpoints />
         <views />
     </model>
-    <model name="pineB" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+    <model name="pineB" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
      	<rendering scheme="forest" />
        <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
@@ -78,17 +78,17 @@
                 <parts>
                     <part name="pine" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                            <subentity index="0" material="global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -98,7 +98,7 @@
         <attachpoints />
         <views />
     </model>
-    <model name="pineC" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+    <model name="pineC" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
     	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
@@ -107,17 +107,17 @@
                 <parts>
                     <part name="pine" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                            <subentity index="0" material="global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -127,7 +127,7 @@
         <attachpoints />
         <views />
     </model>
-    <model name="pineD" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+    <model name="pineD" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
     	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
@@ -136,17 +136,17 @@
                 <parts>
                     <part name="pine" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                            <subentity index="0" material="global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -156,7 +156,7 @@
         <attachpoints />
         <views />
     </model>
-    <model name="pineE" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+    <model name="pineE" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
     	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
@@ -165,17 +165,17 @@
                 <parts>
                     <part name="pine" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                            <subentity index="0" material="global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -185,7 +185,7 @@
         <attachpoints />
         <views />
     </model>
-    <model name="pineF" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+    <model name="pineF" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
     	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
@@ -194,17 +194,17 @@
                 <parts>
                     <part name="pine" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                            <subentity index="0" material="global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -214,7 +214,7 @@
         <attachpoints />
         <views />
     </model>
-    <model name="pineG" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+    <model name="pineG" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
     	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
@@ -223,17 +223,17 @@
                 <parts>
                     <part name="pine" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                            <subentity index="0" material="global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -243,7 +243,7 @@
         <attachpoints />
         <views />
     </model>
-    <model name="pineH" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+    <model name="pineH" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
     	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
@@ -252,17 +252,17 @@
                 <parts>
                     <part name="pine" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                            <subentity index="0" material="global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -272,7 +272,7 @@
         <attachpoints />
         <views />
     </model>
-    <model name="pineI" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+    <model name="pineI" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
     	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
@@ -281,17 +281,17 @@
                 <parts>
                     <part name="pine" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                            <subentity index="0" material="global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -301,7 +301,7 @@
         <attachpoints />
         <views />
     </model>
-    <model name="pineJ" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+    <model name="pineJ" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
     	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
@@ -310,17 +310,17 @@
                 <parts>
                     <part name="pine" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                            <subentity index="0" material="global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -330,7 +330,7 @@
         <attachpoints />
         <views />
     </model>
-    <model name="pineK" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+    <model name="pineK" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
     	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
@@ -339,17 +339,17 @@
                 <parts>
                     <part name="pine" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                            <subentity index="0" material="global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -359,7 +359,7 @@
         <attachpoints />
         <views />
     </model>
-    <model name="pineL" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/evergreen/pineI.png">
+    <model name="pineL" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
     	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
@@ -368,17 +368,17 @@
                 <parts>
                     <part name="pine" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/pine_snow" />
+                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/evergreen/fir" />
+                            <subentity index="0" material="global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>

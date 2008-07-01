@@ -3,21 +3,21 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/environment/boulder/models/granite/graniteA.mesh">
+            <submodel mesh="3d_objects/environment/boulder/graniteA.mesh">
                 <parts>
                     <part name="granite" show="true" group="main">
                         <subentities>
-                            <subentity index="0" material="/global/environment/boulder/granite" />
+                            <subentity index="0" material="/global/environment/ground/stone_granite" />
                         </subentities>
                     </part>
                     <part name="felsite" show="false" group="main">
                         <subentities>
-                            <subentity index="0" material="/global/environment/boulder/felsite" />
+                            <subentity index="0" material="/global/environment/ground/stone_felsite" />
                         </subentities>
                     </part>
                     <part name="felsite_face" show="false" group="main">
                         <subentities>
-                            <subentity index="0" material="/global/environment/boulder/felsite_face" />
+                            <subentity index="0" material="/global/environment/ground/stone_felsite_face" />
                         </subentities>
                     </part>
                 </parts>
