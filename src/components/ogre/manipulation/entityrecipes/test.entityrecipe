@@ -23,7 +23,7 @@
       <bind name="hello">
         <adapter name="value_of_b" />
       </bind>
-      <bind name="foo">
+      <bind name="foo" func="testFunc">
         <adapter name="value_of_a" />
       </bind>
       <bind name="bar">
@@ -31,6 +31,11 @@
       </bind>
     </bindings>
     <script><![CDATA[
+      function testFunc(a)
+        print(tolua.type(a))
+        return Atlas.Message.Element(123)
+      end
+
       function fTest ()
         print("Yay!")
         return Atlas.Message.Element(123)

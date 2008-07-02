@@ -56,7 +56,7 @@ void GUIAdapterBindings::addAdapter(std::string adapterName)
 	mAdapters.push_back(adapterName);
 }
 
-const std::vector<std::string>& GUIAdapterBindings::getAdapters()
+std::vector<std::string>& GUIAdapterBindings::getAdapters()
 {
 	return mAdapters;
 }

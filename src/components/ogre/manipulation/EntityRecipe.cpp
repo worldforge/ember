@@ -27,9 +27,13 @@
 
 #include "EntityRecipe.h"
 #include "components/ogre/scripting/LuaScriptingCallContext.h"
+#include "components/ogre/scripting/LuaScriptingProvider.h"
 #include "services/scripting/ScriptingService.h"
 #include "services/EmberServices.h"
 #include <Atlas/Message/Element.h>
+
+#include <lua.hpp>
+#include <tolua++.h>
 
 namespace EmberOgre {
 
@@ -156,16 +160,18 @@ void EntityRecipe::createEntity()
 {
 	S_LOG_VERBOSE("Creating entity.");
 
+	// Loading script code
+	Ember::EmberServices::getSingleton().getScriptingService()->executeCode(mScript, "LuaScriptingProvider");
+
 	// Walking through adapter bindings
 	for (BindingsStore::iterator I = mBindings.begin(); I != mBindings.end(); ++I) {
 		const std::string& func = I->second->getFunc();
 
 		S_LOG_VERBOSE(" binding: " << I->first << " to func " << func);
 
-		// TODO: handle real functions
 		if (func.empty())
 		{
-			const std::vector<std::string>& adapters = I->second->getAdapters();
+			std::vector<std::string>& adapters = I->second->getAdapters();
 
 			if (adapters.size() == 1)
 			{
@@ -175,8 +181,32 @@ void EntityRecipe::createEntity()
 			}
 			else
 			{
-				S_LOG_WARNING("Wrong number of adapters.");
+				S_LOG_WARNING("Should be only one adapter without calling function.");
 			}
+		}
+		else
+		{
+			LuaScriptingCallContext callContext;
+
+			lua_State* L = static_cast<LuaScriptingProvider*>(Ember::EmberServices::getSingleton().getScriptingService()->getProviderFor("LuaScriptingProvider"))->getLuaState();
+
+			// Pushing function params
+			std::vector<std::string>& adapters = I->second->getAdapters();
+			for (std::vector<std::string>::iterator J = adapters.begin(); J != adapters.end(); J++)
+			{
+				std::string adapterName = *J;
+				Atlas::Message::Element* val = new Atlas::Message::Element(mGUIAdapters[adapterName]->getValue());
+				tolua_pushusertype_and_takeownership(L, val, "Atlas::Message::Element");
+			}
+
+			// Calling test function
+			Ember::EmberServices::getSingleton().getScriptingService()->callFunction(func, "LuaScriptingProvider", &callContext);
+
+			LuaRef returnValue( callContext.getReturnValue() );
+
+			Atlas::Message::Element returnObj;
+			returnObj = returnValue.asObject<Atlas::Message::Element>("Atlas::Message::Element");
+			I->second->setValue(returnObj);
 		}
 	}
 

@@ -59,7 +59,7 @@ public:
 	/**
 	 * Return adapters list
 	 */
-	const std::vector<std::string>& getAdapters();
+	std::vector<std::string>& getAdapters();
 
 	/**
 	 * Associates this bindings with XML element
