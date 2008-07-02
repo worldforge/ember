@@ -3,7 +3,7 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="-0.577350" y="-0.577350" z="-0.577350" degrees="120.000000" />
         <submodels>
-            <submodel mesh="3d_objects/items/building_element/models/cg_foundation/castle_foundation.mesh">
+            <submodel mesh="3d_objects/structures/models/castlegrad/cg_foundation.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
@@ -19,7 +19,7 @@
         <translate x="4.000000" y="0.000000" z="-2.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/structures/models/castlegrad/inn.mesh">
+            <submodel mesh="3d_objects/structures/models/castlegrad/cg_inn.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>

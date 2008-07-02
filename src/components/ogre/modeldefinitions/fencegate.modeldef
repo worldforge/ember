@@ -3,7 +3,7 @@
         <translate x="3.000000" y="2.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/items/building_element/models/wooden_fence2/fence_gate.mesh">
+            <submodel mesh="3d_objects/models/models/wooden_fence/wooden_gate.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>

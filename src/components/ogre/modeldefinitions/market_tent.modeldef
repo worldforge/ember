@@ -3,16 +3,16 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/structures/market_tent/market_tent.mesh">
+            <submodel mesh="3d_objects/structures/models/market_tent/market_tent.mesh">
                 <parts>
                     <part name="blue" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/structures/market_tent/blue" />
+                            <subentity index="0" material="/global/structures/tent_blue" />
                         </subentities>
                     </part>
                     <part name="red" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/structures/market_tent/red" />
+                            <subentity index="0" material="/global/structures/tent_red" />
                         </subentities>
                     </part>
                 </parts>

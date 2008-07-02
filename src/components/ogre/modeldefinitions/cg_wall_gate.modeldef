@@ -3,7 +3,7 @@
         <translate x="-4.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/structures/castle_grad/cg_wall_gate.mesh">
+            <submodel mesh="3d_objects/structures/models/castlegrad/cg_wall_gate.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>

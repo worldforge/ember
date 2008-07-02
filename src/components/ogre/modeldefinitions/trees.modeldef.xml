@@ -18,19 +18,21 @@
         <submodels>
             <submodel mesh="3d_objects/plants/trees/models/pine/pine.mesh">
                 <parts>
-                    <part name="pine" group="main" show="true">
+                    <part name="pine" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
-                    <part name="pine_snow" group="main" show="true">
+                    <part name="pine_snow" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
+                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="global/plants/trees/tree_fir" />
+                            <subentity index="0" material="/global/plants/trees/tree_fir" />
+                            <subentity index="1" material="/global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -47,19 +49,22 @@
         <submodels>
             <submodel mesh="3d_objects/plants/trees/models/pine/pineA.mesh">
                 <parts>
-                    <part name="pine" group="main" show="true">
+                    <part name="pine" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine" />
+                            <subentity index="1" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
-                    <part name="pine_snow" group="main" show="true">
+                    <part name="pine_snow" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
+                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="global/plants/trees/tree_fir" />
+                            <subentity index="0" material="/global/plants/trees/tree_fir" />
+                            <subentity index="1" material="/global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -76,19 +81,22 @@
         <submodels>
             <submodel mesh="3d_objects/plants/trees/models/pine/pineB.mesh">
                 <parts>
-                    <part name="pine" group="main" show="true">
+                    <part name="pine" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine" />
+                            <subentity index="1" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
-                    <part name="pine_snow" group="main" show="true">
+                    <part name="pine_snow" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
+                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="global/plants/trees/tree_fir" />
+                            <subentity index="0" material="/global/plants/trees/tree_fir" />
+                            <subentity index="1" material="/global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -105,19 +113,22 @@
         <submodels>
             <submodel mesh="3d_objects/plants/trees/models/pine/pineC.mesh">
                 <parts>
-                    <part name="pine" group="main" show="true">
+                    <part name="pine" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine" />
+                            <subentity index="1" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
-                    <part name="pine_snow" group="main" show="true">
+                    <part name="pine_snow" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
+                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="global/plants/trees/tree_fir" />
+                            <subentity index="0" material="/global/plants/trees/tree_fir" />
+                            <subentity index="1" material="/global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -134,19 +145,22 @@
         <submodels>
             <submodel mesh="3d_objects/plants/trees/models/pine/pineD.mesh">
                 <parts>
-                    <part name="pine" group="main" show="true">
+                    <part name="pine" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine" />
+                            <subentity index="1" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
-                    <part name="pine_snow" group="main" show="true">
+                    <part name="pine_snow" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
+                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="global/plants/trees/tree_fir" />
+                            <subentity index="0" material="/global/plants/trees/tree_fir" />
+                            <subentity index="1" material="/global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -163,19 +177,22 @@
         <submodels>
             <submodel mesh="3d_objects/plants/trees/models/pine/pineE.mesh">
                 <parts>
-                    <part name="pine" group="main" show="true">
+                    <part name="pine" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine" />
+                            <subentity index="1" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
-                    <part name="pine_snow" group="main" show="true">
+                    <part name="pine_snow" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
+                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="global/plants/trees/tree_fir" />
+                            <subentity index="0" material="/global/plants/trees/tree_fir" />
+                            <subentity index="1" material="/global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -192,19 +209,22 @@
         <submodels>
             <submodel mesh="3d_objects/plants/trees/models/pine/pineF.mesh">
                 <parts>
-                    <part name="pine" group="main" show="true">
+                    <part name="pine" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine" />
+                            <subentity index="1" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
-                    <part name="pine_snow" group="main" show="true">
+                    <part name="pine_snow" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
+                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="global/plants/trees/tree_fir" />
+                            <subentity index="0" material="/global/plants/trees/tree_fir" />
+                            <subentity index="1" material="/global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -221,19 +241,22 @@
         <submodels>
             <submodel mesh="3d_objects/plants/trees/models/pine/pineG.mesh">
                 <parts>
-                    <part name="pine" group="main" show="true">
+                    <part name="pine" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine" />
+                            <subentity index="1" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
-                    <part name="pine_snow" group="main" show="true">
+                    <part name="pine_snow" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
+                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="global/plants/trees/tree_fir" />
+                            <subentity index="0" material="/global/plants/trees/tree_fir" />
+                            <subentity index="1" material="/global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -250,19 +273,22 @@
         <submodels>
             <submodel mesh="3d_objects/plants/trees/models/pine/pineH.mesh">
                 <parts>
-                    <part name="pine" group="main" show="true">
+                    <part name="pine" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine" />
+                            <subentity index="1" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
-                    <part name="pine_snow" group="main" show="true">
+                    <part name="pine_snow" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
+                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="global/plants/trees/tree_fir" />
+                            <subentity index="0" material="/global/plants/trees/tree_fir" />
+                            <subentity index="1" material="/global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -279,19 +305,22 @@
         <submodels>
             <submodel mesh="3d_objects/plants/trees/models/pine/pineI.mesh">
                 <parts>
-                    <part name="pine" group="main" show="true">
+                    <part name="pine" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine" />
+                            <subentity index="1" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
-                    <part name="pine_snow" group="main" show="true">
+                    <part name="pine_snow" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
+                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="global/plants/trees/tree_fir" />
+                            <subentity index="0" material="/global/plants/trees/tree_fir" />
+                            <subentity index="1" material="/global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -308,19 +337,22 @@
         <submodels>
             <submodel mesh="3d_objects/plants/trees/models/pine/pineJ.mesh">
                 <parts>
-                    <part name="pine" group="main" show="true">
+                    <part name="pine" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine" />
+                            <subentity index="1" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
-                    <part name="pine_snow" group="main" show="true">
+                    <part name="pine_snow" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
+                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="global/plants/trees/tree_fir" />
+                            <subentity index="0" material="/global/plants/trees/tree_fir" />
+                            <subentity index="1" material="/global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -337,19 +369,22 @@
         <submodels>
             <submodel mesh="3d_objects/plants/trees/models/pine/pineK.mesh">
                 <parts>
-                    <part name="pine" group="main" show="true">
+                    <part name="pine" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine" />
+                            <subentity index="1" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
-                    <part name="pine_snow" group="main" show="true">
+                    <part name="pine_snow" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
+                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="global/plants/trees/tree_fir" />
+                            <subentity index="0" material="/global/plants/trees/tree_fir" />
+                            <subentity index="1" material="/global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -366,19 +401,22 @@
         <submodels>
             <submodel mesh="3d_objects/plants/trees/models/pine/pineL.mesh">
                 <parts>
-                    <part name="pine" group="main" show="true">
+                    <part name="pine" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine" />
+                            <subentity index="1" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
-                    <part name="pine_snow" group="main" show="true">
+                    <part name="pine_snow" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
+                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="global/plants/trees/tree_fir" />
+                            <subentity index="0" material="/global/plants/trees/tree_fir" />
+                            <subentity index="1" material="/global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
