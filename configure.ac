@@ -377,6 +377,15 @@ PKG_CHECK_MODULES(FREEALUT, freealut >= $FREEALUT_VERSION,
 #SDL_VERSION=1.2.0
 #AC_SUBST(SDL_VERSION)
 
+# check for sigc++ separately from the WF checks
+PKG_CHECK_MODULES(SIG, [sigc++-2.0 >= 2.0],
+  [
+      CXXFLAGS="$CXXFLAGS $SIG_CFLAGS"
+      LDFLAGS="$LDFLAGS $SIG_LIBS"
+  ],
+  [
+      AC_MSG_ERROR([Couldn't find SIGC++2.0])
+  ])
 
 # Check for the WorldForge libs
 PKG_CHECK_MODULES(WF, [eris-1.3 >= 1.3.13 \
