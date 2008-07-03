@@ -200,7 +200,7 @@ void EntityRecipe::createEntity()
 			}
 
 			// Calling test function
-			Ember::EmberServices::getSingleton().getScriptingService()->callFunction(func, "LuaScriptingProvider", &callContext);
+			Ember::EmberServices::getSingleton().getScriptingService()->callFunction(func, adapters.size(), "LuaScriptingProvider", &callContext);
 
 			LuaRef returnValue( callContext.getReturnValue() );
 
@@ -243,7 +243,7 @@ void EntityRecipe::doTest()
 	Ember::EmberServices::getSingleton().getScriptingService()->executeCode(mScript, "LuaScriptingProvider");
 
 	// Calling test function
-	Ember::EmberServices::getSingleton().getScriptingService()->callFunction("fTest", "LuaScriptingProvider", &callContext);
+	Ember::EmberServices::getSingleton().getScriptingService()->callFunction("fTest", 0, "LuaScriptingProvider", &callContext);
 
 	LuaRef returnValue( callContext.getReturnValue() );
 
