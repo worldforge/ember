@@ -361,6 +361,6 @@ inline int TerrainPage::getAlphaTextureSize( ) const
 
 }
 }
-};
+}
 
 #endif

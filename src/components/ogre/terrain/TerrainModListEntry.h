@@ -23,12 +23,10 @@
 #ifndef EMBEROGRETERRAINMODLISTENTRY_H
 #define EMBEROGRETERRAINMODLISTENTRY_H
 #include "../EmberOgrePrerequisites.h"
+#include "TerrainPage.h"
 
 namespace EmberOgre {
 namespace Terrain {
-
-class TerrainPage;
-class TerrainGenerator;
 
 class terrainModListEntry {
 	public:

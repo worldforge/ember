@@ -355,10 +355,6 @@ void TerrainGenerator::buildHeightmap()
 				segment->populateSurfaces();
 				mHeightMax = std::max(mHeightMax, segment->getMax());
 				mHeightMin = std::min(mHeightMin, segment->getMin());
-				
-//				segment->addMod(myCrater);
-//				if( (i == 2) && (j == 2) )
-//					segment->addMod(myCrater);
 			}
 		}
 	}
@@ -617,6 +613,11 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 	
 	
 	return true;
+}
+
+void TerrainGenerator::updateTerrainModifiers(Terrain::terrainModListEntry& modifier)
+{
+
 }
 
 void TerrainGenerator::reloadTerrain(std::vector<TerrainPosition>& positions)

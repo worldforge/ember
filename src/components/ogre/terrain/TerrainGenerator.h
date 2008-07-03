@@ -148,6 +148,11 @@ public:
 	bool updateTerrain(const TerrainDefPointStore& terrainPoints);
 
 	/**
+         *    @brief Updates the terrain with a new modifier
+	 */
+	void updateTerrainModifiers(Terrain::terrainModListEntry& modifier);
+
+	/**
 	 * @brief Return true if there is a valid piece of terrain at the supplied segment indices.
 	 * By valid means a populated terrain-
 	 * @param pos A position in the world.

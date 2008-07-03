@@ -34,6 +34,7 @@
 #include "terrain/TerrainShader.h"
 #include "terrain/TerrainLayerDefinition.h"
 #include "terrain/TerrainLayerDefinitionManager.h"
+#include "terrain/TerrainPage.h" //may not be required
 #include "WorldEmberEntity.h"
 #include "environment/Foliage.h"
 #include "environment/Environment.h"
@@ -50,6 +51,8 @@
 #include <Mercator/DepthShader.h>
 #include <Mercator/GrassShader.h>
 #include <Mercator/ShaderFactory.h>
+#include <Mercator/Segment.h>	//may not be required
+#include <Mercator/TerrainMod.h>//may not be required
 
 namespace EmberOgre {
 WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Terrain::TerrainGenerator* terrainGenerator) : 
@@ -214,13 +217,29 @@ void TerrainParser::updateTerrain(const Atlas::Message::Element& terrain)
         return;
     }
 	mTerrainGenerator->updateTerrain(pointStore);
+
+	if (tmap.count("surfaces")) {
+		const Atlas::Message::Element& surfaces = tmap.find("surfaces")->second;
+		if (surfaces.isList()) {
+        		const Atlas::Message::ListType & slist(surfaces.asList());
+        		for(Atlas::Message::ListType::const_iterator I = slist.begin(); I != slist.end(); ++I) {
+        			if (I->isMap()) {
+	        		const Atlas::Message::MapType& surfaceMap(I->asMap());
+
+					if (surfaceMap.count("terrainmod")) {
+						updateTerrainModifiers(surfaceMap.find("terrainmod")->second);
+					}
+				}
+			}
+		}
+	}
 }
 
 void TerrainParser::updateTerrainModifiers(const Atlas::Message::Element& modifier)
 {
 
     if (!modifier.isMap()) {
-		S_LOG_FAILURE( "Terrain is not a map" );
+		S_LOG_FAILURE( "Terrain modifier is not a map" );
     }
     const Atlas::Message::MapType & modMap = modifier.asMap();
 
@@ -228,6 +247,8 @@ void TerrainParser::updateTerrainModifiers(const Atlas::Message::Element& modifi
     std::string shapeType;
     int shapeDim;
     WFMath::Point<3> pos;
+    Atlas::Message::MapType shapeMap;
+    
     
 	// Get modifier type
     if (modMap.count("type")) {
@@ -251,7 +272,7 @@ void TerrainParser::updateTerrainModifiers(const Atlas::Message::Element& modifi
     if (modMap.count("shape")) {
 	const Atlas::Message::Element& shapeElem(modMap.find("shape")->second);
 	if (shapeElem.isMap()) {
-		const Atlas::Message::MapType & shapeMap = shapeElem.asMap();
+		shapeMap = shapeElem.asMap();
 			// Get shape's type
 		if (shapeMap.count("type")) {
 			const Atlas::Message::Element& shapeTypeElem(shapeMap.find("type")->second);
@@ -319,6 +340,7 @@ void TerrainParser::updateTerrainModifiers(const Atlas::Message::Element& modifi
 			// Create a TerrainModListEntry instance
 			// Make a call to TerrainGenerator, which should handle finding which page
 			//  to apply the mod to, which should handle finding which segment(s) it affects.
+		S_LOG_INFO("Successfully parsed a slopemod");
 	
 	} else if (modType == "levelmod") {
 		float level;
@@ -332,6 +354,7 @@ void TerrainParser::updateTerrainModifiers(const Atlas::Message::Element& modifi
 			// Create a TerrainModListEntry instance
 			// Make a call to TerrainGenerator, which should handle finding which page
 			//  to apply the mod to, which should handle finding which segment(s) it affects.
+		S_LOG_INFO("Successfully parsed a levelmod");
 
 	} else if (modType == "adjustmod") {
 		float level;
@@ -345,12 +368,32 @@ void TerrainParser::updateTerrainModifiers(const Atlas::Message::Element& modifi
 			// Create a TerrainModListEntry instance
 			// Make a call to TerrainGenerator, which should handle finding which page
 			//  to apply the mod to, which should handle finding which segment(s) it affects.
+		S_LOG_INFO("Successfully parsed an adjustmod");
 
 	} else if (modType == "cratermod") {
 		// Make modifier
 			// Create a TerrainModListEntry instance
 			// Make a call to TerrainGenerator, which should handle finding which page
 			//  to apply the mod to, which should handle finding which segment(s) it affects.
+		// Get other shape parameters
+		if (shapeType == "ball" ) {
+			float shapeRadius;
+			// Get sphere's radius
+			if (shapeMap.count("radius")) {
+				const Atlas::Message::Element& shapeRadiusElem(shapeMap.find("radius")->second);
+				shapeRadius = shapeRadiusElem.asNum();
+			}
+
+			// Make sphere
+			WFMath::Ball<3> modShape = WFMath::Ball<3>(pos, shapeRadius); ///FIXME: assumes 3d ball...
+			
+			S_LOG_INFO("Successfully parsed a cratermod");
+		
+			Mercator::CraterTerrainMod *TerrainMod_test;
+			TerrainMod_test = new Mercator::CraterTerrainMod(modShape);
+
+			mTerrainGenerator->getTerrainPage(TerrainPosition((int)pos.x(),(int)pos.y()))->addTerrainModifier(0,0,(int)pos.x(),(int)pos.y(),(int)pos.z(),TerrainMod_test);
+		}
 	}
 
     }
@@ -381,6 +424,12 @@ void TerrainParser::createShaders(const Atlas::Message::Element& surfaces)
 	        	std::string name;
 	        	std::string pattern;
         		const Atlas::Message::MapType& surfaceMap(I->asMap());
+
+// 				if (surfaceMap.count("terrainmod")) {
+					//const Atlast::Message::Element& modifier(surfaceMap.find("terrainMod");
+// 					updateTerrainModifiers(surfaceMap.find("terrainmod")->second);
+// 				}
+
 				Mercator::Shader::Parameters params;
 				if (surfaceMap.count("params")) {
 					const Atlas::Message::Element& paramsElem(surfaceMap.find("params")->second);
