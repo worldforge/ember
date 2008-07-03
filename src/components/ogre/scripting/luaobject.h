@@ -457,7 +457,8 @@ public:
 
 		push();
 
-		return static_cast<Treturn*>(luaL_checkudata(mL, -1, className));
+		Treturn* ptrObj = * static_cast<Treturn**>(luaL_checkudata(mL, -1, className));
+		return *ptrObj;
 	}
 
 	// Return as an object
