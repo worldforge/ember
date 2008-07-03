@@ -26,6 +26,7 @@
 
 #include "../EmberOgrePrerequisites.h"
 #include "LuaScriptingProvider.h"
+#include "luaobject.h"
 
 #include "bindings/lua/helpers/LuaConnector.h"
 
@@ -178,9 +179,9 @@ void LuaScriptingProvider::executeScript(const std::string& scriptCode, Ember::I
 	executeScriptImpl(scriptCode, static_cast<LuaScriptingCallContext*>(callContext), "");
 }
 
-void LuaScriptingProvider::callFunction(const std::string& functionName, Ember::IScriptingCallContext* callContext)
+void LuaScriptingProvider::callFunction(const std::string& functionName, int narg, Ember::IScriptingCallContext* callContext)
 {
-	callFunctionImpl(functionName, static_cast<LuaScriptingCallContext*>(callContext));
+	callFunctionImpl(functionName, narg, static_cast<LuaScriptingCallContext*>(callContext));
 }
 
 void LuaScriptingProvider::executeScriptImpl(const std::string& scriptCode, LuaScriptingCallContext* luaCallContext, const std::string& scriptName)
@@ -263,41 +264,49 @@ void LuaScriptingProvider::executeScriptImpl(const std::string& scriptCode, LuaS
 	}
 }
 
-void LuaScriptingProvider::callFunctionImpl(const std::string& functionName, LuaScriptingCallContext* luaCallContext)
+void LuaScriptingProvider::callFunctionImpl(const std::string& functionName, int narg, LuaScriptingCallContext* luaCallContext)
 {
 	try {
+																				// st: args
 		int top = lua_gettop(mLuaState);
-		lua_getfield(mLuaState, LUA_GLOBALSINDEX, functionName.c_str()); // check errors here?
+		lua_getfield(mLuaState, LUA_GLOBALSINDEX, functionName.c_str());		// st: args func
 
 		///push our error handling method before calling the code
-		int error_index = lua_gettop(mLuaState);
+		int error_index = top + 1; //lua_gettop(mLuaState);
 		#if LUA51
-		lua_pushcfunction(mLuaState, ::EmberOgre::Scripting::LuaHelper::luaErrorHandler);
+		lua_pushcfunction(mLuaState, ::EmberOgre::Scripting::LuaHelper::luaErrorHandler);   // st: args func err_h
 		#else
 		lua_pushliteral(mLuaState, "_TRACEBACK");
 		lua_rawget(mLuaState, LUA_GLOBALSINDEX);  /* get traceback function */
 		#endif
-		lua_insert(mLuaState, error_index);
+		lua_insert(mLuaState, error_index);										// st: args err_h func
 
+		luaPop pop(mLuaState, 1); // pops error handler on exit
+
+		// insert error handler and function before arguments
+		lua_insert(mLuaState, top - narg + 1);									// st: func args err_h
+		lua_insert(mLuaState, top - narg + 1);									// st: err_h func args
 		/// load code into lua and call it
 		int error, nresults;
 		int level = lua_gettop(mLuaState); // top of stack position
 		// if we have context to store return values, then get them
 		if (luaCallContext)
 		{
-			error = lua_pcall(mLuaState, 0, LUA_MULTRET, error_index);
+			S_LOG_VERBOSE("Calling function with " << narg << " arguments");
+			error = lua_pcall(mLuaState, narg, LUA_MULTRET, error_index);
 			nresults = lua_gettop(mLuaState) - level; // number of results
+			S_LOG_VERBOSE("Got " << nresults << " results");
 		}
 		else
 		{
-			error = lua_pcall(mLuaState, 0, 0, error_index);
+			error = lua_pcall(mLuaState, narg, 0, error_index);
 		}
 
 		// handle errors
 		if (error)
 		{
 			std::string errMsg(lua_tostring(mLuaState,-1));
-			lua_settop(mLuaState,top);
+			//lua_settop(mLuaState,top);
 			throw Ember::Exception("Unable to call Lua function '"+functionName+"'\n\n"+errMsg+"\n");
 		}
 
@@ -308,7 +317,7 @@ void LuaScriptingProvider::callFunctionImpl(const std::string& functionName, Lua
 			luaCallContext->setReturnValue(luaRef);
 		}
 
-		lua_settop(mLuaState,top); // just in case :P - do we need it?
+		//lua_settop(mLuaState,top); // just in case :P - do we need it?
 
 // 		getScriptModule().executeString(scriptCode);
 	} catch (const CEGUI::Exception& ex) {
