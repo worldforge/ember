@@ -32,7 +32,11 @@
     </bindings>
     <script><![CDATA[
       function testFunc(a)
-        print(tolua.type(a))
+        print("Poof!")
+        print(tolua.type(a), a:isList(), a:asList():size())
+        for k, v in a:asList():pairs() do
+          print(k, '=>', tolua.type(v), v:getType())
+        end
         return Atlas.Message.Element(123)
       end
 
