@@ -286,6 +286,7 @@ void LuaScriptingProvider::callFunctionImpl(const std::string& functionName, int
 		// insert error handler and function before arguments
 		lua_insert(mLuaState, top - narg + 1);									// st: func args err_h
 		lua_insert(mLuaState, top - narg + 1);									// st: err_h func args
+		error_index = top - narg + 1;
 		/// load code into lua and call it
 		int error, nresults;
 		int level = lua_gettop(mLuaState); // top of stack position
