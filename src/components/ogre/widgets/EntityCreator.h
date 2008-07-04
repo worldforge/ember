@@ -24,6 +24,7 @@
 #define EMBEROGRE_GUIENTITYCREATOR_H
 
 #include "components/ogre/manipulation/EntityRecipe.h"
+#include <Eris/Connection.h>
 #include <CEGUIWindow.h>
 
 namespace EmberOgre {
@@ -49,6 +50,15 @@ public:
 	 * Show adapters of specific recipe in container
 	 */
 	void showRecipe(EntityRecipe& recipe, CEGUI::Window* container);
+
+	/**
+	 * Sends composed entity to server
+	 */
+	void createEntity(EntityRecipe& recipe);
+
+protected:
+	void connectedToServer(Eris::Connection* conn);
+	Eris::Connection* mConn;
 };
 
 }

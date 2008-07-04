@@ -70,6 +70,11 @@ public:
 	size_t calculateSize(void) const;
 
 	/**
+	 * Returns entity type.
+	 */
+	std::string getEntityType();
+
+	/**
 	 * Creates and returns GUI adapter.
 	 */
 	GUIAdapter* createGUIAdapter(std::string name, std::string type);
@@ -100,10 +105,10 @@ public:
 	void associateBindings();
 
 	/**
-	 * Grabs current values from adapters, runs it through Lua function,
-	 * composes resulting Atlas message and creates entity.
+	 * Grabs current values from adapters, runs it through Lua function
+	 * and composes resulting Atlas message.
 	 */
-	void createEntity();
+	Atlas::Message::MapType createEntity();
 
 	/**
 	 * Does some test checking.
@@ -115,6 +120,11 @@ protected:
 	 * List of semi-atlas entity specs.
 	 */
 	TiXmlElement* mEntitySpec;
+
+	/**
+	 * Entity type.
+	 */
+	std::string mEntityType;
 
 	/**
 	 * GUI adapters.

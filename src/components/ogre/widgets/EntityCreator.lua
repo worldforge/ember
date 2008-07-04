@@ -32,7 +32,7 @@ end
 
 -- Handles create button press
 function EntityCreator.Create_Click(args)
-	EntityCreator.recipe:createEntity()
+	EntityCreator.helper:createEntity(EntityCreator.recipe)
 end
 
 -- Shows selected recipe

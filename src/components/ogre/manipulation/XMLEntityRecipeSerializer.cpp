@@ -30,9 +30,6 @@
 #include "components/ogre/XMLHelper.h"
 
 #include <sstream>
-#include <Atlas/Message/QueuedDecoder.h>
-#include <Atlas/Codecs/XML.h>
-#include <Atlas/Message/Element.h>
 
 namespace EmberOgre {
 
@@ -116,6 +113,11 @@ void XMLEntityRecipeSerializer::readEntitySpec(EntityRecipePtr entRecipe, TiXmlE
 
 	// Copy <entity> part of XML into recipe
 	entRecipe->mEntitySpec = entSpecNode->Clone()->ToElement();
+	const char* type = entRecipe->mEntitySpec->Attribute("type");
+	if (type)
+	{
+		entRecipe->mEntityType = std::string(type);
+	}
 
 	/*
 	// Print <entity> part of XML into string and wrap it with stream

@@ -1,0 +1,40 @@
+<entityrecipes>
+  <entityrecipe name="boulder">
+    <entity type="boulder">
+      <atlas>
+        <map>
+          <list name="bbox">$bbox</list>
+          <float name="mass">$mass</float>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+      <adapter name="mass" type="number" />
+    </adapters>
+    <bindings>
+      <bind name="bbox" func="calcSize">
+        <adapter name="mass" />
+      </bind>
+      <bind name="mass">
+        <adapter name="mass" />
+      </bind>
+    </bindings>
+    <script><![CDATA[
+      function calcSize(a)
+        local density = 2500
+        local mass = a:asNum()
+        local volume = density * mass
+        local len = volume^(1/3)
+
+        local bbox = Atlas.Message.ListType()
+        bbox:push_back(-len/2)
+        bbox:push_back(-len/2)
+        bbox:push_back(-len/2)
+        bbox:push_back(len/2)
+        bbox:push_back(len/2)
+        bbox:push_back(len/2)
+        return Atlas.Message.Element(bbox)
+      end
+    ]]></script>
+  </entityrecipe>
+</entityrecipes>

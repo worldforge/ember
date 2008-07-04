@@ -32,6 +32,7 @@ public:
 	EntityCreator();
 	~EntityCreator();
 	void showRecipe(EmberOgre::EntityRecipe& recipe, CEGUI::Window* container);
+	void createEntity(EmberOgre::EntityRecipe& recipe);
 };
 
 }

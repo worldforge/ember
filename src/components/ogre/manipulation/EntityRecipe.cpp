@@ -30,7 +30,11 @@
 #include "components/ogre/scripting/LuaScriptingProvider.h"
 #include "services/scripting/ScriptingService.h"
 #include "services/EmberServices.h"
+
 #include <Atlas/Message/Element.h>
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Message/QueuedDecoder.h>
+#include <Atlas/Codecs/XML.h>
 
 #include <lua.hpp>
 #include <tolua++.h>
@@ -40,7 +44,7 @@ namespace EmberOgre {
 EntityRecipe::EntityRecipe(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
 	const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader)
 	: Resource(creator, name, handle, group, isManual, loader),
-	  mEntitySpec(0)
+	  mEntitySpec(0), mEntityType()
 {
 	if (createParamDictionary("EntityRecipe"))
 	{
@@ -73,6 +77,11 @@ size_t EntityRecipe::calculateSize(void) const
 {
 	//TODO:implement this
 	return 0;
+}
+
+std::string EntityRecipe::getEntityType()
+{
+	return mEntityType;
 }
 
 GUIAdapter* EntityRecipe::createGUIAdapter(std::string name, std::string type)
@@ -156,7 +165,7 @@ bool EntityRecipe::SpecIterator::Visit(const TiXmlText& textNode)
 	return true;
 }
 
-void EntityRecipe::createEntity()
+Atlas::Message::MapType EntityRecipe::createEntity()
 {
 	S_LOG_VERBOSE("Creating entity.");
 
@@ -231,6 +240,28 @@ void EntityRecipe::createEntity()
 	mEntitySpec->Accept( &printer );
 
 	S_LOG_VERBOSE("Composed entity: " << printer.Str());
+
+	std::stringstream strStream(printer.CStr(), std::ios::in);
+
+	// Create objects
+	Atlas::Message::QueuedDecoder decoder;
+	Atlas::Codecs::XML codec(strStream, decoder);
+
+	// Read whole stream into decoder queue
+	while (!strStream.eof())
+	{
+		codec.poll();
+	}
+
+	// Read decoder queue
+	while (decoder.queueSize() > 0)
+	{
+		Atlas::Message::MapType m = decoder.popMessage();
+		return m;
+	}
+
+	S_LOG_WARNING("No entity composed");
+	return Atlas::Message::MapType();
 }
 
 void EntityRecipe::doTest()
@@ -252,7 +283,7 @@ void EntityRecipe::doTest()
 	Atlas::Message::Element returnObj;
 	returnObj = returnValue.asObject<Atlas::Message::Element>("Atlas::Message::Element");
 
-	S_LOG_VERBOSE(returnObj.getType() << " " << (returnObj.getType() == Atlas::Message::Element::TYPE_FLOAT));
+	S_LOG_VERBOSE("Returned element type is " << returnObj.getType());
 }
 
 }
