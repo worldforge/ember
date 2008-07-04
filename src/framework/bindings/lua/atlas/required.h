@@ -51,7 +51,7 @@ TOLUA_API int tolua_isnumber_type (lua_State* L, int lo, int def, tolua_Error* e
 		return 1;
 	err->index = lo;
 	err->array = 0;
-    err->type = "number";
+	err->type = "number";
 	return 0;
 }
 
@@ -66,7 +66,7 @@ TOLUA_API int tolua_isstring_type (lua_State* L, int lo, int def, tolua_Error* e
 		return 1;
 	err->index = lo;
 	err->array = 0;
-    err->type = "string";
+	err->type = "string";
 	return 0;
 }
 

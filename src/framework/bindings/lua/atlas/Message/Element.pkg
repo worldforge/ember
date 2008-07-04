@@ -88,8 +88,8 @@ class Element
     Element(const std::string& v);
     /// Set type to Atlas::Message::MapType, and value to v.
     Element(const Atlas::Message::MapType& v);
-    /// Set type to std::vector<Atlas::Message::Element>, and value to v.
-    Element(const std::vector<Atlas::Message::Element>& v);
+    /// Set type to Atlas::Message::ListType, and value to v.
+    Element(const Atlas::Message::ListType& v);
 
 
     /// Check for equality with another Element.
@@ -117,8 +117,8 @@ class Element
     /// Check for equality with a Atlas::Message::MapMapTypeType.
     bool operator==(const Atlas::Message::MapType& v) const;
 
-    /// Check for equality with a std::vector<Atlas::Message::Element>.
-    bool operator==(const std::vector<Atlas::Message::Element>& v) const;
+    /// Check for equality with a Atlas::Message::ListType.
+    bool operator==(const Atlas::Message::ListType& v) const;
 
     /// Get the current type.
     Atlas::Message::Element::Type getType() const;
@@ -136,7 +136,7 @@ class Element
     bool isString() const;
     /// Check whether the current type is Atlas::Message::MapType.
     bool isMap() const;
-    /// Check whether the current type is std::vector<Atlas::Message::Element>.
+    /// Check whether the current type is Atlas::Message::ListType.
     bool isList() const;
 
     /// Retrieve the current value as a int.
@@ -162,12 +162,12 @@ class Element
     Atlas::Message::MapType& asMap();
     const Atlas::Message::MapType& Map() const;
     Atlas::Message::MapType& Map();
-    /// Retrieve the current value as a const std::vector<Atlas::Message::Element> reference.
-    const std::vector<Atlas::Message::Element>& asList() const;
-    /// Retrieve the current value as a non-const std::vector<Atlas::Message::Element> reference.
-    std::vector<Atlas::Message::Element>& asList();
-    const std::vector<Atlas::Message::Element>& List() const;
-    std::vector<Atlas::Message::Element>& List();
+    /// Retrieve the current value as a const Atlas::Message::ListType reference.
+    const Atlas::Message::ListType& asList() const;
+    /// Retrieve the current value as a non-const Atlas::Message::ListType reference.
+    Atlas::Message::ListType& asList();
+    const Atlas::Message::ListType& List() const;
+    Atlas::Message::ListType& List();
 
 //     static const char * typeName(Type);
 
@@ -200,7 +200,30 @@ public:
 	~MapType();
 };
 
+class ListType {
+	void clear();
+	int size() const;
+
+	const Atlas::Message::Element& operator[](int index) const;
+	Atlas::Message::Element& operator[](int index);
+	void push_back(Atlas::Message::Element val);
+
+	ListType();
+	~ListType();
+};
+
 } 
 } // namespace Atlas::Message
 
+$[
+-- Iterator over ListType
+function Atlas.Message.ListType.pairs (self)
+  return function(a, i)
+    i = i + 1
+    if i < a:size() then
+      return i, a[i]
+    end
+  end, self, -1
+end
+$]
 
