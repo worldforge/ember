@@ -21,18 +21,19 @@
     </bindings>
     <script><![CDATA[
       function calcSize(a)
-        local density = 2500
+        local density = 2500  * 0.52 -- our boulder is not cubic, 0.52 is rough volume of its size 1
+
         local mass = a:asNum()
-        local volume = density * mass
+        local volume = mass / density
         local len = volume^(1/3)
 
         local bbox = Atlas.Message.ListType()
         bbox:push_back(-len/2)
         bbox:push_back(-len/2)
-        bbox:push_back(-len/2)
+        bbox:push_back(0)
         bbox:push_back(len/2)
         bbox:push_back(len/2)
-        bbox:push_back(len/2)
+        bbox:push_back(len)
         return Atlas.Message.Element(bbox)
       end
     ]]></script>
