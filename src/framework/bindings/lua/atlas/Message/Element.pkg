@@ -222,7 +222,7 @@ class ListType {
 
 $[
 -- Iterator over ListType
-function Atlas.Message.ListType.pairs (self)
+function Atlas.Message.ListType:pairs()
   return function(a, i)
     i = i + 1
     if i < a:size() then
