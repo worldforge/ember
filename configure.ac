@@ -464,6 +464,22 @@ else
       CXXFLAGS="$CXXFLAGS -DNDEBUG"
 fi
 
+#multi threading
+AC_ARG_ENABLE(thread_safe,[  --enable-multithread     creates multi threaded code [default=no]],
+[ 
+   if test x$enableval = xno; then 
+		ac_use_thread_code="no"	
+   else 
+		ac_use_thread_code="yes"
+   fi
+], [ac_use_thread_code="no"])
+
+if test "$ac_use_thread_code" = "yes"; then
+      CFLAGS="$CFLAGS -DTHREAD_SAFE"
+      CXXFLAGS="$CXXFLAGS -DTHREAD_SAFE"
+		LDFLAGS="$LDFLAGS -lpthread"
+fi
+
 # gprof debugging option
 AC_ARG_ENABLE(gprof,[  --enable-gprof     Add flags for gprof [default=no]],
 [

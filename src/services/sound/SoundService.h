@@ -32,6 +32,10 @@ class ISoundProvider;
 #include <vorbis/codec.h>
 #include <vorbis/vorbisfile.h>
 
+#ifdef THREAD_SAFE
+#include <pthread.h>
+#endif
+
 #ifndef __WIN32__
 #include <AL/alut.h>
 #else
@@ -208,6 +212,11 @@ class SoundService: public Service, public ConsoleObject
 		// Allocation Functions
 		bool allocateWAVPCM(const std::string &filename, bool playsLocally); 
 		bool allocateOGG(const std::string &filename, bool playsLocally); 
+
+		#ifdef THREAD_SAFE
+		pthread_mutex_t mSamplesMutex;
+		pthread_mutex_t mObjectsMutex;
+		#endif
 
 	public:
 		SoundService();

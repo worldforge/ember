@@ -309,6 +309,11 @@ namespace Ember
 	{
 		setName("Sound Service");
 		setDescription("Service for reproduction of sound effects and background music");
+
+		#ifdef THREAD_SAFE
+		pthread_mutex_init(&mSamplesMutex, NULL);
+		pthread_mutex_init(&mObjectsMutex, NULL);
+		#endif
 	}
 
 	/* dtor */
@@ -405,6 +410,10 @@ namespace Ember
 
 	bool SoundService::registerSound(const std::string &filename, bool playLocally, const SoundSampleType type)
 	{
+		#ifdef THREAD_SAFE
+		pthread_mutex_lock(&mSamplesMutex);
+		#endif
+
 		if (getSoundSample(filename))
 		{
 			S_LOG_INFO("Sound Sample (" + filename + ") already allocated.");
@@ -442,10 +451,18 @@ namespace Ember
 			case SAMPLE_OGG:
 				return allocateOGG(filename, playLocally);
 		};
+
+		#ifdef THREAD_SAFE
+		pthread_mutex_unlock(&mSamplesMutex);
+		#endif
 	}
 
 	bool SoundService::unRegisterSound(const std::string &filename)
 	{
+		#ifdef THREAD_SAFE
+		pthread_mutex_lock(&mSamplesMutex);
+		#endif
+
 		BaseSoundSample* sound = mSamples[filename];
 		if (sound)
 		{
@@ -453,6 +470,10 @@ namespace Ember
 			delete sound;
 			return true;
 		}
+
+		#ifdef THREAD_SAFE
+		pthread_mutex_unlock(&mSamplesMutex);
+		#endif
 
 		return false;
 	}
@@ -469,6 +490,10 @@ namespace Ember
 
 	SoundObject* SoundService::registerObject(const std::string &name)
 	{
+		#ifdef THREAD_SAFE
+		pthread_mutex_lock(&mObjectsMutex);
+		#endif
+
 		if (getSoundObject(name))
 		{
 			S_LOG_INFO("Sound Object (" + name + ") already allocated.");
@@ -483,6 +508,11 @@ namespace Ember
 		}
 
 		mObjects[name] = newObject;
+
+		#ifdef THREAD_SAFE
+		pthread_mutex_unlock(&mObjectsMutex);
+		#endif
+
 		return newObject;
 	}
 		
@@ -628,6 +658,10 @@ Error0:
 
 	void SoundService::cycle()
 	{
+		#ifdef THREAD_SAFE
+		pthread_mutex_lock(&mSamplesMutex);
+		#endif
+
 		for (std::map<std::string, BaseSoundSample*>::iterator it = mSamples.begin(); 
 				it != mSamples.end(); it++)
 		{
@@ -642,6 +676,14 @@ Error0:
 			}
 		}
 
+		#ifdef THREAD_SAFE
+		pthread_mutex_unlock(&mSamplesMutex);
+		#endif
+
+		#ifdef THREAD_SAFE
+		pthread_mutex_lock(&mObjectsMutex);
+		#endif
+
 		for (std::map<std::string, SoundObject*>::iterator it = mObjects.begin();
 				it != mObjects.end(); it++)
 		{
@@ -651,6 +693,10 @@ Error0:
 				object->playQueued();
 			}
 		}
+
+		#ifdef THREAD_SAFE
+		pthread_mutex_lock(&mObjectsMutex);
+		#endif
 	}
 
 	SoundObject* SoundService::getSoundObject(const std::string &name)

@@ -113,6 +113,7 @@ void XMLSoundDefParser::readBuffer(Ember::SoundObject* obj, TiXmlElement* objNod
 		type = Ember::SAMPLE_OGG;
 	}
 
+	/* TODO: Ogre tells us the exact file path
 	#define resourceMgr Ogre::ResourceGroupManager::getSingleton()
 	Ogre::FileInfoListPtr files = resourceMgr.findResourceFileInfo("General", filename);
 	Ogre::FileInfoList::iterator I = files->begin();
@@ -122,6 +123,9 @@ void XMLSoundDefParser::readBuffer(Ember::SoundObject* obj, TiXmlElement* objNod
 		obj->registerSound(finalName, action, playsReal, type);
 	}
 	#undef resourceMgr
+	*/
+	S_LOG_INFO(filename);
+	obj->registerSound(filename, action, playsReal, type);
 }
 
 }
