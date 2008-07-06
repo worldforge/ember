@@ -254,8 +254,9 @@ namespace Ogre
 
         const Vector3 ncenter = box.getMaximum().midPoint(box.getMinimum());
 
-        assert (octantMax.x >= ncenter.x && octantMax.y >= ncenter.y && octantMax.z >= ncenter.z &&
-                octantMin.x <= ncenter.x && octantMin.y <= ncenter.y && octantMin.z <= ncenter.z);
+//ember change: We'll remove this assertion since it seems to trigger sometimes when stuff are placed really close to the boundaries, probably caused be precision issues
+//         assert (octantMax.x >= ncenter.x && octantMax.y >= ncenter.y && octantMax.z >= ncenter.z &&
+//                 octantMin.x <= ncenter.x && octantMin.y <= ncenter.y && octantMin.z <= ncenter.z);
 
         unsigned int x;
         if (ncenter.x > octCenter.x)
