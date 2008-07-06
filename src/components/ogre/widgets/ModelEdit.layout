@@ -20,6 +20,12 @@
 			<Window Type='EmberLook/StaticImage' Name='Image'>
 				<Property Name='UnifiedAreaRect' Value='{{0.466594,0.000000},{0.017910,0.000000},{0.963231,0.000000},{0.458210,0.000000}}'/>
 				<Property Name='UnifiedMaxSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+				<Window Type='EmberLook/Checkbox' Name='Image_ShowAxes'>
+					<Property Name='UnifiedSize' Value='{{0.00000,20.000},{0.00000,20.000000}}'/>
+					<Property Name='UnifiedPosition' Value='{{1.00000,-155.000000},{1.00000,-20.000000}}'/>
+					<Property Name='Tooltip' Value='Toggle the display of the axes.'/>
+					<Event Name="CheckStateChanged" Function="ModelEdit.Image_ShowAxes_CheckStateChanged" />
+				</Window>
 				<Window Type='DefaultGUISheet' Name='Image_Orientation'>
 					<Property Name='UnifiedSize' Value='{{0.00000,130.000},{0.00000,75.000000}}'/>
 					<Property Name='UnifiedPosition' Value='{{1.00000,-135.000000},{1.00000,-80.000000}}'/>

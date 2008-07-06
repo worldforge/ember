@@ -635,6 +635,19 @@ function ModelEdit.updateModelContentList()
 end
 
 
+function ModelEdit.Image_ShowAxes_CheckStateChanged(args)
+
+	local checkbox = ModelEdit.widget:getWindow("Image_ShowAxes")
+	checkbox = CEGUI.toCheckbox(checkbox)
+	
+	if checkbox:isSelected() then
+		ModelEdit.renderer:showAxis()
+	else
+		ModelEdit.renderer:hideAxis()
+	end
+
+end
+
 function ModelEdit.getCurrentModelContentItem()
 	local item = ModelEdit.modelcontentstree:getFirstSelectedItem()
 	if item ~= nil then
