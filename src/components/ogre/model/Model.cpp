@@ -156,7 +156,7 @@ bool Model::createFromDefn()
 	// create instance of model from definition
 	Ogre::SceneManager* sceneManager = _getManager();
 	assert(sceneManager);
-	mScale=mMasterModel->mScale ;
+	mScale = mMasterModel->mScale ;
 	mRotation = mMasterModel->mRotation;
 	setRenderingDistance(mMasterModel->getRenderingDistance());
 	
@@ -179,6 +179,11 @@ bool Model::createFromDefn()
 // 				}
 // 			} 
 			Ogre::Entity* entity = sceneManager->createEntity(entityName, (*I_subModels)->getMeshName());
+			
+			if (entity->getMesh().isNull()) {
+				S_LOG_FAILURE("Could not load mesh " << (*I_subModels)->getMeshName() << " which belongs to model " << mMasterModel->getName() << ".");
+			}
+			
 			if (mMasterModel->getRenderingDistance()) {
 				entity->setRenderingDistance(mMasterModel->getRenderingDistance());
 			}
