@@ -98,12 +98,9 @@ cp -a ${original_media}/common/COPYING.txt .
 
 
 
-echo "Copying packs"
-#note that we'll copy packs that are marked "user" to the shared dir, since "user" means that Ember will look in both the shared and user media, and we want the packs to be loadable from the start
+echo "Copying shared media packs"
 cd ${shared_dir}
 grep -rIE --no-filename "^Zip\[shared\]=.*" ${current}/src/components/ogre/resources.cfg | sed -e 's/Zip\[shared\]=//g' > shared_packs.list
-cd ${original_media} ; tar cf - `cat ${shared_dir}/shared_packs.list ` | ( cd ${shared_dir}/; tar --keep-newer-files -xvf -) 2>  /dev/null
-grep -rIE --no-filename "^Zip\[user\]=.*" ${current}/src/components/ogre/resources.cfg | sed -e 's/Zip\[user\]=//g' > shared_packs.list
 cd ${original_media} ; tar cf - `cat ${shared_dir}/shared_packs.list ` | ( cd ${shared_dir}/; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 
@@ -171,6 +168,10 @@ cp ${original_media}/common/resources/ogre/scripts/base.zip ${shared_dir}/common
 
 
 
+echo "Copying user media packs"
+cd ${user_dir}
+grep -rIE --no-filename "^Zip\[user\]=.*" ${current}/src/components/ogre/resources.cfg | sed -e 's/Zip\[user\]=//g' > user_packs.list
+cd ${original_media} ; tar cf - `cat ${user_dir}/user_packs.list ` | ( cd ${user_dir}/; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 
 
@@ -186,6 +187,7 @@ rm -f ${shared_dir}/common_meshes.list
 rm -f ${shared_dir}/common_skeletons.list
 rm -f ${shared_dir}/shared_packs.list
 
+rm -f ${user_dir}/user_packs.list
 
 echo "Done!"
 
