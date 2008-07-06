@@ -3,7 +3,7 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/environment/monster_skeleton/monster_skeleton.mesh">
+            <submodel mesh="3d_objects/environment/models/monster_skeleton/monster_skeleton.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>

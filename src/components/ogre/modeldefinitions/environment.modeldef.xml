@@ -11,40 +11,9 @@
 		</particlesystems>
 	</model>	
 
-	
-
-	
-	<model name="pile">
-		<submodels>
-			<submodel mesh="3d_objects/environment/ground/models/rounded_heap/rounded_heap.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>
-	
-    <model name="grass" usescaleof="height" showcontained="true">
-        <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
-        <submodels>
-            <submodel mesh="3d_objects/environment/field/models/small_plant/simplegrass.mesh">
-                <parts>
-                    <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/plants/grass/bittergrass" />
-                        </subentities>
-                    </part>
-                </parts>
-            </submodel>
-        </submodels>
-        <actions />
-        <attachpoints />
-    </model>
-	
 	<model name="sun">
 		<submodels>
-			<submodel mesh="3d_objects/environment/sky/models/sphere/sphere.mesh" >
+			<submodel mesh="art/primitives/models/sphere.mesh" >
 				<parts>
 					<part name="main" show="true" />
 				</parts>
@@ -52,70 +21,6 @@
 		</submodels>
 	</model>
 	
-    <model name="iron_ore_node" usescaleof="all" scale="2.000000" showcontained="true">
-        <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
-        <submodels>
-            <submodel mesh="3d_objects/environment/boulder/models/granite/graniteC.mesh">
-                <parts>
-                    <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/environment/ground/stone/weathered_granite" />
-                        </subentities>
-                    </part>
-                </parts>
-            </submodel>
-        </submodels>
-        <actions />
-    </model>	
-	
-    <model name="iron_ore" usescaleof="all" showcontained="true">
-        <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
-        <submodels>
-            <submodel mesh="3d_objects/environment/ground/models/rounded_heap/rounded_heap.mesh">
-                <parts>
-                    <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/building_primitives/rough_stone/floor_" />
-                        </subentities>
-                    </part>
-                </parts>
-            </submodel>
-        </submodels>
-        <actions />
-    </model>
-	
-    <model name="ice_chunk" usescaleof="all" showcontained="true">
-        <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
-        <submodels>
-            <submodel mesh="3d_objects/environment/boulder/models/granite/graniteB.mesh">
-                <parts>
-                    <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/items/building/mausoleum/dirty-st" />
-                        </subentities>
-                    </part>
-                </parts>
-            </submodel>
-        </submodels>
-        <actions />
-    </model>
-	
-	<!-- non-physical entities -->
-	<model name="boundary" >
-	</model>	
-	<model name="weather" >
-	</model>	
-	<model name="ploughed_field" >
-	</model>	
-	<model name="path" >
-	</model>	
-	<model name="wall" >
-	</model>	
-	<model name="hall" >
-	</model>	
 
 	
 </models>

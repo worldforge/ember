@@ -52,19 +52,16 @@
                     <part name="pine" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine" />
-                            <subentity index="1" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
-                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_fir" />
-                            <subentity index="1" material="/global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -84,19 +81,16 @@
                     <part name="pine" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine" />
-                            <subentity index="1" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
-                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_fir" />
-                            <subentity index="1" material="/global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -116,19 +110,16 @@
                     <part name="pine" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine" />
-                            <subentity index="1" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
-                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_fir" />
-                            <subentity index="1" material="/global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -148,19 +139,16 @@
                     <part name="pine" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine" />
-                            <subentity index="1" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
-                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_fir" />
-                            <subentity index="1" material="/global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -180,19 +168,16 @@
                     <part name="pine" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine" />
-                            <subentity index="1" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
-                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_fir" />
-                            <subentity index="1" material="/global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -212,19 +197,16 @@
                     <part name="pine" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine" />
-                            <subentity index="1" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
-                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_fir" />
-                            <subentity index="1" material="/global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -244,19 +226,16 @@
                     <part name="pine" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine" />
-                            <subentity index="1" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
-                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_fir" />
-                            <subentity index="1" material="/global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -276,19 +255,16 @@
                     <part name="pine" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine" />
-                            <subentity index="1" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
-                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_fir" />
-                            <subentity index="1" material="/global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -308,19 +284,16 @@
                     <part name="pine" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine" />
-                            <subentity index="1" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
-                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_fir" />
-                            <subentity index="1" material="/global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -340,19 +313,16 @@
                     <part name="pine" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine" />
-                            <subentity index="1" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
-                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_fir" />
-                            <subentity index="1" material="/global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -372,19 +342,16 @@
                     <part name="pine" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine" />
-                            <subentity index="1" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
-                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_fir" />
-                            <subentity index="1" material="/global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -404,19 +371,16 @@
                     <part name="pine" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine" />
-                            <subentity index="1" material="/global/plants/trees/tree_pine" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
-                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/tree_fir" />
-                            <subentity index="1" material="/global/plants/trees/tree_fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -425,187 +389,5 @@
         <actions />
         <attachpoints />
         <views />
-    </model>
-	
-	<model name="oak_" usescaleof="height" renderingdistance="200.000000" scale="2.000000" showcontained="true">
-    	<rendering scheme="forest" />
-		<translate x="0.000000" y="-1.500000" z="0.000000" />
-		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
-		<submodels>
-			<submodel mesh="3d_objects/plants/trees/models/oak/oakA.mesh">
-				<parts>
-					<part name="A" group="main" show="true">
-						<subentities>
-							<subentity index="0" />
-							<subentity index="1" />
-						</subentities>
-					</part>
-				</parts>
-			</submodel>
-			<submodel mesh="3d_objects/plants/trees/models/oak/oakB.mesh">
-				<parts>
-					<part name="B" group="main" show="false">
-						<subentities>
-							<subentity index="0" />
-							<subentity index="1" />
-						</subentities>
-					</part>
-				</parts>
-			</submodel>
-			<submodel mesh="3d_objects/plants/trees/models/oak/oakC.mesh">
-				<parts>
-					<part name="C" group="main" show="false">
-						<subentities>
-							<subentity index="0" />
-							<subentity index="1" />
-						</subentities>
-					</part>
-				</parts>
-			</submodel>
-		</submodels>
-		<actions />
-	</model>
-	<model name="oak_sapling_" usescaleof="all" showcontained="true" scale="1.500000">
-    	<rendering scheme="forest" />
-		<translate x="0.000000" y="0.000000" z="0.000000" />
-		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
-		<submodels>
-			<submodel mesh="3d_objects/plants/trees/models/oak/oak_saplingA.mesh">
-				<parts>
-					<part name="A" group="main" show="true">
-						<subentities>
-							<subentity index="0" />
-							<subentity index="1" />
-						</subentities>
-					</part>
-				</parts>
-			</submodel>
-			<submodel mesh="3d_objects/plants/trees/models/oak/oak_saplingB.mesh">
-				<parts>
-					<part name="B" group="main" show="false">
-						<subentities>
-							<subentity index="0" />
-							<subentity index="1" />
-						</subentities>
-					</part>
-				</parts>
-			</submodel>
-			<submodel mesh="3d_objects/plants/trees/models/oak/oak_saplingC.mesh">
-				<parts>
-					<part name="C" group="main" show="false">
-						<subentities>
-							<subentity index="0" />
-							<subentity index="1" />
-						</subentities>
-					</part>
-				</parts>
-			</submodel>
-			<submodel mesh="3d_objects/plants/trees/models/oak/oak_saplingD.mesh">
-				<parts>
-					<part name="D" group="main" show="false">
-						<subentities>
-							<subentity index="0" />
-							<subentity index="1" />
-						</subentities>
-					</part>
-				</parts>
-			</submodel>
-		</submodels>
-		<actions />
-	</model>
-	<model name="oak_young_" usescaleof="height" showcontained="true" scale="1.500000">
-    	<rendering scheme="forest" />
-		<translate x="0.000000" y="0.000000" z="0.000000" />
-		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
-		<submodels>
-			<submodel mesh="3d_objects/plants/trees/models/oak/oak_youngA.mesh">
-				<parts>
-					<part name="A" group="main" show="true">
-						<subentities>
-							<subentity index="0" />
-							<subentity index="1" />
-						</subentities>
-					</part>
-				</parts>
-			</submodel>
-			<submodel mesh="3d_objects/plants/trees/models/oak/oak_youngB.mesh">
-				<parts>
-					<part name="B" group="main" show="false">
-						<subentities>
-							<subentity index="0" />
-							<subentity index="1" />
-						</subentities>
-					</part>
-				</parts>
-			</submodel>
-			<submodel mesh="3d_objects/plants/trees/models/oak/oak_youngC.mesh">
-				<parts>
-					<part name="C" group="main" show="false">
-						<subentities>
-							<subentity index="0" />
-							<subentity index="1" />
-						</subentities>
-					</part>
-				</parts>
-			</submodel>
-		</submodels>
-		<actions />
-	</model>
-    <model name="oak_mk1_" usescaleof="height" scale="2.000000" showcontained="true">
-    	<rendering scheme="forest" />
-        <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
-        <submodels>
-            <submodel mesh="3d_objects/plants/trees/models/oak/mk1/trees.mesh">
-                <parts>
-                    <part name="trunk" show="true" group="trunk">
-                        <subentities>
-                            <subentity index="0" material="/global/plants/trees/bark/fir_bark" />
-                        </subentities>
-                    </part>
-                    <part name="leaves/summer" show="true" group="leaves">
-                        <subentities>
-                            <subentity index="1" material="/global/plants/trees/english_oak/branches/summer" />
-                        </subentities>
-                    </part>
-                    <part name="leaves/spring" show="false" group="leaves">
-                        <subentities>
-                            <subentity index="1" material="/global/plants/trees/english_oak/branches/spring" />
-                        </subentities>
-                    </part>
-                    <part name="leaves/fall" show="false" group="leaves">
-                        <subentities>
-                            <subentity index="1" material="/global/plants/trees/english_oak/branches/fall" />
-                        </subentities>
-                    </part>
-                </parts>
-            </submodel>
-        </submodels>
-        <actions />
-        <attachpoints />
-    </model>
-	<!-- just a temporary version which uses the oak mesh -->
-    <model name="birch_mk1_" usescaleof="height" scale="2.000000" showcontained="true">
-    	<rendering scheme="forest" />
-        <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
-        <submodels>
-            <submodel mesh="3d_objects/plants/trees/models/oak/mk1/trees.mesh">
-                <parts>
-                    <part name="trunk" show="true" group="trunk">
-                        <subentities>
-                            <subentity index="0" material="/global/plants/trees/bark/birch_bark_white" />
-                        </subentities>
-                    </part>
-                    <part name="leaves" show="true" group="leaves">
-                        <subentities>
-                            <subentity index="1" material="/global/plants/trees/birch/branches" />
-                        </subentities>
-                    </part>
-                </parts>
-            </submodel>
-        </submodels>
-        <actions />
-        <attachpoints />
     </model>
 </models>

@@ -3,11 +3,11 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/environment/roots/model/root.mesh">
+            <submodel mesh="3d_objects/environment/models/roots/root.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/environment/roots" />
+                            <subentity index="0" material="/global/environment/bare_roots" />
                         </subentities>
                     </part>
                 </parts>

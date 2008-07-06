@@ -81,27 +81,6 @@
 		</submodels>
 	</model>
 	
-	<model name="butcher_house" rotation="-90">
-		<rotation x="0" y="1" z="0" degrees="-90" />
-		<submodels>
-			<submodel mesh="3d_objects/items/building_element/models/butchers_house/butchers_house.mesh" >
-			<parts>
-				<part name="main" show="true" />
-			</parts>
-			</submodel>
-		</submodels>
-	</model>
-	
-	<model name="block_house"  usescaleof="depth">
-		<submodels>
-			<submodel mesh="junkyard/models/blockhouse/blockhouse.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>
-	
 
 	<model name="roof">
 		<submodels>

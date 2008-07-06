@@ -5,9 +5,14 @@
         <submodels>
             <submodel mesh="3d_objects/structures/models/sharpened_log/sharpened_log.mesh">
                 <parts>
-                    <part name="main" show="true">
+                    <part name="birch" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/structures/sharpened_log" />
+                            <subentity index="0" material="/global/structures/sharpened_log_birch" />
+                        </subentities>
+                    </part>
+                    <part name="fir" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/structures/sharpened_log_fir" />
                         </subentities>
                     </part>
                 </parts>

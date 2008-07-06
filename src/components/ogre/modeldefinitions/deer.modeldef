@@ -1,0 +1,49 @@
+<models>
+    <model name="deer" usescaleof="height" showcontained="false" icon="">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_skeletons/creatures/quadruped_v2/models/deer/deer.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions>
+            <action name="__movement_walk" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="Walk" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="__movement_run" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="Run2" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="eat" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="Eat3" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="jump" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="Jump" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+        </actions>
+        <attachpoints />
+        <views />
+    </model>
+</models>

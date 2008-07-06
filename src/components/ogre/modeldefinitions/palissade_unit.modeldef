@@ -7,7 +7,7 @@
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/items/building_element/sharpened_log" />
+                            <subentity index="0" material="/global/plants/trees/oak/nonculled" />
                         </subentities>
                     </part>
                 </parts>

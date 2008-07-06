@@ -7,42 +7,42 @@
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" />
-                            <subentity index="1" />
+                            <subentity index="0" material="/global/structures/wooden_fence" />
+                            <subentity index="1" material="/global/structures/wooden_fence" />
                         </subentities>
                     </part>
                 </parts>
             </submodel>
         </submodels>
         <actions>
-			<action name="close" speed="1.000000">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="Close" weight="1.000000" />
-					</animation>
-				</animations>
-			</action>
-			<action name="closed" speed="1.000000">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="CloseHold" weight="1.000000" />
-					</animation>
-				</animations>
-			</action>
-			<action name="open" speed="1.000000">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="Open" weight="1.000000" />
-					</animation>
-				</animations>
-			</action>
-			<action name="opened" speed="1.000000">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="OpenHold" weight="1.000000" />
-					</animation>
-				</animations>
-			</action>
+            <action name="close" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="Close" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="closed" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="CloseHold" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="open" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="Open" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="opened" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="OpenHold" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
         </actions>
         <attachpoints />
         <views />

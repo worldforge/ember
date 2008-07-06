@@ -1,50 +1,22 @@
 <models>
-	<model name="cg_house" usescaleof="depth" showcontained="true" icon="">
-		<translate x="5.000000" y="0.000000" z="-4.500000" />
-		<rotation x="-0.000000" y="1.000000" z="-0.000000" degrees="90.000000" />
-		<submodels>
-			<submodel mesh="3d_objects/structures/models/castlegrad/cg_house_A1.mesh">
-				<parts>
-					<part name="inside_floor" show="true">
-						<subentities>
-							<subentity index="0" material="/global/items/building_element/cg_floors/tile_floor" />
-						</subentities>
-					</part>
-					<part name="chimney" show="true">
-						<subentities>
-							<subentity index="1" material="/global/items/building_element/cg_floors/tile_floor" />
-						</subentities>
-					</part>
-					<part name="outer_walls" show="true">
-						<subentities>
-							<subentity index="2" material="/global/items/building_element/cg_outer_walls/outer_walls" />
-						</subentities>
-					</part>
-					<part name="porch" show="true">
-						<subentities>
-							<subentity index="3" material="/global/items/building_element/cg_outer_walls/outer_walls" />
-							<subentity index="4" material="/global/items/building_element/cg_floors/tile_floor" />
-						</subentities>
-					</part>
-					<part name="roof_shale" group="roof" show="true">
-						<subentities>
-							<subentity index="5" material="/global/items/building_element/cg_roof/roof_shale" />
-						</subentities>
-					</part>
-					<part name="roof_shingle" group="roof" show="false">
-						<subentities>
-							<subentity index="5" material="/global/items/building_element/cg_roof/roof_shingle" />
-						</subentities>
-					</part>
-					<part name="roof_straw" group="roof" show="false">
-						<subentities>
-							<subentity index="6" material="/global/items/building_element/cg_roof/roof_straw" />
-						</subentities>
-					</part>
-				</parts>
-			</submodel>
-		</submodels>
-		<actions />
-		<attachpoints />
-		<views />
-	</model></models>
+    <model name="cg_house" usescaleof="depth" showcontained="true" icon="">
+        <translate x="5.000000" y="0.000000" z="-4.500000" />
+        <rotation x="-0.000000" y="1.000000" z="-0.000000" degrees="90.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/structures/models/castlegrad/cg_house_A.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/structures/wall_outer" />
+                            <subentity index="1" material="/global/structures/roof_straw" />
+                            <subentity index="2" material="/global/structures/ossyja_floor_planks" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+</models>

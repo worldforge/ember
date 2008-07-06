@@ -8,7 +8,7 @@
 				<param key="clusterDistance">25</param>
 				<param key="density">2</param>
 				<param key="falloff">0.6</param>
-				<param key="material">/global/plants/grass/bittergrass_green</param>
+				<param key="material">/global/plants/grass/ducktail_yellow</param>
 				<param key="minHeight">2.0</param>
 				<param key="maxHeight">2.5</param>
 				<param key="minWidth">1.0</param>

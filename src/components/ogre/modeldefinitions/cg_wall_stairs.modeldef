@@ -7,9 +7,9 @@
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" />
-                            <subentity index="1" />
-                            <subentity index="2" />
+                            <subentity index="0" material="/global/structures/curtain_wall_shale" />
+                            <subentity index="1" material="/global/structures/mortar_brick" />
+                            <subentity index="2" material="/global/structures/wall_outer" />
                         </subentities>
                     </part>
                 </parts>

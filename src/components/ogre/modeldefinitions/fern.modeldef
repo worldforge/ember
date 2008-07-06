@@ -5,9 +5,14 @@
         <submodels>
             <submodel mesh="3d_objects/plants/shrubs/models/fern/fern.mesh">
                 <parts>
-                    <part name="main" show="true">
+                    <part name="brown" show="true" group="main">
                         <subentities>
                             <subentity index="0" material="/global/plants/shrubs/fern_brown" />
+                        </subentities>
+                    </part>
+                    <part name="green" show="true" group="main">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/shrubs/fern_green" />
                         </subentities>
                     </part>
                 </parts>

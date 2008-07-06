@@ -1,41 +1,5 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <models>
-	<model name="creator"  usescaleof="height" showcontained="false" >
-		<submodels>
-			<submodel mesh="3d_objects/items/fire/models/flame/flame.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-		<actions>
-			<action name="__movement_idle">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="innerFire.BAKED" weight="1.0" />
-						<animationpart name="outerFire.BAKED" weight="1.0" />
-					</animation>
-				</animations>
-			</action>
-			<action name="__movement_walk">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="innerFire.BAKED" weight="1.0" />
-						<animationpart name="outerFire.BAKED" weight="1.0" />
-					</animation>
-				</animations>
-			</action>
-			<action name="__movement_run">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="innerFire.BAKED" weight="1.0" />
-						<animationpart name="outerFire.BAKED" weight="1.0" />
-					</animation>
-				</animations>
-			</action>
-		</actions>
-	</model>
-	
 	<model name="male" usescaleof="height" showcontained="false">
 		<translate x="0.000000" y="0.000000" z="0.000000" />
 		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />

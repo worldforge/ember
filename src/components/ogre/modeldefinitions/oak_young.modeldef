@@ -8,7 +8,7 @@
                     <part name="A" group="main" show="true">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/oak/nonculled" />
-                            <subentity index="1" material="/global/plants/trees/oak" />
+                            <subentity index="1" material="/global/plants/trees/oak/nonculled" />
                         </subentities>
                     </part>
                 </parts>
@@ -18,7 +18,7 @@
                     <part name="B" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/oak/nonculled" />
-                            <subentity index="1" material="/global/plants/trees/oak" />
+                            <subentity index="1" material="/global/plants/trees/oak/nonculled" />
                         </subentities>
                     </part>
                 </parts>
@@ -28,7 +28,7 @@
                     <part name="C" group="main" show="false">
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/oak/nonculled" />
-                            <subentity index="1" material="/global/plants/trees/oak" />
+                            <subentity index="1" material="/global/plants/trees/oak/nonculled" />
                         </subentities>
                     </part>
                 </parts>

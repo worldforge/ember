@@ -3,12 +3,16 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="-1.000000" y="-0.000000" z="-0.000000" degrees="90.000000" />
         <submodels>
-            <submodel mesh="3d_objects/items/building_element/models/wooden_fence/fence_sectionA.mesh">
+            <submodel mesh="3d_objects/structures/models/wooden_fence/wooden_fence.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/items/building_element/beam_end" />
-                            <subentity index="1" material="/global/items/building_element/beam_timber" />
+                            <subentity index="0" material="/global/structures/wooden_fence" />
+                        </subentities>
+                    </part>
+                    <part name="spacer" show="false">
+                        <subentities>
+                            <subentity index="1" material="/global/structures/wooden_fence" />
                         </subentities>
                     </part>
                 </parts>

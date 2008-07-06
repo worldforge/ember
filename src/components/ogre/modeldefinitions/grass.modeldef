@@ -1,0 +1,30 @@
+<models>
+    <model name="grass" usescaleof="height" showcontained="true" icon="">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/plants/grass/models/bittergrass/bittergrass.mesh">
+                <parts>
+                    <part name="brown" show="true" group="main">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/grass/bittergrass_brown" />
+                        </subentities>
+                    </part>
+                    <part name="green" show="true" group="main">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/grass/bittergrass_green" />
+                        </subentities>
+                    </part>
+                    <part name="yellow" show="true" group="main">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/grass/bittergrass_yellow" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+</models>

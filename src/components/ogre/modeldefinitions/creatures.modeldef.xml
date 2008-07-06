@@ -29,54 +29,6 @@
 		</actions>
 	</model>	
 	
-	<model name="deer" usescaleof="height" showcontained="false" >
-		<submodels>
-			<submodel mesh="3d_objects/creatures/quadruped_v2/models/deer/deer.mesh">
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-		<actions>
-<!--
-		<action name="__movement_idle">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="Stand" weight="1" />
-					</animation>
-				</animations>
-			</action>
--->
-			<action name="__movement_walk">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="Walk" weight="1" />
-					</animation>
-				</animations>
-			</action>
-			<action name="__movement_run">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="Run2" weight="1" />
-					</animation>
-				</animations>
-			</action>
-			<action name="eat">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="Eat3" weight="1" />
-					</animation>
-				</animations>
-			</action>
-			<action name="jump">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="Jump" weight="1" />
-					</animation>
-				</animations>
-			</action>
-		</actions>
-	</model>	
 
 	<model name="squirrel" showcontained="false" >
 		<submodels>
@@ -491,7 +443,7 @@
 		<translate x="0.000000" y="1.500000" z="0.000000" />
 		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
 		<submodels>
-			<submodel mesh="3d_objects/creatures/quadruped_v2/models/horse/Horse.mesh">
+			<submodel mesh="3d_skeletons/quadrapeds/horse/horse.mesh">
 				<parts>
 					<part name="main" show="true">
 						<subentities>

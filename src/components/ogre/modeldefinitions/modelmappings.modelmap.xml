@@ -354,28 +354,18 @@
 	<automodelmapping name="choppingblock" />
 	<modelmapping name="gravestrone">
 		<entitymatch>
-<!--			<case equals="gravestone_simple,gravestone_stylish,gravestone_rounded">
-				<action type="display-model">gravestone" />
-				<entitymatch>
-					<case equals="gravestone_rounded">
-						<action type="display-part">rounded" />
-					</case>
-					<case equals="gravestone_stylish">
-						<action type="display-part">stylish" />
-					</case>
-				</entitymatch>
-			</case> -->
 			<case>
 				<caseparam type="equals">gravestone</caseparam>
-				<action type="display-model">gravestone</action>
+				<action type="display-model">tombstone</action>
+				<action type="display-part">a</action>
 				<attributematch attribute="style" >
 					<case>
 						<caseparam type="equals">rounded</caseparam>
-						<action type="display-part">rounded</action>
+						<action type="display-part">b</action>
 					</case>
 					<case>
 						<caseparam type="equals">stylish</caseparam>
-						<action type="display-part">stylish</action>
+						<action type="display-part">c</action>
 					</case>
 				</attributematch>
 			</case>
@@ -489,7 +479,14 @@
 			</case>
 		</entitymatch>
 	</modelmapping> 
-	
+	<modelmapping name="arrow">
+		<entitymatch>
+			<case>
+				<caseparam type="equals">arrow</caseparam>
+				<action type="display-model">arrow</action>
+			</case>
+		</entitymatch>
+	</modelmapping> 	
 	
 <!-- vehicles -->	
 	<automodelmapping name="boat" />
@@ -879,6 +876,7 @@
 	<nomodel name="boundary" />
 	<nomodel name="path" />
 	<nomodel name="ploughed_field" />
+	<nomodel name="weather" />
 	<nomodel name="wall" /> <!-- This is the invisble wall for the houses -->
 
 </modelmappings>

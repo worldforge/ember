@@ -5,9 +5,14 @@
         <submodels>
             <submodel mesh="3d_objects/plants/shrubs/models/leaf/leaves.mesh">
                 <parts>
-                    <part name="main" show="true">
+                    <part name="green" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/shrubs/leaf" />
+                            <subentity index="0" material="/global/plants/shrubs/leaf_green" />
+                        </subentities>
+                    </part>
+                    <part name="brown" show="false">
+                        <subentities>
+                            <subentity index="0" material="/global/plants/shrubs/leaf_brown" />
                         </subentities>
                     </part>
                 </parts>
