@@ -1,5 +1,5 @@
 <models>
-    <model name="choppingblock" usescaleof="all" showcontained="true" icon="3d_objects/tools/chopping_block/I.png">
+    <model name="choppingblock" usescaleof="all" showcontained="true" icon="3d_objects/items/tool/models/chopping_block/I.png">
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
