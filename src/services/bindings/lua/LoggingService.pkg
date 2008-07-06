@@ -1,4 +1,10 @@
-
+// Binding log defines as functions
+// TODO: use internal Lua traceback to get correct file and line
+void S_LOG_VERBOSE(const char * message);
+void S_LOG_INFO(const char * message);
+void S_LOG_WARNING(const char * message);
+void S_LOG_FAILURE(const char * message);
+void S_LOG_CRITICAL(const char * message);
 
 namespace Ember {
 
@@ -113,10 +119,9 @@ namespace Ember {
      * @param message The message format string.
      *
      */
-        void log (const char *message, ...);
+        void log (const char *message);
 
-        void log (const MessageImportance importance, const char *message,
-                  ...);
+        void log (const MessageImportance importance, const char *message);
 
     };
 }
