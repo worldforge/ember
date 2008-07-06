@@ -443,66 +443,8 @@ void TerrainPage::unregisterBridge()
 void TerrainPage::addTerrainModifier(int sx, int sy, int mx, int my, int mz, Mercator::TerrainMod *newmod)
 {
 	++mTerrainModCount;
-	
-	int terrain_res = EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getResolution();
-
-	//EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().addMod(*newmod);
-	
-	//work out which segments are overlapped by thus mod
-	//note that the bbox is expanded by one grid unit because
-	//segments share edges. this ensures a mod along an edge
-	//will affect both segments.
-	int lx=(int)floor((newmod->bbox().lowCorner()[0] - 1) / terrain_res);
-	int ly=(int)floor((newmod->bbox().lowCorner()[1] - 1) / terrain_res);
-	int hx=(int)ceil((newmod->bbox().highCorner()[0] + 1) / terrain_res);
-	int hy=(int)ceil((newmod->bbox().highCorner()[1] + 1) / terrain_res);
-
-	for (int i=lx;i<hx;++i) {
-        	for (int j=ly;j<hy;++j) {
-            		Mercator::Segment *s=EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment(i,j);
-			if( (i==sx) && (j==sy) ) { //This is the original segment we applied the mod to
-            			if (s) {
-                			s->addMod(newmod->clone());
-					mTModList.push_back(terrainModListEntry(i,j,mx,my,mz,newmod->clone()));
-            			}
-			} else { //This is an overlapped segment
-				if (s) {
-					//Segment's information:
-					int seg_xRef = EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment(i,j)->getXRef();
-					int seg_yRef = EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment(i,j)->getYRef();
-					int seg_size =  EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment(i,j)->getSize();
-					float *seg_heightpoints = EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment(i,j)->getPoints();
-
-					WFMath::AxisBox<2> bbox = newmod->bbox();
-					bbox.shift(WFMath::Vector<2>(-seg_xRef, -seg_yRef));
-					int l_x, l_y, h_x, h_y;
-					l_x = I_ROUND(bbox.lowCorner()[0]); 
-					if (l_x < 0) l_x = 0;
-    
-					h_x = I_ROUND(bbox.highCorner()[0]); 
-					if (h_x > terrain_res) h_x = terrain_res;
-    
-					l_y = I_ROUND(bbox.lowCorner()[1]); 
-					if (l_y < 0) l_y = 0;
-    
-					h_y = I_ROUND(bbox.highCorner()[1]); 
-					if (h_y > terrain_res) h_y = terrain_res;
-
-					for (int k=l_y; k<=h_y; k++) {
-						for (int l=l_x; l<=h_x; l++) {
-							newmod->apply(seg_heightpoints[k*seg_size + l], l + seg_xRef, k + seg_yRef);
-							//mTModList.push_back(terrainModListEntry(i,j,k,l,seg_heightpoints[k*seg_size +l],newmod->clone()));
-
-						} // of x loop
-					} // of y loop
-					
-					s->addMod(newmod->clone());
-					mTModList.push_back(terrainModListEntry(i,j,mx,my,mz,newmod->clone()));
-				}
-			}
-        	} // of y loop
-    	} // of x loop
-	
+	EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().addMod(*newmod->clone());
+	mTModList.push_back(terrainModListEntry(sx,sy,mx,my,mz,newmod->clone()));
 
 	if(mBridge)
 		mBridge->updateTerrain();	// update the terrain data now; note that this does not update
@@ -619,7 +561,7 @@ Mercator::TerrainMod *terrainModListEntry::Modifier()
 
 TerrainPosition *terrainModListEntry::Position()
 {
-	return new TerrainPosition(-seg_x*64 - mod_x, seg_y*64 + mod_y);
+	return new TerrainPosition(-mod_y, mod_x);
 }
 
 int terrainModListEntry::Id()
