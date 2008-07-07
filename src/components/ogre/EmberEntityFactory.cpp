@@ -28,6 +28,7 @@
 #include <Eris/Avatar.h>
 
 #include "services/server/ServerService.h"
+#include "services/sound/SoundService.h"
 #include "services/EmberServices.h"
 
 
@@ -144,6 +145,12 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Root
 		
 		}
     }
+
+	/**
+	 * Connect the Sound Service onAction callback to the acted signal
+	 * of this entity
+	 */
+	 emberEntity->Acted.connect(sigc::mem_fun(Ember::EmberServices::getSingletonPtr()->getSoundService(), &Ember::SoundService::onAction));
 
 	S_LOG_VERBOSE("Entity added to game view.");
 	return emberEntity;

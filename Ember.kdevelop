@@ -246,9 +246,7 @@
     <revertoptions>-C</revertoptions>
   </kdevcvsservice>
   <kdevcppsupport>
-    <references>
-      <pcs>all</pcs>
-    </references>
+    <references/>
     <codecompletion>
       <includeGlobalFunctions>true</includeGlobalFunctions>
       <includeTypes>true</includeTypes>
@@ -289,11 +287,11 @@
     <qt>
       <used>false</used>
       <version>3</version>
-      <root>/usr/lib/qt3/</root>
+      <root>/usr/share/qt3</root>
       <includestyle>3</includestyle>
       <designerintegration>EmbeddedKDevDesigner</designerintegration>
-      <qmake>/usr/lib/qt3//bin/qmake</qmake>
-      <designer>/usr/bin/designer-qt3</designer>
+      <qmake>/usr/bin/qmake-qt3</qmake>
+      <designer>/usr/bin/designer</designer>
       <designerpluginpaths/>
     </qt>
     <splitheadersource>

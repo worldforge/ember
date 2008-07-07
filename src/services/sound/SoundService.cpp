@@ -320,6 +320,11 @@ namespace Ember
 	SoundService::~SoundService()
 	{
 	}
+	
+	void SoundService::onAction(const Atlas::Objects::Operation::RootOperation& act)
+	{
+		S_LOG_INFO("Romulo, actions working!");
+	}
 
 	/* Method for starting this service */
 	Service::Status SoundService::start()

@@ -45,6 +45,10 @@ class ISoundProvider;
 #include <wfmath/point.h>
 #include <wfmath/vector.h>
 #include <wfmath/quaternion.h>
+			 
+#include <Atlas/Objects/ObjectsFwd.h>
+#include <sigc++/trackable.h>
+#include <sigc++/signal.h>
 
 #define OGG_BUFFER_SIZE (4096 * 8)
 
@@ -208,7 +212,7 @@ class SoundService: public Service, public ConsoleObject
 		// All Allocated buffers
 		std::map<std::string, BaseSoundSample*> mSamples;
 		std::map<std::string, SoundObject*> mObjects;
-
+		
 		// Allocation Functions
 		bool allocateWAVPCM(const std::string &filename, bool playsLocally); 
 		bool allocateOGG(const std::string &filename, bool playsLocally); 
@@ -255,6 +259,11 @@ class SoundService: public Service, public ConsoleObject
 		 * Streaming update
 		 */
 		void cycle();
+		
+		/**
+		 * From server
+		 */
+		void onAction(const Atlas::Objects::Operation::RootOperation& act);
 
 		/**
 		 * Allocated Entities
