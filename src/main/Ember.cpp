@@ -149,9 +149,9 @@ int main(int argc, char **argv)
 	}
    
 #endif
-	if (prefix == "") {
-		prefix = PREFIX;
-	}
+// 	if (prefix == "") {
+// 		prefix = PREFIX;
+// 	}
 	
 #else 
  //  char tmp[64];

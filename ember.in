@@ -55,7 +55,6 @@ exec_prefix=${prefix}
 bindir=${exec_prefix}/bin
 datadir=${prefix}/share/ember
 media_user_dir=${datadir}/media/user
-etcdir=${prefix}/etc/ember
 
 LD_LIBRARY=$prefix/lib/ember:$LD_LIBRARY
 LD_LIBRARY_PATH=$prefix/lib/ember:$LD_LIBRARY_PATH

@@ -49,7 +49,12 @@ namespace Ember
 	const std::string ConfigService::SETVALUE ( "set_value" );
 	const std::string ConfigService::GETVALUE ( "get_value" );
 
-	ConfigService::ConfigService() : Service(), mHomeDir ( "" ), mConfig(new varconf::Config())
+	ConfigService::ConfigService() : 
+	Service()
+	, mHomeDir ( "" )
+	, mConfig(new varconf::Config())
+	, mSharedDataDir(DATADIR "/ember/")
+	, mEtcDir(SYSCONFDIR "/ember/")
 	{
 #ifdef __WIN32__
 		char cwd[512];
@@ -59,8 +64,6 @@ namespace Ember
 		//use this utility function for removing the file part
 		PathRemoveFileSpec ( cwd );
 		baseDir = std::string ( cwd ) + "\\";
-#else
-		setPrefix ( PREFIX );
 #endif
 
 		setName ( "Configuration Service" );
@@ -68,6 +71,7 @@ namespace Ember
 
 		setStatusText ( "Configuration Service status OK." );
 	}
+
 
 	void ConfigService::setPrefix ( const std::string& prefix )
 	{

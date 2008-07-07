@@ -1,4 +1,4 @@
-INCLUDES = -I$(top_srcdir)/src -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
+INCLUDES = -I$(top_srcdir)/src -I$(top_builddir)/src -DPREFIX=\"@prefix@\" -DSYSCONFDIR=\"$(sysconfdir)\" -DDATADIR=\"$(datadir)\"
 
 noinst_LTLIBRARIES = libConfigService.la
 

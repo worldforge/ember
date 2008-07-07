@@ -148,7 +148,9 @@ void Application::initializeServices()
 	mConsoleBackend = std::auto_ptr<ConsoleBackend>(new ConsoleBackend());	
 	/// Initialize the Configuration Service
 	EmberServices::getSingleton().getConfigService()->start();
-	EmberServices::getSingleton().getConfigService()->setPrefix(mPrefix);
+	if (mPrefix != "") {
+		EmberServices::getSingleton().getConfigService()->setPrefix(mPrefix);
+	}
 	if (mHomeDir != "") {
 		EmberServices::getSingleton().getConfigService()->setHomeDirectory(mHomeDir);
 		std::cout << "Setting home directory to " << mHomeDir << std::endl;
