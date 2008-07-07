@@ -149,15 +149,13 @@ IconImageStore::~IconImageStore()
 
 void IconImageStore::createImageset()
 {
-// 	mTexPtr = Ogre::TextureManager::getSingleton().createManual(mImagesetName, "Gui", Ogre::TEX_TYPE_2D, mImageSize, mImageSize, 0, Ogre::PF_A8R8G8B8,Ogre::TU_RENDERTARGET);
 
 	///reset the image
 	memset(mImageDataStream->getPtr(), '\0', mImageDataStream->size());
 	mImage.loadDynamicImage(mImageDataStream->getPtr(), mImageSize, mImageSize, 1, Ogre::PF_A8R8G8B8);
 
-// 	mTexPtr = Ogre::TextureManager::getSingleton().createManual(mImagesetName, "Gui", Ogre::TEX_TYPE_2D, mImageSize, mImageSize, 0, Ogre::PF_A8R8G8B8,Ogre::TU_DYNAMIC_WRITE_ONLY);
-	mTexPtr = Ogre::TextureManager::getSingleton().loadImage(mImagesetName, "Gui", mImage);
-// 	mTexPtr = Ogre::TextureManager::getSingleton().loadRawData(mImagesetName, "Gui", mImageDataStreamPtr, mImageSize, mImageSize,Ogre::PF_A8R8G8B8, Ogre::TEX_TYPE_2D, 0);
+	///no mipmaps to avoid problems when updating dynamically, also we don't really need it since this is a gui element which will be shown in the same resolution almost all of the time
+	mTexPtr = Ogre::TextureManager::getSingleton().loadImage(mImagesetName, "Gui", mImage, Ogre::TEX_TYPE_2D, 0);
 	if (mTexPtr.isNull()) {
 		S_LOG_WARNING("Could not create a texture.");
 		return;
