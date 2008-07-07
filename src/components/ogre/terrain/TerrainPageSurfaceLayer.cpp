@@ -61,7 +61,11 @@ Ogre::TexturePtr TerrainPageSurfaceLayer::createTexture()
 		splatTextureNameSS << "terrain_" << mTerrainPageSurface.getWFPosition().x() << "_" << mTerrainPageSurface.getWFPosition().y() << "_" << mSurfaceIndex;
 		const Ogre::String splatTextureName(splatTextureNameSS.str());
 		
-		mTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(splatTextureName, "General", Ogre::TEX_TYPE_2D, getPixelWidth(), getPixelWidth(), 1, Ogre::PF_A8);
+//		mTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(splatTextureName, "General", Ogre::TEX_TYPE_2D, getPixelWidth(), getPixelWidth(), 1, Ogre::PF_A8);
+		///use no mipmaps since we had problems on nvidia cards with updating it
+ 		mTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadImage(splatTextureName, "General", *mCoverageImage, Ogre::TEX_TYPE_2D, 0);
+		 
+		
 	}
 	return mTexture;
 }
@@ -89,18 +93,18 @@ bool TerrainPageSurfaceLayer::intersects()
 
 void TerrainPageSurfaceLayer::fillAlphaLayer(unsigned char* finalImagePtr, unsigned char* wfImagePtr, unsigned int channel, int startX, int startY, unsigned short numberOfChannels) {
 
-    int width = 64;
- 	int finalImageWidth = getPixelWidth();
-    long i,j; 
+	int width = 64;
+	int finalImageWidth = getPixelWidth();
+	long i,j; 
 	
-    Ogre::uchar* start = finalImagePtr + (numberOfChannels * finalImageWidth * (startY - 1)) + ((startX - 1) * numberOfChannels);
-    Ogre::uchar* end = start + (width * finalImageWidth * numberOfChannels) + (width * numberOfChannels);
+	Ogre::uchar* start = finalImagePtr + (numberOfChannels * finalImageWidth * (startY - 1)) + ((startX - 1) * numberOfChannels);
+	Ogre::uchar* end = start + (width * finalImageWidth * numberOfChannels) + (width * numberOfChannels);
 	///we need to do this to get the alignment correct
 	wfImagePtr += 65;
 	
-    Ogre::uchar* tempPtr = end + channel + numberOfChannels;
-    for (i = 0; i < width; ++i) {
-	    tempPtr -= (width * numberOfChannels);
+	Ogre::uchar* tempPtr = end + channel + numberOfChannels;
+	for (i = 0; i < width; ++i) {
+		tempPtr -= (width * numberOfChannels);
 		for (j = 0; j < width; ++j) {
 			Ogre::uchar alpha = *(wfImagePtr + j);
 			*(tempPtr) = alpha;
@@ -177,21 +181,19 @@ void TerrainPageSurfaceLayer::updateCoverageImage()
 		}
 			
 		if (!mTexture.isNull()) {
-			mTexture->loadImage(*mCoverageImage);
 			///if it's alreay loaded we need to blit directly to the hardware buffer to make sure it's updated
-		// 	if (mTexture->isLoaded()) {
+		 	if (mTexture->isLoaded()) {
 				Ogre::HardwarePixelBufferSharedPtr hardwareBuffer = mTexture->getBuffer();
 				
 				///blit the whole image to the hardware buffer
 				Ogre::PixelBox sourceBox = mCoverageImage->getPixelBox();
 				//Ogre::Box targetBox(0,0, texture->getWidth(), texture->getHeight());
 				hardwareBuffer->blitFromMemory(sourceBox);	
-		// 	}
+		 	} else {
+				mTexture->loadImage(*mCoverageImage);
+		 	}
 		}
 	}
-	
-	
-	
 }
 
 

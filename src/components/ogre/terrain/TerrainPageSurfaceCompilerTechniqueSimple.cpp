@@ -61,16 +61,16 @@ void TerrainPageSurfaceCompilerTechniqueSimple::addShadow(Ogre::Technique* techn
 {
 	Ogre::Pass* shadowPass = technique->createPass();
 	
- 	shadowPass->setSceneBlending(Ogre::SBT_MODULATE);
+	shadowPass->setSceneBlending(Ogre::SBT_MODULATE);
 	shadowPass->setLightingEnabled(false);
 	shadowPass->setFog(false);
 	
 	
 	Ogre::TextureUnitState * textureUnitStateSplat = shadowPass->createTextureUnitState();
-    textureUnitStateSplat->setTextureName(terrainPageShadow->getTexture()->getName());
-    
-    textureUnitStateSplat->setTextureCoordSet(0);
-    textureUnitStateSplat->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+	textureUnitStateSplat->setTextureName(terrainPageShadow->getTexture()->getName());
+
+	textureUnitStateSplat->setTextureCoordSet(0);
+	textureUnitStateSplat->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 	textureUnitStateSplat->setTextureFiltering(Ogre::TFO_ANISOTROPIC);
 }
 
@@ -154,46 +154,37 @@ Ogre::Pass* TerrainPageSurfaceCompilerTechniqueSimple::addPassToTechnique(Ogre::
 		layer->createCoverageImage();
 		layer->updateCoverageImage();
 		layer->createTexture();
-		layer->destroyCoverageImage();
+// 		layer->destroyCoverageImage();
 	} else {
 		///a texture exists, so we just need to update the image
-		layer->createCoverageImage();
+// 		layer->createCoverageImage();
 		layer->updateCoverageImage(); ///calling this will also update the texture since the method will blit the image onto it
-		layer->destroyCoverageImage();
+// 		layer->destroyCoverageImage();
 	}
 	
 	Ogre::Pass* pass = technique->createPass();
 	
 
- 	pass->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+	pass->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
 	pass->setLightingEnabled(false);
-	
-	
+
+
 	Ogre::TextureUnitState * textureUnitState = pass->createTextureUnitState();
-    textureUnitState->setTextureName(layer->getDiffuseTextureName());
-    textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
-    textureUnitState->setTextureCoordSet(0);
+	textureUnitState->setTextureName(layer->getDiffuseTextureName());
+	textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
+	textureUnitState->setTextureCoordSet(0);
 	textureUnitState->setTextureScale(1.0f / layer->getScale(), 1.0f / layer->getScale());		
-	
+
 	Ogre::TextureUnitState * textureUnitStateSplat = pass->createTextureUnitState();
-    textureUnitStateSplat->setTextureName(layer->getCoverageTextureName());
-     
-    textureUnitStateSplat->setTextureCoordSet(0);
-//	textureUnitStateSplat->setTextureFiltering(Ogre::TFO_ANISOTROPIC);
-    textureUnitStateSplat->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+	textureUnitStateSplat->setTextureName(layer->getCoverageTextureName());
+
+	textureUnitStateSplat->setTextureCoordSet(0);
+	textureUnitStateSplat->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 	textureUnitStateSplat->setTextureFiltering(Ogre::TFO_ANISOTROPIC);
 //	textureUnitStateSplat->setAlphaOperation(Ogre::LBX_SOURCE1, Ogre::LBS_TEXTURE, Ogre::LBS_TEXTURE);
 	textureUnitStateSplat->setAlphaOperation(Ogre::LBX_BLEND_DIFFUSE_COLOUR, Ogre::LBS_TEXTURE, Ogre::LBS_CURRENT);
 	textureUnitStateSplat->setColourOperationEx(Ogre::LBX_SOURCE1, Ogre::LBS_CURRENT, Ogre::LBS_CURRENT);
-	
-
-	
-
-
-
-    
-    return pass; 
-//	textureUnitState->setColourOperationEx(LBX_BLEND_CURRENT_ALPHA, LBS_TEXTURE, LBS_CURRENT);
+	return pass; 
 	
 }
 
