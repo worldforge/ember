@@ -243,7 +243,7 @@ void TerrainEditor::createOverlay()
 				ss << "basepointmarker" << x << "_" << y;
 				Ogre::Entity* entity(0);
 				try {
-					entity = EmberOgre::getSingleton().getSceneManager()->createEntity(ss.str(), "art/primitives/models/sphere.mesh");
+					entity = EmberOgre::getSingleton().getSceneManager()->createEntity(ss.str(), "3d_objects/primitives/models/sphere.mesh");
 					///start out with a normal material
 					entity->setMaterialName("BasePointMarkerMaterial");
 					entity->setRenderingDistance(300);
