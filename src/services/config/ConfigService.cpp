@@ -51,10 +51,10 @@ namespace Ember
 
 	ConfigService::ConfigService() : 
 	Service()
-	, mHomeDir ( "" )
-	, mConfig(new varconf::Config())
 	, mSharedDataDir(DATADIR "/ember/")
 	, mEtcDir(SYSCONFDIR "/ember/")
+	, mHomeDir ( "" )
+	, mConfig(new varconf::Config())
 	{
 #ifdef __WIN32__
 		char cwd[512];
