@@ -118,6 +118,7 @@ class OpcodeCollisionDetectorVisualizer;
 
 class EntityRecipeManager;
 
+/**
 	@brief The main class of ember. This functions as a hub for almost all subsystems.
 	
 	This is the central class for the whole Ogre related part of Ember. It's quite large and could perhaps be refactored into smaller parts though.

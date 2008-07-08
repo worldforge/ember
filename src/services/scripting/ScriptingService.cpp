@@ -120,7 +120,7 @@ void ScriptingService::callFunction(const std::string& functionName, int narg, c
 		S_LOG_FAILURE("There is no scripting provider with the name \"" << scriptType << "\"");
 	} else {
 		try {
-			I->second->callFunction(functionName, callContext);
+			I->second->callFunction(functionName, narg, callContext);
 		} catch (const Ember::Exception& ex) {
 			S_LOG_WARNING("Error when executing function '" << functionName << "' with provider " << I->second->getName() << ". Message: " << ex.getError());
 			scriptError(ex.getError());

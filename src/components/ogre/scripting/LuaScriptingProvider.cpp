@@ -293,16 +293,16 @@ void LuaScriptingProvider::callFunctionImpl(const std::string& functionName, int
 		int level = lua_gettop(mLuaState); // top of stack position
 		// if we have context to store return values, then get them
 		if (luaCallContext)
+		{
 			S_LOG_VERBOSE("Calling function with " << narg << " arguments");
 			error = lua_pcall(mLuaState, narg, LUA_MULTRET, error_index);
-		{
-			error = lua_pcall(mLuaState, 0, LUA_MULTRET, error_index);
 			nresults = lua_gettop(mLuaState) - level; // number of results
 			S_LOG_VERBOSE("Got " << nresults << " results");
 		}
 		else
 		{
 			error = lua_pcall(mLuaState, narg, 0, error_index);
+		}
 
 		// handle errors
 		if (error)
