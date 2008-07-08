@@ -239,19 +239,31 @@ void TerrainEditor::createOverlay()
 			x = I->first;
 			for (Mercator::Terrain::Pointcolumn::const_iterator J = I->second.begin(); J != I->second.end(); ++J) {
 				y = J->first;
-				const Mercator::BasePoint& basepoint = J->second;
+				std::stringstream ss;
+				ss << "basepointmarker" << x << "_" << y;
+				Ogre::Entity* entity(0);
+				try {
+					entity = EmberOgre::getSingleton().getSceneManager()->createEntity(ss.str(), "art/primitives/models/sphere.mesh");
+					///start out with a normal material
+					entity->setMaterialName("BasePointMarkerMaterial");
+					entity->setRenderingDistance(300);
+					entity->setQueryFlags(MousePicker::CM_UNDEFINED);
+				} catch (const std::exception& ex) {
+					S_LOG_FAILURE("Error when creating base point marker entity: " << ex.what());
+					continue;
+				}
+				
+				if (!entity) {
+					S_LOG_FAILURE("Unexpected error when creating base point marker entity.");
+					continue;
+				}
+				
+				const Mercator::BasePoint& basepoint(J->second);
 				Ogre::SceneNode* basepointNode = mOverlayNode->createChildSceneNode();
 				TerrainPosition tPos(x*64,y*64);
 				Ogre::Vector3 ogrePos = Atlas2Ogre(tPos);
 				ogrePos.y = basepoint.height();
 				basepointNode->setPosition(ogrePos);
-				std::stringstream ss;
-				ss << "basepointmarker" << x << "_" << y;
-				Ogre::Entity* entity = EmberOgre::getSingleton().getSceneManager()->createEntity(ss.str(), "3d_objects/primitives/models/sphere.mesh");
-				///start out with a normal material
-				entity->setMaterialName("BasePointMarkerMaterial");
-				entity->setRenderingDistance(300);
-				entity->setQueryFlags(MousePicker::CM_UNDEFINED);
 				basepointNode->attachObject(entity);
 				BasePointUserObject* userObject = new BasePointUserObject(TerrainPosition(x,y), basepoint, basepointNode);
 				entity->setUserObject(userObject);
