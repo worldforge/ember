@@ -1,3 +1,3248 @@
+commit b636fbfc0f10bcdbb908363cd954a1da9116d401
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue Jul 8 16:39:42 2008 +0200
+
+    Fixed path to the sphere and added some extra checks. Once the release is done we'll move the sphere mesh to its correct place and update accordingly.
+
+ src/components/ogre/terrain/TerrainEditor.cpp |   28 +++++++++++++++++-------
+ 1 files changed, 20 insertions(+), 8 deletions(-)
+
+commit 5e4c7d51f696fea2bdc4f051dc171c6d5e0aba2a
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue Jul 8 11:00:23 2008 +0200
+
+    Fixed incorrect address.
+
+ AUTHORS |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit b47d58c4bd6e352f65436b99338f115a2141de09
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue Jul 8 10:59:09 2008 +0200
+
+    Tabs obviously didn't look that good, format with spaces instead.
+
+ AUTHORS |   22 +++++++++++-----------
+ 1 files changed, 11 insertions(+), 11 deletions(-)
+
+commit 1178dcee5ee466b7bf0c2075b42ad0bdeda5a851
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue Jul 8 10:55:56 2008 +0200
+
+    Added Sean and Alexey and reformatted.
+
+ AUTHORS |   20 +++++++++++---------
+ 1 files changed, 11 insertions(+), 9 deletions(-)
+
+commit a39d9b4dc5671827bd76d11f6434a92e65c192df
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue Jul 8 10:54:53 2008 +0200
+
+    Since there's now parts of Ember that are licensed under GPL v3+ the end result is now also GPL 3.
+
+ COPYING |  912 +++++++++++++++++++++++++++++++++++++++++++--------------------
+ 1 files changed, 623 insertions(+), 289 deletions(-)
+
+commit 81a720ba29d24eb18a9616c9070f41fbe733d5d8
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon Jul 7 21:31:06 2008 +0200
+
+    Tweak the way Ember handles configuration directory to better handle configure directives while still working with binreloc and allowing us to set another prefix at runtime.
+
+ ember.in                              |    1 -
+ src/main/Application.cpp              |    4 +++-
+ src/main/Ember.cpp                    |    6 +++---
+ src/services/config/ConfigService.cpp |   10 +++++++---
+ src/services/config/Makefile.am       |    2 +-
+ 5 files changed, 14 insertions(+), 9 deletions(-)
+
+commit 0aa6f2edacb8438d01acdbbefd3ceea3087c351d
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon Jul 7 21:30:51 2008 +0200
+
+    Bump version.
+
+ ember.conf |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 2df179239ca6af555fd5e1d1a194ea65a6d3cf5f
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon Jul 7 19:47:09 2008 +0200
+
+    Since there's some problem with mipmaps on nvidia cards we won't use any for the terrain coverage textures.
+    
+    Also don't delete and recreate the images when updating them. This might take some more memory, but will increase the performance.
+
+ .../TerrainPageSurfaceCompilerTechniqueSimple.cpp  |   49 ++++++++------------
+ .../ogre/terrain/TerrainPageSurfaceLayer.cpp       |   32 +++++++------
+ 2 files changed, 37 insertions(+), 44 deletions(-)
+
+commit 8ed6735369d3825247928c8c5fef87cbef20e72b
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon Jul 7 19:14:06 2008 +0200
+
+    Don't use mipmaps for the icons.
+
+ .../ogre/widgets/icons/IconImageStore.cpp          |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
+
+commit ae3612eb0fd3ac4592c25bd885380e1fed07b537
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jul 6 20:03:18 2008 +0200
+
+    More resource fixes.
+
+ make_dist_media.sh                |   10 ++++++----
+ src/components/ogre/resources.cfg |    3 +++
+ 2 files changed, 9 insertions(+), 4 deletions(-)
+
+commit 58f4ae9813ec0e2bd2ce3fe3f07ccb7e533e8388
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jul 6 19:49:53 2008 +0200
+
+    Fix resource problems.
+
+ make_dist_media.sh                |   21 ++++++++++++---------
+ src/components/ogre/resources.cfg |    2 +-
+ 2 files changed, 13 insertions(+), 10 deletions(-)
+
+commit 89eb67b61e60e94166f65e3b80473451335f61dc
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jul 6 19:11:39 2008 +0200
+
+    Put the core files in the shared media.
+
+ src/components/ogre/resources.cfg |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 0d5b4a1d7d94caf3fbaf41f1492483b3dee34a30
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jul 6 17:57:46 2008 +0200
+
+    Updated media references.
+
+ .../ogre/modeldefinitions/choppingblock.modeldef   |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 469c1e8f16cd5b638c75d18a2d55adc607491091
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jul 6 14:57:55 2008 +0200
+
+    Removed an assert which seemed to trigger when entities were placed close to boundaries, probably due to precision issues. This fixes bug #222713
+
+ .../src/OgrePagingLandScapeOctree.cpp              |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit e341c785b4a87c22f6f099398a47e6c8649b8a86
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jul 6 14:37:04 2008 +0200
+
+    Updated model definitions.
+
+ .../ogre/modeldefinitions/armory.modeldef          |    8 +-
+ .../ogre/modeldefinitions/arrow.modeldef           |   20 ++
+ .../ogre/modeldefinitions/bailey1.modeldef         |    8 +-
+ .../ogre/modeldefinitions/bailey2.modeldef         |    8 +-
+ .../ogre/modeldefinitions/barrel.modeldef          |    2 +-
+ src/components/ogre/modeldefinitions/bed.modeldef  |    2 +-
+ .../ogre/modeldefinitions/bottle.modeldef          |    2 +-
+ .../ogre/modeldefinitions/bowls.modeldef           |    2 +-
+ .../modeldefinitions/buildingelements.modeldef.xml |   21 --
+ .../ogre/modeldefinitions/buildings.modeldef       |   68 ------
+ src/components/ogre/modeldefinitions/bush.modeldef |   11 +-
+ .../ogre/modeldefinitions/campfire.modeldef        |    4 +-
+ src/components/ogre/modeldefinitions/cart.modeldef |    8 +-
+ .../modeldefinitions/castle_outer_wall.modeldef    |    6 +-
+ src/components/ogre/modeldefinitions/cave.modeldef |   16 +-
+ .../ogre/modeldefinitions/cg_house.modeldef        |   70 ++-----
+ .../ogre/modeldefinitions/cg_wall_corner.modeldef  |    4 +-
+ .../ogre/modeldefinitions/cg_wall_gate.modeldef    |    4 +-
+ .../ogre/modeldefinitions/cg_wall_run.modeldef     |    4 +-
+ .../ogre/modeldefinitions/cg_wall_stairs.modeldef  |    6 +-
+ .../ogre/modeldefinitions/characters.modeldef.xml  |   36 ----
+ .../ogre/modeldefinitions/chest.modeldef           |    2 +-
+ .../ogre/modeldefinitions/choppingblock.modeldef   |    2 +-
+ .../ogre/modeldefinitions/choppingblockA.modeldef  |   21 --
+ .../ogre/modeldefinitions/choppingblockB.modeldef  |   20 --
+ .../ogre/modeldefinitions/creator.modeldef         |   45 ++++
+ .../ogre/modeldefinitions/creatures.modeldef.xml   |   50 +-----
+ src/components/ogre/modeldefinitions/deed.modeldef |   21 ++
+ src/components/ogre/modeldefinitions/deer.modeldef |   49 +++++
+ .../ogre/modeldefinitions/don_jon.modeldef         |    8 +-
+ .../ogre/modeldefinitions/environment.modeldef.xml |   97 +---------
+ .../ogre/modeldefinitions/fencegate.modeldef       |   21 --
+ .../ogre/modeldefinitions/fencepole.modeldef       |   10 +-
+ .../ogre/modeldefinitions/fencesection.modeldef    |   10 +-
+ src/components/ogre/modeldefinitions/fern.modeldef |    7 +-
+ .../ogre/modeldefinitions/gallows.modeldef         |    4 +-
+ .../ogre/modeldefinitions/gateway.modeldef         |   12 +-
+ .../ogre/modeldefinitions/graniteA.modeldef        |    2 +-
+ .../ogre/modeldefinitions/graniteB.modeldef        |    2 +-
+ .../ogre/modeldefinitions/graniteC.modeldef        |    2 +-
+ .../ogre/modeldefinitions/graniteD.modeldef        |    2 +-
+ .../ogre/modeldefinitions/grass.modeldef           |   30 +++
+ .../ogre/modeldefinitions/house3.modeldef          |   12 +-
+ .../ogre/modeldefinitions/house_A.modeldef         |   30 ---
+ .../ogre/modeldefinitions/ice_chunk.modeldef       |   20 ++
+ src/components/ogre/modeldefinitions/inn.modeldef  |   32 +++
+ .../ogre/modeldefinitions/iron_ore.modeldef        |   20 ++
+ .../ogre/modeldefinitions/iron_ore_node.modeldef   |   20 ++
+ .../ogre/modeldefinitions/items.modeldef.xml       |   37 +---
+ src/components/ogre/modeldefinitions/keep.modeldef |   20 +-
+ src/components/ogre/modeldefinitions/leaf.modeldef |    9 +-
+ .../ogre/modeldefinitions/lumber.modeldef          |    8 +-
+ .../modeldefinitions/marketstall_canvasA.modeldef  |    4 +-
+ .../modeldefinitions/marketstall_canvasB.modeldef  |    4 +-
+ .../modeldefinitions/marketstall_canvasC.modeldef  |    4 +-
+ .../modeldefinitions/modelmappings.modelmap.xml    |   28 ++--
+ .../modeldefinitions/monster_skeleton.modeldef     |    2 +-
+ src/components/ogre/modeldefinitions/moraf.terrain |    2 +-
+ .../ogre/modeldefinitions/morafboulder.modeldef    |   26 ++--
+ .../ogre/modeldefinitions/mushroom_A.modeldef      |    4 +-
+ .../ogre/modeldefinitions/mushroom_B.modeldef      |    4 +-
+ src/components/ogre/modeldefinitions/oakB.modeldef |    2 +-
+ src/components/ogre/modeldefinitions/oakC.modeldef |    2 +-
+ .../ogre/modeldefinitions/oak_sapling.modeldef     |    8 +-
+ .../ogre/modeldefinitions/oak_young.modeldef       |    6 +-
+ .../modeldefinitions/outdoor_structures.modeldef   |   37 ----
+ .../ogre/modeldefinitions/outerwall.modeldef       |    4 +-
+ .../ogre/modeldefinitions/palissade.modeldef       |   21 --
+ .../modeldefinitions/palissade_circle.modeldef     |    4 +-
+ .../ogre/modeldefinitions/palissade_earth.modeldef |   20 ++
+ .../ogre/modeldefinitions/palissade_entry.modeldef |    4 +-
+ .../ogre/modeldefinitions/palissade_unit.modeldef  |    2 +-
+ src/components/ogre/modeldefinitions/pile.modeldef |   20 ++
+ .../ogre/modeldefinitions/primitives.modeldef      |   59 ++++++
+ .../ogre/modeldefinitions/roots.modeldef           |    4 +-
+ .../ogre/modeldefinitions/spanish_moss.modeldef    |   16 +-
+ .../ogre/modeldefinitions/stake.modeldef           |    9 +-
+ .../ogre/modeldefinitions/stalactites.modeldef     |   20 +-
+ .../ogre/modeldefinitions/temple.modeldef          |    8 +-
+ .../ogre/modeldefinitions/tombstone.modeldef       |   40 ++++
+ .../ogre/modeldefinitions/tools.modeldef           |   18 --
+ .../ogre/modeldefinitions/tower.modeldef           |    6 +-
+ .../ogre/modeldefinitions/trees.modeldef.xml       |  218 --------------------
+ .../ogre/modeldefinitions/vehicles.modeldef        |   45 ----
+ src/components/ogre/modeldefinitions/wood.modeldef |   20 ++
+ .../ogre/modeldefinitions/wooden_fence.modeldef    |    8 +-
+ .../ogre/modeldefinitions/wooden_gate.modeldef     |   60 +++---
+ 87 files changed, 682 insertions(+), 992 deletions(-)
+
+commit b46dffc9418e34affbbba7dcef6af3c0dafe958f
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jul 6 14:33:28 2008 +0200
+
+    Added a checkbox for toggle the display of the axes.
+
+ src/components/ogre/widgets/ModelEdit.layout |    6 ++++++
+ src/components/ogre/widgets/ModelEdit.lua    |   13 +++++++++++++
+ 2 files changed, 19 insertions(+), 0 deletions(-)
+
+commit 859166cd4a5a3390f08ea02f6a9e842b9bc58696
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jul 6 14:33:01 2008 +0200
+
+    Added better log output for missing meshes.
+
+ src/components/ogre/model/Model.cpp |    7 ++++++-
+ 1 files changed, 6 insertions(+), 1 deletions(-)
+
+commit aa3f2643ecb3426d60a1206b6f5e2c601c1a6c32
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed Jul 2 20:37:26 2008 +0200
+
+    Updated definitions with new resource paths.
+
+ src/components/ogre/modeldefinitions/boat.modeldef |    4 +-
+ .../ogre/modeldefinitions/buildings.modeldef       |    4 +-
+ .../ogre/modeldefinitions/cg_house.modeldef        |    2 +-
+ .../ogre/modeldefinitions/cg_wall_corner.modeldef  |    2 +-
+ .../ogre/modeldefinitions/cg_wall_gate.modeldef    |    2 +-
+ .../ogre/modeldefinitions/cg_wall_run.modeldef     |    2 +-
+ .../ogre/modeldefinitions/cg_wall_stairs.modeldef  |    2 +-
+ .../ogre/modeldefinitions/don_jon.modeldef         |    2 +-
+ src/components/ogre/modeldefinitions/door.modeldef |    2 +-
+ .../ogre/modeldefinitions/fencegate.modeldef       |    2 +-
+ .../ogre/modeldefinitions/gateway.modeldef         |    4 +-
+ .../ogre/modeldefinitions/house_A.modeldef         |    2 +-
+ .../ogre/modeldefinitions/jetty.modeldef           |    4 +-
+ .../ogre/modeldefinitions/market_tent.modeldef     |    6 +-
+ .../modeldefinitions/marketstall_canvasA.modeldef  |   22 +++--
+ .../modeldefinitions/marketstall_canvasB.modeldef  |   22 +++--
+ .../modeldefinitions/marketstall_canvasC.modeldef  |   22 +++--
+ .../ogre/modeldefinitions/palissade_unit.modeldef  |    2 +-
+ .../ogre/modeldefinitions/shutters.modeldef        |    2 +-
+ .../ogre/modeldefinitions/stone_palisade.modeldef  |    2 +-
+ src/components/ogre/modeldefinitions/sty.modeldef  |    6 +-
+ .../ogre/modeldefinitions/temple.modeldef          |    8 +-
+ .../ogre/modeldefinitions/trees.modeldef.xml       |  116 +++++++++++++-------
+ .../ogre/modeldefinitions/wooden_fence.modeldef    |    2 +-
+ .../ogre/modeldefinitions/wooden_gate.modeldef     |    2 +-
+ 25 files changed, 151 insertions(+), 95 deletions(-)
+
+commit cf20ce61b77ec7ce91ca8b6b583d0f565156dc1d
+Merge: fac38e9... 1afecbe...
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed Jul 2 20:13:58 2008 +0200
+
+    Merge branch 'master' of ssh://jade.worldforge.org/data/git/ember
+
+commit 1afecbe6cec3521b29b1e3b1f4d6f8970961672e
+Author: Sean Ryan <sryan@evercrack.com>
+Date:   Wed Jul 2 10:56:59 2008 -0400
+
+    added separate check for sigc++ library rather than relying only on the WF lib check
+
+ configure.ac |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
+
+commit fac38e9e44d048cc5450fee89aa9fbb615f4719a
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue Jul 1 23:07:56 2008 +0200
+
+    Updated paths.
+
+ src/components/ogre/environment/Water.cpp          |    2 +-
+ .../ogre/modeldefinitions/acorn.modeldef           |    4 +-
+ .../ogre/modeldefinitions/apple.modeldef           |    4 +-
+ .../ogre/modeldefinitions/buildings.modeldef       |    2 +-
+ .../ogre/modeldefinitions/camelia.modeldef         |    2 +-
+ .../ogre/modeldefinitions/carrot.modeldef          |    4 +-
+ src/components/ogre/modeldefinitions/fern.modeldef |    4 +-
+ .../ogre/modeldefinitions/graniteA.modeldef        |    8 +-
+ .../ogre/modeldefinitions/graniteB.modeldef        |    8 +-
+ .../ogre/modeldefinitions/graniteC.modeldef        |    8 +-
+ .../ogre/modeldefinitions/graniteD.modeldef        |    8 +-
+ src/components/ogre/modeldefinitions/leaf.modeldef |    2 +-
+ .../modeldefinitions/monster_skeleton.modeldef     |    4 +-
+ src/components/ogre/modeldefinitions/moraf.terrain |   28 +++---
+ .../ogre/modeldefinitions/oak_mk1.modeldef         |   17 ++-
+ .../ogre/modeldefinitions/stake.modeldef           |    2 +-
+ .../ogre/modeldefinitions/trees.modeldef.xml       |  104 ++++++++++----------
+ .../ogre/modeldefinitions/turnip.modeldef          |    4 +-
+ 18 files changed, 110 insertions(+), 105 deletions(-)
+
+commit 399886f6289eebd7f63bc14362ac904e142721a2
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue Jul 1 23:06:11 2008 +0200
+
+    Use the correct way of injecting mouse positions (as of 0.6.0) since 0.6.1 can't handle our workaround for problematic 0.5.0 behaviour.
+
+ src/components/ogre/GUICEGUIAdapter.cpp |   11 +++--------
+ 1 files changed, 3 insertions(+), 8 deletions(-)
+
+commit d69180f179bf5c647f4142d6cf4114a53cfc63a2
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sat Jun 28 15:02:02 2008 +0200
+
+    Reformat the code for better readability.
+
+ src/components/ogre/WorldEmberEntity.cpp |  239 ++++++++++++------------------
+ 1 files changed, 95 insertions(+), 144 deletions(-)
+
+commit 72335c7b74ff89b8299c13c20577cdc9cd2ed87c
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sat Jun 28 15:01:32 2008 +0200
+
+    Only process each frame if we're actually attached to a node.
+
+ src/components/ogre/AvatarCamera.cpp |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 5bd5bdf0bf5d844178165c54bcc35a7017f0516d
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sat Jun 28 14:52:53 2008 +0200
+
+    Instead of using zip files for the core files, we now use a single directory instead.
+
+ src/components/ogre/resources.cfg |    4 +---
+ 1 files changed, 1 insertions(+), 3 deletions(-)
+
+commit 35ccd630c3e0e7cfb0cfb480e85de79bafaff859
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sat Jun 28 14:50:56 2008 +0200
+
+    The font files are now in the svn media repository, so update paths accordingly.
+
+ .../ogre/cegui/datafiles/fonts/vera-sans-10.xml    |    2 +-
+ .../ogre/cegui/datafiles/fonts/vera-sans-14.xml    |    2 +-
+ .../ogre/cegui/datafiles/fonts/vera-sans-8.xml     |    2 +-
+ .../cegui/datafiles/fonts/vera-sans-bold-10.xml    |    2 +-
+ .../cegui/datafiles/fonts/vera-sans-bold-8.xml     |    2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 17847f719dcf794de49161243efab705d4b52378
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sat Jun 28 14:50:17 2008 +0200
+
+    Removed fonts as they are now in svn.
+
+ src/components/ogre/cegui/Makefile.am              |    2 +-
+ src/components/ogre/cegui/datafiles/fonts/Vera.ttf |  Bin 65932 -> 0 bytes
+ .../ogre/cegui/datafiles/fonts/VeraBd.ttf          |  Bin 58716 -> 0 bytes
+ 3 files changed, 1 insertions(+), 1 deletions(-)
+
+commit ed0107b455af7733390e39507a353e4714bdda7d
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Fri Jun 27 23:54:15 2008 +0200
+
+    Check the norecurse file before entering the directory, so as to never add any of the files in it to the resource paths.
+
+ src/components/ogre/EmberOgreFileSystem.cpp |   35 ++++++++++++++-------------
+ 1 files changed, 18 insertions(+), 17 deletions(-)
+
+commit 98ff30e8785cac464318125090e6b6c4b0fafe7a
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Fri Jun 27 23:53:45 2008 +0200
+
+    Removed old installation instructions.
+
+ media/packs/Makefile.am |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 51485c3e025d8a5437cc9d028880a80146489e3d
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Fri Jun 27 22:56:50 2008 +0200
+
+    Removed media that's now in svn.
+
+ media/packs/EmberCore.material           |   76 ----------------------
+ media/packs/EmberCore.zip                |  Bin 874670 -> 0 bytes
+ media/packs/EmberLoadingPanel.overlay    |  103 ------------------------------
+ media/packs/OgreCore.zip                 |  Bin 152223 -> 0 bytes
+ media/packs/ember_progress_bar.png       |  Bin 64764 -> 0 bytes
+ media/packs/ember_progress_bar_frame.png |  Bin 18682 -> 0 bytes
+ media/packs/ember_splash.png             |  Bin 790862 -> 0 bytes
+ 7 files changed, 0 insertions(+), 179 deletions(-)
+
+commit 78b72a84a061572c87732e3278ff9c61622c6a49
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Fri Jun 27 22:48:21 2008 +0200
+
+    Moved all core files from the EmberCore.zip and OgreCore.zip into a separate directory, which is then populated by the make_dist_media.sh script through the EmberCore.files file list.
+
+ make_dist_media.sh         |   33 ++++++++++++++++++++++++---------
+ media/core/EmberCore.files |   10 ++++++++++
+ 2 files changed, 34 insertions(+), 9 deletions(-)
+
+commit 844192c7e1ff807297c7d777002e8c138877f026
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Sat Jun 21 12:55:50 2008 +0400
+
+    Fixing inheritance modifier of NumberAdapter and StringAdapter.
+
+ .../ogre/widgets/adapters/atlas/NumberAdapter.h    |    2 +-
+ .../ogre/widgets/adapters/atlas/StringAdapter.h    |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 68f79604d59f599cbaa0f25a3fbd90f9956ecb1a
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Sat Jun 21 12:50:48 2008 +0400
+
+    Removing exec attribute from bunch of files.
+
+ 0 files changed, 0 insertions(+), 0 deletions(-)
+
+commit 708e1def7821a010c22fe8cf79fd39e52ce2d9df
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Sat Jun 21 12:52:32 2008 +0400
+
+    Removing zero length file.
+
+ 0 files changed, 0 insertions(+), 0 deletions(-)
+
+commit 96eaee62ffcd89f0b441cf6eb35bf194d22b2841
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed Jun 25 01:01:23 2008 +0200
+
+    Removed a couple of other places where shared pointer were used without there being any real need for it.
+
+ .../TerrainPageSurfaceCompilerTechniqueShader.cpp  |   11 ++++++-----
+ .../TerrainPageSurfaceCompilerTechniqueShader.h    |    1 -
+ src/components/ogre/widgets/icons/IconRenderer.cpp |    4 ++--
+ 3 files changed, 8 insertions(+), 8 deletions(-)
+
+commit d26094050e53501de5688e1e71e27f8d6774fcce
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed Jun 25 00:35:05 2008 +0200
+
+    No need to use a shared pointer for the image memory.
+
+ .../ogre/widgets/icons/IconImageStore.cpp          |    7 ++-----
+ src/components/ogre/widgets/icons/IconImageStore.h |    2 --
+ 2 files changed, 2 insertions(+), 7 deletions(-)
+
+commit a025c1e7773ffa75654364144ad46ba6350a6510
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed Jun 25 00:27:00 2008 +0200
+
+    Closed a couple of more memory holes.
+
+ src/components/ogre/environment/Water.cpp          |    2 ++
+ src/components/ogre/terrain/TerrainArea.cpp        |    1 +
+ src/components/ogre/terrain/TerrainGenerator.cpp   |    2 +-
+ src/components/ogre/terrain/TerrainShader.cpp      |    1 +
+ src/components/ogre/widgets/EntityIconManager.cpp  |   13 +++++++++++++
+ src/components/ogre/widgets/EntityIconManager.h    |    1 +
+ src/components/ogre/widgets/EntityIconSlot.cpp     |    1 +
+ src/components/ogre/widgets/ServerWidget.cpp       |    1 +
+ .../ogre/widgets/icons/IconImageStore.cpp          |    3 +++
+ 9 files changed, 24 insertions(+), 1 deletions(-)
+
+commit ba75106853452a17bea943a95e6c3ba5ed50a8c2
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue Jun 24 23:33:56 2008 +0200
+
+    Don't try to use a common OgreIteratorWrapper.pkg file with nested templates, as this will only confuse tolua and prevent it from properly garbage collect entries that are iterated over.
+    
+    The end result was that when iterating over any subclass of Ogre::ResourcePtr, the pointers would never be freed. Since the pointers uses reference counting and only destroy themselves when nothing is holding a reference, that meant that no resource which ever had been iterated over in the gui was never destroyed.
+
+ .../bindings/lua/ModelDefinitionManager.pkg        |    5 +-
+ .../ogre/scripting/bindings/lua/lua_EmberOgre.cpp  |  162 +----
+ .../ogre/scripting/bindings/lua/ogre/Ogre.pkg      |    3 +-
+ .../bindings/lua/ogre/OgreIteratorWrappers.pkg     |   67 +-
+ .../bindings/lua/ogre/OgreResourceManager.pkg      |   35 +-
+ .../ogre/scripting/bindings/lua/ogre/lua_Ogre.cpp  |  705 +++++++++++++-------
+ src/components/ogre/widgets/ModelEdit.lua          |    2 +-
+ 7 files changed, 550 insertions(+), 429 deletions(-)
+
+commit 44e813701045ca4966bd241bb5bb949727abf86e
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue Jun 24 23:33:26 2008 +0200
+
+    Write to log when shutting down.
+
+ .../ogre/scripting/LuaScriptingProvider.cpp        |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 29b28761c9c6e943b076d206ea676f53b04ce49e
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon Jun 23 23:41:31 2008 +0200
+
+    Cleaned up memory use by using shared memory for the image.
+
+ .../ogre/terrain/TerrainPageSurfaceLayer.cpp       |   13 ++++++-------
+ .../ogre/terrain/TerrainPageSurfaceLayer.h         |    1 -
+ 2 files changed, 6 insertions(+), 8 deletions(-)
+
+commit 2d3547e4bd7ed9652bb53e44c95324c7e8a92419
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon Jun 23 23:29:07 2008 +0200
+
+    Cleaned up memory use.
+
+ .../src/EmberPagingLandScapeData2D_HeightField.cpp |    2 +
+ src/components/ogre/terrain/TerrainPageShadow.cpp  |   22 +++++++------------
+ 2 files changed, 10 insertions(+), 14 deletions(-)
+
+commit 8e567b0bfb0398ba594f65badb08caf25731a80e
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon Jun 23 21:57:16 2008 +0200
+
+    Don't use the singleton instance, instead keep our own reference which we properly can discard when we're done.
+
+ src/services/config/ConfigService.cpp |   22 +++++++++++-----------
+ src/services/config/ConfigService.h   |    9 ++++++++-
+ 2 files changed, 19 insertions(+), 12 deletions(-)
+
+commit 537c0e4585e4970db95367b0ce8f5c64ae2a4324
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon Jun 23 21:56:49 2008 +0200
+
+    Initialize values correctly.
+
+ src/components/ogre/terrain/TerrainGenerator.cpp |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 58e09d712f81db5296955d8cc0f700d8804acef2
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon Jun 23 21:42:16 2008 +0200
+
+    Clean up variable initialization and memory use.
+
+ src/components/ogre/Avatar.cpp                     |    5 +++++
+ src/components/ogre/EmberEntity.cpp                |    1 +
+ .../src/OgrePagingLandScapeTile.cpp                |    3 ++-
+ .../pagedgeometry/source/PagedGeometry.cpp         |    1 +
+ src/components/ogre/gui/ActiveWidgetHandler.cpp    |    2 +-
+ src/components/ogre/input/Input.cpp                |    5 ++++-
+ src/components/ogre/terrain/TerrainGenerator.cpp   |    7 +++++--
+ src/components/ogre/terrain/TerrainGenerator.h     |   16 ++++++++++++----
+ src/components/ogre/terrain/TerrainPage.cpp        |    1 +
+ src/components/ogre/terrain/TerrainPageShadow.cpp  |    4 ++++
+ src/components/ogre/terrain/TerrainPageSurface.cpp |    8 +++++++-
+ 11 files changed, 43 insertions(+), 10 deletions(-)
+
+commit 6ab15d3de58cc97da46d0a4567291bfb8a04e948
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jun 22 20:35:13 2008 +0200
+
+    Plugged a couple of memory holes and provide proper clean up at shutdown.
+
+ src/components/ogre/EmberOgre.cpp  |   12 ++++++++----
+ src/components/ogre/EmberOgre.h    |    2 ++
+ src/components/ogre/GUIManager.cpp |    2 ++
+ src/components/ogre/OgreSetup.cpp  |   12 ++++++++----
+ 4 files changed, 20 insertions(+), 8 deletions(-)
+
+commit 76423ad7ea3beaad4a3adc34127f80482f4574db
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jun 22 20:33:17 2008 +0200
+
+    Cleaned up method naming and added method for deregistering factories at shutdown.
+
+ src/components/ogre/widgets/Widget.cpp            |   20 ++++++++++++++------
+ src/components/ogre/widgets/Widget.h              |    6 ++++--
+ src/components/ogre/widgets/WidgetDefinitions.cpp |   18 +++++++++---------
+ 3 files changed, 27 insertions(+), 17 deletions(-)
+
+commit c75e72d576f7c7e385b511cf337d3fa77d1aee05
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jun 22 20:32:01 2008 +0200
+
+    Properly clean up when being destroyed.
+
+ .../ogre/environment/CaelumEnvironment.cpp         |    1 +
+ src/components/ogre/widgets/ListHolder.cpp         |    8 ++++++--
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+commit a79d7e974d975c5044a42b74ac115ebc77412c59
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed Jun 18 23:01:55 2008 +0200
+
+    Added setting for the check interval to the config.
+
+ ember.conf                                  |    2 ++
+ src/components/ogre/AvatarTerrainCursor.cpp |    8 ++++++++
+ src/components/ogre/AvatarTerrainCursor.h   |    4 +++-
+ 3 files changed, 13 insertions(+), 1 deletions(-)
+
+commit a2924a5e29f1f007c85e143639607c0893572ae7
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed Jun 18 00:46:16 2008 +0200
+
+    Removed refernces to removed fields.
+
+ src/components/ogre/input/Input.cpp |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit c37e8057426d57d237a6362b186eef6e90ce1b05
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed Jun 18 00:30:26 2008 +0200
+
+    Refactored the way movement is handled into separate worker classes of which there currently are two implementations.
+    
+    The EntityMoveAdapterWorkerDiscrete class uses the old way of positioning while EntityMoveAdapterWorkerTerrainCursor uses the new terrain cursor way.
+
+ .../ogre/manipulation/EntityMoveAdapter.cpp        |   89 ++++++++++++++++----
+ .../ogre/manipulation/EntityMoveAdapter.h          |   71 +++++++++++++++-
+ 2 files changed, 142 insertions(+), 18 deletions(-)
+
+commit 399806467829ef641e6834a87458d9f4b6f1a07c
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed Jun 18 00:23:52 2008 +0200
+
+    Changed the signature of the getTerrainCursorPosition to return true if the position has been updated, and let it take as an argument a pointer to a pointer to a position, which will then point to the new position.
+    
+    Also removed some excessive logging.
+
+ src/components/ogre/AvatarTerrainCursor.cpp |   27 +++++++++++++++------------
+ src/components/ogre/AvatarTerrainCursor.h   |    7 ++++---
+ 2 files changed, 19 insertions(+), 15 deletions(-)
+
+commit acd9562c8a95b97e60a8147f9963d00950acdfe7
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed Jun 18 00:21:09 2008 +0200
+
+    Added a struct useful for passing mouse position data. It has both absolute and relative position data.
+
+ src/components/ogre/input/Input.cpp |   22 ++++++++-------
+ src/components/ogre/input/Input.h   |   49 ++++++++++++++++++++++++++++------
+ 2 files changed, 52 insertions(+), 19 deletions(-)
+
+commit da782daac55aa762c337eceeaffb2febdfb55b52
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed Jun 18 00:19:37 2008 +0200
+
+    Use a auto_ptr, to avoid having extra headers in the header. Also added an accessor method and rearranged construction priority to avoid compiler warnings.
+
+ src/components/ogre/AvatarCamera.cpp |    5 +++--
+ src/components/ogre/AvatarCamera.h   |   15 ++++++++++++---
+ 2 files changed, 15 insertions(+), 5 deletions(-)
+
+commit 44d84faf70f7b621074b5512ed75ab23418f5f3d
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue Jun 17 22:57:03 2008 +0200
+
+    Update after changed signature.
+
+ src/components/ogre/AvatarCamera.cpp |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 29aed5b42d52036a6be43d4a8121d98ac7103b0c
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue Jun 17 22:55:28 2008 +0200
+
+    Added doxygen comments and made it update itself either when the mouse has been moved even one pixel, or when the camera has moved and enough time has elapsed since the last update.
+
+ src/components/ogre/AvatarTerrainCursor.cpp |   63 +++++++++++++++-------
+ src/components/ogre/AvatarTerrainCursor.h   |   78 ++++++++++++++++++++++-----
+ 2 files changed, 109 insertions(+), 32 deletions(-)
+
+commit c3add64fa104d1c4ce7701af4523628e1b69550e
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue Jun 17 22:55:06 2008 +0200
+
+    Added accessor for the last mouse position.
+
+ src/components/ogre/input/Input.cpp |    6 ++++++
+ src/components/ogre/input/Input.h   |    6 ++++++
+ 2 files changed, 12 insertions(+), 0 deletions(-)
+
+commit c9089259b6279b043f6d5cf5e5d9adab3a271cd0
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue Jun 17 21:55:34 2008 +0200
+
+    We prefer to use references instead of pointers for instances where the variable never can be null.
+    
+    Also changed it to initialize most values in the constructor.
+
+ src/components/ogre/AvatarCamera.cpp        |    2 +-
+ src/components/ogre/AvatarTerrainCursor.cpp |   18 ++++++++++--------
+ src/components/ogre/AvatarTerrainCursor.h   |    4 ++--
+ 3 files changed, 13 insertions(+), 11 deletions(-)
+
+commit bde9134c550275bf5f3b906e1b11e8b70b080343
+Author: Sean Ryan <sryan@evercrack.com>
+Date:   Mon Jun 16 23:52:35 2008 -0400
+
+    moved getTerrainCursorLocation call from  mouse moved event to the pickInWorld event.  Also added in forward declaration.
+
+ src/components/ogre/AvatarCamera.cpp        |   10 +++++++---
+ src/components/ogre/AvatarCamera.h          |    1 -
+ src/components/ogre/AvatarTerrainCursor.cpp |   12 ++++++------
+ src/components/ogre/AvatarTerrainCursor.h   |    8 +++++---
+ 4 files changed, 18 insertions(+), 13 deletions(-)
+
+commit f8502ec12ae5089c0cdb2f10d461beb22d0abcb3
+Author: Sean Ryan <sryan@evercrack.com>
+Date:   Thu Jun 12 23:32:35 2008 -0400
+
+    fixed compile errors
+
+ src/components/ogre/AvatarCamera.cpp        |    8 ++----
+ src/components/ogre/AvatarTerrainCursor.cpp |   35 +++++++++++++++++---------
+ src/components/ogre/AvatarTerrainCursor.h   |    6 +++-
+ 3 files changed, 30 insertions(+), 19 deletions(-)
+
+commit 8e6477f1b8881ace0d1e52de28f51252e191d755
+Author: Sean Ryan <sryan@evercrack.com>
+Date:   Thu Jun 12 21:53:42 2008 -0400
+
+    forgot to add new class
+
+ src/components/ogre/AvatarTerrainCursor.cpp |   88 +++++++++++++++++++++++++++
+ src/components/ogre/AvatarTerrainCursor.h   |   81 ++++++++++++++++++++++++
+ 2 files changed, 169 insertions(+), 0 deletions(-)
+
+commit 96bde7eaf4a0c1b85dca646d7f567f7527c404ec
+Author: Sean Ryan <sryan@evercrack.com>
+Date:   Thu Jun 12 21:19:29 2008 -0400
+
+    temporary update, does not compile
+
+ src/components/ogre/AvatarCamera.cpp |    5 +++--
+ src/components/ogre/AvatarCamera.h   |    4 ++++
+ src/components/ogre/Makefile.am      |    4 ++--
+ 3 files changed, 9 insertions(+), 4 deletions(-)
+
+commit 808305542b03713be5ea4bf7fe4a90ded59434a3
+Author: Sean Ryan <sryan@evercrack.com>
+Date:   Tue Jun 10 23:42:09 2008 -0400
+
+    added currentTimeMillis to time service, and checked the logging of mouse movement in the avatar camera.  This will be moved to a separate class.
+
+ src/components/ogre/AvatarCamera.cpp |    3 +++
+ src/services/time/TimeService.cpp    |   23 +++++++++++++++++++++++
+ src/services/time/TimeService.h      |   17 +++++++++++++++++
+ 3 files changed, 43 insertions(+), 0 deletions(-)
+
+commit b794a5d2db3861409a20fe6b81426729673cb4c3
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue Jun 17 21:30:27 2008 +0200
+
+    Use an implementation of the shared pointer which better fits with current Ogre code.
+
+ src/components/ogre/model/ModelDefinition.cpp |   53 ++++++++++++++++++++++++-
+ src/components/ogre/model/ModelDefinition.h   |   42 ++++---------------
+ 2 files changed, 60 insertions(+), 35 deletions(-)
+
+commit a7b7740537093da1464939899ef3da4bb01674ce
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue Jun 17 21:11:35 2008 +0200
+
+    Removed the hack where all terrain pages were loaded at startup since we now seem to not have any problem with missing pages.
+
+ src/components/ogre/terrain/TerrainGenerator.cpp |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 13d608f43c1c8648de89a5fbff34f50f41ebbd34
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon Jun 16 22:49:35 2008 +0200
+
+    Refactored it so that the height field class only holds the bridge and not the terrain page, so that there's no risk of dangling pointers.
+    
+    Also made sure that things are deregistered at the correct time and so on.
+
+ .../EmberPagingLandScapeData2D_HeightField.h       |    4 ++-
+ .../include/EmberTerrainPageBridge.h               |    3 ++
+ .../src/EmberPagingLandScapeData2D_HeightField.cpp |   15 ++++-----
+ .../src/EmberTerrainPageBridge.cpp                 |    3 ++
+ src/components/ogre/terrain/ITerrainPageBridge.h   |   34 ++++++++++++++++++++
+ src/components/ogre/terrain/TerrainPage.cpp        |    3 ++
+ 6 files changed, 53 insertions(+), 9 deletions(-)
+
+commit e6f9e258d5dcb6b73eb3004373d5ab27eedab54a
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon Jun 16 22:48:58 2008 +0200
+
+    Delete held instances, as it should.
+
+ src/components/ogre/widgets/MakeEntityWidget.cpp |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 690f1591dad4c9587cf89ee8d1a06fb52e982f13
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon Jun 16 22:48:26 2008 +0200
+
+    Added extra setup check, though it's probably not needed.
+
+ src/components/ogre/EmberOgre.cpp |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit ffb16b89c5f4fee3783977dda0d0108240b2b9b7
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon Jun 16 22:47:52 2008 +0200
+
+    Initialize to something to squash valgrind complaints.
+
+ src/components/ogre/input/Input.cpp |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit ee89d2df6743b0e96308e8e832c884ca0796ea70
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon Jun 16 22:45:46 2008 +0200
+
+    Properly return the scene manager name of the subclass, else the desctructor of the scene manager instance won't be called.
+
+ .../include/EmberPagingSceneManager.h              |    2 ++
+ .../src/EmberPagingSceneManager.cpp                |    5 +++++
+ 2 files changed, 7 insertions(+), 0 deletions(-)
+
+commit b501c6f84028b291c0e5f9d7e198f2257007fbcc
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jun 15 22:04:02 2008 +0200
+
+    Change default not to load all media at startup. This will make the client "stutter" a little more after entering the world, but it will make the memory usage go down, since most media isn't used.
+
+ ember.conf |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 75e08e9340040783f7518173693f57072ea73a56
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Fri Jun 13 09:06:59 2008 +0200
+
+    Plugged some memory leaks, where it allocated memory for the coverage textures and then never releases it (hello 100Mb!)
+
+ .../TerrainPageSurfaceCompilerTechniqueShader.cpp  |    7 +++++--
+ .../ogre/terrain/TerrainPageSurfaceLayer.cpp       |    5 +++--
+ 2 files changed, 8 insertions(+), 4 deletions(-)
+
+commit f33f3b52cf4d2b805a949a544dff4c62cbb6e7ab
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu Jun 12 23:42:01 2008 +0200
+
+    Use a context class whenever we change the gui elements ourselves, which provides some nice RAII to the setting and unsetting of the mSelfUpdate value.
+
+ .../ogre/widgets/adapters/atlas/AdapterBase.cpp    |   10 ++++++++++
+ .../ogre/widgets/adapters/atlas/AdapterBase.h      |   14 ++++++++++++++
+ .../ogre/widgets/adapters/atlas/NumberAdapter.cpp  |    3 +--
+ .../widgets/adapters/atlas/OrientationAdapter.cpp  |    3 +--
+ .../widgets/adapters/atlas/Position2DAdapter.cpp   |    3 +--
+ .../widgets/adapters/atlas/PositionAdapter.cpp     |    3 +--
+ .../ogre/widgets/adapters/atlas/SizeAdapter.cpp    |    3 +--
+ .../ogre/widgets/adapters/atlas/StaticAdapter.cpp  |    3 +--
+ .../ogre/widgets/adapters/atlas/StringAdapter.cpp  |    3 +--
+ 9 files changed, 31 insertions(+), 14 deletions(-)
+
+commit 178c5cbdeaf7ccefccf24f5167f53086abf48f00
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu Jun 12 23:04:38 2008 +0200
+
+    Added documentation.
+
+ .../ogre/widgets/adapters/atlas/AdapterBase.h      |  119 +++++++++++++++++++-
+ .../ogre/widgets/adapters/atlas/AdapterFactory.cpp |   33 ++++--
+ .../ogre/widgets/adapters/atlas/AdapterFactory.h   |   92 +++++++++++++++
+ 3 files changed, 226 insertions(+), 18 deletions(-)
+
+commit b60c7766516c596316c0d9eefd88a91bc86f6be5
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu Jun 12 21:16:06 2008 +0200
+
+    Specify a minimum size, so that windows never can be made too small and disappear or be inverted.
+
+ .../cegui/datafiles/looknfeel/EmberLook.looknfeel  |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 78f0909ce047d586d13bb93de3308dec2182485e
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu Jun 12 00:48:44 2008 +0200
+
+    Added a config file option for the minimum cegui level to log for.
+
+ ember.conf                              |    7 ++++
+ src/components/ogre/gui/CEGUILogger.cpp |   56 ++++++++++++++++++++-----------
+ src/components/ogre/gui/CEGUILogger.h   |    7 +++-
+ 3 files changed, 49 insertions(+), 21 deletions(-)
+
+commit 41ca02418404c19add9dafe92527af48f310e376
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu Jun 12 00:25:17 2008 +0200
+
+    Use our own CEGUI Logger instance, thus overriding the default one and making it route all CEGUI log messages into ember.log.
+
+ src/components/ogre/GUIManager.cpp |    3 +++
+ src/components/ogre/GUIManager.h   |    7 +++++++
+ 2 files changed, 10 insertions(+), 0 deletions(-)
+
+commit d8ad04c19b0bb57cf014acbf4b4269e46accbe57
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu Jun 12 00:25:00 2008 +0200
+
+    Added comments.
+
+ src/components/ogre/gui/CEGUILogger.cpp |    1 +
+ src/components/ogre/gui/CEGUILogger.h   |    4 ++++
+ 2 files changed, 5 insertions(+), 0 deletions(-)
+
+commit a2d7597e2e85e91698fdc067f777f7d1e2f91a40
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu Jun 12 00:23:50 2008 +0200
+
+    Added an implementation of CEGUI::Logger which will reroute all CEGUI log messages to the main Ember logging service. All CEGUI log messages will thus appear in ember.log from now on.
+
+ src/components/ogre/gui/CEGUILogger.cpp |   72 ++++++++++++++++++++++++++++
+ src/components/ogre/gui/CEGUILogger.h   |   79 +++++++++++++++++++++++++++++++
+ src/components/ogre/gui/Makefile.am     |    4 +-
+ 3 files changed, 153 insertions(+), 2 deletions(-)
+
+commit 991090c28fec1eba6a18c748c62b2de7c4f3f5f7
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed Jun 11 23:40:52 2008 +0200
+
+    Clean up places where exceptions are caught, to handle std::exception in most cases.
+
+ .../ogre/scripting/LuaScriptingProvider.cpp        |   12 ++++++------
+ .../bindings/lua/helpers/LuaConnector.cpp          |    5 -----
+ src/main/Application.cpp                           |    3 ---
+ src/services/scripting/ScriptingService.cpp        |    9 ---------
+ 4 files changed, 6 insertions(+), 23 deletions(-)
+
+commit 59a25254f3e046a307e63ccb70fe21934e9aa229
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed Jun 11 23:29:59 2008 +0200
+
+    Make Ember::Exception inherit from std::exception, to make it much easier for everyone. No need to look specifically for Ember::Exception when we can look just for std::exception instead.
+
+ src/framework/Exception.cpp |   80 ++++++++++++++++++++
+ src/framework/Exception.h   |  168 ++++++++++++++++---------------------------
+ src/framework/Makefile.am   |    2 +-
+ src/main/Application.cpp    |    5 --
+ 4 files changed, 142 insertions(+), 113 deletions(-)
+
+commit d19e26aca07e3121071726b1c508ffee669d546f
+Merge: bf557ea... 2b68255...
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed Jun 11 22:20:07 2008 +0200
+
+    Merge branch 'master' of ssh://jade.worldforge.org/data/git/ember
+
+commit bf557ea49392fabf593eada0ada4996d2b59045b
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed Jun 11 22:16:59 2008 +0200
+
+    Print exception messages to std::cout after catching them. Also added more comments.
+
+ src/main/Application.cpp |    6 ++
+ src/main/Application.h   |  150 +++++++++++++++++++++++++++++++--------------
+ 2 files changed, 109 insertions(+), 47 deletions(-)
+
+commit 8d935c8d3caa136fbff71cdf4217c57018b2d4fb
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed Jun 11 22:14:46 2008 +0200
+
+    After creating the main CEGUI system, check that there's at least one schema loaded. If not, something went wrong and CEGUI is in an unusable state and we need to quit.
+
+ src/components/ogre/GUIManager.cpp |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit 5381d321b2f0f48969deb2096fffe26f8027f4ce
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed Jun 11 22:11:32 2008 +0200
+
+    Removed obsolete methods.
+
+ src/components/ogre/EmberOgre.cpp |    7 -------
+ src/components/ogre/EmberOgre.h   |    6 +-----
+ 2 files changed, 1 insertions(+), 12 deletions(-)
+
+commit 2b68255b45867f092886129442fb89b5c37be20f
+Author: Sean Ryan <sryan@evercrack.com>
+Date:   Mon Jun 9 15:56:25 2008 -0400
+
+    added comment for placeholder
+
+ src/components/ogre/AvatarCamera.cpp |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit e9008d1b198b68b9ab643fd3abfae7e261a46118
+Author: Sean Ryan <sryan@evercrack.com>
+Date:   Mon Jun 9 09:10:10 2008 -0400
+
+    Revert "fixed reference to sphere.mesh as the resource was moved."
+    This reverts commit 8fc8c8385fc3f0a92667d972d5b73b2d6fae357b.
+
+ src/components/ogre/terrain/TerrainEditor.cpp |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 8fc8c8385fc3f0a92667d972d5b73b2d6fae357b
+Author: Sean Ryan <sryan@evercrack.com>
+Date:   Mon Jun 9 00:04:27 2008 -0400
+
+    fixed reference to sphere.mesh as the resource was moved.
+    https://bugs.launchpad.net/ember/+bug/238461
+
+ src/components/ogre/terrain/TerrainEditor.cpp |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit c5a05815d2fc1ed1967a8933fdd7c0af35c951af
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jun 8 23:30:07 2008 +0200
+
+    Added a picking info widget, which might be useful when you need to measure stuff in the world for server side scripting.
+
+ src/components/ogre/widgets/Admin.lua          |    5 ++
+ src/components/ogre/widgets/Bootstrap.lua      |    1 +
+ src/components/ogre/widgets/PickingInfo.layout |   19 +++++++++
+ src/components/ogre/widgets/PickingInfo.lua    |   48 ++++++++++++++++++++++++
+ 4 files changed, 73 insertions(+), 0 deletions(-)
+
+commit 606d73b14733248b402f48bc81d4b1c560db1e2e
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jun 8 23:29:38 2008 +0200
+
+    Fixed incorrect bindings.
+
+ .../bindings/lua/EntityWorldPickListener.pkg       |    2 +-
+ .../ogre/scripting/bindings/lua/lua_EmberOgre.cpp  |    8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 153e8908513d7e37ed396889823ebba4c9ff2a75
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jun 8 21:53:11 2008 +0200
+
+    Added missing method for the MovementMode.
+
+ .../bindings/lua/helpers/LuaConnector.cpp          |    6 ++++++
+ .../scripting/bindings/lua/helpers/LuaConnector.h  |    1 +
+ 2 files changed, 7 insertions(+), 0 deletions(-)
+
+commit b3a91492a782cf065b3fd60e09704562593398bf
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jun 8 21:36:23 2008 +0200
+
+    Removed obsolete layout.
+
+ src/components/ogre/widgets/Admin.layout |   56 ------------------------------
+ 1 files changed, 0 insertions(+), 56 deletions(-)
+
+commit d667151fed2ad9518f71e503a142959b66d5dab4
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jun 8 21:34:43 2008 +0200
+
+    Redesigned the admin menu to use an IconBar icon and a popup instead of the previous solution with an ugly window with buttons.
+    
+    We still need to provide a good skin for the menu though, but I'm loathe to do it since we're gonna update the main skin anyway.
+
+ src/components/ogre/widgets/Admin.lua     |   93 +++++++++++++++++++++++------
+ src/components/ogre/widgets/Bootstrap.lua |    2 +-
+ 2 files changed, 76 insertions(+), 19 deletions(-)
+
+commit 61f88eccefca9f5bbd7c0f9d60b6aa1d9bcbc7b4
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jun 8 19:39:09 2008 +0200
+
+    Refactored into a common method, so it should be easier to add new icons from external scripts.
+
+ src/components/ogre/widgets/MainIconBar.lua |   32 ++++++++++++++++-----------
+ 1 files changed, 19 insertions(+), 13 deletions(-)
+
+commit 17719cdf8f155fa6ca45b8a4cf7d493ce572b3d2
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jun 8 19:29:06 2008 +0200
+
+    Removed deprecated C++ status bar code.
+
+ src/components/ogre/GUIManager.cpp                |    1 -
+ src/components/ogre/widgets/Makefile.am           |    4 +-
+ src/components/ogre/widgets/StatusIconBar.cpp     |  182 ---------------------
+ src/components/ogre/widgets/StatusIconBar.h       |   77 ---------
+ src/components/ogre/widgets/WidgetDefinitions.cpp |    2 -
+ 5 files changed, 2 insertions(+), 264 deletions(-)
+
+commit 63c6a4dd673931c1571cb046f31552e611fd4b2f
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jun 8 19:26:04 2008 +0200
+
+    Moved the StatusIconBar into Lua.
+
+ src/components/ogre/widgets/Bootstrap.lua   |    2 +
+ src/components/ogre/widgets/MainIconBar.lua |  132 +++++++++++++++++++++++++++
+ 2 files changed, 134 insertions(+), 0 deletions(-)
+
+commit 42d5be5c8cbd27a7a85a35529aa604dfe537a2e0
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jun 8 19:24:28 2008 +0200
+
+    Added extra sanity checks to the LuaConnector. Now it checks for null signals and writes to the log, instead of just pushing ahead into the segfaults.
+    
+    Also added more bindings to signals.
+
+ .../bindings/lua/helpers/LuaConnector.cpp          |  235 +++++++++++++-------
+ .../scripting/bindings/lua/helpers/LuaConnector.h  |   12 +
+ .../bindings/lua/helpers/LuaConnector.pkg          |    2 +
+ .../scripting/bindings/lua/helpers/lua_Helpers.cpp |  218 ++++++++++++++-----
+ 4 files changed, 336 insertions(+), 131 deletions(-)
+
+commit 1e8ab7c5e1c7d6d1bdce808f39b6195da6fd79ae
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jun 8 16:30:11 2008 +0200
+
+    Pass strings as const references whenever possible to avoid unnecessary copying.
+
+ src/components/ogre/scripting/luaobject.h |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 9d919d6de08bab6c6b2f0a1952b7a262d3f23dd7
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Sun Jun 8 10:11:33 2008 +0400
+
+    Add exec attibute for new update.sh. Add newlines at end of script file to prevent some shell glitches.
+
+ scripts/update_lua_bindings.sh  |    2 +-
+ src/main/bindings/lua/update.sh |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit e372519c63a1d67d7ddcaf3493fa080b5703b142
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Sun Jun 8 00:22:33 2008 +0400
+
+    Adding exec attibute for update.sh files.
+
+ 0 files changed, 0 insertions(+), 0 deletions(-)
+
+commit 4cad430ec2d1801deb477c497bd60b5ce591b1fc
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Sat Jun 7 17:52:53 2008 +0400
+
+    Adding asObject function for string constants.
+
+ src/components/ogre/scripting/luaobject.h |   11 +++++++++--
+ 1 files changed, 9 insertions(+), 2 deletions(-)
+
+commit b9f13e5ccfd7adbc88dc75ac13a767e9bc97dba2
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Sat Jun 7 17:52:07 2008 +0400
+
+    Adding overloaded operator for long into logging service (unfortunately, this triggers rebuild of all ember).
+
+ src/services/logging/LoggingService.cpp |   12 ++++++++++--
+ src/services/logging/LoggingService.h   |    2 ++
+ 2 files changed, 12 insertions(+), 2 deletions(-)
+
+commit bb275edc3ac3583b8100b83d70ea12f0a94fd543
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Sat Jun 7 15:46:33 2008 +0400
+
+    Returning a copy of LuaRef from call context to allow application to manage destruction of an object.
+
+ .../ogre/scripting/LuaScriptingCallContext.h       |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 11d6d48c62ccffd1765d87c6f21753a5bd6a7b10
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Sat Jun 7 15:43:36 2008 +0400
+
+    Fixing LuaRef copy constructor and operator= to defererence current object.
+
+ src/components/ogre/scripting/luaobject.h |   11 ++++++++---
+ 1 files changed, 8 insertions(+), 3 deletions(-)
+
+commit 7111088414f144d57d5e5914940d727bc10c5b9c
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Fri Jun 6 23:52:24 2008 +0400
+
+    Fixing typo that was causing double-free.
+
+ .../ogre/scripting/LuaScriptingCallContext.h       |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 04a0a87ef970e833a694d394febe5328795d99ec
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Fri Jun 6 22:05:49 2008 +0400
+
+    Adding quotes for command line arguments.
+
+ ember.in |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 889ff4df106e3643c6ecb9588ccba86f1c011dbe
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Fri Jun 6 22:03:47 2008 +0400
+
+    Removing LD_PRELOAD thing from ember.in - "libnvidia-tls.so.1: cannot handle TLS data" is an old bug and have solutions.
+
+ ember.in |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
+
+commit 8c306f6df5e2ffd7535be073b1033c3edb9b2e97
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Fri Jun 6 21:10:23 2008 +0400
+
+    Changing command line for new gdb.
+
+ ember.in |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 7780ec06f4823c7080d39aa430018da83af27874
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Fri Jun 6 21:05:01 2008 +0400
+
+    Removing deprecated file.
+
+ WFUT.jar |  Bin 75805 -> 0 bytes
+ 1 files changed, 0 insertions(+), 0 deletions(-)
+
+commit acf75a358dd99920eb50c1d09e3e5b7acfd0a114
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Fri Jun 6 16:09:21 2008 +0400
+
+    Add callFunction to scripting service.
+
+ .../ogre/scripting/LuaScriptingProvider.cpp        |   65 +++++++++++++++++++-
+ .../ogre/scripting/LuaScriptingProvider.h          |    6 ++-
+ src/framework/IScriptingProvider.h                 |    1 +
+ src/services/scripting/ScriptingService.cpp        |   20 ++++++
+ src/services/scripting/ScriptingService.h          |    6 +-
+ 5 files changed, 94 insertions(+), 4 deletions(-)
+
+commit 881a004ce4835dd9e5e274b1ea561fcd493c2372
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Fri Jun 6 12:58:48 2008 +0400
+
+    Checking class of user data.
+
+ src/components/ogre/scripting/luaobject.h |   12 +++++-------
+ 1 files changed, 5 insertions(+), 7 deletions(-)
+
+commit ce394f75e6706700028a6a8f85c33c8a1009ac9f
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jun 8 00:14:36 2008 +0200
+
+    Use the common lua updating script.
+
+ .../ogre/scripting/bindings/lua/helpers/update.sh  |    3 ++-
+ .../ogre/scripting/bindings/lua/ogre/update.sh     |    3 ++-
+ .../ogre/scripting/bindings/lua/update.sh          |    3 ++-
+ .../widgets/adapters/atlas/bindings/lua/update.sh  |    3 ++-
+ src/framework/bindings/lua/atlas/update.sh         |    3 ++-
+ src/framework/bindings/lua/eris/update.sh          |    3 ++-
+ src/framework/bindings/lua/update.sh               |    3 ++-
+ src/main/bindings/lua/update.sh                    |    3 +++
+ src/services/bindings/lua/update.sh                |    3 ++-
+ 9 files changed, 19 insertions(+), 8 deletions(-)
+
+commit ae0de6f4507a1269fe449fb20715f9e1e86eba41
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jun 8 00:13:32 2008 +0200
+
+    Added common bash script for generating tolua bindings.
+
+ scripts/update_lua_bindings.sh |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit ba0268dec57cb4f1606a49b9406e0709aec6a483
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sat Jun 7 00:17:53 2008 +0200
+
+    Use the correct fog method, use the CaelumSky as fog adapter and added a fog density slider to environment.
+
+ .../ogre/environment/CaelumEnvironment.cpp         |    4 +-
+ src/components/ogre/environment/CaelumSky.cpp      |    4 +-
+ src/components/ogre/widgets/Environment.layout     |   18 ++++++++++-
+ src/components/ogre/widgets/Environment.lua        |   30 ++++++++++++++++++--
+ 4 files changed, 47 insertions(+), 9 deletions(-)
+
+commit b5da7d2711ce574a16a7faa36afccea8c76b11f3
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Fri Jun 6 00:17:05 2008 +0200
+
+    Better docs.
+
+ .../ogre/scripting/LuaScriptingProvider.h          |   37 ++++++++++++++-----
+ src/framework/IScriptingProvider.h                 |   29 +++++++++++-----
+ 2 files changed, 47 insertions(+), 19 deletions(-)
+
+commit 3db8f1825a3f670e439c1ffeb4d7f54275777398
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu Jun 5 22:44:42 2008 +0200
+
+    Moved the lua scripting call context to its own file.
+
+ .../ogre/scripting/LuaScriptingCallContext.cpp     |   41 +++++++++++
+ .../ogre/scripting/LuaScriptingCallContext.h       |   73 ++++++++++++++++++++
+ .../ogre/scripting/LuaScriptingProvider.cpp        |    8 +--
+ .../ogre/scripting/LuaScriptingProvider.h          |   24 +------
+ src/components/ogre/scripting/Makefile.am          |    4 +-
+ 5 files changed, 118 insertions(+), 32 deletions(-)
+
+commit 92f7c10b5011f0b9c7619087f0957f04445ccd28
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu Jun 5 22:11:10 2008 +0200
+
+    Cleaned up the api a little bit. Since the context is optional we want to put that as the last parameter.
+
+ .../ogre/scripting/LuaScriptingProvider.cpp        |   22 ++++++------
+ .../ogre/scripting/LuaScriptingProvider.h          |   37 +++++++++++++-------
+ src/framework/IScriptingProvider.h                 |   25 +++++++------
+ src/services/scripting/ScriptingService.cpp        |    9 +----
+ src/services/scripting/ScriptingService.h          |    3 +-
+ 5 files changed, 52 insertions(+), 44 deletions(-)
+
+commit 84b25bac60cd76ad0b4d9f306d61bd0fe024f404
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu Jun 5 21:15:09 2008 +0200
+
+    Moved the constructor and destructor to .cpp file to fix linking errors. Also added more comments and made it use the sent in context when executing scripts.
+
+ .../ogre/scripting/LuaScriptingProvider.cpp        |   12 ++++++++-
+ .../ogre/scripting/LuaScriptingProvider.h          |   28 +++++++++----------
+ src/services/scripting/ScriptingService.cpp        |    2 +-
+ 3 files changed, 25 insertions(+), 17 deletions(-)
+
+commit 17c8c2b0fba3c67882a2339f17a7a9672897fa75
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Thu Jun 5 20:56:04 2008 +0400
+
+    Make it compilable.
+
+ .../ogre/scripting/LuaScriptingProvider.cpp        |   38 +++++++++++++------
+ .../ogre/scripting/LuaScriptingProvider.h          |    6 ++--
+ src/framework/IScriptingProvider.h                 |    2 +-
+ src/services/scripting/ScriptingService.h          |    2 +-
+ 4 files changed, 31 insertions(+), 17 deletions(-)
+
+commit 94aeaa9338fd3e0e00963e886cd07dcfe3729c47
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Wed Jun 4 10:18:06 2008 +0400
+
+    Passing call context as a pointer instead of reference. Removing duplicate code.
+
+ .../ogre/scripting/LuaScriptingProvider.cpp        |   87 ++++++-------------
+ .../ogre/scripting/LuaScriptingProvider.h          |    2 +-
+ src/services/scripting/ScriptingService.cpp        |   24 +-----
+ 3 files changed, 32 insertions(+), 81 deletions(-)
+
+commit be92b58254c90f8a6600754aa40a987fa5906a31
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Mon Jun 2 21:02:08 2008 +0400
+
+    No need to check for NULL pointer before delete. Clean up to conform with coding standards.
+
+ .../ogre/scripting/LuaScriptingProvider.h          |   44 +++++++++++--------
+ 1 files changed, 25 insertions(+), 19 deletions(-)
+
+commit 793e1a670fb7ccc1fba268d3462b0659052f0f5c
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Mon Jun 2 16:28:46 2008 +0400
+
+    Dereferencing objects to prevent memory leaking. But this should be done in more rebust way.
+
+ .../ogre/scripting/LuaScriptingProvider.cpp        |    2 +-
+ .../ogre/scripting/LuaScriptingProvider.h          |   18 +++++++++++++++---
+ 2 files changed, 16 insertions(+), 4 deletions(-)
+
+commit 48393899af4a87469cd0e48bb12f8089b15d0ea5
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jun 1 21:17:57 2008 +0200
+
+    Fixed some problems with how script return values were handled.
+
+ .../ogre/scripting/LuaScriptingProvider.cpp        |    8 +++++---
+ src/framework/IScriptingProvider.h                 |   15 +++++++++++++++
+ 2 files changed, 20 insertions(+), 3 deletions(-)
+
+commit 85f59c214e7e6ae95dcaf5714a1ce0e36d23c2c3
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jun 1 14:27:38 2008 +0200
+
+    Added the ability to get return values from script calls through the use of a script call context object.
+
+ .../ogre/scripting/LuaScriptingProvider.cpp        |   16 ++-
+ .../ogre/scripting/LuaScriptingProvider.h          |   20 +++-
+ src/components/ogre/scripting/Makefile.am          |    4 +-
+ src/framework/IScriptingProvider.h                 |   11 ++-
+ src/framework/bindings/lua/Framework.pkg           |    2 +-
+ src/framework/bindings/lua/lua_Framework.cpp       |  146 +-------------------
+ src/services/scripting/ScriptingService.cpp        |   25 ++++-
+ src/services/scripting/ScriptingService.h          |    4 +-
+ 8 files changed, 74 insertions(+), 154 deletions(-)
+
+commit d67d7b416c501216a1eb9974fa2828fe90226ea1
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jun 1 14:26:40 2008 +0200
+
+    Added helper classes for handling lua return types in c++ code.
+
+ src/components/ogre/scripting/luaobject.cpp |   61 +++
+ src/components/ogre/scripting/luaobject.h   |  581 +++++++++++++++++++++++++++
+ 2 files changed, 642 insertions(+), 0 deletions(-)
+
+commit 2af9a5994ad9806867d88cf30c86d09448465921
+Merge: 06632b6... c5e82bd...
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon Jun 2 20:59:30 2008 +0200
+
+    Merge branch 'master' of ssh://jade.worldforge.org/data/git/ember
+
+commit c5e82bd58c08b2df49438a48e5aa16a8129ce79f
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Fri May 30 21:48:53 2008 +0400
+
+    Fixing issue with missing sighandler_t under FreeBSD.
+
+ configure.ac                    |    9 +++++++++
+ src/components/ogre/OgreSetup.h |    4 ++++
+ 2 files changed, 13 insertions(+), 0 deletions(-)
+
+commit 3aec913355f37cb059a13a87a0c08b82da9aed4d
+Merge: 3206a7b... e95f92f...
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Mon Jun 2 12:08:05 2008 +0400
+
+    Merge commit 'e95f92'
+
+commit 06632b6236df092fac35d93817a0683356040904
+Merge: e95f92f... 3206a7b...
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Jun 1 21:26:25 2008 +0200
+
+    Merge branch 'master' of ssh://jade.worldforge.org/data/git/ember
+
+commit 3206a7be9ba45cc77a3395e62a38a389aedf02eb
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Sun Jun 1 21:39:30 2008 +0400
+
+    Sanity fixes in Exception.
+
+ src/framework/Exception.h |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 2213f1c4c7d4d3ab1a6103b7837b6f23db41cb97
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Sun May 25 00:35:59 2008 +0400
+
+    Add gnome’s anjuta specific ignores.
+
+ .gitignore |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+commit 67e82365e509ed35547d0401804d96ca836177e7
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Sun Jun 1 21:37:40 2008 +0400
+
+    GCC 4.3 fixes.
+
+ src/framework/Exception.h             |    4 ++--
+ src/services/logging/LoggingService.h |    1 +
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+commit e95f92fca8030cee57fa74b48602603cc303e26c
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sat May 31 22:58:51 2008 +0200
+
+    Made the info widget a little wider to handle the full coord info.
+
+ src/components/ogre/widgets/TerrainEditor.layout |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit a0154e623624111f76282ba14ed44048b4d5354d
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu May 29 01:34:44 2008 +0200
+
+    Fixed a whole slew of problems with the terrain engine. Picking now works correctly on non-square worlds. The size of the world is always correct. And we always put the origi in between four pages, to make it much easier for everyone.
+
+ .../EmberPagingLandScapeData2D_HeightField.h       |    6 ++-
+ .../include/EmberPagingLandScapeTexture.h          |    9 ++-
+ .../include/EmberPagingSceneManagerAdapter.h       |    8 ++-
+ .../include/EmberTerrainPageBridge.h               |    1 +
+ .../src/EmberPagingSceneManagerAdapter.cpp         |   29 +++++---
+ .../src/EmberTerrainPageBridge.cpp                 |    2 +-
+ .../src/OgrePagingLandScapeRaySceneQuery.cpp       |    4 +-
+ .../src/OgrePagingLandScapeTile.cpp                |    5 +-
+ src/components/ogre/terrain/ISceneManagerAdapter.h |   72 +++++++++++++++++++-
+ src/components/ogre/terrain/TerrainGenerator.cpp   |    5 +-
+ 10 files changed, 119 insertions(+), 22 deletions(-)
+
+commit d4dd6d519556d4f4f2fdc857f8886abe53e001ff
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 27 22:47:10 2008 +0200
+
+    Bump version.
+
+ ember.conf |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit a0be4d7ba7d9e82bb73507678c4430863c987658
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 27 22:45:09 2008 +0200
+
+    No need to add special locking methods to the input classes, easier just to remove the adapter which binds the input system together with CEGUI from the input system.
+    
+    Also added comments.
+
+ src/components/ogre/GUIManager.cpp               |   21 +--
+ src/components/ogre/GUIManager.h                 |   31 +++-
+ src/components/ogre/input/IInputAdapter.h        |    6 +-
+ src/components/ogre/input/Input.cpp              |   52 ++-----
+ src/components/ogre/input/Input.h                |  194 +++++++++++++---------
+ src/components/ogre/input/InputCommandMapper.cpp |    2 +-
+ src/components/ogre/input/InputCommandMapper.h   |    6 +-
+ 7 files changed, 162 insertions(+), 150 deletions(-)
+
+commit 32580e54e43f78180b1485d565dcaa7a8aac869f
+Author: Sean Ryan <sryan@evercrack.com>
+Date:   Tue May 27 01:41:09 2008 -0400
+
+    small fix in config to allow proper input bindings
+
+ ember.conf                          |    3 +--
+ src/components/ogre/GUIManager.cpp  |   15 +++++++++------
+ src/components/ogre/input/Input.cpp |   20 ++++++++++----------
+ 3 files changed, 20 insertions(+), 18 deletions(-)
+
+commit b97a011bfebcab95705972083b356b66739bce84
+Author: Sean Ryan <sryan@evercrack.com>
+Date:   Tue May 27 01:11:27 2008 -0400
+
+    prevent input mode from changing while gui is  hidden
+
+ src/components/ogre/GUIManager.cpp  |   27 +++++++++++++++++++---
+ src/components/ogre/input/Input.cpp |   42 +++++++++++++++++++++++++++-------
+ src/components/ogre/input/Input.h   |   10 ++++++++
+ 3 files changed, 66 insertions(+), 13 deletions(-)
+
+commit be3091d99333c8b14179861ea50cdf92d65b356d
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon May 26 00:26:13 2008 +0200
+
+    Added a method for checking for the existance of the singleton as well as better docs.
+
+ src/framework/Singleton.h |   45 ++++++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 44 insertions(+), 1 deletions(-)
+
+commit bad11bca49e8b2e24a04d857552def0346685f0e
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon May 26 00:23:13 2008 +0200
+
+    Cleaned up the LoggingService header and made sure that we have a logging instance all the time.
+    
+    The LoggingService isn't handled like other services since we depend on it being there for all of our loggin needs. We really should refactor the logging methods to be static instead of being dependent on a service. The static methods could very well interface with a service, but there should never be a catastrophic segfault if it wasn't created when we want to log.
+
+ src/components/ogre/EmberOgre.cpp               |    6 +-
+ src/components/ogre/OgreSetup.cpp               |    5 +
+ src/framework/ConsoleBackend.cpp                |    2 +-
+ src/framework/StreamLogObserver.h               |    3 +-
+ src/main/Application.cpp                        |   12 +-
+ src/main/Application.h                          |    4 +-
+ src/services/EmberServices.cpp                  |    2 +-
+ src/services/bindings/lua/LoggingService.pkg    |   10 +-
+ src/services/bindings/lua/lua_EmberServices.cpp |   43 +++-
+ src/services/logging/FileObserver.cpp           |   33 +++
+ src/services/logging/FileObserver.h             |   84 ++++++
+ src/services/logging/LoggingService.cpp         |   12 +-
+ src/services/logging/LoggingService.h           |  306 +++++------------------
+ src/services/logging/Makefile.am                |    5 +-
+ src/services/logging/Observer.cpp               |   36 +++
+ src/services/logging/Observer.h                 |   82 ++++++
+ src/services/server/OOGChat.cpp                 |   14 +-
+ src/services/server/ServerService.cpp           |   18 +-
+ 18 files changed, 390 insertions(+), 287 deletions(-)
+
+commit 68fa72a05a3fc4cec00acb629eab59af665b9e4c
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun May 25 20:48:24 2008 +0200
+
+    Release image data when the texture has been updated. We need to add some better functionality for automatically reloading the texture though.
+
+ .../TerrainPageSurfaceCompilerTechniqueShader.h    |    6 ++++++
+ .../TerrainPageSurfaceCompilerTechniqueSimple.cpp  |   16 ++++++++++++++--
+ .../TerrainPageSurfaceCompilerTechniqueSimple.h    |    3 +++
+ 3 files changed, 23 insertions(+), 2 deletions(-)
+
+commit a15290ffbfaf5df86803d8fe47bdd1c52529e1d1
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun May 25 20:09:31 2008 +0200
+
+    Don't hold on to the image or the texture unless it's absolutely needed. This will help bring the used memory down.
+
+ .../TerrainPageSurfaceCompilerTechniqueShader.cpp  |    3 +
+ .../ogre/terrain/TerrainPageSurfaceLayer.cpp       |  118 ++++++++++++++------
+ .../ogre/terrain/TerrainPageSurfaceLayer.h         |   45 +++++++-
+ 3 files changed, 128 insertions(+), 38 deletions(-)
+
+commit dedcd57a5194b8c107f0bb761130c45ac912826f
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun May 25 20:09:00 2008 +0200
+
+    Actually return whether there was an impact or not.
+
+ .../src/OgrePagingLandScapeSceneManager.cpp        |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 92d66246556a94da2b7d9e1a1c26f1ee732d51fc
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sat May 24 23:47:10 2008 +0200
+
+    Refactored the way the terrain is updated to use an instance of ITerrainPageBridge to bind a TerrainPage to the terrain engine.
+
+ .../EmberPagingLandScapeData2D_HeightField.h       |   11 +++--
+ .../include/EmberTerrainPageBridge.h               |   56 ++++++++++++++++++++
+ .../EmberPagingSceneManager/include/Makefile.am    |    3 +-
+ .../src/EmberPagingLandScapeData2D_HeightField.cpp |   34 +++++++++---
+ .../src/EmberTerrainPageBridge.cpp                 |   50 +++++++++++++++++
+ .../EmberPagingSceneManager/src/Makefile.am        |    3 +-
+ src/components/ogre/terrain/ITerrainPageBridge.h   |   53 ++++++++++++++++++
+ src/components/ogre/terrain/Makefile.am            |    2 +-
+ src/components/ogre/terrain/TerrainPage.cpp        |   45 +++++++++-------
+ src/components/ogre/terrain/TerrainPage.h          |   35 +++++++------
+ 10 files changed, 242 insertions(+), 50 deletions(-)
+
+commit ae44cb91f247cd2581e892bd92e8647ecdb57212
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sat May 24 21:04:45 2008 +0200
+
+    Fixed problems with the bounding box not being updated after the terrain tile was changed.
+
+ .../include/OgrePagingLandScapeRenderable.h        |   21 ++++++++--
+ .../src/EmberPagingSceneManagerAdapter.cpp         |    3 +
+ .../src/OgrePagingLandScapeRenderable.cpp          |   42 +++++++++++++++++---
+ 3 files changed, 56 insertions(+), 10 deletions(-)
+
+commit bcf6dd53176fe44b6852901ad14677649957b7ff
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu May 22 21:05:54 2008 +0200
+
+    Adjust the deformation rectangle to force an update of LODs and bounding box.
+
+ .../src/OgrePagingLandScapePage.cpp                |    9 ++++++++-
+ 1 files changed, 8 insertions(+), 1 deletions(-)
+
+commit 53bfadf783e3c16a49b8def549a76e1e7a7f7ed0
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu May 22 20:31:14 2008 +0200
+
+    Altered the way the terrain is generated and updated, to better handle updates as smooth as possible.
+
+ .../include/OgrePagingLandScapePage.h              |    2 +
+ .../include/OgrePagingLandScapeRenderable.h        |    1 +
+ .../src/EmberPagingLandScapeData2D_HeightField.cpp |    9 ++-
+ .../src/EmberPagingSceneManagerAdapter.cpp         |   13 +++-
+ .../src/OgrePagingLandScapePage.cpp                |   12 ++++
+ src/components/ogre/terrain/TerrainPage.cpp        |   60 ++++++++++++-------
+ src/components/ogre/terrain/TerrainPage.h          |   23 +++++++-
+ 7 files changed, 90 insertions(+), 30 deletions(-)
+
+commit e4dba9dbcda5f146c47fb3bc47eff162b76d0254
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu May 22 20:16:38 2008 +0200
+
+    Always return something.
+
+ src/components/ogre/widgets/ServerWidget.cpp |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 3be130a5aa5e07f56217babe850ae0c01fd65b4d
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu May 22 20:00:48 2008 +0200
+
+    Change the order of checking since CEGUILuaScriptModule depends on tolua++.
+
+ configure.ac |   24 +++++++++++++-----------
+ 1 files changed, 13 insertions(+), 11 deletions(-)
+
+commit 0d9946360e7aad9a3f89260fa204eff5671211a1
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Thu May 22 18:06:59 2008 +0400
+
+    Add check for cegui lua module. Use system tolua++ if available, otherwise use one bundled with cegui.
+
+ configure.ac |   35 +++++++++++++++++++++++++++++++----
+ 1 files changed, 31 insertions(+), 4 deletions(-)
+
+commit b1ae127d7fa1c0297a2a8ed8380e56fe4a8b4386
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Thu May 22 18:04:36 2008 +0400
+
+    Fix patch on tinyxml to make it compilable.
+
+ src/framework/tinyxml/tinyxml.cpp |    2 ++
+ src/framework/tinyxml/tinyxml.h   |   32 +++++++++++++++++---------------
+ 2 files changed, 19 insertions(+), 15 deletions(-)
+
+commit f984e73030173b97602242a367d8e380b7c40bf7
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Wed May 21 12:07:44 2008 +0400
+
+    Use system-wide tinyxml library, if available.
+
+ configure.ac                                       |   14 ++
+ src/components/ogre/XMLHelper.cpp                  |    2 +-
+ src/components/ogre/XMLHelper.h                    |    2 +-
+ src/components/ogre/jesus/XMLJesusSerializer.cpp   |   58 ++++----
+ src/components/ogre/jesus/XMLJesusSerializer.h     |    6 +-
+ .../ogre/model/XMLModelDefinitionSerializer.cpp    |  140 ++++++++++----------
+ .../ogre/model/XMLModelDefinitionSerializer.h      |   46 ++++----
+ .../model/mapping/EmberModelMappingManager.cpp     |    2 +-
+ .../XMLModelMappingDefinitionSerializer.cpp        |   32 +++---
+ .../mapping/XMLModelMappingDefinitionSerializer.h  |    8 +-
+ .../ogre/terrain/XMLLayerDefinitionSerializer.cpp  |   14 +-
+ src/framework/Makefile.am                          |   11 +-
+ src/framework/tinyxml/tinyxml.h                    |   23 ++++
+ 13 files changed, 200 insertions(+), 158 deletions(-)
+
+commit cb071bf9ed2bd5b98a7399b1d07bbaddb2fad9e4
+Author: Sean Ryan <sryan@evercrack.com>
+Date:   Wed May 21 23:18:20 2008 -0400
+
+    added eclipse project files to ignore list
+
+ .gitignore |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit fc8e81365ad68ff69c06edb0f6f164534a82f45d
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Tue May 20 22:51:41 2008 +0400
+
+    Small code optimization.
+
+ src/components/ogre/model/ModelDefinition.cpp |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit 3eee5fd9450b2e7553b8372d962b5ee91a4dd49e
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Fri May 16 15:07:20 2008 +0400
+
+    Adding semicolons after logging statements to comply with other code and proper defines.
+
+ src/components/ogre/EmberEntity.cpp             |    4 ++--
+ src/components/ogre/EmberOgrePrerequisites.h    |    2 +-
+ src/components/ogre/OgreResourceLoader.cpp      |    2 +-
+ src/components/ogre/sound/OgreSoundProvider.cpp |    2 +-
+ src/services/sound/SoundService.cpp             |   20 ++++++++++----------
+ 5 files changed, 15 insertions(+), 15 deletions(-)
+
+commit 4e9bc27c42580c552b41f9b027ed403b1c93c9b9
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Fri May 16 12:00:35 2008 +0400
+
+    Proper defines.
+
+ src/services/logging/LoggingService.h |   14 +++++++-------
+ 1 files changed, 7 insertions(+), 7 deletions(-)
+
+commit 3959948d31e599a63b90b9f77caa9505f9dfe13f
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 20 08:08:34 2008 +0200
+
+    Removed old include.
+
+ src/components/ogre/terrain/TerrainPage.cpp |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 7d8d1b74c684da7abed8009b158d497f7162ed04
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon May 19 23:13:25 2008 +0200
+
+    Clean up, remove old unused methods and structs.
+
+ src/components/ogre/WorldEmberEntity.cpp           |    8 +-
+ src/components/ogre/environment/Foliage.cpp        |  185 ----------
+ src/components/ogre/environment/Foliage.h          |   22 +--
+ src/components/ogre/environment/FoliageArea.cpp    |  362 --------------------
+ src/components/ogre/environment/FoliageArea.h      |  113 ------
+ src/components/ogre/environment/FoliageBase.cpp    |    7 +
+ src/components/ogre/environment/FoliageBase.h      |    2 +
+ src/components/ogre/environment/GrassFoliage.cpp   |    1 -
+ src/components/ogre/environment/Makefile.am        |    4 +-
+ .../ogre/environment/ShrubberyFoliage.cpp          |    1 -
+ src/components/ogre/terrain/TerrainGenerator.cpp   |   60 +----
+ src/components/ogre/terrain/TerrainGenerator.h     |   21 --
+ src/components/ogre/terrain/TerrainPage.cpp        |  269 +--------------
+ src/components/ogre/terrain/TerrainPage.h          |   25 +-
+ src/components/ogre/terrain/TerrainPageFoliage.cpp |    3 +-
+ 15 files changed, 29 insertions(+), 1054 deletions(-)
+
+commit 4de3d9fbc3fdf5f066fefe847909e000f79a868e
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Mon May 19 17:51:04 2008 +0400
+
+    Use STL-mode of tinyxml library.
+
+ src/framework/tinyxml/tinyxml.h |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit ab3ce68cad7a6f2a812e0fd939121f59c4e35ee0
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon May 19 11:37:32 2008 +0200
+
+    Make it validate.
+
+ .../cegui/datafiles/looknfeel/EmberLook.looknfeel  |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 98d6b2569668f1ceba91477a9f105c659882d1a5
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon May 19 00:13:32 2008 +0200
+
+    Handle errors better and update location of mesh.
+
+ src/components/ogre/EntityWorldPickListener.cpp |   24 +++++++++++++++-------
+ 1 files changed, 16 insertions(+), 8 deletions(-)
+
+commit b85f0a4db5a78aa6eb9f65938b96d0a6c948ec3f
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon May 19 00:04:47 2008 +0200
+
+    The foliage system won't properly work if we don't populate all surfaces.
+
+ .../ogre/terrain/TerrainPageSurfaceLayer.cpp       |   13 +++++--------
+ 1 files changed, 5 insertions(+), 8 deletions(-)
+
+commit fbbd3958c82dc7729496ffef889ba3112e1c8322
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun May 18 22:34:30 2008 +0200
+
+    Added better comments, renamed some methods to be more desriptive and changed the population order when updating a page, to properly create surfaces.
+
+ .../src/EmberPagingLandScapeData2D_HeightField.cpp |    2 +-
+ src/components/ogre/terrain/TerrainGenerator.cpp   |   42 +++++-------------
+ src/components/ogre/terrain/TerrainGenerator.h     |   47 ++++++++++++--------
+ src/components/ogre/terrain/TerrainPage.cpp        |    5 +-
+ src/components/ogre/terrain/TerrainPageSurface.cpp |    6 ++-
+ 5 files changed, 48 insertions(+), 54 deletions(-)
+
+commit 9bc63e9d73f62dc6c58bcc99ae974c8d84a4db98
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun May 18 22:32:11 2008 +0200
+
+    Add new shaders to segments when appropriate, to handle the cases when terrain changes make new surfaces valid.
+    
+    The Mercator functionality only adds new surfaces when the terrain initially is created, so we need to manually add new ones that are made available later on.
+
+ .../ogre/terrain/TerrainPageSurfaceLayer.cpp       |   23 +++++++++++++++++++-
+ 1 files changed, 22 insertions(+), 1 deletions(-)
+
+commit 8112c9c4807f03b89129b02bc94bdc2f456ca2e7
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun May 18 22:22:01 2008 +0200
+
+    Don't remove from the manager since it's a bit tricky to add it back, and we almost only unload when we reload the page as it's been changed.
+
+ .../src/OgrePagingLandScapeTexture.cpp             |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+commit 04031e84328bc61d807e18cb86450fe16b48bcb8
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun May 18 22:15:35 2008 +0200
+
+    Fixed the indentation: we use tabs, never spaces.
+
+ doc/template_header.h |  163 ++++++++++++++++++++++++-------------------------
+ 1 files changed, 81 insertions(+), 82 deletions(-)
+
+commit 59f6544db7b9d7c5703b89fa69a06de2d7156ada
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun May 18 16:43:42 2008 +0200
+
+    Added material export.
+
+ src/components/ogre/widgets/AssetsManager.layout |   47 +++++++++++++++++++++-
+ src/components/ogre/widgets/AssetsManager.lua    |   44 ++++++++++++++++++++
+ 2 files changed, 89 insertions(+), 2 deletions(-)
+
+commit b63fd3e96de2b0a991cd0964571f248ed2c98258
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun May 18 16:43:03 2008 +0200
+
+    Added method for serializing a material, as well as better docs.
+
+ .../ogre/scripting/bindings/lua/AssetsManager.pkg  |   32 ++++++-
+ .../ogre/scripting/bindings/lua/lua_EmberOgre.cpp  |  110 +++++++++++++-------
+ src/components/ogre/widgets/AssetsManager.cpp      |   11 ++
+ src/components/ogre/widgets/AssetsManager.h        |   31 ++++++
+ 4 files changed, 146 insertions(+), 38 deletions(-)
+
+commit 3f70375cc8c1dfd5d3d5db5eff2a2176eec339c8
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun May 18 16:13:47 2008 +0200
+
+    Added bindings for the ogre material serializer.
+
+ .../ogre/scripting/bindings/lua/ogre/Ogre.pkg      |    1 +
+ .../bindings/lua/ogre/OgreMaterialSerializer.pkg   |   87 ++++
+ .../ogre/scripting/bindings/lua/ogre/lua_Ogre.cpp  |  442 +++++++++++++++++++-
+ 3 files changed, 509 insertions(+), 21 deletions(-)
+
+commit 9b9458ea94463dbfc115efdd7953e90d52f9fec0
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sat May 17 12:51:27 2008 +0200
+
+    Fixed a bug where it used WF coords instead of Ogre coords.
+
+ src/components/ogre/terrain/TerrainPage.cpp |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 0a8d3a5adedb12f813066300bf2cea57c4741065
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Fri May 16 00:51:02 2008 +0200
+
+    All member values are prefixed with "m".
+
+ src/components/ogre/terrain/TerrainGenerator.cpp |    6 +++---
+ src/components/ogre/terrain/TerrainGenerator.h   |    2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 6bc0acd63d100810c51e1c7be2bea6f51ff1be3b
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Fri May 16 00:50:40 2008 +0200
+
+    Updated definition.
+
+ .../ogre/modeldefinitions/stone_palisade.modeldef  |   15 +++++++++------
+ 1 files changed, 9 insertions(+), 6 deletions(-)
+
+commit 975c0d1c95deb79a58f96e4a0d16eb42beea4b26
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Fri May 16 00:50:22 2008 +0200
+
+    Fixed path to texture
+
+ media/particle/smoke.particle |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 344a48112c251a34fbc131b764a8d2ae34e040df
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Fri May 16 00:14:04 2008 +0200
+
+    these have all been moved to svn
+
+ media/materials/base_scripts/base.material         |  507 --------
+ media/materials/overlays/Compass.overlay           |   14 -
+ media/materials/programs/All_In_Wonder.cg          |  721 -----------
+ media/materials/programs/All_In_Wonder.program     |   42 -
+ media/materials/programs/Animation.cg              |   53 -
+ media/materials/programs/Common.program            |   68 --
+ media/materials/programs/Example_Basic.cg          |  272 -----
+ media/materials/programs/Example_Basic.hlsl        |  273 -----
+ media/materials/programs/Example_BumpMapping.cg    |  236 ----
+ media/materials/programs/Example_CelShading.cg     |   63 -
+ media/materials/programs/Example_Fresnel.cg        |  115 --
+ media/materials/programs/Example_FresnelPS.asm     |   72 --
+ media/materials/programs/Example_Projection.cg     |   28 -
+ media/materials/programs/Examples.program          |   39 -
+ media/materials/programs/Grass.cg                  |   73 --
+ media/materials/programs/OffsetMapping.cg          |  165 ---
+ media/materials/programs/OffsetMapping.hlsl        |  135 ---
+ media/materials/programs/OffsetMappingFp.glsl      |   69 --
+ media/materials/programs/OffsetMappingVp.glsl      |   54 -
+ .../materials/programs/OffsetMapping_specular.asm  |   44 -
+ media/materials/scripts/buildings.material         |  481 --------
+ media/materials/scripts/clothing.material          |  123 --
+ media/materials/scripts/creatures.material         |  220 ----
+ media/materials/scripts/cylinder.material          |   14 -
+ media/materials/scripts/edibles.material           |    9 -
+ media/materials/scripts/environment.material       |  516 --------
+ media/materials/scripts/furniture.material         |   66 -
+ media/materials/scripts/placeholder.material       |   15 -
+ media/materials/scripts/smoke.material             |   38 -
+ media/materials/scripts/tools.material             |  115 --
+ media/materials/scripts/ui.material                |   34 -
+ media/materials/scripts/valuables.material         |    9 -
+ media/materials/scripts/vegetation.material        |  590 ---------
+ media/materials/splatting/Splat.cg                 | 1251 --------------------
+ media/materials/splatting/alpha_splat.material     |    3 -
+ media/materials/splatting/shadersplat.material     |    1 -
+ media/materials/splatting/splat.asm                |   36 -
+ media/materials/splatting/splat.program            |  200 ----
+ media/materials/splatting/splat.ps                 |    9 -
+ media/materials/splatting/splat3.asm               |   24 -
+ media/materials/splatting/splat3d.asm              |   36 -
+ media/materials/splatting/splat3lerp.asm           |   23 -
+ media/materials/splatting/splat4.asm               |   24 -
+ media/materials/splatting/splat4lerp.asm           |   21 -
+ media/materials/splatting/splatatlas.asm           |   48 -
+ media/materials/textures/dark.png                  |  Bin 69 -> 0 bytes
+ media/materials/textures/flare.png                 |  Bin 72982 -> 0 bytes
+ media/materials/textures/lensflare5.jpg            |  Bin 5172 -> 0 bytes
+ media/materials/textures/lensflare6.jpg            |  Bin 4149 -> 0 bytes
+ media/materials/textures/lod1.png                  |  Bin 243 -> 0 bytes
+ media/materials/textures/lod2.png                  |  Bin 405 -> 0 bytes
+ media/materials/textures/lod3.png                  |  Bin 500 -> 0 bytes
+ media/materials/textures/lod4.png                  |  Bin 323 -> 0 bytes
+ media/materials/textures/placeholder.png           |  Bin 1466 -> 0 bytes
+ media/materials/textures/smoke.png                 |  Bin 49673 -> 0 bytes
+ media/materials/textures/smokecolors.png           |  Bin 599 -> 0 bytes
+ media/materials/textures/snow.png                  |  Bin 78 -> 0 bytes
+ media/materials/textures/terraindecal.png          |  Bin 179152 -> 0 bytes
+ media/materials/textures/water.png                 |  Bin 249215 -> 0 bytes
+ 59 files changed, 0 insertions(+), 6949 deletions(-)
+
+commit 376464b1bc5a5b8b5d5d4b3ed4157d7ccd6acdba
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Fri May 16 00:11:18 2008 +0200
+
+    Updated schema and fixed validation in existing definitions.
+
+ src/components/ogre/modeldefinitions/male.modeldef |   32 ++++--
+ .../ogre/modeldefinitions/modeldefinition.xsd      |  108 +++++++++++++-------
+ .../ogre/modeldefinitions/tools.modeldef           |    6 -
+ 3 files changed, 93 insertions(+), 53 deletions(-)
+
+commit b418f203696cd357acaf992ff6da7ab70c7edca2
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu May 15 01:55:44 2008 +0200
+
+    Fixed the broken schema and added a xmllint check target for the modeldefs, copied from cyphesis.
+
+ configure.ac                                       |    2 +
+ src/components/ogre/modeldefinitions/Makefile.am   |    6 +
+ .../ogre/modeldefinitions/modeldefinition.xsd      |  269 +++++++++++---------
+ 3 files changed, 160 insertions(+), 117 deletions(-)
+
+commit f518acff8103c391ec95e856d161b823a3778629
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu May 15 01:26:12 2008 +0200
+
+    Output a better error message when a particle system fails to load.
+
+ src/components/ogre/model/Model.cpp |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit a9bc9ad4a2b8529eb56318061b995e8172966629
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu May 15 01:25:09 2008 +0200
+
+    Update after switching to the svn for media.
+
+ make_dist_media.sh |   53 ++++++++++++++++++++++++++++-----------------------
+ 1 files changed, 29 insertions(+), 24 deletions(-)
+
+commit cd17484f975037895293b2be115c865beb98ab67
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu May 15 01:24:44 2008 +0200
+
+    Updated models.
+
+ .../ogre/modeldefinitions/apple.modeldef           |    4 +-
+ .../ogre/modeldefinitions/birchA.modeldef          |    2 +-
+ .../ogre/modeldefinitions/birchB.modeldef          |    2 +-
+ src/components/ogre/modeldefinitions/boat.modeldef |    2 +-
+ .../ogre/modeldefinitions/buildings.modeldef       |    8 +-
+ src/components/ogre/modeldefinitions/bush.modeldef |    2 +-
+ src/components/ogre/modeldefinitions/cart.modeldef |   47 +++++
+ .../ogre/modeldefinitions/cg_wall_corner.modeldef  |   21 +++
+ .../ogre/modeldefinitions/cg_wall_gate.modeldef    |   21 +++
+ .../ogre/modeldefinitions/cg_wall_run.modeldef     |   21 +++
+ .../ogre/modeldefinitions/cg_wall_stairs.modeldef  |   22 +++
+ .../ogre/modeldefinitions/choppingblock.modeldef   |    7 +-
+ src/components/ogre/modeldefinitions/door.modeldef |    4 +-
+ .../ogre/modeldefinitions/hammer.modeldef          |   21 +++
+ .../ogre/modeldefinitions/house_A.modeldef         |   30 +++
+ .../ogre/modeldefinitions/market_tent.modeldef     |   25 +++
+ .../ogre/modeldefinitions/modeldefinition.xsd      |  190 ++++++++++----------
+ .../modeldefinitions/modelmappings.modelmap.xml    |   13 +-
+ .../modeldefinitions/monster_skeleton.modeldef     |    4 +-
+ src/components/ogre/modeldefinitions/moraf.terrain |    4 +-
+ .../ogre/modeldefinitions/open_crate.modeldef      |    1 +
+ .../ogre/modeldefinitions/shutters.modeldef        |   20 ++
+ .../ogre/modeldefinitions/stake.modeldef           |    4 +-
+ .../ogre/modeldefinitions/stone_palisade.modeldef  |    6 +-
+ .../ogre/modeldefinitions/temple.modeldef          |   22 +++
+ .../ogre/modeldefinitions/wooden_fence.modeldef    |   26 +++
+ .../ogre/modeldefinitions/wooden_gate.modeldef     |   50 +++++
+ 27 files changed, 457 insertions(+), 122 deletions(-)
+
+commit 93d7837cd0aa8a63474625cec65332ce919459dc
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu May 15 00:02:58 2008 +0200
+
+    Don't use the depracted getEntity, use getEmberEntity instead.
+
+ src/components/ogre/widgets/EntityBrowser.lua    |    2 +-
+ src/components/ogre/widgets/EntityEditor.lua     |    2 +-
+ src/components/ogre/widgets/Give.lua             |    2 +-
+ src/components/ogre/widgets/TerrainEditor.layout |    2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+commit eceb6d08cd4250c904819d9dc5cbdf3c69549691
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed May 14 20:55:05 2008 +0200
+
+    Remove obsolete docs and update example header.
+
+ doc/template_header.h |  217 +++++++-----------------------------------------
+ doc/user_guide.txt    |   80 ------------------
+ 2 files changed, 32 insertions(+), 265 deletions(-)
+
+commit 162addeb5df87da189406613edfc7270ba67a687
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed May 14 00:56:33 2008 +0200
+
+    The ogre scripts is now in svn, thus the resource file needs to be updated.
+    
+    Note that in order to assert that we load the base materials first we need to load the base.zip file in the bootstrap group.
+
+ src/components/ogre/resources.cfg |   44 +++++++++++++++++-------------------
+ 1 files changed, 21 insertions(+), 23 deletions(-)
+
+commit ca679d52c47d8d58e82272bfdc752c52b0531588
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed May 14 00:04:05 2008 +0200
+
+    Keep a refence of OgreResourceLoader around longer to avoid segfaults. Also removed obsolete methods and added comments to EmberOgre.
+
+ src/components/ogre/EmberOgre.cpp                  |   28 +++----
+ src/components/ogre/EmberOgre.h                    |   80 ++++++++++++++++----
+ src/components/ogre/EmberPhysicalEntity.cpp        |    4 +-
+ .../ogre/manipulation/EntityMoveManager.cpp        |    2 +-
+ .../ogre/scripting/bindings/lua/EmberOgre.pkg      |    1 -
+ .../ogre/scripting/bindings/lua/lua_EmberOgre.cpp  |   38 +---------
+ src/components/ogre/widgets/InspectWidget.cpp      |    2 +-
+ 7 files changed, 82 insertions(+), 73 deletions(-)
+
+commit d96f0a216e8859fdfba5709b2930f6df68af8feb
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed May 14 00:03:14 2008 +0200
+
+    Added new file.
+
+ src/components/ogre/Makefile.am |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit d6d7f8c15dd716ac02b8c8169cc873c0100b222b
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed May 14 00:02:40 2008 +0200
+
+    Register our own archive class with Ogre at startup.
+
+ src/components/ogre/OgreResourceLoader.cpp |    6 ++++++
+ src/components/ogre/OgreResourceLoader.h   |    4 ++++
+ 2 files changed, 10 insertions(+), 0 deletions(-)
+
+commit 03660005190518535ae56a86224fcd9a2186b6a7
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed May 14 00:00:56 2008 +0200
+
+    Added our own specialized file archive loading class, heavily based on the Ogre::FileSystemArchive class.
+    
+    This version has been modified to mainly:
+    1) not visit hidden directories (such as .svn)
+    2) not recurse into directories if there's a file named "norecurse" in them
+
+ src/components/ogre/EmberOgreFileSystem.cpp |  449 +++++++++++++++++++++++++++
+ src/components/ogre/EmberOgreFileSystem.h   |  115 +++++++
+ 2 files changed, 564 insertions(+), 0 deletions(-)
+
+commit fde5fda66618b48fd724b08e2bdf64b808220823
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 13 00:40:42 2008 +0200
+
+    Expanded the terrain editor to handle multiple points at once.
+
+ .../ogre/scripting/bindings/lua/TerrainEditor.pkg  |    8 +
+ .../ogre/scripting/bindings/lua/lua_EmberOgre.cpp  |  136 +++++++++++++++++++-
+ src/components/ogre/terrain/TerrainEditor.cpp      |   55 ++++++++-
+ src/components/ogre/terrain/TerrainEditor.h        |   13 ++-
+ src/components/ogre/widgets/TerrainEditor.layout   |    6 +
+ src/components/ogre/widgets/TerrainEditor.lua      |    6 +
+ 6 files changed, 221 insertions(+), 3 deletions(-)
+
+commit 56b6cc542c6e04062f8365fbefe3bc07f41a36f4
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 13 00:39:53 2008 +0200
+
+    Fixed a bug where the paged geometry can't handle non-square bounds.
+
+ src/components/ogre/environment/Forest.cpp         |   14 +++++++++++++-
+ src/components/ogre/environment/GrassFoliage.cpp   |   14 +++++++++++++-
+ .../ogre/environment/ShrubberyFoliage.cpp          |   15 ++++++++++++++-
+ 3 files changed, 40 insertions(+), 3 deletions(-)
+
+commit b5678eebfe78a4c02206ea70320b63e2f52a0d67
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon May 12 19:40:42 2008 +0200
+
+    Updated the doxygen format and provide a "make docs" target.
+
+ Makefile.am  |    7 +-
+ ember.dox.in |  772 ++++++++++++++--------------------------------------------
+ 2 files changed, 189 insertions(+), 590 deletions(-)
+
+commit 300810d8b4d9b0ddc922e6c1bc010595ad3a620d
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun May 11 23:43:13 2008 +0200
+
+    Updated docs.
+
+ src/components/ogre/model/mapping/Actions/Action.h |   17 +++++++++++------
+ .../ogre/model/mapping/Actions/DummyAction.h       |    2 +-
+ src/services/config/ConfigService.h                |    2 +-
+ 3 files changed, 13 insertions(+), 8 deletions(-)
+
+commit ecb13dc3cb912cedcf91d456049cf487d2ed63a4
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun May 11 23:42:28 2008 +0200
+
+    When exporting atlas, use the scale.
+
+ src/components/ogre/widgets/ModelEdit.lua |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit f6d4b31630a526a86fe4463d7d14d9c8c361bcec
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun May 11 23:41:47 2008 +0200
+
+    Remove extra slash
+
+ src/components/ogre/terrain/TerrainGenerator.cpp |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit c156508c52f1fa5580ffe704a7b5999d62afb2a4
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun May 11 23:40:28 2008 +0200
+
+    Use scale if defined.
+
+ .../ogre/model/ModelDefinitionAtlasComposer.cpp    |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+commit 18aded4072914c46cc8284e30db6d8ff46929038
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun May 11 23:35:32 2008 +0200
+
+    Fixed terrain loading which was broken by Ogre 1.4.8.
+    
+    With 1.4.8, additional checks have been added when a file is loaded from the filesystem through the Ogre resource system. These checks make sure that if an absolute file name is used, it still must reside somewhere in the predefined resource locations.
+    The terrain.cfg file will however not reside in any location included in the ogre resource paths, and thus the Ogre resource system can't be used. We've therefore modified the PLSM2 to be able to load all options through a stream object instead . We create this stream object ourselves and never touches the Ogre system.
+
+ .../include/OgrePagingLandScapeOptions.h           |    2 +-
+ .../src/EmberPagingLandScapeData2D_HeightField.cpp |   29 ++++++++++++++++++-
+ .../src/EmberPagingSceneManagerAdapter.cpp         |   23 +++++++++++++++-
+ .../src/OgrePagingLandScapeOptions.cpp             |   19 +++++++++----
+ 4 files changed, 63 insertions(+), 10 deletions(-)
+
+commit 7225a055b3a1352d118162af0ed11ade1ee85b55
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun May 11 23:34:35 2008 +0200
+
+    Readded the cvs ignore files, in case we'll get the cvs mirroring working.
+
+ src/.cvsignore                                     |    8 ++
+ src/components/.cvsignore                          |    2 +
+ src/components/ogre/.cvsignore                     |   35 +++++++++
+ src/components/ogre/SceneManagers/.cvsignore       |    2 +
+ .../EmberPagingSceneManager/.cvsignore             |    2 +
+ .../EmberPagingSceneManager/include/.cvsignore     |    2 +
+ .../EmberPagingSceneManager/src/.cvsignore         |   78 ++++++++++++++++++++
+ src/components/ogre/carpenter/.cvsignore           |    7 ++
+ src/components/ogre/cegui/.cvsignore               |    2 +
+ src/components/ogre/environment/.cvsignore         |   15 ++++
+ src/components/ogre/environment/caelum/.cvsignore  |   13 +++
+ .../ogre/environment/meshtree/.cvsignore           |    8 ++
+ src/components/ogre/input/.cvsignore               |    7 ++
+ src/components/ogre/jesus/.cvsignore               |    9 ++
+ src/components/ogre/manipulation/.cvsignore        |   10 +++
+ src/components/ogre/model/.cvsignore               |   15 ++++
+ src/components/ogre/model/mapping/.cvsignore       |   45 +++++++++++
+ src/components/ogre/modeldefinitions/.cvsignore    |    2 +
+ src/components/ogre/ogreopcode/.cvsignore          |    1 +
+ src/components/ogre/ogreopcode/include/.cvsignore  |    2 +
+ .../ogre/ogreopcode/include/Opcode/.cvsignore      |    2 +
+ src/components/ogre/ogreopcode/src/.cvsignore      |   27 +++++++
+ .../ogre/ogreopcode/src/Opcode/.cvsignore          |   42 +++++++++++
+ src/components/ogre/scripting/.cvsignore           |    6 ++
+ src/components/ogre/scripting/bindings/.cvsignore  |    2 +
+ .../ogre/scripting/bindings/lua/.cvsignore         |    6 ++
+ .../ogre/scripting/bindings/lua/helpers/.cvsignore |   10 +++
+ .../ogre/scripting/bindings/lua/ogre/.cvsignore    |    6 ++
+ src/components/ogre/sound/.cvsignore               |    6 ++
+ src/components/ogre/terrain/.cvsignore             |   11 +++
+ src/components/ogre/widgets/.cvsignore             |   36 +++++++++
+ src/components/ogre/widgets/adapters/.cvsignore    |    2 +
+ .../ogre/widgets/adapters/atlas/.cvsignore         |   18 +++++
+ src/components/ogre/widgets/icons/.cvsignore       |   10 +++
+ src/components/text/.cvsignore                     |    3 +
+ src/extensions/.cvsignore                          |    4 +
+ src/framework/.cvsignore                           |   16 ++++
+ src/framework/bindings/.cvsignore                  |    2 +
+ src/framework/bindings/lua/.cvsignore              |    6 ++
+ src/framework/bindings/lua/atlas/.cvsignore        |    6 ++
+ src/framework/bindings/lua/eris/.cvsignore         |    6 ++
+ src/main/.cvsignore                                |    7 ++
+ src/main/bindings/.cvsignore                       |    2 +
+ src/main/bindings/lua/.cvsignore                   |    6 ++
+ src/services/.cvsignore                            |    7 ++
+ src/services/bindings/.cvsignore                   |    2 +
+ src/services/bindings/lua/.cvsignore               |    6 ++
+ src/services/config/.cvsignore                     |    7 ++
+ src/services/input/.cvsignore                      |    3 +
+ src/services/logging/.cvsignore                    |    7 ++
+ src/services/metaserver/.cvsignore                 |    7 ++
+ src/services/scripting/.cvsignore                  |    6 ++
+ src/services/server/.cvsignore                     |    5 +
+ src/services/sound/.cvsignore                      |    7 ++
+ src/services/test/.cvsignore                       |    3 +
+ src/services/time/.cvsignore                       |    6 ++
+ src/services/wfut/.cvsignore                       |    7 ++
+ 57 files changed, 580 insertions(+), 0 deletions(-)
+
+commit ac447551a564bfc02117649d068c1b559eb2e0c3
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu May 8 23:12:42 2008 +0200
+
+    Removed obsolete cvs files.
+
+ media/.cvsignore       |    3 ---
+ media/packs/.cvsignore |    2 --
+ 2 files changed, 0 insertions(+), 5 deletions(-)
+
+commit b99467c6b2e90762308f256440880c542aba7112
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu May 8 23:11:52 2008 +0200
+
+    Removed obsolete cvs files. These are all replaced with .gitignore.
+
+ src/.cvsignore                                     |    8 --
+ src/components/.cvsignore                          |    2 -
+ src/components/ogre/.cvsignore                     |   35 ---------
+ src/components/ogre/SceneManagers/.cvsignore       |    2 -
+ .../EmberPagingSceneManager/.cvsignore             |    2 -
+ .../EmberPagingSceneManager/include/.cvsignore     |    2 -
+ .../EmberPagingSceneManager/src/.cvsignore         |   78 --------------------
+ src/components/ogre/carpenter/.cvsignore           |    7 --
+ src/components/ogre/cegui/.cvsignore               |    2 -
+ src/components/ogre/environment/.cvsignore         |   15 ----
+ src/components/ogre/environment/caelum/.cvsignore  |   13 ---
+ .../ogre/environment/meshtree/.cvsignore           |    8 --
+ src/components/ogre/input/.cvsignore               |    7 --
+ src/components/ogre/jesus/.cvsignore               |    9 --
+ src/components/ogre/manipulation/.cvsignore        |   10 ---
+ src/components/ogre/model/.cvsignore               |   15 ----
+ src/components/ogre/model/mapping/.cvsignore       |   45 -----------
+ src/components/ogre/modeldefinitions/.cvsignore    |    2 -
+ src/components/ogre/ogreopcode/.cvsignore          |    2 -
+ src/components/ogre/ogreopcode/include/.cvsignore  |    2 -
+ .../ogre/ogreopcode/include/Opcode/.cvsignore      |    2 -
+ src/components/ogre/ogreopcode/opcode/.cvsignore   |    1 -
+ src/components/ogre/ogreopcode/src/.cvsignore      |   27 -------
+ .../ogre/ogreopcode/src/Opcode/.cvsignore          |   42 -----------
+ src/components/ogre/scripting/.cvsignore           |    6 --
+ src/components/ogre/scripting/bindings/.cvsignore  |    2 -
+ .../ogre/scripting/bindings/lua/.cvsignore         |    6 --
+ .../ogre/scripting/bindings/lua/helpers/.cvsignore |   10 ---
+ .../ogre/scripting/bindings/lua/ogre/.cvsignore    |    6 --
+ src/components/ogre/sound/.cvsignore               |    6 --
+ src/components/ogre/terrain/.cvsignore             |   11 ---
+ src/components/ogre/widgets/.cvsignore             |   36 ---------
+ src/components/ogre/widgets/adapters/.cvsignore    |    2 -
+ .../ogre/widgets/adapters/atlas/.cvsignore         |   18 -----
+ src/components/ogre/widgets/icons/.cvsignore       |   10 ---
+ src/components/text/.cvsignore                     |    3 -
+ src/extensions/.cvsignore                          |    4 -
+ src/framework/.cvsignore                           |   16 ----
+ src/framework/bindings/.cvsignore                  |    2 -
+ src/framework/bindings/lua/.cvsignore              |    6 --
+ src/framework/bindings/lua/atlas/.cvsignore        |    6 --
+ src/framework/bindings/lua/eris/.cvsignore         |    6 --
+ src/main/.cvsignore                                |    7 --
+ src/main/bindings/.cvsignore                       |    2 -
+ src/main/bindings/lua/.cvsignore                   |    6 --
+ src/services/.cvsignore                            |    7 --
+ src/services/bindings/.cvsignore                   |    2 -
+ src/services/bindings/lua/.cvsignore               |    6 --
+ src/services/config/.cvsignore                     |    7 --
+ src/services/input/.cvsignore                      |    3 -
+ src/services/logging/.cvsignore                    |    7 --
+ src/services/metaserver/.cvsignore                 |    7 --
+ src/services/scripting/.cvsignore                  |    6 --
+ src/services/server/.cvsignore                     |   10 ---
+ src/services/sound/.cvsignore                      |    7 --
+ src/services/test/.cvsignore                       |    3 -
+ src/services/time/.cvsignore                       |    6 --
+ src/services/wfut/.cvsignore                       |    7 --
+ 58 files changed, 0 insertions(+), 587 deletions(-)
+
+commit 1e03ab9b587f03e022409eb46a4a604fdd0f683f
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu May 8 23:10:17 2008 +0200
+
+    Removed obsolete classes. These were never used.
+
+ src/services/datamodel/.cvsignore           |    5 -
+ src/services/datamodel/BoolProvider.cpp     |  153 ------
+ src/services/datamodel/BoolProvider.h       |  134 -----
+ src/services/datamodel/DataModel.h          |  126 -----
+ src/services/datamodel/DataModelService.cpp |   91 ----
+ src/services/datamodel/DataModelService.h   |  146 -----
+ src/services/datamodel/DataObject.cpp       |  774 ---------------------------
+ src/services/datamodel/DataObject.h         |  274 ----------
+ src/services/datamodel/DataProvider.cpp     |  328 -----------
+ src/services/datamodel/DataProvider.h       |  273 ----------
+ src/services/datamodel/FloatProvider.cpp    |  153 ------
+ src/services/datamodel/FloatProvider.h      |  134 -----
+ src/services/datamodel/FolderProvider.cpp   |  226 --------
+ src/services/datamodel/FolderProvider.h     |  161 ------
+ src/services/datamodel/IntProvider.cpp      |  153 ------
+ src/services/datamodel/IntProvider.h        |  134 -----
+ src/services/datamodel/LinkProvider.cpp     |  260 ---------
+ src/services/datamodel/LinkProvider.h       |  148 -----
+ src/services/datamodel/Makefile.am          |    5 -
+ src/services/datamodel/StringProvider.cpp   |  152 ------
+ src/services/datamodel/StringProvider.h     |  134 -----
+ 21 files changed, 0 insertions(+), 3964 deletions(-)
+
+commit 040a13f43924ee57f5d551d006ca8992023f9f2c
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed May 7 20:56:57 2008 +0200
+
+    The box is now in the svn media.
+
+ src/components/ogre/EmberPhysicalEntity.cpp |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 8c5a21b79b5dfb9707c68516b0d66dcb71d68117
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed May 7 20:56:33 2008 +0200
+
+    Updated media.
+
+ .../ogre/modeldefinitions/birchA.modeldef          |    2 +-
+ .../ogre/modeldefinitions/birchB.modeldef          |    4 ++--
+ .../ogre/modeldefinitions/bottle.modeldef          |    2 +-
+ src/components/ogre/modeldefinitions/bush.modeldef |    2 +-
+ .../ogre/modeldefinitions/items.modeldef.xml       |    2 +-
+ .../modeldefinitions/marketstall_canvasA.modeldef  |    6 +++---
+ .../modeldefinitions/modelmappings.modelmap.xml    |   12 ++++++++++++
+ src/components/ogre/modeldefinitions/moraf.terrain |    2 +-
+ 8 files changed, 22 insertions(+), 10 deletions(-)
+
+commit 5575add6da5c70a31f4bfff16a868dd0c3506f5d
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed May 7 20:45:05 2008 +0200
+
+    Fixed incorrect export format.
+
+ .../ogre/model/ModelDefinitionAtlasComposer.cpp    |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 8ee83a6b4ffe7d45d2f149d1404180cab6abc24c
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Wed May 7 20:15:18 2008 +0200
+
+    Fixed incorrect conversion between ogre and atlas.
+
+ src/components/ogre/MathConverter.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 38cf515b4d8542d95a7e652e423e78149e0e17cf
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 6 23:01:42 2008 +0200
+
+    These have been moved to svn.
+
+ media/models/arrow.blend      |  Bin 415512 -> 0 bytes
+ media/models/arrow.mesh       |  Bin 6988 -> 0 bytes
+ media/models/placeholder.mesh |  Bin 2115 -> 0 bytes
+ 3 files changed, 0 insertions(+), 0 deletions(-)
+
+commit ebe5a27ccd3aecc9dcdc846f161bbe417fc738b7
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 6 22:53:23 2008 +0200
+
+    Updated the dev media script after we've changed the location of the make_dist_media.sh script.
+
+ refresh-amber-media-dev.sh |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 66040f76b7571f2697b8fe4e79408574b3677c6c
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 6 22:53:10 2008 +0200
+
+    Updated media.
+
+ .../ogre/modeldefinitions/acorn.modeldef           |    2 +-
+ .../ogre/modeldefinitions/apple.modeldef           |    2 +-
+ .../ogre/modeldefinitions/carrot.modeldef          |    2 +-
+ .../ogre/modeldefinitions/gallows.modeldef         |    4 ++--
+ .../ogre/modeldefinitions/lumber.modeldef          |    6 +++---
+ .../modeldefinitions/marketstall_canvasB.modeldef  |    6 +++---
+ .../modeldefinitions/marketstall_canvasC.modeldef  |    6 +++---
+ 7 files changed, 14 insertions(+), 14 deletions(-)
+
+commit c51d198c91fd1d1dcc5f5cdf166473d5693e7365
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 6 22:51:06 2008 +0200
+
+    Make it so that all entities which inherit from game_entity are shown with a placeholder if there's no more fitting match, unless some types which we don't want any models for.
+
+ .../modeldefinitions/modelmappings.modelmap.xml    |   12 +++++++++++-
+ 1 files changed, 11 insertions(+), 1 deletions(-)
+
+commit f24c36c2ceedc37026816db073cc765610389a60
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 6 22:50:14 2008 +0200
+
+    Add support for the shorthand tag <nomodel name="..."> which allows you to disable models for certain entity types.
+
+ .../XMLModelMappingDefinitionSerializer.cpp        |  108 ++++++++++++-------
+ 1 files changed, 68 insertions(+), 40 deletions(-)
+
+commit 644cff980a81a94f6dc37f87c2c6c5d82e216c90
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 6 22:48:00 2008 +0200
+
+    When determining whether an entity is physical or not by checking if there's a modelmapping available for it, and that the first action isn't to hide it.
+    
+    This isn't optional and we would need to change this when we refactor the entity classes to be more component based.
+
+ src/components/ogre/EmberEntityFactory.cpp |   41 ++++++++++++++++++++-------
+ 1 files changed, 30 insertions(+), 11 deletions(-)
+
+commit 86ebb45ef905e9bba13bee9e05cc7294642fab1d
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 6 22:47:22 2008 +0200
+
+    Make EmberEntityHideModelAction so it can access showMesh(...)
+
+ src/components/ogre/EmberPhysicalEntity.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 18e3214fc0330a6cf76264afd62e61d8d881529b
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 6 22:45:23 2008 +0200
+
+    Create instances of EmberEntityHideModelAction from the "hide-model" action type.
+
+ src/components/ogre/EmberEntityActionCreator.cpp |    4 ++++
+ src/components/ogre/EmberEntityModelAction.h     |    1 +
+ src/components/ogre/EmberEntityPartAction.h      |    1 +
+ 3 files changed, 6 insertions(+), 0 deletions(-)
+
+commit af93a6ac29f9ad8861ec8cbe1e824f9934b2f3a6
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 6 22:43:54 2008 +0200
+
+    Added actions for hiding the model. This will also be used in EmberEntityFactory to determine which entites that aren't physical.
+
+ src/components/ogre/EmberEntityHideModelAction.cpp |   51 +++++++++++++++++++
+ src/components/ogre/EmberEntityHideModelAction.h   |   53 ++++++++++++++++++++
+ src/components/ogre/Makefile.am                    |    4 +-
+ 3 files changed, 106 insertions(+), 2 deletions(-)
+
+commit 4c11ae3118f4cc88bd4fe9bcb67c095d7a220a05
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 6 21:13:45 2008 +0200
+
+    Update media.
+
+ media/materials/scripts/vegetation.material        |  207 +++++++++++++++-----
+ .../ogre/modeldefinitions/birchA.modeldef          |   13 +-
+ .../ogre/modeldefinitions/birchB.modeldef          |   13 +-
+ src/components/ogre/modeldefinitions/bush.modeldef |   20 ++
+ .../ogre/modeldefinitions/chest.modeldef           |   50 +++++
+ .../ogre/modeldefinitions/fencegate.modeldef       |    8 +-
+ .../ogre/modeldefinitions/fencepole.modeldef       |    8 +-
+ .../ogre/modeldefinitions/fencesection.modeldef    |    6 +-
+ src/components/ogre/modeldefinitions/fern.modeldef |    2 +-
+ src/components/ogre/modeldefinitions/leaf.modeldef |    2 +-
+ .../modeldefinitions/modelmappings.modelmap.xml    |    2 +-
+ src/components/ogre/modeldefinitions/moraf.terrain |   14 +-
+ .../ogre/modeldefinitions/mushroom_A.modeldef      |    2 +-
+ .../ogre/modeldefinitions/mushroom_B.modeldef      |    2 +-
+ 14 files changed, 262 insertions(+), 87 deletions(-)
+
+commit 5a3e3e132c395f07dfde0edbe1e80e34f14bc911
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 6 21:07:32 2008 +0200
+
+    Update bindings.
+
+ .../scripting/bindings/lua/SimpleRenderContext.pkg |  215 ++++++++++++++++++++
+ 1 files changed, 215 insertions(+), 0 deletions(-)
+
+commit 96c4b7dd713f622293424b486010f27e52b2a90d
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 6 21:07:03 2008 +0200
+
+    Update bindings.
+
+ .../ogre/scripting/bindings/lua/EmberOgre.pkg      |    1 +
+ .../ogre/scripting/bindings/lua/Model.pkg          |   13 +
+ .../bindings/lua/MovableObjectRenderer.pkg         |   21 +
+ .../ogre/scripting/bindings/lua/lua_EmberOgre.cpp  | 1249 +++++++++++++++++++-
+ .../ogre/scripting/bindings/lua/required.h         |    3 +
+ 5 files changed, 1265 insertions(+), 22 deletions(-)
+
+commit c11c7fc29fea7509e3aeb52a1b6b23862884dc78
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 6 21:06:03 2008 +0200
+
+    Also export the rendering technique element.
+
+ .../ogre/model/XMLModelDefinitionSerializer.cpp    |   16 ++++++++++++++++
+ 1 files changed, 16 insertions(+), 0 deletions(-)
+
+commit 30ecf62771bd4ec983c6038ada92f5087ecff029
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 6 21:05:18 2008 +0200
+
+    Properly clean up.
+
+ src/components/ogre/terrain/TerrainEditor.cpp |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
+
+commit b237ad4f7aa92439cc835cbbbd181bd123f867d8
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 6 21:05:00 2008 +0200
+
+    Check for null.
+
+ src/components/ogre/widgets/ModelRenderer.cpp |   13 +++++++------
+ 1 files changed, 7 insertions(+), 6 deletions(-)
+
+commit 45d3e55358aed2507681fc7cbf9ab5965017db84
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 6 21:03:52 2008 +0200
+
+    Scale the axes mesh down a little so it's roughly one meter across.
+
+ media/packs/OgreCore.zip |  Bin 151536 -> 152223 bytes
+ 1 files changed, 0 insertions(+), 0 deletions(-)
+
+commit 45fdf1fedd0b84f26b6ece8cdd99cb453973d861
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 6 21:02:38 2008 +0200
+
+    By default show the axes and make the camera rotate around the center of the world instead of the center of the mesh. This should be switchable in the gui though.
+
+ src/components/ogre/widgets/ModelEdit.lua |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit eed38e88891cc7fa65190a37ecfe517fec432621
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 6 21:01:24 2008 +0200
+
+    Added a method for putting a helpful axes mesh in the centre of the scene. It default to having a size of roughly one meter.
+
+ .../ogre/widgets/MovableObjectRenderer.cpp         |   41 +++++++++++++++++++-
+ .../ogre/widgets/MovableObjectRenderer.h           |   27 ++++++++++++-
+ 2 files changed, 66 insertions(+), 2 deletions(-)
+
+commit d447d1cae138616ab7dcf478826afcfefc5fe78f
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 6 21:00:03 2008 +0200
+
+    Don't unload the bootstrap group.
+    
+    It's very small, and we need the "axes.mesh" in it.
+
+ src/components/ogre/widgets/LoadingBar.cpp |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 7ef8a911f782b03a6fae5448935292a55944dc11
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 6 20:59:16 2008 +0200
+
+    Allow for different camera orientation techniques, not only putting the focus on the middle of the model.
+
+ src/components/ogre/SimpleRenderContext.cpp |   25 ++++++++++++---
+ src/components/ogre/SimpleRenderContext.h   |   43 +++++++++++++++++++++++++++
+ 2 files changed, 63 insertions(+), 5 deletions(-)
+
+commit 35778cd28bf88a0ff7735e5cf1cb2377f8160b36
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 6 20:58:21 2008 +0200
+
+    Added better docs.
+
+ src/components/ogre/model/Model.h |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+commit 6c734c0070d87199b3a1487dada378de01358f3e
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Tue May 6 20:54:46 2008 +0200
+
+    Added methods for setting whether the skeleton should be displayed or not.
+
+ src/components/ogre/model/Model.cpp |   18 ++++++++++++++++++
+ src/components/ogre/model/Model.h   |    5 +++++
+ 2 files changed, 23 insertions(+), 0 deletions(-)
+
+commit 903380db6f4541e0d8136c242d4ee0e16aef1696
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon May 5 00:17:17 2008 +0200
+
+    By default apply the transations and rotations as defined in the model when showing it. Also exposed a public method for updating it which should be called whenever the model settings are changed.
+
+ .../ogre/scripting/bindings/lua/ModelRenderer.pkg  |    4 ++
+ .../ogre/scripting/bindings/lua/lua_EmberOgre.cpp  |   34 +++++++++++++++++++-
+ src/components/ogre/widgets/ModelEdit.lua          |    3 ++
+ src/components/ogre/widgets/ModelRenderer.cpp      |   21 ++++++++++++
+ src/components/ogre/widgets/ModelRenderer.h        |    5 ++-
+ 5 files changed, 65 insertions(+), 2 deletions(-)
+
+commit b48bc5a4b426100942dc2678675b6a2383a8dadd
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon May 5 00:16:14 2008 +0200
+
+    Optimize initializations.
+
+ src/components/ogre/EmberPhysicalEntity.cpp |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
+
+commit acbf3baf7786796845efafce388a689e9c2ed060
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon May 5 00:15:33 2008 +0200
+
+    Updated media with new meshes and materials.
+
+ media/materials/base_scripts/base.material         |   30 +++++++++
+ media/materials/scripts/creatures.material         |    6 +-
+ media/materials/scripts/tools.material             |   35 +++++++++++-
+ media/materials/scripts/vegetation.material        |   63 +++++++++++---------
+ .../ogre/modeldefinitions/acorn.modeldef           |    2 +-
+ .../ogre/modeldefinitions/apple.modeldef           |    8 +-
+ .../ogre/modeldefinitions/barrel.modeldef          |    8 +--
+ src/components/ogre/modeldefinitions/boat.modeldef |    4 +-
+ .../ogre/modeldefinitions/bottle.modeldef          |    6 +-
+ .../ogre/modeldefinitions/bowls.modeldef           |   30 +++++++++
+ .../ogre/modeldefinitions/camelia.modeldef         |    2 +-
+ .../ogre/modeldefinitions/carrot.modeldef          |    2 +-
+ .../ogre/modeldefinitions/creatures.modeldef.xml   |   51 ++++++++++++++--
+ .../ogre/modeldefinitions/house3.modeldef          |    6 +-
+ .../ogre/modeldefinitions/jetty.modeldef           |    4 +-
+ .../ogre/modeldefinitions/kobold.modeldef          |   11 ++-
+ .../modeldefinitions/modelmappings.modelmap.xml    |   39 +++++++++++-
+ src/components/ogre/modeldefinitions/moraf.terrain |   62 +++++++++++++++++---
+ .../ogre/modeldefinitions/mushroom.modeldef        |   39 ------------
+ .../ogre/modeldefinitions/mushroom_A.modeldef      |   40 ++++++++++++
+ .../ogre/modeldefinitions/mushroom_B.modeldef      |   40 ++++++++++++
+ .../ogre/modeldefinitions/tower.modeldef           |    6 +-
+ .../ogre/modeldefinitions/turnip.modeldef          |    4 +-
+ 23 files changed, 380 insertions(+), 118 deletions(-)
+
+commit dcc0288c3ab100b180e05ed740469082f25d1cb1
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun May 4 23:52:15 2008 +0200
+
+    Removed local specific settings
+
+ src/components/ogre/resources.cfg |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 92e63f9a6df46b056116ce90f0eb83573c57ff3e
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun May 4 23:49:46 2008 +0200
+
+    Added helpful comments on how the resource file is built.
+
+ src/components/ogre/resources.cfg |   22 ++++++++++++++++------
+ 1 files changed, 16 insertions(+), 6 deletions(-)
+
+commit d9106b7e28a822492ac6028d5571e86207981733
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sat May 3 16:42:06 2008 +0200
+
+    Fix incorrect case spcification on the bread.
+
+ .../modeldefinitions/modelmappings.modelmap.xml    |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+commit 510ef281f7582e513d04a01ed9dc740ccca60cd0
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Fri May 2 01:56:02 2008 +0200
+
+    Added a button for exporting the model as an atlas type.
+
+ src/components/ogre/widgets/ModelEdit.layout |    6 ++++++
+ src/components/ogre/widgets/ModelEdit.lua    |    8 ++++++++
+ 2 files changed, 14 insertions(+), 0 deletions(-)
+
+commit fd8a93a0a0e604767777ea9bc60f3ccc92022a21
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Fri May 2 01:55:21 2008 +0200
+
+    Expand on methods to export the model as atlas to files.
+
+ .../ogre/model/ModelDefinitionAtlasComposer.cpp    |   66 ++++-
+ .../ogre/model/ModelDefinitionAtlasComposer.h      |    4 +-
+ .../ogre/scripting/bindings/lua/EmberOgre.pkg      |    1 +
+ .../bindings/lua/ModelDefinitionAtlasComposer.pkg  |   50 +++
+ .../ogre/scripting/bindings/lua/lua_EmberOgre.cpp  |  314 ++++++++++++++++++--
+ .../ogre/scripting/bindings/lua/required.h         |    1 +
+ 6 files changed, 405 insertions(+), 31 deletions(-)
+
+commit df84319ec050b8631191126a6f0cc2227ad498c6
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Fri May 2 00:30:42 2008 +0200
+
+    remove old media
+
+ media/materials/scripts/buildings.material         |   24 +++------
+ media/materials/scripts/creatures.material         |   22 ---------
+ media/materials/scripts/malebuilder.material       |   27 -----------
+ .../ogre/modeldefinitions/creatures.modeldef.xml   |    2 +-
+ .../ogre/modeldefinitions/drystan_archer.modeldef  |   22 ---------
+ .../ogre/modeldefinitions/environment.modeldef.xml |   49 +-------------------
+ 6 files changed, 11 insertions(+), 135 deletions(-)
+
+commit 2a0a404542a2bee1398026fe6363b8dca328cf75
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Fri May 2 00:29:57 2008 +0200
+
+    Various updates, mainly to avoid overwriting files that haven't changed.
+
+ make_dist_media.sh |   68 +++++++++++++++++++++++++++++-----------------------
+ 1 files changed, 38 insertions(+), 30 deletions(-)
+
+commit db88bc8660a14ba2b1d2063785e5a41c7a13aa16
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Fri May 2 00:29:34 2008 +0200
+
+    Don't ignore the make dist media shell script since it's not autogenerated anymore.
+
+ .gitignore |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 3feda0185dff0500e5b8ae05791efe9741694ef9
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu May 1 23:35:28 2008 +0200
+
+    Update with new media.
+
+ media/materials/scripts/buildings.material  |   87 +++++++++++++--------------
+ media/materials/scripts/creatures.material  |   54 +++++++++++++++--
+ media/materials/scripts/vegetation.material |   44 +++++++++++++-
+ 3 files changed, 130 insertions(+), 55 deletions(-)
+
+commit 79b673e64635ad74a20e4c717985c88978d661f6
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu May 1 23:34:47 2008 +0200
+
+    Update after media changes, use new nice meshes and materials.
+
+ src/components/ogre/modeldefinitions/boat.modeldef |    2 +-
+ .../ogre/modeldefinitions/chicken.modeldef         |  100 +++++++++++++++++++
+ .../ogre/modeldefinitions/creatures.modeldef.xml   |   77 ---------------
+ .../ogre/modeldefinitions/kobold.modeldef          |  101 ++++++++++++++++++++
+ .../modeldefinitions/modelmappings.modelmap.xml    |   74 ++++++++++++--
+ .../ogre/modeldefinitions/spider.modeldef          |   54 +++++++++++
+ 6 files changed, 320 insertions(+), 88 deletions(-)
+
+commit b271e394063ca22f85d309c026470fca96077f11
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu May 1 23:33:10 2008 +0200
+
+    Bump version and remove make_dist_media.sh.in from the prebuild step.
+
+ configure.ac |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit 36e5457f2ce6ed61db229a3e163ac677259b3fbe
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu May 1 23:32:22 2008 +0200
+
+    No need to use automake for this, use it as a script where it is instead.
+
+ make_dist_media.sh    |  160 +++++++++++++++++++++++++++++++++++++++++++++++++
+ make_dist_media.sh.in |  143 -------------------------------------------
+ 2 files changed, 160 insertions(+), 143 deletions(-)
+
+commit 184d3f2100da6c0623c49d861488680ecc459aeb
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Thu May 1 16:59:58 2008 +0200
+
+    Added an atlas composer class which is useful for generating atlas type definitions from Models. This should help us with getting more of the media into the server as types.
+
+ src/components/ogre/model/Makefile.am              |   13 ++--
+ .../ogre/model/ModelDefinitionAtlasComposer.cpp    |   80 ++++++++++++++++++++
+ .../ogre/model/ModelDefinitionAtlasComposer.h      |   51 +++++++++++++
+ 3 files changed, 137 insertions(+), 7 deletions(-)
+
+commit 3ef07e9073bace13181df603c91279c7cabcee7d
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon Apr 28 22:05:17 2008 +0200
+
+    Write to log when trying to perform an action.
+
+ src/services/server/ConnectedAdapter.cpp |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 578214a8f3488f4a6527d1c97e90673dbd7f9bc6
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon Apr 28 22:04:53 2008 +0200
+
+    Cleanup.
+
+ src/components/ogre/widgets/Environment.layout |    1 +
+ src/components/ogre/widgets/ModelEdit.lua      |    7 +------
+ 2 files changed, 2 insertions(+), 6 deletions(-)
+
+commit 348fe8a464ff88c9d2caf42c9b17c3cd0d25df90
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon Apr 28 22:02:46 2008 +0200
+
+    Use the tree widget.
+
+ src/components/ogre/widgets/MakeEntityWidget.cpp   |  132 +++++++++-----------
+ src/components/ogre/widgets/MakeEntityWidget.h     |   40 +++++-
+ .../ogre/widgets/MakeEntityWidget.layout           |    4 +-
+ 3 files changed, 97 insertions(+), 79 deletions(-)
+
+commit dbcec4159b6205947b4251aaf7a8b624363ab784
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Apr 27 18:25:27 2008 +0200
+
+    Use the tree control.
+
+ src/components/ogre/widgets/ModelEdit.layout |    2 +-
+ src/components/ogre/widgets/ModelEdit.lua    |   40 ++++++++++++++++---------
+ 2 files changed, 26 insertions(+), 16 deletions(-)
+
+commit 0d796a77effdbdc6f2cc3fa40d949c7fbdca963b
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Apr 27 18:24:29 2008 +0200
+
+    Added coloured tree item which works just like the ColouredListItem.
+
+ .../scripting/bindings/lua/ColouredListItem.pkg    |   17 ++
+ .../ogre/scripting/bindings/lua/lua_EmberOgre.cpp  |  181 +++++++++++++++-----
+ src/components/ogre/widgets/ColouredListItem.cpp   |   60 +++++++-
+ src/components/ogre/widgets/ColouredListItem.h     |   23 +++-
+ 4 files changed, 236 insertions(+), 45 deletions(-)
+
+commit 96d967c278cf29a3bdc0e562e1dbb7088def2bd5
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Apr 27 18:24:11 2008 +0200
+
+    Added tree widget.
+
+ .../cegui/datafiles/imagesets/EmberLook.imageset   |    2 +
+ .../ogre/cegui/datafiles/imagesets/Imageset.xsd    |    2 +-
+ .../cegui/datafiles/looknfeel/EmberLook.looknfeel  |   93 +++++++++++++++++++-
+ .../cegui/datafiles/schemes/EmberLookSkin.scheme   |    3 +-
+ 4 files changed, 97 insertions(+), 3 deletions(-)
+
+commit 09571960ea858b5d40a4fe6cab6b16b4347c835c
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Apr 27 17:03:58 2008 +0200
+
+    Removed invalid parameters.
+
+ src/components/ogre/widgets/Status.layout |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
+
+commit a0adffa0b1157103223193c57965c10d4cbcbc4d
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Apr 27 17:03:02 2008 +0200
+
+    Optimise.
+
+ .../src/OgrePagingLandScapeOctreeSceneManager.cpp  |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 6212d9d6eb89285d26558072408c5eff50b326df
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Apr 27 16:00:57 2008 +0200
+
+    Apply patch from Marc Riese which fixes problem with gcc 4.3
+
+ src/components/ogre/AvatarLogger.h                 |    1 +
+ .../environment/caelum/include/LayeredClouds.h     |    1 +
+ .../pagedgeometry/include/ImpostorPage.h           |    3 +++
+ src/components/ogre/input/InputCommandMapper.cpp   |    1 +
+ .../AttributeComparers/HeightComparerWrapper.h     |    1 +
+ .../AttributeComparers/NumericComparerWrapper.h    |    1 +
+ .../AttributeComparers/StringComparerWrapper.h     |    1 +
+ .../ogre/widgets/adapters/atlas/NumberAdapter.cpp  |    1 +
+ src/components/ogre/widgets/icons/IconRenderer.h   |    1 +
+ src/services/config/ConfigService.cpp              |    1 +
+ src/services/logging/LoggingService.h              |    1 +
+ src/services/sound/SoundService.cpp                |    1 +
+ src/services/wfut/WfutService.h                    |    2 ++
+ 13 files changed, 16 insertions(+), 0 deletions(-)
+
+commit 0c9ec77509f655f31c1fab70c653ce193c891b11
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Apr 27 00:23:20 2008 +0200
+
+    Added monster skeleton material.
+
+ media/materials/scripts/creatures.material |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
+
+commit 81fbd313abbbf3b71cb2465ecf05c4fc3a391e77
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Apr 27 00:22:51 2008 +0200
+
+    Added monster skeleton.
+
+ .../modeldefinitions/monster_skeleton.modeldef     |   20 ++++++++++++++++++++
+ 1 files changed, 20 insertions(+), 0 deletions(-)
+
+commit ab208eb527b2d202b613981077cfbbe536640d35
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Apr 27 00:21:35 2008 +0200
+
+    Use the sphere mesh now found in the svn repo.
+
+ src/components/ogre/terrain/TerrainEditor.cpp |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 00d6bde2203355f33817c7535c73347cf4264e4a
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Apr 27 00:21:05 2008 +0200
+
+    Fixed typo.
+
+ .../ogre/modeldefinitions/stone_palisade.modeldef  |   27 ++++++++++++++++++++
+ .../ogre/modeldefinitions/stone_pallisade.modeldef |   27 --------------------
+ 2 files changed, 27 insertions(+), 27 deletions(-)
+
+commit 1e6304ea3a507020c0f21c812a980bccb1f2f99d
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Apr 27 00:17:14 2008 +0200
+
+    Use the box mesh.
+
+ .../ogre/modeldefinitions/placeholder.modeldef.xml |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit e86ea3bd959ca4d229089f2cb5d1e2460d707959
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Apr 27 00:16:54 2008 +0200
+
+    Updated model.
+
+ .../ogre/modeldefinitions/stone_pallisade.modeldef |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit a8a7535f0ac79b4b62817db9682767bd5716d0c1
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Apr 27 00:16:14 2008 +0200
+
+    Sync with trunk.
+
+ .../ogre/environment/caelum/include/Astronomy.h    |   39 +++++--
+ .../ogre/environment/caelum/include/CaelumSystem.h |    2 +-
+ .../ogre/environment/caelum/include/SkyDome.h      |    3 +-
+ .../ogre/environment/caelum/src/Astronomy.cpp      |  123 ++++++++++++--------
+ .../ogre/environment/caelum/src/CaelumSystem.cpp   |    2 +-
+ .../ogre/environment/caelum/src/GroundFog.cpp      |   36 +++---
+ .../ogre/environment/caelum/src/LayeredClouds.cpp  |   40 +++----
+ .../ogre/environment/caelum/src/SkyDome.cpp        |   11 +-
+ .../ogre/environment/caelum/src/Starfield.cpp      |   12 +-
+ src/components/ogre/environment/caelum/src/Sun.cpp |    8 +-
+ .../ogre/environment/caelum/src/UniversalClock.cpp |    5 +-
+ 11 files changed, 164 insertions(+), 117 deletions(-)
+
+commit 10afc0dff00f967b1f1e74307f3e277831f1c8eb
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Apr 27 00:10:10 2008 +0200
+
+    Abort any current animation when movement starts, removed duplicate visibility settings and updated comments.
+
+ src/components/ogre/EmberEntity.cpp         |   23 +++----
+ src/components/ogre/EmberPhysicalEntity.cpp |   52 ++++++++-------
+ src/components/ogre/EmberPhysicalEntity.h   |   92 ++++++++++++++++++++++++++-
+ 3 files changed, 129 insertions(+), 38 deletions(-)
+
+commit b4843c9a100004e86505b6e552222d1c638bd6b9
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Sat Apr 26 09:48:51 2008 +0400
+
+    Disable use of StackableContainer in admin widget until it support use of relative sizes. Make admin widget resizeable.
+
+ src/components/ogre/widgets/Admin.layout |   24 ++++++++++++------------
+ src/components/ogre/widgets/Admin.lua    |    2 ++
+ 2 files changed, 14 insertions(+), 12 deletions(-)
+
+commit 6e0103f5777ef2c18156d2598da0ec376f64c14c
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Fri Apr 25 16:49:58 2008 +0400
+
+    Fix segfault in shutdown signal handler.
+
+ src/components/ogre/OgreSetup.cpp |   17 ++++++++++++++---
+ 1 files changed, 14 insertions(+), 3 deletions(-)
+
+commit 0aa7884b2f1979ebf800c9756df6cb963fa686f4
+Author: Alexey Torkhov <atorkhov@gmail.com>
+Date:   Fri Apr 25 12:38:56 2008 +0400
+
+    Add ignores for autogenerated files.
+
+ .gitignore |    7 ++++++-
+ 1 files changed, 6 insertions(+), 1 deletions(-)
+
+commit b18e3b5306056ce6859ebc1fb83b6484c5010f55
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Fri Apr 25 00:59:58 2008 +0200
+
+    Fix compiler warnings.
+
+ .../pagedgeometry/source/BatchedGeometry.cpp       |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
+
+commit 3c1da4499efeada0de85a625e0fc8bdeb34d6508
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Fri Apr 25 00:59:36 2008 +0200
+
+    Use the dev media.
+
+ ember.conf |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit bdd8deb7555f04f97f300abdae3f8f8fa04c3893
+Merge: 006435b... 1d4a092...
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Fri Apr 25 00:54:18 2008 +0200
+
+    Merge branch '0.5.2'
+
+commit 006435be0c818fdd9acf9fb05c7a754e690eb17e
+Merge: 8856d08... 734fda8...
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Fri Apr 25 00:39:30 2008 +0200
+
+    Merge commit '0.5.2'
+
+commit 1d4a0928fbc5f6b0c9aa9d0f3d43c17b6a294f6b
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Fri Apr 25 00:20:11 2008 +0200
+
+    Default to lua 5.1 now that CEGUI 0.6 supports that natively.
+
+ configure.ac |   24 ++++++++++++------------
+ 1 files changed, 12 insertions(+), 12 deletions(-)
+
+commit 76cd7400c2bb77988372b69e027c5d584597dd90
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Fri Apr 25 00:19:31 2008 +0200
+
+    Fix compiler warnings.
+
+ src/components/ogre/GUIManager.cpp                 |    2 +-
+ src/components/ogre/environment/FoliageLoader.cpp  |    4 ++--
+ src/components/ogre/environment/GrassFoliage.cpp   |    3 ++-
+ src/components/ogre/environment/meshtree/TStem.cpp |    6 ++++--
+ .../pagedgeometry/source/PagedGeometry.cpp         |    4 ++--
+ .../modeldefinitions/modelmappings.modelmap.xml    |   16 ++++++++++++++++
+ src/services/sound/SoundService.cpp                |    4 ++--
+ 7 files changed, 29 insertions(+), 10 deletions(-)
+
+commit 8856d08387f1664ed7f8bc47b5d03ce66c150bce
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon Apr 21 23:47:41 2008 +0200
+
+    Rely on the umask instead.
+
+ Makefile.am |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit d488a9d657d93a03839cfcdeb69a34676639beb2
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon Apr 21 22:50:46 2008 +0200
+
+    Don't delete the SDL surface, since that seems to already be handled by the destruction of the RenderWindow.
+
+ src/components/ogre/OgreSetup.cpp |    9 +++++----
+ src/components/ogre/OgreSetup.h   |    3 +++
+ 2 files changed, 8 insertions(+), 4 deletions(-)
+
+commit 41bbd8c01659c91eb4ee030c06da9e9e4c955718
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon Apr 21 22:10:49 2008 +0200
+
+    Don't preserve ownership when syncing.
+
+ Makefile.am |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit c546c6417d4b1a0fd1b1a165f951b8e7c3cb4ebd
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Mon Apr 21 00:28:25 2008 +0200
+
+    Fixed a couple of memory leaks as found by valgrind.
+
+ src/components/ogre/EmberOgre.cpp                  |    2 +-
+ src/components/ogre/OgreSetup.cpp                  |   38 ++++++++++++++++---
+ src/components/ogre/OgreSetup.h                    |   15 ++++++++
+ src/components/ogre/model/ModelDefinition.cpp      |    8 ++++
+ src/components/ogre/model/ModelDefinition.h        |    1 +
+ .../ogre/model/ModelDefinitionManager.cpp          |   12 +++++--
+ src/components/ogre/model/ModelDefinitionManager.h |    7 ++++
+ 7 files changed, 73 insertions(+), 10 deletions(-)
+
+commit 734fda818eb9f076cfa357048681581f98986655
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Apr 20 11:51:59 2008 +0200
+
+    Use 0.5.2 media
+
+ ember.conf |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit c6004a9ee9cf06875d6bdcad6e38a524a99c8337
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sun Apr 20 01:23:29 2008 +0200
+
+    Added change log file generated by git since this is required by the automake system.
+
+ ChangeLog |40091 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 40091 insertions(+), 0 deletions(-)
+
+commit 5f803d3189a2a0ef60b700ea30ff5bd432da9b9a
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
+Date:   Sat Apr 19 23:54:14 2008 +0200
+
+    New release.
+
+ NEWS |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
 commit d6adedd85f9c55a8f190613a0b06a587622b12be
 Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>
 Date:   Sat Apr 19 23:51:41 2008 +0200
