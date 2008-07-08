@@ -193,6 +193,13 @@ bool EntityMoveAdapter::injectChar(char character)
 
 bool EntityMoveAdapter::injectKeyDown(const SDLKey& key)
 {
+	if (mWorker) {
+		///by pressing and holding shift we'll allow the user to position it with more precision. We do this by switching the worker instances.
+		if (key == SDLK_LSHIFT || key == SDLK_RSHIFT) {
+			delete mWorker;
+			mWorker = new EntityMoveAdapterWorkerDiscrete(*this);
+		}
+	}
 	return true;
 }
 
@@ -201,7 +208,13 @@ bool EntityMoveAdapter::injectKeyUp(const SDLKey& key)
 	if (key == SDLK_ESCAPE) {
 		cancelMovement();
 		return false;
+	} else if (key == SDLK_LSHIFT || key == SDLK_RSHIFT) {
+		if (mWorker) {
+			delete mWorker;
+			mWorker = new EntityMoveAdapterWorkerTerrainCursor(*this);
+		}
 	}
+
 	return true;
 }
 

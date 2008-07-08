@@ -12,7 +12,7 @@ function Mover.updateEntityText(entity)
 		name = entity:getType():getName()
 	end	
 
-	Mover.widget:getWindow("EntityText"):setText("Moving " .. name .. ". Press left mouse button to place, escape to cancel. Pressing and holding shift increases movement speed. Mouse wheel rotates.")
+	Mover.widget:getWindow("EntityText"):setText("Moving " .. name .. ". Press left mouse button to place, escape to cancel. Pressing and holding shift decreases movement speed. Mouse wheel rotates.")
 end
 
 function Mover.StartMoving(entity)
