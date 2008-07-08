@@ -78,7 +78,7 @@ public:
 	 */
 	void executeCode(const std::string& scriptCode, const std::string& scriptType, IScriptingCallContext* callContext = 0);
 
-	void callFunction(const std::string& functionName, const std::string& scriptType, Ember::IScriptingCallContext* callContext = 0);
+	void callFunction(const std::string& functionName, int narg, const std::string& scriptType, Ember::IScriptingCallContext* callContext = 0);
 
 	/**
 	 *    The EventScriptError signal will be emitted when there is an error in a script.

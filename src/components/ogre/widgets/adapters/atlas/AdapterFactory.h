@@ -42,6 +42,8 @@ namespace Adapters {
 
 namespace Atlas {
 
+class AdapterBase;
+
 class StringAdapter;
 class NumberAdapter;
 class SizeAdapter;
@@ -151,6 +153,8 @@ public:
      * @return 
      */
     StaticAdapter* createStaticAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
+
+	AdapterBase* createAdapterByType(std::string type, CEGUI::Window* container, const std::string& adapterPrefix, ::Atlas::Message::Element& element);
 
 	/**
 	 *   @brief Loads the gui elements as specified in the submitted layout-file into the container window, using the supplied prefix.

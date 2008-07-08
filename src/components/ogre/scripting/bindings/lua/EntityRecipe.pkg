@@ -1,0 +1,32 @@
+$#include "components/ogre/manipulation/EntityRecipe.h"
+
+namespace EmberOgre {
+
+/**
+ * Resource that stores recipes for entity creator.
+ */
+class EntityRecipe : public Ogre::Resource {
+
+public:
+	EntityRecipe(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
+		const Ogre::String& group, bool isManual = false, Ogre::ManualResourceLoader* loader = 0);
+	virtual ~EntityRecipe();
+ 	void loadImpl(void);
+ 	void unloadImpl(void);
+	size_t calculateSize(void) const;
+//	GUIAdapter* createGUIAdapter(std::string name, std::string type);
+//	GUIAdapter* getGUIAdapter(std::string name);
+//	GUIAdapterBindings* createGUIAdapterBindings(std::string name);
+	void doTest();
+	void createEntity();
+};
+
+class EntityRecipePtr
+{
+public:
+	EntityRecipe* get();
+};
+
+}
+
+#endif

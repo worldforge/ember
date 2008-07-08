@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
+		<Property Name='UnifiedPosition' Value='{{0.5,-50},{0.5,-50}}'/>
+		<Property Name='UnifiedSize' Value='{{0,200},{0,100}}'/>
+		<Property Name='Alpha' Value='0.6'/>
+		<Property Name='Text' Value='Entity Creator'/>
+		<Window Type='DefaultGUISheet' Name='InnerWindow'>
+			<Property Name='UnifiedPosition' Value='{{0.00000,4.000000},{0.0000,20.000000}}'/>
+			<Property Name='UnifiedSize' Value='{{1.00000,-8.000000},{1.00000,-24.000000}}'/>
+			<Property Name='InheritsAlpha' Value='True'/>
+			<Window Type='EmberLook/Listbox' Name='RecipesList'>
+				<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+				<Property Name='UnifiedSize' Value='{{0.5,0},{0.7,0}}'/>
+				<Event Name="ItemSelectionChanged" Function="EntityCreator.RecipesList_SelectionChanged"/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='Create'>
+				<Property Name='UnifiedPosition' Value='{{0,0},{0.7,0}}'/>
+				<Property Name='UnifiedSize' Value='{{0.5,0},{0.3,0}}'/>
+				<Property Name='Text' Value='Create'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Event Name="MouseClick" Function="EntityCreator.Create_Click" />
+			</Window>
+			<Window Type='DefaultGUISheet' Name='AdaptersContainer'>
+				<Property Name='UnifiedPosition' Value='{{0.5,0},{0,0}}'/>
+				<Property Name='UnifiedSize' Value='{{0.5,0},{1,0}}'/>
+			</Window>
+		</Window>
+	</Window>
+</GUILayout>

@@ -334,6 +334,72 @@ StaticAdapter* AdapterFactory::createStaticAdapter(CEGUI::Window* container, con
 	}
 }
 
+AdapterBase* AdapterFactory::createAdapterByType(std::string type, CEGUI::Window* container, const std::string& adapterPrefix, ::Atlas::Message::Element& element)
+{
+	if (type == "string")
+	{
+		if (element.isNone()) { element = ""; }
+		return createStringAdapter(container, adapterPrefix, element);
+	}
+	else if (type == "number")
+	{
+		if (element.isNone()) { element = 0.0; }
+		return createNumberAdapter(container, adapterPrefix, element);
+	}
+	else if (type == "size")
+	{
+		if (element.isNone()) { element = ::Atlas::Message::ListType(); }
+		return createSizeAdapter(container, adapterPrefix, element);
+	}
+	else if (type == "position")
+	{
+		if (element.isNone())
+		{
+			::Atlas::Message::ListType list;
+			list.push_back(::Atlas::Message::Element(0.0f));
+			list.push_back(::Atlas::Message::Element(0.0f));
+			list.push_back(::Atlas::Message::Element(0.0f));
+			element = list;
+		}
+		return createPositionAdapter(container, adapterPrefix, element);
+	}
+	else if (type == "position2d")
+	{
+		if (element.isNone())
+		{
+			::Atlas::Message::ListType list;
+			list.push_back(::Atlas::Message::Element(0.0f));
+			list.push_back(::Atlas::Message::Element(0.0f));
+			element = list;
+		}
+		return createPosition2DAdapter(container, adapterPrefix, element);
+	}
+	else if (type == "map")
+	{
+		if (element.isNone()) { element = ::Atlas::Message::MapType();}
+		return createNumberAdapter(container, adapterPrefix, element);
+	}
+	else if (type == "list")
+	{
+		if (element.isNone()) { element = ::Atlas::Message::ListType(); }
+		return createListAdapter(container, adapterPrefix, element);
+	}
+	else if (type == "orientation")
+	{
+		if (element.isNone()) { element = ::Atlas::Message::ListType(); }
+		return createNumberAdapter(container, adapterPrefix, element);
+	}
+	else if (type == "static")
+	{
+		if (element.isNone()) { element = ""; }
+		return createStaticAdapter(container, adapterPrefix, element);
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 CEGUI::Window* AdapterFactory::loadLayoutIntoContainer(CEGUI::Window* container, const std::string& adapterPrefix, const std::string& layoutfile)
 {
 	try {

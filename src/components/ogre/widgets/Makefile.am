@@ -20,7 +20,7 @@ INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src
 METASOURCES = AUTO
 noinst_LTLIBRARIES = libWidgets.la
 libWidgets_la_SOURCES = AssetsManager.cpp ColouredListItem.cpp Compass.cpp \
-	ConsoleAdapter.cpp EntityCEGUITexture.cpp EntityEditor.cpp EntityIcon.cpp \
+	ConsoleAdapter.cpp EntityCEGUITexture.cpp EntityCreator.cpp EntityEditor.cpp EntityIcon.cpp \
 	EntityIconDragDropTarget.cpp EntityIconManager.cpp EntityIconSlot.cpp Help.cpp IconBar.cpp \
 	IconBase.cpp IngameChatWidget.cpp InspectWidget.cpp JesusEdit.cpp ListHolder.cpp \
 	LoadingBar.cpp MakeEntityWidget.cpp MeshPreview.cpp ModelRenderer.cpp \
@@ -29,7 +29,7 @@ libWidgets_la_SOURCES = AssetsManager.cpp ColouredListItem.cpp Compass.cpp \
 	WidgetPool.cpp 
 #TerrainEdit.cpp Map.cpp
 noinst_HEADERS = AssetsManager.h ColouredListItem.h ConsoleAdapter.h Compass.h \
-	EntityCEGUITexture.h EntityEditor.h EntityIcon.h EntityIconDragDropTarget.h \
+	EntityCEGUITexture.h EntityCreator.h EntityEditor.h EntityIcon.h EntityIconDragDropTarget.h \
 	EntityIconManager.h EntityIconSlot.h Help.h IconBar.h IconBase.h IngameChatWidget.h \
 	InspectWidget.h JesusEdit.h ListHolder.h LoadingBar.h MakeEntityWidget.h MeshPreview.h \
 	ModelRenderer.h MovableObjectRenderer.h OgreEntityRenderer.h QuaternionAdapter.h Quit.h \

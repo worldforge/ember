@@ -24,6 +24,7 @@
 #define __operator_index  operator[]
 
 #include <Atlas/Message/Element.h>
+#include <cstdlib>
 
 /**
 Utility method for the lua bindings which looks for a entry in a const map. If no entry is found we'll return null, which will be translated to "nil" in lua.
@@ -38,3 +39,35 @@ const Atlas::Message::Element& _MapType_findInMap(const Atlas::Message::MapType*
 		return *element;
 	}
 }
+
+/**
+ * Method that checks, is Lua variable has number type exactly, not a string
+ */
+TOLUA_API int tolua_isnumber_type (lua_State* L, int lo, int def, tolua_Error* err)
+{
+	if (def && lua_gettop(L)<abs(lo))
+		return 1;
+	if (lua_type(L,lo) == LUA_TNUMBER)
+		return 1;
+	err->index = lo;
+	err->array = 0;
+	err->type = "number";
+	return 0;
+}
+
+/**
+ * Method that checks, is Lua variable has string type exactly, not a number
+ */
+TOLUA_API int tolua_isstring_type (lua_State* L, int lo, int def, tolua_Error* err)
+{
+	if (def && lua_gettop(L)<abs(lo))
+		return 1;
+	if (lua_type(L,lo) == LUA_TSTRING)
+		return 1;
+	err->index = lo;
+	err->array = 0;
+	err->type = "string";
+	return 0;
+}
+
+#define tolua_iscppstring_type   tolua_isstring_type

@@ -1,0 +1,54 @@
+<entityrecipes>
+  <entityrecipe name="test">
+    <entity>
+      <atlas>
+        <map>
+          <int name="foo">$bar</int>
+          <float name="meep">1.5</float>
+          <string name="bar">$hello</string>
+          <list name="args">
+            <int>1</int>
+            <int>$foo</int>
+            <float>3.0</float>
+          </list>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+      <adapter name="value_of_a" type="position2d" />
+      <adapter name="value_of_b" type="number" />
+      <adapter name="value_of_c" type="number" />
+    </adapters>
+    <bindings>
+      <bind name="hello">
+        <adapter name="value_of_b" />
+      </bind>
+      <bind name="foo" func="testFunc">
+        <adapter name="value_of_a" />
+      </bind>
+      <bind name="bar">
+        <adapter name="value_of_c" />
+      </bind>
+    </bindings>
+    <script><![CDATA[
+      function testFunc(a)
+        print("Poof!")
+        print(tolua.type(a), a:isList(), a:asList():size())
+        for k, v in a:asList():pairs() do
+          print(k, '=>', tolua.type(v), v:getType())
+        end
+        return Atlas.Message.Element(123)
+      end
+
+      function fTest ()
+        print("Yay!")
+        return Atlas.Message.Element(123)
+      end
+
+      function fTest_error ()
+        print("Yay!")
+        return Atlas.Message.IntElement(123)
+      end
+    ]]></script>
+  </entityrecipe>
+</entityrecipes>

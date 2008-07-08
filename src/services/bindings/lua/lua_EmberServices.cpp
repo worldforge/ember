@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberServices
-** Generated automatically by tolua++-1.0.92 on Sun May 25 22:54:23 2008.
+** Generated automatically by tolua++-1.0.92 on Sun Jul  6 14:34:57 2008.
 */
 
 #ifndef __cplusplus
@@ -68,9 +68,149 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Atlas::Message::MapType");
 }
 
-/* method: getSingletonPtr of class  Ember::LoggingService */
-#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_LoggingService_getSingletonPtr00
-static int tolua_EmberServices_Ember_LoggingService_getSingletonPtr00(lua_State* tolua_S)
+/* function: S_LOG_VERBOSE */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_S_LOG_VERBOSE00
+static int tolua_EmberServices_S_LOG_VERBOSE00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isstring(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const char* message = ((const char*)  tolua_tostring(tolua_S,1,0));
+  {
+   S_LOG_VERBOSE(message);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'S_LOG_VERBOSE'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: S_LOG_INFO */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_S_LOG_INFO00
+static int tolua_EmberServices_S_LOG_INFO00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isstring(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const char* message = ((const char*)  tolua_tostring(tolua_S,1,0));
+  {
+   S_LOG_INFO(message);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'S_LOG_INFO'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: S_LOG_WARNING */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_S_LOG_WARNING00
+static int tolua_EmberServices_S_LOG_WARNING00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isstring(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const char* message = ((const char*)  tolua_tostring(tolua_S,1,0));
+  {
+   S_LOG_WARNING(message);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'S_LOG_WARNING'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: S_LOG_FAILURE */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_S_LOG_FAILURE00
+static int tolua_EmberServices_S_LOG_FAILURE00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isstring(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const char* message = ((const char*)  tolua_tostring(tolua_S,1,0));
+  {
+   S_LOG_FAILURE(message);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'S_LOG_FAILURE'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: S_LOG_CRITICAL */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_S_LOG_CRITICAL00
+static int tolua_EmberServices_S_LOG_CRITICAL00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isstring(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const char* message = ((const char*)  tolua_tostring(tolua_S,1,0));
+  {
+   S_LOG_CRITICAL(message);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'S_LOG_CRITICAL'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getInstance of class  Ember::LoggingService */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_LoggingService_getInstance00
+static int tolua_EmberServices_Ember_LoggingService_getInstance00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -83,44 +223,79 @@ static int tolua_EmberServices_Ember_LoggingService_getSingletonPtr00(lua_State*
 #endif
  {
   {
-   Ember::LoggingService* tolua_ret = (Ember::LoggingService*)  Ember::LoggingService::getSingletonPtr();
+   Ember::LoggingService* tolua_ret = (Ember::LoggingService*)  Ember::LoggingService::getInstance();
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ember::LoggingService");
   }
  }
  return 1;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getSingletonPtr'.",&tolua_err);
+ tolua_error(tolua_S,"#ferror in function 'getInstance'.",&tolua_err);
  return 0;
 #endif
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: getSingleton of class  Ember::LoggingService */
-#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_LoggingService_getSingleton00
-static int tolua_EmberServices_Ember_LoggingService_getSingleton00(lua_State* tolua_S)
+/* method: log of class  Ember::LoggingService */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_LoggingService_log00
+static int tolua_EmberServices_Ember_LoggingService_log00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertable(tolua_S,1,"Ember::LoggingService",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
+     !tolua_isusertype(tolua_S,1,"Ember::LoggingService",0,&tolua_err) ||
+     !tolua_isstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
+  Ember::LoggingService* self = (Ember::LoggingService*)  tolua_tousertype(tolua_S,1,0);
+  const char* message = ((const char*)  tolua_tostring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'log'",NULL);
+#endif
   {
-   Ember::LoggingService& tolua_ret = (Ember::LoggingService&)  Ember::LoggingService::getSingleton();
-   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"Ember::LoggingService");
+   self->log(message);
   }
  }
- return 1;
+ return 0;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getSingleton'.",&tolua_err);
+ tolua_error(tolua_S,"#ferror in function 'log'.",&tolua_err);
  return 0;
 #endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: log of class  Ember::LoggingService */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_LoggingService_log01
+static int tolua_EmberServices_Ember_LoggingService_log01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ember::LoggingService",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  Ember::LoggingService* self = (Ember::LoggingService*)  tolua_tousertype(tolua_S,1,0);
+  const Ember::LoggingService::MessageImportance importance = ((const Ember::LoggingService::MessageImportance)  tolua_tonumber(tolua_S,2,0));
+  const char* message = ((const char*)  tolua_tostring(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'log'",NULL);
+#endif
+  {
+   self->log(importance,message);
+  }
+ }
+ return 0;
+tolua_lerror:
+ return tolua_EmberServices_Ember_LoggingService_log00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
@@ -2247,6 +2422,11 @@ TOLUA_API int tolua_EmberServices_open (lua_State* tolua_S)
  tolua_reg_types(tolua_S);
  tolua_module(tolua_S,NULL,0);
  tolua_beginmodule(tolua_S,NULL);
+  tolua_function(tolua_S,"S_LOG_VERBOSE",tolua_EmberServices_S_LOG_VERBOSE00);
+  tolua_function(tolua_S,"S_LOG_INFO",tolua_EmberServices_S_LOG_INFO00);
+  tolua_function(tolua_S,"S_LOG_WARNING",tolua_EmberServices_S_LOG_WARNING00);
+  tolua_function(tolua_S,"S_LOG_FAILURE",tolua_EmberServices_S_LOG_FAILURE00);
+  tolua_function(tolua_S,"S_LOG_CRITICAL",tolua_EmberServices_S_LOG_CRITICAL00);
   tolua_module(tolua_S,"Ember",0);
   tolua_beginmodule(tolua_S,"Ember");
    tolua_cclass(tolua_S,"LoggingService","Ember::LoggingService","",NULL);
@@ -2257,8 +2437,9 @@ TOLUA_API int tolua_EmberServices_open (lua_State* tolua_S)
     tolua_constant(tolua_S,"FAILURE",Ember::LoggingService::FAILURE);
     tolua_constant(tolua_S,"CRITICAL",Ember::LoggingService::CRITICAL);
     tolua_constant(tolua_S,"END_MESSAGE",Ember::LoggingService::END_MESSAGE);
-    tolua_function(tolua_S,"getSingletonPtr",tolua_EmberServices_Ember_LoggingService_getSingletonPtr00);
-    tolua_function(tolua_S,"getSingleton",tolua_EmberServices_Ember_LoggingService_getSingleton00);
+    tolua_function(tolua_S,"getInstance",tolua_EmberServices_Ember_LoggingService_getInstance00);
+    tolua_function(tolua_S,"log",tolua_EmberServices_Ember_LoggingService_log00);
+    tolua_function(tolua_S,"log",tolua_EmberServices_Ember_LoggingService_log01);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"Ember",0);

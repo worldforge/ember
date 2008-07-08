@@ -32,6 +32,7 @@ $pfile "ConsoleAdapter.pkg"
 $pfile "ColouredListItem.pkg"
 $pfile "AssetsManager.pkg"
 $pfile "Compass.pkg"
+$pfile "EntityCreator.pkg"
 
 
 $pfile "Icon.pkg"
@@ -65,6 +66,9 @@ $pfile "ModelDefinitionManager.pkg"
 $pfile "ModelDefinitionAtlasComposer.pkg"
 
 $pfile "EntityMoveManager.pkg"
+
+$pfile "EntityRecipe.pkg"
+$pfile "EntityRecipeManager.pkg"
 
 $pfile "stdlib.pkg"
 

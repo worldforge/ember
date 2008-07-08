@@ -116,7 +116,7 @@ class OgreSetup;
 class OgreResourceProvider;
 class OpcodeCollisionDetectorVisualizer;
 
-/**
+class EntityRecipeManager;
 
 	@brief The main class of ember. This functions as a hub for almost all subsystems.
 	
@@ -403,6 +403,8 @@ protected:
 	Model::Mapping::EmberModelMappingManager* mModelMappingManager;
 	
 	Terrain::TerrainLayerDefinitionManager* mTerrainLayerManager;
+	
+	EntityRecipeManager* mEntityRecipeManager;
 	
 	/**
 	Responsible for allowing movement of entities in the world by the user.

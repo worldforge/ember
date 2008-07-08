@@ -28,6 +28,7 @@
 #include <memory>
 #include <sigc++/object.h>
 
+#include <memory>
 namespace Ember
 {
 

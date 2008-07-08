@@ -94,7 +94,7 @@ function Admin.SwitchCamera_Click(args)
 end
 
 function Admin.EntityCreator_Click(args)
-	console:runCommand("/show_entitycreator")
+	console:runCommand("/show_advEntityCreator")
 end
 
 function Admin.ScriptEditor_Click(args)

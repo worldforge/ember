@@ -113,7 +113,7 @@ void ScriptingService::executeCode(const std::string& scriptCode, const std::str
 	}
 }
 
-void ScriptingService::callFunction(const std::string& functionName, const std::string& scriptType, IScriptingCallContext* callContext)
+void ScriptingService::callFunction(const std::string& functionName, int narg, const std::string& scriptType, IScriptingCallContext* callContext)
 {
 	ProviderStore::iterator I = mProviders.find(scriptType);
 	if (I == mProviders.end()) {
@@ -121,6 +121,9 @@ void ScriptingService::callFunction(const std::string& functionName, const std::
 	} else {
 		try {
 			I->second->callFunction(functionName, callContext);
+		} catch (const Ember::Exception& ex) {
+			S_LOG_WARNING("Error when executing function '" << functionName << "' with provider " << I->second->getName() << ". Message: " << ex.getError());
+			scriptError(ex.getError());
 		} catch (const std::exception& ex) {
 			S_LOG_WARNING("Error when executing function '" << functionName << "' with provider " << I->second->getName() << ". Message: " << ex.what());
 			scriptError(ex.what());
