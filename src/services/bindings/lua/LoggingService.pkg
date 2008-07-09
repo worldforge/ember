@@ -131,3 +131,26 @@ namespace Ember {
 
     };
 }
+
+// Logging functions 
+$[
+function log.verbose(...)
+	return S_LOG_VERBOSE(...)
+end
+
+function log.info(...)
+	return S_LOG_INFO(...)
+end
+
+function log.warning(...)
+	return S_LOG_WARNING(...)
+end
+
+function log.failure(...)
+	return S_LOG_FAILURE(...)
+end
+
+function log.critical(...)
+	return S_LOG_CRITICAL(...)
+end
+$]
