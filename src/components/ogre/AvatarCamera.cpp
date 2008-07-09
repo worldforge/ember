@@ -325,11 +325,25 @@ void AvatarCamera::pitch(Ogre::Degree degrees)
 	if (mInvertCamera) {
 		degrees -= degrees * 2;
 	}
+	
+	Ogre::SceneNode* node(mMode == MODE_THIRD_PERSON ? mAvatarCameraPitchNode : mAvatarCameraNode);
+	
+	///prevent the camera from being turned upside down
+	const Ogre::Quaternion& orientation(node->getOrientation());
+	Ogre::Degree pitch(orientation.getPitch());
+	if ((pitch.valueDegrees() + degrees.valueDegrees()) > 0) {
+		degrees = std::min<float>(degrees.valueDegrees(), 90 - pitch.valueDegrees());
+	} else {
+		degrees = std::max<float>(degrees.valueDegrees(), -90 - pitch.valueDegrees());
+	}
+	
+	S_LOG_VERBOSE("Pitch: " << pitch.valueDegrees());
+	
 	if (mMode == MODE_THIRD_PERSON) {
 		degreePitch += degrees;
-		mAvatarCameraPitchNode->pitch(degrees);
+		node->pitch(degrees);
 	} else {
-		mAvatarCameraNode->pitch(degrees);
+		node->pitch(degrees);
 	}
 }
 void AvatarCamera::yaw(Ogre::Degree degrees)
