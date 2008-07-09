@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberServices
-** Generated automatically by tolua++-1.0.92 on Tue Jul  8 22:27:58 2008.
+** Generated automatically by tolua++-1.0.92 on Thu Jul 10 02:46:47 2008.
 */
 
 #ifndef __cplusplus
@@ -2471,6 +2471,34 @@ TOLUA_API int tolua_EmberServices_open (lua_State* tolua_S)
     tolua_function(tolua_S,"log",tolua_EmberServices_Ember_LoggingService_log01);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
+
+  { /* begin embedded lua code */
+   int top = lua_gettop(tolua_S);
+   static unsigned char B[] = {
+    10,102,117,110, 99,116,105,111,110, 32,108,111,103, 46,118,
+    101,114, 98,111,115,101, 40, 46, 46, 46, 41, 10,114,101,116,
+    117,114,110, 32, 83, 95, 76, 79, 71, 95, 86, 69, 82, 66, 79,
+     83, 69, 40, 46, 46, 46, 41, 10,101,110,100, 10,102,117,110,
+     99,116,105,111,110, 32,108,111,103, 46,105,110,102,111, 40,
+     46, 46, 46, 41, 10,114,101,116,117,114,110, 32, 83, 95, 76,
+     79, 71, 95, 73, 78, 70, 79, 40, 46, 46, 46, 41, 10,101,110,
+    100, 10,102,117,110, 99,116,105,111,110, 32,108,111,103, 46,
+    119, 97,114,110,105,110,103, 40, 46, 46, 46, 41, 10,114,101,
+    116,117,114,110, 32, 83, 95, 76, 79, 71, 95, 87, 65, 82, 78,
+     73, 78, 71, 40, 46, 46, 46, 41, 10,101,110,100, 10,102,117,
+    110, 99,116,105,111,110, 32,108,111,103, 46,102, 97,105,108,
+    117,114,101, 40, 46, 46, 46, 41, 10,114,101,116,117,114,110,
+     32, 83, 95, 76, 79, 71, 95, 70, 65, 73, 76, 85, 82, 69, 40,
+     46, 46, 46, 41, 10,101,110,100, 10,102,117,110, 99,116,105,
+    111,110, 32,108,111,103, 46, 99,114,105,116,105, 99, 97,108,
+     40, 46, 46, 46, 41, 10,114,101,116,117,114,110, 32, 83, 95,
+     76, 79, 71, 95, 67, 82, 73, 84, 73, 67, 65, 76, 40, 46, 46,
+     46, 41, 10,101,110,100,32
+   };
+   tolua_dobuffer(tolua_S,(char*)B,sizeof(B),"tolua: embedded Lua code 1");
+   lua_settop(tolua_S, top);
+  } /* end of embedded lua code */
+
   tolua_module(tolua_S,"Ember",0);
   tolua_beginmodule(tolua_S,"Ember");
    tolua_cclass(tolua_S,"ConfigService","Ember::ConfigService","",NULL);
