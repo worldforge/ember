@@ -57,4 +57,14 @@ Atlas::Message::Element& GUIAdapter::getValue()
 	return mAdapter->getValue();
 }
 
+void GUIAdapter::setTitle(const std::string& title)
+{
+	mTitle = title;
+}
+
+std::string GUIAdapter::setTitle()
+{
+	return title;
+}
+
 }

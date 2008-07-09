@@ -172,6 +172,12 @@ void XMLEntityRecipeSerializer::readAdapters(EntityRecipePtr entRecipe, TiXmlEle
 		S_LOG_VERBOSE(" adapter '" << *name << "' of type " << *type);
 
 		GUIAdapter* adapter = entRecipe->createGUIAdapter(*name, *type);
+
+		const std::string *title;
+		if (title = smElem->Attribute(std::string("type")))
+		{
+			adapter->setTitle(*title);
+		}
 	}
 }
 

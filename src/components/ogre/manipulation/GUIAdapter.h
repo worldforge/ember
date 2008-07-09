@@ -61,6 +61,16 @@ public:
 	 */
 	Atlas::Message::Element& getValue();
 
+	/**
+	 * Sets adapter title.
+	 */
+	void setTitle(const std::string& title);
+
+	/**
+	 * Gets adapter title.
+	 */
+	std::string getTitle();
+
 protected:
 	/**
 	 * Adapter type.
@@ -76,6 +86,11 @@ protected:
 	 * Adapter value.
 	 */
 	Atlas::Message::Element mElement;
+	
+	/**
+	 * Adapter title.
+	 */
+	std::string mTitle;
 };
 
 }
