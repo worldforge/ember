@@ -69,9 +69,9 @@ bool EntityMoveAdapterWorkerDiscrete::injectMouseMove(const MouseMotion& motion,
 	direction.y() = motion.yRelativeMovement;
 	direction = direction * mMovementSpeed;
 	///hard coded to allow the shift button to increase the speed
-	if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
-		direction = direction * 5;
-	}
+// 	if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
+// 		direction = direction * 5;
+// 	}
 	
 	///move it relative to the camera
 	direction = direction.rotate(Ogre2Atlas(EmberOgre::getSingleton().getMainCamera()->getOrientation()));
