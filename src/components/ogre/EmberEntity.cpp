@@ -462,14 +462,15 @@ void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act)
 	const std::list<std::string> &p = act->getParents();
 	std::list<std::string>::const_iterator I = p.begin();
 	
-	if (I == p.end()) return;
+	if (I != p.end()) {
 	
-	const std::string& name = *I;
-	std::string message = getName() + " performs a " + name + ".";
-	
-	Ember::ConsoleBackend::getSingletonPtr()->pushMessage(message);
-	
-	S_LOG_VERBOSE( "Entity: " << this->getId() << " (" << this->getName() << ") action: " << name);
+		const std::string& name = *I;
+		std::string message = getName() + " performs a " + name + ".";
+		
+		Ember::ConsoleBackend::getSingletonPtr()->pushMessage(message);
+		
+		S_LOG_VERBOSE( "Entity: " << this->getId() << " (" << this->getName() << ") action: " << name);
+	}
 	Entity::onAction(act);
 }
 
