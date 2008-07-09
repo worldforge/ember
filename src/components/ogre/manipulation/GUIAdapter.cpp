@@ -30,7 +30,7 @@
 
 namespace EmberOgre {
 
-GUIAdapter::GUIAdapter(std::string type) :
+GUIAdapter::GUIAdapter(const std::string& type) :
 		mType(type), mAdapter(0)
 {
 
@@ -41,7 +41,7 @@ GUIAdapter::~GUIAdapter()
 	delete mAdapter;
 }
 
-std::string GUIAdapter::getType()
+const std::string& GUIAdapter::getType() const
 {
 	return mType;
 }
@@ -62,9 +62,9 @@ void GUIAdapter::setTitle(const std::string& title)
 	mTitle = title;
 }
 
-std::string GUIAdapter::setTitle()
+const std::string& GUIAdapter::getTitle() const
 {
-	return title;
+	return mTitle;
 }
 
 }

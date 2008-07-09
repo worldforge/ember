@@ -39,7 +39,7 @@ public:
 	/**
 	 * Constructor.
 	 */
-	GUIAdapter(std::string type);
+	GUIAdapter(const std::string& type);
 
 	/**
 	 * Destructor.
@@ -49,7 +49,7 @@ public:
 	/**
 	 * Returns adapter type.
 	 */
-	std::string getType();
+	const std::string& getType() const;
 
 	/**
 	 * Attaches adapter to window.
@@ -69,7 +69,7 @@ public:
 	/**
 	 * Gets adapter title.
 	 */
-	std::string getTitle();
+	const std::string& getTitle() const;
 
 protected:
 	/**
