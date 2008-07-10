@@ -32,8 +32,6 @@ namespace Ember
 class BaseSoundSample
 {
 	protected:
-		std::string			mAction;
-		
 		ALuint 				mSource;
 		SoundSampleType	mType;
 		bool					mPlayPosition;
@@ -45,11 +43,8 @@ class BaseSoundSample
 		void setSource(ALuint src);
 		void setPosition(const WFMath::Point<3> &pos);
 		void setVelocity(const WFMath::Vector<3> &vel);
-		void setAction(const std::string &act);
 
 		// Get Variables
-		const std::string getAction();
-
 		ALuint getSource();
 		ALuint* getSourcePtr();
 		SoundSampleType getType();

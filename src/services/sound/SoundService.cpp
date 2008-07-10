@@ -36,10 +36,10 @@
 
 namespace Ember
 {
-	SoundObject* SoundService::getSoundObject(const std::string &name)
+	SoundEntity* SoundService::getSoundEntity(const std::string &name)
 	{
 		// Can Return NULL
-		SoundObject* obj = mObjects[name];
+		SoundEntity * obj = mEntities[name];
 		return obj;
 	}
 
@@ -51,7 +51,7 @@ namespace Ember
 
 		#ifdef THREAD_SAFE
 		pthread_mutex_init(&mSamplesMutex, NULL);
-		pthread_mutex_init(&mObjectsMutex, NULL);
+		pthread_mutex_init(&mEntitiesMutex, NULL);
 		#endif
 	}
 
@@ -90,7 +90,7 @@ namespace Ember
 		checkAlError();
 		
 		mSamples.clear();
-		mObjects.clear();
+		mEntities.clear();
 		return Service::OK;
 	}
 
@@ -232,29 +232,29 @@ namespace Ember
 		// alListener3f(AL_ORIENTATION, ListenerOri);
 	}
 
-	SoundObject* SoundService::registerObject(const std::string &name)
+	SoundEntity* SoundService::registerEntity(const std::string &name)
 	{
 		#ifdef THREAD_SAFE
-		pthread_mutex_lock(&mObjectsMutex);
+		pthread_mutex_lock(&mEntitiesMutex);
 		#endif
 
-		if (getSoundObject(name))
+		if (getSoundEntity(name))
 		{
-			S_LOG_INFO("Sound Object (" + name + ") already allocated.");
+			S_LOG_INFO("Sound Entity (" + name + ") already allocated.");
 			return NULL;
 		}
 
-		SoundObject* newObject = new SoundObject();
+		SoundEntity* newObject = new SoundEntity();
 		if (!newObject)
 		{
 			S_LOG_FAILURE("Failed to allocate new sound object.");
 			return NULL;
 		}
 
-		mObjects[name] = newObject;
+		mEntities[name] = newObject;
 
 		#ifdef THREAD_SAFE
-		pthread_mutex_unlock(&mObjectsMutex);
+		pthread_mutex_unlock(&mEntitiesMutex);
 		#endif
 
 		return newObject;
@@ -425,13 +425,13 @@ Error0:
 		#endif
 
 		#ifdef THREAD_SAFE
-		pthread_mutex_lock(&mObjectsMutex);
+		pthread_mutex_lock(&mEntitiesMutex);
 		#endif
 
-		for (std::map<std::string, SoundObject*>::iterator it = mObjects.begin();
-				it != mObjects.end(); it++)
+		for (std::map<std::string, SoundEntity*>::iterator it = mEntities.begin();
+				it != mEntities.end(); it++)
 		{
-			SoundObject* object = (*it).second;
+			SoundEntity* object = (*it).second;
 			if (object)
 			{
 				object->playQueued();
@@ -439,7 +439,7 @@ Error0:
 		}
 
 		#ifdef THREAD_SAFE
-		pthread_mutex_lock(&mObjectsMutex);
+		pthread_mutex_lock(&mEntitiesMutex);
 		#endif
 	}
 

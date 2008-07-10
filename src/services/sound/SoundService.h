@@ -24,7 +24,7 @@ class ISoundProvider;
 
 #include "SoundGeneral.h"
 #include "SoundSample.h" 
-#include "SoundObject.h"
+#include "SoundEntity.h"
 
 namespace Ember {
 
@@ -43,7 +43,7 @@ class SoundService: public Service, public ConsoleObject
 	private:
 		// All Allocated buffers
 		std::map<std::string, BaseSoundSample*> mSamples;
-		std::map<std::string, SoundObject*> mObjects;
+		std::map<std::string, SoundEntity*> mEntities;
 		
 		// Allocation Functions
 		bool allocateWAVPCM(const std::string &filename, bool playsLocally); 
@@ -51,7 +51,7 @@ class SoundService: public Service, public ConsoleObject
 
 		#ifdef THREAD_SAFE
 		pthread_mutex_t mSamplesMutex;
-		pthread_mutex_t mObjectsMutex;
+		pthread_mutex_t mEntitiesMutex;
 		#endif
 
 	public:
@@ -68,7 +68,7 @@ class SoundService: public Service, public ConsoleObject
 		/**
 		 * Register(allocate) a new sound buffer
 		 */
-		SoundObject* registerObject(const std::string &name);
+		SoundEntity* registerEntity(const std::string &name);
 		bool registerSound(const std::string &filename, bool playLocally = PLAY_WORLD,
 				const SoundSampleType type = SAMPLE_NONE);
 		bool unRegisterSound(const std::string &filename);
@@ -93,15 +93,10 @@ class SoundService: public Service, public ConsoleObject
 		void cycle();
 		
 		/**
-		 * From server
-		 */
-		void onAction(const Atlas::Objects::Operation::RootOperation& act);
-
-		/**
 		 * Allocated Entities
 		 */
 		BaseSoundSample* getSoundSample(const std::string &filename);
-		SoundObject* getSoundObject(const std::string &name);
+		SoundEntity* getSoundEntity(const std::string &name);
 
 }; //SoundService
 

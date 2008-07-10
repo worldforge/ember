@@ -57,11 +57,6 @@ namespace Ember
 		mSource = src;
 	}
 
-	const std::string BaseSoundSample::getAction()
-	{
-		return mAction;
-	}
-
 	ALuint BaseSoundSample::getSource()
 	{
 		return mSource;
@@ -77,11 +72,6 @@ namespace Ember
 		return mType;
 	}
 	
-	void BaseSoundSample::setAction(const std::string &act)
-	{
-		mAction = act;
-	}
-
 	void BaseSoundSample::play()
 	{
 	}
