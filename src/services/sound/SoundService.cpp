@@ -424,6 +424,7 @@ Error0:
 		pthread_mutex_unlock(&mSamplesMutex);
 		#endif
 
+		/*
 		#ifdef THREAD_SAFE
 		pthread_mutex_lock(&mEntitiesMutex);
 		#endif
@@ -441,6 +442,7 @@ Error0:
 		#ifdef THREAD_SAFE
 		pthread_mutex_lock(&mEntitiesMutex);
 		#endif
+		*/
 	}
 
 } // namespace Ember
