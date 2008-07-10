@@ -219,22 +219,10 @@ void TerrainParser::updateTerrain(const Atlas::Message::Element& terrain)
 	mTerrainGenerator->updateTerrain(pointStore);
 
 		//Check for terrain modifiers
-	Atlas::Message::MapType::const_iterator sI = tmap.find("surfaces");
-	if (sI != tmap.end()) {
-                const Atlas::Message::Element& surfaces(sI->second);
-		if (surfaces.isList()) {
-        		const Atlas::Message::ListType & slist(surfaces.asList());
-        		for(Atlas::Message::ListType::const_iterator I = slist.begin(); I != slist.end(); ++I) {
-        			if (I->isMap()) {
-	        			const Atlas::Message::MapType& surfaceMap(I->asMap());
-					Atlas::Message::MapType::const_iterator sI = surfaceMap.find("terrainmod");
-					if (sI != surfaceMap.end()) {
-						updateTerrainModifiers(sI->second);
-					}
-				}
-			}
-		}
-	}
+    I = tmap.find("terrainmod");
+    if (I != tmap.end()) {
+		updateTerrainModifiers(I->second);
+	} 
 }
 
 void TerrainParser::updateTerrainModifiers(const Atlas::Message::Element& modifier)
