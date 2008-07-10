@@ -20,7 +20,7 @@
 #define SOUND_ACTION_H
 
 #include "SoundGeneral.h"
-#include "SoundService.h"
+#include "SoundSample.h"
 
 namespace Ember
 {
@@ -53,7 +53,7 @@ namespace Ember
 			bool mActive;
 
 			orderOfPlay mPlayOrder;
-			int lastPlayedIndex;
+			int nextPlayIndex;
 
 			std::list<BaseSoundSample*> mSamples;
 
@@ -71,8 +71,6 @@ namespace Ember
 
 			void allocateBuffer(const std::string& filename, 
 					bool playsReal, const SoundSampleType& type);
-
-			void deallocateBuffer(const std::string& filename);
 
 			void update(double timeSinceLastFrame);
 	};

@@ -20,21 +20,20 @@
 #define SOUND_ENTITY_H
 
 #include "SoundGeneral.h"
-#include "SoundService.h"
+#include "SoundAction.h"
 
 namespace Ember
 {
 	class SoundEntity
 	{
 		private:
-			std::string mName;
 			WFMath::Point<3> mPosition;
 			WFMath::Vector<3> mVelocity;
 
 			std::map<std::string, SoundAction*> mActions;
 
 		public:
-			SoundEntity(const std::string& name);
+			SoundEntity();
 			~SoundEntity();
 
 			void setPosition(const WFMath::Point<3> &pos);
