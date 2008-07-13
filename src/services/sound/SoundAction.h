@@ -72,6 +72,8 @@ namespace Ember
 			void allocateBuffer(const std::string& filename, 
 					bool playsReal, const SoundSampleType& type);
 
+			void updateSamplesPosition(const WFMath::Point<3> &pos);
+			void updateSamplesVelocity(const WFMath::Vector<3> &pos);
 			void update(double timeSinceLastFrame);
 	};
 }

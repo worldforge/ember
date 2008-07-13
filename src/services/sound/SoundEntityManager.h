@@ -16,38 +16,39 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _XML_SOUND_DEF_PARSER_
-#define _XML_SOUND_DEF_PARSER_
+#ifndef SOUND_ENTITY_MANAGER_H
+#define SOUND_ENTITY_MANAGER_H
 
-#include "components/ogre/EmberOgrePrerequisites.h"
-#include "framework/tinyxml/tinyxml.h"
+#include <map>
 
-#include "services/sound/SoundEntity.h"
-#include "services/sound/SoundAction.h"
+#include "SoundEntity.h"
+#include "framework/Singleton.h"
 
-#include <iostream>
-#include <sstream>
-#include <list>
-
-namespace EmberOgre { 
-
-class XMLSoundDefParser
+namespace Ember
 {
-public :
-	XMLSoundDefParser();
-	~XMLSoundDefParser();
+	class SoundEntityManager
+	: public Ember::Singleton<SoundEntityManager>
+	{
+		private:
+			std::map<std::string, SoundEntity*> mEntities;
 
-	void parseScript(Ogre::DataStreamPtr stream);
+		public:
+			SoundEntityManager();
+			~SoundEntityManager();
 
-private:
+			/**
+			 * mEntities modifiers
+			 */
+			SoundEntity* allocateEntity(const std::string& name);
+			void deallocateEntity(const std::string& name);
 
-	void readActions(Ember::SoundEntity* ent, TiXmlElement* objNode);
-	void readBuffers(Ember::SoundAction* act, TiXmlElement* objNode);
-	void readBuffer(Ember::SoundAction* act, TiXmlElement* objNode);
-};
-
+			/**
+			 * Ember::Entity use those methods to communicate to
+			 * the soundservice indirectly
+			 */
+			SoundEntity* getEntity(const std::string& name);
+	};
 }
-
 
 #endif
 
