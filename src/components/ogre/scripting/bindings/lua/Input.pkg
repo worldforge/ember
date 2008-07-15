@@ -121,6 +121,22 @@ class Input
 	InputMode toggleInputMode();
 
 	
+	/**
+	 *  @brief Adds an adaptor to which input event will be sent. 
+	 *  Note that event will be sent to adapters added later first, allowing them to decide whether events should be sent to previous added adapters. This allows later added adapters to override current behaviour.
+	 * @see removeAdapter
+	 * @param adaptor An adapter instance to add. Note that ownership isn't transferred. Note that if the adapter already has been added, this will add a duplicate entry.
+	 */
+	void addAdapter(IInputAdapter* adapter);
+	
+	
+	/**
+	 *   @brief Remove an adaptor from the list of adaptors.
+	 * @param adaptor The adapter to remove. If the adapter isn't present already nothing will happen.
+	 */
+	void removeAdapter(IInputAdapter* adapter);
+	
+	
 };
 
 }

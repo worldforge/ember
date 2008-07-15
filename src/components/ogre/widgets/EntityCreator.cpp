@@ -26,6 +26,8 @@
 
 #include "EntityCreator.h"
 #include "../GUIManager.h"
+#include "../AvatarCamera.h"
+#include "../AvatarTerrainCursor.h"
 #include "components/ogre/widgets/adapters/atlas/AdapterFactory.h"
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
@@ -67,12 +69,33 @@ void EntityCreator::showRecipe(EntityRecipe& recipe, CEGUI::Window* container)
 
 		CEGUI::Window* window = mGuiManager.createWindow("DefaultGUISheet");
 		container->addChildWindow(window);
-
 		I->second->attach(window);
+/*
+		double textWidth = 75;
+		CEGUI::Window* outerContainer = mGuiManager.createWindow("DefaultGUISheet");
+
+		CEGUI::Window* label = mGuiManager.createWindow("EmberLook/StaticText");
+
+		label->setText(I->second->getTitle());
+		label->setWidth(CEGUI::UDim(0, textWidth));
+		label->setProperty("FrameEnabled", "false");
+	 	label->setProperty("BackgroundEnabled", "false");
+		label->setProperty("VertFormatting", "TopAligned");
+		label->setProperty("Tooltip", I->second->getTitle());
+
+		CEGUI::Window* container = mGuiManager.createWindow("DefaultGUISheet");
+		container->setXPosition(CEGUI::UDim(0, textWidth));
+		I->second->attach(container);
+
+		outerContainer->addChildWindow(label);
+		outerContainer->addChildWindow(container);
+
+		parentContainer->addChildWindow(outerContainer);
+*/
 	}
 }
 
-void EntityCreator::createEntity(EntityRecipe& recipe)
+void EntityCreator::createEntity(EntityRecipe& recipe, WFMath::Point<3> pos)
 {
 	Eris::TypeInfo* typeinfo = mConn->getTypeService()->getTypeByName(recipe.getEntityType());
 
@@ -88,14 +111,16 @@ void EntityCreator::createEntity(EntityRecipe& recipe)
 	Atlas::Message::MapType msg = recipe.createEntity();
 	msg["loc"] = avatar->getLocation()->getId();
 	
+	/*
 	Ogre::Vector3 o_vector(2,0,0);
 	Ogre::Vector3 o_pos = avatar->getSceneNode()->getPosition() + (avatar->getSceneNode()->getOrientation() * o_vector);
 	
 // 	WFMath::Vector<3> vector(0,2,0);
 // 	WFMath::Point<3> pos = avatar->getPosition() + (avatar->getOrientation() * vector);
 	WFMath::Point<3> pos = Ogre2Atlas(o_pos);
+	*/
 	WFMath::Quaternion orientation = avatar->getOrientation();
-	
+
 	msg["pos"] = pos.toAtlas();
 	/*
 	if (mName->getText().length() > 0) {
@@ -121,6 +146,54 @@ void EntityCreator::connectedToServer(Eris::Connection* conn)
 	mConn = conn;
 }
 
+EntityCreateAdapter::EntityCreateAdapter(EntityCreator& entityCreator, EntityRecipe& entityRecipe)
+	: mEntityCreator(entityCreator), mEntityRecipe(entityRecipe)
+{
 }
 
+bool EntityCreateAdapter::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
+{
+	return true;
+}
+
+bool EntityCreateAdapter::injectMouseButtonUp(const Input::MouseButton& button)
+{
+	if (button == Input::MouseButtonLeft)
+	{
+		const Ogre::Vector3* position(0);
+		if (EmberOgre::getSingleton().getMainCamera()->getTerrainCursor().getTerrainCursorPosition(&position))
+		{
+			mEntityCreator.createEntity(mEntityRecipe, Ogre2Atlas(*position));
+		}
+		GUIManager::getSingleton().getInput().removeAdapter(this);
+		return false;
+	}
+	return true;
+}
+
+bool EntityCreateAdapter::injectMouseButtonDown(const Input::MouseButton& button)
+{
+	if (button == Input::MouseButtonLeft)
+	{
+		return false;
+	}
+	return true;
+}
+
+bool EntityCreateAdapter::injectChar(char character)
+{
+	return true;
+}
+
+bool EntityCreateAdapter::injectKeyDown(const SDLKey& key)
+{
+	return true;
+}
+
+bool EntityCreateAdapter::injectKeyUp(const SDLKey& key)
+{
+	return true;
+}
+
+}
 }

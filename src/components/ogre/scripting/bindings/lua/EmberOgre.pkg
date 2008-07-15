@@ -32,7 +32,6 @@ $pfile "ConsoleAdapter.pkg"
 $pfile "ColouredListItem.pkg"
 $pfile "AssetsManager.pkg"
 $pfile "Compass.pkg"
-$pfile "EntityCreator.pkg"
 
 
 $pfile "Icon.pkg"
@@ -46,6 +45,7 @@ $pfile "EntityIconDragDropTarget.pkg"
 $pfile "Model.pkg"
 $pfile "SubModel.pkg"
 $pfile "ModelDefinition.pkg"
+$pfile "IInputAdapter.pkg"
 $pfile "Input.pkg"
 $pfile "Jesus.pkg"
 
@@ -69,6 +69,7 @@ $pfile "EntityMoveManager.pkg"
 
 $pfile "EntityRecipe.pkg"
 $pfile "EntityRecipeManager.pkg"
+$pfile "EntityCreator.pkg"
 
 $pfile "stdlib.pkg"
 

@@ -24,7 +24,9 @@
 #define EMBEROGRE_GUIENTITYCREATOR_H
 
 #include "components/ogre/manipulation/EntityRecipe.h"
+#include "components/ogre/input/IInputAdapter.h"
 #include <Eris/Connection.h>
+#include <wfmath/point.h>
 #include <CEGUIWindow.h>
 
 namespace EmberOgre {
@@ -54,11 +56,29 @@ public:
 	/**
 	 * Sends composed entity to server
 	 */
-	void createEntity(EntityRecipe& recipe);
+	void createEntity(EntityRecipe& recipe, WFMath::Point<3> pos);
 
 protected:
 	void connectedToServer(Eris::Connection* conn);
 	Eris::Connection* mConn;
+};
+
+/**
+ * Class for intercepting mouse click.
+ */
+class EntityCreateAdapter : public IInputAdapter
+{
+public:
+	EntityCreateAdapter(EntityCreator& entityCreator, EntityRecipe& entityRecipe);
+	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
+	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
+	virtual bool injectMouseButtonDown(const Input::MouseButton& button);
+	virtual bool injectChar(char character);
+	virtual bool injectKeyDown(const SDLKey& key);
+	virtual bool injectKeyUp(const SDLKey& key);
+private:
+	EntityCreator& mEntityCreator;
+	EntityRecipe& mEntityRecipe;
 };
 
 }
