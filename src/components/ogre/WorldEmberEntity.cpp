@@ -552,6 +552,11 @@ void TerrainParser::createDefaultShaders()
 
 }
 
+void WorldEmberEntity::updateTerrainModifiers(const Atlas::Message::Element& modifier)
+{
+    mTerrainParser->updateTerrainModifiers(modifier);
+}
+
 
 void WorldEmberEntity::adjustPositionForContainedNode(EmberEntity* const entity, const Ogre::Vector3& position)
 {

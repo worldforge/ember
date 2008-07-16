@@ -520,6 +520,7 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
 		onBboxChanged();
 		return;
 	}
+
 	Entity::onAttrChanged(str, v);
 }
 

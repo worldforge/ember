@@ -114,6 +114,8 @@ protected:
 	 * @param area 
 	 */
 	void addArea(Terrain::TerrainArea* area);
+
+	void updateTerrainModifiers(const Atlas::Message::Element& modifier);
 	
 	/**
 	The foliage system which provides different foliage functions.
