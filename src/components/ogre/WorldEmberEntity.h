@@ -48,7 +48,6 @@ public:
 	 * @param v 
 	 */
 	void updateTerrain(const Atlas::Message::Element& terrain);
-	void updateTerrainModifiers(const Atlas::Message::Element& modifier);
 
 	void createShaders(const Atlas::Message::Element& surfaces);
 	void createDefaultShaders();
@@ -114,8 +113,6 @@ protected:
 	 * @param area 
 	 */
 	void addArea(Terrain::TerrainArea* area);
-
-	void updateTerrainModifiers(const Atlas::Message::Element& modifier);
 	
 	/**
 	The foliage system which provides different foliage functions.

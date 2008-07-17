@@ -308,7 +308,12 @@ protected:
 	 *    Creates the material used for the eris bboxes, if not already created.
 	 */
 	void createErisBboxMaterial();
-	
+
+	/**
+	 *    Processes new or updated terrain modifiers
+	 *
+	 */
+	void updateTerrainModifiers(const Atlas::Message::Element& modifier);
 	
 	
 	/**
