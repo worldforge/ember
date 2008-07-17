@@ -32,9 +32,7 @@ end
 
 -- Handles create button press
 function EntityCreator.Create_Click(args)
---	EntityCreator.helper:createEntity(EntityCreator.recipe)
-	createAdapter = EmberOgre.Gui.EntityCreateAdapter(EntityCreator.helper, EntityCreator.recipe)
-	guiManager:getInput():addAdapter(createAdapter)
+	EntityCreator.helper:createEntity(EntityCreator.recipe)
 end
 
 -- Shows selected recipe

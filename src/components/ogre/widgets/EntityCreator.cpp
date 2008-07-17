@@ -43,9 +43,47 @@
 #include "../EmberPhysicalEntity.h"
 #include "../AvatarEmberEntity.h"
 
+#include "components/ogre/model/Model.h"
+#include "components/ogre/model/ModelDefinitionManager.h"
+#include "components/ogre/model/mapping/ModelMappingManager.h"
+#include "components/ogre/model/mapping/EmberModelMappingManager.h"
+#include "components/ogre/model/mapping/ModelMapping.h"
+#include "components/ogre/model/mapping/Definitions/ModelMappingDefinition.h"
+#include "components/ogre/model/mapping/IActionCreator.h"
+#include "main/Application.h"
+
 namespace EmberOgre {
 
 namespace Gui {
+
+class EntityCreatorActionCreator : public ::EmberOgre::Model::Mapping::IActionCreator
+{
+public:
+EntityCreatorActionCreator(Eris::Entity& entity): mEntity(entity), mModelName("")
+{
+}
+
+~EntityCreatorActionCreator() {}
+
+virtual void createActions(Model::Mapping::ModelMapping& modelMapping, Model::Mapping::Cases::CaseBase* aCase, Model::Mapping::Definitions::CaseDefinition& caseDefinition)
+{
+	Model::Mapping::Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
+	for (Model::Mapping::Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
+		if (J->getType() == "display-model") {
+			mModelName = J->getValue();
+		}
+	}
+}
+
+const std::string& getModelName() const
+{
+	return mModelName;
+}
+protected:
+Eris::Entity& mEntity;
+std::string mModelName;
+
+};
 
 EntityCreator::EntityCreator()
 {
@@ -95,10 +133,76 @@ void EntityCreator::showRecipe(EntityRecipe& recipe, CEGUI::Window* container)
 	}
 }
 
-void EntityCreator::createEntity(EntityRecipe& recipe, WFMath::Point<3> pos)
+void EntityCreator::createEntity(EntityRecipe& recipe)
 {
-	Eris::TypeInfo* typeinfo = mConn->getTypeService()->getTypeByName(recipe.getEntityType());
+	// Creating entity data
+	mEntityMessage = recipe.createEntity();
+	Eris::TypeInfo* erisType = mConn->getTypeService()->getTypeByName(recipe.getEntityType());
+	if (!erisType) {
+		S_LOG_FAILURE("Type " << recipe.getEntityType() << " not found in recipe " << recipe.getName());
+		return;
+	}
 
+	AvatarEmberEntity* avatar = EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity();
+
+	// Making inital position and orientation of entity
+	Ogre::Vector3 o_vector(2,0,0);
+	Ogre::Vector3 o_pos = avatar->getSceneNode()->getPosition() + (avatar->getSceneNode()->getOrientation() * o_vector);
+	mPos = Ogre2Atlas(o_pos);
+	mOrientation = avatar->getOrientation();
+
+	/*
+	if (mName->getText().length() > 0) {
+		msg["name"] = mName->getText().c_str();
+	} else {
+		msg["name"] = typeinfo->getName();
+	}
+	*/
+	mEntityMessage["loc"] = avatar->getLocation()->getId();
+	mEntityMessage["name"] = erisType->getName();
+	mEntityMessage["parents"] = Atlas::Message::ListType(1, erisType->getName());
+
+	Eris::View* view = Ember::Application::getSingleton().getMainView();
+	if (view) {
+		// Temporary entity
+		Eris::Entity dummyEntity("-1", erisType, view);
+
+		// Making model from temporary entity
+		Ogre::SceneManager* sceneMgr = EmberOgre::getSingleton().getSceneManager();
+		EntityCreatorActionCreator actionCreator(dummyEntity);
+		std::auto_ptr<Model::Mapping::ModelMapping> modelMapping(Model::Mapping::EmberModelMappingManager::getSingleton().getManager().createMapping(&dummyEntity, &actionCreator));
+		std::string modelName;
+		if (modelMapping.get()) {
+			modelMapping->initialize();
+			modelName = actionCreator.getModelName();
+		}
+		///if there's no model defined for this use the placeholder model
+		if (modelName == "") {
+			modelName = "placeholder";
+		}
+		///update the model preview window
+		Model::Model* model = Model::Model::createModel(sceneMgr, modelName);
+
+		// Deleting temporary entity
+		dummyEntity.shutdown();
+
+		// Attaching model to SceneNode
+		mEntityNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
+		mEntityNode->attachObject(model);
+
+		// Registering move adapter to track mouse movements
+		mInputAdapter = new EntityCreatorInputAdapter(*this);
+		mMoveAdapter = new EntityCreatorMoveAdapter(*this);
+	}
+}
+
+void EntityCreator::finalizeCreation()
+{
+	// Final position
+	mEntityMessage["pos"] = mPos.toAtlas();
+	mEntityMessage["orientation"] = mOrientation.toAtlas();
+
+	// Making create operation message
 	Atlas::Objects::Operation::Create c;
 	AvatarEmberEntity* avatar = EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity();
 	c->setFrom(avatar->getId());
@@ -107,38 +211,27 @@ void EntityCreator::createEntity(EntityRecipe& recipe, WFMath::Point<3> pos)
 	if (avatar->getType()->isA(mConn->getTypeService()->getTypeByName("creator"))) {
 		c->setTo(avatar->getId());
 	}
-	
-	Atlas::Message::MapType msg = recipe.createEntity();
-	msg["loc"] = avatar->getLocation()->getId();
-	
-	/*
-	Ogre::Vector3 o_vector(2,0,0);
-	Ogre::Vector3 o_pos = avatar->getSceneNode()->getPosition() + (avatar->getSceneNode()->getOrientation() * o_vector);
-	
-// 	WFMath::Vector<3> vector(0,2,0);
-// 	WFMath::Point<3> pos = avatar->getPosition() + (avatar->getOrientation() * vector);
-	WFMath::Point<3> pos = Ogre2Atlas(o_pos);
-	*/
-	WFMath::Quaternion orientation = avatar->getOrientation();
 
-	msg["pos"] = pos.toAtlas();
-	/*
-	if (mName->getText().length() > 0) {
-		msg["name"] = mName->getText().c_str();
-	} else {
-	*/
-		msg["name"] = typeinfo->getName();
-	/*
-	}
-	*/
-	msg["parents"] = Atlas::Message::ListType(1, typeinfo->getName());
-	msg["orientation"] = orientation.toAtlas();
-	
-	c->setArgsAsList(Atlas::Message::ListType(1, msg));
+	c->setArgsAsList(Atlas::Message::ListType(1, mEntityMessage));
 	mConn->send(c);
+
 	std::stringstream ss;
-	ss << pos;
-	S_LOG_INFO("Trying to create entity of type " << typeinfo->getName() << " at position " << ss.str() );
+	ss << mPos;
+	S_LOG_INFO("Trying to create entity at position " << ss.str() );
+
+	// Cleanup
+	delete mMoveAdapter;
+
+	mEntityNode->detachAllObjects();
+	// delete model ?
+	EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->removeChild(mEntityNode);
+//	delete mEntityNode;  // ?
+}
+
+void EntityCreator::setPosition(WFMath::Point<3> pos)
+{
+	mPos = pos;
+	mEntityNode->setPosition(Atlas2Ogre(pos));
 }
 
 void EntityCreator::connectedToServer(Eris::Connection* conn)
@@ -146,32 +239,34 @@ void EntityCreator::connectedToServer(Eris::Connection* conn)
 	mConn = conn;
 }
 
-EntityCreateAdapter::EntityCreateAdapter(EntityCreator& entityCreator, EntityRecipe& entityRecipe)
-	: mEntityCreator(entityCreator), mEntityRecipe(entityRecipe)
+EntityCreatorInputAdapter::EntityCreatorInputAdapter(EntityCreator& entityCreator)
+	: mEntityCreator(entityCreator)
 {
+	GUIManager::getSingleton().getInput().addAdapter(this);
 }
 
-bool EntityCreateAdapter::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
+EntityCreatorInputAdapter::~EntityCreatorInputAdapter()
+{
+	GUIManager::getSingleton().getInput().removeAdapter(this);
+}
+
+bool EntityCreatorInputAdapter::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
 {
 	return true;
 }
 
-bool EntityCreateAdapter::injectMouseButtonUp(const Input::MouseButton& button)
+bool EntityCreatorInputAdapter::injectMouseButtonUp(const Input::MouseButton& button)
 {
 	if (button == Input::MouseButtonLeft)
 	{
-		const Ogre::Vector3* position(0);
-		if (EmberOgre::getSingleton().getMainCamera()->getTerrainCursor().getTerrainCursorPosition(&position))
-		{
-			mEntityCreator.createEntity(mEntityRecipe, Ogre2Atlas(*position));
-		}
-		GUIManager::getSingleton().getInput().removeAdapter(this);
+		mEntityCreator.finalizeCreation();
+		delete this; // any better method to do this
 		return false;
 	}
 	return true;
 }
 
-bool EntityCreateAdapter::injectMouseButtonDown(const Input::MouseButton& button)
+bool EntityCreatorInputAdapter::injectMouseButtonDown(const Input::MouseButton& button)
 {
 	if (button == Input::MouseButtonLeft)
 	{
@@ -180,18 +275,39 @@ bool EntityCreateAdapter::injectMouseButtonDown(const Input::MouseButton& button
 	return true;
 }
 
-bool EntityCreateAdapter::injectChar(char character)
+bool EntityCreatorInputAdapter::injectChar(char character)
 {
 	return true;
 }
 
-bool EntityCreateAdapter::injectKeyDown(const SDLKey& key)
+bool EntityCreatorInputAdapter::injectKeyDown(const SDLKey& key)
 {
 	return true;
 }
 
-bool EntityCreateAdapter::injectKeyUp(const SDLKey& key)
+bool EntityCreatorInputAdapter::injectKeyUp(const SDLKey& key)
 {
+	return true;
+}
+
+EntityCreatorMoveAdapter::EntityCreatorMoveAdapter(EntityCreator& entityCreator)
+	: mEntityCreator(entityCreator)
+{
+	/// Register this as a frame listener
+	Ogre::Root::getSingleton().addFrameListener(this);
+}
+
+EntityCreatorMoveAdapter::~EntityCreatorMoveAdapter()
+{
+	Ogre::Root::getSingleton().removeFrameListener(this);
+}
+
+bool EntityCreatorMoveAdapter::frameStarted(const Ogre::FrameEvent& event)
+{
+	const Ogre::Vector3* position(0);
+	if (EmberOgre::getSingleton().getMainCamera()->getTerrainCursor().getTerrainCursorPosition(&position)) {
+		mEntityCreator.setPosition(Ogre2Atlas(*position));
+	}
 	return true;
 }
 

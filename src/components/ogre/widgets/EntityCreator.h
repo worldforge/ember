@@ -28,10 +28,14 @@
 #include <Eris/Connection.h>
 #include <wfmath/point.h>
 #include <CEGUIWindow.h>
+#include <OGRE/OgreSceneNode.h>
 
 namespace EmberOgre {
 
 namespace Gui {
+
+class EntityCreatorInputAdapter;
+class EntityCreatorMoveAdapter;
 
 /**
  * Helper class for Entity Creator.
@@ -54,22 +58,38 @@ public:
 	void showRecipe(EntityRecipe& recipe, CEGUI::Window* container);
 
 	/**
+	 * Composes entity
+	 */
+	void createEntity(EntityRecipe& recipe);
+
+	/**
 	 * Sends composed entity to server
 	 */
-	void createEntity(EntityRecipe& recipe, WFMath::Point<3> pos);
+	void finalizeCreation();
 
+	/**
+	 * Sets position of new entity
+	 */
+	void setPosition(WFMath::Point<3> pos);
 protected:
 	void connectedToServer(Eris::Connection* conn);
 	Eris::Connection* mConn;
+	WFMath::Point<3> mPos;
+	WFMath::Quaternion mOrientation;
+	EntityCreatorMoveAdapter* mMoveAdapter;
+	EntityCreatorInputAdapter* mInputAdapter;
+	Ogre::SceneNode* mEntityNode;
+	Atlas::Message::MapType mEntityMessage;
 };
 
 /**
- * Class for intercepting mouse click.
+ * Adapter for intercepting mouse click.
  */
-class EntityCreateAdapter : public IInputAdapter
+class EntityCreatorInputAdapter : public IInputAdapter
 {
 public:
-	EntityCreateAdapter(EntityCreator& entityCreator, EntityRecipe& entityRecipe);
+	EntityCreatorInputAdapter(EntityCreator& entityCreator);
+	~EntityCreatorInputAdapter();
 	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
 	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
 	virtual bool injectMouseButtonDown(const Input::MouseButton& button);
@@ -78,7 +98,22 @@ public:
 	virtual bool injectKeyUp(const SDLKey& key);
 private:
 	EntityCreator& mEntityCreator;
-	EntityRecipe& mEntityRecipe;
+};
+
+/**
+ * Adapter for position entity preview.
+ */
+class EntityCreatorMoveAdapter : public Ogre::FrameListener
+{
+public:
+	EntityCreatorMoveAdapter(EntityCreator& adapter);
+	~EntityCreatorMoveAdapter();
+	/**
+ 	 * Methods from Ogre::FrameListener
+	 */
+	bool frameStarted(const Ogre::FrameEvent& event);
+protected:
+	EntityCreator& mEntityCreator;
 };
 
 }
