@@ -542,7 +542,7 @@ void EmberEntity::updateTerrainModifiers(const Atlas::Message::Element& modifier
     }
 
     // Get modifier position
-    mod_I = modMap.find("pos");
+/*    mod_I = modMap.find("pos");
     if (mod_I != modMap.end()) {
         const Atlas::Message::Element& modPosElem = mod_I->second;
         if (modPosElem.isList()) {
@@ -550,7 +550,10 @@ void EmberEntity::updateTerrainModifiers(const Atlas::Message::Element& modifier
         pos = WFMath::Point<3>((int)point[0].asNum(), (int)point[1].asNum(), (int)point[2].asNum());
         }
     }
-
+*/
+    const Ogre::Vector3 & ent_pos = getSceneNode()->getPosition();
+    pos = WFMath::Point<3>((int)ent_pos.x, (int)ent_pos.y, (int)ent_pos.z);
+    S_LOG_INFO("SceneNode Pos reported as: " << ent_pos.x << "," << ent_pos.y << "," << ent_pos.z);
     // Get modifier's shape
     mod_I = modMap.find("shape");
     if (mod_I != modMap.end()) {
