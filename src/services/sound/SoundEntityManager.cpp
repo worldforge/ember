@@ -44,6 +44,7 @@ namespace Ember
 	SoundEntityManager::SoundEntityManager()
 	{
 		mEntities.clear();
+		S_LOG_INFO("Sound Entity Manager Started.");
 	}
 
 	SoundEntityManager::~SoundEntityManager()
@@ -53,6 +54,8 @@ namespace Ember
 			SoundEntity* toBeDeleted = (*it).second;
 			delete toBeDeleted;
 		}
+
+		S_LOG_INFO("Sound Entity Manager Stopped.");
 	}
 
 	SoundEntity* SoundEntityManager::allocateEntity(const std::string& name)
@@ -89,6 +92,12 @@ namespace Ember
 
 	SoundEntity* SoundEntityManager::getEntity(const std::string& name)
 	{
+		if (mEntities.empty())
+		{
+			return NULL;
+		}
+
+		/* TODO - ITS CRASHING!!!!
 		entityIt it(mEntities.find(name));
 		if (it != mEntities.end())
 		{
@@ -96,6 +105,8 @@ namespace Ember
 		}
 
 		return NULL;
+		*/
+		return mEntities[name];
 	}
 	#undef entityIt
 }

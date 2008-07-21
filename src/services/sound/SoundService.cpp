@@ -399,8 +399,7 @@ Error0:
 	BaseSoundSample* SoundService::getSoundSample(const std::string &filename)
 	{
 		// Can return NULL;
-		BaseSoundSample* sound = mSamples[filename];
-		return sound;
+		return mSamples[filename];
 	}
 
 	void SoundService::cycle()

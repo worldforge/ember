@@ -28,14 +28,6 @@
 
 namespace EmberOgre { 
 
-XMLSoundDefParser::XMLSoundDefParser()
-{
-}
-
-XMLSoundDefParser::~XMLSoundDefParser()
-{
-}
-
 void XMLSoundDefParser::parseScript(Ogre::DataStreamPtr stream)
 {
 	TiXmlDocument xmlDoc;
@@ -56,11 +48,16 @@ void XMLSoundDefParser::parseScript(Ogre::DataStreamPtr stream)
 			continue;
 		}
 
-		Ember::SoundEntity* newEntity = 
-		Ember::SoundEntityManager::getSingleton().allocateEntity(tmp);
+		std::string finalName(tmp);
 
+		Ember::SoundEntity* newEntity = 
+		Ember::SoundEntityManager::getSingleton().allocateEntity(finalName);
+			
 		if (newEntity)
 		{
+			S_LOG_INFO(std::string("Sound Entity ") + finalName
+					+ std::string(" created."));
+
 			readActions(newEntity, smElem);
 		}
 	}	
@@ -102,6 +99,9 @@ void XMLSoundDefParser::readActions(Ember::SoundEntity* ent, TiXmlElement* objNo
 		
 		if (newAction)
 		{
+			S_LOG_INFO(std::string("\t-Action ") + name 
+					+ std::string(" created."));
+
 			readBuffers(newAction, smElem);	
 		}
 	}
@@ -155,6 +155,9 @@ void XMLSoundDefParser::readBuffer(Ember::SoundAction* act, TiXmlElement* objNod
 	#undef resourceMgr
 	*/
 
+	std::string name(filename);
+	S_LOG_INFO(std::string("\t -Buffer ") + name 
+			+ std::string(" created."));
 	act->allocateBuffer(filename, playsReal, type);
 }
 

@@ -34,9 +34,6 @@ namespace EmberOgre {
 class XMLSoundDefParser
 {
 public :
-	XMLSoundDefParser();
-	~XMLSoundDefParser();
-
 	void parseScript(Ogre::DataStreamPtr stream);
 
 private:

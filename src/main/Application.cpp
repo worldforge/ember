@@ -39,6 +39,7 @@
 #include "services/config/ConfigService.h"
 #include "services/metaserver/MetaserverService.h"
 #include "services/sound/SoundService.h"
+#include "services/sound/SoundEntityManager.h"
 #include "services/scripting/ScriptingService.h"
 #include "services/wfut/WfutService.h"
 #include "services/time/TimeService.h"
@@ -208,6 +209,7 @@ void Application::initializeServices()
 	S_LOG_INFO("Using media from " << EmberServices::getSingleton().getConfigService()->getEmberMediaDirectory());
 
 	/// Initialize the Sound Service
+	new Ember::SoundEntityManager();
 	EmberServices::getSingleton().getSoundService()->start();
 
 	/// Initialize and start the Metaserver Service.
