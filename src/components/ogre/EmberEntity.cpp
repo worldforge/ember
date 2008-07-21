@@ -544,9 +544,9 @@ void EmberEntity::updateTerrainModifiers(const Atlas::Message::Element& modifier
     // Get modifier position
 
     pos = getPosition();
-    //pos = WFMath::Point<3>((int)ent_pos.x, -(int)ent_pos.z, (int)ent_pos.y);
     S_LOG_INFO("SceneNode Pos reported as: " << pos.x() << "," << pos.y() << "," << pos.z());
 
+    EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment(pos.x(),pos.y())->clearMods();
 
     // Get modifier's shape
     mod_I = modMap.find("shape");
