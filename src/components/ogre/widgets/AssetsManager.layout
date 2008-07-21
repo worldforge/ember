@@ -60,7 +60,7 @@
 					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
 					<Property Name='Text' Value='Materials'/>
 					<Property Name='InheritsAlpha' Value='false'/>
-					<Property Name='Visible' Value='true'/>
+					<Property Name='Visible' Value='false'/>
 					<Window Type='EmberLook/Editbox' Name='FilterMaterials'>
 						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-50}}'/>
 						<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
