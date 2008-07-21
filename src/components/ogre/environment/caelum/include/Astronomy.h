@@ -41,7 +41,7 @@ namespace caelum
      *  unless otherwise mentioned. Ogre::Degree and Ogre::Radian use
      *  Ogre::Real and should be avoided here.
      */
-    class DllExport Astronomy
+    class CAELUM_EXPORT Astronomy
     {
     private:
         Astronomy() {}
@@ -64,7 +64,21 @@ namespace caelum
         static LongReal atan2Deg (LongReal y, LongReal x);
 
     public:
-        static void convertRectangularToSpherical (
+        /// January 1, 2000, noon
+        static const LongReal J2000;
+
+        /** Convert from ecliptic to ecuatorial spherical coordinates, in radians.
+         *  @param lon Ecliptic longitude
+         *  @param lat Ecliptic latitude
+         *  @param rasc Right ascension
+         *  @param decl Declination
+         *  @warning: This function works in radians.
+         */
+		static void convertEclipticToEquatorialRad (
+                LongReal lon, LongReal lat,
+                LongReal& rasc, LongReal& decl);
+
+		static void convertRectangularToSpherical (
                 LongReal x, LongReal y, LongReal z,
                 LongReal &rasc, LongReal &decl, LongReal &dist);
 
@@ -106,13 +120,30 @@ namespace caelum
                 Ogre::Degree longitude, Ogre::Degree latitude,
                 Ogre::Degree &azimuth, Ogre::Degree &altitude);
 
+        /// Gets the moon position at a specific time in ecliptic coordinates
+        /// @param lon: Ecliptic longitude, in radians.
+        /// @param lat: Ecliptic latitude, in radians.
+		static void getEclipticMoonPositionRad (
+                LongReal jday,
+                LongReal &lon,
+                LongReal &lat);
+
+        static void getHorizontalMoonPosition (
+                LongReal jday,
+                LongReal longitude, LongReal latitude,
+                LongReal &azimuth, LongReal &altitude);
+		static void getHorizontalMoonPosition (
+                LongReal jday,
+                Ogre::Degree longitude, Ogre::Degree latitude,
+                Ogre::Degree &azimuth, Ogre::Degree &altitude);
+
         /** Get astronomical julian day from normal gregorian calendar.
          *  From wikipedia: the integer number of days that have elapsed
          *  since the initial epoch defined as
          *  noon Universal Time (UT) Monday, January 1, 4713 BC
          *  @note this is the time at noon, not midnight.
          */
-        static int getJulianDayFromGregorianDate(
+        static int getJulianDayFromGregorianDate (
                 int year, int month, int day); 
 
         /** Get astronomical julian day from normal gregorian calendar.
@@ -120,28 +151,28 @@ namespace caelum
          *  Time should be given as UTC.
          *  @see http://en.wikipedia.org/wiki/Julian_day
          */
-        static LongReal getJulianDayFromGregorianDateTime(
+        static LongReal getJulianDayFromGregorianDateTime (
                 int year, int month, int day,
                 int hour, int minute, LongReal second); 
 
         /** Get astronomical julian day from normal gregorian calendar.
          *  @see above (I don't know the proper doxygen syntax).
          */
-        static LongReal getJulianDayFromGregorianDateTime(
+        static LongReal getJulianDayFromGregorianDateTime (
                 int year, int month, int day,
                 LongReal secondsFromMidnight); 
 
         /// Get gregorian date from integer julian day.
-        static void getGregorianDateFromJulianDay(
+        static void getGregorianDateFromJulianDay (
                 int julianDay, int &year, int &month, int &day);
 
         /// Get gregorian date time from floating point julian day.
-        static void getGregorianDateTimeFromJulianDay(
+        static void getGregorianDateTimeFromJulianDay (
                 LongReal julianDay, int &year, int &month, int &day,
                 int &hour, int &minute, LongReal &second);
 
         /// Get gregorian date from floating point julian day.
-        static void getGregorianDateFromJulianDay(
+        static void getGregorianDateFromJulianDay (
                 LongReal julianDay, int &year, int &month, int &day);
 
         /** Enter high-precission floating-point mode.

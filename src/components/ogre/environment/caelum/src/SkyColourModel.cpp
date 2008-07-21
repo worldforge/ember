@@ -96,10 +96,24 @@ Ogre::ColourValue SkyColourModel::getSunLightColour (float time, const Ogre::Vec
 	float elevation = sunDir.dotProduct (Ogre::Vector3::UNIT_Y) * 0.5 + 0.5;
 
 	// Hack: return averaged sky colours.
-    // Don't use an alpha value for lights, this can can nasty problems.
+    // Don't use an alpha value for lights, this can cause nasty problems.
 	Ogre::ColourValue col = getInterpolatedColour (elevation, elevation, mSkyGradientsImage, false);
     double val = (col.r + col.g + col.b) / 3;
     col = Ogre::ColourValue(val, val, val, 1.0);
+    assert(Ogre::Math::RealEqual(col.a, 1));
+    return col;
+}
+
+Ogre::ColourValue SkyColourModel::getMoonBodyColour (const Ogre::Vector3 &moonDir) {
+	return Ogre::ColourValue::White;
+}
+
+Ogre::ColourValue SkyColourModel::getMoonLightColour (const Ogre::Vector3 &moonDir) {
+	//scaled version of getSunLightColor
+	float elevation = moonDir.dotProduct (Ogre::Vector3::UNIT_Y) * 0.5 + 0.5;
+	Ogre::ColourValue col = getInterpolatedColour (elevation, elevation, mSkyGradientsImage, false);
+    double val = (col.r + col.g + col.b) / 3;
+    col = Ogre::ColourValue(val/2.5f, val/2.5f, val/2.5f, 1.0);
     assert(Ogre::Math::RealEqual(col.a, 1));
     return col;
 }

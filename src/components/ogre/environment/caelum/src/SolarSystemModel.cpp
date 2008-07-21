@@ -36,25 +36,52 @@ namespace caelum
     {
     }
 
-    const Ogre::Vector3 SolarSystemModel::getSunDirection (LongReal jday)
+    const Ogre::Vector3 SolarSystemModel::makeDirection (
+            Ogre::Degree azimuth, Ogre::Degree altitude)
     {
-        int fpmode = Astronomy::enterHighPrecissionFloatingPointMode ();
-           
-        // Horizontal spherical.
-        Degree azimuth;
-        Degree altitude; 
-        Astronomy::getHorizontalSunPosition(jday,
-                getObserverLongitude(), getObserverLatitude(),
-                azimuth, altitude);
-
-        // Ogre direction.
         Ogre::Vector3 res;
+        res.z = -Math::Cos (azimuth) * Math::Cos (altitude);  // North 
         res.x =  Math::Sin (azimuth) * Math::Cos (altitude);  // East
         res.y = -Math::Sin (altitude); // Zenith
-        res.z = -Math::Cos (azimuth) * Math::Cos (altitude);  // North 
+        return res;
+    }
+
+    const Ogre::Vector3 SolarSystemModel::getSunDirection (LongReal jday)
+    {
+		int fpmode = Astronomy::enterHighPrecissionFloatingPointMode ();
+                  
+        Degree azimuth;
+        Degree altitude; 
+		Astronomy::getHorizontalSunPosition(jday,
+                getObserverLongitude(), getObserverLatitude(),
+                azimuth, altitude);		
+        Ogre::Vector3 res = makeDirection(azimuth, altitude);
 
         Astronomy::restoreFloatingPointMode(fpmode);
-
         return res;
+    }
+
+	const Ogre::Vector3 SolarSystemModel::getMoonDirection (LongReal jday) {
+		int fpmode = Astronomy::enterHighPrecissionFloatingPointMode ();
+
+        Ogre::Degree azimuth, altitude;
+        Astronomy::getHorizontalMoonPosition(jday,
+                getObserverLongitude (), getObserverLatitude (),
+                azimuth, altitude);
+	
+        Ogre::Vector3 res = makeDirection(azimuth, altitude);
+
+		Astronomy::restoreFloatingPointMode(fpmode);
+		return res;
+	}
+
+    const Ogre::Real SolarSystemModel::getMoonPhase (LongReal jday)
+    {
+        // Calculates julian days since January 22, 2008 13:36 (full moon)
+        // and divides by the time between lunations (synodic month)
+        LongReal T = (jday - 2454488.0665L) / 29.531026L;
+
+        T = fabs(fmod(T, 1));
+        return -fabs(-4 * T + 2) + 2;
     }
 }

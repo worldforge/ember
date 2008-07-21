@@ -28,14 +28,24 @@ namespace caelum {
 const Ogre::String SkyDome::SPHERIC_DOME_NAME = "CaelumSphericDome";
 const Ogre::String SkyDome::SKY_DOME_MATERIAL_NAME = "CaelumSkyDomeMaterial";
 
-SkyDome::SkyDome (Ogre::SceneManager *sceneMgr, Ogre::SceneNode *caelumRootNode) {
+SkyDome::SkyDome (Ogre::SceneManager *sceneMgr, Ogre::SceneNode *caelumRootNode):
+	mNode(NULL)
+{
+	// First clone material
 	mMaterial = Ogre::MaterialManager::getSingleton().getByName(SKY_DOME_MATERIAL_NAME);
 	mMaterial = mMaterial->clone(SKY_DOME_MATERIAL_NAME + Ogre::StringConverter::toString((size_t)this));
 	mMaterial->load ();
+
+	// Determine if the shader technique works.
 	mShadersEnabled = mMaterial->getBestTechnique()->getPass(0)->isProgrammable();
+
+	// Force setting haze, ensure mHazeEnabled != value.
+	mHazeEnabled = true;
+	setHazeEnabled(false);
 
 	sceneMgr->getRenderQueue()->getQueueGroup(CAELUM_RENDER_QUEUE_SKYDOME)->setShadowsEnabled(false);
 
+	// Generate dome entity.
 	GeometryFactory::generateSphericDome (SPHERIC_DOME_NAME, 32);
 	Ogre::Entity *ent = sceneMgr->createEntity ("Dome", SPHERIC_DOME_NAME);
 	ent->setMaterialName (mMaterial->getName());
@@ -73,7 +83,7 @@ void SkyDome::setSunDirection (Ogre::Vector3 sunDir) {
     float elevation = sunDir.dotProduct (Ogre::Vector3::UNIT_Y);
     elevation = elevation * 0.5 + 0.5;
 	Ogre::Pass* pass = mMaterial->getBestTechnique()->getPass(0);
-	if(mShadersEnabled)	{
+	if (mShadersEnabled)	{
 		Ogre::GpuProgramParametersSharedPtr vpParams = pass->getVertexProgramParameters();
 		Ogre::GpuProgramParametersSharedPtr fpParams = pass->getFragmentProgramParameters();
 		vpParams->setNamedConstant ("sunDirection", sunDir);
@@ -84,8 +94,15 @@ void SkyDome::setSunDirection (Ogre::Vector3 sunDir) {
 	}
 }
 
+void SkyDome::setHazeColour (Ogre::ColourValue hazeColour) {
+	if (mShadersEnabled && mHazeEnabled) {
+		Ogre::GpuProgramParametersSharedPtr fpParams =  mMaterial->getBestTechnique()->getPass(0)->getFragmentProgramParameters();
+		fpParams->setNamedConstant ("hazeColour", hazeColour);
+    }    
+}
+
 void SkyDome::setLightAbsorption (float absorption) const {
-	if(!mShadersEnabled)
+	if (!mShadersEnabled)
 		return;
 
     if (absorption > 1) {
@@ -163,8 +180,9 @@ void SkyDome::setHazeEnabled (bool value) {
     }
     mHazeEnabled = value;
 
-	if(!mShadersEnabled)
+	if(!mShadersEnabled) {
 		return;
+	}
 
 	Ogre::Pass *pass = mMaterial->getTechnique (0)->getPass (0);
     if (value) {
@@ -174,8 +192,6 @@ void SkyDome::setHazeEnabled (bool value) {
     }
     Ogre::GpuProgramParametersSharedPtr params = pass->getFragmentProgramParameters();
     params->setIgnoreMissingParams(true);
-	params->setNamedConstant ("offset", 0.0f);
-	params->setNamedAutoConstant ("hazeColour", Ogre::GpuProgramParameters::ACT_FOG_COLOUR);
 }
 
 } // namespace caelum

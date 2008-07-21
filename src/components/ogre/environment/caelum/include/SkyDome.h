@@ -29,7 +29,7 @@ namespace caelum {
 /** A sky dome element.
 	@author Jes˙s Alonso Abad
  */
-class DllExport SkyDome : public CameraBoundElement {
+class CAELUM_EXPORT SkyDome : public CameraBoundElement {
 // Attributes -----------------------------------------------------------------
 	private:
 		/** Control scene node.
@@ -70,6 +70,9 @@ class DllExport SkyDome : public CameraBoundElement {
 		 */
 		void setSunDirection (Ogre::Vector3 dir);
 
+        /// Explicit haze colour.
+        void setHazeColour (Ogre::ColourValue hazeColour);
+
 		/** Sets the new light absorption factor.
 			@param absorption The light absorption factor; a number in the range [0, 1], the lower, the less light the atmosphere will absorb.
 		 */
@@ -94,7 +97,9 @@ class DllExport SkyDome : public CameraBoundElement {
         /// If skydome haze is enabled.
         bool getHazeEnabled () const;
 
-        /// Enable or disable skydome haze. This makes the sky darker.
+        /** Enable or disable skydome haze. This makes the sky darker.
+         *  By default haze is disabled.
+         */
         void setHazeEnabled (bool value);
 
     public:

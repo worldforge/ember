@@ -37,7 +37,7 @@ namespace caelum
 		@param wrapX To wrap the x coordinate.
 		@return The interpolated colour.
 	 */
-	DllExport Ogre::ColourValue getInterpolatedColour (float fx, float fy, Ogre::Image *img,
+	CAELUM_EXPORT Ogre::ColourValue getInterpolatedColour (float fx, float fy, Ogre::Image *img,
             bool wrapX = true);
 }
 

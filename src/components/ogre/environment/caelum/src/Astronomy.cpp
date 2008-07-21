@@ -24,6 +24,8 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 namespace caelum
 {
     const LongReal Astronomy::PI = 3.1415926535897932384626433832795029L;
+    
+    const LongReal Astronomy::J2000 = 2451545.0;
 
     LongReal Astronomy::radToDeg (LongReal value)
     {
@@ -56,6 +58,21 @@ namespace caelum
         return value;
     }
 
+	void Astronomy::convertEclipticToEquatorialRad (
+            LongReal lon, LongReal lat,
+            LongReal &rasc, LongReal &decl)
+	{
+		double ecl = Astronomy::degToRad(23.439281);
+
+		double x = cos(lon) * cos(lat);
+		double y = cos(ecl) * sin(lon) * cos(lat) - sin(ecl) * sin(lat);
+		double z = sin(ecl) * sin(lon) * cos(lat) + cos(ecl) * sin(lat);
+
+        double r = sqrt(x * x + y * y);
+        rasc = atan2(y, x);
+        decl = atan2(z, r);
+	} 
+
     void Astronomy::convertRectangularToSpherical (
             LongReal x, LongReal y, LongReal z,
             LongReal &rasc, LongReal &decl, LongReal &dist)
@@ -74,7 +91,7 @@ namespace caelum
         z = dist * sinDeg (decl);
     }
 
-    void Astronomy::convertEquatorialToHorizontal (
+	void Astronomy::convertEquatorialToHorizontal (
             LongReal jday,
             LongReal longitude,   LongReal latitude,
             LongReal rasc,        LongReal decl,
@@ -106,7 +123,7 @@ namespace caelum
             LongReal longitude, LongReal latitude,
             LongReal &azimuth, LongReal &altitude)
     {
-        // Midnight at the start of 31 december 2000 
+        // 2451544.5 == Astronomy::getJulianDayFromGregorianDateTime(2000, 1, 1, 0, 0, 0));
         // 2451543.5 == Astronomy::getJulianDayFromGregorianDateTime(1999, 12, 31, 0, 0, 0));
         LongReal d = jday - 2451543.5;
 
@@ -118,7 +135,7 @@ namespace caelum
         // mean anomaly (0 at perihelion; increases uniformly with time)
         LongReal M = LongReal(356.0470 + 0.9856002585 * d);
         // Obliquity of the ecliptic.
-        LongReal oblecl = LongReal (23.4393 - 3.563E-7 * d);
+        //LongReal oblecl = LongReal (23.4393 - 3.563E-7 * d);
 
         // Eccentric anomaly
         LongReal E = M + radToDeg(e * sinDeg (M) * (1 + e * cosDeg (M)));
@@ -126,22 +143,16 @@ namespace caelum
         // Sun's Distance(R) and true longitude(L)
         LongReal xv = cosDeg (E) - e;
         LongReal yv = sinDeg (E) * sqrt (1 - e * e);
-        LongReal r = sqrt (xv * xv + yv * yv);
+        //LongReal r = sqrt (xv * xv + yv * yv);
         LongReal lon = atan2Deg (yv, xv) + w;
+        LongReal lat = 0;
 
-        // Ecliptic rectangular.
-        LongReal xecl = r * cosDeg(lon);
-        LongReal yecl = r * sinDeg(lon);
-        LongReal zecl = 0;
-
-        // Equatorial rectangular.
-        LongReal xequ = xecl;
-        LongReal yequ = yecl * cosDeg (oblecl) - zecl * sinDeg (oblecl);
-        LongReal zequ = yecl * sinDeg (oblecl) + zecl * cosDeg (oblecl);
-
-        // Equatorial spherical.
+		LongReal lambda = degToRad(lon);
+		LongReal beta = degToRad(lat);
         LongReal rasc, decl;
-        Astronomy::convertRectangularToSpherical (xequ, yequ, zequ, rasc, decl, r);
+		convertEclipticToEquatorialRad (lambda, beta, rasc, decl);
+		rasc = radToDeg(rasc);
+		decl = radToDeg(decl);
 
         // Horizontal spherical.
         Astronomy::convertEquatorialToHorizontal (
@@ -157,6 +168,74 @@ namespace caelum
         getHorizontalSunPosition(jday, longitude.valueDegrees (), latitude.valueDegrees (), az, al);
         azimuth = Ogre::Degree(az);                
         altitude = Ogre::Degree(al);                
+    }
+
+	void Astronomy::getEclipticMoonPositionRad (
+            LongReal jday,
+            LongReal &lon, LongReal &lat)
+	{
+        // Julian centuries since January 1, 2000
+		double T = (jday - 2451545.0L) / 36525.0L; 
+		double lprim = 3.8104L + 8399.7091L * T;
+		double mprim = 2.3554L + 8328.6911L * T;
+		double m = 6.2300L + 648.3019L * T;
+		double d = 5.1985L + 7771.3772L * T;
+		double f = 1.6280L + 8433.4663L * T;
+		lon = lprim
+                + 0.1098L * sin(mprim)
+                + 0.0222L * sin(2.0L * d - mprim)
+                + 0.0115L * sin(2.0L * d)
+				+ 0.0037L * sin(2.0L * mprim)
+                - 0.0032L * sin(m)
+                - 0.0020L * sin(2.0L * f)
+                + 0.0010L * sin(2.0L * d - 2.0L * mprim)
+				+ 0.0010L * sin(2.0L * d - m - mprim)
+                + 0.0009L * sin(2.0L * d + mprim)
+                + 0.0008L * sin(2.0L * d - m)
+				+ 0.0007L * sin(mprim - m)
+                - 0.0006L * sin(d)
+                - 0.0005L * sin(m + mprim);
+		lat =
+                + 0.0895L * sin(f)
+                + 0.0049L * sin(mprim + f)
+                + 0.0048L * sin(mprim - f)
+                + 0.0030L * sin(2.0L * d - f)
+                + 0.0010L * sin(2.0L * d + f - mprim)
+                + 0.0008  * sin(2.0L * d - f - mprim)
+                + 0.0006L * sin(2.0L * d + f);
+	}
+
+    void Astronomy::getHorizontalMoonPosition (
+            LongReal jday,
+            LongReal longitude, LongReal latitude,
+            LongReal &azimuth, LongReal &altitude)
+    {
+        // Ecliptic spherical
+		LongReal lonecl, latecl;
+		Astronomy::getEclipticMoonPositionRad (jday, lonecl, latecl);
+
+		// Equatorial spherical
+        LongReal rasc, decl; 
+		Astronomy::convertEclipticToEquatorialRad (lonecl, latecl, rasc, decl);
+
+		// Radians to degrees (all angles are in radians up to this point)
+        rasc = radToDeg(rasc);
+		decl = radToDeg(decl);
+
+		// Equatorial to horizontal
+        Astronomy::convertEquatorialToHorizontal (
+                jday, longitude, latitude, rasc, decl, azimuth, altitude);
+    }
+
+    void Astronomy::getHorizontalMoonPosition (
+            LongReal jday,
+            Ogre::Degree longitude, Ogre::Degree latitude,
+            Ogre::Degree &azimuth, Ogre::Degree &altitude)
+    {
+        LongReal az, al;
+        getHorizontalMoonPosition(jday, longitude.valueDegrees (), latitude.valueDegrees (), az, al);
+        azimuth = Ogre::Degree(az);                
+        altitude = Ogre::Degree(al);  
     }
 
     int Astronomy::getJulianDayFromGregorianDate(

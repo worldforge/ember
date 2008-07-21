@@ -30,7 +30,7 @@ namespace caelum {
  *  It would be nice to split it into multiple components.
  *  Functions take a "time" parameter but only elevation is actually used.
  */
-class DllExport SkyColourModel {
+class CAELUM_EXPORT SkyColourModel {
 // Attributes -----------------------------------------------------------------
 	private:
 		/** The sky gradients image (for lookups).
@@ -83,6 +83,12 @@ class DllExport SkyColourModel {
          *  @return The colour of the sun's light
 		 */
 		Ogre::ColourValue getSunLightColour (float time, const Ogre::Vector3 &sunDir);
+
+		/// Gets the colour of moon's body.
+		Ogre::ColourValue getMoonBodyColour (const Ogre::Vector3 &moonDir);
+
+		/// Gets the colour of moon's light.
+		Ogre::ColourValue getMoonLightColour (const Ogre::Vector3 &moonDir);
 
 		/// Set the sun gradients image.
 		/// resources/EarthClearSky2.png is the default image; but you can supply another

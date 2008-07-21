@@ -34,5 +34,7 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 #include "UniversalClock.h"
 #include "SolarSystemModel.h"
 #include "Astronomy.h"
+#include "PointStarfield.h"
+#include "PointStarfield.h"
 
 #endif //CAELUM_H

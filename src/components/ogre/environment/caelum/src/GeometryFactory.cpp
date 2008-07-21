@@ -25,10 +25,12 @@ namespace caelum {
 
 void GeometryFactory::generateSphericDome (const Ogre::String &name, int segments, DomeType type) {
 	// Return now if already exists
-	if (Ogre::MeshManager::getSingleton ().resourceExists (name))
+	if (Ogre::MeshManager::getSingleton ().resourceExists (name)) {
 		return;
+    }
 
-	LOG ("Creating " + name + " sphere mesh resource...");
+	Ogre::LogManager::getSingleton ().logMessage (
+            "Caelum: Creating " + name + " sphere mesh resource...");
 
 	// Use the mesh manager to create the mesh
 	Ogre::MeshPtr msh = Ogre::MeshManager::getSingleton ().createManual (name, RESOURCE_GROUP_NAME);
@@ -102,7 +104,8 @@ void GeometryFactory::generateSphericDome (const Ogre::String &name, int segment
 	msh->_setBoundingSphereRadius (1);
 	msh->load ();
 
-	LOG ("DONE");
+	Ogre::LogManager::getSingleton ().logMessage (
+            "Caelum: generateSphericDome DONE");
 }
 
 void GeometryFactory::fillGradientsDomeBuffers (float *pVertex, unsigned short *pIndices, int segments) {

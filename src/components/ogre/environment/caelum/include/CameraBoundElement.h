@@ -33,7 +33,7 @@ namespace caelum {
  *  resizes itself for camera near/far clipping radius. It will correctly
  *  handle infinite far clip planes.
  */
-class DllExport CameraBoundElement {
+class CAELUM_EXPORT CameraBoundElement {
 	private:
 		/** Defines if the element has an automatic "far" radius or not.
 		 */

@@ -105,21 +105,23 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 			caelum::CaelumSystem::CAELUM_COMPONENT_SUN |
 			caelum::CaelumSystem::CAELUM_COMPONENT_SOLAR_SYSTEM_MODEL |
 			caelum::CaelumSystem::CAELUM_COMPONENT_SKY_DOME |
-			caelum::CaelumSystem::CAELUM_COMPONENT_STARFIELD |
+			caelum::CaelumSystem::CAELUM_COMPONENT_POINT_STARFIELD |
 			caelum::CaelumSystem::CAELUM_COMPONENT_CLOUDS |
+			caelum::CaelumSystem::CAELUM_COMPONENT_MOON |
 // 			caelum::CaelumSystem::CAELUM_COMPONENT_GROUND_FOG |
 			0);	
 	mCaelumSystem = new caelum::CaelumSystem (root, sceneMgr, componentMask, false);
 
 
 	mCaelumSystem->setManageSceneFog (true);
+	mCaelumSystem->setManageAmbientLight(true);
 	mCaelumSystem->setGlobalFogDensityMultiplier (0.005);
 
 	///Get the sky dome for  Create a sky dome CaelumSky
 	mDome = mCaelumSystem->getSkyDome();
 	
 	/// Set up some star field options
-	mCaelumSystem->getStarfield ()->setInclination (::Ogre::Degree (13));
+// 	mCaelumSystem->getPointStarfield ()->setInclination (::Ogre::Degree (13));
 
 	/// Setup sun options
 	if (mCaelumSystem->getSun ()) {

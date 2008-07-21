@@ -2,7 +2,7 @@
 This file is part of Caelum.
 See http://www.ogre3d.org/wiki/index.php/Caelum 
 
-Copyright (c) 2006-2007 Caelum team. See Contributors.txt for details.
+Copyright (c) 2006-2008 Caelum team. See Contributors.txt for details.
 
 Caelum is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published
@@ -26,10 +26,10 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 
 namespace caelum {
 
-/** Starfield dome class.
-	@author Jesï¿½s Alonso Abad
+/** ImageStarfield dome class.
+	@author Jesús Alonso Abad
  */
-class DllExport Starfield : public CameraBoundElement {
+class CAELUM_EXPORT ImageStarfield : public CameraBoundElement {
 // Attributes -----------------------------------------------------------------
 	protected:
 		/** Reference to the dome node.
@@ -57,14 +57,14 @@ class DllExport Starfield : public CameraBoundElement {
 		/** Constructor.
 			@param sceneMgr The scene manager this dome will belong to.
 		 */
-		Starfield (
+		ImageStarfield (
                 Ogre::SceneManager *sceneMgr,
 				Ogre::SceneNode *caelumRootNode,
-                const Ogre::String &textureName = "Starfield.jpg");
+                const Ogre::String &textureName = "ImageStarfield.jpg");
 
 		/** Destructor.
 		 */
-		virtual ~Starfield ();
+		virtual ~ImageStarfield ();
 
 		/** Sets the starfield inclination. This inclination is the angle between the starfield rotation axis and the horizon plane.
 			@param inc The starfield inclination in degrees. It`s equal to observer latitude taken with opposite sign.

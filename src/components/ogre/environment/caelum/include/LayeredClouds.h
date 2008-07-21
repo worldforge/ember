@@ -23,7 +23,6 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 
 #include "CaelumPrerequisites.h"
 #include "CameraBoundElement.h"
-#include <memory>
 
 namespace caelum {
 
@@ -36,7 +35,7 @@ namespace caelum {
  *  Cloud offsets and speeds are not in any meaningful world units. Maybe they should
  *  be in radians or something?
  */
-class DllExport LayeredClouds: public CameraBoundElement {
+class CAELUM_EXPORT LayeredClouds: public CameraBoundElement {
 	public:
 		/** Standard constructor.
 		 *  @param scene: Scene to add cloud dome to. This class takes control

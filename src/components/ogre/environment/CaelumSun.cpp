@@ -38,7 +38,7 @@ namespace EmberOgre {
 
 namespace Environment {
 
-CaelumSun::CaelumSun(CaelumEnvironment& environment, caelum::BaseSun* sun)
+CaelumSun::CaelumSun(CaelumEnvironment& environment, caelum::BaseSkyLight* sun)
 : CaelumEnvironmentComponent( environment), mSun(sun) 
 {
 	sun->setAmbientMultiplier (Ogre::ColourValue(0.7, 0.7, 0.7));
@@ -47,7 +47,6 @@ CaelumSun::CaelumSun(CaelumEnvironment& environment, caelum::BaseSun* sun)
 	// For green terrain:
 	//mCaelumSystem->getSun ()->setDiffuseMultiplier (Ogre::ColourValue(0.1, 3, 0.1));
 	sun->setSpecularMultiplier (Ogre::ColourValue(5, 5, 5));
-	sun->setManageAmbientLight (true);
 	
 	registerConfigListener("caelum", "sunambientmultiplier", sigc::mem_fun(*this, &CaelumSun::Config_SunAmbientMultiplier));
 	registerConfigListener("caelum", "sundiffusemultiplier", sigc::mem_fun(*this, &CaelumSun::Config_SunDiffuseMultiplier));
@@ -68,7 +67,7 @@ void CaelumSun::setAmbientLight(const Ogre::ColourValue& colour) {
 
 Ogre::Vector3 CaelumSun::getSunDirection() const
 {
-	return mSun->getSunDirection();
+	return mSun->getLightDirection();
 }
 
 void CaelumSun::Config_SunAmbientMultiplier(const std::string& section, const std::string& key, varconf::Variable& variable)

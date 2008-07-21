@@ -23,150 +23,21 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 
 #include "CaelumPrerequisites.h"
 #include "CameraBoundElement.h"
+#include "SkyLight.h"
 
 namespace caelum {
 
-class BaseSun;		// abstract
+class BaseSkyLight;		// abstract
 class SphereSun;	// deprecated
 class SpriteSun;
 
 typedef SpriteSun Sun;
-
-/** Abstract class representing sun.
-	Can be registered in CaelumSystem and receive update notifications.
-	Contains scene node and main light, that are properly placed on the sky by update method.
-	@author Jes˙s Alonso Abad
- */
-class DllExport BaseSun : public CameraBoundElement {
-// Attributes -----------------------------------------------------------------
-	public:
-	protected:
-		/// Pointer to scene.
-		Ogre::SceneManager *mScene;
-
-		/// The main directional light.
-		Ogre::Light *mMainLight;
-
-		/// The sun scene node.
-		Ogre::SceneNode *mSunNode;
-
-		/// Base distance of the sun.
-		float mRadius;
-
-		/// The latest normalised sun direction.
-		Ogre::Vector3 mSunDirection;
-		
-		/// Sun sphere colour, as set by setSunSphereColour
-		Ogre::ColourValue mSunSphereColour;
-
-		/// Sun light colour, as set by setSunLightColour
-		Ogre::ColourValue mSunLightColour;
-
-		/// Colour multiplier for light diffuse colour.
-		Ogre::ColourValue mDiffuseMultiplier;
-
-		/// Colour multiplier for light specular colour.
-		Ogre::ColourValue mSpecularMultiplier;
-
-		/** Colour multiplier for ambient light colour.
-		 *  No effect unless isManagingAmbientLight is true.
-		 */
-		Ogre::ColourValue mAmbientMultiplier;
-
-		/// If true then this class also manages ambient lighting.
-		bool mManageAmbientLight;
-
-// Methods --------------------------------------------------------------------
-	public:
-		/** Constructor.
-			@param sceneMgr The scene manager where the lights will be created.
-		 */
-		BaseSun (Ogre::SceneManager *sceneMgr,
-			Ogre::SceneNode *caelumRootNode);
-
-		/** Destructor.
-			@note You must use one of descendant, since base sun is invisible.
-		 */
-		virtual ~BaseSun () = 0;
-
-		/** Updates sun parameters.
-			@param sunDirection Sun direction.
-			@param sunLightColour Color for the sun's light source
-			@param sunSphereColour Color to draw the sun sphere itself.
-		 */
-        virtual void update (
-                const Ogre::Vector3& sunDirection,
-                const Ogre::ColourValue &sunLightColour,
-                const Ogre::ColourValue &sunSphereColour);
-
-		/** Retrieves the latest sun direction.
-			@return The sun direction.
-		 */
-		const Ogre::Vector3& getSunDirection () const;
-
-		/** Set the sun direction.
-			@param dir The sun direction.
-		 */
-		virtual void setSunDirection (const Ogre::Vector3 &dir);
-
-		/// Get current sun sphere colour, as set in setSunSphereColour.
-		Ogre::ColourValue getSunSphereColour () const;
-
-		/** Sets the sun sphere colour.
-			@param colour The colour used to draw the sun
-		 */
-		virtual void setSunSphereColour (const Ogre::ColourValue &colour);
-
-		/// Get current sunlight colour, as set in setSunLightColour.
-		Ogre::ColourValue getSunLightColour () const;
-
-		/** Sets the sunlight colour.
-			@param colour The colour used to illuminate the scene.
-		 */
-		virtual void setSunLightColour (const Ogre::ColourValue &colour);
-
-		/// Set diffuse multiplier for light colour
-		void setDiffuseMultiplier (const Ogre::ColourValue &diffuse);
-
-		/// Set diffuse multiplier for light colour
-		Ogre::ColourValue getDiffuseMultiplier () const;
-
-		/// Set specular multiplier for light colour
-		void setSpecularMultiplier (const Ogre::ColourValue &specular);
-
-		/// Set specular multiplier for light colour
-		Ogre::ColourValue getSpecularMultiplier () const;
-
-		/// Set ambient multiplier for light colour
-		/// This only works if isManaging
-		void setAmbientMultiplier (const Ogre::ColourValue &ambient);
-
-		/// Set ambient multiplier for light colour
-		Ogre::ColourValue getAmbientMultiplier () const;
-
-		/// This can make this class manage the ambient light of the scene.
-		void setManageAmbientLight (bool manage);
-
-		/// If the class is managing the scene's ambient light.
-		bool isManagingAmbientLight () const;
-
-		/// Allow access to main light, to disable it duaring eclipse, for example.
-		Ogre::Light* getMainLight() const;
-
-    protected:
-        /// Handle far radius.
-	    virtual void setFarRadius (Ogre::Real radius);
-		
-		/// Temporary change main light color
-		void setMainLightColour(const Ogre::ColourValue &colour);
-};
-
 //========================================================================================================================
 
 /** Class representing the sun as sphere with emissive color on it.
 	@author Jes˙s Alonso Abad
  */
-class DllExport SphereSun : public BaseSun {
+class CAELUM_EXPORT SphereSun : public BaseSkyLight {
 // Attributes -----------------------------------------------------------------
 	public:
 		/// Name of the sun material.
@@ -196,7 +67,7 @@ class DllExport SphereSun : public BaseSun {
 		/** Sets the sun sphere colour.
 			@param colour The colour used to draw the sun
 		 */
-		void setSunSphereColour (const Ogre::ColourValue &colour);
+		void setBodyColour (const Ogre::ColourValue &colour);
 
     public:
 		/// Handle camera change.
@@ -208,7 +79,7 @@ class DllExport SphereSun : public BaseSun {
 /** Class representing the sun as billboard with texture on it.
 	@author Eugene Golushkov
  */
-class DllExport SpriteSun : public BaseSun {
+class CAELUM_EXPORT SpriteSun : public BaseSkyLight {
 // Attributes -----------------------------------------------------------------
 	public:
 		/// Name of the sun material.
@@ -252,13 +123,12 @@ class DllExport SpriteSun : public BaseSun {
 		/** Sets the sun sphere colour.
 			@param colour The colour used to draw the sun
 		 */
-		void setSunSphereColour (const Ogre::ColourValue &colour);
+		void setBodyColour (const Ogre::ColourValue &colour);
 
     public:
 		/// Handle camera change.
 		virtual void notifyCameraChanged (Ogre::Camera *cam);
 };
-
-} // namespace caelum
+}
 
 #endif //SUN_H

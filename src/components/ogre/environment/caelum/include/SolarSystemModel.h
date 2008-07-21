@@ -28,11 +28,14 @@ namespace caelum
     /** Class which calculates sun and moon positions on the sky.
      *  Most of the calculations are done in the astronomy class.
      */
-    class DllExport SolarSystemModel
+    class CAELUM_EXPORT SolarSystemModel
     {
     private:
         Ogre::Degree mObserverLatitude;
         Ogre::Degree mObserverLongitude;
+
+        static const Ogre::Vector3 makeDirection (
+                Ogre::Degree azimuth, Ogre::Degree altitude);
 
 	public:
 		/** Constructor, initializes observer's position on earth.
@@ -58,6 +61,19 @@ namespace caelum
          *  @see UniversalClock for julian day calculations.
 		 */
 		const Ogre::Vector3 getSunDirection (LongReal jday);
+
+		/** Get the moon's direction at a certain time.
+         *  @param jday astronomical julian day.
+		 */
+		const Ogre::Vector3 getMoonDirection (LongReal jday);
+
+        /** Fake function to get the phase of the moon
+         *  @param jday Julian day
+         *  @return the phase of the moon; ranging from 0(full moon) to 2(new moon).
+         *  The calculations performed by this function are completely fake.
+         *  It's a triangle wave with a period of 28.5 days.
+         */
+		const Ogre::Real getMoonPhase (LongReal jday);
     };
 }
 

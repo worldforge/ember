@@ -26,10 +26,10 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 namespace caelum {
 
 /** A constructor for a number of caelum geometric objects.
-	@author Jesús Alonso Abad.
+	@author Jesï¿½s Alonso Abad.
 	@version 0.1
  */
-class DllExport GeometryFactory {
+class CAELUM_EXPORT GeometryFactory {
 // Types and enums ------------------------------------------------------------
 	public:
 		/** Enumeration of types of sky domes.

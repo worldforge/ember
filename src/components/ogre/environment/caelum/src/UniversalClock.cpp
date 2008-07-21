@@ -27,6 +27,7 @@ namespace caelum {
 const caelum::LongReal UniversalClock::SECONDS_PER_DAY = 86400.0;
 
 UniversalClock::UniversalClock () {
+    setJulianDay (Astronomy::J2000);        
 	setTimeScale (1.0);
 	setUpdateRate (0);
     // The above call does forceUpdate but let's be explicit for clarity.

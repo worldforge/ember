@@ -34,7 +34,7 @@ namespace caelum {
  *  This increases precission; mCurrentTime is tracked in seconds while mJulianDayBase
  *  uses days. It would be silly to track the current time in days.
  */
-class DllExport UniversalClock
+class CAELUM_EXPORT UniversalClock
 {
 	private:
         /// Astronomical julian day at mCurrentTime = 0;
@@ -100,6 +100,7 @@ class DllExport UniversalClock
         /** Set the current time as a julian day.
          *  Set the current time as a julian day, which you build using one
          *  of the static getJulianDayFromXXX functions.
+         *  Defaults to J2000 (noon january 1st)
          */
         void setJulianDay(LongReal value);
 

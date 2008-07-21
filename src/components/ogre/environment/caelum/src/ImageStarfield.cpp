@@ -2,7 +2,7 @@
 This file is part of Caelum.
 See http://www.ogre3d.org/wiki/index.php/Caelum 
 
-Copyright (c) 2006-2007 Caelum team. See Contributors.txt for details.
+Copyright (c) 2006-2008 Caelum team. See Contributors.txt for details.
 
 Caelum is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published
@@ -19,16 +19,16 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "CaelumPrecompiled.h"
-#include "Starfield.h"
+#include "ImageStarfield.h"
 #include "GeometryFactory.h"
 
 namespace caelum {
 
-const Ogre::String Starfield::STARFIELD_DOME_NAME = "CaelumStarfieldDome";
+const Ogre::String ImageStarfield::STARFIELD_DOME_NAME = "CaelumStarfieldDome";
 
-const Ogre::String Starfield::STARFIELD_MATERIAL_NAME = "CaelumStarfieldMaterial";
+const Ogre::String ImageStarfield::STARFIELD_MATERIAL_NAME = "CaelumStarfieldMaterial";
 
-Starfield::Starfield (Ogre::SceneManager *sceneMgr, Ogre::SceneNode *caelumRootNode, const Ogre::String &textureName) {
+ImageStarfield::ImageStarfield (Ogre::SceneManager *sceneMgr, Ogre::SceneNode *caelumRootNode, const Ogre::String &textureName) {
 	mInclination = Ogre::Degree (0);
 
 	mStarfieldMaterial = Ogre::MaterialManager::getSingleton().getByName(STARFIELD_MATERIAL_NAME);
@@ -48,7 +48,7 @@ Starfield::Starfield (Ogre::SceneManager *sceneMgr, Ogre::SceneNode *caelumRootN
 	mNode->attachObject (ent);
 }
 
-Starfield::~Starfield () {
+ImageStarfield::~ImageStarfield () {
 	if (mNode) {
 		// Detach and destroy attached entity.
 		Ogre::Entity *ent = static_cast<Ogre::Entity *>(mNode->detachObject ("StarfieldDome"));
@@ -62,28 +62,28 @@ Starfield::~Starfield () {
 	}
 }
 
-void Starfield::notifyCameraChanged (Ogre::Camera *cam) {
+void ImageStarfield::notifyCameraChanged (Ogre::Camera *cam) {
     CameraBoundElement::notifyCameraChanged (cam);
 }
 
-void Starfield::setFarRadius (Ogre::Real radius) {
+void ImageStarfield::setFarRadius (Ogre::Real radius) {
     CameraBoundElement::setFarRadius(radius);
 	mNode->setScale (Ogre::Vector3::UNIT_SCALE * radius);
 }
 
-void Starfield::setInclination (Ogre::Degree inc) {
+void ImageStarfield::setInclination (Ogre::Degree inc) {
 	mInclination = inc;
 }
 
-void Starfield::update (const float time) {
+void ImageStarfield::update (const float time) {
 	Ogre::Quaternion orientation = Ogre::Quaternion::IDENTITY;
 	orientation = orientation * Ogre::Quaternion (Ogre::Radian (mInclination + Ogre::Degree (90)), Ogre::Vector3::UNIT_X);
-	orientation = orientation * Ogre::Quaternion (Ogre::Radian (time * 2 * Ogre::Math::PI), Ogre::Vector3::UNIT_Y);
+	orientation = orientation * Ogre::Quaternion (Ogre::Radian (-time * 2 * Ogre::Math::PI), Ogre::Vector3::UNIT_Y);
 
 	mNode->setOrientation (orientation);
 }
 
-void Starfield::setTexture (const Ogre::String &mapName) {
+void ImageStarfield::setTexture (const Ogre::String &mapName) {
 	// Update the starfield material
 	mStarfieldMaterial->getBestTechnique ()->getPass (0)->getTextureUnitState (0)->setTextureName (mapName);
 }

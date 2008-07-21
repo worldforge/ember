@@ -39,7 +39,7 @@ namespace caelum {
  *	You can set verticalDecay to 0 and get standard GL_EXP fog. Don't actually
  *	do that though because you'll get a division by 0.
  */
-class DllExport GroundFog: public CameraBoundElement {
+class CAELUM_EXPORT GroundFog: public CameraBoundElement {
 	public:
 		static const Ogre::String DEFAULT_PASS_NAME;
 
