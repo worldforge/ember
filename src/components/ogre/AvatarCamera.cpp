@@ -337,8 +337,6 @@ void AvatarCamera::pitch(Ogre::Degree degrees)
 		degrees = std::max<float>(degrees.valueDegrees(), -90 - pitch.valueDegrees());
 	}
 	
-	S_LOG_VERBOSE("Pitch: " << pitch.valueDegrees());
-	
 	if (mMode == MODE_THIRD_PERSON) {
 		degreePitch += degrees;
 		node->pitch(degrees);
