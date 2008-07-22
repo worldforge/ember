@@ -42,7 +42,7 @@ void XMLSoundDefParser::parseScript(Ogre::DataStreamPtr stream)
 	for (TiXmlElement* smElem = rootElem->FirstChildElement();
             smElem != 0; smElem = smElem->NextSiblingElement())
 	{
-		const char* tmp =  smElem->Attribute("entity");
+		const char* tmp =  smElem->Attribute("type");
 		if (!tmp)
 		{
 			continue;
@@ -58,65 +58,43 @@ void XMLSoundDefParser::parseScript(Ogre::DataStreamPtr stream)
 			S_LOG_INFO(std::string("Sound Entity ") + finalName
 					+ std::string(" created."));
 
-			readActions(newEntity, smElem);
+			readGroups(newEntity, smElem);
 		}
 	}	
 }
 
-void XMLSoundDefParser::readActions(Ember::SoundEntity* ent, TiXmlElement* objNode)
+void XMLSoundDefParser::readGroups(Ember::SoundEntity* ent, TiXmlElement* objNode)
 {
 	for (TiXmlElement* smElem = objNode->FirstChildElement();
             smElem != 0; smElem = smElem->NextSiblingElement())
 	{
 		const char* name =  smElem->Attribute("name");
-		const char* order =  smElem->Attribute("orderOfPlaying");
-		const char* timestep =  smElem->Attribute("timeStep");
-
 		if (!name)
 		{
 			continue;
 		}
 
-		Ember::orderOfPlay mOrder = Ember::PLAY_LINEAR;
-		if (order && !stricmp(order, "random"))
+		Ember::SoundGroup* newGroup = ent->registerGroup(name);
+		if (newGroup)
 		{
-			mOrder = Ember::PLAY_RANDOM;
-		}
-		else
-		if (order && !stricmp(order, "inverse"))
-		{
-			mOrder = Ember::PLAY_INVERSE;
-		}
-
-		float mTimeStep = 0.0;
-		if (timestep)
-		{
-			mTimeStep = atof(timestep);
-		}
-
-		Ember::SoundAction* newAction = 
-			ent->registerAction(name, mOrder, mTimeStep);
-		
-		if (newAction)
-		{
-			S_LOG_INFO(std::string("\t-Action ") + name 
+			S_LOG_INFO(std::string("\t-Group ") + name 
 					+ std::string(" created."));
 
-			readBuffers(newAction, smElem);	
+			readBuffers(newGroup, smElem);	
 		}
 	}
 }
 
-void XMLSoundDefParser::readBuffers(Ember::SoundAction* act, TiXmlElement* objNode)
+void XMLSoundDefParser::readBuffers(Ember::SoundGroup* grp, TiXmlElement* objNode)
 {
 	for (TiXmlElement* smElem = objNode->FirstChildElement();
             smElem != 0; smElem = smElem->NextSiblingElement())
 	{
-		readBuffer(act, smElem);
+		readBuffer(grp, smElem);
 	}
 }
 
-void XMLSoundDefParser::readBuffer(Ember::SoundAction* act, TiXmlElement* objNode)
+void XMLSoundDefParser::readBuffer(Ember::SoundGroup* grp, TiXmlElement* objNode)
 {
 	const char* filename = objNode->Attribute("filename");
 	const char* format = objNode->Attribute("format");
@@ -156,9 +134,9 @@ void XMLSoundDefParser::readBuffer(Ember::SoundAction* act, TiXmlElement* objNod
 	*/
 
 	std::string name(filename);
+	grp->allocateBuffer(filename, playsReal, type);
 	S_LOG_INFO(std::string("\t -Buffer ") + name 
 			+ std::string(" created."));
-	act->allocateBuffer(filename, playsReal, type);
 }
 
 }

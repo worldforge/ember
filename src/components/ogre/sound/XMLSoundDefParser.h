@@ -23,7 +23,7 @@
 #include "framework/tinyxml/tinyxml.h"
 
 #include "services/sound/SoundEntity.h"
-#include "services/sound/SoundAction.h"
+#include "services/sound/SoundGroup.h"
 
 #include <iostream>
 #include <sstream>
@@ -38,9 +38,9 @@ public :
 
 private:
 
-	void readActions(Ember::SoundEntity* ent, TiXmlElement* objNode);
-	void readBuffers(Ember::SoundAction* act, TiXmlElement* objNode);
-	void readBuffer(Ember::SoundAction* act, TiXmlElement* objNode);
+	void readGroups(Ember::SoundEntity* ent, TiXmlElement* objNode);
+	void readBuffers(Ember::SoundGroup* act, TiXmlElement* objNode);
+	void readBuffer(Ember::SoundGroup* act, TiXmlElement* objNode);
 };
 
 }

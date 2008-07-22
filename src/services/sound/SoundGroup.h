@@ -24,57 +24,23 @@
 
 namespace Ember
 {
-	enum orderOfPlay
-	{
-		PLAY_LINEAR,
-		PLAY_INVERSE,
-		PLAY_RANDOM
-	};
-
-	/**
-	 * Class SoundAction
-	 *
-	 * Each SoundEntity will have a set of sound actions
-	 * attached to it. For each SoundAction we have a list
-	 * of buffers available for it and how they play.
-	 *
-	 * @mName : The name of the action that triggers 
-	 * @mTimeStep : The frequency (Hz) in wich sounds should be repeated (0 for no loop)
-	 * @mActive : If the SoundAction is active (like idleing, walking...)
-	 * @mPlayOrder : How the buffers should be played
-	 * @mSamples : All the buffers belonging to this SoundAction. Take a note that those
-	 * buffers will be allocated by the SoundService and deallocated by the same.
-	 */
-	class SoundAction
+	class SoundGroup
 	{
 		private:
 			std::string mName;
-			float mTimeStep;
-			bool mActive;
-
-			orderOfPlay mPlayOrder;
-			int nextPlayIndex;
-
 			std::list<BaseSoundSample*> mSamples;
 
-			void defineNextBuffer(); 
-
 		public:
-			SoundAction(const std::string& name, const orderOfPlay playorder, 
-					const float timestep);
-
-			~SoundAction();
+			SoundGroup(const std::string& name);
+			~SoundGroup();
 
 			// Activity
-			void setActivity(bool act);			
-			bool isActive();
-
 			void allocateBuffer(const std::string& filename, 
 					bool playsReal, const SoundSampleType& type);
 
 			void updateSamplesPosition(const WFMath::Point<3> &pos);
 			void updateSamplesVelocity(const WFMath::Vector<3> &pos);
-			void update(double timeSinceLastFrame);
+			void update();
 	};
 }
 
