@@ -645,7 +645,6 @@ void EmberEntity::updateTerrainModifiers(const Atlas::Message::Element& modifier
             NewMod = new Mercator::LevelTerrainMod<WFMath::Ball<2> >(level, modShape);
         
             // Apply Modifier
-            //mTerrainGenerator->getTerrainPage(TerrainPosition((int)pos.x(),(int)pos.y()))->addTerrainModifier(0,0,(int)pos.x(),(int)pos.y(),(int)pos.z(),NewMod);
             EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition((int)pos.x(),(int)pos.y()))->addTerrainModifier(0,0,(int)pos.x(),(int)pos.y(),(int)pos.z(),NewMod);
 
         } else if (shapeType == "rotbox") {

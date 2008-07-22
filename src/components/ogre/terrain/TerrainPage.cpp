@@ -443,12 +443,15 @@ void TerrainPage::unregisterBridge()
 void TerrainPage::addTerrainModifier(int sx, int sy, int mx, int my, int mz, Mercator::TerrainMod *newmod)
 {
 	++mTerrainModCount;
-	EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().addMod(*newmod->clone());
-	mTModList.push_back(terrainModListEntry(sx,sy,mx,my,mz,newmod->clone()));
+    mTModList.push_back(terrainModListEntry(sx,sy,mx,my,mz,newmod->clone()));
+
+    for (int i = 0; i < mTerrainModCount; i++) {
+        EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().addMod(*NextModListEntry().Modifier()->clone());
+    }
 
 	if(mBridge)
 		mBridge->updateTerrain();	// update the terrain data now; note that this does not update
-						//  the ogre data, so we won't be able to see the change yet.
+						            //  the ogre data, so we won't be able to see the change yet.
 }
 
 TerrainPosition *TerrainPage::getTerrainModifierPos()
@@ -569,6 +572,10 @@ int terrainModListEntry::Id()
 	return mId;
 }
 
+void terrainModListEntry::apply()
+{
+    
+}
 
 }
 }

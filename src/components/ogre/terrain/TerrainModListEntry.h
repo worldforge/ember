@@ -43,6 +43,7 @@ class terrainModListEntry {
 
 		int Id();
 		
+		void apply();
 	private:
 		 // A number to uniquely identify this entry
 		int	mId;
