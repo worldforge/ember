@@ -20,6 +20,9 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+#ifndef EMBEROGRE_MODEL_MAPPTING_IACTIONCREATOR_H
+#define EMBEROGRE_MODEL_MAPPTING_IACTIONCREATOR_H
+
 #include "Definitions/CaseDefinition.h"
 
 namespace EmberOgre {
@@ -57,3 +60,5 @@ private:
 }
 
 }
+
+#endif
