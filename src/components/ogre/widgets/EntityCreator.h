@@ -24,6 +24,9 @@
 #define EMBEROGRE_GUIENTITYCREATOR_H
 
 #include "components/ogre/manipulation/EntityRecipe.h"
+#include "components/ogre/model/Model.h"
+#include "components/ogre/model/mapping/IActionCreator.h"
+#include "components/ogre/model/mapping/Actions/Action.h"
 #include "components/ogre/input/IInputAdapter.h"
 #include <Eris/Connection.h>
 #include <wfmath/point.h>
@@ -71,6 +74,22 @@ public:
 	 * Sets position of new entity
 	 */
 	void setPosition(WFMath::Point<3> pos);
+
+	/**
+	 * Sets preview model name
+	 */
+	void setModel(const std::string& modelName);
+
+	/**
+	 * Shows preview model part
+	 */
+	void showModelPart(const std::string& partName);
+
+	/**
+	 * Hide preview model part
+	 */
+	void hideModelPart(const std::string& partName);
+
 protected:
 	void connectedToServer(Eris::Connection* conn);
 	Eris::Connection* mConn;
@@ -79,7 +98,53 @@ protected:
 	EntityCreatorMoveAdapter* mMoveAdapter;
 	EntityCreatorInputAdapter* mInputAdapter;
 	Ogre::SceneNode* mEntityNode;
+	Model::Model* mModel;
 	Atlas::Message::MapType mEntityMessage;
+};
+
+class EntityCreatorActionCreator : public ::EmberOgre::Model::Mapping::IActionCreator
+{
+public:
+	EntityCreatorActionCreator(EntityCreator& entityCreator);
+	~EntityCreatorActionCreator();
+	virtual void createActions(Model::Mapping::ModelMapping& modelMapping, Model::Mapping::Cases::CaseBase* aCase, Model::Mapping::Definitions::CaseDefinition& caseDefinition);
+protected:
+	EntityCreator& mEntityCreator;
+};
+
+class EntityCreatorPartAction : public ::EmberOgre::Model::Mapping::Actions::Action
+{
+public:
+	EntityCreatorPartAction(EntityCreator& entityCreator, std::string partName);
+	~EntityCreatorPartAction();
+	virtual void activate();
+	virtual void deactivate();
+protected:
+	EntityCreator& mEntityCreator;
+	std::string mPartName;
+};
+
+class EntityCreatorModelAction : public ::EmberOgre::Model::Mapping::Actions::Action
+{
+public:
+	EntityCreatorModelAction(EntityCreator& entityCreator, std::string modelName);
+	~EntityCreatorModelAction();
+	virtual void activate();
+	virtual void deactivate();
+protected:
+	EntityCreator& mEntityCreator;
+	std::string mModelName;
+};
+
+class EntityCreatorHideModelAction : public Model::Mapping::Actions::Action
+{
+public:
+	EntityCreatorHideModelAction(EntityCreator& entityCreator);
+	virtual ~EntityCreatorHideModelAction();
+	virtual void activate();
+	virtual void deactivate();	
+protected:
+	EntityCreator& mEntityCreator;
 };
 
 /**

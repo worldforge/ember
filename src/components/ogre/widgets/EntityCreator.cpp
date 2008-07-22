@@ -32,6 +32,7 @@
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
 
+#include "../manipulation/DetachedEntity.h"
 #include <Atlas/Message/Element.h>
 #include <wfmath/atlasconv.h>
 #include <Eris/TypeInfo.h>
@@ -49,6 +50,7 @@
 #include "components/ogre/model/mapping/EmberModelMappingManager.h"
 #include "components/ogre/model/mapping/ModelMapping.h"
 #include "components/ogre/model/mapping/Definitions/ModelMappingDefinition.h"
+#include "components/ogre/model/mapping/Definitions/CaseDefinition.h"
 #include "components/ogre/model/mapping/IActionCreator.h"
 #include "main/Application.h"
 
@@ -56,36 +58,102 @@ namespace EmberOgre {
 
 namespace Gui {
 
-class EntityCreatorActionCreator : public ::EmberOgre::Model::Mapping::IActionCreator
-{
-public:
-EntityCreatorActionCreator(Eris::Entity& entity): mEntity(entity), mModelName("")
+EntityCreatorActionCreator::EntityCreatorActionCreator(EntityCreator& entityCreator)
+		: mEntityCreator(entityCreator)
 {
 }
 
-~EntityCreatorActionCreator() {}
-
-virtual void createActions(Model::Mapping::ModelMapping& modelMapping, Model::Mapping::Cases::CaseBase* aCase, Model::Mapping::Definitions::CaseDefinition& caseDefinition)
+EntityCreatorActionCreator::~EntityCreatorActionCreator()
 {
-	Model::Mapping::Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
-	for (Model::Mapping::Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
-		if (J->getType() == "display-model") {
-			mModelName = J->getValue();
+}
+
+void EntityCreatorActionCreator::createActions(Model::Mapping::ModelMapping& modelMapping, Model::Mapping::Cases::CaseBase* aCase, Model::Mapping::Definitions::CaseDefinition& caseDefinition)
+{
+	::EmberOgre::Model::Mapping::Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
+	for (::EmberOgre::Model::Mapping::Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
+		if (J->getType() == "display-part") {
+			EntityCreatorPartAction* action = new EntityCreatorPartAction(mEntityCreator, J->getValue());
+			aCase->addAction(action);
+		} else if (J->getType() == "display-model") {
+			EntityCreatorModelAction* action = new EntityCreatorModelAction(mEntityCreator, J->getValue());
+			aCase->addAction(action);
+		} else if (J->getType() == "hide-model") {
+			EntityCreatorHideModelAction* action = new EntityCreatorHideModelAction(mEntityCreator);
+			aCase->addAction(action);
 		}
 	}
 }
 
-const std::string& getModelName() const
-{
-	return mModelName;
-}
-protected:
-Eris::Entity& mEntity;
-std::string mModelName;
 
-};
+
+EntityCreatorPartAction::EntityCreatorPartAction(EntityCreator& entityCreator, std::string partName)
+		: mEntityCreator(entityCreator), mPartName(partName)
+{
+}
+
+EntityCreatorPartAction::~EntityCreatorPartAction()
+{
+}
+
+void EntityCreatorPartAction::activate()
+{
+	S_LOG_VERBOSE("Showing part " << mPartName);
+	mEntityCreator.showModelPart(mPartName);
+}
+
+void EntityCreatorPartAction::deactivate()
+{
+	S_LOG_VERBOSE("Hiding part " << mPartName);
+	mEntityCreator.hideModelPart(mPartName);
+} 
+
+
+
+EntityCreatorModelAction::EntityCreatorModelAction(EntityCreator& entityCreator, std::string modelName)
+		: mEntityCreator(entityCreator), mModelName(modelName)
+{
+}
+
+EntityCreatorModelAction::~EntityCreatorModelAction()
+{
+}
+
+void EntityCreatorModelAction::activate()
+{
+	S_LOG_VERBOSE("Showing model " << mModelName);
+	mEntityCreator.setModel(mModelName);
+}
+
+void EntityCreatorModelAction::deactivate()
+{
+	S_LOG_VERBOSE("Hiding model " << mModelName);
+	mEntityCreator.setModel("");
+} 
+
+
+
+EntityCreatorHideModelAction::EntityCreatorHideModelAction(EntityCreator& entityCreator)
+		: mEntityCreator(entityCreator)
+{
+}
+
+EntityCreatorHideModelAction::~EntityCreatorHideModelAction()
+{
+}
+
+void EntityCreatorHideModelAction::activate()
+{
+	mEntityCreator.setModel("");
+}
+
+void EntityCreatorHideModelAction::deactivate()
+{
+} 
+
+
 
 EntityCreator::EntityCreator()
+		: mModel(0)
 {
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EntityCreator::connectedToServer));
 }
@@ -165,17 +233,22 @@ void EntityCreator::createEntity(EntityRecipe& recipe)
 	Eris::View* view = Ember::Application::getSingleton().getMainView();
 	if (view) {
 		// Temporary entity
-		Eris::Entity dummyEntity("-1", erisType, view);
+		::EmberOgre::DetachedEntity dummyEntity("-1", erisType, view);
+		dummyEntity.setFromMessage(mEntityMessage);
+
+		// Creating scene node
+		mEntityNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
 
 		// Making model from temporary entity
-		Ogre::SceneManager* sceneMgr = EmberOgre::getSingleton().getSceneManager();
-		EntityCreatorActionCreator actionCreator(dummyEntity);
+		//Ogre::SceneManager* sceneMgr = EmberOgre::getSingleton().getSceneManager();
+		EntityCreatorActionCreator actionCreator(*this);
 		std::auto_ptr<Model::Mapping::ModelMapping> modelMapping(Model::Mapping::EmberModelMappingManager::getSingleton().getManager().createMapping(&dummyEntity, &actionCreator));
-		std::string modelName;
+		//std::string modelName;
 		if (modelMapping.get()) {
 			modelMapping->initialize();
-			modelName = actionCreator.getModelName();
+			//modelName = actionCreator.getModelName();
 		}
+		/*
 		///if there's no model defined for this use the placeholder model
 		if (modelName == "") {
 			modelName = "placeholder";
@@ -189,10 +262,52 @@ void EntityCreator::createEntity(EntityRecipe& recipe)
 		// Attaching model to SceneNode
 		mEntityNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
 		mEntityNode->attachObject(model);
+		*/
+
+		// Deleting temporary entity
+		dummyEntity.shutdown();
 
 		// Registering move adapter to track mouse movements
 		mInputAdapter = new EntityCreatorInputAdapter(*this);
 		mMoveAdapter = new EntityCreatorMoveAdapter(*this);
+	}
+}
+
+void EntityCreator::setModel(const std::string& modelName)
+{
+	if (mModel) {
+		if (mModel->getDefinition()->getName() == modelName) {
+			return;
+		} else {
+			EmberOgre::getSingleton().getSceneManager()->destroyMovableObject(mModel);
+		}
+	}
+	mModel = Model::Model::createModel(EmberOgre::getSingleton().getSceneManager(), modelName);
+
+	///if the model definition isn't valid, use a placeholder
+	if (!mModel->getDefinition()->isValid()) {
+		S_LOG_FAILURE( "Could not find " << modelName << ", using placeholder.");
+		///add a placeholder model
+		Model::ModelDefnPtr modelDef = mModel->getDefinition();
+		modelDef->createSubModelDefinition("3d_objects/primitives/models/box.mesh")->createPartDefinition("main")->setShow(true);
+		modelDef->setValid(true);
+		modelDef->reloadAllInstances();
+	}
+
+	mEntityNode->attachObject(mModel);
+}
+
+void EntityCreator::showModelPart(const std::string& partName) 
+{
+	if (mModel) {
+		mModel->showPart(partName);
+	}
+}
+
+void EntityCreator::hideModelPart(const std::string& partName) 
+{
+	if (mModel) {
+		mModel->hidePart(partName);
 	}
 }
 
