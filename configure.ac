@@ -584,6 +584,7 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/model/Makefile
 		 src/components/ogre/model/mapping/Makefile
 		 src/components/ogre/modeldefinitions/Makefile
+		 src/components/ogre/sounddefinitions/Makefile
 		 src/components/ogre/input/Makefile
 		 src/components/ogre/carpenter/Makefile
 		 src/components/ogre/jesus/Makefile

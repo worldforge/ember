@@ -1,0 +1,13 @@
+<sounds>
+	<entity type="pig">
+		<group name="pig_snort">
+			<buffer filename="/home/nightz/Desktop/Trabalho/pig/snort1.wav" format="wav" playsIn="world" />
+			<buffer filename="/home/nightz/Desktop/Trabalho/pig/snort2.wav" format="wav" playsIn="world" />
+			<buffer filename="/home/nightz/Desktop/Trabalho/pig/snort3.wav" format="wav" playsIn="world" />
+			<buffer filename="/home/nightz/Desktop/Trabalho/pig/snort4.wav" format="wav" playsIn="world" />
+			<buffer filename="/home/nightz/Desktop/Trabalho/pig/snort5.wav" format="wav" playsIn="world" />
+			<buffer filename="/home/nightz/Desktop/Trabalho/pig/eating.wav" format="wav" playsIn="world" />
+		</group>
+	</entity>
+</sounds>
+
