@@ -1,0 +1,53 @@
+namespace EmberOgre {
+
+
+/**
+	@brief An adapter class which is used to listen to events from the Input class, when the system is in gui input mode.
+	Use instances of this if you want to hook into the input system and override the default gui handling.
+	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+*/
+class IInputAdapter
+{
+public:
+
+	virtual ~IInputAdapter() {}
+	/**
+	 *    Injects a mouse move. Returns false if the event shouldn't be processed any more.
+	 * @param x 
+	 * @param y 
+	 * @return true if other IInputAdapters should continue handle the event, false if no more handling should happen
+	 */
+	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse) = 0;
+	/**
+	 *    Injects a mouse button up event. Returns false if the event shouldn't be processed any more.
+	 * @param button 
+	 * @return true if other IInputAdapters should continue handle the event, false if no more handling should happen
+	 */
+	virtual bool injectMouseButtonUp(const Input::MouseButton& button) = 0;
+	/**
+	 *    Injects a mouse button down event. Returns false if the event shouldn't be processed any more.
+	 * @param button 
+	 * @return true if other IInputAdapters should continue handle the event, false if no more handling should happen
+	 */
+	virtual bool injectMouseButtonDown(const Input::MouseButton& button) = 0;
+	/**
+	 *    Injects a character. Returns false if the event shouldn't be processed any more.
+	 * @param character 
+	 * @return true if other IInputAdapters should continue handle the event, false if no more handling should happen
+	 */
+	virtual bool injectChar(char character) = 0;
+	/**
+	 *    Injects a key down event. Returns false if the event shouldn't be processed any more.
+	 * @param key 
+	 * @return true if other IInputAdapters should continue handle the event, false if no more handling should happen
+	 */
+	virtual bool injectKeyDown(const SDLKey& key) = 0;
+	/**
+	 *    Injects a key up event. Returns false if the event shouldn't be processed any more.
+	 * @param key 
+	 * @return true if other IInputAdapters should continue handle the event, false if no more handling should happen
+	 */
+	virtual bool injectKeyUp(const SDLKey& key) = 0;
+};
+
+}
