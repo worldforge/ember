@@ -63,6 +63,7 @@ private:
 	void readParticleSystems(ModelDefinitionPtr modelDef, TiXmlElement* mParticleSystemsNode);
 	void readParticleSystemsBindings(ModelDefinition::ParticleSystemDefinition& def, TiXmlElement* mParticleSystemsNode);
 	void readViews(ModelDefinitionPtr modelDef, TiXmlElement* viewsNode);
+	void readSounds(TiXmlElement* mAnimationsNode, ActionDefinition* action);
 
 	Ogre::Vector3 fillVector3FromElement(TiXmlElement* elem);
 	void fillElementFromVector3(TiXmlElement& elem, Ogre::Vector3 vector);

@@ -16,8 +16,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef SOUND_ACTION_H
-#define SOUND_ACTION_H
+#ifndef SOUND_GROUP_H
+#define SOUND_GROUP_H
 
 #include "SoundGeneral.h"
 #include "SoundSample.h"
