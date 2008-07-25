@@ -23,6 +23,7 @@
 #ifndef EMBEROGRE_GUIENTITYCREATOR_H
 #define EMBEROGRE_GUIENTITYCREATOR_H
 
+#include "components/ogre/manipulation/DetachedEntity.h"
 #include "components/ogre/manipulation/EntityRecipe.h"
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/mapping/IActionCreator.h"
@@ -100,6 +101,7 @@ protected:
 	Ogre::SceneNode* mEntityNode;
 	Model::Model* mModel;
 	Atlas::Message::MapType mEntityMessage;
+	DetachedEntity* mEntity;
 };
 
 class EntityCreatorActionCreator : public ::EmberOgre::Model::Mapping::IActionCreator

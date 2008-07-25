@@ -229,13 +229,17 @@ void EntityCreator::createEntity(EntityRecipe& recipe)
 	mEntityMessage["loc"] = avatar->getLocation()->getId();
 	mEntityMessage["name"] = erisType->getName();
 	mEntityMessage["parents"] = Atlas::Message::ListType(1, erisType->getName());
+	mEntityMessage["pos"] = mPos.toAtlas();
+	mEntityMessage["orientation"] = mOrientation.toAtlas();
 
 	Eris::View* view = Ember::Application::getSingleton().getMainView();
 	if (view) {
 		// Temporary entity
-		::EmberOgre::DetachedEntity dummyEntity("-1", erisType, view);
-		dummyEntity.setFromMessage(mEntityMessage);
+		mEntity = new DetachedEntity("-1", erisType, view, EmberOgre::getSingleton().getSceneManager());
+		mEntity->init(mEntityMessage);
+		mEntity->setVisible(true);
 
+		/*
 		// Creating scene node
 		mEntityNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
 
@@ -248,6 +252,7 @@ void EntityCreator::createEntity(EntityRecipe& recipe)
 			modelMapping->initialize();
 			//modelName = actionCreator.getModelName();
 		}
+		*/
 		/*
 		///if there's no model defined for this use the placeholder model
 		if (modelName == "") {
@@ -265,7 +270,7 @@ void EntityCreator::createEntity(EntityRecipe& recipe)
 		*/
 
 		// Deleting temporary entity
-		dummyEntity.shutdown();
+		//dummyEntity.shutdown();
 
 		// Registering move adapter to track mouse movements
 		mInputAdapter = new EntityCreatorInputAdapter(*this);
@@ -346,7 +351,7 @@ void EntityCreator::finalizeCreation()
 void EntityCreator::setPosition(WFMath::Point<3> pos)
 {
 	mPos = pos;
-	mEntityNode->setPosition(Atlas2Ogre(pos));
+	mEntity->getScaleNode()->setPosition(Atlas2Ogre(pos));
 }
 
 void EntityCreator::connectedToServer(Eris::Connection* conn)
