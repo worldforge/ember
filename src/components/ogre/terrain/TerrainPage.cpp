@@ -442,11 +442,39 @@ void TerrainPage::unregisterBridge()
 
 void TerrainPage::addTerrainModifier(int sx, int sy, int mx, int my, int mz, Mercator::TerrainMod *newmod)
 {
-	++mTerrainModCount;
-    mTModList.push_back(terrainModListEntry(sx,sy,mx,my,mz,newmod->clone()));
+    int i;
+    terrainModListEntry nm;
+    std::list<terrainModListEntry>::iterator I;
+    for (I = mTModList.begin(); I != mTModList.end(); ++I) {
+        if (I != mTModList.end()) {
+            if (I->X() == mx) {
+                if (I->Y() == my) {
+                    mTModList.erase(I);
+                    mTModList.push_back(terrainModListEntry(sx,sy,mx,my,mz,newmod->clone()));
+                    break;
+                }
+            }
+        }
+    }
 
-    for (int i = 0; i < mTerrainModCount; i++) {
-        EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().addMod(*NextModListEntry().Modifier()->clone());
+    if (I == mTModList.end()) {
+        mTerrainModCount++;
+        mTModList.push_back(terrainModListEntry(sx,sy,mx,my,mz,newmod->clone()));
+    }
+
+    int seg_lx, seg_hx, seg_ly, seg_hy;
+    seg_lx = EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment((float)mx, (float)my)->getRect().lowCorner()[0];
+    seg_ly = EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment((float)mx, (float)my)->getRect().lowCorner()[1];
+    seg_hx = EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment((float)mx, (float)my)->getRect().highCorner()[0];
+    seg_hy = EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment((float)mx, (float)my)->getRect().highCorner()[1];
+
+    S_LOG_INFO("mod segment bounds: " << seg_lx << "," << seg_ly << " : " << seg_hx << "," << seg_hy);
+
+    for (I = mTModList.begin(); I != mTModList.end(); ++I) {
+        //if (((nm.X() > seg_lx) && (nm.X() < seg_hx)) && ((nm.Y() > seg_ly) && (nm.Y() < seg_hy)) ) {
+            EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().addMod(*I->Modifier()->clone());
+            S_LOG_INFO("mod segment updated for modifier at: " << I->X() << "," << I->Y());
+        //}
     }
 
 	if(mBridge)

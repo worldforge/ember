@@ -532,7 +532,6 @@ void EmberEntity::updateTerrainModifiers(const Atlas::Message::Element& modifier
     Atlas::Message::MapType::const_iterator mod_I;
 
     // Get modifier type
-    //Atlas::Message::MapType::const_iterator I = modMap.find("type");
     mod_I = modMap.find("type");
     if (mod_I != modMap.end()) {
     const Atlas::Message::Element& modTypeElem(mod_I->second);
@@ -546,7 +545,7 @@ void EmberEntity::updateTerrainModifiers(const Atlas::Message::Element& modifier
     pos = getPosition();
     S_LOG_INFO("SceneNode Pos reported as: " << pos.x() << "," << pos.y() << "," << pos.z());
 
-    EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment(pos.x(),pos.y())->clearMods();
+    EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment((float)pos.x(),(float)pos.y())->clearMods();
 
     // Get modifier's shape
     mod_I = modMap.find("shape");
@@ -645,7 +644,7 @@ void EmberEntity::updateTerrainModifiers(const Atlas::Message::Element& modifier
             NewMod = new Mercator::LevelTerrainMod<WFMath::Ball<2> >(level, modShape);
         
             // Apply Modifier
-            EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition((int)pos.x(),(int)pos.y()))->addTerrainModifier(0,0,(int)pos.x(),(int)pos.y(),(int)pos.z(),NewMod);
+            EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition((float)pos.x(),(float)pos.y()))->addTerrainModifier(0,0,(int)pos.x(),(int)pos.y(),(int)pos.z(),NewMod);
 
         } else if (shapeType == "rotbox") {
             WFMath::Point<2> shapePoint;
