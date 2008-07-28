@@ -281,7 +281,7 @@ void Model::createActions()
 		Action action;
 		action.setName((*I_actions)->getName());
 		action.getAnimations().setSpeed((*I_actions)->getAnimationSpeed());
-		
+	
 		if (getSkeleton() && getAllAnimationStates()) {
 			if (mSubmodels.size()) {
 				AnimationDefinitionsStore::const_iterator I_anims = (*I_actions)->getAnimationDefinitions().begin();

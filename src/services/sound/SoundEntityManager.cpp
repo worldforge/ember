@@ -62,14 +62,15 @@ namespace Ember
 
 	SoundEntity* SoundEntityManager::allocateEntity(const std::string& name)
 	{
-		if (getEntity(name))
+		SoundEntity* newEntity = getEntity(name);
+		if (newEntity)
 		{
 			S_LOG_INFO(std::string("Entity ") + name + std::string(" already exists."));
-			return NULL;
+			return newEntity;
 		}
 		else
 		{
-			SoundEntity* newEntity = new SoundEntity();
+			newEntity = new SoundEntity();
 			if (newEntity)
 			{
 				mEntities[name] = newEntity;

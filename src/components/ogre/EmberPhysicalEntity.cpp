@@ -53,6 +53,8 @@
 #include "OpcodeCollisionDetector.h"
 #include "MeshCollisionDetector.h"
 
+#include "services/sound/SoundEntity.h"
+#include "services/sound/SoundEntityManager.h"
 
 #include <Eris/Entity.h>
 #include <Eris/View.h>
@@ -226,6 +228,36 @@ void EmberPhysicalEntity::hideModelPart(const std::string& partName)
 	}
 }
 
+void EmberPhysicalEntity::setSounds()
+{
+	if (!mSoundEntity)
+	{
+		// Create a sound Entity based on this entity type
+		//
+		// TODO: Replace with a managed template on model mapping
+		// to map it the same way we map models to entity types
+		#define mEntManager Ember::SoundEntityManager::getSingleton()
+		mSoundEntity = mEntManager.allocateEntity(getType()->getName());
+		if (mSoundEntity)
+		{
+			#define master mModel->getDefinition();
+			#define ActionDefinitionsStore std::vector<Model::ActionDefinition*>
+
+			ActionDefinitionsStore* store = master->getActionDefinitions();
+			ActionDefinitionsStore::const_iterator I_b = master->getActionDefinitions().begin();
+			ActionDefinitionsStore::const_iterator I_e = master->getActionDefinitions().end();
+			for (; I_b != I_e; ++I_b)
+			{
+				// Setup All Sound Actions
+				/*
+				SoundDefinitionsStore::const_iterator I_sounds = (*I_actions)->getSoundDefinitions().begin();
+				SoundDefinitionsStore::const_iterator I_sounds_end = (*I_actions)->getSoundDefinitions().end();
+				*/
+			}
+		}
+	}
+}
+
 void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
 	///first we need to create the scale node
@@ -243,6 +275,9 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 		S_LOG_WARNING("Entity of type " << getType()->getName() << " have no default model, using placeholder.");
 		setModel("placeholder");
 	}
+
+	// Setup Sounds
+	setSounds();
 
 	///start out with the default movement mode
 	onModeChanged(EmberEntity::MM_DEFAULT);

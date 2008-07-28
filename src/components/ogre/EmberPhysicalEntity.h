@@ -24,12 +24,12 @@
 
 #include "EmberEntity.h"
 #include "services/sound/SoundGroup.h"
-#include "services/sound/SoundService.h"
-
+#include "services/sound/SoundEntityManager.h"
 
 namespace EmberOgre {
 
 namespace Model {
+	class ActionDefinition;
 	class Model;
 	class Action;
 	namespace Mapping {
@@ -177,6 +177,12 @@ protected:
 	 * @param modelName The name of the model to use.
 	 */
 	void setModel(const std::string& modelName);
+
+	/**
+	 * Tells the entity to retrieve it sound actions from
+	 * the model definition manager
+	 */
+	void setSounds();
 	
 	/**
 	 *    Shows a certain part of the model.
