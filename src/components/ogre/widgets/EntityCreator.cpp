@@ -233,8 +233,8 @@ void EntityCreator::createEntity(EntityRecipe& recipe)
 	Eris::View* view = Ember::Application::getSingleton().getMainView();
 	if (view) {
 		// Temporary entity
-		::EmberOgre::DetachedEntity dummyEntity("-1", erisType, view);
-		dummyEntity.setFromMessage(mEntityMessage);
+		mEntity = new DetachedEntity("-1", erisType, view);
+		mEntity->setFromMessage(mEntityMessage);
 
 		// Creating scene node
 		mEntityNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
@@ -242,7 +242,7 @@ void EntityCreator::createEntity(EntityRecipe& recipe)
 		// Making model from temporary entity
 		//Ogre::SceneManager* sceneMgr = EmberOgre::getSingleton().getSceneManager();
 		EntityCreatorActionCreator actionCreator(*this);
-		std::auto_ptr<Model::Mapping::ModelMapping> modelMapping(Model::Mapping::EmberModelMappingManager::getSingleton().getManager().createMapping(&dummyEntity, &actionCreator));
+		std::auto_ptr<Model::Mapping::ModelMapping> modelMapping(Model::Mapping::EmberModelMappingManager::getSingleton().getManager().createMapping(mEntity, &actionCreator));
 		//std::string modelName;
 		if (modelMapping.get()) {
 			modelMapping->initialize();
@@ -265,7 +265,7 @@ void EntityCreator::createEntity(EntityRecipe& recipe)
 		*/
 
 		// Deleting temporary entity
-		dummyEntity.shutdown();
+		//mEntity->shutdown();
 
 		// Registering move adapter to track mouse movements
 		mInputAdapter = new EntityCreatorInputAdapter(*this);
@@ -295,6 +295,8 @@ void EntityCreator::setModel(const std::string& modelName)
 	}
 
 	mEntityNode->attachObject(mModel);
+
+	initFromModel();
 }
 
 void EntityCreator::showModelPart(const std::string& partName) 
@@ -308,6 +310,103 @@ void EntityCreator::hideModelPart(const std::string& partName)
 {
 	if (mModel) {
 		mModel->hidePart(partName);
+	}
+}
+
+Ogre::SceneNode* EntityCreator::getScaleNode()
+{
+	return mEntityNode;
+}
+
+Model::Model* EntityCreator::getModel()
+{
+	return mModel;
+}
+
+bool EntityCreator::hasBBox()
+{
+	return mEntity->hasBBox();
+}
+
+const WFMath::AxisBox<3> & EntityCreator::getBBox()
+{
+	return mEntity->getBBox();
+}
+
+void EntityCreator::initFromModel()
+{
+	getScaleNode()->setOrientation(Ogre::Quaternion::IDENTITY);
+	///rotate node to fit with WF space
+	///perhaps this is something to put in the model spec instead?
+	getScaleNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
+	getScaleNode()->rotate(getModel()->getRotation());
+	
+	///make a copy of the original bbox
+	mDefaultOgreBoundingBox = mModel->getBoundingBox();
+	///apply any rotation required first so the bounding box we use as reference represents the way to mesh is adjusted through rotations set in the model definition
+	mDefaultOgreBoundingBox.transform(Ogre::Matrix4(getScaleNode()->getOrientation()));
+	
+	scaleNode();
+	
+	///translate the scale node according to the translate defined in the model
+	getScaleNode()->setPosition(Ogre::Vector3::ZERO);
+	getScaleNode()->translate(getModel()->getDefinition()->getTranslate());
+}
+
+void EntityCreator::scaleNode()
+{
+	getScaleNode()->setScale(1, 1, 1);
+
+	const Ogre::Vector3& ogreMax(mDefaultOgreBoundingBox.getMaximum());
+	const Ogre::Vector3& ogreMin(mDefaultOgreBoundingBox.getMinimum());
+	
+	if (hasBBox())
+	{
+		const WFMath::AxisBox<3>& wfBoundingBox(getBBox());	
+		const WFMath::Point<3>& wfMax(wfBoundingBox.highCorner());
+		const WFMath::Point<3>& wfMin(wfBoundingBox.lowCorner());
+
+		Ogre::Real scaleX;		
+		Ogre::Real scaleY;		
+		Ogre::Real scaleZ;		
+
+		switch (getModel()->getUseScaleOf()) {
+			case Model::ModelDefinition::MODEL_HEIGHT:
+				scaleX = scaleY = scaleZ = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));		
+				break;
+			case Model::ModelDefinition::MODEL_WIDTH:
+				scaleX = scaleY = scaleZ = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));		
+				break;
+			case Model::ModelDefinition::MODEL_DEPTH:
+				scaleX = scaleY = scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));		
+				break;
+			case Model::ModelDefinition::MODEL_NONE:
+				scaleX = scaleY = scaleZ = 1;
+				break;
+				
+			case Model::ModelDefinition::MODEL_ALL:
+			default:				
+				scaleX = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));		
+				scaleY = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));		
+				scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));		
+		}
+
+		//Ogre::Real finalScale = std::max(scaleX, scaleY);
+		//finalScale = std::max(finalScale, scaleZ);
+		getScaleNode()->setScale(scaleX, scaleY, scaleZ);
+	} else if (!getModel()->getScale()) {
+		//set to small size
+		Ogre::Real scaleX = (0.25 / (ogreMax.x - ogreMin.x));		
+		Ogre::Real scaleY = (0.25 / (ogreMax.y - ogreMin.y));		
+		Ogre::Real scaleZ = (0.25 / (ogreMax.z - ogreMin.z));		
+		getScaleNode()->setScale(scaleX, scaleY, scaleZ);
+	}		
+
+	if (getModel()->getScale()) {
+		if (getModel()->getScale() != 1) {
+			//only scale if it's not 1
+			getScaleNode()->scale(getModel()->getScale(), getModel()->getScale(), getModel()->getScale());
+		}
 	}
 }
 

@@ -23,6 +23,7 @@
 #ifndef EMBEROGRE_GUIENTITYCREATOR_H
 #define EMBEROGRE_GUIENTITYCREATOR_H
 
+#include "components/ogre/manipulation/DetachedEntity.h"
 #include "components/ogre/manipulation/EntityRecipe.h"
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/mapping/IActionCreator.h"
@@ -91,12 +92,21 @@ public:
 	void hideModelPart(const std::string& partName);
 
 protected:
+	void initFromModel();
+	void scaleNode();
+	Ogre::SceneNode* getScaleNode();
+	Model::Model* getModel();
+	bool hasBBox();
+	const WFMath::AxisBox<3> & getBBox();
+	Ogre::AxisAlignedBox mDefaultOgreBoundingBox;
+
 	void connectedToServer(Eris::Connection* conn);
 	Eris::Connection* mConn;
 	WFMath::Point<3> mPos;
 	WFMath::Quaternion mOrientation;
 	EntityCreatorMoveAdapter* mMoveAdapter;
 	EntityCreatorInputAdapter* mInputAdapter;
+	DetachedEntity* mEntity;
 	Ogre::SceneNode* mEntityNode;
 	Model::Model* mModel;
 	Atlas::Message::MapType mEntityMessage;
