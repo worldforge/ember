@@ -446,6 +446,8 @@ void EntityCreator::setPosition(WFMath::Point<3> pos)
 {
 	mPos = pos;
 	mEntityNode->setPosition(Atlas2Ogre(pos));
+	mEntityNode->setOrientation(Atlas2Ogre(mOrientation));
+	mEntityNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
 }
 
 void EntityCreator::connectedToServer(Eris::Connection* conn)
