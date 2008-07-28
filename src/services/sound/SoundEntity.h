@@ -20,7 +20,7 @@
 #define SOUND_ENTITY_H
 
 #include "SoundGeneral.h"
-#include "SoundGroup.h"
+#include "SoundAction.h"
 
 namespace Ember
 {
@@ -30,9 +30,9 @@ namespace Ember
 			WFMath::Point<3> mPosition;
 			WFMath::Vector<3> mVelocity;
 
-			std::map<std::string, SoundGroup*> mGroups;
+			std::map<std::string, SoundAction*> mActions;
 
-			bool groupExists(const std::string& name);
+			SoundAction* actionExists(const std::string& name);
 
 		public:
 			SoundEntity();
@@ -44,7 +44,9 @@ namespace Ember
 			const WFMath::Point<3> getPosition();
 			const WFMath::Vector<3> getVelocity();
 
-			SoundGroup* registerGroup(const std::string& name);
+			SoundAction* registerAction(const std::string& name);
+
+			void playAction(const std::string& name);
 			void update();
 	};
 }

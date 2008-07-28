@@ -377,7 +377,7 @@ void XMLModelDefinitionSerializer::readActions(ModelDefinitionPtr modelDef, TiXm
 			if (elem)
 				readAnimations(elem, actionDef);
 			
-			elem = animElem->FirstChildElement("sound");
+			elem = animElem->FirstChildElement("sounds");
 			if (elem)
 				readSounds(elem, actionDef);
 		}
@@ -424,6 +424,9 @@ void XMLModelDefinitionSerializer::readSounds(TiXmlElement* mAnimationsNode, Act
 			{
 				frequency = atoi(tmp);
 			}
+
+			action->createSoundDefinition(groupName, playOrder, frequency);
+			S_LOG_VERBOSE( "  Add Sound: " + groupName);
 		}
 	}
 }

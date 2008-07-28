@@ -23,6 +23,8 @@
 #include "EmberOgrePrerequisites.h"
 
 #include "EmberEntity.h"
+#include "services/sound/SoundGroup.h"
+#include "services/sound/SoundService.h"
 
 
 namespace EmberOgre {
@@ -342,6 +344,11 @@ protected:
 	 * The model of the entity
 	 */
 	 Model::Model* mModel;
+
+	/**
+	 * The sound entity this entitiy is connected to.
+	 */
+	 Ember::SoundEntity* mSoundEntity;
 	
 	/**
 	 * We need to scale the Ogre::Entity, because the underlying media is not

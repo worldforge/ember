@@ -24,23 +24,45 @@
 
 namespace Ember
 {
+	enum playOrder
+	{
+		PLAY_LINEAR,
+		PLAY_INVERSE,
+		PLAY_RANDOM
+	};
+
 	class SoundGroup
 	{
 		private:
-			std::string mName;
 			std::list<BaseSoundSample*> mSamples;
+			BaseSoundSample* mLastPlayed;
+
+			// Internals
+			unsigned int mFrequency;
+			unsigned int mPlayOrder;
+			unsigned int mNextToPlay;
+
+			void getNextToPlay();
 
 		public:
-			SoundGroup(const std::string& name);
+			SoundGroup();
 			~SoundGroup();
 
-			// Activity
 			void allocateBuffer(const std::string& filename, 
 					bool playsReal, const SoundSampleType& type);
 
 			void updateSamplesPosition(const WFMath::Point<3> &pos);
-			void updateSamplesVelocity(const WFMath::Vector<3> &pos);
+			void updateSamplesVelocity(const WFMath::Vector<3> &vel);
+
+			unsigned int getBuffersCount();
+			BaseSoundSample* getBuffer(unsigned int index);
+
+			void setFrequency(const unsigned int freq);
+			void setPlayOrder(const unsigned int playO);
+
+			// Media Control
 			void update();
+			void play();
 	};
 }
 

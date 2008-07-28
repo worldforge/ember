@@ -22,6 +22,7 @@
 #include <map>
 
 #include "SoundEntity.h"
+#include "SoundGroup.h"
 #include "framework/Singleton.h"
 
 namespace Ember
@@ -31,6 +32,10 @@ namespace Ember
 	{
 		private:
 			std::map<std::string, SoundEntity*> mEntities;
+
+			// Keep a list of Groups just to keep the
+			// update on the sound cycle 
+			std::map<std::string, SoundGroup*> mGroups;
 
 		public:
 			SoundEntityManager();
@@ -47,6 +52,13 @@ namespace Ember
 			 * the soundservice indirectly
 			 */
 			SoundEntity* getEntity(const std::string& name);
+
+			/**
+			 * mGroups modifiers
+			 */
+			SoundGroup* allocateGroup(const std::string& name);
+			SoundGroup* getGroup(const std::string& name);
+			void deallocateGroup(const std::string& name);
 	};
 }
 

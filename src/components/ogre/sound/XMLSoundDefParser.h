@@ -38,7 +38,6 @@ public :
 
 private:
 
-	void readGroups(Ember::SoundEntity* ent, TiXmlElement* objNode);
 	void readBuffers(Ember::SoundGroup* act, TiXmlElement* objNode);
 	void readBuffer(Ember::SoundGroup* act, TiXmlElement* objNode);
 };

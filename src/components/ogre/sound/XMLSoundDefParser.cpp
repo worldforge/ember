@@ -42,7 +42,7 @@ void XMLSoundDefParser::parseScript(Ogre::DataStreamPtr stream)
 	for (TiXmlElement* smElem = rootElem->FirstChildElement();
             smElem != 0; smElem = smElem->NextSiblingElement())
 	{
-		const char* tmp =  smElem->Attribute("type");
+		const char* tmp =  smElem->Attribute("name");
 		if (!tmp)
 		{
 			continue;
@@ -50,39 +50,17 @@ void XMLSoundDefParser::parseScript(Ogre::DataStreamPtr stream)
 
 		std::string finalName(tmp);
 
-		Ember::SoundEntity* newEntity = 
-		Ember::SoundEntityManager::getSingleton().allocateEntity(finalName);
+		Ember::SoundGroup* newGroup = 
+		Ember::SoundEntityManager::getSingleton().allocateGroup(finalName);
 			
-		if (newEntity)
-		{
-			S_LOG_INFO(std::string("Sound Entity ") + finalName
-					+ std::string(" created."));
-
-			readGroups(newEntity, smElem);
-		}
-	}	
-}
-
-void XMLSoundDefParser::readGroups(Ember::SoundEntity* ent, TiXmlElement* objNode)
-{
-	for (TiXmlElement* smElem = objNode->FirstChildElement();
-            smElem != 0; smElem = smElem->NextSiblingElement())
-	{
-		const char* name =  smElem->Attribute("name");
-		if (!name)
-		{
-			continue;
-		}
-
-		Ember::SoundGroup* newGroup = ent->registerGroup(name);
 		if (newGroup)
 		{
-			S_LOG_INFO(std::string("\t-Group ") + name 
+			S_LOG_INFO(std::string("Sound Group ") + finalName
 					+ std::string(" created."));
 
-			readBuffers(newGroup, smElem);	
+			readBuffers(newGroup, smElem);
 		}
-	}
+	}	
 }
 
 void XMLSoundDefParser::readBuffers(Ember::SoundGroup* grp, TiXmlElement* objNode)

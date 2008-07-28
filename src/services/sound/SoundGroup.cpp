@@ -39,10 +39,10 @@
 
 namespace Ember
 {
-	SoundGroup::SoundGroup(const std::string& name)
+	SoundGroup::SoundGroup()
 	{
-		mName = name;
 		mSamples.clear();
+		mLastPlayed = NULL;
 	}
 
 	SoundGroup::~SoundGroup()
@@ -85,9 +85,66 @@ namespace Ember
 		}
 	}
 
+	void SoundGroup::setFrequency(const unsigned int freq)
+	{
+		mFrequency = freq;
+	}
+
+	void SoundGroup::setPlayOrder(const unsigned int playO)
+	{
+		mPlayOrder = playO;
+		switch(mPlayOrder)
+		{
+			case PLAY_LINEAR:
+				mNextToPlay = 0;
+				break;
+			case PLAY_INVERSE:
+				mNextToPlay = mSamples.size() - 1; 
+				break;
+			case PLAY_RANDOM:
+				getNextToPlay();
+				break;
+		};
+	}
+
+	void SoundGroup::getNextToPlay()
+	{
+		switch(mPlayOrder)
+		{
+			case PLAY_LINEAR:
+				mNextToPlay++; 
+				break;
+			case PLAY_INVERSE:
+				mNextToPlay--; 
+				break;
+			case PLAY_RANDOM:
+				srand(time(NULL));
+				mNextToPlay = rand() % mSamples.size();
+				break;
+		};
+	}
+
 	void SoundGroup::update()
 	{
 		// TODO
 	}
+
+	void SoundGroup::play()
+	{
+		unsigned int index = 0;
+
+		std::list<BaseSoundSample*>::iterator it = mSamples.begin();
+		for (it; it != mSamples.end(); it++)
+		{
+			if (index == mNextToPlay)
+			{
+				(*it)->play();
+				break;
+			}
+
+			index++;
+		}
+	}
+
 } // namespace Ember
 

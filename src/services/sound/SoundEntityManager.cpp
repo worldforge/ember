@@ -34,6 +34,7 @@
 #include <cstring>
 
 #include "SoundEntity.h"
+#include "SoundGroup.h"
 #include "SoundEntityManager.h"
 
 template<> Ember::SoundEntityManager* Ember::Singleton<Ember::SoundEntityManager>::ms_Singleton = 0;
@@ -44,6 +45,7 @@ namespace Ember
 	SoundEntityManager::SoundEntityManager()
 	{
 		mEntities.clear();
+		mGroups.clear();
 		S_LOG_INFO("Sound Entity Manager Started.");
 	}
 
@@ -108,6 +110,59 @@ namespace Ember
 		*/
 		return mEntities[name];
 	}
+
+	#define groupIt std::map<std::string, SoundGroup*>::iterator
+	SoundGroup* SoundEntityManager::getGroup(const std::string& name)
+	{
+		if (mGroups.empty())
+		{
+			return NULL;
+		}
+
+		/* TODO - ITS CRASHING!!!!
+		entityIt it(mEntities.find(name));
+		if (it != mEntities.end())
+		{
+			return (*it).second;
+		}
+
+		return NULL;
+		*/
+		return mGroups[name];
+	}
+
+	SoundGroup* SoundEntityManager::allocateGroup(const std::string& name)
+	{
+		if (getGroup(name))
+		{
+			S_LOG_INFO(std::string("Group ") + name + std::string(" already exists."));
+			return NULL;
+		}
+		else
+		{
+			SoundGroup* newGroup = new SoundGroup();
+			if (newGroup)
+			{
+				mGroups[name] = newGroup;
+				return newGroup;
+			}
+
+			return NULL;
+		}
+	}
+
+	void SoundEntityManager::deallocateGroup(const std::string& name)
+	{
+		groupIt it(mGroups.find(name));
+		if (it != mGroups.end())
+		{
+			SoundGroup* toBeDeleted = (*it).second;
+			mGroups.erase(it);
+
+			delete toBeDeleted;
+		}
+	}
 	#undef entityIt
+	#undef groupIt 
 }
 
