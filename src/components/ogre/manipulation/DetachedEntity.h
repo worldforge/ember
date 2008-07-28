@@ -19,8 +19,6 @@
 #ifndef EMBEROGRE_DETACHEDENTITY_H
 #define EMBEROGRE_DETACHEDENTITY_H
 
-#include "components/ogre/model/mapping/ModelMapping.h"
-#include "components/ogre/EmberPhysicalEntity.h"
 #include <Eris/Entity.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/View.h>
@@ -34,13 +32,12 @@ namespace EmberOgre {
  *
  * This is an entity that doesn't belong to entity hierarchy.
  */
-class DetachedEntity : public EmberPhysicalEntity
+class DetachedEntity : public Eris::Entity
 {
 public:
-	DetachedEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager);
+	DetachedEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw);
 	virtual ~DetachedEntity();
 
-	void init(const Atlas::Message::MapType& attrs);
 	/**
 	 * Sets entity attributes from Atlas message.
 	 */
