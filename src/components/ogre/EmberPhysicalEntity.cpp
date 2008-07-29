@@ -431,17 +431,9 @@ void EmberPhysicalEntity::onAttrChanged(const std::string& str, const Atlas::Mes
 		processWield(str, v);
 		return;		
 	}
-// 	if (str == "outfit") {
-// 		if (v.isMap()) {
-// 			const Atlas::Message::MapType & outfitMap = v.asMap();
-// 			int i = 0;
-// 		}
-// 	}
-// 	if (str == "bbox") {
-// 		scaleNode();
-// 	}
 
-	//check if the changed attribute should affect any particle systems
+	///check if the changed attribute should affect any particle systems
+	///TODO: refactor this into a system where the Model instead keeps track of whether any particle systems are in use and if so attaches listeners.
 	if (mModel->hasParticles()) {
 		const Model::ParticleSystemBindingsPtrSet& bindings = mModel->getAllParticleSystemBindings();
 		for (Model::ParticleSystemBindingsPtrSet::const_iterator I = bindings.begin(); I != bindings.end(); ++I) {
@@ -518,73 +510,79 @@ void EmberPhysicalEntity::onChildAdded(Entity *e)
 
 void EmberPhysicalEntity::onChildRemoved(Entity *e)
 {
-	//NOTE: we don't have to do detachment here, like we do attachment in onChildAdded, since that is done by the EmberEntity::onLocationChanged(...) method
+	///NOTE: we don't have to do detachment here, like we do attachment in onChildAdded, since that is done by the EmberEntity::onLocationChanged(...) method
 	Eris::Entity::onChildRemoved(e);
 }
 
 
 void EmberPhysicalEntity::scaleNode() {
-		
+
 	getScaleNode()->setScale(1, 1, 1);
 	
 	const Ogre::Vector3& ogreMax(mDefaultOgreBoundingBox.getMaximum());
 	const Ogre::Vector3& ogreMin(mDefaultOgreBoundingBox.getMinimum());
 	
+	///Depending on whether the entity has a bounding box or not we'll use different scaling methods. Most entities should have bounding boxes, but not all.
 	if (hasBBox()) {
 
+		///The entity has a bounding box. We'll now check the "usescaleof" setting.
+		///It it's either of "height", "width" or "depth" we'll scale the model uniformly so that the specified dimension matches up exactly between the bounding box of the Model and the bounding box of the entity.
+		///If it's "none" we won't apply any scaling.
+		///And if it's "all" we'll scale the Model so that it matches all dimensions of the entity's bounding box. This will in almost all cases however distort the Model so it's undesirable.
+		
+		///Note that after the Model has been scaled using the bounding box, it can still be scaled additionally through the "scale" setting in the ModelDefinition.
+		
 		const WFMath::AxisBox<3>& wfBoundingBox(getBBox());	
 		const WFMath::Point<3>& wfMax(wfBoundingBox.highCorner());
 		const WFMath::Point<3>& wfMin(wfBoundingBox.lowCorner());
 		
-		Ogre::Real scaleX;		
-		Ogre::Real scaleY;		
-		Ogre::Real scaleZ;		
-
-		
+		Ogre::Real scaleX;
+		Ogre::Real scaleY;
+		Ogre::Real scaleZ;
 		
 		switch (getModel()->getUseScaleOf()) {
 			case Model::ModelDefinition::MODEL_HEIGHT:
-				scaleX = scaleY = scaleZ = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));		
+				scaleX = scaleY = scaleZ = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));
 				break;
 			case Model::ModelDefinition::MODEL_WIDTH:
-				scaleX = scaleY = scaleZ = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));		
+				scaleX = scaleY = scaleZ = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));
 				break;
 			case Model::ModelDefinition::MODEL_DEPTH:
-				scaleX = scaleY = scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));		
+				scaleX = scaleY = scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));
 				break;
 			case Model::ModelDefinition::MODEL_NONE:
 				scaleX = scaleY = scaleZ = 1;
 				break;
 				
 			case Model::ModelDefinition::MODEL_ALL:
-			default:				
-				scaleX = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));		
-				scaleY = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));		
-				scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));		
+			default:
+				scaleX = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));
+				scaleY = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));
+				scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));
 		}
-			
 		
-		//Ogre::Real finalScale = std::max(scaleX, scaleY);
-		//finalScale = std::max(finalScale, scaleZ);
+		
 		getScaleNode()->setScale(scaleX, scaleY, scaleZ);
 		
 	} else if (!getModel()->getScale()) {
-		//set to small size
+		///If there's no bbox, and no scaling in the model (i.e. not even "1") we'll set the size of the model to a hardcoded small value (0.25 meters in each dimension).
+		///This is of course a last resort; all good models that can belong to entities without bounding boxes should have a scale set
 		
-		Ogre::Real scaleX = (0.25 / (ogreMax.x - ogreMin.x));		
-		Ogre::Real scaleY = (0.25 / (ogreMax.y - ogreMin.y));		
-		Ogre::Real scaleZ = (0.25 / (ogreMax.z - ogreMin.z));		
+		S_LOG_WARNING("Could not find any scale set in the model '" << getModel()->getName() << "' used for entity of type '" << getType()->getName() << "'. We'll thus default to scaling the mesh so it's 0.25 meters in each dimension.");
+		
+		Ogre::Real scaleX = (0.25 / (ogreMax.x - ogreMin.x));
+		Ogre::Real scaleY = (0.25 / (ogreMax.y - ogreMin.y));
+		Ogre::Real scaleZ = (0.25 / (ogreMax.z - ogreMin.z));
 		getScaleNode()->setScale(scaleX, scaleY, scaleZ);
-	}		
+	}
 
+	///Lastly, check if we also should scale the model. This scaling is applied after the Model has been scaled to fit with the bounding box.
 	if (getModel()->getScale()) {
 		if (getModel()->getScale() != 1) {
-			//only scale if it's not 1
+			///only scale if it's not 1
 			getScaleNode()->scale(getModel()->getScale(), getModel()->getScale(), getModel()->getScale());
 		}
 	}
-
-		
 }
 
 const Ogre::Vector3& EmberPhysicalEntity::getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity)
@@ -618,7 +616,7 @@ void EmberPhysicalEntity::updateAnimation(Ogre::Real timeSlice)
 	} else {
 		if (mCurrentMovementAction) {
 			bool continuePlay = false;
-			//check if we're walking backward
+			///Check if we're walking backward. This is a bit of a hack (we should preferrably have a separate animation for backwards walking.
 			if (static_cast<int>((WFMath::Vector<3>(getVelocity()).rotate((getOrientation().inverse()))).x()) < 0) {
 				mCurrentMovementAction->getAnimations().addTime(-timeSlice, continuePlay);
 			} else {
@@ -647,6 +645,7 @@ void EmberPhysicalEntity::setMoving(bool moving)
 
 void EmberPhysicalEntity::detachEntity(const std::string & attachPoint)
 {
+	///See if we've already have attached the entity that we now want to detach. Since attachments can be delayed the situation where we want to detach something which haven't yet been attached to the Model can arise, and in those instances we won't do anything more.
 	const std::string* entityId(0);
 	for(AttachedEntitiesStore::const_iterator I = mAttachedEntities.begin(); I != mAttachedEntities.end(); ++I) {
 		if (I->second == attachPoint) {
@@ -656,8 +655,9 @@ void EmberPhysicalEntity::detachEntity(const std::string & attachPoint)
 	}
 	
 	if (entityId) {
+		///We've found the entity within the map of attached entities, so we'll detach it (if we indeed have added it as a child too). 
 		if (hasChild(*entityId)) {
-			//we already have the entity, do the detachment
+			///we already have the entity, do the detachment
 			EmberEntity* entity = EmberOgre::getSingleton().getEmberEntity(*entityId);
 			if (entity) {
 				entity->detachFromModel();
@@ -670,8 +670,9 @@ void EmberPhysicalEntity::detachEntity(const std::string & attachPoint)
 void EmberPhysicalEntity::attachEntity(const std::string & attachPoint, const std::string & entityId)
 {
 	mAttachedEntities[entityId] = attachPoint;
+	///Sometimes we get the op for attaching a certain entity before we've actually recieved the entity in question from the server. In those cases we'll instead wait until onChildAdded and do the attachment there.
 	if (hasChild(entityId)) {
-		//we already have the entity, do the attachment now, else we will just wait for the onChildAdded event
+		///we already have the entity, do the attachment now, else we will just wait for the onChildAdded event
 		EmberEntity* entity = EmberOgre::getSingleton().getEmberEntity(entityId);
 		if (entity) {
 			entity->attachToPointOnModel(attachPoint, getModel());
@@ -688,7 +689,7 @@ void EmberPhysicalEntity::detachAllEntities()
 
 void EmberPhysicalEntity::attachAllEntities()
 {
-//HACK: this should be data driven
+///HACK: this should be data driven
 	if (hasAttr("right_hand_wield")) {
 		const Atlas::Message::Element& idElement = valueOfAttr("right_hand_wield");
 		attachEntity("right_hand_wield", idElement.asString());
@@ -701,6 +702,7 @@ void EmberPhysicalEntity::attachAllEntities()
 
 void EmberPhysicalEntity::onBboxChanged()
 {
+	///When the bounding box of the entity changes we'll also rescale the scaleNode (to which the Model is attached).
 	EmberEntity::onBboxChanged();
 	scaleNode();
 }
@@ -717,19 +719,6 @@ const Ogre::Sphere & EmberPhysicalEntity::getWorldBoundingSphere (bool derive) c
 
 void EmberPhysicalEntity::onAction(const Atlas::Objects::Operation::RootOperation& act)
 {
-	
-/*	std::string allattribs;
-	
-	//Atlas::Objects::BaseObjectData::const_iterator I = act->begin();
-	std::list< std::string >::const_iterator I = act->getParents().begin();
-
-	for (; I != act->getParents().end(); ++I) 
-	{
-		//const Atlas::Message::Element e = (const Atlas::Message::Element)(*I).second;
-		allattribs.append((*I) + " : ");
-	
-	}*/
-	
 	const std::list<std::string> &p = act->getParents();
 	std::list<std::string>::const_iterator I = p.begin();
 	
