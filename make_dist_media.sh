@@ -20,6 +20,8 @@ material_dir=${script_dir}/materials
 
 mkdir -p ${shared_dir}/common
 cd ${shared_dir}
+
+
 #try to get the textures needed
 #don't include lines starting with "/"
 grep -rIE --no-filename "^[^/].*texture "  ${material_dir}/*.material | sed -e 's/texture //g' > common_textures.list
@@ -161,6 +163,18 @@ for filename in `cat ${original_media}/core/EmberCore.files `
 do
 	cp -uf ${original_media}/common/${filename} ${shared_dir}/core
 done
+
+echo "Copying Caelum files"
+#don't include any hidden directories since they are subversion directories
+mkdir -p ${shared_dir}/common/resources/ogre/caelum
+cd ${original_media}/common/resources/ogre/caelum
+for filename in `find . ! -regex '.*/\..*' `
+do
+	echo $filename
+	mkdir -p `dirname ${shared_dir}/common/resources/ogre/caelum/${filename}`
+	cp -uf ${filename} ${shared_dir}/common/resources/ogre/caelum/${filename}
+done
+
 
 echo "Copying base.zip file"
 mkdir -p ${shared_dir}/common/resources/ogre/scripts
