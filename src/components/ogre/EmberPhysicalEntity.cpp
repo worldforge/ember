@@ -249,13 +249,41 @@ void EmberPhysicalEntity::setSounds()
 			ActionDefinitionsStore::const_iterator I_e = master->getActionDefinitions().end();
 			for (; I_b != I_e; ++I_b)
 			{
+				// Should only be valid if contain any sound
+				Ember::SoundAction* newAction = NULL;
+
 				// Setup All Sound Actions
 				SoundDefinitionsStore::const_iterator I_sounds = (*I_b)->getSoundDefinitions().begin();
 				SoundDefinitionsStore::const_iterator I_sounds_end = (*I_b)->getSoundDefinitions().end();
 				for (; I_sounds != I_sounds_end; ++I_sounds)
 				{
-					SoundDefinition* sound = (*I_sounds);
-					S_LOG_INFO(sound->groupName);
+					Model::SoundDefinition* sound = (*I_sounds);
+					if (!sound)
+					{
+						continue;
+					}
+
+					// Register the action within the entity if not registered yet
+					if (!newAction)
+					{
+						newAction = mSoundEntity->registerAction((*I_b)->getName());
+						if (!newAction)
+						{
+							S_LOG_FAILURE("Failed to register action " + (*I_b)->getName() 
+									+ " within entity.");
+
+							return;
+						}
+					}
+
+					Ember::SoundGroup* newGroup = newAction->registerGroup(sound->groupName);
+					if (newGroup)
+					{
+						newGroup->setFrequency(sound->frequency);
+						newGroup->setPlayOrder(sound->playOrder);
+						S_LOG_INFO("Sound Group " + sound->groupName
+								+ " registered within entity");
+					}
 				}
 			}
 		} // mSoundEntity

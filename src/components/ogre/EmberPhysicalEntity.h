@@ -23,7 +23,9 @@
 #include "EmberOgrePrerequisites.h"
 
 #include "EmberEntity.h"
+#include "services/sound/SoundAction.h"
 #include "services/sound/SoundGroup.h"
+#include "services/sound/SoundEntity.h"
 #include "services/sound/SoundEntityManager.h"
 
 namespace EmberOgre {
