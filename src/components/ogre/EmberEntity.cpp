@@ -635,13 +635,10 @@ void EmberEntity::updateTerrainModifiers(const Atlas::Message::Element& modifier
             // Make disc
             int sx = pos.x() / 64;
             int sy = pos.y() / 64;
-            
-            if ((sx < 0) && (sy < 0)) {
+            if (pos.x() < 0) {
                 sx -= 1;
-                sy -= 1;
-            } else if ((sx < 1) && (sy >= 0)) {
-                sx -= 1;
-            } else if (sy < 0) {
+            }
+            if (pos.y() < 0) {
                 sy -= 1;
             }
             int my = abs(pos.y() - (sy * 64));
@@ -745,13 +742,10 @@ void EmberEntity::updateTerrainModifiers(const Atlas::Message::Element& modifier
             // Make sphere
             int sx = pos.x() / 64;
             int sy = pos.y() / 64;
-            
-            if ((sx < 0) && (sy < 0)) {
+            if (pos.x() < 0) {
                 sx -= 1;
-                sy -= 1;
-            } else if ((sx < 1) && (sy >= 0)) {
-                sx -= 1;
-            } else if (sy < 0) {
+            }
+            if (pos.y() < 0) {
                 sy -= 1;
             }
             int my = abs(pos.y() - (sy * 64));
