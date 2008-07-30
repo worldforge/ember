@@ -541,9 +541,8 @@ void EmberEntity::updateTerrainModifiers(const Atlas::Message::Element& modifier
     }
 
     // Get modifier position
-
     pos = getPosition();
-    S_LOG_INFO("SceneNode Pos reported as: " << pos.x() << "," << pos.y() << "," << pos.z());
+    S_LOG_INFO("mod parent pos reported as: " << pos.x() << "," << pos.y() << "," << pos.z());
 
     EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment((float)pos.x(),(float)pos.y())->clearMods();
 
@@ -634,7 +633,20 @@ void EmberEntity::updateTerrainModifiers(const Atlas::Message::Element& modifier
             }
 
             // Make disc
-            WFMath::Point<2> pos_2d(pos.x(),pos.y());
+            int sx = pos.x() / 64;
+            int sy = pos.y() / 64;
+            int my = abs(pos.y() - (sy * 64));
+            int mx = abs(pos.x() - (sx * 64));
+            if ((sx < 0) && (sy < 0)) {
+                sx -= 1;
+                sy -= 1;
+            } else if ((sx < 1) && (sy >= 0)) {
+                sx -= 1;
+            } else if (sy < 0) {
+                sy -= 1;
+            }
+
+            WFMath::Point<2> pos_2d(mx,my);
             WFMath::Ball<2> modShape = WFMath::Ball<2>(pos_2d, shapeRadius); ///FIXME: assumes 2d ball...
             
             S_LOG_INFO("Successfully parsed a levelmod");
@@ -644,7 +656,7 @@ void EmberEntity::updateTerrainModifiers(const Atlas::Message::Element& modifier
             NewMod = new Mercator::LevelTerrainMod<WFMath::Ball<2> >(level, modShape);
         
             // Apply Modifier
-            EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition((float)pos.x(),(float)pos.y()))->addTerrainModifier(0,0,(int)pos.x(),(int)pos.y(),(int)pos.z(),NewMod);
+            EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition((float)pos.x(),(float)pos.y()))->addTerrainModifier(sx,sy,mx,my,(int)pos.z(),NewMod);
 
         } else if (shapeType == "rotbox") {
             WFMath::Point<2> shapePoint;
@@ -669,7 +681,11 @@ void EmberEntity::updateTerrainModifiers(const Atlas::Message::Element& modifier
             }
 
             // Make rotbox
-            WFMath::RotBox<2> modShape = WFMath::RotBox<2>(shapePoint, shapeVector, WFMath::RotMatrix<2>()); ///FIXME: needs to use shapeDim instead of 2
+            int sx = pos.x() / 64;
+            int sy = pos.y() / 64;
+            int my = pos.y() - (sy * 64);
+            int mx = pos.x() - (sx * 64);               // Was shapePoint
+            WFMath::RotBox<2> modShape = WFMath::RotBox<2>(WFMath::Point<2>(mx,my), shapeVector, WFMath::RotMatrix<2>()); ///FIXME: needs to use shapeDim instead of 2
 
             // Make modifier
             Mercator::LevelTerrainMod<WFMath::RotBox<2> > *NewMod;
@@ -677,7 +693,7 @@ void EmberEntity::updateTerrainModifiers(const Atlas::Message::Element& modifier
 
             // Apply Modifier
             //mTerrainGenerator->getTerrainPage(TerrainPosition((int)pos.x(),(int)pos.y()))->addTerrainModifier(0,0,(int)pos.x(),(int)pos.y(),(int)pos.z(),NewMod);
-            EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition((int)pos.x(),(int)pos.y()))->addTerrainModifier(0,0,(int)pos.x(),(int)pos.y(),(int)pos.z(),NewMod);
+            EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition((int)pos.x(),(int)pos.y()))->addTerrainModifier(sx,sy,mx,my,(int)pos.z(),NewMod);
         }       
 
         S_LOG_INFO("Successfully parsed a levelmod");
@@ -726,15 +742,29 @@ void EmberEntity::updateTerrainModifiers(const Atlas::Message::Element& modifier
             }
 
             // Make sphere
-            WFMath::Ball<3> modShape = WFMath::Ball<3>(pos, shapeRadius); ///FIXME: assumes 3d ball...
+            int sx = pos.x() / 64;
+            int sy = pos.y() / 64;
+            int my = abs(pos.y() - (sy * 64));
+            int mx = abs(pos.x() - (sx * 64));
+            if ((sx < 0) && (sy < 0)) {
+                sx -= 1;
+                sy -= 1;
+            } else if ((sx < 1) && (sy >= 0)) {
+                sx -= 1;
+            } else if (sy < 0) {
+                sy -= 1;
+            }
+            WFMath::Ball<3> modShape = WFMath::Ball<3>(WFMath::Point<3>(mx,my,pos.z()), shapeRadius); ///FIXME: assumes 3d ball...
+
             
+
             S_LOG_INFO("Successfully parsed a cratermod");
             // Make modifier
             Mercator::CraterTerrainMod *NewMod;
             NewMod = new Mercator::CraterTerrainMod(modShape);
 
             //mTerrainGenerator->getTerrainPage(TerrainPosition((int)pos.x(),(int)pos.y()))->addTerrainModifier(0,0,(int)pos.x(),(int)pos.y(),(int)pos.z(),NewMod);
-            EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition((int)pos.x(),(int)pos.y()))->addTerrainModifier(0,0,(int)pos.x(),(int)pos.y(),(int)pos.z(),NewMod);
+            EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition((int)pos.x(),(int)pos.y()))->addTerrainModifier(sx,sy,mx,my,(int)pos.z(),NewMod);
         }
     }
 

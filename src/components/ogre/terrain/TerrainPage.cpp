@@ -92,7 +92,7 @@ namespace Terrain {
 
 
 
-
+// 
 TerrainPage::TerrainPage(TerrainPosition position, const std::map<const Mercator::Shader*, TerrainShader*> shaderMap, TerrainGenerator* generator) 
 : mGenerator(generator)
 , mPosition(position)
@@ -449,6 +449,7 @@ void TerrainPage::addTerrainModifier(int sx, int sy, int mx, int my, int mz, Mer
         if (I != mTModList.end()) {
             if (I->X() == mx) {
                 if (I->Y() == my) {
+                    S_LOG_INFO("mod erased at " << mx + abs(sx*64) << "," << my + abs(sy*64));
                     mTModList.erase(I);
                     mTModList.push_back(terrainModListEntry(sx,sy,mx,my,mz,newmod->clone()));
                     break;
@@ -471,10 +472,11 @@ void TerrainPage::addTerrainModifier(int sx, int sy, int mx, int my, int mz, Mer
     S_LOG_INFO("mod segment bounds: " << seg_lx << "," << seg_ly << " : " << seg_hx << "," << seg_hy);
 
     for (I = mTModList.begin(); I != mTModList.end(); ++I) {
-        //if (((nm.X() > seg_lx) && (nm.X() < seg_hx)) && ((nm.Y() > seg_ly) && (nm.Y() < seg_hy)) ) {
-            EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().addMod(*I->Modifier()->clone());
+//         if (((nm.X() > seg_lx) && (nm.X() < seg_hx)) && ((nm.Y() > seg_ly) && (nm.Y() < seg_hy)) ) {
+            EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment(I->SegX(),I->SegY())->addMod(I->Modifier()->clone());
             S_LOG_INFO("mod segment updated for modifier at: " << I->X() << "," << I->Y());
-        //}
+            S_LOG_INFO("mod segment was: " << I->SegX() << "," << I->SegY());
+//         }
     }
 
 	if(mBridge)
@@ -592,7 +594,7 @@ Mercator::TerrainMod *terrainModListEntry::Modifier()
 
 TerrainPosition *terrainModListEntry::Position()
 {
-	return new TerrainPosition(-mod_y, mod_x);
+	return new TerrainPosition(-(mod_y + seg_y * 64), mod_x + seg_x * 64);
 }
 
 int terrainModListEntry::Id()

@@ -585,12 +585,6 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 	}
     mSegments = &mTerrain->getTerrain();
 
-	
-    const WFMath::Ball<2> wfBall_2d(WFMath::Point<2>(32,32), 30);
-    Mercator::LevelTerrainMod<WFMath::Ball<2> > *TerrainMod_tester;
-    TerrainMod_tester = new Mercator::LevelTerrainMod<WFMath::Ball<2> >(60, wfBall_2d);
-    mTerrain->getSegment((float)92,(float)92)->addMod(TerrainMod_tester);
-
 	buildHeightmap();
 	
 	///for some yet undetermined reason we'll get blank segments seeminly at random in the terrain if we'll load it dynamically when requested by the scene manager, so avoid that we'll initialize everything now
