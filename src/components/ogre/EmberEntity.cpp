@@ -635,8 +635,7 @@ void EmberEntity::updateTerrainModifiers(const Atlas::Message::Element& modifier
             // Make disc
             int sx = pos.x() / 64;
             int sy = pos.y() / 64;
-            int my = abs(pos.y() - (sy * 64));
-            int mx = abs(pos.x() - (sx * 64));
+            
             if ((sx < 0) && (sy < 0)) {
                 sx -= 1;
                 sy -= 1;
@@ -645,6 +644,8 @@ void EmberEntity::updateTerrainModifiers(const Atlas::Message::Element& modifier
             } else if (sy < 0) {
                 sy -= 1;
             }
+            int my = abs(pos.y() - (sy * 64));
+            int mx = abs(pos.x() - (sx * 64));
 
             WFMath::Point<2> pos_2d(mx,my);
             WFMath::Ball<2> modShape = WFMath::Ball<2>(pos_2d, shapeRadius); ///FIXME: assumes 2d ball...
@@ -744,8 +745,7 @@ void EmberEntity::updateTerrainModifiers(const Atlas::Message::Element& modifier
             // Make sphere
             int sx = pos.x() / 64;
             int sy = pos.y() / 64;
-            int my = abs(pos.y() - (sy * 64));
-            int mx = abs(pos.x() - (sx * 64));
+            
             if ((sx < 0) && (sy < 0)) {
                 sx -= 1;
                 sy -= 1;
@@ -754,6 +754,9 @@ void EmberEntity::updateTerrainModifiers(const Atlas::Message::Element& modifier
             } else if (sy < 0) {
                 sy -= 1;
             }
+            int my = abs(pos.y() - (sy * 64));
+            int mx = abs(pos.x() - (sx * 64));
+    
             WFMath::Ball<3> modShape = WFMath::Ball<3>(WFMath::Point<3>(mx,my,pos.z()), shapeRadius); ///FIXME: assumes 3d ball...
 
             
