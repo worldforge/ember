@@ -178,6 +178,16 @@ void XMLEntityRecipeSerializer::readAdapters(EntityRecipePtr entRecipe, TiXmlEle
 		{
 			adapter->setTitle(*title);
 		}
+
+		// Custom adapter parameters
+		if (*type == "string")
+		{
+			for (TiXmlElement* item = smElem->FirstChildElement("item");
+        			item != 0; item = item->NextSiblingElement("item"))
+			{
+				adapter->addSuggestion(item->GetText());
+			}
+		}
 	}
 }
 

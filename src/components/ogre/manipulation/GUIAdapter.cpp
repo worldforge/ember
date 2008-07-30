@@ -50,6 +50,10 @@ void GUIAdapter::attach(CEGUI::Window* window)
 {
 	EmberOgre::Gui::Adapters::Atlas::AdapterFactory factory("EntityCreator");
 	mAdapter = factory.createAdapterByType(mType, window, "adapterPrefix", mElement);
+	for (std::list<std::string>::iterator I = mSuggestions.begin(); I != mSuggestions.end(); I++)
+	{
+		mAdapter->addSuggestion(*I);
+	}
 }
 
 Atlas::Message::Element& GUIAdapter::getValue()
@@ -65,6 +69,11 @@ void GUIAdapter::setTitle(const std::string& title)
 const std::string& GUIAdapter::getTitle() const
 {
 	return mTitle;
+}
+
+void GUIAdapter::addSuggestion(const std::string& text)
+{
+	mSuggestions.push_back(text);
 }
 
 }

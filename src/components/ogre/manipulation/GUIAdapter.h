@@ -71,6 +71,11 @@ public:
 	 */
 	const std::string& getTitle() const;
 
+	/**
+	 * Adds suggestion.
+	 */
+	void addSuggestion(const std::string& text);
+
 protected:
 	/**
 	 * Adapter type.
@@ -91,6 +96,11 @@ protected:
 	 * Adapter title.
 	 */
 	std::string mTitle;
+
+	/**
+	 * List of suggestions.
+	 */
+	std::list<std::string> mSuggestions;
 };
 
 }
