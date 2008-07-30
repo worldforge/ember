@@ -456,7 +456,7 @@ void EntityCreator::connectedToServer(Eris::Connection* conn)
 }
 
 EntityCreatorInputAdapter::EntityCreatorInputAdapter(EntityCreator& entityCreator)
-	: mEntityCreator(entityCreator)
+	: mEntityCreator(entityCreator), mWindowClick(false)
 {
 	GUIManager::getSingleton().getInput().addAdapter(this);
 }
@@ -473,6 +473,23 @@ bool EntityCreatorInputAdapter::injectMouseMove(const MouseMotion& motion, bool&
 
 bool EntityCreatorInputAdapter::injectMouseButtonUp(const Input::MouseButton& button)
 {
+	if (mWindowClick)
+	{
+		mWindowClick = false;
+		if (button == Input::MouseButtonLeft)
+		{
+			CEGUI::System::getSingleton().injectMouseButtonUp(CEGUI::LeftButton);
+		}
+		else if (button == Input::MouseButtonRight)
+		{
+			CEGUI::System::getSingleton().injectMouseButtonUp(CEGUI::RightButton);
+		}
+		else if (button == Input::MouseButtonMiddle)
+		{
+			CEGUI::System::getSingleton().injectMouseButtonUp(CEGUI::MiddleButton);
+		}
+		return false;
+	}
 	if (button == Input::MouseButtonLeft)
 	{
 		mEntityCreator.finalizeCreation();
@@ -484,6 +501,32 @@ bool EntityCreatorInputAdapter::injectMouseButtonUp(const Input::MouseButton& bu
 
 bool EntityCreatorInputAdapter::injectMouseButtonDown(const Input::MouseButton& button)
 {
+	CEGUI::Window* window = CEGUI::System::getSingleton().getWindowContainingMouse();
+	if (window->isAncestor(mEntityCreator.mWidget->getMainWindow()))
+	{
+		mWindowClick = true;
+		if (button == Input::MouseButtonLeft)
+		{
+			CEGUI::System::getSingleton().injectMouseButtonDown(CEGUI::LeftButton);
+		}
+		else if (button == Input::MouseButtonRight)
+		{
+			CEGUI::System::getSingleton().injectMouseButtonDown(CEGUI::RightButton);
+		}
+		else if (button == Input::MouseButtonMiddle)
+		{
+			CEGUI::System::getSingleton().injectMouseButtonDown(CEGUI::MiddleButton);
+		}
+		else if (button == Input::MouseWheelUp)
+		{
+			CEGUI::System::getSingleton().injectMouseWheelChange(1.0);
+		}
+		else if (button == Input::MouseWheelDown)
+		{
+			CEGUI::System::getSingleton().injectMouseWheelChange(-1.0);
+		}
+		return false;
+	}
 	if (button == Input::MouseButtonLeft)
 	{
 		return false;

@@ -29,6 +29,7 @@
 #include "components/ogre/model/mapping/IActionCreator.h"
 #include "components/ogre/model/mapping/Actions/Action.h"
 #include "components/ogre/input/IInputAdapter.h"
+#include "components/ogre/widgets/Widget.h"
 #include <Eris/Connection.h>
 #include <wfmath/point.h>
 #include <CEGUIWindow.h>
@@ -90,6 +91,8 @@ public:
 	 * Hide preview model part
 	 */
 	void hideModelPart(const std::string& partName);
+
+	::EmberOgre::Gui::Widget* mWidget;
 
 protected:
 	void initFromModel();
@@ -173,6 +176,7 @@ public:
 	virtual bool injectKeyUp(const SDLKey& key);
 private:
 	EntityCreator& mEntityCreator;
+	bool mWindowClick;
 };
 
 /**

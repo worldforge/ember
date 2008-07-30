@@ -52,6 +52,7 @@ function EntityCreator.buildWidget()
 
 	-- Initializing helper classes
 	EntityCreator.helper = EmberOgre.Gui.EntityCreator()
+	EntityCreator.helper.mWidget = EntityCreator.widget
 	EntityCreator.factory = EmberOgre.Gui.Adapters.Atlas.AdapterFactory("EntityCreator")
 
 	-- Creating container for storing adapters

@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Wed Jul 16 16:56:35 2008.
+** Generated automatically by tolua++-1.0.92 on Wed Jul 30 20:44:28 2008.
 */
 
 #ifndef __cplusplus
@@ -20010,6 +20010,36 @@ static int tolua_EmberOgre_EmberOgre_Gui_EntityCreator_createEntity00(lua_State*
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* get function: mWidget of class  EmberOgre::Gui::EntityCreator */
+#ifndef TOLUA_DISABLE_tolua_get_EmberOgre__Gui__EntityCreator_mWidget_ptr
+static int tolua_get_EmberOgre__Gui__EntityCreator_mWidget_ptr(lua_State* tolua_S)
+{
+  EmberOgre::Gui::EntityCreator* self = (EmberOgre::Gui::EntityCreator*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'mWidget'",NULL);
+#endif
+  tolua_pushusertype(tolua_S,(void*)self->mWidget,"EmberOgre::Gui::Widget");
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: mWidget of class  EmberOgre::Gui::EntityCreator */
+#ifndef TOLUA_DISABLE_tolua_set_EmberOgre__Gui__EntityCreator_mWidget_ptr
+static int tolua_set_EmberOgre__Gui__EntityCreator_mWidget_ptr(lua_State* tolua_S)
+{
+  EmberOgre::Gui::EntityCreator* self = (EmberOgre::Gui::EntityCreator*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'mWidget'",NULL);
+  if (!tolua_isusertype(tolua_S,2,"EmberOgre::Gui::Widget",0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->mWidget = ((EmberOgre::Gui::Widget*)  tolua_tousertype(tolua_S,2,0))
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: clear of class  std::vector<std::string> */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_std_vector_std__string__clear00
 static int tolua_EmberOgre_std_vector_std__string__clear00(lua_State* tolua_S)
@@ -24965,6 +24995,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"delete",tolua_EmberOgre_EmberOgre_Gui_EntityCreator_delete00);
      tolua_function(tolua_S,"showRecipe",tolua_EmberOgre_EmberOgre_Gui_EntityCreator_showRecipe00);
      tolua_function(tolua_S,"createEntity",tolua_EmberOgre_EmberOgre_Gui_EntityCreator_createEntity00);
+     tolua_variable(tolua_S,"mWidget",tolua_get_EmberOgre__Gui__EntityCreator_mWidget_ptr,tolua_set_EmberOgre__Gui__EntityCreator_mWidget_ptr);
     tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
