@@ -232,21 +232,17 @@ void EmberPhysicalEntity::setSounds()
 {
 	if (!mSoundEntity)
 	{
-		#define mEntManager Ember::SoundEntityManager::getSingleton()
-		#define master mModel->getDefinition()
-		#define ActionDefinitionsStore std::vector<Model::ActionDefinition*>
-		#define SoundDefinitionsStore std::vector<Model::SoundDefinition*>
 
 		// Create a sound Entity based on this entity type
 		//
 		// TODO: Replace with a managed template on model mapping
 		// to map it the same way we map models to entity types
-		mSoundEntity = mEntManager.allocateEntity(getType()->getName());
+		mSoundEntity = Ember::SoundEntityManager::getSingleton().allocateEntity(getType()->getName());
 		if (mSoundEntity)
 		{
-			ActionDefinitionsStore store = master->getActionDefinitions();
-			ActionDefinitionsStore::const_iterator I_b = master->getActionDefinitions().begin();
-			ActionDefinitionsStore::const_iterator I_e = master->getActionDefinitions().end();
+			ActionDefinitionsStore store = mModel->getDefinition()->getActionDefinitions();
+			ActionDefinitionsStore::const_iterator I_b = store.begin();
+			ActionDefinitionsStore::const_iterator I_e = store.end();
 			for (; I_b != I_e; ++I_b)
 			{
 				// Should only be valid if contain any sound

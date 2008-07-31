@@ -32,6 +32,7 @@ namespace EmberOgre {
 
 namespace Model {
 	class ActionDefinition;
+	class SoundDefinition;
 	class Model;
 	class Action;
 	namespace Mapping {
@@ -44,6 +45,8 @@ namespace Model {
 class EmberEntity;
 
 typedef std::list<Model::Action*> ActionStore;
+typedef std::vector<Model::ActionDefinition*> ActionDefinitionsStore;
+typedef std::vector<Model::SoundDefinition*> SoundDefinitionsStore;
 	
 /**
  * Represents a Ember entity with a physical representation in the world.
