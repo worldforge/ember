@@ -26,6 +26,8 @@ var
 *.[oa]
 # Ignore temporary files
 *~
+# Ignore vi swap files
+*.swp
 # Ignore desktop files
 .directory
 # Ignore password file used to rsync update amber
