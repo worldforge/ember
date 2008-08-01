@@ -85,14 +85,9 @@ public:
 	GUIAdapter* getGUIAdapter(std::string name);
 
 	/**
-	 * Returns iterator over adapters.
+	 * Returns list of GUI adapters.
 	 */
-	GUIAdaptersStore::iterator getGUIAdaptersIteratorBegin();
-
-	/**
-	 * Returns end iterator over adapters.
-	 */
-	GUIAdaptersStore::iterator getGUIAdaptersIteratorEnd();
+	const GUIAdaptersStore& getGUIAdapters();
 
 	/**
 	 * Creates and returns GUI adapter bindings.

@@ -167,8 +167,8 @@ void EntityCreator::showRecipe(EntityRecipe& recipe, CEGUI::Window* container)
 {
 	GUIManager& mGuiManager = GUIManager::getSingleton();
 
-	GUIAdaptersStore::iterator I = recipe.getGUIAdaptersIteratorBegin();
-	GUIAdaptersStore::iterator end = recipe.getGUIAdaptersIteratorEnd();
+	GUIAdaptersStore::const_iterator I = recipe.getGUIAdapters().begin();
+	GUIAdaptersStore::const_iterator end = recipe.getGUIAdapters().end();
 	for (; I != end; I++)
 	{
 		S_LOG_VERBOSE("Creating adapter " << I->first << " of type " << I->second->getType());
