@@ -163,44 +163,6 @@ EntityCreator::~EntityCreator()
 
 }
 
-void EntityCreator::showRecipe(EntityRecipe& recipe, CEGUI::Window* container)
-{
-	GUIManager& mGuiManager = GUIManager::getSingleton();
-
-	GUIAdaptersStore::const_iterator I = recipe.getGUIAdapters().begin();
-	GUIAdaptersStore::const_iterator end = recipe.getGUIAdapters().end();
-	for (; I != end; I++)
-	{
-		S_LOG_VERBOSE("Creating adapter " << I->first << " of type " << I->second->getType());
-
-		CEGUI::Window* window = mGuiManager.createWindow("DefaultGUISheet");
-		container->addChildWindow(window);
-		I->second->attach(window);
-/*
-		double textWidth = 75;
-		CEGUI::Window* outerContainer = mGuiManager.createWindow("DefaultGUISheet");
-
-		CEGUI::Window* label = mGuiManager.createWindow("EmberLook/StaticText");
-
-		label->setText(I->second->getTitle());
-		label->setWidth(CEGUI::UDim(0, textWidth));
-		label->setProperty("FrameEnabled", "false");
-	 	label->setProperty("BackgroundEnabled", "false");
-		label->setProperty("VertFormatting", "TopAligned");
-		label->setProperty("Tooltip", I->second->getTitle());
-
-		CEGUI::Window* container = mGuiManager.createWindow("DefaultGUISheet");
-		container->setXPosition(CEGUI::UDim(0, textWidth));
-		I->second->attach(container);
-
-		outerContainer->addChildWindow(label);
-		outerContainer->addChildWindow(container);
-
-		parentContainer->addChildWindow(outerContainer);
-*/
-	}
-}
-
 void EntityCreator::createEntity(EntityRecipe& recipe)
 {
 	// Creating entity data

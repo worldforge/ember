@@ -31,7 +31,6 @@ class EntityCreator{
 public:
 	EntityCreator();
 	~EntityCreator();
-	void showRecipe(EmberOgre::EntityRecipe& recipe, CEGUI::Window* container);
 	void createEntity(EntityRecipe& recipe);
 
 	EmberOgre::Gui::Widget* mWidget;

@@ -37,11 +37,12 @@ end
 
 -- Shows selected recipe
 function EntityCreator.showRecipe(recipe)
---	local element = Atlas.Message.Element("Booo!")
---	local container = EntityCreator.widget:getWindow("AdaptersContainer")
---	local adapter = EntityCreator.factory:createStaticAdapter(container, "testAdapter", element)
-
-	EntityCreator.helper:showRecipe(recipe, EntityCreator.container)
+	for k,v in recipe:getGUIAdapters():pairs() do
+		log.verbose("Creating adapter " .. k .. " of type " .. v:getType())
+		local window = guiManager:createWindow("DefaultGUISheet");
+		EntityCreator.container:addChildWindow(window);
+		v:attach(window)
+	end
 end
 
 -- Builds widget

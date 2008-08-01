@@ -58,11 +58,6 @@ public:
 	~EntityCreator();
 
 	/**
-	 * Show adapters of specific recipe in container
-	 */
-	void showRecipe(EntityRecipe& recipe, CEGUI::Window* container);
-
-	/**
 	 * Composes entity
 	 */
 	void createEntity(EntityRecipe& recipe);
