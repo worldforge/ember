@@ -16,6 +16,7 @@ public:
 	size_t calculateSize(void) const;
 //	GUIAdapter* createGUIAdapter(std::string name, std::string type);
 //	GUIAdapter* getGUIAdapter(std::string name);
+	const GUIAdaptersStore& getGUIAdapters();
 //	GUIAdapterBindings* createGUIAdapterBindings(std::string name);
 	void doTest();
 	void createEntity();
@@ -27,6 +28,42 @@ public:
 	EntityRecipe* get();
 };
 
+class GUIAdaptersStore
+{
+class value_type {
+	const std::string& first;
+	GUIAdapter* second;
+};
+
+$#define __operator_ptr operator*
+$#define __operator_pp operator++
+
+class const_iterator {
+public:
+    value_type& __operator_ptr @ get();
+	EmberOgre::GUIAdaptersStore::const_iterator& __operator_pp @ next();
+	bool operator==(const EmberOgre::GUIAdaptersStore::const_iterator& value);
+};
+public:
+	EmberOgre::GUIAdaptersStore::const_iterator begin() const;
+	EmberOgre::GUIAdaptersStore::const_iterator end @ theEnd() const;  // end is keyword in Lua
+};
+
 }
+
+// Iterator over GUIAdaptersStore
+$[
+function EmberOgre.GUIAdaptersStore:pairs()
+  local I = self:begin()
+  local Iend = self:theEnd()
+  return function()
+    if I ~= Iend then
+      val = I:get()
+      I = I:next()
+      return val.first, val.second
+    end
+  end
+end
+$]
 
 #endif

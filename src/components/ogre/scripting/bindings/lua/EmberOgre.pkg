@@ -67,6 +67,7 @@ $pfile "ModelDefinitionAtlasComposer.pkg"
 
 $pfile "EntityMoveManager.pkg"
 
+$pfile "GUIAdapter.pkg"
 $pfile "EntityRecipe.pkg"
 $pfile "EntityRecipeManager.pkg"
 $pfile "EntityCreator.pkg"
