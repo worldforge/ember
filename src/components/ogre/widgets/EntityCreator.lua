@@ -32,7 +32,7 @@ end
 
 -- Handles create button press
 function EntityCreator.Create_Click(args)
-	EntityCreator.helper:createEntity(EntityCreator.recipe)
+	EntityCreator.helper:toggleCreateMode(EntityCreator.recipe)
 end
 
 -- Shows selected recipe
@@ -87,6 +87,7 @@ function EntityCreator.buildWidget()
 	-- Loading widget layout
 	EntityCreator.widget = guiManager:createWidget()
 	EntityCreator.widget:loadMainSheet("EntityCreator.layout", "EntityCreator/")
+	EntityCreator.createMode = false
 
 	-- Initializing helper classes
 	EntityCreator.helper = EmberOgre.Gui.EntityCreator()

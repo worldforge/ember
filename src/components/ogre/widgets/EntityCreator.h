@@ -58,6 +58,11 @@ public:
 	~EntityCreator();
 
 	/**
+	 * Toggles create mode and performs correspondent action.
+	 */
+	void toggleCreateMode(EntityRecipe& recipe);
+
+	/**
 	 * Composes entity
 	 */
 	void createEntity(EntityRecipe& recipe);
@@ -105,6 +110,7 @@ protected:
 
 	void connectedToServer(Eris::Connection* conn);
 	Eris::Connection* mConn;
+	bool mCreateMode;
 	WFMath::Point<3> mPos;
 	WFMath::Quaternion mOrientation;
 	EntityCreatorMoveAdapter* mMoveAdapter;

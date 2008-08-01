@@ -31,7 +31,9 @@ class EntityCreator{
 public:
 	EntityCreator();
 	~EntityCreator();
+	void toggleCreateMode(EntityRecipe& recipe);
 	void createEntity(EntityRecipe& recipe);
+	void cleanupCreation();
 
 	EmberOgre::Gui::Widget* mWidget;
 };

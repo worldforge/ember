@@ -153,7 +153,7 @@ void EntityCreatorHideModelAction::deactivate()
 
 
 EntityCreator::EntityCreator()
-		: mModel(0)
+		: mModel(0), mCreateMode(false)
 {
 	mInputAdapter = new EntityCreatorInputAdapter(*this);
 	mMoveAdapter = new EntityCreatorMoveAdapter(*this);
@@ -164,6 +164,18 @@ EntityCreator::~EntityCreator()
 {
 	delete mInputAdapter;
 	delete mMoveAdapter;
+}
+
+void EntityCreator::toggleCreateMode(EntityRecipe& recipe)
+{
+	if (!mCreateMode)
+	{
+		createEntity(recipe);
+	}
+	else
+	{
+		cleanupCreation();
+	}
 }
 
 void EntityCreator::createEntity(EntityRecipe& recipe)
@@ -236,6 +248,8 @@ void EntityCreator::createEntity(EntityRecipe& recipe)
 		mInputAdapter->addAdapter();
 		mMoveAdapter->addAdapter();
 	}
+
+	mCreateMode = true;
 }
 
 void EntityCreator::setModel(const std::string& modelName)
@@ -397,8 +411,6 @@ void EntityCreator::finalizeCreation()
 	std::stringstream ss;
 	ss << mPos;
 	S_LOG_INFO("Trying to create entity at position " << ss.str() );
-
-	cleanupCreation();
 }
 
 void EntityCreator::cleanupCreation()
@@ -410,6 +422,8 @@ void EntityCreator::cleanupCreation()
 	// delete model ?
 	EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->removeChild(mEntityNode);
 //	delete mEntityNode;  // ?
+
+	mCreateMode = false;
 }
 
 void EntityCreator::setPosition(WFMath::Point<3> pos)
@@ -486,6 +500,11 @@ bool EntityCreatorInputAdapter::injectChar(char character)
 
 bool EntityCreatorInputAdapter::injectKeyDown(const SDLKey& key)
 {
+	if (key == SDLK_ESCAPE)
+	{
+		mEntityCreator.cleanupCreation();
+		return false;
+	}
 	return true;
 }
 
