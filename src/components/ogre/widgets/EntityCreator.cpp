@@ -166,11 +166,16 @@ EntityCreator::~EntityCreator()
 	delete mMoveAdapter;
 }
 
-void EntityCreator::toggleCreateMode(EntityRecipe& recipe)
+void EntityCreator::setRecipe(EntityRecipe& recipe)
+{
+	mRecipe = &recipe;
+}
+
+void EntityCreator::toggleCreateMode()
 {
 	if (!mCreateMode)
 	{
-		createEntity(recipe);
+		createEntity();
 	}
 	else
 	{
@@ -178,13 +183,13 @@ void EntityCreator::toggleCreateMode(EntityRecipe& recipe)
 	}
 }
 
-void EntityCreator::createEntity(EntityRecipe& recipe)
+void EntityCreator::createEntity()
 {
 	// Creating entity data
-	mEntityMessage = recipe.createEntity();
-	Eris::TypeInfo* erisType = mConn->getTypeService()->getTypeByName(recipe.getEntityType());
+	mEntityMessage = mRecipe->createEntity();
+	Eris::TypeInfo* erisType = mConn->getTypeService()->getTypeByName(mRecipe->getEntityType());
 	if (!erisType) {
-		S_LOG_FAILURE("Type " << recipe.getEntityType() << " not found in recipe " << recipe.getName());
+		S_LOG_FAILURE("Type " << mRecipe->getEntityType() << " not found in recipe " << mRecipe->getName());
 		return;
 	}
 
@@ -411,6 +416,10 @@ void EntityCreator::finalizeCreation()
 	std::stringstream ss;
 	ss << mPos;
 	S_LOG_INFO("Trying to create entity at position " << ss.str() );
+
+	// Recreating the entity to allow change in random attributes.
+	cleanupCreation();
+	createEntity();
 }
 
 void EntityCreator::cleanupCreation()

@@ -26,13 +26,14 @@ function EntityCreator.RecipesList_SelectionChanged(args)
 		local recipePtr = recipeMgr:getByName(name)
 		recipePtr = tolua.cast(recipePtr, "EmberOgre::EntityRecipePtr")
 		EntityCreator.recipe = recipePtr:get()
+		EntityCreator.helper:setRecipe(EntityCreator.recipe)
 		EntityCreator.showRecipe(EntityCreator.recipe)
 	end
 end
 
 -- Handles create button press
 function EntityCreator.Create_Click(args)
-	EntityCreator.helper:toggleCreateMode(EntityCreator.recipe)
+	EntityCreator.helper:toggleCreateMode()
 end
 
 -- Shows selected recipe
@@ -87,7 +88,6 @@ function EntityCreator.buildWidget()
 	-- Loading widget layout
 	EntityCreator.widget = guiManager:createWidget()
 	EntityCreator.widget:loadMainSheet("EntityCreator.layout", "EntityCreator/")
-	EntityCreator.createMode = false
 
 	-- Initializing helper classes
 	EntityCreator.helper = EmberOgre.Gui.EntityCreator()

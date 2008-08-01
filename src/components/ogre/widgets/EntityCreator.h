@@ -58,14 +58,19 @@ public:
 	~EntityCreator();
 
 	/**
+	 * Sets recipe that would be used for entity creation in future.
+	 */
+	void setRecipe(EntityRecipe& recipe);
+
+	/**
 	 * Toggles create mode and performs correspondent action.
 	 */
-	void toggleCreateMode(EntityRecipe& recipe);
+	void toggleCreateMode();
 
 	/**
 	 * Composes entity
 	 */
-	void createEntity(EntityRecipe& recipe);
+	void createEntity();
 
 	/**
 	 * Sends composed entity to server
@@ -111,6 +116,7 @@ protected:
 	void connectedToServer(Eris::Connection* conn);
 	Eris::Connection* mConn;
 	bool mCreateMode;
+	EntityRecipe* mRecipe;
 	WFMath::Point<3> mPos;
 	WFMath::Quaternion mOrientation;
 	EntityCreatorMoveAdapter* mMoveAdapter;
