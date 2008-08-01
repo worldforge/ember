@@ -39,10 +39,47 @@ end
 function EntityCreator.showRecipe(recipe)
 	for k,v in recipe:getGUIAdapters():pairs() do
 		log.verbose("Creating adapter " .. k .. " of type " .. v:getType())
-		local window = guiManager:createWindow("DefaultGUISheet");
-		EntityCreator.container:addChildWindow(window);
-		v:attach(window)
+
+		local container = guiManager:createWindow("DefaultGUISheet")
+		v:attach(container)
+
+		EntityCreator.addAdapter(v, v:getTitle(), container, EntityCreator.container)
 	end
+end
+
+-- Adds adapter
+function EntityCreator.addAdapter(adapter, title, container, parentContainer)
+	local textWidth = 75
+	local outercontainer = guiManager:createWindow("DefaultGUISheet")
+	--outercontainer:setRiseOnClickEnabled(false)
+	local label = guiManager:createWindow("EmberLook/StaticText")
+	
+	label:setText(title)
+	label:setWidth(CEGUI.UDim(0, textWidth))
+	label:setProperty("FrameEnabled", "false");
+ 	label:setProperty("BackgroundEnabled", "false");
+	label:setProperty("VertFormatting", "TopAligned");
+	label:setProperty("Tooltip", title);
+	
+	local width = container:getWidth()
+	width = width + CEGUI.UDim(0, textWidth)
+	outercontainer:setWidth(width)
+	container:setXPosition(CEGUI.UDim(0, textWidth))
+	container:setProperty("Tooltip", title);
+	
+	outercontainer:setHeight(container:getHeight())
+	
+	--make sure that the outer container has the same height as the inner container (so that when we add new child adapters it's updated)
+	function syncWindowHeights(args)
+		outercontainer:setHeight(container:getHeight())
+	end
+	local SizedConnection = container:subscribeEvent("Sized", syncWindowHeights)
+
+	outercontainer:addChildWindow(label)
+	outercontainer:addChildWindow(container)
+
+	parentContainer:addChildWindow(outercontainer)
+	return outercontainer
 end
 
 -- Builds widget

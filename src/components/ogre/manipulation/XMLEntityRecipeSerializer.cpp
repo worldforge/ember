@@ -174,7 +174,7 @@ void XMLEntityRecipeSerializer::readAdapters(EntityRecipePtr entRecipe, TiXmlEle
 		GUIAdapter* adapter = entRecipe->createGUIAdapter(*name, *type);
 
 		const std::string *title;
-		if (title = smElem->Attribute(std::string("type")))
+		if (title = smElem->Attribute(std::string("title")))
 		{
 			adapter->setTitle(*title);
 		}
