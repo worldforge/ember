@@ -155,12 +155,15 @@ void EntityCreatorHideModelAction::deactivate()
 EntityCreator::EntityCreator()
 		: mModel(0)
 {
+	mInputAdapter = new EntityCreatorInputAdapter(*this);
+	mMoveAdapter = new EntityCreatorMoveAdapter(*this);
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EntityCreator::connectedToServer));
 }
 
 EntityCreator::~EntityCreator()
 {
-
+	delete mInputAdapter;
+	delete mMoveAdapter;
 }
 
 void EntityCreator::createEntity(EntityRecipe& recipe)
@@ -230,8 +233,8 @@ void EntityCreator::createEntity(EntityRecipe& recipe)
 		//mEntity->shutdown();
 
 		// Registering move adapter to track mouse movements
-		mInputAdapter = new EntityCreatorInputAdapter(*this);
-		mMoveAdapter = new EntityCreatorMoveAdapter(*this);
+		mInputAdapter->addAdapter();
+		mMoveAdapter->addAdapter();
 	}
 }
 
@@ -395,8 +398,13 @@ void EntityCreator::finalizeCreation()
 	ss << mPos;
 	S_LOG_INFO("Trying to create entity at position " << ss.str() );
 
-	// Cleanup
-	delete mMoveAdapter;
+	cleanupCreation();
+}
+
+void EntityCreator::cleanupCreation()
+{
+	mInputAdapter->removeAdapter();
+	mMoveAdapter->removeAdapter();
 
 	mEntityNode->detachAllObjects();
 	// delete model ?
@@ -420,10 +428,18 @@ void EntityCreator::connectedToServer(Eris::Connection* conn)
 EntityCreatorInputAdapter::EntityCreatorInputAdapter(EntityCreator& entityCreator)
 	: mEntityCreator(entityCreator), mWindowClick(false)
 {
-	GUIManager::getSingleton().getInput().addAdapter(this);
 }
 
 EntityCreatorInputAdapter::~EntityCreatorInputAdapter()
+{
+}
+
+void EntityCreatorInputAdapter::addAdapter()
+{
+	GUIManager::getSingleton().getInput().addAdapter(this);
+}
+
+void EntityCreatorInputAdapter::removeAdapter()
 {
 	GUIManager::getSingleton().getInput().removeAdapter(this);
 }
@@ -443,7 +459,6 @@ bool EntityCreatorInputAdapter::injectMouseButtonUp(const Input::MouseButton& bu
 	if (button == Input::MouseButtonLeft)
 	{
 		mEntityCreator.finalizeCreation();
-		delete this; // any better method to do this
 		return false;
 	}
 	return true;
@@ -482,11 +497,19 @@ bool EntityCreatorInputAdapter::injectKeyUp(const SDLKey& key)
 EntityCreatorMoveAdapter::EntityCreatorMoveAdapter(EntityCreator& entityCreator)
 	: mEntityCreator(entityCreator)
 {
+}
+
+EntityCreatorMoveAdapter::~EntityCreatorMoveAdapter()
+{
+}
+
+void EntityCreatorMoveAdapter::addAdapter()
+{
 	/// Register this as a frame listener
 	Ogre::Root::getSingleton().addFrameListener(this);
 }
 
-EntityCreatorMoveAdapter::~EntityCreatorMoveAdapter()
+void EntityCreatorMoveAdapter::removeAdapter()
 {
 	Ogre::Root::getSingleton().removeFrameListener(this);
 }

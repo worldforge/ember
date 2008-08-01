@@ -68,6 +68,11 @@ public:
 	void finalizeCreation();
 
 	/**
+	 * Cleanup after creation of entity or cancel creation.
+	 */
+	void cleanupCreation();
+
+	/**
 	 * Sets position of new entity
 	 */
 	void setPosition(WFMath::Point<3> pos);
@@ -163,6 +168,8 @@ class EntityCreatorInputAdapter : public IInputAdapter
 public:
 	EntityCreatorInputAdapter(EntityCreator& entityCreator);
 	~EntityCreatorInputAdapter();
+	void addAdapter();
+	void removeAdapter();
 	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
 	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
 	virtual bool injectMouseButtonDown(const Input::MouseButton& button);
@@ -182,6 +189,8 @@ class EntityCreatorMoveAdapter : public Ogre::FrameListener
 public:
 	EntityCreatorMoveAdapter(EntityCreator& adapter);
 	~EntityCreatorMoveAdapter();
+	void addAdapter();
+	void removeAdapter();
 	/**
  	 * Methods from Ogre::FrameListener
 	 */
