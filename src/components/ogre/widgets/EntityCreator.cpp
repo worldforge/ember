@@ -438,19 +438,7 @@ bool EntityCreatorInputAdapter::injectMouseButtonUp(const Input::MouseButton& bu
 	if (mWindowClick)
 	{
 		mWindowClick = false;
-		if (button == Input::MouseButtonLeft)
-		{
-			CEGUI::System::getSingleton().injectMouseButtonUp(CEGUI::LeftButton);
-		}
-		else if (button == Input::MouseButtonRight)
-		{
-			CEGUI::System::getSingleton().injectMouseButtonUp(CEGUI::RightButton);
-		}
-		else if (button == Input::MouseButtonMiddle)
-		{
-			CEGUI::System::getSingleton().injectMouseButtonUp(CEGUI::MiddleButton);
-		}
-		return false;
+		return true;
 	}
 	if (button == Input::MouseButtonLeft)
 	{
@@ -467,27 +455,7 @@ bool EntityCreatorInputAdapter::injectMouseButtonDown(const Input::MouseButton& 
 	if (window->isAncestor(mEntityCreator.mWidget->getMainWindow()))
 	{
 		mWindowClick = true;
-		if (button == Input::MouseButtonLeft)
-		{
-			CEGUI::System::getSingleton().injectMouseButtonDown(CEGUI::LeftButton);
-		}
-		else if (button == Input::MouseButtonRight)
-		{
-			CEGUI::System::getSingleton().injectMouseButtonDown(CEGUI::RightButton);
-		}
-		else if (button == Input::MouseButtonMiddle)
-		{
-			CEGUI::System::getSingleton().injectMouseButtonDown(CEGUI::MiddleButton);
-		}
-		else if (button == Input::MouseWheelUp)
-		{
-			CEGUI::System::getSingleton().injectMouseWheelChange(1.0);
-		}
-		else if (button == Input::MouseWheelDown)
-		{
-			CEGUI::System::getSingleton().injectMouseWheelChange(-1.0);
-		}
-		return false;
+		return true;
 	}
 	if (button == Input::MouseButtonLeft)
 	{
