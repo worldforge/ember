@@ -496,6 +496,11 @@ bool EntityCreatorInputAdapter::injectMouseButtonUp(const Input::MouseButton& bu
 		mEntityCreator.finalizeCreation();
 		return false;
 	}
+	// Don't letting to change movement mode.
+	else if (button == Input::MouseButtonRight)
+	{
+		return false;
+	}
 	return true;
 }
 
