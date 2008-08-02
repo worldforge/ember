@@ -87,6 +87,8 @@ public:
 	 */
 	void setPosition(WFMath::Point<3> pos);
 
+	void yaw(float degrees); 
+
 	/**
 	 * Sets preview model name
 	 */

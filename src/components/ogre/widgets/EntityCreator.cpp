@@ -158,6 +158,8 @@ EntityCreator::EntityCreator()
 	mInputAdapter = new EntityCreatorInputAdapter(*this);
 	mMoveAdapter = new EntityCreatorMoveAdapter(*this);
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EntityCreator::connectedToServer));
+
+	mOrientation.identity();
 }
 
 EntityCreator::~EntityCreator()
@@ -199,7 +201,6 @@ void EntityCreator::createEntity()
 	Ogre::Vector3 o_vector(2,0,0);
 	Ogre::Vector3 o_pos = avatar->getSceneNode()->getPosition() + (avatar->getSceneNode()->getOrientation() * o_vector);
 	mPos = Ogre2Atlas(o_pos);
-	mOrientation = avatar->getOrientation();
 
 	/*
 	if (mName->getText().length() > 0) {
@@ -281,6 +282,11 @@ void EntityCreator::setModel(const std::string& modelName)
 	mEntityNode->attachObject(mModel);
 
 	initFromModel();
+
+	// Setting inital position and orientation
+	mEntityNode->setPosition(Atlas2Ogre(mPos));
+	mEntityNode->setOrientation(Atlas2Ogre(mOrientation));
+	mEntityNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
 }
 
 void EntityCreator::showModelPart(const std::string& partName) 
@@ -439,6 +445,12 @@ void EntityCreator::setPosition(WFMath::Point<3> pos)
 {
 	mPos = pos;
 	mEntityNode->setPosition(Atlas2Ogre(pos));
+}
+
+void EntityCreator::yaw(float degrees)
+{
+	WFMath::Quaternion q;
+	mOrientation *= q.rotation(WFMath::Vector<3>(0,0,1), degrees*WFMath::Pi/180.0);
 	mEntityNode->setOrientation(Atlas2Ogre(mOrientation));
 	mEntityNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
 }
@@ -498,6 +510,22 @@ bool EntityCreatorInputAdapter::injectMouseButtonDown(const Input::MouseButton& 
 	if (button == Input::MouseButtonLeft)
 	{
 		return false;
+	}
+	else if(button == Input::MouseWheelUp)
+	{
+		int movementDegrees = 10;
+		if (GUIManager::getSingleton().getInput().isKeyDown(SDLK_LSHIFT) ||GUIManager::getSingleton().getInput().isKeyDown(SDLK_RSHIFT)) {
+			movementDegrees = 1;
+		}
+		mEntityCreator.yaw(movementDegrees);
+	}
+	else if(button == Input::MouseWheelDown)
+	{
+		int movementDegrees = 10;
+		if (GUIManager::getSingleton().getInput().isKeyDown(SDLK_LSHIFT) ||GUIManager::getSingleton().getInput().isKeyDown(SDLK_RSHIFT)) {
+			movementDegrees = 1;
+		}
+		mEntityCreator.yaw(-movementDegrees);
 	}
 	return true;
 }
