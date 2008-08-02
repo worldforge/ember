@@ -56,6 +56,12 @@ void GUIAdapter::attach(CEGUI::Window* window)
 	}
 }
 
+void GUIAdapter::detach()
+{
+	delete mAdapter;
+	mAdapter = 0;
+}
+
 Atlas::Message::Element& GUIAdapter::getValue()
 {
 	return mAdapter->getValue();

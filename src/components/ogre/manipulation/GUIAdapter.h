@@ -57,6 +57,11 @@ public:
 	void attach(CEGUI::Window* window);
 
 	/**
+	 * Detaches adapter from attached window.
+	 */
+	void detach();
+
+	/**
 	 * Returns adapter value.
 	 */
 	Atlas::Message::Element& getValue();

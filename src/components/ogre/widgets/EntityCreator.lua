@@ -19,6 +19,8 @@ end
 
 -- Handles click on recipes list
 function EntityCreator.RecipesList_SelectionChanged(args)
+	EntityCreator.clear()
+
 	local item = EntityCreator.recipesList:getFirstSelectedItem()
 	if item ~= nil then
 		local name = item:getText()
@@ -28,12 +30,30 @@ function EntityCreator.RecipesList_SelectionChanged(args)
 		EntityCreator.recipe = recipePtr:get()
 		EntityCreator.helper:setRecipe(EntityCreator.recipe)
 		EntityCreator.showRecipe(EntityCreator.recipe)
+	else
+		EntityCreator.recipe = nil
 	end
 end
 
 -- Handles create button press
 function EntityCreator.Create_Click(args)
 	EntityCreator.helper:toggleCreateMode()
+end
+
+-- Clears widget if recipe is selected
+function EntityCreator.clear()
+	if EntityCreator.recipe ~= nil then
+		-- Detaching adapters
+		for k,v in EntityCreator.recipe:getGUIAdapters():pairs() do
+			v:detach()
+		end
+		-- Clearing container, from end to start
+		for i = EntityCreator.container:getChildCount() - 1, 0, -1 do
+		    log.verbose("Destroying adapter container N" .. i)
+		    local window = EntityCreator.container:getChildAtIdx(i)
+			windowManager:destroyWindow(window)
+		end
+	end
 end
 
 -- Shows selected recipe

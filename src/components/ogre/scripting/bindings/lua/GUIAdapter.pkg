@@ -9,6 +9,7 @@ public:
 	virtual ~GUIAdapter();
 	const std::string& getType() const;
 	void attach(CEGUI::Window* window);
+	void detach();
 	Atlas::Message::Element& getValue();
 	void setTitle(const std::string& title);
 	const std::string& getTitle() const;

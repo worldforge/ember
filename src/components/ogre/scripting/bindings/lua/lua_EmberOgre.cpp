@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Fri Aug  1 18:57:24 2008.
+** Generated automatically by tolua++-1.0.92 on Sat Aug  2 13:14:21 2008.
 */
 
 #ifndef __cplusplus
@@ -19514,6 +19514,37 @@ static int tolua_EmberOgre_EmberOgre_GUIAdapter_attach00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: detach of class  EmberOgre::GUIAdapter */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_GUIAdapter_detach00
+static int tolua_EmberOgre_EmberOgre_GUIAdapter_detach00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::GUIAdapter",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::GUIAdapter* self = (EmberOgre::GUIAdapter*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'detach'",NULL);
+#endif
+  {
+   self->detach();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'detach'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: getValue of class  EmberOgre::GUIAdapter */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_GUIAdapter_getValue00
 static int tolua_EmberOgre_EmberOgre_GUIAdapter_getValue00(lua_State* tolua_S)
@@ -25572,6 +25603,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"delete",tolua_EmberOgre_EmberOgre_GUIAdapter_delete00);
     tolua_function(tolua_S,"getType",tolua_EmberOgre_EmberOgre_GUIAdapter_getType00);
     tolua_function(tolua_S,"attach",tolua_EmberOgre_EmberOgre_GUIAdapter_attach00);
+    tolua_function(tolua_S,"detach",tolua_EmberOgre_EmberOgre_GUIAdapter_detach00);
     tolua_function(tolua_S,"getValue",tolua_EmberOgre_EmberOgre_GUIAdapter_getValue00);
     tolua_function(tolua_S,"setTitle",tolua_EmberOgre_EmberOgre_GUIAdapter_setTitle00);
     tolua_function(tolua_S,"getTitle",tolua_EmberOgre_EmberOgre_GUIAdapter_getTitle00);
