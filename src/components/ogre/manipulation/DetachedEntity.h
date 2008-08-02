@@ -47,6 +47,11 @@ public:
 	 * Overrides Eris::Entity method to avoid call to Eris::View::entityDeleted.
 	 */
 	virtual void shutdown();
+
+	/**
+	 * Exposes setAttr to public.
+	 */
+	void setAttr(const std::string &p, const Atlas::Message::Element &v);
 };
 
 }

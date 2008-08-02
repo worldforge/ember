@@ -31,6 +31,11 @@ DetachedEntity::~DetachedEntity()
 {
 }
 
+void DetachedEntity::setAttr(const std::string &p, const Atlas::Message::Element &v)
+{
+	Eris::Entity::setAttr(p, v);
+}
+
 void DetachedEntity::setFromMessage(const Atlas::Message::MapType& attrs)
 {
     beginUpdate();

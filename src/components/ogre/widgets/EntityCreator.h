@@ -34,6 +34,7 @@
 #include <wfmath/point.h>
 #include <CEGUIWindow.h>
 #include <OGRE/OgreSceneNode.h>
+#include <sigc++/signal.h>
 
 namespace EmberOgre {
 
@@ -66,6 +67,16 @@ public:
 	 * Toggles create mode and performs correspondent action.
 	 */
 	void toggleCreateMode();
+
+	/**
+	 * Starts entity creation process.
+	 */
+	void startCreation();
+
+	/**
+	 * Stops entity creation process.
+	 */
+	void stopCreation();
 
 	/**
 	 * Composes entity
@@ -119,6 +130,8 @@ protected:
 	Eris::Connection* mConn;
 	bool mCreateMode;
 	EntityRecipe* mRecipe;
+	sigc::connection mRecipeConnection;
+	void adapterValueChanged();
 	WFMath::Point<3> mPos;
 	WFMath::Quaternion mOrientation;
 	EntityCreatorMoveAdapter* mMoveAdapter;

@@ -29,6 +29,7 @@
 
 #include "framework/tinyxml/tinyxml.h"
 #include <Atlas/Message/Element.h>
+#include <sigc++/signal.h>
 
 namespace EmberOgre {
 
@@ -110,7 +111,14 @@ public:
 	 */
 	void doTest();
 
+	/**
+	 * Emits when value of any of adapters is changed.
+	 */
+	sigc::signal<void> EventValueChanged;
+
 protected:
+	void valueChanged();
+
 	/**
 	 * List of semi-atlas entity specs.
 	 */

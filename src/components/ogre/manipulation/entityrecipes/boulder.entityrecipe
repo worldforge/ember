@@ -16,7 +16,6 @@
         <item>b</item>
         <item>c</item>
         <item>d</item>
-        <item>e</item>
         <item>Random</item>
       </adapter>
     </adapters>
@@ -61,7 +60,7 @@
       function getStyle(a)
         local style = a:asString()
         if style == "Random" then
-          return Atlas.Message.Element(rand{"a", "b", "c", "d", "e"})
+          return Atlas.Message.Element(rand{"a", "b", "c", "d"})
         else
           return Atlas.Message.Element(style)
         end

@@ -177,12 +177,33 @@ void EntityCreator::toggleCreateMode()
 {
 	if (!mCreateMode)
 	{
-		createEntity();
+		startCreation();
 	}
 	else
 	{
-		cleanupCreation();
+		stopCreation();
 	}
+}
+
+void EntityCreator::startCreation()
+{
+	AvatarEmberEntity* avatar = EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity();
+
+	// Making inital position (orientation is preserved)
+	Ogre::Vector3 o_vector(2,0,0);
+	Ogre::Vector3 o_pos = avatar->getSceneNode()->getPosition() + (avatar->getSceneNode()->getOrientation() * o_vector);
+	mPos = Ogre2Atlas(o_pos);
+
+	mRecipeConnection = mRecipe->EventValueChanged.connect( sigc::mem_fun(*this, &EntityCreator::adapterValueChanged) );
+
+	createEntity();
+}
+
+void EntityCreator::stopCreation()
+{
+	mRecipeConnection.disconnect();
+
+	cleanupCreation();
 }
 
 void EntityCreator::createEntity()
@@ -196,11 +217,6 @@ void EntityCreator::createEntity()
 	}
 
 	AvatarEmberEntity* avatar = EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity();
-
-	// Making inital position and orientation of entity
-	Ogre::Vector3 o_vector(2,0,0);
-	Ogre::Vector3 o_pos = avatar->getSceneNode()->getPosition() + (avatar->getSceneNode()->getOrientation() * o_vector);
-	mPos = Ogre2Atlas(o_pos);
 
 	/*
 	if (mName->getText().length() > 0) {
@@ -223,32 +239,11 @@ void EntityCreator::createEntity()
 		mEntityNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
 
 		// Making model from temporary entity
-		//Ogre::SceneManager* sceneMgr = EmberOgre::getSingleton().getSceneManager();
 		EntityCreatorActionCreator actionCreator(*this);
 		std::auto_ptr<Model::Mapping::ModelMapping> modelMapping(Model::Mapping::EmberModelMappingManager::getSingleton().getManager().createMapping(mEntity, &actionCreator));
-		//std::string modelName;
 		if (modelMapping.get()) {
 			modelMapping->initialize();
-			//modelName = actionCreator.getModelName();
 		}
-		/*
-		///if there's no model defined for this use the placeholder model
-		if (modelName == "") {
-			modelName = "placeholder";
-		}
-		///update the model preview window
-		Model::Model* model = Model::Model::createModel(sceneMgr, modelName);
-
-		// Deleting temporary entity
-		dummyEntity.shutdown();
-
-		// Attaching model to SceneNode
-		mEntityNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
-		mEntityNode->attachObject(model);
-		*/
-
-		// Deleting temporary entity
-		//mEntity->shutdown();
 
 		// Registering move adapter to track mouse movements
 		mInputAdapter->addAdapter();
@@ -400,6 +395,13 @@ void EntityCreator::scaleNode()
 	}
 }
 
+void EntityCreator::adapterValueChanged()
+{
+	// Recreating the entity.
+	cleanupCreation();
+	createEntity();
+}
+
 void EntityCreator::finalizeCreation()
 {
 	// Final position
@@ -439,6 +441,10 @@ void EntityCreator::cleanupCreation()
 //	delete mEntityNode;  // ?
 
 	mCreateMode = false;
+
+	// Deleting temporary entity
+	mEntity->shutdown();
+	delete mEntity;
 }
 
 void EntityCreator::setPosition(WFMath::Point<3> pos)

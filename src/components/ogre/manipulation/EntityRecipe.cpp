@@ -89,6 +89,7 @@ GUIAdapter* EntityRecipe::createGUIAdapter(std::string name, std::string type)
 	GUIAdapter* adapter;
 	adapter = new GUIAdapter(type);
 	mGUIAdapters[name] = adapter;
+	adapter->EventValueChanged.connect( sigc::mem_fun(*this, &EntityRecipe::valueChanged) );
 	return adapter;
 }
 
@@ -257,6 +258,11 @@ Atlas::Message::MapType EntityRecipe::createEntity()
 
 	S_LOG_WARNING("No entity composed");
 	return Atlas::Message::MapType();
+}
+
+void EntityRecipe::valueChanged()
+{
+	EventValueChanged.emit();
 }
 
 void EntityRecipe::doTest()

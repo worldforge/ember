@@ -81,7 +81,17 @@ public:
 	 */
 	void addSuggestion(const std::string& text);
 
+	/**
+	 * Emitted when the value has been changed from a gui update.
+	 */
+	sigc::signal<void> EventValueChanged;
+
 protected:
+	/**
+	 * Handles value change of underlying adapter and propagates it forward.
+	 */
+	void valueChanged();
+
 	/**
 	 * Adapter type.
 	 */
