@@ -55,6 +55,8 @@ function connect(connectorTable, event, functionName)
 	return connector
 end
 
+-- Helper math library
+loadScript("Math.lua")
 
 --Load all lua files.
 --They all reside in the same directory.
