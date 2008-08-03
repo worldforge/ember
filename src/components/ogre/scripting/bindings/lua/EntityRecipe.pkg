@@ -58,7 +58,7 @@ function EmberOgre.GUIAdaptersStore:pairs()
   local Iend = self:theEnd()
   return function()
     if I ~= Iend then
-      val = I:get()
+      local val = I:get()
       I = I:next()
       return val.first, val.second
     end
