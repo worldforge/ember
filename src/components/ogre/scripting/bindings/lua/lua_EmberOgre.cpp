@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Sat Aug  2 13:14:21 2008.
+** Generated automatically by tolua++-1.0.92.
 */
 
 #ifndef __cplusplus
