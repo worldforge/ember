@@ -79,7 +79,8 @@ mModelAttachedTo(0),
 mModelMarkedToAttachTo(0),
 mModel(0),
 mScaleNode(0),
-mModelMapping(0)
+mModelMapping(0),
+mSoundEntity(0)
 {
 }
 
@@ -531,6 +532,14 @@ void EmberPhysicalEntity::onModeChanged(MovementMode newMode)
 		} else {
 			actionName = ACTION_STAND;
 		}
+
+		// Lets treat the mode change as an action to the
+		// sound entity
+		if (mSoundEntity)
+		{
+			mSoundEntity->playAction(actionName);
+		}
+
 		if (!mCurrentMovementAction || mCurrentMovementAction->getName() != actionName) {
 			
 			
@@ -798,6 +807,12 @@ void EmberPhysicalEntity::onAction(const Atlas::Objects::Operation::RootOperatio
 	
 	if (I != p.end()) {
 		const std::string& name = *I;
+
+		// If there is a sound entity, ask it to play this action
+		if (mSoundEntity)
+		{
+			mSoundEntity->playAction(name);
+		}
 		
 		Model::Action* newAction = mModel->getAction(name);
 		

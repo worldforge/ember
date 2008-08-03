@@ -41,8 +41,14 @@ namespace Ember
 			unsigned int mFrequency;
 			unsigned int mPlayOrder;
 			unsigned int mNextToPlay;
+			bool mIsPlaying;
 
 			void getNextToPlay();
+
+			// To keep the timers of the groups
+			struct timeval start;
+			void resetClock();
+			float getTime();
 
 		public:
 			SoundGroup();
@@ -63,6 +69,7 @@ namespace Ember
 			// Media Control
 			void update();
 			void play();
+			void stop();
 	};
 }
 

@@ -76,6 +76,10 @@ namespace Ember
 	{
 	}
 
+	void BaseSoundSample::stop()
+	{
+	}
+
 	// Static Sounds (PCM, WAV)
 	StaticSoundSample::StaticSoundSample()
 	{
@@ -120,6 +124,12 @@ namespace Ember
 	void StaticSoundSample::play()
 	{
 		alSourcePlay(mSource);
+		checkAlError();
+	}
+
+	void StaticSoundSample::stop()
+	{
+		alSourceStop(mSource);
 		checkAlError();
 	}
 
@@ -282,6 +292,13 @@ namespace Ember
 		checkAlError();
 
 		alSourcePlay(mSource);
+		checkAlError();
+	}
+
+	void StreamedSoundSample::stop()
+	{
+		mPlaying = false;
+		alSourceStop(mSource);
 		checkAlError();
 	}
 

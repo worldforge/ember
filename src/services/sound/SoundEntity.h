@@ -32,6 +32,7 @@ namespace Ember
 
 			std::map<std::string, SoundAction*> mActions;
 
+			SoundAction* mActiveAction;
 			SoundAction* actionExists(const std::string& name);
 
 		public:

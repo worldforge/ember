@@ -41,7 +41,6 @@ template<> Ember::SoundEntityManager* Ember::Singleton<Ember::SoundEntityManager
 
 namespace Ember
 {
-	#define entityIt std::map<std::string, SoundEntity*>::iterator
 	SoundEntityManager::SoundEntityManager()
 	{
 		mEntities.clear();
@@ -51,7 +50,8 @@ namespace Ember
 
 	SoundEntityManager::~SoundEntityManager()
 	{
-		for (entityIt it = mEntities.begin(); it != mEntities.end(); it++)
+		std::map<std::string, SoundEntity*>::iterator it = mEntities.begin();
+		for (; it != mEntities.end(); it++)
 		{
 			SoundEntity* toBeDeleted = (*it).second;
 			delete toBeDeleted;
@@ -83,7 +83,7 @@ namespace Ember
 
 	void SoundEntityManager::deallocateEntity(const std::string& name)
 	{
-		entityIt it(mEntities.find(name));
+		std::map<std::string, SoundEntity*>::iterator it(mEntities.find(name));
 		if (it != mEntities.end())
 		{
 			SoundEntity* toBeDeleted = (*it).second;
@@ -100,19 +100,15 @@ namespace Ember
 			return NULL;
 		}
 
-		/* TODO - ITS CRASHING!!!!
-		entityIt it(mEntities.find(name));
+		std::map<std::string, SoundEntity*>::iterator it(mEntities.find(name));
 		if (it != mEntities.end())
 		{
 			return (*it).second;
 		}
 
 		return NULL;
-		*/
-		return mEntities[name];
 	}
 
-	#define groupIt std::map<std::string, SoundGroup*>::iterator
 	SoundGroup* SoundEntityManager::getGroup(const std::string& name)
 	{
 		if (mGroups.empty())
@@ -120,16 +116,13 @@ namespace Ember
 			return NULL;
 		}
 
-		/* TODO - ITS CRASHING!!!!
-		entityIt it(mEntities.find(name));
-		if (it != mEntities.end())
+		std::map<std::string, SoundGroup*>::iterator it(mGroups.find(name));
+		if (it != mGroups.end())
 		{
 			return (*it).second;
 		}
 
 		return NULL;
-		*/
-		return mGroups[name];
 	}
 
 	SoundGroup* SoundEntityManager::allocateGroup(const std::string& name)
@@ -154,7 +147,7 @@ namespace Ember
 
 	void SoundEntityManager::deallocateGroup(const std::string& name)
 	{
-		groupIt it(mGroups.find(name));
+		std::map<std::string, SoundGroup*>::iterator it(mGroups.find(name));
 		if (it != mGroups.end())
 		{
 			SoundGroup* toBeDeleted = (*it).second;
@@ -163,7 +156,18 @@ namespace Ember
 			delete toBeDeleted;
 		}
 	}
-	#undef entityIt
-	#undef groupIt 
+
+	void SoundEntityManager::cycle()
+	{
+		std::map<std::string, SoundGroup*>::iterator it = mGroups.begin();
+		for (; it != mGroups.end(); it++)
+		{
+			Ember::SoundGroup* group = it->second;
+			if (group)
+			{
+				group->update();
+			}
+		}
+	}
 }
 

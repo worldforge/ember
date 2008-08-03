@@ -59,6 +59,12 @@ namespace Ember
 			SoundGroup* allocateGroup(const std::string& name);
 			SoundGroup* getGroup(const std::string& name);
 			void deallocateGroup(const std::string& name);
+
+			/**
+			 * This will update all the timers on 
+			 * SoundGroups
+			 */
+			void cycle();
 	};
 }
 

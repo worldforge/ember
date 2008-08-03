@@ -53,6 +53,7 @@ class BaseSoundSample
 
 		// Common Methods
 		virtual void play();
+		virtual void stop();
 };
 
 class StaticSoundSample : public BaseSoundSample
@@ -74,6 +75,7 @@ class StaticSoundSample : public BaseSoundSample
 
 		// Common methods
 		void play();
+		void stop();
 };
 
 class StreamedSoundSample : public BaseSoundSample
@@ -106,6 +108,7 @@ class StreamedSoundSample : public BaseSoundSample
 
 		// Common methods
 		void play();	
+		void stop();
 		void cycle();				
 };
 

@@ -32,6 +32,10 @@
 #include <list>
 #include <cstring>
 
+// Need to find a cross platform solution
+// to this
+#include <sys/time.h>
+
 #include "SoundService.h"
 #include "SoundGeneral.h"
 #include "SoundSample.h"
@@ -43,6 +47,7 @@ namespace Ember
 	{
 		mSamples.clear();
 		mLastPlayed = NULL;
+		mIsPlaying = false;
 	}
 
 	SoundGroup::~SoundGroup()
@@ -124,9 +129,26 @@ namespace Ember
 		};
 	}
 
+	void SoundGroup::resetClock()
+	{
+		gettimeofday(&start, NULL);
+	}
+
+	float SoundGroup::getTime()
+	{
+		struct timeval end;
+		gettimeofday(&end, NULL);
+
+		return (end.tv_sec-start.tv_sec)*1000+(end.tv_usec-start.tv_usec)/1000;
+	}
+
 	void SoundGroup::update()
 	{
-		// TODO
+		if (getTime() >= 1000.0f/mFrequency)
+		{
+			play();
+			resetClock();
+		}
 	}
 
 	void SoundGroup::play()
@@ -138,11 +160,30 @@ namespace Ember
 		{
 			if (index == mNextToPlay)
 			{
+				if (mLastPlayed)
+				{
+					mLastPlayed->stop();
+				}
+
 				(*it)->play();
+				mLastPlayed = dynamic_cast<BaseSoundSample*>(*it);
+				mIsPlaying = true;
+				resetClock();
+
 				break;
 			}
 
 			index++;
+		}
+	}
+
+	void SoundGroup::stop()
+	{
+		if (mLastPlayed)
+		{
+			// Should be the active buffer
+			mLastPlayed->stop();
+			mIsPlaying = false;
 		}
 	}
 

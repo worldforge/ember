@@ -112,6 +112,7 @@ void Application::mainLoopStep()
 		mOgreView->renderOneFrame();
 		#ifndef THREAD_SAFE
 		EmberServices::getSingleton().getSoundService()->cycle();
+		Ember::SoundEntityManager::getSingleton().cycle();
 		#endif
 	} catch (const Ember::Exception& ex) {
 		S_LOG_CRITICAL(ex.getError());
@@ -255,6 +256,7 @@ void* startSoundServiceCycle(void* arg)
 	while (1)
 	{
 		EmberServices::getSingleton().getSoundService()->cycle();
+		Ember::SoundEntityManager::getSingleton().cycle();
 	}
 }
 
