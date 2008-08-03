@@ -11,6 +11,7 @@
     </entity>
     <adapters>
       <adapter name="mass" type="number" title="Mass"/>
+      <adapter name="massdev" type="number" title="Mass std. dev."/>
       <adapter name="style" type="string" title="Style">
         <item>a</item>
         <item>b</item>
@@ -22,6 +23,7 @@
     <bindings>
       <bind name="bbox" func="calcSize">
         <adapter name="mass" />
+        <adapter name="massdev" />
       </bind>
       <bind name="mass">
         <adapter name="mass" />
@@ -40,10 +42,12 @@
         return math.random(n, m)
       end
 
-      function calcSize(a)
+      function calcSize(a, b)
         local density = 2500  * 0.52 -- our boulder is not cubic, 0.52 is rough volume of its size 1
 
-        local mass = a:asNum()
+        local massmean = a:asNum()
+        local massdev = b:asNum()
+        local mass = math.abs(math.randn(massmean, massdev))
         local volume = mass / density
         local len = volume^(1/3)
 
