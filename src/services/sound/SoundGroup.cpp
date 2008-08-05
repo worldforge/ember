@@ -56,6 +56,14 @@ namespace Ember
 		// its static samples must be deallocated by it
 		if (mIsInstance)
 		{
+			std::list<BaseSoundSample*>::iterator it = mSamples.begin();
+			for (; it != mSamples.end(); )
+			{
+				BaseSoundSample* sample = *it;
+				it = mSamples.erase(it);
+
+				delete sample
+			}
 		}
 	}
 

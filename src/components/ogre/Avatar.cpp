@@ -30,7 +30,7 @@
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
 #include "services/time/TimeService.h"
-// #include "services/sound/SoundService.h"
+#include "services/sound/SoundService.h"
 
 
 #include "EmberEntity.h"
@@ -341,15 +341,12 @@ void Avatar::movedInWorld()
 		mHasChangedLocation = false;
 	}
 
-/*
+	// Update avatar entity position in sound service
 	Ember::SoundService* mySoundService = Ember::EmberServices::getSingleton().getSoundService();
 	{
-		mySoundService->updateAvatarSourcePosition(
-			mErisAvatarEntity->getPosition(),
-			mErisAvatarEntity>getOrientation());
-		mySoundService->playAvatarSound();
+		mySoundService->updateListenerPosition(mErisAvatarEntity->getPosition(),
+			mErisAvatarEntity->getOrientation());
 	}
-*/
 }
 
 void Avatar::avatar_LocationChanged(Eris::Entity* entity)
