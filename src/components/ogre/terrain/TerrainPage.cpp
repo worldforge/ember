@@ -497,8 +497,8 @@ void TerrainPage::ClearAllMods()
     for (I = mTModList.begin(); I != mTModList.end(); I++) {
         S_LOG_INFO("Clearing mod from " << I->Position()->x() << "," << I->Position()->y());
         EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment(I->SegX(),I->SegY())->clearMods();
-        S_LOG_INFO("Clearing mod from mTModList");
-        //mTModList.erase(I);
+
+        mTModList.erase(I);
     }
 }
 

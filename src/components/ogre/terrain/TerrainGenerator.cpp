@@ -50,6 +50,7 @@
 #include "TerrainArea.h"
 #include <Mercator/Area.h>
 #include <Mercator/Segment.h>
+#include <Mercator/Terrain.h>
 #include <Mercator/FillShader.h>
 #include <Mercator/ThresholdShader.h>
 #include <Mercator/DepthShader.h>
@@ -620,16 +621,39 @@ void TerrainGenerator::updateTerrainModifiers(Terrain::terrainModListEntry& modi
 
 void TerrainGenerator::ClearAllMods()
 {
-    TerrainPagestore::iterator I = mTerrainPages.begin();
-    for (; I != mTerrainPages.end(); I++)
+    TerrainDefPointStore pointStore;
+    
+    Mercator::Terrain::Segmentstore segs = getTerrain().getTerrain();
+    Mercator::Terrain::Segmentstore::iterator I = segs.begin();
+    for (; I != segs.end(); I++)
     {
-        TerrainPagecolumn::iterator J = I->second.begin();
-        for(; J != I->second.end(); J++)
+        Mercator::Terrain::Segmentcolumn::iterator J = I->second.begin();
+        for (; J != I->second.end(); J++)
         {
-            J->second->ClearAllMods();
-            //EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition((int)getPosition().x(),(int)getPosition().y()))->ClearAllMods();
+            J->second->clearMods();
         }
     }
+
+    std::set<TerrainPage*> pagesToUpdate;
+    for (TerrainPagestore::iterator page_I = mTerrainPages.begin(); page_I != mTerrainPages.end(); ++page_I) {
+        for(TerrainPagecolumn::iterator page_J = page_I->second.begin(); page_J != page_I->second.end(); ++page_J) {
+            pagesToUpdate.insert(page_J->second);
+        }
+    }
+
+    updateHeightMapAndShaders(pagesToUpdate);
+    updateEntityPositions(pagesToUpdate);
+    
+//     TerrainPagestore::iterator I = mTerrainPages.begin();
+//     for (; I != mTerrainPages.end(); I++)
+//     {
+//         TerrainPagecolumn::iterator J = I->second.begin();
+//         for(; J != I->second.end(); J++)
+//         {
+//             J->second->ClearAllMods();
+//             //EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition((int)getPosition().x(),(int)getPosition().y()))->ClearAllMods();
+//         }
+//     }
 }
 
 void TerrainGenerator::reloadTerrain(std::vector<TerrainPosition>& positions)

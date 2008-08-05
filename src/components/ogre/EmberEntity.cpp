@@ -789,9 +789,28 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
         EmberOgre::getSingleton().getTerrainGenerator()->ClearAllMods();
 
             // Find and reapply all other mods
-            //  (use: Eris::Entity::buildEntityDictFromContents(IdEntityMap& dict)  )
-            //  Iterate over that list, using : hasAttr("terrainmod")
-            //  If you find one, then call updateTerrainMod on that entity! Boo Yah!
+        IdEntityMap ents;
+        EmberEntity* w = (EmberEntity*)EmberOgre::getSingleton().getEntityFactory()->getWorld();
+        w->buildEntityDictFromContents(ents);
+
+        IdEntityMap::iterator I = ents.begin();
+        int i = 0;
+        float mx,my; //x, y coords of the mod-holding entity's position
+        for (; I != ents.end(); I++)
+        {
+            if (I->second->hasAttr("terrainmod") ) {
+                i++;
+                mx = I->second->getPosition().x();
+                my = I->second->getPosition().y();
+                    // The logging calls to make sure the position being used is always the same
+                S_LOG_INFO("Clearing mods from segment: " << mx/64 << "," << my/64);
+                //EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment(mx,my)->clearMods();
+                S_LOG_INFO("Reapplying :: " << I->second->getPosition().x() << "," << I->second->getPosition().y());
+                dynamic_cast<EmberEntity*>(I->second)->updateTerrainModifiers(I->second->valueOfAttr("terrainmod"));
+                S_LOG_INFO("Reapplied :: " << I->second->getPosition().x() << "," << I->second->getPosition().y());
+            }
+        }
+
     }
 
 	Entity::onAttrChanged(str, v);
