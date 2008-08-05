@@ -52,7 +52,11 @@ namespace Ember
 
 	SoundGroup::~SoundGroup()
 	{
-		// TODO
+		// If this Group is an instance, all
+		// its static samples must be deallocated by it
+		if (mIsInstance)
+		{
+		}
 	}
 
 	void SoundGroup::allocateBuffer(const std::string& filename, 
@@ -70,6 +74,11 @@ namespace Ember
 			S_LOG_INFO(std::string("Failed to register SoundGroup buffer") + filename);
 		}
 		#undef sSoundService
+	}
+
+	void SoundGroup::setInstance(bool isInstance)
+	{
+		mIsInstance = isInstance;
 	}
 
 	void SoundGroup::updateSamplesPosition(const WFMath::Point<3> &pos)
@@ -114,6 +123,12 @@ namespace Ember
 
 	void SoundGroup::getNextToPlay()
 	{
+		if (!mSamples.size())
+		{
+			S_LOG_INFO("Group has no samples to play");
+			return;
+		}
+
 		switch(mPlayOrder)
 		{
 			case PLAY_LINEAR:
@@ -187,6 +202,14 @@ namespace Ember
 		}
 	}
 	
+	void SoundGroup::pushSample(BaseSoundSample* sample)
+	{
+		if (sample)
+		{
+			mSamples.push_back(sample);
+		}
+	}
+
 	bool SoundGroup::instantiate(SoundGroup* instance)
 	{
 		if (!instance)
@@ -194,6 +217,29 @@ namespace Ember
 			S_LOG_FAILURE("Invalid SoundGroup instance, NULL pointer.");
 			return false;
 		}
+
+		BaseSoundSample* copy;
+		BaseSoundSample* base;
+
+		#define sSoundService Ember::EmberServices::getSingleton().getSoundService() 
+		instance->setInstance(true);
+		std::list<BaseSoundSample*>::iterator it = mSamples.begin();
+		for (; it != mSamples.end(); it++)
+		{
+			sSoundService->registerInstance(*it, copy);
+			if (!copy)
+			{
+				S_LOG_FAILURE("Failed to set copy instance.");
+				return false;
+			}
+			else
+			{
+				instance->pushSample(copy);
+			}
+		}
+		#undef sSoundService
+
+		return true;
 	}
 
 } // namespace Ember

@@ -28,6 +28,7 @@ namespace Ember
 	{
 		private:
 			std::map<std::string, SoundGroup*> mGroups;
+			unsigned int mGroupsSeed;
 
 		public:
 			SoundAction();

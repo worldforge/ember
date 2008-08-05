@@ -65,6 +65,22 @@ namespace Ember
 		S_LOG_INFO("Sound Entity Manager Stopped.");
 	}
 
+	SoundEntity* SoundEntityManager::instantiateEntity(const std::string& name)
+	{
+		SoundEntity* newEntity = new SoundEntity();
+
+		std::stringstream fullName;
+		fullName << name << "_" << mEntitySeed;
+
+		if (newEntity)
+		{
+			mEntities[fullName.str()] = newEntity;
+			return newEntity;
+		}
+
+		return NULL;
+	}
+
 	SoundEntity* SoundEntityManager::allocateEntity(const std::string& name)
 	{
 		SoundEntity* newEntity = getEntity(name);
@@ -152,16 +168,34 @@ namespace Ember
 		
 	SoundGroup* SoundEntityManager::instantiateGroup(const std::string& name)
 	{
-		SoundGroup* entTypeGroup = getGroup(name);
-		if (!entTypeGroup)
+		SoundGroup* entRootGroup = getGroup(name);
+		if (!entRootGroup)
 		{
 			S_LOG_FAILURE("Cannot instantiate type " + name + " because type root doesnt exist");
 			return NULL;
 		}
 
-		// Generate a seeded number for instance
-		std::stringstream instanceName;
-		instanceName << name << "_" << mGroupSeed++;
+		SoundGroup* newGroup = new SoundGroup();
+		if (!newGroup)
+		{
+			S_LOG_FAILURE("Failled to allocate sound group instance");
+			return NULL;
+		}
+
+		if (entRootGroup->instantiate(newGroup))
+		{
+			// Generate a seeded number for instance
+			std::stringstream instanceName;
+			instanceName << name << "_" << mGroupSeed++;
+
+			mGroups[instanceName.str()] = newGroup;
+			return newGroup;
+		}
+		else
+		{
+			S_LOG_FAILURE("Failed to instantiate group.");
+			return NULL;
+		}
 	}
 
 	void SoundEntityManager::deallocateGroup(const std::string& name)

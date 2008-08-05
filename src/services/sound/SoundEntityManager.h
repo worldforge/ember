@@ -49,6 +49,7 @@ namespace Ember
 			 * mEntities modifiers
 			 */
 			SoundEntity* allocateEntity(const std::string& name);
+			SoundEntity* instantiateEntity(const std::string& name);
 			void deallocateEntity(const std::string& name);
 
 			/**

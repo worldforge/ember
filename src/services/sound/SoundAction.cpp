@@ -32,12 +32,14 @@
 
 #include <map>
 #include <cstring>
+#include <sstream>
 
 namespace Ember
 {
 	SoundAction::SoundAction()
 	{
 		mGroups.clear();
+		mGroupsSeed = 0;
 	}
 
 	SoundGroup* SoundAction::getGroup(const std::string& name)
@@ -51,14 +53,10 @@ namespace Ember
 		return NULL;
 	}
 
-	#define soundMgr SoundEntityManager::getSingleton()
 	SoundGroup* SoundAction::registerGroup(const std::string& name)
 	{
-		SoundGroup* newGroup = getGroup(name);
-		if (!newGroup)
-		{
-			newGroup = soundMgr.getGroup(name);
-		}
+		SoundGroup* newGroup;
+		newGroup = SoundEntityManager::getSingleton().instantiateGroup(name);
 
 		if (!newGroup)
 		{
@@ -66,7 +64,10 @@ namespace Ember
 			return NULL;
 		}
 
-		mGroups[name] = newGroup;
+		std::stringstream newName;
+		newName << name << "_" << mGroupsSeed++;
+
+		mGroups[newName.str()] = newGroup;
 		return newGroup;
 	}
 

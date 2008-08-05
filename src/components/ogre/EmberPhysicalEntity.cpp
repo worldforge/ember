@@ -267,7 +267,7 @@ void EmberPhysicalEntity::setSounds()
 		// SoundEntityManager will instantiate an entity of this type
 		if (needSoundEntity())
 		{
-			mSoundEntity = Ember::SoundEntityManager::getSingleton().allocateEntity(getType()->getName());
+			mSoundEntity = Ember::SoundEntityManager::getSingleton().instantiateEntity(getType()->getName());
 		}
 
 		if (mSoundEntity)

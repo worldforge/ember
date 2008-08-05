@@ -44,6 +44,10 @@ class SoundService: public Service, public ConsoleObject
 		// All Allocated buffers
 		std::map<std::string, BaseSoundSample*> mSamples;
 		std::map<std::string, SoundEntity*> mEntities;
+
+		// Instances
+		StaticSoundSample* instStaticSample(StaticSoundSample* base);
+		StreamedSoundSample* instStreamedSample(StreamedSoundSample* base);
 		
 		// Allocation Functions
 		bool allocateWAVPCM(const std::string &filename, bool playsLocally); 
@@ -69,6 +73,7 @@ class SoundService: public Service, public ConsoleObject
 		 * Register(allocate) a new sound buffer
 		 */
 		SoundEntity* registerEntity(const std::string &name);
+		bool registerInstance(BaseSoundSample* base, BaseSoundSample* copy);
 		bool registerSound(const std::string &filename, bool playLocally = PLAY_WORLD,
 				const SoundSampleType type = SAMPLE_NONE);
 		bool unRegisterSound(const std::string &filename);

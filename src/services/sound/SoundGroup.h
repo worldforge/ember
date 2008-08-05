@@ -42,6 +42,7 @@ namespace Ember
 			unsigned int mPlayOrder;
 			unsigned int mNextToPlay;
 			bool mIsPlaying;
+			bool mIsInstance;
 
 			void getNextToPlay();
 
@@ -59,12 +60,14 @@ namespace Ember
 
 			void updateSamplesPosition(const WFMath::Point<3> &pos);
 			void updateSamplesVelocity(const WFMath::Vector<3> &vel);
+			void pushSample(BaseSoundSample* sample);
 
 			unsigned int getBuffersCount();
 			BaseSoundSample* getBuffer(unsigned int index);
 
 			void setFrequency(const unsigned int freq);
 			void setPlayOrder(const unsigned int playO);
+			void setInstance(bool isInstance);
 
 			bool instantiate(SoundGroup* instance);
 

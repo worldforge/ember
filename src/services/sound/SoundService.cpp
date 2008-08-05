@@ -155,12 +155,96 @@ namespace Ember
 		}
 	}
 
+	StaticSoundSample* SoundService::instStaticSample(StaticSoundSample* base)
+	{
+		StaticSoundSample* newSample = new StaticSoundSample();
+		if (!newSample)
+		{
+			S_LOG_FAILURE("Failed to allocate a new sound sample.");
+			return NULL;
+		}
+
+		// Bind the buffer with the source.
+		alGenSources(1, newSample->getSourcePtr());
+
+		if (alGetError() != AL_NO_ERROR)
+		{
+			S_LOG_FAILURE("Failed to generate a new sound source.");
+			delete newSample;
+
+			return NULL;
+		}
+	
+		alSourcei (newSample->getSource(), AL_BUFFER, base->getBuffer());
+		alSourcef (newSample->getSource(), AL_PITCH, 1.0);
+		alSourcef (newSample->getSource(), AL_GAIN, 1.0);
+		alSource3f(newSample->getSource(), AL_POSITION, 0, 0, 0);
+		alSource3f(newSample->getSource(), AL_VELOCITY, 0, 0, 0);
+
+		ALboolean loop = false;
+		alSourcei (newSample->getSource(), AL_LOOPING, loop);
+
+		/* TODO: Get the relative from base
+		if (playsLocally == PLAY_LOCAL)
+			alSourcei(newSample->getSource(), AL_SOURCE_RELATIVE, true);
+		*/
+
+		if (alGetError() != AL_NO_ERROR)
+		{
+			S_LOG_FAILURE("Failed to set sound sample attributes.");
+			delete newSample;
+
+			return NULL;
+		}
+
+		return newSample;
+	}
+
+	StreamedSoundSample* SoundService::instStreamedSample(StreamedSoundSample* base)
+	{
+		return NULL;
+	}
+
+	bool SoundService::registerInstance(BaseSoundSample* base, BaseSoundSample* copy)
+	{
+		if (!base)
+		{
+			S_LOG_FAILURE("Invalid pointer to Base Sample");
+			copy = NULL;
+
+			return false;
+		}
+
+		if (base->getType() == SAMPLE_OGG)
+		{
+			StreamedSoundSample* streamSample = dynamic_cast<StreamedSoundSample*>(base);
+			copy = instStreamedSample(streamSample);
+			if (copy)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			StaticSoundSample* staticSample = dynamic_cast<StaticSoundSample*>(base);
+			copy = instStaticSample(staticSample);
+			if (copy)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+	}
+
 	bool SoundService::registerSound(const std::string &filename, bool playLocally, const SoundSampleType type)
 	{
-		#ifdef THREAD_SAFE
-		pthread_mutex_lock(&mSamplesMutex);
-		#endif
-
 		if (getSoundSample(filename))
 		{
 			S_LOG_INFO("Sound Sample (" + filename + ") already allocated.");
@@ -198,10 +282,6 @@ namespace Ember
 			case SAMPLE_OGG:
 				return allocateOGG(filename, playLocally);
 		};
-
-		#ifdef THREAD_SAFE
-		pthread_mutex_unlock(&mSamplesMutex);
-		#endif
 	}
 
 	bool SoundService::unRegisterSound(const std::string &filename)
@@ -265,6 +345,10 @@ namespace Ember
 		
 	bool SoundService::allocateWAVPCM(const std::string &filename, bool playsLocally)
 	{
+		#ifdef THREAD_SAFE
+		pthread_mutex_lock(&mSamplesMutex);
+		#endif
+
 		StaticSoundSample* newSample = new StaticSoundSample();
 		if (!newSample)
 		{
@@ -283,7 +367,7 @@ namespace Ember
 			return false;
 		}
 
-		ALboolean loop;
+		ALboolean loop = false;
 		newSample->setBuffer(alutCreateBufferFromFile(filename.c_str()));
 
 		if (*(newSample->getBufferPtr()) == AL_NONE)
@@ -324,11 +408,20 @@ namespace Ember
 		}
 
 		mSamples[filename] = newSample;
+
+		#ifdef THREAD_SAFE
+		pthread_mutex_unlock(&mSamplesMutex);
+		#endif
+
 		return true;
 	}
 
 	bool SoundService::allocateOGG(const std::string &filename, bool playsLocally)
 	{
+		#ifdef THREAD_SAFE
+		pthread_mutex_lock(&mSamplesMutex);
+		#endif
+
 		StreamedSoundSample* newSample = new StreamedSoundSample();
 		if (!newSample)
 		{
@@ -393,13 +486,23 @@ Error0:
 			alSourcei(newSample->getSource(), AL_SOURCE_RELATIVE, true);
 
 		mSamples[filename] = newSample;
+
+		#ifdef THREAD_SAFE
+		pthread_mutex_unlock(&mSamplesMutex);
+		#endif
+
 		return true;
 	}
 
 	BaseSoundSample* SoundService::getSoundSample(const std::string &filename)
 	{
-		// Can return NULL;
-		return mSamples[filename];
+		std::map<std::string, BaseSoundSample*>::iterator it(mSamples.find(filename));
+		if (it != mSamples.end())
+		{
+			return (*it).second;
+		}
+
+		return NULL;
 	}
 
 	void SoundService::cycle()

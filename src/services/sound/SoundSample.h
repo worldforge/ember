@@ -35,6 +35,7 @@ class BaseSoundSample
 		ALuint 				mSource;
 		SoundSampleType	mType;
 		bool					mPlayPosition;
+		std::string			mFilename;
 
 	public:
 		virtual ~BaseSoundSample() {}
@@ -50,6 +51,7 @@ class BaseSoundSample
 		SoundSampleType getType();
 		virtual ALuint* getBufferPtr() = 0;
 		virtual unsigned int getNumberOfBuffers() = 0;
+		const std::string& getFileName();
 
 		// Common Methods
 		virtual void play();
