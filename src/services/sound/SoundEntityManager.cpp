@@ -32,6 +32,7 @@
 
 #include <map>
 #include <cstring>
+#include <sstream>
 
 #include "SoundEntity.h"
 #include "SoundGroup.h"
@@ -45,6 +46,10 @@ namespace Ember
 	{
 		mEntities.clear();
 		mGroups.clear();
+
+		mGroupSeed = 0;
+		mEntitySeed = 0;
+
 		S_LOG_INFO("Sound Entity Manager Started.");
 	}
 
@@ -143,6 +148,20 @@ namespace Ember
 
 			return NULL;
 		}
+	}
+		
+	SoundGroup* SoundEntityManager::instantiateGroup(const std::string& name)
+	{
+		SoundGroup* entTypeGroup = getGroup(name);
+		if (!entTypeGroup)
+		{
+			S_LOG_FAILURE("Cannot instantiate type " + name + " because type root doesnt exist");
+			return NULL;
+		}
+
+		// Generate a seeded number for instance
+		std::stringstream instanceName;
+		instanceName << name << "_" << mGroupSeed++;
 	}
 
 	void SoundEntityManager::deallocateGroup(const std::string& name)

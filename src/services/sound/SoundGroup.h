@@ -66,6 +66,8 @@ namespace Ember
 			void setFrequency(const unsigned int freq);
 			void setPlayOrder(const unsigned int playO);
 
+			bool instantiate(SoundGroup* instance);
+
 			// Media Control
 			void update();
 			void play();

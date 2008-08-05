@@ -99,23 +99,22 @@ void XMLSoundDefParser::readBuffer(Ember::SoundGroup* grp, TiXmlElement* objNode
 		type = Ember::SAMPLE_OGG;
 	}
 
-	/* TODO: Ogre tells us the exact file path
-	#define resourceMgr Ogre::ResourceGroupManager::getSingleton()
-	Ogre::FileInfoListPtr files = resourceMgr.findResourceFileInfo("General", filename);
+	std::string realName(filename);
+	Ogre::FileInfoListPtr files = Ogre::ResourceGroupManager::getSingleton()
+		.findResourceFileInfo("General", realName);
+
 	Ogre::FileInfoList::iterator I = files->begin();
 	if (I != files->end()) 
 	{
-		std::string finalName = I->path + I->filename;
-		obj->registerSound(finalName, action, playsReal, type);
+		grp->allocateBuffer(I->archive->getName() + I->filename, playsReal, type);
+		S_LOG_INFO(std::string("\t -Buffer ") + realName
+				+ std::string(" created."));
 	}
-	#undef resourceMgr
-	*/
-
-	std::string name(filename);
-	grp->allocateBuffer(filename, playsReal, type);
-	S_LOG_INFO(std::string("\t -Buffer ") + name 
-			+ std::string(" created."));
+	else
+	{
+		S_LOG_FAILURE("Failed to find buffer " + realName +
+				", invalid file directory or name.");
+	}
 }
-
 }
 

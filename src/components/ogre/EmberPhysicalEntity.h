@@ -188,6 +188,7 @@ protected:
 	 * the model definition manager
 	 */
 	void setSounds();
+	bool needSoundEntity();
 	
 	/**
 	 *    Shows a certain part of the model.

@@ -229,19 +229,50 @@ void EmberPhysicalEntity::hideModelPart(const std::string& partName)
 	}
 }
 
+/**
+ * Check if any sound action is defined within
+ * the model
+ */
+bool EmberPhysicalEntity::needSoundEntity()
+{
+	const ActionDefinitionsStore& store = mModel->getDefinition()->getActionDefinitions();
+	ActionDefinitionsStore::const_iterator I_b = store.begin();
+	ActionDefinitionsStore::const_iterator I_e = store.end();
+	for (; I_b != I_e; ++I_b)
+	{
+		// Setup All Sound Actions
+		SoundDefinitionsStore::const_iterator I_sounds = (*I_b)->getSoundDefinitions().begin();
+		SoundDefinitionsStore::const_iterator I_sounds_end = (*I_b)->getSoundDefinitions().end();
+		for (; I_sounds != I_sounds_end; ++I_sounds)
+		{
+			Model::SoundDefinition* sound = (*I_sounds);
+			
+			// Once we find a single reference
+			// we have an entity to allocate
+			if (sound)
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
 void EmberPhysicalEntity::setSounds()
 {
 	if (!mSoundEntity)
 	{
 
-		// Create a sound Entity based on this entity type
-		//
-		// TODO: Replace with a managed template on model mapping
-		// to map it the same way we map models to entity types
-		mSoundEntity = Ember::SoundEntityManager::getSingleton().allocateEntity(getType()->getName());
+		// SoundEntityManager will instantiate an entity of this type
+		if (needSoundEntity())
+		{
+			mSoundEntity = Ember::SoundEntityManager::getSingleton().allocateEntity(getType()->getName());
+		}
+
 		if (mSoundEntity)
 		{
-			ActionDefinitionsStore store = mModel->getDefinition()->getActionDefinitions();
+			const ActionDefinitionsStore& store = mModel->getDefinition()->getActionDefinitions();
 			ActionDefinitionsStore::const_iterator I_b = store.begin();
 			ActionDefinitionsStore::const_iterator I_e = store.end();
 			for (; I_b != I_e; ++I_b)

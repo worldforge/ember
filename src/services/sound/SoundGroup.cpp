@@ -186,6 +186,15 @@ namespace Ember
 			mIsPlaying = false;
 		}
 	}
+	
+	bool SoundGroup::instantiate(SoundGroup* instance)
+	{
+		if (!instance)
+		{
+			S_LOG_FAILURE("Invalid SoundGroup instance, NULL pointer.");
+			return false;
+		}
+	}
 
 } // namespace Ember
 

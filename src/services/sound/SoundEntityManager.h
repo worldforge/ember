@@ -37,6 +37,10 @@ namespace Ember
 			// update on the sound cycle 
 			std::map<std::string, SoundGroup*> mGroups;
 
+			// Seeds for instances
+			unsigned int mGroupSeed;
+			unsigned int mEntitySeed;
+
 		public:
 			SoundEntityManager();
 			~SoundEntityManager();
@@ -57,6 +61,7 @@ namespace Ember
 			 * mGroups modifiers
 			 */
 			SoundGroup* allocateGroup(const std::string& name);
+			SoundGroup* instantiateGroup(const std::string& name);
 			SoundGroup* getGroup(const std::string& name);
 			void deallocateGroup(const std::string& name);
 
