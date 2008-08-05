@@ -62,7 +62,7 @@ namespace Ember
 				BaseSoundSample* sample = *it;
 				it = mSamples.erase(it);
 
-				delete sample
+				delete sample;
 			}
 		}
 	}
