@@ -645,7 +645,7 @@ void EmberEntity::updateTerrainModifiers(const Atlas::Message::Element& modifier
             int my = abs(pos.y() - (sy * 64));
             int mx = abs(pos.x() - (sx * 64));
 
-            WFMath::Point<2> pos_2d(mx,my);
+            WFMath::Point<2> pos_2d(pos.x(),pos.y());
             WFMath::Ball<2> modShape = WFMath::Ball<2>(pos_2d, shapeRadius); ///FIXME: assumes 2d ball...
             
             S_LOG_INFO("Successfully parsed a levelmod");
@@ -752,7 +752,7 @@ void EmberEntity::updateTerrainModifiers(const Atlas::Message::Element& modifier
             int my = abs(pos.y() - (sy * 64));
             int mx = abs(pos.x() - (sx * 64));
     
-            WFMath::Ball<3> modShape = WFMath::Ball<3>(WFMath::Point<3>(mx,my,pos.z()), shapeRadius); ///FIXME: assumes 3d ball...
+            WFMath::Ball<3> modShape = WFMath::Ball<3>(WFMath::Point<3>(pos.x(),pos.y(),pos.z()), shapeRadius); ///FIXME: assumes 3d ball...
 
             
 
