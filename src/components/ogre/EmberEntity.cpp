@@ -390,6 +390,7 @@ void EmberEntity::adjustPositionForContainedNode(EmberEntity* const entity, cons
 	//Ogre::Vector3 position = sceneNode->getPosition();
 	const Ogre::Vector3& offset = getOffsetForContainedNode(position, entity);
 	if (offset != Ogre::Vector3::ZERO) {
+        
 		sceneNode->setPosition(position + offset);
 	}
 	
@@ -446,7 +447,7 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 			S_LOG_VERBOSE( "Entity relocated to limbo: "<< this->getId() << " (" << this->getName() << ")" );
 	//		mSceneManager->getRootSceneNode()->addChild(getSceneNode());
 		}		
-		
+
 		checkVisibility(isVisible());
 	
 		///we'll adjust the entity so it retains it's former position in the world, but only for moving entities
@@ -779,6 +780,18 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
 		return;
 	} else if (str == "terrainmod") {
         updateTerrainModifiers(v);
+    } else if (str == "pos" && hasAttr("terrainmod")) {
+        /* If an entity with a terrainmod attribute moves, we first clear the all existing mods,
+            get a list of entities in the world and search it for other terrainmods (besides this one)
+            and reapply them all
+        */
+            // Clear all modifiers from the world
+        EmberOgre::getSingleton().getTerrainGenerator()->ClearAllMods();
+
+            // Find and reapply all other mods
+            //  (use: Eris::Entity::buildEntityDictFromContents(IdEntityMap& dict)  )
+            //  Iterate over that list, using : hasAttr("terrainmod")
+            //  If you find one, then call updateTerrainMod on that entity! Boo Yah!
     }
 
 	Entity::onAttrChanged(str, v);

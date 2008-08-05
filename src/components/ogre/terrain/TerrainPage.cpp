@@ -449,7 +449,6 @@ void TerrainPage::addTerrainModifier(int sx, int sy, int mx, int my, int mz, Mer
         if (I != mTModList.end()) {
             if (I->X() == mx) {
                 if (I->Y() == my) {
-                    S_LOG_INFO("mod erased at " << mx + abs(sx*64) << "," << my + abs(sy*64));
                     mTModList.erase(I);
                     mTModList.push_back(terrainModListEntry(sx,sy,mx,my,mz,newmod->clone()));
                     break;
@@ -463,11 +462,18 @@ void TerrainPage::addTerrainModifier(int sx, int sy, int mx, int my, int mz, Mer
         mTModList.push_back(terrainModListEntry(sx,sy,mx,my,mz,newmod->clone()));
     }
 
+    int lx=(int)floor(((*newmod).bbox().lowCorner()[0] - 1) / 64);
+    int ly=(int)floor(((*newmod).bbox().lowCorner()[1] - 1) / 64);
+    int hx=(int)ceil(((*newmod).bbox().highCorner()[0] + 1) / 64);
+    int hy=(int)ceil(((*newmod).bbox().highCorner()[1] + 1) / 64);
+    S_LOG_INFO("lx -> For mod at sx: " << sx << ", sy: " << sy << ", mx: " << mx << ", my: " << my);
+    S_LOG_INFO("lx: " << lx << ", ly: " << ly << ", hx: " << hx << ", hy: " << hy);
+
     int seg_lx, seg_hx, seg_ly, seg_hy;
-    seg_lx = EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment((float)mx, (float)my)->getRect().lowCorner()[0];
-    seg_ly = EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment((float)mx, (float)my)->getRect().lowCorner()[1];
-    seg_hx = EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment((float)mx, (float)my)->getRect().highCorner()[0];
-    seg_hy = EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment((float)mx, (float)my)->getRect().highCorner()[1];
+    seg_lx = EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment((float)(sx*64 + mx), (float)(sy*64 + my))->getRect().lowCorner()[0];
+    seg_ly = EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment((float)(sx*64 + mx), (float)(sy*64 + my))->getRect().lowCorner()[1];
+    seg_hx = EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment((float)(sx*64 + mx), (float)(sy*64 + my))->getRect().highCorner()[0];
+    seg_hy = EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment((float)(sx*64 + mx), (float)(sy*64 + my))->getRect().highCorner()[1];
 
     S_LOG_INFO("mod segment bounds: " << seg_lx << "," << seg_ly << " : " << seg_hx << "," << seg_hy);
 
@@ -482,6 +488,18 @@ void TerrainPage::addTerrainModifier(int sx, int sy, int mx, int my, int mz, Mer
 	if(mBridge)
 		mBridge->updateTerrain();	// update the terrain data now; note that this does not update
 						            //  the ogre data, so we won't be able to see the change yet.
+}
+
+void TerrainPage::ClearAllMods()
+{
+    S_LOG_INFO("BLOOT");
+    std::list<terrainModListEntry>::iterator I;
+    for (I = mTModList.begin(); I != mTModList.end(); I++) {
+        S_LOG_INFO("Clearing mod from " << I->Position()->x() << "," << I->Position()->y());
+        EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment(I->SegX(),I->SegY())->clearMods();
+        S_LOG_INFO("Clearing mod from mTModList");
+        //mTModList.erase(I);
+    }
 }
 
 TerrainPosition *TerrainPage::getTerrainModifierPos()

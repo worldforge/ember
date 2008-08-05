@@ -618,6 +618,20 @@ void TerrainGenerator::updateTerrainModifiers(Terrain::terrainModListEntry& modi
 
 }
 
+void TerrainGenerator::ClearAllMods()
+{
+    TerrainPagestore::iterator I = mTerrainPages.begin();
+    for (; I != mTerrainPages.end(); I++)
+    {
+        TerrainPagecolumn::iterator J = I->second.begin();
+        for(; J != I->second.end(); J++)
+        {
+            J->second->ClearAllMods();
+            //EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition((int)getPosition().x(),(int)getPosition().y()))->ClearAllMods();
+        }
+    }
+}
+
 void TerrainGenerator::reloadTerrain(std::vector<TerrainPosition>& positions)
 {
 	std::set<TerrainPage*> pagesToUpdate;

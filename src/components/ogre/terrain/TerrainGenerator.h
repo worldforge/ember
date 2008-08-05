@@ -152,6 +152,8 @@ public:
 	 */
 	void updateTerrainModifiers(Terrain::terrainModListEntry& modifier);
 
+	void ClearAllMods();
+
 	/**
 	 * @brief Return true if there is a valid piece of terrain at the supplied segment indices.
 	 * By valid means a populated terrain-
