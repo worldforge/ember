@@ -82,7 +82,7 @@ void AvatarControllerInputListener::input_MouseButtonReleased(Input::MouseButton
 	}
 }
 
-AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, GUIManager* guiManager, Ogre::Camera* camera) 
+AvatarController::AvatarController(Avatar& avatar, Ogre::RenderWindow& window, GUIManager& guiManager, Ogre::Camera& camera) 
 : RunToggle("+run", this, "Toggle running mode.")
 , ToggleCameraAttached("toggle_cameraattached", this, "Toggle between the camera being attached to the avatar and free flying.")
 , CharacterMoveForward("+character_move_forward", this, "Move the avatar forward.")
@@ -99,6 +99,7 @@ AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, G
 , mGUIManager(guiManager)
 , mAvatarCamera(0)
 , mCamera(camera)
+, mAvatar(avatar)
 , mEntityUnderCursor(0) 
 , mSelectedEntity(0)
 , mFreeFlyingCameraNode(0)
@@ -111,10 +112,11 @@ AvatarController::AvatarController(Avatar* avatar, Ogre::RenderWindow* window, G
 
 	mMovementCommandMapper.restrictToInputMode(Input::IM_MOVEMENT );
 	
-	setAvatar(avatar);
+	createAvatarCameras(avatar.getAvatarSceneNode());
+	attachCamera();
 	
 	
-	mAvatar->setAvatarController(this);
+	mAvatar.setAvatarController(this);
 	
 	Ogre::Root::getSingleton().addFrameListener(this);
 	
@@ -138,19 +140,11 @@ AvatarController::~AvatarController()
 void AvatarController::createAvatarCameras(Ogre::SceneNode* avatarSceneNode)
 {
 	if (mAvatarCamera == 0) {
-		mAvatarCamera = new AvatarCamera(avatarSceneNode, EmberOgre::getSingletonPtr()->getSceneManager(), mWindow, mGUIManager, mCamera);
+		mAvatarCamera = new AvatarCamera(avatarSceneNode, *EmberOgre::getSingleton().getSceneManager(), mWindow, mGUIManager.getInput(), mCamera);
 	} else {
 		attachCamera();
 	}
 }
-
-void AvatarController::setAvatar(Avatar* avatar)
-{
-	mAvatar = avatar;
-	createAvatarCameras(avatar->getAvatarSceneNode());
-	attachCamera();
-}
-
 
 
 void AvatarController::runCommand(const std::string &command, const std::string &args)
@@ -224,7 +218,7 @@ void AvatarController::detachCamera()
 void AvatarController::attachCamera() 
 {
 	mIsAttached = true;
-	mAvatarCamera->attach(mAvatar->getAvatarSceneNode());
+	mAvatarCamera->attach(mAvatar.getAvatarSceneNode());
 	//mAvatarCamera->setMode(AvatarCamera::MODE_FIRST_PERSON);
 }
 
@@ -235,7 +229,7 @@ bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 	if (mDecalObject)
 	{
 		///hide the decal when we're close to it
-		if (mDecalNode->getWorldPosition().distance(mAvatar->getAvatarSceneNode()->getWorldPosition()) < 1) {
+		if (mDecalNode->getWorldPosition().distance(mAvatar.getAvatarSceneNode()->getWorldPosition()) < 1) {
 			mDecalNode->setVisible(false);
 		}
 	}
@@ -293,7 +287,7 @@ bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 		
 	if (mIsAttached) {
 //		mAvatarCamera->adjustForTerrain();
-		mAvatar->updateFrame(movementForFrame);
+		mAvatar.updateFrame(movementForFrame);
 	} else {
 		Ogre::Real scaler = 50;
 		//make this inverse, so that when the run key is pressed, the free flying camera goes slower
@@ -348,9 +342,9 @@ void AvatarController::moveToPoint(const Ogre::Vector3& point)
 	WFMath::Vector<3> atlasVector = Ogre2Atlas_Vector3(point);
 	WFMath::Point<3> atlasPos(atlasVector.x(), atlasVector.y(), atlasVector.z());
 /*	WFMath::Point<3> atlas2dPos(atlasVector.x(), atlasVector.y(), 0);
-	WFMath::Point<3> avatar2dPos(mAvatar->getAvatarEmberEntity()->getPosition().x(), mAvatar->getAvatarEmberEntity()->getPosition().y(), 0);
+	WFMath::Point<3> avatar2dPos(mAvatar.getAvatarEmberEntity()->getPosition().x(), mAvatar.getAvatarEmberEntity()->getPosition().y(), 0);
 	WFMath::Vector<3> direction(1, 0, 0);
-	direction = direction.rotate(mAvatar->getAvatarEmberEntity()->getOrientation());
+	direction = direction.rotate(mAvatar.getAvatarEmberEntity()->getOrientation());
 	WFMath::Vector<3> directionToPoint = atlas2dPos - avatar2dPos;
 	WFMath::Quaternion rotation;
 	rotation = rotation.rotation(directionToPoint, direction);*/
@@ -367,7 +361,7 @@ void AvatarController::teleportTo(const Ogre::Vector3& point, EmberEntity* locat
 	WFMath::Point<3> atlasPos(atlasVector.x(), atlasVector.y(), atlasVector.z());
 	
 	
-	Ember::EmberServices::getSingletonPtr()->getServerService()->place(mAvatar->getAvatarEmberEntity(), locationEntity, atlasPos);
+	Ember::EmberServices::getSingletonPtr()->getServerService()->place(mAvatar.getAvatarEmberEntity(), locationEntity, atlasPos);
 }
 
 
@@ -396,7 +390,7 @@ void AvatarController::createDecal(Ogre::Vector3 position)
 	// 	mDecalNode->showBoundingBox(true);
 		
 		
-		mPulsatingController = new Ogre::WaveformControllerFunction(Ogre::WFT_SINE, 1, 0.33, 0.25);
+// 		mPulsatingController = new Ogre::WaveformControllerFunction(Ogre::WFT_SINE, 1, 0.33, 0.25);
 	} catch (const Ogre::Exception& ex)
 	{
 		S_LOG_WARNING("Error when creating terrain decal: " << ex.what());

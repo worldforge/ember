@@ -53,7 +53,7 @@ float SimpleFog::getDensity() const
 }
 
 
-SimpleEnvironment::SimpleEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera* camera)
+SimpleEnvironment::SimpleEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera)
 : mSceneMgr(sceneMgr), mWindow(window), mCamera(camera)
 ,mSun(0), mSky(0), mFog(0), mWater(0)
 {

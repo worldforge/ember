@@ -39,7 +39,7 @@ namespace EmberOgre {
 namespace Environment {
 
 
-CaelumEnvironment::CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera* camera)
+CaelumEnvironment::CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera)
 : 
  SetCaelumTime("set_caelumtime",this, "Sets the caelum time. parameters: <hour> <minute>")
 , mCaelumSystem(0)
@@ -94,7 +94,7 @@ void CaelumEnvironment::setupWater()
 	mWater = new Water(mCamera, mSceneMgr);
 }
 
-void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sceneMgr, ::Ogre::RenderWindow* window, ::Ogre::Camera* camera)
+void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sceneMgr, ::Ogre::RenderWindow* window, ::Ogre::Camera& camera)
 {
 	
 	/// Pick components to use

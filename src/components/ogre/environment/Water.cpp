@@ -128,7 +128,7 @@ public:
 
 
 
-	Water::Water(Ogre::Camera *camera, Ogre::SceneManager* mSceneMgr) : mCamera(camera)
+	Water::Water(Ogre::Camera &camera, Ogre::SceneManager* mSceneMgr) : mCamera(camera)
 	{
 	
 		Ogre::Plane waterPlane(Ogre::Vector3::UNIT_Y, 0);
@@ -195,12 +195,12 @@ public:
 	
 	}
 	
-	void Water::createFresnelWater(Ogre::Camera *camera, Ogre::SceneManager* mSceneMgr)
+	void Water::createFresnelWater(Ogre::Camera &camera, Ogre::SceneManager* mSceneMgr)
 	{
 		RenderTexture* rttTex = EmberOgre::getSingleton().getOgreRoot()->getRenderSystem()->createRenderTexture( "Refraction", 512, 512 );
 			
 			{
-				Viewport *v = rttTex->addViewport( mCamera );
+				Viewport *v = rttTex->addViewport( &mCamera );
 				Ogre::MaterialPtr mat = MaterialManager::getSingleton().getByName("Examples/FresnelReflectionRefraction");
 				if (!mat.isNull()) {
 					mat->getTechnique(0)->getPass(0)->getTextureUnitState(2)->setTextureName("Refraction");
@@ -212,7 +212,7 @@ public:
 			
 			rttTex = EmberOgre::getSingleton().getOgreRoot()->getRenderSystem()->createRenderTexture( "Reflection", 512, 512 );
 			{
-				Viewport *v = rttTex->addViewport( mCamera );
+				Viewport *v = rttTex->addViewport( &mCamera );
 				Ogre::MaterialPtr mat = MaterialManager::getSingleton().getByName("Examples/FresnelReflectionRefraction");
 				if (!mat.isNull()) {
 					mat->getTechnique(0)->getPass(0)->getTextureUnitState(1)->setTextureName("Reflection");
@@ -233,12 +233,12 @@ public:
 			mRefractionListener->setPlaneEntity(pPlaneEnt);
 			mReflectionListener->setPlaneEntity(pPlaneEnt);
 			mReflectionListener->setReflectionPlane(reflectionPlane);
-			mReflectionListener->setCamera(camera);
+			mReflectionListener->setCamera(&camera);
 			mWaterNode->attachObject(pPlaneEnt);
 	
 	}
 	
-	void Water::createSimpleWater(Ogre::Camera *camera, Ogre::SceneManager* mSceneMgr)
+	void Water::createSimpleWater(Ogre::Camera &camera, Ogre::SceneManager* mSceneMgr)
 	{
 			Ogre::Entity *waterEntity;
 /*			Ogre::Plane waterPlane;

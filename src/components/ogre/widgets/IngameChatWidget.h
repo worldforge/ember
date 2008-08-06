@@ -269,7 +269,7 @@ protected:
 	
 	std::string mAvatarEntityId;
 	
-	Ogre::Camera* mMainCamera;
+	Ogre::Camera& mMainCamera;
 
 };
 };

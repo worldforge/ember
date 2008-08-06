@@ -67,8 +67,8 @@ size_t MeshPreviewHandler::createInstance(const std::string& meshName)
 	
 	//place it five meters in front of the camera
 	Ogre::Vector3 o_vector(0,0,-5);
-	Ogre::Camera* camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
-	Ogre::Vector3 o_pos = camera->getDerivedPosition() + (camera->getDerivedOrientation() * o_vector);
+	Ogre::Camera& camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
+	Ogre::Vector3 o_pos = camera.getDerivedPosition() + (camera.getDerivedOrientation() * o_vector);
 	node->setPosition(o_pos);
 	
 	node->attachObject(entity);

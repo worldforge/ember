@@ -27,9 +27,7 @@
 
 namespace EmberOgre {
 
-/**
-	@author Erik Hjortsberg <erik@katastrof.nu>
-*/
+
 
 /**
 The kind of mouse click operation.
@@ -49,14 +47,32 @@ Mouse picking info from the windowing system.
 struct MousePickerArgs
 {
 	/**
-	The x and y coords in local window space.
+	The x coords in local window space.
 	*/
-	float windowX, windowY;
+	float windowX;
+	/**
+	The y coords in local window space.
+	*/
+	float windowY;
 	
+	/**
+	The type of picking (either singe or double click).
+	*/
 	MousePickType pickType;
 };
 
 
+/**
+	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+	
+	When a pick operation is performed in the world, i.e. when the user clicks the mouse on something in the world, the AvatarCamera will first check what was picked, which will most often result in a list of Ogre::MovableObjects, and then for each of these objects as its internal list of IWorldPickListener instances whether any of those knows how to handle the object picked.
+	This allows us a great deal of flexibility when we want to add support for different types of things that can be interacted with in the world.
+	
+	The first stage of the picking action is that the initializePickingContext() method is called. This allows the listeners to do some cleanup before the actual processing. Then processPickResult(...) will be called for each object, in order of the nearness to the camera (nearer objects being handled first). If any of the listeners sets the argument continuePicking to false, the picking action will then end, and endPickingContext() will be called.
+	
+	Normal operation for an implementation of this is then, if it can handle the object picked, to mark it, but wait with performing the action action until endPickingContext(...) is called (as opposed to performing the action directly when processPickResult(...) is called).
+	
+*/
 class IWorldPickListener
 {
 public:
@@ -64,18 +80,21 @@ public:
 virtual ~IWorldPickListener() {}
 
 /**
-Called at the start of a picking context. This allows the pickers to be reset and to keep state for each picking.
+@brief Called at the start of a picking context.
+This allows the pickers to be reset and to keep state for each picking.
 */
 virtual void initializePickingContext() {}
 
 /**
-Called when the picking is over, either because one of the processPickResult calls set continuePicking to false, or because there are no more objects to pick.
-*/
+@brief Called when the picking is over, either because one of the processPickResult calls set continuePicking to false, or because there are no more objects to pick.
+ * @param mousePickerArgs The original mouse picking arguments.
+ */
 virtual void endPickingContext(const MousePickerArgs& mousePickerArgs) {}
 
 /**
- * Processes the pick result.
+ * @brief Processes the pick result.
  * This will be called for each picked object.
+ * This is where you need to put your logic checking whether the picked object is something that your implementation knows how to handle. If you don't want any other listeners to then act on the object (which you in most cases don't want) you need to set the continuePicking argument to false.
  * @param continuePicking set this to false if you don't want to process any more pick results, or don't want any other IWorldPickListener to process the pick any more
  * @param entry The actual pick entry.
  * @param cameraRay The ray which resulted in the pick.

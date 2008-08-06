@@ -42,7 +42,7 @@ class Water : public IWater
 
 
 public:
-    Water(Ogre::Camera* camera, Ogre::SceneManager* mSceneMgr);
+    Water(Ogre::Camera& camera, Ogre::SceneManager* mSceneMgr);
 
     ~Water();
 	
@@ -50,12 +50,12 @@ protected:
 	
 	Ogre::Plane reflectionPlane;
 	
-	Ogre::Camera* mCamera;
+	Ogre::Camera& mCamera;
 
     RefractionTextureListener*  mRefractionListener;
     ReflectionTextureListener* mReflectionListener;
-	void createFresnelWater(Ogre::Camera *camera, Ogre::SceneManager* mSceneMgr);
-	void createSimpleWater(Ogre::Camera *camera, Ogre::SceneManager* mSceneMgr);
+	void createFresnelWater(Ogre::Camera &camera, Ogre::SceneManager* mSceneMgr);
+	void createSimpleWater(Ogre::Camera &camera, Ogre::SceneManager* mSceneMgr);
 	Ogre::SceneNode *mWaterNode;
 
 };

@@ -34,21 +34,45 @@ class Entity;
 namespace EmberOgre {
 
 /**
-	Observes changes to a specific attribute and emits a signal.
+	@brief Observes changes to a specific attribute and emits a signal.
+	
+	Note that it's only possible to observe changes to top level attributes.
+	
+	Eris::Entity already has functionality for easily listening to attribute changes through the Eris::Entity::observe method, but this method is hard to use from a scripting environment (such as lua), thus the need for this class.
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
 class AttributeObserver : public sigc::trackable
 {
 public:
 
+	/**
+	 *    @brief Ctor. The entity to watch and the name of the attribute are supplied as parameters.
+	 * @param entity The entity to watch.
+	 * @param attributeName The name of the attribute to watch.
+	 */
 	AttributeObserver(Eris::Entity* entity, const std::string& attributeName);
+	/**
+	 *    Dtor.
+	 */
 	~AttributeObserver();
 	
+	/**
+	@brief Emitted when the attribute which is watched changes.
+	The value passed is the new element for the named attribute.
+	*/
 	sigc::signal<void, const Atlas::Message::Element&> EventChanged;
 	
 protected:
+
+	/**
+	We keep an internal reference to the slot which be activated when the attribute in the entity change. We then pass this change on through the EventChanged signal.
+	*/
 	Eris::Entity::AttrChangedSlot mSlot;
 	
+	/**
+	 * This method is called by the watched entity whenever the attribute changes.
+	 * @param attributeValue 
+	 */
 	void attributeChanged(const Atlas::Message::Element& attributeValue);
 };
 

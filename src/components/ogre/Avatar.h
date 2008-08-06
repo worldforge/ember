@@ -351,6 +351,8 @@ protected:
 	*/
 	std::auto_ptr<AvatarLoggerParent> mChatLoggerParent;
 	
+
+	
 }; //End of class declaration
 
 bool Avatar::isAdmin() const

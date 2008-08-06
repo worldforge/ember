@@ -83,6 +83,8 @@ public:
 	 */
 	AvatarLoggerParent(Avatar& avatar);
 	
+	~AvatarLoggerParent() {}
+	
 protected:
 	
 	/**

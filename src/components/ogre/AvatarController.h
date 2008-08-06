@@ -98,7 +98,7 @@ public Ember::ConsoleObject
 public:
     friend class AvatarControllerInputListener;
 
-    AvatarController(Avatar* avatar, Ogre::RenderWindow* window, GUIManager* guiManager, Ogre::Camera* camera);
+    AvatarController(Avatar& avatar, Ogre::RenderWindow& window, GUIManager& guiManager, Ogre::Camera& camera);
 
 	virtual ~AvatarController();
 
@@ -178,23 +178,22 @@ protected:
 
 	InputCommandMapper mMovementCommandMapper;
 	
-	Ogre::RenderWindow* mWindow;
+	Ogre::RenderWindow& mWindow;
 	
-	GUIManager* mGUIManager;
+	GUIManager& mGUIManager;
 
 
 // 	void checkMovementKeys(const Ogre::FrameEvent & event, const Input& input);
 
 
 	AvatarCamera* mAvatarCamera;
-	void setAvatar(Avatar* avatar);
-	Ogre::Camera* mCamera;
+	Ogre::Camera& mCamera;
 
 	
 	/**
 	 * Avatar
 	 */
-	Avatar* mAvatar;
+	Avatar& mAvatar;
 	
     EmberEntity* mEntityUnderCursor;
     EmberEntity* mSelectedEntity;
@@ -220,9 +219,22 @@ protected:
 	*/
 	void createDecal(Ogre::Vector3 position);
 	
+	/**
+	A decal object for showing a decal on the terrain when the user uses the "move to here" functionality.
+	The decal will be shown at the destination, and removed when the user either gets close to it, or aborts the "move to here" movement (for example by moving manually).
+	*/
 	Ogre::MovableObject* mDecalObject;
+	
+	/**
+	The scene node to which the decal object for showing the destination of a "move to here" movement operation is attached.
+	*/
 	Ogre::SceneNode* mDecalNode;
-	Ogre::WaveformControllerFunction* mPulsatingController;
+	
+	/**
+	Controller for making the decal pulsate a little.
+	@note Not used currently.
+	*/
+// 	Ogre::WaveformControllerFunction* mPulsatingController;
 	
 	AvatarControllerInputListener mControllerInputListener;
 };

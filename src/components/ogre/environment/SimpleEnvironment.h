@@ -80,7 +80,7 @@ class Water;
 class SimpleEnvironment : public IEnvironmentProvider
 {
 public:
-    SimpleEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera* camera);
+    SimpleEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera);
 
     virtual ~SimpleEnvironment();
     
@@ -97,7 +97,7 @@ public:
 protected:
 	Ogre::SceneManager *mSceneMgr;
 	Ogre::RenderWindow* mWindow;
-	Ogre::Camera* mCamera;
+	Ogre::Camera& mCamera;
 	
 	SimpleSun* mSun;
 	SimpleSky* mSky;

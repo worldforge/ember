@@ -80,7 +80,7 @@ namespace EmberOgre {
 			shouldRecalculate = true;
 		} else {
 			///the mouse hasn't moved, perhaps the camera has?
-			if (mLastCameraPosition != mCamera.getCamera()->getDerivedPosition() || mLastCameraOrientation != mCamera.getCamera()->getDerivedOrientation()) {
+			if (mLastCameraPosition != mCamera.getCamera().getDerivedPosition() || mLastCameraOrientation != mCamera.getCamera().getDerivedOrientation()) {
 				///ok, the camera has moved, but has enough time elapsed since our last update to warrant a new update?
 				long now = Ember::EmberServices::getSingletonPtr()->getTimeService()->currentTimeMillis();
 				long delta = now - mLastUpdated;
@@ -98,11 +98,11 @@ namespace EmberOgre {
 			mLastUpdated = Ember::EmberServices::getSingletonPtr()->getTimeService()->currentTimeMillis();
 			mLastMouseX = mousePosition.xPixelPosition;
 			mLastMouseY = mousePosition.yPixelPosition;
-			mLastCameraPosition = mCamera.getCamera()->getDerivedPosition();
-			mLastCameraOrientation = mCamera.getCamera()->getDerivedOrientation();
+			mLastCameraPosition = mCamera.getCamera().getDerivedPosition();
+			mLastCameraOrientation = mCamera.getCamera().getDerivedOrientation();
 			
 			/// Start a new ray query 
-			Ogre::Ray cameraRay(mCamera.getCamera()->getCameraToViewportRay(mousePosition.xRelativePosition, mousePosition.yRelativePosition)); 
+			Ogre::Ray cameraRay(mCamera.getCamera().getCameraToViewportRay(mousePosition.xRelativePosition, mousePosition.yRelativePosition)); 
 			mTerrainCursorRayQuery->setRay(cameraRay);
 			mTerrainCursorRayQuery->execute();
 			

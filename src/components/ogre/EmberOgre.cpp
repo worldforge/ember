@@ -1,10 +1,8 @@
 /*
 -----------------------------------------------------------------------------
-OgreApp.cpp by Miguel Guzman Miranda (Aglanor)
-Based on OGRE sample applications:
-    OGRE (Object-oriented Graphics Rendering Engine)
-For the latest info, see http://ogre.sourceforge.net
-Based on the Ember main application by the Ember team
+
+Author: Miguel Guzman Miranda (Aglanor), (C) 2005
+Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2005
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -435,7 +433,7 @@ bool EmberOgre::setup()
 	// Avatar
 	mAvatar = new Avatar();
 	
-	mAvatarController = new AvatarController(mAvatar, mWindow, mGUIManager, camera);
+	mAvatarController = new AvatarController(*mAvatar, *mWindow, *mGUIManager, *camera);
 	EventAvatarControllerCreated.emit(*mAvatarController);
 	
 	mTerrainGenerator = new Terrain::TerrainGenerator(new EmberPagingSceneManagerAdapter(mSceneMgr));

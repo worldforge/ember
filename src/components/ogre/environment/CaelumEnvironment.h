@@ -48,7 +48,7 @@ class Water;
 class CaelumEnvironment : public IEnvironmentProvider, public Ember::ConsoleObject
 {
 public:
-    CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera* camera);
+    CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera);
 
     ~CaelumEnvironment();
 
@@ -83,7 +83,7 @@ private:
 	 * @param window 
 	 * @param camera 
 	 */
-	void setupCaelum(Ogre::Root *root, Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera* camera);
+	void setupCaelum(Ogre::Root *root, Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera);
 	
 	/**
 	 *    Creates a water plane.
@@ -97,7 +97,7 @@ private:
 	
 	Ogre::SceneManager *mSceneMgr;
 	Ogre::RenderWindow* mWindow;
-	Ogre::Camera* mCamera;
+	Ogre::Camera& mCamera;
 	
 	CaelumSky* mSky;
 	CaelumSun* mSun;

@@ -33,8 +33,8 @@ public:
 	/**
 	 * returns a pointer to the Ogre::Camera instance 
 	 */
-	Ogre::Camera* getCamera();
-	Ogre::Camera* getCamera() const;
+	Ogre::Camera& getCamera();
+	Ogre::Camera& getCamera() const;
 	
 	/**
 	 * Returns the current camera orientation in the world
@@ -59,7 +59,7 @@ public:
 	/**
 	* emitted when the camra moves
 	*/
-	sigc::signal<void, Ogre::Camera*> MovedCamera;
+	sigc::signal<void, Ogre::Camera&> MovedCamera;
 	
 	/**
 	* emitted when the distance between the camera and the avatar has changed
@@ -81,7 +81,7 @@ public:
 	// second Vector2 
 	// returns false if the worldPos is off screen 
 	// 
-	bool worldToScreen(const Ogre::Vector3& worldPos, Ogre::Vector3& screenPos);
+	bool worldToScreen(const Ogre::Vector3& worldPos, Ogre::Vector2& screenPos);
 
 	void attach(Ogre::SceneNode* toNode);
 	

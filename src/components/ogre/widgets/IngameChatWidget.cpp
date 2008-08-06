@@ -63,9 +63,8 @@ namespace EmberOgre {
 namespace Gui {
 
 IngameChatWidget::IngameChatWidget()
-: mTimeShown(0), mDistanceShown(100), mLabelCreator(*this), mLabelPool(mLabelCreator), mChatTextCreator(*this), mChatTextPool(mChatTextCreator), mAvatarEntityId("")
+: mTimeShown(0), mDistanceShown(100), mLabelCreator(*this), mLabelPool(mLabelCreator), mChatTextCreator(*this), mChatTextPool(mChatTextCreator), mAvatarEntityId(""), mMainCamera(EmberOgre::getSingleton().getMainCamera()->getCamera())
 {
-	mMainCamera = EmberOgre::getSingleton().getMainCamera()->getCamera();
 	
 	registerConfigListener("ingamechatwidget", "timeshown", sigc::mem_fun(*this, &IngameChatWidget::Config_TimeShown));	registerConfigListener("ingamechatwidget", "distanceshown", sigc::mem_fun(*this, &IngameChatWidget::Config_DistanceShown));
 
@@ -259,7 +258,7 @@ void IngameChatWidget::EntityObserver::entity_attributeChanged(const Atlas::Mess
 void IngameChatWidget::EntityObserver::updateLabel(const Ogre::Camera * camera)
 {
 	///only update when being rendered by the main camera
-	if (camera == mChatWidget.mMainCamera) {
+	if (camera == &mChatWidget.mMainCamera) {
 	// 	const Ogre::Vector3& entityWorldCoords = mEntity->getDerivedPosition();
 	//	Ogre::Vector3 entityWorldCoords = mEntity->getWorldBoundingBox(true).getCenter();
 	//	Ogre::Vector3 entityWorldCoords = window->getEntity()->getSceneNode()->_getWorldAABB().getCenter();
@@ -331,13 +330,13 @@ void IngameChatWidget::Label::markForRender()
 
 void IngameChatWidget::Label::placeWindowOnEntity()
 {
-	//make sure that the window stays on the entity
-	Ogre::Vector3 screenCoords;
+	///make sure that the window stays on the entity
+	Ogre::Vector2 screenCoords;
 	
 	bool result = false;
 	Ogre::Vector3 entityWorldCoords = getEntity()->getWorldBoundingSphere(true).getCenter();
 	entityWorldCoords.y = getEntity()->getWorldBoundingBox(true).getMaximum().y;
-	//check what the new position is in screen coords
+	///check what the new position is in screen coords
 	result = EmberOgre::getSingletonPtr()->getMainCamera()->worldToScreen(entityWorldCoords, screenCoords);
 	
 	if (result) {
