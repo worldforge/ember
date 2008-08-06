@@ -187,6 +187,13 @@ void XMLEntityRecipeSerializer::readAdapters(EntityRecipePtr entRecipe, TiXmlEle
 			{
 				adapter->addSuggestion(item->GetText());
 			}
+
+			const std::string *allowRandom;
+			if ((allowRandom = smElem->Attribute(std::string("allowrandom"))) &&
+			    (*allowRandom == "yes" || *allowRandom == "true" || *allowRandom == "on"))
+			{
+				adapter->setAllowRandom(true);
+			}
 		}
 	}
 }

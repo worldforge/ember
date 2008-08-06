@@ -35,6 +35,9 @@ namespace EmberOgre {
  */
 class GUIAdapter
 {
+
+typedef std::vector<std::string> SuggestionsStore;
+
 public:
 	/**
 	 * Constructor.
@@ -64,7 +67,7 @@ public:
 	/**
 	 * Returns adapter value.
 	 */
-	Atlas::Message::Element& getValue();
+	const Atlas::Message::Element& getValue();
 
 	/**
 	 * Sets adapter title.
@@ -80,6 +83,11 @@ public:
 	 * Adds suggestion.
 	 */
 	void addSuggestion(const std::string& text);
+
+	/**
+	 * Sets, is there need to add "Random" suggestion.
+	 */
+	void setAllowRandom(bool val);
 
 	/**
 	 * Emitted when the value has been changed from a gui update.
@@ -115,7 +123,17 @@ protected:
 	/**
 	 * List of suggestions.
 	 */
-	std::list<std::string> mSuggestions;
+	SuggestionsStore mSuggestions;
+
+	/**
+	 * If true, adds "Random" suggestion to the list.
+	 */
+	bool mAllowRandom;
+
+	/**
+	 * Temporary element for returning const reference to it.
+	 */
+	Atlas::Message::Element mTempElement;
 };
 
 }

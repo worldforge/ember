@@ -27,11 +27,12 @@
 
 #include "GUIAdapter.h"
 #include "components/ogre/widgets/adapters/atlas/AdapterFactory.h"
+#include <stdlib.h>
 
 namespace EmberOgre {
 
 GUIAdapter::GUIAdapter(const std::string& type) :
-		mType(type), mAdapter(0)
+		mType(type), mAdapter(0), mAllowRandom(false)
 {
 
 }
@@ -51,9 +52,13 @@ void GUIAdapter::attach(CEGUI::Window* window)
 	EmberOgre::Gui::Adapters::Atlas::AdapterFactory factory("EntityCreator");
 	mAdapter = factory.createAdapterByType(mType, window, "adapterPrefix", mElement);
 	mAdapter->EventValueChanged.connect( sigc::mem_fun(*this, &GUIAdapter::valueChanged) );
-	for (std::list<std::string>::iterator I = mSuggestions.begin(); I != mSuggestions.end(); I++)
+	for (SuggestionsStore::iterator I = mSuggestions.begin(); I != mSuggestions.end(); I++)
 	{
 		mAdapter->addSuggestion(*I);
+	}
+	if (mAllowRandom)
+	{
+		mAdapter->addSuggestion("Random");
 	}
 }
 
@@ -63,9 +68,27 @@ void GUIAdapter::detach()
 	mAdapter = 0;
 }
 
-Atlas::Message::Element& GUIAdapter::getValue()
+const Atlas::Message::Element& GUIAdapter::getValue()
 {
-	return mAdapter->getValue();
+	Atlas::Message::Element& value = mAdapter->getValue();
+	if (!(mAllowRandom && value.isString() && value.asString() == "Random"))
+	{
+		return value;
+	}
+	else
+	{
+		if (!mSuggestions.empty())
+		{
+			int i = (int) (((float) mSuggestions.size()) * (rand() / (RAND_MAX + 1.0)));
+			mTempElement = mSuggestions[i];
+			return mTempElement;
+		}
+		else
+		{
+			mTempElement = "";
+			return mTempElement;
+		}
+	}
 }
 
 void GUIAdapter::setTitle(const std::string& title)
@@ -81,6 +104,11 @@ const std::string& GUIAdapter::getTitle() const
 void GUIAdapter::addSuggestion(const std::string& text)
 {
 	mSuggestions.push_back(text);
+}
+
+void GUIAdapter::setAllowRandom(bool val)
+{
+	mAllowRandom = val;
 }
 
 void GUIAdapter::valueChanged()

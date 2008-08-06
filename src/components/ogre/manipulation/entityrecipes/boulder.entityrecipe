@@ -12,12 +12,11 @@
     <adapters>
       <adapter name="mass" type="number" title="Mass"/>
       <adapter name="massdev" type="number" title="Mass std. dev."/>
-      <adapter name="style" type="string" title="Style">
+      <adapter name="style" type="string" title="Style" allowrandom="yes">
         <item>a</item>
         <item>b</item>
         <item>c</item>
         <item>d</item>
-        <item>Random</item>
       </adapter>
     </adapters>
     <bindings>
@@ -28,7 +27,7 @@
       <bind name="mass">
         <adapter name="mass" />
       </bind>
-      <bind name="style" func="getStyle">
+      <bind name="style">
         <adapter name="style" />
       </bind>
     </bindings>
@@ -59,15 +58,6 @@
         bbox:push_back(len/2)
         bbox:push_back(len)
         return Atlas.Message.Element(bbox)
-      end
-
-      function getStyle(a)
-        local style = a:asString()
-        if style == "Random" then
-          return Atlas.Message.Element(rand{"a", "b", "c", "d"})
-        else
-          return Atlas.Message.Element(style)
-        end
       end
     ]]></script>
   </entityrecipe>
