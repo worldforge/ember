@@ -16,17 +16,19 @@
 					<Add option="-D_DEBUG" />
 				</Compiler>
 				<Linker>
-					<Add library="C:\OgreSDK\bin\debug\OgreMain_d.dll" />
-					<Add library="C:\OgreSDK\bin\debug\cg.dll" />
-					<Add library="C:\OgreSDK\bin\debug\mingwm10.dll" />
-					<Add library="C:\OgreSDK\bin\release\OgreGUIRenderer.dll" />
-					<Add library="..\..\forge\libs\Atlas-C++-0.6.1\bin\Debug\libAtlas-C++-0.6.a" />
-					<Add library="..\..\forge\libs\eris-1.3.13\bin\Debug\liberis-1.3.a" />
-					<Add library="..\..\forge\libs\libwfut-0.2.0\bin\Debug\libwfut-0.a" />
-					<Add library="..\..\forge\libs\mercator-0.2.5\bin\Debug\libmercator-0.2.a" />
-					<Add library="..\..\forge\libs\skstream-0.3.6\bin\Debug\libskstream-0.3.a" />
-					<Add library="..\..\forge\libs\varconf-0.6.5\bin\Debug\libvarconf-0.6.a" />
-					<Add library="..\..\forge\libs\wfmath-0.3.7\bin\Debug\libwfmath-0.3.7.a" />
+					<Add library="OgreMain_d" />
+					<Add library="cg" />
+					<Add library="mingwm10" />
+					<Add library="OgreGUIRenderer" />
+					<Add library="libAtlas-C++-0.6.a" />
+					<Add library="liberis-1.3.a" />
+					<Add library="libwfut-0.a" />
+					<Add library="libmercator-0.2.a" />
+					<Add library="libskstream-0.3.a" />
+					<Add library="libvarconf-0.6.a" />
+					<Add library="libwfmath-0.3.7.a" />
+					<Add directory="dependencies\lib\debug" />
+					<Add directory="dependencies\bin\debug" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -40,17 +42,19 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="C:\OgreSDK\bin\release\OgreMain.dll" />
-					<Add library="C:\OgreSDK\bin\release\cg.dll" />
-					<Add library="C:\OgreSDK\bin\release\mingwm10.dll" />
-					<Add library="C:\OgreSDK\bin\release\OgreGUIRenderer.dll" />
-					<Add library="..\..\forge\libs\Atlas-C++-0.6.1\bin\release\libAtlas-C++-0.6.a" />
-					<Add library="..\..\forge\libs\eris-1.3.13\bin\release\liberis-1.3.a" />
-					<Add library="..\..\forge\libs\libwfut-0.1.0\bin\release\libwfut-0.a" />
-					<Add library="..\..\forge\libs\mercator-0.2.5\bin\release\libmercator-0.2.a" />
-					<Add library="..\..\forge\libs\skstream-0.3.6\bin\release\libskstream-0.3.a" />
-					<Add library="..\..\forge\libs\varconf-0.6.5\bin\release\libvarconf-0.6.a" />
-					<Add library="..\..\forge\libs\wfmath-0.3.7\bin\release\libwfmath-0.3.7.a" />
+					<Add library="OgreMain" />
+					<Add library="cg" />
+					<Add library="mingwm10" />
+					<Add library="OgreGUIRenderer" />
+					<Add library="libAtlas-C++-0.6.a" />
+					<Add library="liberis-1.3.a" />
+					<Add library="libwfut-0.a" />
+					<Add library="libmercator-0.2.a" />
+					<Add library="libskstream-0.3.a" />
+					<Add library="libvarconf-0.6.a" />
+					<Add library="libwfmath-0.3.7.a" />
+					<Add directory="dependencies\lib\release" />
+					<Add directory="dependencies\bin\release" />
 				</Linker>
 			</Target>
 		</Build>
@@ -69,45 +73,46 @@
 			<Add option="-DTOLUA_STATIC" />
 			<Add option="-D__MINGW32__" />
 			<Add option="-D__WIN32__" />
+			<Add option="-DLUA51" />
 			<Add directory="." />
 			<Add directory=".\src" />
 			<Add directory=".\src\components\ogre" />
-			<Add directory="..\include" />
-			<Add directory="..\..\forge\libs\Atlas-C++-0.6.1" />
-			<Add directory="..\..\forge\libs\eris-1.3.13" />
-			<Add directory="..\..\forge\libs\libwfut-0.2.0" />
-			<Add directory="..\..\forge\libs\mercator-0.2.5" />
-			<Add directory="..\..\forge\libs\skstream-0.3.6\mingw" />
-			<Add directory="..\..\forge\libs\skstream-0.3.6" />
-			<Add directory="..\..\forge\libs\varconf-0.6.5" />
-			<Add directory="..\..\forge\libs\wfmath-0.3.7" />
-			<Add directory="C:\msys\1.0\local\include" />
-			<Add directory="C:\msys\1.0\local\include\sigc++-2.0" />
-			<Add directory="C:\OgreSDK\include" />
-			<Add directory="C:\msys\1.0\home\iteam\code\CEGUI-0.6.0\include" />
-			<Add directory="C:\msys\1.0\home\iteam\code\CEGUI-0.6.0\ScriptingModules\CEGUILua\LuaScriptModule\include" />
-			<Add directory="C:\OgreSDK\samples\include" />
-			<Add directory="C:\mingw\include\SDL" />
-			<Add directory=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include" />
 			<Add directory=".\src\components\ogre\environment\caelum\include" />
+			<Add directory=".\src\components\ogre\SceneManagers\EmberPagingSceneManager\include" />
 			<Add directory=".\src\components\ogre\environment\pagedgeometry\include" />
-			<Add directory="src\components\ogre\ogreopcode\include\Opcode" />
-			<Add directory="src\components\ogre\ogreopcode\include" />
-			<Add directory="C:\msys\1.0\home\iteam\code\CEGUI-0.6.0\ScriptingModules\CEGUILua\tolua++" />
+			<Add directory=".\src\components\ogre\ogreopcode\include" />
+			<Add directory=".\src\components\ogre\ogreopcode\include\Opcode" />
+			<Add directory="dependencies\include\Atlas-C++-0.6.1" />
+			<Add directory="dependencies\include\eris-1.3.13" />
+			<Add directory="dependencies\include\libwfut-0.2.0" />
+			<Add directory="dependencies\include\mercator-0.2.5" />
+			<Add directory="dependencies\include\skstream-0.3.6\mingw" />
+			<Add directory="dependencies\include\skstream-0.3.6" />
+			<Add directory="dependencies\include\varconf-0.6.5" />
+			<Add directory="dependencies\include\wfmath-0.3.7" />
+			<Add directory="dependencies\include\sigc++-2.0" />
+			<Add directory="dependencies\include\OGRE-1.4.9" />
+			<Add directory="dependencies\include\CEGUI-0.6.1" />
+			<Add directory="dependencies\include\CEGUI-0.6.1\ScriptingModules\CEGUILua\LuaScriptModule\include" />
+			<Add directory="dependencies\include\CEGUI-0.6.1\ScriptingModules\CEGUILua\tolua++" />
+			<Add directory="dependencies\include\SDL" />
+			<Add directory="C:\msys\1.0\local\include" />
 		</Compiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-image-base" />
 			<Add option="-Wl,--add-stdcall-alias" />
-			<Add library="C:\msys\1.0\local\lib\_liblua5.1.a" />
-			<Add library="C:\msys\1.0\local\lib\libsigc-2.0.dll.a" />
-			<Add library="C:\msys\1.0\home\iteam\code\CEGUI-0.6.0\bin\libCEGUIBase-1.dll" />
-			<Add library="C:\msys\1.0\home\iteam\code\CEGUI-0.6.0\bin\libCEGUILuaScriptModule.dll" />
-			<Add library="C:\msys\1.0\home\iteam\code\CEGUI-0.6.0\bin\libCEGUITinyXMLParser.dll" />
-			<Add library="C:\msys\1.0\home\iteam\code\CEGUI-0.6.0\bin\libCEGUItoluapp-1.dll" />
-			<Add library="C:\mingw\lib\libSDL.dll.a" />
-			<Add library="C:\mingw\lib\libSDLmain.a" />
+			<Add library="liblua5.1" />
+			<Add library="libsigc-2.0" />
+			<Add library="libCEGUIBase-1" />
+			<Add library="libCEGUILuaScriptModule" />
+			<Add library="libCEGUITinyXMLParser" />
+			<Add library="libCEGUItoluapp-1" />
+			<Add library="libSDL" />
+			<Add library="libSDLmain" />
 			<Add library="shlwapi" />
 			<Add library="user32" />
+			<Add directory="dependencies\lib" />
+			<Add directory="dependencies\bin" />
 		</Linker>
 		<Unit filename="config.h" />
 		<Unit filename="src\components\ogre\AttributeObserver.cpp" />
@@ -122,6 +127,8 @@
 		<Unit filename="src\components\ogre\AvatarEmberEntity.h" />
 		<Unit filename="src\components\ogre\AvatarLogger.cpp" />
 		<Unit filename="src\components\ogre\AvatarLogger.h" />
+		<Unit filename="src\components\ogre\AvatarTerrainCursor.cpp" />
+		<Unit filename="src\components\ogre\AvatarTerrainCursor.h" />
 		<Unit filename="src\components\ogre\CameraMount.cpp" />
 		<Unit filename="src\components\ogre\CameraMount.h" />
 		<Unit filename="src\components\ogre\ConsoleObjectImpl.cpp" />
@@ -132,6 +139,8 @@
 		<Unit filename="src\components\ogre\EmberEntityActionCreator.h" />
 		<Unit filename="src\components\ogre\EmberEntityFactory.cpp" />
 		<Unit filename="src\components\ogre\EmberEntityFactory.h" />
+		<Unit filename="src\components\ogre\EmberEntityHideModelAction.cpp" />
+		<Unit filename="src\components\ogre\EmberEntityHideModelAction.h" />
 		<Unit filename="src\components\ogre\EmberEntityModelAction.cpp" />
 		<Unit filename="src\components\ogre\EmberEntityModelAction.h" />
 		<Unit filename="src\components\ogre\EmberEntityPartAction.cpp" />
@@ -140,6 +149,8 @@
 		<Unit filename="src\components\ogre\EmberEntityUserObject.h" />
 		<Unit filename="src\components\ogre\EmberOgre.cpp" />
 		<Unit filename="src\components\ogre\EmberOgre.h" />
+		<Unit filename="src\components\ogre\EmberOgreFileSystem.cpp" />
+		<Unit filename="src\components\ogre\EmberOgreFileSystem.h" />
 		<Unit filename="src\components\ogre\EmberOgrePrerequisites.h" />
 		<Unit filename="src\components\ogre\EmberPhysicalEntity.cpp" />
 		<Unit filename="src\components\ogre\EmberPhysicalEntity.h" />
@@ -263,6 +274,7 @@
 		<Unit filename="src\components\ogre\SceneManagers\EmberPagingSceneManager\src\EmberPagingLandScapeTexture.cpp" />
 		<Unit filename="src\components\ogre\SceneManagers\EmberPagingSceneManager\src\EmberPagingSceneManager.cpp" />
 		<Unit filename="src\components\ogre\SceneManagers\EmberPagingSceneManager\src\EmberPagingSceneManagerAdapter.cpp" />
+		<Unit filename="src\components\ogre\SceneManagers\EmberPagingSceneManager\src\EmberTerrainPageBridge.cpp" />
 		<Unit filename="src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgreDebugRectangle2D.cpp" />
 		<Unit filename="src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgreOcclusionBoundingBox.cpp" />
 		<Unit filename="src\components\ogre\SceneManagers\EmberPagingSceneManager\src\OgrePagingLandScapeAxisAlignedBoxSceneQuery.cpp" />
@@ -329,7 +341,6 @@
 		<Unit filename="src\components\ogre\environment\Environment.h" />
 		<Unit filename="src\components\ogre\environment\Foliage.cpp" />
 		<Unit filename="src\components\ogre\environment\Foliage.h" />
-		<Unit filename="src\components\ogre\environment\FoliageArea.cpp" />
 		<Unit filename="src\components\ogre\environment\FoliageArea.h" />
 		<Unit filename="src\components\ogre\environment\FoliageBase.cpp" />
 		<Unit filename="src\components\ogre\environment\FoliageBase.h" />
@@ -416,6 +427,8 @@
 		<Unit filename="src\components\ogre\environment\pagedgeometry\source\TreeLoader3D.cpp" />
 		<Unit filename="src\components\ogre\gui\ActiveWidgetHandler.cpp" />
 		<Unit filename="src\components\ogre\gui\ActiveWidgetHandler.h" />
+		<Unit filename="src\components\ogre\gui\CEGUILogger.cpp" />
+		<Unit filename="src\components\ogre\gui\CEGUILogger.h" />
 		<Unit filename="src\components\ogre\input\IInputAdapter.h" />
 		<Unit filename="src\components\ogre\input\Input.cpp" />
 		<Unit filename="src\components\ogre\input\Input.h" />
@@ -448,6 +461,8 @@
 		<Unit filename="src\components\ogre\model\Model.h" />
 		<Unit filename="src\components\ogre\model\ModelDefinition.cpp" />
 		<Unit filename="src\components\ogre\model\ModelDefinition.h" />
+		<Unit filename="src\components\ogre\model\ModelDefinitionAtlasComposer.cpp" />
+		<Unit filename="src\components\ogre\model\ModelDefinitionAtlasComposer.h" />
 		<Unit filename="src\components\ogre\model\ModelDefinitionManager.cpp" />
 		<Unit filename="src\components\ogre\model\ModelDefinitionManager.h" />
 		<Unit filename="src\components\ogre\model\ParticleSystem.cpp" />
@@ -801,7 +816,6 @@
 		<Unit filename="src\components\ogre\widgets\ServerWidget.h" />
 		<Unit filename="src\components\ogre\widgets\StackableContainer.cpp" />
 		<Unit filename="src\components\ogre\widgets\StackableContainer.h" />
-		<Unit filename="src\components\ogre\widgets\StatusIconBar.cpp" />
 		<Unit filename="src\components\ogre\widgets\StatusIconBar.h" />
 		<Unit filename="src\components\ogre\widgets\Vector3Adapter.cpp" />
 		<Unit filename="src\components\ogre\widgets\Vector3Adapter.h" />
@@ -851,6 +865,7 @@
 		<Unit filename="src\framework\ConsoleCommandWrapper.cpp" />
 		<Unit filename="src\framework\ConsoleCommandWrapper.h" />
 		<Unit filename="src\framework\ConsoleObject.h" />
+		<Unit filename="src\framework\Exception.cpp" />
 		<Unit filename="src\framework\Exception.h" />
 		<Unit filename="src\framework\IGameView.h" />
 		<Unit filename="src\framework\IResourceProvider.h" />
@@ -917,6 +932,7 @@
 		<Unit filename="src\services\server\OOGChat.h" />
 		<Unit filename="src\services\server\ServerService.cpp" />
 		<Unit filename="src\services\server\ServerService.h" />
+		<Unit filename="src\services\sound\SoundService.cpp" />
 		<Unit filename="src\services\sound\SoundService.h" />
 		<Unit filename="src\services\time\TimeImpl.cpp" />
 		<Unit filename="src\services\time\TimeImpl.h" />
