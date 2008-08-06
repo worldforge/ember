@@ -28,6 +28,12 @@
 #include <memory>
 #include <sigc++/object.h>
 
+#ifdef WIN32
+    // These are needed by mingw
+    #include <ctime>
+    #include <stdarg.h>
+#endif
+
 namespace Ember
 {
 
@@ -46,8 +52,8 @@ class Observer;
 
 #define ENDM (Ember::LoggingService::END_MESSAGE)
 #define HEX_NUM(number) (Ember::LoggingService::hexNumber(number))
-	
-//Added by nikal 2002/10/22 For convenience. 
+
+//Added by nikal 2002/10/22 For convenience.
 //%TASK nikal,1: Perhaps a script to switch the macros to the actual function call would make code more readable?
 #define S_LOG_VERBOSE(message) (Ember::LoggingService::getSingleton().slog(__FILE__, __LINE__, Ember::LoggingService::VERBOSE) << message << ENDM)
 #define S_LOG_INFO(message) (Ember::LoggingService::getSingleton().slog(__FILE__, __LINE__, Ember::LoggingService::INFO) << message << ENDM)
@@ -57,7 +63,7 @@ class Observer;
 
 
 //#define S_LOG_INFO(message) Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << message << ENDM;
-	
+
 //TODO: Sorry, but innerclass didn't work properly
 const int NUMBER_BUFFER_SIZE = 24;
 const int MESSAGE_BUFFER_SIZE = 4096;
@@ -67,34 +73,34 @@ const int MESSAGE_BUFFER_SIZE = 4096;
 *
 * This service class should make adding and observing logging messages more easy. This
 * can be done using printf-like log method or just streaming operator << in
-* cout-like way. 
+* cout-like way.
 *
-* The cout-like way always needs a LoggingService::END_MESSAGE to be streamed-in 
+* The cout-like way always needs a LoggingService::END_MESSAGE to be streamed-in
 * last (use ENDM* macro). To specify formats like hexadecimal printing static functions
 * are available for conversion (use the HEX_NUM* macro).
-* 
+*
 * NOTE: Since streaming actually constist of many operations that can be interrupted by
 * switching the active thread, streaming should only be used in thread safe areas. [TODO: How
 * to fix this unwanted behaviour?]
 *
 *
 * There are some log variants for which you can specify some options:
-* - source file (use __FILE__) 
+* - source file (use __FILE__)
 * - source line (use __LINE__)
 * - level of importance (see enum called MessageImportance), always INFO if not specified
 *
 * As a special feature you can use a function called slog* (abbr. for stream log) that can
-* be used for setting the options before using streaming. (See example.)  
+* be used for setting the options before using streaming. (See example.)
 *
-* Observers of logging process can easily be managed 
+* Observers of logging process can easily be managed
 * using addObserver and removeObserver. An observer class handling FILE * is predefined already.
 *
 * To less the amount of messages passed through to the observers, you can specify a filter by
 * levels of importance. Thus all messages above or equal a filter level of importance are
 * written/passed by the callback to an observer.
-* 
-* 
-* HINT: Names marked with * were chosen this short, because they are intentended to be used very 
+*
+*
+* HINT: Names marked with * were chosen this short, because they are intentended to be used very
 * frequently.
 *
 * SAMPLE:
@@ -104,12 +110,12 @@ const int MESSAGE_BUFFER_SIZE = 4096;
 *
 * //do you prefer this way?
 * logger->log(__FILE__, __LINE__, LoggingService::WARNING,
-*      "Player %s (ID: %x) is already dead (but used in %d new messages).", 
+*      "Player %s (ID: %x) is already dead (but used in %d new messages).",
 *		player->getName(), player->getID(), player->getMessages()->getCount());
 *
 * //or this?
-* logger->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Player: " << player->getName() 
-*		<<"(ID: " << HEX_NUM(player->getID()) << "is already dead (but used in " << 
+* logger->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Player: " << player->getName()
+*		<<"(ID: " << HEX_NUM(player->getID()) << "is already dead (but used in " <<
 *      player->getMessages()->getCount() << " new messages)." << ENDM;
 *
 *
@@ -119,7 +125,7 @@ const int MESSAGE_BUFFER_SIZE = 4096;
 class LoggingService : public Service, public Ember::Singleton<LoggingService>
 {
 	private:
-	
+
 	/**
 	* pseudo-type used for multiple overriding with the same type of the operator<<
 	*/
@@ -183,7 +189,7 @@ class LoggingService : public Service, public Ember::Singleton<LoggingService>
 	virtual ~LoggingService ();
 
 	virtual Service::Status start ();
-	
+
     virtual void stop(int code);
 
 	/**
@@ -222,7 +228,7 @@ class LoggingService : public Service, public Ember::Singleton<LoggingService>
 
 	/**
 	* @brief Gives the possibility to specify options when using the streaming method << for messages.
-	* 
+	*
 	* @param file The source code file the message was initiated.
 	* @param line The source code line the message was initiated.
 	* @param importance The level of importance (see MessageImportance enum)
@@ -244,7 +250,7 @@ class LoggingService : public Service, public Ember::Singleton<LoggingService>
 	LoggingService & slog (const std::string & file);
 
 	/**
-	* @brief Adds an observer to the list. 
+	* @brief Adds an observer to the list.
 	*
 	* @param observer Pointer to an object with an Observer interface to be added to the list.
 	*/
@@ -267,15 +273,15 @@ class LoggingService : public Service, public Ember::Singleton<LoggingService>
 	LoggingService & operator<< (const std::string & stringToAdd);
 
 	LoggingService & operator<< (const int intToAdd);
-	
+
 	LoggingService & operator<< (const unsigned int uintToAdd);
-	
+
 	LoggingService & operator<< (const long longToAdd);
 
 	LoggingService & operator<< (const unsigned long ulongToAdd);
 
 	LoggingService & operator<< (const HexNumber & intHexToAdd);
-	
+
 	LoggingService & operator<< (const double doubleToAdd);
 
 //         LoggingService & operator<< (const size_t sizetToAdd);
@@ -317,7 +323,7 @@ private:
 	* The default value is INFO.
 	*/
 	MessageImportance myImportance;
-	
+
 	std::auto_ptr<ErisLogReciever> mErisLogReciever;
 
 	/**
@@ -326,7 +332,7 @@ private:
 	virtual void sendMessage (const std::string & message,
 							const std::string & file, const int line,
 							const MessageImportance importance);
-	
+
 };// LoggingService
 
 }// namespace Ember
