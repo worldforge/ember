@@ -27,7 +27,7 @@
 #include <OgreAxisAlignedBox.h>
 
 //-----------------------------------------------------------------------
-// Options 
+// Options
 //-----------------------------------------------------------------------
 
 //#define _VISIBILITYDEBUG
@@ -53,7 +53,7 @@ namespace Ogre
 
 
     // Octree Scene management
-	
+
     typedef std::list < MovableObject* > MovableObjectList;
     typedef std::list < Renderable* > RenderableList;
 
@@ -77,13 +77,13 @@ namespace Ogre
 
 
     typedef enum culling_modes
-    { 
+    {
         // STANDARD_WALK = 0,
         // VIEW_FRUSTUM,
         VIEW_FRUSTUM_DIRECT,
         //STOP_AND_WAIT,
-        CHC, 
-        CHC_CONSERVATIVE, 
+        CHC,
+        CHC_CONSERVATIVE,
         NUM_CULLING_MODE
     };
     class OcclusionBoundingBox;
@@ -95,7 +95,7 @@ namespace Ogre
 	typedef std::priority_queue<OcclusionElement*,std::vector<OcclusionElement*>,FrontToBackNodeSorterOperator> FrontToBackNodeSorterPriorityQueue;
 	//queue for the nodes with running occlusion queries
 	typedef std::queue<OcclusionElement*> QueriedOcclusionElement;  //queue for the nodes with running occlusion queries
-    	   
+
 
     class Traversal;
     class TraversalConst;
@@ -119,7 +119,7 @@ namespace Ogre
     typedef std::list< PagingLandScapeCamera* > PagingLandScapeCameraList;
 
     class PagingLandScapeRaySceneQuery;
-    
+
     // Basic Horizon Culling (based on tile max and min height)
     class PagingLandScapeHorizon;
 
@@ -146,7 +146,7 @@ typedef enum PageQueuingState
 	queuednone,
 	queuedPreload,
 	queuedTextureLoad,
-	queuedLoad	
+	queuedLoad
 };
 
 	typedef std::list< PagingLandScapePage* > PagingLandScapePageList;
@@ -234,21 +234,15 @@ typedef enum PageQueuingState
     #define STITCH_SOUTH  128 << STITCH_SOUTH_SHIFT
     #define STITCH_WEST   128 << STITCH_WEST_SHIFT
     #define STITCH_EAST   128 << STITCH_EAST_SHIFT
-    
+
 }
 //-----------------------------------------------------------------------
 // Windows Settings
 //-----------------------------------------------------------------------
 
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 
-#   ifdef PLUGIN_PAGINGLANDSCAPE2_EXPORTS
-#       define _OgrePagingLandScapeExport __declspec(dllexport) 
-#   else 
-#       define _OgrePagingLandScapeExport __declspec(dllimport) 
-#   endif 
-#else 
-#   define _OgrePagingLandScapeExport 
-#endif 
+
+#define _OgrePagingLandScapeExport
+
 
 //STL trick to call delete in a for_each
 struct delete_object
