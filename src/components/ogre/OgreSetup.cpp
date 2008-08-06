@@ -1,7 +1,7 @@
 //
 // C++ Implementation: OgreSetup
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2006
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -34,7 +34,9 @@
 #ifdef WIN32
 	#include <SDL.h>
 	#include <SDL_syswm.h>
-#else 
+	#include <float.h>
+	#define _NSIG NSIG //would it perhaps be better to just use NSIG all the time? I don't know whether that's available on *NIX, but mingw only has NSIG
+#else
 	#include <SDL/SDL.h>
 	#include <SDL/SDL_syswm.h>
 	#include "framework/binreloc.h"
@@ -55,11 +57,11 @@ namespace EmberOgre {
 
 
 OgreSetup::OgreSetup()
-: 
+:
 mRoot(0),
 mRenderWindow(0),
-mIconSurface(0), 
-mSceneManagerFactory(0), 
+mIconSurface(0),
+mSceneManagerFactory(0),
 mMainVideoSurface(0)
 {
 }
@@ -79,7 +81,7 @@ void OgreSetup::shutdown()
 			delete mSceneManagerFactory;
 			mSceneManagerFactory = 0;
 		}
-		
+
 // 		if (mRenderWindow) {
 // // 			mRoot->getRenderSystem()->destroyRenderWindow(mRenderWindow->getName());
 // 			mRoot->detachRenderTarget(mRenderWindow);
@@ -90,12 +92,12 @@ void OgreSetup::shutdown()
 	delete mRoot;
 	mRoot = 0;
 	S_LOG_INFO("Ogre shut down.");
-	
+
 	if (mIconSurface) {
 		SDL_FreeSurface(mIconSurface);
 		mIconSurface = 0;
 	}
-///we should clean up after us, but the surface seems to be destroyed when the render window is destroyed, so this won't be needed	
+///we should clean up after us, but the surface seems to be destroyed when the render window is destroyed, so this won't be needed
 // 	if (mMainVideoSurface) {
 // 		SDL_FreeSurface(mMainVideoSurface);
 // 		mMainVideoSurface = 0;
@@ -114,10 +116,10 @@ Ogre::Root* OgreSetup::createOgreSystem()
 // 	const std::string& sharePath(Ember::EmberServices::getSingleton().getConfigService()->getSharedConfigDirectory());
 	std::string pluginExtension = ".so";
 	mRoot = new Ogre::Root("", "ogre.cfg", "");
-	
+
 	///we will try to load the plugins from series of different location, with the hope of getting at least one right
 	std::vector<std::string> pluginLocations;
-	
+
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingleton().getConfigService();
 	if (configSrv->itemExists("ogre", "plugins")) {
 		std::string plugins(configSrv->getValue("ogre", "plugins"));
@@ -128,9 +130,10 @@ Ogre::Root* OgreSetup::createOgreSystem()
 		}
 	#ifdef __WIN32__
 		pluginExtension = ".dll";
+		pluginLocations.push_back("."); ///on windows we'll bundle the dll files in the same directory as the executable
 	#else
 		pluginExtension = ".so";
-		
+
 		#ifdef ENABLE_BINRELOC
 		///binreloc might be used
 		char* br_libdir = br_find_lib_dir(br_strcat(PREFIX, "/lib"));
@@ -220,15 +223,15 @@ bool OgreSetup::configure(void)
 	///it will force DirectX _not_ to set the FPU to single precision mode (since this will mess with mercator amongst others)
 	try {
 		mRoot->getRenderSystem()->setConfigOption("Floating-point mode", "Consistent");
-		
-	} catch (const Ogre::Exception&) 
+
+	} catch (const Ogre::Exception&)
 	{
 		///we don't know what kind of render system is used, so we'll just swallow the error since it doesn't affect anything else than DirectX
 	}
-   
-   
+
+
     mRenderWindow = mRoot->initialise(true, "Ember");
-   
+
    ///do some FPU fiddling, since we need the correct settings for stuff like mercator (which uses fractals etc.) to work
    	_fpreset();
 	_controlfp(_PC_64, _MCW_PC);
@@ -244,7 +247,7 @@ bool OgreSetup::configure(void)
    //  This method always works.
    HWND hWnd;
    mRenderWindow->getCustomAttribute("WINDOW", &hWnd);
-	
+
    char tmp[64];
    // Set the SDL_WINDOWID environment variable
    sprintf(tmp, "SDL_WINDOWID=%d", hWnd);
@@ -261,7 +264,7 @@ bool OgreSetup::configure(void)
       // This is necessary to allow the window to move1
       //  on WIN32 systems. Without this, the window resets
       //  to the smallest possible size after moving.
-      SDL_SetVideoMode(mRenderWindow->getWidth(), mRenderWindow->getHeight(), 0, 0); // first 0: BitPerPixel, 
+      SDL_SetVideoMode(mRenderWindow->getWidth(), mRenderWindow->getHeight(), 0, 0); // first 0: BitPerPixel,
                                              // second 0: flags (fullscreen/...)
                                              // neither are needed as Ogre sets these
 
@@ -273,7 +276,7 @@ bool OgreSetup::configure(void)
    //  and position. Because SDL does not own the window, it
    //  missed the WM_POSCHANGED message and has no record of
    //  either size or position. It defaults to {0, 0, 0, 0},
-   //  which is then used to trap the mouse "inside the 
+   //  which is then used to trap the mouse "inside the
    //  window". We have to fake a window-move to allow SDL
    //  to catch up, after which we can safely grab input.
    RECT r;
@@ -286,90 +289,90 @@ bool OgreSetup::configure(void)
 	_controlfp(_RC_NEAR , _MCW_RC);
 #else
 
-	///On *NIX, Ogre can have either a SDL or an GLX backend (or "platform", it's selected at compile time by the --with-platform=[GLX|SDL] option). Ogre 1.2+ uses GLX by default. 
+	///On *NIX, Ogre can have either a SDL or an GLX backend (or "platform", it's selected at compile time by the --with-platform=[GLX|SDL] option). Ogre 1.2+ uses GLX by default.
 	///However, we use SDL for our input systems. If the SDL backend then is used, everything is already set up for us.
 	///If on the other hand the GLX backend is used, we need to do some fiddling to get SDL to play nice with the GLX render system.
-	
+
 	///Check if SDL already has been initalized. If it has, we know that Ogre uses the SDL backend (the call to SDL_Init happens at mRoot->restoreConfig())
 	if(SDL_WasInit(SDL_INIT_VIDEO)==0) {
 		///SDL hasn't been initilized, we thus know that we're using the GLX platform, and need to initialize SDL ourselves
-		
+
 		/// we start by trying to figure out what kind of resolution the user has selected, and whether full screen should be used or not
 		unsigned int height = 768, width = 1024;
 		bool fullscreen;
-		
+
 		parseWindowGeometry(mRoot->getRenderSystem()->getConfigOptions(), width, height, fullscreen);
-		
+
 		SDL_Init(SDL_INIT_VIDEO);
-		
-		
-		
+
+
+
 		///this is a failsafe which guarantees that SDL is correctly shut down (returning the screen to correct resolution, releasing mouse etc.) if there's a crash.
  		atexit(SDL_Quit);
  		oldSignals[SIGSEGV] = signal(SIGSEGV, shutdownHandler);
  		oldSignals[SIGABRT] = signal(SIGABRT, shutdownHandler);
  		oldSignals[SIGBUS] = signal(SIGBUS, shutdownHandler);
  		oldSignals[SIGILL] = signal(SIGILL, shutdownHandler);
- 		
-		
+
+
 		///set the window size
 //        int flags = SDL_OPENGL | SDL_HWPALETTE | SDL_RESIZABLE | SDL_HWSURFACE;
         int flags = SDL_HWPALETTE | SDL_HWSURFACE;
-		
+
 //         SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
         // request good stencil size if 32-bit colour
 /*        if (colourDepth == 32)
         {
             SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8);
         }*/
-		
+
         if (fullscreen)
             flags |= SDL_FULLSCREEN;
-		
+
 		mMainVideoSurface = SDL_SetVideoMode(width, height,0, flags); // create an SDL window
-	
+
 		SDL_WM_SetCaption("Ember","ember");
-	
+
 		SDL_SysWMinfo info;
 		SDL_VERSION(&info.version);
-	
+
 		SDL_GetWMInfo(&info);
-	
+
 		std::string dsp(&(DisplayString(info.info.x11.display)[1]));
 		std::vector<Ogre::String> tokens = Ogre::StringUtil::split(dsp, ".");
-	
+
 		Ogre::NameValuePairList misc;
 		std::string s = Ogre::StringConverter::toString((long)info.info.x11.display);
 		s += ":" + tokens[1] +":";
 		s += ":" + Ogre::StringConverter::toString((long)info.info.x11.window);
 		misc["parentWindowHandle"] = s;
-		
+
 		//misc["externalGLControl"] = "true";
-		
+
 /*		GLXContext glxContext(glXGetCurrentContext());
 		GLXDrawable glxDrawable(glXGetCurrentDrawable());
 		std::string glxContextString = Ogre::StringConverter::toString((long)glxContext);
 		glxContextString += ":" + Ogre::StringConverter::toString((long)glxDrawable);
 		misc["glxcontext"] = glxContextString;*/
-		
+
 		/// initialise root, without creating a window
 		mRoot->initialise(false);
-		
+
 		mRenderWindow = mRoot->createRenderWindow("MainWindow", width, height, true, &misc);
-		
+
 		///we need to set the window to be active by ourselves, since GLX by default sets it to false, but then activates it upon receiving some X event (which it will never recieve since we'll use SDL).
 		///see OgreGLXWindow.cpp
 		mRenderWindow->setActive(true);
 		mRenderWindow->setAutoUpdated(true);
-	
+
 	} else {
 		mRenderWindow = mRoot->initialise(true, "Ember");
 	}
-    
-    
+
+
     ///set the icon of the window
     Uint32 rmask, gmask, bmask, amask;
-	
+
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
     rmask = 0xff000000;
     gmask = 0x00ff0000;
@@ -388,7 +391,7 @@ An bitmap of the ember icon, to be used for setting the window icon for SDL.
 static struct {
   unsigned int 	 width;
   unsigned int 	 height;
-  unsigned int 	 bytes_per_pixel; /* 3:RGB, 4:RGBA */ 
+  unsigned int 	 bytes_per_pixel; /* 3:RGB, 4:RGBA */
   unsigned char	 pixel_data[64 * 64 * 3 + 1];
 } emberIcon = {
   64, 64, 3,
@@ -740,7 +743,7 @@ static struct {
 
 
 ///We'll use the emberIcon struct
-	mIconSurface = SDL_CreateRGBSurfaceFrom(emberIcon.pixel_data, 64, 64, 24, 64*3, 
+	mIconSurface = SDL_CreateRGBSurfaceFrom(emberIcon.pixel_data, 64, 64, 24, 64*3,
                                       rmask, gmask, bmask, 0);
 	if (mIconSurface) {
 		SDL_WM_SetIcon(mIconSurface, 0);
@@ -748,7 +751,7 @@ static struct {
 
 
 #endif
-	
+
 		setStandardValues();
 
 		return true;
@@ -763,7 +766,7 @@ void OgreSetup::setStandardValues()
 {
 	/// Set default mipmap level (NB some APIs ignore this)
 	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
- 
+
 	/// Set default animation mode
 	Ogre::Animation::setDefaultInterpolationMode(Ogre::Animation::IM_SPLINE);
 
@@ -782,10 +785,10 @@ EmberPagingSceneManager* OgreSetup::chooseSceneManager()
 
     /// Register our factory
     Ogre::Root::getSingleton().addSceneManagerFactory(mSceneManagerFactory);
-	
+
 	EmberPagingSceneManager* sceneMgr = static_cast<EmberPagingSceneManager*>(mRoot->createSceneManager(Ogre::ST_EXTERIOR_REAL_FAR, "EmberPagingSceneManager"));
-	
-	///We need to call init scene since a lot of components used by the scene manager are thus created 
+
+	///We need to call init scene since a lot of components used by the scene manager are thus created
 	sceneMgr->InitScene();
 
 	return sceneMgr;
@@ -798,12 +801,12 @@ void OgreSetup::parseWindowGeometry(Ogre::ConfigOptionMap& config, unsigned int&
 		Ogre::String val = opt->second.currentValue;
 		Ogre::String::size_type pos = val.find('x');
 		if (pos != Ogre::String::npos) {
-	
+
 			width = Ogre::StringConverter::parseUnsignedInt(val.substr(0, pos));
 			height = Ogre::StringConverter::parseUnsignedInt(val.substr(pos + 1));
 		}
 	}
-	
+
 	///now on to whether we should use fullscreen
 	opt = config.find("Full Screen");
 	if (opt != config.end()) {

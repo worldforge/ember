@@ -36,10 +36,15 @@
 
 //we need this for the PathRemoveFileSpec(...) method
 #include <shlwapi.h>
+
+//win32 hack, not sure if this works
+#define SYSCONFDIR "."
+#define DATADIR "."
 #endif
 
 // #include <iostream>
 #include <fstream>
+
 
 using namespace std;
 
@@ -49,7 +54,7 @@ namespace Ember
 	const std::string ConfigService::SETVALUE ( "set_value" );
 	const std::string ConfigService::GETVALUE ( "get_value" );
 
-	ConfigService::ConfigService() : 
+	ConfigService::ConfigService() :
 	Service()
 	, mSharedDataDir(DATADIR "/ember/")
 	, mEtcDir(SYSCONFDIR "/ember/")
@@ -149,7 +154,7 @@ namespace Ember
 	{
 		return hasItem(section, key);
 	}
-	
+
 	bool ConfigService::hasItem ( const std::string& section, const std::string& key ) const
 	{
 		return mConfig->find ( section, key );
@@ -238,14 +243,14 @@ namespace Ember
 				}
 			}
 		}
-	
+
 	}
-	
+
 	void ConfigService::updatedConfig (const std::string& section, const std::string& key)
 	{
 		EventChangedConfigItem.emit ( section, key );
 	}
-	
+
 	void ConfigService::configError ( const char* error )
 	{
 		S_LOG_FAILURE ( std::string ( error ) );

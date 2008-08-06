@@ -23,9 +23,10 @@
 #endif
 
 #ifdef __WIN32__
-	#include <al.h>
-	#include <alc.h>
-	#include <AL/alut.h>
+
+//	#include <al.h>
+//	#include <alc.h>
+//	#include <AL/alut.h>
 #else
 	#include <AL/al.h>
 	#include <AL/alc.h>
@@ -79,7 +80,7 @@ namespace Ember
 	{
 
 		S_LOG_INFO("Sound Service starting");
-		
+
 	#ifndef WIN32
 		// Test that /dev/dsp is availible
 		FILE *temp = fopen("/dev/dsp","w");
@@ -89,7 +90,10 @@ namespace Ember
 			return Service::FAILURE;
 		}
 	#endif
-		
+
+#ifndef WIN32
+
+
 		ALfloat listenerPos[3]={0.0,0.0,0.0};	// listener position
 		ALfloat listenerVel[3]={0.0,0.0,0.0};	// listener velocity
 		ALfloat listenerOri[6]={0.0,0.0,1.0,0.0,1.0,0.0};	// listener orientation
@@ -140,7 +144,7 @@ namespace Ember
 			}
 		}
 
-		
+
 		// Generate sources
 
 		S_LOG_VERBOSE("Generating Sources");
@@ -174,7 +178,7 @@ namespace Ember
 		ConsoleBackend::getSingletonPtr()->registerCommand(PLAYMUSIC,this);
 		ConsoleBackend::getSingletonPtr()->registerCommand(PLAYFILE,this);
 		ConsoleBackend::getSingletonPtr()->registerCommand(PLAYSPEECH,this);
-
+#endif
 		// Service initialized successfully
 		setRunning( true );
 		setStatus(Service::OK);
@@ -189,8 +193,10 @@ namespace Ember
 	void SoundService::stop(int code)
 	{
     	Service::stop(code);
+#ifndef WIN32
 		alSourceStop(worldSources[0]);
 		alutExit();			// Finalize OpenAL
+#endif
 		setStatus(Service::OK);
 	}
 
@@ -251,9 +257,9 @@ namespace Ember
   bool SoundService::UnloadWAV(void)
   {
 
-#ifdef _WIN32 //Windows
+#ifdef WIN32 //Windows
 
-		alutUnloadWAV(format,data,size,freq); // Funtion that unloads the Wav file on windows
+		//alutUnloadWAV(format,data,size,freq); // Funtion that unloads the Wav file on windows
 
 #endif
 
@@ -297,18 +303,19 @@ namespace Ember
 	}
 */
 	void SoundService::playTestGrunt(void) {
-	
+#ifndef WIN32
+
 		std::stringstream gruntPath;
 		gruntPath << soundsDirPath << "pig_grunt.wav";
 		S_LOG_INFO( "Loading sound: [" << gruntPath.str() << "]" );
 		//alutLoadWAV(gruntPath.str().c_str(),&data,&format,&size,&bits,&freq);
-		
+
 		// Connect WAV to buffer
 		//alBufferData(worldBuffers[1],format,data,size,freq);
-		
+
 		// Play
 		//alSourcePlay(worldSources[1]);
-		
+
 		// Check errors
 		int error = alGetError();
 		if(error != AL_NO_ERROR)
@@ -317,11 +324,13 @@ namespace Ember
 			//std::string errorStr = alGetString(error);
 			S_LOG_FAILURE( "Error playing sound: " << errorStr );
 		}
+#endif
 	}
 
 	void SoundService::updateListenerPosition(
 		const WFMath::Point<3>& position,
 		const WFMath::Quaternion& orientation) {
+#ifndef WIN32
 
 		ALfloat listenerPosition[3]={position.x(),position.y(),position.z()};
 		//ALfloat listenerOri[6]={0.0,0.0,1.0,0.0,1.0,0.0};
@@ -330,10 +339,11 @@ namespace Ember
 		alListenerfv(AL_POSITION,listenerPosition);
 		//alListenerfv(AL_ORIENTATION,listenerOri);
 
-		// update the System and Music Source, 
+		// update the System and Music Source,
 		// because they will always be with the listener
 		// TODO: WRONG! do this with relative position (0,0,0) to the listener
 		//alSourcefv(systemSource,AL_POSITION,listenerPosition);
+#endif
 	}
 
 /*
@@ -354,30 +364,35 @@ namespace Ember
 	void SoundService::updateAvatarSourcePosition(
 		const WFMath::Point<3>& position,
 		const WFMath::Quaternion& orientation) {
-
+#ifndef WIN32
 		ALfloat avatarSourcePosition[3]={position.x(),position.y(),position.z()};
 		//ALfloat listenerOri[6]={0.0,0.0,1.0,0.0,1.0,0.0};
 
 		alSourcefv(avatarSource,AL_POSITION,avatarSourcePosition);
 		//alListenerfv(AL_ORIENTATION,listenerOri);
+#endif
 	}
 
 	void SoundService::playTestSound() {
+#ifndef WIN32
 		systemBuffer = alutCreateBufferHelloWorld();
 		alSourcei(systemSource, AL_BUFFER, systemBuffer);
 		alSourcePlay(systemSource);
+#endif
 	}
 
 	void SoundService::playAvatarSound() {
+#ifndef WIN32
 		avatarBuffer = alutCreateBufferHelloWorld();
 		alSourcei(avatarSource, AL_BUFFER, avatarBuffer);
 		alSourcePlay(avatarSource);
+#endif
 	}
 
 	void SoundService::playTalk(std::string message,
 		const WFMath::Point<3>& position,
 		const WFMath::Quaternion& orientation) {
-
+#ifndef WIN32
 		S_LOG_INFO( "Playing talk: " << message );
 
 		// determine the source and buffer that will play the sound
@@ -387,18 +402,19 @@ namespace Ember
 
 		// adjust position
 		// TODO: adjust orientation
-		ALfloat worldSourcePosition[3]={position.x(),position.y(),position.z()};	
+		ALfloat worldSourcePosition[3]={position.x(),position.y(),position.z()};
 		alSourcefv(worldSource,AL_POSITION,worldSourcePosition);
 
 		worldBuffer = alutCreateBufferHelloWorld();
 		alSourcei(worldSource, AL_BUFFER, worldBuffer);
 		alSourcePlay(worldSource);
+#endif
 	}
 
 	void SoundService::playSystemSound(std::string soundName) {
 
 		// load the sound through the sound provider
-		mProvider->loadSound(soundName);	
+		mProvider->loadSound(soundName);
 
 		// play sound
 
@@ -418,21 +434,22 @@ namespace Ember
 		// TODO: check error if it finds none
 
 		systemBuffer = alutCreateBufferFromFile(filePath.c_str());
-		if(systemBuffer == AL_NONE) 
+		if(systemBuffer == AL_NONE)
 		{
 			S_LOG_FAILURE(alutGetErrorString(alutGetError()));
-		} else 
+		} else
 		{
 			S_LOG_INFO("TRACE - BUFFER LOADED");
 		}
 		alSourcei(systemSource, AL_BUFFER, systemBuffer);
-		
+
 		alSourcePlay(systemSource);
 		*/
 	}
-
+#ifndef WIN32
 	ALuint SoundService::getWorldSourceIndexForPlaying(int priority) {
 		return 0;
 	}
+#endif
 
 } // namespace Ember

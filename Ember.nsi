@@ -8,10 +8,10 @@
 ;--------------------------------
 
 ; The name of the installer
-Name "Ember-0.5.1"
+Name "Ember-0.5.3"
 
 ; The file to write
-OutFile "Ember-0.5.1.exe"
+OutFile "Ember-0.5.3.exe"
 
 ; The default installation directory
 InstallDir $PROGRAMFILES\Worldforge\Ember
@@ -42,7 +42,7 @@ Section "Ember (required)"
   SetOutPath $APPDATA\Ember
   File /oname=ogre.cfg etc\ember\ogre.cfg 
 
-  SetOutPath $APPDATA\Ember\ember-media-0.5.1
+  SetOutPath $APPDATA\Ember\ember-media-0.5.3
   File /r media\user\*.*
   
   ; Set output path to the installation directory.

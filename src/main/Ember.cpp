@@ -29,7 +29,7 @@
     #include <io.h> // for _access, Win32 version of stat()
     #include <direct.h> // for _mkdir
 //	#include <sys/stat.h>
-	
+
 	#include <iostream>
 	#include <fstream>
 	#include <ostream>
@@ -45,16 +45,7 @@
 #include "framework/binreloc.h" //this is needed for binreloc functionality
 
 
-#ifdef __WIN32__
-#define WIN32_LEAN_AND_MEAN
-#include "windows.h"
-/**
-* Main function, just boots the application object
-*/
-INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
-#else
 int main(int argc, char **argv)
-#endif
 {
 	int exitStatus(0);
 	bool exit_program = false;
@@ -90,7 +81,7 @@ int main(int argc, char **argv)
 					argv++;
 					argc--;
 				}
-				
+
 			} else if (arg == "--home") {
 				if (!argc) {
 					std::cout << "You didn't supply a home directory.";
@@ -100,7 +91,7 @@ int main(int argc, char **argv)
 					argv++;
 					argc--;
 				}
-				
+
 			} else if (arg == "--config") {
 				if (argc < 2) {
 					std::cout << "You didn't supply any config arguments.";
@@ -132,28 +123,28 @@ int main(int argc, char **argv)
 		}
 		return 0;
 	}
-	
+
 #ifdef ENABLE_BINRELOC
     if (prefix == "") {
 		BrInitError error;
-	
+
 		if (br_init (&error) == 0 && error != BR_INIT_ERROR_DISABLED) {
 			printf ("Warning: BinReloc failed to initialize (error code %d)\n", error);
 			printf ("Will fallback to hardcoded default path.\n");
-		}	
-		
+		}
+
 		char* br_prefixdir = br_find_prefix(PREFIX);
 		const std::string prefixDir(br_prefixdir);
 		free(br_prefixdir);
 		prefix = prefixDir;
 	}
-   
+
 #endif
 // 	if (prefix == "") {
 // 		prefix = PREFIX;
 // 	}
-	
-#else 
+
+#else
  //  char tmp[64];
 
  //  unsigned int floatSetting = _controlfp( 0, 0 );
@@ -174,15 +165,15 @@ int main(int argc, char **argv)
 			/// Create application object
 			Ember::Application app(prefix, homeDir, configMap);
 			//EmberOgre::EmberOgre app;
-			
+
 			std::cout << "Starting Ember version " << VERSION << std::endl;
-		
+
 			app.registerComponents();
-		
+
 			/// Initialize all Ember services needed for this application
 			app.prepareComponents();
 			app.initializeServices();
-		
+
 			app.start();
 		} catch (const std::exception& ex)
 		{

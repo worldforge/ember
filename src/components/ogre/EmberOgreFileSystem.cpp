@@ -77,10 +77,14 @@ int _findclose(long id);
 #   include <windows.h>
 #   include <direct.h>
 #   include <io.h>
+#include <stdio.h>
+#include <ctype.h>
 #endif
 
 using namespace Ogre;
 namespace EmberOgre {
+
+#if OGRE_PLATFORM != OGRE_PLATFORM_WIN32
 
 struct _find_search_t
 {
@@ -90,7 +94,7 @@ struct _find_search_t
     int dirlen;
     DIR *dirfd;
 };
-        
+
 long _findfirst(const char *pattern, struct _finddata_t *data)
 {
     _find_search_t *fs = new _find_search_t;
@@ -192,7 +196,7 @@ int _findclose(long id)
 {
     int ret;
     _find_search_t *fs = (_find_search_t *)id;
-    
+
     ret = fs->dirfd ? closedir (fs->dirfd) : 0;
     free (fs->pattern);
     free (fs->directory);
@@ -203,22 +207,9 @@ int _findclose(long id)
     return ret;
 }
 
+#endif
+}
 
-    //-----------------------------------------------------------------------
-    FileSystemArchive::FileSystemArchive(const String& name, const String& archType )
-        : Archive(name, archType)
-    {
-    }
-    //-----------------------------------------------------------------------
-    bool FileSystemArchive::isCaseSensitive(void) const
-    {
-        #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-            return false;
-        #else
-            return true;
-        #endif
-
-    }
     //-----------------------------------------------------------------------
     static bool is_reserved_dir (const char *fn)
     {
@@ -241,8 +232,25 @@ int _findclose(long id)
         else
             return base + '/' + name;
     }
+namespace EmberOgre {
     //-----------------------------------------------------------------------
-    void FileSystemArchive::findFiles(const String& pattern, bool recursive, 
+    FileSystemArchive::FileSystemArchive(const String& name, const String& archType )
+        : Archive(name, archType)
+    {
+    }
+    //-----------------------------------------------------------------------
+    bool FileSystemArchive::isCaseSensitive(void) const
+    {
+        #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+            return false;
+        #else
+            return true;
+        #endif
+
+    }
+
+    //-----------------------------------------------------------------------
+    void FileSystemArchive::findFiles(const String& pattern, bool recursive,
         bool dirs, StringVector* simpleList, FileInfoList* detailList)
     {
         long lHandle, res;
@@ -263,13 +271,13 @@ int _findclose(long id)
 			// Remove the last '/'
 			base_dir.erase (base_dir.length () - 1);
 		}
-		
+
 		///if there's a file with the name "norecurse" we shouldn't recurse further
 		std::ifstream norecurseFile((base_dir + "/norecurse").c_str());
 		if (!norecurseFile.fail()) {
 			return;
 		}
-		
+
 		base_dir.append ("/*");
 
 
@@ -297,7 +305,7 @@ int _findclose(long id)
                     fi.compressedSize = tagData.size;
                     fi.uncompressedSize = tagData.size;
                     detailList->push_back(fi);
-                    
+
                 }
             }
             res = _findnext( lHandle, &tagData );
@@ -305,7 +313,7 @@ int _findclose(long id)
         // Close if we found any files
         if(lHandle != -1)
             _findclose(lHandle);
-        
+
 
         // Now find directories
         if (recursive)
@@ -358,7 +366,7 @@ int _findclose(long id)
     {
         String full_path = concatenate_path(mName, filename);
 
-        // Use filesystem to determine size 
+        // Use filesystem to determine size
         // (quicker than streaming to the end and back)
         struct stat tagStat;
 	int ret = stat(full_path.c_str(), &tagStat);
@@ -413,7 +421,7 @@ int _findclose(long id)
 
     }
     //-----------------------------------------------------------------------
-    FileInfoListPtr FileSystemArchive::findFileInfo(const String& pattern, 
+    FileInfoListPtr FileSystemArchive::findFileInfo(const String& pattern,
         bool recursive, bool dirs)
     {
         FileInfoListPtr ret(new FileInfoList());
