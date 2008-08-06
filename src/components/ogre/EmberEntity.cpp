@@ -136,7 +136,31 @@ EmberEntity::~EmberEntity()
 	///make sure it's not in the MotionManager
 	///TODO: keep a marker in the entity so we don't need to call this for all entities
 	MotionManager::getSingleton().removeEntity(this);
-	
+
+    if (hasAttr("terrainmod")) {
+            // Remove our terrainmod attribute
+        m_attrs.erase("terrainmod");
+            // Clear all modifiers from the world
+        EmberOgre::getSingleton().getTerrainGenerator()->ClearAllMods();
+
+            // Find and reapply all other mods
+        IdEntityMap ents;
+        EmberEntity* w = (EmberEntity*)EmberOgre::getSingleton().getEntityFactory()->getWorld();
+        w->buildEntityDictFromContents(ents);
+
+        IdEntityMap::iterator I = ents.begin();
+        float mx,my; //x, y coords of the mod-holding entity's position
+        for (; I != ents.end(); I++)
+        {
+            if (I->second->hasAttr("terrainmod") ) {
+                mx = I->second->getPosition().x();
+                my = I->second->getPosition().y();
+                //EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment(mx,my)->clearMods();
+                dynamic_cast<EmberEntity*>(I->second)->updateTerrainModifiers(I->second->valueOfAttr("terrainmod"));
+            }
+        }
+    }
+
 	if (mErisEntityBoundingBox) {
 		mErisEntityBoundingBox->getParentSceneNode()->getCreator()->destroySceneNode(mErisEntityBoundingBox->getParentSceneNode()->getName());
 	}

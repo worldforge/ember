@@ -461,10 +461,10 @@ void TerrainPage::addTerrainModifier(int sx, int sy, int mx, int my, int mz, Mer
         mTModList.push_back(terrainModListEntry(sx,sy,mx,my,mz,newmod->clone()));
     }
 
-    float lx=((*newmod).bbox().lowCorner()[0] - 1);
-    float ly=((*newmod).bbox().lowCorner()[1] - 1);
-    float hx=((*newmod).bbox().highCorner()[0] + 1);
-    float hy=((*newmod).bbox().highCorner()[1] + 1);
+    int lx=(int)floor(((*newmod).bbox().lowCorner()[0] - 1) / 64);
+    int ly=(int)floor(((*newmod).bbox().lowCorner()[1] - 1) / 64);
+    int hx=(int)ceil(((*newmod).bbox().highCorner()[0] + 1) / 64);
+    int hy=(int)ceil(((*newmod).bbox().highCorner()[1] + 1) / 64);
     S_LOG_INFO("lx -> For mod at sx: " << sx << ", sy: " << sy << ", mx: " << mx << ", my: " << my);
     S_LOG_INFO("lx: " << lx << ", ly: " << ly << ", hx: " << hx << ", hy: " << hy);
 
