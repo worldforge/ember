@@ -27,8 +27,8 @@ the OGRE Unrestricted License provided you have obtained such a license from
 Torus Knot Software Ltd.
 -----------------------------------------------------------------------------
 */
-#ifndef __FileSystem_H__
-#define __FileSystem_H__
+#ifndef __EmberOgreFileSystem_H__
+#define __EmberOgreFileSystem_H__
 
 #include <OgrePrerequisites.h>
 
@@ -37,13 +37,13 @@ Torus Knot Software Ltd.
 
 namespace EmberOgre {
 
-    /** Specialisation of the Archive class to allow reading of files from 
+    /** Specialisation of the Archive class to allow reading of files from
         filesystem folders / directories.
         This has been modified from the original Ogre class to:
         1) not visit hidden directories (such as .svn)
         2) not recurse into directories if there's a file named "norecurse" in them
     */
-    class FileSystemArchive : public Ogre::Archive 
+    class FileSystemArchive : public Ogre::Archive
     {
     protected:
         /** Utility method to retrieve all files in a directory matching pattern.
@@ -53,7 +53,7 @@ namespace EmberOgre {
             instead of files
         @param simpleList Populated if retrieving a simple list
         @param detailList Populated if retrieving a detailed list
-        @param currentDir The current directory relative to the base of the 
+        @param currentDir The current directory relative to the base of the
             archive, for file naming
         */
         void findFiles(const Ogre::String& pattern, bool recursive, bool dirs,
@@ -101,7 +101,7 @@ namespace EmberOgre {
         /// @copydoc FactoryObj::getType
         const Ogre::String& getType(void) const;
         /// @copydoc FactoryObj::createInstance
-        Ogre::Archive *createInstance( const Ogre::String& name ) 
+        Ogre::Archive *createInstance( const Ogre::String& name )
         {
             return new EmberOgre::FileSystemArchive(name, "EmberFileSystem");
         }
