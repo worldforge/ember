@@ -29,9 +29,12 @@ class ISoundProvider;
 #include "framework/ConsoleObject.h"
 #include "framework/ISoundProvider.h"
 
+#ifndef WIN32
 //#include <AL/altypes.h>
 //Might need a proper preprocessor to handle different versions
 #include<AL/al.h>
+
+#endif
 
 #include <wfmath/point.h>
 #include <wfmath/vector.h>
@@ -61,27 +64,28 @@ friend class IScriptingProvider;
   //this should be a void* if it is enabled again.  It is not currently used
 
 
+#ifndef WIN32
 
-	/** System source - this source will play system sounds, 
-	like user input request or program error. 
+	/** System source - this source will play system sounds,
+	like user input request or program error.
 	Will always remain in the same relative position to the listener. */
 	ALuint systemSource;
 	/** System buffer - buffer used to load system sounds files */
 	ALuint systemBuffer;
-	/** Music source - this source will play background music. 
+	/** Music source - this source will play background music.
 	Will always remain in the same relative position to the listener. */
 	ALuint musicSource;
 	/** Music buffer - buffer used to load background music files */
 	ALuint musicBuffer;
-	/** Avatar source - this source will play avatar sounds, 
+	/** Avatar source - this source will play avatar sounds,
 	which are more important than the same sounds for other entities
 	Example: avatar footsteps vs other people's footsteps
 	*/
 	ALuint avatarSource;
 	/** Avatar buffer - buffer used to load avatar sounds files */
 	ALuint avatarBuffer;
-	/** World sources - array of sources to play world sounds. 
-	They will be placed in 3D space. 
+	/** World sources - array of sources to play world sounds.
+	They will be placed in 3D space.
 	This field may change depending on the data model */
 	ALuint worldSources[NUM_WORLD_SOURCES];
 	/** Wold buffers - array of buffers for loading world sounds */
@@ -89,8 +93,10 @@ friend class IScriptingProvider;
 
 	ALuint getWorldSourceIndexForPlaying(int priority);
 
+#endif
+
 	std::string soundsDirPath;
-	
+
 #ifdef _WIN32
 	unsigned int size, freq;
 #else
@@ -131,7 +137,7 @@ friend class IScriptingProvider;
 
 	/**
 	 *    Registers a new sound provider.
-	 * @param provider 
+	 * @param provider
 	 */
 	void registerSoundProvider(ISoundProvider* provider);
 
@@ -143,7 +149,7 @@ friend class IScriptingProvider;
 
 	//void playTestGYPH(void);
 	void playTestGrunt(void);
-	
+
 	void updateListenerPosition(
 		const WFMath::Point<3>& position,
 		const WFMath::Quaternion& orientation);
