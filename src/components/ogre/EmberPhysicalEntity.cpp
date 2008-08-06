@@ -706,6 +706,12 @@ const Ogre::Vector3& EmberPhysicalEntity::getOffsetForContainedNode(const Ogre::
 void EmberPhysicalEntity::updateMotion(Ogre::Real timeSlice)
 {
 	EmberEntity::updateMotion(timeSlice);
+
+	// Update Sound Entity Position
+	if (mSoundEntity)
+	{
+		mSoundEntity->setPosition(getPredictedPos());
+	}
 }
 
 
