@@ -7,14 +7,18 @@ $#include "services/server/ServerService.h"
 $#include "services/config/ConfigService.h"
 $#include "services/metaserver/MetaserverService.h"
 $#include "services/scripting/ScriptingService.h"
+$#include "services/input/Input.h"
+$#include "services/input/InputService.h"
 //$#include "services/sound/SoundService.h"
 
 
+$pfile "Input.pkg";
 $pfile "LoggingService.pkg";
 $pfile "ConfigService.pkg";
 $pfile "MetaserverService.pkg";
 $pfile "ServerService.pkg";
 $pfile "ScriptingService.pkg";
+$pfile "InputService.pkg";
 //  class SoundService;
 
 namespace Ember {

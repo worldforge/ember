@@ -32,7 +32,7 @@
 #include "services/config/ConfigService.h"
 #include "services/time/TimeService.h"
 #include "EmberOgre.h"
-#include "input/Input.h"
+#include "services/input/Input.h"
 
 namespace EmberOgre {
 
@@ -75,7 +75,7 @@ namespace EmberOgre {
 		bool updated = false;
 		
 		///first check if the mouse has moved even one pixel, and if so force an update
-		const MousePosition& mousePosition(Input::getSingleton().getMousePosition());
+		const Ember::MousePosition& mousePosition(Ember::Input::getSingleton().getMousePosition());
 		if (mousePosition.xPixelPosition != mLastMouseX || mousePosition.yPixelPosition != mLastMouseY) {
 			shouldRecalculate = true;
 		} else {

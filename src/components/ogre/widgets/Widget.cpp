@@ -28,7 +28,7 @@
 #include "Widget.h"
 
 #include "../GUIManager.h"
-#include "../input/Input.h"
+#include "services/input/Input.h"
 #include "../EmberOgre.h"
 
 #include <CEGUIWindow.h>
@@ -284,7 +284,7 @@ namespace Gui {
 				if (I != mTabOrder.end()) {
 					I->second->activate();
 					///we don't want to process the event any more, in case something else will try to interpret the tab event to also change the focus
-					Input::getSingleton().suppressFurtherHandlingOfCurrentEvent();
+					Ember::Input::getSingleton().suppressFurtherHandlingOfCurrentEvent();
 					return true;
 				}
 			}

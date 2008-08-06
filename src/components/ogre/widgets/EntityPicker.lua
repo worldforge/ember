@@ -66,7 +66,7 @@ function EntityPicker.buildWidget()
 		
 	EntityPicker.stackableContainer = EmberOgre.Gui.StackableContainer:new_local(EntityPicker.menuWindow)
 	EntityPicker.stackableContainer:setInnerContainerWindow(EntityPicker.menuWindow)
-	connect(EntityPicker.connectors, guiManager:getInput().EventMouseButtonReleased, "EntityPicker.input_MouseButtonReleased")
+	connect(EntityPicker.connectors, Ember.Input:getSingleton().EventMouseButtonReleased, "EntityPicker.input_MouseButtonReleased")
 
 end
 
@@ -278,7 +278,7 @@ end
 
 function EntityPicker.input_MouseButtonReleased(button,  mode)
 	--only show the menu while the left mouse button is pressed
-	if button == EmberOgre.Input.MouseButtonLeft then
+	if button == Ember.Input.MouseButtonLeft then
 		EntityPickerWidget_removeMenu()
 	end
 end

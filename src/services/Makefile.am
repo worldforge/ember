@@ -2,7 +2,8 @@ INCLUDES = -I$(top_srcdir)/src -I$(top_builddir)/src
 
 METASOURCES = AUTO
 
-SUBDIRS = bindings config logging metaserver scripting server sound time wfut
+SUBDIRS = bindings config input logging metaserver scripting server sound time \
+	wfut
 # removed subdirs: gui platform datamodel  input image font test sound
 noinst_LTLIBRARIES = libServices.la
 
@@ -16,7 +17,8 @@ libServices_la_LIBADD = \
 	scripting/libScriptingService.la \
 	config/libConfigService.la \
 	time/libTime.la\
-	wfut/libWfut.la 
+	wfut/libWfut.la \
+	input/libInputService.la
 
 
 #check_PROGRAMS = servicetest

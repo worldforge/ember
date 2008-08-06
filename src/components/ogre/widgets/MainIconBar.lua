@@ -61,7 +61,7 @@ function MainIconBar.buildWidget()
 	
 	MainIconBar.movementModeIcon:getButton():subscribeEvent("MouseClick", "MainIconBar.movement_MouseClick")
 	
-	connect(MainIconBar.connectors, EmberOgre.Input:getSingleton().EventChangedInputMode, "MainIconBar.Input_InputModeChanged")
+	connect(MainIconBar.connectors, Ember.Input:getSingleton().EventChangedInputMode, "MainIconBar.Input_InputModeChanged")
 	connect(MainIconBar.connectors, emberOgre:getAvatarController().EventMovementModeChanged, "MainIconBar.AvatarController_MovementModeChanged")
 	
 	--position it in the lower left of the screen
@@ -88,14 +88,14 @@ end
 
 --toggle input mode when the input mode button is clicked
 function MainIconBar.movement_MouseClick(args)
-	guiManager:getInput():toggleInputMode()
+	Ember.Input:getSingleton():toggleInputMode()
 	return true
 end
 
 --when the input mode is changed, we need to update both the image on the movement mode icon and the mouse pointer
 function MainIconBar.Input_InputModeChanged(inputMode)
 	MainIconBar.currentMode = inputMode
-	if inputMode == EmberOgre.Input.IM_GUI then
+	if inputMode == Ember.Input.IM_GUI then
 		MainIconBar.movementModeIcon:setForeground(MainIconBar.movementImage_gui)
 		if MainIconBar.originalCursorImage ~= nil then
 			CEGUI.MouseCursor:getSingleton():setImage(MainIconBar.originalCursorImage);
@@ -109,7 +109,7 @@ end
 
 --When the movement mode is changed (i.e. walking or running) we need to update the images on the movement mode icon as well as the cursor image
 function MainIconBar.AvatarController_MovementModeChanged(mode)
-	if MainIconBar.currentMode == EmberOgre.Input.IM_MOVEMENT then
+	if MainIconBar.currentMode == Ember.Input.IM_MOVEMENT then
 		MainIconBar.checkMovementMode()
 	end
 end

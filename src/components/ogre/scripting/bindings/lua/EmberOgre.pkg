@@ -46,7 +46,6 @@ $pfile "EntityIconDragDropTarget.pkg"
 $pfile "Model.pkg"
 $pfile "SubModel.pkg"
 $pfile "ModelDefinition.pkg"
-$pfile "Input.pkg"
 $pfile "Jesus.pkg"
 
 $pfile "MathConverter.pkg"
@@ -104,7 +103,6 @@ class EmberOgre
 	AvatarCamera* getMainCamera() const;
 	AvatarController* getAvatarController() const;
 	EntityMoveManager* getMoveManager() const;
-//	Input& getInput();
 	
 	EmberEntity* getEmberEntity(const std::string & eid);
 	

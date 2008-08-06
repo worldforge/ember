@@ -33,8 +33,7 @@ class GUIManager
 	
 	//inline MousePicker* getMousePicker();
 	
-	Input& getInput() const;
-	
+
 	//void pushMousePicker(MousePicker* mousePicker);
 	
 //	MousePicker* popMousePicker();

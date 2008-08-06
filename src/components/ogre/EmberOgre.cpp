@@ -139,14 +139,15 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "MediaUpdater.h"
 
 #include "main/Application.h"
-#include "input/InputCommandMapper.h"
-#include "input/Input.h"
+#include "services/input/InputCommandMapper.h"
+#include "services/input/Input.h"
 
 #include "OgreResourceProvider.h"
 #include "scripting/LuaScriptingProvider.h"
 
 template<> EmberOgre::EmberOgre* Ember::Singleton<EmberOgre::EmberOgre>::ms_Singleton = 0;
 
+using namespace Ember;
 namespace EmberOgre {
 
 	void assureConfigFile(const std::string& filename, const std::string& originalConfigFileDir)
@@ -172,7 +173,6 @@ mAvatarController(0),
 mRoot(0),
 mSceneMgr(0),
 mWindow(0),
-mInput(std::auto_ptr<Input>(new Input)),
 mGeneralCommandMapper(std::auto_ptr<InputCommandMapper>(new InputCommandMapper("general"))),
 mEmberEntityFactory(0), 
 mTerrainGenerator(0),
@@ -283,8 +283,9 @@ bool EmberOgre::frameStarted(const Ogre::FrameEvent & evt)
 
 bool EmberOgre::renderOneFrame()
 {
-	mInput->processInput();
-	if (mInput->isApplicationVisible()) {
+	Ember::Input& input(Ember::Input::getSingleton());
+	input.processInput();
+	if (input.isApplicationVisible()) {
 		return mRoot->renderOneFrame();
 	}
 	return true;
@@ -367,11 +368,11 @@ bool EmberOgre::setup()
 	unsigned int height, width, depth;
 	int top, left;
 	mWindow->getMetrics(width, height, depth, left, top);
-	mInput->initialize(width, height);
+	Ember::Input::getSingleton().initialize(width, height);
 	
 	///bind general commands
 	mGeneralCommandMapper->readFromConfigSection("key_bindings_general");
-	mGeneralCommandMapper->bindToInput(*mInput);
+	mGeneralCommandMapper->bindToInput(Ember::Input::getSingleton());
 	
 	///we need a nice loading bar to show the user how far the setup has progressed
 	Gui::LoadingBar loadingBar;

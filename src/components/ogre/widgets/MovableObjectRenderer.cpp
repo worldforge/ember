@@ -37,6 +37,7 @@
 #include "Widget.h"
 #include "../GUIManager.h"
 
+using namespace Ember;
 namespace EmberOgre {
 namespace Gui {
 
@@ -78,7 +79,7 @@ MovableObjectRenderer::~MovableObjectRenderer()
 bool MovableObjectRenderer::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
 {
 	///rotate the modelnode
-	if (GUIManager::getSingleton().getInput().isKeyDown(SDLK_RCTRL) || GUIManager::getSingleton().getInput().isKeyDown(SDLK_LCTRL)) {
+	if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
 		mTexture->getRenderContext()->roll(Ogre::Degree(motion.xRelativeMovement * 180));
 	} else {
 		mTexture->getRenderContext()->yaw(Ogre::Degree(motion.xRelativeMovement * 180));
@@ -191,12 +192,12 @@ float MovableObjectRenderer::getAbsoluteCameraDistance()
 
 void MovableObjectRenderer::catchInput()
 {
-	GUIManager::getSingleton().getInput().addAdapter(this);
+	Input::getSingleton().addAdapter(this);
 }
 
 void MovableObjectRenderer::releaseInput()
 {
-	GUIManager::getSingleton().getInput().removeAdapter(this);
+	Input::getSingleton().removeAdapter(this);
 }
 
 bool MovableObjectRenderer::image_MouseWheel(const CEGUI::EventArgs& args)

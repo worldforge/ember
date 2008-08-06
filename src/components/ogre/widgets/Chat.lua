@@ -50,14 +50,14 @@ function Chat.consoleAdapter_CommandExecuted(command)
 	if command == "" then
 		--remove focus from the console
 		Chat.widget:getMainWindow():deactivate()
-		guiManager:getInput():setInputMode(EmberOgre.Input.IM_MOVEMENT)
+		guiManager:getInput():setInputMode(Ember.Input.IM_MOVEMENT)
 	end
 end
 
 function Chat.console_focus()
 	Chat.consoleInputWindow:activate()
 	--switch to gui mode, so that this command can be called even when the user is in movement mode
-	guiManager:getInput():setInputMode(EmberOgre.Input.IM_GUI)
+	guiManager:getInput():setInputMode(Ember.Input.IM_GUI)
 end
 
 function Chat.createdAvatarEmberEntity(avatarEntity)

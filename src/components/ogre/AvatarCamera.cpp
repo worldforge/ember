@@ -42,7 +42,7 @@
 #include "framework/ConsoleBackend.h"
 
 #include "GUIManager.h"
-#include "input/Input.h"
+#include "services/input/Input.h"
 
 #include "IWorldPickListener.h"
 
@@ -53,7 +53,7 @@
 #include <direct.h>
 #endif
 
-
+using namespace Ember;
 namespace EmberOgre {
  
 Recorder::Recorder(): mSequence(0), mAccruedTime(0.0f), mFramesPerSecond(20.0f)

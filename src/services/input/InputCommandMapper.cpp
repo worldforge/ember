@@ -32,7 +32,7 @@
 #include "services/config/ConfigService.h"
 #include "services/logging/LoggingService.h"
 
-namespace EmberOgre {
+namespace Ember {
 
 
 InputCommandMapper::InputCommandMapper(const std::string& state) : mState(state), mEnabled(true), mInput(0)

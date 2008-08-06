@@ -30,7 +30,7 @@
 #include <string>
 #include <vector>
 
-#include "components/ogre/input/Input.h"
+#include "services/input/Input.h"
 #include "components/ogre/AvatarController.h"
 
 namespace Atlas {
@@ -241,8 +241,8 @@ public:
 	static void pushValue(const EntityPickResult& theValue, const std::string& luaTypename);
 	static void pushValue(const MousePickerArgs& theValue, const std::string& luaTypename);
 	static void pushValue(LuaConnectors::Empty theValue, const std::string& luaTypename);
-	static void pushValue(const Input::MouseButton& theValue, const std::string& luaTypename);
-	static void pushValue(const Input::InputMode& theValue, const std::string& luaTypename);
+	static void pushValue(const Ember::Input::MouseButton& theValue, const std::string& luaTypename);
+	static void pushValue(const Ember::Input::InputMode& theValue, const std::string& luaTypename);
 	static void pushValue(const std::set<std::string>& theValue, const std::string& luaTypename);
 	static void pushValue(const Atlas::Message::Element& theValue, const std::string& luaTypename);
 	static void pushValue(const EmberOgre::AvatarMovementMode::Mode& theValue, const std::string& luaTypename);
@@ -255,8 +255,8 @@ public:
  	LuaConnector(sigc::signal<void, float>& signal);
  	LuaConnector(sigc::signal<void, const EntityPickResult&, const MousePickerArgs&>& signal);
 	LuaConnector(sigc::signal<void, const MousePickerArgs&>& signal);
-	LuaConnector(sigc::signal<void, Input::MouseButton, Input::InputMode>& signal);
-	LuaConnector(sigc::signal<void, Input::InputMode>& signal);
+	LuaConnector(sigc::signal<void, Ember::Input::MouseButton, Ember::Input::InputMode>& signal);
+	LuaConnector(sigc::signal<void, Ember::Input::InputMode>& signal);
 	LuaConnector(sigc::signal<void, EmberEntityFactory*>& signal);
 	LuaConnector(sigc::signal<void, AvatarEmberEntity*>& signal);
 	LuaConnector(sigc::signal<void, Jesus*>& signal);

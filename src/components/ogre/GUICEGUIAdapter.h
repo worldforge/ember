@@ -28,8 +28,8 @@
 #include <CEGUIEventArgs.h>
 #include <CEGUIInputEvent.h> 
 
-#include "input/IInputAdapter.h"
-#include "input/Input.h"
+#include "services/input/IInputAdapter.h"
+#include "services/input/Input.h"
 
 
 namespace CEGUI {
@@ -47,7 +47,7 @@ TYPEDEF_STL_MAP(SDLKey, CEGUI::Key::Scan, SDLKeyMap);
 
 Provides an adapter between the input system and CEGUI.
 */
-class GUICEGUIAdapter : public IInputAdapter {
+class GUICEGUIAdapter : public Ember::IInputAdapter {
 public:
 
     /**
@@ -60,9 +60,9 @@ public:
 
     ~GUICEGUIAdapter();
 	
-	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
-	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
-	virtual bool injectMouseButtonDown(const Input::MouseButton& button);
+	virtual bool injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse);
+	virtual bool injectMouseButtonUp(const Ember::Input::MouseButton& button);
+	virtual bool injectMouseButtonDown(const Ember::Input::MouseButton& button);
 	virtual bool injectChar(char character);
 	virtual bool injectKeyDown(const SDLKey& key);
 	virtual bool injectKeyUp(const SDLKey& key);

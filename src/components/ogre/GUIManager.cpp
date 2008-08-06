@@ -39,7 +39,7 @@
 
 #include "AvatarCamera.h"
 #include "EmberOgre.h"
-#include "input/Input.h"
+#include "services/input/Input.h"
 #include "gui/ActiveWidgetHandler.h"
 #include "gui/CEGUILogger.h"
 
@@ -58,6 +58,8 @@
 #include "widgets/icons/IconManager.h"
 #include "widgets/EntityIconManager.h"
 
+#include "services/input/Input.h"
+
 
 #ifdef __WIN32__
 #include <windows.h>
@@ -70,6 +72,7 @@ template<> EmberOgre::GUIManager* Ember::Singleton<EmberOgre::GUIManager>::ms_Si
 
 using namespace CEGUI;
 using namespace EmberOgre::Gui;
+using namespace Ember;
 
 namespace EmberOgre {
 

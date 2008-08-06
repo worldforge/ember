@@ -33,15 +33,18 @@
 
 #include "framework/ConsoleObject.h"
 
-#include "input/Input.h"
+#include "services/input/Input.h"
 #include <stack>
+
+namespace Ember
+{
+struct MouseMotion;
+}
 
 namespace EmberOgre {
 
 class Avatar;
-class Input;
 class EmberEntity;
-struct MouseMotion;
 struct EntityPickResult;
 class IWorldPickListener;
 struct MousePickerArgs;
@@ -106,7 +109,7 @@ public:
 	 * @param input 
 	 * @param camera 
 	 */
-	AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager& sceneManager, Ogre::RenderWindow& window, Input& input, Ogre::Camera& camera);
+	AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager& sceneManager, Ogre::RenderWindow& window, Ember::Input& input, Ogre::Camera& camera);
 	virtual ~AvatarCamera();
 
 	/**
@@ -350,7 +353,7 @@ protected:
 	bool mIsAdjustedToTerrain;
 	std::auto_ptr<AvatarTerrainCursor> mAvatarTerrainCursor;
 
-	void Input_MouseMoved(const MouseMotion& motion, Input::InputMode mode);
+	void Input_MouseMoved(const Ember::MouseMotion& motion, Ember::Input::InputMode mode);
 
 	void ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key);
 	

@@ -26,7 +26,7 @@
 //#include "test/TestService.h"
 #include "logging/LoggingService.h"
 #include "config/ConfigService.h"
-//#include "input/InputService.h"
+#include "input/InputService.h"
 //#include "gui/GuiService.h"
 #include "sound/SoundService.h"
 #include "metaserver/MetaserverService.h"
@@ -42,9 +42,9 @@ namespace Ember{
 template<> Ember::EmberServices* Ember::Singleton<Ember::EmberServices>::ms_Singleton = 0;
 
 
-  EmberServices::~EmberServices()
-  {
-  }
+	EmberServices::~EmberServices()
+	{
+	}
 
 
 //   TestService* EmberServices::getTestService()
@@ -53,21 +53,21 @@ template<> Ember::EmberServices* Ember::Singleton<Ember::EmberServices>::ms_Sing
 //     return NULL;
 //   }
 
-  LoggingService* EmberServices::getLoggingService()
-  {
-    return Ember::LoggingService::getSingletonPtr();
-  }
+	LoggingService* EmberServices::getLoggingService()
+	{
+		return Ember::LoggingService::getSingletonPtr();
+	}
 
 	ConfigService* EmberServices::getConfigService()
 	{
 		return mConfigService->getService();
 	}
 
-/*  InputService* EmberServices::getInputService()
-  {
-    return Ember::InputService::getInstance();
-  }
-  */
+	InputService* EmberServices::getInputService()
+	{
+		return mInputService->getService();
+	}
+
 
 /*
   GuiService* EmberServices::getGuiService()
@@ -113,7 +113,7 @@ template<> Ember::EmberServices* Ember::Singleton<Ember::EmberServices>::ms_Sing
 	, mSoundService(std::auto_ptr<ServiceContainer<SoundService> >(new ServiceContainer<SoundService>()) )
 	, mServerService(std::auto_ptr<ServiceContainer<ServerService> >(new ServiceContainer<ServerService>()) )
 	, mMetaserverService(std::auto_ptr<ServiceContainer<MetaserverService> >(new ServiceContainer<MetaserverService>()) )
-//   , mInputService(std::auto_ptr<ServiceContainer<InputService> >(new ServiceContainer<InputService>()) )
+	, mInputService(std::auto_ptr<ServiceContainer<InputService> >(new ServiceContainer<InputService>()) )
 	, mWfutService(std::auto_ptr<ServiceContainer<WfutService> >(new ServiceContainer<WfutService>()) )
 	, mConfigService(std::auto_ptr<ServiceContainer<ConfigService> >(new ServiceContainer<ConfigService>()) )
 	, mTimeService(std::auto_ptr<ServiceContainer<Services::Time> >(new ServiceContainer<Services::Time>()) )

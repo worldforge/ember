@@ -32,8 +32,6 @@
 
 #include "components/ogre/widgets/Widget.h"
 
-#include "components/ogre/input/Input.h"
-
 #include "components/ogre/jesus/Jesus.h"
 
 #include "components/ogre/MathConverter.h"

@@ -44,7 +44,7 @@
 #include "model/SubModel.h"
 #include "EmberOgre.h"
 #include "MathConverter.h"
-#include "input/Input.h"
+#include "services/input/Input.h"
 
 #include <Eris/Avatar.h>
 #include <Eris/Connection.h>
@@ -395,7 +395,7 @@ void Avatar::createdAvatarEmberEntity(AvatarEmberEntity *emberEntity)
 	mAvatarController->createAvatarCameras(emberEntity->getSceneNode());
 		
 	EmberOgre::getSingleton().getSceneManager()->destroySceneNode(oldAvatar->getName());
-	Input::getSingleton().setMovementModeEnabled(true);
+	Ember::Input::getSingleton().setMovementModeEnabled(true);
 	
 	mErisAvatarEntity->LocationChanged.connect(sigc::mem_fun(*this, &Avatar::avatar_LocationChanged));
 

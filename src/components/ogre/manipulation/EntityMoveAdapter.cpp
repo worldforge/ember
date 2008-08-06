@@ -35,6 +35,7 @@
 //#include "../input/Input.h"
 
 using namespace WFMath;
+using namespace Ember;
 
 namespace EmberOgre {
 
@@ -59,7 +60,7 @@ EntityMoveAdapterWorkerDiscrete::EntityMoveAdapterWorkerDiscrete(EntityMoveAdapt
 {
 }
 
-bool EntityMoveAdapterWorkerDiscrete::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
+bool EntityMoveAdapterWorkerDiscrete::injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse)
 {
 	///this will move the entity instead of the mouse
 	
@@ -128,7 +129,7 @@ void EntityMoveAdapter::cancelMovement()
 	mManager->EventCancelledMoving.emit();
 }
 
-bool EntityMoveAdapter::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
+bool EntityMoveAdapter::injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse)
 {
 	if (mWorker) {
 		return mWorker->injectMouseMove(motion, freezeMouse);
@@ -136,7 +137,7 @@ bool EntityMoveAdapter::injectMouseMove(const MouseMotion& motion, bool& freezeM
 	return true;
 }
 
-bool EntityMoveAdapter::injectMouseButtonUp(const Input::MouseButton& button)
+bool EntityMoveAdapter::injectMouseButtonUp(const Ember::Input::MouseButton& button)
 {
 	if (button == Input::MouseButtonLeft)
 	{
@@ -153,7 +154,7 @@ bool EntityMoveAdapter::injectMouseButtonUp(const Input::MouseButton& button)
 	return false;
 }
 
-bool EntityMoveAdapter::injectMouseButtonDown(const Input::MouseButton& button)
+bool EntityMoveAdapter::injectMouseButtonDown(const Ember::Input::MouseButton& button)
 {
 	if (button == Input::MouseButtonLeft)
 	{
@@ -169,7 +170,7 @@ bool EntityMoveAdapter::injectMouseButtonDown(const Input::MouseButton& button)
 	else if(button == Input::MouseWheelUp)
 	{
 		int movementDegrees = 10;
-		if (GUIManager::getSingleton().getInput().isKeyDown(SDLK_LSHIFT) ||GUIManager::getSingleton().getInput().isKeyDown(SDLK_RSHIFT)) {
+		if (Input::getSingleton().isKeyDown(SDLK_LSHIFT) ||Input::getSingleton().isKeyDown(SDLK_RSHIFT)) {
 			movementDegrees = 1;
 		}
 		mBridge->yaw(movementDegrees);
@@ -177,7 +178,7 @@ bool EntityMoveAdapter::injectMouseButtonDown(const Input::MouseButton& button)
 	else if(button == Input::MouseWheelDown)
 	{
 		int movementDegrees = 10;
-		if (GUIManager::getSingleton().getInput().isKeyDown(SDLK_LSHIFT) ||GUIManager::getSingleton().getInput().isKeyDown(SDLK_RSHIFT)) {
+		if (Input::getSingleton().isKeyDown(SDLK_LSHIFT) ||Input::getSingleton().isKeyDown(SDLK_RSHIFT)) {
 			movementDegrees = 1;
 		}
 		mBridge->yaw(-movementDegrees);
@@ -233,14 +234,14 @@ void EntityMoveAdapter::detach()
 
 void EntityMoveAdapter::removeAdapter()
 {
-	GUIManager::getSingleton().getInput().removeAdapter(this);
+	Input::getSingleton().removeAdapter(this);
 	delete mWorker;
 	mWorker = 0;
 }
 
 void EntityMoveAdapter::addAdapter()
 {
-	GUIManager::getSingleton().getInput().addAdapter(this);
+	Input::getSingleton().addAdapter(this);
 	///default to the terrain cursor positioning mode
 	mWorker = new EntityMoveAdapterWorkerTerrainCursor(*this);
 }

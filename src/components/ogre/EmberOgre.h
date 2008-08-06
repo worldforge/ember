@@ -52,6 +52,7 @@ class BluePrint;
 namespace Ember
 {
 class StreamLogObserver;
+class InputCommandMapper;
 }
 
 namespace OgreOpcode {
@@ -90,12 +91,6 @@ class EmberEntityFactory;
 class EmberPagingSceneManager;
 
 class MotionManager;
-
-class Input;
-
-class InputManager;
-
-class InputCommandMapper;
 
 class GUIManager;
 
@@ -340,14 +335,9 @@ protected:
 	Ogre::RenderWindow* mWindow;
 	
 	/**
-	The main input object.
-	*/
-	std::auto_ptr<Input> mInput;
-	
-	/**
 	An InputCommandMapper that will handle all general input events.
 	*/
-	std::auto_ptr<InputCommandMapper> mGeneralCommandMapper;
+	std::auto_ptr<Ember::InputCommandMapper> mGeneralCommandMapper;
 
 	/**
 	Main factory for all entities created in the world.

@@ -22,7 +22,7 @@
 //
 #ifndef EMBEROGRE_GUIACTIVEWIDGETHANDLER_H
 #define EMBEROGRE_GUIACTIVEWIDGETHANDLER_H
-#include "../input/Input.h"
+#include "services/input/Input.h"
 
 namespace EmberOgre {
 class GUIManager;
@@ -40,7 +40,7 @@ public:
     ~ActiveWidgetHandler();
 
 protected:
-	void Input_InputModeChanged(Input::InputMode mode);
+	void Input_InputModeChanged(Ember::Input::InputMode mode);
 
 	/**
 	The name of the window which last had input when we switched to movement mode. This is a string and not a pointer since the window might have been destroyed in between. One other possibility is to keep a pointer ref and listen for the Destroyed event.
@@ -50,7 +50,7 @@ protected:
 	/**
 	The last mode we were in.
 	*/
-	Input::InputMode mLastMode;
+	Ember::Input::InputMode mLastMode;
 	
 	/**
 	A reference to the gui manager.

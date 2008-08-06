@@ -33,7 +33,7 @@
 #include <list>
 #include <map>
 
-namespace EmberOgre {
+namespace Ember {
 
 class IInputAdapter;
 class InputCommandMapper;

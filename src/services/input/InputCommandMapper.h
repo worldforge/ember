@@ -28,7 +28,7 @@
 #include "Input.h"
 #include <vector>
 
-namespace EmberOgre {
+namespace Ember {
 
 
 /**

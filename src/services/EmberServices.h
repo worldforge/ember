@@ -260,7 +260,7 @@ private:
 	std::auto_ptr<ServiceContainer<SoundService> > mSoundService;
 	std::auto_ptr<ServiceContainer<ServerService> > mServerService;
 	std::auto_ptr<ServiceContainer<MetaserverService> > mMetaserverService;
-//     std::auto_ptr<ServiceContainer<InputService> > mInputService;
+	std::auto_ptr<ServiceContainer<InputService> > mInputService;
 	std::auto_ptr<ServiceContainer<WfutService> > mWfutService;
 	std::auto_ptr<ServiceContainer<ConfigService> > mConfigService;
 	std::auto_ptr<ServiceContainer<Services::Time> > mTimeService;

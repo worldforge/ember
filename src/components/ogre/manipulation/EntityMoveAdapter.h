@@ -24,7 +24,7 @@
 #define EMBEROGREENTITYMOVEADAPTER_H
 
 #include "../EmberOgrePrerequisites.h"
-#include "../input/IInputAdapter.h"
+#include "services//input/IInputAdapter.h"
 
 
 namespace EmberOgre {
@@ -45,7 +45,7 @@ public:
 	EntityMoveAdapterWorkerBase(EntityMoveAdapter& adapter);
 	virtual ~EntityMoveAdapterWorkerBase();
 	
-	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse) { return true;}
+	virtual bool injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse) { return true;}
 
 protected:
 
@@ -67,7 +67,7 @@ class EntityMoveAdapterWorkerDiscrete : public EntityMoveAdapterWorkerBase
 public:
 	EntityMoveAdapterWorkerDiscrete(EntityMoveAdapter& adapter);
 	
-	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
+	virtual bool injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse);
 
 protected:
 
@@ -100,16 +100,16 @@ protected:
 
 	Provides an adapter for moving objects in the world.
 */
-class EntityMoveAdapter : public IInputAdapter {
+class EntityMoveAdapter : public Ember::IInputAdapter {
 friend class EntityMoveAdapterWorkerBase;
 public:
 
 	EntityMoveAdapter(EntityMoveManager* manager);
 	~EntityMoveAdapter();
 
-	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
-	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
-	virtual bool injectMouseButtonDown(const Input::MouseButton& button);
+	virtual bool injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse);
+	virtual bool injectMouseButtonUp(const Ember::Input::MouseButton& button);
+	virtual bool injectMouseButtonDown(const Ember::Input::MouseButton& button);
 	virtual bool injectChar(char character);
 	virtual bool injectKeyDown(const SDLKey& key);
 	virtual bool injectKeyUp(const SDLKey& key);

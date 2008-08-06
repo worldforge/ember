@@ -1,5 +1,5 @@
 //
-// C++ Interface: InputService
+// C++ Implementation: InputService
 //
 // Description: 
 //
@@ -20,42 +20,43 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBERINPUTSERVICE_H
-#define EMBERINPUTSERVICE_H
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
-#include <framework/Service.h>
-#include <framework/ConsoleObject.h>
+#include "InputService.h"
+#include "Input.h"
 
 namespace Ember {
 
-class Input;
-
-/**
-	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
-*/
-class InputService : public Service
+InputService::InputService()
+: mInput(0)
 {
-public:
-    InputService();
+}
 
-    virtual ~InputService();
 
-	virtual Service::Status start();
-    
-    virtual void stop(int code);
-    
-    /**
-     * @brief Returns the main input instance.
-     * Most input operations are performed through this object.
-     * @return The main Input instance.
-     */
-    Input& getInput();
-    
-private:
-	std::auto_ptr<Input> mInput;
+InputService::~InputService()
+{
+}
 
-};
+Input& InputService::getInput()
+{
+	return *mInput.get();
+}
+
+Service::Status InputService::start()
+{
+	if (!mInput.get()) {
+		mInput = std::auto_ptr<Input>(new Input());
+	}
+	return Service::OK;
+}
+
+void InputService::stop(int code)
+{
+	mInput.reset();
+}
 
 }
 
-#endif
+

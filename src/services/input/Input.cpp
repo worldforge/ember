@@ -36,9 +36,9 @@
 #include "framework/ConsoleBackend.h"
 #include "services/logging/LoggingService.h"
 
-template<> EmberOgre::Input* Ember::Singleton<EmberOgre::Input>::ms_Singleton = 0;
+template<> Ember::Input* Ember::Singleton<Ember::Input>::ms_Singleton = 0;
 
-namespace EmberOgre {
+namespace Ember {
 
 const std::string Input::BINDCOMMAND("bind");
 const std::string Input::UNBINDCOMMAND("unbind");

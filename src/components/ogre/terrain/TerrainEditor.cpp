@@ -51,7 +51,7 @@
 
 #include "../MousePicker.h"
 
-
+using namespace Ember;
 namespace EmberOgre {
 namespace Terrain {
 
@@ -307,7 +307,7 @@ void TerrainEditor::pickedBasePoint(BasePointUserObject* userObject)
 }
 
 
-bool TerrainEditor::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
+bool TerrainEditor::injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse)
 {
 	float multiplier(15.0f);
 	///hard coded to allow the shift button to increase the speed
@@ -370,12 +370,12 @@ bool TerrainEditor::injectKeyUp(const SDLKey& key)
 
 void TerrainEditor::catchInput()
 {
-	GUIManager::getSingleton().getInput().addAdapter(this);
+	Ember::Input::getSingleton().addAdapter(this);
 }
 
 void TerrainEditor::releaseInput()
 {
-	GUIManager::getSingleton().getInput().removeAdapter(this);
+	Ember::Input::getSingleton().removeAdapter(this);
 	
 	///react on the movement
 	createAction(true);

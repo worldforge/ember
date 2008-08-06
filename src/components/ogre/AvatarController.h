@@ -25,8 +25,8 @@
 // #include <SDL.h>
 #include <sigc++/trackable.h>
 
-#include "input/Input.h"
-#include "input/InputCommandMapper.h"
+#include "services/input/Input.h"
+#include "services/input/InputCommandMapper.h"
 #include "framework/ConsoleObject.h"
 #include "EntityWorldPickListener.h"
 
@@ -40,7 +40,6 @@ class AvatarCamera;
 class GUIManager;
 
 class InputManager;
-class Input;
 class AvatarController;
 
 /**
@@ -82,8 +81,8 @@ public:
 
 protected:
 
-	void input_MouseButtonPressed(Input::MouseButton button, Input::InputMode mode);
-	void input_MouseButtonReleased(Input::MouseButton button, Input::InputMode mode);
+	void input_MouseButtonPressed(Ember::Input::MouseButton button, Ember::Input::InputMode mode);
+	void input_MouseButtonReleased(Ember::Input::MouseButton button, Ember::Input::InputMode mode);
 	AvatarController& mController;
 };
 
@@ -176,7 +175,7 @@ public:
 
 protected:
 
-	InputCommandMapper mMovementCommandMapper;
+	Ember::InputCommandMapper mMovementCommandMapper;
 	
 	Ogre::RenderWindow& mWindow;
 	

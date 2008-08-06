@@ -158,11 +158,11 @@
         <envvar value="1" name="WANT_AUTOMAKE_1_9" />
       </envvars>
       <abortonerror>false</abortonerror>
-      <numberofjobs>1</numberofjobs>
+      <numberofjobs>6</numberofjobs>
       <dontact>false</dontact>
       <makebin/>
       <prio>0</prio>
-      <runmultiplejobs>false</runmultiplejobs>
+      <runmultiplejobs>true</runmultiplejobs>
     </make>
   </kdevautoproject>
   <kdevdebugger>

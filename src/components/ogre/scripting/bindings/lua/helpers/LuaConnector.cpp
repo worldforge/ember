@@ -42,6 +42,8 @@
 
 #include <Eris/ServerInfo.h>
 
+using namespace Ember;
+
 namespace EmberOgre {
 
 namespace LuaConnectors {

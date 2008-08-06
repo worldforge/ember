@@ -25,7 +25,7 @@
 
 #include "../EmberOgrePrerequisites.h"
 #include "../IWorldPickListener.h"
-#include "../input/IInputAdapter.h"
+#include "services/input/IInputAdapter.h"
 #include "TerrainPage.h"
 
 
@@ -217,7 +217,7 @@ TerrainPosition mPosition;
 	Provides terrain editing capabilities. Through this class base points in the terrain can be changed, and the changes sent to the server. The editor supports undo and redo functionality.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
-class TerrainEditor : public IInputAdapter
+class TerrainEditor : public Ember::IInputAdapter
 {
 public:
     TerrainEditor();
@@ -321,9 +321,9 @@ public:
 ---------Methods implemented from IInputAdapter
 @see IInputAdapter
 */
-	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
-	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
-	virtual bool injectMouseButtonDown(const Input::MouseButton& button);
+	virtual bool injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse);
+	virtual bool injectMouseButtonUp(const Ember::Input::MouseButton& button);
+	virtual bool injectMouseButtonDown(const Ember::Input::MouseButton& button);
 	virtual bool injectChar(char character);
 	virtual bool injectKeyDown(const SDLKey& key);
 	virtual bool injectKeyUp(const SDLKey& key);

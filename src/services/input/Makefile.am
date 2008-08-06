@@ -1,5 +1,7 @@
-INCLUDES = -I$(top_srcdir)/src
+INCLUDES = -I$(top_srcdir)/src -I$(top_builddir)/src
+METASOURCES = AUTO
 
-noinst_LIBRARIES = libInputService.a
+noinst_LTLIBRARIES = libInputService.la
+libInputService_la_SOURCES = Input.cpp Input.h InputCommandMapper.cpp InputService.cpp
 
-libInputService_a_SOURCES = InputDevice.cpp InputDevice.h InputMapping.h InputService.h DimeKey.h RepetitionDevice.h
+noinst_HEADERS = IInputAdapter.h InputCommandMapper.h InputService.h 

@@ -29,16 +29,17 @@
 #include "../GUIManager.h"
 #include <CEGUI.h>
 
+using namespace Ember;
 namespace EmberOgre {
 
 namespace Gui {
 
 ActiveWidgetHandler::ActiveWidgetHandler(::EmberOgre::GUIManager& guiManager)
-: mGuiManager(guiManager), mLastMode(Input::IM_GUI)
+: mLastMode(Ember::Input::IM_GUI), mGuiManager(guiManager)
 {
 
 	///connect to the changing of input mode since we want to deactivate the current active input window when switching from gui mode to movement mode
-	Input::getSingleton().EventChangedInputMode.connect(sigc::mem_fun(*this, &ActiveWidgetHandler::Input_InputModeChanged));
+	Ember::Input::getSingleton().EventChangedInputMode.connect(sigc::mem_fun(*this, &ActiveWidgetHandler::Input_InputModeChanged));
 
 }
 
@@ -47,9 +48,9 @@ ActiveWidgetHandler::~ActiveWidgetHandler()
 {
 }
 
-void ActiveWidgetHandler::Input_InputModeChanged(Input::InputMode mode)
+void ActiveWidgetHandler::Input_InputModeChanged(Ember::Input::InputMode mode)
 {
-	if (mode != Input::IM_GUI && mLastMode == Input::IM_GUI) {
+	if (mode != Ember::Input::IM_GUI && mLastMode == Ember::Input::IM_GUI) {
 		///save the current active widget
 		CEGUI::Window* window = mGuiManager.getMainSheet()->getActiveChild();
 		if (window) {
@@ -63,7 +64,7 @@ void ActiveWidgetHandler::Input_InputModeChanged(Input::InputMode mode)
 			mLastActiveWidgetName = "";
 		}
 		mLastMode = mode;
-	} else if (mode == Input::IM_GUI) {
+	} else if (mode == Ember::Input::IM_GUI) {
 		if (mLastActiveWidgetName != "") {
 			///restore the previously active widget
 			try {

@@ -36,7 +36,7 @@
 #include "terrain/ISceneManagerAdapter.h"
 
 
-#include "input/Input.h"
+#include "services/input/Input.h"
 
 #include "framework/Tokeniser.h"
 #include "MathConverter.h"
@@ -45,6 +45,7 @@
 
 
 using namespace Ogre;
+using namespace Ember;
 namespace EmberOgre {
 
 
@@ -140,7 +141,7 @@ AvatarController::~AvatarController()
 void AvatarController::createAvatarCameras(Ogre::SceneNode* avatarSceneNode)
 {
 	if (mAvatarCamera == 0) {
-		mAvatarCamera = new AvatarCamera(avatarSceneNode, *EmberOgre::getSingleton().getSceneManager(), mWindow, mGUIManager.getInput(), mCamera);
+		mAvatarCamera = new AvatarCamera(avatarSceneNode, *EmberOgre::getSingleton().getSceneManager(), mWindow, Input::getSingleton(), mCamera);
 	} else {
 		attachCamera();
 	}

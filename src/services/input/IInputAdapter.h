@@ -28,7 +28,7 @@
 #include <SDL.h>
 
 
-namespace EmberOgre {
+namespace Ember {
 
 
 /**

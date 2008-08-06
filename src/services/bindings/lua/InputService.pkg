@@ -20,11 +20,6 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBERINPUTSERVICE_H
-#define EMBERINPUTSERVICE_H
-
-#include <framework/Service.h>
-#include <framework/ConsoleObject.h>
 
 namespace Ember {
 
@@ -33,29 +28,19 @@ class Input;
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
-class InputService : public Service
+class InputService
 {
 public:
-    InputService();
 
-    virtual ~InputService();
-
-	virtual Service::Status start();
-    
-    virtual void stop(int code);
-    
     /**
      * @brief Returns the main input instance.
      * Most input operations are performed through this object.
      * @return The main Input instance.
      */
-    Input& getInput();
-    
-private:
-	std::auto_ptr<Input> mInput;
+    Ember::Input& getInput();
 
 };
 
 }
 
-#endif
+

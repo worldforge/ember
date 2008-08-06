@@ -35,8 +35,7 @@
 
 #include "framework/ConsoleObject.h"
 
-#include "input/Input.h"
-#include "input/InputCommandMapper.h"
+#include "services/input/InputCommandMapper.h"
 
 namespace CEGUI
 {
@@ -46,6 +45,7 @@ class LuaScriptModule;
 
 namespace Ember {
 class IScriptingProvider;
+class Input;
 }
 
 namespace EmberOgre {
@@ -54,7 +54,6 @@ class EmberEntity;
 class TerrainGenerator;
 class CEGUI::Window;
 class MousePicker;
-class Input;
 class AvatarEmberEntity;
 class GUICEGUIAdapter;
 class EntityWorldPickListener;
@@ -179,7 +178,7 @@ public:
 	 *    accessor for the Input instance object
 	 * @return 
 	 */
-	Input& getInput() const;
+	Ember::Input& getInput() const;
 	
 	/**
 	 *    Pushes a new mouse picker onto the stack, "pushing down" the current mouse picker.
@@ -283,7 +282,7 @@ protected:
 	*/
 	static unsigned long msAutoGenId;
 	
-	InputCommandMapper mGuiCommandMapper;
+	Ember::InputCommandMapper mGuiCommandMapper;
 
 	MousePicker* mPicker;
 
@@ -327,7 +326,7 @@ protected:
 	void EmberOgre_AvatarControllerCreated(AvatarController& controller);
 
 // 	InputMode mPreviousInputMode;
-	void pressedKey(const SDL_keysym& key, Input::InputMode inputMode);
+	void pressedKey(const SDL_keysym& key, Ember::Input::InputMode inputMode);
 	
 	/**
 	Adapter for CEGUI which will send input events to CEGUI

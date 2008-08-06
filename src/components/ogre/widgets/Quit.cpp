@@ -31,7 +31,7 @@
 
 #include "framework/ConsoleBackend.h"
 #include "../GUIManager.h"
-#include "../input/Input.h"
+#include "services/input/Input.h"
 
 namespace EmberOgre {
 namespace Gui {
@@ -98,7 +98,7 @@ void Quit::softquit()
 	mMainWindow->moveToFront();
 	mMainWindow->setVisible(true);
 	
-	mGuiManager->getInput().setInputMode(Input::IM_GUI);
+	Ember::Input::getSingleton().setInputMode(Ember::Input::IM_GUI);
 	//mMainWindow->setModalState(true);
 }
 

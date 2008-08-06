@@ -26,7 +26,7 @@
 #include <CEGUIEvent.h> 
 
 #include "components/ogre/EmberOgrePrerequisites.h"
-#include "../input/IInputAdapter.h"
+#include "services/input/IInputAdapter.h"
 #include "../SimpleRenderContext.h"
 
 namespace CEGUI
@@ -44,7 +44,7 @@ Class used for rendering a single Ogre::MovableObject to a EntityCEGUITexture
 
 @author Erik Hjortsberg
 */
-class MovableObjectRenderer : public IInputAdapter, public Ogre::FrameListener
+class MovableObjectRenderer : public Ember::IInputAdapter, public Ogre::FrameListener
 {
 public:
     MovableObjectRenderer(CEGUI::Window* image);
@@ -110,9 +110,9 @@ public:
 ---------Methods implemented from IInputAdapter
 @see IInputAdapter
 */
-	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
-	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
-	virtual bool injectMouseButtonDown(const Input::MouseButton& button);
+	virtual bool injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse);
+	virtual bool injectMouseButtonUp(const Ember::Input::MouseButton& button);
+	virtual bool injectMouseButtonDown(const Ember::Input::MouseButton& button);
 	virtual bool injectChar(char character);
 	virtual bool injectKeyDown(const SDLKey& key);
 	virtual bool injectKeyUp(const SDLKey& key);
