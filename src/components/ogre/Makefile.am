@@ -8,8 +8,7 @@ noinst_LTLIBRARIES = libEmberOgre.la
 
 libEmberOgre_la_LIBADD = \
 	$(top_builddir)/src/components/ogre/SceneManagers/EmberPagingSceneManager/src/libEmberPagingSceneManager.la $(top_builddir)/src/components/ogre/carpenter/libCarpenter.la \
-	$(top_builddir)/src/components/ogre/environment/libEnvironment.la $(top_builddir)/src/components/ogre/input/libInput.la \
-	$(top_builddir)/src/components/ogre/jesus/libJesus.la $(top_builddir)/src/components/ogre/manipulation/libmanipulation.la \
+	$(top_builddir)/src/components/ogre/environment/libEnvironment.la $(top_builddir)/src/components/ogre/jesus/libJesus.la $(top_builddir)/src/components/ogre/manipulation/libmanipulation.la \
 	$(top_builddir)/src/components/ogre/model/libModel.la $(top_builddir)/src/components/ogre/model/mapping/libMapping.la \
 	$(top_builddir)/src/components/ogre/ogreopcode/src/libOgreOpcode.la \
 	$(top_builddir)/src/components/ogre/scripting/bindings/lua/helpers/liblua_Helpers.la \
