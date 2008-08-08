@@ -41,8 +41,8 @@ template<> Ember::ConsoleBackend* Ember::Singleton<Ember::ConsoleBackend>::ms_Si
 
 
 ConsoleBackend::ConsoleBackend(void) :
-	myRegisteredCommands(ConsoleObjectEntryStore()),
-	myConsoleMessages(std::list<std::string>()),
+	mRegisteredCommands(ConsoleObjectEntryStore()),
+	mConsoleMessages(std::list<std::string>()),
 	mHistoryPosition(0)
 {
 	// Register console commands
@@ -104,9 +104,9 @@ void ConsoleBackend::pushMessage(const std::string &message) {
 	//only save message if onGotMessage returns true
 	if (!onGotMessage(message)) {
 	// If we have reached our message limit, remove the oldest message
-		if (myConsoleMessages.size() >= MAX_MESSAGES)
-		myConsoleMessages.erase(myConsoleMessages.begin());
-		myConsoleMessages.push_back(message);
+		if (mConsoleMessages.size() >= MAX_MESSAGES)
+		mConsoleMessages.erase(mConsoleMessages.begin());
+		mConsoleMessages.push_back(message);
 	}
 }
 
@@ -124,7 +124,7 @@ void ConsoleBackend::registerCommand(const std::string &command, ConsoleObject *
 	entry.Object = object;
 	entry.Description = description;
 	// Assign the ConsoleObject to the command
-	myRegisteredCommands[command] = entry;
+	mRegisteredCommands[command] = entry;
 	
 	// prepare the prefix map to have fast access to commands
 	for(std::string::size_type i = 1; i <= command.length(); ++i)
@@ -138,7 +138,7 @@ void ConsoleBackend::deregisterCommand(const std::string &command)
 	S_LOG_INFO("Deregistering: " << command);
 
 	// Delete from the map
-	myRegisteredCommands.erase(myRegisteredCommands.find(command));
+	mRegisteredCommands.erase(mRegisteredCommands.find(command));
 }
 
 void ConsoleBackend::runCommand(const std::string &command, bool addToHistory)
@@ -166,7 +166,7 @@ void ConsoleBackend::runCommand(const std::string &command, bool addToHistory)
 	std::string args = tokeniser.remainingTokens();
 	
 	//Grab object registered to the command
-	ConsoleObjectEntryStore::iterator I = myRegisteredCommands.find(cmd);
+	ConsoleObjectEntryStore::iterator I = mRegisteredCommands.find(cmd);
 	
 	// Print all commands to the console
 	// pushMessage(command_string);
@@ -176,7 +176,7 @@ void ConsoleBackend::runCommand(const std::string &command, bool addToHistory)
 			mHistoryPosition = 0;
 		}
 	// If object exists, run the command
-		if (I != myRegisteredCommands.end() && I->second.Object != 0) {
+		if (I != mRegisteredCommands.end() && I->second.Object != 0) {
 			I->second.Object->runCommand(cmd, args);
 		}
 	else { // Else print error message
@@ -191,7 +191,7 @@ void ConsoleBackend::runCommand(const std::string &command, const std::string &a
 	
 	// This commands prints all currently registers commands to the Log File
 	if (command == LIST_CONSOLE_COMMANDS) {
-		for (ConsoleObjectEntryStore::const_iterator I = myRegisteredCommands.begin(); I != myRegisteredCommands.end(); I++) {
+		for (ConsoleObjectEntryStore::const_iterator I = mRegisteredCommands.begin(); I != mRegisteredCommands.end(); I++) {
 		// TODO - should we check to see if I->second is valid?
 		temp << I->first<< " : " << I->second.Description << std::endl;
 		}

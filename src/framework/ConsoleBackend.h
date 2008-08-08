@@ -26,7 +26,6 @@
 // Included custom library headers
 
 #include <sigc++/signal.h>
-// #include <sigc++/object_slot.h>
 
 // Included system headers
 #include <deque>
@@ -40,47 +39,22 @@
 namespace Ember {
 
 /**
- * Backend storage class for Console's.
+ * @brief Backend for the console. This act very much like a message hub, receiving incoming console commands and then dispatching these to the registered listener.
+ * 
+ * The backend keeps track of all console commands, and all the listeners. Whenever a console command is executed, the listeners are notified in turn, allowing them to act on the console command.
+ * It also allows for some nifty command completion functionality by creating internal lookup maps of all console commands.
  *
- * More detailed description of the class, it's purpose, what it does,
- * how to use it and so on.
- *
- * A short piece of example code demonstarting how this class it is used,
- * and in what context, is encouraged.
- *
- * @author Martin Pollard aka Xmp
- *
- * NOTE: You can also specify the author for individual methods
- * if different persons have created them.
- * It is also possible to have multiple @author tags for a method.
- * Only add yourself as an @author if you have done serious work
- * on a class/method, and can help fixing bugs in it, etc.
- * If you just fixed a bug or added a short code snipplet you
- * don't need to add yourself.
- *
- * @see Ember::Console
+ * Any other component which wishes to interact with the console should preferrably do this through the ConsoleCommandWrapper class. While it's possible to instead use the ConsoleObject class directly, the ConsoleCommandWrapper provides an easier way.
+ * 
+ * @see Ember::ConsoleCommandWrapper
  * @see Ember::ConsoleObject
  *
  */
 
 class ConsoleBackend : public ConsoleObject, public Ember::Singleton<ConsoleBackend>
 {
-    //======================================================================
-    // Inner Classes, Typedefs, and Enums
-    //======================================================================
-    public:
-
-
-    //======================================================================
-    // Public Constants
-    //======================================================================
-    public:
-
-    //======================================================================
-    // Private Constants
-    //======================================================================
     private:
-    
+
 	struct ConsoleObjectEntry
 	{
 		ConsoleObject* Object;
@@ -94,20 +68,17 @@ class ConsoleBackend : public ConsoleObject, public Ember::Singleton<ConsoleBack
     // List of ConsoleBackend's console commands
     static const char * const LIST_CONSOLE_COMMANDS;
 
-    //======================================================================
-    // Private Variables
-    //======================================================================/
     private:
 
     /**
      * Mapping of registered commands to associated object.
      */
-    ConsoleObjectEntryStore myRegisteredCommands;
+    ConsoleObjectEntryStore mRegisteredCommands;
 
     /**
      * Current console messages
      */
-    std::list< std::string > myConsoleMessages;
+    std::list< std::string > mConsoleMessages;
 	
 	/**
 	 * Message history.
@@ -120,12 +91,19 @@ class ConsoleBackend : public ConsoleObject, public Ember::Singleton<ConsoleBack
 	size_t mHistoryPosition;
 	
     /**
-     * Prefix map for commands.
+     * @brief Prefix map for commands.
+     * This is used for fast lookup for the autocompletion.
+     * An example:
+     * If the command "set_foo" is registered, these entries will be added to the mPrefixes:
+     * s => set_foo
+     * se => set_foo
+     * set => set_foo
+     * set_ => set_foo
+     * set_f => set_foo
+     * set_fo => set_foo
+     * set_foo => set_foo (will this really be added?)
      **/
     std::map< std::string, std::set< std::string > > mPrefixes;
-    //======================================================================
-    // Public Methods
-    //======================================================================
     public:
 
     //----------------------------------------------------------------------
@@ -160,19 +138,33 @@ class ConsoleBackend : public ConsoleObject, public Ember::Singleton<ConsoleBack
     //----------------------------------------------------------------------
     // Getters
 
+    /**
+     * @brief Gets a list of previous console messages.
+     * @return A list of the previous console messages, the maximum defined through MAX_MESSAGES.
+     */
     inline const std::list<std::string>& getConsoleMessages() const;
 
 	
+	/**
+	 * @brief Gets the current position within the history.
+	 * When traversing the history we need to keep track of where in the history we are.
+	 * @return 
+	 */
 	inline size_t getHistoryPosition() const;
 	
 	const std::set< std::string > & getPrefixes(const std::string & prefix) const;
 	
 	/**
-	 * Get the current history string.
+	 * @brief Get the current history string.
 	 * The history position 0 is managed in the ConsoleWidget.
 	 **/
 	const std::string & getHistoryString();
 	
+	/**
+	 * @brief Changes a command in the history.
+	 * @param stHistoryIndex The index of the command to change.
+	 * @param sCommand The new command.
+	 */
 	void changeHistory(size_t stHistoryIndex, const std::string & sCommand);
 
 
@@ -194,36 +186,38 @@ class ConsoleBackend : public ConsoleObject, public Ember::Singleton<ConsoleBack
     // Other public methods
 
     /**
-     * Registers a command with the console
-     * command is the command to register
-     * object is the originating object
-     */ 
+     * @brief Registers a command with the console
+     * @param command The command to register.
+     * @param object The object which will recieve updated when the console command is activated.
+     * @param description A description of the command and what it does.
+     */
     void registerCommand(const std::string &command, ConsoleObject *object, const std::string& description = "");
 
     /**
-     * Deregisters a command with the console
-     * command is the command to deregister
-     */ 
+     * @brief Deregisters a command with the console
+     * @param command The command to deregister.
+     */
     void deregisterCommand(const std::string &command);
 
     /**
-     * This is the method the determines what object the pass the command onto
-	 * 
-     * @param command the command string to process
-     */ 
+     * @brief The method the determines what object the pass the command onto
+     * @param command The command string to process.
+     * @param addToHistory Optional. Whether to add the command to the history or not. Most commands will be added to the history, but others, such as the movement command issued when the user pressed movement keys, shouldn't be recorded in the history.
+     */
     void runCommand(const std::string &command, bool addToHistory = true);
 	
     /**
-     * Add a message to the console message queue.
-     * message is the message string
-     */ 
+     * @brief Add a message to the console message queue.
+     * @param message The message.
+     */
     void pushMessage(const std::string &message);
 
+
     /**
-     * This is the ConsoleObject method.
-     * command is the command to run
-     * args is the commands arguments
-     */ 
+     * @brief Reacts to listened to commands.
+     * @param command The command.
+     * @param args The parameters for the command.
+     */
     void runCommand(const std::string &command, const std::string &args);
     
 
@@ -233,7 +227,7 @@ class ConsoleBackend : public ConsoleObject, public Ember::Singleton<ConsoleBack
     
     /**
      * This event is raised every time a message is pushed to the console.
-     * If True is returned, the message won't be saved in myConsoleMessages 
+     * If true is returned, the message won't be saved in myConsoleMessages 
      */ 
     sigc::signal<bool, const std::string&> GotMessage;
 
@@ -244,24 +238,11 @@ class ConsoleBackend : public ConsoleObject, public Ember::Singleton<ConsoleBack
     
     virtual bool onGotMessage(const std::string &message);
 
-
-    //======================================================================
-    // Private Methods
-    //======================================================================
-    private:
-
-
-    //======================================================================
-    // Disabled constructors and operators
-    //======================================================================
-    private:
-
-
-}; // End of ConsoleBackend
+};
 
 const std::list<std::string>& ConsoleBackend::getConsoleMessages() const
 {
-	return myConsoleMessages;
+	return mConsoleMessages;
 }
 
 size_t ConsoleBackend::getHistoryPosition() const
@@ -270,6 +251,6 @@ size_t ConsoleBackend::getHistoryPosition() const
 }
 
 
-} // End of Ember namespace
+}
 
 #endif
