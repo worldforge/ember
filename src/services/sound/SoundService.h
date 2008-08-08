@@ -42,6 +42,7 @@ class SoundService: public Service, public ConsoleObject
 
 	private:
 		// All Allocated buffers
+		std::list<StreamedSoundSample*> mCopySamples;
 		std::map<std::string, BaseSoundSample*> mSamples;
 		std::map<std::string, SoundEntity*> mEntities;
 
@@ -50,10 +51,11 @@ class SoundService: public Service, public ConsoleObject
 		StreamedSoundSample* instStreamedSample(StreamedSoundSample* base);
 		
 		// Allocation Functions
-		bool allocateWAVPCM(const std::string &filename, bool playsLocally); 
-		bool allocateOGG(const std::string &filename, bool playsLocally); 
+		bool allocateWAVPCM(const std::string &filename, bool playsLocally, float soundVolume); 
+		bool allocateOGG(const std::string &filename, bool playsLocally, float soundVolume); 
 
 		#ifdef THREAD_SAFE
+		pthread_mutex_t mCopyMutex;
 		pthread_mutex_t mSamplesMutex;
 		pthread_mutex_t mEntitiesMutex;
 		#endif
@@ -75,7 +77,7 @@ class SoundService: public Service, public ConsoleObject
 		SoundEntity* registerEntity(const std::string &name);
 		bool registerInstance(BaseSoundSample* base, BaseSoundSample* copy);
 		bool registerSound(const std::string &filename, bool playLocally = PLAY_WORLD,
-				const SoundSampleType type = SAMPLE_NONE);
+				const SoundSampleType type = SAMPLE_NONE, float soundVolume = 1.0f);
 		bool unRegisterSound(const std::string &filename);
 
 		/**

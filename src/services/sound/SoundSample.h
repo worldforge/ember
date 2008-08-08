@@ -35,7 +35,6 @@ class BaseSoundSample
 		ALuint 				mSource;
 		SoundSampleType	mType;
 		bool					mPlayPosition;
-		std::string			mFilename;
 
 	public:
 		virtual ~BaseSoundSample() {}
@@ -51,7 +50,6 @@ class BaseSoundSample
 		SoundSampleType getType();
 		virtual ALuint* getBufferPtr() = 0;
 		virtual unsigned int getNumberOfBuffers() = 0;
-		const std::string& getFileName();
 
 		// Common Methods
 		virtual void play();
@@ -83,6 +81,7 @@ class StaticSoundSample : public BaseSoundSample
 class StreamedSoundSample : public BaseSoundSample
 {
 	private:
+		std::string		mFilename;
 		FILE*				mFile;
 		OggVorbis_File mStream;
 		ALuint			mBuffers[2];
@@ -97,7 +96,7 @@ class StreamedSoundSample : public BaseSoundSample
 		~StreamedSoundSample();
 
 		// Set Variables
-		void setFile(FILE* ptr);
+		void setFile(FILE* ptr, const std::string& filename);
 		void setFormat(ALenum fmt);
 		void setRate(ALuint rate);
 		void setPlaying(bool play);
@@ -107,6 +106,7 @@ class StreamedSoundSample : public BaseSoundSample
 		OggVorbis_File*	getStreamPtr();
 		bool					isPlaying();
 		unsigned int		getNumberOfBuffers();
+		const std::string& getFilename();
 
 		// Common methods
 		void play();	

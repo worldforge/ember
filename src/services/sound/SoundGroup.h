@@ -56,7 +56,8 @@ namespace Ember
 			~SoundGroup();
 
 			void allocateBuffer(const std::string& filename, 
-					bool playsReal, const SoundSampleType& type);
+					bool playsReal, const SoundSampleType& type,
+					float soundVolume);
 
 			void updateSamplesPosition(const WFMath::Point<3> &pos);
 			void updateSamplesVelocity(const WFMath::Vector<3> &vel);

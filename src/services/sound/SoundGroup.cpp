@@ -68,10 +68,10 @@ namespace Ember
 	}
 
 	void SoundGroup::allocateBuffer(const std::string& filename, 
-					bool playsReal, const SoundSampleType& type)
+					bool playsReal, const SoundSampleType& type, float soundVolume)
 	{	
 		#define sSoundService Ember::EmberServices::getSingleton().getSoundService() 
-		if (sSoundService->registerSound(filename, playsReal, type))
+		if (sSoundService->registerSound(filename, playsReal, type, soundVolume))
 		{
 			BaseSoundSample* newSample = sSoundService->getSoundSample(filename);
 			if (newSample)

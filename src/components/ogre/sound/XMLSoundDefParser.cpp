@@ -77,6 +77,7 @@ void XMLSoundDefParser::readBuffer(Ember::SoundGroup* grp, TiXmlElement* objNode
 	const char* filename = objNode->Attribute("filename");
 	const char* format = objNode->Attribute("format");
 	const char* playsin = objNode->Attribute("playsIn");
+	const char* volume = objNode->Attribute("volume");
 
 	if (!filename)
 		return;
@@ -99,6 +100,12 @@ void XMLSoundDefParser::readBuffer(Ember::SoundGroup* grp, TiXmlElement* objNode
 		type = Ember::SAMPLE_OGG;
 	}
 
+	float soundVolume = 1.0f;
+	if (volume)
+	{
+		soundVolume = atof(volume);
+	}
+
 	std::string realName(filename);
 	Ogre::FileInfoListPtr files = Ogre::ResourceGroupManager::getSingleton()
 		.findResourceFileInfo("General", realName);
@@ -106,7 +113,9 @@ void XMLSoundDefParser::readBuffer(Ember::SoundGroup* grp, TiXmlElement* objNode
 	Ogre::FileInfoList::iterator I = files->begin();
 	if (I != files->end()) 
 	{
-		grp->allocateBuffer(I->archive->getName() + I->filename, playsReal, type);
+		grp->allocateBuffer(I->archive->getName() + I->filename, 
+				playsReal, type, soundVolume);
+
 		S_LOG_INFO(std::string("\t -Buffer ") + realName
 				+ std::string(" created."));
 	}

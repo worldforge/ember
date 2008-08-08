@@ -154,7 +154,12 @@ namespace Ember
 		ov_clear(&mStream);
 	}
 
-	void StreamedSoundSample::setFile(FILE* ptr)
+	const std::string& StreamedSoundSample::getFilename()
+	{
+		return mFilename;
+	}
+
+	void StreamedSoundSample::setFile(FILE* ptr, const std::string& filename)
 	{
 		if (!ptr)
 		{
@@ -163,6 +168,7 @@ namespace Ember
 		}
 
 		mFile = ptr;
+		mFilename = filename;
 	}
 
 	void StreamedSoundSample::setFormat(ALenum fmt)

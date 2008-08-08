@@ -52,6 +52,7 @@ namespace Ember
 
 		#ifdef THREAD_SAFE
 		pthread_mutex_init(&mSamplesMutex, NULL);
+		pthread_mutex_init(&mCopyMutex, NULL);
 		pthread_mutex_init(&mEntitiesMutex, NULL);
 		#endif
 	}
@@ -184,10 +185,9 @@ namespace Ember
 		ALboolean loop = false;
 		alSourcei (newSample->getSource(), AL_LOOPING, loop);
 
-		/* TODO: Get the relative from base
-		if (playsLocally == PLAY_LOCAL)
-			alSourcei(newSample->getSource(), AL_SOURCE_RELATIVE, true);
-		*/
+		int playsLocally = 0;
+		alGetSourcei(base->getSource(), AL_SOURCE_RELATIVE, &playsLocally);
+		alSourcei(newSample->getSource(), AL_SOURCE_RELATIVE, playsLocally);
 
 		if (alGetError() != AL_NO_ERROR)
 		{
@@ -202,7 +202,81 @@ namespace Ember
 
 	StreamedSoundSample* SoundService::instStreamedSample(StreamedSoundSample* base)
 	{
-		return NULL;
+		#ifdef THREAD_SAFE
+		pthread_mutex_lock(&mCopyMutex);
+		#endif
+
+		StreamedSoundSample* newSample = new StreamedSoundSample();
+		if (!newSample)
+		{
+			S_LOG_FAILURE("Failed to allocate memory for a new sound source.");
+			return NULL;
+		}
+
+		// Should we handle this in Ogre or any other Resource Manager?
+		FILE* newFile = NULL;
+		if (!(newFile = fopen(base->getFilename().c_str(), "rb")))
+		{
+			S_LOG_FAILURE("Failed to open file.");
+			delete newSample;
+
+			return false;
+		}
+
+		newSample->setFile(newFile, base->getFilename());
+
+		if (ov_open(newFile, newSample->getStreamPtr(), NULL, 0) < 0)
+		{
+Error0:
+			S_LOG_FAILURE("Failed to bind ogg stream to sound sample.");
+
+			fclose(newFile);
+			delete newSample;
+
+			return NULL;
+		}
+
+		vorbis_info* oggInfo = ov_info(newSample->getStreamPtr(), -1);
+		if (oggInfo->channels == 1)
+		{
+			newSample->setFormat(AL_FORMAT_MONO16);
+		}
+		else
+		{
+			newSample->setFormat(AL_FORMAT_STEREO16);
+		}
+
+		newSample->setRate(oggInfo->rate);
+
+		alGenBuffers(2, newSample->getBufferPtr());
+		if (alGetError() != AL_NO_ERROR)
+		{
+			goto Error0;
+		}
+
+		alGenSources(1, newSample->getSourcePtr());
+		if (alGetError() != AL_NO_ERROR)
+		{
+			goto Error0;
+		}
+
+		alSourcef (newSample->getSource(), AL_PITCH, 1.0);
+		alSourcef (newSample->getSource(), AL_GAIN, 1.0);
+		alSource3f(newSample->getSource(), AL_POSITION, 0, 0, 0);
+		alSource3f(newSample->getSource(), AL_VELOCITY, 0, 0, 0);
+		alSourcei (newSample->getSource(), AL_LOOPING, false);
+
+		int playsLocally = 0;
+		alGetSourcei(base->getSource(), AL_SOURCE_RELATIVE, &playsLocally);
+		alSourcei(newSample->getSource(), AL_SOURCE_RELATIVE, playsLocally);
+
+		mCopySamples.push_back(newSample);
+
+		#ifdef THREAD_SAFE
+		pthread_mutex_unlock(&mCopyMutex);
+		#endif
+
+		return newSample;
 	}
 
 	bool SoundService::registerInstance(BaseSoundSample* base, BaseSoundSample* copy)
@@ -243,7 +317,8 @@ namespace Ember
 		}
 	}
 
-	bool SoundService::registerSound(const std::string &filename, bool playLocally, const SoundSampleType type)
+	bool SoundService::registerSound(const std::string &filename, bool playLocally,
+			const SoundSampleType type, float soundVolume)
 	{
 		if (getSoundSample(filename))
 		{
@@ -265,12 +340,12 @@ namespace Ember
 					
 						if (extension == "wav" || extension == "pcm")
 						{
-							return allocateWAVPCM(filename, playLocally);
+							return allocateWAVPCM(filename, playLocally, soundVolume);
 						}
 						else
 						if (extension == "ogg")
 						{
-							return allocateOGG(filename, playLocally);
+							return allocateOGG(filename, playLocally, soundVolume);
 						}
 					}
 					return false;
@@ -278,9 +353,9 @@ namespace Ember
 				break;
 			case SAMPLE_PCM:
 			case SAMPLE_WAV:
-				return allocateWAVPCM(filename, playLocally);
+				return allocateWAVPCM(filename, playLocally, soundVolume);
 			case SAMPLE_OGG:
-				return allocateOGG(filename, playLocally);
+				return allocateOGG(filename, playLocally, soundVolume);
 		};
 	}
 
@@ -343,7 +418,7 @@ namespace Ember
 		return newObject;
 	}
 		
-	bool SoundService::allocateWAVPCM(const std::string &filename, bool playsLocally)
+	bool SoundService::allocateWAVPCM(const std::string &filename, bool playsLocally, float soundVolume)
 	{
 		#ifdef THREAD_SAFE
 		pthread_mutex_lock(&mSamplesMutex);
@@ -391,7 +466,7 @@ namespace Ember
 	
 		alSourcei (newSample->getSource(), AL_BUFFER, newSample->getBuffer());
 		alSourcef (newSample->getSource(), AL_PITCH, 1.0);
-		alSourcef (newSample->getSource(), AL_GAIN, 1.0);
+		alSourcef (newSample->getSource(), AL_GAIN, soundVolume);
 		alSource3f(newSample->getSource(), AL_POSITION, 0, 0, 0);
 		alSource3f(newSample->getSource(), AL_VELOCITY, 0, 0, 0);
 		alSourcei (newSample->getSource(), AL_LOOPING, loop);
@@ -416,7 +491,7 @@ namespace Ember
 		return true;
 	}
 
-	bool SoundService::allocateOGG(const std::string &filename, bool playsLocally)
+	bool SoundService::allocateOGG(const std::string &filename, bool playsLocally, float soundVolume)
 	{
 		#ifdef THREAD_SAFE
 		pthread_mutex_lock(&mSamplesMutex);
@@ -439,7 +514,7 @@ namespace Ember
 			return false;
 		}
 
-		newSample->setFile(newFile);
+		newSample->setFile(newFile, filename);
 
 		if (ov_open(newFile, newSample->getStreamPtr(), NULL, 0) < 0)
 		{
@@ -477,7 +552,7 @@ Error0:
 		}
 
 		alSourcef (newSample->getSource(), AL_PITCH, 1.0);
-		alSourcef (newSample->getSource(), AL_GAIN, 1.0);
+		alSourcef (newSample->getSource(), AL_GAIN, soundVolume);
 		alSource3f(newSample->getSource(), AL_POSITION, 0, 0, 0);
 		alSource3f(newSample->getSource(), AL_VELOCITY, 0, 0, 0);
 		alSourcei (newSample->getSource(), AL_LOOPING, false);
@@ -510,9 +585,9 @@ Error0:
 		#ifdef THREAD_SAFE
 		pthread_mutex_lock(&mSamplesMutex);
 		#endif
-
-		for (std::map<std::string, BaseSoundSample*>::iterator it = mSamples.begin(); 
-				it != mSamples.end(); it++)
+	
+		std::map<std::string, BaseSoundSample*>::iterator it = mSamples.begin();
+		for (; it != mSamples.end(); it++)
 		{
 			BaseSoundSample* sample = (*it).second;
 			if (sample && sample->getType() == SAMPLE_OGG)
@@ -529,25 +604,26 @@ Error0:
 		pthread_mutex_unlock(&mSamplesMutex);
 		#endif
 
-		/*
+		if (mCopySamples.empty())
+			return;
+
 		#ifdef THREAD_SAFE
-		pthread_mutex_lock(&mEntitiesMutex);
+		pthread_mutex_lock(&mCopyMutex);	
 		#endif
 
-		for (std::map<std::string, SoundEntity*>::iterator it = mEntities.begin();
-				it != mEntities.end(); it++)
+		std::list<StreamedSoundSample*>::iterator sIt = mCopySamples.begin();
+		for (; sIt != mCopySamples.end(); sIt++)
 		{
-			SoundEntity* object = (*it).second;
-			if (object)
+			StreamedSoundSample* ogg = dynamic_cast<StreamedSoundSample*>(*sIt);
+			if (ogg && ogg->isPlaying())
 			{
-				object->playQueued();
+				ogg->cycle();
 			}
 		}
 
 		#ifdef THREAD_SAFE
-		pthread_mutex_lock(&mEntitiesMutex);
+		pthread_mutex_unlock(&mCopyMutex);
 		#endif
-		*/
 	}
 
 } // namespace Ember
