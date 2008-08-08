@@ -807,7 +807,7 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
     } else if (str == "pos" && hasAttr("terrainmod")) {
         /* If an entity with a terrainmod attribute moves, we first clear the all existing mods,
             get a list of entities in the world and search it for other terrainmods (besides this one)
-            and reapply them all
+            and reapply them all. This should probably be moved elsewhere to keep onAttrChanged simple.
         */
             // Clear all modifiers from the world
         EmberOgre::getSingleton().getTerrainGenerator()->ClearAllMods();
@@ -818,20 +818,11 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
         w->buildEntityDictFromContents(ents);
 
         IdEntityMap::iterator I = ents.begin();
-        int i = 0;
-        float mx,my; //x, y coords of the mod-holding entity's position
+
         for (; I != ents.end(); I++)
         {
             if (I->second->hasAttr("terrainmod") ) {
-                i++;
-                mx = I->second->getPosition().x();
-                my = I->second->getPosition().y();
-                    // The logging calls to make sure the position being used is always the same
-                S_LOG_INFO("Clearing mods from segment: " << mx/64 << "," << my/64);
-                //EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment(mx,my)->clearMods();
-                S_LOG_INFO("Reapplying :: " << I->second->getPosition().x() << "," << I->second->getPosition().y());
-                dynamic_cast<EmberEntity*>(I->second)->updateTerrainModifiers(I->second->valueOfAttr("terrainmod"));
-                S_LOG_INFO("Reapplied :: " << I->second->getPosition().x() << "," << I->second->getPosition().y());
+//                 dynamic_cast<EmberEntity*>(I->second)->updateTerrainModifiers(I->second->valueOfAttr("terrainmod"));
             }
         }
 
