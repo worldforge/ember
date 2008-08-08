@@ -38,21 +38,28 @@ public:
     
     /**
      * Constructor.
-     * @param command The console command.
-     * @param object The object instance.
-     * @param description Description of the command.
-     * @return 
-     */
+     * @param command The console command. There are mainly two different kinds of command: normal commands and "toggle" commands. The latter are identified by always starting with "+", such as "+move_forward". If a "toggle" command is used, an "inverse command" will automatically be generated, accessable through getInverseCommand(). This is meant to be used to act as an inverse of the main command.
+     * @param object The object instance. This will recieve notifications when the command (and if available the inverse command) is used.
+     * @param description Description of the command, to be presented to the end user.
+    */
     ConsoleCommandWrapper(std::string command, ConsoleObject *object, std::string description = "");
 
-    ~ConsoleCommandWrapper();
+    virtual ~ConsoleCommandWrapper();
     
     /**
-     * Gets the command.
+     * @brief Gets the command.
      * @return 
      */
     inline const std::string& getCommand() const;
     
+    /**
+     * @brief Gets the inverse command, i.e. the command used to invert the action of the command.
+     * This is only relevant when dealing with commands prefixed with "+", i.e. commands that will require a similiar command prefixed by "-" to stop what they're doing. An example of this is the "+move_forward" command which will move the avatar forward until a "-move_forward" command is recieved.
+     * This is most often used in conjunction with the InputCommandMapper class, but it can of course be used by other mechanisms as well.
+     *
+     * Note that an inverse command is automatically generated whenever a "+" command is used.
+     * @return The inverse command for the current command.
+     */
     inline const std::string& getInverseCommand() const;
     
     /**
@@ -65,9 +72,25 @@ public:
     
 private:
 
+	/**
+	The command to which this wrapper is bound to.
+	*/
 	std::string mCommand;
+	
+	/**
+	The inverse command which could be used to stop the action invoked by the main command.
+	This is optional since not all commands will have inverse commands.
+	*/
 	std::string mInverseCommand;
+	
+	/**
+	A description of the command, to be shown for the end user.
+	*/
 	std::string mDescription;
+	
+	/**
+	The ConsoleObject to which this wrapper is connected.
+	*/
 	ConsoleObject* mObject;
 };
     
