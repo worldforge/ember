@@ -37,9 +37,11 @@ class EmberEntity;
 class Avatar;
 
 /**
- * This is the main player avatar. We want this one to behave a little different
- * than the other game entities, thus it has it's own subclass.
+ * @author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+ *
+ * @brief This is the main player avatar. We want this one to behave a little different than the other game entities, thus it has it's own subclass.
  * 
+ * One thing that makes this different from other entities is that we don't always respect position updates from the server as we would do with other entities. The main reason is that the user might have moved the avatar in the interim between sending updates to the server and recieving them, so we don't want the client to constantly relocating the avatar when it moves.
  */
 class AvatarEmberEntity 
 : public EmberPhysicalEntity,

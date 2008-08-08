@@ -307,26 +307,13 @@ protected:
 	Keep a temporary list of entities that needs to be removed from the inventory.
 	*/
 	std::set<Eris::Entity*> mEntitiesToBeRemovedFromInventory;
-	
-	
-	/**
-	 *    catch changes to the configuration
-	 * @param section 
-	 * @param key 
-	 */
-	void ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key);
-	
+		
 	/**
 	 * Listen for location changes, since after a location change we need to honour the onMoved updates even if we're in movement mode.
 	 * @param entity 
 	 */
 	void avatar_LocationChanged(Eris::Entity* entity);
 
-	/**
-	*	updates values from the configuration
-	*/
-	void updateFromConfig();
-	
 	/**
 	True if the current user have admin rights, i.e. is a "creator".
 	*/
@@ -339,12 +326,37 @@ protected:
 
 	
 	/**
-	 *    Listen for the changing of the general:logchatmessages config key and create and destroy an intance of AvatarLogger (actually AvatarLoggerParent) accordingly.
+	 *    Listen for changes of the general:logchatmessages config key and create and destroy an instance of AvatarLogger (actually AvatarLoggerParent) accordingly.
 	 * @param section 
 	 * @param key 
 	 * @param variable 
 	 */
 	void Config_LogChatMessages(const std::string& section, const std::string& key, varconf::Variable& variable);
+	
+	/**
+	 *    Bind the frequency of rotation updates being sent to the server when the camera moves to the general:avatarrotationupdatefrequency key
+	 * @param section 
+	 * @param key 
+	 * @param variable 
+	 */
+	void Config_AvatarRotationUpdateFrequency(const std::string& section, const std::string& key, varconf::Variable& variable);
+	
+	/**
+	 *    Bind the walking speed to the input:walkspeed key. Note that this is capped in the end by the server.
+	 * @param section 
+	 * @param key 
+	 * @param variable 
+	 */
+	void Config_WalkSpeed(const std::string& section, const std::string& key, varconf::Variable& variable);
+	
+	/**
+	 *    Bind the running speed to the input:runspeed key. Note that this is capped in the end by the server.
+	 * @param section 
+	 * @param key 
+	 * @param variable 
+	 */
+	void Config_RunSpeed(const std::string& section, const std::string& key, varconf::Variable& variable);
+	
 	
 	/**
 	Holds the objects which logs ingame messages to a file. We don't hold a AvatarLogger instance directly, instead using the AvatarLoggerParent class, since we can't really create an instance of AvatarLogger until we've gotten an AvatarEmberEntity, and the AvatarLoggerParent class will take care of all that.

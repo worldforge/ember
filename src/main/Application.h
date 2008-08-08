@@ -113,25 +113,27 @@ namespace Ember
 	sigc::signal<void> EventServicesInitialized;
 
 	/**
-	 * Causes the application to quit.
+	 * @brief Causes the application to quit.
+	 * This will instantly shut down the application, in contrast to requestQuit which will try to show a confirmation dialog to the user.
 	 */
 	void quit();
 
 
 	/**
-	 * Callback for running Console Commands
+	 * @brief Callback for running Console Commands
 	 */
-	void runCommand(const std::string&,const std::string&);
+	void runCommand(const std::string& command,const std::string& args);
 
 	/**
-	 *    Sets whether eris should be polled each frame. Defaults to true.
-	 * @param doPoll 
+	 * @brief Sets whether eris should be polled each frame. Defaults to true.
+	 * Normally Eris is polled each frame. A "poll" means that Eris is asked to send and recieve any data from the server and act on it.
+	 * @param doPoll True if polling should occur each frame.
 	 */
 	void setErisPolling(bool doPoll);
 
 	/**
-	 *    Gets whether eris should be polled each frame.
-	 * @return 
+	 *  @brief Gets whether eris should be polled each frame.
+	 * @return True if polling occurs each frame.
 	 */
 	bool getErisPolling() const;
 	
@@ -230,6 +232,14 @@ namespace Ember
 	*/
 	std::auto_ptr<ConsoleBackend> mConsoleBackend;
 
+	/**
+	The "quit" command will quit the application, bypassing any confirmation dialog.
+	*/
+	const Ember::ConsoleCommandWrapper Quit;
+	/**
+	Toggles the polling of data from eris. Normally Eris is polled each frame, but this can be turned off (mainly for debug reasons).
+	*/
+	const Ember::ConsoleCommandWrapper ToggleErisPolling;
 };
 }
 

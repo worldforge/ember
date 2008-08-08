@@ -77,7 +77,10 @@ Application::Application(const std::string prefix, const std::string homeDir, co
 , mWorldView(0)
 , mPollEris(true)
 , mConfigSettings(configSettings)
-, mConsoleBackend(0)
+, mConsoleBackend(new ConsoleBackend())
+, Quit("quit", this, "Quit Ember.")
+, ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off.")
+
 {
 
 }
@@ -146,7 +149,6 @@ void Application::initializeServices()
 	std::cout << "Initializing Ember services" << std::endl;
 
 	mServices = new EmberServices();
-	mConsoleBackend = std::auto_ptr<ConsoleBackend>(new ConsoleBackend());	
 	/// Initialize the Configuration Service
 	EmberServices::getSingleton().getConfigService()->start();
 	if (mPrefix != "") {
@@ -294,8 +296,13 @@ void Application::quit()
 	mShouldQuit = true;
 }
 
-void Application::runCommand(const std::string& cmd, const std::string& args)
+void Application::runCommand(const std::string& command, const std::string& args)
 {
+	if(command == Quit.getCommand()) {
+		quit();
+	} else if (ToggleErisPolling == command){
+		setErisPolling(!getErisPolling());
+	}
 }
 
 void Application::setErisPolling(bool doPoll)

@@ -75,13 +75,11 @@ Avatar::Avatar()
 	createAvatar();
 
 	Ogre::Root::getSingleton().addFrameListener(this);
-	
-	Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &Avatar::ConfigService_EventChangedConfigItem));
-
-	///update values from the config
-	updateFromConfig();
-	
+		
 	registerConfigListener("general","logchatmessages", sigc::mem_fun(*this, &Avatar::Config_LogChatMessages));
+	registerConfigListener("general","avatarrotationupdatefrequency", sigc::mem_fun(*this, &Avatar::Config_AvatarRotationUpdateFrequency));
+	registerConfigListener("input","walkspeed", sigc::mem_fun(*this, &Avatar::Config_WalkSpeed));
+	registerConfigListener("input","runspeed", sigc::mem_fun(*this, &Avatar::Config_RunSpeed));
 	
 	mCurrentMovementState.isMoving = false;
 	mCurrentMovementState.velocity = Ogre::Vector3::ZERO;
@@ -102,39 +100,8 @@ void Avatar::setMinIntervalOfRotationChanges(Ogre::Real milliseconds)
 
 void Avatar::createAvatar()
 {
-	// The avatar itself
 	mAvatarNode = static_cast<Ogre::SceneNode*>(EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChild());
 	mAvatarNode->setPosition(Ogre::Vector3(0,0,0));
-	//mAvatarNode->setOrientation(0,1,0,0);
-	//mAvatarNode->setScale(Ogre::Vector3(0.01,0.01,0.01));
-	
-/*	// Model Node and Entity for display
-	// TODO: do also the scaling here! That way the other nodes can be positioned in their real places
-	mAvatarModelNode = static_cast<Ogre::SceneNode*>(mAvatarNode->createChild("AvatarModelNode"));
-	
-	Model* model = new Model("AvatarEntity");
-	model->create("settler");
-	
-// 	Model* model = Model::Create("spider.modeldef.xml", "AvatarEntity");
-	//Model::Create("malebuilder.modeldef.xml", "AvatarEntity1");
-
-
-	mAvatarModel = model;
-	
-	mAvatarModelNode->attachObject(mAvatarModel);
-	mAvatarModelNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);*/
-  
-  
-/*  Ogre::Light* light = mSceneMgr->createLight("AvatarLight__");
-           light->setType(Ogre::Light::LT_POINT);
-            light->setCastShadows(true);
-            light->setDiffuseColour(0.6,0.6,0.6);
-            //light->setSpecularColour(1, 1, 1);
-            light->setAttenuation(50,1,0.0005,0);
-	mAvatarModelNode->attachObject(light);*/
-// 
-// 	mAvatarModelNode->showBoundingBox(true);
-
 }
 
 bool Avatar::frameStarted(const Ogre::FrameEvent & event)
@@ -145,7 +112,7 @@ bool Avatar::frameStarted(const Ogre::FrameEvent & event)
 		std::set<Eris::Entity*>::iterator I_end = mEntitiesToBeAddedToInventory.end();
 		
 		for (; I != I_end; ++I) {
-			//no need to do dynamic cast here
+			///no need to do dynamic cast here
 			EmberEntity* emberEntity = static_cast<EmberEntity*>(*I);
 			EventAddedEntityToInventory.emit(emberEntity);
 		}
@@ -333,7 +300,7 @@ void Avatar::setAvatarController(AvatarController* avatarController)
 
 void Avatar::movedInWorld()
 {
-	///only snap the avatar to the postiion and orientation sent from the server if we're not moving or if we're not recently changed location
+	///only snap the avatar to the postition and orientation sent from the server if we're not moving or if we're not recently changed location
 	///The main reason when moving is that we don't want to have the avatar snapping back in the case of lag
 	///However, if we've just recently changed location, we need to also update the orientation to work with the new location.
 	if (!mCurrentMovementState.isMoving || mHasChangedLocation) 
@@ -376,24 +343,13 @@ void Avatar::createdAvatarEmberEntity(AvatarEmberEntity *emberEntity)
 		mIsAdmin = false;
 	}
 	
-	//mAvatarNode->getParent()->removeChild(mAvatarNode->getName());
-	
-	//HACK!!! DEBUG!!
-	//mAvatarNode->getParent()->removeChild(mAvatarNode->getName());
-	//EmberEntity->getSceneNode()->addChild(mAvatarNode);
-//	mSceneMgr->getRootSceneNode()->addChild(mAvatarNode);
-	//HACK!!! DEBUG!!
-	
 	mAvatarNode = emberEntity->getSceneNode();
 	mAvatarModel = emberEntity->getModel();
 
 	mErisAvatarEntity = emberEntity;
 	emberEntity->setAvatar(this);
-
-	
-	
 	mAvatarController->createAvatarCameras(emberEntity->getSceneNode());
-		
+
 	EmberOgre::getSingleton().getSceneManager()->destroySceneNode(oldAvatar->getName());
 	Ember::Input::getSingleton().setMovementModeEnabled(true);
 	
@@ -402,36 +358,19 @@ void Avatar::createdAvatarEmberEntity(AvatarEmberEntity *emberEntity)
 	EventCreatedAvatarEntity.emit(emberEntity);
 }
 
-void Avatar::ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key)
+void Avatar::Config_AvatarRotationUpdateFrequency(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
-	if (section == "general") {
-		if (key == "avatarrotationupdatefrequency" ) {
-			updateFromConfig();
-		}
-	} else if (section == "input") {
-		if (key == "walkspeed" ) {
-			updateFromConfig();
-		}
-	} else if (section == "input") {
-		if (key == "runspeed" ) {
-			updateFromConfig();
-		}
-	}
+	setMinIntervalOfRotationChanges(static_cast<double>(variable));
 }
 
-void Avatar::updateFromConfig()
+void Avatar::Config_WalkSpeed(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
-	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("general", "avatarrotationupdatefrequency")) {
-		double frequency = static_cast<double>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("general", "avatarrotationupdatefrequency"));
-		setMinIntervalOfRotationChanges(static_cast<Ogre::Real>(frequency));
-	}
-	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("input", "walkspeed")) {
-		mWalkSpeed = static_cast<double>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("input", "walkspeed"));
-	}
-	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("input", "runspeed")) {
-		mRunSpeed = static_cast<double>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("input", "runspeed"));
-	}
+	mWalkSpeed = static_cast<double>(variable);
+}
 
+void Avatar::Config_RunSpeed(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	mRunSpeed = static_cast<double>(variable);
 }
 
 void Avatar::Config_LogChatMessages(const std::string& section, const std::string& key, varconf::Variable& variable)

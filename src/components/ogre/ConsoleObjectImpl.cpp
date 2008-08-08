@@ -40,9 +40,7 @@ template<> EmberOgre::ConsoleObjectImpl* Ember::Singleton<EmberOgre::ConsoleObje
 namespace EmberOgre {
 
 
-ConsoleObjectImpl::ConsoleObjectImpl(void) : 
-Quit("quit", this, "Quit Ember."), 
-ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off.")
+ConsoleObjectImpl::ConsoleObjectImpl(void)
 {
 }
 ConsoleObjectImpl::~ConsoleObjectImpl()
@@ -53,17 +51,7 @@ ConsoleObjectImpl::~ConsoleObjectImpl()
 
 void ConsoleObjectImpl::runCommand(const std::string &command, const std::string &args)
 {
-	if(command == Quit.getCommand()) {
-		Ember::ConsoleBackend::getSingletonPtr()->pushMessage("Bye");
-		quit();
-	} else if (ToggleErisPolling == command){
-		Ember::Application::getSingleton().setErisPolling(!Ember::Application::getSingleton().getErisPolling());
-	}
-}
 
-void ConsoleObjectImpl::quit()
-{
-	Ember::Application::getSingleton().quit();
 }
 
 }

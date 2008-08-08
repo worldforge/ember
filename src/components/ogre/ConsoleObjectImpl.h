@@ -24,12 +24,19 @@
 #include "framework/Singleton.h"
 
 namespace EmberOgre {
+
+/**
+@brief The Ogre specific implementation of Ember::ConsoleObject.
+
+This allows a central location to place console commands that belongs to EmberOgre but have no other obvious place in the class hierarcy.
+
+*/
 class ConsoleObjectImpl: public Ember::ConsoleObject, public Ember::Singleton<ConsoleObjectImpl>
 {
 	public:
 
 	ConsoleObjectImpl(void);
-	~ConsoleObjectImpl();
+	virtual ~ConsoleObjectImpl();
 
 	/**
 	 * Receive commands from console
@@ -39,15 +46,7 @@ class ConsoleObjectImpl: public Ember::ConsoleObject, public Ember::Singleton<Co
 	private:
 
 
-
-	void quit();
-
-	/// List of Ogre's console commands
-	const Ember::ConsoleCommandWrapper Quit;
-	const Ember::ConsoleCommandWrapper ToggleErisPolling;
-
-
-}; // End of class declaration
+};
 
 }
 
