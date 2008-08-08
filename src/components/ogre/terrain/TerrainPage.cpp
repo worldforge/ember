@@ -482,10 +482,9 @@ void TerrainPage::addTerrainModifier(int sx, int sy, int mx, int my, int mz, Mer
 
 void TerrainPage::ClearAllMods()
 {
-    S_LOG_INFO("BLOOT");
     std::list<terrainModListEntry>::iterator I;
     for (I = mTModList.begin(); I != mTModList.end(); I++) {
-        S_LOG_INFO("Clearing mod from " << I->Position()->x() << "," << I->Position()->y());
+
         EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment(I->SegX(),I->SegY())->clearMods();
 
         mTModList.erase(I);
