@@ -249,11 +249,6 @@ public:
 	void addTerrainModifier(int sx, int sy, int mx, int my, int mz, Mercator::TerrainMod *modifier);
 
 	/**
-	 *    @brief Clears all applied modifiers from the terrain and empties mTModList
-	 */
-	void ClearAllMods();
-
-	/**
 	 *    @brief Returns the (2d) position of an applied modifier
 	 *
 	 */

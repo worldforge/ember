@@ -801,8 +801,10 @@ void EmberEntity::updateTerrainModifiers(const Atlas::Message::Element& modifier
     // Clear modifiers from this segment so we get a "clean slate" to work from
     //  In the near future this should be expanded to include all segments touched by
     //  the modifier's bbox.
-     WFMath::Point<3> pos = getPosition();
-     EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment((float)pos.x(),(float)pos.y())->clearMods();
+//      WFMath::Point<3> pos = getPosition();
+//      EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment((float)pos.x(),(float)pos.y())->clearMods();
+            // Clear all modifiers from the world
+        EmberOgre::getSingleton().getTerrainGenerator()->ClearAllMods();
 
     // Apply Modifier
     //EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition((float)pos.x(),(float)pos.y()))->addTerrainModifier(sx,sy,mx,my,(int)pos.z(),NewMod);

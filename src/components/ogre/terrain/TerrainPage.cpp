@@ -480,17 +480,6 @@ void TerrainPage::addTerrainModifier(int sx, int sy, int mx, int my, int mz, Mer
     EmberOgre::getSingleton().getTerrainGenerator()->buildHeightmap();
 }
 
-void TerrainPage::ClearAllMods()
-{
-    std::list<terrainModListEntry>::iterator I;
-    for (I = mTModList.begin(); I != mTModList.end(); I++) {
-
-        EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment(I->SegX(),I->SegY())->clearMods();
-
-        mTModList.erase(I);
-    }
-}
-
 TerrainPosition *TerrainPage::getTerrainModifierPos()
 {
 	S_LOG_INFO("Giving terrainModifier position at: " << mTModList.front().X() << "," << mTModList.front().Y() << "," << mTModList.front().Z()); 
