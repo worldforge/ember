@@ -27,6 +27,8 @@
 
 #include <Eris/Entity.h>
 
+#include <Mercator/TerrainMod.h>
+
 namespace Ogre
 {
 	class OOBBWireBoundingBox;
@@ -314,7 +316,11 @@ protected:
 	 *
 	 */
 	void updateTerrainModifiers(const Atlas::Message::Element& modifier);
-	
+
+	/**
+	 *    Parses the Atlas data for a terrain mod and returns a pointer to a modifier
+	 */
+	Mercator::TerrainMod* parseTerrainModifier(const Atlas::Message::Element& modifier);	
 	
 	/**
 	 * Creates the main scene node which holds the entity.
