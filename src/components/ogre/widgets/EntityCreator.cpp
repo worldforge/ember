@@ -196,6 +196,8 @@ void EntityCreator::startCreation()
 
 	mRecipeConnection = mRecipe->EventValueChanged.connect( sigc::mem_fun(*this, &EntityCreator::adapterValueChanged) );
 
+	mWidget->getMainWindow()->setAlpha(0.6);
+
 	createEntity();
 }
 
@@ -204,6 +206,8 @@ void EntityCreator::stopCreation()
 	mRecipeConnection.disconnect();
 
 	cleanupCreation();
+
+	mWidget->getMainWindow()->setAlpha(1.0);
 }
 
 void EntityCreator::createEntity()
@@ -550,7 +554,7 @@ bool EntityCreatorInputAdapter::injectKeyDown(const SDLKey& key)
 {
 	if (key == SDLK_ESCAPE)
 	{
-		mEntityCreator.cleanupCreation();
+		mEntityCreator.stopCreation();
 		return false;
 	}
 	return true;
