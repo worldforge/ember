@@ -23,6 +23,7 @@
 #ifndef EMBERINPUTSERVICE_H
 #define EMBERINPUTSERVICE_H
 
+#include <memory>
 #include <framework/Service.h>
 #include <framework/ConsoleObject.h>
 
