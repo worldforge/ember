@@ -496,11 +496,13 @@ bool EntityCreatorInputAdapter::injectMouseMove(const MouseMotion& motion, bool&
 
 bool EntityCreatorInputAdapter::injectMouseButtonUp(const Input::MouseButton& button)
 {
+	/* Disabled as changes to adapters doesn't reflected in preview
 	if (mWindowClick)
 	{
 		mWindowClick = false;
 		return true;
 	}
+	*/
 	if (button == Input::MouseButtonLeft)
 	{
 		mEntityCreator.finalizeCreation();
@@ -517,11 +519,13 @@ bool EntityCreatorInputAdapter::injectMouseButtonUp(const Input::MouseButton& bu
 bool EntityCreatorInputAdapter::injectMouseButtonDown(const Input::MouseButton& button)
 {
 	CEGUI::Window* window = CEGUI::System::getSingleton().getWindowContainingMouse();
+	/* Disabled as changes to adapters doesn't reflected in preview
 	if (window->isAncestor(mEntityCreator.mWidget->getMainWindow()))
 	{
 		mWindowClick = true;
 		return true;
 	}
+	*/
 	if (button == Input::MouseButtonLeft)
 	{
 		return false;
