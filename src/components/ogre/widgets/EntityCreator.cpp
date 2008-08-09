@@ -54,6 +54,8 @@
 #include "components/ogre/model/mapping/IActionCreator.h"
 #include "main/Application.h"
 
+#include <CEGUIWindow.h>
+
 namespace EmberOgre {
 
 namespace Gui {
@@ -153,7 +155,7 @@ void EntityCreatorHideModelAction::deactivate()
 
 
 EntityCreator::EntityCreator()
-		: mModel(0), mCreateMode(false)
+		: mModel(0), mCreateMode(false), mBlurb(0), mBlurbShown(false)
 {
 	mInputAdapter = new EntityCreatorInputAdapter(*this);
 	mMoveAdapter = new EntityCreatorMoveAdapter(*this);
@@ -470,6 +472,52 @@ void EntityCreator::connectedToServer(Eris::Connection* conn)
 	mConn = conn;
 }
 
+void EntityCreator::showBlurb_frameStarted(const Ogre::FrameEvent& event)
+{
+	if (mBlurbShown) {
+		return;
+	}
+
+	if (!mBlurb) {
+		try {
+			mBlurb = static_cast<CEGUI::GUISheet*>(CEGUI::WindowManager::getSingleton().createWindow(GUIManager::getSingleton().getDefaultScheme() + "/StaticText", "EntityCreator/Blurb"));
+			mBlurb->setSize(CEGUI::UVector2(CEGUI::UDim(0.3f, 0), CEGUI::UDim(0.1f, 0)));
+			mBlurb->setPosition(CEGUI::UVector2(CEGUI::UDim(0.35f, 0), CEGUI::UDim(0.3f, 0)));
+			mBlurb->setProperty("HorzFormatting", "WordWrapLeftAligned");
+			mBlurb->setText("Click left mouse button to place the entity. Press Escape to exit from CREATE mode.");
+
+			mWidget->getMainSheet()->addChildWindow(mBlurb);
+			mBlurb->setVisible(false);
+			mTimeBlurbShown = 0;
+
+			mTimeUntilShowBlurb = 1;
+			mTimeToShowBlurb = 5;
+		} catch (const CEGUI::Exception& ex) {
+			S_LOG_FAILURE("Error when creating help blurb. Message:\n" << ex.getMessage().c_str());
+		}
+	}
+
+	if (mBlurb) {
+		if (!mBlurb->isVisible()) {
+			mTimeUntilShowBlurb -= event.timeSinceLastFrame;
+			if (mTimeUntilShowBlurb < 0) {
+				mBlurb->setVisible(true);
+			}
+		} else {
+			mTimeBlurbShown += event.timeSinceLastFrame;
+			mBlurb->setAlpha(1.0f - (mTimeBlurbShown / mTimeToShowBlurb));
+			
+			if (mTimeBlurbShown > mTimeToShowBlurb) {
+				CEGUI::WindowManager::getSingleton().destroyWindow(mBlurb);
+				mBlurb = 0;
+				mBlurbShown = true;
+			}
+		}
+	}
+
+	return;
+}
+
 EntityCreatorInputAdapter::EntityCreatorInputAdapter(EntityCreator& entityCreator)
 	: mEntityCreator(entityCreator), mWindowClick(false)
 {
@@ -595,6 +643,7 @@ bool EntityCreatorMoveAdapter::frameStarted(const Ogre::FrameEvent& event)
 	if (EmberOgre::getSingleton().getMainCamera()->getTerrainCursor().getTerrainCursorPosition(&position)) {
 		mEntityCreator.setPosition(Ogre2Atlas(*position));
 	}
+	mEntityCreator.showBlurb_frameStarted(event);
 	return true;
 }
 
