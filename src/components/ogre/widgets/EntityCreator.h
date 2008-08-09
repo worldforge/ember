@@ -98,6 +98,9 @@ public:
 	 */
 	void setPosition(WFMath::Point<3> pos);
 
+	/**
+	 * Rotates an entity for specified number of degrees.
+	 */
 	void yaw(float degrees); 
 
 	/**
