@@ -70,6 +70,12 @@ void GUIAdapter::detach()
 
 const Atlas::Message::Element& GUIAdapter::getValue()
 {
+	if (!mAdapter)
+	{
+		mTempElement = Atlas::Message::Element();
+		return mTempElement;
+	}
+
 	Atlas::Message::Element& value = mAdapter->getValue();
 	if (!(mAllowRandom && value.isString() && value.asString() == "Random"))
 	{
