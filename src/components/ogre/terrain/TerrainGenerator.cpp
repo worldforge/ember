@@ -56,13 +56,11 @@
 #include <Mercator/GrassShader.h>
 #include <Mercator/Surface.h>
 #include <Mercator/Matrix.h>
+#include <Mercator/Terrain.h>
 
 #include "TerrainLayerDefinitionManager.h"
 #include "TerrainLayerDefinition.h"
 #include "TerrainPageSurfaceLayer.h"
-// #include "../model/ModelDefinition.h"
-// #include "../model/ModelDefinitionManager.h"
-
 #include "../AvatarCamera.h"
 
 #include "../environment/Environment.h"
@@ -77,7 +75,6 @@
 #endif
 #include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
-
 
 using namespace Ogre;
 namespace EmberOgre {
@@ -262,10 +259,6 @@ void TerrainGenerator::markShaderForUpdate(TerrainShader* shader, TerrainArea* t
 		mChangedTerrainAreas[shader].push_back(terrainArea);
 	}
 }
-bool TerrainGenerator::frameStarted(const Ogre::FrameEvent & evt)
-{
-	return true;
-}
 
 bool TerrainGenerator::frameEnded(const Ogre::FrameEvent & evt)
 {
@@ -297,36 +290,35 @@ bool TerrainGenerator::frameEnded(const Ogre::FrameEvent & evt)
 
 }
 
-
-void TerrainGenerator::prepareSegments(long segmentXStart, long segmentZStart, long numberOfSegments, bool alsoPushOntoTerrain)
-{
-//TODO: implement!
-
-
-// 	int i,j;
-// 	for (i = segmentXStart; i < segmentXStart + numberOfSegments; ++i) {
-// 		for (j = segmentZStart; j < segmentZStart + numberOfSegments; ++j) {
-// 			if (i >= mXmin && i <= mXmax && j >= mYmin && j <=mYmax) {
-// 				mTerrain->getSegment(i, j)->populate();
-// 				mTerrain->getSegment(i, j)->populateNormals();
-// 				mTerrain->getSegment(i, j)->populateSurfaces();
-// 				TerrainPosition pos(i,j);
-// 				generateTerrainMaterials(mTerrain->getSegment(i, j), pos);
-// 				if (alsoPushOntoTerrain) {
-// 					TerrainPosition pos(i, j);
-// 					mTerrainPageSource->pushPage(pos);
-// 				}
-// 			}
-// 		}
-// 	}
-// //	generateUnderVegetation(0, 0, 1);
-// //	generateUnderVegetation(segmentXStart, segmentZStart, numberOfSegments);
-// 	mTerrainPageSource->setHasTerrain(true);
-// 	if (alsoPushOntoTerrain) {
-// 		mTerrainPageSource->resizeTerrain();
-// 	}
-	
-}
+// void TerrainGenerator::prepareSegments(long segmentXStart, long segmentZStart, long numberOfSegments, bool alsoPushOntoTerrain)
+// {
+// //TODO: implement!
+// 
+// 
+// // 	int i,j;
+// // 	for (i = segmentXStart; i < segmentXStart + numberOfSegments; ++i) {
+// // 		for (j = segmentZStart; j < segmentZStart + numberOfSegments; ++j) {
+// // 			if (i >= mXmin && i <= mXmax && j >= mYmin && j <=mYmax) {
+// // 				mTerrain->getSegment(i, j)->populate();
+// // 				mTerrain->getSegment(i, j)->populateNormals();
+// // 				mTerrain->getSegment(i, j)->populateSurfaces();
+// // 				TerrainPosition pos(i,j);
+// // 				generateTerrainMaterials(mTerrain->getSegment(i, j), pos);
+// // 				if (alsoPushOntoTerrain) {
+// // 					TerrainPosition pos(i, j);
+// // 					mTerrainPageSource->pushPage(pos);
+// // 				}
+// // 			}
+// // 		}
+// // 	}
+// // //	generateUnderVegetation(0, 0, 1);
+// // //	generateUnderVegetation(segmentXStart, segmentZStart, numberOfSegments);
+// // 	mTerrainPageSource->setHasTerrain(true);
+// // 	if (alsoPushOntoTerrain) {
+// // 		mTerrainPageSource->resizeTerrain();
+// // 	}
+// 	
+// }
 
 int TerrainGenerator::getPageIndexSize() 
 {
@@ -562,19 +554,19 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 	for (TerrainDefPointStore::const_iterator I = terrainPoints.begin(); I != terrainPoints.end(); ++I) {
 		
         Mercator::BasePoint bp;
-        if (mTerrain->getBasePoint(static_cast<int>(I->position.x()), static_cast<int>(I->position.y()), bp) && (I->height == bp.height())) {
-			S_LOG_VERBOSE( "Point [" << I->position.x() << "," << I->position.y() << " unchanged");
+        if (mTerrain->getBasePoint(static_cast<int>(I->getPosition().x()), static_cast<int>(I->getPosition().y()), bp) && (I->getHeight() == bp.height())) {
+			S_LOG_VERBOSE( "Point [" << I->getPosition().x() << "," << I->getPosition().y() << " unchanged");
             continue;
         } else {
         	wasUpdate = true;
-			S_LOG_VERBOSE( "Setting base point [" << I->position.x() << "," << I->position.y() << " to height " << I->height);
+			S_LOG_VERBOSE( "Setting base point [" << I->getPosition().x() << "," << I->getPosition().y() << " to height " << I->getHeight());
         }
-        bp.height() = I->height;
+        bp.height() = I->getHeight();
         /// FIXME Sort out roughness and falloff, and generally
         /// verify this code is the same as that in Terrain layer
-        mTerrain->setBasePoint(static_cast<int>(I->position.x()), static_cast<int>(I->position.y()), bp);
-        mTerrainInfo.setBasePoint(I->position, bp);
-		updatedPositions.push_back(I->position);
+        mTerrain->setBasePoint(static_cast<int>(I->getPosition().x()), static_cast<int>(I->getPosition().y()), bp);
+        mTerrainInfo.setBasePoint(I->getPosition(), bp);
+		updatedPositions.push_back(I->getPosition());
 	}
     mSegments = &mTerrain->getTerrain();
 	

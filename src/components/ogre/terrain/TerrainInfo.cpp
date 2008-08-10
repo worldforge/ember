@@ -25,6 +25,7 @@
 #endif
 
 #include "TerrainInfo.h"
+#include <Mercator/BasePoint.h>
 
 namespace EmberOgre {
 namespace Terrain {

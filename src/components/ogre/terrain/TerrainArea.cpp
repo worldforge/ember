@@ -56,7 +56,7 @@ bool TerrainArea::init() {
 bool TerrainArea::parseArea()
 {
 	if (!mEntity->hasAttr("area")) {
-        S_LOG_FAILURE("AreaModel defined on entity with no area attribute");
+        S_LOG_FAILURE("TerrainArea created for entity with no area attribute");
         return false;
     }
     

@@ -24,10 +24,13 @@
 #define EMBEROGRETERRAININFO_H
 
 #include "../EmberOgrePrerequisites.h"
-#include <Mercator/BasePoint.h>
 // #include <wfmath/wfmath.h>
 #include <wfmath/axisbox.h>
 
+namespace Mercator
+{
+class BasePoint;
+}
 
 namespace EmberOgre {
 namespace Terrain {

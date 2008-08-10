@@ -23,7 +23,6 @@
 #include "../EmberOgrePrerequisites.h"
 
 #include <wfmath/point.h>
-#include <Mercator/Terrain.h>
 
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
@@ -46,6 +45,9 @@ namespace Eris
 namespace Mercator
 {
 	class Area;
+	class Terrain;
+	class Shader;
+	class Segment;
 }
 
 namespace EmberOgre {
@@ -68,14 +70,43 @@ class TerrainLayerDefinition;
 class TerrainPageSurfaceLayer;
 class ISceneManagerAdapter;
 
-
-
+/**
+@brief Defines the height of a special "base point" in the terrain. 
+These base points are then user by Mercator::Terrain for generating the actual terrain.
+*/
 struct TerrainDefPoint
 {
 	public:
-		TerrainDefPoint(float x, float y, float terrainHeight) : position(x,y), height(terrainHeight) {}
-	TerrainPosition position;
-	float height;
+	/**
+	*       Ctor.
+	* @param x The position of the point, on the x axis, in world units.
+	* @param y The position of the point, on the y axis, in world units.
+	* @param terrainHeight The height of the point, in world units.
+	*/
+	TerrainDefPoint(float x, float y, float terrainHeight) : mPosition(x,y), mHeight(terrainHeight) {}
+	
+	/**
+	 * @brief Gets the position of the definition point, in world units.
+	 * @return The position of the point.
+	 */
+	inline const TerrainPosition& getPosition() const;
+	
+	/**
+	 * @brief Gets the height of the definition point, in world units.
+	 * @return The height of the point.
+	 */
+	inline float getHeight() const;
+	
+	private:
+	/**
+	The position of the point, in world units.
+	*/
+	TerrainPosition mPosition;
+	
+	/**
+	The height of the point, in world units.
+	*/
+	float mHeight;
 };
 
 
@@ -95,6 +126,9 @@ public sigc::trackable, public Ember::ConsoleObject
 public:
 
 
+	/**
+	A type used for storing the terrain definition points.
+	*/
 	typedef std::vector<TerrainDefPoint> TerrainDefPointStore;
 
 	/**
@@ -102,34 +136,33 @@ public:
 	 * 
 	 */ 
 	typedef std::map<int, TerrainPage *> TerrainPagecolumn;
-     
-			   
 	
 	/**
 	* STL map to store sparse array of TerrainPage pointer columns.
 	*/
 	typedef std::map<int, TerrainPagecolumn > TerrainPagestore;
 	
-	
 	/**
 	 * @brief Default ctor.
 	 * @param adapter An adapter which binds the terrain to a scene manager. The terrain generator will take ownership of the adapter and will destroy it upon it's destruction.
 	 */
 	TerrainGenerator(ISceneManagerAdapter* adapter);
+	
+	
+	/**
+	 *    Dtor.
+	 */
 	virtual ~TerrainGenerator();
 
 	
 	/**
-	 *    At each frame, we check for updates shaders and updates the terrain. This is because we want to batch together changes.
+	 * @brief At each frame, we check for updates shaders and updates the terrain. This is because we want to batch together changes.
 	 * @param evt 
 	 * @return 
 	 */
-	virtual bool frameStarted(const Ogre::FrameEvent & evt);
 	virtual bool frameEnded(const Ogre::FrameEvent & evt);
 
-	
-    void setBasePoint(int x, int y, float z) {mTerrain->setBasePoint(x,y,z);}
-	void prepareSegments(long segmentXStart, long segmentZStart, long numberOfSegments, bool alsoPushOntoTerrain);
+// 	void prepareSegments(long segmentXStart, long segmentZStart, long numberOfSegments, bool alsoPushOntoTerrain);
 
 	/**
 	 * Prepares all segments aquired from Mercator. Note that this can be very,
@@ -186,23 +219,24 @@ public:
 	
 
 	/**
-	 * Gets the size of one page as indices.
+	 * @brief Gets the size of one page as indices.
 	 * @return 
 	 */
 	int getPageIndexSize() ;
 		
 	/**
-	 *    @brief Adds a new Mercator::Area to the terrain.
+	 * @brief Adds a new Mercator::Area to the terrain.
 	 * @param area 
 	 */
 	void addArea(TerrainArea* terrainArea);
 
 	
 	/**
-	 *    Returns a TerrainPage. 
-	 *    If createIfMissing is true and there is no yet existing, a new one is created.
-	 * @param ogrePosition 
-	 * @return 
+	 * @brief Returns a TerrainPage, creating one if there's no existing and so requested.
+	 * If createIfMissing is true and there is no yet existing, a new one is created.
+	 * @param ogrePosition The position, in Ogre space, to create the new page on.
+	 * @param createIfMissing If set to true, a new page will be created if there's no pre-existing. Defaults to true.
+	 * @return An instance of terrain page, or null if there was no existing one and createIfMissing was set to false.
 	 */
 	TerrainPage* getTerrainPage(const Ogre::Vector2& ogrePosition, bool createIfMissing = true);
 	
@@ -223,7 +257,7 @@ public:
 	virtual	void runCommand(const std::string &command, const std::string &args);
 	
 	/**
-	 *    Rebuilds the height map, effectively regenerating the terrain
+	 *    Rebuilds the height map, effectively regenerating the terrain.
 	 */
 	void buildHeightmap();
 	
@@ -239,29 +273,57 @@ public:
 	sigc::signal<void> EventWorldSizeChanged;
 	
 	
+	/**
+	 *    @brief Registers to the scene manager adapter to be used by the generator.
+	 * The adapter acts as a bridge between the generator and the actual scene manager, allowing a certain degree of decoupling.
+	 * @param adapter The adapter to use.
+	 */
 	void registerSceneManagerAdapter(ISceneManagerAdapter* adapter);
+	
+	/**
+	 * @brief Gets the adapter used to bind this generator to a scene manager.
+	 * @return The adapter in use, or null if there is no one registered yet.
+	 */
 	ISceneManagerAdapter* getAdapter() const;
 	
+	/**
+	 * @brief Accessor for all instances of TerrainPage that are registered with the generator.
+	 * @return A store of TerrainPage instances.
+	 */
 	inline const TerrainPagestore& getTerrainPages() const;
 	
 	/**
-	 * Create and registers a new texture shader.
-	 * @param textureName 
-	 * @param mercatorShader 
+	 * @brief Create and registers a new texture shader.
+	 * @param layerDef The terrain layer defintiion to use. This will be used to determine what textures and materials to use for rendering the layer defined by the shader.
+	 * @param mercatorShader The Mercator::Shader to use.
 	 * @return 
 	 */
 	TerrainShader* createShader(const TerrainLayerDefinition* layerDef, Mercator::Shader* mercatorShader);
-		
+	
+	
+	/**
+	 * @brief Regenerates all terrain shadow maps.
+	 */
 	void updateShadows();
 	
+	/**
+	 * @brief Console command for updating all terrain shadow maps.
+	 */
 	const Ember::ConsoleCommandWrapper UpdateShadows;
 	
 	
 	/**
-	*    Gets the shadow colour at the supplied position.
-	* @param position The position in the world.
-	*/
+	 * @brief Gets the shadow colour at the supplied position.
+	 * @param position The position in the world.
+	 * @param colour The shadow colour will be put into this value.
+	 */
 	void getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour);
+	
+	/**
+	 * @brief Gets the shadow colour at the supplied position.
+	 * @param position The position in the world.
+	 * @param colour The shadow colour will be put into this value.
+	 */
 	void getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour);
 
 	/**
@@ -289,8 +351,14 @@ protected:
 	TerrainInfo mTerrainInfo;
 
 	typedef std::map<int,TerrainShader*> AreaShaderstore;
-  	AreaShaderstore mAreaShaders;
+	AreaShaderstore mAreaShaders;
 
+	/**
+	 * @brief Marks a shader for update, to be updated on the next batch, normally a frameEnded event.
+	 * For performance reasons we want to batch together multiple request for shader updates, so we can do them all at once, normally on frameEnded(). By calling this method the supplied shader will be marked for updating.
+	 * @param shader The shader to update.
+	 * @param terrainArea If an area is specified here, only pages touched by the area will be updated.
+	 */
 	void markShaderForUpdate(TerrainShader* shader, TerrainArea* terrainArea = 0);
 	
 	typedef std::set<TerrainShader*> ShaderSet;
@@ -310,7 +378,7 @@ protected:
 	
 	WFMath::Point<3> mCurrentPosition;
 
-	const Mercator::Terrain::Segmentstore* mSegments;
+	const std::map<int, std::map<int, Mercator::Segment*> >* mSegments;
 	
 	/**
 	 * the min and max indices for segments
@@ -394,6 +462,17 @@ unsigned int TerrainGenerator::getFoliageBatchSize() const
 {
 	return mFoliageBatchSize;
 }
+
+const TerrainPosition& TerrainDefPoint::getPosition() const
+{
+	return mPosition;
+}
+	
+float TerrainDefPoint::getHeight() const
+{
+	return mHeight;
+}
+
 
 }
 }
