@@ -70,10 +70,12 @@ namespace Ember
 	void SoundGroup::allocateBuffer(const std::string& filename, 
 					bool playsReal, const SoundSampleType& type, float soundVolume)
 	{	
-		#define sSoundService Ember::EmberServices::getSingleton().getSoundService() 
-		if (sSoundService->registerSound(filename, playsReal, type, soundVolume))
+		if (Ember::EmberServices::getSingleton().getSoundService()->registerSound
+				(filename, playsReal, type, soundVolume))
 		{
-			BaseSoundSample* newSample = sSoundService->getSoundSample(filename);
+			BaseSoundSample* newSample = Ember::EmberServices::getSingleton().
+				getSoundService()->getSoundSample(filename);
+
 			if (newSample)
 				mSamples.push_back(newSample);
 		}
@@ -81,7 +83,6 @@ namespace Ember
 		{
 			S_LOG_INFO(std::string("Failed to register SoundGroup buffer") + filename);
 		}
-		#undef sSoundService
 	}
 
 	void SoundGroup::setInstance(bool isInstance)
@@ -229,12 +230,11 @@ namespace Ember
 		BaseSoundSample* copy;
 		BaseSoundSample* base;
 
-		#define sSoundService Ember::EmberServices::getSingleton().getSoundService() 
 		instance->setInstance(true);
 		std::list<BaseSoundSample*>::iterator it = mSamples.begin();
 		for (; it != mSamples.end(); it++)
 		{
-			sSoundService->registerInstance(*it, copy);
+			Ember::EmberServices::getSingleton().getSoundService()->registerInstance(*it, copy);
 			if (!copy)
 			{
 				S_LOG_FAILURE("Failed to set copy instance.");
@@ -245,7 +245,6 @@ namespace Ember
 				instance->pushSample(copy);
 			}
 		}
-		#undef sSoundService
 
 		return true;
 	}
