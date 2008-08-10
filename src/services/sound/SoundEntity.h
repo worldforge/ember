@@ -24,30 +24,98 @@
 
 namespace Ember
 {
+	/**
+	 * SoundEntity class, usually an instance of this 
+	 * class type (defined by entity name/type) is returned 
+	 * on Eris::Entity allocation.
+	 */
 	class SoundEntity
 	{
 		private:
+			/**
+			 * Entity Position
+			 */
 			WFMath::Point<3> mPosition;
+
+			/**
+			 * Entity Velocity
+			 */
 			WFMath::Vector<3> mVelocity;
 
+			/**
+			 * List of SoundAction referenced by name. When
+			 * the server sends an action to the client,
+			 * the entity ask the specific action (if it exists)
+			 * to be played.
+			 */
 			std::map<std::string, SoundAction*> mActions;
 
+			/**
+			 * Active Action within this entity.
+			 */
 			SoundAction* mActiveAction;
+
+			/**
+			 * Return a pointer to the action from its name
+			 *
+			 * @param name the Action Name
+			 * @return A pointer to the sound action if it exists, otherwise NULL
+			 */
 			SoundAction* actionExists(const std::string& name);
 
 		public:
 			SoundEntity();
 			~SoundEntity();
 
+			/**
+			 * Set Entities Position
+			 *
+			 * @param pos The New Entity Position
+			 */
 			void setPosition(const WFMath::Point<3> &pos);
+
+			/**
+			 * Set Entities Velocity
+			 *
+			 * @param vel The New Entity Velocity
+			 */
 			void setVelocity(const WFMath::Vector<3> &vel);
 
+			/**
+			 * Return Entity Position
+			 *
+			 * @return The Entities Position
+			 */
 			const WFMath::Point<3> getPosition();
+
+			/**
+			 * Return Entity Velocity
+			 *
+			 * @return The Entities Velocity
+			 */
 			const WFMath::Vector<3> getVelocity();
 
+			/**
+			 * Register an action for this entity.
+			 * This method is often called from the modeldef
+			 * parsing.
+			 *
+			 * @param name The Action name
+			 * @return A pointer to the allocated sound action, if it fails, returns NULL
+			 */
 			SoundAction* registerAction(const std::string& name);
 
+			/**
+			 * Play the desired action, from its name
+			 *
+			 * @param name The Action name
+			 */
 			void playAction(const std::string& name);
+
+			/**
+			 * This function is used to update the
+			 * streamed (OGG) buffers active in entity.
+			 */
 			void update();
 	};
 }

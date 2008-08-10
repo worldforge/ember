@@ -32,45 +32,103 @@ namespace Ember
 class BaseSoundSample
 {
 	protected:
+		/**
+		 * openAl internal
+		 */
 		ALuint 				mSource;
+
+		/**
+		 * Type of the sample
+		 */
 		SoundSampleType	mType;
+
+		/**
+		 * If the sound should be play locally(2D) or not(3D).
+		 */
 		bool					mPlayPosition;
 
 	public:
 		virtual ~BaseSoundSample() {}
 
-		// Set Variables
+		/**
+		 * Set sample openAl source
+		 *
+		 * @param src The new source.
+		 */
 		void setSource(ALuint src);
+
+		/**
+		 * Set sample position
+		 *
+		 * @param pos The new sound position
+		 */
 		void setPosition(const WFMath::Point<3> &pos);
+
+		/**
+		 * Set sample velocity 
+		 *
+		 * @param vel The new sound velocity
+		 */
 		void setVelocity(const WFMath::Vector<3> &vel);
 
-		// Get Variables
+		/**
+		 * Return openAl source within this sample
+		 */
 		ALuint getSource();
+
+		/**
+		 * Return openAl pointer to source within this sample
+		 */
 		ALuint* getSourcePtr();
+
+		/**
+		 * Returns entity type
+		 */
 		SoundSampleType getType();
+
 		virtual ALuint* getBufferPtr() = 0;
 		virtual unsigned int getNumberOfBuffers() = 0;
-
-		// Common Methods
 		virtual void play();
 		virtual void stop();
 };
 
+/**
+ * The class StaticSoundSample is responsible
+ * to keep track of samples that doesnt need
+ * often updates and only have one buffer
+ */
 class StaticSoundSample : public BaseSoundSample
 {
 	private:
+		/**
+		 * Sample buffer
+		 */
 		ALuint mBuffer;
 	
 	public:
 		StaticSoundSample();
 		~StaticSoundSample();
 
-		// Set Variables
+		/**
+		 * Set this sample buffer
+		 *
+		 * @param buf The new sample buffer
+		 */
 		void setBuffer(ALuint buf);
 
-		// Get Variables
+		/**
+		 * Returns the unique buffer this sample has.
+		 */
 		ALuint	getBuffer();
+
+		/**
+		 * Returns an pointer to the unique buffer this sample has.
+		 */
 		ALuint*	getBufferPtr();
+
+		/**
+		 * Within this class, this is always 1.
+		 */
 		unsigned int getNumberOfBuffers();
 
 		// Common methods
@@ -78,34 +136,109 @@ class StaticSoundSample : public BaseSoundSample
 		void stop();
 };
 
+/**
+ * The class StreamedSoundSample is responsible
+ * to keep track of samples that often need
+ * updates and requires more than a buffer to stream
+ * data.
+ */
 class StreamedSoundSample : public BaseSoundSample
 {
 	private:
+		/**
+		 * Filename with full path to the data.
+		 */
 		std::string		mFilename;
+
+		/**
+		 * A pointer to the file specified in mFilename
+		 */
 		FILE*				mFile;
+
+		/**
+		 * VORBIS Internal Stream 
+		 */
 		OggVorbis_File mStream;
+
+		/**
+		 * Front and back buffers for openAl
+		 */
 		ALuint			mBuffers[2];
+
+		/**
+		 * Format of the stream (checked from ogg/vorbis)
+		 */
 		ALenum			mFormat;
+
+		/**
+		 * Rate of the stream (checked from ogg/vorbis)
+		 */
 		ALuint			mRate;
+
+		/**
+		 * If this stream is playing
+		 */
 		bool				mPlaying;
 
+		/**
+		 * This function is responsible to fill
+		 * buffers from stream data
+		 *
+		 * @param buffer The destination openAl buffer
+		 * @return Status of the streaming
+		 */
 		bool stream(ALuint buffer);
 
 	public:
 		StreamedSoundSample();
 		~StreamedSoundSample();
 
-		// Set Variables
+		/**
+		 * Set the file to be used in stream proccess.
+		 *
+		 * @param ptr A pointer to the file.
+		 * @param filename The file name with full path.
+		 */
 		void setFile(FILE* ptr, const std::string& filename);
+
+		/**
+		 * Set stream format
+		 */
 		void setFormat(ALenum fmt);
+
+		/**
+		 * Set stream rate
+		 */
 		void setRate(ALuint rate);
+
+		/**
+		 * Set the stream status (if playing or not)
+		 */
 		void setPlaying(bool play);
 
-		// Get Variables
+		/**
+		 * Returns a pointer to the buffers array
+		 */
 		ALuint*				getBufferPtr();
+
+		/**
+		 * Returns a pointer to the stream information (vorbis internals).
+		 */
 		OggVorbis_File*	getStreamPtr();
+
+		/**
+		 * Return the state of the stream.
+		 */
 		bool					isPlaying();
+
+		/**
+		 * Return the number of buffers in this stream. In this case this is 2.
+		 */
 		unsigned int		getNumberOfBuffers();
+
+		/**
+		 * Return the full filename of the stream file.
+		 */
 		const std::string& getFilename();
 
 		// Common methods

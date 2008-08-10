@@ -27,17 +27,30 @@
 
 namespace Ember
 {
+	/**
+	 * The SoundEntityManager class is responsible
+	 * to return instances for each entity type and to 
+	 * keep track of SoundGroups, allowing then to be updated
+	 * when needed.
+	 */
 	class SoundEntityManager
 	: public Ember::Singleton<SoundEntityManager>
 	{
 		private:
+			/**
+			 * Hold the information about all entities allocated.
+			 */
 			std::map<std::string, SoundEntity*> mEntities;
 
-			// Keep a list of Groups just to keep the
-			// update on the sound cycle 
+			/**
+			 * Keep a list of Groups just to keep the
+			 * update on the sound cycle.
+			 */
 			std::map<std::string, SoundGroup*> mGroups;
 
-			// Seeds for instances
+			/**
+			 * Seeds for instances
+			 */
 			unsigned int mGroupSeed;
 			unsigned int mEntitySeed;
 
@@ -46,24 +59,66 @@ namespace Ember
 			~SoundEntityManager();
 
 			/**
-			 * mEntities modifiers
+			 * Allocate an Entity type, referenced by name.
+			 *
+			 * @param name The Entity name
+			 * @return A pointer to the allocated entity, if it fails, returns NULL
 			 */
 			SoundEntity* allocateEntity(const std::string& name);
+
+			/**
+			 * Instantiate an Entity Type
+			 *
+			 * @param name The Entity name
+			 * @return A pointer to the instance entity, if it fails, returns NULL
+			 */
 			SoundEntity* instantiateEntity(const std::string& name);
+
+			/**
+			 * Deallocate entity from its name.
+			 *
+			 * @param name The Entities Name
+			 */
 			void deallocateEntity(const std::string& name);
 
 			/**
 			 * Ember::Entity use those methods to communicate to
 			 * the soundservice indirectly
+			 *
+			 * @param name The Entity name
+			 * @return A pointer to the entity, if it fails, returns NULL
 			 */
 			SoundEntity* getEntity(const std::string& name);
 
 			/**
-			 * mGroups modifiers
+			 * Allocate a SoundGroup.
+			 *
+			 * @param name The Entities name.
+			 * @return A pointer to the allocated group, if it fails, returns NULL
 			 */
 			SoundGroup* allocateGroup(const std::string& name);
+
+			/**
+			 * Instantiate a SoundGroup type.
+			 *
+			 * @param name The Group Name to instantiate
+			 * @return A pointer to the instantiated group, if it fails, returns NULL
+			 */
 			SoundGroup* instantiateGroup(const std::string& name);
+
+			/**
+			 * Return a pointer to the SoundGroup from its name
+			 *
+			 * @param name The Group Name to search for.
+			 * @return A pointer to the group, if it cant be found, returns NULL
+			 */
 			SoundGroup* getGroup(const std::string& name);
+
+			/**
+			 * Deallocate a sound group from its name
+			 *
+			 * @param name The Sound Group name to be deallocated.
+			 */
 			void deallocateGroup(const std::string& name);
 
 			/**

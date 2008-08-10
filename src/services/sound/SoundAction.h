@@ -24,19 +24,56 @@
 
 namespace Ember
 {
+	/**
+	 * SoundAction class is responsible for handling
+	 * actions (defined in modeldef). It contain
+	 * references for sound groups defined within
+	 * the action
+	 */
 	class SoundAction
 	{
 		private:
+			/**
+			 * A list of SoundGroups, referenced by name
+			 */
 			std::map<std::string, SoundGroup*> mGroups;
+
+			/**
+			 * Used to generate unique group names in cases
+			 * of instantiation
+			 */
 			unsigned int mGroupsSeed;
 
 		public:
 			SoundAction();
 
+			/**
+			 * Register a group within this action.
+			 * When you ask a group to be registered, an
+			 * instance of the group type (defined by its name)
+			 * will be added to the mGroups map.
+			 *
+			 * @param name The group name defined in the sounddefs.
+			 * @return A pointer to the group allocated, if it fails, returns NULL
+			 */
 			SoundGroup* registerGroup(const std::string& name);
+
+			/**
+			 * Return a pointer to a sound group from its name
+			 *
+			 * @param name Group Name
+			 * @return A pointer to the group, if it doesnt exists, returns NULL
+			 */
 			SoundGroup* getGroup(const std::string& name);
 
+			/**
+			 * Play this action groups, usually called from the SoundEntity class
+			 */
 			void play();
+
+			/**
+			 * Stop all groups playing in this action
+			 */
 			void stop();
 	};
 }
