@@ -32,15 +32,6 @@
       </bind>
     </bindings>
     <script><![CDATA[
-      -- Returns, either random element from table
-      -- or random number between n and m
-      function rand(n, m)
-        if type(n) == "table" then
-          return n[ math.random(#n) ]
-        end
-        return math.random(n, m)
-      end
-
       function calcSize(a, b)
         local density = 2500  * 0.52 -- our boulder is not cubic, 0.52 is rough volume of its size 1
 

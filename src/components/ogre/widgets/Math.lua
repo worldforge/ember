@@ -1,3 +1,8 @@
+-- Returns random element from table
+function math.randelem(t)
+	return t[ math.random(#t) ]
+end
+
 -- Returns a normally distributed random number with mean mu and standard deviation sigma
 -- Algorithm from Knuth' The art of computer programming
 function math.randn(mu, sigma)
