@@ -22,16 +22,16 @@
 //   See Ottinger's naming rules for more info:
 //   http://www.objectmentor.com/publications/naming.htm
 //
-// - Leave the different separator comments of the template header
-//   (such as Protected Methods, Public Constants, etc) in place even if you don't
-//   use them initially.  This way there is a clear place where to put new methods,
-//   variables, and constants of different types, and the code stays clearer.
-//
 // - Always return a value at the end of non-void functions.
 //
 // - To get a very similar style use the indent program with these options:
 //   indent -i4 -nbad -nbap -npsl -ut -ts4 -bli0 <sourcefile>
 //  [if you find better options then tell me. ]
+//
+// - Always pass strings as "const std::string&". This also applies to returning strings from methods if you are absolutely sure that the object won't go away soon.
+//
+// - If a value cannot be null, always prefer to pass it as reference instead of by pointer. That way there's a degree of inherent semantics, knowing that an object cannot be null.
+//
 //
 //---------------------------------------------------------------------------------------------------
 //
