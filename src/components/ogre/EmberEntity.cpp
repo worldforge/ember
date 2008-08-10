@@ -120,7 +120,7 @@ Eris::Entity(id, ty, vw)
 
 EmberEntity::~EmberEntity()
 {
-	//detach all children so we don't destroy them
+	///detach all children so we don't destroy them
 	while (getSceneNode()->numChildren()) {
 		getSceneNode()->removeChild((short unsigned int)0);
 	}
@@ -173,22 +173,17 @@ void EmberEntity::synchronizeWithServer()
 	if (getOrientation().isValid()) {
 		getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
 	}
-
 }
-
 
 void EmberEntity::createSceneNode(Ogre::SceneManager* sceneManager)
 {
 	EmberEntity* container = getEmberLocation();
 	if (container == 0) {
-		//S_LOG_VERBOSE( "Entity created in limbo: "<< this->getId() << " (" << this->getName() << ")" );
-
 		mOgreNode = sceneManager->createSceneNode(getId());
-		
 	} else {
 		Ogre::SceneNode * node = container->getSceneNode();
 		mOgreNode = node->createChildSceneNode(getId());
-	}		
+	}
 }
 
 void EmberEntity::updateMotion(Ogre::Real timeSlice)
@@ -203,9 +198,6 @@ void EmberEntity::updateMotion(Ogre::Real timeSlice)
 	}
 
 }
-
-
-
 
 void EmberEntity::onMoved()
 {
@@ -234,9 +226,6 @@ void EmberEntity::setMoving(bool moving)
 			mIsInMotionManager = false;
 		}
 	}
-	
-
-
 }
 
 void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArgs)
@@ -246,7 +235,7 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
         Eris::Entity::onTalk(talkArgs);
 		return;
 	}
-		
+
 	const Atlas::Objects::Root& talk = args.front();
 	
 	
@@ -254,8 +243,8 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
         Eris::Entity::onTalk(talkArgs);
 		return;
     }
-	
-	
+
+
 	///some talk operations come with a predefined set of suitable responses, so we'll store those so that they can later on be queried by the GUI for example
 	mSuggestedResponses.clear();
 	if (talk->hasAttr("responses")) {
@@ -397,53 +386,47 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 	
 	if (getLocation() == oldLocation)
 	{
+		///If it's the same location, don't do anything, but do add a warning to the log since this isn't supposed to happen.
 		S_LOG_WARNING( "Same new location as old for entity: " << this->getId() << " (" << this->getName() << ")" );
 		return Eris::Entity::onLocationChanged(oldLocation);
-	
 	}
 	Eris::Entity::onLocationChanged(oldLocation);
 	
-	///if we're attached to something, detach from it
+	///Ff we're attached to something, detach from it.
 	detachFromModel();
 
-	if (!getLocation()) {
+	///Before we detach ourselves from our current parent, we need to record our current position in the world. This will come in handy later on when we need to determine if we actually moved in the world space.
+	const Ogre::Vector3 oldWorldPosition = getSceneNode()->getWorldPosition();
+	
+	///Get the new location. We use getEmberLocation() since we always know that all entities are of type EmberEntity.
+	EmberEntity* newLocationEntity = getEmberLocation();
+	if (getSceneNode()->getParentSceneNode()) {
+		///Detach from our current parent scene node, removing us from the scene node graph.
+		getSceneNode()->getParentSceneNode()->removeChild(getSceneNode()->getName());
+	}
+	if (!newLocationEntity) {
+		///If there's no new location, just leave now. We've already removed ourselves from the scene node graph, so this entity is in effect in limbo.
 		return;	
 	} else {
-		EmberEntity* newLocationEntity = getEmberLocation();
 		
-		const Ogre::Vector3 oldWorldPosition = getSceneNode()->getWorldPosition();
-// 		const Ogre::Quaternion oldWorldOrientation = getSceneNode()->getWorldOrientation();
-		
-		if (getSceneNode()->getParentSceneNode()) {
-			///detach from our current object
-			getSceneNode()->getParentSceneNode()->removeChild(getSceneNode()->getName());
+		///Add ourselves to the scene node of our parent.
+		newLocationEntity->getSceneNode()->addChild(getSceneNode());
+		S_LOG_VERBOSE( "Entity: " << this->getId() << " (" << this->getName() << ") relocated to: "<< newLocationEntity->getId() << " (" << newLocationEntity->getName() << ")" );
+		if (getPosition().isValid()) {
+			///Note that in some instances, for instance when the avatar enters the sty, the position isn't updated yet, which will make the avatar "snap" to an incorrect position (since the parent node has changed) until next frame, when the position should have been updated.
+			getSceneNode()->setPosition(Atlas2Ogre(getPredictedPos()));
+			adjustPosition();
+			std::stringstream ss;
+			ss << getPredictedPos();
+			S_LOG_VERBOSE("New position for entity: "  << this->getId() << " (" << this->getName() << " ) :" << ss.str());
 		}
-		if (newLocationEntity) { 
-			// add to the new entity
-			newLocationEntity->getSceneNode()->addChild(getSceneNode());
-			S_LOG_VERBOSE( "Entity: " << this->getId() << " (" << this->getName() << ") relocated to: "<< newLocationEntity->getId() << " (" << newLocationEntity->getName() << ")" );
-			if (getPosition().isValid()) {
-				///note that in some instances, for instance when the avatar enters the sty, the position isn't updated yet, which will make the avatar "snap" to an incorrect position (since the parent node has changed) until next frame, when the position should have been updated
-				getSceneNode()->setPosition(Atlas2Ogre(getPredictedPos()));
-				adjustPosition();
-				std::stringstream ss;
-				ss << getPredictedPos();
-				S_LOG_VERBOSE("New position for entity: "  << this->getId() << " (" << this->getName() << " ) :" << ss.str());
-			}
-			if (getOrientation().isValid()) {
-				getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
-				std::stringstream ss;
-				ss << getOrientation();
-				S_LOG_VERBOSE("New orientation for entity: "  << this->getId() << " (" << this->getName() << " ) :" << ss.str());
-			}
-//				getSceneNode()->rotate(newLocationEntity->getSceneNode()->getWorldOrientation() - oldWorldOrientation);
+		if (getOrientation().isValid()) {
+			getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
+			std::stringstream ss;
+			ss << getOrientation();
+			S_LOG_VERBOSE("New orientation for entity: "  << this->getId() << " (" << this->getName() << " ) :" << ss.str());
+		}
 	
-		} else {
-			///the entity has no current parent, and should be placed in limbo (hopefully a more correct parent will be submitted in a future LocationChanged event
-			S_LOG_VERBOSE( "Entity relocated to limbo: "<< this->getId() << " (" << this->getName() << ")" );
-	//		mSceneManager->getRootSceneNode()->addChild(getSceneNode());
-		}		
-		
 		checkVisibility(isVisible());
 	
 		///we'll adjust the entity so it retains it's former position in the world, but only for moving entities
@@ -507,7 +490,8 @@ bool EmberEntity::hasSuggestedResponses( ) const
 
 void EmberEntity::addArea(Terrain::TerrainArea* area)
 {
-///just pass it on to the parent until we get to someone who knows how to handle this (preferrably the terrain)
+	///A normal EmberEntity shouldn't know anything about the terrain, so we can't handle the area here.
+	///Intead we just pass it on to the parent until we get to someone who knows how to handle this (preferrably the terrain).
 	if (getEmberLocation()) {
 		getEmberLocation()->addArea(area);
 	}
@@ -636,7 +620,6 @@ bool EmberEntity::getShowErisBoundingBox() const
 	
 }
 
-//inline 
 Ogre::SceneNode* EmberEntity::getSceneNode() const 
 {
 	return mOgreNode;	
@@ -703,33 +686,6 @@ Ogre::SceneManager* EmberEntity::getSceneManager()
 	return mOgreNode->getCreator();
 }
 
-static void dumpElement(const std::string &prefix, const std::string &name, const Atlas::Message::Element &e, std::ostream& outstream, std::ostream& logOutstream) 
-{
-
-  if (e.isMap()) {
-    logOutstream << prefix << name << ": Dumping Map" << std::endl;
-    Atlas::Message::MapType::const_iterator itr = e.asMap().begin();
-    Atlas::Message::MapType::const_iterator end = e.asMap().end();
-    outstream << prefix << name << ":" << std::endl;
-    for (; itr != end; ++itr) {
-      dumpElement(prefix + "  ", itr->first, itr->second, outstream, logOutstream);
-    }
-    logOutstream << prefix << "Finished Dumping Map" << std::endl;
-  } else if (e.isList()) {
-    logOutstream << prefix << name << ": Dumping List" << std::endl;
-    Atlas::Message::ListType::const_iterator itr = e.asList().begin();
-    Atlas::Message::ListType::const_iterator end = e.asList().end();
-    outstream << prefix << name << ":" << std::endl;
-    for (; itr != end; ++itr) {
-      dumpElement(prefix + "  ", "", *itr, outstream, logOutstream);
-    }
-    logOutstream << prefix << "Finished Dumping List" << std::endl;
-  } else {
-    if (e.isString()) outstream << prefix << name << ": " << e.asString() << std::endl;
-    if (e.isNum()) outstream << prefix << name << ": " << e.asNum() << std::endl;
-  }
-}
-
 void EmberEntity::dumpAttributes(std::iostream& outstream, std::ostream& logOutstream) const 
 {
 	logOutstream << "Dumping attributes for entity " << getId() << "(" << getName() << ")" << std::endl;
@@ -744,14 +700,6 @@ void EmberEntity::dumpAttributes(std::iostream& outstream, std::ostream& logOuts
 	encoder.streamMessageElement(getAttributes());
 		
 	formatter.streamEnd();
-
-//   const Eris::Entity::AttrMap &attribs = getAttributes();
-
-//   Eris::Entity::AttrMap::const_iterator itr = attribs.begin();
-//   Eris::Entity::AttrMap::const_iterator end = attribs.end();
-//   for (; itr != end; ++itr) {
-//     dumpElement("",itr->first, itr->second, outstream, logOutstream);
-//   }
 }
 
 }
