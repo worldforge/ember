@@ -54,7 +54,7 @@ void GUIAdapter::attach(CEGUI::Window* window)
 	mAdapter->EventValueChanged.connect( sigc::mem_fun(*this, &GUIAdapter::valueChanged) );
 	for (SuggestionsStore::iterator I = mSuggestions.begin(); I != mSuggestions.end(); I++)
 	{
-		mAdapter->addSuggestion(*I);
+		mAdapter->addSuggestion(I->first);
 	}
 	if (mAllowRandom)
 	{
@@ -68,31 +68,45 @@ void GUIAdapter::detach()
 	mAdapter = 0;
 }
 
-const Atlas::Message::Element& GUIAdapter::getValue()
+Atlas::Message::Element GUIAdapter::getValue()
 {
 	if (!mAdapter)
 	{
-		mTempElement = Atlas::Message::Element();
-		return mTempElement;
+		return Atlas::Message::Element();
 	}
 
 	Atlas::Message::Element& value = mAdapter->getValue();
 	if (!(mAllowRandom && value.isString() && value.asString() == "Random"))
 	{
+		// Not random. Get value that is correspondent to the entered text.
+		if (value.isString())
+		{
+			SuggestionsStore::iterator I = mSuggestions.find(value.asString());
+			if (I != mSuggestions.end())
+			{
+				return I->second;
+			}
+		}
 		return value;
 	}
 	else
 	{
+		// Random element selected.
 		if (!mSuggestions.empty())
 		{
 			int i = (int) (((float) mSuggestions.size()) * (rand() / (RAND_MAX + 1.0)));
-			mTempElement = mSuggestions[i];
-			return mTempElement;
+			// No sequental access to the map.
+			SuggestionsStore::const_iterator I = mSuggestions.begin();
+			while (i > 0)
+			{
+				I++;
+				i--;
+			}
+			return I->second;
 		}
 		else
 		{
-			mTempElement = "";
-			return mTempElement;
+			return "";
 		}
 	}
 }
@@ -107,9 +121,9 @@ const std::string& GUIAdapter::getTitle() const
 	return mTitle;
 }
 
-void GUIAdapter::addSuggestion(const std::string& text)
+void GUIAdapter::addSuggestion(const std::string& value, const std::string& text)
 {
-	mSuggestions.push_back(text);
+	mSuggestions[text] = value;
 }
 
 void GUIAdapter::setAllowRandom(bool val)

@@ -19564,8 +19564,16 @@ static int tolua_EmberOgre_EmberOgre_GUIAdapter_getValue00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getValue'",NULL);
 #endif
   {
-   Atlas::Message::Element& tolua_ret = (Atlas::Message::Element&)  self->getValue();
-   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"Atlas::Message::Element");
+   Atlas::Message::Element tolua_ret = (Atlas::Message::Element)  self->getValue();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new Atlas::Message::Element(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Atlas::Message::Element");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Atlas::Message::Element));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Atlas::Message::Element");
+#endif
+   }
   }
  }
  return 1;
@@ -19652,23 +19660,26 @@ static int tolua_EmberOgre_EmberOgre_GUIAdapter_addSuggestion00(lua_State* tolua
  if (
      !tolua_isusertype(tolua_S,1,"EmberOgre::GUIAdapter",0,&tolua_err) ||
      !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
+     !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
   EmberOgre::GUIAdapter* self = (EmberOgre::GUIAdapter*)  tolua_tousertype(tolua_S,1,0);
-  const std::string text = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  const std::string value = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  const std::string text = ((const std::string)  tolua_tocppstring(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addSuggestion'",NULL);
 #endif
   {
-   self->addSuggestion(text);
+   self->addSuggestion(value,text);
+   tolua_pushcppstring(tolua_S,(const char*)value);
    tolua_pushcppstring(tolua_S,(const char*)text);
   }
  }
- return 1;
+ return 2;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'addSuggestion'.",&tolua_err);
@@ -25666,12 +25677,12 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
     101,110,100, 32, 61, 32,115,101,108,102, 58,116,104,101, 69,
     110,100, 40, 41, 10,114,101,116,117,114,110, 32,102,117,110,
      99,116,105,111,110, 40, 41, 10,105,102, 32, 73, 32,126, 61,
-     32, 73,101,110,100, 32,116,104,101,110, 10,118, 97,108, 32,
-     61, 32, 73, 58,103,101,116, 40, 41, 10, 73, 32, 61, 32, 73,
-     58,110,101,120,116, 40, 41, 10,114,101,116,117,114,110, 32,
-    118, 97,108, 46,102,105,114,115,116, 44, 32,118, 97,108, 46,
-    115,101, 99,111,110,100, 10,101,110,100, 10,101,110,100, 10,
-    101,110,100,32
+     32, 73,101,110,100, 32,116,104,101,110, 10,108,111, 99, 97,
+    108, 32,118, 97,108, 32, 61, 32, 73, 58,103,101,116, 40, 41,
+     10, 73, 32, 61, 32, 73, 58,110,101,120,116, 40, 41, 10,114,
+    101,116,117,114,110, 32,118, 97,108, 46,102,105,114,115,116,
+     44, 32,118, 97,108, 46,115,101, 99,111,110,100, 10,101,110,
+    100, 10,101,110,100, 10,101,110,100,32
    };
    tolua_dobuffer(tolua_S,(char*)B,sizeof(B),"tolua: embedded Lua code 1");
    lua_settop(tolua_S, top);

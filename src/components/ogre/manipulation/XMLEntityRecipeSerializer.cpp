@@ -185,7 +185,17 @@ void XMLEntityRecipeSerializer::readAdapters(EntityRecipePtr entRecipe, TiXmlEle
 			for (TiXmlElement* item = smElem->FirstChildElement("item");
         			item != 0; item = item->NextSiblingElement("item"))
 			{
-				adapter->addSuggestion(item->GetText());
+				const char *text;
+				const std::string *value;
+				text = item->GetText();
+				if ((value = item->Attribute(std::string("value"))))
+				{
+					adapter->addSuggestion(*value, text);
+				}
+				else
+				{
+					adapter->addSuggestion(text, text);
+				}
 			}
 
 			const std::string *allowRandom;
