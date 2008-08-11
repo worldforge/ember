@@ -44,7 +44,6 @@ TerrainMod::~TerrainMod()
 bool TerrainMod::init() {
     observeEntity();
     return parseMod();
-    
 }
 
 bool TerrainMod::parseMod()

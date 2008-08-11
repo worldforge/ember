@@ -27,8 +27,6 @@
 
 #include <Eris/Entity.h>
 
-#include <Mercator/TerrainMod.h>
-
 namespace Ogre
 {
 	class OOBBWireBoundingBox;
@@ -93,7 +91,10 @@ public:
 	*/
 	static const std::string BboxMaterialName;
 
-	
+	/**
+	If a terrainmod belongs to this entity, it's stored here.
+	*/
+	std::auto_ptr<Terrain::TerrainMod> mTerrainMod;
 	
 	EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw,Ogre::SceneManager* sceneManager);
 	virtual ~EmberEntity();
@@ -320,12 +321,6 @@ protected:
 	void createErisBboxMaterial();
 
 	/**
-	 *    Processes new or updated terrain modifiers
-	 *
-	 */
-	void updateTerrainModifiers(const Atlas::Message::Element& modifier);	
-	
-	/**
 	 * Creates the main scene node which holds the entity.
 	 */
 	void createSceneNode(Ogre::SceneManager* sceneManager);
@@ -357,11 +352,6 @@ protected:
 	If there's a terrainarea belonging to this entity, that's stored here.
 	*/
 	std::auto_ptr<Terrain::TerrainArea> mTerrainArea;
-
-	/**
-	If a terrainmod belongs to this entity, it's stored here.
-	*/
-	std::auto_ptr<Terrain::TerrainMod> mTerrainMod;
 		
 	/**
 	the mode the entity is in, like walking, running, swimming etc.

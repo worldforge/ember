@@ -254,12 +254,13 @@ void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
             EmberEntity* e = dynamic_cast<EmberEntity*>(world->getContained(i));
             if (e->hasAttr("terrainmod") ) {
 
-                Mercator::TerrainMod* mod = e->parseTerrainModifier(e->valueOfAttr("terrainmod"));
+//                 Mercator::TerrainMod* mod = e->parseTerrainModifier(e->valueOfAttr("terrainmod"));
+                Mercator::TerrainMod* mod = e->mTerrainMod->getMod();
                 mTerrain->addMod(*mod);
             }
         }
 
-    EmberOgre::getSingleton().getTerrainGenerator()->buildHeightmap();
+    buildHeightmap();
 }
 
 void TerrainGenerator::addArea(TerrainArea* terrainArea)
