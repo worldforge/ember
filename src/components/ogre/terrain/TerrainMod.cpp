@@ -42,7 +42,6 @@ TerrainMod::~TerrainMod()
 }
 
 bool TerrainMod::init() {
-    
     observeEntity();
     return parseMod();
     
@@ -50,16 +49,16 @@ bool TerrainMod::init() {
 
 bool TerrainMod::parseMod()
 {
-    if (!mEntity->hasAttr("area")) {
+    if (!mEntity->hasAttr("terrainmod")) {
         S_LOG_FAILURE("TerrainMod defined on entity with no terrainmod attribute");
-        return false;
+         return false;
     }
 
-    const Atlas::Message::Element& modifier(mEntity->valueOfAttr("area"));
+    const Atlas::Message::Element& modifier(mEntity->valueOfAttr("terrainmod"));
 
     if (!modifier.isMap()) {
         S_LOG_FAILURE( "Terrain modifier is not a map" );
-        return false;
+         return false;
     }
     const Atlas::Message::MapType & modMap = modifier.asMap();
 

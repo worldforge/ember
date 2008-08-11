@@ -45,9 +45,10 @@
 #include "../environment/Forest.h"
 #include "ISceneManagerAdapter.h"
 
-#include "TerrainModListEntry.h"
+
 #include "TerrainPage.h"
 #include "TerrainArea.h"
+#include "TerrainMod.h"
 #include <Mercator/Area.h>
 #include <Mercator/Segment.h>
 #include <Mercator/Terrain.h>
@@ -216,6 +217,50 @@ TerrainShader* TerrainGenerator::createShader(const TerrainLayerDefinition* laye
 // }
 
 
+void TerrainGenerator::addTerrainMod(TerrainMod* terrainMod)
+{
+    terrainMod->EventModChanged.connect(sigc::mem_fun(*this, &TerrainGenerator::TerrainMod_Changed));
+    Mercator::TerrainMod* mod = terrainMod->getMod();
+
+    std::stringstream ss;
+    ss << mod->bbox();
+    S_LOG_VERBOSE("Adding terrain mod to terrain with dimensions: " << ss.str());
+
+    mTerrain->addMod(*mod);
+}
+
+void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
+{
+//         Mercator::TerrainMod * NewMod = parseTerrainModifier(modifier);
+
+    // Clear modifiers from this segment so we get a "clean slate" to work from
+    //  In the near future this should be expanded to include all segments touched by
+    //  the modifier's bbox.
+//      WFMath::Point<3> pos = getPosition();
+//      EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment((float)pos.x(),(float)pos.y())->clearMods();
+            // Clear all modifiers from the world
+       ClearAllMods();
+
+    // Apply Modifier
+    //EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition((float)pos.x(),(float)pos.y()))->addTerrainModifier(sx,sy,mx,my,(int)pos.z(),NewMod);
+    // Find and reapply all other mods
+
+        // Find out how many entities are in the world so we can search them for terrainMods
+        EmberEntity* world = (EmberEntity*)EmberOgre::getSingleton().getEntityFactory()->getWorld();
+        int numEntities = world->numContained();
+
+        for (int i = 0; i < numEntities; i++)
+        {
+            EmberEntity* e = dynamic_cast<EmberEntity*>(world->getContained(i));
+            if (e->hasAttr("terrainmod") ) {
+
+                Mercator::TerrainMod* mod = e->parseTerrainModifier(e->valueOfAttr("terrainmod"));
+                mTerrain->addMod(*mod);
+            }
+        }
+
+    EmberOgre::getSingleton().getTerrainGenerator()->buildHeightmap();
+}
 
 void TerrainGenerator::addArea(TerrainArea* terrainArea)
 {

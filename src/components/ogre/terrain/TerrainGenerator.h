@@ -64,6 +64,7 @@ class TerrainShader;
 
 class TerrainPage;
 class TerrainArea;
+class TerrainMod;
 class TerrainLayerDefinition;
 class TerrainPageSurfaceLayer;
 class ISceneManagerAdapter;
@@ -200,6 +201,11 @@ public:
 	 */
 	void addArea(TerrainArea* terrainArea);
 
+	/**
+	 *    @brief Adds a new Mercator::TerrainMod to the terrain.
+	 * @param mod
+	 */
+	void addTerrainMod(TerrainMod* terrainMod);
 	
 	/**
 	 *    Returns a TerrainPage. 
@@ -381,6 +387,11 @@ protected:
 	Listen to changes in areas.
 	*/
 	void TerrainArea_Changed(TerrainArea* terrainArea);
+
+	/**
+	Listen to changes in terrain mods.
+	*/
+	void TerrainMod_Changed(TerrainMod* terrainMod);
 	
 	ISceneManagerAdapter* mSceneManagerAdapter;
 	

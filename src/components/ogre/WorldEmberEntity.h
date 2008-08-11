@@ -113,6 +113,12 @@ protected:
 	 * @param area 
 	 */
 	void addArea(Terrain::TerrainArea* area);
+
+	/**
+	 *    Adds a terrain modifier to the world by making a call to mTerrainGenerator
+	 * @param mod
+	 */
+	void addTerrainMod(Terrain::TerrainMod* mod);
 	
 	/**
 	The foliage system which provides different foliage functions.

@@ -420,6 +420,11 @@ void WorldEmberEntity::addArea(Terrain::TerrainArea* area)
 	mTerrainGenerator->addArea(area);
 }
 
+void WorldEmberEntity::addTerrainMod(Terrain::TerrainMod* mod)
+{
+    mTerrainGenerator->addTerrainMod(mod);
+}
+
 Environment::Environment* WorldEmberEntity::getEnvironment() const
 {
 	return mEnvironment;

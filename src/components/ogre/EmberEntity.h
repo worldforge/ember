@@ -37,6 +37,7 @@ namespace Ogre
 namespace Mercator
 {
 	class Area;
+	class TerrainMod;
 }
 
 namespace Eris
@@ -53,6 +54,7 @@ namespace Model {
 namespace Terrain
 {
 	class TerrainArea;
+	class TerrainMod;
 }
 
 class EmberEntityFactory;
@@ -251,6 +253,11 @@ public:
 	 */
 	virtual bool getVisualize(const std::string& visualization) const;
 
+	/**
+	 *    Parses the Atlas data for a terrain mod and returns a pointer to a modifier
+	 */
+	Mercator::TerrainMod* parseTerrainModifier(const Atlas::Message::Element& modifier);
+
 protected: 
 
 
@@ -289,6 +296,7 @@ protected:
 	virtual void onSoundAction(const Atlas::Objects::Operation::RootOperation& op);
 	
 	virtual void addArea(Terrain::TerrainArea* area);
+	virtual void addTerrainMod(Terrain::TerrainMod* mod);
 	virtual void onAttrChanged(const std::string& str, const Atlas::Message::Element& v);
 	
 	
@@ -315,12 +323,7 @@ protected:
 	 *    Processes new or updated terrain modifiers
 	 *
 	 */
-	void updateTerrainModifiers(const Atlas::Message::Element& modifier);
-
-	/**
-	 *    Parses the Atlas data for a terrain mod and returns a pointer to a modifier
-	 */
-	Mercator::TerrainMod* parseTerrainModifier(const Atlas::Message::Element& modifier);	
+	void updateTerrainModifiers(const Atlas::Message::Element& modifier);	
 	
 	/**
 	 * Creates the main scene node which holds the entity.
@@ -355,6 +358,10 @@ protected:
 	*/
 	std::auto_ptr<Terrain::TerrainArea> mTerrainArea;
 
+	/**
+	If a terrainmod belongs to this entity, it's stored here.
+	*/
+	std::auto_ptr<Terrain::TerrainMod> mTerrainMod;
 		
 	/**
 	the mode the entity is in, like walking, running, swimming etc.
