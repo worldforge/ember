@@ -824,6 +824,8 @@ void EmberEntity::updateTerrainModifiers(const Atlas::Message::Element& modifier
             }
         }
 
+    EmberOgre::getSingleton().getTerrainGenerator()->buildHeightmap();
+
 }
 
 void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::Element& v)

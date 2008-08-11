@@ -641,8 +641,8 @@ void TerrainGenerator::ClearAllMods()
         }
     }
 
-    updateHeightMapAndShaders(pagesToUpdate);
-    updateEntityPositions(pagesToUpdate);
+//     updateHeightMapAndShaders(pagesToUpdate);
+//     updateEntityPositions(pagesToUpdate);
 
 //     TerrainPagestore::iterator I = mTerrainPages.begin();
 //     for (; I != mTerrainPages.end(); I++)
