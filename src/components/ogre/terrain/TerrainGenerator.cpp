@@ -52,6 +52,7 @@
 #include <Mercator/Area.h>
 #include <Mercator/Segment.h>
 #include <Mercator/Terrain.h>
+#include <Mercator/TerrainMod.h>
 #include <Mercator/FillShader.h>
 #include <Mercator/ThresholdShader.h>
 #include <Mercator/DepthShader.h>
@@ -62,7 +63,6 @@
 #include <wfmath/intersect.h>
 #include <wfmath/axisbox.h>
 #include <wfmath/ball.h>
-#include <Mercator/TerrainMod.h>
 
 #include "TerrainLayerDefinitionManager.h"
 #include "TerrainLayerDefinition.h"
@@ -231,19 +231,8 @@ void TerrainGenerator::addTerrainMod(TerrainMod* terrainMod)
 
 void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
 {
-//         Mercator::TerrainMod * NewMod = parseTerrainModifier(modifier);
-
-    // Clear modifiers from this segment so we get a "clean slate" to work from
-    //  In the near future this should be expanded to include all segments touched by
-    //  the modifier's bbox.
-//      WFMath::Point<3> pos = getPosition();
-//      EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment((float)pos.x(),(float)pos.y())->clearMods();
             // Clear all modifiers from the world
        ClearAllMods();
-
-    // Apply Modifier
-    //EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition((float)pos.x(),(float)pos.y()))->addTerrainModifier(sx,sy,mx,my,(int)pos.z(),NewMod);
-    // Find and reapply all other mods
 
         // Find out how many entities are in the world so we can search them for terrainMods
         EmberEntity* world = (EmberEntity*)EmberOgre::getSingleton().getEntityFactory()->getWorld();
@@ -255,7 +244,9 @@ void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
             if (e->hasAttr("terrainmod") ) {
 
 //                 Mercator::TerrainMod* mod = e->parseTerrainModifier(e->valueOfAttr("terrainmod"));
-                Mercator::TerrainMod* mod = e->mTerrainMod->getMod();
+                Terrain::TerrainMod *emberMod = new Terrain::TerrainMod(e);
+                emberMod->init();
+                Mercator::TerrainMod* mod = emberMod->getMod();
                 mTerrain->addMod(*mod);
             }
         }

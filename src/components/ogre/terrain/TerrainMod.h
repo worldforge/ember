@@ -53,6 +53,8 @@ public:
 	
 	sigc::signal<void, TerrainMod*> EventModChanged;
 
+	Mercator::TerrainMod* parseMod(const Atlas::Message::Element modifier);
+
 protected:
 
 	Mercator::TerrainMod* mModifier;
@@ -62,7 +64,7 @@ protected:
 	void attributeChanged(const Atlas::Message::Element& attributeValue);
 	void entity_Moved();
 	void observeEntity();
-	bool parseMod();
+	bool processMod();
 
 };
 

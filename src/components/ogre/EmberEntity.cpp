@@ -138,26 +138,26 @@ EmberEntity::~EmberEntity()
 	///TODO: keep a marker in the entity so we don't need to call this for all entities
 	MotionManager::getSingleton().removeEntity(this);
 
-    if (hasAttr("terrainmod")) {
-            // Remove our terrainmod attribute
-        m_attrs.erase("terrainmod");
-            // Clear all modifiers from the world
-        EmberOgre::getSingleton().getTerrainGenerator()->ClearAllMods();
-
-            // Find and reapply all other mods
-        IdEntityMap ents;
-        EmberEntity* w = (EmberEntity*)EmberOgre::getSingleton().getEntityFactory()->getWorld();
-        w->buildEntityDictFromContents(ents);
-
-        IdEntityMap::iterator I = ents.begin();
-
-        for (; I != ents.end(); I++)
-        {
-            if (I->second->hasAttr("terrainmod") ) {
-                dynamic_cast<EmberEntity*>(I->second)->updateTerrainModifiers(I->second->valueOfAttr("terrainmod"));
-            }
-        }
-    } // Done dealing with terrainmods
+//     if (hasAttr("terrainmod")) {
+//             // Remove our terrainmod attribute
+//         m_attrs.erase("terrainmod");
+//             // Clear all modifiers from the world
+//         EmberOgre::getSingleton().getTerrainGenerator()->ClearAllMods();
+// 
+//             // Find and reapply all other mods
+//         IdEntityMap ents;
+//         EmberEntity* w = (EmberEntity*)EmberOgre::getSingleton().getEntityFactory()->getWorld();
+//         w->buildEntityDictFromContents(ents);
+// 
+//         IdEntityMap::iterator I = ents.begin();
+// 
+//         for (; I != ents.end(); I++)
+//         {
+//             if (I->second->hasAttr("terrainmod") ) {
+// //                 dynamic_cast<EmberEntity*>(I->second)->updateTerrainModifiers(I->second->valueOfAttr("terrainmod"));
+//             }
+//         }
+//     } // Done dealing with terrainmods
 
 	if (mErisEntityBoundingBox) {
 		mErisEntityBoundingBox->getParentSceneNode()->getCreator()->destroySceneNode(mErisEntityBoundingBox->getParentSceneNode()->getName());
@@ -809,41 +809,6 @@ Mercator::TerrainMod* EmberEntity::parseTerrainModifier(const Atlas::Message::El
     }
 }
 
-void EmberEntity::updateTerrainModifiers(const Atlas::Message::Element& modifier)
-{
-
-//     Mercator::TerrainMod * NewMod = parseTerrainModifier(modifier);
-// 
-//     // Clear modifiers from this segment so we get a "clean slate" to work from
-//     //  In the near future this should be expanded to include all segments touched by
-//     //  the modifier's bbox.
-// //      WFMath::Point<3> pos = getPosition();
-// //      EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment((float)pos.x(),(float)pos.y())->clearMods();
-//             // Clear all modifiers from the world
-//         EmberOgre::getSingleton().getTerrainGenerator()->ClearAllMods();
-// 
-//     // Apply Modifier
-//     //EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition((float)pos.x(),(float)pos.y()))->addTerrainModifier(sx,sy,mx,my,(int)pos.z(),NewMod);
-//     // Find and reapply all other mods
-//         IdEntityMap ents;
-//         EmberEntity* w = (EmberEntity*)EmberOgre::getSingleton().getEntityFactory()->getWorld();
-//         w->buildEntityDictFromContents(ents);
-// 
-//         IdEntityMap::iterator I = ents.begin();
-// 
-//         for (; I != ents.end(); I++)
-//         {
-//             if (I->second->hasAttr("terrainmod") ) {
-// //                 dynamic_cast<EmberEntity*>(I->second)->updateTerrainModifiers(I->second->valueOfAttr("terrainmod"));
-//                 Mercator::TerrainMod* mod = dynamic_cast<EmberEntity*>(I->second)->parseTerrainModifier(I->second->valueOfAttr("terrainmod"));
-//                 EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().addMod(*mod);
-//             }
-//         }
-// 
-//     EmberOgre::getSingleton().getTerrainGenerator()->buildHeightmap();
-
-}
-
 void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::Element& v)
 {
     if (str == "mode") {
@@ -853,33 +818,6 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
 		onBboxChanged();
 		return;
 	}
-//  else if (str == "terrainmod") {
-//         updateTerrainModifiers(v);
-//     } else if (str == "pos" && hasAttr("terrainmod")) {
-//         /* If an entity with a terrainmod attribute moves, we first clear the all existing mods,
-//             get a list of entities in the world and search it for other terrainmods (besides this one)
-//             and reapply them all. This should probably be moved elsewhere to keep onAttrChanged simple.
-//         */
-//             // Clear all modifiers from the world
-//         EmberOgre::getSingleton().getTerrainGenerator()->ClearAllMods();
-// 
-//             // Find and reapply all other mods
-//         IdEntityMap ents;
-//         EmberEntity* w = (EmberEntity*)EmberOgre::getSingleton().getEntityFactory()->getWorld();
-//         w->buildEntityDictFromContents(ents);
-// 
-//         IdEntityMap::iterator I = ents.begin();
-// 
-//         for (; I != ents.end(); I++)
-//         {
-//             if (I->second->hasAttr("terrainmod") ) {
-// //                 dynamic_cast<EmberEntity*>(I->second)->updateTerrainModifiers(I->second->valueOfAttr("terrainmod"));
-//                 Mercator::TerrainMod* mod = dynamic_cast<EmberEntity*>(I->second)->parseTerrainModifier(I->second->valueOfAttr("terrainmod"));
-//                 EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().addMod(*mod);
-//             }
-//         }
-// 
-//     }
 
 	Entity::onAttrChanged(str, v);
 }

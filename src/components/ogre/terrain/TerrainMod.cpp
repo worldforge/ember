@@ -43,21 +43,15 @@ TerrainMod::~TerrainMod()
 
 bool TerrainMod::init() {
     observeEntity();
-    return parseMod();
+    return processMod();
 }
 
-bool TerrainMod::parseMod()
+Mercator::TerrainMod* TerrainMod::parseMod(const Atlas::Message::Element modifier)
 {
-    if (!mEntity->hasAttr("terrainmod")) {
-        S_LOG_FAILURE("TerrainMod defined on entity with no terrainmod attribute");
-         return false;
-    }
-
-    const Atlas::Message::Element& modifier(mEntity->valueOfAttr("terrainmod"));
 
     if (!modifier.isMap()) {
         S_LOG_FAILURE( "Terrain modifier is not a map" );
-         return false;
+         return NULL;
     }
     const Atlas::Message::MapType & modMap = modifier.asMap();
 
@@ -80,10 +74,6 @@ bool TerrainMod::parseMod()
 
     // Get modifier position
     pos = mEntity->getPosition();
-    S_LOG_INFO("mod parent pos reported as: " << pos.x() << "," << pos.y() << "," << pos.z());
-
-    // Clear modifiers from this segment so we get a "clean slate" to work from
-//     EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getSegment((float)pos.x(),(float)pos.y())->clearMods();
 
     // Get modifier's shape
     mod_I = modMap.find("shape");
@@ -146,11 +136,8 @@ bool TerrainMod::parseMod()
             S_LOG_INFO("Successfully parsed a slopemod");
 
             // Make modifier
-//          Mercator::SlopeTerrainMod<WFMath::Ball<2> > *NewMod;
-//          NewMod = new Mercator::SlopeTerrainMod<WFMath::Ball<2> >(dx, dy, level, modShape);
 
-            // Apply Modifier
-            //mTerrainGenerator->getTerrainPage(TerrainPosition((int)pos.x(),(int)pos.y()))->addTerrainModifier(0,0,(int)pos.x(),(int)pos.y(),(int)pos.z(),NewMod);
+//             return true;
         }
     
     } else if (modType == "levelmod") {
@@ -191,12 +178,9 @@ bool TerrainMod::parseMod()
             // Make Modifier
             Mercator::LevelTerrainMod<WFMath::Ball<2> > *NewMod;
             mModifier = new Mercator::LevelTerrainMod<WFMath::Ball<2> >(level, modShape);
-        
-            // Apply Modifier
-            //EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition((float)pos.x(),(float)pos.y()))->addTerrainModifier(sx,sy,mx,my,(int)pos.z(),NewMod);
 
-//             return NewMod;
-            return true;
+//             return true;
+            return mModifier;
 
         } else if (shapeType == "rotbox") {
             WFMath::Point<2> shapePoint;
@@ -231,15 +215,10 @@ bool TerrainMod::parseMod()
             Mercator::LevelTerrainMod<WFMath::RotBox<2> > *NewMod;
             mModifier = new Mercator::LevelTerrainMod<WFMath::RotBox<2> >(level, modShape);
 
-            // Apply Modifier
-            //mTerrainGenerator->getTerrainPage(TerrainPosition((int)pos.x(),(int)pos.y()))->addTerrainModifier(0,0,(int)pos.x(),(int)pos.y(),(int)pos.z(),NewMod);
-            //EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition((int)pos.x(),(int)pos.y()))->addTerrainModifier(sx,sy,mx,my,(int)pos.z(),NewMod);
-
-//             return NewMod;
-            return true;
+//             return true;
+            return mModifier;
         }       
 
-        S_LOG_INFO("Successfully parsed a levelmod");
 
     } else if (modType == "adjustmod") {
         float level;
@@ -264,13 +243,9 @@ bool TerrainMod::parseMod()
             WFMath::Ball<2> modShape = WFMath::Ball<2>(pos_2d, shapeRadius);
         
             // Make modifier
-//          Mercator::AdjustTerrainMod<WFMath::Ball<2> > *NewMod;
-//          NewMod = new Mercator::AdjustTerrainMod<WFMath::Ball<2> >(level, modShape);
 
-            // Apply Modifier
-            //mTerrainGenerator->getTerrainPage(TerrainPosition((int)pos.x(),(int)pos.y()))->addTerrainModifier(0,0,(int)pos.x(),(int)pos.y(),(int)pos.z(),NewMod);
+//             return true;
         }
-        S_LOG_INFO("Successfully parsed an adjustmod");
 
     } else if (modType == "cratermod") {
             
@@ -305,27 +280,41 @@ bool TerrainMod::parseMod()
             Mercator::CraterTerrainMod *NewMod;
             mModifier = new Mercator::CraterTerrainMod(modShape);
 
-            //mTerrainGenerator->getTerrainPage(TerrainPosition((int)pos.x(),(int)pos.y()))->addTerrainModifier(0,0,(int)pos.x(),(int)pos.y(),(int)pos.z(),NewMod);
-            //EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition((int)pos.x(),(int)pos.y()))->addTerrainModifier(sx,sy,mx,my,(int)pos.z(),NewMod);
-
-//             return NewMod;
-            return true;
+//             return true;
+            return mModifier;
         }
     }
 
     }
 }
 
+bool TerrainMod::processMod()
+{
+    if (!mEntity->hasAttr("terrainmod")) {
+        S_LOG_FAILURE("TerrainMod defined on entity with no terrainmod attribute");
+        return false;
+    }
+
+    const Atlas::Message::Element& modifier(mEntity->valueOfAttr("terrainmod"));
+
+    if (parseMod(modifier) != NULL) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 void TerrainMod::attributeChanged(const Atlas::Message::Element& attributeValue)
 {
-    if (parseMod()) {
+    if (processMod()) {
         EventModChanged(this);
     }
 }
 
 void TerrainMod::entity_Moved()
 {
-    if (parseMod()) {
+    if (processMod()) {
         EventModChanged(this);
     }
 }
