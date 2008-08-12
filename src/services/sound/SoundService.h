@@ -54,14 +54,6 @@ class SoundService: public Service, public ConsoleObject
 		std::map<std::string, SoundEntity*> mEntities;
 
 		/**
-		 * Those functions are used to instantiate the sound samples.
-		 * Basically we want an instance for each SoundEntity to prevent
-		 * one overpassing another.
-		 */
-		StaticSoundSample* instStaticSample(StaticSoundSample* base);
-		StreamedSoundSample* instStreamedSample(StreamedSoundSample* base);
-		
-		/**
 		 * Used to allocate a sound of each type. We treat WAV and PCM as the same sample types
 		 * since they dont require any special parsing stuff.
 		 */

@@ -156,129 +156,6 @@ namespace Ember
 		}
 	}
 
-	StaticSoundSample* SoundService::instStaticSample(StaticSoundSample* base)
-	{
-		StaticSoundSample* newSample = new StaticSoundSample();
-		if (!newSample)
-		{
-			S_LOG_FAILURE("Failed to allocate a new sound sample.");
-			return NULL;
-		}
-
-		// Bind the buffer with the source.
-		alGenSources(1, newSample->getSourcePtr());
-
-		if (alGetError() != AL_NO_ERROR)
-		{
-			S_LOG_FAILURE("Failed to generate a new sound source.");
-			delete newSample;
-
-			return NULL;
-		}
-	
-		alSourcei (newSample->getSource(), AL_BUFFER, base->getBuffer());
-		alSourcef (newSample->getSource(), AL_PITCH, 1.0);
-		alSourcef (newSample->getSource(), AL_GAIN, 1.0);
-		alSource3f(newSample->getSource(), AL_POSITION, 0, 0, 0);
-		alSource3f(newSample->getSource(), AL_VELOCITY, 0, 0, 0);
-
-		ALboolean loop = false;
-		alSourcei (newSample->getSource(), AL_LOOPING, loop);
-
-		int playsLocally = 0;
-		alGetSourcei(base->getSource(), AL_SOURCE_RELATIVE, &playsLocally);
-		alSourcei(newSample->getSource(), AL_SOURCE_RELATIVE, playsLocally);
-
-		if (alGetError() != AL_NO_ERROR)
-		{
-			S_LOG_FAILURE("Failed to set sound sample attributes.");
-			delete newSample;
-
-			return NULL;
-		}
-
-		return newSample;
-	}
-
-	StreamedSoundSample* SoundService::instStreamedSample(StreamedSoundSample* base)
-	{
-		#ifdef THREAD_SAFE
-		pthread_mutex_lock(&mCopyMutex);
-		#endif
-
-		StreamedSoundSample* newSample = new StreamedSoundSample();
-		if (!newSample)
-		{
-			S_LOG_FAILURE("Failed to allocate memory for a new sound source.");
-			return NULL;
-		}
-
-		// Should we handle this in Ogre or any other Resource Manager?
-		FILE* newFile = NULL;
-		if (!(newFile = fopen(base->getFilename().c_str(), "rb")))
-		{
-			S_LOG_FAILURE("Failed to open file.");
-			delete newSample;
-
-			return false;
-		}
-
-		newSample->setFile(newFile, base->getFilename());
-
-		if (ov_open(newFile, newSample->getStreamPtr(), NULL, 0) < 0)
-		{
-Error0:
-			S_LOG_FAILURE("Failed to bind ogg stream to sound sample.");
-
-			fclose(newFile);
-			delete newSample;
-
-			return NULL;
-		}
-
-		vorbis_info* oggInfo = ov_info(newSample->getStreamPtr(), -1);
-		if (oggInfo->channels == 1)
-		{
-			newSample->setFormat(AL_FORMAT_MONO16);
-		}
-		else
-		{
-			newSample->setFormat(AL_FORMAT_STEREO16);
-		}
-
-		newSample->setRate(oggInfo->rate);
-
-		alGenBuffers(2, newSample->getBufferPtr());
-		if (alGetError() != AL_NO_ERROR)
-		{
-			goto Error0;
-		}
-
-		alGenSources(1, newSample->getSourcePtr());
-		if (alGetError() != AL_NO_ERROR)
-		{
-			goto Error0;
-		}
-
-		alSourcef (newSample->getSource(), AL_PITCH, 1.0);
-		alSourcef (newSample->getSource(), AL_GAIN, 1.0);
-		alSource3f(newSample->getSource(), AL_POSITION, 0, 0, 0);
-		alSource3f(newSample->getSource(), AL_VELOCITY, 0, 0, 0);
-		alSourcei (newSample->getSource(), AL_LOOPING, false);
-
-		int playsLocally = 0;
-		alGetSourcei(base->getSource(), AL_SOURCE_RELATIVE, &playsLocally);
-		alSourcei(newSample->getSource(), AL_SOURCE_RELATIVE, playsLocally);
-
-		mCopySamples.push_back(newSample);
-
-		#ifdef THREAD_SAFE
-		pthread_mutex_unlock(&mCopyMutex);
-		#endif
-
-		return newSample;
-	}
-
 	bool SoundService::registerInstance(BaseSoundSample* base, BaseSoundSample* copy)
 	{
 		if (!base)
@@ -289,32 +166,26 @@ Error0:
 			return false;
 		}
 
-		if (base->getType() == SAMPLE_OGG)
+		copy = base->instantiate();
+		if (copy->getType() == SAMPLE_OGG)
 		{
-			StreamedSoundSample* streamSample = dynamic_cast<StreamedSoundSample*>(base);
-			copy = instStreamedSample(streamSample);
-			if (copy)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			#ifdef THREAD_SAFE
+			pthread_mutex_lock(&mCopyMutex);
+			#endif
+
+			mCopySamples.push_back(dynamic_cast<StreamedSoundSample*>(copy));
+
+			#ifdef THREAD_SAFE
+			pthread_mutex_unlock(&mCopyMutex);
+			#endif
 		}
-		else
+
+		if (copy)
 		{
-			StaticSoundSample* staticSample = dynamic_cast<StaticSoundSample*>(base);
-			copy = instStaticSample(staticSample);
-			if (copy)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			return true;
 		}
+
+		return false;
 	}
 
 	bool SoundService::registerSound(const std::string &filename, bool playLocally,

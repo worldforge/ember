@@ -121,6 +121,50 @@ namespace Ember
 		return 1;
 	}
 
+	BaseSoundSample* StaticSoundSample::instantiate()
+	{
+		StaticSoundSample* newSample = new StaticSoundSample();
+		if (!newSample)
+		{
+			S_LOG_FAILURE("Failed to allocate a new sound sample.");
+			return NULL;
+		}
+
+		// Bind the buffer with the source.
+		alGenSources(1, newSample->getSourcePtr());
+
+		if (alGetError() != AL_NO_ERROR)
+		{
+			S_LOG_FAILURE("Failed to generate a new sound source.");
+			delete newSample;
+
+			return NULL;
+		}
+	
+		alSourcei (newSample->getSource(), AL_BUFFER, getBuffer());
+		alSourcef (newSample->getSource(), AL_PITCH, 1.0);
+		alSourcef (newSample->getSource(), AL_GAIN, 1.0);
+		alSource3f(newSample->getSource(), AL_POSITION, 0, 0, 0);
+		alSource3f(newSample->getSource(), AL_VELOCITY, 0, 0, 0);
+
+		ALboolean loop = false;
+		alSourcei (newSample->getSource(), AL_LOOPING, loop);
+
+		int playsLocally = 0;
+		alGetSourcei(getSource(), AL_SOURCE_RELATIVE, &playsLocally);
+		alSourcei(newSample->getSource(), AL_SOURCE_RELATIVE, playsLocally);
+
+		if (alGetError() != AL_NO_ERROR)
+		{
+			S_LOG_FAILURE("Failed to set sound sample attributes.");
+			delete newSample;
+
+			return NULL;
+		}
+
+		return newSample;
+	}
+
 	void StaticSoundSample::play()
 	{
 		alSourcePlay(mSource);
@@ -230,6 +274,75 @@ namespace Ember
 			alGetSourcei(mSource, AL_BUFFERS_PROCESSED, &processed);
 			checkAlError();
 		}
+	}
+
+	BaseSoundSample* StreamedSoundSample::instantiate()
+	{
+		StreamedSoundSample* newSample = new StreamedSoundSample();
+		if (!newSample)
+		{
+			S_LOG_FAILURE("Failed to allocate memory for a new sound source.");
+			return NULL;
+		}
+
+		// Should we handle this in Ogre or any other Resource Manager?
+		FILE* newFile = NULL;
+		if (!(newFile = fopen(getFilename().c_str(), "rb")))
+		{
+			S_LOG_FAILURE("Failed to open file.");
+			delete newSample;
+
+			return false;
+		}
+
+		newSample->setFile(newFile, getFilename());
+
+		if (ov_open(newFile, newSample->getStreamPtr(), NULL, 0) < 0)
+		{
+Error0:
+			S_LOG_FAILURE("Failed to bind ogg stream to sound sample.");
+
+			fclose(newFile);
+			delete newSample;
+
+			return NULL;
+		}
+
+		vorbis_info* oggInfo = ov_info(newSample->getStreamPtr(), -1);
+		if (oggInfo->channels == 1)
+		{
+			newSample->setFormat(AL_FORMAT_MONO16);
+		}
+		else
+		{
+			newSample->setFormat(AL_FORMAT_STEREO16);
+		}
+
+		newSample->setRate(oggInfo->rate);
+
+		alGenBuffers(2, newSample->getBufferPtr());
+		if (alGetError() != AL_NO_ERROR)
+		{
+			goto Error0;
+		}
+
+		alGenSources(1, newSample->getSourcePtr());
+		if (alGetError() != AL_NO_ERROR)
+		{
+			goto Error0;
+		}
+
+		alSourcef (newSample->getSource(), AL_PITCH, 1.0);
+		alSourcef (newSample->getSource(), AL_GAIN, 1.0);
+		alSource3f(newSample->getSource(), AL_POSITION, 0, 0, 0);
+		alSource3f(newSample->getSource(), AL_VELOCITY, 0, 0, 0);
+		alSourcei (newSample->getSource(), AL_LOOPING, false);
+
+		int playsLocally = 0;
+		alGetSourcei(getSource(), AL_SOURCE_RELATIVE, &playsLocally);
+		alSourcei(newSample->getSource(), AL_SOURCE_RELATIVE, playsLocally);
+
+		return newSample;
 	}
 
 	bool StreamedSoundSample::stream(ALuint buffer)
