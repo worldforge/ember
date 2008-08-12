@@ -310,6 +310,11 @@ void TerrainMod::entity_Moved()
     }
 }
 
+void TerrainMod::entity_Deleted()
+{
+    delete mModifier;
+}
+
 void TerrainMod::observeEntity()
 {
     mAttrChangedSlot.disconnect();
@@ -317,6 +322,7 @@ void TerrainMod::observeEntity()
         mAttrChangedSlot = sigc::mem_fun(*this, &TerrainMod::attributeChanged);
         mEntity->observe("terrainmod", mAttrChangedSlot);
         mEntity->Moved.connect(sigc::mem_fun(*this, &TerrainMod::entity_Moved));
+        mEntity->BeingDeleted.connect(sigc::mem_fun(*this, &TerrainMod::entity_Deleted));
     }
 }
 

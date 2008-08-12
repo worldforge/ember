@@ -62,6 +62,7 @@ protected:
 	
 	void attributeChanged(const Atlas::Message::Element& attributeValue);
 	void entity_Moved();
+	void entity_Deleted();
 	void observeEntity();
 	bool parseMod();
 
