@@ -51,13 +51,22 @@ public:
 	inline Mercator::TerrainMod* getMod() const;
 	inline void setMod(Mercator::TerrainMod* area);
 	
+	/**
+	Emitted whenever the modifier is changed or moved.
+	*/
 	sigc::signal<void, TerrainMod*> EventModChanged;
+	
+	/**
+	Emitted just before the entity owning this mod is deleted.
+	Should be caught by TerrainGenerator to remove this mod from the terrain.
+	*/
+	sigc::signal<void, TerrainMod*> EventModDeleted;
 
+	EmberEntity* mEntity;
 
 protected:
 
 	Mercator::TerrainMod* mModifier;
-	EmberEntity* mEntity;
 	Eris::Entity::AttrChangedSlot mAttrChangedSlot;
 	
 	void attributeChanged(const Atlas::Message::Element& attributeValue);

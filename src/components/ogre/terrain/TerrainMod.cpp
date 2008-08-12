@@ -313,6 +313,7 @@ void TerrainMod::entity_Moved()
 void TerrainMod::entity_Deleted()
 {
     delete mModifier;
+    EventModDeleted(this);
 }
 
 void TerrainMod::observeEntity()

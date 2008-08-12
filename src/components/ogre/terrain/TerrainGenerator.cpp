@@ -219,7 +219,11 @@ TerrainShader* TerrainGenerator::createShader(const TerrainLayerDefinition* laye
 
 void TerrainGenerator::addTerrainMod(TerrainMod* terrainMod)
 {
+        // Listen for changes to the modifier
     terrainMod->EventModChanged.connect(sigc::mem_fun(*this, &TerrainGenerator::TerrainMod_Changed));
+        // Listen for deletion of the modifier
+    terrainMod->EventModDeleted.connect(sigc::mem_fun(*this, &TerrainGenerator::TerrainMod_Deleted));
+
     Mercator::TerrainMod* mod = terrainMod->getMod();
 
     std::stringstream ss;
@@ -248,6 +252,33 @@ void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
                 emberMod->init();
                 Mercator::TerrainMod* mod = emberMod->getMod();
                 mTerrain->addMod(*mod);
+            }
+        }
+
+    buildHeightmap();
+}
+
+void TerrainGenerator::TerrainMod_Deleted(TerrainMod* terrainMod)
+{
+            // Clear all modifiers from the world
+       ClearAllMods();
+
+        EmberEntity* modOwner = terrainMod->mEntity;
+        // Find out how many entities are in the world so we can search them for terrainMods
+        EmberEntity* world = (EmberEntity*)EmberOgre::getSingleton().getEntityFactory()->getWorld();
+        int numEntities = world->numContained();
+
+        for (int i = 0; i < numEntities; i++)
+        {
+            EmberEntity* e = dynamic_cast<EmberEntity*>(world->getContained(i));
+            if (e->getId() != modOwner->getId()) {
+                if (e->hasAttr("terrainmod") ) {
+
+                    Terrain::TerrainMod *emberMod = new Terrain::TerrainMod(e);
+                    emberMod->init();
+                    Mercator::TerrainMod* mod = emberMod->getMod();
+                    mTerrain->addMod(*mod);
+                }
             }
         }
 

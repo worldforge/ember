@@ -392,6 +392,11 @@ protected:
 	Listen to changes in terrain mods.
 	*/
 	void TerrainMod_Changed(TerrainMod* terrainMod);
+
+	/**
+	Listen for deletion of a terrain mod.
+	*/
+	void TerrainMod_Deleted(TerrainMod* terrainMod);
 	
 	ISceneManagerAdapter* mSceneManagerAdapter;
 	
