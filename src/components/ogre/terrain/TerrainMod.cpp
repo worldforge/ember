@@ -43,11 +43,17 @@ TerrainMod::~TerrainMod()
 
 bool TerrainMod::init() {
     observeEntity();
-    return processMod();
+    return parseMod();
 }
 
-Mercator::TerrainMod* TerrainMod::parseMod(const Atlas::Message::Element modifier)
+bool TerrainMod::parseMod()
 {
+    if (!mEntity->hasAttr("terrainmod")) {
+        S_LOG_FAILURE("TerrainMod defined on entity with no terrainmod attribute");
+        return false;
+    }
+
+    const Atlas::Message::Element& modifier(mEntity->valueOfAttr("terrainmod"));
 
     if (!modifier.isMap()) {
         S_LOG_FAILURE( "Terrain modifier is not a map" );
@@ -137,7 +143,7 @@ Mercator::TerrainMod* TerrainMod::parseMod(const Atlas::Message::Element modifie
 
             // Make modifier
 
-//             return true;
+            return true;
         }
     
     } else if (modType == "levelmod") {
@@ -179,8 +185,8 @@ Mercator::TerrainMod* TerrainMod::parseMod(const Atlas::Message::Element modifie
             Mercator::LevelTerrainMod<WFMath::Ball<2> > *NewMod;
             mModifier = new Mercator::LevelTerrainMod<WFMath::Ball<2> >(level, modShape);
 
-//             return true;
-            return mModifier;
+            return true;
+//             return mModifier;
 
         } else if (shapeType == "rotbox") {
             WFMath::Point<2> shapePoint;
@@ -215,8 +221,8 @@ Mercator::TerrainMod* TerrainMod::parseMod(const Atlas::Message::Element modifie
             Mercator::LevelTerrainMod<WFMath::RotBox<2> > *NewMod;
             mModifier = new Mercator::LevelTerrainMod<WFMath::RotBox<2> >(level, modShape);
 
-//             return true;
-            return mModifier;
+            return true;
+//             return mModifier;
         }       
 
 
@@ -244,7 +250,7 @@ Mercator::TerrainMod* TerrainMod::parseMod(const Atlas::Message::Element modifie
         
             // Make modifier
 
-//             return true;
+            return true;
         }
 
     } else if (modType == "cratermod") {
@@ -280,41 +286,24 @@ Mercator::TerrainMod* TerrainMod::parseMod(const Atlas::Message::Element modifie
             Mercator::CraterTerrainMod *NewMod;
             mModifier = new Mercator::CraterTerrainMod(modShape);
 
-//             return true;
-            return mModifier;
+             return true;
+//             return mModifier;
         }
     }
 
     }
 }
 
-bool TerrainMod::processMod()
-{
-    if (!mEntity->hasAttr("terrainmod")) {
-        S_LOG_FAILURE("TerrainMod defined on entity with no terrainmod attribute");
-        return false;
-    }
-
-    const Atlas::Message::Element& modifier(mEntity->valueOfAttr("terrainmod"));
-
-    if (parseMod(modifier) != NULL) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
 void TerrainMod::attributeChanged(const Atlas::Message::Element& attributeValue)
 {
-    if (processMod()) {
+    if (parseMod()) {
         EventModChanged(this);
     }
 }
 
 void TerrainMod::entity_Moved()
 {
-    if (processMod()) {
+    if (parseMod()) {
         EventModChanged(this);
     }
 }
