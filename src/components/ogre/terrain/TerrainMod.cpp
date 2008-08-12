@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2005
+// Author: Tamas Bates <rhymre@gmail.com>, (C) 2008
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -296,6 +296,7 @@ bool TerrainMod::parseMod()
 
 void TerrainMod::attributeChanged(const Atlas::Message::Element& attributeValue)
 {
+    delete mModifier;
     if (parseMod()) {
         EventModChanged(this);
     }
@@ -303,6 +304,7 @@ void TerrainMod::attributeChanged(const Atlas::Message::Element& attributeValue)
 
 void TerrainMod::entity_Moved()
 {
+    delete mModifier;
     if (parseMod()) {
         EventModChanged(this);
     }
