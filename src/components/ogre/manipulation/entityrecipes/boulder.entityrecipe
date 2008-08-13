@@ -1,5 +1,9 @@
 <entityrecipes>
   <entityrecipe name="boulder">
+    <author>Alexey Torkhov</author>
+    <description>
+      This is boulder recipe
+    </description>
     <entity type="boulder">
       <atlas>
         <map>

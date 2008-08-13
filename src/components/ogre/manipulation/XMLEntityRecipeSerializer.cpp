@@ -79,6 +79,28 @@ void XMLEntityRecipeSerializer::readRecipe(EntityRecipePtr entRecipe, TiXmlEleme
 {
 	TiXmlElement* elem;
 
+	// Author
+	elem = recipeNode->FirstChildElement("author");
+	if (elem)
+	{
+		const char *text = elem->GetText();
+		if (text)
+		{
+			entRecipe->setAuthor(text);
+		}
+	}
+
+	// Description
+	elem = recipeNode->FirstChildElement("description");
+	if (elem)
+	{
+		const char *text = elem->GetText();
+		if (text)
+		{
+			entRecipe->setDescription(text);
+		}
+	}
+
 	// Entity specification
 	elem = recipeNode->FirstChildElement("entity");
 	if (elem)

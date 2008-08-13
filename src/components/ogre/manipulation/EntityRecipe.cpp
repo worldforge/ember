@@ -44,7 +44,7 @@ namespace EmberOgre {
 EntityRecipe::EntityRecipe(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
 	const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader)
 	: Resource(creator, name, handle, group, isManual, loader),
-	  mEntitySpec(0), mEntityType()
+	  mAuthor(), mDescription(), mEntitySpec(0), mEntityType()
 {
 	if (createParamDictionary("EntityRecipe"))
 	{
@@ -258,6 +258,26 @@ Atlas::Message::MapType EntityRecipe::createEntity()
 
 	S_LOG_WARNING("No entity composed");
 	return Atlas::Message::MapType();
+}
+
+void EntityRecipe::setAuthor(const std::string& author)
+{
+	mAuthor = author;
+}
+
+std::string EntityRecipe::getAuthor()
+{
+	return mAuthor;
+}
+
+void EntityRecipe::setDescription(const std::string& description)
+{
+	mDescription = description;
+}
+
+std::string EntityRecipe::getDescription()
+{
+	return mDescription;
 }
 
 void EntityRecipe::valueChanged()

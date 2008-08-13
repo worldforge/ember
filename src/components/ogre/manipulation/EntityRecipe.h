@@ -107,6 +107,26 @@ public:
 	Atlas::Message::MapType createEntity();
 
 	/**
+	 * Sets author.
+	 */
+	void setAuthor(const std::string& author);
+
+	/**
+	 * Gets author.
+	 */
+	std::string getAuthor();
+
+	/**
+	 * Sets description.
+	 */
+	void setDescription(const std::string& description);
+
+	/**
+	 * Gets description.
+	 */
+	std::string getDescription();
+
+	/**
 	 * Does some test checking.
 	 */
 	void doTest();
@@ -118,6 +138,16 @@ public:
 
 protected:
 	void valueChanged();
+
+	/**
+	 * Author of recipe.
+	 */
+	std::string mAuthor;
+
+	/**
+	 * Recipe description.
+	 */
+	std::string mDescription;
 
 	/**
 	 * List of semi-atlas entity specs.

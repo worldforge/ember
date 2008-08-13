@@ -58,6 +58,13 @@ end
 
 -- Shows selected recipe
 function EntityCreator.showRecipe(recipe)
+	local author = recipe:getAuthor()
+	local description = recipe:getDescription()
+	if author ~= "" then
+		description = "Author: " .. author .. "\n" .. description;
+	end
+	EntityCreator.recipeDescription:setText(description)
+
 	for k,v in recipe:getGUIAdapters():pairs() do
 		log.verbose("Creating adapter " .. k .. " of type " .. v:getType())
 
@@ -115,6 +122,7 @@ function EntityCreator.buildWidget()
 	EntityCreator.factory = EmberOgre.Gui.Adapters.Atlas.AdapterFactory("EntityCreator")
 
 	-- Creating container for storing adapters
+	EntityCreator.recipeDescription = EntityCreator.widget:getWindow("RecipeDescription")
 	EntityCreator.container = EntityCreator.widget:getWindow("AdaptersContainer")
 	EntityCreator.stackableContainer = EmberOgre.Gui.StackableContainer(EntityCreator.container)
 

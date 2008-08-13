@@ -18,6 +18,10 @@ public:
 //	GUIAdapter* getGUIAdapter(std::string name);
 	const GUIAdaptersStore& getGUIAdapters();
 //	GUIAdapterBindings* createGUIAdapterBindings(std::string name);
+	void setAuthor(const std::string& author);
+	std::string getAuthor();
+	void setDescription(const std::string& description);
+	std::string getDescription();
 	void doTest();
 	void createEntity();
 };

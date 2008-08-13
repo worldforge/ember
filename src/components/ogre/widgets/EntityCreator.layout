@@ -21,9 +21,15 @@
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Event Name="MouseClick" Function="EntityCreator.Create_Click" />
 			</Window>
-			<Window Type='DefaultGUISheet' Name='AdaptersContainer'>
+			<Window Type='EmberLook/StaticText' Name='RecipeDescription'>
 				<Property Name='UnifiedPosition' Value='{{0,100},{0,0}}'/>
-				<Property Name='UnifiedSize' Value='{{1,-100},{1,0}}'/>
+				<Property Name='UnifiedSize' Value='{{1,-100},{0,50}}'/>
+				<Property Name='FrameEnabled' Value='false' />
+				<Property Name='BackgroundEnabled' Value='false' />
+			</Window>
+			<Window Type='DefaultGUISheet' Name='AdaptersContainer'>
+				<Property Name='UnifiedPosition' Value='{{0,100},{0,50}}'/>
+				<Property Name='UnifiedSize' Value='{{1,-100},{1,-50}}'/>
 			</Window>
 		</Window>
 	</Window>
