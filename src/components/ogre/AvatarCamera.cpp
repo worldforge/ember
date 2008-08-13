@@ -23,7 +23,6 @@
 #include "Avatar.h"
 #include "EmberOgre.h"
 #include "EmberEntity.h"
-// #include "WorldEmberEntity.h"
 #include "Convert.h"
 
 
@@ -35,7 +34,6 @@
 #endif
 
 #include "MousePicker.h"
-// #include "jesus/JesusPickerObject.h"
 
 #include "SceneManagers/EmberPagingSceneManager/include/OgrePagingLandScapeRaySceneQuery.h"
 #include "framework/Tokeniser.h"
@@ -698,6 +696,89 @@ void AvatarCamera::takeScreenshot()
 		Ember::ConsoleBackend::getSingletonPtr()->pushMessage("Unknown error when saving screenshot.");
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void AvatarCameraMount::pitch(Ogre::Degree degrees)
+{
+	if (mInvertCamera) {
+		degrees -= degrees * 2;
+	}
+
+	///prevent the camera from being turned upside down
+	const Ogre::Quaternion& orientation(mAvatarCameraPitchNode->getOrientation());
+	Ogre::Degree pitch(orientation.getPitch());
+	if ((pitch.valueDegrees() + degrees.valueDegrees()) > 0) {
+		degrees = std::min<float>(degrees.valueDegrees(), 90 - pitch.valueDegrees());
+	} else {
+		degrees = std::max<float>(degrees.valueDegrees(), -90 - pitch.valueDegrees());
+	}
+
+	if (mMode == MODE_THIRD_PERSON) {
+		degreePitch += degrees;
+		mAvatarCameraPitchNode->pitch(degrees);
+	} else {
+		mAvatarCameraPitchNode->pitch(degrees);
+	}
+}
+void AvatarCameraMount::yaw(Ogre::Degree degrees)
+{
+// 	degreeYaw += degrees;
+	mAvatarCameraRootNode->yaw(degrees);
+
+	mAvatarCameraRootNode->needUpdate();
+
+}
+
+
+
+
+
+
+
+
+const Ogre::Quaternion& CameraMountBase::getOrientation(bool onlyHorizontal) const {
+	if (!onlyHorizontal) {
+		return mCamera->getDerivedOrientation();
+	} else {
+		static Ogre::Quaternion quat;
+		quat = mCamera->getDerivedOrientation();
+		quat.x = 0;
+		quat.z = 0;
+		return quat;
+	}
+}
+
+const Ogre::Vector3& CameraMountBase::getPosition() const
+{
+	return mCamera.getDerivedPosition();
+}
+
+const Ogre::Degree& CameraMountBase::getPitch() const
+{
+	throw Ember::Exception("Not implemented yet.");
+// 	return degreePitch;
+}
+
+const Ogre::Degree& CameraMountBase::getYaw() const
+{
+	throw Ember::Exception("Not implemented yet.");
+// 	return degreeYaw;
+}
+
 
 }
 

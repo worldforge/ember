@@ -429,43 +429,77 @@ class ICameraMount
 	virtual ~ICameraMount() {};
 
 	/**
-	 * Pitches the camera the supplied degrees
+	 * @brief Pitches the camera the supplied degrees
+	 * @param degrees
 	 */
 	virtual void pitch(Ogre::Degree degrees) = 0;
 
 	/**
-	 * Yaws the camera the supplied degrees
+	 * @brief Yaws the camera the supplied degrees
+	 * @param degrees
 	 */
 	virtual void yaw(Ogre::Degree degrees) = 0;
 
 	/**
-	 * returns the current degrees of pitch from the cameras initial position
+	 * @brief Returns the current degrees of pitch from the cameras initial position.
+	 * @return
 	 */
 	virtual const Ogre::Degree& getPitch() const = 0;
 
 	/**
-	 * returns the current degrees of yaw from the cameras initial position
+	 * @brief Returns the current degrees of yaw from the cameras initial position.
+	 * @return
 	 */
 	virtual const Ogre::Degree& getYaw() const = 0;
 
 	/**
-	 * Returns the current camera orientation in the world
+	 * @brief Returns the current camera orientation in the world
+	 * @param onlyHorizontal
+	 * @return
 	 */
 	virtual const Ogre::Quaternion& getOrientation(bool onlyHorizontal = true) const = 0;
 
 	/**
-	 *    Returns the position of the camera in the world.
+	 * @brief Returns the position of the camera in the world.
 	 * @return
 	 */
 	virtual const Ogre::Vector3& getPosition() const = 0;
 
-	void setMode(AvatarCamera::Mode mode);
+	virtual void move(const Ogre::Vector3& movement) = 0;
+
+// 	void setMode(AvatarCamera::Mode mode);
+
+
+};
+
+class CameraMountBase : ICameraMount
+{
+	/**
+	 * @brief Returns the current degrees of pitch from the cameras initial position.
+	 * @return
+	 */
+	virtual const Ogre::Degree& getPitch() const;
 
 	/**
-	 * sets the node to which the camera is attached
+	 * @brief Returns the current degrees of yaw from the cameras initial position.
+	 * @return
 	 */
-	virtual void setAvatarNode(Ogre::SceneNode* sceneNode);
+	virtual const Ogre::Degree& getYaw() const;
 
+	/**
+	 * @brief Returns the current camera orientation in the world
+	 * @param onlyHorizontal
+	 * @return
+	 */
+	virtual const Ogre::Quaternion& getOrientation(bool onlyHorizontal = true) const;
+
+	/**
+	 * @brief Returns the position of the camera in the world.
+	 * @return
+	 */
+	virtual const Ogre::Vector3& getPosition() const;
+protected:
+	Ogre::Camera* mCamera;
 };
 
 class MainCamera
@@ -473,13 +507,19 @@ class MainCamera
 	virtual ~MainCamera() {}
 
 	/**
-	 * returns a pointer to the Ogre::Camera instance
+	 * @brief Accessor for the main Ogre::Camera instance.
+	 * @return The main Ogre::Camera instance.
 	 */
 	Ogre::Camera* getCamera();
+
+	/**
+	 * @brief Accessor for the main Ogre::Camera instance.
+	 * @return The main Ogre::Camera instance.
+	 */
 	Ogre::Camera* getCamera() const;
 
 	/**
-	* emitted when the camra moves
+	* @brief Emitted when the camera moves
 	*/
 	sigc::signal<void, Ogre::Camera*> MovedCamera;
 
@@ -539,10 +579,24 @@ class MainCamera
 	 */
 	void takeScreenshot();
 
+
+	/**
+	 * @brief Attaches the camera to a new mount, returning the previous mount, if any.
+	 * @param  newCameraMount The new camera mount.
+	 * @return If the camera already was attached to a mount it's returned here, after the camera has been detached from it.
+	 */
+	ICameraMount* attachToMount(ICameraMount* newCameraMount);
+
+private:
+
+	ICameraMount* mCameraMount;
+
 };
 
-class AvatarCameraMount : ICameraMount
+class AvatarCameraMount : BaseCameraMount
 {
+	AvatarCameraMount(Ogre::SceneNode* avatarNode);
+
 	/**
 	* emitted when the distance between the camera and the avatar has changed
     * @param Ogre::Real the new distance
@@ -557,6 +611,47 @@ class AvatarCameraMount : ICameraMount
 
 	const Ember::ConsoleCommandWrapper SetCameraDistance;
 
+	/**
+	 * sets the node to which the camera is attached
+	 */
+	virtual void setAvatarNode(Ogre::SceneNode* sceneNode);
+
+
+	/**
+	 * @brief Pitches the camera the supplied degrees
+	 * @param degrees
+	 */
+	virtual void pitch(Ogre::Degree degrees);
+
+	/**
+	 * @brief Yaws the camera the supplied degrees
+	 * @param degrees
+	 */
+	virtual void yaw(Ogre::Degree degrees);
+
+
+
+	virtual void move(const Ogre::Vector3& movement);
+
+protected:
+	AvatarController* mAvatarController;
+	Ogre::SceneNode* mAvatarNode;
+
+	Ogre::SceneNode* mAvatarCameraRootNode;
+	Ogre::SceneNode* mAvatarCameraPitchNode;
+	Ogre::SceneNode* mAvatarCameraNode;
+
+	bool mInvertCamera;
+};
+
+class CameraMotionHandler
+{
+public:
+
+void setCameraMount(ICameraMount* cameraMount);
+
+protected:
+ICameraMount* mCameraMount;
 };
 
 class FreeFlyingMount : ICameraMount
