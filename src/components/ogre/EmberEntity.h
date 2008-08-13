@@ -254,11 +254,6 @@ public:
 	 */
 	virtual bool getVisualize(const std::string& visualization) const;
 
-	/**
-	 *    Parses the Atlas data for a terrain mod and returns a pointer to a modifier
-	 */
-	Mercator::TerrainMod* parseTerrainModifier(const Atlas::Message::Element& modifier);
-
 protected: 
 
 

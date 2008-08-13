@@ -68,7 +68,6 @@ class TerrainMod;
 class TerrainLayerDefinition;
 class TerrainPageSurfaceLayer;
 class ISceneManagerAdapter;
-class terrainModListEntry;
 
 
 struct TerrainDefPoint
@@ -148,11 +147,10 @@ public:
 	 */
 	bool updateTerrain(const TerrainDefPointStore& terrainPoints);
 
-	/**
-         *    @brief Updates the terrain with a new modifier
-	 */
-	void updateTerrainModifiers(Terrain::terrainModListEntry& modifier);
 
+	/**
+	 * @brief Uses Mercator::Segment::clearMods() on ALL segments on the terrain.
+	 */
 	void ClearAllMods();
 
 	/**
@@ -222,12 +220,6 @@ public:
 	 */
 	TerrainPage* getTerrainPage(const TerrainPosition& worldPosition);
 
-	/**
-	 *    Gets the terrain page that owns the given terrain modifier
-	 * @param terrainModListEntry
-	 */
-	TerrainPage* getTerrainPage(Terrain::terrainModListEntry& terrainMod);
-	
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method
 	 * @param command 

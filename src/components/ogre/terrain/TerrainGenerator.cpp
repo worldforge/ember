@@ -530,13 +530,6 @@ TerrainPage* TerrainGenerator::getTerrainPage(const Ogre::Vector2& ogreIndexPosi
 	return mTerrainPages[x][y];
 }
 
-TerrainPage* TerrainGenerator::getTerrainPage(Terrain::terrainModListEntry& terrainMod)
-{
-	TerrainPosition* modPos = new TerrainPosition;
-	modPos = terrainMod.Position();
-	return getTerrainPage(*modPos);
-}
-
 TerrainPage* TerrainGenerator::createPage(const TerrainPosition& pos)
 {
 	
@@ -682,10 +675,6 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 	return true;
 }
 
-void TerrainGenerator::updateTerrainModifiers(Terrain::terrainModListEntry& modifier)
-{
-
-}
 
 void TerrainGenerator::ClearAllMods()
 {

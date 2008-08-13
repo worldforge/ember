@@ -43,7 +43,6 @@ typedef std::vector<PageSegment> SegmentVector;
 }
 
 #include "TerrainPageShadow.h"
-#include "TerrainModListEntry.h"
 
 namespace Ogre
 {
@@ -242,48 +241,6 @@ public:
 	void unregisterBridge();
 
 
-	/**
-	 *    @brief Adds the specified modifier to the segment at (x,y)
-	 * This is currently called from TerrainGenerator -tb
-	 */
-	void addTerrainModifier(int sx, int sy, int mx, int my, int mz, Mercator::TerrainMod *modifier);
-
-	/**
-	 *    @brief Returns the (2d) position of an applied modifier
-	 *
-	 */
-	TerrainPosition *getTerrainModifierPos();
-
-	int getTerrainModifierZ();
-
-	/**
-	 *    @brief Returns the X index of the segment a modifier is applied to
-	*/
-	int	TerrainModifierSegX();
-
-	/**
-	 *    @brief Returns the Y index of the segment a modifier is applied to
-	*/
-	int	TerrainModifierSegY();
-
-	/**
-	 *    @brief Returns a modifier from the list.
-	 *	Each call to this function will return a new modifier until the end of the list
-	 */	
-	terrainModListEntry NextModListEntry();
-
-	/**
-	 *    @brief Gives the size of mTModList
-	*/
-	int ModListSize();
-
-	/**
-	 *    @brief Gives the total number of terrain mods added to this segment
-	*/
-	int getTerrainModCount();
-
-	int getModId();
-
 private:
 
 	SegmentVector mValidSegments;
@@ -344,14 +301,6 @@ private:
 	*/
 	ITerrainPageBridge* mBridge;
 
-
-	std::list<terrainModListEntry> mTModList;
-	std::list<terrainModListEntry>::iterator mNextMod;
-
-	/**
-	How many modifiers have been applied to this segment, total, including ones that have been deleted
-	*/
-	int mTerrainModCount;
 
 };
 
