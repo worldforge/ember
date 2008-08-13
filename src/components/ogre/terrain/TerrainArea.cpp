@@ -39,6 +39,7 @@ TerrainArea::TerrainArea(EmberEntity* entity) : mArea(0), mEntity(entity)
 
 TerrainArea::~TerrainArea()
 {
+	EventAreaRemoved.emit(this);
 	delete mArea;
 }
 

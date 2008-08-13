@@ -125,7 +125,11 @@ public sigc::trackable, public Ember::ConsoleObject
 {
 public:
 
-
+	/**
+	A type used for storing changes to aeas. We use instances instead of pointers or references since this type will be used in delayed updating, where the originating instance might not any longer be around.
+	*/
+	typedef std::vector<Mercator::Area> AreaStore;
+	
 	/**
 	A type used for storing the terrain definition points.
 	*/
@@ -330,7 +334,7 @@ public:
 	Emitted when a layer is updated.
 	The vector parameter is either null if the update can't be constrained to any areas, or an vector of areas if it can.
 	*/
-	sigc::signal<void, TerrainShader*, std::vector<TerrainArea*>* > EventLayerUpdated;
+	sigc::signal<void, TerrainShader*, AreaStore* > EventLayerUpdated;
 	
 	/**
 	Emitted when a new shader is created.
@@ -367,7 +371,10 @@ protected:
 	typedef std::map<std::string, TerrainPage*> PageStore;
 	PageStore mPages;
 	
-	typedef std::map<TerrainShader*, std::vector<TerrainArea*> > TerrainAreaMap;
+	/**
+	A type for use when keeping track of changes done to areas. We use instances of Mercator::Area instead of pointers or references since we want to batch the updates, and the original area instances might not be around at that time.
+	*/
+	typedef std::map<TerrainShader*, std::vector<Mercator::Area> > TerrainAreaMap;
 	TerrainAreaMap mChangedTerrainAreas;
 	
 	TerrainPagestore mTerrainPages;
@@ -442,6 +449,12 @@ protected:
 	Listen to changes in areas.
 	*/
 	void TerrainArea_Changed(TerrainArea* terrainArea);
+	
+	/**
+	 * @brief Listen to removal of terrain areas and trigger an update of the terrain.
+	 * @param terrainArea The area being removed.
+	 */
+	void TerrainArea_Removed(TerrainArea* terrainArea);
 	
 	/**
 	@brief An adapter class which allows us to access the Ogre scene manager.

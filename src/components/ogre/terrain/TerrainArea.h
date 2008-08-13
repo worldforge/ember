@@ -85,6 +85,11 @@ public:
 	*/
 	sigc::signal<void, TerrainArea*> EventAreaChanged;
 
+	/**
+	@brief Emitted when the area is about to be removed, and we need to tell the terrain to regenerate the visualization of it.
+	*/
+	sigc::signal<void, TerrainArea*> EventAreaRemoved;
+
 protected:
 
 	/**

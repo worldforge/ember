@@ -217,6 +217,7 @@ void TerrainGenerator::addArea(TerrainArea* terrainArea)
 {
 
 	terrainArea->EventAreaChanged.connect(sigc::mem_fun(*this, &TerrainGenerator::TerrainArea_Changed));
+	terrainArea->EventAreaRemoved.connect(sigc::mem_fun(*this, &TerrainGenerator::TerrainArea_Removed));
 	Mercator::Area* area = terrainArea->getArea();
  //   _fpreset();
 	//_controlfp(_PC_64, _MCW_PC);
@@ -252,11 +253,22 @@ void TerrainGenerator::TerrainArea_Changed(TerrainArea* terrainArea)
 	}
 }
 
+void TerrainGenerator::TerrainArea_Removed(TerrainArea* terrainArea)
+{
+	Mercator::Area* area = terrainArea->getArea();
+	mTerrain->removeArea(area);
+	if (mAreaShaders.count(area->getLayer())) {
+		///mark the shader for update
+		///we'll not update immediately, we try to batch many area updates and then only update once per frame
+		markShaderForUpdate(mAreaShaders[area->getLayer()], terrainArea);
+	}
+}
+
 void TerrainGenerator::markShaderForUpdate(TerrainShader* shader, TerrainArea* terrainArea)
 {
 	mShadersToUpdate.insert(shader);
 	if (terrainArea) {
-		mChangedTerrainAreas[shader].push_back(terrainArea);
+		mChangedTerrainAreas[shader].push_back(*terrainArea->getArea());
 	}
 }
 
@@ -275,7 +287,7 @@ bool TerrainGenerator::frameEnded(const Ogre::FrameEvent & evt)
 				J->second->updateShaderTexture(*I, true);
 			}
 			TerrainAreaMap::iterator areaI = mChangedTerrainAreas.find(*I);
-			std::vector<TerrainArea*>* areas(0);
+			std::vector<Mercator::Area>* areas(0);
 			if (areaI != mChangedTerrainAreas.end()) {
 				///only send areas if the update actually affects only areas
 				areas = &(areaI->second);

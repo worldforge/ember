@@ -30,7 +30,6 @@
 #include "services/logging/LoggingService.h"
 
 #include "../EmberOgre.h"
-#include "../terrain/TerrainGenerator.h"
 #include "../terrain/TerrainArea.h"
 #include "../terrain/TerrainShader.h"
 
@@ -81,7 +80,7 @@ void FoliageBase::initializeDependentLayers()
 	}
 }
 
-void FoliageBase::TerrainGenerator_LayerUpdated(Terrain::TerrainShader* shader, std::vector<Terrain::TerrainArea*>* areas)
+void FoliageBase::TerrainGenerator_LayerUpdated(Terrain::TerrainShader* shader, TerrainGenerator::AreaStore* areas)
 {
 	if (mPagedGeometry) {
 		///check if the layer update affects this layer, either if it's the actual layer, or one of the dependent layers
@@ -96,8 +95,8 @@ void FoliageBase::TerrainGenerator_LayerUpdated(Terrain::TerrainShader* shader, 
 		if (isRelevant) {
 			///if there are areas sent, the update only affect those and we only need to update the affected areas
 			if (areas) {
-				for (std::vector<Terrain::TerrainArea*>::iterator I = areas->begin(); I != areas->end(); ++I) {
-					const Ogre::TRect<Ogre::Real> ogreExtent(Atlas2Ogre((*I)->getArea()->bbox()));
+				for (TerrainGenerator::AreaStore::iterator I = areas->begin(); I != areas->end(); ++I) {
+					const Ogre::TRect<Ogre::Real> ogreExtent(Atlas2Ogre(I->bbox()));
 					Ogre::Real pageSize(mPagedGeometry->getPageSize());
 					Ogre::Vector3 pos(ogreExtent.left, 0, ogreExtent.top);
 					for (; pos.x < ogreExtent.right; pos.x += pageSize) {

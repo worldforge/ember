@@ -24,6 +24,7 @@
 #define EMBEROGRE_ENVIRONMENTFOLIAGEBASE_H
 
 #include <OgreFrameListener.h>
+#include "../terrain/TerrainGenerator.h"
 
 namespace PagedGeometry {
 class PagedGeometry;
@@ -65,7 +66,7 @@ protected:
 	TerrainLayerDefinitionStore mDependentDefinitions;
 	
 	void initializeDependentLayers();
-	void TerrainGenerator_LayerUpdated(Terrain::TerrainShader* shader, std::vector<Terrain::TerrainArea*>* areas);
+	void TerrainGenerator_LayerUpdated(Terrain::TerrainShader* shader, ::EmberOgre::Terrain::TerrainGenerator::AreaStore* areas);
 	void TerrainGenerator_EventShaderCreated(Terrain::TerrainShader* shader);
 
 };
