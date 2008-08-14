@@ -82,6 +82,10 @@ ServerWidget::ServerWidget() : mModelPreviewRenderer(0)
 
 ServerWidget::~ServerWidget()
 {
+	///we'll store the id of the characters as string pointers in the ListBox, so we need to delete them ourselves when we cleanup
+	for (unsigned int i = 0; i < mCharacterList->getItemCount(); ++i) {
+		delete static_cast<std::string*>(mCharacterList->getListboxItemFromIndex(i)->getUserData());
+	}
 	delete mModelPreviewRenderer;
 }
 
