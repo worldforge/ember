@@ -251,6 +251,7 @@ void TerrainGenerator::TerrainArea_Changed(TerrainArea* terrainArea)
 		///we'll not update immediately, we try to batch many area updates and then only update once per frame
 		markShaderForUpdate(mAreaShaders[area->getLayer()], terrainArea);
 	}
+	mTerrain->updateArea(area);
 }
 
 void TerrainGenerator::TerrainArea_Removed(TerrainArea* terrainArea)
