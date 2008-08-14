@@ -306,6 +306,10 @@ protected:
 	
 	typedef std::map<TerrainShader*, std::vector<TerrainArea*> > TerrainAreaMap;
 	TerrainAreaMap mChangedTerrainAreas;
+
+
+	typedef std::multimap<const std::string, Mercator::TerrainMod*> TerrainModMap;
+	TerrainModMap mTerrainMods;
 	
 	TerrainPagestore mTerrainPages;
 	

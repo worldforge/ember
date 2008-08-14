@@ -57,7 +57,7 @@ bool TerrainMod::parseMod()
 
     if (!modifier.isMap()) {
         S_LOG_FAILURE( "Terrain modifier is not a map" );
-         return NULL;
+         return false;
     }
     const Atlas::Message::MapType & modMap = modifier.asMap();
 

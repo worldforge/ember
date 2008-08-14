@@ -230,7 +230,12 @@ void TerrainGenerator::addTerrainMod(TerrainMod* terrainMod)
     ss << mod->bbox();
     S_LOG_VERBOSE("Adding terrain mod to terrain with dimensions: " << ss.str());
 
-    mTerrain->addMod(*mod);
+
+    Mercator::TerrainMod* mod2;
+    mod2 = mTerrain->addMod(*mod);
+    mTerrainMods.insert(std::pair<const std::string, Mercator::TerrainMod*>(terrainMod->mEntity->getId(), mod2));
+
+    S_LOG_INFO("mTerrainMods has " << mTerrainMods.size() << " elements in it");
 }
 
 void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
