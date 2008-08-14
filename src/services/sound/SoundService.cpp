@@ -156,30 +156,30 @@ namespace Ember
 		}
 	}
 
-	bool SoundService::registerInstance(BaseSoundSample* base, BaseSoundSample* copy)
+	void SoundService::registerStreamedCopy(BaseSoundSample* copy)
+	{
+		#ifdef THREAD_SAFE
+		pthread_mutex_lock(&mCopyMutex);
+		#endif
+
+		mCopySamples.push_back(dynamic_cast<StreamedSoundSample*>(copy));
+
+		#ifdef THREAD_SAFE
+		pthread_mutex_unlock(&mCopyMutex);
+		#endif
+	}
+
+	bool SoundService::registerInstance(BaseSoundSample* base, BaseSoundSample** copy)
 	{
 		if (!base)
 		{
 			S_LOG_FAILURE("Invalid pointer to Base Sample");
-			copy = NULL;
+			*copy = NULL;
 
 			return false;
 		}
 
-		copy = base->instantiate();
-		if (copy->getType() == SAMPLE_OGG)
-		{
-			#ifdef THREAD_SAFE
-			pthread_mutex_lock(&mCopyMutex);
-			#endif
-
-			mCopySamples.push_back(dynamic_cast<StreamedSoundSample*>(copy));
-
-			#ifdef THREAD_SAFE
-			pthread_mutex_unlock(&mCopyMutex);
-			#endif
-		}
-
+		*copy = base->instantiate();
 		if (copy)
 		{
 			return true;

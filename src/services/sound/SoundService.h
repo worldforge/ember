@@ -107,7 +107,15 @@ class SoundService: public Service, public ConsoleObject
 		 * @param copy The destination sample.
 		 * @return The status of the instantiation.
 		 */
-		bool registerInstance(BaseSoundSample* base, BaseSoundSample* copy);
+		bool registerInstance(BaseSoundSample* base, BaseSoundSample** copy);
+
+		/**
+		 * Ask SoundService to register a copy of this streamed instance
+		 * to keep it on the update cycle (because of ogg feeding)
+		 *
+		 * @param copy The sample to be registered
+		 */
+		void registerStreamedCopy(BaseSoundSample* copy);
 
 		/**
 		 * This function registers individual sound buffers, used on sound samples

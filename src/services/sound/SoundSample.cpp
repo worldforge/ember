@@ -34,6 +34,7 @@
 
 #include "SoundSample.h"
 #include "SoundGeneral.h"
+#include "SoundService.h"
 
 namespace Ember
 {
@@ -299,7 +300,6 @@ namespace Ember
 
 		if (ov_open(newFile, newSample->getStreamPtr(), NULL, 0) < 0)
 		{
-Error0:
 			S_LOG_FAILURE("Failed to bind ogg stream to sound sample.");
 
 			fclose(newFile);
@@ -323,13 +323,23 @@ Error0:
 		alGenBuffers(2, newSample->getBufferPtr());
 		if (alGetError() != AL_NO_ERROR)
 		{
-			goto Error0;
+			S_LOG_FAILURE("Failed to bind ogg stream to sound sample.");
+
+			fclose(newFile);
+			delete newSample;
+
+			return NULL;
 		}
 
 		alGenSources(1, newSample->getSourcePtr());
 		if (alGetError() != AL_NO_ERROR)
 		{
-			goto Error0;
+			S_LOG_FAILURE("Failed to bind ogg stream to sound sample.");
+
+			fclose(newFile);
+			delete newSample;
+
+			return NULL;
 		}
 
 		alSourcef (newSample->getSource(), AL_PITCH, 1.0);
@@ -341,6 +351,9 @@ Error0:
 		int playsLocally = 0;
 		alGetSourcei(getSource(), AL_SOURCE_RELATIVE, &playsLocally);
 		alSourcei(newSample->getSource(), AL_SOURCE_RELATIVE, playsLocally);
+
+		Ember::EmberServices::getSingleton().getSoundService()->registerStreamedCopy
+			(newSample);
 
 		return newSample;
 	}

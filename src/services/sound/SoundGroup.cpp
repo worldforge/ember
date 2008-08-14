@@ -227,14 +227,14 @@ namespace Ember
 			return false;
 		}
 
-		BaseSoundSample* copy;
-		BaseSoundSample* base;
+		BaseSoundSample* copy = 0;
+		BaseSoundSample* base = 0;
 
 		instance->setInstance(true);
 		std::list<BaseSoundSample*>::iterator it = mSamples.begin();
 		for (; it != mSamples.end(); it++)
 		{
-			Ember::EmberServices::getSingleton().getSoundService()->registerInstance(*it, copy);
+			Ember::EmberServices::getSingleton().getSoundService()->registerInstance(*it, &copy);
 			if (!copy)
 			{
 				S_LOG_FAILURE("Failed to set copy instance.");
