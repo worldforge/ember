@@ -61,7 +61,7 @@ void TerrainPageSurfaceCompilerShaderPassCoverageBatch::addCoverage(Ogre::Image*
 	unsigned char * coverageData = coverage->getData();
 	unsigned char * combinedCoverageData = mCombinedCoverageDataStream->getPtr();
 	combinedCoverageData += channel;
-	for (unsigned int i = 0; i <= coverage->getSize(); ++i) {
+	for (unsigned int i = 0; i < coverage->getSize(); ++i) {
 		*combinedCoverageData = *coverageData;
 		combinedCoverageData += numberOfChannels;
 		coverageData++;
