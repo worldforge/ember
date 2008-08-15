@@ -45,6 +45,7 @@ extern "C" {
 //#include <lua.hpp>
 #include <tolua++.h>
 #include "LuaHelper.h"
+#include "bindings/lua/helpers/LuaConnectorHelper.h"
 #include "LuaScriptingCallContext.h"
 
 TOLUA_API int tolua_Ogre_open (lua_State* tolua_S);
@@ -270,7 +271,7 @@ void LuaScriptingProvider::callFunctionImpl(const std::string& functionName, int
 	try {
 																				// st: args
 		int top = lua_gettop(mLuaState);
-		lua_getfield(mLuaState, LUA_GLOBALSINDEX, functionName.c_str());		// st: args func
+		EmberOgre::LuaConnectors::LuaConnectorHelper::pushNamedFunction(mLuaState, functionName.c_str());		// st: args func
 
 		///push our error handling method before calling the code
 		int error_index = top + 1; //lua_gettop(mLuaState);
