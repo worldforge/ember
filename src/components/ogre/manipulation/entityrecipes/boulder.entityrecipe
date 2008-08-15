@@ -24,7 +24,7 @@
       </adapter>
     </adapters>
     <bindings>
-      <bind name="bbox" func="calcSize">
+      <bind name="bbox" func="boulder.calcSize">
         <adapter name="mass" />
         <adapter name="massdev" />
       </bind>
@@ -36,7 +36,8 @@
       </bind>
     </bindings>
     <script><![CDATA[
-      function calcSize(a, b)
+      boulder = {}
+      function boulder.calcSize(a, b)
         local density = 2500  * 0.52 -- our boulder is not cubic, 0.52 is rough volume of its size 1
 
         local massmean = a:asNum()
