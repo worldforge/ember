@@ -17,10 +17,10 @@
       <adapter name="mass" type="number" title="Mass"/>
       <adapter name="massdev" type="number" title="Mass std. dev."/>
       <adapter name="style" type="string" title="Style" allowrandom="yes">
-        <item value="a">Boulder style A</item>
-        <item value="b">Boulder style B</item>
-        <item>c</item>
-        <item>d</item>
+        <item value="a">Boulder A</item>
+        <item value="b">Boulder B</item>
+        <item value="c">Boulder C</item>
+        <item value="d">Boulder D</item>
       </adapter>
     </adapters>
     <bindings>
