@@ -237,36 +237,21 @@ void TerrainGenerator::addTerrainMod(TerrainMod* terrainMod)
 
 void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
 {
-            // Clear all modifiers from the world
-       ClearAllMods();
 
-        // Find out how many entities are in the world so we can search them for terrainMods
-//         EmberEntity* world = (EmberEntity*)EmberOgre::getSingleton().getEntityFactory()->getWorld();
-//         int numEntities = world->numContained();
-// 
-//         for (int i = 0; i < numEntities; i++)
-//         {
-//             EmberEntity* e = dynamic_cast<EmberEntity*>(world->getContained(i));
-//             if (e->hasAttr("terrainmod") ) {
-// 
-// //                 Mercator::TerrainMod* mod = e->parseTerrainModifier(e->valueOfAttr("terrainmod"));
-//                 Terrain::TerrainMod *emberMod = new Terrain::TerrainMod(e);
-//                 emberMod->init();
-//                 Mercator::TerrainMod* mod = emberMod->getMod();
-//                 mTerrain->addMod(*mod);
-//             }
-//         }
+    // Clear this modifier from the terrain, then reapply it so the new parameters take effect
+        // Get its owner's ID
+    std::string entityID = terrainMod->mEntity->getId();
+        // Use the pointer returned from addMod() to remove it
+    mTerrain->removeMod(mTerrainMods.find(entityID)->second);
+        // Remove this mod from our list so we can replace the pointer with a new one
+    mTerrainMods.erase(terrainMod->mEntity->getId());
 
-    for (TerrainModMap::iterator I = mTerrainMods.begin(); I != mTerrainMods.end(); I++) {
-            EmberEntity* e = EmberOgre::getSingleton().getEmberEntity(I->first);
+        // Reapply the mod to the terrain with the updated parameters
+    Mercator::TerrainMod *mercatorMod = terrainMod->getMod();
+    mercatorMod = mTerrain->addMod(*mercatorMod);
 
-            if (e->hasAttr("terrainmod") ) {
-                Terrain::TerrainMod *emberMod = new Terrain::TerrainMod(e);
-                emberMod->init();
-                Mercator::TerrainMod* mercatorMod = emberMod->getMod();
-                mercatorMod = mTerrain->addMod(*mercatorMod);
-            }
-    }
+        // Insert it into our list
+    mTerrainMods.insert(std::pair<const std::string, Mercator::TerrainMod*>(terrainMod->mEntity->getId(), mercatorMod));
 
     buildHeightmap();
 }
@@ -274,46 +259,14 @@ void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
 void TerrainGenerator::TerrainMod_Deleted(TerrainMod* terrainMod)
 {
 
-    // In the future we should be able to just use mTerrain->RemoveMod(terrainMod->getMod());
-
-            // Clear all modifiers from the world
-       ClearAllMods();
-
+        // Clear this mod from the terrain
+            // Get the ID of the modifier's owner
+        std::string entityID = terrainMod->mEntity->getId();
+            // Use the pointer returned from addMod() to remove it
+        mTerrain->removeMod(mTerrainMods.find(entityID)->second);
         // Remove this mod from our list
         mTerrainMods.erase(terrainMod->mEntity->getId());
 
-        EmberEntity* modOwner = terrainMod->mEntity;
-        // Find out how many entities are in the world so we can search them for terrainMods
-//         EmberEntity* world = (EmberEntity*)EmberOgre::getSingleton().getEntityFactory()->getWorld();
-//         int numEntities = world->numContained();
-// 
-//         for (int i = 0; i < numEntities; i++)
-//         {
-//             EmberEntity* e = dynamic_cast<EmberEntity*>(world->getContained(i));
-//             if (e->getId() != modOwner->getId()) {
-//                 if (e->hasAttr("terrainmod") ) {
-// 
-//                     Terrain::TerrainMod *emberMod = new Terrain::TerrainMod(e);
-//                     emberMod->init();
-//                     Mercator::TerrainMod* mod = emberMod->getMod();
-//                     mTerrain->addMod(*mod);
-//                 }
-//             }
-//         }
-
-        for (TerrainModMap::iterator I = mTerrainMods.begin(); I != mTerrainMods.end(); I++) {
-            if (I->first != modOwner->getId()) {
-                EmberEntity* e = EmberOgre::getSingleton().getEmberEntity(I->first);
-    
-                if (e->hasAttr("terrainmod") ) {
-                    Terrain::TerrainMod *emberMod = new Terrain::TerrainMod(e);
-                    emberMod->init();
-                    Mercator::TerrainMod* mercatorMod = emberMod->getMod();
-
-                    mercatorMod = mTerrain->addMod(*mercatorMod);
-                }
-            }
-        }
     buildHeightmap();
 }
 
