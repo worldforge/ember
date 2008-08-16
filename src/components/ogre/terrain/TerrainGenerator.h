@@ -149,11 +149,6 @@ public:
 
 
 	/**
-	 * @brief Uses Mercator::Segment::clearMods() on ALL segments on the terrain.
-	 */
-	void ClearAllMods();
-
-	/**
 	 * @brief Return true if there is a valid piece of terrain at the supplied segment indices.
 	 * By valid means a populated terrain-
 	 * @param pos A position in the world.

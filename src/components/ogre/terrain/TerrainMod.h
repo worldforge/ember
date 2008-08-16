@@ -48,7 +48,14 @@ public:
     ~TerrainMod();
 	bool init();
 	
+	/**
+	Used to retrieve a pointer to this modifier
+	*/
 	inline Mercator::TerrainMod* getMod() const;
+
+	/**
+	Used to set the pointer to this modifier
+	*/
 	inline void setMod(Mercator::TerrainMod* area);
 	
 	/**
@@ -62,18 +69,53 @@ public:
 	*/
 	sigc::signal<void, TerrainMod*> EventModDeleted;
 
+	/**
+	The owner of this modifier
+	*/
 	EmberEntity* mEntity;
 
 protected:
-
+	/**
+	A pointer to the modifier. Used to update and remove it from the terrain.
+	*/
 	Mercator::TerrainMod* mModifier;
 	Eris::Entity::AttrChangedSlot mAttrChangedSlot;
-	
+
+	/**
+	Called whenever a modifier is changed and handles the update
+	*/	
 	void attributeChanged(const Atlas::Message::Element& attributeValue);
+
+	/**
+	Called whenever a modifier is moved and handles the update
+	*/
 	void entity_Moved();
+
+	/**
+	Called whenever the entity holding a modifier is deleted and handles
+	removing the mod from the terrain
+	*/
 	void entity_Deleted();
+
+	/**
+	Sets up the previous three handler functions to be called when a change
+	is made to the entity holding the modifier
+	*/
 	void observeEntity();
+
+	/**
+	Parses the Atlas data for a modifier
+	*/
 	bool parseMod();
+
+	/// \brief creates a CraterTerrainMod based on a shape and position
+	Mercator::TerrainMod * newCraterMod(const Atlas::Message::MapType, WFMath::Point<3>);
+	/// \brief Creates a LevelTerrainMod based on a shape and position
+	Mercator::TerrainMod * newLevelMod(const Atlas::Message::MapType, WFMath::Point<3>);
+	/// \brief Creates a SlopeTerrainMod based on a shape, position, and two slopes
+	Mercator::TerrainMod * newSlopeMod(const Atlas::Message::MapType, WFMath::Point<3>, float, float);
+	/// \brief Creates an AdjustTerrainMod based on a shape and position
+	Mercator::TerrainMod * newAdjustMod(const Atlas::Message::MapType, WFMath::Point<3>);
 
 };
 

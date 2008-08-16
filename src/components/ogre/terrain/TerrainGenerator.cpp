@@ -224,15 +224,11 @@ void TerrainGenerator::addTerrainMod(TerrainMod* terrainMod)
         // Listen for deletion of the modifier
     terrainMod->EventModDeleted.connect(sigc::mem_fun(*this, &TerrainGenerator::TerrainMod_Deleted));
 
-//     std::stringstream ss;
-//     ss << mod->bbox();
-//     S_LOG_VERBOSE("Adding terrain mod to terrain with dimensions: " << ss.str());
-
+        // We need to save this pointer to use when the modifier is changed or deleted
     Mercator::TerrainMod* mod = mTerrain->addMod(*terrainMod->getMod());
 
     mTerrainMods.insert(std::pair<const std::string, Mercator::TerrainMod*>(terrainMod->mEntity->getId(), mod));
 
-    S_LOG_INFO("mTerrainMods has " << mTerrainMods.size() << " elements in it");
 }
 
 void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
@@ -241,6 +237,7 @@ void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
     // Clear this modifier from the terrain, then reapply it so the new parameters take effect
         // Get its owner's ID
     std::string entityID = terrainMod->mEntity->getId();
+    S_LOG_INFO("modhandler: changed: Mod for entity " << entityID << " updated?");
         // Use the pointer returned from addMod() to remove it
     mTerrain->removeMod(mTerrainMods.find(entityID)->second);
         // Remove this mod from our list so we can replace the pointer with a new one
@@ -253,21 +250,21 @@ void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
         // Insert it into our list
     mTerrainMods.insert(std::pair<const std::string, Mercator::TerrainMod*>(terrainMod->mEntity->getId(), mercatorMod));
 
-    buildHeightmap();
+//     buildHeightmap();
 }
 
 void TerrainGenerator::TerrainMod_Deleted(TerrainMod* terrainMod)
 {
-
         // Clear this mod from the terrain
             // Get the ID of the modifier's owner
         std::string entityID = terrainMod->mEntity->getId();
+        S_LOG_INFO("modhandler: deleted: Mod for entity " << entityID << " deleted?");
             // Use the pointer returned from addMod() to remove it
         mTerrain->removeMod(mTerrainMods.find(entityID)->second);
         // Remove this mod from our list
         mTerrainMods.erase(terrainMod->mEntity->getId());
 
-    buildHeightmap();
+//     buildHeightmap();
 }
 
 void TerrainGenerator::addArea(TerrainArea* terrainArea)
@@ -660,43 +657,6 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 	return true;
 }
 
-
-void TerrainGenerator::ClearAllMods()
-{
-    TerrainDefPointStore pointStore;
-    
-    Mercator::Terrain::Segmentstore segs = getTerrain().getTerrain();
-    Mercator::Terrain::Segmentstore::iterator I = segs.begin();
-    for (; I != segs.end(); I++)
-    {
-        Mercator::Terrain::Segmentcolumn::iterator J = I->second.begin();
-        for (; J != I->second.end(); J++)
-        {
-            J->second->clearMods();
-        }
-    }
-
-    std::set<TerrainPage*> pagesToUpdate;
-    for (TerrainPagestore::iterator page_I = mTerrainPages.begin(); page_I != mTerrainPages.end(); ++page_I) {
-        for(TerrainPagecolumn::iterator page_J = page_I->second.begin(); page_J != page_I->second.end(); ++page_J) {
-            pagesToUpdate.insert(page_J->second);
-        }
-    }
-
-//     updateHeightMapAndShaders(pagesToUpdate);
-//     updateEntityPositions(pagesToUpdate);
-
-//     TerrainPagestore::iterator I = mTerrainPages.begin();
-//     for (; I != mTerrainPages.end(); I++)
-//     {
-//         TerrainPagecolumn::iterator J = I->second.begin();
-//         for(; J != I->second.end(); J++)
-//         {
-//             J->second->ClearAllMods();
-//             //EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPage(TerrainPosition((int)getPosition().x(),(int)getPosition().y()))->ClearAllMods();
-//         }
-//     }
-}
 
 void TerrainGenerator::reloadTerrain(std::vector<TerrainPosition>& positions)
 {
