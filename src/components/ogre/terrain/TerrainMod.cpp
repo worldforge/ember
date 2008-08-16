@@ -178,8 +178,8 @@ void TerrainMod::entity_Moved()
 
 void TerrainMod::entity_Deleted()
 {
-    delete mModifier;
     EventModDeleted(this);
+    delete mModifier;
 }
 
 void TerrainMod::observeEntity()
@@ -219,6 +219,8 @@ Mercator::TerrainMod* TerrainMod::newCraterMod(const Atlas::Message::MapType sha
         }
 
         // Make sphere
+        ///HACK: This height adjustment shouldn't be necessary
+        pos.z() += shapeRadius;
         WFMath::Ball<3> modShape = WFMath::Ball<3>(pos, shapeRadius); ///FIXME: assumes 3d ball...
 
 //                 log(INFO,"Successfully parsed a cratermod");

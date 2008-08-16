@@ -228,6 +228,11 @@ void TerrainGenerator::addTerrainMod(TerrainMod* terrainMod)
     Mercator::TerrainMod* mod = mTerrain->addMod(*terrainMod->getMod());
 
     mTerrainMods.insert(std::pair<const std::string, Mercator::TerrainMod*>(terrainMod->mEntity->getId(), mod));
+    
+    
+	std::vector<TerrainPosition> updatedPositions;
+	updatedPositions.push_back(TerrainPosition(mod->bbox().getCenter().x() / 64, mod->bbox().getCenter().y() / 64));
+	reloadTerrain(updatedPositions);
 
 }
 
@@ -250,6 +255,9 @@ void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
         // Insert it into our list
     mTerrainMods.insert(std::pair<const std::string, Mercator::TerrainMod*>(terrainMod->mEntity->getId(), mercatorMod));
 
+	std::vector<TerrainPosition> updatedPositions;
+	updatedPositions.push_back(TerrainPosition(mercatorMod->bbox().getCenter().x() / 64, mercatorMod->bbox().getCenter().y() / 64));
+	reloadTerrain(updatedPositions);
 //     buildHeightmap();
 }
 
@@ -264,6 +272,10 @@ void TerrainGenerator::TerrainMod_Deleted(TerrainMod* terrainMod)
         // Remove this mod from our list
         mTerrainMods.erase(terrainMod->mEntity->getId());
 
+	std::vector<TerrainPosition> updatedPositions;
+	updatedPositions.push_back(TerrainPosition(terrainMod->getMod()->bbox().getCenter().x() / 64, terrainMod->getMod()->bbox().getCenter().y() / 64));
+	reloadTerrain(updatedPositions);
+    
 //     buildHeightmap();
 }
 
