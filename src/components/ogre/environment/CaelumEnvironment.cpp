@@ -129,6 +129,8 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 	} else {
 		///use a simple sun object
 	}
+	
+	mCaelumSystem->setEnsureSingleShadowSource(true); ///we want to use only one shadow caster source, for now at least
 
 	mSky = new CaelumSky(*this);
 
