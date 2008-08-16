@@ -39,7 +39,6 @@
 #include "services/config/ConfigService.h"
 #include "services/metaserver/MetaserverService.h"
 #include "services/sound/SoundService.h"
-#include "services/sound/SoundEntityManager.h"
 #include "services/scripting/ScriptingService.h"
 #include "services/wfut/WfutService.h"
 #include "services/time/TimeService.h"
@@ -112,7 +111,6 @@ void Application::mainLoopStep()
 		mOgreView->renderOneFrame();
 		#ifndef THREAD_SAFE
 		EmberServices::getSingleton().getSoundService()->cycle();
-		Ember::SoundEntityManager::getSingleton().cycle();
 		#endif
 	} catch (const Ember::Exception& ex) {
 		S_LOG_CRITICAL(ex.getError());
@@ -210,7 +208,6 @@ void Application::initializeServices()
 	S_LOG_INFO("Using media from " << EmberServices::getSingleton().getConfigService()->getEmberMediaDirectory());
 
 	/// Initialize the Sound Service
-	new Ember::SoundEntityManager();
 	EmberServices::getSingleton().getSoundService()->start();
 
 	/// Initialize and start the Metaserver Service.
@@ -256,7 +253,6 @@ void* startSoundServiceCycle(void* arg)
 	while (1)
 	{
 		EmberServices::getSingleton().getSoundService()->cycle();
-		Ember::SoundEntityManager::getSingleton().cycle();
 	}
 }
 

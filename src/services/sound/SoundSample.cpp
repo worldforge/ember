@@ -82,9 +82,57 @@ namespace Ember
 	}
 
 	// Static Sounds (PCM, WAV)
-	StaticSoundSample::StaticSoundSample()
+	StaticSoundSample::StaticSoundSample(const std::string& filename, bool playsLocal, float volume)
 	{
 		mType = SAMPLE_WAV;
+
+		// Generate a new Buffer
+		// todo: looking for a shared buffer on static samples
+		alGenBuffers(1, &mBuffer);
+	
+		if (alGetError() != AL_NO_ERROR)
+		{
+			S_LOG_FAILURE("Failed to generate a new static sound buffer.");
+			return;
+		}
+
+		mBuffer = alutCreateBufferFromFile(filename.c_str());
+
+		if (getBufferPtr() == AL_NONE)
+		{
+			S_LOG_FAILURE("Failed to set buffer with file ("+ filename +") data.");
+			return;
+		}
+
+		// Bind the buffer with the source.
+		alGenSources(1, &mSource);
+
+		if (alGetError() != AL_NO_ERROR)
+		{
+			S_LOG_FAILURE("Failed to generate a new sound source.");
+			alDeleteBuffers(1, &mBuffer);
+
+			return;
+		}
+	
+		alSourcei(mSource, AL_BUFFER, mBuffer);
+		alSourcef(mSource, AL_PITCH, 1.0);
+		alSourcef(mSource, AL_GAIN, volume);
+		alSource3f(mSource, AL_POSITION, 0, 0, 0);
+		alSource3f(mSource, AL_VELOCITY, 0, 0, 0);
+		alSourcei(mSource, AL_LOOPING, false);
+
+		if (playsLocal == PLAY_LOCAL)
+			alSourcei(mSource, AL_SOURCE_RELATIVE, true);
+
+		if (alGetError() != AL_NO_ERROR)
+		{
+			S_LOG_FAILURE("Failed to set sound sample attributes.");
+			alDeleteBuffers(1, &mBuffer);
+			alDeleteSources(1, &mSource);
+			
+			return;
+		}
 	}
 
 	StaticSoundSample::~StaticSoundSample()
@@ -122,50 +170,6 @@ namespace Ember
 		return 1;
 	}
 
-	BaseSoundSample* StaticSoundSample::instantiate()
-	{
-		StaticSoundSample* newSample = new StaticSoundSample();
-		if (!newSample)
-		{
-			S_LOG_FAILURE("Failed to allocate a new sound sample.");
-			return NULL;
-		}
-
-		// Bind the buffer with the source.
-		alGenSources(1, newSample->getSourcePtr());
-
-		if (alGetError() != AL_NO_ERROR)
-		{
-			S_LOG_FAILURE("Failed to generate a new sound source.");
-			delete newSample;
-
-			return NULL;
-		}
-	
-		alSourcei (newSample->getSource(), AL_BUFFER, getBuffer());
-		alSourcef (newSample->getSource(), AL_PITCH, 1.0);
-		alSourcef (newSample->getSource(), AL_GAIN, 1.0);
-		alSource3f(newSample->getSource(), AL_POSITION, 0, 0, 0);
-		alSource3f(newSample->getSource(), AL_VELOCITY, 0, 0, 0);
-
-		ALboolean loop = false;
-		alSourcei (newSample->getSource(), AL_LOOPING, loop);
-
-		int playsLocally = 0;
-		alGetSourcei(getSource(), AL_SOURCE_RELATIVE, &playsLocally);
-		alSourcei(newSample->getSource(), AL_SOURCE_RELATIVE, playsLocally);
-
-		if (alGetError() != AL_NO_ERROR)
-		{
-			S_LOG_FAILURE("Failed to set sound sample attributes.");
-			delete newSample;
-
-			return NULL;
-		}
-
-		return newSample;
-	}
-
 	void StaticSoundSample::play()
 	{
 		alSourcePlay(mSource);
@@ -179,14 +183,79 @@ namespace Ember
 	}
 
 	// Streamed (OGG)
-	StreamedSoundSample::StreamedSoundSample()
+	StreamedSoundSample::StreamedSoundSample(const std::string& filename, bool playsLocal, float volume)
 	{
 		mPlaying = false;
 		mType = SAMPLE_OGG;
+
+		FILE* newFile = fopen(filename.c_str(), "rb");
+		if (!newFile)
+		{
+			S_LOG_FAILURE("Failed to open file(" + filename + ") to stream.");
+			return;
+		}
+
+		mFile = newFile;
+		mFilename = filename;
+
+		if (ov_open(newFile, &mStream, NULL, 0) < 0)
+		{
+			S_LOG_FAILURE("Failed to bind ogg stream to sound sample.");
+
+			fclose(newFile);
+			return;
+		}
+
+		vorbis_info* oggInfo = ov_info(&mStream, -1);
+		if (oggInfo->channels == 1)
+		{
+			mFormat = AL_FORMAT_MONO16;
+		}
+		else
+		{
+			mFormat = AL_FORMAT_STEREO16;
+		}
+
+		mRate = oggInfo->rate;
+
+		alGenBuffers(2, mBuffers);
+		if (alGetError() != AL_NO_ERROR)
+		{
+			S_LOG_FAILURE("Failed to bind ogg stream to sound sample.");
+
+			fclose(newFile);
+			return;
+		}
+
+		alGenSources(1, &mSource);
+		if (alGetError() != AL_NO_ERROR)
+		{
+			S_LOG_FAILURE("Failed to bind ogg stream to sound sample.");
+
+			alDeleteBuffers(2, mBuffers);
+			fclose(newFile);
+
+			return;
+		}
+
+		alSourcef(mSource, AL_PITCH, 1.0);
+		alSourcef(mSource, AL_GAIN, volume);
+		alSource3f(mSource, AL_POSITION, 0, 0, 0);
+		alSource3f(mSource, AL_VELOCITY, 0, 0, 0);
+		alSourcei(mSource, AL_LOOPING, false);
+
+		if (playsLocal == PLAY_LOCAL)
+			alSourcei(mSource, AL_SOURCE_RELATIVE, true);
+
+		// Ask the Sound Service to register us
+		// that we way we keep playing =]
+		EmberServices::getSingleton().getSoundService()->registerStream(this);
 	}
 
 	StreamedSoundSample::~StreamedSoundSample()
 	{
+		EmberServices::getSingleton().getSoundService()->unregisterStream(this);
+
 		alSourceStop(mSource);
 		checkAlError();
 
@@ -202,28 +271,6 @@ namespace Ember
 	const std::string& StreamedSoundSample::getFilename()
 	{
 		return mFilename;
-	}
-
-	void StreamedSoundSample::setFile(FILE* ptr, const std::string& filename)
-	{
-		if (!ptr)
-		{
-			S_LOG_FAILURE("Invalid OGG file pointer");
-			return;
-		}
-
-		mFile = ptr;
-		mFilename = filename;
-	}
-
-	void StreamedSoundSample::setFormat(ALenum fmt)
-	{
-		mFormat = fmt;
-	}
-
-	void StreamedSoundSample::setRate(ALuint rate)
-	{
-		mRate = rate;
 	}
 
 	void StreamedSoundSample::setPlaying(bool play)
@@ -275,87 +322,6 @@ namespace Ember
 			alGetSourcei(mSource, AL_BUFFERS_PROCESSED, &processed);
 			checkAlError();
 		}
-	}
-
-	BaseSoundSample* StreamedSoundSample::instantiate()
-	{
-		StreamedSoundSample* newSample = new StreamedSoundSample();
-		if (!newSample)
-		{
-			S_LOG_FAILURE("Failed to allocate memory for a new sound source.");
-			return NULL;
-		}
-
-		// Should we handle this in Ogre or any other Resource Manager?
-		FILE* newFile = NULL;
-		if (!(newFile = fopen(getFilename().c_str(), "rb")))
-		{
-			S_LOG_FAILURE("Failed to open file.");
-			delete newSample;
-
-			return false;
-		}
-
-		newSample->setFile(newFile, getFilename());
-
-		if (ov_open(newFile, newSample->getStreamPtr(), NULL, 0) < 0)
-		{
-			S_LOG_FAILURE("Failed to bind ogg stream to sound sample.");
-
-			fclose(newFile);
-			delete newSample;
-
-			return NULL;
-		}
-
-		vorbis_info* oggInfo = ov_info(newSample->getStreamPtr(), -1);
-		if (oggInfo->channels == 1)
-		{
-			newSample->setFormat(AL_FORMAT_MONO16);
-		}
-		else
-		{
-			newSample->setFormat(AL_FORMAT_STEREO16);
-		}
-
-		newSample->setRate(oggInfo->rate);
-
-		alGenBuffers(2, newSample->getBufferPtr());
-		if (alGetError() != AL_NO_ERROR)
-		{
-			S_LOG_FAILURE("Failed to bind ogg stream to sound sample.");
-
-			fclose(newFile);
-			delete newSample;
-
-			return NULL;
-		}
-
-		alGenSources(1, newSample->getSourcePtr());
-		if (alGetError() != AL_NO_ERROR)
-		{
-			S_LOG_FAILURE("Failed to bind ogg stream to sound sample.");
-
-			fclose(newFile);
-			delete newSample;
-
-			return NULL;
-		}
-
-		alSourcef (newSample->getSource(), AL_PITCH, 1.0);
-		alSourcef (newSample->getSource(), AL_GAIN, 1.0);
-		alSource3f(newSample->getSource(), AL_POSITION, 0, 0, 0);
-		alSource3f(newSample->getSource(), AL_VELOCITY, 0, 0, 0);
-		alSourcei (newSample->getSource(), AL_LOOPING, false);
-
-		int playsLocally = 0;
-		alGetSourcei(getSource(), AL_SOURCE_RELATIVE, &playsLocally);
-		alSourcei(newSample->getSource(), AL_SOURCE_RELATIVE, playsLocally);
-
-		Ember::EmberServices::getSingleton().getSoundService()->registerStreamedCopy
-			(newSample);
-
-		return newSample;
 	}
 
 	bool StreamedSoundSample::stream(ALuint buffer)

@@ -23,6 +23,7 @@ class Service;
 class ISoundProvider;
 
 #include "SoundGeneral.h"
+#include "SoundModel.h"
 #include "SoundSample.h" 
 #include "SoundEntity.h"
 
@@ -45,29 +46,28 @@ class SoundService: public Service, public ConsoleObject
 		 * Keep a list of the samples we are allocating.
 		 * That way, we can cycle and update the streamed ones.
 		 */
-		std::list<StreamedSoundSample*> mCopySamples;
-		std::map<std::string, BaseSoundSample*> mSamples;
+		std::list<StreamedSoundSample*> mSamples;
 
 		/**
-		 * All entities we allocate, keep a reference of them
+		 * Keep a list of the sound groups we are allocating.
+		 * That way, we can cycle and update their timers/playability
 		 */
-		std::map<std::string, SoundEntity*> mEntities;
+		std::list<SoundGroup*> mGroups;
 
 		/**
-		 * Used to allocate a sound of each type. We treat WAV and PCM as the same sample types
-		 * since they dont require any special parsing stuff.
+		 * Thats the list of the sound groups parsed in
+		 * sounddefs
 		 */
-		bool allocateWAVPCM(const std::string &filename, bool playsLocally, float soundVolume); 
-		bool allocateOGG(const std::string &filename, bool playsLocally, float soundVolume); 
+		std::map<std::string, SoundGroupModel*> mSoundGroupModels;
 
 		#ifdef THREAD_SAFE
 		/**
 		 * In case we are using threads, we must lock the mutexes to 
 		 * prevent incorrect writing to the sample lists
 		 */
-		pthread_mutex_t mCopyMutex;
+		pthread_mutex_t mGroupModelsMutex;
+		pthread_mutex_t mGroupsMutex;
 		pthread_mutex_t mSamplesMutex;
-		pthread_mutex_t mEntitiesMutex;
 		#endif
 
 	public:
@@ -93,63 +93,55 @@ class SoundService: public Service, public ConsoleObject
 		void runCommand(const std::string &command, const std::string &args);
 
 		/**
-		 * Register a new Sound Entity
+		 * Register a new SoundModel used to define soundgroups
 		 *
-		 * @param name The new Entity name
-		 * @return A pointer to the new entity or NULL if it fails.
+		 * @return A pointer to the new created SoundModel, if it fails, returns NULL
 		 */
-		SoundEntity* registerEntity(const std::string &name);
+		SoundGroupModel* createSoundGroupModel(const std::string& name);
 
 		/**
-		 * Ask SoundService to instantiate a Sound Sample
+		 * Returns the SoundModel from its name
 		 *
-		 * @param base A base to get the informations from.
-		 * @param copy The destination sample.
-		 * @return The status of the instantiation.
+		 * @param name The desired SoundModel name
+		 * @return A pointer to the SoundModel or NULL if it can't be found
 		 */
-		bool registerInstance(BaseSoundSample* base, BaseSoundSample** copy);
+		SoundGroupModel* getSoundGroupModel(const std::string& name);
 
 		/**
-		 * Ask SoundService to register a copy of this streamed instance
-		 * to keep it on the update cycle (because of ogg feeding)
+		 * Register individual StreamedSamples to keep updated
+		 * on the cycle calls
 		 *
-		 * @param copy The sample to be registered
+		 * @param copy The StreamedSoundSample to be registered
 		 */
-		void registerStreamedCopy(BaseSoundSample* copy);
+		void registerStream(StreamedSoundSample* copy);
 
 		/**
-		 * This function registers individual sound buffers, used on sound samples
+		 * Unregister streamed allocate sound buffers
+		 * This will only remove it from the service list
+		 * it will not deallocate the data.
 		 *
-		 * @param filename The file full path to be allocated.
-		 * @param playLocally If the sound is 2D or 3D.
-		 * @param type The type of the sound.
-		 * @param soundVolume The desired volume to play this sound (0 to 1.0f)
-		 * @return The status of the sound registration.
-		 */
-		bool registerSound(const std::string &filename, bool playLocally = PLAY_WORLD,
-				const SoundSampleType type = SAMPLE_NONE, float soundVolume = 1.0f);
-
-		/**
-		 * Unregister sound buffers from their names
-		 *
-		 * @param filename The sound filename used to allocate the sample.
+		 * @param sample A pointer to the sample to be unregistered
 		 * @return The status of the unregistration.
 		 */
-		bool unRegisterSound(const std::string &filename);
+		bool unregisterStream(const StreamedSoundSample* sample);
 
 		/**
-		 * Play an individual sound sample (for things like GUI elements)
+		 * Register individual SoundGroups to keep updated
+		 * on the cycle calls
 		 *
-		 * @param filename The sample filename to be played.
+		 * @param copy The sound group to be registered
 		 */
-		void playSound(const std::string &filename);
+		void registerSoundGroup(SoundGroup* copy);
 
 		/**
-		 * Stop a playing sound sample
+		 * Unregister SoundGroups allocated on SoundActions.
+		 * This will only remove it from the service list
+		 * it will not deallocate the data.
 		 *
-		 * @param filename The sample filename to be stopped.
+		 * @param sample A pointer to the group to be unregistered
+		 * @return The status of the unregistration.
 		 */
-		void stopSound(const std::string &filename);
+		bool unregisterSoundGroup(const SoundGroup* sample);
 
 		/**
 		 * Update the position (in world coordinates)
@@ -166,22 +158,6 @@ class SoundService: public Service, public ConsoleObject
 		 * Streaming update
 		 */
 		void cycle();
-		
-		/**
-		 * Get a Sound Sample from its filename.
-		 *
-		 * @param filename The sample filename.
-		 * @return A pointer to the sample and if it doesnt find, NULL.
-		 */
-		BaseSoundSample* getSoundSample(const std::string &filename);
-
-		/**
-		 * Get a Sound Entity from its name.
-		 *
-		 * @param name The entity name.
-		 * @return A pointer to the entity and if it doesnt find, NULL.
-		 */
-		SoundEntity* getSoundEntity(const std::string &name);
 
 }; //SoundService
 

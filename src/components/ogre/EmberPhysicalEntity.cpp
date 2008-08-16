@@ -54,7 +54,6 @@
 #include "MeshCollisionDetector.h"
 
 #include "services/sound/SoundEntity.h"
-#include "services/sound/SoundEntityManager.h"
 
 #include <Eris/Entity.h>
 #include <Eris/View.h>
@@ -264,10 +263,13 @@ void EmberPhysicalEntity::setSounds()
 	if (!mSoundEntity)
 	{
 
-		// SoundEntityManager will instantiate an entity of this type
 		if (needSoundEntity())
 		{
-			mSoundEntity = Ember::SoundEntityManager::getSingleton().instantiateEntity(getType()->getName());
+			mSoundEntity = new Ember::SoundEntity();
+			if (!mSoundEntity)
+			{
+				S_LOG_FAILURE("Failled to create entity " + getType()->getName());
+			}
 		}
 
 		if (mSoundEntity)
@@ -294,7 +296,7 @@ void EmberPhysicalEntity::setSounds()
 					// Register the action within the entity if not registered yet
 					if (!newAction)
 					{
-						newAction = mSoundEntity->registerAction((*I_b)->getName());
+						newAction = mSoundEntity->createAction((*I_b)->getName());
 						if (!newAction)
 						{
 							S_LOG_FAILURE("Failed to register action " + (*I_b)->getName() 
@@ -304,7 +306,7 @@ void EmberPhysicalEntity::setSounds()
 						}
 					}
 
-					Ember::SoundGroup* newGroup = newAction->registerGroup(sound->groupName);
+					Ember::SoundGroup* newGroup = newAction->createGroup(sound->groupName);
 					if (newGroup)
 					{
 						newGroup->setFrequency(sound->frequency);

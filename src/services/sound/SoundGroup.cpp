@@ -37,8 +37,6 @@
 #include <sys/time.h>
 
 #include "SoundService.h"
-#include "SoundGeneral.h"
-#include "SoundSample.h"
 #include "SoundGroup.h"
 
 namespace Ember
@@ -48,46 +46,61 @@ namespace Ember
 		mSamples.clear();
 		mLastPlayed = NULL;
 		mIsPlaying = false;
+
+		EmberServices::getSingleton().getSoundService()->registerSoundGroup(this);
 	}
 
 	SoundGroup::~SoundGroup()
 	{
-		// If this Group is an instance, all
-		// its static samples must be deallocated by it
-		if (mIsInstance)
+		std::list<BaseSoundSample*>::iterator it = mSamples.begin();
+		for (it; it != mSamples.end(); )
 		{
-			std::list<BaseSoundSample*>::iterator it = mSamples.begin();
-			for (; it != mSamples.end(); )
-			{
-				BaseSoundSample* sample = *it;
-				it = mSamples.erase(it);
+			BaseSoundSample* toBeDeleted = (*it);
+			delete toBeDeleted;
 
-				delete sample;
-			}
+			it = mSamples.erase(it);
 		}
+
+		EmberServices::getSingleton().getSoundService()->unregisterSoundGroup(this);
 	}
 
-	void SoundGroup::allocateBuffer(const std::string& filename, 
-					bool playsReal, const SoundSampleType& type, float soundVolume)
+	void SoundGroup::createBuffer(SoundModel* model)
 	{	
-		if (Ember::EmberServices::getSingleton().getSoundService()->registerSound
-				(filename, playsReal, type, soundVolume))
+		if (!model)
 		{
-			BaseSoundSample* newSample = Ember::EmberServices::getSingleton().
-				getSoundService()->getSoundSample(filename);
-
-			if (newSample)
-				mSamples.push_back(newSample);
+			S_LOG_FAILURE("Invalid pointer to SoundModel.");
+			return;
 		}
-		else 
+
+		if (model->getFormat() == SAMPLE_WAV || model->getFormat() == SAMPLE_PCM)
 		{
-			S_LOG_INFO(std::string("Failed to register SoundGroup buffer") + filename);
-		}
-	}
+			StaticSoundSample* newStatic = new StaticSoundSample(model->getFilename(), 
+					model->getPlayLocally(), model->getVolume());
 
-	void SoundGroup::setInstance(bool isInstance)
-	{
-		mIsInstance = isInstance;
+			if (!newStatic)
+			{
+				S_LOG_FAILURE("Failled to allocate static sample " + model->getFilename());
+				return;
+			}
+
+			mSamples.push_back(newStatic);
+		}
+		else
+		if (model->getFormat() == SAMPLE_OGG)
+		{
+			StreamedSoundSample* newStream = new StreamedSoundSample(model->getFilename(), 
+					model->getPlayLocally(), model->getVolume());
+
+			if (!newStream)
+			{
+				S_LOG_FAILURE("Failled to allocate streamed sample " + model->getFilename());
+				return;
+			}
+
+			mSamples.push_back(newStream);
+		}
+
+		S_LOG_INFO("Successfully allocated sample " + model->getFilename());
 	}
 
 	void SoundGroup::updateSamplesPosition(const WFMath::Point<3> &pos)
@@ -218,36 +231,5 @@ namespace Ember
 			mSamples.push_back(sample);
 		}
 	}
-
-	bool SoundGroup::instantiate(SoundGroup* instance)
-	{
-		if (!instance)
-		{
-			S_LOG_FAILURE("Invalid SoundGroup instance, NULL pointer.");
-			return false;
-		}
-
-		BaseSoundSample* copy = 0;
-		BaseSoundSample* base = 0;
-
-		instance->setInstance(true);
-		std::list<BaseSoundSample*>::iterator it = mSamples.begin();
-		for (; it != mSamples.end(); it++)
-		{
-			Ember::EmberServices::getSingleton().getSoundService()->registerInstance(*it, &copy);
-			if (!copy)
-			{
-				S_LOG_FAILURE("Failed to set copy instance.");
-				return false;
-			}
-			else
-			{
-				instance->pushSample(copy);
-			}
-		}
-
-		return true;
-	}
-
 } // namespace Ember
 

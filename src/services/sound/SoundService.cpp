@@ -37,13 +37,6 @@
 
 namespace Ember
 {
-	SoundEntity* SoundService::getSoundEntity(const std::string &name)
-	{
-		// Can Return NULL
-		SoundEntity * obj = mEntities[name];
-		return obj;
-	}
-
 	/* Constructor */
 	SoundService::SoundService()
 	{
@@ -51,9 +44,9 @@ namespace Ember
 		setDescription("Service for reproduction of sound effects and background music");
 
 		#ifdef THREAD_SAFE
+		pthread_mutex_init(&mGroupsMutex, NULL);
 		pthread_mutex_init(&mSamplesMutex, NULL);
-		pthread_mutex_init(&mCopyMutex, NULL);
-		pthread_mutex_init(&mEntitiesMutex, NULL);
+		pthread_mutex_init(&mGroupModelsMutex, NULL);
 		#endif
 	}
 
@@ -62,13 +55,6 @@ namespace Ember
 	{
 	}
 	
-	/*
-	void SoundService::onAction(const Atlas::Objects::Operation::RootOperation& act)
-	{
-		S_LOG_INFO("Romulo, actions working!");
-	}
-	*/
-
 	/* Method for starting this service */
 	Service::Status SoundService::start()
 	{
@@ -94,8 +80,53 @@ namespace Ember
 		checkAlError();
 		
 		mSamples.clear();
-		mEntities.clear();
+		mSoundGroupModels.clear();
+
 		return Service::OK;
+	}
+		
+	SoundGroupModel* SoundService::getSoundGroupModel(const std::string& name)
+	{
+		std::map<std::string, SoundGroupModel*>::iterator it(mSoundGroupModels.find(name));
+		if (it != mSoundGroupModels.end())
+		{
+			return it->second;
+		}
+
+		return NULL;
+	}
+
+	SoundGroupModel* SoundService::createSoundGroupModel(const std::string& name)
+	{
+		SoundGroupModel* newModel = getSoundGroupModel(name);
+		if (!newModel)
+		{
+			newModel = new SoundGroupModel();
+			if (newModel)
+			{
+				#ifdef THREAD_SAFE
+				pthread_mutex_lock(&mGroupModelsMutex);
+				#endif
+
+				mSoundGroupModels[name] = newModel;
+
+				#ifdef THREAD_SAFE
+				pthread_mutex_unlock(&mGroupModelsMutex);
+				#endif
+
+				return newModel;
+			}
+			else
+			{
+				S_LOG_FAILURE("Failed to allocate sound group model " + name);
+				return NULL;
+			}
+		}
+		else
+		{
+			S_LOG_INFO("Sound Group Model " + name + " already exists.");
+			return NULL;
+		}
 	}
 
 	/* Interface method for stopping this service */
@@ -107,14 +138,14 @@ namespace Ember
 
 	void SoundService::runCommand(const std::string &command, const std::string &args)
 	{
-		// Test Suite
+		/*
 		if (command == "alloc")
 		{
 			Ember::Tokeniser tokeniser;
 			tokeniser.initTokens(args);
 
 			std::string filename = tokeniser.nextToken();
-			registerSound(filename);
+			create(filename);
 		}
 		else
 		if (command == "play")
@@ -134,114 +165,80 @@ namespace Ember
 			std::string filename = tokeniser.nextToken();
 			unRegisterSound(filename);
 		}
+		*/
 	}
 
-	void SoundService::playSound(const std::string &filename)
-	{
-		BaseSoundSample* sound = mSamples[filename];
-		if (sound)
-		{
-			sound->play();	
-		}
-		else S_LOG_INFO("Sound with filename " + filename + " not found.");
-	}
-
-	void SoundService::stopSound(const std::string &filename)
-	{
-		BaseSoundSample* sound = mSamples[filename];
-		if (sound)
-		{
-			alSourceStop(sound->getSource());
-			checkAlError();
-		}
-	}
-
-	void SoundService::registerStreamedCopy(BaseSoundSample* copy)
+	void SoundService::registerSoundGroup(SoundGroup* copy)
 	{
 		#ifdef THREAD_SAFE
-		pthread_mutex_lock(&mCopyMutex);
+		pthread_mutex_lock(&mGroupsMutex);
 		#endif
 
-		mCopySamples.push_back(dynamic_cast<StreamedSoundSample*>(copy));
+		mGroups.push_back(copy);
 
 		#ifdef THREAD_SAFE
-		pthread_mutex_unlock(&mCopyMutex);
+		pthread_mutex_unlock(&mGroupsMutex);
 		#endif
 	}
 
-	bool SoundService::registerInstance(BaseSoundSample* base, BaseSoundSample** copy)
+	bool SoundService::unregisterSoundGroup(const SoundGroup* sample)
 	{
-		if (!base)
+		#ifdef THREAD_SAFE
+		pthread_mutex_lock(&mGroupsMutex);
+		#endif
+	
+		std::list<SoundGroup*>::iterator it;
+		for (it = mGroups.begin(); it != mGroups.end(); )
 		{
-			S_LOG_FAILURE("Invalid pointer to Base Sample");
-			*copy = NULL;
-
-			return false;
+			if ((*it) == sample)
+			{
+				it = mGroups.erase(it);
+				return true;
+			}
+			else
+			{
+				++it;
+			}
 		}
 
-		*copy = base->instantiate();
-		if (copy)
-		{
-			return true;
-		}
+		#ifdef THREAD_SAFE
+		pthread_mutex_unlock(&mGroupsMutex);
+		#endif
 
 		return false;
 	}
 
-	bool SoundService::registerSound(const std::string &filename, bool playLocally,
-			const SoundSampleType type, float soundVolume)
-	{
-		if (getSoundSample(filename))
-		{
-			S_LOG_INFO("Sound Sample (" + filename + ") already allocated.");
-			return false;
-		}
-
-		switch (type)
-		{
-			default:
-			case SAMPLE_NONE:
-				{
-					std::string extension;
-
-					// Try to guess by extension
-					if (filename.size() > 4)
-					{
-						extension = filename.substr(filename.size()-3, 3);
-					
-						if (extension == "wav" || extension == "pcm")
-						{
-							return allocateWAVPCM(filename, playLocally, soundVolume);
-						}
-						else
-						if (extension == "ogg")
-						{
-							return allocateOGG(filename, playLocally, soundVolume);
-						}
-					}
-					return false;
-				}
-				break;
-			case SAMPLE_PCM:
-			case SAMPLE_WAV:
-				return allocateWAVPCM(filename, playLocally, soundVolume);
-			case SAMPLE_OGG:
-				return allocateOGG(filename, playLocally, soundVolume);
-		};
-	}
-
-	bool SoundService::unRegisterSound(const std::string &filename)
+	void SoundService::registerStream(StreamedSoundSample* copy)
 	{
 		#ifdef THREAD_SAFE
 		pthread_mutex_lock(&mSamplesMutex);
 		#endif
 
-		BaseSoundSample* sound = mSamples[filename];
-		if (sound)
+		mSamples.push_back(copy);
+
+		#ifdef THREAD_SAFE
+		pthread_mutex_unlock(&mSamplesMutex);
+		#endif
+	}
+
+	bool SoundService::unregisterStream(const StreamedSoundSample* sample)
+	{
+		#ifdef THREAD_SAFE
+		pthread_mutex_lock(&mSamplesMutex);
+		#endif
+	
+		std::list<StreamedSoundSample*>::iterator it;
+		for (it = mSamples.begin(); it != mSamples.end(); )
 		{
-			mSamples.erase(filename);
-			delete sound;
-			return true;
+			if ((*it) == sample)
+			{
+				it = mSamples.erase(it);
+				return true;
+			}
+			else
+			{
+				++it;
+			}
 		}
 
 		#ifdef THREAD_SAFE
@@ -260,241 +257,30 @@ namespace Ember
 		// TODO: Convert the quaternion to forward/up vectors
 		// alListener3f(AL_ORIENTATION, ListenerOri);
 	}
-
-	SoundEntity* SoundService::registerEntity(const std::string &name)
-	{
-		#ifdef THREAD_SAFE
-		pthread_mutex_lock(&mEntitiesMutex);
-		#endif
-
-		if (getSoundEntity(name))
-		{
-			S_LOG_INFO("Sound Entity (" + name + ") already allocated.");
-			return NULL;
-		}
-
-		SoundEntity* newObject = new SoundEntity();
-		if (!newObject)
-		{
-			S_LOG_FAILURE("Failed to allocate new sound object.");
-			return NULL;
-		}
-
-		mEntities[name] = newObject;
-
-		#ifdef THREAD_SAFE
-		pthread_mutex_unlock(&mEntitiesMutex);
-		#endif
-
-		return newObject;
-	}
 		
-	bool SoundService::allocateWAVPCM(const std::string &filename, bool playsLocally, float soundVolume)
-	{
-		#ifdef THREAD_SAFE
-		pthread_mutex_lock(&mSamplesMutex);
-		#endif
-
-		StaticSoundSample* newSample = new StaticSoundSample();
-		if (!newSample)
-		{
-			S_LOG_FAILURE("Failed to allocate a new sound sample.");
-			return false;
-		}
-
-		// Generate a new Buffer
-		alGenBuffers(1, newSample->getBufferPtr());
-	
-		if (alGetError() != AL_NO_ERROR)
-		{
-			S_LOG_FAILURE("Failed to generate a new sound buffer.");
-			delete newSample;
-
-			return false;
-		}
-
-		ALboolean loop = false;
-		newSample->setBuffer(alutCreateBufferFromFile(filename.c_str()));
-
-		if (*(newSample->getBufferPtr()) == AL_NONE)
-		{
-			S_LOG_FAILURE("Failed to set buffer with file ("+ filename +") data.");
-			delete newSample;
-
-			return false;
-		}
-
-		// Bind the buffer with the source.
-		alGenSources(1, newSample->getSourcePtr());
-
-		if (alGetError() != AL_NO_ERROR)
-		{
-			S_LOG_FAILURE("Failed to generate a new sound source.");
-			delete newSample;
-
-			return false;
-		}
-	
-		alSourcei (newSample->getSource(), AL_BUFFER, newSample->getBuffer());
-		alSourcef (newSample->getSource(), AL_PITCH, 1.0);
-		alSourcef (newSample->getSource(), AL_GAIN, soundVolume);
-		alSource3f(newSample->getSource(), AL_POSITION, 0, 0, 0);
-		alSource3f(newSample->getSource(), AL_VELOCITY, 0, 0, 0);
-		alSourcei (newSample->getSource(), AL_LOOPING, loop);
-
-		if (playsLocally == PLAY_LOCAL)
-			alSourcei(newSample->getSource(), AL_SOURCE_RELATIVE, true);
-
-		if (alGetError() != AL_NO_ERROR)
-		{
-			S_LOG_FAILURE("Failed to set sound sample attributes.");
-			delete newSample;
-
-			return false;
-		}
-
-		mSamples[filename] = newSample;
-
-		#ifdef THREAD_SAFE
-		pthread_mutex_unlock(&mSamplesMutex);
-		#endif
-
-		return true;
-	}
-
-	bool SoundService::allocateOGG(const std::string &filename, bool playsLocally, float soundVolume)
-	{
-		#ifdef THREAD_SAFE
-		pthread_mutex_lock(&mSamplesMutex);
-		#endif
-
-		StreamedSoundSample* newSample = new StreamedSoundSample();
-		if (!newSample)
-		{
-			S_LOG_FAILURE("Failed to allocate memory for a new sound source.");
-			return false;
-		}
-
-		// Should we handle this in Ogre or any other Resource Manager?
-		FILE* newFile = NULL;
-		if (!(newFile = fopen(filename.c_str(), "rb")))
-		{
-			S_LOG_FAILURE("Failed to open file.");
-			delete newSample;
-
-			return false;
-		}
-
-		newSample->setFile(newFile, filename);
-
-		if (ov_open(newFile, newSample->getStreamPtr(), NULL, 0) < 0)
-		{
-Error0:
-			S_LOG_FAILURE("Failed to bind ogg stream to sound sample.");
-
-			fclose(newFile);
-			delete newSample;
-
-			return false;
-		}
-
-		vorbis_info* oggInfo = ov_info(newSample->getStreamPtr(), -1);
-		if (oggInfo->channels == 1)
-		{
-			newSample->setFormat(AL_FORMAT_MONO16);
-		}
-		else
-		{
-			newSample->setFormat(AL_FORMAT_STEREO16);
-		}
-
-		newSample->setRate(oggInfo->rate);
-
-		alGenBuffers(2, newSample->getBufferPtr());
-		if (alGetError() != AL_NO_ERROR)
-		{
-			goto Error0;
-		}
-
-		alGenSources(1, newSample->getSourcePtr());
-		if (alGetError() != AL_NO_ERROR)
-		{
-			goto Error0;
-		}
-
-		alSourcef (newSample->getSource(), AL_PITCH, 1.0);
-		alSourcef (newSample->getSource(), AL_GAIN, soundVolume);
-		alSource3f(newSample->getSource(), AL_POSITION, 0, 0, 0);
-		alSource3f(newSample->getSource(), AL_VELOCITY, 0, 0, 0);
-		alSourcei (newSample->getSource(), AL_LOOPING, false);
-
-		if (playsLocally == PLAY_LOCAL)
-			alSourcei(newSample->getSource(), AL_SOURCE_RELATIVE, true);
-
-		mSamples[filename] = newSample;
-
-		#ifdef THREAD_SAFE
-		pthread_mutex_unlock(&mSamplesMutex);
-		#endif
-
-		return true;
-	}
-
-	BaseSoundSample* SoundService::getSoundSample(const std::string &filename)
-	{
-		std::map<std::string, BaseSoundSample*>::iterator it(mSamples.find(filename));
-		if (it != mSamples.end())
-		{
-			return (*it).second;
-		}
-
-		return NULL;
-	}
-
 	void SoundService::cycle()
 	{
-		#ifdef THREAD_SAFE
-		pthread_mutex_lock(&mSamplesMutex);
-		#endif
-	
-		std::map<std::string, BaseSoundSample*>::iterator it = mSamples.begin();
+		// Groups
+		std::list<SoundGroup*>::const_iterator git = mGroups.begin();
+		for (; git != mGroups.end(); git++)
+		{
+			SoundGroup* group = (*git);
+			if (group)
+			{
+				group->update();
+			}
+		}
+
+		// Streams
+		std::list<StreamedSoundSample*>::const_iterator it = mSamples.begin();
 		for (; it != mSamples.end(); it++)
 		{
-			BaseSoundSample* sample = (*it).second;
-			if (sample && sample->getType() == SAMPLE_OGG)
+			StreamedSoundSample* sample = (*it);
+			if (sample && sample->isPlaying())
 			{
-				StreamedSoundSample* ogg = dynamic_cast<StreamedSoundSample*>(sample);
-				if (ogg->isPlaying())
-				{
-					ogg->cycle();
-				}
+				sample->cycle();
 			}
 		}
-
-		#ifdef THREAD_SAFE
-		pthread_mutex_unlock(&mSamplesMutex);
-		#endif
-
-		if (mCopySamples.empty())
-			return;
-
-		#ifdef THREAD_SAFE
-		pthread_mutex_lock(&mCopyMutex);	
-		#endif
-
-		std::list<StreamedSoundSample*>::iterator sIt = mCopySamples.begin();
-		for (; sIt != mCopySamples.end(); sIt++)
-		{
-			StreamedSoundSample* ogg = dynamic_cast<StreamedSoundSample*>(*sIt);
-			if (ogg && ogg->isPlaying())
-			{
-				ogg->cycle();
-			}
-		}
-
-		#ifdef THREAD_SAFE
-		pthread_mutex_unlock(&mCopyMutex);
-		#endif
 	}
 
 } // namespace Ember

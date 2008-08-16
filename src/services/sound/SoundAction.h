@@ -56,7 +56,7 @@ namespace Ember
 			 * @param name The group name defined in the sounddefs.
 			 * @return A pointer to the group allocated, if it fails, returns NULL
 			 */
-			SoundGroup* registerGroup(const std::string& name);
+			SoundGroup* createGroup(const std::string& name);
 
 			/**
 			 * Return a pointer to a sound group from its name

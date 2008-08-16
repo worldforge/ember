@@ -85,7 +85,7 @@ namespace Ember
 		return mVelocity;
 	}
 
-	SoundAction* SoundEntity::registerAction(const std::string& name)
+	SoundAction* SoundEntity::createAction(const std::string& name)
 	{
 		SoundAction* newAction = actionExists(name);
 		if (newAction)
@@ -100,6 +100,7 @@ namespace Ember
 
 		S_LOG_INFO("Sound Entity Action " + name + " allocated.");
 		mActions[name] = newAction;
+
 		return newAction;
 	}
 

@@ -28,7 +28,6 @@
 #include <Eris/Avatar.h>
 
 #include "services/server/ServerService.h"
-#include "services/sound/SoundEntityManager.h"
 #include "services/EmberServices.h"
 
 

@@ -22,8 +22,7 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "framework/tinyxml/tinyxml.h"
 
-#include "services/sound/SoundEntity.h"
-#include "services/sound/SoundGroup.h"
+#include "services/sound/SoundModel.h"
 
 #include <iostream>
 #include <sstream>
@@ -38,8 +37,8 @@ public :
 
 private:
 
-	void readBuffers(Ember::SoundGroup* act, TiXmlElement* objNode);
-	void readBuffer(Ember::SoundGroup* act, TiXmlElement* objNode);
+	void readBuffers(Ember::SoundGroupModel* act, TiXmlElement* objNode);
+	void readBuffer(Ember::SoundGroupModel* act, TiXmlElement* objNode);
 };
 
 }

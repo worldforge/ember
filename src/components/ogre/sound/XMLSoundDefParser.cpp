@@ -22,7 +22,8 @@
 #include "XMLSoundDefParser.h"
 
 #include "services/EmberServices.h"
-#include "services/sound/SoundEntityManager.h"
+#include "services/sound/SoundModel.h"
+#include "services/sound/SoundService.h"
 #include "components/ogre/XMLHelper.h"
 
 
@@ -50,20 +51,20 @@ void XMLSoundDefParser::parseScript(Ogre::DataStreamPtr stream)
 
 		std::string finalName(tmp);
 
-		Ember::SoundGroup* newGroup = 
-		Ember::SoundEntityManager::getSingleton().allocateGroup(finalName);
+		Ember::SoundGroupModel* newModel = Ember::EmberServices::getSingleton()
+			.getSoundService()->createSoundGroupModel(finalName);
 			
-		if (newGroup)
+		if (newModel)
 		{
-			S_LOG_INFO(std::string("Sound Group ") + finalName
+			S_LOG_INFO(std::string("Sound Model ") + finalName
 					+ std::string(" created."));
 
-			readBuffers(newGroup, smElem);
+			readBuffers(newModel, smElem);
 		}
 	}	
 }
 
-void XMLSoundDefParser::readBuffers(Ember::SoundGroup* grp, TiXmlElement* objNode)
+void XMLSoundDefParser::readBuffers(Ember::SoundGroupModel* grp, TiXmlElement* objNode)
 {
 	for (TiXmlElement* smElem = objNode->FirstChildElement();
             smElem != 0; smElem = smElem->NextSiblingElement())
@@ -72,7 +73,7 @@ void XMLSoundDefParser::readBuffers(Ember::SoundGroup* grp, TiXmlElement* objNod
 	}
 }
 
-void XMLSoundDefParser::readBuffer(Ember::SoundGroup* grp, TiXmlElement* objNode)
+void XMLSoundDefParser::readBuffer(Ember::SoundGroupModel* grp, TiXmlElement* objNode)
 {
 	const char* filename = objNode->Attribute("filename");
 	const char* format = objNode->Attribute("format");
@@ -113,11 +114,8 @@ void XMLSoundDefParser::readBuffer(Ember::SoundGroup* grp, TiXmlElement* objNode
 	Ogre::FileInfoList::iterator I = files->begin();
 	if (I != files->end()) 
 	{
-		grp->allocateBuffer(I->archive->getName() + I->filename, 
-				playsReal, type, soundVolume);
-
-		S_LOG_INFO(std::string("\t -Buffer ") + realName
-				+ std::string(" created."));
+		grp->insertSample(I->archive->getName() + I->filename, 
+				type, playsReal, soundVolume);
 	}
 	else
 	{

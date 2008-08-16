@@ -16,11 +16,6 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "SoundEntityManager.h"
-#include "SoundGeneral.h"
-#include "SoundAction.h"
-#include "SoundGroup.h"
-
 #include "framework/Service.h"
 #include "framework/ConsoleObject.h"
 
@@ -29,6 +24,12 @@
 #include "services/logging/LoggingService.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
+
+#include "SoundService.h"
+#include "SoundGeneral.h"
+#include "SoundModel.h"
+#include "SoundAction.h"
+#include "SoundGroup.h"
 
 #include <map>
 #include <cstring>
@@ -53,21 +54,34 @@ namespace Ember
 		return NULL;
 	}
 
-	SoundGroup* SoundAction::registerGroup(const std::string& name)
+	SoundGroup* SoundAction::createGroup(const std::string& name)
 	{
-		SoundGroup* newGroup;
-		newGroup = SoundEntityManager::getSingleton().instantiateGroup(name);
+		SoundGroupModel* groupModel = EmberServices::getSingleton()
+			.getSoundService()->getSoundGroupModel(name);
 
+		if (!groupModel)
+		{
+			S_LOG_FAILURE("A template to the group " + name + " could not be found.");
+			return NULL;
+		}
+
+		SoundGroup* newGroup = new SoundGroup();
 		if (!newGroup)
 		{
 			S_LOG_FAILURE("Failed to register Sound Group " + name);
 			return NULL;
 		}
 
-		std::stringstream newName;
-		newName << name << "_" << mGroupsSeed++;
+		std::list<SoundModel*>::const_iterator beg = groupModel->getSamplesBegin();
+		std::list<SoundModel*>::const_iterator end = groupModel->getSamplesEnd();
+		for (beg; beg != end; beg++)
+		{
+			// Register Individual samples
+			SoundModel* thisModel = (*beg);
+			newGroup->createBuffer(thisModel);
+		}
 
-		mGroups[newName.str()] = newGroup;
+		mGroups[name] = newGroup;
 		return newGroup;
 	}
 

@@ -86,15 +86,6 @@ class BaseSoundSample
 		 */
 		SoundSampleType getType();
 
-		/**
-		 * Instantiate a SoundSample
-		 * Sound instances are used to keep track of 
-		 * each entity/object in the world. Think of it like
-		 * a clone of a sound sample that plays in different timers
-		 * for each object
-		 */
-		virtual BaseSoundSample* instantiate() = 0;
-
 		virtual ALuint* getBufferPtr() = 0;
 		virtual unsigned int getNumberOfBuffers() = 0;
 		virtual void play();
@@ -115,7 +106,7 @@ class StaticSoundSample : public BaseSoundSample
 		ALuint mBuffer;
 	
 	public:
-		StaticSoundSample();
+		StaticSoundSample(const std::string& filename, bool playsLocal, float volume);
 		~StaticSoundSample();
 
 		/**
@@ -139,20 +130,6 @@ class StaticSoundSample : public BaseSoundSample
 		 * Within this class, this is always 1.
 		 */
 		unsigned int getNumberOfBuffers();
-
-		/**
-		 * Instantiate a SoundSample
-		 * Sound instances are used to keep track of 
-		 * each entity/object in the world. Think of it like
-		 * a clone of a sound sample that plays in different timers
-		 * for each object
-		 *
-		 * The static sound sample instance is the most optimized 
-		 * instance because it share the same buffers within all
-		 * the instances, that way only a buffer is allocated for 
-		 * the many sources.
-		 */
-		BaseSoundSample* instantiate();
 
 		// Common methods
 		void play();
@@ -213,7 +190,7 @@ class StreamedSoundSample : public BaseSoundSample
 		bool stream(ALuint buffer);
 
 	public:
-		StreamedSoundSample();
+		StreamedSoundSample(const std::string& filename, bool playsLocal, float volume);
 		~StreamedSoundSample();
 
 		/**
@@ -263,19 +240,6 @@ class StreamedSoundSample : public BaseSoundSample
 		 * Return the full filename of the stream file.
 		 */
 		const std::string& getFilename();
-
-		/**
-		 * Instantiate a SoundSample
-		 * Sound instances are used to keep track of 
-		 * each entity/object in the world. Think of it like
-		 * a clone of a sound sample that plays in different timers
-		 * for each object
-		 *
-		 * The streamed sound sample is completely duplicated on 
-		 * the instance creation. The buffers and sources get allocated
-		 * again since its not possible (not practical) to share them.
-		 */
-		BaseSoundSample* instantiate();
 
 		// Common methods
 		void play();	

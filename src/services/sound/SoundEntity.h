@@ -103,7 +103,7 @@ namespace Ember
 			 * @param name The Action name
 			 * @return A pointer to the allocated sound action, if it fails, returns NULL
 			 */
-			SoundAction* registerAction(const std::string& name);
+			SoundAction* createAction(const std::string& name);
 
 			/**
 			 * Play the desired action, from its name

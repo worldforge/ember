@@ -21,6 +21,7 @@
 
 #include "SoundGeneral.h"
 #include "SoundSample.h"
+#include "SoundModel.h"
 
 namespace Ember
 {
@@ -67,12 +68,6 @@ namespace Ember
 			bool mIsPlaying;
 
 			/**
-			 * If this group is an instance of 
-			 * another group
-			 */
-			bool mIsInstance;
-
-			/**
 			 * Based on mPlayOrder this function
 			 * tells mNextToPlay the next buffer
 			 * to be played.
@@ -103,14 +98,9 @@ namespace Ember
 			/**
 			 * Allocate a sound sample/buffer in this group. 
 			 *
-			 * @param filename The Full path of the file to be allocated.
-			 * @param playsReal If the sound is 3D or 2D.
-			 * @param type The type of the Sample.
-			 * @param soundVolume The sound volume for the buffer (0 to 1.0f)
+			 * @param model A sound model containing definitions for the sample.
 			 */
-			void allocateBuffer(const std::string& filename, 
-					bool playsReal, const SoundSampleType& type,
-					float soundVolume);
+			void createBuffer(SoundModel* model);
 
 			/**
 			 * Update the Sample Position, to better define sounds
@@ -162,20 +152,6 @@ namespace Ember
 			 * @param playO The new play order, from playOrder structure.
 			 */
 			void setPlayOrder(const unsigned int playO);
-
-			/**
-			 * Set if this group is an instance of another
-			 * group or not
-			 */
-			void setInstance(bool isInstance);
-
-			/**
-			 * Create an instance of this group.
-			 * 
-			 * @param instance A pointer to the instance.
-			 * @return Status of the instantiation.
-			 */
-			bool instantiate(SoundGroup* instance);
 
 			/**
 			 * Update the timers and buffers within this group
