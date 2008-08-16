@@ -574,7 +574,7 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 		for (int i = -65; i < 66; i += 64) {
 			for (int j = -65; j < 66; j += 64) {
 				TerrainPosition position(worldPosition.x() + i, worldPosition.y() + j);
-				page = terrainGenerator->getTerrainPage(position);
+				page = terrainGenerator->getTerrainPageAtPosition(position);
 				if (page) {
 					pagesToUpdate.insert(page);
 				}

@@ -59,7 +59,7 @@ bool EmberPagingLandScapeData2D_HeightField::_load( const Ogre::uint x, const Og
 
 	mMaxArrayPos = mSize * mSize;
 	mHeightData = new Real[mMaxArrayPos];
-	Terrain::TerrainPage* terrainPage(terrainGenerator->getTerrainPage(Ogre::Vector2(x,z)));
+	Terrain::TerrainPage* terrainPage(terrainGenerator->getTerrainPageAtIndex(Ogre::Vector2(x,z)));
 	//should always return a TerrainPage*
 	assert(terrainPage);
 	mBridge = new EmberTerrainPageBridge(*this);

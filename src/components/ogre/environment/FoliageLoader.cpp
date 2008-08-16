@@ -72,7 +72,7 @@ void FoliageLoader::loadPage(::PagedGeometry::PageInfo &page)
 	static Terrain::TerrainGenerator* terrainGenerator(EmberOgre::getSingleton().getTerrainGenerator());
 
 	TerrainPosition wfPos(Ogre2Atlas_TerrainPosition(page.centerPoint));
-	TerrainPage* terrainPage = terrainGenerator->getTerrainPage(wfPos);
+	TerrainPage* terrainPage = terrainGenerator->getTerrainPageAtPosition(wfPos);
 	if (terrainPage) {
 		Ogre::TRect<float> ogrePageExtent = Atlas2Ogre(terrainPage->getExtent());
 		Ogre::TRect<float> adjustedBounds = Ogre::TRect<float>(page.bounds.left - ogrePageExtent.left, page.bounds.top - ogrePageExtent.top, page.bounds.right - ogrePageExtent.left, page.bounds.bottom - ogrePageExtent.top);

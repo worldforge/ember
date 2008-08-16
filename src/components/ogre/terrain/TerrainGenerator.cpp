@@ -426,7 +426,7 @@ bool TerrainGenerator::isValidTerrainAt(const TerrainPosition& position)
 }
 
 
-TerrainPage* TerrainGenerator::getTerrainPage(const TerrainPosition& worldPosition)
+TerrainPage* TerrainGenerator::getTerrainPageAtPosition(const TerrainPosition& worldPosition)
 {
 
 	
@@ -440,7 +440,8 @@ TerrainPage* TerrainGenerator::getTerrainPage(const TerrainPosition& worldPositi
 	return mTerrainPages[xIndex][yIndex];
 }
 
-TerrainPage* TerrainGenerator::getTerrainPage(const Ogre::Vector2& ogreIndexPosition, bool createIfMissing)
+
+TerrainPage* TerrainGenerator::getTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition, bool createIfMissing)
 {
 	//_fpreset();
 	//S_LOG_INFO("Requesting page at ogre position x: " << ogreIndexPosition.x << " y: " << ogreIndexPosition.y);
@@ -579,7 +580,7 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
         /// verify this code is the same as that in Terrain layer
         mTerrain->setBasePoint(static_cast<int>(I->getPosition().x()), static_cast<int>(I->getPosition().y()), bp);
         mTerrainInfo.setBasePoint(I->getPosition(), bp);
-		updatedPositions.push_back(I->getPosition());
+		updatedPositions.push_back(TerrainPosition(I->getPosition().x() * mTerrain->getResolution(), I->getPosition().y() * mTerrain->getResolution()));
 	}
     mSegments = &mTerrain->getTerrain();
 	
@@ -615,13 +616,13 @@ void TerrainGenerator::reloadTerrain(std::vector<TerrainPosition>& positions)
 {
 	std::set<TerrainPage*> pagesToUpdate;
 	for (std::vector<TerrainPosition>::iterator I(positions.begin()); I != positions.end(); ++I) {
-		TerrainPosition worldPosition(I->x() * 64, I->y() * 64);
+		const TerrainPosition& worldPosition(*I);
 		TerrainPage* page;
 		///make sure we sample pages from all four points around the base point, in case the base point is on a page border
 		for (int i = -65; i < 66; i += 64) {
 			for (int j = -65; j < 66; j += 64) {
 				TerrainPosition position(worldPosition.x() + i, worldPosition.y() + j);
-				page = getTerrainPage(position);
+				page = getTerrainPageAtPosition(position);
 				if (page) {
 					pagesToUpdate.insert(page);
 				}
@@ -629,8 +630,10 @@ void TerrainGenerator::reloadTerrain(std::vector<TerrainPosition>& positions)
 		}
 	}
 
+	EventBeforeTerrainUpdate(positions, pagesToUpdate);
 	updateHeightMapAndShaders(pagesToUpdate);
 	updateEntityPositions(pagesToUpdate);
+	EventAfterTerrainUpdate(positions, pagesToUpdate);
 	
 }
 void TerrainGenerator::updateHeightMapAndShaders(const std::set<TerrainPage*>& pagesToUpdate)
@@ -690,7 +693,7 @@ void TerrainGenerator::getShadowColourAt(const Ogre::Vector2& position, Ogre::ui
 {
 	//TODO: add caching of the last fetched terrain page and first check if the position isn't at that page, since we'll in most cass will call this method with positions that are close to eachother
 	TerrainPosition wfPos(Ogre2Atlas(position));
-	TerrainPage* terrainPage = getTerrainPage(wfPos);
+	TerrainPage* terrainPage = getTerrainPageAtPosition(wfPos);
 	TerrainPageShadow& terrainShadow = terrainPage->getPageShadow();
 	
 	Ogre::TRect<float> ogrePageExtent = Atlas2Ogre(terrainPage->getExtent());
@@ -702,7 +705,7 @@ void TerrainGenerator::getShadowColourAt(const Ogre::Vector2& position, Ogre::Co
 {
 	//TODO: add caching of the last fetched terrain page and first check if the position isn't at that page, since we'll in most cass will call this method with positions that are close to eachother
 	TerrainPosition wfPos(Ogre2Atlas(position));
-	TerrainPage* terrainPage = getTerrainPage(wfPos);
+	TerrainPage* terrainPage = getTerrainPageAtPosition(wfPos);
 	TerrainPageShadow& terrainShadow = terrainPage->getPageShadow();
 	Ogre::TRect<float> ogrePageExtent = Atlas2Ogre(terrainPage->getExtent());
 	terrainShadow.getShadowColourAt(Ogre::Vector2(position.x - ogrePageExtent.left, position.y - ogrePageExtent.top), colour);

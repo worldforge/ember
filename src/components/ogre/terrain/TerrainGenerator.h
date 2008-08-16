@@ -175,18 +175,19 @@ public:
 	void prepareAllSegments();
 	
 	/**
-	 *    Returns the height at the specified position in the world.
-	 * @param atPosition 
-	 * @return 
+	 * @brief Returns the height at the specified position in the world.
+	 * This will be done using the underlying Mercator data, which depending on LOD techniques used can differ some from the actual graphical representation.
+	 * @param atPosition The position, in world space, to get the height for.
+	 * @return The height, in world space, at the specified position.
 	 */
 	virtual float getHeight(const TerrainPosition& atPosition) const;
 	
 	/**
 	 *    @brief Updates the terrain with new terrain points.
-	 * @param terrainPoints A list of terrain points.
-	 * @return True if successful.
+	 * @param terrainIndexPoints A list of terrain index points, i.e. points positioned using the base point positioning scale. In normal setup that's 64 meters per index point, so an index point of 2:1 would translate to real world coords of 128:64
+	 * @return True if the terrain was successfully updated.
 	 */
-	bool updateTerrain(const TerrainDefPointStore& terrainPoints);
+	bool updateTerrain(const TerrainDefPointStore& terrainIndexPoints);
 
 	/**
 	 * @brief Return true if there is a valid piece of terrain at the supplied segment indices.
@@ -197,13 +198,13 @@ public:
 	bool isValidTerrainAt(const TerrainPosition& pos);
 	
 	/**
-	 *    @brief Provides access to the underlying Mercator::Terrain object.
+	 * @brief Provides access to the underlying Mercator::Terrain object.
 	 * @return The main terrain object.
 	 */
 	Mercator::Terrain& getTerrain();
 	
 	/**
-	 *    @brief Gets the max boundaries of the terrain.
+	 * @brief Gets the max boundaries of the terrain.
 	 * @return 
 	 */
 	const TerrainPosition getMax() const;
@@ -238,19 +239,18 @@ public:
 	/**
 	 * @brief Returns a TerrainPage, creating one if there's no existing and so requested.
 	 * If createIfMissing is true and there is no yet existing, a new one is created.
-	 * @param ogrePosition The position, in Ogre space, to create the new page on.
+	 * @param ogreIndexPosition The index, in Ogre space, to create the new page on.
 	 * @param createIfMissing If set to true, a new page will be created if there's no pre-existing. Defaults to true.
 	 * @return An instance of terrain page, or null if there was no existing one and createIfMissing was set to false.
 	 */
-	TerrainPage* getTerrainPage(const Ogre::Vector2& ogrePosition, bool createIfMissing = true);
+	TerrainPage* getTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition, bool createIfMissing = true);
 	
 	/**
-	 *    Gets the page at the specified position in the worl. If no page can be found, a null pointer is returned.
-	 * @param worldPosition 
-	 * @return 
+	 * @brief Gets the page at the specified position in the world. If no page can be found, a null pointer is returned.
+	 * @param worldPosition The position in world space to get the terrain page for.
+	 * @return An terrain page, or null of no page can be found at the specified position.
 	 */
-	TerrainPage* getTerrainPage(const TerrainPosition& worldPosition);
-
+	TerrainPage* getTerrainPageAtPosition(const TerrainPosition& worldPosition);
 
 	
 	/**
@@ -261,12 +261,13 @@ public:
 	virtual	void runCommand(const std::string &command, const std::string &args);
 	
 	/**
-	 *    Rebuilds the height map, effectively regenerating the terrain.
+	 * @brief Rebuilds the Mercator height map, effectively regenerating the terrain.
+	 * Note that this only regenerates the Mercator height map, and won't update the Ogre representation.
 	 */
 	void buildHeightmap();
 	
 	/**
-	 *    @brief Accessor for the main terrain info instance.
+	 * @brief Accessor for the main terrain info instance.
 	 * @return An instance of TerrainInfo containing all relevant terrain info.
 	 */
 	const TerrainInfo& getTerrainInfo() const;
@@ -342,6 +343,24 @@ public:
 	sigc::signal<void, TerrainShader*> EventShaderCreated;
 	
 	/**
+	@brief Emitted before the terrain geometry is changed.
+	
+	When the terrain geometry is about to be changed this signal is emitted.
+	The first parameter is the TerrainPositions that were updated, i.e. the BasePoints that were changed. The terrain is generated from a series of base points, in the default setting dispersed with 64 meters between them.
+	The second parameter is the pages that will be updated.
+	*/
+	sigc::signal<void, std::vector<TerrainPosition>&, std::set<TerrainPage*>&> EventBeforeTerrainUpdate;
+	
+	/**
+	@brief Emitted after the terrain geometry has changed.
+	
+	When the terrain geometry is about to be changed this signal is emitted.
+	The first parameter is the TerrainPositions that were updated, i.e. the BasePoints that were changed. The terrain is generated from a series of base points, in the default setting dispersed with 64 meters between them.
+	The second parameter is the pages that were updated.
+	*/
+	sigc::signal<void, std::vector<TerrainPosition>&, std::set<TerrainPage*>&> EventAfterTerrainUpdate;
+	
+	/**
 	 *    Gets the size of each foliage batch. This is used by the foliage system for setting up batch system for performance.
 	 * @return 
 	 */
@@ -409,17 +428,24 @@ protected:
 
 	
 	typedef std::map<const Mercator::Shader*, TerrainShader*> ShaderStore;
+	
 	/**
 	 * This holds a map of the TerrainShaders
 	 */
 	ShaderStore mShaderMap;
 	
 	/**
-	a list of the shaders, which will all be used on all Pages
+	@brief A list of the shaders, which will all be used on all Pages.
 	*/
 	std::list<TerrainShader*> mBaseShaders;
 	 
 	
+	/**
+	 * @brief Reloads the terrain found at the specified positions.
+	 * Calling this method will update both the internal Mercator heightfield data as well as the Ogre graphical representation.
+	 * @param positions A vector of terrain positions, in world space. The terrain found at these positions will be reloaded. Note that if there's any pages between these positions, these will not be updated.
+	 * TODO: Add a similiar method which also takes a WFMath::AxisBox<2> or another area.
+	 */
 	void reloadTerrain(std::vector<TerrainPosition>& positions);
 	void updateHeightMapAndShaders(const std::set<TerrainPage*>& pagesToUpdate);
 	void updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate);
