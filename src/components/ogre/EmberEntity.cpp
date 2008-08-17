@@ -292,11 +292,11 @@ void EmberEntity::onSoundAction( const Atlas::Objects::Operation::RootOperation 
 
 void EmberEntity::onVisibilityChanged(bool vis)
 {
-	checkVisibility(vis);
+	checkClientVisibility(vis);
 	Eris::Entity::onVisibilityChanged(vis);
 }
 
-void EmberEntity::checkVisibility(bool vis)
+void EmberEntity::checkClientVisibility(bool vis)
 {
 	///since we don't want to show all entities solely by their server flags (for example, an inventory item belonging to a character might not be shown even though the server thinks it's visible) we have to some more checks before we decide whether to show this or not
 	EmberEntity* container = static_cast<EmberEntity*>(getLocation());
@@ -304,18 +304,18 @@ void EmberEntity::checkVisibility(bool vis)
 		///check with the parent first if we should show ourselves
 		if (vis && container->allowVisibilityOfMember(this)) {
 			///don't cascade, only change the top node
-			setVisible(true);	
+			setClientVisible(true);	
 		} else {
-			setVisible(false);	
+			setClientVisible(false);	
 		}
 		
 	} else {
-		setVisible(vis);
+		setClientVisible(vis);
 	}
 }
 
 
-void EmberEntity::setVisible(bool visible)
+void EmberEntity::setClientVisible(bool visible)
 {
 	///when entities are hidden, we detach them from the rendering scene graph altogether. this speeds up Ogre since it doesn't have to calculate visibility for nodes that are hidden anyway
 	if (!visible) {
@@ -329,7 +329,7 @@ void EmberEntity::setVisible(bool visible)
 			}
 		}
 	}
-	
+	EventClientVisibilityChanged.emit(visible);
 // 	getSceneNode()->setVisible(visible && getLocation(), false);	
 }
 
@@ -427,7 +427,7 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 			S_LOG_VERBOSE("New orientation for entity: "  << this->getId() << " (" << this->getName() << " ) :" << ss.str());
 		}
 	
-		checkVisibility(isVisible());
+		checkClientVisibility(isVisible());
 	
 		///we'll adjust the entity so it retains it's former position in the world, but only for moving entities
 		///since else we'll get a "gap" when we're waiting on updated positions from the server
