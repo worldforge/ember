@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberOgre
-** Generated automatically by tolua++-1.0.92 on Thu Aug  7 00:56:22 2008.
+** Generated automatically by tolua++-1.0.92 on Sun Aug 17 22:27:43 2008.
 */
 
 #ifndef __cplusplus
@@ -3573,9 +3573,9 @@ static int tolua_EmberOgre_EmberOgre_EmberEntity_getSuggestedResponses00(lua_Sta
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: setVisible of class  EmberOgre::EmberEntity */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EmberEntity_setVisible00
-static int tolua_EmberOgre_EmberOgre_EmberEntity_setVisible00(lua_State* tolua_S)
+/* method: setClientVisible of class  EmberOgre::EmberEntity */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EmberEntity_setClientVisible00
+static int tolua_EmberOgre_EmberOgre_EmberEntity_setClientVisible00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3591,16 +3591,16 @@ static int tolua_EmberOgre_EmberOgre_EmberEntity_setVisible00(lua_State* tolua_S
   EmberOgre::EmberEntity* self = (EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,1,0);
   bool visible = ((bool)  tolua_toboolean(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setVisible'",NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setClientVisible'",NULL);
 #endif
   {
-   self->setVisible(visible);
+   self->setClientVisible(visible);
   }
  }
  return 0;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'setVisible'.",&tolua_err);
+ tolua_error(tolua_S,"#ferror in function 'setClientVisible'.",&tolua_err);
  return 0;
 #endif
 }
@@ -22938,7 +22938,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"getSceneNode",tolua_EmberOgre_EmberOgre_EmberEntity_getSceneNode00);
     tolua_function(tolua_S,"hasSuggestedResponses",tolua_EmberOgre_EmberOgre_EmberEntity_hasSuggestedResponses00);
     tolua_function(tolua_S,"getSuggestedResponses",tolua_EmberOgre_EmberOgre_EmberEntity_getSuggestedResponses00);
-    tolua_function(tolua_S,"setVisible",tolua_EmberOgre_EmberOgre_EmberEntity_setVisible00);
+    tolua_function(tolua_S,"setClientVisible",tolua_EmberOgre_EmberOgre_EmberEntity_setClientVisible00);
     tolua_function(tolua_S,"getEmberLocation",tolua_EmberOgre_EmberOgre_EmberEntity_getEmberLocation00);
     tolua_function(tolua_S,"isInitialized",tolua_EmberOgre_EmberOgre_EmberEntity_isInitialized00);
     tolua_function(tolua_S,"getMovementMode",tolua_EmberOgre_EmberOgre_EmberEntity_getMovementMode00);

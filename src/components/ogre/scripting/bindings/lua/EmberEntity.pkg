@@ -19,7 +19,7 @@ class EmberEntity : public Eris::Entity {
 	
 	const std::vector< std::string >& getSuggestedResponses() const;
 	
-	virtual void setVisible(bool visible);
+	virtual void setClientVisible(bool visible);
 	
 	EmberEntity* getEmberLocation() const;
 	
