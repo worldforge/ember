@@ -34,11 +34,13 @@
 #include "../model/ModelDefinition.h"
 #include "../model/SubModel.h"
 
+#include <sigc++/bind.h>
+
 namespace EmberOgre {
 
 namespace Environment {
 
-EmberEntityLoader::EmberEntityLoader(::PagedGeometry::PagedGeometry *geom, unsigned int batchSize)
+EmberEntityLoader::EmberEntityLoader(::PagedGeometry::PagedGeometry &geom, unsigned int batchSize)
 : mGeom(geom), mBatchSize(batchSize)
 {
 }
@@ -46,12 +48,40 @@ EmberEntityLoader::EmberEntityLoader(::PagedGeometry::PagedGeometry *geom, unsig
 
 EmberEntityLoader::~EmberEntityLoader()
 {
+	///When shutting down, make sure to delete all connections.
+#if EMBERENTITYLOADER_USEBATCH
+	for (EntityStore::iterator I = mEntities.begin(); I != mEntities.end(); ++I) {
+		for (EntityColumn::iterator J = I->second.begin(); J != I->second.end(); ++J) {
+			for (EntityMap::iterator K = J->second.begin(); K != J->second.end(); ++K)
+			{
+				K->second.movedConnection.disconnect();
+				K->second.beingDeletedConnection.disconnect();
+			}
+		}
+	}
+#else
+	for (EntityMap::iterator I = mEntities.begin(); I != mEntities.end(); ++I)
+	{
+		I->second.movedConnection.disconnect();
+		I->second.beingDeletedConnection.disconnect();
+	}
+#endif
 }
 
 void EmberEntityLoader::addEmberEntity(EmberPhysicalEntity * entity)
 {
+	if (!entity) {
+		S_LOG_WARNING("Tried to add a null ref entity to the paged geometry.");
+		return;
+	}
+	EntityInstance instance;
+	instance.movedConnection = entity->Moved.connect(sigc::bind(sigc::mem_fun(*this, &EmberEntityLoader::EmberEntity_Moved), entity));
+	instance.beingDeletedConnection = entity->BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &EmberEntityLoader::EmberEntity_BeingDeleted), entity));
+	instance.entity = entity;
+	
 	Ogre::Vector3 position(entity->getSceneNode()->getWorldPosition());
-#if USEBATCH
+	instance.lastPosition = position;
+#if EMBERENTITYLOADER_USEBATCH
 	const int batchX = Ogre::Math::Floor(position.x / mBatchSize);
 	const int batchY = Ogre::Math::Floor(position.y / mBatchSize);
 	mEntityLookup[entity] = std::pair<int, int>(batchX, batchY);
@@ -61,34 +91,82 @@ void EmberEntityLoader::addEmberEntity(EmberPhysicalEntity * entity)
 	EntityMap& entities(mEntities);
 #endif
 	
-	entities[entity->getId()] = entity;
+	entities[entity->getId()] = instance;
 
 	///Rebuild geometry if necessary
-	mGeom->reloadGeometryPage(position);
+	mGeom.reloadGeometryPage(position);
+	
+
 
 
 }
 
 void EmberEntityLoader::removeEmberEntity(EmberPhysicalEntity * entity)
 {
-#if USEBATCH
+	if (!entity) {
+		S_LOG_WARNING("Tried to remove a null ref entity from the paged geometry.");
+		return;
+	}
+#if EMBERENTITYLOADER_USEBATCH
 	EntityLookup::iterator I = mEntityLookup.find(entity);
 	if (I != mEntityLookup.end()) {
-		mEntities[I->second.first][I->second.second].erase(entity->getId());
+		EntityStore::iterator J = mEntities.find(I->second.first);
+		if (J != mEntities.end()) {
+			EntityColumn& column(J->second);
+			EntityColumn::iterator K = column.find(I->second.second);
+			if (K != column.end()) {
+				EntityMap& entityMap(K->second);
+				EntityMap::iterator L = entityMap.find(entity->getId());
+				if (L != entityMap.end()) {
+					L->second.movedConnection.disconnect();
+					L->second.beingDeletedConnection.disconnect();
+					entityMap.erase(L);
+					mEntityLookup.erase(I);
+				}
+			}
+		}
 	}
 #else
-	mEntities.erase(entity->getId());
+	EntityMap::iterator I = mEntities.find(entity->getId());
+	if (I != mEntities.end()) {
+		I->second.movedConnection.disconnect();
+		I->second.beingDeletedConnection.disconnect();
+		mEntities.erase(I);
+	}
+	
 #endif
-	///Rebuild geometry if necessary
-	mGeom->reloadGeometryPage(entity->getSceneNode()->getWorldPosition());
+	///Rebuild geometry if necessary.
+	mGeom.reloadGeometryPage(entity->getSceneNode()->getWorldPosition());
 }
+
+EmberEntityLoader::EntityMap* EmberEntityLoader::getStoreForEntity(EmberPhysicalEntity* entity)
+{
+#if EMBERENTITYLOADER_USEBATCH
+	EntityLookup::iterator I = mEntityLookup.find(entity);
+	if (I != mEntityLookup.end()) {
+		EntityStore::iterator J = mEntities.find(I->second.first);
+		if (J != mEntities.end()) {
+			EntityColumn& column(J->second);
+			EntityColumn::iterator K = column.find(I->second.second);
+			if (K != column.end()) {
+				EntityMap& entityMap(K->second);
+				return &entityMap;
+			}
+		}
+	}
+	return 0;
+#else
+	return &mEntities;
+#endif
+}
+
 
 void EmberEntityLoader::loadPage(::PagedGeometry::PageInfo & page)
 {
 	static Ogre::ColourValue colour(1,1,1,1);
 	
 	
-#if USEBATCH
+#if EMBERENTITYLOADER_USEBATCH
 	const int batchX = static_cast<int>(Ogre::Math::Floor(page.bounds.left/ mBatchSize));
 	const int batchY = static_cast<int>(Ogre::Math::Floor(page.bounds.top / mBatchSize));
 	EntityMap& entities(mEntities[batchX][batchY]);
@@ -97,7 +175,8 @@ void EmberEntityLoader::loadPage(::PagedGeometry::PageInfo & page)
 #endif
 	
 	for (EntityMap::iterator I = entities.begin(); I != entities.end(); ++I) {
-		EmberPhysicalEntity* emberEntity(I->second);
+		EntityInstance& instance(I->second);
+		EmberPhysicalEntity* emberEntity(instance.entity);
 		Ogre::SceneNode* sceneNode(emberEntity->getSceneNode());
 		const Ogre::Vector3& pos(sceneNode->getWorldPosition());
 		Model::Model* model(emberEntity->getModel());
@@ -107,13 +186,34 @@ void EmberEntityLoader::loadPage(::PagedGeometry::PageInfo & page)
 // 					model->getParentSceneNode()->attachObject((*J)->getEntity());
 // 				}
 // 				if ((*J)->getEntity()->isVisible()) {
-					addEntity((*J)->getEntity(), I->second->getScaleNode()->getWorldPosition(), I->second->getScaleNode()->getWorldOrientation(), 	I->second->getScaleNode()->_getDerivedScale(), colour);
+					addEntity((*J)->getEntity(), emberEntity->getScaleNode()->getWorldPosition(), emberEntity->getScaleNode()->getWorldOrientation(), 	emberEntity->getScaleNode()->_getDerivedScale(), colour);
 // 					(*J)->getEntity()->setVisible(false);
 // 				}
 			}
 		}
 	}
 }
+
+void EmberEntityLoader::EmberEntity_Moved(EmberPhysicalEntity* entity)
+{
+	EntityMap* entityMap(getStoreForEntity(entity));
+	if (entityMap) {
+		EntityMap::iterator I = entityMap->find(entity->getId());
+		if (I != entityMap->end()) {
+			EntityInstance& instance(I->second);
+			mGeom.reloadGeometryPage(instance.lastPosition);
+			mGeom.reloadGeometryPage(instance.entity->getSceneNode()->getWorldPosition());
+			instance.lastPosition = instance.entity->getSceneNode()->getWorldPosition();
+		}
+	}
+}
+
+void EmberEntityLoader::EmberEntity_BeingDeleted(EmberPhysicalEntity* entity)
+{
+	removeEmberEntity(entity);
+}
+
+
 
 }
 

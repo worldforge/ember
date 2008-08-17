@@ -93,7 +93,7 @@ void Forest::initialize()
 		mTrees->addDetailLevel<PagedGeometry::ImpostorPage>(500, 50);	//Use impostors up to 400 units, and for for 50 more units
 	
 		//Create a new TreeLoader2D object
-		mEntityLoader = new EmberEntityLoader(mTrees, 64);
+		mEntityLoader = new EmberEntityLoader(*mTrees, 64);
 	// 	mTreeLoader = new PagedGeometry::TreeLoader3D(mTrees, Atlas2Ogre(worldSize));
 		mTrees->setPageLoader(mEntityLoader);	//Assign the "treeLoader" to be used to load geometry for the PagedGeometry instance	
 	}
