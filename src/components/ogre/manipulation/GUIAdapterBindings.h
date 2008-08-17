@@ -42,17 +42,17 @@ public:
 	virtual ~GUIAdapterBindings();
 
 	/**
-	 * Returns binded function
+	 * Returns bound function
 	 */
 	const std::string& getFunc();
 
 	/**
-	 * Sets binded function
+	 * Sets bound function
 	 */
 	void setFunc(std::string func);
 
 	/**
-	 * Add binded adapter
+	 * Add bound adapter
 	 */
 	void addAdapter(std::string adapterName);
 
@@ -78,12 +78,12 @@ public:
 
 protected:
 	/**
-	 * Binded function name
+	 * Bound function name
 	 */
 	std::string mFunc;
 
 	/**
-	 * List of binded adapters.
+	 * List of bound adapters.
 	 */
 	std::vector<std::string> mAdapters;
 
