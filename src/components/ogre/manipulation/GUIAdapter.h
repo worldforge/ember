@@ -31,17 +31,23 @@
 namespace EmberOgre {
 
 /**
- * Base class for GUI adapter.
+ * @brief GUI adapters wrapper.
+ *
+ * This class is used to wrap adapters that are instantiated with EmberOgre::Gui::Adapters::Atlas::AdapterFactory.
+ * It allows to &ldquo;create&rdquo; adapter without window and later attach it to window.
+ *
+ * @author Alexey Torkhov <atorkhov@gmail.com>
  */
 class GUIAdapter
 {
 
-// This maps suggestion _text_ to values
+// This maps suggestion text to values
 typedef std::map<std::string, std::string> SuggestionsStore;
 
 public:
 	/**
 	 * Constructor.
+	 * @param type The type of new adapter. Should be known to AdaptersFactory.
 	 */
 	GUIAdapter(const std::string& type);
 
@@ -61,17 +67,22 @@ public:
 	void attach(CEGUI::Window* window);
 
 	/**
-	 * Detaches adapter from attached window.
+	 * Detaches adapter from previously attached window.
 	 */
 	void detach();
 
 	/**
-	 * Returns adapter value.
+	 * @brief Returns adapter value.
+	 *
+	 * This function returns adapter value.
+	 * If allowRandom was set, it return random suggestion if value is equal to &ldquo;Random&rdquo;
 	 */
 	Atlas::Message::Element getValue();
 
 	/**
-	 * Sets adapter title.
+	 * @brief Sets adapter title.
+	 *
+	 * This sets adapter title that could be reused later, when populating widget with adapters.
 	 */
 	void setTitle(const std::string& title);
 
@@ -86,7 +97,9 @@ public:
 	void addSuggestion(const std::string& value, const std::string& text);
 
 	/**
-	 * Sets, is there need to add "Random" suggestion.
+	 * @brief Is &ldquo;Random&rdquo; allowed.
+	 *
+	 * If set to true, adds &ldquo;Random&rdquo; suggestion.
 	 */
 	void setAllowRandom(bool val);
 
@@ -115,7 +128,7 @@ protected:
 	 * Adapter value.
 	 */
 	Atlas::Message::Element mElement;
-	
+
 	/**
 	 * Adapter title.
 	 */
