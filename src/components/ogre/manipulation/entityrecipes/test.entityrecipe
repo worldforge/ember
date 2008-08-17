@@ -1,6 +1,6 @@
 <entityrecipes>
   <entityrecipe name="test">
-    <entity>
+    <entity type="boulder">
       <atlas>
         <map>
           <int name="foo">$bar</int>
