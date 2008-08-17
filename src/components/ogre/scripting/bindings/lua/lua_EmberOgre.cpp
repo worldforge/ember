@@ -20063,37 +20063,6 @@ static int tolua_EmberOgre_EmberOgre_EntityRecipe_getDescription00(lua_State* to
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: doTest of class  EmberOgre::EntityRecipe */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EntityRecipe_doTest00
-static int tolua_EmberOgre_EmberOgre_EntityRecipe_doTest00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::EntityRecipe",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  EmberOgre::EntityRecipe* self = (EmberOgre::EntityRecipe*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'doTest'",NULL);
-#endif
-  {
-   self->doTest();
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'doTest'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* method: createEntity of class  EmberOgre::EntityRecipe */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EntityRecipe_createEntity00
 static int tolua_EmberOgre_EmberOgre_EntityRecipe_createEntity00(lua_State* tolua_S)
@@ -25773,7 +25742,6 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"getAuthor",tolua_EmberOgre_EmberOgre_EntityRecipe_getAuthor00);
     tolua_function(tolua_S,"setDescription",tolua_EmberOgre_EmberOgre_EntityRecipe_setDescription00);
     tolua_function(tolua_S,"getDescription",tolua_EmberOgre_EmberOgre_EntityRecipe_getDescription00);
-    tolua_function(tolua_S,"doTest",tolua_EmberOgre_EmberOgre_EntityRecipe_doTest00);
     tolua_function(tolua_S,"createEntity",tolua_EmberOgre_EmberOgre_EntityRecipe_createEntity00);
    tolua_endmodule(tolua_S);
    tolua_cclass(tolua_S,"EntityRecipePtr","EmberOgre::EntityRecipePtr","",NULL);

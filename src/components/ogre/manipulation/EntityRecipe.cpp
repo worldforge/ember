@@ -285,6 +285,7 @@ void EntityRecipe::valueChanged()
 	EventValueChanged.emit();
 }
 
+/*
 void EntityRecipe::doTest()
 {
 	S_LOG_VERBOSE("Doing test.");
@@ -306,5 +307,6 @@ void EntityRecipe::doTest()
 
 	S_LOG_VERBOSE("Returned element type is " << returnObj.getType());
 }
+*/
 
 }

@@ -132,7 +132,7 @@ public:
 	/**
 	 * Does some test checking.
 	 */
-	void doTest();
+	//void doTest();
 
 	/**
 	 * Emits when value of any of adapters is changed.
