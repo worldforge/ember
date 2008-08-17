@@ -37,7 +37,9 @@ typedef std::map<std::string, GUIAdapter*> GUIAdaptersStore;
 typedef std::map<std::string, GUIAdapterBindings*> BindingsStore;
 
 /**
- * Resource that stores recipes for entity creator.
+ * @brief Resource that stores entity recipes.
+ *
+ * This class is for storing and manipulating with entity recipe.
  */
 class EntityRecipe : public Ogre::Resource {
 
@@ -76,7 +78,7 @@ public:
 	std::string getEntityType();
 
 	/**
-	 * Creates and returns GUI adapter.
+	 * Creates and returns GUI adapter. This used currently by entity recipes parser (XMLEntityRecipeSerializer) for populating entity recipes.
 	 */
 	GUIAdapter* createGUIAdapter(std::string name, std::string type);
 
@@ -91,18 +93,19 @@ public:
 	const GUIAdaptersStore& getGUIAdapters();
 
 	/**
-	 * Creates and returns GUI adapter bindings.
+	 * Creates and returns GUI adapter bindings. This used currently by entity recipes parser (XMLEntityRecipeSerializer) for populating entity recipes.
 	 */
 	GUIAdapterBindings* createGUIAdapterBindings(std::string name);
 
 	/**
-	 * Associate each binding with correspondent placeholders (entity spec nodes)
+	 * Associate each binding with correspondent placeholders (entity spec nodes).
 	 */
 	void associateBindings();
 
 	/**
-	 * Grabs current values from adapters, runs it through Lua function
-	 * and composes resulting Atlas message.
+	 * @brief Composes an entity.
+	 *
+	 * Grabs current values from adapters, runs it through Lua function and composes resulting Atlas message.
 	 */
 	Atlas::Message::MapType createEntity();
 
@@ -150,7 +153,7 @@ protected:
 	std::string mDescription;
 
 	/**
-	 * List of semi-atlas entity specs.
+	 * Stores semi-atlas entity spec.
 	 */
 	TiXmlElement* mEntitySpec;
 

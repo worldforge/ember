@@ -26,7 +26,7 @@
 namespace EmberOgre {
 
 /**
- * Contains bindings for GUI adapters.
+ * Contains bindings of one placeholder to many GUI adapters.
  */
 class GUIAdapterBindings
 {
