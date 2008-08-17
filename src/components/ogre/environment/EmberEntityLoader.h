@@ -65,6 +65,12 @@ struct EntityInstance
 	@brief The connection for listening to the BeingDeleted event on the entity. When removing the entity, make sure to disconnect this.
 	*/
 	sigc::connection beingDeletedConnection;
+
+	/**
+	@brief The connection for listening to the VisiblityChanged event on the entity. When removing the entity, make sure to disconnect this.
+	*/
+	sigc::connection visibilityChangedConnection;
+
 };
 
 
@@ -154,10 +160,17 @@ protected:
 	void EmberEntity_Moved(EmberPhysicalEntity* entity);
 	
 	/**
-	 * @brief Listen for delections of the entity and update the paged geometry accordingly.
+	 * @brief Listen for deletion of the entity and update the paged geometry accordingly.
 	 * @param entity The entity which will be deleted.
 	 */
 	void EmberEntity_BeingDeleted(EmberPhysicalEntity* entity);
+	
+	/**
+	 * @brief Listen for visiblity changes and update the paged geometry accordingly.
+	 * @param visible Whether the entity is visible or not.
+	 * @param entity The entity for which the visibility was changed.
+	 */
+	void EmberEntity_VisibilityChanged(bool visible, EmberPhysicalEntity* entity);
 	
 	/**
 	 * @brief Utility method for getting the EntityMap a certain entity belongs to.

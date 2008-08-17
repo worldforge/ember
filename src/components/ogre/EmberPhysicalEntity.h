@@ -105,7 +105,7 @@ public:
 	 *    Override the default implementation to also handle different rendering techniques (like "forest" rendering).
 	 * @param visible 
 	 */
-	virtual void setVisible(bool visible);
+// 	virtual void setClientVisible(bool visible);
 
 	virtual void attachToPointOnModel(const std::string& point, Model::Model* model);
 	virtual void detachFromModel();

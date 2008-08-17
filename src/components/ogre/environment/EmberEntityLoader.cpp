@@ -56,6 +56,7 @@ EmberEntityLoader::~EmberEntityLoader()
 			{
 				K->second.movedConnection.disconnect();
 				K->second.beingDeletedConnection.disconnect();
+				K->second.visibilityChangedConnection.disconnect();
 			}
 		}
 	}
@@ -64,6 +65,7 @@ EmberEntityLoader::~EmberEntityLoader()
 	{
 		I->second.movedConnection.disconnect();
 		I->second.beingDeletedConnection.disconnect();
+		I->second.visibilityChangedConnection.disconnect();
 	}
 #endif
 }
@@ -77,6 +79,7 @@ void EmberEntityLoader::addEmberEntity(EmberPhysicalEntity * entity)
 	EntityInstance instance;
 	instance.movedConnection = entity->Moved.connect(sigc::bind(sigc::mem_fun(*this, &EmberEntityLoader::EmberEntity_Moved), entity));
 	instance.beingDeletedConnection = entity->BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &EmberEntityLoader::EmberEntity_BeingDeleted), entity));
+	instance.visibilityChangedConnection = entity->VisibilityChanged.connect(sigc::bind(sigc::mem_fun(*this, &EmberEntityLoader::EmberEntity_VisibilityChanged), entity));
 	instance.entity = entity;
 	
 	Ogre::Vector3 position(entity->getSceneNode()->getWorldPosition());
@@ -177,18 +180,20 @@ void EmberEntityLoader::loadPage(::PagedGeometry::PageInfo & page)
 	for (EntityMap::iterator I = entities.begin(); I != entities.end(); ++I) {
 		EntityInstance& instance(I->second);
 		EmberPhysicalEntity* emberEntity(instance.entity);
-		Ogre::SceneNode* sceneNode(emberEntity->getSceneNode());
-		const Ogre::Vector3& pos(sceneNode->getWorldPosition());
-		Model::Model* model(emberEntity->getModel());
-		if (pos.x > page.bounds.left && pos.x < page.bounds.right && pos.z > page.bounds.top && pos.z < page.bounds.bottom) {
-			for (Model::Model::SubModelSet::const_iterator J = model->getSubmodels().begin(); J != model->getSubmodels().end(); ++J) {
-// 				if (!(*J)->getEntity()->getParentSceneNode()) {
-// 					model->getParentSceneNode()->attachObject((*J)->getEntity());
-// 				}
-// 				if ((*J)->getEntity()->isVisible()) {
-					addEntity((*J)->getEntity(), emberEntity->getScaleNode()->getWorldPosition(), emberEntity->getScaleNode()->getWorldOrientation(), 	emberEntity->getScaleNode()->_getDerivedScale(), colour);
-// 					(*J)->getEntity()->setVisible(false);
-// 				}
+		if (emberEntity->isVisible()) {
+			Ogre::SceneNode* sceneNode(emberEntity->getSceneNode());
+			const Ogre::Vector3& pos(sceneNode->getWorldPosition());
+			Model::Model* model(emberEntity->getModel());
+			if (pos.x > page.bounds.left && pos.x < page.bounds.right && pos.z > page.bounds.top && pos.z < page.bounds.bottom) {
+				for (Model::Model::SubModelSet::const_iterator J = model->getSubmodels().begin(); J != model->getSubmodels().end(); ++J) {
+	// 				if (!(*J)->getEntity()->getParentSceneNode()) {
+	// 					model->getParentSceneNode()->attachObject((*J)->getEntity());
+	// 				}
+	//  				if ((*J)->getEntity()->isVisible()) {
+						addEntity((*J)->getEntity(), emberEntity->getScaleNode()->getWorldPosition(), emberEntity->getScaleNode()->getWorldOrientation(), 	emberEntity->getScaleNode()->_getDerivedScale(), colour);
+	// 					(*J)->getEntity()->setVisible(false);
+	//  				}
+				}
 			}
 		}
 	}
@@ -211,6 +216,12 @@ void EmberEntityLoader::EmberEntity_Moved(EmberPhysicalEntity* entity)
 void EmberEntityLoader::EmberEntity_BeingDeleted(EmberPhysicalEntity* entity)
 {
 	removeEmberEntity(entity);
+}
+
+void EmberEntityLoader::EmberEntity_VisibilityChanged(bool visible, EmberPhysicalEntity* entity)
+{
+	///When the visibility changes, we only need to reload the page the entity is on.
+	mGeom.reloadGeometryPage(entity->getSceneNode()->getWorldPosition());
 }
 
 

@@ -128,42 +128,42 @@ EmberEntity* EmberPhysicalEntity::getEntityAttachedToPoint(const std::string& at
 }
 
 
-void EmberPhysicalEntity::setVisible(bool visible)
-{
-	EmberEntity::setVisible(visible);
-	
-	const Model::RenderingDefinition* renderingDef = mModel->getDefinition()->getRenderingDefinition();
-	if (renderingDef && renderingDef->getScheme() == "forest" && mModel) {
-		Environment::Forest* forest = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getForest();
-		if (visible) {
-			forest->addEmberEntity(this);
-		} else {
-			forest->removeEmberEntity(this);
-		}
-/*		for (Model::Model::SubModelSet::const_iterator I = mModel->getSubmodels().begin(); I != mModel->getSubmodels().end(); ++I) {
-// 			if ((*I)->getEntity()->isVisible()) {
-				(*I)->getEntity()->setVisible(true);
-				forest->addTree((*I)->getEntity(), getScaleNode()->getWorldPosition(), getScaleNode()->getWorldOrientation().getYaw(), 	getScaleNode()->getScale().y);
-// 			}
-		}
-		mModel->setRenderingDistance(100);*/
-// 		getScaleNode()->detachObject(mModel);
-// 		getSceneNode()->removeChild(getScaleNode());
-// 		getScaleNode()->setVisible(false);
-	}
-	
-// 	if (!visible) {
-// 		if (getScaleNode()->getParent()) {
-// 			mOgreNode->removeChild(getScaleNode());
-// 		}
-// 	} else {
-// 		if (!getScaleNode()->getParent()) {
-// 			mOgreNode->addChild(getScaleNode());
-// 		}
-// 	}
-// 	getScaleNode()->setVisible(visible && getLocation(), false);	
-	//getModel()->setVisible(visible);
-}
+// void EmberPhysicalEntity::setClientVisible(bool visible)
+// {
+// 	EmberEntity::setClientVisible(visible);
+// 	
+// // 	const Model::RenderingDefinition* renderingDef = mModel->getDefinition()->getRenderingDefinition();
+// // 	if (renderingDef && renderingDef->getScheme() == "forest" && mModel) {
+// // 		Environment::Forest* forest = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getForest();
+// // 		if (visible) {
+// // 			forest->addEmberEntity(this);
+// // 		} else {
+// // 			forest->removeEmberEntity(this);
+// // 		}
+// // /*		for (Model::Model::SubModelSet::const_iterator I = mModel->getSubmodels().begin(); I != mModel->getSubmodels().end(); ++I) {
+// // // 			if ((*I)->getEntity()->isVisible()) {
+// // 				(*I)->getEntity()->setVisible(true);
+// // 				forest->addTree((*I)->getEntity(), getScaleNode()->getWorldPosition(), getScaleNode()->getWorldOrientation().getYaw(), 	getScaleNode()->getScale().y);
+// // // 			}
+// // 		}
+// // 		mModel->setRenderingDistance(100);*/
+// // // 		getScaleNode()->detachObject(mModel);
+// // // 		getSceneNode()->removeChild(getScaleNode());
+// // // 		getScaleNode()->setVisible(false);
+// // 	}
+// 	
+// // 	if (!visible) {
+// // 		if (getScaleNode()->getParent()) {
+// // 			mOgreNode->removeChild(getScaleNode());
+// // 		}
+// // 	} else {
+// // 		if (!getScaleNode()->getParent()) {
+// // 			mOgreNode->addChild(getScaleNode());
+// // 		}
+// // 	}
+// // 	getScaleNode()->setVisible(visible && getLocation(), false);	
+// 	//getModel()->setVisible(visible);
+// }
 
 void EmberPhysicalEntity::createScaleNode() 
 {
@@ -374,7 +374,7 @@ void EmberPhysicalEntity::detachFromModel()
 	if (mModelAttachedTo) {
 		mModelAttachedTo->detachObjectFromBone(getModel()->getName());
 		getScaleNode()->attachObject(getModel());
-		checkVisibility(isVisible());
+		checkClientVisibility(isVisible());
 		mModelAttachedTo = 0;
 	}
 }
