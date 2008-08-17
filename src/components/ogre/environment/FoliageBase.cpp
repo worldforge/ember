@@ -59,6 +59,7 @@ FoliageBase::FoliageBase(const Terrain::TerrainLayerDefinition& terrainLayerDefi
 	
 	EmberOgre::getSingleton().getTerrainGenerator()->EventLayerUpdated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainGenerator_LayerUpdated));
 	EmberOgre::getSingleton().getTerrainGenerator()->EventShaderCreated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainGenerator_EventShaderCreated));
+	EmberOgre::getSingleton().getTerrainGenerator()->EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &FoliageBase::TerrainGenerator_AfterTerrainUpdate));
 	
 }
 
@@ -117,6 +118,29 @@ void FoliageBase::TerrainGenerator_EventShaderCreated(Terrain::TerrainShader* sh
 	///we'll assume that all shaders that are created after this foliage has been created will affect it, so we'll add it to the dependent layers and reload the geometry
 	mDependentDefinitions.push_back(shader->getLayerDefinition());
 	mPagedGeometry->reloadGeometry();
+}
+
+void FoliageBase::TerrainGenerator_AfterTerrainUpdate(std::vector<TerrainPosition>& terrainPositions, std::set< ::EmberOgre::Terrain::TerrainPage* >& pages)
+{
+	if (mPagedGeometry) {
+		mPagedGeometry->reloadGeometry();
+//HACK: for some reason I couldn't get the code below to work as it should, so we'll go with the brute way of just reloading all geometry. Newer versions of PagedGeometry contains additional methods for reloading sections of the geometry which we shoudl be able to use once we've updated the version used in Ember.
+#if 0		
+		Ogre::Real pageSize(mPagedGeometry->getPageSize());
+		for (std::set< ::EmberOgre::Terrain::TerrainPage* >::iterator I = pages.begin(); I != pages.end(); ++I) {
+			::EmberOgre::Terrain::TerrainPage* page(*I);
+			const Ogre::TRect<Ogre::Real> ogreExtent(Atlas2Ogre(page->getExtent()));
+			
+			///update all paged geometry pages that are within the extent of the terrain page
+			Ogre::Vector3 pos(ogreExtent.left, 0, ogreExtent.top);
+			for (; pos.x < ogreExtent.right; pos.x += pageSize) {
+				for (; pos.z < ogreExtent.bottom; pos.z += pageSize) {
+					mPagedGeometry->reloadGeometryPage(pos);
+				}
+			}
+		}
+#endif
+	}
 }
 
 //Gets the height of the terrain at the specified x/z coordinate
