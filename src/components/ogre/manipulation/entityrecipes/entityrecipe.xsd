@@ -114,37 +114,37 @@
 		</xsd:complexType>
 	</xsd:element>
 
-    <xsd:complexType name="semiatlas">
+	<xsd:complexType name="semiatlas">
 		<xsd:all>
 			<xsd:element name="map" type="semiatlas-map" />
 		</xsd:all>
-    </xsd:complexType>
+	</xsd:complexType>
 
-    <xsd:complexType name="semiatlas-string">
+	<xsd:complexType name="semiatlas-string">
 		<xsd:simpleContent>
 			<xsd:extension base="xsd:string">
 				<xsd:attribute name="name" type="xsd:string" use="optional"/>
 			</xsd:extension>
 		</xsd:simpleContent>
-    </xsd:complexType>
+	</xsd:complexType>
 
-    <xsd:complexType name="semiatlas-int">
+	<xsd:complexType name="semiatlas-int">
 		<xsd:simpleContent>
 			<xsd:extension base="xsd:string">
 				<xsd:attribute name="name" type="xsd:string" use="optional"/>
 			</xsd:extension>
 		</xsd:simpleContent>
-    </xsd:complexType>
+	</xsd:complexType>
 
-    <xsd:complexType name="semiatlas-float">
+	<xsd:complexType name="semiatlas-float">
 		<xsd:simpleContent>
 			<xsd:extension base="xsd:string">
 				<xsd:attribute name="name" type="xsd:string" use="optional"/>
 			</xsd:extension>
 		</xsd:simpleContent>
-    </xsd:complexType>
+	</xsd:complexType>
 
-    <xsd:complexType name="semiatlas-list" mixed="true">
+	<xsd:complexType name="semiatlas-list" mixed="true">
 		<xsd:sequence>
 			<xsd:choice minOccurs="0" maxOccurs="unbounded">
 				<xsd:element name="string" type="semiatlas-string" />
@@ -155,9 +155,9 @@
 			</xsd:choice>
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string" use="optional"/>
-    </xsd:complexType>
+	</xsd:complexType>
 
-    <xsd:complexType name="semiatlas-map">
+	<xsd:complexType name="semiatlas-map">
 		<xsd:sequence>
 			<xsd:choice minOccurs="0" maxOccurs="unbounded">
 				<xsd:element name="string" type="semiatlas-string" />
@@ -168,5 +168,5 @@
 			</xsd:choice>
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string" use="optional"/>
-    </xsd:complexType>
+	</xsd:complexType>
 </xsd:schema>
