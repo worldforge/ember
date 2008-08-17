@@ -26,7 +26,7 @@ uninstall-local:
 	find $(DESTDIR)$(datadir)/ember/media/user/modeldefinitions -name  \*.terrain | xargs rm -f
 
 check-local:
-	@for rule in `find $(top_srcdir)/src/components/ogre/modeldefinitions .modeldef` ; do \
+	@for rule in `find $(top_srcdir)/src/components/ogre/modeldefinitions -name \*.modeldef -or -name \*.modeldef.xml` ; do \
 		echo $(XMLLINT) -noout $$rule; \
 		$(XMLLINT) -noout $$rule; \
 	done;
