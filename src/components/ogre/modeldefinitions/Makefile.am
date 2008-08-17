@@ -27,6 +27,6 @@ uninstall-local:
 
 check-local:
 	@for rule in `find $(top_srcdir)/src/components/ogre/modeldefinitions -name \*.modeldef -or -name \*.modeldef.xml` ; do \
-		echo $(XMLLINT) -noout $$rule; \
-		$(XMLLINT) -noout $$rule; \
+		echo $(XMLLINT) -noout -schema $(top_srcdir)/src/components/ogre/modeldefinitions/modeldefinition.xsd $$rule; \
+		$(XMLLINT) -noout -schema $(top_srcdir)/src/components/ogre/modeldefinitions/modeldefinition.xsd $$rule; \
 	done;
