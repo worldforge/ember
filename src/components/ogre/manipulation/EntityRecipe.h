@@ -40,6 +40,8 @@ typedef std::map<std::string, GUIAdapterBindings*> BindingsStore;
  * @brief Resource that stores entity recipes.
  *
  * This class is for storing and manipulating with entity recipe.
+ *
+ * @author Alexey Torkhov <atorkhov@gmail.com>
  */
 class EntityRecipe : public Ogre::Resource {
 

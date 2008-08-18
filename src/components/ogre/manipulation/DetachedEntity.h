@@ -31,6 +31,8 @@ namespace EmberOgre {
  * @brief Entity that doesn't belong to entity hierarchy.
  *
  * This is an entity that doesn't belong to entity hierarchy.
+ * 
+ * @author Alexey Torkhov <atorkhov@gmail.com>
  */
 class DetachedEntity : public Eris::Entity
 {
