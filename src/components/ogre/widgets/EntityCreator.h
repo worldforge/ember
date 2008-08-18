@@ -96,7 +96,7 @@ public:
 	/**
 	 * Sets position of new entity
 	 */
-	void setPosition(WFMath::Point<3> pos);
+	void setPosition(const WFMath::Point<3>& pos);
 
 	/**
 	 * Rotates an entity for specified number of degrees.

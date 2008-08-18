@@ -453,7 +453,7 @@ void EntityCreator::cleanupCreation()
 	delete mEntity;
 }
 
-void EntityCreator::setPosition(WFMath::Point<3> pos)
+void EntityCreator::setPosition(const WFMath::Point<3>& pos)
 {
 	mPos = pos;
 	mEntityNode->setPosition(Atlas2Ogre(pos));
