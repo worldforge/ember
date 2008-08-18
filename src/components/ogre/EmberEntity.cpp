@@ -509,7 +509,6 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
 		} else {
 			///if we couldn't properly initialize, delete the instance now, and then hopefully the next time the "area" attribute is changed we'll be able to properly create an area
 			mTerrainArea.reset();
-// 			mTerrainArea = std::auto_ptr<Terrain::TerrainArea>(0);
 		}
 	}
 	
