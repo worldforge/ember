@@ -442,9 +442,13 @@ void EntityCreator::cleanupCreation()
 	mMoveAdapter->removeAdapter();
 
 	mEntityNode->detachAllObjects();
-	// delete model ?
 	EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->removeChild(mEntityNode);
-//	delete mEntityNode;  // ?
+//	delete mEntityNode;
+	mEntityNode = 0;
+
+	EmberOgre::getSingleton().getSceneManager()->destroyMovableObject(mModel);
+//	delete mModel;
+	mModel = 0;
 
 	mCreateMode = false;
 
