@@ -1,7 +1,13 @@
 //
 // C++ Interface: TerrainMod
 //
-// Description: 
+// Description: The purpose of this class is to handle the bulk of the work
+//		involved with using Mercator::TerrainMods. It handles parsing
+//		the Atlas data and storing all the information needed by 
+//		TerrainGenerator to add and remove them from the Terrain.
+//
+//		TerrainGenerator listens for changes in the modifier and
+//		updates or removes the modifiers from the terrain as needed.
 //
 //
 // Author: Tamas Bates <rhymer@gmail.com>, (C) 2008

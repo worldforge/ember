@@ -248,6 +248,9 @@ void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
         // Remove this mod from our list so we can replace the pointer with a new one
     mTerrainMods.erase(terrainMod->mEntity->getId());
 
+//     mTerrainMods.find(entityID)->second = terrainMod->getMod();
+//     mTerrain->updateMod(mTerrainMods.find(entityID)->second);
+
         // Reapply the mod to the terrain with the updated parameters
     Mercator::TerrainMod *mercatorMod = terrainMod->getMod();
     mercatorMod = mTerrain->addMod(*mercatorMod);
@@ -258,25 +261,23 @@ void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
 	std::vector<TerrainPosition> updatedPositions;
 	updatedPositions.push_back(TerrainPosition(mercatorMod->bbox().getCenter().x() / 64, mercatorMod->bbox().getCenter().y() / 64));
 	reloadTerrain(updatedPositions);
-//     buildHeightmap();
 }
 
 void TerrainGenerator::TerrainMod_Deleted(TerrainMod* terrainMod)
 {
-        // Clear this mod from the terrain
-            // Get the ID of the modifier's owner
-        std::string entityID = terrainMod->mEntity->getId();
-        S_LOG_INFO("modhandler: deleted: Mod for entity " << entityID << " deleted?");
-            // Use the pointer returned from addMod() to remove it
-        mTerrain->removeMod(mTerrainMods.find(entityID)->second);
-        // Remove this mod from our list
-        mTerrainMods.erase(terrainMod->mEntity->getId());
+    // Clear this mod from the terrain
+        // Get the ID of the modifier's owner
+    std::string entityID = terrainMod->mEntity->getId();
+    S_LOG_INFO("modhandler: deleted: Mod for entity " << entityID << " deleted?");
+        // Use the pointer returned from addMod() to remove it
+    mTerrain->removeMod(mTerrainMods.find(entityID)->second);
+    // Remove this mod from our list
+    mTerrainMods.erase(terrainMod->mEntity->getId());
 
 	std::vector<TerrainPosition> updatedPositions;
 	updatedPositions.push_back(TerrainPosition(terrainMod->getMod()->bbox().getCenter().x() / 64, terrainMod->getMod()->bbox().getCenter().y() / 64));
 	reloadTerrain(updatedPositions);
-    
-//     buildHeightmap();
+
 }
 
 void TerrainGenerator::addArea(TerrainArea* terrainArea)
