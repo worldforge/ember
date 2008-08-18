@@ -41,6 +41,7 @@ TerrainArea::~TerrainArea()
 {
 	EventAreaRemoved.emit(this);
 	delete mArea;
+	mAttrChangedSlot.disconnect();
 }
 
 bool TerrainArea::init() {
@@ -48,9 +49,11 @@ bool TerrainArea::init() {
  //   _fpreset();
 	//_controlfp(_PC_64, _MCW_PC);
 	//_controlfp(_RC_NEAR , _MCW_RC);
-
-	observeEntity();
-	return parseArea();
+	bool successfulParsing = parseArea();
+	if (successfulParsing) {
+		observeEntity();
+	}
+	return successfulParsing;
 	
 }
 
@@ -96,6 +99,11 @@ bool TerrainArea::parseArea()
         WFMath::Point<2> wpt(point[0].asNum(), point[1].asNum());
         poly.addCorner(poly.numCorners(), wpt);
     }
+//	if (poly.numCorners() < 3) { TODO: check whether we really can define an area with only one point
+	if (poly.numCorners() == 0) {
+		S_LOG_FAILURE("Could not find enough points to define the area. Found " << poly.numCorners() << " points.");
+		return false;
+	}
  // transform polygon into terrain coords
     WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(mEntity->getOrientation());
     double theta = atan2(xVec.y(), xVec.x()); // rotation about Z
@@ -111,9 +119,9 @@ bool TerrainArea::parseArea()
 		int j = 0;
 	}*/
    
-	if (poly.numCorners()) {
+// 	if (poly.numCorners()) {
     	mArea->setShape(poly);
-	}
+// 	}
 	
 	return true;
 }
