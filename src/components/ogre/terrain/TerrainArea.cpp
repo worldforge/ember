@@ -39,9 +39,9 @@ TerrainArea::TerrainArea(EmberEntity* entity) : mArea(0), mEntity(entity)
 
 TerrainArea::~TerrainArea()
 {
+	mAttrChangedSlot.disconnect();
 	EventAreaRemoved.emit(this);
 	delete mArea;
-	mAttrChangedSlot.disconnect();
 }
 
 bool TerrainArea::init() {
