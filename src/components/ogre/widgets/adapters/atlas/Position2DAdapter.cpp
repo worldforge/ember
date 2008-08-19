@@ -40,10 +40,10 @@ Position2DAdapter::Position2DAdapter(const ::Atlas::Message::Element& element, C
 : AdapterBase(element), mXWindow(xWindow), mYWindow(yWindow)
 {
 	if (mXWindow) {
-		mXWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&Position2DAdapter::window_TextChanged, this)); 
+		addGuiEventConnection(mXWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&Position2DAdapter::window_TextChanged, this))); 
 	}
 	if (mYWindow) {
-		mYWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&Position2DAdapter::window_TextChanged, this)); 
+		addGuiEventConnection(mYWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&Position2DAdapter::window_TextChanged, this))); 
 	}
 	updateGui(mOriginalElement);
 }

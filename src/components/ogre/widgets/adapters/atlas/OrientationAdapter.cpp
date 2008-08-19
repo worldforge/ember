@@ -40,16 +40,16 @@ OrientationAdapter::OrientationAdapter(const ::Atlas::Message::Element& element,
 : AdapterBase(element), mXWindow(xWindow), mYWindow(yWindow), mZWindow(zWindow), mScalarWindow(scalarWindow)
 {
 	if (mXWindow) {
-		mXWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&OrientationAdapter::window_TextChanged, this)); 
+		addGuiEventConnection(mXWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&OrientationAdapter::window_TextChanged, this))); 
 	}
 	if (mYWindow) {
-		mYWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&OrientationAdapter::window_TextChanged, this)); 
+		addGuiEventConnection(mYWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&OrientationAdapter::window_TextChanged, this))); 
 	}
 	if (mZWindow) {
-		mZWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&OrientationAdapter::window_TextChanged, this)); 
+		addGuiEventConnection(mZWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&OrientationAdapter::window_TextChanged, this))); 
 	}
 	if (mScalarWindow) {
-		mScalarWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&OrientationAdapter::window_TextChanged, this)); 
+		addGuiEventConnection(mScalarWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&OrientationAdapter::window_TextChanged, this))); 
 	}
 
 	

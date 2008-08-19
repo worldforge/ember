@@ -54,6 +54,7 @@ AdapterBase::AdapterBase(const ::Atlas::Message::Element& element)
 
 AdapterBase::~AdapterBase()
 {
+	disconnectAllGuiEventConnections();
 }
 
 void AdapterBase::setValue(::Atlas::Message::Element& element)
@@ -106,6 +107,20 @@ bool AdapterBase::isRemoved() const
 
 void AdapterBase::addSuggestion(const std::string& suggestedValue)
 {
+}
+
+
+void AdapterBase::addGuiEventConnection(CEGUI::Event::Connection connection)
+{
+	mGuiEventConnections.push_back(connection);
+}
+
+void AdapterBase::disconnectAllGuiEventConnections()
+{
+	for (std::vector<CEGUI::Event::Connection>::iterator I = mGuiEventConnections.begin(); I != mGuiEventConnections.end(); ++I) {
+		(*I)->disconnect();
+	}
+	mGuiEventConnections.clear();
 }
 
 

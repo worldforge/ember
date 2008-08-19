@@ -227,6 +227,29 @@ protected:
 	 * @return The changed value.
 	 */
 	virtual ::Atlas::Message::Element _getChangedElement();
+	
+	/**
+	 * @brief Adds a CEGUI event connection to the internal list, which all are disconnected when this instance is detroyed.
+	 * All connections that are made to CEGUI event should be disconnected when ever any instance of this is destroyed, to prevent dangling pointers. By calling this method with your connection instance you'll guarantee that that happens.
+	 * @code
+	 * addGuiEventConnection(textWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&FooAdapter::window_TextChanged, this))); 
+	 * @endcode
+	 * @param connection The event connection. 
+	 */
+	void addGuiEventConnection(CEGUI::Event::Connection connection);
+	
+	/**
+	 * @brief Disconnects all cegui event connections that were registered through addGuiEventConnection().
+	 * This method is called automatically when an instance of this is deleted, so you don't need to call this yourself unless you want to force a disconnection.
+	 */
+	void disconnectAllGuiEventConnections();
+	
+private:
+
+	/**
+	@brief The internal list of gui event connections, used for automatic disconnection when the instance is destroyed.
+	*/
+	std::vector<CEGUI::Event::Connection> mGuiEventConnections;
 
 };
 

@@ -81,7 +81,11 @@ bool ListAdapter::_hasChanges()
 {
 	bool hasChanges = false;
 	for (AdapterStore::iterator I = mAdapters.begin(); I != mAdapters.end(); ++I) {
-		hasChanges = hasChanges || I->Adapter->hasChanges();
+		if (I->Adapter == 0) {
+// 			S_LOG_WARNING("The list of adapters contained a null reference. This should never happen.");
+		} else {
+			hasChanges = hasChanges || I->Adapter->hasChanges();
+		}
 	}
 	return hasChanges;
 }
@@ -89,10 +93,14 @@ bool ListAdapter::_hasChanges()
 
 void ListAdapter::addAttributeAdapter(Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow)
 {
-	AdapterWrapper wrapper;
-	wrapper.Adapter = adapter;
-	wrapper.ContainerWindow = containerWindow;
-	mAdapters.push_back(wrapper);
+	if (adapter) {
+		AdapterWrapper wrapper;
+		wrapper.Adapter = adapter;
+		wrapper.ContainerWindow = containerWindow;
+		mAdapters.push_back(wrapper);
+	} else {
+// 		S_LOG_WARNING("Tried to add a null adapter.");
+	}
 }
     
 void ListAdapter::removeAdapters()

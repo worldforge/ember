@@ -25,9 +25,6 @@
 
 #include "AdapterBase.h"
 
-using Atlas::Message::Element;
-using Atlas::Message::ListType;
-using Atlas::Message::MapType;
 
 namespace EmberOgre {
 

@@ -41,7 +41,7 @@ NumberAdapter::NumberAdapter(const ::Atlas::Message::Element& element, CEGUI::Co
 , mTextWindow(textWindow)
 {
 	if (textWindow) {
-		textWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&NumberAdapter::window_TextChanged, this)); 
+		addGuiEventConnection(textWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&NumberAdapter::window_TextChanged, this))); 
 	}
 	updateGui(mOriginalElement);
 	mTextWindow->getPushButton()->setVisible(false);

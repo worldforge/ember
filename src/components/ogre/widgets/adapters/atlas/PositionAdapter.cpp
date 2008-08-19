@@ -40,13 +40,13 @@ PositionAdapter::PositionAdapter(const ::Atlas::Message::Element& element, CEGUI
 : AdapterBase(element), mXWindow(xWindow), mYWindow(yWindow), mZWindow(zWindow)
 {
 	if (mXWindow) {
-		mXWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&PositionAdapter::window_TextChanged, this)); 
+		addGuiEventConnection(mXWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&PositionAdapter::window_TextChanged, this))); 
 	}
 	if (mYWindow) {
-		mYWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&PositionAdapter::window_TextChanged, this)); 
+		addGuiEventConnection(mYWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&PositionAdapter::window_TextChanged, this))); 
 	}
 	if (mZWindow) {
-		mZWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&PositionAdapter::window_TextChanged, this)); 
+		addGuiEventConnection(mZWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&PositionAdapter::window_TextChanged, this))); 
 	}
 	
 	updateGui(mOriginalElement);
