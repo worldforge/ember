@@ -156,7 +156,7 @@ void EntityCreatorHideModelAction::deactivate()
 
 
 EntityCreator::EntityCreator()
-		: mModel(0), mCreateMode(false), mBlurb(0), mBlurbShown(false)
+		: mCreateMode(false), mModel(0), mBlurb(0), mBlurbShown(false)
 {
 	mInputAdapter = new EntityCreatorInputAdapter(*this);
 	mMoveAdapter = new EntityCreatorMoveAdapter(*this);
@@ -571,8 +571,8 @@ bool EntityCreatorInputAdapter::injectMouseButtonUp(const Input::MouseButton& bu
 
 bool EntityCreatorInputAdapter::injectMouseButtonDown(const Input::MouseButton& button)
 {
-	CEGUI::Window* window = CEGUI::System::getSingleton().getWindowContainingMouse();
 	/* Disabled as changes to adapters doesn't reflected in preview
+	CEGUI::Window* window = CEGUI::System::getSingleton().getWindowContainingMouse();
 	if (window->isAncestor(mEntityCreator.mWidget->getMainWindow()))
 	{
 		mWindowClick = true;
