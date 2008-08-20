@@ -48,18 +48,18 @@ This class acts like a wrapper and controller, binding an instance of EmberEntit
 class TerrainArea : public virtual sigc::trackable
 {
 public:
-
-    /**
-     * @brief Ctor.
-     * You must make sure to call init() after you've created your TerrainArea instance, to properly set it up.
-     * @param entity The entity to wich this area is connected. This cannot be null, since the definition of the area is kept within the Entity. When the entity moves, the area will be updated.
-     */
-    TerrainArea(EmberEntity* entity);
-
-    /**
-     * @brief Dtor, will delete the allocated Mercator::Area.
-     */
-    ~TerrainArea();
+	
+	/**
+		* @brief Ctor.
+		* You must make sure to call init() after you've created your TerrainArea instance, to properly set it up.
+		* @param entity The entity to wich this area is connected. This cannot be null, since the definition of the area is kept within the Entity. When the entity moves, the area will be updated.
+		*/
+	TerrainArea(EmberEntity* entity);
+	
+	/**
+		* @brief Dtor, will delete the allocated Mercator::Area.
+		*/
+	~TerrainArea();
     
 	/**
 	 * @brief Sets up the observation of the entity, and parses the area info, creating the initial area instance.
