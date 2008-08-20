@@ -31,13 +31,23 @@
 namespace EmberOgre {
 
 /**
- * Base class for GUI adapter.
+ * @brief GUI adapters wrapper.
+ *
+ * This class is used to wrap adapters that are instantiated with EmberOgre::Gui::Adapters::Atlas::AdapterFactory.
+ * It allows to &ldquo;create&rdquo; adapter without window and later attach it to window.
+ *
+ * @author Alexey Torkhov <atorkhov@gmail.com>
  */
 class GUIAdapter
 {
+
+// This maps suggestion text to values
+typedef std::map<std::string, std::string> SuggestionsStore;
+
 public:
 	/**
 	 * Constructor.
+	 * @param type The type of new adapter. Should be known to AdaptersFactory.
 	 */
 	GUIAdapter(const std::string& type);
 
@@ -57,12 +67,22 @@ public:
 	void attach(CEGUI::Window* window);
 
 	/**
-	 * Returns adapter value.
+	 * Detaches adapter from previously attached window.
 	 */
-	Atlas::Message::Element& getValue();
+	void detach();
 
 	/**
-	 * Sets adapter title.
+	 * @brief Returns adapter value.
+	 *
+	 * This function returns adapter value.
+	 * If allowRandom was set, it return random suggestion if value is equal to &ldquo;Random&rdquo;
+	 */
+	Atlas::Message::Element getValue();
+
+	/**
+	 * @brief Sets adapter title.
+	 *
+	 * This sets adapter title that could be reused later, when populating widget with adapters.
 	 */
 	void setTitle(const std::string& title);
 
@@ -71,7 +91,29 @@ public:
 	 */
 	const std::string& getTitle() const;
 
+	/**
+	 * Adds suggestion.
+	 */
+	void addSuggestion(const std::string& value, const std::string& text);
+
+	/**
+	 * @brief Is &ldquo;Random&rdquo; allowed.
+	 *
+	 * If set to true, adds &ldquo;Random&rdquo; suggestion.
+	 */
+	void setAllowRandom(bool val);
+
+	/**
+	 * Emitted when the value has been changed from a gui update.
+	 */
+	sigc::signal<void> EventValueChanged;
+
 protected:
+	/**
+	 * Handles value change of underlying adapter and propagates it forward.
+	 */
+	void valueChanged();
+
 	/**
 	 * Adapter type.
 	 */
@@ -86,11 +128,21 @@ protected:
 	 * Adapter value.
 	 */
 	Atlas::Message::Element mElement;
-	
+
 	/**
 	 * Adapter title.
 	 */
 	std::string mTitle;
+
+	/**
+	 * List of suggestions.
+	 */
+	SuggestionsStore mSuggestions;
+
+	/**
+	 * If true, adds "Random" suggestion to the list.
+	 */
+	bool mAllowRandom;
 };
 
 }

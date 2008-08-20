@@ -4,10 +4,10 @@ noinst_LTLIBRARIES = libmanipulation.la
 libmanipulation_la_SOURCES = EntityMoveManager.cpp EntityMoveAdapter.cpp \
 			EntityMover.cpp EntityMoveAdjuster.cpp MaterialEditor.cpp \
 			GUIAdapter.cpp GUIAdapterBindings.cpp EntityRecipe.cpp \
-			EntityRecipeManager.cpp XMLEntityRecipeSerializer.cpp
+			EntityRecipeManager.cpp XMLEntityRecipeSerializer.cpp DetachedEntity.cpp
 noinst_HEADERS = EntityMoveManager.h EntityMoveAdapter.h IEntityMoveBridge.h \
 			EntityMover.h EntityMoveAdjuster.h MaterialEditor.h \
 			GUIAdapter.h GUIAdapterBindings.h EntityRecipe.h \
-			EntityRecipeManager.h XMLEntityRecipeSerializer.h
+			EntityRecipeManager.h XMLEntityRecipeSerializer.h DetachedEntity.h
 
 SUBDIRS = entityrecipes

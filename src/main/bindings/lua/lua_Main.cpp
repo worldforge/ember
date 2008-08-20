@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Application
-** Generated automatically by tolua++-1.0.92 on Thu Apr 12 22:40:51 2007.
+** Generated automatically by tolua++-1.0.92.
 */
 
 #ifndef __cplusplus
@@ -18,9 +18,9 @@ TOLUA_API int  tolua_Application_open (lua_State* tolua_S);
 /* function to register type */
 static void tolua_reg_types (lua_State* tolua_S)
 {
- tolua_usertype(tolua_S,"Ember::Application");
  tolua_usertype(tolua_S,"sigc::signal<void>");
  tolua_usertype(tolua_S,"Eris::View");
+ tolua_usertype(tolua_S,"Ember::Application");
  tolua_usertype(tolua_S,"sigc::signal<void,bool&>");
 }
 

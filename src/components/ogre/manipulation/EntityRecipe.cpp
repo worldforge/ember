@@ -44,7 +44,7 @@ namespace EmberOgre {
 EntityRecipe::EntityRecipe(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
 	const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader)
 	: Resource(creator, name, handle, group, isManual, loader),
-	  mEntitySpec(0), mEntityType()
+	  mAuthor(), mDescription(), mEntitySpec(0), mEntityType()
 {
 	if (createParamDictionary("EntityRecipe"))
 	{
@@ -89,6 +89,7 @@ GUIAdapter* EntityRecipe::createGUIAdapter(std::string name, std::string type)
 	GUIAdapter* adapter;
 	adapter = new GUIAdapter(type);
 	mGUIAdapters[name] = adapter;
+	adapter->EventValueChanged.connect( sigc::mem_fun(*this, &EntityRecipe::valueChanged) );
 	return adapter;
 }
 
@@ -102,14 +103,9 @@ GUIAdapter* EntityRecipe::getGUIAdapter(std::string name)
 	}
 }
 
-GUIAdaptersStore::iterator EntityRecipe::getGUIAdaptersIteratorBegin()
+const GUIAdaptersStore& EntityRecipe::getGUIAdapters()
 {
-	return mGUIAdapters.begin();
-}
-
-GUIAdaptersStore::iterator EntityRecipe::getGUIAdaptersIteratorEnd()
-{
-	return mGUIAdapters.end();
+	return mGUIAdapters;
 }
 
 GUIAdapterBindings* EntityRecipe::createGUIAdapterBindings(std::string name)
@@ -264,6 +260,32 @@ Atlas::Message::MapType EntityRecipe::createEntity()
 	return Atlas::Message::MapType();
 }
 
+void EntityRecipe::setAuthor(const std::string& author)
+{
+	mAuthor = author;
+}
+
+std::string EntityRecipe::getAuthor()
+{
+	return mAuthor;
+}
+
+void EntityRecipe::setDescription(const std::string& description)
+{
+	mDescription = description;
+}
+
+std::string EntityRecipe::getDescription()
+{
+	return mDescription;
+}
+
+void EntityRecipe::valueChanged()
+{
+	EventValueChanged.emit();
+}
+
+/*
 void EntityRecipe::doTest()
 {
 	S_LOG_VERBOSE("Doing test.");
@@ -285,5 +307,6 @@ void EntityRecipe::doTest()
 
 	S_LOG_VERBOSE("Returned element type is " << returnObj.getType());
 }
+*/
 
 }

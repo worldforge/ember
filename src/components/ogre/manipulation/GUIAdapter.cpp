@@ -27,11 +27,12 @@
 
 #include "GUIAdapter.h"
 #include "components/ogre/widgets/adapters/atlas/AdapterFactory.h"
+#include <stdlib.h>
 
 namespace EmberOgre {
 
 GUIAdapter::GUIAdapter(const std::string& type) :
-		mType(type), mAdapter(0)
+		mType(type), mAdapter(0), mAllowRandom(false)
 {
 
 }
@@ -50,11 +51,64 @@ void GUIAdapter::attach(CEGUI::Window* window)
 {
 	EmberOgre::Gui::Adapters::Atlas::AdapterFactory factory("EntityCreator");
 	mAdapter = factory.createAdapterByType(mType, window, "adapterPrefix", mElement);
+	mAdapter->EventValueChanged.connect( sigc::mem_fun(*this, &GUIAdapter::valueChanged) );
+	for (SuggestionsStore::iterator I = mSuggestions.begin(); I != mSuggestions.end(); I++)
+	{
+		mAdapter->addSuggestion(I->first);
+	}
+	if (mAllowRandom)
+	{
+		mAdapter->addSuggestion("Random");
+	}
 }
 
-Atlas::Message::Element& GUIAdapter::getValue()
+void GUIAdapter::detach()
 {
-	return mAdapter->getValue();
+	delete mAdapter;
+	mAdapter = 0;
+}
+
+Atlas::Message::Element GUIAdapter::getValue()
+{
+	if (!mAdapter)
+	{
+		return Atlas::Message::Element();
+	}
+
+	Atlas::Message::Element& value = mAdapter->getValue();
+	if (!(mAllowRandom && value.isString() && value.asString() == "Random"))
+	{
+		// Not random. Get value that is correspondent to the entered text.
+		if (value.isString())
+		{
+			SuggestionsStore::iterator I = mSuggestions.find(value.asString());
+			if (I != mSuggestions.end())
+			{
+				return I->second;
+			}
+		}
+		return value;
+	}
+	else
+	{
+		// Random element selected.
+		if (!mSuggestions.empty())
+		{
+			int i = (int) (((float) mSuggestions.size()) * (rand() / (RAND_MAX + 1.0)));
+			// No sequental access to the map.
+			SuggestionsStore::const_iterator I = mSuggestions.begin();
+			while (i > 0)
+			{
+				I++;
+				i--;
+			}
+			return I->second;
+		}
+		else
+		{
+			return "";
+		}
+	}
 }
 
 void GUIAdapter::setTitle(const std::string& title)
@@ -65,6 +119,21 @@ void GUIAdapter::setTitle(const std::string& title)
 const std::string& GUIAdapter::getTitle() const
 {
 	return mTitle;
+}
+
+void GUIAdapter::addSuggestion(const std::string& value, const std::string& text)
+{
+	mSuggestions[text] = value;
+}
+
+void GUIAdapter::setAllowRandom(bool val)
+{
+	mAllowRandom = val;
+}
+
+void GUIAdapter::valueChanged()
+{
+	EventValueChanged.emit();
 }
 
 }

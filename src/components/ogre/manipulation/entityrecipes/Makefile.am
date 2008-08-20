@@ -12,3 +12,9 @@ install-data-local:
 
 uninstall-local:
 	find $(DESTDIR)$(datadir)/ember/media/user/entityrecipes -name  \*.entityrecipe | xargs rm -f
+
+check-local:
+	@for rule in `find $(top_srcdir)/src/components/ogre/manipulation/entityrecipes -name \*.entityrecipe -or -name \*.entityrecipe.xml` ; do \
+		echo $(XMLLINT) -noout -schema $(top_srcdir)/src/components/ogre/manipulation/entityrecipes/entityrecipe.xsd $$rule; \
+		$(XMLLINT) -noout -schema $(top_srcdir)/src/components/ogre/manipulation/entityrecipes/entityrecipe.xsd $$rule; \
+	done;

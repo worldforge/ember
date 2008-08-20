@@ -29,6 +29,7 @@
 
 #include "framework/tinyxml/tinyxml.h"
 #include <Atlas/Message/Element.h>
+#include <sigc++/signal.h>
 
 namespace EmberOgre {
 
@@ -36,7 +37,11 @@ typedef std::map<std::string, GUIAdapter*> GUIAdaptersStore;
 typedef std::map<std::string, GUIAdapterBindings*> BindingsStore;
 
 /**
- * Resource that stores recipes for entity creator.
+ * @brief Resource that stores entity recipes.
+ *
+ * This class is for storing and manipulating with entity recipe.
+ *
+ * @author Alexey Torkhov <atorkhov@gmail.com>
  */
 class EntityRecipe : public Ogre::Resource {
 
@@ -75,7 +80,7 @@ public:
 	std::string getEntityType();
 
 	/**
-	 * Creates and returns GUI adapter.
+	 * Creates and returns GUI adapter. This used currently by entity recipes parser (XMLEntityRecipeSerializer) for populating entity recipes.
 	 */
 	GUIAdapter* createGUIAdapter(std::string name, std::string type);
 
@@ -85,39 +90,72 @@ public:
 	GUIAdapter* getGUIAdapter(std::string name);
 
 	/**
-	 * Returns iterator over adapters.
+	 * Returns list of GUI adapters.
 	 */
-	GUIAdaptersStore::iterator getGUIAdaptersIteratorBegin();
+	const GUIAdaptersStore& getGUIAdapters();
 
 	/**
-	 * Returns end iterator over adapters.
-	 */
-	GUIAdaptersStore::iterator getGUIAdaptersIteratorEnd();
-
-	/**
-	 * Creates and returns GUI adapter bindings.
+	 * Creates and returns GUI adapter bindings. This used currently by entity recipes parser (XMLEntityRecipeSerializer) for populating entity recipes.
 	 */
 	GUIAdapterBindings* createGUIAdapterBindings(std::string name);
 
 	/**
-	 * Associate each binding with correspondent placeholders (entity spec nodes)
+	 * Associate each binding with correspondent placeholders (entity spec nodes).
 	 */
 	void associateBindings();
 
 	/**
-	 * Grabs current values from adapters, runs it through Lua function
-	 * and composes resulting Atlas message.
+	 * @brief Composes an entity.
+	 *
+	 * Grabs current values from adapters, runs it through Lua function and composes resulting Atlas message.
 	 */
 	Atlas::Message::MapType createEntity();
 
 	/**
+	 * Sets author.
+	 */
+	void setAuthor(const std::string& author);
+
+	/**
+	 * Gets author.
+	 */
+	std::string getAuthor();
+
+	/**
+	 * Sets description.
+	 */
+	void setDescription(const std::string& description);
+
+	/**
+	 * Gets description.
+	 */
+	std::string getDescription();
+
+	/**
 	 * Does some test checking.
 	 */
-	void doTest();
+	//void doTest();
+
+	/**
+	 * Emits when value of any of adapters is changed.
+	 */
+	sigc::signal<void> EventValueChanged;
 
 protected:
+	void valueChanged();
+
 	/**
-	 * List of semi-atlas entity specs.
+	 * Author of recipe.
+	 */
+	std::string mAuthor;
+
+	/**
+	 * Recipe description.
+	 */
+	std::string mDescription;
+
+	/**
+	 * Stores semi-atlas entity spec.
 	 */
 	TiXmlElement* mEntitySpec;
 

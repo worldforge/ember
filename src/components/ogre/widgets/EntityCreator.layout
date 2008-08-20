@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
 	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
-		<Property Name='UnifiedPosition' Value='{{0.5,-50},{0.5,-50}}'/>
-		<Property Name='UnifiedSize' Value='{{0,200},{0,100}}'/>
+		<Property Name='UnifiedPosition' Value='{{1.0,-450},{1.0,-220}}'/>
+		<Property Name='UnifiedSize' Value='{{0,400},{0,200}}'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Entity Creator'/>
 		<Window Type='DefaultGUISheet' Name='InnerWindow'>
@@ -11,19 +11,25 @@
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/Listbox' Name='RecipesList'>
 				<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-				<Property Name='UnifiedSize' Value='{{0.5,0},{0.7,0}}'/>
+				<Property Name='UnifiedSize' Value='{{0,100},{1,-27}}'/>
 				<Event Name="ItemSelectionChanged" Function="EntityCreator.RecipesList_SelectionChanged"/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='Create'>
-				<Property Name='UnifiedPosition' Value='{{0,0},{0.7,0}}'/>
-				<Property Name='UnifiedSize' Value='{{0.5,0},{0.3,0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0,0},{1,-25}}'/>
+				<Property Name='UnifiedSize' Value='{{0,100},{0,25}}'/>
 				<Property Name='Text' Value='Create'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Event Name="MouseClick" Function="EntityCreator.Create_Click" />
 			</Window>
+			<Window Type='EmberLook/StaticText' Name='RecipeDescription'>
+				<Property Name='UnifiedPosition' Value='{{0,100},{0,0}}'/>
+				<Property Name='UnifiedSize' Value='{{1,-100},{0,50}}'/>
+				<Property Name='FrameEnabled' Value='false' />
+				<Property Name='BackgroundEnabled' Value='false' />
+			</Window>
 			<Window Type='DefaultGUISheet' Name='AdaptersContainer'>
-				<Property Name='UnifiedPosition' Value='{{0.5,0},{0,0}}'/>
-				<Property Name='UnifiedSize' Value='{{0.5,0},{1,0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0,100},{0,50}}'/>
+				<Property Name='UnifiedSize' Value='{{1,-100},{1,-50}}'/>
 			</Window>
 		</Window>
 	</Window>

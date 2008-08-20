@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xsd:element name="entityrecipes">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="entityrecipe" minOccurs="0" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="author" type="xsd:string" minOccurs="0" maxOccurs="1">
+								<xsd:annotation>
+									<xsd:documentation xml:lang="en">
+										Author of the entity recipe.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="description" type="xsd:string" minOccurs="0" maxOccurs="1">
+								<xsd:annotation>
+									<xsd:documentation xml:lang="en">
+										Description of the entity recipe.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="entity" minOccurs="1" maxOccurs="1">
+								<xsd:annotation>
+									<xsd:documentation xml:lang="en">
+										Semi-Atlas entity specification.
+									</xsd:documentation>
+								</xsd:annotation>
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="atlas" type="semiatlas" minOccurs="1" maxOccurs="1"/>
+									</xsd:sequence>
+									<xsd:attribute name="type" type="xsd:string" use="required">
+										<xsd:annotation>
+											<xsd:documentation xml:lang="en">
+												Eris type for the entity.
+											</xsd:documentation>
+										</xsd:annotation>
+									</xsd:attribute>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="adapters" minOccurs="1" maxOccurs="1">
+								<xsd:annotation>
+									<xsd:documentation xml:lang="en">
+										List of recipe adapters.
+									</xsd:documentation>
+								</xsd:annotation>
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="adapter" minOccurs="0" maxOccurs="unbounded">
+											<xsd:complexType>
+												<xsd:sequence>
+													<xsd:element name="item" minOccurs="0" maxOccurs="unbounded">
+														<xsd:complexType>
+															<xsd:simpleContent>
+																<xsd:extension base="xsd:string">
+																	<xsd:attribute name="value" type="xsd:string" use="optional"/>
+																</xsd:extension>
+															</xsd:simpleContent>
+														</xsd:complexType>
+													</xsd:element>
+												</xsd:sequence>
+												<xsd:attribute name="name" type="xsd:string" use="required"/>
+												<xsd:attribute name="type" type="xsd:string" use="required"/>
+												<xsd:attribute name="title" type="xsd:string" use="optional"/>
+												<xsd:attribute name="allowrandom" type="xsd:string" use="optional"/>
+											</xsd:complexType>
+										</xsd:element>
+									</xsd:sequence>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="bindings" minOccurs="1" maxOccurs="1">
+								<xsd:annotation>
+									<xsd:documentation xml:lang="en">
+										List of adapters bindings.
+									</xsd:documentation>
+								</xsd:annotation>
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="bind" minOccurs="0" maxOccurs="unbounded">
+											<xsd:complexType>
+												<xsd:sequence>
+													<xsd:element name="adapter" minOccurs="0" maxOccurs="unbounded">
+														<xsd:complexType>
+															<xsd:attribute name="name" type="xsd:string" use="required"/>
+														</xsd:complexType>
+													</xsd:element>
+												</xsd:sequence>
+												<xsd:attribute name="name" type="xsd:string" use="required"/>
+												<xsd:attribute name="func" type="xsd:string" use="optional"/>
+											</xsd:complexType>
+										</xsd:element>
+									</xsd:sequence>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="script" type="xsd:string" minOccurs="1" maxOccurs="1">
+								<xsd:annotation>
+									<xsd:documentation xml:lang="en">
+										Lua script that is used for composing entity.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:sequence>
+						<xsd:attribute name="name" type="xsd:string" use="required">
+							<xsd:annotation>
+								<xsd:documentation xml:lang="en">
+									The unique name of the entity recipe.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:complexType name="semiatlas">
+		<xsd:all>
+			<xsd:element name="map" type="semiatlas-map" />
+		</xsd:all>
+	</xsd:complexType>
+
+	<xsd:complexType name="semiatlas-string">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute name="name" type="xsd:string" use="optional"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="semiatlas-int">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute name="name" type="xsd:string" use="optional"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="semiatlas-float">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute name="name" type="xsd:string" use="optional"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="semiatlas-list" mixed="true">
+		<xsd:sequence>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element name="string" type="semiatlas-string" />
+				<xsd:element name="int" type="semiatlas-int" />
+				<xsd:element name="float" type="semiatlas-float" />
+				<xsd:element name="list" type="semiatlas-list" />
+				<xsd:element name="map" type="semiatlas-map" />
+			</xsd:choice>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="semiatlas-map">
+		<xsd:sequence>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element name="string" type="semiatlas-string" />
+				<xsd:element name="int" type="semiatlas-int" />
+				<xsd:element name="float" type="semiatlas-float" />
+				<xsd:element name="list" type="semiatlas-list" />
+				<xsd:element name="map" type="semiatlas-map" />
+			</xsd:choice>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+</xsd:schema>

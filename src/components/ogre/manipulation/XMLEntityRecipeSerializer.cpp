@@ -79,6 +79,28 @@ void XMLEntityRecipeSerializer::readRecipe(EntityRecipePtr entRecipe, TiXmlEleme
 {
 	TiXmlElement* elem;
 
+	// Author
+	elem = recipeNode->FirstChildElement("author");
+	if (elem)
+	{
+		const char *text = elem->GetText();
+		if (text)
+		{
+			entRecipe->setAuthor(text);
+		}
+	}
+
+	// Description
+	elem = recipeNode->FirstChildElement("description");
+	if (elem)
+	{
+		const char *text = elem->GetText();
+		if (text)
+		{
+			entRecipe->setDescription(text);
+		}
+	}
+
 	// Entity specification
 	elem = recipeNode->FirstChildElement("entity");
 	if (elem)
@@ -174,9 +196,36 @@ void XMLEntityRecipeSerializer::readAdapters(EntityRecipePtr entRecipe, TiXmlEle
 		GUIAdapter* adapter = entRecipe->createGUIAdapter(*name, *type);
 
 		const std::string *title;
-		if (title = smElem->Attribute(std::string("type")))
+		if (title = smElem->Attribute(std::string("title")))
 		{
 			adapter->setTitle(*title);
+		}
+
+		// Custom adapter parameters
+		if (*type == "string")
+		{
+			for (TiXmlElement* item = smElem->FirstChildElement("item");
+        			item != 0; item = item->NextSiblingElement("item"))
+			{
+				const char *text;
+				const std::string *value;
+				text = item->GetText();
+				if ((value = item->Attribute(std::string("value"))))
+				{
+					adapter->addSuggestion(*value, text);
+				}
+				else
+				{
+					adapter->addSuggestion(text, text);
+				}
+			}
+
+			const std::string *allowRandom;
+			if ((allowRandom = smElem->Attribute(std::string("allowrandom"))) &&
+			    (*allowRandom == "yes" || *allowRandom == "true" || *allowRandom == "on"))
+			{
+				adapter->setAllowRandom(true);
+			}
 		}
 	}
 }

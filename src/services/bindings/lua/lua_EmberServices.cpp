@@ -1,6 +1,6 @@
 /*
 ** Lua binding: EmberServices
-** Generated automatically by tolua++-1.0.92 on Thu Aug  7 00:55:53 2008.
+** Generated automatically by tolua++-1.0.92.
 */
 
 #ifndef __cplusplus

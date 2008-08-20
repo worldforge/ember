@@ -1,6 +1,6 @@
 /*
 ** Lua binding: atlas_adapters
-** Generated automatically by tolua++-1.0.92 on Tue Oct  9 08:56:23 2007.
+** Generated automatically by tolua++-1.0.92.
 */
 
 #ifndef __cplusplus
