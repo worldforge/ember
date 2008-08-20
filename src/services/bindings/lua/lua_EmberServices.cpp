@@ -22,6 +22,7 @@ TOLUA_API int  tolua_EmberServices_open (lua_State* tolua_S);
 #include "services/scripting/ScriptingService.h"
 #include "services/input/Input.h"
 #include "services/input/InputService.h"
+#include "services/input/IInputAdapter.h"
 
 /* function to release collected object via destructor */
 #ifdef __cplusplus
@@ -39,6 +40,13 @@ static int tolua_collect_std__vector_std__string_ (lua_State* tolua_S)
 	delete self;
 	return 0;
 }
+
+static int tolua_collect_Ember__IInputAdapter (lua_State* tolua_S)
+{
+ Ember::IInputAdapter* self = (Ember::IInputAdapter*) tolua_tousertype(tolua_S,1,0);
+	delete self;
+	return 0;
+}
 #endif
 
 
@@ -46,10 +54,11 @@ static int tolua_collect_std__vector_std__string_ (lua_State* tolua_S)
 static void tolua_reg_types (lua_State* tolua_S)
 {
  tolua_usertype(tolua_S,"varconf::Variable");
+ tolua_usertype(tolua_S,"Ember::EmberServices");
  tolua_usertype(tolua_S,"sigc::signal<void,const Ember::MouseMotion&,Ember::Input::InputMode>");
  tolua_usertype(tolua_S,"WFMath::Quaternion");
  tolua_usertype(tolua_S,"sigc::signal<void,const SDL_keysym&,Ember::Input::InputMode>");
- tolua_usertype(tolua_S,"Ember::EmberServices");
+ tolua_usertype(tolua_S,"Ember::IInputAdapter");
  tolua_usertype(tolua_S,"sigc::signal<void,Ember::Input::MouseButton,Ember::Input::InputMode>");
  tolua_usertype(tolua_S,"Ember::ScriptingService");
  tolua_usertype(tolua_S,"std::vector<std::string>");
@@ -622,6 +631,72 @@ static int tolua_EmberServices_Ember_Input_toggleInputMode00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'toggleInputMode'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: addAdapter of class  Ember::Input */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_Input_addAdapter00
+static int tolua_EmberServices_Ember_Input_addAdapter00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ember::Input",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Ember::IInputAdapter",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ember::Input* self = (Ember::Input*)  tolua_tousertype(tolua_S,1,0);
+  Ember::IInputAdapter* adapter = ((Ember::IInputAdapter*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addAdapter'",NULL);
+#endif
+  {
+   self->addAdapter(adapter);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addAdapter'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: removeAdapter of class  Ember::Input */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_Input_removeAdapter00
+static int tolua_EmberServices_Ember_Input_removeAdapter00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ember::Input",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Ember::IInputAdapter",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ember::Input* self = (Ember::Input*)  tolua_tousertype(tolua_S,1,0);
+  Ember::IInputAdapter* adapter = ((Ember::IInputAdapter*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'removeAdapter'",NULL);
+#endif
+  {
+   self->removeAdapter(adapter);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'removeAdapter'.",&tolua_err);
  return 0;
 #endif
 }
@@ -2846,6 +2921,244 @@ static int tolua_EmberServices_Ember_InputService_getInput00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: delete of class  Ember::IInputAdapter */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_IInputAdapter_delete00
+static int tolua_EmberServices_Ember_IInputAdapter_delete00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ember::IInputAdapter",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ember::IInputAdapter* self = (Ember::IInputAdapter*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'delete'",NULL);
+#endif
+  delete self;
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'delete'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: injectMouseMove of class  Ember::IInputAdapter */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_IInputAdapter_injectMouseMove00
+static int tolua_EmberServices_Ember_IInputAdapter_injectMouseMove00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ember::IInputAdapter",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Ember::MouseMotion",0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ember::IInputAdapter* self = (Ember::IInputAdapter*)  tolua_tousertype(tolua_S,1,0);
+  const Ember::MouseMotion* motion = ((const Ember::MouseMotion*)  tolua_tousertype(tolua_S,2,0));
+  bool freezeMouse = ((bool)  tolua_toboolean(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'injectMouseMove'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->injectMouseMove(*motion,freezeMouse);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+   tolua_pushboolean(tolua_S,(bool)freezeMouse);
+  }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'injectMouseMove'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: injectMouseButtonUp of class  Ember::IInputAdapter */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_IInputAdapter_injectMouseButtonUp00
+static int tolua_EmberServices_Ember_IInputAdapter_injectMouseButtonUp00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ember::IInputAdapter",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ember::IInputAdapter* self = (Ember::IInputAdapter*)  tolua_tousertype(tolua_S,1,0);
+  const Ember::Input::MouseButton button = ((const Ember::Input::MouseButton)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'injectMouseButtonUp'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->injectMouseButtonUp(button);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+   tolua_pushnumber(tolua_S,(lua_Number)button);
+  }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'injectMouseButtonUp'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: injectMouseButtonDown of class  Ember::IInputAdapter */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_IInputAdapter_injectMouseButtonDown00
+static int tolua_EmberServices_Ember_IInputAdapter_injectMouseButtonDown00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ember::IInputAdapter",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ember::IInputAdapter* self = (Ember::IInputAdapter*)  tolua_tousertype(tolua_S,1,0);
+  const Ember::Input::MouseButton button = ((const Ember::Input::MouseButton)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'injectMouseButtonDown'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->injectMouseButtonDown(button);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+   tolua_pushnumber(tolua_S,(lua_Number)button);
+  }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'injectMouseButtonDown'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: injectChar of class  Ember::IInputAdapter */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_IInputAdapter_injectChar00
+static int tolua_EmberServices_Ember_IInputAdapter_injectChar00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ember::IInputAdapter",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ember::IInputAdapter* self = (Ember::IInputAdapter*)  tolua_tousertype(tolua_S,1,0);
+  char character = ((char)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'injectChar'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->injectChar(character);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'injectChar'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: injectKeyDown of class  Ember::IInputAdapter */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_IInputAdapter_injectKeyDown00
+static int tolua_EmberServices_Ember_IInputAdapter_injectKeyDown00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ember::IInputAdapter",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const SDLKey",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ember::IInputAdapter* self = (Ember::IInputAdapter*)  tolua_tousertype(tolua_S,1,0);
+  const SDLKey* key = ((const SDLKey*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'injectKeyDown'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->injectKeyDown(*key);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'injectKeyDown'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: injectKeyUp of class  Ember::IInputAdapter */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_IInputAdapter_injectKeyUp00
+static int tolua_EmberServices_Ember_IInputAdapter_injectKeyUp00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ember::IInputAdapter",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const SDLKey",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ember::IInputAdapter* self = (Ember::IInputAdapter*)  tolua_tousertype(tolua_S,1,0);
+  const SDLKey* key = ((const SDLKey*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'injectKeyUp'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->injectKeyUp(*key);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'injectKeyUp'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: getSingleton of class  Ember::EmberServices */
 #ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_EmberServices_getSingleton00
 static int tolua_EmberServices_Ember_EmberServices_getSingleton00(lua_State* tolua_S)
@@ -3071,6 +3384,8 @@ TOLUA_API int tolua_EmberServices_open (lua_State* tolua_S)
     tolua_function(tolua_S,"setInputMode",tolua_EmberServices_Ember_Input_setInputMode00);
     tolua_function(tolua_S,"getInputMode",tolua_EmberServices_Ember_Input_getInputMode00);
     tolua_function(tolua_S,"toggleInputMode",tolua_EmberServices_Ember_Input_toggleInputMode00);
+    tolua_function(tolua_S,"addAdapter",tolua_EmberServices_Ember_Input_addAdapter00);
+    tolua_function(tolua_S,"removeAdapter",tolua_EmberServices_Ember_Input_removeAdapter00);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_function(tolua_S,"S_LOG_VERBOSE",tolua_EmberServices_S_LOG_VERBOSE00);
@@ -3200,6 +3515,23 @@ TOLUA_API int tolua_EmberServices_open (lua_State* tolua_S)
    tolua_cclass(tolua_S,"InputService","Ember::InputService","",NULL);
    tolua_beginmodule(tolua_S,"InputService");
     tolua_function(tolua_S,"getInput",tolua_EmberServices_Ember_InputService_getInput00);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"Ember",0);
+  tolua_beginmodule(tolua_S,"Ember");
+   #ifdef __cplusplus
+   tolua_cclass(tolua_S,"IInputAdapter","Ember::IInputAdapter","",tolua_collect_Ember__IInputAdapter);
+   #else
+   tolua_cclass(tolua_S,"IInputAdapter","Ember::IInputAdapter","",NULL);
+   #endif
+   tolua_beginmodule(tolua_S,"IInputAdapter");
+    tolua_function(tolua_S,"delete",tolua_EmberServices_Ember_IInputAdapter_delete00);
+    tolua_function(tolua_S,"injectMouseMove",tolua_EmberServices_Ember_IInputAdapter_injectMouseMove00);
+    tolua_function(tolua_S,"injectMouseButtonUp",tolua_EmberServices_Ember_IInputAdapter_injectMouseButtonUp00);
+    tolua_function(tolua_S,"injectMouseButtonDown",tolua_EmberServices_Ember_IInputAdapter_injectMouseButtonDown00);
+    tolua_function(tolua_S,"injectChar",tolua_EmberServices_Ember_IInputAdapter_injectChar00);
+    tolua_function(tolua_S,"injectKeyDown",tolua_EmberServices_Ember_IInputAdapter_injectKeyDown00);
+    tolua_function(tolua_S,"injectKeyUp",tolua_EmberServices_Ember_IInputAdapter_injectKeyUp00);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"Ember",0);

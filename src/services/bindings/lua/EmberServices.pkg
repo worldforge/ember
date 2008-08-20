@@ -9,6 +9,7 @@ $#include "services/metaserver/MetaserverService.h"
 $#include "services/scripting/ScriptingService.h"
 $#include "services/input/Input.h"
 $#include "services/input/InputService.h"
+$#include "services/input/IInputAdapter.h"
 //$#include "services/sound/SoundService.h"
 
 
@@ -19,6 +20,7 @@ $pfile "MetaserverService.pkg";
 $pfile "ServerService.pkg";
 $pfile "ScriptingService.pkg";
 $pfile "InputService.pkg";
+$pfile "IInputAdapter.pkg";
 //  class SoundService;
 
 namespace Ember {
