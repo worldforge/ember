@@ -56,6 +56,7 @@
 
 #include <CEGUIWindow.h>
 
+using namespace Ember;
 namespace EmberOgre {
 
 namespace Gui {

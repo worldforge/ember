@@ -28,7 +28,7 @@
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/mapping/IActionCreator.h"
 #include "components/ogre/model/mapping/Actions/Action.h"
-#include "components/ogre/input/IInputAdapter.h"
+#include "services/input/IInputAdapter.h"
 #include "components/ogre/widgets/Widget.h"
 #include <Eris/Connection.h>
 #include <wfmath/point.h>
@@ -323,7 +323,7 @@ protected:
 /**
  * Adapter for intercepting input.
  */
-class EntityCreatorInputAdapter : public IInputAdapter
+class EntityCreatorInputAdapter : public Ember::IInputAdapter
 {
 public:
 	EntityCreatorInputAdapter(EntityCreator& entityCreator);
@@ -336,9 +336,9 @@ public:
 	 * Unregisters adapter in input service.
 	 */
 	void removeAdapter();
-	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
-	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
-	virtual bool injectMouseButtonDown(const Input::MouseButton& button);
+	virtual bool injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse);
+	virtual bool injectMouseButtonUp(const Ember::Input::MouseButton& button);
+	virtual bool injectMouseButtonDown(const Ember::Input::MouseButton& button);
 	virtual bool injectChar(char character);
 	virtual bool injectKeyDown(const SDLKey& key);
 	virtual bool injectKeyUp(const SDLKey& key);
