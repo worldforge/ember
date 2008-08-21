@@ -216,50 +216,50 @@ TerrainShader* TerrainGenerator::createShader(const TerrainLayerDefinition* laye
 
 void TerrainGenerator::addTerrainMod(TerrainMod* terrainMod)
 {
-        // Listen for changes to the modifier
-    terrainMod->EventModChanged.connect(sigc::mem_fun(*this, &TerrainGenerator::TerrainMod_Changed));
-        // Listen for deletion of the modifier
-    terrainMod->EventModDeleted.connect(sigc::mem_fun(*this, &TerrainGenerator::TerrainMod_Deleted));
+	// Listen for changes to the modifier
+	terrainMod->EventModChanged.connect(sigc::mem_fun(*this, &TerrainGenerator::TerrainMod_Changed));
+	// Listen for deletion of the modifier
+	terrainMod->EventModDeleted.connect(sigc::mem_fun(*this, &TerrainGenerator::TerrainMod_Deleted));
 
-        // We need to save this pointer to use when the modifier is changed or deleted
-    Mercator::TerrainMod* mod = mTerrain->addMod(*terrainMod->getMod());
+	// We need to save this pointer to use when the modifier is changed or deleted
+	Mercator::TerrainMod* mod = mTerrain->addMod(*terrainMod->getMod());
 
-    mTerrainMods.insert(std::pair<const std::string, Mercator::TerrainMod*>(terrainMod->getEntity()->getId(), mod));
+	mTerrainMods.insert(std::pair<const std::string, Mercator::TerrainMod*>(terrainMod->getEntity()->getId(), mod));
 
 }
 
 void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
 {
 
-    // Clear this modifier from the terrain, then reapply it so the new parameters take effect
-        // Get its owner's ID
-    const std::string& entityID = terrainMod->getEntity()->getId();
-    S_LOG_INFO("modhandler: changed: Mod for entity " << entityID << " updated?");
-        // Use the pointer returned from addMod() to remove it
-    mTerrain->removeMod(mTerrainMods.find(entityID)->second);
-        // Remove this mod from our list so we can replace the pointer with a new one
-    mTerrainMods.erase(entityID);
+	// Clear this modifier from the terrain, then reapply it so the new parameters take effect
+	// Get its owner's ID
+	const std::string& entityID = terrainMod->getEntity()->getId();
+	S_LOG_INFO("modhandler: changed: Mod for entity " << entityID << " updated?");
+	// Use the pointer returned from addMod() to remove it
+	mTerrain->removeMod(mTerrainMods.find(entityID)->second);
+	// Remove this mod from our list so we can replace the pointer with a new one
+	mTerrainMods.erase(entityID);
 
-        // Reapply the mod to the terrain with the updated parameters
-    Mercator::TerrainMod *mercatorMod = terrainMod->getMod();
-    mercatorMod = mTerrain->addMod(*mercatorMod);
+	// Reapply the mod to the terrain with the updated parameters
+	Mercator::TerrainMod *mercatorMod = terrainMod->getMod();
+	mercatorMod = mTerrain->addMod(*mercatorMod);
 
-        // Insert it into our list
-    mTerrainMods.insert(TerrainModMap::value_type(entityID, mercatorMod));
+	// Insert it into our list
+	mTerrainMods.insert(TerrainModMap::value_type(entityID, mercatorMod));
 
 //     buildHeightmap();
 }
 
 void TerrainGenerator::TerrainMod_Deleted(TerrainMod* terrainMod)
 {
-        // Clear this mod from the terrain
-            // Get the ID of the modifier's owner
-        const std::string& entityID = terrainMod->getEntity()->getId();
-        S_LOG_INFO("modhandler: deleted: Mod for entity " << entityID << " deleted?");
-            // Use the pointer returned from addMod() to remove it
-        mTerrain->removeMod(mTerrainMods.find(entityID)->second);
-        // Remove this mod from our list
-        mTerrainMods.erase(entityID);
+	// Clear this mod from the terrain
+	// Get the ID of the modifier's owner
+	const std::string& entityID = terrainMod->getEntity()->getId();
+	S_LOG_INFO("modhandler: deleted: Mod for entity " << entityID << " deleted?");
+	// Use the pointer returned from addMod() to remove it
+	mTerrain->removeMod(mTerrainMods.find(entityID)->second);
+	// Remove this mod from our list
+	mTerrainMods.erase(entityID);
 
 //     buildHeightmap();
 }
