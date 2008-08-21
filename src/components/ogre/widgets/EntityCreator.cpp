@@ -156,7 +156,7 @@ void EntityCreatorHideModelAction::deactivate()
 
 
 EntityCreator::EntityCreator()
-		: mCreateMode(false), mModel(0), mBlurb(0), mBlurbShown(false)
+		: mCreateMode(false), mRecipe(0), mModel(0), mBlurb(0), mBlurbShown(false)
 {
 	mInputAdapter = new EntityCreatorInputAdapter(*this);
 	mMoveAdapter = new EntityCreatorMoveAdapter(*this);
@@ -190,6 +190,12 @@ void EntityCreator::toggleCreateMode()
 
 void EntityCreator::startCreation()
 {
+	// No recipe selected, nothing to do
+	if (!mRecipe)
+	{
+		return;
+	}
+
 	AvatarEmberEntity* avatar = EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity();
 
 	// Making inital position (orientation is preserved)
