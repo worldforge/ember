@@ -60,9 +60,6 @@
 #include <Mercator/Surface.h>
 #include <Mercator/Matrix.h>
 #include <Mercator/Terrain.h>
-#include <wfmath/intersect.h>
-#include <wfmath/axisbox.h>
-#include <wfmath/ball.h>
 
 #include "TerrainLayerDefinitionManager.h"
 #include "TerrainLayerDefinition.h"

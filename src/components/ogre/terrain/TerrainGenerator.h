@@ -48,6 +48,7 @@ namespace Mercator
 	class Terrain;
 	class Shader;
 	class Segment;
+	class TerrainMod;
 }
 
 namespace EmberOgre {
@@ -491,6 +492,11 @@ protected:
 	 * @param terrainArea The area being removed.
 	 */
 	void TerrainArea_Removed(TerrainArea* terrainArea);
+	
+	/**
+	Listen to changes in terrain mods.
+	*/
+	void TerrainMod_Changed(TerrainMod* terrainMod);
 	
 	/**
 	@brief An adapter class which allows us to access the Ogre scene manager.

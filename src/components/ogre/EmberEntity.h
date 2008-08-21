@@ -396,6 +396,8 @@ protected:
 	 */
 	virtual void addArea(Terrain::TerrainArea* area);
 	
+	virtual void addTerrainMod(Terrain::TerrainMod* mod);
+	
 	/**
 	* @brief For debugging purposes. This holds a bounding box of how the entity appears in the eris/atlas world.
 	* This is often different from the Ogre bounding box.
@@ -447,6 +449,11 @@ protected:
 	 */
 	std::auto_ptr<Terrain::TerrainArea> mTerrainArea;
 		
+	/**
+	 * @brief If a terrainmod belongs to this entity, it's stored here.
+	 */
+	std::auto_ptr<Terrain::TerrainMod> mTerrainMod;
+	
 	/**
 	* @brief The mode the entity is in, like walking, running, swimming etc.
 	*/
