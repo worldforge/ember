@@ -158,14 +158,6 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 	ss << "Entity " << getId() << "(" << getName() << ") placed at (" << getPredictedPos().x() << "," << getPredictedPos().y() << "," << getPredictedPos().x() << ")";
 	S_LOG_VERBOSE( ss.str());
 	
-
-	if (hasAttr("terrainmod")) {
-    	mTerrainMod = std::auto_ptr<Terrain::TerrainMod>(new Terrain::TerrainMod(this));
-        if (mTerrainMod->init()) {
-            addTerrainMod(mTerrainMod.get());
-        }
-    }
-
 	mIsInitialized = true;
 	
 }
@@ -533,6 +525,19 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
 			mTerrainArea.reset();
 		}
 	}
+	
+	///if the area attribute has changed, and we _don't_ have any mTerrainMod instance, try to create one such.
+	///if we do have an mTerrainMod instance, all updates will be taken care of by that instead and we can ignore this
+	if (hasAttr("terrainmod") && mTerrainMod.get()) {
+		mTerrainMod = std::auto_ptr<Terrain::TerrainMod>(new Terrain::TerrainMod(this));
+		if (mTerrainMod->init()) {
+			addTerrainMod(mTerrainMod.get());
+		} else {
+			///if we couldn't properly initialize, delete the instance now, and then hopefully the next time the "area" attribute is changed we'll be able to properly create a mod
+			mTerrainMod.reset();
+		}
+	}
+
 	
 	Entity::onAttrChanged(str, v);
 }

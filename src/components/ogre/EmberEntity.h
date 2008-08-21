@@ -384,7 +384,7 @@ protected:
 	virtual void onModeChanged(MovementMode newMode);
 	
 	/**
-	 *    Called when the bounding box has changed.
+	 * @brief Called when the bounding box has changed.
 	 */
 	virtual void onBboxChanged();
 
@@ -396,6 +396,12 @@ protected:
 	 */
 	virtual void addArea(Terrain::TerrainArea* area);
 	
+	/**
+	 * @brief Adds a terrain mod to the entity.
+	 * Mods are a terrain feature, and cannot be handled by a standard implementation of EmberEntity. The default implementation of this method in this class will therefore only pass it on to the parent entity, if any such is available. The idea is that somewhere along the way, as the method "walks" the entity hierarcy upwards it will come across an implementation of this method that does indeed know how to handle the terrain mod.
+	 * @see EmberOgre::WorldEmberEntity::addTerrainMod()
+	 * @param mod The mod which has been added.
+	 */
 	virtual void addTerrainMod(Terrain::TerrainMod* mod);
 	
 	/**
@@ -445,12 +451,14 @@ protected:
 	Ogre::SceneManager* getSceneManager();
 	
 	/**
-	 * @brief If there's a terrainarea belonging to this entity, that's stored here.
+	 * @brief If there's a terrain area belonging to this entity, that's stored here.
+	 * The terrain area instance will take care of all required terrain area functionality once it's been created, offloading this from the EmberEntity. Most entities won't however have any terrain areas, for which this will be null.
 	 */
 	std::auto_ptr<Terrain::TerrainArea> mTerrainArea;
 		
 	/**
 	 * @brief If a terrainmod belongs to this entity, it's stored here.
+	 * The terrain mod instance will take care of all required terrain mod functionality once it's been created, offloading this from the EmberEntity. Most entities won't however have any terrain mods, for which this will be null.
 	 */
 	std::auto_ptr<Terrain::TerrainMod> mTerrainMod;
 	
