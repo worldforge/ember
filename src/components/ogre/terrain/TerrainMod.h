@@ -1,7 +1,7 @@
 //
 // C++ Interface: TerrainMod
 //
-// Description: 
+// Description:
 //
 //
 // Author: Tamas Bates <rhymer@gmail.com>, (C) 2008
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -28,10 +28,11 @@
 
 namespace Mercator
 {
-    class TerrainMod;
+	class TerrainMod;
 }
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
 class EmberEntity;
 
@@ -43,11 +44,11 @@ namespace Terrain {
 class TerrainMod
 {
 public:
-    TerrainMod(EmberEntity* entity);
+	TerrainMod(EmberEntity* entity);
 
-    ~TerrainMod();
+	~TerrainMod();
 	bool init();
-	
+
 	/**
 	Used to retrieve a pointer to this modifier
 	*/
@@ -57,12 +58,12 @@ public:
 	Used to set the pointer to this modifier
 	*/
 	inline void setMod(Mercator::TerrainMod* area);
-	
+
 	/**
 	Emitted whenever the modifier is changed or moved.
 	*/
 	sigc::signal<void, TerrainMod*> EventModChanged;
-	
+
 	/**
 	Emitted just before the entity owning this mod is deleted.
 	Should be caught by TerrainGenerator to remove this mod from the terrain.
@@ -83,7 +84,7 @@ protected:
 
 	/**
 	Called whenever a modifier is changed and handles the update
-	*/	
+	*/
 	void attributeChanged(const Atlas::Message::Element& attributeValue);
 
 	/**
@@ -119,8 +120,14 @@ protected:
 
 };
 
-Mercator::TerrainMod* TerrainMod::getMod() const { return mModifier; }
-void TerrainMod::setMod(Mercator::TerrainMod* modifier) { mModifier = modifier; }
+Mercator::TerrainMod* TerrainMod::getMod() const
+{
+	return mModifier;
+}
+void TerrainMod::setMod(Mercator::TerrainMod* modifier)
+{
+	mModifier = modifier;
+}
 
 }
 };
