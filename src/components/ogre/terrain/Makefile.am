@@ -3,7 +3,7 @@ METASOURCES = AUTO
 noinst_LTLIBRARIES = libTerrain.la
 libTerrain_la_SOURCES = TerrainArea.cpp TerrainArea.h TerrainEditor.cpp \
 	TerrainEditor.cpp	TerrainEditor.h TerrainEditor.h TerrainGenerator.cpp TerrainGenerator.h TerrainInfo.cpp \
-	TerrainLayerDefinition.cpp TerrainLayerDefinitionManager.cpp TerrainPage.cpp \
+	TerrainLayerDefinition.cpp TerrainLayerDefinitionManager.cpp TerrainMod.h TerrainMod.cpp TerrainPage.cpp \
 	TerrainPage.cpp	TerrainPage.h TerrainPage.h TerrainPageFoliage.cpp TerrainPageGeometry.cpp \
 	TerrainPageShadow.cpp TerrainPageSurface.cpp TerrainPageSurfaceCompiler.cpp \
 	TerrainPageSurfaceCompilerTechniqueShader.cpp TerrainPageSurfaceCompilerTechniqueSimple.cpp \

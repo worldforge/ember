@@ -48,8 +48,11 @@
 
 #include "TerrainPage.h"
 #include "TerrainArea.h"
+#include "TerrainMod.h"
 #include <Mercator/Area.h>
 #include <Mercator/Segment.h>
+#include <Mercator/Terrain.h>
+#include <Mercator/TerrainMod.h>
 #include <Mercator/FillShader.h>
 #include <Mercator/ThresholdShader.h>
 #include <Mercator/DepthShader.h>
@@ -57,6 +60,9 @@
 #include <Mercator/Surface.h>
 #include <Mercator/Matrix.h>
 #include <Mercator/Terrain.h>
+#include <wfmath/intersect.h>
+#include <wfmath/axisbox.h>
+#include <wfmath/ball.h>
 
 #include "TerrainLayerDefinitionManager.h"
 #include "TerrainLayerDefinition.h"
@@ -130,7 +136,6 @@ TerrainGenerator::~TerrainGenerator()
 	delete mSceneManagerAdapter;
 	delete mTerrain;
 	//delete mTerrainPageSource;
-	
 }
 
 Mercator::Terrain& TerrainGenerator::getTerrain()
@@ -212,6 +217,55 @@ TerrainShader* TerrainGenerator::createShader(const TerrainLayerDefinition* laye
 // }
 
 
+void TerrainGenerator::addTerrainMod(TerrainMod* terrainMod)
+{
+        // Listen for changes to the modifier
+    terrainMod->EventModChanged.connect(sigc::mem_fun(*this, &TerrainGenerator::TerrainMod_Changed));
+        // Listen for deletion of the modifier
+    terrainMod->EventModDeleted.connect(sigc::mem_fun(*this, &TerrainGenerator::TerrainMod_Deleted));
+
+        // We need to save this pointer to use when the modifier is changed or deleted
+    Mercator::TerrainMod* mod = mTerrain->addMod(*terrainMod->getMod());
+
+    mTerrainMods.insert(std::pair<const std::string, Mercator::TerrainMod*>(terrainMod->mEntity->getId(), mod));
+
+}
+
+void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
+{
+
+    // Clear this modifier from the terrain, then reapply it so the new parameters take effect
+        // Get its owner's ID
+    std::string entityID = terrainMod->mEntity->getId();
+    S_LOG_INFO("modhandler: changed: Mod for entity " << entityID << " updated?");
+        // Use the pointer returned from addMod() to remove it
+    mTerrain->removeMod(mTerrainMods.find(entityID)->second);
+        // Remove this mod from our list so we can replace the pointer with a new one
+    mTerrainMods.erase(terrainMod->mEntity->getId());
+
+        // Reapply the mod to the terrain with the updated parameters
+    Mercator::TerrainMod *mercatorMod = terrainMod->getMod();
+    mercatorMod = mTerrain->addMod(*mercatorMod);
+
+        // Insert it into our list
+    mTerrainMods.insert(std::pair<const std::string, Mercator::TerrainMod*>(terrainMod->mEntity->getId(), mercatorMod));
+
+//     buildHeightmap();
+}
+
+void TerrainGenerator::TerrainMod_Deleted(TerrainMod* terrainMod)
+{
+        // Clear this mod from the terrain
+            // Get the ID of the modifier's owner
+        std::string entityID = terrainMod->mEntity->getId();
+        S_LOG_INFO("modhandler: deleted: Mod for entity " << entityID << " deleted?");
+            // Use the pointer returned from addMod() to remove it
+        mTerrain->removeMod(mTerrainMods.find(entityID)->second);
+        // Remove this mod from our list
+        mTerrainMods.erase(terrainMod->mEntity->getId());
+
+//     buildHeightmap();
+}
 
 void TerrainGenerator::addArea(TerrainArea* terrainArea)
 {
@@ -345,8 +399,6 @@ int TerrainGenerator::getPageMetersSize()
 
 void TerrainGenerator::buildHeightmap()
 {
-	mHeightMax = 0, mHeightMin = 0;
-	
 	///initialize all terrain here, since we need to do that in order to get the correct height for placement even though the terrain might not show up in the SceneManager yet
 	
 	///note that we want to use int's here, since a call to getSegment(float, float) is very much different from a call to getSegment(int, int)
@@ -365,6 +417,8 @@ void TerrainGenerator::buildHeightmap()
 			}
 		}
 	}
+
+
 }
 
 // void TerrainGenerator::createShaders(WorldEmberEntity* worldEntity)
@@ -583,7 +637,7 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 		updatedPositions.push_back(TerrainPosition(I->getPosition().x() * mTerrain->getResolution(), I->getPosition().y() * mTerrain->getResolution()));
 	}
     mSegments = &mTerrain->getTerrain();
-	
+
 	buildHeightmap();
 	
 	///for some yet undetermined reason we'll get blank segments seeminly at random in the terrain if we'll load it dynamically when requested by the scene manager, so avoid that we'll initialize everything now
@@ -608,9 +662,10 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 		}
 	}
 	
-	
+
 	return true;
 }
+
 
 void TerrainGenerator::reloadTerrain(std::vector<TerrainPosition>& positions)
 {

@@ -34,6 +34,7 @@
 #include "terrain/TerrainShader.h"
 #include "terrain/TerrainLayerDefinition.h"
 #include "terrain/TerrainLayerDefinitionManager.h"
+#include "terrain/TerrainPage.h" //may not be required
 #include "WorldEmberEntity.h"
 #include "environment/Foliage.h"
 #include "environment/Environment.h"
@@ -49,6 +50,8 @@
 #include <Mercator/DepthShader.h>
 #include <Mercator/GrassShader.h>
 #include <Mercator/ShaderFactory.h>
+#include <Mercator/Segment.h>	//may not be required
+#include <Mercator/TerrainMod.h>//may not be required
 
 namespace EmberOgre {
 WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Terrain::TerrainGenerator* terrainGenerator) : 
@@ -167,6 +170,7 @@ void TerrainParser::updateTerrain(const Atlas::Message::Element& terrain)
 		return;
 	}
 	mTerrainGenerator->updateTerrain(pointStore);
+
 }
 
 float extractFloat(const Atlas::Message::ListType& params, size_t position) {
@@ -191,6 +195,12 @@ void TerrainParser::createShaders(const Atlas::Message::Element& surfaces)
 				std::string name;
 				std::string pattern;
 				const Atlas::Message::MapType& surfaceMap(I->asMap());
+
+// 				if (surfaceMap.count("terrainmod")) {
+					//const Atlast::Message::Element& modifier(surfaceMap.find("terrainMod");
+// 					updateTerrainModifiers(surfaceMap.find("terrainmod")->second);
+// 				}
+
 				Mercator::Shader::Parameters params;
 				if (surfaceMap.count("params")) {
 					const Atlas::Message::Element& paramsElem(surfaceMap.find("params")->second);
@@ -359,6 +369,11 @@ void WorldEmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 void WorldEmberEntity::addArea(Terrain::TerrainArea* area)
 {
 	mTerrainGenerator->addArea(area);
+}
+
+void WorldEmberEntity::addTerrainMod(Terrain::TerrainMod* mod)
+{
+    mTerrainGenerator->addTerrainMod(mod);
 }
 
 Environment::Environment* WorldEmberEntity::getEnvironment() const

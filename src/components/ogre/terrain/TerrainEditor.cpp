@@ -228,8 +228,9 @@ bool TerrainEditor::isOverlayShown() const
 
 void TerrainEditor::createOverlay()
 {
+
 	if (!mOverlayNode) {
-		
+
 		mOverlayNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
 		
 		const Mercator::Terrain& terrain = EmberOgre::getSingleton().getTerrainGenerator()->getTerrain();
@@ -264,17 +265,18 @@ void TerrainEditor::createOverlay()
 				Ogre::Vector3 ogrePos = Atlas2Ogre(tPos);
 				ogrePos.y = basepoint.height();
 				basepointNode->setPosition(ogrePos);
-				basepointNode->attachObject(entity);
+				basepointNode->attachObject(entity);				
+
 				BasePointUserObject* userObject = new BasePointUserObject(TerrainPosition(x,y), basepoint, basepointNode);
 				entity->setUserObject(userObject);
-				
-				
+
 				///store the base point user object
 				std::stringstream ss_;
 				ss_ << x << "_" << y;
 				mBasePointUserObjects[ss_.str()] = userObject;
 			}
 		}
+
 		///register the pick listener
 		EmberOgre::getSingleton().getMainCamera()->pushWorldPickListener(&mPickListener);
 	}

@@ -66,6 +66,7 @@ class TerrainShader;
 
 class TerrainPage;
 class TerrainArea;
+class TerrainMod;
 class TerrainLayerDefinition;
 class TerrainPageSurfaceLayer;
 class ISceneManagerAdapter;
@@ -189,6 +190,7 @@ public:
 	 */
 	bool updateTerrain(const TerrainDefPointStore& terrainIndexPoints);
 
+
 	/**
 	 * @brief Return true if there is a valid piece of terrain at the supplied segment indices.
 	 * By valid means a populated terrain-
@@ -235,6 +237,11 @@ public:
 	 */
 	void addArea(TerrainArea* terrainArea);
 
+	/**
+	 *    @brief Adds a new Mercator::TerrainMod to the terrain.
+	 * @param mod
+	 */
+	void addTerrainMod(TerrainMod* terrainMod);
 	
 	/**
 	 * @brief Returns a TerrainPage, creating one if there's no existing and so requested.
@@ -252,7 +259,6 @@ public:
 	 */
 	TerrainPage* getTerrainPageAtPosition(const TerrainPosition& worldPosition);
 
-	
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method
 	 * @param command 
@@ -395,6 +401,10 @@ protected:
 	*/
 	typedef std::map<TerrainShader*, std::vector<Mercator::Area> > TerrainAreaMap;
 	TerrainAreaMap mChangedTerrainAreas;
+
+
+	typedef std::multimap<const std::string, Mercator::TerrainMod*> TerrainModMap;
+	TerrainModMap mTerrainMods;
 	
 	TerrainPagestore mTerrainPages;
 	
@@ -486,6 +496,7 @@ protected:
 	@brief An adapter class which allows us to access the Ogre scene manager.
 	Note that even though this is passed as a parameter in the constructor, this class is then responsible for its destruction.
 	*/
+	void TerrainMod_Deleted(TerrainMod* terrainMod);
 	ISceneManagerAdapter* mSceneManagerAdapter;
 	
 	unsigned int mFoliageBatchSize;

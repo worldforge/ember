@@ -29,13 +29,18 @@
 #include "MotionManager.h"
 #include "GUIManager.h"
 #include "terrain/TerrainArea.h"
+#include "terrain/TerrainMod.h"
 #include "MathConverter.h"
 
 #include "EmberOgre.h"
 #include <OgreWireBoundingBox.h>
 #include <OgreException.h>
 
+#include "terrain/TerrainGenerator.h"
+#include "terrain/TerrainPage.h"
+
 #include <Mercator/Area.h>
+#include <Mercator/TerrainMod.h>
 //#include <Atlas/Objects/ObjectsFwd.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/View.h>
@@ -133,7 +138,7 @@ EmberEntity::~EmberEntity()
 	///make sure it's not in the MotionManager
 	///TODO: keep a marker in the entity so we don't need to call this for all entities
 	MotionManager::getSingleton().removeEntity(this);
-	
+
 	if (mErisEntityBoundingBox) {
 		mErisEntityBoundingBox->getParentSceneNode()->getCreator()->destroySceneNode(mErisEntityBoundingBox->getParentSceneNode()->getName());
 	}
@@ -153,6 +158,14 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 	ss << "Entity " << getId() << "(" << getName() << ") placed at (" << getPredictedPos().x() << "," << getPredictedPos().y() << "," << getPredictedPos().x() << ")";
 	S_LOG_VERBOSE( ss.str());
 	
+
+	if (hasAttr("terrainmod")) {
+    	mTerrainMod = std::auto_ptr<Terrain::TerrainMod>(new Terrain::TerrainMod(this));
+        if (mTerrainMod->init()) {
+            addTerrainMod(mTerrainMod.get());
+        }
+    }
+
 	mIsInitialized = true;
 	
 }
@@ -369,6 +382,7 @@ void EmberEntity::adjustPositionForContainedNode(EmberEntity* const entity, cons
 	//Ogre::Vector3 position = sceneNode->getPosition();
 	const Ogre::Vector3& offset = getOffsetForContainedNode(position, entity);
 	if (offset != Ogre::Vector3::ZERO) {
+        
 		sceneNode->setPosition(position + offset);
 	}
 	
@@ -488,6 +502,14 @@ void EmberEntity::addArea(Terrain::TerrainArea* area)
 	if (getEmberLocation()) {
 		getEmberLocation()->addArea(area);
 	}
+}
+
+void EmberEntity::addTerrainMod(Terrain::TerrainMod* mod)
+{
+///Same as addArea: pass it on to the parent until it gets to someone who knows how to handle this
+    if (getEmberLocation()) {
+        getEmberLocation()->addTerrainMod(mod);
+    }
 }
 
 void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::Element& v)

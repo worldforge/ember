@@ -415,6 +415,7 @@ bool EmberOgre::setup()
 	{ 
 		S_LOG_INFO( "Begin preload.");
 		mResourceLoader->preloadMedia();
+
 		S_LOG_INFO( "End preload.");
 	}	
 	try {

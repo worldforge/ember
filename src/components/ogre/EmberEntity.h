@@ -35,6 +35,7 @@ namespace Ogre
 namespace Mercator
 {
 	class Area;
+	class TerrainMod;
 }
 
 namespace Eris
@@ -51,6 +52,7 @@ namespace Model {
 namespace Terrain
 {
 	class TerrainArea;
+	class TerrainMod;
 }
 
 class EmberEntityFactory;
@@ -89,7 +91,6 @@ public:
 	*/
 	static const std::string BboxMaterialName;
 
-	
 	
 	/**
 	 * @brief Ctor.
@@ -405,9 +406,7 @@ protected:
 	 * @brief Creates the material used for the eris bboxes, if not already created.
 	 */
 	void createErisBboxMaterial();
-	
-	
-	
+
 	/**
 	 * @brief Creates the main scene node which holds the entity.
 	 * @param sceneManager The scene manager which should be used for creating the scene node.
@@ -447,7 +446,6 @@ protected:
 	 * @brief If there's a terrainarea belonging to this entity, that's stored here.
 	 */
 	std::auto_ptr<Terrain::TerrainArea> mTerrainArea;
-
 		
 	/**
 	* @brief The mode the entity is in, like walking, running, swimming etc.
