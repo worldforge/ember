@@ -40,13 +40,28 @@ namespace Terrain {
 
 /**
 @author Tamas Bates
+@brief Wrapper class that envelopes a Mercator::TerrainMod.
+This class is mainly responsible for parsing atlas data and create or update an instance of Mercator::TerrainMod with the correct data.
+The actual application of the Mercator::TerrainMod to the terrain and the subsequent update of the rendering display (i.e. the Ogre terrain) is handled mainly by TerrainGenerator, which reacts to the events emitted by this class whenever a terrain mod changes or is moved.
 */
 class TerrainMod
 {
 public:
+	/**
+	 * @brief Ctor.
+	 * @param entity The entity to which this mod belongs.
+	 */
 	TerrainMod(EmberEntity* entity);
 
+	/**
+	 * @brief Dtor.
+	 */
 	~TerrainMod();
+	
+	/**
+	 * @brief Sets up the observation of the entity, and parses the mod info, creating the initial mod instance.
+	 * @return True if the atlas data was conformant and successfully parsed.
+	 */
 	bool init();
 
 	/**
@@ -69,17 +84,24 @@ public:
 	Should be caught by TerrainGenerator to remove this mod from the terrain.
 	*/
 	sigc::signal<void, TerrainMod*> EventModDeleted;
-
+	
 	/**
-	The owner of this modifier
-	*/
-	EmberEntity* mEntity;
+	 * @brief Accessor for the entity to which this terrain mod belongs.
+	 * @return A pointer to the entity to which this terrain mod belongs.
+	 */
+	EmberEntity* getEntity() const;
 
 protected:
 	/**
 	A pointer to the modifier. Used to update and remove it from the terrain.
 	*/
 	Mercator::TerrainMod* mModifier;
+	
+	/**
+	The owner of this modifier
+	*/
+	EmberEntity* mEntity;
+	
 	Eris::Entity::AttrChangedSlot mAttrChangedSlot;
 
 	/**
@@ -123,10 +145,6 @@ protected:
 Mercator::TerrainMod* TerrainMod::getMod() const
 {
 	return mModifier;
-}
-void TerrainMod::setMod(Mercator::TerrainMod* modifier)
-{
-	mModifier = modifier;
 }
 
 }

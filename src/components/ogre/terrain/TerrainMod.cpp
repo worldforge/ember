@@ -33,7 +33,9 @@ namespace EmberOgre
 {
 namespace Terrain {
 
-TerrainMod::TerrainMod(EmberEntity* entity) : mModifier(0), mEntity(entity)
+TerrainMod::TerrainMod(EmberEntity* entity)
+: mModifier(0)
+, mEntity(entity)
 {
 }
 
@@ -44,8 +46,11 @@ TerrainMod::~TerrainMod()
 
 bool TerrainMod::init()
 {
-	observeEntity();
-	return parseMod();
+	bool successfulParsing = parseMod();
+	if (successfulParsing) {
+		observeEntity();
+	}
+	return successfulParsing;
 }
 
 bool TerrainMod::parseMod()
@@ -160,6 +165,7 @@ bool TerrainMod::parseMod()
 			return false;
 		}
 	}
+	return false;
 }
 
 void TerrainMod::attributeChanged(const Atlas::Message::Element& attributeValue)
@@ -382,6 +388,11 @@ Mercator::TerrainMod * TerrainMod::newAdjustMod(const Atlas::Message::MapType sh
 
 	S_LOG_FAILURE("AdjustTerrainMod defined with incorrect shape data");
 	return NULL;
+}
+
+EmberEntity* TerrainMod::getEntity() const
+{
+	return mEntity;
 }
 
 } // close Namespace Terrain
