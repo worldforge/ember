@@ -38,6 +38,61 @@ class EmberEntity;
 
 namespace Terrain {
 
+class TerrainMod;
+
+class InnerTerrainMod
+{
+public:
+	InnerTerrainMod(TerrainMod& terrainMod);
+	virtual ~InnerTerrainMod();
+	
+	const std::string& getTypename() const;
+	
+	bool parseAtlasData(const Atlas::Message::MapType& modElement) = 0;
+	
+	Mercator::TerrainMod* getModifier() = 0
+
+protected:
+	std::string mTypeName;
+	TerrainMod& mTerrainMod;
+};
+
+
+class InnerTerrainModSlope : public InnerTerrainMod
+{
+public:
+	InnerTerrainModSlope(TerrainMod& terrainMod);
+	bool parseAtlasData(const Atlas::Message::MapType& modElement);
+protected:
+};
+
+class InnerTerrainModCrater : public InnerTerrainMod
+{
+public:
+	InnerTerrainModCrater(TerrainMod& terrainMod);
+	bool parseAtlasData(const Atlas::Message::MapType& modElement);
+protected:
+	Mercator::CraterTerrainMod* mModifier;
+};
+
+class InnerTerrainModLevel : public InnerTerrainMod
+{
+public:
+	InnerTerrainModLevel(TerrainMod& terrainMod);
+	bool parseAtlasData(const Atlas::Message::MapType& modElement);
+protected:
+};
+
+class InnerTerrainModAdjust : public InnerTerrainMod
+{
+public:
+	InnerTerrainModAdjust(TerrainMod& terrainMod);
+	bool parseAtlasData(const Atlas::Message::MapType& modElement);
+protected:
+};
+
+
+
 /**
 @author Tamas Bates
 @brief Wrapper class that envelopes a Mercator::TerrainMod.
@@ -92,10 +147,6 @@ public:
 	EmberEntity* getEntity() const;
 
 protected:
-	/**
-	A pointer to the modifier. Used to update and remove it from the terrain.
-	*/
-	Mercator::TerrainMod* mModifier;
 	
 	/**
 	The owner of this modifier

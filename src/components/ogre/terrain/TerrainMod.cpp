@@ -29,9 +29,82 @@
 #include "../EmberEntity.h"
 #include <Mercator/TerrainMod.h>
 
-namespace EmberOgre
-{
+namespace EmberOgre {
 namespace Terrain {
+
+InnerTerrainMod::InnerTerrainMod(TerrainMod& terrainMod)
+: mTerrainMod(terrainMod)
+{
+}
+
+InnerTerrainMod::~InnerTerrainMod()
+{
+}
+
+const std::string& InnerTerrainMod::getTypename() const
+{
+	return mTypeName;
+}
+	
+Mercator::TerrainMod* InnerTerrainMod::getModifier()
+{
+	return mModifier;
+}
+
+InnerTerrainModCrater::InnerTerrainModCrater(TerrainMod& terrainMod)
+: mModifier(0)
+, InnerTerrainMod(terrainMod)
+{
+}
+
+InnerTerrainModCrater::parseAtlasData(const Atlas::Message::MapType& modElement)
+{
+	Atlas::Message::MapType::const_iterator shape_I = modElement.find("shape");
+	if (shape_I != modElement.end()) {
+		const Atlas::Message::Element& shapeElement = shape_I->second;
+		if (shapeElement.isMap()) {
+			const Atlas::Message::MapType& shapeMap = shapeElement.asMap();
+			std::string shapeType;
+			
+			// Get shape's type
+			Atlas::Message::MapType::const_iterator type_I = shapeMap.find("type");
+			if (type_I != shapeMap.end()) {
+				const Atlas::Message::Element& shapeTypeElem(type_I->second);
+				if (shapeTypeElem.isString()) {
+					shapeType = shapeTypeElem.asString();
+				}
+			}
+			// end shape data
+			
+			if (shapeType == "ball") {
+				float shapeRadius;
+				// Get sphere's radius
+				Atlas::Message::MapType::const_iterator radius_I = shapeMap.find("radius");
+				if (radius_I != shapeMap.end()) {
+					const Atlas::Message::Element& shapeRadiusElem(radius_I->second);
+					shapeRadius = shapeRadiusElem.asNum();
+				}
+			
+				// Make sphere
+				WFMath::Ball<3> modShape = WFMath::Ball<3>(pos, shapeRadius); ///FIXME: assumes 3d ball...
+			
+				// Make modifier
+				Mercator::CraterTerrainMod *NewMod;
+				NewMod = new Mercator::CraterTerrainMod(modShape);
+			
+				return NewMod;
+			}
+		}
+	}
+	
+	
+
+
+	S_LOG_FAILURE("CraterTerrainMod defined with incorrect shape");
+	return NULL;
+}
+
+
 
 TerrainMod::TerrainMod(EmberEntity* entity)
 : mModifier(0)
@@ -186,8 +259,8 @@ void TerrainMod::entity_Moved()
 
 void TerrainMod::entity_Deleted()
 {
-	delete mModifier;
 	EventModDeleted(this);
+	delete mModifier;
 }
 
 void TerrainMod::observeEntity()
