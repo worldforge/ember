@@ -118,6 +118,7 @@ Eris::Entity(id, ty, vw)
 , mErisEntityBoundingBox(0)
 , mOgreNode(0)
 , mTerrainArea(0)
+, mTerrainMod(0)
 , mMovementMode(MM_DEFAULT)
 {
 	createSceneNode(sceneManager);
@@ -528,7 +529,7 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
 	
 	///if the area attribute has changed, and we _don't_ have any mTerrainMod instance, try to create one such.
 	///if we do have an mTerrainMod instance, all updates will be taken care of by that instead and we can ignore this
-	if (hasAttr("terrainmod") && mTerrainMod.get()) {
+	if (hasAttr("terrainmod") && !mTerrainMod.get()) {
 		mTerrainMod = std::auto_ptr<Terrain::TerrainMod>(new Terrain::TerrainMod(this));
 		if (mTerrainMod->init()) {
 			addTerrainMod(mTerrainMod.get());
