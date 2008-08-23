@@ -384,45 +384,6 @@ protected:
 	bool parseMod();
 
 	/**
-	 *    @brief creates a CraterTerrainMod based on a shape and position
-	 * @param shapeMap An Atlas MapType containing all the information about the shape defining the mod
-	 * @param pos A 3D Point containing the position the modifier is to be applied at
-	 * @returns A pointer to the new TerrainMod on success, or NULL on failure
-	 * pos is used to generate the shape for the modifier, and can cause the mod to be
-	 * applied at a position other than the owning entity's position.
-	 */
-	Mercator::TerrainMod * newCraterMod(const Atlas::Message::MapType, WFMath::Point<3>);
-
-	/**    @brief Creates a LevelTerrainMod based on a shape and position
-	 * @param shapeMap An Atlas MapType containing all the information about the shape defining the mod
-	 * @param pos A 3D Point containing the position the modifier is to be applied at
-	 * @returns A pointer to the new TerrainMod on success, or NULL on failure
-	 * In this case the LevelMod only uses 2D coordinates for its position, so pos.z() actually
-	 * holds the height that the LevelMod will be raised to.
-	 */
-	Mercator::TerrainMod * newLevelMod(const Atlas::Message::MapType, WFMath::Point<3>);
-
-	/**@brief Creates a SlopeTerrainMod based on a shape and position
-	 * @param shapeMap An Atlas MapType containing all the information about the shape defining the mod
-	 * @param pos A 3D Point containing the position the modifier is to be applied at
-	 * @param dx The desired slope on the X-Axis
-	 * @param dy The desired slope on the Y-Axis
-	 * @returns A pointer to the new TerrainMod on success, or NULL on failure
-	 * In this case the SlopeMod only uses 2D coordinates for its position, so pos.z() actually
-	 * holds the height that the terrain will be raised to.
-	 */
-	Mercator::TerrainMod * newSlopeMod(const Atlas::Message::MapType, WFMath::Point<3>, float, float);
-
-	/**    @brief Creates a AdjustTerrainMod based on a shape and position
-	 * @param shapeMap An Atlas MapType containing all the information about the shape defining the mod
-	 * @param pos A 3D Point containing the position the modifier is to be applied at
-	 * @returns A pointer to the new TerrainMod on success, or NULL on failure
-	 * In this case the LevelMod only uses 2D coordinates for its position, so pos.z() actually
-	 * holds the value of the height adjustment made to the terrain.
-	 */
-	Mercator::TerrainMod * newAdjustMod(const Atlas::Message::MapType, WFMath::Point<3>);
-
-	/**
 	 * @brief The inner terrain mod instance which holds the actual Mercator::TerrainMod instance and handles the parsing of it.
 	 * In order to be able to better support different types of mods the actual instance will be any of the subclasses of InnerTerrainMod, depending on the type of the mod.
 	 */
