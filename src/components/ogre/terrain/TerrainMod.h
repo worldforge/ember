@@ -107,10 +107,23 @@ protected:
 	 */
 	TerrainMod& mTerrainMod;
 	
+	/**
+	 * @brief Parses the atlas data of the modifiers, finding the base atlas element for the shape definition, and returning the kind of shape specified.
+	 * This is an utility method to help with those many cases where we need to parse the shape data in order to determine the kind of shape. The actual parsing and creation of the shape happens in InnerTerrainMod_impl however, since that depends on templated calls. However, in order to know what kind of template to use we must first look at the type of shape, thus the need for this method.
+	 * @param modElement The atlas element containing the modifier.
+	 * @param shapeMap A shape data is found, and it's in the map form, it will be put here.
+	 * @return The name of the shape, or an empty string if no valid data could be found.
+	 */
 	const std::string& parseShape(const Atlas::Message::MapType& modElement, const Atlas::Message::MapType** shapeMap);
 };
 
 
+/**
+@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+@brief Inner terrain mod class for handling slope mods.
+This will parse and create an instance of Mercator::SlopeTerrainMod, which is a mod which produces a sloped area in the landscape.
+The main parsing of the atlas data and creation of the terrain mod occurs in InnerTerrainMod_impl however, as this is a mod that uses templated shapes.
+*/
 class InnerTerrainModSlope : public InnerTerrainMod
 {
 public:
@@ -137,7 +150,8 @@ public:
 	
 protected:
 	/**
-	 * @brief A reference to the slope terrain modifier held by this instance.
+	 * @brief A reference to inner mod implementation.
+	 * This is separate from this class because of the heavy use of templated shapes.
 	 * The ownership is ours, so it will be destroyed when this instance is destroyed.
 	 */
 	InnerTerrainMod_impl* mModifier_impl;
@@ -148,6 +162,8 @@ protected:
 @author Tamas Bates
 @brief Handles a crater terrain mod.
 This will parse and create an instance of Mercator::CraterTerrainMod, which is a mod which produces a crater in the landscape.
+Note that this will not make use of InnerTerrainMod_impl since there's no templated shapes in use here.
+TODO: Should perhaps this also use the same pattern of InnerTerrainMod_impl as the other mods, just to not break the pattern? /ehj
 */
 class InnerTerrainModCrater : public InnerTerrainMod
 {
@@ -186,6 +202,7 @@ protected:
 @author Tamas Bates
 @brief Handles a level terrain mod.
 This will parse and create an instance of Mercator::LevelTerrainMod, which is a mod which produces a level area in the landscape.
+The main parsing of the atlas data and creation of the terrain mod occurs in InnerTerrainMod_impl however, as this is a mod that uses templated shapes.
 */
 class InnerTerrainModLevel : public InnerTerrainMod
 {
@@ -214,24 +231,58 @@ public:
 protected:
 
 	/**
-	 * @brief A reference to the level terrain modifier implementation held by this instance.
+	 * @brief A reference to inner mod implementation.
+	 * This is separate from this class because of the heavy use of templated shapes.
 	 * The ownership is ours, so it will be destroyed when this instance is destroyed.
 	 */
 	InnerTerrainMod_impl* mModifier_impl;
 };
 
+/**
+@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+@author Tamas Bates
+@brief Handles a level terrain mod.
+This will parse and create an instance of Mercator::AdjustTerrainMod, which is a mod which adjusts the terrain within an area in the landscape.
+The main parsing of the atlas data and creation of the terrain mod occurs in InnerTerrainMod_impl however, as this is a mod that uses templated shapes.
+*/
 class InnerTerrainModAdjust : public InnerTerrainMod
 {
 public:
+	/**
+	 * @brief Ctor.
+	 * @param terrainMod The TerrainMod instance to which this instance belongs to.
+	 */
 	InnerTerrainModAdjust(TerrainMod& terrainMod);
-	bool parseAtlasData(const Atlas::Message::MapType& modElement);
-protected:
-};
+	
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~InnerTerrainModAdjust();
+	
+	/**
+	 * @copydoc InnerTerrainMod::parseAtlasData()
+	 */
+	virtual bool parseAtlasData(const Atlas::Message::MapType& modElement);
+	
+	/**
+	 * @copydoc InnerTerrainMod::getModifier()
+	 */
+	virtual Mercator::TerrainMod* getModifier();
 
+protected:
+
+	/**
+	 * @brief A reference to inner mod implementation.
+	 * This is separate from this class because of the heavy use of templated shapes.
+	 * The ownership is ours, so it will be destroyed when this instance is destroyed.
+	 */
+	InnerTerrainMod_impl* mModifier_impl;
+};
 
 
 /**
 @author Tamas Bates
+@author Erik Hjortsberg
 @brief Wrapper class that envelopes a Mercator::TerrainMod.
 This class is mainly responsible for parsing atlas data and create or update an instance of Mercator::TerrainMod with the correct data.
 The actual application of the Mercator::TerrainMod to the terrain and the subsequent update of the rendering display (i.e. the Ogre terrain) is handled mainly by TerrainGenerator, which reacts to the events emitted by this class whenever a terrain mod changes or is moved.
@@ -288,7 +339,7 @@ public:
 protected:
 	
 	/**
-	The owner of this modifier
+	 @brief The owner of this modifier.
 	 */
 	EmberEntity* mEntity;
 	
@@ -315,13 +366,13 @@ protected:
 	void entity_Deleted();
 
 	/**
-	 *    @brief Sets up the previous three handler functions to be called when a change
+	 * @brief Sets up the previous three handler functions to be called when a change
 	 * is made to the entity holding the modifier. 
 	 */
 	void observeEntity();
 
 	/**
- 	 *    @brief Parses the Atlas data for a modifier
+	 * @brief Parses the Atlas data for a modifier
 	 * @returns True if it was able to successfully create a Mercator::TerrainMod, False otherwise
 	 * All work specific to a certain kind of TerrainMod is handled by the functions below.
 	 */
@@ -346,7 +397,7 @@ protected:
 	 */
 	Mercator::TerrainMod * newLevelMod(const Atlas::Message::MapType, WFMath::Point<3>);
 
-	/**    @brief Creates a SlopeTerrainMod based on a shape and position
+	/**@brief Creates a SlopeTerrainMod based on a shape and position
 	 * @param shapeMap An Atlas MapType containing all the information about the shape defining the mod
 	 * @param pos A 3D Point containing the position the modifier is to be applied at
 	 * @param dx The desired slope on the X-Axis
