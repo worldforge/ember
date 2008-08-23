@@ -167,6 +167,7 @@ void TerrainParser::updateTerrain(const Atlas::Message::Element& terrain)
 		return;
 	}
 	mTerrainGenerator->updateTerrain(pointStore);
+
 }
 
 float extractFloat(const Atlas::Message::ListType& params, size_t position) {
@@ -191,6 +192,7 @@ void TerrainParser::createShaders(const Atlas::Message::Element& surfaces)
 				std::string name;
 				std::string pattern;
 				const Atlas::Message::MapType& surfaceMap(I->asMap());
+				
 				Mercator::Shader::Parameters params;
 				if (surfaceMap.count("params")) {
 					const Atlas::Message::Element& paramsElem(surfaceMap.find("params")->second);
@@ -359,6 +361,11 @@ void WorldEmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 void WorldEmberEntity::addArea(Terrain::TerrainArea* area)
 {
 	mTerrainGenerator->addArea(area);
+}
+
+void WorldEmberEntity::addTerrainMod(Terrain::TerrainMod* mod)
+{
+    mTerrainGenerator->addTerrainMod(mod);
 }
 
 Environment::Environment* WorldEmberEntity::getEnvironment() const

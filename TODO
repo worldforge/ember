@@ -2,6 +2,7 @@ TODO LIST
 ---------
 
 * terrain
+	-implement terrain modifiers
 	-better use of GPU shaders (both vertex and pixel shaders)
 	-optimize material better
 	

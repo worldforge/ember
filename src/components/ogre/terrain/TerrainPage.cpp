@@ -91,7 +91,7 @@ namespace Terrain {
 
 
 
-
+// 
 TerrainPage::TerrainPage(TerrainPosition position, const std::map<const Mercator::Shader*, TerrainShader*> shaderMap, TerrainGenerator* generator) 
 : mGenerator(generator)
 , mPosition(position)
@@ -121,6 +121,7 @@ TerrainPage::TerrainPage(TerrainPosition position, const std::map<const Mercator
 	S_LOG_VERBOSE("Number of valid segments: " << mValidSegments.size());
 	setupShadowTechnique();
 	mTerrainSurface->setShadow(&mShadow);
+
 }
 
 TerrainPage::~TerrainPage()
@@ -435,6 +436,8 @@ void TerrainPage::unregisterBridge()
 	///we're not responsible for this one, so we don't destroy it here
 	mBridge = 0;
 }
+
+
 
 }
 }

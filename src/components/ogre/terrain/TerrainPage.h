@@ -28,6 +28,7 @@
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
 #include <Mercator/Surface.h>
+#include <Mercator/TerrainMod.h>
 #include "../MathConverter.h"
 
 namespace EmberOgre {
@@ -57,9 +58,9 @@ class TerrainPage;
 class TerrainPageFoliage;
 class TerrainPageSurfaceLayer;
 class ITerrainPageBridge;
+class terrainModListEntry;
 
 TYPEDEF_STL_MAP(const Mercator::Shader*, TerrainShader*, ShaderMap);
-
 
 
 
@@ -71,7 +72,6 @@ This is a bridge class between one Ogre terrain page instance and one or many Me
 
 Instances of this is created by TerrainGenerator.
 One terrain page is composed of both height data, a material, textures for the material and plant positions for the foliage system. This class handles all of these, some of them directly and some by other classes.
-
 
 @author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
@@ -240,6 +240,7 @@ public:
 	 */
 	void unregisterBridge();
 
+
 private:
 
 	SegmentVector mValidSegments;
@@ -292,7 +293,8 @@ private:
 	The keys will be the local indices.
 	*/
 	Mercator::Terrain::Segmentstore mLocalSegments;
-	
+		
+
 	/**
 	@brief Bridge to the ogre terrain engine.
 	When the terrain data is changed we need to also update the actual ingame representation that the terrain engine provides. This instance will take care of that.
@@ -308,6 +310,6 @@ inline int TerrainPage::getAlphaTextureSize( ) const
 
 }
 }
-};
+}
 
 #endif

@@ -48,6 +48,7 @@ namespace Mercator
 	class Terrain;
 	class Shader;
 	class Segment;
+	class TerrainMod;
 }
 
 namespace EmberOgre {
@@ -66,6 +67,7 @@ class TerrainShader;
 
 class TerrainPage;
 class TerrainArea;
+class TerrainMod;
 class TerrainLayerDefinition;
 class TerrainPageSurfaceLayer;
 class ISceneManagerAdapter;
@@ -189,6 +191,7 @@ public:
 	 */
 	bool updateTerrain(const TerrainDefPointStore& terrainIndexPoints);
 
+
 	/**
 	 * @brief Return true if there is a valid piece of terrain at the supplied segment indices.
 	 * By valid means a populated terrain-
@@ -235,6 +238,11 @@ public:
 	 */
 	void addArea(TerrainArea* terrainArea);
 
+	/**
+	 *    @brief Adds a new Mercator::TerrainMod to the terrain.
+	 * @param mod
+	 */
+	void addTerrainMod(TerrainMod* terrainMod);
 	
 	/**
 	 * @brief Returns a TerrainPage, creating one if there's no existing and so requested.
@@ -252,7 +260,6 @@ public:
 	 */
 	TerrainPage* getTerrainPageAtPosition(const TerrainPosition& worldPosition);
 
-	
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method
 	 * @param command 
@@ -332,13 +339,14 @@ public:
 	void getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour);
 
 	/**
-	Emitted when a layer is updated.
+	@brief Emitted when a layer is updated.
 	The vector parameter is either null if the update can't be constrained to any areas, or an vector of areas if it can.
 	*/
 	sigc::signal<void, TerrainShader*, AreaStore* > EventLayerUpdated;
 	
 	/**
-	Emitted when a new shader is created.
+	@brief Emitted when a new shader is created.
+	The shader paremeter is the newly created shader.
 	*/
 	sigc::signal<void, TerrainShader*> EventShaderCreated;
 	
@@ -361,19 +369,23 @@ public:
 	sigc::signal<void, std::vector<TerrainPosition>&, std::set<TerrainPage*>&> EventAfterTerrainUpdate;
 	
 	/**
-	 *    Gets the size of each foliage batch. This is used by the foliage system for setting up batch system for performance.
-	 * @return 
+	 * @brief Gets the size of each foliage batch. This is used by the foliage system for setting up batch system for performance.
+	 * @return The size of on foliage batch, in world units. 
 	 */
 	inline unsigned int getFoliageBatchSize() const;
 
 protected:
 
 	/**
-	Information about the world, such as size and number of pages.
+	@brief Information about the world, such as size and number of pages.
 	*/
 	TerrainInfo mTerrainInfo;
 
 	typedef std::map<int,TerrainShader*> AreaShaderstore;
+	
+	/**
+	@brief We use this to keep track on the terrain shaders used for areas, stored with the layer id as the key.
+	*/
 	AreaShaderstore mAreaShaders;
 
 	/**
@@ -385,6 +397,13 @@ protected:
 	void markShaderForUpdate(TerrainShader* shader, TerrainArea* terrainArea = 0);
 	
 	typedef std::set<TerrainShader*> ShaderSet;
+	
+	/**
+	 * @brief Stores the shaders needing update, to be processed on the next frame.
+	 * For performance reasons we try to batch all shaders updates togther, rather than doing them one by one. This is done by adding the shaders needing update to this store, and then on frameEnded processing them.
+	 * @see markShaderForUpdate
+	 * @see frameEnded
+	 */
 	ShaderSet mShadersToUpdate;
 	
 	typedef std::map<std::string, TerrainPage*> PageStore;
@@ -395,6 +414,10 @@ protected:
 	*/
 	typedef std::map<TerrainShader*, std::vector<Mercator::Area> > TerrainAreaMap;
 	TerrainAreaMap mChangedTerrainAreas;
+
+
+	typedef std::multimap<const std::string, Mercator::TerrainMod*> TerrainModMap;
+	TerrainModMap mTerrainMods;
 	
 	TerrainPagestore mTerrainPages;
 	
@@ -483,9 +506,15 @@ protected:
 	void TerrainArea_Removed(TerrainArea* terrainArea);
 	
 	/**
+	Listen to changes in terrain mods.
+	*/
+	void TerrainMod_Changed(TerrainMod* terrainMod);
+	
+	/**
 	@brief An adapter class which allows us to access the Ogre scene manager.
 	Note that even though this is passed as a parameter in the constructor, this class is then responsible for its destruction.
 	*/
+	void TerrainMod_Deleted(TerrainMod* terrainMod);
 	ISceneManagerAdapter* mSceneManagerAdapter;
 	
 	unsigned int mFoliageBatchSize;

@@ -35,6 +35,7 @@ namespace Ogre
 namespace Mercator
 {
 	class Area;
+	class TerrainMod;
 }
 
 namespace Eris
@@ -51,6 +52,7 @@ namespace Model {
 namespace Terrain
 {
 	class TerrainArea;
+	class TerrainMod;
 }
 
 class EmberEntityFactory;
@@ -89,7 +91,6 @@ public:
 	*/
 	static const std::string BboxMaterialName;
 
-	
 	
 	/**
 	 * @brief Ctor.
@@ -383,7 +384,7 @@ protected:
 	virtual void onModeChanged(MovementMode newMode);
 	
 	/**
-	 *    Called when the bounding box has changed.
+	 * @brief Called when the bounding box has changed.
 	 */
 	virtual void onBboxChanged();
 
@@ -396,6 +397,14 @@ protected:
 	virtual void addArea(Terrain::TerrainArea* area);
 	
 	/**
+	 * @brief Adds a terrain mod to the entity.
+	 * Mods are a terrain feature, and cannot be handled by a standard implementation of EmberEntity. The default implementation of this method in this class will therefore only pass it on to the parent entity, if any such is available. The idea is that somewhere along the way, as the method "walks" the entity hierarcy upwards it will come across an implementation of this method that does indeed know how to handle the terrain mod.
+	 * @see EmberOgre::WorldEmberEntity::addTerrainMod()
+	 * @param mod The mod which has been added.
+	 */
+	virtual void addTerrainMod(Terrain::TerrainMod* mod);
+	
+	/**
 	* @brief For debugging purposes. This holds a bounding box of how the entity appears in the eris/atlas world.
 	* This is often different from the Ogre bounding box.
 	*/
@@ -405,9 +414,7 @@ protected:
 	 * @brief Creates the material used for the eris bboxes, if not already created.
 	 */
 	void createErisBboxMaterial();
-	
-	
-	
+
 	/**
 	 * @brief Creates the main scene node which holds the entity.
 	 * @param sceneManager The scene manager which should be used for creating the scene node.
@@ -444,11 +451,17 @@ protected:
 	Ogre::SceneManager* getSceneManager();
 	
 	/**
-	 * @brief If there's a terrainarea belonging to this entity, that's stored here.
+	 * @brief If there's a terrain area belonging to this entity, that's stored here.
+	 * The terrain area instance will take care of all required terrain area functionality once it's been created, offloading this from the EmberEntity. Most entities won't however have any terrain areas, for which this will be null.
 	 */
 	std::auto_ptr<Terrain::TerrainArea> mTerrainArea;
-
 		
+	/**
+	 * @brief If a terrainmod belongs to this entity, it's stored here.
+	 * The terrain mod instance will take care of all required terrain mod functionality once it's been created, offloading this from the EmberEntity. Most entities won't however have any terrain mods, for which this will be null.
+	 */
+	std::auto_ptr<Terrain::TerrainMod> mTerrainMod;
+	
 	/**
 	* @brief The mode the entity is in, like walking, running, swimming etc.
 	*/
