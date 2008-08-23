@@ -80,6 +80,7 @@ bool InnerTerrainModCrater::parseAtlasData(const Atlas::Message::MapType& modEle
 				const Atlas::Message::Element& shapeTypeElem(type_I->second);
 				if (shapeTypeElem.isString()) {
 					shapeType = shapeTypeElem.asString();
+					///TODO: separate this into resuable code /ehj
 					if (shapeType == "ball") {
 						// Get sphere's radius
 						Atlas::Message::MapType::const_iterator radius_I = shapeMap.find("radius");
@@ -111,6 +112,57 @@ bool InnerTerrainModCrater::parseAtlasData(const Atlas::Message::MapType& modEle
 	S_LOG_FAILURE("CraterTerrainMod defined with incorrect shape");
 	return false;
 }
+
+
+InnerTerrainModSlope::InnerTerrainModSlope(TerrainMod& terrainMod)
+: InnerTerrainMod(terrainMod, "slopemod")
+, mModifier(0)
+{
+}
+
+InnerTerrainModSlope::~InnerTerrainModSlope()
+{
+	delete mModifier;
+}
+
+Mercator::TerrainMod* InnerTerrainModSlope::getModifier()
+{
+	return mModifier;
+}
+
+
+bool InnerTerrainModSlope::parseAtlasData(const Atlas::Message::MapType& modElement)
+{
+	WFMath::Point<3> pos = mTerrainMod.getEntity()->getPosition();
+	float dx, dy, level;
+	// Get slopes
+	mod_I = modElement.find("slopes");
+	if (mod_I != modMap.end()) {
+		const Atlas::Message::Element& modSlopeElem = mod_I->second;
+		if (modSlopeElem.isList()) {
+			const Atlas::Message::ListType & slopes = modSlopeElem.asList();
+			dx = (int)slopes[0].asNum();
+			dy = (int)slopes[1].asNum();
+			// Get level
+			mod_I = modMap.find("height");
+			if (mod_I != modMap.end()) {
+				///is this a required attribute or not? We'll treat it as an optional attribute for now. /ehj
+				const Atlas::Message::Element& modHeightElem = mod_I->second;
+				level = modHeightElem.asNum();
+				pos.z() = level;        // Note that the height of the mod is in pos.z()
+			}
+			
+			///TODO: add parsing of shapes here, but we need to provide better generalized functionality for parsing shapes that can be used by all subclasses.
+			return true;
+		
+		
+		}
+	}
+	S_LOG_FAILURE("SlopeTerrainMod defined with incorrect shape");
+	return false;
+}
+
+
 
 
 
@@ -160,30 +212,7 @@ bool TerrainMod::parseMod()
 			
 			// Build modifier from data
 			if (modType == "slopemod") {
-// 				float dx, dy, level;
-// 				// Get slopes
-// 				mod_I = modMap.find("slopes");
-// 				if (mod_I != modMap.end()) {
-// 					const Atlas::Message::Element& modSlopeElem = mod_I->second;
-// 					if (modSlopeElem.isList()) {
-// 						const Atlas::Message::ListType & slopes = modSlopeElem.asList();
-// 						dx = (int)slopes[0].asNum();
-// 						dy = (int)slopes[1].asNum();
-// 					}
-// 				}
-// 				// Get level
-// 				mod_I = modMap.find("height");
-// 				if (mod_I != modMap.end()) {
-// 					const Atlas::Message::Element& modHeightElem = mod_I->second;
-// 					level = modHeightElem.asNum();
-// 				}
-// 			
-// 				pos.z() = level;        // Note that the height of the mod is in pos.z()
-// 				if ((mModifier = newSlopeMod(shapeMap, pos, dx, dy)) != NULL) {
-// 					return true;
-// 				} else {
-// 					return false;
-// 				}
+				mInnerMod = new InnerTerrainModSlope(*this);
 			} else if (modType == "levelmod") {
 /*				float level;
 				// Get level
@@ -218,12 +247,14 @@ bool TerrainMod::parseMod()
 			
 			} else  if (modType == "cratermod") {
 				mInnerMod = new InnerTerrainModCrater(*this);
-				if (mInnerMod->parseAtlasData(modMap)) {
-					return true;
-				} else {
-					return false;
-				}
 			}
+		}
+	}
+	if (mInnerMod) {
+		if (mInnerMod->parseAtlasData(modMap)) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 

@@ -36,6 +36,11 @@ namespace Mercator
 {
 	class TerrainMod;
 	class CraterTerrainMod;
+	class SlopeTerrainMod;
+	class LevelTerrainMod;
+	class AdjustTerrainMod;
+	class ShapeTerrainMod;
+	
 }
 
 namespace EmberOgre
@@ -47,20 +52,62 @@ namespace Terrain {
 
 class TerrainMod;
 
+/**
+@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+@brief Base class for all terrain mod specific classes.This is not meant to be used directly by anything else than the TerrainMod class.
+The TerrainMod class in itself doesn't hold the actual reference to the terrain mod, and doesn't handle the final parsing of Atlas data. This is instead handled by the different subclasses of this class. Since the different kinds of terrain mods found in Mercator behave differently depending on their type and the kind of shape used, we need to separate the code for handling them into different classes.
+*/
 class InnerTerrainMod
 {
 public:
+	/**
+	* @brief Dtor.
+	*/
 	virtual ~InnerTerrainMod();
 	
+	/**
+	 * @brief Gets the type of terrain mod handled by this.
+	 * This corresponds to the "type" attribute of the "terrainmod" atlas attribute, for example "cratermod" or "slopemod".
+	 * Internally, it's stored in the mTypeName field, as set through the constructor.
+	 * @return The type of mod handled by any instance of this.
+	 */
 	const std::string& getTypename() const;
 	
+	/**
+	 * @brief Tries to parse the Atlas data.
+	 * It's up to the specific subclasses to provide proper parsing of the data depending on their needs.
+	 * If the data is successfully parsed, a new Mercator::TerrainMod instance will be created.
+	 * @param modElement The Atlas element describing the terrainmod. This should in most instances correspond directly to the "terrainmod" element found in the root atlas attribute map.
+	 * @return If the parsing was successful, true will be returned, and a new Mercator::TerrainMod will have been created, else false.
+	 */
 	virtual bool parseAtlasData(const Atlas::Message::MapType& modElement) = 0;
 	
+	/**
+	 * @brief Accessor for the Mercator::TerrainMod created and held by this instance.
+	 * If no terrain mod could be created, such as with faulty Atlas data, or if parseAtlasData() hasn't been called yet, this will return a null pointer.
+	 * @return A pointer to the TerrainMod held by this instance, or null if none created.
+	 */
 	virtual Mercator::TerrainMod* getModifier() = 0;
 
 protected:
+
+	/**
+	 * @brief Ctor.
+	 * This is protected to prevent any other class than subclasses of this to call it.
+	 * @param terrainMod The TerrainMod instance to which this instance belongs to.
+	 * @param typemod The type of terrainmod this handles, such as "cratermod" or "slopemod. This will be stored in mTypeName.
+	 */
 	InnerTerrainMod(TerrainMod& terrainMod, const std::string& typemod);
+	
+	/**
+	 * @brief The type of mod this instance handles.
+	 * @see getTypename()
+	 */
 	std::string mTypeName;
+	
+	/**
+	 * @brief The TerrainMod instance to which this instance belongs.
+	 */
 	TerrainMod& mTerrainMod;
 };
 
@@ -68,19 +115,69 @@ protected:
 class InnerTerrainModSlope : public InnerTerrainMod
 {
 public:
+	/**
+	 * @brief Ctor.
+	 * @param terrainMod The TerrainMod instance to which this instance belongs to.
+	 */
 	InnerTerrainModSlope(TerrainMod& terrainMod);
-	bool parseAtlasData(const Atlas::Message::MapType& modElement);
+	
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~InnerTerrainModSlope();
+	
+	/**
+	 * @copydoc InnerTerrainMod::parseAtlasData()
+	 */
+	virtual bool parseAtlasData(const Atlas::Message::MapType& modElement);
+	
+	/**
+	 * @copydoc InnerTerrainMod::getModifier()
+	 */
+	virtual Mercator::TerrainMod* getModifier();
+	
 protected:
+	/**
+	 * @brief A reference to the slope terrain modifier held by this instance.
+	 * The ownership is ours, so it will be destroyed when this instance is destroyed.
+	 */
+	Mercator::SlopeTerrainMod* mModifier;
 };
 
+/**
+@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+@author Tamas Bates
+@brief Handles a crater terrain mod.
+This will parse and create an instance of Mercator::CraterTerrainMod, which is a mod which produces a crater in the landscape.
+*/
 class InnerTerrainModCrater : public InnerTerrainMod
 {
 public:
+	/**
+	 * @brief Ctor.
+	 * @param terrainMod The TerrainMod instance to which this instance belongs to.
+	 */
 	InnerTerrainModCrater(TerrainMod& terrainMod);
+	
+	/**
+	 * @brief Dtor.
+	 */
 	virtual ~InnerTerrainModCrater();
+	
+	/**
+	 * @copydoc InnerTerrainMod::parseAtlasData()
+	 */
 	virtual bool parseAtlasData(const Atlas::Message::MapType& modElement);
+	
+	/**
+	 * @copydoc InnerTerrainMod::getModifier()
+	 */
 	virtual Mercator::TerrainMod* getModifier();
 protected:
+	/**
+	 * @brief A reference to the crater terrain modifier held by this instance.
+	 * The ownership is ours, so it will be destroyed when this instance is destroyed.
+	 */
 	Mercator::CraterTerrainMod* mModifier;
 };
 
@@ -164,10 +261,13 @@ protected:
 	 */
 	EmberEntity* mEntity;
 	
+	/**
+	 * @brief Slot used to listen for changes to attributes in the Entity to which this mod belongs to.
+	 */
 	Eris::Entity::AttrChangedSlot mAttrChangedSlot;
 
 	/**
-	 *    @brief Called whenever a modifier is changed and handles the update
+	 * @brief Called whenever a modifier is changed and handles the update
 	 * @param attributeValue The new Atlas data for the terrain mod
 	 */	
 	void attributeChanged(const Atlas::Message::Element& attributeValue);
@@ -235,7 +335,10 @@ protected:
 	 */
 	Mercator::TerrainMod * newAdjustMod(const Atlas::Message::MapType, WFMath::Point<3>);
 
-
+	/**
+	 * @brief The inner terrain mod instance which holds the actual Mercator::TerrainMod instance and handles the parsing of it.
+	 * In order to be able to better support different types of mods the actual instance will be any of the subclasses of InnerTerrainMod, depending on the type of the mod.
+	 */
 	InnerTerrainMod* mInnerMod;
 };
 
