@@ -172,6 +172,7 @@ public:
 	 * @copydoc InnerTerrainMod::getModifier()
 	 */
 	virtual Mercator::TerrainMod* getModifier();
+
 protected:
 	/**
 	 * @brief A reference to the crater terrain modifier held by this instance.
@@ -180,12 +181,43 @@ protected:
 	Mercator::CraterTerrainMod* mModifier;
 };
 
+/**
+@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+@author Tamas Bates
+@brief Handles a level terrain mod.
+This will parse and create an instance of Mercator::LevelTerrainMod, which is a mod which produces a level area in the landscape.
+*/
 class InnerTerrainModLevel : public InnerTerrainMod
 {
 public:
+	/**
+	 * @brief Ctor.
+	 * @param terrainMod The TerrainMod instance to which this instance belongs to.
+	 */
 	InnerTerrainModLevel(TerrainMod& terrainMod);
-	bool parseAtlasData(const Atlas::Message::MapType& modElement);
+	
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~InnerTerrainModLevel();
+	
+	/**
+	 * @copydoc InnerTerrainMod::parseAtlasData()
+	 */
+	virtual bool parseAtlasData(const Atlas::Message::MapType& modElement);
+	
+	/**
+	 * @copydoc InnerTerrainMod::getModifier()
+	 */
+	virtual Mercator::TerrainMod* getModifier();
+
 protected:
+
+	/**
+	 * @brief A reference to the level terrain modifier implementation held by this instance.
+	 * The ownership is ours, so it will be destroyed when this instance is destroyed.
+	 */
+	InnerTerrainMod_impl* mModifier_impl;
 };
 
 class InnerTerrainModAdjust : public InnerTerrainMod
