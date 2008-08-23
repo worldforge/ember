@@ -115,6 +115,11 @@ protected:
 	 * @return The name of the shape, or an empty string if no valid data could be found.
 	 */
 	const std::string& parseShape(const Atlas::Message::MapType& modElement, const Atlas::Message::MapType** shapeMap);
+	
+	
+// 	template <typename InnerTerrainMod_implType>
+// 	InnerTerrainMod_implType* createInnerTerrainMod_impInstance(const Atlas::Message::MapType& modElement);
+
 };
 
 

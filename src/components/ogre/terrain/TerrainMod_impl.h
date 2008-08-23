@@ -113,6 +113,39 @@ bool InnerTerrainMod_impl::parseShapeAtlasData<WFMath::Ball<3> >(const Atlas::Me
 	return false;
 }
 
+template<>
+bool InnerTerrainMod_impl::parseShapeAtlasData<WFMath::RotBox<2> >(const Atlas::Message::MapType& shapeElement, WFMath::Point<3> pos, WFMath::RotBox<2>** shape)
+{
+	// Get rotbox's position
+	Atlas::Message::MapType::const_iterator shape_I = shapeElement.find("point");
+	if (shape_I != shapeElement.end()) {
+		const Atlas::Message::Element& shapePointElem(shape_I->second);
+		if (shapePointElem.isList()) {
+			const Atlas::Message::ListType & pointList = shapePointElem.asList();
+			if (pointList.size() > 0 && pointList[0].isNum() && pointList[1].isNum()) {
+				WFMath::Point<2> shapePoint(static_cast<int>(pointList[0].asNum()), static_cast<int>(pointList[1].asNum()));
+				// Get rotbox's vector
+				shape_I = shapeElement.find("vector");
+				if (shape_I != shapeElement.end()) {
+					const Atlas::Message::Element& shapeVectorElem(shape_I->second);
+					if (shapeVectorElem.isList()) {
+						const Atlas::Message::ListType & vectorList = shapeVectorElem.asList();
+						if (vectorList.size() > 0 && vectorList[0].isNum() && vectorList[1].isNum()) {
+							WFMath::Vector<2> shapeVector(static_cast<int>(vectorList[0].asNum()), static_cast<int>(vectorList[1].asNum()));
+							*shape = new WFMath::RotBox<2>(shapePoint, shapeVector, WFMath::RotMatrix<2>());
+							return true;
+						}
+					}
+				}
+			}
+		}
+	}
+	return false;
+}
+
+
+
+
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 	@brief Handles instances of Mercator::SlopeTerrainMod with arbitrary shapes.

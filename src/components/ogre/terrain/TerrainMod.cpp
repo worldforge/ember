@@ -136,6 +136,10 @@ bool InnerTerrainModSlope::parseAtlasData(const Atlas::Message::MapType& modElem
 									InnerTerrainModSlope_impl<WFMath::Ball<2> >* modifierImpl = new InnerTerrainModSlope_impl<WFMath::Ball<2> >();
 									mModifier_impl = modifierImpl;
 									return modifierImpl->createInstance(*shapeMap, pos, level, dx, dy);
+								} else if (shapeType == "rotbox") {
+									InnerTerrainModSlope_impl<WFMath::RotBox<2> >* modifierImpl = new InnerTerrainModSlope_impl<WFMath::RotBox<2> >();
+									mModifier_impl = modifierImpl;
+									return modifierImpl->createInstance(*shapeMap, pos, level, dx, dy);
 								}
 							}
 						}
@@ -184,6 +188,10 @@ bool InnerTerrainModLevel::parseAtlasData(const Atlas::Message::MapType& modElem
 					InnerTerrainModLevel_impl<WFMath::Ball<2> >* modifierImpl = new InnerTerrainModLevel_impl<WFMath::Ball<2> >();
 					mModifier_impl = modifierImpl;
 					return modifierImpl->createInstance(*shapeMap, pos, height);
+				} else if (shapeType == "rotbox") {
+					InnerTerrainModLevel_impl<WFMath::RotBox<2> >* modifierImpl = new InnerTerrainModLevel_impl<WFMath::RotBox<2> >();
+					mModifier_impl = modifierImpl;
+					return modifierImpl->createInstance(*shapeMap, pos, height);
 				}
 			}
 		}
@@ -227,6 +235,10 @@ bool InnerTerrainModAdjust::parseAtlasData(const Atlas::Message::MapType& modEle
 					InnerTerrainModAdjust_impl<WFMath::Ball<2> >* modifierImpl = new InnerTerrainModAdjust_impl<WFMath::Ball<2> >();
 					mModifier_impl = modifierImpl;
 					return modifierImpl->createInstance(*shapeMap, pos, height);
+				} else if (shapeType == "rotbox") {
+					InnerTerrainModAdjust_impl<WFMath::RotBox<2> >* modifierImpl = new InnerTerrainModAdjust_impl<WFMath::RotBox<2> >();
+					mModifier_impl = modifierImpl;
+					return modifierImpl->createInstance(*shapeMap, pos, height);
 				}
 			}
 		}
@@ -260,7 +272,20 @@ const std::string& InnerTerrainMod::parseShape(const Atlas::Message::MapType& mo
 	return empty;
 }
 
-
+// template <typename InnerTerrainMod_implType>
+// InnerTerrainMod_implType* InnerTerrainMod::createInnerTerrainMod_impInstance(const Atlas::Message::MapType& modElement)
+// {
+// 
+// 	const Atlas::Message::MapType* shapeMap(0);
+// 	const std::string& shapeType = parseShape(modElement, &shapeMap);
+// 	if (shapeMap) {
+// 		if (shapeType == "ball") {
+// 			typename InnerTerrainMod_implType::template foo<WFMath::Ball<2> >();
+//  			return new typename InnerTerrainMod_implType::template<WFMath::Ball<2> >();
+// 		}
+// 	}
+// }
+	
 
 
 TerrainMod::TerrainMod(EmberEntity* entity)
