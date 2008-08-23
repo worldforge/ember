@@ -27,6 +27,8 @@
 #include "TerrainMod.h"
 
 #include "../EmberEntity.h"
+#include "TerrainGenerator.h"
+#include "../EmberOgre.h"
 #include <Mercator/TerrainMod.h>
 
 namespace EmberOgre {
@@ -287,6 +289,10 @@ Mercator::TerrainMod* TerrainMod::newCraterMod(const Atlas::Message::MapType sha
 		}
 
 		// Make sphere
+        ///HACK: This height adjustment shouldn't be necessary
+        pos.z() = EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().get(pos.x(), pos.y());
+//         pos.z() += shapeRadius;
+
 		WFMath::Ball<3> modShape = WFMath::Ball<3>(pos, shapeRadius); ///FIXME: assumes 3d ball...
 
 		// Make modifier

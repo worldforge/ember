@@ -215,6 +215,11 @@ void TerrainGenerator::addTerrainMod(TerrainMod* terrainMod)
 	Mercator::TerrainMod* mod = mTerrain->addMod(*terrainMod->getMod());
 
 	mTerrainMods.insert(TerrainModMap::value_type(terrainMod->getEntity()->getId(), mod));
+    
+    
+	std::vector<TerrainPosition> updatedPositions;
+	updatedPositions.push_back(TerrainPosition(mod->bbox().getCenter().x() / 64, mod->bbox().getCenter().y() / 64));
+	reloadTerrain(updatedPositions);
 
 }
 
@@ -230,6 +235,9 @@ void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
 	// Remove this mod from our list so we can replace the pointer with a new one
 	mTerrainMods.erase(entityID);
 
+//     mTerrainMods.find(entityID)->second = terrainMod->getMod();
+//     mTerrain->updateMod(mTerrainMods.find(entityID)->second);
+
 	// Reapply the mod to the terrain with the updated parameters
 	Mercator::TerrainMod *mercatorMod = terrainMod->getMod();
 	mercatorMod = mTerrain->addMod(*mercatorMod);
@@ -237,7 +245,9 @@ void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
 	// Insert it into our list
 	mTerrainMods.insert(TerrainModMap::value_type(entityID, mercatorMod));
 
-//     buildHeightmap();
+	std::vector<TerrainPosition> updatedPositions;
+	updatedPositions.push_back(TerrainPosition(mercatorMod->bbox().getCenter().x() / 64, mercatorMod->bbox().getCenter().y() / 64));
+	reloadTerrain(updatedPositions);
 }
 
 void TerrainGenerator::TerrainMod_Deleted(TerrainMod* terrainMod)
@@ -251,7 +261,10 @@ void TerrainGenerator::TerrainMod_Deleted(TerrainMod* terrainMod)
 	// Remove this mod from our list
 	mTerrainMods.erase(entityID);
 
-//     buildHeightmap();
+	std::vector<TerrainPosition> updatedPositions;
+	updatedPositions.push_back(TerrainPosition(terrainMod->getMod()->bbox().getCenter().x() / 64, terrainMod->getMod()->bbox().getCenter().y() / 64));
+	reloadTerrain(updatedPositions);
+
 }
 
 void TerrainGenerator::addArea(TerrainArea* terrainArea)
