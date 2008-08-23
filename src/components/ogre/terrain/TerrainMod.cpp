@@ -120,8 +120,8 @@ bool InnerTerrainModSlope::parseAtlasData(const Atlas::Message::MapType& modElem
 			const Atlas::Message::ListType & slopes = modSlopeElem.asList();
 			if (slopes.size() > 1) {
 				if (slopes[0].isNum() && slopes[1].isNum()) {
-					dx = static_cast<int>(slopes[0].asNum());
-					dy = static_cast<int>(slopes[1].asNum());
+					dx = slopes[0].asNum();
+					dy = slopes[1].asNum();
 					// Get level
 					mod_I = modElement.find("height");
 					if (mod_I != modElement.end()) {

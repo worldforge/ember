@@ -123,7 +123,7 @@ bool InnerTerrainMod_impl::parseShapeAtlasData<WFMath::RotBox<2> >(const Atlas::
 		if (shapePointElem.isList()) {
 			const Atlas::Message::ListType & pointList = shapePointElem.asList();
 			if (pointList.size() > 1 && pointList[0].isNum() && pointList[1].isNum()) {
-				WFMath::Point<2> shapePoint(static_cast<int>(pointList[0].asNum()), static_cast<int>(pointList[1].asNum()));
+				WFMath::Point<2> shapePoint(pointList[0].asNum(), pointList[1].asNum());
 				// Get rotbox's vector
 				shape_I = shapeElement.find("vector");
 				if (shape_I != shapeElement.end()) {
@@ -133,8 +133,8 @@ bool InnerTerrainMod_impl::parseShapeAtlasData<WFMath::RotBox<2> >(const Atlas::
 						if (vectorList.size() > 1 && vectorList[0].isNum() && vectorList[1].isNum()) {
 							///use the "point" as an offset
 							WFMath::Point<2> adjustedPos(pos.x() + shapePoint.x(), pos.y() + shapePoint.y());
-							WFMath::Vector<2> shapeVector(static_cast<int>(vectorList[0].asNum()), static_cast<int>(vectorList[1].asNum()));
-							*shape = new WFMath::RotBox<2>(adjustedPos, shapeVector, WFMath::RotMatrix<2>());
+							WFMath::Vector<2> shapeVector(vectorList[0].asNum(), vectorList[1].asNum());
+							*shape = new WFMath::RotBox<2>(adjustedPos, shapeVector, WFMath::RotMatrix<2>().identity());
 							return true;
 						}
 					}
