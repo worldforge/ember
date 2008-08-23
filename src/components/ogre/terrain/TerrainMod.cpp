@@ -87,7 +87,10 @@ bool InnerTerrainModCrater::parseAtlasData(const Atlas::Message::MapType& modEle
 							const Atlas::Message::Element& shapeRadiusElem(radius_I->second);
 							float shapeRadius = shapeRadiusElem.asNum();
 							// Make sphere
-							const WFMath::Point<3>& pos = mTerrainMod.getEntity()->getPosition();
+							WFMath::Point<3> pos = mTerrainMod.getEntity()->getPosition();
+							///HACK: This height adjustment shouldn't be necessary
+							pos.z() = EmberOgre::getSingleton().getTerrainGenerator()->getHeight(TerrainPosition(pos.x(), pos.y()));
+							
 							WFMath::Ball<3> modShape(pos, shapeRadius); ///FIXME: assumes 3d ball...
 						
 							//TODO: make sure to delete mModifier and emit a signal for the TerrainGenerator to recieve and handle
@@ -290,7 +293,7 @@ Mercator::TerrainMod* TerrainMod::newCraterMod(const Atlas::Message::MapType sha
 
 		// Make sphere
         ///HACK: This height adjustment shouldn't be necessary
-        pos.z() = EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().get(pos.x(), pos.y());
+//         pos.z() = EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().get(pos.x(), pos.y());
 //         pos.z() += shapeRadius;
 
 		WFMath::Ball<3> modShape = WFMath::Ball<3>(pos, shapeRadius); ///FIXME: assumes 3d ball...
