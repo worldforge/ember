@@ -614,9 +614,12 @@ void EmberEntity::showErisBoundingBox(bool show)
 		Ogre::SceneNode* boundingBoxNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
 		boundingBoxNode->attachObject(mErisEntityBoundingBox);
 		
-		Ogre::AxisAlignedBox aabb(Atlas2Ogre(getBBox()));
-		
-		mErisEntityBoundingBox->setupBoundingBox(aabb);
+		///if there's no bounding box defined for this entity, show one that is 0.2 meters across in all direction
+		if (hasBBox()) {
+			mErisEntityBoundingBox->setupBoundingBox(Atlas2Ogre(getBBox()));
+		} else {
+			mErisEntityBoundingBox->setupBoundingBox(Ogre::AxisAlignedBox(-0.1, -0.1, -0.1, 0.1, 0.1, 0.1));
+		}
 		
 		boundingBoxNode->setPosition(Atlas2Ogre(getPredictedPos()));
 		boundingBoxNode->setOrientation(Atlas2Ogre(getOrientation()));
