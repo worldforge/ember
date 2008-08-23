@@ -36,15 +36,18 @@ namespace EmberOgre {
 
 namespace Terrain {
 
+/**
+	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+*/
 class InnerTerrainMod_impl
 {
 public:
-    InnerTerrainMod_impl() {}
+	InnerTerrainMod_impl() {}
+	
+	virtual ~InnerTerrainMod_impl() {}
 
-    virtual ~InnerTerrainMod_impl() {}
-    
 	template <typename Shape>
-	bool parseShapeAtlasData(const Atlas::Message::MapType& shapeElement, WFMath::Point<3> pos, Shape** shape);
+	static bool parseShapeAtlasData(const Atlas::Message::MapType& shapeElement, WFMath::Point<3> pos, Shape** shape);
 	
 	virtual Mercator::TerrainMod* getModifier() = 0;
 	
@@ -60,22 +63,27 @@ template <typename Shape>
 class InnerTerrainModSlope_impl : public InnerTerrainMod_impl
 {
 public:
-    InnerTerrainModSlope_impl() {}
+	InnerTerrainModSlope_impl() {}
+	
+	virtual ~InnerTerrainModSlope_impl() {}
+	
+	bool createInstance(const Atlas::Message::MapType& shapeElement, WFMath::Point<3> pos, float level, float dx, float dy);
+	
+	inline virtual Mercator::TerrainMod* getModifier();
 
-    virtual ~InnerTerrainModSlope_impl() {}
-    
-    bool createInstance(const Atlas::Message::MapType& shapeElement, WFMath::Point<3> pos, float level, float dx, float dy);
-    
-	virtual Mercator::TerrainMod* getModifier() 
-	{
-		return mTerrainMod;
-	}
 protected:
 	Mercator::SlopeTerrainMod<Shape>* mTerrainMod;
 	
 // 	bool internalParseAtlasData(const Atlas::Message::MapType& shapeElement, WFMath::Point<3> pos);
 
 };
+
+template <typename Shape>
+Mercator::TerrainMod* InnerTerrainModSlope_impl<Shape>::getModifier()
+{
+	return mTerrainMod;
+}
+
 
 template<>
 bool InnerTerrainMod_impl::parseShapeAtlasData<WFMath::Ball<2> >(const Atlas::Message::MapType& shapeElement, WFMath::Point<3> pos, WFMath::Ball<2>** shape)
@@ -94,6 +102,24 @@ bool InnerTerrainMod_impl::parseShapeAtlasData<WFMath::Ball<2> >(const Atlas::Me
 	}
 	return false;
 }
+
+template<>
+bool InnerTerrainMod_impl::parseShapeAtlasData<WFMath::Ball<3> >(const Atlas::Message::MapType& shapeElement, WFMath::Point<3> pos, WFMath::Ball<3>** shape)
+{
+	/// Get sphere's radius
+	Atlas::Message::MapType::const_iterator shape_I = shapeElement.find("radius");
+	if (shape_I != shapeElement.end()) {
+		const Atlas::Message::Element& shapeRadiusElem(shape_I->second);
+		if (shapeRadiusElem.isNum()) {
+			float shapeRadius = shapeRadiusElem.asNum();
+			/// Make ball
+			*shape = new WFMath::Ball<3>(pos, shapeRadius);
+			return true;
+		}
+	}
+	return false;
+}
+
 
 template <typename Shape>
 bool InnerTerrainModSlope_impl<Shape>::createInstance(const Atlas::Message::MapType& shapeElement, WFMath::Point<3> pos, float level, float dx, float dy)
