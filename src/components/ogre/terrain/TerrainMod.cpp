@@ -30,6 +30,7 @@
 #include "TerrainGenerator.h"
 #include "../EmberOgre.h"
 #include <Mercator/TerrainMod.h>
+#include "TerrainMod_impl.h"
 
 namespace EmberOgre {
 namespace Terrain {
@@ -116,18 +117,18 @@ bool InnerTerrainModCrater::parseAtlasData(const Atlas::Message::MapType& modEle
 
 InnerTerrainModSlope::InnerTerrainModSlope(TerrainMod& terrainMod)
 : InnerTerrainMod(terrainMod, "slopemod")
-, mModifier(0)
+, mModifier_impl(0)
 {
 }
 
 InnerTerrainModSlope::~InnerTerrainModSlope()
 {
-	delete mModifier;
+	delete mModifier_impl;
 }
 
 Mercator::TerrainMod* InnerTerrainModSlope::getModifier()
 {
-	return mModifier;
+	return mModifier_impl->getModifier();
 }
 
 
@@ -136,32 +137,60 @@ bool InnerTerrainModSlope::parseAtlasData(const Atlas::Message::MapType& modElem
 	WFMath::Point<3> pos = mTerrainMod.getEntity()->getPosition();
 	float dx, dy, level;
 	// Get slopes
-	mod_I = modElement.find("slopes");
-	if (mod_I != modMap.end()) {
+	Atlas::Message::MapType::const_iterator mod_I = modElement.find("slopes");
+	if (mod_I != modElement.end()) {
 		const Atlas::Message::Element& modSlopeElem = mod_I->second;
 		if (modSlopeElem.isList()) {
 			const Atlas::Message::ListType & slopes = modSlopeElem.asList();
 			dx = (int)slopes[0].asNum();
 			dy = (int)slopes[1].asNum();
 			// Get level
-			mod_I = modMap.find("height");
-			if (mod_I != modMap.end()) {
-				///is this a required attribute or not? We'll treat it as an optional attribute for now. /ehj
+			mod_I = modElement.find("height");
+			if (mod_I != modElement.end()) {
 				const Atlas::Message::Element& modHeightElem = mod_I->second;
-				level = modHeightElem.asNum();
-				pos.z() = level;        // Note that the height of the mod is in pos.z()
+				if (modHeightElem.isNum()) {
+					level = modHeightElem.asNum();
+					pos.z() = level;        // Note that the height of the mod is in pos.z()
+					const Atlas::Message::MapType* shapeMap(0);
+					const std::string& shapeType = parseShape(modElement, &shapeMap);
+					if (shapeMap) {
+						if (shapeType == "ball") {
+							InnerTerrainModSlope_impl<WFMath::Ball<2> >* modifierImpl = new InnerTerrainModSlope_impl<WFMath::Ball<2> >();
+							mModifier_impl = modifierImpl;
+							return modifierImpl->createInstance(*shapeMap, pos, level, dx, dy);
+						}
+					}
+				}
 			}
-			
-			///TODO: add parsing of shapes here, but we need to provide better generalized functionality for parsing shapes that can be used by all subclasses.
-			return true;
-		
-		
 		}
 	}
 	S_LOG_FAILURE("SlopeTerrainMod defined with incorrect shape");
 	return false;
 }
 
+const std::string& InnerTerrainMod::parseShape(const Atlas::Message::MapType& modElement, const Atlas::Message::MapType** shapeMap)
+{
+	Atlas::Message::MapType::const_iterator shape_I = modElement.find("shape");
+	if (shape_I != modElement.end()) {
+		const Atlas::Message::Element& shapeElement = shape_I->second;
+		if (shapeElement.isMap()) {
+			const Atlas::Message::MapType& localShapeMap = shapeElement.asMap();
+			*shapeMap = &localShapeMap;
+			
+			// Get shape's type
+			Atlas::Message::MapType::const_iterator type_I = localShapeMap.find("type");
+			if (type_I != localShapeMap.end()) {
+				const Atlas::Message::Element& shapeTypeElem(type_I->second);
+				if (shapeTypeElem.isString()) {
+					const std::string& shapeType = shapeTypeElem.asString();
+					return shapeType;
+				}
+			}
+		}
+	}
+	static std::string empty("");
+	return empty;
+}
 
 
 

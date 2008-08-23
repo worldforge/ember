@@ -36,11 +36,6 @@ namespace Mercator
 {
 	class TerrainMod;
 	class CraterTerrainMod;
-	class SlopeTerrainMod;
-	class LevelTerrainMod;
-	class AdjustTerrainMod;
-	class ShapeTerrainMod;
-	
 }
 
 namespace EmberOgre
@@ -51,6 +46,7 @@ class EmberEntity;
 namespace Terrain {
 
 class TerrainMod;
+class InnerTerrainMod_impl;
 
 /**
 @author Erik Hjortsberg <erik.hjortsberg@iteam.se>
@@ -109,6 +105,8 @@ protected:
 	 * @brief The TerrainMod instance to which this instance belongs.
 	 */
 	TerrainMod& mTerrainMod;
+	
+	const std::string& parseShape(const Atlas::Message::MapType& modElement, const Atlas::Message::MapType** shapeMap);
 };
 
 
@@ -141,7 +139,7 @@ protected:
 	 * @brief A reference to the slope terrain modifier held by this instance.
 	 * The ownership is ours, so it will be destroyed when this instance is destroyed.
 	 */
-	Mercator::SlopeTerrainMod* mModifier;
+	InnerTerrainMod_impl* mModifier_impl;
 };
 
 /**
