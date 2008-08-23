@@ -34,12 +34,6 @@
 #include <Eris/Entity.h>
 #include <Eris/View.h>
 
-#include <OgreCodec.h>
-#include <OgreImage.h>
-#include <OgreImageCodec.h>
-#include <OgreTextureManager.h>
-#include <OgreStringConverter.h>
-#include <OgreRenderSystemCapabilities.h>
 #include "TerrainShader.h"
 #include "../environment/Foliage.h"
 #include "../environment/Forest.h"
@@ -53,10 +47,6 @@
 #include <Mercator/Segment.h>
 #include <Mercator/Terrain.h>
 #include <Mercator/TerrainMod.h>
-#include <Mercator/FillShader.h>
-#include <Mercator/ThresholdShader.h>
-#include <Mercator/DepthShader.h>
-#include <Mercator/GrassShader.h>
 #include <Mercator/Surface.h>
 #include <Mercator/Matrix.h>
 #include <Mercator/Terrain.h>
@@ -224,7 +214,7 @@ void TerrainGenerator::addTerrainMod(TerrainMod* terrainMod)
 	// We need to save this pointer to use when the modifier is changed or deleted
 	Mercator::TerrainMod* mod = mTerrain->addMod(*terrainMod->getMod());
 
-	mTerrainMods.insert(std::pair<const std::string, Mercator::TerrainMod*>(terrainMod->getEntity()->getId(), mod));
+	mTerrainMods.insert(TerrainModMap::value_type(terrainMod->getEntity()->getId(), mod));
 
 }
 

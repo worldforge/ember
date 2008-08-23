@@ -32,7 +32,7 @@
 namespace EmberOgre {
 namespace Terrain {
 
-InnerTerrainMod::InnerTerrainMod(TerrainMod& terrainMod)
+InnerTerrainMod::InnerTerrainMod(TerrainMod& terrainMod, const std::string& typemod)
 : mTerrainMod(terrainMod)
 {
 }
@@ -45,19 +45,25 @@ const std::string& InnerTerrainMod::getTypename() const
 {
 	return mTypeName;
 }
-	
-Mercator::TerrainMod* InnerTerrainMod::getModifier()
+
+InnerTerrainModCrater::InnerTerrainModCrater(TerrainMod& terrainMod)
+: InnerTerrainMod(terrainMod, "cratermod")
+, mModifier(0)
+{
+}
+
+InnerTerrainModCrater::~InnerTerrainModCrater()
+{
+	delete mModifier;
+}
+
+Mercator::TerrainMod* InnerTerrainModCrater::getModifier()
 {
 	return mModifier;
 }
 
-InnerTerrainModCrater::InnerTerrainModCrater(TerrainMod& terrainMod)
-: mModifier(0)
-, InnerTerrainMod(terrainMod)
-{
-}
 
-InnerTerrainModCrater::parseAtlasData(const Atlas::Message::MapType& modElement)
+bool InnerTerrainModCrater::parseAtlasData(const Atlas::Message::MapType& modElement)
 {
 	Atlas::Message::MapType::const_iterator shape_I = modElement.find("shape");
 	if (shape_I != modElement.end()) {
@@ -72,43 +78,40 @@ InnerTerrainModCrater::parseAtlasData(const Atlas::Message::MapType& modElement)
 				const Atlas::Message::Element& shapeTypeElem(type_I->second);
 				if (shapeTypeElem.isString()) {
 					shapeType = shapeTypeElem.asString();
+					if (shapeType == "ball") {
+						// Get sphere's radius
+						Atlas::Message::MapType::const_iterator radius_I = shapeMap.find("radius");
+						if (radius_I != shapeMap.end()) {
+							const Atlas::Message::Element& shapeRadiusElem(radius_I->second);
+							float shapeRadius = shapeRadiusElem.asNum();
+							// Make sphere
+							const WFMath::Point<3>& pos = mTerrainMod.getEntity()->getPosition();
+							WFMath::Ball<3> modShape(pos, shapeRadius); ///FIXME: assumes 3d ball...
+						
+							//TODO: make sure to delete mModifier and emit a signal for the TerrainGenerator to recieve and handle
+							delete mModifier;
+							// Make modifier
+							mModifier = new Mercator::CraterTerrainMod(modShape);
+							return true;
+						}
+					
+					} else {
+						//TODO: implement more shapes
+						return false;
+					}
 				}
-			}
-			// end shape data
-			
-			if (shapeType == "ball") {
-				float shapeRadius;
-				// Get sphere's radius
-				Atlas::Message::MapType::const_iterator radius_I = shapeMap.find("radius");
-				if (radius_I != shapeMap.end()) {
-					const Atlas::Message::Element& shapeRadiusElem(radius_I->second);
-					shapeRadius = shapeRadiusElem.asNum();
-				}
-			
-				// Make sphere
-				WFMath::Ball<3> modShape = WFMath::Ball<3>(pos, shapeRadius); ///FIXME: assumes 3d ball...
-			
-				// Make modifier
-				Mercator::CraterTerrainMod *NewMod;
-				NewMod = new Mercator::CraterTerrainMod(modShape);
-			
-				return NewMod;
 			}
 		}
 	}
-	
-	
-
-
 	S_LOG_FAILURE("CraterTerrainMod defined with incorrect shape");
-	return NULL;
+	return false;
 }
 
 
 
 TerrainMod::TerrainMod(EmberEntity* entity)
-: mModifier(0)
-, mEntity(entity)
+: mEntity(entity)
+, mInnerMod(0)
 {
 }
 
@@ -141,109 +144,92 @@ bool TerrainMod::parseMod()
 	}
 	const Atlas::Message::MapType & modMap = modifier.asMap();
 
-	std::string modType;
-	WFMath::Point<3> pos;
-	Atlas::Message::MapType shapeMap;
-	Atlas::Message::MapType::const_iterator mod_I;
-
+	
 	// Get modifier type
-	mod_I = modMap.find("type");
+	Atlas::Message::MapType::const_iterator mod_I = modMap.find("type");
 	if (mod_I != modMap.end()) {
 		const Atlas::Message::Element& modTypeElem(mod_I->second);
 		if (modTypeElem.isString()) {
-			modType = modTypeElem.asString();
-		}
-	}
-
-	// Get modifier position
-	pos = mEntity->getPosition();
-
-	// Get modifier's shape data
-	mod_I = modMap.find("shape");
-	if (mod_I != modMap.end()) {
-		const Atlas::Message::Element& shapeElem(mod_I->second);
-		if (shapeElem.isMap()) {
-			shapeMap = shapeElem.asMap();
-		}
-	}
-
-	// Build modifier from data
-	if (modType == "slopemod") {
-		float dx, dy, level;
-		// Get slopes
-		mod_I = modMap.find("slopes");
-		if (mod_I != modMap.end()) {
-			const Atlas::Message::Element& modSlopeElem = mod_I->second;
-			if (modSlopeElem.isList()) {
-				const Atlas::Message::ListType & slopes = modSlopeElem.asList();
-				dx = (int)slopes[0].asNum();
-				dy = (int)slopes[1].asNum();
+			const std::string& modType = modTypeElem.asString();
+			// Get modifier position
+			
+			// Build modifier from data
+			if (modType == "slopemod") {
+// 				float dx, dy, level;
+// 				// Get slopes
+// 				mod_I = modMap.find("slopes");
+// 				if (mod_I != modMap.end()) {
+// 					const Atlas::Message::Element& modSlopeElem = mod_I->second;
+// 					if (modSlopeElem.isList()) {
+// 						const Atlas::Message::ListType & slopes = modSlopeElem.asList();
+// 						dx = (int)slopes[0].asNum();
+// 						dy = (int)slopes[1].asNum();
+// 					}
+// 				}
+// 				// Get level
+// 				mod_I = modMap.find("height");
+// 				if (mod_I != modMap.end()) {
+// 					const Atlas::Message::Element& modHeightElem = mod_I->second;
+// 					level = modHeightElem.asNum();
+// 				}
+// 			
+// 				pos.z() = level;        // Note that the height of the mod is in pos.z()
+// 				if ((mModifier = newSlopeMod(shapeMap, pos, dx, dy)) != NULL) {
+// 					return true;
+// 				} else {
+// 					return false;
+// 				}
+			} else if (modType == "levelmod") {
+/*				float level;
+				// Get level
+				mod_I = modMap.find("height");
+				if (mod_I != modMap.end()) {
+					const Atlas::Message::Element& modHeightElem = mod_I->second;
+					level = modHeightElem.asNum();
+				}
+			
+				pos.z() = level;        // Note that the level the terrain will be raised to is in pos.z()
+				if ((mModifier = newLevelMod(shapeMap, pos)) != NULL) {
+					return true;
+				} else {
+					return false;
+				}*/
+			
+			} else if (modType == "adjustmod") {
+/*				float level;
+				// Get level
+				mod_I = modMap.find("height");
+				if (mod_I != modMap.end()) {
+					const Atlas::Message::Element& modHeightElem = mod_I->second;
+					level = modHeightElem.asNum();
+				}
+			
+				pos.z() = level;        // Note that the level used in the adjustment is in pos.z()
+				if ((mModifier = newAdjustMod(shapeMap, pos)) != NULL) {
+					return true;
+				} else {
+					return false;
+				}*/
+			
+			} else  if (modType == "cratermod") {
+				mInnerMod = new InnerTerrainModCrater(*this);
+				if (mInnerMod->parseAtlasData(modMap)) {
+					return true;
+				} else {
+					return false;
+				}
 			}
 		}
-		// Get level
-		mod_I = modMap.find("height");
-		if (mod_I != modMap.end()) {
-			const Atlas::Message::Element& modHeightElem = mod_I->second;
-			level = modHeightElem.asNum();
-		}
-
-		pos.z() = level;        // Note that the height of the mod is in pos.z()
-		if ((mModifier = newSlopeMod(shapeMap, pos, dx, dy)) != NULL) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 
-	if (modType == "levelmod") {
-		float level;
-		// Get level
-		mod_I = modMap.find("height");
-		if (mod_I != modMap.end()) {
-			const Atlas::Message::Element& modHeightElem = mod_I->second;
-			level = modHeightElem.asNum();
-		}
 
-		pos.z() = level;        // Note that the level the terrain will be raised to is in pos.z()
-		if ((mModifier = newLevelMod(shapeMap, pos)) != NULL) {
-			return true;
-		} else {
-			return false;
-		}
-
-	}
-
-	if (modType == "adjustmod") {
-		float level;
-		// Get level
-		mod_I = modMap.find("height");
-		if (mod_I != modMap.end()) {
-			const Atlas::Message::Element& modHeightElem = mod_I->second;
-			level = modHeightElem.asNum();
-		}
-
-		pos.z() = level;        // Note that the level used in the adjustment is in pos.z()
-		if ((mModifier = newAdjustMod(shapeMap, pos)) != NULL) {
-			return true;
-		} else {
-			return false;
-		}
-
-	}
-
-	if (modType == "cratermod") {
-		if ((mModifier = newCraterMod(shapeMap, pos)) != NULL) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 	return false;
 }
 
 void TerrainMod::attributeChanged(const Atlas::Message::Element& attributeValue)
 {
-	delete mModifier;
+	delete mInnerMod;
+	mInnerMod = 0;
 	if (parseMod()) {
 		EventModChanged(this);
 	}
@@ -251,7 +237,8 @@ void TerrainMod::attributeChanged(const Atlas::Message::Element& attributeValue)
 
 void TerrainMod::entity_Moved()
 {
-	delete mModifier;
+	delete mInnerMod;
+	mInnerMod = 0;
 	if (parseMod()) {
 		EventModChanged(this);
 	}
@@ -260,7 +247,7 @@ void TerrainMod::entity_Moved()
 void TerrainMod::entity_Deleted()
 {
 	EventModDeleted(this);
-	delete mModifier;
+	delete mInnerMod;
 }
 
 void TerrainMod::observeEntity()

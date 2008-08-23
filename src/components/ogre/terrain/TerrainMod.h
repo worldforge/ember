@@ -29,6 +29,7 @@
 namespace Mercator
 {
 	class TerrainMod;
+	class CraterTerrainMod;
 }
 
 namespace EmberOgre
@@ -43,16 +44,16 @@ class TerrainMod;
 class InnerTerrainMod
 {
 public:
-	InnerTerrainMod(TerrainMod& terrainMod);
 	virtual ~InnerTerrainMod();
 	
 	const std::string& getTypename() const;
 	
-	bool parseAtlasData(const Atlas::Message::MapType& modElement) = 0;
+	virtual bool parseAtlasData(const Atlas::Message::MapType& modElement) = 0;
 	
-	Mercator::TerrainMod* getModifier() = 0
+	virtual Mercator::TerrainMod* getModifier() = 0;
 
 protected:
+	InnerTerrainMod(TerrainMod& terrainMod, const std::string& typemod);
 	std::string mTypeName;
 	TerrainMod& mTerrainMod;
 };
@@ -70,7 +71,9 @@ class InnerTerrainModCrater : public InnerTerrainMod
 {
 public:
 	InnerTerrainModCrater(TerrainMod& terrainMod);
-	bool parseAtlasData(const Atlas::Message::MapType& modElement);
+	virtual ~InnerTerrainModCrater();
+	virtual bool parseAtlasData(const Atlas::Message::MapType& modElement);
+	virtual Mercator::TerrainMod* getModifier();
 protected:
 	Mercator::CraterTerrainMod* mModifier;
 };
@@ -191,11 +194,16 @@ protected:
 	/// \brief Creates an AdjustTerrainMod based on a shape and position
 	Mercator::TerrainMod * newAdjustMod(const Atlas::Message::MapType, WFMath::Point<3>);
 
+
+	InnerTerrainMod* mInnerMod;
 };
 
 Mercator::TerrainMod* TerrainMod::getMod() const
 {
-	return mModifier;
+	if (mInnerMod) {
+		return mInnerMod->getModifier();
+	}
+	return 0;
 }
 
 }
