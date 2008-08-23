@@ -32,6 +32,10 @@
 //
 // - If a value cannot be null, always prefer to pass it as reference instead of by pointer. That way there's a degree of inherent semantics, knowing that an object cannot be null.
 //
+// - Never use the C kind of casting, i.e. "(int)foo", instead always use the C++ version, i,e, "static_cast<int>(foo)". Any casts should stand out in the code directly; with the C style it's too easy to miss them.
+//
+// - Never use dynamic_cast unless it's absolutely, absolutely necessary. Use static_cast instead.
+//
 //
 //---------------------------------------------------------------------------------------------------
 //
