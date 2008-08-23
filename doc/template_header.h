@@ -122,7 +122,8 @@ class NameOfClass
 	public:
 	
 	/**
-	* Cretaes a new NameOfClass using default values.
+	* @brief Ctor.
+	* Creates a new NameOfClass using default values.
 	*/
 	NameOfClass()
 	{
@@ -132,7 +133,7 @@ class NameOfClass
 	
 	// Example of a setter method:
 	/**
-	* Sets the name of this gizmo.
+	* @brief Sets the name of this gizmo.
 	* If there already is a gizmo with this name, a number will be
 	* appended to the name, and the naming will be attempted again.
 	*
@@ -142,7 +143,7 @@ class NameOfClass
 	
 	// Example of a getter method:
 	/**
-	* Returns the name of this gizmo.
+	* @brief Returns the name of this gizmo.
 	* The name is guaranteed to be unique among all gizmos.
 	*/
 	inline virtual std::string getName() const;
@@ -154,7 +155,7 @@ class NameOfClass
 	/**
 	* NOTE: This is an example method declaration.
 	*
-	* Creates a new string that repeats a given string some number of times.
+	* @brief Creates a new string that repeats a given string some number of times.
 	* There's no extra space added between the strings in the produced string.
 	* Null characters are handled correctly too.
 	*
@@ -189,12 +190,12 @@ class NameOfClass
 	std::string  mExampleVariable;
 	
 	/**
-	* Stores an unique name of this gizmo.
+	* @brief Stores an unique name of this gizmo.
 	*/
 	std::string mName;
 	
 	/**
-	* This variable is used to keep track of the next free ID number for a new gizmo.
+	* @brief This variable is used to keep track of the next free ID number for a new gizmo.
 	*/
 	static int sNextId;
 	
