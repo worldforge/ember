@@ -48,7 +48,6 @@
 #include <Mercator/Terrain.h>
 #include <Mercator/TerrainMod.h>
 #include <Mercator/Surface.h>
-#include <Mercator/Matrix.h>
 #include <Mercator/Terrain.h>
 
 #include "TerrainLayerDefinitionManager.h"
@@ -85,24 +84,18 @@ mFoliageBatchSize(32)
 {
 
 	registerSceneManagerAdapter( adapter);
-	//new Foliage(EmberOgre::getSingleton().getSceneManager());
 	
-	
-    loadTerrainOptions();
+	loadTerrainOptions();
 	mTerrainInfo.setPageIndicesSize(adapter->getPageSize());
 	mTerrain = new Mercator::Terrain(Mercator::Terrain::SHADED); //, mOptions.pageSize - 1);
 	
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
-
-  
-   
-	
 //	mTerrainPageSource = new EmberTerrainPageSource(this);
-//    EmberOgre::getSingleton().getSceneManager()->registerPageSource(EmberTerrainPageSource::Name, mTerrainPageSource);
+//	EmberOgre::getSingleton().getSceneManager()->registerPageSource(EmberTerrainPageSource::Name, mTerrainPageSource);
 
 
 
-  //  EmberOgre::getSingleton().getSceneManager()->setWorldGeometry(mOptions);
+//	EmberOgre::getSingleton().getSceneManager()->setWorldGeometry(mOptions);
 	Ogre::Root::getSingleton().addFrameListener(this);
 	
 	configSrv->EventChangedConfigItem.connect(sigc::mem_fun(*this, &TerrainGenerator::ConfigService_EventChangedConfigItem));
@@ -133,45 +126,13 @@ Mercator::Terrain& TerrainGenerator::getTerrain()
 
 void TerrainGenerator::loadTerrainOptions()
 {
- 	chdir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str());
+	chdir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str());
 	
-	//Ogre::ConfigFile cf;
- //   cf.load("terrain.cfg");
-
-    
-	// Go through all sections & settings in the file
-	//Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
-	//
-	//std::string first;
-	//std::string second;
-	//std::string pair;
-	//Ogre::String secName, typeName, archName;
-	//while (seci.hasMoreElements())
-	//{
-	//	secName = seci.peekNextKey();
-	//	Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
-	//	Ogre::ConfigFile::SettingsMultiMap::iterator i;
-	//	for (i = settings->begin(); i != settings->end(); ++i)
-	//	{
-	//		first = i->first;
-	//		second = i->second;
-	//		pair = first + "=" + second;
-	//	}
-	//}
-	
-// 	Ogre::PagingLandScapeSceneManager* sceneManager = getEmberSceneManager();
-
-	
-
-
 	getAdapter()->setResourceGroupName("General" );
 
 	getAdapter()->loadOptions(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory() + "terrain.cfg");
 	
 	getAdapter()->setCamera( &EmberOgre::getSingleton().getMainCamera()->getCamera());
-	
-	
-	//Ogre::PagingLandScapeOptions::getSingleton().data2DFormat = "EmberHeightField";
 
 }
 
@@ -184,7 +145,7 @@ TerrainShader* TerrainGenerator::createShader(const TerrainLayerDefinition* laye
 {
 	size_t index = mShaderMap.size();
 	S_LOG_VERBOSE("Creating new shader for shader " << layerDef->getShaderName() <<" with index " << index);
-    TerrainShader* shader = new TerrainShader(mTerrain, index, layerDef, mercatorShader);
+	TerrainShader* shader = new TerrainShader(mTerrain, index, layerDef, mercatorShader);
 
 	mBaseShaders.push_back(shader);
 	mShaderMap[shader->getShader()] = shader;
@@ -206,19 +167,19 @@ TerrainShader* TerrainGenerator::createShader(const TerrainLayerDefinition* laye
 
 void TerrainGenerator::addTerrainMod(TerrainMod* terrainMod)
 {
-	// Listen for changes to the modifier
+	/// Listen for changes to the modifier
 	terrainMod->EventModChanged.connect(sigc::mem_fun(*this, &TerrainGenerator::TerrainMod_Changed));
-	// Listen for deletion of the modifier
+	/// Listen for deletion of the modifier
 	terrainMod->EventModDeleted.connect(sigc::mem_fun(*this, &TerrainGenerator::TerrainMod_Deleted));
 
-	// We need to save this pointer to use when the modifier is changed or deleted
+	/// We need to save this pointer to use when the modifier is changed or deleted
 	Mercator::TerrainMod* mod = mTerrain->addMod(*terrainMod->getMod());
 
 	mTerrainMods.insert(TerrainModMap::value_type(terrainMod->getEntity()->getId(), mod));
     
     
 	std::vector<TerrainPosition> updatedPositions;
-	updatedPositions.push_back(TerrainPosition(mod->bbox().getCenter().x() / 64, mod->bbox().getCenter().y() / 64));
+	updatedPositions.push_back(TerrainPosition(mod->bbox().getCenter().x(), mod->bbox().getCenter().y()));
 	reloadTerrain(updatedPositions);
 
 }
@@ -226,27 +187,33 @@ void TerrainGenerator::addTerrainMod(TerrainMod* terrainMod)
 void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
 {
 
+	std::vector<TerrainPosition> updatedPositions;
+	
 	// Clear this modifier from the terrain, then reapply it so the new parameters take effect
 	// Get its owner's ID
 	const std::string& entityID = terrainMod->getEntity()->getId();
 	S_LOG_INFO("modhandler: changed: Mod for entity " << entityID << " updated?");
-	// Use the pointer returned from addMod() to remove it
-	mTerrain->removeMod(mTerrainMods.find(entityID)->second);
-	// Remove this mod from our list so we can replace the pointer with a new one
-	mTerrainMods.erase(entityID);
+	TerrainModMap::iterator I = mTerrainMods.find(entityID);
+	if (I != mTerrainMods.end()) {
+		// Use the pointer returned from addMod() to remove it
+		mTerrain->removeMod(I->second);
+		// Remove this mod from our list so we can replace the pointer with a new one
+		mTerrainMods.erase(I);
+	}
 
-//     mTerrainMods.find(entityID)->second = terrainMod->getMod();
-//     mTerrain->updateMod(mTerrainMods.find(entityID)->second);
+//	mTerrainMods.find(entityID)->second = terrainMod->getMod();
+//	mTerrain->updateMod(mTerrainMods.find(entityID)->second);
 
 	// Reapply the mod to the terrain with the updated parameters
 	Mercator::TerrainMod *mercatorMod = terrainMod->getMod();
-	mercatorMod = mTerrain->addMod(*mercatorMod);
+	if (mercatorMod) {
+		mercatorMod = mTerrain->addMod(*mercatorMod);
+	
+		// Insert it into our list
+		mTerrainMods.insert(TerrainModMap::value_type(entityID, mercatorMod));
+	}
 
-	// Insert it into our list
-	mTerrainMods.insert(TerrainModMap::value_type(entityID, mercatorMod));
-
-	std::vector<TerrainPosition> updatedPositions;
-	updatedPositions.push_back(TerrainPosition(mercatorMod->bbox().getCenter().x() / 64, mercatorMod->bbox().getCenter().y() / 64));
+	updatedPositions.push_back(TerrainPosition(mercatorMod->bbox().getCenter().x(), mercatorMod->bbox().getCenter().y()));
 	reloadTerrain(updatedPositions);
 }
 
@@ -262,7 +229,7 @@ void TerrainGenerator::TerrainMod_Deleted(TerrainMod* terrainMod)
 	mTerrainMods.erase(entityID);
 
 	std::vector<TerrainPosition> updatedPositions;
-	updatedPositions.push_back(TerrainPosition(terrainMod->getMod()->bbox().getCenter().x() / 64, terrainMod->getMod()->bbox().getCenter().y() / 64));
+	updatedPositions.push_back(TerrainPosition(terrainMod->getMod()->bbox().getCenter().x(), terrainMod->getMod()->bbox().getCenter().y()));
 	reloadTerrain(updatedPositions);
 
 }
