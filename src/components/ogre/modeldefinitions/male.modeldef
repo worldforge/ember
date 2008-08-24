@@ -173,9 +173,6 @@
             	</animations>
             </action>
             <action name="__movement_walk" speed="1.000000">
-					<sounds>
-						<sound group="walking_on_grass" playOrder="linear" frequency="2" />
-					</sounds>
             	<animations>
 					<animation>
 						<animationpart name="wf_humanoid_walkF" weight="1.000000" />
