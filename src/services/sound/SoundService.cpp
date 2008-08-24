@@ -1,7 +1,5 @@
 /*
-  Copyright (C) 2002 Miguel Guzman Miranda (Aglanor)
-  Code based on the Worldspace OpenAL tutorials by Lord Loki
-  	at http://worldspace.berlios.de/openal/
+  Copyright (C) 2008 Romulo Fernandes Machado (nightz)
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -22,17 +20,6 @@
 #include "config.h"
 #endif
 
-#ifdef __WIN32__
-
-//	#include <al.h>
-//	#include <alc.h>
-//	#include <AL/alut.h>
-#else
-	#include <AL/al.h>
-	#include <AL/alc.h>
-	#include <AL/alut.h>
-#endif
-
 #include "framework/Service.h"
 #include "framework/ConsoleObject.h"
 
@@ -42,414 +29,259 @@
 #include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
 
-/*
-#include <list>
-#include <algorithm>
-*/
+#include <map>
 #include <cstring>
-#include <sstream>
 
 #include "SoundService.h"
-
-
+#include "SoundEntity.h"
 
 namespace Ember
 {
-    // List of SoundService's console commands
-	const char * const SoundService::PLAYSOUND = "playsound";
-	const char * const SoundService::PLAYMUSIC = "playmusic";
-	const char * const SoundService::PLAYFILE = "playfile";
-	const char * const SoundService::PLAYSPEECH = "playspeech";
-
-
-	/* ctor */
+	/* Constructor */
 	SoundService::SoundService()
 	{
 		setName("Sound Service");
 		setDescription("Service for reproduction of sound effects and background music");
+
+		#ifdef THREAD_SAFE
+		pthread_mutex_init(&mGroupsMutex, NULL);
+		pthread_mutex_init(&mSamplesMutex, NULL);
+		pthread_mutex_init(&mGroupModelsMutex, NULL);
+		#endif
 	}
 
 	/* dtor */
 	SoundService::~SoundService()
 	{
-
 	}
-
-	/* Method for starting this service 	*/
+	
+	/* Method for starting this service */
 	Service::Status SoundService::start()
 	{
-
 		S_LOG_INFO("Sound Service starting");
+		
+		#ifndef __WIN32__
+			alutInit(NULL, NULL);
+		#else
+			ALCcontext *Context;
+			ALCdevice *Device;
+			Device = alcOpenDevice("DirectSound3D");
 
-	#ifndef WIN32
-		// Test that /dev/dsp is availible
-		FILE *temp = fopen("/dev/dsp","w");
-		if (temp) {
-			fclose(temp);
-		} else {
-			return Service::FAILURE;
-		}
-	#endif
-
-#ifndef WIN32
-
-
-		ALfloat listenerPos[3]={0.0,0.0,0.0};	// listener position
-		ALfloat listenerVel[3]={0.0,0.0,0.0};	// listener velocity
-		ALfloat listenerOri[6]={0.0,0.0,1.0,0.0,1.0,0.0};	// listener orientation
-// 		ALfloat sourcePos[3]={ 0.0, 10.0, 0.0};	// source position
-// 		ALfloat sourceVel[3]={ 0.0, 0.0, 1.0};	// source velocity
-
-		data=NULL;
-
-		// Initialize OpenAL
-		S_LOG_VERBOSE("Initializing OpenAL");
-
-		if(!alutInit(NULL,0)) {
-			S_LOG_FAILURE( "Error initiatin AL: " << alutGetErrorString(alutGetError()) );
-			return Service::FAILURE;
-		} else {
-			S_LOG_INFO( "AL initiated"  );
-		}
-
-		// set listener initial parameters
-		alListenerfv(AL_POSITION,listenerPos);
-		alListenerfv(AL_VELOCITY,listenerVel);
-		alListenerfv(AL_ORIENTATION,listenerOri);
-
-		// Generate buffers
-		S_LOG_VERBOSE("Generating Buffers");
-
-		alGenBuffers(1,&systemBuffer);
-		if (!alIsBuffer(systemBuffer))
-		{
-			S_LOG_FAILURE("Error creating system buffer");
-			return Service::FAILURE;
-		}
-
-		alGenBuffers(1,&musicBuffer);
-		if (!alIsBuffer(musicBuffer))
-		{
-			S_LOG_FAILURE("Error creating music buffer");
-			return Service::FAILURE;
-		}
-
-		alGenBuffers(NUM_WORLD_BUFFERS,worldBuffers);
-		for (int i=0;i<NUM_WORLD_BUFFERS;i++)
-		{
-			if (!alIsBuffer(worldBuffers[i]))
+			if (Device == NULL)
 			{
-				S_LOG_FAILURE( "Error creating world buffers" );
+				S_LOG_FAILURE("Sound Service failed to start, sound device not found 'DirectSound3D'");
 				return Service::FAILURE;
 			}
-		}
 
+			Context = alcCreateContext(Device, NULL);
+			alcMakeContextCurrent(Context);
+		#endif
+		
+		checkAlError();
+		
+		mSamples.clear();
+		mSoundGroupModels.clear();
 
-		// Generate sources
-
-		S_LOG_VERBOSE("Generating Sources");
-		alGenSources(1,&systemSource);
-		if (!alIsSource(systemSource))
-		{
-			S_LOG_FAILURE("Error creating system source");
-			return Service::FAILURE;
-		}
-
-		alGenSources(1,&musicSource);
-		if (!alIsSource(musicSource))
-		{
-			S_LOG_FAILURE("Error creating music source");
-			return Service::FAILURE;
-		}
-
-		alGenSources(NUM_WORLD_SOURCES,worldSources);
-		for (int i=0;i<NUM_WORLD_SOURCES;i++)
-		{
-			if (!alIsSource(worldSources[i]))
-			{
-			S_LOG_FAILURE("Error creating world sources");
-				return Service::FAILURE;
-			}
-		}
-
-		// Register service commands with the console
-		S_LOG_VERBOSE("Registering Sound Service commands");
-		ConsoleBackend::getSingletonPtr()->registerCommand(PLAYSOUND,this);
-		ConsoleBackend::getSingletonPtr()->registerCommand(PLAYMUSIC,this);
-		ConsoleBackend::getSingletonPtr()->registerCommand(PLAYFILE,this);
-		ConsoleBackend::getSingletonPtr()->registerCommand(PLAYSPEECH,this);
-#endif
-		// Service initialized successfully
-		setRunning( true );
-		setStatus(Service::OK);
-		setStatusText("Sound Service status OK.");
-
-		S_LOG_INFO("Sound Service initialized");
 		return Service::OK;
+	}
+		
+	SoundGroupModel* SoundService::getSoundGroupModel(const std::string& name)
+	{
+		std::map<std::string, SoundGroupModel*>::iterator it(mSoundGroupModels.find(name));
+		if (it != mSoundGroupModels.end())
+		{
+			return it->second;
+		}
 
+		return NULL;
+	}
+
+	SoundGroupModel* SoundService::createSoundGroupModel(const std::string& name)
+	{
+		SoundGroupModel* newModel = getSoundGroupModel(name);
+		if (!newModel)
+		{
+			newModel = new SoundGroupModel();
+			if (newModel)
+			{
+				#ifdef THREAD_SAFE
+				pthread_mutex_lock(&mGroupModelsMutex);
+				#endif
+
+				mSoundGroupModels[name] = newModel;
+
+				#ifdef THREAD_SAFE
+				pthread_mutex_unlock(&mGroupModelsMutex);
+				#endif
+
+				return newModel;
+			}
+			else
+			{
+				S_LOG_FAILURE("Failed to allocate sound group model " + name);
+				return NULL;
+			}
+		}
+		else
+		{
+			S_LOG_INFO("Sound Group Model " + name + " already exists.");
+			return NULL;
+		}
 	}
 
 	/* Interface method for stopping this service */
 	void SoundService::stop(int code)
 	{
     	Service::stop(code);
-#ifndef WIN32
-		alSourceStop(worldSources[0]);
-		alutExit();			// Finalize OpenAL
-#endif
 		setStatus(Service::OK);
 	}
 
 	void SoundService::runCommand(const std::string &command, const std::string &args)
 	{
-		if(command == PLAYSOUND)
-		{
-			playTestSound();
-
-		}
-		else if(command == PLAYMUSIC)
-		{
-			// TODO: play test music here
-			S_LOG_INFO(getName() << " I should be playing music");
-		}
-		else if(command == PLAYFILE)
-		{
-			playSystemSound("pig_grunt.wav");
-		}
-		else if(command == PLAYSPEECH)
-		{
-			// TODO: play test music here
-			S_LOG_INFO(getName() << " I should be playing speech");
-		}
-	}
-
-	void SoundService::registerSoundProvider(ISoundProvider* provider)
-	{
-		mProvider = provider;
-		provider->_registerWithService(this);
-		S_LOG_INFO("Registered scripting provider " << provider->getName());
-	}
-
-	bool SoundService::LoadWAV(const char *fname,int buffer)
-	{
-		char* alName = new char[strlen(fname)];
-		strcpy(alName, fname);
-//#ifdef _WIN32 // Windows
-//
-//		alutLoadWAVFile(alName,&format,&data,&size,&freq, &loop); 	// Load WAV file
-//		alBufferData(buffer,format,data,size,freq); 			// Connect WAV to buffer
-//
-//#endif
-//
-//#ifdef _LINUX // Linux
-//
-//		alutLoadWAV(alName,&data,&format,&size,&bits,&freq);		// Load WAV file
-//		alBufferData(buffer,format,data,size,freq);				// Connect WAV to buffer
-//		S_LOG_INFO("Loading WAV and stuff");
-//
-//#endif
-
-		delete[] alName;
-	return true;
-
-	}
-
-  bool SoundService::UnloadWAV(void)
-  {
-
-#ifdef WIN32 //Windows
-
-		//alutUnloadWAV(format,data,size,freq); // Funtion that unloads the Wav file on windows
-
-#endif
-
-#ifdef _LINUX // Linux
-
-		free (data); // Free the memory used when loading the WAV file
-
-#endif
-
-	return true;
-
-	}
-
-	void SoundService::TestPlatform(void)
-	{
-
-		S_LOG_INFO("Testing Platform");
-
-#ifdef _WIN32 //Windows
-
-		S_LOG_INFO("Windows Platform found");
-
-#endif
-
-#ifdef _LINUX // Linux
-
-		S_LOG_INFO("Linux Platform found");
-
-#endif
-
-
-	}
-/*
-	void SoundService::playTestGYPH(void) {
-		alSourcePlay(worldSources[0]);
-		int error = alGetError();
-		if(error != AL_NO_ERROR)
-		{
-			S_LOG_FAILURE("Error playing sound: " << error);
-		}
-	}
-*/
-	void SoundService::playTestGrunt(void) {
-#ifndef WIN32
-
-		std::stringstream gruntPath;
-		gruntPath << soundsDirPath << "pig_grunt.wav";
-		S_LOG_INFO( "Loading sound: [" << gruntPath.str() << "]" );
-		//alutLoadWAV(gruntPath.str().c_str(),&data,&format,&size,&bits,&freq);
-
-		// Connect WAV to buffer
-		//alBufferData(worldBuffers[1],format,data,size,freq);
-
-		// Play
-		//alSourcePlay(worldSources[1]);
-
-		// Check errors
-		int error = alGetError();
-		if(error != AL_NO_ERROR)
-		{
-			char* errorStr = (char*)alGetString(error);
-			//std::string errorStr = alGetString(error);
-			S_LOG_FAILURE( "Error playing sound: " << errorStr );
-		}
-#endif
-	}
-
-	void SoundService::updateListenerPosition(
-		const WFMath::Point<3>& position,
-		const WFMath::Quaternion& orientation) {
-#ifndef WIN32
-
-		ALfloat listenerPosition[3]={position.x(),position.y(),position.z()};
-		//ALfloat listenerOri[6]={0.0,0.0,1.0,0.0,1.0,0.0};
-
-		// set listener initial parameters
-		alListenerfv(AL_POSITION,listenerPosition);
-		//alListenerfv(AL_ORIENTATION,listenerOri);
-
-		// update the System and Music Source,
-		// because they will always be with the listener
-		// TODO: WRONG! do this with relative position (0,0,0) to the listener
-		//alSourcefv(systemSource,AL_POSITION,listenerPosition);
-#endif
-	}
-
-/*
-	void SoundService::updateSourcePosition(
-		const int sourceId,
-		const WFMath::Point<3>& position,
-		const WFMath::Quaternion& orientation) {
-
-		ALfloat sourcePosition[3]={position.x(),position.y(),position.z()};
-		//ALfloat listenerOri[6]={0.0,0.0,1.0,0.0,1.0,0.0};
-
-		// set listener initial parameters
-		alSourcefv(AL_POSITION,sourcePosition);
-		//alListenerfv(AL_ORIENTATION,listenerOri);
-	}
-*/
-
-	void SoundService::updateAvatarSourcePosition(
-		const WFMath::Point<3>& position,
-		const WFMath::Quaternion& orientation) {
-#ifndef WIN32
-		ALfloat avatarSourcePosition[3]={position.x(),position.y(),position.z()};
-		//ALfloat listenerOri[6]={0.0,0.0,1.0,0.0,1.0,0.0};
-
-		alSourcefv(avatarSource,AL_POSITION,avatarSourcePosition);
-		//alListenerfv(AL_ORIENTATION,listenerOri);
-#endif
-	}
-
-	void SoundService::playTestSound() {
-#ifndef WIN32
-		systemBuffer = alutCreateBufferHelloWorld();
-		alSourcei(systemSource, AL_BUFFER, systemBuffer);
-		alSourcePlay(systemSource);
-#endif
-	}
-
-	void SoundService::playAvatarSound() {
-#ifndef WIN32
-		avatarBuffer = alutCreateBufferHelloWorld();
-		alSourcei(avatarSource, AL_BUFFER, avatarBuffer);
-		alSourcePlay(avatarSource);
-#endif
-	}
-
-	void SoundService::playTalk(std::string message,
-		const WFMath::Point<3>& position,
-		const WFMath::Quaternion& orientation) {
-#ifndef WIN32
-		S_LOG_INFO( "Playing talk: " << message );
-
-		// determine the source and buffer that will play the sound
-		int i = getWorldSourceIndexForPlaying(0);
-		ALuint worldSource = worldSources[i];
-		ALuint worldBuffer = worldBuffers[i];
-
-		// adjust position
-		// TODO: adjust orientation
-		ALfloat worldSourcePosition[3]={position.x(),position.y(),position.z()};
-		alSourcefv(worldSource,AL_POSITION,worldSourcePosition);
-
-		worldBuffer = alutCreateBufferHelloWorld();
-		alSourcei(worldSource, AL_BUFFER, worldBuffer);
-		alSourcePlay(worldSource);
-#endif
-	}
-
-	void SoundService::playSystemSound(std::string soundName) {
-
-		// load the sound through the sound provider
-		mProvider->loadSound(soundName);
-
-		// play sound
-
 		/*
-		Ogre::FileInfoListPtr files =
-			Ogre::ResourceGroupManager::getSingleton().findResourceFileInfo(
-			"General", "pig_grunt.wav");
-
-		Ogre::String filePath;
-		for(Ogre::FileInfoList::iterator it=files->begin(); it!=files->end(); ++it )
+		if (command == "alloc")
 		{
-			filePath = (*it).path;
-			//filePath.append((*it).filename);
-			S_LOG_INFO( "Found a filepath: " << filePath);
+			Ember::Tokeniser tokeniser;
+			tokeniser.initTokens(args);
+
+			std::string filename = tokeniser.nextToken();
+			create(filename);
 		}
-		// TODO: this plays the last one found. Should play the first one found
-		// TODO: check error if it finds none
+		else
+		if (command == "play")
+		{
+			Ember::Tokeniser tokeniser;
+			tokeniser.initTokens(args);
 
-		systemBuffer = alutCreateBufferFromFile(filePath.c_str());
-		if(systemBuffer == AL_NONE)
-		{
-			S_LOG_FAILURE(alutGetErrorString(alutGetError()));
-		} else
-		{
-			S_LOG_INFO("TRACE - BUFFER LOADED");
+			std::string filename = tokeniser.nextToken();
+			playSound(filename);
 		}
-		alSourcei(systemSource, AL_BUFFER, systemBuffer);
+		else
+		if (command == "dealloc")
+		{
+			Ember::Tokeniser tokeniser;
+			tokeniser.initTokens(args);
 
-		alSourcePlay(systemSource);
+			std::string filename = tokeniser.nextToken();
+			unRegisterSound(filename);
+		}
 		*/
 	}
-#ifndef WIN32
-	ALuint SoundService::getWorldSourceIndexForPlaying(int priority) {
-		return 0;
+
+	void SoundService::registerSoundGroup(SoundGroup* copy)
+	{
+		#ifdef THREAD_SAFE
+		pthread_mutex_lock(&mGroupsMutex);
+		#endif
+
+		mGroups.push_back(copy);
+
+		#ifdef THREAD_SAFE
+		pthread_mutex_unlock(&mGroupsMutex);
+		#endif
 	}
-#endif
+
+	bool SoundService::unregisterSoundGroup(const SoundGroup* sample)
+	{
+		#ifdef THREAD_SAFE
+		pthread_mutex_lock(&mGroupsMutex);
+		#endif
+	
+		std::list<SoundGroup*>::iterator it;
+		for (it = mGroups.begin(); it != mGroups.end(); )
+		{
+			if ((*it) == sample)
+			{
+				it = mGroups.erase(it);
+				return true;
+			}
+			else
+			{
+				++it;
+			}
+		}
+
+		#ifdef THREAD_SAFE
+		pthread_mutex_unlock(&mGroupsMutex);
+		#endif
+
+		return false;
+	}
+
+	void SoundService::registerStream(StreamedSoundSample* copy)
+	{
+		#ifdef THREAD_SAFE
+		pthread_mutex_lock(&mSamplesMutex);
+		#endif
+
+		mSamples.push_back(copy);
+
+		#ifdef THREAD_SAFE
+		pthread_mutex_unlock(&mSamplesMutex);
+		#endif
+	}
+
+	bool SoundService::unregisterStream(const StreamedSoundSample* sample)
+	{
+		#ifdef THREAD_SAFE
+		pthread_mutex_lock(&mSamplesMutex);
+		#endif
+	
+		std::list<StreamedSoundSample*>::iterator it;
+		for (it = mSamples.begin(); it != mSamples.end(); )
+		{
+			if ((*it) == sample)
+			{
+				it = mSamples.erase(it);
+				return true;
+			}
+			else
+			{
+				++it;
+			}
+		}
+
+		#ifdef THREAD_SAFE
+		pthread_mutex_unlock(&mSamplesMutex);
+		#endif
+
+		return false;
+	}
+
+	void SoundService::updateListenerPosition(const WFMath::Point<3>& pos, 
+			const WFMath::Quaternion& ori)
+	{
+		alListener3f(AL_POSITION, pos.x(), pos.y(), pos.z());
+		checkAlError();
+
+		// TODO: Convert the quaternion to forward/up vectors
+		// alListener3f(AL_ORIENTATION, ListenerOri);
+	}
+		
+	void SoundService::cycle()
+	{
+		// Groups
+		std::list<SoundGroup*>::const_iterator git = mGroups.begin();
+		for (; git != mGroups.end(); git++)
+		{
+			SoundGroup* group = (*git);
+			if (group)
+			{
+				group->update();
+			}
+		}
+
+		// Streams
+		std::list<StreamedSoundSample*>::const_iterator it = mSamples.begin();
+		for (; it != mSamples.end(); it++)
+		{
+			StreamedSoundSample* sample = (*it);
+			if (sample && sample->isPlaying())
+			{
+				sample->cycle();
+			}
+		}
+	}
 
 } // namespace Ember
+

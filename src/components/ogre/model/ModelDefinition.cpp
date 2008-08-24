@@ -509,12 +509,14 @@ void ActionDefinition::removeAnimationDefinition(AnimationDefinition* def)
 }
 
 
-SoundDefinition* ActionDefinition::createSoundDefinition(const std::string& name, bool repeat, Ogre::Real volume)
+SoundDefinition* ActionDefinition::createSoundDefinition(const std::string& groupName, 
+		unsigned int play, unsigned int freq)
 {
 	SoundDefinition* def = new SoundDefinition();
-	def->Name = name;
-	def->Repeat = repeat;
-	def->Volume = volume;
+	def->groupName = groupName;
+	def->frequency = freq;
+	def->playOrder = play;
+
 	mSounds.push_back(def);
 	return def;
 }

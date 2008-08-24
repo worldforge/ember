@@ -80,6 +80,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "terrain/TerrainGenerator.h"
 #include "terrain/TerrainLayerDefinitionManager.h"
 
+#include "sound/SoundDefinitionManager.h"
 
 #include "ConsoleObjectImpl.h"
 #include "Avatar.h"
@@ -131,7 +132,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 #include "widgets/LoadingBar.h"
 
-#include "sound/OgreSoundProvider.h"
+#include "sound/XMLSoundDefParser.h"
 
 #include "OgreSetup.h"
 
@@ -176,6 +177,7 @@ mWindow(0),
 mGeneralCommandMapper(std::auto_ptr<InputCommandMapper>(new InputCommandMapper("general"))),
 mEmberEntityFactory(0), 
 mTerrainGenerator(0),
+mSoundManager(0),
 mMotionManager(0),
 mGUIManager(0),
 mModelDefinitionManager(0),
@@ -215,6 +217,8 @@ EmberOgre::~EmberOgre()
 	}
 	delete mMotionManager;
 	delete mTerrainGenerator;
+
+	delete mSoundManager;
 
 	delete mGUIManager;
 
@@ -334,6 +338,9 @@ bool EmberOgre::setup()
 	mModelMappingManager = new Model::Mapping::EmberModelMappingManager();
 	
 	mTerrainLayerManager = new Terrain::TerrainLayerDefinitionManager();
+
+	// Sounds
+	mSoundManager = new SoundDefinitionManager();
 	
 	mEntityRecipeManager = new EntityRecipeManager();
 	

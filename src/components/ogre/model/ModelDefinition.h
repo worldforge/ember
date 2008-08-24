@@ -219,9 +219,9 @@ private:
 
 struct SoundDefinition
 {
-	std::string Name;
-	bool Repeat;
-	Ogre::Real Volume;
+	std::string groupName;
+	unsigned int playOrder;
+	unsigned int frequency;
 };
 
 class ActionDefinition
@@ -234,7 +234,9 @@ public:
 	const AnimationDefinitionsStore& getAnimationDefinitions();
 	void removeAnimationDefinition(AnimationDefinition* def);
 
-	SoundDefinition* createSoundDefinition(const std::string& name, bool repeat, Ogre::Real volume);
+	SoundDefinition* createSoundDefinition(const std::string& groupName, unsigned int play,
+			unsigned int freq);
+
 	const SoundDefinitionsStore& getSoundDefinitions();
 	void removeSoundDefinition(SoundDefinition* def);
 	

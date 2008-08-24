@@ -359,6 +359,39 @@ PKG_CHECK_MODULES(OPENAL, openal >= $OPENAL_VERSION,
 		AC_MSG_ERROR([Couldn't find OpenAL or tests failed. Error: $OPENAL_PKG_ERRORS. Please go to http://www.openal.org to get the latest, or check config.log to see why the tests failed, and fix it.])
 	])
 
+#check for libogg 
+OGG_VERSION=1.1.3
+PKG_CHECK_MODULES(OGG, ogg >= $OGG_VERSION, 
+		[
+			CXXFLAGS="$CXXFLAGS $OGG_CFLAGS"
+			LDFLAGS="$LDFLAGS $OGG_LIBS"
+		],
+		[
+			AC_MSG_ERROR([Couldn't find libogg or tests failed. Error: $OGG_PKG_ERRORS. Please go to http://www.vorbis.com to get the latest, or check config.log to see why the tests failed, and fix it.])
+		])
+
+#check for vorbis 
+VORBIS_VERSION=1.2.0
+PKG_CHECK_MODULES(VORBIS, vorbis >= $VORBIS_VERSION, 
+		[
+			CXXFLAGS="$CXXFLAGS $VORBIS_CFLAGS"
+			LDFLAGS="$LDFLAGS $VORBIS_LIBS"
+		],
+		[
+			AC_MSG_ERROR([Couldn't find libvorbis or tests failed. Error: $VORBIS_PKG_ERRORS. Please go to http://www.vorbis.com to get the latest, or check config.log to see why the tests failed, and fix it.])
+		])
+
+#check for vorbisfile 
+VORBISF_VERSION=1.2.0
+PKG_CHECK_MODULES(VORBISF, vorbisfile >= $VORBISF_VERSION, 
+		[
+			CXXFLAGS="$CXXFLAGS $VORBISF_CFLAGS"
+			LDFLAGS="$LDFLAGS $VORBISF_LIBS"
+		],
+		[
+			AC_MSG_ERROR([Couldn't find vorbisfile tests failed. Error: $VORBISF_PKG_ERRORS. Please go to http://www.vorbis.com to get the latest, or check config.log to see why the tests failed, and fix it.])
+		])
+
 # Check for FreeALUT
 FREEALUT_VERSION=1.0.0
 PKG_CHECK_MODULES(FREEALUT, freealut >= $FREEALUT_VERSION,
@@ -447,6 +480,22 @@ if test "$ac_use_debug_code" = "yes"; then
 else
       CFLAGS="$CFLAGS -DNDEBUG"
       CXXFLAGS="$CXXFLAGS -DNDEBUG"
+fi
+
+#multi threading
+AC_ARG_ENABLE(thread_safe,[  --enable-multithread     creates multi threaded code [default=no]],
+[ 
+   if test x$enableval = xno; then 
+		ac_use_thread_code="no"	
+   else 
+		ac_use_thread_code="yes"
+   fi
+], [ac_use_thread_code="no"])
+
+if test "$ac_use_thread_code" = "yes"; then
+      CFLAGS="$CFLAGS -DTHREAD_SAFE"
+      CXXFLAGS="$CXXFLAGS -DTHREAD_SAFE"
+		LDFLAGS="$LDFLAGS -lpthread"
 fi
 
 # gprof debugging option
@@ -554,6 +603,7 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/model/Makefile
 		 src/components/ogre/model/mapping/Makefile
 		 src/components/ogre/modeldefinitions/Makefile
+		 src/components/ogre/sounddefinitions/Makefile
 		 src/components/ogre/carpenter/Makefile
 		 src/components/ogre/jesus/Makefile
 		 src/components/ogre/manipulation/Makefile

@@ -23,11 +23,15 @@
 #include "EmberOgrePrerequisites.h"
 
 #include "EmberEntity.h"
-
+#include "services/sound/SoundAction.h"
+#include "services/sound/SoundGroup.h"
+#include "services/sound/SoundEntity.h"
 
 namespace EmberOgre {
 
 namespace Model {
+	class ActionDefinition;
+	class SoundDefinition;
 	class Model;
 	class Action;
 	namespace Mapping {
@@ -40,6 +44,8 @@ namespace Model {
 class EmberEntity;
 
 typedef std::list<Model::Action*> ActionStore;
+typedef std::vector<Model::ActionDefinition*> ActionDefinitionsStore;
+typedef std::vector<Model::SoundDefinition*> SoundDefinitionsStore;
 	
 /**
  * Represents a Ember entity with a physical representation in the world.
@@ -175,6 +181,13 @@ protected:
 	 * @param modelName The name of the model to use.
 	 */
 	void setModel(const std::string& modelName);
+
+	/**
+	 * Tells the entity to retrieve it sound actions from
+	 * the model definition manager
+	 */
+	void setSounds();
+	bool needSoundEntity();
 	
 	/**
 	 *    Shows a certain part of the model.
@@ -342,6 +355,11 @@ protected:
 	 * The model of the entity
 	 */
 	 Model::Model* mModel;
+
+	/**
+	 * The sound entity this entitiy is connected to.
+	 */
+	 Ember::SoundEntity* mSoundEntity;
 	
 	/**
 	 * We need to scale the Ogre::Entity, because the underlying media is not

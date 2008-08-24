@@ -53,6 +53,7 @@
 #include "OpcodeCollisionDetector.h"
 #include "MeshCollisionDetector.h"
 
+#include "services/sound/SoundEntity.h"
 
 #include <Eris/Entity.h>
 #include <Eris/View.h>
@@ -77,7 +78,8 @@ mModelAttachedTo(0),
 mModelMarkedToAttachTo(0),
 mModel(0),
 mScaleNode(0),
-mModelMapping(0)
+mModelMapping(0),
+mSoundEntity(0)
 {
 }
 
@@ -226,6 +228,98 @@ void EmberPhysicalEntity::hideModelPart(const std::string& partName)
 	}
 }
 
+/**
+ * Check if any sound action is defined within
+ * the model
+ */
+bool EmberPhysicalEntity::needSoundEntity()
+{
+	const ActionDefinitionsStore& store = mModel->getDefinition()->getActionDefinitions();
+	ActionDefinitionsStore::const_iterator I_b = store.begin();
+	ActionDefinitionsStore::const_iterator I_e = store.end();
+	for (; I_b != I_e; ++I_b)
+	{
+		// Setup All Sound Actions
+		SoundDefinitionsStore::const_iterator I_sounds = (*I_b)->getSoundDefinitions().begin();
+		SoundDefinitionsStore::const_iterator I_sounds_end = (*I_b)->getSoundDefinitions().end();
+		for (; I_sounds != I_sounds_end; ++I_sounds)
+		{
+			Model::SoundDefinition* sound = (*I_sounds);
+			
+			// Once we find a single reference
+			// we have an entity to allocate
+			if (sound)
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+void EmberPhysicalEntity::setSounds()
+{
+	if (!mSoundEntity)
+	{
+
+		if (needSoundEntity())
+		{
+			mSoundEntity = new Ember::SoundEntity();
+			if (!mSoundEntity)
+			{
+				S_LOG_FAILURE("Failled to create entity " + getType()->getName());
+			}
+		}
+
+		if (mSoundEntity)
+		{
+			const ActionDefinitionsStore& store = mModel->getDefinition()->getActionDefinitions();
+			ActionDefinitionsStore::const_iterator I_b = store.begin();
+			ActionDefinitionsStore::const_iterator I_e = store.end();
+			for (; I_b != I_e; ++I_b)
+			{
+				// Should only be valid if contain any sound
+				Ember::SoundAction* newAction = NULL;
+
+				// Setup All Sound Actions
+				SoundDefinitionsStore::const_iterator I_sounds = (*I_b)->getSoundDefinitions().begin();
+				SoundDefinitionsStore::const_iterator I_sounds_end = (*I_b)->getSoundDefinitions().end();
+				for (; I_sounds != I_sounds_end; ++I_sounds)
+				{
+					Model::SoundDefinition* sound = (*I_sounds);
+					if (!sound)
+					{
+						continue;
+					}
+
+					// Register the action within the entity if not registered yet
+					if (!newAction)
+					{
+						newAction = mSoundEntity->createAction((*I_b)->getName());
+						if (!newAction)
+						{
+							S_LOG_FAILURE("Failed to register action " + (*I_b)->getName() 
+									+ " within entity.");
+
+							return;
+						}
+					}
+
+					Ember::SoundGroup* newGroup = newAction->createGroup(sound->groupName);
+					if (newGroup)
+					{
+						newGroup->setFrequency(sound->frequency);
+						newGroup->setPlayOrder(sound->playOrder);
+						S_LOG_INFO("Sound Group " + sound->groupName
+								+ " registered within entity");
+					}
+				}
+			}
+		} // mSoundEntity
+	}
+}
+
 void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
 	///first we need to create the scale node
@@ -243,6 +337,9 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 		S_LOG_WARNING("Entity of type " << getType()->getName() << " have no default model, using placeholder.");
 		setModel("placeholder");
 	}
+
+	// Setup Sounds
+	setSounds();
 
 	///start out with the default movement mode
 	onModeChanged(EmberEntity::MM_DEFAULT);
@@ -460,6 +557,14 @@ void EmberPhysicalEntity::onModeChanged(MovementMode newMode)
 		} else {
 			actionName = ACTION_STAND;
 		}
+
+		// Lets treat the mode change as an action to the
+		// sound entity
+		if (mSoundEntity)
+		{
+			mSoundEntity->playAction(actionName);
+		}
+
 		if (!mCurrentMovementAction || mCurrentMovementAction->getName() != actionName) {
 			
 			
@@ -601,6 +706,12 @@ const Ogre::Vector3& EmberPhysicalEntity::getOffsetForContainedNode(const Ogre::
 void EmberPhysicalEntity::updateMotion(Ogre::Real timeSlice)
 {
 	EmberEntity::updateMotion(timeSlice);
+
+	// Update Sound Entity Position
+	if (mSoundEntity)
+	{
+		mSoundEntity->setPosition(getPredictedPos());
+	}
 }
 
 
@@ -724,6 +835,12 @@ void EmberPhysicalEntity::onAction(const Atlas::Objects::Operation::RootOperatio
 	
 	if (I != p.end()) {
 		const std::string& name = *I;
+
+		// If there is a sound entity, ask it to play this action
+		if (mSoundEntity)
+		{
+			mSoundEntity->playAction(name);
+		}
 		
 		Model::Action* newAction = mModel->getAction(name);
 		

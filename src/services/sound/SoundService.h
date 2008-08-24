@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2002  Miguel Guzman Miranda (Aglanor)
+    Copyright (C) 2008 Romulo Fernandes Machado (nightz)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,163 +19,145 @@
 #ifndef SOUNDSERVICE_H
 #define SOUNDSERVICE_H
 
-#define NUM_WORLD_SOURCES 16
-#define NUM_WORLD_BUFFERS 16
-
-
 class Service;
 class ISoundProvider;
 
-#include "framework/ConsoleObject.h"
-#include "framework/ISoundProvider.h"
-
-#ifndef WIN32
-//#include <AL/altypes.h>
-//Might need a proper preprocessor to handle different versions
-#include<AL/al.h>
-
-#endif
-
-#include <wfmath/point.h>
-#include <wfmath/vector.h>
-#include <wfmath/quaternion.h>
+#include "SoundGeneral.h"
+#include "SoundModel.h"
+#include "SoundSample.h" 
+#include "SoundEntity.h"
 
 namespace Ember {
 
 /**
  * Ember Sound Service
  *
- * @author Miguel Guzman Miranda (Aglanor)
+ * @author Romulo Fernandes Machado (nightz)
  *
  * @see Ember::Service
  * @see Ember::ConsoleObject
  */
 class SoundService: public Service, public ConsoleObject
 {
+	friend class IScriptingProvider;
 
-friend class IScriptingProvider;
+	private:
+		/**
+		 * Keep a list of the samples we are allocating.
+		 * That way, we can cycle and update the streamed ones.
+		 */
+		std::list<StreamedSoundSample*> mSamples;
 
-    //======================================================================
-    // Private Variables
-    //======================================================================
-    private:
+		/**
+		 * Keep a list of the sound groups we are allocating.
+		 * That way, we can cycle and update their timers/playability
+		 */
+		std::list<SoundGroup*> mGroups;
 
-  //ALCdevice *device;  // device for the Audio Layer Context
-  //this should be a void* if it is enabled again.  It is not currently used
+		/**
+		 * Thats the list of the sound groups parsed in
+		 * sounddefs
+		 */
+		std::map<std::string, SoundGroupModel*> mSoundGroupModels;
 
+		#ifdef THREAD_SAFE
+		/**
+		 * In case we are using threads, we must lock the mutexes to 
+		 * prevent incorrect writing to the sample lists
+		 */
+		pthread_mutex_t mGroupModelsMutex;
+		pthread_mutex_t mGroupsMutex;
+		pthread_mutex_t mSamplesMutex;
+		#endif
 
-#ifndef WIN32
+	public:
+		/**
+		 * Constructor
+		 */
+		SoundService();
+		~SoundService();
 
-	/** System source - this source will play system sounds,
-	like user input request or program error.
-	Will always remain in the same relative position to the listener. */
-	ALuint systemSource;
-	/** System buffer - buffer used to load system sounds files */
-	ALuint systemBuffer;
-	/** Music source - this source will play background music.
-	Will always remain in the same relative position to the listener. */
-	ALuint musicSource;
-	/** Music buffer - buffer used to load background music files */
-	ALuint musicBuffer;
-	/** Avatar source - this source will play avatar sounds,
-	which are more important than the same sounds for other entities
-	Example: avatar footsteps vs other people's footsteps
-	*/
-	ALuint avatarSource;
-	/** Avatar buffer - buffer used to load avatar sounds files */
-	ALuint avatarBuffer;
-	/** World sources - array of sources to play world sounds.
-	They will be placed in 3D space.
-	This field may change depending on the data model */
-	ALuint worldSources[NUM_WORLD_SOURCES];
-	/** Wold buffers - array of buffers for loading world sounds */
-	ALuint worldBuffers[NUM_WORLD_BUFFERS];
+		/**
+		 * Start the Sound Service
+		 */
+		Service::Status start();
 
-	ALuint getWorldSourceIndexForPlaying(int priority);
+		/**
+		 * Stop the Sound Service
+		 */
+		void stop(int code);
 
-#endif
+		/**
+		 * From console you can call functions to the Sound Service
+		 */
+		void runCommand(const std::string &command, const std::string &args);
 
-	std::string soundsDirPath;
+		/**
+		 * Register a new SoundModel used to define soundgroups
+		 *
+		 * @return A pointer to the new created SoundModel, if it fails, returns NULL
+		 */
+		SoundGroupModel* createSoundGroupModel(const std::string& name);
 
-#ifdef _WIN32
-	unsigned int size, freq;
-#else
-	int size, freq;
-#endif
-	int bits,format;
-	void *data;
-	char loop;
+		/**
+		 * Returns the SoundModel from its name
+		 *
+		 * @param name The desired SoundModel name
+		 * @return A pointer to the SoundModel or NULL if it can't be found
+		 */
+		SoundGroupModel* getSoundGroupModel(const std::string& name);
 
-	/**
-	The Sound Provider
-	*/
-	ISoundProvider* mProvider;
+		/**
+		 * Register individual StreamedSamples to keep updated
+		 * on the cycle calls
+		 *
+		 * @param copy The StreamedSoundSample to be registered
+		 */
+		void registerStream(StreamedSoundSample* copy);
 
-    //----------------------------------------------------------------------
-    // Constructors & Destructor
+		/**
+		 * Unregister streamed allocate sound buffers
+		 * This will only remove it from the service list
+		 * it will not deallocate the data.
+		 *
+		 * @param sample A pointer to the sample to be unregistered
+		 * @return The status of the unregistration.
+		 */
+		bool unregisterStream(const StreamedSoundSample* sample);
 
-  public:
+		/**
+		 * Register individual SoundGroups to keep updated
+		 * on the cycle calls
+		 *
+		 * @param copy The sound group to be registered
+		 */
+		void registerSoundGroup(SoundGroup* copy);
 
-    /** Creates a new SoundService using default values. */
-    SoundService();
+		/**
+		 * Unregister SoundGroups allocated on SoundActions.
+		 * This will only remove it from the service list
+		 * it will not deallocate the data.
+		 *
+		 * @param sample A pointer to the group to be unregistered
+		 * @return The status of the unregistration.
+		 */
+		bool unregisterSoundGroup(const SoundGroup* sample);
 
-
-    /** Deletes a SoundService instance. */
-    ~SoundService();
-
-    //----------------------------------------------------------------------
-    // Getters & Setters
-
-    //----------------------------------------------------------------------
-    // Methods
-
-	Service::Status start();
-
-	void stop(int code);
-
-	void runCommand(const std::string &command, const std::string &args);
-
-	/**
-	 *    Registers a new sound provider.
-	 * @param provider
-	 */
-	void registerSoundProvider(ISoundProvider* provider);
-
-	bool LoadWAV(const char *fname,int buffer);
-
-	bool UnloadWAV(void);
-
-	void TestPlatform(void);
-
-	//void playTestGYPH(void);
-	void playTestGrunt(void);
-
-	void updateListenerPosition(
+		/**
+		 * Update the position (in world coordinates)
+		 * of the listener
+		 *
+		 * @param position The new listener position.
+		 * @param orientation The listener orientation.
+		 */
+		void updateListenerPosition(
 		const WFMath::Point<3>& position,
 		const WFMath::Quaternion& orientation);
 
-	/*
-	void SoundService::updateSourcePosition(
-		const WFMath::Point<3>& position,
-		const WFMath::Quaternion& orientation);
-	*/
-
-	void updateAvatarSourcePosition(
-		const WFMath::Point<3>& position,
-		const WFMath::Quaternion& orientation);
-
-	void playTestSound();
-	void playAvatarSound();
-	void playTalk(std::string message,
-		const WFMath::Point<3>& position,
-		const WFMath::Quaternion& orientation);
-	void playSystemSound(std::string soundFileName);
-
-	// List of SoundService's console commands
-	static const char * const PLAYSOUND;
-	static const char * const PLAYMUSIC;
-	static const char * const PLAYFILE;
-	static const char * const PLAYSPEECH;
+		/**
+		 * Streaming update
+		 */
+		void cycle();
 
 }; //SoundService
 

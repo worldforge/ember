@@ -65,6 +65,9 @@
 		</submodels>
 		<actions>
 			<action name="__movement_idle">
+				<sounds>
+					<sound group="pig_snort" playOrder="random" frequency="1" />	
+				</sounds>
 				<animations>
 					<animation iterations="1">
 						<animationpart name="Walk" weight="1" />

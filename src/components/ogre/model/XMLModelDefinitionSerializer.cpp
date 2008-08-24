@@ -377,26 +377,9 @@ void XMLModelDefinitionSerializer::readActions(ModelDefinitionPtr modelDef, TiXm
 			if (elem)
 				readAnimations(elem, actionDef);
 			
-			elem = animElem->FirstChildElement("sound");
-			if (elem) {
-				//only attach one sound to each action
-				std::string name;
-				bool repeat = false;
-				Ogre::Real volume = 1.0f;
-				tmp =  animElem->Attribute("name");
-				if (tmp) { 
-					name = tmp;
-					tmp =  animElem->Attribute("repeat");
-					if (tmp) { 
-						repeat = Ogre::StringConverter::parseBool(tmp);
-					}
-					tmp =  animElem->Attribute("volume");
-					if (tmp) { 
-						volume = Ogre::StringConverter::parseReal(tmp);
-					}
-					actionDef->createSoundDefinition(name, repeat, volume);
-				}
-			}
+			elem = animElem->FirstChildElement("sounds");
+			if (elem)
+				readSounds(elem, actionDef);
 		}
 
 	}
@@ -406,6 +389,46 @@ void XMLModelDefinitionSerializer::readActions(ModelDefinitionPtr modelDef, TiXm
 		S_LOG_VERBOSE( "No actions found." );
 	}
 
+}
+
+void XMLModelDefinitionSerializer::readSounds(TiXmlElement* mAnimationsNode, ActionDefinition* action)
+{
+	const char* tmp = 0;
+
+	for (TiXmlElement* soundElem = mAnimationsNode->FirstChildElement();
+            soundElem != 0; soundElem = soundElem->NextSiblingElement())
+	{
+		tmp = soundElem->Attribute("group");
+		if (tmp)
+		{
+			std::string groupName(tmp);
+
+			unsigned int playOrder = 0;
+			tmp = soundElem->Attribute("playOrder");
+			if (tmp)
+			{
+				std::string playO(tmp);
+				if (playO == "linear")
+					playOrder = 0;
+				else
+				if (playO == "inverse")
+					playOrder = 1;
+				else
+				if (playO == "random")
+					playOrder = 2;
+			}
+
+			unsigned int frequency = 0;
+			tmp = soundElem->Attribute("frequency");
+			if (tmp)
+			{
+				frequency = atoi(tmp);
+			}
+
+			action->createSoundDefinition(groupName, playOrder, frequency);
+			S_LOG_VERBOSE( "  Add Sound: " + groupName);
+		}
+	}
 }
 	
 void XMLModelDefinitionSerializer::readAnimations(TiXmlElement* mAnimationsNode, ActionDefinition* action)
@@ -846,13 +869,21 @@ void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, Ti
 		}
 		
 		//for now, only allow one sound
-		if ((*I)->getSoundDefinitions().size() > 0) {
-			SoundDefinition* def = *(*I)->getSoundDefinitions().begin();
-			TiXmlElement soundElem("sound");
-			soundElem.SetAttribute("name", def->Name.c_str());
-			soundElem.SetAttribute("repeat", def->Repeat);
-			soundElem.SetDoubleAttribute("volume", def->Volume);
-			actionElem.InsertEndChild(soundElem);
+		if ((*I)->getSoundDefinitions().size() > 0) 
+		{
+			TiXmlElement soundsElem("sounds");
+
+			#define soundDefIter SoundDefinitionsStore::const_iterator 
+			for (soundDefIter J = (*I)->getSoundDefinitions().begin(); 
+					J != (*I)->getSoundDefinitions().end(); ++J) 
+			{
+				TiXmlElement soundElem("sound");
+				soundElem.SetAttribute("groupName", (*J)->groupName);
+				soundElem.SetAttribute("frequency", (*J)->frequency);
+				soundElem.SetAttribute("playOrder", (*J)->playOrder);
+				soundsElem.InsertEndChild(soundElem);
+			}
+			#undef soundDefIter
 		}
 		actionsElem.InsertEndChild(actionElem);
 	}

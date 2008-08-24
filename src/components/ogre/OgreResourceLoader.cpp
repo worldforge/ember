@@ -30,6 +30,7 @@
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
 #include "model/ModelDefinitionManager.h"
+#include "sound/XMLSoundDefParser.h"
 
 #include "EmberOgreFileSystem.h"
 
@@ -152,7 +153,7 @@ void OgreResourceLoader::loadGeneral()
 {
 	loadSection("General");
 	loadSection("ModelDefinitions");
-	
+	loadSection("SoundDefinitions");
 	
 	loadAllUnloadedSections();
 
