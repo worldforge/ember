@@ -312,15 +312,6 @@ void Avatar::movedInWorld()
 		mMovementStateAtLastServerMessage.orientation = mAvatarNode->getOrientation();
 		mHasChangedLocation = false;
 	}
-
-	// Update avatar entity position in sound service
-	Ember::SoundService* mySoundService = Ember::EmberServices::getSingleton().getSoundService();
-	{
-		Ogre::Vector3 finalPosition = getAvatarCamera()->getPosition() + mAvatarNode->getPosition();
-
-		mySoundService->updateListenerPosition(Ogre2Atlas(finalPosition),
-			Ogre2Atlas(getAvatarCamera()->getOrientation()));
-	}
 }
 
 void Avatar::avatar_LocationChanged(Eris::Entity* entity)
