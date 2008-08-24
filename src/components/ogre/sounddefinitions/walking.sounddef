@@ -1,6 +1,6 @@
 <sounds>
 	<group name="walking_on_grass">
-		<buffer filename="Footsteps_on_grass_sasquatch.wav" format="wav" playsIn="world" />
+		<buffer filename="soundfx/creatures/footsteps/Footsteps_on_grass_sasquatch.wav" format="wav" playsIn="world" />
 	</group>
 </sounds>
 

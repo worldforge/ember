@@ -1,11 +1,11 @@
 <sounds>
 	<group name="pig_snort">
-		<buffer filename="snort1.wav" format="wav" playsIn="world" volume="0.8" />
-		<buffer filename="snort2.wav" format="wav" playsIn="world" volume="0.8"  />
-		<buffer filename="snort3.wav" format="wav" playsIn="world" volume="0.8"  />
-		<buffer filename="snort4.wav" format="wav" playsIn="world" volume="0.8"  />
-		<buffer filename="snort5.wav" format="wav" playsIn="world" volume="0.8"  />
-		<buffer filename="eating.wav" format="wav" playsIn="world" volume="0.8"  />
+		<buffer filename="soundfx/creatures/pig/snort1.wav" format="wav" playsIn="world" volume="0.8" />
+		<buffer filename="soundfx/creatures/pig/snort2.wav" format="wav" playsIn="world" volume="0.8"  />
+		<buffer filename="soundfx/creatures/pig/snort3.wav" format="wav" playsIn="world" volume="0.8"  />
+		<buffer filename="soundfx/creatures/pig/snort4.wav" format="wav" playsIn="world" volume="0.8"  />
+		<buffer filename="soundfx/creatures/pig/snort5.wav" format="wav" playsIn="world" volume="0.8"  />
+		<buffer filename="soundfx/creatures/pig/eating.wav" format="wav" playsIn="world" volume="0.8"  />
 	</group>
 </sounds>
 
