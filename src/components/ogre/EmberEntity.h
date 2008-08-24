@@ -405,6 +405,16 @@ protected:
 	virtual void addTerrainMod(Terrain::TerrainMod* mod);
 	
 	/**
+	 * @brief Checks if we should create any dependent objects, such as TerrainArea or TerrainMod.
+	 * Call this only when the entity has been propely initialized, since we then have all the correct data regarding positions, bounding boxes etc.
+	 * @see init()
+	 * @see onAttrChanged()
+	 * @param attributeName The attribute which we should try to create something for.
+	 * @return True if any dependent object was created.
+	 */
+	virtual bool createDependentObject(const std::string& attributeName);
+	
+	/**
 	* @brief For debugging purposes. This holds a bounding box of how the entity appears in the eris/atlas world.
 	* This is often different from the Ogre bounding box.
 	*/
