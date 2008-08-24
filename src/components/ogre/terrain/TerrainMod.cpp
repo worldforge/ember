@@ -140,6 +140,10 @@ bool InnerTerrainModSlope::parseAtlasData(const Atlas::Message::MapType& modElem
 									InnerTerrainModSlope_impl<WFMath::RotBox<2> >* modifierImpl = new InnerTerrainModSlope_impl<WFMath::RotBox<2> >();
 									mModifier_impl = modifierImpl;
 									return modifierImpl->createInstance(*shapeMap, pos, level, dx, dy);
+								} else if (shapeType == "polygon") {
+									InnerTerrainModSlope_impl<WFMath::Polygon<2> >* modifierImpl = new InnerTerrainModSlope_impl<WFMath::Polygon<2> >();
+									mModifier_impl = modifierImpl;
+									return modifierImpl->createInstance(*shapeMap, pos, level, dx, dy);
 								}
 							}
 						}
@@ -192,6 +196,10 @@ bool InnerTerrainModLevel::parseAtlasData(const Atlas::Message::MapType& modElem
 					InnerTerrainModLevel_impl<WFMath::RotBox<2> >* modifierImpl = new InnerTerrainModLevel_impl<WFMath::RotBox<2> >();
 					mModifier_impl = modifierImpl;
 					return modifierImpl->createInstance(*shapeMap, pos, height);
+				} else if (shapeType == "polygon") {
+					InnerTerrainModLevel_impl<WFMath::Polygon<2> >* modifierImpl = new InnerTerrainModLevel_impl<WFMath::Polygon<2> >();
+					mModifier_impl = modifierImpl;
+					return modifierImpl->createInstance(*shapeMap, pos, height);
 				}
 			}
 		}
@@ -237,6 +245,10 @@ bool InnerTerrainModAdjust::parseAtlasData(const Atlas::Message::MapType& modEle
 					return modifierImpl->createInstance(*shapeMap, pos, height);
 				} else if (shapeType == "rotbox") {
 					InnerTerrainModAdjust_impl<WFMath::RotBox<2> >* modifierImpl = new InnerTerrainModAdjust_impl<WFMath::RotBox<2> >();
+					mModifier_impl = modifierImpl;
+					return modifierImpl->createInstance(*shapeMap, pos, height);
+				} else if (shapeType == "polygon") {
+					InnerTerrainModAdjust_impl<WFMath::Polygon<2> >* modifierImpl = new InnerTerrainModAdjust_impl<WFMath::Polygon<2> >();
 					mModifier_impl = modifierImpl;
 					return modifierImpl->createInstance(*shapeMap, pos, height);
 				}

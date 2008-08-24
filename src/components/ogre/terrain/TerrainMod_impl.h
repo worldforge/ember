@@ -30,6 +30,7 @@
 #include <Mercator/TerrainMod.h>
 #include <Mercator/TerrainMod_impl.h>
 #include <wfmath/ball.h>
+#include <wfmath/polygon.h>
 
 
 namespace EmberOgre {
@@ -145,6 +146,39 @@ bool InnerTerrainMod_impl::parseShapeAtlasData<WFMath::RotBox<2> >(const Atlas::
 	return false;
 }
 
+template<>
+bool InnerTerrainMod_impl::parseShapeAtlasData<WFMath::Polygon<2> >(const Atlas::Message::MapType& shapeElement, WFMath::Point<3> pos, WFMath::Polygon<2>** shape)
+{
+	Atlas::Message::MapType::const_iterator it = shapeElement.find("points");
+	if ((it != shapeElement.end()) && it->second.isList()) {
+		const Atlas::Message::ListType& pointsData(it->second.asList());
+		
+		WFMath::Polygon<2>* poly = new WFMath::Polygon<2>();
+		for (size_t p = 0; p < pointsData.size(); ++p) {
+			if (!pointsData[p].isList()) {
+// 				S_LOG_FAILURE("Skipped malformed point in area");
+				continue;
+			}
+			
+			const Atlas::Message::ListType& point(pointsData[p].asList());
+			if ((point.size() < 2) || !point[0].isNum() || !point[1].isNum()) {
+// 				S_LOG_FAILURE("skipped malformed point in area");
+				continue;
+			}
+			
+			WFMath::Point<2> wpt(point[0].asNum(), point[1].asNum());
+			poly->addCorner(poly->numCorners(), wpt);
+		}
+		if (poly->numCorners() > 0) {
+	// 		S_LOG_FAILURE("Could not find enough points to define the area. Found " << poly.numCorners() << " points.");
+			poly->shift(WFMath::Vector<2>(pos.x(), pos.y()));
+			*shape = poly;
+			return true;
+		}
+		delete poly;
+	}
+	return false;
+}
 
 
 
