@@ -69,6 +69,12 @@ class SoundService: public Service, public ConsoleObject
 		pthread_mutex_t mGroupsMutex;
 		pthread_mutex_t mSamplesMutex;
 		#endif
+		
+		#ifdef __WIN32__
+			ALCcontext *mContext;
+			ALCdevice *mDevice;
+		#endif
+		
 
 	public:
 		/**

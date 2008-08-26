@@ -39,6 +39,10 @@ namespace Ember
 {
 	/* Constructor */
 	SoundService::SoundService()
+	
+	#ifdef WIN32
+	 : mContext(0), mDevice(0)
+	#endif
 	{
 		setName("Sound Service");
 		setDescription("Service for reproduction of sound effects and background music");
@@ -63,18 +67,16 @@ namespace Ember
 		#ifndef __WIN32__
 			alutInit(NULL, NULL);
 		#else
-			ALCcontext *Context;
-			ALCdevice *Device;
-			Device = alcOpenDevice("DirectSound3D");
+			mDevice = alcOpenDevice("DirectSound3D");
 
-			if (Device == NULL)
+			if (!mDevice)
 			{
 				S_LOG_FAILURE("Sound Service failed to start, sound device not found 'DirectSound3D'");
 				return Service::FAILURE;
 			}
 
-			Context = alcCreateContext(Device, NULL);
-			alcMakeContextCurrent(Context);
+			mContext = alcCreateContext(mDevice, NULL);
+			alcMakeContextCurrent(mContext);
 		#endif
 		
 		checkAlError();
@@ -132,6 +134,13 @@ namespace Ember
 	/* Interface method for stopping this service */
 	void SoundService::stop(int code)
 	{
+		#ifndef __WIN32__
+			alutExit();
+		#else
+			alcMakeContextCurrent(NULL);
+			alcDestroyContext(mContext);
+			alcCloseDevice(mDevice);
+		#endif
     	Service::stop(code);
 		setStatus(Service::OK);
 	}
