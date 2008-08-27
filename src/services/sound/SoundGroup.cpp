@@ -86,39 +86,39 @@ namespace Ember
 			mSamples.push_back(newStatic);
 		}
 		else
-		if (model->getFormat() == SAMPLE_OGG)
-		{
-			StreamedSoundSample* newStream = new StreamedSoundSample(model->getFilename(), 
-					model->getPlayLocally(), model->getVolume());
-
-			if (!newStream)
-			{
-				S_LOG_FAILURE("Failled to allocate streamed sample " + model->getFilename());
-				return;
-			}
-
-			mSamples.push_back(newStream);
-		}
+// 		if (model->getFormat() == SAMPLE_OGG)
+// 		{
+// 			StreamedSoundSample* newStream = new StreamedSoundSample(model->getFilename(), 
+// 					model->getPlayLocally(), model->getVolume());
+// 
+// 			if (!newStream)
+// 			{
+// 				S_LOG_FAILURE("Failled to allocate streamed sample " + model->getFilename());
+// 				return;
+// 			}
+// 
+// 			mSamples.push_back(newStream);
+// 		}
 
 		S_LOG_INFO("Successfully allocated sample " + model->getFilename());
 	}
 
 	void SoundGroup::updateSamplesPosition(const WFMath::Point<3> &pos)
 	{
-		std::list<BaseSoundSample*>::iterator it = mSamples.begin();
-		for (it; it != mSamples.end(); it++)
-		{
-			(*it)->setPosition(pos);
-		}
+// 		std::list<BaseSoundSample*>::iterator it = mSamples.begin();
+// 		for (it; it != mSamples.end(); it++)
+// 		{
+// 			(*it)->setPosition(pos);
+// 		}
 	}
 
 	void SoundGroup::updateSamplesVelocity(const WFMath::Vector<3> &vel)
 	{
-		std::list<BaseSoundSample*>::iterator it = mSamples.begin();
-		for (it; it != mSamples.end(); it++)
-		{
-			(*it)->setVelocity(vel);
-		}
+// 		std::list<BaseSoundSample*>::iterator it = mSamples.begin();
+// 		for (it; it != mSamples.end(); it++)
+// 		{
+// 			(*it)->setVelocity(vel);
+// 		}
 	}
 
 	void SoundGroup::setFrequency(const unsigned int freq)
@@ -190,38 +190,38 @@ namespace Ember
 
 	void SoundGroup::play()
 	{
-		unsigned int index = 0;
-
-		std::list<BaseSoundSample*>::iterator it = mSamples.begin();
-		for (it; it != mSamples.end(); it++)
-		{
-			if (index == mNextToPlay)
-			{
-				if (mLastPlayed)
-				{
-					mLastPlayed->stop();
-				}
-
-				(*it)->play();
-				mLastPlayed = dynamic_cast<BaseSoundSample*>(*it);
-				mIsPlaying = true;
-				resetClock();
-
-				break;
-			}
-
-			index++;
-		}
+// 		unsigned int index = 0;
+// 
+// 		std::list<BaseSoundSample*>::iterator it = mSamples.begin();
+// 		for (it; it != mSamples.end(); it++)
+// 		{
+// 			if (index == mNextToPlay)
+// 			{
+// 				if (mLastPlayed)
+// 				{
+// 					mLastPlayed->stop();
+// 				}
+// 
+// 				(*it)->play();
+// 				mLastPlayed = dynamic_cast<BaseSoundSample*>(*it);
+// 				mIsPlaying = true;
+// 				resetClock();
+// 
+// 				break;
+// 			}
+// 
+// 			index++;
+// 		}
 	}
 
 	void SoundGroup::stop()
 	{
-		if (mLastPlayed)
-		{
-			// Should be the active buffer
-			mLastPlayed->stop();
-			mIsPlaying = false;
-		}
+// 		if (mLastPlayed)
+// 		{
+// 			// Should be the active buffer
+// 			mLastPlayed->stop();
+// 			mIsPlaying = false;
+// 		}
 	}
 	
 	void SoundGroup::pushSample(BaseSoundSample* sample)

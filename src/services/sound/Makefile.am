@@ -1,6 +1,9 @@
 INCLUDES = -I$(top_srcdir)/src -I$(top_builddir)/src
 
 noinst_LTLIBRARIES = libSoundService.la
-noinst_HEADERS = SoundModel.h SoundService.h SoundGeneral.h SoundSample.h SoundAction.h SoundEntity.h 
+noinst_HEADERS = SoundAction.h SoundEntity.h SoundGeneral.h SoundInstance.h \
+	SoundModel.h SoundSample.h SoundService.h SoundSource.h
 
-libSoundService_la_SOURCES = SoundGeneral.cpp SoundModel.cpp SoundSample.cpp SoundAction.cpp SoundGroup.cpp SoundEntity.cpp SoundService.cpp
+libSoundService_la_SOURCES = SoundAction.cpp SoundEntity.cpp SoundGeneral.cpp \
+	SoundGroup.cpp SoundInstance.cpp SoundModel.cpp SoundSample.cpp SoundService.cpp \
+	SoundSource.cpp

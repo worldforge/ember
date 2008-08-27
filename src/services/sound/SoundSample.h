@@ -23,6 +23,30 @@
 
 namespace Ember
 {
+class SoundSource;
+class StaticSoundSample;
+class SoundSampleBinder
+{
+public:
+SoundSampleBinder(SoundSource& source);
+virtual ~SoundSampleBinder();
+
+virtual void update(){};
+
+protected:
+SoundSource& mSource;
+};
+
+class StaticSoundSampleBinder : public SoundSampleBinder
+{
+public:
+StaticSoundSampleBinder(SoundSource& source, StaticSoundSample& sample);
+
+// virtual void update();
+
+protected:
+StaticSoundSample& mSample;
+};
 
 /**
  * Sound Sample 
@@ -33,11 +57,6 @@ class BaseSoundSample
 {
 	protected:
 		/**
-		 * openAl internal
-		 */
-		ALuint 				mSource;
-
-		/**
 		 * Type of the sample
 		 */
 		SoundSampleType	mType;
@@ -45,51 +64,22 @@ class BaseSoundSample
 		/**
 		 * If the sound should be play locally(2D) or not(3D).
 		 */
-		bool					mPlayPosition;
+// 		bool mPlayPosition;
 
 	public:
 		virtual ~BaseSoundSample() {}
-
-		/**
-		 * Set sample openAl source
-		 *
-		 * @param src The new source.
-		 */
-		void setSource(ALuint src);
-
-		/**
-		 * Set sample position
-		 *
-		 * @param pos The new sound position
-		 */
-		void setPosition(const WFMath::Point<3> &pos);
-
-		/**
-		 * Set sample velocity 
-		 *
-		 * @param vel The new sound velocity
-		 */
-		void setVelocity(const WFMath::Vector<3> &vel);
-
-		/**
-		 * Return openAl source within this sample
-		 */
-		ALuint getSource();
-
-		/**
-		 * Return openAl pointer to source within this sample
-		 */
-		ALuint* getSourcePtr();
-
+		
 		/**
 		 * Returns entity type
 		 */
 		SoundSampleType getType();
 
-		virtual ALuint* getBufferPtr() = 0;
+// 		virtual ALuint* getBufferPtr() = 0;
 		virtual unsigned int getNumberOfBuffers() = 0;
-		virtual void play();
-		virtual void stop();
+/*		virtual void play();
+		virtual void stop();*/
+		
+		virtual SoundSampleBinder* createBinder(SoundSource& source) = 0;
 };
 
 /**
@@ -110,13 +100,6 @@ class StaticSoundSample : public BaseSoundSample
 		~StaticSoundSample();
 
 		/**
-		 * Set this sample buffer
-		 *
-		 * @param buf The new sample buffer
-		 */
-		void setBuffer(ALuint buf);
-
-		/**
 		 * Returns the unique buffer this sample has.
 		 */
 		ALuint	getBuffer();
@@ -124,16 +107,18 @@ class StaticSoundSample : public BaseSoundSample
 		/**
 		 * Returns an pointer to the unique buffer this sample has.
 		 */
-		ALuint*	getBufferPtr();
+// 		ALuint*	getBufferPtr();
 
 		/**
 		 * Within this class, this is always 1.
 		 */
 		unsigned int getNumberOfBuffers();
 
+		virtual SoundSampleBinder* createBinder(SoundSource& source);
+
 		// Common methods
-		void play();
-		void stop();
+// 		void play();
+// 		void stop();
 };
 
 /**
@@ -142,110 +127,110 @@ class StaticSoundSample : public BaseSoundSample
  * updates and requires more than a buffer to stream
  * data.
  */
-class StreamedSoundSample : public BaseSoundSample
-{
-	private:
-		/**
-		 * Filename with full path to the data.
-		 */
-		std::string		mFilename;
-
-		/**
-		 * A pointer to the file specified in mFilename
-		 */
-		FILE*				mFile;
-
-		/**
-		 * VORBIS Internal Stream 
-		 */
-		OggVorbis_File mStream;
-
-		/**
-		 * Front and back buffers for openAl
-		 */
-		ALuint			mBuffers[2];
-
-		/**
-		 * Format of the stream (checked from ogg/vorbis)
-		 */
-		ALenum			mFormat;
-
-		/**
-		 * Rate of the stream (checked from ogg/vorbis)
-		 */
-		ALuint			mRate;
-
-		/**
-		 * If this stream is playing
-		 */
-		bool				mPlaying;
-
-		/**
-		 * This function is responsible to fill
-		 * buffers from stream data
-		 *
-		 * @param buffer The destination openAl buffer
-		 * @return Status of the streaming
-		 */
-		bool stream(ALuint buffer);
-
-	public:
-		StreamedSoundSample(const std::string& filename, bool playsLocal, float volume);
-		~StreamedSoundSample();
-
-		/**
-		 * Set the file to be used in stream proccess.
-		 *
-		 * @param ptr A pointer to the file.
-		 * @param filename The file name with full path.
-		 */
-		void setFile(FILE* ptr, const std::string& filename);
-
-		/**
-		 * Set stream format
-		 */
-		void setFormat(ALenum fmt);
-
-		/**
-		 * Set stream rate
-		 */
-		void setRate(ALuint rate);
-
-		/**
-		 * Set the stream status (if playing or not)
-		 */
-		void setPlaying(bool play);
-
-		/**
-		 * Returns a pointer to the buffers array
-		 */
-		ALuint*				getBufferPtr();
-
-		/**
-		 * Returns a pointer to the stream information (vorbis internals).
-		 */
-		OggVorbis_File*	getStreamPtr();
-
-		/**
-		 * Return the state of the stream.
-		 */
-		bool					isPlaying();
-
-		/**
-		 * Return the number of buffers in this stream. In this case this is 2.
-		 */
-		unsigned int		getNumberOfBuffers();
-
-		/**
-		 * Return the full filename of the stream file.
-		 */
-		const std::string& getFilename();
-
-		// Common methods
-		void play();	
-		void stop();
-		void cycle();				
-};
+// class StreamedSoundSample : public BaseSoundSample
+// {
+// 	private:
+// 		/**
+// 		 * Filename with full path to the data.
+// 		 */
+// 		std::string		mFilename;
+// 
+// 		/**
+// 		 * A pointer to the file specified in mFilename
+// 		 */
+// 		FILE*				mFile;
+// 
+// 		/**
+// 		 * VORBIS Internal Stream 
+// 		 */
+// 		OggVorbis_File mStream;
+// 
+// 		/**
+// 		 * Front and back buffers for openAl
+// 		 */
+// 		ALuint			mBuffers[2];
+// 
+// 		/**
+// 		 * Format of the stream (checked from ogg/vorbis)
+// 		 */
+// 		ALenum			mFormat;
+// 
+// 		/**
+// 		 * Rate of the stream (checked from ogg/vorbis)
+// 		 */
+// 		ALuint			mRate;
+// 
+// 		/**
+// 		 * If this stream is playing
+// 		 */
+// 		bool				mPlaying;
+// 
+// 		/**
+// 		 * This function is responsible to fill
+// 		 * buffers from stream data
+// 		 *
+// 		 * @param buffer The destination openAl buffer
+// 		 * @return Status of the streaming
+// 		 */
+// 		bool stream(ALuint buffer);
+// 
+// 	public:
+// 		StreamedSoundSample(const std::string& filename, bool playsLocal, float volume);
+// 		~StreamedSoundSample();
+// 
+// 		/**
+// 		 * Set the file to be used in stream proccess.
+// 		 *
+// 		 * @param ptr A pointer to the file.
+// 		 * @param filename The file name with full path.
+// 		 */
+// 		void setFile(FILE* ptr, const std::string& filename);
+// 
+// 		/**
+// 		 * Set stream format
+// 		 */
+// 		void setFormat(ALenum fmt);
+// 
+// 		/**
+// 		 * Set stream rate
+// 		 */
+// 		void setRate(ALuint rate);
+// 
+// 		/**
+// 		 * Set the stream status (if playing or not)
+// 		 */
+// 		void setPlaying(bool play);
+// 
+// 		/**
+// 		 * Returns a pointer to the buffers array
+// 		 */
+// 		ALuint*				getBufferPtr();
+// 
+// 		/**
+// 		 * Returns a pointer to the stream information (vorbis internals).
+// 		 */
+// 		OggVorbis_File*	getStreamPtr();
+// 
+// 		/**
+// 		 * Return the state of the stream.
+// 		 */
+// 		bool					isPlaying();
+// 
+// 		/**
+// 		 * Return the number of buffers in this stream. In this case this is 2.
+// 		 */
+// 		unsigned int		getNumberOfBuffers();
+// 
+// 		/**
+// 		 * Return the full filename of the stream file.
+// 		 */
+// 		const std::string& getFilename();
+// 
+// 		// Common methods
+// 		void play();	
+// 		void stop();
+// 		void cycle();				
+// };
 
 } // namespace Ember
 

@@ -34,6 +34,7 @@
 
 #include "SoundService.h"
 #include "SoundEntity.h"
+#include "SoundInstance.h"
 
 namespace Ember
 {
@@ -41,8 +42,11 @@ namespace Ember
 	SoundService::SoundService()
 	
 	#ifdef WIN32
-	 : mContext(0), mDevice(0)
+	 : mContext(0), mDevice(0), mResourceProvider(0)
+	#else
+	 : mResourceProvider(0)
 	#endif
+	
 	{
 		setName("Sound Service");
 		setDescription("Service for reproduction of sound effects and background music");
@@ -134,47 +138,21 @@ namespace Ember
 	/* Interface method for stopping this service */
 	void SoundService::stop(int code)
 	{
-		#ifndef __WIN32__
-			alutExit();
-		#else
-			alcMakeContextCurrent(NULL);
-			alcDestroyContext(mContext);
-			alcCloseDevice(mDevice);
-		#endif
+	
+	///this hangs, perhaps because we don't clean up properly after us, so we'll deactivate it for now
+// 		#ifndef __WIN32__
+// 			alutExit();
+// 		#else
+// 			alcMakeContextCurrent(NULL);
+// 			alcDestroyContext(mContext);
+// 			alcCloseDevice(mDevice);
+// 		#endif
     	Service::stop(code);
 		setStatus(Service::OK);
 	}
 
 	void SoundService::runCommand(const std::string &command, const std::string &args)
 	{
-		/*
-		if (command == "alloc")
-		{
-			Ember::Tokeniser tokeniser;
-			tokeniser.initTokens(args);
-
-			std::string filename = tokeniser.nextToken();
-			create(filename);
-		}
-		else
-		if (command == "play")
-		{
-			Ember::Tokeniser tokeniser;
-			tokeniser.initTokens(args);
-
-			std::string filename = tokeniser.nextToken();
-			playSound(filename);
-		}
-		else
-		if (command == "dealloc")
-		{
-			Ember::Tokeniser tokeniser;
-			tokeniser.initTokens(args);
-
-			std::string filename = tokeniser.nextToken();
-			unRegisterSound(filename);
-		}
-		*/
 	}
 
 	void SoundService::registerSoundGroup(SoundGroup* copy)
@@ -269,28 +247,68 @@ namespace Ember
 		
 	void SoundService::cycle()
 	{
-		// Groups
-		std::list<SoundGroup*>::const_iterator git = mGroups.begin();
-		for (; git != mGroups.end(); git++)
-		{
-			SoundGroup* group = (*git);
-			if (group)
-			{
-				group->update();
-			}
-		}
-
-		// Streams
-		std::list<StreamedSoundSample*>::const_iterator it = mSamples.begin();
-		for (; it != mSamples.end(); it++)
-		{
-			StreamedSoundSample* sample = (*it);
-			if (sample && sample->isPlaying())
-			{
-				sample->cycle();
-			}
-		}
+// 		// Groups
+// 		std::list<SoundGroup*>::const_iterator git = mGroups.begin();
+// 		for (; git != mGroups.end(); git++)
+// 		{
+// 			SoundGroup* group = (*git);
+// 			if (group)
+// 			{
+// 				group->update();
+// 			}
+// 		}
+// 
+// 		// Streams
+// 		std::list<StreamedSoundSample*>::const_iterator it = mSamples.begin();
+// 		for (; it != mSamples.end(); it++)
+// 		{
+// 			StreamedSoundSample* sample = (*it);
+// 			if (sample && sample->isPlaying())
+// 			{
+// 				sample->cycle();
+// 			}
+// 		}
 	}
+	
+BaseSoundSample* SoundService::createOrRetrieveSoundSample(const std::string& soundPath)
+{
+	SoundSampleStore::iterator I = mBaseSamples.find(soundPath);
+	if (I != mBaseSamples.end()) {
+		return I->second;
+	}
+	
+}
+
+bool SoundService::destroySoundSample(BaseSoundSample* soundSample)
+{
+}
+	
+	
+SoundInstance* SoundService::createInstance()
+{
+	SoundInstance* instance = new SoundInstance();
+	mInstances.push_back(instance);
+	return instance;
+}
+bool SoundService::destroyInstance(SoundInstance* instance)
+{
+	SoundInstanceStore::iterator I = std::find(mInstances.begin(), mInstances.end(), instance);
+	if (I != mInstances.end()) {
+		mInstances.erase(I);
+		return true;
+	}
+	return false;
+}
+	
+Ember::IResourceProvider* SoundService::getResourceProvider()
+{
+	return mResourceProvider;
+}
+	
+void SoundService::setResourceProvider(Ember::IResourceProvider* resourceProvider)
+{
+	mResourceProvider = resourceProvider;
+}	
 
 } // namespace Ember
 

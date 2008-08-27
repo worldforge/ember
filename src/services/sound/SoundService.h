@@ -29,6 +29,10 @@ class ISoundProvider;
 
 namespace Ember {
 
+class IResourceProvider;
+class StreamedSoundSample;
+class SoundInstance;
+
 /**
  * Ember Sound Service
  *
@@ -39,6 +43,9 @@ namespace Ember {
  */
 class SoundService: public Service, public ConsoleObject
 {
+
+	typedef std::vector<SoundInstance*> SoundInstanceStore;
+	typedef std::map<std::string, BaseSoundSample*> SoundSampleStore;
 	friend class IScriptingProvider;
 
 	private:
@@ -47,6 +54,8 @@ class SoundService: public Service, public ConsoleObject
 		 * That way, we can cycle and update the streamed ones.
 		 */
 		std::list<StreamedSoundSample*> mSamples;
+		
+		SoundSampleStore mBaseSamples;
 
 		/**
 		 * Keep a list of the sound groups we are allocating.
@@ -75,7 +84,9 @@ class SoundService: public Service, public ConsoleObject
 			ALCdevice *mDevice;
 		#endif
 		
+		SoundInstanceStore mInstances;
 
+	IResourceProvider* mResourceProvider;
 	public:
 		/**
 		 * Constructor
@@ -97,6 +108,11 @@ class SoundService: public Service, public ConsoleObject
 		 * From console you can call functions to the Sound Service
 		 */
 		void runCommand(const std::string &command, const std::string &args);
+		
+		
+		BaseSoundSample* createOrRetrieveSoundSample(const std::string& soundPath);
+		
+		bool destroySoundSample(BaseSoundSample* soundSample);
 
 		/**
 		 * Register a new SoundModel used to define soundgroups
@@ -164,6 +180,15 @@ class SoundService: public Service, public ConsoleObject
 		 * Streaming update
 		 */
 		void cycle();
+		
+		
+		SoundInstance* createInstance();
+		bool destroyInstance(SoundInstance* instance);
+		
+	IResourceProvider* getResourceProvider();
+	
+	void setResourceProvider(Ember::IResourceProvider* resourceProvider);
+		
 
 }; //SoundService
 
