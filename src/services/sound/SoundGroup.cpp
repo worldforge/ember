@@ -38,9 +38,36 @@
 
 #include "SoundService.h"
 #include "SoundGroup.h"
+#include "SoundInstance.h"
+#include "SoundSource.h"
 
 namespace Ember
 {
+
+SoundGroupBinding::SoundGroupBinding(SoundSource& source, SoundGroup& soundGroup)
+: SoundBinding(source), mSoundGroup(soundGroup)
+{
+	const SoundGroup::SampleStore& samples = mSoundGroup.getSamples();
+	ALuint buffers[samples.size()];
+	int i = 0;
+	///get the buffers and bind the source to them
+	for (SoundGroup::SampleStore::const_iterator I = samples.begin(); I != samples.end(); ++I) 
+	{
+		BaseSoundSample::BufferStore sampleBuffers = (*I)->getBuffers();
+		buffers[i] = *(sampleBuffers.begin());
+		++i;
+	}
+	alSourceQueueBuffers(source.getALSource(), i, buffers);
+// 	alSourcei(source.getALSource(), AL_BUFFER, sample.getBuffer());
+
+}
+
+SoundGroupBinding::~SoundGroupBinding()
+{
+}
+
+
+
 	SoundGroup::SoundGroup()
 	{
 		mSamples.clear();
@@ -64,67 +91,10 @@ namespace Ember
 		EmberServices::getSingleton().getSoundService()->unregisterSoundGroup(this);
 	}
 
-	void SoundGroup::createBuffer(SoundModel* model)
-	{	
-		if (!model)
-		{
-			S_LOG_FAILURE("Invalid pointer to SoundModel.");
-			return;
-		}
-
-		if (model->getFormat() == SAMPLE_WAV || model->getFormat() == SAMPLE_PCM)
-		{
-			StaticSoundSample* newStatic = new StaticSoundSample(model->getFilename(), 
-					model->getPlayLocally(), model->getVolume());
-
-			if (!newStatic)
-			{
-				S_LOG_FAILURE("Failled to allocate static sample " + model->getFilename());
-				return;
-			}
-
-			mSamples.push_back(newStatic);
-		}
-		else
-// 		if (model->getFormat() == SAMPLE_OGG)
-// 		{
-// 			StreamedSoundSample* newStream = new StreamedSoundSample(model->getFilename(), 
-// 					model->getPlayLocally(), model->getVolume());
-// 
-// 			if (!newStream)
-// 			{
-// 				S_LOG_FAILURE("Failled to allocate streamed sample " + model->getFilename());
-// 				return;
-// 			}
-// 
-// 			mSamples.push_back(newStream);
-// 		}
-
-		S_LOG_INFO("Successfully allocated sample " + model->getFilename());
-	}
-
-	void SoundGroup::updateSamplesPosition(const WFMath::Point<3> &pos)
-	{
-// 		std::list<BaseSoundSample*>::iterator it = mSamples.begin();
-// 		for (it; it != mSamples.end(); it++)
-// 		{
-// 			(*it)->setPosition(pos);
-// 		}
-	}
-
-	void SoundGroup::updateSamplesVelocity(const WFMath::Vector<3> &vel)
-	{
-// 		std::list<BaseSoundSample*>::iterator it = mSamples.begin();
-// 		for (it; it != mSamples.end(); it++)
-// 		{
-// 			(*it)->setVelocity(vel);
-// 		}
-	}
-
-	void SoundGroup::setFrequency(const unsigned int freq)
-	{
-		mFrequency = freq;
-	}
+// 	void SoundGroup::setFrequency(const unsigned int freq)
+// 	{
+// 		mFrequency = freq;
+// 	}
 
 	void SoundGroup::setPlayOrder(const unsigned int playO)
 	{
@@ -179,57 +149,38 @@ namespace Ember
 		return (end.tv_sec-start.tv_sec)*1000+(end.tv_usec-start.tv_usec)/1000;
 	}
 
-	void SoundGroup::update()
+// 	void SoundGroup::update()
+// 	{
+// 		if (getTime() >= 1000.0f/mFrequency)
+// 		{
+// 			play();
+// 			resetClock();
+// 		}
+// 	}
+	
+	void SoundGroup::addSound(SoundDefinition* soundDef)
 	{
-		if (getTime() >= 1000.0f/mFrequency)
+		BaseSoundSample* soundSample = EmberServices::getSingleton().getSoundService()->createOrRetrieveSoundSample(soundDef->getFilename());
+		if (soundSample)
 		{
-			play();
-			resetClock();
+			mSamples.push_back(soundSample);
 		}
-	}
-
-	void SoundGroup::play()
-	{
-// 		unsigned int index = 0;
-// 
-// 		std::list<BaseSoundSample*>::iterator it = mSamples.begin();
-// 		for (it; it != mSamples.end(); it++)
-// 		{
-// 			if (index == mNextToPlay)
-// 			{
-// 				if (mLastPlayed)
-// 				{
-// 					mLastPlayed->stop();
-// 				}
-// 
-// 				(*it)->play();
-// 				mLastPlayed = dynamic_cast<BaseSoundSample*>(*it);
-// 				mIsPlaying = true;
-// 				resetClock();
-// 
-// 				break;
-// 			}
-// 
-// 			index++;
-// 		}
-	}
-
-	void SoundGroup::stop()
-	{
-// 		if (mLastPlayed)
-// 		{
-// 			// Should be the active buffer
-// 			mLastPlayed->stop();
-// 			mIsPlaying = false;
-// 		}
 	}
 	
-	void SoundGroup::pushSample(BaseSoundSample* sample)
+	bool SoundGroup::bindToInstance(SoundInstance* instance)
 	{
-		if (sample)
-		{
-			mSamples.push_back(sample);
-		}
+		SoundGroupBinding* binding = new SoundGroupBinding(instance->getSource(), *this);
+		instance->bind(binding);
+		return true;
 	}
+	
+	
+	
+	const SoundGroup::SampleStore& SoundGroup::getSamples() const
+	{
+		return mSamples;
+	}
+	
+
 } // namespace Ember
 

@@ -86,15 +86,15 @@ namespace Ember
 		checkAlError();
 		
 		mSamples.clear();
-		mSoundGroupModels.clear();
+		mSoundGroupDefinitions.clear();
 
 		return Service::OK;
 	}
 		
-	SoundGroupModel* SoundService::getSoundGroupModel(const std::string& name)
+	SoundGroupDefinition* SoundService::getSoundGroupDefinition(const std::string& name)
 	{
-		std::map<std::string, SoundGroupModel*>::iterator it(mSoundGroupModels.find(name));
-		if (it != mSoundGroupModels.end())
+		std::map<std::string, SoundGroupDefinition*>::iterator it(mSoundGroupDefinitions.find(name));
+		if (it != mSoundGroupDefinitions.end())
 		{
 			return it->second;
 		}
@@ -102,19 +102,19 @@ namespace Ember
 		return NULL;
 	}
 
-	SoundGroupModel* SoundService::createSoundGroupModel(const std::string& name)
+	SoundGroupDefinition* SoundService::createSoundGroupDefinition(const std::string& name)
 	{
-		SoundGroupModel* newModel = getSoundGroupModel(name);
+		SoundGroupDefinition* newModel = getSoundGroupDefinition(name);
 		if (!newModel)
 		{
-			newModel = new SoundGroupModel();
+			newModel = new SoundGroupDefinition();
 			if (newModel)
 			{
 				#ifdef THREAD_SAFE
 				pthread_mutex_lock(&mGroupModelsMutex);
 				#endif
 
-				mSoundGroupModels[name] = newModel;
+				mSoundGroupDefinitions[name] = newModel;
 
 				#ifdef THREAD_SAFE
 				pthread_mutex_unlock(&mGroupModelsMutex);
@@ -276,11 +276,25 @@ BaseSoundSample* SoundService::createOrRetrieveSoundSample(const std::string& so
 	if (I != mBaseSamples.end()) {
 		return I->second;
 	}
+	if (mResourceProvider) {
+		ResourceWrapper resWrapper = mResourceProvider->getResource(soundPath);
+		StaticSoundSample* sample = new StaticSoundSample(resWrapper, false, 1.0);
+		mBaseSamples.insert(SoundSampleStore::value_type(soundPath, sample));
+		return sample;
+	}
+	return 0;
 	
 }
 
-bool SoundService::destroySoundSample(BaseSoundSample* soundSample)
+bool SoundService::destroySoundSample(const std::string& soundPath)
 {
+	SoundSampleStore::iterator I = mBaseSamples.find(soundPath);
+	if (I != mBaseSamples.end()) {
+		delete I->second;
+		mBaseSamples.erase(I);
+		return true;
+	}
+	return false;
 }
 	
 	

@@ -24,10 +24,10 @@
 namespace Ember 
 {
 	/**
-	 * The SoundModel class represent each buffer described inside
+	 * The SoundDefinition class represent each buffer described inside
 	 * especific sound groups.
 	 */
-	class SoundModel
+	class SoundDefinition
 	{
 		private:
 			/**
@@ -54,7 +54,7 @@ namespace Ember
 
 		public:
 			/**
-			 * Initialize this SoundModel
+			 * Initialize this SoundDefinition
 			 *
 			 * @param filename The filename (with path) of the sample.
 			 * @param type The Format of the sample (OGG/WAV/PCM)
@@ -65,7 +65,7 @@ namespace Ember
 					bool playLocal, float volume);
 
 			/**
-			 * Return filename with FULL path
+			 * Return filename
 			 */
 			const std::string& getFilename();
 
@@ -86,16 +86,16 @@ namespace Ember
 	};
 
 	/**
-	 * The SoundGroupModel class describes a set
-	 * of sound samples (SoundModels)
+	 * The SoundGroupDefinition class describes a set
+	 * of sound samples (SoundDefinitions)
 	 */
-	class SoundGroupModel
+	class SoundGroupDefinition
 	{
 		private:
-			std::list<SoundModel*> mSamples;
+			std::list<SoundDefinition*> mSamples;
 
 		public:
-			SoundGroupModel();
+			SoundGroupDefinition();
 			
 			/**
 			 * Insert a sound sample into this group definition
@@ -106,12 +106,12 @@ namespace Ember
 			/**
 			 * Return an iterator to the first member of the list
 			 */
-			std::list<SoundModel*>::const_iterator getSamplesBegin();
+			std::list<SoundDefinition*>::const_iterator getSamplesBegin();
 
 			/**
 			 * Return an iterator to the last member of the list
 			 */
-			std::list<SoundModel*>::const_iterator getSamplesEnd();
+			std::list<SoundDefinition*>::const_iterator getSamplesEnd();
 	};
 }
 

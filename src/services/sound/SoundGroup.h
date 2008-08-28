@@ -25,12 +25,25 @@
 
 namespace Ember
 {
+class SoundGroup;
+class SoundInstance;
 	enum playOrder
 	{
 		PLAY_LINEAR,
 		PLAY_INVERSE,
 		PLAY_RANDOM
 	};
+	
+class SoundGroupBinding
+: public SoundBinding
+{
+public:
+	SoundGroupBinding(SoundSource& source, SoundGroup& soundGroup);
+	virtual ~SoundGroupBinding();
+	
+protected:
+	SoundGroup& mSoundGroup;
+};
 
 	/**
 	 * The class SoundGroup is responsible to keep
@@ -39,11 +52,13 @@ namespace Ember
 	 */
 	class SoundGroup
 	{
+		public: 
+			typedef std::list<BaseSoundSample*> SampleStore;
 		private:
 			/**
 			 * A list of the Samples allocated within the group
 			 */
-			std::list<BaseSoundSample*> mSamples;
+			SampleStore mSamples;
 			BaseSoundSample* mLastPlayed;
 
 			/**
@@ -100,51 +115,7 @@ namespace Ember
 			 *
 			 * @param model A sound model containing definitions for the sample.
 			 */
-			void createBuffer(SoundModel* model);
-
-			/**
-			 * Update the Sample Position, to better define sounds
-			 * in space.
-			 *
-			 * @param pos The new sample position.
-			 */
-			void updateSamplesPosition(const WFMath::Point<3> &pos);
-
-			/**
-			 * Update the Sample Velocity, to better define sounds
-			 * in space.
-			 *
-			 * @param vel The new sample velocity.
-			 */
-			void updateSamplesVelocity(const WFMath::Vector<3> &vel);
-
-			/**
-			 * Insert a new Sound Sample to group samples list.
-			 *
-			 * @param sample A pointer to the sound sample.
-			 */
-			void pushSample(BaseSoundSample* sample);
-
-			/**
-			 * Return the number of samples allocated
-			 * on this SoundGroup
-			 */
-			unsigned int getBuffersCount();
-
-			/**
-			 * Returns a sound sample from a index.
-			 * 
-			 * @param index An index to buffer, in order from they were allocated
-			 * @return A pointer to the sample, if it doesnt exists, returns NULL
-			 */
-			BaseSoundSample* getBuffer(unsigned int index);
-
-			/**
-			 * Set Group Frequency
-			 *
-			 * @param freq The play frequency in hertz
-			 */
-			void setFrequency(const unsigned int freq);
+			void addSound(SoundDefinition* soundDef);
 
 			/**
 			 * Set the group play order.
@@ -152,21 +123,10 @@ namespace Ember
 			 * @param playO The new play order, from playOrder structure.
 			 */
 			void setPlayOrder(const unsigned int playO);
-
-			/**
-			 * Update the timers and buffers within this group
-			 */
-			void update();
-
-			/**
-			 * Play the next buffer defined on mNextToPlay.
-			 */
-			void play();
-
-			/**
-			 * Stop all playing buffers on this group
-			 */
-			void stop();
+			
+			bool bindToInstance(SoundInstance* instance);
+			
+			const SampleStore& getSamples() const;
 	};
 }
 

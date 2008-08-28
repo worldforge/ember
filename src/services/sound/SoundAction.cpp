@@ -30,6 +30,7 @@
 #include "SoundModel.h"
 #include "SoundAction.h"
 #include "SoundGroup.h"
+#include "SoundInstance.h"
 
 #include <map>
 #include <cstring>
@@ -38,70 +39,57 @@
 namespace Ember
 {
 	SoundAction::SoundAction()
+	: mGroup(0), mInstance(0)
 	{
-		mGroups.clear();
-		mGroupsSeed = 0;
 	}
 
-	SoundGroup* SoundAction::getGroup(const std::string& name)
+	SoundGroup* SoundAction::getGroup()
 	{
-		std::map<std::string, SoundGroup*>::iterator it(mGroups.find(name));
-		if (it != mGroups.end())
-		{
-			return (*it).second;
+		return mGroup;
+	}
+
+	SoundGroup* SoundAction::setGroup(const std::string& name)
+	{
+		if (!mGroup) {
+			return 0;
 		}
-
-		return NULL;
-	}
-
-	SoundGroup* SoundAction::createGroup(const std::string& name)
-	{
-		SoundGroupModel* groupModel = EmberServices::getSingleton()
-			.getSoundService()->getSoundGroupModel(name);
+	
+		SoundGroupDefinition* groupModel = EmberServices::getSingleton().getSoundService()->getSoundGroupDefinition(name);
 
 		if (!groupModel)
 		{
-			S_LOG_FAILURE("A template to the group " + name + " could not be found.");
+			S_LOG_FAILURE("A template to the group " << name << " could not be found.");
 			return NULL;
 		}
 
 		SoundGroup* newGroup = new SoundGroup();
-		if (!newGroup)
-		{
-			S_LOG_FAILURE("Failed to register Sound Group " + name);
-			return NULL;
-		}
 
-		std::list<SoundModel*>::const_iterator beg = groupModel->getSamplesBegin();
-		std::list<SoundModel*>::const_iterator end = groupModel->getSamplesEnd();
+		std::list<SoundDefinition*>::const_iterator beg = groupModel->getSamplesBegin();
+		std::list<SoundDefinition*>::const_iterator end = groupModel->getSamplesEnd();
 		for (beg; beg != end; beg++)
 		{
 			// Register Individual samples
-			SoundModel* thisModel = (*beg);
-			newGroup->createBuffer(thisModel);
+			SoundDefinition* thisModel = *beg;
+			newGroup->addSound(thisModel);
 		}
 
-		mGroups[name] = newGroup;
+		mGroup = newGroup;
 		return newGroup;
 	}
 
 	void SoundAction::play()
 	{
-		std::map<std::string, SoundGroup*>::iterator it;
-		for (it = mGroups.begin(); it != mGroups.end(); it++)
-		{
-			SoundGroup* group = it->second;
-			group->play();
+		if (!mInstance && mGroup) {
+			mInstance = EmberServices::getSingleton().getSoundService()->createInstance();
+			mGroup->bindToInstance(mInstance);
+			mInstance->play();
 		}
 	}
 
 	void SoundAction::stop()
 	{
-		std::map<std::string, SoundGroup*>::iterator it;
-		for (it = mGroups.begin(); it != mGroups.end(); it++)
-		{
-			SoundGroup* group = it->second;
-			group->stop();
+		if (mInstance) {
+			mInstance->stop();
 		}
 	}
 }

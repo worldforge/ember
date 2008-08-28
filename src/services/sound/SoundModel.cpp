@@ -22,15 +22,15 @@
 
 namespace Ember
 {
-	SoundGroupModel::SoundGroupModel()
+	SoundGroupDefinition::SoundGroupDefinition()
 	{
 		mSamples.clear();
 	}
 
-	void SoundGroupModel::insertSample(const std::string& name, SoundSampleType type, 
+	void SoundGroupDefinition::insertSample(const std::string& name, SoundSampleType type, 
 					bool playsLocally, float volume)
 	{
-		SoundModel* newModel = new SoundModel();
+		SoundDefinition* newModel = new SoundDefinition();
 		if (newModel)
 		{
 			newModel->setup(name, type, playsLocally, volume);
@@ -44,17 +44,17 @@ namespace Ember
 		}
 	}
 			
-	std::list<SoundModel*>::const_iterator SoundGroupModel::getSamplesBegin()
+	std::list<SoundDefinition*>::const_iterator SoundGroupDefinition::getSamplesBegin()
 	{
 		return mSamples.begin();
 	}
 
-	std::list<SoundModel*>::const_iterator SoundGroupModel::getSamplesEnd()
+	std::list<SoundDefinition*>::const_iterator SoundGroupDefinition::getSamplesEnd()
 	{
 		return mSamples.end();
 	}
 
-	void SoundModel::setup(const std::string& filename, SoundSampleType type, 
+	void SoundDefinition::setup(const std::string& filename, SoundSampleType type, 
 			bool playLocal, float volume) 
 	{
 		mFilename = filename;
@@ -63,22 +63,22 @@ namespace Ember
 		mVolume = volume;
 	}
 
-	const std::string& SoundModel::getFilename()
+	const std::string& SoundDefinition::getFilename()
 	{
 		return mFilename;
 	}
 
-	SoundSampleType SoundModel::getFormat()
+	SoundSampleType SoundDefinition::getFormat()
 	{
 		return mSampleType;
 	}
 
-	bool SoundModel::getPlayLocally()
+	bool SoundDefinition::getPlayLocally()
 	{
 		return mPlaysLocally;
 	}
 
-	float SoundModel::getVolume()
+	float SoundDefinition::getVolume()
 	{
 		return mVolume;
 	}

@@ -40,17 +40,17 @@
 namespace Ember
 {
 
-SoundSampleBinder::SoundSampleBinder(SoundSource& source)
+SoundBinding::SoundBinding(SoundSource& source)
 : mSource(source)
 {
 }
 
-SoundSampleBinder::~SoundSampleBinder()
+SoundBinding::~SoundBinding()
 {
 }
 
-StaticSoundSampleBinder::StaticSoundSampleBinder(SoundSource& source, StaticSoundSample& sample)
-: SoundSampleBinder(source)
+StaticSoundBinding::StaticSoundBinding(SoundSource& source, StaticSoundSample& sample)
+: SoundBinding(source)
 , mSample(sample)
 {
 	///Bind it to the buffer.
@@ -89,7 +89,8 @@ StaticSoundSampleBinder::StaticSoundSampleBinder(SoundSource& source, StaticSoun
 // 	}
 
 	// Static Sounds (PCM, WAV)
-	StaticSoundSample::StaticSoundSample(const std::string& filename, bool playsLocal, float volume)
+	StaticSoundSample::StaticSoundSample(ResourceWrapper resource, bool playsLocal, float volume)
+	: mResource(resource)
 	{
 		mType = SAMPLE_WAV;
 
@@ -102,8 +103,9 @@ StaticSoundSampleBinder::StaticSoundSampleBinder(SoundSource& source, StaticSoun
 			S_LOG_FAILURE("Failed to generate a new static sound buffer.");
 			return;
 		}
+			
 
-		mBuffer = alutCreateBufferFromFile(filename.c_str());
+		mBuffer = alutCreateBufferFromFileImage(resource.getDataPtr(), resource.getSize());
 
 // 		if (getBufferPtr() == AL_NONE)
 // 		{
@@ -155,10 +157,18 @@ StaticSoundSampleBinder::StaticSoundSampleBinder(SoundSource& source, StaticSoun
 	{
 		return mBuffer;
 	}
-	
-	SoundSampleBinder* StaticSoundSample::createBinder(SoundSource& source)
+		
+	BaseSoundSample::BufferStore StaticSoundSample::getBuffers()
 	{
-		return new StaticSoundSampleBinder(source, *this);
+		BaseSoundSample::BufferStore buffers;
+		buffers.push_back(mBuffer);
+		return buffers;
+	}
+	
+	
+	SoundBinding* StaticSoundSample::createBinding(SoundSource& source)
+	{
+		return new StaticSoundBinding(source, *this);
 	}
 
 // 	ALuint* StaticSoundSample::getBufferPtr()

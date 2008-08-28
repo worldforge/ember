@@ -31,22 +31,22 @@
 namespace Ember {
 
 SoundInstance::SoundInstance()
-: mSource(new SoundSource()), mBinder(0)
+: mSource(new SoundSource()), mBinding(0)
 {
 }
 
 
 SoundInstance::~SoundInstance()
 {
-	delete mBinder;
+	delete mBinding;
 }
 
-void SoundInstance::bind(SoundSampleBinder* binder)
+void SoundInstance::bind(SoundBinding* binding)
 {
-	if (mBinder) {
+	if (mBinding) {
 		///TODO: handle calling this when there's already a binder
 	}
-	mBinder = binder;
+	mBinding = binding;
 
 }
 

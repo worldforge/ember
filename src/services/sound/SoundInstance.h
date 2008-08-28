@@ -29,7 +29,7 @@ namespace Ember {
 
 class SoundSource;
 class BaseSoundSample;
-class SoundSampleBinder;
+class SoundBinding;
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
@@ -45,14 +45,14 @@ public:
     
     SoundSource& getSource();
     
-	void bind(SoundSampleBinder* binder);
+	void bind(SoundBinding* binding);
     
 protected:
 
 
 	std::auto_ptr<SoundSource> mSource;
 	
-	SoundSampleBinder* mBinder;
+	SoundBinding* mBinding;
 
 };
 

@@ -20,16 +20,20 @@
 #define SOUND_SAMPLE_H
 
 #include "SoundGeneral.h"
+#include "framework/IResourceProvider.h"
+#include <vector>
 
 namespace Ember
 {
 class SoundSource;
 class StaticSoundSample;
-class SoundSampleBinder
+
+
+class SoundBinding
 {
 public:
-SoundSampleBinder(SoundSource& source);
-virtual ~SoundSampleBinder();
+SoundBinding(SoundSource& source);
+virtual ~SoundBinding();
 
 virtual void update(){};
 
@@ -37,10 +41,10 @@ protected:
 SoundSource& mSource;
 };
 
-class StaticSoundSampleBinder : public SoundSampleBinder
+class StaticSoundBinding : public SoundBinding
 {
 public:
-StaticSoundSampleBinder(SoundSource& source, StaticSoundSample& sample);
+StaticSoundBinding(SoundSource& source, StaticSoundSample& sample);
 
 // virtual void update();
 
@@ -55,6 +59,8 @@ StaticSoundSample& mSample;
  */
 class BaseSoundSample
 {
+	public:
+		typedef std::vector<ALuint> BufferStore;
 	protected:
 		/**
 		 * Type of the sample
@@ -76,10 +82,11 @@ class BaseSoundSample
 
 // 		virtual ALuint* getBufferPtr() = 0;
 		virtual unsigned int getNumberOfBuffers() = 0;
+		virtual BufferStore getBuffers() = 0;
 /*		virtual void play();
 		virtual void stop();*/
 		
-		virtual SoundSampleBinder* createBinder(SoundSource& source) = 0;
+		virtual SoundBinding* createBinding(SoundSource& source) = 0;
 };
 
 /**
@@ -94,9 +101,11 @@ class StaticSoundSample : public BaseSoundSample
 		 * Sample buffer
 		 */
 		ALuint mBuffer;
+		
+		ResourceWrapper mResource;
 	
 	public:
-		StaticSoundSample(const std::string& filename, bool playsLocal, float volume);
+		StaticSoundSample(ResourceWrapper resource, bool playsLocal, float volume);
 		~StaticSoundSample();
 
 		/**
@@ -114,8 +123,9 @@ class StaticSoundSample : public BaseSoundSample
 		 */
 		unsigned int getNumberOfBuffers();
 
-		virtual SoundSampleBinder* createBinder(SoundSource& source);
+		virtual SoundBinding* createBinding(SoundSource& source);
 
+		virtual BaseSoundSample::BufferStore getBuffers();
 		// Common methods
 // 		void play();
 // 		void stop();

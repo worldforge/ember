@@ -67,7 +67,7 @@ class SoundService: public Service, public ConsoleObject
 		 * Thats the list of the sound groups parsed in
 		 * sounddefs
 		 */
-		std::map<std::string, SoundGroupModel*> mSoundGroupModels;
+		std::map<std::string, SoundGroupDefinition*> mSoundGroupDefinitions;
 
 		#ifdef THREAD_SAFE
 		/**
@@ -112,22 +112,22 @@ class SoundService: public Service, public ConsoleObject
 		
 		BaseSoundSample* createOrRetrieveSoundSample(const std::string& soundPath);
 		
-		bool destroySoundSample(BaseSoundSample* soundSample);
+		bool destroySoundSample(const std::string& soundPath);
 
 		/**
-		 * Register a new SoundModel used to define soundgroups
+		 * Register a new SoundDefinition used to define soundgroups
 		 *
-		 * @return A pointer to the new created SoundModel, if it fails, returns NULL
+		 * @return A pointer to the new created SoundDefinition, if it fails, returns NULL
 		 */
-		SoundGroupModel* createSoundGroupModel(const std::string& name);
+		SoundGroupDefinition* createSoundGroupDefinition(const std::string& name);
 
 		/**
-		 * Returns the SoundModel from its name
+		 * Returns the SoundDefinition from its name
 		 *
-		 * @param name The desired SoundModel name
-		 * @return A pointer to the SoundModel or NULL if it can't be found
+		 * @param name The desired SoundDefinition name
+		 * @return A pointer to the SoundDefinition or NULL if it can't be found
 		 */
-		SoundGroupModel* getSoundGroupModel(const std::string& name);
+		SoundGroupDefinition* getSoundGroupDefinition(const std::string& name);
 
 		/**
 		 * Register individual StreamedSamples to keep updated
