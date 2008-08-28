@@ -40,26 +40,28 @@ void XMLSoundDefParser::parseScript(Ogre::DataStreamPtr stream)
 
 	TiXmlElement* rootElem = xmlDoc.RootElement();
 
-	for (TiXmlElement* smElem = rootElem->FirstChildElement();
-            smElem != 0; smElem = smElem->NextSiblingElement())
-	{
-		const char* tmp =  smElem->Attribute("name");
-		if (!tmp)
+	if (rootElem) {
+		for (TiXmlElement* smElem = rootElem->FirstChildElement();
+				smElem != 0; smElem = smElem->NextSiblingElement())
 		{
-			continue;
+			const char* tmp =  smElem->Attribute("name");
+			if (!tmp)
+			{
+				continue;
+			}
+	
+			std::string finalName(tmp);
+	
+			Ember::SoundGroupDefinition* newModel = Ember::EmberServices::getSingleton().getSoundService()->createSoundGroupDefinition(finalName);
+				
+			if (newModel)
+			{
+				S_LOG_INFO("Sound Model " << finalName << " created.");
+	
+				readBuffers(newModel, smElem);
+			}
 		}
-
-		std::string finalName(tmp);
-
-		Ember::SoundGroupDefinition* newModel = Ember::EmberServices::getSingleton().getSoundService()->createSoundGroupDefinition(finalName);
-			
-		if (newModel)
-		{
-			S_LOG_INFO("Sound Model " << finalName << " created.");
-
-			readBuffers(newModel, smElem);
-		}
-	}	
+	}
 }
 
 void XMLSoundDefParser::readBuffers(Ember::SoundGroupDefinition* grp, TiXmlElement* objNode)

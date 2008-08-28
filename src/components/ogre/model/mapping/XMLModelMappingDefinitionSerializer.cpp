@@ -49,101 +49,104 @@ void XMLModelMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocument
 {
 
 	TiXmlElement* rootElem = xmlDocument.RootElement();
+	
+	if (rootElem) {
 
-	for (TiXmlElement* smElem = rootElem->FirstChildElement("modelmapping");
-            smElem != 0; smElem = smElem->NextSiblingElement("modelmapping"))
-    {
-		const char* tmp =  smElem->Attribute("name");
-		if (!tmp) {
-			continue;
-		} else {
-			try {
-				const std::string name(tmp);
-				ModelMappingDefinition* definition = new ModelMappingDefinition();
-				definition->setName(name);
-				TiXmlElement* matchElement = smElem->FirstChildElement();
-				parseMatchElement(*definition, definition->getRoot(), matchElement);
-				mModelMappingManager.addDefinition(definition);
-			} catch (std::exception ex) {
-				//S_LOG_FAILURE(ex.what());
-			} catch (...) {
-				//S_LOG_FAILURE("Error when reading model mapping with name " << name);
-			}
-		}
-				
-	}
-	
-	
-	for (TiXmlElement* smElem = rootElem->FirstChildElement("nomodel");
-            smElem != 0; smElem = smElem->NextSiblingElement("nomodel"))
-    {
-		const char* tmp =  smElem->Attribute("name");
-		if (!tmp) {
-			continue;
-		} else {
-			const std::string name(tmp);
-			try {
-				ModelMappingDefinition* definition = new ModelMappingDefinition();
-				definition->setName(name);
-				definition->getRoot().setType("entitytype");
-				CaseDefinition caseDef;
-				caseDef.setType("entitytypecase");
-				caseDef.getCaseParameters().push_back(CaseDefinition::ParameterEntry("equals", name));
-				ActionDefinition actionDef;
-				actionDef.setType("hide-model");
-				
-				caseDef.getActions().push_back(actionDef);
-				definition->getRoot().getCases().push_back(caseDef);
-			
-				mModelMappingManager.addDefinition(definition);
-			} catch (std::exception ex) {
-				//S_LOG_FAILURE(ex.what());
-			} catch (...) {
-				//S_LOG_FAILURE("Error when reading model mapping with name " << name);
-			}		
-		}
-	}	
-	
-	///Check for automodelmapping elements, which allow for a quick mapping between a entity type and a model.
-	///format: <automodelmapping name="oak">
-	///or: <automodelmapping name="oak" modelname="oak_1">
-	for (TiXmlElement* smElem = rootElem->FirstChildElement("automodelmapping");
-            smElem != 0; smElem = smElem->NextSiblingElement("automodelmapping"))
-    {
-		const char* tmp =  smElem->Attribute("name");
-		if (!tmp) {
-			continue;
-		} else {
-			const std::string name(tmp);
-			try {
-				ModelMappingDefinition* definition = new ModelMappingDefinition();
-				definition->setName(name);
-				definition->getRoot().setType("entitytype");
-				CaseDefinition caseDef;
-				caseDef.setType("entitytypecase");
-				caseDef.getCaseParameters().push_back(CaseDefinition::ParameterEntry("equals", name));
-				ActionDefinition actionDef;
-				actionDef.setType("display-model");
-				
-				///check if a model name is set
-				const char* tmpModelName = smElem->Attribute("modelname");
-				if (tmpModelName) {
-					actionDef.setValue(std::string(tmpModelName));
-				} else {
-					actionDef.setValue(name);
+		for (TiXmlElement* smElem = rootElem->FirstChildElement("modelmapping");
+				smElem != 0; smElem = smElem->NextSiblingElement("modelmapping"))
+		{
+			const char* tmp =  smElem->Attribute("name");
+			if (!tmp) {
+				continue;
+			} else {
+				try {
+					const std::string name(tmp);
+					ModelMappingDefinition* definition = new ModelMappingDefinition();
+					definition->setName(name);
+					TiXmlElement* matchElement = smElem->FirstChildElement();
+					parseMatchElement(*definition, definition->getRoot(), matchElement);
+					mModelMappingManager.addDefinition(definition);
+				} catch (std::exception ex) {
+					//S_LOG_FAILURE(ex.what());
+				} catch (...) {
+					//S_LOG_FAILURE("Error when reading model mapping with name " << name);
 				}
+			}
+					
+		}
+		
+		
+		for (TiXmlElement* smElem = rootElem->FirstChildElement("nomodel");
+				smElem != 0; smElem = smElem->NextSiblingElement("nomodel"))
+		{
+			const char* tmp =  smElem->Attribute("name");
+			if (!tmp) {
+				continue;
+			} else {
+				const std::string name(tmp);
+				try {
+					ModelMappingDefinition* definition = new ModelMappingDefinition();
+					definition->setName(name);
+					definition->getRoot().setType("entitytype");
+					CaseDefinition caseDef;
+					caseDef.setType("entitytypecase");
+					caseDef.getCaseParameters().push_back(CaseDefinition::ParameterEntry("equals", name));
+					ActionDefinition actionDef;
+					actionDef.setType("hide-model");
+					
+					caseDef.getActions().push_back(actionDef);
+					definition->getRoot().getCases().push_back(caseDef);
 				
-				caseDef.getActions().push_back(actionDef);
-				definition->getRoot().getCases().push_back(caseDef);
-			
-				mModelMappingManager.addDefinition(definition);
-			} catch (std::exception ex) {
-				//S_LOG_FAILURE(ex.what());
-			} catch (...) {
-				//S_LOG_FAILURE("Error when reading model mapping with name " << name);
+					mModelMappingManager.addDefinition(definition);
+				} catch (std::exception ex) {
+					//S_LOG_FAILURE(ex.what());
+				} catch (...) {
+					//S_LOG_FAILURE("Error when reading model mapping with name " << name);
+				}		
+			}
+		}	
+		
+		///Check for automodelmapping elements, which allow for a quick mapping between a entity type and a model.
+		///format: <automodelmapping name="oak">
+		///or: <automodelmapping name="oak" modelname="oak_1">
+		for (TiXmlElement* smElem = rootElem->FirstChildElement("automodelmapping");
+				smElem != 0; smElem = smElem->NextSiblingElement("automodelmapping"))
+		{
+			const char* tmp =  smElem->Attribute("name");
+			if (!tmp) {
+				continue;
+			} else {
+				const std::string name(tmp);
+				try {
+					ModelMappingDefinition* definition = new ModelMappingDefinition();
+					definition->setName(name);
+					definition->getRoot().setType("entitytype");
+					CaseDefinition caseDef;
+					caseDef.setType("entitytypecase");
+					caseDef.getCaseParameters().push_back(CaseDefinition::ParameterEntry("equals", name));
+					ActionDefinition actionDef;
+					actionDef.setType("display-model");
+					
+					///check if a model name is set
+					const char* tmpModelName = smElem->Attribute("modelname");
+					if (tmpModelName) {
+						actionDef.setValue(std::string(tmpModelName));
+					} else {
+						actionDef.setValue(name);
+					}
+					
+					caseDef.getActions().push_back(actionDef);
+					definition->getRoot().getCases().push_back(caseDef);
+				
+					mModelMappingManager.addDefinition(definition);
+				} catch (std::exception ex) {
+					//S_LOG_FAILURE(ex.what());
+				} catch (...) {
+					//S_LOG_FAILURE("Error when reading model mapping with name " << name);
+				}
 			}
 		}
-	}	
+	}
 }
 
 void XMLModelMappingDefinitionSerializer::parseMatchElement(ModelMappingDefinition& definition, MatchDefinition& matchDef, TiXmlElement* element)

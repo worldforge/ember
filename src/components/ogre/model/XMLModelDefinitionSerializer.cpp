@@ -72,31 +72,33 @@ void XMLModelDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, cons
 	}
 
 	TiXmlElement* rootElem = xmlDoc.RootElement();
+	if (rootElem) {
 
-	for (TiXmlElement* smElem = rootElem->FirstChildElement();
-            smElem != 0; smElem = smElem->NextSiblingElement())
-    {
-		const char* tmp =  smElem->Attribute("name");
-		std::string name;
-		if (!tmp) {
-			continue;
-		} else {
-			name = tmp;
-		}
-				
-		try {
-			ModelDefinitionPtr modelDef = ModelDefinitionManager::getSingleton().create(name, groupName);
-			if (!modelDef.isNull()) {
-				readModel(modelDef, smElem);
-				modelDef->setValid(true);
+		for (TiXmlElement* smElem = rootElem->FirstChildElement();
+				smElem != 0; smElem = smElem->NextSiblingElement())
+		{
+			const char* tmp =  smElem->Attribute("name");
+			std::string name;
+			if (!tmp) {
+				continue;
+			} else {
+				name = tmp;
 			}
-		} catch (const Ogre::Exception& ex) {
-			S_LOG_FAILURE(ex.getFullDescription());
-			//std::cerr << ex.getFullDescription();
+					
+			try {
+				ModelDefinitionPtr modelDef = ModelDefinitionManager::getSingleton().create(name, groupName);
+				if (!modelDef.isNull()) {
+					readModel(modelDef, smElem);
+					modelDef->setValid(true);
+				}
+			} catch (const Ogre::Exception& ex) {
+				S_LOG_FAILURE(ex.getFullDescription());
+				//std::cerr << ex.getFullDescription();
+			}
+			
+			//modelDef->_notifyOrigin(context.filename);
 		}
-		
-		//modelDef->_notifyOrigin(context.filename);
-	}	
+	}
 	
 }
 
