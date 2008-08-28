@@ -108,14 +108,12 @@ void XMLSoundDefParser::readBuffer(Ember::SoundGroupDefinition* grp, TiXmlElemen
 	}
 
 	std::string realName(filename);
-	Ogre::FileInfoListPtr files = Ogre::ResourceGroupManager::getSingleton()
-		.findResourceFileInfo("General", realName);
+	Ogre::FileInfoListPtr files = Ogre::ResourceGroupManager::getSingleton().findResourceFileInfo("General", realName);
 
 	Ogre::FileInfoList::iterator I = files->begin();
 	if (I != files->end()) 
 	{
-		grp->insertSample(I->archive->getName() + I->filename, 
-				type, playsReal, soundVolume);
+		grp->insertSample(I->filename, type, playsReal, soundVolume);
 	}
 	else
 	{
