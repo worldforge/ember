@@ -189,6 +189,8 @@ mKeepOnRunning(true),
 mJesus(0),
 mLogObserver(0), 
 mMaterialEditor(0),
+mScriptingResourceProvider(0),
+mSoundResourceProvider(0),
 mCollisionManager(0),
 mCollisionDetectorVisualizer(0),
 mResourceLoader(0)
@@ -740,6 +742,9 @@ void EmberOgre::Application_ServicesInitialized()
 	Ember::EmberServices::getSingleton().getScriptingService()->setResourceProvider(mScriptingResourceProvider.get());
 	///register the lua scripting provider
 	Ember::EmberServices::getSingleton().getScriptingService()->registerScriptingProvider(new LuaScriptingProvider());
+	
+	mSoundResourceProvider = std::auto_ptr<OgreResourceProvider>(new OgreResourceProvider("General"));
+	Ember::EmberServices::getSingleton().getSoundService()->setResourceProvider(mSoundResourceProvider.get());
 	
 }
 

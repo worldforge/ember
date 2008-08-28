@@ -447,6 +447,7 @@ protected:
 	void Application_ServicesInitialized();
 	
 	std::auto_ptr<OgreResourceProvider> mScriptingResourceProvider;
+	std::auto_ptr<OgreResourceProvider> mSoundResourceProvider;
 	
 	OgreOpcode::CollisionManager* mCollisionManager;
 	
