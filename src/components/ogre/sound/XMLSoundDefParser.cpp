@@ -51,20 +51,18 @@ void XMLSoundDefParser::parseScript(Ogre::DataStreamPtr stream)
 
 		std::string finalName(tmp);
 
-		Ember::SoundGroupModel* newModel = Ember::EmberServices::getSingleton()
-			.getSoundService()->createSoundGroupModel(finalName);
+		Ember::SoundGroupDefinition* newModel = Ember::EmberServices::getSingleton().getSoundService()->createSoundGroupDefinition(finalName);
 			
 		if (newModel)
 		{
-			S_LOG_INFO(std::string("Sound Model ") + finalName
-					+ std::string(" created."));
+			S_LOG_INFO("Sound Model " << finalName << " created.");
 
 			readBuffers(newModel, smElem);
 		}
 	}	
 }
 
-void XMLSoundDefParser::readBuffers(Ember::SoundGroupModel* grp, TiXmlElement* objNode)
+void XMLSoundDefParser::readBuffers(Ember::SoundGroupDefinition* grp, TiXmlElement* objNode)
 {
 	for (TiXmlElement* smElem = objNode->FirstChildElement();
             smElem != 0; smElem = smElem->NextSiblingElement())
@@ -73,7 +71,7 @@ void XMLSoundDefParser::readBuffers(Ember::SoundGroupModel* grp, TiXmlElement* o
 	}
 }
 
-void XMLSoundDefParser::readBuffer(Ember::SoundGroupModel* grp, TiXmlElement* objNode)
+void XMLSoundDefParser::readBuffer(Ember::SoundGroupDefinition* grp, TiXmlElement* objNode)
 {
 	const char* filename = objNode->Attribute("filename");
 	const char* format = objNode->Attribute("format");
@@ -119,8 +117,7 @@ void XMLSoundDefParser::readBuffer(Ember::SoundGroupModel* grp, TiXmlElement* ob
 	}
 	else
 	{
-		S_LOG_FAILURE("Failed to find buffer " + realName +
-				", invalid file directory or name.");
+		S_LOG_FAILURE("Failed to find buffer " << realName << ", invalid file directory or name.");
 	}
 }
 }

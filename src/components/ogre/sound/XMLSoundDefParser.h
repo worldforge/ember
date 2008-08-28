@@ -37,8 +37,8 @@ public :
 
 private:
 
-	void readBuffers(Ember::SoundGroupModel* act, TiXmlElement* objNode);
-	void readBuffer(Ember::SoundGroupModel* act, TiXmlElement* objNode);
+	void readBuffers(Ember::SoundGroupDefinition* act, TiXmlElement* objNode);
+	void readBuffer(Ember::SoundGroupDefinition* act, TiXmlElement* objNode);
 };
 
 }
