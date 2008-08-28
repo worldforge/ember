@@ -71,7 +71,7 @@ OgreResourceProvider::~OgreResourceProvider()
 Ember::ResourceWrapper OgreResourceProvider::getResource(const std::string& name)
 {
 	Ogre::DataStreamPtr input =
-		Ogre::ResourceGroupManager::getSingleton().openResource(name.c_str(), mGroupName.c_str());
+		Ogre::ResourceGroupManager::getSingleton().openResource(name, mGroupName);
 	
 	if (input.isNull())
 	{
