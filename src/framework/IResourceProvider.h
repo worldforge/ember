@@ -21,6 +21,9 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
+#ifndef EMBERIRESOURCEWRAPPER_H
+#define EMBERIRESOURCEWRAPPER_H
+
 #include <memory>
 
 namespace Ember {
@@ -101,3 +104,4 @@ size_t ResourceWrapper::getSize() { return mInternalWrapper->getSize();}
 const std::string& ResourceWrapper::getName() {return mName;}
 
 }
+#endif //EMBERIRESOURCEWRAPPER_H
