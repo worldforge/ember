@@ -85,6 +85,7 @@ mSoundEntity(0)
 
 EmberPhysicalEntity::~EmberPhysicalEntity()
 {
+	delete mSoundEntity;
 	delete mModelMapping;
 
 	if (mModel) {
@@ -266,14 +267,7 @@ void EmberPhysicalEntity::setSounds()
 		if (needSoundEntity())
 		{
 			mSoundEntity = new Ember::SoundEntity();
-			if (!mSoundEntity)
-			{
-				S_LOG_FAILURE("Failled to create entity " + getType()->getName());
-			}
-		}
-
-		if (mSoundEntity)
-		{
+			
 			const ActionDefinitionsStore& store = mModel->getDefinition()->getActionDefinitions();
 			ActionDefinitionsStore::const_iterator I_b = store.begin();
 			ActionDefinitionsStore::const_iterator I_e = store.end();
@@ -306,10 +300,10 @@ void EmberPhysicalEntity::setSounds()
 						}
 					}
 
-					Ember::SoundGroup* newGroup = newAction->createGroup(sound->groupName);
+					Ember::SoundGroup* newGroup = newAction->setGroup(sound->groupName);
 					if (newGroup)
 					{
-						newGroup->setFrequency(sound->frequency);
+// 						newGroup->setFrequency(sound->frequency);
 						newGroup->setPlayOrder(sound->playOrder);
 						S_LOG_INFO("Sound Group " + sound->groupName
 								+ " registered within entity");
