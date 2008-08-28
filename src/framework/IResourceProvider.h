@@ -59,25 +59,28 @@ A wrapper does not need to contain any data: use the hasData method to check bef
 class ResourceWrapper
 {
 public:
-	ResourceWrapper(const ResourceWrapper& wrapper) : mInternalWrapper(wrapper.mInternalWrapper), mName(wrapper.mName) { }
+	ResourceWrapper(const ResourceWrapper& wrapper) : mInternalWrapper(wrapper.mInternalWrapper), mName(wrapper.mName) 
+	{
+		wrapper.mInternalWrapper.release();
+	}
 	ResourceWrapper(IResourceWrapper* internalWrapper, const std::string& name) : mInternalWrapper(internalWrapper), mName(name) {}
 	
 	/**
 	Gets raw data pointer.
 	*/
-	inline char* getDataPtr();
+	inline char* getDataPtr() const;
 	/**
 	True if the wrapper has data.
 	*/
-	inline bool hasData();
+	inline bool hasData() const;
 	/**
 	Gets the size of the data.
 	*/	
-	inline size_t getSize();
+	inline size_t getSize() const;
 	/**
 	Gets the name of the resource.
 	*/	
-	inline const std::string& getName();
+	inline const std::string& getName() const;
 
 private:
 	mutable std::auto_ptr<IResourceWrapper> mInternalWrapper;
@@ -98,10 +101,10 @@ public:
 	virtual ResourceWrapper getResource(const std::string& name) = 0;
 };
 
-char* ResourceWrapper::getDataPtr() { return mInternalWrapper->getDataPtr();}
-bool ResourceWrapper::hasData() { return mInternalWrapper->hasData();}
-size_t ResourceWrapper::getSize() { return mInternalWrapper->getSize();}
-const std::string& ResourceWrapper::getName() {return mName;}
+char* ResourceWrapper::getDataPtr() const { return mInternalWrapper->getDataPtr();}
+bool ResourceWrapper::hasData() const { return mInternalWrapper->hasData();}
+size_t ResourceWrapper::getSize() const { return mInternalWrapper->getSize();}
+const std::string& ResourceWrapper::getName() const {return mName;}
 
 }
 #endif //EMBERIRESOURCEWRAPPER_H
