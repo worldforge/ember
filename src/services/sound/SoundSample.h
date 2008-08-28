@@ -105,7 +105,7 @@ class StaticSoundSample : public BaseSoundSample
 		ResourceWrapper mResource;
 	
 	public:
-		StaticSoundSample(ResourceWrapper resource, bool playsLocal, float volume);
+		StaticSoundSample(const ResourceWrapper& resource, bool playsLocal, float volume);
 		~StaticSoundSample();
 
 		/**

@@ -89,7 +89,7 @@ StaticSoundBinding::StaticSoundBinding(SoundSource& source, StaticSoundSample& s
 // 	}
 
 	// Static Sounds (PCM, WAV)
-	StaticSoundSample::StaticSoundSample(ResourceWrapper resource, bool playsLocal, float volume)
+	StaticSoundSample::StaticSoundSample(const ResourceWrapper& resource, bool playsLocal, float volume)
 	: mResource(resource)
 	{
 		mType = SAMPLE_WAV;
@@ -105,7 +105,7 @@ StaticSoundBinding::StaticSoundBinding(SoundSource& source, StaticSoundSample& s
 		}
 			
 
-		mBuffer = alutCreateBufferFromFileImage(resource.getDataPtr(), resource.getSize());
+		mBuffer = alutCreateBufferFromFileImage(mResource.getDataPtr(), mResource.getSize());
 
 // 		if (getBufferPtr() == AL_NONE)
 // 		{

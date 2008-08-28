@@ -50,7 +50,7 @@ namespace Ember
 
 	SoundGroup* SoundAction::setGroup(const std::string& name)
 	{
-		if (!mGroup) {
+		if (mGroup) {
 			return 0;
 		}
 	
@@ -79,9 +79,11 @@ namespace Ember
 
 	void SoundAction::play()
 	{
-		if (!mInstance && mGroup) {
-			mInstance = EmberServices::getSingleton().getSoundService()->createInstance();
-			mGroup->bindToInstance(mInstance);
+		if (mGroup) {
+			if (!mInstance) {
+				mInstance = EmberServices::getSingleton().getSoundService()->createInstance();
+				mGroup->bindToInstance(mInstance);
+			}
 			mInstance->play();
 		}
 	}
@@ -92,5 +94,11 @@ namespace Ember
 			mInstance->stop();
 		}
 	}
+	
+	SoundInstance* SoundAction::getInstance() const
+	{
+		return mInstance;
+	}
+	
 }
 

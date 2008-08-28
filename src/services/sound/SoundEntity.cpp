@@ -33,13 +33,14 @@
 #include <cstring>
 
 #include "SoundEntity.h"
-
+#include "SoundInstance.h"
+#include "SoundSource.h"
 namespace Ember
 {
 	SoundEntity::SoundEntity()
+	: mActiveAction(0)
 	{
 		mActions.clear();
-		mActiveAction = NULL;
 	}
 
 	SoundEntity::~SoundEntity()
@@ -51,10 +52,8 @@ namespace Ember
 	{
 		if (mPosition != pos)
 		{
-			std::map<std::string, SoundAction*>::iterator it;
-			for (it = mActions.begin(); it != mActions.end(); it++)
-			{
-				// TODO
+			if (mActiveAction) {
+				mActiveAction->getInstance()->getSource().setPosition(pos);
 			}
 
 			mPosition = pos;
@@ -124,15 +123,17 @@ namespace Ember
 			return;
 		}
 
-		if (mActiveAction)
-		{
-			mActiveAction->stop();
+		if (theAction != mActiveAction) {
+			if (mActiveAction)
+			{
+				mActiveAction->stop();
+			}
+	
+			S_LOG_INFO("Playing Sound Action " + name);
+	
+			theAction->play();
+			mActiveAction = theAction;
 		}
-
-		S_LOG_INFO("Playing Sound Action " + name);
-
-		theAction->play();
-		mActiveAction = theAction;
 	}
 
 	void SoundEntity::update()

@@ -74,6 +74,8 @@ namespace Ember
 			 * Stop all groups playing in this action
 			 */
 			void stop();
+			
+			SoundInstance* getInstance() const;
 	};
 }
 

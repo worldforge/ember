@@ -278,9 +278,11 @@ BaseSoundSample* SoundService::createOrRetrieveSoundSample(const std::string& so
 	}
 	if (mResourceProvider) {
 		ResourceWrapper resWrapper = mResourceProvider->getResource(soundPath);
-		StaticSoundSample* sample = new StaticSoundSample(resWrapper, false, 1.0);
-		mBaseSamples.insert(SoundSampleStore::value_type(soundPath, sample));
-		return sample;
+		if (resWrapper.hasData()) {
+			StaticSoundSample* sample = new StaticSoundSample(resWrapper, false, 1.0);
+			mBaseSamples.insert(SoundSampleStore::value_type(soundPath, sample));
+			return sample;
+		}
 	}
 	return 0;
 	
