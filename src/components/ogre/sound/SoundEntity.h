@@ -33,38 +33,6 @@ namespace EmberOgre
 	 */
 	class SoundEntity
 	{
-		private:
-			/**
-			 * Entity Position
-			 */
-			WFMath::Point<3> mPosition;
-
-			/**
-			 * Entity Velocity
-			 */
-			WFMath::Vector<3> mVelocity;
-
-			/**
-			 * List of SoundAction referenced by name. When
-			 * the server sends an action to the client,
-			 * the entity ask the specific action (if it exists)
-			 * to be played.
-			 */
-			std::map<std::string, SoundAction*> mActions;
-
-			/**
-			 * Active Action within this entity.
-			 */
-			SoundAction* mActiveAction;
-
-			/**
-			 * Return a pointer to the action from its name
-			 *
-			 * @param name the Action Name
-			 * @return A pointer to the sound action if it exists, otherwise NULL
-			 */
-			SoundAction* actionExists(const std::string& name);
-
 		public:
 			SoundEntity();
 			~SoundEntity();
@@ -119,6 +87,37 @@ namespace EmberOgre
 			 * streamed (OGG) buffers active in entity.
 			 */
 			void update();
+		private:
+			/**
+			 * Entity Position
+			 */
+			WFMath::Point<3> mPosition;
+
+			/**
+			 * Entity Velocity
+			 */
+			WFMath::Vector<3> mVelocity;
+
+			/**
+			 * List of SoundAction referenced by name. When
+			 * the server sends an action to the client,
+			 * the entity ask the specific action (if it exists)
+			 * to be played.
+			 */
+			std::map<std::string, SoundAction*> mActions;
+
+			/**
+			 * Active Action within this entity.
+			 */
+			SoundAction* mActiveAction;
+
+			/**
+			 * Return a pointer to the action from its name
+			 *
+			 * @param name the Action Name
+			 * @return A pointer to the sound action if it exists, otherwise NULL
+			 */
+			SoundAction* actionExists(const std::string& name);
 	};
 }
 

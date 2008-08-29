@@ -38,16 +38,6 @@ namespace EmberOgre
 	 */
 	class SoundAction
 	{
-		protected:
-			/**
-			 * A list of SoundGroups, referenced by name
-			 */
-// 			std::map<std::string, SoundGroup*> mGroups;
-
-			Ember::SoundGroup* mGroup;
-
-			Ember::SoundInstance* mInstance;
-
 		public:
 			SoundAction();
 
@@ -81,6 +71,16 @@ namespace EmberOgre
 			void stop();
 			
 			Ember::SoundInstance* getInstance() const;
+		protected:
+			/**
+			 * A list of SoundGroups, referenced by name
+			 */
+// 			std::map<std::string, SoundGroup*> mGroups;
+
+			Ember::SoundGroup* mGroup;
+
+			Ember::SoundInstance* mInstance;
+
 	};
 }
 
