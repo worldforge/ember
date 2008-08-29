@@ -235,14 +235,39 @@ namespace Ember
 		return false;
 	}
 
-	void SoundService::updateListenerPosition(const WFMath::Point<3>& pos, 
-			const WFMath::Quaternion& ori)
+	void SoundService::updateListenerPosition(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation)
 	{
 		alListener3f(AL_POSITION, pos.x(), pos.y(), pos.z());
 		checkAlError();
 
+		WFMath::RotMatrix<3> rotMatrix(orientation);
+		WFMath::Vector<3> vectors[3];
+		
+        for (size_t iCol = 0; iCol < 3; iCol++)
+        {
+            vectors[iCol].x() = rotMatrix.elem(0, iCol);
+            vectors[iCol].y() = rotMatrix.elem(1, iCol);
+            vectors[iCol].z() = rotMatrix.elem(2, iCol);
+        }
+        
+        ALfloat aluVectors[6];
+        aluVectors[0] = vectors[1].x();
+        aluVectors[1] = vectors[1].y();
+        aluVectors[2] = vectors[1].z();
+        aluVectors[3] = vectors[2].x();
+        aluVectors[4] = vectors[2].y();
+        aluVectors[5] = vectors[2].z();
+        
+/*        ALfloat aluVectors[6];
+        aluVectors[0] = rotMatrix.elem(0, 1);
+        aluVectors[1] = rotMatrix.elem(1, 1);
+        aluVectors[2] = rotMatrix.elem(2, 1);
+        aluVectors[3] = rotMatrix.elem(0, 2);
+        aluVectors[4] = rotMatrix.elem(1, 2);
+        aluVectors[5] = rotMatrix.elem(2, 2);    */    
+		
 		// TODO: Convert the quaternion to forward/up vectors
-		// alListener3f(AL_ORIENTATION, ListenerOri);
+		alListenerfv(AL_ORIENTATION, aluVectors);
 	}
 		
 	void SoundService::cycle()

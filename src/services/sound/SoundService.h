@@ -172,9 +172,7 @@ class SoundService: public Service, public ConsoleObject
 		 * @param position The new listener position.
 		 * @param orientation The listener orientation.
 		 */
-		void updateListenerPosition(
-		const WFMath::Point<3>& position,
-		const WFMath::Quaternion& orientation);
+		void updateListenerPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation);
 
 		/**
 		 * Streaming update
