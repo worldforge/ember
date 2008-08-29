@@ -868,16 +868,12 @@ void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, Ti
 		{
 			TiXmlElement soundsElem("sounds");
 
-			#define soundDefIter SoundDefinitionsStore::const_iterator 
-			for (soundDefIter J = (*I)->getSoundDefinitions().begin(); 
-					J != (*I)->getSoundDefinitions().end(); ++J) 
-			{
+			for (SoundDefinitionsStore::const_iterator J = (*I)->getSoundDefinitions().begin(); J != (*I)->getSoundDefinitions().end(); ++J) {
 				TiXmlElement soundElem("sound");
 				soundElem.SetAttribute("groupName", (*J)->groupName);
 				soundElem.SetAttribute("playOrder", (*J)->playOrder);
 				soundsElem.InsertEndChild(soundElem);
 			}
-			#undef soundDefIter
 		}
 		actionsElem.InsertEndChild(actionElem);
 	}
