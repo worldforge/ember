@@ -420,14 +420,7 @@ void XMLModelDefinitionSerializer::readSounds(TiXmlElement* mAnimationsNode, Act
 					playOrder = 2;
 			}
 
-			unsigned int frequency = 0;
-			tmp = soundElem->Attribute("frequency");
-			if (tmp)
-			{
-				frequency = atoi(tmp);
-			}
-
-			action->createSoundDefinition(groupName, playOrder, frequency);
+			action->createSoundDefinition(groupName, playOrder);
 			S_LOG_VERBOSE( "  Add Sound: " + groupName);
 		}
 	}
@@ -881,7 +874,6 @@ void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, Ti
 			{
 				TiXmlElement soundElem("sound");
 				soundElem.SetAttribute("groupName", (*J)->groupName);
-				soundElem.SetAttribute("frequency", (*J)->frequency);
 				soundElem.SetAttribute("playOrder", (*J)->playOrder);
 				soundsElem.InsertEndChild(soundElem);
 			}

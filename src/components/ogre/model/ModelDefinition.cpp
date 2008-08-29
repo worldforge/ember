@@ -509,12 +509,10 @@ void ActionDefinition::removeAnimationDefinition(AnimationDefinition* def)
 }
 
 
-SoundDefinition* ActionDefinition::createSoundDefinition(const std::string& groupName, 
-		unsigned int play, unsigned int freq)
+SoundDefinition* ActionDefinition::createSoundDefinition(const std::string& groupName, unsigned int play)
 {
 	SoundDefinition* def = new SoundDefinition();
 	def->groupName = groupName;
-	def->frequency = freq;
 	def->playOrder = play;
 
 	mSounds.push_back(def);

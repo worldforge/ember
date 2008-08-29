@@ -221,7 +221,6 @@ struct SoundDefinition
 {
 	std::string groupName;
 	unsigned int playOrder;
-	unsigned int frequency;
 };
 
 class ActionDefinition
@@ -234,8 +233,7 @@ public:
 	const AnimationDefinitionsStore& getAnimationDefinitions();
 	void removeAnimationDefinition(AnimationDefinition* def);
 
-	SoundDefinition* createSoundDefinition(const std::string& groupName, unsigned int play,
-			unsigned int freq);
+	SoundDefinition* createSoundDefinition(const std::string& groupName, unsigned int play);
 
 	const SoundDefinitionsStore& getSoundDefinitions();
 	void removeSoundDefinition(SoundDefinition* def);
