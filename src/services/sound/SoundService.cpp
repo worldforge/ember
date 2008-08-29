@@ -33,7 +33,6 @@
 #include <cstring>
 
 #include "SoundService.h"
-#include "SoundEntity.h"
 #include "SoundInstance.h"
 
 namespace Ember

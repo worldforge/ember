@@ -25,13 +25,13 @@ class ISoundProvider;
 #include "SoundGeneral.h"
 #include "SoundDefinition.h"
 #include "SoundSample.h" 
-#include "SoundEntity.h"
 
 namespace Ember {
 
 class IResourceProvider;
 class StreamedSoundSample;
 class SoundInstance;
+class SoundGroup;
 
 /**
  * Ember Sound Service

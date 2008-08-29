@@ -53,12 +53,15 @@
 #include "OpcodeCollisionDetector.h"
 #include "MeshCollisionDetector.h"
 
-#include "services/sound/SoundEntity.h"
+#include "sound/SoundEntity.h"
 
 #include <Eris/Entity.h>
 #include <Eris/View.h>
 #include <Eris/TypeInfo.h>
 
+#include "sound/SoundAction.h"
+#include "sound/SoundEntity.h"
+#include "services/sound/SoundGroup.h"
 
 namespace EmberOgre {
 
@@ -266,7 +269,7 @@ void EmberPhysicalEntity::setSounds()
 
 		if (needSoundEntity())
 		{
-			mSoundEntity = new Ember::SoundEntity();
+			mSoundEntity = new SoundEntity();
 			
 			const ActionDefinitionsStore& store = mModel->getDefinition()->getActionDefinitions();
 			ActionDefinitionsStore::const_iterator I_b = store.begin();
@@ -274,7 +277,7 @@ void EmberPhysicalEntity::setSounds()
 			for (; I_b != I_e; ++I_b)
 			{
 				// Should only be valid if contain any sound
-				Ember::SoundAction* newAction = NULL;
+				SoundAction* newAction = NULL;
 
 				// Setup All Sound Actions
 				SoundDefinitionsStore::const_iterator I_sounds = (*I_b)->getSoundDefinitions().begin();

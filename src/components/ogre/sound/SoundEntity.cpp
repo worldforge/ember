@@ -20,6 +20,8 @@
 #include "config.h"
 #endif
 
+#include "SoundEntity.h"
+
 #include "framework/Service.h"
 #include "framework/ConsoleObject.h"
 
@@ -32,10 +34,11 @@
 #include <map>
 #include <cstring>
 
-#include "SoundEntity.h"
-#include "SoundInstance.h"
-#include "SoundSource.h"
-namespace Ember
+#include "services/sound/SoundInstance.h"
+#include "services/sound/SoundSource.h"
+#include "SoundAction.h"
+
+namespace EmberOgre
 {
 	SoundEntity::SoundEntity()
 	: mActiveAction(0)

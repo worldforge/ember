@@ -15,28 +15,29 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
-#include "framework/Service.h"
-#include "framework/ConsoleObject.h"
+#include "SoundAction.h"
+
 
 #include "services/EmberServices.h"
-#include "services/config/ConfigService.h"
 #include "services/logging/LoggingService.h"
-#include "framework/ConsoleBackend.h"
-#include "framework/Tokeniser.h"
 
-#include "SoundService.h"
-#include "SoundGeneral.h"
-#include "SoundDefinition.h"
-#include "SoundAction.h"
-#include "SoundGroup.h"
-#include "SoundInstance.h"
+#include "services/sound/SoundService.h"
+#include "services/sound/SoundGeneral.h"
+#include "services/sound/SoundDefinition.h"
+#include "services/sound/SoundGroup.h"
+#include "services/sound/SoundInstance.h"
 
 #include <map>
 #include <cstring>
 #include <sstream>
 
-namespace Ember
+using namespace Ember;
+
+namespace EmberOgre
 {
 	SoundAction::SoundAction()
 	: mGroup(0), mInstance(0)

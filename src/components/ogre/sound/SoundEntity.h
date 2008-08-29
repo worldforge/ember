@@ -19,11 +19,13 @@
 #ifndef SOUND_ENTITY_H
 #define SOUND_ENTITY_H
 
-#include "SoundGeneral.h"
-#include "SoundAction.h"
+#include <wfmath/vector.h>
+#include <wfmath/point.h>
+#include <map>
 
-namespace Ember
+namespace EmberOgre
 {
+	class SoundAction;
 	/**
 	 * SoundEntity class, usually an instance of this 
 	 * class type (defined by entity name/type) is returned 

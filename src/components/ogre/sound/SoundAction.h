@@ -19,12 +19,17 @@
 #ifndef SOUND_ACTION_H
 #define SOUND_ACTION_H
 
-#include "SoundGeneral.h"
-#include "SoundGroup.h"
+#include <string>
 
 namespace Ember
 {
 	class SoundInstance;
+	class SoundGroup;
+	class SoundInstance;
+}
+
+namespace EmberOgre
+{
 	/**
 	 * SoundAction class is responsible for handling
 	 * actions (defined in modeldef). It contain
@@ -39,9 +44,9 @@ namespace Ember
 			 */
 // 			std::map<std::string, SoundGroup*> mGroups;
 
-			SoundGroup* mGroup;
+			Ember::SoundGroup* mGroup;
 
-			SoundInstance* mInstance;
+			Ember::SoundInstance* mInstance;
 
 		public:
 			SoundAction();
@@ -55,7 +60,7 @@ namespace Ember
 			 * @param name The group name defined in the sounddefs.
 			 * @return A pointer to the group allocated, if it fails, returns NULL
 			 */
-			SoundGroup* setGroup(const std::string& name);
+			Ember::SoundGroup* setGroup(const std::string& name);
 
 			/**
 			 * Return a pointer to a sound group from its name
@@ -63,7 +68,7 @@ namespace Ember
 			 * @param name Group Name
 			 * @return A pointer to the group, if it doesnt exists, returns NULL
 			 */
-			SoundGroup* getGroup();
+			Ember::SoundGroup* getGroup();
 
 			/**
 			 * Play this action groups, usually called from the SoundEntity class
@@ -75,7 +80,7 @@ namespace Ember
 			 */
 			void stop();
 			
-			SoundInstance* getInstance() const;
+			Ember::SoundInstance* getInstance() const;
 	};
 }
 
