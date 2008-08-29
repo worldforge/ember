@@ -21,7 +21,7 @@
 
 #include "SoundGeneral.h"
 #include "SoundSample.h"
-#include "SoundModel.h"
+#include "SoundDefinition.h"
 
 namespace Ember
 {

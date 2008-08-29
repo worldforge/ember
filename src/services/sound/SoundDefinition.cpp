@@ -17,7 +17,7 @@
 */
 
 #include "services/logging/LoggingService.h"
-#include "SoundModel.h"
+#include "SoundDefinition.h"
 #include <string>
 
 namespace Ember

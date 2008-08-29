@@ -27,7 +27,7 @@
 
 #include "SoundService.h"
 #include "SoundGeneral.h"
-#include "SoundModel.h"
+#include "SoundDefinition.h"
 #include "SoundAction.h"
 #include "SoundGroup.h"
 #include "SoundInstance.h"

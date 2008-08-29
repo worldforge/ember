@@ -23,7 +23,7 @@ class Service;
 class ISoundProvider;
 
 #include "SoundGeneral.h"
-#include "SoundModel.h"
+#include "SoundDefinition.h"
 #include "SoundSample.h" 
 #include "SoundEntity.h"
 
