@@ -311,6 +311,15 @@ public:
 	 * This differs from the visibility set by the server, as found in Eris::Entity. The main reason for this is that we sometimes don't want to show all entities, even if the server says they're visible. An example would be items held as inventory by an entity, which we in most cases don't want to show as entitied directly.
 	 */
 	sigc::signal<void, bool> EventClientVisibilityChanged;
+	
+	
+	/**
+	 * @brief Emitted when the movement mode has changed.
+	 * As the entity moves the "movement mode" changes. An entity which isn't moving should in most cases be in the "default" movement mode, whereas a moving one could be in the "walking", "running" or any other mode.
+	 * The parameter sent is the new movement mode.
+	 * This event will be emitted before the actual mode is changed, so you can call getMovementMode() to get the current movement mode, before the new one is in effect.
+	 */
+	sigc::signal<void, MovementMode> EventModeChanged;
 
 protected: 
 

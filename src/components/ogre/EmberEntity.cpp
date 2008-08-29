@@ -597,6 +597,7 @@ void EmberEntity::onModeChanged(MovementMode newMode)
 	if (newMode == MM_FIXED) {
 		adjustPosition();
 	}
+	EventModeChanged.emit(newMode);
 	mMovementMode = newMode;
 }
 
