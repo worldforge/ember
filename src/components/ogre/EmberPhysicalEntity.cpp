@@ -77,9 +77,9 @@ mActiveAction(0),
 mModelAttachedTo(0), 
 mModelMarkedToAttachTo(0),
 mModel(0),
+mSoundEntity(0),
 mScaleNode(0),
-mModelMapping(0),
-mSoundEntity(0)
+mModelMapping(0)
 {
 }
 

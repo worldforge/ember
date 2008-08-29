@@ -22,7 +22,7 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "framework/tinyxml/tinyxml.h"
 
-#include "services/sound/SoundModel.h"
+#include "services/sound/SoundDefinition.h"
 
 #include <iostream>
 #include <sstream>

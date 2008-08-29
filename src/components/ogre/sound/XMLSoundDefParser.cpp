@@ -22,7 +22,7 @@
 #include "XMLSoundDefParser.h"
 
 #include "services/EmberServices.h"
-#include "services/sound/SoundModel.h"
+#include "services/sound/SoundDefinition.h"
 #include "services/sound/SoundService.h"
 #include "components/ogre/XMLHelper.h"
 
