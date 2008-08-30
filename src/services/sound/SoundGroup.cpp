@@ -73,22 +73,10 @@ SoundGroupBinding::~SoundGroupBinding()
 		mSamples.clear();
 		mLastPlayed = NULL;
 		mIsPlaying = false;
-
-		EmberServices::getSingleton().getSoundService()->registerSoundGroup(this);
 	}
 
 	SoundGroup::~SoundGroup()
 	{
-		std::list<BaseSoundSample*>::iterator it = mSamples.begin();
-		for (it; it != mSamples.end(); )
-		{
-			BaseSoundSample* toBeDeleted = (*it);
-			delete toBeDeleted;
-
-			it = mSamples.erase(it);
-		}
-
-		EmberServices::getSingleton().getSoundService()->unregisterSoundGroup(this);
 	}
 
 // 	void SoundGroup::setFrequency(const unsigned int freq)
