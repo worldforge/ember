@@ -20,7 +20,7 @@
 #endif
 
 #include "SoundAction.h"
-
+#include "SoundEntity.h"
 
 #include "services/EmberServices.h"
 #include "services/logging/LoggingService.h"
@@ -30,6 +30,7 @@
 #include "services/sound/SoundDefinition.h"
 #include "services/sound/SoundGroup.h"
 #include "services/sound/SoundInstance.h"
+#include "services/sound/SoundSource.h"
 
 #include <map>
 #include <cstring>
@@ -39,9 +40,16 @@ using namespace Ember;
 
 namespace EmberOgre
 {
-	SoundAction::SoundAction()
-	: mGroup(0), mInstance(0)
+	SoundAction::SoundAction(SoundEntity& soundEntity)
+	: mSoundEntity(soundEntity), mGroup(0), mInstance(0)
 	{
+	}
+	
+	SoundAction::~SoundAction()
+	{
+		if (mInstance) {
+			EmberServices::getSingleton().getSoundService()->destroyInstance(mInstance);
+		}
 	}
 
 	SoundGroup* SoundAction::getGroup()
@@ -67,7 +75,7 @@ namespace EmberOgre
 
 		std::list<SoundDefinition*>::const_iterator beg = groupModel->getSamplesBegin();
 		std::list<SoundDefinition*>::const_iterator end = groupModel->getSamplesEnd();
-		for (beg; beg != end; beg++)
+		for (; beg != end; beg++)
 		{
 			// Register Individual samples
 			SoundDefinition* thisModel = *beg;
@@ -83,6 +91,7 @@ namespace EmberOgre
 		if (mGroup) {
 			if (!mInstance) {
 				mInstance = EmberServices::getSingleton().getSoundService()->createInstance();
+				mInstance->setMotionProvider(this);
 				mGroup->bindToInstance(mInstance);
 			}
 			mInstance->play();
@@ -93,12 +102,20 @@ namespace EmberOgre
 	{
 		if (mInstance) {
 			mInstance->stop();
+			EmberServices::getSingleton().getSoundService()->destroyInstance(mInstance);
+			mInstance = 0;
 		}
 	}
 	
 	SoundInstance* SoundAction::getInstance() const
 	{
 		return mInstance;
+	}
+	
+	void SoundAction::update(SoundSource& soundSource)
+	{
+		soundSource.setPosition(mSoundEntity.getPosition());
+// 		soundSource.setVelocity(mSoundEntity.getVelocity());
 	}
 	
 }

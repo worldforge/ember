@@ -20,7 +20,7 @@
 #define SOUND_ACTION_H
 
 #include <string>
-
+#include "services/sound/SoundInstance.h"
 namespace Ember
 {
 	class SoundInstance;
@@ -30,16 +30,19 @@ namespace Ember
 
 namespace EmberOgre
 {
+	class SoundEntity;
 	/**
 	 * SoundAction class is responsible for handling
 	 * actions (defined in modeldef). It contain
 	 * references for sound groups defined within
 	 * the action
 	 */
-	class SoundAction
+	class SoundAction : public Ember::ISoundMotionProvider
 	{
 		public:
-			SoundAction();
+			SoundAction(SoundEntity& soundEntity);
+			
+			virtual ~SoundAction();
 
 			/**
 			 * Register a group within this action.
@@ -71,15 +74,21 @@ namespace EmberOgre
 			void stop();
 			
 			Ember::SoundInstance* getInstance() const;
+		
+			virtual void update(Ember::SoundSource& soundSource);
+		
 		protected:
 			/**
 			 * A list of SoundGroups, referenced by name
 			 */
 // 			std::map<std::string, SoundGroup*> mGroups;
 
+			SoundEntity& mSoundEntity;
+			
 			Ember::SoundGroup* mGroup;
 
 			Ember::SoundInstance* mInstance;
+			
 
 	};
 }
