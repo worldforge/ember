@@ -266,54 +266,10 @@ void EmberPhysicalEntity::setSounds()
 {
 	if (!mSoundEntity)
 	{
-
 		if (needSoundEntity())
 		{
-			mSoundEntity = new SoundEntity();
-			
-			const ActionDefinitionsStore& store = mModel->getDefinition()->getActionDefinitions();
-			ActionDefinitionsStore::const_iterator I_b = store.begin();
-			ActionDefinitionsStore::const_iterator I_e = store.end();
-			for (; I_b != I_e; ++I_b)
-			{
-				// Should only be valid if contain any sound
-				SoundAction* newAction = NULL;
-
-				// Setup All Sound Actions
-				SoundDefinitionsStore::const_iterator I_sounds = (*I_b)->getSoundDefinitions().begin();
-				SoundDefinitionsStore::const_iterator I_sounds_end = (*I_b)->getSoundDefinitions().end();
-				for (; I_sounds != I_sounds_end; ++I_sounds)
-				{
-					Model::SoundDefinition* sound = (*I_sounds);
-					if (!sound)
-					{
-						continue;
-					}
-
-					// Register the action within the entity if not registered yet
-					if (!newAction)
-					{
-						newAction = mSoundEntity->createAction((*I_b)->getName());
-						if (!newAction)
-						{
-							S_LOG_FAILURE("Failed to register action " + (*I_b)->getName() 
-									+ " within entity.");
-
-							return;
-						}
-					}
-
-					Ember::SoundGroup* newGroup = newAction->setGroup(sound->groupName);
-					if (newGroup)
-					{
-// 						newGroup->setFrequency(sound->frequency);
-						newGroup->setPlayOrder(sound->playOrder);
-						S_LOG_INFO("Sound Group " + sound->groupName
-								+ " registered within entity");
-					}
-				}
-			}
-		} // mSoundEntity
+			mSoundEntity = new SoundEntity(*this);
+		}
 	}
 }
 
@@ -555,11 +511,11 @@ void EmberPhysicalEntity::onModeChanged(MovementMode newMode)
 			actionName = ACTION_STAND;
 		}
 
-		// Lets treat the mode change as an action to the
-		// sound entity
+		/// Lets inform the sound entity of our movement change.
+		///TODO: should this really be here, and not in the sound entity? this places a binding from this class to the sound entity which perhaps could be avoided
 		if (mSoundEntity)
 		{
-			mSoundEntity->playAction(actionName);
+			mSoundEntity->playMovementSound(actionName);
 		}
 
 		if (!mCurrentMovementAction || mCurrentMovementAction->getName() != actionName) {
@@ -703,12 +659,6 @@ const Ogre::Vector3& EmberPhysicalEntity::getOffsetForContainedNode(const Ogre::
 void EmberPhysicalEntity::updateMotion(Ogre::Real timeSlice)
 {
 	EmberEntity::updateMotion(timeSlice);
-
-	// Update Sound Entity Position
-	if (mSoundEntity)
-	{
-		mSoundEntity->setPosition(getPredictedPos());
-	}
 }
 
 
