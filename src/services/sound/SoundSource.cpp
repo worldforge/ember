@@ -55,6 +55,7 @@ SoundSource::SoundSource()
 
 SoundSource::~SoundSource()
 {
+	alDeleteSources(1, &mALSource);
 }
 
 void SoundSource::setPosition(const WFMath::Point<3> &pos)
