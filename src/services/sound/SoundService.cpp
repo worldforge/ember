@@ -137,6 +137,21 @@ namespace Ember
 	/* Interface method for stopping this service */
 	void SoundService::stop(int code)
 	{
+		for (SoundInstanceStore::iterator I = mInstances.begin(); I != mInstances.end(); ++I) {
+			S_LOG_WARNING("Found a still registered SoundInstance when shutting down sound service. This shouldn't normally happen, since all instances should be handled by their proper owners and removed well in advance of the SoundService shutting down. We'll now delete the instance, which might lead to a segfault or similiar problem as the instance owner might still expect it to be existing.");
+			delete *I;
+		}
+		mInstances.clear();
+		
+		for (SoundSampleStore::iterator I = mBaseSamples.begin(); I != mBaseSamples.end(); ++I) {
+			delete I->second;
+		}
+		mBaseSamples.clear();
+		
+		for (SoundGroupDefinitionStore::iterator I = mSoundGroupDefinitions.begin(); I != mSoundGroupDefinitions.end(); ++I) {
+			delete I->second;
+		}
+		mSoundGroupDefinitions.clear();
 	
 	///this hangs, perhaps because we don't clean up properly after us, so we'll deactivate it for now
 // 		#ifndef __WIN32__
@@ -154,45 +169,45 @@ namespace Ember
 	{
 	}
 
-	void SoundService::registerSoundGroup(SoundGroup* copy)
-	{
-		#ifdef THREAD_SAFE
-		pthread_mutex_lock(&mGroupsMutex);
-		#endif
+// 	void SoundService::registerSoundGroup(SoundGroup* copy)
+// 	{
+// 		#ifdef THREAD_SAFE
+// 		pthread_mutex_lock(&mGroupsMutex);
+// 		#endif
+// 
+// 		mGroups.push_back(copy);
+// 
+// 		#ifdef THREAD_SAFE
+// 		pthread_mutex_unlock(&mGroupsMutex);
+// 		#endif
+// 	}
 
-		mGroups.push_back(copy);
-
-		#ifdef THREAD_SAFE
-		pthread_mutex_unlock(&mGroupsMutex);
-		#endif
-	}
-
-	bool SoundService::unregisterSoundGroup(const SoundGroup* sample)
-	{
-		#ifdef THREAD_SAFE
-		pthread_mutex_lock(&mGroupsMutex);
-		#endif
-	
-		std::list<SoundGroup*>::iterator it;
-		for (it = mGroups.begin(); it != mGroups.end(); )
-		{
-			if ((*it) == sample)
-			{
-				it = mGroups.erase(it);
-				return true;
-			}
-			else
-			{
-				++it;
-			}
-		}
-
-		#ifdef THREAD_SAFE
-		pthread_mutex_unlock(&mGroupsMutex);
-		#endif
-
-		return false;
-	}
+// 	bool SoundService::unregisterSoundGroup(const SoundGroup* sample)
+// 	{
+// 		#ifdef THREAD_SAFE
+// 		pthread_mutex_lock(&mGroupsMutex);
+// 		#endif
+// 	
+// 		std::list<SoundGroup*>::iterator it;
+// 		for (it = mGroups.begin(); it != mGroups.end(); )
+// 		{
+// 			if ((*it) == sample)
+// 			{
+// 				it = mGroups.erase(it);
+// 				return true;
+// 			}
+// 			else
+// 			{
+// 				++it;
+// 			}
+// 		}
+// 
+// 		#ifdef THREAD_SAFE
+// 		pthread_mutex_unlock(&mGroupsMutex);
+// 		#endif
+// 
+// 		return false;
+// 	}
 
 	void SoundService::registerStream(StreamedSoundSample* copy)
 	{
@@ -271,6 +286,10 @@ namespace Ember
 		
 	void SoundService::cycle()
 	{
+		for (SoundInstanceStore::iterator I = mInstances.begin(); I != mInstances.end(); ++I) {
+			(*I)->update();
+		}
+	
 // 		// Groups
 // 		std::list<SoundGroup*>::const_iterator git = mGroups.begin();
 // 		for (; git != mGroups.end(); git++)

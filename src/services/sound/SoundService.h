@@ -46,6 +46,7 @@ class SoundService: public Service, public ConsoleObject
 
 	typedef std::vector<SoundInstance*> SoundInstanceStore;
 	typedef std::map<std::string, BaseSoundSample*> SoundSampleStore;
+	typedef std::map<std::string, SoundGroupDefinition*> SoundGroupDefinitionStore;
 	friend class IScriptingProvider;
 
 	private:
@@ -58,16 +59,10 @@ class SoundService: public Service, public ConsoleObject
 		SoundSampleStore mBaseSamples;
 
 		/**
-		 * Keep a list of the sound groups we are allocating.
-		 * That way, we can cycle and update their timers/playability
-		 */
-		std::list<SoundGroup*> mGroups;
-
-		/**
 		 * Thats the list of the sound groups parsed in
 		 * sounddefs
 		 */
-		std::map<std::string, SoundGroupDefinition*> mSoundGroupDefinitions;
+		SoundGroupDefinitionStore mSoundGroupDefinitions;
 
 		#ifdef THREAD_SAFE
 		/**
@@ -86,7 +81,7 @@ class SoundService: public Service, public ConsoleObject
 		
 		SoundInstanceStore mInstances;
 
-	IResourceProvider* mResourceProvider;
+		IResourceProvider* mResourceProvider;
 	public:
 		/**
 		 * Constructor
@@ -153,7 +148,7 @@ class SoundService: public Service, public ConsoleObject
 		 *
 		 * @param copy The sound group to be registered
 		 */
-		void registerSoundGroup(SoundGroup* copy);
+// 		void registerSoundGroup(SoundGroup* copy);
 
 		/**
 		 * Unregister SoundGroups allocated on SoundActions.
@@ -163,7 +158,7 @@ class SoundService: public Service, public ConsoleObject
 		 * @param sample A pointer to the group to be unregistered
 		 * @return The status of the unregistration.
 		 */
-		bool unregisterSoundGroup(const SoundGroup* sample);
+// 		bool unregisterSoundGroup(const SoundGroup* sample);
 
 		/**
 		 * Update the position (in world coordinates)
