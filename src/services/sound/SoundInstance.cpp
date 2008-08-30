@@ -31,7 +31,7 @@
 namespace Ember {
 
 SoundInstance::SoundInstance()
-: mSource(new SoundSource()), mBinding(0)
+: mSource(new SoundSource()), mBinding(0), mMotionProvider(0)
 {
 }
 
@@ -68,6 +68,13 @@ bool SoundInstance::stop()
 	alSourceStop(mSource->getALSource());
 	///TODO: add error handling
 	return true;
+}
+
+void SoundInstance::update()
+{
+	if (mMotionProvider) {
+		mMotionProvider->update(*mSource);
+	}
 }
 
 

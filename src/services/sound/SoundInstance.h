@@ -30,11 +30,21 @@ namespace Ember {
 class SoundSource;
 class BaseSoundSample;
 class SoundBinding;
+class SoundService;
+
+class ISoundMotionProvider
+{
+public:
+	virtual ~ISoundMotionProvider() {}
+	virtual void update(SoundSource& soundSource) = 0;
+};
+
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
 class SoundInstance
 {
+friend class SoundService;
 public:
     SoundInstance();
 
@@ -46,15 +56,25 @@ public:
     SoundSource& getSource();
     
 	void bind(SoundBinding* binding);
-    
+	
+	inline void setMotionProvider(ISoundMotionProvider* motionProvider);
+	
 protected:
 
-
+	void update();
+	
 	std::auto_ptr<SoundSource> mSource;
 	
 	SoundBinding* mBinding;
+	
+	ISoundMotionProvider* mMotionProvider;
 
 };
+
+void SoundInstance::setMotionProvider(ISoundMotionProvider* motionProvider)
+{
+	mMotionProvider = motionProvider;
+}
 
 }
 
