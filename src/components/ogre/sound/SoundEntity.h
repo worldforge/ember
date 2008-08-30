@@ -22,10 +22,12 @@
 #include <wfmath/vector.h>
 #include <wfmath/point.h>
 #include <map>
+#include <Atlas/Objects/Operation.h>
 
 namespace EmberOgre
 {
 	class SoundAction;
+	class EmberPhysicalEntity;
 	/**
 	 * SoundEntity class, usually an instance of this 
 	 * class type (defined by entity name/type) is returned 
@@ -34,90 +36,54 @@ namespace EmberOgre
 	class SoundEntity
 	{
 		public:
-			SoundEntity();
-			~SoundEntity();
-
-			/**
-			 * Set Entities Position
-			 *
-			 * @param pos The New Entity Position
-			 */
-			void setPosition(const WFMath::Point<3> &pos);
-
-			/**
-			 * Set Entities Velocity
-			 *
-			 * @param vel The New Entity Velocity
-			 */
-			void setVelocity(const WFMath::Vector<3> &vel);
+			SoundEntity(EmberPhysicalEntity& parentEntity);
+			virtual ~SoundEntity();
 
 			/**
 			 * Return Entity Position
 			 *
 			 * @return The Entities Position
 			 */
-			const WFMath::Point<3> getPosition();
+			WFMath::Point<3> getPosition() const;
 
 			/**
 			 * Return Entity Velocity
 			 *
 			 * @return The Entities Velocity
 			 */
-			const WFMath::Vector<3> getVelocity();
-
-			/**
-			 * Register an action for this entity.
-			 * This method is often called from the modeldef
-			 * parsing.
-			 *
-			 * @param name The Action name
-			 * @return A pointer to the allocated sound action, if it fails, returns NULL
-			 */
-			SoundAction* createAction(const std::string& name);
-
-			/**
-			 * Play the desired action, from its name
-			 *
-			 * @param name The Action name
-			 */
-			void playAction(const std::string& name);
+			WFMath::Vector<3> getVelocity() const;
 
 			/**
 			 * This function is used to update the
 			 * streamed (OGG) buffers active in entity.
 			 */
 			void update();
-		private:
-			/**
-			 * Entity Position
-			 */
-			WFMath::Point<3> mPosition;
-
-			/**
-			 * Entity Velocity
-			 */
-			WFMath::Vector<3> mVelocity;
-
+			
+			void playAction(const std::string& name);
+			
+			void playMovementSound(const std::string& actionName);
+		
+		protected:
+		
+			typedef std::map<std::string, SoundAction*> ActionStore;
+			
+			EmberPhysicalEntity& mParentEntity;
+			
 			/**
 			 * List of SoundAction referenced by name. When
 			 * the server sends an action to the client,
 			 * the entity ask the specific action (if it exists)
 			 * to be played.
 			 */
-			std::map<std::string, SoundAction*> mActions;
-
-			/**
-			 * Active Action within this entity.
-			 */
-			SoundAction* mActiveAction;
-
-			/**
-			 * Return a pointer to the action from its name
-			 *
-			 * @param name the Action Name
-			 * @return A pointer to the sound action if it exists, otherwise NULL
-			 */
-			SoundAction* actionExists(const std::string& name);
+			 ActionStore mActions;
+		 
+			 ActionStore mMovementActions;
+			 
+			 SoundAction* mCurrentMovementAction;
+			 
+			 void Entity_Action(const Atlas::Objects::Operation::RootOperation& act);
+			 
+			 void createActions();
 	};
 }
 

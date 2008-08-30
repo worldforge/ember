@@ -31,117 +31,129 @@
 #include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
 
-#include <map>
-#include <cstring>
+#include "components/ogre/EmberPhysicalEntity.h"
 
 #include "services/sound/SoundInstance.h"
 #include "services/sound/SoundSource.h"
 #include "SoundAction.h"
 
+#include "components/ogre/model/ModelDefinition.h"
+#include "components/ogre/model/Model.h"
+
 namespace EmberOgre
 {
-	SoundEntity::SoundEntity()
-	: mActiveAction(0)
+	SoundEntity::SoundEntity(EmberPhysicalEntity& parentEntity)
+	: mParentEntity(parentEntity), mCurrentMovementAction(0)
 	{
-		mActions.clear();
+		parentEntity.Acted.connect(sigc::mem_fun(*this, &SoundEntity::Entity_Action));
+		createActions();
 	}
 
 	SoundEntity::~SoundEntity()
 	{
-		// TODO: Deallocate groups
-	}
-
-	void SoundEntity::setPosition(const WFMath::Point<3> &pos)
-	{
-		if (mPosition != pos)
-		{
-			if (mActiveAction) {
-				mActiveAction->getInstance()->getSource().setPosition(pos);
-			}
-
-			mPosition = pos;
+		for (ActionStore::iterator I = mActions.begin(); I != mActions.end(); ++I) {
+			delete I->second;
 		}
-	}
-			
-	void SoundEntity::setVelocity(const WFMath::Vector<3> &vel)
-	{
-		if (mVelocity != vel)
-		{
-			std::map<std::string, SoundAction*>::iterator it;
-			for (it = mActions.begin(); it != mActions.end(); it++)
-			{
-				// TODO
-			}
-
-			mVelocity = vel;
+		for (ActionStore::iterator I = mMovementActions.begin(); I != mMovementActions.end(); ++I) {
+			delete I->second;
 		}
+		///Note that we shouldn't delete the mCurrentMovementAction since that's a pointer to an object held in the mMovementActions store.
 	}
 
-	const WFMath::Point<3> SoundEntity::getPosition()
+	WFMath::Point<3> SoundEntity::getPosition() const
 	{
-		return mPosition;
+		return mParentEntity.getPredictedPos();
 	}
 
-	const WFMath::Vector<3> SoundEntity::getVelocity()
+	WFMath::Vector<3> SoundEntity::getVelocity() const
 	{
-		return mVelocity;
-	}
-
-	SoundAction* SoundEntity::createAction(const std::string& name)
-	{
-		SoundAction* newAction = actionExists(name);
-		if (newAction)
-			return newAction;
-
-		newAction = new SoundAction();
-		if (!newAction)
-		{
-			S_LOG_FAILURE("Failed to allocate Entity Action " + name);
-			return NULL;
-		}
-
-		S_LOG_INFO("Sound Entity Action " + name + " allocated.");
-		mActions[name] = newAction;
-
-		return newAction;
-	}
-
-	SoundAction* SoundEntity::actionExists(const std::string& name)
-	{
-		std::map<std::string, SoundAction*>::iterator it(mActions.find(name));
-		if (it != mActions.end())
-		{
-			return (*it).second;
-		}
-
-		return NULL;
+		return mParentEntity.getPredictedVelocity();
 	}
 
 	void SoundEntity::playAction(const std::string& name)
 	{
-		SoundAction* theAction = actionExists(name);
-		if (!theAction)
-		{
-			S_LOG_INFO("Sound Action " + name + " doesn't exist.");
-			return;
-		}
-
-		if (theAction != mActiveAction) {
-			if (mActiveAction)
-			{
-				mActiveAction->stop();
-			}
-	
-			S_LOG_INFO("Playing Sound Action " + name);
-	
-			theAction->play();
-			mActiveAction = theAction;
+		ActionStore::iterator I = mActions.find(name);
+		if (I != mActions.end()) {
+			SoundAction* action = I->second;
+			action->play();
 		}
 	}
 
+	void SoundEntity::Entity_Action(const Atlas::Objects::Operation::RootOperation& act)
+	{
+		const std::list<std::string> &p = act->getParents();
+		std::list<std::string>::const_iterator I = p.begin();
+		
+		if (I != p.end()) {
+			const std::string& name = *I;
+			playAction(name);
+		}
+	}
+	
 	void SoundEntity::update()
 	{
 		// TODO
+	}
+	
+	void SoundEntity::playMovementSound(const std::string& actionName)
+	{
+		ActionStore::iterator I = mMovementActions.find(actionName);
+		if (I != mMovementActions.end()) {
+			SoundAction* action = I->second;
+			if (mCurrentMovementAction != action) {
+				if (mCurrentMovementAction) {
+					mCurrentMovementAction->stop();
+				}
+				action->play();
+				mCurrentMovementAction = action;
+			}
+		} else {
+			if (mCurrentMovementAction) {
+				mCurrentMovementAction->stop();
+			}
+			mCurrentMovementAction = 0;
+		}
+	}
+	
+	
+	void SoundEntity::createActions()
+	{
+		Model::Model* model = mParentEntity.getModel();
+		if (!model) {
+			S_LOG_FAILURE("Tried to create actions for a entity which has no model specified.");
+			return;
+		}
+		const Model::ActionDefinitionsStore& store = model->getDefinition()->getActionDefinitions();
+		for (ActionDefinitionsStore::const_iterator I = store.begin(); I != store.end(); ++I)
+		{
+			// Setup All Sound Actions
+			SoundDefinitionsStore::const_iterator J = (*I)->getSoundDefinitions().begin();
+			SoundDefinitionsStore::const_iterator J_end = (*I)->getSoundDefinitions().end();
+			for (; J != J_end; ++J)
+			{
+				Model::SoundDefinition* soundDef(*J);
+				if (!soundDef)
+				{
+					continue;
+				}
+
+				SoundAction* newAction = new SoundAction(*this);
+
+				Ember::SoundGroup* newGroup = newAction->setGroup(soundDef->groupName);
+				if ((*I)->getName().find("__movement_") == 0) {
+					mMovementActions.insert(ActionStore::value_type((*I)->getName(), newAction));
+				} else {
+					mActions.insert(ActionStore::value_type((*I)->getName(), newAction));
+				}
+				break; //for now we'll only allow one group per action
+/*				if (newGroup)
+				{
+					newGroup->setPlayOrder(sound->playOrder);
+					S_LOG_INFO("Sound Group " + sound->groupName
+							+ " registered within entity");
+				}*/
+			}
+		}	
 	}
 
 } // namespace Ember
