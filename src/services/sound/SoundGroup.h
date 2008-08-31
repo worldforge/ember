@@ -41,6 +41,8 @@ public:
 	SoundGroupBinding(SoundSource& source, SoundGroup& soundGroup);
 	virtual ~SoundGroupBinding();
 	
+	virtual void update() {}
+	
 protected:
 	SoundGroup& mSoundGroup;
 };
