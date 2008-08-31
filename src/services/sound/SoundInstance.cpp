@@ -63,6 +63,7 @@ bool SoundInstance::play()
 	///TODO: add error handling
 	return true;
 }
+
 bool SoundInstance::stop()
 {
 	alGetError();
@@ -71,10 +72,21 @@ bool SoundInstance::stop()
 	return true;
 }
 
+bool SoundInstance::pause()
+{
+	alGetError();
+	alSourcePause(mSource->getALSource());
+	///TODO: add error handling
+	return true;
+}
+
 void SoundInstance::update()
 {
 	if (mMotionProvider) {
 		mMotionProvider->update(*mSource);
+	}
+	if (mBinding) {
+		mBinding->update();
 	}
 }
 
