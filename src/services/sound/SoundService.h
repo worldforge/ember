@@ -142,23 +142,6 @@ class SoundService: public Service, public ConsoleObject
 		 */
 		bool unregisterStream(const StreamedSoundSample* sample);
 
-		/**
-		 * Register individual SoundGroups to keep updated
-		 * on the cycle calls
-		 *
-		 * @param copy The sound group to be registered
-		 */
-// 		void registerSoundGroup(SoundGroup* copy);
-
-		/**
-		 * Unregister SoundGroups allocated on SoundActions.
-		 * This will only remove it from the service list
-		 * it will not deallocate the data.
-		 *
-		 * @param sample A pointer to the group to be unregistered
-		 * @return The status of the unregistration.
-		 */
-// 		bool unregisterSoundGroup(const SoundGroup* sample);
 
 		/**
 		 * Update the position (in world coordinates)

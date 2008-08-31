@@ -39,13 +39,11 @@ namespace Ember
 {
 	/* Constructor */
 	SoundService::SoundService()
-	
 	#ifdef WIN32
 	 : mContext(0), mDevice(0), mResourceProvider(0)
 	#else
 	 : mResourceProvider(0)
 	#endif
-	
 	{
 		setName("Sound Service");
 		setDescription("Service for reproduction of sound effects and background music");
@@ -123,13 +121,13 @@ namespace Ember
 			}
 			else
 			{
-				S_LOG_FAILURE("Failed to allocate sound group model " + name);
+				S_LOG_FAILURE("Failed to allocate sound group model " << name);
 				return NULL;
 			}
 		}
 		else
 		{
-			S_LOG_INFO("Sound Group Model " + name + " already exists.");
+			S_LOG_INFO("Sound Group definition " << name << " already exists.");
 			return NULL;
 		}
 	}
@@ -169,45 +167,6 @@ namespace Ember
 	{
 	}
 
-// 	void SoundService::registerSoundGroup(SoundGroup* copy)
-// 	{
-// 		#ifdef THREAD_SAFE
-// 		pthread_mutex_lock(&mGroupsMutex);
-// 		#endif
-// 
-// 		mGroups.push_back(copy);
-// 
-// 		#ifdef THREAD_SAFE
-// 		pthread_mutex_unlock(&mGroupsMutex);
-// 		#endif
-// 	}
-
-// 	bool SoundService::unregisterSoundGroup(const SoundGroup* sample)
-// 	{
-// 		#ifdef THREAD_SAFE
-// 		pthread_mutex_lock(&mGroupsMutex);
-// 		#endif
-// 	
-// 		std::list<SoundGroup*>::iterator it;
-// 		for (it = mGroups.begin(); it != mGroups.end(); )
-// 		{
-// 			if ((*it) == sample)
-// 			{
-// 				it = mGroups.erase(it);
-// 				return true;
-// 			}
-// 			else
-// 			{
-// 				++it;
-// 			}
-// 		}
-// 
-// 		#ifdef THREAD_SAFE
-// 		pthread_mutex_unlock(&mGroupsMutex);
-// 		#endif
-// 
-// 		return false;
-// 	}
 
 	void SoundService::registerStream(StreamedSoundSample* copy)
 	{
@@ -254,6 +213,8 @@ namespace Ember
 		alListener3f(AL_POSITION, pos.x(), pos.y(), pos.z());
 		checkAlError();
 
+		///Set the direction of the listener.
+		///These conversions are however incorrect, we'll have to fix it. /ehj
 		WFMath::RotMatrix<3> rotMatrix(orientation);
 		WFMath::Vector<3> vectors[3];
 		
@@ -289,28 +250,6 @@ namespace Ember
 		for (SoundInstanceStore::iterator I = mInstances.begin(); I != mInstances.end(); ++I) {
 			(*I)->update();
 		}
-	
-// 		// Groups
-// 		std::list<SoundGroup*>::const_iterator git = mGroups.begin();
-// 		for (; git != mGroups.end(); git++)
-// 		{
-// 			SoundGroup* group = (*git);
-// 			if (group)
-// 			{
-// 				group->update();
-// 			}
-// 		}
-// 
-// 		// Streams
-// 		std::list<StreamedSoundSample*>::const_iterator it = mSamples.begin();
-// 		for (; it != mSamples.end(); it++)
-// 		{
-// 			StreamedSoundSample* sample = (*it);
-// 			if (sample && sample->isPlaying())
-// 			{
-// 				sample->cycle();
-// 			}
-// 		}
 	}
 	
 BaseSoundSample* SoundService::createOrRetrieveSoundSample(const std::string& soundPath)
