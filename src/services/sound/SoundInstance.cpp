@@ -38,6 +38,7 @@ SoundInstance::SoundInstance()
 
 SoundInstance::~SoundInstance()
 {
+	stop();
 	delete mBinding;
 }
 
