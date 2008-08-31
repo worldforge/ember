@@ -21,7 +21,6 @@ material_dir=${script_dir}/materials
 mkdir -p ${shared_dir}/common
 cd ${shared_dir}
 
-
 #try to get the textures needed
 #don't include lines starting with "/"
 grep -rIE --no-filename "^[^/].*texture "  ${material_dir}/*.material | sed -e 's/texture //g' > common_textures.list
@@ -90,6 +89,15 @@ do
 done
 cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_skeletons.list ` | ( cd ${shared_dir}/common; tar --keep-newer-files -xvf -) 2>  /dev/null
 
+
+
+#copy all sounds in use
+echo "Copying sounds"
+cd ${shared_dir}
+grep -orIE --no-filename "filename=\"[^\"]*\"" ${original_media}/sounddefinitions/*.sounddef | sed -e 's/filename=\"//g' | sed -e 's/\"//g' > ${shared_dir}/common_sounds.list
+cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_sounds.list ` | ( cd ${shared_dir}/common; tar --keep-newer-files -xvf -) 2>  /dev/null
+
+
 cd ${shared_dir}
 cp -a ${original_media}/common/LICENSING.txt .
 cp -a ${original_media}/common/COPYING.txt .
@@ -137,6 +145,7 @@ cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modeldef.xml`
 cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modelmap` | ( cd ${user_dir}/modeldefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
 cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modelmap.xml` | ( cd ${user_dir}/modeldefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
 cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.terrain` | ( cd ${user_dir}/modeldefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${original_media}/sounddefinitions ; tar cf - `find . -iname \*.sounddef` | ( cd ${user_dir}/sounddefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 
 echo "Copying materials"
@@ -200,6 +209,8 @@ rm -f ${shared_dir}/common_textures_cleaned.list
 rm -f ${shared_dir}/common_meshes.list
 rm -f ${shared_dir}/common_skeletons.list
 rm -f ${shared_dir}/shared_packs.list
+rm -f ${shared_dir}/common_sounds.list
+
 
 rm -f ${user_dir}/user_packs.list
 
