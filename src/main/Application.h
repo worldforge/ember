@@ -59,7 +59,7 @@ namespace Ember
 		Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings);
 
 	/**
-	* @brief At descructuib pretty much all game objects will be destroyed.
+	* @brief At destruction pretty much all game objects will be destroyed.
 	*/
 	~Application();
 	
@@ -138,35 +138,35 @@ namespace Ember
 	bool getErisPolling() const;
 	
 	/**
-	 * Emitted when the use wants to quit the game. Preferrebly the GUI should show some kind of confirmation window.
+	 * @brief Emitted when the use wants to quit the game. Preferrebly the GUI should show some kind of confirmation window.
 	 */ 
 	sigc::signal<void, bool&> EventRequestQuit;
 	
 	/**
-	Emitted before the eris polling is started
-	*/
+	 * @brief Emitted before the eris polling is started.
+	 */
 	sigc::signal<void> EventStartErisPoll;
 	
 	/**
-	Emitted after the eris polling has finished
-	*/
+	 * @brief Emitted after the eris polling has finished.
+	 */
 	sigc::signal<void> EventEndErisPoll;
 	
 	/**
-	 *    Call this to "soft quit" the app. This means that an signal will be emitted, which hopefully will be taken care of by some widget, which will show a confirmation window, asking the user if he/she wants to quit.
-	 However, if there is no widget etc. handling the request, the application will instantly quit.
+	 * @brief Call this to "soft quit" the app. This means that an signal will be emitted, which hopefully will be taken care of by some widget, which will show a confirmation window, asking the user if he/she wants to quit.
+	 * However, if there is no widget etc. handling the request, the application will instantly quit.
 	 */
 	void requestQuit();
 
 	/**
-	 * Accessor for the main eris world view, if any.
+	 * @brief Accessor for the main eris world view, if any.
 	 */
 	Eris::View* getMainView();
     
     private:
     
     /**
-    The logging service is a little special, so we need to hold a reference to it ourselves. Mainly we don't want it to shut down until the application is shut down.
+     * @brief The logging service is a little special, so we need to hold a reference to it ourselves. Mainly we don't want it to shut down until the application is shut down.
     NOTE: The logging mechanism needs to be redone, so it isn't dependent on a service being started.
     */
     std::auto_ptr<Ember::LoggingService> mLoggingService;
@@ -174,71 +174,79 @@ namespace Ember
      
 //	IGameView mGraphicalComponent;
 	/**
-	The main Ogre graphical view.
-	*/
+	 * @brief The main Ogre graphical view.
+	 */
 	EmberOgre::EmberOgre* mOgreView;
 	
 	/**
-	If set to true, Ember should quit before next loop step.
-	@see mainLoop()
-	*/
+	 * @brief If set to true, Ember should quit before next loop step.
+	 * @see mainLoop()
+	 */
 	bool mShouldQuit;
+	
 	/**
-	The file system prefix to where Ember has been installed.
-	*/
+	 * @brief The file system prefix to where Ember has been installed.
+	 */
 	const std::string mPrefix;
 	
 	/**
-	The path to the Ember home directory, where all settings will be stored.
-	On Linux this is ~/.ember by default.
-	*/
+	 * @brief The path to the Ember home directory, where all settings will be stored.
+	 * On Linux this is ~/.ember by default. On an English Windows it's c:\Document and Settings\USERNAME\Application Data\Ember.
+	 */
 	const std::string mHomeDir;
 	
 	/**
-	The main log observer used for all logging.
-	*/
+	 * @brief The main log observer used for all logging.
+	 * The default implementation is to write all log messages to a file out stream.
+	 */
 	LogObserver* mLogObserver;
 	
 	/**
-	The main services object.
-	*/
+	 * @brief The main services object.
+	 */
 	EmberServices* mServices;
 	
 	/**
-	Once connected to a world, this will hold the main world view.
-	*/
+	 * @brief Once connected to a world, this will hold the main world view.
+	 */
 	Eris::View* mWorldView;
 	
 	/**
-	Controls whether eris should be polled at each frame update.
-	*/
+	 * @brief Controls whether eris should be polled at each frame update.
+	 */
 	bool mPollEris;
 	
+	/**
+	 * @brief We listen to the GotView event to be able to store a reference to the View instance.
+	 * @see mWorldView
+	 * @param view The world view.
+	 */
 	void Server_GotView(Eris::View* view);
 
 	/**
-	We hold a pointer to the stream to which all logging messages are written.
-	*/
+	 * @brief We hold a pointer to the stream to which all logging messages are written.
+	 */
 	std::auto_ptr<std::ofstream> mLogOutStream;
 	
 	/**
-	A transient copy of command line set config settings. The settings here will be injected into the ConfigService when the services are started.
-	@see initializeServices()
-	*/
+	 * @brief A transient copy of command line set config settings. The settings here will be injected into the ConfigService when the services are started.
+	 * @see initializeServices()
+	 */
 	ConfigMap mConfigSettings;
 	
 	/**
-	The main console backend instance.
-	*/
+	 * @brief The main console backend instance.
+	 */
 	std::auto_ptr<ConsoleBackend> mConsoleBackend;
 
 	/**
-	The "quit" command will quit the application, bypassing any confirmation dialog.
-	*/
+	 * @brief The "quit" command will quit the application, bypassing any confirmation dialog.
+	 */
 	const Ember::ConsoleCommandWrapper Quit;
+	
 	/**
-	Toggles the polling of data from eris. Normally Eris is polled each frame, but this can be turned off (mainly for debug reasons).
-	*/
+	 * @brief Toggles the polling of data from eris. Normally Eris is polled each frame, but this can be turned off (mainly for debug reasons).
+	 */
 	const Ember::ConsoleCommandWrapper ToggleErisPolling;
 };
 }
