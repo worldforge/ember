@@ -24,12 +24,12 @@
 namespace Ember
 {
 	class SoundInstance;
-	class SoundGroup;
 	class SoundInstance;
 }
 
 namespace EmberOgre
 {
+	class SoundGroup;
 	class SoundEntity;
 	/**
 	 * SoundAction class is responsible for handling
@@ -53,7 +53,7 @@ namespace EmberOgre
 			 * @param name The group name defined in the sounddefs.
 			 * @return A pointer to the group allocated, if it fails, returns NULL
 			 */
-			Ember::SoundGroup* setGroup(const std::string& name);
+			SoundGroup* setGroup(const std::string& name);
 
 			/**
 			 * Return a pointer to a sound group from its name
@@ -61,7 +61,7 @@ namespace EmberOgre
 			 * @param name Group Name
 			 * @return A pointer to the group, if it doesnt exists, returns NULL
 			 */
-			Ember::SoundGroup* getGroup();
+			SoundGroup* getGroup();
 
 			/**
 			 * Play this action groups, usually called from the SoundEntity class
@@ -85,7 +85,7 @@ namespace EmberOgre
 
 			SoundEntity& mSoundEntity;
 			
-			Ember::SoundGroup* mGroup;
+			SoundGroup* mGroup;
 
 			Ember::SoundInstance* mInstance;
 			

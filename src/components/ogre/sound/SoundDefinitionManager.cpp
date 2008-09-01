@@ -33,8 +33,8 @@ template<> EmberOgre::SoundDefinitionManager* Ember::Singleton<EmberOgre::SoundD
 
 SoundDefinitionManager::SoundDefinitionManager()
 {
-   mResourceType = "SoundDefinition";
-        
+	mResourceType = "SoundDefinition";
+	
 	mScriptPatterns.push_back("*.sounddef");
 	Ogre::ResourceGroupManager::getSingleton()._registerScriptLoader(this);
 	Ogre::ResourceGroupManager::getSingleton()._registerResourceManager(mResourceType, this);
@@ -52,9 +52,7 @@ void SoundDefinitionManager::parseScript (Ogre::DataStreamPtr &stream, const Ogr
 	soundParser.parseScript(stream);
 }
 
-Ogre::Resource* SoundDefinitionManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, 
-    const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, 
-    const Ogre::NameValuePairList* createParams)
+Ogre::Resource* SoundDefinitionManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams)
 {
 	return 0;
 }

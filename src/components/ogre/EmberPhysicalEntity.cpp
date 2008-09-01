@@ -59,10 +59,6 @@
 #include <Eris/View.h>
 #include <Eris/TypeInfo.h>
 
-#include "sound/SoundAction.h"
-#include "sound/SoundEntity.h"
-#include "services/sound/SoundGroup.h"
-
 namespace EmberOgre {
 
 const char * const EmberPhysicalEntity::ACTION_STAND("__movement_idle");

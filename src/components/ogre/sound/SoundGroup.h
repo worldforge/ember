@@ -19,117 +19,127 @@
 #ifndef SOUND_GROUP_H
 #define SOUND_GROUP_H
 
-#include "SoundGeneral.h"
-#include "SoundSample.h"
-#include "SoundDefinition.h"
+#include "services/sound/SoundBinding.h"
+#include <list>
 
 namespace Ember
 {
-class SoundGroup;
 class SoundInstance;
-	enum playOrder
+class SoundDefinition;
+class SoundSource;
+class BaseSoundSample;
+}
+namespace EmberOgre {
+
+class SoundGroup;
+	
+/**
+@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+@brief Provides sound binding functionality for a SoundGroup.
+What makes this differs a little from normal sound binding is that the sound group is made up of many different sounds. If all sounds are static there's no problem, as the sound buffers then can be queued as they are. If however any sample is streaming it becomes a little more complex, since we then must update the buffers etc. as long as we're playing the streaming sample.
+*/
+class SoundGroupBinding
+: public Ember::SoundBinding
+{
+public:
+	/**
+	 * @brief Ctor.
+	 * @param source The sound source to which we should bind ourselves.
+	 * @param soundGroup The soundgroup which we should bind to the source.
+	 */
+	SoundGroupBinding(Ember::SoundSource& source, SoundGroup& soundGroup);
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~SoundGroupBinding();
+	
+	/**
+	 * @brief If we have any streaming sounds we should update the buffers accordingly here.
+	 */
+	virtual void update();
+	
+protected:
+	/**
+	 * @brief The sound group which contains the definitions used by this binding.
+	 */
+	SoundGroup& mSoundGroup;
+};
+
+/**
+* The class SoundGroup is responsible to keep
+* sound buffers together and play them in a determinated
+* way (specified in the sounddefs)
+*/
+class SoundGroup
+{
+public: 
+	enum PlayOrder
 	{
 		PLAY_LINEAR,
 		PLAY_INVERSE,
 		PLAY_RANDOM
 	};
+	typedef std::list<Ember::BaseSoundSample*> SampleStore;
 	
-class SoundGroupBinding
-: public SoundBinding
-{
-public:
-	SoundGroupBinding(SoundSource& source, SoundGroup& soundGroup);
-	virtual ~SoundGroupBinding();
-	
-	virtual void update() {}
-	
-protected:
-	SoundGroup& mSoundGroup;
-};
+	SoundGroup();
+	~SoundGroup();
 
 	/**
-	 * The class SoundGroup is responsible to keep
-	 * sound buffers together and play them in a determinated
-	 * way (specified in the sounddefs)
-	 */
-	class SoundGroup
-	{
-		public: 
-			typedef std::list<BaseSoundSample*> SampleStore;
-		private:
-			/**
-			 * A list of the Samples allocated within the group
-			 */
-			SampleStore mSamples;
-			BaseSoundSample* mLastPlayed;
+	* Allocate a sound sample/buffer in this group. 
+	*
+	* @param model A sound model containing definitions for the sample.
+	*/
+	void addSound(Ember::SoundDefinition* soundDef);
 
-			/**
-			 * The frequency (Hz) in wich the sounds should be played.
-			 */
-			unsigned int mFrequency;
+	/**
+	* Set the group play order.
+	*
+	* @param playO The new play order, from playOrder structure.
+	*/
+	void setPlayOrder(const unsigned int playO);
+	
+	bool bindToInstance(Ember::SoundInstance* instance);
+	
+	const SampleStore& getSamples() const;
+protected:
+	/**
+	* A list of the Samples allocated within the group
+	*/
+	SampleStore mSamples;
 
-			/**
-			 * How the buffers should be played, specified by playOrder.
-			 */
-			unsigned int mPlayOrder;
+	/**
+	* The frequency (Hz) in wich the sounds should be played.
+	*/
+	unsigned int mFrequency;
 
-			/**
-			 * This is an internal member to detect what is the next buffer
-			 * to be played based on mPlayOrder
-			 */
-			unsigned int mNextToPlay;
+	/**
+	* How the buffers should be played, specified by playOrder.
+	*/
+	unsigned int mPlayOrder;
 
-			/**
-			 * If this Group is playing.
-			 */
-			bool mIsPlaying;
+	/**
+	* If this Group is playing.
+	*/
+	bool mIsPlaying;
 
-			/**
-			 * Based on mPlayOrder this function
-			 * tells mNextToPlay the next buffer
-			 * to be played.
-			 */
-			void getNextToPlay();
+	/**
+	* This is the group timer, used to verify
+	* when buffers should be played (based on frequency).
+	*/
+// 	struct timeval start;
 
-			/**
-			 * This is the group timer, used to verify
-			 * when buffers should be played (based on frequency).
-			 */
-			struct timeval start;
+	/**
+	* Reset internal group timer.
+	*/
+// 	void resetClock();
 
-			/**
-			 * Reset internal group timer.
-			 */
-			void resetClock();
+	/**
+	* Returns the amount of time that passed since
+	* the start of the second.
+	*/
+// 	float getTime();
 
-			/**
-			 * Returns the amount of time that passed since
-			 * the start of the second.
-			 */
-			float getTime();
-
-		public:
-			SoundGroup();
-			~SoundGroup();
-
-			/**
-			 * Allocate a sound sample/buffer in this group. 
-			 *
-			 * @param model A sound model containing definitions for the sample.
-			 */
-			void addSound(SoundDefinition* soundDef);
-
-			/**
-			 * Set the group play order.
-			 *
-			 * @param playO The new play order, from playOrder structure.
-			 */
-			void setPlayOrder(const unsigned int playO);
-			
-			bool bindToInstance(SoundInstance* instance);
-			
-			const SampleStore& getSamples() const;
-	};
+};
 }
 
 #endif

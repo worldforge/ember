@@ -28,7 +28,7 @@
 #include "services/sound/SoundService.h"
 #include "services/sound/SoundGeneral.h"
 #include "services/sound/SoundDefinition.h"
-#include "services/sound/SoundGroup.h"
+#include "SoundGroup.h"
 #include "services/sound/SoundInstance.h"
 #include "services/sound/SoundSource.h"
 

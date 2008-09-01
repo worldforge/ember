@@ -20,6 +20,8 @@
 #include "config.h"
 #endif
 
+#include "SoundGroup.h"
+
 #include "framework/Service.h"
 #include "framework/ConsoleObject.h"
 
@@ -36,12 +38,12 @@
 // to this
 #include <sys/time.h>
 
-#include "SoundService.h"
-#include "SoundGroup.h"
-#include "SoundInstance.h"
-#include "SoundSource.h"
+#include "services/sound/SoundService.h"
+#include "services/sound/SoundInstance.h"
+#include "services/sound/SoundSource.h"
 
-namespace Ember
+using namespace Ember;
+namespace EmberOgre
 {
 
 SoundGroupBinding::SoundGroupBinding(SoundSource& source, SoundGroup& soundGroup)
@@ -66,12 +68,17 @@ SoundGroupBinding::~SoundGroupBinding()
 {
 }
 
+void SoundGroupBinding::update()
+{
+	///TODO: add support for streaming sounds
+}
+
 
 
 	SoundGroup::SoundGroup()
 	{
 		mSamples.clear();
-		mLastPlayed = NULL;
+// 		mLastPlayed = 0;
 		mIsPlaying = false;
 	}
 
@@ -87,55 +94,55 @@ SoundGroupBinding::~SoundGroupBinding()
 	void SoundGroup::setPlayOrder(const unsigned int playO)
 	{
 		mPlayOrder = playO;
-		switch(mPlayOrder)
-		{
-			case PLAY_LINEAR:
-				mNextToPlay = 0;
-				break;
-			case PLAY_INVERSE:
-				mNextToPlay = mSamples.size() - 1; 
-				break;
-			case PLAY_RANDOM:
-				getNextToPlay();
-				break;
-		};
+// 		switch(mPlayOrder)
+// 		{
+// 			case PLAY_LINEAR:
+// 				mNextToPlay = 0;
+// 				break;
+// 			case PLAY_INVERSE:
+// 				mNextToPlay = mSamples.size() - 1; 
+// 				break;
+// 			case PLAY_RANDOM:
+// 				getNextToPlay();
+// 				break;
+// 		};
 	}
 
-	void SoundGroup::getNextToPlay()
-	{
-		if (!mSamples.size())
-		{
-			S_LOG_INFO("Group has no samples to play");
-			return;
-		}
-
-		switch(mPlayOrder)
-		{
-			case PLAY_LINEAR:
-				mNextToPlay++; 
-				break;
-			case PLAY_INVERSE:
-				mNextToPlay--; 
-				break;
-			case PLAY_RANDOM:
-				srand(time(NULL));
-				mNextToPlay = rand() % mSamples.size();
-				break;
-		};
-	}
-
-	void SoundGroup::resetClock()
-	{
-		gettimeofday(&start, NULL);
-	}
-
-	float SoundGroup::getTime()
-	{
-		struct timeval end;
-		gettimeofday(&end, NULL);
-
-		return (end.tv_sec-start.tv_sec)*1000+(end.tv_usec-start.tv_usec)/1000;
-	}
+// 	void SoundGroup::getNextToPlay()
+// 	{
+// 		if (!mSamples.size())
+// 		{
+// 			S_LOG_INFO("Group has no samples to play");
+// 			return;
+// 		}
+// 
+// 		switch(mPlayOrder)
+// 		{
+// 			case PLAY_LINEAR:
+// 				mNextToPlay++; 
+// 				break;
+// 			case PLAY_INVERSE:
+// 				mNextToPlay--; 
+// 				break;
+// 			case PLAY_RANDOM:
+// 				srand(time(NULL));
+// 				mNextToPlay = rand() % mSamples.size();
+// 				break;
+// 		};
+// 	}
+// 
+// 	void SoundGroup::resetClock()
+// 	{
+// 		gettimeofday(&start, NULL);
+// 	}
+// 
+// 	float SoundGroup::getTime()
+// 	{
+// 		struct timeval end;
+// 		gettimeofday(&end, NULL);
+// 
+// 		return (end.tv_sec-start.tv_sec)*1000+(end.tv_usec-start.tv_usec)/1000;
+// 	}
 
 // 	void SoundGroup::update()
 // 	{
