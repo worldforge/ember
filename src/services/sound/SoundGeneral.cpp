@@ -16,19 +16,25 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "services/logging/LoggingService.h"
 #include "SoundGeneral.h"
+#include "services/logging/LoggingService.h"
+#include <AL/al.h>
+
+#ifndef __WIN32__
+#include <AL/alut.h>
+#else
+#include <ALUT/alut.h>
+#endif
 
 namespace Ember 
 {
-	void checkAlError()
+	void SoundGeneral::checkAlError()
 	{
 		ALenum error = alGetError();
 		if (error == AL_NO_ERROR)
 			return;
 
-		S_LOG_FAILURE(std::string("openAl error: ") + 
-				std::string(alutGetErrorString(error)));
+		S_LOG_FAILURE("openAl error: " << alutGetErrorString(error));
 	}
 
 }

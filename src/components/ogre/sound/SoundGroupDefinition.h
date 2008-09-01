@@ -23,7 +23,13 @@
 #ifndef EMBEROGRESOUNDGROUPDEFINITION_H
 #define EMBEROGRESOUNDGROUPDEFINITION_H
 
-namespace EmberOgre {
+#include "services/sound/SoundGeneral.h"
+#include <map>
+#include <list>
+
+namespace EmberOgre
+{
+class SoundDefinition;
 
 /**
 * The SoundGroupDefinition class describes a set
@@ -31,14 +37,14 @@ namespace EmberOgre {
 */
 class SoundGroupDefinition
 {
-
 public:
+	typedef std::map<std::string, SoundGroupDefinition*> SoundGroupDefinitionStore;
 	SoundGroupDefinition();
 	
 	/**
 	* Insert a sound sample into this group definition
 	*/
-	void insertSample(const std::string& name, SoundSampleType type, float volume);
+	void insertSample(const std::string& name, Ember::SoundGeneral::SoundSampleType type, float volume);
 
 	/**
 	* Return an iterator to the first member of the list

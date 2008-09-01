@@ -37,19 +37,41 @@ namespace EmberOgre {
 */
 class SoundDefinitionManager : public Ogre::ResourceManager, public Ember::Singleton<SoundDefinitionManager>
 {
-	public:
-  		SoundDefinitionManager();
+public:
+	typedef std::map<std::string, SoundGroupDefinition*> SoundGroupDefinitionStore;
 
-  		virtual ~SoundDefinitionManager();
+	SoundDefinitionManager();
 
-		virtual void parseScript(Ogre::DataStreamPtr &stream, const Ogre::String &groupName);
-    
-	protected:
-		XMLSoundDefParser soundParser;
+	virtual ~SoundDefinitionManager();
 
-		Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, 
-				const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, 
-				const Ogre::NameValuePairList* createParams);
+	virtual void parseScript(Ogre::DataStreamPtr &stream, const Ogre::String &groupName);
+	
+	/**
+	* Register a new SoundDefinition used to define soundgroups
+	*
+	* @return A pointer to the new created SoundDefinition, if it fails, returns NULL
+	* TODO: move this to components/ogre since it belongs there and not here
+	*/
+	SoundGroupDefinition* createSoundGroupDefinition(const std::string& name);
+
+	/**
+	* Returns the SoundDefinition from its name
+	*
+	* @param name The desired SoundDefinition name
+	* @return A pointer to the SoundDefinition or NULL if it can't be found
+	* TODO: move this to components/ogre since it belongs there and not here
+	*/
+	SoundGroupDefinition* getSoundGroupDefinition(const std::string& name);
+protected:
+	XMLSoundDefParser mSoundParser;
+
+	Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams);
+	
+	/**
+	* Thats the list of the sound groups parsed in
+	* sounddefs
+	*/
+	SoundGroupDefinitionStore mSoundGroupDefinitions;
 };
 
 }

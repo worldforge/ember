@@ -22,23 +22,20 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "framework/tinyxml/tinyxml.h"
 
-#include "services/sound/SoundDefinition.h"
-
-#include <iostream>
-#include <sstream>
-#include <list>
-
-namespace EmberOgre { 
+namespace EmberOgre {
+class SoundGroupDefinition;
+class SoundDefinitionManager;
 
 class XMLSoundDefParser
 {
-public :
+public:
+	XMLSoundDefParser(SoundDefinitionManager& manager);
 	void parseScript(Ogre::DataStreamPtr stream);
 
 private:
-
-	void readBuffers(Ember::SoundGroupDefinition* act, TiXmlElement* objNode);
-	void readBuffer(Ember::SoundGroupDefinition* act, TiXmlElement* objNode);
+	SoundDefinitionManager& mManager;
+	void readBuffers(SoundGroupDefinition* act, TiXmlElement* objNode);
+	void readBuffer(SoundGroupDefinition* act, TiXmlElement* objNode);
 };
 
 }

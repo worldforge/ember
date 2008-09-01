@@ -22,17 +22,8 @@
 
 #include "SoundGroup.h"
 
-#include "framework/Service.h"
-#include "framework/ConsoleObject.h"
-
-#include "services/EmberServices.h"
-#include "services/config/ConfigService.h"
 #include "services/logging/LoggingService.h"
-#include "framework/ConsoleBackend.h"
-#include "framework/Tokeniser.h"
-
-#include <list>
-#include <cstring>
+#include "services/sound/SoundService.h"
 
 // Need to find a cross platform solution
 // to this
@@ -41,6 +32,8 @@
 #include "services/sound/SoundService.h"
 #include "services/sound/SoundInstance.h"
 #include "services/sound/SoundSource.h"
+#include "services/sound/SoundSample.h"
+#include "SoundDefinition.h"
 
 using namespace Ember;
 namespace EmberOgre

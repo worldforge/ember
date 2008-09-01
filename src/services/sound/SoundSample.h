@@ -21,8 +21,9 @@
 
 #include "SoundGeneral.h"
 #include "SoundBinding.h"
-#include <vector>
 #include "framework/IResourceProvider.h"
+#include <vector>
+#include <AL/al.h>
 
 namespace Ember
 {
@@ -73,43 +74,44 @@ StaticSoundSample& mSample;
 class BaseSoundSample
 {
 public:
+	
 	typedef std::vector<ALuint> BufferStore;
 
 	virtual ~BaseSoundSample() {}
 	
 	/**
-		* Returns entity type
-		*/
-	SoundSampleType getType();
+	* Returns entity type
+	*/
+	SoundGeneral::SoundSampleType getType();
 
 	virtual unsigned int getNumberOfBuffers() = 0;
 	
 	/**
-		* @brief Returns a store of the sound data buffers stored by this sample.
-		* The buffers will be returned as ALuint which is the internal buffer reference within OpenAL. Any further operation on the buffer must therefore go through OpenAL (i.e. the values returned are _not_ memory pointers).
-		* @return A store of OpenAL buffer identifiers.
-		*/
+	* @brief Returns a store of the sound data buffers stored by this sample.
+	* The buffers will be returned as ALuint which is the internal buffer reference within OpenAL. Any further operation on the buffer must therefore go through OpenAL (i.e. the values returned are _not_ memory pointers).
+	* @return A store of OpenAL buffer identifiers.
+	*/
 	virtual BufferStore getBuffers() = 0;
 	
 	/**
-		* @brief Creates a new binding to this buffer, to be used together with an instance of SoundInstance.
-		* If you want the sound held by this buffer to be played, one way would be to call this to create a binding which you then feed to an instance of SoundInstance.
-		* Note that ownership of the created binding is transferred to the caller, and thus it's the caller's responsibility to make sure it's properly deleted. Under normal circumstances that will be taken care of by SoundInstance however.
-		* @see SoundInstance::bind()
-		* @param source The sound source to which we should bind this sound sample.
-		* @return A new sound binding instance.
-		*/
+	* @brief Creates a new binding to this buffer, to be used together with an instance of SoundInstance.
+	* If you want the sound held by this buffer to be played, one way would be to call this to create a binding which you then feed to an instance of SoundInstance.
+	* Note that ownership of the created binding is transferred to the caller, and thus it's the caller's responsibility to make sure it's properly deleted. Under normal circumstances that will be taken care of by SoundInstance however.
+	* @see SoundInstance::bind()
+	* @param source The sound source to which we should bind this sound sample.
+	* @return A new sound binding instance.
+	*/
 	virtual SoundBinding* createBinding(SoundSource& source) = 0;
 protected:
 
 	/**
-		* @brief Ctor. This is protected to disallow direct creation of this class except by subclasses.
-		*/
+	* @brief Ctor. This is protected to disallow direct creation of this class except by subclasses.
+	*/
 	BaseSoundSample() {}
 	/**
-		* Type of the sample
-		*/
-	SoundSampleType	mType;
+	* Type of the sample
+	*/
+	SoundGeneral::SoundSampleType	mType;
 };
 
 /**
@@ -124,33 +126,33 @@ public:
 	~StaticSoundSample();
 
 	/**
-		* Returns the unique buffer this sample has.
-		*/
+	* Returns the unique buffer this sample has.
+	*/
 	ALuint	getBuffer();
 
 	/**
-		* Within this class, this is always 1.
-		*/
+	* Within this class, this is always 1.
+	*/
 	unsigned int getNumberOfBuffers();
 
 	/**
-		* @copydoc BaseSoundSample::createBinding()
-		*/
+	* @copydoc BaseSoundSample::createBinding()
+	*/
 	virtual SoundBinding* createBinding(SoundSource& source);
 
 	/**
-		* @copydoc BaseSoundSample::getBuffers()
-		*/
+	* @copydoc BaseSoundSample::getBuffers()
+	*/
 	virtual BaseSoundSample::BufferStore getBuffers();
 private:
 	/**
-		* Sample buffer
-		*/
+	* Sample buffer
+	*/
 	ALuint mBuffer;
 	
 	/**
-		* @brief The resource wrapper instance which holds the actual data.
-		*/
+	* @brief The resource wrapper instance which holds the actual data.
+	*/
 	ResourceWrapper mResource;
 
 };

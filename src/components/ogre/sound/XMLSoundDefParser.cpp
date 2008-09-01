@@ -21,13 +21,19 @@
 
 #include "XMLSoundDefParser.h"
 
-#include "services/EmberServices.h"
-#include "services/sound/SoundDefinition.h"
-#include "services/sound/SoundService.h"
+#include "SoundGroupDefinition.h"
+#include "SoundDefinition.h"
+#include "SoundDefinitionManager.h"
 #include "components/ogre/XMLHelper.h"
 
-
+using namespace Ember;
 namespace EmberOgre { 
+
+XMLSoundDefParser::XMLSoundDefParser(SoundDefinitionManager& manager)
+: mManager(manager)
+{
+}
+
 
 void XMLSoundDefParser::parseScript(Ogre::DataStreamPtr stream)
 {
@@ -52,7 +58,7 @@ void XMLSoundDefParser::parseScript(Ogre::DataStreamPtr stream)
 	
 			std::string finalName(tmp);
 	
-			Ember::SoundGroupDefinition* newModel = Ember::EmberServices::getSingleton().getSoundService()->createSoundGroupDefinition(finalName);
+			SoundGroupDefinition* newModel = mManager.createSoundGroupDefinition(finalName);
 				
 			if (newModel)
 			{
@@ -64,7 +70,7 @@ void XMLSoundDefParser::parseScript(Ogre::DataStreamPtr stream)
 	}
 }
 
-void XMLSoundDefParser::readBuffers(Ember::SoundGroupDefinition* grp, TiXmlElement* objNode)
+void XMLSoundDefParser::readBuffers(SoundGroupDefinition* grp, TiXmlElement* objNode)
 {
 	for (TiXmlElement* smElem = objNode->FirstChildElement();
             smElem != 0; smElem = smElem->NextSiblingElement())
@@ -73,32 +79,32 @@ void XMLSoundDefParser::readBuffers(Ember::SoundGroupDefinition* grp, TiXmlEleme
 	}
 }
 
-void XMLSoundDefParser::readBuffer(Ember::SoundGroupDefinition* grp, TiXmlElement* objNode)
+void XMLSoundDefParser::readBuffer(SoundGroupDefinition* grp, TiXmlElement* objNode)
 {
 	const char* filename = objNode->Attribute("filename");
 	const char* format = objNode->Attribute("format");
-	const char* playsin = objNode->Attribute("playsIn");
+// 	const char* playsin = objNode->Attribute("playsIn");
 	const char* volume = objNode->Attribute("volume");
 
 	if (!filename)
 		return;
 
-	bool playsReal = PLAY_WORLD;
-	if (!stricmp(playsin, "local"))
-		playsReal = PLAY_LOCAL;
-	else
-	if (!stricmp(playsin, "world"))
-		playsReal = PLAY_WORLD;
+// 	bool playsReal = PLAY_WORLD;
+// 	if (!stricmp(playsin, "local"))
+// 		playsReal = PLAY_LOCAL;
+// 	else
+// 	if (!stricmp(playsin, "world"))
+// 		playsReal = PLAY_WORLD;
 
-	Ember::SoundSampleType type = Ember::SAMPLE_PCM;
+	SoundGeneral::SoundSampleType type = SoundGeneral::SAMPLE_PCM;
 	if (!stricmp(format, "wav") || !stricmp(format, "pcm"))
 	{
-		type = Ember::SAMPLE_WAV;
+		type = SoundGeneral::SAMPLE_WAV;
 	}
 	else
 	if (!stricmp(format, "ogg"))
 	{
-		type = Ember::SAMPLE_OGG;
+		type = SoundGeneral::SAMPLE_OGG;
 	}
 
 	float soundVolume = 1.0f;
@@ -107,18 +113,9 @@ void XMLSoundDefParser::readBuffer(Ember::SoundGroupDefinition* grp, TiXmlElemen
 		soundVolume = atof(volume);
 	}
 
-	std::string realName(filename);
-	Ogre::FileInfoListPtr files = Ogre::ResourceGroupManager::getSingleton().findResourceFileInfo("General", realName);
 
-	Ogre::FileInfoList::iterator I = files->begin();
-	if (I != files->end()) 
-	{
-		grp->insertSample(I->filename, type, playsReal, soundVolume);
-	}
-	else
-	{
-		S_LOG_FAILURE("Failed to find buffer " << realName << ", invalid file directory or name.");
-	}
-}
+	grp->insertSample(filename, type, soundVolume);
+
 }
 
+}

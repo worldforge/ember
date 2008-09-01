@@ -25,13 +25,13 @@
 namespace Ember
 {
 class SoundInstance;
-class SoundDefinition;
 class SoundSource;
 class BaseSoundSample;
 }
 namespace EmberOgre {
 
 class SoundGroup;
+class SoundDefinition;
 	
 /**
 @author Erik Hjortsberg <erik.hjortsberg@iteam.se>
@@ -89,7 +89,7 @@ public:
 	*
 	* @param model A sound model containing definitions for the sample.
 	*/
-	void addSound(Ember::SoundDefinition* soundDef);
+	void addSound(SoundDefinition* soundDef);
 
 	/**
 	* Set the group play order.

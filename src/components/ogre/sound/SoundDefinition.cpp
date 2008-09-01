@@ -20,15 +20,15 @@
 #include "SoundDefinition.h"
 #include <string>
 
-namespace Ember
+using namespace Ember;
+namespace EmberOgre
 {
 
 
-void SoundDefinition::setup(const std::string& filename, SoundSampleType type, bool playLocal, float volume) 
+void SoundDefinition::setup(const std::string& filename, SoundGeneral::SoundSampleType type, float volume)
 {
 	mFilename = filename;
 	mSampleType = type;
-	mPlaysLocally = playLocal;
 	mVolume = volume;
 }
 
@@ -37,7 +37,7 @@ const std::string& SoundDefinition::getFilename()
 	return mFilename;
 }
 
-SoundSampleType SoundDefinition::getFormat()
+SoundGeneral::SoundSampleType SoundDefinition::getFormat()
 {
 	return mSampleType;
 }

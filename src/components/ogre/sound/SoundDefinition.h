@@ -18,10 +18,10 @@
 
 #ifndef SOUNDMODEL_H
 #define SOUNDMODEL_H
+#include "services/sound/SoundGeneral.h"
+#include <string>
 
-#include "SoundGeneral.h"
-
-namespace Ember 
+namespace EmberOgre 
 {
 /**
 * The SoundDefinition class represent each buffer described inside specific sound groups.
@@ -38,8 +38,7 @@ public:
 	* @param playLocal Defines if the sound is 2D or 3D
 	* @param volume The sample volume to be played
 	*/
-	void setup(const std::string& filename, SoundSampleType type, 
-			bool playLocal, float volume);
+	void setup(const std::string& filename, Ember::SoundGeneral::SoundSampleType type, float volume);
 
 	/**
 	* Return filename
@@ -49,7 +48,7 @@ public:
 	/**
 	* Return the format
 	*/
-	SoundSampleType getFormat();
+	Ember::SoundGeneral::SoundSampleType getFormat();
 
 	/**
 	* Return the sound Volume
@@ -66,8 +65,7 @@ protected:
 	/**
 	* Defines the sound Format (WAV/OGG/PCM)
 	*/
-	SoundSampleType mSampleType;
-
+	Ember::SoundGeneral::SoundSampleType mSampleType;
 
 	/**
 	* The volume the sound is going to be played with

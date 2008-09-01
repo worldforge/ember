@@ -25,6 +25,10 @@
 #endif
 
 #include "SoundGroupDefinition.h"
+#include "SoundDefinition.h"
+#include "services/logging/LoggingService.h"
+
+using namespace Ember;
 
 namespace EmberOgre {
 
@@ -33,20 +37,14 @@ SoundGroupDefinition::SoundGroupDefinition()
 	mSamples.clear();
 }
 
-void SoundGroupDefinition::insertSample(const std::string& name, SoundSampleType type, float volume)
+void SoundGroupDefinition::insertSample(const std::string& name, SoundGeneral::SoundSampleType type, float volume)
 {
-	SoundDefinition* newModel = new SoundDefinition();
-	if (newModel)
-	{
-		newModel->setup(name, type, playsLocally, volume);
-		mSamples.push_back(newModel);
+	SoundDefinition* newDef = new SoundDefinition();
+	newDef->setup(name, type, volume);
+	mSamples.push_back(newDef);
 
-		S_LOG_INFO("\t-Sample " + name + " created.");
-	}
-	else
-	{
-		S_LOG_FAILURE("Failed to create a new Sound Model within this group");
-	}
+	S_LOG_INFO("\t-Sample " << name << " created.");
+
 }
 		
 std::list<SoundDefinition*>::const_iterator SoundGroupDefinition::getSamplesBegin()

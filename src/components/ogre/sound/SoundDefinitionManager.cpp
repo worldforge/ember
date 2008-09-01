@@ -24,14 +24,16 @@
 #include "config.h"
 #endif
 
-#include "XMLSoundDefParser.h"
 #include "SoundDefinitionManager.h"
+#include "XMLSoundDefParser.h"
+#include "SoundGroupDefinition.h"
 
 namespace EmberOgre {
 
 template<> EmberOgre::SoundDefinitionManager* Ember::Singleton<EmberOgre::SoundDefinitionManager>::ms_Singleton = 0;
 
 SoundDefinitionManager::SoundDefinitionManager()
+: mSoundParser(*this)
 {
 	mResourceType = "SoundDefinition";
 	
@@ -45,16 +47,64 @@ SoundDefinitionManager::~SoundDefinitionManager()
 {
 	Ogre::ResourceGroupManager::getSingleton()._unregisterScriptLoader(this);
 	Ogre::ResourceGroupManager::getSingleton()._unregisterResourceManager(mResourceType);
+	
+	for (SoundGroupDefinitionStore::iterator I = mSoundGroupDefinitions.begin(); I != mSoundGroupDefinitions.end(); ++I) {
+		delete I->second;
+	}
 }
 
 void SoundDefinitionManager::parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName)
 {
-	soundParser.parseScript(stream);
+	mSoundParser.parseScript(stream);
 }
 
 Ogre::Resource* SoundDefinitionManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams)
 {
 	return 0;
+}
+
+SoundGroupDefinition* SoundDefinitionManager::getSoundGroupDefinition(const std::string& name)
+{
+	std::map<std::string, SoundGroupDefinition*>::iterator it(mSoundGroupDefinitions.find(name));
+	if (it != mSoundGroupDefinitions.end())
+	{
+		return it->second;
+	}
+
+	return NULL;
+}
+
+SoundGroupDefinition* SoundDefinitionManager::createSoundGroupDefinition(const std::string& name)
+{
+	SoundGroupDefinition* newModel = getSoundGroupDefinition(name);
+	if (!newModel)
+	{
+		newModel = new SoundGroupDefinition();
+		if (newModel)
+		{
+			#ifdef THREAD_SAFE
+			pthread_mutex_lock(&mGroupModelsMutex);
+			#endif
+
+			mSoundGroupDefinitions[name] = newModel;
+
+			#ifdef THREAD_SAFE
+			pthread_mutex_unlock(&mGroupModelsMutex);
+			#endif
+
+			return newModel;
+		}
+		else
+		{
+			S_LOG_FAILURE("Failed to allocate sound group model " << name);
+			return NULL;
+		}
+	}
+	else
+	{
+		S_LOG_INFO("Sound Group definition " << name << " already exists.");
+		return NULL;
+	}
 }
 
 }

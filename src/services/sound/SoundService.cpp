@@ -20,20 +20,23 @@
 #include "config.h"
 #endif
 
-#include "framework/Service.h"
-#include "framework/ConsoleObject.h"
+#include "SoundSample.h"
 
-#include "services/EmberServices.h"
-#include "services/config/ConfigService.h"
 #include "services/logging/LoggingService.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
 
+#include "SoundService.h"
+#include "SoundInstance.h"
+
 #include <map>
 #include <cstring>
 
-#include "SoundService.h"
-#include "SoundInstance.h"
+#ifndef __WIN32__
+#include <AL/alut.h>
+#else
+#include <ALUT/alut.h>
+#endif
 
 namespace Ember
 {
@@ -80,57 +83,14 @@ namespace Ember
 			alcMakeContextCurrent(mContext);
 		#endif
 		
-		checkAlError();
+		SoundGeneral::checkAlError();
 		
 		mBaseSamples.clear();
-		mSoundGroupDefinitions.clear();
 
 		return Service::OK;
 	}
 		
-	SoundGroupDefinition* SoundService::getSoundGroupDefinition(const std::string& name)
-	{
-		std::map<std::string, SoundGroupDefinition*>::iterator it(mSoundGroupDefinitions.find(name));
-		if (it != mSoundGroupDefinitions.end())
-		{
-			return it->second;
-		}
 
-		return NULL;
-	}
-
-	SoundGroupDefinition* SoundService::createSoundGroupDefinition(const std::string& name)
-	{
-		SoundGroupDefinition* newModel = getSoundGroupDefinition(name);
-		if (!newModel)
-		{
-			newModel = new SoundGroupDefinition();
-			if (newModel)
-			{
-				#ifdef THREAD_SAFE
-				pthread_mutex_lock(&mGroupModelsMutex);
-				#endif
-
-				mSoundGroupDefinitions[name] = newModel;
-
-				#ifdef THREAD_SAFE
-				pthread_mutex_unlock(&mGroupModelsMutex);
-				#endif
-
-				return newModel;
-			}
-			else
-			{
-				S_LOG_FAILURE("Failed to allocate sound group model " << name);
-				return NULL;
-			}
-		}
-		else
-		{
-			S_LOG_INFO("Sound Group definition " << name << " already exists.");
-			return NULL;
-		}
-	}
 
 	/* Interface method for stopping this service */
 	void SoundService::stop(int code)
@@ -146,10 +106,7 @@ namespace Ember
 		}
 		mBaseSamples.clear();
 		
-		for (SoundGroupDefinitionStore::iterator I = mSoundGroupDefinitions.begin(); I != mSoundGroupDefinitions.end(); ++I) {
-			delete I->second;
-		}
-		mSoundGroupDefinitions.clear();
+
 	
 	///this hangs, perhaps because we don't clean up properly after us, so we'll deactivate it for now
 // 		#ifndef __WIN32__
@@ -211,7 +168,7 @@ namespace Ember
 	void SoundService::updateListenerPosition(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation)
 	{
 		alListener3f(AL_POSITION, pos.x(), pos.y(), pos.z());
-		checkAlError();
+		SoundGeneral::checkAlError();
 
 		///Set the direction of the listener.
 		///These conversions are however incorrect, we'll have to fix it. /ehj

@@ -61,13 +61,13 @@ SoundSource::~SoundSource()
 void SoundSource::setPosition(const WFMath::Point<3> &pos)
 {
 	alSource3f(mALSource, AL_POSITION, pos.x(), pos.y(), pos.z());
-	checkAlError();
+	SoundGeneral::checkAlError();
 }
 
 void SoundSource::setVelocity(const WFMath::Vector<3> &vel)
 {
 	alSource3f(mALSource, AL_VELOCITY, vel.x(), vel.y(), vel.z());
-	checkAlError();
+	SoundGeneral::checkAlError();
 }
 
 void SoundSource::setOrientation(const WFMath::Quaternion& orientation)

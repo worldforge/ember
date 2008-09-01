@@ -19,12 +19,18 @@
 #ifndef SOUNDSERVICE_H
 #define SOUNDSERVICE_H
 
-class Service;
-class ISoundProvider;
-
+//include the EmberServices here since that's the main way of reaching the sound service instance
+#include "../EmberServices.h"
+#include "framework/Service.h"
+#include "framework/ConsoleObject.h"
 #include "SoundGeneral.h"
-#include "SoundDefinition.h"
-#include "SoundSample.h" 
+
+#include <wfmath/vector.h>
+#include <wfmath/quaternion.h>
+#include <wfmath/point.h>
+
+#include <vector>
+#include <map>
 
 namespace Ember {
 
@@ -32,6 +38,7 @@ class IResourceProvider;
 class StreamedSoundSample;
 class SoundInstance;
 class SoundGroup;
+class BaseSoundSample;
 
 /**
  * @brief A service responsible for playing and managing sounds.
@@ -45,7 +52,6 @@ class SoundService: public Service, public ConsoleObject
 {
 typedef std::vector<SoundInstance*> SoundInstanceStore;
 typedef std::map<std::string, BaseSoundSample*> SoundSampleStore;
-typedef std::map<std::string, SoundGroupDefinition*> SoundGroupDefinitionStore;
 
 public:
 	/**
@@ -91,23 +97,6 @@ public:
 	 * @return True if the sound sample could be destroyed, false if it for some reason couldn't be destroyed, or if there was no such sound sample registered.
 	 */
 	bool destroySoundSample(const std::string& soundPath);
-
-	/**
-	* Register a new SoundDefinition used to define soundgroups
-	*
-	* @return A pointer to the new created SoundDefinition, if it fails, returns NULL
-	* TODO: move this to components/ogre since it belongs there and not here
-	*/
-	SoundGroupDefinition* createSoundGroupDefinition(const std::string& name);
-
-	/**
-	* Returns the SoundDefinition from its name
-	*
-	* @param name The desired SoundDefinition name
-	* @return A pointer to the SoundDefinition or NULL if it can't be found
-	* TODO: move this to components/ogre since it belongs there and not here
-	*/
-	SoundGroupDefinition* getSoundGroupDefinition(const std::string& name);
 
 	/**
 	* Register individual StreamedSamples to keep updated
@@ -183,11 +172,6 @@ private:
 	 */
 	SoundSampleStore mBaseSamples;
 
-	/**
-	* Thats the list of the sound groups parsed in
-	* sounddefs
-	*/
-	SoundGroupDefinitionStore mSoundGroupDefinitions;
 
 	#ifdef THREAD_SAFE
 	/**

@@ -24,7 +24,10 @@
 #define EMBERSOUNDSOURCE_H
 
 #include "SoundGeneral.h"
-
+#include <wfmath/vector.h>
+#include <wfmath/quaternion.h>
+#include <wfmath/point.h>
+#include <AL/al.h>
 namespace Ember {
 
 /**

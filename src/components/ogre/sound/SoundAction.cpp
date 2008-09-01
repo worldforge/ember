@@ -21,14 +21,16 @@
 
 #include "SoundAction.h"
 #include "SoundEntity.h"
+#include "SoundGroup.h"
+#include "SoundDefinition.h"
+#include "SoundGroupDefinition.h"
+#include "SoundDefinitionManager.h"
 
 #include "services/EmberServices.h"
 #include "services/logging/LoggingService.h"
 
 #include "services/sound/SoundService.h"
 #include "services/sound/SoundGeneral.h"
-#include "services/sound/SoundDefinition.h"
-#include "SoundGroup.h"
 #include "services/sound/SoundInstance.h"
 #include "services/sound/SoundSource.h"
 
@@ -63,7 +65,7 @@ namespace EmberOgre
 			return 0;
 		}
 	
-		SoundGroupDefinition* groupModel = EmberServices::getSingleton().getSoundService()->getSoundGroupDefinition(name);
+		SoundGroupDefinition* groupModel = SoundDefinitionManager::getSingleton().getSoundGroupDefinition(name);
 
 		if (!groupModel)
 		{

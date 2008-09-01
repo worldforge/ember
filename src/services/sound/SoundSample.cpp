@@ -22,26 +22,23 @@
 
 #include "SoundSample.h"
 
-#include "framework/Service.h"
-#include "framework/ConsoleObject.h"
 
-#include "services/EmberServices.h"
-#include "services/config/ConfigService.h"
 #include "services/logging/LoggingService.h"
-#include "framework/ConsoleBackend.h"
-#include "framework/Tokeniser.h"
 
 #include <map>
-#include <cstring>
 
 #include "SoundGeneral.h"
 #include "SoundService.h"
 #include "SoundSource.h"
 
+#ifndef __WIN32__
+#include <AL/alut.h>
+#else
+#include <ALUT/alut.h>
+#endif
+
 namespace Ember
 {
-
-
 
 StaticSoundBinding::StaticSoundBinding(SoundSource& source, StaticSoundSample& sample)
 : SoundBinding(source)
@@ -69,7 +66,7 @@ StaticSoundBinding::StaticSoundBinding(SoundSource& source, StaticSoundSample& s
 // 		return &mSource;
 // 	}
 
-	SoundSampleType BaseSoundSample::getType()
+	SoundGeneral::SoundSampleType BaseSoundSample::getType()
 	{
 		return mType;
 	}
@@ -86,7 +83,7 @@ StaticSoundBinding::StaticSoundBinding(SoundSource& source, StaticSoundSample& s
 	StaticSoundSample::StaticSoundSample(const ResourceWrapper& resource, bool playsLocal, float volume)
 	: mResource(resource)
 	{
-		mType = SAMPLE_WAV;
+		mType = SoundGeneral::SAMPLE_WAV;
 
 		// Generate a new Buffer
 		// todo: looking for a shared buffer on static samples
@@ -137,7 +134,7 @@ StaticSoundBinding::StaticSoundBinding(SoundSource& source, StaticSoundSample& s
 		if (alIsBuffer(mBuffer))
 		{
 			alDeleteBuffers(1, &mBuffer);
-			checkAlError();
+			SoundGeneral::checkAlError();
 		}
 
 // 		if (alIsSource(mSource))

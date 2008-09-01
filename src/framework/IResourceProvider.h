@@ -25,6 +25,7 @@
 #define EMBERIRESOURCEWRAPPER_H
 
 #include <memory>
+#include <string>
 
 namespace Ember {
 
