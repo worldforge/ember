@@ -71,7 +71,6 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "services/wfut/WfutService.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/ConsoleObject.h" //TODO: this will be included in a different class
-#include "framework/binreloc.h" //this is needed for binreloc functionality
 
 
 // ------------------------------
@@ -220,7 +219,10 @@ EmberOgre::~EmberOgre()
 	delete mMotionManager;
 	delete mTerrainGenerator;
 
+	Ember::EmberServices::getSingleton().getSoundService()->setResourceProvider(0);
 	delete mSoundManager;
+	
+	Ember::EmberServices::getSingleton().getScriptingService()->setResourceProvider(0);
 
 	delete mGUIManager;
 
