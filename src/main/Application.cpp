@@ -214,6 +214,7 @@ void Application::initializeServices()
 	S_LOG_INFO("Using media from " << EmberServices::getSingleton().getConfigService()->getEmberMediaDirectory());
 
 	/// Initialize the Sound Service
+	S_LOG_INFO("Initializing sound service");
 	EmberServices::getSingleton().getSoundService()->start();
 
 	/// Initialize and start the Metaserver Service.
