@@ -82,7 +82,7 @@ namespace Ember
 		
 		checkAlError();
 		
-		mSamples.clear();
+		mBaseSamples.clear();
 		mSoundGroupDefinitions.clear();
 
 		return Service::OK;
@@ -170,7 +170,7 @@ namespace Ember
 
 	void SoundService::registerStream(StreamedSoundSample* copy)
 	{
-		#ifdef THREAD_SAFE
+/*		#ifdef THREAD_SAFE
 		pthread_mutex_lock(&mSamplesMutex);
 		#endif
 
@@ -178,32 +178,32 @@ namespace Ember
 
 		#ifdef THREAD_SAFE
 		pthread_mutex_unlock(&mSamplesMutex);
-		#endif
+		#endif*/
 	}
 
 	bool SoundService::unregisterStream(const StreamedSoundSample* sample)
 	{
-		#ifdef THREAD_SAFE
-		pthread_mutex_lock(&mSamplesMutex);
-		#endif
-	
-		std::list<StreamedSoundSample*>::iterator it;
-		for (it = mSamples.begin(); it != mSamples.end(); )
-		{
-			if ((*it) == sample)
-			{
-				it = mSamples.erase(it);
-				return true;
-			}
-			else
-			{
-				++it;
-			}
-		}
-
-		#ifdef THREAD_SAFE
-		pthread_mutex_unlock(&mSamplesMutex);
-		#endif
+// 		#ifdef THREAD_SAFE
+// 		pthread_mutex_lock(&mSamplesMutex);
+// 		#endif
+// 	
+// 		std::list<StreamedSoundSample*>::iterator it;
+// 		for (it = mSamples.begin(); it != mSamples.end(); )
+// 		{
+// 			if ((*it) == sample)
+// 			{
+// 				it = mSamples.erase(it);
+// 				return true;
+// 			}
+// 			else
+// 			{
+// 				++it;
+// 			}
+// 		}
+// 
+// 		#ifdef THREAD_SAFE
+// 		pthread_mutex_unlock(&mSamplesMutex);
+// 		#endif
 
 		return false;
 	}
