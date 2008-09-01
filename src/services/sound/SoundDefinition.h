@@ -23,96 +23,61 @@
 
 namespace Ember 
 {
+/**
+* The SoundDefinition class represent each buffer described inside specific sound groups.
+*/
+class SoundDefinition
+{
+
+public:
 	/**
-	 * The SoundDefinition class represent each buffer described inside
-	 * especific sound groups.
-	 */
-	class SoundDefinition
-	{
-		private:
-			/**
-			 * Filename WITH path
-			 */
-			std::string mFilename;
-
-			/**
-			 * Defines the sound Format (WAV/OGG/PCM)
-			 */
-			SoundSampleType mSampleType;
-
-			/**
-			 * If the sample plays in local (always audible) coordinates
-			 * or in the world coordinates
-			 */
-			bool mPlaysLocally;
-
-			/**
-			 * The volume the sound is going to be played with
-			 * ranges from 0.0f to 1.0f
-			 */
-			float mVolume;
-
-		public:
-			/**
-			 * Initialize this SoundDefinition
-			 *
-			 * @param filename The filename (with path) of the sample.
-			 * @param type The Format of the sample (OGG/WAV/PCM)
-			 * @param playLocal Defines if the sound is 2D or 3D
-			 * @param volume The sample volume to be played
-			 */
-			void setup(const std::string& filename, SoundSampleType type, 
-					bool playLocal, float volume);
-
-			/**
-			 * Return filename
-			 */
-			const std::string& getFilename();
-
-			/**
-			 * Return the format
-			 */
-			SoundSampleType getFormat();
-
-			/**
-			 * Return if the sound is 2D/3D
-			 */
-			bool getPlayLocally();
-
-			/**
-			 * Return the sound Volume
-			 */
-			float getVolume();
-	};
+	* Initialize this SoundDefinition
+	*
+	* @param filename The filename (with path) of the sample.
+	* @param type The Format of the sample (OGG/WAV/PCM)
+	* @param playLocal Defines if the sound is 2D or 3D
+	* @param volume The sample volume to be played
+	*/
+	void setup(const std::string& filename, SoundSampleType type, 
+			bool playLocal, float volume);
 
 	/**
-	 * The SoundGroupDefinition class describes a set
-	 * of sound samples (SoundDefinitions)
-	 */
-	class SoundGroupDefinition
-	{
-		private:
-			std::list<SoundDefinition*> mSamples;
+	* Return filename
+	*/
+	const std::string& getFilename();
 
-		public:
-			SoundGroupDefinition();
-			
-			/**
-			 * Insert a sound sample into this group definition
-			 */
-			void insertSample(const std::string& name, SoundSampleType type, 
-					bool playsLocally, float volume);
+	/**
+	* Return the format
+	*/
+	SoundSampleType getFormat();
 
-			/**
-			 * Return an iterator to the first member of the list
-			 */
-			std::list<SoundDefinition*>::const_iterator getSamplesBegin();
+	/**
+	* Return the sound Volume
+	*/
+	float getVolume();
 
-			/**
-			 * Return an iterator to the last member of the list
-			 */
-			std::list<SoundDefinition*>::const_iterator getSamplesEnd();
-	};
+protected:
+	
+	/**
+	* Filename WITH path
+	*/
+	std::string mFilename;
+
+	/**
+	* Defines the sound Format (WAV/OGG/PCM)
+	*/
+	SoundSampleType mSampleType;
+
+
+	/**
+	* The volume the sound is going to be played with
+	* ranges from 0.0f to 1.0f
+	*/
+	float mVolume;
+
+};
+
+
 }
 
 #endif
