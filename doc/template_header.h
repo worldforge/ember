@@ -36,6 +36,8 @@
 //
 // - Never use dynamic_cast unless it's absolutely, absolutely necessary. Use static_cast instead.
 //
+// - When documenting a class, member or field always use the @brief doxygen keyword first to provide a quick description. Always use full English sentences, i.e. with uppercase initial letter and a period on the end. See examples later on in this document.
+//
 //
 //---------------------------------------------------------------------------------------------------
 //
@@ -119,7 +121,8 @@ namespace applicationNamespace {
  */
 class NameOfClass
 {
-	public:
+/* NOTE: We always put the public members first, since those are the ones that people looking at this header probably are most interested in. */
+public:
 	
 	/**
 	* @brief Ctor.
@@ -134,8 +137,7 @@ class NameOfClass
 	// Example of a setter method:
 	/**
 	* @brief Sets the name of this gizmo.
-	* If there already is a gizmo with this name, a number will be
-	* appended to the name, and the naming will be attempted again.
+	* If there already is a gizmo with this name, a number will be appended to the name, and the naming will be attempted again.
 	*
 	* @param name The new name of the gizmo.
 	*/
@@ -174,10 +176,10 @@ class NameOfClass
 	virtual std::string createRepeatingString(std::string message, int repeatCount) const;
 	
 	
-	protected:
+protected:
 	
 	
-	private:
+private:
 	
 	// NOTE: Class variables are prefixed with "m", static variables are
 	//       prefixed with "s".
