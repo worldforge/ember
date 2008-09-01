@@ -20,6 +20,8 @@
 #include "config.h"
 #endif
 
+#include "SoundSample.h"
+
 #include "framework/Service.h"
 #include "framework/ConsoleObject.h"
 
@@ -32,7 +34,6 @@
 #include <map>
 #include <cstring>
 
-#include "SoundSample.h"
 #include "SoundGeneral.h"
 #include "SoundService.h"
 #include "SoundSource.h"
@@ -40,14 +41,7 @@
 namespace Ember
 {
 
-SoundBinding::SoundBinding(SoundSource& source)
-: mSource(source)
-{
-}
 
-SoundBinding::~SoundBinding()
-{
-}
 
 StaticSoundBinding::StaticSoundBinding(SoundSource& source, StaticSoundSample& sample)
 : SoundBinding(source)

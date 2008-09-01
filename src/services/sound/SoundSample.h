@@ -20,50 +20,15 @@
 #define SOUND_SAMPLE_H
 
 #include "SoundGeneral.h"
-#include "framework/IResourceProvider.h"
+#include "SoundBinding.h"
 #include <vector>
+#include "framework/IResourceProvider.h"
 
 namespace Ember
 {
 class SoundSource;
 class StaticSoundSample;
 
-/**
-@brief Acts as a binding between a sound source and one or many sound data buffers.
-
-An instance of this is responsible for binding a sound source and one or many sound data buffers together. The buffers will contain the actual sound data to be played, and without this binding no sound can be played.
-Normally the binding occurs in the constructor, but some sounds needs to be streamed, and thus further binding alterations needs to occur in the update() method. The update() method will be called once each frame when the binding is in use.
-
-@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
-*/
-class SoundBinding
-{
-public:
-
-/**
- * @brief Ctor.
- * In most subclasses you want to perform the initial, if not all, bind operations in the constructor.
- * @param source The sound source to which this binding should bind any sound data buffers.
- */
-SoundBinding(SoundSource& source);
-/**
- * @brief Dtor.
- * Normally nothing should happen here, unless there's a need to unqueue any buffers.
- */
-virtual ~SoundBinding();
-
-/**
- * @brief Called each frame to allow the binding to do any dynamic updates if so required.
- * This is especially true for streaming sounds, where the buffers needs to be updated as OpenAL plays through them.
- */
-virtual void update() = 0;
-
-protected:
-/**
- * @brief The SoundSource to which this binding is attached.
- */
-SoundSource& mSource;
-};
 
 /**
 @brief A binding to a "static" sound source, i.e. a sound source which doesn't have to be updated.
