@@ -1,5 +1,6 @@
 /*
     Copyright (C) 2008 Romulo Fernandes Machado (nightz)
+    Copyright (C) 2008 Erik Hjortsberg <erik.hjortsberg@iteam.se>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,14 +23,7 @@
 
 #include "SoundEntity.h"
 
-#include "framework/Service.h"
-#include "framework/ConsoleObject.h"
-
-#include "services/EmberServices.h"
-#include "services/config/ConfigService.h"
 #include "services/logging/LoggingService.h"
-#include "framework/ConsoleBackend.h"
-#include "framework/Tokeniser.h"
 
 #include "components/ogre/EmberPhysicalEntity.h"
 
@@ -70,13 +64,15 @@ namespace EmberOgre
 		return mParentEntity.getPredictedVelocity();
 	}
 
-	void SoundEntity::playAction(const std::string& name)
+	const SoundAction* SoundEntity::playAction(const std::string& name)
 	{
 		ActionStore::iterator I = mActions.find(name);
 		if (I != mActions.end()) {
 			SoundAction* action = I->second;
 			action->play();
+			return action;
 		}
+		return 0;
 	}
 
 	void SoundEntity::Entity_Action(const Atlas::Objects::Operation::RootOperation& act)
@@ -90,12 +86,7 @@ namespace EmberOgre
 		}
 	}
 	
-	void SoundEntity::update()
-	{
-		// TODO
-	}
-	
-	void SoundEntity::playMovementSound(const std::string& actionName)
+	const SoundAction* SoundEntity::playMovementSound(const std::string& actionName)
 	{
 		ActionStore::iterator I = mMovementActions.find(actionName);
 		if (I != mMovementActions.end()) {
@@ -113,6 +104,7 @@ namespace EmberOgre
 			}
 			mCurrentMovementAction = 0;
 		}
+		return mCurrentMovementAction;
 	}
 	
 	

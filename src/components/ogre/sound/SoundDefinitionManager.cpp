@@ -33,7 +33,7 @@ namespace EmberOgre {
 template<> EmberOgre::SoundDefinitionManager* Ember::Singleton<EmberOgre::SoundDefinitionManager>::ms_Singleton = 0;
 
 SoundDefinitionManager::SoundDefinitionManager()
-: mSoundParser(*this)
+: mSoundParser(new XMLSoundDefParser(*this))
 {
 	mResourceType = "SoundDefinition";
 	
@@ -55,7 +55,7 @@ SoundDefinitionManager::~SoundDefinitionManager()
 
 void SoundDefinitionManager::parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName)
 {
-	mSoundParser.parseScript(stream);
+	mSoundParser->parseScript(stream);
 }
 
 Ogre::Resource* SoundDefinitionManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams)

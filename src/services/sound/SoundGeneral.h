@@ -1,5 +1,6 @@
 /*
     Copyright (C) 2008 Romulo Fernandes Machado (nightz)
+    Copyright (C) 2008 Erik Hjortsberg <erik.hjortsberg@iteam.se>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,29 +20,8 @@
 #ifndef SOUND_GENERAL_H
 #define SOUND_GENERAL_H
 
-// #include <AL/al.h>
-// #include <AL/alc.h>
-// #include <ogg/ogg.h>
-// #include <vorbis/codec.h>
-// #include <vorbis/vorbisfile.h>
+#include <string>
 
-// #ifdef THREAD_SAFE
-// #include <pthread.h>
-// #endif
-// 
-// #ifndef __WIN32__
-// #include <AL/alut.h>
-// #else
-// #include <ALUT/alut.h>
-// #endif
-/*
-#include <wfmath/point.h>
-#include <wfmath/vector.h>
-#include <wfmath/quaternion.h>*/
-			 
-// #include <Atlas/Objects/ObjectsFwd.h>
-// #include <sigc++/trackable.h>
-// #include <sigc++/signal.h>
 
 // #define OGG_BUFFER_SIZE (4096 * 8)
 
@@ -58,7 +38,14 @@ public:
 		SAMPLE_OGG
 	};
 
-	static void checkAlError();
+	/**
+	 * @brief Checks for any errors in the OpenAL context.
+	 * If an error has occurred, it's logged and this method returns false.
+	 * Make sure to call this after you've interacted with OpenAL to make sure that the internal error state is reset in time for the next call to OpenAL. If not, the errors will carry over.
+	 * @param  description If an error occurs, an entry will be written to the log. If you provide a description this will be added too, which might be good when looking through the log and figuring out what's wrong.
+	 * @return False if an error has occurred, else true.
+	 */
+	static bool checkAlError(const std::string& description = "");
 };
 }
 

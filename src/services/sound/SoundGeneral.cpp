@@ -1,5 +1,6 @@
 /*
     Copyright (C) 2008 Romulo Fernandes Machado (nightz)
+    Copyright (C) 2008 Erik Hjortsberg <erik.hjortsberg@iteam.se>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,13 +29,19 @@
 
 namespace Ember 
 {
-	void SoundGeneral::checkAlError()
+	bool SoundGeneral::checkAlError(const std::string& description)
 	{
 		ALenum error = alGetError();
-		if (error == AL_NO_ERROR)
-			return;
-
-		S_LOG_FAILURE("openAl error: " << alutGetErrorString(error));
+		if (error == AL_NO_ERROR) {
+			return true;
+		}
+		
+		if (description != "") {
+			S_LOG_FAILURE("OpenAl error: " << alutGetErrorString(error));
+		} else {
+			S_LOG_FAILURE("OpenAl error: " << alutGetErrorString(error) << "\nDescription: " << description);
+		}
+		return false;
 	}
 
 }

@@ -40,75 +40,75 @@
 
 namespace Ember
 {
-	/* Constructor */
-	SoundService::SoundService()
-	#ifdef WIN32
-	 : mContext(0), mDevice(0), mResourceProvider(0)
-	#else
-	 : mResourceProvider(0)
+/* Constructor */
+SoundService::SoundService()
+#ifdef WIN32
+	: mContext(0), mDevice(0), mResourceProvider(0)
+#else
+	: mResourceProvider(0)
+#endif
+{
+	setName("Sound Service");
+	setDescription("Service for reproduction of sound effects and background music");
+
+	#ifdef THREAD_SAFE
+	pthread_mutex_init(&mGroupsMutex, NULL);
+	pthread_mutex_init(&mSamplesMutex, NULL);
+	pthread_mutex_init(&mGroupModelsMutex, NULL);
 	#endif
-	{
-		setName("Sound Service");
-		setDescription("Service for reproduction of sound effects and background music");
+}
 
-		#ifdef THREAD_SAFE
-		pthread_mutex_init(&mGroupsMutex, NULL);
-		pthread_mutex_init(&mSamplesMutex, NULL);
-		pthread_mutex_init(&mGroupModelsMutex, NULL);
-		#endif
-	}
+/* dtor */
+SoundService::~SoundService()
+{
+}
 
-	/* dtor */
-	SoundService::~SoundService()
-	{
-	}
+/* Method for starting this service */
+Service::Status SoundService::start()
+{
+	S_LOG_INFO("Sound Service starting");
 	
-	/* Method for starting this service */
-	Service::Status SoundService::start()
-	{
-		S_LOG_INFO("Sound Service starting");
-		
-		#ifndef __WIN32__
-			alutInit(NULL, NULL);
-		#else
-			mDevice = alcOpenDevice("DirectSound3D");
+	#ifndef __WIN32__
+		alutInit(NULL, NULL);
+	#else
+		mDevice = alcOpenDevice("DirectSound3D");
 
-			if (!mDevice)
-			{
-				S_LOG_FAILURE("Sound Service failed to start, sound device not found 'DirectSound3D'");
-				return Service::FAILURE;
-			}
-
-			mContext = alcCreateContext(mDevice, NULL);
-			alcMakeContextCurrent(mContext);
-		#endif
-		
-		SoundGeneral::checkAlError();
-		
-		mBaseSamples.clear();
-
-		return Service::OK;
-	}
-		
-
-
-	/* Interface method for stopping this service */
-	void SoundService::stop(int code)
-	{
-		for (SoundInstanceStore::iterator I = mInstances.begin(); I != mInstances.end(); ++I) {
-			S_LOG_WARNING("Found a still registered SoundInstance when shutting down sound service. This shouldn't normally happen, since all instances should be handled by their proper owners and removed well in advance of the SoundService shutting down. We'll now delete the instance, which might lead to a segfault or similiar problem as the instance owner might still expect it to be existing.");
-			delete *I;
+		if (!mDevice)
+		{
+			S_LOG_FAILURE("Sound Service failed to start, sound device not found 'DirectSound3D'");
+			return Service::FAILURE;
 		}
-		mInstances.clear();
-		
-		for (SoundSampleStore::iterator I = mBaseSamples.begin(); I != mBaseSamples.end(); ++I) {
-			delete I->second;
-		}
-		mBaseSamples.clear();
-		
 
+		mContext = alcCreateContext(mDevice, NULL);
+		alcMakeContextCurrent(mContext);
+	#endif
 	
-	///this hangs, perhaps because we don't clean up properly after us, so we'll deactivate it for now
+	SoundGeneral::checkAlError();
+	
+	mBaseSamples.clear();
+
+	return Service::OK;
+}
+	
+
+
+/* Interface method for stopping this service */
+void SoundService::stop(int code)
+{
+	for (SoundInstanceStore::iterator I = mInstances.begin(); I != mInstances.end(); ++I) {
+		S_LOG_WARNING("Found a still registered SoundInstance when shutting down sound service. This shouldn't normally happen, since all instances should be handled by their proper owners and removed well in advance of the SoundService shutting down. We'll now delete the instance, which might lead to a segfault or similiar problem as the instance owner might still expect it to be existing.");
+		delete *I;
+	}
+	mInstances.clear();
+	
+	for (SoundSampleStore::iterator I = mBaseSamples.begin(); I != mBaseSamples.end(); ++I) {
+		delete I->second;
+	}
+	mBaseSamples.clear();
+	
+
+
+///this hangs, perhaps because we don't clean up properly after us, so we'll deactivate it for now
 // 		#ifndef __WIN32__
 // 			alutExit();
 // 		#else
@@ -116,30 +116,30 @@ namespace Ember
 // 			alcDestroyContext(mContext);
 // 			alcCloseDevice(mDevice);
 // 		#endif
-    	Service::stop(code);
-		setStatus(Service::OK);
-	}
+	Service::stop(code);
+	setStatus(Service::OK);
+}
 
-	void SoundService::runCommand(const std::string &command, const std::string &args)
-	{
-	}
+void SoundService::runCommand(const std::string &command, const std::string &args)
+{
+}
 
 
-	void SoundService::registerStream(StreamedSoundSample* copy)
-	{
+void SoundService::registerStream(StreamedSoundSample* copy)
+{
 /*		#ifdef THREAD_SAFE
-		pthread_mutex_lock(&mSamplesMutex);
-		#endif
+	pthread_mutex_lock(&mSamplesMutex);
+	#endif
 
-		mSamples.push_back(copy);
+	mSamples.push_back(copy);
 
-		#ifdef THREAD_SAFE
-		pthread_mutex_unlock(&mSamplesMutex);
-		#endif*/
-	}
+	#ifdef THREAD_SAFE
+	pthread_mutex_unlock(&mSamplesMutex);
+	#endif*/
+}
 
-	bool SoundService::unregisterStream(const StreamedSoundSample* sample)
-	{
+bool SoundService::unregisterStream(const StreamedSoundSample* sample)
+{
 // 		#ifdef THREAD_SAFE
 // 		pthread_mutex_lock(&mSamplesMutex);
 // 		#endif
@@ -162,34 +162,34 @@ namespace Ember
 // 		pthread_mutex_unlock(&mSamplesMutex);
 // 		#endif
 
-		return false;
-	}
+	return false;
+}
 
-	void SoundService::updateListenerPosition(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation)
+void SoundService::updateListenerPosition(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation)
+{
+	alListener3f(AL_POSITION, pos.x(), pos.y(), pos.z());
+	SoundGeneral::checkAlError("Setting the listener position.");
+
+	///Set the direction of the listener.
+	///These conversions are however incorrect, we'll have to fix it. /ehj
+	WFMath::RotMatrix<3> rotMatrix(orientation);
+	WFMath::Vector<3> vectors[3];
+	
+	for (size_t iCol = 0; iCol < 3; iCol++)
 	{
-		alListener3f(AL_POSITION, pos.x(), pos.y(), pos.z());
-		SoundGeneral::checkAlError();
-
-		///Set the direction of the listener.
-		///These conversions are however incorrect, we'll have to fix it. /ehj
-		WFMath::RotMatrix<3> rotMatrix(orientation);
-		WFMath::Vector<3> vectors[3];
-		
-        for (size_t iCol = 0; iCol < 3; iCol++)
-        {
-            vectors[iCol].x() = rotMatrix.elem(0, iCol);
-            vectors[iCol].y() = rotMatrix.elem(1, iCol);
-            vectors[iCol].z() = rotMatrix.elem(2, iCol);
-        }
-        
-        ALfloat aluVectors[6];
-        aluVectors[0] = vectors[1].x();
-        aluVectors[1] = vectors[1].y();
-        aluVectors[2] = vectors[1].z();
-        aluVectors[3] = vectors[2].x();
-        aluVectors[4] = vectors[2].y();
-        aluVectors[5] = vectors[2].z();
-        
+		vectors[iCol].x() = rotMatrix.elem(0, iCol);
+		vectors[iCol].y() = rotMatrix.elem(1, iCol);
+		vectors[iCol].z() = rotMatrix.elem(2, iCol);
+	}
+	
+	ALfloat aluVectors[6];
+	aluVectors[0] = vectors[1].x();
+	aluVectors[1] = vectors[1].y();
+	aluVectors[2] = vectors[1].z();
+	aluVectors[3] = vectors[2].x();
+	aluVectors[4] = vectors[2].y();
+	aluVectors[5] = vectors[2].z();
+	
 /*        ALfloat aluVectors[6];
         aluVectors[0] = rotMatrix.elem(0, 1);
         aluVectors[1] = rotMatrix.elem(1, 1);
@@ -197,17 +197,17 @@ namespace Ember
         aluVectors[3] = rotMatrix.elem(0, 2);
         aluVectors[4] = rotMatrix.elem(1, 2);
         aluVectors[5] = rotMatrix.elem(2, 2);    */    
-		
-		// TODO: Convert the quaternion to forward/up vectors
-		alListenerfv(AL_ORIENTATION, aluVectors);
+	
+	alListenerfv(AL_ORIENTATION, aluVectors);
+	SoundGeneral::checkAlError("Setting the listener orientation.");
+}
+	
+void SoundService::cycle()
+{
+	for (SoundInstanceStore::iterator I = mInstances.begin(); I != mInstances.end(); ++I) {
+		(*I)->update();
 	}
-		
-	void SoundService::cycle()
-	{
-		for (SoundInstanceStore::iterator I = mInstances.begin(); I != mInstances.end(); ++I) {
-			(*I)->update();
-		}
-	}
+}
 	
 BaseSoundSample* SoundService::createOrRetrieveSoundSample(const std::string& soundPath)
 {

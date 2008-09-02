@@ -36,19 +36,22 @@ SoundSource::SoundSource()
 	alGetError();
 	// Bind the buffer with the source.
 	alGenSources(1, &mALSource);
-	if (alGetError() != AL_NO_ERROR)
+	if (!SoundGeneral::checkAlError("Creating new sound source."))
 	{
-		S_LOG_FAILURE("Failed to generate a new sound source.");
 		alDeleteSources(1, &mALSource);
 		throw Exception("Failed to generate a new sound source.");
 	}
 	
 	alSourcef(mALSource, AL_PITCH, 1.0f);
+	SoundGeneral::checkAlError("Setting sound source pitch.");
 	alSourcef(mALSource, AL_GAIN, 1.0f);
+	SoundGeneral::checkAlError("Setting sound source gain.");
 	alSource3f(mALSource, AL_POSITION, 0, 0, 0);
+	SoundGeneral::checkAlError("Setting sound source position.");
 	alSource3f(mALSource, AL_VELOCITY, 0, 0, 0);
+	SoundGeneral::checkAlError("Setting sound source velocity.");
 	alSourcei(mALSource, AL_LOOPING, true);
-	
+	SoundGeneral::checkAlError("Setting sound source looping.");
 
 }
 
@@ -56,18 +59,19 @@ SoundSource::SoundSource()
 SoundSource::~SoundSource()
 {
 	alDeleteSources(1, &mALSource);
+	SoundGeneral::checkAlError("Deleting sound source.");
 }
 
 void SoundSource::setPosition(const WFMath::Point<3> &pos)
 {
 	alSource3f(mALSource, AL_POSITION, pos.x(), pos.y(), pos.z());
-	SoundGeneral::checkAlError();
+	SoundGeneral::checkAlError("Setting sound source position.");
 }
 
 void SoundSource::setVelocity(const WFMath::Vector<3> &vel)
 {
 	alSource3f(mALSource, AL_VELOCITY, vel.x(), vel.y(), vel.z());
-	SoundGeneral::checkAlError();
+	SoundGeneral::checkAlError("Setting sound source velocity.");
 }
 
 void SoundSource::setOrientation(const WFMath::Quaternion& orientation)

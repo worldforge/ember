@@ -46,136 +46,58 @@ StaticSoundBinding::StaticSoundBinding(SoundSource& source, StaticSoundSample& s
 {
 	///Bind it to the buffer.
 	alSourcei(source.getALSource(), AL_BUFFER, sample.getBuffer());
+	SoundGeneral::checkAlError("Binding sound source to static sound buffer.");
+}
+
+SoundGeneral::SoundSampleType BaseSoundSample::getType()
+{
+	return mType;
 }
 
 
-
-
-// 	void BaseSoundSample::setSource(ALuint src)
-// 	{
-// 		mSource = src;
-// 	}
-
-// 	ALuint BaseSoundSample::getSource()
-// 	{
-// 		return mSource;
-// 	}
-// 
-// 	ALuint* BaseSoundSample::getSourcePtr()
-// 	{
-// 		return &mSource;
-// 	}
-
-	SoundGeneral::SoundSampleType BaseSoundSample::getType()
-	{
-		return mType;
-	}
+StaticSoundSample::StaticSoundSample(const ResourceWrapper& resource, bool playsLocal, float volume)
+: mBuffer(0), mResource(resource)
+{
+	mType = SoundGeneral::SAMPLE_WAV;
+	mBuffer = alutCreateBufferFromFileImage(mResource.getDataPtr(), mResource.getSize());
 	
-// 	void BaseSoundSample::play()
-// 	{
-// 	}
-// 
-// 	void BaseSoundSample::stop()
-// 	{
-// 	}
-
-	// Static Sounds (PCM, WAV)
-	StaticSoundSample::StaticSoundSample(const ResourceWrapper& resource, bool playsLocal, float volume)
-	: mResource(resource)
+	if (!SoundGeneral::checkAlError("Generated buffer for static sample."))
 	{
-		mType = SoundGeneral::SAMPLE_WAV;
+		alDeleteBuffers(1, &mBuffer);
+	}
+}
 
-		// Generate a new Buffer
-		// todo: looking for a shared buffer on static samples
-		alGenBuffers(1, &mBuffer);
+StaticSoundSample::~StaticSoundSample()
+{
+	if (alIsBuffer(mBuffer))
+	{
+		alDeleteBuffers(1, &mBuffer);
+		SoundGeneral::checkAlError("Deleting static sound buffers.");
+	}
+}
+
+ALuint StaticSoundSample::getBuffer()
+{
+	return mBuffer;
+}
 	
-		if (alGetError() != AL_NO_ERROR)
-		{
-			S_LOG_FAILURE("Failed to generate a new static sound buffer.");
-			return;
-		}
-			
+BaseSoundSample::BufferStore StaticSoundSample::getBuffers()
+{
+	BaseSoundSample::BufferStore buffers;
+	buffers.push_back(mBuffer);
+	return buffers;
+}
 
-		mBuffer = alutCreateBufferFromFileImage(mResource.getDataPtr(), mResource.getSize());
 
-// 		if (getBufferPtr() == AL_NONE)
-// 		{
-// 			S_LOG_FAILURE("Failed to set buffer with file ("+ filename +") data.");
-// 			return;
-// 		}
+SoundBinding* StaticSoundSample::createBinding(SoundSource& source)
+{
+	return new StaticSoundBinding(source, *this);
+}
 
-		// Bind the buffer with the source.
-// 		alGenSources(1, &mSource);
-
-		if (alGetError() != AL_NO_ERROR)
-		{
-			S_LOG_FAILURE("Failed to generate a new buffer.");
-			alDeleteBuffers(1, &mBuffer);
-
-			return;
-		}
-	
-
-// 		if (playsLocal == PLAY_LOCAL)
-// 			alSourcei(mSource, AL_SOURCE_RELATIVE, true);
-
-/*		if (alGetError() != AL_NO_ERROR)
-		{
-			S_LOG_FAILURE("Failed to set sound sample attributes.");
-			alDeleteBuffers(1, &mBuffer);
-			alDeleteSources(1, &mSource);
-			
-			return;
-		}*/
-	}
-
-	StaticSoundSample::~StaticSoundSample()
-	{
-		if (alIsBuffer(mBuffer))
-		{
-			alDeleteBuffers(1, &mBuffer);
-			SoundGeneral::checkAlError();
-		}
-
-// 		if (alIsSource(mSource))
-// 		{
-// 			alDeleteSources(1, &mSource);
-// 			checkAlError();
-// 		}
-	}
-
-	ALuint StaticSoundSample::getBuffer()
-	{
-		return mBuffer;
-	}
-		
-	BaseSoundSample::BufferStore StaticSoundSample::getBuffers()
-	{
-		BaseSoundSample::BufferStore buffers;
-		buffers.push_back(mBuffer);
-		return buffers;
-	}
-	
-	
-	SoundBinding* StaticSoundSample::createBinding(SoundSource& source)
-	{
-		return new StaticSoundBinding(source, *this);
-	}
-
-// 	ALuint* StaticSoundSample::getBufferPtr()
-// 	{
-// 		return &mBuffer;
-// 	}
-// 
-// 	void StaticSoundSample::setBuffer(ALuint buf)
-// 	{
-// 		mBuffer = buf;
-// 	}
-
-	unsigned int StaticSoundSample::getNumberOfBuffers()
-	{
-		return 1;
-	}
+unsigned int StaticSoundSample::getNumberOfBuffers()
+{
+	return 1;
+}
 
 // 	void StaticSoundSample::play()
 // 	{

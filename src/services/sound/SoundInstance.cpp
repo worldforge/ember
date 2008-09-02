@@ -60,24 +60,21 @@ bool SoundInstance::play()
 {
 	alGetError();
 	alSourcePlay(mSource->getALSource());
-	///TODO: add error handling
-	return true;
+	return SoundGeneral::checkAlError("Playing sound instance.");
 }
 
 bool SoundInstance::stop()
 {
 	alGetError();
 	alSourceStop(mSource->getALSource());
-	///TODO: add error handling
-	return true;
+	return SoundGeneral::checkAlError("Stopping sound instance.");
 }
 
 bool SoundInstance::pause()
 {
 	alGetError();
 	alSourcePause(mSource->getALSource());
-	///TODO: add error handling
-	return true;
+	return SoundGeneral::checkAlError("Pausing sound instance.");
 }
 
 void SoundInstance::update()

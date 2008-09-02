@@ -25,13 +25,14 @@
 #define EMBEROGRE_SOUNDDEFINITIONMANAGER_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
-#include "XMLSoundDefParser.h"
 
 #include <OgreResourceManager.h>
 #include "framework/Singleton.h"
 
 namespace EmberOgre {
 
+class SoundGroupDefinition;
+class XMLSoundDefParser;
 /**
 	@author Romulo Fernandes <abra185@gmail.com>
 */
@@ -63,7 +64,7 @@ public:
 	*/
 	SoundGroupDefinition* getSoundGroupDefinition(const std::string& name);
 protected:
-	XMLSoundDefParser mSoundParser;
+	std::auto_ptr<XMLSoundDefParser> mSoundParser;
 
 	Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams);
 	
