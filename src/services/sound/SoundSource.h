@@ -31,29 +31,58 @@
 namespace Ember {
 
 /**
-	@brief Represents a sound source in the 3d world.
-	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+@brief Represents a sound source in the 3d world.
+An instance of this class mainly envelopes an OpenAL soundsource, allocating it when it's created and removing it at destruction time.
+@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
 class SoundSource
 {
 friend class SoundInstance;
 public:
-    SoundSource();
-
-    virtual ~SoundSource();
-    
-    void setPosition(const WFMath::Point<3>& position);
-    void setOrientation(const WFMath::Quaternion& orientation);
-    void setVelocity(const WFMath::Vector<3>& velocity);
+	
+	/**
+	 * @brief Dtor.
+	 * When an instance is destroyed the OpenAL sound source will be released as well.
+	 */
+	virtual ~SoundSource();
+	
+	/**
+	 * @brief Sets the position of the sound source.
+	 * @param position The position, in world units.
+	 */
+	void setPosition(const WFMath::Point<3>& position);
+	
+	/**
+	 * @brief Sets the orientation of the sound source.
+	 * @param orientation The orientation.
+	 */
+	void setOrientation(const WFMath::Quaternion& orientation);
+	
+	/**
+	 * @brief Sets the velocity of the sound source.
+	 * @param velocity The velocity, in world units.
+	 */
+	void setVelocity(const WFMath::Vector<3>& velocity);
 	
 	/**
 	* @brief Return openAl source within this sample
-	 * @return 
-	 */
+	* @return 
+	*/
 	inline ALuint getALSource() const;
-    
+	
 protected:
 
+	/**
+	* @brief Ctor.
+	* At construction time the sound source will be created in OpenAL and initialized to default values.
+	* This is protected since we only want the SoundInstance class to be able to create new instances.
+	*/
+	SoundSource();
+
+	
+	/**
+	 * @brief The OpenAL source which this class represents.
+	 */
 	ALuint mALSource;
 
 };
