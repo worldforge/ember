@@ -44,7 +44,7 @@ using namespace Ember;
 namespace EmberOgre
 {
 	SoundAction::SoundAction(SoundEntity& soundEntity)
-	: mSoundEntity(soundEntity), mGroup(0), mInstance(0)
+	: mSoundEntity(soundEntity), mGroup(0), mInstance(0), mIsLooping(false)
 	{
 	}
 	
@@ -95,6 +95,12 @@ namespace EmberOgre
 			if (!mInstance) {
 				mInstance = EmberServices::getSingleton().getSoundService()->createInstance();
 				mInstance->setMotionProvider(this);
+				mInstance->setIsLooping(mIsLooping);
+				///If the sound is set not to loop, we need to listen for when it's done playing and remove the instance once it's done (to save on sound resources).
+				if (!mIsLooping) {
+					mInstance->EventPlayComplete.connect(sigc::mem_fun(*this, &SoundAction::SoundInstance_PlayComplete));
+				}
+				
 				mGroup->bindToInstance(mInstance);
 			}
 			mInstance->play();
@@ -104,9 +110,19 @@ namespace EmberOgre
 	void SoundAction::stop()
 	{
 		if (mInstance) {
-			mInstance->stop();
 			EmberServices::getSingleton().getSoundService()->destroyInstance(mInstance);
 			mInstance = 0;
+		}
+	}
+	
+	
+	void SoundAction::SoundInstance_PlayComplete()
+	{
+		if (mInstance) {
+			EmberServices::getSingleton().getSoundService()->destroyInstance(mInstance);
+			mInstance = 0;
+		} else {
+			S_LOG_WARNING("Got a play complete signal while there's no sound instance registered. For some reason the sound instance must have already been removed.");
 		}
 	}
 	
@@ -121,5 +137,10 @@ namespace EmberOgre
 // 		soundSource.setVelocity(mSoundEntity.getVelocity());
 	}
 	
+	void SoundAction::setIsLooping(bool isLooping)
+	{
+		mIsLooping = isLooping;
+	}
+
 }
 

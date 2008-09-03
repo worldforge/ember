@@ -30,68 +30,99 @@ namespace Ember
 
 namespace EmberOgre
 {
-	class SoundGroup;
-	class SoundEntity;
+class SoundGroup;
+class SoundEntity;
+/**
+* SoundAction class is responsible for handling
+* actions (defined in modeldef). It contain
+* references for sound groups defined within
+* the action
+*/
+class SoundAction : public Ember::ISoundMotionProvider
+{
+public:
+	SoundAction(SoundEntity& soundEntity);
+	
+	virtual ~SoundAction();
+
 	/**
-	 * SoundAction class is responsible for handling
-	 * actions (defined in modeldef). It contain
-	 * references for sound groups defined within
-	 * the action
+	* Register a group within this action.
+	* When you ask a group to be registered, an
+	* instance of the group type (defined by its name)
+	* will be added to the mGroups map.
+	*
+	* @param name The group name defined in the sounddefs.
+	* @return A pointer to the group allocated, if it fails, returns NULL
+	*/
+	SoundGroup* setGroup(const std::string& name);
+
+	/**
+	* Return a pointer to a sound group from its name
+	*
+	* @param name Group Name
+	* @return A pointer to the group, if it doesnt exists, returns NULL
+	*/
+	SoundGroup* getGroup();
+
+	/**
+	* Play this action groups, usually called from the SoundEntity class
+	*/
+	void play();
+
+	/**
+	* Stop all groups playing in this action
+	*/
+	void stop();
+	
+	/**
+	 * @brief Accessor for the sound instance used for playing the sound for this action.
+	 * If no sound is currently playing this will be null. Note that the SoundInstance returned here could be deleted at any time, so don't store any reference to it.
+	 * @return The sound instance, or null if no sound is being played.
 	 */
-	class SoundAction : public Ember::ISoundMotionProvider
-	{
-		public:
-			SoundAction(SoundEntity& soundEntity);
-			
-			virtual ~SoundAction();
+	Ember::SoundInstance* getInstance() const;
 
-			/**
-			 * Register a group within this action.
-			 * When you ask a group to be registered, an
-			 * instance of the group type (defined by its name)
-			 * will be added to the mGroups map.
-			 *
-			 * @param name The group name defined in the sounddefs.
-			 * @return A pointer to the group allocated, if it fails, returns NULL
-			 */
-			SoundGroup* setGroup(const std::string& name);
+	virtual void update(Ember::SoundSource& soundSource);
+	
+	/**
+	 * @brief Sets whether this sound should loop or not.
+	 * @param isLooping If true, the sound should loop.
+	 */
+	void setIsLooping(bool isLooping);
 
-			/**
-			 * Return a pointer to a sound group from its name
-			 *
-			 * @param name Group Name
-			 * @return A pointer to the group, if it doesnt exists, returns NULL
-			 */
-			SoundGroup* getGroup();
+protected:
 
-			/**
-			 * Play this action groups, usually called from the SoundEntity class
-			 */
-			void play();
+	/**
+	 * @brief The sound entity to which this action belongs.
+	 * Not owned by this class.
+	 */
+	SoundEntity& mSoundEntity;
+	
+	/**
+	 * @brief The sound group used for playing this sound.
+	 */
+	SoundGroup* mGroup;
 
-			/**
-			 * Stop all groups playing in this action
-			 */
-			void stop();
-			
-			Ember::SoundInstance* getInstance() const;
-		
-			virtual void update(Ember::SoundSource& soundSource);
-		
-		protected:
-			/**
-			 * A list of SoundGroups, referenced by name
-			 */
-// 			std::map<std::string, SoundGroup*> mGroups;
+	/**
+	 * @brief The sound instance which will be used to play this action.
+	 * This is owned by this class, but only available when the sound is actually playing. As soon as the sound stops playing this will be set to null (and the instance deleted).
+	 */
+	Ember::SoundInstance* mInstance;
+	
+	/**
+	 * @brief Set to true if the sounds created by this actions should loop.
+	 * Most actions should not loop, but movement actions should. The default is false.
+	 * Note that if a sound is set to not loop, we must listen for the Ember::SoundInstance::EventPlayComplete so that we can remove the sound instance the momement it's done playing.
+	 */
+	bool mIsLooping;
+	
+	/**
+	 * @brief Listen for when the sound has been played to completion and then delete the instance.
+	 * This only applies when the sound is set not to loop.
+	 */
+	void SoundInstance_PlayComplete();
 
-			SoundEntity& mSoundEntity;
-			
-			SoundGroup* mGroup;
 
-			Ember::SoundInstance* mInstance;
-			
-
-	};
+};
 }
 
 #endif

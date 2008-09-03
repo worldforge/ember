@@ -133,8 +133,10 @@ namespace EmberOgre
 
 				SoundGroup* newGroup = newAction->setGroup(soundDef->groupName);
 				if ((*I)->getName().find("__movement_") == 0) {
+					newAction->setIsLooping(true);
 					mMovementActions.insert(ActionStore::value_type((*I)->getName(), newAction));
 				} else {
+					newAction->setIsLooping(false);
 					mActions.insert(ActionStore::value_type((*I)->getName(), newAction));
 				}
 				break; //for now we'll only allow one group per action
