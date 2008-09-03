@@ -326,6 +326,20 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
 
 void EmberEntity::onSoundAction( const Atlas::Objects::Operation::RootOperation & op )
 {
+	///We'll just catch the call and write something to both the log and the console, and then pass it on.
+	const std::list<std::string> &p = op->getParents();
+	std::list<std::string>::const_iterator I = p.begin();
+	
+	if (I != p.end()) {
+	
+		const std::string& name = *I;
+		std::string message = getName() + " emits a " + name + ".";
+		
+		Ember::ConsoleBackend::getSingletonPtr()->pushMessage(message);
+		
+		S_LOG_VERBOSE( "Entity: " << this->getId() << " (" << this->getName() << ") sound action: " << name);
+	}
+	
 	Eris::Entity::onSoundAction(op);
 }
 
@@ -512,7 +526,6 @@ void EmberEntity::onImaginary(const Atlas::Objects::Root& act)
 	Entity::onImaginary(act);
 
 }
-
 
 bool EmberEntity::allowVisibilityOfMember(EmberEntity* entity) {
 	return true;
