@@ -31,7 +31,7 @@
 namespace Ember {
 
 SoundInstance::SoundInstance()
-: mSource(new SoundSource()), mBinding(0), mMotionProvider(0)
+: mSource(new SoundSource()), mBinding(0), mMotionProvider(0), mPreviousState(0)
 {
 }
 
@@ -60,6 +60,7 @@ bool SoundInstance::play()
 {
 	alGetError();
 	alSourcePlay(mSource->getALSource());
+	mPreviousState = AL_PLAYING;
 	return SoundGeneral::checkAlError("Playing sound instance.");
 }
 
@@ -85,6 +86,32 @@ void SoundInstance::update()
 	if (mBinding) {
 		mBinding->update();
 	}
+	if (!getIsLooping()) {
+		if (mPreviousState == AL_PLAYING) {
+			ALint alNewState;
+			alGetSourcei(mSource->getALSource(), AL_SOURCE_STATE, &alNewState);
+			SoundGeneral::checkAlError("Checking source state.");
+			if (alNewState == AL_STOPPED) {
+				EventPlayComplete.emit();
+				mPreviousState = alNewState;
+			}
+		}
+	}
+}
+
+
+void SoundInstance::setIsLooping(bool isLooping)
+{
+	alSourcei(mSource->getALSource(), AL_LOOPING, isLooping ? AL_TRUE : AL_FALSE);
+	SoundGeneral::checkAlError("Setting looping status.");
+}
+
+bool SoundInstance::getIsLooping() const
+{
+	ALint alValue;
+	alGetSourcei(mSource->getALSource(), AL_LOOPING, &alValue);
+	SoundGeneral::checkAlError("Checking looping status.");
+	return alValue == AL_TRUE;
 }
 
 

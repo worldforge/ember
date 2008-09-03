@@ -24,6 +24,7 @@
 #define EMBERSOUNDINSTANCE_H
 
 #include <memory>
+#include <sigc++/signal.h>
 
 namespace Ember {
 
@@ -107,6 +108,23 @@ public:
 	 */
 	inline void setMotionProvider(ISoundMotionProvider* motionProvider);
 	
+	/**
+	 * @brief Emitted when the sound has played to its completion.
+	 * This will only be emitted for sounds that aren't looping.
+	 */
+	sigc::signal<void> EventPlayComplete;
+	
+	/**
+	 * @brief Sets whether the sound should loop or not.
+	 * @param isLooping If true, the sound will loop.
+	 */
+	void setIsLooping(bool isLooping);
+	/**
+	 * @brief Gets whether the sound is set to loop.
+	 * @return True if the sound is set to loop.
+	 */
+	bool getIsLooping() const;
+	
 protected:
     /**
      * @brief Ctor. This is protected to allow only the SoundService to create instances.
@@ -149,6 +167,11 @@ protected:
 	 * Ownership won't be transferred to this class, and it won't be deleted when an instance of this is deleted.
 	 */
 	ISoundMotionProvider* mMotionProvider;
+	
+	/**
+	 * @brief We keep track of the previous state mainly to allow us to detect when a sound has been played to its completion.
+	 */
+	int mPreviousState;
 
 };
 
