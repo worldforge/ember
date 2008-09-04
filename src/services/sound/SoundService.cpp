@@ -201,7 +201,26 @@ void SoundService::updateListenerPosition(const WFMath::Point<3>& pos, const WFM
 	alListenerfv(AL_ORIENTATION, aluVectors);
 	SoundGeneral::checkAlError("Setting the listener orientation.");
 }
-	
+
+void SoundService::updateListenerPosition(const WFMath::Point<3>& pos, const WFMath::Vector<3>& direction, const WFMath::Vector<3> up)
+{
+	alListener3f(AL_POSITION, pos.x(), pos.y(), pos.z());
+	SoundGeneral::checkAlError("Setting the listener position.");
+
+	///Set the direction of the listener.
+
+	ALfloat aluVectors[6];
+	aluVectors[0] = direction.x();
+	aluVectors[1] = direction.y();
+	aluVectors[2] = direction.z();
+	aluVectors[3] = up.x();
+	aluVectors[4] = up.y();
+	aluVectors[5] = up.z();
+
+	alListenerfv(AL_ORIENTATION, aluVectors);
+	SoundGeneral::checkAlError("Setting the listener orientation.");
+}
+
 void SoundService::cycle()
 {
 	for (SoundInstanceStore::iterator I = mInstances.begin(); I != mInstances.end(); ++I) {
@@ -250,6 +269,7 @@ bool SoundService::destroyInstance(SoundInstance* instance)
 	SoundInstanceStore::iterator I = std::find(mInstances.begin(), mInstances.end(), instance);
 	if (I != mInstances.end()) {
 		mInstances.erase(I);
+		delete instance;
 		return true;
 	}
 	return false;

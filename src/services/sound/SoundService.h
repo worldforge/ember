@@ -126,6 +126,15 @@ public:
 	void updateListenerPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation);
 
 	/**
+	* @brief Update the position (in world coordinates) of the listener
+	*
+	* @param position The new listener position.
+	* @param direction The direction vector of the listener.
+	* @param up The up vector of the listener.
+	*/
+	void updateListenerPosition(const WFMath::Point<3>& pos, const WFMath::Vector<3>& direction, const WFMath::Vector<3> up);
+	
+	/**
 	 * @brief Call this each frame to update the sound samples.
 	 * Through a call of this all registered and active SoundInstance instances will be asked to update themselves. Such an update could involve updating streaming buffers in the case of a streaming sound, or update the position of the sound if it's positioned within the 3d world.
 	 */
