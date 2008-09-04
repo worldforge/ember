@@ -224,6 +224,8 @@ void SoundService::updateListenerPosition(const WFMath::Point<3>& pos, const WFM
 void SoundService::cycle()
 {
 	for (SoundInstanceStore::iterator I = mInstances.begin(); I != mInstances.end(); ) {
+		///We do the iteration this way to allow for instances to be removed inside the iteration.
+		///A typical example would be a sound instance that has played to its completion and thus should be destroyed. The signal for this is emitted as a result of calling SoundInstance::update().
 		SoundInstance* instance(*I);
 		++I;
 		instance->update();
