@@ -119,8 +119,9 @@ namespace EmberOgre
 	void SoundAction::SoundInstance_PlayComplete()
 	{
 		if (mInstance) {
-			EmberServices::getSingleton().getSoundService()->destroyInstance(mInstance);
-			mInstance = 0;
+			if (EmberServices::getSingleton().getSoundService()->destroyInstance(mInstance)) {
+				mInstance = 0;
+			}
 		} else {
 			S_LOG_WARNING("Got a play complete signal while there's no sound instance registered. For some reason the sound instance must have already been removed.");
 		}
