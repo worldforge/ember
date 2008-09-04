@@ -223,8 +223,10 @@ void SoundService::updateListenerPosition(const WFMath::Point<3>& pos, const WFM
 
 void SoundService::cycle()
 {
-	for (SoundInstanceStore::iterator I = mInstances.begin(); I != mInstances.end(); ++I) {
-		(*I)->update();
+	for (SoundInstanceStore::iterator I = mInstances.begin(); I != mInstances.end(); ) {
+		SoundInstance* instance(*I);
+		++I;
+		instance->update();
 	}
 }
 	
