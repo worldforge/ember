@@ -124,11 +124,13 @@ cd ${user_dir}
 #get the gui files
 mkdir -p ${shared_dir}/gui/cegui
 mkdir -p ${shared_dir}/gui/icons
+mkdir -p ${shared_dir}/gui/status
 cp -a ${original_media}/common/themes/ember/gui/cegui/EmberLook.png ${shared_dir}/gui/cegui
 cp -a ${original_media}/common/themes/ember/gui/icons/ember.png ${shared_dir}/gui/icons
 cp -a ${original_media}/common/themes/ember/gui/icons/iconset_mason.png ${shared_dir}/gui/icons
 cp -a ${original_media}/common/themes/ember/gui/icons/iconset_standard.png ${shared_dir}/gui/icons
-cp -a ${original_media}/common/themes/ember/gui/status ${shared_dir}/gui/status
+cp -a ${original_media}/common/themes/ember/gui/status/bars.png ${shared_dir}/gui/status
+cp -a ${original_media}/common/themes/ember/gui/status/main.png ${shared_dir}/gui/status
 
 
 #get the theme media dir
