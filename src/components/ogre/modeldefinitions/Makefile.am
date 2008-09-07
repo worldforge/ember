@@ -9,6 +9,7 @@ dist-hook:
 # 	(cd $(top_srcdir)/src/components/ogre/modeldefinitions && tar cf - `find . -name \*.modelmap` | ( cd $(current) && cd $(distdir) && tar xf -))
 	(cd $(top_srcdir)/src/components/ogre/modeldefinitions && tar cf - `find . -name \*.modelmap.xml` | ( cd $(current) && cd $(distdir) && tar xf -))
 	(cd $(top_srcdir)/src/components/ogre/modeldefinitions && tar cf - `find . -name \*.terrain` | ( cd $(current) && cd $(distdir) && tar xf -))
+	(cd $(top_srcdir)/src/components/ogre/modeldefinitions && tar cf - `find . -name \*.xsd` | ( cd $(current) && cd $(distdir) && tar xf -))
 
 install-data-local:
 	mkdir -p $(DESTDIR)$(datadir)/ember/media/user/modeldefinitions 
