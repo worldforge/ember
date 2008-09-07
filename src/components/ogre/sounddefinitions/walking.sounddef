@@ -1,9 +1,8 @@
 <sounds>
 	<group name="walking_on_grass">
-		<buffer filename="soundfx/creatures/footsteps/Footsteps_on_grass_sasquatch.wav" format="wav" playsIn="world" />
+		<buffer filename="soundfx/creatures/footsteps/Footsteps_on_grass_sasquatch.wav" format="wav" />
 	</group>
 	<group name="sawing">
-		<buffer filename="soundfx/items/saw/sawing2_11khz_mono_jo.wav" format="wav" playsIn="world" />
+		<buffer filename="soundfx/items/saw/sawing2_11khz_mono_jo.wav" format="wav" />
 	</group>
 </sounds>
-

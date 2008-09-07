@@ -1,4 +1,5 @@
-<!-- sounds>
+<sounds>
+	<!--
 	<group name="pig_snort">
 		<buffer filename="soundfx/creatures/pig/snort1.wav" format="wav" playsIn="world" volume="0.8" />
 		<buffer filename="soundfx/creatures/pig/snort2.wav" format="wav" playsIn="world" volume="0.8"  />
@@ -7,5 +8,5 @@
 		<buffer filename="soundfx/creatures/pig/snort5.wav" format="wav" playsIn="world" volume="0.8"  />
 		<buffer filename="soundfx/creatures/pig/eating.wav" format="wav" playsIn="world" volume="0.8"  />
 	</group>
-</sounds -->
-
+	-->
+</sounds>
