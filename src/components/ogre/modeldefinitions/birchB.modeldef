@@ -4,14 +4,13 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/plants/trees/birch/birchB.mesh">
+            <submodel mesh="3d_objects/plants/trees/models/birch/birchB.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/birch/leavesA" />
-                            <subentity index="1" material="/global/plants/trees/birch/leavesB" />
-                            <subentity index="2" material="/global/plants/trees/birch/branches" />
-                            <subentity index="3" material="/global/plants/trees/birch/bark" />
+                            <subentity index="0" material="/global/plants/trees/bark_birch" />
+                            <subentity index="1" material="/global/plants/trees/branches_birch_bare" />
+                            <subentity index="2" material="/global/plants/trees/branches_birch" />
                         </subentities>
                     </part>
                 </parts>

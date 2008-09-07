@@ -570,6 +570,10 @@
 						<caseparam type="equals">weathered</caseparam>
 						<action type="display-model">birchB</action>
 					</case>
+					<case>
+						<caseparam type="equals">straight</caseparam>
+						<action type="display-model">birchC</action>
+					</case>
 				</attributematch>
 			</case>
 		</entitymatch>
