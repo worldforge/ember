@@ -114,5 +114,21 @@ bool SoundInstance::getIsLooping() const
 	return alValue == AL_TRUE;
 }
 
+void SoundInstance::setMaxDistance(float maxDistance)
+{
+	alSourcef(mSource->getALSource(), AL_MAX_DISTANCE, maxDistance);
+	SoundGeneral::checkAlError("Setting max distance.");
+}
+
+float SoundInstance::getMaxDistance() const
+{
+	ALfloat alValue;
+	alGetSourcef(mSource->getALSource(), AL_MAX_DISTANCE, &alValue);
+	SoundGeneral::checkAlError("Checking max distance.");
+	return alValue;
+}
+
+
+
 
 }

@@ -125,6 +125,19 @@ public:
 	 */
 	bool getIsLooping() const;
 	
+	/**
+	 * @brief Sets the max distance for the sound. Defaults to 1.0
+	 * @param maxDistance The max distance for the sound.
+	 */
+	void setMaxDistance(float maxDistance);
+	
+	/**
+	 * @brief Gets the max distance for the sound.
+	 * @return The max distance for the sound.
+	 */
+	float getMaxDistance() const;
+	
+	
 protected:
     /**
      * @brief Ctor. This is protected to allow only the SoundService to create instances.
