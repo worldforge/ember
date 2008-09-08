@@ -15,6 +15,8 @@ shared_dir=${media_dir}/media/shared
 ogre_dir=${original_media}/common/resources/ogre
 script_dir=${ogre_dir}/scripts
 material_dir=${script_dir}/materials
+overlay_dir=${script_dir}/overlays
+program_dir=${script_dir}/programs
 
 #start with shared media
 
@@ -152,15 +154,21 @@ cd ${original_media}/sounddefinitions ; tar cf - `find . -iname \*.sounddef` | (
 
 echo "Copying materials"
 user_ogre_dir=${user_dir}/common/resources/ogre
-mkdir -p ${user_ogre_dir}
-cd ${ogre_dir} ; tar cf - `find . -iname \*.png` | ( cd ${user_ogre_dir}; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${ogre_dir} ; tar cf - `find . -iname \*.jpg` | ( cd ${user_ogre_dir}; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${ogre_dir} ; tar cf - `find . -iname \*.cg` | ( cd ${user_ogre_dir}; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${ogre_dir} ; tar cf - `find . -iname \*.program` | ( cd ${user_ogre_dir}; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${ogre_dir} ; tar cf - `find . -iname \*.asm` | ( cd ${user_ogre_dir}; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${ogre_dir} ; tar cf - `find . -iname \*.ps` | ( cd ${user_ogre_dir}; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${ogre_dir} ; tar cf - `find . -iname \*.material` | ( cd ${user_ogre_dir}; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${ogre_dir} ; tar cf - `find . -iname \*.overlay` | ( cd ${user_ogre_dir}; tar --keep-newer-files -xvf -) 2>  /dev/null
+mkdir -p ${user_ogre_dir}/scripts/materials
+mkdir -p ${user_ogre_dir}/scripts/overlays
+mkdir -p ${user_ogre_dir}/scripts/programs
+cd ${program_dir} ; tar cf - `find . -iname \*.cg` | ( cd ${user_ogre_dir}/scripts/programs; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${program_dir} ; tar cf - `find . -iname \*.program` | ( cd ${user_ogre_dir}/scripts/programs; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${program_dir} ; tar cf - `find . -iname \*.asm` | ( cd ${user_ogre_dir}/scripts/programs; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${program_dir} ; tar cf - `find . -iname \*.ps` | ( cd ${user_ogre_dir}/scripts/programs; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${material_dir} ; tar cf - `find . -iname \*.material` | ( cd ${user_ogre_dir}/scripts/materials; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${overlay_dir} ; tar cf - `find . -iname \*.overlay` | ( cd ${user_ogre_dir}/scripts/overlays; tar --keep-newer-files -xvf -) 2>  /dev/null
+
+#Note: we'll keep this for now, until we have a nicer way of copying all the textures that's needed
+mkdir -p ${user_ogre_dir}/textures
+cd ${ogre_dir}/textures ; tar cf - `find . -iname \*.png` | ( cd ${user_ogre_dir}/textures; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${ogre_dir}/textures ; tar cf - `find . -iname \*.jpg` | ( cd ${user_ogre_dir}/textures; tar --keep-newer-files -xvf -) 2>  /dev/null
+
 
 #cd ${original_media}/models ; tar cf - `find . -iname \*.mesh` | ( cd ${user_dir}/models; tar xvf -)
 #cd ${original_media}/models ; tar cf - `find . -iname \*.skeleton` | ( cd ${user_dir}/models; tar xvf -)
@@ -192,11 +200,11 @@ mkdir -p ${shared_dir}/common/resources/ogre/scripts
 cp ${original_media}/common/resources/ogre/scripts/base.zip ${shared_dir}/common/resources/ogre/scripts/
 
 
-
-echo "Copying user media packs"
-cd ${user_dir}
-grep -rIE --no-filename "^Zip\[user\]=.*" ${current}/src/components/ogre/resources.cfg | sed -e 's/Zip\[user\]=//g' > user_packs.list
-cd ${original_media} ; tar cf - `cat ${user_dir}/user_packs.list ` | ( cd ${user_dir}/; tar --keep-newer-files -xvf -) 2>  /dev/null
+#We don't have any user packs, and this only conflicts with the base.zip archive (i.e. it copies it when it really shouldn't)
+# echo "Copying user media packs"
+# cd ${user_dir}
+# grep -rIE --no-filename "^Zip\[user\]=.*" ${current}/src/components/ogre/resources.cfg | sed -e 's/Zip\[user\]=//g' > user_packs.list
+# cd ${original_media} ; tar cf - `cat ${user_dir}/user_packs.list ` | ( cd ${user_dir}/; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 
 
