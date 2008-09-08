@@ -360,37 +360,37 @@ PKG_CHECK_MODULES(OPENAL, openal >= $OPENAL_VERSION,
 	])
 
 #check for libogg 
-OGG_VERSION=1.1.3
-PKG_CHECK_MODULES(OGG, ogg >= $OGG_VERSION, 
-		[
-			CXXFLAGS="$CXXFLAGS $OGG_CFLAGS"
-			LDFLAGS="$LDFLAGS $OGG_LIBS"
-		],
-		[
-			AC_MSG_ERROR([Couldn't find libogg or tests failed. Error: $OGG_PKG_ERRORS. Please go to http://www.vorbis.com to get the latest, or check config.log to see why the tests failed, and fix it.])
-		])
+#OGG_VERSION=1.1.3
+#PKG_CHECK_MODULES(OGG, ogg >= $OGG_VERSION, 
+#		[
+#			CXXFLAGS="$CXXFLAGS $OGG_CFLAGS"
+#			LDFLAGS="$LDFLAGS $OGG_LIBS"
+#		],
+#		[
+#			AC_MSG_ERROR([Couldn't find libogg or tests failed. Error: $OGG_PKG_ERRORS. Please go to http://www.vorbis.com to get the latest, or check config.log to see why the tests failed, and fix it.])
+#		])
 
 #check for vorbis 
-VORBIS_VERSION=1.2.0
-PKG_CHECK_MODULES(VORBIS, vorbis >= $VORBIS_VERSION, 
-		[
-			CXXFLAGS="$CXXFLAGS $VORBIS_CFLAGS"
-			LDFLAGS="$LDFLAGS $VORBIS_LIBS"
-		],
-		[
-			AC_MSG_ERROR([Couldn't find libvorbis or tests failed. Error: $VORBIS_PKG_ERRORS. Please go to http://www.vorbis.com to get the latest, or check config.log to see why the tests failed, and fix it.])
-		])
+#VORBIS_VERSION=1.2.0
+#PKG_CHECK_MODULES(VORBIS, vorbis >= $VORBIS_VERSION, 
+#		[
+#			CXXFLAGS="$CXXFLAGS $VORBIS_CFLAGS"
+#			LDFLAGS="$LDFLAGS $VORBIS_LIBS"
+#		],
+#		[
+#			AC_MSG_ERROR([Couldn't find libvorbis or tests failed. Error: $VORBIS_PKG_ERRORS. Please go to http://www.vorbis.com to get the latest, or check config.log to see why the tests failed, and fix it.])
+#		])
 
 #check for vorbisfile 
-VORBISF_VERSION=1.2.0
-PKG_CHECK_MODULES(VORBISF, vorbisfile >= $VORBISF_VERSION, 
-		[
-			CXXFLAGS="$CXXFLAGS $VORBISF_CFLAGS"
-			LDFLAGS="$LDFLAGS $VORBISF_LIBS"
-		],
-		[
-			AC_MSG_ERROR([Couldn't find vorbisfile tests failed. Error: $VORBISF_PKG_ERRORS. Please go to http://www.vorbis.com to get the latest, or check config.log to see why the tests failed, and fix it.])
-		])
+#VORBISF_VERSION=1.2.0
+#PKG_CHECK_MODULES(VORBISF, vorbisfile >= $VORBISF_VERSION, 
+#		[
+#			CXXFLAGS="$CXXFLAGS $VORBISF_CFLAGS"
+#			LDFLAGS="$LDFLAGS $VORBISF_LIBS"
+#		],
+#		[
+#			AC_MSG_ERROR([Couldn't find vorbisfile tests failed. Error: $VORBISF_PKG_ERRORS. Please go to http://www.vorbis.com to get the latest, or check config.log to see why the tests failed, and fix it.])
+#		])
 
 # Check for FreeALUT
 FREEALUT_VERSION=1.0.0
