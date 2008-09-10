@@ -299,23 +299,7 @@ PKG_CHECK_MODULES(LUA, lua5.1 >= 5.1,
 		AC_MSG_NOTICE([Lua version => 5.1, make sure that CEGUI also has been compiled for this version])
 	],
 	[
-		PKG_CHECK_MODULES(LUA, lua >= 5.0 lua < 5.1,
-		[
-			CXXFLAGS="$CXXFLAGS $LUA_CFLAGS -DLUA50"
-			LDFLAGS="$LDFLAGS $LUA_LIBS"
-			AC_MSG_NOTICE([Lua version = 5.0, make sure that CEGUI also has been compiled for this version])
-		],
-		[
-			PKG_CHECK_MODULES(LUA, lua50 >= 5.0 lua50 < 5.1 lualib50 >= 5.0 lualib50 <= 5.1,
-			[
-				CXXFLAGS="$CXXFLAGS $LUA_CFLAGS -DLUA50"
-				LDFLAGS="$LDFLAGS $LUA_LIBS"
-				AC_MSG_NOTICE([Lua version = 5.0, make sure that CEGUI also has been compiled for this version])
-			],
-			[
-				AC_MSG_ERROR([Couldn't find Lua or tests failed. Error: $LUA_PKG_ERRORS. Please go to http://www.lua.org to get the latest, or check config.log to see why the tests failed, and fix it. Also make sure that CEGUI is built with Lua support.])
-			])
-		])
+		AC_MSG_ERROR([Couldn't find Lua or tests failed. Error: $LUA_PKG_ERRORS. Please go to http://www.lua.org to get the latest, or check config.log to see why the tests failed, and fix it. Also make sure that CEGUI is built with Lua support.])
 	])
 ])
 
