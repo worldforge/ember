@@ -255,7 +255,7 @@ config.log to see why the tests failed, and fix it.])
 	])
 
 # Check for OGRE
-OGRE_VERSION=1.4.2
+OGRE_VERSION=1.6.0
 PKG_CHECK_MODULES(OGRE, [OGRE >= $OGRE_VERSION CEGUI-OGRE >= $OGRE_VERSION],
 	[
 		CXXFLAGS="$CXXFLAGS $OGRE_CFLAGS"
