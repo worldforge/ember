@@ -29,9 +29,6 @@ libEmberPagingSceneManager_la_SOURCES = \
 						OgrePagingLandScapeRenderableManager.cpp \
 						OgrePagingLandScapeTextureCoordinatesManager.cpp \
 						OgrePagingLandScapeSceneManager.cpp \
-						OgrePagingLandScapeSceneManagerDll.cpp \
-						OgrePagingLandScapeTexture_BaseTexture2.cpp \
-						OgrePagingLandScapeTexture_BaseTexture.cpp \
 						OgrePagingLandScapeTexture.cpp \
 						OgrePagingLandScapeTextureManager.cpp \
 						OgrePagingLandScapeTile.cpp \
@@ -79,5 +76,8 @@ libEmberPagingSceneManager_la_LDFLAGS = -no-undefined
 # 						OgrePagingLandScapeTexture_Splatting7Edit.cpp \
 # 						OgrePagingLandScapeTexture_SplattingShader.cpp \
 # 						OgrePagingLandScapeTexture_SplattingShaderEdit.cpp \
-# 						OgrePagingLandScapeTexture_Splatting.cpp 
+# 						OgrePagingLandScapeTexture_Splatting.cpp \
+# 						OgrePagingLandScapeSceneManagerDll.cpp
+# 						OgrePagingLandScapeTexture_BaseTexture2.cpp \
+# 						OgrePagingLandScapeTexture_BaseTexture.cpp 
 

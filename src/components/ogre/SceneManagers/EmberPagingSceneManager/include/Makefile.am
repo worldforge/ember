@@ -13,13 +13,6 @@ noinst_HEADERS = \
 			OgrePagingLandScapeOctreeSphereSceneQuery.h \
 			OgrePagingLandScapeCamera.h \
 			OgrePagingLandScapeData2D.h \
-			OgrePagingLandScapeData2D_HeightField.h \
-			OgrePagingLandScapeData2D_HeightFieldN.h \
-			OgrePagingLandScapeData2D_HeightFieldNTC.h \
-			OgrePagingLandScapeData2D_HeightFieldRaw.h \
-			OgrePagingLandScapeData2D_HeightFieldRawTC.h \
-			OgrePagingLandScapeData2D_HeightFieldTC.h \
-			OgrePagingLandScapeData2D_HeightFieldBlendNeighbor.h \
 			OgrePagingLandScapeData2DManager.h \
 			OgrePagingLandScapeData2D_Spline.h \
 			OgrePagingLandScapeHorizon.h \
@@ -37,25 +30,8 @@ noinst_HEADERS = \
 			OgrePagingLandScapeRenderableManager.h \
 			OgrePagingLandScapeTextureCoordinatesManager.h \
 			OgrePagingLandScapeSceneManager.h \
-			OgrePagingLandScapeTexture_BaseTexture2.h \
-			OgrePagingLandScapeTexture_BaseTexture.h \
 			OgrePagingLandScapeTexture.h \
-			OgrePagingLandScapeTexture_Image.h \
-			OgrePagingLandScapeTexture_InstantBaseTexture.h \
-			OgrePagingLandScapeTexture_InstantBaseTextureEdit.h \
 			OgrePagingLandScapeTextureManager.h \
-			OgrePagingLandScapeTexture_Splatting2.h \
-			OgrePagingLandScapeTexture_Splatting2Edit.h \
-			OgrePagingLandScapeTexture_Splatting3.h \
-			OgrePagingLandScapeTexture_Splatting4.h \
-			OgrePagingLandScapeTexture_Splatting5.h \
-			OgrePagingLandScapeTexture_Splatting6.h \
-			OgrePagingLandScapeTexture_Splatting7.h \
-			OgrePagingLandScapeTexture_Splatting7Edit.h \
-			OgrePagingLandScapeTexture_Splatting.h \
-			OgrePagingLandScapeTexture_SplattingShader.h \
-			OgrePagingLandScapeTexture_SplattingShaderEdit.h \
-			OgrePagingLandScapeTexture_None.h \
 			OgrePagingLandScapeTile.h \
 			OgrePagingLandScapeTileInfo.h \
 			OgrePagingLandScapeTileManager.h \
@@ -76,7 +52,6 @@ noinst_HEADERS = \
 			OgrePagingLandScapePrecompiledHeaders.h \
 			OgrePagingLandScapeCallBackEvent.h \
 			OgrePagingLandScapeCallback.h \
-			OgrePagingLandScapeTexture_InstantBaseTextureShadowed.h \
 			OgrePagingLandScapeAxisAlignedBoxSceneQuery.h \
 			OgrePagingLandScapeMeshDecal.h \
 			\
@@ -85,3 +60,32 @@ EmberPagingLandScapeTexture.h \
 EmberPagingSceneManager.h \
 EmberPagingSceneManagerAdapter.h \
 EmberTerrainPageBridge.h
+
+
+
+# 			OgrePagingLandScapeTexture_Splatting2.h \
+# 			OgrePagingLandScapeTexture_Splatting2Edit.h \
+# 			OgrePagingLandScapeTexture_Splatting3.h \
+# 			OgrePagingLandScapeTexture_Splatting4.h \
+# 			OgrePagingLandScapeTexture_Splatting5.h \
+# 			OgrePagingLandScapeTexture_Splatting6.h \
+# 			OgrePagingLandScapeTexture_Splatting7.h \
+# 			OgrePagingLandScapeTexture_Splatting7Edit.h \
+# 			OgrePagingLandScapeTexture_Splatting.h \
+# 			OgrePagingLandScapeTexture_SplattingShader.h \
+# 			OgrePagingLandScapeTexture_SplattingShaderEdit.h \
+# 			OgrePagingLandScapeTexture_None.h \
+# 			OgrePagingLandScapeTexture_BaseTexture2.h \
+# 			OgrePagingLandScapeTexture_BaseTexture.h \
+# 			OgrePagingLandScapeTexture_InstantBaseTexture.h \
+# 			OgrePagingLandScapeTexture_InstantBaseTextureEdit.h \
+# 			OgrePagingLandScapeData2D_HeightField.h \
+# 			OgrePagingLandScapeData2D_HeightFieldN.h \
+# 			OgrePagingLandScapeData2D_HeightFieldNTC.h \
+# 			OgrePagingLandScapeData2D_HeightFieldRaw.h \
+# 			OgrePagingLandScapeData2D_HeightFieldRawTC.h \
+# 			OgrePagingLandScapeData2D_HeightFieldTC.h \
+# 			OgrePagingLandScapeData2D_HeightFieldBlendNeighbor.h \
+# 			OgrePagingLandScapeTexture_InstantBaseTextureShadowed.h \
+# 			OgrePagingLandScapeTexture_Image.h 
+
