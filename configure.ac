@@ -1,5 +1,5 @@
 ## Process this file with autoconf to produce a configure script.
-AC_INIT(Ember, 0.5.4, clients@worldforge.org)
+AC_INIT(Ember, 0.5.5, clients@worldforge.org)
 
 AC_CONFIG_SRCDIR(src)
 
