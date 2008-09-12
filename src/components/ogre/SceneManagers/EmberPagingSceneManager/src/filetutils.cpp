@@ -9,7 +9,7 @@
 
 #include "OgrePagingLandScapePrecompiledHeaders.h"
 
-#include "OgreNoMemoryMacros.h"
+// #include "OgreNoMemoryMacros.h"
 
 
 #include <sys/types.h>

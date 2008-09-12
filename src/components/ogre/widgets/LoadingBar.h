@@ -85,8 +85,8 @@ public:
 
 	// ResourceGroupListener callbacks
 	void resourceGroupScriptingStarted(const Ogre::String & groupName, size_t scriptCount);
-	void scriptParseStarted(const Ogre::String & scriptName);
-	void scriptParseEnded(const Ogre::String& scriptName);
+	void scriptParseStarted(const Ogre::String & scriptName, bool& skipThisScript);
+	void scriptParseEnded(const Ogre::String& scriptName, bool skipped);
 	void resourceGroupScriptingEnded(const Ogre::String & groupName) {}
 	void resourceGroupLoadStarted(const Ogre::String & groupName, size_t resourceCount);
 	void resourceLoadStarted(const Ogre::ResourcePtr& resource);

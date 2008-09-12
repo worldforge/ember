@@ -90,6 +90,11 @@ namespace EmberOgre {
 
         /// @copydoc Archive::exists
         bool exists(const Ogre::String& filename);
+        
+		/**
+		 * @copydoc Ogre::Archive::getModifiedTime
+		 */
+		virtual time_t getModifiedTime(const Ogre::String& filename); 
 
     };
 

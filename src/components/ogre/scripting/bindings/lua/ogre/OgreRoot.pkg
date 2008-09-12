@@ -554,7 +554,7 @@ namespace Ogre
 //         bool _fireFrameEnded();
 
         /** Gets the number of the current frame. */
-        unsigned long getCurrentFrameNumber(void) const;
+        unsigned long getNextFrameNumber(void) const;
 
         /** Returns the scene manager currently being used to render a frame.
         @remarks

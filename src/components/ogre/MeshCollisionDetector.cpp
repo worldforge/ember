@@ -83,8 +83,8 @@ void MeshCollisionDetector::testCollision(Ogre::Ray& ray, CollisionResult& resul
 	
 			// get the mesh information
 			getMeshInformation(pentity->getMesh(), vertex_count, vertices, index_count, indices,             
-								pentity->getParentNode()->getWorldPosition(),
-								pentity->getParentNode()->getWorldOrientation(),
+								pentity->getParentNode()->_getDerivedPosition(),
+								pentity->getParentNode()->_getDerivedOrientation(),
 								pentity->getParentNode()->getScale());
 	
 			// test for hitting individual triangles on the mesh

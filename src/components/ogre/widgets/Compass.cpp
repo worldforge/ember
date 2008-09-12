@@ -240,7 +240,7 @@ CompassCameraAnchor::~CompassCameraAnchor()
 
 
 CompassSceneNodeAnchor::CompassSceneNodeAnchor(Compass& compass, Ogre::SceneNode* sceneNode)
-: mAnchor(compass, sceneNode->getWorldPosition(), sceneNode->getWorldOrientation())
+: mAnchor(compass, sceneNode->_getDerivedPosition(), sceneNode->_getDerivedOrientation())
 , mSceneNode(sceneNode)
 {
 }

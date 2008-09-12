@@ -264,7 +264,7 @@ void IngameChatWidget::EntityObserver::updateLabel(const Ogre::Camera * camera)
 	//	Ogre::Vector3 entityWorldCoords = window->getEntity()->getSceneNode()->_getWorldAABB().getCenter();
 	// 	const Ogre::Vector3& cameraCoords = camera->getDerivedPosition();
 	///getWorldPosition is faster than getting the center of the boundingbox...
-		Ogre::Vector3 diff = mEntity->getSceneNode()->getWorldPosition() - camera->getWorldPosition();
+		Ogre::Vector3 diff = mEntity->getSceneNode()->_getDerivedPosition() - camera->getDerivedPosition();
 		
 		///remove the window if it's either too far away
 		if (diff.length() > mChatWidget.mDistanceShown) {

@@ -478,7 +478,7 @@ void PagingLandScapeMeshDecal::_updateRenderQueue( RenderQueue* queue )
 void PagingLandScapeMeshDecal::getRenderOperation( Ogre::RenderOperation& op )
 {
 	// Update our RenderOperation if necessary.
-	const Vector3& position = mParentNode->getWorldPosition();
+	const Vector3& position = mParentNode->_getDerivedPosition();
 	const Quaternion& orientation = mParentNode->getOrientation();
 	if( position != position_ ||
 		orientation != orientation_ )
@@ -498,19 +498,9 @@ void PagingLandScapeMeshDecal::getWorldTransforms( Ogre::Matrix4* xform ) const
 	*xform = mParentNode->_getFullTransform();
 }
 
-const Quaternion& PagingLandScapeMeshDecal::getWorldOrientation() const
-{
-	return mParentNode->_getDerivedOrientation();
-}
-
-const Vector3& PagingLandScapeMeshDecal::getWorldPosition() const
-{
-	return mParentNode->getWorldPosition();
-}
-
 Real PagingLandScapeMeshDecal::getSquaredViewDepth( const Camera* cam ) const
 {
-    return ( getWorldPosition() - cam->getDerivedPosition() ).squaredLength();
+    return ( mParentNode->_getDerivedPosition() - cam->getDerivedPosition() ).squaredLength();
 }
  
 // Receive terrain vertices from our query.
@@ -587,6 +577,11 @@ bool PagingLandScapeMeshDecal::queryResult(SceneQuery::WorldFragment* fragment)
 	return true;
 }
 
+
+void PagingLandScapeMeshDecal::visitRenderables(Renderable::Visitor* visitor, bool debugRenderables)
+{
+	visitor->visit(this, 0, debugRenderables);
+}
 //-----------------------------------------------------------------------
 String PagingLandScapeMeshDecalFactory::FACTORY_TYPE_NAME = "PagingLandScapeMeshDecal";
 
@@ -657,3 +652,4 @@ void PagingLandScapeMeshDecalFactory::destroyInstance( MovableObject* obj )
 {
 	delete obj;
 }
+

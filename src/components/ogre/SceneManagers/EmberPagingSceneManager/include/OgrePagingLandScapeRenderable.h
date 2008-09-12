@@ -177,6 +177,10 @@ namespace Ogre
 		*/
 		bool frameStarted(const Ogre::FrameEvent& event);
         
+		/**
+			* @copydoc MovableObject::visitRenderables
+			*/
+		virtual void visitRenderables(Renderable::Visitor* visitor, bool debugRenderables = false);
 
 
 	protected:	

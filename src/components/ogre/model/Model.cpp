@@ -187,7 +187,6 @@ bool Model::createFromDefn()
 			if (mMasterModel->getRenderingDistance()) {
 				entity->setRenderingDistance(mMasterModel->getRenderingDistance());
 			}
-			entity->setNormaliseNormals(true);
 
 // 			//for convenience, if it's a new mesh, check if there's a skeleton file in the same directory
 // 			//if so, use that
@@ -976,6 +975,19 @@ void Model::removeQueryFlags(unsigned long flags)
 		(*I)->getEntity()->removeQueryFlags(flags);
 	}
 	
+}
+
+void Model::visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRenderables)
+{
+	if (isVisible()) {
+		SubModelSet::const_iterator I = mSubmodels.begin();
+		SubModelSet::const_iterator I_end = mSubmodels.end();
+		for (; I != I_end; ++I) {
+			if ((*I)->getEntity()->isVisible()) {
+				(*I)->getEntity()->visitRenderables(visitor, debugRenderables);
+			}
+		}
+	}	
 }
 
 

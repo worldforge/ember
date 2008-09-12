@@ -140,7 +140,7 @@ void PagingLandScapeTile::init (SceneNode *ParentSceneNode,
 		StringConverter::toString(tileZ);
 	mTileSceneNode = mParent->getSceneManager()->createSceneNode (NodeName + ".Node"); 
 
-	const Vector3 ParentPos = ParentSceneNode->getWorldPosition();
+	const Vector3 ParentPos = ParentSceneNode->_getDerivedPosition();
 	const Real MaxHeight = mParent->getSceneManager()->getData2DManager()->getMaxHeight(mInfo->mPageX, mInfo->mPageZ);
 	assert (MaxHeight >= (Real)0.0f);
 	//Change Zone of this page

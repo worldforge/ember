@@ -241,6 +241,12 @@ public:
         /** Overridden from MovableObject */
 		virtual bool   isVisible (void) const;
 		
+		/**
+		 * @copydoc Ogre::MovableObject::visitRenderables()
+		 */
+		virtual void visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRenderables);
+
+		
 	/**
 	 *    returns a pointer to the defintion of the Model
 	 * @return 

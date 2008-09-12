@@ -225,7 +225,7 @@ namespace Ogre
                            0.0f + Numtiles * scale_z);
 
         assert (mParentNode);
-        mCenter = mBounds.getCenter()  + mParentNode->getWorldPosition();
+        mCenter = mBounds.getCenter()  + mParentNode->_getDerivedPosition();
 	    mWorldBoundingSphere.setCenter(mCenter);
 	    mWorldBoundingSphere.setRadius(mBounds.getMaximum().length());
 
@@ -303,4 +303,10 @@ namespace Ogre
 		// return world flag
 		return SceneManager::WORLD_GEOMETRY_TYPE_MASK;
 	}
+	
+	void PagingLandScapePageRenderable::visitRenderables(Renderable::Visitor* visitor, bool debugRenderables)
+	{
+		visitor->visit(this, 0, debugRenderables);
+	}
+	
 } //namespace

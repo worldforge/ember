@@ -109,6 +109,10 @@ namespace Ogre
 		    /// @see MovableObject
 		    uint32 getTypeFlags(void) const;
 
+			/**
+			 * @copydoc MovableObject::visitRenderables
+			 */
+			virtual void visitRenderables(Renderable::Visitor* visitor, bool debugRenderables = false);
         protected:
             
            PagingLandScapePageManager *mParent;

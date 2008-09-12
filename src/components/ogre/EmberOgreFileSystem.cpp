@@ -448,6 +448,24 @@ namespace EmberOgre {
 
 		return ret;
 	}
+	
+	time_t FileSystemArchive::getModifiedTime(const String& filename)
+	{
+		String full_path = concatenate_path(mName, filename);
+
+		struct stat tagStat;
+		bool ret = (stat(full_path.c_str(), &tagStat) == 0);
+
+		if (ret)
+		{
+			return tagStat.st_mtime;
+		}
+		else
+		{
+			return 0;
+		}
+
+	}	
     //-----------------------------------------------------------------------
     const String& FileSystemArchiveFactory::getType(void) const
     {

@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Ogre
-** Generated automatically by tolua++-1.0.92 on Tue Jun 24 23:27:05 2008.
+** Generated automatically by tolua++-1.0.92.
 */
 
 #ifndef __cplusplus
@@ -10770,71 +10770,6 @@ static int tolua_Ogre_Ogre_Entity_getWorldBoundingSphere00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: setNormaliseNormals of class  Ogre::Entity */
-#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Entity_setNormaliseNormals00
-static int tolua_Ogre_Ogre_Entity_setNormaliseNormals00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"Ogre::Entity",0,&tolua_err) ||
-     !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  Ogre::Entity* self = (Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
-  bool normalise = ((bool)  tolua_toboolean(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setNormaliseNormals'",NULL);
-#endif
-  {
-   self->setNormaliseNormals(normalise);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'setNormaliseNormals'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: getNormaliseNormals of class  Ogre::Entity */
-#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Entity_getNormaliseNormals00
-static int tolua_Ogre_Ogre_Entity_getNormaliseNormals00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"const Ogre::Entity",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  const Ogre::Entity* self = (const Ogre::Entity*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getNormaliseNormals'",NULL);
-#endif
-  {
-   bool tolua_ret = (bool)  self->getNormaliseNormals();
-   tolua_pushboolean(tolua_S,(bool)tolua_ret);
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getNormaliseNormals'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* method: hasSkeleton of class  Ogre::Entity */
 #ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Entity_hasSkeleton00
 static int tolua_Ogre_Ogre_Entity_hasSkeleton00(lua_State* tolua_S)
@@ -13050,11 +12985,10 @@ static int tolua_Ogre_Ogre_Node_getWorldTransforms00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: getWorldOrientation of class  Ogre::Node */
-#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Node_getWorldOrientation00
-static int tolua_Ogre_Ogre_Node_getWorldOrientation00(lua_State* tolua_S)
+/* method: _getDerivedOrientation of class  Ogre::Node */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Node__getDerivedOrientation01
+static int tolua_Ogre_Ogre_Node__getDerivedOrientation01(lua_State* tolua_S)
 {
-#ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"const Ogre::Node",0,&tolua_err) ||
@@ -13062,31 +12996,26 @@ static int tolua_Ogre_Ogre_Node_getWorldOrientation00(lua_State* tolua_S)
  )
   goto tolua_lerror;
  else
-#endif
  {
   const Ogre::Node* self = (const Ogre::Node*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getWorldOrientation'",NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function '_getDerivedOrientation'",NULL);
 #endif
   {
-   const Ogre::Quaternion& tolua_ret = (const Ogre::Quaternion&)  self->getWorldOrientation();
+   const Ogre::Quaternion& tolua_ret = (const Ogre::Quaternion&)  self->_getDerivedOrientation();
    tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const Ogre::Quaternion");
   }
  }
  return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getWorldOrientation'.",&tolua_err);
- return 0;
-#endif
+tolua_lerror:
+ return tolua_Ogre_Ogre_Node__getDerivedOrientation00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: getWorldPosition of class  Ogre::Node */
-#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Node_getWorldPosition00
-static int tolua_Ogre_Ogre_Node_getWorldPosition00(lua_State* tolua_S)
+/* method: _getDerivedPosition of class  Ogre::Node */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Node__getDerivedPosition01
+static int tolua_Ogre_Ogre_Node__getDerivedPosition01(lua_State* tolua_S)
 {
-#ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"const Ogre::Node",0,&tolua_err) ||
@@ -13094,23 +13023,19 @@ static int tolua_Ogre_Ogre_Node_getWorldPosition00(lua_State* tolua_S)
  )
   goto tolua_lerror;
  else
-#endif
  {
   const Ogre::Node* self = (const Ogre::Node*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getWorldPosition'",NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function '_getDerivedPosition'",NULL);
 #endif
   {
-   const Ogre::Vector3& tolua_ret = (const Ogre::Vector3&)  self->getWorldPosition();
+   const Ogre::Vector3& tolua_ret = (const Ogre::Vector3&)  self->_getDerivedPosition();
    tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const Ogre::Vector3");
   }
  }
  return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getWorldPosition'.",&tolua_err);
- return 0;
-#endif
+tolua_lerror:
+ return tolua_Ogre_Ogre_Node__getDerivedPosition00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
@@ -18677,9 +18602,9 @@ static int tolua_Ogre_Ogre_Root_getTimer00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: getCurrentFrameNumber of class  Ogre::Root */
-#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Root_getCurrentFrameNumber00
-static int tolua_Ogre_Ogre_Root_getCurrentFrameNumber00(lua_State* tolua_S)
+/* method: getNextFrameNumber of class  Ogre::Root */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Root_getNextFrameNumber00
+static int tolua_Ogre_Ogre_Root_getNextFrameNumber00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -18693,17 +18618,17 @@ static int tolua_Ogre_Ogre_Root_getCurrentFrameNumber00(lua_State* tolua_S)
  {
   const Ogre::Root* self = (const Ogre::Root*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getCurrentFrameNumber'",NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getNextFrameNumber'",NULL);
 #endif
   {
-   unsigned long tolua_ret = (unsigned long)  self->getCurrentFrameNumber();
+   unsigned long tolua_ret = (unsigned long)  self->getNextFrameNumber();
    tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getCurrentFrameNumber'.",&tolua_err);
+ tolua_error(tolua_S,"#ferror in function 'getNextFrameNumber'.",&tolua_err);
  return 0;
 #endif
 }
@@ -19240,8 +19165,6 @@ TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"getBoundingRadius",tolua_Ogre_Ogre_Entity_getBoundingRadius00);
     tolua_function(tolua_S,"getWorldBoundingBox",tolua_Ogre_Ogre_Entity_getWorldBoundingBox00);
     tolua_function(tolua_S,"getWorldBoundingSphere",tolua_Ogre_Ogre_Entity_getWorldBoundingSphere00);
-    tolua_function(tolua_S,"setNormaliseNormals",tolua_Ogre_Ogre_Entity_setNormaliseNormals00);
-    tolua_function(tolua_S,"getNormaliseNormals",tolua_Ogre_Ogre_Entity_getNormaliseNormals00);
     tolua_function(tolua_S,"hasSkeleton",tolua_Ogre_Ogre_Entity_hasSkeleton00);
     tolua_function(tolua_S,"getSkeleton",tolua_Ogre_Ogre_Entity_getSkeleton00);
     tolua_function(tolua_S,"isHardwareAnimationEnabled",tolua_Ogre_Ogre_Entity_isHardwareAnimationEnabled00);
@@ -19323,8 +19246,8 @@ TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"_update",tolua_Ogre_Ogre_Node__update00);
     tolua_function(tolua_S,"getMaterial",tolua_Ogre_Ogre_Node_getMaterial00);
     tolua_function(tolua_S,"getWorldTransforms",tolua_Ogre_Ogre_Node_getWorldTransforms00);
-    tolua_function(tolua_S,"getWorldOrientation",tolua_Ogre_Ogre_Node_getWorldOrientation00);
-    tolua_function(tolua_S,"getWorldPosition",tolua_Ogre_Ogre_Node_getWorldPosition00);
+    tolua_function(tolua_S,"_getDerivedOrientation",tolua_Ogre_Ogre_Node__getDerivedOrientation01);
+    tolua_function(tolua_S,"_getDerivedPosition",tolua_Ogre_Ogre_Node__getDerivedPosition01);
     tolua_function(tolua_S,"setInitialState",tolua_Ogre_Ogre_Node_setInitialState00);
     tolua_function(tolua_S,"resetToInitialState",tolua_Ogre_Ogre_Node_resetToInitialState00);
     tolua_function(tolua_S,"getInitialPosition",tolua_Ogre_Ogre_Node_getInitialPosition00);
@@ -19576,7 +19499,7 @@ TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"removeFrameListener",tolua_Ogre_Ogre_Root_removeFrameListener00);
     tolua_function(tolua_S,"convertColourValue",tolua_Ogre_Ogre_Root_convertColourValue00);
     tolua_function(tolua_S,"getTimer",tolua_Ogre_Ogre_Root_getTimer00);
-    tolua_function(tolua_S,"getCurrentFrameNumber",tolua_Ogre_Ogre_Root_getCurrentFrameNumber00);
+    tolua_function(tolua_S,"getNextFrameNumber",tolua_Ogre_Ogre_Root_getNextFrameNumber00);
     tolua_function(tolua_S,"getSingleton",tolua_Ogre_Ogre_Root_getSingleton00);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);

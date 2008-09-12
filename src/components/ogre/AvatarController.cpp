@@ -230,7 +230,7 @@ bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 	if (mDecalObject)
 	{
 		///hide the decal when we're close to it
-		if (mDecalNode->getWorldPosition().distance(mAvatar.getAvatarSceneNode()->getWorldPosition()) < 1) {
+		if (mDecalNode->_getDerivedPosition().distance(mAvatar.getAvatarSceneNode()->_getDerivedPosition()) < 1) {
 			mDecalNode->setVisible(false);
 		}
 	}
