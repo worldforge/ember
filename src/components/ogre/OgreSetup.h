@@ -40,7 +40,8 @@ class EmberPagingSceneManagerFactory;
 	A class used for setting up Ogre. Instead of creating the Ogre root object and the main render window direclty, use this to guarantee that everything is set up correctly.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
-class OgreSetup{
+class OgreSetup : Ogre::FrameListener
+{
 public:
     OgreSetup();
 
@@ -82,6 +83,8 @@ public:
      */
     void shutdown();
     
+	bool frameEnded(const Ogre::FrameEvent & evt);
+
 private:
 
 	/**
