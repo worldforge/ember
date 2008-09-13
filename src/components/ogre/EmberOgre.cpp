@@ -293,10 +293,9 @@ bool EmberOgre::renderOneFrame()
 {
 	Ember::Input& input(Ember::Input::getSingleton());
 	input.processInput();
-// 	if (input.isApplicationVisible()) {
+ 	if (input.isApplicationVisible()) {
 		mRoot->renderOneFrame();
-		mWindow->update();
-// 	}
+ 	}
 	return true;
 }
 
