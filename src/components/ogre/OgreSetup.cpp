@@ -310,10 +310,9 @@ bool OgreSetup::configure(void)
 // 	int flags = SDL_HWPALETTE | SDL_HWSURFACE | SDL_OPENGL;
  	int flags = SDL_OPENGL;
 
-//  	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-//  	bool useAltSwapControl = SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1) != 0;
+// 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+// 	bool useAltSwapControl = SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1) != 0;
 
-// 	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1);
 		// request good stencil size if 32-bit colour
 /*        if (colourDepth == 32)
 		{
@@ -330,31 +329,11 @@ bool OgreSetup::configure(void)
 
 	Ogre::NameValuePairList misc;
 
-/*	SDL_SysWMinfo info;
-	SDL_VERSION(&info.version);
-
-	SDL_GetWMInfo(&info);
-
-	std::string dsp(&(DisplayString(info.info.x11.display)[1]));
-	std::vector<Ogre::String> tokens = Ogre::StringUtil::split(dsp, ".");
-
-	std::string s = Ogre::StringConverter::toString((long)info.info.x11.display);
-	s += ":" + tokens[1] +":";
-	s += ":" + Ogre::StringConverter::toString((long)info.info.x11.window);
-	misc["parentWindowHandle"] = s;*/
-	
-	
 // 	misc["externalGLControl"] = Ogre::String("True");
 	misc["currentGLContext"] = Ogre::String("True");
 // 	misc["vsync"] = Ogre::String("No");
 	
-	//misc["externalGLControl"] = "true";
 
-/*		GLXContext glxContext(glXGetCurrentContext());
-		GLXDrawable glxDrawable(glXGetCurrentDrawable());
-		std::string glxContextString = Ogre::StringConverter::toString((long)glxContext);
-		glxContextString += ":" + Ogre::StringConverter::toString((long)glxDrawable);
-		misc["glxcontext"] = glxContextString;*/
 
 	/// initialise root, without creating a window
 	mRoot->initialise(false);
@@ -366,6 +345,7 @@ bool OgreSetup::configure(void)
 	mRenderWindow->setActive(true);
 	mRenderWindow->setAutoUpdated(true);
 	mRenderWindow->setVisible(true);
+	
 	
 // 	mRoot->addFrameListener(this);
 
