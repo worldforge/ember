@@ -31,6 +31,7 @@
 
 #include <map>
 #include <cstring>
+#include <algorithm>
 
 #ifndef __WIN32__
 #include <AL/alut.h>
