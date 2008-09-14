@@ -289,89 +289,67 @@ bool OgreSetup::configure(void)
 	_controlfp(_RC_NEAR , _MCW_RC);
 #else
 
-	///On *NIX, Ogre can have either a SDL or an GLX backend (or "platform", it's selected at compile time by the --with-platform=[GLX|SDL] option). Ogre 1.2+ uses GLX by default.
-	///However, we use SDL for our input systems. If the SDL backend then is used, everything is already set up for us.
-	///If on the other hand the GLX backend is used, we need to do some fiddling to get SDL to play nice with the GLX render system.
+	/// we start by trying to figure out what kind of resolution the user has selected, and whether full screen should be used or not
+	unsigned int height = 768, width = 1024;
+	bool fullscreen;
 
-	///Check if SDL already has been initalized. If it has, we know that Ogre uses the SDL backend (the call to SDL_Init happens at mRoot->restoreConfig())
-	if(SDL_WasInit(SDL_INIT_VIDEO)==0) {
-		///SDL hasn't been initilized, we thus know that we're using the GLX platform, and need to initialize SDL ourselves
+	parseWindowGeometry(mRoot->getRenderSystem()->getConfigOptions(), width, height, fullscreen);
 
-		/// we start by trying to figure out what kind of resolution the user has selected, and whether full screen should be used or not
-		unsigned int height = 768, width = 1024;
-		bool fullscreen;
-
-		parseWindowGeometry(mRoot->getRenderSystem()->getConfigOptions(), width, height, fullscreen);
-
-		SDL_Init(SDL_INIT_VIDEO);
-
+	SDL_Init(SDL_INIT_VIDEO);
+	
+	///this is a failsafe which guarantees that SDL is correctly shut down (returning the screen to correct resolution, releasing mouse etc.) if there's a crash.
+	atexit(SDL_Quit);
+	oldSignals[SIGSEGV] = signal(SIGSEGV, shutdownHandler);
+	oldSignals[SIGABRT] = signal(SIGABRT, shutdownHandler);
+	oldSignals[SIGBUS] = signal(SIGBUS, shutdownHandler);
+	oldSignals[SIGILL] = signal(SIGILL, shutdownHandler);
 
 
-		///this is a failsafe which guarantees that SDL is correctly shut down (returning the screen to correct resolution, releasing mouse etc.) if there's a crash.
- 		atexit(SDL_Quit);
- 		oldSignals[SIGSEGV] = signal(SIGSEGV, shutdownHandler);
- 		oldSignals[SIGABRT] = signal(SIGABRT, shutdownHandler);
- 		oldSignals[SIGBUS] = signal(SIGBUS, shutdownHandler);
- 		oldSignals[SIGILL] = signal(SIGILL, shutdownHandler);
-
-
-		///set the window size
+	///set the window size
 //        int flags = SDL_OPENGL | SDL_HWPALETTE | SDL_RESIZABLE | SDL_HWSURFACE;
-        int flags = SDL_HWPALETTE | SDL_HWSURFACE;
+	int flags = SDL_HWPALETTE | SDL_HWSURFACE;
 
 //         SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-        // request good stencil size if 32-bit colour
+		// request good stencil size if 32-bit colour
 /*        if (colourDepth == 32)
-        {
-            SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8);
-        }*/
+		{
+			SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8);
+		}*/
 
-        if (fullscreen)
-            flags |= SDL_FULLSCREEN;
+	if (fullscreen)
+		flags |= SDL_FULLSCREEN;
 
-		mMainVideoSurface = SDL_SetVideoMode(width, height,0, flags); // create an SDL window
+	mMainVideoSurface = SDL_SetVideoMode(width, height,0, flags); // create an SDL window
 
-		SDL_WM_SetCaption("Ember","ember");
+	SDL_WM_SetCaption("Ember","ember");
 
-		SDL_SysWMinfo info;
-		SDL_VERSION(&info.version);
+	SDL_SysWMinfo info;
+	SDL_VERSION(&info.version);
 
-		SDL_GetWMInfo(&info);
+	SDL_GetWMInfo(&info);
 
-		std::string dsp(&(DisplayString(info.info.x11.display)[1]));
-		std::vector<Ogre::String> tokens = Ogre::StringUtil::split(dsp, ".");
+	std::string dsp(&(DisplayString(info.info.x11.display)[1]));
+	std::vector<Ogre::String> tokens = Ogre::StringUtil::split(dsp, ".");
 
-		Ogre::NameValuePairList misc;
-		std::string s = Ogre::StringConverter::toString((long)info.info.x11.display);
-		s += ":" + tokens[1] +":";
-		s += ":" + Ogre::StringConverter::toString((long)info.info.x11.window);
-		misc["parentWindowHandle"] = s;
+	Ogre::NameValuePairList misc;
+	std::string s = Ogre::StringConverter::toString((long)info.info.x11.display);
+	s += ":" + tokens[1] +":";
+	s += ":" + Ogre::StringConverter::toString((long)info.info.x11.window);
+	misc["parentWindowHandle"] = s;
 
-		//misc["externalGLControl"] = "true";
+	/// initialise root, without creating a window
+	mRoot->initialise(false);
 
-/*		GLXContext glxContext(glXGetCurrentContext());
-		GLXDrawable glxDrawable(glXGetCurrentDrawable());
-		std::string glxContextString = Ogre::StringConverter::toString((long)glxContext);
-		glxContextString += ":" + Ogre::StringConverter::toString((long)glxDrawable);
-		misc["glxcontext"] = glxContextString;*/
+	mRenderWindow = mRoot->createRenderWindow("MainWindow", width, height, true, &misc);
 
-		/// initialise root, without creating a window
-		mRoot->initialise(false);
-
-		mRenderWindow = mRoot->createRenderWindow("MainWindow", width, height, true, &misc);
-
-		///we need to set the window to be active by ourselves, since GLX by default sets it to false, but then activates it upon receiving some X event (which it will never recieve since we'll use SDL).
-		///see OgreGLXWindow.cpp
-		mRenderWindow->setActive(true);
-		mRenderWindow->setAutoUpdated(true);
-
-	} else {
-		mRenderWindow = mRoot->initialise(true, "Ember");
-	}
+	///we need to set the window to be active by ourselves, since GLX by default sets it to false, but then activates it upon receiving some X event (which it will never recieve since we'll use SDL).
+	///see OgreGLXWindow.cpp
+	mRenderWindow->setActive(true);
+	mRenderWindow->setAutoUpdated(true);
 
 
     ///set the icon of the window
-    Uint32 rmask, gmask, bmask, amask;
+	Uint32 rmask, gmask, bmask, amask;
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
     rmask = 0xff000000;
