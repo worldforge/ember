@@ -40,6 +40,14 @@ function EntityCreator.Create_Click(args)
 	EntityCreator.helper:toggleCreateMode()
 end
 
+-- Handles toggling the randomizing of the orientation on and off
+function EntityCreator.RandomizeOrientation_CheckStateChanged(args)
+	local checkbox = EntityCreator.widget:getWindow("RandomizeOrientation")
+	checkbox = CEGUI.toCheckbox(checkbox)
+
+	EntityCreator.helper:setRandomizeOrientation(checkbox:isSelected())
+end
+
 -- Clears widget if recipe is selected
 function EntityCreator.clear()
 	if EntityCreator.recipe ~= nil then

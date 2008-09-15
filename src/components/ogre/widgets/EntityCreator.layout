@@ -27,9 +27,17 @@
 				<Property Name='FrameEnabled' Value='false' />
 				<Property Name='BackgroundEnabled' Value='false' />
 			</Window>
-			<Window Type='DefaultGUISheet' Name='AdaptersContainer'>
+			<Window Type='EmberLook/Checkbox' Name='RandomizeOrientation'>
 				<Property Name='UnifiedPosition' Value='{{0,100},{0,50}}'/>
-				<Property Name='UnifiedSize' Value='{{1,-100},{1,-50}}'/>
+				<Property Name='UnifiedSize' Value='{{1,-100},{0,25}}'/>
+				<Property Name='Selected' Value='True'/>
+				<Property Name='Tooltip' Value='If checked, will randomize the orientation of all new entities.'/>
+				<Property Name='Text' Value='Random orientation'/>
+				<Event Name="CheckStateChanged" Function="EntityCreator.RandomizeOrientation_CheckStateChanged" />
+			</Window>
+			<Window Type='DefaultGUISheet' Name='AdaptersContainer'>
+				<Property Name='UnifiedPosition' Value='{{0,100},{0,75}}'/>
+				<Property Name='UnifiedSize' Value='{{1,-100},{1,-75}}'/>
 			</Window>
 		</Window>
 	</Window>

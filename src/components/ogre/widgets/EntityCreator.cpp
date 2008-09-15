@@ -35,6 +35,7 @@
 #include "../manipulation/DetachedEntity.h"
 #include <Atlas/Message/Element.h>
 #include <wfmath/atlasconv.h>
+#include <wfmath/MersenneTwister.h>
 #include <Eris/TypeInfo.h>
 #include "../MathConverter.h"
 
@@ -156,7 +157,7 @@ void EntityCreatorHideModelAction::deactivate()
 
 
 EntityCreator::EntityCreator()
-		: mCreateMode(false), mRecipe(0), mModel(0), mBlurb(0), mBlurbShown(false)
+		: mCreateMode(false), mRecipe(0), mModel(0), mBlurb(0), mBlurbShown(false), mRandomizeOrientation(true)
 {
 	mInputAdapter = new EntityCreatorInputAdapter(*this);
 	mMoveAdapter = new EntityCreatorMoveAdapter(*this);
@@ -187,6 +188,12 @@ void EntityCreator::toggleCreateMode()
 		stopCreation();
 	}
 }
+
+void EntityCreator::setRandomizeOrientation(bool randomize)
+{
+	mRandomizeOrientation = randomize;
+}
+
 
 void EntityCreator::startCreation()
 {
@@ -293,6 +300,10 @@ void EntityCreator::setModel(const std::string& modelName)
 
 	// Setting inital position and orientation
 	mEntityNode->setPosition(Atlas2Ogre(mPos));
+	if (mRandomizeOrientation) {
+		WFMath::MTRand rng;
+		mOrientation.rotation(2, rng.rand() * 360.0f);
+	}
 	mEntityNode->setOrientation(Atlas2Ogre(mOrientation));
 	mEntityNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
 }

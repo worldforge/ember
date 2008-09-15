@@ -71,6 +71,13 @@ public:
 	 * Toggles create mode and performs correspondent action.
 	 */
 	void toggleCreateMode();
+	
+	/**
+	 * @brief Sets whether to randomize the orientation of all new entities.
+	 * If set, all new entities will have their orientation randomized along the vertical axis.
+	 * @param randomize Whether to randomize the orientation or not.
+	 */
+	void setRandomizeOrientation(bool randomize);
 
 	/**
 	 * Starts entity creation process.
@@ -240,6 +247,11 @@ protected:
 	 * Parameters for blurb timing.
 	 */
 	Ogre::Real mTimeUntilShowBlurb, mTimeBlurbShown, mTimeToShowBlurb;
+	
+	/**
+	@brief If set to true, all new entities will have their orientation randomized around the vertical axis.
+	*/
+	bool mRandomizeOrientation;
 };
 
 /**

@@ -33,6 +33,12 @@ public:
 	~EntityCreator();
 	void setRecipe(EntityRecipe& recipe);
 	void toggleCreateMode();
+	/**
+	 * @brief Sets whether to randomize the orientation of all new entities.
+	 * If set, all new entities will have their orientation randomized along the vertical axis.
+	 * @param randomize Whether to randomize the orientation or not.
+	 */
+	void setRandomizeOrientation(bool randomize);
 	void createEntity();
 	void cleanupCreation();
 
