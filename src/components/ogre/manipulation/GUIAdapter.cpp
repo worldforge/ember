@@ -121,6 +121,16 @@ const std::string& GUIAdapter::getTitle() const
 	return mTitle;
 }
 
+void GUIAdapter::setTooltip(const std::string& tooltip)
+{
+	mTooltip = tooltip;
+}
+	
+const std::string& GUIAdapter::getTooltip() const
+{
+	return mTooltip;
+}
+
 void GUIAdapter::addSuggestion(const std::string& value, const std::string& text)
 {
 	mSuggestions[text] = value;

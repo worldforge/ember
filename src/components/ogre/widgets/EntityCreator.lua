@@ -101,7 +101,7 @@ function EntityCreator.addAdapter(adapter, title, container, parentContainer)
 	width = width + CEGUI.UDim(0, textWidth)
 	outercontainer:setWidth(width)
 	container:setXPosition(CEGUI.UDim(0, textWidth))
-	container:setProperty("Tooltip", title);
+	container:setProperty("Tooltip", adapter:getTooltip());
 	
 	outercontainer:setHeight(container:getHeight())
 	

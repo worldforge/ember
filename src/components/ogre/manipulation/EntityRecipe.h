@@ -77,17 +77,17 @@ public:
 	/**
 	 * Returns entity type.
 	 */
-	std::string getEntityType();
+	const std::string& getEntityType() const;
 
 	/**
 	 * Creates and returns GUI adapter. This used currently by entity recipes parser (XMLEntityRecipeSerializer) for populating entity recipes.
 	 */
-	GUIAdapter* createGUIAdapter(std::string name, std::string type);
+	GUIAdapter* createGUIAdapter(const std::string& name, const std::string& type, const std::string& tooltip);
 
 	/**
 	 * Returns named GUI adapter.
 	 */
-	GUIAdapter* getGUIAdapter(std::string name);
+	GUIAdapter* getGUIAdapter(const std::string& name);
 
 	/**
 	 * Returns list of GUI adapters.
@@ -97,7 +97,7 @@ public:
 	/**
 	 * Creates and returns GUI adapter bindings. This used currently by entity recipes parser (XMLEntityRecipeSerializer) for populating entity recipes.
 	 */
-	GUIAdapterBindings* createGUIAdapterBindings(std::string name);
+	GUIAdapterBindings* createGUIAdapterBindings(const std::string& name);
 
 	/**
 	 * Associate each binding with correspondent placeholders (entity spec nodes).
@@ -119,7 +119,7 @@ public:
 	/**
 	 * Gets author.
 	 */
-	std::string getAuthor();
+	const std::string& getAuthor() const;
 
 	/**
 	 * Sets description.
@@ -129,7 +129,7 @@ public:
 	/**
 	 * Gets description.
 	 */
-	std::string getDescription();
+	const std::string& getDescription() const;
 
 	/**
 	 * Does some test checking.
