@@ -146,17 +146,6 @@ AC_LANG_POP(C)
 
 # make sure binreloc funtionality is used
 AM_BINRELOC
-# CXXFLAGS="$CXXFLAGS $BINRELOC_CFLAGS"
-
-
-# Test for libxml2
-#PKG_CHECK_MODULES(XML, libxml-2.0 >= 2.4.23,
-#	[
-#		CXXFLAGS="$CXXFLAGS $XML_CFLAGS"
-#		LDFLAGS="$LDFLAGS $XML_LIBS"
-#	],
-# AC_MSG_ERROR(Couldn't find libxml)
-#)
 
 # Try to find system-wide installation of tinyxml
 # If found, add define to config.h, set LIBS and add automake conditional
@@ -171,40 +160,6 @@ AC_CHECK_LIB(tinyxml, main,
 	]
 )
 AM_CONDITIONAL(HAVE_LIBTINYXML, [test x$have_tinyxml = xtrue])
-
-# Check for the FreeType 2 library
-#
-# Get the cflags and libraries from the freetype-config script
-#AC_ARG_WITH(freetype-prefix,[  --with-freetype-prefix=PFX   Prefix where FREETYPE is 
-#			       installed (optional)],
-#			       freetype_prefix="$withval",
-#			       freetype_prefix="")
-#AC_ARG_WITH(freetype-exec-prefix,[  --with-freetype-exec-prefix=PFX Exec prefix
-#				    where FREETYPE is installed (optional)],
-#				    freetype_exec_prefix="$withval", freetype_exec_prefix="")
-#
-#if test x$freetype_exec_prefix != x ; then
-#     freetype_args="$freetype_args --exec-prefix=$freetype_exec_prefix"
-#     if test x${FREETYPE_CONFIG+set} != xset ; then
-#        FREETYPE_CONFIG=$freetype_exec_prefix/bin/freetype-config
-#     fi
-#fi
-#if test x$freetype_prefix != x ; then
-#     freetype_args="$freetype_args --prefix=$freetype_prefix"
-#     if test x${FREETYPE_CONFIG+set} != xset ; then
-#        FREETYPE_CONFIG=$freetype_prefix/bin/freetype-config
-#     fi
-#fi
-#AC_PATH_PROG(FREETYPE_CONFIG, freetype-config, no)
-#no_freetype=""
-#if test "$FREETYPE_CONFIG" = "no" ; then
-#    AC_MSG_ERROR([
-#*** Unable to find FreeType2 library (http://www.freetype.org/)
-#])
-#else
-#    CXXFLAGS="$CXXFLAGS `$FREETYPE_CONFIG $freetypeconf_args --cflags`"
-#    LIBS="$LIBS `$FREETYPE_CONFIG $freetypeconf_args --libs`"
-#fi
 
 # Check for C++ libraries:
 AC_LANG_POP([C])
@@ -256,7 +211,8 @@ config.log to see why the tests failed, and fix it.])
 
 # Check for OGRE
 OGRE_VERSION=1.4.2
-PKG_CHECK_MODULES(OGRE, [OGRE >= $OGRE_VERSION CEGUI-OGRE >= $OGRE_VERSION],
+OGRE_MAX_VERSION=1.6.0
+PKG_CHECK_MODULES(OGRE, [OGRE >= $OGRE_VERSION OGRE < $OGRE_MAX_VERSION CEGUI-OGRE >= $OGRE_VERSION],
 	[
 		CXXFLAGS="$CXXFLAGS $OGRE_CFLAGS"
 		LDFLAGS="$LDFLAGS $OGRE_LIBS"
@@ -498,30 +454,12 @@ if test "$ac_use_gprof_code" = "yes"; then
 fi
 
 
-dnl disabled cal3d, until needed
-
-#AC_ARG_WITH(cal3d, [--with-cal3d=prefix 	Specify where Cal3d is installed too], [
-#	CPPFLAGS="$CPPFLAGS -I$withval/include"
-#	LIBS="$LIBS -L$withval/lib"
-#])
-
-#AC_CHECK_HEADER(cal3d/cal3d.h,,AC_MSG_ERROR(Couldn't find the Cal3d headers))
-
-# verify that we can link against Cal3d, but don't add it to LIBS
-#saved_LIBS=$LIBS
-#AC_CHECK_LIB(cal3d, main, , AC_MSG_ERROR(Couldn't find the Cal3d library))
-#LIBS=$saved_LIBS
 
 
-#AC_LANG([C++])
+
 
 #dnl add SDL flags here, now that we're done with the other tests
-#CXXFLAGS="$CXXFLAGS
-#LIBS="$LIBS
-
 CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
-
-#LDFLAGS="$LDFLAGS $SDL_LIBS"
 LDFLAGS="$LDFLAGS $SDL_LIBS"
     
 
@@ -616,6 +554,8 @@ AC_MSG_RESULT([
 		* If you're using a release version, you should however instead do:
 		*
 		* make releasemediarsync
+		*
+		* Note that both of these make targets will just fetch and install the files directly, bypassing normal "make install" producures. They should therefore not be used if you don't want to pollute your installation directory, and shouldn't be used if you install to a system directory.
 		*
 		* A third way is to get the media tarball directly. This only works for release versions however.
 		* You can find these media tarballs at http://amber.worldforge.org/WFUT .
