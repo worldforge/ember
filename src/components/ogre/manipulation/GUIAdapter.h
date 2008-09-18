@@ -104,6 +104,20 @@ public:
 	const std::string& getTooltip() const;
 
 	/**
+	 * @brief Sets a default value, to which the created gui adapter should be initialized when it's created.
+	 * @param value The default value. This must be translatable to something that the adapter used can handle (i.e. if the adapter used is a numerical adapter, the default value must be parsable into to a number).
+	 */
+	void setDefaultValue(const std::string& value);
+	
+	/**
+	 * @brief Gets the default value.
+	 * when using this to set the initial value of an adapter, it should be parsed into a corresponding atlas element value.
+	 * @return The default value, as a string.
+	 */
+	const std::string& getDefaultValue() const;
+	
+	
+	/**
 	 * Adds suggestion.
 	 */
 	void addSuggestion(const std::string& value, const std::string& text);
@@ -160,6 +174,8 @@ protected:
 	* @brief An optional tooltip text for this adapter.
 	*/
 	std::string mTooltip;
+	
+	std::string mDefaultValue;
 };
 
 }

@@ -183,7 +183,7 @@ void XMLEntityRecipeSerializer::readAdapters(EntityRecipePtr entRecipe, TiXmlEle
 	for (TiXmlElement* smElem = adaptersNode->FirstChildElement("adapter");
             smElem != 0; smElem = smElem->NextSiblingElement("adapter"))
 	{
-		const std::string *name, *type, *tooltip;
+		const std::string *name, *type, *tooltip, *defaultValue;
 		std::string tooltipText;
 		if (!(name = smElem->Attribute(std::string("name"))))
 			continue;
@@ -194,6 +194,8 @@ void XMLEntityRecipeSerializer::readAdapters(EntityRecipePtr entRecipe, TiXmlEle
 		if ((tooltip = smElem->Attribute(std::string("tooltip")))) {
 			tooltipText = *tooltip;
 		}
+		
+		defaultValue = smElem->Attribute(std::string("default"));
 
 		S_LOG_VERBOSE(" adapter '" << *name << "' of type " << *type);
 
@@ -203,6 +205,10 @@ void XMLEntityRecipeSerializer::readAdapters(EntityRecipePtr entRecipe, TiXmlEle
 		if ((title = smElem->Attribute(std::string("title"))))
 		{
 			adapter->setTitle(*title);
+		}
+		
+		if (defaultValue) {
+			adapter->setDefaultValue(*defaultValue);
 		}
 
 		// Custom adapter parameters
