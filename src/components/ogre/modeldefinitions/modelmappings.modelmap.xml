@@ -528,15 +528,15 @@
 				<attributematch attribute="style" >
 					<case>
 						<caseparam type="equals">gnarly</caseparam>
-						<action type="display-model">pineB</action>
+						<action type="display-model">pineA</action>
 					</case>
 					<case>
 						<caseparam type="equals">knotted</caseparam>
-						<action type="display-model">pineC</action>
+						<action type="display-model">pineB</action>
 					</case>
 					<case>
 						<caseparam type="equals">weathered</caseparam>
-						<action type="display-model">pineD</action>
+						<action type="display-model">pineC</action>
 					</case>
 				</attributematch>
 			</case>
