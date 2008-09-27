@@ -14,9 +14,9 @@
       </atlas>
     </entity>
     <adapters>
-      <adapter name="height" type="number" title="Height" tooltip="Specify the height in meters."/>
-      <adapter name="heightdev" type="number" title="Height std. dev." tooltip="Specify the height deviation in meters."/>
-      <adapter name="style" type="string" title="Style" allowrandom="yes">
+      <adapter name="height" type="number" title="Height" tooltip="Specify the height in meters."  default="12"/>
+      <adapter name="heightdev" type="number" title="Height std. dev." tooltip="Specify the height deviation in meters."  default="4"/>
+      <adapter name="style" type="string" title="Style" allowrandom="yes" default="Random">
         <item value="weathered">Weathered</item>
         <item value="gnarly">Gnarly</item>
         <item value="knotted">Knotted</item>
