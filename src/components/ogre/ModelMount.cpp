@@ -27,6 +27,7 @@
 #include "ModelMount.h"
 #include <Ogre.h>
 #include "components/ogre/model/Model.h"
+#include "MathConverter.h"
 
 namespace EmberOgre {
 
@@ -48,21 +49,20 @@ void ModelMount::rescale(const WFMath::AxisBox<3>& wfBbox)
 {
 	reset();
 	scaleNode(wfBbox);
-	
-	///translate the scale node according to the translate defined in the model
-	getScaleNode()->setPosition(Ogre::Vector3::ZERO);
-	getScaleNode()->translate(getModel().getDefinition()->getTranslate());
 }
 
 
 void ModelMount::reset()
 {
+	getScaleNode()->setPosition(Ogre::Vector3::ZERO);
 	getScaleNode()->setOrientation(Ogre::Quaternion::IDENTITY);
+	getScaleNode()->setScale(Ogre::Vector3::UNIT_SCALE);
 	///rotate node to fit with WF space
 	///perhaps this is something to put in the model spec instead?
 	getScaleNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
 	getScaleNode()->rotate(getModel().getRotation());
-	getScaleNode()->setScale(Ogre::Vector3::UNIT_SCALE);
+	///translate the scale node according to the translate defined in the model
+	getScaleNode()->translate(getModel().getDefinition()->getTranslate());
 }
 
 void ModelMount::scaleNode(const WFMath::AxisBox<3>& wfBbox)
@@ -70,10 +70,13 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>& wfBbox)
 	///make a copy of the original bbox
 	Ogre::AxisAlignedBox defaultOgreBoundingBox = mModel.getBoundingBox();
 	///apply any rotation required first so the bounding box we use as reference represents the way to mesh is adjusted through rotations set in the model definition
-	defaultOgreBoundingBox.transform(Ogre::Matrix4(getScaleNode()->getOrientation()));
+	Ogre::Matrix4 localTransform;
+	localTransform.makeTransform(getScaleNode()->getPosition(), getScaleNode()->getScale(), getScaleNode()->getOrientation());
+ 	defaultOgreBoundingBox.transform(localTransform);
+// 	defaultOgreBoundingBox.transform(Ogre::Matrix4(getScaleNode()->getOrientation()));
 	
-	const Ogre::Vector3& ogreMax(defaultOgreBoundingBox.getMaximum());
-	const Ogre::Vector3& ogreMin(defaultOgreBoundingBox.getMinimum());
+	const Ogre::Vector3& defaultMax(defaultOgreBoundingBox.getMaximum());
+	const Ogre::Vector3& defaultMin(defaultOgreBoundingBox.getMinimum());
 	
 	///Depending on whether the entity has a bounding box or not we'll use different scaling methods. Most entities should have bounding boxes, but not all.
 	if (wfBbox.isValid()) {
@@ -85,8 +88,12 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>& wfBbox)
 		
 		///Note that after the Model has been scaled using the bounding box, it can still be scaled additionally through the "scale" setting in the ModelDefinition.
 		
-		const WFMath::Point<3>& wfMax(wfBbox.highCorner());
-		const WFMath::Point<3>& wfMin(wfBbox.lowCorner());
+		Ogre::AxisAlignedBox ogreBbox(Atlas2Ogre(wfBbox));
+		
+		const Ogre::Vector3& ogreMax(ogreBbox.getMaximum());
+		const Ogre::Vector3& ogreMin(ogreBbox.getMinimum());
+/*		const WFMath::Point<3>& wfMax(wfBbox.highCorner());
+		const WFMath::Point<3>& wfMin(wfBbox.lowCorner());*/
 		
 		Ogre::Real scaleX;
 		Ogre::Real scaleY;
@@ -94,13 +101,13 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>& wfBbox)
 		
 		switch (getModel().getUseScaleOf()) {
 			case Model::ModelDefinition::MODEL_HEIGHT:
-				scaleX = scaleY = scaleZ = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));
+				scaleX = scaleY = scaleZ = fabs((ogreMax.y - ogreMin.y) / (defaultMax.y - defaultMin.y));
 				break;
 			case Model::ModelDefinition::MODEL_WIDTH:
-				scaleX = scaleY = scaleZ = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));
+				scaleX = scaleY = scaleZ = fabs((ogreMax.x - ogreMin.x) / (defaultMax.x - defaultMin.x));
 				break;
 			case Model::ModelDefinition::MODEL_DEPTH:
-				scaleX = scaleY = scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));
+				scaleX = scaleY = scaleZ = fabs((ogreMax.z - ogreMin.z) / (defaultMax.z - defaultMin.z));
 				break;
 			case Model::ModelDefinition::MODEL_NONE:
 				scaleX = scaleY = scaleZ = 1;
@@ -108,9 +115,10 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>& wfBbox)
 				
 			case Model::ModelDefinition::MODEL_ALL:
 			default:
-				scaleX = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));
-				scaleY = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));
-				scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));
+				///HACK: for some reason we have to switch x and z here. I'm not completely sure why, but it works. It hints at a problem elsewhere though
+				scaleZ = fabs((ogreMax.x - ogreMin.x) / (defaultMax.x - defaultMin.x));
+				scaleY = fabs((ogreMax.y - ogreMin.y) / (defaultMax.y - defaultMin.y));
+				scaleX = fabs((ogreMax.z - ogreMin.z) / (defaultMax.z - defaultMin.z));
 		}
 		
 		
@@ -122,9 +130,9 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>& wfBbox)
 		
 		S_LOG_WARNING("Could not find any scale set in the model '" << getModel().getName() << "'. We'll thus default to scaling the mesh so it's 0.25 meters in each dimension.");
 		
-		Ogre::Real scaleX = (0.25 / (ogreMax.x - ogreMin.x));
-		Ogre::Real scaleY = (0.25 / (ogreMax.y - ogreMin.y));
-		Ogre::Real scaleZ = (0.25 / (ogreMax.z - ogreMin.z));
+		Ogre::Real scaleX = (0.25 / (defaultMax.x - defaultMin.x));
+		Ogre::Real scaleY = (0.25 / (defaultMax.y - defaultMin.y));
+		Ogre::Real scaleZ = (0.25 / (defaultMax.z - defaultMin.z));
 		getScaleNode()->setScale(scaleX, scaleY, scaleZ);
 	}
 
