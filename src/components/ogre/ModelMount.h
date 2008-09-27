@@ -23,6 +23,8 @@
 #ifndef EMBEROGREMODELMOUNT_H
 #define EMBEROGREMODELMOUNT_H
 
+#include <wfmath/axisbox.h>
+
 namespace Ogre {
 	class SceneNode;
 }
@@ -74,6 +76,12 @@ public:
 	 */
 	inline EmberOgre::Model::Model& getModel() const;
 	
+	/**
+	 * @brief Rescales the model according to the bounding box.
+	 * @param wfBbox The bounding box to the model should be scaled. If you don't have an axis box available, just send an unitialized one (which you can get by just creating a new AxisBox with the empty constructor).
+	 */
+	void rescale(const WFMath::AxisBox<3>& wfBbox);
+	
 	
 protected:
 	/**
@@ -95,9 +103,15 @@ protected:
 	
 	
 	/**
-	 *  @brief Resets all scaling and rotation
+	 * @brief Resets all scaling and rotation
 	 */
 	void reset();
+
+	/**
+	 * @brief Scales the scale node accoring to the submitted bounding box.
+	 * @param wfBbox The bounding box, in WF space, for which we should scale the node.
+	 */
+	void scaleNode(const WFMath::AxisBox<3>& wfBbox);
 
 };
 
