@@ -34,11 +34,13 @@ ModelMount::ModelMount(EmberOgre::Model::Model& model, Ogre::SceneNode* mainNode
 : mModel(model), mMainNode(mainNode)
 {
 	mScaleNode = mMainNode->createChildSceneNode();
+	mScaleNode->attachObject(&mModel);
 }
 
 
 ModelMount::~ModelMount()
 {
+	mScaleNode->detachObject(&mModel);
 	mMainNode->removeAndDestroyChild(mScaleNode->getName());
 }
 

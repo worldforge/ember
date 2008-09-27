@@ -64,8 +64,8 @@ public:
 	inline Ogre::SceneNode* getMainNode() const;
  
 	/**
-	 * @brief Gets the scale node. This is the node to which the Model is directly attached to. It should normally never be used outside of this class.
-	 * Under normal circumstances the scale node is handed solely by this class and should never be modified from outside functionality. We do however provide this accessor for testing and diagnostics sake.
+	 * @brief Gets the scale node. This is the node to which the Model is directly attached to. It should normally never be altered outside of this class.
+	 * Under normal circumstances the scale node is handed solely by this class and should never be modified from outside functionality. Accessing through this method is mainly for lookup purposes, when you need to read the orientation or scale of the bounding box.
 	 * @return The scale node, to which the Model is attached.
 	 */
 	inline Ogre::SceneNode* getScaleNode() const;
