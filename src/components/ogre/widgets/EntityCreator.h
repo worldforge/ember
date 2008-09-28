@@ -38,6 +38,7 @@
 
 namespace EmberOgre {
 
+class ModelMount;
 namespace Gui {
 
 class EntityCreatorInputAdapter;
@@ -153,11 +154,10 @@ protected:
 	void scaleNode();
 
 	// Glue functions to allow code from EmberPhysicalEntity work without changes.
-	Ogre::SceneNode* getScaleNode();
 	Model::Model* getModel();
 	bool hasBBox();
 	const WFMath::AxisBox<3> & getBBox();
-	Ogre::AxisAlignedBox mDefaultOgreBoundingBox;
+	
 
 	/**
 	 * Sets Eris connection on connect to server event.
@@ -223,6 +223,8 @@ protected:
 	 */
 	Ogre::SceneNode* mEntityNode;
 
+	ModelMount* mModelMount;
+	
 	/**
 	 * Preview model.
 	 */
