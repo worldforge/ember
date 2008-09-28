@@ -364,7 +364,7 @@ void EntityCreator::finalizeCreation()
 {
 	// Final position
 	mEntityMessage["pos"] = mPos.toAtlas();
-	mEntityMessage["orientation"] = mOrientation.toAtlas();
+	mEntityMessage["orientation"] = Ogre2Atlas(mEntityNode->getOrientation()).toAtlas();
 
 	// Making create operation message
 	Atlas::Objects::Operation::Create c;
@@ -422,7 +422,6 @@ void EntityCreator::yaw(float degrees)
 	WFMath::Quaternion q;
 	mOrientation *= q.rotation(WFMath::Vector<3>(0,0,1), degrees*WFMath::Pi/180.0);
 	mEntityNode->setOrientation(Atlas2Ogre(mOrientation));
-	mEntityNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
 }
 
 void EntityCreator::connectedToServer(Eris::Connection* conn)
