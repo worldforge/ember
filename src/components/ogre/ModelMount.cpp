@@ -45,8 +45,9 @@ ModelMount::~ModelMount()
 	mMainNode->removeAndDestroyChild(mScaleNode->getName());
 }
 
-void ModelMount::rescale(const WFMath::AxisBox<3>& wfBbox)
+void ModelMount::rescale(const WFMath::AxisBox<3>* wfBbox)
 {
+	///It's important that we reset everything before we call scaleNode
 	reset();
 	scaleNode(wfBbox);
 }
@@ -65,11 +66,13 @@ void ModelMount::reset()
 	getScaleNode()->translate(getModel().getDefinition()->getTranslate());
 }
 
-void ModelMount::scaleNode(const WFMath::AxisBox<3>& wfBbox)
+void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 {
+	///it's important that reset() has been called before this method is called
+	
 	///make a copy of the original bbox
 	Ogre::AxisAlignedBox defaultOgreBoundingBox = mModel.getBoundingBox();
-	///apply any rotation required first so the bounding box we use as reference represents the way to mesh is adjusted through rotations set in the model definition
+	///apply any transformations required first so the bounding box we use as reference represents the way to mesh is adjusted through rotations set in the model definition
 	Ogre::Matrix4 localTransform;
 	localTransform.makeTransform(getScaleNode()->getPosition(), getScaleNode()->getScale(), getScaleNode()->getOrientation());
  	defaultOgreBoundingBox.transform(localTransform);
@@ -79,7 +82,7 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>& wfBbox)
 	const Ogre::Vector3& defaultMin(defaultOgreBoundingBox.getMinimum());
 	
 	///Depending on whether the entity has a bounding box or not we'll use different scaling methods. Most entities should have bounding boxes, but not all.
-	if (wfBbox.isValid()) {
+	if (wfBbox) {
 
 		///The entity has a bounding box. We'll now check the "usescaleof" setting.
 		///It it's either of "height", "width" or "depth" we'll scale the model uniformly so that the specified dimension matches up exactly between the bounding box of the Model and the bounding box of the entity.
@@ -88,7 +91,7 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>& wfBbox)
 		
 		///Note that after the Model has been scaled using the bounding box, it can still be scaled additionally through the "scale" setting in the ModelDefinition.
 		
-		Ogre::AxisAlignedBox ogreBbox(Atlas2Ogre(wfBbox));
+		Ogre::AxisAlignedBox ogreBbox(Atlas2Ogre(*wfBbox));
 		
 		const Ogre::Vector3& ogreMax(ogreBbox.getMaximum());
 		const Ogre::Vector3& ogreMin(ogreBbox.getMinimum());

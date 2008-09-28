@@ -49,7 +49,7 @@ public:
 	* @param model The model which we need a mount for.
 	* @param mainNode The main node. A scale node will be created as a child, to which the model then will be attached. Ownership of the main node isn't transferred to this class, but the scale node that's created will be owned, and destroyed, by this class.
 	*/
-	ModelMount(EmberOgre::Model::Model& model, Ogre::SceneNode* mainNode);
+	ModelMount(::EmberOgre::Model::Model& model, Ogre::SceneNode* mainNode);
 
 	/**
 	 * @brief Dtor.
@@ -74,20 +74,20 @@ public:
 	 * @brief Gets the Model instance to which this mount is attached.
 	 * @return The model instance.
 	 */
-	inline EmberOgre::Model::Model& getModel() const;
+	inline ::EmberOgre::Model::Model& getModel() const;
 	
 	/**
 	 * @brief Rescales the model according to the bounding box.
-	 * @param wfBbox The bounding box to the model should be scaled. If you don't have an axis box available, just send an unitialized one (which you can get by just creating a new AxisBox with the empty constructor).
+	 * @param wfBbox The bounding box to the model should be scaled. If you don't have an axis box available, just send null.
 	 */
-	void rescale(const WFMath::AxisBox<3>& wfBbox);
+	void rescale(const WFMath::AxisBox<3>* wfBbox);
 	
 	
 protected:
 	/**
 	 *@brief The Model which this mount is attached to.
 	 */
-	EmberOgre::Model::Model& mModel;
+	::EmberOgre::Model::Model& mModel;
 	
 	/**
 	 * @brief The inner scale node, to which the model is attached to.
@@ -109,9 +109,10 @@ protected:
 
 	/**
 	 * @brief Scales the scale node accoring to the submitted bounding box.
-	 * @param wfBbox The bounding box, in WF space, for which we should scale the node.
+	 * @note You should in almost all cases call reset() before calling this method.
+	 * @param wfBbox The bounding box, in WF space, for which we should scale the node, or null if there's no bbox available.
 	 */
-	void scaleNode(const WFMath::AxisBox<3>& wfBbox);
+	void scaleNode(const WFMath::AxisBox<3>* wfBbox);
 
 };
 
@@ -125,7 +126,7 @@ Ogre::SceneNode* ModelMount::getScaleNode() const
 	return mScaleNode;
 }
 
-EmberOgre::Model::Model& ModelMount::getModel() const
+::EmberOgre::Model::Model& ModelMount::getModel() const
 {
 	return mModel;
 }

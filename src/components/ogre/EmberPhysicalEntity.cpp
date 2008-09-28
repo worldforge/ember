@@ -275,7 +275,7 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 
 void EmberPhysicalEntity::initFromModel()
 {
-	mModelMount->rescale(getBBox());
+	scaleNode();
 	
 	connectEntities();
 	
@@ -492,9 +492,9 @@ void EmberPhysicalEntity::scaleNode()
 {
 	if (mModelMount) {
 		if (hasBBox()) {
-			mModelMount->rescale(getBBox());
+			mModelMount->rescale(&getBBox());
 		} else {
-			mModelMount->rescale(WFMath::AxisBox<3>());
+			mModelMount->rescale(0);
 		}
 	}
 }
