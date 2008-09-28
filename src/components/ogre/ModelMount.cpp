@@ -82,7 +82,7 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 	const Ogre::Vector3& defaultMin(defaultOgreBoundingBox.getMinimum());
 	
 	///Depending on whether the entity has a bounding box or not we'll use different scaling methods. Most entities should have bounding boxes, but not all.
-	if (wfBbox) {
+	if (wfBbox && wfBbox->isValid()) {
 
 		///The entity has a bounding box. We'll now check the "usescaleof" setting.
 		///It it's either of "height", "width" or "depth" we'll scale the model uniformly so that the specified dimension matches up exactly between the bounding box of the Model and the bounding box of the entity.
