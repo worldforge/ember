@@ -261,9 +261,7 @@ public:
 	TerrainPage* getTerrainPageAtPosition(const TerrainPosition& worldPosition);
 
 	/**
-	 *    Reimplements the ConsoleObject::runCommand method
-	 * @param command 
-	 * @param args 
+	 * @copydoc Ember::ConsoleObject::runCommand 
 	 */
 	virtual	void runCommand(const std::string &command, const std::string &args);
 	
@@ -280,8 +278,8 @@ public:
 	const TerrainInfo& getTerrainInfo() const;
 	
 	/**
-	Emitted when the size of the world has changed.
-	*/
+	 * @brief Emitted when the size of the world has changed.
+	 */
 	sigc::signal<void> EventWorldSizeChanged;
 	
 	
@@ -425,8 +423,6 @@ protected:
 	
 	Ogre::Real mHeightMax, mHeightMin;
 	
-	WFMath::Point<3> mCurrentPosition;
-
 	const std::map<int, std::map<int, Mercator::Segment*> >* mSegments;
 	
 	/**
