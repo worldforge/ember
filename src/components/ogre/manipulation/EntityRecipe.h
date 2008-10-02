@@ -207,32 +207,44 @@ public:
     EntityRecipePtr(const Ogre::ResourcePtr& r) : Ogre::SharedPtr<EntityRecipe>()
     {
 		// lock & copy other mutex pointer
-		OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME)
-		OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME)
-        pRep = static_cast<EntityRecipe*>(r.getPointer());
-        pUseCount = r.useCountPointer();
-        if (pUseCount)
-        {
-            ++(*pUseCount);
-        }
+		OGRE_MUTEX_CONDITIONAL(r.OGRE_AUTO_MUTEX_NAME)
+		{
+			OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME)
+			OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME)
+			pRep = static_cast<EntityRecipe*>(r.getPointer());
+			pUseCount = r.useCountPointer();
+			if (pUseCount)
+			{
+				++(*pUseCount);
+			}
+		}
     }
 
     /// Operator used to convert a ResourcePtr to a EntityRecipePtr
     EntityRecipePtr& operator=(const Ogre::ResourcePtr& r)
     {
-        if (pRep == static_cast<EntityRecipe*>(r.getPointer()))
-            return *this;
-        release();
+		if (pRep == static_cast<EntityRecipe*>(r.getPointer()))
+			return *this;
+		release();
 		// lock & copy other mutex pointer
-		OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME)
-		OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME)
-        pRep = static_cast<EntityRecipe*>(r.getPointer());
-        pUseCount = r.useCountPointer();
-        if (pUseCount)
-        {
-            ++(*pUseCount);
-        }
-        return *this;
+		OGRE_MUTEX_CONDITIONAL(r.OGRE_AUTO_MUTEX_NAME)
+		{
+			OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME)
+			OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME)
+			pRep = static_cast<EntityRecipe*>(r.getPointer());
+			pUseCount = r.useCountPointer();
+			if (pUseCount)
+			{
+				++(*pUseCount);
+			}
+		}
+		else
+		{
+			// RHS must be a null pointer
+			assert(r.isNull() && "RHS must be null if it has no mutex!");
+			setNull();
+		}
+		return *this;
     }
 };
 
