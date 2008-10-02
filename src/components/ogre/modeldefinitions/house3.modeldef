@@ -3,7 +3,7 @@
         <translate x="1.000000" y="0.000000" z="-1.000000" />
         <rotation x="-0.000000" y="0.707107" z="0.707107" degrees="180.000000" />
         <submodels>
-            <submodel mesh="3d_objects/items/building_element/models/two_room_house/two_room_house.mesh">
+            <submodel mesh="3d_objects/structures/models/two_room_house/two_room_house.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
