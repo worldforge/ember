@@ -13,6 +13,18 @@ public:
 	Atlas::Message::Element getValue();
 	void setTitle(const std::string& title);
 	const std::string& getTitle() const;
+	/**
+	 * @brief Sets an optional tooltip for the adapter.
+	 * @param tooltip The tooltip text.
+	 */
+	void setTooltip(const std::string& tooltip);
+	
+	/**
+	 * @brief Gets the optional tool tip text for the adapter.
+	 * @return The tool tip text.
+	 */
+	const std::string& getTooltip() const;
+	
 	void addSuggestion(const std::string& value, const std::string& text);
 };
 

@@ -60,6 +60,17 @@ void GUIAdapter::attach(CEGUI::Window* window)
 	{
 		mAdapter->addSuggestion("Random");
 	}
+	
+	///If we have a default value set, use that
+	if (mDefaultValue != "") {
+		if (mType == "string") {
+			///NOTE: Why does setValue only accept a non-const ref? Is that by design? If not, we should change it to accept a const reference so that it can be called here. We'll use updateGui here now, but setValue would be preferred...
+// 			mAdapter->setValue(Atlas::Message::Element(mDefaultValue));
+			mAdapter->updateGui(Atlas::Message::Element(mDefaultValue));
+		} else if (mType == "number") {
+			mAdapter->updateGui(Atlas::Message::Element(atof(mDefaultValue.c_str())));
+		}
+	}
 }
 
 void GUIAdapter::detach()
@@ -120,6 +131,27 @@ const std::string& GUIAdapter::getTitle() const
 {
 	return mTitle;
 }
+
+void GUIAdapter::setTooltip(const std::string& tooltip)
+{
+	mTooltip = tooltip;
+}
+	
+const std::string& GUIAdapter::getTooltip() const
+{
+	return mTooltip;
+}
+
+void GUIAdapter::setDefaultValue(const std::string& value)
+{
+	mDefaultValue = value;
+}
+
+const std::string& GUIAdapter::getDefaultValue() const
+{
+	return mDefaultValue;
+}
+
 
 void GUIAdapter::addSuggestion(const std::string& value, const std::string& text)
 {

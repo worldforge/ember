@@ -14,9 +14,9 @@
       </atlas>
     </entity>
     <adapters>
-      <adapter name="mass" type="number" title="Mass"/>
-      <adapter name="massdev" type="number" title="Mass std. dev."/>
-      <adapter name="style" type="string" title="Style" allowrandom="yes">
+      <adapter name="mass" type="number" title="Mass" default="100000"/>
+      <adapter name="massdev" type="number" title="Mass std. dev." default="10000"/>
+      <adapter name="style" type="string" title="Style" allowrandom="yes" default="Random">
         <item value="a">Boulder A</item>
         <item value="b">Boulder B</item>
         <item value="c">Boulder C</item>

@@ -412,7 +412,8 @@ void TerrainGenerator::prepareAllSegments()
 	//_controlfp(_RC_NEAR, _MCW_RC);
 
 	
-	getAdapter()->setWorldPagesDimensions(mTerrainInfo.getTotalNumberOfPagesX(), mTerrainInfo.getTotalNumberOfPagesY(), mTerrainInfo.getPageOffsetX(), mTerrainInfo.getPageOffsetY());
+//	getAdapter()->setWorldPagesDimensions(mTerrainInfo.getTotalNumberOfPagesX(), mTerrainInfo.getTotalNumberOfPagesY(), mTerrainInfo.getPageOffsetX(), mTerrainInfo.getPageOffsetY());
+	getAdapter()->setWorldPagesDimensions(mTerrainInfo.getTotalNumberOfPagesY(), mTerrainInfo.getTotalNumberOfPagesX(), mTerrainInfo.getPageOffsetY(), mTerrainInfo.getPageOffsetX());
 	
 
 		
@@ -449,16 +450,22 @@ bool TerrainGenerator::isValidTerrainAt(const TerrainPosition& position)
 
 TerrainPage* TerrainGenerator::getTerrainPageAtPosition(const TerrainPosition& worldPosition)
 {
-
 	
 	int xRemainder = static_cast<int>(getMin().x()) % (getPageMetersSize());
 	int yRemainder = static_cast<int>(getMin().y()) % (getPageMetersSize());
-	
- 	int xIndex = static_cast<int>(floor((worldPosition.x() + xRemainder)/ (getPageMetersSize())));
- 	int yIndex = static_cast<int>(ceil((worldPosition.y() + yRemainder) / (getPageMetersSize())));
- 	
-	
-	return mTerrainPages[xIndex][yIndex];
+
+	int xIndex = static_cast<int>(floor((worldPosition.x() + xRemainder) / (getPageMetersSize())));
+	int yIndex = static_cast<int>(ceil((worldPosition.y() + yRemainder) / (getPageMetersSize())));
+// 	int yIndex = static_cast<int>(floor((worldPosition.y() + yRemainder) / (getPageMetersSize())));
+
+	TerrainPagestore::iterator I = mTerrainPages.find(xIndex);
+	if (I != mTerrainPages.end()) {
+		TerrainPagecolumn::iterator J = I->second.find(yIndex);
+		if (J != I->second.end()) {
+			return J->second;
+		}
+	}
+	return 0;
 }
 
 
@@ -467,6 +474,7 @@ TerrainPage* TerrainGenerator::getTerrainPageAtIndex(const Ogre::Vector2& ogreIn
 	//_fpreset();
 	//S_LOG_INFO("Requesting page at ogre position x: " << ogreIndexPosition.x << " y: " << ogreIndexPosition.y);
 	
+	///TerrainInfo deals with WF space, so we need to flip the x and y offsets here (as it's in Ogre space)
 	Ogre::Vector2 adjustedOgrePos(ogreIndexPosition.x - mTerrainInfo.getPageOffsetY(), ogreIndexPosition.y - mTerrainInfo.getPageOffsetX());
 	
 	TerrainPosition pos(Ogre2Atlas(adjustedOgrePos));

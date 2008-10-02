@@ -142,14 +142,14 @@ cp -a ${original_media}/common/themes/ember/gui/status/main.png ${shared_dir}/gu
 #cd ${current}/media/common/themes/ember ; tar cf - `find . -iname \*.jpeg` | ( cd ${current}/${media_dir}/media/common/themes/ember; tar xvf -)
 #cd ${current}/media/common/themes/ember ; tar cf - `find . -iname \*.jpg` | ( cd ${current}/${media_dir}/media/common/themes/ember; tar xvf -)
 
-echo "Copying definitions"
-mkdir -p ${user_dir}/modeldefinitions
-cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modeldef` | ( cd ${user_dir}/modeldefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modeldef.xml` | ( cd ${user_dir}/modeldefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modelmap` | ( cd ${user_dir}/modeldefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modelmap.xml` | ( cd ${user_dir}/modeldefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.terrain` | ( cd ${user_dir}/modeldefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${original_media}/sounddefinitions ; tar cf - `find . -iname \*.sounddef` | ( cd ${user_dir}/sounddefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
+# echo "Copying definitions"
+# mkdir -p ${user_dir}/modeldefinitions
+# cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modeldef` | ( cd ${user_dir}/modeldefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
+# cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modeldef.xml` | ( cd ${user_dir}/modeldefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
+# cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modelmap` | ( cd ${user_dir}/modeldefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
+# cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modelmap.xml` | ( cd ${user_dir}/modeldefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
+# cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.terrain` | ( cd ${user_dir}/modeldefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
+# cd ${original_media}/sounddefinitions ; tar cf - `find . -iname \*.sounddef` | ( cd ${user_dir}/sounddefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 
 echo "Copying materials"

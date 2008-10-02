@@ -40,16 +40,19 @@ namespace Model {
 
 class EmberEntity;
 class SoundEntity;
+class ModelMount;
 
 typedef std::list<Model::Action*> ActionStore;
 typedef std::vector<Model::ActionDefinition*> ActionDefinitionsStore;
 typedef std::vector<Model::SoundDefinition*> SoundDefinitionsStore;
 	
 /**
- * Represents a Ember entity with a physical representation in the world.
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief Represents a Ember entity with a physical representation in the world.
  * This is presented by an instance of Model::Model, available through getModel().
  * The Model instance is attached to an instance of Ogre::SceneNode which can be accessed through getScaleNode(). This in turn is attached to the Ogre::SceneNode held by EmberEntity. The reason for this is that we want to be able to scale the Model without affecting child nodes. As an example, a character holding a sword might be scaled without the sword being scaled.
  * This means that child nodes will be children of the node held in EmberEntity, not children of the "scale node".
+ * The handling of the scale node and the update of the Model's scaling and orientation is done through the ModelMount class.
  *
  * When the node is created we use the Model::ModelMapping framework to determine what Model to show. This happens in the init(...) method. As data is updated the Model::ModelMapping framework might trigger certain parts of the Model to be hidden or shown, as well as a new model to be shown.
  *
@@ -70,7 +73,6 @@ public:
 	static const char * const ACTION_WALK;
 	static const char * const ACTION_SWIM;
 	static const char * const ACTION_FLOAT;
-
 
 
 
@@ -99,18 +101,8 @@ public:
 	 *    Returns the "scale node", which is the Ogre::SceneNode to which the Model instance is attached. This is separate from the Ogre::SceneNode in EmberEntity since we want to be able to scale the node without also scaling the attached nodes (such as any wielded entity).
 	 * @return An Ogre::SceneNode, to which the Model::Model instance is attached.
 	 */
-	inline Ogre::SceneNode* getScaleNode() const;
+	Ogre::SceneNode* getScaleNode() const;
 	
-
-
-	
-	
-	/**
-	 *    Override the default implementation to also handle different rendering techniques (like "forest" rendering).
-	 * @param visible 
-	 */
-// 	virtual void setClientVisible(bool visible);
-
 	virtual void attachToPointOnModel(const std::string& point, Model::Model* model);
 	virtual void detachFromModel();
 	
@@ -127,14 +119,12 @@ public:
 	 * @param show whether to show the ogre bounding box
 	 */
 	virtual void showOgreBoundingBox(bool show);
-// 	virtual void showErisBoundingBox(bool show);
 
 	/**
 	 * Gets whether the ogre axis aligned bounding box should be shown or not.
 	 * @return true if the bounding box is shown
 	 */
 	virtual bool getShowOgreBoundingBox() const;
-// 	virtual bool getShowErisBoundingBox();
 	
 	
 	/**
@@ -213,20 +203,14 @@ protected:
 	 *    Creates the model mapping for this entity. Call this once when initializing the entity.
 	 */
 	void createModelMapping();
-	
-	/**
-	 * Creates the scale node to which the Model instance will be attached. Call this once when initializing the entity.
-	 */
-	void createScaleNode();
-		
-		
+
 	/**
 	 *    Called when the bounding box has changed.
 	 */
 	virtual void onBboxChanged();
 	
 	/**
-	 *    Called when the movement mode has changed. We might want to update the animation of the entity, for example if it's a human.
+	 * @brief Called when the movement mode has changed. We might want to update the animation of the entity, for example if it's a human.
 	 * @param newMode 
 	 */
 	virtual void onModeChanged(MovementMode newMode);
@@ -266,31 +250,31 @@ protected:
 	
 
 	/**
-	 *    Detaches an entity which is already wielded.
+	 * @brief Detaches an entity which is already wielded.
 	 * @param entityId 
 	 */
 	void detachEntity(const std::string & entityId);
 	
 	/**
-	 *    Attaches an entity to a certain attach point
+	 * @brief Attaches an entity to a certain attach point
 	 * @param attachPoint the name of the attachpoint to attach to
 	 * @param entityId the id of the entity to attach to
 	 */
 	void attachEntity(const std::string & attachPoint, const std::string & entityId);
 	
 	/**
-	Detaches all currently attached entities. Call this before the Model is resetted.
-	*/
+	 * @brief Detaches all currently attached entities. Call this before the Model is resetted.
+	 */
 	void detachAllEntities();
 	
 	/**
-	Attaches all entities that aren't currently attached.
-	*/
+	 * @brief Attaches all entities that aren't currently attached.
+	 */
 	void attachAllEntities();
 	
 	
 	/**
-	 *    Process wield ops, which means wielding and unwielding entities. This methos will in turn call the appropriate attachEntity and detachEntity methods.
+	 * @brief Process wield ops, which means wielding and unwielding entities. This methos will in turn call the appropriate attachEntity and detachEntity methods.
 	 * @param wieldName the attachpoint to update
 	 * @param idElement the id of the entity to wield
 	 */
@@ -298,7 +282,7 @@ protected:
 
 	
 	/**
-	 *    Processes the outfit map and updates the appearance.
+	 * @brief Processes the outfit map and updates the appearance.
 	 * @param outfitMap 
 	 */
 	void processOutfit(const Atlas::Message::MapType & outfitMap);
@@ -317,8 +301,8 @@ protected:
 
 	typedef std::map<std::string, std::string> AttachedEntitiesStore;
 	/**
-	A store of all attached entities, indexed by their id.
-	*/
+	 * @brief A store of all attached entities, indexed by their id.
+	 */
 	AttachedEntitiesStore mAttachedEntities;	
 
 //	virtual void onMoved();
@@ -334,69 +318,53 @@ protected:
 	 */
     virtual void init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp);
 
-
 	/**
-	The default size of the ogre bounding box, before any scaling is done.
-	*/
-	Ogre::AxisAlignedBox mDefaultOgreBoundingBox;
-
-
-	/**
-	 * Scales the Ogre::SceneNode to the size of the AxisBox defined by Eris::Entity
+	 * @brief Scales the Ogre::SceneNode to the size of the AxisBox defined by Eris::Entity.
+	 * Note that this method in its default implementation will just call ModelMount::rescale
 	 */
 	virtual void scaleNode();
 	
-	//void setNodes();
+	/**
+	 * @brief The model of the entity.
+	 * This is the main graphical representation of this entity.
+	 * Note that the Model won't be directly connected to the main scene node, instead the mModelMount instance will take care of setting everything up to use an intermediary "scale node".
+	 */
+	Model::Model* mModel;
 	
+	/**
+	 * @brief The model mount, which takes care of setting up and handling the rotation and orientation of the model.
+	 * This also owns the scale node, which will be destroyed when the mount is destroyed.
+	 */
+	ModelMount* mModelMount;
 
 	/**
-	 * The model of the entity
+	 * @brief The sound entity this entitiy is connected to.
 	 */
-	 Model::Model* mModel;
-
-	/**
-	 * The sound entity this entitiy is connected to.
-	 */
-	 SoundEntity* mSoundEntity;
+	SoundEntity* mSoundEntity;
 	
 	/**
-	 * We need to scale the Ogre::Entity, because the underlying media is not
-	 * always correctly scaled.
-	 * But since each Eris::Entity can contain child entites, we'll get problems
-	 * with scaling if we attach the children to a scaled node.
-	 * Thus we use a separate, scaled node.
-	 */
-	Ogre::SceneNode* mScaleNode;
-	
-	
-	/**
-	 *    When the Model is reloaded we need to update with the new values.
+	 * @brief When the Model is reloaded we need to update with the new values.
 	 */
 	void Model_Reloaded();
 	
 	/**
-	 *    When the Model is reset we need to clean up and remove all attachments from it.
+	 * @brief When the Model is reset we need to clean up and remove all attachments from it.
 	 */
 	void Model_Resetting();
 	
 	
 	/**
-	 *    Initialize position and scaling of the scale node with values from the Model, as well as set up any alternative rendering techniques.
+	 * @brief Initialize position and scaling of the scale node with values from the Model, as well as set up any alternative rendering techniques.
 	 */
 	void initFromModel();
 	
 	/**
-	The model mapping used for this entity.
-	*/
+	 * @brief The model mapping used for this entity.
+	 */
 	Model::Mapping::ModelMapping* mModelMapping;
 	
 	
 };
-
-Ogre::SceneNode* EmberPhysicalEntity::getScaleNode() const
-{
-	return mScaleNode;
-}	
 
 Model::Model* EmberPhysicalEntity::getModel() const
 {

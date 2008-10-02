@@ -40,20 +40,20 @@
 #include "EmberEntityFactory.h"
 #include "WorldEmberEntity.h"
 
-
 #include "EmberEntityActionCreator.h"
 
-
-#include <OgreException.h>
-
-#include "EmberOgre.h"
 #include "MousePicker.h"
+#include "ModelMount.h"
 
 #include "EmberEntityUserObject.h"
 #include "OpcodeCollisionDetector.h"
 #include "MeshCollisionDetector.h"
 
 #include "sound/SoundEntity.h"
+
+#include "EmberOgre.h"
+
+#include <OgreException.h>
 
 #include <Eris/Entity.h>
 #include <Eris/View.h>
@@ -76,8 +76,8 @@ mActiveAction(0),
 mModelAttachedTo(0), 
 mModelMarkedToAttachTo(0),
 mModel(0),
+mModelMount(0),
 mSoundEntity(0),
-mScaleNode(0),
 mModelMapping(0)
 {
 }
@@ -87,27 +87,18 @@ EmberPhysicalEntity::~EmberPhysicalEntity()
 	delete mSoundEntity;
 	delete mModelMapping;
 
+	///When the modelmount is deleted the scale node will also be destroyed.
+	delete mModelMount;
+	
 	if (mModel) {
 		delete mModel->getUserObject();
 		getSceneManager()->destroyMovableObject(mModel);
-	}
-	Ogre::SceneNode *parent = static_cast<Ogre::SceneNode*>(getScaleNode()->getParent());
-	if (parent) {
-		parent->removeAndDestroyChild(getScaleNode()->getName());
 	}
 	
 	///make sure it's not in the MotionManager
 	///TODO: keep a marker in the entity so we don't need to call this for all entities
 	MotionManager::getSingleton().removeAnimatedEntity(this);
 
-/*
-
-	mSceneManager->removeEntity(mOgreEntity);
-	mSceneManager->removeEntity(mOgreEntity);
-	
-	delete mOgreEntity;
-	delete mSceneNode;
-	*/
 }
 
 EmberEntity* EmberPhysicalEntity::getEntityAttachedToPoint(const std::string& attachPoint)
@@ -130,54 +121,16 @@ EmberEntity* EmberPhysicalEntity::getEntityAttachedToPoint(const std::string& at
 }
 
 
-// void EmberPhysicalEntity::setClientVisible(bool visible)
-// {
-// 	EmberEntity::setClientVisible(visible);
-// 	
-// // 	const Model::RenderingDefinition* renderingDef = mModel->getDefinition()->getRenderingDefinition();
-// // 	if (renderingDef && renderingDef->getScheme() == "forest" && mModel) {
-// // 		Environment::Forest* forest = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getForest();
-// // 		if (visible) {
-// // 			forest->addEmberEntity(this);
-// // 		} else {
-// // 			forest->removeEmberEntity(this);
-// // 		}
-// // /*		for (Model::Model::SubModelSet::const_iterator I = mModel->getSubmodels().begin(); I != mModel->getSubmodels().end(); ++I) {
-// // // 			if ((*I)->getEntity()->isVisible()) {
-// // 				(*I)->getEntity()->setVisible(true);
-// // 				forest->addTree((*I)->getEntity(), getScaleNode()->getWorldPosition(), getScaleNode()->getWorldOrientation().getYaw(), 	getScaleNode()->getScale().y);
-// // // 			}
-// // 		}
-// // 		mModel->setRenderingDistance(100);*/
-// // // 		getScaleNode()->detachObject(mModel);
-// // // 		getSceneNode()->removeChild(getScaleNode());
-// // // 		getScaleNode()->setVisible(false);
-// // 	}
-// 	
-// // 	if (!visible) {
-// // 		if (getScaleNode()->getParent()) {
-// // 			mOgreNode->removeChild(getScaleNode());
-// // 		}
-// // 	} else {
-// // 		if (!getScaleNode()->getParent()) {
-// // 			mOgreNode->addChild(getScaleNode());
-// // 		}
-// // 	}
-// // 	getScaleNode()->setVisible(visible && getLocation(), false);	
-// 	//getModel()->setVisible(visible);
-// }
-
-void EmberPhysicalEntity::createScaleNode() 
-{
-	mScaleNode = mOgreNode->createChildSceneNode(getId() + "_scaleNode");
-}
-
 void EmberPhysicalEntity::setModel(const std::string& modelName) 
 {
+	
 	if (mModel) {
 		if (mModel->getDefinition()->getName() == modelName) {
 			return;
 		} else {
+			///Reset the model mount to start with.
+			delete mModelMount;
+			mModelMount = 0;
 			getSceneManager()->destroyMovableObject(mModel);
 		}
 	}
@@ -192,11 +145,8 @@ void EmberPhysicalEntity::setModel(const std::string& modelName)
 		modelDef->setValid( true);
 		modelDef->reloadAllInstances();
 	}
-	///rotate node to fit with WF space
-	///perhaps this is something to put in the model spec instead?
-//  	scaleNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
-
-	mScaleNode->attachObject(mModel);
+	
+	mModelMount = new ModelMount(*mModel, getSceneNode());
 }
 
 
@@ -271,9 +221,6 @@ void EmberPhysicalEntity::setSounds()
 
 void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
-	///first we need to create the scale node
-	createScaleNode();
-
 	/// we need a model mapping
 	createModelMapping();
 	
@@ -295,14 +242,6 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 	
 	EmberEntity::init(ge, fromCreateOp);
 	getModel()->setQueryFlags(MousePicker::CM_ENTITY);
-
-/*	assert(mOgreNode);
-	assert(mScaleNode);*/
-	
-	//if there is no bounding box, scaleNode hasn't been called, so do it here
-/*	if (!hasBBox()) {
-		scaleNode();
-	}*/
 
 	initFromModel();
 	
@@ -336,25 +275,8 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 
 void EmberPhysicalEntity::initFromModel()
 {
-	
-	
-	getScaleNode()->setOrientation(Ogre::Quaternion::IDENTITY);
-	///rotate node to fit with WF space
-	///perhaps this is something to put in the model spec instead?
-	getScaleNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
-	getScaleNode()->rotate(getModel()->getRotation());
-	
-	///make a copy of the original bbox
-	mDefaultOgreBoundingBox = mModel->getBoundingBox();
-	///apply any rotation required first so the bounding box we use as reference represents the way to mesh is adjusted through rotations set in the model definition
-	mDefaultOgreBoundingBox.transform(Ogre::Matrix4(getScaleNode()->getOrientation()));
-	
 	scaleNode();
 	
-	///translate the scale node according to the translate defined in the model
-	getScaleNode()->setPosition(Ogre::Vector3::ZERO);
-	getScaleNode()->translate(getModel()->getDefinition()->getTranslate());
-
 	connectEntities();
 	
 	///see if we should use a rendering technique different from the default one (which is just using the Model::Model instance)
@@ -362,16 +284,6 @@ void EmberPhysicalEntity::initFromModel()
 	if (renderingDef && renderingDef->getScheme() == "forest" && mModel) {
 		Environment::Forest* forest = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getForest();
 		forest->addEmberEntity(this);
-/*		for (Model::Model::SubModelSet::const_iterator I = mModel->getSubmodels().begin(); I != mModel->getSubmodels().end(); ++I) {
-// 			if ((*I)->getEntity()->isVisible()) {
-				(*I)->getEntity()->setVisible(true);
-				forest->addTree((*I)->getEntity(), getScaleNode()->getWorldPosition(), getScaleNode()->getWorldOrientation().getYaw(), 	getScaleNode()->getScale().y);
-// 			}
-		}
-		mModel->setRenderingDistance(100);*/
-// 		getScaleNode()->detachObject(mModel);
-// 		getSceneNode()->removeChild(getScaleNode());
-// 		getScaleNode()->setVisible(false);
 	}
 	
 }
@@ -398,6 +310,13 @@ void EmberPhysicalEntity::connectEntities()
 	}
 }
 
+Ogre::SceneNode* EmberPhysicalEntity::getScaleNode() const
+{
+	if (mModelMount) {
+		return mModelMount->getScaleNode();
+	}
+	return 0;
+}
 
 void EmberPhysicalEntity::attachToPointOnModel(const std::string& point, Model::Model* model)
 {
@@ -569,72 +488,13 @@ void EmberPhysicalEntity::onChildRemoved(Entity *e)
 }
 
 
-void EmberPhysicalEntity::scaleNode() {
-
-	getScaleNode()->setScale(1, 1, 1);
-	
-	const Ogre::Vector3& ogreMax(mDefaultOgreBoundingBox.getMaximum());
-	const Ogre::Vector3& ogreMin(mDefaultOgreBoundingBox.getMinimum());
-	
-	///Depending on whether the entity has a bounding box or not we'll use different scaling methods. Most entities should have bounding boxes, but not all.
-	if (hasBBox()) {
-
-		///The entity has a bounding box. We'll now check the "usescaleof" setting.
-		///It it's either of "height", "width" or "depth" we'll scale the model uniformly so that the specified dimension matches up exactly between the bounding box of the Model and the bounding box of the entity.
-		///If it's "none" we won't apply any scaling.
-		///And if it's "all" we'll scale the Model so that it matches all dimensions of the entity's bounding box. This will in almost all cases however distort the Model so it's undesirable.
-		
-		///Note that after the Model has been scaled using the bounding box, it can still be scaled additionally through the "scale" setting in the ModelDefinition.
-		
-		const WFMath::AxisBox<3>& wfBoundingBox(getBBox());	
-		const WFMath::Point<3>& wfMax(wfBoundingBox.highCorner());
-		const WFMath::Point<3>& wfMin(wfBoundingBox.lowCorner());
-		
-		Ogre::Real scaleX;
-		Ogre::Real scaleY;
-		Ogre::Real scaleZ;
-		
-		switch (getModel()->getUseScaleOf()) {
-			case Model::ModelDefinition::MODEL_HEIGHT:
-				scaleX = scaleY = scaleZ = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));
-				break;
-			case Model::ModelDefinition::MODEL_WIDTH:
-				scaleX = scaleY = scaleZ = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));
-				break;
-			case Model::ModelDefinition::MODEL_DEPTH:
-				scaleX = scaleY = scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));
-				break;
-			case Model::ModelDefinition::MODEL_NONE:
-				scaleX = scaleY = scaleZ = 1;
-				break;
-				
-			case Model::ModelDefinition::MODEL_ALL:
-			default:
-				scaleX = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));
-				scaleY = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));
-				scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));
-		}
-		
-		
-		getScaleNode()->setScale(scaleX, scaleY, scaleZ);
-		
-	} else if (!getModel()->getScale()) {
-		///If there's no bbox, and no scaling in the model (i.e. not even "1") we'll set the size of the model to a hardcoded small value (0.25 meters in each dimension).
-		///This is of course a last resort; all good models that can belong to entities without bounding boxes should have a scale set
-		
-		S_LOG_WARNING("Could not find any scale set in the model '" << getModel()->getName() << "' used for entity of type '" << getType()->getName() << "'. We'll thus default to scaling the mesh so it's 0.25 meters in each dimension.");
-		
-		Ogre::Real scaleX = (0.25 / (ogreMax.x - ogreMin.x));
-		Ogre::Real scaleY = (0.25 / (ogreMax.y - ogreMin.y));
-		Ogre::Real scaleZ = (0.25 / (ogreMax.z - ogreMin.z));
-		getScaleNode()->setScale(scaleX, scaleY, scaleZ);
-	}
-
-	///Lastly, check if we also should scale the model. This scaling is applied after the Model has been scaled to fit with the bounding box.
-	if (getModel()->getScale()) {
-		if (getModel()->getScale() != 1) {
-			///only scale if it's not 1
-			getScaleNode()->scale(getModel()->getScale(), getModel()->getScale(), getModel()->getScale());
+void EmberPhysicalEntity::scaleNode() 
+{
+	if (mModelMount) {
+		if (hasBBox()) {
+			mModelMount->rescale(&getBBox());
+		} else {
+			mModelMount->rescale(0);
 		}
 	}
 }

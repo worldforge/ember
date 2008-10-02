@@ -79,21 +79,22 @@ size_t EntityRecipe::calculateSize(void) const
 	return 0;
 }
 
-std::string EntityRecipe::getEntityType()
+const std::string& EntityRecipe::getEntityType() const
 {
 	return mEntityType;
 }
 
-GUIAdapter* EntityRecipe::createGUIAdapter(std::string name, std::string type)
+GUIAdapter* EntityRecipe::createGUIAdapter(const std::string& name, const std::string& type, const std::string& tooltip)
 {
 	GUIAdapter* adapter;
 	adapter = new GUIAdapter(type);
+	adapter->setTooltip(tooltip);
 	mGUIAdapters[name] = adapter;
 	adapter->EventValueChanged.connect( sigc::mem_fun(*this, &EntityRecipe::valueChanged) );
 	return adapter;
 }
 
-GUIAdapter* EntityRecipe::getGUIAdapter(std::string name)
+GUIAdapter* EntityRecipe::getGUIAdapter(const std::string& name)
 {
 	GUIAdaptersStore::iterator adapter;
 	if ((adapter = mGUIAdapters.find(name)) != mGUIAdapters.end()) {
@@ -108,7 +109,7 @@ const GUIAdaptersStore& EntityRecipe::getGUIAdapters()
 	return mGUIAdapters;
 }
 
-GUIAdapterBindings* EntityRecipe::createGUIAdapterBindings(std::string name)
+GUIAdapterBindings* EntityRecipe::createGUIAdapterBindings(const std::string& name)
 {
 	GUIAdapterBindings* adapterBindings;
 	adapterBindings = new GUIAdapterBindings();
@@ -265,7 +266,7 @@ void EntityRecipe::setAuthor(const std::string& author)
 	mAuthor = author;
 }
 
-std::string EntityRecipe::getAuthor()
+const std::string& EntityRecipe::getAuthor() const
 {
 	return mAuthor;
 }
@@ -275,7 +276,7 @@ void EntityRecipe::setDescription(const std::string& description)
 	mDescription = description;
 }
 
-std::string EntityRecipe::getDescription()
+const std::string& EntityRecipe::getDescription() const
 {
 	return mDescription;
 }

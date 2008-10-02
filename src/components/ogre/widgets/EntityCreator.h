@@ -38,6 +38,7 @@
 
 namespace EmberOgre {
 
+class ModelMount;
 namespace Gui {
 
 class EntityCreatorInputAdapter;
@@ -71,6 +72,13 @@ public:
 	 * Toggles create mode and performs correspondent action.
 	 */
 	void toggleCreateMode();
+	
+	/**
+	 * @brief Sets whether to randomize the orientation of all new entities.
+	 * If set, all new entities will have their orientation randomized along the vertical axis.
+	 * @param randomize Whether to randomize the orientation or not.
+	 */
+	void setRandomizeOrientation(bool randomize);
 
 	/**
 	 * Starts entity creation process.
@@ -146,11 +154,10 @@ protected:
 	void scaleNode();
 
 	// Glue functions to allow code from EmberPhysicalEntity work without changes.
-	Ogre::SceneNode* getScaleNode();
 	Model::Model* getModel();
 	bool hasBBox();
 	const WFMath::AxisBox<3> & getBBox();
-	Ogre::AxisAlignedBox mDefaultOgreBoundingBox;
+	
 
 	/**
 	 * Sets Eris connection on connect to server event.
@@ -216,6 +223,8 @@ protected:
 	 */
 	Ogre::SceneNode* mEntityNode;
 
+	ModelMount* mModelMount;
+	
 	/**
 	 * Preview model.
 	 */
@@ -240,6 +249,11 @@ protected:
 	 * Parameters for blurb timing.
 	 */
 	Ogre::Real mTimeUntilShowBlurb, mTimeBlurbShown, mTimeToShowBlurb;
+	
+	/**
+	@brief If set to true, all new entities will have their orientation randomized around the vertical axis.
+	*/
+	bool mRandomizeOrientation;
 };
 
 /**

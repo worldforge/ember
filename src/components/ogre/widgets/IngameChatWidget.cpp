@@ -451,6 +451,9 @@ IngameChatWidget::Label* IngameChatWidget::LabelCreator::createWidget(unsigned i
 	std::stringstream ss;
 	ss <<  "Label/" << currentPoolSize << "/";
 	Window* window = WindowManager::getSingleton().loadWindowLayout(GUIManager::getSingleton().getLayoutDir()+"Label.layout", ss.str());
+	///We don't want the labels to prevent the user from picking entities in the world.
+	window->setMousePassThroughEnabled(true);
+	window->setRiseOnClickEnabled(false);
 
 	Label* label = new Label(window, CEGUI::WindowManager::getSingletonPtr(), mIngameChatWidget, ss.str());
 	return label;

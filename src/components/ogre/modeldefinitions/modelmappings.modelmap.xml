@@ -352,7 +352,7 @@
 	<automodelmapping name="jetty" />
 	<automodelmapping name="campfire" />
 	<automodelmapping name="choppingblock" />
-	<modelmapping name="gravestrone">
+	<modelmapping name="gravestone">
 		<entitymatch>
 			<case>
 				<caseparam type="equals">gravestone</caseparam>
@@ -360,12 +360,24 @@
 				<action type="display-part">a</action>
 				<attributematch attribute="style" >
 					<case>
+						<caseparam type="equals">simple</caseparam>
+						<action type="display-part">a</action>
+					</case>
+					<case>
 						<caseparam type="equals">rounded</caseparam>
 						<action type="display-part">b</action>
 					</case>
 					<case>
 						<caseparam type="equals">stylish</caseparam>
 						<action type="display-part">c</action>
+					</case>
+					<case>
+						<caseparam type="equals">cross</caseparam>
+						<action type="display-part">tombstone_cross_a</action>
+					</case>
+					<case>
+						<caseparam type="equals">cross broken</caseparam>
+						<action type="display-part">tombstone_cross_b</action>
 					</case>
 				</attributematch>
 			</case>
@@ -416,6 +428,13 @@
 			</case>
 		</entitymatch>
 	</modelmapping>	
+	<automodelmapping name="castle_wall_run" modelname="cg_wall_run" />
+	<automodelmapping name="castle_wall_gate" modelname="cg_wall_gate" />
+	<automodelmapping name="castle_wall_stairs" modelname="cg_wall_stairs" />
+	<automodelmapping name="castle_wall_corner" modelname="cg_wall_corner" />
+	
+	
+	
 	<automodelmapping name="inn" />
 	<automodelmapping name="outerwall" />
 	<modelmapping name="mausoleum">
@@ -528,15 +547,15 @@
 				<attributematch attribute="style" >
 					<case>
 						<caseparam type="equals">gnarly</caseparam>
-						<action type="display-model">pineB</action>
+						<action type="display-model">pineA</action>
 					</case>
 					<case>
 						<caseparam type="equals">knotted</caseparam>
-						<action type="display-model">pineC</action>
+						<action type="display-model">pineB</action>
 					</case>
 					<case>
 						<caseparam type="equals">weathered</caseparam>
-						<action type="display-model">pineD</action>
+						<action type="display-model">pineC</action>
 					</case>
 				</attributematch>
 			</case>

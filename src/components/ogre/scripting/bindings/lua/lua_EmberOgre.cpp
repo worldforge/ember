@@ -18753,6 +18753,72 @@ static int tolua_EmberOgre_EmberOgre_GUIAdapter_getTitle00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: setTooltip of class  EmberOgre::GUIAdapter */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_GUIAdapter_setTooltip00
+static int tolua_EmberOgre_EmberOgre_GUIAdapter_setTooltip00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::GUIAdapter",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::GUIAdapter* self = (EmberOgre::GUIAdapter*)  tolua_tousertype(tolua_S,1,0);
+  const std::string tooltip = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setTooltip'",NULL);
+#endif
+  {
+   self->setTooltip(tooltip);
+   tolua_pushcppstring(tolua_S,(const char*)tooltip);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setTooltip'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getTooltip of class  EmberOgre::GUIAdapter */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_GUIAdapter_getTooltip00
+static int tolua_EmberOgre_EmberOgre_GUIAdapter_getTooltip00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::GUIAdapter",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::GUIAdapter* self = (const EmberOgre::GUIAdapter*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getTooltip'",NULL);
+#endif
+  {
+   const std::string tolua_ret = (const std::string)  self->getTooltip();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getTooltip'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: addSuggestion of class  EmberOgre::GUIAdapter */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_GUIAdapter_addSuggestion00
 static int tolua_EmberOgre_EmberOgre_GUIAdapter_addSuggestion00(lua_State* tolua_S)
@@ -19074,19 +19140,19 @@ static int tolua_EmberOgre_EmberOgre_EntityRecipe_getAuthor00(lua_State* tolua_S
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::EntityRecipe",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::EntityRecipe",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  EmberOgre::EntityRecipe* self = (EmberOgre::EntityRecipe*)  tolua_tousertype(tolua_S,1,0);
+  const EmberOgre::EntityRecipe* self = (const EmberOgre::EntityRecipe*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getAuthor'",NULL);
 #endif
   {
-   std::string tolua_ret = (std::string)  self->getAuthor();
+   const std::string tolua_ret = (const std::string)  self->getAuthor();
    tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
   }
  }
@@ -19140,19 +19206,19 @@ static int tolua_EmberOgre_EmberOgre_EntityRecipe_getDescription00(lua_State* to
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::EntityRecipe",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::EntityRecipe",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  EmberOgre::EntityRecipe* self = (EmberOgre::EntityRecipe*)  tolua_tousertype(tolua_S,1,0);
+  const EmberOgre::EntityRecipe* self = (const EmberOgre::EntityRecipe*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getDescription'",NULL);
 #endif
   {
-   std::string tolua_ret = (std::string)  self->getDescription();
+   const std::string tolua_ret = (const std::string)  self->getDescription();
    tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
   }
  }
@@ -19808,6 +19874,39 @@ static int tolua_EmberOgre_EmberOgre_Gui_EntityCreator_toggleCreateMode00(lua_St
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'toggleCreateMode'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setRandomizeOrientation of class  EmberOgre::Gui::EntityCreator */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_EntityCreator_setRandomizeOrientation00
+static int tolua_EmberOgre_EmberOgre_Gui_EntityCreator_setRandomizeOrientation00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::EntityCreator",0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Gui::EntityCreator* self = (EmberOgre::Gui::EntityCreator*)  tolua_tousertype(tolua_S,1,0);
+  bool randomize = ((bool)  tolua_toboolean(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setRandomizeOrientation'",NULL);
+#endif
+  {
+   self->setRandomizeOrientation(randomize);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setRandomizeOrientation'.",&tolua_err);
  return 0;
 #endif
 }
@@ -24769,6 +24868,8 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"getValue",tolua_EmberOgre_EmberOgre_GUIAdapter_getValue00);
     tolua_function(tolua_S,"setTitle",tolua_EmberOgre_EmberOgre_GUIAdapter_setTitle00);
     tolua_function(tolua_S,"getTitle",tolua_EmberOgre_EmberOgre_GUIAdapter_getTitle00);
+    tolua_function(tolua_S,"setTooltip",tolua_EmberOgre_EmberOgre_GUIAdapter_setTooltip00);
+    tolua_function(tolua_S,"getTooltip",tolua_EmberOgre_EmberOgre_GUIAdapter_getTooltip00);
     tolua_function(tolua_S,"addSuggestion",tolua_EmberOgre_EmberOgre_GUIAdapter_addSuggestion00);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
@@ -24876,6 +24977,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"delete",tolua_EmberOgre_EmberOgre_Gui_EntityCreator_delete00);
      tolua_function(tolua_S,"setRecipe",tolua_EmberOgre_EmberOgre_Gui_EntityCreator_setRecipe00);
      tolua_function(tolua_S,"toggleCreateMode",tolua_EmberOgre_EmberOgre_Gui_EntityCreator_toggleCreateMode00);
+     tolua_function(tolua_S,"setRandomizeOrientation",tolua_EmberOgre_EmberOgre_Gui_EntityCreator_setRandomizeOrientation00);
      tolua_function(tolua_S,"createEntity",tolua_EmberOgre_EmberOgre_Gui_EntityCreator_createEntity00);
      tolua_function(tolua_S,"cleanupCreation",tolua_EmberOgre_EmberOgre_Gui_EntityCreator_cleanupCreation00);
      tolua_variable(tolua_S,"mWidget",tolua_get_EmberOgre__Gui__EntityCreator_mWidget_ptr,tolua_set_EmberOgre__Gui__EntityCreator_mWidget_ptr);

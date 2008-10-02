@@ -296,7 +296,7 @@ bool OgreSetup::configure(void)
 	parseWindowGeometry(mRoot->getRenderSystem()->getConfigOptions(), width, height, fullscreen);
 
 	SDL_Init(SDL_INIT_VIDEO);
-
+	
 	///this is a failsafe which guarantees that SDL is correctly shut down (returning the screen to correct resolution, releasing mouse etc.) if there's a crash.
 	atexit(SDL_Quit);
 	oldSignals[SIGSEGV] = signal(SIGSEGV, shutdownHandler);
@@ -333,8 +333,6 @@ bool OgreSetup::configure(void)
 	misc["currentGLContext"] = Ogre::String("True");
 // 	misc["vsync"] = Ogre::String("No");
 	
-
-
 	/// initialise root, without creating a window
 	mRoot->initialise(false);
 
@@ -350,9 +348,8 @@ bool OgreSetup::configure(void)
 // 	mRoot->addFrameListener(this);
 
 
-
     ///set the icon of the window
-    Uint32 rmask, gmask, bmask, amask;
+	Uint32 rmask, gmask, bmask, amask;
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
     rmask = 0xff000000;

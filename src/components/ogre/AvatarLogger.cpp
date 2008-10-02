@@ -33,6 +33,7 @@
 #include "services/time/TimeService.h"
 
 
+#include "framework/osdir.h"
 
 #include <sigc++/signal.h>
 
@@ -42,17 +43,37 @@ AvatarLogger::AvatarLogger(AvatarEmberEntity& avatarEntity)
 : mChatLogger(0)
 {
 	assert(&avatarEntity);
-	///perform setup of the stream
-	std::stringstream logFileSS;
-	logFileSS << Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory() << "/" << avatarEntity.getName() << "_chatlog.log";
-	mChatLogger = std::auto_ptr<std::ofstream>(new std::ofstream(logFileSS.str().c_str(), std::ios::app));
-	S_LOG_VERBOSE("Chat Logging set to write in [ " << logFileSS.str() << " ]");
 	
-	*mChatLogger << "-------------------------------------------------------" << std::endl;
-	*mChatLogger << "Chat Logging Initialized at " <<  Ember::EmberServices::getSingleton().getTimeService()->getLocalTimeStr() << std::endl;
-	*mChatLogger << "-------------------------------------------------------" << std::endl;
-	
-	GUIManager::getSingleton().AppendIGChatLine.connect(sigc::mem_fun(*this, &AvatarLogger::GUIManager_AppendIGChatLine));
+	///Put log files in a "logs" subdirectory of the home directory.
+	const std::string dir = Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/logs/";
+	try {
+		//make sure the directory exists
+		
+		oslink::directory osdir(dir);
+
+		if (!osdir.isExisting()) {
+#ifdef __WIN32__
+			mkdir(dir.c_str());
+#else
+			mkdir(dir.c_str(), S_IRWXU);
+#endif
+		}
+		///perform setup of the stream
+		std::stringstream logFileSS;
+		logFileSS << dir << "/" << avatarEntity.getName() << "_chatlog.log";
+		mChatLogger = std::auto_ptr<std::ofstream>(new std::ofstream(logFileSS.str().c_str(), std::ios::app));
+		S_LOG_VERBOSE("Chat Logging set to write in [ " << logFileSS.str() << " ]");
+		
+		*mChatLogger << "-------------------------------------------------------" << std::endl;
+		*mChatLogger << "Chat Logging Initialized at " <<  Ember::EmberServices::getSingleton().getTimeService()->getLocalTimeStr() << std::endl;
+		*mChatLogger << "-------------------------------------------------------" << std::endl;
+		
+		///wait with connecting until everything has been properly set up
+		GUIManager::getSingleton().AppendIGChatLine.connect(sigc::mem_fun(*this, &AvatarLogger::GUIManager_AppendIGChatLine));
+		
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Error when creating directory for logs. Message: " << std::string(ex.what()));
+	}
 }
 
 

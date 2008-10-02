@@ -35,6 +35,7 @@
 #include "../manipulation/DetachedEntity.h"
 #include <Atlas/Message/Element.h>
 #include <wfmath/atlasconv.h>
+#include <wfmath/MersenneTwister.h>
 #include <Eris/TypeInfo.h>
 #include "../MathConverter.h"
 
@@ -43,6 +44,7 @@
 
 #include "../EmberPhysicalEntity.h"
 #include "../AvatarEmberEntity.h"
+#include "../ModelMount.h"
 
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelDefinitionManager.h"
@@ -156,7 +158,7 @@ void EntityCreatorHideModelAction::deactivate()
 
 
 EntityCreator::EntityCreator()
-		: mCreateMode(false), mRecipe(0), mModel(0), mBlurb(0), mBlurbShown(false)
+		: mCreateMode(false), mRecipe(0), mModelMount(0), mModel(0), mBlurb(0), mBlurbShown(false), mRandomizeOrientation(true)
 {
 	mInputAdapter = new EntityCreatorInputAdapter(*this);
 	mMoveAdapter = new EntityCreatorMoveAdapter(*this);
@@ -169,6 +171,7 @@ EntityCreator::~EntityCreator()
 {
 	delete mInputAdapter;
 	delete mMoveAdapter;
+	delete mModelMount;
 }
 
 void EntityCreator::setRecipe(EntityRecipe& recipe)
@@ -187,6 +190,12 @@ void EntityCreator::toggleCreateMode()
 		stopCreation();
 	}
 }
+
+void EntityCreator::setRandomizeOrientation(bool randomize)
+{
+	mRandomizeOrientation = randomize;
+}
+
 
 void EntityCreator::startCreation()
 {
@@ -272,6 +281,9 @@ void EntityCreator::setModel(const std::string& modelName)
 		if (mModel->getDefinition()->getName() == modelName) {
 			return;
 		} else {
+			///Reset the model mount to start with.
+			delete mModelMount;
+			mModelMount = 0;
 			EmberOgre::getSingleton().getSceneManager()->destroyMovableObject(mModel);
 		}
 	}
@@ -287,14 +299,18 @@ void EntityCreator::setModel(const std::string& modelName)
 		modelDef->reloadAllInstances();
 	}
 
-	mEntityNode->attachObject(mModel);
+	
+	mModelMount = new ModelMount(*mModel, mEntityNode);
 
 	initFromModel();
 
 	// Setting inital position and orientation
 	mEntityNode->setPosition(Atlas2Ogre(mPos));
+	if (mRandomizeOrientation) {
+		WFMath::MTRand rng;
+		mOrientation.rotation(2, rng.rand() * 360.0f);
+	}
 	mEntityNode->setOrientation(Atlas2Ogre(mOrientation));
-	mEntityNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
 }
 
 void EntityCreator::showModelPart(const std::string& partName) 
@@ -311,10 +327,6 @@ void EntityCreator::hideModelPart(const std::string& partName)
 	}
 }
 
-Ogre::SceneNode* EntityCreator::getScaleNode()
-{
-	return mEntityNode;
-}
 
 Model::Model* EntityCreator::getModel()
 {
@@ -333,79 +345,12 @@ const WFMath::AxisBox<3> & EntityCreator::getBBox()
 
 void EntityCreator::initFromModel()
 {
-	getScaleNode()->setOrientation(Ogre::Quaternion::IDENTITY);
-	///rotate node to fit with WF space
-	///perhaps this is something to put in the model spec instead?
-	getScaleNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
-	getScaleNode()->rotate(getModel()->getRotation());
-	
-	///make a copy of the original bbox
-	mDefaultOgreBoundingBox = mModel->getBoundingBox();
-	///apply any rotation required first so the bounding box we use as reference represents the way to mesh is adjusted through rotations set in the model definition
-	mDefaultOgreBoundingBox.transform(Ogre::Matrix4(getScaleNode()->getOrientation()));
-	
 	scaleNode();
-	
-	///translate the scale node according to the translate defined in the model
-	getScaleNode()->setPosition(Ogre::Vector3::ZERO);
-	getScaleNode()->translate(getModel()->getDefinition()->getTranslate());
 }
 
 void EntityCreator::scaleNode()
 {
-	getScaleNode()->setScale(1, 1, 1);
-
-	const Ogre::Vector3& ogreMax(mDefaultOgreBoundingBox.getMaximum());
-	const Ogre::Vector3& ogreMin(mDefaultOgreBoundingBox.getMinimum());
-	
-	if (hasBBox())
-	{
-		const WFMath::AxisBox<3>& wfBoundingBox(getBBox());	
-		const WFMath::Point<3>& wfMax(wfBoundingBox.highCorner());
-		const WFMath::Point<3>& wfMin(wfBoundingBox.lowCorner());
-
-		Ogre::Real scaleX;		
-		Ogre::Real scaleY;		
-		Ogre::Real scaleZ;		
-
-		switch (getModel()->getUseScaleOf()) {
-			case Model::ModelDefinition::MODEL_HEIGHT:
-				scaleX = scaleY = scaleZ = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));		
-				break;
-			case Model::ModelDefinition::MODEL_WIDTH:
-				scaleX = scaleY = scaleZ = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));		
-				break;
-			case Model::ModelDefinition::MODEL_DEPTH:
-				scaleX = scaleY = scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));		
-				break;
-			case Model::ModelDefinition::MODEL_NONE:
-				scaleX = scaleY = scaleZ = 1;
-				break;
-				
-			case Model::ModelDefinition::MODEL_ALL:
-			default:				
-				scaleX = fabs((wfMax.x() - wfMin.x()) / (ogreMax.x - ogreMin.x));		
-				scaleY = fabs((wfMax.z() - wfMin.z()) / (ogreMax.y - ogreMin.y));		
-				scaleZ = fabs((wfMax.y() - wfMin.y()) / (ogreMax.z - ogreMin.z));		
-		}
-
-		//Ogre::Real finalScale = std::max(scaleX, scaleY);
-		//finalScale = std::max(finalScale, scaleZ);
-		getScaleNode()->setScale(scaleX, scaleY, scaleZ);
-	} else if (!getModel()->getScale()) {
-		//set to small size
-		Ogre::Real scaleX = (0.25 / (ogreMax.x - ogreMin.x));		
-		Ogre::Real scaleY = (0.25 / (ogreMax.y - ogreMin.y));		
-		Ogre::Real scaleZ = (0.25 / (ogreMax.z - ogreMin.z));		
-		getScaleNode()->setScale(scaleX, scaleY, scaleZ);
-	}		
-
-	if (getModel()->getScale()) {
-		if (getModel()->getScale() != 1) {
-			//only scale if it's not 1
-			getScaleNode()->scale(getModel()->getScale(), getModel()->getScale(), getModel()->getScale());
-		}
-	}
+	mModelMount->rescale(hasBBox() ? &getBBox() : 0);
 }
 
 void EntityCreator::adapterValueChanged()
@@ -419,7 +364,7 @@ void EntityCreator::finalizeCreation()
 {
 	// Final position
 	mEntityMessage["pos"] = mPos.toAtlas();
-	mEntityMessage["orientation"] = mOrientation.toAtlas();
+	mEntityMessage["orientation"] = Ogre2Atlas(mEntityNode->getOrientation()).toAtlas();
 
 	// Making create operation message
 	Atlas::Objects::Operation::Create c;
@@ -448,13 +393,15 @@ void EntityCreator::cleanupCreation()
 	mInputAdapter->removeAdapter();
 	mMoveAdapter->removeAdapter();
 
+	delete mModelMount;
+	mModelMount = 0;
+
 	mEntityNode->detachAllObjects();
 	EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->removeChild(mEntityNode);
 //	delete mEntityNode;
 	mEntityNode = 0;
 
 	EmberOgre::getSingleton().getSceneManager()->destroyMovableObject(mModel);
-//	delete mModel;
 	mModel = 0;
 
 	mCreateMode = false;
@@ -475,7 +422,6 @@ void EntityCreator::yaw(float degrees)
 	WFMath::Quaternion q;
 	mOrientation *= q.rotation(WFMath::Vector<3>(0,0,1), degrees*WFMath::Pi/180.0);
 	mEntityNode->setOrientation(Atlas2Ogre(mOrientation));
-	mEntityNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
 }
 
 void EntityCreator::connectedToServer(Eris::Connection* conn)

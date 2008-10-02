@@ -1,0 +1,66 @@
+<entityrecipes>
+  <entityrecipe name="birch">
+    <author>Erik Hjortsberg</author>
+    <description>
+      Creates birch trees.
+    </description>
+    <entity type="birch">
+      <atlas>
+        <map>
+          <list name="bbox">$bbox</list>
+          <float name="mass">$mass</float>
+          <string name="style">$style</string>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+      <adapter name="height" type="number" title="Height" tooltip="Specify the height in meters." default="12"/>
+      <adapter name="heightdev" type="number" title="Height std. dev." tooltip="Specify the height deviation in meters." default="4"/>
+      <adapter name="style" type="string" title="Style" allowrandom="yes" default="Random">
+        <item value="weathered">Weathered</item>
+        <item value="gnarly">Gnarly</item>
+        <item value="straight">Straight</item>
+      </adapter>
+    </adapters>
+    <bindings>
+      <bind name="bbox" func="birch.calcSize">
+        <adapter name="height" />
+        <adapter name="heightdev" />
+      </bind>
+      <bind name="mass" func="birch.calcMass">
+      </bind>
+      <bind name="style">
+        <adapter name="style" />
+      </bind>
+    </bindings>
+    <script><![CDATA[
+      birch = {mass=0}
+      function birch.calcSize(a, b)
+      	
+      	local density = 100
+        local heightmean = a:asNum()
+        local heightdev = b:asNum()
+        local height = math.abs(math.randn(heightmean, heightdev))
+        
+        local radius = height / 40
+        
+        --volume of a cylinder
+        local volume = math.pi * (radius * radius) * height 
+        
+        mass = volume * density
+
+        local bbox = Atlas.Message.ListType()
+        bbox:push_back(-radius)
+        bbox:push_back(-radius)
+        bbox:push_back(0)
+        bbox:push_back(radius)
+        bbox:push_back(radius)
+        bbox:push_back(height)
+        return Atlas.Message.Element(bbox)
+      end
+      function birch.calcMass()
+      	return Atlas.Message.Element(mass)
+      end
+    ]]></script>
+  </entityrecipe>
+</entityrecipes>
