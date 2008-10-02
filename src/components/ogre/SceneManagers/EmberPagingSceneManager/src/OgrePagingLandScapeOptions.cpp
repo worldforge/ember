@@ -178,7 +178,7 @@ namespace Ogre
         mResourceZip.clear();
 
 		queryNoInterpolation = false;
-		queryResolutionFactor = 1.0f;
+		queryResolutionFactor = 0.1f;
 #ifdef _MAPSPLITTER
 
         Blur = 0.0f;
