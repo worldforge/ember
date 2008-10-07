@@ -56,7 +56,7 @@ void EntityMover::setPosition(const WFMath::Point<3>& position)
 		mEntity->adjustPosition(mEntity->getSceneNode()->getPosition());
 	}
 }
-void EntityMover::move(const WFMath::Vector<3> directionVector)
+void EntityMover::move(const WFMath::Vector<3>& directionVector)
 {
 	if (directionVector.isValid()) {
 		mEntity->getSceneNode()->translate(Atlas2Ogre(directionVector));
