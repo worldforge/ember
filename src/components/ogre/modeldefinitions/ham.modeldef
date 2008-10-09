@@ -1,0 +1,30 @@
+<models>
+    <model name="ham" usescaleof="none" scale="1.000000" showcontained="true" icon="">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/food/models/ham/ham.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/items/food/meat" />
+                            <subentity index="1" material="/global/items/food/meat" />
+                            <subentity index="2" material="/global/items/food/meat" />
+                            <subentity index="3" material="/global/items/food/meat" />
+                            <subentity index="4" material="/global/items/food/meat" />
+                            <subentity index="5" material="/global/items/food/meat" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views>
+            <view name="icon">
+                <distance>0</distance>
+                <rotation x="-0.678598" y="-0.678598" z="-0.281085" degrees="62.799435" />
+            </view>
+        </views>
+    </model>
+</models>
