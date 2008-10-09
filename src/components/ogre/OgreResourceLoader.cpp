@@ -213,6 +213,10 @@ void OgreResourceLoader::loadSection(const std::string& sectionName)
 
 		S_LOG_VERBOSE("Adding resource section " << sectionName);
 	// 	Ogre::ResourceGroupManager::getSingleton().createResourceGroup(sectionName);
+	
+		///We want to make sure that "user" media always is loaded before "shared" media. Unfortunately the Ogre settings iterator doesn't return the settings in the order they are defined in resource.cfg so we can't rely on the order that the settings are defined, and instead need to first add the settings to two different vectors, and then iterate through the user vector first.
+		std::vector<std::pair<std::string, std::string> > userPlaces;
+		std::vector<std::pair<std::string, std::string> > sharedPlaces;
 		
 		Ogre::ConfigFile::SettingsIterator I = mConfigFile.getSettingsIterator(sectionName);
 		std::string finalTypename;
@@ -220,15 +224,28 @@ void OgreResourceLoader::loadSection(const std::string& sectionName)
 			//Ogre::ConfigFile::SettingsMultiMap J = I.getNext();
 			const std::string& typeName = I.peekNextKey();
 			const std::string& archName = I.peekNextValue();
-	
+			
 			finalTypename = typeName.substr(0, typeName.find("["));
+			
 			if (Ogre::StringUtil::endsWith(typeName, "[shared]")) {
-				mediaAdded |= addSharedMedia(archName, finalTypename, sectionName, mLoadRecursive);
+				sharedPlaces.push_back(std::pair<std::string, std::string>(finalTypename, archName));
 			} else {
-				mediaAdded |= addUserMedia(archName, finalTypename, sectionName, mLoadRecursive);
+				userPlaces.push_back(std::pair<std::string, std::string>(finalTypename, archName));
 			}
 			I.moveNext();
 		}
+		
+		///We've now filled the vectors, start by adding all the user media.
+		for (std::vector<std::pair<std::string, std::string> >::iterator I = userPlaces.begin(); I != userPlaces.end(); ++I)
+		{
+			mediaAdded |= addUserMedia(I->second, I->first, sectionName, mLoadRecursive);
+		}
+		for (std::vector<std::pair<std::string, std::string> >::iterator I = sharedPlaces.begin(); I != sharedPlaces.end(); ++I)
+		{
+			mediaAdded |= addSharedMedia(I->second, I->first, sectionName, mLoadRecursive);
+		}
+		
+		
 		mLoadedSections.push_back(sectionName);
 	
 		///only initialize the resource group if it has media
@@ -243,8 +260,6 @@ void OgreResourceLoader::loadSection(const std::string& sectionName)
 					
 				}
 				*/
-			} catch (const Ogre::Exception& ex) {
-				S_LOG_FAILURE("An error occurred when loading media from section '" << sectionName << "'. Message:\n\t"<< ex.getFullDescription());
 			} catch (const std::exception& ex) {
 				S_LOG_FAILURE("An error occurred when loading media from section '" << sectionName << "'. Message:\n\t"<< ex.what());
 			} catch (...) {
