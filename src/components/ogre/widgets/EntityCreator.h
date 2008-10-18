@@ -139,6 +139,12 @@ public:
 	 * Entity creator widget. Set from Lua, so it is public.
 	 */
 	::EmberOgre::Gui::Widget* mWidget;
+	
+	/**
+	 * @brief Makes sure that all types are loaded. This is needed for the type lookup we need to do in the recipes in order to get the default values.
+	 */
+	void loadAllTypes();
+
 
 protected:
 	/**

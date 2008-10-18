@@ -199,6 +199,7 @@ void EntityCreator::setRandomizeOrientation(bool randomize)
 
 void EntityCreator::startCreation()
 {
+	loadAllTypes();
 	// No recipe selected, nothing to do
 	if (!mRecipe)
 	{
@@ -219,6 +220,22 @@ void EntityCreator::startCreation()
 	createEntity();
 }
 
+void EntityCreator::loadAllTypes()
+{
+	if (mConn) {
+		Eris::TypeService* typeservice = mConn->getTypeService();
+		if (typeservice) {
+			Eris::TypeInfo* typeInfo = typeservice->getTypeByName("game_entity");
+			if (typeInfo) {
+				if (typeInfo->hasUnresolvedChildren()) {
+					typeInfo->resolveChildren();
+				}
+			}
+		}
+	}
+}
+
+
 void EntityCreator::stopCreation()
 {
 	mRecipeConnection.disconnect();
@@ -231,7 +248,7 @@ void EntityCreator::stopCreation()
 void EntityCreator::createEntity()
 {
 	// Creating entity data
-	mEntityMessage = mRecipe->createEntity();
+	mEntityMessage = mRecipe->createEntity(*mConn->getTypeService());
 	Eris::TypeInfo* erisType = mConn->getTypeService()->getTypeByName(mRecipe->getEntityType());
 	if (!erisType) {
 		S_LOG_FAILURE("Type " << mRecipe->getEntityType() << " not found in recipe " << mRecipe->getName());
@@ -250,7 +267,7 @@ void EntityCreator::createEntity()
 	mEntityMessage["loc"] = avatar->getLocation()->getId();
 	mEntityMessage["name"] = erisType->getName();
 	mEntityMessage["parents"] = Atlas::Message::ListType(1, erisType->getName());
-
+	
 	Eris::View* view = Ember::Application::getSingleton().getMainView();
 	if (view) {
 		// Temporary entity
