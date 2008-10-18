@@ -132,15 +132,15 @@
 		<entitymatch>
 			<case>
 				<caseparam type="equals">mushroom</caseparam>
-				<action type="display-model">mushroom_A</action>
+				<action type="display-model">amanita</action>
 				<attributematch attribute="style">
 					<case>
 						<caseparam type="equals">stocky</caseparam>
-						<action type="display-model">mushroom_A</action>
+						<action type="display-model">amanita</action>
 					</case>
 					<case>
 						<caseparam type="equals">pointy</caseparam>
-						<action type="display-model">mushroom_B</action>
+						<action type="display-model">galerina</action>
 					</case>
 				</attributematch>
 				<!-- The parts are identical for both types of meshes. -->
@@ -310,8 +310,16 @@
 				<action type="display-model">stone_palisade</action>
 				<attributematch attribute="style" >
 					<case>
-						<caseparam type="equals">broken</caseparam>
-						<action type="display-part">broken</action>
+						<caseparam type="equals">whole</caseparam>
+						<action type="display-part">whole</action>
+					</case>
+					<case>
+						<caseparam type="equals">brokenA</caseparam>
+						<action type="display-part">brokenA</action>
+					</case>
+					<case>
+						<caseparam type="equals">brokenB</caseparam>
+						<action type="display-part">brokenB</action>
 					</case>
 				</attributematch>
 			</case>

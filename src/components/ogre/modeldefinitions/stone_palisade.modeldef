@@ -7,12 +7,12 @@
                 <parts>
                     <part name="whole" show="true" group="main">
                         <subentities>
-                            <subentity index="0" />
+                            <subentity index="1" />
                         </subentities>
                     </part>
                     <part name="brokenA" show="false" group="main">
                         <subentities>
-                            <subentity index="1" />
+                            <subentity index="0" />
                         </subentities>
                     </part>
                     <part name="brokenB" show="false" group="main">
