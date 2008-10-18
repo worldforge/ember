@@ -1764,7 +1764,7 @@ bool TiXmlPrinter::VisitEnter( const TiXmlElement& element, const TiXmlAttribute
 
 	if ( !element.FirstChild() ) 
 	{
-		buffer += " />";
+		buffer += std::string("></") + element.Value() + ">";
 		DoLineBreak();
 	}
 	else 
