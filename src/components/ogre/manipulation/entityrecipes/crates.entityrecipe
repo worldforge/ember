@@ -1,0 +1,34 @@
+<entityrecipes>
+  <entityrecipe name="crate">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A crate.
+    </description>
+    <entity type="crate">
+      <atlas>
+        <map>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+    </adapters>
+    <bindings>
+    </bindings>
+  </entityrecipe>
+  <entityrecipe name="open crate">
+    <author>Erik Hjortsberg</author>
+    <description>
+      An open crate.
+    </description>
+    <entity type="open_crate">
+      <atlas>
+        <map>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+    </adapters>
+    <bindings>
+    </bindings>
+  </entityrecipe>
+</entityrecipes>

@@ -1,0 +1,27 @@
+<entityrecipes>
+  <entityrecipe name="stone_palisade">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A stone palissade segment.
+    </description>
+    <entity type="stone_palisade">
+      <atlas>
+        <map>
+          <string name="style">$style</string>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+      <adapter name="style" type="string" title="Style" allowrandom="yes" default="Random">
+        <item value="whole">Whole</item>
+        <item value="brokenA">Broken style A</item>
+        <item value="brokenB">Broken style B</item>
+      </adapter>
+    </adapters>
+    <bindings>
+      <bind name="style">
+        <adapter name="style" />
+      </bind>
+    </bindings>
+  </entityrecipe>
+</entityrecipes>

@@ -1,0 +1,36 @@
+<entityrecipes>
+  <entityrecipe name="mushroom">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A mushroom.
+    </description>
+    <entity type="mushroom">
+      <atlas>
+        <map>
+          <string name="style">$style</string>
+          <string name="species">$species</string>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+      <adapter name="style" type="string" title="Style" allowrandom="yes" default="Random">
+        <item value="stocky">Stocky</item>
+        <item value="pointy">Pointy</item>
+      </adapter>
+      <adapter name="species" type="string" title="Species" allowrandom="yes" default="Random">
+        <item value="amanita">Amanita</item>
+        <item value="galerina">Galerina</item>
+        <item value="blue_moon">Blue moon</item>
+        <item value="silkfoot">Silkfoot</item>
+      </adapter>
+    </adapters>
+    <bindings>
+      <bind name="style">
+        <adapter name="style" />
+      </bind>
+      <bind name="species">
+        <adapter name="species" />
+      </bind>
+    </bindings>
+  </entityrecipe>
+</entityrecipes>

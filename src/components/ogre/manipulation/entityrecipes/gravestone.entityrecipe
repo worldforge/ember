@@ -1,0 +1,38 @@
+<entityrecipes>
+  <entityrecipe name="gravestone">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A gravestone, with inscription.
+    </description>
+    <entity type="gravestone">
+      <atlas>
+        <map>
+          <list name="bbox">
+			<float>-0.5</float>
+			<float>-0.1</float>
+			<float>0</float>
+			<float>0.5</float>
+			<float>0.1</float>
+			<float>1</float>
+          </list>
+          <string name="style">$style</string>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+      <adapter name="name" type="string" title="Name"/>
+      <adapter name="style" type="string" title="Style" allowrandom="yes" default="Random">
+        <item value="simple">Simple</item>
+        <item value="rounded">Rounded</item>
+        <item value="stylish">Stylish</item>
+        <item value="cross">Cross</item>
+        <item value="cross broken">Cross broken</item>
+      </adapter>
+    </adapters>
+    <bindings>
+      <bind name="style">
+        <adapter name="style" />
+      </bind>
+    </bindings>
+  </entityrecipe>
+</entityrecipes>

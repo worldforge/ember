@@ -1,0 +1,78 @@
+<entityrecipes>
+  <entityrecipe name="castle wall run">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A castle wall section.
+    </description>
+    <entity type="castle_wall_run">
+      <atlas>
+        <map>
+          <list name="bbox">
+			<float>0</float><float>-0.697179</float><float>-0.992728</float><float>4.00001</float><float>1.88365</float><float>7.0314</float>
+          </list>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+    </adapters>
+    <bindings>
+    </bindings>
+  </entityrecipe>
+  <entityrecipe name="castle wall gate">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A castle wall section with a gate.
+    </description>
+    <entity type="castle_wall_gate">
+      <atlas>
+        <map>
+          <list name="bbox">
+			<float>0</float><float>-0.697179</float><float>-0.992728</float><float>8</float><float>1.88365</float><float>7.0314</float>
+          </list>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+    </adapters>
+    <bindings>
+    </bindings>
+  </entityrecipe>  
+  <entityrecipe name="castle wall stairs">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A castle wall section with stairs.
+    </description>
+    <entity type="castle_wall_stairs">
+      <atlas>
+        <map>
+          <list name="bbox">
+			<float>0</float><float>-0.697179</float><float>-0.992728</float><float>4.00001</float><float>5.00223</float><float>7.0314</float>
+          </list>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+    </adapters>
+    <bindings>
+    </bindings>
+  </entityrecipe>  
+  <entityrecipe name="castle wall corner">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A castle corner wall section.
+    </description>
+    <entity type="castle_wall_corner">
+      <atlas>
+        <map>
+          <list name="bbox">
+			<float>0</float><float>-0.697179</float><float>-0.99557</float><float>5.69718</float><float>5.00001</float><float>7.0314</float>
+          </list>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+    </adapters>
+    <bindings>
+    </bindings>
+  </entityrecipe>  
+</entityrecipes>

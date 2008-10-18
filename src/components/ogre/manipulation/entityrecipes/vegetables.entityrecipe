@@ -1,0 +1,50 @@
+<entityrecipes>
+  <entityrecipe name="turnip">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A turnip.
+    </description>
+    <entity type="turnip">
+      <atlas>
+        <map>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+    </adapters>
+    <bindings>
+    </bindings>
+  </entityrecipe>
+  <entityrecipe name="carrot">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A carrot.
+    </description>
+    <entity type="carrot">
+      <atlas>
+        <map>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+    </adapters>
+    <bindings>
+    </bindings>
+  </entityrecipe>
+  <entityrecipe name="apple">
+    <author>Erik Hjortsberg</author>
+    <description>
+      An apple.
+    </description>
+    <entity type="apple">
+      <atlas>
+        <map>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+    </adapters>
+    <bindings>
+    </bindings>
+  </entityrecipe>
+</entityrecipes>

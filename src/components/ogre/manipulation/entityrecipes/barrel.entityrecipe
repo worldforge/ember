@@ -1,0 +1,18 @@
+<entityrecipes>
+  <entityrecipe name="barrel">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A barrel.
+    </description>
+    <entity type="barrel">
+      <atlas>
+        <map>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+    </adapters>
+    <bindings>
+    </bindings>
+  </entityrecipe>
+</entityrecipes>
