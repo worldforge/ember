@@ -31,6 +31,11 @@
 #include <Atlas/Message/Element.h>
 #include <sigc++/signal.h>
 
+namespace Eris
+{
+class TypeService;
+}
+
 namespace EmberOgre {
 
 typedef std::map<std::string, GUIAdapter*> GUIAdaptersStore;
@@ -108,8 +113,9 @@ public:
 	 * @brief Composes an entity.
 	 *
 	 * Grabs current values from adapters, runs it through Lua function and composes resulting Atlas message.
+	 * @param typeService The main eris type service, from which type info will be queried.
 	 */
-	Atlas::Message::MapType createEntity();
+	Atlas::Message::MapType createEntity(Eris::TypeService& typeService);
 
 	/**
 	 * Sets author.

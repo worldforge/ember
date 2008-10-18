@@ -36,6 +36,10 @@
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/Codecs/XML.h>
 
+
+#include <Eris/TypeInfo.h>
+
+
 #include <lua.hpp>
 #include <tolua++.h>
 
@@ -162,7 +166,7 @@ bool EntityRecipe::SpecIterator::Visit(const TiXmlText& textNode)
 	return true;
 }
 
-Atlas::Message::MapType EntityRecipe::createEntity()
+Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeService)
 {
 	S_LOG_VERBOSE("Creating entity.");
 
@@ -215,6 +219,33 @@ Atlas::Message::MapType EntityRecipe::createEntity()
 			I->second->setValue(returnObj);
 		}
 	}
+	
+	///Inject all default attributes that aren't yet added.
+// 	TiXmlElement *elem = mEntitySpec->FirstChildElement("atlas");
+// 	if (elem)
+// 	{
+// 		Eris::TypeInfo* erisType = mConn->getTypeService()->getTypeByName(getEntityType());
+// 		if (erisType) {
+// 			const Atlas::Message::MapType& defaultAttributes = erisType->getAttributes();
+// 			for (Atlas::Message::MapType::const_iterator I = defaultAttributes.begin(); I != defaultAttributes.end(); ++I) {
+// 				bool hasAttribute = false;
+// 				TiXmlNode* child(0);
+// 				while(child = elem->IterateChildren(child)) {
+// 					if (child->ToElement()) {
+// 						if (std::string(child->ToElement()->Attribute("name")) == I->first) {
+// 							hasAttribute = true;
+// 							break;
+// 						}
+// 					}
+// 				}
+// 				
+// 				if (!hasAttribute) {
+// 					///The attribute isn't present, we'll inject it
+// 					///This a bit contrived, since we'll now first convert the atlas into xml and inject it into the TiXmlElement (which will convert the xml strings into TiXml structures). And then later on we'll parse the xml again and create the final atlas data from it. However, the main reason for doing it this way is that in the future we would want to have nested child elements, which could be repeated. And in those cases we'll want to work directly with xml.
+// 				}
+// 			}
+// 		}
+// 	}	
 
 /*
 	std::stringstream str;
@@ -254,6 +285,15 @@ Atlas::Message::MapType EntityRecipe::createEntity()
 	while (decoder.queueSize() > 0)
 	{
 		Atlas::Message::MapType m = decoder.popMessage();
+		Eris::TypeInfo* erisType = typeService.getTypeByName(getEntityType());
+		if (erisType) {
+			const Atlas::Message::MapType& defaultAttributes = erisType->getAttributes();
+			for (Atlas::Message::MapType::const_iterator I = defaultAttributes.begin(); I != defaultAttributes.end(); ++I) {		
+				if (m.find(I->first) == m.end()) {
+					m.insert(Atlas::Message::MapType::value_type(I->first, I->second));
+				}
+			}
+		}
 		return m;
 	}
 
