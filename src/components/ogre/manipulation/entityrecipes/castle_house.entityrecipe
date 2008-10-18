@@ -1,0 +1,26 @@
+<entityrecipes>
+  <entityrecipe name="castle house">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A one room castle house.
+    </description>
+    <entity type="castle_house">
+      <atlas>
+        <map>
+          <string name="roof">$roof</string>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+      <adapter name="roof" type="string" title="Roof style" allowrandom="yes" default="Random">
+        <item value="straw">Straw</item>
+        <item value="shale">Shale</item>
+      </adapter>
+    </adapters>
+    <bindings>
+      <bind name="roof">
+        <adapter name="roof" />
+      </bind>
+    </bindings>
+  </entityrecipe>
+</entityrecipes>
