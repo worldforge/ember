@@ -23,7 +23,7 @@ public:
 	void setDescription(const std::string& description);
 	const std::string& getDescription() const;
 	//void doTest();
-	void createEntity();
+	void createEntity(Eris::TypeService& typeService);
 };
 
 class EntityRecipePtr
