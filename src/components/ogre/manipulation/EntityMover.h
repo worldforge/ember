@@ -34,7 +34,7 @@ class EmberEntity;
 /**
 	@author Erik Hjortsberg <erik@katastrof.nu>
 	
-	An implementation of IEntityMoveBridge which allows for EmberEntity instances to be moved.
+	@brief An implementation of IEntityMoveBridge which allows for EmberEntity instances to be moved.
 */
 class EntityMover : public IEntityMoveBridge
 {
@@ -46,7 +46,7 @@ public:
 	virtual const WFMath::Quaternion& getOrientation() const;
 	virtual const WFMath::Point<3>& getPosition() const;
 	virtual void setPosition(const WFMath::Point<3>& position);
-	virtual void move(const WFMath::Vector<3> directionVector);
+	virtual void move(const WFMath::Vector<3>& directionVector);
 	virtual void setRotation (int axis, WFMath::CoordType angle);
 	virtual void setOrientation(const WFMath::Quaternion& rotation);
 	virtual void yaw(WFMath::CoordType angle);

@@ -98,12 +98,18 @@ protected:
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 	@author Lennart Sauerbeck
 
-	Provides an adapter for moving objects in the world.
+	@brief Provides an adapter for moving objects in the world.
+	
+	When activates, an instance of this will recieve input events and pass these on to the currently selected instance of EntityMoveAdapterWorkerBase which in turn will translate those input operations into entity movements.
 */
 class EntityMoveAdapter : public Ember::IInputAdapter {
 friend class EntityMoveAdapterWorkerBase;
 public:
 
+	/**
+	 * @brief Ctor.
+	 * @param manager The manager to which this adapter belongs.
+	 */
 	EntityMoveAdapter(EntityMoveManager* manager);
 	~EntityMoveAdapter();
 
@@ -115,36 +121,53 @@ public:
 	virtual bool injectKeyUp(const SDLKey& key);
 
 	/**
-	 *    Attaches the adapter to the suppied IEntityMoveBridge, allowing it to be moved. This will activate the adapter.
-	 * @param bridge 
+	 * @brief Attaches the adapter to the suppied IEntityMoveBridge, allowing it to be moved. This will activate the adapter.
+	 * Ownership of the bridge will be passed to this class.
+	 * @param bridge The bridge through which the entity is moved. After calling this, ownership will be transferred to this class.
 	 */
 	void attachToBridge(IEntityMoveBridge* bridge);
 	
 	/**
-	 *    Detaches the adapter from the current bridge. This will deactive the adapter.
+	 * @brief Detaches the adapter from the current bridge. This will deactive the adapter.
+	 * At detachment the bridge will also be deleted. Call attachToBridge to attach to a new bridge if you want to move another entity.
 	 */
 	void detach();
 
 private:
+	/**
+	 * @brief Removes this instance from the input system, which means that it will no longer receive any calls to the inject* methods.
+	 */
 	void removeAdapter();
+	
+	/**
+	 * @brief Adds this instance as an adapter to the input system, which means that it will begin receiving calls to the inject* methods.
+	 */
 	void addAdapter();
 	
 	/**
-	 *    Cancels the current movement, returning the IEntityMoveBridge to it's original place.
+	 * @brief Cancels the current movement, returning the IEntityMoveBridge to it's original place.
 	 */
 	void cancelMovement();
 	/**
-	 *    Finalizes the current movement, sending updates for the IEntityMoveBridge to the server.
+	 * @brief Finalizes the current movement, sending updates for the IEntityMoveBridge to the server.
 	 */
 	void finalizeMovement();
 	
 	
+	/**
+	 * @brief The bridge through which all movement happens.
+	 * This is initially null, but is set through attachToBridge. Once a bridge has been attached the ownership is transferred to this class, and subsequently the reponsibility to delete it.
+	 */
 	IEntityMoveBridge* mBridge;
+	
+	/**
+	 * @brief The manager to which this adapter belongs to (normally only one in the system).
+	 */
 	EntityMoveManager* mManager;
 	
 	/**
-	The worker instance which will listen for inputs and tell the bridge to update accordingly.
-	*/
+	 * @brief The worker instance which will listen for inputs and tell the bridge to update accordingly.
+	 */
 	EntityMoveAdapterWorkerBase* mWorker;
 	
 };

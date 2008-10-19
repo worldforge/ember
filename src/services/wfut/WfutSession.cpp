@@ -78,7 +78,7 @@ const std::string &systemPath
 	
 	S_LOG_VERBOSE("Channel name: " << channelName);
 	/// This is the base path for all files that will be downloaded
-	const std::string &local_root = localPath + "/" + channelName + "/";
+	const std::string local_root = localPath + "/" + channelName + "/";
 	
 	std::string channel(channelName);
 	std::string channel_file = "wfut.xml";
@@ -94,7 +94,7 @@ const std::string &systemPath
 	}
 	
 	/// Look for tmpwfut file. If it exists, update the mLocal files list.
-	const std::string &tmp_wfut = localPath  + "/" + tmpfile;
+	const std::string tmp_wfut = localPath  + "/" + tmpfile;
 	S_LOG_VERBOSE("Tmp wfut: " << tmp_wfut);
 	
 	if (fileExists(tmp_wfut)) {
@@ -113,7 +113,7 @@ const std::string &systemPath
 	
 	/// Look for a mSystem mWfutClient file
 	if (!systemPath.empty()) {
-		const std::string &system_wfut = systemPath + "/" + channel + "/" + channel_file; 
+		const std::string system_wfut = systemPath + "/" + channel + "/" + channel_file; 
 		S_LOG_VERBOSE("System wfut: " << system_wfut);
 		
 		if (fileExists(system_wfut)) {
@@ -130,7 +130,7 @@ const std::string &systemPath
 		return;
 	}
 	
-	const std::string &server_wfut = serverRoot + "/" + channel + "/" + channel_file; 
+	const std::string server_wfut = serverRoot + "/" + channel + "/" + channel_file; 
 	S_LOG_VERBOSE("Server wfut: " << server_wfut);
 	
 	mServerListDownloadingSlot(server_wfut);

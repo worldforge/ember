@@ -39,24 +39,29 @@ EntityMover::EntityMover(EmberEntity* entity) : mEntity(entity)
 
 const WFMath::Quaternion& EntityMover::getOrientation() const
 {
-	mOrientation = Ogre2Atlas(mEntity->getSceneNode()->getOrientation());
+	mOrientation = Ogre2Atlas(mEntity->getSceneNode()->_getDerivedOrientation());
 	return mOrientation;
 }
 
 const WFMath::Point<3>& EntityMover::getPosition() const
 {
-	mPosition = Ogre2Atlas(mEntity->getSceneNode()->getPosition());
+	mPosition = Ogre2Atlas(mEntity->getSceneNode()->_getDerivedPosition());
 	return mPosition;
 }
 void EntityMover::setPosition(const WFMath::Point<3>& position)
 {
 	if (position.isValid()) {
-		mEntity->getSceneNode()->setPosition(Atlas2Ogre(position));
+		///We need to offset into local space.
+		Ogre::Vector3 posOffset = Ogre::Vector3::ZERO;
+		if (mEntity->getSceneNode()->getParent()) {
+			posOffset = mEntity->getSceneNode()->getParent()->_getDerivedPosition();
+		}
+		mEntity->getSceneNode()->setPosition(Atlas2Ogre(position) - posOffset);
 		///adjust it so that it moves according to the ground for example
 		mEntity->adjustPosition(mEntity->getSceneNode()->getPosition());
 	}
 }
-void EntityMover::move(const WFMath::Vector<3> directionVector)
+void EntityMover::move(const WFMath::Vector<3>& directionVector)
 {
 	if (directionVector.isValid()) {
 		mEntity->getSceneNode()->translate(Atlas2Ogre(directionVector));
@@ -77,7 +82,12 @@ void EntityMover::yaw(WFMath::CoordType angle)
 void EntityMover::setOrientation(const WFMath::Quaternion& rotation)
 {
 	if (rotation.isValid()) {
-		mEntity->getSceneNode()->setOrientation(Atlas2Ogre(rotation));
+		///We need to offset into local space.
+		Ogre::Quaternion rotOffset = Ogre::Quaternion::IDENTITY;
+		if (mEntity->getSceneNode()->getParent()) {
+			rotOffset = mEntity->getSceneNode()->getParent()->_getDerivedOrientation();
+		}
+		mEntity->getSceneNode()->setOrientation(Atlas2Ogre(rotation) - rotOffset);
 	}
 }
 

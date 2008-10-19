@@ -27,6 +27,8 @@
 #include "LuaConnector.h"
 #include "LuaConnectorHelper.h"
 
+#include "../../../luaobject.h"
+
 #include "framework/Exception.h"
 #include "services/EmberServices.h"
 #include "services/logging/LoggingService.h"
@@ -101,11 +103,7 @@ template <typename Treturn, typename T0, typename T1, typename T2, typename T3> 
 
 		///get the lua function
 		lua_rawgeti(state, LUA_REGISTRYINDEX, mLuaFunctionIndex);
-
-// 		lua_getglobal(state, mLuaMethod.c_str());
 	
-		// is it a function
-		
 		LuaTypeStore::const_iterator I = mLuaTypeNames.begin();
 		if (I != mLuaTypeNames.end()) 
 			EmberOgre::LuaConnector::pushValue(t0, (*I++));
@@ -125,6 +123,8 @@ template <typename Treturn, typename T0, typename T1, typename T2, typename T3> 
 		lua_rawget(state, LUA_GLOBALSINDEX);  /* get traceback function */
 		#endif
 		lua_insert(state, error_index);/* put it under chunk and args */
+		
+		luaPop pop(state, 1); // pops error handler on exit
 		
 		/// call it
 		int error = lua_pcall(state,numberOfArguments,LUA_MULTRET,error_index);

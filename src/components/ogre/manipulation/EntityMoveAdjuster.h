@@ -32,6 +32,7 @@ class EntityMoveAdjuster;
 class EntityMoveManager;
 
 /**
+	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 	@see EntityMoveAdjuster
 	An instance of a adjustment operation. After time out, the entity encapsuled by this instance will be synchronized with the server.
 */
@@ -69,7 +70,8 @@ private:
 };
 
 /**
-This class is responsible for adjusting moved entities to their correct place.
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@brief This class is responsible for adjusting moved entities to their correct place.
 Basically, when an entity is moved the client sends the updates to the server, but it's not clear at that time whether the movement is allowed. This can only be seen by waiting to see whether the movement went through, i.e. if the entity was updated.
 So what this class does, together with EntityMoveAdjustmentInstance, waiting a couple of milleseconds and then telling the entity that  was moved to synchronize with the server. If the movement didn't go through, this will lead to the entity "snapping" back to the original position. If it did go through nothing will happen.
 */
