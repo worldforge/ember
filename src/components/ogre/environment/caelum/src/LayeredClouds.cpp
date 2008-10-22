@@ -177,8 +177,8 @@ namespace caelum
 		};
 
 		Ogre::Pass* pass = mMaterial->getBestTechnique()->getPass(0);
-		pass->getTextureUnitState(0)->setAnimatedTextureName(animTextures1, 4, cloudBlendTime * 4);
-		pass->getTextureUnitState(1)->setAnimatedTextureName(animTextures2, 4, cloudBlendTime * 4);
+/*		pass->getTextureUnitState(0)->setAnimatedTextureName(animTextures1, 4, cloudBlendTime * 4);
+		pass->getTextureUnitState(1)->setAnimatedTextureName(animTextures2, 4, cloudBlendTime * 4);*/
 		setCloudMassBlend(0);
 		mCloudBlendTime = cloudBlendTime;
 	}
