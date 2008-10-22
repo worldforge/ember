@@ -265,7 +265,7 @@ function Inventory.buildWidget()
 		
 	
 	Inventory.menu.container:setVisible(true)
--- 	connect(Inventory.connectors, guiManager:getInput().EventMouseButtonReleased, "Inventory.input_MouseButtonReleased")
+-- 	connect(Inventory.connectors, Ember.Input:getSingleton().EventMouseButtonReleased, "Inventory.input_MouseButtonReleased")
 --	guiManager:getMainSheet():addChildWindow(Inventory.menu.container)
 
 	
