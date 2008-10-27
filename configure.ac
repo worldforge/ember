@@ -547,7 +547,7 @@ AC_MSG_RESULT([
 		* Finished.  Run make to compile Ember.
 		* Note that you also need to install the media. This can be gotten in a couple of different ways.
 		* The easiest way is to use the rsync make target (which uses the rsync program to update the media.).
-		* If you're compiling from cvs and want to use the development version, do:
+		* If you're compiling from git and want to use the development version, do:
 		*
 		* make devmedia
 		*
