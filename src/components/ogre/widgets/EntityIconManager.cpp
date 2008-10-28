@@ -104,6 +104,7 @@ void EntityIconManager::destroyIcon(EntityIcon* icon)
 	EntityIconStore::iterator I = std::find(mIcons.begin(), mIcons.end(), icon);
 	if (I != mIcons.end()) {
 		mIcons.erase(I);
+		///TODO: make sure to delete the cegui elements
 		delete icon;
 	}
 }

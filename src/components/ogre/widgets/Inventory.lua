@@ -349,18 +349,23 @@ function Inventory.setupDoll(avatarEntity)
 	Inventory.doll.righHand.observer = EmberOgre.AttributeObserver:new_local(avatarEntity, "right_hand_wield")
 	Inventory.doll.righHand.attributeChanged = function(element)
 		if element:isString() then
+			--Check whether we should update the wielding slot.
 			local entityBucket = Inventory.icons[element:asString()]
 			if entityBucket ~= nil then
-				local icon = entityBucket[1].entityIcon
-				if icon ~= Inventory.doll.righHand.slot:getEntityIcon() then
+				local newEntityIcon = entityBucket[1].entityIcon
+				local currentWieldedIcon = Inventory.doll.righHand.slot:getEntityIcon()
+				if currentWieldedIcon ~= newEntityIcon then
+					--If the new wielded entity isn't the same as the currently wielded icon, we need to put the new entity icon there and add the old wielded icon back to the inventory.
 					local oldIcon = Inventory.doll.righHand.slot:removeEntityIcon()
-					Inventory.doll.righHand.slot:addEntityIcon(icon)
+					Inventory.doll.righHand.slot:addEntityIcon(newEntityIcon)
 					if oldIcon ~= nil then
 						local slotWrapper = Inventory.getFreeSlot()
 						local slot = slotWrapper.slot
 						slot:addEntityIcon(oldIcon)
 					end
 				end
+			else
+				log.warning("No inventory slot found for new wielded entity.")
 			end
 		end
 	end
