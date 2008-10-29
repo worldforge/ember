@@ -171,7 +171,8 @@ void InspectWidget::startInspecting(EmberEntity* entity)
 {
 	disconnectFromEntity();
 	
-	mMainWindow->setVisible(true);
+	show();
+	
 	mCurrentEntity = entity;
 	showEntityInfo(entity);
 	

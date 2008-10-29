@@ -10913,6 +10913,40 @@ static int tolua_EmberOgre_EmberOgre_Gui_EntityIcon_getEntity00(lua_State* tolua
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: operator== of class  EmberOgre::Gui::EntityIcon */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_EntityIcon__eq00
+static int tolua_EmberOgre_EmberOgre_Gui_EntityIcon__eq00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::EntityIcon",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const EmberOgre::Gui::EntityIcon",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Gui::EntityIcon* self = (EmberOgre::Gui::EntityIcon*)  tolua_tousertype(tolua_S,1,0);
+  const EmberOgre::Gui::EntityIcon* value = ((const EmberOgre::Gui::EntityIcon*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator=='",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->operator==(*value);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.eq'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: createSlot of class  EmberOgre::Gui::EntityIconManager */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_EntityIconManager_createSlot00
 static int tolua_EmberOgre_EmberOgre_Gui_EntityIconManager_createSlot00(lua_State* tolua_S)
@@ -24373,6 +24407,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"getSlot",tolua_EmberOgre_EmberOgre_Gui_EntityIcon_getSlot00);
      tolua_function(tolua_S,"setTooltipText",tolua_EmberOgre_EmberOgre_Gui_EntityIcon_setTooltipText00);
      tolua_function(tolua_S,"getEntity",tolua_EmberOgre_EmberOgre_Gui_EntityIcon_getEntity00);
+     tolua_function(tolua_S,".eq",tolua_EmberOgre_EmberOgre_Gui_EntityIcon__eq00);
     tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);

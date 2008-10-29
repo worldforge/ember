@@ -358,7 +358,14 @@
 		</entitymatch>
 	</modelmapping>	
 	<automodelmapping name="jetty" />
-	<automodelmapping name="campfire" />
+	<modelmapping name="campfire">
+		<entitymatch>
+			<case>
+				<caseparam type="equals">campfire</caseparam>
+				<action type="display-model">campfireB</action>
+			</case>
+		</entitymatch>
+	</modelmapping>	
 	<automodelmapping name="choppingblock" />
 	<modelmapping name="gravestone">
 		<entitymatch>
