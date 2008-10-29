@@ -10,6 +10,7 @@
                             <subentity index="0" material="/global/structures/wall_outer" />
                             <subentity index="1" material="/global/structures/roof_straw" />
                             <subentity index="2" material="/global/structures/ossyja_floor_planks" />
+                            <subentity index="3" material="/global/structures/ossyja_floor_planks" />
                         </subentities>
                     </part>
                 </parts>
