@@ -1,5 +1,6 @@
 /*
   Copyright (C) 2008 Romulo Fernandes Machado (nightz)
+  Copyright (C) 2008 Erik Hjortsberg <erik.hjortsberg@iteam.se>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -22,6 +23,7 @@
 
 #include "SoundSample.h"
 
+#include "services/config/ConfigService.h"
 #include "services/logging/LoggingService.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
@@ -69,22 +71,27 @@ Service::Status SoundService::start()
 {
 	S_LOG_INFO("Sound Service starting");
 	
-	#ifndef __WIN32__
-		alutInit(NULL, NULL);
-	#else
-		mDevice = alcOpenDevice("DirectSound3D");
+	if (Ember::EmberServices::getSingleton().getConfigService()->hasItem("audio", "enabled") && static_cast<bool>(Ember::EmberServices::getSingleton().getConfigService()->getValue("audio", "enabled")) == false) {
+		S_LOG_INFO("Sound disabled.");
+	} else {
 
-		if (!mDevice)
-		{
-			S_LOG_FAILURE("Sound Service failed to start, sound device not found 'DirectSound3D'");
-			return Service::FAILURE;
-		}
-
-		mContext = alcCreateContext(mDevice, NULL);
-		alcMakeContextCurrent(mContext);
-	#endif
+		#ifndef __WIN32__
+			alutInit(NULL, NULL);
+		#else
+			mDevice = alcOpenDevice("DirectSound3D");
 	
-	SoundGeneral::checkAlError();
+			if (!mDevice)
+			{
+				S_LOG_FAILURE("Sound Service failed to start, sound device not found 'DirectSound3D'");
+				return Service::FAILURE;
+			}
+	
+			mContext = alcCreateContext(mDevice, NULL);
+			alcMakeContextCurrent(mContext);
+		#endif
+		
+		SoundGeneral::checkAlError();
+	}
 	
 	mBaseSamples.clear();
 

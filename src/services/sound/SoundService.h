@@ -1,5 +1,6 @@
 /*
     Copyright (C) 2008 Romulo Fernandes Machado (nightz)
+    Copyright (C) 2008 Erik Hjortsberg <erik.hjortsberg@iteam.se>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -187,9 +188,9 @@ private:
 
 	#ifdef THREAD_SAFE
 	/**
-		* In case we are using threads, we must lock the mutexes to 
-		* prevent incorrect writing to the sample lists
-		*/
+	* In case we are using threads, we must lock the mutexes to 
+	* prevent incorrect writing to the sample lists
+	*/
 	pthread_mutex_t mGroupModelsMutex;
 	pthread_mutex_t mGroupsMutex;
 	pthread_mutex_t mSamplesMutex;
