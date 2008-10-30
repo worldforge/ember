@@ -7,9 +7,6 @@
     <entity type="castle_wall_run">
       <atlas>
         <map>
-          <list name="bbox">
-			<float>0</float><float>-0.697179</float><float>-0.992728</float><float>4.00001</float><float>1.88365</float><float>7.0314</float>
-          </list>
         </map>
       </atlas>
     </entity>
@@ -26,9 +23,6 @@
     <entity type="castle_wall_gate">
       <atlas>
         <map>
-          <list name="bbox">
-			<float>0</float><float>-0.697179</float><float>-0.992728</float><float>8</float><float>1.88365</float><float>7.0314</float>
-          </list>
         </map>
       </atlas>
     </entity>
@@ -45,9 +39,6 @@
     <entity type="castle_wall_stairs">
       <atlas>
         <map>
-          <list name="bbox">
-			<float>0</float><float>-0.697179</float><float>-0.992728</float><float>4.00001</float><float>5.00223</float><float>7.0314</float>
-          </list>
         </map>
       </atlas>
     </entity>
@@ -64,9 +55,6 @@
     <entity type="castle_wall_corner">
       <atlas>
         <map>
-          <list name="bbox">
-			<float>0</float><float>-0.697179</float><float>-0.99557</float><float>5.69718</float><float>5.00001</float><float>7.0314</float>
-          </list>
         </map>
       </atlas>
     </entity>
