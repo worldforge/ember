@@ -80,6 +80,8 @@ Atlas::Message::MapType ModelDefinitionAtlasComposer::compose(Model* model, cons
 	
 	MapType bboxMap;
 
+	model->getParentSceneNode()->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90));
+
 	Ogre::AxisAlignedBox aabb(model->getWorldBoundingBox(true));
 	if (scale != 0 && scale != 1.0f) {
 		aabb.scale(Ogre::Vector3(scale, scale, scale));
@@ -97,6 +99,8 @@ Atlas::Message::MapType ModelDefinitionAtlasComposer::compose(Model* model, cons
 	ListType parents;
 	parents.push_back(StringType(parentTypeName));
 	mainMap["parents"] = parents;
+	
+	model->getParentSceneNode()->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(-90));
 	
 	
 	return mainMap;

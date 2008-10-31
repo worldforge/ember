@@ -1,5 +1,6 @@
 /*
     Copyright (C) 2008 Romulo Fernandes Machado (nightz)
+    Copyright (C) 2008 Erik Hjortsberg <erik.hjortsberg@iteam.se>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -148,7 +149,8 @@ public:
 	 * @brief Creates a new SoundInstance.
 	 * Every time you want to play a sound you must create a SoundInstance and use that to play it. The only way to (normally) create such an instance is through this method. The sound service will keep track of all SoundInstance instances that are created, and will call SoundInstance::update() each frame, granted that SoundService::cycle() is called.
 	 * Ownership of the SoundInstance is held by the sound service, and as soon as you're finished with it you should immediately return it to the sound service through destroyInstance(). Under normal operations it's expected that there will only be a few SoundInstances in play at once.
-	 * @return A bew SoundInstance instance. Before you can play it, through SoundInstance::play(), you must bind it to a SoundSample.
+	 * @note If the sound system is disabled this will always return null, so make sure to check what you recieve when calling this.
+	 * @return A new SoundInstance instance, or null if no instance could be created or the sound system is disabled. Before you can play it, through SoundInstance::play(), you must bind it to a SoundSample.
 	 */
 	SoundInstance* createInstance();
 	
@@ -174,7 +176,11 @@ public:
 	 */
 	void setResourceProvider(Ember::IResourceProvider* resourceProvider);
 	
-
+	/**
+	 * @brief Returns true if the sound system is enabled.
+	 * @return True if the sound is enabled.
+	 */
+	bool isEnabled() const;
 
 private:
 	
@@ -187,9 +193,9 @@ private:
 
 	#ifdef THREAD_SAFE
 	/**
-		* In case we are using threads, we must lock the mutexes to 
-		* prevent incorrect writing to the sample lists
-		*/
+	* In case we are using threads, we must lock the mutexes to 
+	* prevent incorrect writing to the sample lists
+	*/
 	pthread_mutex_t mGroupModelsMutex;
 	pthread_mutex_t mGroupsMutex;
 	pthread_mutex_t mSamplesMutex;
@@ -218,6 +224,12 @@ private:
 	 * This is not owned by the service and won't be destroyed when the service shuts down.
 	 */
 	IResourceProvider* mResourceProvider;
+	
+	/**
+	 * @brief True if the sound system is enabled.
+	 * @see isEnabled()
+	 */
+	bool mEnabled;
 }; //SoundService
 
 } // namespace Ember
