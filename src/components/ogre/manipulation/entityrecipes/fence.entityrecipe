@@ -7,7 +7,6 @@
     <entity type="fence_section">
       <atlas>
         <map>
-          <list name="bbox"><float>-3.16088</float><float>-0.0884642</float><float>-0.0409198</float><float>0.14511</float><float>0.088465</float><float>1.43494</float></list>
         </map>
       </atlas>
     </entity>
@@ -20,7 +19,6 @@
     <entity type="fence_gate">
       <atlas>
         <map>
-          <list name="bbox"><float>-0.200216</float><float>-1.81962</float><float>-0.0437205</float><float>0.444085</float><float>0.088465</float><float>1.40195</float></list>
         </map>
       </atlas>
     </entity>
