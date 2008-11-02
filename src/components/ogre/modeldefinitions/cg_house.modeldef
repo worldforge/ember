@@ -1,16 +1,17 @@
-﻿<models>
+<models>
     <model name="cg_house" usescaleof="depth" showcontained="true" icon="">
         <translate x="0.000000" y="0.000000" z="-0.000000" />
-        <rotation x="-0.000000" y="1.000000" z="-0.000000" degrees="90.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
             <submodel mesh="3d_objects/structures/models/castlegrad/cg_house_A.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
                             <subentity index="0" material="/global/structures/wall_outer" />
+                            <subentity index="3" material="/global/structures/ossyja_floor_planks" />
                         </subentities>
                     </part>
-                            <subentity index="3" material="/global/structures/ossyja_floor_planks" />
+                    <part name="roof_shale" show="true" group="roof">
                         <subentities>
                             <subentity index="1" material="/global/structures/roof_shale" />
                         </subentities>

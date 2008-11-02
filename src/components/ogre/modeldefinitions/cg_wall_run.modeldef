@@ -1,14 +1,15 @@
 <models>
-    <model name="cg_wall_run" usescaleof="all" showcontained="true" icon="">
-        <translate x="-4.000000" y="0.000000" z="0.000000" />
+    <model name="cg_wall_stairs" usescaleof="all" showcontained="true" icon="">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/structures/models/castlegrad/cg_wall_run.mesh">
+            <submodel mesh="3d_objects/structures/models/castlegrad/cg_wall_stairs.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
                             <subentity index="0" material="/global/structures/curtain_wall_shale" />
-                            <subentity index="1" material="/global/structures/wall_outer" />
+                            <subentity index="1" material="/global/structures/mortar_brick" />
+                            <subentity index="2" material="/global/structures/wall_outer" />
                         </subentities>
                     </part>
                 </parts>
