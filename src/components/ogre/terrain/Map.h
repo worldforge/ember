@@ -106,6 +106,14 @@ public:
     
     Ogre::TexturePtr getTexture() const;
     
+    /**
+     * @brief Gets the render texture into which the map is being rendered.
+     * This is the same texture as the one you will get from getTexture(), but this accesses the more low level rendering structure, allowing you to access the actual ViewPort.
+     * If you haven't called initialize() yet this will return a null pointer.
+     * @return A pointer to the render texture being used for rendering the map, or null if no such has been created yet.
+     */
+    Ogre::RenderTexture* getRenderTexture() const;
+    
     void render();
     void reposition(Ogre::Vector2 pos);
     void reposition(float x, float y);
