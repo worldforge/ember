@@ -64,6 +64,20 @@
 												<xsd:attribute name="type" type="xsd:string" use="required"/>
 												<xsd:attribute name="title" type="xsd:string" use="optional"/>
 												<xsd:attribute name="allowrandom" type="xsd:string" use="optional"/>
+												<xsd:attribute name="default" type="xsd:string" use="optional">
+													<xsd:annotation>
+														<xsd:documentation xml:lang="en">
+															The default value for this adapter.
+														</xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
+												<xsd:attribute name="tooltip" type="xsd:string" use="optional">
+													<xsd:annotation>
+														<xsd:documentation xml:lang="en">
+															A tool tip text to be shown in the interface.
+														</xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
 											</xsd:complexType>
 										</xsd:element>
 									</xsd:sequence>
