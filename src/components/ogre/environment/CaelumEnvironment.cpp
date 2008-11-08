@@ -34,9 +34,15 @@
 
 #include "services/time/TimeService.h"
 
+#include "hydrax/src/Hydrax.h"
+#include "hydrax/src/Noise/Perlin/Perlin.h"
+#include "hydrax/src/Modules/ProjectedGrid/ProjectedGrid.h"
+
 namespace EmberOgre {
 
 namespace Environment {
+
+Hydrax::Hydrax *mHydrax = 0;
 
 
 CaelumEnvironment::CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera)
@@ -88,10 +94,41 @@ void CaelumEnvironment::createEnvironment()
 	
 }
 
-
 void CaelumEnvironment::setupWater()
 {
-	mWater = new Water(mCamera, mSceneMgr);
+	//mWater = new Water(mCamera, mSceneMgr);
+
+	// Init Hydrax
+
+        // Create Hydrax object
+        mHydrax = new Hydrax::Hydrax(mSceneMgr, &mCamera, mCamera.getViewport());
+
+        // Create our projected grid module
+        Hydrax::Module::ProjectedGrid *mModule
+            = new Hydrax::Module::ProjectedGrid(// Hydrax parent pointer
+                                                mHydrax,
+                                                // Noise module
+                                                new Hydrax::Noise::Perlin(/*Generic one*/),
+                                                // Base plane
+                                                Ogre::Plane(Ogre::Vector3(0,1,0), Ogre::Vector3(0,0,0)),
+                                                // Normal mode
+                                                Hydrax::MaterialManager::NM_VERTEX,
+                                                // Projected grid options
+                                                Hydrax::Module::ProjectedGrid::Options(264));
+
+        // Set our module
+        mHydrax->setModule(static_cast<Hydrax::Module::Module*>(mModule));
+
+        // Load all parameters from config file
+        // Remarks: The config file must be in Hydrax resource group.
+        // All parameters can be set/updated directly by code(Like previous versions),
+        // but due to the high number of customizable parameters, Hydrax 0.4 allows save/load config files.
+        mHydrax->loadCfg("HydraxDemo.hdx");
+
+        // Create water
+        mHydrax->create();
+
+
 }
 
 void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sceneMgr, ::Ogre::RenderWindow* window, ::Ogre::Camera& camera)
