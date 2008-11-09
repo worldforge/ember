@@ -310,8 +310,8 @@ bool OgreSetup::configure(void)
 // 	int flags = SDL_HWPALETTE | SDL_HWSURFACE | SDL_OPENGL;
  	int flags = SDL_OPENGL;
 
-// 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-// 	bool useAltSwapControl = SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1) != 0;
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	bool useAltSwapControl = SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1) != 0;
 
 		// request good stencil size if 32-bit colour
 /*        if (colourDepth == 32)
@@ -324,6 +324,41 @@ bool OgreSetup::configure(void)
 	}
 
 	mMainVideoSurface = SDL_SetVideoMode(width, height, 0, flags); // create an SDL window
+
+	if (!useAltSwapControl)
+	{
+		/// SDL_GL_SWAP_CONTROL was requested. Check that it is now set.
+		int value;
+		if (!SDL_GL_GetAttribute(SDL_GL_SWAP_CONTROL, &value))
+		{
+			useAltSwapControl = !value;
+		}
+		else
+		{
+			useAltSwapControl = true;
+		}
+	}
+	
+	if (useAltSwapControl)
+	{
+		/// Try another way to get vertical sync working. Use glXSwapIntervalSGI.
+		bool hasSwapControl = isExtensionSupported("GLX_SGI_swap_control");
+	
+		if (hasSwapControl)
+		{
+			const GLubyte *name;
+			name = reinterpret_cast<const GLubyte*>("glXSwapIntervalSGI");
+	
+			int (*funcPtr)(int);
+			funcPtr = reinterpret_cast<int(*)(int)>(glXGetProcAddress(name));
+	
+			if (funcPtr)
+			{
+				funcPtr(1);
+			}
+		}
+	}
+
 
 	SDL_WM_SetCaption("Ember","ember");
 
@@ -344,8 +379,8 @@ bool OgreSetup::configure(void)
 	mRenderWindow->setAutoUpdated(true);
 	mRenderWindow->setVisible(true);
 	
-	
-// 	mRoot->addFrameListener(this);
+	///We need to swap the frame buffers each frame.
+	mRoot->addFrameListener(this);
 
 
     ///set the icon of the window
@@ -798,6 +833,54 @@ bool OgreSetup::frameEnded(const Ogre::FrameEvent & evt)
 	SDL_GL_SwapBuffers();
 	
 	return true;
+}
+
+///Taken from sage.
+int OgreSetup::isExtensionSupported(const char *extension) {
+	SDL_SysWMinfo wmInfo;
+	SDL_VERSION(&wmInfo.version);
+	SDL_GetWMInfo(&wmInfo);
+
+	::Display *display = wmInfo.info.x11.gfxdisplay;
+	if (!display)
+	{
+		return false;
+	}
+
+	int screen = DefaultScreen(display);
+
+	const char *extensionsChar;
+	extensionsChar = glXQueryExtensionsString(display, screen);
+	const GLubyte *extensions;
+	extensions = reinterpret_cast<const GLubyte*>(extensionsChar);
+
+	const GLubyte *start;
+	GLubyte *where, *terminator;
+	
+	/* Extension names should not have spaces. */
+	where = (GLubyte *) strchr(extension, ' ');
+	if ((where != NULL) || *extension == '\0')
+		return 0;
+	
+	//  if (extensions == NULL) extensions = (GLubyte*)glGetString(GL_EXTENSIONS);
+	
+	if (extensions == NULL) return 0;
+	
+	/* It takes a bit of care to be fool-proof about parsing the
+		OpenGL extensions string. Don't be fooled by sub-strings,
+		etc. */
+	start = extensions;
+	for (;;) {
+		where = (GLubyte*) strstr((const char *) start, extension);
+		if (!where)
+		break;
+		terminator = where + strlen(extension);
+		if (where == start || *(where - 1) == (GLubyte)' ')
+		if (*terminator == (GLubyte)' ' || *terminator == (GLubyte)'\0')
+			return 1;
+		start = terminator;
+	}
+	return 0;
 }
 
 
