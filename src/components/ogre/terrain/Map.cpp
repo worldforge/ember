@@ -103,6 +103,11 @@ Ogre::TexturePtr Map::getTexture() const
 	return mTexture;
 }
 
+Ogre::RenderTexture* Map::getRenderTexture() const
+{
+	return mRenderTexture;
+}
+
 float Map::getResolution() const
 {
 	return mTexturePixelSize / mResolutionMeters;

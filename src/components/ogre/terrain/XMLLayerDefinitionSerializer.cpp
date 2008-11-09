@@ -63,12 +63,20 @@ void XMLLayerDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, cons
 			std::string shadername;
 			int areaId(0);
 			if (tmp) {
-				shadername = tmp;
+				///make sure it's not added yet
+				if (!mManager.getDefinitionForShader(tmp)) {
+					shadername = tmp;
+				}
 			} else {
 				smElem->QueryIntAttribute("areaindex", &areaId);
+				///make sure it's not added yet
+				if (mManager.getDefinitionForArea(areaId)) {
+					areaId = 0;
+				}
 			}
 			
 			if (shadername != "" || areaId != 0) {
+				///make sure that there's no preexisting shader defined
 				S_LOG_VERBOSE("Adding terrain layer definition for shader '" << shadername << "' and area index '"<< areaId << "'.");
 				try {
 					TerrainLayerDefinition* definition = new TerrainLayerDefinition();
@@ -105,9 +113,8 @@ void XMLLayerDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, cons
 					S_LOG_FAILURE(ex.what());
 				} catch (...) {
 					S_LOG_FAILURE("Error when reading terrain layer definition.");
-				}			
+				}
 			}
-
 		}
 	}
 }

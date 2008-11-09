@@ -84,19 +84,23 @@ void Foliage::initialize()
 	for (TerrainLayerDefinitionManager::DefinitionStore::const_iterator I = TerrainLayerDefinitionManager::getSingleton().getDefinitions().begin(); I != TerrainLayerDefinitionManager::getSingleton().getDefinitions().end(); ++I) {
 		const TerrainLayerDefinition* layerDef = *I;
 		for (TerrainLayerDefinition::TerrainFoliageDefinitionStore::const_iterator J = layerDef->getFoliages().begin(); J != layerDef->getFoliages().end(); ++J) {
+			FoliageBase* foliageBase(0);
 			try {
 				if (J->getRenderTechnique() == "grass") {
-					GrassFoliage* foliage = new GrassFoliage(*layerDef, *J);
-					foliage->initialize();
-					mFoliages.push_back(foliage);
+					foliageBase = new GrassFoliage(*layerDef, *J);
 				} else if (J->getRenderTechnique() == "shrubbery") {
-					ShrubberyFoliage* foliage = new ShrubberyFoliage(*layerDef, *J);
-					foliage->initialize();
-					mFoliages.push_back(foliage);
+					foliageBase = new ShrubberyFoliage(*layerDef, *J);
 				}
+				foliageBase->initialize();
+				mFoliages.push_back(foliageBase);
 			} catch (const std::exception& ex) 
 			{
 				S_LOG_FAILURE("Error when creating foliage. Message: " << ex.what());
+				try {
+					delete foliageBase;
+				} catch (const std::exception& innerEx) {
+					S_LOG_FAILURE("Even got an error when deletin the foliage, things could get ugly from here on. Message: " << innerEx.what());
+				}
 			}
 		}
 	}

@@ -117,6 +117,65 @@ protected:
 	
 };
 
+/**
+@brief A compass implementation which uses a compositor to create the rounded map image.
+The main problem with CEGUI is that there's no easy way to apply transparence to a dynamic render texture. By using a compositor we can however render the /ui/compass material, which will use an alpha mask to remove the border from the map texture, providing a rounded shape.
+This implementation will only provide the rounded map texture. It's up to other components to then provide further functionality. This can perhaps be done through CEGUI.
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+*/
+class CompositorCompassImpl : ICompassImpl
+{
+public:
+
+	/**
+	 * @brief Ctor.
+	 */
+	CompositorCompassImpl();
+	
+	/**
+	 * @brief Dtor.
+	 * The render texture which this instance owns will be destroyed along with this instance.
+	 */
+	virtual ~CompositorCompassImpl();
+	
+    /**
+     * @copydoc ICompassImpl::reposition
+     */
+    virtual void reposition(float x, float y);
+    
+    /**
+     * @copydoc ICompassImpl::rotate
+     */
+    virtual void rotate(const Ogre::Degree& degree);
+
+protected:
+	/**
+	@brief The texture into which the final compass texture will be rendered.
+	*/
+	Ogre::TexturePtr mTexture;
+	
+	/**
+	@brief The render texture representation of mTexture.
+	*/
+	Ogre::RenderTexture* mRenderTexture;
+	
+	/**
+	@brief The compositor used for rendering our full screen quad.
+	*/
+	Ogre::CompositorInstance* mCompositor;
+	
+	/**
+	@brief The compass material used in the rendering. By changing the offset of the first texture we can simulate the terrain being scrolled.
+	*/
+	Ogre::MaterialPtr mCompassMaterial;
+
+	/**
+	 * @brief When the owner compass instance is set, the render texture will be created and the compositior registered.
+	 * @param compass 
+	 */
+	virtual void _setCompass(Compass* compass);
+};
+
 
 class CompassAnchor
 : public Ogre::FrameListener

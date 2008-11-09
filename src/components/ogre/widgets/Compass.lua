@@ -42,16 +42,31 @@ function Compass.CreatedAvatarEntity(avatarEntity)
 end
 
 function Compass.buildWidget()
-	Compass.helperImpl = EmberOgre.Gui.OverlayCompassImpl:new_local()
+-- 	Compass.helperImpl = EmberOgre.Gui.OverlayCompassImpl:new_local()
+--	Compass.helperImpl = EmberOgre.Gui.CEGUICompassImpl:new_local()
+	Compass.helperImpl = EmberOgre.Gui.CompositorCompassImpl:new_local()
+
 	Compass.helper = EmberOgre.Gui.Compass:new_local(Compass.helperImpl)
 	Compass.map = Compass.helper:getMap()
 	
---[[	Compass.widget = guiManager:createWidget()
+	
+-- -- 	local assetManager = EmberOgre.Gui.AssetsManager:new_local()
+-- -- 	
+-- -- 	local texturePair = assetManager:createTextureImage(Compass.map:getTexture(), "CompassMap")
+-- -- 	if texturePair:hasData() then 
+-- -- 		Compass.renderImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(texturePair:getTextureImage()))
+-- -- 	end
+
+	connect(Compass.connectors, emberOgre.EventCreatedAvatarEntity, "Compass.CreatedAvatarEntity")
+
+end
+
+-- Call this method to build the cegui widget.
+function Compass.buildCEGUIWidget()
+	Compass.widget = guiManager:createWidget()
 	Compass.widget:loadMainSheet("Compass.layout", "Compass/")
 	Compass.widget:setIsActiveWindowOpaque(false)
 	Compass.renderImage = Compass.widget:getWindow("RenderImage")
-	
-	Compass.renderImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(Compass.helper:getViewImage()))]]
 	
 -- 	local assetManager = EmberOgre.Gui.AssetsManager:new_local()
 -- 	
@@ -59,9 +74,11 @@ function Compass.buildWidget()
 -- 	if texturePair:hasData() then 
 -- 		Compass.renderImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(texturePair:getTextureImage()))
 -- 	end
-
-	connect(Compass.connectors, emberOgre.EventCreatedAvatarEntity, "Compass.CreatedAvatarEntity")
-
+	
+	
+-- 	Compass.renderImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(Compass.helperImpl:getViewImage()))
 end
+
+
 
 Compass.buildWidget()

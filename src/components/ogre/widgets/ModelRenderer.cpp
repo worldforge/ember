@@ -97,6 +97,7 @@ void ModelRenderer::showModel(const std::string& modelName)
 {
 	if (mModel) {
 		mModel->_getManager()->destroyMovableObject(mModel);
+		mModel = 0;
 		//delete mModel;
 	}
 	if (modelName != "") {

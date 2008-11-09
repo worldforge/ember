@@ -7,8 +7,7 @@
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/items/valuables/moraf_coin/coin_back" />
-                            <subentity index="1" material="/global/items/valuables/moraf_coin/coin_front" />
+                            <subentity index="0" material="/global/items/valuables/moraf_coin" />
                         </subentities>
                     </part>
                 </parts>

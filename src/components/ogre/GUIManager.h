@@ -41,6 +41,7 @@ namespace CEGUI
 {
 class GUISheet;
 class LuaScriptModule;
+class Window;
 }
 
 namespace Ember {
@@ -52,7 +53,6 @@ namespace EmberOgre {
 
 class EmberEntity;
 class TerrainGenerator;
-class CEGUI::Window;
 class MousePicker;
 class AvatarEmberEntity;
 class GUICEGUIAdapter;
