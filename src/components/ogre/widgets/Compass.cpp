@@ -214,9 +214,10 @@ CompositorCompassImpl::~CompositorCompassImpl()
 		Ogre::CompositorManager::getSingleton().removeCompositorChain(mRenderTexture->getViewport(0));
 	}
 
-	if (!mTexture.isNull()) {
-		Ogre::TextureManager::getSingleton().remove(mTexture->getName());
-	}
+	///We should probably not do this ourselves, since it will corrupt the material.
+// 	if (!mTexture.isNull()) {
+// 		Ogre::TextureManager::getSingleton().remove(mTexture->getName());
+// 	}
 	
 	if (mCamera) {
 		mSceneManager->destroyCamera(mCamera);
