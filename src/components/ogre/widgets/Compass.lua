@@ -17,12 +17,12 @@ end
 function Compass.repositionAtAvatar()
 	local pos = emberOgre:getAvatar():getAvatarSceneNode():getPosition()
 -- 	local pos = emberOgre:getAvatar():getAvatarEmberEntity():getSceneNode():getPosition()
-	if pos.x ~= previousPosX or pos.z ~= previousPosY then
+-- 	if pos.x ~= previousPosX or pos.z ~= previousPosY then
 		Compass.helper:reposition(pos.x, pos.z)
 -- 		Compass.renderImage:requestRedraw()
-		previousPosX = pos.x
-		previousPosY = pos.z
-	end
+-- 		previousPosX = pos.x
+-- 		previousPosY = pos.z
+-- 	end
 -- 	console:pushMessage("x: " .. pos.x .. "y: " .. pos.z)
 end
 
@@ -56,7 +56,8 @@ function Compass.buildWidget()
 -- -- 	if texturePair:hasData() then 
 -- -- 		Compass.renderImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(texturePair:getTextureImage()))
 -- -- 	end
-
+	Compass.buildCEGUIWidget()
+	
 	connect(Compass.connectors, emberOgre.EventCreatedAvatarEntity, "Compass.CreatedAvatarEntity")
 
 end
@@ -68,12 +69,12 @@ function Compass.buildCEGUIWidget()
 	Compass.widget:setIsActiveWindowOpaque(false)
 	Compass.renderImage = Compass.widget:getWindow("RenderImage")
 	
--- 	local assetManager = EmberOgre.Gui.AssetsManager:new_local()
--- 	
--- 	local texturePair = assetManager:createTextureImage(Compass.map:getTexture(), "CompassMap")
--- 	if texturePair:hasData() then 
--- 		Compass.renderImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(texturePair:getTextureImage()))
--- 	end
+	local assetManager = EmberOgre.Gui.AssetsManager:new_local()
+	
+	local texturePair = assetManager:createTextureImage(Compass.helperImpl:getTexture(), "CompassMap")
+	if texturePair:hasData() then 
+		Compass.renderImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(texturePair:getTextureImage()))
+	end
 	
 	
 -- 	Compass.renderImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(Compass.helperImpl:getViewImage()))

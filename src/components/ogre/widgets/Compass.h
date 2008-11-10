@@ -147,6 +147,12 @@ public:
      * @copydoc ICompassImpl::rotate
      */
     virtual void rotate(const Ogre::Degree& degree);
+    
+	/**
+	* @brief Gets the texture onto which the compass is rendered.
+	* @return The texture pointer.
+	*/
+	Ogre::TexturePtr getTexture();
 
 protected:
 	/**
@@ -174,6 +180,11 @@ protected:
 	 * @param compass 
 	 */
 	virtual void _setCompass(Compass* compass);
+	
+	Ogre::Camera* mCamera;
+	Ogre::SceneManager* mSceneManager;
+	Ogre::Viewport* mViewport;
+	Ogre::TextureUnitState* mCompassMaterialMapTUS;
 };
 
 

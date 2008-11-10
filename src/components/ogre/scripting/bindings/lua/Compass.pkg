@@ -101,6 +101,12 @@ public:
      */
     virtual void rotate(const Ogre::Degree& degree);
 
+	/**
+	* @brief Gets the texture onto which the compass is rendered.
+	* @return The texture pointer.
+	*/
+	Ogre::TexturePtr getTexture();
+
 };
 
 class CompassCameraAnchor

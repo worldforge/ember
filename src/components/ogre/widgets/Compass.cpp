@@ -202,8 +202,10 @@ void OverlayCompassImpl::rotate(const Ogre::Degree& degree)
 }
 
 CompositorCompassImpl::CompositorCompassImpl()
-: mRenderTexture(0), mCompositor(0)
+: mRenderTexture(0), mCompositor(0), mCamera(0), mSceneManager(0), mViewport(0), mCompassMaterialMapTUS(0)
 {
+	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, "CompositorCompassImpl_sceneManager");
+	mSceneManager->setFog(Ogre::FOG_NONE, Ogre::ColourValue(1,1,1,1), 0.0f, 10000000.0f, 100000001.0f);
 }
 
 CompositorCompassImpl::~CompositorCompassImpl()
@@ -215,17 +217,26 @@ CompositorCompassImpl::~CompositorCompassImpl()
 	if (!mTexture.isNull()) {
 		Ogre::TextureManager::getSingleton().remove(mTexture->getName());
 	}
+	
+	if (mCamera) {
+		mSceneManager->destroyCamera(mCamera);
+	}
+	
+	Ogre::Root::getSingleton().destroySceneManager(mSceneManager);
+	
 }
 
 void CompositorCompassImpl::reposition(float x, float y)
 {
 	mMap->getView().reposition(Ogre::Vector2(x, y));
 	
-	if (!mCompassMaterial.isNull()) {
-		Ogre::TextureUnitState* tus(mCompassMaterial->getBestTechnique()->getPass(0)->getTextureUnitState(0));
+	if (mCompassMaterialMapTUS) {
 		const Ogre::Vector2& relPosition(mMap->getView().getRelativeViewPosition());
-		tus->setTextureScroll(-0.5f + relPosition.x, -0.5f + relPosition.y);
+   		mCompassMaterialMapTUS->setTextureScroll(-0.5f + relPosition.x, -0.5f + relPosition.y);
 		
+		///We must mark the chain as dirty, else our changes won't apply
+		mCompositor->getChain()->_markDirty();
+// 		mViewport->update();
 		mRenderTexture->update();
 	}
 }
@@ -239,22 +250,42 @@ void CompositorCompassImpl::rotate(const Ogre::Degree& degree)
 void CompositorCompassImpl::_setCompass(Compass* compass)
 {
 	mCompassMaterial = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName("/ui/compass"));
-	mCompassMaterial->getBestTechnique()->getPass(0)->getTextureUnitState(0)->setTextureName(mMap->getTexture()->getName());
+	if (!mCompassMaterial.isNull()) {
+		if (Ogre::Technique* tech = mCompassMaterial->getBestTechnique()) {
+			Ogre::Pass* pass(0);
+			if (tech->getNumPasses() && (pass = tech->getPass(0))) {
+				if ((mCompassMaterialMapTUS = pass->getTextureUnitState("Background"))) {
+					mCompassMaterialMapTUS->setTextureName(mMap->getTexture()->getName());
+		
+					mTexture = Ogre::TextureManager::getSingleton().createManual("ComposedCompass", "Gui", Ogre::TEX_TYPE_2D, 128, 128, 0, Ogre::PF_A8R8G8B8, Ogre::TU_RENDERTARGET);
+					mRenderTexture = mTexture->getBuffer()->getRenderTarget();
+					mRenderTexture->removeAllViewports();
+					mRenderTexture->setAutoUpdated(false);
+					mRenderTexture->setActive(true);
+					
+					mCamera = mSceneManager->createCamera("ComposedCompassCamera");
+					mViewport = mRenderTexture->addViewport(mCamera);
+					mViewport->setOverlaysEnabled(false);
+					mViewport->setShadowsEnabled(false);
+					mViewport->setSkiesEnabled(false);
+					mViewport->setClearEveryFrame(true);
+					mViewport->setBackgroundColour(Ogre::ColourValue::ZERO);
+				
+					mCompositor = Ogre::CompositorManager::getSingleton().addCompositor(mViewport, "/ui/compass");
+					mCompositor->setEnabled(true);
+					
+					///Return early since everything is good.
+					return;
+				}
+			}
+		}
+	} 
+	S_LOG_WARNING("Could not load material '/ui/compass' for the compass.");
+}
 
-	mTexture = Ogre::TextureManager::getSingleton().createManual("ComposedCompass", "Gui", Ogre::TEX_TYPE_2D, 128, 128, 0, Ogre::PF_R8G8B8,Ogre::TU_RENDERTARGET);
-	mRenderTexture = mTexture->getBuffer()->getRenderTarget();
-	mRenderTexture->setAutoUpdated(false);
-	
-	Ogre::Camera* camera = EmberOgre::getSingleton().getSceneManager()->createCamera("ComposedCompassCamera");
-	Ogre::Viewport* viewport = mRenderTexture->addViewport(camera);
-	viewport->setOverlaysEnabled(false);
-	viewport->setShadowsEnabled(false);
-	viewport->setSkiesEnabled(false);
-    viewport->setClearEveryFrame(true);
-	viewport->setBackgroundColour(Ogre::ColourValue::ZERO);
-
-	mCompositor = Ogre::CompositorManager::getSingleton().addCompositor(mRenderTexture->getViewport(0), "/ui/compass");
-	mCompositor->setEnabled(true);
+Ogre::TexturePtr CompositorCompassImpl::getTexture()
+{
+	return mTexture;
 }
 
 
@@ -279,6 +310,8 @@ bool CompassAnchor::frameStarted(const Ogre::FrameEvent& event)
 	mCompass.rotate(-mOrientation.getYaw());
 	if (mPosition.x != mPreviousX || mPosition.z != mPreviousZ) {
 		mCompass.reposition(mPosition.x, mPosition.z);
+		mPreviousX = mPosition.x;
+		mPreviousZ = mPosition.z;
 	}
 	return true;
 }
