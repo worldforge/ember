@@ -26,19 +26,23 @@ function Compass.repositionAtAvatar()
 -- 	console:pushMessage("x: " .. pos.x .. "y: " .. pos.z)
 end
 
-function Compass.rotate()
-	local cameraOrientation = emberOgre:getMainCamera():getOrientation():getYaw()
-	Compass.helper:rotate(-cameraOrientation)
-end
-
-function Compass.framestarted(timeSinceLastFrame)
-	Compass.repositionAtAvatar()
-	Compass.rotate()
-end
+-- function Compass.rotate()
+-- 	local cameraOrientation = emberOgre:getMainCamera():getOrientation():getYaw()
+-- 	Compass.helper:rotate(-cameraOrientation)
+-- end
+-- 
+-- function Compass.framestarted(timeSinceLastFrame)
+-- 	Compass.repositionAtAvatar()
+-- 	Compass.rotate()
+-- end
 
 function Compass.CreatedAvatarEntity(avatarEntity)
 	Compass.anchor = EmberOgre.Gui.CompassCameraAnchor:new_local(Compass.helper, emberOgre:getMainCamera():getCamera())
 -- 	connect(Compass.connectors, guiManager.EventFrameStarted, "Compass.framestarted")
+	if Compass.widget ~= nil then
+		Compass.widget:show()
+	end
+
 end
 
 function Compass.buildWidget()
@@ -75,6 +79,8 @@ function Compass.buildCEGUIWidget()
 	if texturePair:hasData() then 
 		Compass.renderImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(texturePair:getTextureImage()))
 	end
+	
+	Compass.widget:hide()
 	
 	
 -- 	Compass.renderImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(Compass.helperImpl:getViewImage()))
