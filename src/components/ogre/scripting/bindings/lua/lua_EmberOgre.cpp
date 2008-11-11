@@ -9765,6 +9765,37 @@ tolua_lerror:
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: refresh of class  EmberOgre::Gui::Compass */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_Compass_refresh00
+static int tolua_EmberOgre_EmberOgre_Gui_Compass_refresh00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::Compass",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Gui::Compass* self = (EmberOgre::Gui::Compass*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'refresh'",NULL);
+#endif
+  {
+   self->refresh();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'refresh'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: new of class  EmberOgre::Gui::CEGUICompassImpl */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_CEGUICompassImpl_new00
 static int tolua_EmberOgre_EmberOgre_Gui_CEGUICompassImpl_new00(lua_State* tolua_S)
@@ -9882,74 +9913,6 @@ static int tolua_EmberOgre_EmberOgre_Gui_CEGUICompassImpl_getViewImage00(lua_Sta
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: reposition of class  EmberOgre::Gui::CEGUICompassImpl */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_CEGUICompassImpl_reposition00
-static int tolua_EmberOgre_EmberOgre_Gui_CEGUICompassImpl_reposition00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::CEGUICompassImpl",0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,4,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  EmberOgre::Gui::CEGUICompassImpl* self = (EmberOgre::Gui::CEGUICompassImpl*)  tolua_tousertype(tolua_S,1,0);
-  float x = ((float)  tolua_tonumber(tolua_S,2,0));
-  float y = ((float)  tolua_tonumber(tolua_S,3,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'reposition'",NULL);
-#endif
-  {
-   self->reposition(x,y);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'reposition'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: rotate of class  EmberOgre::Gui::CEGUICompassImpl */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_CEGUICompassImpl_rotate00
-static int tolua_EmberOgre_EmberOgre_Gui_CEGUICompassImpl_rotate00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::CEGUICompassImpl",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"const Ogre::Degree",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  EmberOgre::Gui::CEGUICompassImpl* self = (EmberOgre::Gui::CEGUICompassImpl*)  tolua_tousertype(tolua_S,1,0);
-  const Ogre::Degree* degree = ((const Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'rotate'",NULL);
-#endif
-  {
-   self->rotate(*degree);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'rotate'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* method: new of class  EmberOgre::Gui::OverlayCompassImpl */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_OverlayCompassImpl_new00
 static int tolua_EmberOgre_EmberOgre_Gui_OverlayCompassImpl_new00(lua_State* tolua_S)
@@ -10035,74 +9998,6 @@ static int tolua_EmberOgre_EmberOgre_Gui_OverlayCompassImpl_delete00(lua_State* 
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: reposition of class  EmberOgre::Gui::OverlayCompassImpl */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_OverlayCompassImpl_reposition00
-static int tolua_EmberOgre_EmberOgre_Gui_OverlayCompassImpl_reposition00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::OverlayCompassImpl",0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,4,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  EmberOgre::Gui::OverlayCompassImpl* self = (EmberOgre::Gui::OverlayCompassImpl*)  tolua_tousertype(tolua_S,1,0);
-  float x = ((float)  tolua_tonumber(tolua_S,2,0));
-  float y = ((float)  tolua_tonumber(tolua_S,3,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'reposition'",NULL);
-#endif
-  {
-   self->reposition(x,y);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'reposition'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: rotate of class  EmberOgre::Gui::OverlayCompassImpl */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_OverlayCompassImpl_rotate00
-static int tolua_EmberOgre_EmberOgre_Gui_OverlayCompassImpl_rotate00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::OverlayCompassImpl",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"const Ogre::Degree",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  EmberOgre::Gui::OverlayCompassImpl* self = (EmberOgre::Gui::OverlayCompassImpl*)  tolua_tousertype(tolua_S,1,0);
-  const Ogre::Degree* degree = ((const Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'rotate'",NULL);
-#endif
-  {
-   self->rotate(*degree);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'rotate'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* method: new of class  EmberOgre::Gui::CompositorCompassImpl */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_CompositorCompassImpl_new00
 static int tolua_EmberOgre_EmberOgre_Gui_CompositorCompassImpl_new00(lua_State* tolua_S)
@@ -10183,74 +10078,6 @@ static int tolua_EmberOgre_EmberOgre_Gui_CompositorCompassImpl_delete00(lua_Stat
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'delete'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: reposition of class  EmberOgre::Gui::CompositorCompassImpl */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_CompositorCompassImpl_reposition00
-static int tolua_EmberOgre_EmberOgre_Gui_CompositorCompassImpl_reposition00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::CompositorCompassImpl",0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,4,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  EmberOgre::Gui::CompositorCompassImpl* self = (EmberOgre::Gui::CompositorCompassImpl*)  tolua_tousertype(tolua_S,1,0);
-  float x = ((float)  tolua_tonumber(tolua_S,2,0));
-  float y = ((float)  tolua_tonumber(tolua_S,3,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'reposition'",NULL);
-#endif
-  {
-   self->reposition(x,y);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'reposition'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: rotate of class  EmberOgre::Gui::CompositorCompassImpl */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_CompositorCompassImpl_rotate00
-static int tolua_EmberOgre_EmberOgre_Gui_CompositorCompassImpl_rotate00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::CompositorCompassImpl",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"const Ogre::Degree",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  EmberOgre::Gui::CompositorCompassImpl* self = (EmberOgre::Gui::CompositorCompassImpl*)  tolua_tousertype(tolua_S,1,0);
-  const Ogre::Degree* degree = ((const Ogre::Degree*)  tolua_tousertype(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'rotate'",NULL);
-#endif
-  {
-   self->rotate(*degree);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'rotate'.",&tolua_err);
  return 0;
 #endif
 }
@@ -24489,6 +24316,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"reposition",tolua_EmberOgre_EmberOgre_Gui_Compass_reposition00);
      tolua_function(tolua_S,"rotate",tolua_EmberOgre_EmberOgre_Gui_Compass_rotate00);
      tolua_function(tolua_S,"rotate",tolua_EmberOgre_EmberOgre_Gui_Compass_rotate01);
+     tolua_function(tolua_S,"refresh",tolua_EmberOgre_EmberOgre_Gui_Compass_refresh00);
     tolua_endmodule(tolua_S);
     #ifdef __cplusplus
     tolua_cclass(tolua_S,"CEGUICompassImpl","EmberOgre::Gui::CEGUICompassImpl","EmberOgre::Gui::ICompassImpl",tolua_collect_EmberOgre__Gui__CEGUICompassImpl);
@@ -24501,8 +24329,6 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,".call",tolua_EmberOgre_EmberOgre_Gui_CEGUICompassImpl_new00_local);
      tolua_function(tolua_S,"delete",tolua_EmberOgre_EmberOgre_Gui_CEGUICompassImpl_delete00);
      tolua_function(tolua_S,"getViewImage",tolua_EmberOgre_EmberOgre_Gui_CEGUICompassImpl_getViewImage00);
-     tolua_function(tolua_S,"reposition",tolua_EmberOgre_EmberOgre_Gui_CEGUICompassImpl_reposition00);
-     tolua_function(tolua_S,"rotate",tolua_EmberOgre_EmberOgre_Gui_CEGUICompassImpl_rotate00);
     tolua_endmodule(tolua_S);
     #ifdef __cplusplus
     tolua_cclass(tolua_S,"OverlayCompassImpl","EmberOgre::Gui::OverlayCompassImpl","EmberOgre::Gui::ICompassImpl",tolua_collect_EmberOgre__Gui__OverlayCompassImpl);
@@ -24514,8 +24340,6 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"new_local",tolua_EmberOgre_EmberOgre_Gui_OverlayCompassImpl_new00_local);
      tolua_function(tolua_S,".call",tolua_EmberOgre_EmberOgre_Gui_OverlayCompassImpl_new00_local);
      tolua_function(tolua_S,"delete",tolua_EmberOgre_EmberOgre_Gui_OverlayCompassImpl_delete00);
-     tolua_function(tolua_S,"reposition",tolua_EmberOgre_EmberOgre_Gui_OverlayCompassImpl_reposition00);
-     tolua_function(tolua_S,"rotate",tolua_EmberOgre_EmberOgre_Gui_OverlayCompassImpl_rotate00);
     tolua_endmodule(tolua_S);
     #ifdef __cplusplus
     tolua_cclass(tolua_S,"CompositorCompassImpl","EmberOgre::Gui::CompositorCompassImpl","EmberOgre::Gui::ICompassImpl",tolua_collect_EmberOgre__Gui__CompositorCompassImpl);
@@ -24527,8 +24351,6 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"new_local",tolua_EmberOgre_EmberOgre_Gui_CompositorCompassImpl_new00_local);
      tolua_function(tolua_S,".call",tolua_EmberOgre_EmberOgre_Gui_CompositorCompassImpl_new00_local);
      tolua_function(tolua_S,"delete",tolua_EmberOgre_EmberOgre_Gui_CompositorCompassImpl_delete00);
-     tolua_function(tolua_S,"reposition",tolua_EmberOgre_EmberOgre_Gui_CompositorCompassImpl_reposition00);
-     tolua_function(tolua_S,"rotate",tolua_EmberOgre_EmberOgre_Gui_CompositorCompassImpl_rotate00);
      tolua_function(tolua_S,"getTexture",tolua_EmberOgre_EmberOgre_Gui_CompositorCompassImpl_getTexture00);
     tolua_endmodule(tolua_S);
     #ifdef __cplusplus

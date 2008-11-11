@@ -84,6 +84,14 @@ void Compass::rotate(const Ogre::Radian& radian)
 	rotate(Ogre::Degree(radian));
 }
 
+void Compass::refresh()
+{
+	if (mCompassImpl) {
+		mCompassImpl->refresh();
+	}
+}
+
+
 ICompassImpl::ICompassImpl()
 : mMap(0)
 , mCompass(0)
@@ -127,6 +135,11 @@ void CEGUICompassImpl::reposition(float x, float y)
 void CEGUICompassImpl::rotate(const Ogre::Degree& degree)
 {
 	///we can't rotate CEGUI windows so we won't do anything
+}
+
+void CEGUICompassImpl::refresh()
+{
+	//TODO: implement
 }
 
 void CEGUICompassImpl::_setCompass(Compass* compass)
@@ -201,6 +214,12 @@ void OverlayCompassImpl::rotate(const Ogre::Degree& degree)
  	}
 }
 
+void OverlayCompassImpl::refresh()
+{
+	//TODO: implement
+}
+
+
 CompositorCompassImpl::CompositorCompassImpl()
 : mRenderTexture(0), mCompositor(0), mCamera(0), mSceneManager(0), mViewport(0), mCompassMaterialMapTUS(0)
 {
@@ -247,6 +266,18 @@ void CompositorCompassImpl::rotate(const Ogre::Degree& degree)
 	///We won't rotate the image.
 	return;
 }
+
+
+void CompositorCompassImpl::refresh()
+{
+	///We must mark the chain as dirty, else our changes won't apply
+// 	mCompositor->getChain()->_markDirty();
+// 		mViewport->update();
+	if (mRenderTexture) {
+		mRenderTexture->update();
+	}
+}
+
 
 void CompositorCompassImpl::_setCompass(Compass* compass)
 {

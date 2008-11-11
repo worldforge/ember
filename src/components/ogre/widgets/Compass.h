@@ -58,6 +58,11 @@ public:
     void rotate(const Ogre::Degree& degree);
     void rotate(const Ogre::Radian& radian);
     
+    /**
+     * @brief Refreshes the compass rendering.
+     */
+    void refresh();
+    
     
 protected:
 	
@@ -80,6 +85,11 @@ public:
 	ICompassImpl();
     virtual void reposition(float x, float y) = 0;
     virtual void rotate(const Ogre::Degree& degree) = 0;
+    
+    /**
+     * @brief Refreshes the compass rendering.
+     */
+    virtual void refresh() = 0;
 
 protected:
 
@@ -101,6 +111,10 @@ public:
     
     virtual void reposition(float x, float y) ;
     virtual void rotate(const Ogre::Degree& degree);
+    /**
+     * @brief Refreshes the compass rendering.
+     */
+    virtual void refresh();
     
 protected:
 	const CEGUI::Image* mViewImage;
@@ -116,6 +130,10 @@ public:
 	
     virtual void reposition(float x, float y);
     virtual void rotate(const Ogre::Degree& degree);
+    /**
+     * @brief Refreshes the compass rendering.
+     */
+    virtual void refresh();
     
 protected:
 
@@ -156,6 +174,11 @@ public:
      * @copydoc ICompassImpl::rotate
      */
     virtual void rotate(const Ogre::Degree& degree);
+    
+    /**
+     * @brief Refreshes the compass rendering.
+     */
+    virtual void refresh();
     
 	/**
 	* @brief Gets the texture onto which the compass is rendered.
