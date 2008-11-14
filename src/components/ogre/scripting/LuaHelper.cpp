@@ -31,7 +31,7 @@ namespace EmberOgre {
 namespace Scripting {
 
 int LuaHelper::luaErrorHandler(lua_State *L) {
-#ifdef LUA51
+#if LUA_VERSION_NUM >= 501
 	///see if we have the debug library loaded
 	lua_getfield(L, LUA_GLOBALSINDEX, "debug");
 	if (!lua_istable(L, -1)) {
