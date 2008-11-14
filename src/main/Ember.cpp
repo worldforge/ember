@@ -111,6 +111,7 @@ int main(int argc, char **argv)
 		}
 	}
 
+	#if !defined(__WIN32__) && !defined(__APPLE__)
 	if (exit_program) {
 		if (homeDir != "") {
 			if (chdir(homeDir.c_str())) {
@@ -123,6 +124,7 @@ int main(int argc, char **argv)
 		}
 		return 0;
 	}
+	#endif
 
 #ifdef ENABLE_BINRELOC
     if (prefix == "") {
@@ -182,7 +184,7 @@ int main(int argc, char **argv)
 		}
 	}
 
-#ifndef __WIN32__
+#if !defined(__WIN32__) && !defined(__APPLE__)
 	if (homeDir != "") {
 		if (chdir(homeDir.c_str())) {
 			std::cerr << "Could not set homedir to '" << homeDir << "'." << std::endl;
