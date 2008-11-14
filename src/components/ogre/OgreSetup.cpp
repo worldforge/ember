@@ -35,7 +35,6 @@
 	#include <SDL.h>
 	#include <SDL_syswm.h>
 	#include <float.h>
-	#define _NSIG NSIG //would it perhaps be better to just use NSIG all the time? I don't know whether that's available on *NIX, but mingw only has NSIG
 #else
 	#include <SDL/SDL.h>
 	#include <SDL/SDL_syswm.h>
@@ -49,7 +48,7 @@
 extern "C" {
 #include <signal.h>    /* signal name macros, and the signal() prototype */
 
-sighandler_t oldSignals[_NSIG];
+sighandler_t oldSignals[NSIG];
 }
 
 namespace EmberOgre {
