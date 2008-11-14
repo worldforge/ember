@@ -19,7 +19,11 @@
 
 #include "SoundGeneral.h"
 #include "services/logging/LoggingService.h"
+#ifdef __APPLE__
+#include <OpenAL/al.h>
+#else
 #include <AL/al.h>
+#endif
 
 #ifndef __WIN32__
 #include <AL/alut.h>
