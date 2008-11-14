@@ -20,6 +20,9 @@
 #include "config.h"
 #endif
 
+// Redefines main() on Win32 and MacOS
+#include <SDL_main.h>
+
 #include "Application.h"
 #include "framework/Tokeniser.h"
 
@@ -45,6 +48,9 @@
 #include "framework/binreloc.h" //this is needed for binreloc functionality
 
 
+#ifdef __cplusplus
+extern "C"
+#endif
 int main(int argc, char **argv)
 {
 	int exitStatus(0);
