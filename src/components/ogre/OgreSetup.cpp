@@ -127,10 +127,10 @@ Ogre::Root* OgreSetup::createOgreSystem()
 			std::string pluginDir(configSrv->getValue("ogre", "plugindir"));
 			pluginLocations.push_back(pluginDir);
 		}
-	#ifdef __WIN32__
+	#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 		pluginExtension = ".dll";
 		pluginLocations.push_back("."); ///on windows we'll bundle the dll files in the same directory as the executable
-	#else
+	#elif OGRE_PLATFORM == OGRE_PLATFORM_LINUX
 		pluginExtension = ".so";
 
 		#ifdef ENABLE_BINRELOC
@@ -147,12 +147,20 @@ Ogre::Root* OgreSetup::createOgreSystem()
 		///enter the usual locations if Ogre is installed system wide, with local installations taking precedence
 		pluginLocations.push_back("/usr/local/lib/OGRE");
 		pluginLocations.push_back("/usr/lib/OGRE");
+	#elif OGRE_PLATFORM == OGRE_PLATFORM_APPLE
+		// On Mac, plugins are found in Resources in the Main (Application) bundle, then in the Ogre framework bundle
+		pluginExtension = "";
+		pluginLocations.push_back("");
 	#endif
 		Ember::Tokeniser tokeniser(plugins, ",");
 		std::string token = tokeniser.nextToken();
 		while (token != "") {
 			for (std::vector<std::string>::iterator I = pluginLocations.begin(); I != pluginLocations.end(); ++I) {
-				std::string pluginPath((*I) + "/" + token + pluginExtension);
+				#if OGRE_PLATFORM != OGRE_PLATFORM_APPLE
+					std::string pluginPath((*I) + "/" + token + pluginExtension);
+				#else
+					std::string pluginPath(token);
+				#endif
 				bool success = false;
 				try {
 					S_LOG_INFO("Trying to load the plugin " << pluginPath);
