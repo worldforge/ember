@@ -15,13 +15,13 @@ function Compass.Refresh_Clicked(args)
 end
 
 function Compass.ZoomIn_Clicked(args)
-	Compass.helper:getMap():setDistance(Compass.helper:getMap():getDistance() - 100)
+	Compass.helper:getMap():setResolution(Compass.helper:getMap():getResolution() - 0.2)
 	Compass.helper:getMap():render()
 	Compass.helper:refresh()
 	return true
 end
 function Compass.ZoomOut_Clicked(args)
-	Compass.helper:getMap():setDistance(Compass.helper:getMap():getDistance() + 100)
+	Compass.helper:getMap():setResolution(Compass.helper:getMap():getResolution() + 0.2)
 	Compass.helper:getMap():render()
 	Compass.helper:refresh()
 	return true
