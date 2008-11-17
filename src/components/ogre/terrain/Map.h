@@ -71,6 +71,12 @@ class MapView
 public:
 	MapView(Map& map, MapCamera& mapCamera);
 	
+	/**
+	 * @brief Reposition the view.
+	 * If the view after the reposition will be outside of the current rendered map, the map will be repositioned and rendered. This happens automatically.
+	 * @param pos The world position in ogre space to where we want to reposition the view.
+	 * @return True if the map needed to be repositioned and rerendered.
+	 */
 	bool reposition(Ogre::Vector2 pos);
 	
 	const Ogre::TRect<float>& getRelativeViewBounds() const;
@@ -121,7 +127,23 @@ public:
 	void setDistance(float distance);
 	float getDistance() const;
 	
+	/**
+	 * @brief Gets the resolution in meters per pixel.
+	 * @return The resolution in meters per pixel.
+	 */
 	float getResolution() const;
+	
+	/**
+	 * @brief Sets the resolution of the map.
+	 * The map will be rerendered after the resolution has been changed.
+	 * @param metersPerPixel The resolution of the map in pixels per meter.
+	 */
+	void setResolution(float metersPerPixel);
+	
+	/**
+	 * @brief Gets the resolution in meters of the map.
+	 * @return The size of one side of the map in meters.
+	 */
 	float getResolutionMeters() const;
 	
 	MapView& getView();
@@ -136,12 +158,12 @@ protected:
 	Ogre::TexturePtr mTexture;
 	Ogre::RenderTexture* mRenderTexture;
 	
-	unsigned int mResolutionMeters;
 	unsigned int mTexturePixelSize;
+	float mMetersPerPixel;
 	
 	MapCamera mCamera;
 	MapView mView;
-
+	
 };
 
 

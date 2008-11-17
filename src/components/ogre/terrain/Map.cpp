@@ -35,8 +35,8 @@ namespace Terrain {
 Map::Map()
 :
 mRenderTexture(0)
-, mResolutionMeters(256)
 , mTexturePixelSize(256)
+, mMetersPerPixel(1.0f)
 , mCamera(*this, EmberOgre::getSingleton().getSceneManager())
 , mView(*this, mCamera)
 {
@@ -110,12 +110,18 @@ Ogre::RenderTexture* Map::getRenderTexture() const
 
 float Map::getResolution() const
 {
-	return mTexturePixelSize / mResolutionMeters;
+	return mMetersPerPixel;
+}
+
+void Map::setResolution(float metersPerPixel)
+{
+	mMetersPerPixel = metersPerPixel;
+	render();
 }
 
 float Map::getResolutionMeters() const
 {
-	return mTexturePixelSize;
+	return mTexturePixelSize * mMetersPerPixel;
 }
 
 MapView& Map::getView()
@@ -239,14 +245,6 @@ MapCamera::MapCamera(Map& map, Ogre::SceneManager* manager)
 // 	mCamera->setFOVy(Ogre::Degree(30));
 // 	mCamera->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
 
-	mCamera->setNearClipDistance(1);
-	mCamera->setFarClipDistance(mDistance * 200);
-	///use orthographic projection and then alter the projectionmatrix to make it render only the intended area
-	mCamera->setProjectionType(Ogre::PT_ORTHOGRAPHIC );
-	int halfRes = static_cast<int>(mMap.getResolutionMeters() / 2.0f);
-	mCamera->setCustomProjectionMatrix(true,makeOrtho2D(-halfRes,halfRes,-halfRes,halfRes,1,1000));
-	mCamera->setAspectRatio(1.0);
-	
 	mCamera->addQueryFlags(Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
 
 }
@@ -288,6 +286,16 @@ void MapCamera::reposition(Ogre::Vector2 pos)
 
 void MapCamera::render()
 {
+	mCamera->setNearClipDistance(1);
+	mCamera->setFarClipDistance(mDistance * 200);
+	
+	mCamera->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
+	mCamera->setOrthoWindow(mMap.getResolutionMeters(), mMap.getResolutionMeters());
+	///use orthographic projection and then alter the projectionmatrix to make it render only the intended area
+/*	mCamera->setProjectionType(Ogre::PT_ORTHOGRAPHIC );
+	int halfRes = static_cast<int>(mMap.getResolutionMeters() / 2.0f);
+	mCamera->setCustomProjectionMatrix(true,makeOrtho2D(-halfRes,halfRes,-halfRes,halfRes,1,1000));*/
+	mCamera->setAspectRatio(1.0);
 	{
 		///use a RAII rendering instance so that we're sure to reset all settings of the scene manager that we change, even if something goes wrong here
 		Ogre::SceneManager* manager(mCamera->getSceneManager());

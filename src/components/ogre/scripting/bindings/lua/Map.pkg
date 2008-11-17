@@ -48,9 +48,24 @@ public:
 	void setDistance(float distance);
 	float getDistance() const;
 
+	/**
+	 * @brief Gets the resolution in meters per pixel.
+	 * @return The resolution in meters per pixel.
+	 */
 	float getResolution() const;
-	float getResolutionMeters() const;
 	
+	/**
+	 * @brief Sets the resolution of the map.
+	 * The map will be rerendered after the resolution has been changed.
+	 * @param metersPerPixel The resolution of the map in pixels per meter.
+	 */
+	void setResolution(float metersPerPixel);
+	
+	/**
+	 * @brief Gets the resolution in meters of the map.
+	 * @return The size of one side of the map in meters.
+	 */
+	float getResolutionMeters() const;	
 	MapView& getView();
 };
 

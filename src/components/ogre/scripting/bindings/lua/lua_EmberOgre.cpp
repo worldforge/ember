@@ -22654,6 +22654,39 @@ static int tolua_EmberOgre_EmberOgre_Terrain_Map_getResolution00(lua_State* tolu
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: setResolution of class  EmberOgre::Terrain::Map */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_Map_setResolution00
+static int tolua_EmberOgre_EmberOgre_Terrain_Map_setResolution00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Terrain::Map",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Terrain::Map* self = (EmberOgre::Terrain::Map*)  tolua_tousertype(tolua_S,1,0);
+  float metersPerPixel = ((float)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setResolution'",NULL);
+#endif
+  {
+   self->setResolution(metersPerPixel);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setResolution'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: getResolutionMeters of class  EmberOgre::Terrain::Map */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_Map_getResolutionMeters00
 static int tolua_EmberOgre_EmberOgre_Terrain_Map_getResolutionMeters00(lua_State* tolua_S)
@@ -25232,6 +25265,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"setDistance",tolua_EmberOgre_EmberOgre_Terrain_Map_setDistance00);
      tolua_function(tolua_S,"getDistance",tolua_EmberOgre_EmberOgre_Terrain_Map_getDistance00);
      tolua_function(tolua_S,"getResolution",tolua_EmberOgre_EmberOgre_Terrain_Map_getResolution00);
+     tolua_function(tolua_S,"setResolution",tolua_EmberOgre_EmberOgre_Terrain_Map_setResolution00);
      tolua_function(tolua_S,"getResolutionMeters",tolua_EmberOgre_EmberOgre_Terrain_Map_getResolutionMeters00);
      tolua_function(tolua_S,"getView",tolua_EmberOgre_EmberOgre_Terrain_Map_getView00);
     tolua_endmodule(tolua_S);
