@@ -93,8 +93,6 @@ protected:
 	MapCamera& mMapCamera;
 	
 	float mViewSize;
-	int mViewSizeMeters;
-	
 
 };
 

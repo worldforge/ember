@@ -137,7 +137,6 @@ MapView::MapView(Map& map, MapCamera& mapCamera)
 : mMap(map)
 , mMapCamera(mapCamera)
 , mViewSize(0.5)
-, mViewSizeMeters(static_cast<int>(mViewSize * map.getResolutionMeters()))
 {
 	///set it to invalid values so we'll force an update when it's repositioned
 	mFullBounds.left = 1;
@@ -148,7 +147,7 @@ MapView::MapView(Map& map, MapCamera& mapCamera)
 
 bool MapView::reposition(Ogre::Vector2 pos)
 {
-	int halfViewSizeMeters(mViewSizeMeters / 2);
+	int halfViewSizeMeters((mMap.getResolutionMeters() * mViewSize)/ 2);
 	///check if we need to reposition the camera
 	if (pos.x - halfViewSizeMeters < mFullBounds.left || pos.x + halfViewSizeMeters > mFullBounds.right
 		|| pos.y - halfViewSizeMeters < mFullBounds.top || pos.y + halfViewSizeMeters > mFullBounds.bottom) {
@@ -192,40 +191,6 @@ const Ogre::Vector2& MapView::getRelativeViewPosition() const
 	return mRelativeViewPosition;
 }
 
-
-
-
-
-
-
-
-
-
-
-Ogre::Matrix4 makeOrtho2D(float left, float right, float bottom, float top, float zNear, float zFar)
-{
-  float width = right-left;
-  float height = top-bottom;
-  float depth = zFar-zNear;
-
-  // naive initialization
-  Ogre::Matrix4 result = Ogre::Matrix4::ZERO;
-
-  // [i][j] operator for Ogre is really [row][col] for math texts
-
-  // calculate the diagonal
-  result[0][0] = 2.f / (width);
-  result[1][1] = 2.f / (height);
-  result[2][2] = -2.f / (depth);
-  result[3][3] = 1.f;
-
-  // calculate the translational
-  result[0][3] = -(right+left) / (width);
-  result[1][3] = -(top+bottom) / (height);
-  result[2][3] = -(zFar+zNear) / (depth);
-
-  return result;
-} 
 
 
 
@@ -291,10 +256,6 @@ void MapCamera::render()
 	
 	mCamera->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
 	mCamera->setOrthoWindow(mMap.getResolutionMeters(), mMap.getResolutionMeters());
-	///use orthographic projection and then alter the projectionmatrix to make it render only the intended area
-/*	mCamera->setProjectionType(Ogre::PT_ORTHOGRAPHIC );
-	int halfRes = static_cast<int>(mMap.getResolutionMeters() / 2.0f);
-	mCamera->setCustomProjectionMatrix(true,makeOrtho2D(-halfRes,halfRes,-halfRes,halfRes,1,1000));*/
 	mCamera->setAspectRatio(1.0);
 	{
 		///use a RAII rendering instance so that we're sure to reset all settings of the scene manager that we change, even if something goes wrong here
