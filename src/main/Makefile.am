@@ -12,3 +12,5 @@ ember_bin_LDADD = $(top_builddir)/src/components/ogre/libEmberOgre.la \
 
 noinst_HEADERS = Application.h LogObserver.h
 SUBDIRS = bindings
+
+EXTRA_DIST=macosx/COPYING.SDL macosx/ReadMeDevLite.txt macosx/SDLMain.h macosx/SDLMain.m
