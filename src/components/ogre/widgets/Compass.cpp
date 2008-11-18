@@ -259,6 +259,8 @@ void CompositorCompassImpl::reposition(float x, float y)
 // 		mViewport->update();
 		mRenderTexture->update();
 	}
+	mX = x;
+	mY = y;
 }
 
 void CompositorCompassImpl::rotate(const Ogre::Degree& degree)
@@ -270,12 +272,7 @@ void CompositorCompassImpl::rotate(const Ogre::Degree& degree)
 
 void CompositorCompassImpl::refresh()
 {
-	///We must mark the chain as dirty, else our changes won't apply
-// 	mCompositor->getChain()->_markDirty();
-// 		mViewport->update();
-	if (mRenderTexture) {
-		mRenderTexture->update();
-	}
+	reposition(mX, mY);
 }
 
 

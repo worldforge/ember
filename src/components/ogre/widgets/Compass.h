@@ -232,6 +232,16 @@ protected:
 	 * @brief The texture unit state onto which the map is projected. This will be scrolled to simulate movement.
 	 */
 	Ogre::TextureUnitState* mCompassMaterialMapTUS;
+	
+	/**
+	 * @brief The last world position in the x axis, in ogre world units.
+	 */
+	float mX;
+	
+	/**
+	 * @brief The last world position in the y axis (really the ogre z axis), in ogre world units.
+	 */
+	float mY;
 };
 
 
