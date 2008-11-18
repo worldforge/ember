@@ -372,7 +372,15 @@ CompassSceneNodeAnchor::~CompassSceneNodeAnchor()
 {
 }
 
+CompassThirdPersonCameraAnchor::CompassThirdPersonCameraAnchor(Compass& compass, Ogre::Camera* camera, Ogre::SceneNode* sceneNode)
+: mAnchor(compass, sceneNode->_getDerivedPosition(), camera->getDerivedOrientation())
+, mCamera(camera), mSceneNode(sceneNode)
+{
+}
 
+CompassThirdPersonCameraAnchor::~CompassThirdPersonCameraAnchor()
+{
+}
 
 
 }

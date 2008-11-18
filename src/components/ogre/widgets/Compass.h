@@ -247,6 +247,7 @@ class CompassAnchor
 {
 friend class CompassCameraAnchor;
 friend class CompassSceneNodeAnchor;
+friend class CompassThirdPersonCameraAnchor;
 public:
 
 	
@@ -366,6 +367,48 @@ protected:
 	 */
 	Ogre::SceneNode* mSceneNode;
 };
+
+/**
+@brief An anchor implementation which will attach the anchor to both a certain Ogre::Camera instance and a scene node.
+The camera will be used for determining the direction of the compass and the scene node will be used to determine the position. This anchor is mainly useful for thir person cameras.
+@see CompassAnchor
+
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+*/
+class CompassThirdPersonCameraAnchor
+{
+public:
+
+	/**
+	 * @brief Ctor.
+	 * @param compass The compass to which we want to attach the anchor.
+	 * @param camera The Ogre::Camera instance which we want the anchor to follow. When the camera moves the compass will move.
+	 */
+	CompassThirdPersonCameraAnchor(Compass& compass, Ogre::Camera* camera, Ogre::SceneNode* node);
+	
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~CompassThirdPersonCameraAnchor();
+
+protected:
+	
+	/**
+	 * @brief The anchor instance which does the heavy lifting.
+	 */
+	CompassAnchor mAnchor;
+	
+	/**
+	 * @brief The camera to which an instance of this is attached.
+	 */
+	Ogre::Camera* mCamera;
+	
+	/**
+	 * @brief The scene node to which an instance of this is attached.
+	 */
+	Ogre::SceneNode* mSceneNode;
+};
+
 
 
 }

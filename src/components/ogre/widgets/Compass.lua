@@ -41,18 +41,9 @@ function Compass.repositionAtAvatar()
 -- 	console:pushMessage("x: " .. pos.x .. "y: " .. pos.z)
 end
 
--- function Compass.rotate()
--- 	local cameraOrientation = emberOgre:getMainCamera():getOrientation():getYaw()
--- 	Compass.helper:rotate(-cameraOrientation)
--- end
--- 
--- function Compass.framestarted(timeSinceLastFrame)
--- 	Compass.repositionAtAvatar()
--- 	Compass.rotate()
--- end
 
 function Compass.CreatedAvatarEntity(avatarEntity)
-	Compass.anchor = EmberOgre.Gui.CompassCameraAnchor:new_local(Compass.helper, emberOgre:getMainCamera():getCamera())
+	Compass.anchor = EmberOgre.Gui.CompassThirdPersonCameraAnchor:new_local(Compass.helper, emberOgre:getMainCamera():getCamera(), emberOgre:getMainCamera():getRootNode())
 -- 	connect(Compass.connectors, guiManager.EventFrameStarted, "Compass.framestarted")
 	if Compass.widget ~= nil then
 		Compass.widget:show()
