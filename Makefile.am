@@ -17,7 +17,7 @@ dist_icon_DATA = ember.png
 docdir = $(datadir)/doc/ember-$(VERSION)
 dist_doc_DATA = README COPYING AUTHORS NEWS
 
-EXTRA_DIST=Ember-Info.plist Ember.xcodeproj/project.pbxproj
+EXTRA_DIST = autogen.sh Ember-Info.plist Ember.xcodeproj/project.pbxproj
 
 devmedia:
 	echo "I will now use rsync to update the development media from amber.worldforge.org."
