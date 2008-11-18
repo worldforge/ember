@@ -47,7 +47,12 @@ public:
 	void setDistance(float distance);
 	float getDistance() const;
 	
-    void reposition(Ogre::Vector2 pos);
+	void reposition(const Ogre::Vector2& pos);
+	/**
+	 * @brief Gets the current 2d position of the camera, in world space.
+	 * @return The current position of the camera, in world space.
+	 */
+	const Ogre::Vector2 getPosition() const;
 
 	
 	void setRenderTarget(Ogre::RenderTarget* renderTarget);
@@ -77,10 +82,16 @@ public:
 	 * @param pos The world position in ogre space to where we want to reposition the view.
 	 * @return True if the map needed to be repositioned and rerendered.
 	 */
-	bool reposition(Ogre::Vector2 pos);
+	bool reposition(const Ogre::Vector2& pos);
 	
 	const Ogre::TRect<float>& getRelativeViewBounds() const;
 	const Ogre::Vector2& getRelativeViewPosition() const;
+	
+	/**
+	 * @brief Recalculates the bounds. Call this whenever you've altered the scaling or repositioned the camera.
+	 * This will also be called internally whenever the camera needs to be repositioned through a call to MapView::reposition.
+	 */
+	void recalculateBounds();
 
 protected:
 
@@ -119,7 +130,7 @@ public:
     Ogre::RenderTexture* getRenderTexture() const;
     
     void render();
-    void reposition(Ogre::Vector2 pos);
+    void reposition(const Ogre::Vector2& pos);
     void reposition(float x, float y);
     
 	void setDistance(float distance);

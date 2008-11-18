@@ -77,7 +77,7 @@ void Map::render()
 	mCamera.render();
 }
 
-void Map::reposition(Ogre::Vector2 pos)
+void Map::reposition(const Ogre::Vector2& pos)
 {
 	mCamera.reposition(pos);
 }
@@ -117,6 +117,7 @@ void Map::setResolution(float metersPerPixel)
 {
 	mMetersPerPixel = metersPerPixel;
 	render();
+	mView.recalculateBounds();
 }
 
 float Map::getResolutionMeters() const
@@ -145,7 +146,7 @@ MapView::MapView(Map& map, MapCamera& mapCamera)
 	mFullBounds.bottom = -1;
 }
 
-bool MapView::reposition(Ogre::Vector2 pos)
+bool MapView::reposition(const Ogre::Vector2& pos)
 {
 	int halfViewSizeMeters((mMap.getResolutionMeters() * mViewSize)/ 2);
 	///check if we need to reposition the camera
@@ -154,20 +155,8 @@ bool MapView::reposition(Ogre::Vector2 pos)
 		mMapCamera.reposition(pos);
 		mMapCamera.render();
 		
-		mFullBounds.left = static_cast<int>(pos.x - (mMap.getResolutionMeters() / 2));
-		mFullBounds.right = static_cast<int>(pos.x + (mMap.getResolutionMeters() / 2));
-		mFullBounds.top = static_cast<int>(pos.y - (mMap.getResolutionMeters() / 2));
-		mFullBounds.bottom = static_cast<int>(pos.y + (mMap.getResolutionMeters() / 2));
+		recalculateBounds();
 		
-		
-		
-		mVisibleRelativeBounds.left = 0.5f - (mViewSize / 2);
-		mVisibleRelativeBounds.right= 0.5f + (mViewSize / 2);
-		mVisibleRelativeBounds.top = 0.5f - mViewSize / 2;
-		mVisibleRelativeBounds.bottom= 0.5f + (mViewSize / 2);
-		mRelativeViewPosition.x = 0.5f;
-		mRelativeViewPosition.y = 0.5f;
-
 		return true;
 	}
 	mRelativeViewPosition.x = (pos.x - mFullBounds.left) / static_cast<float>(mMap.getResolutionMeters());
@@ -189,6 +178,24 @@ const Ogre::TRect<float>& MapView::getRelativeViewBounds() const
 const Ogre::Vector2& MapView::getRelativeViewPosition() const
 {
 	return mRelativeViewPosition;
+}
+
+void MapView::recalculateBounds()
+{
+	Ogre::Vector2 pos(mMapCamera.getPosition());
+	mFullBounds.left = static_cast<int>(pos.x - (mMap.getResolutionMeters() / 2));
+	mFullBounds.right = static_cast<int>(pos.x + (mMap.getResolutionMeters() / 2));
+	mFullBounds.top = static_cast<int>(pos.y - (mMap.getResolutionMeters() / 2));
+	mFullBounds.bottom = static_cast<int>(pos.y + (mMap.getResolutionMeters() / 2));
+	
+	
+	
+	mVisibleRelativeBounds.left = 0.5f - (mViewSize / 2);
+	mVisibleRelativeBounds.right= 0.5f + (mViewSize / 2);
+	mVisibleRelativeBounds.top = 0.5f - mViewSize / 2;
+	mVisibleRelativeBounds.bottom= 0.5f + (mViewSize / 2);
+	mRelativeViewPosition.x = 0.5f;
+	mRelativeViewPosition.y = 0.5f;
 }
 
 
@@ -244,10 +251,16 @@ float MapCamera::getDistance() const
 	return mDistance;
 }
 
-void MapCamera::reposition(Ogre::Vector2 pos)
+void MapCamera::reposition(const Ogre::Vector2& pos)
 {
 	mCamera->setPosition(pos.x, mDistance, pos.y);
 }
+
+const Ogre::Vector2 MapCamera::getPosition() const
+{
+	return Ogre::Vector2(mCamera->getPosition().x, mCamera->getPosition().z);
+}
+
 
 void MapCamera::render()
 {
