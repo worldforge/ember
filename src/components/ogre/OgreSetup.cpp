@@ -210,8 +210,9 @@ bool OgreSetup::configure(void)
 {
 	bool suppressConfig = false;
 	bool success = false;
-	if (Ember::EmberServices::getSingleton().getConfigService()->itemExists("ogre", "suppressconfigdialog")) {
-		suppressConfig = static_cast<bool>(Ember::EmberServices::getSingleton().getConfigService()->getValue("ogre", "suppressconfigdialog"));
+	Ember::ConfigService* configService(Ember::EmberServices::getSingleton().getConfigService());
+	if (configService->itemExists("ogre", "suppressconfigdialog")) {
+		suppressConfig = static_cast<bool>(configService->getValue("ogre", "suppressconfigdialog"));
 	}
 	if (suppressConfig) {
 		success = mRoot->restoreConfig();
@@ -313,8 +314,20 @@ bool OgreSetup::configure(void)
 // 	int flags = SDL_HWPALETTE | SDL_HWSURFACE | SDL_OPENGL;
 	int flags = SDL_OPENGL;
 
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	bool useAltSwapControl = SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1) != 0;
+	bool enableDoubleBuffering = false;
+	if (configService->itemExists("ogre", "doublebuffered")) {
+		enableDoubleBuffering = static_cast<bool>(configService->getValue("ogre", "doublebuffered"));
+		if (enableDoubleBuffering) {
+			S_LOG_INFO("Using double buffering.");
+		}
+	}
+	
+	bool useAltSwapControl = false;
+	
+	if (enableDoubleBuffering) {
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+		useAltSwapControl = SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1) != 0;
+	}
 
 		// request good stencil size if 32-bit colour
 /*        if (colourDepth == 32)
@@ -328,36 +341,38 @@ bool OgreSetup::configure(void)
 
 	mMainVideoSurface = SDL_SetVideoMode(width, height, 0, flags); // create an SDL window
 
-	if (!useAltSwapControl)
-	{
-		/// SDL_GL_SWAP_CONTROL was requested. Check that it is now set.
-		int value;
-		if (!SDL_GL_GetAttribute(SDL_GL_SWAP_CONTROL, &value))
+	if (enableDoubleBuffering) {
+		if (!useAltSwapControl)
 		{
-			useAltSwapControl = !value;
-		}
-		else
-		{
-			useAltSwapControl = true;
-		}
-	}
-	
-	if (useAltSwapControl)
-	{
-		/// Try another way to get vertical sync working. Use glXSwapIntervalSGI.
-		bool hasSwapControl = isExtensionSupported("GLX_SGI_swap_control");
-	
-		if (hasSwapControl)
-		{
-			const GLubyte *name;
-			name = reinterpret_cast<const GLubyte*>("glXSwapIntervalSGI");
-	
-			int (*funcPtr)(int);
-			funcPtr = reinterpret_cast<int(*)(int)>(glXGetProcAddress(name));
-	
-			if (funcPtr)
+			/// SDL_GL_SWAP_CONTROL was requested. Check that it is now set.
+			int value;
+			if (!SDL_GL_GetAttribute(SDL_GL_SWAP_CONTROL, &value))
 			{
-				funcPtr(1);
+				useAltSwapControl = !value;
+			}
+			else
+			{
+				useAltSwapControl = true;
+			}
+		}
+		
+		if (useAltSwapControl)
+		{
+			/// Try another way to get vertical sync working. Use glXSwapIntervalSGI.
+			bool hasSwapControl = isExtensionSupported("GLX_SGI_swap_control");
+		
+			if (hasSwapControl)
+			{
+				const GLubyte *name;
+				name = reinterpret_cast<const GLubyte*>("glXSwapIntervalSGI");
+		
+				int (*funcPtr)(int);
+				funcPtr = reinterpret_cast<int(*)(int)>(glXGetProcAddress(name));
+		
+				if (funcPtr)
+				{
+					funcPtr(1);
+				}
 			}
 		}
 	}
@@ -380,8 +395,10 @@ bool OgreSetup::configure(void)
 	mRenderWindow->setAutoUpdated(true);
 	mRenderWindow->setVisible(true);
 	
-	///We need to swap the frame buffers each frame.
-	mRoot->addFrameListener(this);
+	if (enableDoubleBuffering) {
+		///We need to swap the frame buffers each frame.
+		mRoot->addFrameListener(this);
+	}
 
 
 	///set the icon of the window
