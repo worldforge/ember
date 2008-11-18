@@ -174,7 +174,7 @@ AC_MSG_RESULT([
 AC_CHECK_LIB(IL, ilInit,
 	[
 		CXXFLAGS="$CXXFLAGS $IL_CFLAGS"
-		LDFLAGS="$LDFLAGS $IL_LIBS -lIL"
+		LIBS="$LIBS $IL_LIBS -lIL"
 	]
 ,AC_MSG_ERROR([
 ****************************************************************
@@ -184,7 +184,7 @@ AC_CHECK_LIB(IL, ilInit,
 AC_CHECK_LIB(ILU, iluFlipImage,
 	[
 		CXXFLAGS="$CXXFLAGS $ILU_CFLAGS"
-		LDFLAGS="$LDFLAGS $ILU_LIBS -lILU"
+		LIBS="$LIBS $ILU_LIBS -lILU"
 	]
 ,AC_MSG_ERROR([
 ****************************************************************
@@ -200,7 +200,7 @@ AC_CHECK_HEADER(ext/hash_set, AC_DEFINE(EXT_HASH,1,"extension stl"),	)
 PKG_CHECK_MODULES(CEGUI, CEGUI >= 0.6,
 	[
 		CXXFLAGS="$CXXFLAGS $CEGUI_CFLAGS"
-		LDFLAGS="$LDFLAGS $CEGUI_LIBS"
+		LIBS="$LIBS $CEGUI_LIBS"
 	],
 	[
 		AC_MSG_ERROR([Couldn't find CEGUI-OGRE or tests failed:
@@ -215,7 +215,7 @@ OGRE_MAX_VERSION=1.8.0
 PKG_CHECK_MODULES(OGRE, [OGRE >= $OGRE_VERSION OGRE < $OGRE_MAX_VERSION CEGUI-OGRE >= $OGRE_VERSION],
 	[
 		CXXFLAGS="$CXXFLAGS $OGRE_CFLAGS"
-		LDFLAGS="$LDFLAGS $OGRE_LIBS"
+		LIBS="$LIBS $OGRE_LIBS"
 		AC_DEFINE_UNQUOTED([OGRE_PLUGINDIR], "`pkg-config --variable=plugindir OGRE`", [The Ogre plugin dir])
 	],
 	[
@@ -242,14 +242,14 @@ fi
 PKG_CHECK_MODULES(LUA, lua5.1 >= 5.1,
 [
 	CXXFLAGS="$CXXFLAGS $LUA_CFLAGS -DLUA51"
-	LDFLAGS="$LDFLAGS $LUA_LIBS"
+	LIBS="$LIBS $LUA_LIBS"
 	AC_MSG_NOTICE([Lua version => 5.1, make sure that CEGUI also has been compiled for this version])
 ],
 [
 	PKG_CHECK_MODULES(LUA, lua >= 5.1,
 	[
 		CXXFLAGS="$CXXFLAGS $LUA_CFLAGS -DLUA51"
-		LDFLAGS="$LDFLAGS $LUA_LIBS"
+		LIBS="$LIBS $LUA_LIBS"
 		AC_MSG_NOTICE([Lua version => 5.1, make sure that CEGUI also has been compiled for this version])
 	],
 	[
@@ -291,7 +291,7 @@ OPENAL_VERSION=0.0.8
 PKG_CHECK_MODULES(OPENAL, openal >= $OPENAL_VERSION,
 	[
 		CXXFLAGS="$CXXFLAGS $OPENAL_CFLAGS"
-		LDFLAGS="$LDFLAGS $OPENAL_LIBS"
+		LIBS="$LIBS $OPENAL_LIBS"
 	],
 	[
 		AC_MSG_ERROR([Couldn't find OpenAL or tests failed. Error: $OPENAL_PKG_ERRORS. Please go to http://www.openal.org to get the latest, or check config.log to see why the tests failed, and fix it.])
@@ -302,7 +302,7 @@ PKG_CHECK_MODULES(OPENAL, openal >= $OPENAL_VERSION,
 #PKG_CHECK_MODULES(OGG, ogg >= $OGG_VERSION, 
 #		[
 #			CXXFLAGS="$CXXFLAGS $OGG_CFLAGS"
-#			LDFLAGS="$LDFLAGS $OGG_LIBS"
+#			LIBS="$LIBS $OGG_LIBS"
 #		],
 #		[
 #			AC_MSG_ERROR([Couldn't find libogg or tests failed. Error: $OGG_PKG_ERRORS. Please go to http://www.vorbis.com to get the latest, or check config.log to see why the tests failed, and fix it.])
@@ -313,7 +313,7 @@ PKG_CHECK_MODULES(OPENAL, openal >= $OPENAL_VERSION,
 #PKG_CHECK_MODULES(VORBIS, vorbis >= $VORBIS_VERSION, 
 #		[
 #			CXXFLAGS="$CXXFLAGS $VORBIS_CFLAGS"
-#			LDFLAGS="$LDFLAGS $VORBIS_LIBS"
+#			LIBS="$LIBS $VORBIS_LIBS"
 #		],
 #		[
 #			AC_MSG_ERROR([Couldn't find libvorbis or tests failed. Error: $VORBIS_PKG_ERRORS. Please go to http://www.vorbis.com to get the latest, or check config.log to see why the tests failed, and fix it.])
@@ -324,7 +324,7 @@ PKG_CHECK_MODULES(OPENAL, openal >= $OPENAL_VERSION,
 #PKG_CHECK_MODULES(VORBISF, vorbisfile >= $VORBISF_VERSION, 
 #		[
 #			CXXFLAGS="$CXXFLAGS $VORBISF_CFLAGS"
-#			LDFLAGS="$LDFLAGS $VORBISF_LIBS"
+#			LIBS="$LIBS $VORBISF_LIBS"
 #		],
 #		[
 #			AC_MSG_ERROR([Couldn't find vorbisfile tests failed. Error: $VORBISF_PKG_ERRORS. Please go to http://www.vorbis.com to get the latest, or check config.log to see why the tests failed, and fix it.])
@@ -335,7 +335,7 @@ FREEALUT_VERSION=1.0.0
 PKG_CHECK_MODULES(FREEALUT, freealut >= $FREEALUT_VERSION,
 	[
 		CXXFLAGS="$CXXFLAGS $FREEALUT_CFLAGS"
-		LDFLAGS="$LDFLAGS $FREEALUT_LIBS"
+		LIBS="$LIBS $FREEALUT_LIBS"
 	],
 	[
 		AC_MSG_ERROR([Couldn't find FreeALUT or tests failed. Error: $FREEALUT_PKG_ERRORS. Please go to http://www.openal.org to get the latest, or check config.log to see why the tests failed, and fix it.])
@@ -352,7 +352,7 @@ PKG_CHECK_MODULES(FREEALUT, freealut >= $FREEALUT_VERSION,
 PKG_CHECK_MODULES(SIG, [sigc++-2.0 >= 2.0],
   [
       CXXFLAGS="$CXXFLAGS $SIG_CFLAGS"
-      LDFLAGS="$LDFLAGS $SIG_LIBS"
+      LIBS="$LIBS $SIG_LIBS"
   ],
   [
       AC_MSG_ERROR([Couldn't find SIGC++2.0])
@@ -363,7 +363,7 @@ PKG_CHECK_MODULES(WF, [eris-1.3 >= 1.3.13 \
  varconf-1.0 >= 0.6.5 mercator-0.2 >= 0.2.6 atlascpp-0.6 >= 0.6.0 wfmath-0.3 >= 0.3.5 libwfut-0.2 >= 0.2.0],
 	[
 		CXXFLAGS="$CXXFLAGS $WF_CFLAGS"
-		LDFLAGS="$LDFLAGS $WF_LIBS"
+		LIBS="$LIBS $WF_LIBS"
 	],
  AC_MSG_ERROR([Couldn't find some of the required WorldForge libraries: $WF_PKG_ERRORS
 Please visit  http://worldforge.org/dev/eng/libraries to get the latest versions.])
@@ -433,7 +433,7 @@ AC_ARG_ENABLE(thread_safe,[  --enable-multithread     creates multi threaded cod
 if test "$ac_use_thread_code" = "yes"; then
       CFLAGS="$CFLAGS -DTHREAD_SAFE"
       CXXFLAGS="$CXXFLAGS -DTHREAD_SAFE"
-		LDFLAGS="$LDFLAGS -lpthread"
+		LIBS="$LIBS -lpthread"
 fi
 
 # gprof debugging option
@@ -458,7 +458,7 @@ fi
 
 #dnl add SDL flags here, now that we're done with the other tests
 CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
-LDFLAGS="$LDFLAGS $SDL_LIBS"
+LIBS="$LIBS $SDL_LIBS"
     
 
 AC_MSG_RESULT([
