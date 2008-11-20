@@ -59,6 +59,7 @@ class Jesus;
 namespace Terrain {
 class BasePointUserObject;
 class TerrainEditAction;
+class TerrainPage;
 }
 
 typedef std::vector<std::string> LuaTypeStore;
@@ -246,6 +247,7 @@ public:
 	static void pushValue(const std::set<std::string>& theValue, const std::string& luaTypename);
 	static void pushValue(const Atlas::Message::Element& theValue, const std::string& luaTypename);
 	static void pushValue(const EmberOgre::AvatarMovementMode::Mode& theValue, const std::string& luaTypename);
+	static void pushValue(const EmberOgre::Terrain::TerrainPage& theValue, const std::string& luaTypename);
 	
 	
  	LuaConnector(sigc::signal<void>& signal);
@@ -271,6 +273,8 @@ public:
  	LuaConnector(sigc::signal<void, EmberOgre::Gui::EntityIcon*>& signal);
  	LuaConnector(sigc::signal<void, const Atlas::Message::Element&>& signal);
  	LuaConnector(sigc::signal<void, EmberOgre::AvatarMovementMode::Mode>& signal);
+ 	LuaConnector(sigc::signal<void, EmberOgre::Terrain::TerrainPage&>& signal);
+ 	
    
    
     ~LuaConnector();
