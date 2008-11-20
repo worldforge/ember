@@ -319,6 +319,8 @@ void TerrainPage::updateOgreHeightData(Ogre::Real* heightData)
 				position[0] = position[0] + 1;
 			}
 		}
+		
+		mGenerator->EventTerrainPageGeometryUpdated.emit(*this);
 	}
 }
 
