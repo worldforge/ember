@@ -5,7 +5,8 @@ widget = nil,
 renderImage = nil,
 helper = nil,
 previousPosX = 0,
-previousPosY = 0
+previousPosY = 0,
+updateNextFrame = false
 }
 
 function Compass.Refresh_Clicked(args)
@@ -41,6 +42,19 @@ function Compass.repositionAtAvatar()
 -- 	console:pushMessage("x: " .. pos.x .. "y: " .. pos.z)
 end
 
+function Compass.framestarted(frameEvent)
+	if Compass.updateNextFrame then
+		Compass.helper:getMap():render()
+		Compass.helper:refresh()
+		Compass.updateNextFrame = false
+	end
+end
+
+function Compass.TerrainPageGeometryUpdated(page)
+	Compass.updateNextFrame = true;
+--[[	Compass.helper:getMap():render()
+	Compass.helper:refresh()]]
+end
 
 function Compass.CreatedAvatarEntity(avatarEntity)
 	Compass.anchor = EmberOgre.Gui.CompassThirdPersonCameraAnchor:new_local(Compass.helper, emberOgre:getMainCamera():getCamera(), emberOgre:getMainCamera():getRootNode())
@@ -48,6 +62,10 @@ function Compass.CreatedAvatarEntity(avatarEntity)
 	if Compass.widget ~= nil then
 		Compass.widget:show()
 	end
+	
+	connect(Compass.connectors, emberOgre:getTerrainGenerator().EventTerrainPageGeometryUpdated, "Compass.TerrainPageGeometryUpdated")
+	connect(Compass.connectors, guiManager.EventFrameStarted, "Compass.framestarted")
+	
 
 end
 
