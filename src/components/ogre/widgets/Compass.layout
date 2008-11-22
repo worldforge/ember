@@ -13,6 +13,7 @@
 			<Property Name='BackgroundEnabled' Value='false'/>
 			<Property Name='FrameEnabled' Value='false'/>
 			<Property Name='MousePassThroughEnabled' Value='true'/>
+			<Property Name='RiseOnClick' Value='false'/>
 		</Window>
 		<Window Type='EmberLook/StaticImage' Name='RenderImage'>
 			<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
@@ -21,6 +22,7 @@
 			<Property Name='Alpha' Value='1.0'/>
 			<Property Name='BackgroundEnabled' Value='false'/>
 			<Property Name='FrameEnabled' Value='false'/>
+			<Property Name='RiseOnClick' Value='false'/>
 		</Window>
 		<Window Type='EmberLook/StaticImage' Name='MainOverlay'>
 			<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
@@ -30,6 +32,7 @@
 			<Property Name='FrameEnabled' Value='false'/>
 			<Property Name='MousePassThroughEnabled' Value='true'/>
 			<Property Name='Image' Value='set:compass image:full' />
+			<Property Name='RiseOnClick' Value='false'/>
 		</Window>
 		<Window Type='EmberLook/Button' Name='ZoomIn'>
 			<Property Name='UnifiedPosition' Value='{{1,-20},{1.0,-40}}'/>
