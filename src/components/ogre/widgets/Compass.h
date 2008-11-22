@@ -28,6 +28,11 @@
 #include <OgreMaterial.h>
 #include <OgreFrameListener.h>
 
+namespace Ogre
+{
+class Rectangle2D;
+}
+
 namespace EmberOgre {
 
 namespace Terrain
@@ -198,11 +203,6 @@ protected:
 	Ogre::RenderTexture* mRenderTexture;
 	
 	/**
-	@brief The compositor used for rendering our full screen quad.
-	*/
-	Ogre::CompositorInstance* mCompositor;
-	
-	/**
 	@brief The compass material used in the rendering. By changing the offset of the first texture we can simulate the terrain being scrolled.
 	*/
 	Ogre::MaterialPtr mCompassMaterial;
@@ -242,6 +242,11 @@ protected:
 	 * @brief The last world position in the y axis (really the ogre z axis), in ogre world units.
 	 */
 	float mY;
+	
+	/**
+	 * @brief The rectangle used for rendering the map background.
+	 */
+	Ogre::Rectangle2D* mMapRectangle;
 };
 
 

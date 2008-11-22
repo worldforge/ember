@@ -221,7 +221,7 @@ void OverlayCompassImpl::refresh()
 
 
 CompositorCompassImpl::CompositorCompassImpl()
-: mRenderTexture(0), mCompositor(0), mCamera(0), mSceneManager(0), mViewport(0), mCompassMaterialMapTUS(0)
+: mRenderTexture(0), mCamera(0), mSceneManager(0), mViewport(0), mCompassMaterialMapTUS(0), mMapRectangle(0)
 {
 	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, "CompositorCompassImpl_sceneManager");
 	mSceneManager->setFog(Ogre::FOG_NONE, Ogre::ColourValue(1,1,1,1), 0.0f, 10000000.0f, 100000001.0f);
@@ -229,10 +229,6 @@ CompositorCompassImpl::CompositorCompassImpl()
 
 CompositorCompassImpl::~CompositorCompassImpl()
 {
-	if (mCompositor && mRenderTexture) {
-		Ogre::CompositorManager::getSingleton().removeCompositorChain(mRenderTexture->getViewport(0));
-	}
-
 	///We should probably not do this ourselves, since it will corrupt the material.
 // 	if (!mTexture.isNull()) {
 // 		Ogre::TextureManager::getSingleton().remove(mTexture->getName());
@@ -244,6 +240,9 @@ CompositorCompassImpl::~CompositorCompassImpl()
 	
 	Ogre::Root::getSingleton().destroySceneManager(mSceneManager);
 	
+
+	OGRE_DELETE mMapRectangle;
+	
 }
 
 void CompositorCompassImpl::reposition(float x, float y)
@@ -252,11 +251,8 @@ void CompositorCompassImpl::reposition(float x, float y)
 	
 	if (mCompassMaterialMapTUS) {
 		const Ogre::Vector2& relPosition(mMap->getView().getRelativeViewPosition());
-   		mCompassMaterialMapTUS->setTextureScroll(-0.5f + relPosition.x, -0.5f + relPosition.y);
+		mCompassMaterialMapTUS->setTextureScroll(-0.5f + relPosition.x, -0.5f + relPosition.y);
 		
-		///We must mark the chain as dirty, else our changes won't apply
-		mCompositor->getChain()->_markDirty();
-// 		mViewport->update();
 		mRenderTexture->update();
 	}
 	mX = x;
@@ -284,6 +280,7 @@ void CompositorCompassImpl::_setCompass(Compass* compass)
 			Ogre::Pass* pass(0);
 			if (tech->getNumPasses() && (pass = tech->getPass(0))) {
 				if ((mCompassMaterialMapTUS = pass->getTextureUnitState("Background"))) {
+					///Make sure that the compass material is using the map texture for the base rendering
 					mCompassMaterialMapTUS->setTextureName(mMap->getTexture()->getName());
 		
 					mTexture = Ogre::TextureManager::getSingleton().createManual("ComposedCompass", "Gui", Ogre::TEX_TYPE_2D, 128, 128, 0, Ogre::PF_A8R8G8B8, Ogre::TU_RENDERTARGET);
@@ -294,14 +291,28 @@ void CompositorCompassImpl::_setCompass(Compass* compass)
 					
 					mCamera = mSceneManager->createCamera("ComposedCompassCamera");
 					mViewport = mRenderTexture->addViewport(mCamera);
-					mViewport->setOverlaysEnabled(false);
+ 					mViewport->setOverlaysEnabled(false);
 					mViewport->setShadowsEnabled(false);
-					mViewport->setSkiesEnabled(false);
+ 					mViewport->setSkiesEnabled(false);
 					mViewport->setClearEveryFrame(true);
 					mViewport->setBackgroundColour(Ogre::ColourValue::ZERO);
 				
-					mCompositor = Ogre::CompositorManager::getSingleton().addCompositor(mViewport, "/ui/compass");
-					mCompositor->setEnabled(true);
+					mMapRectangle = OGRE_NEW Ogre::Rectangle2D(true);
+					mMapRectangle->setMaterial("/ui/compass");
+					
+					///We need to maximise the rendered texture to cover the whole screen
+					Ogre::RenderSystem* rs = Ogre::Root::getSingleton().getRenderSystem();
+					Ogre::Real hOffset = rs->getHorizontalTexelOffset() / (0.5 * mViewport->getActualWidth());
+					Ogre::Real vOffset = rs->getVerticalTexelOffset() / (0.5 * mViewport->getActualHeight());
+					mMapRectangle->setCorners(-1 + hOffset, 1 - vOffset, 1 + hOffset, -1 - vOffset);
+					
+					///Since a Rectangle2D instance is a moveable object it won't be rendered unless it's in the frustrum. If we set the axis aligned box to be "infinite" it will always be rendered.
+					Ogre::AxisAlignedBox aabInf;
+					aabInf.setInfinite();
+					mMapRectangle->setBoundingBox(aabInf);
+
+					///We can't attach something to the root node, so we'll attach it to a newly created node. We won't keep a reference to this node since it will be destroyed along with the scene manager when we ourselves are destroyed.
+					mSceneManager->getRootSceneNode()->createChildSceneNode()->attachObject(mMapRectangle);
 					
 					///Return early since everything is good.
 					return;
