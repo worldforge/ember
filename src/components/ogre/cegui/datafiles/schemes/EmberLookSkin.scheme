@@ -9,6 +9,7 @@
 	<Imageset Name="iconset_standard" Filename="cegui/datafiles/imagesets/iconset_standard.imageset" />
 	<Imageset Name="iconset_mason" Filename="cegui/datafiles/imagesets/iconset_mason.imageset" />
 	<Imageset Name="status_main" Filename="cegui/datafiles/imagesets/status_main.imageset" />
+	<Imageset Name="compass" Filename="cegui/datafiles/imagesets/compass.imageset" />
 	<LookNFeel Filename="cegui/datafiles/looknfeel/EmberLook.looknfeel" />
 	<WindowRendererSet Filename="CEGUIFalagardWRBase" />
 	<FalagardMapping WindowType="EmberLook/Button"      TargetType="CEGUI/PushButton"  Renderer="Falagard/Button"       LookNFeel="EmberLook/Button" />
