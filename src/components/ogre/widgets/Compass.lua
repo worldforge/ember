@@ -6,7 +6,8 @@ renderImage = nil,
 helper = nil,
 previousPosX = 0,
 previousPosY = 0,
-updateNextFrame = false
+updateNextFrame = false,
+zoomInButton = nil
 }
 
 function Compass.Refresh_Clicked(args)
@@ -61,6 +62,11 @@ function Compass.CreatedAvatarEntity(avatarEntity)
 -- 	connect(Compass.connectors, guiManager.EventFrameStarted, "Compass.framestarted")
 	if Compass.widget ~= nil then
 		Compass.widget:show()
+		
+--[[		Compass.zoomInButton = EmberOgre.Gui.IconBase:new("compass_zoom", MainIconBar.images.background, EmberOgre.Gui.IconBase:loadImageFromImageset("iconset_standard", "close2"), MainIconBar.images.borderinactive, MainIconBar.images.borderactive, CEGUI.UVector2(CEGUI.UDim(0, 24), CEGUI.UDim(0, 24)))
+		
+		Compass.widget:getMainWindow():addChildWindow(Compass.zoomInButton:getContainer())]]
+		
 	end
 	
 	connect(Compass.connectors, emberOgre:getTerrainGenerator().EventTerrainPageGeometryUpdated, "Compass.TerrainPageGeometryUpdated")
@@ -72,7 +78,7 @@ end
 function Compass.buildWidget()
 -- 	Compass.helperImpl = EmberOgre.Gui.OverlayCompassImpl:new_local()
 --	Compass.helperImpl = EmberOgre.Gui.CEGUICompassImpl:new_local()
-	Compass.helperImpl = EmberOgre.Gui.CompositorCompassImpl:new_local()
+	Compass.helperImpl = EmberOgre.Gui.RenderedCompassImpl:new_local()
 
 	Compass.helper = EmberOgre.Gui.Compass:new_local(Compass.helperImpl)
 	Compass.map = Compass.helper:getMap()

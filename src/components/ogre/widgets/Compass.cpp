@@ -220,14 +220,14 @@ void OverlayCompassImpl::refresh()
 }
 
 
-CompositorCompassImpl::CompositorCompassImpl()
+RenderedCompassImpl::RenderedCompassImpl()
 : mRenderTexture(0), mCamera(0), mSceneManager(0), mViewport(0), mCompassMaterialMapTUS(0), mMapRectangle(0)
 {
-	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, "CompositorCompassImpl_sceneManager");
+	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, "RenderedCompassImpl_sceneManager");
 	mSceneManager->setFog(Ogre::FOG_NONE, Ogre::ColourValue(1,1,1,1), 0.0f, 10000000.0f, 100000001.0f);
 }
 
-CompositorCompassImpl::~CompositorCompassImpl()
+RenderedCompassImpl::~RenderedCompassImpl()
 {
 	///We should probably not do this ourselves, since it will corrupt the material.
 // 	if (!mTexture.isNull()) {
@@ -245,7 +245,7 @@ CompositorCompassImpl::~CompositorCompassImpl()
 	
 }
 
-void CompositorCompassImpl::reposition(float x, float y)
+void RenderedCompassImpl::reposition(float x, float y)
 {
 	mMap->getView().reposition(Ogre::Vector2(x, y));
 	
@@ -259,20 +259,20 @@ void CompositorCompassImpl::reposition(float x, float y)
 	mY = y;
 }
 
-void CompositorCompassImpl::rotate(const Ogre::Degree& degree)
+void RenderedCompassImpl::rotate(const Ogre::Degree& degree)
 {
 	///We won't rotate the image.
 	return;
 }
 
 
-void CompositorCompassImpl::refresh()
+void RenderedCompassImpl::refresh()
 {
 	reposition(mX, mY);
 }
 
 
-void CompositorCompassImpl::_setCompass(Compass* compass)
+void RenderedCompassImpl::_setCompass(Compass* compass)
 {
 	mCompassMaterial = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName("/ui/compass"));
 	if (!mCompassMaterial.isNull()) {
@@ -323,7 +323,7 @@ void CompositorCompassImpl::_setCompass(Compass* compass)
 	S_LOG_WARNING("Could not load material '/ui/compass' for the compass.");
 }
 
-Ogre::TexturePtr CompositorCompassImpl::getTexture()
+Ogre::TexturePtr RenderedCompassImpl::getTexture()
 {
 	return mTexture;
 }

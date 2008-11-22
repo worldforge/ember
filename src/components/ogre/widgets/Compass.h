@@ -150,25 +150,25 @@ protected:
 
 /**
 @brief A compass implementation which uses a compositor to create the rounded map image.
-The main problem with CEGUI is that there's no easy way to apply transparence to a dynamic render texture. By using a compositor we can however render the /ui/compass material, which will use an alpha mask to remove the border from the map texture, providing a rounded shape.
+The main problem with CEGUI is that there's no easy way to apply transparence to a dynamic render texture. By using Ogre to render into full screen quadswe can however render the /ui/compass material, which will use an alpha mask to remove the border from the map texture, providing a rounded shape.
 This implementation will only provide the rounded map texture. It's up to other components to then provide further functionality. This can perhaps be done through CEGUI.
 Note that we use a separate scene manager, owned by this class, for this.
 @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class CompositorCompassImpl : ICompassImpl
+class RenderedCompassImpl : ICompassImpl
 {
 public:
 
 	/**
 	 * @brief Ctor.
 	 */
-	CompositorCompassImpl();
+	RenderedCompassImpl();
 	
 	/**
 	 * @brief Dtor.
 	 * The render texture which this instance owns will be destroyed along with this instance.
 	 */
-	virtual ~CompositorCompassImpl();
+	virtual ~RenderedCompassImpl();
 	
     /**
      * @copydoc ICompassImpl::reposition

@@ -75,20 +75,20 @@ The main problem with CEGUI is that there's no easy way to apply transparence to
 This implementation will only provide the rounded map texture. It's up to other components to then provide further functionality. This can perhaps be done through CEGUI.
 @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class CompositorCompassImpl : ICompassImpl
+class RenderedCompassImpl : ICompassImpl
 {
 public:
 
 	/**
 	 * @brief Ctor.
 	 */
-	CompositorCompassImpl();
+	RenderedCompassImpl();
 	
 	/**
 	 * @brief Dtor.
 	 * The render texture which this instance owns will be destroyed along with this instance.
 	 */
-	virtual ~CompositorCompassImpl();
+	virtual ~RenderedCompassImpl();
 	
 	/**
 	* @brief Gets the texture onto which the compass is rendered.
