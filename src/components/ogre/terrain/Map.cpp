@@ -115,9 +115,11 @@ float Map::getResolution() const
 
 void Map::setResolution(float metersPerPixel)
 {
-	mMetersPerPixel = metersPerPixel;
-	render();
-	mView.recalculateBounds();
+	if (metersPerPixel > 0) {
+		mMetersPerPixel = metersPerPixel;
+		render();
+		mView.recalculateBounds();
+	}
 }
 
 float Map::getResolutionMeters() const
