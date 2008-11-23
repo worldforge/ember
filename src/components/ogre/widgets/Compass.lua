@@ -17,15 +17,23 @@ function Compass.Refresh_Clicked(args)
 end
 
 function Compass.ZoomIn_Clicked(args)
-	Compass.helper:getMap():setResolution(Compass.helper:getMap():getResolution() - 0.2)
-	Compass.helper:getMap():render()
-	Compass.helper:refresh()
+	local newResolution = Compass.helper:getMap():getResolution() - 0.2
+	--prevent the user from zooming in to much (at which point only one pixel from the head of the avatar will be seen
+	if newResolution > 0.2 then
+		Compass.helper:getMap():setResolution(newResolution)
+		Compass.helper:getMap():render()
+		Compass.helper:refresh()
+	end
 	return true
 end
 function Compass.ZoomOut_Clicked(args)
-	Compass.helper:getMap():setResolution(Compass.helper:getMap():getResolution() + 0.2)
-	Compass.helper:getMap():render()
-	Compass.helper:refresh()
+	local newResolution = Compass.helper:getMap():getResolution() + 0.2
+	--we'll use the arbitrary resolution of 5 as the max
+	if newResolution < 5 then
+		Compass.helper:getMap():setResolution(Compass.helper:getMap():getResolution() + 0.2)
+		Compass.helper:getMap():render()
+		Compass.helper:refresh()
+	end
 	return true
 end
 
