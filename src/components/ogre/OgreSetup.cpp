@@ -863,7 +863,13 @@ int OgreSetup::isExtensionSupported(const char *extension) {
 	SDL_VERSION(&wmInfo.version);
 	SDL_GetWMInfo(&wmInfo);
 
+///gfxdisplay is only available in SDL 1.2.12 or later
+#if SDL_VERSION_ATLEAST(1, 2, 12)
 	::Display *display = wmInfo.info.x11.gfxdisplay;
+#else
+	::Display *display = wmInfo.info.x11.display;
+#endif 
+	
 	if (!display)
 	{
 		return false;
