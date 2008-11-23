@@ -331,7 +331,7 @@ bool OgreSetup::configure(void)
 	
 	if (enableDoubleBuffering) {
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-		useAltSwapControl = SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1) != 0;
+		useAltSwapControl = SDL_GL_SetAttribute((SDL_GLattr)SDL_GL_SWAP_CONTROL, 1) != 0;
 	}
 
 		// request good stencil size if 32-bit colour
@@ -351,7 +351,7 @@ bool OgreSetup::configure(void)
 		{
 			/// SDL_GL_SWAP_CONTROL was requested. Check that it is now set.
 			int value;
-			if (!SDL_GL_GetAttribute(SDL_GL_SWAP_CONTROL, &value))
+			if (!SDL_GL_GetAttribute((SDL_GLattr)SDL_GL_SWAP_CONTROL, &value))
 			{
 				useAltSwapControl = !value;
 			}
