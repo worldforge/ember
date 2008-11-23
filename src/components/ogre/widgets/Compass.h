@@ -27,6 +27,7 @@
 #include "AssetsManager.h"
 #include <OgreMaterial.h>
 #include <OgreFrameListener.h>
+#include <OgreMath.h>
 
 namespace Ogre
 {
@@ -149,6 +150,91 @@ protected:
 };
 
 /**
+@brief Renders a pointer which can be rotated along with the camera.
+
+Since CEGUI doesn't (as of v0.6.1) support rotation of textures we have to do that ourselves. An instance of this will create a scene manager, camera and rendertexture for rendering a pointer image. By calling rotate() the texture will be rotated.
+Use getTexture() to get a reference to the final rendered texture.
+
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+*/
+class RenderedCompassPointer
+{
+public:
+
+	/**
+	 * @brief Ctor.
+	 * Everything will be setup in the constructor. That includes creating a scene manager, camera, render texture and getting the correct material.
+	 * @param materialName The name of the material to use for the pointer. The material must have a texture unit state named "Pointer", which must reside in the first pass.
+	 */
+	RenderedCompassPointer(std::string materialName = "/ui/compass/pointer");
+	
+	/**
+	 * @brief Dtor.
+	 * The scene manager and camera will be destroyed along with this instance.
+	 */
+	virtual ~RenderedCompassPointer();
+	
+	/**
+	 * @brief Sets the rotation of the arrow.
+	 * @param degree The new rotation of the arrow.
+	 */
+	void rotate(const Ogre::Degree& degree);
+	
+	/**
+	* @brief Gets the texture onto which the compass is rendered.
+	* @return The texture pointer.
+	*/
+	Ogre::TexturePtr getTexture() const;
+
+protected:
+	/**
+	@brief The texture into which the final compass texture will be rendered.
+	*/
+	Ogre::TexturePtr mTexture;
+	
+	/**
+	@brief The render texture representation of mTexture.
+	*/
+	Ogre::RenderTexture* mRenderTexture;
+	
+	/**
+	@brief The pointer material used in the rendering. By changing the rotation of the first texture we can simulate the pointer being rotated.
+	*/
+	Ogre::MaterialPtr mPointerMaterial;
+	
+	/**
+	 * @brief The camera used for rendering.
+	 */
+	Ogre::Camera* mCamera;
+	
+	/**
+	 * @brief The scene manager used for rendering. We use a completely separate scene manager to avoid interference with other scenes.
+	 */
+	Ogre::SceneManager* mSceneManager;
+	
+	/**
+	 * @brief The main viewport used by our camera.
+	 */
+	Ogre::Viewport* mViewport;
+	
+	/**
+	 * @brief The texture unit state onto which the pointer is projected. This will be rotated.
+	 */
+	Ogre::TextureUnitState* mPointerTUS;
+	
+	/**
+	 * @brief The rectangle used for rendering the pointer.
+	 */
+	Ogre::Rectangle2D* mPointerRectangle;
+	
+	/**
+	 * @brief The previous rotation of the pointer. This is used for preventing unnecessary rendering.
+	 */
+	Ogre::Degree mPreviousRotation;
+
+};
+
+/**
 @brief A compass implementation which uses a compositor to create the rounded map image.
 The main problem with CEGUI is that there's no easy way to apply transparence to a dynamic render texture. By using Ogre to render into full screen quadswe can however render the /ui/compass material, which will use an alpha mask to remove the border from the map texture, providing a rounded shape.
 This implementation will only provide the rounded map texture. It's up to other components to then provide further functionality. This can perhaps be done through CEGUI.
@@ -189,7 +275,13 @@ public:
 	* @brief Gets the texture onto which the compass is rendered.
 	* @return The texture pointer.
 	*/
-	Ogre::TexturePtr getTexture();
+	Ogre::TexturePtr getTexture() const;
+
+	/**
+	* @brief Gets the texture onto which the compass pointer is rendered.
+	* @return The texture pointer.
+	*/
+	Ogre::TexturePtr getPointerTexture() const;
 
 protected:
 	/**
@@ -247,6 +339,11 @@ protected:
 	 * @brief The rectangle used for rendering the map background.
 	 */
 	Ogre::Rectangle2D* mMapRectangle;
+	
+	/**
+	 * @brief The pointer renderer instance, responsible for rotating the pointer arrow.
+	 */
+	RenderedCompassPointer mPointer;
 };
 
 

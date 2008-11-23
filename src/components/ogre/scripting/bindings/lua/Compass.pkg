@@ -94,8 +94,13 @@ public:
 	* @brief Gets the texture onto which the compass is rendered.
 	* @return The texture pointer.
 	*/
-	Ogre::TexturePtr getTexture();
+	Ogre::TexturePtr getTexture() const;
 
+	/**
+	* @brief Gets the texture onto which the compass pointer is rendered.
+	* @return The texture pointer.
+	*/
+	Ogre::TexturePtr getPointerTexture() const;
 };
 
 class CompassCameraAnchor

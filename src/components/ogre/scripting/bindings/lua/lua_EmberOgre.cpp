@@ -11206,14 +11206,14 @@ static int tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_getTexture00(lua_St
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::RenderedCompassImpl",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Gui::RenderedCompassImpl",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  EmberOgre::Gui::RenderedCompassImpl* self = (EmberOgre::Gui::RenderedCompassImpl*)  tolua_tousertype(tolua_S,1,0);
+  const EmberOgre::Gui::RenderedCompassImpl* self = (const EmberOgre::Gui::RenderedCompassImpl*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getTexture'",NULL);
 #endif
@@ -11234,6 +11234,46 @@ static int tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_getTexture00(lua_St
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'getTexture'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getPointerTexture of class  EmberOgre::Gui::RenderedCompassImpl */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_getPointerTexture00
+static int tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_getPointerTexture00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Gui::RenderedCompassImpl",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Gui::RenderedCompassImpl* self = (const EmberOgre::Gui::RenderedCompassImpl*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getPointerTexture'",NULL);
+#endif
+  {
+   Ogre::TexturePtr tolua_ret = (Ogre::TexturePtr)  self->getPointerTexture();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new Ogre::TexturePtr(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::TexturePtr");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::TexturePtr));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::TexturePtr");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getPointerTexture'.",&tolua_err);
  return 0;
 #endif
 }
@@ -25699,6 +25739,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,".call",tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_new00_local);
      tolua_function(tolua_S,"delete",tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_delete00);
      tolua_function(tolua_S,"getTexture",tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_getTexture00);
+     tolua_function(tolua_S,"getPointerTexture",tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_getPointerTexture00);
     tolua_endmodule(tolua_S);
     #ifdef __cplusplus
     tolua_cclass(tolua_S,"CompassCameraAnchor","EmberOgre::Gui::CompassCameraAnchor","",tolua_collect_EmberOgre__Gui__CompassCameraAnchor);
