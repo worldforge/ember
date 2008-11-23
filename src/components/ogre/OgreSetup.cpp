@@ -45,6 +45,11 @@
 // #include "image/OgreILCodecs.h"
 #include "framework/Tokeniser.h"
 
+///SDL_GL_SWAP_CONTROL is only available for sdl version 1.2.10 and later.
+#if ! SDL_VERSION_ATLEAST(1, 2, 10)
+#define SDL_GL_SWAP_CONTROL 16
+#endif 
+
 extern "C" {
 #include <signal.h>    /* signal name macros, and the signal() prototype */
 
