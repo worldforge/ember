@@ -350,7 +350,9 @@ RenderedCompassPointer::RenderedCompassPointer(std::string materialName)
 			if (tech->getNumPasses() && (pass = tech->getPass(0))) {
 				if ((mPointerTUS = pass->getTextureUnitState("Pointer"))) {
 		
-					mTexture = Ogre::TextureManager::getSingleton().createManual("RenderedCompassPointer", "Gui", Ogre::TEX_TYPE_2D, 16, 16, 0, Ogre::PF_A8R8G8B8, Ogre::TU_RENDERTARGET);
+					///Since we need to rotate the arrow we'll make the image twice as big (32px) as the width of the arrow (16px), else it will be truncated when it's turned 45 degrees.
+					///The material used must those use a 0.5 scale so that the compass arrow is half the size.
+					mTexture = Ogre::TextureManager::getSingleton().createManual("RenderedCompassPointer", "Gui", Ogre::TEX_TYPE_2D, 32, 32, 0, Ogre::PF_A8R8G8B8, Ogre::TU_RENDERTARGET);
 					mRenderTexture = mTexture->getBuffer()->getRenderTarget();
 					mRenderTexture->removeAllViewports();
 					mRenderTexture->setAutoUpdated(false);
@@ -369,8 +371,8 @@ RenderedCompassPointer::RenderedCompassPointer(std::string materialName)
 					
 					///We need to maximise the rendered texture to cover the whole screen
 					Ogre::RenderSystem* rs = Ogre::Root::getSingleton().getRenderSystem();
-					Ogre::Real hOffset = rs->getHorizontalTexelOffset() / (0.5 * mViewport->getActualWidth());
-					Ogre::Real vOffset = rs->getVerticalTexelOffset() / (0.5 * mViewport->getActualHeight());
+					Ogre::Real hOffset = rs->getHorizontalTexelOffset() / (0.5 * 32);
+					Ogre::Real vOffset = rs->getVerticalTexelOffset() / (0.5 * 32);
 					mPointerRectangle->setCorners(-1 + hOffset, 1 - vOffset, 1 + hOffset, -1 - vOffset);
 					
 					///Since a Rectangle2D instance is a moveable object it won't be rendered unless it's in the frustrum. If we set the axis aligned box to be "infinite" it will always be rendered.

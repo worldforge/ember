@@ -34,8 +34,8 @@
 			<Property Name='Image' Value='set:compass image:full' />
 			<Property Name='RiseOnClick' Value='false'/>
 			<Window Type='EmberLook/StaticImage' Name='Pointer'>
-				<Property Name='UnifiedSize' Value='{{0,16},{0,16}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.5,-8},{0.5,-8}}'/>
+				<Property Name='UnifiedSize' Value='{{0,32},{0,32}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.5,-16},{0.5,-16}}'/>
 				<Property Name='InheritsAlpha' Value='true'/>
 				<Property Name='BackgroundEnabled' Value='false'/>
 				<Property Name='FrameEnabled' Value='false'/>
