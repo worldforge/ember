@@ -102,18 +102,23 @@ function Compass.buildCEGUIWidget()
 	Compass.widget:loadMainSheet("Compass.layout", "Compass/")
 	Compass.widget:setIsActiveWindowOpaque(false)
 	Compass.renderImage = Compass.widget:getWindow("RenderImage")
+	Compass.pointerImage = Compass.widget:getWindow("Pointer")
 	
 	local assetManager = EmberOgre.Gui.AssetsManager:new_local()
 	
+	--set up the main background image
 	local texturePair = assetManager:createTextureImage(Compass.helperImpl:getTexture(), "CompassMap")
 	if texturePair:hasData() then 
 		Compass.renderImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(texturePair:getTextureImage()))
 	end
 	
+	--also set up the pointer image
+	texturePair = assetManager:createTextureImage(Compass.helperImpl:getPointerTexture(), "CompassPointer")
+	if texturePair:hasData() then 
+		Compass.pointerImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(texturePair:getTextureImage()))
+	end
+	
 	Compass.widget:hide()
-	
-	
--- 	Compass.renderImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(Compass.helperImpl:getViewImage()))
 end
 
 
