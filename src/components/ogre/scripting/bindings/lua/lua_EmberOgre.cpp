@@ -11170,6 +11170,110 @@ static int tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_new00_local(lua_Sta
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: new of class  EmberOgre::Gui::RenderedCompassImpl */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_new01
+static int tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_new01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"EmberOgre::Gui::RenderedCompassImpl",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  std::string compassMaterialName = ((std::string)  tolua_tocppstring(tolua_S,2,0));
+  {
+   EmberOgre::Gui::RenderedCompassImpl* tolua_ret = (EmberOgre::Gui::RenderedCompassImpl*)  new EmberOgre::Gui::RenderedCompassImpl(compassMaterialName);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Gui::RenderedCompassImpl");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_new00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  EmberOgre::Gui::RenderedCompassImpl */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_new01_local
+static int tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_new01_local(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"EmberOgre::Gui::RenderedCompassImpl",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  std::string compassMaterialName = ((std::string)  tolua_tocppstring(tolua_S,2,0));
+  {
+   EmberOgre::Gui::RenderedCompassImpl* tolua_ret = (EmberOgre::Gui::RenderedCompassImpl*)  new EmberOgre::Gui::RenderedCompassImpl(compassMaterialName);
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::Gui::RenderedCompassImpl");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_new00_local(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new of class  EmberOgre::Gui::RenderedCompassImpl */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_new02
+static int tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_new02(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"EmberOgre::Gui::RenderedCompassImpl",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  std::string compassMaterialName = ((std::string)  tolua_tocppstring(tolua_S,2,0));
+  std::string pointerMaterialName = ((std::string)  tolua_tocppstring(tolua_S,3,0));
+  {
+   EmberOgre::Gui::RenderedCompassImpl* tolua_ret = (EmberOgre::Gui::RenderedCompassImpl*)  new EmberOgre::Gui::RenderedCompassImpl(compassMaterialName,pointerMaterialName);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Gui::RenderedCompassImpl");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_new01(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  EmberOgre::Gui::RenderedCompassImpl */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_new02_local
+static int tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_new02_local(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"EmberOgre::Gui::RenderedCompassImpl",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  std::string compassMaterialName = ((std::string)  tolua_tocppstring(tolua_S,2,0));
+  std::string pointerMaterialName = ((std::string)  tolua_tocppstring(tolua_S,3,0));
+  {
+   EmberOgre::Gui::RenderedCompassImpl* tolua_ret = (EmberOgre::Gui::RenderedCompassImpl*)  new EmberOgre::Gui::RenderedCompassImpl(compassMaterialName,pointerMaterialName);
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::Gui::RenderedCompassImpl");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_new01_local(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: delete of class  EmberOgre::Gui::RenderedCompassImpl */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_delete00
 static int tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_delete00(lua_State* tolua_S)
@@ -25737,6 +25841,12 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"new",tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_new00);
      tolua_function(tolua_S,"new_local",tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_new00_local);
      tolua_function(tolua_S,".call",tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_new00_local);
+     tolua_function(tolua_S,"new",tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_new01);
+     tolua_function(tolua_S,"new_local",tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_new01_local);
+     tolua_function(tolua_S,".call",tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_new01_local);
+     tolua_function(tolua_S,"new",tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_new02);
+     tolua_function(tolua_S,"new_local",tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_new02_local);
+     tolua_function(tolua_S,".call",tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_new02_local);
      tolua_function(tolua_S,"delete",tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_delete00);
      tolua_function(tolua_S,"getTexture",tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_getTexture00);
      tolua_function(tolua_S,"getPointerTexture",tolua_EmberOgre_EmberOgre_Gui_RenderedCompassImpl_getPointerTexture00);

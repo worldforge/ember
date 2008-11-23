@@ -85,6 +85,20 @@ public:
 	RenderedCompassImpl();
 	
 	/**
+	 * @brief Ctor.
+	 * @param compassMaterialName The name of the compass ogre material, defaults to "/ui/compass". The material must have a texture unit state named "Background" in it's first pass.
+	 */
+	RenderedCompassImpl(std::string compassMaterialName);
+	
+	/**
+	 * @brief Ctor.
+	 * @param compassMaterialName The name of the compass ogre material, defaults to "/ui/compass". The material must have a texture unit state named "Background" in it's first pass.
+	 * @param pointerMaterialName The name of the pointer ogre material, defaults to "/ui/compass/pointer". The material must have a texture unit state named "Pointer", which must reside in the first pass.
+	 */
+	RenderedCompassImpl(std::string compassMaterialName, std::string pointerMaterialName);
+	
+	
+	/**
 	 * @brief Dtor.
 	 * The render texture which this instance owns will be destroyed along with this instance.
 	 */

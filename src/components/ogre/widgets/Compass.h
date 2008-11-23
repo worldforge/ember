@@ -247,8 +247,10 @@ public:
 
 	/**
 	 * @brief Ctor.
+	 * @param compassMaterialName The name of the compass ogre material, defaults to "/ui/compass". The material must have a texture unit state named "Background" in it's first pass.
+	 * @param pointerMaterialName The name of the pointer ogre material, defaults to "/ui/compass/pointer". The material must have a texture unit state named "Pointer", which must reside in the first pass.
 	 */
-	RenderedCompassImpl();
+	RenderedCompassImpl(std::string compassMaterialName = "/ui/compass", std::string pointerMaterialName = "/ui/compass/pointer");
 	
 	/**
 	 * @brief Dtor.
@@ -344,6 +346,11 @@ protected:
 	 * @brief The pointer renderer instance, responsible for rotating the pointer arrow.
 	 */
 	RenderedCompassPointer mPointer;
+	
+	/**
+	 * @brief The name of the compass ogre material.
+	 */
+	std::string mMaterialName;
 };
 
 

@@ -220,8 +220,8 @@ void OverlayCompassImpl::refresh()
 }
 
 
-RenderedCompassImpl::RenderedCompassImpl()
-: mRenderTexture(0), mCamera(0), mSceneManager(0), mViewport(0), mCompassMaterialMapTUS(0), mMapRectangle(0)
+RenderedCompassImpl::RenderedCompassImpl(std::string compassMaterialName, std::string pointerMaterialName)
+: mRenderTexture(0), mCamera(0), mSceneManager(0), mViewport(0), mCompassMaterialMapTUS(0), mMapRectangle(0), mPointer(pointerMaterialName), mMaterialName(compassMaterialName)
 {
 	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, "RenderedCompassImpl_sceneManager");
 	mSceneManager->setFog(Ogre::FOG_NONE, Ogre::ColourValue(1,1,1,1), 0.0f, 10000000.0f, 100000001.0f);
@@ -274,7 +274,7 @@ void RenderedCompassImpl::refresh()
 
 void RenderedCompassImpl::_setCompass(Compass* compass)
 {
-	mCompassMaterial = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName("/ui/compass"));
+	mCompassMaterial = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(mMaterialName));
 	if (!mCompassMaterial.isNull()) {
 		mCompassMaterial->load();
 		if (Ogre::Technique* tech = mCompassMaterial->getBestTechnique()) {
@@ -299,7 +299,7 @@ void RenderedCompassImpl::_setCompass(Compass* compass)
 					mViewport->setBackgroundColour(Ogre::ColourValue::ZERO);
 				
 					mMapRectangle = OGRE_NEW Ogre::Rectangle2D(true);
-					mMapRectangle->setMaterial("/ui/compass");
+					mMapRectangle->setMaterial(mMaterialName);
 					
 					///We need to maximise the rendered texture to cover the whole screen
 					Ogre::RenderSystem* rs = Ogre::Root::getSingleton().getRenderSystem();
@@ -321,7 +321,7 @@ void RenderedCompassImpl::_setCompass(Compass* compass)
 			}
 		}
 	} 
-	S_LOG_WARNING("Could not load material '/ui/compass' for the compass.");
+	S_LOG_WARNING("Could not load material '" << mMaterialName << "' for the compass.");
 }
 
 Ogre::TexturePtr RenderedCompassImpl::getTexture() const
