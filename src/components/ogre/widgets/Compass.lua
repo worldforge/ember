@@ -6,8 +6,9 @@ renderImage = nil,
 helper = nil,
 previousPosX = 0,
 previousPosY = 0,
-updateNextFrame = false,
-zoomInButton = nil
+updateFrameCountDown = -1, --this is used for triggering delayed render updates. If it's more than zero, it's decreased each frame until it's zero, and a render is then carried out. If it's below zero nothing is done.
+zoomInButton = nil,
+anchor = nil
 }
 
 function Compass.Refresh_Clicked(args)
@@ -41,66 +42,53 @@ end
 
 function Compass.repositionAtAvatar()
 	local pos = emberOgre:getAvatar():getAvatarSceneNode():getPosition()
--- 	local pos = emberOgre:getAvatar():getAvatarEmberEntity():getSceneNode():getPosition()
--- 	if pos.x ~= previousPosX or pos.z ~= previousPosY then
-		Compass.helper:reposition(pos.x, pos.z)
--- 		Compass.renderImage:requestRedraw()
--- 		previousPosX = pos.x
--- 		previousPosY = pos.z
--- 	end
--- 	console:pushMessage("x: " .. pos.x .. "y: " .. pos.z)
+	Compass.helper:reposition(pos.x, pos.z)
 end
 
 function Compass.framestarted(frameEvent)
-	if Compass.updateNextFrame then
-		Compass.helper:getMap():render()
-		Compass.helper:refresh()
-		Compass.updateNextFrame = false
+	if Compass.updateFrameCountDown > 0 then
+		Compass.updateFrameCountDown = Compass.updateFrameCountDown - 1
+		if Compass.updateFrameCountDown == 0 then
+			--if we haven't created any anchor yet, it means that the whole compass is uninitialized and needs to be shown, else we can just rerender the map
+			if Compass.anchor == nil then
+				Compass.initialize()
+			else
+				Compass.helper:getMap():render()
+				Compass.helper:refresh()
+			end
+			Compass.updateFrameCountDown = -1
+		end
 	end
 end
 
 function Compass.TerrainPageGeometryUpdated(page)
-	Compass.updateNextFrame = true;
---[[	Compass.helper:getMap():render()
-	Compass.helper:refresh()]]
+	--wait six frames until we rerender the map. This is a hack because apparently the event this listens for doesn't actually guarantee that the page will be rendered next frame. We need to add another event which is emitted when a page actually is rendered the first time.
+	Compass.updateFrameCountDown = 6
+end
+
+function Compass.initialize()
+	Compass.anchor = EmberOgre.Gui.CompassThirdPersonCameraAnchor:new_local(Compass.helper, emberOgre:getMainCamera():getCamera(), emberOgre:getMainCamera():getRootNode())
+	if Compass.widget ~= nil then
+		Compass.widget:show()
+	end
 end
 
 function Compass.CreatedAvatarEntity(avatarEntity)
-	Compass.anchor = EmberOgre.Gui.CompassThirdPersonCameraAnchor:new_local(Compass.helper, emberOgre:getMainCamera():getCamera(), emberOgre:getMainCamera():getRootNode())
--- 	connect(Compass.connectors, guiManager.EventFrameStarted, "Compass.framestarted")
-	if Compass.widget ~= nil then
-		Compass.widget:show()
-		
---[[		Compass.zoomInButton = EmberOgre.Gui.IconBase:new("compass_zoom", MainIconBar.images.background, EmberOgre.Gui.IconBase:loadImageFromImageset("iconset_standard", "close2"), MainIconBar.images.borderinactive, MainIconBar.images.borderactive, CEGUI.UVector2(CEGUI.UDim(0, 24), CEGUI.UDim(0, 24)))
-		
-		Compass.widget:getMainWindow():addChildWindow(Compass.zoomInButton:getContainer())]]
-		
-	end
-	
-	connect(Compass.connectors, emberOgre:getTerrainGenerator().EventTerrainPageGeometryUpdated, "Compass.TerrainPageGeometryUpdated")
 	connect(Compass.connectors, guiManager.EventFrameStarted, "Compass.framestarted")
-	
-
 end
 
 function Compass.buildWidget()
--- 	Compass.helperImpl = EmberOgre.Gui.OverlayCompassImpl:new_local()
---	Compass.helperImpl = EmberOgre.Gui.CEGUICompassImpl:new_local()
 	Compass.helperImpl = EmberOgre.Gui.RenderedCompassImpl:new_local()
 
 	Compass.helper = EmberOgre.Gui.Compass:new_local(Compass.helperImpl)
 	Compass.map = Compass.helper:getMap()
 	
 	
--- -- 	local assetManager = EmberOgre.Gui.AssetsManager:new_local()
--- -- 	
--- -- 	local texturePair = assetManager:createTextureImage(Compass.map:getTexture(), "CompassMap")
--- -- 	if texturePair:hasData() then 
--- -- 		Compass.renderImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(texturePair:getTextureImage()))
--- -- 	end
 	Compass.buildCEGUIWidget()
 	
+	--don't show the compass here, instead wait until we've gotten some terrain (by listening 
 	connect(Compass.connectors, emberOgre.EventCreatedAvatarEntity, "Compass.CreatedAvatarEntity")
+	connect(Compass.connectors, emberOgre:getTerrainGenerator().EventTerrainPageGeometryUpdated, "Compass.TerrainPageGeometryUpdated")
 
 end
 
