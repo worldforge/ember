@@ -5,17 +5,17 @@
         <submodels>
             <submodel mesh="3d_objects/structures/models/stone_palisade/stone_palisade.mesh">
                 <parts>
-                    <part name="whole" show="true" group="main">
-                        <subentities>
-                            <subentity index="0" />
-                        </subentities>
-                    </part>
-                    <part name="brokenA" show="false" group="main">
+                    <part name="whole" group="main" show="true">
                         <subentities>
                             <subentity index="1" />
                         </subentities>
                     </part>
-                    <part name="brokenB" show="false" group="main">
+                    <part name="brokenA" group="main" show="false">
+                        <subentities>
+                            <subentity index="0" />
+                        </subentities>
+                    </part>
+                    <part name="brokenB" group="main" show="false">
                         <subentities>
                             <subentity index="2" />
                         </subentities>

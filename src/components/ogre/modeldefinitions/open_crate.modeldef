@@ -8,7 +8,7 @@
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/items/containers/craftsman_wood/crate_aged" />
+                            <subentity index="0" material="/global/items/containers/crate_aged" />
                         </subentities>
                     </part>
                 </parts>

@@ -7,8 +7,8 @@
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" />
-                            <subentity index="1" />
+                            <subentity index="0" material="/global/items/parchments/parchment_text" />
+                            <subentity index="1" material="/global/items/parchments/parchment" />
                         </subentities>
                     </part>
                 </parts>

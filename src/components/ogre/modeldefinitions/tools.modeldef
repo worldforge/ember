@@ -3,7 +3,7 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="-1.000000" y="-0.000000" z="-0.000000" degrees="180.000000" />
         <submodels>
-            <submodel mesh="3d_objects/items/tools/models/axe/Axe.mesh">
+            <submodel mesh="3d_objects/items/tools/models/axe/axe.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
@@ -43,25 +43,6 @@
         </views>
     </model>    
     	
-    <model name="sword" usescaleof="none" scale="0.150000" showcontained="true">
-        <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="-0.000000" z="-0.000000" degrees="90.000000" />
-        <submodels>
-            <submodel mesh="3d_objects/items/tools/models/swords/sword_A01.mesh">
-                <parts>
-                    <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/items/tool/rusty_tools/rusted_tool_head" />
-                            <subentity index="1" material="/global/items/tool/rusty_tools/rusted_tool_head" />
-                        </subentities>
-                    </part>
-                </parts>
-            </submodel>
-        </submodels>
-        <actions />
-        <attachpoints />
-    </model>
-	
     <model name="scythe" usescaleof="none" scale="1.000000" showcontained="true">
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
@@ -115,11 +96,11 @@
         </submodels>
         <actions />
     </model>
-        <model name="pickaxe" usescaleof="none" scale="1.000000" showcontained="true" icon="3d_objects/items/tools/textures/axe_pick/I.png">
+        <!-- model name="pickaxe" usescaleof="none" scale="1.000000" showcontained="true" icon="3d_objects/items/tools/textures/axe_pick/I.png">
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/items/tools/models/pickaxe/pickaxe.mesh">
+            <submodel mesh="3d_objects/items/tools/models/axe_pick/axe_pick.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
@@ -136,110 +117,7 @@
                 <rotation x="0.000000" y="0.000000" z="-1.000000" degrees="180.000015" />
             </view>
         </views>
-    </model>
-    
-<!-- some parts -->
-    
-    <model name="axe_head" usescaleof="all" showcontained="true">
-        <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
-        <submodels>
-            <submodel mesh="3d_objects/items/tools/models/axe/Axe.mesh">
-                <parts>
-                    <part name="main" show="true">
-                        <subentities>
-                            <subentity index="1" material="/global/items/tool/settler_tools/tool_head" />
-                        </subentities>
-                    </part>
-                </parts>
-            </submodel>
-        </submodels>
-        <actions />
-    </model>
+    </model -->
 
-    <model name="hammer_head" usescaleof="all" showcontained="true">
-        <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
-        <submodels>
-            <submodel mesh="3d_objects/items/tools/models/hammer/hammer.mesh">
-                <parts>
-                    <part name="main" show="true">
-                        <subentities>
-                            <subentity index="1" material="/global/items/tool/settler_tools/tool_head" />
-                        </subentities>
-                    </part>
-                </parts>
-            </submodel>
-        </submodels>
-        <actions />
-    </model>
-
-    <model name="pickaxe_head" usescaleof="all" showcontained="true">
-        <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
-        <submodels>
-            <submodel mesh="3d_objects/items/tools/models/pickaxe/pickaxe.mesh">
-                <parts>
-                    <part name="main" show="true">
-                        <subentities>
-                            <subentity index="1" material="/global/items/tool/settler_tools/tool_head" />
-                        </subentities>
-                    </part>
-                </parts>
-            </submodel>
-        </submodels>
-        <actions />
-    </model>
-
-    <model name="saw_ blade" usescaleof="all" showcontained="true">
-        <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
-        <submodels>
-            <submodel mesh="3d_objects/items/tools/models/bucksaw/bucksaw.mesh">
-                <parts>
-                    <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/items/tool/settler_tools/tool_head" />
-                        </subentities>
-                    </part>
-                </parts>
-            </submodel>
-        </submodels>
-        <actions />
-    </model>
-
-    <model name="scythe_head" usescaleof="all" showcontained="true">
-        <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
-        <submodels>
-            <submodel mesh="3d_objects/items/tools/models/scythe/scythe.mesh">
-                <parts>
-                    <part name="main" show="true">
-                        <subentities>
-                            <subentity index="1" material="/global/items/tool/settler_tools/tool_head" />
-                        </subentities>
-                    </part>
-                </parts>
-            </submodel>
-        </submodels>
-        <actions />
-    </model>
-
-    <model name="trowel_head" usescaleof="all" showcontained="true">
-        <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
-        <submodels>
-            <submodel mesh="3d_objects/items/tools/models/trowel/trowel.mesh">
-                <parts>
-                    <part name="main" show="true">
-                        <subentities>
-                            <subentity index="1" material="/global/items/tool/settler_tools/tool_head" />
-                        </subentities>
-                    </part>
-                </parts>
-            </submodel>
-        </submodels>
-        <actions />
-    </model>
     
 </models> 

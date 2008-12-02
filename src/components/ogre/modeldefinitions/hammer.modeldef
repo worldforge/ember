@@ -7,8 +7,8 @@
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/items/tool/settler_tools/tool_handle" />
-                            <subentity index="1" material="/global/items/tool/settler_tools/tool_head" />
+                            <subentity index="0" material="/global/items/tool/tool_handle" />
+                            <subentity index="1" material="/global/items/tool/tool_head" />
                         </subentities>
                     </part>
                 </parts>
