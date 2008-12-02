@@ -43,19 +43,9 @@ bool XMLHelper::Load(TiXmlDocument& xmlDoc, Ogre::DataStreamPtr stream)
 
 	if ( length )
 	{
-		// If we have a file, assume it is all one big XML file, and read it in.
-		// The document parser may decide the document ends sooner than the entire file, however.
-		std::string data;
-		data.reserve( length );
-
-		char *buf = new char[length];
-
-		while( stream->read( buf, length ) )
-		{
-			//got segfaults when doing "data += buf;", so switched to this
-			data.append(buf, length);
-		}
-		delete[] buf; 
+		/// If we have a file, assume it is all one big XML file, and read it in.
+		/// The document parser may decide the document ends sooner than the entire file, however.
+		std::string data(stream->getAsString());
 
 		xmlDoc.Parse( data.c_str());
 

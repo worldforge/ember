@@ -108,6 +108,11 @@ public:
 	 */
 	void takeScreenshot();
 
+	/**
+	 * @brief Gets the root node, to which the whole camera mount is hinged on.
+	 * @return The root node of the camera mount.
+	 */
+	inline Ogre::SceneNode* getRootNode() const;
 
 };
 

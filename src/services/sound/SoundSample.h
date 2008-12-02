@@ -23,7 +23,11 @@
 #include "SoundBinding.h"
 #include "framework/IResourceProvider.h"
 #include <vector>
+#ifdef __APPLE__
+#include <OpenAL/al.h>
+#else
 #include <AL/al.h>
+#endif
 
 namespace Ember
 {

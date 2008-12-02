@@ -45,6 +45,54 @@
 // #include <iostream>
 #include <fstream>
 
+// From sear
+#ifdef __APPLE__
+
+#include <CoreFoundation/CFBundle.h>
+#include <CoreServices/CoreServices.h>
+
+std::string getBundleResourceDirPath()
+{
+    /* the following code looks for the base package directly inside
+    the application bundle. This can be changed fairly easily by
+    fiddling with the code below. And yes, I know it's ugly and verbose.
+    */
+    CFBundleRef appBundle = CFBundleGetMainBundle();
+    CFURLRef resUrl = CFBundleCopyResourcesDirectoryURL(appBundle);
+    CFURLRef absResUrl = CFURLCopyAbsoluteURL(resUrl);
+
+    // now convert down to a path, and the a c-string
+    CFStringRef path = CFURLCopyFileSystemPath(absResUrl, kCFURLPOSIXPathStyle);
+    std::string result = CFStringGetCStringPtr(path, CFStringGetSystemEncoding());
+
+    CFRelease(resUrl);
+    CFRelease(absResUrl);
+    CFRelease(path);
+    return result;
+}
+
+std::string getAppSupportDirPath()
+{
+    FSRef fs;
+    OSErr err = FSFindFolder(kUserDomain, kApplicationSupportFolderType, true, &fs);
+    if (err != noErr) {
+        std::cerr << "error doing FindFolder" << std::endl;
+        return std::string();
+    }
+
+    CFURLRef dirURL = CFURLCreateFromFSRef(kCFAllocatorSystemDefault, &fs);
+    char fsRepr[1024];
+    if (!CFURLGetFileSystemRepresentation(dirURL, true, (UInt8*) fsRepr, 1024)) {
+        std::cerr << "error invoking CFURLGetFileSystemRepresentation" << std::endl;
+        return std::string();
+    }
+
+    CFRelease(dirURL);
+    return fsRepr;
+}
+
+#endif
+
 
 using namespace std;
 
@@ -56,8 +104,8 @@ namespace Ember
 
 	ConfigService::ConfigService() :
 	Service()
-	, mSharedDataDir(DATADIR "/ember/")
-	, mEtcDir(SYSCONFDIR "/ember/")
+	, mSharedDataDir( "" )
+	, mEtcDir( "" )
 	, mHomeDir ( "" )
 	, mConfig(new varconf::Config())
 	{
@@ -69,6 +117,11 @@ namespace Ember
 		//use this utility function for removing the file part
 		PathRemoveFileSpec ( cwd );
 		baseDir = std::string ( cwd ) + "\\";
+#endif
+
+#if !defined(__APPLE__) && !defined(__WIN32__)
+		mSharedDataDir = DATADIR "/ember/";
+		mEtcDir = SYSCONFDIR "/ember/";
 #endif
 
 		setName ( "Configuration Service" );
@@ -308,7 +361,8 @@ namespace Ember
 		else
 		{
 #ifdef __APPLE__
-			return getBundleResourceDirPath();
+			static std::string path ( getBundleResourceDirPath() );
+			return path;
 #elif __WIN32__
 			return baseDir;
 #else
@@ -376,7 +430,7 @@ namespace Ember
 
 	const std::string& ConfigService::getSharedMediaDirectory() const
 	{
-		static std::string path ( getSharedDataDirectory() + "media/shared/" );
+		static std::string path ( getSharedDataDirectory() + "/media/shared/" );
 		return path;
 	}
 

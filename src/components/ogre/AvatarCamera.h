@@ -289,6 +289,13 @@ public:
 	 */
 	inline AvatarTerrainCursor& getTerrainCursor();
 	
+	/**
+	 * @brief Gets the root node, to which the whole camera mount is hinged on.
+	 * @return The root node of the camera mount.
+	 */
+	inline Ogre::SceneNode* getRootNode() const;
+
+	
 protected:
 
 	typedef std::deque<IWorldPickListener*> WorldPickListenersStore;
@@ -390,6 +397,11 @@ protected:
 	AvatarTerrainCursor& AvatarCamera::getTerrainCursor()
 	{
 		return *mAvatarTerrainCursor.get();
+	}
+	
+	Ogre::SceneNode* AvatarCamera::getRootNode() const
+	{
+		return mAvatarCameraRootNode;
 	}
 
 

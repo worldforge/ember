@@ -27,7 +27,12 @@
 #include <wfmath/vector.h>
 #include <wfmath/quaternion.h>
 #include <wfmath/point.h>
+#ifdef __APPLE__
+#include <OpenAL/al.h>
+#else
 #include <AL/al.h>
+#endif
+
 namespace Ember {
 
 /**

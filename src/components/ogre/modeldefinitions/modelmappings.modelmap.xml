@@ -301,8 +301,8 @@
 	<automodelmapping name="wood" />
 
 <!-- outdoor structures -->
-	<automodelmapping name="palissade" />
-	<automodelmapping name="palissade_earth" />
+	<automodelmapping name="palisade" />
+	<automodelmapping name="palisade_earth" />
 	<modelmapping name="stone_palisade">
 		<entitymatch>
 			<case>
@@ -350,7 +350,14 @@
 		</entitymatch>
 	</modelmapping>	
 	<automodelmapping name="jetty" />
-	<automodelmapping name="campfire" />
+	<modelmapping name="campfire">
+		<entitymatch>
+			<case>
+				<caseparam type="equals">campfire</caseparam>
+				<action type="display-model">campfireB</action>
+			</case>
+		</entitymatch>
+	</modelmapping>	
 	<automodelmapping name="choppingblock" />
 	<modelmapping name="gravestone">
 		<entitymatch>

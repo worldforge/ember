@@ -35,11 +35,11 @@ using namespace CEGUI;
 namespace EmberOgre {
 namespace Gui {
 
-IconBase::IconBase(const std::string& name, const Image* background, const Image* foreground, const Image* borderInactive, const Image* borderActive)
+IconBase::IconBase(const std::string& name, const Image* background, const Image* foreground, const Image* borderInactive, const Image* borderActive, UVector2 size)
 {
 
 	mContainer = WindowManager::getSingleton().createWindow("DefaultGUISheet", "icons/" + name + "/container");
-	mContainer->setSize(UVector2(UDim(0, 48), UDim(0, 48)));
+	mContainer->setSize(size);
 	mContainer->setVisible(true);
 	mContainer->setEnabled(true);
 //	mContainer->setFrameEnabled(false);

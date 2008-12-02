@@ -44,9 +44,10 @@ public:
      * @param foreground the image for the foreground, will always be shown
      * @param borderInactive the image for the border when active (i.e. rolled over). Will only be active when rolled over.
      * @param borderActive the image for the border when inactive (i.e. not rolled over). Will only be active when not rolled over.
+     * @param size The size of the icon. Defaults to 48x48px.
      * @return 
      */
-    IconBase(const std::string& name, const CEGUI::Image* background, const CEGUI::Image* foreground, const CEGUI::Image* borderInactive, const CEGUI::Image* borderActive);
+    IconBase(const std::string& name, const CEGUI::Image* background, const CEGUI::Image* foreground, const CEGUI::Image* borderInactive, const CEGUI::Image* borderActive, CEGUI::UVector2 size = CEGUI::UVector2(CEGUI::UDim(0, 48), CEGUI::UDim(0, 48)));
 
     ~IconBase();
     

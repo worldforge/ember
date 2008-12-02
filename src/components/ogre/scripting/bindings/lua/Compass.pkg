@@ -45,6 +45,11 @@ public:
     void reposition(float x, float y);
     void rotate(const Ogre::Degree& degree);
     void rotate(const Ogre::Radian& radian);
+    
+    /**
+     * @brief Refreshes the compass rendering.
+     */
+    void refresh();
 
 };
 
@@ -54,9 +59,6 @@ public:
 	CEGUICompassImpl();
 	virtual ~CEGUICompassImpl();
     const CEGUI::Image* getViewImage();
-    
-    virtual void reposition(float x, float y) ;
-    virtual void rotate(const Ogre::Degree& degree);
 };
 
 class OverlayCompassImpl : ICompassImpl
@@ -65,11 +67,55 @@ public:
 	OverlayCompassImpl();
 	virtual ~OverlayCompassImpl();
 	
-    virtual void reposition(float x, float y);
-    virtual void rotate(const Ogre::Degree& degree);
-	
 };
 
+/**
+@brief A compass implementation which uses a compositor to create the rounded map image.
+The main problem with CEGUI is that there's no easy way to apply transparence to a dynamic render texture. By using a compositor we can however render the /ui/compass material, which will use an alpha mask to remove the border from the map texture, providing a rounded shape.
+This implementation will only provide the rounded map texture. It's up to other components to then provide further functionality. This can perhaps be done through CEGUI.
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+*/
+class RenderedCompassImpl : ICompassImpl
+{
+public:
+
+	/**
+	 * @brief Ctor.
+	 */
+	RenderedCompassImpl();
+	
+	/**
+	 * @brief Ctor.
+	 * @param compassMaterialName The name of the compass ogre material, defaults to "/ui/compass". The material must have a texture unit state named "Background" in it's first pass.
+	 */
+	RenderedCompassImpl(std::string compassMaterialName);
+	
+	/**
+	 * @brief Ctor.
+	 * @param compassMaterialName The name of the compass ogre material, defaults to "/ui/compass". The material must have a texture unit state named "Background" in it's first pass.
+	 * @param pointerMaterialName The name of the pointer ogre material, defaults to "/ui/compass/pointer". The material must have a texture unit state named "Pointer", which must reside in the first pass.
+	 */
+	RenderedCompassImpl(std::string compassMaterialName, std::string pointerMaterialName);
+	
+	
+	/**
+	 * @brief Dtor.
+	 * The render texture which this instance owns will be destroyed along with this instance.
+	 */
+	virtual ~RenderedCompassImpl();
+	
+	/**
+	* @brief Gets the texture onto which the compass is rendered.
+	* @return The texture pointer.
+	*/
+	Ogre::TexturePtr getTexture() const;
+
+	/**
+	* @brief Gets the texture onto which the compass pointer is rendered.
+	* @return The texture pointer.
+	*/
+	Ogre::TexturePtr getPointerTexture() const;
+};
 
 class CompassCameraAnchor
 {
@@ -89,6 +135,31 @@ public:
 	CompassSceneNodeAnchor(EmberOgre::Gui::Compass& compass, Ogre::SceneNode* sceneNode);
 	
 	virtual ~CompassSceneNodeAnchor();
+
+};
+
+/**
+@brief An anchor implementation which will attach the anchor to both a certain Ogre::Camera instance and a scene node.
+The camera will be used for determining the direction of the compass and the scene node will be used to determine the position. This anchor is mainly useful for thir person cameras.
+@see CompassAnchor
+
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+*/
+class CompassThirdPersonCameraAnchor
+{
+public:
+
+	/**
+	 * @brief Ctor.
+	 * @param compass The compass to which we want to attach the anchor.
+	 * @param camera The Ogre::Camera instance which we want the anchor to follow. When the camera moves the compass will move.
+	 */
+	CompassThirdPersonCameraAnchor(EmberOgre::Gui::Compass& compass, Ogre::Camera* camera, Ogre::SceneNode* node);
+	
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~CompassThirdPersonCameraAnchor();
 
 };
 

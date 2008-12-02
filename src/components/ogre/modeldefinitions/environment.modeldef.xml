@@ -13,14 +13,12 @@
 
 	<model name="sun">
 		<submodels>
-			<submodel mesh="art/primitives/models/sphere.mesh" >
+			<submodel mesh="3d_objects/primitives/models/sphere.mesh" >
 				<parts>
 					<part name="main" show="true" />
 				</parts>
 			</submodel>
 		</submodels>
 	</model>
-	
-
 	
 </models>

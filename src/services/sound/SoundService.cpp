@@ -1,5 +1,6 @@
 /*
   Copyright (C) 2008 Romulo Fernandes Machado (nightz)
+  Copyright (C) 2008 Erik Hjortsberg <erik.hjortsberg@iteam.se>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -22,6 +23,7 @@
 
 #include "SoundSample.h"
 
+#include "services/config/ConfigService.h"
 #include "services/logging/LoggingService.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
@@ -48,6 +50,7 @@ SoundService::SoundService()
 #else
 	: mResourceProvider(0)
 #endif
+, mEnabled(false)
 {
 	setName("Sound Service");
 	setDescription("Service for reproduction of sound effects and background music");
@@ -69,25 +72,38 @@ Service::Status SoundService::start()
 {
 	S_LOG_INFO("Sound Service starting");
 	
-	#ifndef __WIN32__
-		alutInit(NULL, NULL);
-	#else
-		mDevice = alcOpenDevice("DirectSound3D");
+	if (Ember::EmberServices::getSingleton().getConfigService()->hasItem("audio", "enabled") && static_cast<bool>(Ember::EmberServices::getSingleton().getConfigService()->getValue("audio", "enabled")) == false) {
+		S_LOG_INFO("Sound disabled.");
+	} else {
+	
+		if (isEnabled()) {
+			S_LOG_FAILURE("Can't start the sound system if it's already started.");
+		} else {
 
-		if (!mDevice)
-		{
-			S_LOG_FAILURE("Sound Service failed to start, sound device not found 'DirectSound3D'");
-			return Service::FAILURE;
+		#ifndef __WIN32__
+			mEnabled = alutInit(NULL, NULL) == ALC_TRUE;
+		#else
+			mDevice = alcOpenDevice("DirectSound3D");
+	
+			if (!mDevice) {
+				mEnabled = false;
+				S_LOG_FAILURE("Sound Service failed to start, sound device not found 'DirectSound3D'");
+				return Service::FAILURE;
+			}
+	
+			mContext = alcCreateContext(mDevice, NULL);
+			if (!mContext) {
+				mEnabled = false;
+				S_LOG_FAILURE("Sound Service failed to start, sound device not found 'DirectSound3D'");
+				return Service::FAILURE;
+			}
+			mEnabled = alcMakeContextCurrent(mContext) == ALC_TRUE;
+		#endif
+		
+			SoundGeneral::checkAlError();
 		}
-
-		mContext = alcCreateContext(mDevice, NULL);
-		alcMakeContextCurrent(mContext);
-	#endif
+	}
 	
-	SoundGeneral::checkAlError();
-	
-	mBaseSamples.clear();
-
 	return Service::OK;
 }
 	
@@ -110,16 +126,27 @@ void SoundService::stop(int code)
 
 
 ///this hangs, perhaps because we don't clean up properly after us, so we'll deactivate it for now
+// 	if (isEnabled()) {
 // 		#ifndef __WIN32__
 // 			alutExit();
 // 		#else
 // 			alcMakeContextCurrent(NULL);
 // 			alcDestroyContext(mContext);
 // 			alcCloseDevice(mDevice);
+// 			mDevice = 0;
+// 			mContext = 0;
 // 		#endif
+// 	}
+	mEnabled = false;
 	Service::stop(code);
 	setStatus(Service::OK);
 }
+
+bool SoundService::isEnabled() const
+{
+	return mEnabled;
+}
+
 
 void SoundService::runCommand(const std::string &command, const std::string &args)
 {
@@ -168,6 +195,9 @@ bool SoundService::unregisterStream(const StreamedSoundSample* sample)
 
 void SoundService::updateListenerPosition(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation)
 {
+	if (!isEnabled()) {
+		return;
+	}
 	alListener3f(AL_POSITION, pos.x(), pos.y(), pos.z());
 	SoundGeneral::checkAlError("Setting the listener position.");
 
@@ -205,6 +235,9 @@ void SoundService::updateListenerPosition(const WFMath::Point<3>& pos, const WFM
 
 void SoundService::updateListenerPosition(const WFMath::Point<3>& pos, const WFMath::Vector<3>& direction, const WFMath::Vector<3> up)
 {
+	if (!isEnabled()) {
+		return;
+	}
 	alListener3f(AL_POSITION, pos.x(), pos.y(), pos.z());
 	SoundGeneral::checkAlError("Setting the listener position.");
 
@@ -265,6 +298,9 @@ bool SoundService::destroySoundSample(const std::string& soundPath)
 	
 SoundInstance* SoundService::createInstance()
 {
+	if (!isEnabled()) {
+		return 0;
+	}
 	SoundInstance* instance = new SoundInstance();
 	mInstances.push_back(instance);
 	return instance;

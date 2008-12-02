@@ -53,7 +53,7 @@ namespace Environment {
 	@see Foliage
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
-class FoliageBase
+class FoliageBase : public sigc::trackable
 {
 public:
 	/**

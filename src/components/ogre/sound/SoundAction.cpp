@@ -71,7 +71,7 @@ namespace EmberOgre
 		if (!groupModel)
 		{
 			S_LOG_FAILURE("A template to the group " << name << " could not be found.");
-			return NULL;
+			return 0;
 		}
 
 		SoundGroup* newGroup = new SoundGroup();
@@ -94,6 +94,10 @@ namespace EmberOgre
 		if (mGroup) {
 			if (!mInstance) {
 				mInstance = EmberServices::getSingleton().getSoundService()->createInstance();
+				if (!mInstance) {
+					///The sound system seems to be disabled (could be for a valid reason) so just return without any fuss.
+					return;
+				}
 				mInstance->setMotionProvider(this);
 				mInstance->setIsLooping(mIsLooping);
 				///If the sound is set not to loop, we need to listen for when it's done playing and remove the instance once it's done (to save on sound resources).

@@ -538,7 +538,7 @@ void IngameChatWidget::ChatText::updateText(const std::string & line)
 			responseText->setProperty("HorzFormatting", "WordWrapLeftAligned");
  			responseText->setProperty("FrameEnabled", "false");
  			responseText->setProperty("BackgroundEnabled", "false");
- 			responseText->setProperty("Font", "Vera-Sans-Bold-8");
+ 			responseText->setProperty("Font", "DejaVuSans-Bold-8");
  			responseText->setProperty("TextColours", "tl:FFFFFFFF tr:FFFFFFFF bl:FFffc990 br:FFffc990");
 			
 			

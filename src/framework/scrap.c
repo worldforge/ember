@@ -1,6 +1,8 @@
 
 /* Handle clipboard text and data in arbitrary formats */
 
+#ifndef WITHOUT_SCRAP
+
 #include <stdio.h>
 #include <limits.h>
 
@@ -638,3 +640,5 @@ PRIVATE int clipboard_filter(const SDL_Event *event)
   return(1);
 }
 #endif /* X11_SCRAP */
+
+#endif // WITHOUT_SCRAP

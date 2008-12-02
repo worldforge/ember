@@ -11,9 +11,8 @@ ceguiconfigdir = $(datadir)/ember/media/shared/gui/cegui/datafiles/configs
 ceguilooknfeeldir = $(datadir)/ember/media/shared/gui/cegui/datafiles/looknfeel
 ceguischemadir = $(datadir)/ember/media/shared/gui
 
-
-dist_ceguifonts_DATA = datafiles/fonts/Font.xsd datafiles/fonts/vera-sans-14.xml datafiles/fonts/vera-sans-10.xml datafiles/fonts/vera-sans-8.xml datafiles/fonts/vera-sans-bold-8.xml datafiles/fonts/vera-sans-bold-10.xml
-dist_ceguiimagesets_DATA = datafiles/imagesets/Imageset.xsd datafiles/imagesets/iconset_standard.imageset datafiles/imagesets/iconset_mason.imageset datafiles/imagesets/EmberLook.imageset datafiles/imagesets/status_main.imageset
+dist_ceguifonts_DATA = datafiles/fonts/DejaVuSans-Bold-8.xml datafiles/fonts/DejaVuSans-Bold-10.xml datafiles/fonts/DejaVuSans-14.xml datafiles/fonts/DejaVuSans-10.xml datafiles/fonts/DejaVuSans-8.xml
+dist_ceguiimagesets_DATA = datafiles/imagesets/Imageset.xsd datafiles/imagesets/iconset_standard.imageset datafiles/imagesets/iconset_mason.imageset datafiles/imagesets/EmberLook.imageset datafiles/imagesets/status_main.imageset datafiles/imagesets/compass.imageset
 dist_ceguilayouts_DATA = datafiles/layouts/GUILayout.xsd
 dist_ceguischemes_DATA = datafiles/schemes/GUIScheme.xsd datafiles/schemes/EmberLookSkin.scheme
 dist_ceguiconfig_DATA = datafiles/configs/cegui.config

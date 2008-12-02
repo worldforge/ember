@@ -29,7 +29,9 @@
 #include "InputCommandMapper.h"
 
 #include "main/Application.h"
+#ifndef WITHOUT_SCRAP
 #include "framework/scrap.h"
+#endif // WITHOUT_SCRAP
 #include "IInputAdapter.h"
 
 #include "framework/Tokeniser.h"
@@ -94,9 +96,11 @@ void Input::initialize(int width, int height)
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 	
 	///must initialize the clipboard support
+	#ifndef WITHOUT_SCRAP
 	if ( init_scrap() < 0 ) {
 		S_LOG_FAILURE("Couldn't init clipboard: \n" << SDL_GetError());
 	}
+	#endif // WITHOUT_SCRAP
 	
 	Ember::ConsoleBackend::getSingletonPtr()->registerCommand(BINDCOMMAND,this);
 	Ember::ConsoleBackend::getSingletonPtr()->registerCommand(UNBINDCOMMAND,this);
@@ -165,9 +169,11 @@ void Input::setMovementModeEnabled(bool value)
 
 void Input::writeToClipboard(const std::string& text)
 {
+	#ifndef WITHOUT_SCRAP
 	char basicString[text.length() + 1];
 	strcpy (basicString,text.c_str());
 	put_scrap(T('T','E','X','T'), text.length(), basicString);
+	#endif // WITHOUT_SCRAP
 }
 
 
@@ -382,6 +388,7 @@ void Input::pollEvents(float secondsSinceLast)
 
 void Input::pasteFromClipboard()
 {
+	#ifndef WITHOUT_SCRAP
 	static char *scrap = 0;
 	int scraplen;
 
@@ -391,6 +398,7 @@ void Input::pasteFromClipboard()
 			if (!(*I)->injectChar(scrap[i])) break;
 		}
 	}
+	#endif // WITHOUT_SCRAP
 }
 
 void Input::keyChanged(const SDL_KeyboardEvent &keyEvent)

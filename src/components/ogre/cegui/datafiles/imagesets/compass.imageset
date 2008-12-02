@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<Imageset Name="compass" Imagefile="themes/ember/gui/compass/outer_ring.png" NativeHorzRes="256" NativeVertRes="256" AutoScaled="false">
+	<Image Name="full" XPos="0" YPos="0" Width="256" Height="256" />
+</Imageset>

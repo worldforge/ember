@@ -10,39 +10,8 @@
 			</submodel>
 		</submodels>
 	</model>
-	
-    <model name="pine" usescaleof="height" showcontained="true" scale="2.000000"  icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
-    	<rendering scheme="forest" />
-        <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
-        <submodels>
-            <submodel mesh="3d_objects/plants/trees/models/pine/pine.mesh">
-                <parts>
-                    <part name="pine" group="main" show="false">
-                        <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine" />
-                        </subentities>
-                    </part>
-                    <part name="pine_snow" group="main" show="false">
-                        <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
-                            <subentity index="1" material="/global/plants/trees/tree_pine_snow" />
-                        </subentities>
-                    </part>
-                    <part name="fir" group="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_fir" />
-                            <subentity index="1" material="/global/plants/trees/tree_fir" />
-                        </subentities>
-                    </part>
-                </parts>
-            </submodel>
-        </submodels>
-        <actions />
-        <attachpoints />
-        <views />
-    </model>
-    <model name="pineA" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
+    
+	<model name="pineA" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
     	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />

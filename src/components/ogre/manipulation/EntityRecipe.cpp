@@ -36,7 +36,12 @@
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/Codecs/XML.h>
 
-#include <lua.hpp>
+extern "C" {
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
+}
+//#include <lua.hpp>
 #include <tolua++.h>
 
 namespace EmberOgre {

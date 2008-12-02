@@ -26,9 +26,11 @@
 
 #include "OgreInfo.h"
 
-#ifdef WIN32
+#if defined(__WIN32__)
+#elif defined(__APPLE__)
+#include <OpenGL/gl.h>
 #else
-	#include <GL/gl.h> 
+#include <GL/gl.h>
 #endif
 
 

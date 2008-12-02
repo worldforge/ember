@@ -84,8 +84,6 @@ loadScript("Inventory.lua")
 loadScript("PickingInfo.lua")
 
 
---disable for 0.5.2 release
---loadScript("Compass.lua")
---loadScript("TerrainEditor.lua")
+loadScript("Compass.lua")
 
 loadScript("EntityCreator.lua")

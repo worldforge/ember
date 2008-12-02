@@ -19,6 +19,7 @@ $pfile "Environment.pkg"
 
 $pfile "GUIManager.pkg"
 //$pfile "MousePicker.pkg"
+$pfile "TerrainGenerator.pkg"
 $pfile "TerrainArea.pkg"
 $pfile "TerrainEditor.pkg"
 $pfile "MotionManager.pkg"
@@ -97,7 +98,7 @@ class EmberOgre
 
 	Avatar* getAvatar() const;
 	//Ogre::SceneManager* getSceneManager() const;
-	//TerrainGenerator* getTerrainGenerator() const;
+	EmberOgre::Terrain::TerrainGenerator* getTerrainGenerator() const;
 	MotionManager* getMotionManager() const;
 	//Ogre::Root* getOgreRoot() const;
 	EmberEntityFactory* getEntityFactory() const;

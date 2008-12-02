@@ -7,7 +7,7 @@
 		<Property Name='VertFormatting' Value='TopAligned'/>
 		<Property Name='FrameEnabled' Value='false'/>
 		<Property Name='BackgroundEnabled' Value='false'/>
-		<Property Name='Font' Value='Vera-Sans-Bold-10'/>
+		<Property Name='Font' Value='DejaVuSans-Bold-10'/>
 		<Property Name='TextColours' Value='tl:FFFFFFFF tr:FFFFFFFF bl:FFffc990 br:FFffc990'/>
 	</Window>
 </GUILayout>
