@@ -1,0 +1,21 @@
+<models>
+    <model name="spade" usescaleof="none" scale="1.000000" showcontained="true" icon="3d_objects/items/tools/textures/spade/I.png">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/tools/models/spade/spade.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/items/tool/tool_handle" />
+                            <subentity index="1" material="/global/items/tool/tool_head" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+</models>
