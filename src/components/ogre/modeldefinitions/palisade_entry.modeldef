@@ -1,9 +1,9 @@
 <models>
-    <model name="palissade_circle" usescaleof="all" showcontained="true" icon="">
+    <model name="palisade_entry" usescaleof="all" showcontained="true" icon="">
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/structures/models/palissade/pallisade_circle.mesh">
+            <submodel mesh="3d_objects/structures/models/palisade/palisade_entry.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
