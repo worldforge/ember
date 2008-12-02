@@ -78,8 +78,8 @@ grep -orIE --no-filename "mesh=\"[^\"]*\"" ${original_media}/modeldefinitions/*.
 # grep -orIE --no-filename "mesh=\"junk[^\"]*\"" ${original_media}/modeldefinitions/*.modeldef.xml | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> ${shared_dir}/common_meshes.list
 cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_meshes.list ` | ( cd ${shared_dir}/common; tar --keep-newer-files -xvf -) 2>  /dev/null
 # exit
-mkdir -p ${shared_dir}/models
-cd ${original_media}/models ; tar cf - `find -L . -iname \*.mesh` | ( cd ${shared_dir}/models; tar --keep-newer-files -xvf -) 2>  /dev/null
+# mkdir -p ${shared_dir}/models
+# cd ${original_media}/models ; tar cf - `find -L . -iname \*.mesh` | ( cd ${shared_dir}/models; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 
 echo "Copying skeletons"
@@ -193,11 +193,6 @@ do
 	mkdir -p `dirname ${shared_dir}/common/resources/ogre/caelum/${filename}`
 	cp -uf ${filename} ${shared_dir}/common/resources/ogre/caelum/${filename}
 done
-
-
-echo "Copying base.zip file"
-mkdir -p ${shared_dir}/common/resources/ogre/scripts
-cp ${original_media}/common/resources/ogre/scripts/base.zip ${shared_dir}/common/resources/ogre/scripts/
 
 
 #We don't have any user packs, and this only conflicts with the base.zip archive (i.e. it copies it when it really shouldn't)
