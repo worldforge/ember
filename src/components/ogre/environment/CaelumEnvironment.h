@@ -73,6 +73,7 @@ public:
 	 */
 	virtual	void runCommand(const std::string &command, const std::string &args);
 
+
 private:
 
 	
@@ -101,7 +102,7 @@ private:
 	
 	CaelumSky* mSky;
 	CaelumSun* mSun;
-	Water* mWater;
+	IWater* mWater;
 
 };
 	
