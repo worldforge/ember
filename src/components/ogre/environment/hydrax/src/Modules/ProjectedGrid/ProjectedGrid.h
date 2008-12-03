@@ -185,7 +185,7 @@ namespace Hydrax{ namespace Module
 		    @param CgfFile Ogre::ConfigFile reference 
 			@return True if is the correct module config
 		 */
-		bool loadCfg(Ogre::ConfigFile &CfgFile);
+		bool loadCfg(const Ogre::ConfigFile &CfgFile);
 
 		/** Get the current heigth at a especified world-space point
 		    @param Position X/Z World position

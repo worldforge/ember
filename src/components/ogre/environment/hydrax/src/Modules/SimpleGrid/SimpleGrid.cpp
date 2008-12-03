@@ -219,7 +219,7 @@ namespace Hydrax{namespace Module
 		Data += CfgFileManager::_getCfgString("SG_ChoppyStrength", mOptions.ChoppyStrength); Data += "\n";
 	}
 
-	bool SimpleGrid::loadCfg(Ogre::ConfigFile &CfgFile)
+	bool SimpleGrid::loadCfg(const Ogre::ConfigFile &CfgFile)
 	{
 		if (!Module::loadCfg(CfgFile))
 		{

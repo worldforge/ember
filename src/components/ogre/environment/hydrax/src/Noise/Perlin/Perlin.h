@@ -201,7 +201,7 @@ namespace Hydrax{ namespace Noise
 		    @param CgfFile Ogre::ConfigFile reference 
 			@return True if is the correct noise config
 		 */
-		bool loadCfg(Ogre::ConfigFile &CfgFile);
+		bool loadCfg(const Ogre::ConfigFile &CfgFile);
 
 		/** Get the especified x/y noise value
 		    @param x X Coord

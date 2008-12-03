@@ -54,6 +54,12 @@ namespace Hydrax
 		 */
 		const bool load(const Ogre::String& File) const;
 
+		/** Load hydrax cfg file
+		    @param CfgFile File
+			@return false if an error has been ocurred(Check the log file in this case).
+		 */
+		const bool load(const Ogre::ConfigFile& CfgFile) const;
+		
 		/** Save current hydrax config to a file
 		    @param File Destination file name
 			@param Path File path
@@ -109,7 +115,7 @@ namespace Hydrax
 			@return int value
 			@remarks if the parameter isn't found or the data type is not an int value, return 0 as default
 		 */
-		static int _getIntValue(Ogre::ConfigFile& CfgFile, const Ogre::String Name);
+		static int _getIntValue(const Ogre::ConfigFile& CfgFile, const Ogre::String Name);
 
 		/** Get float value
 		    @param CfgFile Config file
@@ -117,7 +123,7 @@ namespace Hydrax
 			@return float value
 			@remarks if the parameter isn't found or the data type is not a float value, return 0 as default
 		 */
-		static Ogre::Real _getFloatValue(Ogre::ConfigFile& CfgFile, const Ogre::String Name);
+		static Ogre::Real _getFloatValue(const Ogre::ConfigFile& CfgFile, const Ogre::String Name);
 
 		/** Get bool value
 		    @param CfgFile Config file
@@ -125,7 +131,7 @@ namespace Hydrax
 			@return bool value
 			@remarks if the parameter isn't found or the data type is not a bool value, return false as default
 		 */
-		static bool _getBoolValue(Ogre::ConfigFile& CfgFile, const Ogre::String Name);
+		static bool _getBoolValue(const Ogre::ConfigFile& CfgFile, const Ogre::String Name);
 
 		/** Get vector2 value
 		    @param CfgFile Config file
@@ -133,7 +139,7 @@ namespace Hydrax
 			@return vector2 value
 			@remarks if the parameter isn't found or the data type is not an int value, returns (0,0) as default
 		 */
-		static Ogre::Vector2 _getVector2Value(Ogre::ConfigFile& CfgFile, const Ogre::String Name);
+		static Ogre::Vector2 _getVector2Value(const Ogre::ConfigFile& CfgFile, const Ogre::String Name);
 
 		/** Get vector3 value
 		    @param CfgFile Config file
@@ -141,7 +147,7 @@ namespace Hydrax
 			@return vector3 value
 			@remarks if the parameter isn't found or the data type is not an int value, returns (0,0,0) as default
 		 */
-		static Ogre::Vector3 _getVector3Value(Ogre::ConfigFile& CfgFile, const Ogre::String Name);
+		static Ogre::Vector3 _getVector3Value(const Ogre::ConfigFile& CfgFile, const Ogre::String Name);
 
 		/** Get size value
 		    @param CfgFile Config file
@@ -149,7 +155,7 @@ namespace Hydrax
 			@return size value
 			@remarks if the parameter isn't found or the data type is not an int value, returns (0,0) as default
 		 */
-		static Size _getSizeValue(Ogre::ConfigFile& CfgFile, const Ogre::String Name);
+		static Size _getSizeValue(const Ogre::ConfigFile& CfgFile, const Ogre::String Name);
 
 		/** Check is a std::vector<Ogre::String> contains a specified Ogre::String
 		    @param List String list
@@ -181,7 +187,7 @@ namespace Hydrax
 		/** Load components settings
 		    @param CfgFile Config file
 		 */
-		const void _loadComponentsSettings(Ogre::ConfigFile& CfgFile) const;
+		const void _loadComponentsSettings(const Ogre::ConfigFile& CfgFile) const;
 
 		/** Get rtt quality config string
 		    @return Rtt quality cfg string
@@ -191,7 +197,7 @@ namespace Hydrax
 		/** Load rtt settings
 		    @param CfgFile Config file
 		 */
-		const void _loadRttSettings(Ogre::ConfigFile& CfgFile) const;
+		const void _loadRttSettings(const Ogre::ConfigFile& CfgFile) const;
 
 		/** Get hydrax version cfg string
 		    @return Hydrax version cfg string
@@ -202,7 +208,7 @@ namespace Hydrax
 		    @param CfgFile Config file
 		    @return true if it's the same version, false if not.
 		 */
-		const bool _checkVersion(Ogre::ConfigFile& CfgFile) const;
+		const bool _checkVersion(const Ogre::ConfigFile& CfgFile) const;
 		    
 		/// Hydrax parent pointer
 		Hydrax* mHydrax;

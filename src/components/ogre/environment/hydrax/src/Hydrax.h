@@ -136,7 +136,18 @@ namespace Hydrax
 		{
 			return mCfgFileManager->load(File);
 		}
-
+		
+		/** Load config from file
+		    @param CfgFile File
+			@return false if an error has been ocurred(Check the log file in this case).
+			@remarks If module isn't set, or module isn't the same from
+			         config file, module options won't be loaded.
+		 */
+		inline const bool loadCfg(const Ogre::ConfigFile& CfgFile) const
+		{
+			return mCfgFileManager->load(CfgFile);
+		}
+		
         /** Set clip planes error
             @param PlanesError Clip planes error
          */

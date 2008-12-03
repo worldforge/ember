@@ -53,6 +53,11 @@ namespace Hydrax
 		{
 			return false;
 		}
+		load(CfgFile);
+	}
+	
+	const bool CfgFileManager::load(const Ogre::ConfigFile& CfgFile) const
+	{
 
 		// Load main options
 		mHydrax->setPosition(_getVector3Value(CfgFile,"Position"));
@@ -300,7 +305,7 @@ namespace Hydrax
 		return false;
 	}
 
-	const void CfgFileManager::_loadComponentsSettings(Ogre::ConfigFile& CfgFile) const
+	const void CfgFileManager::_loadComponentsSettings(const Ogre::ConfigFile& CfgFile) const
 	{
 		std::vector<Ogre::String> Cmpnts = Ogre::StringUtil::split(CfgFile.getSetting("Components"), "|");
 
@@ -399,7 +404,7 @@ namespace Hydrax
 			_getCfgString("Rtt_Quality_GPUNormalMap", mHydrax->getRttManager()->getTextureSize(RttManager::RTT_GPU_NORMAL_MAP));
 	}
 
-	const void CfgFileManager::_loadRttSettings(Ogre::ConfigFile& CfgFile) const
+	const void CfgFileManager::_loadRttSettings(const Ogre::ConfigFile& CfgFile) const
 	{
 		mHydrax->getRttManager()->setTextureSize(RttManager::RTT_REFLECTION,_getSizeValue(CfgFile,"Rtt_Quality_Reflection"));
 		mHydrax->getRttManager()->setTextureSize(RttManager::RTT_REFRACTION,_getSizeValue(CfgFile,"Rtt_Quality_Refraction"));
@@ -419,7 +424,7 @@ namespace Hydrax
 				Ogre::StringConverter::toString(HYDRAX_VERSION_PATCH)+"\n\n";
 	}
 
-	const bool CfgFileManager::_checkVersion(Ogre::ConfigFile& CfgFile) const
+	const bool CfgFileManager::_checkVersion(const Ogre::ConfigFile& CfgFile) const
 	{
 		if(CfgFile.getSetting("HydraxVersion") != (
 			    // Major
@@ -437,7 +442,7 @@ namespace Hydrax
 		return true;
 	}
 
-	int CfgFileManager::_getIntValue(Ogre::ConfigFile& CfgFile, const Ogre::String Name)
+	int CfgFileManager::_getIntValue(const Ogre::ConfigFile& CfgFile, const Ogre::String Name)
 	{
 		Ogre::String Value = CfgFile.getSetting("<int>" + Name);
 
@@ -451,7 +456,7 @@ namespace Hydrax
 		}
 	}
 
-	Ogre::Real CfgFileManager::_getFloatValue(Ogre::ConfigFile& CfgFile, const Ogre::String Name)
+	Ogre::Real CfgFileManager::_getFloatValue(const Ogre::ConfigFile& CfgFile, const Ogre::String Name)
 	{
 		Ogre::String Value = CfgFile.getSetting("<float>" + Name);
 
@@ -465,7 +470,7 @@ namespace Hydrax
 		}
 	}
 
-	bool CfgFileManager::_getBoolValue(Ogre::ConfigFile& CfgFile, const Ogre::String Name)
+	bool CfgFileManager::_getBoolValue(const Ogre::ConfigFile& CfgFile, const Ogre::String Name)
 	{
 		Ogre::String Value = CfgFile.getSetting("<bool>" + Name);
 
@@ -479,7 +484,7 @@ namespace Hydrax
 		}
 	}
 
-	Ogre::Vector2 CfgFileManager::_getVector2Value(Ogre::ConfigFile& CfgFile, const Ogre::String Name)
+	Ogre::Vector2 CfgFileManager::_getVector2Value(const Ogre::ConfigFile& CfgFile, const Ogre::String Name)
 	{
 		Ogre::String Value = CfgFile.getSetting("<vector2>" + Name);
 
@@ -494,7 +499,7 @@ namespace Hydrax
 		}
 	}
 
-	Ogre::Vector3 CfgFileManager::_getVector3Value(Ogre::ConfigFile& CfgFile, const Ogre::String Name)
+	Ogre::Vector3 CfgFileManager::_getVector3Value(const Ogre::ConfigFile& CfgFile, const Ogre::String Name)
 	{
 		Ogre::String Value = CfgFile.getSetting("<vector3>" + Name);
 
@@ -510,7 +515,7 @@ namespace Hydrax
 		}
 	}
 
-	Size CfgFileManager::_getSizeValue(Ogre::ConfigFile& CfgFile, const Ogre::String Name)
+	Size CfgFileManager::_getSizeValue(const Ogre::ConfigFile& CfgFile, const Ogre::String Name)
 	{
 		Ogre::String Value = CfgFile.getSetting("<size>" + Name);
 

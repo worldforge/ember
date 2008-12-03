@@ -85,7 +85,7 @@ namespace Hydrax{ namespace Module
 		    @param CgfFile Ogre::ConfigFile reference 
 			@return True if is the correct module config
 		 */
-		virtual bool loadCfg(Ogre::ConfigFile &CfgFile);
+		virtual bool loadCfg(const Ogre::ConfigFile &CfgFile);
 
 		/** Get module name
 		    @return Module name

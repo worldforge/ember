@@ -95,7 +95,7 @@ namespace Hydrax{namespace Module
 		Data += "Module="+mName+"\n\n";
 	}
 
-	bool Module::loadCfg(Ogre::ConfigFile &CfgFile)
+	bool Module::loadCfg(const Ogre::ConfigFile &CfgFile)
 	{
 		if (CfgFile.getSetting("Module") == mName)
 		{

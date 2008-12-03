@@ -7,7 +7,7 @@ Copyright (C) 2008 Xavier Verguín González <xavierverguin@hotmail.com>
                                            <xavyiy@gmail.com>
 
 This program is free software; you can redistribute it and/or modify it under
-the terms of the GNU Lesser General Public License as published by the Free Software
+the terms of the GNU Lesser General Public License as (const Ogre::ConfigFile by the Free Software
 Foundation; either version 2 of the License, or (at your option) any later
 version.
 
@@ -152,7 +152,7 @@ namespace Hydrax{ namespace Module
 		    @param CgfFile Ogre::ConfigFile reference 
 			@return True if is the correct module config
 		 */
-		bool loadCfg(Ogre::ConfigFile &CfgFile);
+		bool loadCfg(const Ogre::ConfigFile &CfgFile);
 
 		/** Get the current heigth at a especified world-space point
 		    @param Position X/Z World position

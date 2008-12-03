@@ -217,7 +217,7 @@ namespace Hydrax{namespace Module
 		Data += CfgFileManager::_getCfgString("PG_Strength", mOptions.Strength); Data += "\n";
 	}
 
-	bool ProjectedGrid::loadCfg(Ogre::ConfigFile &CfgFile)
+	bool ProjectedGrid::loadCfg(const Ogre::ConfigFile &CfgFile)
 	{
 		if (!Module::loadCfg(CfgFile))
 		{

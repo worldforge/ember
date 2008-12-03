@@ -345,7 +345,7 @@ namespace Hydrax{namespace Noise
 		Data += CfgFileManager::_getCfgString("Perlin_GPU_LODParameters", mOptions.GPU_LODParameters); Data += "\n";
 	}
 
-	bool Perlin::loadCfg(Ogre::ConfigFile &CfgFile)
+	bool Perlin::loadCfg(const Ogre::ConfigFile &CfgFile)
 	{
 		if (!Noise::loadCfg(CfgFile))
 		{

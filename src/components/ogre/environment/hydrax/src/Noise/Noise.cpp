@@ -78,7 +78,7 @@ namespace Hydrax{namespace Noise
 		Data += "Noise="+mName+"\n\n";
 	}
 
-	bool Noise::loadCfg(Ogre::ConfigFile &CfgFile)
+	bool Noise::loadCfg(const Ogre::ConfigFile &CfgFile)
 	{
 		if (CfgFile.getSetting("Noise") == mName)
 		{
