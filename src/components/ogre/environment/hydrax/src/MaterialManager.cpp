@@ -1931,6 +1931,35 @@ namespace Hydrax
 			}
 			break;
 		}
+		
+		///After we've changed the material, we must flush all scene managers. If we don't do this, we'll run into assertion issues when using multiple scene managers (there's no problem if only one scene manager is used).
+		if(Ogre::Pass::getDirtyHashList().size()!=0 || Ogre::Pass::getPassGraveyard().size()!=0)
+		{
+			Ogre::SceneManagerEnumerator::SceneManagerIterator scenesIter = Ogre::Root::getSingleton().getSceneManagerIterator();
+			
+			while(scenesIter.hasMoreElements())
+			{
+				Ogre::SceneManager* pScene = scenesIter.getNext();
+				if(pScene)
+				{
+					Ogre::RenderQueue* pQueue = pScene->getRenderQueue();
+					if(pQueue)
+					{
+					Ogre::RenderQueue::QueueGroupIterator groupIter = pQueue->_getQueueGroupIterator();
+					while(groupIter.hasMoreElements())
+					{
+						Ogre::RenderQueueGroup* pGroup = groupIter.getNext();
+						if(pGroup)
+							pGroup->clear(false);
+					}//end_while(groupIter.hasMoreElements())
+					}//end_if(pScene)
+				}//end_if(pScene)
+			}//end_while(scenesIter.hasMoreElements())      
+			
+			// Now trigger the pending pass updates
+			Ogre::Pass::processPendingPassUpdates();
+		
+		}//end_if(m_Root..		
 	}
 
 	void MaterialManager::addDepthTechnique(Ogre::Technique *Technique, const bool& AutoUpdate)
