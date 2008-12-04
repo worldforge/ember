@@ -26,8 +26,6 @@ mkdir -p ${shared_dir}/common
 cd ${shared_dir}
 
 
-
-
 #try to get the textures needed
 #don't include lines starting with "/"
 grep -rIE --no-filename "^[^/].*texture "  ${material_dir}/*.material | sed -e 's/texture //g' > common_textures.list
@@ -125,7 +123,9 @@ cd ${shared_dir}
 grep -rIE --no-filename "^Zip\[shared\]=.*" ${current}/src/components/ogre/resources.cfg | sed -e 's/Zip\[shared\]=//g' > shared_packs.list
 cd ${original_media} ; tar cf - `cat ${shared_dir}/shared_packs.list ` | ( cd ${shared_dir}/; tar --keep-newer-files -xvf -) 2>  /dev/null
 
-
+echo "Copy fonts"
+mkdir -p ${shared_dir}/common/themes/ember/gui/fonts
+cp -a ${original_media}/common/themes/ember/gui/fonts/* ${shared_dir}/common/themes/ember/gui/fonts
 
 #then get the user media
 
