@@ -1,108 +1,106 @@
 Ember
 
- Introduction
+1 Introduction
 
 This is the Ember client for the Worldforge project.
 
-Ember is a fully functional 3d client for both Cyphesis 
-and Indri servers. It's goal is to be used with all 
-worlds created withing the Worldforge project.
+Ember is a fully functional 3d client for both Cyphesis and Indri 
+servers. It's goal is to be used with all worlds created withing 
+the Worldforge project.
 
- Quickstart
+2 Quickstart
 
-In the upper part of the window is the console. It has 
-two modes, full or small. In small mode, which is the 
-default, only the input strip is shown. I full mode the 
-console occupies half of the screen. Use F12 to switch 
-console modes. The console is used for both talking in 
-the world and executing commands. If you've used IRC 
-before you'll find it quite similiar. All commands are 
-prefixed by "/". Use the command "/list_commands" to get a 
-list of all available commands. If you just enter text 
-normally in the console, your character will say what 
-you've entered in the world.
+The first thing you'll see when you log in is the server browser, 
+which shows you all of the available servers. If the list is 
+empty you might be behind a firewall which blocks the needed 
+traffic.
 
-Use the server browser to connect to a server. Once 
-connected, you'll have to create a new account. Enter 
-an account name and a password and press "create". After 
-you're logged in with an account, you'll have to create 
-an avatar in the world. An account can have many 
-avatars. Choose a name, a type, a sex and optionally a 
-description.
+Use the server browser to connect to a server. Once connected, 
+you'll have to create a new account. Enter an account name and a 
+password and press “create”. After you're logged in with an 
+account, you'll have to create an avatar in the world. An account 
+can have many avatars. Choose a name, a type, a sex and 
+optionally a description.
 
- Moving around in the world
+2.1 Moving around in the world
 
-Once in the world you'll be presented to a third person 
-view of your avatar. The default mode is GUI mode. In 
-GUI mode you can interact with the different GUI 
-widgets and moving your mouse will move the cursor. 
-Press the right mouse button to switch to movement 
-mode. When in movement mode, the mouse is used to pan 
-around the world. The avatar will change direction to 
-face the camera. Use the keys w,a,s,d to move around 
-the world. Pressing shift will make the avatar run.
+Once in the world you'll be presented to a third person view of 
+your avatar. By moving the mouse you can pan around, and the keys 
+wasd will make your character move. If you click the right mouse 
+button you'll switch to “GUI mode”, in which mouse movements will 
+move the cursor instead of the camera, and you can interact with 
+the gui.
 
-When in gui mode, the gui behaves pretty much like a 
-standard gui. Double click on window headers to make 
-them roll up and down. 
+When in gui mode, the gui behaves pretty much like a standard 
+gui. Double click on window headers to make them roll up and 
+down. 
 
-Click on an entity in the world (a tree, a NPC) to show 
-the mouse picker menu. Most options here are pretty 
-self explanatory. If you have something wielded, like 
-an axe or a shovel, you also get an option to use the 
-wielded object with the picked entity.
+Click on an entity in the world (a tree, a NPC) to show the mouse 
+picker menu. Most options here are pretty self explanatory. If 
+you have something wielded, like an axe or a shovel, you also get 
+an option to use the wielded object with the picked entity.
 
- Talking to people
+2.1.1 Talking to people
 
-Use the console to talk to people in the world, just 
-enter some text and press enter. (Note that all console 
-commands are prefixed by "/", such as "/quit".) When 
-someone else in the world says something, it will be 
-shown through the use of a "talk bubble" to the left of 
-the person. Some NPC have a series of suggested 
-responses. These will be shown to the left of the NPC. 
-You can let your avatar say one of these by clicking on them.
+Down to the left you have a widget which allows you to interact 
+with the world. If you want to say something, just enter it here 
+and press enter. When someone else in the world says something, 
+it will be shown through the use of a “talk bubble” to the left 
+of the person. Some NPC have a series of suggested responses. 
+These will be shown to the left of the NPC. You can let your 
+avatar say one of these by clicking on them.
 
- Developing
+3 Developing
 
-The main design philosophy behind Ember is to as much 
-as possible use 3d party libraries. We strive to remove 
-as much uneccessary code from Ember as possible, if 
-there's equivalent functionality to be found in an 
-existing library. This prevents us from a 
-Not-Invented-Here mindset and makes it easier to kill 
-our darlings.
+The main design philosophy behind Ember is to as much as possible 
+use 3d party libraries. We strive to remove as much uneccessary 
+code from Ember as possible, if there's equivalent functionality 
+to be found in an existing library. This prevents us from a 
+Not-Invented-Here mindset and makes it easier to kill our 
+darlings.
 
-* It uses Ogre (http://www.ogre3d.org) to present the 
-  world in full 3d. Ogre is very much hardwired into 
-  the core of Ember. 
+• It uses Ogre (http://www.ogre3d.org) to present the world in 
+  full 3d. Ogre is very much hardwired into the core of Ember. 
 
-* SDL is used for input handling. This is not that hard 
-  wired as Ogre, but since the goal of SDL is to 
-  provide a platform agnostic library there's perhaps 
-  no big reason to provide support for a different 
-  input library. We will hade to do some research into 
-  DirectInput though. 
+• SDL is used for input handling. This is not that hard wired as 
+  Ogre, but since the goal of SDL is to provide a platform 
+  agnostic library there's perhaps no big reason to provide 
+  support for a different input library. We will hade to do some 
+  research into DirectInput though. 
 
-* SigC++ is used for signals and events. This is also 
-  very much hardwired into Ember.
+• SigC++ is used for signals and events. This is also very much 
+  hardwired into Ember.
 
 Other notable libraries used: 
 
-* CEGUI (http://www.cegui.org.uk) is used for the gui. 
-  This can be removed from Ember, and another library 
-  can be used. Note however that all current widgets 
-  are made for CEGUI only, ie. we don't try to provide 
-  a generic widget abstraction. It seems unlikely that 
-  such a construct would work. For reference, see any 
-  discussion on Java's AWT, Swing and SWT. 
+• CEGUI (http://www.cegui.org.uk) is used for the gui. This can 
+  be removed from Ember, and another library can be used. Note 
+  however that all current widgets are made for CEGUI only, ie. 
+  we don't try to provide a generic widget abstraction. It seems 
+  unlikely that such a construct would work. For reference, see 
+  any discussion on Java's AWT, Swing and SWT. 
 
-* OpenAL (http://www.openal.org/) is used for the 
-  sound. This should be loosely decoupled from Ember, 
-  but much like SDL OpenAL is geared towards providing 
-  platform agnostic sound support. Then again, FMOD 
-  might be interesting. 
+• OpenAL (http://www.openal.org/) is used for the sound. This 
+  should be loosely decoupled from Ember, but much like SDL 
+  OpenAL is geared towards providing platform agnostic sound 
+  support. Then again, FMOD might be interesting. 
 
 See the doc directory and 
-http://www.worldforge.org/dev/eng/clients/ember/ for 
-more information.
+http://www.worldforge.org/dev/eng/clients/ember/ for more 
+information.
+
+4 Third party libraries
+
+This project uses the Ogre3d library licensed under the LGPL. It 
+can be obtained from http://www.ogre3d.org
+
+This project uses the CEGUI library licensed under the LGPL. It 
+can be obtained from http://www.cegui.org.uk
+
+This project uses the OpenAL library licensed under the LGPL. It 
+can be obtained from http://www.openal.org/
+
+This project uses libraries from the Worldforge project, licensed 
+under the GPL. These can be obtained from 
+http://www.worldforge.org/
+
