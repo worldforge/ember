@@ -1,3 +1,3 @@
 #! /bin/sh
-git-log --numstat > ChangeLog
+git log --numstat > ChangeLog
 
