@@ -12,6 +12,8 @@ original_media=${PWD}/media
 user_dir=${media_dir}/media/user
 shared_dir=${media_dir}/media/shared
 
+srcdir=${PWD}/src
+
 ogre_dir=${original_media}/common/resources/ogre
 script_dir=${ogre_dir}/scripts
 material_dir=${script_dir}/materials
@@ -22,6 +24,7 @@ program_dir=${script_dir}/programs
 
 mkdir -p ${shared_dir}/common
 cd ${shared_dir}
+
 
 #try to get the textures needed
 #don't include lines starting with "/"
@@ -109,13 +112,20 @@ cp -a ${original_media}/common/COPYING.txt .
 # cd ${original_media}/sounds; tar cf - `find . -iname \*.wav` | ( cd ${shared_dir}/sounds; tar xvf -)
 
 
+echo "Copying gui files"
+cd ${shared_dir}
+grep -orIE --no-filename "Imagefile=\"[^\"]*\"" ${srcdir}/components/ogre/cegui/datafiles/imagesets/*.imageset | sed -e 's/Imagefile=\"//g' | sed -e 's/\"//g' > ${shared_dir}/media_textures.list
+cd ${original_media}/common/ ; tar cf - `cat ${shared_dir}/media_textures.list ` | ( cd ${shared_dir}/common; tar --keep-newer-files -xvf -) 2>  /dev/null
+
 
 echo "Copying shared media packs"
 cd ${shared_dir}
 grep -rIE --no-filename "^Zip\[shared\]=.*" ${current}/src/components/ogre/resources.cfg | sed -e 's/Zip\[shared\]=//g' > shared_packs.list
 cd ${original_media} ; tar cf - `cat ${shared_dir}/shared_packs.list ` | ( cd ${shared_dir}/; tar --keep-newer-files -xvf -) 2>  /dev/null
 
-
+echo "Copy fonts"
+mkdir -p ${shared_dir}/common/themes/ember/gui/fonts
+cp -a ${original_media}/common/themes/ember/gui/fonts/* ${shared_dir}/common/themes/ember/gui/fonts
 
 #then get the user media
 
@@ -123,16 +133,16 @@ echo "User media"
 mkdir -p ${user_dir}
 cd ${user_dir}
 
-#get the gui files
-mkdir -p ${shared_dir}/gui/cegui
-mkdir -p ${shared_dir}/gui/icons
-mkdir -p ${shared_dir}/gui/status
-cp -a ${original_media}/common/themes/ember/gui/cegui/EmberLook.png ${shared_dir}/gui/cegui
-cp -a ${original_media}/common/themes/ember/gui/icons/ember.png ${shared_dir}/gui/icons
-cp -a ${original_media}/common/themes/ember/gui/icons/iconset_mason.png ${shared_dir}/gui/icons
-cp -a ${original_media}/common/themes/ember/gui/icons/iconset_standard.png ${shared_dir}/gui/icons
-cp -a ${original_media}/common/themes/ember/gui/status/bars.png ${shared_dir}/gui/status
-cp -a ${original_media}/common/themes/ember/gui/status/main.png ${shared_dir}/gui/status
+# #get the gui files
+# mkdir -p ${shared_dir}/gui/cegui
+# mkdir -p ${shared_dir}/gui/icons
+# mkdir -p ${shared_dir}/gui/status
+# cp -a ${original_media}/common/themes/ember/gui/cegui/EmberLook.png ${shared_dir}/gui/cegui
+# cp -a ${original_media}/common/themes/ember/gui/icons/ember.png ${shared_dir}/gui/icons
+# cp -a ${original_media}/common/themes/ember/gui/icons/iconset_mason.png ${shared_dir}/gui/icons
+# cp -a ${original_media}/common/themes/ember/gui/icons/iconset_standard.png ${shared_dir}/gui/icons
+# cp -a ${original_media}/common/themes/ember/gui/status/bars.png ${shared_dir}/gui/status
+# cp -a ${original_media}/common/themes/ember/gui/status/main.png ${shared_dir}/gui/status
 
 
 #get the theme media dir
@@ -215,7 +225,7 @@ rm -f ${shared_dir}/common_meshes.list
 rm -f ${shared_dir}/common_skeletons.list
 rm -f ${shared_dir}/shared_packs.list
 rm -f ${shared_dir}/common_sounds.list
-
+rm -f ${shared_dir}/media_textures.list
 
 rm -f ${user_dir}/user_packs.list
 
