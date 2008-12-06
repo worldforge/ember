@@ -35,7 +35,6 @@
 	#include <SDL.h>
 	#include <SDL_syswm.h>
 	#include <float.h>
-	#define _NSIG NSIG //would it perhaps be better to just use NSIG all the time? I don't know whether that's available on *NIX, but mingw only has NSIG
 #else
 	#include <SDL/SDL.h>
 	#include <SDL/SDL_syswm.h>
@@ -46,10 +45,15 @@
 // #include "image/OgreILCodecs.h"
 #include "framework/Tokeniser.h"
 
+///SDL_GL_SWAP_CONTROL is only available for sdl version 1.2.10 and later.
+#if ! SDL_VERSION_ATLEAST(1, 2, 10)
+#define SDL_GL_SWAP_CONTROL 16
+#endif 
+
 extern "C" {
 #include <signal.h>    /* signal name macros, and the signal() prototype */
 
-sighandler_t oldSignals[_NSIG];
+sighandler_t oldSignals[NSIG];
 }
 
 namespace EmberOgre {
@@ -128,10 +132,10 @@ Ogre::Root* OgreSetup::createOgreSystem()
 			std::string pluginDir(configSrv->getValue("ogre", "plugindir"));
 			pluginLocations.push_back(pluginDir);
 		}
-	#ifdef __WIN32__
+	#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 		pluginExtension = ".dll";
 		pluginLocations.push_back("."); ///on windows we'll bundle the dll files in the same directory as the executable
-	#else
+	#elif OGRE_PLATFORM == OGRE_PLATFORM_LINUX
 		pluginExtension = ".so";
 
 		#ifdef ENABLE_BINRELOC
@@ -148,12 +152,20 @@ Ogre::Root* OgreSetup::createOgreSystem()
 		///enter the usual locations if Ogre is installed system wide, with local installations taking precedence
 		pluginLocations.push_back("/usr/local/lib/OGRE");
 		pluginLocations.push_back("/usr/lib/OGRE");
+	#elif OGRE_PLATFORM == OGRE_PLATFORM_APPLE
+		/// On Mac, plugins are found in Resources in the Main (Application) bundle, then in the Ogre framework bundle
+		pluginExtension = "";
+		pluginLocations.push_back("");
 	#endif
 		Ember::Tokeniser tokeniser(plugins, ",");
 		std::string token = tokeniser.nextToken();
 		while (token != "") {
 			for (std::vector<std::string>::iterator I = pluginLocations.begin(); I != pluginLocations.end(); ++I) {
-				std::string pluginPath((*I) + "/" + token + pluginExtension);
+				#if OGRE_PLATFORM != OGRE_PLATFORM_APPLE
+					std::string pluginPath((*I) + "/" + token + pluginExtension);
+				#else
+					std::string pluginPath(token);
+				#endif
 				bool success = false;
 				try {
 					S_LOG_INFO("Trying to load the plugin " << pluginPath);
@@ -171,11 +183,7 @@ Ogre::Root* OgreSetup::createOgreSystem()
 		}
 	}
 
-//	std::vector<Ogre::String> tokens = Ogre::StringUtil::split(dsp, ".");
 	Ember::Tokeniser tokeniser();
-
-	// Register image codecs
-//    Ogre::ILCodecs::registerCodecs();
 
 	return mRoot;
 }
@@ -207,8 +215,9 @@ bool OgreSetup::configure(void)
 {
 	bool suppressConfig = false;
 	bool success = false;
-	if (Ember::EmberServices::getSingleton().getConfigService()->itemExists("ogre", "suppressconfigdialog")) {
-		suppressConfig = static_cast<bool>(Ember::EmberServices::getSingleton().getConfigService()->getValue("ogre", "suppressconfigdialog"));
+	Ember::ConfigService* configService(Ember::EmberServices::getSingleton().getConfigService());
+	if (configService->itemExists("ogre", "suppressconfigdialog")) {
+		suppressConfig = static_cast<bool>(configService->getValue("ogre", "suppressconfigdialog"));
 	}
 	if (suppressConfig) {
 		success = mRoot->restoreConfig();
@@ -217,7 +226,7 @@ bool OgreSetup::configure(void)
 	}
 
 	if(success)
-    {
+	{
 #if __WIN32__
 	///this will only apply on DirectX
 	///it will force DirectX _not_ to set the FPU to single precision mode (since this will mess with mercator amongst others)
@@ -230,61 +239,61 @@ bool OgreSetup::configure(void)
 	}
 
 
-    mRenderWindow = mRoot->initialise(true, "Ember");
-
-   ///do some FPU fiddling, since we need the correct settings for stuff like mercator (which uses fractals etc.) to work
-   	_fpreset();
+	mRenderWindow = mRoot->initialise(true, "Ember");
+	
+	///do some FPU fiddling, since we need the correct settings for stuff like mercator (which uses fractals etc.) to work
+	_fpreset();
 	_controlfp(_PC_64, _MCW_PC);
 	_controlfp(_RC_NEAR , _MCW_RC);
 
-   // Allow SDL to use the window Ogre just created
-
-   // Old method: do not use this, because it only works
-   //  when there is 1 (one) window with this name!
-   // HWND hWnd = FindWindow(tmp, 0);
-
-   // New method: As proposed by Sinbad.
-   //  This method always works.
-   HWND hWnd;
-   mRenderWindow->getCustomAttribute("WINDOW", &hWnd);
-
-   char tmp[64];
-   // Set the SDL_WINDOWID environment variable
-   sprintf(tmp, "SDL_WINDOWID=%d", hWnd);
-   putenv(tmp);
-
-   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) < 0)
-    {
-      S_LOG_FAILURE("Couldn't initialize SDL:\n\t\t");
-      S_LOG_FAILURE(SDL_GetError());
-    }
-
-      // if width = 0 and height = 0, the window is fullscreen
-
-      // This is necessary to allow the window to move1
-      //  on WIN32 systems. Without this, the window resets
-      //  to the smallest possible size after moving.
-      SDL_SetVideoMode(mRenderWindow->getWidth(), mRenderWindow->getHeight(), 0, 0); // first 0: BitPerPixel,
-                                             // second 0: flags (fullscreen/...)
-                                             // neither are needed as Ogre sets these
-
-   static SDL_SysWMinfo pInfo;
-   SDL_VERSION(&pInfo.version);
-   SDL_GetWMInfo(&pInfo);
-
-   // Also, SDL keeps an internal record of the window size
-   //  and position. Because SDL does not own the window, it
-   //  missed the WM_POSCHANGED message and has no record of
-   //  either size or position. It defaults to {0, 0, 0, 0},
-   //  which is then used to trap the mouse "inside the
-   //  window". We have to fake a window-move to allow SDL
-   //  to catch up, after which we can safely grab input.
-   RECT r;
-   GetWindowRect(pInfo.window, &r);
-   SetWindowPos(pInfo.window, 0, r.left, r.top, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-
-   ///do some FPU fiddling, since we need the correct settings for stuff like mercator (which uses fractals etc.) to work
-   	_fpreset();
+	// Allow SDL to use the window Ogre just created
+	
+	// Old method: do not use this, because it only works
+	//  when there is 1 (one) window with this name!
+	// HWND hWnd = FindWindow(tmp, 0);
+	
+	// New method: As proposed by Sinbad.
+	//  This method always works.
+	HWND hWnd;
+	mRenderWindow->getCustomAttribute("WINDOW", &hWnd);
+	
+	char tmp[64];
+	// Set the SDL_WINDOWID environment variable
+	sprintf(tmp, "SDL_WINDOWID=%d", hWnd);
+	putenv(tmp);
+	
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) < 0)
+		{
+		S_LOG_FAILURE("Couldn't initialize SDL:\n\t\t");
+		S_LOG_FAILURE(SDL_GetError());
+		}
+	
+		// if width = 0 and height = 0, the window is fullscreen
+	
+		// This is necessary to allow the window to move1
+		//  on WIN32 systems. Without this, the window resets
+		//  to the smallest possible size after moving.
+		SDL_SetVideoMode(mRenderWindow->getWidth(), mRenderWindow->getHeight(), 0, 0); // first 0: BitPerPixel,
+												// second 0: flags (fullscreen/...)
+												// neither are needed as Ogre sets these
+	
+	static SDL_SysWMinfo pInfo;
+	SDL_VERSION(&pInfo.version);
+	SDL_GetWMInfo(&pInfo);
+	
+	// Also, SDL keeps an internal record of the window size
+	//  and position. Because SDL does not own the window, it
+	//  missed the WM_POSCHANGED message and has no record of
+	//  either size or position. It defaults to {0, 0, 0, 0},
+	//  which is then used to trap the mouse "inside the
+	//  window". We have to fake a window-move to allow SDL
+	//  to catch up, after which we can safely grab input.
+	RECT r;
+	GetWindowRect(pInfo.window, &r);
+	SetWindowPos(pInfo.window, 0, r.left, r.top, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+	
+	///do some FPU fiddling, since we need the correct settings for stuff like mercator (which uses fractals etc.) to work
+	_fpreset();
 	_controlfp(_PC_64, _MCW_PC);
 	_controlfp(_RC_NEAR , _MCW_RC);
 #else
@@ -306,61 +315,110 @@ bool OgreSetup::configure(void)
 
 
 	///set the window size
-//        int flags = SDL_OPENGL | SDL_HWPALETTE | SDL_RESIZABLE | SDL_HWSURFACE;
-	int flags = SDL_HWPALETTE | SDL_HWSURFACE;
+//  int flags = SDL_OPENGL | SDL_HWPALETTE | SDL_RESIZABLE | SDL_HWSURFACE;
+// 	int flags = SDL_HWPALETTE | SDL_HWSURFACE | SDL_OPENGL;
+	int flags = SDL_OPENGL;
 
-//         SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+	bool enableDoubleBuffering = false;
+	if (configService->itemExists("ogre", "doublebuffered")) {
+		enableDoubleBuffering = static_cast<bool>(configService->getValue("ogre", "doublebuffered"));
+		if (enableDoubleBuffering) {
+			S_LOG_INFO("Using double buffering.");
+		}
+	}
+	
+	bool useAltSwapControl = false;
+	
+	if (enableDoubleBuffering) {
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+		useAltSwapControl = SDL_GL_SetAttribute((SDL_GLattr)SDL_GL_SWAP_CONTROL, 1) != 0;
+	}
+
 		// request good stencil size if 32-bit colour
 /*        if (colourDepth == 32)
 		{
 			SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8);
 		}*/
 
-	if (fullscreen)
+	if (fullscreen) {
 		flags |= SDL_FULLSCREEN;
+	}
 
-	mMainVideoSurface = SDL_SetVideoMode(width, height,0, flags); // create an SDL window
+	mMainVideoSurface = SDL_SetVideoMode(width, height, 0, flags); // create an SDL window
+
+	if (enableDoubleBuffering) {
+		if (!useAltSwapControl)
+		{
+			/// SDL_GL_SWAP_CONTROL was requested. Check that it is now set.
+			int value;
+			if (!SDL_GL_GetAttribute((SDL_GLattr)SDL_GL_SWAP_CONTROL, &value))
+			{
+				useAltSwapControl = !value;
+			}
+			else
+			{
+				useAltSwapControl = true;
+			}
+		}
+		
+		if (useAltSwapControl)
+		{
+			/// Try another way to get vertical sync working. Use glXSwapIntervalSGI.
+			bool hasSwapControl = isExtensionSupported("GLX_SGI_swap_control");
+		
+			if (hasSwapControl)
+			{
+				const GLubyte *name;
+				name = reinterpret_cast<const GLubyte*>("glXSwapIntervalSGI");
+		
+				int (*funcPtr)(int);
+				funcPtr = reinterpret_cast<int(*)(int)>(glXGetProcAddress(name));
+		
+				if (funcPtr)
+				{
+					funcPtr(1);
+				}
+			}
+		}
+	}
+
 
 	SDL_WM_SetCaption("Ember","ember");
 
-	SDL_SysWMinfo info;
-	SDL_VERSION(&info.version);
-
-	SDL_GetWMInfo(&info);
-
-	std::string dsp(&(DisplayString(info.info.x11.display)[1]));
-	std::vector<Ogre::String> tokens = Ogre::StringUtil::split(dsp, ".");
-
 	Ogre::NameValuePairList misc;
-	std::string s = Ogre::StringConverter::toString((long)info.info.x11.display);
-	s += ":" + tokens[1] +":";
-	s += ":" + Ogre::StringConverter::toString((long)info.info.x11.window);
-	misc["parentWindowHandle"] = s;
+
+	misc["currentGLContext"] = Ogre::String("True");
 
 	/// initialise root, without creating a window
 	mRoot->initialise(false);
 
-	mRenderWindow = mRoot->createRenderWindow("MainWindow", width, height, true, &misc);
+	mRenderWindow = mRoot->createRenderWindow("MainWindow", width, height, false, &misc);
 
-	///we need to set the window to be active by ourselves, since GLX by default sets it to false, but then activates it upon receiving some X event (which it will never recieve since we'll use SDL).
+	///we need to set the window to be active and visible by ourselves, since GLX by default sets it to false, but then activates it upon receiving some X event (which it will never recieve since we'll use SDL).
 	///see OgreGLXWindow.cpp
 	mRenderWindow->setActive(true);
 	mRenderWindow->setAutoUpdated(true);
+	mRenderWindow->setVisible(true);
+	
+	if (enableDoubleBuffering) {
+		///We need to swap the frame buffers each frame.
+		mRoot->addFrameListener(this);
+	}
 
 
-    ///set the icon of the window
+	///set the icon of the window
 	Uint32 rmask, gmask, bmask, amask;
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-    rmask = 0xff000000;
-    gmask = 0x00ff0000;
-    bmask = 0x0000ff00;
-    amask = 0x000000ff;
+	rmask = 0xff000000;
+	gmask = 0x00ff0000;
+	bmask = 0x0000ff00;
+	amask = 0x000000ff;
 #else
-    rmask = 0x000000ff;
-    gmask = 0x0000ff00;
-    bmask = 0x00ff0000;
-    amask = 0xff000000;
+	rmask = 0x000000ff;
+	gmask = 0x0000ff00;
+	bmask = 0x00ff0000;
+	amask = 0xff000000;
 #endif
 
 /**
@@ -721,8 +779,7 @@ static struct {
 
 
 ///We'll use the emberIcon struct
-	mIconSurface = SDL_CreateRGBSurfaceFrom(emberIcon.pixel_data, 64, 64, 24, 64*3,
-                                      rmask, gmask, bmask, 0);
+	mIconSurface = SDL_CreateRGBSurfaceFrom(emberIcon.pixel_data, 64, 64, 24, 64*3, rmask, gmask, bmask, 0);
 	if (mIconSurface) {
 		SDL_WM_SetIcon(mIconSurface, 0);
 	}
@@ -734,10 +791,10 @@ static struct {
 
 		return true;
     }
-    else
-    {
-        return false;
-    }
+	else
+	{
+		return false;
+	}
 }
 
 void OgreSetup::setStandardValues()
@@ -758,12 +815,12 @@ void OgreSetup::setStandardValues()
 
 EmberPagingSceneManager* OgreSetup::chooseSceneManager()
 {
-    /// Create new scene manager factory
-    mSceneManagerFactory = new EmberPagingSceneManagerFactory();
-
-    /// Register our factory
-    Ogre::Root::getSingleton().addSceneManagerFactory(mSceneManagerFactory);
-
+	/// Create new scene manager factory
+	mSceneManagerFactory = new EmberPagingSceneManagerFactory();
+	
+	/// Register our factory
+	Ogre::Root::getSingleton().addSceneManagerFactory(mSceneManagerFactory);
+	
 	EmberPagingSceneManager* sceneMgr = static_cast<EmberPagingSceneManager*>(mRoot->createSceneManager(Ogre::ST_EXTERIOR_REAL_FAR, "EmberPagingSceneManager"));
 
 	///We need to call init scene since a lot of components used by the scene manager are thus created
@@ -791,6 +848,67 @@ void OgreSetup::parseWindowGeometry(Ogre::ConfigOptionMap& config, unsigned int&
 		fullscreen = (opt->second.currentValue == "Yes");
 	}
 
+}
+
+bool OgreSetup::frameEnded(const Ogre::FrameEvent & evt)
+{
+	SDL_GL_SwapBuffers();
+	
+	return true;
+}
+
+///Taken from sage.
+int OgreSetup::isExtensionSupported(const char *extension) {
+	SDL_SysWMinfo wmInfo;
+	SDL_VERSION(&wmInfo.version);
+	SDL_GetWMInfo(&wmInfo);
+
+///gfxdisplay is only available in SDL 1.2.12 or later
+#if SDL_VERSION_ATLEAST(1, 2, 12)
+	::Display *display = wmInfo.info.x11.gfxdisplay;
+#else
+	::Display *display = wmInfo.info.x11.display;
+#endif 
+	
+	if (!display)
+	{
+		return false;
+	}
+
+	int screen = DefaultScreen(display);
+
+	const char *extensionsChar;
+	extensionsChar = glXQueryExtensionsString(display, screen);
+	const GLubyte *extensions;
+	extensions = reinterpret_cast<const GLubyte*>(extensionsChar);
+
+	const GLubyte *start;
+	GLubyte *where, *terminator;
+	
+	/* Extension names should not have spaces. */
+	where = (GLubyte *) strchr(extension, ' ');
+	if ((where != NULL) || *extension == '\0')
+		return 0;
+	
+	//  if (extensions == NULL) extensions = (GLubyte*)glGetString(GL_EXTENSIONS);
+	
+	if (extensions == NULL) return 0;
+	
+	/* It takes a bit of care to be fool-proof about parsing the
+		OpenGL extensions string. Don't be fooled by sub-strings,
+		etc. */
+	start = extensions;
+	for (;;) {
+		where = (GLubyte*) strstr((const char *) start, extension);
+		if (!where)
+		break;
+		terminator = where + strlen(extension);
+		if (where == start || *(where - 1) == (GLubyte)' ')
+		if (*terminator == (GLubyte)' ' || *terminator == (GLubyte)'\0')
+			return 1;
+		start = terminator;
+	}
+	return 0;
 }
 
 

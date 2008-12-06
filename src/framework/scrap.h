@@ -1,6 +1,8 @@
 
 /* Handle clipboard text and data in arbitrary formats */
 
+#ifndef WITHOUT_SCRAP
+
 /* Miscellaneous defines */
 #define T(A, B, C, D)	(int)((A<<24)|(B<<16)|(C<<8)|(D<<0))
 #ifdef __cplusplus
@@ -15,3 +17,5 @@ extern void get_scrap(int type, int *dstlen, char **dst);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
+
+#endif // WITHOUT_SCRAP

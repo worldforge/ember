@@ -69,17 +69,6 @@ namespace Ogre {
 		{
 			SimpleRenderable::getWorldTransforms(xform);
 		}
-		//-----------------------------------------------------------------------
-		const Quaternion& getWorldOrientation(void) const
-		{
-			return SimpleRenderable::getWorldOrientation();
-		}
-		//-----------------------------------------------------------------------
-		const Vector3& getWorldPosition(void) const
-		{
-			return SimpleRenderable::getWorldPosition();
-		}				
-
 	};
 
 };
@@ -451,7 +440,7 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 	detachFromModel();
 
 	///Before we detach ourselves from our current parent, we need to record our current position in the world. This will come in handy later on when we need to determine if we actually moved in the world space.
-	const Ogre::Vector3 oldWorldPosition = getSceneNode()->getWorldPosition();
+	const Ogre::Vector3 oldWorldPosition = getSceneNode()->_getDerivedPosition();
 	
 	///Get the new location. We use getEmberLocation() since we always know that all entities are of type EmberEntity.
 	EmberEntity* newLocationEntity = getEmberLocation();
@@ -488,7 +477,7 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 		///since else we'll get a "gap" when we're waiting on updated positions from the server
 		///this isn't optimal
 		if (isMoving()) {
-			const Ogre::Vector3& newWorldPosition = getSceneNode()->getWorldPosition();
+			const Ogre::Vector3& newWorldPosition = getSceneNode()->_getDerivedPosition();
 			getSceneNode()->translate(oldWorldPosition - newWorldPosition);
 		}
 	}

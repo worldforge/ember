@@ -218,11 +218,11 @@ namespace Ogre
             if (renderer)
             {
                 const RenderSystemCapabilities* caps = renderer->getCapabilities();
-				hasVertexShader = caps->hasCapability(RSC_VERTEX_PROGRAM) && !(StringUtil::startsWith(caps->getMaxFragmentProgramVersion (), "vs_1_0", true));
-				hasVertexShader = caps->hasCapability(RSC_BLENDING) && !(StringUtil::startsWith(caps->getMaxFragmentProgramVersion (), "vs_1_0", true));
+				hasVertexShader = caps->hasCapability(RSC_VERTEX_PROGRAM) && caps->isShaderProfileSupported ("vs_1_0");
+				hasVertexShader = caps->hasCapability(RSC_BLENDING) && caps->isShaderProfileSupported("vs_1_0");
                 hasFragmentShader = caps->hasCapability(RSC_FRAGMENT_PROGRAM);
-                const String &maxShaderVersion = caps->getMaxFragmentProgramVersion ();
-                hasFragmentShader2 = hasFragmentShader && !(maxShaderVersion == "ps_1_1" || maxShaderVersion == "ps_1_0");
+//                 const String &maxShaderVersion = caps->getMaxFragmentProgramVersion ();
+                hasFragmentShader2 = hasFragmentShader && caps->isShaderProfileSupported("ps_1_1") && caps->isShaderProfileSupported("ps_1_0");
                 numTextureUnits = caps->getNumTextureUnits ();
                 isRenderGL = StringUtil::startsWith(renderer->getName(), "OpenGL", false);
                 isInit = true;

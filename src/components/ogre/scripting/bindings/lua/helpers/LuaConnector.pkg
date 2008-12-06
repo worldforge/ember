@@ -45,6 +45,7 @@ class LuaConnector{
  	LuaConnector(sigc::signal<void, EmberOgre::Gui::EntityIcon*>& signal);
  	LuaConnector(sigc::signal<void, const Atlas::Message::Element&>& signal);
  	LuaConnector(sigc::signal<void, EmberOgre::AvatarMovementMode::Mode>& signal);
+ 	LuaConnector(sigc::signal<void, EmberOgre::Terrain::TerrainPage&>& signal);
 
 
 };

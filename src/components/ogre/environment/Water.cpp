@@ -197,7 +197,9 @@ public:
 	
 	void Water::createFresnelWater(Ogre::Camera &camera, Ogre::SceneManager* mSceneMgr)
 	{
-		RenderTexture* rttTex = EmberOgre::getSingleton().getOgreRoot()->getRenderSystem()->createRenderTexture( "Refraction", 512, 512 );
+		Ogre::TexturePtr texture = TextureManager::getSingleton().createManual("Refraction", "General", TEX_TYPE_2D, 512, 512, 0, PF_A8R8G8B8, TU_RENDERTARGET);	
+		RenderTexture* rttTex = texture->getBuffer()->getRenderTarget();
+/*		RenderTexture* rttTex = EmberOgre::getSingleton().getOgreRoot()->getRenderSystem()->createRenderTexture( "Refraction", 512, 512 );*/
 			
 			{
 				Viewport *v = rttTex->addViewport( &mCamera );
@@ -210,7 +212,8 @@ public:
 			}
 			
 			
-			rttTex = EmberOgre::getSingleton().getOgreRoot()->getRenderSystem()->createRenderTexture( "Reflection", 512, 512 );
+			texture = TextureManager::getSingleton().createManual("Reflection", "General", TEX_TYPE_2D, 512, 512, 0, PF_A8R8G8B8, TU_RENDERTARGET);
+			rttTex = texture->getBuffer()->getRenderTarget();
 			{
 				Viewport *v = rttTex->addViewport( &mCamera );
 				Ogre::MaterialPtr mat = MaterialManager::getSingleton().getByName("Examples/FresnelReflectionRefraction");

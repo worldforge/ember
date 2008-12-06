@@ -1,0 +1,292 @@
+/*
+    Copyright (C) 2004  Erik Hjortsberg
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
+
+namespace EmberOgre {
+namespace Terrain {
+
+class TerrainShader;
+class TerrainPage;
+class TerrainArea;
+class TerrainMod;
+class TerrainLayerDefinition;
+class TerrainPageSurfaceLayer;
+class ISceneManagerAdapter;
+
+/**
+@brief Defines the height of a special "base point" in the terrain. 
+These base points are then user by Mercator::Terrain for generating the actual terrain.
+*/
+struct TerrainDefPoint
+{
+	/**
+	*       Ctor.
+	* @param x The position of the point, on the x axis, in world units.
+	* @param y The position of the point, on the y axis, in world units.
+	* @param terrainHeight The height of the point, in world units.
+	*/
+	TerrainDefPoint(float x, float y, float terrainHeight) : mPosition(x,y), mHeight(terrainHeight) {}
+	
+	/**
+	 * @brief Gets the position of the definition point, in world units.
+	 * @return The position of the point.
+	 */
+	inline const WFMath::Point<2>& getPosition() const;
+	
+	/**
+	 * @brief Gets the height of the definition point, in world units.
+	 * @return The height of the point.
+	 */
+	inline float getHeight() const;
+};
+
+
+
+/**
+ * @brief Handles generation and updates of the terrain.
+ * This class takes care of generating terrain for Ogre's scenemanager.
+ * This involves getting terrain from Mercator, converting this to ogre
+ * format and creating materials to make it look good.
+ * 
+ * It works closely with EmberTerrainPageSource.
+ * 
+ */
+class TerrainGenerator 
+{
+public:
+
+	/**
+	A type used for storing changes to aeas. We use instances instead of pointers or references since this type will be used in delayed updating, where the originating instance might not any longer be around.
+	*/
+	typedef std::vector<Mercator::Area> AreaStore;
+	
+	/**
+	A type used for storing the terrain definition points.
+	*/
+	typedef std::vector<TerrainDefPoint> TerrainDefPointStore;
+
+	/**
+	 * STL map to store sparse array of TerrainPage pointers.
+	 * 
+	 */ 
+	typedef std::map<int, TerrainPage *> TerrainPagecolumn;
+	
+	/**
+	* STL map to store sparse array of TerrainPage pointer columns.
+	*/
+	typedef std::map<int, TerrainPagecolumn > TerrainPagestore;
+	
+
+	/**
+	 * @brief Returns the height at the specified position in the world.
+	 * This will be done using the underlying Mercator data, which depending on LOD techniques used can differ some from the actual graphical representation.
+	 * @param atPosition The position, in world space, to get the height for.
+	 * @return The height, in world space, at the specified position.
+	 */
+	virtual float getHeight(const WFMath::Point<2>& atPosition) const;
+	
+	/**
+	 *    @brief Updates the terrain with new terrain points.
+	 * @param terrainIndexPoints A list of terrain index points, i.e. points positioned using the base point positioning scale. In normal setup that's 64 meters per index point, so an index point of 2:1 would translate to real world coords of 128:64
+	 * @return True if the terrain was successfully updated.
+	 */
+	bool updateTerrain(const TerrainDefPointStore& terrainIndexPoints);
+
+
+	/**
+	 * @brief Return true if there is a valid piece of terrain at the supplied segment indices.
+	 * By valid means a populated terrain-
+	 * @param pos A position in the world.
+	 * @return true if the terrain at the position is valid.
+	 */
+	bool isValidTerrainAt(const WFMath::Point<2>& pos);
+	
+	/**
+	 * @brief Provides access to the underlying Mercator::Terrain object.
+	 * @return The main terrain object.
+	 */
+	Mercator::Terrain& getTerrain();
+	
+	/**
+	 * @brief Gets the max boundaries of the terrain.
+	 * @return 
+	 */
+	const WFMath::Point<2> getMax() const;
+	
+	/**
+	 *    @brief Gets the min boundaries of the terrain.
+	 * @return 
+	 */
+	const WFMath::Point<2> getMin() const;
+	
+	/**
+	 *   @brief Gets the size of one terrain segment.
+	 *	(note that this is different from Mercator segments, which always are of size 64)
+	 * @return 
+	 */
+	int getPageMetersSize();
+	
+
+	/**
+	 * @brief Gets the size of one page as indices.
+	 * @return 
+	 */
+	int getPageIndexSize() ;
+		
+	/**
+	 * @brief Adds a new Mercator::Area to the terrain.
+	 * @param area 
+	 */
+	void addArea(TerrainArea* terrainArea);
+
+	/**
+	 *    @brief Adds a new Mercator::TerrainMod to the terrain.
+	 * @param mod
+	 */
+	void addTerrainMod(TerrainMod* terrainMod);
+	
+	/**
+	 * @brief Returns a TerrainPage, creating one if there's no existing and so requested.
+	 * If createIfMissing is true and there is no yet existing, a new one is created.
+	 * @param ogreIndexPosition The index, in Ogre space, to create the new page on.
+	 * @param createIfMissing If set to true, a new page will be created if there's no pre-existing. Defaults to true.
+	 * @return An instance of terrain page, or null if there was no existing one and createIfMissing was set to false.
+	 */
+	TerrainPage* getTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition, bool createIfMissing = true);
+	
+	/**
+	 * @brief Gets the page at the specified position in the world. If no page can be found, a null pointer is returned.
+	 * @param worldPosition The position in world space to get the terrain page for.
+	 * @return An terrain page, or null of no page can be found at the specified position.
+	 */
+	TerrainPage* getTerrainPageAtPosition(const WFMath::Point<2>& worldPosition);
+
+	/**
+	 * @brief Rebuilds the Mercator height map, effectively regenerating the terrain.
+	 * Note that this only regenerates the Mercator height map, and won't update the Ogre representation.
+	 */
+	void buildHeightmap();
+	
+	/**
+	 * @brief Accessor for the main terrain info instance.
+	 * @return An instance of TerrainInfo containing all relevant terrain info.
+	 */
+	const EmberOgre::Terrain::TerrainInfo& getTerrainInfo() const;
+	
+	/**
+	 * @brief Emitted when the size of the world has changed.
+	 */
+	sigc::signal<void> EventWorldSizeChanged;
+	
+	/**
+	 * @brief Gets the adapter used to bind this generator to a scene manager.
+	 * @return The adapter in use, or null if there is no one registered yet.
+	 */
+	EmberOgre::Terrain::ISceneManagerAdapter* getAdapter() const;
+	
+	/**
+	 * @brief Accessor for all instances of TerrainPage that are registered with the generator.
+	 * @return A store of TerrainPage instances.
+	 */
+	inline const TerrainPagestore& getTerrainPages() const;
+	
+	/**
+	 * @brief Create and registers a new texture shader.
+	 * @param layerDef The terrain layer defintiion to use. This will be used to determine what textures and materials to use for rendering the layer defined by the shader.
+	 * @param mercatorShader The Mercator::Shader to use.
+	 * @return 
+	 */
+	EmberOgre::Terrain::TerrainShader* createShader(const TerrainLayerDefinition* layerDef, Mercator::Shader* mercatorShader);
+	
+	
+	/**
+	 * @brief Regenerates all terrain shadow maps.
+	 */
+	void updateShadows();
+	
+	/**
+	 * @brief Console command for updating all terrain shadow maps.
+	 */
+	const Ember::ConsoleCommandWrapper UpdateShadows;
+	
+	
+	/**
+	 * @brief Gets the shadow colour at the supplied position.
+	 * @param position The position in the world.
+	 * @param colour The shadow colour will be put into this value.
+	 */
+	void getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour);
+	
+	/**
+	 * @brief Gets the shadow colour at the supplied position.
+	 * @param position The position in the world.
+	 * @param colour The shadow colour will be put into this value.
+	 */
+	void getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour);
+
+	/**
+	@brief Emitted when a layer is updated.
+	The vector parameter is either null if the update can't be constrained to any areas, or an vector of areas if it can.
+	*/
+	sigc::signal<void, EmberOgre::Terrain::TerrainShader*, AreaStore* > EventLayerUpdated;
+	
+	/**
+	@brief Emitted when a new shader is created.
+	The shader paremeter is the newly created shader.
+	*/
+	sigc::signal<void, EmberOgre::Terrain::TerrainShader*> EventShaderCreated;
+	
+	/**
+	@brief Emitted before the terrain geometry is changed.
+	
+	When the terrain geometry is about to be changed this signal is emitted.
+	The first parameter is the TerrainPositions that were updated, i.e. the BasePoints that were changed. The terrain is generated from a series of base points, in the default setting dispersed with 64 meters between them.
+	The second parameter is the pages that will be updated.
+	*/
+	//sigc::signal<void, std::vector<WFMath::Point<2> >&, std::set<EmberOgre::Terrain::TerrainPage*>&> EventBeforeTerrainUpdate;
+	
+	/**
+	@brief Emitted after the terrain geometry has changed.
+	
+	When the terrain geometry has been changed this signal is emitted.
+	The first parameter is the TerrainPositions that were updated, i.e. the BasePoints that were changed. The terrain is generated from a series of base points, in the default setting dispersed with 64 meters between them.
+	The second parameter is the pages that were updated.
+	*/
+	//sigc::signal<void, std::vector<WFMath::Point<2> >&, std::set<EmberOgre::Terrain::TerrainPage*>&> EventAfterTerrainUpdate;
+	
+	/**
+	 * @brief Emitted when a terrain page has had its geometry updated.
+	 *
+	 * This often signals that a page is to be loaded and rendered.
+	 */
+	sigc::signal<void, EmberOgre::Terrain::TerrainPage&> EventTerrainPageGeometryUpdated;
+	
+	/**
+	 * @brief Gets the size of each foliage batch. This is used by the foliage system for setting up batch system for performance.
+	 * @return The size of on foliage batch, in world units. 
+	 */
+	inline unsigned int getFoliageBatchSize() const;
+
+
+};
+
+}
+}
+
+
+#endif // TERRAINGENERATOR_H

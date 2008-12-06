@@ -133,7 +133,7 @@ bool LensFlare::createLensFlare()
 
 const Ogre::Vector3& LensFlare::getLightPosition() const
 {
-	return mLightNode->getWorldPosition();
+	return mLightNode->_getDerivedPosition();
 }
 
 

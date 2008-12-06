@@ -333,6 +333,10 @@ void LuaConnector::pushValue(const EmberOgre::AvatarMovementMode::Mode& theValue
 	tolua_pushnumber(EmberOgre::LuaConnector::getState(), theValue);
 }
 
+void LuaConnector::pushValue(const  EmberOgre::Terrain::TerrainPage& theValue, const std::string& luaTypename)
+{
+	tolua_pushusertype(EmberOgre::LuaConnector::getState(),(void*)&theValue, luaTypename.c_str());
+}
 
 
 LuaConnector::~LuaConnector()
@@ -608,6 +612,17 @@ LuaConnector::LuaConnector(sigc::signal<void, EmberOgre::AvatarMovementMode::Mod
 		mConnector = new LuaConnectors::ConnectorOne<void, EmberOgre::AvatarMovementMode::Mode>(signal, luaTypes);
 	}
 }
+
+LuaConnector::LuaConnector(sigc::signal<void, EmberOgre::Terrain::TerrainPage&>& signal)
+{
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("EmberOgre::Terrain::TerrainPage");
+		mConnector = new LuaConnectors::ConnectorOne<void, EmberOgre::Terrain::TerrainPage&>(signal, luaTypes);
+	}
+}
+
+
 
 
 

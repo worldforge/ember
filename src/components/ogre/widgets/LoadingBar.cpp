@@ -269,11 +269,11 @@ namespace Gui {
 		mProgressBarInc /= (Real)scriptCount;
 		mSection.setCaption("Parsing scripts...");
 	}
-	void ResourceGroupLoadingBarSection::scriptParseStarted(const String& scriptName)
+	void ResourceGroupLoadingBarSection::scriptParseStarted(const String& scriptName, bool& skipThisScript)
 	{
 		mSection.setCaption(scriptName);
 	}
-	void ResourceGroupLoadingBarSection::scriptParseEnded(const Ogre::String& scriptName)
+	void ResourceGroupLoadingBarSection::scriptParseEnded(const Ogre::String& scriptName, bool skipped)
 	{
 		///make the black blocking block a little bit smaller and move it to the right
 		mSection.tick(mProgressBarInc);

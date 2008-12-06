@@ -131,6 +131,7 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 	}
 	
 	mCaelumSystem->setEnsureSingleShadowSource(true); ///we want to use only one shadow caster source, for now at least
+	mCaelumSystem->setEnsureSingleLightSource(true); ///We want to only use the brightest light source only, even if another is closer. This is to make sure the main light is taken from the sun instead of the moon (which will result in a dark landscape).
 
 	mSky = new CaelumSky(*this);
 

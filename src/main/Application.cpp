@@ -269,7 +269,10 @@ void* startSoundServiceCycle(void* arg)
 void Application::start()
 {
 	try {
-		mOgreView->setup();
+		if (!mOgreView->setup()) {
+			///The setup was cancelled, return.
+			return;
+		}
 	} catch (const std::exception& ex) {
 		std::cout << "Error when setting up Ogre: " << ex.what() << std::endl;
 		S_LOG_CRITICAL("Error when setting up Ogre: " << ex.what());

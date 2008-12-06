@@ -76,7 +76,7 @@ namespace Ogre
     class Leaf;
 
 
-    typedef enum culling_modes
+    enum culling_modes
     {
         // STANDARD_WALK = 0,
         // VIEW_FRUSTUM,
@@ -133,7 +133,7 @@ namespace Ogre
 #define PAGE_OUTSIDE 0x00000004
 
 
-typedef enum PageState
+enum PageState
 {
 	inited,
 	Preloaded,
@@ -141,7 +141,7 @@ typedef enum PageState
 	Loaded
 };
 
-typedef enum PageQueuingState
+enum PageQueuingState
 {
 	queuednone,
 	queuedPreload,

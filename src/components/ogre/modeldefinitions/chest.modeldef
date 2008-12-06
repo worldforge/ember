@@ -15,34 +15,34 @@
             </submodel>
         </submodels>
         <actions>
-			<action name="close" speed="1.000000">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="chest_close" weight="1.000000" />
-					</animation>
-				</animations>
-			</action>
-			<action name="closed" speed="1.000000">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="chest_close_hold" weight="1.000000" />
-					</animation>
-				</animations>
-			</action>
-			<action name="open" speed="1.000000">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="chest_open" weight="1.000000" />
-					</animation>
-				</animations>
-			</action>
-			<action name="opened" speed="1.000000">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="chest_open_hold" weight="1.000000" />
-					</animation>
-				</animations>
-			</action>
+            <action name="close" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="chest_close" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="closed" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="chest_close_hold" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="open" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="chest_open" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="opened" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="chest_open_hold" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
         </actions>
         <attachpoints />
         <views />

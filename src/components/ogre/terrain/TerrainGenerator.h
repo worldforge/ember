@@ -360,11 +360,19 @@ public:
 	/**
 	@brief Emitted after the terrain geometry has changed.
 	
-	When the terrain geometry is about to be changed this signal is emitted.
+	When the terrain geometry has been changed this signal is emitted.
 	The first parameter is the TerrainPositions that were updated, i.e. the BasePoints that were changed. The terrain is generated from a series of base points, in the default setting dispersed with 64 meters between them.
 	The second parameter is the pages that were updated.
 	*/
 	sigc::signal<void, std::vector<TerrainPosition>&, std::set<TerrainPage*>&> EventAfterTerrainUpdate;
+	
+	/**
+	 * @brief Emitted when a terrain page has had its geometry updated.
+	 *
+	 * This often signals that a page is to be loaded and rendered.
+	 * @warning You must not do any rendering directly in the methods listening for this event, since that can lead to strange behaviour in the scene manager. The reason is that this event is emitted while already in the rendering loop, and entering the render loop again at that point will lead to some very inconsistent states.
+	 */
+	sigc::signal<void, TerrainPage&> EventTerrainPageGeometryUpdated;
 	
 	/**
 	 * @brief Gets the size of each foliage batch. This is used by the foliage system for setting up batch system for performance.

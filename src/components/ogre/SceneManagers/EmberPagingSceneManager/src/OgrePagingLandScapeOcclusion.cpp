@@ -50,7 +50,7 @@ namespace Ogre
         {
             mCurrentCam = cam;
         }
-        if  (mCurrentCam->nextFrame(Root::getSingleton().getCurrentFrameNumber ()))
+        if  (mCurrentCam->nextFrame(Root::getSingleton().getNextFrameNumber()))
         {              
             // change frame Id counter 
             //that identify current frame.

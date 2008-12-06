@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<Imageset Name="iconset_standard" Imagefile="icons/iconset_standard.png" NativeHorzRes="1024" NativeVertRes="768" AutoScaled="false">
+<Imageset Name="iconset_standard" Imagefile="themes/ember/gui/icons/iconset_standard.png" NativeHorzRes="1024" NativeVertRes="768" AutoScaled="false">
 	<Image Name="background_A" XPos="0" YPos="0" Width="48" Height="48" />
 	<Image Name="background_B" XPos="48" YPos="0" Width="48" Height="48" />
 	<Image Name="ring" XPos="96" YPos="0" Width="48" Height="48" />

@@ -383,7 +383,9 @@ function Inventory.setupDoll(avatarEntity)
 	Inventory.doll.righHand.entityIconDropped_connector = EmberOgre.LuaConnector:new_local(Inventory.doll.righHand.slot.EventIconDropped):connect(Inventory.doll.righHand.entityIconDropped)
 	
 	Inventory.doll.righHand.newEntityCreated = function(newEntity)
-		Inventory.doll.righHand.attributeChanged(avatarEntity:valueOfAttr("right_hand_wield"))
+		if avatarEntity:hasAttr("right_hand_wield") then
+			Inventory.doll.righHand.attributeChanged(avatarEntity:valueOfAttr("right_hand_wield"))
+		end
 	end
 	table.insert(Inventory.newEntityListeners, Inventory.doll.righHand.newEntityCreated)	
 	

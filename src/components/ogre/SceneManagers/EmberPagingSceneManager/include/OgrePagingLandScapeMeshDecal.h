@@ -112,6 +112,11 @@ namespace Ogre
 		void SetSize( const Vector2& size );
 		
 		virtual void _notifyAttached(Node* parent, bool isTagPoint = false);
+		
+		/**
+		* @copydoc MovableObject::visitRenderables
+		*/
+		virtual void visitRenderables(Renderable::Visitor* visitor, bool debugRenderables = false);
 	private:
 		void CreateGeometry();
 		size_t GetNumVertices() const;
@@ -133,6 +138,7 @@ namespace Ogre
 										  const bool omitFirstTri,
 										  const bool omitLastTri, 
 										  const int indexOffset );
+	protected:
 		// From MovableObject
 		const String& getMovableType() const 
 		{
@@ -155,9 +161,7 @@ namespace Ogre
 		}
 		virtual void getRenderOperation( RenderOperation& op );
 		virtual void getWorldTransforms( Matrix4* xform ) const;
-		const Quaternion& getWorldOrientation() const;
-		const Vector3& getWorldPosition() const;
-		Real getSquaredViewDepth( const Camera* cam ) const;
+		virtual Real getSquaredViewDepth( const Camera* cam ) const;
 		const LightList& getLights() const
 		{
 			return lightList_;

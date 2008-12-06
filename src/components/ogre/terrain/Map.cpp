@@ -35,8 +35,8 @@ namespace Terrain {
 Map::Map()
 :
 mRenderTexture(0)
-, mResolutionMeters(256)
 , mTexturePixelSize(256)
+, mMetersPerPixel(1.0f)
 , mCamera(*this, EmberOgre::getSingleton().getSceneManager())
 , mView(*this, mCamera)
 {
@@ -77,7 +77,7 @@ void Map::render()
 	mCamera.render();
 }
 
-void Map::reposition(Ogre::Vector2 pos)
+void Map::reposition(const Ogre::Vector2& pos)
 {
 	mCamera.reposition(pos);
 }
@@ -103,14 +103,28 @@ Ogre::TexturePtr Map::getTexture() const
 	return mTexture;
 }
 
+Ogre::RenderTexture* Map::getRenderTexture() const
+{
+	return mRenderTexture;
+}
+
 float Map::getResolution() const
 {
-	return mTexturePixelSize / mResolutionMeters;
+	return mMetersPerPixel;
+}
+
+void Map::setResolution(float metersPerPixel)
+{
+	if (metersPerPixel > 0) {
+		mMetersPerPixel = metersPerPixel;
+		render();
+		mView.recalculateBounds();
+	}
 }
 
 float Map::getResolutionMeters() const
 {
-	return mTexturePixelSize;
+	return mTexturePixelSize * mMetersPerPixel;
 }
 
 MapView& Map::getView()
@@ -126,7 +140,6 @@ MapView::MapView(Map& map, MapCamera& mapCamera)
 : mMap(map)
 , mMapCamera(mapCamera)
 , mViewSize(0.5)
-, mViewSizeMeters(static_cast<int>(mViewSize * map.getResolutionMeters()))
 {
 	///set it to invalid values so we'll force an update when it's repositioned
 	mFullBounds.left = 1;
@@ -135,29 +148,17 @@ MapView::MapView(Map& map, MapCamera& mapCamera)
 	mFullBounds.bottom = -1;
 }
 
-bool MapView::reposition(Ogre::Vector2 pos)
+bool MapView::reposition(const Ogre::Vector2& pos)
 {
-	int halfViewSizeMeters(mViewSizeMeters / 2);
+	int halfViewSizeMeters((mMap.getResolutionMeters() * mViewSize)/ 2);
 	///check if we need to reposition the camera
 	if (pos.x - halfViewSizeMeters < mFullBounds.left || pos.x + halfViewSizeMeters > mFullBounds.right
 		|| pos.y - halfViewSizeMeters < mFullBounds.top || pos.y + halfViewSizeMeters > mFullBounds.bottom) {
 		mMapCamera.reposition(pos);
 		mMapCamera.render();
 		
-		mFullBounds.left = static_cast<int>(pos.x - (mMap.getResolutionMeters() / 2));
-		mFullBounds.right = static_cast<int>(pos.x + (mMap.getResolutionMeters() / 2));
-		mFullBounds.top = static_cast<int>(pos.y - (mMap.getResolutionMeters() / 2));
-		mFullBounds.bottom = static_cast<int>(pos.y + (mMap.getResolutionMeters() / 2));
+		recalculateBounds();
 		
-		
-		
-		mVisibleRelativeBounds.left = 0.5f - (mViewSize / 2);
-		mVisibleRelativeBounds.right= 0.5f + (mViewSize / 2);
-		mVisibleRelativeBounds.top = 0.5f - mViewSize / 2;
-		mVisibleRelativeBounds.bottom= 0.5f + (mViewSize / 2);
-		mRelativeViewPosition.x = 0.5f;
-		mRelativeViewPosition.y = 0.5f;
-
 		return true;
 	}
 	mRelativeViewPosition.x = (pos.x - mFullBounds.left) / static_cast<float>(mMap.getResolutionMeters());
@@ -181,40 +182,24 @@ const Ogre::Vector2& MapView::getRelativeViewPosition() const
 	return mRelativeViewPosition;
 }
 
-
-
-
-
-
-
-
-
-
-
-Ogre::Matrix4 makeOrtho2D(float left, float right, float bottom, float top, float zNear, float zFar)
+void MapView::recalculateBounds()
 {
-  float width = right-left;
-  float height = top-bottom;
-  float depth = zFar-zNear;
+	Ogre::Vector2 pos(mMapCamera.getPosition());
+	mFullBounds.left = static_cast<int>(pos.x - (mMap.getResolutionMeters() / 2));
+	mFullBounds.right = static_cast<int>(pos.x + (mMap.getResolutionMeters() / 2));
+	mFullBounds.top = static_cast<int>(pos.y - (mMap.getResolutionMeters() / 2));
+	mFullBounds.bottom = static_cast<int>(pos.y + (mMap.getResolutionMeters() / 2));
+	
+	
+	
+	mVisibleRelativeBounds.left = 0.5f - (mViewSize / 2);
+	mVisibleRelativeBounds.right= 0.5f + (mViewSize / 2);
+	mVisibleRelativeBounds.top = 0.5f - mViewSize / 2;
+	mVisibleRelativeBounds.bottom= 0.5f + (mViewSize / 2);
+	mRelativeViewPosition.x = 0.5f;
+	mRelativeViewPosition.y = 0.5f;
+}
 
-  // naive initialization
-  Ogre::Matrix4 result = Ogre::Matrix4::ZERO;
-
-  // [i][j] operator for Ogre is really [row][col] for math texts
-
-  // calculate the diagonal
-  result[0][0] = 2.f / (width);
-  result[1][1] = 2.f / (height);
-  result[2][2] = -2.f / (depth);
-  result[3][3] = 1.f;
-
-  // calculate the translational
-  result[0][3] = -(right+left) / (width);
-  result[1][3] = -(top+bottom) / (height);
-  result[2][3] = -(zFar+zNear) / (depth);
-
-  return result;
-} 
 
 
 
@@ -234,14 +219,6 @@ MapCamera::MapCamera(Map& map, Ogre::SceneManager* manager)
 // 	mCamera->setFOVy(Ogre::Degree(30));
 // 	mCamera->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
 
-	mCamera->setNearClipDistance(1);
-	mCamera->setFarClipDistance(mDistance * 200);
-	///use orthographic projection and then alter the projectionmatrix to make it render only the intended area
-	mCamera->setProjectionType(Ogre::PT_ORTHOGRAPHIC );
-	int halfRes = static_cast<int>(mMap.getResolutionMeters() / 2.0f);
-	mCamera->setCustomProjectionMatrix(true,makeOrtho2D(-halfRes,halfRes,-halfRes,halfRes,1,1000));
-	mCamera->setAspectRatio(1.0);
-	
 	mCamera->addQueryFlags(Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
 
 }
@@ -276,13 +253,25 @@ float MapCamera::getDistance() const
 	return mDistance;
 }
 
-void MapCamera::reposition(Ogre::Vector2 pos)
+void MapCamera::reposition(const Ogre::Vector2& pos)
 {
 	mCamera->setPosition(pos.x, mDistance, pos.y);
 }
 
+const Ogre::Vector2 MapCamera::getPosition() const
+{
+	return Ogre::Vector2(mCamera->getPosition().x, mCamera->getPosition().z);
+}
+
+
 void MapCamera::render()
 {
+	mCamera->setNearClipDistance(1);
+	mCamera->setFarClipDistance(mDistance * 200);
+	
+	mCamera->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
+	mCamera->setOrthoWindow(mMap.getResolutionMeters(), mMap.getResolutionMeters());
+	mCamera->setAspectRatio(1.0);
 	{
 		///use a RAII rendering instance so that we're sure to reset all settings of the scene manager that we change, even if something goes wrong here
 		Ogre::SceneManager* manager(mCamera->getSceneManager());

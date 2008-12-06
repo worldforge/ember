@@ -255,7 +255,7 @@ void AvatarCamera::attach(Ogre::SceneNode* toNode) {
 	mAvatarCameraNode->setOrientation(Ogre::Quaternion::IDENTITY);
 	mAvatarCameraNode->_update(true, true);
 	std::stringstream ss;
-	ss << "Attached camera to node: " << toNode->getName() <<". New position: " << mCamera.getWorldPosition() << " New orientation: " << mCamera.getWorldOrientation();
+	ss << "Attached camera to node: " << toNode->getName() <<". New position: " << mCamera.getDerivedPosition() << " New orientation: " << mCamera.getDerivedOrientation();
 	S_LOG_VERBOSE(ss.str());
 }
 
@@ -459,7 +459,7 @@ void AvatarCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const Mouse
 		if (direction.z != 0) {
 		
 			mAdjustTerrainRay.setDirection(direction);
-			mAdjustTerrainRay.setOrigin(mAvatarCameraRootNode->getWorldPosition());
+			mAdjustTerrainRay.setOrigin(mAvatarCameraRootNode->_getDerivedPosition());
 			
  			mAdjustTerrainRaySceneQuery->setRay(mAdjustTerrainRay);
 			
@@ -472,7 +472,7 @@ void AvatarCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const Mouse
 				
 				if (entry.worldFragment) {
 					Ogre::Vector3 position = entry.worldFragment->singleIntersection;
-					Ogre::Real distance = mAvatarCameraRootNode->getWorldPosition().distance(position);
+					Ogre::Real distance = mAvatarCameraRootNode->_getDerivedPosition().distance(position);
 					if (distance < mWantedCameraDistance) {
 						_setCameraDistance(distance - 0.1);
 						return true;

@@ -264,7 +264,7 @@ void IngameChatWidget::EntityObserver::updateLabel(const Ogre::Camera * camera)
 	//	Ogre::Vector3 entityWorldCoords = window->getEntity()->getSceneNode()->_getWorldAABB().getCenter();
 	// 	const Ogre::Vector3& cameraCoords = camera->getDerivedPosition();
 	///getWorldPosition is faster than getting the center of the boundingbox...
-		Ogre::Vector3 diff = mEntity->getSceneNode()->getWorldPosition() - camera->getWorldPosition();
+		Ogre::Vector3 diff = mEntity->getSceneNode()->_getDerivedPosition() - camera->getDerivedPosition();
 		
 		///remove the window if it's either too far away
 		if (diff.length() > mChatWidget.mDistanceShown) {
@@ -538,7 +538,7 @@ void IngameChatWidget::ChatText::updateText(const std::string & line)
 			responseText->setProperty("HorzFormatting", "WordWrapLeftAligned");
  			responseText->setProperty("FrameEnabled", "false");
  			responseText->setProperty("BackgroundEnabled", "false");
- 			responseText->setProperty("Font", "Vera-Sans-Bold-8");
+ 			responseText->setProperty("Font", "DejaVuSans-Bold-8");
  			responseText->setProperty("TextColours", "tl:FFFFFFFF tr:FFFFFFFF bl:FFffc990 br:FFffc990");
 			
 			

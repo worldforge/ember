@@ -37,66 +37,73 @@ class EmberPagingSceneManager;
 class EmberPagingSceneManagerFactory;
 
 /**
-	A class used for setting up Ogre. Instead of creating the Ogre root object and the main render window direclty, use this to guarantee that everything is set up correctly.
+	@brief A class used for setting up Ogre. Instead of creating the Ogre root object and the main render window direclty, use this to guarantee that everything is set up correctly.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
-class OgreSetup{
+class OgreSetup : Ogre::FrameListener
+{
 public:
-    OgreSetup();
-
-    ~OgreSetup();
-    
-    /**
-     * Creates the ogre base system.
-     * @return 
-     */
-    Ogre::Root* createOgreSystem();
-    
+	OgreSetup();
+	
+	~OgreSetup();
+	
 	/**
-	 * Configures the application - returns false if the user chooses to abandon configuration.
-	 * @param  
-	 * @return 
+	* Creates the ogre base system.
+	* @return The new Ogre Root object.
+	*/
+	Ogre::Root* createOgreSystem();
+	
+	/**
+	 * @brief Configures the application - returns false if the user chooses to abandon configuration.
+	 * @return True if everything was correctly set up, else false.
 	 */
-	bool configure(void);
-    
+	bool configure();
+
 	/**
-	 *    Gets the main render window.
-	 * @return 
+	 * @brief Gets the main render window.
+	 * @return The render window.
 	 */
 	inline Ogre::RenderWindow* getRenderWindow() const;
 	
-    /**
-     * Gets the Ogre root object.
-     * @return 
-     */
-    inline Ogre::Root* getRoot() const;
-    
-    /**
-     * chooses and sets up the correct scene manager
-     * @param  
-     */
-    EmberPagingSceneManager* chooseSceneManager();
-    
-    /**
-     * Shuts down the ogre system.
-     */
-    void shutdown();
-    
+	/**
+	* @brief Gets the Ogre root object.
+	* @return The root object.
+	*/
+	inline Ogre::Root* getRoot() const;
+
+	/**
+	 * @brief Chooses and sets up the correct scene manager.
+	 * @return The newly created scene manager.
+	 */
+	EmberPagingSceneManager* chooseSceneManager();
+
+	/**
+	* @brief Shuts down the ogre system.
+	*/
+	void shutdown();
+
+	/**
+	 * @brief Swap the double buffers every frame.
+	 * @param evt The ogre frame event.
+	 * @return Always return true.
+	 */
+	bool frameEnded(const Ogre::FrameEvent & evt);
+
 private:
 
 	/**
-	Holds the Ogre root object.
-	*/
+	 * @brief Holds the Ogre root object.
+	 */
 	Ogre::Root* mRoot;
 	
 	/**
-	Holds the main render window.
-	*/
+	 * @brief Holds the main render window.
+	 */
 	Ogre::RenderWindow* mRenderWindow;
 	
 	
 	/**
-	 *    Attempts to parse out the user selected geometry options for ogre.
+	 * @brief Attempts to parse out the user selected geometry options for ogre.
 	 * @param config The option map, usually found inside the currently selected RenderSystem.
 	 * @param width The width of the window in pixels.
 	 * @param height The height of the window in pixels.
@@ -105,9 +112,17 @@ private:
 	void parseWindowGeometry(Ogre::ConfigOptionMap& config, unsigned int& width, unsigned int& height, bool& fullscreen);
 	
 	/**
-	Sets standard values in the ogre environment.
-	*/
+	 * @brief Sets standard values in the ogre environment.
+	 */
 	void setStandardValues();
+	
+	/**
+	 * @brief Checks for the named gl extension.
+	 * @param extension The name of the extension to check for.
+	 * @return True if the extension was found.
+	 */
+	int isExtensionSupported(const char *extension);
+
 	
 	/**
 	The icon shown in the top of the window.

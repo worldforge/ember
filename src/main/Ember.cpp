@@ -20,6 +20,9 @@
 #include "config.h"
 #endif
 
+// Redefines main() on Win32 and MacOS
+#include <SDL_main.h>
+
 #include "Application.h"
 #include "framework/Tokeniser.h"
 
@@ -45,6 +48,9 @@
 #include "framework/binreloc.h" //this is needed for binreloc functionality
 
 
+#ifdef __cplusplus
+extern "C"
+#endif
 int main(int argc, char **argv)
 {
 	int exitStatus(0);
@@ -111,6 +117,7 @@ int main(int argc, char **argv)
 		}
 	}
 
+	#if !defined(__WIN32__) && !defined(__APPLE__)
 	if (exit_program) {
 		if (homeDir != "") {
 			if (chdir(homeDir.c_str())) {
@@ -123,6 +130,7 @@ int main(int argc, char **argv)
 		}
 		return 0;
 	}
+	#endif
 
 #ifdef ENABLE_BINRELOC
     if (prefix == "") {
@@ -182,7 +190,7 @@ int main(int argc, char **argv)
 		}
 	}
 
-#ifndef __WIN32__
+#if !defined(__WIN32__) && !defined(__APPLE__)
 	if (homeDir != "") {
 		if (chdir(homeDir.c_str())) {
 			std::cerr << "Could not set homedir to '" << homeDir << "'." << std::endl;

@@ -118,7 +118,7 @@ void LuaScriptingProvider::createState()
 	}
 
 
-#ifdef LUA51
+#if LUA_VERSION_NUM >= 501
 	static const luaL_Reg lualibs[] = {
 		{"", luaopen_base},
 		{LUA_LOADLIBNAME, luaopen_package},
@@ -138,12 +138,12 @@ void LuaScriptingProvider::createState()
 		{LUA_DBLIBNAME, luaopen_debug},
 		{NULL, NULL}
 		};		
-#endif /* LUA51 */
+#endif /* LUA_VERSION_NUM >= 501 */
 
 	mLuaState = lua_open();
 
 	// init all standard libraries
-#ifdef LUA51
+#if LUA_VERSION_NUM >= 501
 	const luaL_Reg *lib = loadDebugLib ? lualibsDebug : lualibs;
 	for (; lib->func; lib++)
 	{
@@ -151,7 +151,7 @@ void LuaScriptingProvider::createState()
 		lua_pushstring(mLuaState, lib->name);
 		lua_call(mLuaState, 1, 0);
 	}
-#else /* LUA51 */
+#else /* LUA_VERSION_NUM >= 501 */
 	luaopen_base(mLuaState);
 	luaopen_io(mLuaState);
 	luaopen_string(mLuaState);
@@ -160,7 +160,7 @@ void LuaScriptingProvider::createState()
 	if (loadDebugLib) {
 		luaopen_debug(mLuaState);
 	}
-#endif /* LUA51 */
+#endif /* LUA_VERSION_NUM >= 501 */
 
 }
 
@@ -208,7 +208,7 @@ void LuaScriptingProvider::executeScriptImpl(const std::string& scriptCode, LuaS
 
 		///push our error handling method before calling the code
 		int error_index = lua_gettop(mLuaState);
-		#if LUA51
+		#if LUA_VERSION_NUM >= 501
 		lua_pushcfunction(mLuaState, ::EmberOgre::Scripting::LuaHelper::luaErrorHandler);
 		#else
 		lua_pushliteral(mLuaState, "_TRACEBACK");
@@ -275,7 +275,7 @@ void LuaScriptingProvider::callFunctionImpl(const std::string& functionName, int
 
 		///push our error handling method before calling the code
 		int error_index = top + 1; //lua_gettop(mLuaState);
-		#if LUA51
+		#if LUA_VERSION_NUM >= 501
 		lua_pushcfunction(mLuaState, ::EmberOgre::Scripting::LuaHelper::luaErrorHandler);   // st: args func err_h
 		#else
 		lua_pushliteral(mLuaState, "_TRACEBACK");
@@ -356,7 +356,7 @@ void LuaScriptingProvider::_registerWithService(Ember::ScriptingService* service
 
 void LuaScriptingProvider::forceGC()
 {
-#ifdef LUA51
+#if LUA_VERSION_NUM >= 501
 	lua_gc(mLuaState, LUA_GCCOLLECT, 0);
 #else
 	lua_setgcthreshold(mLuaState,0);

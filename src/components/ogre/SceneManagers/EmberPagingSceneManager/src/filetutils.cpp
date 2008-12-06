@@ -9,7 +9,7 @@
 
 #include "OgrePagingLandScapePrecompiledHeaders.h"
 
-#include "OgreNoMemoryMacros.h"
+// #include "OgreNoMemoryMacros.h"
 
 
 #include <sys/types.h>
@@ -31,7 +31,7 @@
 #ifdef _APPLE
 #   include <malloc/malloc.h>
 #else 
-#   include <malloc.h>	
+#   include <stdlib.h>
 #endif
 #   include <unistd.h>
 #   include <sys/param.h>
