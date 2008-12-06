@@ -102,7 +102,7 @@ protected:
 	SimpleSun* mSun;
 	SimpleSky* mSky;
 	SimpleFog* mFog;
-	Water* mWater;
+	IWater* mWater;
 
 };
 

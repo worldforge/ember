@@ -40,7 +40,6 @@ namespace Environment {
 
 class CaelumSky;
 class CaelumSun;
-class Water;
 
 /**
 	@author Erik Hjortsberg <erik@katastrof.nu>

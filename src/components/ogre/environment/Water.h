@@ -42,21 +42,49 @@ class Water : public IWater
 
 
 public:
-    Water(Ogre::Camera& camera, Ogre::SceneManager* mSceneMgr);
+    Water(Ogre::Camera& camera, Ogre::SceneManager& sceneMgr);
 
-    ~Water();
+    virtual ~Water();
+	
+	/**
+	 * @brief Performs checks to see whether this technique is supported on the current hardware.
+	 * @return True if the water technique is supported.
+	 */
+	virtual bool isSupported() const;
+	
+	/**
+	 * @brief Initializes the water. You must call this in order for the water to show up.
+	 * @return True if the water technique could be setup, else false.
+	 */
+	virtual bool initialize();
+	
 	
 protected:
 	
-	Ogre::Plane reflectionPlane;
+	Ogre::Plane mReflectionPlane;
 	
+	/**
+	 * @brief The camera used.
+	 */
 	Ogre::Camera& mCamera;
+	
+	/**
+	 * @brief The scene manager to which the water will be added.
+	 */
+	Ogre::SceneManager& mSceneMgr;
 
-    RefractionTextureListener*  mRefractionListener;
+    RefractionTextureListener* mRefractionListener;
     ReflectionTextureListener* mReflectionListener;
-	void createFresnelWater(Ogre::Camera &camera, Ogre::SceneManager* mSceneMgr);
-	void createSimpleWater(Ogre::Camera &camera, Ogre::SceneManager* mSceneMgr);
+	
+	/**
+	 * @brief The node to which the water entity is attached to. Owned by this instance-
+	 */
 	Ogre::SceneNode *mWaterNode;
+	
+	/**
+	 * @brief The entity representing the water plane. Owned by this instance-
+	 */
+	Ogre::Entity* mWaterEntity;
 
 };
 

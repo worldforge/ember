@@ -44,23 +44,29 @@ class HydraxWater : public IWater, public Ogre::FrameListener
 public:
 	HydraxWater(Ogre::Camera& camera, Ogre::SceneManager& mSceneMgr);
 	
-	~HydraxWater();
+	virtual ~HydraxWater();
 
 	/**
 	 * Methods from Ogre::FrameListener
 	 */
 	bool frameStarted(const Ogre::FrameEvent& event);
 
+	/**
+	 * @brief Performs checks to see whether this technique is supported on the current hardware.
+	 * @return True if the water technique is supported.
+	 */
+	virtual bool isSupported() const;
+	/**
+	 * @brief Initializes the water. You must call this in order for the water to show up.
+	 * @return True if the water technique could be setup, else false.
+	 */
+	virtual bool initialize();
+
+
 protected:
 
 	
-	/**
-	 * @brief Creates and intializes hydrax.
-	 */
-	void setupHydrax();
 
-
-	
 	/**
 	 * @brief The camera used.
 	 */

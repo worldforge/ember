@@ -128,9 +128,40 @@ public:
 
 
 
-	Water::Water(Ogre::Camera &camera, Ogre::SceneManager* mSceneMgr) : mCamera(camera)
+Water::Water(Ogre::Camera &camera, Ogre::SceneManager& sceneMgr) : mCamera(camera), mSceneMgr(sceneMgr), mWaterNode(0), mWaterEntity(0)
+{
+}
+
+bool Water::isSupported() const
+{
+	/// Check prerequisites first
+	const RenderSystemCapabilities* caps = Root::getSingleton().getRenderSystem()->getCapabilities();
+	if (!caps->hasCapability(RSC_VERTEX_PROGRAM) || !(caps->hasCapability(RSC_FRAGMENT_PROGRAM)))
 	{
-	
+		return false;
+	}
+	else
+	{
+		if (!GpuProgramManager::getSingleton().isSyntaxSupported("arbfp1") &&
+			!GpuProgramManager::getSingleton().isSyntaxSupported("ps_2_0") &&
+			!GpuProgramManager::getSingleton().isSyntaxSupported("ps_1_4")
+			)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+
+/**
+	* @brief Initializes the water. You must call this in order for the water to show up.
+	* @return True if the water technique could be setup, else false.
+	*/
+bool Water::initialize()
+{
+	try {
 		Ogre::Plane waterPlane(Ogre::Vector3::UNIT_Y, 0);
 
 
@@ -149,80 +180,36 @@ public:
 		);
 		
 		mWaterNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode("water");
-		//mWaterNode->translate(500, 0, 500);
-
-			
+		
 		mRefractionListener = new RefractionTextureListener();
 		mReflectionListener = new ReflectionTextureListener();
-	
-		bool canDoFresnel = true;
-		// Check prerequisites first
-		const RenderSystemCapabilities* caps = Root::getSingleton().getRenderSystem()->getCapabilities();
-		if (!caps->hasCapability(RSC_VERTEX_PROGRAM) || !(caps->hasCapability(RSC_FRAGMENT_PROGRAM)))
-		{
-			canDoFresnel = false;
-		/*            Except(1, "Your card does not support vertex and fragment programs, so cannot "
-				"run this demo. Sorry!", 
-				"Fresnel::createScene");*/
-		}
-		else
-		{
-			if (!GpuProgramManager::getSingleton().isSyntaxSupported("arbfp1") &&
-				!GpuProgramManager::getSingleton().isSyntaxSupported("ps_2_0") &&
-				!GpuProgramManager::getSingleton().isSyntaxSupported("ps_1_4")
-				)
-			{
-				canDoFresnel = false;
-		/*                Except(1, "Your card does not support advanced fragment programs, "
-					"so cannot run this demo. Sorry!", 
-				"Fresnel::createScene");*/
-			}
-		}
-	
-		//default to normal water if "fresnelwater" not found in config
-		if (canDoFresnel && Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("graphics", "fresnelwater")) {
-			canDoFresnel = Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("graphics", "fresnelwater");
-		} else {
-			canDoFresnel = false;
-		}
 		
-		if (canDoFresnel)
-		{
-			createFresnelWater(camera, mSceneMgr);
-		} else {
-			createSimpleWater(camera, mSceneMgr);
-		}
-	
-	}
-	
-	void Water::createFresnelWater(Ogre::Camera &camera, Ogre::SceneManager* mSceneMgr)
-	{
 		Ogre::TexturePtr texture = TextureManager::getSingleton().createManual("Refraction", "General", TEX_TYPE_2D, 512, 512, 0, PF_A8R8G8B8, TU_RENDERTARGET);	
 		RenderTexture* rttTex = texture->getBuffer()->getRenderTarget();
 /*		RenderTexture* rttTex = EmberOgre::getSingleton().getOgreRoot()->getRenderSystem()->createRenderTexture( "Refraction", 512, 512 );*/
-			
-			{
-				Viewport *v = rttTex->addViewport( &mCamera );
-				Ogre::MaterialPtr mat = MaterialManager::getSingleton().getByName("Examples/FresnelReflectionRefraction");
-				if (!mat.isNull()) {
-					mat->getTechnique(0)->getPass(0)->getTextureUnitState(2)->setTextureName("Refraction");
-					v->setOverlaysEnabled(false);
-					rttTex->addListener(mRefractionListener);
-				}
+		
+		{
+			Viewport *v = rttTex->addViewport( &mCamera );
+			Ogre::MaterialPtr mat = MaterialManager::getSingleton().getByName("Examples/FresnelReflectionRefraction");
+			if (!mat.isNull()) {
+				mat->getTechnique(0)->getPass(0)->getTextureUnitState(2)->setTextureName("Refraction");
+				v->setOverlaysEnabled(false);
+				rttTex->addListener(mRefractionListener);
 			}
-			
-			
-			texture = TextureManager::getSingleton().createManual("Reflection", "General", TEX_TYPE_2D, 512, 512, 0, PF_A8R8G8B8, TU_RENDERTARGET);
-			rttTex = texture->getBuffer()->getRenderTarget();
-			{
-				Viewport *v = rttTex->addViewport( &mCamera );
-				Ogre::MaterialPtr mat = MaterialManager::getSingleton().getByName("Examples/FresnelReflectionRefraction");
-				if (!mat.isNull()) {
-					mat->getTechnique(0)->getPass(0)->getTextureUnitState(1)->setTextureName("Reflection");
-					v->setOverlaysEnabled(false);
-					rttTex->addListener(mReflectionListener);
-				}
+		}
+		
+		
+		texture = TextureManager::getSingleton().createManual("Reflection", "General", TEX_TYPE_2D, 512, 512, 0, PF_A8R8G8B8, TU_RENDERTARGET);
+		rttTex = texture->getBuffer()->getRenderTarget();
+		{
+			Viewport *v = rttTex->addViewport( &mCamera );
+			Ogre::MaterialPtr mat = MaterialManager::getSingleton().getByName("Examples/FresnelReflectionRefraction");
+			if (!mat.isNull()) {
+				mat->getTechnique(0)->getPass(0)->getTextureUnitState(1)->setTextureName("Reflection");
+				v->setOverlaysEnabled(false);
+				rttTex->addListener(mReflectionListener);
 			}
+		}
 			
 			// Define a floor plane mesh
 /*			reflectionPlane.normal = Vector3::UNIT_Y;
@@ -230,51 +217,37 @@ public:
 /*			MeshManager::getSingleton().createPlane("ReflectPlane",reflectionPlane,
 				1500,1500,10,10,true,1,5,5,Vector3::UNIT_Z);*/
 		
-			
-			Entity* pPlaneEnt = mSceneMgr->createEntity( "plane", "WaterPlane" );
-			pPlaneEnt->setMaterialName("Examples/FresnelReflectionRefraction");
-			mRefractionListener->setPlaneEntity(pPlaneEnt);
-			mReflectionListener->setPlaneEntity(pPlaneEnt);
-			mReflectionListener->setReflectionPlane(reflectionPlane);
-			mReflectionListener->setCamera(&camera);
-			mWaterNode->attachObject(pPlaneEnt);
-	
-	}
-	
-	void Water::createSimpleWater(Ogre::Camera &camera, Ogre::SceneManager* mSceneMgr)
+		
+		mWaterEntity = mSceneMgr.createEntity( "plane", "WaterPlane" );
+		mWaterEntity->setMaterialName("Examples/FresnelReflectionRefraction");
+		mRefractionListener->setPlaneEntity(mWaterEntity);
+		mReflectionListener->setPlaneEntity(mWaterEntity);
+		mReflectionListener->setReflectionPlane(mReflectionPlane);
+		mReflectionListener->setCamera(&mCamera);
+		mWaterNode->attachObject(mWaterEntity);
+		return true;
+	} catch (const std::exception& ex)
 	{
-			Ogre::Entity *waterEntity;
-/*			Ogre::Plane waterPlane;
-	
-	
-			// create a water plane/scene node
-			waterPlane.normal = Ogre::Vector3::UNIT_Y; 
-			waterPlane.d = 0; 
-			Ogre::MeshManager::getSingleton().createPlane(
-				"WaterPlane",
-				waterPlane,
-				1400, 1400,
-				20, 20,
-				true, 1, 
-				100, 100,
-				Ogre::Vector3::UNIT_Z
-			);*/
-	
-			waterEntity = mSceneMgr->createEntity("water", "WaterPlane"); 
-			waterEntity->setMaterialName("/global/environment/ground/water/simple"); 
-			waterEntity->setRenderQueueGroup(Ogre::RENDER_QUEUE_6);
-			waterEntity->setCastShadows(false);
-			
-			mWaterNode->attachObject(waterEntity); 
-	
+		S_LOG_FAILURE("Error when creating water: " << ex.what());
+		return false;
 	}
-	
-	
-	Water::~Water()
-	{
-		delete mRefractionListener;
-		delete mReflectionListener;
+
+}
+
+
+
+Water::~Water()
+{
+	delete mRefractionListener;
+	delete mReflectionListener;
+	if (mWaterNode) {
+		mWaterNode->detachAllObjects();
+		mSceneMgr.destroySceneNode(mWaterNode);
 	}
+	if (mWaterEntity) {
+		mSceneMgr.destroyEntity(mWaterEntity);
+	}
+}
 
 
 }

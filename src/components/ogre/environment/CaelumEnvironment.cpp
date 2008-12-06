@@ -29,6 +29,7 @@
 #include "CaelumSky.h"
 #include "CaelumSun.h"
 #include "Water.h"
+#include "SimpleWater.h"
 #include "HydraxWater.h"
 #include "framework/Tokeniser.h"
 //#include "caelum/include/CaelumSystem.h"
@@ -93,8 +94,17 @@ void CaelumEnvironment::createEnvironment()
 
 void CaelumEnvironment::setupWater()
 {
+
 	//mWater = new Water(mCamera, mSceneMgr);
-	mWater = new HydraxWater(mCamera, *mSceneMgr);
+// 	mWater = new HydraxWater(mCamera, *mSceneMgr);
+	mWater = new SimpleWater(mCamera, *mSceneMgr);
+	if (mWater->isSupported()) {
+		mWater->initialize();
+	} else {
+		delete mWater;
+		mWater = new SimpleWater(mCamera, *mSceneMgr);
+		mWater->initialize();
+	}
 
 
 }
