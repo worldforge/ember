@@ -96,8 +96,8 @@ void CaelumEnvironment::setupWater()
 {
 
 	//mWater = new Water(mCamera, mSceneMgr);
-// 	mWater = new HydraxWater(mCamera, *mSceneMgr);
-	mWater = new SimpleWater(mCamera, *mSceneMgr);
+	mWater = new HydraxWater(mCamera, *mSceneMgr);
+// 	mWater = new SimpleWater(mCamera, *mSceneMgr);
 	if (mWater->isSupported()) {
 		mWater->initialize();
 	} else {
