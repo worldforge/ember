@@ -43,6 +43,7 @@
 #include "services/wfut/WfutService.h"
 #include "services/time/TimeService.h"
 #include "services/input/InputService.h"
+#include "services/input/Input.h"
 
 #include "framework/ConsoleBackend.h"
 #include "framework/StreamLogObserver.h"
@@ -116,6 +117,8 @@ void Application::mainLoopStep()
 				mWorldView->update();
 			EventEndErisPoll.emit();
 		}
+		Ember::Input& input(Ember::Input::getSingleton());
+		input.processInput();
 		mOgreView->renderOneFrame();
 		#ifndef THREAD_SAFE
 		EmberServices::getSingleton().getSoundService()->cycle();
