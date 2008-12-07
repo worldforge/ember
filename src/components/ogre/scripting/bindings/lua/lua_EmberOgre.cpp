@@ -1,4 +1,4 @@
-﻿/*
+/*
 ** Lua binding: EmberOgre
 ** Generated automatically by tolua++-1.0.92.
 */
@@ -557,6 +557,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"EmberOgre::Gui::IconBar");
  tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainLayerDefinition");
  tolua_usertype(tolua_S,"Carpenter::AttachPair");
+ tolua_usertype(tolua_S,"Eris::TypeService");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Terrain::TerrainGenerator&>");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Terrain::BasePointUserObject*>");
  tolua_usertype(tolua_S,"Ogre::AxisAlignedBox");
