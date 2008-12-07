@@ -1,4 +1,4 @@
-﻿//
+//
 // C++ Implementation: EntityRecipe
 //
 // Description: 
@@ -35,6 +35,8 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/Codecs/XML.h>
+
+#include <Eris/TypeInfo.h>
 
 extern "C" {
 #include "lua.h"
