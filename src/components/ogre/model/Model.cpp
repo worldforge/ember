@@ -216,18 +216,30 @@ bool Model::createFromDefn()
 				if ((*I_parts)->getSubEntityDefinitions().size() > 0)
 				{
 					for (SubEntityDefinitionsStore::const_iterator I_subEntities = (*I_parts)->getSubEntityDefinitions().begin(); I_subEntities != (*I_parts)->getSubEntityDefinitions().end(); ++I_subEntities) {
-						Ogre::SubEntity* subEntity;
-						//try with a submodelname first
-						if ((*I_subEntities)->getSubEntityName() != "") {
-							subEntity = entity->getSubEntity((*I_subEntities)->getSubEntityName());
-						} else {
-							//no name specified, use the index instead
-							subEntity = entity->getSubEntity((*I_subEntities)->getSubEntityIndex());
-						}
-						part->addSubEntity(subEntity, *I_subEntities);
-						
-						if ((*I_subEntities)->getMaterialName() != "") {
-							subEntity->setMaterialName((*I_subEntities)->getMaterialName());
+						try {
+							Ogre::SubEntity* subEntity(0);
+							///try with a submodelname first
+							if ((*I_subEntities)->getSubEntityName() != "") {
+								subEntity = entity->getSubEntity((*I_subEntities)->getSubEntityName());
+							} else {
+								///no name specified, use the index instead
+								if (entity->getNumSubEntities() > (*I_subEntities)->getSubEntityIndex()) {
+									subEntity = entity->getSubEntity((*I_subEntities)->getSubEntityIndex());
+								} else {
+									S_LOG_WARNING("Model definition " << mMasterModel->getName() << " has a reference to entity with index " << (*I_subEntities)->getSubEntityIndex() << " which is out of bounds.");
+								}
+							}
+							if (subEntity) {
+								part->addSubEntity(subEntity, *I_subEntities);
+								
+								if ((*I_subEntities)->getMaterialName() != "") {
+									subEntity->setMaterialName((*I_subEntities)->getMaterialName());
+								}
+							} else {
+								S_LOG_WARNING("Could not add subentity.");
+							}
+						} catch (const std::exception& ex) {
+							S_LOG_WARNING("Error when getting sub entities for model " << mMasterModel->getName() << ": " << ex.what());
 						}
 					}		
 				} else {
