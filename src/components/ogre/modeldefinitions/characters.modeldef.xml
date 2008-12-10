@@ -1,6 +1,6 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <models>
-	<model name="male" usescaleof="height" showcontained="false">
+	<!--<model name="male" usescaleof="height" showcontained="false">
 		<translate x="0.000000" y="0.000000" z="0.000000" />
 		<rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
 		<submodels>
@@ -185,10 +185,9 @@
 		</actions>
 		<attachpoints>
 			<attachpoint name="right_hand_wield" bone="RMiddleRoot">
-				<!-- rotation x="1" y="0" z="0" degrees="45.000000" / -->
 			</attachpoint>
 		</attachpoints>
-	</model>
+	</model>-->
 		
 </models>
 
