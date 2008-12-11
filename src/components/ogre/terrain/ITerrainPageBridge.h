@@ -51,7 +51,13 @@ public:
 	 * Call this when the heightdata has changed and you want the Ogre representation to be updated to reflect this.
 	 */
 	virtual void updateTerrain() = 0;
-		
+	
+	/**
+	 * @brief Accessor to the terrain page this bridge is bound to.
+	 * @return A pointer to the terrain page, or null if no page yet has been bound.
+	 */
+	inline TerrainPage* getTerrainPage() const;
+	
 protected:
 	
 	/**
@@ -81,6 +87,12 @@ void ITerrainPageBridge::unbindFromTerrainPage()
 {
 	mTerrainPage = 0;
 }
+	
+TerrainPage* ITerrainPageBridge::getTerrainPage() const
+{
+	return mTerrainPage;
+}
+
 
 }
 }
