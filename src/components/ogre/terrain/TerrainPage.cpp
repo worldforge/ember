@@ -441,7 +441,11 @@ void TerrainPage::unregisterBridge()
 
 bool TerrainPage::getNormal(const TerrainPosition& localPosition, WFMath::Vector<3>& normal) const
 {
-	Mercator::Segment* segment(getSegmentAtLocalPosition(localPosition));
+
+	float height;
+	return mGenerator->getTerrain().getHeightAndNormal(mExtent.lowCorner().x() + localPosition.x(), mExtent.lowCorner().y() + localPosition.y(), height, normal);
+
+/*	Mercator::Segment* segment(getSegmentAtLocalPosition(localPosition));
 	if (segment) {
 		size_t xPos = I_ROUND(localPosition.x()) - (I_ROUND(floor(localPosition.x() / 64)) * 64);
 		size_t yPos = I_ROUND(localPosition.y()) - (I_ROUND(floor(localPosition.y() / 64)) * 64);
@@ -450,7 +454,7 @@ bool TerrainPage::getNormal(const TerrainPosition& localPosition, WFMath::Vector
 		return true;
 	} else {
 		return false;
-	}
+	}*/
 }
 
 
