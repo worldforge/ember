@@ -239,6 +239,15 @@ public:
 	 * Make sure to call this when the bridge is destroyed, so as not to leave any dangling pointers. This won't however delete the bridge.
 	 */
 	void unregisterBridge();
+	
+	
+	/**
+	 * @brief Gets the normal at the specified local position.
+	 * @param localPosition The position, local to the page.
+	 * @param normal The normal will be placed here.
+	 * @return True if a valid normal could be found at the specified position.
+	 */
+	bool getNormal(const TerrainPosition& localPosition, WFMath::Vector<3>& normal) const;
 
 
 private:

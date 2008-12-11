@@ -68,6 +68,23 @@
 #include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
 
+
+#ifdef HAVE_LRINTF
+    #define I_ROUND(_x) (::lrintf(_x)) 
+#elif defined(HAVE_RINTF)
+    #define I_ROUND(_x) ((int)::rintf(_x)) 
+#elif defined(HAVE_RINT)
+    #define I_ROUND(_x) ((int)::rint(_x)) 
+#else
+    #define I_ROUND(_x) ((int)(_x)) 
+#endif
+
+#ifdef HAVE_FABSF
+    #define F_ABS(_x) (::fabsf(_x))
+#else
+    #define F_ABS(_x) (::fabs(_x))
+#endif
+
 using namespace Ogre;
 namespace EmberOgre {
 namespace Terrain {
@@ -740,6 +757,28 @@ void TerrainGenerator::getShadowColourAt(const Ogre::Vector2& position, Ogre::Co
 	Ogre::TRect<float> ogrePageExtent = Atlas2Ogre(terrainPage->getExtent());
 	terrainShadow.getShadowColourAt(Ogre::Vector2(position.x - ogrePageExtent.left, position.y - ogrePageExtent.top), colour);
 }
+
+bool TerrainGenerator::getNormal(const TerrainPosition& worldPosition, WFMath::Vector<3>& normal) const
+{
+// 	static WFMath::Vector<3> defaultNormal(1,1,1);
+	int ix = I_ROUND(floor(worldPosition.x() / 64));
+	int iy = I_ROUND(floor(worldPosition.y() / 64));
+
+	Mercator::Segment * s = mTerrain->getSegment(ix, iy);
+	if ((s == 0) || (!s->isValid())) {
+		return false;
+	}
+	float xPos = I_ROUND(worldPosition.x()) - (ix * 64);
+	float yPos = I_ROUND(worldPosition.y()) - (iy * 64);
+	size_t normalPos = (yPos * 64 * 3) + (xPos * 3);
+	normal.x() = s->getNormals()[normalPos];
+	normal.y() = s->getNormals()[normalPos + 1];
+	normal.z() = s->getNormals()[normalPos + 2];
+
+	return true;
+
+}
+
 
 }
 }

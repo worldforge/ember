@@ -439,6 +439,20 @@ void TerrainPage::unregisterBridge()
 	mBridge = 0;
 }
 
+bool TerrainPage::getNormal(const TerrainPosition& localPosition, WFMath::Vector<3>& normal) const
+{
+	Mercator::Segment* segment(getSegmentAtLocalPosition(localPosition));
+	if (segment) {
+		size_t xPos = I_ROUND(localPosition.x()) - (I_ROUND(floor(localPosition.x() / 64)) * 64);
+		size_t yPos = I_ROUND(localPosition.y()) - (I_ROUND(floor(localPosition.y() / 64)) * 64);
+		size_t normalPos = (yPos * 64 * 3) + (xPos * 3);
+		normal = WFMath::Vector<3>(segment->getNormals()[normalPos], segment->getNormals()[normalPos + 1], segment->getNormals()[normalPos] + 2);
+		return true;
+	} else {
+		return false;
+	}
+}
+
 
 
 }
