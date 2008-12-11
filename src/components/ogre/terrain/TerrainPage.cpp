@@ -442,19 +442,20 @@ void TerrainPage::unregisterBridge()
 bool TerrainPage::getNormal(const TerrainPosition& localPosition, WFMath::Vector<3>& normal) const
 {
 
-	float height;
-	return mGenerator->getTerrain().getHeightAndNormal(mExtent.lowCorner().x() + localPosition.x(), mExtent.lowCorner().y() + localPosition.y(), height, normal);
+// 	float height;
+// 	return mGenerator->getTerrain().getHeightAndNormal(mExtent.lowCorner().x() + localPosition.x(), mExtent.lowCorner().y() + localPosition.y(), height, normal);
 
-/*	Mercator::Segment* segment(getSegmentAtLocalPosition(localPosition));
+	Mercator::Segment* segment(getSegmentAtLocalPosition(localPosition));
 	if (segment) {
-		size_t xPos = I_ROUND(localPosition.x()) - (I_ROUND(floor(localPosition.x() / 64)) * 64);
-		size_t yPos = I_ROUND(localPosition.y()) - (I_ROUND(floor(localPosition.y() / 64)) * 64);
-		size_t normalPos = (yPos * 64 * 3) + (xPos * 3);
+		int resolution = segment->getResolution();
+		size_t xPos = localPosition.x() - (I_ROUND(floor(localPosition.x() / resolution)) * resolution);
+		size_t yPos = localPosition.y() - (I_ROUND(floor(localPosition.y() / resolution)) * resolution);
+		size_t normalPos = (yPos * segment->getSize() * 3) + (xPos * 3);
 		normal = WFMath::Vector<3>(segment->getNormals()[normalPos], segment->getNormals()[normalPos + 1], segment->getNormals()[normalPos] + 2);
 		return true;
 	} else {
 		return false;
-	}*/
+	}
 }
 
 
