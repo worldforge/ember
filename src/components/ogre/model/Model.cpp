@@ -275,8 +275,8 @@ bool Model::createFromDefn()
 	createActions();
 	
 	createParticles();
-
 	
+	createLights();	
 
 
 	
@@ -357,6 +357,43 @@ void Model::createParticles()
 	}
 }
 
+void Model::createLights()
+{
+	ModelDefinition::LightSet::const_iterator I_lights = mMasterModel->mLights.begin();
+	ModelDefinition::LightSet::const_iterator I_lights_end = mMasterModel->mLights.end();
+	int j = 0;
+	for (;I_lights != I_lights_end; ++I_lights) {
+		//first try to create the ogre lights
+		//std::string name(mName + "/light");
+		std::stringstream name;
+		name << mName << "/light" << (j++);
+		LightInfo lightInfo;
+		Ogre::Light* ogreLight;
+		try {		
+			ogreLight = _getManager()->createLight(name.str());
+		} catch (const Ogre::Exception& ex) {
+			S_LOG_FAILURE("Could not create light: " << name.str() << "\nMessage: " << ex.getFullDescription());
+			continue;
+		}
+		if (ogreLight) {
+			ogreLight->setType(Ogre::Light::LT_POINT);
+			ogreLight->setDiffuseColour(I_lights->diffuseColour);
+			ogreLight->setSpecularColour(I_lights->specularColour);
+			ogreLight->setAttenuation(I_lights->range, I_lights->constant, I_lights->linear, I_lights->quadratic);
+
+			//ogreLight->setDiffuseColour(Ogre::ColourValue(0.5f,0.0f,0.0f));
+			//ogreLight->setSpecularColour(Ogre::ColourValue(0.5f,0.0f,0.0f));
+			//ogreLight->setAttenuation(100,1,0,0);
+			//ogreLight->setSpotlightRange(Ogre::Degree(60), Ogre::Degree(70));
+			//ogreLight->setDirection(Ogre::Vector3::NEGATIVE_UNIT_Y);
+
+			lightInfo.light = ogreLight;
+			lightInfo.position = I_lights->position;
+			mLights.push_back(lightInfo);
+		}
+		
+	}
+}
 
 bool Model::hasParticles() const
 {
@@ -371,6 +408,11 @@ const ParticleSystemBindingsPtrSet& Model::getAllParticleSystemBindings() const
 ParticleSystemSet& Model::getParticleSystems()
 {
 	return mParticleSystems;
+}
+
+LightSet& Model::getLights()
+{
+	return mLights;
 }
 
 

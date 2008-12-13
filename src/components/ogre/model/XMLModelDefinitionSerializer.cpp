@@ -211,6 +211,9 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, TiXmlE
 		}
 	}	
 	
+	elem = modelNode->FirstChildElement("lights");
+	if (elem)
+		readLights(modelDef, elem);
 }
 
 
@@ -622,6 +625,111 @@ void XMLModelDefinitionSerializer::readViews(ModelDefinitionPtr modelDef, TiXmlE
 			}
 			
 		}
+	}
+}
+
+void  XMLModelDefinitionSerializer::readLights(ModelDefinitionPtr modelDef, TiXmlElement* mLightsNode)
+{
+	TiXmlElement* elem;
+	ModelDefinition::LightSet& lights = modelDef->mLights;
+	
+	const char* tmp = 0;
+
+	for (TiXmlElement* lElem = mLightsNode->FirstChildElement();
+            lElem != 0; lElem = lElem->NextSiblingElement())
+	{
+		ModelDefinition::LightDefinition def;
+
+		def.type = Ogre::Light::LT_POINT;
+
+		tmp = lElem->Attribute("type");
+		if (tmp)
+		{
+			std::string type = tmp;
+			if (type == "point")
+			{
+				def.type = Ogre::Light::LT_POINT;
+			}
+			else if (type == "directional")
+			{
+				def.type = Ogre::Light::LT_DIRECTIONAL;
+			}
+			else if (type == "spotlight")
+			{
+				def.type = Ogre::Light::LT_SPOTLIGHT;
+			}
+		}
+		
+		Ogre::Real r=1.0f, g=1.0f, b=1.0f;
+
+		elem = lElem->FirstChildElement("diffusecolour");
+		if (elem)
+		{
+			if (elem->Attribute("r")) {
+				r = atof(elem->Attribute("r"));
+			}
+			if (elem->Attribute("g")) {
+				g = atof(elem->Attribute("g"));
+			}
+			if (elem->Attribute("b")) {
+				b = atof(elem->Attribute("b"));
+			}
+		}
+		def.diffuseColour = Ogre::ColourValue(r, g, b);
+
+		elem = lElem->FirstChildElement("specularcolour");
+		if (elem)
+		{
+			if (elem->Attribute("r")) {
+				r = atof(elem->Attribute("r"));
+			}
+			if (elem->Attribute("g")) {
+				g = atof(elem->Attribute("g"));
+			}
+			if (elem->Attribute("b")) {
+				b = atof(elem->Attribute("b"));
+			}
+			def.specularColour = Ogre::ColourValue(r, g, b);
+		}
+		else
+		{
+			def.specularColour = def.diffuseColour;
+		}
+
+		elem = lElem->FirstChildElement("attenuation");
+		def.range = 100000.0;
+		def.constant = 1.0;
+		def.linear = 0.0;
+		def.quadratic = 0.0;
+		if (elem)
+		{
+			if (elem->Attribute("range")) {
+				def.range = atof(elem->Attribute("range"));
+			}
+			if (elem->Attribute("constant")) {
+				def.constant = atof(elem->Attribute("constant"));
+			}
+			if (elem->Attribute("linear")) {
+				def.linear = atof(elem->Attribute("linear"));
+			}
+			if (elem->Attribute("quadratic")) {
+				def.quadratic = atof(elem->Attribute("quadratic"));
+			}
+		}
+
+		elem = lElem->FirstChildElement("position");
+		if (elem)
+		{
+			def.position = fillVector3FromElement(elem);
+		}
+		else
+		{
+			def.position = Ogre::Vector3::ZERO;
+		}
+
+		S_LOG_VERBOSE( "  Add light");
+
+		lights.push_back(def);
 	}
 }
 

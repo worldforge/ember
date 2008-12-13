@@ -35,8 +35,15 @@ class ParticleSystemBinding;
 class ParticleSystem;
 class Action;
 
+struct LightInfo
+{
+	Ogre::Light* light;
+	Ogre::Vector3 position;
+};
+
 typedef std::vector<ParticleSystem*> ParticleSystemSet;
 typedef std::vector<ParticleSystemBinding> ParticleSystemBindingsSet;
+typedef std::vector<LightInfo> LightSet;
 
 class ModelPart
 {
@@ -265,6 +272,8 @@ public:
 	ParticleSystemSet& getParticleSystems();
 	
 	bool hasParticles() const;
+
+	LightSet& getLights();
 	
 	/**
 	Returns a store of AttachPointWrapper objects, which represents all attached objects.
@@ -308,6 +317,8 @@ protected:
 	static unsigned long msAutoGenId;
 	ParticleSystemBindingsPtrSet mAllParticleSystemBindings;
 	ParticleSystemSet mParticleSystems;
+	LightSet mLights;
+
 	/**
 	 *    Clears all the submodels
 	 */
@@ -315,6 +326,7 @@ protected:
 	
 	void createActions();
 	void createParticles();	
+	void createLights();
 	
 	/**
 	 *    Clears all the particles
