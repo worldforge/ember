@@ -40,8 +40,8 @@ namespace caelum
             Ogre::Degree azimuth, Ogre::Degree altitude)
     {
         Ogre::Vector3 res;
-        res.z = -Math::Cos (azimuth) * Math::Cos (altitude);  // North 
-        res.x =  Math::Sin (azimuth) * Math::Cos (altitude);  // East
+        res.z =  Math::Cos (azimuth) * Math::Cos (altitude);  // North 
+        res.x = -Math::Sin (azimuth) * Math::Cos (altitude);  // East
         res.y = -Math::Sin (altitude); // Zenith
         return res;
     }
