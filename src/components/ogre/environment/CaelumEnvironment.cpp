@@ -116,6 +116,7 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 	mCaelumSystem->setManageSceneFog (true);
 	mCaelumSystem->setManageAmbientLight(true);
 	mCaelumSystem->setGlobalFogDensityMultiplier (0.005);
+	mCaelumSystem->setMinimumAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.2, 1.0));
 
 	///Get the sky dome for  Create a sky dome CaelumSky
 	mDome = mCaelumSystem->getSkyDome();
@@ -151,24 +152,26 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 	}
 	
 	///little hack here. We of course want to use the server time, but currently when you log in when it's dark, you won't see much, so in order to show the world in it's full glory we'll try to set the time to day time
+	/*
 	if (hour < 6) {
 		hour = 6;
 	} else if (hour > 16) {
 		hour = 15;
 	}
+	*/
 	
 	
 	mCaelumSystem->getUniversalClock ()->setGregorianDateTime (year, month, day, hour, minute, second);
 	
 	///greenwich
-	mCaelumSystem->getSolarSystemModel ()->setObserverLatitude  (Ogre::Degree(0));
+	mCaelumSystem->getSolarSystemModel ()->setObserverLatitude  (Ogre::Degree(51.0 + 29.0 / 60.0));
 	mCaelumSystem->getSolarSystemModel ()->setObserverLongitude(Ogre::Degree(0));
 	
 /*	//stockholm
 	mCaelumSystem->getSolarSystemModel ()->setObserverLatitude  (Ogre::Degree(59 + 18.0 / 60));
 	mCaelumSystem->getSolarSystemModel ()->setObserverLongitude(Ogre::Degree(31 + 113.0 / 60));*/
 	
-//  	mCaelumSystem->getUniversalClock()->setUpdateRate( 1 / (24 * 60)); //update every minute
+  	mCaelumSystem->getUniversalClock()->setUpdateRate( 1 / (24 * 60)); //update every minute
 	
 	
 	///advance it one second to force it to do initial updating, since other subsystems such as the terrain rendering depends on the sun postions etc.
