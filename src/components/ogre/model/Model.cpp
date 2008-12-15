@@ -29,6 +29,7 @@
 #include "Action.h"
 #include "ParticleSystem.h"
 #include "ParticleSystemBinding.h"
+#include "ModelPart.h"
 
 
 #include "components/ogre/EmberOgre.h"
@@ -466,51 +467,6 @@ SubModel* Model::getSubModel(size_t index)
 
 }
 
-ModelPart::ModelPart() : mVisible(false)
-{
-}
-
-
-void ModelPart::show()
-{
-	mVisible = true;
-	for (SubModelPartStore::iterator I = mSubModelParts.begin(); I != mSubModelParts.end(); ++I) {
-		(*I)->show();
-	}
-}
-
-void ModelPart::hide()
-{
-	for (SubModelPartStore::iterator I = mSubModelParts.begin(); I != mSubModelParts.end(); ++I) {
-		(*I)->hide();
-	}
-}
-
-bool ModelPart::getVisible() const
-{
-	return mVisible;
-}
-
-void ModelPart::setVisible(bool visible)
-{
-	mVisible = visible;
-}
-
-
-const std::string& ModelPart::getGroupName() const
-{
-	return mGroupName;
-}
-
-void ModelPart::setGroupName(const std::string& groupName)
-{
-	mGroupName = groupName;
-}
-
-void ModelPart::addSubModelPart(SubModelPart* part)
-{
-	mSubModelParts.push_back(part);
-}
 
 
 
