@@ -337,6 +337,15 @@ public:
 	void getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour);
 
 	/**
+	 * @brief Gets the normal at the specified world position.
+	 * If an invalid world position is specified the method will return false.
+	 * @param worldPosition The world position to get the normal for.
+	 * @param normal The normal values will be placed in this.
+	 * @return True if a valid segment and normal could be found at the specified world position.
+	 */
+	bool getNormal(const TerrainPosition& worldPosition, WFMath::Vector<3>& normal) const;
+	
+	/**
 	@brief Emitted when a layer is updated.
 	The vector parameter is either null if the update can't be constrained to any areas, or an vector of areas if it can.
 	*/
@@ -379,7 +388,7 @@ public:
 	 * @return The size of on foliage batch, in world units. 
 	 */
 	inline unsigned int getFoliageBatchSize() const;
-
+	
 protected:
 
 	/**

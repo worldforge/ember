@@ -264,7 +264,14 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 	{
 		getScaleNode()->attachObject((*I)->getOgreParticleSystem());
 	}
-	
+
+	for (Model::LightSet::iterator I = mModel->getLights().begin(); I != mModel->getLights().end(); ++I) 
+	{
+		Ogre::SceneNode* lightNode = getScaleNode()->createChildSceneNode();
+		lightNode->attachObject(I->light);
+		lightNode->setPosition(I->position);
+	}
+
 	///listen for reload or reset events from the model. This allows us to alter model definitions at run time and have the in game entities update.
 	getModel()->Reloaded.connect(sigc::mem_fun(*this, &EmberPhysicalEntity::Model_Reloaded));
 	getModel()->Resetting.connect(sigc::mem_fun(*this, &EmberPhysicalEntity::Model_Resetting));

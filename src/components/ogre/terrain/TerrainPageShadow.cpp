@@ -43,10 +43,11 @@ void SimpleTerrainPageShadowTechnique::createShadowData(TerrainPage& page, Terra
 	int pageSizeInMeters = pageSizeInVertices - 1;
 	
 	///since Ogre uses a different coord system than WF, we have to do some conversions here
-	TerrainPosition origPosition(page.getWFPosition());
+// 	TerrainPosition origPosition(page.getWFPosition());
+	TerrainPosition origPosition(0, pageSizeInMeters - 1);
 	///start in one of the corners...
-	origPosition[0] = (page.getWFPosition()[0] * (pageSizeInMeters));
-	origPosition[1] = (page.getWFPosition()[1] * (pageSizeInMeters));
+/*	origPosition[0] = (page.getWFPosition()[0] * (pageSizeInMeters));
+	origPosition[1] = (page.getWFPosition()[1] * (pageSizeInMeters));*/
 	
 	WFMath::Vector<3> wfLightDirection = Ogre2Atlas_Vector3(lightDirection);
 	wfLightDirection = wfLightDirection.normalize(1);
@@ -60,8 +61,9 @@ void SimpleTerrainPageShadowTechnique::createShadowData(TerrainPage& page, Terra
 		for (int j = 0; j < pageSizeInMeters; ++j) {
 			float height;
 			WFMath::Vector<3> normal;
-			if (generator->getTerrain().getHeightAndNormal(position.x(), position.y(), height, normal)) {
-				float dotProduct = WFMath::Dot(normal, wfLightDirection);
+ 			//if (generator->getTerrain().getHeightAndNormal(position.x(), position.y(), height, normal)) {
+ 			if (page.getNormal(position, normal)) {
+				float dotProduct = WFMath::Dot(normal.normalize(1), wfLightDirection);
 
 //correct
 // 				if (dotProduct > 0) {

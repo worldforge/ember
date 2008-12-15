@@ -34,38 +34,21 @@ class ModelDefinition;
 class ParticleSystemBinding;
 class ParticleSystem;
 class Action;
+class ModelPart;
+
+struct LightInfo
+{
+	Ogre::Light* light;
+	Ogre::Vector3 position;
+};
 
 typedef std::vector<ParticleSystem*> ParticleSystemSet;
 typedef std::vector<ParticleSystemBinding> ParticleSystemBindingsSet;
+typedef std::vector<LightInfo> LightSet;
 
-class ModelPart
-{
-public:
-	typedef std::vector<SubModelPart*> SubModelPartStore;
-	ModelPart();
-	
-	void addSubModelPart(SubModelPart* part);
-	
-	void hide();
-	void show();
-	
-	bool getVisible() const;
-	void setVisible(bool visible);
-	
-	const std::string& getGroupName() const;
-	void setGroupName(const std::string& groupName);
-	
-protected:
-	bool mShown;
-	bool mVisible;
-	
-	SubModelPartStore mSubModelParts;
-	
-	std::string mGroupName;
-};
 
 /**
- * This is the standard model used in Ember.
+ * @brief An instance of this represents a complete model, comprised of both multiple meshes, particle systems and lights.
  * A model can be made out of different entities, just as long as they share a skeleton.
  * The model consists of different parts, represented by instances of SubModelPart. 
  * Typical parts would be a body or a shirt. These parts can be turned on or off.
@@ -265,6 +248,8 @@ public:
 	ParticleSystemSet& getParticleSystems();
 	
 	bool hasParticles() const;
+
+	LightSet& getLights();
 	
 	/**
 	Returns a store of AttachPointWrapper objects, which represents all attached objects.
@@ -308,6 +293,8 @@ protected:
 	static unsigned long msAutoGenId;
 	ParticleSystemBindingsPtrSet mAllParticleSystemBindings;
 	ParticleSystemSet mParticleSystems;
+	LightSet mLights;
+
 	/**
 	 *    Clears all the submodels
 	 */
@@ -315,6 +302,7 @@ protected:
 	
 	void createActions();
 	void createParticles();	
+	void createLights();
 	
 	/**
 	 *    Clears all the particles
