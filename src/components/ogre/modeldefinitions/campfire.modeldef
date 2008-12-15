@@ -19,9 +19,9 @@
         <views />
         <lights>
             <light type="point">
-                 <diffusecolour r="0.5" g="0" b="0" />
-                 <specularcolour r="0.5" g="0" b="0" />
-                 <attenuation range="50" constant="1" linear="0" quadratic="0" />
+                 <diffusecolour r="0.8" g="0.7" b="0.25" />
+                 <specularcolour r="0.8" g="0.7" b="0.25" />
+                 <attenuation range="500" constant="1" linear="0" quadratic="0.001" />
                  <position x="0" y="1" z="0" />
             </light>
         </lights>
@@ -46,9 +46,9 @@
         <views />
         <lights>
             <light type="point">
-                 <diffusecolour r="0.5" g="0" b="0" />
-                 <specularcolour r="0.5" g="0" b="0" />
-                 <attenuation range="50" constant="1" linear="0" quadratic="0" />
+                 <diffusecolour r="0.8" g="0.7" b="0.25" />
+                 <specularcolour r="0.8" g="0.7" b="0.25" />
+                 <attenuation range="500" constant="1" linear="0" quadratic="0.001" />
                  <position x="0" y="1" z="0" />
             </light>
         </lights>
