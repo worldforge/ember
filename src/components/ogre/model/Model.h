@@ -44,35 +44,81 @@ struct LightInfo
 typedef std::vector<ParticleSystem*> ParticleSystemSet;
 typedef std::vector<ParticleSystemBinding> ParticleSystemBindingsSet;
 typedef std::vector<LightInfo> LightSet;
+/**
+@brief A part of a model, which can be turned on and off.
 
+Each model is separated into one or many "parts" which consists of one or many sub entities using specific materials. By showing or hiding certain parts you can simulate concepts such as different clothes or attached objects. A part can belong to a "group", which is just an arbitrary name. Parts belonging to the same group are mutually exlusive and only one part can be shown at once. When a part which belongs to a certain group is shown, all other parts in the same group are automatically hidden.
+A typical example of usage of this would be a human model where there's ten different parts for different shirt combinations. Each shirt part points towards the same mesh, but with different materials. They all belong to the same group, "shirt". Whenever one shirt is shown, all of the others are automatically hidden.
+@author Erik Hjortsberg <erik@worldforge.org>
+*/
 class ModelPart
 {
 public:
 	typedef std::vector<SubModelPart*> SubModelPartStore;
+	/**
+	 * @brief Default ctor.
+	 */
 	ModelPart();
 	
+	/**
+	 * @brief Adds a sub model part to this model part.
+	 * @param part The sub model part to add.
+	 */
 	void addSubModelPart(SubModelPart* part);
 	
+	/**
+	 * @brief Hides this part.
+	 */
 	void hide();
+	
+	/**
+	 * @brief Shows this part.
+	 */
 	void show();
 	
+	/**
+	 * @brief Gets whether the part is visible or not.
+	 * @return True if the part is visible.
+	 */
 	bool getVisible() const;
+	
+	/**
+	 * @brief Sets whether the part is visible or not.
+	 * @param visible True if the part should be visible.
+	 */
 	void setVisible(bool visible);
 	
+	/**
+	 * @brief Gets the name of the group which this part belongs to.
+	 * @return The name of the group which this part belongs to.
+	 */
 	const std::string& getGroupName() const;
+	
+	/**
+	 * @brief Sets the name of the group to which this part belongs to.
+	 * @param groupName The name of the group which this part should belong to.
+	 */
 	void setGroupName(const std::string& groupName);
 	
 protected:
-	bool mShown;
+	/**
+	 * @brief Whether the part is shown or not.
+	 */
 	bool mVisible;
 	
+	/**
+	 * @brief A store of the sub model parts belonging to this part.
+	 */
 	SubModelPartStore mSubModelParts;
 	
+	/**
+	 * @brief The name of the group to which this part belongs.
+	 */
 	std::string mGroupName;
 };
 
 /**
- * This is the standard model used in Ember.
+ * @brief An instance of this represents a complete model, comprised of both multiple meshes, particle systems and lights.
  * A model can be made out of different entities, just as long as they share a skeleton.
  * The model consists of different parts, represented by instances of SubModelPart. 
  * Typical parts would be a body or a shirt. These parts can be turned on or off.

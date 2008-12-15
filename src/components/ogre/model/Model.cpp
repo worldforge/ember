@@ -466,7 +466,7 @@ SubModel* Model::getSubModel(size_t index)
 
 }
 
-ModelPart::ModelPart() : mShown(false), mVisible(false)
+ModelPart::ModelPart() : mVisible(false)
 {
 }
 
