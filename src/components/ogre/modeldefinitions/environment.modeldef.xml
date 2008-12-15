@@ -3,7 +3,7 @@
 
 	<model name="fire">
 		<particlesystems>
-			<particlesystem script="Examples/Smoke">
+			<particlesystem script="/global/particles/smoke">
 				<bindings>
 					<binding emittervar="emission_rate" atlasattribute="status" />
 				</bindings>
