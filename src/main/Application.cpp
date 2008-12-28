@@ -117,8 +117,10 @@ void Application::mainLoopStep()
 				mWorldView->update();
 			EventEndErisPoll.emit();
 		}
+		EventBeforeInputProcessing.emit();
 		Ember::Input& input(Ember::Input::getSingleton());
 		input.processInput();
+		EventAfterInputProcessing.emit();
 		mOgreView->renderOneFrame();
 		#ifndef THREAD_SAFE
 		EmberServices::getSingleton().getSoundService()->cycle();
