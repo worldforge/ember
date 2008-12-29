@@ -181,14 +181,6 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 	
 	mCaelumSystem->getUniversalClock ()->setGregorianDateTime (year, month, day, hour, minute, second);
 	
-	///greenwich
-	mCaelumSystem->getSolarSystemModel ()->setObserverLatitude  (Ogre::Degree(51.0 + 29.0 / 60.0));
-	mCaelumSystem->getSolarSystemModel ()->setObserverLongitude(Ogre::Degree(0));
-	
-/*	//stockholm
-	mCaelumSystem->getSolarSystemModel ()->setObserverLatitude  (Ogre::Degree(59 + 18.0 / 60));
-	mCaelumSystem->getSolarSystemModel ()->setObserverLongitude(Ogre::Degree(31 + 113.0 / 60));*/
-	
   	mCaelumSystem->getUniversalClock()->setUpdateRate( 1 / (24 * 60)); //update every minute
 	
 	
@@ -236,6 +228,15 @@ void CaelumEnvironment::setTime(int seconds)
 	Ember::EmberServices::getSingleton().getTimeService()->getServerTime(year, month, day, _hour, _minute, _second);
 	
 	mCaelumSystem->getUniversalClock ()->setGregorianDateTime(year, month, day, 0, 0, seconds);
+}
+
+
+void CaelumEnvironment::setWorldPosition(float longitudeDegrees, float latitudeDegrees)
+{
+	if (mCaelumSystem) {
+		mCaelumSystem->getSolarSystemModel ()->setObserverLatitude (Ogre::Degree(latitudeDegrees));
+		mCaelumSystem->getSolarSystemModel ()->setObserverLongitude(Ogre::Degree(longitudeDegrees));
+	}
 }
 
 void CaelumEnvironment::runCommand(const std::string &command, const std::string &args)

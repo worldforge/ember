@@ -94,6 +94,13 @@ public:
     virtual void setTime(int hour, int minute, int second = 0);
 	virtual void setTime(int seconds);
 	
+	/**
+	 * @brief Sets the position of the world.
+	 * @param longitudeDegrees The longitude, as degrees.
+	 * @param latitudeDegrees The latitude, as degrees.
+	 */
+	virtual void setWorldPosition(float longitudeDegrees, float latitudeDegrees);
+	
 protected:
 	Ogre::SceneManager *mSceneMgr;
 	Ogre::RenderWindow* mWindow;

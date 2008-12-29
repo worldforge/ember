@@ -74,6 +74,13 @@ public:
 
     virtual void setTime(int hour, int minute, int second = 0) = 0;
 	virtual void setTime(int seconds) = 0;
+	
+	/**
+	 * @brief Sets the position of the world.
+	 * @param longitudeDegrees The longitude, as degrees.
+	 * @param latitudeDegrees The latitude, as degrees.
+	 */
+	virtual void setWorldPosition(float longitudeDegrees, float latitudeDegrees) = 0;
 
 };
 
@@ -115,6 +122,13 @@ public:
 	 * @param colour 
 	 */
 	void setAmbientLight(const Ogre::ColourValue& colour);
+	
+	/**
+	 * @brief Sets the position of the world.
+	 * @param longitudeDegrees The longitude, as degrees.
+	 * @param latitudeDegrees The latitude, as degrees.
+	 */
+	void setWorldPosition(float longitudeDegrees, float latitudeDegrees);
     
     
    	/**

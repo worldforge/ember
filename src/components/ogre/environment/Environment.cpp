@@ -129,6 +129,12 @@ void Environment::setAmbientLight(const Ogre::ColourValue& colour) {
 	}
 }
 
+void Environment::setWorldPosition(float longitudeDegrees, float latitudeDegrees)
+{
+	mProvider->setWorldPosition(longitudeDegrees, latitudeDegrees);
+}
+
+
 }
 
 }
