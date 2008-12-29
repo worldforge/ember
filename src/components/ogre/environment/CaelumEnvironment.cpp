@@ -96,10 +96,9 @@ void CaelumEnvironment::setupWater()
 
 void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sceneMgr, ::Ogre::RenderWindow* window, ::Ogre::Camera& camera)
 {
-	
 	/// Pick components to use
 	///We'll skip the ground fog for now...
-	caelum::CaelumSystem::CaelumComponent componentMask = 
+	caelum::CaelumSystem::CaelumComponent componentMask =
 			static_cast<caelum::CaelumSystem::CaelumComponent> (
 			caelum::CaelumSystem::CAELUM_COMPONENT_SKY_COLOUR_MODEL |
 			caelum::CaelumSystem::CAELUM_COMPONENT_SUN |
@@ -109,8 +108,27 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 			caelum::CaelumSystem::CAELUM_COMPONENT_CLOUDS |
 			caelum::CaelumSystem::CAELUM_COMPONENT_MOON |
 // 			caelum::CaelumSystem::CAELUM_COMPONENT_GROUND_FOG |
-			0);	
-	mCaelumSystem = new caelum::CaelumSystem (root, sceneMgr, componentMask, false);
+			0);
+
+	caelum::CaelumSystem::CaelumComponent componentMaskFallback =
+			static_cast<caelum::CaelumSystem::CaelumComponent> (
+			caelum::CaelumSystem::CAELUM_COMPONENT_SKY_COLOUR_MODEL |
+			caelum::CaelumSystem::CAELUM_COMPONENT_SUN |
+			caelum::CaelumSystem::CAELUM_COMPONENT_SOLAR_SYSTEM_MODEL |
+			caelum::CaelumSystem::CAELUM_COMPONENT_SKY_DOME |
+			caelum::CaelumSystem::CAELUM_COMPONENT_IMAGE_STARFIELD |	// Point starfield require shaders
+			caelum::CaelumSystem::CAELUM_COMPONENT_CLOUDS |
+//			caelum::CaelumSystem::CAELUM_COMPONENT_MOON |				// Moon would be ugly without shaders
+			0);
+
+	try {
+		mCaelumSystem = new caelum::CaelumSystem (root, sceneMgr, componentMask, false);
+	} catch (const Ogre::Exception& ex) {
+		S_LOG_FAILURE("Could not load main caelum technique, will try fallback. Message: " << ex.getFullDescription());
+
+		sceneMgr->getRootSceneNode()->removeAndDestroyChild("CaelumRoot");
+		mCaelumSystem = new caelum::CaelumSystem (root, sceneMgr, componentMaskFallback, false);
+	}
 
 
 	mCaelumSystem->setManageSceneFog (true);
