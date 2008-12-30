@@ -5,7 +5,8 @@ textures = {controls = {}, listbox = nil,selectedTexture = nil},
 materials = {controls = {}, listbox = nil,selectedTexture = nil}, 
 images = {controls = {}, listbox = nil,selectedTexture = nil}, 
 windows = {controls = {}, listbox = nil, selectedWindow = nil},
-meshes = {controls = {}, listbox = nil, selectedWindow = nil}
+meshes = {controls = {}, listbox = nil, selectedWindow = nil},
+shaders = {controls = {}, listbox = nil, selectedTexture = nil}
 }
 
 --Reloads a resource
@@ -100,6 +101,49 @@ function AssetsManager.MaterialsList_ItemSelectionChanged(args)
 	
 end
 
+function AssetsManager.RefreshShaders_Clicked(args)
+	AssetsManager.shaders.refresh()
+end
+
+function AssetsManager.shaders.refresh()
+	AssetsManager.shaders.listholder:resetList()
+	
+	local manager = Ogre.HighLevelGpuProgramManager:getSingleton()
+	local I = manager:getResourceIterator()
+	local i = 0
+	while I:hasMoreElements() do
+		local definitionPtr = I:getNext()
+		--definitionPtr = tolua.cast(definitionPtr, "Ogre::MaterialPtr")
+		local definition = definitionPtr:get()
+		local name = definition:getName()
+		local item = EmberOgre.Gui.ColouredListItem:new(name, i)
+		AssetsManager.shaders.listholder:addItem(item)
+		i = i + 1
+	end	
+end
+
+function AssetsManager.ShadersList_ItemSelectionChanged(args)
+	local item = AssetsManager.shaders.controls.listbox:getFirstSelectedItem()
+	if item ~= nil then
+		local manager = Ogre.HighLevelGpuProgramManager:getSingleton()
+		local materialName = item:getText()
+		local res = manager:getByName(materialName)
+		if res ~= nil then
+			res = tolua.cast(res, "Ogre::GpuProgramPtr")
+			resPtr = res:get()
+			if resPtr ~= nil then
+				resPtr:load()
+				AssetsManager.shaders.controls.textWidget:setProperty("Text", resPtr:getSource())
+			end
+		end
+	end
+	
+end
+
+function AssetsManager.ShadersReload_Clicked(args)
+	AssetsManager.reloadResourceFromList(AssetsManager.shaders.controls.listbox, Ogre.HighLevelGpuProgramManager:getSingleton())
+	AssetsManager.ShadersList_ItemSelectionChanged(args)
+end
 
 function AssetsManager.RefreshImages_Clicked(args)
 	AssetsManager.images.refresh()
@@ -307,6 +351,14 @@ function AssetsManager.buildWidget()
 	AssetsManager.meshes.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterMeshes"))
 	AssetsManager.meshes.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.meshes.controls.listbox, AssetsManager.meshes.controls.filter)
 	AssetsManager.meshes.controls.textureView = AssetsManager.widget:getWindow("MeshInfo/Preview")
+
+	--the shaders part
+	AssetsManager.shaders.controls.listbox = CEGUI.toListbox(AssetsManager.widget:getWindow("ShadersList"))
+-- 	AssetsManager.sceneNodes.nodeInfo = AssetsManager.widget:getWindow("SceneNodeInfo")
+	AssetsManager.shaders.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterShaders"))
+	AssetsManager.shaders.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.shaders.controls.listbox, AssetsManager.shaders.controls.filter)
+	AssetsManager.shaders.controls.textWidget = AssetsManager.widget:getWindow("ShadersInfo/Text")
+
 
 
 	AssetsManager.helper = EmberOgre.Gui.AssetsManager:new_local()

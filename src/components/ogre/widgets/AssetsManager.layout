@@ -177,6 +177,49 @@
 						</Window>
 					</Window>
 				</Window>
+				<Window Type='DefaultGUISheet' Name='Shaders'>
+					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='Text' Value='Shaders'/>
+					<Property Name='InheritsAlpha' Value='false'/>
+					<Property Name='Visible' Value='false'/>
+					<Window Type='EmberLook/Editbox' Name='FilterShaders'>
+						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-50}}'/>
+						<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+					</Window>
+					<Window Type='EmberLook/Button' Name='RefreshShaders'>
+						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-20}}'/>
+						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
+						<Property Name='Text' Value='Refresh'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Event Name="MouseClick" Function="AssetsManager.RefreshShaders_Clicked" />
+					</Window>
+					<Window Type='EmberLook/Button' Name='ShadersReload'>
+						<Property Name='UnifiedPosition' Value='{{0,75},{1.0,-20}}'/>
+						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
+						<Property Name='Text' Value='Reload'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Event Name="MouseClick" Function="AssetsManager.ShadersReload_Clicked" />
+					</Window>
+					<Window Type='EmberLook/Listbox' Name='ShadersList'>
+						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
+						<Property Name='UnifiedSize' Value='{{0,200},{1,-70}}'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Event Name="ItemSelectionChanged" Function="AssetsManager.ShadersList_ItemSelectionChanged" />
+					</Window>
+					<Window Type='EmberLook/StaticText' Name='ShadersInfo'>
+						<Property Name='UnifiedPosition' Value='{{0,205},{0,4}}'/>
+						<Property Name='UnifiedSize' Value='{{1,-210},{1,-70}}'/>
+						<Property Name='Text' Value=''/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Property Name='VertFormatting' Value='TopAligned'/>
+						<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
+						<Window Type='EmberLook/MultiLineEditbox' Name='ShadersInfo/Text'>
+							<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+							<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
+						</Window>
+					</Window>
+				</Window>
 				<Window Type='DefaultGUISheet' Name='Windows'>
 					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
 					<Property Name='Text' Value='Windows'/>
