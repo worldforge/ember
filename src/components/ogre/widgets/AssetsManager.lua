@@ -12,7 +12,7 @@ shaders = {controls = {}, listbox = nil, selectedTexture = nil}
 --Reloads a resource
 function AssetsManager.reloadResource(manager, resourceName)
 	local resourcePtr = manager:getByName(resourceName)
-	if (resourcePtr:isNull() == false) then
+	if resourcePtr:isNull() == false then
 		local resource = resourcePtr:get()
 		resource:reload();
 	end
@@ -99,6 +99,10 @@ function AssetsManager.MaterialsList_ItemSelectionChanged(args)
 		AssetsManager.materials.controls.textWidget:setProperty("Text", text)
 	end
 	
+end
+
+function AssetsManager.MaterialsReload_Clicked(args)
+	AssetsManager.reloadResourceFromList(AssetsManager.materials.controls.listbox, Ogre.MaterialManager:getSingleton())
 end
 
 function AssetsManager.RefreshShaders_Clicked(args)
