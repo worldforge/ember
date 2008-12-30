@@ -91,6 +91,7 @@ namespace Ogre {
     {
     public:
 		Ogre::HighLevelGpuProgram* get();
+		bool isNull();
 
     };
 

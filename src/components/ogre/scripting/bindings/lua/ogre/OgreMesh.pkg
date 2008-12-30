@@ -544,6 +544,7 @@ namespace Ogre {
     {
     	Ogre::Mesh* get();
     	Ogre::Mesh* get() const;
+		bool isNull();
 //     public:
 //         MeshPtr() : SharedPtr<Mesh>() {}
 //         explicit MeshPtr(Mesh* rep) : SharedPtr<Mesh>(rep) {}
