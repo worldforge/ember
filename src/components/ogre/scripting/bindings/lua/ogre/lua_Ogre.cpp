@@ -171,65 +171,71 @@ static int tolua_collect_Ogre__Matrix3 (lua_State* tolua_S)
 /* function to register type */
 static void tolua_reg_types (lua_State* tolua_S)
 {
- tolua_usertype(tolua_S,"Ogre::Vector2");
+ tolua_usertype(tolua_S,"Ogre::ResourceManager::ResourceMapIterator");
  tolua_usertype(tolua_S,"Ogre::RenderTarget");
- tolua_usertype(tolua_S,"Ogre::Timer");
- tolua_usertype(tolua_S,"Ogre::ResourceHandle");
  tolua_usertype(tolua_S,"Ogre::Radian");
  tolua_usertype(tolua_S,"Ogre::RenderWindow");
- tolua_usertype(tolua_S,"Ogre::FrameListener");
  tolua_usertype(tolua_S,"Ogre::Vector4");
  tolua_usertype(tolua_S,"Ogre::SceneManager");
  tolua_usertype(tolua_S,"Ogre::DataStreamPtr");
- tolua_usertype(tolua_S,"Ogre::Image");
- tolua_usertype(tolua_S,"Ogre::Root");
- tolua_usertype(tolua_S,"Ogre::ColourValue");
- tolua_usertype(tolua_S,"Ogre::MeshPtr");
- tolua_usertype(tolua_S,"Ogre::AxisAlignedBox");
- tolua_usertype(tolua_S,"Ogre::TextureManager");
- tolua_usertype(tolua_S,"size_t");
- tolua_usertype(tolua_S,"Ogre::Material");
- tolua_usertype(tolua_S,"Ogre::MaterialManager");
- tolua_usertype(tolua_S,"Ogre::Texture");
- tolua_usertype(tolua_S,"Ogre::TexturePtr");
- tolua_usertype(tolua_S,"Ogre::SceneNode");
- tolua_usertype(tolua_S,"Ogre::VisibleObjectsBoundsInfo");
- tolua_usertype(tolua_S,"Ogre::MaterialSerializer");
- tolua_usertype(tolua_S,"Ogre::SubEntity");
- tolua_usertype(tolua_S,"Ogre::Sphere");
- tolua_usertype(tolua_S,"Ogre::Matrix3");
- tolua_usertype(tolua_S,"Ogre::Node");
- tolua_usertype(tolua_S,"Ogre::RenderTarget::FrameStats");
- tolua_usertype(tolua_S,"Ogre::Math");
- tolua_usertype(tolua_S,"Ogre::Plane");
- tolua_usertype(tolua_S,"Ogre::SkeletonInstance");
  tolua_usertype(tolua_S,"Ogre::Degree");
- tolua_usertype(tolua_S,"Ogre::MapIterator<Ogre::Entity::ChildObjectList>");
- tolua_usertype(tolua_S,"Ogre::TagPoint");
- tolua_usertype(tolua_S,"std::list<Ogre::Plane>");
- tolua_usertype(tolua_S,"Ogre::Resource");
- tolua_usertype(tolua_S,"Ogre::MeshManager");
- tolua_usertype(tolua_S,"Ogre::AnimationState");
- tolua_usertype(tolua_S,"Ogre::Quaternion");
- tolua_usertype(tolua_S,"Ogre::ResourceManager");
- tolua_usertype(tolua_S,"std::set<Ogre::Entity*>");
- tolua_usertype(tolua_S,"Ogre::MaterialPtr");
- tolua_usertype(tolua_S,"ushort");
- tolua_usertype(tolua_S,"std::vector<Ogre::Plane>");
- tolua_usertype(tolua_S,"Ogre::Matrix4");
- tolua_usertype(tolua_S,"Ogre::ResourcePtr");
- tolua_usertype(tolua_S,"std::pair<bool,float>");
- tolua_usertype(tolua_S,"Ogre::ResourceManager::ResourceMapIterator");
- tolua_usertype(tolua_S,"Ogre::SubMesh");
+ tolua_usertype(tolua_S,"Ogre::MaterialSerializer");
+ tolua_usertype(tolua_S,"size_t");
+ tolua_usertype(tolua_S,"Ogre::GpuProgram");
+ tolua_usertype(tolua_S,"Ogre::Node");
+ tolua_usertype(tolua_S,"Ogre::Matrix3");
+ tolua_usertype(tolua_S,"Ogre::RenderTarget::FrameStats");
  tolua_usertype(tolua_S,"Ogre::Mesh");
- tolua_usertype(tolua_S,"Ogre::Entity");
- tolua_usertype(tolua_S,"Ogre::Vector3");
+ tolua_usertype(tolua_S,"Ogre::AnimationState");
+ tolua_usertype(tolua_S,"Ogre::SkeletonInstance");
+ tolua_usertype(tolua_S,"Ogre::MapIterator<Ogre::Entity::ChildObjectList>");
+ tolua_usertype(tolua_S,"Ogre::Resource");
+ tolua_usertype(tolua_S,"std::set<Ogre::Entity*>");
+ tolua_usertype(tolua_S,"Ogre::HighLevelGpuProgramPtr");
+ tolua_usertype(tolua_S,"Ogre::HighLevelGpuProgramManager");
+ tolua_usertype(tolua_S,"Ogre::Timer");
+ tolua_usertype(tolua_S,"std::pair<bool,float>");
+ tolua_usertype(tolua_S,"Ogre::TagPoint");
  tolua_usertype(tolua_S,"Renderable");
- tolua_usertype(tolua_S,"Ogre::AnimationStateSet");
  tolua_usertype(tolua_S,"uint");
  tolua_usertype(tolua_S,"Ogre::MovableObject");
  tolua_usertype(tolua_S,"Ogre::Ray");
  tolua_usertype(tolua_S,"Ogre::Camera");
+ tolua_usertype(tolua_S,"Ogre::Vector2");
+ tolua_usertype(tolua_S,"Ogre::GpuProgramManager");
+ tolua_usertype(tolua_S,"Ogre::ResourceHandle");
+ tolua_usertype(tolua_S,"Ogre::AxisAlignedBox");
+ tolua_usertype(tolua_S,"Ogre::Image");
+ tolua_usertype(tolua_S,"Ogre::MeshPtr");
+ tolua_usertype(tolua_S,"Ogre::Material");
+ tolua_usertype(tolua_S,"Ogre::MaterialManager");
+ tolua_usertype(tolua_S,"Ogre::MeshManager");
+ tolua_usertype(tolua_S,"Ogre::VisibleObjectsBoundsInfo");
+ tolua_usertype(tolua_S,"Ogre::Plane");
+ tolua_usertype(tolua_S,"Ogre::FrameListener");
+ tolua_usertype(tolua_S,"std::list<Ogre::Plane>");
+ tolua_usertype(tolua_S,"Ogre::Root");
+ tolua_usertype(tolua_S,"Ogre::SceneNode");
+ tolua_usertype(tolua_S,"Ogre::Quaternion");
+ tolua_usertype(tolua_S,"Ogre::ResourceManager");
+ tolua_usertype(tolua_S,"Ogre::TexturePtr");
+ tolua_usertype(tolua_S,"Ogre::MaterialPtr");
+ tolua_usertype(tolua_S,"ushort");
+ tolua_usertype(tolua_S,"Ogre::Matrix4");
+ tolua_usertype(tolua_S,"Ogre::GpuProgramPtr");
+ tolua_usertype(tolua_S,"Ogre::ResourcePtr");
+ tolua_usertype(tolua_S,"std::vector<Ogre::Plane>");
+ tolua_usertype(tolua_S,"Ogre::Texture");
+ tolua_usertype(tolua_S,"Ogre::SubMesh");
+ tolua_usertype(tolua_S,"Ogre::ColourValue");
+ tolua_usertype(tolua_S,"Ogre::Entity");
+ tolua_usertype(tolua_S,"Ogre::Vector3");
+ tolua_usertype(tolua_S,"Ogre::TextureManager");
+ tolua_usertype(tolua_S,"Ogre::AnimationStateSet");
+ tolua_usertype(tolua_S,"Ogre::HighLevelGpuProgram");
+ tolua_usertype(tolua_S,"Ogre::SubEntity");
+ tolua_usertype(tolua_S,"Ogre::Sphere");
+ tolua_usertype(tolua_S,"Ogre::Math");
 }
 
 /* get function: lastFPS of class  FrameStats */
@@ -18243,6 +18249,1107 @@ static int tolua_Ogre_Ogre_ColourValue_setHSB00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: isSyntaxSupported of class  Ogre::GpuProgramManager */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgramManager_isSyntaxSupported00
+static int tolua_Ogre_Ogre_GpuProgramManager_isSyntaxSupported00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::GpuProgramManager",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::GpuProgramManager* self = (const Ogre::GpuProgramManager*)  tolua_tousertype(tolua_S,1,0);
+  const std::string syntaxCode = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'isSyntaxSupported'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->isSyntaxSupported(syntaxCode);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+   tolua_pushcppstring(tolua_S,(const char*)syntaxCode);
+  }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'isSyntaxSupported'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getByName of class  Ogre::GpuProgramManager */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgramManager_getByName00
+static int tolua_Ogre_Ogre_GpuProgramManager_getByName00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::GpuProgramManager",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,3,1,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::GpuProgramManager* self = (Ogre::GpuProgramManager*)  tolua_tousertype(tolua_S,1,0);
+  const std::string name = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  bool preferHighLevelPrograms = ((bool)  tolua_toboolean(tolua_S,3,true));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getByName'",NULL);
+#endif
+  {
+   Ogre::ResourcePtr tolua_ret = (Ogre::ResourcePtr)  self->getByName(name,preferHighLevelPrograms);
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new Ogre::ResourcePtr(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ResourcePtr");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::ResourcePtr));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"Ogre::ResourcePtr");
+#endif
+   }
+   tolua_pushcppstring(tolua_S,(const char*)name);
+  }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getByName'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getSingleton of class  Ogre::GpuProgramManager */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgramManager_getSingleton00
+static int tolua_Ogre_Ogre_GpuProgramManager_getSingleton00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Ogre::GpuProgramManager",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   Ogre::GpuProgramManager& tolua_ret = (Ogre::GpuProgramManager&)  Ogre::GpuProgramManager::getSingleton();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"Ogre::GpuProgramManager");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getSingleton'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getSingletonPtr of class  Ogre::GpuProgramManager */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgramManager_getSingletonPtr00
+static int tolua_Ogre_Ogre_GpuProgramManager_getSingletonPtr00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Ogre::GpuProgramManager",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   Ogre::GpuProgramManager* tolua_ret = (Ogre::GpuProgramManager*)  Ogre::GpuProgramManager::getSingletonPtr();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::GpuProgramManager");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getSingletonPtr'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setSourceFile of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_setSourceFile00
+static int tolua_Ogre_Ogre_GpuProgram_setSourceFile00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::GpuProgram* self = (Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+  const std::string filename = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSourceFile'",NULL);
+#endif
+  {
+   self->setSourceFile(filename);
+   tolua_pushcppstring(tolua_S,(const char*)filename);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setSourceFile'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setSource of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_setSource00
+static int tolua_Ogre_Ogre_GpuProgram_setSource00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::GpuProgram* self = (Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+  const std::string source = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSource'",NULL);
+#endif
+  {
+   self->setSource(source);
+   tolua_pushcppstring(tolua_S,(const char*)source);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setSource'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getSyntaxCode of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_getSyntaxCode00
+static int tolua_Ogre_Ogre_GpuProgram_getSyntaxCode00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::GpuProgram* self = (const Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getSyntaxCode'",NULL);
+#endif
+  {
+   const std::string tolua_ret = (const std::string)  self->getSyntaxCode();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getSyntaxCode'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setSyntaxCode of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_setSyntaxCode00
+static int tolua_Ogre_Ogre_GpuProgram_setSyntaxCode00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::GpuProgram* self = (Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+  const std::string syntax = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSyntaxCode'",NULL);
+#endif
+  {
+   self->setSyntaxCode(syntax);
+   tolua_pushcppstring(tolua_S,(const char*)syntax);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setSyntaxCode'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getSourceFile of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_getSourceFile00
+static int tolua_Ogre_Ogre_GpuProgram_getSourceFile00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::GpuProgram* self = (const Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getSourceFile'",NULL);
+#endif
+  {
+   const std::string tolua_ret = (const std::string)  self->getSourceFile();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getSourceFile'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getSource of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_getSource00
+static int tolua_Ogre_Ogre_GpuProgram_getSource00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::GpuProgram* self = (const Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getSource'",NULL);
+#endif
+  {
+   const std::string tolua_ret = (const std::string)  self->getSource();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getSource'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: isSupported of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_isSupported00
+static int tolua_Ogre_Ogre_GpuProgram_isSupported00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::GpuProgram* self = (const Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'isSupported'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->isSupported();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'isSupported'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setSkeletalAnimationIncluded of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_setSkeletalAnimationIncluded00
+static int tolua_Ogre_Ogre_GpuProgram_setSkeletalAnimationIncluded00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::GpuProgram* self = (Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+  bool included = ((bool)  tolua_toboolean(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSkeletalAnimationIncluded'",NULL);
+#endif
+  {
+   self->setSkeletalAnimationIncluded(included);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setSkeletalAnimationIncluded'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: isSkeletalAnimationIncluded of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_isSkeletalAnimationIncluded00
+static int tolua_Ogre_Ogre_GpuProgram_isSkeletalAnimationIncluded00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::GpuProgram* self = (const Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'isSkeletalAnimationIncluded'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->isSkeletalAnimationIncluded();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'isSkeletalAnimationIncluded'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setMorphAnimationIncluded of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_setMorphAnimationIncluded00
+static int tolua_Ogre_Ogre_GpuProgram_setMorphAnimationIncluded00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::GpuProgram* self = (Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+  bool included = ((bool)  tolua_toboolean(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMorphAnimationIncluded'",NULL);
+#endif
+  {
+   self->setMorphAnimationIncluded(included);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setMorphAnimationIncluded'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setPoseAnimationIncluded of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_setPoseAnimationIncluded00
+static int tolua_Ogre_Ogre_GpuProgram_setPoseAnimationIncluded00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::GpuProgram* self = (Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+  unsigned short poseCount = ((unsigned short)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setPoseAnimationIncluded'",NULL);
+#endif
+  {
+   self->setPoseAnimationIncluded(poseCount);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setPoseAnimationIncluded'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: isMorphAnimationIncluded of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_isMorphAnimationIncluded00
+static int tolua_Ogre_Ogre_GpuProgram_isMorphAnimationIncluded00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::GpuProgram* self = (const Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'isMorphAnimationIncluded'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->isMorphAnimationIncluded();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'isMorphAnimationIncluded'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: isPoseAnimationIncluded of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_isPoseAnimationIncluded00
+static int tolua_Ogre_Ogre_GpuProgram_isPoseAnimationIncluded00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::GpuProgram* self = (const Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'isPoseAnimationIncluded'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->isPoseAnimationIncluded();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'isPoseAnimationIncluded'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getNumberOfPosesIncluded of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_getNumberOfPosesIncluded00
+static int tolua_Ogre_Ogre_GpuProgram_getNumberOfPosesIncluded00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::GpuProgram* self = (const Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getNumberOfPosesIncluded'",NULL);
+#endif
+  {
+   unsigned short tolua_ret = (unsigned short)  self->getNumberOfPosesIncluded();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getNumberOfPosesIncluded'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setVertexTextureFetchRequired of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_setVertexTextureFetchRequired00
+static int tolua_Ogre_Ogre_GpuProgram_setVertexTextureFetchRequired00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::GpuProgram* self = (Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+  bool r = ((bool)  tolua_toboolean(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setVertexTextureFetchRequired'",NULL);
+#endif
+  {
+   self->setVertexTextureFetchRequired(r);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setVertexTextureFetchRequired'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: isVertexTextureFetchRequired of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_isVertexTextureFetchRequired00
+static int tolua_Ogre_Ogre_GpuProgram_isVertexTextureFetchRequired00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::GpuProgram* self = (const Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'isVertexTextureFetchRequired'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->isVertexTextureFetchRequired();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'isVertexTextureFetchRequired'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setAdjacencyInfoRequired of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_setAdjacencyInfoRequired00
+static int tolua_Ogre_Ogre_GpuProgram_setAdjacencyInfoRequired00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::GpuProgram* self = (Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+  bool r = ((bool)  tolua_toboolean(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setAdjacencyInfoRequired'",NULL);
+#endif
+  {
+   self->setAdjacencyInfoRequired(r);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setAdjacencyInfoRequired'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: isAdjacencyInfoRequired of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_isAdjacencyInfoRequired00
+static int tolua_Ogre_Ogre_GpuProgram_isAdjacencyInfoRequired00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::GpuProgram* self = (const Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'isAdjacencyInfoRequired'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->isAdjacencyInfoRequired();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'isAdjacencyInfoRequired'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: hasDefaultParameters of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_hasDefaultParameters00
+static int tolua_Ogre_Ogre_GpuProgram_hasDefaultParameters00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::GpuProgram* self = (const Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'hasDefaultParameters'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->hasDefaultParameters();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'hasDefaultParameters'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setSurfaceAndPassLightStates of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_setSurfaceAndPassLightStates00
+static int tolua_Ogre_Ogre_GpuProgram_setSurfaceAndPassLightStates00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::GpuProgram* self = (Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+  bool state = ((bool)  tolua_toboolean(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSurfaceAndPassLightStates'",NULL);
+#endif
+  {
+   self->setSurfaceAndPassLightStates(state);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setSurfaceAndPassLightStates'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getPassSurfaceAndLightStates of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_getPassSurfaceAndLightStates00
+static int tolua_Ogre_Ogre_GpuProgram_getPassSurfaceAndLightStates00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::GpuProgram* self = (const Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getPassSurfaceAndLightStates'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->getPassSurfaceAndLightStates();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getPassSurfaceAndLightStates'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getLanguage of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_getLanguage00
+static int tolua_Ogre_Ogre_GpuProgram_getLanguage00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::GpuProgram* self = (const Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getLanguage'",NULL);
+#endif
+  {
+   const std::string tolua_ret = (const std::string)  self->getLanguage();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getLanguage'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: hasCompileError of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_hasCompileError00
+static int tolua_Ogre_Ogre_GpuProgram_hasCompileError00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::GpuProgram* self = (const Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'hasCompileError'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->hasCompileError();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'hasCompileError'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: resetCompileError of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_resetCompileError00
+static int tolua_Ogre_Ogre_GpuProgram_resetCompileError00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::GpuProgram* self = (Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'resetCompileError'",NULL);
+#endif
+  {
+   self->resetCompileError();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'resetCompileError'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setManualNamedConstantsFile of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_setManualNamedConstantsFile00
+static int tolua_Ogre_Ogre_GpuProgram_setManualNamedConstantsFile00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::GpuProgram* self = (Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+  const std::string paramDefFile = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setManualNamedConstantsFile'",NULL);
+#endif
+  {
+   self->setManualNamedConstantsFile(paramDefFile);
+   tolua_pushcppstring(tolua_S,(const char*)paramDefFile);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setManualNamedConstantsFile'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getManualNamedConstantsFile of class  Ogre::GpuProgram */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_getManualNamedConstantsFile00
+static int tolua_Ogre_Ogre_GpuProgram_getManualNamedConstantsFile00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ogre::GpuProgram",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::GpuProgram* self = (const Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getManualNamedConstantsFile'",NULL);
+#endif
+  {
+   const std::string tolua_ret = (const std::string)  self->getManualNamedConstantsFile();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getManualNamedConstantsFile'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: get of class  Ogre::GpuProgramPtr */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgramPtr_get00
+static int tolua_Ogre_Ogre_GpuProgramPtr_get00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::GpuProgramPtr",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::GpuProgramPtr* self = (Ogre::GpuProgramPtr*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'get'",NULL);
+#endif
+  {
+   Ogre::GpuProgram* tolua_ret = (Ogre::GpuProgram*)  self->get();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::GpuProgram");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'get'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getSingleton of class  Ogre::HighLevelGpuProgramManager */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_HighLevelGpuProgramManager_getSingleton00
+static int tolua_Ogre_Ogre_HighLevelGpuProgramManager_getSingleton00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Ogre::HighLevelGpuProgramManager",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   Ogre::HighLevelGpuProgramManager& tolua_ret = (Ogre::HighLevelGpuProgramManager&)  Ogre::HighLevelGpuProgramManager::getSingleton();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"Ogre::HighLevelGpuProgramManager");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getSingleton'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getSingletonPtr of class  Ogre::HighLevelGpuProgramManager */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_HighLevelGpuProgramManager_getSingletonPtr00
+static int tolua_Ogre_Ogre_HighLevelGpuProgramManager_getSingletonPtr00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Ogre::HighLevelGpuProgramManager",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   Ogre::HighLevelGpuProgramManager* tolua_ret = (Ogre::HighLevelGpuProgramManager*)  Ogre::HighLevelGpuProgramManager::getSingletonPtr();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::HighLevelGpuProgramManager");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getSingletonPtr'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: get of class  Ogre::HighLevelGpuProgramPtr */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_HighLevelGpuProgramPtr_get00
+static int tolua_Ogre_Ogre_HighLevelGpuProgramPtr_get00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::HighLevelGpuProgramPtr",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::HighLevelGpuProgramPtr* self = (Ogre::HighLevelGpuProgramPtr*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'get'",NULL);
+#endif
+  {
+   Ogre::HighLevelGpuProgram* tolua_ret = (Ogre::HighLevelGpuProgram*)  self->get();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::HighLevelGpuProgram");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'get'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: saveConfig of class  Ogre::Root */
 #ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Root_saveConfig00
 static int tolua_Ogre_Ogre_Root_saveConfig00(lua_State* tolua_S)
@@ -19482,6 +20589,70 @@ TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
     tolua_function(tolua_S,".div",tolua_Ogre_Ogre_ColourValue__div00);
     tolua_function(tolua_S,".div",tolua_Ogre_Ogre_ColourValue__div01);
     tolua_function(tolua_S,"setHSB",tolua_Ogre_Ogre_ColourValue_setHSB00);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"Ogre",0);
+  tolua_beginmodule(tolua_S,"Ogre");
+   tolua_cclass(tolua_S,"GpuProgramManager","Ogre::GpuProgramManager","Ogre::ResourceManager",NULL);
+   tolua_beginmodule(tolua_S,"GpuProgramManager");
+    tolua_function(tolua_S,"isSyntaxSupported",tolua_Ogre_Ogre_GpuProgramManager_isSyntaxSupported00);
+    tolua_function(tolua_S,"getByName",tolua_Ogre_Ogre_GpuProgramManager_getByName00);
+    tolua_function(tolua_S,"getSingleton",tolua_Ogre_Ogre_GpuProgramManager_getSingleton00);
+    tolua_function(tolua_S,"getSingletonPtr",tolua_Ogre_Ogre_GpuProgramManager_getSingletonPtr00);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"Ogre",0);
+  tolua_beginmodule(tolua_S,"Ogre");
+   tolua_cclass(tolua_S,"GpuProgram","Ogre::GpuProgram","Ogre::Resource",NULL);
+   tolua_beginmodule(tolua_S,"GpuProgram");
+    tolua_function(tolua_S,"setSourceFile",tolua_Ogre_Ogre_GpuProgram_setSourceFile00);
+    tolua_function(tolua_S,"setSource",tolua_Ogre_Ogre_GpuProgram_setSource00);
+    tolua_function(tolua_S,"getSyntaxCode",tolua_Ogre_Ogre_GpuProgram_getSyntaxCode00);
+    tolua_function(tolua_S,"setSyntaxCode",tolua_Ogre_Ogre_GpuProgram_setSyntaxCode00);
+    tolua_function(tolua_S,"getSourceFile",tolua_Ogre_Ogre_GpuProgram_getSourceFile00);
+    tolua_function(tolua_S,"getSource",tolua_Ogre_Ogre_GpuProgram_getSource00);
+    tolua_function(tolua_S,"isSupported",tolua_Ogre_Ogre_GpuProgram_isSupported00);
+    tolua_function(tolua_S,"setSkeletalAnimationIncluded",tolua_Ogre_Ogre_GpuProgram_setSkeletalAnimationIncluded00);
+    tolua_function(tolua_S,"isSkeletalAnimationIncluded",tolua_Ogre_Ogre_GpuProgram_isSkeletalAnimationIncluded00);
+    tolua_function(tolua_S,"setMorphAnimationIncluded",tolua_Ogre_Ogre_GpuProgram_setMorphAnimationIncluded00);
+    tolua_function(tolua_S,"setPoseAnimationIncluded",tolua_Ogre_Ogre_GpuProgram_setPoseAnimationIncluded00);
+    tolua_function(tolua_S,"isMorphAnimationIncluded",tolua_Ogre_Ogre_GpuProgram_isMorphAnimationIncluded00);
+    tolua_function(tolua_S,"isPoseAnimationIncluded",tolua_Ogre_Ogre_GpuProgram_isPoseAnimationIncluded00);
+    tolua_function(tolua_S,"getNumberOfPosesIncluded",tolua_Ogre_Ogre_GpuProgram_getNumberOfPosesIncluded00);
+    tolua_function(tolua_S,"setVertexTextureFetchRequired",tolua_Ogre_Ogre_GpuProgram_setVertexTextureFetchRequired00);
+    tolua_function(tolua_S,"isVertexTextureFetchRequired",tolua_Ogre_Ogre_GpuProgram_isVertexTextureFetchRequired00);
+    tolua_function(tolua_S,"setAdjacencyInfoRequired",tolua_Ogre_Ogre_GpuProgram_setAdjacencyInfoRequired00);
+    tolua_function(tolua_S,"isAdjacencyInfoRequired",tolua_Ogre_Ogre_GpuProgram_isAdjacencyInfoRequired00);
+    tolua_function(tolua_S,"hasDefaultParameters",tolua_Ogre_Ogre_GpuProgram_hasDefaultParameters00);
+    tolua_function(tolua_S,"setSurfaceAndPassLightStates",tolua_Ogre_Ogre_GpuProgram_setSurfaceAndPassLightStates00);
+    tolua_function(tolua_S,"getPassSurfaceAndLightStates",tolua_Ogre_Ogre_GpuProgram_getPassSurfaceAndLightStates00);
+    tolua_function(tolua_S,"getLanguage",tolua_Ogre_Ogre_GpuProgram_getLanguage00);
+    tolua_function(tolua_S,"hasCompileError",tolua_Ogre_Ogre_GpuProgram_hasCompileError00);
+    tolua_function(tolua_S,"resetCompileError",tolua_Ogre_Ogre_GpuProgram_resetCompileError00);
+    tolua_function(tolua_S,"setManualNamedConstantsFile",tolua_Ogre_Ogre_GpuProgram_setManualNamedConstantsFile00);
+    tolua_function(tolua_S,"getManualNamedConstantsFile",tolua_Ogre_Ogre_GpuProgram_getManualNamedConstantsFile00);
+   tolua_endmodule(tolua_S);
+   tolua_cclass(tolua_S,"GpuProgramPtr","Ogre::GpuProgramPtr","",NULL);
+   tolua_beginmodule(tolua_S,"GpuProgramPtr");
+    tolua_function(tolua_S,"get",tolua_Ogre_Ogre_GpuProgramPtr_get00);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"Ogre",0);
+  tolua_beginmodule(tolua_S,"Ogre");
+   tolua_cclass(tolua_S,"HighLevelGpuProgramManager","Ogre::HighLevelGpuProgramManager","Ogre::ResourceManager",NULL);
+   tolua_beginmodule(tolua_S,"HighLevelGpuProgramManager");
+    tolua_function(tolua_S,"getSingleton",tolua_Ogre_Ogre_HighLevelGpuProgramManager_getSingleton00);
+    tolua_function(tolua_S,"getSingletonPtr",tolua_Ogre_Ogre_HighLevelGpuProgramManager_getSingletonPtr00);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"Ogre",0);
+  tolua_beginmodule(tolua_S,"Ogre");
+   tolua_cclass(tolua_S,"HighLevelGpuProgram","Ogre::HighLevelGpuProgram","Ogre::GpuProgram",NULL);
+   tolua_beginmodule(tolua_S,"HighLevelGpuProgram");
+   tolua_endmodule(tolua_S);
+   tolua_cclass(tolua_S,"HighLevelGpuProgramPtr","Ogre::HighLevelGpuProgramPtr","",NULL);
+   tolua_beginmodule(tolua_S,"HighLevelGpuProgramPtr");
+    tolua_function(tolua_S,"get",tolua_Ogre_Ogre_HighLevelGpuProgramPtr_get00);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"Ogre",0);

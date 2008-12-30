@@ -24,6 +24,10 @@ $pfile "OgreTexture.pkg"
 $pfile "OgreTextureManager.pkg"
 $pfile "OgreAxisAlignedBox.pkg"
 $pfile "OgreColourValue.pkg"
+$pfile "OgreGpuProgramManager.pkg"
+$pfile "OgreGpuProgram.pkg"
+$pfile "OgreHighLevelGpuProgramManager.pkg"
+$pfile "OgreHighLevelGpuProgram.pkg"
 $pfile "OgreRoot.pkg"
 
 
