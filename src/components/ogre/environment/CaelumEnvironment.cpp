@@ -112,10 +112,9 @@ void CaelumEnvironment::setupWater()
 
 void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sceneMgr, ::Ogre::RenderWindow* window, ::Ogre::Camera& camera)
 {
-	
 	/// Pick components to use
 	///We'll skip the ground fog for now...
-	caelum::CaelumSystem::CaelumComponent componentMask = 
+	caelum::CaelumSystem::CaelumComponent componentMask =
 			static_cast<caelum::CaelumSystem::CaelumComponent> (
 			caelum::CaelumSystem::CAELUM_COMPONENT_SKY_COLOUR_MODEL |
 			caelum::CaelumSystem::CAELUM_COMPONENT_SUN |
@@ -125,8 +124,27 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 			caelum::CaelumSystem::CAELUM_COMPONENT_CLOUDS |
 			caelum::CaelumSystem::CAELUM_COMPONENT_MOON |
 // 			caelum::CaelumSystem::CAELUM_COMPONENT_GROUND_FOG |
-			0);	
-	mCaelumSystem = new caelum::CaelumSystem (root, sceneMgr, componentMask, false);
+			0);
+
+	caelum::CaelumSystem::CaelumComponent componentMaskFallback =
+			static_cast<caelum::CaelumSystem::CaelumComponent> (
+			caelum::CaelumSystem::CAELUM_COMPONENT_SKY_COLOUR_MODEL |
+			caelum::CaelumSystem::CAELUM_COMPONENT_SUN |
+			caelum::CaelumSystem::CAELUM_COMPONENT_SOLAR_SYSTEM_MODEL |
+			caelum::CaelumSystem::CAELUM_COMPONENT_SKY_DOME |
+			caelum::CaelumSystem::CAELUM_COMPONENT_IMAGE_STARFIELD |	// Point starfield require shaders
+			caelum::CaelumSystem::CAELUM_COMPONENT_CLOUDS |
+//			caelum::CaelumSystem::CAELUM_COMPONENT_MOON |				// Moon would be ugly without shaders
+			0);
+
+	try {
+		mCaelumSystem = new caelum::CaelumSystem (root, sceneMgr, componentMask, false);
+	} catch (const Ogre::Exception& ex) {
+		S_LOG_FAILURE("Could not load main caelum technique, will try fallback. Message: " << ex.getFullDescription());
+
+		sceneMgr->getRootSceneNode()->removeAndDestroyChild("CaelumRoot");
+		mCaelumSystem = new caelum::CaelumSystem (root, sceneMgr, componentMaskFallback, false);
+	}
 
 
 	mCaelumSystem->setManageSceneFog (true);
@@ -179,14 +197,6 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 	
 	mCaelumSystem->getUniversalClock ()->setGregorianDateTime (year, month, day, hour, minute, second);
 	
-	///greenwich
-	mCaelumSystem->getSolarSystemModel ()->setObserverLatitude  (Ogre::Degree(51.0 + 29.0 / 60.0));
-	mCaelumSystem->getSolarSystemModel ()->setObserverLongitude(Ogre::Degree(0));
-	
-/*	//stockholm
-	mCaelumSystem->getSolarSystemModel ()->setObserverLatitude  (Ogre::Degree(59 + 18.0 / 60));
-	mCaelumSystem->getSolarSystemModel ()->setObserverLongitude(Ogre::Degree(31 + 113.0 / 60));*/
-	
   	mCaelumSystem->getUniversalClock()->setUpdateRate( 1 / (24 * 60)); //update every minute
 	
 	
@@ -234,6 +244,15 @@ void CaelumEnvironment::setTime(int seconds)
 	Ember::EmberServices::getSingleton().getTimeService()->getServerTime(year, month, day, _hour, _minute, _second);
 	
 	mCaelumSystem->getUniversalClock ()->setGregorianDateTime(year, month, day, 0, 0, seconds);
+}
+
+
+void CaelumEnvironment::setWorldPosition(float longitudeDegrees, float latitudeDegrees)
+{
+	if (mCaelumSystem) {
+		mCaelumSystem->getSolarSystemModel ()->setObserverLatitude (Ogre::Degree(latitudeDegrees));
+		mCaelumSystem->getSolarSystemModel ()->setObserverLongitude(Ogre::Degree(longitudeDegrees));
+	}
 }
 
 void CaelumEnvironment::runCommand(const std::string &command, const std::string &args)

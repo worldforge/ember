@@ -106,6 +106,10 @@ void SimpleEnvironment::setTime(int seconds)
 {
 }
 
+void SimpleEnvironment::setWorldPosition(float longitudeDegrees, float latitudeDegrees)
+{
+}
+
 
 
 }

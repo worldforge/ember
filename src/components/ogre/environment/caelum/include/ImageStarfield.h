@@ -60,7 +60,7 @@ class CAELUM_EXPORT ImageStarfield : public CameraBoundElement {
 		ImageStarfield (
                 Ogre::SceneManager *sceneMgr,
 				Ogre::SceneNode *caelumRootNode,
-                const Ogre::String &textureName = "ImageStarfield.jpg");
+                const Ogre::String &textureName = "Starfield.jpg");
 
 		/** Destructor.
 		 */
