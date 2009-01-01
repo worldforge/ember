@@ -184,7 +184,6 @@ mModelMappingManager(0),
 mTerrainLayerManager(0),
 mEntityRecipeManager(0),
 mMoveManager(0),
-mKeepOnRunning(true),
 mJesus(0),
 mLogObserver(0), 
 mMaterialEditor(0),
@@ -283,9 +282,6 @@ bool EmberOgre::frameEnded(const Ogre::FrameEvent & evt)
 bool EmberOgre::frameStarted(const Ogre::FrameEvent & evt)
 {
 	//OgreOpcode::CollisionManager::getSingletonPtr()->getDefaultContext()->visualize(true, false, false, false, true, true);
-// 	if (!mKeepOnRunning)
-// 		S_LOG_INFO( "Shutting down Ember.");
-// 	return mKeepOnRunning;
 	return true;
 }
 
@@ -512,7 +508,6 @@ void EmberOgre::checkForConfigFiles()
 
 	///make sure that there are files 
 	assureConfigFile("ogre.cfg", sharePath);
-	//assureConfigFile("plugins.cfg", sharePath);
 }
 
 
