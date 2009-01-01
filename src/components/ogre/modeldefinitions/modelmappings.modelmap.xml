@@ -442,7 +442,7 @@
 	
 	
 	
-	<automodelmapping name="inn" />
+	<automodelmapping name="inn" modelname="cg_inn" />
 	<automodelmapping name="outerwall" />
 	<modelmapping name="mausoleum">
 		<entitymatch>
