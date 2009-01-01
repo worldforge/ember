@@ -29,14 +29,23 @@
 namespace EmberOgre {
 
 /**
-	A simple helper class for loading tinyxml documents through the ogre resource system.
+@brief A simple helper class for loading tinyxml documents through the ogre resource system.
+Also contains a couple of static method for converting common Ogre structures to and from xml.
 
-	@author Erik Hjortsberg <erik@katastrof.nu>
+@author Erik Hjortsberg <erik@worldforge.org>
 */
-class XMLHelper{
+class XMLHelper
+{
 public:
+
+    /**
+     * Ctor.
+     */
     XMLHelper();
 
+    /**
+     * Dtor.
+     */
     ~XMLHelper();
 
 	/**
@@ -47,6 +56,33 @@ public:
 	 */
     bool Load(TiXmlDocument& xmlDoc, Ogre::DataStreamPtr stream);
 
+	/**
+	 * @brief Utility method for filling an Ogre Vector3 with data from an xml element.
+	 * @param elem The xml element from which data will be taken. The xml element must have three numerical properties, "x", "y" and "z".
+	 * @return An Ogre::Vector3 instance.
+	 */
+	static Ogre::Vector3 fillVector3FromElement(TiXmlElement* elem);
+	
+	/**
+	 * @brief Utility method for filling an xml element with data from an Ogre::Vector3 instance.
+	 * @param elem The element which should be filled. The data will be represented through three numerical properties, "x", "y" and "z".
+	 * @param vector The Ogre Vector3 instance from which the data will be taken.
+	 */
+	static void fillElementFromVector3(TiXmlElement& elem, Ogre::Vector3 vector);
+
+	/**
+	 * @brief Utility method for filling an Ogre Quaternion with data from an xml element.
+	 * @param elem The xml element from which data will be taken. The xml element must have four numerical properties, "w", "x", "y" and "z".
+	 * @return An Ogre::Quaternion instance.
+	 */
+	static Ogre::Quaternion fillQuaternionFromElement(TiXmlElement* elem);
+	
+	/**
+	 * @brief Utility method for filling an xml element with data from an Ogre::Quaternion instance.
+	 * @param elem The element which should be filled. The data will be represented through four numerical properties, "w", "x", "y" and "z".
+	 * @param vector The Ogre Quaternion instance from which the data will be taken.
+	 */
+	static void fillElementFromQuaternion(TiXmlElement& elem, Ogre::Quaternion quaternion);
 
 };
 
