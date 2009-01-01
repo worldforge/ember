@@ -235,33 +235,6 @@ bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 		}
 	}
 
-// 	if (mDecalObject) {
-// 		Ogre::Real newSize = mPulsatingController->calculate(event.timeSinceLastFrame);
-// 		//mDecalNode->setScale(Ogre::Vector3(newSize, 1.0f, newSize));
-// // 		mDecalNode->yaw(Ogre::Radian(0.1f));
-// 	}
-
-// 	EmberPagingSceneManager* mScnMgr = static_cast<EmberPagingSceneManager*>(EmberOgre::getSingleton().getSceneManager());
-// 	if (mGUIManager->getInput()->isKeyDown(SDLK_F4)) {
-// /*		Real change;
-// 		mScnMgr->getOption( "MaxPixelError", &change );
-// 		change -= 0.5f;
-// 		mScnMgr->setOption( "MaxPixelError", &change ); */
-// 		--Ogre::PagingLandScapeOptions::getSingleton().maxPixelError;
-// 		Ogre::PagingLandScapeOptions::getSingleton().calculateCFactor();
-// 		mScnMgr->WorldDimensionChange();
-// 	}
-// 	if (mGUIManager->getInput()->isKeyDown(SDLK_F5)) {
-// /*		Real change;
-// 		mScnMgr->getOption( "MaxPixelError", &change );
-// 		change += 0.5f;
-// 		mScnMgr->setOption( "MaxPixelError", &change ); */
-// 		++Ogre::PagingLandScapeOptions::getSingleton().maxPixelError; 
-// 		Ogre::PagingLandScapeOptions::getSingleton().calculateCFactor();
-// 		mScnMgr->WorldDimensionChange();
-// 	}
-// 	
-
 	movementForFrame = AvatarControllerMovement();
 	
 /*	if (mMovementDirection != Ogre::Vector3::ZERO) {*/
@@ -275,17 +248,6 @@ bool AvatarController::frameStarted(const Ogre::FrameEvent& event)
 // 	} else {
 // 	}
 
-// 	if (mGUIManager->isInMovementKeysMode()) {
-//		movementForFrame.movementDirection = Ogre::Vector3::ZERO;
-//		movementForFrame.mIsRunning = false;
-//		movementForFrame.isMoving = false;	
-		
-/*		checkMovementKeys(event, EmberOgre::getSingleton().getInput());
-		
-		
-		movementForFrame.timeSlice = event.timeSinceLastFrame;
-	}	*/
-		
 	if (mIsAttached) {
 //		mAvatarCamera->adjustForTerrain();
 		mAvatar.updateFrame(movementForFrame);
