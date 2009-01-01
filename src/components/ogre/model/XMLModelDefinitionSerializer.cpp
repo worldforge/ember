@@ -907,6 +907,8 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		
 		exportViews(modelDef, modelElem);
 		
+		exportLights(modelDef, modelElem);
+		
 		elem.InsertEndChild(modelElem);
 		
 		xmlDoc.InsertEndChild(elem);
@@ -1045,6 +1047,51 @@ void XMLModelDefinitionSerializer::exportAttachPoints(ModelDefinitionPtr modelDe
 		attachpointsElem.InsertEndChild(attachpointElem);
 	}
 	modelElem.InsertEndChild(attachpointsElem);
+}
+
+void XMLModelDefinitionSerializer::exportLights(ModelDefinitionPtr modelDef, TiXmlElement& modelElem)
+{
+	TiXmlElement lightsElem("lights");
+	
+	for (ModelDefinition::LightSet::const_iterator I = modelDef->mLights.begin(); I != modelDef->mLights.end(); ++I) {
+		ModelDefinition::LightDefinition def(*I);
+		TiXmlElement lightElem("light");
+		std::string type;
+		if (def.type == Ogre::Light::LT_POINT) {
+			type = "point";
+		} else if (def.type == Ogre::Light::LT_DIRECTIONAL) {
+			type = "directional";
+		} else if (def.type == Ogre::Light::LT_SPOTLIGHT) {
+			type = "spotlight";
+		}
+		lightElem.SetAttribute("type", type);
+		
+		TiXmlElement diffuseElem("diffusecolour");
+		diffuseElem.SetAttribute("r", def.diffuseColour.r);
+		diffuseElem.SetAttribute("g", def.diffuseColour.g);
+		diffuseElem.SetAttribute("b", def.diffuseColour.b);
+		lightElem.InsertEndChild(diffuseElem);
+		
+		TiXmlElement specularElem("specularcolour");
+		specularElem.SetAttribute("r", def.specularColour.r);
+		specularElem.SetAttribute("g", def.specularColour.g);
+		specularElem.SetAttribute("b", def.specularColour.b);
+		lightElem.InsertEndChild(specularElem);
+		
+		TiXmlElement attenuationElem("attenuation");
+		attenuationElem.SetDoubleAttribute("range", def.range);
+		attenuationElem.SetDoubleAttribute("constant", def.constant);
+		attenuationElem.SetDoubleAttribute("linear", def.linear);
+		attenuationElem.SetDoubleAttribute("quadratic", def.quadratic);
+		lightElem.InsertEndChild(attenuationElem);
+		
+		TiXmlElement posElem("position");
+		fillElementFromVector3(posElem, def.position);
+		lightElem.InsertEndChild(posElem);
+		
+		lightsElem.InsertEndChild(lightElem);
+	}
+	modelElem.InsertEndChild(lightsElem);
 }
 
 } //end namespace

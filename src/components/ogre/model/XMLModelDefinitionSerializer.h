@@ -66,16 +66,45 @@ private:
 	void readSounds(TiXmlElement* mAnimationsNode, ActionDefinition* action);
 	void readLights(ModelDefinitionPtr modelDef, TiXmlElement* mLightsNode);
 
+	/**
+	 * @brief Utility method for filling an Ogre Vector3 with data from an xml element.
+	 * @param elem The xml element from which data will be taken. The xml element must have three numerical properties, "x", "y" and "z".
+	 * @return An Ogre::Vector3 instance.
+	 */
 	Ogre::Vector3 fillVector3FromElement(TiXmlElement* elem);
+	
+	/**
+	 * @brief Utility method for filling an xml element with data from an Ogre::Vector3 instance.
+	 * @param elem The element which should be filled. The data will be represented through three numerical properties, "x", "y" and "z".
+	 * @param vector The Ogre Vector3 instance from which the data will be taken.
+	 */
 	void fillElementFromVector3(TiXmlElement& elem, Ogre::Vector3 vector);
 
+	/**
+	 * @brief Utility method for filling an Ogre Quaternion with data from an xml element.
+	 * @param elem The xml element from which data will be taken. The xml element must have four numerical properties, "w", "x", "y" and "z".
+	 * @return An Ogre::Quaternion instance.
+	 */
 	Ogre::Quaternion fillQuaternionFromElement(TiXmlElement* elem);
+	
+	/**
+	 * @brief Utility method for filling an xml element with data from an Ogre::Quaternion instance.
+	 * @param elem The element which should be filled. The data will be represented through four numerical properties, "w", "x", "y" and "z".
+	 * @param vector The Ogre Quaternion instance from which the data will be taken.
+	 */
 	void fillElementFromQuaternion(TiXmlElement& elem, Ogre::Quaternion quaternion);
 
 	void exportSubModels(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
 	void exportActions(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
 	void exportAttachPoints(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
 	void exportViews(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
+	
+	/**
+	 * @brief Exports the light data.
+	 * @param modelDef The model definition.
+	 * @param modelElem The model xml element.
+	 */
+	void exportLights(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
 
 };
 
