@@ -1,0 +1,25 @@
+<models>
+    <model name="cg_house_A" usescaleof="all" showcontained="true" icon="">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/structures/models/cg_house_A/cg_house_A.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/structures/ossyja_floor_planks" />
+                            <subentity index="1" material="/global/structures/ossyja_inner_walls" />
+                            <subentity index="2" material="/global/structures/ossyja_rough_beams" />
+                            <subentity index="3" material="/global/structures/ossyja_wall_cobblestone" />
+                            <subentity index="4" material="/global/structures/roof_shale" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+        <lights />
+    </model>
+</models>

@@ -8,53 +8,57 @@
                     <part name="bare_torso" group="torso" show="true">
                         <subentities>
                             <subentity index="1" material="/global/bipeds/races/human/male/body/base" />
-                            <subentity index="6" material="/global/bipeds/races/human/male/body/base" />
                             <subentity index="7" material="/global/bipeds/races/human/male/body/base" />
+                            <subentity index="11" material="/global/bipeds/races/human/male/body/base" />
                         </subentities>
                     </part>
                     <part name="bare_legs" group="legs" show="true">
                         <subentities>
-                            <subentity index="8" material="/global/bipeds/races/human/male/body/base" />
+                            <subentity index="0" material="/global/bipeds/races/human/male/body/base" />
                             <subentity index="9" material="/global/bipeds/races/human/male/body/base" />
+                            <subentity index="12" material="/global/bipeds/races/human/male/body/base" />
                         </subentities>
                     </part>
                     <part name="bare_feet" group="feet" show="true">
                         <subentities>
-                            <subentity index="2" material="/global/bipeds/races/human/male/body/base" />
-                            <subentity index="10" material="/global/bipeds/races/human/male/body/base" />
+                            <subentity index="3" material="/global/bipeds/races/human/male/body/base" />
                         </subentities>
                     </part>
                     <part name="bare_head" group="head" show="true">
                         <subentities>
-                            <subentity index="11" material="/global/bipeds/races/human/male/head/middle_aged" />
+                            <subentity index="6" material="/global/bipeds/races/human/male/head/middle_aged" />
                         </subentities>
                     </part>
-                    <part name="bare_arms" group="arms" show="true">
+                    <part name="bare_arms" group="arms" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/bipeds/races/human/male/body/base" />
-                            <subentity index="3" material="/global/bipeds/races/human/male/body/base" />
+                            <subentity index="8" material="/global/bipeds/races/human/male/body/base" />
+                            <subentity index="10" material="/global/bipeds/races/human/male/body/base" />
                             <subentity index="4" material="/global/bipeds/races/human/male/body/base" />
+                        </subentities>
+                    </part>
+                    <part name="bare_hands" show="true">
+                        <subentities>
                             <subentity index="5" material="/global/bipeds/races/human/male/body/base" />
                         </subentities>
                     </part>
                     <part name="eyes/blue" group="eyes" show="true">
                         <subentities>
-                            <subentity index="12" material="/global/bipeds/races/universal/eyes/blue" />
+                            <subentity index="2" material="/global/bipeds/races/universal/eyes/blue" />
                         </subentities>
                     </part>
-                    <part name="eyes/green" group="eyes" show="true">
+                    <part name="eyes/green" group="eyes" show="false">
                         <subentities>
-                            <subentity index="12" material="/global/bipeds/races/universal/eyes/green" />
+                            <subentity index="2" material="/global/bipeds/races/universal/eyes/green" />
                         </subentities>
                     </part>
-                    <part name="eyes/brown" group="eyes" show="true">
+                    <part name="eyes/brown" group="eyes" show="false">
                         <subentities>
-                            <subentity index="12" material="/global/bipeds/races/universal/eyes/brown" />
+                            <subentity index="2" material="/global/bipeds/races/universal/eyes/brown" />
                         </subentities>
                     </part>
-                    <part name="eyes/hazel" group="eyes" show="true">
+                    <part name="eyes/hazel" group="eyes" show="false">
                         <subentities>
-                            <subentity index="12" material="/global/bipeds/races/universal/eyes/hazel" />
+                            <subentity index="2" material="/global/bipeds/races/universal/eyes/hazel" />
                         </subentities>
                     </part>
                 </parts>
@@ -83,14 +87,14 @@
             <action name="__movement_idle" speed="1.000000">
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="idle_Clip" weight="1.000000" />
+                        <animationpart name="idle" weight="1.000000" />
                     </animation>
                 </animations>
             </action>
             <action name="__movement_walk" speed="1.000000">
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="walk_Clip" weight="1.000000" />
+                        <animationpart name="trns_walk" weight="1.000000" />
                     </animation>
                 </animations>
             </action>
@@ -104,16 +108,17 @@
             <action name="__movement_run" speed="1.000000">
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="run_Clip" weight="1.000000" />
+                        <animationpart name="trns_run" weight="1.000000" />
                     </animation>
                 </animations>
             </action>
         </actions>
-		<attachpoints>
-			<attachpoint name="right_hand_wield" bone="RMiddleRoot">
-				<!-- rotation x="1" y="0" z="0" degrees="45.000000" / -->
-			</attachpoint>
-		</attachpoints>
+        <attachpoints>
+            <attachpoint name="right_hand_wield" bone="RMiddleRoot">
+                <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+            </attachpoint>
+        </attachpoints>
         <views />
+        <lights />
     </model>
 </models>

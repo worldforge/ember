@@ -174,12 +174,12 @@
 <!-- furniture-->
 	<automodelmapping name="chair" />
 	<automodelmapping name="door" />
-	<automodelmapping name="long_table" />
+	<automodelmapping name="longtable" />
 	<automodelmapping name="shelf_table" />
 	<automodelmapping name="simple_shelf" />
 	<automodelmapping name="stool" />
 	<automodelmapping name="bed" />
-	<automodelmapping name="table" />
+	<automodelmapping name="table" modelname="simple_table" />
 	
 <!-- items -->
 	<automodelmapping name="barrel" />

@@ -7,7 +7,7 @@
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" />
+                            <subentity index="0" material="/global/items/furniture/avalon"/>
                         </subentities>
                     </part>
                 </parts>
@@ -15,11 +15,11 @@
         </submodels>
         <actions />
     </model>
-    <model name="long_table" usescaleof="all" showcontained="true">
+    <model name="longtable" usescaleof="all" showcontained="true">
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/items/furniture/models/table/long_table.mesh">
+            <submodel mesh="3d_objects/items/furniture/models/longtable/longtable.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
@@ -35,11 +35,11 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="1.000000" z="1.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/items/furniture/models/table/shelf_table.mesh">
+            <submodel mesh="3d_objects/items/furniture/models/shelf_table/shelf_table.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" />
+                            <subentity index="0" material="/global/items/furniture/avalon" />
                         </subentities>
                     </part>
                 </parts>
@@ -55,7 +55,7 @@
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" />
+                            <subentity index="0" material="/global/items/furniture/avalon" />
                         </subentities>
                     </part>
                 </parts>
@@ -84,11 +84,11 @@
         </submodels>
         <actions />
     </model>
-	<model name="table" usescaleof="height"  >
+	<model name="simple_table" usescaleof="height"  >
 		<submodels>
-			<submodel mesh="3d_objects/items/furniture/models/table/simple_table.mesh" >
+			<submodel mesh="3d_objects/items/furniture/models/simple_table/simple_table.mesh" >
 			<parts>
-				<part name="main" show="true" />
+				<part name="main" show="true" material="/global/items/furniture/avalon"/>
 			</parts>
 			</submodel>
 		</submodels>
