@@ -86,13 +86,17 @@ cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_meshes.list ` |
 
 
 echo "Copying skeletons"
-#use meshmagick to figure out the needed skeletons
-for filename in `find ${shared_dir}/common -name "*.mesh"`
-do
-	meshmagick info ${filename} | grep -oE "skeletonfile.*.skeleton" | sed -e 's/skeletonfile //' >> ${shared_dir}/common_skeletons.list
-	meshmagick info ${filename} | grep -oE "skeleton file.*.skeleton" | sed -e 's/skeleton file //' >> ${shared_dir}/common_skeletons.list
-done
-cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_skeletons.list ` | ( cd ${shared_dir}/common; tar --keep-newer-files -xvf -) 2>  /dev/null
+#just copy all skeletons, since the method involving meshmagick can't resolve the correct file name when using relative skeleton names
+cd ${original_media}/common/3d_objects ; tar cf - `find -L . -iname \*.skeleton` | ( cd ${shared_dir}/common/3d_objects; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${original_media}/common/3d_skeletons ; tar cf - `find -L . -iname \*.skeleton` | ( cd ${shared_dir}/common/3d_skeletons; tar --keep-newer-files -xvf -) 2>  /dev/null
+
+# #use meshmagick to figure out the needed skeletons
+# for filename in `find ${shared_dir}/common -name "*.mesh"`
+# do
+# 	meshmagick info ${filename} | grep -oE "skeletonfile.*.skeleton" | sed -e 's/skeletonfile //' >> ${shared_dir}/common_skeletons.list
+# 	meshmagick info ${filename} | grep -oE "skeleton file.*.skeleton" | sed -e 's/skeleton file //' >> ${shared_dir}/common_skeletons.list
+# done
+# cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_skeletons.list ` | ( cd ${shared_dir}/common; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 
 
