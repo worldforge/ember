@@ -3,7 +3,7 @@
 
 	<model name="fish" usescaleof="width" showcontained="false">
 		<submodels>
-			<submodel mesh="3d_objects/creatures/tubular/models/fish_01/fish_01.mesh" >
+			<submodel mesh="3d_skeletons/creatures/tubular/models/fish_01/fish_01.mesh" >
 				<parts>
 					<part name="main" show="true" />
 				</parts>
@@ -12,7 +12,7 @@
 	</model>	
 	<model name="dog" usescaleof="height" showcontained="false">
 		<submodels>
-			<submodel mesh="3d_objects/creatures/quadruped/models/dog/dog.mesh" >
+			<submodel mesh="3d_skeletons/creatures/quadruped/models/dog/dog.mesh" >
 				<parts>
 					<part name="main" show="true" />
 				</parts>
@@ -32,7 +32,7 @@
 
 	<model name="squirrel" showcontained="false" >
 		<submodels>
-			<submodel mesh="3d_objects/creatures/quadruped/models/squirrel/squirrel.mesh">
+			<submodel mesh="3d_skeletons/creatures/quadruped/models/squirrel/squirrel.mesh">
 			<parts>
 				<part name="main" show="true" />
 			</parts>
@@ -118,7 +118,7 @@
 	
 	<model name="rabbit" usescaleof="height" showcontained="false" >
 		<submodels>
-			<submodel mesh="3d_objects/creatures/quadruped_v2/models/bunny/RabbitHi.mesh" >
+			<submodel mesh="3d_skeletons/creatures/quadruped_v2/models/bunny/RabbitHi.mesh" >
 			<parts>
 				<part name="main" show="true" />
 			</parts>
@@ -145,7 +145,7 @@
 	
 	<model name="wolf" usescaleof="height" showcontained="false" >
 		<submodels>
-			<submodel mesh="3d_objects/creatures/quadruped_v2/models/wolf/normal_wolf.mesh" >
+			<submodel mesh="3d_skeletons/creatures/quadruped_v2/models/wolf/normal_wolf.mesh" >
 			<parts>
 				<part name="main" show="true" />
 			</parts>
