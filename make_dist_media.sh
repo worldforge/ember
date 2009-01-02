@@ -133,6 +133,7 @@ mkdir -p ${shared_ogre_dir}/scripts/materials
 mkdir -p ${shared_ogre_dir}/scripts/overlays
 mkdir -p ${shared_ogre_dir}/scripts/programs
 cd ${script_dir} ; tar cf - `find . -iname \*.cg` | ( cd ${shared_ogre_dir}/scripts; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${script_dir} ; tar cf - `find . -iname \*.glsl` | ( cd ${shared_ogre_dir}/scripts; tar --keep-newer-files -xvf -) 2>  /dev/null
 cd ${script_dir} ; tar cf - `find . -iname \*.program` | ( cd ${shared_ogre_dir}/scripts; tar --keep-newer-files -xvf -) 2>  /dev/null
 cd ${script_dir} ; tar cf - `find . -iname \*.asm` | ( cd ${shared_ogre_dir}/scriptss; tar --keep-newer-files -xvf -) 2>  /dev/null
 cd ${script_dir} ; tar cf - `find . -iname \*.ps` | ( cd ${shared_ogre_dir}/scripts; tar --keep-newer-files -xvf -) 2>  /dev/null
