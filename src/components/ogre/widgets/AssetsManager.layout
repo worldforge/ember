@@ -28,14 +28,14 @@
 						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 						<Property Name='Text' Value='Refresh'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="MouseClick" Function="AssetsManager.TexturesRefresh_Clicked" />
+						<Event Name="Clicked" Function="AssetsManager.TexturesRefresh_Clicked" />
 					</Window>
 					<Window Type='EmberLook/Button' Name='TexturesReload'>
 						<Property Name='UnifiedPosition' Value='{{0,75},{1.0,-20}}'/>
 						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 						<Property Name='Text' Value='Reload'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="MouseClick" Function="AssetsManager.TexturesReload_Clicked" />
+						<Event Name="Clicked" Function="AssetsManager.TexturesReload_Clicked" />
 					</Window>
 					<Window Type='EmberLook/Listbox' Name='TexturesList'>
 						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
@@ -71,14 +71,14 @@
 						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 						<Property Name='Text' Value='Refresh'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="MouseClick" Function="AssetsManager.MaterialsRefresh_Clicked" />
+						<Event Name="Clicked" Function="AssetsManager.MaterialsRefresh_Clicked" />
 					</Window>
 					<Window Type='EmberLook/Button' Name='MaterialsReload'>
 						<Property Name='UnifiedPosition' Value='{{0,75},{1.0,-20}}'/>
 						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 						<Property Name='Text' Value='Reload'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="MouseClick" Function="AssetsManager.MaterialsReload_Clicked" />
+						<Event Name="Clicked" Function="AssetsManager.MaterialsReload_Clicked" />
 					</Window>
 					<Window Type='EmberLook/Listbox' Name='MaterialsList'>
 						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
@@ -114,7 +114,7 @@
 						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 						<Property Name='Text' Value='Refresh'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="MouseClick" Function="AssetsManager.MeshesRefresh_Clicked" />
+						<Event Name="Clicked" Function="AssetsManager.MeshesRefresh_Clicked" />
 					</Window>
 					<Window Type='EmberLook/Listbox' Name='MeshesList'>
 						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
@@ -156,7 +156,7 @@
 						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 						<Property Name='Text' Value='Refresh'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="MouseClick" Function="AssetsManager.RefreshImages_Clicked" />
+						<Event Name="Clicked" Function="AssetsManager.RefreshImages_Clicked" />
 					</Window>
 					<Window Type='EmberLook/Listbox' Name='ImagesList'>
 						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
@@ -192,14 +192,14 @@
 						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 						<Property Name='Text' Value='Refresh'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="MouseClick" Function="AssetsManager.RefreshShaders_Clicked" />
+						<Event Name="Clicked" Function="AssetsManager.RefreshShaders_Clicked" />
 					</Window>
 					<Window Type='EmberLook/Button' Name='ShadersReload'>
 						<Property Name='UnifiedPosition' Value='{{0,75},{1.0,-20}}'/>
 						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 						<Property Name='Text' Value='Reload'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="MouseClick" Function="AssetsManager.ShadersReload_Clicked" />
+						<Event Name="Clicked" Function="AssetsManager.ShadersReload_Clicked" />
 					</Window>
 					<Window Type='EmberLook/Listbox' Name='ShadersList'>
 						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
@@ -235,7 +235,7 @@
 						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 						<Property Name='Text' Value='Refresh'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="MouseClick" Function="AssetsManager.RefreshWindows_Clicked" />
+						<Event Name="Clicked" Function="AssetsManager.RefreshWindows_Clicked" />
 					</Window>
 					<Window Type='EmberLook/Listbox' Name='WindowsList'>
 						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>

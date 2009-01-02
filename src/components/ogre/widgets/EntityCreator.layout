@@ -19,7 +19,7 @@
 				<Property Name='UnifiedSize' Value='{{0,100},{0,25}}'/>
 				<Property Name='Text' Value='Create'/>
 				<Property Name='InheritsAlpha' Value='True'/>
-				<Event Name="MouseClick" Function="EntityCreator.Create_Click" />
+				<Event Name="Clicked" Function="EntityCreator.Create_Click" />
 			</Window>
 			<Window Type='EmberLook/StaticText' Name='RecipeDescription'>
 				<Property Name='UnifiedPosition' Value='{{0,100},{0,0}}'/>

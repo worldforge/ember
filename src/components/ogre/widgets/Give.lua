@@ -18,10 +18,10 @@ function Give.buildWidget()
 	connect(Give.connectors, emberOgre.EventCreatedAvatarEntity, "Give.createdAvatarEmberEntity")
 	
 	giveButton = Give.widget:getWindow("Give")
-	giveButton:subscribeEvent("MouseClick", "Give.Give_Click")
+	giveButton:subscribeEvent("Clicked", "Give.Give_Click")
 	
 	cancelButton = Give.widget:getWindow("Cancel")
-	cancelButton:subscribeEvent("MouseClick", "Give.Cancel_Click")
+	cancelButton:subscribeEvent("Clicked", "Give.Cancel_Click")
 
 	connect(Give.connectors, guiManager.EventEntityAction, "Give.handleAction")
 	

@@ -531,7 +531,7 @@ void IngameChatWidget::ChatText::updateText(const std::string & line)
 			
 			
 			
-			BIND_CEGUI_EVENT(responseTextButton, ButtonBase::EventMouseClick,IngameChatWidget::ChatText::buttonResponse_Click );
+			BIND_CEGUI_EVENT(responseTextButton, PushButton::EventClicked, IngameChatWidget::ChatText::buttonResponse_Click );
 			responseText->setText(*I);
 			responseText->setSize(UVector2(UDim(0.8f, 0), UDim(0.9f, 0)));
 			responseText->setPosition(UVector2(UDim(0.1f, 0), UDim(0.05f, 0)));

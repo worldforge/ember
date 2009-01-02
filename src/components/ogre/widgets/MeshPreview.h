@@ -221,8 +221,8 @@ private:
 	
 	bool createButton_Click(const CEGUI::EventArgs& args);
 	bool removeButton_Click(const CEGUI::EventArgs& args);
-	bool playAnimation_MouseClick(const CEGUI::EventArgs& args);
-	bool resetAnimation_MouseClick(const CEGUI::EventArgs& args);
+	bool playAnimation_Clicked(const CEGUI::EventArgs& args);
+	bool resetAnimation_Clicked(const CEGUI::EventArgs& args);
 	
 // 	void addMeshToAvailableMeshesList(const std::string& name);
 

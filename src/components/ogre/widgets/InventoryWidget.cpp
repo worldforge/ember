@@ -75,10 +75,10 @@ void InventoryWidget::buildWidget()
 	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(sigc::mem_fun(*this, &InventoryWidget::createdAvatarEmberEntity));
 	
 	CEGUI::PushButton* dropButton = static_cast<CEGUI::PushButton*>(getWindow("Drop"));
-	BIND_CEGUI_EVENT(dropButton, CEGUI::ButtonBase::EventMouseClick, InventoryWidget::Drop_Click)
+	BIND_CEGUI_EVENT(dropButton, CEGUI::PushButton::EventClicked, InventoryWidget::Drop_Click)
 	
 	CEGUI::PushButton* wieldButton = static_cast<CEGUI::PushButton*>(getWindow("Wield"));
-	BIND_CEGUI_EVENT(wieldButton, CEGUI::ButtonBase::EventMouseClick, InventoryWidget::Wield_Click)
+	BIND_CEGUI_EVENT(wieldButton, CEGUI::PushButton::EventClicked, InventoryWidget::Wield_Click)
 
 	enableCloseButton();
 	

@@ -110,15 +110,15 @@ void InspectWidget::buildWidget()
 	enableCloseButton();
 
 	if (CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(getWindow("ShowOgreBoundingBox"))) {
-		BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick, InspectWidget::ShowOgreBoundingBox_Click);
+		BIND_CEGUI_EVENT(button, CEGUI::PushButton::EventClicked, InspectWidget::ShowOgreBoundingBox_Click);
 	}
 	
 	if (CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(getWindow("ShowErisBoundingBox"))) {
-		BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick, InspectWidget::ShowErisBoundingBox_Click);
+		BIND_CEGUI_EVENT(button, CEGUI::PushButton::EventClicked, InspectWidget::ShowErisBoundingBox_Click);
 	}
 	
 	if (CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(getWindow("ShowCollision"))) {
-		BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick, InspectWidget::ShowCollision_Click);
+		BIND_CEGUI_EVENT(button, CEGUI::PushButton::EventClicked, InspectWidget::ShowCollision_Click);
 	}
 	
 }

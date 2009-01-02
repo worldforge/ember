@@ -86,22 +86,22 @@ void JesusEdit::buildWidget()
 	
 	//bind buttons
 	CEGUI::PushButton* switchButton = static_cast<CEGUI::PushButton*>(getWindow("SwitchMode"));
-	BIND_CEGUI_EVENT(switchButton, CEGUI::ButtonBase::EventMouseClick, JesusEdit::SwitchMode_Click)
+	BIND_CEGUI_EVENT(switchButton, CEGUI::PushButton::EventClicked, JesusEdit::SwitchMode_Click)
 	
 	CEGUI::PushButton* fileButton = static_cast<CEGUI::PushButton*>(getWindow("File"));
-	BIND_CEGUI_EVENT(fileButton, CEGUI::ButtonBase::EventMouseClick, JesusEdit::File_Click)
+	BIND_CEGUI_EVENT(fileButton, CEGUI::PushButton::EventClicked, JesusEdit::File_Click)
 	
 	mCreateNew = static_cast<CEGUI::PushButton*>(getWindow("CreateNew"));
-	BIND_CEGUI_EVENT(mCreateNew, CEGUI::ButtonBase::EventMouseClick, JesusEdit::CreateNew_Click)
+	BIND_CEGUI_EVENT(mCreateNew, CEGUI::PushButton::EventClicked, JesusEdit::CreateNew_Click)
 	
 	mCreate = static_cast<CEGUI::PushButton*>(getWindow("Create"));
-	BIND_CEGUI_EVENT(mCreate, CEGUI::ButtonBase::EventMouseClick, JesusEdit::Create_Click)
+	BIND_CEGUI_EVENT(mCreate, CEGUI::PushButton::EventClicked, JesusEdit::Create_Click)
 	
 	mBind = static_cast<CEGUI::PushButton*>(getWindow("Bind"));
-	BIND_CEGUI_EVENT(mBind, CEGUI::ButtonBase::EventMouseClick, JesusEdit::Bind_Click)
+	BIND_CEGUI_EVENT(mBind, CEGUI::PushButton::EventClicked, JesusEdit::Bind_Click)
 	
 	mRemove = static_cast<CEGUI::PushButton*>(getWindow("Remove"));
-	BIND_CEGUI_EVENT(mRemove, CEGUI::ButtonBase::EventMouseClick, JesusEdit::Remove_Click)
+	BIND_CEGUI_EVENT(mRemove, CEGUI::PushButton::EventClicked, JesusEdit::Remove_Click)
 	
 	
 	
@@ -669,9 +669,9 @@ JesusEditFile::JesusEditFile(GUIManager* guiManager, JesusEdit* jesusEdit, Jesus
 	
 	
 	mLoadButton = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditFile/Load"));
-	BIND_CEGUI_EVENT(mLoadButton, CEGUI::ButtonBase::EventMouseClick, JesusEditFile::Load_Click)
+	BIND_CEGUI_EVENT(mLoadButton, CEGUI::PushButton::EventClicked, JesusEditFile::Load_Click)
 	mSaveButton = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditFile/Save"));
-	BIND_CEGUI_EVENT(mSaveButton, CEGUI::ButtonBase::EventMouseClick, JesusEditFile::Save_Click)
+	BIND_CEGUI_EVENT(mSaveButton, CEGUI::PushButton::EventClicked, JesusEditFile::Save_Click)
 
 	mNewNameEditBox = static_cast<CEGUI::Editbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditFile/NewName"));
 	

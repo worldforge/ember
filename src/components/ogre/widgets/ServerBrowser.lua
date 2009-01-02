@@ -32,11 +32,11 @@ function ServerBrowser.buildWidget()
 	
 	wee = ServerBrowser.widget:getWindow("Refresh")
 	local refreshButton = CEGUI.toPushButton(wee)
-	refreshButton:subscribeEvent("MouseClick", "ServerBrowser.Refresh_Click")
+	refreshButton:subscribeEvent("Clicked", "ServerBrowser.Refresh_Click")
 	
 	wee = ServerBrowser.widget:getWindow("Connect")
 	local connectButton = CEGUI.toPushButton(wee)
-	connectButton:subscribeEvent("MouseClick", "ServerBrowser.Connect_Click")
+	connectButton:subscribeEvent("Clicked", "ServerBrowser.Connect_Click")
 		
 	wee = ServerBrowser.widget:getWindow("ManualServerName")
 	ServerBrowser.manualServerNameTextbox = CEGUI.toPushButton(wee)
