@@ -33,6 +33,8 @@
 #include <Mercator/TerrainMod.h>
 #include "TerrainMod_impl.h"
 
+#include <wfmath/atlasconv.h>
+
 namespace EmberOgre {
 namespace Terrain {
 
@@ -70,20 +72,22 @@ Mercator::TerrainMod* InnerTerrainModCrater::getModifier()
 bool InnerTerrainModCrater::parseAtlasData(const Atlas::Message::MapType& modElement)
 {
 
-	const Atlas::Message::MapType* shapeMap(0);
+	const Atlas::Message::Element* shapeMap(0);
 	const std::string& shapeType = parseShape(modElement, &shapeMap);
 	if (shapeMap) {
 		if (shapeType == "ball") {
 			WFMath::Point<3> pos = mTerrainMod.getEntity()->getPosition();
 			///HACK: This height adjustment shouldn't be necessary
 			pos.z() = EmberOgre::getSingleton().getTerrainGenerator()->getHeight(TerrainPosition(pos.x(), pos.y()));
-			WFMath::Ball<3>* shape(0);
-			if (InnerTerrainMod_impl::parseShapeAtlasData<WFMath::Ball<3> >(*shapeMap, pos, &shape)) {
-				mModifier = new Mercator::CraterTerrainMod(*shape);
-				delete shape;
+			WFMath::Ball<3> shape;
+			try {
+				shape.fromAtlas(*shapeMap);
+				shape.shift(WFMath::Vector<3>(pos.x(), pos.y(), pos.z()));
+				mModifier = new Mercator::CraterTerrainMod(shape);
 				return true;
+			} catch (const Atlas::Message::WrongTypeException& ex) {
+				///Just fall through
 			}
-			delete shape;
 		}
 	}
 	S_LOG_FAILURE("Crater terrain mod defined with incorrect shape");
@@ -129,7 +133,7 @@ bool InnerTerrainModSlope::parseAtlasData(const Atlas::Message::MapType& modElem
 						if (modHeightElem.isNum()) {
 							level = modHeightElem.asNum();
 							pos.z() = level;        // Note that the height of the mod is in pos.z()
-							const Atlas::Message::MapType* shapeMap(0);
+							const Atlas::Message::Element* shapeMap(0);
 							const std::string& shapeType = parseShape(modElement, &shapeMap);
 							if (shapeMap) {
 								if (shapeType == "ball") {
@@ -185,7 +189,7 @@ bool InnerTerrainModLevel::parseAtlasData(const Atlas::Message::MapType& modElem
 		if (modHeightElem.isNum()) {
 			float height = modHeightElem.asNum();
 			pos.z() = height;        // Note that the height of the mod is in pos.z()
-			const Atlas::Message::MapType* shapeMap(0);
+			const Atlas::Message::Element* shapeMap(0);
 			const std::string& shapeType = parseShape(modElement, &shapeMap);
 			if (shapeMap) {
 				if (shapeType == "ball") {
@@ -236,7 +240,7 @@ bool InnerTerrainModAdjust::parseAtlasData(const Atlas::Message::MapType& modEle
 		if (modHeightElem.isNum()) {
 			float height = modHeightElem.asNum();
 			pos.z() = height;        // Note that the height of the mod is in pos.z()
-			const Atlas::Message::MapType* shapeMap(0);
+			const Atlas::Message::Element* shapeMap(0);
 			const std::string& shapeType = parseShape(modElement, &shapeMap);
 			if (shapeMap) {
 				if (shapeType == "ball") {
@@ -260,14 +264,14 @@ bool InnerTerrainModAdjust::parseAtlasData(const Atlas::Message::MapType& modEle
 }
 
 
-const std::string& InnerTerrainMod::parseShape(const Atlas::Message::MapType& modElement, const Atlas::Message::MapType** shapeMap)
+const std::string& InnerTerrainMod::parseShape(const Atlas::Message::MapType& modElement, const Atlas::Message::Element** shapeMap)
 {
 	Atlas::Message::MapType::const_iterator shape_I = modElement.find("shape");
 	if (shape_I != modElement.end()) {
 		const Atlas::Message::Element& shapeElement = shape_I->second;
 		if (shapeElement.isMap()) {
 			const Atlas::Message::MapType& localShapeMap = shapeElement.asMap();
-			*shapeMap = &localShapeMap;
+			*shapeMap = &shapeElement;
 			
 			// Get shape's type
 			Atlas::Message::MapType::const_iterator type_I = localShapeMap.find("type");

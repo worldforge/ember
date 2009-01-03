@@ -67,7 +67,7 @@ public:
 	 * @return True if the atlas data was successfully parsed and a shape was created.
 	 */
 	template <typename Shape>
-	static bool parseShapeAtlasData(const Atlas::Message::MapType& shapeElement, WFMath::Point<3> pos, Shape** shape);
+	static bool parseShapeAtlasData(const Atlas::Message::Element& shapeElement, WFMath::Point<3> pos, Shape** shape);
 	
 	/**
 	 * @brief Gets the modifier which this instance represents.
@@ -79,108 +79,19 @@ protected:
 
 };
 
-template<>
-bool InnerTerrainMod_impl::parseShapeAtlasData<WFMath::Ball<2> >(const Atlas::Message::MapType& shapeElement, WFMath::Point<3> pos, WFMath::Ball<2>** shape)
+template<typename Shape>
+bool InnerTerrainMod_impl::parseShapeAtlasData(const Atlas::Message::Element& shapeElement, WFMath::Point<3> pos, Shape** shape)
 {
-	// Get sphere's radius
-	Atlas::Message::MapType::const_iterator shape_I = shapeElement.find("radius");
-	if (shape_I != shapeElement.end()) {
-		const Atlas::Message::Element& shapeRadiusElem(shape_I->second);
-		if (shapeRadiusElem.isNum()) {
-			float shapeRadius = shapeRadiusElem.asNum();
-			// Make disc
-			WFMath::Point<2> pos_2d(pos.x(), pos.y());
-			*shape = new WFMath::Ball<2>(pos_2d, shapeRadius);
-			return true;
-		}
+	try {
+		*shape = new Shape(shapeElement);
+	} catch (...) {
+		///Just log an error and return false, this isn't fatal.
+		S_LOG_WARNING("Error when parsing shape from atlas.");	
+		return false;
 	}
-	return false;
+	(*shape)->shift(WFMath::Vector<2>(pos.x(), pos.y())); ///This of course depends on the assumption that we'll only ever use 2d shapes. If a 3d shape is used the shift method expects a Vector<3> instead...
+	return true;
 }
-
-template<>
-bool InnerTerrainMod_impl::parseShapeAtlasData<WFMath::Ball<3> >(const Atlas::Message::MapType& shapeElement, WFMath::Point<3> pos, WFMath::Ball<3>** shape)
-{
-	/// Get sphere's radius
-	Atlas::Message::MapType::const_iterator shape_I = shapeElement.find("radius");
-	if (shape_I != shapeElement.end()) {
-		const Atlas::Message::Element& shapeRadiusElem(shape_I->second);
-		if (shapeRadiusElem.isNum()) {
-			float shapeRadius = shapeRadiusElem.asNum();
-			/// Make ball
-			*shape = new WFMath::Ball<3>(pos, shapeRadius);
-			return true;
-		}
-	}
-	return false;
-}
-
-template<>
-bool InnerTerrainMod_impl::parseShapeAtlasData<WFMath::RotBox<2> >(const Atlas::Message::MapType& shapeElement, WFMath::Point<3> pos, WFMath::RotBox<2>** shape)
-{
-	// Get rotbox's position
-	Atlas::Message::MapType::const_iterator shape_I = shapeElement.find("point");
-	if (shape_I != shapeElement.end()) {
-		const Atlas::Message::Element& shapePointElem(shape_I->second);
-		if (shapePointElem.isList()) {
-			const Atlas::Message::ListType & pointList = shapePointElem.asList();
-			if (pointList.size() > 1 && pointList[0].isNum() && pointList[1].isNum()) {
-				WFMath::Point<2> shapePoint(pointList[0].asNum(), pointList[1].asNum());
-				// Get rotbox's vector
-				shape_I = shapeElement.find("vector");
-				if (shape_I != shapeElement.end()) {
-					const Atlas::Message::Element& shapeVectorElem(shape_I->second);
-					if (shapeVectorElem.isList()) {
-						const Atlas::Message::ListType & vectorList = shapeVectorElem.asList();
-						if (vectorList.size() > 1 && vectorList[0].isNum() && vectorList[1].isNum()) {
-							///use the "point" as an offset
-							WFMath::Point<2> adjustedPos(pos.x() + shapePoint.x(), pos.y() + shapePoint.y());
-							WFMath::Vector<2> shapeVector(vectorList[0].asNum(), vectorList[1].asNum());
-							*shape = new WFMath::RotBox<2>(adjustedPos, shapeVector, WFMath::RotMatrix<2>().identity());
-							return true;
-						}
-					}
-				}
-			}
-		}
-	}
-	return false;
-}
-
-template<>
-bool InnerTerrainMod_impl::parseShapeAtlasData<WFMath::Polygon<2> >(const Atlas::Message::MapType& shapeElement, WFMath::Point<3> pos, WFMath::Polygon<2>** shape)
-{
-	Atlas::Message::MapType::const_iterator it = shapeElement.find("points");
-	if ((it != shapeElement.end()) && it->second.isList()) {
-		const Atlas::Message::ListType& pointsData(it->second.asList());
-		
-		WFMath::Polygon<2>* poly = new WFMath::Polygon<2>();
-		for (size_t p = 0; p < pointsData.size(); ++p) {
-			if (!pointsData[p].isList()) {
-// 				S_LOG_FAILURE("Skipped malformed point in area");
-				continue;
-			}
-			
-			const Atlas::Message::ListType& point(pointsData[p].asList());
-			if ((point.size() < 2) || !point[0].isNum() || !point[1].isNum()) {
-// 				S_LOG_FAILURE("skipped malformed point in area");
-				continue;
-			}
-			
-			WFMath::Point<2> wpt(point[0].asNum(), point[1].asNum());
-			poly->addCorner(poly->numCorners(), wpt);
-		}
-		if (poly->numCorners() > 0) {
-	// 		S_LOG_FAILURE("Could not find enough points to define the area. Found " << poly.numCorners() << " points.");
-			poly->shift(WFMath::Vector<2>(pos.x(), pos.y()));
-			*shape = poly;
-			return true;
-		}
-		delete poly;
-	}
-	return false;
-}
-
-
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
@@ -212,7 +123,7 @@ public:
 	 * @param dy
 	 * @return True if the atlas data could be successfully parsed an a mod created.
 	 */
-	bool createInstance(const Atlas::Message::MapType& shapeElement, WFMath::Point<3> pos, float level, float dx, float dy);
+	bool createInstance(const Atlas::Message::Element& shapeElement, WFMath::Point<3> pos, float level, float dx, float dy);
 	
 	/**
 	 * @copydoc InnerTerrainMod_impl::getModifier()
@@ -234,7 +145,7 @@ Mercator::TerrainMod* InnerTerrainModSlope_impl<Shape>::getModifier()
 }
 
 template <typename Shape>
-bool InnerTerrainModSlope_impl<Shape>::createInstance(const Atlas::Message::MapType& shapeElement, WFMath::Point<3> pos, float level, float dx, float dy)
+bool InnerTerrainModSlope_impl<Shape>::createInstance(const Atlas::Message::Element& shapeElement, WFMath::Point<3> pos, float level, float dx, float dy)
 {
 	Shape* shape(0);
 	if (parseShapeAtlasData<Shape>(shapeElement, pos, &shape)) {
@@ -274,7 +185,7 @@ public:
 	 * @param height The height where the level should be created.
 	 * @return True if the atlas data could be successfully parsed an a mod created.
 	 */
-	bool createInstance(const Atlas::Message::MapType& shapeElement, WFMath::Point<3> pos, float height);
+	bool createInstance(const Atlas::Message::Element& shapeElement, WFMath::Point<3> pos, float height);
 	
 	/**
 	 * @copydoc InnerTerrainMod_impl::getModifier()
@@ -296,7 +207,7 @@ Mercator::TerrainMod* InnerTerrainModLevel_impl<Shape>::getModifier()
 }
 
 template <typename Shape>
-bool InnerTerrainModLevel_impl<Shape>::createInstance(const Atlas::Message::MapType& shapeElement, WFMath::Point<3> pos, float height)
+bool InnerTerrainModLevel_impl<Shape>::createInstance(const Atlas::Message::Element& shapeElement, WFMath::Point<3> pos, float height)
 {
 	Shape* shape(0);
 	if (parseShapeAtlasData<Shape>(shapeElement, pos, &shape)) {
@@ -336,7 +247,7 @@ public:
 	 * @param height The height where the level should be created.
 	 * @return True if the atlas data could be successfully parsed an a mod created.
 	 */
-	bool createInstance(const Atlas::Message::MapType& shapeElement, WFMath::Point<3> pos, float height);
+	bool createInstance(const Atlas::Message::Element& shapeElement, WFMath::Point<3> pos, float height);
 	
 	/**
 	 * @copydoc InnerTerrainMod_impl::getModifier()
@@ -358,7 +269,7 @@ Mercator::TerrainMod* InnerTerrainModAdjust_impl<Shape>::getModifier()
 }
 
 template <typename Shape>
-bool InnerTerrainModAdjust_impl<Shape>::createInstance(const Atlas::Message::MapType& shapeElement, WFMath::Point<3> pos, float height)
+bool InnerTerrainModAdjust_impl<Shape>::createInstance(const Atlas::Message::Element& shapeElement, WFMath::Point<3> pos, float height)
 {
 	Shape* shape(0);
 	if (parseShapeAtlasData<Shape>(shapeElement, pos, &shape)) {
