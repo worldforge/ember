@@ -371,6 +371,12 @@ protected:
 	 * @param distance the new distance
 	 */
 	void _setCameraDistance(Ogre::Real distance);
+	
+	/**
+	 * @brief Call this whenever you've moved any node which will make the derived position or orientation of the camera change.
+	 * We need to mark the parent node of the camera as dirty. The update of the derived orientation and position of the node should normally occur when the scene tree is traversed, but in some instances we need to access the derived position or orientataion of the camera before the traversal occurs, and if we don't mark the node as dirty it won't be updated
+	 */
+	void markCameraNodeAsDirty();
 
 };
 

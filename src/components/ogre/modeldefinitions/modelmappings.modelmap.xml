@@ -174,12 +174,12 @@
 <!-- furniture-->
 	<automodelmapping name="chair" />
 	<automodelmapping name="door" />
-	<automodelmapping name="long_table" />
+	<automodelmapping name="longtable" />
 	<automodelmapping name="shelf_table" />
 	<automodelmapping name="simple_shelf" />
 	<automodelmapping name="stool" />
 	<automodelmapping name="bed" />
-	<automodelmapping name="table" />
+	<automodelmapping name="table" modelname="simple_table" />
 	
 <!-- items -->
 	<automodelmapping name="barrel" />
@@ -450,7 +450,7 @@
 	
 	
 	
-	<automodelmapping name="inn" />
+	<automodelmapping name="inn" modelname="cg_inn" />
 	<automodelmapping name="outerwall" />
 	<modelmapping name="mausoleum">
 		<entitymatch>
@@ -674,21 +674,20 @@
 	<!-- We'll use the "male" model for the entities of type "settler" or "butcher". Depending on what kind of entity is outfitted to the torso we'll show a shirt part. The shirts all belongs to the same group in the model, so only one will be shown at the same time.
 		-->
 	
-<!--	<modelmapping name="human">
+	<modelmapping name="human">
 		<entitymatch>
 			<case>
 				<caseparam type="equals">settler</caseparam>
 				<caseparam type="equals">merchant</caseparam>
 				<caseparam type="equals">mercenary</caseparam>
 				<caseparam type="equals">marshall</caseparam>
-				<caseparam type="equals">butcher</caseparam>
-				<action type="display-model">male__</action>
+				<action type="display-model">male</action>
 			</case>
 		</entitymatch>
-	</modelmapping>		-->	
+	</modelmapping>
 	
 	
-	<modelmapping name="human">
+<!--	<modelmapping name="human">
 		<entitymatch>
 			<case>
 				<caseparam type="equals">settler</caseparam>
@@ -761,7 +760,7 @@
 				</outfitmatch>
 			</case>
 		</entitymatch>
-	</modelmapping>
+	</modelmapping> -->
 	<automodelmapping name="creator" />
 
 	<automodelmapping name="fish" />

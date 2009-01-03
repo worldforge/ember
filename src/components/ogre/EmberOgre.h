@@ -136,10 +136,14 @@ public Ogre::FrameListener
 public:
  
  
-    /// Standard constructor
+    /**
+     * @brief Ctor.
+     */
     EmberOgre();
  
-    /// Standard destructor
+    /**
+     * @brief Dtor.
+     */
     ~EmberOgre();
 
 	virtual bool frameStarted(const Ogre::FrameEvent & evt);
@@ -148,7 +152,7 @@ public:
 // 	void shutdown();
 
 	/**
-	 * Initialize all Ember services needed for this application
+	 * @brief Initialize all Ember services needed for this application
 	 * @param  the prefix for the application, not appliable if running under win32
 	 * @param  the an alternative home directory. If the default should be used, send an empty string.
 	 */
@@ -168,299 +172,288 @@ public:
 	AvatarCamera* getMainCamera() const;
 	AvatarController* getAvatarController() const;
 	inline EntityMoveManager* getMoveManager() const;
-// 	inline Input& getInput();
 	
 	/**
-	 *    Finds and returns the entity with the given id, if it's available.
+	 * @brief Finds and returns the entity with the given id, if it's available.
 	 * @param id The unique id for the entity.
 	 * @return An instance of EmberEntity or null if no entity with the specified id could be found.
 	 */
 	EmberEntity* getEmberEntity(const std::string & eid);
 	
 	/**
-	 *    Returns the main Jesus object, which should be used as the main entry into the Jesus subsystem.
+	 * @brief Returns the main Jesus object, which should be used as the main entry into the Jesus subsystem.
 	 * @return The main Jesus instance.
 	 */
 	inline Jesus* getJesus() const;
 	
 	/**
-	 *    Gets the main render window.
-	 *    The system can contains many different render windows, but there's only one that's the main window.
+	 * @brief Gets the main render window.
+	 * The system can contains many different render windows, but there's only one that's the main window.
 	 * @return The main render window.
 	 */
 	inline Ogre::RenderWindow* getRenderWindow() const;
 	
-	
+	/**
+	 * @brief Emitted when the Ember entity factory has been created.
+	 */
 	sigc::signal<void, EmberEntityFactory*> EventCreatedEmberEntityFactory;
 	
 	/**
-	Emitted when the avatar entity has been created.
-	*/
+	 * @brief Emitted when the avatar entity has been created.
+	 */
 	sigc::signal<void, AvatarEmberEntity*> EventCreatedAvatarEntity;
 	
 	/**
-	Emitted when the Jesus subsystem has been created.
-	*/
+	 * @brief Emitted when the Jesus subsystem has been created.
+	 */
 	sigc::signal<void, Jesus*> EventCreatedJesus;
 	
+
 	/**
-	Emitted before the eris polling is started
-	*/
-// 	sigc::signal<void> EventStartErisPoll;
-	
-	/**
-	Emitted after the eris polling has finished
-	*/
-// 	sigc::signal<void> EventEndErisPoll;
-	
-	/**
-	 * Returns the scenenode of the world entity.
+	 * @brief Returns the scenenode of the world entity.
 	 * Throws en exception if no such node has been created yet.
 	 * @return 
 	 */
 	Ogre::SceneNode* getWorldSceneNode() const;	
 	
 	/**
-	 *    Returns the root scene node, to which all other nodes are attached.
+	 * @brief Returns the root scene node, to which all other nodes are attached.
 	 * @return The Ogre root scene node.
 	 */
 	Ogre::SceneNode* getRootSceneNode() const;	
 	
 	/**
-	Emitted after the GUIManager has been created, but not yet initialized
-	*/
+	 * @brief Emitted after the GUIManager has been created, but not yet initialized
+	 */
 	sigc::signal<void, GUIManager&> EventGUIManagerCreated;
 	
 	/**
-	Emitted after the GUIManager has been initilized
-	*/
+	 * @brief Emitted after the GUIManager has been initilized
+	 */
 	sigc::signal<void, GUIManager&> EventGUIManagerInitialized;
 	
 	/**
-	Emitted after the Motion has been created
-	*/
+	 * @brief Emitted after the Motion has been created
+	 */
 	sigc::signal<void, MotionManager&> EventMotionManagerCreated;
 	
 	
 	/**
-	Emitted after the TerrainGenerator has been created
-	*/
+	 * @brief Emitted after the TerrainGenerator has been created
+	 */
 	sigc::signal<void, Terrain::TerrainGenerator&> EventTerrainGeneratorCreated;
 	
 	/**
-	Emitted after the AvatarController has been created
-	*/
+	 * @brief Emitted after the AvatarController has been created
+	 */
 	sigc::signal<void, AvatarController&> EventAvatarControllerCreated;
 	
 	/**
-	Emitted after the base Ogre scene has been created
-	*/
+	 * @brief Emitted after the base Ogre scene has been created
+	 */
 	sigc::signal<void> EventSceneCreated;
 	
+	/**
+	 * @brief Emitted before the main Ogre render window is rendered.
+	 */
+	sigc::signal<void> EventBeforeRender;
 	
 	/**
-	 *    Call this to "soft quit" the app. This means that an signal will be emitted, which hopefully will be taken care of by some widget, which will show a confirmation window, asking the user if he/she wants to quit.
-	 However, if there is no widget etc. handling the request, the application will instantly quit.
+	 * @brief Emitted after the main Ogre render window is rendered.
 	 */
-// 	void requestQuit();
-
-	/**
-	 *    Sets whether eris should be polled each frame. Defaults to true.
-	 * @param doPoll 
-	 */
-// 	void setErisPolling(bool doPoll);
-
-	/**
-	 *    Gets whether eris should be polled each frame.
-	 * @return 
-	 */
-// 	bool getErisPolling() const;
+	sigc::signal<void> EventAfterRender;
 	
 	/**
-	 * Renders one frame.
+	 * @brief Renders one frame.
 	 * @return True if rendering should continue. False if the application should end.
 	 */
 	bool renderOneFrame();
 
     /**
-     * Sets up the application - returns false if the user chooses to abandon configuration.
+     * @brief Sets up the application - returns false if the user chooses to abandon configuration.
      * @return 
      */
     bool setup();
     
+    /**
+     * @brief Shuts down the gui.
+     * Call this at closing time, right before you destroy the view and shut down the scripting service.
+     */
     void shutdownGui();
 
 protected:
 
 	/**
-	 * Sent from the server service when we've recieved a Eris::View instance from the server.
+	 * @brief Sent from the server service when we've recieved a Eris::View instance from the server.
 	 * @param world 
 	 */
 	void Server_GotView(Eris::View* world);
 	
 	/**
-	 *    Sent from the server when we've successfully connected.
+	 * @brief Sent from the server when we've successfully connected.
 	 * @param connection 
 	 */
 	void Server_GotConnection(Eris::Connection* connection);
 
 	/**
-	utility object for setting up and tearing down ogre
-	*/
+	 * @brief Utility object for setting up and tearing down ogre
+	 */
 	std::auto_ptr<OgreSetup> mOgreSetup;
 	
+	/**
+	 * @brief Gets the main Eris View instance, which is the main inteface to the world.
+	 * The View can also be accessed through the Server service, but this can be used for convenience.
+	 * @return The main Eris View instance which represents the server world.
+	 */
 	Eris::View* getMainView();
 
 	/**
-	* The main user avatar
-	*/
+		* @brief The main user avatar
+		*/
 	Avatar* mAvatar;
 	
 	/**
-	When connected to a world, handles the avatar and patches mouse and keyboard movement events on the avatar.
-	*/
+	 * @brief When connected to a world, handles the avatar and patches mouse and keyboard movement events on the avatar.
+	 */
 	AvatarController* mAvatarController;
 
 	/**
-	The main Ogre root object. All of Ogre is accessed through this.
-	*/
+	 * @brief The main Ogre root object. All of Ogre is accessed through this.
+	 */
 	Ogre::Root *mRoot;
 	
 	/**
-	The main scene manager of the world.
-	*/
+	 * @brief The main scene manager of the world.
+	 */
 	EmberPagingSceneManager* mSceneMgr;
 	
 	/**
-	The main render window. There can be many more render targets in the system, but they will all reside within this render window (such as entity preview through CEGUI).
-	*/
+	 * @brief The main render window. There can be many more render targets in the system, but they will all reside within this render window (such as entity preview through CEGUI).
+	 */
 	Ogre::RenderWindow* mWindow;
 	
 	/**
-	An InputCommandMapper that will handle all general input events.
-	*/
+	 * @brief An InputCommandMapper that will handle all general input events.
+	 */
 	std::auto_ptr<Ember::InputCommandMapper> mGeneralCommandMapper;
 
 	/**
-	Main factory for all entities created in the world.
-	*/
+	 * @brief Main factory for all entities created in the world.
+	 */
 	EmberEntityFactory* mEmberEntityFactory;
 
 	/**
-	 *    Creates the basic scene with a single avatar, just for testing purpose.
+	 * @brief Creates the basic scene with a single avatar, just for testing purpose.
 	 * NOTE: remove this when going final
-	 * @param  
 	 */
 	void createScene(void);
 	
 	/**
-	 *    Sets up Jesus. This inialized the mJesus member and loads all building blocks, blueprint and modelblocks etc.
+	 * @brief Sets up Jesus. This inialized the mJesus member and loads all building blocks, blueprint and modelblocks etc.
 	 */
 	void setupJesus();
 	
 	/**
-	 *    Preloads the media, thus avoiding frame rate drops ingame.
-	 * @param  
+	 * @brief Preloads the media, thus avoiding frame rate drops ingame.
+	 * Note that preloading media can take quite a while.
 	 */
-	void preloadMedia(void);
+	void preloadMedia();
 
 	/**
-	
-	makes sure that there are files in ~/.ember
-	*/
+	 * @brief Makes sure that there are files in ~/.ember.
+	 * Call this early on at application startup. If the required files cannot be found they are copied there from their default versions as installed in the shared location.
+	 */
 	void checkForConfigFiles();
 
 	/**
-	Responsible for handling of terrain.
-	*/
+	 * @brief Responsible for handling of terrain.
+	 */
 	Terrain::TerrainGenerator* mTerrainGenerator;
 
 	/**
-	Responsible for handling sound loading
-	*/
+	 * @brief Responsible for handling sound loading
+	 */
 	SoundDefinitionManager* mSoundManager;
 	
 	/**
-	Responsible for updating motions and animations of entities.
-	*/
+	 * @brief Responsible for updating motions and animations of entities.
+	 */
 	MotionManager* mMotionManager;
 	
 	/**
-	Responsible for the GUI.
-	*/
+	 * @brief Responsible for the GUI.
+	 */
 	GUIManager* mGUIManager;  
 	
 	/**
-	Resonsible for managing all Model definitions;
-	*/
+	 * @brief Resonsible for managing all Model definitions;
+	 */
 	Model::ModelDefinitionManager* mModelDefinitionManager;
 	
 	/**
-	Handles all model mappings.
-	*/
+	 * @brief Handles all model mappings.
+	 */
 	Model::Mapping::EmberModelMappingManager* mModelMappingManager;
 	
+	/**
+	 * @brief Responsible for handling all terrain layers.
+	 */
 	Terrain::TerrainLayerDefinitionManager* mTerrainLayerManager;
 	
+	/**
+	 * @brief Responsible for handling all entity recipes.
+	 */
 	EntityRecipeManager* mEntityRecipeManager;
 	
 	/**
-	Responsible for allowing movement of entities in the world by the user.
-	*/
+	 * @brief Responsible for allowing movement of entities in the world by the user.
+	 */
 	EntityMoveManager* mMoveManager;
 	
 	/**
-	when this is false the app will exit
-	*/
-	bool mKeepOnRunning;
-	
-	/**
-	main entry point for the Jesus system (which is an Ember wrapper for the Carpenter lib)
-	*/
+	 * @brief Main entry point for the Jesus system (which is an Ember wrapper for the Carpenter lib)
+	 * @note The Jesus and Carpenter system hasn't been touched in quite a while, and it's not certain that it will remain in Ember.
+	 */
 	Jesus* mJesus;
 	
-	/**
-	Once connected to a world, this will hold the main world view.
-	*/
-// 	Eris::View* mWorldView;
-	
-	/**
-	Controls whether eris should be polled at each frame update.
-	*/
-// 	bool mPollEris;
-
 	/**
 	The main log observer used for all logging. This will send Ogre logging events on to the internal Ember logging framework.
 	*/
 	OgreLogObserver* mLogObserver;
 	
 	/**
-	Patches logging events from the Ember logging framework on to a file writer.
-	*/
-// 	Ember::StreamLogObserver* mStreamLogObserver;
-	
-	/**
-	Helper object that allows for easy Ogre material editing.
-	*/
+	 * @brief Helper object that allows for easy Ogre material editing.
+	 */
 	MaterialEditor* mMaterialEditor;
 	
+	/**
+	 * @brief Listen for when all of the application services has been initialized and then register needed objects with them.
+	 * This should occur fairly early on in the application life cycle.
+	 */
 	void Application_ServicesInitialized();
 	
 	std::auto_ptr<OgreResourceProvider> mScriptingResourceProvider;
 	std::auto_ptr<OgreResourceProvider> mSoundResourceProvider;
 	
+	/**
+	 * @brief The collision manager, responsible for handling collisions of the geometry in the world.
+	 */
 	OgreOpcode::CollisionManager* mCollisionManager;
 	
 	/**
-	Responsible for visualizing collisions.
-	*/
+	 * @brief Responsible for visualizing collisions.
+	 */
 	OpcodeCollisionDetectorVisualizer* mCollisionDetectorVisualizer;
 	
 	/**
-	Handles loading of resources. This will also take care of registering our own Ogre::ArchiveFactory instance, so it needs to be destroyed first after ogre is shutdown (since there's no way to remove an already added ArchiveFactory instance from Ogre).
-	*/
+	 *@brief Handles loading of resources. This will also take care of registering our own Ogre::ArchiveFactory instance, so it needs to be destroyed first after ogre is shutdown (since there's no way to remove an already added ArchiveFactory instance from Ogre).
+	 */
 	OgreResourceLoader* mResourceLoader;
 	
+	/**
+	 * @brief We hold a reference to our own Ogre log manager, thus making sure that Ogre doesn't create one itself.
+	 * Since we do this we can better steer how Ogre log messages are handled.
+	 */
 	Ogre::LogManager* mOgreLogManager;
 	
 };

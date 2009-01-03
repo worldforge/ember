@@ -41,12 +41,12 @@ function MainIconBar.buildWidget()
 	--start with the close icon
 	foreground = EmberOgre.Gui.IconBase:loadImageFromImageset("iconset_standard", "close2")
 	helpIconBase = MainIconBar.addIcon("close2", foreground, "Click here to exit Ember.")
-	helpIconBase:getButton():subscribeEvent("MouseClick", "MainIconBar.close_MouseClick")
+	helpIconBase:getButton():subscribeEvent("Clicked", "MainIconBar.close_Clicked")
 	
 	--then the help icon
 	foreground = EmberOgre.Gui.IconBase:loadImageFromImageset("iconset_standard", "question")
 	helpIconBase = MainIconBar.addIcon("help", foreground, "Click here to access the help.")
-	helpIconBase:getButton():subscribeEvent("MouseClick", "MainIconBar.help_MouseClick")
+	helpIconBase:getButton():subscribeEvent("Clicked", "MainIconBar.help_Clicked")
 	
 	--and the the movement icon
 	
@@ -59,7 +59,7 @@ function MainIconBar.buildWidget()
 	--start out with the movement mode icon hidden, only show it when the user has an avatar
 	MainIconBar.movementModeIcon:getContainer():setVisible(false)
 	
-	MainIconBar.movementModeIcon:getButton():subscribeEvent("MouseClick", "MainIconBar.movement_MouseClick")
+	MainIconBar.movementModeIcon:getButton():subscribeEvent("Clicked", "MainIconBar.movement_Clicked")
 	
 	connect(MainIconBar.connectors, Ember.Input:getSingleton().EventChangedInputMode, "MainIconBar.Input_InputModeChanged")
 	connect(MainIconBar.connectors, emberOgre:getAvatarController().EventMovementModeChanged, "MainIconBar.AvatarController_MovementModeChanged")
@@ -74,20 +74,20 @@ function MainIconBar.buildWidget()
 end
 
 --just show the help window when the help button is clicked
-function MainIconBar.help_MouseClick(args)
+function MainIconBar.help_Clicked(args)
 	console:runCommand("/help");
 	return true
 end
 
 --show the softquit window when the close button is clicked
-function MainIconBar.close_MouseClick(args)
+function MainIconBar.close_Clicked(args)
 	--note that if the cegui system isn't working, the /softquit command knows how to shut down immediately instead
 	console:runCommand("/softquit")
 	return true
 end
 
 --toggle input mode when the input mode button is clicked
-function MainIconBar.movement_MouseClick(args)
+function MainIconBar.movement_Clicked(args)
 	Ember.Input:getSingleton():toggleInputMode()
 	return true
 end

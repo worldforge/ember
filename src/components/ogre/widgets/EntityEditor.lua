@@ -194,7 +194,7 @@ function EntityEditor.createNewListElementWidget(listAdapter, outercontainer, pr
 			wrapper.outercontainer:addChildWindow(wrapper.container)
 		end
 	end
-	wrapper.button:subscribeEvent("MouseClick", wrapper.buttonPressed)
+	wrapper.button:subscribeEvent("Clicked", wrapper.buttonPressed)
 
 	return wrapper
 end
@@ -232,7 +232,7 @@ function EntityEditor.createNewPointsElementWidget(listAdapter, outercontainer)
 			wrapper.outercontainer:addChildWindow(wrapper.container)
 		end
 	end
-	wrapper.button:subscribeEvent("MouseClick", wrapper.buttonPressed)
+	wrapper.button:subscribeEvent("Clicked", wrapper.buttonPressed)
 
 	return wrapper
 end
@@ -279,7 +279,7 @@ function EntityEditor.createNewMapElementWidget(mapAdapter, outercontainer, prot
 			wrapper.outercontainer:addChildWindow(wrapper.container)
 		end
 	end
-	wrapper.button:subscribeEvent("MouseClick", wrapper.buttonPressed)
+	wrapper.button:subscribeEvent("Clicked", wrapper.buttonPressed)
 
 	return wrapper
 end
@@ -494,7 +494,7 @@ function EntityEditor.addUnNamedAdapterContainer(adapter, container, parentConta
 			adapter:remove()
 			outercontainer:setAlpha(0.2)
 		end
-		deleteButton:subscribeEvent("MouseClick", removeAdapter)
+		deleteButton:subscribeEvent("Clicked", removeAdapter)
 	end
 		
 	local width = container:getWidth()
@@ -571,7 +571,7 @@ function EntityEditor.addNamedAdapterContainer(attributeName, adapter, container
 			adapter:remove()
 			outercontainer:setAlpha(0.2)
 		end
-		deleteButton:subscribeEvent("MouseClick", removeAdapter)
+		deleteButton:subscribeEvent("Clicked", removeAdapter)
 		
 		label:addChildWindow(deleteButton)
 	end
@@ -612,7 +612,7 @@ end
 
 
 
-function EntityEditor.Submit_MouseClick(args)
+function EntityEditor.Submit_Clicked(args)
 	EntityEditor.instance.helper:submitChanges()
 	--we want to update the next time a change comes from the server
 	EntityEditor.listenForChanges = true
@@ -620,7 +620,7 @@ function EntityEditor.Submit_MouseClick(args)
 	return true
 end
 
-function EntityEditor.DeleteButton_MouseClick(args)
+function EntityEditor.DeleteButton_Clicked(args)
 	if EntityEditor.instance ~= nil then
 		local entity = EntityEditor.instance.entity
 		if entity ~= nil then
@@ -631,12 +631,12 @@ function EntityEditor.DeleteButton_MouseClick(args)
 	return true
 end
 
-function EntityEditor.ExportButton_MouseClick(args)
+function EntityEditor.ExportButton_Clicked(args)
 	emberOgre:getEntityFactory():dumpAttributesOfEntity(EntityEditor.instance.entity:getId())
 	return true
 end
 
-function EntityEditor.RefreshButton_MouseClick(args)
+function EntityEditor.RefreshButton_Clicked(args)
 	if EntityEditor.instance.entity ~= nil then
 		EntityEditor.editEntity(EntityEditor.instance.entity)
 	end

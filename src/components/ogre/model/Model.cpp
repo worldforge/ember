@@ -29,6 +29,7 @@
 #include "Action.h"
 #include "ParticleSystem.h"
 #include "ParticleSystemBinding.h"
+#include "ModelPart.h"
 
 
 #include "components/ogre/EmberOgre.h"
@@ -216,18 +217,30 @@ bool Model::createFromDefn()
 				if ((*I_parts)->getSubEntityDefinitions().size() > 0)
 				{
 					for (SubEntityDefinitionsStore::const_iterator I_subEntities = (*I_parts)->getSubEntityDefinitions().begin(); I_subEntities != (*I_parts)->getSubEntityDefinitions().end(); ++I_subEntities) {
-						Ogre::SubEntity* subEntity;
-						//try with a submodelname first
-						if ((*I_subEntities)->getSubEntityName() != "") {
-							subEntity = entity->getSubEntity((*I_subEntities)->getSubEntityName());
-						} else {
-							//no name specified, use the index instead
-							subEntity = entity->getSubEntity((*I_subEntities)->getSubEntityIndex());
-						}
-						part->addSubEntity(subEntity, *I_subEntities);
-						
-						if ((*I_subEntities)->getMaterialName() != "") {
-							subEntity->setMaterialName((*I_subEntities)->getMaterialName());
+						try {
+							Ogre::SubEntity* subEntity(0);
+							///try with a submodelname first
+							if ((*I_subEntities)->getSubEntityName() != "") {
+								subEntity = entity->getSubEntity((*I_subEntities)->getSubEntityName());
+							} else {
+								///no name specified, use the index instead
+								if (entity->getNumSubEntities() > (*I_subEntities)->getSubEntityIndex()) {
+									subEntity = entity->getSubEntity((*I_subEntities)->getSubEntityIndex());
+								} else {
+									S_LOG_WARNING("Model definition " << mMasterModel->getName() << " has a reference to entity with index " << (*I_subEntities)->getSubEntityIndex() << " which is out of bounds.");
+								}
+							}
+							if (subEntity) {
+								part->addSubEntity(subEntity, *I_subEntities);
+								
+								if ((*I_subEntities)->getMaterialName() != "") {
+									subEntity->setMaterialName((*I_subEntities)->getMaterialName());
+								}
+							} else {
+								S_LOG_WARNING("Could not add subentity.");
+							}
+						} catch (const std::exception& ex) {
+							S_LOG_WARNING("Error when getting sub entities for model " << mMasterModel->getName() << ": " << ex.what());
 						}
 					}		
 				} else {
@@ -263,8 +276,8 @@ bool Model::createFromDefn()
 	createActions();
 	
 	createParticles();
-
 	
+	createLights();	
 
 
 	
@@ -345,6 +358,43 @@ void Model::createParticles()
 	}
 }
 
+void Model::createLights()
+{
+	ModelDefinition::LightSet::const_iterator I_lights = mMasterModel->mLights.begin();
+	ModelDefinition::LightSet::const_iterator I_lights_end = mMasterModel->mLights.end();
+	int j = 0;
+	for (;I_lights != I_lights_end; ++I_lights) {
+		//first try to create the ogre lights
+		//std::string name(mName + "/light");
+		std::stringstream name;
+		name << mName << "/light" << (j++);
+		LightInfo lightInfo;
+		Ogre::Light* ogreLight;
+		try {		
+			ogreLight = _getManager()->createLight(name.str());
+		} catch (const Ogre::Exception& ex) {
+			S_LOG_FAILURE("Could not create light: " << name.str() << "\nMessage: " << ex.getFullDescription());
+			continue;
+		}
+		if (ogreLight) {
+			ogreLight->setType(Ogre::Light::LT_POINT);
+			ogreLight->setDiffuseColour(I_lights->diffuseColour);
+			ogreLight->setSpecularColour(I_lights->specularColour);
+			ogreLight->setAttenuation(I_lights->range, I_lights->constant, I_lights->linear, I_lights->quadratic);
+
+			//ogreLight->setDiffuseColour(Ogre::ColourValue(0.5f,0.0f,0.0f));
+			//ogreLight->setSpecularColour(Ogre::ColourValue(0.5f,0.0f,0.0f));
+			//ogreLight->setAttenuation(100,1,0,0);
+			//ogreLight->setSpotlightRange(Ogre::Degree(60), Ogre::Degree(70));
+			//ogreLight->setDirection(Ogre::Vector3::NEGATIVE_UNIT_Y);
+
+			lightInfo.light = ogreLight;
+			lightInfo.position = I_lights->position;
+			mLights.push_back(lightInfo);
+		}
+		
+	}
+}
 
 bool Model::hasParticles() const
 {
@@ -359,6 +409,11 @@ const ParticleSystemBindingsPtrSet& Model::getAllParticleSystemBindings() const
 ParticleSystemSet& Model::getParticleSystems()
 {
 	return mParticleSystems;
+}
+
+LightSet& Model::getLights()
+{
+	return mLights;
 }
 
 
@@ -412,51 +467,6 @@ SubModel* Model::getSubModel(size_t index)
 
 }
 
-ModelPart::ModelPart() : mShown(false), mVisible(false)
-{
-}
-
-
-void ModelPart::show()
-{
-	mVisible = true;
-	for (SubModelPartStore::iterator I = mSubModelParts.begin(); I != mSubModelParts.end(); ++I) {
-		(*I)->show();
-	}
-}
-
-void ModelPart::hide()
-{
-	for (SubModelPartStore::iterator I = mSubModelParts.begin(); I != mSubModelParts.end(); ++I) {
-		(*I)->hide();
-	}
-}
-
-bool ModelPart::getVisible() const
-{
-	return mVisible;
-}
-
-void ModelPart::setVisible(bool visible)
-{
-	mVisible = visible;
-}
-
-
-const std::string& ModelPart::getGroupName() const
-{
-	return mGroupName;
-}
-
-void ModelPart::setGroupName(const std::string& groupName)
-{
-	mGroupName = groupName;
-}
-
-void ModelPart::addSubModelPart(SubModelPart* part)
-{
-	mSubModelParts.push_back(part);
-}
 
 
 

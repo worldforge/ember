@@ -40,7 +40,6 @@ namespace Environment {
 
 class CaelumSky;
 class CaelumSun;
-class Water;
 
 /**
 	@author Erik Hjortsberg <erik@katastrof.nu>
@@ -67,11 +66,19 @@ public:
 	virtual void setTime(int seconds);
 
 	/**
+	 * @brief Sets the position of the world.
+	 * @param longitudeDegrees The longitude, as degrees.
+	 * @param latitudeDegrees The latitude, as degrees.
+	 */
+	virtual void setWorldPosition(float longitudeDegrees, float latitudeDegrees);
+	
+	/**
 	 *    Reimplements the ConsoleObject::runCommand method
 	 * @param command 
 	 * @param args 
 	 */
 	virtual	void runCommand(const std::string &command, const std::string &args);
+
 
 private:
 
@@ -101,7 +108,7 @@ private:
 	
 	CaelumSky* mSky;
 	CaelumSun* mSun;
-	Water* mWater;
+	IWater* mWater;
 
 };
 	

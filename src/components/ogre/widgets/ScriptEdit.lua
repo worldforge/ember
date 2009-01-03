@@ -25,14 +25,14 @@ function ScriptEdit.buildWidget()
 	ScriptEdit.inspect = ScriptEdit.widget:getWindow("InspectButton")
 	ScriptEdit.inspectText = ScriptEdit.widget:getWindow("InspectText")
 	
-	ScriptEdit.widget:getWindow("ClearScriptTextButton"):subscribeEvent("MouseClick", "ScriptEdit.ClearScriptTextButtonClick")
-	ScriptEdit.widget:getWindow("ClearOutputButton"):subscribeEvent("MouseClick", "ScriptEdit.ClearOutputButtonClick")
+	ScriptEdit.widget:getWindow("ClearScriptTextButton"):subscribeEvent("Clicked", "ScriptEdit.ClearScriptTextButtonClick")
+	ScriptEdit.widget:getWindow("ClearOutputButton"):subscribeEvent("Clicked", "ScriptEdit.ClearOutputButtonClick")
 	
 	
 	
 	--subscribe event
-	ScriptEdit.execute:subscribeEvent("MouseClick", "ScriptEdit.executeClick")
-	ScriptEdit.inspect:subscribeEvent("MouseClick", "ScriptEdit.inspectClick")
+	ScriptEdit.execute:subscribeEvent("Clicked", "ScriptEdit.executeClick")
+	ScriptEdit.inspect:subscribeEvent("Clicked", "ScriptEdit.inspectClick")
 	connect(ScriptEdit.connectors, scriptingService:getEventScriptError(), "ScriptEdit.scriptError")
 	
 	ScriptEdit.dynamicBindings = CEGUI.toCheckbox(ScriptEdit.widget:getWindow("DynamicBindings"))
@@ -141,7 +141,7 @@ function ScriptEdit.ClearOutputButtonClick(args)
 	ScriptEdit.output:setText("")
 end
 
-function ScriptEdit.ForceGCButton_MouseClick(args)
+function ScriptEdit.ForceGCButton_Clicked(args)
 	local provider = ScriptEdit.getSelectedScriptingProvider()
 	provider:forceGC()
 end

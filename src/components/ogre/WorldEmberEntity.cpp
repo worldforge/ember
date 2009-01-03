@@ -60,6 +60,8 @@ EmberEntity(id, ty, vw, sceneManager)
 , mFoliageInitializer(0)
 , mHasBeenInitialized(false)
 {
+	mWorldPosition.LatitudeDegrees = 0;
+	mWorldPosition.LongitudeDegrees = 0;
 	sceneManager->getRootSceneNode()->addChild(getSceneNode());
 }
 
@@ -345,6 +347,9 @@ void WorldEmberEntity::onVisibilityChanged(bool vis)
 		mTerrainGenerator->prepareAllSegments();
 		
 		//mTerrainGenerator->prepareSegments(0,0,1,true);
+		
+		///TODO: Parse world location data when it's available
+		mEnvironment->setWorldPosition(mWorldPosition.LongitudeDegrees, mWorldPosition.LatitudeDegrees);
 		
 		///wait a little with initializing the foliage
 		mFoliageInitializer = std::auto_ptr<DelayedFoliageInitializer>(new DelayedFoliageInitializer(mFoliage, getView(), 1000, 15000));

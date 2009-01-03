@@ -8,11 +8,11 @@ EntityBrowser.sceneNodes = {}
 EntityBrowser.sceneNodes.listbox = nil
 EntityBrowser.sceneNodes.selectedSceneNode = nil
 
-function EntityBrowser.Refresh_MouseClick(args)
+function EntityBrowser.Refresh_Clicked(args)
 	EntityBrowser.refresh()
 end
 
-function EntityBrowser.RefreshSceneNodes_MouseClick(args)
+function EntityBrowser.RefreshSceneNodes_Clicked(args)
 	EntityBrowser.refreshSceneNodes();
 end
 
@@ -116,7 +116,7 @@ function EntityBrowser.buildWidget()
 	
 	EntityBrowser.filter = CEGUI.toEditbox(EntityBrowser.widget:getWindow("FilterEntities"))
 	EntityBrowser.listholder = EmberOgre.Gui.ListHolder:new_local(EntityBrowser.listbox, EntityBrowser.filter)
-	EntityBrowser.widget:getWindow("Refresh"):subscribeEvent("MouseClick", "EntityBrowser.Refresh_MouseClick")
+	EntityBrowser.widget:getWindow("Refresh"):subscribeEvent("Clicked", "EntityBrowser.Refresh_Clicked")
 
 	
 	--the ogre scene nodes part
@@ -125,7 +125,7 @@ function EntityBrowser.buildWidget()
 	EntityBrowser.sceneNodes.nodeInfo = EntityBrowser.widget:getWindow("SceneNodeInfo")
 	EntityBrowser.sceneNodes.filter = CEGUI.toEditbox(EntityBrowser.widget:getWindow("FilterSceneNodes"))
 	EntityBrowser.sceneNodes.listholder = EmberOgre.Gui.ListHolder:new_local(EntityBrowser.sceneNodes.listbox, EntityBrowser.sceneNodes.filter)
-	EntityBrowser.widget:getWindow("RefreshSceneNodes"):subscribeEvent("MouseClick", "EntityBrowser.RefreshSceneNodes_MouseClick")
+	EntityBrowser.widget:getWindow("RefreshSceneNodes"):subscribeEvent("Clicked", "EntityBrowser.RefreshSceneNodes_Clicked")
 
 
 	EntityBrowser.widget:registerConsoleVisibilityToggleCommand("entityBrowser")

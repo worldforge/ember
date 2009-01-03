@@ -300,36 +300,36 @@ function ModelEdit.ModelScale_TextChanged(args)
 	model:setScale(tonumber(ModelEdit.scaleTextbox:getText()));
 end
 
-function ModelEdit.YawLeft_MouseClick(args)
+function ModelEdit.YawLeft_Clicked(args)
 	ModelEdit.renderer:yaw(Ogre.Degree:new_local(-45))
 end
 
-function ModelEdit.YawRight_MouseClick(args)
+function ModelEdit.YawRight_Clicked(args)
 	ModelEdit.renderer:yaw(Ogre.Degree:new_local(45))
 end
 
-function ModelEdit.PitchUp_MouseClick(args)
+function ModelEdit.PitchUp_Clicked(args)
 	ModelEdit.renderer:pitch(Ogre.Degree:new_local(-45))
 end
 
-function ModelEdit.PitchDown_MouseClick(args)
+function ModelEdit.PitchDown_Clicked(args)
 	ModelEdit.renderer:pitch(Ogre.Degree:new_local(45))
 end
 
-function ModelEdit.RollLeft_MouseClick(args)
+function ModelEdit.RollLeft_Clicked(args)
 	ModelEdit.renderer:roll(Ogre.Degree:new_local(-45))
 end
 
-function ModelEdit.RollRight_MouseClick(args)
+function ModelEdit.RollRight_Clicked(args)
 	ModelEdit.renderer:roll(Ogre.Degree:new_local(45))
 end
 
-function ModelEdit.ResetOrientation_MouseClick(args)
+function ModelEdit.ResetOrientation_Clicked(args)
 	ModelEdit.renderer:resetCameraOrientation()
 end
 
 
-function ModelEdit.submeshinforemovesubmesh_MouseClick(args)
+function ModelEdit.submeshinforemovesubmesh_Clicked(args)
 	--just remove the subentity definition from the part
 	local subentity = ModelEdit.getSelectedSubEntity()
 	local part = subentity:getPartDefinition()
@@ -338,7 +338,7 @@ function ModelEdit.submeshinforemovesubmesh_MouseClick(args)
 	ModelEdit.updateModelContentList()
 end
 
-function ModelEdit.removePart_MouseClick(args)
+function ModelEdit.removePart_Clicked(args)
 	--just remove the part definition from the submodel
 	local part = ModelEdit.getSelectedPart()
 	local submodel = part:getSubModelDefinition()
@@ -347,7 +347,7 @@ function ModelEdit.removePart_MouseClick(args)
 	ModelEdit.updateModelContentList()
 end
 
-function ModelEdit.addSubmesh_MouseClick(args)
+function ModelEdit.addSubmesh_Clicked(args)
 --get the selected submesh and add it to the part
 	local list = ModelEdit.widget:getWindow("SubmeshList")
 	list = CEGUI.toListbox(list)
@@ -362,18 +362,18 @@ function ModelEdit.addSubmesh_MouseClick(args)
 
 end
 
-function ModelEdit.ReloadModelListButton_MouseClick(args)
+function ModelEdit.ReloadModelListButton_Clicked(args)
 	ModelEdit.fillModellist()
 end
 
-function ModelEdit.SaveModelButton_MouseClick(args)
+function ModelEdit.SaveModelButton_Clicked(args)
 	local modelDefMgr = EmberOgre.Model.ModelDefinitionManager:getSingleton()
 	modelDefMgr:exportScript(ModelEdit.definitionPtr)	
 	inspectObject(ModelEdit.definition:getName())
 
 end
 
-function ModelEdit.ExportAsAtlasTypeButton_MouseClick(args)
+function ModelEdit.ExportAsAtlasTypeButton_Clicked(args)
 	local model = ModelEdit.renderer:getModel()
 	if model ~= nil then
 		local composer = EmberOgre.Model.ModelDefinitionAtlasComposer:new_local()
@@ -381,7 +381,7 @@ function ModelEdit.ExportAsAtlasTypeButton_MouseClick(args)
 	end	
 end
 
-function ModelEdit.AddSubmodelButton_MouseClick(args)
+function ModelEdit.AddSubmodelButton_Clicked(args)
 	
 	local item = ModelEdit.contentparts.modelInfo.meshlist:getFirstSelectedItem()
 	--an item must be selected
@@ -414,19 +414,19 @@ function ModelEdit.AddSubmodelButton_MouseClick(args)
 
 end
 
-function ModelEdit.ReloadInstancesButton_MouseClick(args)
+function ModelEdit.ReloadInstancesButton_Clicked(args)
 	--reload all model instances
 	ModelEdit.definition:reloadAllInstances()
 end
 
 
-function ModelEdit.GetRotationFromPreviewButton_MouseClick(args)
+function ModelEdit.GetRotationFromPreviewButton_Clicked(args)
 	--Get the rotation from the preview window
 
 	ModelEdit.rotationAdapter:setValue(ModelEdit.renderer:getEntityRotation())
 end
 
-function ModelEdit.GetIconFromPreviewButton_MouseClick(args)
+function ModelEdit.GetIconFromPreviewButton_Clicked(args)
 	if ModelEdit.definition ~= nil then
 		local definition = ModelEdit.definition:createViewDefinition("icon")
 		definition.Rotation = ModelEdit.renderer:getEntityRotation():Inverse()
@@ -437,7 +437,7 @@ function ModelEdit.GetIconFromPreviewButton_MouseClick(args)
 	end
 end
 
-function ModelEdit.RemoveSubmodelButton_MouseClick(args)
+function ModelEdit.RemoveSubmodelButton_Clicked(args)
 
 	local submodel = ModelEdit.getSelectedSubModel()
 	ModelEdit.definition:removeSubModelDefinition(submodel)
@@ -448,7 +448,7 @@ function ModelEdit.RemoveSubmodelButton_MouseClick(args)
 end
 
 
-function ModelEdit.addPart_MouseClick(args)
+function ModelEdit.addPart_Clicked(args)
 	local editbox = ModelEdit.widget:getWindow("NewPartName")
 	local name = editbox:getText()
 	if name ~= "" then
@@ -461,7 +461,7 @@ function ModelEdit.addPart_MouseClick(args)
 	end
 end
 
-function ModelEdit.renamePart_MouseClick(args)
+function ModelEdit.renamePart_Clicked(args)
 	local editbox = ModelEdit.widget:getWindow("PartName")
 	local name = editbox:getText()
 	if name ~= "" then
@@ -475,16 +475,16 @@ function ModelEdit.renamePart_MouseClick(args)
 end
 
 
-function ModelEdit.AddModelButton_MouseClick(args)
+function ModelEdit.AddModelButton_Clicked(args)
 	ModelEdit.widget:getWindow("NewModelWindow"):setVisible(true)
 	ModelEdit.widget:getWindow("NewModelWindow"):moveToFront()
 end
 
-function ModelEdit.NewModelCancel_MouseClick(args)
+function ModelEdit.NewModelCancel_Clicked(args)
 	ModelEdit.widget:getWindow("NewModelWindow"):setVisible(false)
 end
 
-function ModelEdit.NewModelOk_MouseClick(args)
+function ModelEdit.NewModelOk_Clicked(args)
 	local modelDefMgr = EmberOgre.Model.ModelDefinitionManager:getSingleton()
 	local name = ModelEdit.widget:getWindow("NewModelName"):getText()
 	def = modelDefMgr:create(name, "ModelDefinitions"):get()
@@ -807,30 +807,30 @@ function ModelEdit.buildWidget()
 	ModelEdit.contentparts.submeshInfo.listholder = EmberOgre.Gui.ListHolder:new_local(ModelEdit.contentparts.submeshInfo.materiallist, ModelEdit.contentparts.submeshInfo.filter)
 	
 	ModelEdit.contentparts.submeshInfo.removeSubMeshButton = ModelEdit.widget:getWindow("RemoveSubMeshButton")
-	ModelEdit.contentparts.submeshInfo.removeSubMeshButton:subscribeEvent("MouseClick", "ModelEdit.submeshinforemovesubmesh_MouseClick")
+	ModelEdit.contentparts.submeshInfo.removeSubMeshButton:subscribeEvent("Clicked", "ModelEdit.submeshinforemovesubmesh_Clicked")
 	
-	ModelEdit.widget:getWindow("PartRemoveButton"):subscribeEvent("MouseClick", "ModelEdit.removePart_MouseClick")
-	ModelEdit.widget:getWindow("AddSubmeshButton"):subscribeEvent("MouseClick", "ModelEdit.addSubmesh_MouseClick")
-	ModelEdit.widget:getWindow("AddPartButton"):subscribeEvent("MouseClick", "ModelEdit.addPart_MouseClick")
-	ModelEdit.widget:getWindow("RenamePartButton"):subscribeEvent("MouseClick", "ModelEdit.renamePart_MouseClick")
-	ModelEdit.widget:getWindow("AddModelButton"):subscribeEvent("MouseClick", "ModelEdit.AddModelButton_MouseClick")
-	ModelEdit.widget:getWindow("ReloadModelListButton"):subscribeEvent("MouseClick", "ModelEdit.ReloadModelListButton_MouseClick")
+	ModelEdit.widget:getWindow("PartRemoveButton"):subscribeEvent("Clicked", "ModelEdit.removePart_Clicked")
+	ModelEdit.widget:getWindow("AddSubmeshButton"):subscribeEvent("Clicked", "ModelEdit.addSubmesh_Clicked")
+	ModelEdit.widget:getWindow("AddPartButton"):subscribeEvent("Clicked", "ModelEdit.addPart_Clicked")
+	ModelEdit.widget:getWindow("RenamePartButton"):subscribeEvent("Clicked", "ModelEdit.renamePart_Clicked")
+	ModelEdit.widget:getWindow("AddModelButton"):subscribeEvent("Clicked", "ModelEdit.AddModelButton_Clicked")
+	ModelEdit.widget:getWindow("ReloadModelListButton"):subscribeEvent("Clicked", "ModelEdit.ReloadModelListButton_Clicked")
 	
-	ModelEdit.widget:getWindow("AddSubmodelButton"):subscribeEvent("MouseClick", "ModelEdit.AddSubmodelButton_MouseClick")
-	ModelEdit.widget:getWindow("SaveModelButton"):subscribeEvent("MouseClick", "ModelEdit.SaveModelButton_MouseClick")
-	ModelEdit.widget:getWindow("NewModelOk"):subscribeEvent("MouseClick", "ModelEdit.NewModelOk_MouseClick")
-	ModelEdit.widget:getWindow("NewModelCancel"):subscribeEvent("MouseClick", "ModelEdit.NewModelCancel_MouseClick")
-	ModelEdit.widget:getWindow("RemoveSubmodelButton"):subscribeEvent("MouseClick", "ModelEdit.RemoveSubmodelButton_MouseClick")
-	ModelEdit.widget:getWindow("ReloadInstancesButton"):subscribeEvent("MouseClick", "ModelEdit.ReloadInstancesButton_MouseClick")
-	ModelEdit.widget:getWindow("GetRotationFromPreviewButton"):subscribeEvent("MouseClick", "ModelEdit.GetRotationFromPreviewButton_MouseClick")
+	ModelEdit.widget:getWindow("AddSubmodelButton"):subscribeEvent("Clicked", "ModelEdit.AddSubmodelButton_Clicked")
+	ModelEdit.widget:getWindow("SaveModelButton"):subscribeEvent("Clicked", "ModelEdit.SaveModelButton_Clicked")
+	ModelEdit.widget:getWindow("NewModelOk"):subscribeEvent("Clicked", "ModelEdit.NewModelOk_Clicked")
+	ModelEdit.widget:getWindow("NewModelCancel"):subscribeEvent("Clicked", "ModelEdit.NewModelCancel_Clicked")
+	ModelEdit.widget:getWindow("RemoveSubmodelButton"):subscribeEvent("Clicked", "ModelEdit.RemoveSubmodelButton_Clicked")
+	ModelEdit.widget:getWindow("ReloadInstancesButton"):subscribeEvent("Clicked", "ModelEdit.ReloadInstancesButton_Clicked")
+	ModelEdit.widget:getWindow("GetRotationFromPreviewButton"):subscribeEvent("Clicked", "ModelEdit.GetRotationFromPreviewButton_Clicked")
 	
-	ModelEdit.widget:getWindow("YawLeft"):subscribeEvent("MouseClick", "ModelEdit.YawLeft_MouseClick")
-	ModelEdit.widget:getWindow("YawRight"):subscribeEvent("MouseClick", "ModelEdit.YawRight_MouseClick")
-	ModelEdit.widget:getWindow("RollLeft"):subscribeEvent("MouseClick", "ModelEdit.RollLeft_MouseClick")
-	ModelEdit.widget:getWindow("RollRight"):subscribeEvent("MouseClick", "ModelEdit.RollRight_MouseClick")
-	ModelEdit.widget:getWindow("PitchUp"):subscribeEvent("MouseClick", "ModelEdit.PitchUp_MouseClick")
-	ModelEdit.widget:getWindow("PitchDown"):subscribeEvent("MouseClick", "ModelEdit.PitchDown_MouseClick")
-	ModelEdit.widget:getWindow("ResetOrientation"):subscribeEvent("MouseClick", "ModelEdit.ResetOrientation_MouseClick")
+	ModelEdit.widget:getWindow("YawLeft"):subscribeEvent("Clicked", "ModelEdit.YawLeft_Clicked")
+	ModelEdit.widget:getWindow("YawRight"):subscribeEvent("Clicked", "ModelEdit.YawRight_Clicked")
+	ModelEdit.widget:getWindow("RollLeft"):subscribeEvent("Clicked", "ModelEdit.RollLeft_Clicked")
+	ModelEdit.widget:getWindow("RollRight"):subscribeEvent("Clicked", "ModelEdit.RollRight_Clicked")
+	ModelEdit.widget:getWindow("PitchUp"):subscribeEvent("Clicked", "ModelEdit.PitchUp_Clicked")
+	ModelEdit.widget:getWindow("PitchDown"):subscribeEvent("Clicked", "ModelEdit.PitchDown_Clicked")
+	ModelEdit.widget:getWindow("ResetOrientation"):subscribeEvent("Clicked", "ModelEdit.ResetOrientation_Clicked")
 
 
 

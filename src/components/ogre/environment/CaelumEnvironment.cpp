@@ -29,14 +29,18 @@
 #include "CaelumSky.h"
 #include "CaelumSun.h"
 #include "Water.h"
+#include "SimpleWater.h"
+#include "HydraxWater.h"
 #include "framework/Tokeniser.h"
 //#include "caelum/include/CaelumSystem.h"
 
 #include "services/time/TimeService.h"
 
+
 namespace EmberOgre {
 
 namespace Environment {
+
 
 
 CaelumEnvironment::CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera)
@@ -88,18 +92,30 @@ void CaelumEnvironment::createEnvironment()
 	
 }
 
-
 void CaelumEnvironment::setupWater()
 {
-	mWater = new Water(mCamera, mSceneMgr);
+
+	//mWater = new Water(mCamera, mSceneMgr);
+//	mWater = new HydraxWater(mCamera, *mSceneMgr);
+///NOTE: we default to simple water for now since there are a couple of performance problems with hydrax
+ 	mWater = new SimpleWater(mCamera, *mSceneMgr);
+	if (mWater->isSupported()) {
+		mWater->initialize();
+	} else {
+		delete mWater;
+		mWater = new SimpleWater(mCamera, *mSceneMgr);
+		mWater->initialize();
+	}
+
+
 }
+
 
 void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sceneMgr, ::Ogre::RenderWindow* window, ::Ogre::Camera& camera)
 {
-	
 	/// Pick components to use
 	///We'll skip the ground fog for now...
-	caelum::CaelumSystem::CaelumComponent componentMask = 
+	caelum::CaelumSystem::CaelumComponent componentMask =
 			static_cast<caelum::CaelumSystem::CaelumComponent> (
 			caelum::CaelumSystem::CAELUM_COMPONENT_SKY_COLOUR_MODEL |
 			caelum::CaelumSystem::CAELUM_COMPONENT_SUN |
@@ -109,13 +125,33 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 			caelum::CaelumSystem::CAELUM_COMPONENT_CLOUDS |
 			caelum::CaelumSystem::CAELUM_COMPONENT_MOON |
 // 			caelum::CaelumSystem::CAELUM_COMPONENT_GROUND_FOG |
-			0);	
-	mCaelumSystem = new caelum::CaelumSystem (root, sceneMgr, componentMask, false);
+			0);
+
+	caelum::CaelumSystem::CaelumComponent componentMaskFallback =
+			static_cast<caelum::CaelumSystem::CaelumComponent> (
+			caelum::CaelumSystem::CAELUM_COMPONENT_SKY_COLOUR_MODEL |
+			caelum::CaelumSystem::CAELUM_COMPONENT_SUN |
+			caelum::CaelumSystem::CAELUM_COMPONENT_SOLAR_SYSTEM_MODEL |
+			caelum::CaelumSystem::CAELUM_COMPONENT_SKY_DOME |
+			caelum::CaelumSystem::CAELUM_COMPONENT_IMAGE_STARFIELD |	// Point starfield require shaders
+			caelum::CaelumSystem::CAELUM_COMPONENT_CLOUDS |
+//			caelum::CaelumSystem::CAELUM_COMPONENT_MOON |				// Moon would be ugly without shaders
+			0);
+
+	try {
+		mCaelumSystem = new caelum::CaelumSystem (root, sceneMgr, componentMask, false);
+	} catch (const Ogre::Exception& ex) {
+		S_LOG_FAILURE("Could not load main caelum technique, will try fallback. Message: " << ex.getFullDescription());
+
+		sceneMgr->getRootSceneNode()->removeAndDestroyChild("CaelumRoot");
+		mCaelumSystem = new caelum::CaelumSystem (root, sceneMgr, componentMaskFallback, false);
+	}
 
 
 	mCaelumSystem->setManageSceneFog (true);
 	mCaelumSystem->setManageAmbientLight(true);
 	mCaelumSystem->setGlobalFogDensityMultiplier (0.005);
+	mCaelumSystem->setMinimumAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.2, 1.0));
 
 	///Get the sky dome for  Create a sky dome CaelumSky
 	mDome = mCaelumSystem->getSkyDome();
@@ -151,24 +187,18 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 	}
 	
 	///little hack here. We of course want to use the server time, but currently when you log in when it's dark, you won't see much, so in order to show the world in it's full glory we'll try to set the time to day time
+	/*
 	if (hour < 6) {
 		hour = 6;
 	} else if (hour > 16) {
 		hour = 15;
 	}
+	*/
 	
 	
 	mCaelumSystem->getUniversalClock ()->setGregorianDateTime (year, month, day, hour, minute, second);
 	
-	///greenwich
-	mCaelumSystem->getSolarSystemModel ()->setObserverLatitude  (Ogre::Degree(0));
-	mCaelumSystem->getSolarSystemModel ()->setObserverLongitude(Ogre::Degree(0));
-	
-/*	//stockholm
-	mCaelumSystem->getSolarSystemModel ()->setObserverLatitude  (Ogre::Degree(59 + 18.0 / 60));
-	mCaelumSystem->getSolarSystemModel ()->setObserverLongitude(Ogre::Degree(31 + 113.0 / 60));*/
-	
-//  	mCaelumSystem->getUniversalClock()->setUpdateRate( 1 / (24 * 60)); //update every minute
+  	mCaelumSystem->getUniversalClock()->setUpdateRate( 1 / (24 * 60)); //update every minute
 	
 	
 	///advance it one second to force it to do initial updating, since other subsystems such as the terrain rendering depends on the sun postions etc.
@@ -198,7 +228,7 @@ IFog* CaelumEnvironment::getFog()
 
 IWater* CaelumEnvironment::getWater()
 {
-	return 0;
+	return mWater;
 }
 
 void CaelumEnvironment::setTime(int hour, int minute, int second)
@@ -215,6 +245,15 @@ void CaelumEnvironment::setTime(int seconds)
 	Ember::EmberServices::getSingleton().getTimeService()->getServerTime(year, month, day, _hour, _minute, _second);
 	
 	mCaelumSystem->getUniversalClock ()->setGregorianDateTime(year, month, day, 0, 0, seconds);
+}
+
+
+void CaelumEnvironment::setWorldPosition(float longitudeDegrees, float latitudeDegrees)
+{
+	if (mCaelumSystem) {
+		mCaelumSystem->getSolarSystemModel ()->setObserverLatitude (Ogre::Degree(latitudeDegrees));
+		mCaelumSystem->getSolarSystemModel ()->setObserverLongitude(Ogre::Degree(longitudeDegrees));
+	}
 }
 
 void CaelumEnvironment::runCommand(const std::string &command, const std::string &args)

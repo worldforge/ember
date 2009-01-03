@@ -49,14 +49,14 @@
 			<Property Name='UnifiedSize' Value='{{0,20},{0,20}}'/>
 			<Property Name='Text' Value='+'/>
 			<Property Name='InheritsAlpha' Value='True'/>
-			<Event Name="MouseClick" Function="Compass.ZoomIn_Clicked" />
+			<Event Name="Clicked" Function="Compass.ZoomIn_Clicked" />
 		</Window>	
 		<Window Type='EmberLook/Button' Name='ZoomOut'>
 			<Property Name='UnifiedPosition' Value='{{1,-40},{1.0,-20}}'/>
 			<Property Name='UnifiedSize' Value='{{0,20},{0,20}}'/>
 			<Property Name='Text' Value='-'/>
 			<Property Name='InheritsAlpha' Value='True'/>
-			<Event Name="MouseClick" Function="Compass.ZoomOut_Clicked" />
+			<Event Name="Clicked" Function="Compass.ZoomOut_Clicked" />
 		</Window>	
 	</Window>
 </GUILayout>

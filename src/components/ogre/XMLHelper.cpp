@@ -64,4 +64,54 @@ bool XMLHelper::Load(TiXmlDocument& xmlDoc, Ogre::DataStreamPtr stream)
 	return false;
 }
 
+Ogre::Vector3 XMLHelper::fillVector3FromElement(TiXmlElement* elem)
+{
+	Ogre::Real x=0.0f, y=0.0f, z=0.0f;
+	if (elem->Attribute("x")) {
+		x = atof(elem->Attribute("x"));
+	}
+	if (elem->Attribute("y")) {
+		y = atof(elem->Attribute("y"));
+	}
+	if (elem->Attribute("z")) {
+		z = atof(elem->Attribute("z"));
+	}
+	
+	return Ogre::Vector3(x,y,z);
+}
+
+
+void XMLHelper::fillElementFromVector3(TiXmlElement& elem, Ogre::Vector3 vector)
+{
+	elem.SetDoubleAttribute("x", vector.x);
+	elem.SetDoubleAttribute("y", vector.y);
+	elem.SetDoubleAttribute("z", vector.z);
+}
+
+Ogre::Quaternion XMLHelper::fillQuaternionFromElement(TiXmlElement* elem)
+{
+	Ogre::Vector3 vector = fillVector3FromElement(elem);
+	Ogre::Degree degrees;
+	///first check if degrees is specified, but also allow for radians to be specified
+	if (elem->Attribute("degrees")) {
+		degrees = atof(elem->Attribute("degrees"));
+	} else if (elem->Attribute("radians")) {
+		degrees = Ogre::Radian(atof(elem->Attribute("radians")));
+	}
+	Ogre::Quaternion q;
+	q.FromAngleAxis(degrees, vector);
+	return q;
+	
+}
+
+void XMLHelper::fillElementFromQuaternion(TiXmlElement& elem, Ogre::Quaternion quaternion)
+{
+	///split the quaternion into an axis and a degree (our format allows us to store the angle element as a radian too, but I prefer degrees)
+	Ogre::Degree degrees;
+	Ogre::Vector3 axis;
+	quaternion.ToAngleAxis( degrees, axis);
+	fillElementFromVector3(elem, axis);
+	elem.SetDoubleAttribute("degrees", degrees.valueDegrees());
+}
+
 }

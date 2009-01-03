@@ -295,7 +295,7 @@ namespace Gui {
 				if ((*I)->isVisible()) {
 					CEGUI::Window* window = *I;
 					WindowEventArgs args(window);
-					window->fireEvent(ButtonBase::EventMouseClick, args, PushButton::EventNamespace);
+					window->fireEvent(PushButton::EventClicked, args, PushButton::EventNamespace);
 					break;
 				}
 			}

@@ -214,7 +214,7 @@ function Inventory.buildWidget()
 		end
 		Inventory.menu.hide()
 	end
-	Inventory.menu.eatButton:subscribeEvent("MouseClick", Inventory.menu.eatButton_MouseClick)
+	Inventory.menu.eatButton:subscribeEvent("Clicked", Inventory.menu.eatButton_MouseClick)
 	Inventory.menu.innercontainer:addChildWindow(Inventory.menu.eatButton)
 	
 	
@@ -229,7 +229,7 @@ function Inventory.buildWidget()
 		end
 		Inventory.menu.hide()
 	end
-	Inventory.menu.dropButton:subscribeEvent("MouseClick", Inventory.menu.dropButton_MouseClick)
+	Inventory.menu.dropButton:subscribeEvent("Clicked", Inventory.menu.dropButton_MouseClick)
 	Inventory.menu.innercontainer:addChildWindow(Inventory.menu.dropButton)
 		
 		
@@ -244,7 +244,7 @@ function Inventory.buildWidget()
 		end
 		Inventory.menu.hide()
 	end
-	Inventory.menu.wieldButton:subscribeEvent("MouseClick", Inventory.menu.wieldButton_MouseClick)
+	Inventory.menu.wieldButton:subscribeEvent("Clicked", Inventory.menu.wieldButton_MouseClick)
 	Inventory.menu.innercontainer:addChildWindow(Inventory.menu.wieldButton)
 	
 	Inventory.menu.useButton = guiManager:createWindow("EmberLook/Button")
@@ -258,7 +258,7 @@ function Inventory.buildWidget()
 		end
 		Inventory.menu.hide()
 	end
-	Inventory.menu.useButton:subscribeEvent("MouseClick", Inventory.menu.useButton_MouseClick)
+	Inventory.menu.useButton:subscribeEvent("Clicked", Inventory.menu.useButton_MouseClick)
 	Inventory.menu.innercontainer:addChildWindow(Inventory.menu.useButton)
 	
 

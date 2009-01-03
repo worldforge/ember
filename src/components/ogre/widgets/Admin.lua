@@ -10,7 +10,7 @@ Admin = {connectors={}, adminIcon=nil}
 function Admin.addMenuItem(labelText, clickMethod, tooltipText)
 	local menuItem = windowManager:createWindow("EmberLook/MenuItem")
 	menuItem:setText(labelText)
-	menuItem:subscribeEvent("MouseClick", clickMethod)
+	menuItem:subscribeEvent("Clicked", clickMethod)
 	menuItem:setTooltipText(tooltipText)
 	Admin.popup:addChildWindow(menuItem)
 	return menuItem
@@ -25,7 +25,7 @@ function Admin.buildWidget()
 		--we'll use the "spell" icon from the "iconset_mason" for now until we get a better icon
 		local foreground = EmberOgre.Gui.IconBase:loadImageFromImageset("iconset_mason", "spell")
 		Admin.adminIcon = MainIconBar.addIcon("admin", foreground, "Click here to access the admin menu.")
-		Admin.adminIcon:getButton():subscribeEvent("MouseClick", "Admin.admin_MouseClick")
+		Admin.adminIcon:getButton():subscribeEvent("Clicked", "Admin.admin_Clicked")
 	
 		Admin.popup = windowManager:createWindow("EmberLook/PopupMenu")
 		Admin.popup = CEGUI.toPopupMenu(Admin.popup)
@@ -59,7 +59,7 @@ end
 --[[
 Show the admin menu at the mouse position
 ]]--
-function Admin.admin_MouseClick(args)
+function Admin.admin_Clicked(args)
 	Admin.popup:openPopupMenu()
 	
 --[[	local adminContainer = Admin.adminIcon:getContainer()

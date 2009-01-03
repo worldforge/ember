@@ -26,6 +26,7 @@
 
 #include "SimpleEnvironment.h"
 #include "Water.h"
+#include "SimpleWater.h"
 
 namespace EmberOgre {
 
@@ -73,7 +74,8 @@ void SimpleEnvironment::createEnvironment()
 	mSun = new SimpleSun();
 	mSky = new SimpleSky();
 	mFog = new SimpleFog();
-	mWater = new Water(mCamera, mSceneMgr);
+	mWater = new SimpleWater(mCamera, *mSceneMgr);
+	mWater->initialize();
 }
 
 ISun* SimpleEnvironment::getSun()
@@ -101,6 +103,10 @@ void SimpleEnvironment::setTime(int hour, int minute, int second)
 }
 
 void SimpleEnvironment::setTime(int seconds)
+{
+}
+
+void SimpleEnvironment::setWorldPosition(float longitudeDegrees, float latitudeDegrees)
 {
 }
 

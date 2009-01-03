@@ -35,6 +35,7 @@ namespace EmberOgre {
 
 class EmberPagingSceneManager;
 class EmberPagingSceneManagerFactory;
+class MeshSerializerListener;
 
 /**
 	@brief A class used for setting up Ogre. Instead of creating the Ogre root object and the main render window direclty, use this to guarantee that everything is set up correctly.
@@ -138,6 +139,11 @@ private:
 	The main video surface. Since we use SDL for input we need SDL to handle it too.
 	*/
 	SDL_Surface* mMainVideoSurface;
+	
+	/**
+	* @brief Provides the ability to use relative paths for skeletons in meshes.
+	*/
+	MeshSerializerListener* mMeshSerializerListener;
 
 };
 

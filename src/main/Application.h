@@ -153,6 +153,16 @@ namespace Ember
 	sigc::signal<void> EventEndErisPoll;
 	
 	/**
+	 * @brief Emitted before processing input. This event is emitted continously.
+	 */
+	sigc::signal<void> EventBeforeInputProcessing;
+	
+	/**
+	 * @brief Emitted after processing input. This event is emitted continously.
+	 */
+	sigc::signal<void> EventAfterInputProcessing;
+	
+	/**
 	 * @brief Call this to "soft quit" the app. This means that an signal will be emitted, which hopefully will be taken care of by some widget, which will show a confirmation window, asking the user if he/she wants to quit.
 	 * However, if there is no widget etc. handling the request, the application will instantly quit.
 	 */

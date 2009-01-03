@@ -100,7 +100,7 @@ void MakeEntityWidget::buildWidget()
 	
 	CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(getWindow("CreateButton"));
 	
-	BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick,MakeEntityWidget::createButton_Click );
+	BIND_CEGUI_EVENT(button, CEGUI::PushButton::EventClicked,MakeEntityWidget::createButton_Click );
 	BIND_CEGUI_EVENT(mTypeTree, CEGUI::Tree::EventSelectionChanged ,MakeEntityWidget::typeTree_ItemSelectionChanged );
 
 	

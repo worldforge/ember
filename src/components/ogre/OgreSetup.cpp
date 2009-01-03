@@ -28,6 +28,8 @@
 
 #include "OgreSetup.h"
 
+#include "MeshSerializerListener.h"
+
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 
@@ -66,7 +68,8 @@ mRoot(0),
 mRenderWindow(0),
 mIconSurface(0),
 mSceneManagerFactory(0),
-mMainVideoSurface(0)
+mMainVideoSurface(0),
+mMeshSerializerListener(0)
 {
 }
 
@@ -96,6 +99,8 @@ void OgreSetup::shutdown()
 	delete mRoot;
 	mRoot = 0;
 	S_LOG_INFO("Ogre shut down.");
+	
+	delete mMeshSerializerListener;
 
 	if (mIconSurface) {
 		SDL_FreeSurface(mIconSurface);
@@ -182,9 +187,10 @@ Ogre::Root* OgreSetup::createOgreSystem()
 			token = tokeniser.nextToken();
 		}
 	}
-
-	Ember::Tokeniser tokeniser();
-
+	
+	mMeshSerializerListener = new MeshSerializerListener();
+	
+	Ogre::MeshManager::getSingleton().setListener(mMeshSerializerListener);
 	return mRoot;
 }
 

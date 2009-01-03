@@ -177,19 +177,19 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, TiXmlE
 	elem = modelNode->FirstChildElement("translate");
 	if (elem)
 	{
-		modelDef->mTranslate = fillVector3FromElement(elem);
+		modelDef->mTranslate = XMLHelper::fillVector3FromElement(elem);
 	}
 	
 	elem = modelNode->FirstChildElement("rotation");
 	if (elem)
 	{
-		modelDef->setRotation(fillQuaternionFromElement(elem));
+		modelDef->setRotation(XMLHelper::fillQuaternionFromElement(elem));
 	}
 
 	elem = modelNode->FirstChildElement("contentoffset");
 	if (elem)
 	{
-		Ogre::Vector3 offset = fillVector3FromElement(elem);
+		Ogre::Vector3 offset = XMLHelper::fillVector3FromElement(elem);
 		modelDef->setContentOffset(offset);
 	}
 	
@@ -211,6 +211,9 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, TiXmlE
 		}
 	}	
 	
+	elem = modelNode->FirstChildElement("lights");
+	if (elem)
+		readLights(modelDef, elem);
 }
 
 
@@ -517,7 +520,7 @@ void XMLModelDefinitionSerializer::readAttachPoints(ModelDefinitionPtr modelDef,
 		TiXmlElement* elem = apElem->FirstChildElement("rotation");
 		if (elem)
 		{
-			attachPointDef.Rotation = fillQuaternionFromElement(elem);
+			attachPointDef.Rotation = XMLHelper::fillQuaternionFromElement(elem);
 		} else {
 			attachPointDef.Rotation = Ogre::Quaternion::IDENTITY;
 		}
@@ -609,7 +612,7 @@ void XMLModelDefinitionSerializer::readViews(ModelDefinitionPtr modelDef, TiXmlE
 	
 			elem = viewElem->FirstChildElement("rotation");
 			if (elem) {
-				def->Rotation = fillQuaternionFromElement(elem);
+				def->Rotation = XMLHelper::fillQuaternionFromElement(elem);
 			} else {
 				def->Rotation = Ogre::Quaternion::IDENTITY;
 			}
@@ -625,56 +628,111 @@ void XMLModelDefinitionSerializer::readViews(ModelDefinitionPtr modelDef, TiXmlE
 	}
 }
 
-
-Ogre::Vector3 XMLModelDefinitionSerializer::fillVector3FromElement(TiXmlElement* elem)
+void  XMLModelDefinitionSerializer::readLights(ModelDefinitionPtr modelDef, TiXmlElement* mLightsNode)
 {
-	Ogre::Real x=0.0f, y=0.0f, z=0.0f;
-	if (elem->Attribute("x")) {
-		x = atof(elem->Attribute("x"));
-	}
-	if (elem->Attribute("y")) {
-		y = atof(elem->Attribute("y"));
-	}
-	if (elem->Attribute("z")) {
-		z = atof(elem->Attribute("z"));
-	}
+	TiXmlElement* elem;
+	ModelDefinition::LightSet& lights = modelDef->mLights;
 	
-	return Ogre::Vector3(x,y,z);
-}
+	const char* tmp = 0;
 
+	for (TiXmlElement* lElem = mLightsNode->FirstChildElement();
+            lElem != 0; lElem = lElem->NextSiblingElement())
+	{
+		ModelDefinition::LightDefinition def;
 
-void XMLModelDefinitionSerializer::fillElementFromVector3(TiXmlElement& elem, Ogre::Vector3 vector)
-{
-	elem.SetDoubleAttribute("x", vector.x);
-	elem.SetDoubleAttribute("y", vector.y);
-	elem.SetDoubleAttribute("z", vector.z);
-}
+		def.type = Ogre::Light::LT_POINT;
 
-Ogre::Quaternion XMLModelDefinitionSerializer::fillQuaternionFromElement(TiXmlElement* elem)
-{
-	Ogre::Vector3 vector = fillVector3FromElement(elem);
-	Ogre::Degree degrees;
-	///first check if degrees is specified, but also allow for radians to be specified
-	if (elem->Attribute("degrees")) {
-		degrees = atof(elem->Attribute("degrees"));
-	} else if (elem->Attribute("radians")) {
-		degrees = Ogre::Radian(atof(elem->Attribute("radians")));
+		tmp = lElem->Attribute("type");
+		if (tmp)
+		{
+			std::string type = tmp;
+			if (type == "point")
+			{
+				def.type = Ogre::Light::LT_POINT;
+			}
+			else if (type == "directional")
+			{
+				def.type = Ogre::Light::LT_DIRECTIONAL;
+			}
+			else if (type == "spotlight")
+			{
+				def.type = Ogre::Light::LT_SPOTLIGHT;
+			}
+		}
+		
+		Ogre::Real r=1.0f, g=1.0f, b=1.0f;
+
+		elem = lElem->FirstChildElement("diffusecolour");
+		if (elem)
+		{
+			if (elem->Attribute("r")) {
+				r = atof(elem->Attribute("r"));
+			}
+			if (elem->Attribute("g")) {
+				g = atof(elem->Attribute("g"));
+			}
+			if (elem->Attribute("b")) {
+				b = atof(elem->Attribute("b"));
+			}
+		}
+		def.diffuseColour = Ogre::ColourValue(r, g, b);
+
+		elem = lElem->FirstChildElement("specularcolour");
+		if (elem)
+		{
+			if (elem->Attribute("r")) {
+				r = atof(elem->Attribute("r"));
+			}
+			if (elem->Attribute("g")) {
+				g = atof(elem->Attribute("g"));
+			}
+			if (elem->Attribute("b")) {
+				b = atof(elem->Attribute("b"));
+			}
+			def.specularColour = Ogre::ColourValue(r, g, b);
+		}
+		else
+		{
+			def.specularColour = def.diffuseColour;
+		}
+
+		elem = lElem->FirstChildElement("attenuation");
+		def.range = 100000.0;
+		def.constant = 1.0;
+		def.linear = 0.0;
+		def.quadratic = 0.0;
+		if (elem)
+		{
+			if (elem->Attribute("range")) {
+				def.range = atof(elem->Attribute("range"));
+			}
+			if (elem->Attribute("constant")) {
+				def.constant = atof(elem->Attribute("constant"));
+			}
+			if (elem->Attribute("linear")) {
+				def.linear = atof(elem->Attribute("linear"));
+			}
+			if (elem->Attribute("quadratic")) {
+				def.quadratic = atof(elem->Attribute("quadratic"));
+			}
+		}
+
+		elem = lElem->FirstChildElement("position");
+		if (elem)
+		{
+			def.position = XMLHelper::fillVector3FromElement(elem);
+		}
+		else
+		{
+			def.position = Ogre::Vector3::ZERO;
+		}
+
+		S_LOG_VERBOSE( "  Add light");
+
+		lights.push_back(def);
 	}
-	Ogre::Quaternion q;
-	q.FromAngleAxis(degrees, vector);
-	return q;
-	
 }
 
-void XMLModelDefinitionSerializer::fillElementFromQuaternion(TiXmlElement& elem, Ogre::Quaternion quaternion)
-{
-	///split the quaternion into an axis and a degree (our format allows us to store the angle element as a radian too, but I prefer degrees)
-	Ogre::Degree degrees;
-	Ogre::Vector3 axis;
-	quaternion.ToAngleAxis( degrees, axis);
-	fillElementFromVector3(elem, axis);
-	elem.SetDoubleAttribute("degrees", degrees.valueDegrees());
-}
 
 
 void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, const std::string& filename)
@@ -749,7 +807,7 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		
 		if (modelDef->getContentOffset() != Ogre::Vector3::ZERO) {
 			TiXmlElement contentOffset("contentoffset");
-			fillElementFromVector3(contentOffset, modelDef->getContentOffset());
+			XMLHelper::fillElementFromVector3(contentOffset, modelDef->getContentOffset());
 			modelElem.InsertEndChild(contentOffset);
 		}
 		
@@ -770,11 +828,11 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 
 		
 		TiXmlElement translate("translate");
-		fillElementFromVector3(translate, modelDef->getTranslate());
+		XMLHelper::fillElementFromVector3(translate, modelDef->getTranslate());
 		modelElem.InsertEndChild(translate);
 		
 		TiXmlElement rotation("rotation");
-		fillElementFromQuaternion(rotation, modelDef->getRotation());
+		XMLHelper::fillElementFromQuaternion(rotation, modelDef->getRotation());
 		modelElem.InsertEndChild(rotation);
 		
 		modelElem.SetAttribute("icon", modelDef->getIconPath().c_str());
@@ -798,6 +856,8 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		exportAttachPoints(modelDef, modelElem);
 		
 		exportViews(modelDef, modelElem);
+		
+		exportLights(modelDef, modelElem);
 		
 		elem.InsertEndChild(modelElem);
 		
@@ -828,7 +888,7 @@ void XMLModelDefinitionSerializer::exportViews(ModelDefinitionPtr modelDef, TiXm
 		viewElem.InsertEndChild(distanceElem);
 
 		TiXmlElement rotation("rotation");
-		fillElementFromQuaternion(rotation, I->second->Rotation);
+		XMLHelper::fillElementFromQuaternion(rotation, I->second->Rotation);
 		viewElem.InsertEndChild(rotation);
 
 		viewsElem.InsertEndChild(viewElem);
@@ -931,12 +991,57 @@ void XMLModelDefinitionSerializer::exportAttachPoints(ModelDefinitionPtr modelDe
 		attachpointElem.SetAttribute("name", I->Name.c_str());
 		attachpointElem.SetAttribute("bone", I->BoneName.c_str());
 		TiXmlElement rotationElem("rotation");
-		fillElementFromQuaternion(rotationElem, I->Rotation);
+		XMLHelper::fillElementFromQuaternion(rotationElem, I->Rotation);
 		attachpointElem.InsertEndChild(rotationElem);
 		
 		attachpointsElem.InsertEndChild(attachpointElem);
 	}
 	modelElem.InsertEndChild(attachpointsElem);
+}
+
+void XMLModelDefinitionSerializer::exportLights(ModelDefinitionPtr modelDef, TiXmlElement& modelElem)
+{
+	TiXmlElement lightsElem("lights");
+	
+	for (ModelDefinition::LightSet::const_iterator I = modelDef->mLights.begin(); I != modelDef->mLights.end(); ++I) {
+		ModelDefinition::LightDefinition def(*I);
+		TiXmlElement lightElem("light");
+		std::string type;
+		if (def.type == Ogre::Light::LT_POINT) {
+			type = "point";
+		} else if (def.type == Ogre::Light::LT_DIRECTIONAL) {
+			type = "directional";
+		} else if (def.type == Ogre::Light::LT_SPOTLIGHT) {
+			type = "spotlight";
+		}
+		lightElem.SetAttribute("type", type);
+		
+		TiXmlElement diffuseElem("diffusecolour");
+		diffuseElem.SetAttribute("r", def.diffuseColour.r);
+		diffuseElem.SetAttribute("g", def.diffuseColour.g);
+		diffuseElem.SetAttribute("b", def.diffuseColour.b);
+		lightElem.InsertEndChild(diffuseElem);
+		
+		TiXmlElement specularElem("specularcolour");
+		specularElem.SetAttribute("r", def.specularColour.r);
+		specularElem.SetAttribute("g", def.specularColour.g);
+		specularElem.SetAttribute("b", def.specularColour.b);
+		lightElem.InsertEndChild(specularElem);
+		
+		TiXmlElement attenuationElem("attenuation");
+		attenuationElem.SetDoubleAttribute("range", def.range);
+		attenuationElem.SetDoubleAttribute("constant", def.constant);
+		attenuationElem.SetDoubleAttribute("linear", def.linear);
+		attenuationElem.SetDoubleAttribute("quadratic", def.quadratic);
+		lightElem.InsertEndChild(attenuationElem);
+		
+		TiXmlElement posElem("position");
+		XMLHelper::fillElementFromVector3(posElem, def.position);
+		lightElem.InsertEndChild(posElem);
+		
+		lightsElem.InsertEndChild(lightElem);
+	}
+	modelElem.InsertEndChild(lightsElem);
 }
 
 } //end namespace

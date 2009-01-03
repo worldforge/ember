@@ -96,28 +96,28 @@
 				<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 				<Property Name='Text' Value='Submit'/>
 				<Property Name='InheritsAlpha' Value='True'/>
-				<Event Name="MouseClick" Function="EntityEditor.Submit_MouseClick" />
+				<Event Name="Clicked" Function="EntityEditor.Submit_Clicked" />
 			</Window>
 			<Window Type='EmberLook/Button' Name='DeleteButton'>
 				<Property Name='UnifiedPosition' Value='{{0,80},{1.0,-20}}'/>
 				<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 				<Property Name='Text' Value='Delete'/>
 				<Property Name='InheritsAlpha' Value='True'/>
-				<Event Name="MouseClick" Function="EntityEditor.DeleteButton_MouseClick" />
+				<Event Name="Clicked" Function="EntityEditor.DeleteButton_Clicked" />
 			</Window>
 			<Window Type='EmberLook/Button' Name='ExportButton'>
 				<Property Name='UnifiedPosition' Value='{{0,160},{1.0,-20}}'/>
 				<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 				<Property Name='Text' Value='Export'/>
 				<Property Name='InheritsAlpha' Value='True'/>
-				<Event Name="MouseClick" Function="EntityEditor.ExportButton_MouseClick" />
+				<Event Name="Clicked" Function="EntityEditor.ExportButton_Clicked" />
 			</Window>
 			<Window Type='EmberLook/Button' Name='RefreshButton'>
 				<Property Name='UnifiedPosition' Value='{{0,240},{1.0,-20}}'/>
 				<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 				<Property Name='Text' Value='Refresh'/>
 				<Property Name='InheritsAlpha' Value='True'/>
-				<Event Name="MouseClick" Function="EntityEditor.RefreshButton_MouseClick" />
+				<Event Name="Clicked" Function="EntityEditor.RefreshButton_Clicked" />
 			</Window>
 		</Window>
 	</Window>

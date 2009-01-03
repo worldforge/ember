@@ -48,7 +48,7 @@ The PagingLandscape SceneManager comes with a whole set of different heightfield
 			virtual Ogre::String getName() const {return Ogre::String("EmberHeightField");}
 			virtual ~EmberPagingLandScapeData2D_HeightField( void );
 
-			virtual const Ogre::Vector3 getNormal( const Ogre::Real mX, const Ogre::Real mZ );
+			virtual const Ogre::Vector3 getNormal( const Ogre::Real localPageX, const Ogre::Real localPageZ);
 			virtual const Ogre::ColourValue getBase( const Ogre::Real mX, const Ogre::Real mZ );
 			virtual const Ogre::ColourValue getCoverage( const Ogre::Real mX, const Ogre::Real mZ );
 			virtual const Ogre::Real getShadow( const Ogre::Real mX, const Ogre::Real mZ, const bool& positive );

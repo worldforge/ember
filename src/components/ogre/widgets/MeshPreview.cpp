@@ -233,10 +233,10 @@ void MeshPreview::buildWidget()
 	//bind buttons
 	CEGUI::PushButton* button;
 	button  = static_cast<CEGUI::PushButton*>(getWindow("Create"));
-	BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick, MeshPreview::createButton_Click);
+	BIND_CEGUI_EVENT(button, CEGUI::PushButton::EventClicked, MeshPreview::createButton_Click);
 	
 	button  = static_cast<CEGUI::PushButton*>(getWindow("Remove"));
-	BIND_CEGUI_EVENT(button, CEGUI::ButtonBase::EventMouseClick, MeshPreview::removeButton_Click);
+	BIND_CEGUI_EVENT(button, CEGUI::PushButton::EventClicked, MeshPreview::removeButton_Click);
 	
 	CEGUI::Window* meshNameBox = getWindow("MeshName");
 	BIND_CEGUI_EVENT(meshNameBox, CEGUI::Editbox::EventTextAccepted, MeshPreview::createButton_Click)
@@ -254,10 +254,10 @@ void MeshPreview::buildWidget()
 	mAnimations = static_cast<CEGUI::Listbox*>(getWindow("Animations"));
 	
 	mPlayAnimation = static_cast<CEGUI::PushButton*>(getWindow("PlayAnimation"));
-	BIND_CEGUI_EVENT(mPlayAnimation, CEGUI::ButtonBase::EventMouseClick, MeshPreview::playAnimation_MouseClick);
+	BIND_CEGUI_EVENT(mPlayAnimation, CEGUI::PushButton::EventClicked, MeshPreview::playAnimation_Clicked);
 	
 	CEGUI::Window* resetButton = getWindow("ResetAnimation");
-	BIND_CEGUI_EVENT(resetButton, CEGUI::ButtonBase::EventMouseClick, MeshPreview::resetAnimation_MouseClick);
+	BIND_CEGUI_EVENT(resetButton, CEGUI::PushButton::EventClicked, MeshPreview::resetAnimation_Clicked);
 	
 	
 	hide();
@@ -292,7 +292,7 @@ bool MeshPreview::removeButton_Click(const CEGUI::EventArgs& args)
 }
 
 
-bool MeshPreview::playAnimation_MouseClick(const CEGUI::EventArgs& args)
+bool MeshPreview::playAnimation_Clicked(const CEGUI::EventArgs& args)
 {
 	try {
 		MeshPreviewMeshInstance& instance = getActiveInstance();
@@ -308,7 +308,7 @@ bool MeshPreview::playAnimation_MouseClick(const CEGUI::EventArgs& args)
 	return true;
 }
 
-bool MeshPreview::resetAnimation_MouseClick(const CEGUI::EventArgs& args)
+bool MeshPreview::resetAnimation_Clicked(const CEGUI::EventArgs& args)
 {
 	try {
 		MeshPreviewMeshInstance& instance = getActiveInstance();

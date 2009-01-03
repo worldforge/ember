@@ -89,15 +89,15 @@ function TerrainEditor.buildWidget()
 	
 	TerrainEditor.showOverlayButton = TerrainEditor.widget:getWindow("ShowOverlayButton")
 	TerrainEditor.showOverlayButton = CEGUI.toPushButton(TerrainEditor.showOverlayButton)
-	TerrainEditor.showOverlayButton:subscribeEvent("MouseClick", "TerrainEditor.ShowOverlayButton_Click")
+	TerrainEditor.showOverlayButton:subscribeEvent("Clicked", "TerrainEditor.ShowOverlayButton_Click")
 	
 	--hook up the undo and redo buttons
-	TerrainEditor.widget:getWindow("UndoButton"):subscribeEvent("MouseClick", "TerrainEditor.UndoButton_Click")
-	TerrainEditor.widget:getWindow("RedoButton"):subscribeEvent("MouseClick", "TerrainEditor.RedoButton_Click")
+	TerrainEditor.widget:getWindow("UndoButton"):subscribeEvent("Clicked", "TerrainEditor.UndoButton_Click")
+	TerrainEditor.widget:getWindow("RedoButton"):subscribeEvent("Clicked", "TerrainEditor.RedoButton_Click")
 	
 	TerrainEditor.widget:getMainWindow():subscribeEvent("Hidden", "TerrainEditor.MainWindow_Hidden")
 	
-	TerrainEditor.widget:getWindow("SendToServerButton"):subscribeEvent("MouseClick", "TerrainEditor.SendToServerButton_Click")
+	TerrainEditor.widget:getWindow("SendToServerButton"):subscribeEvent("Clicked", "TerrainEditor.SendToServerButton_Click")
 	
 	
 	TerrainEditor.widget:registerConsoleVisibilityToggleCommand("terrainEditor")

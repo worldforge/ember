@@ -460,6 +460,15 @@ private:
 
 	typedef std::vector<ParticleSystemDefinition> ParticleSystemSet;
 
+	struct LightDefinition
+	{
+		Ogre::Light::LightTypes type;
+		Ogre::ColourValue diffuseColour, specularColour;
+		Ogre::Real range, constant, linear, quadratic;
+		Ogre::Vector3 position;
+	};
+
+	typedef std::vector<LightDefinition> LightSet;
 
 	
 	
@@ -489,6 +498,7 @@ private:
 	SubModelDefinitionsStore mSubModels;
 	ActionDefinitionsStore mActions;
 	ParticleSystemSet mParticleSystems;
+	LightSet mLights;
 	
 	AttachPointDefinitionStore mAttachPoints;
 	

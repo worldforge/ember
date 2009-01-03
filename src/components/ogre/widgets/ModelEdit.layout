@@ -193,7 +193,7 @@
 					<Property Name='Text' Value='Export Atlas'/>
 					<Property Name='UnifiedSize' Value='{{0.000000,75.000000},{0.000000,25.000000}}'/>
 					<Property Name='UnifiedPosition' Value='{{0.000000,100.000000},{1.000000,-30.000000}}'/>
-					<Event Name="MouseClick" Function="ModelEdit.ExportAsAtlasTypeButton_MouseClick" />
+					<Event Name="Clicked" Function="ModelEdit.ExportAsAtlasTypeButton_Clicked" />
 				</Window>
 				<Window Type='EmberLook/Checkbox' Name='ModelShowContent'>
 					<Property Name='Text' Value='Show content'/>
@@ -314,7 +314,7 @@
 					<Property Name='Text' Value='Icon from preview'/>
 					<Property Name='UnifiedPosition' Value='{{1,-125},{1,-60}}'/>
 					<Property Name='UnifiedSize' Value='{{0,120},{0,25}}'/>
-					<Event Name="MouseClick" Function="ModelEdit.GetIconFromPreviewButton_MouseClick" />
+					<Event Name="Clicked" Function="ModelEdit.GetIconFromPreviewButton_Clicked" />
 				</Window>
 			</Window>
 			<Window Type='DefaultWindow' Name='SubModelInfo'>

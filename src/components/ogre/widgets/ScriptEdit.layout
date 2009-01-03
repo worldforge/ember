@@ -45,7 +45,7 @@
 			<Property Name='UnifiedPosition' Value='{{0.0000,380.000000},{1.0000,-35.000000}}'/>
 			<Property Name='Text' Value='Force GC'/>
 			<Property Name='Tooltip' Value='Forces garbage collection for the current scripting module.'/>
-			<Event Name='MouseClick' Function='ScriptEdit.ForceGCButton_MouseClick' />
+			<Event Name='Clicked' Function='ScriptEdit.ForceGCButton_Clicked' />
 		</Window>
 		<Window Type='EmberLook/Button' Name='InspectButton'>
 			<Property Name='UnifiedSize' Value='{{0,75.000000},{0,25.000000}}'/>

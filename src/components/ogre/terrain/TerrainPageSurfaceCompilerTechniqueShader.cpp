@@ -304,7 +304,8 @@ bool TerrainPageSurfaceCompilerShaderPass::finalize()
 	ss << "splatting_fragment_" << mLayers.size();
 	std::string fragmentProgramName(ss.str());
 	
-	mPass->setLightingEnabled(false);
+	mPass->setLightingEnabled(true);
+	mPass->setMaxSimultaneousLights(3);
 // 	mPass->setFog(true, Ogre::FOG_NONE);
 	
 			
@@ -327,7 +328,9 @@ bool TerrainPageSurfaceCompilerShaderPass::finalize()
 		fpParams->setNamedConstant("iScales", mScales, 4); //4*4=16
 		
 		fpParams->setNamedAutoConstant("iLightAmbient", Ogre::GpuProgramParameters::ACT_AMBIENT_LIGHT_COLOUR);
-		fpParams->setNamedAutoConstant("iLightDiffuse", Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR);
+		fpParams->setNamedAutoConstant("iLightDiffuse", Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR_ARRAY, 3);
+		fpParams->setNamedAutoConstant("iLightAttenuation", Ogre::GpuProgramParameters::ACT_LIGHT_ATTENUATION_ARRAY, 3);
+		fpParams->setNamedAutoConstant("iLightPosition", Ogre::GpuProgramParameters::ACT_LIGHT_POSITION_OBJECT_SPACE_ARRAY, 3);
 	} catch (const Ogre::Exception& ex) {
 		S_LOG_WARNING("Error when setting fragment program parameters. Message:\n" << ex.what());
 		return false;
@@ -335,8 +338,10 @@ bool TerrainPageSurfaceCompilerShaderPass::finalize()
 	
 	///add vertex shader for fog	
 	if (EmberOgre::getSingleton().getSceneManager()->getFogMode() == Ogre::FOG_EXP2) {
+		S_LOG_VERBOSE("Using vertex program " << "fog_exp2_vp" << " for terrain page.");
 		mPass->setVertexProgram("fog_exp2_vp");
 	} else {
+		S_LOG_VERBOSE("Using vertex program " << "fog_linear_vp" << " for terrain page.");
 		mPass->setVertexProgram("fog_linear_vp");
 	}
 	try {

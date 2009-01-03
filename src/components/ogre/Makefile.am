@@ -25,8 +25,8 @@ libEmberOgre_la_SOURCES = AttributeObserver.cpp Avatar.cpp AvatarCamera.cpp \
 	EmberEntityFactory.cpp EmberEntityHideModelAction.cpp EmberEntityModelAction.cpp \
 	EmberEntityPartAction.cpp EmberEntityUserObject.cpp EmberOgre.cpp EmberOgreFileSystem.cpp \
 	EmberPhysicalEntity.cpp EntityWorldPickListener.cpp GUICEGUIAdapter.cpp GUIManager.cpp \
-	MediaUpdater.cpp MeshCollisionDetector.cpp ModelMount.cpp MotionManager.cpp \
-	MousePicker.cpp OgreInfo.cpp OgreLogObserver.cpp OgreResourceLoader.cpp \
+	MediaUpdater.cpp MeshCollisionDetector.cpp MeshSerializerListener.cpp ModelMount.cpp \
+	MotionManager.cpp MousePicker.cpp OgreInfo.cpp OgreLogObserver.cpp OgreResourceLoader.cpp \
 	OgreResourceProvider.cpp OgreSetup.cpp OpcodeCollisionDetector.cpp \
 	OpcodeCollisionDetectorVisualizer.cpp SimpleRenderContext.cpp WorldEmberEntity.cpp XMLHelper.cpp
 
@@ -40,9 +40,10 @@ noinst_HEADERS = AttributeObserver.h Avatar.h AvatarCamera.h AvatarController.h 
 	EmberEntityHideModelAction.h EmberEntityModelAction.h EmberEntityPartAction.h \
 	EmberEntityUserObject.h EmberOgre.h EmberOgreFileSystem.h EmberOgrePrerequisites.h \
 	EmberPhysicalEntity.h EntityWorldPickListener.h GUICEGUIAdapter.h GUIManager.h \
-	IWorldPickListener.h MathConverter.h MediaUpdater.h MeshCollisionDetector.h ModelMount.h \
-	MotionManager.h MousePicker.h OgreIncludes.h OgreInfo.h OgreLogObserver.h \
-	OgreResourceLoader.h OgreResourceProvider.h OgreSetup.h OpcodeCollisionDetector.h \
-	OpcodeCollisionDetectorVisualizer.h SimpleRenderContext.h WorldEmberEntity.h XMLHelper.h
+	IWorldPickListener.h MathConverter.h MediaUpdater.h MeshCollisionDetector.h \
+	MeshSerializerListener.h ModelMount.h MotionManager.h MousePicker.h OgreIncludes.h OgreInfo.h \
+	OgreLogObserver.h OgreResourceLoader.h OgreResourceProvider.h OgreSetup.h \
+	OpcodeCollisionDetector.h OpcodeCollisionDetectorVisualizer.h SimpleRenderContext.h \
+	WorldEmberEntity.h XMLHelper.h
 	
 #libEmberOgre_la_LDFLAGS = -no-undefined

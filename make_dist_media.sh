@@ -86,13 +86,17 @@ cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_meshes.list ` |
 
 
 echo "Copying skeletons"
-#use meshmagick to figure out the needed skeletons
-for filename in `find ${shared_dir}/common -name "*.mesh"`
-do
-	meshmagick info ${filename} | grep -oE "skeletonfile.*.skeleton" | sed -e 's/skeletonfile //' >> ${shared_dir}/common_skeletons.list
-	meshmagick info ${filename} | grep -oE "skeleton file.*.skeleton" | sed -e 's/skeleton file //' >> ${shared_dir}/common_skeletons.list
-done
-cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_skeletons.list ` | ( cd ${shared_dir}/common; tar --keep-newer-files -xvf -) 2>  /dev/null
+#just copy all skeletons, since the method involving meshmagick can't resolve the correct file name when using relative skeleton names
+cd ${original_media}/common/3d_objects ; tar cf - `find -L . -iname \*.skeleton` | ( cd ${shared_dir}/common/3d_objects; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${original_media}/common/3d_skeletons ; tar cf - `find -L . -iname \*.skeleton` | ( cd ${shared_dir}/common/3d_skeletons; tar --keep-newer-files -xvf -) 2>  /dev/null
+
+# #use meshmagick to figure out the needed skeletons
+# for filename in `find ${shared_dir}/common -name "*.mesh"`
+# do
+# 	meshmagick info ${filename} | grep -oE "skeletonfile.*.skeleton" | sed -e 's/skeletonfile //' >> ${shared_dir}/common_skeletons.list
+# 	meshmagick info ${filename} | grep -oE "skeleton file.*.skeleton" | sed -e 's/skeleton file //' >> ${shared_dir}/common_skeletons.list
+# done
+# cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_skeletons.list ` | ( cd ${shared_dir}/common; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 
 
@@ -126,6 +130,55 @@ cd ${original_media} ; tar cf - `cat ${shared_dir}/shared_packs.list ` | ( cd ${
 echo "Copy fonts"
 mkdir -p ${shared_dir}/common/themes/ember/gui/fonts
 cp -a ${original_media}/common/themes/ember/gui/fonts/* ${shared_dir}/common/themes/ember/gui/fonts
+
+echo "Copying materials"
+shared_ogre_dir=${shared_dir}/common/resources/ogre
+mkdir -p ${shared_ogre_dir}/scripts/materials
+mkdir -p ${shared_ogre_dir}/scripts/overlays
+mkdir -p ${shared_ogre_dir}/scripts/programs
+cd ${script_dir} ; tar cf - `find . -iname \*.cg` | ( cd ${shared_ogre_dir}/scripts; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${script_dir} ; tar cf - `find . -iname \*.glsl` | ( cd ${shared_ogre_dir}/scripts; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${script_dir} ; tar cf - `find . -iname \*.program` | ( cd ${shared_ogre_dir}/scripts; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${script_dir} ; tar cf - `find . -iname \*.asm` | ( cd ${shared_ogre_dir}/scriptss; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${script_dir} ; tar cf - `find . -iname \*.ps` | ( cd ${shared_ogre_dir}/scripts; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${script_dir} ; tar cf - `find . -iname \*.material` | ( cd ${shared_ogre_dir}/scripts; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${script_dir} ; tar cf - `find . -iname \*.overlay` | ( cd ${shared_ogre_dir}/scripts; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${script_dir} ; tar cf - `find . -iname \*.particle` | ( cd ${shared_ogre_dir}/scripts; tar --keep-newer-files -xvf -) 2>  /dev/null
+
+#Note: we'll keep this for now, until we have a nicer way of copying all the textures that's needed
+mkdir -p ${shared_ogre_dir}/textures
+cd ${ogre_dir}/textures ; tar cf - `find . -iname \*.png` | ( cd ${shared_ogre_dir}/textures; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${ogre_dir}/textures ; tar cf - `find . -iname \*.jpg` | ( cd ${shared_ogre_dir}/textures; tar --keep-newer-files -xvf -) 2>  /dev/null
+
+
+#cd ${original_media}/models ; tar cf - `find . -iname \*.mesh` | ( cd ${user_dir}/models; tar xvf -)
+#cd ${original_media}/models ; tar cf - `find . -iname \*.skeleton` | ( cd ${user_dir}/models; tar xvf -)
+
+
+echo "Copying core files"
+mkdir -p ${shared_dir}/core
+for filename in `cat ${original_media}/core/EmberCore.files `
+do
+	cp -uf ${original_media}/common/${filename} ${shared_dir}/core
+done
+
+echo "Copying Caelum files"
+#don't include any hidden directories since they are subversion directories
+mkdir -p ${shared_dir}/common/resources/ogre/caelum
+cd ${original_media}/common/resources/ogre/caelum
+for filename in `find . ! -regex '.*/\..*' `
+do
+	echo $filename
+	mkdir -p `dirname ${shared_dir}/common/resources/ogre/caelum/${filename}`
+	cp -uf ${filename} ${shared_dir}/common/resources/ogre/caelum/${filename}
+done
+
+
+
+
+
+
+
 
 #then get the user media
 
@@ -162,47 +215,7 @@ cd ${user_dir}
 # cd ${original_media}/sounddefinitions ; tar cf - `find . -iname \*.sounddef` | ( cd ${user_dir}/sounddefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 
-echo "Copying materials"
-user_ogre_dir=${user_dir}/common/resources/ogre
-mkdir -p ${user_ogre_dir}/scripts/materials
-mkdir -p ${user_ogre_dir}/scripts/overlays
-mkdir -p ${user_ogre_dir}/scripts/programs
-cd ${program_dir} ; tar cf - `find . -iname \*.cg` | ( cd ${user_ogre_dir}/scripts/programs; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${program_dir} ; tar cf - `find . -iname \*.program` | ( cd ${user_ogre_dir}/scripts/programs; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${program_dir} ; tar cf - `find . -iname \*.asm` | ( cd ${user_ogre_dir}/scripts/programs; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${program_dir} ; tar cf - `find . -iname \*.ps` | ( cd ${user_ogre_dir}/scripts/programs; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${material_dir} ; tar cf - `find . -iname \*.material` | ( cd ${user_ogre_dir}/scripts/materials; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${overlay_dir} ; tar cf - `find . -iname \*.overlay` | ( cd ${user_ogre_dir}/scripts/overlays; tar --keep-newer-files -xvf -) 2>  /dev/null
 
-#Note: we'll keep this for now, until we have a nicer way of copying all the textures that's needed
-mkdir -p ${user_ogre_dir}/textures
-cd ${ogre_dir}/textures ; tar cf - `find . -iname \*.png` | ( cd ${user_ogre_dir}/textures; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${ogre_dir}/textures ; tar cf - `find . -iname \*.jpg` | ( cd ${user_ogre_dir}/textures; tar --keep-newer-files -xvf -) 2>  /dev/null
-
-
-#cd ${original_media}/models ; tar cf - `find . -iname \*.mesh` | ( cd ${user_dir}/models; tar xvf -)
-#cd ${original_media}/models ; tar cf - `find . -iname \*.skeleton` | ( cd ${user_dir}/models; tar xvf -)
-mkdir -p ${user_dir}/particle
-cd ${original_media}/particle ; tar cf - `find . -iname \*.particle` | ( cd ${user_dir}/particle; tar --keep-newer-files -xvf -) 2>  /dev/null
-
-
-echo "Copying core files"
-mkdir -p ${shared_dir}/core
-for filename in `cat ${original_media}/core/EmberCore.files `
-do
-	cp -uf ${original_media}/common/${filename} ${shared_dir}/core
-done
-
-echo "Copying Caelum files"
-#don't include any hidden directories since they are subversion directories
-mkdir -p ${shared_dir}/common/resources/ogre/caelum
-cd ${original_media}/common/resources/ogre/caelum
-for filename in `find . ! -regex '.*/\..*' `
-do
-	echo $filename
-	mkdir -p `dirname ${shared_dir}/common/resources/ogre/caelum/${filename}`
-	cp -uf ${filename} ${shared_dir}/common/resources/ogre/caelum/${filename}
-done
 
 
 #We don't have any user packs, and this only conflicts with the base.zip archive (i.e. it copies it when it really shouldn't)

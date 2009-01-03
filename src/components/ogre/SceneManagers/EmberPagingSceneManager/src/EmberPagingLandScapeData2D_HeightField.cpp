@@ -143,12 +143,24 @@ const Real EmberPagingLandScapeData2D_HeightField::getShadow (const Real mX, con
 }
 
     //-----------------------------------------------------------------------
-const Vector3 EmberPagingLandScapeData2D_HeightField::getNormal (const Real x, const Real z)
+const Vector3 EmberPagingLandScapeData2D_HeightField::getNormal (const Real localPageX, const Real localPageZ)
 {
-	float height;
+	///Use the bridge for quicker lookup.
+	if (mBridge) {
+		Terrain::TerrainPage* terrainPage(mBridge->getTerrainPage());
+		if (terrainPage) {
+			WFMath::Vector<3> normal;
+			if (terrainPage->getNormal(TerrainPosition(localPageX, 512 - localPageZ), normal)) {
+				return Atlas2Ogre(normal);
+			}
+		}
+	}
+	return Vector3::ZERO;
+// 	return Atlas2Ogre(EmberOgre::getSingleton().getTerrainGenerator()->getNormal(TerrainPosition(x, -z)));
+/*	float height;
 	WFMath::Vector<3> normal;
 	EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getHeightAndNormal(x, -z, height, normal);
-	return Atlas2Ogre(normal);
+	return Atlas2Ogre(normal);*/
 // 	return Ogre::PagingLandScapeData2D::getNormal(x, z);
 }
     //-----------------------------------------------------------------------

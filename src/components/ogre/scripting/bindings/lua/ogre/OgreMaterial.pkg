@@ -510,6 +510,7 @@ namespace Ogre {
 	class MaterialPtr
 	{
 		Ogre::Material* get();
+		bool isNull();
 	};
 
 } //namespace 

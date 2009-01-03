@@ -82,7 +82,7 @@ function Tasks.buildWidget()
 	
 	Tasks.nameWindow = Tasks.widget:getWindow("NameText")
 
-	Tasks.widget:getWindow("StopButton"):subscribeEvent("MouseClick", "Tasks.StopButtonClicked")
+	Tasks.widget:getWindow("StopButton"):subscribeEvent("Clicked", "Tasks.StopButtonClicked")
 
 
 	connect(Tasks.connectors, emberOgre.EventCreatedAvatarEntity, "Tasks.createdAvatarEmberEntity")

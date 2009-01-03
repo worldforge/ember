@@ -274,7 +274,7 @@ void TerrainPageSurfaceLayer::populate()
 		Mercator::Segment* segment(I->segment);
 		
 		segment->populate();
-// 		I->segment->populateNormals();
+		segment->populateNormals();
 		Mercator::Segment::Surfacestore::iterator I(segment->getSurfaces().find(mSurfaceIndex));
 		if (I == segment->getSurfaces().end()) {
 			///the segment doesn't contain this surface yet, lets add it

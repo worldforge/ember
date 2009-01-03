@@ -54,9 +54,26 @@ public:
 	virtual float getDensity() const = 0;
 };
 
+
+/**
+@brief Interface for all water techniques. Call isSupported() first to see if the water can be created, and then initialize() to set it all up.
+@author Erik Hjortsberg <erik@worldforge.org>
+*/
 class IWater
 {
 public:
+	virtual ~IWater() {}
+	
+	/**
+	 * @brief Performs checks to see whether this technique is supported on the current hardware.
+	 * @return True if the water technique is supported.
+	 */
+	virtual bool isSupported() const = 0;
+	/**
+	 * @brief Initializes the water. You must call this in order for the water to show up.
+	 * @return True if the water technique could be setup, else false.
+	 */
+	virtual bool initialize() = 0;
 };
 
 class IEnvironmentProvider
@@ -74,6 +91,13 @@ public:
 
     virtual void setTime(int hour, int minute, int second = 0) = 0;
 	virtual void setTime(int seconds) = 0;
+	
+	/**
+	 * @brief Sets the position of the world.
+	 * @param longitudeDegrees The longitude, as degrees.
+	 * @param latitudeDegrees The latitude, as degrees.
+	 */
+	virtual void setWorldPosition(float longitudeDegrees, float latitudeDegrees) = 0;
 
 };
 
@@ -115,6 +139,13 @@ public:
 	 * @param colour 
 	 */
 	void setAmbientLight(const Ogre::ColourValue& colour);
+	
+	/**
+	 * @brief Sets the position of the world.
+	 * @param longitudeDegrees The longitude, as degrees.
+	 * @param latitudeDegrees The latitude, as degrees.
+	 */
+	void setWorldPosition(float longitudeDegrees, float latitudeDegrees);
     
     
    	/**

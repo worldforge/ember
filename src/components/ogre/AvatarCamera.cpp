@@ -313,6 +313,7 @@ void AvatarCamera::_setCameraDistance(Ogre::Real distance)
 	mCurrentCameraDistance = distance;
 	Ogre::Vector3 pos(0,0,distance);
 	mAvatarCameraNode->setPosition(pos);
+	markCameraNodeAsDirty();
 	EventChangedCameraDistance.emit(distance);
 }
 
@@ -339,6 +340,9 @@ void AvatarCamera::pitch(Ogre::Degree degrees)
 	} else {
 		node->pitch(degrees);
 	}
+	///We need to manually update the node here to make sure that the derived orientation and position of the camera is updated.
+	node->_update(true, false);
+	markCameraNodeAsDirty();
 }
 void AvatarCamera::yaw(Ogre::Degree degrees)
 {
@@ -346,12 +350,22 @@ void AvatarCamera::yaw(Ogre::Degree degrees)
 		degreeYaw += degrees;
 		mAvatarCameraRootNode->yaw(degrees);
 		
-		mAvatarCameraRootNode->needUpdate();
-//		Ogre::Quaternion q = mAvatarCameraRootNode->_getDerivedOrientation();
+		///We need to manually update the node here to make sure that the derived orientation and position of the camera is updated.
+		mAvatarCameraRootNode->_update(true, false);
 	} else {
 		mAvatarCameraNode->yaw(degrees);
+		///We need to manually update the node here to make sure that the derived orientation and position of the camera is updated.
+		mAvatarCameraNode->_update(true, false);
 	}
-	
+	markCameraNodeAsDirty();
+}
+
+void AvatarCamera::markCameraNodeAsDirty()
+{
+	if (mCamera.getParentNode()) {
+		///We need to mark the parent node of the camera as dirty. The update of the derived orientation and position of the node should normally occur when the scene tree is traversed, but in some instances we need to access the derived position or orientataion of the camera before the traversal occurs, and if we don't mark the node as dirty it won't be updated
+		mCamera.getParentNode()->needUpdate(true);
+	}
 }
 
 void AvatarCamera::Input_MouseMoved(const MouseMotion& motion, Input::InputMode mode)
@@ -571,9 +585,9 @@ bool AvatarCamera::frameStarted(const Ogre::FrameEvent& event)
 	if (mIsAdjustedToTerrain && mAvatarNode) {
 		if (mCamera.getDerivedPosition() != mLastPosition) {
 			adjustForTerrain();
+			mLastPosition = mCamera.getDerivedPosition();
 		}
 	}
-	mLastPosition = mCamera.getDerivedPosition();
 	
 	/// Update avatar entity position in sound service
 	Ember::EmberServices::getSingleton().getSoundService()->updateListenerPosition(Ogre2Atlas(mCamera.getDerivedPosition()), Ogre2Atlas_Vector3(mCamera.getDirection()), Ogre2Atlas_Vector3(mCamera.getUp()));
