@@ -36,6 +36,7 @@ namespace EmberOgre {
 namespace Gui {
 
 IconBase::IconBase(const std::string& name, const Image* background, const Image* foreground, const Image* borderInactive, const Image* borderActive, UVector2 size)
+: mContainer(0), mButton(0)
 {
 
 	mContainer = WindowManager::getSingleton().createWindow("DefaultGUISheet", "icons/" + name + "/container");
@@ -49,6 +50,8 @@ IconBase::IconBase(const std::string& name, const Image* background, const Image
 	mButton = static_cast<PushButton*>(WindowManager::getSingleton().createWindow(EmberOgre::GUIManager::getSingleton().getDefaultScheme() + "/BorderIconButton", "icons/" + name + "/button"));
 	mButton->setSize(UVector2(UDim(1, 0), UDim(1, 0)));
 	mButton->setPosition(UVector2(UDim(0, 0), UDim(0, 0)));
+	mButton->setVisible(true);
+	mButton->setEnabled(true);
 	
 	mButton->setProperty("BackImage", PropertyHelper::imageToString(background));
 	mButton->setProperty("FrontImage", PropertyHelper::imageToString(foreground));
@@ -91,7 +94,11 @@ const Image* IconBase::loadImageFromImageset(const std::string & imagesetName, c
 		try {
 			std::string imagesetFileName("cegui/datafiles/imagesets/" + imagesetName + ".imageset");
 			imageSet = ImagesetManager::getSingleton().createImageset(imagesetFileName);
-		} catch (const Ogre::Exception&) {
+		} catch (const std::exception& ex) {
+			S_LOG_WARNING("Error when loading imageset " << imagesetName << ": " << ex.what());
+			return 0;
+		} catch (const CEGUI::Exception& ex) {
+			S_LOG_WARNING("Error when loading imageset " << imagesetName << ": " << ex.getMessage().c_str());
 			return 0;
 		}
 	} else {
