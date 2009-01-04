@@ -17,7 +17,15 @@
         <actions />
         <attachpoints />
         <views />
-    </model>
+        <lights>
+            <light type="point">
+                 <diffusecolour r="0.8" g="0.7" b="0.25" />
+                 <specularcolour r="0.8" g="0.7" b="0.25" />
+                 <attenuation range="500" constant="1" linear="0" quadratic="0.01" />
+                 <position x="0" y="1" z="0" />
+            </light>
+        </lights>
+	</model>
     <model name="campfireB" usescaleof="all" showcontained="true" icon="">
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
@@ -36,5 +44,13 @@
         <actions />
         <attachpoints />
         <views />
-    </model>
+        <lights>
+            <light type="point">
+                 <diffusecolour r="0.8" g="0.7" b="0.25" />
+                 <specularcolour r="0.8" g="0.7" b="0.25" />
+                 <attenuation range="500" constant="1" linear="0" quadratic="0.01" />
+                 <position x="0" y="1" z="0" />
+            </light>
+        </lights>
+	</model>
 </models>
