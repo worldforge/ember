@@ -75,7 +75,78 @@ WorldEmberEntity::~WorldEmberEntity()
 
 void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
-	
+	// Need to detect D3D or GL for best depth shadowmapping
+	bool isOpenGL;
+	if (Ogre::Root::getSingleton().getRenderSystem()->getName().find("GL") != Ogre::String::npos)
+	{
+		isOpenGL = true;
+	}
+	else
+	{
+		isOpenGL = false;
+	}
+
+	Ogre::SceneManager* sceneMgr = EmberOgre::getSingleton().getSceneManager();
+	sceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE_INTEGRATED);
+
+	sceneMgr->setShadowTextureCount(5);
+	//sceneMgr->setShadowColour(Ogre::ColourValue(0.1, 0.1, 0.1));
+	sceneMgr->setShadowTextureSelfShadow(true);
+
+	sceneMgr->setShadowTextureCountPerLightType(Ogre::Light::LT_DIRECTIONAL, 3);
+	sceneMgr->setShadowTextureCountPerLightType(Ogre::Light::LT_POINT, 1);
+	sceneMgr->setShadowTextureCountPerLightType(Ogre::Light::LT_SPOTLIGHT, 1);
+
+	// Set shadow far distance before creating any lights
+	//sceneMgr->setShadowFarDistance(100);
+
+	if (isOpenGL)
+	{
+		// GL performs much better if you pick half-float format
+		sceneMgr->setShadowTexturePixelFormat(Ogre::PF_FLOAT16_R);
+	}
+	else
+	{
+		// D3D is the opposite - if you ask for PF_FLOAT16_R you
+		// get an integer format instead! You can ask for PF_FLOAT16_GR
+		// but the precision doesn't work well
+		sceneMgr->setShadowTexturePixelFormat(Ogre::PF_FLOAT32_R);
+	}
+	sceneMgr->setShadowTextureSize(1024);
+
+	sceneMgr->setShadowTextureCasterMaterial("Ogre/DepthShadowmap/Caster/Float");
+	/*
+	sceneMgr->setShadowTexturePixelFormat(PF_L8);
+    sceneMgr->setShadowTextureCasterMaterial(StringUtil::BLANK);
+    sceneMgr->setShadowTextureReceiverMaterial(StringUtil::BLANK);
+	*/
+
+	// Shadow camera setup
+	//Ogre::LiSPSMShadowCameraSetup* liSPSMSetup = new Ogre::LiSPSMShadowCameraSetup();
+	////liSPSMSetup->setUseAggressiveFocusRegion(false);
+
+	Ogre::Camera& camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
+
+    // shadow camera setup
+    Ogre::PSSMShadowCameraSetup* pssmSetup = new Ogre::PSSMShadowCameraSetup();
+
+	Ogre::PSSMShadowCameraSetup::SplitPointList splitPointList = pssmSetup->getSplitPoints();;
+	splitPointList[0] = 0.1;
+	splitPointList[1] = 32.0;
+	splitPointList[2] = 64.0;
+	splitPointList[3] = 256.0;
+	pssmSetup->setSplitPoints(splitPointList);
+	//pssmSetup->calculateSplitPoints(3, camera.getNearClipDistance(), camera.getFarClipDistance());
+
+	//pssmSetup->setSplitPadding(5.0);
+
+	// set the LISPM adjustment factor (see API documentation for these)
+	//pssmSetup->setOptimalAdjustFactor(0, 2.0);
+	//pssmSetup->setOptimalAdjustFactor(1, 1.0);
+	//pssmSetup->setOptimalAdjustFactor(2, 0.5);
+
+	sceneMgr->setShadowCameraSetup(Ogre::ShadowCameraSetupPtr(pssmSetup));
+
 	///create the foliage
 	mFoliage = new Environment::Foliage(EmberOgre::getSingleton().getSceneManager());
 	EventFoliageCreated.emit();
