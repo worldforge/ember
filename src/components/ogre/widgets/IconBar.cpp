@@ -56,6 +56,7 @@ void IconBar::addIcon(IconBase* iconBase)
 	mIconBases.push_back(iconBase);
 	mWindow->addChildWindow(iconBase->getContainer());
 	repositionIcons();
+
 }
 void IconBar::removeIcon(IconBase* iconBase)
 {
@@ -96,6 +97,8 @@ void IconBar::repositionIcons()
 	}
 	accumulatedWidth -= mIconPadding;
 	mWindow->setSize(UVector2(UDim(0, accumulatedWidth), UDim(0,maxHeight)));
+	///We need to call this to guarantee that cegui correctly renders any newly added icons.
+	mWindow->notifyScreenAreaChanged();
 }
 
 float IconBar::getAbsoluteHeight()
