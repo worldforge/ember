@@ -116,6 +116,15 @@ protected:
 	 */
 	const std::string& parseShape(const Atlas::Message::MapType& modElement, const Atlas::Message::MapType** shapeMap);
 	
+	/**
+	 * @brief Parses the position of the mod.
+	 * If no height data is given the height of the entity the mod belongs to will be used.
+	 * If however a "height" value is set, that will be used instead.
+	 * If no "height" value is set, but a "heightoffset" is present, that value will be added to the height set by the position of the entity the mod belongs to.
+	 * @param modElement The top mod element.
+	 * @return The position of the mod, where the height has been adjusted.
+	 */
+	WFMath::Point<3> parsePosition(const Atlas::Message::MapType& modElement);
 	
 // 	template <typename InnerTerrainMod_implType>
 // 	InnerTerrainMod_implType* createInnerTerrainMod_impInstance(const Atlas::Message::MapType& modElement);
