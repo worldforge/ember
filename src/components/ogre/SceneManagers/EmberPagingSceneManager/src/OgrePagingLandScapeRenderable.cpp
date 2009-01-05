@@ -95,7 +95,7 @@ namespace Ogre
 
     {
 	    // No shadow projection
-        MovableObject::mCastShadows = false;
+        //MovableObject::mCastShadows = false;
 
         // Default query flags to top bit so users can exclude it if they wish
         MovableObject::mQueryFlags = SceneManager::WORLD_GEOMETRY_TYPE_MASK;
