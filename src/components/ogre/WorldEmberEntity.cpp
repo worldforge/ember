@@ -125,9 +125,6 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 	//Ogre::LiSPSMShadowCameraSetup* liSPSMSetup = new Ogre::LiSPSMShadowCameraSetup();
 	////liSPSMSetup->setUseAggressiveFocusRegion(false);
 
-	Ogre::Camera& camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
-
-    // shadow camera setup
     Ogre::PSSMShadowCameraSetup* pssmSetup = new Ogre::PSSMShadowCameraSetup();
 
 	Ogre::PSSMShadowCameraSetup::SplitPointList splitPointList = pssmSetup->getSplitPoints();;
@@ -136,14 +133,17 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 	splitPointList[2] = 64.0;
 	splitPointList[3] = 256.0;
 	pssmSetup->setSplitPoints(splitPointList);
+	//Ogre::Camera& camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
 	//pssmSetup->calculateSplitPoints(3, camera.getNearClipDistance(), camera.getFarClipDistance());
+
+	pssmSetup->setUseAggressiveFocusRegion(false);
 
 	//pssmSetup->setSplitPadding(5.0);
 
-	// set the LISPM adjustment factor (see API documentation for these)
-	//pssmSetup->setOptimalAdjustFactor(0, 2.0);
-	//pssmSetup->setOptimalAdjustFactor(1, 1.0);
-	//pssmSetup->setOptimalAdjustFactor(2, 0.5);
+	// Set the LISPM adjustment factor (see API documentation for these)
+	pssmSetup->setOptimalAdjustFactor(0, 2.0);
+	pssmSetup->setOptimalAdjustFactor(1, 1.0);
+	pssmSetup->setOptimalAdjustFactor(2, 0.5);
 
 	sceneMgr->setShadowCameraSetup(Ogre::ShadowCameraSetupPtr(pssmSetup));
 
