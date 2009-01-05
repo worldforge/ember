@@ -274,6 +274,8 @@ void SimpleRenderContext::setTexture(Ogre::TexturePtr texture)
 		
 		S_LOG_VERBOSE("Adding camera.");
 		mViewPort = mRenderTexture->addViewport(mCamera);
+		mViewPort->setOverlaysEnabled(false);
+		mViewPort->setShadowsEnabled(false);
 		///make sure the camera renders into this new texture
 		///this should preferrably be a transparent background, so that CEGUI could itself decide what to show behind it, but alas I couldn't get it to work, thus black
 		mViewPort->setBackgroundColour(mBackgroundColour);
