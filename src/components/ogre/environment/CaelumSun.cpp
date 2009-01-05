@@ -47,7 +47,9 @@ CaelumSun::CaelumSun(CaelumEnvironment& environment, caelum::BaseSkyLight* sun)
 	// For green terrain:
 	//mCaelumSystem->getSun ()->setDiffuseMultiplier (Ogre::ColourValue(0.1, 3, 0.1));
 	sun->setSpecularMultiplier (Ogre::ColourValue(5, 5, 5));
-	
+
+	sun->setAutoDisable(true);
+
 	registerConfigListener("caelum", "sunambientmultiplier", sigc::mem_fun(*this, &CaelumSun::Config_SunAmbientMultiplier));
 	registerConfigListener("caelum", "sundiffusemultiplier", sigc::mem_fun(*this, &CaelumSun::Config_SunDiffuseMultiplier));
 	registerConfigListener("caelum", "sunspecularmultiplier", sigc::mem_fun(*this, &CaelumSun::Config_SunSpecularMultiplier));
