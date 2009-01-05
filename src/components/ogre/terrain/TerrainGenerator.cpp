@@ -33,6 +33,7 @@
 
 #include <Eris/Entity.h>
 #include <Eris/View.h>
+#include <Eris/TerrainMod.h>
 
 #include "TerrainShader.h"
 #include "../environment/Foliage.h"
@@ -58,6 +59,7 @@
 #include "../environment/Environment.h"
 
 #include <sigc++/object_slot.h>
+#include <sigc++/bind.h>
 
 #ifdef WIN32
 	#include <tchar.h>
@@ -184,15 +186,16 @@ TerrainShader* TerrainGenerator::createShader(const TerrainLayerDefinition* laye
 
 void TerrainGenerator::addTerrainMod(TerrainMod* terrainMod)
 {
+	Eris::TerrainMod* erisTerrainMod(terrainMod->getErisMod());
 	/// Listen for changes to the modifier
-	terrainMod->EventModChanged.connect(sigc::mem_fun(*this, &TerrainGenerator::TerrainMod_Changed));
+	terrainMod->EventModChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainGenerator::TerrainMod_Changed), terrainMod));
 	/// Listen for deletion of the modifier
-	terrainMod->EventModDeleted.connect(sigc::mem_fun(*this, &TerrainGenerator::TerrainMod_Deleted));
+	terrainMod->EventModDeleted.connect(sigc::bind(sigc::mem_fun(*this, &TerrainGenerator::TerrainMod_Deleted), terrainMod));
 
 	/// We need to save this pointer to use when the modifier is changed or deleted
-	Mercator::TerrainMod* mod = mTerrain->addMod(*terrainMod->getMod());
+	Mercator::TerrainMod* mod = mTerrain->addMod(*erisTerrainMod->getMod());
 
-	mTerrainMods.insert(TerrainModMap::value_type(terrainMod->getEntity()->getId(), mod));
+	mTerrainMods.insert(TerrainModMap::value_type(erisTerrainMod->getEntity()->getId(), mod));
     
     
 	std::vector<TerrainPosition> updatedPositions;
@@ -204,11 +207,12 @@ void TerrainGenerator::addTerrainMod(TerrainMod* terrainMod)
 void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
 {
 
+	Eris::TerrainMod* erisTerrainMod(terrainMod->getErisMod());
 	std::vector<TerrainPosition> updatedPositions;
 	
 	// Clear this modifier from the terrain, then reapply it so the new parameters take effect
 	// Get its owner's ID
-	const std::string& entityID = terrainMod->getEntity()->getId();
+	const std::string& entityID = erisTerrainMod->getEntity()->getId();
 	S_LOG_INFO("modhandler: changed: Mod for entity " << entityID << " updated?");
 	TerrainModMap::iterator I = mTerrainMods.find(entityID);
 	if (I != mTerrainMods.end()) {
@@ -222,7 +226,7 @@ void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
 //	mTerrain->updateMod(mTerrainMods.find(entityID)->second);
 
 	// Reapply the mod to the terrain with the updated parameters
-	Mercator::TerrainMod *mercatorMod = terrainMod->getMod();
+	Mercator::TerrainMod *mercatorMod = erisTerrainMod->getMod();
 	if (mercatorMod) {
 		mercatorMod = mTerrain->addMod(*mercatorMod);
 	
@@ -236,9 +240,10 @@ void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
 
 void TerrainGenerator::TerrainMod_Deleted(TerrainMod* terrainMod)
 {
+	Eris::TerrainMod* erisTerrainMod(terrainMod->getErisMod());
 	// Clear this mod from the terrain
 	// Get the ID of the modifier's owner
-	const std::string& entityID = terrainMod->getEntity()->getId();
+	const std::string& entityID = erisTerrainMod->getEntity()->getId();
 	S_LOG_INFO("modhandler: deleted: Mod for entity " << entityID << " deleted?");
 	// Use the pointer returned from addMod() to remove it
 	mTerrain->removeMod(mTerrainMods.find(entityID)->second);
@@ -246,7 +251,7 @@ void TerrainGenerator::TerrainMod_Deleted(TerrainMod* terrainMod)
 	mTerrainMods.erase(entityID);
 
 	std::vector<TerrainPosition> updatedPositions;
-	updatedPositions.push_back(TerrainPosition(terrainMod->getMod()->bbox().getCenter().x(), terrainMod->getMod()->bbox().getCenter().y()));
+	updatedPositions.push_back(TerrainPosition(erisTerrainMod->getMod()->bbox().getCenter().x(), erisTerrainMod->getMod()->bbox().getCenter().y()));
 	reloadTerrain(updatedPositions);
 
 }
