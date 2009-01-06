@@ -216,6 +216,7 @@ void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
 	S_LOG_INFO("modhandler: changed: Mod for entity " << entityID << " updated?");
 	TerrainModMap::iterator I = mTerrainMods.find(entityID);
 	if (I != mTerrainMods.end()) {
+    	updatedPositions.push_back(TerrainPosition(I->second->bbox().getCenter().x(), I->second->bbox().getCenter().y()));
 		// Use the pointer returned from addMod() to remove it
 		mTerrain->removeMod(I->second);
 		// Remove this mod from our list so we can replace the pointer with a new one
