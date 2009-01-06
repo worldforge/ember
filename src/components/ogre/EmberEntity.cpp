@@ -712,20 +712,19 @@ std::vector<std::string> EmberEntity::getActions()
 	///get the actions from Eris and return them a simple vector of strings
 	std::vector<std::string> actions;
 	
-	const Eris::Entity::AttrMap::const_iterator I_attribute = this->getAttributes().find("actions");
-	if (I_attribute != this->getAttributes().end()) {
-		Atlas::Message::Element operations = I_attribute->second;
+	if (hasAttr("actions")) {
+		const Atlas::Message::Element& operations = valueOfAttr("actions");
 		if (operations.isList()) {
-			const Atlas::Message::ListType & plist = operations.asList();
-			actions.reserve(plist.size());
-			Atlas::Message::ListType::const_iterator J = plist.begin();
-			for (; J != plist.end(); ++J) {
+			const Atlas::Message::ListType& list = operations.asList();
+			actions.reserve(list.size());
+			Atlas::Message::ListType::const_iterator J = list.begin();
+			for (; J != list.end(); ++J) {
 				if (J->isString()) {
 					actions.push_back(J->asString());
 				}
 			}
 		}
-	} 	
+	}
 
 	return actions;
 }
