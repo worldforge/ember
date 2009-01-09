@@ -39,9 +39,9 @@ namespace Mapping {
 
 
 /**
-	Uses the Ogre::ResourceManager framework to provide managing of model mapping definitions.
+@brief Uses the Ogre::ResourceManager framework to provide managing of model mapping definitions.
 
-	@author Erik Hjortsberg <erik@katastrof.nu>
+@author Erik Hjortsberg <erik@katastrof.nu>
 */
 class EmberModelMappingManager : 
 public Ogre::ResourceManager, 
@@ -49,14 +49,14 @@ public Ember::Singleton<EmberModelMappingManager>,
 public sigc::trackable
 {
 public:
-    EmberModelMappingManager();
+	EmberModelMappingManager();
 
-    ~EmberModelMappingManager();
+	~EmberModelMappingManager();
     
-    /**
-    Accessor for the main ModelMappingManager instance.
-    */
-    inline ModelMappingManager& getManager();
+	/**
+	Accessor for the main ModelMappingManager instance.
+	*/
+	ModelMappingManager& getManager();
 
 	/**
 	Method called by Ogre. Will parse the script supplied in the stream object.
@@ -78,8 +78,8 @@ protected:
 	Internal method called by Ogre.
 	*/
 	virtual Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, 
-        const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, 
-        const Ogre::NameValuePairList* createParams);
+		const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, 
+		const Ogre::NameValuePairList* createParams);
 
 	/**
 	When we get a connection, set the TypeService on the mModelMappingManager instance.
@@ -88,7 +88,7 @@ protected:
 
 };
 
-ModelMappingManager& EmberModelMappingManager::getManager()
+inline ModelMappingManager& EmberModelMappingManager::getManager()
 {
 	return mModelMappingManager;
 }

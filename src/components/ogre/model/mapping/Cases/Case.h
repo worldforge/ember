@@ -51,7 +51,7 @@ public:
 	/**
 	Sets the parent Match instance.
 	*/
- 	inline void setParentMatch(TMatch* aMatch);
+ 	void setParentMatch(TMatch* aMatch);
  	
 
 protected:
@@ -61,7 +61,7 @@ protected:
 };
 
 template <class TMatch>
-void Case<TMatch>::setParentMatch(TMatch* aMatch) 
+inline void Case<TMatch>::setParentMatch(TMatch* aMatch) 
 {
 	mParentMatch = aMatch;
 }

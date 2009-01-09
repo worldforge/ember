@@ -84,7 +84,7 @@ public:
      * The name of the state that this instance applies to.
      * @return 
      */
-    inline const std::string& getState() const;
+    const std::string& getState() const;
     
 	/**
 	 *    Reads a section from the config and sets up bindings accordingly.
@@ -96,13 +96,13 @@ public:
      * Sets whether this instance is enabled or not.
      * @param enabled 
      */
-    inline void setEnabled(bool enabled);
+    void setEnabled(bool enabled);
     
     /**
      * Returns whether this instance is enabled or not.
      * @return 
      */
-    inline bool getEnabled() const;
+    bool getEnabled() const;
     
     /**
      * Binds the instance to a Input object. Call this to start recieving input.
@@ -114,13 +114,13 @@ public:
 	 *    Sets which modes this instance should be restricted to. An empty list will make it listen for all modes.
 	 * @param modes 
 	 */
-	inline void restrictToInputModes(InputModeStore modes);
+	void restrictToInputModes(InputModeStore modes);
 	
 	/**
 	 *    Sets which mode this instance should be restricted to.
 	 * @param mode 
 	 */
-	inline void restrictToInputMode(Input::InputMode mode);
+	void restrictToInputMode(Input::InputMode mode);
 	    
 protected:
 
@@ -187,16 +187,30 @@ protected:
 	Input* mInput;
 };
 
-const std::string& InputCommandMapper::getState() const {return mState;}
+inline const std::string& InputCommandMapper::getState() const 
+{
+	return mState;
+}
 
-void InputCommandMapper::setEnabled(bool enabled) {mEnabled = enabled;}
-bool InputCommandMapper::getEnabled() const {return mEnabled; }
+inline void InputCommandMapper::setEnabled(bool enabled) 
+{
+	mEnabled = enabled;
+}
+inline bool InputCommandMapper::getEnabled() const 
+{
+	return mEnabled; 
+}
 
-void InputCommandMapper::restrictToInputModes(InputModeStore modes) {mInputModesRestriction = modes; }
-void InputCommandMapper::restrictToInputMode(Input::InputMode mode) {
-InputModeStore modes;
-modes.push_back(mode);
-restrictToInputModes(modes); 
+inline void InputCommandMapper::restrictToInputModes(InputModeStore modes) 
+{
+	mInputModesRestriction = modes; 
+}
+
+inline void InputCommandMapper::restrictToInputMode(Input::InputMode mode) 
+{
+	InputModeStore modes;
+	modes.push_back(mode);
+	restrictToInputModes(modes); 
 }
 
 

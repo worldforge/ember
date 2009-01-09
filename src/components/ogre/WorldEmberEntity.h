@@ -151,7 +151,7 @@ public:
 	 * @brief Gets the position of the world, as expressed in degrees of longitude and latitude.
 	 * @return The position of the world.
 	 */
-	inline const WorldPosition& getWorldPosition() const;
+	const WorldPosition& getWorldPosition() const;
 	
 	/**
 	 * @brief Emitted when the foliage has been created.
@@ -226,7 +226,7 @@ protected:
 
 };
 
-const WorldEmberEntity::WorldPosition& WorldEmberEntity::getWorldPosition() const
+inline const WorldEmberEntity::WorldPosition& WorldEmberEntity::getWorldPosition() const
 {
 	return mWorldPosition;
 }

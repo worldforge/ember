@@ -106,7 +106,7 @@ public:
 	 * The instance registered here won't be owned by this class, and it's therefore up to the calling party to make sure that it's properly destroyed after the SoundInstance has been destroyed and there's no more use for it.
 	 * @param motionProvider A pointer to a sound motion provider, or null.
 	 */
-	inline void setMotionProvider(ISoundMotionProvider* motionProvider);
+	void setMotionProvider(ISoundMotionProvider* motionProvider);
 	
 	/**
 	 * @brief Emitted when the sound has played to its completion.
@@ -188,7 +188,7 @@ protected:
 
 };
 
-void SoundInstance::setMotionProvider(ISoundMotionProvider* motionProvider)
+inline void SoundInstance::setMotionProvider(ISoundMotionProvider* motionProvider)
 {
 	mMotionProvider = motionProvider;
 }

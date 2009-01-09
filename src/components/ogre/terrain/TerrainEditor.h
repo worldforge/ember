@@ -165,13 +165,13 @@ typedef std::vector<TerrainEditBasePointMovement> MovementStore;
  * Gets all movements contained by this action.
  * @return 
  */
-inline const MovementStore& getMovements() const;
+const MovementStore& getMovements() const;
 
 /**
  * Gets all movements contained by this action.
  * @return 
  */
-inline MovementStore& getMovements();
+MovementStore& getMovements();
 
 private:
 
@@ -182,8 +182,15 @@ MovementStore mMovements;
 
 };
 
-const TerrainEditAction::MovementStore& TerrainEditAction::getMovements() const { return mMovements;}
-TerrainEditAction::MovementStore& TerrainEditAction::getMovements() {return mMovements;}
+inline const TerrainEditAction::MovementStore& TerrainEditAction::getMovements() const 
+{
+	return mMovements;
+}
+
+inline TerrainEditAction::MovementStore& TerrainEditAction::getMovements() 
+{
+	return mMovements;
+}
 
 /**
  *A single height movement of a base point.

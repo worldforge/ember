@@ -64,13 +64,13 @@ public:
 	 * @brief Gets the main render window.
 	 * @return The render window.
 	 */
-	inline Ogre::RenderWindow* getRenderWindow() const;
+	Ogre::RenderWindow* getRenderWindow() const;
 	
 	/**
 	* @brief Gets the Ogre root object.
 	* @return The root object.
 	*/
-	inline Ogre::Root* getRoot() const;
+	Ogre::Root* getRoot() const;
 
 	/**
 	 * @brief Chooses and sets up the correct scene manager.
@@ -147,8 +147,15 @@ private:
 
 };
 
-Ogre::Root* OgreSetup::getRoot() const { return mRoot;}
-Ogre::RenderWindow* OgreSetup::getRenderWindow() const { return mRenderWindow;}
+inline Ogre::Root* OgreSetup::getRoot() const 
+{
+	return mRoot;
+}
+
+inline Ogre::RenderWindow* OgreSetup::getRenderWindow() const 
+{
+	return mRenderWindow;
+}
 
 }
 

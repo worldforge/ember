@@ -62,26 +62,9 @@ public:
 	 */
 	virtual void doMousePicking(const Ogre::Real x, const Ogre::Real y, const MousePickerArgs& args);
 
-
-
-// 	sigc::signal<void, const MousePickerArgs&> EventPickedNothing;
-	
-// 	inline EmberEntity* getLastPickedEntity() { return mLastPickedEntityResult.entity; }
-
 	
 protected:
 
-// 	virtual void onEventPickedEntity(const EntityPickResult & result, const MousePickerArgs& args);
-// 	virtual void onEventPickedNothing(const MousePickerArgs& args);
-
-	
-
-
-	//the currently selected entity
-//     EmberEntity* mEntityUnderCursor;
-	
-	//the last clicked entity
-// 	EntityPickResult mLastPickedEntityResult;
 };
 
 }

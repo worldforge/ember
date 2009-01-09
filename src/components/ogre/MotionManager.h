@@ -103,7 +103,7 @@ public:
 	 *    Gets info about the MotionManager.
 	 * @return 
 	 */
-	inline const MotionManagerInfo& getInfo() const;
+	const MotionManagerInfo& getInfo() const;
 	
 private:
 
@@ -156,7 +156,7 @@ private:
 	
 };
 
-const MotionManager::MotionManagerInfo& MotionManager::getInfo() const
+inline const MotionManager::MotionManagerInfo& MotionManager::getInfo() const
 {
 	return mInfo;
 }

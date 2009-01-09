@@ -171,7 +171,7 @@ public:
 	 *    Gets the current prefix used in the latest loaded layout.
 	 * @return 
 	 */
-	inline const std::string& getCurrentPrefix() const;
+	const std::string& getCurrentPrefix() const;
 
 protected:
 
@@ -182,7 +182,7 @@ protected:
 
 };
 
-const std::string& AdapterFactory::getCurrentPrefix() const
+inline const std::string& AdapterFactory::getCurrentPrefix() const
 {
 	return mCurrentPrefix;
 }

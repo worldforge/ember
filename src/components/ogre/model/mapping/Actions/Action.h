@@ -64,23 +64,24 @@ public:
 	 * Sets the case this action belongs to.
 	 * @param ownerCase The owning case.
 	 */
-	inline void setCase(Cases::CaseBase* ownerCase);
+	void setCase(Cases::CaseBase* ownerCase);
 	
 	/**
 	 * Gets the case that this action belongs to.
 	 * @return The owner case. 
 	 */
-	inline Cases::CaseBase* getCase() const;
+	Cases::CaseBase* getCase() const;
 
 protected:
 	Cases::CaseBase* mOwnerCase;
 };
 
-void Action::setCase(Cases::CaseBase* ownerCase)
+inline void Action::setCase(Cases::CaseBase* ownerCase)
 {
 	mOwnerCase = ownerCase;
 }
-Cases::CaseBase* Action::getCase() const
+
+inline Cases::CaseBase* Action::getCase() const
 {
 	return mOwnerCase;
 }

@@ -53,8 +53,8 @@ public:
 	void addTime(Ogre::Real timeSlice);
 	void setTime(Ogre::Real time);
 	
-	inline int getIterations() const;
-	inline Ogre::Real getLengthOfOneIteration() const;
+	int getIterations() const;
+	Ogre::Real getLengthOfOneIteration() const;
 protected:
 	AnimationPartSet mAnimationParts;
 	Ogre::Real mIterationLength;
@@ -98,8 +98,8 @@ public:
 	 */
 // 	bool hasCompleted() const;
 
- 	inline void setSpeed(Ogre::Real speed);
- 	inline Ogre::Real getSpeed() const;
+	void setSpeed(Ogre::Real speed);
+	Ogre::Real getSpeed() const;
 
 protected:
 	Ogre::Real mAccumulatedTime;
@@ -108,11 +108,11 @@ protected:
 	Ogre::Real mSpeed;
 };
 
-void AnimationSet::setSpeed(Ogre::Real speed) { mSpeed = speed;}
-Ogre::Real AnimationSet::getSpeed() const { return mSpeed; }
+inline void AnimationSet::setSpeed(Ogre::Real speed) { mSpeed = speed;}
+inline Ogre::Real AnimationSet::getSpeed() const { return mSpeed; }
 
 
-Ogre::Real Animation::getLengthOfOneIteration() const
+inline Ogre::Real Animation::getLengthOfOneIteration() const
 {
 	return mIterationLength;
 }

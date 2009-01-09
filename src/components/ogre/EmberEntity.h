@@ -204,13 +204,13 @@ public:
 	 * @see init()
 	 * @return True if init() already has been called, else false.
 	 */
-	inline bool isInitialized() const;
+	bool isInitialized() const;
 
 	/**
 	 * @brief The mode the entity is in, like walking, running, swimming etc.
 	 * @return The current movement mode of the entity.
 	 */
-	inline MovementMode getMovementMode() const;
+	MovementMode getMovementMode() const;
 	
 	/**
 	 * @brief Call this method once per frame to update the motion of the entity
@@ -498,15 +498,15 @@ protected:
 
 
 ///inline implementations
-	bool EmberEntity::isInitialized() const 
-	{ 
-		return mIsInitialized; 
-	}
+inline bool EmberEntity::isInitialized() const 
+{ 
+	return mIsInitialized; 
+}
 
-	EmberEntity::MovementMode EmberEntity::getMovementMode() const 
-	{ 
-		return mMovementMode; 
-	}
+inline EmberEntity::MovementMode EmberEntity::getMovementMode() const 
+{ 
+	return mMovementMode; 
+}
 
 
 }

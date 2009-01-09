@@ -71,14 +71,14 @@ public:
 	 * @brief Accessor for the Mercator::Area, which is the Mercator representation of the area. We shouldn't do very much ourselves with this, instead passing it on to Mercator::Terrain in most cases.
 	 * @return The Mercator::Area instance for this terrain area, or null if none could be created.
 	 */
-	inline Mercator::Area* getArea() const;
+	Mercator::Area* getArea() const;
 	
 	/**
 	 * @brief Setter for the Mercator::Area instance for this terrain area.
 	 * Normally you would never call this, instead depending on the parsing of the terrain area from the atlas data, through parseArea().
 	 * @param area The new Mercator::Area instance.
 	 */
-	inline void setArea(Mercator::Area* area);
+	void setArea(Mercator::Area* area);
 	
 	/**
 	@brief Emitted when something about the area changes, and we need to tell the terrain to regenerate the visualization of it.
@@ -132,8 +132,14 @@ protected:
 
 };
 
-Mercator::Area* TerrainArea::getArea() const { return mArea; }
-void TerrainArea::setArea(Mercator::Area* area) { mArea = area; }
+inline Mercator::Area* TerrainArea::getArea() const 
+{
+	return mArea; 
+}
+inline void TerrainArea::setArea(Mercator::Area* area) 
+{ 
+	mArea = area; 
+}
 
 }
 };

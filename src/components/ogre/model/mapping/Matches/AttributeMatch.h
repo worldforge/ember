@@ -73,7 +73,7 @@ public:
 	/**
 	Gets the name of the attribute that is watched. 
 	*/
-	inline const std::string& getAttributeName();
+	const std::string& getAttributeName();
 	
 	/**
 	Sets the Entity to watch.
@@ -85,7 +85,7 @@ protected:
 	std::string mAttributeName, mInternalAttributeName;
 };
 
-const std::string& AttributeMatch::getAttributeName()
+inline const std::string& AttributeMatch::getAttributeName()
 {
 	return mAttributeName;
 }

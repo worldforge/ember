@@ -34,27 +34,25 @@ class TerrainShader{
 public:
 
 	TerrainShader(Mercator::Terrain* terrain, int terrainIndex, const TerrainLayerDefinition* layerDef, Mercator::Shader* shader);
-// 	TerrainShader(Mercator::Terrain* terrain, int terrainIndex,  Ogre::MaterialPtr material, Mercator::Shader* shader);
 	virtual ~TerrainShader();
 	
 	Mercator::Shader* getShader() const;
-// 	const Ogre::String& getTextureName() const;
 
-	/*
-	 * Adds a texture unit with a splatting alpha texture to the supplied pass.
+	/**
+	 * @brief Adds a texture unit with a splatting alpha texture to the supplied pass.
 	 * Use this when you're using many texture units in the same pass
 	 */
 	void addTextureUnitsToPass(Ogre::Pass* pass, const Ogre::String& splatTextureName);
 
-	/*
-	 * Adds a pass with a splatting alpha texture to the supplied technique.
+	/**
+	 * @brief Adds a pass with a splatting alpha texture to the supplied technique.
 	 * Use this when you're using many passes. This is more expensive than 
 	 * addTextureUnitsToPass(...) but works on card with a low number of
 	 * TextureUnits.
 	 */
 	Ogre::Pass* addPassToTechnique(Ogre::Technique* technique, const Ogre::String& splatTextureName);
 	
-	inline int getTerrainIndex() const { return mTerrainIndex;}
+	int getTerrainIndex() const;
 
 	void addMaterialToTechnique(Ogre::Technique*  technique, const Ogre::String& splatTextureName);
 	void addSplatToTechnique(Ogre::Technique*  technique, const Ogre::String& splatTextureName);
@@ -67,33 +65,23 @@ public:
 	 */
 	Mercator::Surface* getSurfaceForSegment(Mercator::Segment* segment) const;
 	
-/*	inline float getScale() const;
-	inline void setScale(float scale);*/
 	
 	const TerrainLayerDefinition* getLayerDefinition() const;
 	
 protected:
 	const TerrainLayerDefinition* mLayerDef;
-// 	const Ogre::String mTextureName;
 	Mercator::Shader* mShader;
 	Mercator::Terrain* mTerrain;
 	int mTerrainIndex;
-// 	Ogre::MaterialPtr mMaterial;
 	
 	Ogre::ushort getMaxTextureUnits() const;
-// 	float mScale;
-	
-	//const Model::ModelDefinition::AreaDefinition& mAreaDefinition;
 };
 
-// float TerrainShader::getScale() const
-// {
-// 	return mScale;
-// }
-// void TerrainShader::setScale(float scale)
-// {
-// 	mScale = scale;
-// }
+inline int TerrainShader::getTerrainIndex() const 
+{
+	return mTerrainIndex;
+}
+
 
 }
 }

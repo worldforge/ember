@@ -185,7 +185,7 @@ public:
 	 *    Gets the prefix used in the widget definition
 	 * @return 
 	 */
-	inline const std::string& getPrefix() const { return mPrefix;}
+	const std::string& getPrefix() const;
 	
 	/**
 	 *    Gets whether the window when being activated should become fully opaque, to return to it's preset alpha value when being deactivated.
@@ -281,6 +281,8 @@ private:
 	std::string mPrefix;
 	
 };
+
+inline const std::string& Widget::getPrefix() const { return mPrefix;}
 
 
 typedef Widget* (*FactoryFunc)();

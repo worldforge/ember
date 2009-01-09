@@ -171,7 +171,7 @@ public:
 	EmberEntityFactory* getEntityFactory() const;
 	AvatarCamera* getMainCamera() const;
 	AvatarController* getAvatarController() const;
-	inline EntityMoveManager* getMoveManager() const;
+	EntityMoveManager* getMoveManager() const;
 	
 	/**
 	 * @brief Finds and returns the entity with the given id, if it's available.
@@ -184,14 +184,14 @@ public:
 	 * @brief Returns the main Jesus object, which should be used as the main entry into the Jesus subsystem.
 	 * @return The main Jesus instance.
 	 */
-	inline Jesus* getJesus() const;
+	Jesus* getJesus() const;
 	
 	/**
 	 * @brief Gets the main render window.
 	 * The system can contains many different render windows, but there's only one that's the main window.
 	 * @return The main render window.
 	 */
-	inline Ogre::RenderWindow* getRenderWindow() const;
+	Ogre::RenderWindow* getRenderWindow() const;
 	
 	/**
 	 * @brief Emitted when the Ember entity factory has been created.
@@ -458,20 +458,16 @@ protected:
 	
 };
 
-// Input& EmberOgre::getInput() 
-// { 
-// 	return mInput;
-// }
-EntityMoveManager* EmberOgre::getMoveManager() const 
+inline EntityMoveManager* EmberOgre::getMoveManager() const 
 {
 	return mMoveManager;
 }
 
-Jesus* EmberOgre::getJesus() const 
+inline Jesus* EmberOgre::getJesus() const 
 { 
 	return mJesus; 
 }
-Ogre::RenderWindow* EmberOgre::getRenderWindow() const 
+inline Ogre::RenderWindow* EmberOgre::getRenderWindow() const 
 { 
 	return mWindow; 
 }

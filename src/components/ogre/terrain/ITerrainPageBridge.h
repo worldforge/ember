@@ -56,7 +56,7 @@ public:
 	 * @brief Accessor to the terrain page this bridge is bound to.
 	 * @return A pointer to the terrain page, or null if no page yet has been bound.
 	 */
-	inline TerrainPage* getTerrainPage() const;
+	TerrainPage* getTerrainPage() const;
 	
 protected:
 	
@@ -64,12 +64,12 @@ protected:
 	 *    @brief Binds the bridge to a TerrainPage.
 	 * @param terrainPage 
 	 */
-	inline void bindToTerrainPage(TerrainPage* terrainPage);
+	void bindToTerrainPage(TerrainPage* terrainPage);
 	/**
 	 *    @brief Unbinds from a TerrainPage.
 	 * Call this when the TerrainPage to which this bridge is connected to is destroyed. If not, you run the risk of segfaults since the bridge will still keep a pointer to the now deleted TerrainPage.
 	 */
-	inline void unbindFromTerrainPage();
+	void unbindFromTerrainPage();
 	
 	/**
 	@brief The TerrainPage instance to which this bridge is connected to.
@@ -78,17 +78,17 @@ protected:
 };
 
 
-void ITerrainPageBridge::bindToTerrainPage(TerrainPage* terrainPage)
+inline void ITerrainPageBridge::bindToTerrainPage(TerrainPage* terrainPage)
 {
 	mTerrainPage = terrainPage;
 }
 
-void ITerrainPageBridge::unbindFromTerrainPage()
+inline void ITerrainPageBridge::unbindFromTerrainPage()
 {
 	mTerrainPage = 0;
 }
 	
-TerrainPage* ITerrainPageBridge::getTerrainPage() const
+inline TerrainPage* ITerrainPageBridge::getTerrainPage() const
 {
 	return mTerrainPage;
 }
