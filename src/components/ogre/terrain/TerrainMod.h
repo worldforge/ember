@@ -325,13 +325,7 @@ public:
 	 *    @brief Used to retrieve a pointer to this modifier
 	 * @returns a pointer to this modifier
 	 */
-	inline Mercator::TerrainMod* getMod() const;
-
-	/**
-	 *    @brief Used to set the pointer to this modifier
-	 * @param modifier The TerrainMod we need stored (usually returned from Terrain::addMod() )
-	 */
-	inline void setMod(Mercator::TerrainMod* modifier);
+	Mercator::TerrainMod* getMod() const;
 
 	/**
 	 * Emitted whenever the modifier is changed or moved.
@@ -399,7 +393,7 @@ protected:
 	InnerTerrainMod* mInnerMod;
 };
 
-Mercator::TerrainMod* TerrainMod::getMod() const
+inline Mercator::TerrainMod* TerrainMod::getMod() const
 {
 	if (mInnerMod) {
 		return mInnerMod->getModifier();

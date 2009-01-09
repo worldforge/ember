@@ -78,7 +78,7 @@ public:
     Sets the type service. Applications are required to set this before calling createMapping(...)
     @param typeService An Eris::TypeService instance.
     */
-    inline void setTypeService(Eris::TypeService* typeService);
+    void setTypeService(Eris::TypeService* typeService);
     
     /**
     Adds a definition to the manager. This definition will be deleted by the manager upon destruction.
@@ -122,7 +122,7 @@ protected:
 	
 };
 
-void ModelMappingManager::setTypeService(Eris::TypeService* typeService)
+inline void ModelMappingManager::setTypeService(Eris::TypeService* typeService)
 {
 	mTypeService = typeService;
 }

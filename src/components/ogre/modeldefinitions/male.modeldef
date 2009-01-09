@@ -101,14 +101,14 @@
             <action name="__movement_swim" speed="1.000000">
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="walk_Clip" weight="1.000000" />
+                        <animationpart name="trns_walk" weight="1.000000" />
                     </animation>
                 </animations>
             </action>
             <action name="__movement_run" speed="1.000000">
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="trns_run" weight="1.000000" />
+                        <animationpart name="trns_walk" weight="1.000000" />
                     </animation>
                 </animations>
             </action>

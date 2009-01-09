@@ -73,7 +73,7 @@ public:
 	* @brief Return openAl source within this sample
 	* @return 
 	*/
-	inline ALuint getALSource() const;
+	ALuint getALSource() const;
 	
 protected:
 
@@ -92,7 +92,7 @@ protected:
 
 };
 
-ALuint SoundSource::getALSource() const
+inline ALuint SoundSource::getALSource() const
 {
 	return mALSource;
 }

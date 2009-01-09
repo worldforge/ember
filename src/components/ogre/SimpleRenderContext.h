@@ -109,7 +109,7 @@ public:
      * Gets the default distance of the camera from the base, most likely somewhere where the whole scene is shown
      * @return 
      */
-    inline Ogre::Real getDefaultCameraDistance() const;
+    Ogre::Real getDefaultCameraDistance() const;
     
     /**
      * Sets whether the rendering should be active or not.
@@ -187,7 +187,7 @@ public:
 	void resetCameraOrientation();
     
     
-    inline Ogre::SceneManager* getSceneManager() const;
+    Ogre::SceneManager* getSceneManager() const;
     
     Ogre::RenderTexture* getRenderTexture();
     
@@ -314,12 +314,12 @@ private:
 
 };
 
-Ogre::Real SimpleRenderContext::getDefaultCameraDistance() const 
+inline Ogre::Real SimpleRenderContext::getDefaultCameraDistance() const 
 {
 	return mDefaultCameraDistance;
 }
 
-Ogre::SceneManager* SimpleRenderContext::getSceneManager() const
+inline Ogre::SceneManager* SimpleRenderContext::getSceneManager() const
 {
 	return mSceneManager;
 }

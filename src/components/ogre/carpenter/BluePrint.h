@@ -110,18 +110,18 @@ public:
 	
 	
 	WFMath::Point<3> getWorldPositionForPoint(const AttachPoint* point);
-	inline bool isAttached() const { return mAttached; }
+	bool isAttached() const;
 	
 	
 
-	inline void setPosition(WFMath::Point<3> position) { mPosition = position;}
-	inline void setOrientation(WFMath::Quaternion orientation) { mOrientation = orientation;}
-	inline const WFMath::Point<3>& getPosition() const { return mPosition;}
-	inline const WFMath::Quaternion& getOrientation() const { return mOrientation;}
+	void setPosition(WFMath::Point<3> position);
+	void setOrientation(WFMath::Quaternion orientation);
+	const WFMath::Point<3>& getPosition() const;
+	const WFMath::Quaternion& getOrientation() const;
 	
-	inline const BuildingBlockSpec* getBuildingBlockSpec() const { return mBuildingBlockSpec; }
+	const BuildingBlockSpec* getBuildingBlockSpec() const;
 	
-	inline const BlockSpec* getBlockSpec() const { return mBuildingBlockSpec->getBlockSpec(); }
+	const BlockSpec* getBlockSpec() const;
 	
 	const std::vector<const AttachPoint*> getAllPoints() const;
 	
@@ -130,7 +130,7 @@ public:
 			as long as it's more than zero, the block cannot be deleted
 	 * @return 
 	 */
-	inline int getNumberOfChildBindings() const { return mChildBindings; }
+	int getNumberOfChildBindings() const;
 	
 protected: 	
 	//ModelBlock mModelBlock;
@@ -159,6 +159,14 @@ protected:
 };
 
 
+inline bool BuildingBlock::isAttached() const { return mAttached; }
+inline void BuildingBlock::setPosition(WFMath::Point<3> position) { mPosition = position;}
+inline void BuildingBlock::setOrientation(WFMath::Quaternion orientation) { mOrientation = orientation;}
+inline const WFMath::Point<3>& BuildingBlock::getPosition() const { return mPosition;}
+inline const WFMath::Quaternion& BuildingBlock::getOrientation() const { return mOrientation;}
+inline const BuildingBlockSpec* BuildingBlock::getBuildingBlockSpec() const { return mBuildingBlockSpec; }
+inline const BlockSpec* BuildingBlock::getBlockSpec() const { return mBuildingBlockSpec->getBlockSpec(); }
+inline int BuildingBlock::getNumberOfChildBindings() const { return mChildBindings; }
 
 
 
@@ -169,7 +177,7 @@ class BluePrint
 public:
 	BluePrint(const std::string & name, Carpenter* carpenter);
 	
-	inline const std::string& getName() const {return mName;}
+	const std::string& getName() const;
 	
 	/**
 	 *    compiles the blueprint into a structure
@@ -194,7 +202,7 @@ public:
 	 * @param name 
 	 */
 	void setStartingBlock(const std::string& name);
-	inline const BuildingBlock* getStartingBlock() const {return mStartingBlock;}
+	const BuildingBlock* getStartingBlock() const;
 	
 	/**
 	 *    Places the unbound block in the supplied bindings correctly
@@ -202,7 +210,7 @@ public:
 	 */
 	void placeBindings(BuildingBlock* unboundBlock, std::vector<BuildingBlockBinding*> bindings);
 	
-	inline Carpenter* const getCarpenter() { return mCarpenter;}
+	Carpenter* const getCarpenter();
 	
 	
 	/**
@@ -234,6 +242,10 @@ protected:
 	void doBindingsForBlock(BuildingBlock *block);
 
 };
+
+inline Carpenter* const BluePrint::getCarpenter() { return mCarpenter;}
+inline const std::string& BluePrint::getName() const {return mName;}
+inline const BuildingBlock* BluePrint::getStartingBlock() const {return mStartingBlock;}
 
 };
 

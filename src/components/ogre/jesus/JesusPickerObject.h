@@ -41,14 +41,17 @@ public:
 
     ~JesusPickerObject();
 	
-	inline ModelBlock* getModelBlock() const { return mModelBlock; }
-	inline AttachPointNode* getPointNode() const { return mPointNode; }
+	ModelBlock* getModelBlock() const;
+	AttachPointNode* getPointNode() const;
 	virtual const Ogre::String & 	getTypeName (void) const;
 protected:
 ModelBlock* mModelBlock;
 AttachPointNode* mPointNode;
 
 };
+
+inline ModelBlock* JesusPickerObject::getModelBlock() const { return mModelBlock; }
+inline AttachPointNode* JesusPickerObject::getPointNode() const { return mPointNode; }
 
 }
 

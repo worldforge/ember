@@ -156,7 +156,7 @@ public:
 	
 // 	inline const SubModelPartStoreMap& getSubmodelParts() const;
 	
-	inline const SubModelSet& getSubmodels() const;
+	const SubModelSet& getSubmodels() const;
 	
 	//SubModel* getSubModel(const std::string& name);
 	SubModel* getSubModel(size_t index);
@@ -234,7 +234,7 @@ public:
 	 *    returns a pointer to the defintion of the Model
 	 * @return 
 	 */
-	inline ModelDefnPtr getDefinition() const;
+	ModelDefnPtr getDefinition() const;
 	
 	
 	Ogre::TagPoint* attachObjectToBone(const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation=Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition=Ogre::Vector3::ZERO, const Ogre::Vector3 &scale = Ogre::Vector3::UNIT_SCALE);
@@ -386,14 +386,17 @@ protected:
 // 	return _masterModel->getRenderingDistance();
 // }
 
-ModelDefnPtr Model::getDefinition() const { return mMasterModel; }
+inline ModelDefnPtr Model::getDefinition() const 
+{
+	return mMasterModel;
+}
 
 // // const Model::SubModelPartStoreMap& Model::getSubmodelParts() const
 // // {
 // // 	return mSubModelPartMap;
 // // }
 
-const Model::SubModelSet& Model::getSubmodels() const
+inline const Model::SubModelSet& Model::getSubmodels() const
 {
 	return mSubmodels;
 }

@@ -58,7 +58,7 @@ public:
 	virtual IFog* getFog();
 	virtual IWater* getWater();
 	
-	inline caelum::CaelumSystem* getCaelumSystem() const;	
+	caelum::CaelumSystem* getCaelumSystem() const;	
 
 	const Ember::ConsoleCommandWrapper SetCaelumTime;
     
@@ -112,7 +112,7 @@ private:
 
 };
 	
-caelum::CaelumSystem* CaelumEnvironment::getCaelumSystem() const
+inline caelum::CaelumSystem* CaelumEnvironment::getCaelumSystem() const
 {
 	return	mCaelumSystem;
 }	

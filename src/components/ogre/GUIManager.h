@@ -171,7 +171,7 @@ public:
 	 *    Gets the currently active MousePicker instance.
 	 * @return 
 	 */
-	inline MousePicker* getMousePicker() { return  mMousePickers.top(); }
+	MousePicker* getMousePicker();
 	
 	
 	/**
@@ -193,7 +193,7 @@ public:
 	 */
 // 	MousePicker* popMousePicker();
 	
-	inline CEGUI::OgreCEGUIRenderer* getGuiRenderer() const {return mGuiRenderer;}
+	CEGUI::OgreCEGUIRenderer* getGuiRenderer() const;
 
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method
@@ -351,6 +351,10 @@ protected:
 	*/
 	Gui::CEGUILogger* mCEGUILogger;
 };
+
+inline MousePicker* GUIManager::getMousePicker() { return  mMousePickers.top(); }
+inline CEGUI::OgreCEGUIRenderer* GUIManager::getGuiRenderer() const {return mGuiRenderer;}
+
 }
 
 

@@ -217,7 +217,7 @@ public:
 	/**
 	 * @copydoc InnerTerrainMod_impl::getModifier()
 	 */
-	inline virtual Mercator::TerrainMod* getModifier();
+	virtual Mercator::TerrainMod* getModifier();
 
 protected:
 
@@ -228,13 +228,13 @@ protected:
 };
 
 template <typename Shape>
-Mercator::TerrainMod* InnerTerrainModSlope_impl<Shape>::getModifier()
+inline Mercator::TerrainMod* InnerTerrainModSlope_impl<Shape>::getModifier()
 {
 	return mTerrainMod;
 }
 
 template <typename Shape>
-bool InnerTerrainModSlope_impl<Shape>::createInstance(const Atlas::Message::MapType& shapeElement, WFMath::Point<3> pos, float level, float dx, float dy)
+inline bool InnerTerrainModSlope_impl<Shape>::createInstance(const Atlas::Message::MapType& shapeElement, WFMath::Point<3> pos, float level, float dx, float dy)
 {
 	Shape* shape(0);
 	if (parseShapeAtlasData<Shape>(shapeElement, pos, &shape)) {
@@ -279,7 +279,7 @@ public:
 	/**
 	 * @copydoc InnerTerrainMod_impl::getModifier()
 	 */
-	inline virtual Mercator::TerrainMod* getModifier();
+	virtual Mercator::TerrainMod* getModifier();
 
 protected:
 
@@ -290,7 +290,7 @@ protected:
 };
 
 template <typename Shape>
-Mercator::TerrainMod* InnerTerrainModLevel_impl<Shape>::getModifier()
+inline Mercator::TerrainMod* InnerTerrainModLevel_impl<Shape>::getModifier()
 {
 	return mTerrainMod;
 }
@@ -341,7 +341,7 @@ public:
 	/**
 	 * @copydoc InnerTerrainMod_impl::getModifier()
 	 */
-	inline virtual Mercator::TerrainMod* getModifier();
+	virtual Mercator::TerrainMod* getModifier();
 
 protected:
 
@@ -352,13 +352,13 @@ protected:
 };
 
 template <typename Shape>
-Mercator::TerrainMod* InnerTerrainModAdjust_impl<Shape>::getModifier()
+inline Mercator::TerrainMod* InnerTerrainModAdjust_impl<Shape>::getModifier()
 {
 	return mTerrainMod;
 }
 
 template <typename Shape>
-bool InnerTerrainModAdjust_impl<Shape>::createInstance(const Atlas::Message::MapType& shapeElement, WFMath::Point<3> pos, float height)
+inline bool InnerTerrainModAdjust_impl<Shape>::createInstance(const Atlas::Message::MapType& shapeElement, WFMath::Point<3> pos, float height)
 {
 	Shape* shape(0);
 	if (parseShapeAtlasData<Shape>(shapeElement, pos, &shape)) {

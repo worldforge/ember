@@ -62,11 +62,11 @@ friend class BlockSpec;
 friend class Carpenter;
 public:
 	AttachPoint(const std::string& mName, WFMath::Point<3> position, WFMath::Vector<3> normal);
-	inline const std::string& getName() const { return mName; }
-	inline const WFMath::Vector<3>& getNormal() const { return mNormal; }
-	inline const WFMath::Point<3>& getPosition() const { return mPosition; }
+	const std::string& getName() const;
+	const WFMath::Vector<3>& getNormal() const;
+	const WFMath::Point<3>& getPosition() const;
 
-	inline const AttachPair* getAttachPair() const { return mAttachPair; }
+	const AttachPair* getAttachPair() const;
 	const AttachPoint* getSibling() const;
 protected:
 	WFMath::Vector<3> mNormal;
@@ -76,30 +76,27 @@ protected:
 	void setAttachPair(AttachPair* pair) { mAttachPair = pair; }
 };
 
+inline const std::string& AttachPoint::getName() const { return mName; }
+inline const WFMath::Vector<3>& AttachPoint::getNormal() const { return mNormal; }
+inline const WFMath::Point<3>& AttachPoint::getPosition() const { return mPosition; }
+
+inline const AttachPair* AttachPoint::getAttachPair() const { return mAttachPair; }
+
+
 class AttachPair
 {
 friend class BlockSpec;
 friend class AttachPoint;
 friend class Carpenter;
 public:
-	const AttachPoint* getAttachPoint(const std::string & name) const { 
-		if (mPoint1.mName == name) {
-			return &mPoint1;
-		} else if (mPoint2.mName == name) {
-			return &mPoint2;
-		} else {
-			//"No pair with that name."
-			throw std::exception();
-		}
-		
-	}
+	const AttachPoint* getAttachPoint(const std::string & name) const;
 	
 	AttachPair(const std::string& name, const std::string& type, AttachPoint point1, AttachPoint point2);
 	
-	inline const AttachPoint& getPoint1() const { return mPoint1; }
-	inline const AttachPoint& getPoint2() const { return mPoint2; }
-	inline const std::string& getName() const { return mName; }
-	inline const std::string& getType() const { return mType; }
+	const AttachPoint& getPoint1() const;
+	const AttachPoint& getPoint2() const;
+	const std::string& getName() const;
+	const std::string& getType() const;
 
 protected:
 	AttachPoint mPoint1;	
@@ -110,13 +107,31 @@ protected:
 	
 };
 
+inline const AttachPoint* AttachPair::getAttachPoint(const std::string & name) const { 
+	if (mPoint1.mName == name) {
+		return &mPoint1;
+	} else if (mPoint2.mName == name) {
+		return &mPoint2;
+	} else {
+		//"No pair with that name."
+		throw std::exception();
+	}
+	
+}
+
+inline const AttachPoint& AttachPair::getPoint1() const { return mPoint1; }
+inline const AttachPoint& AttachPair::getPoint2() const { return mPoint2; }
+inline const std::string& AttachPair::getName() const { return mName; }
+inline const std::string& AttachPair::getType() const { return mType; }
+
+
 class BlockSpec
 {
 friend class Carpenter;
 public:
 	typedef std::map<const std::string, AttachPair> AttachPairStore;
-	inline const std::string& getName() const { return mName; }
-	inline const WFMath::AxisBox<3>& getBoundingBox() const { return mBoundingBox; }
+	const std::string& getName() const;
+	const WFMath::AxisBox<3>& getBoundingBox() const;
 	const AttachPair* getAttachPair(const std::string & name) const;
 	
 	bool addAttachPair(AttachPair* pair);
@@ -130,6 +145,10 @@ protected:
 	AttachPairStore mAttachPairs;
 	
 };
+
+inline const std::string& BlockSpec::getName() const { return mName; }
+inline const WFMath::AxisBox<3>& BlockSpec::getBoundingBox() const { return mBoundingBox; }
+
 
 class BuildingBlockSpecDefinition
 {
@@ -147,15 +166,18 @@ class BuildingBlockSpec
 friend class Carpenter;
 public:
 	BuildingBlockSpec();
-	const BuildingBlockSpecDefinition& getDefinition() const { return mDefinition; }
-	const BlockSpec*  getBlockSpec() const { return mBlockSpec; }
-	inline const std::string& getName() const { return mDefinition.mName; }
+	const BuildingBlockSpecDefinition& getDefinition() const;
+	const BlockSpec*  getBlockSpec() const;
+	const std::string& getName() const;
 protected:
 	BuildingBlockSpecDefinition mDefinition;
 	BlockSpec* mBlockSpec;
 	//EmberOgre::Model* mModel;
 };
 
+	inline const BuildingBlockSpecDefinition& BuildingBlockSpec::getDefinition() const { return mDefinition; }
+	inline const BlockSpec* BuildingBlockSpec::getBlockSpec() const { return mBlockSpec; }
+	inline const std::string& BuildingBlockSpec::getName() const { return mDefinition.mName; }
 
 
 
@@ -180,19 +202,18 @@ public:
 	BlockSpec* createBlockSpec(std::string name);
 	BuildingBlockSpec* createBuildingBlockSpec(BuildingBlockSpecDefinition definition);
 	
-	const std::map<const std::string , BlockSpec >* getBlockSpecs() const {return &mBlockSpecs;}
-	const std::map<const std::string , BuildingBlockSpec >* getBuildingBlockSpecs() const {return &mBuildingBlockSpecs;}
-	const std::map<const std::string , BluePrint>* getBluePrints() const {return &mBluePrints;}
+	const std::map<const std::string , BlockSpec >* getBlockSpecs() const;
+	const std::map<const std::string , BuildingBlockSpec >* getBuildingBlockSpecs() const;
+	const std::map<const std::string , BluePrint>* getBluePrints() const;
 
 protected:
 	std::map<const std::string , BlockSpec > mBlockSpecs;
 	std::map<const std::string , BuildingBlockSpec > mBuildingBlockSpecs;
 	std::map<const std::string , BluePrint> mBluePrints;
-
-	
-
-
 };
+inline const std::map<const std::string , BlockSpec >* Carpenter::getBlockSpecs() const {return &mBlockSpecs;}
+inline const std::map<const std::string , BuildingBlockSpec >* Carpenter::getBuildingBlockSpecs() const {return &mBuildingBlockSpecs;}
+inline const std::map<const std::string , BluePrint>* Carpenter::getBluePrints() const {return &mBluePrints;}
 
 }
 
