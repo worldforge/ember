@@ -103,7 +103,7 @@ class Jesus{
 	 *    Accessor for the Carpenter object.
 	 * @return 
 	 */
-	inline Carpenter::Carpenter* getCarpenter() const { return mCarpenter; }
+	Carpenter::Carpenter* getCarpenter() const;
 	
 	/**
 	 *    adds a blueprint
@@ -122,7 +122,7 @@ class Jesus{
 	Carpenter::BluePrint* getBluePrint(const std::string& name) const;
 	
 	
-	inline const std::map<std::string , Carpenter::BluePrint* > * getAllBluePrints() const {return &mBlueprints;}
+	const std::map<std::string , Carpenter::BluePrint* > * getAllBluePrints() const;
 
 protected:
 	
@@ -152,6 +152,8 @@ protected:
 
 };
 
+inline const std::map<std::string , Carpenter::BluePrint* > * Jesus::getAllBluePrints() const {return &mBlueprints;}
+inline Carpenter::Carpenter* Jesus::getCarpenter() const { return mCarpenter; }
 
 /** This class 'wibbles' the billboard */
 class LightWibbler : public Ogre::ControllerValue<Ogre::Real>
@@ -175,7 +177,7 @@ public:
 	~AttachPointNode();
 	void select();
 	void deselect();
-	inline const Carpenter::AttachPoint* getAttachPoint() const { return mAttachPoint;}
+	const Carpenter::AttachPoint* getAttachPoint() const;
 	
 protected:
 	const ModelBlock* mModelBlock;
@@ -188,6 +190,7 @@ protected:
 	Ogre::Entity* mPointerEntity;
 };
 
+inline const Carpenter::AttachPoint* AttachPointNode::getAttachPoint() const { return mAttachPoint;}
 
 /**
 
@@ -200,8 +203,8 @@ public:
 	~ModelBlock();
 	//void selectAttachPointNode(AttachPointNode* selectedNode);
 	
-	inline const Carpenter::BuildingBlock* getBuildingBlock() const { return mBuildingBlock; }
-	inline Construction* getConstruction() const { return mConstruction; }
+	const Carpenter::BuildingBlock* getBuildingBlock() const;
+	Construction* getConstruction() const;
 	void createAttachPointNodes();
 	void select();
 	void deselect();
@@ -220,6 +223,10 @@ protected:
 	Construction* mConstruction;
 	//Jesus* mJesus;
 };
+
+inline const Carpenter::BuildingBlock* ModelBlock::getBuildingBlock() const { return mBuildingBlock; }
+inline Construction* ModelBlock::getConstruction() const { return mConstruction; }
+
 
 /**
 	Mapping between a Carpenter block type and a Ember Model.
@@ -243,8 +250,8 @@ public:
 	Construction(Carpenter::BluePrint* blueprint, Jesus* jesus, Ogre::SceneNode* node);
 	~Construction();
 	//inline Ogre::BillboardSet* getBillBoardSet() const { return mPointBillBoardSet; }
-	inline Jesus* getJesus() const { return mJesus; }
-	inline Carpenter::BluePrint* getBluePrint() const { return mBlueprint; }
+	Jesus* getJesus() const;
+	Carpenter::BluePrint* getBluePrint() const;
 
 
 	void buildFromBluePrint(bool createAttachPointNodes);
@@ -270,6 +277,8 @@ protected:
 	
 };
 
+inline Jesus* Construction::getJesus() const { return mJesus; }
+inline Carpenter::BluePrint* Construction::getBluePrint() const { return mBlueprint; }
 
 
 };

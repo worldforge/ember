@@ -182,7 +182,7 @@ class IngameChatWidget : public Widget, public Ember::ConfigListenerContainer {
 			*/
 			bool frameStarted( const Ogre::FrameEvent & event );
 			
-			inline float getElapsedTimeSinceLastUpdate() { return mElapsedTimeSinceLastUpdate;}
+			float getElapsedTimeSinceLastUpdate();
 			
 			/**
 			increases the elapsed time with the supplied amount
@@ -202,6 +202,7 @@ class IngameChatWidget : public Widget, public Ember::ConfigListenerContainer {
 			
 			bool buttonResponse_Click(const CEGUI::EventArgs& args);
 	};
+	
 	
 	class ChatTextCreator : public WidgetPool<IngameChatWidget::ChatText>::WidgetCreator
 	{
@@ -272,7 +273,11 @@ protected:
 	Ogre::Camera& mMainCamera;
 
 };
-};
-};
+
+inline float IngameChatWidget::ChatText::getElapsedTimeSinceLastUpdate() { return mElapsedTimeSinceLastUpdate;}
+
+
+}
+}
 
 #endif

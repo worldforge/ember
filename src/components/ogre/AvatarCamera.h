@@ -129,25 +129,25 @@ public:
 	 * @brief Returns the current degrees of pitch from the cameras initial position.
 	 * @return The amount of degrees the camera currently is pitched.
 	 */
-	inline const Ogre::Degree& getPitch() const;
+	const Ogre::Degree& getPitch() const;
 	
 	/**
 	 * @brief Returns the current degrees of yaw from the cameras initial position.
 	 * @return The amount of degrees the camera currently is yawed.
 	 */
-	inline const Ogre::Degree& getYaw() const;
+	const Ogre::Degree& getYaw() const;
 	
 	/**
 	 * @brief Accessor for the main Ogre::Camera instance 
 	 * @return The main ogre camera instance.
 	 */
-	inline Ogre::Camera& getCamera();
+	Ogre::Camera& getCamera();
 	
 	/**
 	 * @brief Accessor for the main Ogre::Camera instance 
 	 * @return The main ogre camera instance.
 	 */
-	inline Ogre::Camera& getCamera() const;
+	Ogre::Camera& getCamera() const;
 	
 	/**
 	 * @brief Returns the current camera orientation in the world.
@@ -287,13 +287,13 @@ public:
 	 * @brief Gets the terrain cursor, used for efficiently getting the position of the terrain currently under the cursor.
 	 * @return An object which can be used to get the terrain that intersects the terrain at the current cursor.
 	 */
-	inline AvatarTerrainCursor& getTerrainCursor();
+	AvatarTerrainCursor& getTerrainCursor();
 	
 	/**
 	 * @brief Gets the root node, to which the whole camera mount is hinged on.
 	 * @return The root node of the camera mount.
 	 */
-	inline Ogre::SceneNode* getRootNode() const;
+	Ogre::SceneNode* getRootNode() const;
 
 	
 protected:
@@ -383,29 +383,29 @@ protected:
 
 ///inline implementations
 
-	const Ogre::Degree& AvatarCamera::getPitch() const
+	inline const Ogre::Degree& AvatarCamera::getPitch() const
 	{
 		return degreePitch;
 	}
 	
-	const Ogre::Degree& AvatarCamera::getYaw() const
+	inline const Ogre::Degree& AvatarCamera::getYaw() const
 	{
 		return degreeYaw;
 	}
 	
-	Ogre::Camera& AvatarCamera::getCamera()  {
+	inline Ogre::Camera& AvatarCamera::getCamera()  {
 		return mCamera;	
 	}
-	Ogre::Camera& AvatarCamera::getCamera() const {
+	inline Ogre::Camera& AvatarCamera::getCamera() const {
 		return mCamera;	
 	}
 
-	AvatarTerrainCursor& AvatarCamera::getTerrainCursor()
+	inline AvatarTerrainCursor& AvatarCamera::getTerrainCursor()
 	{
 		return *mAvatarTerrainCursor.get();
 	}
 	
-	Ogre::SceneNode* AvatarCamera::getRootNode() const
+	inline Ogre::SceneNode* AvatarCamera::getRootNode() const
 	{
 		return mAvatarCameraRootNode;
 	}
@@ -463,8 +463,8 @@ class MainCamera
 	/**
 	 * returns a pointer to the Ogre::Camera instance 
 	 */
-	inline Ogre::Camera* getCamera();
-	inline Ogre::Camera* getCamera() const;
+	Ogre::Camera* getCamera();
+	Ogre::Camera* getCamera() const;
 	
 	/**
 	* emitted when the camra moves

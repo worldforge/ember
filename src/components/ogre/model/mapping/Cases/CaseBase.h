@@ -48,7 +48,7 @@ class MatchBase;
 namespace Cases {
 
 /**
-	Base class for all Cases.
+	@brief Base class for all Cases.
 	A Case containes zero or many Actions, which will be activated when the Case is activated. A Case also contains zero or many child Matches.
 	A Case is activated when it's true and all it's parent cases, all the way up to the root of the ModelMapping, also are true.
 	@author Erik Hjortsberg <erik@katastrof.nu>
@@ -62,25 +62,25 @@ public:
 	CaseBase();
 	virtual ~CaseBase();
 	
-	inline void setParentCase(CaseBase* aCase);
+	void setParentCase(CaseBase* aCase);
 
 	/**
 	 * Returns whether this invidivual case is true. 
 	 * @return 
 	 */
-	inline bool getIsTrue();
+	bool getIsTrue();
 	
 	/**
 	 *    Returns whether this case is active.
 	 * @return 
 	 */
-	inline bool getIsActive();
+	bool getIsActive();
 	
 	/**
 	 * Returns whether this case is true and all of its parent cases, all the way up to the root, also are true.
 	 * @return 
 	 */
-	inline bool getIsTrueToRoot();
+	bool getIsTrueToRoot();
 	
 	/**
 	Adds an Action to this case.
@@ -89,7 +89,7 @@ public:
 	/**
 	Gets a list of all the actions contained by this Case.
 	*/
-	inline const ActionStore& getActions();
+	const ActionStore& getActions();
 	
 	/**
 	Activates all actions in the Case. Also switches the mActive flag.
@@ -107,7 +107,7 @@ public:
 	/**
 	Gets a list of all the Matches contained by this Case.
 	*/
-	inline const MatchBaseStore& getMatches();
+	const MatchBaseStore& getMatches();
 
 	/**
 	Evaluates all changes, and if a change has occurred, adds itself to the supplied ChangeContext instance.
@@ -125,42 +125,42 @@ protected:
 	CaseBase* mParentCase;
 	bool mIsTrue, mIsActive;
 	
-	inline void setState(bool state);
+	void setState(bool state);
 	
 	MatchBaseStore mMatches;
 	
 };
 
-void CaseBase::setState(bool state) 
+inline void CaseBase::setState(bool state) 
 {
 	mIsTrue = state;
 }
 
-const CaseBase::MatchBaseStore& CaseBase::getMatches() 
+inline const CaseBase::MatchBaseStore& CaseBase::getMatches() 
 {
 	return mMatches;
 }
 	
-const CaseBase::ActionStore& CaseBase::getActions() 
+inline const CaseBase::ActionStore& CaseBase::getActions() 
 { 
 	return mActions; 
 };
 
-void CaseBase::setParentCase(CaseBase* aCase) {
+inline void CaseBase::setParentCase(CaseBase* aCase) {
 	mParentCase = aCase; 
 }
 
-bool CaseBase::getIsTrue() 
+inline bool CaseBase::getIsTrue() 
 { 
 	return mIsTrue; 
 }
 
-bool CaseBase::getIsActive() 
+inline bool CaseBase::getIsActive() 
 { 
 	return mIsActive;
 }
 
-bool CaseBase::getIsTrueToRoot() {
+inline bool CaseBase::getIsTrueToRoot() {
 	if (!mParentCase) {
 		return mIsTrue;
 	} else {

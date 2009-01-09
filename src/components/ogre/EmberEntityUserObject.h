@@ -143,7 +143,7 @@ public:
 	
 	void refit();
 	
-	inline ICollisionDetector* getCollisionDetector() const;
+	ICollisionDetector* getCollisionDetector() const;
 
 private:
 	EmberEntity*  mEmberEntity;
@@ -153,7 +153,7 @@ private:
 
 };
 	
-ICollisionDetector* EmberEntityUserObject::getCollisionDetector() const
+inline ICollisionDetector* EmberEntityUserObject::getCollisionDetector() const
 {
 	return mCollisionDetector;
 }

@@ -69,19 +69,19 @@ public:
 	/**
 	Gets raw data pointer.
 	*/
-	inline char* getDataPtr() const;
+	char* getDataPtr() const;
 	/**
 	True if the wrapper has data.
 	*/
-	inline bool hasData() const;
+	bool hasData() const;
 	/**
 	Gets the size of the data.
 	*/	
-	inline size_t getSize() const;
+	size_t getSize() const;
 	/**
 	Gets the name of the resource.
 	*/	
-	inline const std::string& getName() const;
+	const std::string& getName() const;
 
 private:
 	mutable std::auto_ptr<IResourceWrapper> mInternalWrapper;
@@ -102,10 +102,10 @@ public:
 	virtual ResourceWrapper getResource(const std::string& name) = 0;
 };
 
-char* ResourceWrapper::getDataPtr() const { return mInternalWrapper->getDataPtr();}
-bool ResourceWrapper::hasData() const { return mInternalWrapper->hasData();}
-size_t ResourceWrapper::getSize() const { return mInternalWrapper->getSize();}
-const std::string& ResourceWrapper::getName() const {return mName;}
+inline char* ResourceWrapper::getDataPtr() const { return mInternalWrapper->getDataPtr();}
+inline bool ResourceWrapper::hasData() const { return mInternalWrapper->hasData();}
+inline size_t ResourceWrapper::getSize() const { return mInternalWrapper->getSize();}
+inline const std::string& ResourceWrapper::getName() const {return mName;}
 
 }
 #endif //EMBERIRESOURCEWRAPPER_H

@@ -95,7 +95,7 @@ public Ember::ConfigListenerContainer
 	 *    Gets the scene node which the avatar is attached to.
 	 * @return 
 	 */
-	inline Ogre::SceneNode* getAvatarSceneNode() const;
+	Ogre::SceneNode* getAvatarSceneNode() const;
 	
 	/**
 	 *    Called each frame.
@@ -161,9 +161,7 @@ public Ember::ConfigListenerContainer
 	/**
 	True if the current user have admin rights, i.e. is a "creator".
 	*/
-	inline bool isAdmin() const;
-	
-	
+	bool isAdmin() const;
 
 protected:
 	
@@ -367,11 +365,11 @@ protected:
 	
 }; //End of class declaration
 
-bool Avatar::isAdmin() const
+inline bool Avatar::isAdmin() const
 {
 	return mIsAdmin;
 }
-Ogre::SceneNode* Avatar::getAvatarSceneNode() const
+inline Ogre::SceneNode* Avatar::getAvatarSceneNode() const
 {
 	return mAvatarNode;
 }

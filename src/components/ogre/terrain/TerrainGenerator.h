@@ -91,13 +91,13 @@ struct TerrainDefPoint
 	 * @brief Gets the position of the definition point, in world units.
 	 * @return The position of the point.
 	 */
-	inline const TerrainPosition& getPosition() const;
+	const TerrainPosition& getPosition() const;
 	
 	/**
 	 * @brief Gets the height of the definition point, in world units.
 	 * @return The height of the point.
 	 */
-	inline float getHeight() const;
+	float getHeight() const;
 	
 	private:
 	/**
@@ -300,7 +300,7 @@ public:
 	 * @brief Accessor for all instances of TerrainPage that are registered with the generator.
 	 * @return A store of TerrainPage instances.
 	 */
-	inline const TerrainPagestore& getTerrainPages() const;
+	const TerrainPagestore& getTerrainPages() const;
 	
 	/**
 	 * @brief Create and registers a new texture shader.
@@ -387,7 +387,7 @@ public:
 	 * @brief Gets the size of each foliage batch. This is used by the foliage system for setting up batch system for performance.
 	 * @return The size of on foliage batch, in world units. 
 	 */
-	inline unsigned int getFoliageBatchSize() const;
+	unsigned int getFoliageBatchSize() const;
 	
 protected:
 
@@ -534,22 +534,22 @@ protected:
 
 };
 
-const TerrainGenerator::TerrainPagestore& TerrainGenerator::getTerrainPages() const
+inline const TerrainGenerator::TerrainPagestore& TerrainGenerator::getTerrainPages() const
 {
 	return mTerrainPages;
 }
 
-unsigned int TerrainGenerator::getFoliageBatchSize() const
+inline unsigned int TerrainGenerator::getFoliageBatchSize() const
 {
 	return mFoliageBatchSize;
 }
 
-const TerrainPosition& TerrainDefPoint::getPosition() const
+inline const TerrainPosition& TerrainDefPoint::getPosition() const
 {
 	return mPosition;
 }
 	
-float TerrainDefPoint::getHeight() const
+inline float TerrainDefPoint::getHeight() const
 {
 	return mHeight;
 }

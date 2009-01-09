@@ -206,8 +206,8 @@ public:
 	const AnimationPartDefinitionsStore& getAnimationPartDefinitions();
 	void removeAnimationPartDefinition(AnimationPartDefinition* def);
 	
-	inline const std::string& getName() const;
-	inline int getIterations() const;
+	const std::string& getName() const;
+	int getIterations() const;
 	
 private:
 	AnimationDefinition(int iterations);
@@ -285,14 +285,14 @@ public:
     virtual ~ModelDefinition();
 
     bool isValid(void);
-	inline void setValid(bool valid);
+	void setValid(bool valid);
 
 	//Ogre resource virtual functions
  	void loadImpl(void);
 
  	void unloadImpl(void);
 
-	inline size_t calculateSize(void) const;
+	size_t calculateSize(void) const;
 
 	//Model* createModel(Ogre::String name, Ogre::SceneManager* sceneManager);
 	
@@ -300,16 +300,16 @@ public:
 	 *    Gets the amount of scale that needs to be applied to derived Models.
 	 * @return 
 	 */
-	inline Ogre::Real getScale() const;
-	inline void setScale(Ogre::Real scale);
+	Ogre::Real getScale() const;
+	void setScale(Ogre::Real scale);
 	
 	/**
 	 *    Gets how derived Models needs to be scaled.
 	 Defaults to "ALL"
 	 * @return 
 	 */
-	inline const UseScaleOf getUseScaleOf() const;
-	inline void setUseScaleOf(const UseScaleOf useScale);
+	const UseScaleOf getUseScaleOf() const;
+	void setUseScaleOf(const UseScaleOf useScale);
 	
 	/**
 	 *    Gets an optional translation vector which should be applied to derived Models.
@@ -330,16 +330,16 @@ public:
 	 *    If set to something else than 0, all models beyond this distance won't be shown.
 	 * @return 
 	 */
-	inline float getRenderingDistance() const;
-	inline void setRenderingDistance(float distance);
+	float getRenderingDistance() const;
+	void setRenderingDistance(float distance);
 	
 	/**
 	 *    Returns a vector defining how much, if ever, contained entities should be offset.
 	 *    If they shouldn't, Ogre::Vector3::ZERO will be returned.
 	 * @return A offset vector.
 	 */
-	inline const Ogre::Vector3& getContentOffset() const;
-	inline void setContentOffset(const Ogre::Vector3&);
+	const Ogre::Vector3& getContentOffset() const;
+	void setContentOffset(const Ogre::Vector3&);
 	
 	/**
 	 *    Gets the rotation of the model.
@@ -358,7 +358,7 @@ public:
 	 *    Gets a path to an icon resource, if defined.
 	 * @return a path to an image which can be used as an icon for the model
 	 */
-	inline const std::string& getIconPath() const;
+	const std::string& getIconPath() const;
 	
 	
 	/**
@@ -562,66 +562,63 @@ typedef ModelDefnPtr ModelDefinitionPtr;
 
 ///implementations
 
-const Ogre::Vector3& ModelDefinition::getContentOffset() const 
+inline const Ogre::Vector3& ModelDefinition::getContentOffset() const 
 {
 	return mContentOffset; 
 }
-void ModelDefinition::setContentOffset(const Ogre::Vector3& offset) 
+inline void ModelDefinition::setContentOffset(const Ogre::Vector3& offset) 
 { 
 	mContentOffset = offset; 
 }
 
-void ModelDefinition::setValid(bool valid) 
+inline void ModelDefinition::setValid(bool valid) 
 {
 	mIsValid = valid; 
 }
 
-size_t ModelDefinition::calculateSize(void) const 
+inline size_t ModelDefinition::calculateSize(void) const 
 {
 	//TODO:implement this
 	return 0; 
 }
 
-Ogre::Real ModelDefinition::getScale() const 
+inline Ogre::Real ModelDefinition::getScale() const 
 {
 	return mScale; 
 }
-void ModelDefinition::setScale(Ogre::Real scale) 
+inline void ModelDefinition::setScale(Ogre::Real scale) 
 {
 	mScale = scale; 
 }
 
-const ModelDefinition::UseScaleOf ModelDefinition::getUseScaleOf() const 
+inline const ModelDefinition::UseScaleOf ModelDefinition::getUseScaleOf() const 
 {
 	return mUseScaleOf; 
 }
-void ModelDefinition::setUseScaleOf(const UseScaleOf useScale)  
+inline void ModelDefinition::setUseScaleOf(const UseScaleOf useScale)  
 {
 	mUseScaleOf = useScale; 
 }
 
-float ModelDefinition::getRenderingDistance() const
+inline float ModelDefinition::getRenderingDistance() const
 {
 	return mRenderingDistance;
 }
 
-void ModelDefinition::setRenderingDistance(float distance)
+inline void ModelDefinition::setRenderingDistance(float distance)
 {
 	mRenderingDistance = distance;
 }
 	
-const std::string& ModelDefinition::getIconPath() const
+inline const std::string& ModelDefinition::getIconPath() const
 {
 	return mIconPath;
 }
 
-int AnimationDefinition::getIterations() const
+inline int AnimationDefinition::getIterations() const
 {
 	return mIterations;
 }
-
-
-
 
 }
 }

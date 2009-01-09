@@ -61,20 +61,20 @@ public:
 	 * @brief Gets the main node. This is the node to use when positioning or rotating the Model.
 	 * @return The main node.
 	 */
-	inline Ogre::SceneNode* getMainNode() const;
+	Ogre::SceneNode* getMainNode() const;
  
 	/**
 	 * @brief Gets the scale node. This is the node to which the Model is directly attached to. It should normally never be altered outside of this class.
 	 * Under normal circumstances the scale node is handed solely by this class and should never be modified from outside functionality. Accessing through this method is mainly for lookup purposes, when you need to read the orientation or scale of the bounding box.
 	 * @return The scale node, to which the Model is attached.
 	 */
-	inline Ogre::SceneNode* getScaleNode() const;
+	Ogre::SceneNode* getScaleNode() const;
 	
 	/**
 	 * @brief Gets the Model instance to which this mount is attached.
 	 * @return The model instance.
 	 */
-	inline ::EmberOgre::Model::Model& getModel() const;
+	::EmberOgre::Model::Model& getModel() const;
 	
 	/**
 	 * @brief Rescales the model according to the bounding box.
@@ -116,17 +116,17 @@ protected:
 
 };
 
-Ogre::SceneNode* ModelMount::getMainNode() const
+inline Ogre::SceneNode* ModelMount::getMainNode() const
 {
 	return mMainNode;
 }
 
-Ogre::SceneNode* ModelMount::getScaleNode() const
+inline Ogre::SceneNode* ModelMount::getScaleNode() const
 {
 	return mScaleNode;
 }
 
-::EmberOgre::Model::Model& ModelMount::getModel() const
+inline ::EmberOgre::Model::Model& ModelMount::getModel() const
 {
 	return mModel;
 }

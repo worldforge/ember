@@ -117,7 +117,7 @@ class ServerService : public Service, public ConsoleObject
 
     //----------------------------------------------------------------------
     // Getters & Setters
-    inline bool isConnected() const;
+    bool isConnected() const;
 
     //----------------------------------------------------------------------
     // Methods
@@ -138,8 +138,8 @@ class ServerService : public Service, public ConsoleObject
 
     void runCommand(const std::string &, const std::string &);
 
-	inline Eris::View* getView();
-	inline Eris::Avatar* getAvatar();
+	Eris::View* getView();
+	Eris::Avatar* getAvatar();
 
       
 	/**
@@ -272,7 +272,7 @@ class ServerService : public Service, public ConsoleObject
 	IServerAdapter* mServerAdapter;
 };
 
-bool ServerService::isConnected() const
+inline bool ServerService::isConnected() const
 {
 	return mConnected;
 }

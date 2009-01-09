@@ -113,11 +113,11 @@ public:
 	/**
 	Returns whether all scripting methods should be looked up at every call. Setting this to true will decrease performance, but allow for dynamic updating of script methods.
 	*/
-	inline bool getAlwaysLookup() const;
+	bool getAlwaysLookup() const;
 	/**
 	Sets whether all scripting methods should be looked up at every call. Setting this to true will decrease performance, but allow for dynamic updating of script methods.
 	*/
-	inline void setAlwaysLookup(bool alwaysLookup);
+	void setAlwaysLookup(bool alwaysLookup);
 private:
 
 	/**
@@ -141,12 +141,12 @@ private:
 
 };
 
-bool ScriptingService::getAlwaysLookup() const
+inline bool ScriptingService::getAlwaysLookup() const
 {
 	return mAlwaysLookup;
 }
 
-void ScriptingService::setAlwaysLookup(bool alwaysLookup)
+inline void ScriptingService::setAlwaysLookup(bool alwaysLookup)
 {
 	mAlwaysLookup = alwaysLookup;
 }

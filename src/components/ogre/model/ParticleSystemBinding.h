@@ -44,10 +44,13 @@ private:
 	ParticleSystem* mParticleSystem;
 	Ogre::Real mOriginalValue;
 public:
-	inline const std::string& getEmitterVal() const {return mEmitterVal;}
-	inline const std::string& getVariableName() const {return mVariableName;}
+	const std::string& getEmitterVal() const;
+	const std::string& getVariableName() const;
 
 };
+
+inline const std::string& ParticleSystemBinding::getEmitterVal() const {return mEmitterVal;}
+inline const std::string& ParticleSystemBinding::getVariableName() const {return mVariableName;}
 }
 }
 #endif

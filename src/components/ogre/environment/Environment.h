@@ -122,11 +122,11 @@ public:
 	const Ember::ConsoleCommandWrapper SetFogDensity;
 	const Ember::ConsoleCommandWrapper SetAmbientLight;
    
-	inline ISun* getSun();
-	inline ISky* getSky();
-	inline IFog* getFog();
-	inline IWater* getWater();
-	inline Forest* getForest();
+	ISun* getSun();
+	ISky* getSky();
+	IFog* getFog();
+	IWater* getWater();
+	Forest* getForest();
     
     
     void setTime(int hour, int minute, int second = 0);
@@ -164,27 +164,27 @@ private:
 
 };
 
-ISun* Environment::getSun()
+inline ISun* Environment::getSun()
 {
 	return mProvider->getSun();
 }
 
-ISky* Environment::getSky()
+inline ISky* Environment::getSky()
 {
 	return mProvider->getSky();
 }
 
-IFog* Environment::getFog()
+inline IFog* Environment::getFog()
 {
 	return mProvider->getFog();
 }
 
-IWater* Environment::getWater()
+inline IWater* Environment::getWater()
 {
 	return mProvider->getWater();
 }
 
-Forest* Environment::getForest()
+inline Forest* Environment::getForest()
 {
 	return mForest;
 }

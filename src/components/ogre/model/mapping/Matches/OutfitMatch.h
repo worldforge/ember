@@ -54,7 +54,7 @@ public:
 
 	virtual void testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation = false);
 	
-	inline const std::string& getOutfitName();
+	const std::string& getOutfitName();
 	virtual void setEntity(Eris::Entity* entity);
 	
 	void setEntityCreationObserver(Observers::EntityCreationObserver* observer);
@@ -66,6 +66,12 @@ protected:
 	Eris::View* mView;
 	std::auto_ptr<Observers::EntityCreationObserver> mEntityObserver;
 };
+
+inline const std::string& OutfitMatch::getOutfitName()
+{
+	return mOutfitName;
+}
+
 }
 
 }

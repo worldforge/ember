@@ -186,7 +186,7 @@ public:
 	virtual void buildWidget();
 
 	
-	inline Construction* getConstruction() const {return mCurrentConstruction;}
+	Construction* getConstruction() const;
 	
 	/**
 	 *    loads the supplied construction
@@ -377,7 +377,7 @@ protected:
 
 	
 	Construction* mCurrentConstruction;
-	inline ModelBlock* getSelectedBlock() { return mCurrentlySelectedBlock;};
+	ModelBlock* getSelectedBlock();
 	ModelBlock* mCurrentlySelectedBlock;
 // 	const Carpenter::BuildingBlockSpec* mCurrentlySelectedBuildingBlockSpec;
 	
@@ -406,6 +406,8 @@ protected:
 	JesusEditFile* mFile;
 };
 
+inline ModelBlock* JesusEdit::getSelectedBlock() { return mCurrentlySelectedBlock;};
+inline Construction* JesusEdit::getConstruction() const {return mCurrentConstruction;}
 
 
 

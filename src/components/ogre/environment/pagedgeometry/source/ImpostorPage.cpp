@@ -500,7 +500,7 @@ void ImpostorTexture::renderTextures(bool force)
 	Real oldFogDensity = sceneMgr->getFogDensity();
 	Real oldFogStart = sceneMgr->getFogStart();
 	Real oldFogEnd = sceneMgr->getFogEnd();
-	sceneMgr->setFog(FOG_NONE);
+	sceneMgr->setFog(FOG_EXP2, ColourValue::White, 0); ///Ember change
 	
 	//Only render the entity
 	sceneMgr->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_INCLUDE); 

@@ -95,7 +95,7 @@ public:
 	/**
 	 * return the Model of this object
 	 */
-	inline Model::Model* getModel() const;
+	Model::Model* getModel() const;
 
 	/**
 	 *    Returns the "scale node", which is the Ogre::SceneNode to which the Model instance is attached. This is separate from the Ogre::SceneNode in EmberEntity since we want to be able to scale the node without also scaling the attached nodes (such as any wielded entity).
@@ -366,7 +366,7 @@ protected:
 	
 };
 
-Model::Model* EmberPhysicalEntity::getModel() const
+inline Model::Model* EmberPhysicalEntity::getModel() const
 {
 	return mModel;	
 }

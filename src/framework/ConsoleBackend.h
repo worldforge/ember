@@ -142,7 +142,7 @@ class ConsoleBackend : public ConsoleObject, public Ember::Singleton<ConsoleBack
      * @brief Gets a list of previous console messages.
      * @return A list of the previous console messages, the maximum defined through MAX_MESSAGES.
      */
-    inline const std::list<std::string>& getConsoleMessages() const;
+    const std::list<std::string>& getConsoleMessages() const;
 
 	
 	/**
@@ -150,7 +150,7 @@ class ConsoleBackend : public ConsoleObject, public Ember::Singleton<ConsoleBack
 	 * When traversing the history we need to keep track of where in the history we are.
 	 * @return 
 	 */
-	inline size_t getHistoryPosition() const;
+	size_t getHistoryPosition() const;
 	
 	const std::set< std::string > & getPrefixes(const std::string & prefix) const;
 	
@@ -240,12 +240,12 @@ class ConsoleBackend : public ConsoleObject, public Ember::Singleton<ConsoleBack
 
 };
 
-const std::list<std::string>& ConsoleBackend::getConsoleMessages() const
+inline const std::list<std::string>& ConsoleBackend::getConsoleMessages() const
 {
 	return mConsoleMessages;
 }
 
-size_t ConsoleBackend::getHistoryPosition() const
+inline size_t ConsoleBackend::getHistoryPosition() const
 {
 	return mHistoryPosition;
 }

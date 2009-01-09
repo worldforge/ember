@@ -192,7 +192,7 @@ public:
 	 *    The size in pixels of one side of the AlphaTexture. This is in sizes of 64.
 	 * @return 
 	 */
-	inline int getAlphaTextureSize() const;
+	int getAlphaTextureSize() const;
 	
 	SegmentVector& getValidSegments();
 	

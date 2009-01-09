@@ -109,7 +109,6 @@ protected:
 	Eris::TerrainMod* mInnerMod;
 };
 
-
 }
 };
 
