@@ -47,7 +47,7 @@ AdapterSelfUpdateContext::~AdapterSelfUpdateContext()
 
 
 AdapterBase::AdapterBase(const ::Atlas::Message::Element& element)
-: mOriginalElement(element), mEditedElement(element), mRemoved(false), mSelfUpdate(false)
+: mOriginalElement(element), mEditedElement(element), mSelfUpdate(false), mRemoved(false)
 {
 }
 

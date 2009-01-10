@@ -46,12 +46,7 @@ namespace Atlas {
  * @param number The number to convert.
  * @return The number as represented by a string.
  */
-static std::string toString(float number)
-{
-	std::stringstream ss;
-	ss << number;
-	return ss.str();
-}
+static std::string toString(float number);
 
 class AdapterBase;
 
@@ -252,6 +247,13 @@ private:
 	std::vector<CEGUI::Event::Connection> mGuiEventConnections;
 
 };
+
+inline std::string toString(float number)
+{
+	std::stringstream ss;
+	ss << number;
+	return ss.str();
+}
 
 }
 
