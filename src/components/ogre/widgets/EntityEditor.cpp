@@ -31,8 +31,17 @@
 
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
+#include "services/logging/LoggingService.h"
+
 #include <Atlas/Message/Element.h>
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Message/QueuedDecoder.h>
+#include <Atlas/Codecs/XML.h>
+#include <Atlas/Formatter.h>
+
 #include <Eris/Entity.h>
+
+
 
 using namespace Atlas::Message;
 
@@ -58,6 +67,19 @@ void EntityEditor::submitChanges()
 		if (rootElement.isMap()) {
 			std::map<std::string, ::Atlas::Message::Element> attributes(rootElement.asMap());
 			if (attributes.size()) {
+			
+				std::stringstream ss;
+			
+				Atlas::Message::QueuedDecoder decoder;
+			
+				Atlas::Codecs::XML codec(ss, decoder);
+				Atlas::Formatter formatter(ss, codec);
+				Atlas::Message::Encoder encoder(formatter);
+				formatter.streamBegin();
+				encoder.streamMessageElement(attributes);
+				formatter.streamEnd();
+				S_LOG_VERBOSE("Sending attribute update to server:\n" << ss.str());	
+				
 				Ember::EmberServices::getSingleton().getServerService()->setAttributes(mEntity, attributes);		
 			}
 		}
