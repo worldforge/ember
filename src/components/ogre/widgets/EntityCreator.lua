@@ -21,6 +21,8 @@ end
 function EntityCreator.RecipesList_SelectionChanged(args)
 	EntityCreator.clear()
 
+	EntityCreator.widget:getWindow("CreateSection"):setVisible(false)
+	EntityCreator.widget:getWindow("WaitForTypeInfo"):setVisible(true)
 	local item = EntityCreator.recipesList:getFirstSelectedItem()
 	if item ~= nil then
 		local name = item:getText()
@@ -28,8 +30,8 @@ function EntityCreator.RecipesList_SelectionChanged(args)
 		local recipePtr = recipeMgr:getByName(name)
 		recipePtr = tolua.cast(recipePtr, "EmberOgre::EntityRecipePtr")
 		EntityCreator.recipe = recipePtr:get()
+		--We just set the recipe here and wait for the EventTypeInfoLoaded event, which will call the showRecipe function when the recipe is ready
 		EntityCreator.helper:setRecipe(EntityCreator.recipe)
-		EntityCreator.showRecipe(EntityCreator.recipe)
 	else
 		EntityCreator.recipe = nil
 	end
@@ -65,9 +67,13 @@ function EntityCreator.clear()
 end
 
 -- Shows selected recipe
-function EntityCreator.showRecipe(recipe)
+function EntityCreator.showRecipe()
+	local recipe = EntityCreator.recipe
 	local author = recipe:getAuthor()
 	local description = recipe:getDescription()
+	
+	EntityCreator.widget:getWindow("CreateSection"):setVisible(true)
+	EntityCreator.widget:getWindow("WaitForTypeInfo"):setVisible(false)
 	if author ~= "" then
 		description = "Author: " .. author .. "\n" .. description;
 	end
@@ -126,6 +132,7 @@ function EntityCreator.buildWidget()
 
 	-- Initializing helper classes
 	EntityCreator.helper = EmberOgre.Gui.EntityCreator()
+	connect(EntityCreator.connectors, EntityCreator.helper.EventTypeInfoLoaded, EntityCreator.showRecipe)
 	EntityCreator.helper.mWidget = EntityCreator.widget
 	EntityCreator.factory = EmberOgre.Gui.Adapters.Atlas.AdapterFactory("EntityCreator")
 
