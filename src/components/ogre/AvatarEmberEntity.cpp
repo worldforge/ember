@@ -86,12 +86,13 @@ void AvatarEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool 
 
 void AvatarEmberEntity::onMoved()
 {
-	//EmberPhysicalEntity::onMoved();
-	
+	///If there's an avatar connected we'll let that handle the update of the Ogre node, and bypass the EmberPhysicalEntity
 	if (getAvatar()) {
 		getAvatar()->movedInWorld();
+		Eris::Entity::onMoved();
+	} else {
+		EmberPhysicalEntity::onMoved();	
 	}
-	Eris::Entity::onMoved();
 }
 
 void AvatarEmberEntity::onImaginary(const Atlas::Objects::Root& act)
