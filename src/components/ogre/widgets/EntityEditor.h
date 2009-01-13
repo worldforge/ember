@@ -59,10 +59,19 @@ struct AdapterWrapper
 };
 
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+@brief Helper class for the entity editor widget.
+The main logic of the entity editor is in the lua file. This class acts like a helper class, implementing C++ functionality that might be cumbersome to code in Lua.
+Normally an instance of this is created by the lua widget for each entity that's being edited.
+
+@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
-class EntityEditor{
+class EntityEditor {
 public:
+    /**
+     * @brief Ctor.
+     * @param entity The entity which should be edited.
+     * @param rootAdapter The root adapter for the attributes.
+     */
     EntityEditor(Eris::Entity* entity, Adapters::Atlas::MapAdapter* rootAdapter);
 
     virtual ~EntityEditor();
