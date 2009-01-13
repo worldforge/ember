@@ -43,6 +43,12 @@ public:
 	void cleanupCreation();
 
 	EmberOgre::Gui::Widget* mWidget;
+	
+	/**
+	* @brief Emitted when all needed type info for the current recipe is loaded.
+	*/
+	sigc::signal<void> EventTypeInfoLoaded;
+
 };
 
 }
