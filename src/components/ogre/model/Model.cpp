@@ -35,9 +35,12 @@
 #include "components/ogre/EmberOgre.h"
 #include "ModelDefinitionManager.h"
 #include "ModelDefinition.h"
+#include "ModelBackgroundLoader.h"
 
 
 #include <OgreTagPoint.h>
+#include <OgreMeshManager.h>
+#include <OgreResourceBackgroundQueue.h>
 
 namespace EmberOgre {
 namespace Model {
@@ -67,6 +70,7 @@ Model::Model(const std::string& name)
 , mRotation(Ogre::Quaternion::IDENTITY)
 , mAnimationStateSet(0)
 , mAttachPoints(0)
+, mBackgroundLoader(0)
 {
  mVisible = true;
 }
@@ -76,6 +80,9 @@ Model::~Model()
 	resetParticles();	
 	if (!mMasterModel.isNull()) {
 		mMasterModel->removeModelInstance(this);
+	}
+	if (mBackgroundLoader) {
+		ModelDefinitionManager::getSingleton().removeBackgroundLoader(mBackgroundLoader);
 	}
 }
 
@@ -150,8 +157,6 @@ void Model::_notifyManager(Ogre::SceneManager* man)
 	}
 }
 
-
-
 bool Model::createFromDefn()
 {
 	// create instance of model from definition
@@ -159,7 +164,64 @@ bool Model::createFromDefn()
 	assert(sceneManager);
 	mScale = mMasterModel->mScale ;
 	mRotation = mMasterModel->mRotation;
-	setRenderingDistance(mMasterModel->getRenderingDistance());
+	
+	if (!mBackgroundLoader) {
+		mBackgroundLoader = new ModelBackgroundLoader(*this);
+	}
+
+	for (SubModelDefinitionsStore::const_iterator I_subModels = mMasterModel->getSubModelDefinitions().begin(); I_subModels != mMasterModel->getSubModelDefinitions().end(); ++I_subModels) 
+	{
+		Ogre::MeshPtr meshPtr = static_cast<Ogre::MeshPtr>(Ogre::MeshManager::getSingleton().getByName((*I_subModels)->getMeshName()));
+		if (meshPtr.isNull() || !meshPtr->isPrepared()) {
+			Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().load(Ogre::MeshManager::getSingleton().getResourceType(), (*I_subModels)->getMeshName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+			mBackgroundLoader->addTicket(ticket);
+		} else {
+			if (!meshPtr->isLoaded()) {
+				meshPtr->load();
+				Ogre::Mesh::SubMeshIterator subMeshI = meshPtr->getSubMeshIterator();
+				while (subMeshI.hasMoreElements()) {
+					Ogre::SubMesh* submesh(subMeshI.getNext());
+					Ogre::MaterialPtr materialPtr = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(submesh->getMaterialName()));
+					if (materialPtr.isNull() || !materialPtr->isPrepared()) {
+						Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().load(Ogre::MaterialManager::getSingleton().getResourceType(), submesh->getMaterialName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+						mBackgroundLoader->addTicket(ticket);
+					} else {
+						materialPtr->load();
+					}
+				}
+			}
+		}
+		
+		for (PartDefinitionsStore::const_iterator I_parts = (*I_subModels)->getPartDefinitions().begin(); I_parts != (*I_subModels)->getPartDefinitions().end(); ++I_parts) {
+			for (SubEntityDefinitionsStore::const_iterator I_subEntities = (*I_parts)->getSubEntityDefinitions().begin(); I_subEntities != (*I_parts)->getSubEntityDefinitions().end(); ++I_subEntities)  {
+				Ogre::MaterialPtr materialPtr = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName((*I_subEntities)->getMaterialName()));
+				if (materialPtr.isNull() || !materialPtr->isPrepared()) {
+					Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().load(Ogre::MaterialManager::getSingleton().getResourceType(), (*I_subEntities)->getMaterialName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+					mBackgroundLoader->addTicket(ticket);
+				} else {
+					materialPtr->load();
+				}
+			}
+		}
+	}
+
+	if (mBackgroundLoader->checkModelReady(false)) {
+		return createActualModel();
+	} else {
+		ModelDefinitionManager::getSingleton().addBackgroundLoader(mBackgroundLoader);
+		setRenderingDistance(mMasterModel->getRenderingDistance());
+	}
+	return true;
+}
+
+
+bool Model::createActualModel()
+{
+	// create instance of model from definition
+	Ogre::SceneManager* sceneManager = _getManager();
+	assert(sceneManager);
+	mScale = mMasterModel->mScale ;
+	mRotation = mMasterModel->mRotation;
 	
 	std::vector<std::string> showPartVector;
 
@@ -172,13 +234,7 @@ bool Model::createFromDefn()
 	{
 		std::string entityName = mName + "/" + (*I_subModels)->getMeshName();
 		try {
-// 			bool firstLoad = false;
-// 			Ogre::MeshPtr mesh = Ogre::MeshManager::getSingleton().getByName((*I_subModels).Mesh);
-// 			if (!mesh.isNull()) {
-// 				if (!mesh->isLoaded()) {
-// 					firstLoad = true;
-// 				}
-// 			} 
+			
 			Ogre::Entity* entity = sceneManager->createEntity(entityName, (*I_subModels)->getMeshName());
 			
 			if (entity->getMesh().isNull()) {
@@ -188,24 +244,6 @@ bool Model::createFromDefn()
 			if (mMasterModel->getRenderingDistance()) {
 				entity->setRenderingDistance(mMasterModel->getRenderingDistance());
 			}
-
-// 			//for convenience, if it's a new mesh, check if there's a skeleton file in the same directory
-// 			//if so, use that
-// //			if (!entity->getMesh()->isLoaded()) {
-// /*				std::string fileName;
-// 				std::string path;
-// 				Ogre::StringUtil::splitFilename((*I_subModels).Mesh, fileName, path);*/
-// 			if (firstLoad) {
-// 				std::string meshname = (*I_subModels).Mesh.substr(0, (*I_subModels).Mesh.size() - 5);
-// 				
-// /*				std::vector<Ogre::String> strings = Ogre::StringUtil::split((*I_subModels).Mesh, ".mesh");
-// 				if (strings.size() > 0) {
-// 					meshname = strings[0];*/
-// 				entity->getMesh()->setSkeletonName(meshname + ".skeleton");
-// 			}
-// // 				}
-// 				
-// //			}
 
 			SubModel* submodel = new SubModel(entity);
 			//Model::SubModelPartMapping* submodelPartMapping = new Model::SubModelPartMapping();
@@ -272,6 +310,8 @@ bool Model::createFromDefn()
 			return false;
 		}
 	}
+	
+	setRenderingDistance(mMasterModel->getRenderingDistance());
 
 	createActions();
 	

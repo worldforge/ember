@@ -35,6 +35,7 @@ class ParticleSystemBinding;
 class ParticleSystem;
 class Action;
 class ModelPart;
+class ModelBackgroundLoader;
 
 struct LightInfo
 {
@@ -290,6 +291,8 @@ protected:
 	 */
 	bool create(const std::string& modelType); // create model of specific type
 
+	bool createActualModel();
+
 	static unsigned long msAutoGenId;
 	ParticleSystemBindingsPtrSet mAllParticleSystemBindings;
 	ParticleSystemSet mParticleSystems;
@@ -378,8 +381,12 @@ protected:
 	bool createFromDefn();
 	
 	std::auto_ptr<AttachPointWrapperStore> mAttachPoints;
+	
+	ModelBackgroundLoader* mBackgroundLoader;
+	
 	//void enableAnimation(const std::string& nameOfAnimation,bool enable);
 };
+
 
 // Ogre::Real Model::getRenderingDistance   (   void    )    const
 // {
