@@ -29,6 +29,7 @@
 #include "ModelDefinitionManager.h"
 #include "ModelDefinition.h"
 #include "Model.h"
+#include "ModelBackgroundLoader.h"
 
 #include "XMLModelDefinitionSerializer.h"
 
@@ -132,6 +133,34 @@ bool ModelDefinitionManager::getShowModels() const
 void ModelDefinitionManager::setShowModels(bool show)
 {
 	mShowModels = show;
+}
+
+void ModelDefinitionManager::addBackgroundLoader(ModelBackgroundLoader* loader)
+{
+	if (std::find(mBackgroundLoaders.begin(), mBackgroundLoaders.end(), loader) == mBackgroundLoaders.end()) {
+		mBackgroundLoaders.push_back(loader);
+	}
+}
+
+void ModelDefinitionManager::removeBackgroundLoader(ModelBackgroundLoader* loader)
+{
+	BackgroundLoaderStore::iterator I = std::find(mBackgroundLoaders.begin(), mBackgroundLoaders.end(), loader);
+	if (I != mBackgroundLoaders.end()) {
+		mBackgroundLoaders.erase(I);
+	}
+}
+
+
+void ModelDefinitionManager::pollBackgroundLoaders()
+{
+	for (BackgroundLoaderStore::iterator I = mBackgroundLoaders.begin(); I != mBackgroundLoaders.end();) 
+	{
+		BackgroundLoaderStore::iterator I_copy = I;
+		++I;
+		if ((*I_copy)->checkModelReady(true)) {
+			mBackgroundLoaders.erase(I_copy);
+		}
+	}
 }
 
 

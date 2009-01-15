@@ -34,6 +34,7 @@ namespace EmberOgre {
 namespace Model {
 
 class ModelFactory;
+class ModelBackgroundLoader;
 
 /**
 @author Erik Hjortsberg
@@ -75,8 +76,14 @@ public:
 	 */
 	void setShowModels(bool show);
 	
+	void addBackgroundLoader(ModelBackgroundLoader* loader);
+	void removeBackgroundLoader(ModelBackgroundLoader* loader);
+	
+	void pollBackgroundLoaders();
+	
 protected:
 
+	typedef std::list<ModelBackgroundLoader*> BackgroundLoaderStore;
 	Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, 
         const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, 
         const Ogre::NameValuePairList* createParams);
@@ -90,6 +97,8 @@ protected:
 	An instance of our own model factory which we register with the ogre root object.
 	*/
 	ModelFactory* mModelFactory;
+	
+	BackgroundLoaderStore mBackgroundLoaders;
 
 };
 
