@@ -42,9 +42,9 @@ template<> Ember::LoggingService* Ember::Singleton<Ember::LoggingService>::ms_Si
 
 Service::Status LoggingService::start ()
 {
-    setRunning (true);
-    setStatus (Service::OK);
-    return Service::OK;
+	setRunning(true);
+	setStatus(Service::OK);
+	return Service::OK;
 }
 
 void LoggingService::stop(int code)
@@ -57,111 +57,87 @@ void LoggingService::stop(int code)
 
 void LoggingService::log (const char *message, ...)
 {
-    va_list vl;
-    va_start (vl, message);
-    logVarParam ("", -1, INFO, message, vl);
-    va_end (vl);
+	va_list vl;
+	va_start(vl, message);
+	logVarParam("", -1, INFO, message, vl);
+	va_end(vl);
 }
 
 
 void LoggingService::log (const char *file, const char *message, ...)
 {
-    va_list vl;
-    va_start (vl, message);
-    logVarParam (file, -1, INFO, message, vl);
-    va_end (vl);
+	va_list vl;
+	va_start(vl, message);
+	logVarParam(file, -1, INFO, message, vl);
+	va_end(vl);
 }
 
 
 
-void LoggingService::log (const char *file, const int line,
-                                const char *message, ...)
+void LoggingService::log (const char *file, const int line, const char *message, ...)
 {
-    va_list vl;
-    va_start (vl, message);
-    logVarParam (file, line, INFO, message, vl);
-    va_end (vl);
+	va_list vl;
+	va_start(vl, message);
+	logVarParam(file, line, INFO, message, vl);
+	va_end(vl);
 }
 
 
-void LoggingService::log (const MessageImportance importance,
-                                const char *message, ...)
+void LoggingService::log (const MessageImportance importance, const char *message, ...)
 {
-    va_list vl;
-    va_start (vl, message);
-    logVarParam ("", -1, importance, message, vl);
-    va_end (vl);
+	va_list vl;
+	va_start(vl, message);
+	logVarParam("", -1, importance, message, vl);
+	va_end(vl);
 }
 
-void LoggingService::log (const char *file,
-                                const MessageImportance importance,
-                                const char *message, ...)
+void LoggingService::log (const char *file, const MessageImportance importance, const char *message, ...)
 {
-    va_list vl;
-    va_start (vl, message);
-    logVarParam (file, -1, importance, message, vl);
-    va_end (vl);
+	va_list vl;
+	va_start(vl, message);
+	logVarParam(file, -1, importance, message, vl);
+	va_end(vl);
 }
 
-void LoggingService::log (const char *file, const int line,
-                                const MessageImportance importance,
-                                const char *message, ...)
+void LoggingService::log (const char *file, const int line,  const MessageImportance importance, const char *message, ...)
 {
-    va_list vl;
-    va_start (vl, message);
-    logVarParam (file, line, importance, message, vl);
-    va_end (vl);
+	va_list vl;
+	va_start(vl, message);
+	logVarParam(file, line, importance, message, vl);
+	va_end(vl);
 }
 
-void LoggingService::logVarParam (const char *file, const int line,
-                                        const MessageImportance importance,
-                                        const char *message, va_list argptr)
+void LoggingService::logVarParam (const char *file, const int line, const MessageImportance importance, const char *message, va_list argptr)
 {
-    char Buffer[MESSAGE_BUFFER_SIZE];
-    vsprintf ((char *) Buffer, message, argptr);
-    sendMessage (std::string ((char *) Buffer), file, line, importance);
+	char Buffer[MESSAGE_BUFFER_SIZE];
+	vsprintf((char *) Buffer, message, argptr);
+	sendMessage(std::string((char *) Buffer), file, line, importance);
 }
 
 
-LoggingService & LoggingService::slog (const std::string & file,
-                                                   const int line,
-                                                   const MessageImportance
-                                                   importance)
+LoggingInstance LoggingService::slog (const std::string & file, const int line, const MessageImportance importance)
 {
-    myFile = file;
-    myLine = line;
-    myImportance = importance;
-    return *this;
+	return LoggingInstance(*this, file, line, importance);
 }
 
-LoggingService & LoggingService::
-slog (const MessageImportance importance)
+LoggingInstance LoggingService::slog (const MessageImportance importance)
 {
-    myImportance = importance;
-    return *this;
+	return LoggingInstance(*this, importance);
 }
 
-LoggingService & LoggingService::slog (const std::string & file,
-                                                   const MessageImportance
-                                                   importance)
+LoggingInstance LoggingService::slog (const std::string & file, const MessageImportance importance)
 {
-    myFile = file;
-    myImportance = importance;
-    return *this;
+	return LoggingInstance(*this, file, importance);
 }
 
-LoggingService & LoggingService::slog (const std::string & file,
-                                                   const int line)
+LoggingInstance LoggingService::slog (const std::string & file, const int line)
 {
-    myFile = file;
-    myLine = line;
-    return *this;
+	return LoggingInstance(*this, file, line);
 }
 
-LoggingService & LoggingService::slog (const std::string & file)
+LoggingInstance LoggingService::slog (const std::string & file)
 {
-    myFile = file;
-    return *this;
+	return LoggingInstance(*this, file);
 }
 
 
@@ -169,128 +145,48 @@ LoggingService & LoggingService::slog (const std::string & file)
 
 void LoggingService::addObserver (Observer * observer)
 {
-    //test on already existing observer
-    for (ObserverList::iterator i = myObserverList.begin ();
-         i != myObserverList.end (); i++)
-    {
-        if (*i == observer)
-        {
-            return;
-        }
-    }
-
-    //no existing observer, add a new                    
-    myObserverList.push_back (observer);
+	//test on already existing observer
+	for (ObserverList::iterator i = myObserverList.begin(); i != myObserverList.end(); i++)
+	{
+		if (*i == observer) {
+			return;
+		}
+	}
+	
+	//no existing observer, add a new
+	myObserverList.push_back(observer);
 }
 
 int LoggingService::removeObserver (Observer * observer)
 {
-    for (ObserverList::iterator i = myObserverList.begin ();
-         i != myObserverList.end (); i++)
-    {
-        if (*i == observer)
-        {
-            myObserverList.erase (i);
-            return 0;
-        }
-    }
-
-    return -1;
+	for (ObserverList::iterator i = myObserverList.begin(); i != myObserverList.end(); i++)
+	{
+		if (*i == observer) {
+			myObserverList.erase(i);
+			return 0;
+		}
+	}
+	
+	return -1;
 }
 
 LoggingService::HexNumber LoggingService::
 hexNumber (const int intDecimal)
 {
-    HexNumber intHex;
-    intHex.myNumber = intDecimal;
-    return intHex;
-}
-
-LoggingService & LoggingService::operator<< (const std::string & stringToAdd)
-{
-    myMessage += stringToAdd;
-    return *this;
-}
-
-LoggingService & LoggingService::operator<< (const unsigned int uintToAdd)
-{
-	std::stringstream ss;
-	ss << uintToAdd;
-    myMessage += ss.str();
-    
-    return *this;
-}
-
-LoggingService & LoggingService::operator<< (const int intToAdd)
-{
-	std::stringstream ss;
-	ss << intToAdd;
-    myMessage += ss.str();
-    
-    return *this;
-}
-
-LoggingService & LoggingService::
-operator<< (const HexNumber & intHexToAdd)
-{
-    char buffer[NUMBER_BUFFER_SIZE];
-    sprintf (buffer, "%x", intHexToAdd.myNumber);
-    myMessage += buffer;
-    return *this;
-}
-
-LoggingService & LoggingService::
-operator<< (const double doubleToAdd)
-{
-	std::stringstream ss;
-	ss << doubleToAdd;
-    myMessage += ss.str();
-    return *this;
-}
-
-LoggingService & LoggingService::operator<< (const long longToAdd)
-{
-	std::stringstream ss;
-	ss << longToAdd;
-    myMessage += ss.str();
-    
-    return *this;
-}
-
-LoggingService & LoggingService::
-operator<< (const unsigned long ulongToAdd)
-{
-	std::stringstream ss;
-	ss << ulongToAdd;
-    myMessage += ss.str();
-    return *this;
+	HexNumber intHex;
+	intHex.myNumber = intDecimal;
+	return intHex;
 }
 
 
-void LoggingService::operator<< (const EndMessageEnum endMessage)
-{
-    sendMessage (myMessage, myFile, myLine, myImportance);
-
-    myMessage = "";
-    myFile = "";
-    myLine = -1;
-    myImportance = INFO;
-}
 
 LoggingService::LoggingService () : Service()
 {
-    //set service properties
-
-    setName ("Logging");
-    setDescription ("Eases message writing and distribution.");
-
-
-    //set all option values to not specified
-    myMessage = "";
-    myFile = "";
-    myLine = -1;
-    myImportance = INFO;
-
+	//set service properties
+	
+	setName("Logging");
+	setDescription("Eases message writing and distribution.");
+	
 	mErisLogReciever = std::auto_ptr<ErisLogReciever>(new ErisLogReciever(*this));
 }
 
@@ -301,22 +197,118 @@ LoggingService::~LoggingService ()
 }
 
 
-void LoggingService::sendMessage (const std::string & message,
-                                        const std::string & file,
-                                        const int line,
-                                        const MessageImportance importance)
+void LoggingService::sendMessage(const std::string & message, const std::string & file, const int line, const MessageImportance importance)
 {
-    time_t currentTime;
-    time (&currentTime);
+	time_t currentTime;
+	time(&currentTime);
 
-    for (ObserverList::iterator i = myObserverList.begin ();
-         i != myObserverList.end (); i++)
-    {
-        if ((int) importance >= (int) (*i)->getFilter ())
-        {
-            (*i)->onNewMessage (message, file, line, importance, currentTime);
-        }
-    }
+	for (ObserverList::iterator i = myObserverList.begin(); i != myObserverList.end(); i++) {
+		if (static_cast<int>(importance) >= static_cast<int>((*i)->getFilter())) {
+			(*i)->onNewMessage(message, file, line, importance, currentTime);
+		}
+	}
+}
+
+
+
+LoggingInstance::LoggingInstance(LoggingService& service, const std::string & file, const int line, const LoggingService::MessageImportance importance)
+: mService(service), mFile(file), mLine(line), mImportance(importance), mMessage("")
+{
+}
+
+LoggingInstance::LoggingInstance(LoggingService& service, const LoggingService::MessageImportance importance)
+: mService(service), mFile(""), mLine(-1), mImportance(importance), mMessage("")
+{
+}
+
+LoggingInstance::LoggingInstance(LoggingService& service, const std::string & file, const LoggingService::MessageImportance importance)
+: mService(service), mFile(file), mLine(-1), mImportance(importance), mMessage("")
+{
+}
+
+LoggingInstance::LoggingInstance(LoggingService& service, const std::string & file, const int line)
+: mService(service), mFile(file), mLine(line), mImportance(LoggingService::INFO), mMessage("")
+{
+}
+
+LoggingInstance::LoggingInstance(LoggingService& service, const std::string & file)
+: mService(service), mFile(file), mLine(-1), mImportance(LoggingService::INFO), mMessage("")
+{
+}
+
+LoggingInstance::~LoggingInstance()
+{
+	///If we haven't sent to the service yet, do it now.
+	if (mMessage != "") {
+		mService.sendMessage (mMessage, mFile, mLine, mImportance);
+	}
+}
+
+LoggingInstance & LoggingInstance::operator<< (const std::string & stringToAdd)
+{
+	mMessage += stringToAdd;
+	return *this;
+}
+
+LoggingInstance & LoggingInstance::operator<< (const unsigned int uintToAdd)
+{
+	std::stringstream ss;
+	ss << uintToAdd;
+	mMessage += ss.str();
+	
+	return *this;
+}
+
+LoggingInstance & LoggingInstance::operator<< (const int intToAdd)
+{
+	std::stringstream ss;
+	ss << intToAdd;
+	mMessage += ss.str();
+
+	return *this;
+}
+
+LoggingInstance & LoggingInstance::
+operator<< (const LoggingService::HexNumber & intHexToAdd)
+{
+	char buffer[LoggingService::NUMBER_BUFFER_SIZE];
+	sprintf (buffer, "%x", intHexToAdd.myNumber);
+	mMessage += buffer;
+	return *this;
+}
+
+LoggingInstance & LoggingInstance::
+operator<< (const double doubleToAdd)
+{
+	std::stringstream ss;
+	ss << doubleToAdd;
+	mMessage += ss.str();
+	return *this;
+}
+
+LoggingInstance & LoggingInstance::operator<< (const long longToAdd)
+{
+	std::stringstream ss;
+	ss << longToAdd;
+	mMessage += ss.str();
+
+	return *this;
+}
+
+LoggingInstance & LoggingInstance::
+operator<< (const unsigned long ulongToAdd)
+{
+	std::stringstream ss;
+	ss << ulongToAdd;
+	mMessage += ss.str();
+	return *this;
+}
+
+
+void LoggingInstance::operator<< (const LoggingService::EndMessageEnum endMessage)
+{
+	mService.sendMessage(mMessage, mFile, mLine, mImportance);
+	mMessage = "";
 }
 
 }

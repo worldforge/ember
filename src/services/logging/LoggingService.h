@@ -37,12 +37,6 @@
 namespace Ember
 {
 
-//General TODOs:
-//%TASK Tim,2: make LoggingService threadsafe!
-//%TASK Tim,2: Is it necessary to support UNICODE/wide characters?
-//%TASK Tim,2: Add debug assertions. (How are the platform independent macros called?)
-
-
 class ErisLogReciever;
 class Observer;
 
@@ -62,11 +56,7 @@ class Observer;
 #define S_LOG_CRITICAL(message) (Ember::LoggingService::getSingleton().slog(__FILE__, __LINE__, Ember::LoggingService::CRITICAL) << message << ENDM)
 
 
-//#define S_LOG_INFO(message) Ember::LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << message << ENDM;
-	
-//TODO: Sorry, but innerclass didn't work properly
-const int NUMBER_BUFFER_SIZE = 24;
-const int MESSAGE_BUFFER_SIZE = 4096;
+class LoggingInstance;
 
 /**
 * @brief Easy-to-deal-with logging class.
@@ -79,9 +69,6 @@ const int MESSAGE_BUFFER_SIZE = 4096;
 * last (use ENDM* macro). To specify formats like hexadecimal printing static functions
 * are available for conversion (use the HEX_NUM* macro).
 *
-* NOTE: Since streaming actually constist of many operations that can be interrupted by
-* switching the active thread, streaming should only be used in thread safe areas. [TODO: How
-* to fix this unwanted behaviour?]
 *
 *
 * There are some log variants for which you can specify some options:
@@ -121,7 +108,6 @@ const int MESSAGE_BUFFER_SIZE = 4096;
 *
 * @author Tim Enderling
 */
-
 class LoggingService : public Service, public Ember::Singleton<LoggingService>
 {
 	private:
@@ -136,6 +122,11 @@ class LoggingService : public Service, public Ember::Singleton<LoggingService>
 
 	public:
 	friend class ErisLogReciever;
+	friend class LoggingInstance;
+	
+	static const int NUMBER_BUFFER_SIZE = 24;
+	static const int MESSAGE_BUFFER_SIZE = 4096;
+	
 	/**
 	* @brief This enum contains all levels of message importance.
 	* -VERBOSE messages are for maxiumum level of verboseness and are emitted frequently with details of Ember's internal state.
@@ -201,30 +192,24 @@ class LoggingService : public Service, public Ember::Singleton<LoggingService>
 	* @param message The message format string.
 	*
 	*/
-	void log (const char *message, ...);
+	void log(const char *message, ...);
 
-	void log (const char *file, const char *message, ...);
+	void log(const char *file, const char *message, ...);
 
-	void log (const char *file, const int line, const char *message, ...);
+	void log(const char *file, const int line, const char *message, ...);
 
-	void log (const MessageImportance importance, const char *message,
-			...);
+	void log(const MessageImportance importance, const char *message, ...);
 
-	void log (const char *file, const MessageImportance importance,
-			const char *message, ...);
+	void log(const char *file, const MessageImportance importance, const char *message, ...);
 
-	void log (const char *file, const int line,
-			const MessageImportance importance, const char *message,
-			...);
+	void log(const char *file, const int line, const MessageImportance importance, const char *message, ...);
 
 
 	/**
 	*  @brief Is actually used in all cases of log. (Generates the message and then uses sendMessage.)
 	* @see log
 	*/
-	void logVarParam (const char *file, const int line,
-					const MessageImportance importance,
-					const char *message, va_list argptr);
+	void logVarParam(const char *file, const int line, const MessageImportance importance, const char *message, va_list argptr);
 
 	/**
 	* @brief Gives the possibility to specify options when using the streaming method << for messages.
@@ -233,28 +218,26 @@ class LoggingService : public Service, public Ember::Singleton<LoggingService>
 	* @param line The source code line the message was initiated.
 	* @param importance The level of importance (see MessageImportance enum)
 	*
-	* @return This function always returns a reference to the LoggingService object. You
+	* @return This function always returns a reference to a LoggingInstance object. You
 	* can thus easily apply the shifting operator to it.
 	*/
 
-	LoggingService & slog (const std::string & file, const int line,
-						const MessageImportance importance);
+	LoggingInstance slog(const std::string & file, const int line, const MessageImportance importance);
 
-	LoggingService & slog (const MessageImportance importance);
+	LoggingInstance slog(const MessageImportance importance);
 
-	LoggingService & slog (const std::string & file,
-						const MessageImportance importance);
+	LoggingInstance slog(const std::string & file, const MessageImportance importance);
 
-	LoggingService & slog (const std::string & file, const int line);
+	LoggingInstance slog(const std::string & file, const int line);
 
-	LoggingService & slog (const std::string & file);
+	LoggingInstance slog(const std::string & file);
 
 	/**
 	* @brief Adds an observer to the list.
 	*
 	* @param observer Pointer to an object with an Observer interface to be added to the list.
 	*/
-	void addObserver (Observer * observer);
+	void addObserver(Observer * observer);
 
 
 	/**
@@ -263,34 +246,12 @@ class LoggingService : public Service, public Ember::Singleton<LoggingService>
 	* @param observer The pointer previously added the the observer list via addObserver.
 	* @return 0 if the observer was found and removed, <> 0 otherwise
 	*/
-	int removeObserver (Observer * observer);
+	int removeObserver(Observer * observer);
 
 	/**
 	* @brief Converts a normal int to a hexadecimal int that can be streamed into the LoggingService object. (use HEX_NUM macro if you want)
 	*/
-	static HexNumber hexNumber (const int intDecimal);
-
-	LoggingService & operator<< (const std::string & stringToAdd);
-
-	LoggingService & operator<< (const int intToAdd);
-
-	LoggingService & operator<< (const unsigned int uintToAdd);
-
-	LoggingService & operator<< (const long longToAdd);
-
-	LoggingService & operator<< (const unsigned long ulongToAdd);
-
-	LoggingService & operator<< (const HexNumber & intHexToAdd);
-
-	LoggingService & operator<< (const double doubleToAdd);
-
-//         LoggingService & operator<< (const size_t sizetToAdd);
-	/**
-	* By streaming in END_MESSAGE (equally to ENDM-macro) you finish the message and start
-	* sending it.
-	*/
-
-	void operator<< (const EndMessageEnum endMessage);
+	static HexNumber hexNumber(const int intDecimal);
 
 private:
 
@@ -301,39 +262,101 @@ private:
 	*/
 	ObserverList myObserverList;
 
-	/**
-	currently given part of the message string (used by << streaming only)
-	*/
-	std::string myMessage;
-
-	/**
-	* currently set source file (option; used by << streaming only)
-	* An empty string indicates that no file option was set.
-	*/
-	std::string myFile;
-
-	/**
-	* currently set source code line (option; used by << streaming only)
-	* -1 indicates that no line option was set.
-	*/
-	int myLine;
-
-	/**
-	* currently set importance (option; used by << streaming only)
-	* The default value is INFO.
-	*/
-	MessageImportance myImportance;
 
 	std::auto_ptr<ErisLogReciever> mErisLogReciever;
 
 	/**
 	* Unifies the sending mechanism for streaming- and formatting-input
 	*/
-	virtual void sendMessage (const std::string & message,
-							const std::string & file, const int line,
-							const MessageImportance importance);
+	virtual void sendMessage (const std::string & message, const std::string & file, const int line, const MessageImportance importance);
 
 };// LoggingService
+
+
+/**
+@brief A logging instance.
+Use the << methods to write log message to the instance.
+Send LoggingService::EndMessageEnum to it to make it write its contents to the service. If nothing has been written at the time of deletion it will be written then.
+*/
+class LoggingInstance
+{
+public:
+	friend class LoggingService;
+
+	LoggingInstance(LoggingService& service, const std::string & file, const int line, const LoggingService::MessageImportance importance);
+
+	LoggingInstance(LoggingService& service, const LoggingService::MessageImportance importance);
+
+	LoggingInstance(LoggingService& service, const std::string & file, const LoggingService::MessageImportance importance);
+
+	LoggingInstance(LoggingService& service, const std::string & file, const int line);
+
+	LoggingInstance(LoggingService& service, const std::string & file);
+	
+	
+	LoggingInstance& operator<< (const std::string & stringToAdd);
+
+	LoggingInstance& operator<< (const int intToAdd);
+
+	LoggingInstance& operator<< (const unsigned int uintToAdd);
+
+	LoggingInstance& operator<< (const long longToAdd);
+
+	LoggingInstance& operator<< (const unsigned long ulongToAdd);
+
+	LoggingInstance& operator<< (const LoggingService::HexNumber & intHexToAdd);
+
+	LoggingInstance& operator<< (const double doubleToAdd);
+	
+	/**
+	 * @brief At destruction the message will be written, if not already done.
+	 */
+	~LoggingInstance();
+
+	/**
+	* By streaming in END_MESSAGE (equally to ENDM-macro) you finish the message and start
+	* sending it.
+	*/
+	void operator<< (const LoggingService::EndMessageEnum endMessage);
+
+private:
+
+	/**
+	 * @brief This is private to prevent copying.
+	 * @param l 
+	 */
+	LoggingInstance(const LoggingInstance& l);
+
+	/**
+	 * @brief The service to which this instance is bound.
+	 */
+	LoggingService& mService;
+
+	/**
+	* currently set source file (option; used by << streaming only)
+	* An empty string indicates that no file option was set.
+	*/
+	std::string mFile;
+
+	/**
+	* currently set source code line (option; used by << streaming only)
+	* -1 indicates that no line option was set.
+	*/
+	int mLine;
+	
+
+	/**
+	* currently set importance (option; used by << streaming only)
+	* The default value is INFO.
+	*/
+	LoggingService::MessageImportance mImportance;
+	
+	/**
+	currently given part of the message string (used by << streaming only)
+	*/
+	std::string mMessage;
+	
+};
 
 }// namespace Ember
 
