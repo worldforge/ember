@@ -171,26 +171,26 @@ AC_MSG_RESULT([
 		**************************************
 
 	])
-AC_CHECK_LIB(IL, ilInit,
-	[
-		CXXFLAGS="$CXXFLAGS $IL_CFLAGS"
-		LIBS="$LIBS $IL_LIBS -lIL"
-	]
-,AC_MSG_ERROR([
-****************************************************************
-* You do not have DevIL installed.  This is required to build. *
-* You may find it at http://openil.sourceforge.net/.           *
-****************************************************************]))
-AC_CHECK_LIB(ILU, iluFlipImage,
-	[
-		CXXFLAGS="$CXXFLAGS $ILU_CFLAGS"
-		LIBS="$LIBS $ILU_LIBS -lILU"
-	]
-,AC_MSG_ERROR([
-****************************************************************
-* You do not have DevIL installed.  This is required to build. *
-* You may find it at http://openil.sourceforge.net/.           *
-****************************************************************]))
+#AC_CHECK_LIB(IL, ilInit,
+#	[
+#		CXXFLAGS="$CXXFLAGS $IL_CFLAGS"
+#		LIBS="$LIBS $IL_LIBS -lIL"
+#	]
+#,AC_MSG_ERROR([
+#****************************************************************
+#* You do not have DevIL installed.  This is required to build. *
+#* You may find it at http://openil.sourceforge.net/.           *
+#****************************************************************]))
+#AC_CHECK_LIB(ILU, iluFlipImage,
+#	[
+#		CXXFLAGS="$CXXFLAGS $ILU_CFLAGS"
+#		LIBS="$LIBS $ILU_LIBS -lILU"
+#	]
+#,AC_MSG_ERROR([
+#****************************************************************
+#* You do not have DevIL installed.  This is required to build. *
+#* You may find it at http://openil.sourceforge.net/.           *
+#****************************************************************]))
 
 #AC_DEFINE(LIBSIGC_DISABLE_DEPRECATED, 1, [Don't use deprecated sigc methods.])
 
