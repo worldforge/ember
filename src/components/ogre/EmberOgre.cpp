@@ -281,6 +281,7 @@ bool EmberOgre::frameEnded(const Ogre::FrameEvent & evt)
 
 bool EmberOgre::frameStarted(const Ogre::FrameEvent & evt)
 {
+	mModelDefinitionManager->pollBackgroundLoaders();
 	//OgreOpcode::CollisionManager::getSingletonPtr()->getDefaultContext()->visualize(true, false, false, false, true, true);
 	return true;
 }
