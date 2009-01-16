@@ -169,43 +169,7 @@ bool Model::createFromDefn()
 		mBackgroundLoader = new ModelBackgroundLoader(*this);
 	}
 
-	for (SubModelDefinitionsStore::const_iterator I_subModels = mMasterModel->getSubModelDefinitions().begin(); I_subModels != mMasterModel->getSubModelDefinitions().end(); ++I_subModels) 
-	{
-		Ogre::MeshPtr meshPtr = static_cast<Ogre::MeshPtr>(Ogre::MeshManager::getSingleton().getByName((*I_subModels)->getMeshName()));
-		if (meshPtr.isNull() || !meshPtr->isPrepared()) {
-			Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().load(Ogre::MeshManager::getSingleton().getResourceType(), (*I_subModels)->getMeshName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-			mBackgroundLoader->addTicket(ticket);
-		} else {
-			if (!meshPtr->isLoaded()) {
-				meshPtr->load();
-				Ogre::Mesh::SubMeshIterator subMeshI = meshPtr->getSubMeshIterator();
-				while (subMeshI.hasMoreElements()) {
-					Ogre::SubMesh* submesh(subMeshI.getNext());
-					Ogre::MaterialPtr materialPtr = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(submesh->getMaterialName()));
-					if (materialPtr.isNull() || !materialPtr->isPrepared()) {
-						Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().load(Ogre::MaterialManager::getSingleton().getResourceType(), submesh->getMaterialName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-						mBackgroundLoader->addTicket(ticket);
-					} else {
-						materialPtr->load();
-					}
-				}
-			}
-		}
-		
-		for (PartDefinitionsStore::const_iterator I_parts = (*I_subModels)->getPartDefinitions().begin(); I_parts != (*I_subModels)->getPartDefinitions().end(); ++I_parts) {
-			for (SubEntityDefinitionsStore::const_iterator I_subEntities = (*I_parts)->getSubEntityDefinitions().begin(); I_subEntities != (*I_parts)->getSubEntityDefinitions().end(); ++I_subEntities)  {
-				Ogre::MaterialPtr materialPtr = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName((*I_subEntities)->getMaterialName()));
-				if (materialPtr.isNull() || !materialPtr->isPrepared()) {
-					Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().load(Ogre::MaterialManager::getSingleton().getResourceType(), (*I_subEntities)->getMaterialName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-					mBackgroundLoader->addTicket(ticket);
-				} else {
-					materialPtr->load();
-				}
-			}
-		}
-	}
-
-	if (mBackgroundLoader->checkModelReady(false)) {
+	if (mBackgroundLoader->poll(false)) {
 		return createActualModel();
 	} else {
 		ModelDefinitionManager::getSingleton().addBackgroundLoader(mBackgroundLoader);

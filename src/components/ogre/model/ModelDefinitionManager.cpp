@@ -157,7 +157,7 @@ void ModelDefinitionManager::pollBackgroundLoaders()
 	{
 		BackgroundLoaderStore::iterator I_copy = I;
 		++I;
-		if ((*I_copy)->checkModelReady(true)) {
+		if ((*I_copy)->poll(true)) {
 			mBackgroundLoaders.erase(I_copy);
 		}
 	}

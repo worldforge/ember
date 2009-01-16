@@ -34,7 +34,7 @@ namespace EmberOgre {
 namespace Model {
 
 ModelBackgroundLoader::ModelBackgroundLoader(Model& model)
-: mModel(model)
+: mModel(model), mState(LS_UNINITIALIZED)
 {
 }
 
@@ -44,25 +44,96 @@ ModelBackgroundLoader::~ModelBackgroundLoader()
 }
 
 
-bool ModelBackgroundLoader::checkModelReady(bool reloadIfReady)
+
+bool ModelBackgroundLoader::poll(bool reloadIfReady)
 {
-	if (mTickets.size() > 0) {
-		for (TicketStore::iterator I = mTickets.begin(); I != mTickets.end(); ) {
-			TicketStore::iterator I_copy = I;
-			++I;
-			if (Ogre::ResourceBackgroundQueue::getSingleton().isProcessComplete(*I_copy)) {
-				mTickets.erase(I_copy);
+
+	if (mState == LS_UNINITIALIZED) {
+		///Start to load the meshes
+		for (SubModelDefinitionsStore::const_iterator I_subModels = mModel.getDefinition()->getSubModelDefinitions().begin(); I_subModels != mModel.getDefinition()->getSubModelDefinitions().end(); ++I_subModels) 
+		{
+			Ogre::MeshPtr meshPtr = static_cast<Ogre::MeshPtr>(Ogre::MeshManager::getSingleton().getByName((*I_subModels)->getMeshName()));
+			if (meshPtr.isNull() || !meshPtr->isPrepared()) {
+				Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().load(Ogre::MeshManager::getSingleton().getResourceType(), (*I_subModels)->getMeshName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+				if (ticket) {
+					addTicket(ticket);
+				}
+			}
+		}
+		mState = LS_MESH_PREPARING;
+		return poll(reloadIfReady);
+	} else if (mState == LS_MESH_PREPARING) {
+		if (mTickets.size() > 0) {
+			for (TicketStore::iterator I = mTickets.begin(); I != mTickets.end(); ) {
+				TicketStore::iterator I_copy = I;
+				++I;
+				if (Ogre::ResourceBackgroundQueue::getSingleton().isProcessComplete(*I_copy)) {
+					mTickets.erase(I_copy);
+				}
 			}
 		}
 		if (mTickets.size() == 0) {
-			if (reloadIfReady) {
-				mModel.reload();
-			}
-			return true;
+			mState = LS_MESH_PREPARED;
+			return poll(reloadIfReady);
 		}
-		return false;
+	} else if (mState == LS_MESH_PREPARED) {
+		for (SubModelDefinitionsStore::const_iterator I_subModels = mModel.getDefinition()->getSubModelDefinitions().begin(); I_subModels != mModel.getDefinition()->getSubModelDefinitions().end(); ++I_subModels) 
+		{
+			Ogre::MeshPtr meshPtr = static_cast<Ogre::MeshPtr>(Ogre::MeshManager::getSingleton().getByName((*I_subModels)->getMeshName()));
+			if (!meshPtr.isNull()) {
+				meshPtr->load();
+				Ogre::Mesh::SubMeshIterator subMeshI = meshPtr->getSubMeshIterator();
+				while (subMeshI.hasMoreElements()) {
+					Ogre::SubMesh* submesh(subMeshI.getNext());
+					Ogre::MaterialPtr materialPtr = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(submesh->getMaterialName()));
+					if (materialPtr.isNull() || !materialPtr->isPrepared()) {
+						Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().load(Ogre::MaterialManager::getSingleton().getResourceType(), submesh->getMaterialName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+						if (ticket) {
+							addTicket(ticket);
+						}
+					}
+				}
+			}
+		}
+		mState = LS_MATERIAL_PREPARING;
+		return poll(reloadIfReady);
+	} else if (mState == LS_MATERIAL_PREPARING) {
+		if (mTickets.size() > 0) {
+			for (TicketStore::iterator I = mTickets.begin(); I != mTickets.end(); ) {
+				TicketStore::iterator I_copy = I;
+				++I;
+				if (Ogre::ResourceBackgroundQueue::getSingleton().isProcessComplete(*I_copy)) {
+					mTickets.erase(I_copy);
+				}
+			}
+		}
+		if (mTickets.size() == 0) {
+			mState = LS_MATERIAL_PREPARED;
+			return poll(reloadIfReady);
+		}
+	} else if (mState == LS_MATERIAL_PREPARED) {
+		for (SubModelDefinitionsStore::const_iterator I_subModels = mModel.getDefinition()->getSubModelDefinitions().begin(); I_subModels != mModel.getDefinition()->getSubModelDefinitions().end(); ++I_subModels) 
+		{
+			Ogre::MeshPtr meshPtr = static_cast<Ogre::MeshPtr>(Ogre::MeshManager::getSingleton().getByName((*I_subModels)->getMeshName()));
+			meshPtr->load();
+			Ogre::Mesh::SubMeshIterator subMeshI = meshPtr->getSubMeshIterator();
+			while (subMeshI.hasMoreElements()) {
+				Ogre::SubMesh* submesh(subMeshI.getNext());
+				Ogre::MaterialPtr materialPtr = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(submesh->getMaterialName()));
+				if (!materialPtr.isNull()) {
+					materialPtr->load();
+				}
+			}
+		}
+		if (reloadIfReady) {
+			mModel.reload();
+		}
+		mState = LS_DONE;
+		return true;
+	} else {
+		return true;
 	}
-	return true;
+	return false;
 }
 
 void ModelBackgroundLoader::addTicket(Ogre::BackgroundProcessTicket ticket)

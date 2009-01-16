@@ -36,21 +36,34 @@ class Model;
 class ModelBackgroundLoader
 {
 public:
+	enum LoadingState {
+		LS_UNINITIALIZED,
+		LS_MESH_PREPARING,
+		LS_MESH_PREPARED,
+		LS_MATERIAL_PREPARING,
+		LS_MATERIAL_PREPARED,
+		LS_DONE
+	};
 	typedef std::list<Ogre::BackgroundProcessTicket> TicketStore;
 	
 	ModelBackgroundLoader(Model& model);
 	
 	~ModelBackgroundLoader();
 	
-	bool checkModelReady(bool reloadIfReady = true);
+	bool poll(bool reloadIfReady = true);
 	
 	void addTicket(Ogre::BackgroundProcessTicket ticket);
+	
+// 	void initialize();
 	
 	
 protected:
 	Model& mModel;
 	
 	TicketStore mTickets;
+	
+	LoadingState mState;
+	
 };
 
 }
