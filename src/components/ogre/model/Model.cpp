@@ -170,6 +170,8 @@ bool Model::createFromDefn()
 	}
 
 	if (mBackgroundLoader->poll(false)) {
+		delete mBackgroundLoader;
+		mBackgroundLoader = 0;
 		return createActualModel();
 	} else {
 		ModelDefinitionManager::getSingleton().addBackgroundLoader(mBackgroundLoader);
@@ -209,11 +211,11 @@ bool Model::createActualModel()
 				entity->setRenderingDistance(mMasterModel->getRenderingDistance());
 			}
 
-			SubModel* submodel = new SubModel(entity);
+			SubModel* submodel = new SubModel(*entity);
 			//Model::SubModelPartMapping* submodelPartMapping = new Model::SubModelPartMapping();
 				
 			for (PartDefinitionsStore::const_iterator I_parts = (*I_subModels)->getPartDefinitions().begin(); I_parts != (*I_subModels)->getPartDefinitions().end(); ++I_parts) {
-				SubModelPart* part = submodel->createSubModelPart((*I_parts)->getName());
+				SubModelPart& part = submodel->createSubModelPart((*I_parts)->getName());
 				std::string groupName("");
 				
 				if ((*I_parts)->getSubEntityDefinitions().size() > 0)
@@ -233,7 +235,7 @@ bool Model::createActualModel()
 								}
 							}
 							if (subEntity) {
-								part->addSubEntity(subEntity, *I_subEntities);
+								part.addSubEntity(subEntity, *I_subEntities);
 								
 								if ((*I_subEntities)->getMaterialName() != "") {
 									subEntity->setMaterialName((*I_subEntities)->getMaterialName());
@@ -249,7 +251,7 @@ bool Model::createActualModel()
 					//if no subentities are defined, add all subentities
 					unsigned int numSubEntities = entity->getNumSubEntities();
 					for (unsigned int i = 0;i < numSubEntities; ++i) {
-						part->addSubEntity(entity->getSubEntity(i), 0);
+						part.addSubEntity(entity->getSubEntity(i), 0);
 					}
 				}
 				if ((*I_parts)->getGroup() != "") {
@@ -262,7 +264,7 @@ bool Model::createActualModel()
 				}
 				
 				ModelPart& modelPart = mModelParts[(*I_parts)->getName()];
-				modelPart.addSubModelPart(part);
+				modelPart.addSubModelPart(&part);
 				modelPart.setGroupName((*I_parts)->getGroup());
 			}
 			addSubmodel(submodel);
