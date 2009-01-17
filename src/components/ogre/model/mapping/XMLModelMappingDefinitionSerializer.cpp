@@ -84,8 +84,9 @@ void XMLModelMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocument
 				continue;
 			} else {
 				const std::string name(tmp);
+				ModelMappingDefinition* definition(0);
 				try {
-					ModelMappingDefinition* definition = new ModelMappingDefinition();
+					definition = new ModelMappingDefinition();
 					definition->setName(name);
 					definition->getRoot().setType("entitytype");
 					CaseDefinition caseDef;
@@ -97,12 +98,16 @@ void XMLModelMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocument
 					caseDef.getActions().push_back(actionDef);
 					definition->getRoot().getCases().push_back(caseDef);
 				
-					mModelMappingManager.addDefinition(definition);
 				} catch (std::exception ex) {
+					delete definition;
 					//S_LOG_FAILURE(ex.what());
 				} catch (...) {
+					delete definition;
 					//S_LOG_FAILURE("Error when reading model mapping with name " << name);
-				}		
+				}
+				if (definition) {
+					mModelMappingManager.addDefinition(definition);
+				}
 			}
 		}	
 		
@@ -117,8 +122,9 @@ void XMLModelMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocument
 				continue;
 			} else {
 				const std::string name(tmp);
+				ModelMappingDefinition* definition(0);
 				try {
-					ModelMappingDefinition* definition = new ModelMappingDefinition();
+					definition = new ModelMappingDefinition();
 					definition->setName(name);
 					definition->getRoot().setType("entitytype");
 					CaseDefinition caseDef;
@@ -138,11 +144,15 @@ void XMLModelMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocument
 					caseDef.getActions().push_back(actionDef);
 					definition->getRoot().getCases().push_back(caseDef);
 				
-					mModelMappingManager.addDefinition(definition);
 				} catch (std::exception ex) {
+					delete definition;
 					//S_LOG_FAILURE(ex.what());
 				} catch (...) {
 					//S_LOG_FAILURE("Error when reading model mapping with name " << name);
+					delete definition;
+				}
+				if (definition) {
+					mModelMappingManager.addDefinition(definition);
 				}
 			}
 		}
