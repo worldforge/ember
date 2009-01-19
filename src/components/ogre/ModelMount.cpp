@@ -74,7 +74,7 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 	Ogre::AxisAlignedBox defaultOgreBoundingBox = mModel.getBoundingBox();
 	
 	///We can only apply any meaninful scaling if there's a bounding box in the model. This might not be true if the model for example only contains a particle system or similiar, and no entities
-	if (!defaultOgreBoundingBox.isNull()) {
+	if (!defaultOgreBoundingBox.isNull() && (defaultOgreBoundingBox.getSize().x == 0.0f || defaultOgreBoundingBox.getSize().y == 0.0f || defaultOgreBoundingBox.getSize().z == 0.0f)) {
 		///apply any transformations required first so the bounding box we use as reference represents the way to mesh is adjusted through rotations set in the model definition
 		Ogre::Matrix4 localTransform;
 		localTransform.makeTransform(getScaleNode()->getPosition(), getScaleNode()->getScale(), getScaleNode()->getOrientation());
