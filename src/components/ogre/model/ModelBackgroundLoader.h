@@ -85,16 +85,20 @@ public:
 	/**
 	 * @brief Polls the loading state (which might occur in a background thread).
 	 * If the loading state has progressed it will be updated.
-	 * @param reloadIfReady If set to true, the Model will be reloaded when the loading has completed.
 	 * @return True if the loading is complete.
 	 */
-	bool poll(bool reloadIfReady = true);
+	bool poll();
 	
 	/**
 	 * @brief Gets the current loading state.
 	 * @return The current loading state.
 	 */
 	const LoadingState getState() const;
+	
+	/**
+	 * @brief Reloads the model.
+	 */
+	void reloadModel();
 	
 protected:
 	
