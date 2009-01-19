@@ -72,7 +72,7 @@ Model::Model(const std::string& name)
 , mAttachPoints(0)
 , mBackgroundLoader(0)
 {
- mVisible = true;
+	mVisible = true;
 }
 Model::~Model()
 {
@@ -84,10 +84,13 @@ Model::~Model()
 	if (mBackgroundLoader) {
 		ModelDefinitionManager::getSingleton().removeBackgroundLoader(mBackgroundLoader);
 	}
+	delete mBackgroundLoader;
+	S_LOG_VERBOSE("Deleted "<< getName());
 }
 
 void Model::reset()
 {
+	S_LOG_VERBOSE("Resetting "<< getName());
 	Resetting.emit();
 //	resetAnimations();
 	resetSubmodels();
@@ -169,9 +172,10 @@ bool Model::createFromDefn()
 		mBackgroundLoader = new ModelBackgroundLoader(*this);
 	}
 
-	if (mBackgroundLoader->poll(false)) {
+	if (mBackgroundLoader->poll()) {
+/*		ModelDefinitionManager::getSingleton().removeBackgroundLoader(mBackgroundLoader);
 		delete mBackgroundLoader;
-		mBackgroundLoader = 0;
+		mBackgroundLoader = 0;*/
 		return createActualModel();
 	} else {
 		ModelDefinitionManager::getSingleton().addBackgroundLoader(mBackgroundLoader);
@@ -693,6 +697,7 @@ Ogre::TagPoint* Model::attachObjectToAttachPoint(const Ogre::String &attachPoint
 			wrapper.AttachPointName = attachPointName;
 			wrapper.Movable = pMovable;
 			mAttachPoints->push_back(wrapper);
+			return tagPoint;
 		}
 	}
 	return 0;
@@ -857,13 +862,15 @@ void Model::setRenderQueueGroup(Ogre::RenderQueueGroupID queueID)
 */
 const Ogre::AxisAlignedBox& Model::getBoundingBox(void) const
 {
-	mFull_aa_box.setNull();
-	 
-	SubModelSet::const_iterator child_itr = mSubmodels.begin();
-	SubModelSet::const_iterator child_itr_end = mSubmodels.end();
-	for( ; child_itr != child_itr_end; child_itr++)
-	{
-		mFull_aa_box.merge((*child_itr)->getEntity()->getBoundingBox());
+	if (mSubmodels.size() != 0) {
+		mFull_aa_box.setNull();
+		
+		SubModelSet::const_iterator child_itr = mSubmodels.begin();
+		SubModelSet::const_iterator child_itr_end = mSubmodels.end();
+		for( ; child_itr != child_itr_end; child_itr++)
+		{
+			mFull_aa_box.merge((*child_itr)->getEntity()->getBoundingBox());
+		}
 	}
 
 	return mFull_aa_box;
@@ -873,16 +880,18 @@ const Ogre::AxisAlignedBox& Model::getBoundingBox(void) const
 */
 const Ogre::AxisAlignedBox& Model::getWorldBoundingBox(bool derive) const
 {
-	mWorldFull_aa_box.setNull();
-	 
-	SubModelSet::const_iterator child_itr = mSubmodels.begin();
-	SubModelSet::const_iterator child_itr_end = mSubmodels.end();
-
-	for( ; child_itr != child_itr_end; child_itr++)
-	{
- 		mWorldFull_aa_box.merge((*child_itr)->getEntity()->getWorldBoundingBox(derive));
+	if (mSubmodels.size() != 0) {
+		mWorldFull_aa_box.setNull();
+		
+		SubModelSet::const_iterator child_itr = mSubmodels.begin();
+		SubModelSet::const_iterator child_itr_end = mSubmodels.end();
+	
+		for( ; child_itr != child_itr_end; child_itr++)
+		{
+			mWorldFull_aa_box.merge((*child_itr)->getEntity()->getWorldBoundingBox(derive));
+		}
 	}
-	 
+	
 	return mWorldFull_aa_box;
 }
 
