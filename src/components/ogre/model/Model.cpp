@@ -111,12 +111,9 @@ void Model::reload()
 	resetParticles();	*/
 	reset();
 	createFromDefn();
-	//if we are attached, we have to nofify the new entities, else they won't appear in the scene
-	if (mParentNode != 0) {
-		Ogre::Node* theParent = mParentNode;
-		_notifyAttached(0, false);
-		_notifyAttached(theParent, mParentIsTagPoint);
-	}
+	///if we are attached, we have to nofify the new entities, else they won't appear in the scene
+	_notifyAttached(mParentNode, mParentIsTagPoint);
+
 	Reloaded.emit();
 }
 
@@ -187,12 +184,7 @@ bool Model::createFromDefn()
 
 bool Model::createActualModel()
 {
-	// create instance of model from definition
 	Ogre::SceneManager* sceneManager = _getManager();
-	assert(sceneManager);
-	mScale = mMasterModel->mScale ;
-	mRotation = mMasterModel->mRotation;
-	
 	std::vector<std::string> showPartVector;
 
 /*	const SubModelDefinitionsStore&
@@ -1019,11 +1011,15 @@ void Model::visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRende
 /** Overridden from MovableObject */
 void Model::_notifyAttached(Ogre::Node* parent, bool isTagPoint)
 {
-	MovableObject::_notifyAttached(parent, isTagPoint);
+	if (parent != mParentNode) {
+		MovableObject::_notifyAttached(parent, isTagPoint);
+	}
 	SubModelSet::const_iterator I = mSubmodels.begin();
 	SubModelSet::const_iterator I_end = mSubmodels.end();
 	for (; I != I_end; ++I) {
-		(*I)->getEntity()->_notifyAttached(parent, isTagPoint);
+		if ((*I)->getEntity()->getParentNode() != parent) {
+			(*I)->getEntity()->_notifyAttached(parent, isTagPoint);
+		}
 	}
 }
 
