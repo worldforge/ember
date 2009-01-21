@@ -74,15 +74,15 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 	Ogre::AxisAlignedBox defaultOgreBoundingBox = mModel.getBoundingBox();
 	
 	///We can only apply any meaninful scaling if there's a bounding box in the model. This might not be true if the model for example only contains a particle system or similiar, and no entities
-	if (!defaultOgreBoundingBox.isNull() && (defaultOgreBoundingBox.getSize().x == 0.0f || defaultOgreBoundingBox.getSize().y == 0.0f || defaultOgreBoundingBox.getSize().z == 0.0f)) {
+	Ogre::Vector3 defaultSize = defaultOgreBoundingBox.getSize();
+	if (!defaultOgreBoundingBox.isNull() && (defaultSize.x != 0.0f && defaultSize.y != 0.0f && defaultSize.z != 0.0f)) {
 		///apply any transformations required first so the bounding box we use as reference represents the way to mesh is adjusted through rotations set in the model definition
 		Ogre::Matrix4 localTransform;
 		localTransform.makeTransform(getScaleNode()->getPosition(), getScaleNode()->getScale(), getScaleNode()->getOrientation());
 		defaultOgreBoundingBox.transform(localTransform);
 	// 	defaultOgreBoundingBox.transform(Ogre::Matrix4(getScaleNode()->getOrientation()));
 		
-		const Ogre::Vector3& defaultMax(defaultOgreBoundingBox.getMaximum());
-		const Ogre::Vector3& defaultMin(defaultOgreBoundingBox.getMinimum());
+		defaultSize = defaultOgreBoundingBox.getSize();
 		
 		///Depending on whether the entity has a bounding box or not we'll use different scaling methods. Most entities should have bounding boxes, but not all.
 		if (wfBbox && wfBbox->isValid()) {
@@ -107,13 +107,13 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 			
 			switch (getModel().getUseScaleOf()) {
 				case Model::ModelDefinition::MODEL_HEIGHT:
-					scaleX = scaleY = scaleZ = fabs((ogreMax.y - ogreMin.y) / (defaultMax.y - defaultMin.y));
+					scaleX = scaleY = scaleZ = fabs((ogreMax.y - ogreMin.y) / defaultSize.y);
 					break;
 				case Model::ModelDefinition::MODEL_WIDTH:
-					scaleX = scaleY = scaleZ = fabs((ogreMax.x - ogreMin.x) / (defaultMax.x - defaultMin.x));
+					scaleX = scaleY = scaleZ = fabs((ogreMax.x - ogreMin.x) / defaultSize.x);
 					break;
 				case Model::ModelDefinition::MODEL_DEPTH:
-					scaleX = scaleY = scaleZ = fabs((ogreMax.z - ogreMin.z) / (defaultMax.z - defaultMin.z));
+					scaleX = scaleY = scaleZ = fabs((ogreMax.z - ogreMin.z) / defaultSize.z);
 					break;
 				case Model::ModelDefinition::MODEL_NONE:
 					scaleX = scaleY = scaleZ = 1;
@@ -122,9 +122,9 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 				case Model::ModelDefinition::MODEL_ALL:
 				default:
 					///HACK: for some reason we have to switch x and z here. I'm not completely sure why, but it works. It hints at a problem elsewhere though
-					scaleZ = fabs((ogreMax.x - ogreMin.x) / (defaultMax.x - defaultMin.x));
-					scaleY = fabs((ogreMax.y - ogreMin.y) / (defaultMax.y - defaultMin.y));
-					scaleX = fabs((ogreMax.z - ogreMin.z) / (defaultMax.z - defaultMin.z));
+					scaleZ = fabs((ogreMax.x - ogreMin.x) / defaultSize.x);
+					scaleY = fabs((ogreMax.y - ogreMin.y) / defaultSize.y);
+					scaleX = fabs((ogreMax.z - ogreMin.z) / defaultSize.z);
 			}
 			
 			
@@ -136,9 +136,9 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 			
 			S_LOG_WARNING("Could not find any scale set in the model '" << getModel().getName() << "'. We'll thus default to scaling the mesh so it's 0.25 meters in each dimension.");
 			
-			Ogre::Real scaleX = (0.25 / (defaultMax.x - defaultMin.x));
-			Ogre::Real scaleY = (0.25 / (defaultMax.y - defaultMin.y));
-			Ogre::Real scaleZ = (0.25 / (defaultMax.z - defaultMin.z));
+			Ogre::Real scaleX = (0.25 / defaultSize.x);
+			Ogre::Real scaleY = (0.25 / defaultSize.y);
+			Ogre::Real scaleZ = (0.25 / defaultSize.z);
 			getScaleNode()->setScale(scaleX, scaleY, scaleZ);
 		}
 	
@@ -149,6 +149,8 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 				getScaleNode()->scale(getModel().getScale(), getModel().getScale(), getModel().getScale());
 			}
 		}
+	} else {
+		getScaleNode()->setScale(1, 1, 1);
 	}
 }
 
