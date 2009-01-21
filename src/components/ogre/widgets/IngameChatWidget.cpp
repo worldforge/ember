@@ -334,8 +334,8 @@ void IngameChatWidget::Label::placeWindowOnEntity()
 	Ogre::Vector2 screenCoords;
 	
 	bool result = false;
-	Ogre::Vector3 entityWorldCoords = getEntity()->getWorldBoundingSphere(true).getCenter();
-	entityWorldCoords.y = getEntity()->getWorldBoundingBox(true).getMaximum().y;
+	Ogre::Vector3 entityWorldCoords = getEntity()->getWorldBoundingSphere().getCenter();
+	entityWorldCoords.y = getEntity()->getWorldBoundingBox().getMaximum().y;
 	///check what the new position is in screen coords
 	result = EmberOgre::getSingletonPtr()->getMainCamera()->worldToScreen(entityWorldCoords, screenCoords);
 	
