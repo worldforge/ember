@@ -134,6 +134,12 @@ bool ModelBackgroundLoader::poll()
 	return false;
 }
 
+const ModelBackgroundLoader::LoadingState ModelBackgroundLoader::getState() const
+{
+	return mState;
+}
+
+
 void ModelBackgroundLoader::reloadModel()
 {
 	mModel.reload();
