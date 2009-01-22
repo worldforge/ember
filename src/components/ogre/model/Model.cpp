@@ -554,6 +554,11 @@ bool Model::getDisplaySkeleton(void) const
 	return false;
 }
 
+bool Model::isLoaded() const
+{
+	return mBackgroundLoader != 0 && mBackgroundLoader->getState() == ModelBackgroundLoader::LS_DONE;
+}
+
 
 
 const Ogre::Real Model::getScale() const
