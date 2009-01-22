@@ -365,6 +365,8 @@ bool EmberPhysicalEntity::getShowOgreBoundingBox() const
 void EmberPhysicalEntity::Model_Reloaded()
 {
 	initFromModel();
+	///Retrigger a movement change so that animations can be stopped and started now that the model has changed.
+	onModeChanged(mMovementMode);
 	attachAllEntities();
 }
 
