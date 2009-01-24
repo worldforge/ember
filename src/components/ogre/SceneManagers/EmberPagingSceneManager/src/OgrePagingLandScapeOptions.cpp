@@ -238,7 +238,7 @@ namespace Ogre
         {
             // Wrap as a stream
             DataStreamPtr stream(
-                new FileStreamDataStream(filename, &fs, false));
+                OGRE_NEW FileStreamDataStream(filename, &fs, false));
 
 	        config.load(stream);
 
