@@ -494,6 +494,20 @@ void EmberPhysicalEntity::onChildRemoved(Entity *e)
 {
 	///NOTE: we don't have to do detachment here, like we do attachment in onChildAdded, since that is done by the EmberEntity::onLocationChanged(...) method
 	Eris::Entity::onChildRemoved(e);
+	
+}
+
+
+void EmberPhysicalEntity::onLocationChanged(Eris::Entity *oldLocation)
+{
+	bool requireRescaling = false;
+	if (mModelAttachedTo) {
+		requireRescaling = true;
+	}
+	EmberEntity::onLocationChanged(oldLocation);
+	if (requireRescaling) {
+		scaleNode();
+	}
 }
 
 
