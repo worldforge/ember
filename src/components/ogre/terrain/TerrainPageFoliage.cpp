@@ -317,7 +317,7 @@ void EmberOgre::Terrain::ClusterPopulator::populate(EmberOgre::Terrain::TerrainP
 	float clustersPersAxis(coverageMapPixelWidth / mClusterDistance);
 	unsigned int clustersPerPage(static_cast<unsigned int>(clustersPersAxis * clustersPersAxis));
 
-	WFMath::MTRand::uint32 seed(plantIndex + static_cast<WFMath::MTRand::uint32>(mTerrainPageFoliage.getTerrainPage().getWFPosition().x()) << 4 + static_cast<WFMath::MTRand::uint32>(mTerrainPageFoliage.getTerrainPage().getWFPosition().y()) << 8);
+	WFMath::MTRand::uint32 seed(plantIndex + (static_cast<WFMath::MTRand::uint32>(mTerrainPageFoliage.getTerrainPage().getWFPosition().x()) << 4) + (static_cast<WFMath::MTRand::uint32>(mTerrainPageFoliage.getTerrainPage().getWFPosition().y()) << 8));
 	
 // 	((mTerrainPageFoliage.getTerrainPage().getWFPosition().x() * mTerrainPageFoliage.getTerrainPage().getWFPosition().x()) + (mTerrainPageFoliage.getTerrainPage().getWFPosition().y() * mTerrainPageFoliage.getTerrainPage().getWFPosition().y() + mTerrainPageFoliage.getTerrainPage().getWFPosition().y())) * (plantIndex * plantIndex * plantIndex * plantIndex) );
 	WFMath::MTRand rng(seed);
