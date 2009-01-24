@@ -247,7 +247,7 @@ EmberOgre::~EmberOgre()
 	
 	///Ogre is destroyed already, so we can't deregister this: we'll just destroy it
 	delete mLogObserver;
-	delete mOgreLogManager;
+	OGRE_DELETE mOgreLogManager;
 	
 	///delete this first after Ogre has been shut down, since it then deletes the EmberOgreFileSystemFactory instance, and that can only be done once Ogre is shutdown
 	delete mResourceLoader;
@@ -325,7 +325,7 @@ bool EmberOgre::setup()
 	mLogObserver = new OgreLogObserver();
 	
 	///if we do this we will override the automatic creation of a LogManager and can thus route all logging from ogre to the ember log
-	mOgreLogManager = new Ogre::LogManager();
+	mOgreLogManager = OGRE_NEW Ogre::LogManager();
 	Ogre::LogManager::getSingleton().createLog("Ogre", true, false, true);
 	Ogre::LogManager::getSingleton().getDefaultLog()->addListener(mLogObserver);
 
