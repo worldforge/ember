@@ -131,6 +131,7 @@ namespace EmberOgre
 
 				SoundAction* newAction = new SoundAction(*this);
 
+				newAction->setGroup(soundDef->groupName);
 				SoundGroup* newGroup = newAction->setGroup(soundDef->groupName);
 				if ((*I)->getName().find("__movement_") == 0) {
 					newAction->setIsLooping(true);

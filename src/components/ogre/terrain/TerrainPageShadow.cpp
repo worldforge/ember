@@ -59,7 +59,7 @@ void SimpleTerrainPageShadowTechnique::createShadowData(TerrainPage& page, Terra
 		position = origPosition;
 		position[1] = position[1] - i;
 		for (int j = 0; j < pageSizeInMeters; ++j) {
-			float height;
+// 			float height;
 			WFMath::Vector<3> normal;
  			//if (generator->getTerrain().getHeightAndNormal(position.x(), position.y(), height, normal)) {
  			if (page.getNormal(position, normal)) {
