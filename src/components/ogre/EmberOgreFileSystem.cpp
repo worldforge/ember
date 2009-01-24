@@ -369,24 +369,24 @@ namespace EmberOgre {
         // Use filesystem to determine size
         // (quicker than streaming to the end and back)
         struct stat tagStat;
-	int ret = stat(full_path.c_str(), &tagStat);
+		int ret = stat(full_path.c_str(), &tagStat);
         assert(ret == 0 && "Problem getting file size" );
 
         // Always open in binary mode
-        std::ifstream *origStream = new std::ifstream();
+        std::ifstream *origStream = OGRE_NEW_T(std::ifstream, MEMCATEGORY_GENERAL)();
         origStream->open(full_path.c_str(), std::ios::in | std::ios::binary);
 
         // Should check ensure open succeeded, in case fail for some reason.
         if (origStream->fail())
         {
-            delete origStream;
+            OGRE_DELETE_T(origStream, basic_ifstream, MEMCATEGORY_GENERAL);
             OGRE_EXCEPT(Exception::ERR_FILE_NOT_FOUND,
                 "Cannot open file: " + filename,
                 "FileSystemArchive::open");
         }
 
         /// Construct return stream, tell it to delete on destroy
-        FileStreamDataStream* stream = new FileStreamDataStream(filename,
+        FileStreamDataStream* stream = OGRE_NEW FileStreamDataStream(filename,
             origStream, tagStat.st_size, true);
         return DataStreamPtr(stream);
     }
@@ -394,7 +394,7 @@ namespace EmberOgre {
     StringVectorPtr FileSystemArchive::list(bool recursive, bool dirs)
     {
 		// directory change requires locking due to saved returns
-        StringVectorPtr ret(new StringVector());
+		StringVectorPtr ret(OGRE_NEW_T(StringVector, MEMCATEGORY_GENERAL)(), SPFM_DELETE_T);
 
         findFiles("*", recursive, dirs, ret.getPointer(), 0);
 
@@ -403,7 +403,7 @@ namespace EmberOgre {
     //-----------------------------------------------------------------------
     FileInfoListPtr FileSystemArchive::listFileInfo(bool recursive, bool dirs)
     {
-        FileInfoListPtr ret(new FileInfoList());
+        FileInfoListPtr ret(OGRE_NEW_T(FileInfoList, MEMCATEGORY_GENERAL)(), SPFM_DELETE_T);
 
         findFiles("*", recursive, dirs, 0, ret.getPointer());
 
@@ -413,7 +413,7 @@ namespace EmberOgre {
     StringVectorPtr FileSystemArchive::find(const String& pattern,
                                             bool recursive, bool dirs)
     {
-        StringVectorPtr ret(new StringVector());
+		StringVectorPtr ret(OGRE_NEW_T(StringVector, MEMCATEGORY_GENERAL)(), SPFM_DELETE_T);
 
         findFiles(pattern, recursive, dirs, ret.getPointer(), 0);
 
@@ -424,7 +424,7 @@ namespace EmberOgre {
     FileInfoListPtr FileSystemArchive::findFileInfo(const String& pattern,
         bool recursive, bool dirs)
     {
-        FileInfoListPtr ret(new FileInfoList());
+		FileInfoListPtr ret(OGRE_NEW_T(FileInfoList, MEMCATEGORY_GENERAL)(), SPFM_DELETE_T);
 
         findFiles(pattern, recursive, dirs, 0, ret.getPointer());
 
