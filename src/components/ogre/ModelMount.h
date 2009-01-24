@@ -27,6 +27,7 @@
 
 namespace Ogre {
 	class SceneNode;
+	class Node;
 }
 
 namespace EmberOgre {
@@ -82,6 +83,8 @@ public:
 	 */
 	void rescale(const WFMath::AxisBox<3>* wfBbox);
 	
+// 	const Ogre::Vector3 calculateScaling(::EmberOgre::Model::Model& model, const WFMath::AxisBox<3>* wfBbox);
+	
 	
 protected:
 	/**
@@ -113,6 +116,12 @@ protected:
 	 * @param wfBbox The bounding box, in WF space, for which we should scale the node, or null if there's no bbox available.
 	 */
 	void scaleNode(const WFMath::AxisBox<3>* wfBbox);
+	
+	/**
+	 * @brief Gets the active scaling node. If the model is attached to a node already, this will be used, else the mScaleNode will be used.
+	 * @return The active scaling node.
+	 */
+	Ogre::Node* getActiveScaleNode() const;	
 
 };
 
@@ -121,10 +130,6 @@ inline Ogre::SceneNode* ModelMount::getMainNode() const
 	return mMainNode;
 }
 
-inline Ogre::SceneNode* ModelMount::getScaleNode() const
-{
-	return mScaleNode;
-}
 
 inline ::EmberOgre::Model::Model& ModelMount::getModel() const
 {
