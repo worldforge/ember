@@ -309,7 +309,24 @@ bool EmberOgre::setup()
 	if (mRoot) {
 		throw Ember::Exception("EmberOgre::setup has already been called.");
 	}
-	S_LOG_INFO("Compiled against ogre version " << OGRE_VERSION);
+	S_LOG_INFO("Compiled against Ogre version " << OGRE_VERSION);
+
+#if OGRE_DEBUG_MODE
+	S_LOG_INFO("Compiled against Ogre in debug mode.");
+#else
+	S_LOG_INFO("Compiled against Ogre in release mode.");
+#endif
+
+
+#if OGRE_THREAD_SUPPORT == 0
+	S_LOG_INFO("Compiled against Ogre without threading support.");
+#elif OGRE_THREAD_SUPPORT == 1
+	S_LOG_INFO("Compiled against Ogre with multi threading support.");
+#elif OGRE_THREAD_SUPPORT == 2
+	S_LOG_INFO("Compiled against Ogre with semi threading support.");
+#else
+	S_LOG_INFO("Compiled against Ogre with unknown threading support.");
+#endif
 
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingleton().getConfigService();
 
