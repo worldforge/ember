@@ -45,6 +45,9 @@ EntityEditor.prototypes =
 		type = "orientation",
 		nodelete = true
 	},
+	area = {
+		type = "area",
+	},
 	points = {
 		type = "points"
 	},
@@ -312,6 +315,8 @@ function EntityEditor.createAdapterFromPrototype(element, prototype)
 			adapterWrapper = EntityEditor.createStringAdapter(element, prototype)
 		elseif prototype.type == "number" then
 			adapterWrapper = EntityEditor.createNumberAdapter(element, prototype)
+		elseif prototype.type == "area" then
+			adapterWrapper = EntityEditor.createAreaAdapter(element, prototype)
 		end
 		if adapterWrapper ~= nil then
 			if prototype.suggestions ~= nil then
@@ -476,6 +481,13 @@ function EntityEditor.createOrientationAdapter(element, prototype)
 	local wrapper = {}
 	wrapper.container = guiManager:createWindow("DefaultGUISheet")
 	wrapper.adapter = EntityEditor.factory:createOrientationAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
+	return wrapper	
+end
+
+function EntityEditor.createAreaAdapter(element, prototype)
+	local wrapper = {}
+	wrapper.container = guiManager:createWindow("DefaultGUISheet")
+	wrapper.adapter = EntityEditor.factory:createAreaAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element, EntityEditor.instance.entity)
 	return wrapper	
 end
 
