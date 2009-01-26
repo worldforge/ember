@@ -24,6 +24,8 @@ $#include "../../AdapterFactory.h"
 
 namespace EmberOgre {
 
+class EmberEntity;
+
 namespace Gui {
 
 namespace Adapters {
@@ -50,6 +52,15 @@ public:
 	ListAdapter* createListAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const Atlas::Message::Element& element);
     OrientationAdapter* createOrientationAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const Atlas::Message::Element& element);
     StaticAdapter* createStaticAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const Atlas::Message::Element& element);
+	/**
+	* @brief Creates and adapter for a terrain area.
+	* @param container The container window into which the adapter's windows will be loaded.
+	* @param adapterPrefix A unique prefix for the adapter.
+	* @param element The element to which the adapter is bound.
+	* @param entity The entity to which the terrain area is bound. This can be a null pointer.
+	* @return A new terrain area adapter.
+	*/
+	AreaAdapter* createAreaAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const Atlas::Message::Element& element, EmberEntity* entity);
 
 
 	CEGUI::Window* loadLayoutIntoContainer(CEGUI::Window* container, const std::string& adapterPrefix, const std::string& layoutfile);

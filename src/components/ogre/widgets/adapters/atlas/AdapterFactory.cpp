@@ -34,6 +34,7 @@
 #include "Position2DAdapter.h"
 #include "OrientationAdapter.h"
 #include "StaticAdapter.h"
+#include "AreaAdapter.h"
 #include <CEGUI.h>
 #include "components/ogre/GUIManager.h"
 #include "services/logging/LoggingService.h"
@@ -330,6 +331,34 @@ StaticAdapter* AdapterFactory::createStaticAdapter(CEGUI::Window* container, con
 		return 0;
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when loading StaticAdapter. " << ex.what());
+		return 0;
+	}
+}
+
+AreaAdapter* AdapterFactory::createAreaAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
+{
+	if (!container) {
+		S_LOG_FAILURE("No container sent to AdapterFactory::createAreaAdapter.");
+		return 0;
+	}
+	
+	if (!element.isMap()) {
+		S_LOG_FAILURE("Incorrect element type, expected a map.");
+		return 0;
+	}
+	
+	try {
+		loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/AreaAdapter.layout");
+		WindowManager& windowMgr = WindowManager::getSingleton();
+		PushButton* button = static_cast<PushButton*>(windowMgr.getWindow(mCurrentPrefix + "showButton"));
+		AreaAdapter* adapter = new AreaAdapter(element, button, entity);
+		
+		return adapter;
+	} catch (const CEGUI::Exception& ex) {
+		S_LOG_FAILURE("Error when creating AreaAdapter. " << ex.getMessage ().c_str());
+		return 0;
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Error when loading AreaAdapter. " << ex.what());
 		return 0;
 	}
 }

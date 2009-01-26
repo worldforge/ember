@@ -36,6 +36,8 @@ class Entity;
 
 namespace EmberOgre {
 
+class EmberEntity;
+
 namespace Gui {
 
 namespace Adapters {
@@ -53,6 +55,7 @@ class PositionAdapter;
 class Position2DAdapter;
 class OrientationAdapter;
 class StaticAdapter;
+class AreaAdapter;
 
 /**
 	A factory class through which all adapters are created. Instead of creating the adapters yourself, use this to properly instantiate them.
@@ -145,14 +148,25 @@ public:
 	 * @return 
 	 */
 	ListAdapter* createListAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
-    /**
-     * Creates an adapter for a standard static value, shown in it's simples text form.
-     * @param container 
-     * @param adapterPrefix 
-     * @param element 
-     * @return 
-     */
-    StaticAdapter* createStaticAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
+	
+	/**
+	* Creates an adapter for a standard static value, shown in it's simples text form.
+	* @param container 
+	* @param adapterPrefix 
+	* @param element 
+	* @return 
+	*/
+	StaticAdapter* createStaticAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
+
+	/**
+	* @brief Creates and adapter for a terrain area.
+	* @param container The container window into which the adapter's windows will be loaded.
+	* @param adapterPrefix A unique prefix for the adapter.
+	* @param element The element to which the adapter is bound.
+	* @param entity The entity to which the terrain area is bound. This can be a null pointer.
+	* @return A new terrain area adapter.
+	*/
+	AreaAdapter* createAreaAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity);
 
 	AdapterBase* createAdapterByType(std::string type, CEGUI::Window* container, const std::string& adapterPrefix, ::Atlas::Message::Element& element);
 
