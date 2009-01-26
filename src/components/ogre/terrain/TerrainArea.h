@@ -38,7 +38,26 @@ class EmberEntity;
 namespace Terrain {
 
 /**
-Represents a terrain area, as defined by Mercator::Area.
+@brief Parses area data from an Atlas element.
+The element must be of map type and contain an int value named "layer", and a list of float tuples named "area".
+@author Erik Hjortsberg
+*/
+class TerrainAreaParser
+{
+public:
+/**
+* @brief Parses the area data from the atlas element.
+* @param areaData The root area element.
+* @param poly The shape of the area will be put here.
+* @param layer The layer of the area will be put here.
+* @return True if the parsing was successful.
+*/
+bool parseArea(const Atlas::Message::MapType& areaData, WFMath::Polygon<2>& poly, int& layer);
+
+};
+
+/**
+@brief Represents a terrain area, as defined by Mercator::Area.
 A terrain area is a section of the terrain, as defined by a 2d polygon. It's connected to a specified layer in the terrain, and allows you to define stuff like roads, fields or any other feature you want added to the terrain.
 
 The areas are always attached to an entity, and when the entity moves the area moves with it. The position of the area is defined in space coordinates relative to the entity's position.
