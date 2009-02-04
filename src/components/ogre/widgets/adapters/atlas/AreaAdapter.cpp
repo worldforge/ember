@@ -27,6 +27,8 @@
 #include "AreaAdapter.h"
 #include "components/ogre/terrain/TerrainArea.h"
 #include <wfmath/polygon.h>
+#include "components/ogre/EmberOgre.h"
+#include "components/ogre/terrain/TerrainGenerator.h"
 
 
 namespace EmberOgre {
@@ -44,7 +46,11 @@ EntityAreaPolygonPositionProvider::EntityAreaPolygonPositionProvider(EmberEntity
 
 float EntityAreaPolygonPositionProvider::getHeightForPosition(const WFMath::Point<2>& localPosition)
 {
-	//TODO: implement
+	::EmberOgre::Terrain::TerrainGenerator* terrain = EmberOgre::getSingleton().getTerrainGenerator();
+	if (terrain) {
+		WFMath::Point<3> worldPos = Ogre2Atlas(mEntity.getSceneNode()->_getDerivedPosition());
+		return terrain->getHeight(WFMath::Point<2>(worldPos.x() + localPosition.x(), worldPos.y() + localPosition.y())) - worldPos.z();
+	}
 	return 1;
 }
 
@@ -76,6 +82,7 @@ void AreaAdapter::updateGui(const ::Atlas::Message::Element& element)
 
 bool AreaAdapter::showButton_Clicked(const CEGUI::EventArgs& e) {
 	showPolygon();
+	return true;
 }
 
 void AreaAdapter::showPolygon()
@@ -104,6 +111,9 @@ void AreaAdapter::showPolygon()
 				mPolygon->loadFromShape(poly);
 			}
 		}
+	} else {
+		delete mPolygon;
+		mPolygon = 0;
 	}
 }
 
