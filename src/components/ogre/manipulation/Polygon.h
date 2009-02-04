@@ -47,6 +47,23 @@ class PolygonPointUserObject;
 class Polygon;
 class PolygonPoint;
 
+class PolygonRenderer
+{
+public:
+
+PolygonRenderer(Polygon& polygon);
+
+virtual ~PolygonRenderer();
+
+void update();
+
+protected:
+
+Polygon& mPolygon;
+Ogre::ManualObject* mManualObject;
+static unsigned int sCounter;
+};
+
 class PolygonPointUserObject : public Ogre::UserDefinedObject
 {
 public: 
@@ -108,6 +125,8 @@ public:
 	
 	Ogre::SceneNode* getNode();
 	
+	Ogre::SceneNode* getNode() const;
+	
 	void translate(const WFMath::Vector<2>& translation);
 	
 	WFMath::Point<2> getLocalPosition();
@@ -166,6 +185,8 @@ protected:
 	PointStore mPoints;
 	
 	IPolygonPositionProvider* mPositionProvider;
+	
+	PolygonRenderer mRenderer;
 	
 };
 

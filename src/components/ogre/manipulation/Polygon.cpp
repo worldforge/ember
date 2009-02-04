@@ -40,6 +40,41 @@ namespace EmberOgre {
 
 namespace Manipulation {
 
+unsigned int PolygonRenderer::sCounter = 0;
+
+PolygonRenderer::PolygonRenderer(Polygon& polygon)
+: mPolygon(polygon), mManualObject(0)
+{
+	std::stringstream ss;
+	ss << "PolygonRenderer" << sCounter++;
+	mManualObject = static_cast<Ogre::ManualObject*>(polygon.getBaseNode()->getCreator()->createMovableObject(ss.str(), Ogre::ManualObjectFactory::FACTORY_TYPE_NAME));
+	mManualObject->setDynamic(true); ///We'll be updating this a lot if the use alters the polygon
+	mPolygon.getBaseNode()->attachObject(mManualObject);
+	
+}
+
+PolygonRenderer::~PolygonRenderer()
+{
+	if (mManualObject) {
+		mPolygon.getBaseNode()->removeAndDestroyChild(mManualObject->getName());
+	}
+}
+
+void PolygonRenderer::update()
+{
+	mManualObject->clear();
+	mManualObject->begin("/global/authoring/polygon/line", Ogre::RenderOperation::OT_LINE_STRIP);
+	
+	for (Polygon::PointStore::const_iterator I = mPolygon.getPoints().begin(); I != mPolygon.getPoints().end(); ++I) {
+		const PolygonPoint* point(*I);
+		mManualObject->position(point->getNode()->getPosition());
+	}
+	mManualObject->end();
+
+	
+}
+
+
 unsigned int PolygonPoint::sPointCounter = 0;
 
 PolygonPoint::PolygonPoint(Polygon& polygon, const WFMath::Point<2>& localPosition)
@@ -50,6 +85,7 @@ PolygonPoint::PolygonPoint(Polygon& polygon, const WFMath::Point<2>& localPositi
 		nodePosition.y = polygon.getPositionProvider()->getHeightForPosition(localPosition);
 	}
 	mNode = mPolygon.getBaseNode()->createChildSceneNode(nodePosition);
+	mNode->setScale(0.25f, 0.25f, 0.25f);
 	
 	std::stringstream ss;
 	ss << "PolygonPoint" << sPointCounter++;
@@ -77,6 +113,16 @@ PolygonPoint::~PolygonPoint()
 	mPolygon.getBaseNode()->removeAndDestroyChild(mNode->getName());
 }
 
+Ogre::SceneNode* PolygonPoint::getNode()
+{
+	return mNode;
+}
+
+Ogre::SceneNode* PolygonPoint::getNode() const
+{
+	return mNode;
+}
+
 const std::string PolygonPointUserObject::s_TypeName("PolygonPointMarker");
 
 
@@ -101,7 +147,7 @@ const Ogre::String & PolygonPointUserObject::getTypeName (void) const
 
 
 Polygon::Polygon(Ogre::SceneNode* baseNode, IPolygonPositionProvider* positionProvider)
-: mBaseNode(baseNode), mPositionProvider(positionProvider)
+: mBaseNode(baseNode), mPositionProvider(positionProvider), mRenderer(*this)
 {
 }
 
@@ -124,6 +170,7 @@ void Polygon::loadFromShape(const WFMath::Polygon<2>& shape)
 		PolygonPoint* point = new PolygonPoint(*this, position);
 		mPoints.push_back(point);
 	}
+	mRenderer.update();
 }
 
 void Polygon::clear()
@@ -132,7 +179,14 @@ void Polygon::clear()
 		delete *I;
 	}
 	mPoints.clear();
+	mRenderer.update();
 }
+
+const Polygon::PointStore& Polygon::getPoints() const
+{
+	return mPoints;
+}
+
 
 IPolygonPositionProvider* Polygon::getPositionProvider() const
 {
