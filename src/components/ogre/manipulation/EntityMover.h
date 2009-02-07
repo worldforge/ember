@@ -24,7 +24,7 @@
 #define EMBEROGREENTITYMOVER_H
 
 #include "../EmberOgrePrerequisites.h"
-#include "IEntityMoveBridge.h"
+#include "IMovementBridge.h"
 #include <wfmath/point.h>
 
 namespace EmberOgre {

@@ -26,7 +26,7 @@
 
 #include "../EmberOgrePrerequisites.h"
 #include "framework/ConsoleObject.h"
-#include "EntityMoveAdapter.h"
+#include "MovementAdapter.h"
 #include "EntityMoveAdjuster.h"
 
 namespace EmberOgre {

@@ -26,7 +26,7 @@
 #endif
 
 #include "EntityMoveManager.h"
-#include "EntityMoveAdapter.h"
+#include "MovementAdapter.h"
 #include "EntityMover.h"
 #include "../GUIManager.h"
 #include "framework/Tokeniser.h"

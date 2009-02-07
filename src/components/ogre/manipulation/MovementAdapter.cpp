@@ -24,9 +24,9 @@
 #include "config.h"
 #endif
 
-#include "EntityMoveAdapter.h"
+#include "MovementAdapter.h"
 #include "../EmberOgre.h"
-#include "IEntityMoveBridge.h"
+#include "IMovementBridge.h"
 #include "EntityMoveManager.h"
 #include "../AvatarCamera.h"
 #include "../AvatarTerrainCursor.h"
