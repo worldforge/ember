@@ -40,7 +40,7 @@ namespace EmberOgre {
 
 
 EntityMoveManager::EntityMoveManager() :
-Move("move", this, "Moves an entity."), mMoveAdapter(this), mAdjuster(this)
+Move("move", this, "Moves an entity."), mMoveAdapter(*this), mAdjuster(this)
 {
 	GUIManager::getSingleton().EventEntityAction.connect(sigc::mem_fun(*this, &EntityMoveManager::GuiManager_EntityAction));
 }

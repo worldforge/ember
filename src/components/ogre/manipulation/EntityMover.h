@@ -36,7 +36,7 @@ class EmberEntity;
 	
 	@brief An implementation of IEntityMoveBridge which allows for EmberEntity instances to be moved.
 */
-class EntityMover : public IEntityMoveBridge
+class EntityMover : public IMovementBridge
 {
 public:
 
