@@ -40,7 +40,7 @@ namespace EmberOgre {
 
 
 EntityMoveManager::EntityMoveManager() :
-Move("move", this, "Moves an entity."), mMoveAdapter(*this), mAdjuster(this)
+Move("move", this, "Moves an entity."), mMoveAdapter(), mAdjuster(this)
 {
 	GUIManager::getSingleton().EventEntityAction.connect(sigc::mem_fun(*this, &EntityMoveManager::GuiManager_EntityAction));
 }
@@ -58,7 +58,7 @@ void EntityMoveManager::startMove(EmberEntity* entity)
 {
 	///disallow moving of the root entity
 	if (entity->getLocation()) {
-		EntityMover* mover = new EntityMover(entity);
+		EntityMover* mover = new EntityMover(*entity, *this);
 		mMoveAdapter.attachToBridge(mover);
 		EventStartMoving.emit(entity);
 	}

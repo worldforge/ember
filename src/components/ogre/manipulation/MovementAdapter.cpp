@@ -244,24 +244,4 @@ void MovementAdapter::addAdapter()
 	mWorker = new MovementAdapterWorkerTerrainCursor(*this);
 }
 
-
-EntityMovementAdapter::EntityMovementAdapter(EntityMoveManager& manager)
-: MovementAdapter(), mManager(manager)
-{}
-
-EntityMovementAdapter::~EntityMovementAdapter()
-{}
-
-void EntityMovementAdapter::finalizeMovement()
-{
-	MovementAdapter::finalizeMovement();
-	mManager.EventFinishedMoving.emit();
-}
-
-void EntityMovementAdapter::cancelMovement()
-{
-	MovementAdapter::cancelMovement();
-	mManager.EventCancelledMoving.emit();
-}
-
 }

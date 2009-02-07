@@ -100,7 +100,7 @@ protected:
 
 	@brief Provides an adapter for moving objects in the world.
 	
-	When activates, an instance of this will recieve input events and pass these on to the currently selected instance of MovementAdapterWorkerBase which in turn will translate those input operations into entity movements.
+	When activates, an instance of this will recieve input events and pass these on to the currently selected instance of MovementAdapterWorkerBase which in turn will translate those input operations into movement of any object movements, as defined in the bridge to which this is attached.
 */
 class MovementAdapter : public Ember::IInputAdapter {
 friend class MovementAdapterWorkerBase;
@@ -168,36 +168,7 @@ protected:
 	
 };
 
-class EntityMovementAdapter : public MovementAdapter {
-public:
-	/**
-	 * @brief Ctor.
-	 * @param manager The manager to which this adapter belongs.
-	 */
-	EntityMovementAdapter(EntityMoveManager& manager);
-	
-	/**
-	 * @brief Dtor.
-	 */
-	virtual ~EntityMovementAdapter();
 
-protected:
-	
-	/**
-	 * @brief Cancels the current movement, returning the IMovementBridge to it's original place.
-	 */
-	virtual void cancelMovement();
-	
-	/**
-	 * @brief Finalizes the current movement, sending updates for the IMovementBridge to the server.
-	 */
-	virtual void finalizeMovement();
-	
-	/**
-	 * @brief The manager to which this adapter belongs to (normally only one in the system).
-	 */
-	EntityMoveManager& mManager;
-};
 
 }
 

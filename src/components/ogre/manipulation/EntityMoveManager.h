@@ -77,7 +77,7 @@ protected:
 	/**
 	Main adapter which will intercept mouse and keyboard input to allow for movement of an entity.
 	*/
-	EntityMovementAdapter mMoveAdapter;
+	MovementAdapter mMoveAdapter;
 
 
 	/**

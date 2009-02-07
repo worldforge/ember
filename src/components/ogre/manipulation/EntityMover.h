@@ -30,6 +30,7 @@
 namespace EmberOgre {
 
 class EmberEntity;
+class EntityMoveManager;
 
 /**
 	@author Erik Hjortsberg <erik@katastrof.nu>
@@ -40,7 +41,7 @@ class EntityMover : public IMovementBridge
 {
 public:
 
-	EntityMover(EmberEntity* entity);
+	EntityMover(EmberEntity& entity, EntityMoveManager& manager);
 	virtual ~EntityMover() {}
 
 	virtual const WFMath::Quaternion& getOrientation() const;
@@ -56,9 +57,11 @@ public:
 
 private:
 
-	EmberEntity* mEntity;
+	EmberEntity& mEntity;
+	EntityMoveManager& mManager;
 	mutable WFMath::Quaternion mOrientation;
 	mutable WFMath::Point<3> mPosition;
+	
 };
 
 }
