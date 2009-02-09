@@ -1,5 +1,5 @@
 //
-// C++ Interface: Polygon
+// C++ Interface: PolygonPoint
 //
 // Description: 
 //
@@ -20,11 +20,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBEROGRE_MANIPULATIONPOLYGON_H
-#define EMBEROGRE_MANIPULATIONPOLYGON_H
+#ifndef EMBEROGRE_MANIPULATIONPOLYGONPOINT_H
+#define EMBEROGRE_MANIPULATIONPOLYGONPOINT_H
 
-#include "PolygonRenderer.h"
-#include <wfmath/polygon.h>
+#include <wfmath/point.h>
+#include "PolygonPointUserObject.h"
 
 namespace Ogre {
 class SceneNode;
@@ -34,57 +34,42 @@ namespace EmberOgre {
 
 namespace Manipulation {
 
-
-
-class PolygonPointUserObject;
 class Polygon;
-class PolygonPoint;
-class IPolygonPositionProvider;
-
+class PolygonPointMover;
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class Polygon
+class PolygonPoint
 {
 public:
-friend class PolygonPoint;
-typedef std::list<PolygonPoint*> PointStore;
-	Polygon(Ogre::SceneNode* baseNode, IPolygonPositionProvider* positionProvider);
+
+	PolygonPoint(Polygon& polygon, const WFMath::Point<2>& localPosition);
 	
-	~Polygon();
+	~PolygonPoint();
 	
-	WFMath::Polygon<2> getShape() const;
+	Polygon& getPolygon();
 	
-	void loadFromShape(const WFMath::Polygon<2>& shape);
+	Ogre::SceneNode* getNode();
 	
-	void clear();
+	Ogre::SceneNode* getNode() const;
 	
-	const PointStore& getPoints() const;
+	void translate(const WFMath::Vector<2>& translation);
 	
-	PolygonPoint* appendPoint();
+	WFMath::Point<2> getLocalPosition();
 	
-	PolygonPoint* insertPoint(size_t index);
+	WFMath::Point<2> getDerivedPosition();
 	
-	bool removePoint(PolygonPoint& point);
+	void startMovement();
 	
-	Ogre::SceneNode* getBaseNode();
+	void endMovement();
 	
-	IPolygonPositionProvider* getPositionProvider() const;
-    
 protected:
-
-
-
-	void updateNodes();
-
-	Ogre::SceneNode* mBaseNode;
-
-	PointStore mPoints;
+	static unsigned int sPointCounter;
 	
-	IPolygonPositionProvider* mPositionProvider;
-	
-	PolygonRenderer mRenderer;
-	
+	Polygon& mPolygon;
+	PolygonPointUserObject mUserObject;
+	Ogre::SceneNode* mNode;
+	PolygonPointMover* mMover;
 };
 
 }

@@ -1,5 +1,5 @@
 //
-// C++ Interface: Polygon
+// C++ Interface: PolygonRenderer
 //
 // Description: 
 //
@@ -20,71 +20,37 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBEROGRE_MANIPULATIONPOLYGON_H
-#define EMBEROGRE_MANIPULATIONPOLYGON_H
-
-#include "PolygonRenderer.h"
-#include <wfmath/polygon.h>
+#ifndef EMBEROGRE_MANIPULATIONPOLYGONRENDERER_H
+#define EMBEROGRE_MANIPULATIONPOLYGONRENDERER_H
 
 namespace Ogre {
-class SceneNode;
+class ManualObject;
 }
 
 namespace EmberOgre {
 
 namespace Manipulation {
 
-
-
-class PolygonPointUserObject;
 class Polygon;
-class PolygonPoint;
-class IPolygonPositionProvider;
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class Polygon
+class PolygonRenderer
 {
 public:
-friend class PolygonPoint;
-typedef std::list<PolygonPoint*> PointStore;
-	Polygon(Ogre::SceneNode* baseNode, IPolygonPositionProvider* positionProvider);
+
+	PolygonRenderer(Polygon& polygon);
 	
-	~Polygon();
+	virtual ~PolygonRenderer();
 	
-	WFMath::Polygon<2> getShape() const;
-	
-	void loadFromShape(const WFMath::Polygon<2>& shape);
-	
-	void clear();
-	
-	const PointStore& getPoints() const;
-	
-	PolygonPoint* appendPoint();
-	
-	PolygonPoint* insertPoint(size_t index);
-	
-	bool removePoint(PolygonPoint& point);
-	
-	Ogre::SceneNode* getBaseNode();
-	
-	IPolygonPositionProvider* getPositionProvider() const;
-    
+	void update();
+
 protected:
 
-
-
-	void updateNodes();
-
-	Ogre::SceneNode* mBaseNode;
-
-	PointStore mPoints;
-	
-	IPolygonPositionProvider* mPositionProvider;
-	
-	PolygonRenderer mRenderer;
-	
+	Polygon& mPolygon;
+	Ogre::ManualObject* mManualObject;
+	static unsigned int sCounter;
 };
 
 }
