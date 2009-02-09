@@ -111,6 +111,13 @@ Ogre::Vector3 Atlas2Ogre(const TerrainPosition& p);
 Ogre::Vector2 Atlas2Ogre_Vector2(const TerrainPosition& p);
 
 /**
+ * @brief Converts a 2d vector into a 2d Ogre vector.
+ * @param p A 2d Worldforge vector.
+ * @return A 2d Ogre vector.
+ */
+Ogre::Vector2 Atlas2Ogre(const WFMath::Vector<2>& p);
+
+/**
  * @brief Converts an Ogre 3d vector into a Worldforge 3d point.
  * @param p A 3d Ogre vector.
  * @return A 3d Worldforge point.
@@ -200,6 +207,10 @@ WFMath::AxisBox<2> Ogre2Atlas(const Ogre::TRect<Ogre::Real>& bounds);
 
 inline Ogre::Vector3 Atlas2Ogre(const TerrainPosition& p) {
 	return Ogre::Vector3(p.x(),0,-p.y());
+}
+
+inline Ogre::Vector2 Atlas2Ogre(const WFMath::Vector<2>& p) {
+	return Ogre::Vector2(p.x(),-p.y());
 }
 
 inline Ogre::Vector2 Atlas2Ogre_Vector2(const TerrainPosition& p) {
