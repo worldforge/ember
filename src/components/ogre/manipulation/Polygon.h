@@ -71,10 +71,10 @@ typedef std::list<PolygonPoint*> PointStore;
 	Ogre::SceneNode* getBaseNode();
 	
 	IPolygonPositionProvider* getPositionProvider() const;
-    
+	
+	void updateRender();
+
 protected:
-
-
 
 	void updateNodes();
 

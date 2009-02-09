@@ -44,7 +44,7 @@ namespace Manipulation {
 unsigned int PolygonPoint::sPointCounter = 0;
 
 PolygonPoint::PolygonPoint(Polygon& polygon, const WFMath::Point<2>& localPosition)
-: mPolygon(polygon), mUserObject(*this), mNode(0), mMover(0)
+: mPolygon(polygon), mUserObject(*this), mNode(0), mMover(0), mMoveAdapter(0)
 {
 	Ogre::Vector3 nodePosition = Atlas2Ogre(localPosition);
 	if (polygon.getPositionProvider()) {
@@ -62,6 +62,9 @@ PolygonPoint::PolygonPoint(Polygon& polygon, const WFMath::Point<2>& localPositi
 		entity->setMaterialName("BasePointMarkerMaterial");
 		entity->setRenderingDistance(300);
 		entity->setQueryFlags(MousePicker::CM_UNDEFINED);
+		
+		entity->setUserObject(&mUserObject);
+		
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when creating polygon point marker entity: " << ex.what());
 		return;
@@ -112,6 +115,7 @@ void PolygonPoint::translate(const WFMath::Vector<2>& translation)
 {
 	Ogre::Vector2 ogrePos = Atlas2Ogre(translation);
 	getNode()->translate(Ogre::Vector3(ogrePos.x, 0, ogrePos.y));
+	mPolygon.updateRender();
 }
 
 

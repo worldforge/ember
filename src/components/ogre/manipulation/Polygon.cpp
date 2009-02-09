@@ -95,6 +95,10 @@ IPolygonPositionProvider* Polygon::getPositionProvider() const
 	return mPositionProvider;
 }
 
+void Polygon::updateRender()
+{
+	mRenderer.update();
+}
 
 
 }
