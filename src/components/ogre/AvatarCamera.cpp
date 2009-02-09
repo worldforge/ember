@@ -600,6 +600,17 @@ void AvatarCamera::pushWorldPickListener(IWorldPickListener* worldPickListener)
 	mPickListeners.push_front(worldPickListener);
 }
 
+void AvatarCamera::removeWorldPickListener(IWorldPickListener* worldPickListener)
+{
+	if (worldPickListener) {
+		WorldPickListenersStore::iterator I = std::find(mPickListeners.begin(), mPickListeners.end(), worldPickListener);
+		if (I != mPickListeners.end()) {
+			mPickListeners.erase(I);
+		}
+	}
+}
+
+
 const std::string AvatarCamera::_takeScreenshot() 
 {
 	// retrieve current time
