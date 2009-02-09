@@ -25,6 +25,7 @@
 
 #include "AdapterBase.h"
 #include "components/ogre/manipulation/Polygon.h"
+#include "components/ogre/manipulation/IPolygonPositionProvider.h"
 #include "components/ogre/EmberEntity.h"
 
 namespace EmberOgre {
