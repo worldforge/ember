@@ -25,6 +25,11 @@
 
 #include "EmberOgrePrerequisites.h"
 
+namespace Ogre {
+class RaySceneQueryResultEntry;
+class Ray;
+}
+
 namespace EmberOgre {
 
 
