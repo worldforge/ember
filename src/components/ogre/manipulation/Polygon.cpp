@@ -75,10 +75,35 @@ void PolygonRenderer::update()
 }
 
 
+
+void PolygonPointPickListener::processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs)
+{
+	if (entry.movable) {
+		Ogre::MovableObject* pickedMovable = entry.movable;
+		if (pickedMovable->isVisible() && pickedMovable->getUserObject() != 0 && pickedMovable->getUserObject()->getTypeName() == PolygonPointUserObject::s_TypeName) {
+			mPickedUserObject = static_cast<PolygonPointUserObject*>(pickedMovable->getUserObject());
+			continuePicking = false;
+		}
+	}
+}
+
+void PolygonPointPickListener::initializePickingContext()
+{
+	mPickedUserObject = 0;
+}
+
+void PolygonPointPickListener::endPickingContext(const MousePickerArgs& mousePickerArgs)
+{
+	if (mPickedUserObject) {
+		mPickedUserObject->getPoint().startMovement();
+	}
+}
+
+
 unsigned int PolygonPoint::sPointCounter = 0;
 
 PolygonPoint::PolygonPoint(Polygon& polygon, const WFMath::Point<2>& localPosition)
-: mPolygon(polygon), mUserObject(*this), mNode(0)
+: mPolygon(polygon), mUserObject(*this), mNode(0), mMover(0)
 {
 	Ogre::Vector3 nodePosition = Atlas2Ogre(localPosition);
 	if (polygon.getPositionProvider()) {
@@ -110,6 +135,7 @@ PolygonPoint::PolygonPoint(Polygon& polygon, const WFMath::Point<2>& localPositi
 
 PolygonPoint::~PolygonPoint()
 {
+	endMovement();
 	mPolygon.getBaseNode()->removeAndDestroyChild(mNode->getName());
 }
 
@@ -121,6 +147,18 @@ Ogre::SceneNode* PolygonPoint::getNode()
 Ogre::SceneNode* PolygonPoint::getNode() const
 {
 	return mNode;
+}
+
+void PolygonPoint::startMovement()
+{
+	delete mMover;
+// 	mMover = new PolygonPointMover(*this);
+}
+
+void PolygonPoint::endMovement()
+{
+	delete mMover;
+	mMover = 0;
 }
 
 const std::string PolygonPointUserObject::s_TypeName("PolygonPointMarker");

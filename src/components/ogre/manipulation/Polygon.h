@@ -26,6 +26,7 @@
 #include <wfmath/point.h>
 #include <OgreUserDefinedObject.h>
 #include <sigc++/signal.h>
+#include "../IWorldPickListener.h"
 
 namespace Ogre {
 class SceneNode;
@@ -62,6 +63,30 @@ protected:
 Polygon& mPolygon;
 Ogre::ManualObject* mManualObject;
 static unsigned int sCounter;
+};
+
+class PolygonPointMover
+{
+public:
+PolygonPointMover(PolygonPoint& point);
+protected:
+PolygonPoint& mPoint;
+};
+
+class PolygonPointPickListener : public IWorldPickListener
+{
+public:
+	PolygonPointPickListener();
+	virtual void processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs);
+	
+	virtual void initializePickingContext();
+
+	virtual void endPickingContext(const MousePickerArgs& mousePickerArgs);
+
+
+private:
+// 	TerrainEditor* mTerrainEditor;
+	PolygonPointUserObject* mPickedUserObject;
 };
 
 class PolygonPointUserObject : public Ogre::UserDefinedObject
@@ -133,12 +158,17 @@ public:
 	
 	WFMath::Point<2> getDerivedPosition();
 	
+	void startMovement();
+	
+	void endMovement();
+	
 protected:
 	static unsigned int sPointCounter;
 	
 	Polygon& mPolygon;
 	PolygonPointUserObject mUserObject;
 	Ogre::SceneNode* mNode;
+	PolygonPointMover* mMover;
 };
 
 
