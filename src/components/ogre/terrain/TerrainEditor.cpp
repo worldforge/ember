@@ -185,8 +185,6 @@ TerrainEditor::TerrainEditor() : mPickListener(this), mCurrentUserObject(0),mOve
 		//material->setLightingEnabled(false);
 		material->setFog(true);
 	}
-//	createOverlay();
-	//hideOverlay();
 }
 
 
@@ -201,6 +199,9 @@ TerrainEditor::~TerrainEditor()
 			mOverlayNode->getCreator()->destroySceneNode(mOverlayNode->getName());
 		}
 	}
+	///It's safe to do this even if the pick listener hasn't been added yet.
+	EmberOgre::getSingleton().getMainCamera()->removeWorldPickListener(&mPickListener);
+	
 }
 
 void TerrainEditor::showOverlay()
