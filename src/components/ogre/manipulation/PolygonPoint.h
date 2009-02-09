@@ -31,6 +31,7 @@ class SceneNode;
 }
 
 namespace EmberOgre {
+class MovementAdapter;
 
 namespace Manipulation {
 
@@ -70,6 +71,11 @@ protected:
 	PolygonPointUserObject mUserObject;
 	Ogre::SceneNode* mNode;
 	PolygonPointMover* mMover;
+	
+	/**
+	 * @brief Main adapter which will intercept mouse and keyboard input to allow for movement of this point.
+	 */
+	MovementAdapter* mMoveAdapter;
 };
 
 }

@@ -30,6 +30,7 @@ namespace EmberOgre {
 namespace Manipulation {
 
 class PolygonPointUserObject;
+class Polygon;
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -37,7 +38,8 @@ class PolygonPointUserObject;
 class PolygonPointPickListener : public IWorldPickListener
 {
 public:
-	PolygonPointPickListener();
+	PolygonPointPickListener(Polygon& polygon);
+	virtual ~PolygonPointPickListener();
 	virtual void processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs);
 	
 	virtual void initializePickingContext();
@@ -46,7 +48,7 @@ public:
 
 
 private:
-// 	TerrainEditor* mTerrainEditor;
+	Polygon& mPolygon;
 	PolygonPointUserObject* mPickedUserObject;
 };
 

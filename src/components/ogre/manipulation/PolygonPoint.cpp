@@ -28,6 +28,9 @@
 #include "PolygonPointMover.h"
 #include "Polygon.h"
 #include "IPolygonPositionProvider.h"
+
+#include "MovementAdapter.h"
+
 #include "../MathConverter.h"
 #include "../MousePicker.h"
 #include "services/logging/LoggingService.h"
@@ -90,14 +93,27 @@ Ogre::SceneNode* PolygonPoint::getNode() const
 void PolygonPoint::startMovement()
 {
 	delete mMover;
-// 	mMover = new PolygonPointMover(*this);
+	delete mMoveAdapter;
+	mMoveAdapter = new MovementAdapter();
+	mMover = new PolygonPointMover(*this);
+	mMoveAdapter->attachToBridge(mMover);
 }
 
 void PolygonPoint::endMovement()
 {
 	delete mMover;
 	mMover = 0;
+	delete mMoveAdapter;
+	mMoveAdapter = 0;
+
 }
+
+void PolygonPoint::translate(const WFMath::Vector<2>& translation)
+{
+	Ogre::Vector2 ogrePos = Atlas2Ogre(translation);
+	getNode()->translate(Ogre::Vector3(ogrePos.x, 0, ogrePos.y));
+}
+
 
 }
 

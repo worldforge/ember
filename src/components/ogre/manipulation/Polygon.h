@@ -40,6 +40,7 @@ class PolygonPointUserObject;
 class Polygon;
 class PolygonPoint;
 class IPolygonPositionProvider;
+class PolygonPointPickListener;
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -84,6 +85,8 @@ protected:
 	IPolygonPositionProvider* mPositionProvider;
 	
 	PolygonRenderer mRenderer;
+	
+	std::auto_ptr<PolygonPointPickListener> mListener;
 	
 };
 
