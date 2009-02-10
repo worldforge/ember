@@ -44,17 +44,17 @@ public:
 	/**
 	* Return filename
 	*/
-	const std::string& getFilename();
+	const std::string& getFilename() const;
 
 	/**
 	* Return the format
 	*/
-	Ember::SoundGeneral::SoundSampleType getFormat();
+	Ember::SoundGeneral::SoundSampleType getFormat() const;
 
 	/**
 	* Return the sound Volume
 	*/
-	float getVolume();
+	float getVolume() const;
 
 protected:
 	

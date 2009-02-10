@@ -147,9 +147,9 @@ void SoundGroupBinding::update()
 // 		}
 // 	}
 	
-	void SoundGroup::addSound(SoundDefinition* soundDef)
+	void SoundGroup::addSound(const SoundDefinition& soundDef)
 	{
-		BaseSoundSample* soundSample = EmberServices::getSingleton().getSoundService()->createOrRetrieveSoundSample(soundDef->getFilename());
+		BaseSoundSample* soundSample = EmberServices::getSingleton().getSoundService()->createOrRetrieveSoundSample(soundDef.getFilename());
 		if (soundSample)
 		{
 			mSamples.push_back(soundSample);

@@ -69,7 +69,7 @@ public:
 		 */
 		LS_DONE
 	};
-	typedef std::list<Ogre::BackgroundProcessTicket> TicketStore;
+	typedef std::list<Ogre::BackgroundProcessTicket, Ogre::STLAllocator<Ogre::BackgroundProcessTicket, Ogre::CategorisedAlignAllocPolicy<Ogre::MEMCATEGORY_GENERAL> > > TicketStore;
 	
 	/**
 	 * @brief Ctor.

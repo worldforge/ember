@@ -38,8 +38,10 @@ class SoundDefinition;
 class SoundGroupDefinition
 {
 public:
-	typedef std::map<std::string, SoundGroupDefinition*> SoundGroupDefinitionStore;
+	typedef std::list<SoundDefinition> SoundDefinitionStore;
 	SoundGroupDefinition();
+	
+	virtual ~SoundGroupDefinition();
 	
 	/**
 	* Insert a sound sample into this group definition
@@ -47,17 +49,16 @@ public:
 	void insertSample(const std::string& name, Ember::SoundGeneral::SoundSampleType type, float volume);
 
 	/**
-	* Return an iterator to the first member of the list
-	*/
-	std::list<SoundDefinition*>::const_iterator getSamplesBegin();
-
-	/**
-	* Return an iterator to the last member of the list
-	*/
-	std::list<SoundDefinition*>::const_iterator getSamplesEnd();
+	 * @brief Accessor for the sound definitions store.
+	 * @return 
+	 */
+	const SoundDefinitionStore& getSoundDefinitions() const;
 
 private:
-	std::list<SoundDefinition*> mSamples;
+	/**
+	 * @brief The sounds defined for this group.
+	 */
+	SoundDefinitionStore mSamples;
 };
 
 }
