@@ -115,6 +115,11 @@ void PolygonPoint::translate(const WFMath::Vector<2>& translation)
 {
 	Ogre::Vector2 ogrePos = Atlas2Ogre(translation);
 	getNode()->translate(Ogre::Vector3(ogrePos.x, 0, ogrePos.y));
+	if (mPolygon.getPositionProvider()) {
+		Ogre::Vector3 pos = getNode()->getPosition();
+		pos.y = mPolygon.getPositionProvider()->getHeightForPosition(Ogre2Atlas_TerrainPosition(pos));
+		getNode()->setPosition(pos);
+	}
 	mPolygon.updateRender();
 }
 
