@@ -27,6 +27,7 @@
 #include <OgreCommon.h>
 #include <OgreSharedPtr.h>
 #include <OgreDataStream.h>
+#include <OgreMemoryAllocatorConfig.h>
 
 namespace Ogre
 {
@@ -58,10 +59,10 @@ class TerrainLayerDefinition;
 class TerrainPageFoliage
 {
 public:
-	/**
+	/** 
 	A store of plant positions. We keep this in ogre space for performance reasons.
 	*/
-	typedef std::vector<Ogre::Vector2> PlantStore;
+	typedef std::vector<Ogre::Vector2, Ogre::STLAllocator<Ogre::Vector2, Ogre::CategorisedAlignAllocPolicy<Ogre::MEMCATEGORY_GEOMETRY> > > PlantStore;
 	typedef std::map<int, PlantStore> PlantBatchColumn;
 	typedef std::map<int, PlantBatchColumn> PlantBatchStore;
 	typedef std::map<std::string, PlantBatchStore> PlantStoreMap;
