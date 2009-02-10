@@ -100,6 +100,9 @@ function EntityEditor.clearEditing()
 		if EntityEditor.instance.entityChangeConnection ~= nil then
 			EntityEditor.instance.entityChangeConnection:disconnect()
 		end
+		if EntityEditor.instance.rootMapAdapter ~= nil then
+			EntityEditor.instance.rootMapAdapter:removeAdapters()
+		end
 		EntityEditor.instance = nil
 	end
 	EntityEditor.instance = {}
@@ -108,6 +111,7 @@ function EntityEditor.clearEditing()
 	EntityEditor.instance.addNewElement = function(element) 
 		table.insert(EntityEditor.instance.newElements,element)
 	end
+	
 end
 
 function EntityEditor.editEntity(entity)
