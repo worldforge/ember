@@ -34,27 +34,26 @@ namespace EmberOgre {
 
 SoundGroupDefinition::SoundGroupDefinition()
 {
-	mSamples.clear();
+}
+
+SoundGroupDefinition::~SoundGroupDefinition()
+{
+// 	for (SoundDefinitionStore::
 }
 
 void SoundGroupDefinition::insertSample(const std::string& name, SoundGeneral::SoundSampleType type, float volume)
 {
-	SoundDefinition* newDef = new SoundDefinition();
-	newDef->setup(name, type, volume);
+	SoundDefinition newDef;
+	newDef.setup(name, type, volume);
 	mSamples.push_back(newDef);
 
 	S_LOG_INFO("\t-Sample " << name << " created.");
 
 }
-		
-std::list<SoundDefinition*>::const_iterator SoundGroupDefinition::getSamplesBegin()
-{
-	return mSamples.begin();
-}
 
-std::list<SoundDefinition*>::const_iterator SoundGroupDefinition::getSamplesEnd()
+const SoundGroupDefinition::SoundDefinitionStore& SoundGroupDefinition::getSoundDefinitions() const
 {
-	return mSamples.end();
+	return mSamples;
 }
 
 

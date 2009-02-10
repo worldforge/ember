@@ -76,12 +76,11 @@ namespace EmberOgre
 
 		SoundGroup* newGroup = new SoundGroup();
 
-		std::list<SoundDefinition*>::const_iterator beg = groupModel->getSamplesBegin();
-		std::list<SoundDefinition*>::const_iterator end = groupModel->getSamplesEnd();
-		for (; beg != end; beg++)
+		const SoundGroupDefinition::SoundDefinitionStore& soundDefinitions = groupModel->getSoundDefinitions();
+		for (SoundGroupDefinition::SoundDefinitionStore::const_iterator I; I != soundDefinitions.end(); I++)
 		{
 			// Register Individual samples
-			SoundDefinition* thisModel = *beg;
+			const SoundDefinition& thisModel = *I;
 			newGroup->addSound(thisModel);
 		}
 

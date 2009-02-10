@@ -90,7 +90,7 @@ public:
 	*
 	* @param model A sound model containing definitions for the sample.
 	*/
-	void addSound(SoundDefinition* soundDef);
+	void addSound(const SoundDefinition& soundDef);
 
 	/**
 	* Set the group play order.
