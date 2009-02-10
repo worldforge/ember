@@ -45,6 +45,7 @@ PolygonRenderer::PolygonRenderer(Polygon& polygon)
 	ss << "PolygonRenderer" << sCounter++;
 	mManualObject = static_cast<Ogre::ManualObject*>(polygon.getBaseNode()->getCreator()->createMovableObject(ss.str(), Ogre::ManualObjectFactory::FACTORY_TYPE_NAME));
 	mManualObject->setDynamic(true); ///We'll be updating this a lot if the use alters the polygon
+	mManualObject->setRenderQueueGroup(Ogre::RENDER_QUEUE_SKIES_LATE + 2); ///We want to render the lines on top of everything, so that they aren't hidden by anything
 	mPolygon.getBaseNode()->attachObject(mManualObject);
 	
 }
