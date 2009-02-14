@@ -62,11 +62,16 @@ void PolygonRenderer::update()
 {
 	mManualObject->clear();
 	
-	if (mPolygon.getPoints().size()) {
+	if (mPolygon.getPoints().size() > 1) {
 		mManualObject->begin("/global/authoring/polygon/line", Ogre::RenderOperation::OT_LINE_STRIP);
 		
 		for (Polygon::PointStore::const_iterator I = mPolygon.getPoints().begin(); I != mPolygon.getPoints().end(); ++I) {
 			const PolygonPoint* point(*I);
+			mManualObject->position(point->getNode()->getPosition());
+		}
+		///if there are more than two points we should close the polygon
+		if (mPolygon.getPoints().size() > 2) {
+			const PolygonPoint* point(*mPolygon.getPoints().begin());
 			mManualObject->position(point->getNode()->getPosition());
 		}
 		mManualObject->end();
