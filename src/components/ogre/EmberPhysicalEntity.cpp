@@ -554,7 +554,7 @@ void EmberPhysicalEntity::updateAnimation(Ogre::Real timeSlice)
 		if (mCurrentMovementAction) {
 			bool continuePlay = false;
 			///Check if we're walking backward. This is a bit of a hack (we should preferrably have a separate animation for backwards walking.
-			if (static_cast<int>((WFMath::Vector<3>(getVelocity()).rotate((getOrientation().inverse()))).x()) < 0) {
+			if (getVelocity().isValid() && static_cast<int>((WFMath::Vector<3>(getVelocity()).rotate((getOrientation().inverse()))).x()) < 0) {
 				mCurrentMovementAction->getAnimations().addTime(-timeSlice, continuePlay);
 			} else {
 				mCurrentMovementAction->getAnimations().addTime(timeSlice, continuePlay);

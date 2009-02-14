@@ -226,7 +226,7 @@ bool GUICEGUIAdapter::injectMouseButtonUp(const Ember::Input::MouseButton& butto
 
 bool GUICEGUIAdapter::injectMouseButtonDown(const Ember::Input::MouseButton& button)
 {
-	CEGUI::MouseButton ceguiButton;
+	CEGUI::MouseButton ceguiButton(CEGUI::LeftButton);
 	if (button == Ember::Input::MouseButtonLeft) {
 		ceguiButton = CEGUI::LeftButton;
 	} else if(button == Ember::Input::MouseButtonRight) {

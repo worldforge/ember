@@ -70,6 +70,7 @@
 #include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
 
+#include <limits>
 
 #ifdef HAVE_LRINTF
     #define I_ROUND(_x) (::lrintf(_x)) 
@@ -96,6 +97,8 @@ TerrainGenerator::TerrainGenerator(ISceneManagerAdapter* adapter)
 : 
 UpdateShadows("update_shadows", this, "Updates shadows in the terrain."),
 mTerrain(0),
+mHeightMax(std::numeric_limits<Ogre::Real>::min()),
+mHeightMin(std::numeric_limits<Ogre::Real>::max()),
 mSegments(0),
 mHasTerrainInfo(false),
 mSceneManagerAdapter(0),
@@ -442,7 +445,14 @@ void TerrainGenerator::prepareAllSegments()
 		
 	getAdapter()->loadScene();
 	const WFMath::AxisBox<2>& worldSize = mTerrainInfo.getWorldSizeInIndices();
-	Ogre::AxisAlignedBox worldBox(worldSize.lowCorner().x(), mHeightMin, -worldSize.highCorner().y(), worldSize.highCorner().x(), mHeightMax, -worldSize.lowCorner().y());
+	float heightMin = mHeightMin;
+	float heightMax = mHeightMax;
+	if (heightMax < heightMin) {
+		S_LOG_WARNING("It seems like the world haven't been properly initialized. Perhaps the server has an invalid terrain?");
+		heightMin = -100;
+		heightMax = 100;
+	}
+	Ogre::AxisAlignedBox worldBox(worldSize.lowCorner().x(), heightMin, -worldSize.highCorner().y(), worldSize.highCorner().x(), heightMax, -worldSize.lowCorner().y());
 	
 	std::stringstream ss;
 	ss << worldBox;
