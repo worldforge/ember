@@ -91,6 +91,9 @@ function EntityEditor.clearEditing()
 			value:disconnect()
 		end
 	
+		if EntityEditor.instance.rootMapAdapter ~= nil then
+			EntityEditor.instance.rootMapAdapter:removeAdapters()
+		end
 		if EntityEditor.instance.outercontainer ~= nil then
 			windowManager:destroyWindow(EntityEditor.instance.outercontainer)
 		end
@@ -100,8 +103,9 @@ function EntityEditor.clearEditing()
 		if EntityEditor.instance.entityChangeConnection ~= nil then
 			EntityEditor.instance.entityChangeConnection:disconnect()
 		end
-		if EntityEditor.instance.rootMapAdapter ~= nil then
-			EntityEditor.instance.rootMapAdapter:removeAdapters()
+		if EntityEditor.instance.helper ~= nil then
+			EntityEditor.instance.helper:delete()
+			EntityEditor.instance.helper = nil
 		end
 		EntityEditor.instance = nil
 	end
@@ -136,7 +140,7 @@ function EntityEditor.editEntity(entity)
 	EntityEditor.instance.outercontainer = guiManager:createWindow("DefaultGUISheet")
 	local adapter = EntityEditor.factory:createMapAdapter(EntityEditor.instance.outercontainer, EntityEditor.instance.entity:getId(), EntityEditor.instance.entity)
 	EntityEditor.instance.rootMapAdapter = adapter
-	EntityEditor.instance.helper = EmberOgre.Gui.EntityEditor:new_local(entity, EntityEditor.instance.rootMapAdapter)
+	EntityEditor.instance.helper = EmberOgre.Gui.EntityEditor:new(entity, EntityEditor.instance.rootMapAdapter)
 	EntityEditor.attributesContainer:addChildWindow(EntityEditor.instance.outercontainer)
 	
 	local attributeNames = EntityEditor.instance.rootMapAdapter:getAttributeNames()
