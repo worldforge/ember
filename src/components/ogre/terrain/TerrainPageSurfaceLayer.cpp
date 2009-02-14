@@ -49,8 +49,8 @@ TerrainPageSurfaceLayer::TerrainPageSurfaceLayer(TerrainPageSurface& terrainPage
 
 TerrainPageSurfaceLayer::~TerrainPageSurfaceLayer()
 {
-	delete mCoverageImage;
-	delete mCoverageDataStream;
+	OGRE_DELETE mCoverageImage;
+	OGRE_DELETE mCoverageDataStream;
 }
 
 Ogre::TexturePtr TerrainPageSurfaceLayer::createTexture()
@@ -138,8 +138,8 @@ bool TerrainPageSurfaceLayer::createCoverageImage()
 	if (mCoverageImage) {
 		return false;
 	}
-	mCoverageDataStream = new Ogre::MemoryDataStream(mTerrainPageSurface.getPixelWidth() * mTerrainPageSurface.getPixelWidth() * 1, true);
-	mCoverageImage = new Ogre::Image();
+	mCoverageDataStream = OGRE_NEW Ogre::MemoryDataStream(mTerrainPageSurface.getPixelWidth() * mTerrainPageSurface.getPixelWidth() * 1, true);
+	mCoverageImage = OGRE_NEW Ogre::Image();
 	mCoverageImage->loadDynamicImage(mCoverageDataStream->getPtr(), getPixelWidth(), getPixelWidth(), 1, Ogre::PF_A8);
 	return true;
 	
@@ -149,9 +149,9 @@ bool TerrainPageSurfaceLayer::createCoverageImage()
 bool TerrainPageSurfaceLayer::destroyCoverageImage()
 {
 	if (mCoverageImage) {
-		delete mCoverageImage;
+		OGRE_DELETE mCoverageImage;
 		mCoverageImage = 0;
-		delete mCoverageDataStream;
+		OGRE_DELETE mCoverageDataStream;
 		mCoverageDataStream = 0;
 	}
 	return false;

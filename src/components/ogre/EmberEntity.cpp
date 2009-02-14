@@ -132,7 +132,7 @@ EmberEntity::~EmberEntity()
 	if (mErisEntityBoundingBox) {
 		mErisEntityBoundingBox->getParentSceneNode()->getCreator()->destroySceneNode(mErisEntityBoundingBox->getParentSceneNode()->getName());
 	}
-	delete mErisEntityBoundingBox;
+	OGRE_DELETE mErisEntityBoundingBox;
 	
 	//mSceneManager->destroySceneNode(getSceneNode()->getName());
 }
@@ -145,7 +145,9 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 	
 	// set the Ogre node position and orientation based on Atlas data
 	std::stringstream ss;
-	ss << "Entity " << getId() << "(" << getName() << ") placed at (" << getPredictedPos().x() << "," << getPredictedPos().y() << "," << getPredictedPos().x() << ")";
+	if (getPredictedPos().isValid()) {
+		ss << "Entity " << getId() << "(" << getName() << ") placed at (" << getPredictedPos().x() << "," << getPredictedPos().y() << "," << getPredictedPos().x() << ")";
+	}
 	S_LOG_VERBOSE( ss.str());
 	
 	mIsInitialized = true;
@@ -636,7 +638,7 @@ void EmberEntity::showErisBoundingBox(bool show)
 	///if there's no bounding box, create one now
 	///allowing for some lazy loading
 	if (!mErisEntityBoundingBox) {
-		mErisEntityBoundingBox = new Ogre::OOBBWireBoundingBox();
+		mErisEntityBoundingBox = OGRE_NEW Ogre::OOBBWireBoundingBox();
 		mErisEntityBoundingBox->setMaterial(BboxMaterialName);
 		Ogre::SceneNode* boundingBoxNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
 		boundingBoxNode->attachObject(mErisEntityBoundingBox);
