@@ -79,8 +79,14 @@ PolygonPoint::PolygonPoint(Polygon& polygon, const WFMath::Point<2>& localPositi
 
 PolygonPoint::~PolygonPoint()
 {
-	endMovement();
-	mPolygon.getBaseNode()->removeAndDestroyChild(mNode->getName());
+	try {
+		endMovement();
+		if (mNode) {
+			mPolygon.getBaseNode()->removeAndDestroyChild(mNode->getName());
+		}
+	} catch (const std::exception& ex) {
+		S_LOG_WARNING("Error when deleting polygon point: " << ex.what());
+	}
 }
 
 Ogre::SceneNode* PolygonPoint::getNode()

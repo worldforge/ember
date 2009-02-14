@@ -43,7 +43,7 @@ PolygonRenderer::PolygonRenderer(Polygon& polygon)
 {
 	std::stringstream ss;
 	ss << "PolygonRenderer" << sCounter++;
-	mManualObject = static_cast<Ogre::ManualObject*>(polygon.getBaseNode()->getCreator()->createMovableObject(ss.str(), Ogre::ManualObjectFactory::FACTORY_TYPE_NAME));
+	mManualObject = polygon.getBaseNode()->getCreator()->createManualObject(ss.str());
 	mManualObject->setDynamic(true); ///We'll be updating this a lot if the use alters the polygon
 	mManualObject->setRenderQueueGroup(Ogre::RENDER_QUEUE_SKIES_LATE + 2); ///We want to render the lines on top of everything, so that they aren't hidden by anything
 	mPolygon.getBaseNode()->attachObject(mManualObject);
@@ -53,20 +53,24 @@ PolygonRenderer::PolygonRenderer(Polygon& polygon)
 PolygonRenderer::~PolygonRenderer()
 {
 	if (mManualObject) {
-		mPolygon.getBaseNode()->removeAndDestroyChild(mManualObject->getName());
+		mPolygon.getBaseNode()->detachObject(mManualObject);
+		mPolygon.getBaseNode()->getCreator()->destroyManualObject(mManualObject);
 	}
 }
 
 void PolygonRenderer::update()
 {
 	mManualObject->clear();
-	mManualObject->begin("/global/authoring/polygon/line", Ogre::RenderOperation::OT_LINE_STRIP);
 	
-	for (Polygon::PointStore::const_iterator I = mPolygon.getPoints().begin(); I != mPolygon.getPoints().end(); ++I) {
-		const PolygonPoint* point(*I);
-		mManualObject->position(point->getNode()->getPosition());
+	if (mPolygon.getPoints().size()) {
+		mManualObject->begin("/global/authoring/polygon/line", Ogre::RenderOperation::OT_LINE_STRIP);
+		
+		for (Polygon::PointStore::const_iterator I = mPolygon.getPoints().begin(); I != mPolygon.getPoints().end(); ++I) {
+			const PolygonPoint* point(*I);
+			mManualObject->position(point->getNode()->getPosition());
+		}
+		mManualObject->end();
 	}
-	mManualObject->end();
 
 	
 }

@@ -112,7 +112,11 @@ void AreaAdapter::showPolygon()
 			}
 		}
 	} else {
-		delete mPolygon;
+		try {
+			delete mPolygon;
+		} catch (const std::exception& ex) {
+			S_LOG_FAILURE("Error when deleting polygon.");
+		}
 		mPolygon = 0;
 	}
 }
