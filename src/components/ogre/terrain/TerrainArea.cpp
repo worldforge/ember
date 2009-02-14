@@ -25,6 +25,7 @@
 #endif
 
 #include "TerrainArea.h"
+#include "TerrainAreaParser.h"
 
 #include "../EmberEntity.h"
 #include <Mercator/Area.h>
@@ -33,46 +34,7 @@ namespace EmberOgre {
 namespace Terrain {
 
 
-bool TerrainAreaParser::parseArea(const Atlas::Message::MapType& areaData, WFMath::Polygon<2>& poly, int& layer)
-{
-	Atlas::Message::MapType::const_iterator it = areaData.find("points");
-	if ((it == areaData.end()) || !it->second.isList()) {
-		S_LOG_FAILURE("malformed area attribute on entity, no points data");
-		return false;
-	}
-	
-	const Atlas::Message::ListType& pointsData(it->second.asList());
-	it = areaData.find("layer");
-	if ((it == areaData.end()) || !it->second.isInt()) {
-		S_LOG_FAILURE("malformed area attribute on entity, no layer data");
-		return false;
-	}
 
-	layer = it->second.asInt();
-
-	
-	for (size_t p=0; p<pointsData.size(); ++p) {
-		if (!pointsData[p].isList()) {
-			S_LOG_FAILURE("skipped malformed point in area");
-			continue;
-		}
-		
-		const Atlas::Message::ListType& point(pointsData[p].asList());
-		if ((point.size() < 2) || !point[0].isNum() || !point[1].isNum()) {
-		S_LOG_FAILURE("skipped malformed point in area");
-			continue;
-		}
-		
-		WFMath::Point<2> wpt(point[0].asNum(), point[1].asNum());
-		poly.addCorner(poly.numCorners(), wpt);
-	}
-//	if (poly.numCorners() < 3) { TODO: check whether we really can define an area with only one point
-	if (poly.numCorners() == 0) {
-		S_LOG_FAILURE("Could not find enough points to define the area. Found " << poly.numCorners() << " points.");
-		return false;
-	}
-	return true;
-}
 
 
 TerrainArea::TerrainArea(EmberEntity* entity) : mArea(0), mEntity(entity)
