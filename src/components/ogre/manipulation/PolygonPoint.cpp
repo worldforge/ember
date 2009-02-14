@@ -99,6 +99,12 @@ Ogre::SceneNode* PolygonPoint::getNode() const
 	return mNode;
 }
 
+WFMath::Point<2> PolygonPoint::getLocalPosition() const
+{
+	return WFMath::Point<2>(mNode->getPosition().x, -mNode->getPosition().z);
+}
+
+
 void PolygonPoint::startMovement()
 {
 	delete mMover;

@@ -64,6 +64,17 @@ Ogre::SceneNode* Polygon::getBaseNode()
 	return mBaseNode;
 }
 
+WFMath::Polygon<2> Polygon::getShape() const
+{
+	WFMath::Polygon<2> poly;
+	unsigned int i = 0;
+	for (PointStore::const_iterator I = mPoints.begin(); I != mPoints.end(); ++I) {
+		poly.addCorner(i++, (*I)->getLocalPosition());
+	}
+	return poly;
+}
+
+
 void Polygon::loadFromShape(const WFMath::Polygon<2>& shape)
 {
 	clear();

@@ -56,9 +56,9 @@ public:
 	
 	void translate(const WFMath::Vector<2>& translation);
 	
-	WFMath::Point<2> getLocalPosition();
+	WFMath::Point<2> getLocalPosition() const;
 	
-	WFMath::Point<2> getDerivedPosition();
+	WFMath::Point<2> getDerivedPosition() const;
 	
 	void startMovement();
 	
