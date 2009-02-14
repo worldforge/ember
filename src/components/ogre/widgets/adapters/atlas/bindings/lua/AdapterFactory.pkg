@@ -62,7 +62,17 @@ public:
 	*/
 	AreaAdapter* createAreaAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const Atlas::Message::Element& element, EmberEntity* entity);
 
-
+	/**
+	 * @brief Creates a new adapter based on a specified type.
+	 * @param type The type for which an adapter should be created. Possible values are "string|number|size|position|position2d|map|list|orientation|static".
+	 * @param container The container window into which the adapter's windows will be loaded.
+	 * @param adapterPrefix A unique prefix for the adapter.
+	 * @param element The element to which the adapter is bound.
+	 * @param entity An optional entity to which the adapter is connected. This isn't always needed (since an entity instance is not always available)
+	 * @return A new adapter instance, or null if there either was an error when creating one, or none could be found for the specified type.
+	 */
+	AdapterBase* createAdapterByType(std::string type, CEGUI::Window* container, const std::string& adapterPrefix, const Atlas::Message::Element& element, EmberOgre::EmberEntity* entity = 0);
+	
 	CEGUI::Window* loadLayoutIntoContainer(CEGUI::Window* container, const std::string& adapterPrefix, const std::string& layoutfile);
 
 	inline const std::string& getCurrentPrefix() const;

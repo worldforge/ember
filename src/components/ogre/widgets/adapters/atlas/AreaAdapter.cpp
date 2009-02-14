@@ -26,10 +26,12 @@
 
 #include "AreaAdapter.h"
 #include "components/ogre/terrain/TerrainArea.h"
-#include <wfmath/polygon.h>
+#include "components/ogre/terrain/TerrainAreaParser.h"
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/terrain/TerrainGenerator.h"
+#include "../../ColouredListItem.h"
 
+#include <wfmath/polygon.h>
 
 namespace EmberOgre {
 
@@ -55,8 +57,8 @@ float EntityAreaPolygonPositionProvider::getHeightForPosition(const WFMath::Poin
 }
 
 
-AreaAdapter::AreaAdapter(const ::Atlas::Message::Element& element, CEGUI::PushButton* showButton, EmberEntity* entity)
-: AdapterBase(element), mShowButton(showButton), mPolygon(0), mEntity(entity), mPositionProvider(0)
+AreaAdapter::AreaAdapter(const ::Atlas::Message::Element& element, CEGUI::PushButton* showButton, CEGUI::Combobox* layerWindow, EmberEntity* entity)
+: AdapterBase(element), mShowButton(showButton), mPolygon(0), mLayer(0), mLayerWindow(layerWindow), mEntity(entity), mPositionProvider(0)
 {
 	if (entity) {
 		mPositionProvider = new EntityAreaPolygonPositionProvider(*entity);
@@ -65,6 +67,19 @@ AreaAdapter::AreaAdapter(const ::Atlas::Message::Element& element, CEGUI::PushBu
 	if (showButton) {
 		addGuiEventConnection(showButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&AreaAdapter::showButton_Clicked, this)));
 	}
+	
+	if (mLayerWindow) {
+		addGuiEventConnection(mLayerWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&AreaAdapter::layerWindow_TextChanged, this))); 
+		mLayerWindow->addItem(new ColouredListItem("1"));
+		mLayerWindow->addItem(new ColouredListItem("2"));
+		mLayerWindow->addItem(new ColouredListItem("3"));
+		mLayerWindow->addItem(new ColouredListItem("4"));
+		mLayerWindow->addItem(new ColouredListItem("5"));
+		mLayerWindow->addItem(new ColouredListItem("6"));
+		mLayerWindow->addItem(new ColouredListItem("7"));
+		mLayerWindow->addItem(new ColouredListItem("8"));
+	}
+
 	
 	updateGui(mOriginalElement);
 }
@@ -85,20 +100,29 @@ bool AreaAdapter::showButton_Clicked(const CEGUI::EventArgs& e) {
 	return true;
 }
 
+bool AreaAdapter::layerWindow_TextChanged(const CEGUI::EventArgs& e)
+{
+	if (!mSelfUpdate) {
+		mLayer = atoi(mLayerWindow->getText().c_str());
+		EventValueChanged.emit();
+	}
+	return true;
+}
+
 void AreaAdapter::showPolygon()
 {
 	if (!mPolygon) {
+		::Atlas::Message::Element areaElem(getChangedElement());
+		
 		mPolygon = new ::EmberOgre::Manipulation::Polygon(mEntity->getSceneNode(), mPositionProvider);
 		
-		::Atlas::Message::Element areaElem(getChangedElement());
 	
 		if (areaElem.isMap()) {
 			const ::Atlas::Message::MapType& areaData(areaElem.asMap());
 	
 			WFMath::Polygon<2> poly;
-			int layer = 0;
 			Terrain::TerrainAreaParser parser;
-			if (parser.parseArea(areaData, poly, layer)) {
+			if (parser.parseArea(areaData, poly, mLayer)) {
 // 				if (mEntity) {
 // 					/// transform polygon into terrain coords
 // 					WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(mEntity->getOrientation());
@@ -123,12 +147,15 @@ void AreaAdapter::showPolygon()
 
 void AreaAdapter::fillElementFromGui()
 {
-	
+	if (mPolygon) {
+		Terrain::TerrainAreaParser parser;
+		mEditedElement = parser.createElement(mPolygon->getShape(), mLayer);
+	}
 }
 
 bool AreaAdapter::_hasChanges()
 {
-	return true;
+	return mOriginalElement != getChangedElement();
 }
 
 

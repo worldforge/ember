@@ -28,6 +28,11 @@
 #include "components/ogre/manipulation/IPolygonPositionProvider.h"
 #include "components/ogre/EmberEntity.h"
 
+namespace CEGUI {
+	class Combobox;
+	class PushButton;
+}
+
 namespace EmberOgre {
 class EmberEntity;
 namespace Manipulation {
@@ -58,7 +63,7 @@ protected:
 class AreaAdapter : public AdapterBase
 {
 public:
-	AreaAdapter(const ::Atlas::Message::Element& element, CEGUI::PushButton* showButton, EmberEntity* entity);
+	AreaAdapter(const ::Atlas::Message::Element& element, CEGUI::PushButton* showButton, CEGUI::Combobox* layerWindow, EmberEntity* entity);
 
 	virtual ~AreaAdapter();
     
@@ -73,10 +78,13 @@ protected:
 
 	CEGUI::PushButton* mShowButton;
 	::EmberOgre::Manipulation::Polygon* mPolygon;
+	int mLayer;
+	CEGUI::Combobox* mLayerWindow;
 	EmberEntity* mEntity;
 	
 	EntityAreaPolygonPositionProvider* mPositionProvider;
 
+	bool layerWindow_TextChanged(const CEGUI::EventArgs& e);
 	bool showButton_Clicked(const CEGUI::EventArgs& e);
 
 	virtual void fillElementFromGui();

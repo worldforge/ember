@@ -1406,8 +1406,9 @@ static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_new00(l
      !tolua_isusertable(tolua_S,1,"EmberOgre::Gui::Adapters::Atlas::AreaAdapter",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"const Atlas::Message::Element",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,3,"CEGUI::PushButton",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"EmberOgre::EmberEntity",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,5,&tolua_err)
+     !tolua_isusertype(tolua_S,4,"CEGUI::Combobox",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,5,"EmberOgre::EmberEntity",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,6,&tolua_err)
  )
   goto tolua_lerror;
  else
@@ -1415,9 +1416,10 @@ static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_new00(l
  {
   const Atlas::Message::Element* element = ((const Atlas::Message::Element*)  tolua_tousertype(tolua_S,2,0));
   CEGUI::PushButton* showButton = ((CEGUI::PushButton*)  tolua_tousertype(tolua_S,3,0));
-  EmberOgre::EmberEntity* entity = ((EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,4,0));
+  CEGUI::Combobox* layerWindow = ((CEGUI::Combobox*)  tolua_tousertype(tolua_S,4,0));
+  EmberOgre::EmberEntity* entity = ((EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,5,0));
   {
-   EmberOgre::Gui::Adapters::Atlas::AreaAdapter* tolua_ret = (EmberOgre::Gui::Adapters::Atlas::AreaAdapter*)  new EmberOgre::Gui::Adapters::Atlas::AreaAdapter(*element,showButton,entity);
+   EmberOgre::Gui::Adapters::Atlas::AreaAdapter* tolua_ret = (EmberOgre::Gui::Adapters::Atlas::AreaAdapter*)  new EmberOgre::Gui::Adapters::Atlas::AreaAdapter(*element,showButton,layerWindow,entity);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Gui::Adapters::Atlas::AreaAdapter");
   }
  }
@@ -1440,8 +1442,9 @@ static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_new00_l
      !tolua_isusertable(tolua_S,1,"EmberOgre::Gui::Adapters::Atlas::AreaAdapter",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"const Atlas::Message::Element",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,3,"CEGUI::PushButton",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"EmberOgre::EmberEntity",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,5,&tolua_err)
+     !tolua_isusertype(tolua_S,4,"CEGUI::Combobox",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,5,"EmberOgre::EmberEntity",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,6,&tolua_err)
  )
   goto tolua_lerror;
  else
@@ -1449,9 +1452,10 @@ static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_new00_l
  {
   const Atlas::Message::Element* element = ((const Atlas::Message::Element*)  tolua_tousertype(tolua_S,2,0));
   CEGUI::PushButton* showButton = ((CEGUI::PushButton*)  tolua_tousertype(tolua_S,3,0));
-  EmberOgre::EmberEntity* entity = ((EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,4,0));
+  CEGUI::Combobox* layerWindow = ((CEGUI::Combobox*)  tolua_tousertype(tolua_S,4,0));
+  EmberOgre::EmberEntity* entity = ((EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,5,0));
   {
-   EmberOgre::Gui::Adapters::Atlas::AreaAdapter* tolua_ret = (EmberOgre::Gui::Adapters::Atlas::AreaAdapter*)  new EmberOgre::Gui::Adapters::Atlas::AreaAdapter(*element,showButton,entity);
+   EmberOgre::Gui::Adapters::Atlas::AreaAdapter* tolua_ret = (EmberOgre::Gui::Adapters::Atlas::AreaAdapter*)  new EmberOgre::Gui::Adapters::Atlas::AreaAdapter(*element,showButton,layerWindow,entity);
    tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::Gui::Adapters::Atlas::AreaAdapter");
   }
  }

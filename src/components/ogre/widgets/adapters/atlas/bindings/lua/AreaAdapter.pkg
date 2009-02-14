@@ -48,7 +48,7 @@ namespace Atlas {
 class AreaAdapter : public AdapterBase
 {
 public:
-	AreaAdapter(const Atlas::Message::Element& element, CEGUI::PushButton* showButton, EmberEntity* entity);
+	AreaAdapter(const Atlas::Message::Element& element, CEGUI::PushButton* showButton, CEGUI::Combobox* layerWindow, EmberEntity* entity);
 
 	virtual ~AreaAdapter();
     
