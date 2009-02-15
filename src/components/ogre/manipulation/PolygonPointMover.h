@@ -34,13 +34,24 @@ namespace Manipulation {
 class PolygonPoint;
 
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@brief Responsible for handling movement of a PolygonPoint instance.
+The movement happens through a graphical interface in Ogre. Basically a sphere is added to the world, which can then moved with the mouse.
+
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class PolygonPointMover : public IMovementBridge
 {
 public:
 
+	/**
+	 * @brief Ctor.
+	 * @param point The point for which movement should occur.
+	 */
 	PolygonPointMover(PolygonPoint& point);
+	
+	/**
+	 * @brief Dtor.
+	 */
 	virtual ~PolygonPointMover();
 
 	virtual const WFMath::Quaternion& getOrientation() const;
@@ -56,8 +67,14 @@ public:
 
 private:
 
+	/**
+	 * @brief The polygon point to which this movement belongs.
+	 */
 	PolygonPoint& mPoint;
-	mutable WFMath::Quaternion mOrientation;
+	
+	/**
+	 * @brief The current position of the polygon point.
+	 */
 	mutable WFMath::Point<3> mPosition;
 	
 };

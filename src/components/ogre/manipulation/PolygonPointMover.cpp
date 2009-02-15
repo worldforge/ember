@@ -45,8 +45,8 @@ PolygonPointMover::~PolygonPointMover()
 
 const WFMath::Quaternion& PolygonPointMover::getOrientation() const
 {
-	mOrientation = Ogre2Atlas(mPoint.getNode()->_getDerivedOrientation());
-	return mOrientation;
+	static WFMath::Quaternion orientation;
+	return orientation;
 }
 
 const WFMath::Point<3>& PolygonPointMover::getPosition() const

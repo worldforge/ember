@@ -25,6 +25,10 @@
 #endif
 
 #include "PolygonPointUserObject.h"
+#include "PolygonPoint.h"
+
+#include <OgreEntity.h>
+#include <OgreSceneNode.h>
 
 namespace EmberOgre {
 
@@ -50,6 +54,18 @@ PolygonPoint& PolygonPointUserObject::getPoint()
 const Ogre::String & PolygonPointUserObject::getTypeName (void) const
 {
 	return s_TypeName;
+}
+
+void PolygonPointUserObject::markAsMoved()
+{
+	Ogre::Entity* entity = static_cast<Ogre::Entity*>(mPoint.getNode()->getAttachedObject(0));
+	entity->setMaterialName("/global/authoring/polygon/point/moved");
+}
+
+void PolygonPointUserObject::resetMarking()
+{
+	Ogre::Entity* entity = static_cast<Ogre::Entity*>(mPoint.getNode()->getAttachedObject(0));
+	entity->setMaterialName("/global/authoring/polygon/point");
 }
 
 

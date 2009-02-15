@@ -38,38 +38,97 @@ namespace Manipulation {
 class Polygon;
 class PolygonPointMover;
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@brief A graphical representation of one point in a polygon.
+The point is represented by a sphere, which can be manipulated through dragging.
+
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class PolygonPoint
 {
 public:
 
+	/**
+	 * @brief Ctor.
+	 * @param polygon The polygon to which this point is a part of.
+	 * @param localPosition The local position of this point, within the polygon space.
+	 */
 	PolygonPoint(Polygon& polygon, const WFMath::Point<2>& localPosition);
 	
+	/**
+	 * @brief Dtor.
+	 */
 	~PolygonPoint();
 	
+	/**
+	 * @brief Gets the polygon instance to which this point belongs to.
+	 * @return The polygon instance to which this point belongs to.
+	 */
 	Polygon& getPolygon();
 	
+	/**
+	 * @brief Gets the scene node which represents this point.
+	 * The scene node is owned by this instance and will be destroyed along with it.
+	 * @return The scene node which represents this point.
+	 */
 	Ogre::SceneNode* getNode();
 	
+	/**
+	 * @brief Gets the scene node which represents this point.
+	 * The scene node is owned by this instance and will be destroyed along with it.
+	 * @return The scene node which represents this point.
+	 */
 	Ogre::SceneNode* getNode() const;
 	
+	/**
+	 * @brief Translates the position of the point.
+	 * @param translation The translation, in local space (i.e. relative to the polygon to which the point belongs to).
+	 */
 	void translate(const WFMath::Vector<2>& translation);
 	
+	/**
+	 * @brief Gets the local position of the point within the polygon space.
+	 * @return The local position of the point within the polygon space.
+	 */
 	WFMath::Point<2> getLocalPosition() const;
 	
-	WFMath::Point<2> getDerivedPosition() const;
-	
+	/**
+	 * @brief Starts movement of the polygon point.
+	 * The movement handling will be relegated to an instance of PolygonPointMover. When movement has completed, call endMovement().
+	 */
 	void startMovement();
 	
+	/**
+	 * @brief Ends a previously started movement of the polygon point.
+	 * Call this when movement has ended.
+	 */
 	void endMovement();
 	
 protected:
+	/**
+	 * @brief Used for generating unique names for the entities used to represent the points in Ogre.
+	 */
 	static unsigned int sPointCounter;
 	
+	/**
+	 * @brief The polygon to which this point belongs.
+	 */
 	Polygon& mPolygon;
+	
+	/**
+	 * @brief The Ogre user object which is used for hooking into the picking system.
+	 * This is owned by this instance.
+	 */
 	PolygonPointUserObject mUserObject;
+	
+	/**
+	 * @brief The Ogre scene node which is used to represent the point graphically in Ogre.
+	 * This is owned by this instance.
+	 */
 	Ogre::SceneNode* mNode;
+	
+	/**
+	 * @brief When the point is moved, an instance of this will be created and the movement handled by it.
+	 */
 	PolygonPointMover* mMover;
 	
 	/**

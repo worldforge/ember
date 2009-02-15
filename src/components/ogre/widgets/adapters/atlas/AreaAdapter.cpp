@@ -48,6 +48,7 @@ EntityAreaPolygonPositionProvider::EntityAreaPolygonPositionProvider(EmberEntity
 
 float EntityAreaPolygonPositionProvider::getHeightForPosition(const WFMath::Point<2>& localPosition)
 {
+	///TODO: refactor into a better structure, so that we don't have to know about the terrain
 	::EmberOgre::Terrain::TerrainGenerator* terrain = EmberOgre::getSingleton().getTerrainGenerator();
 	if (terrain) {
 		Ogre::Vector3 parentPos = mEntity.getSceneNode()->_getDerivedPosition();
@@ -56,7 +57,7 @@ float EntityAreaPolygonPositionProvider::getHeightForPosition(const WFMath::Poin
 		WFMath::Point<3> worldPos = Ogre2Atlas(parentPos + localPos);
 		return terrain->getHeight(WFMath::Point<2>(worldPos.x(), worldPos.y())) - worldPos.z();
 	}
-	return 1;
+	return 0;
 }
 
 
@@ -99,7 +100,7 @@ void AreaAdapter::updateGui(const ::Atlas::Message::Element& element)
 }
 
 bool AreaAdapter::showButton_Clicked(const CEGUI::EventArgs& e) {
-	showPolygon();
+	toggleDisplayOfPolygon();
 	return true;
 }
 
@@ -112,30 +113,34 @@ bool AreaAdapter::layerWindow_TextChanged(const CEGUI::EventArgs& e)
 	return true;
 }
 
-void AreaAdapter::showPolygon()
+void AreaAdapter::toggleDisplayOfPolygon()
 {
 	if (!mPolygon) {
-		::Atlas::Message::Element areaElem(getChangedElement());
+		if (!mEntity) {
+			S_LOG_WARNING("There's no entity attached to the AreaAdapter, and the polygon can't thus be shown.");
+		} else {
+			::Atlas::Message::Element areaElem(getChangedElement());
+			
+			mPolygon = new ::EmberOgre::Manipulation::Polygon(mEntity->getSceneNode(), mPositionProvider);
+			
 		
-		mPolygon = new ::EmberOgre::Manipulation::Polygon(mEntity->getSceneNode(), mPositionProvider);
+			if (areaElem.isMap()) {
+				const ::Atlas::Message::MapType& areaData(areaElem.asMap());
 		
-	
-		if (areaElem.isMap()) {
-			const ::Atlas::Message::MapType& areaData(areaElem.asMap());
-	
-			WFMath::Polygon<2> poly;
-			Terrain::TerrainAreaParser parser;
-			if (parser.parseArea(areaData, poly, mLayer)) {
-// 				if (mEntity) {
-// 					/// transform polygon into terrain coords
-// 					WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(mEntity->getOrientation());
-// 					double theta = atan2(xVec.y(), xVec.x()); // rotation about Z
-// 					
-// 					WFMath::RotMatrix<2> rm;
-// 					poly.rotatePoint(rm.rotation(theta), WFMath::Point<2>(0,0));
-// 					poly.shift(WFMath::Vector<2>(mEntity->getPosition().x(), mEntity->getPosition().y()));
-// 				}
-				mPolygon->loadFromShape(poly);
+				WFMath::Polygon<2> poly;
+				Terrain::TerrainAreaParser parser;
+				if (parser.parseArea(areaData, poly, mLayer)) {
+	// 				if (mEntity) {
+	// 					/// transform polygon into terrain coords
+	// 					WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(mEntity->getOrientation());
+	// 					double theta = atan2(xVec.y(), xVec.x()); // rotation about Z
+	// 					
+	// 					WFMath::RotMatrix<2> rm;
+	// 					poly.rotatePoint(rm.rotation(theta), WFMath::Point<2>(0,0));
+	// 					poly.shift(WFMath::Vector<2>(mEntity->getPosition().x(), mEntity->getPosition().y()));
+	// 				}
+					mPolygon->loadFromShape(poly);
+				}
 			}
 		}
 	} else {

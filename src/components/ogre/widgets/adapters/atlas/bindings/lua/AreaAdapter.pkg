@@ -48,12 +48,25 @@ namespace Atlas {
 class AreaAdapter : public AdapterBase
 {
 public:
+	/**
+	 * @brief Ctor.
+	 * @param element The Atlas element containing the initial data for the adapter.
+	 * @param showButton A button which will toggle the display of the graphical representation of the area on and off.
+	 * @param layerWindow A combox which will contain a list of the available layers which can be specified for the area.
+	 * @param entity The entity to which the area belongs. This is needed to do height lookups so that the polygon points are snapped to the ground. It's optional, but the graphical representation might not work if it's omitted.
+	 */
 	AreaAdapter(const Atlas::Message::Element& element, CEGUI::PushButton* showButton, CEGUI::Combobox* layerWindow, EmberEntity* entity);
 
+	/**
+	 * @brief Dtor.
+	 */
 	virtual ~AreaAdapter();
     
     
-    void showPolygon();
+    /**
+     * @brief Toggles the display of the graphical representation of the polygon.
+     */
+    void toggleDisplayOfPolygon();
 
 };
 

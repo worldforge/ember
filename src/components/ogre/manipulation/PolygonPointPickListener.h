@@ -33,13 +33,24 @@ class PolygonPointUserObject;
 class Polygon;
 
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@brief A listener which knows how to handle PolygonPoints.
+The Polygon class allows for easy editing of polygon through clicking and dragging of the polygon points.
+This listener class will take care of recognizing mouse clicking and initializing movements of the point.
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class PolygonPointPickListener : public IWorldPickListener
 {
 public:
+	/**
+	 * @brief Ctor.
+	 * @param polygon The polygon to which this listener belongs to.
+	 */
 	PolygonPointPickListener(Polygon& polygon);
+	/**
+	 * @brief Dtor.
+	 */
 	virtual ~PolygonPointPickListener();
+	
 	virtual void processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs);
 	
 	virtual void initializePickingContext();
@@ -48,7 +59,14 @@ public:
 
 
 private:
+	/**
+	 * @brief The polygon to which this listener belongs to.
+	 */
 	Polygon& mPolygon;
+	
+	/**
+	 * @brief The picked user object, if any has been picked.
+	 */
 	PolygonPointUserObject* mPickedUserObject;
 };
 

@@ -33,52 +33,65 @@ namespace Manipulation {
 class PolygonPoint;
 
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@brief An Ogre user object, connected to a PolygonPoint instance, which can be attached to any Ogre Entity.
+This allows the system to know when the user has clicked on a polygon point and then initialize a movement operation.
+Note that most logic resides in PolygonPointPickListener and PolygonPointMover.
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class PolygonPointUserObject : public Ogre::UserDefinedObject
 {
 public: 
 	/**
-	The type of UserDefinedObject
-	*/
+	 * @brief The type of UserDefinedObject
+	 */
 	static const std::string s_TypeName;
 	
 	
+	/**
+	 * @brief Ctor.
+	 * @param point The polygon point to which this object belongs.
+	 */
 	PolygonPointUserObject(PolygonPoint& point);
 	
+	/**
+	 * @brief Dtor.
+	 */
 	virtual ~PolygonPointUserObject();
 	
 	/**
-	 *    Overloaded method for getting the type name of this instance.
-	 * @param  
-	 * @return 
+	 * @brief Overloaded method for getting the type name of this instance.
+	 * @return
 	 */
-	virtual const Ogre::String & getTypeName (void) const;
+	virtual const Ogre::String & getTypeName() const;
 	
 	
+	/**
+	 * @brief Gets the polygon point to which this instance is attached.
+	 * @return The polygon point to which this instance is attached.
+	 */
 	PolygonPoint& getPoint();
 	
 
-	
-// 	void translate(Ogre::Real verticalMovement);
-	
 	/**
-	Emitted when the position of the base point has been updated
-	*/
+	 * @brief Emitted when the position of the base point has been updated
+	 */
 	sigc::signal<void> EventUpdatedPosition;
 	
 	/**
-	 *    Marks the entity as "moved"
+	 * @brief Marks the entity as "moved"
 	 */
 	void markAsMoved();
 
 	/**
-	 *    Resets the marking of the entity to the normal material (instead of the "moved" marking)
+	 * @brief Resets the marking of the entity to the normal material (instead of the "moved" marking)
 	 */
 	void resetMarking();
 	
 	
 private:
+	/**
+	 * @brief The point to which this instance belongs.
+	 */
 	PolygonPoint& mPoint;
 
 };

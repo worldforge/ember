@@ -58,15 +58,22 @@ class StaticAdapter;
 class AreaAdapter;
 
 /**
-	A factory class through which all adapters are created. Instead of creating the adapters yourself, use this to properly instantiate them.
-	The factory will take care of loading the gui elements from predefined cegui layout definitions, and setting up all gui elements.
-	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+@brief A factory class through which all adapters are created. Instead of creating the adapters yourself, use this to properly instantiate them.
+The factory will take care of loading the gui elements from predefined cegui layout definitions, and setting up all gui elements.
+@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
 */
 class AdapterFactory{
 public:
+	/**
+	 * @brief Ctor.
+	 * @param prefix An unique prefix to use when generating the CEGUI windows.
+	 */
 	AdapterFactory(const std::string prefix);
 
-	~AdapterFactory();
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~AdapterFactory();
     
 	/**
 	* Creates an adapter for a simple string.
@@ -194,16 +201,26 @@ public:
 	CEGUI::Window* loadLayoutIntoContainer(CEGUI::Window* container, const std::string& adapterPrefix, const std::string& layoutfile);
 	
 	/**
-	 *    Gets the current prefix used in the latest loaded layout.
+	 * @brief Gets the current prefix used in the latest loaded layout.
 	 * @return 
 	 */
 	const std::string& getCurrentPrefix() const;
 
 protected:
 
-
+	/**
+	 * @brief Used for auto generating unique CEGUI window names.
+	 */
 	static unsigned long msAutoGenId;
+	
+	/**
+	 * @brief The externally specified prefix used as a base for unique CEGUI window names.
+	 */
 	std::string mPrefix;
+	
+	/**
+	 * @brief The prefix used for the current loaded layout.
+	 */
 	std::string mCurrentPrefix;
 	
 	/**
