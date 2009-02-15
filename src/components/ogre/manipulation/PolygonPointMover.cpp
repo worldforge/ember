@@ -63,6 +63,8 @@ void PolygonPointMover::setPosition(const WFMath::Point<3>& position)
 			posOffset = mPoint.getNode()->getParent()->_getDerivedPosition();
 		}
 		Ogre::Vector3 newPos = Atlas2Ogre(position) - posOffset;
+		newPos = mPoint.getNode()->getParent()->_getDerivedOrientation().Inverse() * newPos;
+
 		WFMath::Vector<3> translation = Ogre2Atlas_Vector3(newPos - mPoint.getNode()->getPosition());
 		///adjust it so that it moves according to the ground for example
 		mPoint.translate(WFMath::Vector<2>(translation.x(), translation.y()));

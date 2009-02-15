@@ -50,8 +50,11 @@ float EntityAreaPolygonPositionProvider::getHeightForPosition(const WFMath::Poin
 {
 	::EmberOgre::Terrain::TerrainGenerator* terrain = EmberOgre::getSingleton().getTerrainGenerator();
 	if (terrain) {
-		WFMath::Point<3> worldPos = Ogre2Atlas(mEntity.getSceneNode()->_getDerivedPosition());
-		return terrain->getHeight(WFMath::Point<2>(worldPos.x() + localPosition.x(), worldPos.y() + localPosition.y())) - worldPos.z();
+		Ogre::Vector3 parentPos = mEntity.getSceneNode()->_getDerivedPosition();
+		Ogre::Vector3 localPos(localPosition.x(), 0, -localPosition.y());
+		localPos = mEntity.getSceneNode()->_getDerivedOrientation() * localPos;
+		WFMath::Point<3> worldPos = Ogre2Atlas(parentPos + localPos);
+		return terrain->getHeight(WFMath::Point<2>(worldPos.x(), worldPos.y())) - worldPos.z();
 	}
 	return 1;
 }

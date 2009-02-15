@@ -58,6 +58,8 @@ protected:
 };
 
 /**
+@brief An adapter for terrain areas.
+This adapter will allow the user to edit the areas graphically through the use of the Polygon classes.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class AreaAdapter : public AdapterBase
