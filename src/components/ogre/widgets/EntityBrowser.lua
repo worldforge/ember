@@ -22,7 +22,12 @@ function EntityBrowser.EntityList_SelectionChanged(args)
 		local entityId = item:getID()
 		local entity = emberOgre:getEmberEntity(entityId);
 		if (entity ~= nil) then
-			guiManager:EmitEntityAction("inspect", entity)
+			--if we're admin, edit, else just inspect
+			if emberOgre:getAvatar():isAdmin() then
+				guiManager:EmitEntityAction("edit", entity)
+			else
+				guiManager:EmitEntityAction("inspect", entity)
+			end
 		end
 	end
 	
