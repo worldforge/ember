@@ -64,6 +64,15 @@ float EntityAreaPolygonPositionProvider::getHeightForPosition(const WFMath::Poin
 AreaAdapter::AreaAdapter(const ::Atlas::Message::Element& element, CEGUI::PushButton* showButton, CEGUI::Combobox* layerWindow, EmberEntity* entity)
 : AdapterBase(element), mShowButton(showButton), mPolygon(0), mLayer(0), mLayerWindow(layerWindow), mEntity(entity), mPositionProvider(0)
 {
+	if (element.isMap()) {
+		const ::Atlas::Message::MapType& areaData(element.asMap());
+
+		WFMath::Polygon<2> poly;
+		Terrain::TerrainAreaParser parser;
+		parser.parseArea(areaData, poly, mLayer);
+	}
+
+
 	if (entity) {
 		mPositionProvider = new EntityAreaPolygonPositionProvider(*entity);
 	}
@@ -82,7 +91,13 @@ AreaAdapter::AreaAdapter(const ::Atlas::Message::Element& element, CEGUI::PushBu
 		mLayerWindow->addItem(new ColouredListItem("6"));
 		mLayerWindow->addItem(new ColouredListItem("7"));
 		mLayerWindow->addItem(new ColouredListItem("8"));
+		
+		std::stringstream ss;
+		ss << mLayer;
+		mLayerWindow->setText(ss.str());
 	}
+	
+
 
 	
 	updateGui(mOriginalElement);
@@ -155,9 +170,14 @@ void AreaAdapter::toggleDisplayOfPolygon()
 
 void AreaAdapter::fillElementFromGui()
 {
+	mLayer = atoi(mLayerWindow->getText().c_str());
 	if (mPolygon) {
 		Terrain::TerrainAreaParser parser;
 		mEditedElement = parser.createElement(mPolygon->getShape(), mLayer);
+	} else {
+		if (mEditedElement.isMap()) {
+			mEditedElement.asMap()["layer"] = mLayer;
+		}
 	}
 }
 
