@@ -109,6 +109,18 @@ public:
 	 */
 	void endMovement();
 	
+	/**
+	 * @brief Sets the visibility of the point.
+	 * @param visibility The visibility of the point.
+	 */
+	void setVisible(bool visibility);
+	
+	/**
+	 * @brief Gets whether the point is shown or not.
+	 * @return Whether the point is shown or not.
+	 */
+	bool getVisible() const;
+	
 	
 protected:
 	/**
@@ -142,6 +154,11 @@ protected:
 	 * @brief Main adapter which will intercept mouse and keyboard input to allow for movement of this point.
 	 */
 	MovementAdapter* mMoveAdapter;
+	
+	/**
+	 * @brief The entity which shows the marker, i.e. the draggable ball.
+	*/
+	Ogre::Entity* mEntity;
 };
 
 }

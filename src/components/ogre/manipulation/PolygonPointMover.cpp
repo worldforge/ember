@@ -36,7 +36,7 @@ namespace EmberOgre {
 namespace Manipulation {
 
 PolygonPointMover::PolygonPointMover(PolygonPoint& point)
-: mPoint(point), mNewPoint(0), mInitialPosition(point.getLocalPosition())
+: mPoint(point), mNewPoint(0), mDeleted(false), mPointAfterDeleted(0), mInitialPosition(point.getLocalPosition())
 {
 	Ember::Input::getSingleton().EventKeyPressed.connect(sigc::mem_fun(*this, &PolygonPointMover::input_KeyPressed));
 	Ember::Input::getSingleton().EventKeyReleased.connect(sigc::mem_fun(*this, &PolygonPointMover::input_KeyReleased));
@@ -95,6 +95,7 @@ void PolygonPointMover::setOrientation(const WFMath::Quaternion& rotation)
 
 void PolygonPointMover::finalizeMovement()
 {
+	//TODO: clean up if the point has been deleted
 	mPoint.endMovement();
 }
 
@@ -121,6 +122,8 @@ void PolygonPointMover::input_KeyPressed(const SDL_keysym& key, Ember::Input::In
 		if (!mNewPoint) {
 			switchToNewPointMode();
 		}
+	} else if (key.sym == SDLK_LALT || key.sym == SDLK_RALT) {
+		switchToDeleteMode();
 	}
 }
 
@@ -130,38 +133,53 @@ void PolygonPointMover::input_KeyReleased(const SDL_keysym& key, Ember::Input::I
 		if (mNewPoint) {
 			switchToExistingPointMode();
 		}
+	} else if (key.sym == SDLK_LALT || key.sym == SDLK_RALT) {
+		switchToExistingPointMode();
 	}
 }
 
 void PolygonPointMover::switchToNewPointMode()
 {
-	if (!mNewPoint) {
-		///Get the two nearest points and position the new point to the one's that's closest
-		PolygonPoint* point1 = mPoint.getPolygon().getPointAfter(mPoint);
-		PolygonPoint* point2 = mPoint.getPolygon().getPointBefore(mPoint);
-		if (point1 && point2) {
-			float initialDistance1 = WFMath::Distance(mInitialPosition, point1->getLocalPosition());
-			float initialDistance2 = WFMath::Distance(mInitialPosition, point2->getLocalPosition());
-			float currentDistance1 = WFMath::Distance(mPoint.getLocalPosition(), point1->getLocalPosition());
-			float currentDistance2 = WFMath::Distance(mPoint.getLocalPosition(), point2->getLocalPosition());
-			
-			float distanceDiff1 = initialDistance1 - currentDistance1;
-			float distanceDiff2 = initialDistance2 - currentDistance2;
-			if (distanceDiff1 < distanceDiff2) {
-				mNewPoint = mPoint.getPolygon().insertPointBefore(mPoint);
-			} else {
-				mNewPoint = mPoint.getPolygon().insertPointBefore(*point1);
+	if (!mDeleted) {
+		if (!mNewPoint) {
+			///Get the two nearest points and position the new point to the one's that's closest
+			PolygonPoint* point1 = mPoint.getPolygon().getPointAfter(mPoint);
+			PolygonPoint* point2 = mPoint.getPolygon().getPointBefore(mPoint);
+			if (point1 && point2) {
+				float initialDistance1 = WFMath::Distance(mInitialPosition, point1->getLocalPosition());
+				float initialDistance2 = WFMath::Distance(mInitialPosition, point2->getLocalPosition());
+				float currentDistance1 = WFMath::Distance(mPoint.getLocalPosition(), point1->getLocalPosition());
+				float currentDistance2 = WFMath::Distance(mPoint.getLocalPosition(), point2->getLocalPosition());
+				
+				float distanceDiff1 = initialDistance1 - currentDistance1;
+				float distanceDiff2 = initialDistance2 - currentDistance2;
+				if (distanceDiff1 < distanceDiff2) {
+					mNewPoint = mPoint.getPolygon().insertPointBefore(mPoint);
+				} else {
+					mNewPoint = mPoint.getPolygon().insertPointBefore(*point1);
+				}
+				
+				mNewPoint->setLocalPosition(mPoint.getLocalPosition());
+				mPoint.setLocalPosition(mInitialPosition);
+				mPoint.getPolygon().updateRender();
 			}
-			
-			mNewPoint->setLocalPosition(mPoint.getLocalPosition());
-			mPoint.setLocalPosition(mInitialPosition);
-			mPoint.getPolygon().updateRender();
 		}
 	}
 }
 
 void PolygonPointMover::switchToExistingPointMode()
 {
+	if (mDeleted) {
+		if (mPointAfterDeleted) {
+			mPoint.getPolygon().insertPointBefore(*mPointAfterDeleted);
+		} else {
+			mPoint.getPolygon().insertPoint(0, mPoint);
+		}
+		mPoint.setVisible(true);
+		mDeleted = false;
+		mPointAfterDeleted = 0;
+		mPoint.getPolygon().updateRender();
+	}
 	if (mNewPoint) {
 		if (mPoint.getPolygon().removePoint(*mNewPoint)) {
 			mPoint.setLocalPosition(mNewPoint->getLocalPosition());
@@ -171,6 +189,16 @@ void PolygonPointMover::switchToExistingPointMode()
 		}
 	}
 }
+
+void PolygonPointMover::switchToDeleteMode()
+{
+	mPointAfterDeleted = mPoint.getPolygon().getPointAfter(mPoint);
+	mPoint.getPolygon().removePoint(mPoint);
+	mPoint.setVisible(false);
+	mDeleted = true;
+	mPoint.getPolygon().updateRender();
+}
+
 
 }
 

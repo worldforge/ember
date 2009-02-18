@@ -39,6 +39,7 @@ class PolygonPoint;
 @brief Responsible for handling movement of a PolygonPoint instance.
 The movement happens through a graphical interface in Ogre. Basically a sphere is added to the world, which can then moved with the mouse.
 If a point is moved and ctrl is pressed a new point will be created.
+If a point is moved and alt is pressed the point will be removed from the polygon.
 
 @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
@@ -86,6 +87,16 @@ private:
 	PolygonPoint* mNewPoint;
 	
 	/**
+	 * @brief If true, the point has been deleted.
+	 */
+	bool mDeleted;
+	
+	/**
+	 * @brief We need to keep track of the point preceding our own point, in the case that a delete operation is aborted (since we then need to return the point to its correct place in the polygon).
+	 */
+	PolygonPoint* mPointAfterDeleted;
+	
+	/**
 	 * @brief Gets the active point, which is either the existing point or a new one if any such exists.
 	 * @see mNewPoint
 	 * @return Either the existing point, or a new point if any such exists.
@@ -113,6 +124,12 @@ private:
 	 * If existing point mode already is selected nothing will happen.
 	 */
 	void switchToExistingPointMode();
+	
+	/**
+	 * @brief Switches to deleted mode.
+	 * In deleted mode the point is removed from the polygon.
+	 */
+	void switchToDeleteMode();
 	
 	
 };

@@ -124,6 +124,18 @@ PolygonPoint* Polygon::insertPointBefore(PolygonPoint& point)
 	return 0;
 }
 
+void Polygon::insertPoint(size_t index, PolygonPoint& point)
+{
+	size_t i = 0;
+	PointStore::iterator I = mPoints.begin();
+	while (I != mPoints.end() && i < index) {
+		++i;
+		++I;
+	}
+	mPoints.insert(I, &point);
+}
+
+
 PolygonPoint* Polygon::getPointBefore(PolygonPoint& point)
 {
 	if (mPoints.size()) {

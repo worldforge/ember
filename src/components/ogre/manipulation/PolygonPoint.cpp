@@ -44,7 +44,7 @@ namespace Manipulation {
 unsigned int PolygonPoint::sPointCounter = 0;
 
 PolygonPoint::PolygonPoint(Polygon& polygon, const WFMath::Point<2>& localPosition)
-: mPolygon(polygon), mUserObject(*this), mNode(0), mMover(0), mMoveAdapter(0)
+: mPolygon(polygon), mUserObject(*this), mNode(0), mMover(0), mMoveAdapter(0), mEntity(0)
 {
 	Ogre::Vector3 nodePosition = Atlas2Ogre(localPosition);
 	if (polygon.getPositionProvider()) {
@@ -55,26 +55,26 @@ PolygonPoint::PolygonPoint(Polygon& polygon, const WFMath::Point<2>& localPositi
 	
 	std::stringstream ss;
 	ss << "PolygonPoint" << sPointCounter++;
-	Ogre::Entity* entity(0);
+	
 	try {
-		entity = mNode->getCreator()->createEntity(ss.str(), "3d_objects/primitives/models/sphere.mesh");
+		mEntity = mNode->getCreator()->createEntity(ss.str(), "3d_objects/primitives/models/sphere.mesh");
 		///start out with a normal material
-		entity->setMaterialName("/global/authoring/point");
-		entity->setRenderingDistance(300);
-		entity->setQueryFlags(MousePicker::CM_UNDEFINED);
+		mEntity->setMaterialName("/global/authoring/point");
+		mEntity->setRenderingDistance(300);
+		mEntity->setQueryFlags(MousePicker::CM_UNDEFINED);
 		
-		entity->setUserObject(&mUserObject);
+		mEntity->setUserObject(&mUserObject);
 		
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when creating polygon point marker entity: " << ex.what());
 		return;
 	}
 	
-	if (!entity) {
+	if (!mEntity) {
 		S_LOG_FAILURE("Unexpected error when creating polygon point marker entity.");
 		return;
 	}
-	mNode->attachObject(entity);
+	mNode->attachObject(mEntity);
 }
 
 PolygonPoint::~PolygonPoint()
@@ -149,6 +149,22 @@ void PolygonPoint::translate(const WFMath::Vector<2>& translation)
 	}
 	mPolygon.updateRender();
 }
+
+void PolygonPoint::setVisible(bool visibility)
+{
+	if (mEntity) {
+		mEntity->setVisible(visibility);
+	}
+}
+	
+bool PolygonPoint::getVisible() const
+{
+	if (mEntity) {
+		return mEntity->getVisible();
+	}
+	return false;
+}
+
 
 
 }
