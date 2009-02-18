@@ -26,6 +26,8 @@
 
 #include "PolygonPointMover.h"
 #include "PolygonPoint.h"
+#include "Polygon.h"
+#include "services/input/Input.h"
 
 #include "../MathConverter.h"
 
@@ -34,8 +36,10 @@ namespace EmberOgre {
 namespace Manipulation {
 
 PolygonPointMover::PolygonPointMover(PolygonPoint& point)
-: mPoint(point)
+: mPoint(point), mNewPoint(0), mInitialPosition(point.getLocalPosition())
 {
+	Ember::Input::getSingleton().EventKeyPressed.connect(sigc::mem_fun(*this, &PolygonPointMover::input_KeyPressed));
+	Ember::Input::getSingleton().EventKeyReleased.connect(sigc::mem_fun(*this, &PolygonPointMover::input_KeyReleased));
 }
 
 
@@ -51,7 +55,7 @@ const WFMath::Quaternion& PolygonPointMover::getOrientation() const
 
 const WFMath::Point<3>& PolygonPointMover::getPosition() const
 {
-	mPosition = Ogre2Atlas(mPoint.getNode()->_getDerivedPosition());
+	mPosition = Ogre2Atlas(getActivePoint()->getNode()->_getDerivedPosition());
 	return mPosition;
 }
 void PolygonPointMover::setPosition(const WFMath::Point<3>& position)
@@ -59,21 +63,21 @@ void PolygonPointMover::setPosition(const WFMath::Point<3>& position)
 	if (position.isValid()) {
 		///We need to offset into local space.
 		Ogre::Vector3 posOffset = Ogre::Vector3::ZERO;
-		if (mPoint.getNode()->getParent()) {
-			posOffset = mPoint.getNode()->getParent()->_getDerivedPosition();
+		if (getActivePoint()->getNode()->getParent()) {
+			posOffset = getActivePoint()->getNode()->getParent()->_getDerivedPosition();
 		}
 		Ogre::Vector3 newPos = Atlas2Ogre(position) - posOffset;
-		newPos = mPoint.getNode()->getParent()->_getDerivedOrientation().Inverse() * newPos;
+		newPos = getActivePoint()->getNode()->getParent()->_getDerivedOrientation().Inverse() * newPos;
 
-		WFMath::Vector<3> translation = Ogre2Atlas_Vector3(newPos - mPoint.getNode()->getPosition());
+		WFMath::Vector<3> translation = Ogre2Atlas_Vector3(newPos - getActivePoint()->getNode()->getPosition());
 		///adjust it so that it moves according to the ground for example
-		mPoint.translate(WFMath::Vector<2>(translation.x(), translation.y()));
+		getActivePoint()->translate(WFMath::Vector<2>(translation.x(), translation.y()));
 	}
 }
 void PolygonPointMover::move(const WFMath::Vector<3>& directionVector)
 {
 	if (directionVector.isValid()) {
-		mPoint.translate(WFMath::Vector<2>(directionVector.x(), directionVector.y()));
+		getActivePoint()->translate(WFMath::Vector<2>(directionVector.x(), directionVector.y()));
 	}
 }
 void PolygonPointMover::setRotation (int axis, WFMath::CoordType angle)
@@ -91,9 +95,81 @@ void PolygonPointMover::setOrientation(const WFMath::Quaternion& rotation)
 
 void PolygonPointMover::finalizeMovement()
 {
+	mPoint.endMovement();
 }
+
 void PolygonPointMover::cancelMovement()
 {
+	mPoint.setLocalPosition(mInitialPosition);
+	if (mNewPoint) {
+		switchToExistingPointMode();
+	}
+	mPoint.endMovement();
+}
+
+PolygonPoint* PolygonPointMover::getActivePoint() const
+{
+	if (mNewPoint) {
+		return mNewPoint;
+	}
+	return &mPoint;
+}
+
+void PolygonPointMover::input_KeyPressed(const SDL_keysym& key, Ember::Input::InputMode mode)
+{
+	if (key.sym == SDLK_LCTRL || key.sym == SDLK_RCTRL) {
+		if (!mNewPoint) {
+			switchToNewPointMode();
+		}
+	}
+}
+
+void PolygonPointMover::input_KeyReleased(const SDL_keysym& key, Ember::Input::InputMode mode)
+{
+	if (key.sym == SDLK_LCTRL || key.sym == SDLK_RCTRL) {
+		if (mNewPoint) {
+			switchToExistingPointMode();
+		}
+	}
+}
+
+void PolygonPointMover::switchToNewPointMode()
+{
+	if (!mNewPoint) {
+		///Get the two nearest points and position the new point to the one's that's closest
+		PolygonPoint* point1 = mPoint.getPolygon().getPointAfter(mPoint);
+		PolygonPoint* point2 = mPoint.getPolygon().getPointBefore(mPoint);
+		if (point1 && point2) {
+			float initialDistance1 = WFMath::Distance(mInitialPosition, point1->getLocalPosition());
+			float initialDistance2 = WFMath::Distance(mInitialPosition, point2->getLocalPosition());
+			float currentDistance1 = WFMath::Distance(mPoint.getLocalPosition(), point1->getLocalPosition());
+			float currentDistance2 = WFMath::Distance(mPoint.getLocalPosition(), point2->getLocalPosition());
+			
+			float distanceDiff1 = initialDistance1 - currentDistance1;
+			float distanceDiff2 = initialDistance2 - currentDistance2;
+			if (distanceDiff1 < distanceDiff2) {
+				mNewPoint = mPoint.getPolygon().insertPointBefore(mPoint);
+			} else {
+				mNewPoint = mPoint.getPolygon().insertPointBefore(*point1);
+			}
+			
+			mNewPoint->setLocalPosition(mPoint.getLocalPosition());
+			mPoint.setLocalPosition(mInitialPosition);
+			mPoint.getPolygon().updateRender();
+		}
+	}
+}
+
+void PolygonPointMover::switchToExistingPointMode()
+{
+	if (mNewPoint) {
+		if (mPoint.getPolygon().removePoint(*mNewPoint)) {
+			mPoint.setLocalPosition(mNewPoint->getLocalPosition());
+			delete mNewPoint;
+			mNewPoint = 0;
+			mPoint.getPolygon().updateRender();
+		}
+	}
 }
 
 }

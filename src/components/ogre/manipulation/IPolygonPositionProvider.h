@@ -28,12 +28,19 @@ namespace EmberOgre {
 namespace Manipulation {
 
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@brief Provides the ability to provide a height value to the otherwise 2d polygons.
+For example, if a polygon is placed on terrain we want the height to be adjusted so that it snaps to the ground.
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class IPolygonPositionProvider
 {
 public:
 
+/**
+ * @brief Gets the height for the local position, within the polygon's space.
+ * @param localPosition The local position within the polygon's space.
+ * @return The height.
+ */
 virtual float getHeightForPosition(const WFMath::Point<2>& localPosition) = 0;
 
 };

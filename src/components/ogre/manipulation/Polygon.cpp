@@ -111,6 +111,62 @@ void Polygon::updateRender()
 	mRenderer.update();
 }
 
+PolygonPoint* Polygon::insertPointBefore(PolygonPoint& point)
+{
+	if (mPoints.size()) {
+		PointStore::iterator I = std::find(mPoints.begin(), mPoints.end(), &point);
+		if (I != mPoints.end()) {
+			PolygonPoint* newPoint = new PolygonPoint(*this);
+			mPoints.insert(I, newPoint);
+			return newPoint;
+		}
+	}
+	return 0;
+}
+
+PolygonPoint* Polygon::getPointBefore(PolygonPoint& point)
+{
+	if (mPoints.size()) {
+		PointStore::iterator I = std::find(mPoints.begin(), mPoints.end(), &point);
+		if (I != mPoints.end()) {
+			if (I == mPoints.begin()) {
+				return *(mPoints.rbegin());
+			} else {
+				return *(--I);
+			}
+		}
+	}
+	return 0;
+}
+	
+PolygonPoint* Polygon::getPointAfter(PolygonPoint& point)
+{
+	if (mPoints.size()) {
+		PointStore::iterator I = std::find(mPoints.begin(), mPoints.end(), &point);
+		if (I != mPoints.end()) {
+			if (I == (--mPoints.end())) {
+				return *(mPoints.begin());
+			} else {
+				return *(++I);
+			}
+		}
+	}
+	return 0;
+}
+
+bool Polygon::removePoint(PolygonPoint& point)
+{
+	if (mPoints.size()) {
+		PointStore::iterator I = std::find(mPoints.begin(), mPoints.end(), &point);
+		if (I != mPoints.end()) {
+			mPoints.erase(I);
+			return true;
+		}
+	}
+	return false;
+}
+
+
 
 }
 

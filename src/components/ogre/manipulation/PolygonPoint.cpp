@@ -89,6 +89,11 @@ PolygonPoint::~PolygonPoint()
 	}
 }
 
+Polygon& PolygonPoint::getPolygon()
+{
+	return mPolygon;
+}
+
 Ogre::SceneNode* PolygonPoint::getNode()
 {
 	return mNode;
@@ -102,6 +107,16 @@ Ogre::SceneNode* PolygonPoint::getNode() const
 WFMath::Point<2> PolygonPoint::getLocalPosition() const
 {
 	return WFMath::Point<2>(mNode->getPosition().x, -mNode->getPosition().z);
+}
+
+void PolygonPoint::setLocalPosition(const WFMath::Point<2>& position)
+{
+	mNode->setPosition(position.x(), mNode->getPosition().y, -position.y());
+	if (mPolygon.getPositionProvider()) {
+		Ogre::Vector3 pos = getNode()->getPosition();
+		pos.y = mPolygon.getPositionProvider()->getHeightForPosition(Ogre2Atlas_TerrainPosition(pos));
+		getNode()->setPosition(pos);
+	}
 }
 
 

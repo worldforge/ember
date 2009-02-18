@@ -25,7 +25,9 @@
 
 // #include "../EmberOgrePrerequisites.h"
 #include "IMovementBridge.h"
+#include "services/input/Input.h"
 #include <wfmath/point.h>
+#include <sigc++/trackable.h>
 
 namespace EmberOgre {
 
@@ -36,10 +38,11 @@ class PolygonPoint;
 /**
 @brief Responsible for handling movement of a PolygonPoint instance.
 The movement happens through a graphical interface in Ogre. Basically a sphere is added to the world, which can then moved with the mouse.
+If a point is moved and ctrl is pressed a new point will be created.
 
 @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class PolygonPointMover : public IMovementBridge
+class PolygonPointMover : public IMovementBridge, public sigc::trackable
 {
 public:
 
@@ -76,6 +79,41 @@ private:
 	 * @brief The current position of the polygon point.
 	 */
 	mutable WFMath::Point<3> mPosition;
+	
+	/**
+	 * @brief Stores a newly created point.
+	 */
+	PolygonPoint* mNewPoint;
+	
+	/**
+	 * @brief Gets the active point, which is either the existing point or a new one if any such exists.
+	 * @see mNewPoint
+	 * @return Either the existing point, or a new point if any such exists.
+	 */
+	PolygonPoint* getActivePoint() const;
+	
+	/**
+	 * @brief The initial position of the point, when the movement started.
+	 */
+	WFMath::Point<2> mInitialPosition;
+	
+	void input_KeyPressed(const SDL_keysym& key, Ember::Input::InputMode mode);
+	void input_KeyReleased(const SDL_keysym& key, Ember::Input::InputMode mode);
+	
+	/**
+	 * @brief Switch to new point mode.
+	 * This involves creating a new point, positioning that at the current position of the moved point, and reverting the existing point back to the original position.
+	 * If new point mode already is selected nothing will happen.
+	 */
+	void switchToNewPointMode();
+	
+	/**
+	 * @brief Switches to existing point mode. This is the default.
+	 * This involves removing the new point and placing the existing point on the mouse position.
+	 * If existing point mode already is selected nothing will happen.
+	 */
+	void switchToExistingPointMode();
+	
 	
 };
 

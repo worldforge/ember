@@ -52,7 +52,7 @@ public:
 	 * @param polygon The polygon to which this point is a part of.
 	 * @param localPosition The local position of this point, within the polygon space.
 	 */
-	PolygonPoint(Polygon& polygon, const WFMath::Point<2>& localPosition);
+	PolygonPoint(Polygon& polygon, const WFMath::Point<2>& localPosition = WFMath::Point<2>::ZERO());
 	
 	/**
 	 * @brief Dtor.
@@ -92,6 +92,12 @@ public:
 	WFMath::Point<2> getLocalPosition() const;
 	
 	/**
+	 * @brief Sets the local position.
+	 * @param position The new local position, within the polygon space.
+	 */
+	void setLocalPosition(const WFMath::Point<2>& position);
+	
+	/**
 	 * @brief Starts movement of the polygon point.
 	 * The movement handling will be relegated to an instance of PolygonPointMover. When movement has completed, call endMovement().
 	 */
@@ -102,6 +108,7 @@ public:
 	 * Call this when movement has ended.
 	 */
 	void endMovement();
+	
 	
 protected:
 	/**
