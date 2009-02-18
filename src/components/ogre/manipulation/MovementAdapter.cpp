@@ -117,14 +117,14 @@ MovementAdapter::~MovementAdapter()
 
 void MovementAdapter::finalizeMovement()
 {
-	mBridge->finalizeMovement();
 	removeAdapter();
+	mBridge->finalizeMovement();
 }
 
 void MovementAdapter::cancelMovement()
 {
-	mBridge->cancelMovement();
 	removeAdapter();
+	mBridge->cancelMovement();
 }
 
 bool MovementAdapter::injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse)
