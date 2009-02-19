@@ -44,7 +44,7 @@ namespace Manipulation {
 unsigned int PolygonPoint::sPointCounter = 0;
 
 PolygonPoint::PolygonPoint(Polygon& polygon, const WFMath::Point<2>& localPosition)
-: mPolygon(polygon), mUserObject(*this), mNode(0), mMover(0), mMoveAdapter(0), mEntity(0)
+: mPolygon(polygon), mUserObject(*this), mNode(0), mEntity(0)
 {
 	Ogre::Vector3 nodePosition = Atlas2Ogre(localPosition);
 	if (polygon.getPositionProvider()) {
@@ -80,7 +80,6 @@ PolygonPoint::PolygonPoint(Polygon& polygon, const WFMath::Point<2>& localPositi
 PolygonPoint::~PolygonPoint()
 {
 	try {
-		endMovement();
 		if (mNode) {
 			mPolygon.getBaseNode()->removeAndDestroyChild(mNode->getName());
 		}
@@ -120,23 +119,23 @@ void PolygonPoint::setLocalPosition(const WFMath::Point<2>& position)
 }
 
 
-void PolygonPoint::startMovement()
-{
-	delete mMover;
-	delete mMoveAdapter;
-	mMoveAdapter = new MovementAdapter();
-	mMover = new PolygonPointMover(*this);
-	mMoveAdapter->attachToBridge(mMover);
-}
-
-void PolygonPoint::endMovement()
-{
-	delete mMover;
-	mMover = 0;
-	delete mMoveAdapter;
-	mMoveAdapter = 0;
-
-}
+// void PolygonPoint::startMovement()
+// {
+// 	delete mMover;
+// 	delete mMoveAdapter;
+// 	mMoveAdapter = new MovementAdapter();
+// 	mMover = new PolygonPointMover(*this);
+// 	mMoveAdapter->attachToBridge(mMover);
+// }
+// 
+// void PolygonPoint::endMovement()
+// {
+// 	delete mMover;
+// 	mMover = 0;
+// 	delete mMoveAdapter;
+// 	mMoveAdapter = 0;
+// 
+// }
 
 void PolygonPoint::translate(const WFMath::Vector<2>& translation)
 {

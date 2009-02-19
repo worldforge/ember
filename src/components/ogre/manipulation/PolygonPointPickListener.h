@@ -24,6 +24,7 @@
 #define EMBEROGRE_MANIPULATIONPOLYGONPOINTPICKLISTENER_H
 
 #include "../IWorldPickListener.h"
+#include <sigc++/signal.h>
 
 namespace EmberOgre {
 
@@ -31,6 +32,7 @@ namespace Manipulation {
 
 class PolygonPointUserObject;
 class Polygon;
+class PolygonPoint;
 
 /**
 @brief A listener which knows how to handle PolygonPoints.
@@ -56,6 +58,8 @@ public:
 	virtual void initializePickingContext();
 
 	virtual void endPickingContext(const MousePickerArgs& mousePickerArgs);
+	
+	sigc::signal<void, PolygonPoint&> EventPickedPoint;
 
 
 private:

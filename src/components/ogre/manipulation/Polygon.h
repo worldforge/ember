@@ -160,7 +160,7 @@ typedef std::list<PolygonPoint*> PointStore;
 	 * Call this whenever the polygon has changed. This will rebuild the mesh that provides the points the binds the polygon points together.
 	 */
 	void updateRender();
-
+	
 protected:
 
 	/**
@@ -183,12 +183,7 @@ protected:
 	 * @brief Responsible for rendering the mesh that binds the polygon points together.
 	 */
 	PolygonRenderer mRenderer;
-	
-	/**
-	 * @brief Responsible for listening for pick events and initiating movements of the points.
-	 */
-	std::auto_ptr<PolygonPointPickListener> mListener;
-	
+
 };
 
 }

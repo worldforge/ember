@@ -62,7 +62,7 @@ void PolygonPointPickListener::initializePickingContext()
 void PolygonPointPickListener::endPickingContext(const MousePickerArgs& mousePickerArgs)
 {
 	if (mPickedUserObject) {
-		mPickedUserObject->getPoint().startMovement();
+		EventPickedPoint.emit(mPickedUserObject->getPoint());
 		mPickedUserObject = 0;
 	}
 }

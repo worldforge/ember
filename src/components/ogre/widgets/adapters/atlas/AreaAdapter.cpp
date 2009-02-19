@@ -30,6 +30,8 @@
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/terrain/TerrainGenerator.h"
 #include "../../ColouredListItem.h"
+#include "components/ogre/manipulation/PolygonPointPickListener.h"
+#include "components/ogre/AvatarCamera.h"
 
 #include <wfmath/polygon.h>
 
@@ -62,7 +64,7 @@ float EntityAreaPolygonPositionProvider::getHeightForPosition(const WFMath::Poin
 
 
 AreaAdapter::AreaAdapter(const ::Atlas::Message::Element& element, CEGUI::PushButton* showButton, CEGUI::Combobox* layerWindow, EmberEntity* entity)
-: AdapterBase(element), mShowButton(showButton), mPolygon(0), mLayer(0), mLayerWindow(layerWindow), mEntity(entity), mPositionProvider(0)
+: AdapterBase(element), mShowButton(showButton), mPolygon(0), mPickListener(0), mPointMovement(0), mLayer(0), mLayerWindow(layerWindow), mEntity(entity), mPositionProvider(0)
 {
 	if (element.isMap()) {
 		const ::Atlas::Message::MapType& areaData(element.asMap());
@@ -106,6 +108,15 @@ AreaAdapter::AreaAdapter(const ::Atlas::Message::Element& element, CEGUI::PushBu
 
 AreaAdapter::~AreaAdapter()
 {
+	if (mPickListener) {
+		EmberOgre::getSingleton().getMainCamera()->removeWorldPickListener(mPickListener);
+		try {
+			delete mPickListener;
+		} catch (const std::exception& ex) {
+			S_LOG_FAILURE("Error when deleting polygon point pick listener.");
+		}
+	}
+
 	delete mPolygon;
 	delete mPositionProvider;
 }
@@ -157,8 +168,20 @@ void AreaAdapter::toggleDisplayOfPolygon()
 					mPolygon->loadFromShape(poly);
 				}
 			}
+			mPickListener = new ::EmberOgre::Manipulation::PolygonPointPickListener(*mPolygon);
+			mPickListener->EventPickedPoint.connect(sigc::mem_fun(*this, &AreaAdapter::pickListener_PickedPoint));
+			EmberOgre::getSingleton().getMainCamera()->pushWorldPickListener(mPickListener);
 		}
 	} else {
+		if (mPickListener) {
+			EmberOgre::getSingleton().getMainCamera()->removeWorldPickListener(mPickListener);
+			try {
+				delete mPickListener;
+			} catch (const std::exception& ex) {
+				S_LOG_FAILURE("Error when deleting polygon point pick listener.");
+			}
+			mPickListener = 0;
+		}
 		try {
 			delete mPolygon;
 		} catch (const std::exception& ex) {
@@ -184,6 +207,23 @@ void AreaAdapter::fillElementFromGui()
 bool AreaAdapter::_hasChanges()
 {
 	return mOriginalElement != getChangedElement();
+}
+
+void AreaAdapter::pickListener_PickedPoint(Manipulation::PolygonPoint& point)
+{
+	delete mPointMovement;
+	mPointMovement = new Manipulation::PolygonPointMovement(point, this);
+}
+
+void AreaAdapter::endMovement()
+{
+	delete mPointMovement;
+	mPointMovement = 0;
+}
+void AreaAdapter::cancelMovement()
+{
+	delete mPointMovement;
+	mPointMovement = 0;
 }
 
 

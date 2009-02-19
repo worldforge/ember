@@ -26,7 +26,6 @@
 
 #include "Polygon.h"
 #include "PolygonPoint.h"
-#include "PolygonPointPickListener.h"
 
 
 #include <Ogre.h>
@@ -35,8 +34,7 @@
 
 #include "../MathConverter.h"
 #include "../EmberOgre.h"
-#include "../AvatarCamera.h"
-
+// 
 #include "services/logging/LoggingService.h"
 
 
@@ -46,16 +44,13 @@ namespace EmberOgre {
 namespace Manipulation {
 
 Polygon::Polygon(Ogre::SceneNode* baseNode, IPolygonPositionProvider* positionProvider)
-: mBaseNode(baseNode), mPositionProvider(positionProvider), mRenderer(*this), mListener(new PolygonPointPickListener(*this))
+: mBaseNode(baseNode), mPositionProvider(positionProvider), mRenderer(*this)
 {
-	EmberOgre::getSingleton().getMainCamera()->pushWorldPickListener(mListener.get());
-
 }
 
 
 Polygon::~Polygon()
 {
-	EmberOgre::getSingleton().getMainCamera()->removeWorldPickListener(mListener.get());
 	clear();
 }
 

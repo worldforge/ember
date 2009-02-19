@@ -36,6 +36,24 @@ namespace Manipulation {
 class PolygonPoint;
 
 /**
+@brief A listener interface which will recieve updates when the movement of the point changes.
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+*/
+class IMovementListener
+{
+public:
+	/**
+	 * @brief The movement has ended successfully.
+	 */
+	virtual void endMovement() = 0;
+	
+	/**
+	 * @brief The movement was cancelled.
+	 */
+	virtual void cancelMovement() = 0;
+};
+
+/**
 @brief Responsible for handling movement of a PolygonPoint instance.
 The movement happens through a graphical interface in Ogre. Basically a sphere is added to the world, which can then moved with the mouse.
 If a point is moved and ctrl is pressed a new point will be created.
@@ -51,7 +69,7 @@ public:
 	 * @brief Ctor.
 	 * @param point The point for which movement should occur.
 	 */
-	PolygonPointMover(PolygonPoint& point);
+	PolygonPointMover(PolygonPoint& point, IMovementListener* listener = 0);
 	
 	/**
 	 * @brief Dtor.
@@ -130,6 +148,11 @@ private:
 	 * In deleted mode the point is removed from the polygon.
 	 */
 	void switchToDeleteMode();
+	
+	/**
+	 * @brief An optional listener which will recieve movement updates.
+	 */
+	IMovementListener* mListener;
 	
 	
 };

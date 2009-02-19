@@ -98,18 +98,6 @@ public:
 	void setLocalPosition(const WFMath::Point<2>& position);
 	
 	/**
-	 * @brief Starts movement of the polygon point.
-	 * The movement handling will be relegated to an instance of PolygonPointMover. When movement has completed, call endMovement().
-	 */
-	void startMovement();
-	
-	/**
-	 * @brief Ends a previously started movement of the polygon point.
-	 * Call this when movement has ended.
-	 */
-	void endMovement();
-	
-	/**
 	 * @brief Sets the visibility of the point.
 	 * @param visibility The visibility of the point.
 	 */
@@ -144,16 +132,6 @@ protected:
 	 * This is owned by this instance.
 	 */
 	Ogre::SceneNode* mNode;
-	
-	/**
-	 * @brief When the point is moved, an instance of this will be created and the movement handled by it.
-	 */
-	PolygonPointMover* mMover;
-	
-	/**
-	 * @brief Main adapter which will intercept mouse and keyboard input to allow for movement of this point.
-	 */
-	MovementAdapter* mMoveAdapter;
 	
 	/**
 	 * @brief The entity which shows the marker, i.e. the draggable ball.

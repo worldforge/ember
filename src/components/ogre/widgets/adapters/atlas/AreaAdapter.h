@@ -25,6 +25,7 @@
 
 #include "AdapterBase.h"
 #include "components/ogre/manipulation/Polygon.h"
+#include "components/ogre/manipulation/PolygonPointMovement.h"
 #include "components/ogre/manipulation/IPolygonPositionProvider.h"
 #include "components/ogre/EmberEntity.h"
 
@@ -37,6 +38,9 @@ namespace EmberOgre {
 class EmberEntity;
 namespace Manipulation {
 class Polygon;
+class PolygonPoint;
+class PolygonPointPickListener;
+class PolygonPointMovement;
 }
 
 namespace Gui {
@@ -80,7 +84,7 @@ protected:
 This adapter will allow the user to edit the areas graphically through the use of the Polygon classes.
 @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class AreaAdapter : public AdapterBase
+class AreaAdapter : public AdapterBase, public ::EmberOgre::Manipulation::IMovementListener
 {
 public:
 	/**
@@ -107,6 +111,10 @@ public:
      */
     void toggleDisplayOfPolygon();
     
+	virtual void endMovement();
+	virtual void cancelMovement();
+    
+    
 protected:
 
 	/**
@@ -118,7 +126,17 @@ protected:
 	 * @brief The polygon used for graphical representation of this area.
 	 * Owned by this instance.
 	 */
-	::EmberOgre::Manipulation::Polygon* mPolygon;
+	Manipulation::Polygon* mPolygon;
+	
+	/**
+	 * @brief Responsible for listening for pick events and initiating movements of the points.
+	 */
+	Manipulation::PolygonPointPickListener* mPickListener;
+	
+	/**
+	 * @brief Responsible for handling the movement of a specific point.
+	 */
+	Manipulation::PolygonPointMovement* mPointMovement;
 	
 	/**
 	 * @brief The area layer.
@@ -144,6 +162,13 @@ protected:
 
 	bool layerWindow_TextChanged(const CEGUI::EventArgs& e);
 	bool showButton_Clicked(const CEGUI::EventArgs& e);
+	
+	/**
+	 * @brief Listen for points being picked and initiate movement of the point.
+	 * @param point The point that was picked.
+	 */
+	void pickListener_PickedPoint(Manipulation::PolygonPoint& point);
+	
 
 	virtual void fillElementFromGui();
 	virtual bool _hasChanges();

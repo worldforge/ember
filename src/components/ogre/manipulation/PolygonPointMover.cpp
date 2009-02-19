@@ -35,8 +35,8 @@ namespace EmberOgre {
 
 namespace Manipulation {
 
-PolygonPointMover::PolygonPointMover(PolygonPoint& point)
-: mPoint(point), mNewPoint(0), mDeleted(false), mPointAfterDeleted(0), mInitialPosition(point.getLocalPosition())
+PolygonPointMover::PolygonPointMover(PolygonPoint& point, IMovementListener* listener)
+: mPoint(point), mNewPoint(0), mDeleted(false), mPointAfterDeleted(0), mInitialPosition(point.getLocalPosition()), mListener(listener)
 {
 	Ember::Input::getSingleton().EventKeyPressed.connect(sigc::mem_fun(*this, &PolygonPointMover::input_KeyPressed));
 	Ember::Input::getSingleton().EventKeyReleased.connect(sigc::mem_fun(*this, &PolygonPointMover::input_KeyReleased));
@@ -96,7 +96,7 @@ void PolygonPointMover::setOrientation(const WFMath::Quaternion& rotation)
 void PolygonPointMover::finalizeMovement()
 {
 	//TODO: clean up if the point has been deleted
-	mPoint.endMovement();
+	mListener->endMovement();
 }
 
 void PolygonPointMover::cancelMovement()
@@ -105,7 +105,8 @@ void PolygonPointMover::cancelMovement()
 	if (mNewPoint) {
 		switchToExistingPointMode();
 	}
-	mPoint.endMovement();
+	mListener->cancelMovement();
+// 	mPoint.getPolygon().endMovement();
 }
 
 PolygonPoint* PolygonPointMover::getActivePoint() const
