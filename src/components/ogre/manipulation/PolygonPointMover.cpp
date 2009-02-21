@@ -45,6 +45,9 @@ PolygonPointMover::PolygonPointMover(PolygonPoint& point, IMovementListener* lis
 
 PolygonPointMover::~PolygonPointMover()
 {
+	if (mDeleted) {
+		delete &mPoint;
+	}
 }
 
 const WFMath::Quaternion& PolygonPointMover::getOrientation() const
@@ -172,9 +175,9 @@ void PolygonPointMover::switchToExistingPointMode()
 {
 	if (mDeleted) {
 		if (mPointAfterDeleted) {
-			mPoint.getPolygon().insertPointBefore(*mPointAfterDeleted);
+			mPoint.getPolygon().reInsertPointBefore(*mPointAfterDeleted, mPoint);
 		} else {
-			mPoint.getPolygon().insertPoint(0, mPoint);
+			mPoint.getPolygon().reInsertPoint(0, mPoint);
 		}
 		mPoint.setVisible(true);
 		mDeleted = false;

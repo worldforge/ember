@@ -105,11 +105,20 @@ typedef std::list<PolygonPoint*> PointStore;
 	PolygonPoint* insertPoint(size_t index);
 	
 	/**
-	 * @brief Inserts an existing point at the specified index.
+	 * @brief Re-inserts an existing point at the specified index.
 	 * @param index The index where the new point will be inserted.
 	 * @param point The point to insert.
+	 * @return True if the insertion was successful.
 	 */
-	void insertPoint(size_t index, PolygonPoint& point);
+	bool reInsertPoint(size_t index, PolygonPoint& point);
+	
+	/**
+	 * @brief Re-inserts an existing point before the specified point.
+	 * @param point The point before which a point should be inserted.
+	 * @param existingPoint The point which should be inserted. This must already have belonged to the polygon before.
+	 * @return True if the insertion was successful.
+	 */
+	bool reInsertPointBefore(PolygonPoint& point, PolygonPoint& existingPoint);
 	
 	/**
 	 * @brief Inserts a point before the specified point.

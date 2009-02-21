@@ -119,8 +119,26 @@ PolygonPoint* Polygon::insertPointBefore(PolygonPoint& point)
 	return 0;
 }
 
-void Polygon::insertPoint(size_t index, PolygonPoint& point)
+bool Polygon::reInsertPointBefore(PolygonPoint& point, PolygonPoint& existingPoint)
 {
+	if (&existingPoint.getPolygon() == this) {
+		if (mPoints.size()) {
+			PointStore::iterator I = std::find(mPoints.begin(), mPoints.end(), &point);
+			if (I != mPoints.end()) {
+				mPoints.insert(I, &existingPoint);
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool Polygon::reInsertPoint(size_t index, PolygonPoint& point)
+{
+	if (&point.getPolygon() != this) {
+		return false;
+	}
+	
 	size_t i = 0;
 	PointStore::iterator I = mPoints.begin();
 	while (I != mPoints.end() && i < index) {
@@ -128,6 +146,7 @@ void Polygon::insertPoint(size_t index, PolygonPoint& point)
 		++I;
 	}
 	mPoints.insert(I, &point);
+	return true;
 }
 
 
