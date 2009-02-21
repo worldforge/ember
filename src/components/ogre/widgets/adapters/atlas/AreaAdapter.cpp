@@ -166,11 +166,15 @@ void AreaAdapter::toggleDisplayOfPolygon()
 	// 					poly.shift(WFMath::Vector<2>(mEntity->getPosition().x(), mEntity->getPosition().y()));
 	// 				}
 					mPolygon->loadFromShape(poly);
+					mPickListener = new ::EmberOgre::Manipulation::PolygonPointPickListener(*mPolygon);
+					mPickListener->EventPickedPoint.connect(sigc::mem_fun(*this, &AreaAdapter::pickListener_PickedPoint));
+					EmberOgre::getSingleton().getMainCamera()->pushWorldPickListener(mPickListener);
+				} else {
+					createNewPolygon();
 				}
+			} else {
+				createNewPolygon();
 			}
-			mPickListener = new ::EmberOgre::Manipulation::PolygonPointPickListener(*mPolygon);
-			mPickListener->EventPickedPoint.connect(sigc::mem_fun(*this, &AreaAdapter::pickListener_PickedPoint));
-			EmberOgre::getSingleton().getMainCamera()->pushWorldPickListener(mPickListener);
 		}
 	} else {
 		if (mPickListener) {
@@ -189,6 +193,24 @@ void AreaAdapter::toggleDisplayOfPolygon()
 		}
 		mPolygon = 0;
 	}
+}
+
+void AreaAdapter::createNewPolygon()
+{
+	delete mPolygon;
+	mPolygon = new ::EmberOgre::Manipulation::Polygon(mEntity->getSceneNode(), mPositionProvider);
+	WFMath::Polygon<2> poly;
+	poly.addCorner(0, WFMath::Point<2>(-1, -1));
+	poly.addCorner(1, WFMath::Point<2>(-1, 1));
+	poly.addCorner(2, WFMath::Point<2>(1, 1));
+	poly.addCorner(3, WFMath::Point<2>(1, -1));
+	
+	mPolygon->loadFromShape(poly);	
+	mPickListener = new ::EmberOgre::Manipulation::PolygonPointPickListener(*mPolygon);
+	mPickListener->EventPickedPoint.connect(sigc::mem_fun(*this, &AreaAdapter::pickListener_PickedPoint));
+	EmberOgre::getSingleton().getMainCamera()->pushWorldPickListener(mPickListener);
+	
+	mLayer = atoi(mLayerWindow->getText().c_str());
 }
 
 void AreaAdapter::fillElementFromGui()

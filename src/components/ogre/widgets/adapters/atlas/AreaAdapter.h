@@ -111,7 +111,20 @@ public:
      */
     void toggleDisplayOfPolygon();
     
+    
+    /**
+     * @brief Creates a new polygon.
+     */
+    void createNewPolygon();
+    
+	/**
+	 * @brief When movement has ended, remove the movement instance.
+	 */
 	virtual void endMovement();
+	
+	/**
+	 * @brief When movement has been cancelled, remove the movement instance.
+	 */
 	virtual void cancelMovement();
     
     
