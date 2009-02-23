@@ -1,66 +1,132 @@
 --Allows the editing of entities
 
-EntityEditor = {connectors={}}
-EntityEditor.instance = {}
-EntityEditor.instance.stackableContainers = {}
-EntityEditor.instance.entity = nil
-EntityEditor.instance.rootMapAdapter = nil
-EntityEditor.instance.helper = nil
-EntityEditor.instance.newElements = {}
-EntityEditor.instance.deleteListener = nil
-EntityEditor.factory = nil
-EntityEditor.attributesContainer = nil
+EntityEditor = {
+	connectors={},
+	instance = {
+		stackableContainers = {},
+		entity = nil,
+		rootMapAdapter = nil,
+		helper = nil,
+		newElements = {},
+		deleteListener = nil
+	},
+	factory = nil,
+	attributesContainer = nil,
+	adapters = {
+		map = {
+			createAdapter = function(element, prototype)
+				return EntityEditor.createMapAdapter(element, prototype)
+			end
+		},
+		list = {
+			createAdapter = function(element, prototype)
+				return EntityEditor.createListAdapter(element, prototype)
+			end
+		},
+		static = {
+			createAdapter = function(element, prototype)
+				return EntityEditor.createStaticAdapter(element, prototype)
+			end
+		},
+		size = {
+			createAdapter = function(element, prototype)
+				return EntityEditor.createSizeAdapter(element, prototype)
+			end
+		},
+		pos = {
+			createAdapter = function(element, prototype)
+				return EntityEditor.createPositionAdapter(element, prototype)
+			end
+		},
+		pos2d = {
+			createAdapter = function(element, prototype)
+				return EntityEditor.createPosition2DAdapter(element, prototype)
+			end
+		},
+		orientation = {
+			createAdapter = function(element, prototype)
+				return EntityEditor.createOrientationAdapter(element, prototype)
+			end
+		},
+		points = {
+			createAdapter = function(element, prototype)
+				return EntityEditor.createPointsAdapter(element, prototype)
+			end
+		},
+		string = {
+			createAdapter = function(element, prototype)
+				return EntityEditor.createStringAdapter(element, prototype)
+			end
+		},
+		number = {
+			createAdapter = function(element, prototype)
+				return EntityEditor.createNumberAdapter(element, prototype)
+			end
+		},
+		area = {
+			createAdapter = function(element, prototype)
+				return EntityEditor.createAreaAdapter(element, prototype)
+			end
+		}
+	},
+	modelTab = {}
+}
 EntityEditor.prototypes = 
 {
 	external = {
-		readonly = true
+		adapter = EntityEditor.adapters.static
 	},
 	parents = {
 		nodelete = true,
-		readonly = true
+-- 		adapter = EntityEditor.adapters.static
+		adapter = nil
 	},
 	objtype = {
-		type = "static",
-		nodelete = true
+		nodelete = true,
+		adapter = EntityEditor.adapters.static
 	},
 	velocity = {
-		hidden = true
+		adapter = nil
 	},
 	stamp = {
-		hidden = true,
+		adapter = nil,
 		nodelete = true
 	},
 	name = {
+		adapter = EntityEditor.adapters.string,
 		nodelete = true
 	},
 	bbox = {
-		type = "size",
+		adapter = EntityEditor.adapters.size,
 		nodelete = true
 	},
 	pos = {
-		type = "position",
+		adapter = EntityEditor.adapters.pos,
 		nodelete = true
 	},
 	orientation = {
-		type = "orientation",
+		adapter = EntityEditor.adapters.orientation,
 		nodelete = true
 	},
 	area = {
-		type = "area",
+		adapter = EntityEditor.adapters.area
 	},
 	points = {
-		type = "points"
+		adapter = EntityEditor.adapters.points
 	},
 	style = {
+		adapter = EntityEditor.adapters.string,
 		suggestions = {
 			"gnarly",
 			"knotted",
 			"weathered"
 		}
+	},
+	default = {
+		adapter = EntityEditor.adapters.string
 	}
 }
 
-EntityEditor.modelTab = {}
 
 
 function editEntity(id)
@@ -263,6 +329,8 @@ function EntityEditor.createNewMapElementWidget(mapAdapter, outercontainer, prot
 		local adapterWrapper = nil
 		local element = nil
 		local name = wrapper.nameEditbox:getText()
+		local proto = wrapper.typeCombobox:getSelectedItem():getUserData()
+-- 		debugObject(proto)
 		if wrapper.typeCombobox:getSelectedItem():getID() == 0 then
 			element = EntityEditor.instance.helper:createStringElement()
 			adapterWrapper = EntityEditor.createStringAdapter(element, EntityEditor.getPrototype(name, element))
@@ -302,30 +370,8 @@ end
 
 function EntityEditor.createAdapterFromPrototype(element, prototype)
 	local adapterWrapper = nil
-	if prototype.hidden == nil then
-		if prototype.type == "map" then
-			adapterWrapper = EntityEditor.createMapAdapter(element, prototype)
-		elseif prototype.type == "list" then
-			adapterWrapper = EntityEditor.createListAdapter(element, prototype)
-		elseif prototype.type == "static" or prototype.readonly ~= nil then
-			adapterWrapper = EntityEditor.createStaticAdapter(element, prototype)
-		elseif prototype.type == 'size' then
-			adapterWrapper = EntityEditor.createSizeAdapter(element, prototype)
-		elseif prototype.type == 'pos' then
-			adapterWrapper = EntityEditor.createPositionAdapter(element, prototype)
-		elseif prototype.type == 'pos2d' then
-			adapterWrapper = EntityEditor.createPosition2DAdapter(element, prototype)
-		elseif prototype.type == 'orientation' then
-			adapterWrapper = EntityEditor.createOrientationAdapter(element, prototype)
-		elseif prototype.type == 'points' then
-			adapterWrapper = EntityEditor.createPointsAdapter(element, prototype)
-		elseif prototype.type == "string" then
-			adapterWrapper = EntityEditor.createStringAdapter(element, prototype)
-		elseif prototype.type == "number" then
-			adapterWrapper = EntityEditor.createNumberAdapter(element, prototype)
-		elseif prototype.type == "area" then
-			adapterWrapper = EntityEditor.createAreaAdapter(element, prototype)
-		end
+	if prototype.adapter ~= nil then
+		adapterWrapper = prototype.adapter.createAdapter(element, prototype)
 		if adapterWrapper ~= nil then
 			if prototype.suggestions ~= nil then
 				for index,value in ipairs(prototype.suggestions) do
@@ -342,16 +388,15 @@ function EntityEditor.getPrototype(attributeName, element)
 	local prototype = {}
 	if EntityEditor.prototypes[attributeName] ~= nil then
 		 prototype = EntityEditor.prototypes[attributeName]
-	end
-	if prototype.type == nil then
+	else
 		if element:isString() then
-			prototype.type = "string"
+			prototype.adapter = EntityEditor.adapters.string
 		elseif element:isNum() then
-			prototype.type = "number"
+			prototype.adapter = EntityEditor.adapters.number
 		elseif element:isMap() then
-			prototype.type = "map"
+			prototype.adapter = EntityEditor.adapters.map
 		elseif element:isList() then
-			prototype.type = "list"
+			prototype.adapter = EntityEditor.adapters.list
 		end
 	end
 	return prototype
@@ -613,21 +658,41 @@ function EntityEditor.createDeleteButton(attributeName)
 	return deleteButton
 end
 
-function EntityEditor.fillNewElementCombobox(combobox)
+function EntityEditor.fillNewElementCombobox(combobox, existingPrototype, element)
+
+-- 	for index,value in ipairs(EntityEditor.adapters) do
+-- 		if value.shouldBeAdded(element) then
+-- 			if existingPrototype.shouldAddChild(element, value) then
+-- 				item = EmberOgre.Gui.ColouredListItem:new(value.name, index)
+-- 				combobox:addItem(item)
+-- 			end
+-- 		end
+-- 	end
+
+
 	local item = nil
+	
 	item = EmberOgre.Gui.ColouredListItem:new("String", 0)
+-- 	item:setUserData(EntityEditor.prototypes.area)
 	combobox:addItem(item)
 	item = EmberOgre.Gui.ColouredListItem:new("Integer", 1)
+-- 	item:setUserData(EntityEditor.prototypes.area)
 	combobox:addItem(item)
 	item = EmberOgre.Gui.ColouredListItem:new("Float", 2)
+-- 	item:setUserData(EntityEditor.prototypes.area)
 	combobox:addItem(item)
 	item = EmberOgre.Gui.ColouredListItem:new("Map", 3)
+-- 	item:setUserData(EntityEditor.prototypes.area)
 	combobox:addItem(item)
 	item = EmberOgre.Gui.ColouredListItem:new("List", 4)
+-- 	item:setUserData(EntityEditor.prototypes.area)
 	combobox:addItem(item)
+-- 	item = EmberOgre.Gui.ColouredListItem:new("Area", 5)
+-- 	item:setUserData(EntityEditor.prototypes.area)
+-- 	combobox:addItem(item)
 	combobox:setHeight(CEGUI.UDim(0, 100))
 	combobox:setProperty("ReadOnly", "true")
-	--combobox:getDropList():setProperty("ClippedByParent", "false")
+-- 	--combobox:getDropList():setProperty("ClippedByParent", "false")
 end
 
 
