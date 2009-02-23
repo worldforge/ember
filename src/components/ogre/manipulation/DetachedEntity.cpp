@@ -54,7 +54,7 @@ void DetachedEntity::setFromMessage(const Atlas::Message::MapType& attrs)
 		if (A->first == "loc" || A->first == "id" || A->first == "contains") continue;
 
         // see if the value in the sight matches the exsiting value
-		Eris:Entity::AttrMap::iterator I = m_attrs.find(A->first);
+		Eris::Entity::AttrMap::iterator I = m_attrs.find(A->first);
         if ((I != m_attrs.end()) && (I->second == A->second)) continue;
 
         setAttr(A->first, A->second);
