@@ -26,6 +26,8 @@
 
 #include "MovableObjectRenderer.h"
 
+#include <sigc++/connection.h>
+
 namespace CEGUI
 {
 	class GUISheet;
@@ -96,6 +98,10 @@ protected:
     Model::Model* mModel;
 
 	virtual Ogre::MovableObject* getMovableObject();
+	
+	void model_Reloaded();
+	
+	sigc::connection mModelReloadedConnection;
 
 };
 }

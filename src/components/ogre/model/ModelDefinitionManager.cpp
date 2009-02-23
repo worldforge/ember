@@ -29,6 +29,7 @@
 #include "ModelDefinitionManager.h"
 #include "ModelDefinition.h"
 #include "Model.h"
+#include "ModelBackgroundLoader.h"
 
 #include "XMLModelDefinitionSerializer.h"
 
@@ -84,13 +85,13 @@ bool isManual, Ogre::ManualResourceLoader* loader,
 const Ogre::NameValuePairList* createParams)
 {
 	Ogre::ResourcePtr ret = getByName(name);
-    if (ret.isNull())
-    {
-    	return Ogre::ResourceManager::create(name, group, isManual, loader, createParams);
-    }
-    ///Report this. We count on this happening a lot (user media overriding shared media for example), so we will not consider it a failure.
-    S_LOG_INFO("ModelDefinition with name " << name << " already exists.");
-    return Ogre::ResourcePtr();
+	if (ret.isNull())
+	{
+		return Ogre::ResourceManager::create(name, group, isManual, loader, createParams);
+	}
+	///Report this. We count on this happening a lot (user media overriding shared media for example), so we will not consider it a failure.
+	S_LOG_INFO("ModelDefinition with name " << name << " already exists.");
+	return Ogre::ResourcePtr();
 
 }
 
@@ -102,15 +103,13 @@ void ModelDefinitionManager::parseScript (Ogre::DataStreamPtr &stream, const Ogr
 
 void ModelDefinitionManager::exportScript(ModelDefnPtr definition)
 {
-    XMLModelDefinitionSerializer serializer;
+	XMLModelDefinitionSerializer serializer;
 	serializer.exportScript(definition, definition->getName() + ".modeldef");
 }
 
-Ogre::Resource* ModelDefinitionManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, 
-    const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, 
-    const Ogre::NameValuePairList* createParams)
+Ogre::Resource* ModelDefinitionManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams)
 {
-     return new ModelDefinition(this, name, handle, group, isManual, loader);
+	return new ModelDefinition(this, name, handle, group, isManual, loader);
 }
 
 const std::vector<std::string> ModelDefinitionManager::getAllMeshes() const
@@ -132,6 +131,36 @@ bool ModelDefinitionManager::getShowModels() const
 void ModelDefinitionManager::setShowModels(bool show)
 {
 	mShowModels = show;
+}
+
+void ModelDefinitionManager::addBackgroundLoader(ModelBackgroundLoader* loader)
+{
+	if (std::find(mBackgroundLoaders.begin(), mBackgroundLoaders.end(), loader) == mBackgroundLoaders.end()) {
+		mBackgroundLoaders.push_back(loader);
+	}
+}
+
+void ModelDefinitionManager::removeBackgroundLoader(ModelBackgroundLoader* loader)
+{
+	BackgroundLoaderStore::iterator I = std::find(mBackgroundLoaders.begin(), mBackgroundLoaders.end(), loader);
+	if (I != mBackgroundLoaders.end()) {
+		mBackgroundLoaders.erase(I);
+	}
+}
+
+
+void ModelDefinitionManager::pollBackgroundLoaders()
+{
+	for (BackgroundLoaderStore::iterator I = mBackgroundLoaders.begin(); I != mBackgroundLoaders.end();) 
+	{
+		BackgroundLoaderStore::iterator I_copy = I;
+		ModelBackgroundLoader* loader(*I);
+		++I;
+		if (loader->poll()) {
+			mBackgroundLoaders.erase(I_copy);
+			loader->reloadModel();
+		}
+	}
 }
 
 

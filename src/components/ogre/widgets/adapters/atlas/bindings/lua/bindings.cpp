@@ -18,6 +18,7 @@ TOLUA_API int  tolua_atlas_adapters_open (lua_State* tolua_S);
 #include "../../StringAdapter.h"
 #include "../../NumberAdapter.h"
 #include "../../SizeAdapter.h"
+#include "../../AreaAdapter.h"
 #include "../../MapAdapter.h"
 #include "../../ListAdapter.h"
 #include "../../PositionAdapter.h"
@@ -42,6 +43,13 @@ static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__SizeAdapter (lua_State
 	return 0;
 }
 
+static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__StaticAdapter (lua_State* tolua_S)
+{
+ EmberOgre::Gui::Adapters::Atlas::StaticAdapter* self = (EmberOgre::Gui::Adapters::Atlas::StaticAdapter*) tolua_tousertype(tolua_S,1,0);
+	delete self;
+	return 0;
+}
+
 static int tolua_collect_std__vector_std__string_ (lua_State* tolua_S)
 {
  std::vector<std::string>* self = (std::vector<std::string>*) tolua_tousertype(tolua_S,1,0);
@@ -49,9 +57,9 @@ static int tolua_collect_std__vector_std__string_ (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__StaticAdapter (lua_State* tolua_S)
+static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__OrientationAdapter (lua_State* tolua_S)
 {
- EmberOgre::Gui::Adapters::Atlas::StaticAdapter* self = (EmberOgre::Gui::Adapters::Atlas::StaticAdapter*) tolua_tousertype(tolua_S,1,0);
+ EmberOgre::Gui::Adapters::Atlas::OrientationAdapter* self = (EmberOgre::Gui::Adapters::Atlas::OrientationAdapter*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -63,9 +71,9 @@ static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__ListAdapter (lua_State
 	return 0;
 }
 
-static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__OrientationAdapter (lua_State* tolua_S)
+static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__PositionAdapter (lua_State* tolua_S)
 {
- EmberOgre::Gui::Adapters::Atlas::OrientationAdapter* self = (EmberOgre::Gui::Adapters::Atlas::OrientationAdapter*) tolua_tousertype(tolua_S,1,0);
+ EmberOgre::Gui::Adapters::Atlas::PositionAdapter* self = (EmberOgre::Gui::Adapters::Atlas::PositionAdapter*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -84,9 +92,9 @@ static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__AdapterFactory (lua_St
 	return 0;
 }
 
-static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__PositionAdapter (lua_State* tolua_S)
+static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__MapAdapter (lua_State* tolua_S)
 {
- EmberOgre::Gui::Adapters::Atlas::PositionAdapter* self = (EmberOgre::Gui::Adapters::Atlas::PositionAdapter*) tolua_tousertype(tolua_S,1,0);
+ EmberOgre::Gui::Adapters::Atlas::MapAdapter* self = (EmberOgre::Gui::Adapters::Atlas::MapAdapter*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -105,9 +113,9 @@ static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__NumberAdapter (lua_Sta
 	return 0;
 }
 
-static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__MapAdapter (lua_State* tolua_S)
+static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__AreaAdapter (lua_State* tolua_S)
 {
- EmberOgre::Gui::Adapters::Atlas::MapAdapter* self = (EmberOgre::Gui::Adapters::Atlas::MapAdapter*) tolua_tousertype(tolua_S,1,0);
+ EmberOgre::Gui::Adapters::Atlas::AreaAdapter* self = (EmberOgre::Gui::Adapters::Atlas::AreaAdapter*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -117,20 +125,23 @@ static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__MapAdapter (lua_State*
 /* function to register type */
 static void tolua_reg_types (lua_State* tolua_S)
 {
- tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::AdapterBase");
+ tolua_usertype(tolua_S,"EmberOgre::EmberEntity");
  tolua_usertype(tolua_S,"::Atlas::Message::Element");
  tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::SizeAdapter");
  tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::ListAdapter");
  tolua_usertype(tolua_S,"Atlas::Message::MapType");
  tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::StaticAdapter");
  tolua_usertype(tolua_S,"CEGUI::Window");
- tolua_usertype(tolua_S,"Eris::Entity");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::AreaAdapter");
  tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::NumberAdapter");
- tolua_usertype(tolua_S,"CEGUI::Combobox");
- tolua_usertype(tolua_S,"std::vector<std::string>");
  tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::PositionAdapter");
- tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::OrientationAdapter");
+ tolua_usertype(tolua_S,"Eris::Entity");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::AdapterBase");
  tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::MapAdapter");
+ tolua_usertype(tolua_S,"std::vector<std::string>");
+ tolua_usertype(tolua_S,"CEGUI::PushButton");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::OrientationAdapter");
+ tolua_usertype(tolua_S,"CEGUI::Combobox");
  tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::Position2DAdapter");
  tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::AdapterFactory");
  tolua_usertype(tolua_S,"sigc::signal<void>");
@@ -965,6 +976,90 @@ static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_crea
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: createAreaAdapter of class  EmberOgre::Gui::Adapters::Atlas::AdapterFactory */
+#ifndef TOLUA_DISABLE_tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_createAreaAdapter00
+static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_createAreaAdapter00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::Adapters::Atlas::AdapterFactory",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"CEGUI::Window",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,4,"const Atlas::Message::Element",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,5,"EmberOgre::EmberEntity",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Gui::Adapters::Atlas::AdapterFactory* self = (EmberOgre::Gui::Adapters::Atlas::AdapterFactory*)  tolua_tousertype(tolua_S,1,0);
+  CEGUI::Window* container = ((CEGUI::Window*)  tolua_tousertype(tolua_S,2,0));
+  const std::string adapterPrefix = ((const std::string)  tolua_tocppstring(tolua_S,3,0));
+  const Atlas::Message::Element* element = ((const Atlas::Message::Element*)  tolua_tousertype(tolua_S,4,0));
+  EmberOgre::EmberEntity* entity = ((EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,5,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'createAreaAdapter'",NULL);
+#endif
+  {
+   EmberOgre::Gui::Adapters::Atlas::AreaAdapter* tolua_ret = (EmberOgre::Gui::Adapters::Atlas::AreaAdapter*)  self->createAreaAdapter(container,adapterPrefix,*element,entity);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Gui::Adapters::Atlas::AreaAdapter");
+   tolua_pushcppstring(tolua_S,(const char*)adapterPrefix);
+  }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'createAreaAdapter'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: createAdapterByType of class  EmberOgre::Gui::Adapters::Atlas::AdapterFactory */
+#ifndef TOLUA_DISABLE_tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_createAdapterByType00
+static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_createAdapterByType00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::Adapters::Atlas::AdapterFactory",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"CEGUI::Window",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,4,0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,5,"const Atlas::Message::Element",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,6,"EmberOgre::EmberEntity",1,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,7,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Gui::Adapters::Atlas::AdapterFactory* self = (EmberOgre::Gui::Adapters::Atlas::AdapterFactory*)  tolua_tousertype(tolua_S,1,0);
+  std::string type = ((std::string)  tolua_tocppstring(tolua_S,2,0));
+  CEGUI::Window* container = ((CEGUI::Window*)  tolua_tousertype(tolua_S,3,0));
+  const std::string adapterPrefix = ((const std::string)  tolua_tocppstring(tolua_S,4,0));
+  const Atlas::Message::Element* element = ((const Atlas::Message::Element*)  tolua_tousertype(tolua_S,5,0));
+  EmberOgre::EmberEntity* entity = ((EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,6,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'createAdapterByType'",NULL);
+#endif
+  {
+   EmberOgre::Gui::Adapters::Atlas::AdapterBase* tolua_ret = (EmberOgre::Gui::Adapters::Atlas::AdapterBase*)  self->createAdapterByType(type,container,adapterPrefix,*element,entity);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Gui::Adapters::Atlas::AdapterBase");
+   tolua_pushcppstring(tolua_S,(const char*)adapterPrefix);
+  }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'createAdapterByType'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: loadLayoutIntoContainer of class  EmberOgre::Gui::Adapters::Atlas::AdapterFactory */
 #ifndef TOLUA_DISABLE_tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_loadLayoutIntoContainer00
 static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_loadLayoutIntoContainer00(lua_State* tolua_S)
@@ -1339,6 +1434,138 @@ static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_SizeAdapter_delete0
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'delete'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new of class  EmberOgre::Gui::Adapters::Atlas::AreaAdapter */
+#ifndef TOLUA_DISABLE_tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_new00
+static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_new00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"EmberOgre::Gui::Adapters::Atlas::AreaAdapter",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Atlas::Message::Element",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"CEGUI::PushButton",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,4,"CEGUI::Combobox",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,5,"EmberOgre::EmberEntity",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Atlas::Message::Element* element = ((const Atlas::Message::Element*)  tolua_tousertype(tolua_S,2,0));
+  CEGUI::PushButton* showButton = ((CEGUI::PushButton*)  tolua_tousertype(tolua_S,3,0));
+  CEGUI::Combobox* layerWindow = ((CEGUI::Combobox*)  tolua_tousertype(tolua_S,4,0));
+  EmberOgre::EmberEntity* entity = ((EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,5,0));
+  {
+   EmberOgre::Gui::Adapters::Atlas::AreaAdapter* tolua_ret = (EmberOgre::Gui::Adapters::Atlas::AreaAdapter*)  new EmberOgre::Gui::Adapters::Atlas::AreaAdapter(*element,showButton,layerWindow,entity);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Gui::Adapters::Atlas::AreaAdapter");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  EmberOgre::Gui::Adapters::Atlas::AreaAdapter */
+#ifndef TOLUA_DISABLE_tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_new00_local
+static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_new00_local(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"EmberOgre::Gui::Adapters::Atlas::AreaAdapter",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Atlas::Message::Element",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"CEGUI::PushButton",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,4,"CEGUI::Combobox",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,5,"EmberOgre::EmberEntity",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Atlas::Message::Element* element = ((const Atlas::Message::Element*)  tolua_tousertype(tolua_S,2,0));
+  CEGUI::PushButton* showButton = ((CEGUI::PushButton*)  tolua_tousertype(tolua_S,3,0));
+  CEGUI::Combobox* layerWindow = ((CEGUI::Combobox*)  tolua_tousertype(tolua_S,4,0));
+  EmberOgre::EmberEntity* entity = ((EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,5,0));
+  {
+   EmberOgre::Gui::Adapters::Atlas::AreaAdapter* tolua_ret = (EmberOgre::Gui::Adapters::Atlas::AreaAdapter*)  new EmberOgre::Gui::Adapters::Atlas::AreaAdapter(*element,showButton,layerWindow,entity);
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::Gui::Adapters::Atlas::AreaAdapter");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: delete of class  EmberOgre::Gui::Adapters::Atlas::AreaAdapter */
+#ifndef TOLUA_DISABLE_tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_delete00
+static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_delete00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::Adapters::Atlas::AreaAdapter",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Gui::Adapters::Atlas::AreaAdapter* self = (EmberOgre::Gui::Adapters::Atlas::AreaAdapter*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'delete'",NULL);
+#endif
+  delete self;
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'delete'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: toggleDisplayOfPolygon of class  EmberOgre::Gui::Adapters::Atlas::AreaAdapter */
+#ifndef TOLUA_DISABLE_tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_toggleDisplayOfPolygon00
+static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_toggleDisplayOfPolygon00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::Adapters::Atlas::AreaAdapter",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Gui::Adapters::Atlas::AreaAdapter* self = (EmberOgre::Gui::Adapters::Atlas::AreaAdapter*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'toggleDisplayOfPolygon'",NULL);
+#endif
+  {
+   self->toggleDisplayOfPolygon();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'toggleDisplayOfPolygon'.",&tolua_err);
  return 0;
 #endif
 }
@@ -2275,6 +2502,9 @@ TOLUA_API int tolua_atlas_adapters_open (lua_State* tolua_S)
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"EmberOgre",0);
   tolua_beginmodule(tolua_S,"EmberOgre");
+   tolua_cclass(tolua_S,"EmberEntity","EmberOgre::EmberEntity","",NULL);
+   tolua_beginmodule(tolua_S,"EmberEntity");
+   tolua_endmodule(tolua_S);
    tolua_module(tolua_S,"Gui",0);
    tolua_beginmodule(tolua_S,"Gui");
     tolua_module(tolua_S,"Adapters",0);
@@ -2302,6 +2532,8 @@ TOLUA_API int tolua_atlas_adapters_open (lua_State* tolua_S)
        tolua_function(tolua_S,"createListAdapter",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_createListAdapter00);
        tolua_function(tolua_S,"createOrientationAdapter",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_createOrientationAdapter00);
        tolua_function(tolua_S,"createStaticAdapter",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_createStaticAdapter00);
+       tolua_function(tolua_S,"createAreaAdapter",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_createAreaAdapter00);
+       tolua_function(tolua_S,"createAdapterByType",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_createAdapterByType00);
        tolua_function(tolua_S,"loadLayoutIntoContainer",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_loadLayoutIntoContainer00);
        tolua_function(tolua_S,"getCurrentPrefix",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_getCurrentPrefix00);
       tolua_endmodule(tolua_S);
@@ -2373,6 +2605,30 @@ TOLUA_API int tolua_atlas_adapters_open (lua_State* tolua_S)
        tolua_function(tolua_S,"new_local",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_SizeAdapter_new00_local);
        tolua_function(tolua_S,".call",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_SizeAdapter_new00_local);
        tolua_function(tolua_S,"delete",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_SizeAdapter_delete00);
+      tolua_endmodule(tolua_S);
+     tolua_endmodule(tolua_S);
+    tolua_endmodule(tolua_S);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"EmberOgre",0);
+  tolua_beginmodule(tolua_S,"EmberOgre");
+   tolua_module(tolua_S,"Gui",0);
+   tolua_beginmodule(tolua_S,"Gui");
+    tolua_module(tolua_S,"Adapters",0);
+    tolua_beginmodule(tolua_S,"Adapters");
+     tolua_module(tolua_S,"Atlas",0);
+     tolua_beginmodule(tolua_S,"Atlas");
+      #ifdef __cplusplus
+      tolua_cclass(tolua_S,"AreaAdapter","EmberOgre::Gui::Adapters::Atlas::AreaAdapter","EmberOgre::Gui::Adapters::Atlas::AdapterBase",tolua_collect_EmberOgre__Gui__Adapters__Atlas__AreaAdapter);
+      #else
+      tolua_cclass(tolua_S,"AreaAdapter","EmberOgre::Gui::Adapters::Atlas::AreaAdapter","EmberOgre::Gui::Adapters::Atlas::AdapterBase",NULL);
+      #endif
+      tolua_beginmodule(tolua_S,"AreaAdapter");
+       tolua_function(tolua_S,"new",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_new00);
+       tolua_function(tolua_S,"new_local",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_new00_local);
+       tolua_function(tolua_S,".call",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_new00_local);
+       tolua_function(tolua_S,"delete",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_delete00);
+       tolua_function(tolua_S,"toggleDisplayOfPolygon",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_toggleDisplayOfPolygon00);
       tolua_endmodule(tolua_S);
      tolua_endmodule(tolua_S);
     tolua_endmodule(tolua_S);

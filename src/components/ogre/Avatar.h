@@ -33,6 +33,10 @@ namespace Eris {
 	class Entity;
 }
 
+namespace WFMath {
+    class Quaternion;
+}
+
 
 namespace EmberOgre {
 
@@ -361,6 +365,12 @@ protected:
 	*/
 	std::auto_ptr<AvatarLoggerParent> mChatLoggerParent;
 	
+	
+	/**
+	 * @brief We save the five latest orientations that we send to the server.
+	 * The reason we do this is to be able to recognize updates sent from the server that's our own updates. Since there might be lag, these updates can arrive half a second or more after they were sent. They should thus be ignored to avoid the camera jumping all over the place.
+	 */
+	std::list<WFMath::Quaternion> mLastOrientations;
 
 	
 }; //End of class declaration

@@ -105,13 +105,13 @@ void BasePointUserObject::setHeight(Ogre::Real height)
 void BasePointUserObject::markAsMoved()
 {
 	Ogre::Entity* entity = static_cast<Ogre::Entity*>(getBasePointMarkerNode()->getAttachedObject(0));
-	entity->setMaterialName("BasePointMarkerMovedMaterial");
+	entity->setMaterialName("/global/authoring/point/moved");
 }
 
 void BasePointUserObject::resetMarking()
 {
 	Ogre::Entity* entity = static_cast<Ogre::Entity*>(getBasePointMarkerNode()->getAttachedObject(0));
-	entity->setMaterialName("BasePointMarkerMaterial");
+	entity->setMaterialName("/global/authoring/point");
 }
 
 BasePointPickListener::BasePointPickListener(TerrainEditor* terrainEditor) 
@@ -165,28 +165,6 @@ TerrainEditor::TerrainEditor() : mPickListener(this), mCurrentUserObject(0),mOve
 ,mMovementRadiusInMeters(0)
 ,mFalloff(0)
 {
-	///create a material which will be used for base points (this will be blue)
-	if (!Ogre::MaterialManager::getSingleton().resourceExists("BasePointMarkerMaterial")) {
-		Ogre::MaterialPtr material = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().create("BasePointMarkerMaterial", "General"));
-		
-		material->setDiffuse(0,0,1,1);
-		material->setAmbient(0,0,1);
-		material->setSelfIllumination(0,0,1);
-		//material->setLightingEnabled(false);
-		material->setFog(true);
-	}
-	///create a material which will be used for base points that have been moved (this will be red)
-	if (!Ogre::MaterialManager::getSingleton().resourceExists("BasePointMarkerMovedMaterial")) {
-		Ogre::MaterialPtr material = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().create("BasePointMarkerMovedMaterial", "General"));
-		
-		material->setDiffuse(1,0,0,1);
-		material->setAmbient(1,0,0);
-		material->setSelfIllumination(1,0,0);
-		//material->setLightingEnabled(false);
-		material->setFog(true);
-	}
-//	createOverlay();
-	//hideOverlay();
 }
 
 
@@ -201,6 +179,9 @@ TerrainEditor::~TerrainEditor()
 			mOverlayNode->getCreator()->destroySceneNode(mOverlayNode->getName());
 		}
 	}
+	///It's safe to do this even if the pick listener hasn't been added yet.
+	EmberOgre::getSingleton().getMainCamera()->removeWorldPickListener(&mPickListener);
+	
 }
 
 void TerrainEditor::showOverlay()
@@ -246,7 +227,7 @@ void TerrainEditor::createOverlay()
 				try {
 					entity = EmberOgre::getSingleton().getSceneManager()->createEntity(ss.str(), "3d_objects/primitives/models/sphere.mesh");
 					///start out with a normal material
-					entity->setMaterialName("BasePointMarkerMaterial");
+					entity->setMaterialName("/global/authoring/point");
 					entity->setRenderingDistance(300);
 					entity->setQueryFlags(MousePicker::CM_UNDEFINED);
 				} catch (const std::exception& ex) {

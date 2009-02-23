@@ -233,7 +233,7 @@ namespace Ogre
 		if (fs)
 		{
 			// Wrap as a stream
-			DataStreamPtr myStream (new FileStreamDataStream (filename, &fs, false));
+			DataStreamPtr myStream (OGRE_NEW FileStreamDataStream (filename, &fs, false));
 			setWorldGeometry (myStream);
 			return;
 		}

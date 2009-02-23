@@ -2,11 +2,11 @@ INCLUDES = -I$(top_builddir)/src -I$(top_srcdir)/src
 METASOURCES = AUTO
 libAtlas_la_LDFLAGS = -no-undefined
 noinst_LTLIBRARIES = libAtlas.la
-noinst_HEADERS = AdapterBase.h AdapterFactory.h CustomAdapter.h ListAdapter.h \
-	MapAdapter.h NumberAdapter.h OrientationAdapter.h Position2DAdapter.h \
+noinst_HEADERS = AdapterBase.h AdapterFactory.h AreaAdapter.h CustomAdapter.h \
+	ListAdapter.h MapAdapter.h NumberAdapter.h OrientationAdapter.h Position2DAdapter.h \
 	PositionAdapter.h SizeAdapter.h StaticAdapter.h StringAdapter.h
-libAtlas_la_SOURCES = AdapterBase.cpp AdapterFactory.cpp CustomAdapter.cpp \
-	ListAdapter.cpp MapAdapter.cpp NumberAdapter.cpp OrientationAdapter.cpp \
+libAtlas_la_SOURCES = AdapterBase.cpp AdapterFactory.cpp AreaAdapter.cpp \
+	CustomAdapter.cpp ListAdapter.cpp MapAdapter.cpp NumberAdapter.cpp OrientationAdapter.cpp \
 	Position2DAdapter.cpp PositionAdapter.cpp SizeAdapter.cpp StaticAdapter.cpp StringAdapter.cpp \
 	bindings/lua/bindings.cpp
 

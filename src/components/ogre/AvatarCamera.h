@@ -263,9 +263,15 @@ public:
 	
 	/**
 	 * @brief Adds a new world pick listener to the queue of listeners.
-	 * @param worldPickListener 
+	 * @param worldPickListener The world pick listener which show start recive world pick events.
 	 */
 	void pushWorldPickListener(IWorldPickListener* worldPickListener);
+	
+	/**
+	 * @brief Removes a world pick listener which previously has been added through pushWorldPickListener().
+	 * @param worldPickListener The world pick listener which should be removed. If the listener haven't been added nothing will happen.
+	 */
+	void removeWorldPickListener(IWorldPickListener* worldPickListener);
 	
 	const Ember::ConsoleCommandWrapper SetCameraDistance;
 	const Ember::ConsoleCommandWrapper ToggleRendermode;

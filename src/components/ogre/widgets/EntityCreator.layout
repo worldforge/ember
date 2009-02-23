@@ -21,23 +21,36 @@
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Event Name="Clicked" Function="EntityCreator.Create_Click" />
 			</Window>
-			<Window Type='EmberLook/StaticText' Name='RecipeDescription'>
+			<Window Type='DefaultGUISheet' Name='CreateSection'>
 				<Property Name='UnifiedPosition' Value='{{0,100},{0,0}}'/>
-				<Property Name='UnifiedSize' Value='{{1,-100},{0,50}}'/>
+				<Property Name='UnifiedSize' Value='{{1,-100},{1,0}}'/>
+				<Property Name='Visible' Value='false'/>
+				<Window Type='EmberLook/StaticText' Name='RecipeDescription'>
+					<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+					<Property Name='UnifiedSize' Value='{{1,0},{0,50}}'/>
+					<Property Name='FrameEnabled' Value='false' />
+					<Property Name='BackgroundEnabled' Value='false' />
+				</Window>
+				<Window Type='EmberLook/Checkbox' Name='RandomizeOrientation'>
+					<Property Name='UnifiedPosition' Value='{{0,0},{0,50}}'/>
+					<Property Name='UnifiedSize' Value='{{1,0},{0,25}}'/>
+					<Property Name='Selected' Value='True'/>
+					<Property Name='Tooltip' Value='If checked, will randomize the orientation of all new entities.'/>
+					<Property Name='Text' Value='Random orientation'/>
+					<Event Name="CheckStateChanged" Function="EntityCreator.RandomizeOrientation_CheckStateChanged" />
+				</Window>
+				<Window Type='DefaultGUISheet' Name='AdaptersContainer'>
+					<Property Name='UnifiedPosition' Value='{{0,0},{0,75}}'/>
+					<Property Name='UnifiedSize' Value='{{1,0},{1,-75}}'/>
+				</Window>
+			</Window>
+			<Window Type='EmberLook/StaticText' Name='WaitForTypeInfo'>
+				<Property Name='UnifiedPosition' Value='{{0,100},{0,0}}'/>
+				<Property Name='UnifiedSize' Value='{{1,-100},{1,0}}'/>
+				<Property Name='Visible' Value='false'/>
 				<Property Name='FrameEnabled' Value='false' />
 				<Property Name='BackgroundEnabled' Value='false' />
-			</Window>
-			<Window Type='EmberLook/Checkbox' Name='RandomizeOrientation'>
-				<Property Name='UnifiedPosition' Value='{{0,100},{0,50}}'/>
-				<Property Name='UnifiedSize' Value='{{1,-100},{0,25}}'/>
-				<Property Name='Selected' Value='True'/>
-				<Property Name='Tooltip' Value='If checked, will randomize the orientation of all new entities.'/>
-				<Property Name='Text' Value='Random orientation'/>
-				<Event Name="CheckStateChanged" Function="EntityCreator.RandomizeOrientation_CheckStateChanged" />
-			</Window>
-			<Window Type='DefaultGUISheet' Name='AdaptersContainer'>
-				<Property Name='UnifiedPosition' Value='{{0,100},{0,75}}'/>
-				<Property Name='UnifiedSize' Value='{{1,-100},{1,-75}}'/>
+				<Property Name='Text' Value='Waiting for type info from the server...' />
 			</Window>
 		</Window>
 	</Window>

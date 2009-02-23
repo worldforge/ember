@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='DefaultGUISheet' Name='AreaAdapter'>
+		<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+		<Property Name='UnifiedSize' Value='{{0,150},{0,60}}'/>
+		<Window Type='EmberLook/Button' Name='showButton'>
+			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+			<Property Name='UnifiedSize' Value='{{0,100},{0,25}}'/>
+			<Property Name='Text' Value='Show' />
+		</Window>
+		<Window Type='EmberLook/StaticText' Name='LayerText'>
+			<Property Name='UnifiedPosition' Value='{{0,0},{0,30}}'/>
+			<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+			<Property Name='FrameEnabled' Value='false' />
+			<Property Name='BackgroundEnabled' Value='false' />
+			<Property Name='Text' Value='Layer' />
+		</Window>
+		<Window Type='EmberLook/Combobox' Name='Layer'>
+			<Property Name='UnifiedPosition' Value='{{0,75},{0,30}}'/>
+			<Property Name='UnifiedSize' Value='{{0,75},{0,125}}'/>
+			<Property Name='ReadOnly' Value='true'/>
+		</Window>
+	</Window>
+</GUILayout>

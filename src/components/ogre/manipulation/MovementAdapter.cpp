@@ -1,5 +1,5 @@
 //
-// C++ Implementation: EntityMoveAdapter
+// C++ Implementation: MovementAdapter
 //
 // Description: 
 //
@@ -24,9 +24,9 @@
 #include "config.h"
 #endif
 
-#include "EntityMoveAdapter.h"
+#include "MovementAdapter.h"
 #include "../EmberOgre.h"
-#include "IEntityMoveBridge.h"
+#include "IMovementBridge.h"
 #include "EntityMoveManager.h"
 #include "../AvatarCamera.h"
 #include "../AvatarTerrainCursor.h"
@@ -40,27 +40,27 @@ using namespace Ember;
 namespace EmberOgre {
 
 
-EntityMoveAdapterWorkerBase::EntityMoveAdapterWorkerBase(EntityMoveAdapter& adapter)
+MovementAdapterWorkerBase::MovementAdapterWorkerBase(MovementAdapter& adapter)
 : mAdapter(adapter)
 {
 }
 
-EntityMoveAdapterWorkerBase::~EntityMoveAdapterWorkerBase()
+MovementAdapterWorkerBase::~MovementAdapterWorkerBase()
 {
 }
 
-IEntityMoveBridge* EntityMoveAdapterWorkerBase::getBridge()
+IMovementBridge* MovementAdapterWorkerBase::getBridge()
 {
 	return mAdapter.mBridge;
 }
 
 
-EntityMoveAdapterWorkerDiscrete::EntityMoveAdapterWorkerDiscrete(EntityMoveAdapter& adapter)
-: EntityMoveAdapterWorkerBase(adapter), mMovementSpeed(10)
+MovementAdapterWorkerDiscrete::MovementAdapterWorkerDiscrete(MovementAdapter& adapter)
+: MovementAdapterWorkerBase(adapter), mMovementSpeed(10)
 {
 }
 
-bool EntityMoveAdapterWorkerDiscrete::injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse)
+bool MovementAdapterWorkerDiscrete::injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse)
 {
 	///this will move the entity instead of the mouse
 	
@@ -86,19 +86,19 @@ bool EntityMoveAdapterWorkerDiscrete::injectMouseMove(const Ember::MouseMotion& 
 
 }
 
-EntityMoveAdapterWorkerTerrainCursor::EntityMoveAdapterWorkerTerrainCursor(EntityMoveAdapter& adapter)
-: EntityMoveAdapterWorkerBase(adapter)
+MovementAdapterWorkerTerrainCursor::MovementAdapterWorkerTerrainCursor(MovementAdapter& adapter)
+: MovementAdapterWorkerBase(adapter)
 {
 	/// Register this as a frame listener
 	Ogre::Root::getSingleton().addFrameListener(this);
 }
 
-EntityMoveAdapterWorkerTerrainCursor::~EntityMoveAdapterWorkerTerrainCursor()
+MovementAdapterWorkerTerrainCursor::~MovementAdapterWorkerTerrainCursor()
 {
 	Ogre::Root::getSingleton().removeFrameListener(this);
 }
 
-bool EntityMoveAdapterWorkerTerrainCursor::frameStarted(const Ogre::FrameEvent& event)
+bool MovementAdapterWorkerTerrainCursor::frameStarted(const Ogre::FrameEvent& event)
 {
 	const Ogre::Vector3* position(0);
 	if (EmberOgre::getSingleton().getMainCamera()->getTerrainCursor().getTerrainCursorPosition(&position)) {
@@ -108,28 +108,26 @@ bool EntityMoveAdapterWorkerTerrainCursor::frameStarted(const Ogre::FrameEvent& 
 }
 
 
-EntityMoveAdapter::EntityMoveAdapter(EntityMoveManager* manager)
-: mBridge(0), mManager(manager), mWorker(0)
+MovementAdapter::MovementAdapter()
+: mBridge(0), mWorker(0)
 {}
 
-EntityMoveAdapter::~EntityMoveAdapter()
+MovementAdapter::~MovementAdapter()
 {}
 
-void EntityMoveAdapter::finalizeMovement()
+void MovementAdapter::finalizeMovement()
 {
+	removeAdapter();
 	mBridge->finalizeMovement();
-	removeAdapter();
-	mManager->EventFinishedMoving.emit();
 }
 
-void EntityMoveAdapter::cancelMovement()
+void MovementAdapter::cancelMovement()
 {
-	mBridge->cancelMovement();
 	removeAdapter();
-	mManager->EventCancelledMoving.emit();
+	mBridge->cancelMovement();
 }
 
-bool EntityMoveAdapter::injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse)
+bool MovementAdapter::injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse)
 {
 	if (mWorker) {
 		return mWorker->injectMouseMove(motion, freezeMouse);
@@ -137,7 +135,7 @@ bool EntityMoveAdapter::injectMouseMove(const Ember::MouseMotion& motion, bool& 
 	return true;
 }
 
-bool EntityMoveAdapter::injectMouseButtonUp(const Ember::Input::MouseButton& button)
+bool MovementAdapter::injectMouseButtonUp(const Ember::Input::MouseButton& button)
 {
 	if (button == Input::MouseButtonLeft)
 	{
@@ -154,7 +152,7 @@ bool EntityMoveAdapter::injectMouseButtonUp(const Ember::Input::MouseButton& but
 	return false;
 }
 
-bool EntityMoveAdapter::injectMouseButtonDown(const Ember::Input::MouseButton& button)
+bool MovementAdapter::injectMouseButtonDown(const Ember::Input::MouseButton& button)
 {
 	if (button == Input::MouseButtonLeft)
 	{
@@ -187,24 +185,24 @@ bool EntityMoveAdapter::injectMouseButtonDown(const Ember::Input::MouseButton& b
 	return false;
 }
 
-bool EntityMoveAdapter::injectChar(char character)
+bool MovementAdapter::injectChar(char character)
 {
 	return true;
 }
 
-bool EntityMoveAdapter::injectKeyDown(const SDLKey& key)
+bool MovementAdapter::injectKeyDown(const SDLKey& key)
 {
 	if (mWorker) {
 		///by pressing and holding shift we'll allow the user to position it with more precision. We do this by switching the worker instances.
 		if (key == SDLK_LSHIFT || key == SDLK_RSHIFT) {
 			delete mWorker;
-			mWorker = new EntityMoveAdapterWorkerDiscrete(*this);
+			mWorker = new MovementAdapterWorkerDiscrete(*this);
 		}
 	}
 	return true;
 }
 
-bool EntityMoveAdapter::injectKeyUp(const SDLKey& key)
+bool MovementAdapter::injectKeyUp(const SDLKey& key)
 {
 	if (key == SDLK_ESCAPE) {
 		cancelMovement();
@@ -212,38 +210,38 @@ bool EntityMoveAdapter::injectKeyUp(const SDLKey& key)
 	} else if (key == SDLK_LSHIFT || key == SDLK_RSHIFT) {
 		if (mWorker) {
 			delete mWorker;
-			mWorker = new EntityMoveAdapterWorkerTerrainCursor(*this);
+			mWorker = new MovementAdapterWorkerTerrainCursor(*this);
 		}
 	}
 
 	return true;
 }
 
-void EntityMoveAdapter::attachToBridge(IEntityMoveBridge* bridge)
+void MovementAdapter::attachToBridge(IMovementBridge* bridge)
 {
 	mBridge = bridge;
 	addAdapter();
 }
 
-void EntityMoveAdapter::detach()
+void MovementAdapter::detach()
 {
 	delete mBridge;
 	mBridge = 0;
 	removeAdapter();
 }
 
-void EntityMoveAdapter::removeAdapter()
+void MovementAdapter::removeAdapter()
 {
 	Input::getSingleton().removeAdapter(this);
 	delete mWorker;
 	mWorker = 0;
 }
 
-void EntityMoveAdapter::addAdapter()
+void MovementAdapter::addAdapter()
 {
 	Input::getSingleton().addAdapter(this);
 	///default to the terrain cursor positioning mode
-	mWorker = new EntityMoveAdapterWorkerTerrainCursor(*this);
+	mWorker = new MovementAdapterWorkerTerrainCursor(*this);
 }
 
 }

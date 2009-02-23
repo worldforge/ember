@@ -246,6 +246,7 @@ protected:
 
 	virtual void onChildAdded(Entity *e);
 	virtual void onChildRemoved(Entity *e);
+	virtual void onLocationChanged(Entity *oldLocation);
 
 	
 

@@ -809,4 +809,8 @@ void GeometryPage::clearBoundingBox()
 	_trueBounds = AxisAlignedBox(0, 0, 0, 0, 0, 0);
 	_trueBoundsUndefined = true;
 }
+
+GeometryPage::GeometryPage() : _trueBoundsUndefined(true)
+{
+}
 }

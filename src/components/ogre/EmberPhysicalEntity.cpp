@@ -365,6 +365,8 @@ bool EmberPhysicalEntity::getShowOgreBoundingBox() const
 void EmberPhysicalEntity::Model_Reloaded()
 {
 	initFromModel();
+	///Retrigger a movement change so that animations can be stopped and started now that the model has changed.
+	onModeChanged(mMovementMode);
 	attachAllEntities();
 }
 
@@ -492,6 +494,20 @@ void EmberPhysicalEntity::onChildRemoved(Entity *e)
 {
 	///NOTE: we don't have to do detachment here, like we do attachment in onChildAdded, since that is done by the EmberEntity::onLocationChanged(...) method
 	Eris::Entity::onChildRemoved(e);
+	
+}
+
+
+void EmberPhysicalEntity::onLocationChanged(Eris::Entity *oldLocation)
+{
+	bool requireRescaling = false;
+	if (mModelAttachedTo) {
+		requireRescaling = true;
+	}
+	EmberEntity::onLocationChanged(oldLocation);
+	if (requireRescaling) {
+		scaleNode();
+	}
 }
 
 
@@ -538,7 +554,7 @@ void EmberPhysicalEntity::updateAnimation(Ogre::Real timeSlice)
 		if (mCurrentMovementAction) {
 			bool continuePlay = false;
 			///Check if we're walking backward. This is a bit of a hack (we should preferrably have a separate animation for backwards walking.
-			if (static_cast<int>((WFMath::Vector<3>(getVelocity()).rotate((getOrientation().inverse()))).x()) < 0) {
+			if (getVelocity().isValid() && static_cast<int>((WFMath::Vector<3>(getVelocity()).rotate((getOrientation().inverse()))).x()) < 0) {
 				mCurrentMovementAction->getAnimations().addTime(-timeSlice, continuePlay);
 			} else {
 				mCurrentMovementAction->getAnimations().addTime(timeSlice, continuePlay);

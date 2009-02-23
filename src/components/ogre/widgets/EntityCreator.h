@@ -141,6 +141,12 @@ public:
 	::EmberOgre::Gui::Widget* mWidget;
 	
 	/**
+	* @brief Emitted when all needed type info for the current recipe is loaded.
+	*/
+	sigc::signal<void> EventTypeInfoLoaded;
+
+	
+	/**
 	 * @brief Makes sure that all types are loaded. This is needed for the type lookup we need to do in the recipes in order to get the default values.
 	 */
 	void loadAllTypes();
@@ -198,6 +204,20 @@ protected:
 	 * TODO Unfortunately, this signal is never called. Need to find what happens with it in adapters class.
 	 */
 	void adapterValueChanged();
+	
+	/**
+	 * @brief Checks whether the type info for the current recipe is fully bound.
+	 * If so, the EventTypeInfoLoaded signal will be emitted right away, else it will be emitted later on when the type is bound through the typeService_BoundType method.
+	 * Call this method right after a new entity recipe has been set, to make sure that the interface doesn't proceed until the type info is bound.
+	 */
+	void checkTypeInfoBound();
+	
+	
+	/**
+	 * @brief Listen for the bound signal for the type service, and if the type of our recipe has been bound emit the EventTypeInfoLoaded signal.
+	 * @param typeInfo The type info that was bound.
+	 */
+	void typeService_BoundType(Eris::TypeInfo* typeInfo);
 
 	/**
 	 * Current position of preview in the world.
@@ -260,6 +280,11 @@ protected:
 	@brief If set to true, all new entities will have their orientation randomized around the vertical axis.
 	*/
 	bool mRandomizeOrientation;
+	
+	/**
+	 * @brief The connection for the TypeInfo bound signal, used for making sure that the UI doesn't proceed until the type info has been correctly bound.
+	 */
+// 	sigc::connection mTypeInfoBoundConnection;
 };
 
 /**

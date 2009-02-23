@@ -835,6 +835,8 @@ public:
 	*/
 	virtual void clearBoundingBox();
 
+	GeometryPage();
+
 	/**
 	\brief Destructor
 	This is defined here so the destructors of derived classes are called properly. Whether

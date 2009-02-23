@@ -29,39 +29,33 @@
 namespace EmberOgre {
 namespace Model {
 
-SubModel::SubModel(Ogre::Entity* entity) :
+SubModel::SubModel(Ogre::Entity& entity) :
 mEntity(entity)
 {
 	//begin by hiding all subentities
-	unsigned int numSubEntities = mEntity->getNumSubEntities();
+	unsigned int numSubEntities = mEntity.getNumSubEntities();
 	for (unsigned int i = 0;i < numSubEntities; ++i) {
-		mEntity->getSubEntity(i)->setVisible(false);
+		mEntity.getSubEntity(i)->setVisible(false);
 	}
 	
 }
 SubModel::~SubModel()
 {
-	for (SubModelPartMap::iterator I = mSubModelParts.begin(); I != mSubModelParts.end(); ++I) {
-		delete I->second;
-	}
-	if (mEntity) {
-		Ogre::SceneManager* sceneManager = mEntity->_getManager();
-		sceneManager->destroyEntity(mEntity);
-	}
+	Ogre::SceneManager* sceneManager = mEntity._getManager();
+	sceneManager->destroyEntity(&mEntity);
 	
 }
 
-std::map<std::string, SubModelPart*>* SubModel::getSubModelPartMap()
+SubModel::SubModelPartMap& SubModel::getSubModelPartMap()
 {
-	return &mSubModelParts;
-	
+	return mSubModelParts;
 }
 
-SubModelPart* SubModel::createSubModelPart(const std::string& name)
+SubModelPart& SubModel::createSubModelPart(const std::string& name)
 {
-	SubModelPart* part = new SubModelPart(name);
-	mSubModelParts.insert(SubModelPartMap::value_type(name, part));
-	return part;
+	SubModelPart part(name);
+	std::pair<SubModelPartMap::iterator, bool> result(mSubModelParts.insert(SubModelPartMap::value_type(name, part)));
+	return result.first->second;
 	
 }
 
@@ -95,7 +89,7 @@ SubModelPart* SubModel::createSubModelPart(const std::string& name)
 
 Ogre::Entity* SubModel::getEntity() const
 {
-	return mEntity;	
+	return &mEntity;	
 }
 
 

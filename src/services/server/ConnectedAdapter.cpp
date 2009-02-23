@@ -34,6 +34,8 @@
 #include <Eris/Exceptions.h>
 #include <Eris/Entity.h>
 
+#include <Atlas/Objects/Operation.h>
+
 #include "services/logging/LoggingService.h"
 #include "framework/ConsoleBackend.h"
 

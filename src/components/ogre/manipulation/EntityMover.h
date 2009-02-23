@@ -24,23 +24,24 @@
 #define EMBEROGREENTITYMOVER_H
 
 #include "../EmberOgrePrerequisites.h"
-#include "IEntityMoveBridge.h"
+#include "IMovementBridge.h"
 #include <wfmath/point.h>
 
 namespace EmberOgre {
 
 class EmberEntity;
+class EntityMoveManager;
 
 /**
 	@author Erik Hjortsberg <erik@katastrof.nu>
 	
 	@brief An implementation of IEntityMoveBridge which allows for EmberEntity instances to be moved.
 */
-class EntityMover : public IEntityMoveBridge
+class EntityMover : public IMovementBridge
 {
 public:
 
-	EntityMover(EmberEntity* entity);
+	EntityMover(EmberEntity& entity, EntityMoveManager& manager);
 	virtual ~EntityMover() {}
 
 	virtual const WFMath::Quaternion& getOrientation() const;
@@ -56,9 +57,11 @@ public:
 
 private:
 
-	EmberEntity* mEntity;
+	EmberEntity& mEntity;
+	EntityMoveManager& mManager;
 	mutable WFMath::Quaternion mOrientation;
 	mutable WFMath::Point<3> mPosition;
+	
 };
 
 }

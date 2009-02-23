@@ -60,7 +60,7 @@ namespace OgreOpcode
 
 		protected:
 
-			std::vector<Ogre::Vector3> _points;
+			std::vector<Ogre::Vector3, Ogre::STLAllocator<Ogre::Vector3, Ogre::CategorisedAlignAllocPolicy<Ogre::MEMCATEGORY_GEOMETRY> > > _points;
 			bool _drawn;
 		};
 #endif

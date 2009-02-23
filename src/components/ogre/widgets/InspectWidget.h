@@ -23,8 +23,9 @@
 #ifndef EMBEROGREINSPECTWIDGET_H
 #define EMBEROGREINSPECTWIDGET_H
 
-#include <Eris/Entity.h>
 #include "Widget.h"
+#include <Eris/Entity.h>
+#include <Atlas/Message/Element.h>
 
 namespace EmberOgre {
 class EmberEntity;

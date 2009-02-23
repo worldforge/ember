@@ -59,7 +59,7 @@ void SimpleTerrainPageShadowTechnique::createShadowData(TerrainPage& page, Terra
 		position = origPosition;
 		position[1] = position[1] - i;
 		for (int j = 0; j < pageSizeInMeters; ++j) {
-			float height;
+// 			float height;
 			WFMath::Vector<3> normal;
  			//if (generator->getTerrain().getHeightAndNormal(position.x(), position.y(), height, normal)) {
  			if (page.getNormal(position, normal)) {
@@ -104,8 +104,8 @@ TerrainPageShadow::TerrainPageShadow(TerrainPage& terrainPage)
 
 TerrainPageShadow::~TerrainPageShadow()
 {
-	delete mImage;
-	delete mShadowChunk;
+	OGRE_DELETE mImage;
+	OGRE_DELETE mShadowChunk;
 }
 
 void TerrainPageShadow::setLightDirection(const Ogre::Vector3& lightDirection)
@@ -139,7 +139,7 @@ void TerrainPageShadow::updateShadow()
 void TerrainPageShadow::createImage()
 {
 	assert(!mShadowChunk);
-	mShadowChunk = new Ogre::MemoryDataStream(mTerrainPage.getAlphaTextureSize() * mTerrainPage.getAlphaTextureSize() * 1, true);
+	mShadowChunk = OGRE_NEW Ogre::MemoryDataStream(mTerrainPage.getAlphaTextureSize() * mTerrainPage.getAlphaTextureSize() * 1, true);
 	
 	memset( mShadowChunk->getPtr(), '\0', mShadowChunk->size());
 	
@@ -147,7 +147,7 @@ void TerrainPageShadow::createImage()
 	createShadowData(mShadowChunk->getPtr());
 	
 	
-	mImage = new Ogre::Image();
+	mImage = OGRE_NEW Ogre::Image();
 	mImage->loadDynamicImage(mShadowChunk->getPtr(), mTerrainPage.getAlphaTextureSize(), mTerrainPage.getAlphaTextureSize(), 1, Ogre::PF_L8);
 
 	mTexture->loadImage(*mImage);

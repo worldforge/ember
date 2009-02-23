@@ -34,8 +34,8 @@ namespace Terrain {
 TerrainPageSurfaceCompilerShaderPassCoverageBatch::TerrainPageSurfaceCompilerShaderPassCoverageBatch(TerrainPageSurfaceCompilerShaderPass& shaderPass, Ogre::TexturePtr combinedCoverageTexture)
 : mShaderPass(shaderPass)
 , mCombinedCoverageTexture(combinedCoverageTexture)
-, mCombinedCoverageImage(new Ogre::Image())
-, mCombinedCoverageDataStream(new Ogre::MemoryDataStream(combinedCoverageTexture->getWidth() * combinedCoverageTexture->getWidth() * 4, true))
+, mCombinedCoverageImage(OGRE_NEW Ogre::Image())
+, mCombinedCoverageDataStream(OGRE_NEW Ogre::MemoryDataStream(combinedCoverageTexture->getWidth() * combinedCoverageTexture->getWidth() * 4, true))
 {
 	///reset the coverage image
 	memset(mCombinedCoverageDataStream->getPtr(), '\0', mCombinedCoverageDataStream->size());
@@ -43,8 +43,8 @@ TerrainPageSurfaceCompilerShaderPassCoverageBatch::TerrainPageSurfaceCompilerSha
 
 TerrainPageSurfaceCompilerShaderPassCoverageBatch::~TerrainPageSurfaceCompilerShaderPassCoverageBatch()
 {
-	delete mCombinedCoverageImage;
-	delete mCombinedCoverageDataStream;
+	OGRE_DELETE mCombinedCoverageImage;
+	OGRE_DELETE mCombinedCoverageDataStream;
 }
 
 void TerrainPageSurfaceCompilerShaderPassCoverageBatch::addLayer(TerrainPageSurfaceLayer* layer)

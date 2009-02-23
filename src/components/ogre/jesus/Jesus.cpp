@@ -338,11 +338,11 @@ Ogre::ColourValue Jesus::getColourForAttachPoint(const Carpenter::AttachPoint* p
 void AttachPointNode::select()
 {
 	Ogre::ControllerFunctionRealPtr func = Ogre::ControllerFunctionRealPtr(
-			new Ogre::WaveformControllerFunction(Ogre::WFT_SINE, 0.0, 2));
+			OGRE_NEW Ogre::WaveformControllerFunction(Ogre::WFT_SINE, 0.0, 2));
 	Ogre::ControllerManager& contMgr = Ogre::ControllerManager::getSingleton();
 		
 	Ogre::ControllerValueRealPtr val = Ogre::ControllerValueRealPtr(
-			new LightWibbler(mColour, mFlare));
+			OGRE_NEW LightWibbler(mColour, mFlare));
 	mController = contMgr.createController(contMgr.getFrameTimeSource(), val, func);
 }
 

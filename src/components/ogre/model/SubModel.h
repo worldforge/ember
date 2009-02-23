@@ -33,19 +33,19 @@ class SubModel{
 friend class ModelDefinition;
 public:
 	typedef std::map<std::string, std::set<std::string> > SubModelPartMapping;
-	typedef std::map<std::string, SubModelPart*> SubModelPartMap;
+	typedef std::map<std::string, SubModelPart> SubModelPartMap;
 	
-	SubModel(Ogre::Entity* entity);
+	SubModel(Ogre::Entity& entity);
 	virtual ~SubModel();
 	
-	SubModelPart* createSubModelPart(const std::string& name);
+	SubModelPart& createSubModelPart(const std::string& name);
 	
-	SubModelPartMap* getSubModelPartMap();
+	SubModelPartMap& getSubModelPartMap();
 
 	Ogre::Entity* getEntity() const;
 
 protected:
-	Ogre::Entity* mEntity;
+	Ogre::Entity& mEntity;
 	SubModelPartMap mSubModelParts;
 	
 };

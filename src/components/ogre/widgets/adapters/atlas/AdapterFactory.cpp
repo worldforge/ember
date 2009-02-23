@@ -34,6 +34,7 @@
 #include "Position2DAdapter.h"
 #include "OrientationAdapter.h"
 #include "StaticAdapter.h"
+#include "AreaAdapter.h"
 #include <CEGUI.h>
 #include "components/ogre/GUIManager.h"
 #include "services/logging/LoggingService.h"
@@ -61,188 +62,207 @@ AdapterFactory::~AdapterFactory()
 {
 }
 
-StringAdapter* AdapterFactory::createStringAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
+template <typename TAdapter>
+TAdapter* AdapterFactory::createAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
 {
 	if (!container) {
-		S_LOG_FAILURE("No container sent to AdapterFactory::createStringAdapter.");
+		S_LOG_FAILURE("No container sent to adapter factory.");
 		return 0;
 	}
-	
-	if (!element.isString()) {
-		S_LOG_FAILURE("Incorrect element type, expected a string.");
+	if (!verifyCorrectType<TAdapter>(element)) {
 		return 0;
 	}
 	
 	try {
-		loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/StringAdapter.layout");
-		WindowManager& windowMgr = WindowManager::getSingleton();
-		Combobox* stringWindow = static_cast<Combobox*>(windowMgr.getWindow(mCurrentPrefix + "String"));
-		StringAdapter* adapter = new StringAdapter(element, stringWindow);
-		
-		return adapter;
+		return loadWindowIntoAdapter<TAdapter>(container, adapterPrefix, element, entity);
 	} catch (const CEGUI::Exception& ex) {
-		S_LOG_FAILURE("Error when creating StringAdapter. " << ex.getMessage ().c_str());
+		S_LOG_FAILURE("Error when creating adapter. " << ex.getMessage().c_str());
 		return 0;
 	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when loading StringAdapter. " << ex.what());
+		S_LOG_FAILURE("Error when loading adapter. " << ex.what());
 		return 0;
-	}
+	}	
+}
 
+template <>
+bool AdapterFactory::verifyCorrectType<StringAdapter>(const ::Atlas::Message::Element& element)
+{
+	return element.isString();
+}
+template <>
+bool AdapterFactory::verifyCorrectType<NumberAdapter>(const ::Atlas::Message::Element& element)
+{
+	return element.isNum();
+}
+template <>
+bool AdapterFactory::verifyCorrectType<SizeAdapter>(const ::Atlas::Message::Element& element)
+{
+	return element.isList();
+}
+template <>
+bool AdapterFactory::verifyCorrectType<OrientationAdapter>(const ::Atlas::Message::Element& element)
+{
+	return element.isList();
+}
+template <>
+bool AdapterFactory::verifyCorrectType<PositionAdapter>(const ::Atlas::Message::Element& element)
+{
+	return element.isList();
+}
+template <>
+bool AdapterFactory::verifyCorrectType<Position2DAdapter>(const ::Atlas::Message::Element& element)
+{
+	return element.isList();
+}
+template <>
+bool AdapterFactory::verifyCorrectType<ListAdapter>(const ::Atlas::Message::Element& element)
+{
+	return element.isList();
+}
+template <>
+bool AdapterFactory::verifyCorrectType<MapAdapter>(const ::Atlas::Message::Element& element)
+{
+	return element.isMap();
+}
+template <>
+bool AdapterFactory::verifyCorrectType<StaticAdapter>(const ::Atlas::Message::Element& element)
+{
+	return element.isString() || element.isNum();
+}
+template <>
+bool AdapterFactory::verifyCorrectType<AreaAdapter>(const ::Atlas::Message::Element& element)
+{
+	return element.isMap();
+}
+
+
+template <>
+StringAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
+{
+	loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/StringAdapter.layout");
+	WindowManager& windowMgr = WindowManager::getSingleton();
+	Combobox* stringWindow = static_cast<Combobox*>(windowMgr.getWindow(mCurrentPrefix + "String"));
+	return new StringAdapter(element, stringWindow);
+}
+
+template <>
+NumberAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
+{
+	loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/NumberAdapter.layout");
+	WindowManager& windowMgr = WindowManager::getSingleton();
+	Combobox* numberWindow = static_cast<Combobox*>(windowMgr.getWindow(mCurrentPrefix + "Number"));
+	return new NumberAdapter(element, numberWindow);
+}
+
+template <>
+SizeAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
+{
+	loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/SizeAdapter.layout");
+	WindowManager& windowMgr = WindowManager::getSingleton();
+	Window* lowerX = windowMgr.getWindow(mCurrentPrefix + "lowerX");
+	Window* lowerY = windowMgr.getWindow(mCurrentPrefix + "lowerY");
+	Window* lowerZ = windowMgr.getWindow(mCurrentPrefix + "lowerZ");
+	Window* upperX = windowMgr.getWindow(mCurrentPrefix + "upperX");
+	Window* upperY = windowMgr.getWindow(mCurrentPrefix + "upperY");
+	Window* upperZ = windowMgr.getWindow(mCurrentPrefix + "upperZ");
+	Slider* scaler = static_cast<Slider*>(windowMgr.getWindow(mCurrentPrefix + "scaler"));
+	Window* info = windowMgr.getWindow(mCurrentPrefix + "info");
+	return new SizeAdapter(element, lowerX, lowerY, lowerZ, upperX, upperY, upperZ, scaler, info);
+}
+
+template <>
+OrientationAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
+{
+	loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/OrientationAdapter.layout");
+	WindowManager& windowMgr = WindowManager::getSingleton();
+	Window* x = windowMgr.getWindow(mCurrentPrefix + "x");
+	Window* y = windowMgr.getWindow(mCurrentPrefix + "y");
+	Window* z = windowMgr.getWindow(mCurrentPrefix + "z");
+	Window* scalar = windowMgr.getWindow(mCurrentPrefix + "scalar");
+	return new OrientationAdapter(element, x, y, z, scalar);
+}
+
+template <>
+PositionAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
+{
+	loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/PositionAdapter.layout");
+	WindowManager& windowMgr = WindowManager::getSingleton();
+	Window* x = windowMgr.getWindow(mCurrentPrefix + "x");
+	Window* y = windowMgr.getWindow(mCurrentPrefix + "y");
+	Window* z = windowMgr.getWindow(mCurrentPrefix + "z");
+	return new PositionAdapter(element, x, y, z);
+}
+
+template <>
+Position2DAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
+{
+	loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/Position2DAdapter.layout");
+	WindowManager& windowMgr = WindowManager::getSingleton();
+	Window* x = windowMgr.getWindow(mCurrentPrefix + "x");
+	Window* y = windowMgr.getWindow(mCurrentPrefix + "y");
+	return new Position2DAdapter(element, x, y);
+}
+
+template <>
+MapAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
+{
+	Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/MapAdapter.layout");
+	return new MapAdapter(element, window);
+}
+
+template <>
+ListAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
+{
+	Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/ListAdapter.layout");
+	return new ListAdapter(element, window);
+}
+
+template <>
+StaticAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
+{
+	Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/StaticAdapter.layout");
+	return new StaticAdapter(element, window);
+}
+
+template <>
+AreaAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
+{
+	loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/AreaAdapter.layout");
+	WindowManager& windowMgr = WindowManager::getSingleton();
+	PushButton* button = static_cast<PushButton*>(windowMgr.getWindow(mCurrentPrefix + "showButton"));
+	Combobox* layerWindow = static_cast<Combobox*>(windowMgr.getWindow(mCurrentPrefix + "Layer"));
+	return new AreaAdapter(element, button, layerWindow, entity);
+}
+
+
+StringAdapter* AdapterFactory::createStringAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
+{
+	return createAdapter<StringAdapter>(container, adapterPrefix, element);
 }
 
 NumberAdapter* AdapterFactory::createNumberAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
-	if (!container) {
-		S_LOG_FAILURE("No container sent to AdapterFactory::createNumberAdapter.");
-		return 0;
-	}
-	
-	if (!element.isNum()) {
-		S_LOG_FAILURE("Incorrect element type, expected a number.");
-		return 0;
-	}
-	
-	try {
-		
-		loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/NumberAdapter.layout");
-		WindowManager& windowMgr = WindowManager::getSingleton();
-		Combobox* numberWindow = static_cast<Combobox*>(windowMgr.getWindow(mCurrentPrefix + "Number"));
-		NumberAdapter* adapter = new NumberAdapter(element, numberWindow);
-		
-		return adapter;
-	} catch (const CEGUI::Exception& ex) {
-		S_LOG_FAILURE("Error when creating NumberAdapter. " << ex.getMessage ().c_str());
-		return 0;
-	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when loading NumberAdapter. " << ex.what());
-		return 0;
-	}
-
+	return createAdapter<NumberAdapter>(container, adapterPrefix, element);
 }
 
 SizeAdapter* AdapterFactory::createSizeAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
-	if (!container) {
-		S_LOG_FAILURE("No container sent to AdapterFactory::createSizeAdapter.");
-		return 0;
-	}
-	
-	if (!element.isList()) {
-		S_LOG_FAILURE("Incorrect element type, expected a list.");
-		return 0;
-	}
-	
-	try {
-		loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/SizeAdapter.layout");
-		WindowManager& windowMgr = WindowManager::getSingleton();
-		Window* lowerX = windowMgr.getWindow(mCurrentPrefix + "lowerX");
-		Window* lowerY = windowMgr.getWindow(mCurrentPrefix + "lowerY");
-		Window* lowerZ = windowMgr.getWindow(mCurrentPrefix + "lowerZ");
-		Window* upperX = windowMgr.getWindow(mCurrentPrefix + "upperX");
-		Window* upperY = windowMgr.getWindow(mCurrentPrefix + "upperY");
-		Window* upperZ = windowMgr.getWindow(mCurrentPrefix + "upperZ");
-		Slider* scaler = static_cast<Slider*>(windowMgr.getWindow(mCurrentPrefix + "scaler"));
-		Window* info = windowMgr.getWindow(mCurrentPrefix + "info");
-		SizeAdapter* adapter = new SizeAdapter(element, lowerX, lowerY, lowerZ, upperX, upperY, upperZ, scaler, info);
-		
-		return adapter;
-	} catch (const CEGUI::Exception& ex) {
-		S_LOG_FAILURE("Error when creating SizeAdapter. " << ex.getMessage ().c_str());
-		return 0;
-	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when loading SizeAdapter. " << ex.what());
-		return 0;
-	}
+	return createAdapter<SizeAdapter>(container, adapterPrefix, element);
 }
 
 OrientationAdapter* AdapterFactory::createOrientationAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
-	if (!container) {
-		S_LOG_FAILURE("No container sent to AdapterFactory::createOrientationAdapter.");
-		return 0;
-	}
-	
-	if (!element.isList()) {
-		S_LOG_FAILURE("Incorrect element type, expected a list.");
-		return 0;
-	}
-	
-	try {
-		loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/OrientationAdapter.layout");
-		WindowManager& windowMgr = WindowManager::getSingleton();
-		Window* x = windowMgr.getWindow(mCurrentPrefix + "x");
-		Window* y = windowMgr.getWindow(mCurrentPrefix + "y");
-		Window* z = windowMgr.getWindow(mCurrentPrefix + "z");
-		Window* scalar = windowMgr.getWindow(mCurrentPrefix + "scalar");
-		OrientationAdapter* adapter = new OrientationAdapter(element, x, y, z, scalar);
-		
-		return adapter;
-	} catch (const CEGUI::Exception& ex) {
-		S_LOG_FAILURE("Error when creating OrientationAdapter. " << ex.getMessage ().c_str());
-		return 0;
-	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when loading OrientationAdapter. " << ex.what());
-		return 0;
-	}
+	return createAdapter<OrientationAdapter>(container, adapterPrefix, element);
 }
 
 PositionAdapter* AdapterFactory::createPositionAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
-	if (!container) {
-		S_LOG_FAILURE("No container sent to AdapterFactory::createPositionAdapter.");
-		return 0;
-	}
-	
-	if (!element.isList()) {
-		S_LOG_FAILURE("Incorrect element type, expected a list.");
-		return 0;
-	}
-	
-	try {
-		loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/PositionAdapter.layout");
-		WindowManager& windowMgr = WindowManager::getSingleton();
-		Window* x = windowMgr.getWindow(mCurrentPrefix + "x");
-		Window* y = windowMgr.getWindow(mCurrentPrefix + "y");
-		Window* z = windowMgr.getWindow(mCurrentPrefix + "z");
-		PositionAdapter* adapter = new PositionAdapter(element, x, y, z);
-		
-		return adapter;
-	} catch (const CEGUI::Exception& ex) {
-		S_LOG_FAILURE("Error when creating PositionAdapter. " << ex.getMessage ().c_str());
-		return 0;
-	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when loading PositionAdapter. " << ex.what());
-		return 0;
-	}
+	return createAdapter<PositionAdapter>(container, adapterPrefix, element);
 }
 
 Position2DAdapter* AdapterFactory::createPosition2DAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
-	if (!container) {
-		S_LOG_FAILURE("No container sent to AdapterFactory::createPosition2DAdapter.");
-		return 0;
-	}
-	
-	if (!element.isList()) {
-		S_LOG_FAILURE("Incorrect element type, expected a list.");
-		return 0;
-	}
-	
-	try {
-		loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/Position2DAdapter.layout");
-		WindowManager& windowMgr = WindowManager::getSingleton();
-		Window* x = windowMgr.getWindow(mCurrentPrefix + "x");
-		Window* y = windowMgr.getWindow(mCurrentPrefix + "y");
-		Position2DAdapter* adapter = new Position2DAdapter(element, x, y);
-		
-		return adapter;
-	} catch (const CEGUI::Exception& ex) {
-		S_LOG_FAILURE("Error when creating Position2DAdapter. " << ex.getMessage ().c_str());
-		return 0;
-	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when loading Position2DAdapter. " << ex.what());
-		return 0;
-	}
+	return createAdapter<Position2DAdapter>(container, adapterPrefix, element);
 }
 
 MapAdapter* AdapterFactory::createMapAdapter(CEGUI::Window* container, const std::string& adapterPrefix, Eris::Entity* entity)
@@ -257,142 +277,89 @@ MapAdapter* AdapterFactory::createMapAdapter(CEGUI::Window* container, const std
 
 MapAdapter* AdapterFactory::createMapAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
-	if (!container) {
-		S_LOG_FAILURE("No container sent to AdapterFactory::createMapAdapter.");
-		return 0;
-	}
-	
-	if (!element.isMap()) {
-		S_LOG_FAILURE("Incorrect element type, expected a map.");
-		return 0;
-	}
-	
-	
-	try {
-		Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/MapAdapter.layout");
-		MapAdapter* adapter = new MapAdapter(element, window);
-		
-		return adapter;
-	} catch (const CEGUI::Exception& ex) {
-		S_LOG_FAILURE("Error when loading MapAdapter. " << ex.getMessage().c_str());
-		return 0;
-	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when loading MapAdapter. " << ex.what());
-		return 0;
-	}
+	return createAdapter<MapAdapter>(container, adapterPrefix, element);
 }
 
 ListAdapter* AdapterFactory::createListAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
-	if (!container) {
-		S_LOG_FAILURE("No container sent to AdapterFactory::createListAdapter.");
-		return 0;
-	}
-	
-	if (!element.isList()) {
-		S_LOG_FAILURE("Incorrect element type, expected a list.");
-		return 0;
-	}
-	
-	try {
-		Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/ListAdapter.layout");
-		ListAdapter* adapter = new ListAdapter(element, window);
-		
-		return adapter;
-	} catch (const CEGUI::Exception& ex) {
-		S_LOG_FAILURE("Error when loading ListAdapter. " << ex.getMessage().c_str());
-		return 0;
-	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when loading ListAdapter. " << ex.what());
-		return 0;
-	}
+	return createAdapter<ListAdapter>(container, adapterPrefix, element);
 }
 
 StaticAdapter* AdapterFactory::createStaticAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
-	if (!container) {
-		S_LOG_FAILURE("No container sent to AdapterFactory::createStaticAdapter.");
-		return 0;
-	}
-	
-	if (!(element.isString() || element.isNum())) {
-		S_LOG_FAILURE("Incorrect element type, expected a string.");
-		return 0;
-	}
-	
-	try {
-		Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/StaticAdapter.layout");
-		StaticAdapter* adapter = new StaticAdapter(element, window);
-		
-		return adapter;
-	} catch (const CEGUI::Exception& ex) {
-		S_LOG_FAILURE("Error when loading StaticAdapter. " << ex.getMessage().c_str());
-		return 0;
-	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when loading StaticAdapter. " << ex.what());
-		return 0;
-	}
+	return createAdapter<StaticAdapter>(container, adapterPrefix, element);
 }
 
-AdapterBase* AdapterFactory::createAdapterByType(std::string type, CEGUI::Window* container, const std::string& adapterPrefix, ::Atlas::Message::Element& element)
+AreaAdapter* AdapterFactory::createAreaAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
 {
+	return createAdapter<AreaAdapter>(container, adapterPrefix, element, entity);
+}
+
+AdapterBase* AdapterFactory::createAdapterByType(std::string type, CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
+{
+	::Atlas::Message::Element newElement(element);
 	if (type == "string")
 	{
-		if (element.isNone()) { element = ""; }
-		return createStringAdapter(container, adapterPrefix, element);
+		if (newElement.isNone()) { newElement = ""; }
+		return createStringAdapter(container, adapterPrefix, newElement);
 	}
 	else if (type == "number")
 	{
-		if (element.isNone()) { element = 0.0; }
-		return createNumberAdapter(container, adapterPrefix, element);
+		if (newElement.isNone()) { newElement = 0.0; }
+		return createNumberAdapter(container, adapterPrefix, newElement);
 	}
 	else if (type == "size")
 	{
-		if (element.isNone()) { element = ::Atlas::Message::ListType(); }
-		return createSizeAdapter(container, adapterPrefix, element);
+		if (newElement.isNone()) { newElement = ::Atlas::Message::ListType(); }
+		return createSizeAdapter(container, adapterPrefix, newElement);
 	}
 	else if (type == "position")
 	{
-		if (element.isNone())
+		if (newElement.isNone())
 		{
 			::Atlas::Message::ListType list;
 			list.push_back(::Atlas::Message::Element(0.0f));
 			list.push_back(::Atlas::Message::Element(0.0f));
 			list.push_back(::Atlas::Message::Element(0.0f));
-			element = list;
+			newElement = list;
 		}
-		return createPositionAdapter(container, adapterPrefix, element);
+		return createPositionAdapter(container, adapterPrefix, newElement);
 	}
 	else if (type == "position2d")
 	{
-		if (element.isNone())
+		if (newElement.isNone())
 		{
 			::Atlas::Message::ListType list;
 			list.push_back(::Atlas::Message::Element(0.0f));
 			list.push_back(::Atlas::Message::Element(0.0f));
-			element = list;
+			newElement = list;
 		}
-		return createPosition2DAdapter(container, adapterPrefix, element);
+		return createPosition2DAdapter(container, adapterPrefix, newElement);
 	}
 	else if (type == "map")
 	{
-		if (element.isNone()) { element = ::Atlas::Message::MapType();}
-		return createNumberAdapter(container, adapterPrefix, element);
+		if (newElement.isNone()) { newElement = ::Atlas::Message::MapType();}
+		return createNumberAdapter(container, adapterPrefix, newElement);
 	}
 	else if (type == "list")
 	{
-		if (element.isNone()) { element = ::Atlas::Message::ListType(); }
-		return createListAdapter(container, adapterPrefix, element);
+		if (newElement.isNone()) { newElement = ::Atlas::Message::ListType(); }
+		return createListAdapter(container, adapterPrefix, newElement);
 	}
 	else if (type == "orientation")
 	{
-		if (element.isNone()) { element = ::Atlas::Message::ListType(); }
-		return createNumberAdapter(container, adapterPrefix, element);
+		if (newElement.isNone()) { newElement = ::Atlas::Message::ListType(); }
+		return createNumberAdapter(container, adapterPrefix, newElement);
 	}
 	else if (type == "static")
 	{
-		if (element.isNone()) { element = ""; }
-		return createStaticAdapter(container, adapterPrefix, element);
+		if (newElement.isNone()) { newElement = ""; }
+		return createStaticAdapter(container, adapterPrefix, newElement);
+	}
+	else if (type == "area")
+	{
+		if (newElement.isNone()) { newElement = ::Atlas::Message::MapType();}
+		return createAreaAdapter(container, adapterPrefix, newElement, entity);
 	}
 	else
 	{

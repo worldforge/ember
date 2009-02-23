@@ -49,7 +49,7 @@ ModelRenderer::ModelRenderer(CEGUI::Window* image)
 
 ModelRenderer::~ModelRenderer()
 {
-
+	mModelReloadedConnection.disconnect();
 }
 
 void ModelRenderer::setModel(Model::Model* model)
@@ -62,6 +62,7 @@ void ModelRenderer::setModel(Model::Model* model)
 		repositionSceneNode();
 		mTexture->getRenderContext()->repositionCamera();
 		if (mAutoShowFull) {
+			mModelReloadedConnection = mModel->Reloaded.connect(sigc::mem_fun(*this, &ModelRenderer::model_Reloaded));
 			showFull();
 		}
 	}
@@ -98,6 +99,7 @@ void ModelRenderer::showModel(const std::string& modelName)
 	if (mModel) {
 		mModel->_getManager()->destroyMovableObject(mModel);
 		mModel = 0;
+		mModelReloadedConnection.disconnect();
 		//delete mModel;
 	}
 	if (modelName != "") {
@@ -113,6 +115,11 @@ void ModelRenderer::showModel(const std::string& modelName)
 		setModel(0);
 		mTexture->getRenderContext()->setActive(false);
 	}
+}
+
+void ModelRenderer::model_Reloaded()
+{
+	showFull();
 }
 
 

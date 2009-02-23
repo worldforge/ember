@@ -177,6 +177,7 @@ EntityCreator::~EntityCreator()
 void EntityCreator::setRecipe(EntityRecipe& recipe)
 {
 	mRecipe = &recipe;
+	checkTypeInfoBound();
 }
 
 void EntityCreator::toggleCreateMode()
@@ -444,7 +445,34 @@ void EntityCreator::yaw(float degrees)
 void EntityCreator::connectedToServer(Eris::Connection* conn)
 {
 	mConn = conn;
+	mConn->getTypeService()->BoundType.connect(sigc::mem_fun(*this, &EntityCreator::typeService_BoundType));
 }
+
+void EntityCreator::checkTypeInfoBound()
+{
+	if (mRecipe)  {
+		const std::string& typeName = mRecipe->getEntityType();
+		///Calling getTypeByName will also send a request for type info to the server if no type info exists yet
+		Eris::TypeInfo* typeInfo = mConn->getTypeService()->getTypeByName(typeName);
+		if (typeInfo) {
+			if (typeInfo->isBound()) {
+				EventTypeInfoLoaded.emit();
+			}
+		}
+	}
+}
+
+void EntityCreator::typeService_BoundType(Eris::TypeInfo* typeInfo)
+{
+	if (mRecipe) {
+		if (typeInfo->getName() == mRecipe->getEntityType()) {
+			EventTypeInfoLoaded.emit();
+		}
+	}
+}
+
+
+
 
 void EntityCreator::showBlurb_frameStarted(const Ogre::FrameEvent& event)
 {

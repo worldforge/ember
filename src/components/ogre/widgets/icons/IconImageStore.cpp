@@ -107,7 +107,7 @@ IconImageStore::IconImageStore(const std::string& imagesetName)
 : mImagesetName(imagesetName)
 , mIconSize(64)
 , mImageSize(256)
-, mImageDataStream(new Ogre::MemoryDataStream(mImageSize * mImageSize * 4, true))
+, mImageDataStream(OGRE_NEW Ogre::MemoryDataStream(mImageSize * mImageSize * 4, true))
 , mCeguiTexture(0)
 , mImageset(0)
 {
@@ -144,7 +144,7 @@ IconImageStore::~IconImageStore()
 	for (IconImageStoreEntryStore::iterator I(mIconImages.begin()); I != mIconImages.end(); ++I) {
 		delete *I;
 	}
-	delete mImageDataStream;
+	OGRE_DELETE mImageDataStream;
 }
 
 void IconImageStore::createImageset()

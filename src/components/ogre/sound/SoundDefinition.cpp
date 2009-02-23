@@ -33,17 +33,17 @@ void SoundDefinition::setup(const std::string& filename, SoundGeneral::SoundSamp
 	mVolume = volume;
 }
 
-const std::string& SoundDefinition::getFilename()
+const std::string& SoundDefinition::getFilename() const
 {
 	return mFilename;
 }
 
-SoundGeneral::SoundSampleType SoundDefinition::getFormat()
+SoundGeneral::SoundSampleType SoundDefinition::getFormat() const
 {
 	return mSampleType;
 }
 
-float SoundDefinition::getVolume()
+float SoundDefinition::getVolume() const
 {
 	return mVolume;
 }

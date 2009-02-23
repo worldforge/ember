@@ -122,12 +122,13 @@ namespace Hydrax
 		{
 			Ogre::TextureManager::getSingleton().remove(mTextures.at(Index)->getName());
 
-			std::vector<Ogre::TexturePtr>::iterator TexIt = mTextures.begin() + Index;
+			TextureStore::iterator TexIt = mTextures.begin() + Index;
 
 			mTextures.erase(TexIt);
 		}
 
 	private:
+		typedef std::vector<Ogre::TexturePtr, Ogre::STLAllocator<Ogre::TexturePtr, Ogre::CategorisedAlignAllocPolicy<Ogre::MEMCATEGORY_GENERAL> > > TextureStore;
 
 		/// Hydrax main pointer
 		Hydrax *mHydrax;
@@ -148,7 +149,7 @@ namespace Hydrax
 		    The following std::vector will store all textures, and after they need
 			to be modified in the noise module.
 	     */
-		std::vector<Ogre::TexturePtr> mTextures;
+		TextureStore mTextures;
 	};
 }
 

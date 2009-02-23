@@ -37,11 +37,11 @@ Note that this deals with world space only, which means that all orientations an
 All movement that happens through this class will be on the client only, until either finalizeMovement() or cancelMovement() are called.
 	@author Erik Hjortsberg <erik@katastrof.nu>
 */
-class IEntityMoveBridge
+class IMovementBridge
 {
 public:
 	
-	virtual ~IEntityMoveBridge() {}
+	virtual ~IMovementBridge() {}
 
 	/**
 	 * @brief Gets the orientation of the entity, in world space.

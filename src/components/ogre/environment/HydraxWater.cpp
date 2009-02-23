@@ -91,7 +91,7 @@ bool HydraxWater::initialize()
 			S_LOG_FAILURE("Could not find file "<< configFilename);
 			return false;
 		}
-		std::ifstream *filestream = new std::ifstream();
+		std::ifstream *filestream = OGRE_NEW_T(std::ifstream, Ogre::MEMCATEGORY_GENERAL)();
 		filestream->open(configFilename.c_str(), std::ios::in);
 	
 		if (filestream->fail())
@@ -102,7 +102,7 @@ bool HydraxWater::initialize()
 		}
 	
 		///this will envelope the file stream pointer and delete it when it's destroyed itself
-		Ogre::FileStreamDataStream* stream = new Ogre::FileStreamDataStream(configFilename, filestream, theStat.st_size, true);
+		Ogre::FileStreamDataStream* stream = OGRE_NEW Ogre::FileStreamDataStream(configFilename, filestream, theStat.st_size, true);
 		Ogre::DataStreamPtr dataPtr(stream);
 	
 		if (stream->size() == 0) {

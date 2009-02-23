@@ -26,7 +26,7 @@
 
 #include "../EmberOgrePrerequisites.h"
 #include "framework/ConsoleObject.h"
-#include "EntityMoveAdapter.h"
+#include "MovementAdapter.h"
 #include "EntityMoveAdjuster.h"
 
 namespace EmberOgre {
@@ -77,7 +77,7 @@ protected:
 	/**
 	Main adapter which will intercept mouse and keyboard input to allow for movement of an entity.
 	*/
-	EntityMoveAdapter mMoveAdapter;
+	MovementAdapter mMoveAdapter;
 
 
 	/**

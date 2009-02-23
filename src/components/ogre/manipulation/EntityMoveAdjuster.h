@@ -24,6 +24,7 @@
 #define EMBEROGREENTITYMOVEADJUSTER_H
 
 #include <Eris/Timeout.h>
+#include <vector>
 
 namespace EmberOgre {
 

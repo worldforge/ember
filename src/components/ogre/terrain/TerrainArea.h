@@ -37,8 +37,9 @@ class EmberEntity;
 
 namespace Terrain {
 
+
 /**
-Represents a terrain area, as defined by Mercator::Area.
+@brief Represents a terrain area, as defined by Mercator::Area.
 A terrain area is a section of the terrain, as defined by a 2d polygon. It's connected to a specified layer in the terrain, and allows you to define stuff like roads, fields or any other feature you want added to the terrain.
 
 The areas are always attached to an entity, and when the entity moves the area moves with it. The position of the area is defined in space coordinates relative to the entity's position.

@@ -98,10 +98,11 @@ else
 fi
 
 #TODO: move this from here into the ember executable
-if [ ! -d $media_dir ] ; then
-	echo "Copying dynamic data to user directory"
-	cp -dpR $media_user_dir $media_dir
-fi
+#Note: this isn't needed any more
+# if [ ! -d $media_dir ] ; then
+# 	echo "Copying dynamic data to user directory"
+# 	cp -dpR $media_user_dir $media_dir
+# fi
 
 #Let's write the version number so that we can do some useful thing with it in the future. (Like remove old media dirs.)
 echo @VERSION@ > $homedata/latest_version

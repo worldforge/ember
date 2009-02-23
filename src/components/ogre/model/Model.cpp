@@ -35,9 +35,12 @@
 #include "components/ogre/EmberOgre.h"
 #include "ModelDefinitionManager.h"
 #include "ModelDefinition.h"
+#include "ModelBackgroundLoader.h"
 
 
 #include <OgreTagPoint.h>
+#include <OgreMeshManager.h>
+#include <OgreResourceBackgroundQueue.h>
 
 namespace EmberOgre {
 namespace Model {
@@ -67,8 +70,9 @@ Model::Model(const std::string& name)
 , mRotation(Ogre::Quaternion::IDENTITY)
 , mAnimationStateSet(0)
 , mAttachPoints(0)
+, mBackgroundLoader(0)
 {
- mVisible = true;
+	mVisible = true;
 }
 Model::~Model()
 {
@@ -77,10 +81,16 @@ Model::~Model()
 	if (!mMasterModel.isNull()) {
 		mMasterModel->removeModelInstance(this);
 	}
+	if (mBackgroundLoader) {
+		ModelDefinitionManager::getSingleton().removeBackgroundLoader(mBackgroundLoader);
+	}
+	delete mBackgroundLoader;
+	S_LOG_VERBOSE("Deleted "<< getName());
 }
 
 void Model::reset()
 {
+	S_LOG_VERBOSE("Resetting "<< getName());
 	Resetting.emit();
 //	resetAnimations();
 	resetSubmodels();
@@ -101,12 +111,9 @@ void Model::reload()
 	resetParticles();	*/
 	reset();
 	createFromDefn();
-	//if we are attached, we have to nofify the new entities, else they won't appear in the scene
-	if (mParentNode != 0) {
-		Ogre::Node* theParent = mParentNode;
-		_notifyAttached(0, false);
-		_notifyAttached(theParent, mParentIsTagPoint);
-	}
+	///if we are attached, we have to nofify the new entities, else they won't appear in the scene
+	_notifyAttached(mParentNode, mParentIsTagPoint);
+
 	Reloaded.emit();
 }
 
@@ -150,8 +157,6 @@ void Model::_notifyManager(Ogre::SceneManager* man)
 	}
 }
 
-
-
 bool Model::createFromDefn()
 {
 	// create instance of model from definition
@@ -159,8 +164,27 @@ bool Model::createFromDefn()
 	assert(sceneManager);
 	mScale = mMasterModel->mScale ;
 	mRotation = mMasterModel->mRotation;
-	setRenderingDistance(mMasterModel->getRenderingDistance());
 	
+	if (!mBackgroundLoader) {
+		mBackgroundLoader = new ModelBackgroundLoader(*this);
+	}
+
+	if (mBackgroundLoader->poll()) {
+/*		ModelDefinitionManager::getSingleton().removeBackgroundLoader(mBackgroundLoader);
+		delete mBackgroundLoader;
+		mBackgroundLoader = 0;*/
+		return createActualModel();
+	} else {
+		ModelDefinitionManager::getSingleton().addBackgroundLoader(mBackgroundLoader);
+		setRenderingDistance(mMasterModel->getRenderingDistance());
+	}
+	return true;
+}
+
+
+bool Model::createActualModel()
+{
+	Ogre::SceneManager* sceneManager = _getManager();
 	std::vector<std::string> showPartVector;
 
 /*	const SubModelDefinitionsStore&
@@ -172,13 +196,7 @@ bool Model::createFromDefn()
 	{
 		std::string entityName = mName + "/" + (*I_subModels)->getMeshName();
 		try {
-// 			bool firstLoad = false;
-// 			Ogre::MeshPtr mesh = Ogre::MeshManager::getSingleton().getByName((*I_subModels).Mesh);
-// 			if (!mesh.isNull()) {
-// 				if (!mesh->isLoaded()) {
-// 					firstLoad = true;
-// 				}
-// 			} 
+			
 			Ogre::Entity* entity = sceneManager->createEntity(entityName, (*I_subModels)->getMeshName());
 			
 			if (entity->getMesh().isNull()) {
@@ -189,29 +207,11 @@ bool Model::createFromDefn()
 				entity->setRenderingDistance(mMasterModel->getRenderingDistance());
 			}
 
-// 			//for convenience, if it's a new mesh, check if there's a skeleton file in the same directory
-// 			//if so, use that
-// //			if (!entity->getMesh()->isLoaded()) {
-// /*				std::string fileName;
-// 				std::string path;
-// 				Ogre::StringUtil::splitFilename((*I_subModels).Mesh, fileName, path);*/
-// 			if (firstLoad) {
-// 				std::string meshname = (*I_subModels).Mesh.substr(0, (*I_subModels).Mesh.size() - 5);
-// 				
-// /*				std::vector<Ogre::String> strings = Ogre::StringUtil::split((*I_subModels).Mesh, ".mesh");
-// 				if (strings.size() > 0) {
-// 					meshname = strings[0];*/
-// 				entity->getMesh()->setSkeletonName(meshname + ".skeleton");
-// 			}
-// // 				}
-// 				
-// //			}
-
-			SubModel* submodel = new SubModel(entity);
+			SubModel* submodel = new SubModel(*entity);
 			//Model::SubModelPartMapping* submodelPartMapping = new Model::SubModelPartMapping();
 				
 			for (PartDefinitionsStore::const_iterator I_parts = (*I_subModels)->getPartDefinitions().begin(); I_parts != (*I_subModels)->getPartDefinitions().end(); ++I_parts) {
-				SubModelPart* part = submodel->createSubModelPart((*I_parts)->getName());
+				SubModelPart& part = submodel->createSubModelPart((*I_parts)->getName());
 				std::string groupName("");
 				
 				if ((*I_parts)->getSubEntityDefinitions().size() > 0)
@@ -231,7 +231,7 @@ bool Model::createFromDefn()
 								}
 							}
 							if (subEntity) {
-								part->addSubEntity(subEntity, *I_subEntities);
+								part.addSubEntity(subEntity, *I_subEntities);
 								
 								if ((*I_subEntities)->getMaterialName() != "") {
 									subEntity->setMaterialName((*I_subEntities)->getMaterialName());
@@ -247,7 +247,7 @@ bool Model::createFromDefn()
 					//if no subentities are defined, add all subentities
 					unsigned int numSubEntities = entity->getNumSubEntities();
 					for (unsigned int i = 0;i < numSubEntities; ++i) {
-						part->addSubEntity(entity->getSubEntity(i), 0);
+						part.addSubEntity(entity->getSubEntity(i), 0);
 					}
 				}
 				if ((*I_parts)->getGroup() != "") {
@@ -260,7 +260,7 @@ bool Model::createFromDefn()
 				}
 				
 				ModelPart& modelPart = mModelParts[(*I_parts)->getName()];
-				modelPart.addSubModelPart(part);
+				modelPart.addSubModelPart(&part);
 				modelPart.setGroupName((*I_parts)->getGroup());
 			}
 			addSubmodel(submodel);
@@ -272,6 +272,8 @@ bool Model::createFromDefn()
 			return false;
 		}
 	}
+	
+	setRenderingDistance(mMasterModel->getRenderingDistance());
 
 	createActions();
 	
@@ -552,6 +554,11 @@ bool Model::getDisplaySkeleton(void) const
 	return false;
 }
 
+bool Model::isLoaded() const
+{
+	return mBackgroundLoader != 0 && mBackgroundLoader->getState() == ModelBackgroundLoader::LS_DONE;
+}
+
 
 
 const Ogre::Real Model::getScale() const
@@ -687,6 +694,7 @@ Ogre::TagPoint* Model::attachObjectToAttachPoint(const Ogre::String &attachPoint
 			wrapper.AttachPointName = attachPointName;
 			wrapper.Movable = pMovable;
 			mAttachPoints->push_back(wrapper);
+			return tagPoint;
 		}
 	}
 	return 0;
@@ -851,13 +859,15 @@ void Model::setRenderQueueGroup(Ogre::RenderQueueGroupID queueID)
 */
 const Ogre::AxisAlignedBox& Model::getBoundingBox(void) const
 {
-	mFull_aa_box.setNull();
-	 
-	SubModelSet::const_iterator child_itr = mSubmodels.begin();
-	SubModelSet::const_iterator child_itr_end = mSubmodels.end();
-	for( ; child_itr != child_itr_end; child_itr++)
-	{
-		mFull_aa_box.merge((*child_itr)->getEntity()->getBoundingBox());
+	if (mSubmodels.size() != 0) {
+		mFull_aa_box.setNull();
+		
+		SubModelSet::const_iterator child_itr = mSubmodels.begin();
+		SubModelSet::const_iterator child_itr_end = mSubmodels.end();
+		for( ; child_itr != child_itr_end; child_itr++)
+		{
+			mFull_aa_box.merge((*child_itr)->getEntity()->getBoundingBox());
+		}
 	}
 
 	return mFull_aa_box;
@@ -867,16 +877,18 @@ const Ogre::AxisAlignedBox& Model::getBoundingBox(void) const
 */
 const Ogre::AxisAlignedBox& Model::getWorldBoundingBox(bool derive) const
 {
-	mWorldFull_aa_box.setNull();
-	 
-	SubModelSet::const_iterator child_itr = mSubmodels.begin();
-	SubModelSet::const_iterator child_itr_end = mSubmodels.end();
-
-	for( ; child_itr != child_itr_end; child_itr++)
-	{
- 		mWorldFull_aa_box.merge((*child_itr)->getEntity()->getWorldBoundingBox(derive));
+	if (mSubmodels.size() != 0) {
+		mWorldFull_aa_box.setNull();
+		
+		SubModelSet::const_iterator child_itr = mSubmodels.begin();
+		SubModelSet::const_iterator child_itr_end = mSubmodels.end();
+	
+		for( ; child_itr != child_itr_end; child_itr++)
+		{
+			mWorldFull_aa_box.merge((*child_itr)->getEntity()->getWorldBoundingBox(derive));
+		}
 	}
-	 
+	
 	return mWorldFull_aa_box;
 }
 
@@ -1004,11 +1016,15 @@ void Model::visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRende
 /** Overridden from MovableObject */
 void Model::_notifyAttached(Ogre::Node* parent, bool isTagPoint)
 {
-	MovableObject::_notifyAttached(parent, isTagPoint);
+	if (parent != mParentNode) {
+		MovableObject::_notifyAttached(parent, isTagPoint);
+	}
 	SubModelSet::const_iterator I = mSubmodels.begin();
 	SubModelSet::const_iterator I_end = mSubmodels.end();
 	for (; I != I_end; ++I) {
-		(*I)->getEntity()->_notifyAttached(parent, isTagPoint);
+		if ((*I)->getEntity()->getParentNode() != parent) {
+			(*I)->getEntity()->_notifyAttached(parent, isTagPoint);
+		}
 	}
 }
 

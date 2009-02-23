@@ -21426,6 +21426,36 @@ static int tolua_set_EmberOgre__Gui__EntityCreator_mWidget_ptr(lua_State* tolua_
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* get function: EventTypeInfoLoaded of class  EmberOgre::Gui::EntityCreator */
+#ifndef TOLUA_DISABLE_tolua_get_EmberOgre__Gui__EntityCreator_EventTypeInfoLoaded
+static int tolua_get_EmberOgre__Gui__EntityCreator_EventTypeInfoLoaded(lua_State* tolua_S)
+{
+  EmberOgre::Gui::EntityCreator* self = (EmberOgre::Gui::EntityCreator*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventTypeInfoLoaded'",NULL);
+#endif
+  tolua_pushusertype(tolua_S,(void*)&self->EventTypeInfoLoaded,"sigc::signal<void>");
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: EventTypeInfoLoaded of class  EmberOgre::Gui::EntityCreator */
+#ifndef TOLUA_DISABLE_tolua_set_EmberOgre__Gui__EntityCreator_EventTypeInfoLoaded
+static int tolua_set_EmberOgre__Gui__EntityCreator_EventTypeInfoLoaded(lua_State* tolua_S)
+{
+  EmberOgre::Gui::EntityCreator* self = (EmberOgre::Gui::EntityCreator*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventTypeInfoLoaded'",NULL);
+  if (!tolua_isusertype(tolua_S,2,"sigc::signal<void>",0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->EventTypeInfoLoaded = *((sigc::signal<void>*)  tolua_tousertype(tolua_S,2,0))
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: clear of class  std::vector<std::string> */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_std_vector_std__string__clear00
 static int tolua_EmberOgre_std_vector_std__string__clear00(lua_State* tolua_S)
@@ -26565,6 +26595,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"createEntity",tolua_EmberOgre_EmberOgre_Gui_EntityCreator_createEntity00);
      tolua_function(tolua_S,"cleanupCreation",tolua_EmberOgre_EmberOgre_Gui_EntityCreator_cleanupCreation00);
      tolua_variable(tolua_S,"mWidget",tolua_get_EmberOgre__Gui__EntityCreator_mWidget_ptr,tolua_set_EmberOgre__Gui__EntityCreator_mWidget_ptr);
+     tolua_variable(tolua_S,"EventTypeInfoLoaded",tolua_get_EmberOgre__Gui__EntityCreator_EventTypeInfoLoaded,tolua_set_EmberOgre__Gui__EntityCreator_EventTypeInfoLoaded);
     tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
