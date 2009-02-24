@@ -26,7 +26,10 @@
 
 #include "EntityCreator.h"
 
+#include "EntityCreatorMovement.h"
 #include "EntityCreatorActionCreator.h"
+#include "components/ogre/manipulation/DetachedEntity.h"
+
 #include "../GUIManager.h"
 #include "../AvatarCamera.h"
 #include "../AvatarTerrainCursor.h"
@@ -75,7 +78,6 @@ namespace Gui {
 EntityCreator::EntityCreator()
 		: mCreateMode(false), mRecipe(0), mModelMount(0), mModel(0), mBlurb(0), mBlurbShown(false), mRandomizeOrientation(true)
 {
-	mInputAdapter = new EntityCreatorInputAdapter(*this);
 	mMoveAdapter = new EntityCreatorMoveAdapter(*this);
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EntityCreator::connectedToServer));
 
@@ -84,7 +86,6 @@ EntityCreator::EntityCreator()
 
 EntityCreator::~EntityCreator()
 {
-	delete mInputAdapter;
 	delete mMoveAdapter;
 	delete mModelMount;
 }
@@ -201,7 +202,8 @@ void EntityCreator::createEntity()
 		}
 
 		// Registering move adapter to track mouse movements
-		mInputAdapter->addAdapter();
+// 		mInputAdapter->addAdapter();
+		mMovement = new EntityCreatorMovement(*this, *mEntity, mEntityNode);
 		mMoveAdapter->addAdapter();
 	}
 
@@ -296,7 +298,7 @@ void EntityCreator::adapterValueChanged()
 void EntityCreator::finalizeCreation()
 {
 	// Final position
-	mEntityMessage["pos"] = mPos.toAtlas();
+	mEntityMessage["pos"] = Ogre2Atlas(mEntityNode->getPosition()).toAtlas();
 	mEntityMessage["orientation"] = Ogre2Atlas(mEntityNode->getOrientation()).toAtlas();
 
 	// Making create operation message
@@ -323,7 +325,9 @@ void EntityCreator::finalizeCreation()
 
 void EntityCreator::cleanupCreation()
 {
-	mInputAdapter->removeAdapter();
+	delete mMovement;
+	mMovement = 0;
+// 	mInputAdapter->removeAdapter();
 	mMoveAdapter->removeAdapter();
 
 	delete mModelMount;
@@ -435,105 +439,6 @@ void EntityCreator::showBlurb_frameStarted(const Ogre::FrameEvent& event)
 	return;
 }
 
-EntityCreatorInputAdapter::EntityCreatorInputAdapter(EntityCreator& entityCreator)
-	: mEntityCreator(entityCreator), mWindowClick(false)
-{
-}
-
-EntityCreatorInputAdapter::~EntityCreatorInputAdapter()
-{
-}
-
-void EntityCreatorInputAdapter::addAdapter()
-{
-	GUIManager::getSingleton().getInput().addAdapter(this);
-}
-
-void EntityCreatorInputAdapter::removeAdapter()
-{
-	GUIManager::getSingleton().getInput().removeAdapter(this);
-}
-
-bool EntityCreatorInputAdapter::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
-{
-	return true;
-}
-
-bool EntityCreatorInputAdapter::injectMouseButtonUp(const Input::MouseButton& button)
-{
-	/* Disabled as changes to adapters doesn't reflected in preview
-	if (mWindowClick)
-	{
-		mWindowClick = false;
-		return true;
-	}
-	*/
-	if (button == Input::MouseButtonLeft)
-	{
-		mEntityCreator.finalizeCreation();
-		return false;
-	}
-	// Don't letting to change movement mode.
-	else if (button == Input::MouseButtonRight)
-	{
-		return false;
-	}
-	return true;
-}
-
-bool EntityCreatorInputAdapter::injectMouseButtonDown(const Input::MouseButton& button)
-{
-	/* Disabled as changes to adapters doesn't reflected in preview
-	CEGUI::Window* window = CEGUI::System::getSingleton().getWindowContainingMouse();
-	if (window->isAncestor(mEntityCreator.mWidget->getMainWindow()))
-	{
-		mWindowClick = true;
-		return true;
-	}
-	*/
-	if (button == Input::MouseButtonLeft)
-	{
-		return false;
-	}
-	else if(button == Input::MouseWheelUp)
-	{
-		int movementDegrees = 10;
-		if (GUIManager::getSingleton().getInput().isKeyDown(SDLK_LSHIFT) ||GUIManager::getSingleton().getInput().isKeyDown(SDLK_RSHIFT)) {
-			movementDegrees = 1;
-		}
-		mEntityCreator.yaw(movementDegrees);
-	}
-	else if(button == Input::MouseWheelDown)
-	{
-		int movementDegrees = 10;
-		if (GUIManager::getSingleton().getInput().isKeyDown(SDLK_LSHIFT) ||GUIManager::getSingleton().getInput().isKeyDown(SDLK_RSHIFT)) {
-			movementDegrees = 1;
-		}
-		mEntityCreator.yaw(-movementDegrees);
-	}
-	return true;
-}
-
-bool EntityCreatorInputAdapter::injectChar(char character)
-{
-	return true;
-}
-
-bool EntityCreatorInputAdapter::injectKeyDown(const SDLKey& key)
-{
-	if (key == SDLK_ESCAPE)
-	{
-		mEntityCreator.stopCreation();
-		return false;
-	}
-	return true;
-}
-
-bool EntityCreatorInputAdapter::injectKeyUp(const SDLKey& key)
-{
-	return true;
-}
-
 EntityCreatorMoveAdapter::EntityCreatorMoveAdapter(EntityCreator& entityCreator)
 	: mEntityCreator(entityCreator)
 {
@@ -556,10 +461,6 @@ void EntityCreatorMoveAdapter::removeAdapter()
 
 bool EntityCreatorMoveAdapter::frameStarted(const Ogre::FrameEvent& event)
 {
-	const Ogre::Vector3* position(0);
-	if (EmberOgre::getSingleton().getMainCamera()->getTerrainCursor().getTerrainCursorPosition(&position)) {
-		mEntityCreator.setPosition(Ogre2Atlas(*position));
-	}
 	mEntityCreator.showBlurb_frameStarted(event);
 	return true;
 }

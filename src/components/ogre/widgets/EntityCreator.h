@@ -23,24 +23,30 @@
 #ifndef EMBEROGRE_GUIENTITYCREATOR_H
 #define EMBEROGRE_GUIENTITYCREATOR_H
 
-#include "components/ogre/manipulation/DetachedEntity.h"
 #include "components/ogre/manipulation/EntityRecipe.h"
 #include "components/ogre/model/Model.h"
-#include "services/input/IInputAdapter.h"
 #include "components/ogre/widgets/Widget.h"
 #include <Eris/Connection.h>
 #include <wfmath/point.h>
+#include <wfmath/quaternion.h>
 #include <CEGUIWindow.h>
-#include <OGRE/OgreSceneNode.h>
 #include <sigc++/signal.h>
+#include <sigc++/connection.h>
+
+namespace Eris
+{
+class TypeInfo;
+}
 
 namespace EmberOgre {
 
+class DetachedEntity;
 class ModelMount;
 namespace Gui {
 
 class EntityCreatorInputAdapter;
 class EntityCreatorMoveAdapter;
+class EntityCreatorMovement;
 
 /**
  * @brief Helper class for Entity Creator.
@@ -233,11 +239,6 @@ protected:
 	EntityCreatorMoveAdapter* mMoveAdapter;
 
 	/**
-	 * Adapter that listens to input events.
-	 */
-	EntityCreatorInputAdapter* mInputAdapter;
-
-	/**
 	 * Detached entity that is used in process of creating preview.
 	 */
 	DetachedEntity* mEntity;
@@ -283,45 +284,11 @@ protected:
 	 * @brief The connection for the TypeInfo bound signal, used for making sure that the UI doesn't proceed until the type info has been correctly bound.
 	 */
 // 	sigc::connection mTypeInfoBoundConnection;
+
+	EntityCreatorMovement* mMovement;
+
 };
 
-
-
-
-
-
-
-/**
- * Adapter for intercepting input.
- */
-class EntityCreatorInputAdapter : public Ember::IInputAdapter
-{
-public:
-	EntityCreatorInputAdapter(EntityCreator& entityCreator);
-	~EntityCreatorInputAdapter();
-	/**
-	 * Registers adapter in input service.
-	 */
-	void addAdapter();
-	/**
-	 * Unregisters adapter in input service.
-	 */
-	void removeAdapter();
-	virtual bool injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse);
-	virtual bool injectMouseButtonUp(const Ember::Input::MouseButton& button);
-	virtual bool injectMouseButtonDown(const Ember::Input::MouseButton& button);
-	virtual bool injectChar(char character);
-	virtual bool injectKeyDown(const SDLKey& key);
-	virtual bool injectKeyUp(const SDLKey& key);
-private:
-	EntityCreator& mEntityCreator;
-
-	/**
-	 * True if mouse button down event was happen over entity creator widget,
-	 * to pass button up event also to widget.
-	 */
-	bool mWindowClick;
-};
 
 /**
  * Adapter for position entity preview.

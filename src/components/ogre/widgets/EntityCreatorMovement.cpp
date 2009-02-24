@@ -1,10 +1,9 @@
 //
-// C++ Interface: EntityCreatorHideModelAction
+// C++ Implementation: EntityCreatorMovement
 //
 // Description: 
 //
 //
-// Author: Alexey Torkhov <atorkhov@gmail.com>, (C) 2008
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2009
 //
 // This program is free software; you can redistribute it and/or modify
@@ -21,39 +20,28 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBEROGRE_GUIENTITYCREATORHIDEMODELACTION_H
-#define EMBEROGRE_GUIENTITYCREATORHIDEMODELACTION_H
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
-#include "components/ogre/model/mapping/Actions/Action.h"
+#include "EntityCreatorMovement.h"
 
 namespace EmberOgre {
 
 namespace Gui {
 
-class EntityCreator;
-
-/**
- * Shows or hides specific model in entity creator preview.
- */
-class EntityCreatorHideModelAction : public Model::Mapping::Actions::Action
+EntityCreatorMovement::EntityCreatorMovement(EntityCreator& entityCreator, DetachedEntity& entity, Ogre::SceneNode* node)
+: mMovementBridge(entityCreator, entity, node)
 {
-public:
-	EntityCreatorHideModelAction(EntityCreator& entityCreator);
-	virtual ~EntityCreatorHideModelAction();
-	/**
-	 * Hides model. Called by model mapping framework.
-	 */
-	virtual void activate();
-	/**
-	 * Does nothing. Called by model mapping framework.
-	 */
-	virtual void deactivate();	
-protected:
-	EntityCreator& mEntityCreator;
-};
+	mMoveAdapter.attachToBridge(&mMovementBridge);
+}
+
+
+EntityCreatorMovement::~EntityCreatorMovement()
+{
+}
+
 
 }
 
 }
-
-#endif
