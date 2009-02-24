@@ -25,6 +25,8 @@
 #endif
 
 #include "EntityCreator.h"
+
+#include "EntityCreatorActionCreator.h"
 #include "../GUIManager.h"
 #include "../AvatarCamera.h"
 #include "../AvatarTerrainCursor.h"
@@ -52,7 +54,6 @@
 #include "components/ogre/model/mapping/EmberModelMappingManager.h"
 #include "components/ogre/model/mapping/ModelMapping.h"
 #include "components/ogre/model/mapping/Definitions/ModelMappingDefinition.h"
-#include "components/ogre/model/mapping/Definitions/CaseDefinition.h"
 #include "components/ogre/model/mapping/IActionCreator.h"
 #include "main/Application.h"
 
@@ -63,97 +64,11 @@ namespace EmberOgre {
 
 namespace Gui {
 
-EntityCreatorActionCreator::EntityCreatorActionCreator(EntityCreator& entityCreator)
-		: mEntityCreator(entityCreator)
-{
-}
-
-EntityCreatorActionCreator::~EntityCreatorActionCreator()
-{
-}
-
-void EntityCreatorActionCreator::createActions(Model::Mapping::ModelMapping& modelMapping, Model::Mapping::Cases::CaseBase* aCase, Model::Mapping::Definitions::CaseDefinition& caseDefinition)
-{
-	::EmberOgre::Model::Mapping::Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
-	for (::EmberOgre::Model::Mapping::Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
-		if (J->getType() == "display-part") {
-			EntityCreatorPartAction* action = new EntityCreatorPartAction(mEntityCreator, J->getValue());
-			aCase->addAction(action);
-		} else if (J->getType() == "display-model") {
-			EntityCreatorModelAction* action = new EntityCreatorModelAction(mEntityCreator, J->getValue());
-			aCase->addAction(action);
-		} else if (J->getType() == "hide-model") {
-			EntityCreatorHideModelAction* action = new EntityCreatorHideModelAction(mEntityCreator);
-			aCase->addAction(action);
-		}
-	}
-}
 
 
 
-EntityCreatorPartAction::EntityCreatorPartAction(EntityCreator& entityCreator, std::string partName)
-		: mEntityCreator(entityCreator), mPartName(partName)
-{
-}
-
-EntityCreatorPartAction::~EntityCreatorPartAction()
-{
-}
-
-void EntityCreatorPartAction::activate()
-{
-	S_LOG_VERBOSE("Showing part " << mPartName);
-	mEntityCreator.showModelPart(mPartName);
-}
-
-void EntityCreatorPartAction::deactivate()
-{
-	S_LOG_VERBOSE("Hiding part " << mPartName);
-	mEntityCreator.hideModelPart(mPartName);
-} 
 
 
-
-EntityCreatorModelAction::EntityCreatorModelAction(EntityCreator& entityCreator, std::string modelName)
-		: mEntityCreator(entityCreator), mModelName(modelName)
-{
-}
-
-EntityCreatorModelAction::~EntityCreatorModelAction()
-{
-}
-
-void EntityCreatorModelAction::activate()
-{
-	S_LOG_VERBOSE("Showing model " << mModelName);
-	mEntityCreator.setModel(mModelName);
-}
-
-void EntityCreatorModelAction::deactivate()
-{
-	S_LOG_VERBOSE("Hiding model " << mModelName);
-	mEntityCreator.setModel("");
-} 
-
-
-
-EntityCreatorHideModelAction::EntityCreatorHideModelAction(EntityCreator& entityCreator)
-		: mEntityCreator(entityCreator)
-{
-}
-
-EntityCreatorHideModelAction::~EntityCreatorHideModelAction()
-{
-}
-
-void EntityCreatorHideModelAction::activate()
-{
-	mEntityCreator.setModel("");
-}
-
-void EntityCreatorHideModelAction::deactivate()
-{
-} 
 
 
 

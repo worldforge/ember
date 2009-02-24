@@ -26,8 +26,6 @@
 #include "components/ogre/manipulation/DetachedEntity.h"
 #include "components/ogre/manipulation/EntityRecipe.h"
 #include "components/ogre/model/Model.h"
-#include "components/ogre/model/mapping/IActionCreator.h"
-#include "components/ogre/model/mapping/Actions/Action.h"
 #include "services/input/IInputAdapter.h"
 #include "components/ogre/widgets/Widget.h"
 #include <Eris/Connection.h>
@@ -287,83 +285,11 @@ protected:
 // 	sigc::connection mTypeInfoBoundConnection;
 };
 
-/**
- * @brief Creating entity creator specific actions with model mapping framework.
- *
- * Implementation of IActionCreator interface to use with model mapping framework.
- * Creates entity creator specific actions. Used for showing entity preview.
- */
-class EntityCreatorActionCreator : public ::EmberOgre::Model::Mapping::IActionCreator
-{
-public:
-	EntityCreatorActionCreator(EntityCreator& entityCreator);
-	~EntityCreatorActionCreator();
-	virtual void createActions(Model::Mapping::ModelMapping& modelMapping, Model::Mapping::Cases::CaseBase* aCase, Model::Mapping::Definitions::CaseDefinition& caseDefinition);
-protected:
-	EntityCreator& mEntityCreator;
-};
 
-/**
- * Shows or hides specific model part in entity creator preview.
- */
-class EntityCreatorPartAction : public ::EmberOgre::Model::Mapping::Actions::Action
-{
-public:
-	EntityCreatorPartAction(EntityCreator& entityCreator, std::string partName);
-	~EntityCreatorPartAction();
-	/**
-	 * Shows specific model part. Called by model mapping framework.
-	 */
-	virtual void activate();
-	/**
-	 * Hides specific model part. Called by model mapping framework.
-	 */
-	virtual void deactivate();
-protected:
-	EntityCreator& mEntityCreator;
-	std::string mPartName;
-};
 
-/**
- * Shows or hides specific model in entity creator preview.
- */
-class EntityCreatorModelAction : public ::EmberOgre::Model::Mapping::Actions::Action
-{
-public:
-	EntityCreatorModelAction(EntityCreator& entityCreator, std::string modelName);
-	~EntityCreatorModelAction();
-	/**
-	 * Shows specific model. Called by model mapping framework.
-	 */
-	virtual void activate();
-	/**
-	 * Hides model. Called by model mapping framework.
-	 */
-	virtual void deactivate();
-protected:
-	EntityCreator& mEntityCreator;
-	std::string mModelName;
-};
 
-/**
- * Shows or hides specific model in entity creator preview.
- */
-class EntityCreatorHideModelAction : public Model::Mapping::Actions::Action
-{
-public:
-	EntityCreatorHideModelAction(EntityCreator& entityCreator);
-	virtual ~EntityCreatorHideModelAction();
-	/**
-	 * Hides model. Called by model mapping framework.
-	 */
-	virtual void activate();
-	/**
-	 * Does nothing. Called by model mapping framework.
-	 */
-	virtual void deactivate();	
-protected:
-	EntityCreator& mEntityCreator;
-};
+
+
 
 /**
  * Adapter for intercepting input.
