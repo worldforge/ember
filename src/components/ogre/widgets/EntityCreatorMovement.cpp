@@ -34,6 +34,7 @@ EntityCreatorMovement::EntityCreatorMovement(EntityCreator& entityCreator, Detac
 : mMovementBridge(entityCreator, entity, node)
 {
 	mMoveAdapter.attachToBridge(&mMovementBridge);
+	mMoveAdapter.update();
 }
 
 

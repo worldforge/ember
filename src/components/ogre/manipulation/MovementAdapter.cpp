@@ -98,13 +98,23 @@ MovementAdapterWorkerTerrainCursor::~MovementAdapterWorkerTerrainCursor()
 	Ogre::Root::getSingleton().removeFrameListener(this);
 }
 
+void MovementAdapterWorkerTerrainCursor::update()
+{
+	updatePosition(true);
+}
+
 bool MovementAdapterWorkerTerrainCursor::frameStarted(const Ogre::FrameEvent& event)
 {
+	updatePosition();
+	return true;
+}
+
+void MovementAdapterWorkerTerrainCursor::updatePosition(bool forceUpdate)
+{
 	const Ogre::Vector3* position(0);
-	if (EmberOgre::getSingleton().getMainCamera()->getTerrainCursor().getTerrainCursorPosition(&position)) {
+	if (EmberOgre::getSingleton().getMainCamera()->getTerrainCursor().getTerrainCursorPosition(&position) || forceUpdate) {
 		getBridge()->setPosition(Ogre2Atlas(*position));
 	}
-	return true;
 }
 
 
@@ -242,6 +252,13 @@ void MovementAdapter::addAdapter()
 	Input::getSingleton().addAdapter(this);
 	///default to the terrain cursor positioning mode
 	mWorker = new MovementAdapterWorkerTerrainCursor(*this);
+}
+
+void MovementAdapter::update()
+{
+	if (mWorker) {
+		mWorker->update();
+	}
 }
 
 }

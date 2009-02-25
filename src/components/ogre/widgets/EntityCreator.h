@@ -110,16 +110,6 @@ public:
 	void cleanupCreation();
 
 	/**
-	 * Sets position of new entity
-	 */
-	void setPosition(const WFMath::Point<3>& pos);
-
-	/**
-	 * Rotates an entity for specified number of degrees.
-	 */
-	void yaw(float degrees); 
-
-	/**
 	 * Sets preview model name
 	 */
 	void setModel(const std::string& modelName);

@@ -47,6 +47,11 @@ public:
 	
 	virtual bool injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse) { return true;}
 
+	/**
+	 * @brief Forces an update.
+	 * This could be called to force a position update, even if no input has been recieved (for example a mouse movement).
+	 */
+	virtual void update() {};
 protected:
 
 	/**
@@ -89,8 +94,20 @@ public:
 	* Methods from Ogre::FrameListener
 	*/
 	bool frameStarted(const Ogre::FrameEvent& event);
+	
+	/**
+	 * @brief Forces an update.
+	 * This could be called to force a position update, even if no input has been recieved (for example a mouse movement).
+	 */
+	virtual void update();
 
 protected:
+
+	/**
+	 * @brief Updates the position from the placement of the cursor on the terrain.
+	 * @param forceUpdate True if the position should be updated even if the mouse hasn't been moved.
+	 */
+	void updatePosition(bool forceUpdate = false);
 
 };
 
@@ -132,6 +149,12 @@ public:
 	 * At detachment the bridge will also be deleted. Call attachToBridge to attach to a new bridge if you want to move another entity.
 	 */
 	virtual void detach();
+	
+	/**
+	 * @brief Forces an update.
+	 * This could be called to force a position update, even if no input has been recieved (for example a mouse movement).
+	 */
+	virtual void update();
 
 protected:
 	/**

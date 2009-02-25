@@ -348,18 +348,6 @@ void EntityCreator::cleanupCreation()
 	delete mEntity;
 }
 
-void EntityCreator::setPosition(const WFMath::Point<3>& pos)
-{
-	mPos = pos;
-	mEntityNode->setPosition(Atlas2Ogre(pos));
-}
-
-void EntityCreator::yaw(float degrees)
-{
-	WFMath::Quaternion q;
-	mOrientation *= q.rotation(WFMath::Vector<3>(0,0,1), degrees*WFMath::Pi/180.0);
-	mEntityNode->setOrientation(Atlas2Ogre(mOrientation));
-}
 
 void EntityCreator::connectedToServer(Eris::Connection* conn)
 {
