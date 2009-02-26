@@ -15,57 +15,154 @@ EntityEditor = {
 	adapters = {
 		map = {
 			createAdapter = function(element, prototype)
-				return EntityEditor.createMapAdapter(element, prototype)
+				local wrapper = {}
+				wrapper.container = guiManager:createWindow("DefaultGUISheet")
+				wrapper.adapter = EntityEditor.factory:createMapAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
+				if wrapper.adapter == nil then
+					return nil
+				end
+				
+				local attributeNames = wrapper.adapter:getAttributeNames()
+				for i = 0, attributeNames:size() - 1 do
+					local name = attributeNames[i]
+					local childElement = wrapper.adapter:valueOfAttr(name)
+					local adapterWrapper = EntityEditor.createAdapter(name, childElement)
+					if adapterWrapper ~= nil then
+						if adapterWrapper.adapter ~= nil then
+							EntityEditor.addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, wrapper.container, adapterWrapper.prototype)
+							wrapper.adapter:addAttributeAdapter(name, adapterWrapper.adapter, adapterWrapper.outercontainer)
+						end
+					end
+				end
+				
+				if prototype.readonly == nil then
+					local newElementWrapper = EntityEditor.createNewMapElementWidget(wrapper.adapter, wrapper.container)
+					wrapper.container:addChildWindow(newElementWrapper.container)
+				end
+				EntityEditor.createStackableContainer(wrapper.container):repositionWindows()
+				return wrapper
 			end
 		},
 		list = {
 			createAdapter = function(element, prototype)
-				return EntityEditor.createListAdapter(element, prototype)
+				local wrapper = {}
+				wrapper.container = guiManager:createWindow("DefaultGUISheet")
+				wrapper.adapter = EntityEditor.factory:createListAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
+				if wrapper.adapter == nil then
+					return nil
+				end
+				for i = 0, wrapper.adapter:getSize() - 1 do
+					local childElement = wrapper.adapter:valueOfAttr(i)
+					local childPrototype = EntityEditor.getPrototype("", childElement)
+					--if the prototype for the list have it marked as nodelete, mark the childelements too
+					if prototype.readonly ~= nil then
+						childPrototype.readonly = true
+						childPrototype.nodelete = true
+					end
+					local adapterWrapper = EntityEditor.createAdapterFromPrototype(childElement, childPrototype)
+					if adapterWrapper ~= nil then
+						EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.container, adapterWrapper.prototype)
+						wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
+					end
+				end	
+				
+				if prototype.readonly == nil then
+					local newElementWrapper = EntityEditor.createNewListElementWidget(wrapper.adapter, wrapper.container)
+					wrapper.container:addChildWindow(newElementWrapper.container)
+				end
+				EntityEditor.createStackableContainer(wrapper.container):repositionWindows()
+				
+				return wrapper	
 			end
 		},
 		static = {
 			createAdapter = function(element, prototype)
-				return EntityEditor.createStaticAdapter(element, prototype)
+				local wrapper = {}
+				wrapper.container = guiManager:createWindow("DefaultGUISheet")
+				wrapper.adapter = EntityEditor.factory:createStaticAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
+				return wrapper	
 			end
 		},
 		size = {
 			createAdapter = function(element, prototype)
-				return EntityEditor.createSizeAdapter(element, prototype)
+				local wrapper = {}
+				wrapper.container = guiManager:createWindow("DefaultGUISheet")
+				wrapper.adapter = EntityEditor.factory:createSizeAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
+				return wrapper	
 			end
 		},
-		pos = {
+		position = {
 			createAdapter = function(element, prototype)
-				return EntityEditor.createPositionAdapter(element, prototype)
+				local wrapper = {}
+				wrapper.container = guiManager:createWindow("DefaultGUISheet")
+				wrapper.adapter = EntityEditor.factory:createPositionAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
+				return wrapper	
 			end
 		},
-		pos2d = {
+		position2d = {
 			createAdapter = function(element, prototype)
-				return EntityEditor.createPosition2DAdapter(element, prototype)
+				local wrapper = {}
+				wrapper.container = guiManager:createWindow("DefaultGUISheet")
+				wrapper.adapter = EntityEditor.factory:createPosition2DAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
+				return wrapper	
 			end
 		},
 		orientation = {
 			createAdapter = function(element, prototype)
-				return EntityEditor.createOrientationAdapter(element, prototype)
+				local wrapper = {}
+				wrapper.container = guiManager:createWindow("DefaultGUISheet")
+				wrapper.adapter = EntityEditor.factory:createOrientationAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
+				return wrapper	
 			end
 		},
 		points = {
 			createAdapter = function(element, prototype)
-				return EntityEditor.createPointsAdapter(element, prototype)
+				local wrapper = {}
+				wrapper.container = guiManager:createWindow("DefaultGUISheet")
+				wrapper.adapter = EntityEditor.factory:createListAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
+				if wrapper.adapter == nil then
+					return nil
+				end
+				for i = 0, wrapper.adapter:getSize() - 1 do
+					local childElement = wrapper.adapter:valueOfAttr(i)
+					local childPrototype = EntityEditor.adapters.position2d
+					local adapterWrapper = EntityEditor.createAdapterFromPrototype(childElement, childPrototype)
+					if adapterWrapper ~= nil then
+						EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.container, adapterWrapper.prototype)
+						wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
+					end
+				end	
+				
+				local newElementWrapper = EntityEditor.createNewPointsElementWidget(wrapper.adapter, wrapper.container)
+				wrapper.container:addChildWindow(newElementWrapper.container)
+				EntityEditor.createStackableContainer(wrapper.container):repositionWindows()
+				
+				return wrapper	
 			end
 		},
 		string = {
 			createAdapter = function(element, prototype)
-				return EntityEditor.createStringAdapter(element, prototype)
+				local wrapper = {}
+				wrapper.container = guiManager:createWindow("DefaultGUISheet")
+				wrapper.adapter = EntityEditor.factory:createStringAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
+			-- 	wrapper.adapter:addSuggestion("test")
+				return wrapper	
 			end
 		},
 		number = {
 			createAdapter = function(element, prototype)
-				return EntityEditor.createNumberAdapter(element, prototype)
+				local wrapper = {}
+				wrapper.container = guiManager:createWindow("DefaultGUISheet")
+				wrapper.adapter = EntityEditor.factory:createNumberAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
+				return wrapper	
 			end
 		},
 		area = {
 			createAdapter = function(element, prototype)
-				return EntityEditor.createAreaAdapter(element, prototype)
+				local wrapper = {}
+				wrapper.container = guiManager:createWindow("DefaultGUISheet")
+				wrapper.adapter = EntityEditor.factory:createAreaAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element, EntityEditor.instance.entity)
+				return wrapper	
 			end
 		}
 	},
@@ -101,7 +198,7 @@ EntityEditor.prototypes =
 		nodelete = true
 	},
 	pos = {
-		adapter = EntityEditor.adapters.pos,
+		adapter = EntityEditor.adapters.position,
 		nodelete = true
 	},
 	orientation = {
@@ -245,19 +342,19 @@ function EntityEditor.createNewListElementWidget(listAdapter, outercontainer, pr
 		local element = nil
 		if wrapper.typeCombobox:getSelectedItem():getID() == 0 then
 			element = EntityEditor.instance.helper:createStringElement()
-			adapterWrapper = EntityEditor.createStringAdapter(element, EntityEditor.getPrototype("", element))
+			adapterWrapper = EntityEditor.adapters.string.createAdapter(element, EntityEditor.getPrototype("", element))
 		elseif wrapper.typeCombobox:getSelectedItem():getID() == 1 then
 			element = EntityEditor.instance.helper:createIntElement()
-			adapterWrapper = EntityEditor.createNumberAdapter(element, EntityEditor.getPrototype("", element))
+			adapterWrapper = EntityEditor.adapters.number.createAdapter(element, EntityEditor.getPrototype("", element))
 		elseif wrapper.typeCombobox:getSelectedItem():getID() == 2 then
 			element = EntityEditor.instance.helper:createFloatElement()
-			adapterWrapper = EntityEditor.createNumberAdapter(element, EntityEditor.getPrototype("", element))
+			adapterWrapper = EntityEditor.adapters.number.createAdapter(element, EntityEditor.getPrototype("", element))
 		elseif wrapper.typeCombobox:getSelectedItem():getID() == 3 then
 			element = EntityEditor.instance.helper:createMapElement()
-			adapterWrapper = EntityEditor.createMapAdapter(element, EntityEditor.getPrototype("", element))
+			adapterWrapper = EntityEditor.adapters.map.createAdapter(element, EntityEditor.getPrototype("", element))
 		elseif wrapper.typeCombobox:getSelectedItem():getID() == 4 then
 			element = EntityEditor.instance.helper:createListElement()
-			adapterWrapper = EntityEditor.createListAdapter(element, EntityEditor.getPrototype("", element))
+			adapterWrapper = EntityEditor.adapters.list.createAdapter(element, EntityEditor.getPrototype("", element))
 		end
 		
 		--store a reference to the element so it isn't garbage collected
@@ -296,7 +393,7 @@ function EntityEditor.createNewPointsElementWidget(listAdapter, outercontainer)
 		local element = nil
 		if wrapper.typeCombobox:getSelectedItem():getID() == 0 then
 			element = EntityEditor.instance.helper:createPosition2dElement()
-			adapterWrapper = EntityEditor.createPosition2DAdapter(element, EntityEditor.getPrototype("", element))
+			adapterWrapper = EntityEditor.adapters.position2d.createAdapter(element, EntityEditor.getPrototype("", element))
 		end
 		
 		EntityEditor.instance.addNewElement(element)
@@ -333,19 +430,19 @@ function EntityEditor.createNewMapElementWidget(mapAdapter, outercontainer, prot
 -- 		debugObject(proto)
 		if wrapper.typeCombobox:getSelectedItem():getID() == 0 then
 			element = EntityEditor.instance.helper:createStringElement()
-			adapterWrapper = EntityEditor.createStringAdapter(element, EntityEditor.getPrototype(name, element))
+			adapterWrapper = EntityEditor.adapters.string.createAdapter(element, EntityEditor.getPrototype(name, element))
 		elseif wrapper.typeCombobox:getSelectedItem():getID() == 1 then
 			element = EntityEditor.instance.helper:createIntElement()
-			adapterWrapper = EntityEditor.createNumberAdapter(element, EntityEditor.getPrototype(name, element))
+			adapterWrapper = EntityEditor.adapters.number.createAdapter(element, EntityEditor.getPrototype(name, element))
 		elseif wrapper.typeCombobox:getSelectedItem():getID() == 2 then
 			element = EntityEditor.instance.helper:createFloatElement()
-			adapterWrapper = EntityEditor.createNumberAdapter(element, EntityEditor.getPrototype(name, element))
+			adapterWrapper = EntityEditor.adapters.number.createAdapter(element, EntityEditor.getPrototype(name, element))
 		elseif wrapper.typeCombobox:getSelectedItem():getID() == 3 then
 			element = EntityEditor.instance.helper:createMapElement()
-			adapterWrapper = EntityEditor.createMapAdapter(element, EntityEditor.getPrototype(name, element))
+			adapterWrapper = EntityEditor.adapters.map.createAdapter(element, EntityEditor.getPrototype(name, element))
 		elseif wrapper.typeCombobox:getSelectedItem():getID() == 4 then
 			element = EntityEditor.instance.helper:createListElement()
-			adapterWrapper = EntityEditor.createListAdapter(element, EntityEditor.getPrototype(name, element))
+			adapterWrapper = EntityEditor.adapters.list.createAdapter(element, EntityEditor.getPrototype(name, element))
 		end
 		
 		EntityEditor.instance.addNewElement(element)
@@ -402,147 +499,39 @@ function EntityEditor.getPrototype(attributeName, element)
 	return prototype
 end
 
-function EntityEditor.createMapAdapter(element, prototype)
-	local wrapper = {}
-	wrapper.container = guiManager:createWindow("DefaultGUISheet")
-	wrapper.adapter = EntityEditor.factory:createMapAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
-	if wrapper.adapter == nil then
-		return nil
-	end
-	
-	local attributeNames = wrapper.adapter:getAttributeNames()
-	for i = 0, attributeNames:size() - 1 do
-		local name = attributeNames[i]
-		local childElement = wrapper.adapter:valueOfAttr(name)
-		local adapterWrapper = EntityEditor.createAdapter(name, childElement)
-		if adapterWrapper ~= nil then
-			if adapterWrapper.adapter ~= nil then
-				EntityEditor.addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, wrapper.container, adapterWrapper.prototype)
-				wrapper.adapter:addAttributeAdapter(name, adapterWrapper.adapter, adapterWrapper.outercontainer)
-			end
-		end
-	end
-	
-	if prototype.readonly == nil then
-		local newElementWrapper = EntityEditor.createNewMapElementWidget(wrapper.adapter, wrapper.container)
-		wrapper.container:addChildWindow(newElementWrapper.container)
-	end
-	EntityEditor.createStackableContainer(wrapper.container):repositionWindows()
-	return wrapper	
-end
-
-function EntityEditor.createListAdapter(element, prototype)
-	local wrapper = {}
-	wrapper.container = guiManager:createWindow("DefaultGUISheet")
-	wrapper.adapter = EntityEditor.factory:createListAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
-	if wrapper.adapter == nil then
-		return nil
-	end
-	for i = 0, wrapper.adapter:getSize() - 1 do
-		local childElement = wrapper.adapter:valueOfAttr(i)
-		local childPrototype = EntityEditor.getPrototype("", childElement)
-		--if the prototype for the list have it marked as nodelete, mark the childelements too
-		if prototype.readonly ~= nil then
-			childPrototype.readonly = true
-			childPrototype.nodelete = true
-		end
-		local adapterWrapper = EntityEditor.createAdapterFromPrototype(childElement, childPrototype)
-		if adapterWrapper ~= nil then
-			EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.container, adapterWrapper.prototype)
-			wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
-		end
-	end	
-	
-	if prototype.readonly == nil then
-		local newElementWrapper = EntityEditor.createNewListElementWidget(wrapper.adapter, wrapper.container)
-		wrapper.container:addChildWindow(newElementWrapper.container)
-	end
-	EntityEditor.createStackableContainer(wrapper.container):repositionWindows()
-	
-	return wrapper	
-end
-
-function EntityEditor.createPointsAdapter(element, prototype)
-	local wrapper = {}
-	wrapper.container = guiManager:createWindow("DefaultGUISheet")
-	wrapper.adapter = EntityEditor.factory:createListAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
-	if wrapper.adapter == nil then
-		return nil
-	end
-	for i = 0, wrapper.adapter:getSize() - 1 do
-		local childElement = wrapper.adapter:valueOfAttr(i)
-		local childPrototype = {type = "pos2d"}
-		local adapterWrapper = EntityEditor.createAdapterFromPrototype(childElement, childPrototype)
-		if adapterWrapper ~= nil then
-			EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.container, adapterWrapper.prototype)
-			wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
-		end
-	end	
-	
-	local newElementWrapper = EntityEditor.createNewPointsElementWidget(wrapper.adapter, wrapper.container)
-	wrapper.container:addChildWindow(newElementWrapper.container)
-	EntityEditor.createStackableContainer(wrapper.container):repositionWindows()
-	
-	return wrapper	
-end
-
-
-function EntityEditor.createStaticAdapter(element, prototype)
-	local wrapper = {}
-	wrapper.container = guiManager:createWindow("DefaultGUISheet")
-	wrapper.adapter = EntityEditor.factory:createStaticAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
-	return wrapper	
-end
-
-function EntityEditor.createStringAdapter(element, prototype)
-	local wrapper = {}
-	wrapper.container = guiManager:createWindow("DefaultGUISheet")
-	wrapper.adapter = EntityEditor.factory:createStringAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
--- 	wrapper.adapter:addSuggestion("test")
-	return wrapper	
-end
-
-function EntityEditor.createNumberAdapter(element, prototype)
-	local wrapper = {}
-	wrapper.container = guiManager:createWindow("DefaultGUISheet")
-	wrapper.adapter = EntityEditor.factory:createNumberAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
-	return wrapper	
-end
-
-function EntityEditor.createSizeAdapter(element, prototype)
-	local wrapper = {}
-	wrapper.container = guiManager:createWindow("DefaultGUISheet")
-	wrapper.adapter = EntityEditor.factory:createSizeAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
-	return wrapper	
-end
-
-function EntityEditor.createPositionAdapter(element, prototype)
-	local wrapper = {}
-	wrapper.container = guiManager:createWindow("DefaultGUISheet")
-	wrapper.adapter = EntityEditor.factory:createPositionAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
-	return wrapper	
-end
-
-function EntityEditor.createPosition2DAdapter(element, prototype)
-	local wrapper = {}
-	wrapper.container = guiManager:createWindow("DefaultGUISheet")
-	wrapper.adapter = EntityEditor.factory:createPosition2DAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
-	return wrapper	
-end
-
-function EntityEditor.createOrientationAdapter(element, prototype)
-	local wrapper = {}
-	wrapper.container = guiManager:createWindow("DefaultGUISheet")
-	wrapper.adapter = EntityEditor.factory:createOrientationAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
-	return wrapper	
-end
-
-function EntityEditor.createAreaAdapter(element, prototype)
-	local wrapper = {}
-	wrapper.container = guiManager:createWindow("DefaultGUISheet")
-	wrapper.adapter = EntityEditor.factory:createAreaAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element, EntityEditor.instance.entity)
-	return wrapper	
-end
+-- function EntityEditor.adapters.map.createAdapter(element, prototype)
+-- end
+-- 
+-- function EntityEditor.adapters.list.createAdapter(element, prototype)
+-- end
+-- 
+-- function EntityEditor.adapters.points.createAdapter(element, prototype)
+-- end
+-- 
+-- 
+-- function EntityEditor.adapters.static.createAdapter(element, prototype)
+-- end
+-- 
+-- function EntityEditor.adapters.string.createAdapter(element, prototype)
+-- end
+-- 
+-- function EntityEditor.adapters.number.createAdapter(element, prototype)
+-- end
+-- 
+-- function EntityEditor.adapters.size.createAdapter(element, prototype)
+-- end
+-- 
+-- function EntityEditor.adapters.position.createAdapter(element, prototype)
+-- end
+-- 
+-- function EntityEditor.adapters.position2d.createAdapter(element, prototype)
+-- end
+-- 
+-- function EntityEditor.adapters.orientation.createAdapter(element, prototype)
+-- end
+-- 
+-- function EntityEditor.adapters.area.createAdapter(element, prototype)
+-- end
 
 function EntityEditor.addUnNamedAdapterContainer(adapter, container, parentContainer, prototype)
 	local outercontainer = guiManager:createWindow("DefaultGUISheet")
