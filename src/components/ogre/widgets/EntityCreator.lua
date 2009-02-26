@@ -64,6 +64,8 @@ function EntityCreator.clear()
 			windowManager:destroyWindow(window)
 		end
 	end
+	EntityCreator.createButton:setEnabled(false)
+
 end
 
 -- Shows selected recipe
@@ -71,6 +73,9 @@ function EntityCreator.showRecipe()
 	local recipe = EntityCreator.recipe
 	local author = recipe:getAuthor()
 	local description = recipe:getDescription()
+	
+	EntityCreator.createButton:setEnabled(true)
+
 	
 	EntityCreator.widget:getWindow("CreateSection"):setVisible(true)
 	EntityCreator.widget:getWindow("WaitForTypeInfo"):setVisible(false)
@@ -144,6 +149,9 @@ function EntityCreator.buildWidget()
 	-- Filling list of recipes
 	EntityCreator.recipesList = CEGUI.toListbox(EntityCreator.widget:getWindow("RecipesList"))
 	EntityCreator.fillRecipesList()
+	
+	EntityCreator.createButton = CEGUI.toPushButton(EntityCreator.widget:getWindow("Create"))
+	EntityCreator.createButton:setEnabled(false)
 
 	-- Finalizing
 	EntityCreator.widget:registerConsoleVisibilityToggleCommand("advEntityCreator")
