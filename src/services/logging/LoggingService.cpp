@@ -29,9 +29,8 @@
 // Include system headers here
 #include <string>
 #include <list>
-#include <stdio.h>
+#include <cstdio>
 #include <sstream>
-//#include <varargs.h> //TODO: Needed by unix?
 
 #include <sigc++/object_slot.h>
 

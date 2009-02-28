@@ -25,13 +25,13 @@
 #include "framework/Singleton.h"
 
 // Include library headers here
+#include <cstdarg>
 #include <memory>
 #include <sigc++/object.h>
 
 #ifdef WIN32
     // These are needed by mingw
     #include <ctime>
-    #include <stdarg.h>
 #endif
 
 namespace Ember
