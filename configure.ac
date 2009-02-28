@@ -227,7 +227,7 @@ see why the tests failed, and fix it.])
 
 if test "$freeimage_check" = "true"; then 
 	AC_CHECK_DECLS(OGRE_NO_FREEIMAGE
-	, , [AC_MSG_ERROR([You've compiled Ogre with FreeImage support. Due to the way FreeImage includes its own versions of common image libraries such as libpng this will clash with other system libs such as DevIL, leading to random crashes. Please compile Ogre with FreeImage disabled (by using the --disable-freeimage configure switch). Ogre will then use DevIL instead.])]
+	, , [AC_MSG_NOTICE([You've compiled Ogre with FreeImage support. Due to the way old versions of FreeImage includes its own versions of common image libraries such as libpng this could clash with other system libs such as DevIL, leading to random crashes. If you have old version of FreeImage, please compile Ogre with FreeImage disabled (by using the --disable-freeimage configure switch). Ogre will then use DevIL instead.])]
 	)
 else
 	AC_MSG_RESULT(
