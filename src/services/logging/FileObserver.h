@@ -25,8 +25,9 @@
 
 #include "Observer.h"
 #include <ctime>
-#include <stdarg.h>
+#include <cstdarg>
 #include <memory>
+#include <cstdio>
 
 namespace Ember {
 

@@ -25,6 +25,7 @@
 
 #include "../EmberOgrePrerequisites.h"
 // #include <wfmath/wfmath.h>
+#include <wfmath/point.h>
 #include <wfmath/axisbox.h>
 
 namespace Mercator
