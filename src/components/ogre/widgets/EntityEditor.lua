@@ -15,6 +15,7 @@ EntityEditor = {
 	attributesContainer = nil,
 	adapters = {
 		map = {
+			name = "Map",
 			createAdapter = function(element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultGUISheet")
@@ -52,11 +53,17 @@ EntityEditor = {
 				wrapper.outercontainer = outercontainer
 				wrapper.container = guiManager:createWindow("DefaultGUISheet")
 				EntityEditor.factory:loadLayoutIntoContainer(wrapper.container, "newNamedElement", "adapters/atlas/MapAdapterNewElement.layout")
+				wrapper.button = CEGUI.toPushButton(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "NewElementButton"))
 				wrapper.container:setHeight(CEGUI.UDim(0, 25))
 				wrapper.typeCombobox = CEGUI.toCombobox(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "ElementType"))
-				wrapper.newAdapters = EntityEditor.fillNewElementCombobox(wrapper.typeCombobox)
-				wrapper.nameEditbox = CEGUI.toEditbox(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "ElementName"))
-				wrapper.button = CEGUI.toPushButton(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "NewElementButton"))
+				wrapper.newAdapters = EntityEditor.fillNewElementCombobox(wrapper.typeCombobox, wrapper.button, "")
+				wrapper.nameEditbox = CEGUI.toCombobox(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "ElementName"))
+				wrapper.nameChanged = function(args)
+					wrapper.newAdapters = EntityEditor.fillNewElementCombobox(wrapper.typeCombobox, wrapper.button, wrapper.nameEditbox:getText())
+					return true
+				end
+				wrapper.nameChanged = wrapper.nameEditbox:getEditbox():subscribeEvent("TextChanged", wrapper.nameChanged)
+				
 				wrapper.buttonPressed = function(args)
 					local name = wrapper.nameEditbox:getText()
 -- 					local proto = wrapper.typeCombobox:getSelectedItem():getUserData()
@@ -83,6 +90,7 @@ EntityEditor = {
 			end
 		},
 		list = {
+			name = "List",
 			createAdapter = function(element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultGUISheet")
@@ -122,10 +130,10 @@ EntityEditor = {
 				wrapper.outercontainer = outercontainer
 				wrapper.container = guiManager:createWindow("DefaultGUISheet")
 				EntityEditor.factory:loadLayoutIntoContainer(wrapper.container, "newUnnamedElement", "adapters/atlas/ListAdapterNewElement.layout")
+				wrapper.button = CEGUI.toPushButton(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "NewElementButton"))
 				wrapper.container:setHeight(CEGUI.UDim(0, 25))
 				wrapper.typeCombobox = CEGUI.toCombobox(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "ElementType"))
-				wrapper.newAdapters = EntityEditor.fillNewElementCombobox(wrapper.typeCombobox)
-				wrapper.button = CEGUI.toPushButton(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "NewElementButton"))
+				wrapper.newAdapters = EntityEditor.fillNewElementCombobox(wrapper.typeCombobox, wrapper.button, "")
 				wrapper.buttonPressed = function(args)
 					local newAdapter = wrapper.newAdapters[wrapper.typeCombobox:getSelectedItem():getID()]
 					local element = newAdapter.createNewElement()
@@ -148,6 +156,7 @@ EntityEditor = {
 			end
 		},
 		static = {
+			name = "Static",
 			createAdapter = function(element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultGUISheet")
@@ -156,6 +165,7 @@ EntityEditor = {
 			end
 		},
 		size = {
+			name = "Size",
 			createAdapter = function(element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultGUISheet")
@@ -164,6 +174,7 @@ EntityEditor = {
 			end
 		},
 		position = {
+			name = "Position",
 			createAdapter = function(element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultGUISheet")
@@ -172,6 +183,7 @@ EntityEditor = {
 			end
 		},
 		position2d = {
+			name = "Position",
 			createAdapter = function(element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultGUISheet")
@@ -183,6 +195,7 @@ EntityEditor = {
 			end
 		},
 		orientation = {
+			name = "Orientation",
 			createAdapter = function(element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultGUISheet")
@@ -191,6 +204,7 @@ EntityEditor = {
 			end
 		},
 		points = {
+			name = "Points",
 			createAdapter = function(element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultGUISheet")
@@ -262,6 +276,7 @@ EntityEditor = {
 
 		},
 		string = {
+			name = "String",
 			createAdapter = function(element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultGUISheet")
@@ -274,6 +289,7 @@ EntityEditor = {
 			end
 		},
 		number = {
+			name = "Number",
 			createAdapter = function(element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultGUISheet")
@@ -282,6 +298,7 @@ EntityEditor = {
 			end
 		},
 		float = {
+			name = "Float",
 			createAdapter = function(element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultGUISheet")
@@ -294,6 +311,7 @@ EntityEditor = {
 			
 		},
 		integer = {
+			name = "Integer",
 			createAdapter = function(element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultGUISheet")
@@ -305,6 +323,7 @@ EntityEditor = {
 			end
 		},
 		area = {
+			name = "Area",
 			createAdapter = function(element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultGUISheet")
@@ -370,7 +389,24 @@ EntityEditor.prototypes =
 		adapter = EntityEditor.adapters.string
 	}
 }
-
+EntityEditor.defaultPrototypes = 
+{
+	string = {
+		adapter = EntityEditor.adapters.string
+	},
+	integer = {
+		adapter = EntityEditor.adapters.integer
+	},
+	float = {
+		adapter = EntityEditor.adapters.float
+	},
+	list = {
+		adapter = EntityEditor.adapters.list
+	},
+	map = {
+		adapter = EntityEditor.adapters.map
+	}
+}
 
 
 function editEntity(id)
@@ -629,37 +665,63 @@ function EntityEditor.createDeleteButton(attributeName)
 	return deleteButton
 end
 
-function EntityEditor.fillNewElementCombobox(combobox, existingPrototype, element)
+function EntityEditor.fillNewElementCombobox(combobox, button, elementName, element)
 
--- 	for index,value in ipairs(EntityEditor.adapters) do
--- 		if value.shouldBeAdded(element) then
--- 			if existingPrototype.shouldAddChild(element, value) then
--- 				item = EmberOgre.Gui.ColouredListItem:new(value.name, index)
--- 				combobox:addItem(item)
--- 			end
--- 		end
--- 	end
-
+	combobox:resetList()
 	local newAdapters = {}
 
-
-	local item = nil
+	local possibleProto = EntityEditor.prototypes[elementName]
+	if possibleProto ~= nil then
+		if possibleProto.adapter ~= nil then
+			local itemIndex = #newAdapters
+			
+			local item = EmberOgre.Gui.ColouredListItem:new(possibleProto.adapter.name, itemIndex)
+			newAdapters[itemIndex] = possibleProto.adapter
+			combobox:addItem(item)
+		end
+	else
+		--Use the default adapters
 	
-	item = EmberOgre.Gui.ColouredListItem:new("String", 0)
-	newAdapters[0] = EntityEditor.adapters.string
-	combobox:addItem(item)
-	item = EmberOgre.Gui.ColouredListItem:new("Integer", 1)
-	newAdapters[1] = EntityEditor.adapters.integer
-	combobox:addItem(item)
-	item = EmberOgre.Gui.ColouredListItem:new("Float", 2)
-	newAdapters[2] = EntityEditor.adapters.float
-	combobox:addItem(item)
-	item = EmberOgre.Gui.ColouredListItem:new("Map", 3)
-	newAdapters[3] = EntityEditor.adapters.map
-	combobox:addItem(item)
-	item = EmberOgre.Gui.ColouredListItem:new("List", 4)
-	newAdapters[4] = EntityEditor.adapters.list
-	combobox:addItem(item)
+		for index,value in pairs(EntityEditor.defaultPrototypes) do
+			local itemIndex = #newAdapters
+			local item = EmberOgre.Gui.ColouredListItem:new(value.adapter.name, itemIndex)
+			newAdapters[itemIndex] = value.adapter
+			combobox:addItem(item)
+		end
+		
+-- 		item = EmberOgre.Gui.ColouredListItem:new("String", 0)
+-- 		newAdapters[0] = EntityEditor.adapters.string
+-- 		combobox:addItem(item)
+-- 		item = EmberOgre.Gui.ColouredListItem:new("Integer", 1)
+-- 		newAdapters[1] = EntityEditor.adapters.integer
+-- 		combobox:addItem(item)
+-- 		item = EmberOgre.Gui.ColouredListItem:new("Float", 2)
+-- 		newAdapters[2] = EntityEditor.adapters.float
+-- 		combobox:addItem(item)
+-- 		item = EmberOgre.Gui.ColouredListItem:new("Map", 3)
+-- 		newAdapters[3] = EntityEditor.adapters.map
+-- 		combobox:addItem(item)
+-- 		item = EmberOgre.Gui.ColouredListItem:new("List", 4)
+-- 		newAdapters[4] = EntityEditor.adapters.list
+-- 		combobox:addItem(item)
+	end
+	
+	--check that our previous selection is still available
+	if combobox:findItemWithText(combobox:getText(), nil) == nil then
+		if combobox:getItemCount() == 1 then
+			combobox:setText(combobox:getListboxItemFromIndex(0):getText())
+		else
+			combobox:setText("")
+		end
+	end
+
+	if combobox:getItemCount() == 0 then
+		button:setEnabled(false)
+	else
+		button:setEnabled(true)
+	end
+
+
 -- 	item = EmberOgre.Gui.ColouredListItem:new("Area", 5)
 -- 	item:setUserData(EntityEditor.prototypes.area)
 -- 	combobox:addItem(item)

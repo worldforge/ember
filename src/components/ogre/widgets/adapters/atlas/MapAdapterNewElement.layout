@@ -3,7 +3,7 @@
 	<Window Type='DefaultGUISheet' Name='MapAdapterNewElement'>
 		<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 		<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
-		<Window Type='EmberLook/Editbox' Name='ElementName'>
+		<Window Type='EmberLook/Combobox' Name='ElementName'>
 			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 			<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
 		</Window>
