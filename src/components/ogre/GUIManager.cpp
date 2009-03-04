@@ -118,11 +118,14 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		CEGUI::ResourceProvider* resourceProvider = mGuiRenderer->createResourceProvider();
 		resourceProvider->setDefaultResourceGroup("Gui");
 		
-		Ember::IScriptingProvider* provider;
-		provider = Ember::EmberServices::getSingleton().getScriptingService()->getProviderFor("LuaScriptingProvider");
+		Ember::IScriptingProvider* provider = Ember::EmberServices::getSingleton().getScriptingService()->getProviderFor("LuaScriptingProvider");
 		if (provider != 0) {
 			LuaScriptingProvider* luaScriptProvider = static_cast<LuaScriptingProvider*>(provider);
 			mLuaScriptModule = new LuaScriptModule(luaScriptProvider->getLuaState()); 
+			if (luaScriptProvider->getErrorHandlingFunctionName().size() != 0) {
+				mLuaScriptModule->setDefaultPCallErrorHandler(luaScriptProvider->getErrorHandlingFunctionName());
+				mLuaScriptModule->executeString(""); ///We must call this to make CEGUI set up the error function internally. If we don't, CEGUI will never correctly set it up. The reason for this is that we never use the execute* methods in the CEGUI lua module later on, instead loading our scripts ourselves. And CEGUI is currently set up to require the execute* methods to be called in order for the error function to be registered.
+			}
 			mGuiSystem = new CEGUI::System(mGuiRenderer, resourceProvider, 0, mLuaScriptModule, "cegui/datafiles/configs/cegui.config");
 			
 			Ember::EmberServices::getSingleton().getScriptingService()->EventStopping.connect(sigc::mem_fun(*this, &GUIManager::scriptingServiceStopping));
@@ -132,7 +135,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		CEGUI::SchemeManager::SchemeIterator schemeI(SchemeManager::getSingleton().getIterator());
 		if (schemeI.isAtEnd()) {
 // 			S_LOG_FAILURE("Could not load any CEGUI schemes. This means that there's something wromg with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
-			throw Ember::Exception("Could not load any CEGUI schemes. This means that there's something wromg with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
+			throw Ember::Exception("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
 		}
 		
 		mWindowManager = &CEGUI::WindowManager::getSingleton();

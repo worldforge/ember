@@ -112,6 +112,15 @@ public:
 	 */
 	lua_State* getLuaState();
 	
+	
+// 	int getErrorHandlingFunctionIndex() const;
+
+	/**
+	 * @brief Gets the name of the error handling function, if available.
+	 * @return The error handling function name (i.e. a lua function).
+	 */
+	const std::string& getErrorHandlingFunctionName() const; 
+	
 
 private:
 
@@ -147,6 +156,13 @@ private:
 	The main lua state. This is the sole entry into the lua virtual machine.
 	*/
 	lua_State* mLuaState;
+	
+// 	int mErrorHandlingFunctionIndex;
+
+	/**
+	 * @brief The name of the error handling function, if available.
+	 */
+	std::string mErrorHandlingFunctionName;
 	
 };
 

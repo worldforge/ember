@@ -61,7 +61,7 @@ TOLUA_API int tolua_Atlas_open (lua_State* tolua_S);
 namespace EmberOgre {
 
 LuaScriptingProvider::LuaScriptingProvider()
-: mService(0)
+: mService(0), mErrorHandlingFunctionName("")
 {
 	initialize();
 }
@@ -114,11 +114,11 @@ void LuaScriptingProvider::createState()
 		loadDebugLib = static_cast<bool>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("lua", "debug"));
 	}
 	if (loadDebugLib) {
+		mErrorHandlingFunctionName = "debug.traceback";
 		S_LOG_VERBOSE("Loading lua debug library.");
 	}
 
 
-#if LUA_VERSION_NUM >= 501
 	static const luaL_Reg lualibs[] = {
 		{"", luaopen_base},
 		{LUA_LOADLIBNAME, luaopen_package},
@@ -138,12 +138,11 @@ void LuaScriptingProvider::createState()
 		{LUA_DBLIBNAME, luaopen_debug},
 		{NULL, NULL}
 		};		
-#endif /* LUA_VERSION_NUM >= 501 */
 
 	mLuaState = lua_open();
 
 	// init all standard libraries
-#if LUA_VERSION_NUM >= 501
+	
 	const luaL_Reg *lib = loadDebugLib ? lualibsDebug : lualibs;
 	for (; lib->func; lib++)
 	{
@@ -151,17 +150,22 @@ void LuaScriptingProvider::createState()
 		lua_pushstring(mLuaState, lib->name);
 		lua_call(mLuaState, 1, 0);
 	}
-#else /* LUA_VERSION_NUM >= 501 */
-	luaopen_base(mLuaState);
-	luaopen_io(mLuaState);
-	luaopen_string(mLuaState);
-	luaopen_table(mLuaState);
-	luaopen_math(mLuaState);
-	if (loadDebugLib) {
-		luaopen_debug(mLuaState);
-	}
-#endif /* LUA_VERSION_NUM >= 501 */
 
+
+// 	lua_pushcfunction(mLuaState, ::EmberOgre::Scripting::LuaHelper::luaErrorHandler);
+// 	mErrorHandlingFunctionIndex = luaL_ref(mLuaState, LUA_REGISTRYINDEX);
+
+
+}
+
+// int LuaScriptingProvider::getErrorHandlingFunctionIndex() const
+// {
+// 	return mErrorHandlingFunctionIndex;
+// }
+
+const std::string& LuaScriptingProvider::getErrorHandlingFunctionName() const
+{
+	return mErrorHandlingFunctionName;
 }
 
 lua_State* LuaScriptingProvider::getLuaState()
@@ -208,13 +212,12 @@ void LuaScriptingProvider::executeScriptImpl(const std::string& scriptCode, LuaS
 
 		///push our error handling method before calling the code
 		int error_index = lua_gettop(mLuaState);
-		#if LUA_VERSION_NUM >= 501
 		lua_pushcfunction(mLuaState, ::EmberOgre::Scripting::LuaHelper::luaErrorHandler);
-		#else
-		lua_pushliteral(mLuaState, "_TRACEBACK");
-		lua_rawget(mLuaState, LUA_GLOBALSINDEX);  /* get traceback function */
-		#endif
 		lua_insert(mLuaState, error_index);
+		
+// 		lua_rawgeti(mLuaState, LUA_REGISTRYINDEX, mErrorHandlingFunctionIndex);
+//         int error_index = lua_gettop(mLuaState);
+
 
 		/// load code into lua and call it
 		int error, nresults;
