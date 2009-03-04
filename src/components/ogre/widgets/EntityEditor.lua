@@ -8,7 +8,8 @@ EntityEditor = {
 		rootMapAdapter = nil,
 		helper = nil,
 		newElements = {},
-		deleteListener = nil
+		deleteListener = nil,
+		model = {}
 	},
 	factory = nil,
 	attributesContainer = nil,
@@ -36,10 +37,48 @@ EntityEditor = {
 				end
 				
 				if prototype.readonly == nil then
-					local newElementWrapper = EntityEditor.createNewMapElementWidget(wrapper.adapter, wrapper.container)
+					local newElementWrapper = EntityEditor.adapters.map.createNewElementWidget(wrapper.adapter, wrapper.container)
 					wrapper.container:addChildWindow(newElementWrapper.container)
 				end
 				EntityEditor.createStackableContainer(wrapper.container):repositionWindows()
+				return wrapper
+			end,
+			createNewElement = function()
+				return EntityEditor.instance.helper:createMapElement()
+			end,
+			createNewElementWidget = function(mapAdapter, outercontainer, prototype)
+				local wrapper = {}
+				wrapper.adapter = mapAdapter
+				wrapper.outercontainer = outercontainer
+				wrapper.container = guiManager:createWindow("DefaultGUISheet")
+				EntityEditor.factory:loadLayoutIntoContainer(wrapper.container, "newNamedElement", "adapters/atlas/MapAdapterNewElement.layout")
+				wrapper.container:setHeight(CEGUI.UDim(0, 25))
+				wrapper.typeCombobox = CEGUI.toCombobox(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "ElementType"))
+				wrapper.newAdapters = EntityEditor.fillNewElementCombobox(wrapper.typeCombobox)
+				wrapper.nameEditbox = CEGUI.toEditbox(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "ElementName"))
+				wrapper.button = CEGUI.toPushButton(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "NewElementButton"))
+				wrapper.buttonPressed = function(args)
+					local name = wrapper.nameEditbox:getText()
+-- 					local proto = wrapper.typeCombobox:getSelectedItem():getUserData()
+			-- 		debugObject(proto)
+					local newAdapter = wrapper.newAdapters[wrapper.typeCombobox:getSelectedItem():getID()]
+					local element = newAdapter.createNewElement()
+					debugObject(element)
+					local adapterWrapper = newAdapter.createAdapter(element, EntityEditor.getPrototype(name, element))
+					
+					EntityEditor.instance.addNewElement(element)
+					
+					if adapterWrapper ~= nil then
+						local newPrototype = {}
+						wrapper.adapter:addAttributeAdapter(name, adapterWrapper.adapter, adapterWrapper.outercontainer)
+						EntityEditor.addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
+						--by adding the window again we make sure that it's at the bottom of the child window list
+						wrapper.outercontainer:addChildWindow(wrapper.container)
+					end
+					return true
+				end
+				wrapper.buttonSubscriber = wrapper.button:subscribeEvent("Clicked", wrapper.buttonPressed)
+			
 				return wrapper
 			end
 		},
@@ -67,12 +106,45 @@ EntityEditor = {
 				end	
 				
 				if prototype.readonly == nil then
-					local newElementWrapper = EntityEditor.createNewListElementWidget(wrapper.adapter, wrapper.container)
+					local newElementWrapper = EntityEditor.adapters.list.createNewElementWidget(wrapper.adapter, wrapper.container)
 					wrapper.container:addChildWindow(newElementWrapper.container)
 				end
 				EntityEditor.createStackableContainer(wrapper.container):repositionWindows()
 				
 				return wrapper	
+			end,
+			createNewElement = function()
+				return EntityEditor.instance.helper:createListElement()
+			end,
+			createNewElementWidget = function(listAdapter, outercontainer, prototype)
+				local wrapper = {}
+				wrapper.adapter = listAdapter
+				wrapper.outercontainer = outercontainer
+				wrapper.container = guiManager:createWindow("DefaultGUISheet")
+				EntityEditor.factory:loadLayoutIntoContainer(wrapper.container, "newUnnamedElement", "adapters/atlas/ListAdapterNewElement.layout")
+				wrapper.container:setHeight(CEGUI.UDim(0, 25))
+				wrapper.typeCombobox = CEGUI.toCombobox(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "ElementType"))
+				wrapper.newAdapters = EntityEditor.fillNewElementCombobox(wrapper.typeCombobox)
+				wrapper.button = CEGUI.toPushButton(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "NewElementButton"))
+				wrapper.buttonPressed = function(args)
+					local newAdapter = wrapper.newAdapters[wrapper.typeCombobox:getSelectedItem():getID()]
+					local element = newAdapter.createNewElement()
+					local adapterWrapper = newAdapter.createAdapter(element, EntityEditor.getPrototype("", element))
+					
+					--store a reference to the element so it isn't garbage collected
+					EntityEditor.instance.addNewElement(element)
+					
+					if adapterWrapper ~= nil then
+						wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
+						local newPrototype = {}
+						EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
+						--by adding the window again we make sure that it's at the bottom of the child window list
+						wrapper.outercontainer:addChildWindow(wrapper.container)
+					end
+				end
+				wrapper.button:subscribeEvent("Clicked", wrapper.buttonPressed)
+			
+				return wrapper
 			end
 		},
 		static = {
@@ -105,6 +177,9 @@ EntityEditor = {
 				wrapper.container = guiManager:createWindow("DefaultGUISheet")
 				wrapper.adapter = EntityEditor.factory:createPosition2DAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
 				return wrapper	
+			end,
+			createNewElement = function()
+				return EntityEditor.instance.helper:createPosition2dElement()
 			end
 		},
 		orientation = {
@@ -133,12 +208,58 @@ EntityEditor = {
 					end
 				end	
 				
-				local newElementWrapper = EntityEditor.createNewPointsElementWidget(wrapper.adapter, wrapper.container)
+				local newElementWrapper = EntityEditor.adapters.points.createNewElementWidget(wrapper.adapter, wrapper.container)
 				wrapper.container:addChildWindow(newElementWrapper.container)
 				EntityEditor.createStackableContainer(wrapper.container):repositionWindows()
 				
 				return wrapper	
+			end,
+			createNewElement = function()
+				return EntityEditor.instance.helper:createListElement()
+			end,
+			createNewElementWidget = function(listAdapter, outercontainer, prototype)
+				local wrapper = {}
+				wrapper.adapter = listAdapter
+				wrapper.outercontainer = outercontainer
+				wrapper.container = guiManager:createWindow("DefaultGUISheet")
+				EntityEditor.factory:loadLayoutIntoContainer(wrapper.container, "newUnnamedElement", "adapters/atlas/ListAdapterNewElement.layout")
+				wrapper.container:setHeight(CEGUI.UDim(0, 25))
+				wrapper.typeCombobox = CEGUI.toCombobox(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "ElementType"))
+				
+				local item = EmberOgre.Gui.ColouredListItem:new("Point", 0)
+				wrapper.typeCombobox:addItem(item)
+				wrapper.typeCombobox:setHeight(CEGUI.UDim(0, 100))
+				--combobox:setProperty("ReadOnly", "true")
+				
+				wrapper.button = CEGUI.toPushButton(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "NewElementButton"))
+				wrapper.buttonPressed = function(args)
+					local newAdapter = newAdapters[wrapper.typeCombobox:getSelectedItem():getID()]
+					local element = newAdapter.createNewElement()
+					local adapterWrapper = newAdapter.createAdapter(element, EntityEditor.getPrototype("", element))
+					
+--[[					local adapterWrapper = nil
+					local element = nil
+					
+					if wrapper.typeCombobox:getSelectedItem():getID() == 0 then
+						element = EntityEditor.instance.helper:createPosition2dElement()
+						adapterWrapper = EntityEditor.adapters.position2d.createAdapter(element, EntityEditor.getPrototype("", element))
+					end]]
+					
+					EntityEditor.instance.addNewElement(element)
+					
+					if adapterWrapper ~= nil then
+						local newPrototype = {}
+						wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
+						EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
+						--by adding the window again we make sure that it's at the bottom of the child window list
+						wrapper.outercontainer:addChildWindow(wrapper.container)
+					end
+				end
+				wrapper.button:subscribeEvent("Clicked", wrapper.buttonPressed)
+			
+				return wrapper
 			end
+
 		},
 		string = {
 			createAdapter = function(element, prototype)
@@ -147,6 +268,9 @@ EntityEditor = {
 				wrapper.adapter = EntityEditor.factory:createStringAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
 			-- 	wrapper.adapter:addSuggestion("test")
 				return wrapper	
+			end,
+			createNewElement = function()
+				return EntityEditor.instance.helper:createStringElement()
 			end
 		},
 		number = {
@@ -155,6 +279,29 @@ EntityEditor = {
 				wrapper.container = guiManager:createWindow("DefaultGUISheet")
 				wrapper.adapter = EntityEditor.factory:createNumberAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
 				return wrapper	
+			end
+		},
+		float = {
+			createAdapter = function(element, prototype)
+				local wrapper = {}
+				wrapper.container = guiManager:createWindow("DefaultGUISheet")
+				wrapper.adapter = EntityEditor.factory:createNumberAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
+				return wrapper	
+			end,
+			createNewElement = function()
+				return EntityEditor.instance.helper:createFloatElement()
+			end
+			
+		},
+		integer = {
+			createAdapter = function(element, prototype)
+				local wrapper = {}
+				wrapper.container = guiManager:createWindow("DefaultGUISheet")
+				wrapper.adapter = EntityEditor.factory:createNumberAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
+				return wrapper	
+			end,
+			createNewElement = function()
+				return EntityEditor.instance.helper:createIntElement()
 			end
 		},
 		area = {
@@ -286,6 +433,7 @@ function EntityEditor.editEntity(entity)
 
 	EntityEditor.clearEditing()
 	
+	EntityEditor.instance.model = {}
 	EntityEditor.instance.entity = entity
 	
 	--show the bounding boxes by default when editing
@@ -319,145 +467,12 @@ function EntityEditor.editEntity(entity)
 			EntityEditor.addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, EntityEditor.instance.outercontainer, adapterWrapper.prototype)
 		end
 	end
-	local newElementWrapper = EntityEditor.createNewMapElementWidget(adapter, EntityEditor.instance.outercontainer)
-	EntityEditor.instance.outercontainer:addChildWindow(newElementWrapper.container)
+	EntityEditor.instance.model.newAdapter = EntityEditor.adapters.map.createNewElementWidget(adapter, EntityEditor.instance.outercontainer)
+	EntityEditor.instance.outercontainer:addChildWindow(EntityEditor.instance.model.newAdapter.container)
 	EntityEditor.createStackableContainer(EntityEditor.instance.outercontainer):repositionWindows()
 
 	EntityEditor.infoWindow:setText('Id: ' .. entity:getId() .. ' Name: ' .. entity:getName())
 	
-end
-
-function EntityEditor.createNewListElementWidget(listAdapter, outercontainer, prototype)
-	local wrapper = {}
-	wrapper.adapter = listAdapter
-	wrapper.outercontainer = outercontainer
-	wrapper.container = guiManager:createWindow("DefaultGUISheet")
-	EntityEditor.factory:loadLayoutIntoContainer(wrapper.container, "newUnnamedElement", "adapters/atlas/ListAdapterNewElement.layout")
-	wrapper.container:setHeight(CEGUI.UDim(0, 25))
-	wrapper.typeCombobox = CEGUI.toCombobox(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "ElementType"))
-	EntityEditor.fillNewElementCombobox(wrapper.typeCombobox)
-	wrapper.button = CEGUI.toPushButton(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "NewElementButton"))
-	wrapper.buttonPressed = function(args)
-		local adapterWrapper = nil
-		local element = nil
-		if wrapper.typeCombobox:getSelectedItem():getID() == 0 then
-			element = EntityEditor.instance.helper:createStringElement()
-			adapterWrapper = EntityEditor.adapters.string.createAdapter(element, EntityEditor.getPrototype("", element))
-		elseif wrapper.typeCombobox:getSelectedItem():getID() == 1 then
-			element = EntityEditor.instance.helper:createIntElement()
-			adapterWrapper = EntityEditor.adapters.number.createAdapter(element, EntityEditor.getPrototype("", element))
-		elseif wrapper.typeCombobox:getSelectedItem():getID() == 2 then
-			element = EntityEditor.instance.helper:createFloatElement()
-			adapterWrapper = EntityEditor.adapters.number.createAdapter(element, EntityEditor.getPrototype("", element))
-		elseif wrapper.typeCombobox:getSelectedItem():getID() == 3 then
-			element = EntityEditor.instance.helper:createMapElement()
-			adapterWrapper = EntityEditor.adapters.map.createAdapter(element, EntityEditor.getPrototype("", element))
-		elseif wrapper.typeCombobox:getSelectedItem():getID() == 4 then
-			element = EntityEditor.instance.helper:createListElement()
-			adapterWrapper = EntityEditor.adapters.list.createAdapter(element, EntityEditor.getPrototype("", element))
-		end
-		
-		--store a reference to the element so it isn't garbage collected
-		EntityEditor.instance.addNewElement(element)
-		
-		if adapterWrapper ~= nil then
-			wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
-			local newPrototype = {}
-			EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
-			--by adding the window again we make sure that it's at the bottom of the child window list
-			wrapper.outercontainer:addChildWindow(wrapper.container)
-		end
-	end
-	wrapper.button:subscribeEvent("Clicked", wrapper.buttonPressed)
-
-	return wrapper
-end
-
-function EntityEditor.createNewPointsElementWidget(listAdapter, outercontainer)
-	local wrapper = {}
-	wrapper.adapter = listAdapter
-	wrapper.outercontainer = outercontainer
-	wrapper.container = guiManager:createWindow("DefaultGUISheet")
-	EntityEditor.factory:loadLayoutIntoContainer(wrapper.container, "newUnnamedElement", "adapters/atlas/ListAdapterNewElement.layout")
-	wrapper.container:setHeight(CEGUI.UDim(0, 25))
-	wrapper.typeCombobox = CEGUI.toCombobox(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "ElementType"))
-	
-	local item = EmberOgre.Gui.ColouredListItem:new("Point", 0)
-	wrapper.typeCombobox:addItem(item)
-	wrapper.typeCombobox:setHeight(CEGUI.UDim(0, 100))
-	--combobox:setProperty("ReadOnly", "true")
-	
-	wrapper.button = CEGUI.toPushButton(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "NewElementButton"))
-	wrapper.buttonPressed = function(args)
-		local adapterWrapper = nil
-		local element = nil
-		if wrapper.typeCombobox:getSelectedItem():getID() == 0 then
-			element = EntityEditor.instance.helper:createPosition2dElement()
-			adapterWrapper = EntityEditor.adapters.position2d.createAdapter(element, EntityEditor.getPrototype("", element))
-		end
-		
-		EntityEditor.instance.addNewElement(element)
-		
-		if adapterWrapper ~= nil then
-			local newPrototype = {}
-			wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
-			EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
-			--by adding the window again we make sure that it's at the bottom of the child window list
-			wrapper.outercontainer:addChildWindow(wrapper.container)
-		end
-	end
-	wrapper.button:subscribeEvent("Clicked", wrapper.buttonPressed)
-
-	return wrapper
-end
-
-function EntityEditor.createNewMapElementWidget(mapAdapter, outercontainer, prototype)
-	local wrapper = {}
-	wrapper.adapter = mapAdapter
-	wrapper.outercontainer = outercontainer
-	wrapper.container = guiManager:createWindow("DefaultGUISheet")
-	EntityEditor.factory:loadLayoutIntoContainer(wrapper.container, "newNamedElement", "adapters/atlas/MapAdapterNewElement.layout")
-	wrapper.container:setHeight(CEGUI.UDim(0, 25))
-	wrapper.typeCombobox = CEGUI.toCombobox(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "ElementType"))
-	EntityEditor.fillNewElementCombobox(wrapper.typeCombobox)
-	wrapper.nameEditbox = CEGUI.toEditbox(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "ElementName"))
-	wrapper.button = CEGUI.toPushButton(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "NewElementButton"))
-	wrapper.buttonPressed = function(args)
-		local adapterWrapper = nil
-		local element = nil
-		local name = wrapper.nameEditbox:getText()
-		local proto = wrapper.typeCombobox:getSelectedItem():getUserData()
--- 		debugObject(proto)
-		if wrapper.typeCombobox:getSelectedItem():getID() == 0 then
-			element = EntityEditor.instance.helper:createStringElement()
-			adapterWrapper = EntityEditor.adapters.string.createAdapter(element, EntityEditor.getPrototype(name, element))
-		elseif wrapper.typeCombobox:getSelectedItem():getID() == 1 then
-			element = EntityEditor.instance.helper:createIntElement()
-			adapterWrapper = EntityEditor.adapters.number.createAdapter(element, EntityEditor.getPrototype(name, element))
-		elseif wrapper.typeCombobox:getSelectedItem():getID() == 2 then
-			element = EntityEditor.instance.helper:createFloatElement()
-			adapterWrapper = EntityEditor.adapters.number.createAdapter(element, EntityEditor.getPrototype(name, element))
-		elseif wrapper.typeCombobox:getSelectedItem():getID() == 3 then
-			element = EntityEditor.instance.helper:createMapElement()
-			adapterWrapper = EntityEditor.adapters.map.createAdapter(element, EntityEditor.getPrototype(name, element))
-		elseif wrapper.typeCombobox:getSelectedItem():getID() == 4 then
-			element = EntityEditor.instance.helper:createListElement()
-			adapterWrapper = EntityEditor.adapters.list.createAdapter(element, EntityEditor.getPrototype(name, element))
-		end
-		
-		EntityEditor.instance.addNewElement(element)
-		
-		if adapterWrapper ~= nil then
-			local newPrototype = {}
-			wrapper.adapter:addAttributeAdapter(name, adapterWrapper.adapter, adapterWrapper.outercontainer)
-			EntityEditor.addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
-			--by adding the window again we make sure that it's at the bottom of the child window list
-			wrapper.outercontainer:addChildWindow(wrapper.container)
-		end
-	end
-	wrapper.button:subscribeEvent("Clicked", wrapper.buttonPressed)
-
-	return wrapper
 end
 
 function EntityEditor.createAdapter(attributeName, element)
@@ -499,39 +514,6 @@ function EntityEditor.getPrototype(attributeName, element)
 	return prototype
 end
 
--- function EntityEditor.adapters.map.createAdapter(element, prototype)
--- end
--- 
--- function EntityEditor.adapters.list.createAdapter(element, prototype)
--- end
--- 
--- function EntityEditor.adapters.points.createAdapter(element, prototype)
--- end
--- 
--- 
--- function EntityEditor.adapters.static.createAdapter(element, prototype)
--- end
--- 
--- function EntityEditor.adapters.string.createAdapter(element, prototype)
--- end
--- 
--- function EntityEditor.adapters.number.createAdapter(element, prototype)
--- end
--- 
--- function EntityEditor.adapters.size.createAdapter(element, prototype)
--- end
--- 
--- function EntityEditor.adapters.position.createAdapter(element, prototype)
--- end
--- 
--- function EntityEditor.adapters.position2d.createAdapter(element, prototype)
--- end
--- 
--- function EntityEditor.adapters.orientation.createAdapter(element, prototype)
--- end
--- 
--- function EntityEditor.adapters.area.createAdapter(element, prototype)
--- end
 
 function EntityEditor.addUnNamedAdapterContainer(adapter, container, parentContainer, prototype)
 	local outercontainer = guiManager:createWindow("DefaultGUISheet")
@@ -658,23 +640,25 @@ function EntityEditor.fillNewElementCombobox(combobox, existingPrototype, elemen
 -- 		end
 -- 	end
 
+	local newAdapters = {}
+
 
 	local item = nil
 	
 	item = EmberOgre.Gui.ColouredListItem:new("String", 0)
--- 	item:setUserData(EntityEditor.prototypes.area)
+	newAdapters[0] = EntityEditor.adapters.string
 	combobox:addItem(item)
 	item = EmberOgre.Gui.ColouredListItem:new("Integer", 1)
--- 	item:setUserData(EntityEditor.prototypes.area)
+	newAdapters[1] = EntityEditor.adapters.integer
 	combobox:addItem(item)
 	item = EmberOgre.Gui.ColouredListItem:new("Float", 2)
--- 	item:setUserData(EntityEditor.prototypes.area)
+	newAdapters[2] = EntityEditor.adapters.float
 	combobox:addItem(item)
 	item = EmberOgre.Gui.ColouredListItem:new("Map", 3)
--- 	item:setUserData(EntityEditor.prototypes.area)
+	newAdapters[3] = EntityEditor.adapters.map
 	combobox:addItem(item)
 	item = EmberOgre.Gui.ColouredListItem:new("List", 4)
--- 	item:setUserData(EntityEditor.prototypes.area)
+	newAdapters[4] = EntityEditor.adapters.list
 	combobox:addItem(item)
 -- 	item = EmberOgre.Gui.ColouredListItem:new("Area", 5)
 -- 	item:setUserData(EntityEditor.prototypes.area)
@@ -682,6 +666,7 @@ function EntityEditor.fillNewElementCombobox(combobox, existingPrototype, elemen
 	combobox:setHeight(CEGUI.UDim(0, 100))
 	combobox:setProperty("ReadOnly", "true")
 -- 	--combobox:getDropList():setProperty("ClippedByParent", "false")
+	return newAdapters
 end
 
 
