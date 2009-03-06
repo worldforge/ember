@@ -35,9 +35,14 @@ namespace Atlas {
 class PositionAdapter : public AdapterBase
 {
 public:
-    PositionAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* xWindow, CEGUI::Window* yWindow, CEGUI::Window* zWindow);
+    PositionAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* xWindow, CEGUI::Window* yWindow, CEGUI::Window* zWindow, CEGUI::PushButton* moveButton);
 
     virtual ~PositionAdapter();
+
+    /**
+     * @brief Emitted when the move button has been clicked.
+     */
+	sigc::signal<void> EventMoveClicked;
 
 };
 
