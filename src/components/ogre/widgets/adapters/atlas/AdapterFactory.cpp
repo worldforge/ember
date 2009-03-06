@@ -190,7 +190,8 @@ PositionAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container,
 	Window* x = windowMgr.getWindow(mCurrentPrefix + "x");
 	Window* y = windowMgr.getWindow(mCurrentPrefix + "y");
 	Window* z = windowMgr.getWindow(mCurrentPrefix + "z");
-	return new PositionAdapter(element, x, y, z);
+	PushButton* moveButton = static_cast<PushButton*>(windowMgr.getWindow(mCurrentPrefix + "moveButton"));
+	return new PositionAdapter(element, x, y, z, moveButton);
 }
 
 template <>

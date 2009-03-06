@@ -28,6 +28,10 @@
 #include <wfmath/vector.h>
 #include <wfmath/atlasconv.h>
 
+namespace CEGUI {
+class PushButton;
+}
+
 namespace EmberOgre {
 
 namespace Gui {
@@ -36,7 +40,7 @@ namespace Adapters {
 
 namespace Atlas {
 
-PositionAdapter::PositionAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* xWindow, CEGUI::Window* yWindow, CEGUI::Window* zWindow)
+PositionAdapter::PositionAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* xWindow, CEGUI::Window* yWindow, CEGUI::Window* zWindow, CEGUI::PushButton* moveButton)
 : AdapterBase(element), mXWindow(xWindow), mYWindow(yWindow), mZWindow(zWindow)
 {
 	if (mXWindow) {
@@ -47,6 +51,10 @@ PositionAdapter::PositionAdapter(const ::Atlas::Message::Element& element, CEGUI
 	}
 	if (mZWindow) {
 		addGuiEventConnection(mZWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&PositionAdapter::window_TextChanged, this))); 
+	}
+	
+	if (moveButton) {
+		addGuiEventConnection(moveButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&PositionAdapter::moveButton_Clicked, this))); 
 	}
 	
 	updateGui(mOriginalElement);
@@ -78,6 +86,12 @@ bool PositionAdapter::window_TextChanged(const CEGUI::EventArgs& e)
 	if (!mSelfUpdate) {
 		EventValueChanged.emit();
 	}
+	return true;
+}
+
+bool PositionAdapter::moveButton_Clicked(const CEGUI::EventArgs& e)
+{
+	EventMoveClicked.emit();
 	return true;
 }
 

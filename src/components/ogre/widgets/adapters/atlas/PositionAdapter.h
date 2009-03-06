@@ -39,7 +39,7 @@ namespace Atlas {
 class PositionAdapter : public AdapterBase
 {
 public:
-    PositionAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* xWindow, CEGUI::Window* yWindow, CEGUI::Window* zWindow);
+    PositionAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* xWindow, CEGUI::Window* yWindow, CEGUI::Window* zWindow, CEGUI::PushButton* moveButton = 0);
 
     virtual ~PositionAdapter();
 	
@@ -48,6 +48,12 @@ public:
 	*/
 	virtual void updateGui(const ::Atlas::Message::Element& element);
     
+    
+    /**
+     * @brief Emitted when the move button has been clicked.
+     */
+	sigc::signal<void> EventMoveClicked;
+    
 protected:
 
 	CEGUI::Window* mXWindow;
@@ -55,6 +61,7 @@ protected:
 	CEGUI::Window* mZWindow;
 
 	bool window_TextChanged(const CEGUI::EventArgs& e);
+	bool moveButton_Clicked(const CEGUI::EventArgs& e);
 
 	virtual void fillElementFromGui();
 	virtual bool _hasChanges();
