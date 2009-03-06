@@ -38,7 +38,7 @@ EntityEditor = {
 				end
 				
 				if prototype.readonly == nil then
-					local newElementWrapper = EntityEditor.adapters.map.createNewElementWidget(wrapper.adapter, wrapper.container)
+					local newElementWrapper = EntityEditor.adapters.map.createNewElementWidget(wrapper.adapter, wrapper.container, element)
 					wrapper.container:addChildWindow(newElementWrapper.container)
 				end
 				EntityEditor.createStackableContainer(wrapper.container):repositionWindows()
@@ -47,7 +47,7 @@ EntityEditor = {
 			createNewElement = function()
 				return EntityEditor.instance.helper:createMapElement()
 			end,
-			createNewElementWidget = function(mapAdapter, outercontainer, prototype)
+			createNewElementWidget = function(mapAdapter, outercontainer, outerElement)
 				local wrapper = {}
 				wrapper.adapter = mapAdapter
 				wrapper.outercontainer = outercontainer
@@ -56,13 +56,38 @@ EntityEditor = {
 				wrapper.button = CEGUI.toPushButton(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "NewElementButton"))
 				wrapper.container:setHeight(CEGUI.UDim(0, 25))
 				wrapper.typeCombobox = CEGUI.toCombobox(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "ElementType"))
-				wrapper.newAdapters = EntityEditor.fillNewElementCombobox(wrapper.typeCombobox, wrapper.button, "")
+				wrapper.newAdapters = EntityEditor.fillNewElementCombobox(wrapper.typeCombobox, "", outerElement)
 				wrapper.nameEditbox = CEGUI.toCombobox(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "ElementName"))
 				wrapper.nameChanged = function(args)
-					wrapper.newAdapters = EntityEditor.fillNewElementCombobox(wrapper.typeCombobox, wrapper.button, wrapper.nameEditbox:getText())
+					--check that the name doesn't already exists in the map adapter
+					if mapAdapter:hasAdapter(wrapper.nameEditbox:getText()) then
+						wrapper.button:setEnabled(false)
+					else
+						wrapper.newAdapters = EntityEditor.fillNewElementCombobox(wrapper.typeCombobox, wrapper.nameEditbox:getText(), outerElement)
+						wrapper.buttonEnableChecker(args)
+					end
 					return true
 				end
 				wrapper.nameChanged = wrapper.nameEditbox:getEditbox():subscribeEvent("TextChanged", wrapper.nameChanged)
+				
+				for index,value in pairs(EntityEditor.prototypes) do
+					if value.shouldAddSuggestion ~= nil then
+						if value.shouldAddSuggestion(outerElement) then
+							local item = EmberOgre.Gui.ColouredListItem:new(index)
+							wrapper.nameEditbox:addItem(item)
+						end
+					end
+				end
+				
+				wrapper.buttonEnableChecker = function(args)
+					if wrapper.typeCombobox:getSelectedItem() ~= nil and wrapper.nameEditbox:getText() ~= "" then
+						wrapper.button:setEnabled(true)
+					else
+						wrapper.button:setEnabled(false)
+					end
+					return true
+				end
+				wrapper.typeCombobox:subscribeEvent("ListSelectionChanged", wrapper.buttonEnableChecker)
 				
 				wrapper.buttonPressed = function(args)
 					local name = wrapper.nameEditbox:getText()
@@ -81,11 +106,14 @@ EntityEditor = {
 						EntityEditor.addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
 						--by adding the window again we make sure that it's at the bottom of the child window list
 						wrapper.outercontainer:addChildWindow(wrapper.container)
+						wrapper.nameEditbox:setText("")
 					end
 					return true
 				end
 				wrapper.buttonSubscriber = wrapper.button:subscribeEvent("Clicked", wrapper.buttonPressed)
 			
+				wrapper.buttonEnableChecker(nil)
+
 				return wrapper
 			end
 		},
@@ -133,7 +161,7 @@ EntityEditor = {
 				wrapper.button = CEGUI.toPushButton(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "NewElementButton"))
 				wrapper.container:setHeight(CEGUI.UDim(0, 25))
 				wrapper.typeCombobox = CEGUI.toCombobox(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "ElementType"))
-				wrapper.newAdapters = EntityEditor.fillNewElementCombobox(wrapper.typeCombobox, wrapper.button, "")
+				wrapper.newAdapters = EntityEditor.fillNewElementCombobox(wrapper.typeCombobox, "")
 				wrapper.buttonPressed = function(args)
 					local newAdapter = wrapper.newAdapters[wrapper.typeCombobox:getSelectedItem():getID()]
 					local element = newAdapter.createNewElement()
@@ -151,6 +179,18 @@ EntityEditor = {
 					end
 				end
 				wrapper.button:subscribeEvent("Clicked", wrapper.buttonPressed)
+			
+				wrapper.buttonEnableChecker = function(args)
+					if wrapper.typeCombobox:getSelectedItem() ~= nil then
+						wrapper.button:setEnabled(true)
+					else
+						wrapper.button:setEnabled(false)
+					end
+					return true
+				end
+				wrapper.typeCombobox:subscribeEvent("ListSelectionChanged", wrapper.buttonEnableChecker)
+				
+				wrapper.buttonEnableChecker(nil)
 			
 				return wrapper
 			end
@@ -179,7 +219,11 @@ EntityEditor = {
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultGUISheet")
 				wrapper.adapter = EntityEditor.factory:createPositionAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
-				return wrapper	
+				wrapper.moveButtonPressed = function()
+					guiManager:EmitEntityAction("move", EntityEditor.instance.entity)
+				end
+				wrapper.moveButtonPressedListener = EmberOgre.LuaConnector:new_local(wrapper.adapter.EventMoveClicked):connect(wrapper.moveButtonPressed)
+				return wrapper
 			end
 		},
 		position2d = {
@@ -329,6 +373,9 @@ EntityEditor = {
 				wrapper.container = guiManager:createWindow("DefaultGUISheet")
 				wrapper.adapter = EntityEditor.factory:createAreaAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element, EntityEditor.instance.entity)
 				return wrapper	
+			end,
+			createNewElement = function()
+				return EntityEditor.instance.helper:createMapElement()
 			end
 		}
 	},
@@ -372,7 +419,10 @@ EntityEditor.prototypes =
 		nodelete = true
 	},
 	area = {
-		adapter = EntityEditor.adapters.area
+		adapter = EntityEditor.adapters.area,
+		shouldAddSuggestion = function(ownerElement)
+			return true
+		end
 	},
 	points = {
 		adapter = EntityEditor.adapters.points
@@ -384,9 +434,6 @@ EntityEditor.prototypes =
 			"knotted",
 			"weathered"
 		}
-	},
-	default = {
-		adapter = EntityEditor.adapters.string
 	}
 }
 EntityEditor.defaultPrototypes = 
@@ -665,7 +712,7 @@ function EntityEditor.createDeleteButton(attributeName)
 	return deleteButton
 end
 
-function EntityEditor.fillNewElementCombobox(combobox, button, elementName, element)
+function EntityEditor.fillNewElementCombobox(combobox, elementName, outerElement)
 
 	combobox:resetList()
 	local newAdapters = {}
@@ -673,58 +720,36 @@ function EntityEditor.fillNewElementCombobox(combobox, button, elementName, elem
 	local possibleProto = EntityEditor.prototypes[elementName]
 	if possibleProto ~= nil then
 		if possibleProto.adapter ~= nil then
-			local itemIndex = #newAdapters
+			local itemIndex = table.maxn(newAdapters) + 1
 			
 			local item = EmberOgre.Gui.ColouredListItem:new(possibleProto.adapter.name, itemIndex)
-			newAdapters[itemIndex] = possibleProto.adapter
+			table.insert(newAdapters, possibleProto.adapter)
 			combobox:addItem(item)
 		end
 	else
 		--Use the default adapters
 	
 		for index,value in pairs(EntityEditor.defaultPrototypes) do
-			local itemIndex = #newAdapters
+			local itemIndex = table.maxn(newAdapters) + 1
+			console:pushMessage(itemIndex)
 			local item = EmberOgre.Gui.ColouredListItem:new(value.adapter.name, itemIndex)
-			newAdapters[itemIndex] = value.adapter
+			table.insert(newAdapters, value.adapter)
 			combobox:addItem(item)
 		end
-		
--- 		item = EmberOgre.Gui.ColouredListItem:new("String", 0)
--- 		newAdapters[0] = EntityEditor.adapters.string
--- 		combobox:addItem(item)
--- 		item = EmberOgre.Gui.ColouredListItem:new("Integer", 1)
--- 		newAdapters[1] = EntityEditor.adapters.integer
--- 		combobox:addItem(item)
--- 		item = EmberOgre.Gui.ColouredListItem:new("Float", 2)
--- 		newAdapters[2] = EntityEditor.adapters.float
--- 		combobox:addItem(item)
--- 		item = EmberOgre.Gui.ColouredListItem:new("Map", 3)
--- 		newAdapters[3] = EntityEditor.adapters.map
--- 		combobox:addItem(item)
--- 		item = EmberOgre.Gui.ColouredListItem:new("List", 4)
--- 		newAdapters[4] = EntityEditor.adapters.list
--- 		combobox:addItem(item)
 	end
 	
 	--check that our previous selection is still available
-	if combobox:findItemWithText(combobox:getText(), nil) == nil then
+	local selectedItem = combobox:findItemWithText(combobox:getText(), nil)
+	if selectedItem == nil then
 		if combobox:getItemCount() == 1 then
-			combobox:setText(combobox:getListboxItemFromIndex(0):getText())
+			combobox:getListboxItemFromIndex(0):setSelected(true)
 		else
-			combobox:setText("")
+			combobox:clearAllSelections()
 		end
-	end
-
-	if combobox:getItemCount() == 0 then
-		button:setEnabled(false)
 	else
-		button:setEnabled(true)
+		selectedItem:setSelected(true)
 	end
-
-
--- 	item = EmberOgre.Gui.ColouredListItem:new("Area", 5)
--- 	item:setUserData(EntityEditor.prototypes.area)
--- 	combobox:addItem(item)
+	
 	combobox:setHeight(CEGUI.UDim(0, 100))
 	combobox:setProperty("ReadOnly", "true")
 -- 	--combobox:getDropList():setProperty("ClippedByParent", "false")
