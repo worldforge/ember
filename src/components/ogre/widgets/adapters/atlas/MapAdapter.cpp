@@ -139,6 +139,10 @@ void MapAdapter::removeAdapters()
 	return Element(attributes);
 }
 
+bool MapAdapter::hasAdapter(const std::string& attr) const
+{
+	return mAdapters.find(attr) != mAdapters.end();
+}
 
 
 }

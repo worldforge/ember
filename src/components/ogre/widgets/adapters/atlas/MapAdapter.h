@@ -67,6 +67,14 @@ public:
     void removeAdapters();
     
 	::Atlas::Message::Element getSelectedChangedElements();
+	
+	/**
+	 * @brief Returns true if the map adapter already contains an adapter with the specified name.
+	 * This works very much like hasAttr(), with the exception that this also will take into considerations those adapters that have been added but not yet applied to the underlying element.
+	 * @param attr The name of the attribute to look for an adapter for.
+	 * @return True if an adapter for the named attribute exists.
+	 */
+	bool hasAdapter(const std::string& attr) const;
 
 protected:
 	typedef std::map<std::string, AdapterWrapper> AdapterStore;
