@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <terrain>
 	<layers>
-		<layer shadername="sand" diffusetexture="3d_objects/environment/textures/ground_sand_dirty/D.png" normalmaptexture="3d_objects/environment/textures/ground_sand_dirty/N.png" tilesize="8">
+		<layer name="Sand" shadername="sand" diffusetexture="3d_objects/environment/textures/ground_sand_dirty/D.png" normalmaptexture="3d_objects/environment/textures/ground_sand_dirty/N.png" tilesize="8">
 			<foliage planttype="grass" populationtechnique="cluster" rendertechnique="grass">
 				<param key="minClusterRadius">2</param>
 				<param key="maxClusterRadius">10</param>
@@ -17,7 +17,7 @@
 				<param key="renderTech">quad</param>
 			</foliage>
 		</layer>
-		<layer shadername="grass" diffusetexture="3d_objects/environment/textures/ground_grass/D.png" normalmaptexture="3d_objects/environment/textures/ground_grass/N.png" tilesize="6">
+		<layer name="Grass" shadername="grass" diffusetexture="3d_objects/environment/textures/ground_grass/D.png" normalmaptexture="3d_objects/environment/textures/ground_grass/N.png" tilesize="6">
 			<!--foliage planttype="grass" populationtechnique="cluster" rendertechnique="grass">
 				<param key="minClusterRadius">2</param>
 				<param key="maxClusterRadius">10</param>
@@ -123,17 +123,17 @@
 				<param key="falloff">0.7</param>
 			</foliage>
 		</layer>
-		<layer shadername="snow" diffusetexture="resources/ogre/textures/snow.png" normalmaptexture="" tilesize="8">
+		<layer name="Snow" shadername="snow" diffusetexture="resources/ogre/textures/snow.png" normalmaptexture="" tilesize="8">
 		</layer>
-		<layer shadername="rock" diffusetexture="3d_objects/environment/textures/stone_granite_weathered/D.png" normalmaptexture="3d_objects/environment/textures/stone_granite_weathered/N.png" tilesize="6">
+		<layer name="Rock" shadername="rock" diffusetexture="3d_objects/environment/textures/stone_granite_weathered/D.png" normalmaptexture="3d_objects/environment/textures/stone_granite_weathered/N.png" tilesize="6">
 		</layer>
-		<layer shadername="silt" diffusetexture="resources/ogre/textures/dark.png" normalmaptexture="" tilesize="8">
+		<layer name="Silt" shadername="silt" diffusetexture="resources/ogre/textures/dark.png" normalmaptexture="" tilesize="8">
 		</layer>
-		<layer areaindex="6" diffusetexture="3d_objects/environment/textures/ground_leaf_covered/D.png" normalmaptexture="3d_objects/environment/textures/ground_leaf_covered/N.png" tilesize="4">
+		<layer name="Leaf covered" areaindex="6" diffusetexture="3d_objects/environment/textures/ground_leaf_covered/D.png" normalmaptexture="3d_objects/environment/textures/ground_leaf_covered/N.png" tilesize="4">
 		</layer>
-		<layer areaindex="7" diffusetexture="3d_objects/environment/textures/ground_dirt_dry/D.png" normalmaptexture="3d_objects/environment/textures/ground_dirt_dry/N.png" tilesize="4">
+		<layer name="Dirt" areaindex="7" diffusetexture="3d_objects/environment/textures/ground_dirt_dry/D.png" normalmaptexture="3d_objects/environment/textures/ground_dirt_dry/N.png" tilesize="4">
 		</layer>
-		<layer areaindex="8" diffusetexture="3d_objects/environment/textures/ground_dirt_plowed/D.png" normalmaptexture="3d_objects/environment/textures/ground_dirt_plowed/N.png" tilesize="8">
+		<layer name="Plowed" areaindex="8" diffusetexture="3d_objects/environment/textures/ground_dirt_plowed/D.png" normalmaptexture="3d_objects/environment/textures/ground_dirt_plowed/N.png" tilesize="8">
 		</layer>
 	</layers>
 </terrain>

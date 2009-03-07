@@ -83,6 +83,7 @@ void XMLLayerDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, cons
 					definition->setShaderName(shadername);
 					definition->setAreaId(static_cast<unsigned int>(areaId));
 					
+					definition->setName(smElem->Attribute("name"));
 					definition->setDiffuseTextureName(smElem->Attribute("diffusetexture"));
 					definition->setNormalMapTextureName(smElem->Attribute("normalmaptexture"));
 					float tileSize;

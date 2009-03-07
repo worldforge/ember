@@ -43,6 +43,18 @@ public:
 
     ~TerrainLayerDefinition();
     
+    /**
+     * @brief Sets a descriptive name for the layer.
+     * @param name A descriptive name.
+     */
+    void setName(const std::string& name);
+    
+    /**
+     * @brief Gets the descriptive name for the layer.
+     * @return The descriptive name.
+     */
+    const std::string& getName() const;
+    
     void setAreaId(unsigned int areaId);
     unsigned int getAreaId() const;
     
@@ -65,6 +77,7 @@ public:
 protected:
 
 	unsigned int mAreaId;
+	std::string mName;
 	std::string mDiffuseTextureName;
 	std::string mNormalMapTextureName;
 	std::string mShaderName;

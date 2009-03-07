@@ -40,6 +40,17 @@ TerrainLayerDefinition::~TerrainLayerDefinition()
 {
 }
 
+void TerrainLayerDefinition::setName(const std::string& name)
+{
+	mName = name;
+}
+
+const std::string& TerrainLayerDefinition::getName() const
+{
+	return mName;
+}
+
+
 void TerrainLayerDefinition::setAreaId(unsigned int areaId)
 {
 	mAreaId = areaId;
