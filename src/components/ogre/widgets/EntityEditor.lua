@@ -1,5 +1,4 @@
 --Allows the editing of entities
-
 EntityEditor = {
 	connectors={},
 	instance = {
@@ -325,7 +324,6 @@ EntityEditor = {
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultGUISheet")
 				wrapper.adapter = EntityEditor.factory:createStringAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
-			-- 	wrapper.adapter:addSuggestion("test")
 				return wrapper	
 			end,
 			createNewElement = function()
@@ -372,6 +370,19 @@ EntityEditor = {
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultGUISheet")
 				wrapper.adapter = EntityEditor.factory:createAreaAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element, EntityEditor.instance.entity)
+				
+				--fill the area adapter with suggested areas, which we get from the terrain layer definitions
+				local layerDefinitions = EmberOgre.Terrain.TerrainLayerDefinitionManager:getSingleton():getDefinitions()
+				for index,value in layerDefinitions:ipairs() do
+					if value:getAreaId() ~= 0 then
+						local name = value:getName()
+						--fall back to the area id if there's no name given
+						if name == "" then
+							name = value:getAreaId() 
+						end
+						wrapper.adapter:addAreaSuggestion(value:getAreaId(), name)
+					end
+				end 
 				return wrapper	
 			end,
 			createNewElement = function()
