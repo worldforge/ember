@@ -37,7 +37,7 @@ namespace Terrain {
 
 
 
-TerrainArea::TerrainArea(EmberEntity* entity) : mArea(0), mEntity(entity)
+TerrainArea::TerrainArea(EmberEntity* entity) : mArea(0), mOldArea(0), mEntity(entity)
 {
 }
 
@@ -45,7 +45,7 @@ TerrainArea::TerrainArea(EmberEntity* entity) : mArea(0), mEntity(entity)
 TerrainArea::~TerrainArea()
 {
 	mAttrChangedSlot.disconnect();
-	EventAreaRemoved.emit(this);
+	EventAreaRemoved.emit();
 	delete mArea;
 }
 
@@ -84,6 +84,12 @@ bool TerrainArea::parseArea()
 	if (parser.parseArea(areaData, poly, layer)) {
 		if (!mArea) {
 			mArea = new Mercator::Area(layer, false);
+		} else {
+			///A bit of an ugly hack here since the Mercator system doesn't support changing the layer. We need to swap the old area for a new one if the layer has changed.
+			if (mArea->getLayer() != layer) {
+				mOldArea = mArea;
+				mArea = new Mercator::Area(layer, false);
+			}
 		}
 		/// transform polygon into terrain coords
 		WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(mEntity->getOrientation());
@@ -104,14 +110,20 @@ bool TerrainArea::parseArea()
 void TerrainArea::attributeChanged(const Atlas::Message::Element& attributeValue)
 {
 	if (parseArea()) {
-		EventAreaChanged(this);
+		if (mOldArea) {
+			EventAreaSwapped(*mOldArea);
+			delete mOldArea;
+			mOldArea = 0;
+		} else {
+			EventAreaChanged();
+		}
 	}
 }
 
 void TerrainArea::entity_Moved()
 {
 	if (parseArea()) {
-		EventAreaChanged(this);
+		EventAreaChanged();
 	}
 }
 

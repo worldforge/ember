@@ -409,7 +409,7 @@ protected:
 	 * @param shader The shader to update.
 	 * @param terrainArea If an area is specified here, only pages touched by the area will be updated.
 	 */
-	void markShaderForUpdate(TerrainShader* shader, TerrainArea* terrainArea = 0);
+	void markShaderForUpdate(TerrainShader* shader,  Mercator::Area* terrainArea = 0);
 	
 	typedef std::set<TerrainShader*> ShaderSet;
 	
@@ -517,6 +517,13 @@ protected:
 	 * @param terrainArea The area being removed.
 	 */
 	void TerrainArea_Removed(TerrainArea* terrainArea);
+	
+	/**
+	 * @brief Listen to swapping of terrain areas and trigger an update of the terrain.
+	 * @param oldArea The area being removed.
+	 * @param terrainArea The terrain area.
+	 */
+	void TerrainArea_Swapped(Mercator::Area& oldArea, TerrainArea* terrainArea);
 	
 	/**
 	Listen to changes in terrain mods.

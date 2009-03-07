@@ -263,8 +263,9 @@ void TerrainGenerator::TerrainMod_Deleted(TerrainMod* terrainMod)
 void TerrainGenerator::addArea(TerrainArea* terrainArea)
 {
 
-	terrainArea->EventAreaChanged.connect(sigc::mem_fun(*this, &TerrainGenerator::TerrainArea_Changed));
-	terrainArea->EventAreaRemoved.connect(sigc::mem_fun(*this, &TerrainGenerator::TerrainArea_Removed));
+	terrainArea->EventAreaChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainGenerator::TerrainArea_Changed), terrainArea));
+	terrainArea->EventAreaRemoved.connect(sigc::bind(sigc::mem_fun(*this, &TerrainGenerator::TerrainArea_Removed), terrainArea));
+	terrainArea->EventAreaSwapped.connect(sigc::bind(sigc::mem_fun(*this, &TerrainGenerator::TerrainArea_Swapped), terrainArea));
 	Mercator::Area* area = terrainArea->getArea();
  //   _fpreset();
 	//_controlfp(_PC_64, _MCW_PC);
@@ -286,7 +287,7 @@ void TerrainGenerator::addArea(TerrainArea* terrainArea)
 	if (mAreaShaders.count(area->getLayer())) {
 		///mark the shader for update
 		///we'll not update immediately, we try to batch many area updates and then only update once per frame
-		markShaderForUpdate(mAreaShaders[area->getLayer()], terrainArea);
+		markShaderForUpdate(mAreaShaders[area->getLayer()], area);
 	}
 }
 
@@ -296,7 +297,7 @@ void TerrainGenerator::TerrainArea_Changed(TerrainArea* terrainArea)
 	if (mAreaShaders.count(area->getLayer())) {
 		///mark the shader for update
 		///we'll not update immediately, we try to batch many area updates and then only update once per frame
-		markShaderForUpdate(mAreaShaders[area->getLayer()], terrainArea);
+		markShaderForUpdate(mAreaShaders[area->getLayer()], area);
 	}
 	mTerrain->updateArea(area);
 }
@@ -308,15 +309,44 @@ void TerrainGenerator::TerrainArea_Removed(TerrainArea* terrainArea)
 	if (mAreaShaders.count(area->getLayer())) {
 		///mark the shader for update
 		///we'll not update immediately, we try to batch many area updates and then only update once per frame
-		markShaderForUpdate(mAreaShaders[area->getLayer()], terrainArea);
+		markShaderForUpdate(mAreaShaders[area->getLayer()], area);
 	}
 }
 
-void TerrainGenerator::markShaderForUpdate(TerrainShader* shader, TerrainArea* terrainArea)
+
+void TerrainGenerator::TerrainArea_Swapped(Mercator::Area& oldArea, TerrainArea* terrainArea)
+{
+	mTerrain->removeArea(&oldArea);
+	if (mAreaShaders.count(oldArea.getLayer())) {
+		///mark the shader for update
+		///we'll not update immediately, we try to batch many area updates and then only update once per frame
+		markShaderForUpdate(mAreaShaders[oldArea.getLayer()], &oldArea);
+	}
+	
+	Mercator::Area* area = terrainArea->getArea();
+	mTerrain->addArea(area);
+	if (!mAreaShaders.count(area->getLayer())) {
+		S_LOG_VERBOSE("Shader does not exists, creating new.");
+		TerrainShader* shader;
+		///try to get the materialdefinition for this kind of area
+		const TerrainLayerDefinition* layerDef = TerrainLayerDefinitionManager::getSingleton().getDefinitionForArea(area->getLayer());
+		if (layerDef) {
+			shader = createShader(layerDef, new Mercator::AreaShader(area->getLayer()));
+			mAreaShaders[area->getLayer()] = shader;
+		}
+	}
+	if (mAreaShaders.count(area->getLayer())) {
+		///mark the shader for update
+		///we'll not update immediately, we try to batch many area updates and then only update once per frame
+		markShaderForUpdate(mAreaShaders[area->getLayer()], area);
+	}
+	
+}
+void TerrainGenerator::markShaderForUpdate(TerrainShader* shader, Mercator::Area* terrainArea)
 {
 	mShadersToUpdate.insert(shader);
 	if (terrainArea) {
-		mChangedTerrainAreas[shader].push_back(*terrainArea->getArea());
+		mChangedTerrainAreas[shader].push_back(*terrainArea);
 	}
 }
 

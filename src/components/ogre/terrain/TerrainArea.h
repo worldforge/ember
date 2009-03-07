@@ -84,12 +84,19 @@ public:
 	/**
 	@brief Emitted when something about the area changes, and we need to tell the terrain to regenerate the visualization of it.
 	*/
-	sigc::signal<void, TerrainArea*> EventAreaChanged;
+	sigc::signal<void> EventAreaChanged;
 
 	/**
 	@brief Emitted when the area is about to be removed, and we need to tell the terrain to regenerate the visualization of it.
 	*/
-	sigc::signal<void, TerrainArea*> EventAreaRemoved;
+	sigc::signal<void> EventAreaRemoved;
+	
+	
+	/**
+	@brief Emitted when the underlying terrain area was swapped since it had it's layer changed. Currently the system can't handle dynamic changing of the layer, so we need to create a new area and drop the old one when the layer is changed.
+	*/
+	sigc::signal<void, Mercator::Area&> EventAreaSwapped;
+	
 
 protected:
 
@@ -97,6 +104,11 @@ protected:
 	@brief The internal Mercator::Area instance which this class wraps.
 	*/
 	Mercator::Area* mArea;
+	
+	/**
+	@brief An internal Mercator::Area instance used to hold a temporary instance when the area needs to be swapped.
+	*/
+	Mercator::Area* mOldArea;
 	
 	/**
 	@brief The entity to which this area is connected to.
