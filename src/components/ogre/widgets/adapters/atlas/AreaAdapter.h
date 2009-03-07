@@ -127,6 +127,17 @@ public:
 	 */
 	virtual void cancelMovement();
     
+    /**
+     * @brief Adds an area suggestion.
+     * @param id The id of the area.
+     * @param name The name of the area, to be presented to the user.
+     */
+    void addAreaSuggestion(int id, const std::string& name);
+    
+    /**
+     * @brief Clears all area suggestions.
+     */
+    void clearAreaSuggestions();
     
 protected:
 
@@ -174,6 +185,8 @@ protected:
 	EntityAreaPolygonPositionProvider* mPositionProvider;
 
 	bool layerWindow_TextChanged(const CEGUI::EventArgs& e);
+	bool layerWindow_ListSelectionChanged(const CEGUI::EventArgs& e);
+	
 	bool showButton_Clicked(const CEGUI::EventArgs& e);
 	
 	/**

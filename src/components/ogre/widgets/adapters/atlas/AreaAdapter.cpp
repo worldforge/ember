@@ -84,19 +84,7 @@ AreaAdapter::AreaAdapter(const ::Atlas::Message::Element& element, CEGUI::PushBu
 	}
 	
 	if (mLayerWindow) {
-		addGuiEventConnection(mLayerWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&AreaAdapter::layerWindow_TextChanged, this))); 
-		mLayerWindow->addItem(new ColouredListItem("1"));
-		mLayerWindow->addItem(new ColouredListItem("2"));
-		mLayerWindow->addItem(new ColouredListItem("3"));
-		mLayerWindow->addItem(new ColouredListItem("4"));
-		mLayerWindow->addItem(new ColouredListItem("5"));
-		mLayerWindow->addItem(new ColouredListItem("6"));
-		mLayerWindow->addItem(new ColouredListItem("7"));
-		mLayerWindow->addItem(new ColouredListItem("8"));
-		
-		std::stringstream ss;
-		ss << mLayer;
-		mLayerWindow->setText(ss.str());
+		addGuiEventConnection(mLayerWindow->subscribeEvent(CEGUI::Combobox::EventListSelectionChanged, CEGUI::Event::Subscriber(&AreaAdapter::layerWindow_ListSelectionChanged, this))); 
 	}
 	
 
@@ -138,6 +126,21 @@ bool AreaAdapter::layerWindow_TextChanged(const CEGUI::EventArgs& e)
 	}
 	return true;
 }
+
+bool AreaAdapter::layerWindow_ListSelectionChanged(const CEGUI::EventArgs& e)
+{
+	if (!mSelfUpdate) {
+		if (mLayerWindow->getSelectedItem()) {
+			mLayer = mLayerWindow->getSelectedItem()->getID();
+		} else {
+			mLayer = 0;
+		}
+		EventValueChanged.emit();
+	}
+	return true;
+}
+
+
 
 void AreaAdapter::toggleDisplayOfPolygon()
 {
@@ -215,7 +218,10 @@ void AreaAdapter::createNewPolygon()
 
 void AreaAdapter::fillElementFromGui()
 {
-	mLayer = atoi(mLayerWindow->getText().c_str());
+	CEGUI::ListboxItem* item = mLayerWindow->getSelectedItem();
+	if (item) {
+		mLayer = item->getID();
+	}
 	if (mPolygon) {
 		Terrain::TerrainAreaParser parser;
 		mEditedElement = parser.createElement(mPolygon->getShape(), mLayer);
@@ -246,6 +252,22 @@ void AreaAdapter::cancelMovement()
 {
 	delete mPointMovement;
 	mPointMovement = 0;
+}
+
+void AreaAdapter::addAreaSuggestion(int id, const std::string& name)
+{
+	ColouredListItem* item = new ColouredListItem(name, id);
+	mLayerWindow->addItem(item);
+	if (id == mLayer) {
+		item->setSelected(true);
+		mLayerWindow->setText(name);
+	}
+}
+
+void AreaAdapter::clearAreaSuggestions()
+{
+	mLayerWindow->resetList();
+	mLayerWindow->setText("");
 }
 
 

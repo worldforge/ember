@@ -24,6 +24,10 @@ TOLUA_API int  tolua_EmberOgre_open (lua_State* tolua_S);
 #include "components/ogre/manipulation/EntityRecipeManager.h"
 #include "components/ogre/widgets/EntityCreator.h"
 #include "components/ogre/terrain/Map.h"
+#include "components/ogre/terrain/TerrainLayerDefinition.h"
+#include "components/ogre/terrain/TerrainLayerDefinitionManager.h"
+#define __operator_ptr operator*
+#define __operator_pp operator++
 
 /* function to release collected object via destructor */
 #ifdef __cplusplus
@@ -269,6 +273,13 @@ static int tolua_collect_std__vector_EmberOgre__ModelBlock__ (lua_State* tolua_S
 static int tolua_collect_EmberOgre__OgreInfo (lua_State* tolua_S)
 {
  EmberOgre::OgreInfo* self = (EmberOgre::OgreInfo*) tolua_tousertype(tolua_S,1,0);
+	delete self;
+	return 0;
+}
+
+static int tolua_collect_EmberOgre__Terrain__TerrainLayerDefinitionManager__DefinitionStore__const_iterator (lua_State* tolua_S)
+{
+ EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator* self = (EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -553,12 +564,15 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"std::vector<EmberOgre::Terrain::TerrainEditBasePointMovement>");
  tolua_usertype(tolua_S,"Ogre::Vector2");
  tolua_usertype(tolua_S,"WFMath::AxisBox<3>");
+ tolua_usertype(tolua_S,"Carpenter::AttachPair");
  tolua_usertype(tolua_S,"std::iostream");
  tolua_usertype(tolua_S,"EmberOgre::Gui::IconBar");
- tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainLayerDefinition");
- tolua_usertype(tolua_S,"Carpenter::AttachPair");
- tolua_usertype(tolua_S,"Eris::TypeService");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Terrain::TerrainGenerator&>");
+ tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainLayerDefinition");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::MotionManager&>");
+ tolua_usertype(tolua_S,"EmberOgre::Model::PartDefinition");
+ tolua_usertype(tolua_S,"Eris::TypeService");
+ tolua_usertype(tolua_S,"Ogre::RenderWindow");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Terrain::BasePointUserObject*>");
  tolua_usertype(tolua_S,"Ogre::AxisAlignedBox");
  tolua_usertype(tolua_S,"EmberOgre::Gui::EntityIconManager");
@@ -566,15 +580,15 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Mercator::Terrain");
  tolua_usertype(tolua_S,"std::vector<EmberOgre::ModelBlock*>");
  tolua_usertype(tolua_S,"sigc::signal<void,float>");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::MotionManager&>");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntityFactory*>");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::AvatarEmberEntity*>");
  tolua_usertype(tolua_S,"EmberOgre::Environment::ISun");
- tolua_usertype(tolua_S,"EmberOgre::Model::PartDefinition");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntityFactory*>");
- tolua_usertype(tolua_S,"Ogre::RenderWindow");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::OverlayCompassImpl");
+ tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator");
+ tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore");
  tolua_usertype(tolua_S,"Ember::ConsoleCommandWrapper");
  tolua_usertype(tolua_S,"Carpenter::BuildingBlock");
- tolua_usertype(tolua_S,"EmberOgre::Gui::OverlayCompassImpl");
+ tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefinitionAtlasComposer");
  tolua_usertype(tolua_S,"sigc::signal<void,const Atlas::Message::Element&>");
  tolua_usertype(tolua_S,"Carpenter::BuildingBlockBindingDefinition");
  tolua_usertype(tolua_S,"Ogre::BillboardSet");
@@ -635,7 +649,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Ogre::Viewport");
  tolua_usertype(tolua_S,"size_t");
  tolua_usertype(tolua_S,"Atlas::Message::MapType");
- tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefinitionAtlasComposer");
+ tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainLayerDefinitionManager");
  tolua_usertype(tolua_S,"EmberOgre::AvatarCamera");
  tolua_usertype(tolua_S,"Ogre::ResourceManager");
  tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefinitionManager");
@@ -5661,6 +5675,198 @@ static int tolua_EmberOgre_EmberOgre_Terrain_TerrainArea_setArea00(lua_State* to
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'setArea'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getName of class  EmberOgre::Terrain::TerrainLayerDefinition */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinition_getName00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinition_getName00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Terrain::TerrainLayerDefinition",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Terrain::TerrainLayerDefinition* self = (const EmberOgre::Terrain::TerrainLayerDefinition*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getName'",NULL);
+#endif
+  {
+   const std::string tolua_ret = (const std::string)  self->getName();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getName'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getAreaId of class  EmberOgre::Terrain::TerrainLayerDefinition */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinition_getAreaId00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinition_getAreaId00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Terrain::TerrainLayerDefinition",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Terrain::TerrainLayerDefinition* self = (const EmberOgre::Terrain::TerrainLayerDefinition*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getAreaId'",NULL);
+#endif
+  {
+   unsigned int tolua_ret = (unsigned int)  self->getAreaId();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getAreaId'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getDiffuseTextureName of class  EmberOgre::Terrain::TerrainLayerDefinition */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinition_getDiffuseTextureName00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinition_getDiffuseTextureName00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Terrain::TerrainLayerDefinition",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Terrain::TerrainLayerDefinition* self = (const EmberOgre::Terrain::TerrainLayerDefinition*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getDiffuseTextureName'",NULL);
+#endif
+  {
+   const std::string tolua_ret = (const std::string)  self->getDiffuseTextureName();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getDiffuseTextureName'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getNormalMapTextureName of class  EmberOgre::Terrain::TerrainLayerDefinition */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinition_getNormalMapTextureName00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinition_getNormalMapTextureName00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Terrain::TerrainLayerDefinition",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Terrain::TerrainLayerDefinition* self = (const EmberOgre::Terrain::TerrainLayerDefinition*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getNormalMapTextureName'",NULL);
+#endif
+  {
+   const std::string tolua_ret = (const std::string)  self->getNormalMapTextureName();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getNormalMapTextureName'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getShaderName of class  EmberOgre::Terrain::TerrainLayerDefinition */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinition_getShaderName00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinition_getShaderName00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Terrain::TerrainLayerDefinition",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Terrain::TerrainLayerDefinition* self = (const EmberOgre::Terrain::TerrainLayerDefinition*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getShaderName'",NULL);
+#endif
+  {
+   const std::string tolua_ret = (const std::string)  self->getShaderName();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getShaderName'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getTileSize of class  EmberOgre::Terrain::TerrainLayerDefinition */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinition_getTileSize00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinition_getTileSize00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Terrain::TerrainLayerDefinition",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Terrain::TerrainLayerDefinition* self = (const EmberOgre::Terrain::TerrainLayerDefinition*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getTileSize'",NULL);
+#endif
+  {
+   float tolua_ret = (float)  self->getTileSize();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getTileSize'.",&tolua_err);
  return 0;
 #endif
 }
@@ -24449,6 +24655,346 @@ static int tolua_set_EmberOgre__AttributeObserver_EventChanged(lua_State* tolua_
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: __operator_ptr of class  const_iterator */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_DefinitionStore_const_iterator_get00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_DefinitionStore_const_iterator_get00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator* self = (EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function '__operator_ptr'",NULL);
+#endif
+  {
+   EmberOgre::Terrain::TerrainLayerDefinition* tolua_ret = (EmberOgre::Terrain::TerrainLayerDefinition*)  self->__operator_ptr();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Terrain::TerrainLayerDefinition");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'get'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: __operator_pp of class  const_iterator */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_DefinitionStore_const_iterator_next00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_DefinitionStore_const_iterator_next00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator* self = (EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function '__operator_pp'",NULL);
+#endif
+  {
+   EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator& tolua_ret = (EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator&)  self->__operator_pp();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'next'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: begin of class  DefinitionStore */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_DefinitionStore_begin00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_DefinitionStore_begin00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore* self = (const EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'begin'",NULL);
+#endif
+  {
+   EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator tolua_ret = (EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator)  self->begin();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'begin'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: end of class  DefinitionStore */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_DefinitionStore_theEnd00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_DefinitionStore_theEnd00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore* self = (const EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'end'",NULL);
+#endif
+  {
+   EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator tolua_ret = (EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator)  self->end();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'theEnd'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: size of class  DefinitionStore */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_DefinitionStore_size00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_DefinitionStore_size00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore* self = (const EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'size'",NULL);
+#endif
+  {
+   int tolua_ret = (int)  self->size();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'size'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getSingleton of class  EmberOgre::Terrain::TerrainLayerDefinitionManager */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_getSingleton00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_getSingleton00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"EmberOgre::Terrain::TerrainLayerDefinitionManager",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   EmberOgre::Terrain::TerrainLayerDefinitionManager& tolua_ret = (EmberOgre::Terrain::TerrainLayerDefinitionManager&)  EmberOgre::Terrain::TerrainLayerDefinitionManager::getSingleton();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"EmberOgre::Terrain::TerrainLayerDefinitionManager");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getSingleton'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: parseScript of class  EmberOgre::Terrain::TerrainLayerDefinitionManager */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_parseScript00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_parseScript00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Terrain::TerrainLayerDefinitionManager",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Ogre::DataStreamPtr",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"const Ogre::String",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Terrain::TerrainLayerDefinitionManager* self = (EmberOgre::Terrain::TerrainLayerDefinitionManager*)  tolua_tousertype(tolua_S,1,0);
+  Ogre::DataStreamPtr* stream = ((Ogre::DataStreamPtr*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::String* groupName = ((const Ogre::String*)  tolua_tousertype(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'parseScript'",NULL);
+#endif
+  {
+   self->parseScript(*stream,*groupName);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'parseScript'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getDefinitions of class  EmberOgre::Terrain::TerrainLayerDefinitionManager */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_getDefinitions00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_getDefinitions00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Terrain::TerrainLayerDefinitionManager",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Terrain::TerrainLayerDefinitionManager* self = (const EmberOgre::Terrain::TerrainLayerDefinitionManager*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getDefinitions'",NULL);
+#endif
+  {
+   const EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore& tolua_ret = (const EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore&)  self->getDefinitions();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getDefinitions'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getDefinitionForArea of class  EmberOgre::Terrain::TerrainLayerDefinitionManager */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_getDefinitionForArea00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_getDefinitionForArea00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Terrain::TerrainLayerDefinitionManager",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Terrain::TerrainLayerDefinitionManager* self = (EmberOgre::Terrain::TerrainLayerDefinitionManager*)  tolua_tousertype(tolua_S,1,0);
+  unsigned int areaIndex = ((unsigned int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getDefinitionForArea'",NULL);
+#endif
+  {
+   EmberOgre::Terrain::TerrainLayerDefinition* tolua_ret = (EmberOgre::Terrain::TerrainLayerDefinition*)  self->getDefinitionForArea(areaIndex);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Terrain::TerrainLayerDefinition");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getDefinitionForArea'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getDefinitionForShader of class  EmberOgre::Terrain::TerrainLayerDefinitionManager */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_getDefinitionForShader00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_getDefinitionForShader00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Terrain::TerrainLayerDefinitionManager",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Terrain::TerrainLayerDefinitionManager* self = (EmberOgre::Terrain::TerrainLayerDefinitionManager*)  tolua_tousertype(tolua_S,1,0);
+  const std::string shaderType = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getDefinitionForShader'",NULL);
+#endif
+  {
+   EmberOgre::Terrain::TerrainLayerDefinition* tolua_ret = (EmberOgre::Terrain::TerrainLayerDefinition*)  self->getDefinitionForShader(shaderType);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Terrain::TerrainLayerDefinition");
+   tolua_pushcppstring(tolua_S,(const char*)shaderType);
+  }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getDefinitionForShader'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: getSingleton of class  EmberOgre::EmberOgre */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EmberOgre_getSingleton00
 static int tolua_EmberOgre_EmberOgre_EmberOgre_getSingleton00(lua_State* tolua_S)
@@ -25483,6 +26029,12 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
     tolua_endmodule(tolua_S);
     tolua_cclass(tolua_S,"TerrainLayerDefinition","EmberOgre::Terrain::TerrainLayerDefinition","",NULL);
     tolua_beginmodule(tolua_S,"TerrainLayerDefinition");
+     tolua_function(tolua_S,"getName",tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinition_getName00);
+     tolua_function(tolua_S,"getAreaId",tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinition_getAreaId00);
+     tolua_function(tolua_S,"getDiffuseTextureName",tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinition_getDiffuseTextureName00);
+     tolua_function(tolua_S,"getNormalMapTextureName",tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinition_getNormalMapTextureName00);
+     tolua_function(tolua_S,"getShaderName",tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinition_getShaderName00);
+     tolua_function(tolua_S,"getTileSize",tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinition_getTileSize00);
     tolua_endmodule(tolua_S);
     tolua_cclass(tolua_S,"TerrainPageSurfaceLayer","EmberOgre::Terrain::TerrainPageSurfaceLayer","",NULL);
     tolua_beginmodule(tolua_S,"TerrainPageSurfaceLayer");
@@ -26816,6 +27368,69 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
     tolua_variable(tolua_S,"EventChanged",tolua_get_EmberOgre__AttributeObserver_EventChanged,tolua_set_EmberOgre__AttributeObserver_EventChanged);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"EmberOgre",0);
+  tolua_beginmodule(tolua_S,"EmberOgre");
+   tolua_module(tolua_S,"Terrain",0);
+   tolua_beginmodule(tolua_S,"Terrain");
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"EmberOgre",0);
+  tolua_beginmodule(tolua_S,"EmberOgre");
+   tolua_module(tolua_S,"Terrain",0);
+   tolua_beginmodule(tolua_S,"Terrain");
+    tolua_cclass(tolua_S,"TerrainLayerDefinitionManager","EmberOgre::Terrain::TerrainLayerDefinitionManager","Ogre::ResourceManager",NULL);
+    tolua_beginmodule(tolua_S,"TerrainLayerDefinitionManager");
+     tolua_cclass(tolua_S,"DefinitionStore","EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore","",NULL);
+     tolua_beginmodule(tolua_S,"DefinitionStore");
+      #ifdef __cplusplus
+      tolua_cclass(tolua_S,"const_iterator","EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator","",tolua_collect_EmberOgre__Terrain__TerrainLayerDefinitionManager__DefinitionStore__const_iterator);
+      #else
+      tolua_cclass(tolua_S,"const_iterator","EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator","",NULL);
+      #endif
+      tolua_beginmodule(tolua_S,"const_iterator");
+       tolua_function(tolua_S,"get",tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_DefinitionStore_const_iterator_get00);
+       tolua_function(tolua_S,"next",tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_DefinitionStore_const_iterator_next00);
+      tolua_endmodule(tolua_S);
+      tolua_function(tolua_S,"begin",tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_DefinitionStore_begin00);
+      tolua_function(tolua_S,"theEnd",tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_DefinitionStore_theEnd00);
+      tolua_function(tolua_S,"size",tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_DefinitionStore_size00);
+     tolua_endmodule(tolua_S);
+     tolua_function(tolua_S,"getSingleton",tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_getSingleton00);
+     tolua_function(tolua_S,"parseScript",tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_parseScript00);
+     tolua_function(tolua_S,"getDefinitions",tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_getDefinitions00);
+     tolua_function(tolua_S,"getDefinitionForArea",tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_getDefinitionForArea00);
+     tolua_function(tolua_S,"getDefinitionForShader",tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinitionManager_getDefinitionForShader00);
+    tolua_endmodule(tolua_S);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+
+  { /* begin embedded lua code */
+   int top = lua_gettop(tolua_S);
+   static unsigned char B[] = {
+    10,102,117,110, 99,116,105,111,110, 32, 69,109, 98,101,114,
+     79,103,114,101, 46, 84,101,114,114, 97,105,110, 46, 84,101,
+    114,114, 97,105,110, 76, 97,121,101,114, 68,101,102,105,110,
+    105,116,105,111,110, 77, 97,110, 97,103,101,114, 46, 68,101,
+    102,105,110,105,116,105,111,110, 83,116,111,114,101, 58,105,
+    112, 97,105,114,115, 40, 41, 10,108,111, 99, 97,108, 32, 73,
+     32, 61, 32,115,101,108,102, 58, 98,101,103,105,110, 40, 41,
+     10,108,111, 99, 97,108, 32, 73,101,110,100, 32, 61, 32,115,
+    101,108,102, 58,116,104,101, 69,110,100, 40, 41, 10,108,111,
+     99, 97,108, 32,105,110,100,101,120, 32, 61, 32, 45, 49, 59,
+     10,114,101,116,117,114,110, 32,102,117,110, 99,116,105,111,
+    110, 40, 41, 10,105,102, 32,105,110,100,101,120, 32, 43, 32,
+     49, 32, 60, 32,115,101,108,102, 58,115,105,122,101, 40, 41,
+     32,116,104,101,110, 10,108,111, 99, 97,108, 32,118, 97,108,
+     32, 61, 32, 73, 58,103,101,116, 40, 41, 10,105,110,100,101,
+    120, 32, 61, 32,105,110,100,101,120, 32, 43, 32, 49, 10, 73,
+     32, 61, 32, 73, 58,110,101,120,116, 40, 41, 10,114,101,116,
+    117,114,110, 32,105,110,100,101,120, 44, 32,118, 97,108, 10,
+    101,110,100, 10,101,110,100, 10,101,110,100,32
+   };
+   tolua_dobuffer(tolua_S,(char*)B,sizeof(B),"tolua: embedded Lua code 2");
+   lua_settop(tolua_S, top);
+  } /* end of embedded lua code */
+
   tolua_module(tolua_S,"EmberOgre",0);
   tolua_beginmodule(tolua_S,"EmberOgre");
    tolua_cclass(tolua_S,"EmberOgre","EmberOgre::EmberOgre","",NULL);

@@ -1,0 +1,63 @@
+$#include "components/ogre/terrain/TerrainLayerDefinitionManager.h"
+namespace EmberOgre {
+
+namespace Terrain {
+
+class TerrainLayerDefinitionManager : public Ogre::ResourceManager
+{
+	class DefinitionStore
+	{
+	$#define __operator_ptr operator*
+	$#define __operator_pp operator++
+	
+		class const_iterator {
+			public:
+				EmberOgre::Terrain::TerrainLayerDefinition* __operator_ptr @ get();
+				EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator& __operator_pp @ next();
+// 				bool operator==(const EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator& value);
+		};
+	public:
+		EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator begin() const;
+		EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator end @ theEnd() const;  // end is keyword in Lua
+		int size() const;
+	};
+	static TerrainLayerDefinitionManager& getSingleton();
+	
+	virtual void parseScript(Ogre::DataStreamPtr &stream, const Ogre::String &groupName);
+
+    /**
+    Adds a definition to the manager. This definition will be deleted by the manager upon destruction.
+    @param definition A valid definition.
+    */
+//    void addDefinition(TerrainLayerDefinition* definition);
+    
+    const DefinitionStore& getDefinitions() const;
+    
+    TerrainLayerDefinition* getDefinitionForArea(unsigned int areaIndex);
+    TerrainLayerDefinition* getDefinitionForShader(const std::string& shaderType);
+    
+};
+
+
+
+}
+
+}
+
+
+
+$[
+function EmberOgre.Terrain.TerrainLayerDefinitionManager.DefinitionStore:ipairs()
+	local I = self:begin()
+	local Iend = self:theEnd()
+	local index = -1;
+	return function()
+		if index + 1 < self:size() then
+			local val = I:get()
+			index = index + 1
+			I = I:next()
+			return index, val
+		end
+	end
+end
+$]

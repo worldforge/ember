@@ -1571,6 +1571,73 @@ static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_toggleD
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: addAreaSuggestion of class  EmberOgre::Gui::Adapters::Atlas::AreaAdapter */
+#ifndef TOLUA_DISABLE_tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_addAreaSuggestion00
+static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_addAreaSuggestion00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::Adapters::Atlas::AreaAdapter",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Gui::Adapters::Atlas::AreaAdapter* self = (EmberOgre::Gui::Adapters::Atlas::AreaAdapter*)  tolua_tousertype(tolua_S,1,0);
+  int id = ((int)  tolua_tonumber(tolua_S,2,0));
+  const std::string name = ((const std::string)  tolua_tocppstring(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addAreaSuggestion'",NULL);
+#endif
+  {
+   self->addAreaSuggestion(id,name);
+   tolua_pushcppstring(tolua_S,(const char*)name);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addAreaSuggestion'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: clearAreaSuggestions of class  EmberOgre::Gui::Adapters::Atlas::AreaAdapter */
+#ifndef TOLUA_DISABLE_tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_clearAreaSuggestions00
+static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_clearAreaSuggestions00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::Adapters::Atlas::AreaAdapter",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Gui::Adapters::Atlas::AreaAdapter* self = (EmberOgre::Gui::Adapters::Atlas::AreaAdapter*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'clearAreaSuggestions'",NULL);
+#endif
+  {
+   self->clearAreaSuggestions();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'clearAreaSuggestions'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: new of class  EmberOgre::Gui::Adapters::Atlas::MapAdapter */
 #ifndef TOLUA_DISABLE_tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_MapAdapter_new00
 static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_MapAdapter_new00(lua_State* tolua_S)
@@ -2698,6 +2765,8 @@ TOLUA_API int tolua_atlas_adapters_open (lua_State* tolua_S)
        tolua_function(tolua_S,".call",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_new00_local);
        tolua_function(tolua_S,"delete",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_delete00);
        tolua_function(tolua_S,"toggleDisplayOfPolygon",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_toggleDisplayOfPolygon00);
+       tolua_function(tolua_S,"addAreaSuggestion",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_addAreaSuggestion00);
+       tolua_function(tolua_S,"clearAreaSuggestions",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AreaAdapter_clearAreaSuggestions00);
       tolua_endmodule(tolua_S);
      tolua_endmodule(tolua_S);
     tolua_endmodule(tolua_S);
