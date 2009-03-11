@@ -90,11 +90,8 @@ EntityEditor = {
 				
 				wrapper.buttonPressed = function(args)
 					local name = wrapper.nameEditbox:getText()
--- 					local proto = wrapper.typeCombobox:getSelectedItem():getUserData()
-			-- 		debugObject(proto)
 					local newAdapter = wrapper.newAdapters[wrapper.typeCombobox:getSelectedItem():getID()]
 					local element = newAdapter.createNewElement()
-					debugObject(element)
 					local adapterWrapper = newAdapter.createAdapter(element, EntityEditor.getPrototype(name, element))
 					
 					EntityEditor.instance.addNewElement(element)
@@ -754,11 +751,14 @@ function EntityEditor.fillNewElementCombobox(combobox, elementName, outerElement
 	if selectedItem == nil then
 		if combobox:getItemCount() == 1 then
 			combobox:getListboxItemFromIndex(0):setSelected(true)
+			combobox:setText(combobox:getSelectedItem():getText())
 		else
 			combobox:clearAllSelections()
+			combobox:setText("")
 		end
 	else
 		selectedItem:setSelected(true)
+		combobox:setText(combobox:getSelectedItem():getText())
 	end
 	
 	combobox:setHeight(CEGUI.UDim(0, 100))
