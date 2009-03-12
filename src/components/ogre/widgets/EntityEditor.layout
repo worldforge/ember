@@ -90,6 +90,26 @@
 						<Property Name='InheritsAlpha' Value='false'/>
 					</Window -->
 				</Window>
+				<Window Type='DefaultGUISheet' Name='AtlasPanel'>
+					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='Text' Value='Atlas'/>
+					<Property Name='InheritsAlpha' Value='false'/>
+					<!-- Property Name='Visible' Value='true'/ -->
+					<Window Type='EmberLook/MultiLineEditbox' Name='AtlasTextbox'>
+						<Property Name='UnifiedSize' Value='{{1.000000,-10.000000},{1.000000,-40.000000}}'/>
+						<Property Name='UnifiedPosition' Value='{{0.000000,5.000000},{0.000000,5.000000}}'/>
+						<Property Name='Text' Value=''/>
+						<Property Name='InheritsAlpha' Value='false'/>
+						<Property Name='ReadOnly' Value='true'/>
+					</Window>
+					<Window Type='EmberLook/Button' Name='RefreshAtlas'>
+						<Property Name='UnifiedPosition' Value='{{0,5},{1.0,-30}}'/>
+						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
+						<Property Name='Text' Value='Refresh'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+						<Event Name="Clicked" Function="EntityEditor.RefreshAtlas_Clicked" />
+					</Window>
+				</Window>
 			</Window>
 			<Window Type='EmberLook/Button' Name='Submit'>
 				<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-20}}'/>

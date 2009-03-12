@@ -788,6 +788,20 @@ function EntityEditor.DeleteButton_Clicked(args)
 	return true
 end
 
+function EntityEditor.RefreshAtlas_Clicked(args)
+	if EntityEditor.instance ~= nil then
+		local entity = EntityEditor.instance.entity
+		if entity ~= nil then
+			local ss = std.stringstream:new_local()
+			local ss_log = std.stringstream:new_local()
+			entity:dumpAttributes(ss, ss_log.__ostream__)
+			EntityEditor.widget:getWindow("AtlasTextbox"):setText(ss:str())
+		end
+	end
+	return true
+	
+end
+
 function EntityEditor.ExportButton_Clicked(args)
 	emberOgre:getEntityFactory():dumpAttributesOfEntity(EntityEditor.instance.entity:getId())
 	return true

@@ -65,5 +65,14 @@ class EmberEntity : public Eris::Entity {
 	 * @return true if visualization is turned on, else false
 	 */
 	virtual bool getVisualize(const std::string& visualization) const;
+	
+	/**
+	 * @brief Dumps all of this entity's attributes to the supplied outstream.
+	 * By default the entity will be exported using XML Atlas format.
+	 * @param outstream The stream to write to.
+	 * @param logOutstream The stream to which log messages will be written.
+	 */
+	void dumpAttributes(std::iostream& outstream, std::ostream& logOutstream) const;
+	
 };
 }
