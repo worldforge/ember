@@ -1,0 +1,14 @@
+$#include <ostream>
+$#include <istream>
+$#include <sstream>
+
+namespace std {
+
+class stringstream : public iostream, public istream, public ostream
+{
+public:
+	stringstream();
+	~stringstream();
+	std::string str() const;
+};
+}

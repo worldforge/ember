@@ -14,9 +14,19 @@
 TOLUA_API int  tolua_Framework_open (lua_State* tolua_S);
 
 #include "required.h"
+#include <ostream>
+#include <istream>
+#include <sstream>
 
 /* function to release collected object via destructor */
 #ifdef __cplusplus
+
+static int tolua_collect_std__stringstream (lua_State* tolua_S)
+{
+ std::stringstream* self = (std::stringstream*) tolua_tousertype(tolua_S,1,0);
+	delete self;
+	return 0;
+}
 
 static int tolua_collect_Ember__Tokeniser (lua_State* tolua_S)
 {
@@ -33,6 +43,10 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"sigc::signal<bool,const std::string&>");
  tolua_usertype(tolua_S,"Ember::Tokeniser");
  tolua_usertype(tolua_S,"Ember::ConsoleBackend");
+ tolua_usertype(tolua_S,"std::iostream");
+ tolua_usertype(tolua_S,"std::istream");
+ tolua_usertype(tolua_S,"std::ostream");
+ tolua_usertype(tolua_S,"std::stringstream");
 }
 
 /* method: getSingletonPtr of class  Ember::ConsoleBackend */
@@ -406,6 +420,174 @@ static int tolua_Framework_Ember_Tokeniser_remainingTokens00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* get function: __ostream__ of class  std::iostream */
+#ifndef TOLUA_DISABLE_tolua_get_std__iostream___ostream__
+static int tolua_get_std__iostream___ostream__(lua_State* tolua_S)
+{
+  std::iostream* self = (std::iostream*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable '__ostream__'",NULL);
+#endif
+#ifdef __cplusplus
+  tolua_pushusertype(tolua_S,(void*)static_cast<std::ostream*>(self), "std::ostream");
+#else
+  tolua_pushusertype(tolua_S,(void*)((std::ostream*)self), "std::ostream");
+#endif
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new of class  std::stringstream */
+#ifndef TOLUA_DISABLE_tolua_Framework_std_stringstream_new00
+static int tolua_Framework_std_stringstream_new00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"std::stringstream",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   std::stringstream* tolua_ret = (std::stringstream*)  new std::stringstream();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"std::stringstream");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  std::stringstream */
+#ifndef TOLUA_DISABLE_tolua_Framework_std_stringstream_new00_local
+static int tolua_Framework_std_stringstream_new00_local(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"std::stringstream",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   std::stringstream* tolua_ret = (std::stringstream*)  new std::stringstream();
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"std::stringstream");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: delete of class  std::stringstream */
+#ifndef TOLUA_DISABLE_tolua_Framework_std_stringstream_delete00
+static int tolua_Framework_std_stringstream_delete00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"std::stringstream",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  std::stringstream* self = (std::stringstream*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'delete'",NULL);
+#endif
+  delete self;
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'delete'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: str of class  std::stringstream */
+#ifndef TOLUA_DISABLE_tolua_Framework_std_stringstream_str00
+static int tolua_Framework_std_stringstream_str00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const std::stringstream",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const std::stringstream* self = (const std::stringstream*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'str'",NULL);
+#endif
+  {
+   std::string tolua_ret = (std::string)  self->str();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'str'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: __istream__ of class  std::stringstream */
+#ifndef TOLUA_DISABLE_tolua_get_std__stringstream___istream__
+static int tolua_get_std__stringstream___istream__(lua_State* tolua_S)
+{
+  std::stringstream* self = (std::stringstream*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable '__istream__'",NULL);
+#endif
+#ifdef __cplusplus
+  tolua_pushusertype(tolua_S,(void*)static_cast<std::istream*>(self), "std::istream");
+#else
+  tolua_pushusertype(tolua_S,(void*)((std::istream*)self), "std::istream");
+#endif
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: __ostream__ of class  std::stringstream */
+#ifndef TOLUA_DISABLE_tolua_get_std__stringstream___ostream__
+static int tolua_get_std__stringstream___ostream__(lua_State* tolua_S)
+{
+  std::stringstream* self = (std::stringstream*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable '__ostream__'",NULL);
+#endif
+#ifdef __cplusplus
+  tolua_pushusertype(tolua_S,(void*)static_cast<std::ostream*>(self), "std::ostream");
+#else
+  tolua_pushusertype(tolua_S,(void*)((std::ostream*)self), "std::ostream");
+#endif
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* Open function */
 TOLUA_API int tolua_Framework_open (lua_State* tolua_S)
 {
@@ -440,6 +622,33 @@ TOLUA_API int tolua_Framework_open (lua_State* tolua_S)
     tolua_function(tolua_S,"initTokens",tolua_Framework_Ember_Tokeniser_initTokens00);
     tolua_function(tolua_S,"nextToken",tolua_Framework_Ember_Tokeniser_nextToken00);
     tolua_function(tolua_S,"remainingTokens",tolua_Framework_Ember_Tokeniser_remainingTokens00);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"std",0);
+  tolua_beginmodule(tolua_S,"std");
+   tolua_cclass(tolua_S,"istream","std::istream","",NULL);
+   tolua_beginmodule(tolua_S,"istream");
+   tolua_endmodule(tolua_S);
+   tolua_cclass(tolua_S,"ostream","std::ostream","",NULL);
+   tolua_beginmodule(tolua_S,"ostream");
+   tolua_endmodule(tolua_S);
+   tolua_cclass(tolua_S,"iostream","std::iostream","std::istream",NULL);
+   tolua_beginmodule(tolua_S,"iostream");
+    tolua_variable(tolua_S,"__ostream__",tolua_get_std__iostream___ostream__,NULL);
+   tolua_endmodule(tolua_S);
+   #ifdef __cplusplus
+   tolua_cclass(tolua_S,"stringstream","std::stringstream","std::iostream",tolua_collect_std__stringstream);
+   #else
+   tolua_cclass(tolua_S,"stringstream","std::stringstream","std::iostream",NULL);
+   #endif
+   tolua_beginmodule(tolua_S,"stringstream");
+    tolua_function(tolua_S,"new",tolua_Framework_std_stringstream_new00);
+    tolua_function(tolua_S,"new_local",tolua_Framework_std_stringstream_new00_local);
+    tolua_function(tolua_S,".call",tolua_Framework_std_stringstream_new00_local);
+    tolua_function(tolua_S,"delete",tolua_Framework_std_stringstream_delete00);
+    tolua_function(tolua_S,"str",tolua_Framework_std_stringstream_str00);
+    tolua_variable(tolua_S,"__istream__",tolua_get_std__stringstream___istream__,NULL);
+    tolua_variable(tolua_S,"__ostream__",tolua_get_std__stringstream___ostream__,NULL);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
