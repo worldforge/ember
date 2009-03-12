@@ -18,6 +18,7 @@ TOLUA_API int  tolua_atlas_adapters_open (lua_State* tolua_S);
 #include "../../StringAdapter.h"
 #include "../../NumberAdapter.h"
 #include "../../SizeAdapter.h"
+#include "../../PolygonAdapter.h"
 #include "../../AreaAdapter.h"
 #include "../../MapAdapter.h"
 #include "../../ListAdapter.h"
@@ -29,16 +30,9 @@ TOLUA_API int  tolua_atlas_adapters_open (lua_State* tolua_S);
 /* function to release collected object via destructor */
 #ifdef __cplusplus
 
-static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__AdapterBase (lua_State* tolua_S)
+static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__PolygonAdapter (lua_State* tolua_S)
 {
- EmberOgre::Gui::Adapters::Atlas::AdapterBase* self = (EmberOgre::Gui::Adapters::Atlas::AdapterBase*) tolua_tousertype(tolua_S,1,0);
-	delete self;
-	return 0;
-}
-
-static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__SizeAdapter (lua_State* tolua_S)
-{
- EmberOgre::Gui::Adapters::Atlas::SizeAdapter* self = (EmberOgre::Gui::Adapters::Atlas::SizeAdapter*) tolua_tousertype(tolua_S,1,0);
+ EmberOgre::Gui::Adapters::Atlas::PolygonAdapter* self = (EmberOgre::Gui::Adapters::Atlas::PolygonAdapter*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -50,6 +44,27 @@ static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__StaticAdapter (lua_Sta
 	return 0;
 }
 
+static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__OrientationAdapter (lua_State* tolua_S)
+{
+ EmberOgre::Gui::Adapters::Atlas::OrientationAdapter* self = (EmberOgre::Gui::Adapters::Atlas::OrientationAdapter*) tolua_tousertype(tolua_S,1,0);
+	delete self;
+	return 0;
+}
+
+static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__SizeAdapter (lua_State* tolua_S)
+{
+ EmberOgre::Gui::Adapters::Atlas::SizeAdapter* self = (EmberOgre::Gui::Adapters::Atlas::SizeAdapter*) tolua_tousertype(tolua_S,1,0);
+	delete self;
+	return 0;
+}
+
+static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__MapAdapter (lua_State* tolua_S)
+{
+ EmberOgre::Gui::Adapters::Atlas::MapAdapter* self = (EmberOgre::Gui::Adapters::Atlas::MapAdapter*) tolua_tousertype(tolua_S,1,0);
+	delete self;
+	return 0;
+}
+
 static int tolua_collect_std__vector_std__string_ (lua_State* tolua_S)
 {
  std::vector<std::string>* self = (std::vector<std::string>*) tolua_tousertype(tolua_S,1,0);
@@ -57,9 +72,9 @@ static int tolua_collect_std__vector_std__string_ (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__OrientationAdapter (lua_State* tolua_S)
+static int tolua_collect_WFMath__Polygon_2_ (lua_State* tolua_S)
 {
- EmberOgre::Gui::Adapters::Atlas::OrientationAdapter* self = (EmberOgre::Gui::Adapters::Atlas::OrientationAdapter*) tolua_tousertype(tolua_S,1,0);
+ WFMath::Polygon<2>* self = (WFMath::Polygon<2>*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -85,16 +100,16 @@ static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__Position2DAdapter (lua
 	return 0;
 }
 
-static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__AdapterFactory (lua_State* tolua_S)
+static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__NumberAdapter (lua_State* tolua_S)
 {
- EmberOgre::Gui::Adapters::Atlas::AdapterFactory* self = (EmberOgre::Gui::Adapters::Atlas::AdapterFactory*) tolua_tousertype(tolua_S,1,0);
+ EmberOgre::Gui::Adapters::Atlas::NumberAdapter* self = (EmberOgre::Gui::Adapters::Atlas::NumberAdapter*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
 
-static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__MapAdapter (lua_State* tolua_S)
+static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__AdapterFactory (lua_State* tolua_S)
 {
- EmberOgre::Gui::Adapters::Atlas::MapAdapter* self = (EmberOgre::Gui::Adapters::Atlas::MapAdapter*) tolua_tousertype(tolua_S,1,0);
+ EmberOgre::Gui::Adapters::Atlas::AdapterFactory* self = (EmberOgre::Gui::Adapters::Atlas::AdapterFactory*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -106,9 +121,9 @@ static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__StringAdapter (lua_Sta
 	return 0;
 }
 
-static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__NumberAdapter (lua_State* tolua_S)
+static int tolua_collect_EmberOgre__Gui__Adapters__Atlas__AdapterBase (lua_State* tolua_S)
 {
- EmberOgre::Gui::Adapters::Atlas::NumberAdapter* self = (EmberOgre::Gui::Adapters::Atlas::NumberAdapter*) tolua_tousertype(tolua_S,1,0);
+ EmberOgre::Gui::Adapters::Atlas::AdapterBase* self = (EmberOgre::Gui::Adapters::Atlas::AdapterBase*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -130,16 +145,18 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::SizeAdapter");
  tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::ListAdapter");
  tolua_usertype(tolua_S,"Atlas::Message::MapType");
- tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::StaticAdapter");
- tolua_usertype(tolua_S,"CEGUI::Window");
- tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::AreaAdapter");
- tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::NumberAdapter");
- tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::PositionAdapter");
- tolua_usertype(tolua_S,"Eris::Entity");
  tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::AdapterBase");
- tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::MapAdapter");
- tolua_usertype(tolua_S,"std::vector<std::string>");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::StaticAdapter");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::NumberAdapter");
+ tolua_usertype(tolua_S,"CEGUI::Window");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::PositionAdapter");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::PolygonAdapter");
  tolua_usertype(tolua_S,"CEGUI::PushButton");
+ tolua_usertype(tolua_S,"Eris::Entity");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::MapAdapter");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::AreaAdapter");
+ tolua_usertype(tolua_S,"std::vector<std::string>");
+ tolua_usertype(tolua_S,"WFMath::Polygon<2>");
  tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::OrientationAdapter");
  tolua_usertype(tolua_S,"CEGUI::Combobox");
  tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::Position2DAdapter");
@@ -1017,6 +1034,47 @@ static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_crea
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: createPolygonAdapter of class  EmberOgre::Gui::Adapters::Atlas::AdapterFactory */
+#ifndef TOLUA_DISABLE_tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_createPolygonAdapter00
+static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_createPolygonAdapter00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::Adapters::Atlas::AdapterFactory",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"CEGUI::Window",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,4,"const ::Atlas::Message::Element",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,5,"EmberOgre::EmberEntity",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Gui::Adapters::Atlas::AdapterFactory* self = (EmberOgre::Gui::Adapters::Atlas::AdapterFactory*)  tolua_tousertype(tolua_S,1,0);
+  CEGUI::Window* container = ((CEGUI::Window*)  tolua_tousertype(tolua_S,2,0));
+  const std::string adapterPrefix = ((const std::string)  tolua_tocppstring(tolua_S,3,0));
+  const ::Atlas::Message::Element* element = ((const ::Atlas::Message::Element*)  tolua_tousertype(tolua_S,4,0));
+  EmberOgre::EmberEntity* entity = ((EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,5,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'createPolygonAdapter'",NULL);
+#endif
+  {
+   EmberOgre::Gui::Adapters::Atlas::PolygonAdapter* tolua_ret = (EmberOgre::Gui::Adapters::Atlas::PolygonAdapter*)  self->createPolygonAdapter(container,adapterPrefix,*element,entity);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Gui::Adapters::Atlas::PolygonAdapter");
+   tolua_pushcppstring(tolua_S,(const char*)adapterPrefix);
+  }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'createPolygonAdapter'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: createAdapterByType of class  EmberOgre::Gui::Adapters::Atlas::AdapterFactory */
 #ifndef TOLUA_DISABLE_tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_createAdapterByType00
 static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_createAdapterByType00(lua_State* tolua_S)
@@ -1434,6 +1492,237 @@ static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_SizeAdapter_delete0
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'delete'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new of class  EmberOgre::Gui::Adapters::Atlas::PolygonAdapter */
+#ifndef TOLUA_DISABLE_tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_PolygonAdapter_new00
+static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_PolygonAdapter_new00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"EmberOgre::Gui::Adapters::Atlas::PolygonAdapter",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const ::Atlas::Message::Element",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"CEGUI::PushButton",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,4,"EmberOgre::EmberEntity",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const ::Atlas::Message::Element* element = ((const ::Atlas::Message::Element*)  tolua_tousertype(tolua_S,2,0));
+  CEGUI::PushButton* showButton = ((CEGUI::PushButton*)  tolua_tousertype(tolua_S,3,0));
+  EmberOgre::EmberEntity* entity = ((EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,4,0));
+  {
+   EmberOgre::Gui::Adapters::Atlas::PolygonAdapter* tolua_ret = (EmberOgre::Gui::Adapters::Atlas::PolygonAdapter*)  new EmberOgre::Gui::Adapters::Atlas::PolygonAdapter(*element,showButton,entity);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Gui::Adapters::Atlas::PolygonAdapter");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  EmberOgre::Gui::Adapters::Atlas::PolygonAdapter */
+#ifndef TOLUA_DISABLE_tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_PolygonAdapter_new00_local
+static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_PolygonAdapter_new00_local(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"EmberOgre::Gui::Adapters::Atlas::PolygonAdapter",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const ::Atlas::Message::Element",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"CEGUI::PushButton",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,4,"EmberOgre::EmberEntity",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const ::Atlas::Message::Element* element = ((const ::Atlas::Message::Element*)  tolua_tousertype(tolua_S,2,0));
+  CEGUI::PushButton* showButton = ((CEGUI::PushButton*)  tolua_tousertype(tolua_S,3,0));
+  EmberOgre::EmberEntity* entity = ((EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,4,0));
+  {
+   EmberOgre::Gui::Adapters::Atlas::PolygonAdapter* tolua_ret = (EmberOgre::Gui::Adapters::Atlas::PolygonAdapter*)  new EmberOgre::Gui::Adapters::Atlas::PolygonAdapter(*element,showButton,entity);
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::Gui::Adapters::Atlas::PolygonAdapter");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: delete of class  EmberOgre::Gui::Adapters::Atlas::PolygonAdapter */
+#ifndef TOLUA_DISABLE_tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_PolygonAdapter_delete00
+static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_PolygonAdapter_delete00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::Adapters::Atlas::PolygonAdapter",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Gui::Adapters::Atlas::PolygonAdapter* self = (EmberOgre::Gui::Adapters::Atlas::PolygonAdapter*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'delete'",NULL);
+#endif
+  delete self;
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'delete'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: toggleDisplayOfPolygon of class  EmberOgre::Gui::Adapters::Atlas::PolygonAdapter */
+#ifndef TOLUA_DISABLE_tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_PolygonAdapter_toggleDisplayOfPolygon00
+static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_PolygonAdapter_toggleDisplayOfPolygon00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::Adapters::Atlas::PolygonAdapter",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Gui::Adapters::Atlas::PolygonAdapter* self = (EmberOgre::Gui::Adapters::Atlas::PolygonAdapter*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'toggleDisplayOfPolygon'",NULL);
+#endif
+  {
+   self->toggleDisplayOfPolygon();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'toggleDisplayOfPolygon'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: createNewPolygon of class  EmberOgre::Gui::Adapters::Atlas::PolygonAdapter */
+#ifndef TOLUA_DISABLE_tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_PolygonAdapter_createNewPolygon00
+static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_PolygonAdapter_createNewPolygon00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::Adapters::Atlas::PolygonAdapter",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Gui::Adapters::Atlas::PolygonAdapter* self = (EmberOgre::Gui::Adapters::Atlas::PolygonAdapter*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'createNewPolygon'",NULL);
+#endif
+  {
+   self->createNewPolygon();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'createNewPolygon'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: hasShape of class  EmberOgre::Gui::Adapters::Atlas::PolygonAdapter */
+#ifndef TOLUA_DISABLE_tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_PolygonAdapter_hasShape00
+static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_PolygonAdapter_hasShape00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Gui::Adapters::Atlas::PolygonAdapter",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Gui::Adapters::Atlas::PolygonAdapter* self = (const EmberOgre::Gui::Adapters::Atlas::PolygonAdapter*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'hasShape'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->hasShape();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'hasShape'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getShape of class  EmberOgre::Gui::Adapters::Atlas::PolygonAdapter */
+#ifndef TOLUA_DISABLE_tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_PolygonAdapter_getShape00
+static int tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_PolygonAdapter_getShape00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Gui::Adapters::Atlas::PolygonAdapter",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Gui::Adapters::Atlas::PolygonAdapter* self = (const EmberOgre::Gui::Adapters::Atlas::PolygonAdapter*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getShape'",NULL);
+#endif
+  {
+   const WFMath::Polygon<2> tolua_ret = (const WFMath::Polygon<2>)  self->getShape();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new WFMath::Polygon<2>(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"const WFMath::Polygon<2>");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(const WFMath::Polygon<2>));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"const WFMath::Polygon<2>");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getShape'.",&tolua_err);
  return 0;
 #endif
 }
@@ -2669,6 +2958,7 @@ TOLUA_API int tolua_atlas_adapters_open (lua_State* tolua_S)
        tolua_function(tolua_S,"createOrientationAdapter",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_createOrientationAdapter00);
        tolua_function(tolua_S,"createStaticAdapter",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_createStaticAdapter00);
        tolua_function(tolua_S,"createAreaAdapter",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_createAreaAdapter00);
+       tolua_function(tolua_S,"createPolygonAdapter",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_createPolygonAdapter00);
        tolua_function(tolua_S,"createAdapterByType",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_createAdapterByType00);
        tolua_function(tolua_S,"loadLayoutIntoContainer",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_loadLayoutIntoContainer00);
        tolua_function(tolua_S,"getCurrentPrefix",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_AdapterFactory_getCurrentPrefix00);
@@ -2741,6 +3031,33 @@ TOLUA_API int tolua_atlas_adapters_open (lua_State* tolua_S)
        tolua_function(tolua_S,"new_local",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_SizeAdapter_new00_local);
        tolua_function(tolua_S,".call",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_SizeAdapter_new00_local);
        tolua_function(tolua_S,"delete",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_SizeAdapter_delete00);
+      tolua_endmodule(tolua_S);
+     tolua_endmodule(tolua_S);
+    tolua_endmodule(tolua_S);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"EmberOgre",0);
+  tolua_beginmodule(tolua_S,"EmberOgre");
+   tolua_module(tolua_S,"Gui",0);
+   tolua_beginmodule(tolua_S,"Gui");
+    tolua_module(tolua_S,"Adapters",0);
+    tolua_beginmodule(tolua_S,"Adapters");
+     tolua_module(tolua_S,"Atlas",0);
+     tolua_beginmodule(tolua_S,"Atlas");
+      #ifdef __cplusplus
+      tolua_cclass(tolua_S,"PolygonAdapter","EmberOgre::Gui::Adapters::Atlas::PolygonAdapter","EmberOgre::Gui::Adapters::Atlas::AdapterBase",tolua_collect_EmberOgre__Gui__Adapters__Atlas__PolygonAdapter);
+      #else
+      tolua_cclass(tolua_S,"PolygonAdapter","EmberOgre::Gui::Adapters::Atlas::PolygonAdapter","EmberOgre::Gui::Adapters::Atlas::AdapterBase",NULL);
+      #endif
+      tolua_beginmodule(tolua_S,"PolygonAdapter");
+       tolua_function(tolua_S,"new",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_PolygonAdapter_new00);
+       tolua_function(tolua_S,"new_local",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_PolygonAdapter_new00_local);
+       tolua_function(tolua_S,".call",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_PolygonAdapter_new00_local);
+       tolua_function(tolua_S,"delete",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_PolygonAdapter_delete00);
+       tolua_function(tolua_S,"toggleDisplayOfPolygon",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_PolygonAdapter_toggleDisplayOfPolygon00);
+       tolua_function(tolua_S,"createNewPolygon",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_PolygonAdapter_createNewPolygon00);
+       tolua_function(tolua_S,"hasShape",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_PolygonAdapter_hasShape00);
+       tolua_function(tolua_S,"getShape",tolua_atlas_adapters_EmberOgre_Gui_Adapters_Atlas_PolygonAdapter_getShape00);
       tolua_endmodule(tolua_S);
      tolua_endmodule(tolua_S);
     tolua_endmodule(tolua_S);

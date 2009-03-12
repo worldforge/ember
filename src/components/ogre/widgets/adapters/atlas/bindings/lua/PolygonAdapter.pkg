@@ -1,0 +1,91 @@
+//
+// C++ Interface: PolygonAdapter
+//
+// Description: 
+//
+//
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2009
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
+//
+$#include "../../PolygonAdapter.h"
+
+namespace EmberOgre {
+
+namespace Gui {
+
+namespace Adapters {
+
+namespace Atlas {
+
+
+
+/**
+@brief An adapter for polygons.
+This allows the editing of polygons through graphical drag and drop operations.
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+*/
+class PolygonAdapter : public AdapterBase
+{
+public:
+	/**
+	 * @brief Ctor.
+	 * @param element The Atlas element containing the initial data for the adapter.
+	 * @param showButton A button which will toggle the display of the graphical representation of the area on and off.
+	 * @param entity The entity to which the area belongs. This is needed to do height lookups so that the polygon points are snapped to the ground. It's optional, but the graphical representation might not work if it's omitted.
+	 */
+	PolygonAdapter(const ::Atlas::Message::Element& element, CEGUI::PushButton* showButton, EmberEntity* entity);
+
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~PolygonAdapter();
+    
+   
+    /**
+     * @brief Toggles the display of the graphical representation of the polygon.
+     */
+    void toggleDisplayOfPolygon();
+    
+    
+    /**
+     * @brief Creates a new polygon.
+     */
+    void createNewPolygon();
+	
+	/**
+	 * @brief True if there's an existing polygon instance created from which a shape can be gotten.
+	 * @return True if there's an existing polygon instance.
+	 */
+	bool hasShape() const;
+	
+	/**
+	 * @brief Gets the polygon shape.
+	 * Note that there's no guarantee that the polygon shape returned will be valid. Make sure to check with WFMath::Polygon::isValid().
+	 * @return A polygon shape.
+	 */
+	const WFMath::Polygon<2> getShape() const;
+    
+
+};
+
+}
+
+}
+
+}
+
+}
+

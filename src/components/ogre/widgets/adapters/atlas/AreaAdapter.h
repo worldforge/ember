@@ -49,42 +49,15 @@ namespace Adapters {
 
 namespace Atlas {
 
-/**
-@brief Provides height positions for a polygon attached to an EmberEntity instance.
-The height will be adjusted for the terrain.
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
-class EntityAreaPolygonPositionProvider: public ::EmberOgre::Manipulation::IPolygonPositionProvider
-{
-public:
-
-	/**
-	 * @brief Ctor.
-	 * @param entity The entity to which this instance belongs.
-	 */
-	EntityAreaPolygonPositionProvider(EmberEntity& entity);
-	
-	/**
-	 * @brief Gets the height for the local position.
-	 * The local position will be translated to a global position, and then looked up in the terrain, so that the height of the terrain is returned.
-	 * @param localPosition The local position.
-	 * @return A height.
-	 */
-	virtual float getHeightForPosition(const WFMath::Point<2>& localPosition);
-
-protected:
-	/**
-	 * @brief The entity to which this instance belongs.
-	 */
-	EmberEntity& mEntity;
-};
+class PolygonAdapter;
 
 /**
 @brief An adapter for terrain areas.
 This adapter will allow the user to edit the areas graphically through the use of the Polygon classes.
+The polygon editing functionality is handled by an instance of PolygonAdapter, which this class wraps.
 @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class AreaAdapter : public AdapterBase, public ::EmberOgre::Manipulation::IMovementListener
+class AreaAdapter : public AdapterBase
 {
 public:
 	/**
@@ -117,16 +90,6 @@ public:
      */
     void createNewPolygon();
     
-	/**
-	 * @brief When movement has ended, remove the movement instance.
-	 */
-	virtual void endMovement();
-	
-	/**
-	 * @brief When movement has been cancelled, remove the movement instance.
-	 */
-	virtual void cancelMovement();
-    
     /**
      * @brief Adds an area suggestion.
      * @param id The id of the area.
@@ -142,27 +105,6 @@ public:
 protected:
 
 	/**
-	 * @brief A button used for toggling the display of the polygon on and off.
-	 */
-	CEGUI::PushButton* mShowButton;
-	
-	/**
-	 * @brief The polygon used for graphical representation of this area.
-	 * Owned by this instance.
-	 */
-	Manipulation::Polygon* mPolygon;
-	
-	/**
-	 * @brief Responsible for listening for pick events and initiating movements of the points.
-	 */
-	Manipulation::PolygonPointPickListener* mPickListener;
-	
-	/**
-	 * @brief Responsible for handling the movement of a specific point.
-	 */
-	Manipulation::PolygonPointMovement* mPointMovement;
-	
-	/**
 	 * @brief The area layer.
 	 */
 	int mLayer;
@@ -177,23 +119,15 @@ protected:
 	 * Mainly used for height lookups, so that the polygon snaps to the ground.
 	 */
 	EmberEntity* mEntity;
-	
+
 	/**
-	 * @brief A position provider, for the polygon.
-	 * If an EmberEntity instance is present this will be created (and owned).
+	 * @brief The polygon adapter, which handles the actual polygon editing.
 	 */
-	EntityAreaPolygonPositionProvider* mPositionProvider;
+	std::auto_ptr<PolygonAdapter> mPolygonAdapter;
 
 	bool layerWindow_TextChanged(const CEGUI::EventArgs& e);
 	bool layerWindow_ListSelectionChanged(const CEGUI::EventArgs& e);
 	
-	bool showButton_Clicked(const CEGUI::EventArgs& e);
-	
-	/**
-	 * @brief Listen for points being picked and initiate movement of the point.
-	 * @param point The point that was picked.
-	 */
-	void pickListener_PickedPoint(Manipulation::PolygonPoint& point);
 	
 
 	virtual void fillElementFromGui();

@@ -35,6 +35,7 @@
 #include "OrientationAdapter.h"
 #include "StaticAdapter.h"
 #include "AreaAdapter.h"
+#include "PolygonAdapter.h"
 #include <CEGUI.h>
 #include "components/ogre/GUIManager.h"
 #include "services/logging/LoggingService.h"
@@ -135,6 +136,11 @@ bool AdapterFactory::verifyCorrectType<AreaAdapter>(const ::Atlas::Message::Elem
 	return element.isMap();
 }
 
+template <>
+bool AdapterFactory::verifyCorrectType<PolygonAdapter>(const ::Atlas::Message::Element& element)
+{
+	return element.isMap();
+}
 
 template <>
 StringAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
@@ -235,6 +241,14 @@ AreaAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, con
 	return new AreaAdapter(element, button, layerWindow, entity);
 }
 
+template <>
+PolygonAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
+{
+	loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/PolygonAdapter.layout");
+	WindowManager& windowMgr = WindowManager::getSingleton();
+	PushButton* button = static_cast<PushButton*>(windowMgr.getWindow(mCurrentPrefix + "showButton"));
+	return new PolygonAdapter(element, button, entity);
+}
 
 StringAdapter* AdapterFactory::createStringAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
@@ -294,6 +308,11 @@ StaticAdapter* AdapterFactory::createStaticAdapter(CEGUI::Window* container, con
 AreaAdapter* AdapterFactory::createAreaAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
 {
 	return createAdapter<AreaAdapter>(container, adapterPrefix, element, entity);
+}
+
+PolygonAdapter* AdapterFactory::createPolygonAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
+{
+	return createAdapter<PolygonAdapter>(container, adapterPrefix, element, entity);
 }
 
 AdapterBase* AdapterFactory::createAdapterByType(std::string type, CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
@@ -361,6 +380,11 @@ AdapterBase* AdapterFactory::createAdapterByType(std::string type, CEGUI::Window
 	{
 		if (newElement.isNone()) { newElement = ::Atlas::Message::MapType();}
 		return createAreaAdapter(container, adapterPrefix, newElement, entity);
+	}
+	else if (type == "polygon")
+	{
+		if (newElement.isNone()) { newElement = ::Atlas::Message::MapType();}
+		return createPolygonAdapter(container, adapterPrefix, newElement, entity);
 	}
 	else
 	{
