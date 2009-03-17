@@ -57,6 +57,7 @@ class OrientationAdapter;
 class StaticAdapter;
 class AreaAdapter;
 class PolygonAdapter;
+class TerrainModAdapter;
 
 /**
 @brief A factory class through which all adapters are created. Instead of creating the adapters yourself, use this to properly instantiate them.
@@ -170,7 +171,7 @@ public:
 	StaticAdapter* createStaticAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
 
 	/**
-	* @brief Creates and adapter for a terrain area.
+	* @brief Creates an adapter for a terrain area.
 	* @param container The container window into which the adapter's windows will be loaded.
 	* @param adapterPrefix A unique prefix for the adapter.
 	* @param element The element to which the adapter is bound.
@@ -180,7 +181,7 @@ public:
 	AreaAdapter* createAreaAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity);
 
 	/**
-	* @brief Creates and adapter for a polygon.
+	* @brief Creates an adapter for a polygon.
 	* @param container The container window into which the adapter's windows will be loaded.
 	* @param adapterPrefix A unique prefix for the adapter.
 	* @param element The element to which the adapter is bound.
@@ -188,6 +189,16 @@ public:
 	* @return A new polygon adapter.
 	*/
 	PolygonAdapter* createPolygonAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity);
+	
+	/**
+	* @brief Creates an adapter for a terrain mod.
+	* @param container The container window into which the adapter's windows will be loaded.
+	* @param adapterPrefix A unique prefix for the adapter.
+	* @param element The element to which the adapter is bound.
+	* @param entity The entity to which the terrain area is bound. This can be a null pointer.
+	* @return A new polygon adapter.
+	*/
+	TerrainModAdapter* createTerrainModAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity);
 	
 	/**
 	 * @brief Creates a new adapter based on a specified type.

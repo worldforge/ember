@@ -24,10 +24,7 @@
 #define EMBEROGRE_GUI_ADAPTERS_ATLASAREAADAPTER_H
 
 #include "AdapterBase.h"
-#include "components/ogre/manipulation/Polygon.h"
-#include "components/ogre/manipulation/PolygonPointMovement.h"
-#include "components/ogre/manipulation/IPolygonPositionProvider.h"
-#include "components/ogre/EmberEntity.h"
+#include <memory>
 
 namespace CEGUI {
 	class Combobox;
@@ -36,12 +33,6 @@ namespace CEGUI {
 
 namespace EmberOgre {
 class EmberEntity;
-namespace Manipulation {
-class Polygon;
-class PolygonPoint;
-class PolygonPointPickListener;
-class PolygonPointMovement;
-}
 
 namespace Gui {
 

@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='DefaultGUISheet' Name='AreaAdapter'>
+		<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+		<Property Name='UnifiedSize' Value='{{0,200},{0,120}}'/>
+		<Window Type='EmberLook/Button' Name='showButton'>
+			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+			<Property Name='UnifiedSize' Value='{{0,100},{0,25}}'/>
+			<Property Name='Text' Value='Show' />
+		</Window>
+		<Window Type='EmberLook/StaticText' Name='posTypeText'>
+			<Property Name='UnifiedPosition' Value='{{0,0},{0,30}}'/>
+			<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+			<Property Name='FrameEnabled' Value='false' />
+			<Property Name='BackgroundEnabled' Value='false' />
+			<Property Name='Text' Value='Pos. type' />
+		</Window>
+		<Window Type='EmberLook/Combobox' Name='posType'>
+			<Property Name='UnifiedPosition' Value='{{0,75},{0,30}}'/>
+			<Property Name='UnifiedSize' Value='{{0,125},{0,125}}'/>
+			<Property Name='ReadOnly' Value='true'/>
+		</Window>
+		<Window Type='EmberLook/StaticText' Name='modTypeText'>
+			<Property Name='UnifiedPosition' Value='{{0,0},{0,60}}'/>
+			<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+			<Property Name='FrameEnabled' Value='false' />
+			<Property Name='BackgroundEnabled' Value='false' />
+			<Property Name='Text' Value='Mod type' />
+		</Window>
+		<Window Type='EmberLook/Combobox' Name='modType'>
+			<Property Name='UnifiedPosition' Value='{{0,75},{0,60}}'/>
+			<Property Name='UnifiedSize' Value='{{0,125},{0,125}}'/>
+			<Property Name='ReadOnly' Value='true'/>
+		</Window>
+		<Window Type='EmberLook/StaticText' Name='heightText'>
+			<Property Name='UnifiedPosition' Value='{{0,0},{0,90}}'/>
+			<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+			<Property Name='FrameEnabled' Value='false' />
+			<Property Name='BackgroundEnabled' Value='false' />
+			<Property Name='Text' Value='Height' />
+		</Window>
+		<Window Type='EmberLook/Editbox' Name='height'>
+			<Property Name='UnifiedPosition' Value='{{0,75},{0,90}}'/>
+			<Property Name='UnifiedSize' Value='{{0,125},{0,25}}'/>
+		</Window>
+	</Window>
+</GUILayout>

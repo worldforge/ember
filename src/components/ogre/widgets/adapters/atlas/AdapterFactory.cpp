@@ -36,6 +36,7 @@
 #include "StaticAdapter.h"
 #include "AreaAdapter.h"
 #include "PolygonAdapter.h"
+#include "TerrainModAdapter.h"
 #include <CEGUI.h>
 #include "components/ogre/GUIManager.h"
 #include "services/logging/LoggingService.h"
@@ -138,6 +139,12 @@ bool AdapterFactory::verifyCorrectType<AreaAdapter>(const ::Atlas::Message::Elem
 
 template <>
 bool AdapterFactory::verifyCorrectType<PolygonAdapter>(const ::Atlas::Message::Element& element)
+{
+	return element.isMap();
+}
+
+template <>
+bool AdapterFactory::verifyCorrectType<TerrainModAdapter>(const ::Atlas::Message::Element& element)
 {
 	return element.isMap();
 }
@@ -250,6 +257,18 @@ PolygonAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, 
 	return new PolygonAdapter(element, button, entity);
 }
 
+template <>
+TerrainModAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
+{
+	loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/TerrainModAdapter.layout");
+	WindowManager& windowMgr = WindowManager::getSingleton();
+	PushButton* button = static_cast<PushButton*>(windowMgr.getWindow(mCurrentPrefix + "showButton"));
+	Combobox* posType = static_cast<Combobox*>(windowMgr.getWindow(mCurrentPrefix + "posType"));
+	Combobox* modType = static_cast<Combobox*>(windowMgr.getWindow(mCurrentPrefix + "modType"));
+	Editbox* heightEditbox = static_cast<Editbox*>(windowMgr.getWindow(mCurrentPrefix + "height"));
+	return new TerrainModAdapter(element, button, entity, posType, modType, heightEditbox);
+}
+
 StringAdapter* AdapterFactory::createStringAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
 	return createAdapter<StringAdapter>(container, adapterPrefix, element);
@@ -314,6 +333,12 @@ PolygonAdapter* AdapterFactory::createPolygonAdapter(CEGUI::Window* container, c
 {
 	return createAdapter<PolygonAdapter>(container, adapterPrefix, element, entity);
 }
+
+TerrainModAdapter* AdapterFactory::createTerrainModAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
+{
+	return createAdapter<TerrainModAdapter>(container, adapterPrefix, element, entity);
+}
+
 
 AdapterBase* AdapterFactory::createAdapterByType(std::string type, CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
 {
