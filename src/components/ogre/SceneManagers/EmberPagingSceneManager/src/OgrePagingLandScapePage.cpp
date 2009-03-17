@@ -542,8 +542,10 @@ namespace Ogre
 		
 			for (PagingLandScapeTileRow::iterator I = it->begin(); I != it->end(); ++I) {
 				///we need to adjust the deformation rectangle for the whole tile/renderable so to force a recalculation of the bounding box and the LOD calculation
-				(*I)->getRenderable()->adjustDeformationRectangle(0, 0);
-				(*I)->getRenderable()->adjustDeformationRectangle(opt->TileSize - 1, opt->TileSize - 1);
+				if ((*I)->getRenderable()) {
+					(*I)->getRenderable()->adjustDeformationRectangle(0, 0);
+					(*I)->getRenderable()->adjustDeformationRectangle(opt->TileSize - 1, opt->TileSize - 1);
+				}
 				(*I)->updateTerrain();
 			}
 		} 
