@@ -385,6 +385,18 @@ EntityEditor = {
 			createNewElement = function()
 				return EntityEditor.instance.helper:createMapElement()
 			end
+		},
+		terrainmod = {
+			name = "Terrain mod",
+			createAdapter = function(element, prototype)
+				local wrapper = {}
+				wrapper.container = guiManager:createWindow("DefaultGUISheet")
+				wrapper.adapter = EntityEditor.factory:createTerrainModAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element, EntityEditor.instance.entity)
+				return wrapper	
+			end,
+			createNewElement = function()
+				return EntityEditor.instance.helper:createMapElement()
+			end
 		}
 	},
 	modelTab = {}
@@ -442,6 +454,12 @@ EntityEditor.prototypes =
 			"knotted",
 			"weathered"
 		}
+	},
+	terrainmod = {
+		adapter = EntityEditor.adapters.terrainmod,
+		shouldAddSuggestion = function(ownerElement)
+			return true
+		end
 	}
 }
 EntityEditor.defaultPrototypes = 
