@@ -191,7 +191,9 @@ mScriptingResourceProvider(0),
 mSoundResourceProvider(0),
 mCollisionManager(0),
 mCollisionDetectorVisualizer(0),
-mResourceLoader(0)
+mResourceLoader(0),
+mOgreLogManager(0),
+mIsInPausedMode(false)
 {
 	Ember::Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
 }
@@ -290,7 +292,14 @@ bool EmberOgre::renderOneFrame()
 {
 	Ember::Input& input(Ember::Input::getSingleton());
 	if (input.isApplicationVisible()) {
+		///If we're resuming from paused mode we need to reset the event times to prevent particle effects strangeness
+		if (mIsInPausedMode) {
+			mIsInPausedMode = false;
+			mRoot->clearEventTimes();
+		}
 		mRoot->renderOneFrame();
+	} else {
+		mIsInPausedMode = true;
 	}
 	return true;
 }

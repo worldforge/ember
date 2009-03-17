@@ -456,6 +456,11 @@ protected:
 	 */
 	Ogre::LogManager* mOgreLogManager;
 	
+	/**
+	 * @brief Set this to true when we're not rendering. The reason is that later on, when we resume rendering, we need to reset the event times to prevent various particle effect strangeness.
+	 */
+	bool mIsInPausedMode;
+	
 };
 
 inline EntityMoveManager* EmberOgre::getMoveManager() const 
