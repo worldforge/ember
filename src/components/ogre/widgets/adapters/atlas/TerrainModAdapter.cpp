@@ -27,7 +27,6 @@
 #include "TerrainModAdapter.h"
 #include "PolygonAdapter.h"
 
-#include "../../ColouredListItem.h"
 
 namespace EmberOgre {
 
@@ -38,83 +37,7 @@ namespace Adapters {
 namespace Atlas {
 
 
-template <typename T, typename WidgetT>
-ListBinder<T, WidgetT>::ListBinder(WidgetT* listbox)
-: mListbox(listbox)
-{
-// 	if (listbox) {
-// 		addGuiEventConnection(textWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&ListBinder<T, WidgetT>::listbox_SelectionChanged, this))); 
-// 	}
-}
 
-
-template <typename T, typename WidgetT>
-void ListBinder<T, WidgetT>::sync()
-{
-	mListbox->resetList();
-	mListboxLookup.clear();
-	for (typename TypeStore::iterator I = mTypes.begin(); I != mTypes.end(); ++I) {
-		CEGUI::ListboxItem* item = new ColouredListItem(I->second.first, mListbox->getItemCount());
-		mListbox->addItem(item);
-		mListboxLookup[item->getID()] = &(I->second.second);
-	}
-}
-
-template <typename T, typename WidgetT>
-void ListBinder<T, WidgetT>::addType(const std::string& key, const std::string& displayName, T type)
-{
-	mTypes.insert(typename TypeStore::value_type(key, std::pair<std::string, T>(displayName, type)));
-}
-
-template <typename T, typename WidgetT>
-bool ListBinder<T, WidgetT>::listbox_SelectionChanged(const CEGUI::EventArgs& e)
-{
-	
-	T* selectedType(getCurrentSelected());
-	for (typename TypeStore::iterator I = mTypes.begin(); I != mTypes.end(); ++I) {
-		if (&(I->second.second) == selectedType) {
-			EventSelected.emit(I->second.first, selectedType);
-		}
-	}
-	return true;
-}
-
-template <typename T, typename WidgetT>
-std::pair<const std::string&, T*> ListBinder<T, WidgetT>::getCurrentSelected()
-{
-	CEGUI::ListboxItem* item = mListbox->getSelectedItem ();
-	if (item) {
-		size_t index = item->getID();
-		typename TypeLookupStore::iterator I = mListboxLookup.find(index);
-		if (I != mListboxLookup.end()) {
-			for (typename TypeStore::iterator J = mTypes.begin(); J != mTypes.end(); ++J) {
-				if (&(J->second.second) == I->second) {
-					return std::pair<const std::string&, T*>(J->first, I->second);
-				}
-			}
-		}
-	}
-	return std::pair<const std::string&, T*>("", 0);
-}
-
-template <typename T, typename WidgetT>
-T* ListBinder<T, WidgetT>::select(const std::string& key)
-{
-	typename TypeStore::iterator I = mTypes.find(key);
-	if (I != mTypes.end()) {
-		for (typename TypeLookupStore::iterator J = mListboxLookup.begin(); J != mListboxLookup.end(); ++J) {
-			if (&(I->second.second) == J->second) {
-				CEGUI::ListboxItem* item = mListbox->getListboxItemFromIndex(J->first);
-				if (item) {
-					mListbox->clearAllSelections();
-					mListbox->setItemSelectState(item, true);
-				}
-				return J->second;
-			}
-		}
-	}
-	return 0;
-}
 
 
 TerrainModBase::TerrainModBase(const std::string& type)

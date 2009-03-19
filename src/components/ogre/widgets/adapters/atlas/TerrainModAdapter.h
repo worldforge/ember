@@ -25,6 +25,7 @@
 #include "AdapterBase.h"
 
 #include <memory>
+#include "../ListBinder.h"
 
 namespace EmberOgre {
 
@@ -38,35 +39,6 @@ namespace Atlas {
 
 class PolygonAdapter;
 
-template <class T, class WidgetT>
-class ListBinder
-{
-public:
-	typedef std::pair<const std::string&, T*> SelectedType;
-	ListBinder(WidgetT* listbox);
-
-	void addType(const std::string& key, const std::string& displayName, T type);
-	
-	sigc::signal<void, const std::string&, T&> EventSelected;
-	
-	void sync();
-	
-	SelectedType getCurrentSelected();
-	
-	T* select(const std::string& key);
-
-protected:
-	typedef std::map<std::string, std::pair<std::string, T> > TypeStore;
-	typedef std::map<size_t, T*> TypeLookupStore;
-	TypeStore mTypes;
-	
-	TypeLookupStore mListboxLookup;
-	
-	WidgetT* mListbox;
-
-	bool listbox_SelectionChanged(const CEGUI::EventArgs& e);
-
-};
 
 class TerrainModBase {
 public:
@@ -117,14 +89,29 @@ public:
 };
 
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@brief An adapter for terrain mods.
+This adapter will allow the user to edit the mods graphically through the use of the Polygon classes.
+The polygon editing functionality is handled by an instance of PolygonAdapter, which this class wraps.
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class TerrainModAdapter : public AdapterBase
 {
 public:
 	
+	/**
+	 * @brief Ctor.
+	 * @param element The existing element.
+	 * @param showButton A buttons which toggles the display of the polygon on and off.
+	 * @param entity The entity to which this belongs.
+	 * @param posTypeCombobox A combobox for the positioning types.
+	 * @param modTypeCombobox A combobox for the terrain mod types.
+	 * @param heightTextbox An editbox for the height.
+	 */
 	TerrainModAdapter(const ::Atlas::Message::Element& element, CEGUI::PushButton* showButton, EmberEntity* entity, CEGUI::Combobox* posTypeCombobox, CEGUI::Combobox* modTypeCombobox, CEGUI::Editbox* heightTextbox);
 
+	/**
+	 * @brief Dtor.
+	 */
 	virtual ~TerrainModAdapter();
 	
 	/**

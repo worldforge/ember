@@ -41,5 +41,5 @@ noinst_HEADERS = AssetsManager.h ColouredListItem.h Compass.h ConsoleAdapter.h \
 #TerrainEdit.h Map.h
 SUBDIRS = adapters icons
 libWidgets_la_LIBADD = \
-	$(top_builddir)/src/components/ogre/widgets/adapters/atlas/libAtlas.la $(top_builddir)/src/components/ogre/widgets/icons/libIcons.la
+	$(top_builddir)/src/components/ogre/widgets/adapters/atlas/libAtlas.la 	$(top_builddir)/src/components/ogre/widgets/adapters/libAdapters.la $(top_builddir)/src/components/ogre/widgets/icons/libIcons.la
 libWidgets_la_LDFLAGS = -no-undefined
