@@ -57,6 +57,23 @@ void ColouredListItem::setColours()
 	}
 }
 
+CEGUI::Size ColouredListItem::getPixelSize() const
+{
+	if (isDisabled()) {
+		return CEGUI::Size(0, 0);
+	}
+	return CEGUI::ListboxTextItem::getPixelSize();
+}
+
+void ColouredListItem::draw(const CEGUI::Vector3 &position, float alpha, const CEGUI::Rect &  clipper)
+{
+	if (isDisabled()) {
+		return;
+	}
+	CEGUI::ListboxTextItem::draw(position, alpha, clipper);
+
+}
+
 CEGUI::ListboxItem* ColouredListItem::createColouredListItem(const CEGUI::String& text)
 {
 	return new ColouredListItem(text);

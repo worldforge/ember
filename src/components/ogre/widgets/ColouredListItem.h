@@ -31,8 +31,9 @@ namespace EmberOgre {
 namespace Gui {
 
 /**
-	A standard ListboxTextItem, with the exeption that the selection will be coloured.
-	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+@brief A standard ListboxTextItem, with the exeption that the selection will be coloured.
+This class also has the feature that items that are disabled won't be rendered. This is useful when filtering out items from lists.
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class ColouredListItem : public CEGUI::ListboxTextItem
 {
@@ -45,13 +46,27 @@ public:
 	static CEGUI::ListboxItem* createColouredListItem(const CEGUI::String& text, unsigned int item_id);
 	static CEGUI::ListboxItem* createColouredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data);
 
+	/**
+	 * @brief If the item is disabled, return a zero size.
+	 * @return A zero size if the item is disabled.
+	 */
+	virtual CEGUI::Size getPixelSize() const;
+	
+	/**
+	 * @brief If the item is disabled, don't render anything.
+	 * @param position 
+	 * @param alpha 
+	 * @param clipper 
+	 */
+	virtual void draw(const CEGUI::Vector3 &position, float alpha, const CEGUI::Rect& clipper);
+
 private:
 	void setColours();
 };
 
 /**
-	A standard CEGUI::TreeItem, with the exeption that the selection will be coloured.
-	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+@brief A standard CEGUI::TreeItem, with the exeption that the selection will be coloured.
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class ColouredTreeItem : public CEGUI::TreeItem
 {

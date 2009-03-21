@@ -102,14 +102,13 @@ bool ListHolder::isItemAllowed(CEGUI::ListboxItem* item)
 
 void ListHolder::updateItems()
 {
+	///Note that this will only work when the items in the list are of class ColouredListItem, since that class doesn't render any disabled items
 	if (mListbox) {
-		mListbox->resetList();
 		for(ListItemStore::iterator I = mItems.begin(); I != mItems.end(); ++I) 
 		{
-			if (isItemAllowed(*I)) {
-				mListbox->addItem(*I);
-			}
+			(*I)->setDisabled(!isItemAllowed(*I));
 		}
+		mListbox->handleUpdatedItemData();
 	}
 }
 
