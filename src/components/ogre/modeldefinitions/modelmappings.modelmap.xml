@@ -447,6 +447,7 @@
 	<automodelmapping name="castle_wall_gate" modelname="cg_wall_gate" />
 	<automodelmapping name="castle_wall_stairs" modelname="cg_wall_stairs" />
 	<automodelmapping name="castle_wall_corner" modelname="cg_wall_corner" />
+	<automodelmapping name="cg_house_A" />
 	
 	
 	

@@ -1,0 +1,22 @@
+<models>
+    <model name="concrete_stairs" usescaleof="all" showcontained="true" icon="">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/structures/models/concrete_stairs/concrete_stairs.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/structures/ossyja_floor_planks" />
+                            <subentity index="1" material="/global/structures/rezpa_concrete" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+        <lights />
+    </model>
+</models>
