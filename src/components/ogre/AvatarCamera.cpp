@@ -688,8 +688,10 @@ void AvatarCamera::takeScreenshot()
 		const std::string& result = _takeScreenshot();
 		S_LOG_INFO(result);
 		Ember::ConsoleBackend::getSingletonPtr()->pushMessage("Wrote image: " + result);
-	} catch (const Ember::Exception& ex) {
-		Ember::ConsoleBackend::getSingletonPtr()->pushMessage("Error when saving screenshot: " + ex.getError());
+	} catch (const std::exception& ex) {
+		Ember::ConsoleBackend::getSingletonPtr()->pushMessage(std::string("Error when saving screenshot: ") + ex.what());
+	} catch (...) {
+		Ember::ConsoleBackend::getSingletonPtr()->pushMessage("Unknown error when saving screenshot.");
 	}
 }
 
