@@ -45,7 +45,7 @@ namespace Gui {
 
 	const std::string Widget::DEFAULT_TAB_GROUP("default");
 	
-	Widget::Widget() : mCommandSuffix(""), mMainWindow(0), mActiveWindowIsOpaque(true), mFirstTabWindow(0), mLastTabWindow(0)
+	Widget::Widget() : mCommandSuffix(""), mMainWindow(0), mActiveWindowIsOpaque(true), mFirstTabWindow(0), mLastTabWindow(0), mWindowHasBeenShown(false)
 	{
 	}
 	
@@ -102,9 +102,21 @@ namespace Gui {
 			BIND_CEGUI_EVENT(mMainWindow, CEGUI::FrameWindow::EventDeactivated, Widget::MainWindow_Deactivated);
 			///we want to catch all click events, so we'll listen for the mouse button down event
 			BIND_CEGUI_EVENT(mMainWindow, CEGUI::Window::EventMouseButtonDown, Widget::MainWindow_MouseButtonDown);
+			if (mMainWindow->isVisible()) {
+				onEventFirstTimeShown();
+			} else {
+				///Set it up to listen for the first time the window is shown.
+				BIND_CEGUI_EVENT(mMainWindow, CEGUI::Window::EventShown, Widget::MainWindow_Shown);
+			}
 			
 		}
 		return mMainWindow;
+	}
+	
+	void  Widget::onEventFirstTimeShown()
+	{
+		mWindowHasBeenShown = true;
+		EventFirstTimeShown.emit();
 	}
 
 	CEGUI::Window* Widget::getWindow(const std::string& windowName)
@@ -253,6 +265,15 @@ namespace Gui {
 		}
 		return true;
 	}
+
+	bool Widget::MainWindow_Shown(const CEGUI::EventArgs& args)
+	{
+		if (!mWindowHasBeenShown) {
+			onEventFirstTimeShown();
+		}
+		return true;
+	}
+
 
 	bool Widget::getIsActiveWindowOpaque() const
 	{

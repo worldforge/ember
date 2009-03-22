@@ -67,7 +67,7 @@ public:
 
 /** 
 
-Base class for all widgets.
+@brief Base class for all widgets.
 Put all widget set up code in the buildWidget() method.
 
 
@@ -76,7 +76,7 @@ NOTE: Perhaps we should provide another base class for widgets that have a singl
 
 When creating a new Widget class, make sure you also add it to WidgetDefinitions.
 @see WidgetDefinitions
-
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class Widget : 
 public sigc::trackable,
@@ -225,13 +225,26 @@ public:
 	void closeTabGroup();
 	
 	/**
-	 * Emitted each time a frame is started.
-	*/
+	 * @brief Emitted each time a frame is started.
+	 */
 	sigc::signal<void, float> EventFrameStarted;
+	
+	/**
+	 * @brief Emitted the first time the window is shown.
+	 */
+	sigc::signal<void> EventFirstTimeShown;
 
 protected:
 
+	/**
+	 * @brief Ctor.
+	 * This is protected to avoid direct creation of instances of this. Instead use GUIManager::createWidget().
+	 */
 	Widget();
+	
+	/**
+	 * @brief Dtor.
+	 */
 	virtual ~Widget();
 
 	bool MainWindow_CloseClick(const CEGUI::EventArgs& args);
@@ -239,9 +252,21 @@ protected:
 	bool MainWindow_Activated(const CEGUI::EventArgs& args);
 	bool MainWindow_Deactivated(const CEGUI::EventArgs& args);
 	bool MainWindow_MouseButtonDown(const CEGUI::EventArgs& args);
+	/**
+	 * @brief Listen to the window being shown, so that we can emit the EventFirstTimeShown the first time the window is shown.
+	 * @param args 
+	 * @return 
+	 */
+	bool MainWindow_Shown(const CEGUI::EventArgs& args);
+	
+	/**
+	 * @brief Called when the EventFirstTimeShown signal should be emitted.
+	 */
+	virtual void onEventFirstTimeShown();
+	
 
 	/**
-	*    The suffixed used by registerConsoleVisibilityToggleCommand
+	* @brief The suffixed used by registerConsoleVisibilityToggleCommand
 	* @see registerConsoleVisibilityToggleCommand
 	*/
 	std::string mCommandSuffix;
@@ -249,7 +274,7 @@ protected:
 	
 	
 	/**
-	*     The main window for the widget.
+	* @brief The main window for the widget.
 	*/
 	CEGUI::Window* mMainWindow;
 
@@ -276,6 +301,12 @@ protected:
 		
 	bool TabbableWindow_KeyDown(const CEGUI::EventArgs& args);
 	
+	/**
+	 * @brief True if the window has been shown once.
+	 * This is used for making sure that the EventFirstTimeShown signal is emitted the first time the window is shown.
+	 */
+	bool mWindowHasBeenShown;
+	
 	
 private:
 	std::string mPrefix;
@@ -289,10 +320,11 @@ typedef Widget* (*FactoryFunc)();
 TYPEDEF_STL_MAP(std::string, FactoryFunc, WidgetFactoryMap);	
 
 /**
-Utility class for associating Widgets to strings.
+@brief Utility class for associating Widgets to strings.
 See WidgetLoaderHolder on how to register Widgets.
 
 Use createWidget("someName") to create widgets.
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class WidgetLoader
 {

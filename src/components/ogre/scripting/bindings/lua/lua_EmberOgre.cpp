@@ -8784,6 +8784,36 @@ static int tolua_set_EmberOgre__Gui__Widget_EventFrameStarted(lua_State* tolua_S
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* get function: EventFirstTimeShown of class  EmberOgre::Gui::Widget */
+#ifndef TOLUA_DISABLE_tolua_get_EmberOgre__Gui__Widget_EventFirstTimeShown
+static int tolua_get_EmberOgre__Gui__Widget_EventFirstTimeShown(lua_State* tolua_S)
+{
+  EmberOgre::Gui::Widget* self = (EmberOgre::Gui::Widget*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventFirstTimeShown'",NULL);
+#endif
+  tolua_pushusertype(tolua_S,(void*)&self->EventFirstTimeShown,"sigc::signal<void>");
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: EventFirstTimeShown of class  EmberOgre::Gui::Widget */
+#ifndef TOLUA_DISABLE_tolua_set_EmberOgre__Gui__Widget_EventFirstTimeShown
+static int tolua_set_EmberOgre__Gui__Widget_EventFirstTimeShown(lua_State* tolua_S)
+{
+  EmberOgre::Gui::Widget* self = (EmberOgre::Gui::Widget*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventFirstTimeShown'",NULL);
+  if (!tolua_isusertype(tolua_S,2,"sigc::signal<void>",0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->EventFirstTimeShown = *((sigc::signal<void>*)  tolua_tousertype(tolua_S,2,0))
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: new of class  EmberOgre::Gui::IconBase */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_IconBase_new00
 static int tolua_EmberOgre_EmberOgre_Gui_IconBase_new00(lua_State* tolua_S)
@@ -26232,6 +26262,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"addTabbableWindow",tolua_EmberOgre_EmberOgre_Gui_Widget_addTabbableWindow00);
      tolua_function(tolua_S,"closeTabGroup",tolua_EmberOgre_EmberOgre_Gui_Widget_closeTabGroup00);
      tolua_variable(tolua_S,"EventFrameStarted",tolua_get_EmberOgre__Gui__Widget_EventFrameStarted,tolua_set_EmberOgre__Gui__Widget_EventFrameStarted);
+     tolua_variable(tolua_S,"EventFirstTimeShown",tolua_get_EmberOgre__Gui__Widget_EventFirstTimeShown,tolua_set_EmberOgre__Gui__Widget_EventFirstTimeShown);
     tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);

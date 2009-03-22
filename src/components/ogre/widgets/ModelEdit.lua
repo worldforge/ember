@@ -745,150 +745,154 @@ end
 
 function ModelEdit.buildWidget()
 	ModelEdit.widget = guiManager:createWidget()
+	
+	--delay setup of the widget until it's shown for the first time
+	local setup = function()
+		ModelEdit.renderImage = ModelEdit.widget:getWindow("Image")
+		--ModelEdit.renderImage = CEGUI.toStaticImage(ModelEdit.renderImage)
+	
+		ModelEdit.models = ModelEdit.widget:getWindow("Models")
+		ModelEdit.models = CEGUI.toListbox(ModelEdit.models)
+		ModelEdit.models:subscribeEvent("ItemSelectionChanged", "ModelEdit.models_SelectionChanged")
+		ModelEdit.modelsfilter = ModelEdit.widget:getWindow("FilterModels")
+		ModelEdit.modelsfilter = CEGUI.toEditbox(ModelEdit.modelsfilter)
+		ModelEdit.modelslistholder = EmberOgre.Gui.ListHolder:new_local(ModelEdit.models, ModelEdit.modelsfilter)
+		
+		local xW = ModelEdit.widget:getWindow("ModelTranslate_x")
+		local yW = ModelEdit.widget:getWindow("ModelTranslate_y")
+		local zW = ModelEdit.widget:getWindow("ModelTranslate_z")
+		ModelEdit.translateAdapter = EmberOgre.Gui.Vector3Adapter:new_local(xW,yW ,zW)
+		connect(ModelEdit.connectors, ModelEdit.translateAdapter.EventValueChanged, "ModelEdit.translateAdapter_update")
+		
+		local xW = ModelEdit.widget:getWindow("ModelContainedOffset_x")
+		local yW = ModelEdit.widget:getWindow("ModelContainedOffset_y")
+		local zW = ModelEdit.widget:getWindow("ModelContainedOffset_z")
+		ModelEdit.containedOffsetAdapter = EmberOgre.Gui.Vector3Adapter:new_local(xW,yW ,zW)
+		connect(ModelEdit.connectors, ModelEdit.containedOffsetAdapter.EventValueChanged, "ModelEdit.containedOffsetAdapter_update")
+	
+		local xW = ModelEdit.widget:getWindow("ModelRotation_x")
+		local yW = ModelEdit.widget:getWindow("ModelRotation_y")
+		local zW = ModelEdit.widget:getWindow("ModelRotation_z")
+		local degreeW = ModelEdit.widget:getWindow("ModelRotation_degrees")
+		ModelEdit.rotationAdapter = EmberOgre.Gui.QuaternionAdapter:new_local(degreeW, xW,yW ,zW)
+		connect(ModelEdit.connectors, ModelEdit.rotationAdapter.EventValueChanged, "ModelEdit.rotationAdapter_update")
+	
+	
+	
+	
+	
+		ModelEdit.contentparts = {}
+		ModelEdit.contentparts.partInfo = ModelEdit.widget:getWindow("PartInfo")
+		ModelEdit.contentparts.modelInfo = ModelEdit.widget:getWindow("ModelInfo")
+		ModelEdit.contentparts.submodelInfo = ModelEdit.widget:getWindow("SubModelInfo")
+		ModelEdit.contentparts.submeshInfo = ModelEdit.widget:getWindow("SubMeshInfo")
+		
+		--hide all parts initially
+		ModelEdit.hideAllContentParts()
+		
+		
+		ModelEdit.contentparts.modelInfo.meshlist = ModelEdit.widget:getWindow("MeshList")
+		ModelEdit.contentparts.modelInfo.meshlist = CEGUI.toListbox(ModelEdit.contentparts.modelInfo.meshlist)
+		ModelEdit.contentparts.modelInfo.meshlist:subscribeEvent("ItemSelectionChanged", "ModelEdit.modelinfoMeshlist_SelectionChanged")
+		
+		ModelEdit.contentparts.modelInfo.meshlistfilter =  CEGUI.toEditbox(ModelEdit.widget:getWindow("MeshListFilter"))
+		ModelEdit.contentparts.modelInfo.meshlistlistholder = EmberOgre.Gui.ListHolder:new_local(ModelEdit.contentparts.modelInfo.meshlist, ModelEdit.contentparts.modelInfo.meshlistfilter)
+		
+		
+		ModelEdit.contentparts.submeshInfo.materiallist = ModelEdit.widget:getWindow("Materials")
+		ModelEdit.contentparts.submeshInfo.materiallist = CEGUI.toListbox(ModelEdit.contentparts.submeshInfo.materiallist)
+		ModelEdit.contentparts.submeshInfo.materiallist:subscribeEvent("ItemSelectionChanged", "ModelEdit.submeshinfomaterials_SelectionChanged")
+		ModelEdit.contentparts.submeshInfo.filter = ModelEdit.widget:getWindow("FilterMaterials")
+		ModelEdit.contentparts.submeshInfo.filter = CEGUI.toEditbox(ModelEdit.contentparts.submeshInfo.filter)
+		ModelEdit.contentparts.submeshInfo.listholder = EmberOgre.Gui.ListHolder:new_local(ModelEdit.contentparts.submeshInfo.materiallist, ModelEdit.contentparts.submeshInfo.filter)
+		
+		ModelEdit.contentparts.submeshInfo.removeSubMeshButton = ModelEdit.widget:getWindow("RemoveSubMeshButton")
+		ModelEdit.contentparts.submeshInfo.removeSubMeshButton:subscribeEvent("Clicked", "ModelEdit.submeshinforemovesubmesh_Clicked")
+		
+		ModelEdit.widget:getWindow("PartRemoveButton"):subscribeEvent("Clicked", "ModelEdit.removePart_Clicked")
+		ModelEdit.widget:getWindow("AddSubmeshButton"):subscribeEvent("Clicked", "ModelEdit.addSubmesh_Clicked")
+		ModelEdit.widget:getWindow("AddPartButton"):subscribeEvent("Clicked", "ModelEdit.addPart_Clicked")
+		ModelEdit.widget:getWindow("RenamePartButton"):subscribeEvent("Clicked", "ModelEdit.renamePart_Clicked")
+		ModelEdit.widget:getWindow("AddModelButton"):subscribeEvent("Clicked", "ModelEdit.AddModelButton_Clicked")
+		ModelEdit.widget:getWindow("ReloadModelListButton"):subscribeEvent("Clicked", "ModelEdit.ReloadModelListButton_Clicked")
+		
+		ModelEdit.widget:getWindow("AddSubmodelButton"):subscribeEvent("Clicked", "ModelEdit.AddSubmodelButton_Clicked")
+		ModelEdit.widget:getWindow("SaveModelButton"):subscribeEvent("Clicked", "ModelEdit.SaveModelButton_Clicked")
+		ModelEdit.widget:getWindow("NewModelOk"):subscribeEvent("Clicked", "ModelEdit.NewModelOk_Clicked")
+		ModelEdit.widget:getWindow("NewModelCancel"):subscribeEvent("Clicked", "ModelEdit.NewModelCancel_Clicked")
+		ModelEdit.widget:getWindow("RemoveSubmodelButton"):subscribeEvent("Clicked", "ModelEdit.RemoveSubmodelButton_Clicked")
+		ModelEdit.widget:getWindow("ReloadInstancesButton"):subscribeEvent("Clicked", "ModelEdit.ReloadInstancesButton_Clicked")
+		ModelEdit.widget:getWindow("GetRotationFromPreviewButton"):subscribeEvent("Clicked", "ModelEdit.GetRotationFromPreviewButton_Clicked")
+		
+		ModelEdit.widget:getWindow("YawLeft"):subscribeEvent("Clicked", "ModelEdit.YawLeft_Clicked")
+		ModelEdit.widget:getWindow("YawRight"):subscribeEvent("Clicked", "ModelEdit.YawRight_Clicked")
+		ModelEdit.widget:getWindow("RollLeft"):subscribeEvent("Clicked", "ModelEdit.RollLeft_Clicked")
+		ModelEdit.widget:getWindow("RollRight"):subscribeEvent("Clicked", "ModelEdit.RollRight_Clicked")
+		ModelEdit.widget:getWindow("PitchUp"):subscribeEvent("Clicked", "ModelEdit.PitchUp_Clicked")
+		ModelEdit.widget:getWindow("PitchDown"):subscribeEvent("Clicked", "ModelEdit.PitchDown_Clicked")
+		ModelEdit.widget:getWindow("ResetOrientation"):subscribeEvent("Clicked", "ModelEdit.ResetOrientation_Clicked")
+	
+	
+	
+		ModelEdit.contentparts.modelInfo.renderImage =  ModelEdit.widget:getWindow("MeshPreviewImage")
+		--ModelEdit.contentparts.modelInfo.renderImage = CEGUI.toStaticImage(ModelEdit.contentparts.modelInfo.renderImage)
+		
+	--	ModelEdit.materials = ModelEdit.widget:getWindow("Materials")
+	--	ModelEdit.materials = CEGUI.toListbox(ModelEdit.materials)
+	--	ModelEdit.materials:subscribeEvent("ItemSelectionChanged", "ModelEdit.materials_SelectionChanged")
+		
+		
+	
+		ModelEdit.modelcontentstree = ModelEdit.widget:getWindow("ModelContentsTree")
+		ModelEdit.modelcontentstree = tolua.cast(ModelEdit.modelcontentstree,"CEGUI::Tree")
+		ModelEdit.modelcontentstree:setMultiselectEnabled(false)
+		ModelEdit.modelcontentstree:subscribeEvent("ItemSelectionChanged", "ModelEdit.modelcontents_SelectionChanged")
+		ModelEdit.modelcontentstree:subscribeEvent("ListItemsChanged", "ModelEdit.modelcontents_SelectionChanged")
+		--ModelEdit.modelcontents:setMutedState(true)
+	
+		
+		ModelEdit.partShown = ModelEdit.widget:getWindow("Shown")
+		ModelEdit.partShown = CEGUI.toCheckbox(ModelEdit.partShown)
+		ModelEdit.partShown:subscribeEvent("CheckStateChanged", "ModelEdit.partShown_StateChanged")
+			
+		
+			
+		ModelEdit.renderer = EmberOgre.Gui.ModelRenderer:new_local(ModelEdit.renderImage)
+		ModelEdit.renderer:showAxis();
+		ModelEdit.renderer:setCameraPositionMode(EmberOgre.SimpleRenderContext.CPM_WORLDCENTER)
+		
+		local subMeshPreviewImage = ModelEdit.widget:getWindow("SubMeshPreviewImage")
+		--subMeshPreviewImage = CEGUI.toStaticImage(subMeshPreviewImage)
+		ModelEdit.subMeshPartRenderer = EmberOgre.Gui.OgreEntityRenderer:new_local(subMeshPreviewImage)
+		
+		local meshPreviewImage = ModelEdit.widget:getWindow("MeshPreviewImage")
+		--meshPreviewImage = CEGUI.toStaticImage(meshPreviewImage)
+		ModelEdit.submeshRenderer = EmberOgre.Gui.OgreEntityRenderer:new_local(meshPreviewImage)
+		
+		--ModelEdit.contentparts.modelInfo.renderer = EmberOgre.Gui.ModelRenderer:new_local(ModelEdit.contentparts.modelInfo.renderImage)
+		
+		ModelEdit.zoomSlider  = ModelEdit.widget:getWindow("Zoom")
+		ModelEdit.zoomSlider = CEGUI.toSlider(ModelEdit.zoomSlider)
+		ModelEdit.zoomSlider:subscribeEvent("ValueChanged", "ModelEdit.zoom_ValueChanged")
+		
+		ModelEdit.scaleTextbox = ModelEdit.widget:getWindow("ModelScale")
+		ModelEdit.scaleTextbox:subscribeEvent("TextChanged", "ModelEdit.ModelScale_TextChanged")
+		
+		ModelEdit.fillMaterialList()
+		ModelEdit.fillModellist()
+		ModelEdit.fillMeshList()
+		ModelEdit.fillScaleTypesList()
+		--def:setValid(true)	
+		--model = ModelEdit.renderer:getModel()
+		--def = model:getDefinition():get()
+		
+		ModelEdit.widget:enableCloseButton()
+	
+	end
 
+	connect(ModelEdit.connectors, ModelEdit.widget.EventFirstTimeShown, setup)
 	ModelEdit.widget:loadMainSheet("ModelEdit.layout", "ModelEdit/")
-	
-	ModelEdit.renderImage = ModelEdit.widget:getWindow("Image")
-	--ModelEdit.renderImage = CEGUI.toStaticImage(ModelEdit.renderImage)
-
-	ModelEdit.models = ModelEdit.widget:getWindow("Models")
-	ModelEdit.models = CEGUI.toListbox(ModelEdit.models)
-	ModelEdit.models:subscribeEvent("ItemSelectionChanged", "ModelEdit.models_SelectionChanged")
-	ModelEdit.modelsfilter = ModelEdit.widget:getWindow("FilterModels")
-	ModelEdit.modelsfilter = CEGUI.toEditbox(ModelEdit.modelsfilter)
-	ModelEdit.modelslistholder = EmberOgre.Gui.ListHolder:new_local(ModelEdit.models, ModelEdit.modelsfilter)
-	
-	local xW = ModelEdit.widget:getWindow("ModelTranslate_x")
-	local yW = ModelEdit.widget:getWindow("ModelTranslate_y")
-	local zW = ModelEdit.widget:getWindow("ModelTranslate_z")
-	ModelEdit.translateAdapter = EmberOgre.Gui.Vector3Adapter:new_local(xW,yW ,zW)
-	connect(ModelEdit.connectors, ModelEdit.translateAdapter.EventValueChanged, "ModelEdit.translateAdapter_update")
-	
-	local xW = ModelEdit.widget:getWindow("ModelContainedOffset_x")
-	local yW = ModelEdit.widget:getWindow("ModelContainedOffset_y")
-	local zW = ModelEdit.widget:getWindow("ModelContainedOffset_z")
-	ModelEdit.containedOffsetAdapter = EmberOgre.Gui.Vector3Adapter:new_local(xW,yW ,zW)
-	connect(ModelEdit.connectors, ModelEdit.containedOffsetAdapter.EventValueChanged, "ModelEdit.containedOffsetAdapter_update")
-
-	local xW = ModelEdit.widget:getWindow("ModelRotation_x")
-	local yW = ModelEdit.widget:getWindow("ModelRotation_y")
-	local zW = ModelEdit.widget:getWindow("ModelRotation_z")
-	local degreeW = ModelEdit.widget:getWindow("ModelRotation_degrees")
-	ModelEdit.rotationAdapter = EmberOgre.Gui.QuaternionAdapter:new_local(degreeW, xW,yW ,zW)
-	connect(ModelEdit.connectors, ModelEdit.rotationAdapter.EventValueChanged, "ModelEdit.rotationAdapter_update")
-
-
-
-
-
-	ModelEdit.contentparts = {}
-	ModelEdit.contentparts.partInfo = ModelEdit.widget:getWindow("PartInfo")
-	ModelEdit.contentparts.modelInfo = ModelEdit.widget:getWindow("ModelInfo")
-	ModelEdit.contentparts.submodelInfo = ModelEdit.widget:getWindow("SubModelInfo")
-	ModelEdit.contentparts.submeshInfo = ModelEdit.widget:getWindow("SubMeshInfo")
-	
-	--hide all parts initially
-	ModelEdit.hideAllContentParts()
-	
-	
-	ModelEdit.contentparts.modelInfo.meshlist = ModelEdit.widget:getWindow("MeshList")
-	ModelEdit.contentparts.modelInfo.meshlist = CEGUI.toListbox(ModelEdit.contentparts.modelInfo.meshlist)
-	ModelEdit.contentparts.modelInfo.meshlist:subscribeEvent("ItemSelectionChanged", "ModelEdit.modelinfoMeshlist_SelectionChanged")
-	
-	ModelEdit.contentparts.modelInfo.meshlistfilter =  CEGUI.toEditbox(ModelEdit.widget:getWindow("MeshListFilter"))
-	ModelEdit.contentparts.modelInfo.meshlistlistholder = EmberOgre.Gui.ListHolder:new_local(ModelEdit.contentparts.modelInfo.meshlist, ModelEdit.contentparts.modelInfo.meshlistfilter)
-	
-	
-	ModelEdit.contentparts.submeshInfo.materiallist = ModelEdit.widget:getWindow("Materials")
-	ModelEdit.contentparts.submeshInfo.materiallist = CEGUI.toListbox(ModelEdit.contentparts.submeshInfo.materiallist)
-	ModelEdit.contentparts.submeshInfo.materiallist:subscribeEvent("ItemSelectionChanged", "ModelEdit.submeshinfomaterials_SelectionChanged")
-	ModelEdit.contentparts.submeshInfo.filter = ModelEdit.widget:getWindow("FilterMaterials")
-	ModelEdit.contentparts.submeshInfo.filter = CEGUI.toEditbox(ModelEdit.contentparts.submeshInfo.filter)
-	ModelEdit.contentparts.submeshInfo.listholder = EmberOgre.Gui.ListHolder:new_local(ModelEdit.contentparts.submeshInfo.materiallist, ModelEdit.contentparts.submeshInfo.filter)
-	
-	ModelEdit.contentparts.submeshInfo.removeSubMeshButton = ModelEdit.widget:getWindow("RemoveSubMeshButton")
-	ModelEdit.contentparts.submeshInfo.removeSubMeshButton:subscribeEvent("Clicked", "ModelEdit.submeshinforemovesubmesh_Clicked")
-	
-	ModelEdit.widget:getWindow("PartRemoveButton"):subscribeEvent("Clicked", "ModelEdit.removePart_Clicked")
-	ModelEdit.widget:getWindow("AddSubmeshButton"):subscribeEvent("Clicked", "ModelEdit.addSubmesh_Clicked")
-	ModelEdit.widget:getWindow("AddPartButton"):subscribeEvent("Clicked", "ModelEdit.addPart_Clicked")
-	ModelEdit.widget:getWindow("RenamePartButton"):subscribeEvent("Clicked", "ModelEdit.renamePart_Clicked")
-	ModelEdit.widget:getWindow("AddModelButton"):subscribeEvent("Clicked", "ModelEdit.AddModelButton_Clicked")
-	ModelEdit.widget:getWindow("ReloadModelListButton"):subscribeEvent("Clicked", "ModelEdit.ReloadModelListButton_Clicked")
-	
-	ModelEdit.widget:getWindow("AddSubmodelButton"):subscribeEvent("Clicked", "ModelEdit.AddSubmodelButton_Clicked")
-	ModelEdit.widget:getWindow("SaveModelButton"):subscribeEvent("Clicked", "ModelEdit.SaveModelButton_Clicked")
-	ModelEdit.widget:getWindow("NewModelOk"):subscribeEvent("Clicked", "ModelEdit.NewModelOk_Clicked")
-	ModelEdit.widget:getWindow("NewModelCancel"):subscribeEvent("Clicked", "ModelEdit.NewModelCancel_Clicked")
-	ModelEdit.widget:getWindow("RemoveSubmodelButton"):subscribeEvent("Clicked", "ModelEdit.RemoveSubmodelButton_Clicked")
-	ModelEdit.widget:getWindow("ReloadInstancesButton"):subscribeEvent("Clicked", "ModelEdit.ReloadInstancesButton_Clicked")
-	ModelEdit.widget:getWindow("GetRotationFromPreviewButton"):subscribeEvent("Clicked", "ModelEdit.GetRotationFromPreviewButton_Clicked")
-	
-	ModelEdit.widget:getWindow("YawLeft"):subscribeEvent("Clicked", "ModelEdit.YawLeft_Clicked")
-	ModelEdit.widget:getWindow("YawRight"):subscribeEvent("Clicked", "ModelEdit.YawRight_Clicked")
-	ModelEdit.widget:getWindow("RollLeft"):subscribeEvent("Clicked", "ModelEdit.RollLeft_Clicked")
-	ModelEdit.widget:getWindow("RollRight"):subscribeEvent("Clicked", "ModelEdit.RollRight_Clicked")
-	ModelEdit.widget:getWindow("PitchUp"):subscribeEvent("Clicked", "ModelEdit.PitchUp_Clicked")
-	ModelEdit.widget:getWindow("PitchDown"):subscribeEvent("Clicked", "ModelEdit.PitchDown_Clicked")
-	ModelEdit.widget:getWindow("ResetOrientation"):subscribeEvent("Clicked", "ModelEdit.ResetOrientation_Clicked")
-
-
-
-	ModelEdit.contentparts.modelInfo.renderImage =  ModelEdit.widget:getWindow("MeshPreviewImage")
-	--ModelEdit.contentparts.modelInfo.renderImage = CEGUI.toStaticImage(ModelEdit.contentparts.modelInfo.renderImage)
-	
---	ModelEdit.materials = ModelEdit.widget:getWindow("Materials")
---	ModelEdit.materials = CEGUI.toListbox(ModelEdit.materials)
---	ModelEdit.materials:subscribeEvent("ItemSelectionChanged", "ModelEdit.materials_SelectionChanged")
-	
-	
-
-	ModelEdit.modelcontentstree = ModelEdit.widget:getWindow("ModelContentsTree")
-	ModelEdit.modelcontentstree = tolua.cast(ModelEdit.modelcontentstree,"CEGUI::Tree")
-	ModelEdit.modelcontentstree:setMultiselectEnabled(false)
-	ModelEdit.modelcontentstree:subscribeEvent("ItemSelectionChanged", "ModelEdit.modelcontents_SelectionChanged")
-	ModelEdit.modelcontentstree:subscribeEvent("ListItemsChanged", "ModelEdit.modelcontents_SelectionChanged")
-	--ModelEdit.modelcontents:setMutedState(true)
-
-	
-	ModelEdit.partShown = ModelEdit.widget:getWindow("Shown")
-	ModelEdit.partShown = CEGUI.toCheckbox(ModelEdit.partShown)
-	ModelEdit.partShown:subscribeEvent("CheckStateChanged", "ModelEdit.partShown_StateChanged")
-		
-	
-		
-	ModelEdit.renderer = EmberOgre.Gui.ModelRenderer:new_local(ModelEdit.renderImage)
-	ModelEdit.renderer:showAxis();
-	ModelEdit.renderer:setCameraPositionMode(EmberOgre.SimpleRenderContext.CPM_WORLDCENTER)
-	
-	local subMeshPreviewImage = ModelEdit.widget:getWindow("SubMeshPreviewImage")
-	--subMeshPreviewImage = CEGUI.toStaticImage(subMeshPreviewImage)
-	ModelEdit.subMeshPartRenderer = EmberOgre.Gui.OgreEntityRenderer:new_local(subMeshPreviewImage)
-	
-	local meshPreviewImage = ModelEdit.widget:getWindow("MeshPreviewImage")
-	--meshPreviewImage = CEGUI.toStaticImage(meshPreviewImage)
-	ModelEdit.submeshRenderer = EmberOgre.Gui.OgreEntityRenderer:new_local(meshPreviewImage)
-	
-	--ModelEdit.contentparts.modelInfo.renderer = EmberOgre.Gui.ModelRenderer:new_local(ModelEdit.contentparts.modelInfo.renderImage)
-	
-	ModelEdit.zoomSlider  = ModelEdit.widget:getWindow("Zoom")
-	ModelEdit.zoomSlider = CEGUI.toSlider(ModelEdit.zoomSlider)
-	ModelEdit.zoomSlider:subscribeEvent("ValueChanged", "ModelEdit.zoom_ValueChanged")
-	
-	ModelEdit.scaleTextbox = ModelEdit.widget:getWindow("ModelScale")
-	ModelEdit.scaleTextbox:subscribeEvent("TextChanged", "ModelEdit.ModelScale_TextChanged")
-	
-	ModelEdit.fillMaterialList()
-	ModelEdit.fillModellist()
-	ModelEdit.fillMeshList()
-	ModelEdit.fillScaleTypesList()
-	--def:setValid(true)	
-	--model = ModelEdit.renderer:getModel()
-	--def = model:getDefinition():get()
-	
 	ModelEdit.widget:registerConsoleVisibilityToggleCommand("modelEdit")
-	ModelEdit.widget:enableCloseButton()
-	ModelEdit.widget:hide()
 
 end
 
