@@ -131,32 +131,37 @@ end
 
 -- Builds widget
 function EntityCreator.buildWidget()
-	-- Loading widget layout
-	EntityCreator.widget = guiManager:createWidget()
-	EntityCreator.widget:loadMainSheet("EntityCreator.layout", "EntityCreator/")
 
 	-- Initializing helper classes
 	EntityCreator.helper = EmberOgre.Gui.EntityCreator()
-	connect(EntityCreator.connectors, EntityCreator.helper.EventTypeInfoLoaded, EntityCreator.showRecipe)
-	EntityCreator.helper.mWidget = EntityCreator.widget
-	EntityCreator.factory = EmberOgre.Gui.Adapters.Atlas.AdapterFactory("EntityCreator")
-
-	-- Creating container for storing adapters
-	EntityCreator.recipeDescription = EntityCreator.widget:getWindow("RecipeDescription")
-	EntityCreator.container = EntityCreator.widget:getWindow("AdaptersContainer")
-	EntityCreator.stackableContainer = EmberOgre.Gui.StackableContainer(EntityCreator.container)
-
-	-- Filling list of recipes
-	EntityCreator.recipesList = CEGUI.toListbox(EntityCreator.widget:getWindow("RecipesList"))
-	EntityCreator.fillRecipesList()
 	
-	EntityCreator.createButton = CEGUI.toPushButton(EntityCreator.widget:getWindow("Create"))
-	EntityCreator.createButton:setEnabled(false)
+	-- Loading widget layout
+	EntityCreator.widget = guiManager:createWidget()
+	local setup = function()
 
-	-- Finalizing
+		connect(EntityCreator.connectors, EntityCreator.helper.EventTypeInfoLoaded, EntityCreator.showRecipe)
+		EntityCreator.helper.mWidget = EntityCreator.widget
+		EntityCreator.factory = EmberOgre.Gui.Adapters.Atlas.AdapterFactory("EntityCreator")
+	
+		-- Creating container for storing adapters
+		EntityCreator.recipeDescription = EntityCreator.widget:getWindow("RecipeDescription")
+		EntityCreator.container = EntityCreator.widget:getWindow("AdaptersContainer")
+		EntityCreator.stackableContainer = EmberOgre.Gui.StackableContainer(EntityCreator.container)
+	
+		-- Filling list of recipes
+		EntityCreator.recipesList = CEGUI.toListbox(EntityCreator.widget:getWindow("RecipesList"))
+		EntityCreator.fillRecipesList()
+		
+		EntityCreator.createButton = CEGUI.toPushButton(EntityCreator.widget:getWindow("Create"))
+		EntityCreator.createButton:setEnabled(false)
+	
+		-- Finalizing
+		EntityCreator.widget:enableCloseButton()
+	end
+	connect(EntityCreator.connectors, EntityCreator.widget.EventFirstTimeShown, setup)
 	EntityCreator.widget:registerConsoleVisibilityToggleCommand("advEntityCreator")
-	EntityCreator.widget:enableCloseButton()
-	EntityCreator.widget:hide()
+	EntityCreator.widget:loadMainSheet("EntityCreator.layout", "EntityCreator/")
+	
 end
 
 EntityCreator.buildWidget()
