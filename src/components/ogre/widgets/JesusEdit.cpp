@@ -74,15 +74,8 @@ JesusEdit::~JesusEdit()
 {
 }
 
-
-void JesusEdit::buildWidget()
+void JesusEdit::onEventFirstTimeShown()
 {
-
-	loadMainSheet("JesusEdit.layout", "JesusEdit/");
-	mMainWindow->setVisible(false);
-	
-	
-
 	
 	//bind buttons
 	CEGUI::PushButton* switchButton = static_cast<CEGUI::PushButton*>(getWindow("SwitchMode"));
@@ -140,9 +133,18 @@ void JesusEdit::buildWidget()
 	//make sure the buttons are disabled by default
 	updateBindingButton();
 	updateCreateButton();
+	
+	enableCloseButton();
+	
+}
+
+void JesusEdit::buildWidget()
+{
+
+	loadMainSheet("JesusEdit.layout", "JesusEdit/");
+
 
 	registerConsoleVisibilityToggleCommand("builder");
-	enableCloseButton();
 	
 }
 

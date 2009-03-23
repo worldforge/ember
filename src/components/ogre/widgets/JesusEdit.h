@@ -209,6 +209,10 @@ public:
 
 	
 protected:
+	/**
+	 * @brief Called when the EventFirstTimeShown signal should be emitted.
+	 */
+	virtual void onEventFirstTimeShown();
 
 	/**
 	if set to true, we're in edit mode
