@@ -97,7 +97,7 @@ void FoliageBase::TerrainGenerator_LayerUpdated(Terrain::TerrainShader* shader, 
 			///if there are areas sent, the update only affect those and we only need to update the affected areas
 			if (areas) {
 				for (TerrainGenerator::AreaStore::iterator I = areas->begin(); I != areas->end(); ++I) {
-					const Ogre::TRect<Ogre::Real> ogreExtent(Atlas2Ogre(I->bbox()));
+					const Ogre::TRect<Ogre::Real> ogreExtent(Atlas2Ogre(*I));
 					Ogre::Real pageSize(mPagedGeometry->getPageSize());
 					Ogre::Vector3 pos(ogreExtent.left, 0, ogreExtent.top);
 					for (; pos.x < ogreExtent.right; pos.x += pageSize) {
@@ -117,7 +117,9 @@ void FoliageBase::TerrainGenerator_EventShaderCreated(Terrain::TerrainShader* sh
 {
 	///we'll assume that all shaders that are created after this foliage has been created will affect it, so we'll add it to the dependent layers and reload the geometry
 	mDependentDefinitions.push_back(shader->getLayerDefinition());
-	mPagedGeometry->reloadGeometry();
+	if (mPagedGeometry) {
+		mPagedGeometry->reloadGeometry();
+	}
 }
 
 void FoliageBase::TerrainGenerator_AfterTerrainUpdate(std::vector<TerrainPosition>& terrainPositions, std::set< ::EmberOgre::Terrain::TerrainPage* >& pages)

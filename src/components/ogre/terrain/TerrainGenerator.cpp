@@ -344,9 +344,11 @@ void TerrainGenerator::TerrainArea_Swapped(Mercator::Area& oldArea, TerrainArea*
 }
 void TerrainGenerator::markShaderForUpdate(TerrainShader* shader, Mercator::Area* terrainArea)
 {
-	mShadersToUpdate.insert(shader);
+	ShaderUpdateRequest& updateRequest = mShadersToUpdate[shader];
 	if (terrainArea) {
-		mChangedTerrainAreas[shader].push_back(*terrainArea);
+		updateRequest.Areas.push_back(terrainArea->bbox());
+	} else {
+		updateRequest.UpdateAll = true;
 	}
 }
 
@@ -359,18 +361,33 @@ bool TerrainGenerator::frameEnded(const Ogre::FrameEvent & evt)
 // 		}	
 		
 		///use a reverse iterator, since we need to update top most layers first, since lower layers might depend on them for their foliage positions
-		for (ShaderSet::reverse_iterator I = mShadersToUpdate.rbegin(); I != mShadersToUpdate.rend(); ++I) {
-			for (PageStore::iterator J = mPages.begin(); J != mPages.end(); ++J) {
-				///repopulate the layer
-				J->second->updateShaderTexture(*I, true);
+		for (ShaderUpdateSet::reverse_iterator I = mShadersToUpdate.rbegin(); I != mShadersToUpdate.rend(); ++I) {
+			const ShaderUpdateRequest& updateRequest = I->second;
+			
+			AreaStore* areas(0);
+			///We should either update all pages at once, or only those pages that intersect or contains the areas that have been changed
+			if (updateRequest.UpdateAll) {
+				for (PageStore::iterator J = mPages.begin(); J != mPages.end(); ++J) {
+					///repopulate the layer
+					J->second->updateShaderTexture((I->first), true);
+				}
+			} else {
+				areas = &(I->second.Areas);
+				for (PageStore::iterator J = mPages.begin(); J != mPages.end(); ++J) {
+					bool shouldUpdate = false;
+					for (AreaStore::iterator K = areas->begin(); K != areas->end(); ++K) {
+						if (WFMath::Intersect(J->second->getExtent(), *K, true) || WFMath::Contains(J->second->getExtent(), *K, true)) {
+							shouldUpdate = true;
+							break;
+						}
+					}
+					if (shouldUpdate) {
+						///repopulate the layer
+						J->second->updateShaderTexture((I->first), true);
+					}
+				}
 			}
-			TerrainAreaMap::iterator areaI = mChangedTerrainAreas.find(*I);
-			std::vector<Mercator::Area>* areas(0);
-			if (areaI != mChangedTerrainAreas.end()) {
-				///only send areas if the update actually affects only areas
-				areas = &(areaI->second);
-			}
-			EventLayerUpdated.emit(*I, areas);
+			EventLayerUpdated.emit(I->first, areas);
 		}	
 	}
 	

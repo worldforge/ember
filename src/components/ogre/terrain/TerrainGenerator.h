@@ -128,23 +128,22 @@ public sigc::trackable, public Ember::ConsoleObject
 public:
 
 	/**
-	A type used for storing changes to aeas. We use instances instead of pointers or references since this type will be used in delayed updating, where the originating instance might not any longer be around.
+	 * @brief A type used for storing changes to aeas. We use instances instead of pointers or references since this type will be used in delayed updating, where the originating instance might not any longer be around.
 	*/
-	typedef std::vector<Mercator::Area> AreaStore;
+	typedef std::vector<WFMath::AxisBox<2> > AreaStore;
 	
 	/**
-	A type used for storing the terrain definition points.
-	*/
+	 * @brief A type used for storing the terrain definition points.
+	 */
 	typedef std::vector<TerrainDefPoint> TerrainDefPointStore;
 
 	/**
-	 * STL map to store sparse array of TerrainPage pointers.
-	 * 
-	 */ 
+	 * @brief STL map to store sparse array of TerrainPage pointers.
+	 */
 	typedef std::map<int, TerrainPage *> TerrainPagecolumn;
 	
 	/**
-	* STL map to store sparse array of TerrainPage pointer columns.
+	* @brief STL map to store sparse array of TerrainPage pointer columns.
 	*/
 	typedef std::map<int, TerrainPagecolumn > TerrainPagestore;
 	
@@ -156,7 +155,7 @@ public:
 	
 	
 	/**
-	 *    Dtor.
+	 * @brief Dtor.
 	 */
 	virtual ~TerrainGenerator();
 
@@ -171,8 +170,7 @@ public:
 // 	void prepareSegments(long segmentXStart, long segmentZStart, long numberOfSegments, bool alsoPushOntoTerrain);
 
 	/**
-	 * Prepares all segments aquired from Mercator. Note that this can be very,
-	 * very expensive if there's a lot of terrain defined.
+	 * @brief Prepares all segments aquired from Mercator. Note that this can be very, very expensive if there's a lot of terrain defined.
 	 */
 	void prepareAllSegments();
 	
@@ -185,7 +183,7 @@ public:
 	virtual float getHeight(const TerrainPosition& atPosition) const;
 	
 	/**
-	 *    @brief Updates the terrain with new terrain points.
+	 * @brief Updates the terrain with new terrain points.
 	 * @param terrainIndexPoints A list of terrain index points, i.e. points positioned using the base point positioning scale. In normal setup that's 64 meters per index point, so an index point of 2:1 would translate to real world coords of 128:64
 	 * @return True if the terrain was successfully updated.
 	 */
@@ -213,14 +211,14 @@ public:
 	const TerrainPosition getMax() const;
 	
 	/**
-	 *    @brief Gets the min boundaries of the terrain.
+	 * @brief Gets the min boundaries of the terrain.
 	 * @return 
 	 */
 	const TerrainPosition getMin() const;
 	
 	/**
-	 *   @brief Gets the size of one terrain segment.
-	 *	(note that this is different from Mercator segments, which always are of size 64)
+	 * @brief Gets the size of one terrain segment.
+	 * (note that this is different from Mercator segments, which always are of size 64)
 	 * @return 
 	 */
 	int getPageMetersSize();
@@ -392,6 +390,23 @@ public:
 protected:
 
 	/**
+	 * @brief Encapsules a shader update request.
+	 */
+	struct ShaderUpdateRequest
+	{
+		/**
+		 * @brief A list of areas that have been changed.
+		 * Unless UpdateAll is true, this should be used for determining what geometry needs updating.
+		 */
+		AreaStore Areas;
+		
+		/**
+		 * @brief If this is set to true, all geomtry should be updated, no matter what areas are specified in Areas.
+		 */
+		bool UpdateAll;
+	};
+
+	/**
 	@brief Information about the world, such as size and number of pages.
 	*/
 	TerrainInfo mTerrainInfo;
@@ -411,15 +426,15 @@ protected:
 	 */
 	void markShaderForUpdate(TerrainShader* shader,  Mercator::Area* terrainArea = 0);
 	
-	typedef std::set<TerrainShader*> ShaderSet;
+	typedef std::map<TerrainShader*, ShaderUpdateRequest> ShaderUpdateSet;
 	
 	/**
 	 * @brief Stores the shaders needing update, to be processed on the next frame.
-	 * For performance reasons we try to batch all shaders updates togther, rather than doing them one by one. This is done by adding the shaders needing update to this store, and then on frameEnded processing them.
+	 * For performance reasons we try to batch all shaders updates together, rather than doing them one by one. This is done by adding the shaders needing update to this store, and then on frameEnded processing them.
 	 * @see markShaderForUpdate
 	 * @see frameEnded
 	 */
-	ShaderSet mShadersToUpdate;
+	ShaderUpdateSet mShadersToUpdate;
 	
 	typedef std::map<std::string, TerrainPage*> PageStore;
 	PageStore mPages;
