@@ -2,7 +2,7 @@
 <kdevelop>
   <general>
     <author>Erik Hjortsberg</author>
-    <email>erik.hjortsberg@iteam.se</email>
+    <email>erik.hjortsberg@gmail.com</email>
     <version>$VERSION$</version>
     <projectmanagement>KDevAutoProject</projectmanagement>
     <primarylanguage>C++</primarylanguage>
@@ -11,7 +11,7 @@
     <absoluteprojectpath>false</absoluteprojectpath>
     <description/>
     <secondaryLanguages/>
-    <versioncontrol>kdevcvsservice</versioncontrol>
+    <versioncontrol/>
     <defaultencoding/>
     <projectname>Ember</projectname>
   </general>
@@ -21,10 +21,10 @@
       <useconfiguration>debug</useconfiguration>
     </general>
     <run>
-      <mainprogram>/home/erik/code/worldforge/forge/clients/ember/optimized</mainprogram>
+      <mainprogram/>
       <directoryradio>executable</directoryradio>
       <customdirectory>/home/erik/code/worldforge/forge_cvs/clients/ember/src/components/ogre/</customdirectory>
-      <programargs>--prefix $HOME/opt/worldforge --binrelocloading__ ---home $HOME/ember/home ---home $HOME/.ember</programargs>
+      <programargs>--prefix $HOME/opt/ogre_1_6 --home $HOME/ember/home</programargs>
       <terminal>false</terminal>
       <autocompile>true</autocompile>
       <envvars/>
@@ -32,8 +32,8 @@
         <EmberOgre/>
         <ember.bin>--prefix $HOME/opt/worldforge --binrelocloading__ --home $HOME/ember/home ---home $HOME/.ember</ember.bin>
       </runarguments>
-      <globaldebugarguments>--prefix $HOME/opt/worldforge --binrelocloading__ ---home $HOME/ember/home ---home $HOME/.ember</globaldebugarguments>
-      <globalcwd>/home/erik/code/worldforge/forge/clients/ember/debug</globalcwd>
+      <globaldebugarguments>--prefix $HOME/opt/ogre_1_6 --home $HOME/ember/home</globaldebugarguments>
+      <globalcwd>/home/erik/code/worldforge-git/ember/ogre1_6_debug</globalcwd>
       <useglobalprogram>false</useglobalprogram>
       <autoinstall>false</autoinstall>
       <autokdesu>false</autokdesu>
@@ -137,7 +137,7 @@
       <profile>
         <envvars/>
         <configargs>--prefix=$HOME/opt/worldforge --enable-lua=yes --enable-gprof</configargs>
-        <builddir>profile</builddir>
+        <builddir>ogre1.6_debug_semithreaded</builddir>
         <topsourcedir/>
         <cppflags/>
         <ldflags/>
@@ -151,6 +151,25 @@
         <cxxflags/>
         <f77flags/>
       </profile>
+      <ogre1.6_debug_semithreaded>
+        <envvars>
+          <envvar value="/home/erik/opt/ogre_1_6_semithreaded/lib/pkgconfig:/home/erik/opt/worldforge/lib/pkgconfig:$PKG_CONFIG_PATH" name="PKG_CONFIG_PATH" />
+        </envvars>
+        <configargs>--enable-debug=full --prefix=/home/erik/opt/ogre_1_6_semithreaded --disable-freeimage-check</configargs>
+        <builddir>ogre_semithreaded_debug</builddir>
+        <topsourcedir/>
+        <cppflags>-I/home/erik/opt/ogre_1_6_semithreaded/include -L/home/erik/opt/ogre_1_6_semithreaded/lib</cppflags>
+        <ldflags>-L/home/erik/opt/ogre_1_6_semithreaded/lib</ldflags>
+        <ccompiler>kdevgccoptions</ccompiler>
+        <cxxcompiler>kdevgppoptions</cxxcompiler>
+        <f77compiler>kdevpghpfoptions</f77compiler>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags/>
+        <cxxflags>-O0 -g3 -Wall -I/home/erik/opt/ogre_1_6_semithreaded/include -L/home/erik/opt/ogre_1_6_semithreaded/lib</cxxflags>
+        <f77flags/>
+      </ogre1.6_debug_semithreaded>
     </configurations>
     <make>
       <envvars>
@@ -158,7 +177,7 @@
         <envvar value="1" name="WANT_AUTOMAKE_1_9" />
       </envvars>
       <abortonerror>false</abortonerror>
-      <numberofjobs>6</numberofjobs>
+      <numberofjobs>3</numberofjobs>
       <dontact>false</dontact>
       <makebin/>
       <prio>0</prio>
@@ -246,7 +265,12 @@
     <revertoptions>-C</revertoptions>
   </kdevcvsservice>
   <kdevcppsupport>
-    <references/>
+    <references>
+      <pcs>usr_local</pcs>
+      <pcs>usr</pcs>
+      <pcs>opt_worldforge</pcs>
+      <pcs>all</pcs>
+    </references>
     <codecompletion>
       <includeGlobalFunctions>true</includeGlobalFunctions>
       <includeTypes>true</includeTypes>
@@ -287,11 +311,11 @@
     <qt>
       <used>false</used>
       <version>3</version>
-      <root>/usr/share/qt3</root>
+      <root>/usr/lib/qt3/</root>
       <includestyle>3</includestyle>
       <designerintegration>EmbeddedKDevDesigner</designerintegration>
-      <qmake>/usr/bin/qmake-qt3</qmake>
-      <designer>/usr/bin/designer</designer>
+      <qmake>/usr/lib/qt3//bin/qmake</qmake>
+      <designer>/usr/bin/designer-qt3</designer>
       <designerpluginpaths/>
     </qt>
     <splitheadersource>
