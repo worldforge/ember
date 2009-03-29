@@ -54,3 +54,8 @@ src/stamp-h1
 # ignore Eclipse project files
 .project
 .cproject
+*.orig
+media*
+*.log
+*.mp4
+*.kdevelop
