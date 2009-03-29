@@ -330,7 +330,12 @@ protected:
 	 * @brief The main render window. There can be many more render targets in the system, but they will all reside within this render window (such as entity preview through CEGUI).
 	 */
 	Ogre::RenderWindow* mWindow;
-	
+
+	/**
+	 * @brief Utility object to configure shaders
+	 */
+	std::auto_ptr<ShaderManager> mShaderManager;
+
 	/**
 	 * @brief An InputCommandMapper that will handle all general input events.
 	 */

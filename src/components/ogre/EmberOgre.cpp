@@ -495,6 +495,9 @@ bool EmberOgre::setup()
 		throw Ember::Exception("Could not initialize gui, aborting. Make sure that all media got downloaded and installed correctly.");
 	}
 
+	/// Create shader manager
+	mShaderManager = new ShaderManager();
+
 	/// Create the scene
 	createScene();
 	EventSceneCreated.emit();
