@@ -111,6 +111,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 #include "manipulation/EntityRecipeManager.h"
 
+#include "ShaderManager.h"
+
 // ------------------------------
 // Include Ember header files
 // ------------------------------
@@ -496,7 +498,7 @@ bool EmberOgre::setup()
 	}
 
 	/// Create shader manager
-	mShaderManager = new ShaderManager();
+	mShaderManager = std::auto_ptr<ShaderManager>(new ShaderManager);
 
 	/// Create the scene
 	createScene();

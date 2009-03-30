@@ -114,6 +114,8 @@ class OpcodeCollisionDetectorVisualizer;
 
 class EntityRecipeManager;
 
+class ShaderManager;
+
 /**
 	@brief The main class of ember. This functions as a hub for almost all subsystems.
 	

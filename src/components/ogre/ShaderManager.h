@@ -23,6 +23,8 @@
 #ifndef EMBEROGRE_SHADERMANAGER_H
 #define EMBEROGRE_SHADERMANAGER_H
 
+#include <string>
+
 namespace EmberOgre {
 
 /**
@@ -50,8 +52,8 @@ public:
 	/**
 	 * Checks whether material is supported in current scheme
 	 */
-	void checkMaterial(std::string materialName);
-}
+	bool checkMaterial(std::string materialName, std::string schemeName);
+};
 
 }
 
