@@ -75,6 +75,7 @@ WorldEmberEntity::~WorldEmberEntity()
 
 void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
+#if 0
 	// Need to detect D3D or GL for best depth shadowmapping
 	bool isOpenGL;
 	if (Ogre::Root::getSingleton().getRenderSystem()->getName().find("GL") != Ogre::String::npos)
@@ -146,6 +147,7 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 	pssmSetup->setOptimalAdjustFactor(2, 0.5);
 
 	sceneMgr->setShadowCameraSetup(Ogre::ShadowCameraSetupPtr(pssmSetup));
+#endif
 
 	///create the foliage
 	mFoliage = new Environment::Foliage(EmberOgre::getSingleton().getSceneManager());

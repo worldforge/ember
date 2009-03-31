@@ -23,6 +23,8 @@
 #ifndef EMBEROGRE_SHADERMANAGER_H
 #define EMBEROGRE_SHADERMANAGER_H
 
+#include "framework/ConsoleObject.h"
+
 #include <string>
 #include <map>
 
@@ -37,7 +39,7 @@ namespace EmberOgre {
  *
  * @author Alexey Torkhov <atorkhov@gmail.com>
  */
-class ShaderManager {
+class ShaderManager : public Ember::ConsoleObject {
 public:
 	/**
 	 * Enumeration of graphics levels
@@ -84,6 +86,21 @@ public:
 	 */
 	GraphicsLevel setGraphicsLevel(GraphicsLevel newLevel);
 
+	/**
+	 * Reimplements the ConsoleObject::runCommand method
+	 */
+	virtual	void runCommand(const std::string &command, const std::string &args);
+
+	/**
+	 * Sets graphics level at runtime
+	 */
+	const Ember::ConsoleCommandWrapper SetLevel;
+
+	/**
+	 * Returns level id by its name
+	 */
+	GraphicsLevel getLevelByName(const std::string &level);
+
 private:
 	/**
 	 * Current graphics level
@@ -103,7 +120,17 @@ private:
 	/**
 	 * Checks whether material is supported in current scheme
 	 */
-	bool checkMaterial(std::string materialName, std::string schemeName);
+	bool checkMaterial(const std::string& materialName, const std::string& schemeName);
+
+	/**
+	 * Setups PSSM shadows
+	 */
+	void setPSSMShadows();
+
+	/**
+	 * Disables shadows
+	 */
+	void setNoShadows();
 };
 
 }
