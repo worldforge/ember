@@ -86,8 +86,11 @@
         <actions>
             <action name="__movement_idle" speed="1.000000">
                 <animations>
-                    <animation iterations="1">
+                    <animation iterations="6">
                         <animationpart name="idle" weight="1.000000" />
+                    </animation>gstr_fidgeting
+                    <animation iterations="1">
+                        <animationpart name="gstr_fidgeting" weight="1.000000" />
                     </animation>
                 </animations>
             </action>
@@ -105,10 +108,52 @@
                     </animation>
                 </animations>
             </action>
-            <action name="__movement_run" speed="1.000000">
+            <action name="__movement_run" speed="2.000000">
                 <animations>
                     <animation iterations="1">
                         <animationpart name="trns_walk" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="eat" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="gstr_eat" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="pickup" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="gstr_pickup" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="dig" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="work_dig" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="chop" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="work_chop" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="punch" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="ofns_punch" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="attack" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="ofns_punch" weight="1.000000" />
                     </animation>
                 </animations>
             </action>
