@@ -166,7 +166,6 @@ ShaderManager::GraphicsLevel ShaderManager::setGraphicsLevel(ShaderManager::Grap
 	Ogre::MaterialManager::getSingleton().setActiveScheme(mGraphicSchemes[newLevel]);
 
 	Ogre::RenderWindow* window = EmberOgre::getSingleton().getRenderWindow();
-	S_LOG_INFO("NumViewports = " << window->getNumViewports());
 	for (int i = 0; i < window->getNumViewports(); ++i) {
 		window->getViewport(i)->setMaterialScheme(mGraphicSchemes[newLevel]);
 	}
