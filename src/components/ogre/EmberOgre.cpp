@@ -440,6 +440,9 @@ bool EmberOgre::setup()
 	
 	mResourceLoader->loadGui();
 	mResourceLoader->loadGeneral();
+
+	/// Create shader manager
+	mShaderManager = std::auto_ptr<ShaderManager>(new ShaderManager);
 	
 	///add ourself as a frame listener
 	Ogre::Root::getSingleton().addFrameListener(this);
@@ -496,9 +499,6 @@ bool EmberOgre::setup()
 		///we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
 		throw Ember::Exception("Could not initialize gui, aborting. Make sure that all media got downloaded and installed correctly.");
 	}
-
-	/// Create shader manager
-	mShaderManager = std::auto_ptr<ShaderManager>(new ShaderManager);
 
 	/// Create the scene
 	createScene();
