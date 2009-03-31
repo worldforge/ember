@@ -32,33 +32,35 @@
 
 namespace EmberOgre {
 
-ShaderManager::ShaderManager()
+ShaderManager::ShaderManager() : mGraphicsLevel(LEVEL_DEFAULT), mBestGraphicsLevel(LEVEL_DEFAULT)
 {
+	mGraphicSchemes[LEVEL_DEFAULT]		= std::string("Default");
+	mGraphicSchemes[LEVEL_LOW]			= std::string("Low");
+	mGraphicSchemes[LEVEL_MEDIUM]		= std::string("Medium");
+	mGraphicSchemes[LEVEL_HIGH]			= std::string("High");
+	mGraphicSchemes[LEVEL_EXPERIMENTAL]	= std::string("Experimental");
+
 	init();
 }
 
 void ShaderManager::init()
 {
-	std::list<std::string> schemesToCheck;
-	schemesToCheck.push_back("High");
-	schemesToCheck.push_back("Medium");
-	schemesToCheck.push_back("Low");
-	schemesToCheck.push_back("Default");
-
+	// We normally want to check base materials
 	std::list<std::string> materialsToCheck;
+	materialsToCheck.push_back("/base/simple");
 	materialsToCheck.push_back("/base/normalmap");
 	materialsToCheck.push_back("/base/normalmap/specular");
 
 	bool supported;
 
-	for (std::list<std::string>::iterator I = schemesToCheck.begin(); I != schemesToCheck.end(); ++I) {
+	// Iterate schemes from best to worst
+	for (std::map<GraphicsLevel, std::string>::reverse_iterator I = mGraphicSchemes.rbegin(); I != mGraphicSchemes.rend(); ++I) {
 
-		Ogre::MaterialManager::getSingleton().setActiveScheme(*I);
+		Ogre::MaterialManager::getSingleton().setActiveScheme(I->second);
 
 		supported = true;
-
 		for (std::list<std::string>::iterator J = materialsToCheck.begin(); J != materialsToCheck.end(); ++J) {
-			supported &= checkMaterial(*J, *I);
+			supported &= checkMaterial(*J, I->second);
 			// Break when found first unsupported material, no need to check others
 			if (!supported) {
 				break;
@@ -67,35 +69,61 @@ void ShaderManager::init()
 
 		// Found some supported sheme, ok
 		if (supported) {
+			mBestGraphicsLevel = I->first;
+			S_LOG_INFO("Best graphics level is " << I->second);
 			break;
 		}
 	}
 
-	// No scheme is supported, this GFX sucks
+	// No scheme is supported, something wrong with graphics
 	if (!supported) {
-		throw "Ember won't run on this video card.";
+		S_LOG_FAILURE("No schemes is supported");
+		throw "Something wrong with graphics";
+	}
+
+	// Don't start in experimental level
+	if (mBestGraphicsLevel == LEVEL_EXPERIMENTAL)
+	{
+		setGraphicsLevel(LEVEL_HIGH);
+	}
+	else
+	{
+		setGraphicsLevel(mBestGraphicsLevel);
 	}
 }
 
 bool ShaderManager::checkMaterial(std::string materialName, std::string schemeName)
 {
+	// OGRE scheme is switched in caller
 	Ogre::MaterialPtr material = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().create(materialName, "General"));
 	// Loading material to compile it
 	material->load();
 	if (material->getNumSupportedTechniques() == 0) {
-		S_LOG_INFO("The material '" << material->getName() << "' has no supported techniques with scheme '" << schemeName << "'. The reason for this is: \n" << material->getUnsupportedTechniquesExplanation());
+		S_LOG_INFO("The material '" << material->getName() << "' has no supported techniques with scheme " << schemeName << ". The reason for this is: \n" << material->getUnsupportedTechniquesExplanation());
 		return false;
 	}
+	// Check that we use desired scheme, but not fallbacked to default
 	if (material->getBestTechnique()->getSchemeName() != schemeName) {
-		S_LOG_INFO("The material '" << material->getName() << "' has best supported scheme '" << material->getBestTechnique()->getSchemeName() << "'. Expected '" << schemeName << "'.");
+		S_LOG_INFO("The material '" << material->getName() << "' has best supported scheme " << material->getBestTechnique()->getSchemeName() << ". Was looking for " << schemeName);
 		return false;
 	}
-	S_LOG_INFO("The material '" << material->getName() << "' supported with scheme '" << schemeName << "'.");
+	S_LOG_INFO("The material '" << material->getName() << "' supported with scheme " << schemeName);
 	return true;
 }
 
 ShaderManager::~ShaderManager()
 {
+}
+
+ShaderManager::GraphicsLevel ShaderManager::getGraphicsLevel()
+{
+	return mGraphicsLevel;
+}
+
+ShaderManager::GraphicsLevel ShaderManager::setGraphicsLevel(ShaderManager::GraphicsLevel newLevel)
+{
+	S_LOG_INFO("Using graphics level " << mGraphicSchemes[newLevel]);
+	mGraphicsLevel = newLevel;
 }
 
 }

@@ -24,16 +24,41 @@
 #define EMBEROGRE_SHADERMANAGER_H
 
 #include <string>
+#include <map>
 
 namespace EmberOgre {
 
 /**
  * @brief Utility class for setup shaders
  *
+ * Utility class for setup shaders. It checks a set of materials and selects
+ * best sheme they work at. Then it performs setup of auxilary things like
+ * shadows.
+ *
  * @author Alexey Torkhov <atorkhov@gmail.com>
  */
 class ShaderManager {
 public:
+	/**
+	 * Enumeration of graphics levels
+	 */
+	enum GraphicsLevel {
+		// Default scheme is when no scheme specified, very simple textured models
+		LEVEL_DEFAULT,
+
+		// Low level, shader model 2
+		LEVEL_LOW,
+
+		// Medium level, shader model 3
+		LEVEL_MEDIUM,
+
+		// High level, shader model 4
+		LEVEL_HIGH,
+
+		// Experimental level
+		LEVEL_EXPERIMENTAL,
+	};
+
 	/**
 	 * Constructor.
 	 */
@@ -48,6 +73,32 @@ public:
 	 * Shaders initialization
 	 */
 	void init();
+
+	/**
+	 * Gets current graphics level
+	 */
+	GraphicsLevel getGraphicsLevel();
+
+	/**
+	 * Sets current graphics level
+	 */
+	GraphicsLevel setGraphicsLevel(GraphicsLevel newLevel);
+
+private:
+	/**
+	 * Current graphics level
+	 */
+	GraphicsLevel mGraphicsLevel;
+
+	/**
+	 * Best graphics level supported, determined at initialization time
+	 */
+	GraphicsLevel mBestGraphicsLevel;
+
+	/**
+	 * Map of levels and schemes. Also used to convert levels to strings
+	 */
+	std::map<GraphicsLevel, std::string> mGraphicSchemes;
 
 	/**
 	 * Checks whether material is supported in current scheme
