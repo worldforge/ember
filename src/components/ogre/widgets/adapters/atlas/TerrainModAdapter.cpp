@@ -162,11 +162,11 @@ void TerrainModAdapter::fillElementFromGui()
 	}
 	mapElement["shape"] = shapeElement;
 	
-	std::pair<const std::string&, PositioningBase*> positioning = mPositioningsBinder.getCurrentSelected();
+	std::pair<const std::string, PositioningBase*> positioning = mPositioningsBinder.getCurrentSelected();
 	if (positioning.second) {
 		mapElement[positioning.first] = ::Atlas::Message::Element(atof(mHeightTextbox->getText().c_str()));
 	}
-	std::pair<const std::string&, TerrainModBase*> modType = mTerrainModsBinder.getCurrentSelected();
+	std::pair<const std::string, TerrainModBase*> modType = mTerrainModsBinder.getCurrentSelected();
 	if (modType.second) {
 		mapElement["type"] = modType.first;
 	}

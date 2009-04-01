@@ -55,7 +55,7 @@ template <class T, class WidgetT>
 class ListBinder
 {
 public:
-	typedef std::pair<const std::string&, T*> SelectedType;
+	typedef std::pair<const std::string, T*> SelectedType;
 		
 	/**
 	 * @brief Ctor.
@@ -179,18 +179,18 @@ bool ListBinder<T, WidgetT>::listbox_SelectionChanged(const CEGUI::EventArgs& e)
 }
 
 template <typename T, typename WidgetT>
-std::pair<const std::string&, T*> ListBinder<T, WidgetT>::getCurrentSelected()
+typename ListBinder<T, WidgetT>::SelectedType ListBinder<T, WidgetT>::getCurrentSelected()
 {
 	CEGUI::ListboxItem* item = mListbox->getSelectedItem ();
 	if (item) {
 		size_t index = item->getID();
 		for (typename TypeStore::iterator I = mTypes.begin(); I != mTypes.end(); ++I) {
 			if (I->second.ListIndex == index) {
-				return std::pair<const std::string&, T*>(I->first, &(I->second.Type));
+				return SelectedType(I->first, &(I->second.Type));
 			}
 		}
 	}
-	return std::pair<const std::string&, T*>("", 0);
+	return SelectedType("", 0);
 }
 
 template <typename T, typename WidgetT>
