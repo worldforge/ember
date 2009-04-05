@@ -32,7 +32,7 @@
 ///in most cases, use the S_LOG* defines
 ///such as:
 ///S_LOG_INFO("some info");
-#include "services/logging/LoggingService.h"
+#include "framework/Loge.h"
 
 #include "framework/Exception.h"
 
