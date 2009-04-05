@@ -52,20 +52,20 @@ void ErisLogReciever::Eris_Logged (Eris::LogLevel level, const std::string & msg
     switch (level)
     {
     case Eris::LOG_ERROR:
-        importance = LoggingService::CRITICAL;
+        importance = Log::CRITICAL;
         break;
     case Eris::LOG_WARNING:
-        importance = LoggingService::WARNING;
+        importance = Log::WARNING;
         break;
     case Eris::LOG_NOTICE:
-      importance=LoggingService::INFO;
+      importance=Log::INFO;
       break;
     case Eris::LOG_VERBOSE:
     default:
-        importance = LoggingService::VERBOSE;
+        importance = Log::VERBOSE;
     }
 
-    mLogService.sendMessage (msg, "ERIS", 0, importance);
+    Log::sendMessage(msg, "ERIS", 0, importance);
 }
 
 }
