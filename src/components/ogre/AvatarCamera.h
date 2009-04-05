@@ -35,6 +35,7 @@
 
 #include "services/input/Input.h"
 #include <stack>
+#include <memory>
 
 namespace Ember
 {

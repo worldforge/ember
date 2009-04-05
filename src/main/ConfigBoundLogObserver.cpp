@@ -1,5 +1,5 @@
 //
-// C++ Implementation: LogObserver
+// C++ Implementation: ConfigBoundLogObserver
 //
 // Description: 
 //
@@ -24,45 +24,44 @@
 #include "config.h"
 #endif
 
-#include "LogObserver.h"
+#include "ConfigBoundLogObserver.h"
 
-#include "services/EmberServices.h"
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 #include "services/config/ConfigService.h"
 
 namespace Ember {
 
-LogObserver::LogObserver(std::ostream &out) 
+ConfigBoundLogObserver::ConfigBoundLogObserver(std::ostream &out) 
 : Ember::StreamLogObserver(out)
 {
-	Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &LogObserver::ConfigService_EventChangedConfigItem));
+	Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &ConfigBoundLogObserver::ConfigService_EventChangedConfigItem));
 
 }
 
 
 
-LogObserver::~LogObserver()
+ConfigBoundLogObserver::~ConfigBoundLogObserver()
 {
 }
 
 /**
-	* Updates from the config. The relevant section is "general" and the key "logginglevel". It can have the values of verbose|info|warning|failure|critical
-	*/
-void LogObserver::updateFromConfig()
+* Updates from the config. The relevant section is "general" and the key "logginglevel". It can have the values of verbose|info|warning|failure|critical
+*/
+void ConfigBoundLogObserver::updateFromConfig()
 {
 	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("general", "logginglevel")) {
 		std::string loggingLevel = static_cast<std::string>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("general", "logginglevel"));
-		Ember::LoggingService::MessageImportance importance(Ember::LoggingService::INFO);
+		Ember::Log::MessageImportance importance(Ember::Log::INFO);
 		if (loggingLevel == "verbose") {
-			importance = Ember::LoggingService::VERBOSE;
+			importance = Ember::Log::VERBOSE;
 		} else if (loggingLevel == "info") {
-			importance = Ember::LoggingService::INFO;
+			importance = Ember::Log::INFO;
 		} else if (loggingLevel == "warning") {
-			importance = Ember::LoggingService::WARNING;
+			importance = Ember::Log::WARNING;
 		} else if (loggingLevel == "failure") {
-			importance = Ember::LoggingService::FAILURE;
+			importance = Ember::Log::FAILURE;
 		} else if (loggingLevel == "critical") {
-			importance = Ember::LoggingService::CRITICAL;
+			importance = Ember::Log::CRITICAL;
 		}
 		setFilter(importance);
 	}
@@ -74,7 +73,7 @@ void LogObserver::updateFromConfig()
 	* @param section 
 	* @param key 
 	*/
-void LogObserver::ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key)
+void ConfigBoundLogObserver::ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key)
 {
 	if (section == "general") {
 		if (key == "logginglevel") {

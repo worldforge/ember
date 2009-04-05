@@ -25,7 +25,7 @@
 #endif
 
 #include "ColouredListItem.h"
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 
 namespace EmberOgre {
 

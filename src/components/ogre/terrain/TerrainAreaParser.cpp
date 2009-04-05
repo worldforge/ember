@@ -26,7 +26,7 @@
 
 #include "TerrainAreaParser.h"
 #include "TerrainArea.h"
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 #include <Mercator/Area.h>
 #include <wfmath/atlasconv.h>
 

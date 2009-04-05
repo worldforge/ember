@@ -27,6 +27,7 @@
 #include "IWorldPickListener.h"
 #include <sigc++/signal.h>
 #include "framework/ConsoleObject.h"
+#include <memory>
 
 
 namespace EmberOgre {

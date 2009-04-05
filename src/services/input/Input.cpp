@@ -36,7 +36,7 @@
 
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 
 template<> Ember::Input* Ember::Singleton<Ember::Input>::ms_Singleton = 0;
 

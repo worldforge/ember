@@ -24,7 +24,7 @@
 #include "SoundSample.h"
 
 #include "services/config/ConfigService.h"
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
 

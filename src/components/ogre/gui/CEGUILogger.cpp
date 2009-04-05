@@ -25,8 +25,7 @@
 #endif
 
 #include "CEGUILogger.h"
-#include "services/EmberServices.h"
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 
 namespace EmberOgre {
 
@@ -49,19 +48,19 @@ void CEGUILogger::logEvent(const CEGUI::String& message, CEGUI::LoggingLevel lev
 	if (d_level >= level) {
 		switch (level) {
 			case CEGUI::Insane:
-				Ember::EmberServices::getSingletonPtr()->getLoggingService()->slog("CEGUI", Ember::LoggingService::VERBOSE) << ogre << message.c_str() << Ember::LoggingService::END_MESSAGE;
+				Ember::Log::slog("CEGUI", Ember::Log::VERBOSE) << ogre << message.c_str() << Ember::Log::END_MESSAGE;
 				break;
 			case CEGUI::Informative:
-				Ember::EmberServices::getSingletonPtr()->getLoggingService()->slog("CEGUI", Ember::LoggingService::VERBOSE) << ogre << message.c_str() << Ember::LoggingService::END_MESSAGE;
+				Ember::Log::slog("CEGUI", Ember::Log::VERBOSE) << ogre << message.c_str() << Ember::Log::END_MESSAGE;
 				break;
 			case CEGUI::Standard:
-				Ember::EmberServices::getSingletonPtr()->getLoggingService()->slog("CEGUI", Ember::LoggingService::INFO) << ogre << message.c_str() << Ember::LoggingService::END_MESSAGE;
+				Ember::Log::slog("CEGUI", Ember::Log::INFO) << ogre << message.c_str() << Ember::Log::END_MESSAGE;
 				break;
 			case CEGUI::Warnings:
-				Ember::EmberServices::getSingletonPtr()->getLoggingService()->slog("CEGUI", Ember::LoggingService::WARNING) << ogre << message.c_str() << Ember::LoggingService::END_MESSAGE;
+				Ember::Log::slog("CEGUI", Ember::Log::WARNING) << ogre << message.c_str() << Ember::Log::END_MESSAGE;
 				break;
 			case CEGUI::Errors:
-				Ember::EmberServices::getSingletonPtr()->getLoggingService()->slog("CEGUI", Ember::LoggingService::FAILURE) << ogre << message.c_str() << Ember::LoggingService::END_MESSAGE;
+				Ember::Log::slog("CEGUI", Ember::Log::FAILURE) << ogre << message.c_str() << Ember::Log::END_MESSAGE;
 				break;
 		}
 	}

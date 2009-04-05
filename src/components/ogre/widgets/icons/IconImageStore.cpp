@@ -27,7 +27,7 @@
 #include "IconImageStore.h"
 #include <CEGUI.h>
 #include <Ogre.h>
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 #include "components/ogre/GUIManager.h"
 
 namespace EmberOgre {

@@ -1,10 +1,10 @@
 // Binding log defines as functions
 // TODO: use internal Lua traceback to get correct file and line
-void S_LOG_VERBOSE(const char * message);
-void S_LOG_INFO(const char * message);
-void S_LOG_WARNING(const char * message);
-void S_LOG_FAILURE(const char * message);
-void S_LOG_CRITICAL(const char * message);
+// void S_LOG_VERBOSE(const char * message);
+// void S_LOG_INFO(const char * message);
+// void S_LOG_WARNING(const char * message);
+// void S_LOG_FAILURE(const char * message);
+// void S_LOG_CRITICAL(const char * message);
 
 namespace Ember {
 
@@ -65,81 +65,18 @@ namespace Ember {
 
     class LoggingService
     {
-        //======================================================================
-        // Public Constants and enums
-        //======================================================================
-      public:
-
-        /**
-	 * This enum contains all levels of message importance.
-	 * -VERBOSE messages are for maxiumum level of verboseness and are emitted frequently with details of Ember's internal state.
-	 * -INFO messages are intended to be read only to look for reasons of errors.
-	 * -WARNING messages appear whenever something could get critical in some case.
-	 * -CRITICAL messages should be read always and contain fatal errors.
-	 */
-        enum MessageImportance
-        {
-	  VERBOSE = 0,
-	  INFO = 1,
-	  WARNING = 2,
-	  FAILURE = 3,
-	  CRITICAL = 4
-        };
-
-
-        /**
-	 * Pseudo-enum necessary to make the END_MESSAGE constant not be mixed with ints
-	 */
-        enum EndMessageEnum
-        {
-            END_MESSAGE = 0
-        };
-
-        //======================================================================
-        // Inner Classes and typedefs
-        //======================================================================
-
-
-
-        //----------------------------------------------------------------------
-        // Singleton
-
-    /**
-     * Gets an instance of the LoggingService
-     */
-    static Ember::LoggingService* getSingletonPtr();
-
-    /**
-     * Gets an instance of the LoggingService
-     */
-    static Ember::LoggingService& getSingleton();
-
-
-    /**
-     * Adds a message presented by various options, a format string and variable params like
-     * in printf using also the same format specifications.
-     *
-     * @param file The source code file the message was initiated.
-     * @param line The source code line the message was initiated.
-     * @param importance The level of importance (see MessageImportance enum)
-     * @param message The message format string.
-     *
-     */
-        void log (const char *message);
-
-        void log (const MessageImportance importance, const char *message);
 
     };
 }
 
 // Logging functions 
-$[
-log =
-{
-	verbose = S_LOG_VERBOSE;
-	info = S_LOG_INFO;
-	warning = S_LOG_WARNING;
-	failure = S_LOG_FAILURE;
-	critical = S_LOG_CRITICAL
-}
-$]
+// $[
+// log =
+// {
+// 	verbose = S_LOG_VERBOSE;
+// 	info = S_LOG_INFO;
+// 	warning = S_LOG_WARNING;
+// 	failure = S_LOG_FAILURE;
+// 	critical = S_LOG_CRITICAL
+// }
+// $]

@@ -26,8 +26,8 @@
 #include <sigc++/signal.h>
 	
 #include "GUIManager.h"
-#include "framework/Singleton.h"
 #include "services/config/ConfigListener.h"
+#include <memory>
 
 namespace Eris {
 	class Entity;

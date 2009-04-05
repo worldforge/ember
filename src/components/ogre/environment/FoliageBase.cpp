@@ -26,8 +26,7 @@
 
 #include "FoliageBase.h"
 
-#include "services/EmberServices.h"
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 
 #include "../EmberOgre.h"
 #include "../terrain/TerrainArea.h"

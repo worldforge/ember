@@ -21,7 +21,6 @@
 #include "config/ConfigService.h"
 #include "metaserver/MetaserverService.h"
 #include "Eris/PollDefault.h"
-//#include "LoggingService.h"
 
 #include <iostream>
 

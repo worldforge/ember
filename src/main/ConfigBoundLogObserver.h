@@ -1,5 +1,5 @@
 //
-// C++ Interface: LogObserver
+// C++ Interface: ConfigBoundLogObserver
 //
 // Description: 
 //
@@ -20,22 +20,23 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBERLOGOBSERVER_H
-#define EMBERLOGOBSERVER_H
+#ifndef EMBERConfigBoundLogObserver_H
+#define EMBERConfigBoundLogObserver_H
 
 #include "framework/StreamLogObserver.h"
+#include <sigc++/trackable.h>
 
 namespace Ember {
 
 /**
-	@author Erik Hjortsberg <erik@katastrof.nu>
+	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class LogObserver : public Ember::StreamLogObserver, public sigc::trackable
+class ConfigBoundLogObserver : public Ember::StreamLogObserver, public sigc::trackable
 {
 public:
-    LogObserver(std::ostream &out);
+    ConfigBoundLogObserver(std::ostream &out);
 
-    ~LogObserver();
+    ~ConfigBoundLogObserver();
 
 protected:
 	

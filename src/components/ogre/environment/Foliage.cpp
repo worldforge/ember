@@ -24,8 +24,7 @@
 #include "config.h"
 #endif
 
-#include "services/EmberServices.h"
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 #include "services/config/ConfigService.h"
 
 #include "Foliage.h"

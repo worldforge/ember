@@ -26,7 +26,7 @@
 
 #include "WfutSession.h"
 #include <fstream>
-#include "../logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 
 using namespace WFUT;
 

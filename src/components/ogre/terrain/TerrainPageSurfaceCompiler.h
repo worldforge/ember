@@ -24,6 +24,7 @@
 #define EMBEROGRETERRAINPAGESURFACECOMPILER_H
 
 #include "../EmberOgrePrerequisites.h"
+#include <memory>
 
 namespace EmberOgre {
 namespace Terrain {

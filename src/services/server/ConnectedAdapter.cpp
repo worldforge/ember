@@ -36,7 +36,7 @@
 
 #include <Atlas/Objects/Operation.h>
 
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 #include "framework/ConsoleBackend.h"
 
 

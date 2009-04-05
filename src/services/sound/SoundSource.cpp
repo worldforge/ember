@@ -25,7 +25,7 @@
 #endif
 
 #include "SoundSource.h"
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 #include "framework/Exception.h"
 
 namespace Ember {

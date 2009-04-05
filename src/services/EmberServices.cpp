@@ -55,7 +55,7 @@ template<> Ember::EmberServices* Ember::Singleton<Ember::EmberServices>::ms_Sing
 
 	LoggingService* EmberServices::getLoggingService()
 	{
-		return Ember::LoggingService::getSingletonPtr();
+		return mLoggingService->getService();
 	}
 
 	ConfigService* EmberServices::getConfigService()

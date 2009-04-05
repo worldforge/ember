@@ -24,6 +24,7 @@
 #define EMBEROGREENTITYCEGUITEXTURE_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
+#include <memory>
 
 namespace CEGUI
 {

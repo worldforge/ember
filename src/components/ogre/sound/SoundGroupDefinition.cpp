@@ -26,7 +26,7 @@
 
 #include "SoundGroupDefinition.h"
 #include "SoundDefinition.h"
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 
 using namespace Ember;
 

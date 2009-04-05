@@ -26,9 +26,7 @@
 
 #include "ShrubberyFoliage.h"
 
-#include "services/EmberServices.h"
-#include "services/logging/LoggingService.h"
-#include "services/config/ConfigService.h"
+#include "framework/LoggingInstance.h"
 
 #include "FoliageLayer.h"
 #include "FoliageLoader.h"

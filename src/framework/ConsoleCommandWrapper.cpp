@@ -26,7 +26,7 @@
 
 #include "ConsoleCommandWrapper.h"
 #include "ConsoleBackend.h"
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 
 namespace Ember {
 

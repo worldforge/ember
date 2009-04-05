@@ -28,14 +28,6 @@
 
 namespace Ember {
 
-LogObserver::LogObserver()
-{
-}
-
-
-LogObserver::~LogObserver()
-{
-}
 
 
 }

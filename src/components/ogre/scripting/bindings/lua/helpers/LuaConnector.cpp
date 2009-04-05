@@ -31,7 +31,7 @@
 
 #include "framework/Exception.h"
 #include "services/EmberServices.h"
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 #include "services/scripting/ScriptingService.h"
 
 #include "components/ogre/MousePicker.h"

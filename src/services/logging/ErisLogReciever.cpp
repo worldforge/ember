@@ -28,12 +28,10 @@
 
 namespace Ember {
 
-ErisLogReciever::ErisLogReciever(LoggingService& logService)
-: mLogService(logService)
+ErisLogReciever::ErisLogReciever()
 {
-    //Hook up to Eris's logging Service
-    Eris::Logged.
-        connect (sigc::mem_fun (*this, &ErisLogReciever::Eris_Logged));
+	//Hook up to Eris's logging Service
+	Eris::Logged.connect(sigc::mem_fun(*this, &ErisLogReciever::Eris_Logged));
 
 }
 
@@ -44,28 +42,28 @@ ErisLogReciever::~ErisLogReciever()
 
 void ErisLogReciever::Eris_Logged (Eris::LogLevel level, const std::string & msg)
 {
-    LoggingService::MessageImportance importance;
-
-
-    // Translate Eris importance's to ours
-
-    switch (level)
-    {
-    case Eris::LOG_ERROR:
-        importance = Log::CRITICAL;
-        break;
-    case Eris::LOG_WARNING:
-        importance = Log::WARNING;
-        break;
-    case Eris::LOG_NOTICE:
-      importance=Log::INFO;
-      break;
-    case Eris::LOG_VERBOSE:
-    default:
-        importance = Log::VERBOSE;
-    }
-
-    Log::sendMessage(msg, "ERIS", 0, importance);
+	Log::MessageImportance importance;
+	
+	
+	// Translate Eris importance's to ours
+	
+	switch (level)
+	{
+	case Eris::LOG_ERROR:
+		importance = Log::CRITICAL;
+		break;
+	case Eris::LOG_WARNING:
+		importance = Log::WARNING;
+		break;
+	case Eris::LOG_NOTICE:
+		importance=Log::INFO;
+		break;
+	case Eris::LOG_VERBOSE:
+	default:
+		importance = Log::VERBOSE;
+	}
+	
+	Log::sendMessage(msg, "ERIS", 0, importance);
 }
 
 }

@@ -46,7 +46,7 @@ Torus Knot Software Ltd.
 #include <fnmatch.h>
 
 
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 
 
 namespace EmberOgre {

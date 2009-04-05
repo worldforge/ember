@@ -28,6 +28,7 @@
 
 #include <OgreResourceManager.h>
 #include "framework/Singleton.h"
+#include <memory>
 
 namespace EmberOgre {
 

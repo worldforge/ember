@@ -27,7 +27,7 @@
 #include "TimeImpl.h"
 #include "../EmberServices.h"
 #include "../server/ServerService.h"
-#include "../logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 
 
 #include <Eris/Calendar.h>

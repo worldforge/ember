@@ -23,7 +23,7 @@
 #endif
 
 #include "ConfigService.h"
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 // #include "framework/binreloc.h"
 
 #include <iostream>

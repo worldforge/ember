@@ -25,6 +25,7 @@
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "framework/ConsoleObject.h"
+#include <sigc++/signal.h>
 
 namespace EmberOgre {
 

@@ -26,7 +26,7 @@
 
 #include "OgreResourceLoader.h"
 #include "services/EmberServices.h"
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
 #include "model/ModelDefinitionManager.h"

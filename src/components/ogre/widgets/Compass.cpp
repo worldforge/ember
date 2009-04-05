@@ -34,7 +34,7 @@
 
 #include "../terrain/Map.h"
 
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 #include "../EmberOgre.h"
 #include "../Avatar.h"
 #include "../AvatarCamera.h"

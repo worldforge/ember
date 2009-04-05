@@ -24,6 +24,7 @@
 #include "ModelDefinition.h"
 #include "ParticleSystem.h"
 #include <sigc++/signal.h>
+#include <memory>
 
 namespace EmberOgre {
 namespace Model {

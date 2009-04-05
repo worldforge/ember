@@ -24,7 +24,7 @@
 #define EMBERERISLOGRECIEVER_H
 
 #include <Eris/Log.h>
-#include "LoggingService.h"
+#include "framework/Log.h"
 
 namespace Ember {
 
@@ -33,7 +33,7 @@ namespace Ember {
 */
 class ErisLogReciever{
 public:
-    ErisLogReciever(LoggingService& logService);
+    ErisLogReciever();
 
     ~ErisLogReciever();
 private:
@@ -42,7 +42,6 @@ private:
 	*/
 	void Eris_Logged(Eris::LogLevel level, const std::string & msg);
 
-	LoggingService& mLogService;
 };
 
 }

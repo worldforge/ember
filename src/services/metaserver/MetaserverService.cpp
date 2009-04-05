@@ -25,7 +25,7 @@
 #include "MetaserverService.h"
 
 // Current project
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 #include "services/config/ConfigService.h"
 #include "services/EmberServices.h"
 #include "framework/ConsoleBackend.h"

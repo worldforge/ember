@@ -34,6 +34,8 @@
 
 namespace Ember {
 
+Log::ObserverList Log::sObserverList;
+
 void Log::log (const char *message, ...)
 {
 	va_list vl;

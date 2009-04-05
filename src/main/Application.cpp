@@ -50,7 +50,7 @@
 
 #include "components/ogre/EmberOgre.h"
 
-#include "LogObserver.h"
+#include "ConfigBoundLogObserver.h"
 
 #include <iostream>
 #include <sstream>
@@ -68,8 +68,7 @@ template<> Ember::Application *Ember::Singleton<Ember::Application>::ms_Singleto
 
 
 Application::Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings)
-: mLoggingService(new Ember::LoggingService())
-, mOgreView(0)
+: mOgreView(0)
 , mShouldQuit(false)
 , mPrefix(prefix)
 , mHomeDir(homeDir)
@@ -96,9 +95,8 @@ Application::~Application()
 	delete mOgreView;
 	delete mServices;
 	S_LOG_INFO("Ember shut down normally.");
-	LoggingService::getSingleton().removeObserver(mLogObserver);
+	Log::removeObserver(mLogObserver);
 	delete mLogObserver;
-	mLoggingService->stop(0);
 }
 
 void Application::registerComponents()
@@ -174,12 +172,11 @@ void Application::initializeServices()
 	///write to the log the version number
 	*mLogOutStream << "Ember version " << VERSION << std::endl;
 	
-	mLogObserver = new LogObserver(*mLogOutStream);
-	Ember::LoggingService *logging = EmberServices::getSingleton().getLoggingService();
-	logging->addObserver(mLogObserver);
+	mLogObserver = new ConfigBoundLogObserver(*mLogOutStream);
+	Ember::Log::addObserver(mLogObserver);
 	
 	///default to INFO, though this can be changed by the config file
- 	mLogObserver->setFilter(Ember::LoggingService::INFO);
+ 	mLogObserver->setFilter(Ember::Log::INFO);
  	
  	
 

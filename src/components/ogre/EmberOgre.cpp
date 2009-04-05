@@ -27,6 +27,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "config.h"
 #endif
 
+
 #include "EmberOgre.h"
 
 // Headers to stop compile problems from headers
@@ -71,6 +72,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "services/wfut/WfutService.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/ConsoleObject.h" //TODO: this will be included in a different class
+#include "framework/LoggingInstance.h"
 
 
 // ------------------------------

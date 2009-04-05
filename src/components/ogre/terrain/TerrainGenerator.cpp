@@ -22,8 +22,7 @@
 
 #include "TerrainGenerator.h"
 
-#include "services/EmberServices.h"
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 #include "services/config/ConfigService.h"
 
 #include "../EmberOgre.h"

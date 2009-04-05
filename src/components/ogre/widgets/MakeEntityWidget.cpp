@@ -40,7 +40,7 @@
 #include <wfmath/atlasconv.h>
 
 #include "../EmberOgre.h"
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 #include "../Avatar.h"
 
 

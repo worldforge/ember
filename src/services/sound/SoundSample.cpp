@@ -23,7 +23,7 @@
 #include "SoundSample.h"
 
 
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 
 #include <map>
 

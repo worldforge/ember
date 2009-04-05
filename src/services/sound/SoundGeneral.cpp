@@ -18,7 +18,7 @@
 */
 
 #include "SoundGeneral.h"
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 #ifdef __APPLE__
 #include <OpenAL/al.h>
 #else

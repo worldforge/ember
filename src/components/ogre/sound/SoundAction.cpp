@@ -28,7 +28,7 @@
 #include "SoundDefinitionManager.h"
 
 #include "services/EmberServices.h"
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 
 #include "services/sound/SoundService.h"
 #include "services/sound/SoundGeneral.h"

@@ -35,8 +35,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 
 #include "framework/Singleton.h"
-
-
+#include <memory>
 
 namespace Eris {
 class View;

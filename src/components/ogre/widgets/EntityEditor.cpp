@@ -31,7 +31,7 @@
 
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Operation.h>

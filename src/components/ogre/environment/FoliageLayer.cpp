@@ -34,8 +34,7 @@
 #include "../terrain/TerrainPage.h"
 #include "../terrain/TerrainPageShadow.h"
 #include "../terrain/TerrainLayerDefinition.h"
-#include "services/EmberServices.h"
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 #include <wfmath/intersect.h>
 
 using namespace PagedGeometry;

@@ -175,13 +175,6 @@ namespace Ember
     
     private:
     
-    /**
-     * @brief The logging service is a little special, so we need to hold a reference to it ourselves. Mainly we don't want it to shut down until the application is shut down.
-    NOTE: The logging mechanism needs to be redone, so it isn't dependent on a service being started.
-    */
-    std::auto_ptr<Ember::LoggingService> mLoggingService;
-    
-     
 //	IGameView mGraphicalComponent;
 	/**
 	 * @brief The main Ogre graphical view.

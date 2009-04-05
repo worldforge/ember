@@ -256,6 +256,7 @@ public:
 
 private:
 	
+    std::auto_ptr<ServiceContainer<LoggingService> > mLoggingService;
 	std::auto_ptr<ServiceContainer<ScriptingService> > mScriptingService;
 	std::auto_ptr<ServiceContainer<SoundService> > mSoundService;
 	std::auto_ptr<ServiceContainer<ServerService> > mServerService;

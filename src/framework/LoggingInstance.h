@@ -25,6 +25,12 @@
 
 #include "Log.h"
 
+#define S_LOG_VERBOSE(message) (Ember::Log::slog(__FILE__, __LINE__, Ember::Log::VERBOSE) << message << ENDM)
+#define S_LOG_INFO(message) (Ember::Log::slog(__FILE__, __LINE__, Ember::Log::INFO) << message << ENDM)
+#define S_LOG_WARNING(message) (Ember::Log::slog(__FILE__, __LINE__, Ember::Log::WARNING) << message << ENDM)
+#define S_LOG_FAILURE(message) (Ember::Log::slog(__FILE__, __LINE__, Ember::Log::FAILURE) << message << ENDM)
+#define S_LOG_CRITICAL(message) (Ember::Log::slog(__FILE__, __LINE__, Ember::Log::CRITICAL) << message << ENDM)
+
 namespace Ember {
 
 /**

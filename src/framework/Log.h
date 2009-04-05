@@ -33,14 +33,6 @@
 
 #define ENDM (Ember::Log::END_MESSAGE)
 #define HEX_NUM(number) (Ember::Log::hexNumber(number))
-	
-//Added by nikal 2002/10/22 For convenience. 
-//%TASK nikal,1: Perhaps a script to switch the macros to the actual function call would make code more readable?
-#define S_LOG_VERBOSE(message) (Ember::Log::slog(__FILE__, __LINE__, Ember::Log::VERBOSE) << message << ENDM)
-#define S_LOG_INFO(message) (Ember::Log::slog(__FILE__, __LINE__, Ember::Log::INFO) << message << ENDM)
-#define S_LOG_WARNING(message) (Ember::Log::slog(__FILE__, __LINE__, Ember::Log::WARNING) << message << ENDM)
-#define S_LOG_FAILURE(message) (Ember::Log::slog(__FILE__, __LINE__, Ember::Log::FAILURE) << message << ENDM)
-#define S_LOG_CRITICAL(message) (Ember::Log::slog(__FILE__, __LINE__, Ember::Log::CRITICAL) << message << ENDM)
 
 namespace Ember {
 

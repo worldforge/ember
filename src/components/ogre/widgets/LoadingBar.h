@@ -25,6 +25,7 @@ the basic resources required for the progress bar and will be loaded automatical
 #define EMBEROGRELOADERBAR_H
 
 #include "../EmberOgrePrerequisites.h"
+#include <sigc++/trackable.h>
 
 namespace EmberOgre {
 namespace Gui {

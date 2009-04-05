@@ -17,7 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 #include "SoundDefinition.h"
 #include <string>
 

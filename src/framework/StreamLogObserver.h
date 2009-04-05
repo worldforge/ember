@@ -20,8 +20,8 @@
 #define STREAMLOGOBSERVER_H
 
 // Included headers from the current project
-#include "services/logging/LoggingService.h"
-#include "services/logging/Observer.h"
+#include "Log.h"
+#include "LogObserver.h"
 
 // Included custom library headers
 
@@ -36,18 +36,18 @@ namespace Ember {
  * This log observer takes an arbitrary ostream at it's creation
  * and logs all messages sent to it to this stream.
  * 
- * LoggingService *logging = EmberServices::getSingletonPtr()->getLoggingService();
+ * Log *logging = EmberServices::getSingletonPtr()->getLog();
  * //Create log observer that prints everything to cerr
  * StreamLogObserver* obs = new StreamLogObserver(std::cerr);
- * obs->setFilter(LoggingService::VERBOSE);
+ * obs->setFilter(Log::VERBOSE);
  * logging->addObserver(obs);
  *
  * @author Lakin Wecker aka nikal
  *
- * @see LoggingService::Observer
+ * @see Log::Observer
  */
 
-class StreamLogObserver : public Ember::Observer
+class StreamLogObserver : public Ember::LogObserver
 {
 
     //======================================================================
@@ -93,7 +93,7 @@ class StreamLogObserver : public Ember::Observer
      * Prints out the message provided with file, line and datestamp to myOut;
      */
     virtual void onNewMessage(const std::string & message, const std::string & file, const int & line, 
-                                  const Ember::LoggingService::MessageImportance & importance, const time_t & timeStamp);
+                                  const Ember::Log::MessageImportance & importance, const time_t & timeStamp);
 
     //----------------------------------------------------------------------
     // Disable Assignment operator

@@ -33,7 +33,7 @@
 
 #include "../MathConverter.h"
 #include "../MousePicker.h"
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 
 #include <OgreVector3.h>
 

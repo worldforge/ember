@@ -27,7 +27,7 @@
 #include "ScriptingService.h"
 
 
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 #include "framework/IScriptingProvider.h"
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"

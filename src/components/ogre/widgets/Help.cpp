@@ -33,8 +33,7 @@
 #include <elements/CEGUIFrameWindow.h>
 #include <elements/CEGUIGUISheet.h>
 
-#include "services/EmberServices.h"
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 #include "services/config/ConfigService.h"
 
 #include "../EmberEntity.h"

@@ -39,7 +39,7 @@
 #include "TerrainModAdapter.h"
 #include <CEGUI.h>
 #include "components/ogre/GUIManager.h"
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 #include <Eris/Entity.h>
 
 using namespace CEGUI;

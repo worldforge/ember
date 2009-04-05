@@ -27,8 +27,7 @@
 #include "Forest.h"
 #include "EmberEntityLoader.h"
 
-#include "services/EmberServices.h"
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 #include "services/config/ConfigService.h"
 #include "pagedgeometry/include/PagedGeometry.h"
 #include "pagedgeometry/include/TreeLoader3D.h"

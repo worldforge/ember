@@ -23,8 +23,7 @@
 
 #include "LoggingService.h"
 #include "ErisLogReciever.h"
-#include "Observer.h"
-#include "FileObserver.h"
+
 
 // Include system headers here
 #include <string>
@@ -35,8 +34,6 @@
 #include <sigc++/object_slot.h>
 
 namespace Ember {
-
-template<> Ember::LoggingService* Ember::Singleton<Ember::LoggingService>::ms_Singleton = 0;
 
 
 Service::Status LoggingService::start ()
@@ -61,7 +58,7 @@ LoggingService::LoggingService () : Service()
 	setName("Logging");
 	setDescription("Eases message writing and distribution.");
 	
-	mErisLogReciever = std::auto_ptr<ErisLogReciever>(new ErisLogReciever(*this));
+	mErisLogReciever = std::auto_ptr<ErisLogReciever>(new ErisLogReciever());
 }
 
 

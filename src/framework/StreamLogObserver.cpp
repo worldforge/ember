@@ -46,16 +46,18 @@ namespace Ember {
     /**
      * Deletes a StreamLogObserver instance.
      */
-    StreamLogObserver::~StreamLogObserver () {}
+    StreamLogObserver::~StreamLogObserver () {
+    	myOut.flush();
+    }
 
     //----------------------------------------------------------------------
-    // Implemented methods from LoggingService::Observer
+    // Implemented methods from Log::Observer
 
     /**
      * Prints out the message provided with file, line and datestamp to myOut;
      */
     void StreamLogObserver::onNewMessage(const std::string & message, const std::string & file, const int & line, 
-                                                 const Ember::LoggingService::MessageImportance & importance, const time_t & timeStamp)
+                                                 const Ember::Log::MessageImportance & importance, const time_t & timeStamp)
     {
         tm * ctm = localtime(&timeStamp); //currentLocalTime was too long, sorry
         
@@ -68,19 +70,19 @@ namespace Ember {
         myOut.width(2);			
         myOut << ctm->tm_sec << "] ";			
 
-        if(importance == Ember::LoggingService::CRITICAL)
+        if(importance == Ember::Log::CRITICAL)
 		{
 			myOut << "CRITICAL";
 		}
-        else  if(importance == Ember::LoggingService::FAILURE)
+        else  if(importance == Ember::Log::FAILURE)
 		{
 			myOut << "FAILURE";
 		} 
-        else if(importance == Ember::LoggingService::WARNING)
+        else if(importance == Ember::Log::WARNING)
 		{
 			myOut << "WARNING";
 		}
-        else if(importance == Ember::LoggingService::INFO)
+        else if(importance == Ember::Log::INFO)
 		{
 			myOut << "INFO";
 		}
@@ -92,7 +94,7 @@ namespace Ember {
         myOut << " " << message;
         
         ///only write file and line number if we're in verbose mode (to make the log a little smaller in most cases
-/*        if (getFilter() == Ember::LoggingService::VERBOSE) {
+/*        if (getFilter() == Ember::Log::VERBOSE) {
         	myOut << " [File: " << file << ", Line #:" <<  line << "]";
         }*/
         myOut << std::endl;

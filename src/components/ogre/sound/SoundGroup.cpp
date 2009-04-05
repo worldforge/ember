@@ -23,7 +23,7 @@
 
 #include "SoundGroup.h"
 
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 #include "services/sound/SoundService.h"
 
 // Need to find a cross platform solution

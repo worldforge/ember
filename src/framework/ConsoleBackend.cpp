@@ -27,7 +27,7 @@
 #endif
 
 #include "ConsoleBackend.h"
-#include "services/logging/LoggingService.h"
+#include "framework/LoggingInstance.h"
 #include "Tokeniser.h"
 
 #include <sstream>
