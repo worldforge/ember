@@ -1,6 +1,6 @@
 /*
     Copyright (C) 2008 Romulo Fernandes Machado (nightz)
-    Copyright (C) 2008 Erik Hjortsberg <erik.hjortsberg@iteam.se>
+    Copyright (C) 2008 Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ class EmberPhysicalEntity;
 * The only thing that needs extra input is whenever the movement mode is changed, at which point playMovementSound() should be called.
 * There can only be one single movement sound playing at any time, but there can be multiple actions being played simultanously 
 * All sound definition data used to set this class up is contained in the ModelDefinition of the Model attached to the EmberPhysicalEntity.
-* @author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+* @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 * @author Romulo Fernandes Machado
 */
 class SoundEntity

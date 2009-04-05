@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2007
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -169,7 +169,7 @@ public:
 };
 
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 	Responsible for rendering the model to the icon texture.
 	The actual rendering will be handled by an instance of IconRenderWorker. 
 	Note that it's not guaranteed that the rendering and blitting will occur on the same frame.

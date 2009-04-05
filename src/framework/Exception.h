@@ -56,7 +56,7 @@ const int EXCEPTION_TEXT_SIZE = 1024;
  *
  * @author Nikal
  * @author Xmp (Martin Pollard)
- * @author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  *
  */
 class Exception : public std::exception

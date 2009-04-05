@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2008
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
 // This code is taked from http://www.ogre3d.org/wiki/index.php/Raycasting_to_the_polygon_level (2008-01-13), where it's released as Public Domain, and now relicensed to GPL. Author is unknown.
 //
 // This program is free software; you can redistribute it and/or modify

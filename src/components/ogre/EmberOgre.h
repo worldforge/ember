@@ -125,7 +125,7 @@ class EntityRecipeManager;
 	EmberOgre::EmberOgre::getSingleton()
 	@endcode
 	
-	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
 */
 class EmberOgre : public Ember::Singleton<EmberOgre>, 

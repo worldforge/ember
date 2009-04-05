@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2006
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
 // Copyright (C) 2001 - 2005 Simon Goodall, University of Southampton
 //
 // This program is free software; you can redistribute it and/or modify
@@ -37,7 +37,7 @@ namespace Ember {
 	
 	It's expected that more than one instance of this should exists, one for each different game "state", such as "movement mode", "general" etc.
 
-	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class InputCommandMapper : public sigc::trackable
 {

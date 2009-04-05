@@ -5,7 +5,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2006
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -223,7 +223,7 @@ TerrainPosition mPosition;
 
 /**
 	Provides terrain editing capabilities. Through this class base points in the terrain can be changed, and the changes sent to the server. The editor supports undo and redo functionality.
-	@author Erik Hjortsberg <erik@katastrof.nu>
+	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class TerrainEditor : public Ember::IInputAdapter
 {

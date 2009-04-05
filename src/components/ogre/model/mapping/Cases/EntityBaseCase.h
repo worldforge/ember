@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2007
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ namespace Cases {
 /**
 	A Case which triggers on the type of the entity.
 	Entity type matching takes into account inheritance, so for example, if the type Settler is a child of the type Character, and this case is set to be valid for the type Character, it will also be valid for all Settlers. 
-	@author Erik Hjortsberg <erik@katastrof.nu>
+	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class EntityBaseCase
 {

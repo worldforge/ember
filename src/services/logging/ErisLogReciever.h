@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2007
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 namespace Ember {
 
 /**
-	@author Erik Hjortsberg <erik@katastrof.nu>
+	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class ErisLogReciever{
 public:

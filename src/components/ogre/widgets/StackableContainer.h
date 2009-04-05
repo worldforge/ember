@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2007
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ namespace Gui {
 	An instance of this will attach itself to a window and listen for children being added and removed, as well as resized.
 	It will rearrange these child windows so that they are stacked, either vertically or horizontally.
 
-	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class StackableContainer{
 public:

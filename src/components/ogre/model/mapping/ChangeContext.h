@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2007
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ class CaseBase;
 
 /**
 	Whenever something has changed in the values that affects the Model, cases will need to be reevaluated and actions may be activated or deactivated. A ChangeContext wraps these events into one class. This is an internal class which will be created and acted upon by the mapping framework. 
-	@author Erik Hjortsberg <erik@katastrof.nu>
+	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class ChangeContext
 {

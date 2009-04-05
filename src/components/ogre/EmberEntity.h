@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2004  Erik Hjortsberg <erik.hjortsberg@iteam.se>
+    Copyright (C) 2004  Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ namespace Terrain
 
 class EmberEntityFactory;
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief A representation of an Eris::Entity, ie. a world entity.
  * Note that most entities in the game world will be of type EmberPhysicalEntity as they will have some sort of physical representation.
  * This is however the base class for all entities in the world. All entities, even those that are standard instances of this and therefore doesn't have any Model attached to them, are however represented in the Ogre scenegraph through an Ogre::SceneNode, as accessed through getSceneNode().

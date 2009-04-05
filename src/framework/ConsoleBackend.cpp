@@ -1,6 +1,6 @@
 /*
     Copyright (C) 2002  Martin Pollard (Xmp), Simon Goodall
-    Copyright (C) 2005 Erik Hjortsberg <erik.hjortsberg@iteam.se>
+    Copyright (C) 2005 Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

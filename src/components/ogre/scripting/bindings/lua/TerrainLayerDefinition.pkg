@@ -6,7 +6,7 @@ namespace Terrain {
 
 
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class TerrainLayerDefinition{
 public:

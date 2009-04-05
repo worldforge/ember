@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2006
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@ struct MousePickerArgs
 
 
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 	
 	When a pick operation is performed in the world, i.e. when the user clicks the mouse on something in the world, the AvatarCamera will first check what was picked, which will most often result in a list of Ogre::MovableObjects, and then for each of these objects as its internal list of IWorldPickListener instances whether any of those knows how to handle the object picked.
 	This allows us a great deal of flexibility when we want to add support for different types of things that can be interacted with in the world.

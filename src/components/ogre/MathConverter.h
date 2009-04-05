@@ -1,9 +1,9 @@
 /*
 -----------------------------------------------------------------------------
 MathConverter.h by Miguel Guzman Miranda (Aglanor)
-Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2005
+Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
 
-Copyright © 2003 The Worldforge Project (http://www.worldforge.org)
+Copyright ï¿½ 2003 The Worldforge Project (http://www.worldforge.org)
 This file is part of Ember client (http://www.worldforge.org/dev/eng/clients/Ember)
 
 This code is distributed under the GNU GPL (General Public License).

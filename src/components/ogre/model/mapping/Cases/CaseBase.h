@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2007
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ namespace Cases {
 	@brief Base class for all Cases.
 	A Case containes zero or many Actions, which will be activated when the Case is activated. A Case also contains zero or many child Matches.
 	A Case is activated when it's true and all it's parent cases, all the way up to the root of the ModelMapping, also are true.
-	@author Erik Hjortsberg <erik@katastrof.nu>
+	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class CaseBase 
 {

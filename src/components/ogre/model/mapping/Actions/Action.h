@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2007
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ namespace Actions {
 	When an action is activated the model mapping engine will call activate(). If an already activated action is deactivated, as a result of another action being activated, the engine will first call deactivate() on the previous active action.
 	By extending this in a subclass and providing your own implementation of activate() and deactivate() you can provide application specific behaviour for entity changes.
 	
-	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class Action 
 {

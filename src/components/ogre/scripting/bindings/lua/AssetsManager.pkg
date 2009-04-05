@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2007
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ public:
 	An instance of this is used whenever there's a need for asset and resource management functionality. It's used mainly by AssetsManager.lua, but other widgets and classes are free to use it as well.
 	The methods defined here are mainly basic resource handling methods that would be either redundant or too complicated to implement in Lua.
 	Whenever you want to do something in Lua related to resource management that you feel will be overly complicated, or will require a lot of additional lua bindings, this is a good place to place it.
-	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class AssetsManager{
 public:

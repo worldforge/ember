@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2006,
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006,
 // Rômulo Fernandes <abra185@gmail.com>, (C) 2008
 //
 // This program is free software; you can redistribute it and/or modify

@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2006
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
 // Copyright (C) 2001 - 2005 Simon Goodall, University of Southampton
 //
 // This program is free software; you can redistribute it and/or modify

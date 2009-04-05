@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2005
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -73,7 +73,7 @@ This is a bridge class between one Ogre terrain page instance and one or many Me
 Instances of this is created by TerrainGenerator.
 One terrain page is composed of both height data, a material, textures for the material and plant positions for the foliage system. This class handles all of these, some of them directly and some by other classes.
 
-@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class TerrainPage{
 friend class TerrainPageShadow;

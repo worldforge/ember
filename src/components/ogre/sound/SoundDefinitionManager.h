@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2007
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
 // 		Romulo Fernandes <abra185@gmail.com>, (C) 2008
 //
 // This program is free software; you can redistribute it and/or modify

@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2008
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ class TerrainPage;
 Because we don't want to make Ember and the scene manager used for terrain rendering too tightly coupled we provide this interface instead of letting TerrainPage know of any scene manager classes.
 It's up to the scene manager speficic adapter code to provide concrete instances of this interface which knows how to react mainly to calls to updateTerrain(), and update the Ogre representation accordinly.
 
-@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class ITerrainPageBridge
 {

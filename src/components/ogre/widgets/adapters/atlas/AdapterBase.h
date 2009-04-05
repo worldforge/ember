@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2007
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -66,7 +66,7 @@ struct AdapterWrapper
 
 /**
 Use an instance of this whenever you need to update the gui from the adapter. In order to prevent endless loops we need to set the mSelfUpdate variable to true while we do the update. This will automate the setting of this, and the unsetting when it's destroyed.
-	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class AdapterSelfUpdateContext
 {
@@ -98,7 +98,7 @@ AdapterBase& mAdapter;
 	
 	An adapter can also be marked for removal through remove(). It's however up to the actual adapter implementation as well as code that acts on it to perform the actual removal. In not all instances is removal possible.
 
-	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class AdapterBase
 {

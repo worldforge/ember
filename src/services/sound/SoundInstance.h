@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2008
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ class SoundService;
 
 This interface allows a SoundInstance to get motion updates each frame. If an instance of this is attached to an SoundInstance, it will get queried each frame for motion updates. A typical implementation would be a class that provides updates from an ingame entity.
 
-@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class ISoundMotionProvider
 {
@@ -56,7 +56,7 @@ An instane of this encapsulates a SoundSource instance which is automatically cr
 
 If you want to provide motion updates for the sound instance (such as with a sound eminating from within the 3d world) you need to register an instance of ISoundMotionProvider through setMotionProvider(). Note that this isn't required, for example with ambient or gui sounds.
 
-@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class SoundInstance
 {

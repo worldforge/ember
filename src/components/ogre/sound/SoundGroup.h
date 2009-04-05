@@ -1,6 +1,6 @@
 /*
     Copyright (C) 2008 Romulo Fernandes Machado (nightz)
-    Copyright (C) 2008 Erik Hjortsberg <erik.hjortsberg@iteam.se>
+    Copyright (C) 2008 Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ class SoundGroup;
 class SoundDefinition;
 	
 /**
-@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 @brief Provides sound binding functionality for a SoundGroup.
 What makes this differ a little from normal sound binding is that the sound group is made up of many different sounds. If all sounds are static there's no problem, as the sound buffers then can be queued as they are. If however any sample is streaming it becomes a little more complex, since we then must update the buffers etc. as long as we're playing the streaming sample.
 */

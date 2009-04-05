@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2007
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ struct AdapterWrapper
 The main logic of the entity editor is in the lua file. This class acts like a helper class, implementing C++ functionality that might be cumbersome to code in Lua.
 Normally an instance of this is created by the lua widget for each entity that's being edited.
 
-@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class EntityEditor {
 public:

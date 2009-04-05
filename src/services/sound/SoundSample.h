@@ -40,7 +40,7 @@ class StaticSoundSample;
 
 A "static" sound is one that is small enough to fit into one continous buffer, and thus doesn't need to be dynamically updated as is the case with "streaming" sounds. As a result, this binding is very simple and will just bind the sound data to the source in the constructor, without having to provide any functionality in the update() method.
 
-@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class StaticSoundBinding : public SoundBinding
 {

@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2008
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ class EmberPhysicalEntity;
 namespace Environment {
 
 /**
-@author Erik Hjortsber <erik.hjortsberg@iteam.se>
+@author Erik Hjortsber <erik.hjortsberg@gmail.com>
 @brief A simple struct for storing an entity inst1ance.
 * This allows us to keep track of both the latest position of the entity, as well as the connections that have been made.
 * The position is needed for updating the paged geometry when the position of the entity changes, since we need to update the page both at the entity's previous position as well as the page in the new position.
@@ -75,7 +75,7 @@ struct EntityInstance
 
 
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 	@brief A specialized implementation of PagedGeometry::PageLoader used for positioning instances of EmberPhysicalEntity 
 	
 	This acts like a bridge between the Ember and the PagedGeometry systems, allowing EmberPhysicalEntity instances from the former being represented in the latter. Entities that are handled by this will be graphically represented through the PagedGeometry engine, rather than by using instances of Model. The class will take care of listening to movement updates and deletions from the entity, automatically updating the paged geometry when the entity changes.

@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik@katastrof.nu>, (C) 2007
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ class EntityCreationObserver;
 
 /**
 	Watches for changes to a specific outfit point, such as "body" or "feet". Whenever an entity is outfitted or removed this will trigger.
-	@author Erik Hjortsberg <erik@katastrof.nu>
+	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class OutfitMatch : public AbstractMatch<Cases::OutfitCase>, public AttributeDependentMatch
 {

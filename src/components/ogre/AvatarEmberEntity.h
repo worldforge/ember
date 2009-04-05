@@ -37,7 +37,7 @@ class EmberEntity;
 class Avatar;
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  *
  * @brief This is the main player avatar. We want this one to behave a little different than the other game entities, thus it has it's own subclass.
  * 

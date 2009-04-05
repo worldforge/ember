@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2008
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ class EmberPagingLandScapeData2D_HeightField;
 
 /**
 	Acts as a bridge between an instance of TerrainPage and EmberPagingLandScapeData2D_HeightField, making sure that the former is correctly updated when the terrain changes.
-	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class EmberTerrainPageBridge : public ::EmberOgre::Terrain::ITerrainPageBridge
 {

@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2007
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -62,7 +62,7 @@ class TerrainModAdapter;
 /**
 @brief A factory class through which all adapters are created. Instead of creating the adapters yourself, use this to properly instantiate them.
 The factory will take care of loading the gui elements from predefined cegui layout definitions, and setting up all gui elements.
-@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class AdapterFactory{
 public:

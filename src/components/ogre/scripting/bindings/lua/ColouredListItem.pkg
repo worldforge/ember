@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2007
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ namespace Gui {
 
 /**
 	A standard ListboxTextItem, with the exeption that the selection will be colored.
-	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class ColouredListItem : public CEGUI::ListboxTextItem
 {
@@ -45,7 +45,7 @@ public:
 
 /**
 	A standard CEGUI::TreeItem, with the exeption that the selection will be coloured.
-	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class ColouredTreeItem : public CEGUI::TreeItem
 {

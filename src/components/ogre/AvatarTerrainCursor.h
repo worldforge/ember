@@ -40,7 +40,7 @@ namespace EmberOgre {
 	If the mouse position has been updated a new ray check will always be executed, but if only the camera has been moved the update of the ray check will only happen after a certain interval, which can be set through setThreshold(unsigned int).
 	
 	@author Sean Ryan <sean@evercrack.com>
-	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 	*/
 	class AvatarTerrainCursor : public sigc::trackable, Ember::ConfigListenerContainer
 	{

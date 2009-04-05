@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2008
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ namespace Environment {
 	
 	An instance of this class will contain an instance of PagedGeometry, which is the main entry class for a paged geometry instance. All interactions with the PagedGeometry should therefore mainly go through this class or subclasses of it.
 	@see Foliage
-	@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class FoliageBase : public sigc::trackable
 {

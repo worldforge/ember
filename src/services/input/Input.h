@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2005
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ typedef std::list<IInputAdapter*> IInputAdapterStore;
 
 /**
 @brief Struct for a mouse movement.
-@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 struct MouseMotion
 {
@@ -91,7 +91,7 @@ struct MouseMotion
 @brief Expresses the position of the mouse, both in terms of pixels and relative.
 
 Positions are from the upper left corner.
-@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 struct MousePosition
 {
@@ -118,7 +118,7 @@ struct MousePosition
 };
 
 /**
-@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
 @brief This class takes care of all input and routes it to the correct place in Ember.
 Right now that means that when in GUI mode, all input will be routed to the registered list of @see IInputAdapter, and when in non-gui mode (ie. movement mode), all input will be routed directly to Ember, where it can be handled by the camera and movement system.

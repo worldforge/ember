@@ -1,6 +1,6 @@
 /*
     Copyright (C) 2008 Romulo Fernandes Machado (nightz)
-    Copyright (C) 2008 Erik Hjortsberg <erik.hjortsberg@iteam.se>
+    Copyright (C) 2008 Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ class BaseSoundSample;
  * Before you can start requesting sound instances and binding them to samples you must however set up the service. The first thing that needs to be set up is a resource provider through the IResourceProvider interface. The resource provider is responsible for providing any resource when so asked, and is the main interface into the actual sound data.
  *
  * @author Romulo Fernandes Machado (nightz)
- * @author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
 class SoundService: public Service, public ConsoleObject
 {

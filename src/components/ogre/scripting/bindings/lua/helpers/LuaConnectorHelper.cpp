@@ -2,7 +2,7 @@
 // C++ Implementation: LuaConnectorHelper
 /***************************************************************************
  *   Copyright (C) 2004 - 2006 Paul D Turner & The CEGUI Development Team
- *   Copyright (C) 2207 Erik Hjortsberg <erik.hjortsberg@iteam.se>
+ *   Copyright (C) 2207 Erik Hjortsberg <erik.hjortsberg@gmail.com>
  *
  *   Permission is hereby granted, free of charge, to any person obtaining
  *   a copy of this software and associated documentation files (the

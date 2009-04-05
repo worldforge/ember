@@ -149,13 +149,13 @@ public:
 protected:
 	/**
 	 * Sets preview node properties basing on model. Code from EmberPhysicalEntity.
-	 * @author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+	 * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 	 */
 	void initFromModel();
 
 	/**
 	 * Applies correct scaling basing on model definition. Code from EmberPhysicalEntity.
-	 * @author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+	 * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 	 */
 	void scaleNode();
 

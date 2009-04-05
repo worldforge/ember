@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@iteam.se>, (C) 2008
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ class SoundSource;
 An instance of this is responsible for binding a sound source and one or many sound data buffers together. The buffers will contain the actual sound data to be played, and without this binding no sound can be played.
 Normally the binding occurs in the constructor, but some sounds needs to be streamed, and thus further binding alterations needs to occur in the update() method. The update() method will be called once each frame when the binding is in use.
 
-@author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class SoundBinding
 {

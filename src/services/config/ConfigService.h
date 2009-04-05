@@ -37,7 +37,7 @@ namespace Ember
 	*
 	* If you want to provide functionality in your class for dynamically reacting to changes to the config you should use the ConfigLister classes instead of interfacing with this service directly.
 	*
-	* @author Erik Hjortsberg (erik.hjortsberg@iteam.se)
+	* @author Erik Hjortsberg (erik.hjortsberg@gmail.com)
 	* @author Miguel Guzman Miranda [Aglanor]
 	* @author Joel Schander         [nullstar]
 	*
