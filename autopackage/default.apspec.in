@@ -7,8 +7,8 @@ DisplayName: Ember - a client for Worldforge
 ShortName: ember
 AutopackageTarget: 1.0.0
 URL: http://www.worldforge.org/dev/eng/clients/ember
-Maintainer: Erik Hjortsberg <erik@katastrof.nu>
-Packager: Erik Hjortsberg <erik@katastrof.nu>
+Maintainer: Erik Hjortsberg <erik.hjortsberg@gmail.com>
+Packager: Erik Hjortsberg <erik.hjortsberg@gmail.com>
 Summary: Ember is a client for MMORPGs using the Worldforge system. It uses the Ogre 3d engine with CEGUI.
 SoftwareVersion: @VERSION@
 Language: sv
