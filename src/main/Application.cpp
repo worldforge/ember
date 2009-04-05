@@ -176,10 +176,7 @@ void Application::initializeServices()
 	Ember::Log::addObserver(mLogObserver);
 	
 	///default to INFO, though this can be changed by the config file
- 	mLogObserver->setFilter(Ember::Log::INFO);
- 	
- 	
-
+	mLogObserver->setFilter(Ember::Log::INFO);
 
 	/// Change working directory
 	const std::string& dirName = EmberServices::getSingleton().getConfigService()->getHomeDirectory();

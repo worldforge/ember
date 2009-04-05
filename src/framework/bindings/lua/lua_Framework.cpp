@@ -41,11 +41,12 @@ static int tolua_collect_Ember__Tokeniser (lua_State* tolua_S)
 static void tolua_reg_types (lua_State* tolua_S)
 {
  tolua_usertype(tolua_S,"sigc::signal<bool,const std::string&>");
- tolua_usertype(tolua_S,"Ember::Tokeniser");
+ tolua_usertype(tolua_S,"std::ostream");
+ tolua_usertype(tolua_S,"std::istream");
  tolua_usertype(tolua_S,"Ember::ConsoleBackend");
  tolua_usertype(tolua_S,"std::iostream");
- tolua_usertype(tolua_S,"std::istream");
- tolua_usertype(tolua_S,"std::ostream");
+ tolua_usertype(tolua_S,"Ember::Log");
+ tolua_usertype(tolua_S,"Ember::Tokeniser");
  tolua_usertype(tolua_S,"std::stringstream");
 }
 
@@ -420,20 +421,198 @@ static int tolua_Framework_Ember_Tokeniser_remainingTokens00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* get function: __ostream__ of class  std::iostream */
-#ifndef TOLUA_DISABLE_tolua_get_std__iostream___ostream__
-static int tolua_get_std__iostream___ostream__(lua_State* tolua_S)
+/* method: log of class  Ember::Log */
+#ifndef TOLUA_DISABLE_tolua_Framework_Ember_Log_log00
+static int tolua_Framework_Ember_Log_log00(lua_State* tolua_S)
 {
-  std::iostream* self = (std::iostream*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable '__ostream__'",NULL);
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Ember::Log",0,&tolua_err) ||
+     !tolua_isstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
 #endif
-#ifdef __cplusplus
-  tolua_pushusertype(tolua_S,(void*)static_cast<std::ostream*>(self), "std::ostream");
-#else
-  tolua_pushusertype(tolua_S,(void*)((std::ostream*)self), "std::ostream");
+ {
+  const char* message = ((const char*)  tolua_tostring(tolua_S,2,0));
+  {
+   Ember::Log::log(message);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'log'.",&tolua_err);
+ return 0;
 #endif
- return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: log of class  Ember::Log */
+#ifndef TOLUA_DISABLE_tolua_Framework_Ember_Log_log01
+static int tolua_Framework_Ember_Log_log01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Ember::Log",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  const Ember::Log::MessageImportance importance = ((const Ember::Log::MessageImportance)  tolua_tonumber(tolua_S,2,0));
+  const char* message = ((const char*)  tolua_tostring(tolua_S,3,0));
+  {
+   Ember::Log::log(importance,message);
+  }
+ }
+ return 0;
+tolua_lerror:
+ return tolua_Framework_Ember_Log_log00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: S_LOG_VERBOSE */
+#ifndef TOLUA_DISABLE_tolua_Framework_S_LOG_VERBOSE00
+static int tolua_Framework_S_LOG_VERBOSE00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isstring(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const char* message = ((const char*)  tolua_tostring(tolua_S,1,0));
+  {
+   S_LOG_VERBOSE(message);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'S_LOG_VERBOSE'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: S_LOG_INFO */
+#ifndef TOLUA_DISABLE_tolua_Framework_S_LOG_INFO00
+static int tolua_Framework_S_LOG_INFO00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isstring(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const char* message = ((const char*)  tolua_tostring(tolua_S,1,0));
+  {
+   S_LOG_INFO(message);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'S_LOG_INFO'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: S_LOG_WARNING */
+#ifndef TOLUA_DISABLE_tolua_Framework_S_LOG_WARNING00
+static int tolua_Framework_S_LOG_WARNING00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isstring(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const char* message = ((const char*)  tolua_tostring(tolua_S,1,0));
+  {
+   S_LOG_WARNING(message);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'S_LOG_WARNING'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: S_LOG_FAILURE */
+#ifndef TOLUA_DISABLE_tolua_Framework_S_LOG_FAILURE00
+static int tolua_Framework_S_LOG_FAILURE00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isstring(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const char* message = ((const char*)  tolua_tostring(tolua_S,1,0));
+  {
+   S_LOG_FAILURE(message);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'S_LOG_FAILURE'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: S_LOG_CRITICAL */
+#ifndef TOLUA_DISABLE_tolua_Framework_S_LOG_CRITICAL00
+static int tolua_Framework_S_LOG_CRITICAL00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isstring(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const char* message = ((const char*)  tolua_tostring(tolua_S,1,0));
+  {
+   S_LOG_CRITICAL(message);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'S_LOG_CRITICAL'.",&tolua_err);
+ return 0;
+#endif
 }
 #endif //#ifndef TOLUA_DISABLE
 
@@ -554,13 +733,13 @@ static int tolua_Framework_std_stringstream_str00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* get function: __istream__ of class  std::stringstream */
-#ifndef TOLUA_DISABLE_tolua_get_std__stringstream___istream__
-static int tolua_get_std__stringstream___istream__(lua_State* tolua_S)
+/* get function: __std of class  std::stringstream */
+#ifndef TOLUA_DISABLE_tolua_get_std__stringstream___std__istream__
+static int tolua_get_std__stringstream___std__istream__(lua_State* tolua_S)
 {
   std::stringstream* self = (std::stringstream*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable '__istream__'",NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable '__std'",NULL);
 #endif
 #ifdef __cplusplus
   tolua_pushusertype(tolua_S,(void*)static_cast<std::istream*>(self), "std::istream");
@@ -571,13 +750,13 @@ static int tolua_get_std__stringstream___istream__(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* get function: __ostream__ of class  std::stringstream */
-#ifndef TOLUA_DISABLE_tolua_get_std__stringstream___ostream__
-static int tolua_get_std__stringstream___ostream__(lua_State* tolua_S)
+/* get function: __std of class  std::stringstream */
+#ifndef TOLUA_DISABLE_tolua_get_std__stringstream___std__ostream__
+static int tolua_get_std__stringstream___std__ostream__(lua_State* tolua_S)
 {
   std::stringstream* self = (std::stringstream*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable '__ostream__'",NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable '__std'",NULL);
 #endif
 #ifdef __cplusplus
   tolua_pushusertype(tolua_S,(void*)static_cast<std::ostream*>(self), "std::ostream");
@@ -624,18 +803,45 @@ TOLUA_API int tolua_Framework_open (lua_State* tolua_S)
     tolua_function(tolua_S,"remainingTokens",tolua_Framework_Ember_Tokeniser_remainingTokens00);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"Ember",0);
+  tolua_beginmodule(tolua_S,"Ember");
+   tolua_cclass(tolua_S,"Log","Ember::Log","",NULL);
+   tolua_beginmodule(tolua_S,"Log");
+    tolua_constant(tolua_S,"VERBOSE",Ember::Log::VERBOSE);
+    tolua_constant(tolua_S,"INFO",Ember::Log::INFO);
+    tolua_constant(tolua_S,"WARNING",Ember::Log::WARNING);
+    tolua_constant(tolua_S,"FAILURE",Ember::Log::FAILURE);
+    tolua_constant(tolua_S,"CRITICAL",Ember::Log::CRITICAL);
+    tolua_constant(tolua_S,"END_MESSAGE",Ember::Log::END_MESSAGE);
+    tolua_function(tolua_S,"log",tolua_Framework_Ember_Log_log00);
+    tolua_function(tolua_S,"log",tolua_Framework_Ember_Log_log01);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_function(tolua_S,"S_LOG_VERBOSE",tolua_Framework_S_LOG_VERBOSE00);
+  tolua_function(tolua_S,"S_LOG_INFO",tolua_Framework_S_LOG_INFO00);
+  tolua_function(tolua_S,"S_LOG_WARNING",tolua_Framework_S_LOG_WARNING00);
+  tolua_function(tolua_S,"S_LOG_FAILURE",tolua_Framework_S_LOG_FAILURE00);
+  tolua_function(tolua_S,"S_LOG_CRITICAL",tolua_Framework_S_LOG_CRITICAL00);
+
+  { /* begin embedded lua code */
+   int top = lua_gettop(tolua_S);
+   static unsigned char B[] = {
+    10,108,111,103, 32, 61, 10,123, 10,118,101,114, 98,111,115,
+    101, 32, 61, 32, 83, 95, 76, 79, 71, 95, 86, 69, 82, 66, 79,
+     83, 69, 59, 10,105,110,102,111, 32, 61, 32, 83, 95, 76, 79,
+     71, 95, 73, 78, 70, 79, 59, 10,119, 97,114,110,105,110,103,
+     32, 61, 32, 83, 95, 76, 79, 71, 95, 87, 65, 82, 78, 73, 78,
+     71, 59, 10,102, 97,105,108,117,114,101, 32, 61, 32, 83, 95,
+     76, 79, 71, 95, 70, 65, 73, 76, 85, 82, 69, 59, 10, 99,114,
+    105,116,105, 99, 97,108, 32, 61, 32, 83, 95, 76, 79, 71, 95,
+     67, 82, 73, 84, 73, 67, 65, 76, 10,125,32
+   };
+   tolua_dobuffer(tolua_S,(char*)B,sizeof(B),"tolua: embedded Lua code 1");
+   lua_settop(tolua_S, top);
+  } /* end of embedded lua code */
+
   tolua_module(tolua_S,"std",0);
   tolua_beginmodule(tolua_S,"std");
-   tolua_cclass(tolua_S,"istream","std::istream","",NULL);
-   tolua_beginmodule(tolua_S,"istream");
-   tolua_endmodule(tolua_S);
-   tolua_cclass(tolua_S,"ostream","std::ostream","",NULL);
-   tolua_beginmodule(tolua_S,"ostream");
-   tolua_endmodule(tolua_S);
-   tolua_cclass(tolua_S,"iostream","std::iostream","std::istream",NULL);
-   tolua_beginmodule(tolua_S,"iostream");
-    tolua_variable(tolua_S,"__ostream__",tolua_get_std__iostream___ostream__,NULL);
-   tolua_endmodule(tolua_S);
    #ifdef __cplusplus
    tolua_cclass(tolua_S,"stringstream","std::stringstream","std::iostream",tolua_collect_std__stringstream);
    #else
@@ -647,8 +853,8 @@ TOLUA_API int tolua_Framework_open (lua_State* tolua_S)
     tolua_function(tolua_S,".call",tolua_Framework_std_stringstream_new00_local);
     tolua_function(tolua_S,"delete",tolua_Framework_std_stringstream_delete00);
     tolua_function(tolua_S,"str",tolua_Framework_std_stringstream_str00);
-    tolua_variable(tolua_S,"__istream__",tolua_get_std__stringstream___istream__,NULL);
-    tolua_variable(tolua_S,"__ostream__",tolua_get_std__stringstream___ostream__,NULL);
+    tolua_variable(tolua_S,"__std__istream__",tolua_get_std__stringstream___std__istream__,NULL);
+    tolua_variable(tolua_S,"__std__ostream__",tolua_get_std__stringstream___std__ostream__,NULL);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);

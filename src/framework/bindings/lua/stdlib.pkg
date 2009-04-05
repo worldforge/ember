@@ -4,7 +4,7 @@ $#include <sstream>
 
 namespace std {
 
-class stringstream : public iostream, public istream, public ostream
+class stringstream : public std::iostream, public std::istream, public std::ostream
 {
 public:
 	stringstream();

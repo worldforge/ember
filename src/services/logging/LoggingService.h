@@ -22,17 +22,11 @@
 
 // Include other headers of the current program here
 #include "framework/Service.h"
-#include "framework/Singleton.h"
 
 // Include library headers here
-#include <cstdarg>
 #include <memory>
-#include <sigc++/object.h>
 
-#ifdef WIN32
-    // These are needed by mingw
-    #include <ctime>
-#endif
+
 
 namespace Ember
 {
@@ -42,19 +36,18 @@ class ErisLogReciever;
 class LoggingService : public Service
 {
 	public:
-	friend class ErisLogReciever;
 
 	/**
 	* Creates a new LoggingService using default values.
 	*/
-	LoggingService ();
+	LoggingService();
 
 	/**
 	* Deletes a LoggingService instance.
 	*/
-	virtual ~LoggingService ();
+	virtual ~LoggingService();
 
-	virtual Service::Status start ();
+	virtual Service::Status start();
 
     virtual void stop(int code);
 

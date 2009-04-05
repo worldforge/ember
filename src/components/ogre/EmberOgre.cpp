@@ -63,13 +63,10 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 //Ember headers
 #include "services/EmberServices.h"
-#include "services/logging/LoggingService.h"
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
-#include "services/metaserver/MetaserverService.h"
 #include "services/sound/SoundService.h"
 #include "services/scripting/ScriptingService.h"
-#include "services/wfut/WfutService.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/ConsoleObject.h" //TODO: this will be included in a different class
 #include "framework/LoggingInstance.h"
