@@ -1,7 +1,0 @@
-.deps
-Makefile
-Makefile.in.libs
-MetaserverService.lo
-libMetaserverService.la
-.libs
-Makefile.in

@@ -1,6 +1,0 @@
-.deps
-.libs
-Makefile
-Makefile.in
-OgreSoundProvider.lo
-libSound.la

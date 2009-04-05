@@ -1,6 +1,0 @@
-.deps
-.libs
-Makefile
-Makefile.in
-liblua_Main.la
-lua_Main.lo
