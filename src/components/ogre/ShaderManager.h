@@ -24,6 +24,7 @@
 #define EMBEROGRE_SHADERMANAGER_H
 
 #include "framework/ConsoleObject.h"
+#include "services/config/ConfigListener.h"
 
 #include <string>
 #include <map>
@@ -39,7 +40,8 @@ namespace EmberOgre {
  *
  * @author Alexey Torkhov <atorkhov@gmail.com>
  */
-class ShaderManager : public Ember::ConsoleObject {
+class ShaderManager : public Ember::ConsoleObject, public Ember::ConfigListenerContainer 
+{
 public:
 	/**
 	 * Enumeration of graphics levels
@@ -131,6 +133,15 @@ private:
 	 * Disables shadows
 	 */
 	void setNoShadows();
+	
+	/**
+	 * @brief Called when the varconf setting for the graphics level changes. This will in turn call setGraphicsLevel.
+	 * @param section 
+	 * @param key 
+	 * @param variable 
+	 */
+	void Config_Level(const std::string& section, const std::string& key, varconf::Variable& variable);
+	
 };
 
 }

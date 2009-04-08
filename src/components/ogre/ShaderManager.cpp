@@ -39,8 +39,7 @@
 namespace EmberOgre {
 
 ShaderManager::ShaderManager() :
-	mGraphicsLevel(LEVEL_DEFAULT), mBestGraphicsLevel(LEVEL_DEFAULT),
-	SetLevel("set_level", this, "Sets the graphics level. Parameters: <level>. Level is one of: high, medium, low.")
+	SetLevel("set_level", this, "Sets the graphics level. Parameters: <level>. Level is one of: high, medium, low."), mGraphicsLevel(LEVEL_DEFAULT), mBestGraphicsLevel(LEVEL_DEFAULT)	
 {
 	mGraphicSchemes[LEVEL_DEFAULT]		= std::string("Default");
 	mGraphicSchemes[LEVEL_LOW]			= std::string("Low");
@@ -49,6 +48,9 @@ ShaderManager::ShaderManager() :
 	mGraphicSchemes[LEVEL_EXPERIMENTAL]	= std::string("Experimental");
 
 	init();
+	
+	registerConfigListener("graphics", "level", sigc::mem_fun(*this, &ShaderManager::Config_Level), false);
+	
 }
 
 void ShaderManager::init()
@@ -135,9 +137,17 @@ void ShaderManager::runCommand(const std::string &command, const std::string &ar
 		Ember::Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string levelString = tokeniser.nextToken();
-		setGraphicsLevel(getLevelByName(levelString));
+		Ember::EmberServices::getSingleton().getConfigService()->setValue("graphics", "level", levelString);
 	}
 }
+
+void ShaderManager::Config_Level(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	if (variable.is_string()) {
+		setGraphicsLevel(getLevelByName(std::string(variable)));
+	}
+}
+
 
 ShaderManager::GraphicsLevel ShaderManager::getLevelByName(const std::string &level)
 {
