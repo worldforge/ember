@@ -26,6 +26,7 @@
 
 #include "ModelBackgroundLoader.h"
 #include "Model.h"
+#include "framework/LoggingInstance.h"
 
 #include <OgreResourceBackgroundQueue.h>
 
@@ -54,9 +55,14 @@ bool ModelBackgroundLoader::poll()
 		{
 			Ogre::MeshPtr meshPtr = static_cast<Ogre::MeshPtr>(Ogre::MeshManager::getSingleton().getByName((*I_subModels)->getMeshName()));
 			if (meshPtr.isNull() || !meshPtr->isPrepared()) {
-				Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().load(Ogre::MeshManager::getSingleton().getResourceType(), (*I_subModels)->getMeshName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-				if (ticket) {
-					addTicket(ticket);
+				try {
+					Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().load(Ogre::MeshManager::getSingleton().getResourceType(), (*I_subModels)->getMeshName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+					if (ticket) {
+						addTicket(ticket);
+					}
+				} catch (const Ogre::Exception& ex) {
+					S_LOG_FAILURE("Could not load the mesh " << (*I_subModels)->getMeshName() << " when loading model " << mModel.getName());
+					continue;
 				}
 			}
 		}
@@ -82,7 +88,12 @@ bool ModelBackgroundLoader::poll()
 			Ogre::MeshPtr meshPtr = static_cast<Ogre::MeshPtr>(Ogre::MeshManager::getSingleton().getByName((*I_subModels)->getMeshName()));
 			if (!meshPtr.isNull()) {
 				if (!meshPtr->isLoaded()) {
-					meshPtr->load();
+					try {
+						meshPtr->load();
+					} catch (const Ogre::Exception& ex) {
+						S_LOG_FAILURE("Could not load the mesh " << meshPtr->getName() << " when loading model " << mModel.getName());
+						continue;
+					}
 				}
 				Ogre::Mesh::SubMeshIterator subMeshI = meshPtr->getSubMeshIterator();
 				while (subMeshI.hasMoreElements()) {
