@@ -319,32 +319,23 @@ bool OgreSetup::configure(void)
 	oldSignals[SIGBUS] = signal(SIGBUS, shutdownHandler);
 	oldSignals[SIGILL] = signal(SIGILL, shutdownHandler);
 
+ 	int flags = 0;
 
-	///set the window size
-//  int flags = SDL_OPENGL | SDL_HWPALETTE | SDL_RESIZABLE | SDL_HWSURFACE;
-// 	int flags = SDL_HWPALETTE | SDL_HWSURFACE | SDL_OPENGL;
-	int flags = SDL_OPENGL;
 
-	bool enableDoubleBuffering = false;
-	if (configService->itemExists("ogre", "doublebuffered")) {
-		enableDoubleBuffering = static_cast<bool>(configService->getValue("ogre", "doublebuffered"));
-		if (enableDoubleBuffering) {
-			S_LOG_INFO("Using double buffering.");
-		}
-	}
-	
-	bool useAltSwapControl = false;
-	
-	if (enableDoubleBuffering) {
-		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-		useAltSwapControl = SDL_GL_SetAttribute((SDL_GLattr)SDL_GL_SWAP_CONTROL, 1) != 0;
-	}
-
-		// request good stencil size if 32-bit colour
-/*        if (colourDepth == 32)
-		{
-			SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8);
-		}*/
+// 	bool enableDoubleBuffering = false;
+// 	if (configService->itemExists("ogre", "doublebuffered")) {
+// 		enableDoubleBuffering = static_cast<bool>(configService->getValue("ogre", "doublebuffered"));
+// 		if (enableDoubleBuffering) {
+// 			S_LOG_INFO("Using double buffering.");
+// 		}
+// 	}
+// 	
+// 	bool useAltSwapControl = false;
+// 	
+// 	if (enableDoubleBuffering) {
+// 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+// 		useAltSwapControl = SDL_GL_SetAttribute((SDL_GLattr)SDL_GL_SWAP_CONTROL, 1) != 0;
+// 	}
 
 	if (fullscreen) {
 		flags |= SDL_FULLSCREEN;
@@ -352,48 +343,64 @@ bool OgreSetup::configure(void)
 
 	mMainVideoSurface = SDL_SetVideoMode(width, height, 0, flags); // create an SDL window
 
-	if (enableDoubleBuffering) {
-		if (!useAltSwapControl)
-		{
-			/// SDL_GL_SWAP_CONTROL was requested. Check that it is now set.
-			int value;
-			if (!SDL_GL_GetAttribute((SDL_GLattr)SDL_GL_SWAP_CONTROL, &value))
-			{
-				useAltSwapControl = !value;
-			}
-			else
-			{
-				useAltSwapControl = true;
-			}
-		}
-		
-		if (useAltSwapControl)
-		{
-			/// Try another way to get vertical sync working. Use glXSwapIntervalSGI.
-			bool hasSwapControl = isExtensionSupported("GLX_SGI_swap_control");
-		
-			if (hasSwapControl)
-			{
-				const GLubyte *name;
-				name = reinterpret_cast<const GLubyte*>("glXSwapIntervalSGI");
-		
-				int (*funcPtr)(int);
-				funcPtr = reinterpret_cast<int(*)(int)>(glXGetProcAddress(name));
-		
-				if (funcPtr)
-				{
-					funcPtr(1);
-				}
-			}
-		}
-	}
+
+
+// 	if (enableDoubleBuffering) {
+// 		if (!useAltSwapControl)
+// 		{
+// 			/// SDL_GL_SWAP_CONTROL was requested. Check that it is now set.
+// 			int value;
+// 			if (!SDL_GL_GetAttribute((SDL_GLattr)SDL_GL_SWAP_CONTROL, &value))
+// 			{
+// 				useAltSwapControl = !value;
+// 			}
+// 			else
+// 			{
+// 				useAltSwapControl = true;
+// 			}
+// 		}
+// 		
+// 		if (useAltSwapControl)
+// 		{
+// 			/// Try another way to get vertical sync working. Use glXSwapIntervalSGI.
+// 			bool hasSwapControl = isExtensionSupported("GLX_SGI_swap_control");
+// 		
+// 			if (hasSwapControl)
+// 			{
+// 				const GLubyte *name;
+// 				name = reinterpret_cast<const GLubyte*>("glXSwapIntervalSGI");
+// 		
+// 				int (*funcPtr)(int);
+// 				funcPtr = reinterpret_cast<int(*)(int)>(glXGetProcAddress(name));
+// 		
+// 				if (funcPtr)
+// 				{
+// 					funcPtr(1);
+// 				}
+// 			}
+// 		}
+// 	}
 
 
 	SDL_WM_SetCaption("Ember","ember");
 
 	Ogre::NameValuePairList misc;
 
-	misc["currentGLContext"] = Ogre::String("True");
+
+	SDL_SysWMinfo info;
+	SDL_VERSION(&info.version);
+
+	SDL_GetWMInfo(&info);
+
+	std::string dsp(&(DisplayString(info.info.x11.display)[1]));
+	std::vector<Ogre::String> tokens = Ogre::StringUtil::split(dsp, ".");
+
+	std::string s = Ogre::StringConverter::toString((long)info.info.x11.display);
+	s += ":" + tokens[1] +":";
+	s += Ogre::StringConverter::toString((long)info.info.x11.window);
+	misc["parentWindowHandle"] = s;
+
+// 	misc["currentGLContext"] = Ogre::String("True");
 
 	/// initialise root, without creating a window
 	mRoot->initialise(false);
@@ -406,10 +413,10 @@ bool OgreSetup::configure(void)
 	mRenderWindow->setAutoUpdated(true);
 	mRenderWindow->setVisible(true);
 	
-	if (enableDoubleBuffering) {
-		///We need to swap the frame buffers each frame.
-		mRoot->addFrameListener(this);
-	}
+// 	if (enableDoubleBuffering) {
+// 		///We need to swap the frame buffers each frame.
+// 		mRoot->addFrameListener(this);
+// 	}
 
 
 	///set the icon of the window
