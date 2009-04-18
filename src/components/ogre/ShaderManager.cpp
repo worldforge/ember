@@ -231,7 +231,6 @@ void ShaderManager::setPSSMShadows()
 	}
 	sceneMgr->setShadowTextureSize(1024);
 
-	sceneMgr->setShadowTextureCasterMaterial("Ogre/DepthShadowmap/Caster/Float");
 	/*
 	sceneMgr->setShadowTexturePixelFormat(PF_L8);
 	sceneMgr->setShadowTextureCasterMaterial(StringUtil::BLANK);
@@ -242,7 +241,7 @@ void ShaderManager::setPSSMShadows()
 	//Ogre::LiSPSMShadowCameraSetup* liSPSMSetup = new Ogre::LiSPSMShadowCameraSetup();
 	////liSPSMSetup->setUseAggressiveFocusRegion(false);
 
-	Ogre::PSSMShadowCameraSetup* pssmSetup = new Ogre::PSSMShadowCameraSetup();
+	Ogre::PSSMShadowCameraSetup* pssmSetup = OGRE_NEW Ogre::PSSMShadowCameraSetup();
 
 	Ogre::PSSMShadowCameraSetup::SplitPointList splitPointList = pssmSetup->getSplitPoints();;
 	splitPointList[0] = 0.1;

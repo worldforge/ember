@@ -31,6 +31,8 @@
 #include "EmberPagingLandScapeTexture.h"
 #include "model/Model.h"
 
+using namespace Ogre;
+
 namespace EmberOgre {
 
     const Ogre::String EmberPagingSceneManagerFactory::FACTORY_TYPE_NAME = "EmberPagingSceneManager";
@@ -94,6 +96,134 @@ namespace EmberOgre {
 	{
 		return EmberPagingSceneManagerFactory::FACTORY_TYPE_NAME;
 	}
+	
+	const Ogre::Pass* EmberPagingSceneManager::deriveShadowCasterPass(const Ogre::Pass* pass)
+	{
+		///This behaves very much like the original method found in Ogre::SceneManager, with the exception that we'll copy parameters from the original pass even to technique specific custom shadow material (whereas the superclass method would only to that for the scene manager general material)
+		if (isShadowTechniqueTextureBased())
+		{
+			bool customMaterial = false;
+			Pass* retPass;	
+			if (!pass->getParent()->getShadowCasterMaterial().isNull())
+			{
+				customMaterial = true;
+				retPass = pass->getParent()->getShadowCasterMaterial()->getBestTechnique()->getPass(0);
+				if (!retPass) {
+					return pass;
+				}
+			}
+			else 
+			{
+				retPass = mShadowTextureCustomCasterPass ? 
+					mShadowTextureCustomCasterPass : mShadowCasterPlainBlackPass;
+			}
+	
+			
+			// Special case alpha-blended passes
+			if ((pass->getSourceBlendFactor() == SBF_SOURCE_ALPHA && 
+				pass->getDestBlendFactor() == SBF_ONE_MINUS_SOURCE_ALPHA) 
+				|| pass->getAlphaRejectFunction() != CMPF_ALWAYS_PASS)
+			{
+				// Alpha blended passes must retain their transparency
+				retPass->setAlphaRejectSettings(pass->getAlphaRejectFunction(), 
+					pass->getAlphaRejectValue());
+				retPass->setSceneBlending(pass->getSourceBlendFactor(), pass->getDestBlendFactor());
+				retPass->getParent()->getParent()->setTransparencyCastsShadows(true);
+	
+				// So we allow the texture units, but override the colour functions
+				// Copy texture state, shift up one since 0 is shadow texture
+				unsigned short origPassTUCount = pass->getNumTextureUnitStates();
+				for (unsigned short t = 0; t < origPassTUCount; ++t)
+				{
+					TextureUnitState* tex;
+					if (retPass->getNumTextureUnitStates() <= t)
+					{
+						tex = retPass->createTextureUnitState();
+					}
+					else
+					{
+						tex = retPass->getTextureUnitState(t);
+					}
+					// copy base state
+					(*tex) = *(pass->getTextureUnitState(t));
+					// override colour function
+					tex->setColourOperationEx(LBX_SOURCE1, LBS_MANUAL, LBS_CURRENT,
+						isShadowTechniqueAdditive()? ColourValue::Black : mShadowColour);
+	
+				}
+				// Remove any extras
+				while (retPass->getNumTextureUnitStates() > origPassTUCount)
+				{
+					retPass->removeTextureUnitState(origPassTUCount);
+				}
+	
+			}
+			else
+			{
+				// reset
+				retPass->setSceneBlending(SBT_REPLACE);
+				retPass->setAlphaRejectFunction(CMPF_ALWAYS_PASS);
+				while (retPass->getNumTextureUnitStates() > 0)
+				{
+					retPass->removeTextureUnitState(0);
+				}
+			}
+	
+			// Propagate culling modes
+			retPass->setCullingMode(pass->getCullingMode());
+			retPass->setManualCullingMode(pass->getManualCullingMode());
+			
+	
+			// Does incoming pass have a custom shadow caster program?
+			if (!pass->getShadowCasterVertexProgramName().empty())
+			{
+				// Have to merge the shadow caster vertex program in
+				retPass->setVertexProgram(
+					pass->getShadowCasterVertexProgramName(), false);
+				const GpuProgramPtr& prg = retPass->getVertexProgram();
+				// Load this program if not done already
+				if (!prg->isLoaded())
+					prg->load();
+				// Copy params
+				retPass->setVertexProgramParameters(
+					pass->getShadowCasterVertexProgramParameters());
+				// Also have to hack the light autoparams, that is done later
+			}
+			else 
+			{
+				if (!customMaterial) {
+					if (retPass == mShadowTextureCustomCasterPass)
+					{
+						// reset vp?
+						if (mShadowTextureCustomCasterPass->getVertexProgramName() !=
+							mShadowTextureCustomCasterVertexProgram)
+						{
+							mShadowTextureCustomCasterPass->setVertexProgram(
+								mShadowTextureCustomCasterVertexProgram, false);
+							if(mShadowTextureCustomCasterPass->hasVertexProgram())
+							{
+								mShadowTextureCustomCasterPass->setVertexProgramParameters(
+									mShadowTextureCustomCasterVPParams);
+		
+							}
+		
+						}
+		
+					}
+					else
+					{
+						// Standard shadow caster pass, reset to no vp
+						retPass->setVertexProgram(StringUtil::BLANK);
+					}
+				}
+			}
+			return retPass;
+		}
+		else
+		{
+			return pass;
+		}
+    }
 	
 }
 
