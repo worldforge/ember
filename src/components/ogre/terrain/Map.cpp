@@ -237,6 +237,7 @@ void MapCamera::setRenderTarget(Ogre::RenderTarget* renderTarget)
 	mViewport->setShadowsEnabled(false);
 	mViewport->setSkiesEnabled(false);
     mViewport->setClearEveryFrame(true);
+    mViewport->setMaterialScheme("Low"); ///This will disable shadows etc.
     
     mViewport->setVisibilityMask(Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
 }
