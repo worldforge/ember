@@ -28,6 +28,7 @@
 
 #include <string>
 #include <map>
+#include <sigc++/signal.h>
 
 namespace EmberOgre {
 
@@ -102,6 +103,8 @@ public:
 	 * Returns level id by its name
 	 */
 	GraphicsLevel getLevelByName(const std::string &level);
+	
+	sigc::signal<void> EventLevelChanged;
 
 private:
 	/**
