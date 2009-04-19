@@ -37,6 +37,8 @@
 
 #include "../AvatarCamera.h"
 #include "../EmberOgre.h"
+#include "../MathConverter.h"
+#include "../terrain/TerrainInfo.h"
 #include "../terrain/TerrainGenerator.h"
 #include "../terrain/TerrainLayerDefinition.h"
 #include "../terrain/TerrainArea.h"

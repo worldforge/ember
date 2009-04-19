@@ -29,7 +29,7 @@
 #include <Mercator/Segment.h>
 #include <Mercator/Surface.h>
 #include <Mercator/TerrainMod.h>
-#include "../MathConverter.h"
+#include "../Types.h"
 
 namespace EmberOgre {
 

@@ -27,6 +27,7 @@
 #include "TerrainEditor.h"
 #include "../EmberOgrePrerequisites.h"
 #include "../EmberOgre.h"
+#include "../MathConverter.h"
 #include "../Avatar.h"
 #include "TerrainGenerator.h"
 #include "../AvatarCamera.h"

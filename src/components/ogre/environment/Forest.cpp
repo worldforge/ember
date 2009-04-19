@@ -37,8 +37,10 @@
 #include "pagedgeometry/include/PassiveEntityPage.h"
 #include "pagedgeometry/include/BatchedGeometry.h"
 
+#include "../MathConverter.h"
 #include "../AvatarCamera.h"
 #include "../EmberOgre.h"
+#include "../terrain/TerrainInfo.h"
 #include "../terrain/TerrainGenerator.h"
 #include "../terrain/ISceneManagerAdapter.h"
 

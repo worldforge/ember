@@ -87,28 +87,22 @@ Description:	Point, Vector and Quaternion converter
 #include <wfmath/quaternion.h>
 #include <wfmath/const.h>
 
-
 namespace EmberOgre {
 
 /**
- * @brief A 2d position in the world.
- */
-typedef WFMath::Point<2> TerrainPosition;
-
-/**
- * @brief Converts a 2d terrainposition into a 3d Ogre vector.
+ * @brief Converts a 2d WFMath::Point<2> into a 3d Ogre vector.
  * The vertical position of the resulting vector will be zero.
  * @param p A 2d Worldforge position.
  * @return A 3d Ogre vector.
  */
-Ogre::Vector3 Atlas2Ogre(const TerrainPosition& p);
+Ogre::Vector3 Atlas2Ogre(const WFMath::Point<2>& p);
 
 /**
- * @brief Converts a 2d terrainposition into a 2d Ogre vector.
+ * @brief Converts a 2d WFMath::Point<2> into a 2d Ogre vector.
  * @param p A 2d Worldforge position.
  * @return A 2d Ogre vector.
  */
-Ogre::Vector2 Atlas2Ogre_Vector2(const TerrainPosition& p);
+Ogre::Vector2 Atlas2Ogre_Vector2(const WFMath::Point<2>& p);
 
 /**
  * @brief Converts a 2d vector into a 2d Ogre vector.
@@ -129,14 +123,14 @@ WFMath::Point<3> Ogre2Atlas(const Ogre::Vector3& p);
  * @param p A 2d Ogre vector.
  * @return A 2d Worldforge point.
  */
-TerrainPosition Ogre2Atlas(const Ogre::Vector2& p);
+WFMath::Point<2> Ogre2Atlas(const Ogre::Vector2& p);
 
 /**
  * @brief Converts an Ogre 3d vector into a Worldforge 2d point.
  * @param p A 3d Ogre vector.
  * @return A 2d Worldforge point.
  */
-TerrainPosition Ogre2Atlas_TerrainPosition(const Ogre::Vector3& p);
+WFMath::Point<2> Ogre2Atlas_TerrainPosition(const Ogre::Vector3& p);
 
 /**
  * @brief Converts an Ogre 3d vector into a Worldforge 3d vector.
@@ -205,7 +199,7 @@ WFMath::AxisBox<2> Ogre2Atlas(const Ogre::TRect<Ogre::Real>& bounds);
 
 ///Implementations
 
-inline Ogre::Vector3 Atlas2Ogre(const TerrainPosition& p) {
+inline Ogre::Vector3 Atlas2Ogre(const WFMath::Point<2>& p) {
 	return Ogre::Vector3(p.x(),0,-p.y());
 }
 
@@ -213,7 +207,7 @@ inline Ogre::Vector2 Atlas2Ogre(const WFMath::Vector<2>& p) {
 	return Ogre::Vector2(p.x(),-p.y());
 }
 
-inline Ogre::Vector2 Atlas2Ogre_Vector2(const TerrainPosition& p) {
+inline Ogre::Vector2 Atlas2Ogre_Vector2(const WFMath::Point<2>& p) {
 	return Ogre::Vector2(p.x(),-p.y());
 }
 
@@ -221,12 +215,12 @@ inline WFMath::Point<3> Ogre2Atlas(const Ogre::Vector3& p) {
 	return WFMath::Point<3>(p.x,-p.z,p.y);
 }
 
-inline TerrainPosition Ogre2Atlas(const Ogre::Vector2& p) {
-	return TerrainPosition(p.x,-p.y);
+inline WFMath::Point<2> Ogre2Atlas(const Ogre::Vector2& p) {
+	return WFMath::Point<2>(p.x,-p.y);
 }
 
-inline TerrainPosition Ogre2Atlas_TerrainPosition(const Ogre::Vector3& p) {
-	return TerrainPosition(p.x,-p.z);
+inline WFMath::Point<2> Ogre2Atlas_TerrainPosition(const Ogre::Vector3& p) {
+	return WFMath::Point<2>(p.x,-p.z);
 }
 
 inline WFMath::Vector<3> Ogre2Atlas_Vector3(const Ogre::Vector3& p) {

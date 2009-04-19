@@ -40,6 +40,7 @@
 #include <wfmath/atlasconv.h>
 
 #include "../EmberOgre.h"
+#include "../MathConverter.h"
 #include "framework/LoggingInstance.h"
 #include "../Avatar.h"
 

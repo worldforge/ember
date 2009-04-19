@@ -27,6 +27,7 @@
 #include "PolygonAdapter.h"
 
 #include "components/ogre/EmberOgre.h"
+#include "components/ogre/MathConverter.h"
 #include "components/ogre/terrain/TerrainGenerator.h"
 #include "components/ogre/manipulation/PolygonPointPickListener.h"
 #include "components/ogre/AvatarCamera.h"

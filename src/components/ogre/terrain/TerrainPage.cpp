@@ -49,6 +49,7 @@
 
 #include "../environment/Foliage.h"
 #include "TerrainGenerator.h"
+#include "TerrainInfo.h"
 #include "TerrainPageSurfaceLayer.h"
 #include "TerrainPageSurface.h"
 #include "TerrainLayerDefinition.h"

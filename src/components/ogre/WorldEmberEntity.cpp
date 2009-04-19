@@ -42,6 +42,7 @@
 #include "EmberOgre.h"
 #include "Avatar.h"
 #include "AvatarCamera.h"
+#include "MathConverter.h"
 
 #include <Mercator/Area.h>
 #include <Mercator/FillShader.h>

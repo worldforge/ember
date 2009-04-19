@@ -28,6 +28,7 @@
 #include "TerrainPage.h"
 #include "TerrainGenerator.h"
 #include "../EmberOgrePrerequisites.h"
+#include "../MathConverter.h"
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 #include <wfmath/stream.h>
