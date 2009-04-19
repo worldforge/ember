@@ -196,6 +196,32 @@ bool TerrainPageSurfaceCompilerTechniqueShader::compileMaterial(Ogre::MaterialPt
 			return false;
 		}
 	}
+	
+	///Now also add a "Low" technique, for use in the compass etc.
+	technique = material->createTechnique();
+	technique->setSchemeName("Low");
+
+	shaderPass = addPass(technique);
+	if (shaderPass) {
+		for (std::map<int, TerrainPageSurfaceLayer*>::iterator I = terrainPageSurfaces.begin(); I != terrainPageSurfaces.end(); ++I) {
+			TerrainPageSurfaceLayer* surfaceLayer = I->second;
+			if (shaderPass->hasRoomForLayer(surfaceLayer)) {
+				if (I == terrainPageSurfaces.begin()) {
+					shaderPass->setBaseLayer(surfaceLayer);
+				} else {
+					if (surfaceLayer->intersects()) {
+						shaderPass->addLayer(surfaceLayer);
+					}
+				}
+			} else {
+				///TODO: handle new pass
+			}
+		}
+		if (!shaderPass->finalize(false))
+		{
+			return false;
+		}
+	}
 
 	// add lighting pass
 	/*
@@ -295,7 +321,7 @@ LayerStore& TerrainPageSurfaceCompilerShaderPass::getLayers()
 	return mLayers;
 }
 
-bool TerrainPageSurfaceCompilerShaderPass::finalize()
+bool TerrainPageSurfaceCompilerShaderPass::finalize(bool useShadows)
 {
 	//TODO: add shadow here
 	
@@ -322,10 +348,15 @@ bool TerrainPageSurfaceCompilerShaderPass::finalize()
 	///we provide different fragment programs for different amounts of textures used, so we need to determine which one to use. They all have the form of "splatting_fragment_*"
 	std::stringstream ss;
 	ss << "SplattingFp/" << mLayers.size();
+	if (!useShadows) {
+		ss << "/NoShadows";
+	}
 	std::string fragmentProgramName(ss.str());
 	
-	mPass->setLightingEnabled(true);
-	mPass->setMaxSimultaneousLights(3);
+	if (useShadows) {
+		mPass->setLightingEnabled(true);
+		mPass->setMaxSimultaneousLights(3);
+	}
 // 	mPass->setFog(true, Ogre::FOG_NONE);
 	
 			
@@ -348,21 +379,22 @@ bool TerrainPageSurfaceCompilerShaderPass::finalize()
 		*/
 		///set how much the texture should tile
 		fpParams->setNamedConstant("scales", mScales, 4); //4*4=16
-
-		Ogre::PSSMShadowCameraSetup* pssmSetup = static_cast<Ogre::PSSMShadowCameraSetup*>(EmberOgre::getSingleton().getSceneManager()->getShadowCameraSetup().get());
-		Ogre::Vector4 splitPoints;
-		Ogre::PSSMShadowCameraSetup::SplitPointList splitPointList = pssmSetup->getSplitPoints();
-		for (int i = 0; i < 3; i++)
-		{
-			splitPoints[i] = splitPointList[i];
+		
+		if (useShadows) {
+			Ogre::PSSMShadowCameraSetup* pssmSetup = static_cast<Ogre::PSSMShadowCameraSetup*>(EmberOgre::getSingleton().getSceneManager()->getShadowCameraSetup().get());
+			Ogre::Vector4 splitPoints;
+			Ogre::PSSMShadowCameraSetup::SplitPointList splitPointList = pssmSetup->getSplitPoints();
+			for (int i = 0; i < 3; i++)
+			{
+				splitPoints[i] = splitPointList[i];
+			}
+	
+			fpParams->setNamedConstant("pssmSplitPoints", splitPoints);
+	
+	//		fpParams->setNamedConstant("shadowMap0", 0);
+	//		fpParams->setNamedConstant("shadowMap1", 1);
+	//		fpParams->setNamedConstant("shadowMap2", 2);
 		}
-
-		fpParams->setNamedConstant("pssmSplitPoints", splitPoints);
-
-//		fpParams->setNamedConstant("shadowMap0", 0);
-//		fpParams->setNamedConstant("shadowMap1", 1);
-//		fpParams->setNamedConstant("shadowMap2", 2);
-
 		/*
 		fpParams->setNamedAutoConstant("iLightAmbient", Ogre::GpuProgramParameters::ACT_AMBIENT_LIGHT_COLOUR);
 		fpParams->setNamedAutoConstant("iLightDiffuse", Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR_ARRAY, 3);
@@ -375,13 +407,24 @@ bool TerrainPageSurfaceCompilerShaderPass::finalize()
 	}
 	
 	///add vertex shader for fog	
+	std::string lightningVpProgram;
 	if (EmberOgre::getSingleton().getSceneManager()->getFogMode() == Ogre::FOG_EXP2) {
+		if (useShadows) {
+			lightningVpProgram = "Lighting/ShadowVp";
+		} else {
+			lightningVpProgram = "Lighting/SimpleVp";
+		}
 		S_LOG_VERBOSE("Using vertex program " << "Lighting/ShadowVp" << " for terrain page.");
-		mPass->setVertexProgram("Lighting/ShadowVp");
 	} else {
-		S_LOG_FAILURE("Fog mode is different, but using vertex program " << "Lighting/ShadowVp" << " for terrain page.");
-		mPass->setVertexProgram("Lighting/ShadowVp");
+		if (useShadows) {
+			lightningVpProgram = "Lighting/ShadowVp";
+		} else {
+			lightningVpProgram = "Lighting/SimpleVp";
+		}
+		S_LOG_FAILURE("Fog mode is different, but using vertex program " << lightningVpProgram << " for terrain page.");
 	}
+	mPass->setVertexProgram(lightningVpProgram);
+	
 	try {
 		Ogre::GpuProgramParametersSharedPtr fpParams = mPass->getVertexProgramParameters();
 		fpParams->setIgnoreMissingParams(true);

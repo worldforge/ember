@@ -83,12 +83,13 @@ friend class TerrainPageSurfaceCompilerShaderPassCoverageBatch;
 	void addShadowLayer(TerrainPageShadow* terrainPageShadow);
 	
 	virtual bool hasRoomForLayer(TerrainPageSurfaceLayer* layer);
-	
-	
+
 	/**
-	 *    Creates the combined final coverage textures and sets the shader params. Be sure to call this before you load the material.
+	 * @brief Creates the combined final coverage textures and sets the shader params. Be sure to call this before you load the material.
+	 * @param useShadows Whether to use shadows or not in the pass.
+	 * @return True if the creation of the pass was successful.
 	 */
-	virtual bool finalize();
+	virtual bool finalize(bool useShadows = true);
 	
 	LayerStore& getLayers();
 	
