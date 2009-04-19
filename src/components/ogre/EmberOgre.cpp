@@ -744,6 +744,11 @@ AvatarController* EmberOgre::getAvatarController() const
 	return mAvatarController;
 }
 
+ShaderManager* EmberOgre::getShaderManager() const
+{
+	return mShaderManager.get();
+}
+
 // // void EmberOgre::setErisPolling(bool doPoll)
 // // {
 // // 	mPollEris = doPoll;

@@ -160,15 +160,66 @@ public:
 
 	// TODO: possibly we'd like to do the following in a different way,
 	// perhaps refactoring stuff
+	/**
+	 * @brief Gets the main avatar instance.
+	 * @return The main avatar instance. This is currently valid even before the user has logged in to a server, but this will probably change in the future.
+	 */
 	Avatar* getAvatar() const;
+	
+	/**
+	 * @brief Gets the main scene manager.
+	 * There will be many different scene managers created by Ember, but this one is the main one which represents the world.
+	 * @return The main scene manager.
+	 */
 	Ogre::SceneManager* getSceneManager() const;
+	
+	/**
+	 * @brief Gets the terrain generator.
+	 * @return The terrain generator, responsible for creating and handling the terrain.
+	 */
 	Terrain::TerrainGenerator* getTerrainGenerator() const;
+	
+	/**
+	 * @brief Gets the motion manager, which is responsible for handling all motion and animations of entities.
+	 * @return The motion manager.
+	 */
 	MotionManager* getMotionManager() const;
+	
+	/**
+	 * @brief Gets the Ogre root object.
+	 * @return The Ogre root object, which acts as an entry point for most of Ogre.
+	 */
 	Ogre::Root* getOgreRoot() const;
+	
+	/**
+	 * @brief Gets the entity factory which is responsible for creating all new entities in the world.
+	 * @return The entity factory.
+	 */
 	EmberEntityFactory* getEntityFactory() const;
+	
+	/**
+	 * @brief Gets the main camera, which is attached to the Avatar.
+	 * @return The main avatar camera.
+	 */
 	AvatarCamera* getMainCamera() const;
+	
+	/**
+	 * @brief Gets the avatar controller, which recieves input and makes sure that the Avatar is moved.
+	 * @return The avatar controller.
+	 */
 	AvatarController* getAvatarController() const;
+	
+	/**
+	 * @brief Gets the entity move manager, which handles movement of entities in the world by the user.
+	 * @return The entity move manager.
+	 */
 	EntityMoveManager* getMoveManager() const;
+	
+	/**
+	 * @brief Gets the shader manager, which handles setup of the graphic level and the shaders.
+	 * @return The shader manager.
+	 */
+	ShaderManager* getShaderManager() const;
 	
 	/**
 	 * @brief Finds and returns the entity with the given id, if it's available.
