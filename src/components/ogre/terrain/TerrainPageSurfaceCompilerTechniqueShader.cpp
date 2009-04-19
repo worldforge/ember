@@ -193,11 +193,12 @@ bool TerrainPageSurfaceCompilerTechniqueShader::compileMaterial(Ogre::MaterialPt
 					///TODO: handle new pass
 				}
 			}
-			if (!shaderPass->finalize())
+			if (!shaderPass->finalize(true, ""))
 			{
 				return false;
 			}
 		} else {
+			///We're not using shadows
 			for (std::map<int, TerrainPageSurfaceLayer*>::iterator I = terrainPageSurfaces.begin(); I != terrainPageSurfaces.end(); ++I) {
 				TerrainPageSurfaceLayer* surfaceLayer = I->second;
 				if (shaderPass->hasRoomForLayer(surfaceLayer)) {
@@ -212,7 +213,8 @@ bool TerrainPageSurfaceCompilerTechniqueShader::compileMaterial(Ogre::MaterialPt
 					///TODO: handle new pass
 				}
 			}
-			if (!shaderPass->finalize(false))
+			///The normal, shadowed, shaders have clones with the suffix "/NoShadows" which will skip the shadows.
+			if (!shaderPass->finalize(false, "/NoShadows"))
 			{
 				return false;
 			}
@@ -241,7 +243,8 @@ bool TerrainPageSurfaceCompilerTechniqueShader::compileMaterial(Ogre::MaterialPt
 				///TODO: handle new pass
 			}
 		}
-		if (!shaderPass->finalize(false))
+		///The normal, shadowed, shaders have clones with the suffix "/Simple" which will skip the shadows and the fog and restrict it to only one light source.
+		if (!shaderPass->finalize(false, "/Simple"))
 		{
 			return false;
 		}
@@ -345,7 +348,7 @@ LayerStore& TerrainPageSurfaceCompilerShaderPass::getLayers()
 	return mLayers;
 }
 
-bool TerrainPageSurfaceCompilerShaderPass::finalize(bool useShadows)
+bool TerrainPageSurfaceCompilerShaderPass::finalize(bool useShadows, const std::string shaderSuffix)
 {
 	//TODO: add shadow here
 	
@@ -371,16 +374,14 @@ bool TerrainPageSurfaceCompilerShaderPass::finalize(bool useShadows)
 	
 	///we provide different fragment programs for different amounts of textures used, so we need to determine which one to use. They all have the form of "splatting_fragment_*"
 	std::stringstream ss;
-	ss << "SplattingFp/" << mLayers.size();
-	if (!useShadows) {
-		ss << "/NoShadows";
-	}
+	ss << "SplattingFp/" << mLayers.size() << shaderSuffix;
+
 	std::string fragmentProgramName(ss.str());
 	
 	if (useShadows) {
 		mPass->setLightingEnabled(true);
-		mPass->setMaxSimultaneousLights(3);
 	}
+	mPass->setMaxSimultaneousLights(3);
 // 	mPass->setFog(true, Ogre::FOG_NONE);
 	
 			

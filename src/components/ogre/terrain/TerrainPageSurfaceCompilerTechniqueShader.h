@@ -87,9 +87,10 @@ friend class TerrainPageSurfaceCompilerShaderPassCoverageBatch;
 	/**
 	 * @brief Creates the combined final coverage textures and sets the shader params. Be sure to call this before you load the material.
 	 * @param useShadows Whether to use shadows or not in the pass.
+	 * @param shaderSuffix A suffix to add to the shader name. This allows you to make it use a somewhat different shader depending on graphics level etc.
 	 * @return True if the creation of the pass was successful.
 	 */
-	virtual bool finalize(bool useShadows = true);
+	virtual bool finalize(bool useShadows = true, const std::string shaderSuffix = "");
 	
 	LayerStore& getLayers();
 	
