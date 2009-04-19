@@ -107,10 +107,11 @@ public:
 	
 	
 	/**
-	 *    Generates the terrain materials needed.
-	 * @return 
+	 * @brief Generates the terrain materials needed.
+	 * @param reselectTechnique If true, we'll also see if we need to reselect the technique to use.
+	 * @return The new material created.
 	 */
-	Ogre::MaterialPtr generateTerrainMaterials();
+	Ogre::MaterialPtr generateTerrainMaterials(bool reselectTechnique);
 	
 	/**
 	 *    Fills the bound height data with height data. If no buffer has been bound nothing will be done.

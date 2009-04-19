@@ -74,7 +74,11 @@ public:
 	
 	Ogre::MaterialPtr getMaterial();
 	
-	void recompileMaterial();
+	/**
+	 * @brief Recompiles the material.
+	 * @param reselectTechnique If true, we'll also see if we need to reselect the technique to use.
+	 */
+	void recompileMaterial(bool reselectTechnique);
 	
 	void setShadow(TerrainPageShadow* shadow);
 	

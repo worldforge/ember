@@ -602,7 +602,7 @@ TerrainPage* TerrainGenerator::createPage(const TerrainPosition& pos)
 	}
 	
 	page->createShadow(EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection());
-	page->generateTerrainMaterials();
+	page->generateTerrainMaterials(false);
 	if (showFoliage) {
 		page->showFoliage();
 	}
@@ -849,7 +849,7 @@ bool TerrainGenerator::getNormal(const TerrainPosition& worldPosition, WFMath::V
 void TerrainGenerator::shaderManager_LevelChanged(ShaderManager* shaderManager)
 {
 	for (PageStore::iterator J = mPages.begin(); J != mPages.end(); ++J) {
-		J->second->generateTerrainMaterials();
+		J->second->generateTerrainMaterials(true);
 	}
 }
 

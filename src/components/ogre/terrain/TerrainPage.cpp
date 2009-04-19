@@ -252,9 +252,9 @@ void TerrainPage::updateShadow(const Ogre::Vector3& lightDirection)
 }
 
 
-Ogre::MaterialPtr TerrainPage::generateTerrainMaterials() {
+Ogre::MaterialPtr TerrainPage::generateTerrainMaterials(bool reselectTechnique) {
 
-	mTerrainSurface->recompileMaterial();
+	mTerrainSurface->recompileMaterial(reselectTechnique);
 	return mTerrainSurface->getMaterial();
 }
 
@@ -408,7 +408,7 @@ void TerrainPage::updateAllShaderTextures(bool repopulate)
 	for (; I != mTerrainSurface->getLayers().end(); ++I) {
 		mTerrainSurface->updateLayer(I->first, repopulate);
 	}
-	mTerrainSurface->recompileMaterial();
+	mTerrainSurface->recompileMaterial(false);
 	mPageFoliage->generateCoverageMap();
 }
 
@@ -417,10 +417,10 @@ TerrainPageSurfaceLayer* TerrainPage::updateShaderTexture(TerrainShader* shader,
 	TerrainPageSurfaceLayer* layer;
 	if (mTerrainSurface->getLayers().find(shader->getTerrainIndex()) == mTerrainSurface->getLayers().end()) {
 		layer = addShader(shader);
-		mTerrainSurface->recompileMaterial();
+		mTerrainSurface->recompileMaterial(false);
 	} else {
 		layer = mTerrainSurface->updateLayer(shader->getTerrainIndex(), repopulate);
-		mTerrainSurface->recompileMaterial();
+		mTerrainSurface->recompileMaterial(false);
 	}
 	
 	mPageFoliage->generateCoverageMap();

@@ -106,11 +106,16 @@ Ogre::MaterialPtr TerrainPageSurface::getMaterial()
 	return mMaterial;
 }
 	
-void TerrainPageSurface::recompileMaterial()
+void TerrainPageSurface::recompileMaterial(bool reselectTechnique)
 {
 // 	if (!mMaterial.isNull()) {
 // 		mMaterial->unload();
 // 	}
+
+	if (reselectTechnique) {
+		 mSurfaceCompiler.reset(new TerrainPageSurfaceCompiler());
+	}
+
 	mSurfaceCompiler->compileMaterial(mMaterial, mLayers, mShadow, mTerrainPage);
 	//mMaterial->reload();
 	
