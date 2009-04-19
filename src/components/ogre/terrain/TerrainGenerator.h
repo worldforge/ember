@@ -20,17 +20,17 @@
 #ifndef TERRAINGENERATOR_H
 #define TERRAINGENERATOR_H
 
-#include "../EmberOgrePrerequisites.h"
 
-#include <wfmath/point.h>
+#include <wfmath/point.h> //needed for the terrain position
 
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
 
 #include "framework/ConsoleObject.h"
 
-#include "TerrainInfo.h"
-#include "../MathConverter.h"
+#include "../Types.h"
+#include <OgreFrameListener.h>
+
 namespace Ogre
 {
 	class TerrainOptions;
@@ -55,6 +55,7 @@ namespace EmberOgre {
 class EmberEntity;
 class EmberEntityFactory;
 class EmberPagingSceneManager;
+class ShaderManager;
 
 namespace Environment
 {
@@ -64,7 +65,7 @@ namespace Environment
 namespace Terrain {
 	
 class TerrainShader;
-
+class TerrainInfo;
 class TerrainPage;
 class TerrainArea;
 class TerrainMod;
@@ -409,7 +410,7 @@ protected:
 	/**
 	@brief Information about the world, such as size and number of pages.
 	*/
-	TerrainInfo mTerrainInfo;
+	std::auto_ptr<TerrainInfo> mTerrainInfo;
 
 	typedef std::map<int,TerrainShader*> AreaShaderstore;
 	
@@ -553,6 +554,12 @@ protected:
 	ISceneManagerAdapter* mSceneManagerAdapter;
 	
 	unsigned int mFoliageBatchSize;
+	
+	/**
+	 * @brief Listen to graphic level updates and ask the pages to regenerate their materials (since they will use different materials depending on the level chosen).
+	 * @param shaderManager The shader manager, which contains information on the graphics level set.
+	 */
+	void shaderManager_LevelChanged(ShaderManager& shaderManager);
 
 };
 
