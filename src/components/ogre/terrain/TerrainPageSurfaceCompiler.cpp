@@ -29,6 +29,9 @@
 #include "TerrainPageSurfaceLayer.h"
 #include "TerrainPageSurfaceCompilerTechniqueShader.h"
 #include "TerrainPageSurfaceCompilerTechniqueSimple.h"
+#include "../ShaderManager.h"
+#include "../EmberOgre.h"
+
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
@@ -91,9 +94,11 @@ void TerrainPageSurfaceCompiler::selectTechnique()
 		}
 	}
 	
-	if (preferredTech == "ShaderNormalMapped" && shaderSupport) {
+	ShaderManager::GraphicsLevel graphicsLevel = EmberOgre::getSingleton().getShaderManager()->getGraphicsLevel();
+	
+	if (preferredTech == "ShaderNormalMapped" && shaderSupport && graphicsLevel >= ShaderManager::LEVEL_HIGH) {
 		mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueShaderNormalMapped());
-	} else if (preferredTech == "Shader" && shaderSupport) {
+	} else if (preferredTech == "Shader" && shaderSupport && graphicsLevel >= ShaderManager::LEVEL_MEDIUM) {
 		mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueShader());
 	} else {
 		mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueSimple());
