@@ -205,7 +205,7 @@ void MapView::recalculateBounds()
 
 
 MapCamera::MapCamera(Map& map, Ogre::SceneManager* manager)
-: mMap(map), mViewport(0), mDistance(400)
+: mMap(map), mViewport(0), mDistance(400), mLightning(*manager)
 {
 	mCamera = manager->createCamera("TerrainMapCamera");
 	mCamera->setPosition(Ogre::Vector3(0, 0, 0));
@@ -225,6 +225,9 @@ MapCamera::MapCamera(Map& map, Ogre::SceneManager* manager)
 
 MapCamera::~MapCamera()
 {
+	if (mCamera) {
+		mCamera->getSceneManager()->destroyCamera(mCamera);
+	}
 }
 
 
@@ -277,6 +280,7 @@ void MapCamera::render()
 		///use a RAII rendering instance so that we're sure to reset all settings of the scene manager that we change, even if something goes wrong here
 		Ogre::SceneManager* manager(mCamera->getSceneManager());
 		RenderingInstance instance(manager);
+		MapCameraLightningInstance lightningInstance(mLightning);
 		
 /*		manager->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_INCLUDE); 
 		manager->addSpecialCaseRenderQueue(Ogre::RENDER_QUEUE_WORLD_GEOMETRY_1);
@@ -295,10 +299,71 @@ void MapCamera::render()
 
 
 
+MapCameraLightning::MapCameraLightning(Ogre::SceneManager& sceneManager)
+: mSceneManager(sceneManager)
+{
+	mLight = sceneManager.createLight("MapFixedSunLight");
+	mLight->setType(Ogre::Light::LT_DIRECTIONAL);
+	
+	mLight->setPosition(Ogre::Vector3(-500,300,-350));
+	Ogre::Vector3 dir = -mLight->getPosition();
+	dir.normalise();
+	mLight->setDirection(dir);
+	
+	mLight->setDiffuseColour(Ogre::ColourValue(0.8, 0.8, 0.6)); //yellow
+	//mSun->setSpecularColour(1, 1, 0.7); //yellow
+	mLight->setCastShadows(false);
+	mLight->setAttenuation(1000000, 1, 0, 0);
+
+	mLight->setVisible(false);
+}
+
+
+MapCameraLightning::~MapCameraLightning()
+{
+	mSceneManager.destroyLight(mLight);
+}
+
+Ogre::Light* MapCameraLightning::getLight()
+{
+	return mLight;
+}
+
+Ogre::SceneManager& MapCameraLightning::getSceneManager()
+{
+	return mSceneManager;
+}
 
 
 
+MapCameraLightningInstance::MapCameraLightningInstance(MapCameraLightning& lightning)
+: mLightning(lightning)
+{
 
+	Ogre::SceneManager::MovableObjectIterator iterator = lightning.getSceneManager().getMovableObjectIterator("Light");
+	
+	while (iterator.hasMoreElements()) {
+		Ogre::MovableObject* light = iterator.getNext();
+		if (light && light != mLightning.getLight()) {
+			if (light->getVisible()) {
+				mVisibleLights.push_back(light);
+				light->setVisible(false);
+			}
+		}
+	}
+	mLightning.getLight()->setVisible(true);
+	mAmbientColour = mLightning.getSceneManager().getAmbientLight();
+	mLightning.getSceneManager().setAmbientLight(mLightning.getLight()->getDiffuseColour());
+}
+
+MapCameraLightningInstance::~MapCameraLightningInstance()
+{
+	for (LightStore::iterator I = mVisibleLights.begin(); I != mVisibleLights.end(); ++I) {
+		(*I)->setVisible(true);
+	}
+	mLightning.getLight()->setVisible(false);
+	mLightning.getSceneManager().setAmbientLight(mAmbientColour);
+}
 
 
 RenderingInstance::RenderingInstance(Ogre::SceneManager* manager)

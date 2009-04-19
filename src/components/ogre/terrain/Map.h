@@ -32,7 +32,93 @@ namespace Terrain {
 class Map;
 
 /**
-	Responsible for handling the camera used to render the terrain overhead map.
+@brief Provides lightning for the map rendering.
+
+We don't want to use the regular scene lightning since then we won't see anything at all during the night. This class takes care of setting up a light which will provide a good sunny day for the map rendering.
+
+You don't use this directly when you want to render however, instead you use an instance of MapCameraLightningInstance.
+
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+*/
+class MapCameraLightning
+{
+public:
+	/**
+	 * @brief Ctor.
+	 * The light will automatically be created in the constructor.
+	 * @param sceneManager The scene manager which is used for rendering.
+	 */
+	MapCameraLightning(Ogre::SceneManager& sceneManager);
+	
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~MapCameraLightning();
+	
+	/**
+	 * @brief Gets the light which is used for rendering. This is a yellow, bright light in the middle of the sky.
+	 * @return The main light.
+	 */
+	Ogre::Light* getLight();
+	
+	/**
+	 * @brief Gets the scene manager.
+	 * @return The scene manager.
+	 */
+	Ogre::SceneManager& getSceneManager();
+	
+protected:
+	/**
+	 * @brief The light, owned by this instance.
+	 */
+	Ogre::Light* mLight;
+	
+	/**
+	 * @brief The scene manager to which everything belongs.
+	 */
+	Ogre::SceneManager& mSceneManager;
+};
+
+/**
+@brief An instance of map specific lightning, using RAII to make sure that the lightning is correctly reset after rendering is complete.
+
+Use an instance of this during your rendering to make sure that the lightning is correctly set up, and then reset afterwards.
+
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+*/class MapCameraLightningInstance {
+public:
+	/**
+	 * @brief Ctor.
+	 * @param lightning The lightning.
+	 */
+	MapCameraLightningInstance(MapCameraLightning& lightning);
+	
+	/**
+	 * @brief Dtor.
+	 */
+	~MapCameraLightningInstance();
+	
+protected:
+	typedef std::vector<Ogre::MovableObject*> LightStore;
+	
+	/**
+	 * @brief The lightning.
+	 */
+	MapCameraLightning& mLightning;
+	
+	/**
+	 * @brief A store of visible lights which will be disabled when this instance is created, and enabled when it's destroyed.
+	 */
+	LightStore mVisibleLights;
+	
+	/**
+	 * @brief The ambient colour of the scene before this instance is created, which will be reset when it's destroyed.
+	 */
+	Ogre::ColourValue mAmbientColour;
+};
+
+/**
+	@brief Responsible for handling the camera used to render the terrain overhead map.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
 */
@@ -63,11 +149,13 @@ protected:
 	Ogre::Camera* mCamera;
 	Ogre::Viewport* mViewport;
 	float mDistance;
+	
+	MapCameraLightning mLightning;
 };
 
 
 /**
-	Represents a sub view of the map.
+	@brief Represents a sub view of the map.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
 */
@@ -174,6 +262,7 @@ protected:
 	MapView mView;
 	
 };
+
 
 
 /**
