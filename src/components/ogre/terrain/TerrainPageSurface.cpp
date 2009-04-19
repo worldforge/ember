@@ -29,6 +29,7 @@
 #include "TerrainPageSurfaceLayer.h"
 #include "TerrainPageSurfaceCompiler.h"
 #include "TerrainLayerDefinition.h"
+#include "../MathConverter.h"
 
 namespace EmberOgre {
 namespace Terrain {

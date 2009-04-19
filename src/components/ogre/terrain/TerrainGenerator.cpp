@@ -125,7 +125,7 @@ mFoliageBatchSize(32)
 	
 	configSrv->EventChangedConfigItem.connect(sigc::mem_fun(*this, &TerrainGenerator::ConfigService_EventChangedConfigItem));
 	
-	EmberOgre::getSingleton().getShaderManager()->EventLevelChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainGenerator::shaderManager_LevelChanged), *(EmberOgre::getSingleton().getShaderManager())));
+	EmberOgre::getSingleton().getShaderManager()->EventLevelChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainGenerator::shaderManager_LevelChanged), EmberOgre::getSingleton().getShaderManager()));
 }
 
 TerrainGenerator::~TerrainGenerator()
@@ -846,7 +846,7 @@ bool TerrainGenerator::getNormal(const TerrainPosition& worldPosition, WFMath::V
 
 }
 
-void TerrainGenerator::shaderManager_LevelChanged(ShaderManager& shaderManager)
+void TerrainGenerator::shaderManager_LevelChanged(ShaderManager* shaderManager)
 {
 	for (PageStore::iterator J = mPages.begin(); J != mPages.end(); ++J) {
 		J->second->generateTerrainMaterials();

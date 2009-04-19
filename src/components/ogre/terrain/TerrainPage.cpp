@@ -35,6 +35,7 @@
 #include "ITerrainPageBridge.h"
 
 #include "../EmberOgre.h"
+#include "../MathConverter.h"
 
 #include <OgreRenderSystemCapabilities.h>
 

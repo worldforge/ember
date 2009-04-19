@@ -559,7 +559,7 @@ protected:
 	 * @brief Listen to graphic level updates and ask the pages to regenerate their materials (since they will use different materials depending on the level chosen).
 	 * @param shaderManager The shader manager, which contains information on the graphics level set.
 	 */
-	void shaderManager_LevelChanged(ShaderManager& shaderManager);
+	void shaderManager_LevelChanged(ShaderManager* shaderManager);
 
 };
 

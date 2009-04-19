@@ -25,7 +25,7 @@
 
 #include <list>
 #include "../EmberOgrePrerequisites.h"
-#include "../MathConverter.h"
+#include "../Types.h"
 #include "TerrainPage.h"
 
 namespace Mercator
