@@ -193,6 +193,9 @@ ShaderManager::GraphicsLevel ShaderManager::setGraphicsLevel(ShaderManager::Grap
 		break;
 	}
 	mGraphicsLevel = newLevel;
+	
+	EventLevelChanged.emit();
+	
 	return mGraphicsLevel;
 }
 
