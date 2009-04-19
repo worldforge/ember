@@ -120,7 +120,11 @@ protected:
 class TerrainPageSurfaceCompilerTechniqueShader : public TerrainPageSurfaceCompilerTechnique
 {
 public:
-    TerrainPageSurfaceCompilerTechniqueShader();
+    /**
+     * @brief Ctor.
+     * @param includeShadows If true, shadows will be used.
+     */
+    TerrainPageSurfaceCompilerTechniqueShader(bool includeShadows);
     virtual ~TerrainPageSurfaceCompilerTechniqueShader();
     
 	virtual bool compileMaterial(Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow);
@@ -133,6 +137,11 @@ protected:
 	TerrainPage* mPage;
 	virtual TerrainPageSurfaceCompilerShaderPass* addPass(Ogre::Technique* technique);
 	PassStore mPasses;
+	
+	/**
+	 * @brief Sets whether shadows should be used.
+	 */
+	bool mIncludeShadows;
 	
 	void addBaseLayer(Ogre::Pass* pass, TerrainPageSurfaceLayer* layer);
 	void addLayer(Ogre::Pass* pass, TerrainPageSurfaceLayer* layer);
@@ -180,6 +189,11 @@ protected:
 class TerrainPageSurfaceCompilerTechniqueShaderNormalMapped : public TerrainPageSurfaceCompilerTechniqueShader
 {
 public:
+	/**
+	 * @brief Ctor.
+	 * @param includeShadows If true, shadows will be used.
+	 */
+	TerrainPageSurfaceCompilerTechniqueShaderNormalMapped(bool includeShadows);
 protected:
 	virtual TerrainPageSurfaceCompilerShaderPass* addPass(Ogre::Technique* technique);
 

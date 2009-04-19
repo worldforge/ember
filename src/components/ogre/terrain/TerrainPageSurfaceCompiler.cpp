@@ -97,9 +97,17 @@ void TerrainPageSurfaceCompiler::selectTechnique()
 	ShaderManager::GraphicsLevel graphicsLevel = EmberOgre::getSingleton().getShaderManager()->getGraphicsLevel();
 	
 	if (preferredTech == "ShaderNormalMapped" && shaderSupport && graphicsLevel >= ShaderManager::LEVEL_HIGH) {
-		mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueShaderNormalMapped());
+		///Use normal mapped shader tech with shadows
+		mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueShaderNormalMapped(true));
+	} else if (preferredTech == "ShaderNormalMapped" && shaderSupport && graphicsLevel >= ShaderManager::LEVEL_MEDIUM) {
+		///Use normal mapped shader tech without shadows
+		mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueShaderNormalMapped(false));
+	} else if (preferredTech == "Shader" && shaderSupport && graphicsLevel >= ShaderManager::LEVEL_HIGH) {
+		///Use shader tech with shadows
+		mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueShader(true));
 	} else if (preferredTech == "Shader" && shaderSupport && graphicsLevel >= ShaderManager::LEVEL_MEDIUM) {
-		mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueShader());
+		///Use shader tech without shadows
+		mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueShader(false));
 	} else {
 		mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueSimple());
 	}

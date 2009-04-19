@@ -120,7 +120,8 @@ void TerrainPageSurfaceCompilerShaderPassCoverageBatch::finalize()
 
 
 
-TerrainPageSurfaceCompilerTechniqueShader::TerrainPageSurfaceCompilerTechniqueShader()
+TerrainPageSurfaceCompilerTechniqueShader::TerrainPageSurfaceCompilerTechniqueShader(bool includeShadows)
+: mIncludeShadows(includeShadows)
 {
 }
 
@@ -172,30 +173,53 @@ bool TerrainPageSurfaceCompilerTechniqueShader::compileMaterial(Ogre::MaterialPt
 
 	TerrainPageSurfaceCompilerShaderPass* shaderPass = addPass(technique);
 	if (shaderPass) {
-		shaderPass->addShadowLayer(terrainPageShadow);
-		shaderPass->addShadowLayer(terrainPageShadow);
-		shaderPass->addShadowLayer(terrainPageShadow);
-		shaderPass->addShadowLayer(terrainPageShadow);
-		shaderPass->addShadowLayer(terrainPageShadow);
-		for (std::map<int, TerrainPageSurfaceLayer*>::iterator I = terrainPageSurfaces.begin(); I != terrainPageSurfaces.end(); ++I) {
-			TerrainPageSurfaceLayer* surfaceLayer = I->second;
-			if (shaderPass->hasRoomForLayer(surfaceLayer)) {
-				if (I == terrainPageSurfaces.begin()) {
-					shaderPass->setBaseLayer(surfaceLayer);
-				} else {
-					if (surfaceLayer->intersects()) {
-						shaderPass->addLayer(surfaceLayer);
+		if (mIncludeShadows) {
+			shaderPass->addShadowLayer(terrainPageShadow);
+			shaderPass->addShadowLayer(terrainPageShadow);
+			shaderPass->addShadowLayer(terrainPageShadow);
+			shaderPass->addShadowLayer(terrainPageShadow);
+			shaderPass->addShadowLayer(terrainPageShadow);
+			for (std::map<int, TerrainPageSurfaceLayer*>::iterator I = terrainPageSurfaces.begin(); I != terrainPageSurfaces.end(); ++I) {
+				TerrainPageSurfaceLayer* surfaceLayer = I->second;
+				if (shaderPass->hasRoomForLayer(surfaceLayer)) {
+					if (I == terrainPageSurfaces.begin()) {
+						shaderPass->setBaseLayer(surfaceLayer);
+					} else {
+						if (surfaceLayer->intersects()) {
+							shaderPass->addLayer(surfaceLayer);
+						}
 					}
+				} else {
+					///TODO: handle new pass
 				}
-			} else {
-				///TODO: handle new pass
+			}
+			if (!shaderPass->finalize())
+			{
+				return false;
+			}
+		} else {
+			for (std::map<int, TerrainPageSurfaceLayer*>::iterator I = terrainPageSurfaces.begin(); I != terrainPageSurfaces.end(); ++I) {
+				TerrainPageSurfaceLayer* surfaceLayer = I->second;
+				if (shaderPass->hasRoomForLayer(surfaceLayer)) {
+					if (I == terrainPageSurfaces.begin()) {
+						shaderPass->setBaseLayer(surfaceLayer);
+					} else {
+						if (surfaceLayer->intersects()) {
+							shaderPass->addLayer(surfaceLayer);
+						}
+					}
+				} else {
+					///TODO: handle new pass
+				}
+			}
+			if (!shaderPass->finalize(false))
+			{
+				return false;
 			}
 		}
-		if (!shaderPass->finalize())
-		{
-			return false;
-		}
 	}
+	
+	
 	
 	///Now also add a "Low" technique, for use in the compass etc.
 	technique = material->createTechnique();
@@ -626,6 +650,11 @@ bool TerrainPageSurfaceCompilerShaderNormalMappedPass::finalize()
 		return false;
 	}
 	return true;
+}
+
+TerrainPageSurfaceCompilerTechniqueShaderNormalMapped::TerrainPageSurfaceCompilerTechniqueShaderNormalMapped(bool includeShadows)
+: TerrainPageSurfaceCompilerTechniqueShader::TerrainPageSurfaceCompilerTechniqueShader(includeShadows)
+{
 }
 
 TerrainPageSurfaceCompilerShaderPass* TerrainPageSurfaceCompilerTechniqueShaderNormalMapped::addPass(Ogre::Technique* technique)
