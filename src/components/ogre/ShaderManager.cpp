@@ -272,6 +272,8 @@ void ShaderManager::setNoShadows()
 {
 	Ogre::SceneManager* sceneMgr = EmberOgre::getSingleton().getSceneManager();
 	sceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_NONE);
+	///This will make any other camera setup delete itself (unless held by another shared pointer).
+	sceneMgr->setShadowCameraSetup(Ogre::ShadowCameraSetupPtr());
 }
 
 }
