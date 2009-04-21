@@ -288,7 +288,7 @@ void MapCamera::render()
 		manager->addSpecialCaseRenderQueue(Ogre::RENDER_QUEUE_6); //water*/
 		
 		
-		manager->setFog(Ogre::FOG_NONE, Ogre::ColourValue(1,1,1,1), 0.0f, 10000000.0f, 100000001.0f);
+		manager->setFog(Ogre::FOG_EXP2, Ogre::ColourValue(0,0,0,0), 0.0f, 0.0f, 0.0f);
 		mViewport->update();
 // 		manager->removeSpecialCaseRenderQueue(Ogre::RENDER_QUEUE_WORLD_GEOMETRY_1);
 // 		manager->removeSpecialCaseRenderQueue(Ogre::RENDER_QUEUE_WORLD_GEOMETRY_2);

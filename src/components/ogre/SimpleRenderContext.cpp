@@ -84,7 +84,9 @@ void SimpleRenderContext::setupScene(const std::string& prefix)
 {
 	S_LOG_VERBOSE("Creating new SimpleRenderContext for prefix " << prefix  << " with w:" << mWidth << " h:" << mHeight);
 	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, prefix + "_sceneManager");
-	mSceneManager->setFog(Ogre::FOG_NONE, Ogre::ColourValue(1,1,1,1), 0.0f, 10000000.0f, 100000001.0f);
+	///One might wonder why we're not setting the fog to FOG_NONE. The reason is that it seems that due to a bug in either Ogre or OpenGL when doing that, none of the other fog values would be set. Since we use shaders and in the shaders look for the alpha value of the fog colour to determine whether fog is enabled or not, we need to make sure that the fog colour indeed is set.
+	mSceneManager->setFog(Ogre::FOG_EXP2, Ogre::ColourValue(0,0,0,0), 0.0f, 0.0f, 0.0f);
+// 	mSceneManager->setFog(Ogre::FOG_NONE, Ogre::ColourValue(1,1,1,1), 0.0f, 10000000.0f, 100000001.0f);
 
 	mRootNode = mSceneManager->getRootSceneNode();
 	

@@ -224,7 +224,7 @@ RenderedCompassImpl::RenderedCompassImpl(std::string compassMaterialName, std::s
 : mRenderTexture(0), mCamera(0), mSceneManager(0), mViewport(0), mCompassMaterialMapTUS(0), mMapRectangle(0), mPointer(pointerMaterialName), mMaterialName(compassMaterialName)
 {
 	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, "RenderedCompassImpl_sceneManager");
-	mSceneManager->setFog(Ogre::FOG_NONE, Ogre::ColourValue(1,1,1,1), 0.0f, 10000000.0f, 100000001.0f);
+	mSceneManager->setFog(Ogre::FOG_EXP2, Ogre::ColourValue(0,0,0,0), 0.0f, 0.0f, 0.0f);
 }
 
 RenderedCompassImpl::~RenderedCompassImpl()
@@ -340,7 +340,7 @@ RenderedCompassPointer::RenderedCompassPointer(std::string materialName)
 : mRenderTexture(0), mCamera(0), mSceneManager(0), mViewport(0), mPointerTUS(0), mPointerRectangle(0)
 {
 	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, "RenderedCompassPointer_sceneManager");
-	mSceneManager->setFog(Ogre::FOG_NONE, Ogre::ColourValue(1,1,1,1), 0.0f, 10000000.0f, 100000001.0f);
+	mSceneManager->setFog(Ogre::FOG_EXP2, Ogre::ColourValue(0,0,0,0), 0.0f, 0.0f, 0.0f);
 	
 	mPointerMaterial = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(materialName));
 	if (!mPointerMaterial.isNull()) {
