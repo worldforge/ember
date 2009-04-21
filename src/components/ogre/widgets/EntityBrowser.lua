@@ -135,7 +135,6 @@ function EntityBrowser.buildWidget()
 
 	EntityBrowser.widget:registerConsoleVisibilityToggleCommand("entityBrowser")
 	EntityBrowser.widget:enableCloseButton()
-	EntityBrowser.widget:hide()
 
 	local xW = EntityBrowser.widget:getWindow("SceneNodeInfo/Position/X")
 	local yW = EntityBrowser.widget:getWindow("SceneNodeInfo/Position/Y")
@@ -149,6 +148,9 @@ function EntityBrowser.buildWidget()
 	local degreeW = EntityBrowser.widget:getWindow("SceneNodeInfo/Orientation/Scalar")
 	EntityBrowser.sceneNodes.rotationAdapter = EmberOgre.Gui.QuaternionAdapter:new_local(degreeW, xW, yW ,zW)
 	connect(EntityBrowser.connectors, EntityBrowser.sceneNodes.rotationAdapter.EventValueChanged, "EntityBrowser.sceneNodes_rotationAdapter_changed")
+	
+	--force a refresh the first time the window is shown
+	connect(EntityBrowser.connectors, EntityBrowser.widget.EventFirstTimeShown, EntityBrowser.refresh)
 
 
 end

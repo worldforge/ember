@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
 	<Window Type='EmberLook/FrameWindow' Name='Mainwindow'>
+		<Property Name='Visible' Value='false'/>
 		<Property Name='UnifiedSize' Value='{{0.00000,350.000000},{0.00000,400.000000}}'/>
 		<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0,0.000000}}'/>
 		<Property Name='Alpha' Value='0.6'/>
