@@ -39,7 +39,7 @@
 									</xsd:attribute>
 								</xsd:complexType>
 							</xsd:element>
-							<xsd:element name="adapters" minOccurs="1" maxOccurs="1">
+							<xsd:element name="adapters" minOccurs="0" maxOccurs="1">
 								<xsd:annotation>
 									<xsd:documentation xml:lang="en">
 										List of recipe adapters.
@@ -83,7 +83,7 @@
 									</xsd:sequence>
 								</xsd:complexType>
 							</xsd:element>
-							<xsd:element name="bindings" minOccurs="1" maxOccurs="1">
+							<xsd:element name="bindings" minOccurs="0" maxOccurs="1">
 								<xsd:annotation>
 									<xsd:documentation xml:lang="en">
 										List of adapters bindings.
@@ -107,7 +107,7 @@
 									</xsd:sequence>
 								</xsd:complexType>
 							</xsd:element>
-							<xsd:element name="script" type="xsd:string" minOccurs="1" maxOccurs="1">
+							<xsd:element name="script" type="xsd:string" minOccurs="0" maxOccurs="1">
 								<xsd:annotation>
 									<xsd:documentation xml:lang="en">
 										Lua script that is used for composing entity.
