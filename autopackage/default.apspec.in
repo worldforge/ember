@@ -5,7 +5,7 @@
 RootName: @worldforge.org/clients/ember:$SOFTWAREVERSION
 DisplayName: Ember - a client for Worldforge
 ShortName: ember
-AutopackageTarget: 1.0.0
+AutopackageTarget: 1.4
 URL: http://www.worldforge.org/dev/eng/clients/ember
 Maintainer: Erik Hjortsberg <erik.hjortsberg@gmail.com>
 Packager: Erik Hjortsberg <erik.hjortsberg@gmail.com>
