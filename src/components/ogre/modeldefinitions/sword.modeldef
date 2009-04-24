@@ -1,7 +1,7 @@
 <models>
-    <model name="sword" usescaleof="none" scale="0.150000" showcontained="true" icon="">
+    <model name="sword" usescaleof="height" scale="1.000000" showcontained="true" icon="">
         <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="-0.000000" z="-0.000000" degrees="90.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
             <submodel mesh="3d_objects/items/weapons/models/swords/sword_A01.mesh">
                 <parts>
@@ -17,5 +17,6 @@
         <actions />
         <attachpoints />
         <views />
+        <lights />
     </model>
 </models>
