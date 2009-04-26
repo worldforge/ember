@@ -49,7 +49,6 @@ ParticleSystem::~ParticleSystem()
 	for (; I != I_end; ++I) {
 		delete *I;
 	}
-	mBindings.clear();
 	
 	//and then destroy the system to save resources
 	mOgreParticleSystem->_getManager()->destroyParticleSystem(mOgreParticleSystem);
@@ -68,6 +67,14 @@ ParticleSystemBinding * ParticleSystem::addBinding( const std::string & emitterV
 	mBindings.push_back(binding);
 	return binding;
 }
+
+void ParticleSystem::setVisible(bool visibility)
+{
+	if (mOgreParticleSystem) {
+		mOgreParticleSystem->setVisible(visibility);
+	}
+}
+
 
 }
 }

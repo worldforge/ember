@@ -88,27 +88,32 @@ public:
 	static const Ogre::String sMovableType;
 	
 	
+	/**
+	 * @brief Ctor.
+	 */
 	virtual ~Model();
 	
 	
-	/** Notify the object of it's manager (internal use only) */
+	/**
+	* @brief Notify the object of it's manager (internal use only) 
+	*/
 	virtual void _notifyManager(Ogre::SceneManager* man);
 
 	static Model* createModel(Ogre::SceneManager* sceneManager, const std::string& modelType, const std::string& name = "");
 	
 	/**
-	 *    Reloads the model from the modeldefinition.
+	 * @brief Reloads the model from the modeldefinition.
 	 */
 	void reload();
 	
 	
 	/**
-	* Emitted when the model is reloaded
+	* @brief Emitted when the model is reloaded
 	*/
 	sigc::signal<void> Reloaded;
 	
 	/**
-	* Emitted when the model is about to be resetted.
+	* @brief Emitted when the model is about to be resetted.
 	*/
 	sigc::signal<void> Resetting;
 	
@@ -116,16 +121,37 @@ public:
 	bool addSubmodel(SubModel* submodel);
  	bool removeSubmodel(SubModel* submodel);
  	
+	/**
+	 * @brief Gets the action with the supplied name. If none is found null is returned.
+	 * @param name The name of the action.
+	 * @return A pointer to an action, or null.
+	 */
 	Action* getAction(const std::string& name);	
 	
 
-	ModelPart& getPart(const std::string& partName);
+// 	ModelPart& getPart(const std::string& partName);
 
 	/**
-	 * hides and shows a certain part of the model
+	 * @brief Shows a certain part of the model.
+	 * If no part with the supplied name can be found, nothing happens.
+	 * @param partName The name of the part to show.
+	 * @param hideOtherParts If true, all other parts that share the same group as the part which will be shown will be hidden.
 	 */
 	void showPart(const std::string& partName, bool hideOtherParts = true);
+	
+
+	/**
+	 * @brief Hides a certain part.
+	 * @param partName The name of the part to hide.
+	 * @param dontChangeVisibility If true, the visibility of the part won't be affected. In addition, any other part which belong to the same group and is set to be visible, won't automatically be shown.
+	 */
 	void hidePart(const std::string& partName, bool dontChangeVisibility = false);
+	
+	
+	/**
+	 * @brief Sets the visibility of the model and all of it subparts.
+	 * @param visible Whether the model should be visible or not.
+	 */
 	void setVisible(bool visible);
 	
 	/**
@@ -307,12 +333,17 @@ protected:
 	void createLights();
 	
 	/**
-	 *    Clears all the particles
+	 * @brief Clears all the particles, removing them from the scene.
 	 */
 	void resetParticles();
 	
 	/**
-	 *    Resets the whole model.
+	 * @brief Clears all lights, removing them from the scene.
+	 */
+	void resetLights();
+	
+	/**
+	 * @brief Resets the whole model.
 	 */
 	void reset();
 	

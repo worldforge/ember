@@ -77,7 +77,8 @@ Model::Model(const std::string& name)
 Model::~Model()
 {
 	resetSubmodels();
-	resetParticles();	
+	resetParticles();
+	resetLights();
 	if (!mMasterModel.isNull()) {
 		mMasterModel->removeModelInstance(this);
 	}
@@ -95,6 +96,7 @@ void Model::reset()
 //	resetAnimations();
 	resetSubmodels();
 	resetParticles();	
+	resetLights();
 	mScale = 0;
 	mRotation = Ogre::Quaternion::IDENTITY;
 	mSkeletonInstance = 0;
@@ -528,11 +530,35 @@ void Model::hidePart(const std::string& partName, bool dontChangeVisibility)
 void Model::setVisible(bool visible) 
 {
 	mVisible = visible;
-	SubModelSet::const_iterator I = mSubmodels.begin();
-	SubModelSet::const_iterator I_end = mSubmodels.end();
-	for (; I != I_end; ++I) {
-		(*I)->getEntity()->setVisible(visible);		
+	{
+		SubModelSet::const_iterator I = mSubmodels.begin();
+		SubModelSet::const_iterator I_end = mSubmodels.end();
+		for (; I != I_end; ++I) {
+			(*I)->getEntity()->setVisible(visible);		
+		}
 	}
+	
+	{
+		LightSet::const_iterator I = mLights.begin();
+		LightSet::const_iterator I_end = mLights.end();
+		for (; I != I_end; ++I) {
+			Ogre::Light* light = I->light;
+			if (light) {
+				light->setVisible(visible);
+			}
+		}
+	}
+	
+	{
+		ParticleSystemSet::iterator I = mParticleSystems.begin();
+		ParticleSystemSet::iterator I_end = mParticleSystems.end();
+		for (; I != I_end; ++I) {
+			ParticleSystem* particleSystem = *I;
+			if (particleSystem) {
+				particleSystem->setVisible(visible);
+			}
+		}
+	}	
 	
 }
 
@@ -677,6 +703,27 @@ void Model::resetParticles()
 	}
 	mParticleSystems.clear();
 	mAllParticleSystemBindings.clear();
+}
+
+void Model::resetLights()
+{
+	LightSet::const_iterator I = mLights.begin();
+	LightSet::const_iterator I_end = mLights.end();
+	for (; I != I_end; ++I) {
+		Ogre::Light* light = I->light;
+		if (light) {
+			///Try first with the manager to which the light belongs to. If none is found, try to see if we belong to a maneger. And if that's not true either, just delete it.
+			if (light->_getManager()) {
+				light->_getManager()->destroyLight(light);
+			} else if (_getManager()) {
+				_getManager()->destroyLight(light);
+			} else {
+				delete light;
+			}
+			
+		}
+	}
+	mLights.clear();
 }
 
 Ogre::TagPoint* Model::attachObjectToAttachPoint(const Ogre::String &attachPointName, Ogre::MovableObject *pMovable, const Ogre::Vector3 &scale, const Ogre::Quaternion &offsetOrientation, const Ogre::Vector3 &offsetPosition)

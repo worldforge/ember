@@ -45,6 +45,7 @@ class ModelMount;
 typedef std::list<Model::Action*> ActionStore;
 typedef std::vector<Model::ActionDefinition*> ActionDefinitionsStore;
 typedef std::vector<Model::SoundDefinition*> SoundDefinitionsStore;
+typedef std::vector<Ogre::SceneNode*> SceneNodeStore;
 	
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -190,6 +191,10 @@ protected:
 	 * @param partName The part to hide.
 	 */
 	void hideModelPart(const std::string& partName);
+	
+	
+	virtual void setClientVisible(bool visible);
+
 
 	virtual const Ogre::Vector3& getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity);
 	
@@ -363,6 +368,11 @@ protected:
 	 * @brief The model mapping used for this entity.
 	 */
 	Model::Mapping::ModelMapping* mModelMapping;
+	
+	/**
+	 * @brief Keep track of the light nodes.
+	 */
+	SceneNodeStore mLightNodes;
 	
 	
 };

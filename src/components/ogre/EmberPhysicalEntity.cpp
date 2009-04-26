@@ -88,12 +88,14 @@ EmberPhysicalEntity::~EmberPhysicalEntity()
 	delete mModelMapping;
 
 	///When the modelmount is deleted the scale node will also be destroyed.
+	///Note that there's no need to destroy the light nodes since they are attached to the scale node, which is deleted (along with its children) when the model mount is destroyed.
 	delete mModelMount;
 	
 	if (mModel) {
 		delete mModel->getUserObject();
 		getSceneManager()->destroyMovableObject(mModel);
 	}
+	
 	
 	///make sure it's not in the MotionManager
 	///TODO: keep a marker in the entity so we don't need to call this for all entities
@@ -270,6 +272,7 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 		Ogre::SceneNode* lightNode = getScaleNode()->createChildSceneNode();
 		lightNode->attachObject(I->light);
 		lightNode->setPosition(I->position);
+		mLightNodes.push_back(lightNode);
 	}
 
 	///listen for reload or reset events from the model. This allows us to alter model definitions at run time and have the in game entities update.
@@ -278,6 +281,16 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 	
 	
 
+}
+
+void EmberPhysicalEntity::setClientVisible(bool visible)
+{
+	///It appears that lights aren't disabled even when they're detached from the node tree (which will happen if the visibity is disabled as the lights are attached to the scale node), so we need to disable them ourselves.
+	for (Model::LightSet::iterator I = mModel->getLights().begin(); I != mModel->getLights().end(); ++I) 
+	{
+		I->light->setVisible(visible);
+	}
+	EmberEntity::setClientVisible(visible);
 }
 
 void EmberPhysicalEntity::initFromModel()

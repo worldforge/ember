@@ -44,13 +44,19 @@ public:
 	Ogre::ParticleSystem* getOgreParticleSystem();
 	
 	/**
-	 *        Adds a new binding.
+	 * @brief Adds a new binding.
 	 * @param emitterVal the name of the particle emitter
 	 * @param variableName the name of the atlas attribute
 	 * @return a pointer to the newly created binding
 	 */
 	ParticleSystemBinding* addBinding(const std::string& emitterVal, const std::string& variableName);
 	ParticleSystemBindingsPtrSet& getBindings();
+	
+	/**
+	 * @brief Sets the visibility of the particle system.
+	 * @param visibility Whether the particle system should be shown.
+	 */
+	void setVisible(bool visibility);
 protected:
 	Ogre::ParticleSystem* mOgreParticleSystem;
 	ParticleSystemBindingsPtrSet mBindings;
