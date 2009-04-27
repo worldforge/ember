@@ -28,6 +28,7 @@
 #include "LogObserver.h"
 #include "LoggingInstance.h"
 #include <algorithm>
+#include <cstdio>
 
 
 

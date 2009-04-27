@@ -26,6 +26,7 @@
 
 #include "LoggingInstance.h"
 #include <sstream>
+#include <cstdio>
 
 namespace Ember {
 
