@@ -129,22 +129,22 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 
 	caelum::CaelumSystem::CaelumComponent componentMaskFallback =
 			static_cast<caelum::CaelumSystem::CaelumComponent> (
-			caelum::CaelumSystem::CAELUM_COMPONENT_SKY_COLOUR_MODEL |
+ 			caelum::CaelumSystem::CAELUM_COMPONENT_SKY_COLOUR_MODEL |
 			caelum::CaelumSystem::CAELUM_COMPONENT_SUN |
-			caelum::CaelumSystem::CAELUM_COMPONENT_SOLAR_SYSTEM_MODEL |
-			caelum::CaelumSystem::CAELUM_COMPONENT_SKY_DOME |
-			caelum::CaelumSystem::CAELUM_COMPONENT_IMAGE_STARFIELD |	// Point starfield require shaders
-			caelum::CaelumSystem::CAELUM_COMPONENT_CLOUDS |
+ 			caelum::CaelumSystem::CAELUM_COMPONENT_SOLAR_SYSTEM_MODEL |
+ 			caelum::CaelumSystem::CAELUM_COMPONENT_SKY_DOME |
+ 			caelum::CaelumSystem::CAELUM_COMPONENT_IMAGE_STARFIELD |	// Point starfield require shaders
+ 			caelum::CaelumSystem::CAELUM_COMPONENT_CLOUDS |
 //			caelum::CaelumSystem::CAELUM_COMPONENT_MOON |				// Moon would be ugly without shaders
 			0);
 
-	try {
-		mCaelumSystem = new caelum::CaelumSystem (root, sceneMgr, componentMask, false);
-	} catch (const Ogre::Exception& ex) {
-		S_LOG_FAILURE("Could not load main caelum technique, will try fallback. Message: " << ex.getFullDescription());
-
-		sceneMgr->getRootSceneNode()->removeAndDestroyChild("CaelumRoot");
-		mCaelumSystem = new caelum::CaelumSystem (root, sceneMgr, componentMaskFallback, false);
+	mCaelumSystem = new caelum::CaelumSystem(root, sceneMgr);
+	if (!mCaelumSystem->init(componentMask, false)) {
+		S_LOG_FAILURE("Could not load main caelum technique, will try fallback.");
+		mCaelumSystem->shutdown(true);
+		mCaelumSystem = 0;
+		mCaelumSystem = new caelum::CaelumSystem (root, sceneMgr);
+		mCaelumSystem->init(componentMaskFallback, false);
 	}
 
 
@@ -233,24 +233,28 @@ IWater* CaelumEnvironment::getWater()
 
 void CaelumEnvironment::setTime(int hour, int minute, int second)
 {
-	int year, month, day, _hour, _minute, _second;
-	Ember::EmberServices::getSingleton().getTimeService()->getServerTime(year, month, day, _hour, _minute, _second);
-	
-	mCaelumSystem->getUniversalClock ()->setGregorianDateTime(year, month, day, hour, minute, second);
+	if (mCaelumSystem && mCaelumSystem->getUniversalClock ()) {
+		int year, month, day, _hour, _minute, _second;
+		Ember::EmberServices::getSingleton().getTimeService()->getServerTime(year, month, day, _hour, _minute, _second);
+		
+		mCaelumSystem->getUniversalClock ()->setGregorianDateTime(year, month, day, hour, minute, second);
+	}
 }
 
 void CaelumEnvironment::setTime(int seconds)
 {
-	int year, month, day, _hour, _minute, _second;
-	Ember::EmberServices::getSingleton().getTimeService()->getServerTime(year, month, day, _hour, _minute, _second);
-	
-	mCaelumSystem->getUniversalClock ()->setGregorianDateTime(year, month, day, 0, 0, seconds);
+	if (mCaelumSystem && mCaelumSystem->getUniversalClock ()) {
+		int year, month, day, _hour, _minute, _second;
+		Ember::EmberServices::getSingleton().getTimeService()->getServerTime(year, month, day, _hour, _minute, _second);
+		
+		mCaelumSystem->getUniversalClock ()->setGregorianDateTime(year, month, day, 0, 0, seconds);
+	}
 }
 
 
 void CaelumEnvironment::setWorldPosition(float longitudeDegrees, float latitudeDegrees)
 {
-	if (mCaelumSystem) {
+	if (mCaelumSystem && mCaelumSystem->getSolarSystemModel ()) {
 		mCaelumSystem->getSolarSystemModel ()->setObserverLatitude (Ogre::Degree(latitudeDegrees));
 		mCaelumSystem->getSolarSystemModel ()->setObserverLongitude(Ogre::Degree(longitudeDegrees));
 	}

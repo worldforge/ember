@@ -183,15 +183,15 @@ class CAELUM_EXPORT CaelumSystem : public Ogre::FrameListener, public Ogre::Rend
 		 */
 		CaelumSystem (
                 Ogre::Root *root, 
-				Ogre::SceneManager *sceneMgr, 
-				CaelumComponent componentsToCreate = CAELUM_COMPONENTS_DEFAULT, 
-				bool manageResGroup = true, 
-				const Ogre::String &resGroupName = RESOURCE_GROUP_NAME
+				Ogre::SceneManager *sceneMgr
         );
 
 		/** Destructor.
 		 */
 		~CaelumSystem ();
+		
+		bool init(CaelumComponent componentsToCreate = CAELUM_COMPONENTS_DEFAULT, bool manageResGroup = true, 
+				const Ogre::String &resGroupName = RESOURCE_GROUP_NAME);
 
 		/** Shuts down the system and detaches itself from the Ogre engine.
          *

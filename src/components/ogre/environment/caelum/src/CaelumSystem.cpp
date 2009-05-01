@@ -31,15 +31,11 @@ Ogre::String RESOURCE_GROUP_NAME = "Caelum";
 CaelumSystem::CaelumSystem
 (
     Ogre::Root *root, 
-	Ogre::SceneManager *sceneMgr, 
-	CaelumComponent componentsToCreate/* = CAELUM_COMPONENTS_DEFAULT*/, 
-	bool manageResGroup/* = true*/, 
-	const Ogre::String &resGroupName/* = RESOURCE_GROUP_NAME*/
-):
+	Ogre::SceneManager *sceneMgr):
     mOgreRoot (root),
     mSceneMgr (sceneMgr),
     mCleanup (false),
-
+	mManageResourceGroup(false),
     mManageSceneFog (false),
 	mGlobalFogDensityMultiplier (1),
 	mSceneFogDensityMultiplier (1),
@@ -52,67 +48,77 @@ CaelumSystem::CaelumSystem
     mEnsureSingleLightSource (false),
     mEnsureSingleShadowSource (false)
 {
-	Ogre::LogManager::getSingleton().logMessage ("Caelum: Initialising Caelum system...");
-	mCaelumRootNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("CaelumRoot");
+}
 
-	RESOURCE_GROUP_NAME = resGroupName;
+bool CaelumSystem::init(CaelumComponent componentsToCreate, bool manageResGroup, const Ogre::String &resGroupName) {
 
-	// Create resource group
-	if (manageResGroup) {
-		// Search for the resource group
-		Ogre::StringVector resGroups = Ogre::ResourceGroupManager::getSingleton ().getResourceGroups ();
-		Ogre::StringVector::iterator it = resGroups.begin (), iend = resGroups.end ();
-        while (it != iend && *it != resGroupName) {
-			++it;
-        }
-
-		if (it == iend) {
-			Ogre::ResourceGroupManager::getSingleton ().createResourceGroup (RESOURCE_GROUP_NAME);
-			mManageResourceGroup = true;
-			Ogre::LogManager::getSingleton ().logMessage (
-                    "Caelum: Created resource group (" + RESOURCE_GROUP_NAME + ")");
+	try {
+		RESOURCE_GROUP_NAME = resGroupName;
+		Ogre::LogManager::getSingleton().logMessage ("Caelum: Initialising Caelum system...");
+		mCaelumRootNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("CaelumRoot");
+	
+	
+		// Create resource group
+		if (manageResGroup) {
+			// Search for the resource group
+			Ogre::StringVector resGroups = Ogre::ResourceGroupManager::getSingleton ().getResourceGroups ();
+			Ogre::StringVector::iterator it = resGroups.begin (), iend = resGroups.end ();
+			while (it != iend && *it != resGroupName) {
+				++it;
+			}
+	
+			if (it == iend) {
+				Ogre::ResourceGroupManager::getSingleton ().createResourceGroup (RESOURCE_GROUP_NAME);
+				mManageResourceGroup = true;
+				Ogre::LogManager::getSingleton ().logMessage (
+						"Caelum: Created resource group (" + RESOURCE_GROUP_NAME + ")");
+			} else {
+				mManageResourceGroup = false;
+			}
 		} else {
 			mManageResourceGroup = false;
 		}
-	} else {
-		mManageResourceGroup = false;
+	
+		// Clock
+		mUniversalClock = new UniversalClock ();
+	
+		Ogre::LogManager::getSingleton ().logMessage ("Caelum: System attributes set up.");
+	
+		// Create default components; as requested.
+		if (componentsToCreate & CAELUM_COMPONENT_SKY_COLOUR_MODEL) {
+			this->setSkyColourModel (new SkyColourModel ());
+		}
+		if (componentsToCreate & CAELUM_COMPONENT_SOLAR_SYSTEM_MODEL) {
+			this->setSolarSystemModel (new SolarSystemModel ());
+		}
+		if (componentsToCreate & CAELUM_COMPONENT_SKY_DOME) {
+			this->setSkyDome (new SkyDome (mSceneMgr, mCaelumRootNode));
+		}
+		if (componentsToCreate & CAELUM_COMPONENT_SUN) {
+			this->setSun (new SpriteSun (mSceneMgr, mCaelumRootNode));
+		}
+		if (componentsToCreate & CAELUM_COMPONENT_MOON) {
+			this->setMoon (new Moon (mSceneMgr, mCaelumRootNode));
+		}
+		if (componentsToCreate & CAELUM_COMPONENT_IMAGE_STARFIELD) {
+			this->setImageStarfield (new ImageStarfield (mSceneMgr, mCaelumRootNode));
+		}
+		if (componentsToCreate & CAELUM_COMPONENT_POINT_STARFIELD) {
+			this->setPointStarfield (new PointStarfield (mSceneMgr, mCaelumRootNode));
+		}
+		if (componentsToCreate & CAELUM_COMPONENT_CLOUDS) {
+			this->setClouds (new LayeredClouds (mSceneMgr, mCaelumRootNode));
+		}
+		if (componentsToCreate & CAELUM_COMPONENT_GROUND_FOG) {
+			this->setGroundFog (new GroundFog (mSceneMgr, mCaelumRootNode));
+		}
+	
+		Ogre::LogManager::getSingleton ().logMessage ("Caelum: DONE initializing");
+		return true;
+	} catch (const std::exception& ex) {
+		Ogre::LogManager::getSingleton ().logMessage (std::string("Caelum: ERROR initializing: ") + ex.what());
+		return false;
 	}
-
-	// Clock
-	mUniversalClock = new UniversalClock ();
-
-	Ogre::LogManager::getSingleton ().logMessage ("Caelum: System attributes set up.");
-
-	// Create default components; as requested.
-    if (componentsToCreate & CAELUM_COMPONENT_SKY_COLOUR_MODEL) {
-        this->setSkyColourModel (new SkyColourModel ());
-    }
-    if (componentsToCreate & CAELUM_COMPONENT_SOLAR_SYSTEM_MODEL) {
-        this->setSolarSystemModel (new SolarSystemModel ());
-    }
-    if (componentsToCreate & CAELUM_COMPONENT_SKY_DOME) {
-	    this->setSkyDome (new SkyDome (mSceneMgr, mCaelumRootNode));
-    }
-    if (componentsToCreate & CAELUM_COMPONENT_SUN) {
-		this->setSun (new SpriteSun (mSceneMgr, mCaelumRootNode));
-    }
-    if (componentsToCreate & CAELUM_COMPONENT_MOON) {
-		this->setMoon (new Moon (mSceneMgr, mCaelumRootNode));
-    }
-	if (componentsToCreate & CAELUM_COMPONENT_IMAGE_STARFIELD) {
-		this->setImageStarfield (new ImageStarfield (mSceneMgr, mCaelumRootNode));
-    }
-	if (componentsToCreate & CAELUM_COMPONENT_POINT_STARFIELD) {
-		this->setPointStarfield (new PointStarfield (mSceneMgr, mCaelumRootNode));
-    }
-    if (componentsToCreate & CAELUM_COMPONENT_CLOUDS) {
-		this->setClouds (new LayeredClouds (mSceneMgr, mCaelumRootNode));
-    }
-    if (componentsToCreate & CAELUM_COMPONENT_GROUND_FOG) {
-		this->setGroundFog (new GroundFog (mSceneMgr, mCaelumRootNode));
-    }
-
-	Ogre::LogManager::getSingleton ().logMessage ("Caelum: DONE initializing");
 }
 
 CaelumSystem::~CaelumSystem () {
