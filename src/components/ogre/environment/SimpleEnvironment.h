@@ -43,9 +43,11 @@ A very simple sun which always will return the same direction.
 class SimpleSun : public ISun
 {
 public:
+	SimpleSun(Ogre::SceneManager *sceneMgr);
 	virtual void setAmbientLight(const Ogre::ColourValue& colour);
 	virtual Ogre::Vector3 getSunDirection() const;
 protected:
+	Ogre::Light* mMainLight;
 };
 
 /**
@@ -63,6 +65,7 @@ A very simple fog which will always return a density of 1.0
 class SimpleFog : public IFog
 {
 public:
+	SimpleFog(Ogre::SceneManager *sceneMgr);
 	virtual void setDensity(float density);
 	virtual float getDensity() const;
 protected:

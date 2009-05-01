@@ -32,6 +32,20 @@ namespace EmberOgre {
 
 namespace Environment {
 
+SimpleSun::SimpleSun(Ogre::SceneManager *sceneMgr)
+{
+
+	mMainLight = sceneMgr->createLight ("SimpleSun");
+	mMainLight->setType (Ogre::Light::LT_DIRECTIONAL);
+	// HDR power scale, REALLY bright:
+// 	mMainLight->setPowerScale (10);
+	
+	mMainLight->setVisible(true);
+	mMainLight->setDiffuseColour(Ogre::ColourValue(0.9, 0.9, 0.9));
+	mMainLight->setSpecularColour(Ogre::ColourValue(0.9, 0.9, 0.9));
+	mMainLight->setDirection (Ogre::Vector3(1, -1, 0));
+}
+
 void SimpleSun::setAmbientLight(const Ogre::ColourValue& colour)
 {
 }
@@ -42,6 +56,11 @@ Ogre::Vector3 SimpleSun::getSunDirection() const
 }
 
 
+SimpleFog::SimpleFog(Ogre::SceneManager *sceneMgr)
+{
+	sceneMgr->setFog(Ogre::FOG_EXP2, Ogre::ColourValue(0.8, 0.8, 0.8), 0.005);
+
+}
 
 
 void SimpleFog::setDensity(float density)
@@ -71,9 +90,9 @@ SimpleEnvironment::~SimpleEnvironment()
 
 void SimpleEnvironment::createEnvironment()
 {
-	mSun = new SimpleSun();
+	mSun = new SimpleSun(mSceneMgr);
 	mSky = new SimpleSky();
-	mFog = new SimpleFog();
+	mFog = new SimpleFog(mSceneMgr);
 	mWater = new SimpleWater(mCamera, *mSceneMgr);
 	mWater->initialize();
 }
