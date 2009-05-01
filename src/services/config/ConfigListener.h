@@ -46,7 +46,11 @@ public:
 
     ~ConfigListener();
     
-    void evaluate();
+    /**
+     * @brief Evaluates the value and calls the listeners if it exitst.
+     * @return True if the setting existed.
+     */
+    bool evaluate();
 protected:
     ConfigListener(const std::string& section, const std::string& key, SettingChangedSlot slot);
 
@@ -60,6 +64,7 @@ protected:
 };
 
 /**
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 All classes that whishes to use the ConfigListener class to listen for configuration changes must inherit from this class.
 Call registerConfigListener to register new listeners.
 
@@ -74,7 +79,7 @@ public:
 protected:
 
 	/**
-	 *    Registers a new listener. The listener instance will be owned by this class and automatically deleted when the destructor is called.
+	 * @brief Registers a new listener. The listener instance will be owned by this class and automatically deleted when the destructor is called.
 	 * @param section The config section to listen to.
 	 * @param key The config key to listen to.
 	 * @param slot The slot to execute when a change has occurred.
@@ -83,6 +88,16 @@ protected:
 	 */
 	ConfigListener* registerConfigListener(const std::string& section, const std::string& key, ConfigListener::SettingChangedSlot slot, bool evaluateNow = true);
 
+	/**
+	 * @brief Registers a new listener. The listener instance will be owned by this class and automatically deleted when the destructor is called. The setting will always be evaluated, and if no setting can be found the default value will be used to trigger a call to the listener method.
+	 * @param section The config section to listen to.
+	 * @param key The config key to listen to.
+	 * @param slot The slot to execute when a change has occurred.
+	 * @param defaultValue The default value, to use if no existing setting can be found.
+	 * @return A pointer to the newly created listener instance.
+	 */
+	ConfigListener* registerConfigListenerWithDefaults(const std::string& section, const std::string& key, ConfigListener::SettingChangedSlot slot, varconf::Variable defaultValue);
+	
 private:
 	/**
 	A collection of listeners.
