@@ -174,6 +174,7 @@ mAvatarController(0),
 mRoot(0),
 mSceneMgr(0),
 mWindow(0),
+mShaderManager(0),
 mGeneralCommandMapper(std::auto_ptr<InputCommandMapper>(new InputCommandMapper("general"))),
 mEmberEntityFactory(0), 
 mTerrainGenerator(0),
@@ -241,6 +242,7 @@ EmberOgre::~EmberOgre()
 // 		mRoot->getRenderSystem()->destroyRenderTarget(mWindow->getName());
 // 	}
 	
+	delete mShaderManager;
 	
 	if (mOgreSetup.get()) {
 		mOgreSetup->shutdown();
@@ -442,7 +444,7 @@ bool EmberOgre::setup()
 	mResourceLoader->loadGeneral();
 
 	/// Create shader manager
-	mShaderManager = std::auto_ptr<ShaderManager>(new ShaderManager);
+	mShaderManager = new ShaderManager;
 	
 	///add ourself as a frame listener
 	Ogre::Root::getSingleton().addFrameListener(this);
@@ -746,7 +748,7 @@ AvatarController* EmberOgre::getAvatarController() const
 
 ShaderManager* EmberOgre::getShaderManager() const
 {
-	return mShaderManager.get();
+	return mShaderManager;
 }
 
 // // void EmberOgre::setErisPolling(bool doPoll)

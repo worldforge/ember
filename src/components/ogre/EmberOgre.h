@@ -383,7 +383,7 @@ protected:
 	/**
 	 * @brief Utility object to configure shaders
 	 */
-	std::auto_ptr<ShaderManager> mShaderManager;
+	ShaderManager* mShaderManager;
 
 	/**
 	 * @brief An InputCommandMapper that will handle all general input events.
