@@ -28,7 +28,7 @@ libEmberOgre_la_SOURCES = AttributeObserver.cpp Avatar.cpp AvatarCamera.cpp \
 	MediaUpdater.cpp MeshCollisionDetector.cpp MeshSerializerListener.cpp ModelMount.cpp \
 	MotionManager.cpp MousePicker.cpp OgreInfo.cpp OgreLogObserver.cpp OgreResourceLoader.cpp \
 	OgreResourceProvider.cpp OgreSetup.cpp OpcodeCollisionDetector.cpp \
-	OpcodeCollisionDetectorVisualizer.cpp SimpleRenderContext.cpp ShaderManager.cpp \
+	OpcodeCollisionDetectorVisualizer.cpp ShaderManager.cpp ShadowCameraSetup.cpp SimpleRenderContext.cpp \
 	WorldEmberEntity.cpp XMLHelper.cpp
 
 confdir = $(sysconfdir)/ember
@@ -44,7 +44,7 @@ noinst_HEADERS = AttributeObserver.h Avatar.h AvatarCamera.h AvatarController.h 
 	IWorldPickListener.h MathConverter.h MediaUpdater.h MeshCollisionDetector.h \
 	MeshSerializerListener.h ModelMount.h MotionManager.h MousePicker.h OgreIncludes.h OgreInfo.h \
 	OgreLogObserver.h OgreResourceLoader.h OgreResourceProvider.h OgreSetup.h \
-	OpcodeCollisionDetector.h OpcodeCollisionDetectorVisualizer.h SimpleRenderContext.h \
-	ShaderManager.h Types.h WorldEmberEntity.h XMLHelper.h
+	OpcodeCollisionDetector.h OpcodeCollisionDetectorVisualizer.h ShaderManager.h ShadowCameraSetup.h \
+	SimpleRenderContext.h Types.h WorldEmberEntity.h XMLHelper.h
 	
 #libEmberOgre_la_LDFLAGS = -no-undefined

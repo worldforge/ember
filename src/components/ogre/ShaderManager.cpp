@@ -26,6 +26,7 @@
 
 #include "ShaderManager.h"
 
+#include "ShadowCameraSetup.h"
 #include "EmberOgrePrerequisites.h"
 #include "EmberOgre.h"
 #include "framework/Tokeniser.h"
@@ -39,7 +40,7 @@
 namespace EmberOgre {
 
 ShaderManager::ShaderManager() :
-	SetLevel("set_level", this, "Sets the graphics level. Parameters: <level>. Level is one of: high, medium, low."), mGraphicsLevel(LEVEL_DEFAULT), mBestGraphicsLevel(LEVEL_DEFAULT)	
+	SetLevel("set_level", this, "Sets the graphics level. Parameters: <level>. Level is one of: high, medium, low."), mGraphicsLevel(LEVEL_DEFAULT), mBestGraphicsLevel(LEVEL_DEFAULT), mShadowCameraSetup(0)
 {
 	mGraphicSchemes[LEVEL_DEFAULT]		= std::string("Default");
 	mGraphicSchemes[LEVEL_LOW]			= std::string("Low");
@@ -124,6 +125,7 @@ bool ShaderManager::checkMaterial(const std::string& materialName, const std::st
 
 ShaderManager::~ShaderManager()
 {
+	delete mShadowCameraSetup;
 }
 
 ShaderManager::GraphicsLevel ShaderManager::getGraphicsLevel()
@@ -201,77 +203,14 @@ ShaderManager::GraphicsLevel ShaderManager::setGraphicsLevel(ShaderManager::Grap
 
 void ShaderManager::setPSSMShadows()
 {
-	// Need to detect D3D or GL for best depth shadowmapping
-	bool isOpenGL;
-	if (Ogre::Root::getSingleton().getRenderSystem()->getName().find("GL") != Ogre::String::npos) {
-		isOpenGL = true;
-	} else {
-		isOpenGL = false;
-	}
-
-	Ogre::SceneManager* sceneMgr = EmberOgre::getSingleton().getSceneManager();
-	sceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE_INTEGRATED);
-
-	sceneMgr->setShadowTextureCount(5);
-	//sceneMgr->setShadowColour(Ogre::ColourValue(0.1, 0.1, 0.1));
-	sceneMgr->setShadowTextureSelfShadow(true);
-
-	sceneMgr->setShadowTextureCountPerLightType(Ogre::Light::LT_DIRECTIONAL, 3);
-	sceneMgr->setShadowTextureCountPerLightType(Ogre::Light::LT_POINT, 1);
-	sceneMgr->setShadowTextureCountPerLightType(Ogre::Light::LT_SPOTLIGHT, 1);
-
-	// Set shadow far distance before creating any lights
-	//sceneMgr->setShadowFarDistance(100);
-
-	if (isOpenGL) {
-		// GL performs much better if you pick half-float format
-		sceneMgr->setShadowTexturePixelFormat(Ogre::PF_FLOAT16_R);
-	} else {
-		// D3D is the opposite - if you ask for PF_FLOAT16_R you
-		// get an integer format instead! You can ask for PF_FLOAT16_GR
-		// but the precision doesn't work well
-		sceneMgr->setShadowTexturePixelFormat(Ogre::PF_FLOAT32_R);
-	}
-	sceneMgr->setShadowTextureSize(1024);
-
-	/*
-	sceneMgr->setShadowTexturePixelFormat(PF_L8);
-	sceneMgr->setShadowTextureCasterMaterial(StringUtil::BLANK);
-	sceneMgr->setShadowTextureReceiverMaterial(StringUtil::BLANK);
-	*/
-
-	// Shadow camera setup
-	//Ogre::LiSPSMShadowCameraSetup* liSPSMSetup = new Ogre::LiSPSMShadowCameraSetup();
-	////liSPSMSetup->setUseAggressiveFocusRegion(false);
-
-	Ogre::PSSMShadowCameraSetup* pssmSetup = OGRE_NEW Ogre::PSSMShadowCameraSetup();
-
-	Ogre::PSSMShadowCameraSetup::SplitPointList splitPointList = pssmSetup->getSplitPoints();;
-	splitPointList[0] = 1;
-	splitPointList[1] = 15.0;
-	splitPointList[2] = 50.0;
-	splitPointList[3] = 500.0;
-	pssmSetup->setSplitPoints(splitPointList);
-
-	//Ogre::Camera& camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
-	//pssmSetup->calculateSplitPoints(3, camera.getNearClipDistance(), camera.getFarClipDistance());
-	//pssmSetup->calculateSplitPoints(3, 1, 500);
-
-	//pssmSetup->setUseAggressiveFocusRegion(false);
-
-	pssmSetup->setSplitPadding(10.0);
-
-	// Set the LISPM adjustment factor (see API documentation for these)
-	pssmSetup->setOptimalAdjustFactor(0, 1.0);
-	pssmSetup->setOptimalAdjustFactor(1, 1.0);
-	pssmSetup->setOptimalAdjustFactor(2, 1.0);
-
-	sceneMgr->setShadowCameraSetup(Ogre::ShadowCameraSetupPtr(pssmSetup));
-////liSPSMSetup->setUseAggressiveFocusRegion(false);
+	delete mShadowCameraSetup;
+	mShadowCameraSetup = new ShadowCameraSetup(*EmberOgre::getSingleton().getSceneManager());
 }
 
 void ShaderManager::setNoShadows()
 {
+	delete mShadowCameraSetup;
+	mShadowCameraSetup = 0;
 	Ogre::SceneManager* sceneMgr = EmberOgre::getSingleton().getSceneManager();
 	sceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_NONE);
 	///This will make any other camera setup delete itself (unless held by another shared pointer).

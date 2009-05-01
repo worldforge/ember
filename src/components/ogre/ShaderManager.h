@@ -32,6 +32,8 @@
 
 namespace EmberOgre {
 
+class ShadowCameraSetup;
+
 /**
  * @brief Utility class for setup shaders
  *
@@ -147,6 +149,11 @@ private:
 	 * @param variable 
 	 */
 	void Config_Level(const std::string& section, const std::string& key, varconf::Variable& variable);
+	
+	/**
+	 * @brief Takes care of the setup of the pssm shadow camera. Owned by this instance.
+	 */
+	ShadowCameraSetup* mShadowCameraSetup;
 	
 };
 
