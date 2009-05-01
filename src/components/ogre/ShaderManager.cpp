@@ -246,18 +246,16 @@ void ShaderManager::setPSSMShadows()
 
 	Ogre::PSSMShadowCameraSetup* pssmSetup = OGRE_NEW Ogre::PSSMShadowCameraSetup();
 
-	/*
 	Ogre::PSSMShadowCameraSetup::SplitPointList splitPointList = pssmSetup->getSplitPoints();;
-	splitPointList[0] = 0.1;
-	splitPointList[1] = 32.0;
-	splitPointList[2] = 64.0;
-	splitPointList[3] = 256.0;
+	splitPointList[0] = 1;
+	splitPointList[1] = 15.0;
+	splitPointList[2] = 50.0;
+	splitPointList[3] = 500.0;
 	pssmSetup->setSplitPoints(splitPointList);
-	*/
 
 	//Ogre::Camera& camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
 	//pssmSetup->calculateSplitPoints(3, camera.getNearClipDistance(), camera.getFarClipDistance());
-	pssmSetup->calculateSplitPoints(3, 1, 500);
+	//pssmSetup->calculateSplitPoints(3, 1, 500);
 
 	//pssmSetup->setUseAggressiveFocusRegion(false);
 
