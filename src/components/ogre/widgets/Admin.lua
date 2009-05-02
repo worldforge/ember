@@ -39,6 +39,7 @@ function Admin.buildWidget()
 		Admin.addMenuItem("Entity browser", "Admin.EntityBrowser_Click", "Shows the entity browser.")
 		Admin.addMenuItem("Assets manager", "Admin.AssetsManager_Click", "Shows the assets manager.")
 		Admin.addMenuItem("Picking info", "Admin.PickingInfo_Click", "Shows mouse picking info.")
+		Admin.addMenuItem("Environment", "Admin.Environment_Click", "Shows environment widget.")
 		
 	
 		root:addChildWindow(Admin.popup)
@@ -112,6 +113,11 @@ end
 function Admin.PickingInfo_Click(args)
 	console:runCommand("/show_pickingInfo")
 end
+
+function Admin.Environment_Click(args)
+	console:runCommand("/show_environment")
+end
+
 
 --only show the admin menu if we're logged in as an admin
 function Admin.createdAvatarEmberEntity(avatarEntity)
