@@ -36,7 +36,7 @@ namespace Manipulation {
 */
 class SnapToMovement{
 public:
-    SnapToMovement(EmberEntity& entity);
+    SnapToMovement(EmberEntity& entity, float snapThreshold);
 
     ~SnapToMovement();
     
@@ -45,6 +45,7 @@ public:
     
 protected:
 	EmberEntity& mEntity;
+	float mSnapThreshold;
 
 };
 

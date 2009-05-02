@@ -25,13 +25,16 @@
 #endif
 
 #include "SnapToMovement.h"
+#include "components/ogre/EmberEntity.h"
+
+#include <OgreSceneManager.h>
 
 namespace EmberOgre {
 
 namespace Manipulation {
 
-SnapToMovement::SnapToMovement(EmberEntity& entity)
-: mEntity(entity)
+SnapToMovement::SnapToMovement(EmberEntity& entity, float snapThreshold)
+: mEntity(entity), mSnapThreshold(snapThreshold)
 {
 }
 
@@ -39,6 +42,19 @@ SnapToMovement::SnapToMovement(EmberEntity& entity)
 SnapToMovement::~SnapToMovement()
 {
 }
+
+bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, WFMath::Point<3>& newPosition, EmberEntity* snappedToEntity)
+{
+	///First find all entities which are close enough
+	///Then try to do a snap movement based on the points of the eris bounding boxes. I.e. we only provide support for snapping one corner of a bounding box to another corner (for now).
+	Ogre::SceneManager* sceneMngr = mEntity.getSceneNode()->getCreator();
+	if (sceneMngr) {
+		Ogre::AxisAlignedBox bbox = mEntity.getSceneNode()->_getWorldAABB();
+		bbox.
+		Ogre::AxisAlignedBoxSceneQuery* query = sceneMngr->createAABBQuery();
+	}
+}
+
 
 
 }
