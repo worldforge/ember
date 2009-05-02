@@ -104,7 +104,7 @@ private:
 	 * @param variable 
 	 */
 	void Config_ShadowOptimalAdjustFactors(const std::string& section, const std::string& key, varconf::Variable& variable);
-	
+
 	/**
 	 * @brief Sets the shadow use aggressive focus region, as a boolean.
 	 * @param section 
@@ -112,6 +112,14 @@ private:
 	 * @param variable 
 	 */
 	void Config_ShadowUseAggressiveFocusRegion(const std::string& section, const std::string& key, varconf::Variable& variable);
+
+	/**
+	 * @brief Sets the shadow far distance, as a float.
+	 * @param section 
+	 * @param key 
+	 * @param variable 
+	 */
+	void Config_ShadowFarDistance(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 
 };

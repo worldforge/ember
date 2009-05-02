@@ -41,6 +41,7 @@ ShadowCameraSetup::ShadowCameraSetup(Ogre::SceneManager& sceneMgr)
 	registerConfigListenerWithDefaults("shadows", "splitpadding", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowSplitPadding), 10.0);
 	registerConfigListenerWithDefaults("shadows", "optimaladjustfactors", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowOptimalAdjustFactors), "1 1 1");
 	registerConfigListenerWithDefaults("shadows", "useaggressivefocusregion", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowUseAggressiveFocusRegion), true);
+	registerConfigListenerWithDefaults("shadows", "fardistance", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowFarDistance), 500.0);
 }
 
 
@@ -144,6 +145,18 @@ void ShadowCameraSetup::Config_ShadowUseAggressiveFocusRegion(const std::string&
 		}
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when setting shadow use aggressive focus region: " << ex.what());
+	}
+}
+
+void ShadowCameraSetup::Config_ShadowFarDistance(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	try {
+		if (variable.is_bool()) {
+			mSceneMgr.setShadowFarDistance(static_cast<double>(variable));
+			S_LOG_VERBOSE("Setting shadow far distace: " << static_cast<double>(variable));
+		}
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Error when setting shadow far distance: " << ex.what());
 	}
 }
 
