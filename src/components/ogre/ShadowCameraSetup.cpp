@@ -37,11 +37,11 @@ ShadowCameraSetup::ShadowCameraSetup(Ogre::SceneManager& sceneMgr)
 {
 	setup();
 	registerConfigListenerWithDefaults("shadows", "texturesize", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowTextureSize), 1024);
-	registerConfigListenerWithDefaults("shadows", "splitpoints", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowSplitPoints), "1 15 50 500");
+	registerConfigListenerWithDefaults("shadows", "splitpoints", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowSplitPoints), "1 15 50 200");
 	registerConfigListenerWithDefaults("shadows", "splitpadding", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowSplitPadding), 10.0);
 	registerConfigListenerWithDefaults("shadows", "optimaladjustfactors", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowOptimalAdjustFactors), "1 1 1");
 	registerConfigListenerWithDefaults("shadows", "useaggressivefocusregion", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowUseAggressiveFocusRegion), true);
-	registerConfigListenerWithDefaults("shadows", "fardistance", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowFarDistance), 500.0);
+	registerConfigListenerWithDefaults("shadows", "fardistance", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowFarDistance), 200.0);
 }
 
 
