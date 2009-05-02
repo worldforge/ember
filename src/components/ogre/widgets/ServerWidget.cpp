@@ -75,16 +75,18 @@ namespace Gui {
 /*template<> WidgetLoader WidgetLoaderHolder<ServerWidget>::loader("ServerWidget", &createWidgetInstance);*/
 //WidgetLoader Widget::loader("ServerWidget", &createWidgetInstance<ServerWidget>);
 
-ServerWidget::ServerWidget() : mModelPreviewRenderer(0)
+ServerWidget::ServerWidget() : mCharacterList(0), mModelPreviewRenderer(0)
 {
 }
 
 
 ServerWidget::~ServerWidget()
 {
-	///we'll store the id of the characters as string pointers in the ListBox, so we need to delete them ourselves when we cleanup
-	for (unsigned int i = 0; i < mCharacterList->getItemCount(); ++i) {
-		delete static_cast<std::string*>(mCharacterList->getListboxItemFromIndex(i)->getUserData());
+	if (mCharacterList) {
+		///we'll store the id of the characters as string pointers in the ListBox, so we need to delete them ourselves when we cleanup
+		for (unsigned int i = 0; i < mCharacterList->getItemCount(); ++i) {
+			delete static_cast<std::string*>(mCharacterList->getListboxItemFromIndex(i)->getUserData());
+		}
 	}
 	delete mModelPreviewRenderer;
 }
@@ -93,74 +95,82 @@ void ServerWidget::buildWidget()
 {
 
 
-	loadMainSheet("ServerWidget.layout", "Server/");
-	mMainWindow->setVisible(false);
-
-	CEGUI::PushButton* login = static_cast<CEGUI::PushButton*>(getWindow("LoginPanel/Login"));
-	BIND_CEGUI_EVENT(login, CEGUI::PushButton::EventClicked, ServerWidget::Login_Click);
-	CEGUI::PushButton* createAcc = static_cast<CEGUI::PushButton*>(getWindow("LoginPanel/CreateAcc"));
-	BIND_CEGUI_EVENT(createAcc, CEGUI::PushButton::EventClicked, ServerWidget::CreateAcc_Click);
-
-	mCharacterList = static_cast<CEGUI::Listbox*>(getWindow("ChooseCharacterPanel/CharacterList"));
-	CEGUI::PushButton* chooseChar = static_cast<CEGUI::PushButton*>(getWindow("ChooseCharacterPanel/Choose"));
-	mUseCreator =  static_cast<CEGUI::PushButton*>(getWindow("UseCreator"));
-	mCreateChar = static_cast<CEGUI::PushButton*>(getWindow("CreateCharacterPanel/CreateButton"));
+	if (loadMainSheet("ServerWidget.layout", "Server/")) {
 	
-	BIND_CEGUI_EVENT(chooseChar, CEGUI::PushButton::EventClicked, ServerWidget::Choose_Click);
-	BIND_CEGUI_EVENT(mUseCreator, CEGUI::PushButton::EventClicked, ServerWidget::UseCreator_Click);
-	BIND_CEGUI_EVENT(mCreateChar, CEGUI::PushButton::EventClicked, ServerWidget::CreateChar_Click);
-	BIND_CEGUI_EVENT(mCharacterList, CEGUI::ButtonBase::EventMouseDoubleClick, ServerWidget::Choose_Click);
+		mMainWindow->setVisible(false);
 	
-	mNewCharName = static_cast<CEGUI::Editbox*>(getWindow("CreateCharacterPanel/NameEdit"));
-	mNewCharDescription = static_cast<CEGUI::MultiLineEditbox*>(getWindow("CreateCharacterPanel/Description"));
-	mTypesList = static_cast<CEGUI::Combobox*>(getWindow("CreateCharacterPanel/Type"));
-    
-	mGenderRadioButton =  static_cast<CEGUI::RadioButton*>(getWindow("CreateCharacterPanel/Gender/Male"));
-	CEGUI::RadioButton* femaleRadioButton =  static_cast<CEGUI::RadioButton*>(getWindow("CreateCharacterPanel/Gender/Female"));
-	
-	BIND_CEGUI_EVENT(mNewCharName, CEGUI::Editbox::EventTextChanged, ServerWidget::Name_TextChanged);
-	BIND_CEGUI_EVENT(mNewCharDescription, CEGUI::Editbox::EventTextChanged, ServerWidget::Description_TextChanged);
-	BIND_CEGUI_EVENT(mTypesList, CEGUI::Combobox::EventListSelectionChanged, ServerWidget::TypesList_SelectionChanged);
-	BIND_CEGUI_EVENT(mGenderRadioButton, CEGUI::RadioButton::EventSelectStateChanged, ServerWidget::Gender_SelectionChanged);
-	BIND_CEGUI_EVENT(femaleRadioButton, CEGUI::RadioButton::EventSelectStateChanged, ServerWidget::Gender_SelectionChanged);
+		CEGUI::PushButton* okButton = static_cast<CEGUI::PushButton*>(getWindow("NoCharactersAlert/OkButton"));
+		if (okButton) {
+			BIND_CEGUI_EVENT(okButton, CEGUI::PushButton::EventClicked, ServerWidget::OkButton_Click);
+		}
 	
 	
-	updateNewCharacter();
-
-	CEGUI::Window* nameBox = getWindow("LoginPanel/NameEdit");
-	CEGUI::Window* passwordBox = getWindow("LoginPanel/PasswordEdit");
+		CEGUI::PushButton* login = static_cast<CEGUI::PushButton*>(getWindow("LoginPanel/Login"));
+		BIND_CEGUI_EVENT(login, CEGUI::PushButton::EventClicked, ServerWidget::Login_Click);
+		CEGUI::PushButton* createAcc = static_cast<CEGUI::PushButton*>(getWindow("LoginPanel/CreateAcc"));
+		BIND_CEGUI_EVENT(createAcc, CEGUI::PushButton::EventClicked, ServerWidget::CreateAcc_Click);
 	
-	BIND_CEGUI_EVENT(nameBox, CEGUI::Window::EventTextChanged, ServerWidget::nameBox_TextChanged);
-	BIND_CEGUI_EVENT(passwordBox, CEGUI::Window::EventTextChanged, ServerWidget::passwordBox_TextChanged);
-	
+		mCharacterList = static_cast<CEGUI::Listbox*>(getWindow("ChooseCharacterPanel/CharacterList"));
+		CEGUI::PushButton* chooseChar = static_cast<CEGUI::PushButton*>(getWindow("ChooseCharacterPanel/Choose"));
+		mUseCreator =  static_cast<CEGUI::PushButton*>(getWindow("UseCreator"));
+		mCreateChar = static_cast<CEGUI::PushButton*>(getWindow("CreateCharacterPanel/CreateButton"));
 		
-	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &ServerWidget::connection_GotConnection));	
-	Ember::EmberServices::getSingletonPtr()->getServerService()->GotAccount.connect(sigc::mem_fun(*this, &ServerWidget::createdAccount));
-	Ember::EmberServices::getSingletonPtr()->getServerService()->LoginSuccess.connect(sigc::mem_fun(*this, &ServerWidget::loginSuccess));
-	Ember::EmberServices::getSingletonPtr()->getServerService()->GotAvatar.connect(sigc::mem_fun(*this, &ServerWidget::gotAvatar));
-	Ember::EmberServices::getSingletonPtr()->getServerService()->GotAllCharacters.connect(sigc::mem_fun(*this, &ServerWidget::gotAllCharacters));
-    Ember::EmberServices::getSingletonPtr()->getServerService()->LoginFailure.connect(sigc::mem_fun(*this, &ServerWidget::showLoginFailure));
+		BIND_CEGUI_EVENT(chooseChar, CEGUI::PushButton::EventClicked, ServerWidget::Choose_Click);
+		BIND_CEGUI_EVENT(mUseCreator, CEGUI::PushButton::EventClicked, ServerWidget::UseCreator_Click);
+		BIND_CEGUI_EVENT(mCreateChar, CEGUI::PushButton::EventClicked, ServerWidget::CreateChar_Click);
+		BIND_CEGUI_EVENT(mCharacterList, CEGUI::ButtonBase::EventMouseDoubleClick, ServerWidget::Choose_Click);
+		
+		mNewCharName = static_cast<CEGUI::Editbox*>(getWindow("CreateCharacterPanel/NameEdit"));
+		mNewCharDescription = static_cast<CEGUI::MultiLineEditbox*>(getWindow("CreateCharacterPanel/Description"));
+		mTypesList = static_cast<CEGUI::Combobox*>(getWindow("CreateCharacterPanel/Type"));
+		
+		mGenderRadioButton =  static_cast<CEGUI::RadioButton*>(getWindow("CreateCharacterPanel/Gender/Male"));
+		CEGUI::RadioButton* femaleRadioButton =  static_cast<CEGUI::RadioButton*>(getWindow("CreateCharacterPanel/Gender/Female"));
+		
+		BIND_CEGUI_EVENT(mNewCharName, CEGUI::Editbox::EventTextChanged, ServerWidget::Name_TextChanged);
+		BIND_CEGUI_EVENT(mNewCharDescription, CEGUI::Editbox::EventTextChanged, ServerWidget::Description_TextChanged);
+		BIND_CEGUI_EVENT(mTypesList, CEGUI::Combobox::EventListSelectionChanged, ServerWidget::TypesList_SelectionChanged);
+		BIND_CEGUI_EVENT(mGenderRadioButton, CEGUI::RadioButton::EventSelectStateChanged, ServerWidget::Gender_SelectionChanged);
+		BIND_CEGUI_EVENT(femaleRadioButton, CEGUI::RadioButton::EventSelectStateChanged, ServerWidget::Gender_SelectionChanged);
+		
+		
+		updateNewCharacter();
 	
-	addTabbableWindow(getWindow("LoginPanel/NameEdit"));
-	addTabbableWindow(getWindow("LoginPanel/PasswordEdit"));
+		CEGUI::Window* nameBox = getWindow("LoginPanel/NameEdit");
+		CEGUI::Window* passwordBox = getWindow("LoginPanel/PasswordEdit");
+		
+		BIND_CEGUI_EVENT(nameBox, CEGUI::Window::EventTextChanged, ServerWidget::nameBox_TextChanged);
+		BIND_CEGUI_EVENT(passwordBox, CEGUI::Window::EventTextChanged, ServerWidget::passwordBox_TextChanged);
+		
+			
+		Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &ServerWidget::connection_GotConnection));	
+		Ember::EmberServices::getSingletonPtr()->getServerService()->GotAccount.connect(sigc::mem_fun(*this, &ServerWidget::createdAccount));
+		Ember::EmberServices::getSingletonPtr()->getServerService()->LoginSuccess.connect(sigc::mem_fun(*this, &ServerWidget::loginSuccess));
+		Ember::EmberServices::getSingletonPtr()->getServerService()->GotAvatar.connect(sigc::mem_fun(*this, &ServerWidget::gotAvatar));
+		Ember::EmberServices::getSingletonPtr()->getServerService()->GotAllCharacters.connect(sigc::mem_fun(*this, &ServerWidget::gotAllCharacters));
+		Ember::EmberServices::getSingletonPtr()->getServerService()->LoginFailure.connect(sigc::mem_fun(*this, &ServerWidget::showLoginFailure));
+		
+		addTabbableWindow(getWindow("LoginPanel/NameEdit"));
+		addTabbableWindow(getWindow("LoginPanel/PasswordEdit"));
+		
+		addEnterButton(login);
+	/*	addTabbableWindow(login);
+		addTabbableWindow(createAcc);*/
+		closeTabGroup();
+		
+		addTabbableWindow(mNewCharName);
+	// 	addTabbableWindow(mTypesList);
+	/*	addTabbableWindow(mGenderRadioButton);
+		addTabbableWindow(femaleRadioButton);*/
+		addTabbableWindow(mNewCharDescription);
+		addEnterButton(mCreateChar);
+		closeTabGroup();
+		
+		hide();
 	
-	addEnterButton(login);
-/*	addTabbableWindow(login);
-	addTabbableWindow(createAcc);*/
-	closeTabGroup();
-	
-	addTabbableWindow(mNewCharName);
-// 	addTabbableWindow(mTypesList);
-/*	addTabbableWindow(mGenderRadioButton);
-	addTabbableWindow(femaleRadioButton);*/
-	addTabbableWindow(mNewCharDescription);
-	addEnterButton(mCreateChar);
-	closeTabGroup();
-	
-	hide();
-
-	createPreviewTexture();
+		createPreviewTexture();
 //	getMainSheet()->addChildWindow(mMainWindow); 
+	}
 
 }
 
@@ -434,17 +444,21 @@ void ServerWidget::fillAllowedCharacterTypes(Eris::Account* account)
 {
 	const std::vector< std::string >& characters = account->getCharacterTypes();
 	
-	for(std::vector< std::string >::const_iterator I = characters.begin(); I != characters.end(); ++I) {
-		
-		///if the user has access to the "creator" character, he/she can log in as this to get admin privileges
-		///thus we active our special "admin button"
-		if (*I == "creator") {
-			mUseCreator->setVisible(true);
-			mUseCreator->setEnabled(true);
+	if (characters.size() == 0) {
+		showNoCharactersAlert();
+	} else {
+		for(std::vector< std::string >::const_iterator I = characters.begin(); I != characters.end(); ++I) {
+			
+			///if the user has access to the "creator" character, he/she can log in as this to get admin privileges
+			///thus we active our special "admin button"
+			if (*I == "creator") {
+				mUseCreator->setVisible(true);
+				mUseCreator->setEnabled(true);
+			}
+			
+			CEGUI::ListboxItem* item = new Gui::ColouredListItem(*I, 0, 0);
+			mTypesList->addItem(item);
 		}
-		
-		CEGUI::ListboxItem* item = new Gui::ColouredListItem(*I, 0, 0);
-		mTypesList->addItem(item);
 	}
 }
 
@@ -608,6 +622,15 @@ bool ServerWidget::CreateAcc_Click(const CEGUI::EventArgs& args)
 	return true;
 }
 
+bool ServerWidget::OkButton_Click(const CEGUI::EventArgs& args)
+{
+	CEGUI::Window* alert = getWindow("NoCharactersAlert");
+	if (alert) {
+		alert->setVisible(false);
+	}
+	return true;
+}
+
 void ServerWidget::gotAvatar(Eris::Avatar* avatar) 
 {
 	hide();
@@ -625,6 +648,15 @@ void ServerWidget::createPreviewTexture()
 	}
 
 }
+
+void ServerWidget::showNoCharactersAlert()
+{
+	CEGUI::Window* alert = getWindow("NoCharactersAlert");
+	alert->setVisible(true);
+	alert->moveToFront();
+
+}
+
 
 bool NewCharacter::isValid( ) const
 {

@@ -79,6 +79,7 @@ protected:
 	bool UseCreator_Click(const CEGUI::EventArgs& args);
 	bool CreateChar_Click(const CEGUI::EventArgs& args);
 	bool CreateAcc_Click(const CEGUI::EventArgs& args);
+	bool OkButton_Click(const CEGUI::EventArgs& args);
 	
 	bool fetchCredentials(std::string& user, std::string& pass);
 	bool saveCredentials(void);
@@ -151,6 +152,11 @@ protected:
 	 */
 	void showServerInfo();
 	
+	/**
+	 * @brief Shows an alert explaining to the user that the server doesn't have any available characters and thus isn't correctly setup.
+	 */
+	void showNoCharactersAlert();
+
 };
 };
 };

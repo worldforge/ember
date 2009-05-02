@@ -212,5 +212,24 @@
 				</Window>
 			</Window>
 		</Window>
+		<Window Type='EmberLook/StaticText' Name='NoCharactersAlert'>
+			<Property Name='UnifiedPosition' Value='{{0.0,4},{0,15}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-8},{1,-15}}'/>
+			<Property Name='InheritsAlpha' Value='True'/>
+			<Property Name='FrameEnabled' Value='False'/>
+			<Property Name='Visible' Value='False'/>
+			<Window Type='EmberLook/MultiLineEditbox' Name='NoCharactersAlert/Text'>
+				<Property Name='UnifiedSize' Value='{{1.,0.000000},{1.0,-50.0}}'/>
+				<Property Name='Text' Value="This server has no characters available, and you cannot therefore create any avatar to log in with. The most likely cause is that it hasn't been properly set up. Please restart Ember and try to log in to another server."/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='ReadOnly' Value='True'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='NoCharactersAlert/OkButton'>
+				<Property Name='UnifiedSize' Value='{{0.000000,80.000000},{0.000000,25.000000}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.500000,-40.000000},{1.00000,-40.000000}}'/>
+				<Property Name='Text' Value='Ok'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+			</Window>
+		</Window>
 	</Window>
 </GUILayout>
