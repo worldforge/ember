@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
 	<Window Type='EmberLook/FrameWindow' Name='Mainwindow'>
-		<Property Name='UnifiedSize' Value='{{0.00000,400.000000},{0.00000,500.000000}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0,0.000000}}'/>
+		<Property Name='UnifiedSize' Value='{{0.00,400.0},{0.00,500.0}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0,0.0}}'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Entity editor'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
@@ -18,34 +18,34 @@
 				<Property Name='BackgroundEnabled' Value='false' />
 			</Window>
 			<Window Type='EmberLook/TabControl' Name='MainTabControl'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.00000,-70.000000}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.0000,30.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.00,-70.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,30.0}}'/>
 				<Property Name='InheritsAlpha' Value='false'/>
 				<Window Type='DefaultGUISheet' Name='AttributesPanel'>
-					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Attributes'/>
 					<Property Name='InheritsAlpha' Value='false'/>
 					<Property Name='Visible' Value='true'/>
 					<Window Type='EmberLook/ScrollablePane' Name='AttributesContainer'>
-						<Property Name='UnifiedSize' Value='{{1,0.000000},{1.00000,0.000000}}'/>
+						<Property Name='UnifiedSize' Value='{{1,0.0},{1.00,0.0}}'/>
 						<Property Name='Text' Value=''/>
 						<Property Name='InheritsAlpha' Value='True'/>
 					</Window>
 				</Window>
 				<Window Type='DefaultGUISheet' Name='KnowledgePanel'>
-					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Knowledge'/>
 					<Property Name='InheritsAlpha' Value='false'/>
 					<!-- Property Name='Visible' Value='true'/ -->
 				</Window>
 				<Window Type='DefaultGUISheet' Name='GoalsPanel'>
-					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Goals'/>
 					<Property Name='InheritsAlpha' Value='false'/>
 					<!-- Property Name='Visible' Value='true'/ -->
 				</Window>
 				<Window Type='DefaultGUISheet' Name='ChildrenPanel'>
-					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Children'/>
 					<Property Name='InheritsAlpha' Value='false'/>
 					<!-- Property Name='Visible' Value='true'/ -->
@@ -62,7 +62,7 @@
 					</Window>
 				</Window>
 				<Window Type='DefaultGUISheet' Name='ModelPanel'>
-					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Model'/>
 					<Property Name='InheritsAlpha' Value='false'/>
 					<!-- Property Name='Visible' Value='true'/ -->
@@ -86,18 +86,18 @@
 						<Event Name="CheckStateChanged" Function="EntityEditor.ShowErisBbox_CheckStateChanged" />
 					</Window>
 					<!-- Window Type='DefaultGUISheet' Name='ModelPanelStackable'>
-						<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+						<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 						<Property Name='InheritsAlpha' Value='false'/>
 					</Window -->
 				</Window>
 				<Window Type='DefaultGUISheet' Name='AtlasPanel'>
-					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Atlas'/>
 					<Property Name='InheritsAlpha' Value='false'/>
 					<!-- Property Name='Visible' Value='true'/ -->
 					<Window Type='EmberLook/MultiLineEditbox' Name='AtlasTextbox'>
-						<Property Name='UnifiedSize' Value='{{1.000000,-10.000000},{1.000000,-40.000000}}'/>
-						<Property Name='UnifiedPosition' Value='{{0.000000,5.000000},{0.000000,5.000000}}'/>
+						<Property Name='UnifiedSize' Value='{{1.0,-10.0},{1.0,-40.0}}'/>
+						<Property Name='UnifiedPosition' Value='{{0.0,5.0},{0.0,5.0}}'/>
 						<Property Name='Text' Value=''/>
 						<Property Name='InheritsAlpha' Value='false'/>
 						<Property Name='ReadOnly' Value='true'/>

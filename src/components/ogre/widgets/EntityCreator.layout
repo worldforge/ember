@@ -7,8 +7,8 @@
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Entity Creator'/>
 		<Window Type='DefaultGUISheet' Name='InnerWindow'>
-			<Property Name='UnifiedPosition' Value='{{0.00000,4.000000},{0.0000,20.000000}}'/>
-			<Property Name='UnifiedSize' Value='{{1.00000,-8.000000},{1.00000,-24.000000}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.00,4.0},{0.0,20.0}}'/>
+			<Property Name='UnifiedSize' Value='{{1.00,-8.0},{1.00,-24.0}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/Listbox' Name='RecipesList'>
 				<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>

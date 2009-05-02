@@ -1,29 +1,29 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
 	<Window Type='DefaultGUISheet' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.200000,0.000000},{0.300000,0.000000}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.400000,0.000000},{0.350000,0.000000}}'/>
+		<Property Name='UnifiedSize' Value='{{0.200000,0.0},{0.300000,0.0}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.400000,0.0},{0.350000,0.0}}'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Give'/>
 		<Window Type='EmberLook/StaticText' Name='Text'>
-			<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.150000,0.000000}}'/>
+			<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.150000,0.0}}'/>
 			<Property Name='InheritsAlpha' Value='false'/>
 		</Window>
 		<Window Type='EmberLook/Listbox' Name='ListBox'>
-			<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.650000,0.000000}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.150000,0.000000}}'/>
+			<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.650000,0.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.150000,0.0}}'/>
 			<Property Name='InheritsAlpha' Value='false'/>
 			<Property Name='MultiSelect' Value='true'/>
 		</Window>
 		<Window Type='EmberLook/Button' Name='Give'>
-			<Property Name='UnifiedSize' Value='{{0.500000,0.000000},{0.200000,0.000000}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.500000,0.000000},{0.800000,0.000000}}'/>
+			<Property Name='UnifiedSize' Value='{{0.500000,0.0},{0.200000,0.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.500000,0.0},{0.800000,0.0}}'/>
 			<Property Name='Text' Value='Give'/>
 			<Property Name='InheritsAlpha' Value='True'/>
 		</Window>
 		<Window Type='EmberLook/Button' Name='Cancel'>
-			<Property Name='UnifiedSize' Value='{{0.500000,0.000000},{0.200000,0.000000}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.800000,0.000000}}'/>
+			<Property Name='UnifiedSize' Value='{{0.500000,0.0},{0.200000,0.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.800000,0.0}}'/>
 			<Property Name='Text' Value='Close'/>
 			<Property Name='InheritsAlpha' Value='True'/>
 		</Window>

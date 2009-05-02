@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
 	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.000000,600.000000},{0.000000,400.000000}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.50000,-300.000000},{0.15,0.000000}}'/>
+		<Property Name='UnifiedSize' Value='{{0.0,600.0},{0.0,400.0}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.50000,-300.0},{0.15,0.0}}'/>
 		<Property Name='SizingEnabled' Value='false'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Server browser'/>
@@ -12,7 +12,7 @@
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/MultiColumnList' Name='ServerList'>
 				<Property Name='UnifiedPosition' Value='{{0.0,1},{0,0}}'/>
-				<Property Name='UnifiedSize' Value='{{1.000000,-2.000000},{1.000000,-35.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,-2.0},{1.0,-35.0}}'/>
 				<Property Name='InheritsAlpha' Value='true'/>
 				<Property Name='SelectionMode' Value='RowSingle'/>
 				<Property Name='ColumnHeader' Value='text:Server Name width:{0.30, 0} id:0'/>
@@ -24,20 +24,20 @@
 				<Property Name='ColumnHeader' Value='text:Address width:{0.15, 0} id:6'/>
 			</Window>
 			<Window Type='EmberLook/Editbox' Name='ManualServerName'>
-				<Property Name='UnifiedSize' Value='{{0.000000,150.000000},{0.000000,25.000000}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{1.000000,-30.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{0.0,150.0},{0.0,25.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{1.0,-30.0}}'/>
 				<Property Name='Text' Value=''/>
 				<Property Name='InheritsAlpha' Value='true'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='Refresh'>
-				<Property Name='UnifiedSize' Value='{{0.000000,75.000000},{0.000000,25.000000}}'/>
-				<Property Name='UnifiedPosition' Value='{{1.000000,-160.000000},{1.000000,-30.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{0.0,75.0},{0.0,25.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{1.0,-160.0},{1.0,-30.0}}'/>
 				<Property Name='Text' Value='Refresh'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='Connect'>
-				<Property Name='UnifiedSize' Value='{{0.000000,75.000000},{0.000000,25.000000}}'/>
-				<Property Name='UnifiedPosition' Value='{{1.000000,-80.000000},{1.000000,-30.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{0.0,75.0},{0.0,25.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{1.0,-80.0},{1.0,-30.0}}'/>
 				<Property Name='Text' Value='Connect'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>

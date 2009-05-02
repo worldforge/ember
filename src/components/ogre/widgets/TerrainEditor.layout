@@ -12,7 +12,7 @@
 				<Property Name='Text' Value='Selected basepoint:'/>
 				<Property Name='UnifiedPosition' Value='{{0,5},{0,5}}'/>
 				<Property Name='UnifiedSize' Value='{{0,200},{0,25}}'/>
-				<Property Name='UnifiedMaxSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+				<Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 				<Property Name='BackgroundEnabled' Value='False'/>
 				<Property Name='FrameEnabled' Value='False'/>
 			</Window>
@@ -26,7 +26,7 @@
 			<Window Type='EmberLook/Editbox' Name='Height'>
 				<Property Name='UnifiedPosition' Value='{{0,55},{0,35}}'/>
 				<Property Name='UnifiedSize' Value='{{0,50},{0,25}}'/>
-				<Property Name='UnifiedMaxSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+				<Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='RedoButton'>
 				<Property Name='Text' Value='Redo'/>
@@ -49,8 +49,8 @@
 				<Property Name='UnifiedSize' Value='{{0,100},{0,25}}'/>
 			</Window>
 			<Window Type='EmberLook/Slider' Name='Radius'>
-				<Property Name='UnifiedSize' Value='{{1.00000,-20.000000},{0.0000,15.000000}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.000000,10.000000},{0.0000,160.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.00,-20.0},{0.0,15.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,10.0},{0.0,160.0}}'/>
 				<Event Name="ValueChanged" Function="TerrainEditor.Radius_ValueChanged" />
 				<Property Name='Tooltip' Value='Sets the radius of the selection.'/>
 			</Window>

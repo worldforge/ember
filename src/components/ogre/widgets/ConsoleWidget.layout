@@ -1,20 +1,20 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
 	<Window Type='DefaultWindow' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.000000,1024.000000},{0.000000,385.000000}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.000000,-360.000000}}'/>
+		<Property Name='UnifiedSize' Value='{{0.0,1024.0},{0.0,385.0}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,-360.0}}'/>
 		<Property Name='FrameEnabled' Value='False'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Tooltip' Value='Use the console for conversions. You can also enter commands. /list_commands shows all commands available. Press Tab for completion. F12 will expand the console window.'/>
 		<Window Type='EmberLook/MultiLineEditbox' Name='TextBox'>
-			<Property Name='UnifiedSize' Value='{{0.000000,1024.000000},{0.000000,360.000000}}'/>
+			<Property Name='UnifiedSize' Value='{{0.0,1024.0},{0.0,360.0}}'/>
 			<Property Name='Text' Value=''/>
 			<Property Name='ReadOnly' Value='true'/>
 			<Property Name='InheritsTooltipText' Value='true'/>
 		</Window>
 		<Window Type='EmberLook/Editbox' Name='InputBox'>
-			<Property Name='UnifiedSize' Value='{{0.000000,1024.000000},{0.000000,25.000000}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.000000,360.000000}}'/>
+			<Property Name='UnifiedSize' Value='{{0.0,1024.0},{0.0,25.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,360.0}}'/>
 			<Property Name='Text' Value=''/>
 			<Property Name='InheritsTooltipText' Value='true'/>
 			<Property Name='InheritsAlpha' Value='false'/>

@@ -1,15 +1,15 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
 	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.0000,300.000000},{0.0000,100.000000}}'/>
-		<Property Name='UnifiedPosition' Value='{{1,-300.000000},{1,-400.000000}}'/>
+		<Property Name='UnifiedSize' Value='{{0.0,300.0},{0.0,100.0}}'/>
+		<Property Name='UnifiedPosition' Value='{{1,-300.0},{1,-400.0}}'/>
 		<Property Name='Text' Value='Mouse picking info'/>
 		<Window Type='DefaultGUISheet' Name='Menu'>
 			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,15}}'/>
 			<Property Name='UnifiedSize' Value='{{1,-4},{1,-15}}'/>
 			<Property Name='InheritsAlpha' Value='true'/>
 			<Window Type='EmberLook/MultiLineEditbox' Name='InfoBox'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 				<Property Name='Text' Value=''/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='ReadOnly' Value='true'/>

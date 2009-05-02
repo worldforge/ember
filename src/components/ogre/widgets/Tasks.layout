@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
 	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
-		<Property Name='UnifiedPosition' Value='{{0.0,0.000000},{1,-390.000000}}'/>
-		<Property Name='UnifiedSize' Value='{{0,300},{0,90.000000}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.0,0.0},{1,-390.0}}'/>
+		<Property Name='UnifiedSize' Value='{{0,300},{0,90.0}}'/>
 		<Property Name='Text' Value='Tasks'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Window Type='DefaultWindow' Name='MainInnerWindow'>

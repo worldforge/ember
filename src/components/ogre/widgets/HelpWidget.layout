@@ -1,14 +1,14 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
 	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.000000,800.000000},{0.000000,600.000000}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.000000,90.000000},{0.000000,50.000000}}'/>
+		<Property Name='UnifiedSize' Value='{{0.0,800.0},{0.0,600.0}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.0,90.0},{0.0,50.0}}'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Help'/>
 		<Property Name='Visible' Value='false'/>
 		<Window Type='EmberLook/MultiLineEditbox' Name='TextBox'>
-			<Property Name='UnifiedSize' Value='{{0.000000,780.000000},{0.000000,560.000000}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.000000,10.000000},{0.000000,30.000000}}'/>
+			<Property Name='UnifiedSize' Value='{{0.0,780.0},{0.0,560.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,10.0},{0.0,30.0}}'/>
 			<Property Name='Text'>Welcome to ember. This help window can be accessed anytime either by clicking on the help icon down to the left, or by entering the command '/help' in the console (F12 will expand the console).
 
 ---Getting started---

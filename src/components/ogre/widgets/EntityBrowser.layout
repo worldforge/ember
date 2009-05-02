@@ -2,8 +2,8 @@
 <GUILayout>
 	<Window Type='EmberLook/FrameWindow' Name='Mainwindow'>
 		<Property Name='Visible' Value='false'/>
-		<Property Name='UnifiedSize' Value='{{0.00000,350.000000},{0.00000,400.000000}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0,0.000000}}'/>
+		<Property Name='UnifiedSize' Value='{{0.00,350.0},{0.00,400.0}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0,0.0}}'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Entity browser'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
@@ -11,11 +11,11 @@
 			<Property Name='UnifiedSize' Value='{{1,-8},{1,-20}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/TabControl' Name='MainTabControl'>
-				<Property Name='UnifiedSize' Value='{{1.000000,-8.000000},{1.00000,-8.000000}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.000000,4.000000},{0.0000,4.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,-8.0},{1.00,-8.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,4.0},{0.0,4.0}}'/>
 				<Property Name='InheritsAlpha' Value='true'/>
 				<Window Type='DefaultGUISheet' Name='Eris'>
-					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Eris'/>
 					<Property Name='InheritsAlpha' Value='false'/>
 					<Property Name='Visible' Value='true'/>
@@ -37,7 +37,7 @@
 					</Window>
 				</Window>
 				<Window Type='DefaultGUISheet' Name='Ogre'>
-					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Ogre'/>
 					<Property Name='InheritsAlpha' Value='false'/>
 					<Property Name='Visible' Value='false'/>

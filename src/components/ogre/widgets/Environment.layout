@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
 	<Window Type='EmberLook/FrameWindow' Name='Mainwindow'>
-		<Property Name='UnifiedSize' Value='{{0,300.000000},{0,180.000000}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.400000,0.000000},{0.350000,0.000000}}'/>
+		<Property Name='UnifiedSize' Value='{{0,300.0},{0,180.0}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.4,0.0},{0.35,0.0}}'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Environment'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
@@ -10,7 +10,7 @@
 			<Property Name='UnifiedSize' Value='{{1,-4},{1,-15}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/StaticText' Name='TimeText'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.0000,25.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.0,25.0}}'/>
 				<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 				<Property Name='InheritsAlpha' Value='false'/>
 				<Property Name='Text' Value='Time'/>
@@ -18,12 +18,12 @@
 				<Property Name='FrameEnabled' Value='False'/>
 			</Window>
 			<Window Type='EmberLook/Slider' Name='Time'>
-				<Property Name='UnifiedSize' Value='{{1.00000,-20.000000},{0.0000,15.000000}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.000000,10.000000},{0.0000,30.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.00,-20.0},{0.0,15.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,10.0},{0.0,30.0}}'/>
 				<Event Name="ValueChanged" Function="Environment.Time_ValueChanged" />
 			</Window>
 			<Window Type='EmberLook/StaticText' Name='FogDistanceText'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.0000,25.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.0,25.0}}'/>
 				<Property Name='UnifiedPosition' Value='{{0,0},{0,60}}'/>
 				<Property Name='InheritsAlpha' Value='false'/>
 				<Property Name='Text' Value='Fog distance'/>
@@ -31,8 +31,8 @@
 				<Property Name='FrameEnabled' Value='False'/>
 			</Window>
 			<Window Type='EmberLook/Slider' Name='FogDistance'>
-				<Property Name='UnifiedSize' Value='{{1.00000,-20.000000},{0.0000,15.000000}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.000000,10.000000},{0.0000,90.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,-20.0},{0.0,15.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,10.0},{0.0,90.0}}'/>
 				<Property Name='Value' Value='0.25'/>
 				<Event Name="ValueChanged" Function="Environment.FogDistance_ValueChanged" />
 			</Window>

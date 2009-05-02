@@ -1,114 +1,114 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
 	<Window Type='DefaultGUISheet' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.0000,120.000000},{0.0000,300.000000}}'/>
-		<Property Name='UnifiedPosition' Value='{{0,0.000000},{0,0.000000}}'/>
+		<Property Name='UnifiedSize' Value='{{0.0,120.0},{0.0,300.0}}'/>
+		<Property Name='UnifiedPosition' Value='{{0,0.0},{0,0.0}}'/>
 		<Property Name='Visible' Value='false'/>
 		<Property Name='AlwaysOnTop' Value='true'/>
 		<Window Type='EmberLook/StaticText' Name='EntityName'>
-			<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.00000,25.000000}}'/>
+			<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.00,25.0}}'/>
 			<Property Name='InheritsAlpha' Value='true'/>
 			<Property Name='FrameEnabled' Value='true'/>
 			<Property Name='HorzFormatting' Value='HorzCentred'/>
 		</Window>
 		<Window Type='DefaultGUISheet' Name='Menu'>
-			<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0.00000,275.000000}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.00000,25.000000}}'/>
+			<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.00,275.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.00,25.0}}'/>
 			<Property Name='InheritsAlpha' Value='true'/>
 			<Window Type='EmberLook/Button' Name='MoveToButton'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0,20.0}}'/>
 				<Property Name='Text' Value='Move to'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='Tooltip' Value='Move to this point.'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='TeleportToButton'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0,20.0}}'/>
 				<Property Name='Text' Value='Teleport to'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='Tooltip' Value='Teleport to this point.'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='TouchButton'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0,20.0}}'/>
 				<Property Name='Text' Value='Touch'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='Tooltip' Value='Touch the entity.'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='TakeButton'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.16,0.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0,20.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.16,0.0}}'/>
 				<Property Name='Text' Value='Take'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='Tooltip' Value='Pick up the entity.'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='GiveButton'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.32,0.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0,20.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.32,0.0}}'/>
 				<Property Name='Text' Value='Give'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='Tooltip' Value='Give something to the entity.'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='MoveButton'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.48,0.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0,20.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.48,0.0}}'/>
 				<Property Name='Text' Value='Move'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='Tooltip' Value='Move the entity.'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='InspectButton'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.64,0.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0,20.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.64,0.0}}'/>
 				<Property Name='Text' Value='Inspect'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='Tooltip' Value='Inspect the entity.'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='EditButton'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.64,0.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0,20.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.64,0.0}}'/>
 				<Property Name='Text' Value='Edit'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='Tooltip' Value='Edit the entity.'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='AttackButton'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.64,0.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0,20.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.64,0.0}}'/>
 				<Property Name='Text' Value='Attack'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='Tooltip' Value='Attack the entity.'/>
 			</Window>
 			<!-- Window Type='EmberLook/Button' Name='EatButton'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.64,0.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0,20.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.64,0.0}}'/>
 				<Property Name='Text' Value='Eat'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='Tooltip' Value='Try to eat the entity.'/>
 			</Window -->
 			<Window Type='EmberLook/Button' Name='UseButton1'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.800000,0.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0,20.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.800000,0.0}}'/>
 				<Property Name='Text' Value='Use'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='UseButton2'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.800000,0.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0,20.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.800000,0.0}}'/>
 				<Property Name='Text' Value='Use'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='UseButton3'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.800000,0.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0,20.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.800000,0.0}}'/>
 				<Property Name='Text' Value='Use'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='UseButton4'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.800000,0.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0,20.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.800000,0.0}}'/>
 				<Property Name='Text' Value='Use'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='UseButton5'>
-				<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{0,20.000000}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0.800000,0.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0,20.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.800000,0.0}}'/>
 				<Property Name='Text' Value='Use'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>

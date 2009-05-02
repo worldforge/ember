@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
 	<Window Type='EmberLook/FrameWindow' Name='Mainwindow'>
-		<Property Name='UnifiedSize' Value='{{0.00000,450.000000},{0.00000,400.000000}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.000000,0.000000},{0,100.000000}}'/>
+		<Property Name='UnifiedSize' Value='{{0.00,450.0},{0.00,400.0}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0,100.0}}'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Assets manager'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
@@ -10,11 +10,11 @@
 			<Property Name='UnifiedSize' Value='{{1,-8},{1,-20}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/TabControl' Name='MainTabControl'>
-				<Property Name='UnifiedSize' Value='{{1.000000,-8.000000},{1.00000,-8.000000}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.000000,4.000000},{0.0000,4.000000}}'/>
+				<Property Name='UnifiedSize' Value='{{1.0,-8.0},{1.00,-8.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,4.0},{0.0,4.0}}'/>
 				<Property Name='InheritsAlpha' Value='true'/>
 				<Window Type='DefaultGUISheet' Name='Textures'>
-					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Textures'/>
 					<Property Name='InheritsAlpha' Value='false'/>
 					<Property Name='Visible' Value='true'/>
@@ -57,7 +57,7 @@
 					</Window>
 				</Window>
 				<Window Type='DefaultGUISheet' Name='Materials'>
-					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Materials'/>
 					<Property Name='InheritsAlpha' Value='false'/>
 					<Property Name='Visible' Value='false'/>
@@ -100,7 +100,7 @@
 					</Window>
 				</Window>
 				<Window Type='DefaultGUISheet' Name='Meshes'>
-					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Meshes'/>
 					<Property Name='InheritsAlpha' Value='false'/>
 					<Property Name='Visible' Value='false'/>
@@ -142,7 +142,7 @@
 					</Window>
 				</Window>
 				<Window Type='DefaultGUISheet' Name='Images'>
-					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Images'/>
 					<Property Name='InheritsAlpha' Value='false'/>
 					<Property Name='Visible' Value='false'/>
@@ -178,7 +178,7 @@
 					</Window>
 				</Window>
 				<Window Type='DefaultGUISheet' Name='Shaders'>
-					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Shaders'/>
 					<Property Name='InheritsAlpha' Value='false'/>
 					<Property Name='Visible' Value='false'/>
@@ -221,7 +221,7 @@
 					</Window>
 				</Window>
 				<Window Type='DefaultGUISheet' Name='Windows'>
-					<Property Name='UnifiedSize' Value='{{1.000000,0.000000},{1.000000,0.000000}}'/>
+					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Windows'/>
 					<Property Name='InheritsAlpha' Value='false'/>
 					<Property Name='Visible' Value='false'/>
