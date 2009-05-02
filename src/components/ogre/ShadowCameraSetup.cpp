@@ -38,10 +38,9 @@ ShadowCameraSetup::ShadowCameraSetup(Ogre::SceneManager& sceneMgr)
 	setup();
 	registerConfigListenerWithDefaults("shadows", "texturesize", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowTextureSize), 1024);
 	registerConfigListenerWithDefaults("shadows", "splitpoints", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowSplitPoints), "1 15 50 500");
-	registerConfigListenerWithDefaults("shadows", "splitpadding", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowSplitPadding), 10);
+	registerConfigListenerWithDefaults("shadows", "splitpadding", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowSplitPadding), 10.0);
 	registerConfigListenerWithDefaults("shadows", "optimaladjustfactors", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowOptimalAdjustFactors), "1 1 1");
-	registerConfigListenerWithDefaults("shadows", "fardistance", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowFarDistance), 250);
-
+	registerConfigListenerWithDefaults("shadows", "useaggressivefocusregion", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowUseAggressiveFocusRegion), true);
 }
 
 
@@ -68,7 +67,6 @@ bool ShadowCameraSetup::setup()
 	mSceneMgr.setShadowTextureCountPerLightType(Ogre::Light::LT_POINT, 1);
 	mSceneMgr.setShadowTextureCountPerLightType(Ogre::Light::LT_SPOTLIGHT, 1);
 
-
 	if (isOpenGL) {
 		// GL performs much better if you pick half-float format
 		mSceneMgr.setShadowTexturePixelFormat(Ogre::PF_FLOAT16_R);
@@ -82,7 +80,7 @@ bool ShadowCameraSetup::setup()
 	mPssmSetup = OGRE_NEW Ogre::PSSMShadowCameraSetup();
 	mSharedCameraPtr = Ogre::ShadowCameraSetupPtr(mPssmSetup);
 	mSceneMgr.setShadowCameraSetup(mSharedCameraPtr);
-	
+
 	return true;
 }
 
@@ -102,14 +100,15 @@ void ShadowCameraSetup::Config_ShadowSplitPoints(const std::string& section, con
 		if (variable.is_string()) {
 			Ogre::PSSMShadowCameraSetup::SplitPointList splitPointList = mPssmSetup->getSplitPoints();;
 			Ember::Tokeniser tokeniser(variable);
-			splitPointList[0] = atoi(tokeniser.nextToken().c_str());
-			splitPointList[1] = atoi(tokeniser.nextToken().c_str());
-			splitPointList[2] = atoi(tokeniser.nextToken().c_str());
-			splitPointList[3] = atoi(tokeniser.nextToken().c_str());
+			splitPointList[0] = atof(tokeniser.nextToken().c_str());
+			splitPointList[1] = atof(tokeniser.nextToken().c_str());
+			splitPointList[2] = atof(tokeniser.nextToken().c_str());
+			splitPointList[3] = atof(tokeniser.nextToken().c_str());
+			S_LOG_VERBOSE("Setting split points: " << splitPointList[0] << " " << splitPointList[1] << " " << splitPointList[2] << " " << splitPointList[3]);
 			mPssmSetup->setSplitPoints(splitPointList);
 		}
 	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when setting shadow spit points: " << ex.what());
+		S_LOG_FAILURE("Error when setting shadow split points: " << ex.what());
 	}
 }
 void ShadowCameraSetup::Config_ShadowSplitPadding(const std::string& section, const std::string& key, varconf::Variable& variable)
@@ -137,14 +136,14 @@ void ShadowCameraSetup::Config_ShadowOptimalAdjustFactors(const std::string& sec
 	}
 }
 
-void ShadowCameraSetup::Config_ShadowFarDistance(const std::string& section, const std::string& key, varconf::Variable& variable)
+void ShadowCameraSetup::Config_ShadowUseAggressiveFocusRegion(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
 	try {
-		if (variable.is_double()) {
-			mSceneMgr.setShadowFarDistance(static_cast<double>(variable));
+		if (variable.is_bool()) {
+			mPssmSetup->setUseAggressiveFocusRegion(static_cast<bool>(variable));
 		}
 	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when setting shadow far distance: " << ex.what());
+		S_LOG_FAILURE("Error when setting shadow use aggressive focus region: " << ex.what());
 	}
 }
 
