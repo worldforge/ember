@@ -31,6 +31,8 @@
 #include "../EmberEntity.h"
 #include "../MathConverter.h"
 
+#include "SnapToMovement.h"
+
 
 namespace EmberOgre {
 
@@ -51,13 +53,21 @@ const WFMath::Point<3>& EntityMover::getPosition() const
 }
 void EntityMover::setPosition(const WFMath::Point<3>& position)
 {
+	WFMath::Point<3> finalPosition(position);
 	if (position.isValid()) {
+		Manipulation::SnapToMovement snapping(mEntity, 5.0f);
+		WFMath::Vector<3> adjustment;
+		EmberEntity* entity(0);
+		if (snapping.testSnapTo(position, getOrientation(), adjustment, entity)) {
+			finalPosition = finalPosition.shift(adjustment);
+		}
+	
 		///We need to offset into local space.
 		Ogre::Vector3 posOffset = Ogre::Vector3::ZERO;
 		if (mEntity.getSceneNode()->getParent()) {
 			posOffset = mEntity.getSceneNode()->getParent()->_getDerivedPosition();
 		}
-		mEntity.getSceneNode()->setPosition(Atlas2Ogre(position) - posOffset);
+		mEntity.getSceneNode()->setPosition(Atlas2Ogre(finalPosition) - posOffset);
 		///adjust it so that it moves according to the ground for example
 		mEntity.adjustPosition(mEntity.getSceneNode()->getPosition());
 	}

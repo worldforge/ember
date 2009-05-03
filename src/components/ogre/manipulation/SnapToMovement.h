@@ -24,6 +24,7 @@
 #define EMBEROGRE_MANIPULATIONSNAPTOMOVEMENT_H
 
 #include <wfmath/point.h>
+#include <wfmath/vector.h>
 
 namespace EmberOgre {
 
@@ -41,11 +42,18 @@ public:
     ~SnapToMovement();
     
     
-    bool testSnapTo(const WFMath::Point<3>& position, WFMath::Point<3>& newPosition, EmberEntity* snappedToEntity);
+    bool testSnapTo(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, WFMath::Vector<3>& adjustment, EmberEntity* snappedToEntity);
     
 protected:
+	struct SnapPointCandidate
+	{
+		WFMath::CoordType distance;
+		WFMath::Vector<3> adjustment;
+		EmberEntity* entity;
+	};
 	EmberEntity& mEntity;
 	float mSnapThreshold;
+	
 
 };
 
