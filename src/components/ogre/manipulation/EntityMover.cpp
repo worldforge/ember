@@ -36,7 +36,7 @@
 
 namespace EmberOgre {
 
-EntityMover::EntityMover(EmberEntity& entity, EntityMoveManager& manager) : mEntity(entity), mManager(manager)
+EntityMover::EntityMover(EmberEntity& entity, EntityMoveManager& manager) : mEntity(entity), mManager(manager), mSnapping(new Manipulation::SnapToMovement(entity, 5.0f))
 {
 }
 
@@ -55,10 +55,9 @@ void EntityMover::setPosition(const WFMath::Point<3>& position)
 {
 	WFMath::Point<3> finalPosition(position);
 	if (position.isValid()) {
-		Manipulation::SnapToMovement snapping(mEntity, 5.0f);
 		WFMath::Vector<3> adjustment;
 		EmberEntity* entity(0);
-		if (snapping.testSnapTo(position, getOrientation(), adjustment, entity)) {
+		if (mSnapping->testSnapTo(position, getOrientation(), adjustment, entity)) {
 			finalPosition = finalPosition.shift(adjustment);
 		}
 	

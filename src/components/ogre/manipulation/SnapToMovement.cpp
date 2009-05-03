@@ -27,6 +27,7 @@
 #include "SnapToMovement.h"
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/EmberEntityUserObject.h"
+#include "components/ogre/MathConverter.h"
 
 #include <wfmath/rotbox.h>
 
@@ -39,21 +40,60 @@ namespace Manipulation {
 SnapToMovement::SnapToMovement(EmberEntity& entity, float snapThreshold)
 : mEntity(entity), mSnapThreshold(snapThreshold)
 {
+	Ogre::SceneManager* sceneMngr = entity.getSceneNode()->getCreator();
+	for (int i = 0; i < 30; ++i) {
+		Ogre::SceneNode* node = sceneMngr->getRootSceneNode()->createChildSceneNode();
+		Ogre::Entity* entity = sceneMngr->createEntity(node->getName() + "_entity", "3d_objects/primitives/models/sphere.mesh");
+		///start out with a normal material
+		entity->setMaterialName("/global/authoring/point");
+		entity->setRenderingDistance(300);
+// 		entity->setQueryFlags(MousePicker::CM_UNDEFINED);
+		node->setScale(0.25, 0.25, 0.25);
+		node->attachObject(entity);
+		node->setVisible(false);
+		mDebugNodes.push_back(node);
+	}
 }
 
 
 SnapToMovement::~SnapToMovement()
 {
+	Ogre::SceneManager* sceneMngr = mEntity.getSceneNode()->getCreator();
+	for (std::vector<Ogre::SceneNode*>::iterator I = mDebugNodes.begin(); I != mDebugNodes.end(); ++I) {
+		Ogre::SceneNode* node = *I;
+		node->removeAndDestroyAllChildren();
+		sceneMngr->destroySceneNode(node);
+	}
+
 }
 
 bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, WFMath::Vector<3>& adjustment, EmberEntity* snappedToEntity)
 {
+	
+	for (std::vector<Ogre::SceneNode*>::iterator I = mDebugNodes.begin(); I != mDebugNodes.end(); ++I) {
+		Ogre::SceneNode* node = *I;
+		node->setVisible(false);
+		Ogre::Entity* entity = static_cast<Ogre::Entity*>(node->getAttachedObject(0));
+		entity->setMaterialName("/global/authoring/point");
+	}
+	
+	std::vector<Ogre::SceneNode*>::iterator nodeIterator = mDebugNodes.begin();
+	
 	std::auto_ptr<SnapPointCandidate> closestSnapping(0);
 
 	WFMath::AxisBox<3> currentBbox = mEntity.getBBox();
 	currentBbox.shift(WFMath::Vector<3>(position));
 	WFMath::RotBox<3> currentRotbox(currentBbox.lowCorner(), currentBbox.highCorner() - currentBbox.lowCorner(), orientation);
 	
+	for (int j = 0; j < currentRotbox.numCorners(); ++j) {
+		WFMath::Point<3> currentPoint = currentRotbox.getCorner(j);
+		if (nodeIterator != mDebugNodes.end()) {
+			Ogre::SceneNode* node = *nodeIterator;
+			node->setPosition(Atlas2Ogre(currentPoint));
+			node->setVisible(true);
+			nodeIterator++;
+		}
+	}	
 	
 	///First find all entities which are close enough
 	///Then try to do a snap movement based on the points of the eris bounding boxes. I.e. we only provide support for snapping one corner of a bounding box to another corner (for now).
@@ -76,12 +116,23 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 					
 					for (int i = 0; i < rotbox.numCorners(); ++i) {
 						WFMath::Point<3> point = rotbox.getCorner(i);
+						Ogre::SceneNode* currentNode(0);
+						if (nodeIterator != mDebugNodes.end()) {
+							currentNode = *nodeIterator;
+							currentNode->setPosition(Atlas2Ogre(point));
+							currentNode->setVisible(true);
+							nodeIterator++;
+						}
 						point.z() = 0;
 						for (int j = 0; j < currentRotbox.numCorners(); ++j) {
-							WFMath::Point<3> currentPoint = currentRotbox.getCorner(i);
+							WFMath::Point<3> currentPoint = currentRotbox.getCorner(j);
 							currentPoint.z() = 0;
 							WFMath::CoordType distance = WFMath::Distance(currentPoint, point);
 							if (distance <= mSnapThreshold) {
+								if (currentNode) {
+									Ogre::Entity* entity = static_cast<Ogre::Entity*>(currentNode->getAttachedObject(0));
+									entity->setMaterialName("/global/authoring/point/moved");
+								}
 								if (!closestSnapping.get()) {
 									closestSnapping = std::auto_ptr<SnapPointCandidate>(new SnapPointCandidate());
 									closestSnapping->entity = entity;

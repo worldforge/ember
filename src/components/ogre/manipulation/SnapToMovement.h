@@ -25,6 +25,11 @@
 
 #include <wfmath/point.h>
 #include <wfmath/vector.h>
+#include <vector>
+
+namespace Ogre {
+class SceneNode;
+}
 
 namespace EmberOgre {
 
@@ -53,6 +58,9 @@ protected:
 	};
 	EmberEntity& mEntity;
 	float mSnapThreshold;
+	
+	
+	std::vector<Ogre::SceneNode*> mDebugNodes;
 	
 
 };

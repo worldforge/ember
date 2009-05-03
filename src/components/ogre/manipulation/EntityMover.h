@@ -28,6 +28,9 @@
 #include <wfmath/point.h>
 
 namespace EmberOgre {
+namespace Manipulation {
+class SnapToMovement;
+}
 
 class EmberEntity;
 class EntityMoveManager;
@@ -61,7 +64,8 @@ private:
 	EntityMoveManager& mManager;
 	mutable WFMath::Quaternion mOrientation;
 	mutable WFMath::Point<3> mPosition;
-	
+	std::auto_ptr<Manipulation::SnapToMovement> mSnapping;
+
 };
 
 }

@@ -123,7 +123,9 @@ MovementAdapter::MovementAdapter()
 {}
 
 MovementAdapter::~MovementAdapter()
-{}
+{
+	detach(); ///A call to this will delete both the bridge and the adapter.
+}
 
 void MovementAdapter::finalizeMovement()
 {
@@ -229,6 +231,9 @@ bool MovementAdapter::injectKeyUp(const SDLKey& key)
 
 void MovementAdapter::attachToBridge(IMovementBridge* bridge)
 {
+	if (mBridge != bridge) {
+		delete mBridge;
+	}
 	mBridge = bridge;
 	addAdapter();
 }
