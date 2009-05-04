@@ -812,7 +812,7 @@ function EntityEditor.RefreshAtlas_Clicked(args)
 		if entity ~= nil then
 			local ss = std.stringstream:new_local()
 			local ss_log = std.stringstream:new_local()
-			entity:dumpAttributes(ss, ss_log.__ostream__)
+			entity:dumpAttributes(ss, ss_log.__std__ostream__)
 			EntityEditor.widget:getWindow("AtlasTextbox"):setText(ss:str())
 		end
 	end
