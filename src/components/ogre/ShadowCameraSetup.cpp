@@ -78,6 +78,8 @@ bool ShadowCameraSetup::setup()
 		mSceneMgr.setShadowTexturePixelFormat(Ogre::PF_FLOAT32_R);
 	}
 
+	mSceneMgr.setShadowTextureCasterMaterial("Ogre/DepthShadowmap/Caster/Float/NoAlpha");
+
 	mPssmSetup = OGRE_NEW Ogre::PSSMShadowCameraSetup();
 	mSharedCameraPtr = Ogre::ShadowCameraSetupPtr(mPssmSetup);
 	mSceneMgr.setShadowCameraSetup(mSharedCameraPtr);
