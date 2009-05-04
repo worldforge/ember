@@ -119,7 +119,7 @@ void ShadowCameraSetup::Config_ShadowSplitPadding(const std::string& section, co
 			mPssmSetup->setSplitPadding(static_cast<double>(variable));
 		}
 	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when setting shadow spit padding: " << ex.what());
+		S_LOG_FAILURE("Error when setting shadow split padding: " << ex.what());
 	}
 }
 
@@ -152,8 +152,8 @@ void ShadowCameraSetup::Config_ShadowFarDistance(const std::string& section, con
 {
 	try {
 		if (variable.is_bool()) {
-			mSceneMgr.setShadowFarDistance(static_cast<double>(variable));
 			S_LOG_VERBOSE("Setting shadow far distace: " << static_cast<double>(variable));
+			mSceneMgr.setShadowFarDistance(static_cast<double>(variable));
 		}
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when setting shadow far distance: " << ex.what());
