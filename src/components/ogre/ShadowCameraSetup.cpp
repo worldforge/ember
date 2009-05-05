@@ -68,15 +68,15 @@ bool ShadowCameraSetup::setup()
 	mSceneMgr.setShadowTextureCountPerLightType(Ogre::Light::LT_POINT, 1);
 	mSceneMgr.setShadowTextureCountPerLightType(Ogre::Light::LT_SPOTLIGHT, 1);
 
-	if (isOpenGL) {
-		// GL performs much better if you pick half-float format
-		mSceneMgr.setShadowTexturePixelFormat(Ogre::PF_FLOAT16_R);
-	} else {
-		// D3D is the opposite - if you ask for PF_FLOAT16_R you
-		// get an integer format instead! You can ask for PF_FLOAT16_GR
-		// but the precision doesn't work well
+	//if (isOpenGL) {
+	//	// GL performs much better if you pick half-float format
+	//	mSceneMgr.setShadowTexturePixelFormat(Ogre::PF_FLOAT16_R);
+	//} else {
+	//	// D3D is the opposite - if you ask for PF_FLOAT16_R you
+	//	// get an integer format instead! You can ask for PF_FLOAT16_GR
+	//	// but the precision doesn't work well
 		mSceneMgr.setShadowTexturePixelFormat(Ogre::PF_FLOAT32_R);
-	}
+	//}
 
 	mSceneMgr.setShadowTextureCasterMaterial("Ogre/DepthShadowmap/Caster/Float/NoAlpha");
 	mSceneMgr.setShadowCasterRenderBackFaces(true);
