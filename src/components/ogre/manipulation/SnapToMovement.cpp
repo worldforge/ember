@@ -82,16 +82,17 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 	std::auto_ptr<SnapPointCandidate> closestSnapping(0);
 
 	WFMath::AxisBox<3> currentBbox = mEntity.getBBox();
-	currentBbox.shift(WFMath::Vector<3>(position));
 	WFMath::RotBox<3> currentRotbox;
 	currentRotbox.size() = currentBbox.highCorner() - currentBbox.lowCorner();
-	currentRotbox.shift(currentBbox.lowCorner() - currentBbox.getCenter());
+	currentRotbox.corner0() = currentBbox.lowCorner();
+	currentRotbox.orientation().identity();
 	currentRotbox.rotateCenter(orientation);
-	//(currentBbox.lowCorner(), currentBbox.highCorner() - currentBbox.lowCorner(), orientation);
+	currentRotbox.shift(WFMath::Vector<3>(position));
 
 	for (int j = 0; j < currentRotbox.numCorners(); ++j) {
 		WFMath::Point<3> currentPoint = currentRotbox.getCorner(j);
-		if (nodeIterator != mDebugNodes.end()) {
+		if (currentPoint.isValid() && nodeIterator != mDebugNodes.end()) {
+
 			Ogre::SceneNode* node = *nodeIterator;
 			node->setPosition(Atlas2Ogre(currentPoint));
 			node->setVisible(true);
@@ -115,8 +116,12 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 				if (entity && entity != &mEntity && entity->hasBBox()) {
 					///Ok, we have an entity which is close to our entity. Now check if any of the points of the bounding box is close.
 					WFMath::AxisBox<3> bbox = entity->getBBox();
-					bbox.shift(WFMath::Vector<3>(entity->getViewPosition()));
-					WFMath::RotBox<3> rotbox(bbox.lowCorner(), bbox.highCorner() - bbox.lowCorner(), entity->getViewOrientation());
+					WFMath::RotBox<3> rotbox;
+					rotbox.size() = bbox.highCorner() - bbox.lowCorner();
+					rotbox.corner0() = bbox.lowCorner();
+					rotbox.orientation().identity();
+					rotbox.rotateCenter(entity->getViewOrientation());
+					rotbox.shift(WFMath::Vector<3>(entity->getViewPosition()));
 
 					for (int i = 0; i < rotbox.numCorners(); ++i) {
 						WFMath::Point<3> point = rotbox.getCorner(i);
