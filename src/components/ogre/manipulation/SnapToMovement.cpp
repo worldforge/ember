@@ -1,7 +1,7 @@
 //
 // C++ Implementation: SnapToMovement
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2009
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -69,22 +69,26 @@ SnapToMovement::~SnapToMovement()
 
 bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, WFMath::Vector<3>& adjustment, EmberEntity* snappedToEntity)
 {
-	
+
 	for (std::vector<Ogre::SceneNode*>::iterator I = mDebugNodes.begin(); I != mDebugNodes.end(); ++I) {
 		Ogre::SceneNode* node = *I;
 		node->setVisible(false);
 		Ogre::Entity* entity = static_cast<Ogre::Entity*>(node->getAttachedObject(0));
 		entity->setMaterialName("/global/authoring/point");
 	}
-	
+
 	std::vector<Ogre::SceneNode*>::iterator nodeIterator = mDebugNodes.begin();
-	
+
 	std::auto_ptr<SnapPointCandidate> closestSnapping(0);
 
 	WFMath::AxisBox<3> currentBbox = mEntity.getBBox();
 	currentBbox.shift(WFMath::Vector<3>(position));
-	WFMath::RotBox<3> currentRotbox(currentBbox.lowCorner(), currentBbox.highCorner() - currentBbox.lowCorner(), orientation);
-	
+	WFMath::RotBox<3> currentRotbox;
+	currentRotbox.size() = currentBbox.highCorner() - currentBbox.lowCorner();
+	currentRotbox.shift(currentBbox.lowCorner() - currentBbox.getCenter());
+	currentRotbox.rotateCenter(orientation);
+	//(currentBbox.lowCorner(), currentBbox.highCorner() - currentBbox.lowCorner(), orientation);
+
 	for (int j = 0; j < currentRotbox.numCorners(); ++j) {
 		WFMath::Point<3> currentPoint = currentRotbox.getCorner(j);
 		if (nodeIterator != mDebugNodes.end()) {
@@ -93,8 +97,8 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 			node->setVisible(true);
 			nodeIterator++;
 		}
-	}	
-	
+	}
+
 	///First find all entities which are close enough
 	///Then try to do a snap movement based on the points of the eris bounding boxes. I.e. we only provide support for snapping one corner of a bounding box to another corner (for now).
 	Ogre::SceneManager* sceneMngr = mEntity.getSceneNode()->getCreator();
@@ -113,7 +117,7 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 					WFMath::AxisBox<3> bbox = entity->getBBox();
 					bbox.shift(WFMath::Vector<3>(entity->getViewPosition()));
 					WFMath::RotBox<3> rotbox(bbox.lowCorner(), bbox.highCorner() - bbox.lowCorner(), entity->getViewOrientation());
-					
+
 					for (int i = 0; i < rotbox.numCorners(); ++i) {
 						WFMath::Point<3> point = rotbox.getCorner(i);
 						Ogre::SceneNode* currentNode(0);
@@ -145,7 +149,7 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 								}
 							}
 						}
-						
+
 					}
 				}
 			}
