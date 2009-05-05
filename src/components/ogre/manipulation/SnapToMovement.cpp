@@ -37,21 +37,23 @@ namespace EmberOgre {
 
 namespace Manipulation {
 
-SnapToMovement::SnapToMovement(EmberEntity& entity, float snapThreshold)
+SnapToMovement::SnapToMovement(EmberEntity& entity, float snapThreshold, bool showDebugOverlay)
 : mEntity(entity), mSnapThreshold(snapThreshold)
 {
-	Ogre::SceneManager* sceneMngr = entity.getSceneNode()->getCreator();
-	for (int i = 0; i < 30; ++i) {
-		Ogre::SceneNode* node = sceneMngr->getRootSceneNode()->createChildSceneNode();
-		Ogre::Entity* entity = sceneMngr->createEntity(node->getName() + "_entity", "3d_objects/primitives/models/sphere.mesh");
-		///start out with a normal material
-		entity->setMaterialName("/global/authoring/point");
-		entity->setRenderingDistance(300);
-// 		entity->setQueryFlags(MousePicker::CM_UNDEFINED);
-		node->setScale(0.25, 0.25, 0.25);
-		node->attachObject(entity);
-		node->setVisible(false);
-		mDebugNodes.push_back(node);
+	if (showDebugOverlay) {
+		Ogre::SceneManager* sceneMngr = entity.getSceneNode()->getCreator();
+		for (int i = 0; i < 30; ++i) {
+			Ogre::SceneNode* node = sceneMngr->getRootSceneNode()->createChildSceneNode();
+			Ogre::Entity* entity = sceneMngr->createEntity(node->getName() + "_entity", "3d_objects/primitives/models/sphere.mesh");
+			///start out with a normal material
+			entity->setMaterialName("/global/authoring/point");
+			entity->setRenderingDistance(300);
+	// 		entity->setQueryFlags(MousePicker::CM_UNDEFINED);
+			node->setScale(0.25, 0.25, 0.25);
+			node->attachObject(entity);
+			node->setVisible(false);
+			mDebugNodes.push_back(node);
+		}
 	}
 }
 
@@ -86,7 +88,7 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 	currentRotbox.size() = currentBbox.highCorner() - currentBbox.lowCorner();
 	currentRotbox.corner0() = currentBbox.lowCorner();
 	currentRotbox.orientation().identity();
-	currentRotbox.rotateCenter(orientation);
+	currentRotbox.rotatePoint(orientation, WFMath::Point<3>(0, 0, 0));
 	currentRotbox.shift(WFMath::Vector<3>(position));
 
 	for (int j = 0; j < currentRotbox.numCorners(); ++j) {
@@ -120,7 +122,7 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 					rotbox.size() = bbox.highCorner() - bbox.lowCorner();
 					rotbox.corner0() = bbox.lowCorner();
 					rotbox.orientation().identity();
-					rotbox.rotateCenter(entity->getViewOrientation());
+					rotbox.rotatePoint(entity->getViewOrientation(), WFMath::Point<3>(0, 0, 0));
 					rotbox.shift(WFMath::Vector<3>(entity->getViewPosition()));
 
 					for (int i = 0; i < rotbox.numCorners(); ++i) {
