@@ -1,7 +1,7 @@
 //
 // C++ Implementation: MovementAdapter
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -63,7 +63,7 @@ MovementAdapterWorkerDiscrete::MovementAdapterWorkerDiscrete(MovementAdapter& ad
 bool MovementAdapterWorkerDiscrete::injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse)
 {
 	///this will move the entity instead of the mouse
-	
+
 	Vector<3> direction;
 	direction.zero();
 	direction.x() = -motion.xRelativeMovement;
@@ -73,15 +73,15 @@ bool MovementAdapterWorkerDiscrete::injectMouseMove(const Ember::MouseMotion& mo
 // 	if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
 // 		direction = direction * 5;
 // 	}
-	
+
 	///move it relative to the camera
 	direction = direction.rotate(Ogre2Atlas(EmberOgre::getSingleton().getMainCamera()->getOrientation()));
-	
+
 	getBridge()->move( direction);//move the entity a fixed distance for each mouse movement.
-	
+
 	///we don't want to move the cursor
 	freezeMouse = true;
-	
+
 	return false;
 
 }
@@ -124,19 +124,27 @@ MovementAdapter::MovementAdapter()
 
 MovementAdapter::~MovementAdapter()
 {
-	detach(); ///A call to this will delete both the bridge and the adapter.
+	//detach(); ///A call to this will delete both the bridge and the adapter.
 }
 
 void MovementAdapter::finalizeMovement()
 {
 	removeAdapter();
-	mBridge->finalizeMovement();
+	//We need to do it this way since there's a chance that the call to IMovementBridge::finalizeMovement will delete this instance, and then we can't reference mBridge anymore
+	IMovementBridge* bridge = mBridge;
+	mBridge = 0;
+	bridge->finalizeMovement();
+	delete bridge;
 }
 
 void MovementAdapter::cancelMovement()
 {
 	removeAdapter();
-	mBridge->cancelMovement();
+	//We need to do it this way since there's a chance that the call to IMovementBridge::cancelMovement will delete this instance, and then we can't reference mBridge anymore
+	IMovementBridge* bridge = mBridge;
+	mBridge = 0;
+	bridge->cancelMovement();
+	delete bridge;
 }
 
 bool MovementAdapter::injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse)
@@ -160,7 +168,7 @@ bool MovementAdapter::injectMouseButtonUp(const Ember::Input::MouseButton& butto
 	{
 		return false;
 	}
-	
+
 	return false;
 }
 

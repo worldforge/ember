@@ -1,7 +1,7 @@
 //
 // C++ Implementation: EntityCreator
 //
-// Description: 
+// Description:
 //
 //
 // Author: Alexey Torkhov <atorkhov@gmail.com>, (C) 2008
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -76,7 +76,7 @@ namespace Gui {
 
 
 EntityCreator::EntityCreator()
-		: mCreateMode(false), mRecipe(0), mModelMount(0), mModel(0), mBlurb(0), mBlurbShown(false), mRandomizeOrientation(true)
+		: mCreateMode(false), mRecipe(0), mModelMount(0), mModel(0), mBlurb(0), mBlurbShown(false), mRandomizeOrientation(true), mMovement(0)
 {
 	mMoveAdapter = new EntityCreatorMoveAdapter(*this);
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EntityCreator::connectedToServer));
@@ -184,7 +184,7 @@ void EntityCreator::createEntity()
 	mEntityMessage["loc"] = avatar->getLocation()->getId();
 	mEntityMessage["name"] = erisType->getName();
 	mEntityMessage["parents"] = Atlas::Message::ListType(1, erisType->getName());
-	
+
 	Eris::View* view = Ember::Application::getSingleton().getMainView();
 	if (view) {
 		// Temporary entity
@@ -234,7 +234,7 @@ void EntityCreator::setModel(const std::string& modelName)
 		modelDef->reloadAllInstances();
 	}
 
-	
+
 	mModelMount = new ModelMount(*mModel, mEntityNode);
 
 	initFromModel();
@@ -248,14 +248,14 @@ void EntityCreator::setModel(const std::string& modelName)
 	mEntityNode->setOrientation(Atlas2Ogre(mOrientation));
 }
 
-void EntityCreator::showModelPart(const std::string& partName) 
+void EntityCreator::showModelPart(const std::string& partName)
 {
 	if (mModel) {
 		mModel->showPart(partName);
 	}
 }
 
-void EntityCreator::hideModelPart(const std::string& partName) 
+void EntityCreator::hideModelPart(const std::string& partName)
 {
 	if (mModel) {
 		mModel->hidePart(partName);
@@ -415,7 +415,7 @@ void EntityCreator::showBlurb_frameStarted(const Ogre::FrameEvent& event)
 		} else {
 			mTimeBlurbShown += event.timeSinceLastFrame;
 			mBlurb->setAlpha(1.0f - (mTimeBlurbShown / mTimeToShowBlurb));
-			
+
 			if (mTimeBlurbShown > mTimeToShowBlurb) {
 				CEGUI::WindowManager::getSingleton().destroyWindow(mBlurb);
 				mBlurb = 0;
