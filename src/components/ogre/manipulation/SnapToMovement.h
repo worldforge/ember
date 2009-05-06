@@ -27,41 +27,87 @@
 #include <wfmath/vector.h>
 #include <vector>
 
-namespace Ogre {
+namespace Ogre
+{
 class SceneNode;
 }
+namespace Eris
+{
+class Entity;
+}
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
 class EmberEntity;
 
-namespace Manipulation {
+namespace Manipulation
+{
 
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
-class SnapToMovement{
+ * @brief Provides snap-to functionality for moved entities, i.e. it allows them to snap to other entities.
+ *
+ * This can be very useful when you want to align two entities with another.
+ * The snapping is done through the corners of the bounding boxes.
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
+class SnapToMovement
+{
 public:
-    SnapToMovement(EmberEntity& entity, float snapThreshold, bool showDebugOverlay = false);
+	/**
+	 * @brief Ctor.
+	 * @param entity The entity which is moved.
+	 * @param node The node to which the entity is attached.
+	 * @param snapThreshold The max distance, in world units, when looking for suitable snap targets.
+	 * @param showDebugOverlay Whether to show a debug overlay consisting of dots for the snapping.
+	 */
+	SnapToMovement(Eris::Entity& entity, Ogre::SceneNode& node, float snapThreshold, bool showDebugOverlay = false);
 
-    ~SnapToMovement();
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~SnapToMovement();
 
-
-    bool testSnapTo(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, WFMath::Vector<3>& adjustment, EmberEntity* snappedToEntity);
+	/**
+	 * @brief Tests whether the entity can be snapped to another entity.
+	 * @param position The position of the entity.
+	 * @param orientation The orientation of the entity.
+	 * @param adjustment If snapping can happen, this is the adjustment needed for the entity to be in the new position.
+	 * @param snappedToEntity If snapping can happen, this is the entity to which it can be snapped.
+	 * @returns True if it could be snapped.
+	 */
+	bool testSnapTo(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, WFMath::Vector<3>& adjustment, EmberEntity* snappedToEntity);
 
 protected:
+	/**
+	 * @brief A simple struct for snapping candidates.
+	 */
 	struct SnapPointCandidate
 	{
 		WFMath::CoordType distance;
 		WFMath::Vector<3> adjustment;
 		EmberEntity* entity;
 	};
-	EmberEntity& mEntity;
+
+	/**
+	 * @brief The entity which is being moved.
+	 */
+	Eris::Entity& mEntity;
+
+	/**
+	 * @brief The node to which the entity is attached.
+	 */
+	Ogre::SceneNode& mNode;
+
+	/**
+	 * @brief The max distance for when looking for entities to snap to.
+	 */
 	float mSnapThreshold;
 
-
+	/**
+	 * @brief If debug overlay is shown, the scene nodes which contains the nodes will be stored here.
+	 */
 	std::vector<Ogre::SceneNode*> mDebugNodes;
-
 
 };
 

@@ -33,78 +33,18 @@
 
 #include "SnapToMovement.h"
 
+namespace EmberOgre
+{
 
-namespace EmberOgre {
-
-EntityMover::EntityMover(EmberEntity& entity, EntityMoveManager& manager)
-: mEntity(entity), mManager(manager), mSnapping(new Manipulation::SnapToMovement(entity, 2.0f, true))
+EntityMover::EntityMover(EmberEntity& entity, EntityMoveManager& manager) :
+	EntityMoverBase(entity, entity.getSceneNode()), mEntity(entity), mManager(manager)
 {
-}
-
-const WFMath::Quaternion& EntityMover::getOrientation() const
-{
-	mOrientation = Ogre2Atlas(mEntity.getSceneNode()->_getDerivedOrientation());
-	return mOrientation;
-}
-
-const WFMath::Point<3>& EntityMover::getPosition() const
-{
-	mPosition = Ogre2Atlas(mEntity.getSceneNode()->_getDerivedPosition());
-	return mPosition;
-}
-void EntityMover::setPosition(const WFMath::Point<3>& position)
-{
-	WFMath::Point<3> finalPosition(position);
-	if (position.isValid()) {
-		WFMath::Vector<3> adjustment;
-		EmberEntity* entity(0);
-		if (mSnapping->testSnapTo(position, getOrientation(), adjustment, entity)) {
-			finalPosition = finalPosition.shift(adjustment);
-		}
-
-		///We need to offset into local space.
-		Ogre::Vector3 posOffset = Ogre::Vector3::ZERO;
-		if (mEntity.getSceneNode()->getParent()) {
-			posOffset = mEntity.getSceneNode()->getParent()->_getDerivedPosition();
-		}
-		mEntity.getSceneNode()->setPosition(Atlas2Ogre(finalPosition) - posOffset);
-		///adjust it so that it moves according to the ground for example
-		mEntity.adjustPosition(mEntity.getSceneNode()->getPosition());
-	}
-}
-void EntityMover::move(const WFMath::Vector<3>& directionVector)
-{
-	if (directionVector.isValid()) {
-		mEntity.getSceneNode()->translate(Atlas2Ogre(directionVector));
-		///adjust it so that it moves according to the ground for example
-		mEntity.adjustPosition(mEntity.getSceneNode()->getPosition());
-	}
-}
-void EntityMover::setRotation (int axis, WFMath::CoordType angle)
-{
-	///not implemented yet
-}
-
-void EntityMover::yaw(WFMath::CoordType angle)
-{
-	mEntity.getSceneNode()->yaw(Ogre::Degree(angle));
-}
-
-void EntityMover::setOrientation(const WFMath::Quaternion& rotation)
-{
-	if (rotation.isValid()) {
-		///We need to offset into local space.
-		Ogre::Quaternion rotOffset = Ogre::Quaternion::IDENTITY;
-		if (mEntity.getSceneNode()->getParent()) {
-			rotOffset = mEntity.getSceneNode()->getParent()->_getDerivedOrientation();
-		}
-		mEntity.getSceneNode()->setOrientation(Atlas2Ogre(rotation) - rotOffset);
-	}
 }
 
 void EntityMover::finalizeMovement()
 {
-	if (mEntity.getLocation()) {
+	if (mEntity.getLocation())
+	{
 		///send to server
 		Ember::EmberServices::getSingleton().getServerService()->place(&mEntity, mEntity.getLocation(), Ogre2Atlas(mEntity.getSceneNode()->getPosition()), Ogre2Atlas(mEntity.getSceneNode()->getOrientation()));
 	}
@@ -117,5 +57,9 @@ void EntityMover::cancelMovement()
 	mManager.EventCancelledMoving.emit();
 }
 
+void EntityMover::newEntityPosition(const Ogre::Vector3& position)
+{
+	mEntity.adjustPosition(mEntity.getSceneNode()->getPosition());
+}
 
 }

@@ -1,7 +1,7 @@
 //
 // C++ Interface: EntityMover
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -24,7 +24,7 @@
 #define EMBEROGREENTITYMOVER_H
 
 #include "../EmberOgrePrerequisites.h"
-#include "IMovementBridge.h"
+#include "EntityMoverBase.h"
 #include <wfmath/point.h>
 
 namespace EmberOgre {
@@ -37,34 +37,28 @@ class EntityMoveManager;
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-	
+
 	@brief An implementation of IEntityMoveBridge which allows for EmberEntity instances to be moved.
 */
-class EntityMover : public IMovementBridge
+class EntityMover : public Manipulation::EntityMoverBase
 {
 public:
 
 	EntityMover(EmberEntity& entity, EntityMoveManager& manager);
 	virtual ~EntityMover() {}
 
-	virtual const WFMath::Quaternion& getOrientation() const;
-	virtual const WFMath::Point<3>& getPosition() const;
-	virtual void setPosition(const WFMath::Point<3>& position);
-	virtual void move(const WFMath::Vector<3>& directionVector);
-	virtual void setRotation (int axis, WFMath::CoordType angle);
-	virtual void setOrientation(const WFMath::Quaternion& rotation);
-	virtual void yaw(WFMath::CoordType angle);
-	
 	virtual void finalizeMovement();
 	virtual void cancelMovement();
+
+protected:
+
+	virtual void newEntityPosition(const Ogre::Vector3& position);
+
 
 private:
 
 	EmberEntity& mEntity;
 	EntityMoveManager& mManager;
-	mutable WFMath::Quaternion mOrientation;
-	mutable WFMath::Point<3> mPosition;
-	std::auto_ptr<Manipulation::SnapToMovement> mSnapping;
 
 };
 

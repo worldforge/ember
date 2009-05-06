@@ -23,31 +23,65 @@
 
 #ifndef ENTITYMOVERBASE_H_
 #define ENTITYMOVERBASE_H_
+#include "IMovementBridge.h"
+#include <wfmath/point.h>
+#include <memory>
 
-class EntityMoverBase : public IMovementBridge
+namespace Eris
+{
+class Entity;
+}
+
+namespace EmberOgre
+{
+class EmberEntity;
+namespace Manipulation
+{
+class SnapToMovement;
+
+/**
+ * @brief Base class for all movement bridges which are moving entities.
+ *
+ * By subclassing from this you'll get a lot of boiler plate code, as well as automatic snap-to behavior.
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
+class EntityMoverBase: public IMovementBridge
 {
 public:
-    /**
-     * @brief Ctor.
-     * @param entity The entity which should be moved.
-     * @param node The node to which the entity belongs.
-     */
-	EntityMoverBase(EmberEntity& entity, Ogre::SceneNode* node);
+	/**
+	 * @brief Ctor.
+	 * @param entity The entity which should be moved.
+	 * @param node The node to which the entity belongs.
+	 */
+	EntityMoverBase(Eris::Entity& entity, Ogre::SceneNode* node);
+
+	/**
+	 * @brief Dtor.
+	 */
 	virtual ~EntityMoverBase();
 
 	virtual const WFMath::Quaternion& getOrientation() const;
 	virtual const WFMath::Point<3>& getPosition() const;
 	virtual void setPosition(const WFMath::Point<3>& position);
 	virtual void move(const WFMath::Vector<3>& directionVector);
-	virtual void setRotation (int axis, WFMath::CoordType angle);
+	virtual void setRotation(int axis, WFMath::CoordType angle);
 	virtual void setOrientation(const WFMath::Quaternion& rotation);
 	virtual void yaw(WFMath::CoordType angle);
 
 protected:
+
+	/**
+	 * @brief Called when the entity's position has been changed.
+	 * Implementing this in a subclass allows you to do additional adjustment with the entity.
+	 *
+	 * @param position The new position.
+	 */
+	virtual void newEntityPosition(const Ogre::Vector3& position);
+
 	/**
 	 * @brief The entity which should be moved.
 	 */
-	EmberEntity& mEntity;
+	Eris::Entity& mEntity;
 	/**
 	 * @brief The node to which the entity is attached.
 	 */
@@ -62,8 +96,13 @@ protected:
 	 */
 	mutable WFMath::Point<3> mPosition;
 
+	/**
+	 * @brief Handles snap-to movement, which will make the entity snap to other entities in the world.
+	 */
 	std::auto_ptr<Manipulation::SnapToMovement> mSnapping;
 
 };
+}
+}
 
 #endif /* ENTITYMOVERBASE_H_ */

@@ -30,18 +30,20 @@
 #include "components/ogre/MathConverter.h"
 
 #include <wfmath/rotbox.h>
+#include <Eris/Entity.h>
 
 #include <OgreSceneManager.h>
+#include <memory>
 
 namespace EmberOgre {
 
 namespace Manipulation {
 
-SnapToMovement::SnapToMovement(EmberEntity& entity, float snapThreshold, bool showDebugOverlay)
-: mEntity(entity), mSnapThreshold(snapThreshold)
+SnapToMovement::SnapToMovement(Eris::Entity& entity, Ogre::SceneNode& node, float snapThreshold, bool showDebugOverlay)
+: mEntity(entity), mNode(node), mSnapThreshold(snapThreshold)
 {
 	if (showDebugOverlay) {
-		Ogre::SceneManager* sceneMngr = entity.getSceneNode()->getCreator();
+		Ogre::SceneManager* sceneMngr = mNode.getCreator();
 		for (int i = 0; i < 30; ++i) {
 			Ogre::SceneNode* node = sceneMngr->getRootSceneNode()->createChildSceneNode();
 			Ogre::Entity* entity = sceneMngr->createEntity(node->getName() + "_entity", "3d_objects/primitives/models/sphere.mesh");
@@ -60,7 +62,7 @@ SnapToMovement::SnapToMovement(EmberEntity& entity, float snapThreshold, bool sh
 
 SnapToMovement::~SnapToMovement()
 {
-	Ogre::SceneManager* sceneMngr = mEntity.getSceneNode()->getCreator();
+	Ogre::SceneManager* sceneMngr = mNode.getCreator();
 	for (std::vector<Ogre::SceneNode*>::iterator I = mDebugNodes.begin(); I != mDebugNodes.end(); ++I) {
 		Ogre::SceneNode* node = *I;
 		node->removeAndDestroyAllChildren();
@@ -104,10 +106,10 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 
 	///First find all entities which are close enough
 	///Then try to do a snap movement based on the points of the eris bounding boxes. I.e. we only provide support for snapping one corner of a bounding box to another corner (for now).
-	Ogre::SceneManager* sceneMngr = mEntity.getSceneNode()->getCreator();
+	Ogre::SceneManager* sceneMngr = mNode.getCreator();
 	if (sceneMngr) {
 		WFMath::Ball<3> boundingSphere = mEntity.getBBox().boundingSphere();
-		Ogre::Sphere sphere(mEntity.getSceneNode()->_getDerivedPosition(), boundingSphere.radius() * 2);
+		Ogre::Sphere sphere(mNode._getDerivedPosition(), boundingSphere.radius() * 2);
 		Ogre::SphereSceneQuery* query = sceneMngr->createSphereQuery(sphere);
 		Ogre::SceneQueryResult& result = query->execute();
 		for (Ogre::SceneQueryResultMovableList::const_iterator I = result.movables.begin(); I != result.movables.end(); ++I) {
