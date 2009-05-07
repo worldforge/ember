@@ -493,7 +493,7 @@ void TerrainPageSurfaceCompilerShaderPass::addShadowLayer(TerrainPageShadow* ter
 
 	textureUnitState->setContentType(Ogre::TextureUnitState::CONTENT_SHADOW);
 	textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_BORDER);
-	textureUnitState->setTextureBorderColour(Ogre::ColourValue(100000.0, 100000.0, 100000.0, 1.0));
+	textureUnitState->setTextureBorderColour(Ogre::ColourValue(1.0, 1.0, 1.0, 1.0));
 }
 
 unsigned int TerrainPageSurfaceCompilerShaderPass::getCoveragePixelWidth() const
