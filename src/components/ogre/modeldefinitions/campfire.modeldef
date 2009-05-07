@@ -1,5 +1,5 @@
 <models>
-    <model name="campfireA" usescaleof="all" showcontained="true" icon="">
+    <model name="campfireA" usescaleof="width" showcontained="true" icon="">
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
@@ -18,7 +18,7 @@
         <attachpoints />
         <views />
 	</model>
-    <model name="campfireB" usescaleof="all" showcontained="true" icon="">
+    <model name="campfireB" usescaleof="width" showcontained="true" icon="">
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
