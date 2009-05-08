@@ -42,6 +42,11 @@ mEmitterVal(emitterVal)
 		if (emitter) {
 			mOriginalValue = emitter->getEmissionRate();
 		}
+	} else if (mEmitterVal == "time_to_live") {
+		Ogre::ParticleEmitter* emitter = mParticleSystem->getOgreParticleSystem()->getEmitter(0);
+		if (emitter) {
+			mOriginalValue = emitter->getTimeToLive();
+		}
 	}
 
 }
@@ -54,6 +59,11 @@ void ParticleSystemBinding::scaleValue(Ogre::Real scaler)
 		Ogre::ParticleEmitter* emitter = mParticleSystem->getOgreParticleSystem()->getEmitter(0);
 		if (emitter) {
 			emitter->setEmissionRate(mOriginalValue * scaler);
+		}
+	} else if (mEmitterVal == "time_to_live") {
+		Ogre::ParticleEmitter* emitter = mParticleSystem->getOgreParticleSystem()->getEmitter(0);
+		if (emitter) {
+			emitter->setTimeToLive(mOriginalValue * scaler);
 		}
 	}
 }
