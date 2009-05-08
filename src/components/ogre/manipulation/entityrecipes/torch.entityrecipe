@@ -1,0 +1,18 @@
+<entityrecipes>
+  <entityrecipe name="torch">
+    <author>Alexey Torkhov</author>
+    <description>
+      A torch.
+    </description>
+    <entity type="torch">
+      <atlas>
+        <map>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+    </adapters>
+    <bindings>
+    </bindings>
+  </entityrecipe>
+</entityrecipes>
