@@ -6,6 +6,7 @@
 			<particlesystem script="/global/particles/smoke">
 				<bindings>
 					<binding emittervar="emission_rate" atlasattribute="status" />
+					<binding emittervar="time_to_live" atlasattribute="status" />
 				</bindings>
 			</particlesystem>
 		</particlesystems>
