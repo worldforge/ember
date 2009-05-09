@@ -1,7 +1,7 @@
 //
 // C++ Interface: IntegratedChatWidget
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -26,7 +26,7 @@
 #include "Widget.h"
 #include "WidgetPool.h"
 #include <Eris/Entity.h>
-#include "services/config/ConfigListener.h"
+#include "services/config/ConfigListenerContainer.h"
 
 namespace EmberOgre {
 
@@ -51,7 +51,7 @@ If the npc has a list of suggested responses these will be shown in a list of cl
 class IngameChatWidget : public Widget, public Ember::ConfigListenerContainer {
 
 
-	
+
 
 	class EntityObserver;
 	class Label;
@@ -60,39 +60,39 @@ class IngameChatWidget : public Widget, public Ember::ConfigListenerContainer {
 		public:
 			MovableObjectListener(EntityObserver& entityObserver, EmberPhysicalEntity* entity);
 			virtual ~MovableObjectListener();
-			
+
 			virtual bool objectRendering (const Ogre::MovableObject * movableObject, const Ogre::Camera * camera);
 			void setObserving(bool isObserving);
-			
+
 		private:
 			EntityObserver& mEntityObserver;
 			EmberPhysicalEntity* mEntity;
 			bool mIsObserving;
 	};
-	
+
 	class EntityObserver : public virtual sigc::trackable
 	{
 		public:
 			EntityObserver(IngameChatWidget& chatWidget, EmberPhysicalEntity* entity);
 			virtual ~EntityObserver();
 			void updateLabel(const Ogre::Camera * camera);
-			
+
 		protected:
 			IngameChatWidget& mChatWidget;
 			EmberPhysicalEntity* mEntity;
 			Label* mLabel;
 			MovableObjectListener mMovableObjectListener;
 			Eris::Entity::AttrChangedSlot mExternalSlot; //, mNameSlot;
-			
+
 			void showLabel();
 			void hideLabel();
-			
+
 			void entity_VisibilityChanged(bool visible);
 			void entity_BeingDeleted();
 			void entity_Say(const Atlas::Objects::Root& talk);
 			void entity_attributeChanged(const Atlas::Message::Element& attributeValue);
-			
-		
+
+
 	};
 
 	class ChatText;
@@ -103,29 +103,29 @@ class IngameChatWidget : public Widget, public Ember::ConfigListenerContainer {
 	{
 		public:
 			/**
-			
+
 			*/
 			Label(CEGUI::Window* window, CEGUI::WindowManager* windowManager, IngameChatWidget& containerWidget, const std::string& prefix);
-			
+
 			virtual ~Label();
 
 			/**
-			
+
 			*/
 			void updateText(const std::string& line);
-		
-			
+
+
 			/**
 			gets the entity the window belongs to
 			*/
 			EmberEntity* getEntity();
-			
+
 			void setEntity(EmberEntity* entity);
-			
+
 			void setActive(bool active);
 			bool getActive() const;
 			void markForRender();
-			
+
 			CEGUI::Window* getWindow();
 			/**
 			call this each frame to update the window
@@ -136,29 +136,29 @@ class IngameChatWidget : public Widget, public Ember::ConfigListenerContainer {
 			positions the window on top of the entity
 			*/
 			void placeWindowOnEntity();
-			
+
 			IngameChatWidget& getIngameChatWidget() { return mContainerWidget;}
-			
+
 			void updateEntityName();
-			
+
 		protected:
-			
+
 			CEGUI::Window* mWindow;
 			EmberEntity* mEntity;
 			std::vector<CEGUI::Window*> mResponseTextWidgets;
 			CEGUI::WindowManager* mWindowManager;
 			IngameChatWidget& mContainerWidget;
-			
+
 			bool buttonResponse_Click(const CEGUI::EventArgs& args);
-			
+
 			bool mActive;
 			const std::string mPrefix;
 			bool mRenderNextFrame;
 			ChatText* mChatText;
 // 			CEGUI::Window* mNameWidget;
-		
+
 	};
-	
+
 	class LabelCreator : public WidgetPool<IngameChatWidget::Label>::WidgetCreator
 	{
 		public:
@@ -168,29 +168,29 @@ class IngameChatWidget : public Widget, public Ember::ConfigListenerContainer {
 		protected:
 			IngameChatWidget& mIngameChatWidget;
 	};
-	
+
 	class ChatText : public sigc::trackable
 	{
 		public:
 			ChatText(CEGUI::Window* window, const std::string& prefix);
 			virtual ~ChatText() {}
-			
+
 			void updateText( const std::string & line);
-			
+
 			/**
 			call this each frame to update the window
 			*/
 			bool frameStarted( const Ogre::FrameEvent & event );
-			
+
 			float getElapsedTimeSinceLastUpdate();
-			
+
 			/**
 			increases the elapsed time with the supplied amount
 			*/
 			void increaseElapsedTime(float timeSlice);
-			
+
 			void attachToLabel(Label* label);
-			
+
 		protected:
 			std::vector<CEGUI::Window*> mResponseTextWidgets;
 			Label* mLabel;
@@ -199,11 +199,11 @@ class IngameChatWidget : public Widget, public Ember::ConfigListenerContainer {
 			CEGUI::Window* mResponseWidget;
 			float mElapsedTimeSinceLastUpdate;
 			std::string mPrefix;
-			
+
 			bool buttonResponse_Click(const CEGUI::EventArgs& args);
 	};
-	
-	
+
+
 	class ChatTextCreator : public WidgetPool<IngameChatWidget::ChatText>::WidgetCreator
 	{
 		public:
@@ -213,7 +213,7 @@ class IngameChatWidget : public Widget, public Ember::ConfigListenerContainer {
 		protected:
 			IngameChatWidget& mIngameChatWidget;
 	};
-	
+
 typedef std::map<std::string, Label*> LabelMap;
 typedef std::vector<Label*> LabelStore;
 typedef std::stack<Label*> LabelStack;
@@ -225,51 +225,51 @@ public:
     virtual ~IngameChatWidget();
 	void buildWidget();
 	virtual void frameStarted(const Ogre::FrameEvent & event);
-	
+
 	void removeWidget(const std::string& windowName);
-	
+
 // 	Label* getLabel();
 // 	void returnLabel(Label* label);
-	
+
 	void removeEntityObserver(EntityObserver* observer);
-	
+
 	WidgetPool<Label>& getLabelPool();
 	WidgetPool<ChatText>& getChatTextPool();
-	
-	float getTimeShown() {return mTimeShown;} 
-	
+
+	float getTimeShown() {return mTimeShown;}
+
 	CEGUI::Window* getLabelSheet();
-	
+
 protected:
-	
+
 	void View_EntitySeen(Eris::Entity* entity);
 	void ServerService_GotView(Eris::View* view);
 
 	void Config_TimeShown(const std::string& section, const std::string& key, varconf::Variable& variable);
 	void Config_DistanceShown(const std::string& section, const std::string& key, varconf::Variable& variable);
 
-		
-		
+
+
 	EntityObserverStore mEntityObservers;
-	
+
 	TypeInfoStore mLabelTypes;
-	
+
 	//the length in seconds a window should be shown after it has been activated
 	float mTimeShown;
-	
+
 	//how far away, in meters, the window should be visible
 	float mDistanceShown;
-	
-	LabelCreator mLabelCreator;	
+
+	LabelCreator mLabelCreator;
 	WidgetPool<Label> mLabelPool;
-	
-	ChatTextCreator mChatTextCreator;	
+
+	ChatTextCreator mChatTextCreator;
 	WidgetPool<ChatText> mChatTextPool;
-	
+
 	CEGUI::Window* mLabelSheet;
-	
+
 	std::string mAvatarEntityId;
-	
+
 	Ogre::Camera& mMainCamera;
 
 };

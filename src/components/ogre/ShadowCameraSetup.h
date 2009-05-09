@@ -1,7 +1,7 @@
 //
 // C++ Interface: ShadowCameraSetup
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2009
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -23,7 +23,7 @@
 #ifndef EMBEROGRESHADOWCAMERASETUP_H
 #define EMBEROGRESHADOWCAMERASETUP_H
 
-#include "services/config/ConfigListener.h"
+#include "services/config/ConfigListenerContainer.h"
 #include <OgreShadowCameraSetupPSSM.h>
 
 namespace EmberOgre {
@@ -53,20 +53,20 @@ protected:
     /**
      * @brief Sets up the shadows.
      * A couple of settings are however omitted in this method as they are instead set in the Config_* methods.
-     * @return 
+     * @return
      */
     virtual bool setup();
-    
+
     /**
      * @brief The scene manager which we want to apply our shadow camera to.
      */
     Ogre::SceneManager& mSceneMgr;
-    
+
     /**
      * @brief The pssm shadow camera setup.
      */
     Ogre::PSSMShadowCameraSetup* mPssmSetup;
-    
+
     /**
      * @brief A reference to the shared pointer, which guarantees that the mPssmSetup field isn't deleted inside Ogre.
      */
@@ -75,49 +75,49 @@ private:
 
 	/**
 	 * @brief Sets the shadow texture size.
-	 * @param section 
-	 * @param key 
-	 * @param variable 
+	 * @param section
+	 * @param key
+	 * @param variable
 	 */
 	void Config_ShadowTextureSize(const std::string& section, const std::string& key, varconf::Variable& variable);
-	
+
 	/**
 	 * @brief Sets the shadow split points (as a space separated series of floats, for example "1 15 50 500").
-	 * @param section 
-	 * @param key 
-	 * @param variable 
+	 * @param section
+	 * @param key
+	 * @param variable
 	 */
 	void Config_ShadowSplitPoints(const std::string& section, const std::string& key, varconf::Variable& variable);
-	
+
 	/**
 	 * @brief Sets the shadow split padding, a float.
-	 * @param section 
-	 * @param key 
-	 * @param variable 
+	 * @param section
+	 * @param key
+	 * @param variable
 	 */
 	void Config_ShadowSplitPadding(const std::string& section, const std::string& key, varconf::Variable& variable);
-	
+
 	/**
 	 * @brief Sets the shadow optimal adjust factors (as a space separated series of floats, for example "1 1 1").
-	 * @param section 
-	 * @param key 
-	 * @param variable 
+	 * @param section
+	 * @param key
+	 * @param variable
 	 */
 	void Config_ShadowOptimalAdjustFactors(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 	/**
 	 * @brief Sets the shadow use aggressive focus region, as a boolean.
-	 * @param section 
-	 * @param key 
-	 * @param variable 
+	 * @param section
+	 * @param key
+	 * @param variable
 	 */
 	void Config_ShadowUseAggressiveFocusRegion(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 	/**
 	 * @brief Sets the shadow far distance, as a float.
-	 * @param section 
-	 * @param key 
-	 * @param variable 
+	 * @param section
+	 * @param key
+	 * @param variable
 	 */
 	void Config_ShadowFarDistance(const std::string& section, const std::string& key, varconf::Variable& variable);
 

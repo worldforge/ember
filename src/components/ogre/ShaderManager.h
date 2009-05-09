@@ -1,7 +1,7 @@
 //
 // C++ Interface: ShaderManager
 //
-// Description: 
+// Description:
 //
 //
 // Author: Alexey Torkhov <atorkhov@gmail.com>, (C) 2009
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -24,7 +24,7 @@
 #define EMBEROGRE_SHADERMANAGER_H
 
 #include "framework/ConsoleObject.h"
-#include "services/config/ConfigListener.h"
+#include "services/config/ConfigListenerContainer.h"
 
 #include <string>
 #include <map>
@@ -43,7 +43,7 @@ class ShadowCameraSetup;
  *
  * @author Alexey Torkhov <atorkhov@gmail.com>
  */
-class ShaderManager : public Ember::ConsoleObject, public Ember::ConfigListenerContainer 
+class ShaderManager : public Ember::ConsoleObject, public Ember::ConfigListenerContainer
 {
 public:
 	/**
@@ -105,7 +105,7 @@ public:
 	 * Returns level id by its name
 	 */
 	GraphicsLevel getLevelByName(const std::string &level);
-	
+
 	/**
 	 * @brief Emitted when the graphical level is changed.
 	 */
@@ -141,20 +141,20 @@ private:
 	 * Disables shadows
 	 */
 	void setNoShadows();
-	
+
 	/**
 	 * @brief Called when the varconf setting for the graphics level changes. This will in turn call setGraphicsLevel.
-	 * @param section 
-	 * @param key 
-	 * @param variable 
+	 * @param section
+	 * @param key
+	 * @param variable
 	 */
 	void Config_Level(const std::string& section, const std::string& key, varconf::Variable& variable);
-	
+
 	/**
 	 * @brief Takes care of the setup of the pssm shadow camera. Owned by this instance.
 	 */
 	ShadowCameraSetup* mShadowCameraSetup;
-	
+
 };
 
 }

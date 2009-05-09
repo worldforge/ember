@@ -1,7 +1,7 @@
 //
 // C++ Interface: CEGUILogger
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -24,7 +24,7 @@
 #define EMBEROGRE_GUICEGUILOGGER_H
 
 #include <CEGUILogger.h>
-#include "services/config/ConfigListener.h"
+#include "services/config/ConfigListenerContainer.h"
 
 namespace EmberOgre {
 
@@ -32,7 +32,7 @@ namespace Gui {
 
 /**
 	An implementation of the CEGUI::Logger interface which will reroute all CEGUI log messages to the main Ember logging service instead.
-	
+
 	In order to use it, just create and hold onto an insance of it before creating the CEGUI::System. The base class of CEGUI::Logger is a singleton with a static method for access, so CEGUI::System will automatically catch that there's already a Logger instance created and use that instead of creating its own.
 	@note When CEGUI::System is destroyed, it will automatically delete the system wide Logger instance, even though it didn't create it in the first place. That means that when you use this class, make sure to use a pointer (no auto_ptr, no regular, stack object allocation), and don't try to delete it yourself.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -77,7 +77,7 @@ public:
     virtual void setLogFilename(const CEGUI::String& filename, bool append = false) {}
 private:
 	void Config_MinimumLogLevel(const std::string& section, const std::string& key, varconf::Variable& variable);
-	
+
 
 };
 
