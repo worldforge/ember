@@ -22,7 +22,6 @@
 
 #include "EmberPhysicalEntity.h"
 
-#include "framework/ConsoleBackend.h"
 #include "MotionManager.h"
 #include "model/Model.h"
 #include "model/ModelDefinition.h"
@@ -39,6 +38,7 @@
 #include "EmberEntityFactory.h"
 #include "WorldEmberEntity.h"
 
+#include "MathConverter.h"
 #include "EmberEntityActionCreator.h"
 
 #include "MousePicker.h"
@@ -342,7 +342,7 @@ Ogre::SceneNode* EmberPhysicalEntity::getScaleNode() const
 	return 0;
 }
 
-void EmberPhysicalEntity::attachToPointOnModel(const std::string& point, Model::Model* model)
+void EmberPhysicalEntity::attachToPointOnModel(const std::string& point, Model::Model* model, Ogre::Quaternion orientation, Ogre::Vector3 offset)
 {
 	///if we're not initialized, delay attachment until after init
 	if (!isInitialized())
@@ -354,35 +354,42 @@ void EmberPhysicalEntity::attachToPointOnModel(const std::string& point, Model::
 	{
 		if (model->hasAttachPoint(point) && model->getSkeleton())
 		{
+			S_LOG_INFO("Entity name: " << getName() << " model: " << getModel()->getDefinition()->getName());
 			getScaleNode()->detachObject(getModel());
 			getModel()->setVisible(true);
-			model->attachObjectToAttachPoint(point, getModel(), getScaleNode()->getScale(), getModel()->getDefinition()->getRotation());
+			model->attachObjectToAttachPoint(point, getModel(), getScaleNode()->getScale(), getModel()->getDefinition()->getRotation() * orientation, offset);
 			//Now also attach all lights and particles
-			Model::LightSet::const_iterator lightI = model->getLights().begin();
-			Model::LightSet::const_iterator lightI_end = model->getLights().end();
+			Model::LightSet::const_iterator lightI = getModel()->getLights().begin();
+			Model::LightSet::const_iterator lightI_end = getModel()->getLights().end();
 			for (; lightI != lightI_end; ++lightI)
 			{
 				Ogre::Light* light = lightI->light;
 				if (light)
 				{
 					getScaleNode()->detachObject(light);
-					model->attachObjectToAttachPoint(point, light, getScaleNode()->getScale(), getModel()->getDefinition()->getRotation());
+					model->attachObjectToAttachPoint(point, light, getScaleNode()->getScale(), getModel()->getDefinition()->getRotation() * orientation, offset);
 				}
 			}
 
-			Model::ParticleSystemSet::const_iterator particleI = model->getParticleSystems().begin();
-			Model::ParticleSystemSet::const_iterator particleI_end = model->getParticleSystems().end();
+			Model::ParticleSystemSet::const_iterator particleI = getModel()->getParticleSystems().begin();
+			Model::ParticleSystemSet::const_iterator particleI_end = getModel()->getParticleSystems().end();
 			for (; particleI != particleI_end; ++particleI)
 			{
 				Model::ParticleSystem* system = *particleI;
 				if (system && system->getOgreParticleSystem())
 				{
 					getScaleNode()->detachObject(system->getOgreParticleSystem());
-					model->attachObjectToAttachPoint(point, system->getOgreParticleSystem(), getScaleNode()->getScale(), getModel()->getDefinition()->getRotation());
+					model->attachObjectToAttachPoint(point, system->getOgreParticleSystem(), getScaleNode()->getScale(), getModel()->getDefinition()->getRotation() * orientation, offset);
 				}
 			}
 			mModelAttachedTo = model;
 		}
+		for (unsigned int i = 0; i < numContained(); ++i)
+		{
+			EmberEntity* entity = static_cast<EmberEntity*>(getContained(i));
+			entity->attachToPointOnModel(point, model, getScaleNode()->getOrientation() * orientation* Atlas2Ogre(entity->getOrientation()), getScaleNode()->getPosition() + offset + Atlas2Ogre(entity->getPosition()));
+		}
+
 	}
 }
 
@@ -392,8 +399,33 @@ void EmberPhysicalEntity::detachFromModel()
 	{
 		mModelAttachedTo->detachObjectFromBone(getModel()->getName());
 		getScaleNode()->attachObject(getModel());
+		for (Model::LightSet::const_iterator lightI = getModel()->getLights().begin(); lightI != getModel()->getLights().end(); ++lightI)
+		{
+			Ogre::Light* light = lightI->light;
+			if (light)
+			{
+				mModelAttachedTo->detachObjectFromBone(light->getName());
+				getScaleNode()->attachObject(light);
+			}
+		}
+
+		for (Model::ParticleSystemSet::const_iterator particleI = getModel()->getParticleSystems().begin(); particleI != getModel()->getParticleSystems().end(); ++particleI)
+		{
+			Model::ParticleSystem* system = *particleI;
+			if (system && system->getOgreParticleSystem())
+			{
+				mModelAttachedTo->detachObjectFromBone(system->getOgreParticleSystem()->getName());
+				getScaleNode()->attachObject(system->getOgreParticleSystem());
+			}
+		}
+
 		checkClientVisibility(isVisible());
 		mModelAttachedTo = 0;
+	}
+	for (unsigned int i = 0; i < numContained(); ++i)
+	{
+		EmberEntity* entity = static_cast<EmberEntity*>(getContained(i));
+		entity->detachFromModel();
 	}
 }
 

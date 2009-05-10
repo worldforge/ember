@@ -66,7 +66,7 @@ class EmberEntity : public Eris::Entity {
 	friend class EmberEntityFactory;
 public:
 
-	
+
 	enum MovementMode
 	{
 		MM_DEFAULT = 0,
@@ -76,7 +76,7 @@ public:
 		MM_SWIMMING = 4,
 		MM_WALKING = 5,
 		MM_RUNNING = 6,
-		MM_FIXED = 7  
+		MM_FIXED = 7
 	};
 
 	static const std::string MODE_STANDING;
@@ -85,13 +85,13 @@ public:
 	static const std::string MODE_SWIMMING;
 	static const std::string MODE_FLOATING;
 	static const std::string MODE_FIXED;
-	
+
 	/**
 	The material used for showing the eris bbox.
 	*/
 	static const std::string BboxMaterialName;
 
-	
+
 	/**
 	 * @brief Ctor.
 	 * This isn't normally called by something else than the EmberEntityFactory, but we'll keep it public for testing sake.
@@ -101,12 +101,12 @@ public:
 	 * @param sceneManager The scene manager to which this entity belongs.
 	 */
 	EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw,Ogre::SceneManager* sceneManager);
-	
+
 	/**
 	 * @brief Dtor.
 	 */
 	virtual ~EmberEntity();
-	
+
 
 	/**
 	 * @brief Called by contained entites to determine how they should be adjusted, for example snap to the ground.
@@ -123,8 +123,8 @@ public:
 	 * This is most often done by making a call to the containing node's adjustPositionForContainedNode method.
 	 * @see adjustPositionForContainedNode()
 	 */
-	virtual void adjustPosition(); 
-	
+	virtual void adjustPosition();
+
 	/**
 	 * @brief Adjust the height of the entity so that it "snaps" to the ground or is otherwise adjusted, depending on the current movement mode.
 	 * This is most often done by making a call to the containing node's
@@ -140,7 +140,7 @@ public:
 	 * @return The SceneNode to which this entity is attached.
 	 */
 	Ogre::SceneNode* getSceneNode() const;
-	
+
 	/**
 	 * @brief Called by a contained member to see if the member is allowed to be shown.
 	 * This can be reimplemented in a subclass such as AvatarEmberEntity to disallow things that belongs to a characters inventory to be shown.
@@ -151,22 +151,22 @@ public:
 	 */
 	virtual bool allowVisibilityOfMember(EmberEntity* entity);
 
-	
+
 	/**
 	 * @brief Returns true if the entity has a list of suggested responses to something this entity has said in the world.
 	 * @see getSuggestedResponses()
 	 * @return True if there's a collection of suggested responses to something that this entity has just said.
 	 */
 	bool hasSuggestedResponses() const;
-	
+
 	/**
 	 * @brief Returns a list of all suggested responses when conversing with this entity.
 	 * When talking to entities in the world (for example NPCs) the can sometimes be a specified list of suggested responses.
 	 * @return A vector of the suggested responses.
 	 */
 	const std::vector< std::string >& getSuggestedResponses() const;
-	
-	
+
+
 	/**
 	 * @brief Sets the visiblity of the graphical visibility of the entity.
 	 * This differs from the visibility set by the server, as found in Eris::Entity. The main reason for this is that we sometimes don't want to show all entities, even if the server says they're visible. An example would be items held as inventory by an entity, which we in most cases don't want to show as entitied directly.
@@ -174,7 +174,7 @@ public:
 	 * @param visible True if the graphical representation should be shown, else false.
 	 */
 	virtual void setClientVisible(bool visible);
-	
+
 
 	/**
 	 * @brief Gets the location (i.e. parent entity) as cast to an EmberEntity.
@@ -184,20 +184,20 @@ public:
 	 * @return The location of this entity, i.e. the parent entity. If there's no parent entity available, null will be returned (i.e. if the entity is in limbo, or if it's the topmost entity).
 	 */
 	EmberEntity* getEmberLocation() const;
-	
+
 	/**
 	 * @brief Attaches the entity to another entity (or in reality another Model).
 	 * @param point The point on the other entity to attach to.
 	 * @param model The model to which we should attach ourself.
 	 */
-	virtual void attachToPointOnModel(const std::string& point, Model::Model* model) {};
-	
+	virtual void attachToPointOnModel(const std::string& point, Model::Model* model, Ogre::Quaternion orientation = Ogre::Quaternion::IDENTITY, Ogre::Vector3 offset = Ogre::Vector3::ZERO) {};
+
 	/**
 	 * @brief Detaches the entity from another entity (or in reality another Model).
 	 * While the implementation here is missing, it's expected that subclasses that deals with Models should implement this.
 	 */
 	virtual void detachFromModel() {};
-	
+
 	/**
 	 * @brief Returns true if init(...) has been called and the entity been set up.
 	 * This can be useful when handling the entity, and not knowing whether it has been properly initialized yet. After the entity has been created, there's a small delay until init() is called. During this time the entity is in an incomplete state, and code that accesses it during that time might instead want to wait until it has been properly initialized.
@@ -211,20 +211,20 @@ public:
 	 * @return The current movement mode of the entity.
 	 */
 	MovementMode getMovementMode() const;
-	
+
 	/**
 	 * @brief Call this method once per frame to update the motion of the entity
 	 * @param timeSlice Elapsed time since we last updated, in seconds.
 	 */
 	virtual void updateMotion(Ogre::Real timeSlice);
-	
+
 	/**
 	 * @brief Shows the Ogre bounding box.
 	 * This is mainly useful for debugging or authoring.
 	 * @param show If true, the bounding box will be shown. If false, it will be hidden.
 	 */
 	virtual void showOgreBoundingBox(bool show);
-	
+
 
 	/**
 	 * @brief Shows the eris/atlas bounding box.
@@ -239,7 +239,7 @@ public:
 	 * @return True if the ogre bounding box is shown.
 	 */
 	virtual bool getShowOgreBoundingBox() const;
-	
+
 	/**
 	 * @brief Returns whether the eris/atlas bounding box is shown.
 	 * @see mErisEntityBoundingBox
@@ -253,29 +253,29 @@ public:
 	 * @return The world bounding box for this entity, in world units.
 	 */
 	virtual const Ogre::AxisAlignedBox& getWorldBoundingBox(bool derive = true) const;
-	
-	
+
+
 	/**
 	 * @brief Accesses the world bounding sphere for this entity.
-	 * @param derive 
+	 * @param derive
 	 * @return The world bounding sphere, in world units, for this entity.
 	 */
 	virtual const Ogre::Sphere & getWorldBoundingSphere (bool derive=true) const;
-	
+
 	/**
 	 *    Returns a list of the default use operators that can be used with this entity.
 	 For example, an axe would have a list of operators such as "chop" and "sharpen".
-	 * @return 
+	 * @return
 	 */
 	std::vector<std::string> getDefaultUseOperators();
-	
-	
+
+
 	/**
 	 * @brief Returns a list of actions that can be performed on this entity, if any.
 	 * @return A vector of actions, as strings.
 	 */
 	std::vector<std::string> getActions();
-	
+
 	/**
 	 * @brief Synchronizes the position and orientation of the entity with the server.
 	 */
@@ -289,30 +289,30 @@ public:
 	 * @param logOutstream The stream to which log messages will be written.
 	 */
 	void dumpAttributes(std::iostream& outstream, std::ostream& logOutstream) const;
-	
+
 	/**
 	 * General method for turning on and off debug visualizations. Subclasses might support more types of visualizations than the ones defined here.
 	 * @param visualization The type of visualization. Currently supports "OgreBBox" and "ErisBBox".
 	 * @param visualize Whether to visualize or not.
 	 */
 	virtual void setVisualize(const std::string& visualization, bool visualize);
-	
-	
+
+
 	/**
 	 * @brief Gets whether a certain visualization is turned on or off.
 	 * @param visualization The type of visualization. Currently supports "OgreBBox" and "ErisBBox".
 	 * @return true if visualization is turned on, else false
 	 */
 	virtual bool getVisualize(const std::string& visualization) const;
-	
-	
+
+
 	/**
 	 * @brief Emitted when the visibility of the entity has changed.
 	 * This differs from the visibility set by the server, as found in Eris::Entity. The main reason for this is that we sometimes don't want to show all entities, even if the server says they're visible. An example would be items held as inventory by an entity, which we in most cases don't want to show as entitied directly.
 	 */
 	sigc::signal<void, bool> EventClientVisibilityChanged;
-	
-	
+
+
 	/**
 	 * @brief Emitted when the movement mode has changed.
 	 * As the entity moves the "movement mode" changes. An entity which isn't moving should in most cases be in the "default" movement mode, whereas a moving one could be in the "walking", "running" or any other mode.
@@ -321,7 +321,7 @@ public:
 	 */
 	sigc::signal<void, MovementMode> EventModeChanged;
 
-protected: 
+protected:
 
 
 	/**
@@ -332,19 +332,19 @@ protected:
 	 * @return The offset by which to adjust the contained node.
 	 */
 	virtual const Ogre::Vector3& getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity);
-	
+
 
 	/**
 	* @brief If this is true, init(...) has been called and the entity been set up.
 	* @see isInitialized().
 	*/
 	bool mIsInitialized;
-	
+
 	/**
 	@brief If true, the entity is already registered with the motion manager, so we don't need to add it again (which can be expensive since the motionmanager holds all entities needing updated motions in a std::set).
 	*/
 	bool mIsInMotionManager;
-	
+
 	/**
 	 *    @copydoc Eris::Entity::onMoved()
 	 */
@@ -378,12 +378,12 @@ protected:
 	 *    @copydoc Eris::Entity::onSoundAction()
 	 */
 	virtual void onSoundAction(const Atlas::Objects::Operation::RootOperation& op);
-	
+
 	/**
 	 *    @copydoc Eris::Entity::onAttrChanged()
 	 */
 	virtual void onAttrChanged(const std::string& str, const Atlas::Message::Element& v);
-	
+
 	/**
 	 * @brief Called when the movement mode of the entity changes.
 	 * For example when the entity changes from standing to walking.
@@ -391,7 +391,7 @@ protected:
 	 * @param newMode The new movement mode.
 	 */
 	virtual void onModeChanged(MovementMode newMode);
-	
+
 	/**
 	 * @brief Called when the bounding box has changed.
 	 */
@@ -404,7 +404,7 @@ protected:
 	 * @param area The area which has been added.
 	 */
 	virtual void addArea(Terrain::TerrainArea* area);
-	
+
 	/**
 	 * @brief Adds a terrain mod to the entity.
 	 * Mods are a terrain feature, and cannot be handled by a standard implementation of EmberEntity. The default implementation of this method in this class will therefore only pass it on to the parent entity, if any such is available. The idea is that somewhere along the way, as the method "walks" the entity hierarcy upwards it will come across an implementation of this method that does indeed know how to handle the terrain mod.
@@ -412,7 +412,7 @@ protected:
 	 * @param mod The mod which has been added.
 	 */
 	virtual void addTerrainMod(Terrain::TerrainMod* mod);
-	
+
 	/**
 	 * @brief Checks if we should create any dependent objects, such as TerrainArea or TerrainMod.
 	 * Call this only when the entity has been propely initialized, since we then have all the correct data regarding positions, bounding boxes etc.
@@ -422,13 +422,13 @@ protected:
 	 * @return True if any dependent object was created.
 	 */
 	virtual bool createDependentObject(const std::string& attributeName);
-	
+
 	/**
 	* @brief For debugging purposes. This holds a bounding box of how the entity appears in the eris/atlas world.
 	* This is often different from the Ogre bounding box.
 	*/
 	Ogre::OOBBWireBoundingBox* mErisEntityBoundingBox;
-	
+
 	/**
 	 * @brief Creates the material used for the eris bboxes, if not already created.
 	 */
@@ -439,11 +439,11 @@ protected:
 	 * @param sceneManager The scene manager which should be used for creating the scene node.
 	 */
 	void createSceneNode(Ogre::SceneManager* sceneManager);
-	
+
 	/**
 	 * @brief Called by eris just after the entity has been put into the world.
 	 * @param ge The root entity which contains all atlas data that define this entity.
-	 * @param fromCreateOp 
+	 * @param fromCreateOp
 	 */
 	virtual void init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp);
 
@@ -463,24 +463,24 @@ protected:
 	 * @brief The main SceneNode which holds the entity in the ogre world space.
 	 */
 	Ogre::SceneNode* mOgreNode;
-	
+
 	/**
 	 * @brief Gets the scene manager that manages the Ogre scene node held by this.
 	 */
 	Ogre::SceneManager* getSceneManager();
-	
+
 	/**
 	 * @brief If there's a terrain area belonging to this entity, that's stored here.
 	 * The terrain area instance will take care of all required terrain area functionality once it's been created, offloading this from the EmberEntity. Most entities won't however have any terrain areas, for which this will be null.
 	 */
 	std::auto_ptr<Terrain::TerrainArea> mTerrainArea;
-		
+
 	/**
 	 * @brief If a terrainmod belongs to this entity, it's stored here.
 	 * The terrain mod instance will take care of all required terrain mod functionality once it's been created, offloading this from the EmberEntity. Most entities won't however have any terrain mods, for which this will be null.
 	 */
 	std::auto_ptr<Terrain::TerrainMod> mTerrainMod;
-	
+
 	/**
 	* @brief The mode the entity is in, like walking, running, swimming etc.
 	*/
@@ -493,19 +493,18 @@ protected:
 	 * @param v The element that contains the mode attribute, should be the "mode" attribute in the root attributes map.
 	 */
 	void parseModeChange(const Atlas::Message::Element& v);
-
 };
 
 
 ///inline implementations
-inline bool EmberEntity::isInitialized() const 
-{ 
-	return mIsInitialized; 
+inline bool EmberEntity::isInitialized() const
+{
+	return mIsInitialized;
 }
 
-inline EmberEntity::MovementMode EmberEntity::getMovementMode() const 
-{ 
-	return mMovementMode; 
+inline EmberEntity::MovementMode EmberEntity::getMovementMode() const
+{
+	return mMovementMode;
 }
 
 
