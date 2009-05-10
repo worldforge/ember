@@ -354,7 +354,6 @@ void EmberPhysicalEntity::attachToPointOnModel(const std::string& point, Model::
 	{
 		if (model->hasAttachPoint(point) && model->getSkeleton())
 		{
-			S_LOG_INFO("Entity name: " << getName() << " model: " << getModel()->getDefinition()->getName());
 			getScaleNode()->detachObject(getModel());
 			getModel()->setVisible(true);
 			model->attachObjectToAttachPoint(point, getModel(), getScaleNode()->getScale(), getModel()->getDefinition()->getRotation() * orientation, offset);
