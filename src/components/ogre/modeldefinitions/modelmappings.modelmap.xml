@@ -126,6 +126,7 @@
 	-->
 	
 	<automodelmapping name="fire" />
+	<automodelmapping name="ocean" />
 	<automodelmapping name="lumber" />
 	
 	<modelmapping name="mushroom">
