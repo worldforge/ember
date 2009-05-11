@@ -63,7 +63,7 @@ void TerrainPageSurfaceCompilerTechniqueSimple::addShadow(Ogre::Technique* techn
 	
 	shadowPass->setSceneBlending(Ogre::SBT_MODULATE);
 	shadowPass->setLightingEnabled(false);
-	shadowPass->setFog(false);
+	shadowPass->setFog(true, Ogre::FOG_NONE);
 	
 	
 	Ogre::TextureUnitState * textureUnitStateSplat = shadowPass->createTextureUnitState();
