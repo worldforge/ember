@@ -586,7 +586,7 @@ void EmberPhysicalEntity::onChildAdded(Entity *e)
 	if (mModelAttachedTo)
 	{
 		EmberEntity* emberEntity = static_cast<EmberEntity*> (e);
-		emberEntity->attachToPointOnModel(mModelAttachedTo->model, mModelAttachedTo->attachPoint, mModelAttachedTo->orientation * Atlas2Ogre(entity->getOrientation()), mModelAttachedTo->offset + Atlas2Ogre(entity->getPosition()));
+		emberEntity->attachToPointOnModel(mModelAttachedTo->attachPoint, mModelAttachedTo->model, mModelAttachedTo->orientation * Atlas2Ogre(emberEntity->getOrientation()), mModelAttachedTo->offset + Atlas2Ogre(emberEntity->getPosition()));
 	}
 
 	/*	if (hasChild(entityId)) {
