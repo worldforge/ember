@@ -76,6 +76,7 @@ EmberPhysicalEntity::~EmberPhysicalEntity()
 {
 	delete mSoundEntity;
 	delete mModelMapping;
+	delete mModelAttachedTo;
 
 	///When the modelmount is deleted the scale node will also be destroyed.
 	///Note that there's no need to destroy the light nodes since they are attached to the scale node, which is deleted (along with its children) when the model mount is destroyed.
@@ -381,7 +382,11 @@ void EmberPhysicalEntity::attachToPointOnModel(const std::string& point, Model::
 					model->attachObjectToAttachPoint(point, system->getOgreParticleSystem(), getScaleNode()->getScale(), getModel()->getDefinition()->getRotation() * orientation, offset);
 				}
 			}
-			mModelAttachedTo = model;
+			mModelAttachedTo = new ModelAttachment();
+			mModelAttachedTo->model = model;
+			mModelAttachedTo->attachPoint = point;
+			mModelAttachedTo->offset = offset;
+			mModelAttachedTo->orientation = getModel()->getDefinition()->getRotation() * orientation;
 		}
 		for (unsigned int i = 0; i < numContained(); ++i)
 		{
@@ -396,14 +401,15 @@ void EmberPhysicalEntity::detachFromModel()
 {
 	if (mModelAttachedTo)
 	{
-		mModelAttachedTo->detachObjectFromBone(getModel()->getName());
+		Model::Model* model = mModelAttachedTo->model;
+		model->detachObjectFromBone(getModel()->getName());
 		getScaleNode()->attachObject(getModel());
 		for (Model::LightSet::const_iterator lightI = getModel()->getLights().begin(); lightI != getModel()->getLights().end(); ++lightI)
 		{
 			Ogre::Light* light = lightI->light;
 			if (light)
 			{
-				mModelAttachedTo->detachObjectFromBone(light->getName());
+				model->detachObjectFromBone(light->getName());
 				getScaleNode()->attachObject(light);
 			}
 		}
@@ -413,12 +419,13 @@ void EmberPhysicalEntity::detachFromModel()
 			Model::ParticleSystem* system = *particleI;
 			if (system && system->getOgreParticleSystem())
 			{
-				mModelAttachedTo->detachObjectFromBone(system->getOgreParticleSystem()->getName());
+				model->detachObjectFromBone(system->getOgreParticleSystem()->getName());
 				getScaleNode()->attachObject(system->getOgreParticleSystem());
 			}
 		}
 
 		checkClientVisibility(isVisible());
+		delete mModelAttachedTo;
 		mModelAttachedTo = 0;
 	}
 	for (unsigned int i = 0; i < numContained(); ++i)
@@ -575,6 +582,11 @@ void EmberPhysicalEntity::onChildAdded(Entity *e)
 	{
 		EmberEntity* emberEntity = static_cast<EmberEntity*> (e);
 		emberEntity->attachToPointOnModel(mAttachedEntities[e->getId()], getModel());
+	}
+	if (mModelAttachedTo)
+	{
+		EmberEntity* emberEntity = static_cast<EmberEntity*> (e);
+		emberEntity->attachToPointOnModel(mModelAttachedTo->model, mModelAttachedTo->attachPoint, mModelAttachedTo->orientation * Atlas2Ogre(entity->getOrientation()), mModelAttachedTo->offset + Atlas2Ogre(entity->getPosition()));
 	}
 
 	/*	if (hasChild(entityId)) {

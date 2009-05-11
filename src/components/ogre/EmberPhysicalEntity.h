@@ -158,6 +158,14 @@ public:
 
 protected:
 
+	struct ModelAttachment
+	{
+		Model::Model* model;
+		std::string attachPoint;
+		Ogre::Vector3 offset;
+		Ogre::Quaternion orientation;
+	};
+
 	/**
 	 *    Tells the entity to use the model with the supplied name. This will trigger a creation of a Model::Model instance.
 	 *    This method is normally called by an instance of EmberEntityModelAction.
@@ -229,7 +237,7 @@ protected:
 	 If the entity is attached to another entity, this is the model to which it is attached to.
 	 This will be 0 if the entity isn't attached.
 	 */
-	Model::Model* mModelAttachedTo;
+	ModelAttachment* mModelAttachedTo;
 
 	/**
 	 We can't do attachments until the entity has been properly initialized, so sometimes we need to do delayed attachments. This will then hold the model to which this entity should be attached. Once the entity has been initialized we'll use mModelAttachedTo instead.
