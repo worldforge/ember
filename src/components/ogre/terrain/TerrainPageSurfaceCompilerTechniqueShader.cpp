@@ -403,8 +403,9 @@ bool TerrainPageSurfaceCompilerShaderPass::finalize(bool useShadows, const std::
 		fpParams->setNamedConstant("iNumberOfLayers", (float)mLayers.size()); ///this will only apply to the splatting_fragment_dynamic material
 		*/
 		///set how much the texture should tile
-		fpParams->setNamedConstant("scales", mScales, 4); //4*4=16
-		
+		//fpParams->setNamedConstant("scales", mScales, 3); //4*4=16
+		fpParams->setNamedConstant("scales", mScales, (mLayers.size()-1)/4+1);
+
 		if (useShadows) {
 			Ogre::PSSMShadowCameraSetup* pssmSetup = static_cast<Ogre::PSSMShadowCameraSetup*>(EmberOgre::getSingleton().getSceneManager()->getShadowCameraSetup().get());
 			Ogre::Vector4 splitPoints;
