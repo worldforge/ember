@@ -671,6 +671,29 @@
 			</case>
 		</entitymatch>
 	</entitymapping> 	
+
+	<entitymapping name="bush">
+		<entitymatch>
+			<case>
+				<caseparam type="equals">bush</caseparam>
+				<action type="display-model">bush</action>
+				<attributematch attribute="style" >
+					<case>
+						<caseparam type="equals">bush</caseparam>
+						<action type="display-model">bush</action>
+					</case>
+					<case>
+						<caseparam type="equals">shrubA</caseparam>
+						<action type="display-model">shrubA</action>
+					</case>
+					<case>
+						<caseparam type="equals">shrubB</caseparam>
+						<action type="display-model">shrubB</action>
+					</case>
+				</attributematch>
+			</case>
+		</entitymatch>
+	</entitymapping> 	
 	
 	
 	<!-- We'll use jayrs new oak for now -->
