@@ -1,7 +1,7 @@
 //
 // C++ Interface: TerrainPageShadow
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -23,6 +23,8 @@
 #ifndef EMBEROGRETERRAINPAGESHADOW_H
 #define EMBEROGRETERRAINPAGESHADOW_H
 #include "../EmberOgrePrerequisites.h"
+#include <OgreTexture.h>
+#include <OgreVector3.h>
 
 namespace EmberOgre {
 namespace Terrain {
@@ -55,32 +57,32 @@ public:
     TerrainPageShadow(TerrainPage& terrainPage);
 
     virtual ~TerrainPageShadow();
-    
+
     void setShadowTechnique(ITerrainPageShadowTechnique* shadowTechnique);
-    
+
     void setLightDirection(const Ogre::Vector3& lightDirection);
-    
+
     void createShadowData(unsigned char* data);
-    
+
     Ogre::TexturePtr getTexture();
 	void updateShadow();
 	void createImage();
-	
+
 	Ogre::Image* getImage() const;
-   
+
 	void getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour);
 	void getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour);
-  
-   
+
+
 protected:
 	TerrainPage& mTerrainPage;
 	Ogre::Vector3 mLightDirection;
 	Ogre::Image* mImage;
 	Ogre::TexturePtr mTexture;
 	Ogre::MemoryDataStream* mShadowChunk;
-	
+
 	ITerrainPageShadowTechnique* mShadowTechnique;
-	
+
 };
 
 }

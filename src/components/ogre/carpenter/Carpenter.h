@@ -1,7 +1,7 @@
 //
 // C++ Interface: Carpenter
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -31,6 +31,9 @@
 #include <wfmath/vector.h>
 #include <wfmath/axisbox.h>
 #include <wfmath/quaternion.h>
+
+#include <vector>
+#include <map>
 
 #include "../EmberOgrePrerequisites.h"
 //#include "../model/Model.h"
@@ -90,24 +93,24 @@ friend class AttachPoint;
 friend class Carpenter;
 public:
 	const AttachPoint* getAttachPoint(const std::string & name) const;
-	
+
 	AttachPair(const std::string& name, const std::string& type, AttachPoint point1, AttachPoint point2);
-	
+
 	const AttachPoint& getPoint1() const;
 	const AttachPoint& getPoint2() const;
 	const std::string& getName() const;
 	const std::string& getType() const;
 
 protected:
-	AttachPoint mPoint1;	
-	AttachPoint mPoint2;	
+	AttachPoint mPoint1;
+	AttachPoint mPoint2;
 //	const AttachPoint& [] getPoints() const;
 	const std::string mName;
 	const std::string mType;
-	
+
 };
 
-inline const AttachPoint* AttachPair::getAttachPoint(const std::string & name) const { 
+inline const AttachPoint* AttachPair::getAttachPoint(const std::string & name) const {
 	if (mPoint1.mName == name) {
 		return &mPoint1;
 	} else if (mPoint2.mName == name) {
@@ -116,7 +119,7 @@ inline const AttachPoint* AttachPair::getAttachPoint(const std::string & name) c
 		//"No pair with that name."
 		throw std::exception();
 	}
-	
+
 }
 
 inline const AttachPoint& AttachPair::getPoint1() const { return mPoint1; }
@@ -133,17 +136,17 @@ public:
 	const std::string& getName() const;
 	const WFMath::AxisBox<3>& getBoundingBox() const;
 	const AttachPair* getAttachPair(const std::string & name) const;
-	
+
 	bool addAttachPair(AttachPair* pair);
 	void setBoundingBox(WFMath::AxisBox<3> bbox);
-	
+
 	const std::vector<const AttachPoint*> getAllPoints() const;
-	
+
 protected:
 	std::string mName;
 	WFMath::AxisBox<3> mBoundingBox;
 	AttachPairStore mAttachPairs;
-	
+
 };
 
 inline const std::string& BlockSpec::getName() const { return mName; }
@@ -194,14 +197,14 @@ public:
     ~Carpenter();
 /*	bool loadBlockSpec(const std::string& filename);
 	bool loadModelBlockDefinition(const std::string& filename);*/
-	
+
 	BluePrint* createBlueprint(std::string name);
-	
+
 	BuildingBlockSpec* getBuildingBlockSpec(const std::string& name);
-	
+
 	BlockSpec* createBlockSpec(std::string name);
 	BuildingBlockSpec* createBuildingBlockSpec(BuildingBlockSpecDefinition definition);
-	
+
 	const std::map<const std::string , BlockSpec >* getBlockSpecs() const;
 	const std::map<const std::string , BuildingBlockSpec >* getBuildingBlockSpecs() const;
 	const std::map<const std::string , BluePrint>* getBluePrints() const;

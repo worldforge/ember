@@ -1,7 +1,7 @@
 //
 // C++ Interface: BluePrint
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -29,6 +29,9 @@
 #include <wfmath/vector.h>
 #include <wfmath/axisbox.h>
 #include <wfmath/quaternion.h>
+
+#include <vector>
+#include <map>
 
 #include "Carpenter.h"
 
@@ -107,32 +110,32 @@ public:
 	const std::vector<BuildingBlockBinding*> getBindingsForBlock() const;
 	const AttachPair* getAttachPair(const std::string& name);
 	const std::string& getName() const { return mBlockDefinition.mName; }
-	
-	
+
+
 	WFMath::Point<3> getWorldPositionForPoint(const AttachPoint* point);
 	bool isAttached() const;
-	
-	
+
+
 
 	void setPosition(WFMath::Point<3> position);
 	void setOrientation(WFMath::Quaternion orientation);
 	const WFMath::Point<3>& getPosition() const;
 	const WFMath::Quaternion& getOrientation() const;
-	
+
 	const BuildingBlockSpec* getBuildingBlockSpec() const;
-	
+
 	const BlockSpec* getBlockSpec() const;
-	
+
 	const std::vector<const AttachPoint*> getAllPoints() const;
-	
+
 	/**
 	 *    the number of bindings that are dependant on this block
 			as long as it's more than zero, the block cannot be deleted
-	 * @return 
+	 * @return
 	 */
 	int getNumberOfChildBindings() const;
-	
-protected: 	
+
+protected:
 	//ModelBlock mModelBlock;
 	BuildingBlockSpec* mBuildingBlockSpec;
 	BuildingBlockDefinition mBlockDefinition;
@@ -143,13 +146,13 @@ protected:
 		A vector of all points that are already bound
 	*/
 	std::vector<const AttachPoint*> mBoundPoints;
-	
+
 	/**
 	 *    removes a point from the list of bound points
-	 * @param point 
+	 * @param point
 	 */
 	void removeBoundPoint(const AttachPoint* point);
-	
+
 	/**
 	the number of bindings that are dependant on this block
 	as long as it's more than zero, the block cannot be deleted
@@ -176,19 +179,19 @@ class BluePrint
 {
 public:
 	BluePrint(const std::string & name, Carpenter* carpenter);
-	
+
 	const std::string& getName() const;
-	
+
 	/**
 	 *    compiles the blueprint into a structure
 	 */
 	void compile();
-	
+
 	BuildingBlock* createBuildingBlock(BuildingBlockDefinition);
-	
+
 	/**
 	 *    deletes a building block from the blueprint
-	 * @param name 
+	 * @param name
 	 */
 //    	void deleteBuildingBlock(const std::string & name);
 
@@ -199,31 +202,31 @@ public:
 
 	/**
 	 *    accessor for the name of the starting block
-	 * @param name 
+	 * @param name
 	 */
 	void setStartingBlock(const std::string& name);
 	const BuildingBlock* getStartingBlock() const;
-	
+
 	/**
 	 *    Places the unbound block in the supplied bindings correctly
-	 * @param binding 
+	 * @param binding
 	 */
 	void placeBindings(BuildingBlock* unboundBlock, std::vector<BuildingBlockBinding*> bindings);
-	
+
 	Carpenter* const getCarpenter();
-	
-	
+
+
 	/**
 	 *    true if the building block can be removed from the blueprint
-	 * @param  
-	 * @return 
+	 * @param
+	 * @return
 	 */
 	bool isRemovable(const BuildingBlock* bblock) const;
-	
+
 	/**
 	 *    removes the building block from the blueprint, if it can be removed
-	 * @param bblock 
-	 * @return 
+	 * @param bblock
+	 * @return
 	 */
 	bool remove(const BuildingBlock* bblock);
 
@@ -231,14 +234,14 @@ public:
 protected:
 	BuildingBlockStore mBuildingBlocks;
 	std::list< BuildingBlockBinding> mBindings;
-	
+
 	std::vector< BuildingBlock*> mAttachedBlocks;
 	BuildingBlock* mStartingBlock;
 	std::string mName;
-	
+
 	Carpenter* mCarpenter;
-	
-	
+
+
 	void doBindingsForBlock(BuildingBlock *block);
 
 };

@@ -49,7 +49,7 @@ public:
 /** Different methods used to render billboards. This can be supplied as a parameter
 to the StaticBillboardSet constructor to manually select how you want billboards
 rendered (although in almost all cases BB_METHOD_ACCELERATED is the best choice).*/
-typedef enum BillboardMethod {
+enum BillboardMethod {
 	/** This mode accelerates the performance of billboards by using vertex shaders
 	to keep billboards facing the camera. Note: If the computer's hardware is not
 	capable	of vertex shaders, it will automatically fall back to BB_METHOD_COMPATIBLE
@@ -86,13 +86,13 @@ public:
 	*/
 	StaticBillboardSet(Ogre::SceneManager *mgr, Ogre::SceneNode *rootSceneNode, BillboardMethod method = BB_METHOD_ACCELERATED);
 	~StaticBillboardSet();
-	
+
 	/**
 	\brief Adds a billboard to the StaticBillboardSet at the specified position.
 	\param position The desired position of the billboard.
 	\param xScale The width scale of the billboard.
 	\param yScale The height scale of the billboard.
-	\param texcoordIndex The texture tile this billboard will use. This value shoud be 
+	\param texcoordIndex The texture tile this billboard will use. This value shoud be
 	0..n, where n is the number of slices set with setTextureSlices()
 
 	The texcoordIndex option is only applicable if you have used setTextureSlices()
@@ -156,7 +156,7 @@ public:
 	{
 		return renderMethod;
 	}
-	
+
 	/**
 	\brief Sets whether or not this StaticBillboardSet will be rendered.
 	\param visible The desired visibility state of the StaticBillboardSet (true/false)
@@ -168,7 +168,7 @@ public:
 			node->setVisible(visible);
 		}
 	}
-	
+
 	/**
 	\brief Enables/disables distance fade-out for this billboard set
 	\param enabled Whether or not to enable fading
@@ -205,7 +205,7 @@ public:
 	which this function does.
 	*/
 	void clear();
-	
+
 	/**
 	\brief Applies a material to the billboards in this set.
 	\param materialName The name of the material to apply to this StaticBillboardSet.
@@ -243,14 +243,14 @@ public:
 
 private:
 	Ogre::SceneManager *sceneMgr;
-	
+
 	bool visible;
 	Ogre::SceneNode *node;
 	Ogre::Entity *entity;
 	Ogre::MeshPtr mesh;
 	Ogre::SubMesh *subMesh;
 	Ogre::String entityName;
-	
+
 	Ogre::MaterialPtr materialPtr, fadeMaterialPtr;
 	float uFactor, vFactor;
 

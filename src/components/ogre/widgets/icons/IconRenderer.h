@@ -1,7 +1,7 @@
 //
 // C++ Interface: IconRenderer
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -25,13 +25,15 @@
 
 #include <string>
 #include <memory>
-#include <Ogre.h>
+#include "components/ogre/EmberOgrePrerequisites.h"
+#include <queue>
+#include <OgreFrameListener.h>
 
 namespace EmberOgre {
 
 class SimpleRenderContext;
 
-namespace Model 
+namespace Model
 {
 	class Model;
 }
@@ -55,15 +57,15 @@ public:
 	virtual ~DelayedIconRendererEntry();
 	/**
 	 *    Accessor for the model which will be rendered.
-	 * @return 
+	 * @return
 	 */
 	Model::Model* getModel();
 	/**
 	 *    Accessor for the icon.
-	 * @return 
+	 * @return
 	 */
 	Icon* getIcon();
-	
+
 	/**
 	 *    Called by the DelayedIconRendererWorker at the start of each frame.
 	 */
@@ -96,7 +98,7 @@ public:
     /**
      * Starts the process of rendering the model onto the icon. Depending on the implementation the actual blitting and rendering might be delayed some frames.
      * @param model The model to render. Note that it's the responsibility of this class to make sure that's it's properly destroyed after use.
-     * @param icon 
+     * @param icon
      */
     virtual void render(Model::Model* model, Icon* icon, IconImageStoreEntry* imageStoreEntry) = 0;
 protected:
@@ -116,11 +118,11 @@ public:
 	* Calles by Ogre. At each frame we'll see if there's any entries in our queue. If so, we'll call frameStarted on the first entry in the list.
 	*/
 	bool frameStarted(const Ogre::FrameEvent& event);
-	
+
     /**
      * Starts the process of rendering a model onto an icon. The blitting will be delayed a couple of frames though.
-     * @param model 
-     * @param icon 
+     * @param model
+     * @param icon
      */
     void render(Model::Model* model, Icon* icon, IconImageStoreEntry* imageStoreEntry);
 
@@ -128,22 +130,22 @@ public:
 protected:
 
 	IconRenderer& getRenderer();
-	
+
 	/**
 	 *    Method to be called by the contained entries when they want to perform the actual rendering operation.
-	 * @param entry 
+	 * @param entry
 	 */
 	void performRendering(DelayedIconRendererEntry& entry);
-	
+
 	/**
 	 *    Method to be called by the contained entries when they want the blitting to occur.
 	 *    Calling this method will also pop an entry from the entries queue. (So if you call it from within a DelayedIconRendererEntry entry, make sure to not touch any member variables afterwards, since the instance will have been destroyed.)
-	 * @param entry 
+	 * @param entry
 	 */
 	void finalizeRendering(DelayedIconRendererEntry& entry);
-	
+
 	typedef std::queue<DelayedIconRendererEntry> EntryStore;
-	
+
 	/**
 	The queue of entries which will be rendered in order.
 	*/
@@ -162,8 +164,8 @@ public:
 
     /**
      * Starts the process of rendering a model onto an icon. The blitting will occur in the same frame as the rendering.
-     * @param model 
-     * @param icon 
+     * @param model
+     * @param icon
      */
      void render(Model::Model* model, Icon* icon, IconImageStoreEntry* imageStoreEntry);
 };
@@ -171,7 +173,7 @@ public:
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 	Responsible for rendering the model to the icon texture.
-	The actual rendering will be handled by an instance of IconRenderWorker. 
+	The actual rendering will be handled by an instance of IconRenderWorker.
 	Note that it's not guaranteed that the rendering and blitting will occur on the same frame.
 */
 class IconRenderer
@@ -181,20 +183,20 @@ public:
 
     /**
      * Ctor. Be sure to call setWorker before you start any rendering.
-     * @param prefix 
-     * @param pixelWidth 
+     * @param prefix
+     * @param pixelWidth
      */
     IconRenderer(const std::string& prefix, int pixelWidth);
 
     ~IconRenderer();
-    
+
     /**
      * Renders a model by the specified name to the icon.
      * @param modelName The name of the model to render.
      * @param icon The icon it should be rendered to.
      */
     void render(const std::string& modelName, Icon* icon);
-    
+
 	/**
 	* Renders the Model onto the Icon. Note that depending on the IconRenderWorker used this might not occur on the same frame.
 	* Make sure to call setWorker before calling this method.
@@ -202,37 +204,37 @@ public:
 	* @param icon The icon to render to.
 	*/
 	void render(Model::Model* model, Icon* icon);
-    
+
     /**
      * Gets the SimpleRenderContext used for the rendering.
-     * @return 
+     * @return
      */
     SimpleRenderContext* getRenderContext();
-    
+
     /**
      * Sets the worker instance. Be sure to call this before doing any rendering.
-     * @param worker 
+     * @param worker
      */
     void setWorker(IconRenderWorker* worker);
-    
-    
+
+
     /**
      * Performs the actual rendering op.
-     * @param model 
-     * @param icon 
+     * @param model
+     * @param icon
      */
     void performRendering(Model::Model* model, Icon* icon);
-    
-    
+
+
     /**
      * Blits the rendered texture onto the icon texture.
-     * @param icon 
+     * @param icon
      */
     void blitRenderToIcon(Icon* icon);
-    
+
 protected:
 
-    
+
 	int mPixelWidth;
 	std::auto_ptr<SimpleRenderContext> mRenderContext;
 	IconRenderWorker* mWorker;

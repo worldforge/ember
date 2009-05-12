@@ -37,7 +37,7 @@ class ImpostorBatch;
 class ImpostorTexture;
 
 //Blend modes used by ImpostorPage::setBlendMode()
-typedef enum ImpostorBlendMode {
+enum ImpostorBlendMode {
 	ALPHA_REJECT_IMPOSTOR,
 	ALPHA_BLEND_IMPOSTOR
 };
@@ -75,12 +75,12 @@ class ImpostorPage: public GeometryPage
 public:
 	void init(PagedGeometry *geom);
 	~ImpostorPage();
-	
+
 	void setRegion(Ogre::Real left, Ogre::Real top, Ogre::Real right, Ogre::Real bottom);
 	void addEntity(Ogre::Entity *ent, const Ogre::Vector3 &position, const Ogre::Quaternion &rotation, const Ogre::Vector3 &scale, const Ogre::ColourValue &color);
 	void build();
 	void removeEntities();
-	
+
 	void setVisible(bool visible);
 	void setFade(bool enabled, Ogre::Real visibleDist, Ogre::Real invisibleDist);
 
@@ -89,11 +89,11 @@ public:
 	/**
 	\brief Sets the resolution for single impostor images.
 	\param pixels The width/height of one square impostor render
-	
+
 	The default impostor resolution is 128x128. Note that 32 impostor images
 	will be stored in a single texture (8 x 4), so a impostor resolution of 128,
 	for example, results in final texture size of 1024 x 512.
-	
+
 	\warning Calling this function will have no effect unless it is done before
 	any entities are added to any page.
 	*/
@@ -143,7 +143,7 @@ public:
 	/**
 	\brief Regenerates the impostor texture for the specified entity
 	\param ent The entity which will have it's impostor texture regenerated
-	
+
 	This function can be called to force the regeneration of a specific impostor.
 	Normally, impostors are generated once (saved to a file), and simply preloaded
 	from the file afterwards (unless you delete the file). Calling this will
@@ -167,7 +167,7 @@ public:
 	\warning This is NOT a real-time operation - it may take a few seconds to complete.
 	*/
 	static void regenerateAll();
-	
+
 
 	inline void setBlendMode(ImpostorBlendMode blendMode) { this->blendMode = blendMode; }
 	inline ImpostorBlendMode getBlendMode() { return blendMode; }
@@ -180,7 +180,7 @@ protected:
 	static int impostorResolution;
 	static Ogre::ColourValue impostorBackgroundColor;
 	static Ogre::BillboardOrigin impostorPivot;
-	
+
 	static unsigned int selfInstances;
 	static unsigned int updateInstanceID;
 	unsigned int instanceID;
@@ -189,7 +189,7 @@ protected:
 
 	Ogre::Vector3 center;
 	int aveCount;
-	
+
 	std::map<Ogre::String, ImpostorBatch *> impostorBatches;
 };
 
@@ -260,11 +260,11 @@ public:
 	 * @param renderContext The ImpostorTexture to which this instance belongs.
 	 */
 	ImpostorTextureResourceLoader(ImpostorTexture& impostorTexture);
-	
-	
+
+
 	/**
 	 *    At load time the texture will be rerendered.
-	 * @param resource 
+	 * @param resource
 	 */
 	virtual void loadResource (Ogre::Resource *resource);
 protected:
@@ -286,7 +286,7 @@ public:
 	already exist, one will automatically be created.
 	*/
 	static ImpostorTexture *getTexture(ImpostorPage *group, Ogre::Entity *entity);
-	
+
 	/** remove created texture, note that all of the ImposterTextures
 	must be deleted at once, because there is no track if a texture is still
 	being used by something else
@@ -297,7 +297,7 @@ public:
 	static void regenerateAll();
 
 	~ImpostorTexture();
-	
+
 protected:
 	ImpostorTexture(ImpostorPage *group, Ogre::Entity *entity);
 
@@ -324,7 +324,7 @@ protected:
 	{
 		return prefix + Ogre::StringConverter::toString(++GUID);
 	}
-	
+
 	//This will only be used when IMPOSTOR_FILE_SAVE is set to 0
 	std::auto_ptr<ImpostorTextureResourceLoader> loader;
 };

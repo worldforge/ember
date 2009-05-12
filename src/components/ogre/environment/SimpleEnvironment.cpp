@@ -1,7 +1,7 @@
 //
 // C++ Implementation: SimpleEnvironment
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -27,7 +27,8 @@
 #include "SimpleEnvironment.h"
 #include "Water.h"
 #include "SimpleWater.h"
-
+#include <OgreSceneManager.h>
+#include <OgreLight.h>
 namespace EmberOgre {
 
 namespace Environment {
@@ -39,7 +40,7 @@ SimpleSun::SimpleSun(Ogre::SceneManager *sceneMgr)
 	mMainLight->setType (Ogre::Light::LT_DIRECTIONAL);
 	// HDR power scale, REALLY bright:
 // 	mMainLight->setPowerScale (10);
-	
+
 	mMainLight->setVisible(true);
 	mMainLight->setDiffuseColour(Ogre::ColourValue(0.9, 0.9, 0.9));
 	mMainLight->setSpecularColour(Ogre::ColourValue(0.9, 0.9, 0.9));

@@ -1,7 +1,7 @@
 //
 // C++ Implementation: ModelBackgroundLoader
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2009
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -29,6 +29,10 @@
 #include "framework/LoggingInstance.h"
 
 #include <OgreResourceBackgroundQueue.h>
+#include <OgreSubMesh.h>
+#include <OgreMaterialManager.h>
+#include <OgreMeshManager.h>
+#include <OgreResourceGroupManager.h>
 
 namespace EmberOgre {
 
@@ -51,7 +55,7 @@ bool ModelBackgroundLoader::poll()
 
 	if (mState == LS_UNINITIALIZED) {
 		///Start to load the meshes
-		for (SubModelDefinitionsStore::const_iterator I_subModels = mModel.getDefinition()->getSubModelDefinitions().begin(); I_subModels != mModel.getDefinition()->getSubModelDefinitions().end(); ++I_subModels) 
+		for (SubModelDefinitionsStore::const_iterator I_subModels = mModel.getDefinition()->getSubModelDefinitions().begin(); I_subModels != mModel.getDefinition()->getSubModelDefinitions().end(); ++I_subModels)
 		{
 			Ogre::MeshPtr meshPtr = static_cast<Ogre::MeshPtr>(Ogre::MeshManager::getSingleton().getByName((*I_subModels)->getMeshName()));
 			if (meshPtr.isNull() || !meshPtr->isPrepared()) {
@@ -83,7 +87,7 @@ bool ModelBackgroundLoader::poll()
 			return poll();
 		}
 	} else if (mState == LS_MESH_PREPARED) {
-		for (SubModelDefinitionsStore::const_iterator I_subModels = mModel.getDefinition()->getSubModelDefinitions().begin(); I_subModels != mModel.getDefinition()->getSubModelDefinitions().end(); ++I_subModels) 
+		for (SubModelDefinitionsStore::const_iterator I_subModels = mModel.getDefinition()->getSubModelDefinitions().begin(); I_subModels != mModel.getDefinition()->getSubModelDefinitions().end(); ++I_subModels)
 		{
 			Ogre::MeshPtr meshPtr = static_cast<Ogre::MeshPtr>(Ogre::MeshManager::getSingleton().getByName((*I_subModels)->getMeshName()));
 			if (!meshPtr.isNull()) {
@@ -125,7 +129,7 @@ bool ModelBackgroundLoader::poll()
 			return poll();
 		}
 	} else if (mState == LS_MATERIAL_PREPARED) {
-		for (SubModelDefinitionsStore::const_iterator I_subModels = mModel.getDefinition()->getSubModelDefinitions().begin(); I_subModels != mModel.getDefinition()->getSubModelDefinitions().end(); ++I_subModels) 
+		for (SubModelDefinitionsStore::const_iterator I_subModels = mModel.getDefinition()->getSubModelDefinitions().begin(); I_subModels != mModel.getDefinition()->getSubModelDefinitions().end(); ++I_subModels)
 		{
 			Ogre::MeshPtr meshPtr = static_cast<Ogre::MeshPtr>(Ogre::MeshManager::getSingleton().getByName((*I_subModels)->getMeshName()));
 			Ogre::Mesh::SubMeshIterator subMeshI = meshPtr->getSubMeshIterator();

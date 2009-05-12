@@ -20,13 +20,29 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+#ifndef EMBEROGRE_OGREINCLUDES_H
+#define EMBEROGRE_OGREINCLUDES_H
 
 //base include files needed for Ogre
 
 //#include <Ogre.h>
-
+#include <OgreConfig.h>
 
 namespace Ogre {
+
+// define the real number values to be used
+// default to use 'float' unless precompiler option set
+#if OGRE_DOUBLE_PRECISION == 1
+	/** Software floating point type.
+	@note Not valid as a pointer to GPU buffers / parameters
+	*/
+    typedef double Real;
+#else
+	/** Software floating point type.
+	@note Not valid as a pointer to GPU buffers / parameters
+	*/
+    typedef float Real;
+#endif
 
     /** In order to avoid finger-aches :)
     */
@@ -225,4 +241,7 @@ namespace Ogre {
     class CompositionTechnique;
     class CompositionPass;
     class CompositionTargetPass;
+    class MemoryDataStream;
+    class ConfigFile;
 }
+#endif //EMBEROGRE_OGREINCLUDES_H

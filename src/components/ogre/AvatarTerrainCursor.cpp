@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -33,6 +33,10 @@
 #include "services/time/TimeService.h"
 #include "EmberOgre.h"
 #include "services/input/Input.h"
+
+#include <OgreCamera.h>
+#include <OgreSceneManager.h>
+#include <OgreSceneQuery.h>
 
 namespace EmberOgre {
 
@@ -61,19 +65,19 @@ namespace EmberOgre {
 	{
 		return ( mUpdatePositionThreshold );
 	}
-	
+
 	unsigned int AvatarTerrainCursor::setThreshold(unsigned int newThreshold)
 	{
 		mUpdatePositionThreshold = newThreshold;
 		return ( mUpdatePositionThreshold );
 	}
 
-	
+
 	bool AvatarTerrainCursor::getTerrainCursorPosition(const Ogre::Vector3** position)
 	{
 		bool shouldRecalculate = false;
 		bool updated = false;
-		
+
 		///first check if the mouse has moved even one pixel, and if so force an update
 		const Ember::MousePosition& mousePosition(Ember::Input::getSingleton().getMousePosition());
 		if (mousePosition.xPixelPosition != mLastMouseX || mousePosition.yPixelPosition != mLastMouseY) {
@@ -84,7 +88,7 @@ namespace EmberOgre {
 				///ok, the camera has moved, but has enough time elapsed since our last update to warrant a new update?
 				long now = Ember::EmberServices::getSingletonPtr()->getTimeService()->currentTimeMillis();
 				long delta = now - mLastUpdated;
-				
+
 				// if enough time has lapsed, we'll update, otherwise we return the last known position
 				if( delta >  mUpdatePositionThreshold )
 				{
@@ -100,32 +104,32 @@ namespace EmberOgre {
 			mLastMouseY = mousePosition.yPixelPosition;
 			mLastCameraPosition = mCamera.getCamera().getDerivedPosition();
 			mLastCameraOrientation = mCamera.getCamera().getDerivedOrientation();
-			
-			/// Start a new ray query 
-			Ogre::Ray cameraRay(mCamera.getCamera().getCameraToViewportRay(mousePosition.xRelativePosition, mousePosition.yRelativePosition)); 
+
+			/// Start a new ray query
+			Ogre::Ray cameraRay(mCamera.getCamera().getCameraToViewportRay(mousePosition.xRelativePosition, mousePosition.yRelativePosition));
 			mTerrainCursorRayQuery->setRay(cameraRay);
 			mTerrainCursorRayQuery->execute();
-			
+
 			// Can we avoid the iterator, and just use the result ?
 			const Ogre::RaySceneQueryResult& queryResult(mTerrainCursorRayQuery->getLastResults());
 			Ogre::RaySceneQueryResult::const_iterator rayIterator(queryResult.begin());
 			if (rayIterator != queryResult.end()) {
 				const Ogre::RaySceneQueryResultEntry& entry(*rayIterator);
-				
+
 				if (entry.worldFragment) {
 					mLastTerrainPosition = entry.worldFragment->singleIntersection;
 					updated = true;
-// 					S_LOG_VERBOSE("getTerrainCursorPosition : Update ("<< mLastMouseX << "," << mLastMouseY << ")->" << Ogre::StringConverter::toString(mLastTerrainPosition));	
+// 					S_LOG_VERBOSE("getTerrainCursorPosition : Update ("<< mLastMouseX << "," << mLastMouseY << ")->" << Ogre::StringConverter::toString(mLastTerrainPosition));
 				} else {
 					S_LOG_WARNING("Picked something else than a world fragment even though we specified only terrain. Something is wrong with the ray check methods.");
 				}
 			}
 		}
 		*position = &mLastTerrainPosition;
-// 		S_LOG_VERBOSE("getTerrainCursorPosition : return");	
+// 		S_LOG_VERBOSE("getTerrainCursorPosition : return");
 		return updated;
 	}
-	
+
 	void AvatarTerrainCursor::Config_TerrainCheckInterval(const std::string& section, const std::string& key, varconf::Variable& variable)
 	{
 		if (variable.is_int()) {

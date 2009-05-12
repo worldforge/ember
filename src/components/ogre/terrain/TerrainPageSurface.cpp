@@ -1,7 +1,7 @@
 //
 // C++ Implementation: TerrainPageSurface
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -30,6 +30,9 @@
 #include "TerrainPageSurfaceCompiler.h"
 #include "TerrainLayerDefinition.h"
 #include "../MathConverter.h"
+#include <OgreMaterialManager.h>
+#include <OgreRoot.h>
+#include <OgreSceneManager.h>
 
 namespace EmberOgre {
 namespace Terrain {
@@ -47,14 +50,14 @@ TerrainPageSurface::TerrainPageSurface(TerrainPage& terrainPage)
 
 	///create the actual material
 	mMaterial = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().create(materialNameSS.str(), "General"));
-	
+
 
 }
 
 
 TerrainPageSurface::~TerrainPageSurface()
 {
-	for (TerrainPageSurfaceLayerStore::iterator I(mLayers.begin()); I != mLayers.end(); ++I) 
+	for (TerrainPageSurfaceLayerStore::iterator I(mLayers.begin()); I != mLayers.end(); ++I)
 	{
 		delete I->second;
 	}
@@ -78,7 +81,7 @@ TerrainPageSurfaceLayer* TerrainPageSurface::updateLayer(int layerIndex, bool re
 	return 0;
 }
 
-	
+
 const TerrainPosition& TerrainPageSurface::getWFPosition() const
 {
 	return mTerrainPage.getWFPosition();
@@ -105,7 +108,7 @@ Ogre::MaterialPtr TerrainPageSurface::getMaterial()
 {
 	return mMaterial;
 }
-	
+
 void TerrainPageSurface::recompileMaterial(bool reselectTechnique)
 {
 // 	if (!mMaterial.isNull()) {
@@ -118,7 +121,7 @@ void TerrainPageSurface::recompileMaterial(bool reselectTechnique)
 
 	mSurfaceCompiler->compileMaterial(mMaterial, mLayers, mShadow, mTerrainPage);
 	//mMaterial->reload();
-	
+
 	updateSceneManagersAfterMaterialsChange();
 }
 
@@ -139,7 +142,7 @@ void TerrainPageSurface::updateSceneManagersAfterMaterialsChange()
    if(Ogre::Pass::getDirtyHashList().size()!=0 || Ogre::Pass::getPassGraveyard().size()!=0)
    {
       Ogre::SceneManagerEnumerator::SceneManagerIterator scenesIter = Ogre::Root::getSingleton().getSceneManagerIterator();
-      
+
       while(scenesIter.hasMoreElements())
       {
           Ogre::SceneManager* pScene = scenesIter.getNext();
@@ -157,13 +160,13 @@ void TerrainPageSurface::updateSceneManagersAfterMaterialsChange()
                }//end_while(groupIter.hasMoreElements())
             }//end_if(pScene)
           }//end_if(pScene)
-      }//end_while(scenesIter.hasMoreElements())      
-      
+      }//end_while(scenesIter.hasMoreElements())
+
       // Now trigger the pending pass updates
         Ogre::Pass::processPendingPassUpdates();
 
    }//end_if(m_Root..
-} 
+}
 }
 
 }

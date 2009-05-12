@@ -1,7 +1,7 @@
 //
 // C++ Interface: XMLHelper
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -25,6 +25,7 @@
 
 #include "EmberOgrePrerequisites.h"
 #include "framework/tinyxml/tinyxml.h"
+#include <OgreDataStream.h>
 
 namespace EmberOgre {
 
@@ -62,7 +63,7 @@ public:
 	 * @return An Ogre::Vector3 instance.
 	 */
 	static Ogre::Vector3 fillVector3FromElement(TiXmlElement* elem);
-	
+
 	/**
 	 * @brief Utility method for filling an xml element with data from an Ogre::Vector3 instance.
 	 * @param elem The element which should be filled. The data will be represented through three numerical properties, "x", "y" and "z".
@@ -76,7 +77,7 @@ public:
 	 * @return An Ogre::Quaternion instance.
 	 */
 	static Ogre::Quaternion fillQuaternionFromElement(TiXmlElement* elem);
-	
+
 	/**
 	 * @brief Utility method for filling an xml element with data from an Ogre::Quaternion instance.
 	 * @param elem The element which should be filled. The data will be represented through four numerical properties, "w", "x", "y" and "z".

@@ -1,7 +1,7 @@
 //
 // C++ Implementation: ModelDefinitionManager
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2004
@@ -11,12 +11,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -33,6 +33,9 @@
 
 #include "XMLModelDefinitionSerializer.h"
 
+#include <OgreRoot.h>
+#include <OgreSceneManagerEnumerator.h>
+
 
 template<> EmberOgre::Model::ModelDefinitionManager* Ember::Singleton<EmberOgre::Model::ModelDefinitionManager>::ms_Singleton = 0;
 namespace EmberOgre
@@ -43,18 +46,18 @@ ModelDefinitionManager::ModelDefinitionManager() : mShowModels(true), mModelFact
 {
     mLoadOrder = 300.0f;
     mResourceType = "ModelDefinition";
-        
+
 	mScriptPatterns.push_back("*.modeldef");
 	mScriptPatterns.push_back("*.modeldef.xml");
 	Ogre::ResourceGroupManager::getSingleton()._registerScriptLoader(this);
 
 	Ogre::ResourceGroupManager::getSingleton()._registerResourceManager(mResourceType, this);
-	
-	
+
+
 	///register factories
 	mModelFactory = new ModelFactory();
 	Ogre::Root::getSingleton().addMovableObjectFactory(mModelFactory);
-	
+
 }
 
 
@@ -64,24 +67,24 @@ ModelDefinitionManager::~ModelDefinitionManager()
 	Ogre::ResourceGroupManager::getSingleton()._unregisterResourceManager(mResourceType);
 	Ogre::ResourceGroupManager::getSingleton()._unregisterScriptLoader(this);
 	///we need to make sure that all Models are destroyed before Ogre begins destroying other movable objects (such as Entities)
-	///this is because Model internally uses Entities, so if those Entities are destroyed by Ogre before the Models are destroyed, the Models will try to delete them again, causing segfaults and other wickedness 
+	///this is because Model internally uses Entities, so if those Entities are destroyed by Ogre before the Models are destroyed, the Models will try to delete them again, causing segfaults and other wickedness
 	Ogre::SceneManagerEnumerator::SceneManagerIterator sceneManagerIterator =  Ogre::SceneManagerEnumerator::getSingleton().getSceneManagerIterator();
 	while (sceneManagerIterator.hasMoreElements()) {
 		sceneManagerIterator.getNext()->destroyAllMovableObjectsByType(Model::sMovableType);
 	}
-	
+
 	if (mModelFactory) {
 		Ogre::Root::getSingleton().removeMovableObjectFactory(mModelFactory);
 		delete mModelFactory;
 	}
-	
+
 }
 
 
 
 
-Ogre::ResourcePtr ModelDefinitionManager::create(const Ogre::String& name, const Ogre::String& group, 
-bool isManual, Ogre::ManualResourceLoader* loader, 
+Ogre::ResourcePtr ModelDefinitionManager::create(const Ogre::String& name, const Ogre::String& group,
+bool isManual, Ogre::ManualResourceLoader* loader,
 const Ogre::NameValuePairList* createParams)
 {
 	Ogre::ResourcePtr ret = getByName(name);
@@ -151,7 +154,7 @@ void ModelDefinitionManager::removeBackgroundLoader(ModelBackgroundLoader* loade
 
 void ModelDefinitionManager::pollBackgroundLoaders()
 {
-	for (BackgroundLoaderStore::iterator I = mBackgroundLoaders.begin(); I != mBackgroundLoaders.end();) 
+	for (BackgroundLoaderStore::iterator I = mBackgroundLoaders.begin(); I != mBackgroundLoaders.end();)
 	{
 		BackgroundLoaderStore::iterator I_copy = I;
 		ModelBackgroundLoader* loader(*I);

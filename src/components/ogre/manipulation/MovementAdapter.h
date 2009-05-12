@@ -1,7 +1,7 @@
 //
 // C++ Interface: MovementAdapter
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -25,6 +25,7 @@
 
 #include "../EmberOgrePrerequisites.h"
 #include "services//input/IInputAdapter.h"
+#include <OgreFrameListener.h>
 
 
 namespace EmberOgre {
@@ -44,7 +45,7 @@ class MovementAdapterWorkerBase
 public:
 	MovementAdapterWorkerBase(MovementAdapter& adapter);
 	virtual ~MovementAdapterWorkerBase();
-	
+
 	virtual bool injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse) { return true;}
 
 	/**
@@ -56,7 +57,7 @@ protected:
 
 	/**
 	 *    Gets the movement bridge in use.
-	 * @return 
+	 * @return
 	 */
 	IMovementBridge* getBridge();
 	MovementAdapter& mAdapter;
@@ -71,7 +72,7 @@ class MovementAdapterWorkerDiscrete : public MovementAdapterWorkerBase
 {
 public:
 	MovementAdapterWorkerDiscrete(MovementAdapter& adapter);
-	
+
 	virtual bool injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse);
 
 protected:
@@ -94,7 +95,7 @@ public:
 	* Methods from Ogre::FrameListener
 	*/
 	bool frameStarted(const Ogre::FrameEvent& event);
-	
+
 	/**
 	 * @brief Forces an update.
 	 * This could be called to force a position update, even if no input has been recieved (for example a mouse movement).
@@ -116,7 +117,7 @@ protected:
 	@author Lennart Sauerbeck
 
 	@brief Provides an adapter for moving objects in the world.
-	
+
 	When activates, an instance of this will recieve input events and pass these on to the currently selected instance of MovementAdapterWorkerBase which in turn will translate those input operations into movement of any object movements, as defined in the bridge to which this is attached.
 */
 class MovementAdapter : public Ember::IInputAdapter {
@@ -143,13 +144,13 @@ public:
 	 * @param bridge The bridge through which the entity is moved. After calling this, ownership will be transferred to this class.
 	 */
 	virtual void attachToBridge(IMovementBridge* bridge);
-	
+
 	/**
 	 * @brief Detaches the adapter from the current bridge. This will deactive the adapter.
 	 * At detachment the bridge will also be deleted. Call attachToBridge to attach to a new bridge if you want to move another entity.
 	 */
 	virtual void detach();
-	
+
 	/**
 	 * @brief Forces an update.
 	 * This could be called to force a position update, even if no input has been recieved (for example a mouse movement).
@@ -161,34 +162,34 @@ protected:
 	 * @brief Removes this instance from the input system, which means that it will no longer receive any calls to the inject* methods.
 	 */
 	virtual void removeAdapter();
-	
+
 	/**
 	 * @brief Adds this instance as an adapter to the input system, which means that it will begin receiving calls to the inject* methods.
 	 */
 	virtual void addAdapter();
-	
+
 	/**
 	 * @brief Cancels the current movement, returning the IMovementBridge to it's original place.
 	 */
 	virtual void cancelMovement();
-	
+
 	/**
 	 * @brief Finalizes the current movement, sending updates for the IMovementBridge to the server.
 	 */
 	virtual void finalizeMovement();
-	
-	
+
+
 	/**
 	 * @brief The bridge through which all movement happens.
 	 * This is initially null, but is set through attachToBridge. Once a bridge has been attached the ownership is transferred to this class, and subsequently the reponsibility to delete it.
 	 */
 	IMovementBridge* mBridge;
-	
+
 	/**
 	 * @brief The worker instance which will listen for inputs and tell the bridge to update accordingly.
 	 */
 	MovementAdapterWorkerBase* mWorker;
-	
+
 };
 
 

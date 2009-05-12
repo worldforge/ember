@@ -35,49 +35,49 @@ public:
 
 	TerrainShader(Mercator::Terrain* terrain, int terrainIndex, const TerrainLayerDefinition* layerDef, Mercator::Shader* shader);
 	virtual ~TerrainShader();
-	
+
 	Mercator::Shader* getShader() const;
 
 	/**
 	 * @brief Adds a texture unit with a splatting alpha texture to the supplied pass.
 	 * Use this when you're using many texture units in the same pass
 	 */
-	void addTextureUnitsToPass(Ogre::Pass* pass, const Ogre::String& splatTextureName);
+	void addTextureUnitsToPass(Ogre::Pass* pass, const std::string& splatTextureName);
 
 	/**
 	 * @brief Adds a pass with a splatting alpha texture to the supplied technique.
-	 * Use this when you're using many passes. This is more expensive than 
+	 * Use this when you're using many passes. This is more expensive than
 	 * addTextureUnitsToPass(...) but works on card with a low number of
 	 * TextureUnits.
 	 */
-	Ogre::Pass* addPassToTechnique(Ogre::Technique* technique, const Ogre::String& splatTextureName);
-	
+	Ogre::Pass* addPassToTechnique(Ogre::Technique* technique, const std::string& splatTextureName);
+
 	int getTerrainIndex() const;
 
-	void addMaterialToTechnique(Ogre::Technique*  technique, const Ogre::String& splatTextureName);
-	void addSplatToTechnique(Ogre::Technique*  technique, const Ogre::String& splatTextureName);
-	
-	
+	void addMaterialToTechnique(Ogre::Technique*  technique, const std::string& splatTextureName);
+	void addSplatToTechnique(Ogre::Technique*  technique, const std::string& splatTextureName);
+
+
 	/**
 	 *    returns the Surface for the given segment
-	 * @param segment 
+	 * @param segment
 	 * @return a surface, or null if no could be found
 	 */
 	Mercator::Surface* getSurfaceForSegment(Mercator::Segment* segment) const;
-	
-	
+
+
 	const TerrainLayerDefinition* getLayerDefinition() const;
-	
+
 protected:
 	const TerrainLayerDefinition* mLayerDef;
 	Mercator::Shader* mShader;
 	Mercator::Terrain* mTerrain;
 	int mTerrainIndex;
-	
+
 	Ogre::ushort getMaxTextureUnits() const;
 };
 
-inline int TerrainShader::getTerrainIndex() const 
+inline int TerrainShader::getTerrainIndex() const
 {
 	return mTerrainIndex;
 }

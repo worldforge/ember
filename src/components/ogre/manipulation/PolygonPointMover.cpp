@@ -1,7 +1,7 @@
 //
 // C++ Implementation: PolygonPointMover
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2009
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -30,6 +30,7 @@
 #include "services/input/Input.h"
 
 #include "../MathConverter.h"
+#include <OgreSceneNode.h>
 
 namespace EmberOgre {
 
@@ -154,7 +155,7 @@ void PolygonPointMover::switchToNewPointMode()
 				float initialDistance2 = WFMath::Distance(mInitialPosition, point2->getLocalPosition());
 				float currentDistance1 = WFMath::Distance(mPoint.getLocalPosition(), point1->getLocalPosition());
 				float currentDistance2 = WFMath::Distance(mPoint.getLocalPosition(), point2->getLocalPosition());
-				
+
 				float distanceDiff1 = initialDistance1 - currentDistance1;
 				float distanceDiff2 = initialDistance2 - currentDistance2;
 				if (distanceDiff1 < distanceDiff2) {
@@ -162,7 +163,7 @@ void PolygonPointMover::switchToNewPointMode()
 				} else {
 					mNewPoint = mPoint.getPolygon().insertPointBefore(*point1);
 				}
-				
+
 				mNewPoint->setLocalPosition(mPoint.getLocalPosition());
 				mPoint.setLocalPosition(mInitialPosition);
 				mPoint.getPolygon().updateRender();

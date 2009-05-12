@@ -1,7 +1,7 @@
 //
 // C++ Implementation: TerrainPageFoliage
 //
-// Description: 
+// Description:
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
 //
@@ -9,12 +9,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -42,14 +42,17 @@
 
 #include <wfmath/MersenneTwister.h>
 
+#include <OgreMath.h>
+#include <OgreVector2.h>
+
 #ifdef HAVE_LRINTF
-    #define I_ROUND(_x) (::lrintf(_x)) 
+    #define I_ROUND(_x) (::lrintf(_x))
 #elif defined(HAVE_RINTF)
-    #define I_ROUND(_x) ((int)::rintf(_x)) 
+    #define I_ROUND(_x) ((int)::rintf(_x))
 #elif defined(HAVE_RINT)
-    #define I_ROUND(_x) ((int)::rint(_x)) 
+    #define I_ROUND(_x) ((int)::rint(_x))
 #else
-    #define I_ROUND(_x) ((int)(_x)) 
+    #define I_ROUND(_x) ((int)(_x))
 #endif
 
 #ifdef HAVE_FABSF
@@ -86,7 +89,7 @@ void TerrainPageFoliage::generatePlantPositions()
 		const TerrainLayerDefinition* layerDef = *I;
 		for (TerrainLayerDefinition::TerrainFoliageDefinitionStore::const_iterator I = layerDef->getFoliages().begin(); I != layerDef->getFoliages().end(); ++I) {
 			PlantBatchStore& plants = mPlantStores[I->getPlantType()];
-	
+
 			if (I->getPopulationTechnique() == "cluster") {
 				ClusterPopulator populator(*this);
 				populator.setClusterDistance(atof(I->getParameter("clusterDistance").c_str()));
@@ -94,7 +97,7 @@ void TerrainPageFoliage::generatePlantPositions()
 				populator.setMaxClusterRadius(atof(I->getParameter("maxClusterRadius").c_str()));
 				populator.setDensity(atof(I->getParameter("density").c_str()));
 				populator.setFalloff(atof(I->getParameter("falloff").c_str()));
-				
+
 				populator.populate(plants, index++, mGenerator.getFoliageBatchSize());
 			}
 		}
@@ -105,13 +108,13 @@ void TerrainPageFoliage::generateCoverageMap()
 {
 	///we've disable the functionality for keeping a coverage map since it's faster to do the checkups through Mercator
 	return;
-#if 0	
+#if 0
 	S_LOG_VERBOSE("Starting generation of foliage coverage map for page at position x: " << mTerrainPage.getWFPosition().x() << " y: " << mTerrainPage.getWFPosition().y() << ".");
 	if (!mFoliageCoverageDataStream) {
 		mFoliageCoverageDataStream = new Ogre::MemoryDataStream(mCoverageMapPixelWidth * mCoverageMapPixelWidth * 1, true);
 		mFoliageCoverageDataStreamPtr = Ogre::DataStreamPtr(mFoliageCoverageDataStream);
 	}
-	
+
 	size_t foliageBufferSize =  mFoliageCoverageDataStream->size();
 	TerrainPageSurfaceLayer* grassLayer(0);
 	for (TerrainPageSurface::TerrainPageSurfaceLayerStore::const_iterator I = mTerrainPage.getSurface()->getLayers().begin(); I != mTerrainPage.getSurface()->getLayers().end(); ++I) {
@@ -137,7 +140,7 @@ void TerrainPageFoliage::generateCoverageMap()
 		}
 	}
 #endif
-	
+
 ///activate this if you want to see the texture in game (to get debug information etc.)
 #if 0
 	std::stringstream ss;
@@ -164,20 +167,20 @@ void TerrainPageFoliage::getPlantsForArea(const TerrainLayerDefinition& layerDef
 	const int batchY = Ogre::Math::Floor(area.top / mGenerator.getFoliageBatchSize());
 	PlantStore& plants = plantBatchStore[batchX][batchY];
 	store.reserve(plants.size());
-	
+
 	for (PlantStore::iterator I = plants.begin(); I != plants.end(); ++I) {
 		if (I->x >= area.left && I->x <= area.right && I->y >= area.top && I->y <= area.bottom) {
-			
+
 			#if 1
 			unsigned char combinedCoverage(0);
 			float x = I->x;
 			float y = mCoverageMapPixelWidth - I->y;
-		
+
 			Mercator::Segment* segment = mTerrainPage.getSegmentAtLocalPosition(TerrainPosition(x, y), localPositionInSegment);
 			if ((segment == 0) || (!segment->isValid())) {
 				continue;
 			}
-			
+
 			///start from the coverage for the active layer, and substract all layers above
 			///if the end result is below the threshold we'll show the plant
 			TerrainPageSurfaceLayer* activeLayer(0);
@@ -206,10 +209,10 @@ void TerrainPageFoliage::getPlantsForArea(const TerrainLayerDefinition& layerDef
 			if (combinedCoverage >= threshold) {
 				store.push_back(*I);
 			}
-			
+
 			#endif
-			
-			
+
+
 			#if 0
 			///use the combined coverage map
 			size_t position = static_cast<size_t>((mCoverageMapPixelWidth * static_cast<unsigned int>(I->y)) + static_cast<unsigned int>(I->x));
@@ -295,7 +298,7 @@ void EmberOgre::Terrain::ClusterPopulator::setClusterDistance ( float theValue )
 EmberOgre::Terrain::PlantPopulator::PlantPopulator(TerrainPageFoliage & terrainPageFoliage)
 : mTerrainPageFoliage(terrainPageFoliage)
 {
-	
+
 }
 
 EmberOgre::Terrain::PlantPopulator::~ PlantPopulator()
@@ -318,17 +321,17 @@ void EmberOgre::Terrain::ClusterPopulator::populate(EmberOgre::Terrain::TerrainP
 	unsigned int clustersPerPage(static_cast<unsigned int>(clustersPersAxis * clustersPersAxis));
 
 	WFMath::MTRand::uint32 seed(plantIndex + (static_cast<WFMath::MTRand::uint32>(mTerrainPageFoliage.getTerrainPage().getWFPosition().x()) << 4) + (static_cast<WFMath::MTRand::uint32>(mTerrainPageFoliage.getTerrainPage().getWFPosition().y()) << 8));
-	
+
 // 	((mTerrainPageFoliage.getTerrainPage().getWFPosition().x() * mTerrainPageFoliage.getTerrainPage().getWFPosition().x()) + (mTerrainPageFoliage.getTerrainPage().getWFPosition().y() * mTerrainPageFoliage.getTerrainPage().getWFPosition().y() + mTerrainPageFoliage.getTerrainPage().getWFPosition().y())) * (plantIndex * plantIndex * plantIndex * plantIndex) );
 	WFMath::MTRand rng(seed);
-	
+
 	unsigned int plantCount(0);
 	for (unsigned int i = 0; i < clustersPerPage; ++i) {
 		///Pick a random position for our cluster
 		float clusterX(rng.rand(coverageMapPixelWidth));
 		float clusterY(rng.rand(coverageMapPixelWidth));
 		float clusterRadius(rng.rand(mMaxClusterRadius - mMinClusterRadius) + mMinClusterRadius);
-		
+
 		float volume = (clusterRadius * clusterRadius) * Ogre::Math::PI;
 		unsigned int instancesInEachCluster = volume * mDensity;
 
@@ -343,12 +346,12 @@ void EmberOgre::Terrain::ClusterPopulator::populate(EmberOgre::Terrain::TerrainP
 				if (rng.rand() < chance) {
 					float plantX = offsetX + clusterX;
 					float plantY = offsetY + clusterY;
-					
+
 					if (plantX >= 0 && plantX < coverageMapPixelWidth && plantY >= 0 && plantY < coverageMapPixelWidth) {
 						const int batchX = Ogre::Math::Floor(plantX / batchSize);
 						const int batchY = Ogre::Math::Floor(plantY / batchSize);
 						EmberOgre::Terrain::TerrainPageFoliage::PlantStore& plantStore = plantBatchStore[batchX][batchY];
-						
+
 						plantStore.push_back(Ogre::Vector2(plantX, plantY));
 						plantCount++;
 					}

@@ -38,6 +38,9 @@
 #include <OgreTagPoint.h>
 #include <OgreMeshManager.h>
 #include <OgreResourceBackgroundQueue.h>
+#include <OgreSceneManager.h>
+#include <OgreAnimationState.h>
+#include <OgreSubEntity.h>
 
 namespace EmberOgre
 {

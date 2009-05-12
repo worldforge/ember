@@ -1,7 +1,7 @@
 //
 // C++ Implementation: Foliage
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2004
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -48,6 +48,8 @@
 #include "pagedgeometry/include/BatchPage.h"
 #include "pagedgeometry/include/GrassLoader.h"
 
+#include <OgreRoot.h>
+
 
 template<> EmberOgre::Environment::Foliage* Ember::Singleton<EmberOgre::Environment::Foliage>::ms_Singleton = 0;
 using namespace EmberOgre::Terrain;
@@ -68,7 +70,7 @@ Foliage::Foliage( Ogre::SceneManager* sceneMgr)
 Foliage::~Foliage()
 {
 	S_LOG_INFO("Shutting down foliage system.");
-	
+
 	for (FoliageStore::iterator I = mFoliages.begin(); I != mFoliages.end(); ++I) {
 		delete *I;
 	}
@@ -92,7 +94,7 @@ void Foliage::initialize()
 				}
 				foliageBase->initialize();
 				mFoliages.push_back(foliageBase);
-			} catch (const std::exception& ex) 
+			} catch (const std::exception& ex)
 			{
 				S_LOG_FAILURE("Error when creating foliage. Message: " << ex.what());
 				try {
@@ -107,11 +109,11 @@ void Foliage::initialize()
 
 
 bool Foliage::frameStarted(const Ogre::FrameEvent & evt)
-{	
+{
 	for (FoliageStore::iterator I = mFoliages.begin(); I != mFoliages.end(); ++I) {
 		(*I)->frameStarted(evt);
-	}	
-	
+	}
+
 	return true;
 
 }

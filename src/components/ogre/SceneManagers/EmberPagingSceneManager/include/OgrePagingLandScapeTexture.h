@@ -19,7 +19,7 @@
 #define PAGINGLandScapeTEXTURE_H
 
 #include "OgrePagingLandScapePrerequisites.h"
-
+#include <OgreGpuProgram.h>
 namespace Ogre
 {
 
@@ -34,7 +34,7 @@ namespace Ogre
     class PagingLandScapeTexture
     {
         public:
-	        PagingLandScapeTexture(PagingLandScapeTextureManager *pageMgr, 
+	        PagingLandScapeTexture(PagingLandScapeTextureManager *pageMgr,
 				const String materialName,
 				const unsigned int numTexture = 0,
 				bool isSplatMode = false);
@@ -60,11 +60,11 @@ namespace Ogre
             virtual void setOptions(void);
 
 
-			virtual const unsigned int getNumChannels (void) const 
+			virtual const unsigned int getNumChannels (void) const
 			{
 				return mNumTexture;
 			};
-			virtual const unsigned int getNumChannelsperTexture (const size_t i) const 
+			virtual const unsigned int getNumChannelsperTexture (const size_t i) const
 			{
 				return static_cast<unsigned int>(mNumChannelperTexture[i]);
 			};
@@ -80,14 +80,14 @@ namespace Ogre
 
 	        const MaterialPtr& getMaterial(void) const;
 
-            void paint (const unsigned int x, 
-						const unsigned int z, 
+            void paint (const unsigned int x,
+						const unsigned int z,
 						const Real paintForce);
 
 
             void adjustDeformationRectangle(unsigned int x, unsigned int z);
             void adjustPaintRectangle(unsigned int x, unsigned int z);
-            
+
             virtual void lightUpdate();
 
 			void getCoordinates(unsigned int& X, unsigned int& Z)
@@ -104,17 +104,17 @@ namespace Ogre
 
         protected:
 
-			void compute(PagingLandScapeData2D* data, 
+			void compute(PagingLandScapeData2D* data,
 				const Image::Box& dataRect,
 				const Image::Box& textureRect);
 
 
 			void computePointAlpha(const unsigned int imagePos,
-				const Real height, 
+				const Real height,
 				const Real slope) ;
 
 			void computePointColor(const unsigned int imagePos,
-				const Real height, 
+				const Real height,
 				const Real slope) ;
 
 			void paintPoint (const unsigned int imagePos,
@@ -133,7 +133,7 @@ namespace Ogre
 
 
 
-			// properties that can be accessed from children 
+			// properties that can be accessed from children
 
             bool mIsSplatMode;
 			bool mIsBaseMode;
@@ -154,7 +154,7 @@ namespace Ogre
 
 			// Edit, deform and update
 			unsigned int								mNumTexture;
-			std::vector<unsigned int>					mNumChannelperTexture;			
+			std::vector<unsigned int>					mNumChannelperTexture;
 			std::vector<Image>							mImages;
 			std::vector<TexturePtr>						mTextures;
 			std::vector<HardwarePixelBufferSharedPtr>	mBuffers;
@@ -179,7 +179,7 @@ namespace Ogre
 
 			// Name that helps building textures names on each page
 			String mMaterialBaseName;
-			
+
 			private :
 				void loadTexturesToModify();
     };

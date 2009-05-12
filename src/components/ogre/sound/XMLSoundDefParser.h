@@ -21,6 +21,7 @@
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "framework/tinyxml/tinyxml.h"
+#include <OgreDataStream.h>
 
 namespace EmberOgre {
 class SoundGroupDefinition;

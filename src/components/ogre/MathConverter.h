@@ -87,6 +87,12 @@ Description:	Point, Vector and Quaternion converter
 #include <wfmath/quaternion.h>
 #include <wfmath/const.h>
 
+#include <OgreVector3.h>
+#include <OgreVector2.h>
+#include <OgreQuaternion.h>
+#include <OgreAxisAlignedBox.h>
+#include <OgreCommon.h>
+
 namespace EmberOgre {
 
 /**

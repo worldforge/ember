@@ -32,6 +32,7 @@
 #include "../AvatarTerrainCursor.h"
 #include "../GUIManager.h"
 #include "../MathConverter.h"
+#include <OgreRoot.h>
 //#include "../input/Input.h"
 
 using namespace WFMath;

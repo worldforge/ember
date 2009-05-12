@@ -61,6 +61,7 @@
 #include "main/Application.h"
 
 #include <CEGUIWindow.h>
+#include <OgreRoot.h>
 
 using namespace Ember;
 namespace EmberOgre {

@@ -33,7 +33,9 @@
 #include <Eris/Entity.h>
 
 #include <OgreSceneManager.h>
+#include <OgreEntity.h>
 #include <memory>
+
 
 namespace EmberOgre {
 

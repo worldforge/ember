@@ -1,7 +1,7 @@
 //
 // C++ Implementation: IconRenderer
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -31,6 +31,12 @@
 #include "../../model/Model.h"
 #include "../../model/ModelDefinition.h"
 #include "../../SimpleRenderContext.h"
+#include <OgreHardwarePixelBuffer.h>
+#include <OgreRenderTexture.h>
+#include <OgreSceneManager.h>
+#include <OgreSceneNode.h>
+#include <OgreRoot.h>
+#include <OgreTextureManager.h>
 
 namespace EmberOgre {
 
@@ -73,15 +79,15 @@ void IconRenderer::render(Model::Model* model, Icon* icon)
 
 void IconRenderer::performRendering(Model::Model* model, Icon* icon)
 {
-	
+
 	if (model) {
 // 		icon->getImageStoreEntry()->getTexture()->get
-	
+
 		Ogre::SceneNode* node = mRenderContext->getSceneNode();
-		
+
 		node->detachAllObjects();
 		node->attachObject(model);
-		
+
 		///check for a defined "icon" view and use that if available, else just reposition the camera
 		const Model::ViewDefinitionStore::const_iterator I = model->getDefinition()->getViewDefinitions().find("icon");
 		if (I != model->getDefinition()->getViewDefinitions().end()) {
@@ -99,18 +105,18 @@ void IconRenderer::performRendering(Model::Model* model, Icon* icon)
 			mRenderContext->showFull(model);
 			mRenderContext->setCameraDistance(mRenderContext->getDefaultCameraDistance() * 0.75);
  		}
-		
+
 // 		mRenderContext->setCameraDistance(0.75);
-		
+
 		///the problem with PBuffer and Copy might be that we need to wait a little before we try to blit, since it's not guaranteed that the content will be correctly rendered (since the render ops are queued to the GPU)
 		///thus we need to create some kind of frame listener callback mechanism
  		mRenderContext->getViewport()->update();
-		
+
 // 		SDL_Delay(1000);
 // 		blitRenderToIcon(icon);
-		
+
 		node->detachAllObjects();
-		
+
 	}
 }
 
@@ -118,34 +124,34 @@ void IconRenderer::blitRenderToIcon(Icon* icon)
 {
 	Ogre::HardwarePixelBufferSharedPtr srcBuffer = mRenderContext->getTexture()->getBuffer();
 	Ogre::HardwarePixelBufferSharedPtr dstBuffer = icon->getImageStoreEntry()->getTexture()->getBuffer();
-	
+
 	Ogre::Box sourceBox(0, 0, mRenderContext->getRenderTexture()->getWidth(), mRenderContext->getRenderTexture()->getHeight());
 // 	Ogre::PixelBox sourceLockedBox = srcBuffer->lock(sourceBox, Ogre::HardwareBuffer::HBL_READ_ONLY);
-	
+
 	Ogre::Box dstBox = icon->getImageStoreEntry()->getBox();
 // 	Ogre::PixelBox dstLockedBox = dstBuffer->lock(dstBox, Ogre::HardwareBuffer::HBL_NORMAL);
-	
+
 /*	Ogre::MemoryDataStream* dataStream = new Ogre::MemoryDataStream(sourceBox.getWidth() * sourceBox.getHeight() * 4, true);
 	Ogre::DataStreamPtr imageDataStreamPtr(dataStream);*/
-	
-	
+
+
 /*	Ogre::Image image;
 	image.loadRawData(imageDataStreamPtr, sourceBox.getWidth(), sourceBox.getHeight(), Ogre::PF_A8R8G8B8);*/
-	
+
  	srcBuffer->blitToMemory(icon->getImageStoreEntry()->getImagePixelBox());
  	dstBuffer->blitFromMemory(icon->getImageStoreEntry()->getImagePixelBox(), dstBox);
 //  	static int counter(0);
 //  	std::stringstream ss;
 //  	ss << "/home/erik/skit/temp_" << counter++ << ".jpg";
 // 	image.save(ss.str());
-	
+
 //	dstBuffer->blit(srcBuffer, sourceBox, dstBox);
-	
+
 // 	srcBuffer->unlock();
 // 	dstBuffer->unlock();
 }
 
-    
+
 // void IconRenderer::showModel(const std::string& modelName)
 // {
 // 	if (mModel) {
@@ -236,7 +242,7 @@ void DelayedIconRendererEntry::frameStarted()
 		mRenderer.finalizeRendering(*this);
 		///we can't do anything here, since the call to finalizeRendering will delete this instance
 	}
-	
+
 }
 
 

@@ -1,7 +1,7 @@
 //
 // C++ Implementation: TerrainPageShadow
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -32,7 +32,12 @@
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 #include <wfmath/stream.h>
-
+#include <OgreColourValue.h>
+#include <OgreRoot.h>
+#include <OgreTextureManager.h>
+#include <OgreColourValue.h>
+#include <OgreHardwarePixelBuffer.h>
+#include <OgreMaterial.h>
 namespace EmberOgre {
 namespace Terrain {
 
@@ -42,20 +47,20 @@ void SimpleTerrainPageShadowTechnique::createShadowData(TerrainPage& page, Terra
 
 	int pageSizeInVertices = page.getPageSize();
 	int pageSizeInMeters = pageSizeInVertices - 1;
-	
+
 	///since Ogre uses a different coord system than WF, we have to do some conversions here
 // 	TerrainPosition origPosition(page.getWFPosition());
 	TerrainPosition origPosition(0, pageSizeInMeters - 1);
 	///start in one of the corners...
 /*	origPosition[0] = (page.getWFPosition()[0] * (pageSizeInMeters));
 	origPosition[1] = (page.getWFPosition()[1] * (pageSizeInMeters));*/
-	
+
 	WFMath::Vector<3> wfLightDirection = Ogre2Atlas_Vector3(lightDirection);
 	wfLightDirection = wfLightDirection.normalize(1);
 
-	 
+
 	TerrainPosition position(origPosition);
-	
+
 	for (int i = 0; i < pageSizeInMeters; ++i) {
 		position = origPosition;
 		position[1] = position[1] - i;
@@ -72,7 +77,7 @@ void SimpleTerrainPageShadowTechnique::createShadowData(TerrainPage& page, Terra
 // 				} else {
 // 					*data = 255;
 // 				}
-				
+
 				/// if the dotProduct is > 0, the face is looking away from the sun
 				*data = static_cast<unsigned char>((1.0f - ((dotProduct + 1.0f) * 0.5f)) * 255);
 
@@ -98,7 +103,7 @@ TerrainPageShadow::TerrainPageShadow(TerrainPage& terrainPage)
 	std::stringstream shadowTextureNameSS;
 	shadowTextureNameSS << mTerrainPage.getMaterial()->getName() << "_shadow";
 	const Ogre::String shadowTextureName(shadowTextureNameSS.str());
-	
+
 	mTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(shadowTextureName, "General", Ogre::TEX_TYPE_2D, mTerrainPage.getAlphaTextureSize(), mTerrainPage.getAlphaTextureSize(), 1, Ogre::PF_L8);
 }
 
@@ -130,24 +135,24 @@ void TerrainPageShadow::updateShadow()
 	createShadowData(mShadowChunk->getPtr());
 
 	Ogre::HardwarePixelBufferSharedPtr hardwareBuffer = mTexture->getBuffer();
-	
+
 	///blit the whole image to the hardware buffer
 	Ogre::PixelBox sourceBox = mImage->getPixelBox();
 	hardwareBuffer->blitFromMemory(sourceBox);
 }
-	
+
 
 void TerrainPageShadow::createImage()
 {
 	assert(!mShadowChunk);
 	mShadowChunk = OGRE_NEW Ogre::MemoryDataStream(mTerrainPage.getAlphaTextureSize() * mTerrainPage.getAlphaTextureSize() * 1, true);
-	
+
 	memset( mShadowChunk->getPtr(), '\0', mShadowChunk->size());
-	
-	
+
+
 	createShadowData(mShadowChunk->getPtr());
-	
-	
+
+
 	mImage = OGRE_NEW Ogre::Image();
 	mImage->loadDynamicImage(mShadowChunk->getPtr(), mTerrainPage.getAlphaTextureSize(), mTerrainPage.getAlphaTextureSize(), 1, Ogre::PF_L8);
 
@@ -174,7 +179,7 @@ void TerrainPageShadow::getShadowColourAt(const Ogre::Vector2& position, Ogre::u
 {
 	if (mImage) {
 		unsigned char val(mImage->getData()[static_cast<size_t>((mImage->getWidth() * static_cast<unsigned int>(position.y)) + static_cast<unsigned int>(position.x))]);
-		
+
 		Ogre::uint8* aVal((Ogre::uint8*)&colour);
 		aVal[0] = val;
 		aVal[1] = val;
@@ -187,7 +192,7 @@ void TerrainPageShadow::getShadowColourAt(const Ogre::Vector2& position, Ogre::C
 {
 	if (mImage) {
 		float val(mImage->getData()[static_cast<size_t>((mImage->getWidth() * static_cast<unsigned int>(position.y)) + static_cast<unsigned int>(position.x))] / 255.0f);
-		
+
 		colour.r = val;
 		colour.g = val;
 		colour.b = val;

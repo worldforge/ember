@@ -27,6 +27,7 @@
 #include "WidgetPool.h"
 #include <Eris/Entity.h>
 #include "services/config/ConfigListenerContainer.h"
+#include <OgreMovableObject.h>
 
 namespace EmberOgre {
 

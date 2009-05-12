@@ -1,7 +1,7 @@
 //
 // C++ Implementation: IconManager
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -40,13 +40,15 @@
 #include "../../SimpleRenderContext.h"
 #include "main/Application.h"
 
+#include <OgreTextureManager.h>
+
 
 namespace EmberOgre {
 
 namespace Gui {
 
 namespace Icons {
-    
+
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
@@ -79,7 +81,7 @@ Eris::Entity& mEntity;
 std::string mModelName;
 
 };
-    
+
 
 
 IconManager::IconManager()
@@ -120,7 +122,7 @@ Icon* IconManager::getIcon(int pixelWidth, EmberEntity* entity)
 				Model::ModelDefinition* modelDef = static_cast< Model::ModelDefinition*>(modelDefPtr.get());
 				const std::string& iconPath(modelDef->getIconPath());
 				if (iconPath != "") {
-				
+
 					Ogre::TexturePtr texPtr;
 					try {
 						if (Ogre::TextureManager::getSingleton().resourceExists(iconPath)) {
@@ -156,7 +158,7 @@ Icon* IconManager::getIcon(int pixelWidth, EmberEntity* entity)
 
 Icon* IconManager::getIcon(int pixelWidth, Eris::TypeInfo* erisType)
 {
-	
+
 	std::string key = "entity_" + erisType->getName();
 	if (mIconStore.hasIcon(key)) {
 		return mIconStore.getIcon(key);
@@ -184,7 +186,7 @@ Icon* IconManager::getIcon(int pixelWidth, Eris::TypeInfo* erisType)
 // 					Model::Model* model = Model::Model::createModel(mIconRenderer.getRenderContext()->getSceneManager(), modelName);
 					mIconRenderer.render(modelName, icon);
 // 					mIconRenderer.getRenderContext()->getSceneManager()->destroyMovableObject(model);
-					
+
 					dummyEntity.shutdown();
 				}
 			}

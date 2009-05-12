@@ -1,7 +1,7 @@
 //
 // C++ Interface: MovableObjectRenderer
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -23,12 +23,12 @@
 #ifndef EMBEROGREMOVABLEOBJECTRENDERER_H
 #define EMBEROGREMOVABLEOBJECTRENDERER_H
 
-#include <CEGUIEvent.h> 
+#include <CEGUIEvent.h>
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "services/input/IInputAdapter.h"
 #include "../SimpleRenderContext.h"
-
+#include <OgreFrameListener.h>
 namespace CEGUI
 {
 class GUISheet;
@@ -50,59 +50,59 @@ public:
     MovableObjectRenderer(CEGUI::Window* image);
 
     virtual ~MovableObjectRenderer();
-    
+
     /**
      * Adapts the position of the camera so that the whole scene is shown.
      */
     void showFull();
-    
+
     /**
      * Sets the distance of the camera from the Model.
-     * @param distance 
+     * @param distance
      */
     void setCameraDistance(float distance);
-    
+
     /**
      * Gets the distance of the camera from the Model in reltive terms with 1.0 being the optimal distance to show the full model.
-     * @return 
+     * @return
      */
     float getCameraDistance();
-    
+
 	/**
 	 *    Gets the distance of the camera from the model in world units.
-	 * @return 
+	 * @return
 	 */
 	float getAbsoluteCameraDistance();
-	
-   
-    
-    
+
+
+
+
     /**
      * Returns whether input catching (and also rotation of the model) is allowed.
      * Defaults to true.
-     * @return 
+     * @return
      */
     bool getIsInputCatchingAllowed() const;
-    
+
     /**
      * Sets whether input catching (and also rotation of the model) is allowed.
-     * @param allowed 
+     * @param allowed
      */
     void setIsInputCatchingAllowed(bool allowed);
-    
+
     /**
      * Gets whether the camera should be repositioned so that the full scene is shown each time the content of the scene node updates
      * Defaults to true.
-     * @return 
+     * @return
      */
     void setAutoShowFull(bool showFull);
-    
+
     /**
      * Sets whether the camera should be repositioned so that the full scene is shown each time the content of the scene node updates
-     * @return 
+     * @return
      */
     bool getAutoShowFull() const;
-    
+
     bool getActive() const {return mActive;}
     void setActive(bool isActive) {mActive = isActive;}
 
@@ -126,75 +126,75 @@ public:
 
 	/**
 	 *    Gets the rotation of the entity.
-	 * @return 
+	 * @return
 	 */
 	Ogre::Quaternion getEntityRotation();
-	
-	
+
+
 	/**
 	 *    Resets the orientation of the camera.
 	 */
 	void resetCameraOrientation();
-	
+
 	/**
 	 *    Pitches the camera.
 	 * @param degrees The amount of degrees to pitch.
 	 */
 	void pitch(Ogre::Degree degrees);
-	
+
 	/**
 	 *    Yaws the camera.
 	 * @param degrees The amount of degree to yaw.
 	 */
 	void yaw(Ogre::Degree degrees);
-    
+
 	/**
 	 *    Rolls the camera.
 	 * @param degrees The amount of degree to roll.
 	 */
     void roll(Ogre::Degree degrees);
-    
+
     /**
      * Updates the texture by rendering one frame manually.
      */
     void updateRender();
-    
+
     /**
      * Sets the background colour.
-     * @param colour 
+     * @param colour
      */
     void setBackgroundColour(const Ogre::ColourValue& colour);
     /**
      * Sets the background colour.
-     * @param red 
-     * @param green 
-     * @param blue 
-     * @param  
+     * @param red
+     * @param green
+     * @param blue
+     * @param
      */
     void setBackgroundColour(float red, float green, float blue, float alpha);
-    
+
     /**
      * Shows an axis mesh in the middle of the scene. Useful for authoring.
      */
-    void showAxis();    
-    
+    void showAxis();
+
     /**
      * Hides the axis mesh.
      */
-    void hideAxis();      
-    
+    void hideAxis();
+
 	/**
 	 *    Gets the current camera positioning mode. The default is CPM_OBJECTCENTER which centers the camera on the current displayed object.
-	 * @return 
+	 * @return
 	 */
 	SimpleRenderContext::CameraPositioningMode getCameraPositionMode() const;
-    
+
 	/**
 	 *    Sets the camera positioning mode. This determines how the camera behaves.
-	 * @param mode 
+	 * @param mode
 	 */
 	void setCameraPositionMode(SimpleRenderContext::CameraPositioningMode mode);
-		
+
 protected:
 
 	/**
@@ -202,29 +202,29 @@ protected:
 	 *    @see releaseInput
 	 */
 	void catchInput();
-	
+
 	/**
 	 *    Releases input caught with catchInput
 	 *    @see catchInput
 	 */
 	void releaseInput();
-	
-	
+
+
 	/**CEGUI::StaticImage* image
 	 *    When the mouse button is pressed over the image, catch input and allow for rotation of the model. When the mouse button is releases, also release input.
-	 * @param args 
-	 * @return 
+	 * @param args
+	 * @return
 	 */
 	bool image_MouseButtonDown(const CEGUI::EventArgs& args);
-	
-	
+
+
 	/**
 	 *    Mouse wheel movements will zoom in and out.
-	 * @param args 
-	 * @return 
+	 * @param args
+	 * @return
 	 */
 	bool image_MouseWheel(const CEGUI::EventArgs& args);
-	
+
     EntityCEGUITexture* mTexture;
     /**
     If true, the input will be caught when the user clicks on the image, allowing for rotation of the model.
@@ -235,13 +235,13 @@ protected:
 	used to decide if the camera should be repositioned so that the full scene is shown each time the content of the scene node updates
 	*/
 	bool mAutoShowFull;
-	
+
 	CEGUI::Window* mImage;
-	
+
 	virtual Ogre::MovableObject* getMovableObject() = 0;
-	
+
 	bool mActive;
-	
+
 	Ogre::Entity* mAxisEntity;
 	Ogre::SceneNode* mAxesNode;
 

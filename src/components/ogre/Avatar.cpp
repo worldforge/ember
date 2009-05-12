@@ -50,10 +50,12 @@
 #include <Eris/Connection.h>
 #include <Eris/TypeInfo.h>
 
+#include <OgreRoot.h>
+
 namespace EmberOgre {
 
 
-Avatar::Avatar()  
+Avatar::Avatar()
 : mErisAvatarEntity(0)
 , mHasChangedLocation(false)
 , mChatLoggerParent(0)
@@ -71,16 +73,16 @@ Avatar::Avatar()
 
 	/// Create the Avatar tree of nodes, with a base entity
 	/// and attach all the needed cameras
-	
+
 	createAvatar();
 
 	Ogre::Root::getSingleton().addFrameListener(this);
-		
+
 	registerConfigListener("general","logchatmessages", sigc::mem_fun(*this, &Avatar::Config_LogChatMessages));
 	registerConfigListener("general","avatarrotationupdatefrequency", sigc::mem_fun(*this, &Avatar::Config_AvatarRotationUpdateFrequency));
 	registerConfigListener("input","walkspeed", sigc::mem_fun(*this, &Avatar::Config_WalkSpeed));
 	registerConfigListener("input","runspeed", sigc::mem_fun(*this, &Avatar::Config_RunSpeed));
-	
+
 	mCurrentMovementState.isMoving = false;
 	mCurrentMovementState.velocity = Ogre::Vector3::ZERO;
 	mCurrentMovementState.orientation = Ogre::Quaternion::IDENTITY;
@@ -93,7 +95,7 @@ Avatar::~Avatar()
 
 }
 
-void Avatar::setMinIntervalOfRotationChanges(Ogre::Real milliseconds) 
+void Avatar::setMinIntervalOfRotationChanges(Ogre::Real milliseconds)
 {
 	mMinIntervalOfRotationChanges = milliseconds;
 }
@@ -110,27 +112,27 @@ bool Avatar::frameStarted(const Ogre::FrameEvent & event)
 	if (mEntitiesToBeAddedToInventory.size() > 0) {
 		std::set<Eris::Entity*>::iterator I = mEntitiesToBeAddedToInventory.begin();
 		std::set<Eris::Entity*>::iterator I_end = mEntitiesToBeAddedToInventory.end();
-		
+
 		for (; I != I_end; ++I) {
 			///no need to do dynamic cast here
 			EmberEntity* emberEntity = static_cast<EmberEntity*>(*I);
 			EventAddedEntityToInventory.emit(emberEntity);
 		}
-		
-		mEntitiesToBeAddedToInventory.clear();
-	}	
 
-	
+		mEntitiesToBeAddedToInventory.clear();
+	}
+
+
 /*	if (mEntitiesToBeRemovedFromInventory.size() > 0) {
 		std::set<Eris::Entity*>::iterator J = mEntitiesToBeRemovedFromInventory.begin();
 		std::set<Eris::Entity*>::iterator J_end = mEntitiesToBeRemovedFromInventory.end();
-		
+
 		for (; J != J_end; ++J) {
 			EmberEntity* emberEntity = dynamic_cast<EmberEntity*>(*J);
 			if (emberEntity)
 				EventRemovedEntityFromInventory.emit(emberEntity);
 		}
-		
+
 		mEntitiesToBeRemovedFromInventory.clear();
 	}*/
 	return true;
@@ -140,20 +142,20 @@ bool Avatar::frameStarted(const Ogre::FrameEvent & event)
 
 void Avatar::updateFrame(AvatarControllerMovement& movement)
 {
-	
+
 	///for now we'll just rotate without notifying the server
 	///except when moving!
 	attemptRotate(movement);
-	
-	
+
+
 	///this next method will however send send stuff to the server
 	attemptMove(movement);
-	
+
 	///only adjust if there is actual movement. If we adjust when there's only rotation we'll get a strange jerky effect (some bug I guess)
 	if (movement.isMoving) {
 		adjustAvatarToNewPosition(&movement);
 	}
-	
+
 }
 
 void Avatar::attemptMove(AvatarControllerMovement& movement)
@@ -163,30 +165,30 @@ void Avatar::attemptMove(AvatarControllerMovement& movement)
 	Ogre::Real timeSlice = movement.timeSlice;
 	float speed = isRunning ? mRunSpeed : mWalkSpeed;
 	Ogre::Vector3 rawVelocity = move * speed;
-	
-	
+
+
 	///first we'll register the current state in newMovementState and compare to mCurrentMovementState
 	///that way we'll only send stuff to the server if our movement changes
 	AvatarMovementState newMovementState;
 	newMovementState.orientation = mAvatarNode->getOrientation();
 	newMovementState.velocity = rawVelocity;// * newMovementState.orientation.xAxis();
-	
+
 	if (move != Ogre::Vector3::ZERO) {
 		newMovementState.isMoving = true;
 		newMovementState.isRunning = isRunning;
 	} else {
 		newMovementState.isMoving = false;
 		newMovementState.isRunning = false;
-	}		
+	}
 	bool sendToServer = false;
-	
-	//first we check if we are already moving 
+
+	//first we check if we are already moving
 	if (!mCurrentMovementState.isMoving) {
 		//we are not moving. Should we start to move?
 		if (newMovementState.isMoving) {
 			//we'll start moving
 			//let's send the movement command to the server
-			sendToServer = true;		
+			sendToServer = true;
 
 		} else if (!(newMovementState.orientation == mMovementStateAtLastServerMessage.orientation)) {
 			//we have rotated since last server update
@@ -208,14 +210,14 @@ void Avatar::attemptMove(AvatarControllerMovement& movement)
 			sendToServer = true;
 		}
 	}
-		
-	
+
+
 	if (sendToServer) {
 		S_LOG_VERBOSE("Sending move op to server.");
 		mMovementStateAtBeginningOfMovement = newMovementState;
 		mMovementStateAtLastServerMessage = newMovementState;
 		mTimeSinceLastServerMessage = 0;
-		
+
 
 		///Save the five latest orientations sent to the server, so we can later when we recieve an update from the server we can recognize that it's our own updates and ignore them.
 		mLastOrientations.push_back(Ogre2Atlas(newMovementState.orientation));
@@ -236,7 +238,7 @@ void Avatar::attemptMove(AvatarControllerMovement& movement)
 		mAvatarNode->translate(mAvatarNode->getOrientation() * (rawVelocity * timeSlice));
 	}
 	mCurrentMovementState = newMovementState;
-	
+
 }
 
 void Avatar::adjustAvatarToNewPosition(AvatarControllerMovement* movement)
@@ -258,7 +260,7 @@ void Avatar::attemptRotate(AvatarControllerMovement& movement)
 /*	float degHoriz = movement.rotationDegHoriz;
 	float degVert = movement.rotationDegVert;
 	Ogre::Real timeSlice = movement.timeSlice;*/
-	
+
 //	mAccumulatedHorizontalRotation += (degHoriz * timeSlice);
 
 	//if we're moving we must sync the rotation with messages sent to the server
@@ -284,7 +286,7 @@ void Avatar::attemptRotate(AvatarControllerMovement& movement)
 bool Avatar::isOkayToSendRotationMovementChangeToServer()
 {
 	return mTimeSinceLastServerMessage > mMinIntervalOfRotationChanges;
-	
+
 }
 
 AvatarCamera* Avatar::getAvatarCamera() const
@@ -300,7 +302,7 @@ AvatarEmberEntity* Avatar::getAvatarEmberEntity()
 
 void Avatar::setAvatarController(AvatarController* avatarController)
 {
-	mAvatarController = avatarController;	
+	mAvatarController = avatarController;
 }
 
 void Avatar::movedInWorld()
@@ -308,7 +310,7 @@ void Avatar::movedInWorld()
 	///only snap the avatar to the postition and orientation sent from the server if we're not moving or if we're not recently changed location
 	///The main reason when moving is that we don't want to have the avatar snapping back in the case of lag
 	///However, if we've just recently changed location, we need to also update the orientation to work with the new location.
-	if (!mCurrentMovementState.isMoving || mHasChangedLocation) 
+	if (!mCurrentMovementState.isMoving || mHasChangedLocation)
 	{
 		const WFMath::Quaternion& orient = mErisAvatarEntity->getOrientation();
 		bool isOwnRotation = false;
@@ -339,7 +341,7 @@ void Avatar::avatar_LocationChanged(Eris::Entity* entity)
 void Avatar::createdAvatarEmberEntity(AvatarEmberEntity *emberEntity)
 {
 	Ogre::SceneNode* oldAvatar = mAvatarNode;
-	
+
 	///check if the user is of type "creator" and thus an admin
 	Eris::TypeService* typeService = emberEntity->getErisAvatar()->getConnection()->getTypeService();
 	if (emberEntity->getType()->isA(typeService->getTypeByName("creator"))) {
@@ -347,7 +349,7 @@ void Avatar::createdAvatarEmberEntity(AvatarEmberEntity *emberEntity)
 	} else {
 		mIsAdmin = false;
 	}
-	
+
 	mAvatarNode = emberEntity->getSceneNode();
 	mAvatarModel = emberEntity->getModel();
 
@@ -357,7 +359,7 @@ void Avatar::createdAvatarEmberEntity(AvatarEmberEntity *emberEntity)
 
 	EmberOgre::getSingleton().getSceneManager()->destroySceneNode(oldAvatar->getName());
 	Ember::Input::getSingleton().setMovementModeEnabled(true);
-	
+
 	mErisAvatarEntity->LocationChanged.connect(sigc::mem_fun(*this, &Avatar::avatar_LocationChanged));
 
 	EventCreatedAvatarEntity.emit(emberEntity);

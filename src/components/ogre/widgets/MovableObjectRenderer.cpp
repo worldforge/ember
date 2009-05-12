@@ -1,7 +1,7 @@
 //
 // C++ Implementation: MovableObjectRenderer
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -37,6 +37,12 @@
 #include "Widget.h"
 #include "../GUIManager.h"
 
+#include <OgreRoot.h>
+#include <OgreSceneNode.h>
+#include <OgreEntity.h>
+#include <OgreRenderTexture.h>
+#include <OgreTexture.h>
+
 using namespace Ember;
 namespace EmberOgre {
 namespace Gui {
@@ -56,8 +62,8 @@ MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image)
 		//mImage->setImageColours(CEGUI::colour(1.0f, 1.0f, 1.0f));
 		BIND_CEGUI_EVENT(mImage, CEGUI::Window::EventMouseButtonDown, MovableObjectRenderer::image_MouseButtonDown);
 		BIND_CEGUI_EVENT(mImage, CEGUI::Window::EventMouseWheel, MovableObjectRenderer::image_MouseWheel);
-		
-		
+
+
 		/// Register this as a frame listener
 		Ogre::Root::getSingleton().addFrameListener(this);
 	} else {
@@ -148,7 +154,7 @@ bool MovableObjectRenderer::getIsInputCatchingAllowed() const
 {
 	return mIsInputCatchingAllowed;
 }
-    
+
 void MovableObjectRenderer::setIsInputCatchingAllowed(bool allowed)
 {
 	mIsInputCatchingAllowed = allowed;
@@ -173,7 +179,7 @@ void MovableObjectRenderer::showFull()
 
 void MovableObjectRenderer::setCameraDistance(float distance)
 {
-	
+
 	mTexture->getRenderContext()->setCameraDistance(mTexture->getRenderContext()->getDefaultCameraDistance() * distance);
 /*	Ogre::Vector3 position = mTexture->getDefaultCameraPosition();
 	position.z *= distance;
@@ -203,7 +209,7 @@ void MovableObjectRenderer::releaseInput()
 bool MovableObjectRenderer::image_MouseWheel(const CEGUI::EventArgs& args)
 {
 	const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
-	
+
 	if (mTexture) {
 		if (mouseArgs.wheelChange != 0.0f) {
 			float distance = mTexture->getRenderContext()->getCameraDistance();
@@ -211,7 +217,7 @@ bool MovableObjectRenderer::image_MouseWheel(const CEGUI::EventArgs& args)
 			setCameraDistance(distance);
 		}
 	}
-	
+
 	return true;
 }
 
@@ -248,7 +254,7 @@ void MovableObjectRenderer::setBackgroundColour(const Ogre::ColourValue& colour)
 {
 	mTexture->getRenderContext()->setBackgroundColour(colour);
 }
-    
+
 void MovableObjectRenderer::setBackgroundColour(float red, float green, float blue, float alpha)
 {
 	mTexture->getRenderContext()->setBackgroundColour(red, green, blue, alpha);
@@ -288,7 +294,7 @@ SimpleRenderContext::CameraPositioningMode MovableObjectRenderer::getCameraPosit
 {
 	return mTexture->getRenderContext()->getCameraPositionMode();
 }
-	
+
 void MovableObjectRenderer::setCameraPositionMode(SimpleRenderContext::CameraPositioningMode mode)
 {
 	mTexture->getRenderContext()->setCameraPositionMode(mode);

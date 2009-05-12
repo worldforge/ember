@@ -1,7 +1,7 @@
 //
 // C++ Implementation: TerrainPageSurfaceCompilerTechniqueShader
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -27,6 +27,16 @@
 #include "TerrainPageSurfaceCompilerTechniqueShader.h"
 #include "TerrainPageSurfaceLayer.h"
 #include "../EmberOgre.h"
+#include <OgreGpuProgram.h>
+#include <OgreTechnique.h>
+#include <OgrePass.h>
+#include <OgreTextureUnitState.h>
+#include <OgreRoot.h>
+#include <OgreRenderSystem.h>
+#include <OgreRenderSystemCapabilities.h>
+#include <OgreShadowCameraSetupPSSM.h>
+#include <OgreHardwarePixelBuffer.h>
+
 namespace EmberOgre {
 
 namespace Terrain {
@@ -77,14 +87,14 @@ void TerrainPageSurfaceCompilerShaderPassCoverageBatch::assignCombinedCoverageTe
 	mCombinedCoverageDataStream->seek(0);
 	mCombinedCoverageImage->loadDynamicImage(mCombinedCoverageDataStream->getPtr(), mShaderPass.getCoveragePixelWidth(), mShaderPass.getCoveragePixelWidth(), 1, Ogre::PF_B8G8R8A8);
 	mCombinedCoverageTexture->loadImage(*mCombinedCoverageImage);
-	
+
 	Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(mCombinedCoverageTexture->getBuffer());
 	///blit the whole image to the hardware buffer
 	Ogre::PixelBox sourceBox(mCombinedCoverageImage->getPixelBox());
 	hardwareBuffer->blitFromMemory(sourceBox);
-	
+
 }
-	
+
 Ogre::TexturePtr TerrainPageSurfaceCompilerShaderPassCoverageBatch::getCombinedCoverageTexture()
 {
 	return mCombinedCoverageTexture;
@@ -98,17 +108,17 @@ void TerrainPageSurfaceCompilerShaderPassCoverageBatch::finalize()
 	coverageTUS->setTextureName(getCombinedCoverageTexture()->getName());
 	coverageTUS->setTextureCoordSet(0);
 	coverageTUS->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
-	
+
 	for (LayerStore::iterator I = mLayers.begin(); I != mLayers.end(); ++I) {
 		TerrainPageSurfaceLayer* layer(*I);
 		///add the layer textures
-		S_LOG_VERBOSE("Adding new layer with diffuse texture " << layer->getDiffuseTextureName());	
+		S_LOG_VERBOSE("Adding new layer with diffuse texture " << layer->getDiffuseTextureName());
 		///add the first layer of the terrain, no alpha or anything
 		Ogre::TextureUnitState * diffuseTUS = mShaderPass.mPass->createTextureUnitState();
 		//textureUnitState->setTextureScale(0.025, 0.025);
 		diffuseTUS->setTextureName(layer->getDiffuseTextureName());
 		diffuseTUS->setTextureCoordSet(0);
-		diffuseTUS->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);	
+		diffuseTUS->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 	}
 }
 
@@ -161,7 +171,7 @@ void TerrainPageSurfaceCompilerTechniqueShader::reset()
 	for (PassStore::iterator I = mPasses.begin(); I != mPasses.end(); ++I) {
 		delete *I;
 	}
-	mPasses.clear();	
+	mPasses.clear();
 }
 
 
@@ -220,9 +230,9 @@ bool TerrainPageSurfaceCompilerTechniqueShader::compileMaterial(Ogre::MaterialPt
 			}
 		}
 	}
-	
-	
-	
+
+
+
 	///Now also add a "Low" technique, for use in the compass etc.
 	technique = material->createTechnique();
 	technique->setSchemeName("Low");
@@ -275,7 +285,7 @@ bool TerrainPageSurfaceCompilerTechniqueShader::compileMaterial(Ogre::MaterialPt
 
 
 TerrainPageSurfaceCompilerShaderPass::TerrainPageSurfaceCompilerShaderPass(Ogre::Pass* pass, TerrainPage& page)
-: 
+:
 mPass(pass)
 // , mCurrentLayerIndex(0)
 , mBaseLayer(0)
@@ -331,9 +341,9 @@ void TerrainPageSurfaceCompilerShaderPass::addLayer(TerrainPageSurfaceLayer* lay
 // 		textureUnitState->setTextureName(layer->getDiffuseTextureName());
 // 		textureUnitState->setTextureCoordSet(0);
 // 		textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
-		
+
 		getCurrentBatch()->addLayer(layer);
-		
+
 // 		mCurrentLayerIndex++;
 		mScales[mLayers.size()] = layer->getScale();
 		mLayers.push_back(layer);
@@ -351,40 +361,40 @@ LayerStore& TerrainPageSurfaceCompilerShaderPass::getLayers()
 bool TerrainPageSurfaceCompilerShaderPass::finalize(bool useShadows, const std::string shaderSuffix)
 {
 	//TODO: add shadow here
-	
+
 	///should we use a base pass?
 	if (mBaseLayer) {
 		Ogre::ushort numberOfTextureUnitsOnCard = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits();
-		S_LOG_VERBOSE("Adding new base layer with diffuse texture " << mBaseLayer->getDiffuseTextureName() << " (" << numberOfTextureUnitsOnCard << " texture units supported)");	
+		S_LOG_VERBOSE("Adding new base layer with diffuse texture " << mBaseLayer->getDiffuseTextureName() << " (" << numberOfTextureUnitsOnCard << " texture units supported)");
 		///add the first layer of the terrain, no alpha or anything
 		Ogre::TextureUnitState * textureUnitState = mPass->createTextureUnitState();
 		textureUnitState->setTextureName(mBaseLayer->getDiffuseTextureName());
 		textureUnitState->setTextureCoordSet(0);
 		textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
-	}	
-	
+	}
+
 	///add our coverage textures first
 	for (CoverageBatchStore::iterator I = mCoverageBatches.begin(); I != mCoverageBatches.end(); ++I) {
 		TerrainPageSurfaceCompilerShaderPassCoverageBatch* batch = *I;
 		batch->finalize();
 	}
-	
 
 
-	
+
+
 	///we provide different fragment programs for different amounts of textures used, so we need to determine which one to use. They all have the form of "splatting_fragment_*"
 	std::stringstream ss;
 	ss << "SplattingFp/" << mLayers.size() << shaderSuffix;
 
 	std::string fragmentProgramName(ss.str());
-	
+
 	if (useShadows) {
 		mPass->setLightingEnabled(true);
 	}
 	mPass->setMaxSimultaneousLights(3);
 // 	mPass->setFog(true, Ogre::FOG_NONE);
-	
-			
+
+
 	///add fragment shader for splatting
 // 	mPass->setFragmentProgram("splatting_fragment_dynamic");
 	try {
@@ -414,9 +424,9 @@ bool TerrainPageSurfaceCompilerShaderPass::finalize(bool useShadows, const std::
 			{
 				splitPoints[i] = splitPointList[i];
 			}
-	
+
 			fpParams->setNamedConstant("pssmSplitPoints", splitPoints);
-	
+
 	//		fpParams->setNamedConstant("shadowMap0", 0);
 	//		fpParams->setNamedConstant("shadowMap1", 1);
 	//		fpParams->setNamedConstant("shadowMap2", 2);
@@ -431,8 +441,8 @@ bool TerrainPageSurfaceCompilerShaderPass::finalize(bool useShadows, const std::
 		S_LOG_WARNING("Error when setting fragment program parameters. Message:\n" << ex.what());
 		return false;
 	}
-	
-	///add vertex shader for fog	
+
+	///add vertex shader for fog
 	std::string lightningVpProgram;
 	if (EmberOgre::getSingleton().getSceneManager()->getFogMode() == Ogre::FOG_EXP2) {
 		if (useShadows) {
@@ -450,7 +460,7 @@ bool TerrainPageSurfaceCompilerShaderPass::finalize(bool useShadows, const std::
 		S_LOG_FAILURE("Fog mode is different, but using vertex program " << lightningVpProgram << " for terrain page.");
 	}
 	mPass->setVertexProgram(lightningVpProgram);
-	
+
 	try {
 		Ogre::GpuProgramParametersSharedPtr fpParams = mPass->getVertexProgramParameters();
 		fpParams->setIgnoreMissingParams(true);
@@ -480,7 +490,7 @@ bool TerrainPageSurfaceCompilerShaderPass::hasRoomForLayer(TerrainPageSurfaceLay
 
 void TerrainPageSurfaceCompilerShaderPass::addShadowLayer(TerrainPageShadow* terrainPageShadow)
 {
-	S_LOG_VERBOSE("Adding shadow layer.");	
+	S_LOG_VERBOSE("Adding shadow layer.");
 	Ogre::TextureUnitState * textureUnitState = mPass->createTextureUnitState();
 
 	//textureUnitState->setTextureScale(0.025, 0.025);
@@ -538,17 +548,17 @@ void TerrainPageSurfaceCompilerShaderNormalMappedPassCoverageBatch::finalize()
 	coverageTUS->setTextureName(getCombinedCoverageTexture()->getName());
 	coverageTUS->setTextureCoordSet(0);
 	coverageTUS->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
-	
+
 	for (LayerStore::iterator I = mLayers.begin(); I != mLayers.end(); ++I) {
 		TerrainPageSurfaceLayer* layer(*I);
 		///add the layer textures
-		S_LOG_VERBOSE("Adding new layer with diffuse texture " << layer->getDiffuseTextureName() << " and normal map texture "<< layer->getNormalTextureName() );	
+		S_LOG_VERBOSE("Adding new layer with diffuse texture " << layer->getDiffuseTextureName() << " and normal map texture "<< layer->getNormalTextureName() );
 		///add the first layer of the terrain, no alpha or anything
 		Ogre::TextureUnitState * diffuseTextureUnitState = mShaderPass.getPass()->createTextureUnitState();
 		//textureUnitState->setTextureScale(0.025, 0.025);
 		diffuseTextureUnitState->setTextureName(layer->getDiffuseTextureName());
 		diffuseTextureUnitState->setTextureCoordSet(0);
-		diffuseTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);	
+		diffuseTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 		Ogre::TextureUnitState * normalMapTextureUnitState = mShaderPass.getPass()->createTextureUnitState();
 		normalMapTextureUnitState->setTextureName(layer->getNormalTextureName());
 		normalMapTextureUnitState->setTextureCoordSet(0);
@@ -560,7 +570,7 @@ void TerrainPageSurfaceCompilerShaderNormalMappedPassCoverageBatch::finalize()
 TerrainPageSurfaceCompilerShaderNormalMappedPass::TerrainPageSurfaceCompilerShaderNormalMappedPass(Ogre::Pass* pass, TerrainPage& page) : TerrainPageSurfaceCompilerShaderPass(pass, page)
 {
 }
-	
+
 
 
 TerrainPageSurfaceCompilerShaderPassCoverageBatch* TerrainPageSurfaceCompilerShaderNormalMappedPass::createNewBatch()
@@ -585,11 +595,11 @@ bool TerrainPageSurfaceCompilerShaderNormalMappedPass::hasRoomForLayer(TerrainPa
 bool TerrainPageSurfaceCompilerShaderNormalMappedPass::finalize()
 {
 	//TODO: add shadow here
-	
+
 	///should we use a base pass?
 	if (mBaseLayer) {
 		Ogre::ushort numberOfTextureUnitsOnCard = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits();
-		S_LOG_VERBOSE("Adding new base layer with diffuse texture " << mBaseLayer->getDiffuseTextureName() << " and normal map texture "<< mBaseLayer->getNormalTextureName()  <<" (" << numberOfTextureUnitsOnCard << " texture units supported)");	
+		S_LOG_VERBOSE("Adding new base layer with diffuse texture " << mBaseLayer->getDiffuseTextureName() << " and normal map texture "<< mBaseLayer->getNormalTextureName()  <<" (" << numberOfTextureUnitsOnCard << " texture units supported)");
 		///add the first layer of the terrain, no alpha or anything
 		Ogre::TextureUnitState * diffuseTextureUnitState = mPass->createTextureUnitState();
 		diffuseTextureUnitState->setTextureName(mBaseLayer->getDiffuseTextureName());
@@ -599,21 +609,21 @@ bool TerrainPageSurfaceCompilerShaderNormalMappedPass::finalize()
 		normalMapTextureUnitState->setTextureName(mBaseLayer->getNormalTextureName());
 		normalMapTextureUnitState->setTextureCoordSet(0);
 		normalMapTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
-	}	
-	
+	}
+
 	///add our coverage textures first
 	for (CoverageBatchStore::iterator I = mCoverageBatches.begin(); I != mCoverageBatches.end(); ++I) {
 		TerrainPageSurfaceCompilerShaderPassCoverageBatch* batch = *I;
 		batch->finalize();
 	}
-	
+
 	std::stringstream ss;
 	ss << "splatting_fragment_normalmapped_" << mLayers.size();
 	std::string fragmentProgramName(ss.str());
-	
+
 	mPass->setLightingEnabled(false);
 // 	mPass->setFog(true, Ogre::FOG_NONE);
-	
+
 	///add fragment shader for splatting
 	mPass->setFragmentProgram("splatting_fragment_normalmapped_dynamic");
 // 	mPass->setFragmentProgram(fragmentProgramName);
@@ -631,14 +641,14 @@ bool TerrainPageSurfaceCompilerShaderNormalMappedPass::finalize()
 		S_LOG_WARNING("Error when setting fragment program parameters. Message:\n" << ex.what());
 		return false;
 	}
-	
-	///add vertex shader for fog	
+
+	///add vertex shader for fog
 	if (EmberOgre::getSingleton().getSceneManager()->getFogMode() == Ogre::FOG_EXP2) {
 		mPass->setVertexProgram("splatting_vertex_normalmapped_exp2");
 	} else {
 		mPass->setVertexProgram("splatting_vertex_normalmapped");
 	}
-	
+
 	try {
 		Ogre::GpuProgramParametersSharedPtr fpParams = mPass->getVertexProgramParameters();
 		fpParams->setNamedAutoConstant("lightPosition", Ogre::GpuProgramParameters::ACT_LIGHT_POSITION_OBJECT_SPACE);

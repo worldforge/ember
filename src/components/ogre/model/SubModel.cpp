@@ -25,6 +25,8 @@
 
 #include "SubModelPart.h"
 #include "ModelDefinitionManager.h"
+#include <OgreSceneManager.h>
+#include <OgreSubEntity.h>
 
 namespace EmberOgre {
 namespace Model {
@@ -37,13 +39,13 @@ mEntity(entity)
 	for (unsigned int i = 0;i < numSubEntities; ++i) {
 		mEntity.getSubEntity(i)->setVisible(false);
 	}
-	
+
 }
 SubModel::~SubModel()
 {
 	Ogre::SceneManager* sceneManager = mEntity._getManager();
 	sceneManager->destroyEntity(&mEntity);
-	
+
 }
 
 SubModel::SubModelPartMap& SubModel::getSubModelPartMap()
@@ -56,14 +58,14 @@ SubModelPart& SubModel::createSubModelPart(const std::string& name)
 	SubModelPart part(name);
 	std::pair<SubModelPartMap::iterator, bool> result(mSubModelParts.insert(SubModelPartMap::value_type(name, part)));
 	return result.first->second;
-	
+
 }
 
 // void SubModel::createSubModelParts(SubModelPartMapping* submodelPartMapping)
 // {
 // 	SubModelPartMapping::const_iterator I = submodelPartMapping->begin();
 // 	SubModelPartMapping::const_iterator I_end = submodelPartMapping->end();
-// 	
+//
 // 	for (;I != I_end; ++I) {
 // 		std::string partname = I->first;
 // 		SubModelPart* part = new SubModelPart(partname);
@@ -81,15 +83,15 @@ SubModelPart& SubModel::createSubModelPart(const std::string& name)
 // 			}
 // 		}
 // 		mSubModelParts.insert(SubModelPartMap::value_type(partname, part));
-// 		
+//
 // 	}
-// 	
-// 	
+//
+//
 // }
 
 Ogre::Entity* SubModel::getEntity() const
 {
-	return &mEntity;	
+	return &mEntity;
 }
 
 
@@ -98,7 +100,7 @@ Ogre::Entity* SubModel::getEntity() const
 bool SubModel::addEntity(Ogre::Entity* entity)
 {
 	mEntities.insert(entity);
-	return true;	
+	return true;
 }
 
 bool SubModel::removeEntity(Ogre::Entity* entity)

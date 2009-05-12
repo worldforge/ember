@@ -1,7 +1,7 @@
 //
 // C++ Implementation: MaterialEditor
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -26,6 +26,14 @@
 
 #include "MaterialEditor.h"
 #include "framework/Tokeniser.h"
+#include <vector>
+#include <OgreMaterial.h>
+#include <OgreStringConverter.h>
+#include <OgreTechnique.h>
+#include <OgrePass.h>
+#include <OgreTextureUnitState.h>
+#include <OgreException.h>
+#include <OgreMaterialManager.h>
 
 namespace EmberOgre {
 
@@ -46,15 +54,15 @@ void MaterialEditor::runCommand(const std::string &command, const std::string &a
 		try {
 			Ember::Tokeniser tokeniser;
 			tokeniser.initTokens(args);
-			
+
 			std::vector<std::string> tokens;
 			std::string token;
 			while ((token = tokeniser.nextToken()) != "") {
 				tokens.push_back(token);
 			}
-			
+
 			std::string materialName = tokens[0];
-			
+
 			Ogre::MaterialPtr materialPtr = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(materialName));
 			if (!materialPtr.isNull()) {
 				std::string techniqueIndexString = tokens[1];
@@ -68,19 +76,19 @@ void MaterialEditor::runCommand(const std::string &command, const std::string &a
 							Ogre::Pass* pass = technique->getPass(passIndex);
 							///is texture unit specified
 							if (tokens.size() == 6) {
-								std::string textureUnitIndexString = tokens[3]; 
-								std::string property = tokens[4]; 
+								std::string textureUnitIndexString = tokens[3];
+								std::string property = tokens[4];
 								std::string value = tokens[5];
-								
+
 								int textureUnitIndex = Ogre::StringConverter::parseInt(textureUnitIndexString);
-								
+
 								Ogre::TextureUnitState* textureUnit = pass->getTextureUnitState(textureUnitIndex);
 								if (textureUnit) {
-									
+
 								}
 							} else {
-								std::string property = tokens[3]; 
-								std::string value = tokens[4]; 
+								std::string property = tokens[3];
+								std::string value = tokens[4];
 								if (property == "alpha_rejection") {
 									pass->setAlphaRejectValue(Ogre::StringConverter::parseInt(value) );
 								}

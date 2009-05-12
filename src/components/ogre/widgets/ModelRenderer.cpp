@@ -1,7 +1,7 @@
 //
 // C++ Implementation: ModelRenderer
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -33,6 +33,7 @@
 
 #include "components/ogre/model/Model.h"
 #include "framework/Exception.h"
+#include <OgreSceneManager.h>
 
 // #include "Widget.h"
 // #include "../GUIManager.h"
@@ -41,8 +42,8 @@
 namespace EmberOgre {
 namespace Gui {
 
-ModelRenderer::ModelRenderer(CEGUI::Window* image) 
-: MovableObjectRenderer(image), mModel(0) 
+ModelRenderer::ModelRenderer(CEGUI::Window* image)
+: MovableObjectRenderer(image), mModel(0)
 {
 }
 
@@ -55,7 +56,7 @@ ModelRenderer::~ModelRenderer()
 void ModelRenderer::setModel(Model::Model* model)
 {
 	Ogre::SceneNode* node = mTexture->getRenderContext()->getSceneNode();
-	
+
 	node->detachAllObjects();
 	if (model) {
 		node->attachObject(model);
@@ -66,7 +67,7 @@ void ModelRenderer::setModel(Model::Model* model)
 			showFull();
 		}
 	}
-	
+
 }
 
 void ModelRenderer::repositionSceneNode()
@@ -79,11 +80,11 @@ void ModelRenderer::repositionSceneNode()
 			///perhaps this is something to put in the model spec instead?
 // 			node->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
 			node->rotate(mModel->getRotation());
-			
+
 			///translate the scale node according to the translate defined in the model
 			node->setPosition(Ogre::Vector3::ZERO);
 			node->translate(mModel->getDefinition()->getTranslate());
-			
+
 		}
 	}
 
@@ -93,7 +94,7 @@ Model::Model* ModelRenderer::getModel()
 {
 	return mModel;
 }
-    
+
 void ModelRenderer::showModel(const std::string& modelName)
 {
 	if (mModel) {

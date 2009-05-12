@@ -47,10 +47,14 @@
 // #include "image/OgreILCodecs.h"
 #include "framework/Tokeniser.h"
 
+#include <OgreRenderWindow.h>
+#include <OgreMeshManager.h>
+#include <OgreAnimation.h>
+
 ///SDL_GL_SWAP_CONTROL is only available for sdl version 1.2.10 and later.
 #if ! SDL_VERSION_ATLEAST(1, 2, 10)
 #define SDL_GL_SWAP_CONTROL 16
-#endif 
+#endif
 
 extern "C" {
 #include <signal.h>    /* signal name macros, and the signal() prototype */
@@ -99,7 +103,7 @@ void OgreSetup::shutdown()
 	delete mRoot;
 	mRoot = 0;
 	S_LOG_INFO("Ogre shut down.");
-	
+
 	delete mMeshSerializerListener;
 
 	if (mIconSurface) {
@@ -187,9 +191,9 @@ Ogre::Root* OgreSetup::createOgreSystem()
 			token = tokeniser.nextToken();
 		}
 	}
-	
+
 	mMeshSerializerListener = new MeshSerializerListener();
-	
+
 	Ogre::MeshManager::getSingleton().setListener(mMeshSerializerListener);
 	return mRoot;
 }
@@ -246,47 +250,47 @@ bool OgreSetup::configure(void)
 
 
 	mRenderWindow = mRoot->initialise(true, "Ember");
-	
+
 	///do some FPU fiddling, since we need the correct settings for stuff like mercator (which uses fractals etc.) to work
 	_fpreset();
 	_controlfp(_PC_64, _MCW_PC);
 	_controlfp(_RC_NEAR , _MCW_RC);
 
 	// Allow SDL to use the window Ogre just created
-	
+
 	// Old method: do not use this, because it only works
 	//  when there is 1 (one) window with this name!
 	// HWND hWnd = FindWindow(tmp, 0);
-	
+
 	// New method: As proposed by Sinbad.
 	//  This method always works.
 	HWND hWnd;
 	mRenderWindow->getCustomAttribute("WINDOW", &hWnd);
-	
+
 	char tmp[64];
 	// Set the SDL_WINDOWID environment variable
 	sprintf(tmp, "SDL_WINDOWID=%d", hWnd);
 	putenv(tmp);
-	
+
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) < 0)
 		{
 		S_LOG_FAILURE("Couldn't initialize SDL:\n\t\t");
 		S_LOG_FAILURE(SDL_GetError());
 		}
-	
+
 		// if width = 0 and height = 0, the window is fullscreen
-	
+
 		// This is necessary to allow the window to move1
 		//  on WIN32 systems. Without this, the window resets
 		//  to the smallest possible size after moving.
 		SDL_SetVideoMode(mRenderWindow->getWidth(), mRenderWindow->getHeight(), 0, 0); // first 0: BitPerPixel,
 												// second 0: flags (fullscreen/...)
 												// neither are needed as Ogre sets these
-	
+
 	static SDL_SysWMinfo pInfo;
 	SDL_VERSION(&pInfo.version);
 	SDL_GetWMInfo(&pInfo);
-	
+
 	// Also, SDL keeps an internal record of the window size
 	//  and position. Because SDL does not own the window, it
 	//  missed the WM_POSCHANGED message and has no record of
@@ -297,7 +301,7 @@ bool OgreSetup::configure(void)
 	RECT r;
 	GetWindowRect(pInfo.window, &r);
 	SetWindowPos(pInfo.window, 0, r.left, r.top, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-	
+
 	///do some FPU fiddling, since we need the correct settings for stuff like mercator (which uses fractals etc.) to work
 	_fpreset();
 	_controlfp(_PC_64, _MCW_PC);
@@ -311,7 +315,7 @@ bool OgreSetup::configure(void)
 	parseWindowGeometry(mRoot->getRenderSystem()->getConfigOptions(), width, height, fullscreen);
 
 	SDL_Init(SDL_INIT_VIDEO);
-	
+
 	///this is a failsafe which guarantees that SDL is correctly shut down (returning the screen to correct resolution, releasing mouse etc.) if there's a crash.
 	atexit(SDL_Quit);
 	oldSignals[SIGSEGV] = signal(SIGSEGV, shutdownHandler);
@@ -329,9 +333,9 @@ bool OgreSetup::configure(void)
 // 			S_LOG_INFO("Using double buffering.");
 // 		}
 // 	}
-// 	
+//
 // 	bool useAltSwapControl = false;
-// 	
+//
 // 	if (enableDoubleBuffering) {
 // 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 // 		useAltSwapControl = SDL_GL_SetAttribute((SDL_GLattr)SDL_GL_SWAP_CONTROL, 1) != 0;
@@ -359,20 +363,20 @@ bool OgreSetup::configure(void)
 // 				useAltSwapControl = true;
 // 			}
 // 		}
-// 		
+//
 // 		if (useAltSwapControl)
 // 		{
 // 			/// Try another way to get vertical sync working. Use glXSwapIntervalSGI.
 // 			bool hasSwapControl = isExtensionSupported("GLX_SGI_swap_control");
-// 		
+//
 // 			if (hasSwapControl)
 // 			{
 // 				const GLubyte *name;
 // 				name = reinterpret_cast<const GLubyte*>("glXSwapIntervalSGI");
-// 		
+//
 // 				int (*funcPtr)(int);
 // 				funcPtr = reinterpret_cast<int(*)(int)>(glXGetProcAddress(name));
-// 		
+//
 // 				if (funcPtr)
 // 				{
 // 					funcPtr(1);
@@ -412,7 +416,7 @@ bool OgreSetup::configure(void)
 	mRenderWindow->setActive(true);
 	mRenderWindow->setAutoUpdated(true);
 	mRenderWindow->setVisible(true);
-	
+
 // 	if (enableDoubleBuffering) {
 // 		///We need to swap the frame buffers each frame.
 // 		mRoot->addFrameListener(this);
@@ -830,10 +834,10 @@ EmberPagingSceneManager* OgreSetup::chooseSceneManager()
 {
 	/// Create new scene manager factory
 	mSceneManagerFactory = new EmberPagingSceneManagerFactory();
-	
+
 	/// Register our factory
 	Ogre::Root::getSingleton().addSceneManagerFactory(mSceneManagerFactory);
-	
+
 	EmberPagingSceneManager* sceneMgr = static_cast<EmberPagingSceneManager*>(mRoot->createSceneManager(Ogre::ST_EXTERIOR_REAL_FAR, "EmberPagingSceneManager"));
 
 	///We need to call init scene since a lot of components used by the scene manager are thus created
@@ -866,7 +870,7 @@ void OgreSetup::parseWindowGeometry(Ogre::ConfigOptionMap& config, unsigned int&
 bool OgreSetup::frameEnded(const Ogre::FrameEvent & evt)
 {
 	SDL_GL_SwapBuffers();
-	
+
 	return true;
 }
 
@@ -881,8 +885,8 @@ int OgreSetup::isExtensionSupported(const char *extension) {
 	::Display *display = wmInfo.info.x11.gfxdisplay;
 #else
 	::Display *display = wmInfo.info.x11.display;
-#endif 
-	
+#endif
+
 	if (!display)
 	{
 		return false;
@@ -897,16 +901,16 @@ int OgreSetup::isExtensionSupported(const char *extension) {
 
 	const GLubyte *start;
 	GLubyte *where, *terminator;
-	
+
 	/* Extension names should not have spaces. */
 	where = (GLubyte *) strchr(extension, ' ');
 	if ((where != NULL) || *extension == '\0')
 		return 0;
-	
+
 	//  if (extensions == NULL) extensions = (GLubyte*)glGetString(GL_EXTENSIONS);
-	
+
 	if (extensions == NULL) return 0;
-	
+
 	/* It takes a bit of care to be fool-proof about parsing the
 		OpenGL extensions string. Don't be fooled by sub-strings,
 		etc. */

@@ -29,6 +29,9 @@
 #include "services/input/InputCommandMapper.h"
 #include "framework/ConsoleObject.h"
 #include "EntityWorldPickListener.h"
+#include <OgreVector3.h>
+#include <OgreQuaternion.h>
+#include <OgreFrameListener.h>
 
 
 
@@ -46,28 +49,28 @@ class AvatarController;
 The movement mode of the avatar, run or walk.
 */
 class AvatarMovementMode {
-public:	
+public:
 	enum Mode
 	{
 		MM_WALK = 0,
 		MM_RUN = 1
 	};
 };
-	
-	
+
+
 /**
 Used for sending the current desired movement to the actual avatar.
 */
 struct AvatarControllerMovement
 {
 	AvatarControllerMovement();
-	
+
 	float rotationDegHoriz;
 	float rotationDegVert;
 	Ogre::Real timeSlice;
 	Ogre::Vector3 movementDirection;
 	AvatarMovementMode::Mode mode;
-	bool isMoving; 
+	bool isMoving;
 	Ogre::Quaternion cameraOrientation;
 };
 
@@ -90,7 +93,7 @@ protected:
 Controls the avatar. All avatar movement is handled by an instance of this class.
 */
 class AvatarController
-: public Ogre::FrameListener, 
+: public Ogre::FrameListener,
 public sigc::trackable,
 public Ember::ConsoleObject
 {
@@ -105,20 +108,20 @@ public:
 	Each frame we check if we should update the avatar.
 	*/
 	virtual bool frameStarted(const Ogre::FrameEvent & event);
-	
-	
+
+
 	/**
 	Emitted when the movement mode changes between run and walk.
 	*/
 	sigc::signal<void, AvatarMovementMode::Mode> EventMovementModeChanged;
 
-	
+
 
 	void createAvatarCameras(Ogre::SceneNode* avatarSceneNode);
-	
+
 	/**
 	 * Gets the AvatarCamera.
-	 * @return 
+	 * @return
 	 */
 	AvatarCamera* getAvatarCamera() const;
 
@@ -126,15 +129,15 @@ public:
 	 *    Detaches the camera from the avatar and attaches it to the free flying node.
 	 */
 	void detachCamera();
-	
+
 	/**
 	 *    Attaches the camera to the avatar.
 	 */
 	void attachCamera();
-	
+
 	/**
 	 *    Gets the current movement for this frame.
-	 * @return 
+	 * @return
 	 */
 	const AvatarControllerMovement& getCurrentMovement() const;
 
@@ -149,36 +152,36 @@ public:
 	const Ember::ConsoleCommandWrapper CharacterStrafeRight;
 /*	const Ember::ConsoleCommandWrapper CharacterRotateLeft;
 	const Ember::ConsoleCommandWrapper CharacterRotateRight;*/
-	
+
 	const Ember::ConsoleCommandWrapper MoveCameraTo;
-	
+
 
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method
-	 * @param command 
-	 * @param args 
+	 * @param command
+	 * @param args
 	 */
 	virtual	void runCommand(const std::string &command, const std::string &args);
-	
+
 	/**
 	Moves the avatar to the specified point.
 	A terrain decal will be shown.
 	*/
 	void moveToPoint(const Ogre::Vector3& point);
-	
+
 	/**
 	 *    Teleports the avatar to the specified point.
-	 * @param point 
-	 * @param locationEntity 
+	 * @param point
+	 * @param locationEntity
 	 */
 	void teleportTo(const Ogre::Vector3& point, EmberEntity* locationEntity);
 
 protected:
 
 	Ember::InputCommandMapper mMovementCommandMapper;
-	
+
 	Ogre::RenderWindow& mWindow;
-	
+
 	GUIManager& mGUIManager;
 
 
@@ -188,53 +191,53 @@ protected:
 	AvatarCamera* mAvatarCamera;
 	Ogre::Camera& mCamera;
 
-	
+
 	/**
 	 * Avatar
 	 */
 	Avatar& mAvatar;
-	
+
     EmberEntity* mEntityUnderCursor;
     EmberEntity* mSelectedEntity;
-    
+
     AvatarControllerMovement movementForFrame, mPreviousMovementForFrame;
-		
+
 	Ogre::SceneNode* mFreeFlyingCameraNode;
 	bool mIsAttached;
 	/**
 	True if we're in running mode.
 	*/
 	bool mIsRunning;
-	
+
 	Ogre::Vector3 mMovementDirection;
-    
+
 	/**
 	Listen for double clicks and send the avatar to the double clicked position.
 	*/
 	void entityPicker_PickedEntity(const EntityPickResult& result, const MousePickerArgs& args);
-	
+
 	/**
 	Creates the terrain decal needed for displaying where the avatar is heading.
 	*/
 	void createDecal(Ogre::Vector3 position);
-	
+
 	/**
 	A decal object for showing a decal on the terrain when the user uses the "move to here" functionality.
 	The decal will be shown at the destination, and removed when the user either gets close to it, or aborts the "move to here" movement (for example by moving manually).
 	*/
 	Ogre::MovableObject* mDecalObject;
-	
+
 	/**
 	The scene node to which the decal object for showing the destination of a "move to here" movement operation is attached.
 	*/
 	Ogre::SceneNode* mDecalNode;
-	
+
 	/**
 	Controller for making the decal pulsate a little.
 	@note Not used currently.
 	*/
 // 	Ogre::WaveformControllerFunction* mPulsatingController;
-	
+
 	AvatarControllerInputListener mControllerInputListener;
 };
 

@@ -1,7 +1,7 @@
 //
 // C++ Implementation: TerrainInfo
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -26,6 +26,8 @@
 
 #include "TerrainInfo.h"
 #include <Mercator/BasePoint.h>
+#include <cmath>
+#include <algorithm>
 
 namespace EmberOgre {
 namespace Terrain {
@@ -45,12 +47,12 @@ void TerrainInfo::setBasePoint(const WFMath::Point<2>& position, const Mercator:
 	mXmaxBasePoint = std::max<WFMath::CoordType>(position.x(), mXmaxBasePoint);
 	mYminBasePoint = std::min<WFMath::CoordType>(position.y(), mYminBasePoint);
 	mYmaxBasePoint = std::max<WFMath::CoordType>(position.y(), mYmaxBasePoint);
-	
+
 	adjustBasePointPositionDown(mXminBasePointAdjusted, mXminBasePoint);
 	adjustBasePointPositionUp(mXmaxBasePointAdjusted, mXmaxBasePoint);
 	adjustBasePointPositionDown(mYminBasePointAdjusted, mYminBasePoint);
 	adjustBasePointPositionUp(mYmaxBasePointAdjusted, mYmaxBasePoint);
-	
+
 	recalculateSize();
 }
 
@@ -58,7 +60,7 @@ void TerrainInfo::recalculateSize()
 {
 	mCalculatedSize = WFMath::AxisBox<2>(WFMath::Point<2>(mXminBasePointAdjusted * 64, mYminBasePointAdjusted * 64), WFMath::Point<2>(mXmaxBasePointAdjusted * 64, mYmaxBasePointAdjusted * 64));
 	mCalculatedSegmentSize = WFMath::AxisBox<2>(WFMath::Point<2>(mXminBasePointAdjusted, mYminBasePointAdjusted ), WFMath::Point<2>(mXmaxBasePointAdjusted , mYmaxBasePointAdjusted ));
-	
+
 	int mercatorSegmentsPerOgrePage = mPageIndicesSize / 64;
 	mCalculatedPageSize = WFMath::AxisBox<2>(WFMath::Point<2>(mXminBasePointAdjusted / mercatorSegmentsPerOgrePage, mYminBasePointAdjusted / mercatorSegmentsPerOgrePage), WFMath::Point<2>(mXmaxBasePointAdjusted / mercatorSegmentsPerOgrePage, mYmaxBasePointAdjusted / mercatorSegmentsPerOgrePage));
 }

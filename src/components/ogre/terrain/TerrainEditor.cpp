@@ -1,7 +1,7 @@
 //
 // C++ Implementation: TerrainEditor
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -52,13 +52,15 @@
 
 #include "../MousePicker.h"
 
+#include <OgreEntity.h>
+
 using namespace Ember;
 namespace EmberOgre {
 namespace Terrain {
 
 const std::string BasePointUserObject::s_TypeName("BasePointMarker");
-	
-	
+
+
 BasePointUserObject::BasePointUserObject(const TerrainPosition terrainPosition,const Mercator::BasePoint& basePoint, Ogre::SceneNode* basePointMarkerNode) : mBasePoint(basePoint), mBasePointMarkerNode(basePointMarkerNode), mPosition(terrainPosition)
 {
 }
@@ -77,7 +79,7 @@ Ogre::SceneNode* BasePointUserObject::getBasePointMarkerNode() const
 {
 	return mBasePointMarkerNode;
 }
-	
+
 const TerrainPosition& BasePointUserObject::getPosition() const
 {
 	return mPosition;
@@ -115,7 +117,7 @@ void BasePointUserObject::resetMarking()
 	entity->setMaterialName("/global/authoring/point");
 }
 
-BasePointPickListener::BasePointPickListener(TerrainEditor* terrainEditor) 
+BasePointPickListener::BasePointPickListener(TerrainEditor* terrainEditor)
 : mTerrainEditor(terrainEditor), mPickedUserObject(0)
 {
 
@@ -158,7 +160,7 @@ Ogre::Real TerrainEditBasePointMovement::getVerticalMovement() const
 const TerrainPosition& TerrainEditBasePointMovement::getPosition() const
 {
 	return mPosition;
-	
+
 }
 
 
@@ -182,7 +184,7 @@ TerrainEditor::~TerrainEditor()
 	}
 	///It's safe to do this even if the pick listener hasn't been added yet.
 	EmberOgre::getSingleton().getMainCamera()->removeWorldPickListener(&mPickListener);
-	
+
 }
 
 void TerrainEditor::showOverlay()
@@ -214,7 +216,7 @@ void TerrainEditor::createOverlay()
 	if (!mOverlayNode) {
 
 		mOverlayNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
-		
+
 		const Mercator::Terrain& terrain = EmberOgre::getSingleton().getTerrainGenerator()->getTerrain();
 		const Mercator::Terrain::Pointstore &points = terrain.getPoints();
 		int x, y;
@@ -235,19 +237,19 @@ void TerrainEditor::createOverlay()
 					S_LOG_FAILURE("Error when creating base point marker entity: " << ex.what());
 					continue;
 				}
-				
+
 				if (!entity) {
 					S_LOG_FAILURE("Unexpected error when creating base point marker entity.");
 					continue;
 				}
-				
+
 				const Mercator::BasePoint& basepoint(J->second);
 				Ogre::SceneNode* basepointNode = mOverlayNode->createChildSceneNode();
 				TerrainPosition tPos(x*64,y*64);
 				Ogre::Vector3 ogrePos = Atlas2Ogre(tPos);
 				ogrePos.y = basepoint.height();
 				basepointNode->setPosition(ogrePos);
-				basepointNode->attachObject(entity);				
+				basepointNode->attachObject(entity);
 
 				BasePointUserObject* userObject = new BasePointUserObject(TerrainPosition(x,y), basepoint, basepointNode);
 				entity->setUserObject(userObject);
@@ -301,7 +303,7 @@ bool TerrainEditor::injectMouseMove(const Ember::MouseMotion& motion, bool& free
 	assert(mCurrentUserObject);
 	float translation(motion.yRelativeMovement * multiplier);
 	mCurrentUserObject->translate(translation);
-	
+
 	///should we also translate secondary objects?
 	if (mMovementRadiusInMeters > 1.0f) {
 // 		float squaredMovementRadius = mMovementRadiusInMeters * mMovementRadiusInMeters;
@@ -318,7 +320,7 @@ bool TerrainEditor::injectMouseMove(const Ember::MouseMotion& motion, bool& free
 	}
 
 	EventSelectedBasePointUpdatedPosition.emit(mCurrentUserObject);
-	
+
 	///we don't want to move the cursor
 	freezeMouse = true;
 	return false;
@@ -360,7 +362,7 @@ void TerrainEditor::catchInput()
 void TerrainEditor::releaseInput()
 {
 	Ember::Input::getSingleton().removeAdapter(this);
-	
+
 	///react on the movement
 	createAction(true);
 
@@ -376,7 +378,7 @@ void TerrainEditor::createAction(bool alsoCommit)
 			TerrainEditBasePointMovement movement(distance, mCurrentUserObject->getPosition());
 			TerrainEditAction action;
 			action.getMovements().push_back(movement);
-			
+
 			for (BasePointUserObjectSet::iterator I = mSecondaryUserObjects.begin(); I != mSecondaryUserObjects.end(); ++I) {
 				distance = (*I)->getBasePointMarkerNode()->getPosition().y - (*I)->getBasePoint().height();
 				if (distance != 0) {
@@ -384,15 +386,15 @@ void TerrainEditor::createAction(bool alsoCommit)
 					action.getMovements().push_back(movement);
 				}
 			}
-			
+
 			mActions.push_back(action);
-			
+
 			///when a new action is created the undo list must be emptied
 			mUndoneActions.clear();
 
-			
+
 			EventActionCreated(&action);
-			
+
 			if (alsoCommit)
 			{
 				commitAction(action);
@@ -415,40 +417,40 @@ void TerrainEditor::sendChangesToServer()
 				positions[key.str()] = J->getPosition();
 			}
 		}
-	
+
 		Atlas::Objects::Operation::Set s;
-			
+
 		Atlas::Message::MapType sarg;
 		sarg["id"] = "0";
-		
+
 		Atlas::Message::MapType & terrain = (sarg["terrain"] = Atlas::Message::MapType()).asMap();
-	
+
 		Atlas::Message::MapType & pointMap = (terrain["points"] = Atlas::Message::MapType()).asMap();
-	
+
 		for (std::map<std::string, TerrainPosition>::iterator I = positions.begin(); I != positions.end(); ++I) {
-			
+
 			Mercator::BasePoint bp;
 			WFMath::CoordType basepointX = I->second.x();
 			WFMath::CoordType basepointY = I->second.y();
 			EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().getBasePoint(static_cast<int>(basepointX),static_cast<int>(basepointY), bp);
-			
+
 			Atlas::Message::ListType & point =
 					(pointMap[I->first] = Atlas::Message::ListType(3)).asList();
 			point[0] = (Atlas::Message::FloatType)(I->second.x());
 			point[1] = (Atlas::Message::FloatType)(I->second.y());
 			point[2] = (Atlas::Message::FloatType)(bp.height());
-			
-			
+
+
 		}
-		
-	
+
+
 		Atlas::Message::ListType sargsList(1, sarg);
 		s->setArgsAsList(sargsList);
 		s->setFrom(EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity()->getId());
-	
+
 		Ember::EmberServices::getSingleton().getServerService()->getConnection()->send(s);
 		S_LOG_INFO("Sent updated terrain to server (" << positions.size() << " base points updated).");
-			
+
 		///also reset the marking for the base points
 		for (std::map<std::string, TerrainPosition>::iterator I = positions.begin(); I != positions.end(); ++I) {
 			BasePointUserObject* userObject = getUserObject(I->second);
@@ -481,7 +483,7 @@ bool TerrainEditor::undoLastAction()
 		return true;
 	}
 	return false;
-	
+
 }
 
 bool TerrainEditor::redoAction()
@@ -499,7 +501,7 @@ float TerrainEditor::getRadius() const
 {
 	return mMovementRadiusInMeters;
 }
-	
+
 void TerrainEditor::setRadius(float radiusInMeters)
 {
 	mMovementRadiusInMeters = radiusInMeters;
@@ -520,7 +522,7 @@ void TerrainEditor::seFalloff(float falloff)
 void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 {
 	TerrainGenerator::TerrainDefPointStore pointStore;
-	
+
 // 	std::set<Ogre::PagingLandScapeTile*> tilesToUpdate;
 	std::set<TerrainPage*> pagesToUpdate;
 // 	EmberPagingSceneManager* sceneMgr = EmberOgre::getSingleton().getTerrainGenerator()->getEmberSceneManager();
@@ -534,13 +536,13 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 		///check if we should do a reverse action (which is done when an action is undone)
         bp.height() = bp.height() + (reverse ? -I->getVerticalMovement() : I->getVerticalMovement());
 		//EmberOgre::getSingleton().getTerrainGenerator()->getTerrain().setBasePoint(basepointX, basepointY, bp);
-		
+
 		TerrainDefPoint defPoint(basepointX, basepointY,bp.height());
 		pointStore.push_back(defPoint);
-		
-		
+
+
 // 		Ogre::Vector3 markerPos = Atlas2Ogre(I->getPosition());
-// 		
+//
 // 		markerPos *= 64;
 // 		Ogre::PagingLandScapeTile* tile;
 // 		for (int i = -1; i < 2; i += 2) {
@@ -551,7 +553,7 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 // 				}
 // 			}
 // 		}
-		
+
 		TerrainPosition worldPosition(I->getPosition().x() * 64, I->getPosition().y() * 64);
 		TerrainPage* page;
 		///make sure we sample pages from all four points around the base point, in case the base point is on a page border
@@ -564,7 +566,7 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 				}
 			}
 		}
-		
+
 		///make sure the marker node is updated
 		BasePointUserObject* userObject = getUserObject(I->getPosition());
 		if (userObject) {
@@ -572,39 +574,39 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 		}
 
 	}
-	
+
 // 	for (TerrainGenerator::TerrainPagestore::const_iterator I = terrainGenerator->getTerrainPages().begin();I != terrainGenerator->getTerrainPages().end(); ++I) {
 // 		for (TerrainGenerator::TerrainPagecolumn::const_iterator J = I->second.begin();J != I->second.end(); ++J) {
 // 			pagesToUpdate.insert(J->second);
 // 		}
 // 	}
 	EmberOgre::getSingleton().getTerrainGenerator()->updateTerrain(pointStore);
-	
-	
+
+
 	///reload all shader textures of the affected pages
 // 	for (std::set<TerrainPage*>::iterator I = pagesToUpdate.begin(); I != pagesToUpdate.end(); ++I) {
 // 		(*I)->update();
 // 		(*I)->updateAllShaderTextures();
 // 	}
-	
 
-	
+
+
 // 	std::set<Ogre::PagingLandScapeData2D*> dataStore;
 // 	///reload all affected tiles
 // 	for (std::set<Ogre::PagingLandScapeTile*>::iterator I = tilesToUpdate.begin(); I != tilesToUpdate.end(); ++I) {
 // //		(*I)->updateTerrain();
-// 		
+//
 // 		Ogre::PagingLandScapeData2D *data = sceneMgr->getData2DManager()->getData2D((*I)->getInfo()->pageX, (*I)->getInfo()->pageZ);
 // //		dataStore.insert(data);
 // 		uint x, z;
 // 		data->getCoordinates(x, z);
 // 		sceneMgr->getData2DManager()->reload(x,z);
-// 		
+//
 // 		(*I)->unload();
 // 		(*I)->load();
-// 		
+//
 // 	}
-// 	
+//
 // 	///also update the data
 // 	for (std::set<Ogre::PagingLandScapeData2D*>::iterator I = dataStore.begin(); I != dataStore.end(); ++I) {
 // 		uint x, z;
@@ -612,15 +614,15 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 // 		sceneMgr->getData2DManager()->reload(x,z);
 // 	}
 // 	Ogre::Vector2 targetPage (X, Z);
-// 	sceneMgr->setOption("PageUpdate", &targetPage); 
+// 	sceneMgr->setOption("PageUpdate", &targetPage);
 
 	///TODO: this shouldn't be necessary
 	//sceneMgr->getPageManager()->load();
 // 	terrainGenerator->getAdapter()->reloadAllPages();
-	
-	
+
+
 // 	updateEntityPositions(pagesToUpdate);
-	
+
 
 }
 

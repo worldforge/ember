@@ -1,7 +1,7 @@
 //
 // C++ Implementation: Environment
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -29,6 +29,8 @@
 #include "framework/Tokeniser.h"
 #include "Forest.h"
 #include "SimpleEnvironment.h"
+#include <OgreStringConverter.h>
+#include <OgreColourValue.h>
 
 namespace EmberOgre {
 
@@ -59,22 +61,22 @@ void Environment::runCommand(const std::string &command, const std::string &args
 // 		tokeniser.initTokens(args);
 // 		std::string hourString = tokeniser.nextToken();
 // 		std::string minuteString = tokeniser.nextToken();
-// 		
+//
 // 		int hour = ::Ogre::StringConverter::parseInt( hourString);
 // 		int minute = ::Ogre::StringConverter::parseInt( minuteString);
 // 		setTime(hour, minute);
-// 		
-// 	} else 
+//
+// 	} else
 	if (SetFogDensity == command) {
 		if (getFog()) {
 			Ember::Tokeniser tokeniser;
 			tokeniser.initTokens(args);
 			std::string densityString = tokeniser.nextToken();
-			
+
 			float density = ::Ogre::StringConverter::parseReal(densityString);
 			getFog()->setDensity( density);
 		}
-		
+
 	} else if (SetAmbientLight == command)
 	{
 		Ember::Tokeniser tokeniser;
@@ -82,14 +84,14 @@ void Environment::runCommand(const std::string &command, const std::string &args
 		std::string r = tokeniser.nextToken();
 		std::string b = tokeniser.nextToken();
 		std::string g = tokeniser.nextToken();
-		
+
 		if (r == "" || b == "" || g == "") {
 			return;
 		} else {
 			Ogre::ColourValue colour(Ogre::StringConverter::parseReal(r),Ogre::StringConverter::parseReal(b),Ogre::StringConverter::parseReal(g));
 			setAmbientLight(colour);
 		}
-	
+
 	}
 
 }

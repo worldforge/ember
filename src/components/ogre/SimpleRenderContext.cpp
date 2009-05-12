@@ -1,7 +1,7 @@
 //
 // C++ Implementation: SimpleRenderContext
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -32,6 +32,12 @@
 
 #include "framework/Exception.h"
 #include <OgreBitwise.h>
+#include <OgreRoot.h>
+#include <OgreSceneManager.h>
+#include <OgreHardwarePixelBuffer.h>
+#include <OgreRenderTexture.h>
+#include <OgreViewport.h>
+#include <OgreTextureManager.h>
 
 namespace EmberOgre {
 
@@ -89,15 +95,15 @@ void SimpleRenderContext::setupScene(const std::string& prefix)
 // 	mSceneManager->setFog(Ogre::FOG_NONE, Ogre::ColourValue(1,1,1,1), 0.0f, 10000000.0f, 100000001.0f);
 
 	mRootNode = mSceneManager->getRootSceneNode();
-	
-	
+
+
 	mEntityNode = mRootNode->createChildSceneNode();
 
 	///make the cameranode a child of the main entity node
 	mCameraNode = mRootNode->createChildSceneNode();
-	
+
 	mCameraPitchNode = mCameraNode->createChildSceneNode();
-	
+
 	createCamera(prefix);
 	//setVisible(false);
 	Ogre::ColourValue colour(0.5, 0.5, 0.5);
@@ -111,7 +117,7 @@ void SimpleRenderContext::setupScene(const std::string& prefix)
 
 	mSceneManager->setAmbientLight(colour);
 	mCameraPitchNode->attachObject(mMainLight);
-	
+
 	resetCameraOrientation();
 }
 
@@ -150,7 +156,7 @@ void SimpleRenderContext::repositionCamera()
 }
 
 void SimpleRenderContext::createCamera(const std::string& prefix)
-{	
+{
 	mCamera = mSceneManager->createCamera(prefix + "_SimpleRenderContextCamera");
 
 	mCameraPitchNode->attachObject(mCamera);
@@ -168,11 +174,11 @@ void SimpleRenderContext::roll(Ogre::Degree degrees)
 {
 	mCameraNode->roll(degrees);
 }
-	
-	
+
+
 float SimpleRenderContext::getCameraDistance() const
 {
-	if (mDefaultCameraDistance) { 
+	if (mDefaultCameraDistance) {
 		return mCamera->getPosition().z / mDefaultCameraDistance;
 	}
 	return mCamera->getPosition().z;
@@ -238,17 +244,17 @@ void SimpleRenderContext::createImage(const std::string& prefix)
 	if (mWidth == 0 || mHeight == 0) {
 		throw Ember::Exception("Height and width of the image can't be 0.");
 	}
-	
+
 	Ogre::Real aspectRatio = static_cast<float>(mWidth) / static_cast<float>(mHeight);
-	
+
 	S_LOG_VERBOSE("Setting aspect ratio of camera to " << aspectRatio);
 	mCamera->setAspectRatio(aspectRatio);
-	
+
 	///the width and height needs to be multipes of 2
-	mWidth = Ogre::Bitwise::firstPO2From(mWidth); 
-	mHeight = Ogre::Bitwise::firstPO2From(mHeight); 
-	
-	
+	mWidth = Ogre::Bitwise::firstPO2From(mWidth);
+	mHeight = Ogre::Bitwise::firstPO2From(mHeight);
+
+
 	///first, create a RenderTexture to which the Ogre renderer should render the image
 	S_LOG_VERBOSE("Creating new rendertexture " << (prefix + "_SimpleRenderContextRenderTexture") << " with w:" << mWidth << " h:" << mHeight);
 	Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().createManual(prefix + "_SimpleRenderContextRenderTexture", "Gui", Ogre::TEX_TYPE_2D, mWidth, mHeight, 0, Ogre::PF_A8R8G8B8,Ogre::TU_RENDERTARGET, &mResourceLoader);
@@ -256,7 +262,7 @@ void SimpleRenderContext::createImage(const std::string& prefix)
 		S_LOG_WARNING("Could not create a texture.");
 		return;
 	}
-	
+
 	setTexture(texture);
 }
 
@@ -269,11 +275,11 @@ void SimpleRenderContext::setTexture(Ogre::TexturePtr texture)
 		mTexture = texture;
 		mRenderTexture = texture->getBuffer()->getRenderTarget();
 		mRenderTexture->removeAllViewports();
-		
+
 		mRenderTexture->setAutoUpdated(false);
 		///initially deactivate it until setActive(true) is called
 		mRenderTexture->setActive(false);
-		
+
 		S_LOG_VERBOSE("Adding camera.");
 		mViewPort = mRenderTexture->addViewport(mCamera);
 		mViewPort->setOverlaysEnabled(false);
@@ -292,7 +298,7 @@ SimpleRenderContext::CameraPositioningMode SimpleRenderContext::getCameraPositio
 {
 	return mCameraPositionMode;
 }
-	
+
 void SimpleRenderContext::setCameraPositionMode(SimpleRenderContext::CameraPositioningMode mode)
 {
 	mCameraPositionMode = mode;
@@ -324,12 +330,12 @@ void SimpleRenderContext::showFull(const Ogre::MovableObject* object)
 		}
 		Ogre::Real distanceNudge = distance / 100;
 		distance += distanceNudge;
-		
+
 		mDefaultCameraDistance = distance;
-		
+
 		setCameraDistance(distance);
 	}
-	
+
 }
 
 Ogre::RenderTexture* SimpleRenderContext::getRenderTexture()

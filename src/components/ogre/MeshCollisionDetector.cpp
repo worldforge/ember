@@ -1,7 +1,7 @@
 //
 // C++ Implementation: MeshCollisionDetector
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
@@ -11,12 +11,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -31,6 +31,9 @@
 
 #include "model/Model.h"
 #include "model/SubModel.h"
+#include <OgreSceneNode.h>
+#include <OgreRay.h>
+#include <OgreSubMesh.h>
 
 namespace EmberOgre {
 
@@ -62,7 +65,7 @@ bool MeshCollisionDetector::getVisualize() const
 
 void MeshCollisionDetector::testCollision(Ogre::Ray& ray, CollisionResult& result)
 {
-	
+
 	// at this point we have raycast to a series of different objects bounding boxes.
 	// we need to test these different objects to see which is the first polygon hit.
 	// there are some minor optimizations (distance based) that mean we wont have to
@@ -75,18 +78,18 @@ void MeshCollisionDetector::testCollision(Ogre::Ray& ray, CollisionResult& resul
 	{
 		Ogre::Entity* pentity = (*I)->getEntity();
 		if (pentity->isVisible() && pentity->getParentNode()) {
-			// mesh data to retrieve         
+			// mesh data to retrieve
 			size_t vertex_count;
 			size_t index_count;
 			Ogre::Vector3 *vertices;
 			unsigned long *indices;
-	
+
 			// get the mesh information
-			getMeshInformation(pentity->getMesh(), vertex_count, vertices, index_count, indices,             
+			getMeshInformation(pentity->getMesh(), vertex_count, vertices, index_count, indices,
 								pentity->getParentNode()->_getDerivedPosition(),
 								pentity->getParentNode()->_getDerivedOrientation(),
 								pentity->getParentNode()->getScale());
-	
+
 			// test for hitting individual triangles on the mesh
 			bool new_closest_found = false;
 			for (int i = 0; i < static_cast<int>(index_count); i += 3)
@@ -94,7 +97,7 @@ void MeshCollisionDetector::testCollision(Ogre::Ray& ray, CollisionResult& resul
 				// check for a hit against this triangle
 				std::pair<bool, Ogre::Real> hit = Ogre::Math::intersects(ray, vertices[indices[i]],
 					vertices[indices[i+1]], vertices[indices[i+2]], true, false);
-	
+
 				// if it was a hit check if its the closest
 				if (hit.first)
 				{
@@ -107,21 +110,21 @@ void MeshCollisionDetector::testCollision(Ogre::Ray& ray, CollisionResult& resul
 					}
 				}
 			}
-	
+
 			// free the verticies and indicies memory
 			delete[] vertices;
 			delete[] indices;
-	
+
 			// if we found a new closest raycast for this object, update the
 			// closest_result before moving on to the next object.
 			if (new_closest_found)
 			{
-				closest_result = ray.getPoint(closest_distance);               
+				closest_result = ray.getPoint(closest_distance);
 			}
 		}
 	}
-	
-	
+
+
 	// return the result
 	if (closest_distance >= 0.0f)
 	{
@@ -134,7 +137,7 @@ void MeshCollisionDetector::testCollision(Ogre::Ray& ray, CollisionResult& resul
 	{
 		// raycast failed
 		result.collided = false;
-	} 
+	}
 }
 
 
@@ -262,6 +265,6 @@ void MeshCollisionDetector::getMeshInformation(const Ogre::MeshPtr mesh,
 		ibuf->unlock();
 		current_offset = next_offset;
 	}
-} 
+}
 
 }

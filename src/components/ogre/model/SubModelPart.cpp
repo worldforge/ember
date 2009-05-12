@@ -28,6 +28,8 @@
 #include "SubModelPart.h"
 #include "Model.h"
 #include "SubModel.h"
+#include <OgreSubEntity.h>
+#include <OgreSubMesh.h>
 
 namespace EmberOgre {
 namespace Model {
@@ -46,7 +48,7 @@ bool SubModelPart::addSubEntity(Ogre::SubEntity* subentity, SubEntityDefinition*
 	SubModelPartEntity modelPartEntity;
 	modelPartEntity.Definition = definition;
 	modelPartEntity.SubEntity = subentity;
-	mSubEntities.push_back(modelPartEntity);	
+	mSubEntities.push_back(modelPartEntity);
 	return true;
 }
 bool SubModelPart::removeSubEntity(Ogre::SubEntity* subentity)
@@ -63,7 +65,7 @@ bool SubModelPart::removeSubEntity(Ogre::SubEntity* subentity)
 
 const std::string& SubModelPart::getName() const
 {
-	return mName;	
+	return mName;
 }
 
 void SubModelPart::show()
@@ -71,14 +73,14 @@ void SubModelPart::show()
 	SubModelPartEntityStore::const_iterator I;
 	for (I = mSubEntities.begin(); I != mSubEntities.end(); I++) {
 		if (I->Definition && I->Definition->getMaterialName() != "") {
-			I->SubEntity->setMaterialName(I->Definition->getMaterialName());	
+			I->SubEntity->setMaterialName(I->Definition->getMaterialName());
 		} else {
 			///if no material name is set in the ModelDefinition, use the default one from the mesh
 			I->SubEntity->setMaterialName(I->SubEntity->getSubMesh()->getMaterialName());
 		}
-		
+
 		I->SubEntity->setVisible(true);
-	}	
+	}
 }
 
 void SubModelPart::hide()
@@ -86,7 +88,7 @@ void SubModelPart::hide()
 	SubModelPartEntityStore::const_iterator I;
 	for (I = mSubEntities.begin(); I != mSubEntities.end(); I++) {
 		I->SubEntity->setVisible(false);
-	}	
+	}
 }
 
 const SubModelPart::SubModelPartEntityStore& SubModelPart::getSubentities() const

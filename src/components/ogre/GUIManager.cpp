@@ -59,6 +59,10 @@
 #include "widgets/EntityIconManager.h"
 
 #include "services/input/Input.h"
+#include <OgreRenderWindow.h>
+#include <OgreViewport.h>
+#include <OgreTextureManager.h>
+#include <OgreRoot.h>
 
 
 #ifdef __WIN32__
@@ -79,7 +83,7 @@ namespace EmberOgre {
 unsigned long GUIManager::msAutoGenId(0);
 
 
-GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr) 
+GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 : ToggleInputMode("toggle_inputmode", this, "Toggle the input mode.")
 , ReloadGui("reloadgui", this, "Reloads the gui.")
 , ToggleGui("toggle_gui", this, "Toggle the gui display")
@@ -101,43 +105,43 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 
 	///we need this here just to force the linker to also link in the WidgetDefinitions
 	WidgetDefinitions w;
-	
+
 	try {
-		
+
 		S_LOG_INFO("Starting CEGUI");
 		mDefaultScheme = "EmberLook";
 		S_LOG_VERBOSE("Setting default scheme to "<< mDefaultScheme);
-	
+
 		Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 		if (chdir(configSrv->getEmberDataDirectory().c_str())) {
 			S_LOG_WARNING("Failed to change to the data directory. Gui loading might fail.");
 		}
-		
+
 		///The OgreCEGUIRenderer is the main interface between Ogre and CEGUI. Note that the third argument tells the renderer to render the gui after all of the regular render queues have been processed, thus making sure that the gui always is on top.
 		mGuiRenderer = new CEGUI::OgreCEGUIRenderer(window, Ogre::RENDER_QUEUE_OVERLAY, true, 0, sceneMgr);
 		CEGUI::ResourceProvider* resourceProvider = mGuiRenderer->createResourceProvider();
 		resourceProvider->setDefaultResourceGroup("Gui");
-		
+
 		Ember::IScriptingProvider* provider = Ember::EmberServices::getSingleton().getScriptingService()->getProviderFor("LuaScriptingProvider");
 		if (provider != 0) {
 			LuaScriptingProvider* luaScriptProvider = static_cast<LuaScriptingProvider*>(provider);
-			mLuaScriptModule = new LuaScriptModule(luaScriptProvider->getLuaState()); 
+			mLuaScriptModule = new LuaScriptModule(luaScriptProvider->getLuaState());
 			if (luaScriptProvider->getErrorHandlingFunctionName().size() != 0) {
 				mLuaScriptModule->setDefaultPCallErrorHandler(luaScriptProvider->getErrorHandlingFunctionName());
 				mLuaScriptModule->executeString(""); ///We must call this to make CEGUI set up the error function internally. If we don't, CEGUI will never correctly set it up. The reason for this is that we never use the execute* methods in the CEGUI lua module later on, instead loading our scripts ourselves. And CEGUI is currently set up to require the execute* methods to be called in order for the error function to be registered.
 			}
 			mGuiSystem = new CEGUI::System(mGuiRenderer, resourceProvider, 0, mLuaScriptModule, "cegui/datafiles/configs/cegui.config");
-			
+
 			Ember::EmberServices::getSingleton().getScriptingService()->EventStopping.connect(sigc::mem_fun(*this, &GUIManager::scriptingServiceStopping));
 		} else {
-			mGuiSystem = new CEGUI::System(mGuiRenderer, resourceProvider, 0, 0, "cegui/datafiles/configs/cegui.config"); 
+			mGuiSystem = new CEGUI::System(mGuiRenderer, resourceProvider, 0, 0, "cegui/datafiles/configs/cegui.config");
 		}
 		CEGUI::SchemeManager::SchemeIterator schemeI(SchemeManager::getSingleton().getIterator());
 		if (schemeI.isAtEnd()) {
 // 			S_LOG_FAILURE("Could not load any CEGUI schemes. This means that there's something wromg with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
 			throw Ember::Exception("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
 		}
-		
+
 		mWindowManager = &CEGUI::WindowManager::getSingleton();
 
 
@@ -147,10 +151,10 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 			S_LOG_FAILURE("CEGUI - could not set mouse pointer. Make sure that the correct scheme " << getDefaultScheme() << " is available. Message: " << ex.getMessage().c_str());
 			throw Ember::Exception(ex.getMessage().c_str());
 		}
-		
-		
+
+
 		mSheet = mWindowManager->createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"root_wnd");
-		mGuiSystem->setGUISheet(mSheet); 
+		mGuiSystem->setGUISheet(mSheet);
 		mSheet->activate();
 		mSheet->moveToBack();
 		mSheet->setDistributesCapturedInputs(false);
@@ -158,42 +162,42 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		BIND_CEGUI_EVENT(mSheet, CEGUI::ButtonBase::EventMouseButtonDown, GUIManager::mSheet_MouseButtonDown);
 		BIND_CEGUI_EVENT(mSheet, CEGUI::Window::EventInputCaptureLost, GUIManager::mSheet_CaptureLost);
 		BIND_CEGUI_EVENT(mSheet, CEGUI::ButtonBase::EventMouseDoubleClick, GUIManager::mSheet_MouseDoubleClick);
-			
+
 		///set a default tool tip
 		CEGUI::System::getSingleton().setDefaultTooltip(getDefaultScheme() + "/Tooltip");
-		
+
 		S_LOG_INFO("CEGUI system set up");
 
 		mPicker = new MousePicker();
-		
+
 		///create a new entity world pick listener which listens for event
 		///TODO: should this really be here?
 		mEntityWorldPickListener = new EntityWorldPickListener();
-		
+
 		///don't connect it yet since there's no AvatarCamera yet, wait until that's created
 		EmberOgre::getSingleton().EventAvatarControllerCreated.connect(sigc::mem_fun(*this, &GUIManager::EmberOgre_AvatarControllerCreated));
-		
+
 		getInput().EventKeyPressed.connect(sigc::mem_fun(*this, &GUIManager::pressedKey));
 		getInput().setInputMode(Input::IM_GUI);
-		
+
 		///add adapter for CEGUI, this will route input event to the gui
 		mCEGUIAdapter = new GUICEGUIAdapter(mGuiSystem, mGuiRenderer);
 		getInput().addAdapter(mCEGUIAdapter);
-		
+
 		mGuiCommandMapper.bindToInput(getInput());
-		
+
 		///connect to the creation of the avatar, since we want to switch to movement mode when that happens
 		EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(sigc::mem_fun(*this, &GUIManager::EmberOgre_CreatedAvatarEntity));
-		
+
 		mActiveWidgetHandler = new Gui::ActiveWidgetHandler(*this);
-		
+
 		Ogre::Root::getSingleton().addFrameListener(this);
-		
-	
+
+
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_FAILURE("GUIManager - error when creating gui. Message: " << ex.getMessage().c_str());
 		throw Ember::Exception(ex.getMessage().c_str());
-	
+
 	}
 
 }
@@ -202,29 +206,29 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 GUIManager::~GUIManager()
 {
 	S_LOG_INFO("Shutting down GUI manager.");
-	
+
 	WidgetStore widgetStoreCopy(mWidgets);
 	for (WidgetStore::iterator I = widgetStoreCopy.begin(); I != widgetStoreCopy.end(); ++I) {
 		S_LOG_INFO("Deleting widget " << (*I)->getPrefix() << ".");
 		delete *I;
 	}
-	
+
 	delete mActiveWidgetHandler;
 	delete mEntityIconManager;
 	delete mIconManager;
-	
+
 	delete mGuiSystem;
 	///note that we normally would delete the mCEGUILogger here, but we don't have to since mGuiSystem will do that in it's desctructor, even though it doesn't own the logger
 	Ogre::Root::getSingleton().removeFrameListener(this);
 	delete mCEGUIAdapter;
-	
+
 	delete mEntityWorldPickListener;
 	delete mPicker;
 	delete mGuiRenderer;
 	delete mLuaScriptModule;
 	//delete mMousePicker;
 	//mMousePicker = 0;
-	
+
 	WidgetLoader::removeAllWidgetFactories();
 
 }
@@ -239,11 +243,11 @@ void GUIManager::initialize()
 		mDebugText->setMaxSize(CEGUI::UVector2(UDim(1.0f, 0), UDim(0, 25)));
 		mDebugText->setPosition(CEGUI::UVector2(UDim(0.0f, 0), UDim(1.0f, -25)));
 		mDebugText->setSize(CEGUI::UVector2(UDim(1.0f, 0), UDim(0, 25)));
-		
+
 /*		mDebugText->setFrameEnabled(false);
 		mDebugText->setBackgroundEnabled(false);*/
 		//stxt->setHorizontalFormatting(StaticText::WordWrapCentred);
-	
+
 
 		//the console and quit widgets are not lua scripts, and should be loaded explicit
 // 		mConsoleWidget = static_cast<ConsoleWidget*>(createWidget("ConsoleWidget"));
@@ -265,7 +269,7 @@ void GUIManager::initialize()
 	} catch (const CEGUI::Exception& e) {
 		S_LOG_FAILURE("GUIManager - error when creating icon manager: " << e.getMessage().c_str());
 	}
-	
+
 	try {
 		mEntityIconManager = new Gui::EntityIconManager(*this);
 	} catch (const std::exception& e) {
@@ -273,8 +277,8 @@ void GUIManager::initialize()
 	} catch (const CEGUI::Exception& e) {
 		S_LOG_FAILURE("GUIManager - error when creating entity icon manager: " << e.getMessage().c_str());
 	}
-	
-	
+
+
 	std::vector<std::string> widgetsToLoad;
 	widgetsToLoad.push_back("IngameChatWidget");
 // 	widgetsToLoad.push_back("InventoryWidget");
@@ -284,7 +288,7 @@ void GUIManager::initialize()
 	widgetsToLoad.push_back("ServerWidget");
 	widgetsToLoad.push_back("Help");
 	widgetsToLoad.push_back("MeshPreview");
-	
+
 	///this should be defined in some kind of text file, which should be different depending on what game you're playing (like mason)
 	try {
 	///load the bootstrap script which will load all other scripts
@@ -293,8 +297,8 @@ void GUIManager::initialize()
 		S_LOG_FAILURE("Error when loading bootstrap script. Error message: " << e.what());
 	} catch (const CEGUI::Exception& e) {
 		S_LOG_FAILURE("Error when loading bootstrap script. Error message: " << e.getMessage().c_str());
-	}	
-	
+	}
+
 	for (std::vector<std::string>::iterator I = widgetsToLoad.begin(); I != widgetsToLoad.end(); ++I) {
 		try {
 			S_LOG_VERBOSE("Loading widget " << *I);
@@ -305,7 +309,7 @@ void GUIManager::initialize()
 			S_LOG_FAILURE("Error when initializing widget " << *I << " : " << e.getMessage().c_str());
 		}
 	}
-	
+
 }
 
 void GUIManager::scriptingServiceStopping()
@@ -351,7 +355,7 @@ Widget* GUIManager::createWidget(const std::string& name)
 {
 	Widget* widget(0);
 	try {
-	
+
 		widget = WidgetLoader::createWidget(name);
 		if (widget == 0) {
 			S_LOG_FAILURE( "Could not find widget with name " << name );
@@ -398,8 +402,8 @@ Input& GUIManager::getInput() const
 
 
 CEGUI::Window* GUIManager::getMainSheet() const
-{ 
-	return mSheet; 
+{
+	return mSheet;
 }
 
 void GUIManager::removeWidget(Widget* widget)
@@ -422,7 +426,7 @@ void GUIManager::addWidget(Widget* widget)
 
 bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 {
-	try {	
+	try {
 		CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
@@ -438,13 +442,13 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 // 			mPreviousInputMode = IM_GUI;
 // 		}
 // 	}
-	
-	
-	
+
+
+
 	//iterate over all widgets and send them a frameStarted event
 	WidgetStore::iterator I = mWidgets.begin();
 	WidgetStore::iterator I_end = mWidgets.end();
-	
+
 	for (; I != I_end; ++I) {
 		Widget* aWidget = *I;
 		try {
@@ -453,9 +457,9 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 			S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
 		}
 	}
-	
+
 	EventFrameStarted.emit(evt.timeSinceLastFrame);
-	
+
 	return true;
 
 
@@ -473,7 +477,7 @@ bool GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 		}
 		//mSheet->activate();
 		//mSheet->captureInput();
-	
+
 		if (mPicker) {
 			const CEGUI::Point& position = CEGUI::MouseCursor::getSingleton().getDisplayIndependantPosition();
 			MousePickerArgs pickerArgs;
@@ -490,7 +494,7 @@ bool GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 
 bool GUIManager::mSheet_MouseDoubleClick(const CEGUI::EventArgs& args)
 {
-	
+
 	const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
 	S_LOG_VERBOSE("Main sheet double click.");
 	CEGUI::Window* aWindow = CEGUI::Window::getCaptureWindow();
@@ -521,11 +525,11 @@ bool GUIManager::mSheet_CaptureLost(const CEGUI::EventArgs& args)
 }
 
 const bool GUIManager::isInMovementKeysMode() const {
-	return mSheet->isCapturedByThis() || !isInGUIMode(); 
+	return mSheet->isCapturedByThis() || !isInGUIMode();
 }
 
-const bool GUIManager::isInGUIMode() const { 
-	return getInput().getInputMode() == Input::IM_GUI; 
+const bool GUIManager::isInGUIMode() const {
+	return getInput().getInputMode() == Input::IM_GUI;
 }
 
 void GUIManager::pressedKey(const SDL_keysym& key, Input::InputMode inputMode)
@@ -535,29 +539,29 @@ void GUIManager::pressedKey(const SDL_keysym& key, Input::InputMode inputMode)
 		bool cut = (key.sym == SDLK_x);
 		CEGUI::Window* active = mSheet->getActiveChild();
 		if (!active) return;
-	
+
 		CEGUI::String seltext;
 		const CEGUI::String& type = active->getType();
-	
+
 		if (type.find("/MultiLineEditbox") != CEGUI::String::npos) {
 			CEGUI::MultiLineEditbox* edit = static_cast<CEGUI::MultiLineEditbox*>(active);
 			CEGUI::String::size_type beg = edit->getSelectionStartIndex();
 			CEGUI::String::size_type len = edit->getSelectionLength();
 			seltext = edit->getText().substr( beg, len ).c_str();
-	
+
 			// are we cutting or just copying?
 			if (cut) {
 				if (edit->isReadOnly()) return;
 				CEGUI::String newtext = edit->getText();
 				edit->setText( newtext.erase( beg, len ) );
 			}
-	
+
 		} else if (type.find("/Editbox") != CEGUI::String::npos) {
 			CEGUI::Editbox* edit = static_cast<CEGUI::Editbox*>(active);
 			CEGUI::String::size_type beg = edit->getSelectionStartIndex();
 			CEGUI::String::size_type len = edit->getSelectionLength();
 			seltext = edit->getText().substr( beg, len ).c_str();
-	
+
 			// are we cutting or just copying?
 			if (cut) {
 				if (edit->isReadOnly()) return;
@@ -565,7 +569,7 @@ void GUIManager::pressedKey(const SDL_keysym& key, Input::InputMode inputMode)
 				edit->setText( newtext.erase( beg, len ) );
 			}
 		}
-		getInput().writeToClipboard( seltext.c_str() ); 
+		getInput().writeToClipboard( seltext.c_str() );
 	}
 }
 
@@ -576,22 +580,22 @@ void GUIManager::runCommand(const std::string &command, const std::string &args)
 	if (command == ToggleInputMode.getCommand()) {
 		getInput().toggleInputMode();
 	} else if (command == ToggleGui.getCommand()) {
-		
+
 		S_LOG_VERBOSE("Toggle Gui Initiated -- " << getInput().getInputMode() );
-		
+
 		if (mWindow->getViewport(0)->getOverlaysEnabled()) {
 			// disable overlays so gui disappears
 			S_LOG_INFO("Disabling GUI");
 			mWindow->getViewport(0)->setOverlaysEnabled(false);
-			
+
 			getInput().removeAdapter(mCEGUIAdapter);
-			
+
 		} else {
-	
+
 			// enable overlays
 			S_LOG_INFO("Enabling GUI");
 			mWindow->getViewport(0)->setOverlaysEnabled(true);
-			
+
 			getInput().addAdapter(mCEGUIAdapter);
 		}
 	} else if (command == ReloadGui.getCommand()) {
@@ -611,7 +615,7 @@ void GUIManager::runCommand(const std::string &command, const std::string &args)
 // MousePicker * GUIManager::popMousePicker()
 // {
 // 	///only pop if there's more than one registered picker
-// 	if (mMousePickers.size() > 1) 
+// 	if (mMousePickers.size() > 1)
 // 		mMousePickers.pop();
 // 	return mMousePickers.top();
 // }

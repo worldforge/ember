@@ -29,6 +29,7 @@
 #include "SnapToMovement.h"
 
 #include <Eris/Entity.h>
+#include <OgreSceneNode.h>
 
 namespace EmberOgre
 {

@@ -22,6 +22,9 @@
 
 #include "TerrainShader.h"
 #include <OgreIteratorWrappers.h>
+#include <OgreRoot.h>
+#include <OgreRenderSystem.h>
+#include <OgreRenderSystemCapabilities.h>
 #include "TerrainLayerDefinition.h"
 namespace EmberOgre {
 namespace Terrain {
@@ -58,7 +61,7 @@ TerrainShader::~TerrainShader()
 	//mTerrain->removeShader(mShader)
 }
 
-Ogre::ushort TerrainShader::getMaxTextureUnits() const 
+Ogre::ushort TerrainShader::getMaxTextureUnits() const
 {
  	return std::min<unsigned short>(4, Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits());
 }
@@ -79,23 +82,23 @@ const TerrainLayerDefinition* TerrainShader::getLayerDefinition() const
 }
 
 
-void TerrainShader::addTextureUnitsToPass(Ogre::Pass* pass, const Ogre::String& splatTextureName) {
-	
+void TerrainShader::addTextureUnitsToPass(Ogre::Pass* pass, const std::string& splatTextureName) {
+
 /*	if (getMaxTextureUnits() - pass->getNumTextureUnitStates() < 2 || pass->getParent()->getNumPasses() > 1)  {
 		addPassToTechnique(pass->getParent(), splatTextureName);
 // 		S_LOG_WARNING("Trying to add texture units to pass with too few available texture unit states.");
 		return;
 	}
-		
+
 	S_LOG_VERBOSE("Adding new texture unit (detailtexture: " << mTextureName << " alphatexture: " << splatTextureName << ") to pass nr " << pass->getIndex() << " in technique for material " << pass->getParent()->getParent()->getName());*/
-	
+
 /*	pass->setSelfIllumination(Ogre::ColourValue(1,1,1));
 	pass->setAmbient(Ogre::ColourValue(1,1,1));
 	pass->setDiffuse(Ogre::ColourValue(1,1,1));
 	pass->setLightingEnabled(true);*/
 /*	Ogre::TextureUnitState * textureUnitStateSplat = pass->createTextureUnitState();
     textureUnitStateSplat->setTextureName(splatTextureName);
-     
+
     textureUnitStateSplat->setTextureCoordSet(0);
 	textureUnitStateSplat->setTextureFiltering(Ogre::TFO_ANISOTROPIC);
 	textureUnitStateSplat->setAlphaOperation(Ogre::LBX_SOURCE1, Ogre::LBS_TEXTURE, Ogre::LBS_TEXTURE);
@@ -110,7 +113,7 @@ void TerrainShader::addTextureUnitsToPass(Ogre::Pass* pass, const Ogre::String& 
 /*	textureUnitState->setTextureCoordSet(0);*/
 /*	textureUnitState->setTextureScale(0.025, 0.025);
 	textureUnitState->setColourOperationEx(Ogre::LBX_BLEND_CURRENT_ALPHA, Ogre::LBS_TEXTURE, Ogre::LBS_CURRENT);*/
-	
+
 /*	Ogre::TextureUnitState * alphaTextureState= pass->createTextureUnitState();
     alphaTextureState->setTextureName(mTextureName);
 //     alphaTextureState->setTextureName(splatTextureName);
@@ -131,10 +134,10 @@ void TerrainShader::addTextureUnitsToPass(Ogre::Pass* pass, const Ogre::String& 
 	detailTextureState ->setTextureCoordSet(0);
 	detailTextureState ->setTextureScale(0.01, 0.01);
 	//detailTextureState ->setColourOperationEx(Ogre::LBX_BLEND_CURRENT_ALPHA, Ogre::LBS_TEXTURE, Ogre::LBS_CURRENT);*/
-	
+
 }
 
-Ogre::Pass* TerrainShader::addPassToTechnique(Ogre::Technique* technique, const Ogre::String& splatTextureName) {
+Ogre::Pass* TerrainShader::addPassToTechnique(Ogre::Technique* technique, const std::string& splatTextureName) {
 	return 0;
 	///check if we instead can reuse the existing pass
 // 	if (technique->getNumPasses() != 0) {
@@ -145,53 +148,53 @@ Ogre::Pass* TerrainShader::addPassToTechnique(Ogre::Technique* technique, const 
 // 			addTextureUnitsToPass(pass, splatTextureName);
 // 			return pass;
 // 		}
-// 		
+//
 // 	}
-	
-	
+
+
 // 	Ogre::Pass* pass = technique->createPass();
-// 	
+//
 // 	S_LOG_VERBOSE("Adding new pass (" << mTextureName << ") to technique for material " << technique->getParent()->getName() << ". Number of passes in this technique: " << technique->getNumPasses());
-// 	
+//
 //  	pass->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
 // 	pass->setLightingEnabled(false);
-// 	
-// 	
+//
+//
 // 	Ogre::TextureUnitState * textureUnitStateSplat = pass->createTextureUnitState();
 //     textureUnitStateSplat->setTextureName(splatTextureName);
-//      
+//
 //     textureUnitStateSplat->setTextureCoordSet(0);
 // //	textureUnitStateSplat->setTextureFiltering(Ogre::TFO_ANISOTROPIC);
 //     textureUnitStateSplat->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 // 	textureUnitStateSplat->setTextureFiltering(Ogre::TFO_ANISOTROPIC);
 // //	textureUnitStateSplat->setAlphaOperation(Ogre::LBX_SOURCE1, Ogre::LBS_TEXTURE, Ogre::LBS_TEXTURE);
 // 	textureUnitStateSplat->setColourOperationEx(Ogre::LBX_BLEND_DIFFUSE_ALPHA, Ogre::LBS_CURRENT, Ogre::LBS_TEXTURE);
-// 
+//
 // 	Ogre::TextureUnitState * textureUnitState = pass->createTextureUnitState();
 //     textureUnitState->setTextureName(mTextureName);
 //     textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 //     textureUnitState->setTextureCoordSet(0);
 // 	textureUnitState->setTextureScale(0.025, 0.025);
-// 
-//     
-//     return pass; 
+//
+//
+//     return pass;
 //	textureUnitState->setColourOperationEx(LBX_BLEND_CURRENT_ALPHA, LBS_TEXTURE, LBS_CURRENT);
-	
+
 }
 
-void TerrainShader::addMaterialToTechnique(Ogre::Technique*  technique, const Ogre::String& splatTextureName) {
+void TerrainShader::addMaterialToTechnique(Ogre::Technique*  technique, const std::string& splatTextureName) {
 
 // 	if (!mMaterial->getNumSupportedTechniques()) {
 // 		return;
 // 	}
-// 	
+//
 // 	Ogre::Technique* sourceTech = mMaterial->getSupportedTechnique(0);
 // 	Ogre::Technique::PassIterator I = sourceTech->getPassIterator();
 // 	bool isFirstPass = true;
 // 	while (I.hasMoreElements()) {
 // 		Ogre::Pass* sourcePass = I.getNext();
-// 		
-// 		
+//
+//
 // 		///if there's only one pass, check if we can fit that into the existing pass
 // 		if (isFirstPass && technique->getNumPasses() == 1) {
 // 			isFirstPass = false;
@@ -209,21 +212,21 @@ void TerrainShader::addMaterialToTechnique(Ogre::Technique*  technique, const Og
 // 						if (newTexUnitState->getTextureName() == "splat") {
 // 							newTexUnitState->setTextureName(splatTextureName);
 // 						}
-// 						
+//
 // 					}
 // 					continue;
 // 				}
 // 			}
 // 		}
-// 		
+//
 // 		Ogre::Pass* destPass = technique->createPass();
-// 		
+//
 // 		//just make a copy of the source pass
 // 		*destPass = *sourcePass;
 // 		destPass->setName("");
-// 		
+//
 // 		S_LOG_VERBOSE("Added new pass from template material(" << mMaterial->getName()<< ") to technique for material " << technique->getParent()->getName() << ". Number of passes in this technique: " << technique->getNumPasses());
-// 		
+//
 // 		//now iterate through all textures and look for the splat
 // 		Ogre::Pass::TextureUnitStateIterator J = destPass->getTextureUnitStateIterator();
 // 		while (J.hasMoreElements()) {
@@ -236,7 +239,7 @@ void TerrainShader::addMaterialToTechnique(Ogre::Technique*  technique, const Og
 // 	}
 }
 
-void TerrainShader::addSplatToTechnique(Ogre::Technique*  technique, const Ogre::String& splatTextureName) {
+void TerrainShader::addSplatToTechnique(Ogre::Technique*  technique, const std::string& splatTextureName) {
 /*	if (!mMaterial.isNull()) {
 		addMaterialToTechnique(technique, splatTextureName);
 	} else {

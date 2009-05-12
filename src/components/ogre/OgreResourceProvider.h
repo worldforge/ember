@@ -1,7 +1,7 @@
 //
 // C++ Interface: OgreResourceProvider
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -24,7 +24,8 @@
 #define EMBEROGREOGRERESOURCEPROVIDER_H
 
 #include "framework/IScriptingProvider.h"
-#include <Ogre.h>
+#include "components/ogre/EmberOgrePrerequisites.h"
+#include <OgreDataStream.h>
 
 namespace EmberOgre {
 
@@ -34,7 +35,7 @@ class OgreResourceWrapper : public Ember::IResourceWrapper
 public:
 	OgreResourceWrapper(Ogre::DataStreamPtr dataStream);
 	virtual ~OgreResourceWrapper();
-	
+
 	virtual char* getDataPtr();
 	virtual bool hasData();
 	virtual size_t getSize();
@@ -53,9 +54,9 @@ public:
     OgreResourceProvider(const std::string& groupName);
 
     virtual ~OgreResourceProvider();
-    
+
 	virtual Ember::ResourceWrapper getResource(const std::string& name);
-private: 
+private:
 	std::string mGroupName;
 
 };

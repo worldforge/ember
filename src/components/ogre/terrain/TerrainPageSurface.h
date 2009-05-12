@@ -1,7 +1,7 @@
 //
 // C++ Interface: TerrainPageSurface
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -27,6 +27,8 @@
 #include "../EmberOgrePrerequisites.h"
 #include "../Types.h"
 #include "TerrainPage.h"
+#include <OgreMaterial.h>
+
 
 namespace Mercator
 {
@@ -53,39 +55,39 @@ public:
     TerrainPageSurface(TerrainPage& terrainPage);
 
     virtual ~TerrainPageSurface();
-    
+
     unsigned int getPixelWidth() const;
-    
+
 	/**
 	 *    The position of the page in Worldforge space
-	 * @return 
+	 * @return
 	 */
 	const TerrainPosition& getWFPosition() const;
-	
+
 	SegmentVector& getValidSegments();
-	
+
 	/**
 	 *    The number of Mercator::Segments for each axis. I.e. the root of the total number of segments.
-	 * @return 
+	 * @return
 	 */
-	int getNumberOfSegmentsPerAxis() const;	
-	
+	int getNumberOfSegmentsPerAxis() const;
+
 	TerrainPageSurfaceLayer* createSurfaceLayer(const TerrainLayerDefinition& definition, int surfaceIndex, Mercator::Shader* shader);
-	
+
 	Ogre::MaterialPtr getMaterial();
-	
+
 	/**
 	 * @brief Recompiles the material.
 	 * @param reselectTechnique If true, we'll also see if we need to reselect the technique to use.
 	 */
 	void recompileMaterial(bool reselectTechnique);
-	
+
 	void setShadow(TerrainPageShadow* shadow);
-	
+
 	const TerrainPageSurfaceLayerStore& getLayers() const;
-	
+
 	TerrainPageSurfaceLayer* updateLayer(int layerIndex, bool repopulate);
-	
+
 protected:
 
 	void updateSceneManagersAfterMaterialsChange();

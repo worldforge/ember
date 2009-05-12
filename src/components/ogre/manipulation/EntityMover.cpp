@@ -32,6 +32,7 @@
 #include "../MathConverter.h"
 
 #include "SnapToMovement.h"
+#include <OgreSceneNode.h>
 
 namespace EmberOgre
 {

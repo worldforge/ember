@@ -1,7 +1,7 @@
 //
 // C++ Implementation: AnimationSet
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -25,6 +25,7 @@
 #endif
 
 #include "AnimationSet.h"
+#include <OgreAnimationState.h>
 
 namespace EmberOgre {
 namespace Model {
@@ -72,14 +73,14 @@ void AnimationSet::addTime(Ogre::Real timeSlice, bool& continueAnimation)
 				animation = &mAnimations[mCurrentAnimationSetIndex];
 				animation->setTime(0);
 			}
-			
+
 			Ogre::Real calculatedTime = timeSlice * mSpeed;
 			animation->setEnabled(true);
 			animation->addTime(calculatedTime);
 		}
 		mAccumulatedTime += calculatedTime;
 	}
-	
+
 }
 
 void AnimationSet::reset()
@@ -91,7 +92,7 @@ void AnimationSet::reset()
 	mCurrentAnimationSetIndex = 0;
 	mAccumulatedTime = 0;
 }
-	
+
 void AnimationSet::addAnimation(Animation animation)
 {
 	mAnimations.push_back(animation);

@@ -1,7 +1,7 @@
 //
 // C++ Implementation: TerrainPageSurfaceLayer
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -31,6 +31,9 @@
 #include <Mercator/Surface.h>
 #include <Mercator/Segment.h>
 #include <Mercator/Shader.h>
+#include <OgreHardwarePixelBuffer.h>
+#include <OgreRoot.h>
+#include <OgreTextureManager.h>
 
 namespace EmberOgre {
 namespace Terrain {
@@ -60,12 +63,12 @@ Ogre::TexturePtr TerrainPageSurfaceLayer::createTexture()
 		std::stringstream splatTextureNameSS;
 		splatTextureNameSS << "terrain_" << mTerrainPageSurface.getWFPosition().x() << "_" << mTerrainPageSurface.getWFPosition().y() << "_" << mSurfaceIndex;
 		const Ogre::String splatTextureName(splatTextureNameSS.str());
-		
+
 //		mTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(splatTextureName, "General", Ogre::TEX_TYPE_2D, getPixelWidth(), getPixelWidth(), 1, Ogre::PF_A8);
 		///use no mipmaps since we had problems on nvidia cards with updating it
  		mTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadImage(splatTextureName, "General", *mCoverageImage, Ogre::TEX_TYPE_2D, 0);
-		 
-		
+
+
 	}
 	return mTexture;
 }
@@ -95,13 +98,13 @@ void TerrainPageSurfaceLayer::fillAlphaLayer(unsigned char* finalImagePtr, unsig
 
 	int width = 64;
 	int finalImageWidth = getPixelWidth();
-	long i,j; 
-	
+	long i,j;
+
 	Ogre::uchar* start = finalImagePtr + (numberOfChannels * finalImageWidth * (startY - 1)) + ((startX - 1) * numberOfChannels);
 	Ogre::uchar* end = start + (width * finalImageWidth * numberOfChannels) + (width * numberOfChannels);
 	///we need to do this to get the alignment correct
 	wfImagePtr += 65;
-	
+
 	Ogre::uchar* tempPtr = end + channel + numberOfChannels;
 	for (i = 0; i < width; ++i) {
 		tempPtr -= (width * numberOfChannels);
@@ -110,7 +113,7 @@ void TerrainPageSurfaceLayer::fillAlphaLayer(unsigned char* finalImagePtr, unsig
 			*(tempPtr) = alpha;
 			///advance the number of channels
 			tempPtr += numberOfChannels;
-			
+
 		}
 		tempPtr -= (finalImageWidth * numberOfChannels);
 		wfImagePtr += 65;
@@ -142,7 +145,7 @@ bool TerrainPageSurfaceLayer::createCoverageImage()
 	mCoverageImage = OGRE_NEW Ogre::Image();
 	mCoverageImage->loadDynamicImage(mCoverageDataStream->getPtr(), getPixelWidth(), getPixelWidth(), 1, Ogre::PF_A8);
 	return true;
-	
+
 }
 
 
@@ -163,32 +166,32 @@ void TerrainPageSurfaceLayer::updateCoverageImage()
 /*	mCoverageDataStream = new Ogre::MemoryDataStream(mTerrainPageSurface.getPixelWidth() * mTerrainPageSurface.getPixelWidth() * 1, false);
 	mCoverageDataStreamPtr = Ogre::DataStreamPtr(mCoverageDataStream);*/
 		mCoverageDataStream->seek(0);
-		
+
 		///reset the coverage image
 		memset(mCoverageDataStream->getPtr(), '\0', mCoverageDataStream->size());
-	
+
 		for (SegmentVector::iterator I = mTerrainPageSurface.getValidSegments().begin(); I != mTerrainPageSurface.getValidSegments().end(); ++I) {
 			if (mShader->checkIntersect(*I->segment)) {
 				Mercator::Surface* surface = getSurfaceForSegment(I->segment);
 				if (surface && surface->isValid()) {
-				
+
 					int alphaChannel = 0;
 					///use only one channel
 					fillAlphaLayer(mCoverageDataStream->getPtr(), surface->getData(), alphaChannel, (int)I->pos.x() * 64, (mTerrainPageSurface.getNumberOfSegmentsPerAxis() - (int)I->pos.y() - 1) * 64, 1);
-		
+
 				}
 			}
 		}
-			
+
 		if (!mTexture.isNull()) {
 			///if it's alreay loaded we need to blit directly to the hardware buffer to make sure it's updated
 		 	if (mTexture->isLoaded()) {
 				Ogre::HardwarePixelBufferSharedPtr hardwareBuffer = mTexture->getBuffer();
-				
+
 				///blit the whole image to the hardware buffer
 				Ogre::PixelBox sourceBox = mCoverageImage->getPixelBox();
 				//Ogre::Box targetBox(0,0, texture->getWidth(), texture->getHeight());
-				hardwareBuffer->blitFromMemory(sourceBox);	
+				hardwareBuffer->blitFromMemory(sourceBox);
 		 	} else {
 				mTexture->loadImage(*mCoverageImage);
 		 	}
@@ -270,9 +273,9 @@ void TerrainPageSurfaceLayer::populate()
 			surface->populate();
 		}
 		#else
-		
+
 		Mercator::Segment* segment(I->segment);
-		
+
 		segment->populate();
 		segment->populateNormals();
 		Mercator::Segment::Surfacestore::iterator I(segment->getSurfaces().find(mSurfaceIndex));
@@ -288,7 +291,7 @@ void TerrainPageSurfaceLayer::populate()
 			I->second->populate();*/
 		}
 		///NOTE: we have to repopulate all surfaces mainly to get the foliage to work.
-		segment->populateSurfaces();		
+		segment->populateSurfaces();
 		#endif
 	}
 }

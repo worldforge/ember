@@ -1,7 +1,7 @@
 //
 // C++ Implementation: AssetsManager
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -30,13 +30,15 @@
 #include <OgreMaterialSerializer.h>
 #include "../EmberOgrePrerequisites.h"
 
-#include <CEGUIImagesetManager.h> 
-#include <CEGUIImageset.h> 
+#include <CEGUIImagesetManager.h>
+#include <CEGUIImageset.h>
 
 #include "../EmberOgre.h"
 #include "../GUIManager.h"
 
 #include "framework/Exception.h"
+#include <OgreTextureManager.h>
+#include <OgreTexture.h>
 // #include <OgreBitwise.h>
 
 
@@ -79,7 +81,7 @@ TexturePair AssetsManager::showTexture(const std::string textureName)
 		}
 	}
 	return TexturePair();
-	
+
 }
 
 
@@ -89,27 +91,27 @@ TexturePair AssetsManager::createTextureImage(Ogre::TexturePtr texturePtr, const
 // 		GUIManager::getSingleton().getGuiRenderer()->destroyTexture(mOgreCEGUITexture);
 // 		mOgreCEGUITexture = 0;
 // 	}
-	
-	
+
+
 	CEGUI::Imageset* textureImageset;
-	
+
 	if (CEGUI::ImagesetManager::getSingleton().isImagesetPresent(imageSetName)) {
 		textureImageset = CEGUI::ImagesetManager::getSingleton().getImageset(imageSetName);
 	} else {
 		///create a CEGUI texture from our Ogre texture
 		S_LOG_VERBOSE("Creating new CEGUI texture from Ogre texture.");
 		CEGUI::Texture* ogreCEGUITexture = GUIManager::getSingleton().getGuiRenderer()->createTexture(texturePtr);
-		
+
 		///we need a imageset in order to create GUI elements from the ceguiTexture
 		S_LOG_VERBOSE("Creating new CEGUI imageset with name " << imageSetName);
 		textureImageset = CEGUI::ImagesetManager::getSingleton().createImageset(imageSetName , ogreCEGUITexture);
-		
+
 		///we only want one element: the whole texture
 		textureImageset->defineImage("full_image", CEGUI::Rect(0, 0, texturePtr->getWidth(), texturePtr->getHeight()), CEGUI::Point(0,0));
 	}
 	///assign our image element to the StaticImage widget
 	const CEGUI::Image* textureImage = &textureImageset->getImage("full_image");
-	
+
 	return TexturePair(texturePtr, textureImage, textureImageset);
 
 }
@@ -138,7 +140,7 @@ TexturePair::TexturePair(Ogre::TexturePtr ogreTexture, const CEGUI::Image* textu
 , mTextureImageset(textureImageset)
 {
 }
-	
+
 TexturePair::TexturePair()
 : mOgreTexture(0)
 // , mOgreCEGUITexture(0)
@@ -146,7 +148,7 @@ TexturePair::TexturePair()
 , mTextureImageset(0)
 {
 }
-	
+
 Ogre::TexturePtr TexturePair::getOgreTexture() const
 {
 	return mOgreTexture;

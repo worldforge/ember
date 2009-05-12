@@ -1,7 +1,7 @@
 //
 // C++ Implementation: TerrainPageSurfaceCompilerTechniqueSimple
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -26,6 +26,9 @@
 
 #include "TerrainPageSurfaceCompilerTechniqueSimple.h"
 #include "TerrainPageSurfaceLayer.h"
+#include <OgreTechnique.h>
+#include <OgrePass.h>
+#include <OgreTextureUnitState.h>
 
 namespace EmberOgre {
 
@@ -60,12 +63,12 @@ bool TerrainPageSurfaceCompilerTechniqueSimple::compileMaterial(Ogre::MaterialPt
 void TerrainPageSurfaceCompilerTechniqueSimple::addShadow(Ogre::Technique* technique, TerrainPageShadow* terrainPageShadow)
 {
 	Ogre::Pass* shadowPass = technique->createPass();
-	
+
 	shadowPass->setSceneBlending(Ogre::SBT_MODULATE);
 	shadowPass->setLightingEnabled(false);
 	shadowPass->setFog(true, Ogre::FOG_NONE);
-	
-	
+
+
 	Ogre::TextureUnitState * textureUnitStateSplat = shadowPass->createTextureUnitState();
 	textureUnitStateSplat->setTextureName(terrainPageShadow->getTexture()->getName());
 
@@ -81,22 +84,22 @@ void TerrainPageSurfaceCompilerTechniqueSimple::setPage(TerrainPage* page)
 
 
 // void TerrainPageSurfaceCompiler::addTextureUnitsToPass(Ogre::Pass* pass, const Ogre::String& splatTextureName) {
-// 	
+//
 // 	if (getMaxTextureUnits() - pass->getNumTextureUnitStates() < 2 || pass->getParent()->getNumPasses() > 1)  {
 // 		addPassToTechnique(pass->getParent(), splatTextureName);
 // // 		S_LOG_WARNING("Trying to add texture units to pass with too few available texture unit states.");
 // 		return;
 // 	}
-// 		
+//
 // 	S_LOG_VERBOSE("Adding new texture unit (detailtexture: " << mTextureName << " alphatexture: " << splatTextureName << ") to pass nr " << pass->getIndex() << " in technique for material " << pass->getParent()->getParent()->getName());
-// 	
+//
 // /*	pass->setSelfIllumination(Ogre::ColourValue(1,1,1));
 // 	pass->setAmbient(Ogre::ColourValue(1,1,1));
 // 	pass->setDiffuse(Ogre::ColourValue(1,1,1));
 // 	pass->setLightingEnabled(true);*/
 // 	Ogre::TextureUnitState * textureUnitStateSplat = pass->createTextureUnitState();
 //     textureUnitStateSplat->setTextureName(splatTextureName);
-//      
+//
 //     textureUnitStateSplat->setTextureCoordSet(0);
 // 	textureUnitStateSplat->setTextureFiltering(Ogre::TFO_ANISOTROPIC);
 // 	textureUnitStateSplat->setAlphaOperation(Ogre::LBX_SOURCE1, Ogre::LBS_TEXTURE, Ogre::LBS_TEXTURE);
@@ -104,14 +107,14 @@ void TerrainPageSurfaceCompilerTechniqueSimple::setPage(TerrainPage* page)
 //     textureUnitStateSplat->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 // // 	textureUnitStateSplat->setColourOperationEx(Ogre::LBX_BLEND_DIFFUSE_ALPHA, Ogre::LBS_CURRENT, Ogre::LBS_TEXTURE);
 // //	textureUnitStateSplat->setColourOperationEx(Ogre::LBX_BLEND_TEXTURE_ALPHA, Ogre::LBS_CURRENT, Ogre::LBS_TEXTURE);
-// 
+//
 // 	Ogre::TextureUnitState * textureUnitState = pass->createTextureUnitState();
 //     textureUnitState->setTextureName(mTextureName);
 //     textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 // /*	textureUnitState->setTextureCoordSet(0);*/
 // 	textureUnitState->setTextureScale(0.025, 0.025);
 // 	textureUnitState->setColourOperationEx(Ogre::LBX_BLEND_CURRENT_ALPHA, Ogre::LBS_TEXTURE, Ogre::LBS_CURRENT);
-// 	
+//
 // /*	Ogre::TextureUnitState * alphaTextureState= pass->createTextureUnitState();
 //     alphaTextureState->setTextureName(mTextureName);
 // //     alphaTextureState->setTextureName(splatTextureName);
@@ -119,12 +122,12 @@ void TerrainPageSurfaceCompilerTechniqueSimple::setPage(TerrainPage* page)
 // 	alphaTextureState->setTextureFiltering(Ogre::TFO_ANISOTROPIC);
 //     alphaTextureState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 //  	alphaTextureState->setColourOperationEx(Ogre::LBX_BLEND_DIFFUSE_ALPHA, Ogre::LBS_CURRENT, Ogre::LBS_TEXTURE);
-// 
-// 
-// 
+//
+//
+//
 // // 	detailTextureState->setAlphaOperation(Ogre::LBX_SOURCE1, Ogre::LBS_TEXTURE, Ogre::LBS_TEXTURE);
 // // 	detailTextureState->setColourOperationEx(Ogre::LBX_SOURCE1, Ogre::LBS_CURRENT, Ogre::LBS_CURRENT);
-// 
+//
 // 	Ogre::TextureUnitState * detailTextureState  = pass->createTextureUnitState();
 //     detailTextureState ->setTextureName(splatTextureName);
 // //     detailTextureState ->setTextureName(mTextureName);
@@ -132,9 +135,9 @@ void TerrainPageSurfaceCompilerTechniqueSimple::setPage(TerrainPage* page)
 // 	detailTextureState ->setTextureCoordSet(0);
 // 	detailTextureState ->setTextureScale(0.01, 0.01);
 // 	//detailTextureState ->setColourOperationEx(Ogre::LBX_BLEND_CURRENT_ALPHA, Ogre::LBS_TEXTURE, Ogre::LBS_CURRENT);*/
-// 	
+//
 // }
-// 
+//
 Ogre::Pass* TerrainPageSurfaceCompilerTechniqueSimple::addPassToTechnique(Ogre::Technique* technique, TerrainPageSurfaceLayer* layer) {
 	///check if we instead can reuse the existing pass
 // 	if (technique->getNumPasses() != 0) {
@@ -145,9 +148,9 @@ Ogre::Pass* TerrainPageSurfaceCompilerTechniqueSimple::addPassToTechnique(Ogre::
 // 			addTextureUnitsToPass(pass, splatTextureName);
 // 			return pass;
 // 		}
-// 		
+//
 // 	}
-	
+
 	///we need to create the image, update it and then destroy it again (to keep the memory usage down)
 	if (layer->getCoverageTextureName() == "") {
 		///no texture yet; let's create one
@@ -161,9 +164,9 @@ Ogre::Pass* TerrainPageSurfaceCompilerTechniqueSimple::addPassToTechnique(Ogre::
 		layer->updateCoverageImage(); ///calling this will also update the texture since the method will blit the image onto it
 // 		layer->destroyCoverageImage();
 	}
-	
+
 	Ogre::Pass* pass = technique->createPass();
-	
+
 
 	pass->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
 	pass->setLightingEnabled(false);
@@ -173,7 +176,7 @@ Ogre::Pass* TerrainPageSurfaceCompilerTechniqueSimple::addPassToTechnique(Ogre::
 	textureUnitState->setTextureName(layer->getDiffuseTextureName());
 	textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 	textureUnitState->setTextureCoordSet(0);
-	textureUnitState->setTextureScale(1.0f / layer->getScale(), 1.0f / layer->getScale());		
+	textureUnitState->setTextureScale(1.0f / layer->getScale(), 1.0f / layer->getScale());
 
 	Ogre::TextureUnitState * textureUnitStateSplat = pass->createTextureUnitState();
 	textureUnitStateSplat->setTextureName(layer->getCoverageTextureName());
@@ -184,8 +187,8 @@ Ogre::Pass* TerrainPageSurfaceCompilerTechniqueSimple::addPassToTechnique(Ogre::
 //	textureUnitStateSplat->setAlphaOperation(Ogre::LBX_SOURCE1, Ogre::LBS_TEXTURE, Ogre::LBS_TEXTURE);
 	textureUnitStateSplat->setAlphaOperation(Ogre::LBX_BLEND_DIFFUSE_COLOUR, Ogre::LBS_TEXTURE, Ogre::LBS_CURRENT);
 	textureUnitStateSplat->setColourOperationEx(Ogre::LBX_SOURCE1, Ogre::LBS_CURRENT, Ogre::LBS_CURRENT);
-	return pass; 
-	
+	return pass;
+
 }
 
 

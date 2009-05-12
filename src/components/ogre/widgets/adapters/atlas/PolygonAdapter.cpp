@@ -1,7 +1,7 @@
 //
 // C++ Implementation: PolygonAdapter
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2009
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -34,6 +34,8 @@
 
 #include <wfmath/polygon.h>
 #include <wfmath/atlasconv.h>
+
+#include <OgreSceneNode.h>
 
 namespace EmberOgre {
 
@@ -66,15 +68,15 @@ float EntityPolygonPositionProvider::getHeightForPosition(const WFMath::Point<2>
 PolygonAdapter::PolygonAdapter(const ::Atlas::Message::Element& element, CEGUI::PushButton* showButton, EmberEntity* entity)
 : AdapterBase(element), mShowButton(showButton), mPolygon(0), mPickListener(0), mPointMovement(0), mEntity(entity), mPositionProvider(0)
 {
-	
+
 	if (entity) {
 		mPositionProvider = new EntityPolygonPositionProvider(*entity);
 	}
-	
+
 	if (showButton) {
 		addGuiEventConnection(showButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&PolygonAdapter::showButton_Clicked, this)));
 	}
-	
+
 	updateGui(mOriginalElement);
 }
 
@@ -110,10 +112,10 @@ void PolygonAdapter::toggleDisplayOfPolygon()
 			S_LOG_WARNING("There's no entity attached to the PolygonAdapter, and the polygon can't thus be shown.");
 		} else {
 			::Atlas::Message::Element areaElem(getChangedElement());
-			
+
 			mPolygon = new ::EmberOgre::Manipulation::Polygon(mEntity->getSceneNode(), mPositionProvider);
-			
-		
+
+
 			if (areaElem.isMap()) {
 				try {
 					WFMath::Polygon<2> poly(areaElem);
@@ -156,8 +158,8 @@ void PolygonAdapter::createNewPolygon()
 	poly.addCorner(1, WFMath::Point<2>(-1, 1));
 	poly.addCorner(2, WFMath::Point<2>(1, 1));
 	poly.addCorner(3, WFMath::Point<2>(1, -1));
-	
-	mPolygon->loadFromShape(poly);	
+
+	mPolygon->loadFromShape(poly);
 	mPickListener = new ::EmberOgre::Manipulation::PolygonPointPickListener(*mPolygon);
 	mPickListener->EventPickedPoint.connect(sigc::mem_fun(*this, &PolygonAdapter::pickListener_PickedPoint));
 	EmberOgre::getSingleton().getMainCamera()->pushWorldPickListener(mPickListener);
@@ -196,7 +198,7 @@ bool PolygonAdapter::hasShape() const
 {
 	return mPolygon != 0;
 }
-	
+
 const WFMath::Polygon<2> PolygonAdapter::getShape() const
 {
 	if (mPolygon) {

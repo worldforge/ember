@@ -58,6 +58,10 @@
 #include <Eris/View.h>
 #include <Eris/TypeInfo.h>
 
+#include <OgreSceneNode.h>
+#include <OgreSceneManager.h>
+#include <OgreParticleSystem.h>
+
 namespace EmberOgre
 {
 

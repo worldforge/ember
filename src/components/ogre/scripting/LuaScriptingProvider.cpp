@@ -1,7 +1,7 @@
 //
 // C++ Implementation: LuaScriptingProvider
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -35,6 +35,8 @@
 #include "framework/Exception.h"
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
+
+#include <OgreString.h>
 
 // include Lua libs and tolua++
 extern "C" {
@@ -92,7 +94,7 @@ void LuaScriptingProvider::stop()
 	}
 }
 
-void LuaScriptingProvider::initialize() 
+void LuaScriptingProvider::initialize()
 {
 	createState();
 	tolua_Framework_open(mLuaState);
@@ -107,7 +109,7 @@ void LuaScriptingProvider::initialize()
 	LuaConnector::setState(mLuaState);
 }
 
-void LuaScriptingProvider::createState() 
+void LuaScriptingProvider::createState()
 {
 	bool loadDebugLib = true;
 	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("lua", "debug")) {
@@ -137,12 +139,12 @@ void LuaScriptingProvider::createState()
 		{LUA_MATHLIBNAME, luaopen_math},
 		{LUA_DBLIBNAME, luaopen_debug},
 		{NULL, NULL}
-		};		
+		};
 
 	mLuaState = lua_open();
 
 	// init all standard libraries
-	
+
 	const luaL_Reg *lib = loadDebugLib ? lualibsDebug : lualibs;
 	for (; lib->func; lib++)
 	{
@@ -214,7 +216,7 @@ void LuaScriptingProvider::executeScriptImpl(const std::string& scriptCode, LuaS
 		int error_index = lua_gettop(mLuaState);
 		lua_pushcfunction(mLuaState, ::EmberOgre::Scripting::LuaHelper::luaErrorHandler);
 		lua_insert(mLuaState, error_index);
-		
+
 // 		lua_rawgeti(mLuaState, LUA_REGISTRYINDEX, mErrorHandlingFunctionIndex);
 //         int error_index = lua_gettop(mLuaState);
 
@@ -352,7 +354,7 @@ const std::string& LuaScriptingProvider::getName() const
 }
 
 void LuaScriptingProvider::_registerWithService(Ember::ScriptingService* service)
-{	
+{
 	mService = service;
 }
 
@@ -372,13 +374,13 @@ void LuaScriptingProvider::forceGC()
 // int32_t LuaScriptInterface::callFunction(uint32_t nParams)
 // {
 // 	int32_t result = LUA_NO_ERROR;
-// 
+//
 // 	int size0 = lua_gettop(m_luaState);
-// 	
+//
 // 	int error_index = lua_gettop(m_luaState) - nParams;
 // 	lua_pushcfunction(m_luaState, luaErrorHandler);
 // 	lua_insert(m_luaState, error_index);
-// 
+//
 // 	if(lua_pcall(m_luaState, nParams, 1, error_index) != 0){
 // 		LuaScriptInterface::reportError(NULL, std::string(LuaScriptInterface::popString(m_luaState)));
 // 		result = LUA_ERROR;
@@ -386,11 +388,11 @@ void LuaScriptingProvider::forceGC()
 // 		result = (int32_t)LuaScriptInterface::popNumber(m_luaState);
 // 	}
 // 	lua_remove(m_luaState, error_index);
-// 
+//
 // 	if((lua_gettop(m_luaState) + (int)nParams  + 1) != size0){
 // 		LuaScriptInterface::reportError(NULL, "Stack size changed!");
 // 	}
-// 
+//
 // 	return result;
 // }
 

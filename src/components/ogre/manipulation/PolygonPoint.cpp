@@ -1,7 +1,7 @@
 //
 // C++ Implementation: PolygonPoint
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2009
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -36,6 +36,9 @@
 #include "framework/LoggingInstance.h"
 
 #include <OgreVector3.h>
+#include <OgreEntity.h>
+#include <OgreSceneNode.h>
+#include <OgreSceneManager.h>
 
 namespace EmberOgre {
 
@@ -52,24 +55,24 @@ PolygonPoint::PolygonPoint(Polygon& polygon, const WFMath::Point<2>& localPositi
 	}
 	mNode = mPolygon.getBaseNode()->createChildSceneNode(nodePosition);
 	mNode->setScale(0.25f, 0.25f, 0.25f);
-	
+
 	std::stringstream ss;
 	ss << "PolygonPoint" << sPointCounter++;
-	
+
 	try {
 		mEntity = mNode->getCreator()->createEntity(ss.str(), "3d_objects/primitives/models/sphere.mesh");
 		///start out with a normal material
 		mEntity->setMaterialName("/global/authoring/point");
 		mEntity->setRenderingDistance(300);
 		mEntity->setQueryFlags(MousePicker::CM_UNDEFINED);
-		
+
 		mEntity->setUserObject(&mUserObject);
-		
+
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when creating polygon point marker entity: " << ex.what());
 		return;
 	}
-	
+
 	if (!mEntity) {
 		S_LOG_FAILURE("Unexpected error when creating polygon point marker entity.");
 		return;
@@ -127,14 +130,14 @@ void PolygonPoint::setLocalPosition(const WFMath::Point<2>& position)
 // 	mMover = new PolygonPointMover(*this);
 // 	mMoveAdapter->attachToBridge(mMover);
 // }
-// 
+//
 // void PolygonPoint::endMovement()
 // {
 // 	delete mMover;
 // 	mMover = 0;
 // 	delete mMoveAdapter;
 // 	mMoveAdapter = 0;
-// 
+//
 // }
 
 void PolygonPoint::translate(const WFMath::Vector<2>& translation)
@@ -155,7 +158,7 @@ void PolygonPoint::setVisible(bool visibility)
 		mEntity->setVisible(visibility);
 	}
 }
-	
+
 bool PolygonPoint::getVisible() const
 {
 	if (mEntity) {

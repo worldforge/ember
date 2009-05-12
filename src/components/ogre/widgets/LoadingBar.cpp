@@ -14,9 +14,9 @@ LGPL like the rest of the engine.
 /*
 -----------------------------------------------------------------------------
 Filename:    ExampleLoadingBar.h
-Description: Defines an example loading progress bar which you can use during 
-startup, level changes etc to display loading progress. 
-IMPORTANT: Note that this progress bar relies on you having the OgreCore.zip 
+Description: Defines an example loading progress bar which you can use during
+startup, level changes etc to display loading progress.
+IMPORTANT: Note that this progress bar relies on you having the OgreCore.zip
 package already added to a resource group called 'Bootstrap' - this provides
 the basic resources required for the progress bar and will be loaded automatically.
 */
@@ -28,26 +28,30 @@ the basic resources required for the progress bar and will be loaded automatical
 
 #include "services/EmberServices.h"
 #include "services/wfut/WfutService.h"
+#include <OgreOverlay.h>
+#include <OgreOverlayElement.h>
+#include <OgreOverlayManager.h>
+#include <OgreRenderWindow.h>
 
 using namespace Ogre;
 namespace EmberOgre {
 namespace Gui {
 
-/** Defines an example loading progress bar which you can use during 
-	startup, level changes etc to display loading progress. 
+/** Defines an example loading progress bar which you can use during
+	startup, level changes etc to display loading progress.
 @remarks
 	Basically you just need to create an instance of this class, call start()
 	before loading and finish() afterwards. You may also need to stop areas of
-	your scene rendering in between since this method will call 
+	your scene rendering in between since this method will call
 	RenderWindow::update() to update the display of the bar - we advise using
 	SceneManager's 'special case render queues' for this, see
 	SceneManager::addSpecialCaseRenderQueue for details.
-@note 
-	This progress bar relies on you having the OgreCore.zip and EmberCore.zip package already 
-	added to a resource group called 'Bootstrap' - this provides the basic 
+@note
+	This progress bar relies on you having the OgreCore.zip and EmberCore.zip package already
+	added to a resource group called 'Bootstrap' - this provides the basic
 	resources required for the progress bar and will be loaded automatically.
 */
-	LoadingBar::LoadingBar() : 
+	LoadingBar::LoadingBar() :
 	mProgress(0) ,
 	mWindow(0),
 	mLoadOverlay(0),
@@ -61,7 +65,7 @@ namespace Gui {
 	LoadingBar::~LoadingBar(){}
 
 	/** Show the loading bar and start listening.
-	@param window The window to update 
+	@param window The window to update
 	@param numGroupsInit The number of groups you're going to be initialising
 	@param numGroupsLoad The number of groups you're going to be loading
 	@param initProportion The proportion of the progress which will be taken
@@ -80,23 +84,23 @@ namespace Gui {
 			mLoadOverlay = (Overlay*)omgr.getByName("EmberCore/LoadOverlay");
 			if (!mLoadOverlay)
 			{
-			OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, 
+			OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND,
 				"Cannot find loading overlay", "LoadingBar::start");
 			}
 			mLoadOverlay->show();
-	
+
 			// Save links to the bar and to the loading text, for updates as we go
 			mLoadingBarElement = omgr.getOverlayElement("EmberCore/LoadPanel/Bar/Progress");
 			mLoadingCommentElement = omgr.getOverlayElement("EmberCore/LoadPanel/Comment");
 			mLoadingDescriptionElement = omgr.getOverlayElement("EmberCore/LoadPanel/Description");
 			mVersionElement = omgr.getOverlayElement("EmberCore/Splash/VersionInfo");
-	
+
 			//OverlayElement* barContainer = omgr.getOverlayElement("EmberCore/LoadPanel/Bar");
 			mProgressBarMaxSize = mLoadingBarElement->getWidth();
 	 		mProgressBarMaxLeft = mLoadingBarElement->getLeft();
-			
+
 			//mLoadingBarElement->setWidth(300);
-	
+
 		} catch (const Ogre::Exception& ex) {
 			S_LOG_FAILURE("Error when creating loading bar. Message: \n" << ex.getFullDescription());
 		}
@@ -104,7 +108,7 @@ namespace Gui {
 
 	}
 
-	/** Hide the loading bar and stop listening. 
+	/** Hide the loading bar and stop listening.
 	*/
 	void LoadingBar::finish(void)
 	{
@@ -120,27 +124,27 @@ namespace Gui {
 
 
 
-	
+
 	void LoadingBar::addSection(LoadingBarSection* section)
 	{
 		mSections.push_back(section);
 	}
-	
+
 	void LoadingBar::activateSection(LoadingBarSection* section)
 	{
 		SectionStore::iterator I = std::find(mSections.begin(), mSections.end(), section);
 		if (I != mSections.end()) {
 			mCurrentSection = I;
 			SectionStore::iterator J = I;
-			float totalSize = 0;	
+			float totalSize = 0;
 			for (;J != mSections.begin(); --J) {
 				totalSize += (*J)->getSize();
 			}
 			setProgress(totalSize);
 		}
 	}
-	
-	void LoadingBar::setProgress(float progress) 
+
+	void LoadingBar::setProgress(float progress)
 	{
 		if (mLoadingBarElement) {
 			///make the black blocking block a little bit smaller and move it to the right
@@ -150,12 +154,12 @@ namespace Gui {
 		}
 		mProgress = progress;
 	}
-	
-	void LoadingBar::increase(float amount) 
+
+	void LoadingBar::increase(float amount)
 	{
 		setProgress(mProgress + amount);
 	}
-	
+
 	void LoadingBar::setCaption(const std::string& caption)
 	{
 		if (mLoadingCommentElement) {
@@ -171,11 +175,11 @@ namespace Gui {
 			mWindow->update();
 		}
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	LoadingBarSection::LoadingBarSection(LoadingBar& loadingBar, float size, const std::string& name)
 	: mSize(size), mLoadingBar(loadingBar), mAccumulatedSize(0), mName(name), mActive(false)
 	{
@@ -183,17 +187,17 @@ namespace Gui {
 	LoadingBarSection::~LoadingBarSection()
 	{
 	}
-	
+
 	const std::string& LoadingBarSection::getName() const
 	{
 		return mName;
 	}
-	
+
 	void LoadingBarSection::setCaption(const std::string& caption)
 	{
 		mLoadingBar.setCaption(caption);
 	}
-	
+
 	float LoadingBarSection::getSize() const
 	{
 		return mSize;
@@ -206,35 +210,35 @@ namespace Gui {
 			mAccumulatedSize += tickSize;
 		}
 	}
-	
+
 	void LoadingBarSection::deactivate()
 	{
 		mActive = false;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	ResourceGroupLoadingBarSection::ResourceGroupLoadingBarSection(LoadingBarSection& section, 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	ResourceGroupLoadingBarSection::ResourceGroupLoadingBarSection(LoadingBarSection& section,
 		unsigned short numGroupsInit,
 		unsigned short numGroupsLoad,
 		Ogre::Real initProportion)
@@ -243,12 +247,12 @@ namespace Gui {
 		// self is listener
 		ResourceGroupManager::getSingleton().addResourceGroupListener(this);
 	}
-	
+
 	ResourceGroupLoadingBarSection::~ResourceGroupLoadingBarSection()
 	{
 		ResourceGroupManager::getSingleton().removeResourceGroupListener(this);
 	}
-		
+
 	/// ResourceGroupListener callbacks
 	void ResourceGroupLoadingBarSection::resourceGroupScriptingStarted(const String& groupName, size_t scriptCount)
 	{
@@ -259,13 +263,13 @@ namespace Gui {
 			mProgressBarInc = mInitProportion / mNumGroupsInit;
 		} else {
 			mProgressBarInc = 1.0 / mNumGroupsInit;
-		} 
-		
+		}
+
 		if (scriptCount == 0) {
 			///no scripts will be loaded, so we'll have to conclude this group here and now
 			mSection.tick(mProgressBarInc);
 		}
-		
+
 		mProgressBarInc /= (Real)scriptCount;
 		mSection.setCaption("Parsing scripts...");
 	}
@@ -284,17 +288,17 @@ namespace Gui {
 			return; ///avoid divide-by-zero
 		}
 		if (mNumGroupsInit) {
-			mProgressBarInc = (1.0-mInitProportion) / 
+			mProgressBarInc = (1.0-mInitProportion) /
 				mNumGroupsLoad;
 		} else {
 			mProgressBarInc = 1.0 / mNumGroupsLoad;
 		}
-		
+
 		if (resourceCount == 0) {
 			///no resources will be loaded, so we'll have to conclude this group here and now
 			mSection.tick(mProgressBarInc);
 		}
-		
+
 		mProgressBarInc /= (Real)resourceCount;
 		mSection.setCaption("Loading resources...");
 	}
@@ -312,24 +316,24 @@ namespace Gui {
 	}*/
 	void ResourceGroupLoadingBarSection::resourceGroupLoadEnded(const String& groupName)
 	{
-	}	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	WfutLoadingBarSection::WfutLoadingBarSection(LoadingBarSection& section) 
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	WfutLoadingBarSection::WfutLoadingBarSection(LoadingBarSection& section)
 	: mSection(section), mNumberOfFilesToUpdate(0), mDownloadedSoFar(0)
 	{
 		Ember::WfutService* wfutSrv = Ember::EmberServices::getSingleton().getWfutService();
@@ -341,12 +345,12 @@ namespace Gui {
 	}
 	WfutLoadingBarSection::~WfutLoadingBarSection()
 	{}
-	
+
 	void WfutLoadingBarSection::wfutService_DownloadComplete(const std::string& url, const std::string& filename)
 	{
 		mDownloadedSoFar++;
 		std::stringstream ss;
-		ss << "Downloaded " << filename << " (" <<mDownloadedSoFar << " of "<< mNumberOfFilesToUpdate << ")"; 
+		ss << "Downloaded " << filename << " (" <<mDownloadedSoFar << " of "<< mNumberOfFilesToUpdate << ")";
 		mSection.setCaption(ss.str());
 		if (mNumberOfFilesToUpdate) {
 			mSection.tick(1.0 / mNumberOfFilesToUpdate);
@@ -357,7 +361,7 @@ namespace Gui {
 	{
 		mDownloadedSoFar++;
 		std::stringstream ss;
-		ss << "Failed to download " << filename << " (" << mDownloadedSoFar << " of " << mNumberOfFilesToUpdate << ")"; 
+		ss << "Failed to download " << filename << " (" << mDownloadedSoFar << " of " << mNumberOfFilesToUpdate << ")";
 		mSection.setCaption(ss.str());
 		if (mNumberOfFilesToUpdate) {
 			mSection.tick(1.0 / mNumberOfFilesToUpdate);
@@ -370,14 +374,14 @@ namespace Gui {
 
 	void WfutLoadingBarSection::wfutService_DownloadingServerList(const std::string& url)
 	{
-		mSection.setCaption("Getting server list from " + url); 
+		mSection.setCaption("Getting server list from " + url);
 	}
-	
+
 	void WfutLoadingBarSection::wfutService_UpdatesCalculated(unsigned int numberOfFilesToUpdate)
 	{
 		mNumberOfFilesToUpdate = numberOfFilesToUpdate;
 	}
-	
+
 }
 }
 

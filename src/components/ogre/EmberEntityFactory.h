@@ -21,10 +21,11 @@
 #include "EmberOgrePrerequisites.h"
 
 #include <Eris/Factory.h>
-	
+
 #include <Atlas/Objects/Entity.h>
 
 #include <sigc++/trackable.h>
+#include <set>
 
 #include "framework/ConsoleObject.h"
 namespace Eris
@@ -54,17 +55,17 @@ class WorldEmberEntity;
  * Creates the EmberEntities required.
  * Basically this attaches to Eris and creates Entites on demand.
  * @see Eris::Factory
- * 
+ *
  */
-class EmberEntityFactory : 
-public Eris::Factory, 
+class EmberEntityFactory :
+public Eris::Factory,
 public sigc::trackable,
 public Ember::ConsoleObject
 {
 public:
-	
-	typedef std::set<Ogre::String> StringSet;
-	
+
+	typedef std::set<std::string> StringSet;
+
 
 	/**
 	Default constructor. This should be instantiated by EmberOgre or similiar high level object. Note that Eris upon shutdown will delete all registered factories, so don't delete an instance of this yourself.
@@ -81,12 +82,12 @@ public:
     Creates instances of EmberEntity and its subclasses.
     */
     virtual Eris::Entity* instantiate(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View* w);
-    
+
     /** retrieve this factory's priority level; higher priority factories
     get first chance to process a recieved Atlas entity. The default implementation
     returns one. */
     virtual int priority();
-    
+
 	/**
 	Returns the main world entity.
 	*/
@@ -94,8 +95,8 @@ public:
 
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method
-	 * @param command 
-	 * @param args 
+	 * @param command
+	 * @param args
 	 */
 	virtual	void runCommand(const std::string &command, const std::string &args);
 
@@ -110,14 +111,14 @@ public:
 	*/
 	const Ember::ConsoleCommandWrapper DumpAttributes;
 
-	
+
 	/**
 	 *    Dumps the attributes of the entity with the supplied id to the std::out.
-	 * @param entityId 
-	 * @return 
+	 * @param entityId
+	 * @return
 	 */
 	void dumpAttributesOfEntity(const std::string& entityId) const;
-	
+
 protected:
 
 
@@ -133,7 +134,7 @@ protected:
 	Creates a AvatarEmberEntity instance.
 	*/
 	AvatarEmberEntity* createAvatarEntity(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View *world);
-	
+
 	void gotAvatarCharacter(Eris::Entity* entity);
 
 
@@ -141,14 +142,14 @@ protected:
 	Terrain::TerrainGenerator* mTerrainGenerator;
 	Eris::TypeService* mTypeService;
 	Eris::TypeInfo* mTerrainType;
-	
+
 	Eris::Avatar* getErisAvatar();
-	
+
 	WorldEmberEntity *mWorldEntity;
-	
+
 	Eris::View* mView;
-	
-	
+
+
 };
 
 }

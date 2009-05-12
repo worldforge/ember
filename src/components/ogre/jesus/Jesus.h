@@ -1,7 +1,7 @@
 //
 // C++ Interface: Jesus
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -30,6 +30,8 @@
 
 #include "../EmberOgre.h"
 #include <wfmath/vector.h>
+#include <OgreColourValue.h>
+#include <OgreController.h>
 
 namespace Carpenter
 {
@@ -79,72 +81,72 @@ class Jesus{
     Jesus(Carpenter::Carpenter* carpenter);
 
     ~Jesus();
-	
 
-		
+
+
 	/**
 	 *    Creates a new Model instance for the supplied block type.
 	 *    If there's no Model defined for the supplies block type, a null pointer will be returned.
-	 * @param blockType 
-	 * @param modelName 
+	 * @param blockType
+	 * @param modelName
 	 * @return A Model instance or 0
 	 */
 	Model::Model* createModelForBlockType(const std::string& blockType,  const std::string& modelName);
-	
-	
+
+
 	/**
 	 *    Finds the colour associated to the supplied attachpoint. If no colour is registered, a ColourValue of 1,1,1 will be returned
-	 * @param point 
-	 * @return 
+	 * @param point
+	 * @return
 	 */
 	Ogre::ColourValue getColourForAttachPoint(const Carpenter::AttachPoint* point) const;
-	
+
 	/**
 	 *    Accessor for the Carpenter object.
-	 * @return 
+	 * @return
 	 */
 	Carpenter::Carpenter* getCarpenter() const;
-	
+
 	/**
 	 *    adds a blueprint
-	 * @param blueprint 
+	 * @param blueprint
 	 * @return false if there's already a blueprint with the same name as the supplied blueprint
 	 */
 	bool addBluePrint(Carpenter::BluePrint* blueprint);
-	
+
 	/**
 	 *    returns a blueprint with the supplied name
 	 *	  note that the blueprint must already be loaded and added to Jesus with addBluePrint(...)
 	 *	  @see addBluePrint(Carpenter::BluePrint*)
-	 * @param name 
-	 * @return 
+	 * @param name
+	 * @return
 	 */
 	Carpenter::BluePrint* getBluePrint(const std::string& name) const;
-	
-	
+
+
 	const std::map<std::string , Carpenter::BluePrint* > * getAllBluePrints() const;
 
 protected:
-	
+
 	/**
 	a map of what Model should represent a certain Carpenter::BuildingBlockSpec
 	the first value is the name of the Carpenter::BuildingBlockSpec and the second value is the name of the Model
 	*/
 	std::map<std::string, std::string> mModelMappings;
 	Carpenter::Carpenter* mCarpenter;
-	
+
 	/**
 	* Convenience map of commonly used normals, such as NORTH, UP, WEST etc.
 	*/
 	std::map<const std::string, WFMath::Vector<3> > mNormalTypes;
-	
+
 	/**
 	Map of colours for Attach point types.
 	*/
 	AttachPointColourValueMap mColourMap;
-	
+
 	void addAttachPointType(const std::string & type);
-	
+
 	/**
 	all blueprints are stored here
 	*/
@@ -178,7 +180,7 @@ public:
 	void select();
 	void deselect();
 	const Carpenter::AttachPoint* getAttachPoint() const;
-	
+
 protected:
 	const ModelBlock* mModelBlock;
 	Ogre::SceneNode* mModelNode;
@@ -202,21 +204,21 @@ public:
 	ModelBlock(Ogre::SceneNode* baseNode, const Carpenter::BuildingBlock* buildingBlock,  Model::Model* model, Construction* construction);
 	~ModelBlock();
 	//void selectAttachPointNode(AttachPointNode* selectedNode);
-	
+
 	const Carpenter::BuildingBlock* getBuildingBlock() const;
 	Construction* getConstruction() const;
 	void createAttachPointNodes();
 	void select();
 	void deselect();
-	
+
 	std::vector<AttachPointNode*> getAttachPointNodes() const;
-	
+
 	const Model::Model* getModel() const { return mModel;}
 	const Ogre::SceneNode* getNode() const { return mNode;}
 protected:
 	const Carpenter::BuildingBlock* mBuildingBlock;
 	Model::Model* mModel;
-	
+
 	std::vector<AttachPointNode*> mAttachPointNodes;
 	Ogre::SceneNode *mNode, *mModelNode;
 	Ogre::BillboardSet* mPointBillBoardSet;
@@ -234,7 +236,7 @@ inline Construction* ModelBlock::getConstruction() const { return mConstruction;
 struct ModelMapping
 {
 
-public: 
+public:
 	const std::string model;
 	const std::string blocktype;
 };
@@ -256,25 +258,25 @@ public:
 
 	void buildFromBluePrint(bool createAttachPointNodes);
 
-	
+
 	/**
 	 *    Creates a new ModelBlock and adds it to the construction.
-	 * @param buildingBlock 
-	 * @return 
+	 * @param buildingBlock
+	 * @return
 	 */
 	ModelBlock* createModelBlock(const Carpenter::BuildingBlock* buildingBlock, bool createAttachPointNodes);
-	
+
 	std::vector<ModelBlock*> getModelBlocks() const;
-	
+
 	bool remove(ModelBlock* modelBlock);
-	
+
 protected:
  	Carpenter::BluePrint* mBlueprint;
 	Ogre::SceneNode* mBaseNode;
 	Jesus* mJesus;
-	
+
 	std::vector<ModelBlock*> mModelBlocks;
-	
+
 };
 
 inline Jesus* Construction::getJesus() const { return mJesus; }

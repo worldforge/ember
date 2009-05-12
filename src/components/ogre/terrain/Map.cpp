@@ -1,7 +1,7 @@
 //
 // C++ Implementation: Map
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -27,6 +27,10 @@
 #include "Map.h"
 #include "../EmberOgre.h"
 #include <OgreCamera.h>
+#include <OgreTextureManager.h>
+#include <OgreRenderTexture.h>
+#include <OgreViewport.h>
+#include <OgreHardwarePixelBuffer.h>
 
 namespace EmberOgre {
 
@@ -65,7 +69,7 @@ void Map::createTexture()
 	mTexture = Ogre::TextureManager::getSingleton().createManual("TerrainMap", "Gui", Ogre::TEX_TYPE_2D, mTexturePixelSize, mTexturePixelSize, 0, Ogre::PF_R8G8B8,Ogre::TU_RENDERTARGET);
 	mRenderTexture = mTexture->getBuffer()->getRenderTarget();
 	mRenderTexture->removeAllViewports();
-	
+
 	mRenderTexture->setAutoUpdated(false);
 	///initially deactivate it until setActive(true) is called
 // 	mRenderTexture->setActive(false);
@@ -156,9 +160,9 @@ bool MapView::reposition(const Ogre::Vector2& pos)
 		|| pos.y - halfViewSizeMeters < mFullBounds.top || pos.y + halfViewSizeMeters > mFullBounds.bottom) {
 		mMapCamera.reposition(pos);
 		mMapCamera.render();
-		
+
 		recalculateBounds();
-		
+
 		return true;
 	}
 	mRelativeViewPosition.x = (pos.x - mFullBounds.left) / static_cast<float>(mMap.getResolutionMeters());
@@ -169,7 +173,7 @@ bool MapView::reposition(const Ogre::Vector2& pos)
 	mVisibleRelativeBounds.top = mRelativeViewPosition.y - halfViewSize;
 	mVisibleRelativeBounds.bottom= mRelativeViewPosition.y + halfViewSize;
 	return false;
-	
+
 }
 
 const Ogre::TRect<float>& MapView::getRelativeViewBounds() const
@@ -189,9 +193,9 @@ void MapView::recalculateBounds()
 	mFullBounds.right = static_cast<int>(pos.x + (mMap.getResolutionMeters() / 2));
 	mFullBounds.top = static_cast<int>(pos.y - (mMap.getResolutionMeters() / 2));
 	mFullBounds.bottom = static_cast<int>(pos.y + (mMap.getResolutionMeters() / 2));
-	
-	
-	
+
+
+
 	mVisibleRelativeBounds.left = 0.5f - (mViewSize / 2);
 	mVisibleRelativeBounds.right= 0.5f + (mViewSize / 2);
 	mVisibleRelativeBounds.top = 0.5f - mViewSize / 2;
@@ -213,9 +217,9 @@ MapCamera::MapCamera(Map& map, Ogre::SceneManager* manager)
 	mCamera->pitch(Ogre::Degree(-90));
 	///we want really low LOD on this camera
 	mCamera->setLodBias(0.0001f);
-	
+
 	setDistance(mDistance);
-	
+
 // 	mCamera->setFOVy(Ogre::Degree(30));
 // 	mCamera->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
 
@@ -241,7 +245,7 @@ void MapCamera::setRenderTarget(Ogre::RenderTarget* renderTarget)
 	mViewport->setSkiesEnabled(false);
     mViewport->setClearEveryFrame(true);
     mViewport->setMaterialScheme("Low"); ///This will disable shadows etc.
-    
+
     mViewport->setVisibilityMask(Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
 }
 
@@ -272,7 +276,7 @@ void MapCamera::render()
 {
 	mCamera->setNearClipDistance(1);
 	mCamera->setFarClipDistance(mDistance * 200);
-	
+
 	mCamera->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
 	mCamera->setOrthoWindow(mMap.getResolutionMeters(), mMap.getResolutionMeters());
 	mCamera->setAspectRatio(1.0);
@@ -281,13 +285,13 @@ void MapCamera::render()
 		Ogre::SceneManager* manager(mCamera->getSceneManager());
 		RenderingInstance instance(manager);
 		MapCameraLightningInstance lightningInstance(mLightning);
-		
-/*		manager->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_INCLUDE); 
+
+/*		manager->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_INCLUDE);
 		manager->addSpecialCaseRenderQueue(Ogre::RENDER_QUEUE_WORLD_GEOMETRY_1);
 		manager->addSpecialCaseRenderQueue(Ogre::RENDER_QUEUE_WORLD_GEOMETRY_2);
 		manager->addSpecialCaseRenderQueue(Ogre::RENDER_QUEUE_6); //water*/
-		
-		
+
+
 		manager->setFog(Ogre::FOG_EXP2, Ogre::ColourValue(0,0,0,0), 0.0f, 0.0f, 0.0f);
 		mViewport->update();
 // 		manager->removeSpecialCaseRenderQueue(Ogre::RENDER_QUEUE_WORLD_GEOMETRY_1);
@@ -304,12 +308,12 @@ MapCameraLightning::MapCameraLightning(Ogre::SceneManager& sceneManager)
 {
 	mLight = sceneManager.createLight("MapFixedSunLight");
 	mLight->setType(Ogre::Light::LT_DIRECTIONAL);
-	
+
 	mLight->setPosition(Ogre::Vector3(-500,300,-350));
 	Ogre::Vector3 dir = -mLight->getPosition();
 	dir.normalise();
 	mLight->setDirection(dir);
-	
+
 	mLight->setDiffuseColour(Ogre::ColourValue(0.8, 0.8, 0.6)); //yellow
 	//mSun->setSpecularColour(1, 1, 0.7); //yellow
 	mLight->setCastShadows(false);
@@ -341,7 +345,7 @@ MapCameraLightningInstance::MapCameraLightningInstance(MapCameraLightning& light
 {
 
 	Ogre::SceneManager::MovableObjectIterator iterator = lightning.getSceneManager().getMovableObjectIterator("Light");
-	
+
 	while (iterator.hasMoreElements()) {
 		Ogre::MovableObject* light = iterator.getNext();
 		if (light && light != mLightning.getLight()) {
@@ -375,13 +379,13 @@ RenderingInstance::RenderingInstance(Ogre::SceneManager* manager)
 , mFogEnd(manager->getFogEnd())
 , mSpecialCaseRenderQueueMode(manager->getSpecialCaseRenderQueueMode())
 {
-	
+
 }
 
 RenderingInstance::~RenderingInstance()
 {
 	mManager->setFog(mFogMode, mFogColour, mFogDensity, mFogStart, mFogEnd);
-	
+
 	mManager->setSpecialCaseRenderQueueMode(mSpecialCaseRenderQueueMode);
 }
 

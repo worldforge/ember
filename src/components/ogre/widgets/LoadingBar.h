@@ -14,9 +14,9 @@ LGPL like the rest of the engine.
 /*
 -----------------------------------------------------------------------------
 Filename:    ExampleLoadingBar.h
-Description: Defines an example loading progress bar which you can use during 
-startup, level changes etc to display loading progress. 
-IMPORTANT: Note that this progress bar relies on you having the OgreCore.zip 
+Description: Defines an example loading progress bar which you can use during
+startup, level changes etc to display loading progress.
+IMPORTANT: Note that this progress bar relies on you having the OgreCore.zip
 package already added to a resource group called 'Bootstrap' - this provides
 the basic resources required for the progress bar and will be loaded automatically.
 */
@@ -27,6 +27,7 @@ the basic resources required for the progress bar and will be loaded automatical
 #include "../EmberOgrePrerequisites.h"
 #include <sigc++/trackable.h>
 
+#include <OgreResourceGroupManager.h>
 namespace EmberOgre {
 namespace Gui {
 
@@ -38,13 +39,13 @@ friend class LoadingBar;
 public:
 	LoadingBarSection(LoadingBar& loadingBar, float size, const std::string& name);
 	virtual ~LoadingBarSection();
-	
+
 	void activate(int steps);
 	float getSize() const;
 	const std::string& getName() const;
 	void tick(float tickSize);
 	void setCaption(const std::string& caption);
-	
+
 private:
 	void deactivate();
 	float mSize;
@@ -60,7 +61,7 @@ public:
 	WfutLoadingBarSection(LoadingBarSection& section);
 	virtual ~WfutLoadingBarSection();
 private:
-	
+
 	void wfutService_DownloadComplete(const std::string& url, const std::string& filename);
 
 	void wfutService_DownloadFailed(const std::string& url, const std::string& filename, const std::string& reason);
@@ -68,10 +69,10 @@ private:
 	void wfutService_AllDownloadsComplete();
 
 	void wfutService_DownloadingServerList(const std::string& url);
-	
+
 	void wfutService_UpdatesCalculated(unsigned int numberOfFilesToUpdate);
-	
-	
+
+
 	LoadingBarSection& mSection;
 	unsigned int mNumberOfFilesToUpdate, mDownloadedSoFar;
 };
@@ -79,8 +80,8 @@ private:
 class ResourceGroupLoadingBarSection : public Ogre::ResourceGroupListener
 {
 public:
-	ResourceGroupLoadingBarSection(LoadingBarSection& section, unsigned short numGroupsInit = 1, 
-		unsigned short numGroupsLoad = 1, 
+	ResourceGroupLoadingBarSection(LoadingBarSection& section, unsigned short numGroupsInit = 1,
+		unsigned short numGroupsLoad = 1,
 		Ogre::Real initProportion = 0.70f);
 	virtual ~ResourceGroupLoadingBarSection();
 
@@ -106,21 +107,21 @@ private:
 };
 
 
-/** Defines an example loading progress bar which you can use during 
-	startup, level changes etc to display loading progress. 
+/** Defines an example loading progress bar which you can use during
+	startup, level changes etc to display loading progress.
 @remarks
 	Basically you just need to create an instance of this class, call start()
 	before loading and finish() afterwards. You may also need to stop areas of
-	your scene rendering in between since this method will call 
+	your scene rendering in between since this method will call
 	RenderWindow::update() to update the display of the bar - we advise using
 	SceneManager's 'special case render queues' for this, see
 	SceneManager::addSpecialCaseRenderQueue for details.
-@note 
-	This progress bar relies on you having the OgreCore.zip package already 
-	added to a resource group called 'Bootstrap' - this provides the basic 
+@note
+	This progress bar relies on you having the OgreCore.zip package already
+	added to a resource group called 'Bootstrap' - this provides the basic
 	resources required for the progress bar and will be loaded automatically.
 */
-class LoadingBar 
+class LoadingBar
 {
 protected:
 	typedef std::vector<LoadingBarSection*> SectionStore;
@@ -128,7 +129,7 @@ protected:
 	SectionStore::iterator mCurrentSection;
 	float mProgress;
 	Ogre::Real mProgressBarMaxSize, mProgressBarMaxLeft;
-	
+
 	Ogre::RenderWindow* mWindow;
 	Ogre::Overlay* mLoadOverlay;
 	Ogre::Real mProgressBarScriptSize;
@@ -142,7 +143,7 @@ public:
 	virtual ~LoadingBar();
 
 	/** Show the loading bar and start listening.
-	@param window The window to update 
+	@param window The window to update
 	@param numGroupsInit The number of groups you're going to be initialising
 	@param numGroupsLoad The number of groups you're going to be loading
 	@param initProportion The proportion of the progress which will be taken
@@ -151,15 +152,15 @@ public:
 	*/
 	virtual void start(Ogre::RenderWindow* window);
 
-	/** Hide the loading bar and stop listening. 
+	/** Hide the loading bar and stop listening.
 	*/
 	virtual void finish(void);
 
 	void addSection(LoadingBarSection* section);
-	
+
 	void activateSection(LoadingBarSection* section);
 	void increase(float amount);
-	void setProgress(float progress); 
+	void setProgress(float progress);
 	void setDescription(const std::string& description);
 	void setCaption(const std::string& caption);
 	void setVersionText(const std::string& versionText);
