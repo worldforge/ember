@@ -242,12 +242,7 @@ protected:
 	/**
 	 We can't do attachments until the entity has been properly initialized, so sometimes we need to do delayed attachments. This will then hold the model to which this entity should be attached. Once the entity has been initialized we'll use mModelAttachedTo instead.
 	 */
-	Model::Model* mModelMarkedToAttachTo;
-
-	/**
-	 We can't do attachments until the entity has been properly initialized, so sometimes we need to do delayed attachments. This will then hold the name of the attach point to which this entity should be attached. Once the entity has been initialized we'll use mModelAttachedTo instead.
-	 */
-	std::string mAttachPointMarkedToAttachTo;
+	ModelAttachment* mModelMarkedToAttachTo;
 
 	virtual void onChildAdded(Entity *e);
 	virtual void onChildRemoved(Entity *e);

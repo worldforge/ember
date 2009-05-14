@@ -81,6 +81,7 @@ EmberPhysicalEntity::~EmberPhysicalEntity()
 	delete mSoundEntity;
 	delete mModelMapping;
 	delete mModelAttachedTo;
+	delete mModelMarkedToAttachTo;
 
 	///When the modelmount is deleted the scale node will also be destroyed.
 	///Note that there's no need to destroy the light nodes since they are attached to the scale node, which is deleted (along with its children) when the model mount is destroyed.
@@ -260,27 +261,31 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 		idleaction->getAnimations().addTime(Ogre::Math::RangeRandom(0, 15));
 	}
 
-	///check if we should do delayed attachment
-	if (mModelMarkedToAttachTo)
-	{
-		attachToPointOnModel(mAttachPointMarkedToAttachTo, mModelMarkedToAttachTo);
-		mModelMarkedToAttachTo = 0;
-		mAttachPointMarkedToAttachTo = "";
-	}
-
 	///NOTE: for now, add all particle systems. we will want to add some visibility flag or something in the future
 	for (Model::ParticleSystemSet::iterator I = mModel->getParticleSystems().begin(); I != mModel->getParticleSystems().end(); ++I)
 	{
+		(*I)->getOgreParticleSystem()->detatchFromParent();
 		getScaleNode()->attachObject((*I)->getOgreParticleSystem());
 	}
 
 	for (Model::LightSet::iterator I = mModel->getLights().begin(); I != mModel->getLights().end(); ++I)
 	{
+		I->light->detatchFromParent();
 		Ogre::SceneNode* lightNode = getScaleNode()->createChildSceneNode();
 		lightNode->attachObject(I->light);
 		lightNode->setPosition(I->position);
 		mLightNodes.push_back(lightNode);
 	}
+
+	///check if we should do delayed attachment
+	if (mModelMarkedToAttachTo)
+	{
+		attachToPointOnModel(mModelMarkedToAttachTo->attachPoint, mModelMarkedToAttachTo->model, mModelMarkedToAttachTo->orientation, mModelMarkedToAttachTo->offset);
+		delete mModelMarkedToAttachTo;
+		mModelMarkedToAttachTo = 0;
+	}
+
+
 
 	///listen for reload or reset events from the model. This allows us to alter model definitions at run time and have the in game entities update.
 	getModel()->Reloaded.connect(sigc::mem_fun(*this, &EmberPhysicalEntity::Model_Reloaded));
@@ -352,14 +357,18 @@ void EmberPhysicalEntity::attachToPointOnModel(const std::string& point, Model::
 	///if we're not initialized, delay attachment until after init
 	if (!isInitialized())
 	{
-		mModelMarkedToAttachTo = model;
-		mAttachPointMarkedToAttachTo = point;
+		delete mModelMarkedToAttachTo;
+		mModelMarkedToAttachTo = new ModelAttachment();
+		mModelMarkedToAttachTo->model = model;
+		mModelMarkedToAttachTo->attachPoint = point;
+		mModelMarkedToAttachTo->orientation = orientation;
+		mModelMarkedToAttachTo->offset = offset;
 	}
 	else
 	{
 		if (model->hasAttachPoint(point) && model->getSkeleton())
 		{
-			getScaleNode()->detachObject(getModel());
+			getModel()->detatchFromParent();
 			getModel()->setVisible(true);
 			model->attachObjectToAttachPoint(point, getModel(), getScaleNode()->getScale(), getModel()->getDefinition()->getRotation() * orientation, offset);
 			//Now also attach all lights and particles
@@ -370,7 +379,7 @@ void EmberPhysicalEntity::attachToPointOnModel(const std::string& point, Model::
 				Ogre::Light* light = lightI->light;
 				if (light)
 				{
-					getScaleNode()->detachObject(light);
+					light->detatchFromParent();
 					model->attachObjectToAttachPoint(point, light, getScaleNode()->getScale(), getModel()->getDefinition()->getRotation() * orientation, offset);
 				}
 			}
@@ -382,7 +391,7 @@ void EmberPhysicalEntity::attachToPointOnModel(const std::string& point, Model::
 				Model::ParticleSystem* system = *particleI;
 				if (system && system->getOgreParticleSystem())
 				{
-					getScaleNode()->detachObject(system->getOgreParticleSystem());
+					system->getOgreParticleSystem()->detatchFromParent();
 					model->attachObjectToAttachPoint(point, system->getOgreParticleSystem(), getScaleNode()->getScale(), getModel()->getDefinition()->getRotation() * orientation, offset);
 				}
 			}
@@ -586,15 +595,15 @@ void EmberPhysicalEntity::onChildAdded(Entity *e)
 	{
 		EmberEntity* emberEntity = static_cast<EmberEntity*> (e);
 		emberEntity->attachToPointOnModel(mAttachedEntities[e->getId()], getModel());
-	}
-	if (mModelAttachedTo)
-	{
-		EmberEntity* emberEntity = static_cast<EmberEntity*> (e);
-		emberEntity->attachToPointOnModel(mModelAttachedTo->attachPoint, mModelAttachedTo->model, mModelAttachedTo->orientation * Atlas2Ogre(emberEntity->getOrientation()), mModelAttachedTo->offset + Atlas2Ogre(emberEntity->getPosition()));
+	} else {
+		if (mModelAttachedTo)
+		{
+			EmberEntity* emberEntity = static_cast<EmberEntity*> (e);
+	//		entity->attachToPointOnModel(point, model, getScaleNode()->getOrientation() * orientation* Atlas2Ogre(entity->getOrientation()), getScaleNode()->getPosition() + offset + Atlas2Ogre(entity->getPosition()));
+			emberEntity->attachToPointOnModel(mModelAttachedTo->attachPoint, mModelAttachedTo->model, Atlas2Ogre(getOrientation()) * mModelAttachedTo->orientation * Atlas2Ogre(emberEntity->getOrientation()), Atlas2Ogre(getPosition()) + mModelAttachedTo->offset + Atlas2Ogre(emberEntity->getPosition()));
+		}
 	}
 
-	/*	if (hasChild(entityId)) {
-	 }*/
 
 }
 
