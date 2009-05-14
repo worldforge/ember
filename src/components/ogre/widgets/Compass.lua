@@ -103,15 +103,19 @@ function Compass.buildCEGUIWidget()
 	local assetManager = EmberOgre.Gui.AssetsManager:new_local()
 	
 	--set up the main background image
-	local texturePair = assetManager:createTextureImage(Compass.helperImpl:getTexture(), "CompassMap")
-	if texturePair:hasData() then 
-		Compass.renderImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(texturePair:getTextureImage()))
+	if not Compass.helperImpl:getTexture():isNull() then
+		local texturePair = assetManager:createTextureImage(Compass.helperImpl:getTexture(), "CompassMap")
+		if texturePair:hasData() then 
+			Compass.renderImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(texturePair:getTextureImage()))
+		end
 	end
-	
-	--also set up the pointer image
-	texturePair = assetManager:createTextureImage(Compass.helperImpl:getPointerTexture(), "CompassPointer")
-	if texturePair:hasData() then 
-		Compass.pointerImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(texturePair:getTextureImage()))
+		
+	if not Compass.helperImpl:getPointerTexture():isNull() then
+		--also set up the pointer image
+		texturePair = assetManager:createTextureImage(Compass.helperImpl:getPointerTexture(), "CompassPointer")
+		if texturePair:hasData() then 
+			Compass.pointerImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(texturePair:getTextureImage()))
+		end
 	end
 	
 	Compass.widget:hide()
