@@ -56,7 +56,7 @@ public:
 	/** \brief Creates a new TreeLoader2D object.
 	\param geom The PagedGeometry object that this TreeLoader2D will be assigned to.
 	\param bounds The rectangular boundary in which all trees will be placed. */
-	TreeLoader2D(PagedGeometry *geom, const Ogre::TRect<Ogre::Real> &bounds);
+	TreeLoader2D(PagedGeometry *geom, const TBounds &bounds);
 	~TreeLoader2D();
 	
 	/** \brief Adds an entity to the scene with the specified location, rotation, and scale.
@@ -91,7 +91,31 @@ public:
 	#else
 		void
 	#endif
-	deleteTrees(const Ogre::Vector3 &position, float radius, Ogre::Entity *type = NULL);
+	deleteTrees(const Ogre::Vector3 &position, Ogre::Real radius = 0.001f, Ogre::Entity *type = NULL);
+
+	/** \brief Deletes trees within a certain rectangular area.
+	\param area The area where trees are to be deleted
+	\param type The type of tree to delete (optional)
+
+	\note If the "type" parameter is set to an entity, only trees created with that entity
+	will be deleted. */
+	#ifdef PAGEDGEOMETRY_USER_DATA
+		std::vector<void*>
+	#else
+		void
+	#endif
+	deleteTrees(TBounds area, Ogre::Entity *type = NULL);
+
+#ifdef PAGEDGEOMETRY_USER_DATA
+	/** \brief Find trees within a certain radius of the given coordinates.
+		\param position The coordinate of the tree(s) to look for
+		\param radius The radius from the given coordinate where trees will be deleted
+		\param type The type of tree to find (optional)
+
+		\note If the "type" parameter is set to an entity, only trees created with that entity
+		will be found. */
+	std::vector<void*> findTrees(const Ogre::Vector3 &position, float radius, Ogre::Entity *type = NULL);
+#endif
 
 	/** \brief Sets the height function used to calculate tree height coordinates
 	\param heightFunction A pointer to a height function
@@ -137,6 +161,8 @@ public:
 	to this TreeLoader fairly efficiently.
 
 	\see The TreeIterator class documentation for more info.
+	\warning Be sure to test TreeIterator3D::hasMoreElements() before calling other members of the
+	TreeIterator3D class.
 	*/
 	TreeIterator2D getTrees();
 
@@ -162,7 +188,7 @@ public:
 
 	\note The texture data you provide is copied into RAM, so you can delete the texture after
 	calling this function without risk of crashing. */
-	void setColorMap(Ogre::Texture *map, MapChannel channel = CHANNEL_COLOR);
+	void setColorMap(Ogre::TexturePtr map, MapChannel channel = CHANNEL_COLOR);
 
 	/** \brief Gets a pointer to the color map being used
 
@@ -239,6 +265,15 @@ public:
 		return minimumScale;
 	}
 
+	/** \brief Gets the tree boundary area
+	\returns A TBounds boundary value
+
+	This function returns the boundaries in which all trees are added. This value is set from the constructor. */
+	inline const TBounds &getBounds()
+	{
+		return actualBounds;
+	}
+
 	void loadPage(PageInfo &page);
 
 private:
@@ -256,7 +291,7 @@ private:
 	//Information about the 2D grid of pages
 	int pageGridX, pageGridZ;
 	Ogre::Real pageSize;
-	Ogre::TRect<Ogre::Real> gridBounds, actualBounds;
+	TBounds gridBounds, actualBounds;
 
 	Ogre::Real maximumScale, minimumScale;
 
@@ -329,8 +364,8 @@ public:
 	inline Ogre::Entity *getEntity() { return entity; }
 
 #ifdef PAGEDGEOMETRY_USER_DATA
-   /** Returns the user-defined data associated with this tree */
-   inline void* getUserData() { return userData; }
+	/** Returns the user-defined data associated with this tree */
+	inline void* getUserData() { return userData; }
 #endif
 
 private:

@@ -23,14 +23,24 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreTextureManager.h>
 #include <OgreRenderTexture.h>
 
-#include <memory>
-
-#include <memory>
-
+//The number of angle increments around the yaw axis to render impostor "snapshots" of trees
 #define IMPOSTOR_YAW_ANGLES 8
+
+//The number of angle increments around the pitch axis to render impostor "snapshots" of trees
 #define IMPOSTOR_PITCH_ANGLES 4
-//If set to 1, imposter textures will be read and saved to disc; if set to 0 they will stay in memory and need to be regenerated each time the application is run.
-#define IMPOSTOR_FILE_SAVE 0
+
+//When IMPOSTOR_RENDER_ABOVE_ONLY is defined, impostor images will only be rendered from angles around and
+//above entities. If this is disabled, bottom views of the entities will be rendered to the impostor atlas
+//and therefore allow those angles to be viewed from a distance. However, this requires the IMPOSTOR_PITCH_ANGLES
+//to be doubled to maintain an equal level of impostor angle correctness compared to when impostors are rendered
+//from above only.
+#define IMPOSTOR_RENDER_ABOVE_ONLY
+
+//When IMPOSTOR_FILE_SAVE is defined, impostor textures will be read and saved to disc; if not, they will stay
+//in memory and need to be regenerated each time the application is run (remove or comment out the line below if this
+//is desired)
+//#define IMPOSTOR_FILE_SAVE
+
 namespace PagedGeometry {
 
 class ImpostorBatch;
@@ -73,7 +83,7 @@ class ImpostorPage: public GeometryPage
 	friend class ImpostorTexture;
 
 public:
-	void init(PagedGeometry *geom);
+	void init(PagedGeometry *geom, const Ogre::Any &data);
 	~ImpostorPage();
 
 	void setRegion(Ogre::Real left, Ogre::Real top, Ogre::Real right, Ogre::Real bottom);
@@ -181,9 +191,9 @@ protected:
 	static Ogre::ColourValue impostorBackgroundColor;
 	static Ogre::BillboardOrigin impostorPivot;
 
-	static unsigned int selfInstances;
-	static unsigned int updateInstanceID;
-	unsigned int instanceID;
+	static Ogre::uint32 selfInstances;
+	static Ogre::uint32 updateInstanceID;
+	Ogre::uint32 instanceID;
 
 	Ogre::Timer updateTimer;
 

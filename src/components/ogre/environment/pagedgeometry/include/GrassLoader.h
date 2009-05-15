@@ -50,7 +50,7 @@ namespace PagedGeometry {
 class GrassLayer;
 class GrassLayerBase;
 
-/** \brief A PageLoader-derived object you can use with PagedGeometry to produce realistic grass. 
+/** \brief A PageLoader-derived object you can use with PagedGeometry to produce realistic grass.
 
 Using a GrassLoader is simple - simply create an instance, attach it to your PagedGeometry object
 with PagedGeometry::setPageLoader(), and add your grass. Important: For best performance, it is
@@ -83,20 +83,20 @@ template <typename TGrassLayer>
 class GrassLoader: public PageLoader
 {
 public:
-	/** \brief Creates a new GrassLoader object. 
+	/** \brief Creates a new GrassLoader object.
 	\param geom The PagedGeometry object that this GrassLoader will be assigned to.*/
 	inline GrassLoader(PagedGeometry *geom);
 	~GrassLoader();
 
 	/** \brief Adds a grass layer to the scene.
 	\param material The initial grass texture to use (this can be changed later).
-	
+
 	Since all grass is potentially infinite, it is not added like normal entities which
 	have a specific position. Instead you add a grass "layer" to the scene. A grass layer
 	is a "carpet" of a single type of grass that gets applied everywhere in your world.
 	If you want multiple types of grass with different appearances, you'll have to add
 	a multiple grass layers for each style.
-	
+
 	Of course, a grass layer is not completely uniform. The GrassLayer class contains
 	functions to vary grass size and density levels as desired.
 
@@ -109,7 +109,7 @@ public:
 	void deleteLayer(TGrassLayer *layer);
 
 	/** \brief Returns a list of added grass layers.
-	
+
 	This function returns a std::list<GrassLayer*> reference, which contains all grass
 	layers which have been added to this GrassLoader. */
 	inline std::list<TGrassLayer*> &getLayerList() { return layerList; }
@@ -117,12 +117,12 @@ public:
 	/** \brief Sets the global wind direction for this GrassLoader.
 
 	GrassLayer animation properties are used to configure the most of the animation
-	behavour (sway length, speed, etc.), but wind direction is not included in GrassLayer
+	behavior (sway length, speed, etc.), but wind direction is not included in GrassLayer
 	since this is really a global property. Using this function, you can set the "global"
 	wind direction which affects all animated grass associated with this PageLoader.
 
 	Default value is Vector3::UNIT_X.
-		
+
 	\note This only affects grass layers which have breeze animations enabled.
 	*/
 	inline void setWindDirection(Ogre::Vector3 &dir) { windDir = dir; }
@@ -153,7 +153,7 @@ public:
 
 	/** \brief Sets the render queue group the grass will be rendered through
 	\param queueID Enumerated value of the queue group to use
-	
+
 	Like Ogre's MovableObject::setRenderQueueGroup(), this allows you to customize
 	the rendering order of your scene. Since grass is transparent, it's likely that
 	you may encounter alpha-sorting issues between grass and your particle effects,
@@ -203,7 +203,6 @@ public:
 		this->heightFunction = heightFunction;
 		heightFunctionUserData = userData;
 	}
-
 
 	/** INTERNAL FUNCTION - DO NOT USE */
 	void loadPage(PageInfo &page);
@@ -281,11 +280,11 @@ public:
 
 	/** \brief Sets the maximum size that grass quads/billboards will be */
 	void setMaximumSize(float width, float height);
-	
+
 	/** \brief Sets the technique used to render this grass layer
 	\param style The GrassTechnique style used to display grass.
 	\param blendBase Whether or not grass base blending is enabled.
-	
+
 	The "style" setting allows you to choose from various construction methods, such as
 	sprite-style grass quads, plain 3D quads, etc. See the GrassTechnique documentation
 	for more information about this option. GRASSTECH_QUAD is used by default.
@@ -301,7 +300,7 @@ public:
 
 	/** \brief Sets the technique used when fading out distant grass
 	\param style The FadeTechnique style used to fade grass.
-	
+
 	This "style" setting allows you to choose from various fade techniques. Depending on
 	your scene, certain techniques may look better than others. The most compatible method
 	is FADETECH_ALPHA (used by default), although better results can usually be achieved
@@ -310,7 +309,7 @@ public:
 	void setFadeTechnique(FadeTechnique style);
 
 	/** \brief Enables/disables animation on this layer
-	
+
 	Always use this function to disable animation, rather than setting SwayLength or SwaySpeed
 	to 0. This function will use a different vertex shader which means improved performance
 	when animation is disabled.
@@ -335,7 +334,7 @@ public:
 	a smoother breeze appearance, but values too high can look unrealistic.
 	*/
 	void setSwayDistribution(float freq) { animFreq = freq; }
-	
+
 	/** \brief Sets the boundaries of the density/color maps
 	\param bounds The map boundary
 
@@ -344,15 +343,15 @@ public:
 	won't work properly. The boundary given to this function defines the area where density/color
 	maps take effect. Normally this is set to your terrain's bounds so the density/color map is aligned
 	to your heightmap, but you could apply it anywhere you want.
-	
+
 	\note The grass system is infinite, so there's no need to worry about using too expansive
 	boundaries. This setting simply configures the behavior of density and color maps. */
 	virtual void setMapBounds(const Ogre::TRect<Ogre::Real> &bounds)
 	{
 		mapBounds = bounds;
 	}
-	
-	
+
+
 	/**
 	 *    Calculates the max number of grass instances for this layer.
 	 * @param densityFactor The density factor set on the grass loader
@@ -360,8 +359,8 @@ public:
 	 * @return The max number of grass instances to create.
 	 */
 	virtual unsigned int calculateMaxGrassCount(float densityFactor, float volume) = 0;
-	
-protected: 
+
+protected:
 
 	//Used by GrassLoader::loadPage() - populates an array with grass.
 	//Returns the final number of grasses, which will always be <= grassCount
@@ -369,18 +368,18 @@ protected:
 
 	//Updates the vertex shader used by this layer based on the animate enable status
 	void _updateShaders();
-	
+
 	//Grass material/shape properties
 	Ogre::MaterialPtr material;
 	float minWidth, maxWidth;
 	float minHeight, maxHeight;
-	
+
 	FadeTechnique fadeTechnique;
 	GrassTechnique renderTechnique;
 
 	//Property maps
 	Ogre::TRect<Ogre::Real> mapBounds;
-	
+
 	//Grass shader properties
 	bool animate, blend, shaderNeedsUpdate;
 	float animMag, animSpeed, animFreq;
@@ -389,7 +388,7 @@ protected:
 	float waveCount;
 
 	PagedGeometry *geom;
-	
+
 };
 
 
@@ -427,10 +426,38 @@ public:
 	as necessary. */
 	void setHeightRange(float minHeight, float maxHeight = 0) { minY = minHeight; maxY = maxHeight; }
 
+	/** \brief Set the maximum slope a grass of blade can be placed on.
+	\param maxSlopeRatio The maximum slope (h/w ratio) a grass blade is allowed to be placed on.
+
+	This function can be used to set the maximum slope you want your grass to be placed on
+	(although it doesn't work for sprite grass). By default grass is allowed on any slope.
+
+	This version of setMaxSlope() accepts a slope ratio value, where ATan(maxSlopeRatio) =
+	maxSlopeAngle. If you wish to provide a maximum slope as an angle, either use the other
+	overload of this function, or convert your angle to a slope ratio first with Tan().*/
+	void setMaxSlope(const float maxSlopeRatio) { maxSlope = maxSlopeRatio; }
+
+	void setMaxSlope(Ogre::Radian maxSlopeAngle) {
+		if (maxSlopeAngle > Ogre::Degree(89.99f))
+			maxSlopeAngle = Ogre::Degree(89.99f);
+		if (maxSlopeAngle < Ogre::Degree(0))
+			maxSlopeAngle = Ogre::Degree(0);
+
+		maxSlope = Ogre::Math::Tan(maxSlopeAngle);
+	}
+
+	/** \brief Get the maximum slope a grass blade can be placed on (as set by setMaxSlope()).
+	\returns The currently set maximum slope ratio value (not an angle).
+
+	This returns the currently set maximum slope which is used to determine what ground is too steep
+	for grass to be placed on. Note that this returns the slope as a slope ratio, not an angle. If you
+	need an angle value, convert with ATan() (maxSlopeAngle = ATan(maxSlopeRatio)).*/
+	float getMaxSlope() const { return maxSlope; }
+
 	/** \brief Sets the density map used for this grass layer
 	\param mapFile The density map image
 	\param channel The color channel(s) to from the image to interpret as density
-	
+
 	A density map is simply a greyscale image, similar to a heightmap, that specifies the grass
 	density on your map. Full pixel intensity indicates that grass should be fully dense at that
 	point (the maximum density is specified by GrassLayer::setDensity()), while no pixel intensity
@@ -440,7 +467,7 @@ public:
 	red, green, blue, alpha, or color values. For example, you may store density values in the
 	alpha channel, in which case you would use CHANNEL_ALPHA. By default, CHANNEL_COLOR is used,
 	which means the image color is converted to greyscale internally and used as a density map.
-	
+
 	Note that GrassLayer by default has no idea of your terrain/world boundaries, so you
 	must specify a rectangular/square area of your world that is affected by density/color maps.
 	To do this, use the setMapBounds() function. Normally this is set to your terrain's bounds
@@ -452,10 +479,10 @@ public:
 
 	Overloaded to accept a Texture object. See the original setDensityMap() documentation above
 	for more detailed information on density maps.
-	
+
 	\note The texture data you provide is copied into the GrassLayer's own memory space, so you
 	can delete the texture after calling this function without risk of crashing. */
-	void setDensityMap(Ogre::Texture *map, MapChannel channel = CHANNEL_COLOR);
+	void setDensityMap(Ogre::TexturePtr map, MapChannel channel = CHANNEL_COLOR);
 
 	/** \brief Sets the filtering mode used for density maps
 
@@ -465,14 +492,14 @@ public:
 	depending on the resolution of your density map.
 
 	MAPFILTER_NONE is slightly faster than MAPFILTER_BILINEAR, so use it if you don't notice any
-	considerable blockyness.
+	considerable blockiness.
 	*/
 	void setDensityMapFilter(MapFilter filter);
 
 	/** \brief Sets the color map used for this grass layer
 	\param mapFile The color map image
 	\param channel The color channel(s) to from the image to use
-	
+
 	A color map is simply a texture that allows you to vary the color and shading of grass
 	across your world for a more realistic look. For example, adding a dark spot to the center
 	of your color map will make grass near the center of your terrain look darker, as long as
@@ -483,7 +510,7 @@ public:
 	grass in the red channel of an image, in which case you would use CHANNEL_RED (when you choose
 	a single channel, it is converted to a greyscale color). By default, CHANNEL_COLOR is used,
 	which uses the full color information available in the image.
-	
+
 	Remember that GrassLayer by default has no idea of your terrain/world boundaries, so you
 	must specify a rectangular/square area of your world that is affected by density/color maps.
 	To do this, use the setMapBounds() function. Normally this is set to your terrain's bounds
@@ -495,10 +522,10 @@ public:
 
 	Overloaded to accept a Texture object. See the original setColorMap() documentation above
 	for more detailed information on color maps.
-	
+
 	\note The texture data you provide is copied into RAM, so you can delete the texture after
 	calling this function without risk of crashing. */
-	void setColorMap(Ogre::Texture *map, MapChannel channel = CHANNEL_COLOR);
+	void setColorMap(Ogre::TexturePtr map, MapChannel channel = CHANNEL_COLOR);
 
 	/** \brief Sets the filtering mode used for color maps
 
@@ -506,7 +533,7 @@ public:
 	grass. By default, bilinear filtering is used (MAPFILTER_BILINEAR). If you disable filtering
 	by using MAPFILTER_NONE, the resulting grass coloration may appear slightly pixelated,
 	depending on the resolution of your color map.
-	
+
 	MAPFILTER_NONE is slightly faster than MAPFILTER_BILINEAR, so use it if you don't notice any
 	considerable pixelation.
 	*/
@@ -534,46 +561,25 @@ public:
 	don't, the grass you see will remain unchanged. */
 	ColorMap *getColorMap() { return colorMap; }
 
-
-	/** \brief Sets the boundaries of the density/color maps
-	\param bounds The map boundary
-
-	By default, the GrassLayer has no knowledge of your terrain/world boundaries, so you must
-	use this function to specify a rectangular/square area of your world, otherwise density/color maps
-	won't work properly. The boundary given to this function defines the area where density/color
-	maps take effect. Normally this is set to your terrain's bounds so the density/color map is aligned
-	to your heightmap, but you could apply it anywhere you want.
-	
-	\note The grass system is infinite, so there's no need to worry about using too expansive
-	boundaries. This setting simply configures the behavior of density and color maps. */
-	virtual void setMapBounds(const Ogre::TRect<Ogre::Real> &bounds)
-	{
-		GrassLayerBase::setMapBounds(bounds);
-		if (densityMap)
-			densityMap->setMapBounds(mapBounds);
-		if (colorMap)
-			colorMap->setMapBounds(mapBounds);
-	}
-	
 	/**
 	 *    Calculates the max number of grass instances for this layer.
 	 * @param densityFactor The density factor set on the grass loader
 	 * @param volume The volume, in world units, to fill
 	 * @return The max number of grass instances to create.
-	 */
+	*/
 	virtual unsigned int calculateMaxGrassCount(float densityFactor, float volume);
-	
-	
+
+
 	/**
 	 *    If there's a colormap registered use that for lookup, else return fullbright.
-	 * @param x 
-	 * @param z 
-	 * @return 
-	 */
+	 * @param x
+	 * @param z
+	 * @return
+	*/
 	inline Ogre::uint32 getColorAt(float x, float z)
 	{
 		if (colorMap)
-			return colorMap->getColorAt(x, z);
+			return colorMap->getColorAt(x, z, mapBounds);
 		else
 			return 0xFFFFFFFF;
 	}
@@ -590,7 +596,7 @@ private:
 	//Used by GrassLoader::loadPage() - populates an array with grass.
 	//Returns the final number of grasses, which will always be <= grassCount
 	virtual unsigned int _populateGrassList(PageInfo page, float *posBuff, unsigned int grassCount);
-	
+
 	//Used by GrassLoader::loadPage() - populates an array with a uniform distribution of grass
 	//Returns the final number of grasses, which will always be <= grassCount
 	unsigned int _populateGrassList_Uniform(PageInfo page, float *posBuff, unsigned int grassCount);
@@ -608,7 +614,7 @@ private:
 
 	//Grass material/shape properties
 	float density;
-
+	float maxSlope;
 	float minY, maxY;
 
 
@@ -631,7 +637,7 @@ but it also means potentially poor performance if you don't know what you're doi
 class GrassPage: public GeometryPage
 {
 public:
-	void init(PagedGeometry *geom);
+	void init(PagedGeometry *geom, const Ogre::Any &data);
 	~GrassPage();
 
 	void addEntity(Ogre::Entity *ent, const Ogre::Vector3 &position, const Ogre::Quaternion &rotation, const Ogre::Vector3 &scale, const Ogre::ColourValue &color);
@@ -656,7 +662,7 @@ template <class TGrassLayer>
 GrassLoader<TGrassLayer>::GrassLoader(PagedGeometry *geom)
 {
 	GrassLoader<TGrassLayer>::geom = geom;
-	
+
 	heightFunction = NULL;
 	heightFunctionUserData = NULL;
 
@@ -703,7 +709,7 @@ void GrassLoader<TGrassLayer>::frameUpdate()
 	lastTime = currentTime;
 
 	float ellapsed = ellapsedTime / 1000.0f;
-	
+
 	//Update the vertex shader parameters
 	typename std::list<TGrassLayer*>::iterator it;
 	for (it = layerList.begin(); it != layerList.end(); ++it){
@@ -976,7 +982,7 @@ Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, T
 
 		//Get the color at the grass position
 		Ogre::uint32 color(layer->getColorAt(x, z));
-		
+
 // 		if (layer->colorMap)
 // 			color = layer->colorMap->getColorAt(x, z);
 // 		else

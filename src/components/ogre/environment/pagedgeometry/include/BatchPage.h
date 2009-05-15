@@ -30,20 +30,24 @@ This is one of the geometry page types included in the StaticGeometry engine. Th
 page types should be added to a PagedGeometry object with PagedGeometry::addDetailLevel()
 so the PagedGeometry will know how you want your geometry displayed.
 
-To use this page type, use:
+To use this page type, use (the last parameter is optional):
 \code
-PagedGeometry::addDetailLevel<BatchPage>(farRange);
+PagedGeometry::addDetailLevel<BatchPage>(farRange, transitionLength, Ogre::Any(LODLevel));
 \endcode
 
 This page type uses batched geometry (Ogre::StaticGeometry) to represent the entities.
 Batched geometry is generally much faster than plain entities, since video card state
 changes and transform calculations can be minimized. Batched geometry can be anywhere
 from 2 to 20 times faster than plain entities.
+
+"LODLevel" can be used to specify a certain LOD level to use from the added entities.
+This would be useful, for example, if you wanted to add high-res batched trees near the camera,
+and low-res batched trees farther away.
 */
 class BatchPage: public GeometryPage
 {
 public:
-	void init(PagedGeometry *geom);
+	virtual void init(PagedGeometry *geom, const Ogre::Any &data);
 	~BatchPage();
 	
 	void addEntity(Ogre::Entity *ent, const Ogre::Vector3 &position, const Ogre::Quaternion &rotation, const Ogre::Vector3 &scale, const Ogre::ColourValue &color);
@@ -57,8 +61,8 @@ public:
 	void clearBoundingBox() {}
 	const Ogre::AxisAlignedBox &getBoundingBox() { return batch->getBoundingBox(); }
 
-private:
-	void _updateShaders();
+protected :
+	virtual void _updateShaders();
 
 	bool fadeEnabled, shadersSupported;
 	Ogre::Real visibleDist, invisibleDist;
@@ -69,10 +73,14 @@ private:
 
 	static unsigned long refCount;
 	static unsigned long GUID;
+	size_t mLODLevel;
+
+private:
 	static inline Ogre::String getUniqueID(const Ogre::String &prefix)
 	{
 		return prefix + Ogre::StringConverter::toString(++GUID);
 	}
+
 };
 
 }

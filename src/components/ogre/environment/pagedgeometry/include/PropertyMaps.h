@@ -53,7 +53,7 @@ class DensityMap
 {
 public:
 	static DensityMap *load(const Ogre::String &fileName, MapChannel channel = CHANNEL_COLOR);
-	static DensityMap *load(Ogre::Texture *texture, MapChannel channel = CHANNEL_COLOR);
+	static DensityMap *load(Ogre::TexturePtr texture, MapChannel channel = CHANNEL_COLOR);
 	void unload();
 
 	/** \brief Sets the filtering mode used for this density map
@@ -69,16 +69,6 @@ public:
 
 	/** \brief Returns the filtering mode being used for this density map */
 	MapFilter getFilter() { return filter; }
-
-	/** \brief Sets the boundaries that this density map affects
-
-	The boundary given to this function defines the area where this density map takes effect.
-	Normally this is set to your terrain's bounds so the density map is aligned
-	to your heightmap, but you could apply it anywhere you want. */
-	void setMapBounds(const Ogre::TRect<Ogre::Real> &bounds) { mapBounds = bounds; }
-
-	/** \brief Returns the map bounds for this density map, as set by setMapBounds() */
-	Ogre::TRect<Ogre::Real> getMapBounds() { return mapBounds; }
 
 	/** \brief Gets a pointer to the pixel data of the density map
 
@@ -96,29 +86,32 @@ public:
 		return *pixels;
 	}
 	
-	/** \brief Gets the density level at the specified position */
-	inline float getDensityAt(float x, float z)
+	/** \brief Gets the density level at the specified position
+
+	The boundary given defines the area where this density map takes effect.
+	Normally this is set to your terrain's bounds so the density map is aligned
+	to your heightmap, but you could apply it anywhere you want. */
+	inline float getDensityAt(float x, float z, const Ogre::TRect<Ogre::Real> &mapBounds)
 	{
 		if (filter == MAPFILTER_NONE)
-			return _getDensityAt_Unfiltered(x, z);
+			return _getDensityAt_Unfiltered(x, z, mapBounds);
 		else
-			return _getDensityAt_Bilinear(x, z);
+			return _getDensityAt_Bilinear(x, z, mapBounds);
 	}
 
-	float _getDensityAt_Unfiltered(float x, float z);
-	float _getDensityAt_Bilinear(float x, float z);
+	float _getDensityAt_Unfiltered(float x, float z, const Ogre::TRect<Ogre::Real> &mapBounds);
+	float _getDensityAt_Bilinear(float x, float z, const Ogre::TRect<Ogre::Real> &mapBounds);
 
 private:
-	DensityMap(Ogre::Texture *texture, MapChannel channel);
+	DensityMap(Ogre::TexturePtr texture, MapChannel channel);
 	~DensityMap();
 
 	static std::map<Ogre::String, DensityMap*> selfList;
 	Ogre::String selfKey;
-	unsigned int refCount;
+	Ogre::uint32 refCount;
 
 	MapFilter filter;
 	Ogre::PixelBox *pixels;
-	Ogre::TRect<Ogre::Real> mapBounds;
 };
 
 /** \brief A 2D greyscale image that is assigned to a certain region of your world to represent color levels.
@@ -133,7 +126,7 @@ class ColorMap
 {
 public:
 	static ColorMap *load(const Ogre::String &fileName, MapChannel channel = CHANNEL_COLOR);
-	static ColorMap *load(Ogre::Texture *texture, MapChannel channel = CHANNEL_COLOR);
+	static ColorMap *load(Ogre::TexturePtr texture, MapChannel channel = CHANNEL_COLOR);
 	void unload();
 
 	/** \brief Sets the filtering mode used for this color map
@@ -149,16 +142,6 @@ public:
 
 	/** \brief Returns the filtering mode being used for this color map */
 	MapFilter getFilter() { return filter; }
-
-	/** \brief Sets the boundaries that this color map affects
-
-	The boundary given to this function defines the area where this color map takes effect.
-	Normally this is set to your terrain's bounds so the color map is aligned
-	to your heightmap, but you could apply it anywhere you want. */
-	void setMapBounds(const Ogre::TRect<Ogre::Real> &bounds) { mapBounds = bounds; }
-
-	/** \brief Returns the map bounds for this color map, as set by setMapBounds() */
-	Ogre::TRect<Ogre::Real> getMapBounds() { return mapBounds; }
 
 	/** \brief Gets a pointer to the pixel data of the color map
 
@@ -180,26 +163,30 @@ public:
 	/** \brief Gets the color value at the specified position
 
 	A RenderSystem-specific 32-bit packed color value is used, so it can be fed directly to
-	the video card. */
-	inline Ogre::uint32 getColorAt(float x, float z)
+	the video card.
+
+	The boundary given defines the area where this color map takes effect.
+	Normally this is set to your terrain's bounds so the color map is aligned
+	to your heightmap, but you could apply it anywhere you want. */
+	inline Ogre::uint32 getColorAt(float x, float z, const Ogre::TRect<Ogre::Real> &mapBounds)
 	{
 		if (filter == MAPFILTER_NONE)
-			return _getColorAt(x, z);
+			return _getColorAt(x, z, mapBounds);
 		else
-			return _getColorAt_Bilinear(x, z);
+			return _getColorAt_Bilinear(x, z, mapBounds);
 	}
 
 	/** \brief Gets the color value at the specified position
 
 	The unpacks the 32-bit color value into an Ogre::ColourValue and returns it. */
-	inline Ogre::ColourValue getColorAt_Unpacked(float x, float z)
+	inline Ogre::ColourValue getColorAt_Unpacked(float x, float z, const Ogre::TRect<Ogre::Real> &mapBounds)
 	{
 		Ogre::uint32 c;
 
 		if (filter == MAPFILTER_NONE)
-			c = _getColorAt(x, z);
+			c = _getColorAt(x, z, mapBounds);
 		else
-			c = _getColorAt_Bilinear(x, z);
+			c = _getColorAt_Bilinear(x, z, mapBounds);
 		
 		Ogre::Real r, g, b, a;
 		static Ogre::VertexElementType format = Ogre::Root::getSingleton().getRenderSystem()->getColourVertexElementType();
@@ -219,21 +206,21 @@ public:
 	}
 
 private:
-	ColorMap(Ogre::Texture *map, MapChannel channel);
+	ColorMap(Ogre::TexturePtr map, MapChannel channel);
 	~ColorMap();
 
 	static std::map<Ogre::String, ColorMap*> selfList;
 	Ogre::String selfKey;
-	unsigned int refCount;
+	Ogre::uint32 refCount;
 
-	//Directly interpolates two uint32 colors
+	//Directly interpolates two Ogre::uint32 colors
 	Ogre::uint32 _interpolateColor(Ogre::uint32 color1, Ogre::uint32 color2, float ratio, float ratioInv);
 
 	//Returns the color map value at the given location
-	Ogre::uint32 _getColorAt(float x, float z);
+	Ogre::uint32 _getColorAt(float x, float z, const Ogre::TRect<Ogre::Real> &mapBounds);
 
 	//Returns the color map value at the given location with bilinear filtering
-	Ogre::uint32 _getColorAt_Bilinear(float x, float z);
+	Ogre::uint32 _getColorAt_Bilinear(float x, float z, const Ogre::TRect<Ogre::Real> &mapBounds);
 
 	MapFilter filter;
 	Ogre::PixelBox *pixels;

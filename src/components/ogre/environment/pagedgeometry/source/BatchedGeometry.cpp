@@ -32,7 +32,13 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreHardwareBuffer.h>
 #include <OgreMaterialManager.h>
 #include <OgreMaterial.h>
+#include <string>
 using namespace Ogre;
+
+#ifndef max
+#define max(a,b)            (((a) > (b)) ? (a) : (b))
+#endif
+
 
 namespace PagedGeometry {
 
@@ -57,6 +63,11 @@ BatchedGeometry::~BatchedGeometry()
 
 void BatchedGeometry::addEntity(Entity *ent, const Vector3 &position, const Quaternion &orientation, const Vector3 &scale, const Ogre::ColourValue &color)
 {
+	MeshPtr mesh = ent->getMesh();
+
+	//If shared vertex data is used, extract into non-shared data
+	extractVertexDataFromShared(mesh);
+
 	//For each subentity
 	for (uint32 i = 0; i < ent->getNumSubEntities(); ++i){
 		//Get the subentity
@@ -65,9 +76,9 @@ void BatchedGeometry::addEntity(Entity *ent, const Vector3 &position, const Quat
 
 		//Generate a format string that uniquely identifies this material & vertex/index format
 		if (subMesh->vertexData == NULL)
-			OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "BatchedGeometry cannot use meshes with shared vertex data", "BatchedGeometry::addEntity()");
+			OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, "SubMesh vertex data not found!", "BatchedGeometry::addEntity()");
 		String formatStr = getFormatString(subEntity);
-		
+
 		//If a batch using an identical format exists...
 		SubBatch *batch;
 		SubBatchMap::iterator batchIter = subBatchMap.find(formatStr);
@@ -89,7 +100,7 @@ void BatchedGeometry::addEntity(Entity *ent, const Vector3 &position, const Quat
 	mat.setScale(scale);
 	AxisAlignedBox entBounds = ent->getBoundingBox();
 	entBounds.transform(mat);
-	
+
 	if (boundsUndefined){
 		bounds.setMinimum(entBounds.getMinimum() + position);
 		bounds.setMaximum(entBounds.getMaximum() + position);
@@ -103,6 +114,143 @@ void BatchedGeometry::addEntity(Entity *ent, const Vector3 &position, const Quat
 		bounds.setMaximum(max);
 	}
 }
+
+
+uint32 CountUsedVertices(IndexData *id, std::map<uint32, uint32> &ibmap)
+{
+	uint32 i, count;
+	switch (id->indexBuffer->getType()) {
+		case HardwareIndexBuffer::IT_16BIT:
+			{
+				uint16 *data = (uint16*)id->indexBuffer->lock(id->indexStart * sizeof(uint16),
+					id->indexCount * sizeof(uint16), HardwareBuffer::HBL_READ_ONLY);
+
+				for (i = 0; i < id->indexCount; i++) {
+					uint16 index = data[i];
+					if (ibmap.find(index) == ibmap.end()) ibmap[index] = ibmap.size();
+				}
+				count = (uint32)ibmap.size();
+				id->indexBuffer->unlock();
+			}
+			break;
+
+		case HardwareIndexBuffer::IT_32BIT:
+			{
+				uint32 *data = (uint32*)id->indexBuffer->lock(id->indexStart * sizeof(uint32),
+					id->indexCount * sizeof(uint32), HardwareBuffer::HBL_READ_ONLY);
+
+				for (i = 0; i < id->indexCount; i++) {
+					uint32 index = data[i];
+					if (ibmap.find(index) == ibmap.end()) ibmap[index] = ibmap.size();
+				}
+				count = (uint32)ibmap.size();
+				id->indexBuffer->unlock();
+			}
+			break;
+
+		default:
+			throw new Ogre::Exception(0, "Unknown index buffer type", "Converter.cpp::CountVertices");
+			break;
+	}
+
+	return count;
+}
+
+void BatchedGeometry::extractVertexDataFromShared(MeshPtr mesh)
+{
+	if (mesh->sharedVertexData == NULL)
+		return;
+
+	Mesh::SubMeshIterator subMeshIterator = mesh->getSubMeshIterator();
+
+	// Get shared vertex data
+	VertexData *oldVertexData = mesh->sharedVertexData;
+
+	while (subMeshIterator.hasMoreElements()) {
+		SubMesh *subMesh = subMeshIterator.getNext();
+
+		// Get index data
+		IndexData *indexData = subMesh->indexData;
+		HardwareIndexBufferSharedPtr ib = indexData->indexBuffer;
+
+		// Create new nonshared vertex data
+		std::map<uint32, uint32> indicesMap;
+		VertexData *newVertexData = new VertexData();
+		newVertexData->vertexCount = CountUsedVertices(indexData, indicesMap);
+		//delete newVertexData->vertexDeclaration;
+		newVertexData->vertexDeclaration = oldVertexData->vertexDeclaration->clone();
+
+		// Create new vertex buffers
+		uint32 buffersCount = (uint32)oldVertexData->vertexBufferBinding->getBufferCount();
+		for (uint32 bufferIndex = 0; bufferIndex < buffersCount; bufferIndex++) {
+
+			// Lock shared vertex buffer
+			HardwareVertexBufferSharedPtr oldVertexBuffer = oldVertexData->vertexBufferBinding->getBuffer(bufferIndex);
+			size_t vertexSize = oldVertexBuffer->getVertexSize();
+			uint8 *oldLock = (uint8*)oldVertexBuffer->lock(0, oldVertexData->vertexCount * vertexSize, HardwareBuffer::HBL_READ_ONLY);
+
+			// Create and lock nonshared vertex buffer
+			HardwareVertexBufferSharedPtr newVertexBuffer = HardwareBufferManager::getSingleton().createVertexBuffer(
+				vertexSize, newVertexData->vertexCount, oldVertexBuffer->getUsage(), oldVertexBuffer->hasShadowBuffer());
+			uint8 *newLock = (uint8*)newVertexBuffer->lock(0, newVertexData->vertexCount * vertexSize, HardwareBuffer::HBL_NORMAL);
+
+			// Copy vertices from shared vertex buffer into nonshared vertex buffer
+			std::map<uint32, uint32>::iterator i, iend = indicesMap.end();
+			for (i = indicesMap.begin(); i != iend; i++) {
+				memcpy(newLock + vertexSize * i->second, oldLock + vertexSize * i->first, vertexSize);
+			}
+
+			// Unlock vertex buffers
+			oldVertexBuffer->unlock();
+			newVertexBuffer->unlock();
+
+			// Bind new vertex buffer
+			newVertexData->vertexBufferBinding->setBinding(bufferIndex, newVertexBuffer);
+		}
+
+		// Re-create index buffer
+		switch (indexData->indexBuffer->getType()) {
+			case HardwareIndexBuffer::IT_16BIT:
+				{
+					uint16 *data = (uint16*)indexData->indexBuffer->lock(indexData->indexStart * sizeof(uint16),
+						indexData->indexCount * sizeof(uint16), HardwareBuffer::HBL_NORMAL);
+
+					for (uint32 i = 0; i < indexData->indexCount; i++) {
+						data[i] = (uint16)indicesMap[data[i]];
+					}
+
+					indexData->indexBuffer->unlock();
+				}
+				break;
+
+			case HardwareIndexBuffer::IT_32BIT:
+				{
+					uint32 *data = (uint32*)indexData->indexBuffer->lock(indexData->indexStart * sizeof(uint32),
+						indexData->indexCount * sizeof(uint32), HardwareBuffer::HBL_NORMAL);
+
+					for (uint32 i = 0; i < indexData->indexCount; i++) {
+						data[i] = (uint32)indicesMap[data[i]];
+					}
+
+					indexData->indexBuffer->unlock();
+				}
+				break;
+
+			default:
+				throw new Ogre::Exception(0, "Unknown index buffer type", "Converter.cpp::CountVertices");
+				break;
+		}
+
+		// Store new attributes
+		subMesh->useSharedVertices = false;
+		subMesh->vertexData = newVertexData;
+	}
+
+	// Release shared vertex data
+	delete mesh->sharedVertexData;
+	mesh->sharedVertexData = NULL;
+}
+
 
 BatchedGeometry::SubBatchIterator BatchedGeometry::getSubBatchIterator() const
 {
@@ -141,7 +289,7 @@ void BatchedGeometry::build()
 		bounds.setMinimum(bounds.getMinimum() - center);	//Center the bounding box
 		bounds.setMaximum(bounds.getMaximum() - center);	//Center the bounding box
 		radius = bounds.getMaximum().length();	//Calculate BB radius
-		
+
 		//Create scene node
 		sceneNode = parentSceneNode->createChildSceneNode(center);
 
@@ -158,7 +306,7 @@ void BatchedGeometry::build()
 
 		built = true;
 	}
-	
+
 }
 
 void BatchedGeometry::clear()
@@ -208,7 +356,7 @@ void BatchedGeometry::_notifyCurrentCamera(Camera *cam)
 		//Calculate camera distance
 		Vector3 camVec = _convertToLocal(cam->getDerivedPosition()) - center;
 		Real centerDistanceSquared = camVec.squaredLength();
-		minDistanceSquared = std::max(0.0f, centerDistanceSquared - (radius * radius));
+		minDistanceSquared = max(0.0f, centerDistanceSquared - (radius * radius));
 		//Note: centerDistanceSquared measures the distance between the camera and the center of the GeomBatch,
 		//while minDistanceSquared measures the closest distance between the camera and the closest edge of the
 		//geometry's bounding sphere.
@@ -233,10 +381,12 @@ BatchedGeometry::SubBatch::SubBatch(BatchedGeometry *parent, SubEntity *ent)
 	meshType = ent->getSubMesh();
 	this->parent = parent;
 	built = false;
+	requireVertexColors = false;
 
+	// Material must always exist
 	Material *origMat = ((MaterialPtr)MaterialManager::getSingleton().getByName(ent->getMaterialName())).getPointer();
 	if (origMat) {
-	material = MaterialManager::getSingleton().getByName(getMaterialClone(origMat)->getName());
+		material = MaterialManager::getSingleton().getByName(getMaterialClone(*origMat)->getName());
 	} else {
 		MaterialManager::ResourceCreateOrRetrieveResult result = MaterialManager::getSingleton().createOrRetrieve("PagedGeometry_Batched_Material", "General");
 		if (result.first.isNull()) {
@@ -284,17 +434,17 @@ BatchedGeometry::SubBatch::~SubBatch()
 	delete indexData;
 }
 
-Material *BatchedGeometry::SubBatch::getMaterialClone(Material *mat)
+Material *BatchedGeometry::SubBatch::getMaterialClone(Material &mat)
 {
-	String clonedName = mat->getName() + "_Batched";
+	String clonedName = mat.getName() + "_Batched";
 	MaterialPtr clonedMat = MaterialManager::getSingleton().getByName(clonedName);
 	if (clonedMat.isNull())
-		clonedMat = mat->clone(clonedName);
-	
+		clonedMat = mat.clone(clonedName);
+
 	return clonedMat.getPointer();
 }
 
-void BatchedGeometry::SubBatch::addSubEntity(SubEntity *ent, const Vector3 &position, const Quaternion &orientation, const Vector3 &scale, const Ogre::ColourValue &color)
+void BatchedGeometry::SubBatch::addSubEntity(SubEntity *ent, const Vector3 &position, const Quaternion &orientation, const Vector3 &scale, const Ogre::ColourValue &color, void* userData)
 {
 	assert(!built);
 
@@ -304,18 +454,22 @@ void BatchedGeometry::SubBatch::addSubEntity(SubEntity *ent, const Vector3 &posi
 	newMesh.position = position;
 	newMesh.orientation = orientation;
 	newMesh.scale = scale;
+	newMesh.userData = userData;
 
 	newMesh.color = color;
-	VertexElementType format = Root::getSingleton().getRenderSystem()->getColourVertexElementType();
-	switch (format){
-			case VET_COLOUR_ARGB:
-				std::swap(newMesh.color.r, newMesh.color.b);
-				break;
-			case VET_COLOUR_ABGR:
-				break;
-			default:
-				OGRE_EXCEPT(0, "Unknown RenderSystem color format", "BatchedGeometry::SubBatch::addSubMesh()");
-				break;
+	if (newMesh.color != ColourValue::White) {
+		requireVertexColors = true;
+		VertexElementType format = Root::getSingleton().getRenderSystem()->getColourVertexElementType();
+		switch (format){
+				case VET_COLOUR_ARGB:
+					std::swap(newMesh.color.r, newMesh.color.b);
+					break;
+				case VET_COLOUR_ABGR:
+					break;
+				default:
+					OGRE_EXCEPT(0, "Unknown RenderSystem color format", "BatchedGeometry::SubBatch::addSubMesh()");
+					break;
+		}
 	}
 
 	meshQueue.push_back(newMesh);
@@ -363,43 +517,30 @@ void BatchedGeometry::SubBatch::build()
 		HardwareVertexBufferSharedPtr buffer = HardwareBufferManager::getSingleton()
 			.createVertexBuffer(vertDecl->getVertexSize(i), vertexData->vertexCount, HardwareBuffer::HBU_STATIC_WRITE_ONLY);
 		vertBinding->setBinding(i, buffer);
-		
+
 		vertexBuffers.push_back(static_cast<uchar*>(buffer->lock(HardwareBuffer::HBL_DISCARD)));
 		vertexBufferElements.push_back(vertDecl->findElementsBySource(i));
 	}
 
 	//If no vertex colors are used, make sure the final batch includes them (so the shade values work)
-	if (!vertexData->vertexDeclaration->findElementBySemantic(VES_DIFFUSE)) {
-		Ogre::ushort i = (Ogre::ushort)vertBinding->getBufferCount();
+	if (requireVertexColors) {
+		if (!vertexData->vertexDeclaration->findElementBySemantic(VES_DIFFUSE)) {
+			Ogre::ushort i = (Ogre::ushort)vertBinding->getBufferCount();
 
-		vertDecl->addElement(i, 0, VET_COLOUR, VES_DIFFUSE);
+			vertDecl->addElement(i, 0, VET_COLOUR, VES_DIFFUSE);
 
-		HardwareVertexBufferSharedPtr buffer = HardwareBufferManager::getSingleton()
-			.createVertexBuffer(vertDecl->getVertexSize(i), vertexData->vertexCount, HardwareBuffer::HBU_STATIC_WRITE_ONLY);
-		vertBinding->setBinding(i, buffer);
-		
-		vertexBuffers.push_back(static_cast<uchar*>(buffer->lock(HardwareBuffer::HBL_DISCARD)));
-		vertexBufferElements.push_back(vertDecl->findElementsBySource(i));
+			HardwareVertexBufferSharedPtr buffer = HardwareBufferManager::getSingleton()
+				.createVertexBuffer(vertDecl->getVertexSize(i), vertexData->vertexCount, HardwareBuffer::HBU_STATIC_WRITE_ONLY);
+			vertBinding->setBinding(i, buffer);
 
+			vertexBuffers.push_back(static_cast<uchar*>(buffer->lock(HardwareBuffer::HBL_DISCARD)));
+			vertexBufferElements.push_back(vertDecl->findElementsBySource(i));
+
+		}
+
+		Pass *p = material->getTechnique(0)->getPass(0);
+		p->setVertexColourTracking(TVC_AMBIENT);
 	}
-
-	//Prepare vertex colors
-	Pass *p = material->getTechnique(0)->getPass(0);
-	p->setVertexColourTracking(TVC_AMBIENT);
-
-	ColourValue ambient = p->getAmbient();
-	VertexElementType format = Root::getSingleton().getRenderSystem()->getColourVertexElementType();
-	switch (format){
-			case VET_COLOUR_ARGB:
-				std::swap(ambient.r, ambient.b);
-				break;
-			case VET_COLOUR_ABGR:
-				break;
-			default:
-				OGRE_EXCEPT(0, "Unknown RenderSystem color format", "BatchedGeometry::SubBatch::build()");
-				break;
-	}
-
 
 	//For each queued mesh...
 	MeshQueueIterator it;
@@ -445,7 +586,7 @@ void BatchedGeometry::SubBatch::build()
 							tmp.x = *sourcePtr++;
 							tmp.y = *sourcePtr++;
 							tmp.z = *sourcePtr++;
-							
+
 							//Transform
 							tmp = (queuedMesh.orientation * (tmp * queuedMesh.scale)) + queuedMesh.position;
 							tmp -= batchCenter;		//Adjust for batch center
@@ -470,9 +611,9 @@ void BatchedGeometry::SubBatch::build()
 
 						case VES_DIFFUSE:
 							tmpColor = *((uint32*)sourcePtr++);
-							tmpR = ((tmpColor) & 0xFF) * queuedMesh.color.r * ambient.r;
-							tmpG = ((tmpColor >> 8) & 0xFF) * queuedMesh.color.g * ambient.g;
-							tmpB = ((tmpColor >> 16) & 0xFF) * queuedMesh.color.b * ambient.b;
+							tmpR = ((tmpColor) & 0xFF) * queuedMesh.color.r;
+							tmpG = ((tmpColor >> 8) & 0xFF) * queuedMesh.color.g;
+							tmpB = ((tmpColor >> 16) & 0xFF) * queuedMesh.color.b;
 							tmpA = (tmpColor >> 24) & 0xFF;
 
 							tmpColor = tmpR | (tmpG << 8) | (tmpB << 16) | (tmpA << 24);
@@ -509,14 +650,16 @@ void BatchedGeometry::SubBatch::build()
 				vertexBuffers[i] = destBase;
 				sourceBuffer->unlock();
 			} else {
+				assert(requireVertexColors);
+
 				//Get the locked output buffer
 				uint32 *startPtr = (uint32*)vertexBuffers[vertBinding->getBufferCount()-1];
 				uint32 *endPtr = startPtr + sourceVertexData->vertexCount;
-				
+
 				//Generate color
-				uint8 tmpR = ambient.r * queuedMesh.color.r * 255;
-				uint8 tmpG = ambient.g * queuedMesh.color.g * 255;
-				uint8 tmpB = ambient.b * queuedMesh.color.b * 255;
+				uint8 tmpR = queuedMesh.color.r * 255;
+				uint8 tmpG = queuedMesh.color.g * 255;
+				uint8 tmpB = queuedMesh.color.b * 255;
 				uint32 tmpColor = tmpR | (tmpG << 8) | (tmpB << 16) | (0xFF << 24);
 
 				//Copy colors
@@ -541,7 +684,7 @@ void BatchedGeometry::SubBatch::build()
 			while (source != sourceEnd) {
 				*indexBuffer32++ = static_cast<uint32>(*source++ + indexOffset);
 			}
-			
+
 			//Unlock the input buffer
 			sourceIndexData->indexBuffer->unlock();
 
@@ -625,8 +768,8 @@ void BatchedGeometry::SubBatch::addSelfToRenderQueue(RenderQueue *queue, uint8 g
 	if (built){
 		//Update material technique based on camera distance
 		assert(!material.isNull());
-		bestTechnqiue = material->getBestTechnique(material->getLodIndexSquaredDepth(parent->minDistanceSquared));
-			
+		bestTechnique = material->getBestTechnique(material->getLodIndex(parent->minDistanceSquared * parent->minDistanceSquared));
+
 		//Add to render queue
 		queue->addRenderable(this, group);
 	}
@@ -659,7 +802,6 @@ const Ogre::LightList& BatchedGeometry::SubBatch::getLights(void) const
 {
 	return parent->queryLights();
 }
-
 }
 
 #endif

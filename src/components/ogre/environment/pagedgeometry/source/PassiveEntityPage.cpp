@@ -31,7 +31,7 @@ namespace PagedGeometry {
 unsigned long PassiveEntityPage::GUID = 0;
 
 
-void PassiveEntityPage::init(::PagedGeometry::PagedGeometry  *geom)
+void PassiveEntityPage::init(::PagedGeometry::PagedGeometry *geom, const Ogre::Any &data)
 {
 	sceneMgr = geom->getSceneManager();
 }

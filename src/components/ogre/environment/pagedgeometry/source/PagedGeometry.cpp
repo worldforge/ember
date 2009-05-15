@@ -20,13 +20,13 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreCamera.h>
 #include <OgreVector3.h>
 using namespace Ogre;
+using namespace std;
 
 namespace PagedGeometry {
 
 //-------------------------------------------------------------------------------------
 PagedGeometry::PagedGeometry(Camera* cam, const Real pageSize)
 {
-	lastSceneCam = 0;
 	//Setup camera, scene manager, and scene node
 	if (cam){
 		sceneCam = cam;
@@ -44,7 +44,9 @@ PagedGeometry::PagedGeometry(Camera* cam, const Real pageSize)
 		rootNode = NULL;
 		oldCamPos = Vector3::ZERO;
 	}
-	
+	lastSceneCam = NULL;
+	lastOldCamPos = Vector3::ZERO;
+
 	#ifdef PAGEDGEOMETRY_ALTERNATE_COORDSYSTEM
 	//Setup default coordinate system
 	coordinateSystemQuat = Quaternion::IDENTITY;
@@ -60,6 +62,7 @@ PagedGeometry::PagedGeometry(Camera* cam, const Real pageSize)
 
 	//Misc.
 	pageLoader = NULL;
+	geometryAllowedVisible = true;
 }
 
 PagedGeometry::~PagedGeometry()
@@ -130,7 +133,7 @@ void PagedGeometry::setCoordinateSystem(Vector3 up, Vector3 right)
 #endif
 
 #ifdef PAGEDGEOMETRY_ALTERNATE_COORDSYSTEM
-Vector3 PagedGeometry::_convertToLocal(const Vector3 &globalVec)
+Vector3 PagedGeometry::_convertToLocal(const Vector3 &globalVec) const
 {
 	assert(getSceneNode());
 	//Convert from the given global position to the local coordinate system of PagedGeometry's root scene node.
@@ -138,7 +141,7 @@ Vector3 PagedGeometry::_convertToLocal(const Vector3 &globalVec)
 }
 #else
 //Default coordinate system - no conversion
-Vector3 PagedGeometry::_convertToLocal(const Vector3 &globalVec)
+Vector3 PagedGeometry::_convertToLocal(const Vector3 &globalVec) const
 {
 	return globalVec;
 }
@@ -164,12 +167,19 @@ void PagedGeometry::setBounds(TBounds bounds)
 {
 	if (!managerList.empty())
 		OGRE_EXCEPT(0, "PagedGeometry::setBounds() cannot be called after detail levels have been added. Call removeDetailLevels() first.", "PagedGeometry::setBounds()");
-	if (bounds.width() != bounds.height())
+	if (!Math::RealEqual(bounds.width(), bounds.height(), 0.01f))
 		OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "Bounds must be square", "PagedGeometry::setBounds()");
 	if (bounds.width() <= 0 || bounds.height() <=0)
 		OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "Bounds must have positive width and height", "PagedGeometry::setBounds()");
 
 	m_bounds = bounds;
+}
+
+TBounds PagedGeometry::convertAABToTBounds( const Ogre::AxisAlignedBox & aab ) const
+{
+	Vector3 minimum = _convertToLocal(aab.getMinimum());
+	Vector3 maximum = _convertToLocal(aab.getMaximum());
+	return TBounds (minimum.x, minimum.z, maximum.x, maximum.z);
 }
 
 void PagedGeometry::removeDetailLevels()
@@ -245,6 +255,10 @@ void PagedGeometry::reloadGeometryPage(const Vector3 &point)
 	if (!pageLoader)
 		return;
 
+#ifdef PAGEDGEOMETRY_ALTERNATE_COORDSYSTEM
+	point = _convertToLocal(point);
+#endif
+
 	std::list<GeometryPageManager *>::iterator it;
 	for (it = managerList.begin(); it != managerList.end(); ++it){
 		GeometryPageManager *mgr = *it;
@@ -252,6 +266,67 @@ void PagedGeometry::reloadGeometryPage(const Vector3 &point)
 	}
 }
 
+void PagedGeometry::reloadGeometryPages(const Ogre::Vector3 &center, Real radius)
+{
+	if (!pageLoader)
+		return;
+
+#ifdef PAGEDGEOMETRY_ALTERNATE_COORDSYSTEM
+	center = _convertToLocal(center);
+#endif
+
+	std::list<GeometryPageManager *>::iterator it;
+	for (it = managerList.begin(); it != managerList.end(); ++it){
+		GeometryPageManager *mgr = *it;
+		mgr->reloadGeometryPages(center, radius);
+	}
+}
+
+void PagedGeometry::reloadGeometryPages(const TBounds & area)
+{
+	if (!pageLoader)
+		return;
+
+	TBounds localArea = area;
+
+	if (localArea.left > localArea.right) std::swap(localArea.left, localArea.right);
+	if (localArea.top > localArea.bottom) std::swap(localArea.top, localArea.bottom);
+
+	std::list<GeometryPageManager *>::iterator it;
+	for (it = managerList.begin(); it != managerList.end(); ++it){
+		GeometryPageManager *mgr = *it;
+		mgr->reloadGeometryPages(localArea);
+	}
+}
+
+void PagedGeometry::preloadGeometry(const TBounds & area)
+{
+	if (!pageLoader)
+		return;
+
+	TBounds localArea = area;
+
+	if (localArea.left > localArea.right) std::swap(localArea.left, localArea.right);
+	if (localArea.top > localArea.bottom) std::swap(localArea.top, localArea.bottom);
+
+	std::list<GeometryPageManager *>::iterator it;
+	for (it = managerList.begin(); it != managerList.end(); ++it){
+		GeometryPageManager *mgr = *it;
+		mgr->preloadGeometry(localArea);
+	}
+}
+
+void PagedGeometry::resetPreloadedGeometry()
+{
+	if (!pageLoader)
+		return;
+
+	std::list<GeometryPageManager *>::iterator it;
+	for (it = managerList.begin(); it != managerList.end(); ++it){
+		GeometryPageManager *mgr = *it;
+		mgr->resetPreloadedGeometry();
+	}
+}
 
 void PagedGeometry::_addDetailLevel(GeometryPageManager *mgr, Real maxRange, Real transitionLength)
 {
@@ -275,13 +350,42 @@ void PagedGeometry::_addDetailLevel(GeometryPageManager *mgr, Real maxRange, Rea
 	managerList.push_back(mgr);
 }
 
+void  PagedGeometry::setCustomParam(string entity, string paramName, float paramValue)
+{
+	setCustomParam(entity + "." + paramName, paramValue);
+}
+
+void  PagedGeometry::setCustomParam(string paramName, float paramValue)
+{
+	customParam[paramName] = paramValue;
+}
+
+float PagedGeometry::getCustomParam(string entity, string paramName, float defaultParamValue) const
+{
+	return getCustomParam(entity + "." + paramName, defaultParamValue);
+}
+
+float PagedGeometry::getCustomParam(string paramName, float defaultParamValue) const
+{
+	map<string, float>::const_iterator it;
+	it = customParam.find(paramName);
+	if (it != customParam.end()) {
+		float x = it->second;
+		return x;
+	}
+	else
+		return defaultParamValue;
+}
+
 //-------------------------------------------------------------------------------------
 
 GeometryPageManager::GeometryPageManager(PagedGeometry *mainGeom)
 : mainGeom(mainGeom)
-	, geomGrid(NULL)
-	, scrollBuffer(NULL)
 	, cacheTimer(0) // Reset the cache timer
+	, scrollBuffer(NULL)
+	, geomGrid(NULL)
+	, geomGridX(0)
+	, geomGridZ(0)
 {
 	//Use default cache speeds
 	setCacheSpeed();
@@ -468,9 +572,15 @@ void GeometryPageManager::update(unsigned long deltaTime, Vector3 &camPos, Vecto
 		
 		//If the geometry has expired...
 		if (blk->_inactiveTime >= inactivePageLife){
-			//Unload it
-			_unloadPage(blk);
-			i1 = loadedList.erase(i1);
+			if (!blk->_keepLoaded) {
+				//Unload it
+				_unloadPage(blk);
+				i1 = loadedList.erase(i1);
+			} else {
+				//This page needs to be kept loaded indefinitely, so don't unload it
+				blk->_inactiveTime = 0;
+				++i1;
+			}
 		} else {
 			//Update it's visibility/fade status based on it's distance from the camera
 			bool visible = false;
@@ -521,6 +631,9 @@ void GeometryPageManager::update(unsigned long deltaTime, Vector3 &camPos, Vecto
 			//Non-fade visibility
 			if (distSq >= nearDistSq && distSq < farDistSq)
 				visible = true;
+			//Hide all?
+			if (!mainGeom->getVisible())
+				visible = false;
 
 			//Update visibility
 			if (visible){
@@ -540,7 +653,7 @@ void GeometryPageManager::update(unsigned long deltaTime, Vector3 &camPos, Vecto
 			//And update it
 			blk->update();
 				
-			i1++;
+			++i1;
 		}
 		
 		//Increment the inactivity timer for the geometry
@@ -577,6 +690,126 @@ void GeometryPageManager::reloadGeometryPage(const Vector3 &point)
 	}
 }
 
+//Clears pages within the radius
+void GeometryPageManager::reloadGeometryPages(const Vector3 &center, Real radius)
+{
+	//First calculate a square boundary to eliminate the search space
+	TBounds area(center.x - radius, center.z - radius, center.x + radius, center.z + radius);
+
+	//Determine which grid block contains the top-left corner
+	int x1 = Math::Floor(geomGridX * (area.left - gridBounds.left) / gridBounds.width());
+	int z1 = Math::Floor(geomGridZ * (area.top - gridBounds.top) / gridBounds.height());
+	if (x1 < 0) x1 = 0; else if (x1 > geomGridX-1) x1 = geomGridX-1;
+	if (z1 < 0) z1 = 0; else if (z1 > geomGridZ-1) z1 = geomGridZ-1;
+	//...and the bottom right
+	int x2 = Math::Floor(geomGridX * (area.right - gridBounds.left) / gridBounds.width());
+	int z2 = Math::Floor(geomGridZ * (area.bottom - gridBounds.top) / gridBounds.height());
+	if (x2 < 0) x2 = 0; else if (x2 > geomGridX-1) x2 = geomGridX-1;
+	if (z2 < 0) z2 = 0; else if (z2 > geomGridZ-1) z2 = geomGridZ-1;
+
+	//Scan all the grid blocks in the region
+	Real radiusSq = radius * radius;
+	for (int x = x1; x <= x2; ++x) {
+		for (int z = z1; z <= z2; ++z) {
+			GeometryPage *page = _getGridPage(x, z);
+			if (page->_loaded){
+				Vector3 pos = page->getCenterPoint();
+				Real distX = (pos.x - center.x), distZ = (pos.z - center.z);
+				Real distSq = distX * distX + distZ * distZ;
+				
+				if (distSq <= radius) {
+					_unloadPage(page);
+					loadedList.erase(page->_iter);
+				}
+			}
+		}
+	}
+}
+
+//Clears pages within the bounds
+void GeometryPageManager::reloadGeometryPages(const TBounds & area)
+{
+	//Determine which grid block contains the top-left corner
+	int x1 = Math::Floor(geomGridX * (area.left - gridBounds.left) / gridBounds.width());
+	int z1 = Math::Floor(geomGridZ * (area.top - gridBounds.top) / gridBounds.height());
+	if (x1 < 0) x1 = 0; else if (x1 > geomGridX-1) x1 = geomGridX-1;
+	if (z1 < 0) z1 = 0; else if (z1 > geomGridZ-1) z1 = geomGridZ-1;
+	//...and the bottom right
+	int x2 = Math::Floor(geomGridX * (area.right - gridBounds.left) / gridBounds.width());
+	int z2 = Math::Floor(geomGridZ * (area.bottom - gridBounds.top) / gridBounds.height());
+	if (x2 < 0) x2 = 0; else if (x2 > geomGridX-1) x2 = geomGridX-1;
+	if (z2 < 0) z2 = 0; else if (z2 > geomGridZ-1) z2 = geomGridZ-1;
+
+	//Unload the grid blocks
+	for (int x = x1; x <= x2; ++x) {
+		for (int z = z1; z <= z2; ++z) {
+			GeometryPage *page = _getGridPage(x, z);
+			if (page->_loaded){
+				_unloadPage(page);
+				loadedList.erase(page->_iter);
+			}
+		}
+	}
+}
+
+//Loads pages within viewing range of the bounds and keeps them loaded
+void GeometryPageManager::preloadGeometry(const TBounds & area)
+{
+	TBounds loadarea;
+	loadarea.left = area.left - farDist;
+	loadarea.right = area.right + farDist;
+	loadarea.top = area.top - farDist;
+	loadarea.bottom = area.bottom + farDist;
+
+	//Determine which grid block contains the top-left corner
+	int x1 = Math::Floor(geomGridX * (loadarea.left - gridBounds.left) / gridBounds.width());
+	int z1 = Math::Floor(geomGridZ * (loadarea.top - gridBounds.top) / gridBounds.height());
+	if (x1 < 0) x1 = 0; else if (x1 > geomGridX-1) x1 = geomGridX-1;
+	if (z1 < 0) z1 = 0; else if (z1 > geomGridZ-1) z1 = geomGridZ-1;
+	//...and the bottom right
+	int x2 = Math::Floor(geomGridX * (loadarea.right - gridBounds.left) / gridBounds.width());
+	int z2 = Math::Floor(geomGridZ * (loadarea.bottom - gridBounds.top) / gridBounds.height());
+	if (x2 < 0) x2 = 0; else if (x2 > geomGridX-1) x2 = geomGridX-1;
+	if (z2 < 0) z2 = 0; else if (z2 > geomGridZ-1) z2 = geomGridZ-1;
+
+	//Preload the grid blocks
+	for (int x = x1; x <= x2; ++x) {
+		for (int z = z1; z <= z2; ++z) {
+			GeometryPage *page = _getGridPage(x, z);
+
+			//If the page isn't loaded
+			if (!page->_loaded){
+				//Load the geometry immediately
+				_loadPage(page);
+				loadedList.push_back(page);
+				page->_iter = (--loadedList.end());
+
+				//And remove it from the pending list if necessary
+				if (page->_pending){
+					pendingList.remove(page);
+					page->_pending = false;
+				}
+			}
+
+			//Flag the page so it won't expire and be deleted in a few seconds if
+			//it's currently not in the viewing range.
+			page->_keepLoaded = true;
+		}
+	}
+}
+
+void GeometryPageManager::resetPreloadedGeometry()
+{
+	//Set all grid blocks' _keepLoaded flag to false
+	for (int x = 0; x < geomGridX; ++x) {
+		for (int z = 0; z < geomGridZ; ++z) {
+			GeometryPage *page = _getGridPage(x, z);
+			page->_keepLoaded = true;
+		}
+	}
+}
+
+
 //Loads the given page of geometry immediately
 //Note: _loadPage() does add the page to loadedList, so that will have to be done manually
 void GeometryPageManager::_loadPage(GeometryPage *page)
@@ -599,6 +832,7 @@ void GeometryPageManager::_loadPage(GeometryPage *page)
 		page->removeEntities();
 		mainGeom->getPageLoader()->unloadPage(info);
 		page->_userData = 0;
+		page->_needsUnload = false;
 
 		page->clearBoundingBox();
 	}
@@ -640,6 +874,7 @@ void GeometryPageManager::_unloadPage(GeometryPage *page)
 	page->removeEntities();
 	mainGeom->getPageLoader()->unloadPage(info);
 	page->_userData = 0;
+	page->_needsUnload = false;
 
 	page->clearBoundingBox();
 
@@ -667,6 +902,7 @@ void GeometryPageManager::_scrollGridPages(int shiftX, int shiftZ)
 			for (int z = 0; z < geomGridZ; ++z){
 				GeometryPage *page = _getGridPage(x, z);
 				if (page->_loaded){
+					page->_keepLoaded = false;
 					_unloadPage(page);
 					loadedList.erase(page->_iter);
 				}
@@ -684,6 +920,7 @@ void GeometryPageManager::_scrollGridPages(int shiftX, int shiftZ)
 				for (int x = 0; x < shiftX; ++x){
 					GeometryPage *page = _getGridPage(x, z);
 					if (page->_loaded){
+						page->_keepLoaded = false;
 						_unloadPageDelayed(page);
 						loadedList.erase(page->_iter);
 					}
@@ -708,6 +945,7 @@ void GeometryPageManager::_scrollGridPages(int shiftX, int shiftZ)
 				for (int x = initialMidpoint; x < geomGridX; ++x){
 					GeometryPage *page = _getGridPage(x, z);
 					if (page->_loaded){
+						page->_keepLoaded = false;
 						_unloadPageDelayed(page);
 						loadedList.erase(page->_iter);
 					}
@@ -731,6 +969,7 @@ void GeometryPageManager::_scrollGridPages(int shiftX, int shiftZ)
 				for (int z = 0; z < shiftZ; ++z){
 					GeometryPage *page = _getGridPage(x, z);
 					if (page->_loaded){
+						page->_keepLoaded = false;
 						_unloadPageDelayed(page);
 						loadedList.erase(page->_iter);
 					}
@@ -755,6 +994,7 @@ void GeometryPageManager::_scrollGridPages(int shiftX, int shiftZ)
 				for (int z = initialMidpoint; z < geomGridZ; ++z){
 					GeometryPage *page = _getGridPage(x, z);
 					if (page->_loaded){
+						page->_keepLoaded = false;
 						_unloadPageDelayed(page);
 						loadedList.erase(page->_iter);
 					}
@@ -775,6 +1015,14 @@ void GeometryPageManager::_scrollGridPages(int shiftX, int shiftZ)
 }
 
 
+GeometryPage::GeometryPage()
+{
+	_visible = _fadeEnable = _pending = _pending = _loaded = _needsUnload = false;
+	_trueBoundsUndefined = true;
+	_inactiveTime = 0; _xIndex = _zIndex = 0; 
+	_centerPoint = Ogre::Vector3::ZERO; 
+	_userData = NULL;
+}
 
 void GeometryPage::addEntityToBoundingBox(Ogre::Entity *ent, const Ogre::Vector3 &position, const Ogre::Quaternion &rotation, const Ogre::Vector3 &scale)
 {
@@ -808,9 +1056,5 @@ void GeometryPage::clearBoundingBox()
 {
 	_trueBounds = AxisAlignedBox(0, 0, 0, 0, 0, 0);
 	_trueBoundsUndefined = true;
-}
-
-GeometryPage::GeometryPage() : _trueBoundsUndefined(true)
-{
 }
 }

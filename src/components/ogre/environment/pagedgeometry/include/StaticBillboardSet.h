@@ -86,13 +86,13 @@ public:
 	*/
 	StaticBillboardSet(Ogre::SceneManager *mgr, Ogre::SceneNode *rootSceneNode, BillboardMethod method = BB_METHOD_ACCELERATED);
 	~StaticBillboardSet();
-
+	
 	/**
 	\brief Adds a billboard to the StaticBillboardSet at the specified position.
 	\param position The desired position of the billboard.
 	\param xScale The width scale of the billboard.
 	\param yScale The height scale of the billboard.
-	\param texcoordIndex The texture tile this billboard will use. This value shoud be
+	\param texcoordIndex The texture tile this billboard will use. This value shoud be 
 	0..n, where n is the number of slices set with setTextureSlices()
 
 	The texcoordIndex option is only applicable if you have used setTextureSlices()
@@ -156,7 +156,7 @@ public:
 	{
 		return renderMethod;
 	}
-
+	
 	/**
 	\brief Sets whether or not this StaticBillboardSet will be rendered.
 	\param visible The desired visibility state of the StaticBillboardSet (true/false)
@@ -168,7 +168,7 @@ public:
 			node->setVisible(visible);
 		}
 	}
-
+	
 	/**
 	\brief Enables/disables distance fade-out for this billboard set
 	\param enabled Whether or not to enable fading
@@ -205,7 +205,7 @@ public:
 	which this function does.
 	*/
 	void clear();
-
+	
 	/**
 	\brief Applies a material to the billboards in this set.
 	\param materialName The name of the material to apply to this StaticBillboardSet.
@@ -243,14 +243,14 @@ public:
 
 private:
 	Ogre::SceneManager *sceneMgr;
-
+	
 	bool visible;
 	Ogre::SceneNode *node;
 	Ogre::Entity *entity;
 	Ogre::MeshPtr mesh;
 	Ogre::SubMesh *subMesh;
 	Ogre::String entityName;
-
+	
 	Ogre::MaterialPtr materialPtr, fadeMaterialPtr;
 	float uFactor, vFactor;
 
@@ -267,7 +267,7 @@ private:
 	bool fadeEnabled;
 	Ogre::Real fadeVisibleDist, fadeInvisibleDist;
 
-	static unsigned int selfInstances;
+	static Ogre::uint32 selfInstances;
 
 	static unsigned long GUID;
 	static inline Ogre::String getUniqueID(const Ogre::String &prefix)
@@ -300,7 +300,7 @@ private:
 
 	static SBMaterialRefList selfList;
 
-	unsigned int refCount;
+	Ogre::uint32 refCount;
 	Ogre::Material *material;
 	Ogre::BillboardOrigin origin;
 };

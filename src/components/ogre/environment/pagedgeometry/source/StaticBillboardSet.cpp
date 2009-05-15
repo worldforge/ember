@@ -44,7 +44,7 @@ namespace PagedGeometry {
 //-------------------------------------------------------------------------------------
 
 unsigned long StaticBillboardSet::GUID = 0;
-unsigned int StaticBillboardSet::selfInstances = 0;
+uint32 StaticBillboardSet::selfInstances = 0;
 StaticBillboardSet::FadedMaterialMap StaticBillboardSet::fadedMaterialMap;
 
 StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNode, BillboardMethod method)
@@ -54,6 +54,7 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 	visible = true;
 	fadeEnabled = false;
 	bbOrigin = BBO_CENTER;
+	subMesh = NULL;
 	
 	//Fall back to BB_METHOD_COMPATIBLE if vertex shaders are not available
 	if (renderMethod == BB_METHOD_ACCELERATED){
@@ -67,7 +68,7 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 
 	if (renderMethod == BB_METHOD_ACCELERATED){
 		//Accelerated billboard method
-		entity = 0;
+		entity = NULL;
 
 		uFactor = 1.0f;
 		vFactor = 1.0f;
@@ -87,7 +88,7 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 					"	out float4 oPosition : POSITION,	\n"
 					"	out float2 oUv       : TEXCOORD0,	\n"
 					"	out float4 oColor    : COLOR, \n"
-					"	out float4 oFog      : FOG,	\n"
+					"	out float oFog       : FOG,	\n"
 					"	uniform float4x4 worldViewProj,	\n"
 					"	uniform float    uScroll, \n"
 					"	uniform float    vScroll, \n"
@@ -107,15 +108,26 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 					"	oUv.y += vScroll; \n"
 					
 					//Fog
-					"	oFog.x = oPosition.z; \n"
+					"	oFog = oPosition.z; \n"
 					"}"; 
+
+				String shaderLanguage;
+				if (Root::getSingleton().getRenderSystem()->getName() == "Direct3D9 Rendering Subsystem")
+					shaderLanguage = "hlsl";
+				else
+					shaderLanguage = "cg";
 
 				vertexShader = HighLevelGpuProgramManager::getSingleton()
 					.createProgram("Sprite_vp",
 					ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-					"cg", GPT_VERTEX_PROGRAM);
+					shaderLanguage, GPT_VERTEX_PROGRAM);
 				vertexShader->setSource(vertexProg);
-				vertexShader->setParameter("profiles", "vs_1_1 arbvp1");
+
+				if (shaderLanguage == "hlsl")
+					vertexShader->setParameter("target", "vs_1_1");
+				else
+					vertexShader->setParameter("profiles", "vs_1_1 arbvp1");
+
 				vertexShader->setParameter("entry_point", "Sprite_vp");
 				vertexShader->load();
 			}
@@ -133,7 +145,7 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 					"	out float4 oPosition : POSITION,	\n"
 					"	out float2 oUv       : TEXCOORD0,	\n"
 					"	out float4 oColor    : COLOR, \n"
-					"	out float4 oFog      : FOG,	\n"
+					"	out float oFog       : FOG,	\n"
 					"	uniform float4x4 worldViewProj,	\n"
 
 					"	uniform float3 camPos, \n"
@@ -161,15 +173,26 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 					"	oUv.y += vScroll; \n"
 
 					//Fog
-					"	oFog.x = oPosition.z; \n"
+					"	oFog = oPosition.z; \n"
 					"}"; 
+
+				String shaderLanguage;
+				if (Root::getSingleton().getRenderSystem()->getName() == "Direct3D9 Rendering Subsystem")
+					shaderLanguage = "hlsl";
+				else
+					shaderLanguage = "cg";
 
 				vertexShader2 = HighLevelGpuProgramManager::getSingleton()
 					.createProgram("SpriteFade_vp",
 					ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-					"cg", GPT_VERTEX_PROGRAM);
+					shaderLanguage, GPT_VERTEX_PROGRAM);
 				vertexShader2->setSource(vertexProg2);
-				vertexShader2->setParameter("profiles", "vs_1_1 arbvp1");
+
+				if (shaderLanguage == "hlsl")
+					vertexShader2->setParameter("target", "vs_1_1");
+				else
+					vertexShader2->setParameter("profiles", "vs_1_1 arbvp1");
+
 				vertexShader2->setParameter("entry_point", "SpriteFade_vp");
 				vertexShader2->load();
 			}
@@ -179,6 +202,8 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 		//Compatible billboard method
 		fallbackSet = sceneMgr->createBillboardSet(getUniqueID("SBS"), 100);
 		node->attachObject(fallbackSet);
+		uFactor = 0;
+		vFactor = 0;
 	}
 }
 

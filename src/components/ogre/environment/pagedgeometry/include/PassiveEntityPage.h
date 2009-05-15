@@ -29,10 +29,10 @@ class PassiveEntityPage: public GeometryPage
 public:
 	typedef std::vector<std::pair<Ogre::SceneNode*, Ogre::Entity*> > EntityStore;
 
-	void init(::PagedGeometry::PagedGeometry *geom);
+	void init(::PagedGeometry::PagedGeometry *geom, const Ogre::Any &data);
 	PassiveEntityPage();
 	~PassiveEntityPage();
-	
+
 	void addEntity(Ogre::Entity *ent, const Ogre::Vector3 &position, const Ogre::Quaternion &rotation, const Ogre::Vector3 &scale, const Ogre::ColourValue &color);
 	void removeEntities();
 	void setFade(bool enabled, Ogre::Real visibleDist = 0, Ogre::Real invisibleDist = 0);
@@ -42,7 +42,7 @@ public:
 private:
 	Ogre::SceneManager *sceneMgr;
 	EntityStore mEntities;
-	
+
 	static unsigned long GUID;
 	static inline Ogre::String getUniqueID(const Ogre::String &prefix)
 	{
