@@ -1,7 +1,7 @@
 //
 // C++ Implementation: ShrubberyFoliage
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -69,8 +69,8 @@ void ShrubberyFoliage::initialize()
 {
 	Ogre::Camera& camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
 	mPagedGeometry = new ::PagedGeometry::PagedGeometry(&camera, EmberOgre::getSingleton().getTerrainGenerator()->getFoliageBatchSize());
-	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainInfo().getWorldSizeInIndices();	
-	
+	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainInfo().getWorldSizeInIndices();
+
 	::PagedGeometry::TBounds ogreBounds(Atlas2Ogre(worldSize));
 	if (ogreBounds.width() != ogreBounds.height()) {
 		if (ogreBounds.width() > ogreBounds.height()) {
@@ -82,29 +82,29 @@ void ShrubberyFoliage::initialize()
 		}
 	}
 	mPagedGeometry->setBounds(ogreBounds);
-	
-	
+
+
 	mPagedGeometry->addDetailLevel<PagedGeometry::BatchPage>(64, 32);
-	
+
 	mLoader = new FoliageLoader(mTerrainLayerDefinition, mFoliageDefinition);
  	mPagedGeometry->setPageLoader(mLoader);
 }
 
 void ShrubberyFoliage::frameStarted(const Ogre::FrameEvent & evt)
-{	
-	
+{
+
 	if (mPagedGeometry) {
 		try {
 			mPagedGeometry->update();
 		} catch (const Ogre::Exception& ex)
 		{
-			S_LOG_FAILURE("Error when updating grass. Will disable grass.\n"<< ex.what());
+			S_LOG_FAILURE("Error when updating shrubbery for terrain layer " << mTerrainLayerDefinition.getName() << " and areaId " << mTerrainLayerDefinition.getAreaId() << ". Will disable shrubbery.\n"<< ex.what());
 			delete mPagedGeometry;
 			delete mLoader;
 			mPagedGeometry = 0;
 			mLoader = 0;
 		}
-	}	
+	}
 }
 
 
