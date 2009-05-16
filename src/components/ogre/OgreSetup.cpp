@@ -28,6 +28,9 @@
 
 #include "OgreSetup.h"
 
+// Should be before GL/glx.h for OGRE < 1.6.2
+#include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
+
 #include "MeshSerializerListener.h"
 
 #include "services/EmberServices.h"
@@ -43,7 +46,6 @@
 	#include "framework/binreloc.h"
 	#include <GL/glx.h>
 #endif
-#include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
 // #include "image/OgreILCodecs.h"
 #include "framework/Tokeniser.h"
 
