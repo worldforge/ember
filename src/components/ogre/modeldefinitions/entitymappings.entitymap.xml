@@ -180,6 +180,29 @@
 	<autoentitymapping name="pile" />
 	<autoentitymapping name="grass" />
 	
+	<entitymapping name="grass">
+		<entitymatch>
+			<case>
+				<caseparam type="equals">grass</caseparam>
+				<action type="display-model">grass</action>
+				<attributematch attribute="style" >
+					<case>
+						<caseparam type="equals">grass</caseparam>
+						<action type="display-part">green</action>
+					</case>
+					<case>
+						<caseparam type="equals">hay</caseparam>
+						<action type="display-part">yellow</action>
+					</case>
+					<case>
+						<caseparam type="equals">brown</caseparam>
+						<action type="display-part">brown</action>
+					</case>
+				</attributematch>
+			</case>
+		</entitymatch>
+	</entitymapping>
+
 <!-- furniture-->
 	<autoentitymapping name="chair" />
 	<autoentitymapping name="door" />

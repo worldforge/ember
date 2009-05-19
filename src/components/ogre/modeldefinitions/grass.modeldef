@@ -5,7 +5,7 @@
         <submodels>
             <submodel mesh="3d_objects/plants/grass/models/bittergrass/bittergrass.mesh">
                 <parts>
-                    <part name="brown" show="true" group="main">
+                    <part name="brown" show="false" group="main">
                         <subentities>
                             <subentity index="0" material="/global/plants/grass/bittergrass_brown" />
                         </subentities>
@@ -15,7 +15,7 @@
                             <subentity index="0" material="/global/plants/grass/bittergrass_green" />
                         </subentities>
                     </part>
-                    <part name="yellow" show="true" group="main">
+                    <part name="yellow" show="false" group="main">
                         <subentities>
                             <subentity index="0" material="/global/plants/grass/bittergrass_yellow" />
                         </subentities>
