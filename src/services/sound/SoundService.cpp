@@ -1,21 +1,22 @@
 /*
-  Copyright (C) 2008 Romulo Fernandes Machado (nightz)
-  Copyright (C) 2008 Erik Hjortsberg <erik.hjortsberg@gmail.com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
+ * Copyright (C) 2008 Romulo Fernandes Machado (nightz)
+ * Copyright (C) 2008 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * Copyright (C) 2009 by Manuel A. Fernandez Montecelo <manuel.montezelo@gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 675 Mass
+ * Ave, Cambridge, MA 02139, USA.
+ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -23,6 +24,7 @@
 
 #include "SoundSample.h"
 
+#include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 #include "framework/LoggingInstance.h"
 #include "framework/ConsoleBackend.h"
@@ -72,7 +74,8 @@ Service::Status SoundService::start()
 {
 	S_LOG_INFO("Sound Service starting");
 	
-	if (Ember::EmberServices::getSingleton().getConfigService()->hasItem("audio", "enabled") && static_cast<bool>(Ember::EmberServices::getSingleton().getConfigService()->getValue("audio", "enabled")) == false) {
+	if (Ember::EmberServices::getSingleton().getConfigService()->hasItem("audio", "enabled")
+	    && static_cast<bool>(Ember::EmberServices::getSingleton().getConfigService()->getValue("audio", "enabled")) == false) {
 		S_LOG_INFO("Sound disabled.");
 	} else {
 	
@@ -123,8 +126,6 @@ void SoundService::stop(int code)
 	}
 	mBaseSamples.clear();
 	
-
-
 ///this hangs, perhaps because we don't clean up properly after us, so we'll deactivate it for now
 // 	if (isEnabled()) {
 // 		#ifndef __WIN32__
@@ -147,11 +148,9 @@ bool SoundService::isEnabled() const
 	return mEnabled;
 }
 
-
 void SoundService::runCommand(const std::string &command, const std::string &args)
 {
 }
-
 
 void SoundService::registerStream(StreamedSoundSample* copy)
 {
@@ -198,6 +197,7 @@ void SoundService::updateListenerPosition(const WFMath::Point<3>& pos, const WFM
 	if (!isEnabled()) {
 		return;
 	}
+
 	alListener3f(AL_POSITION, pos.x(), pos.y(), pos.z());
 	SoundGeneral::checkAlError("Setting the listener position.");
 
@@ -206,8 +206,7 @@ void SoundService::updateListenerPosition(const WFMath::Point<3>& pos, const WFM
 	WFMath::RotMatrix<3> rotMatrix(orientation);
 	WFMath::Vector<3> vectors[3];
 	
-	for (size_t iCol = 0; iCol < 3; iCol++)
-	{
+	for (size_t iCol = 0; iCol < 3; iCol++) {
 		vectors[iCol].x() = rotMatrix.elem(0, iCol);
 		vectors[iCol].y() = rotMatrix.elem(1, iCol);
 		vectors[iCol].z() = rotMatrix.elem(2, iCol);
@@ -238,6 +237,7 @@ void SoundService::updateListenerPosition(const WFMath::Point<3>& pos, const WFM
 	if (!isEnabled()) {
 		return;
 	}
+
 	alListener3f(AL_POSITION, pos.x(), pos.y(), pos.z());
 	SoundGeneral::checkAlError("Setting the listener position.");
 
@@ -294,8 +294,7 @@ bool SoundService::destroySoundSample(const std::string& soundPath)
 	}
 	return false;
 }
-	
-	
+
 SoundInstance* SoundService::createInstance()
 {
 	if (!isEnabled()) {
@@ -305,6 +304,7 @@ SoundInstance* SoundService::createInstance()
 	mInstances.push_back(instance);
 	return instance;
 }
+
 bool SoundService::destroyInstance(SoundInstance* instance)
 {
 	SoundInstanceStore::iterator I = std::find(mInstances.begin(), mInstances.end(), instance);
