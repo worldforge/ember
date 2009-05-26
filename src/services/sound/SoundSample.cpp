@@ -94,18 +94,6 @@ unsigned int StaticSoundSample::getNumberOfBuffers() const
 	return 1;
 }
 
-// 	void StaticSoundSample::play()
-// 	{
-// 		alSourcePlay(mSource);
-// 		checkAlError();
-// 	}
-// 
-// 	void StaticSoundSample::stop()
-// 	{
-// 		alSourceStop(mSource);
-// 		checkAlError();
-// 	}
-
 	// Streamed (OGG)
 // 	StreamedSoundSample::StreamedSoundSample(const std::string& filename, bool playsLocal, float volume)
 // 	{
