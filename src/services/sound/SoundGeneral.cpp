@@ -42,10 +42,11 @@ namespace Ember
 		if (error == AL_NO_ERROR) {
 			return true;
 		} else {
-			if (description != "") {
+			if (description == "") {
 				S_LOG_FAILURE("OpenAl error: " << alutGetErrorString(error));
 			} else {
-				S_LOG_FAILURE("OpenAl error: " << alutGetErrorString(error) << "\nDescription: " << description);
+				S_LOG_FAILURE("OpenAl error: " << alutGetErrorString(error)
+					      << "\nDescription: " << description);
 			}
 			return false;
 		}
