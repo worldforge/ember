@@ -148,12 +148,13 @@ public:
 protected:
 
 	/**
-	* @brief Ctor. This is protected to disallow direct creation of this class except by subclasses.
-	*/
-	BaseSoundSample() {}
+	 * @brief Ctor. This is protected to disallow direct creation of this class except by subclasses.
+	 */
+	BaseSoundSample() { }
+
 	/**
-	* Type of the sample
-	*/
+	 * Type of the sample
+	 */
 	SoundGeneral::SoundSampleType	mType;
 };
 
@@ -164,7 +165,20 @@ protected:
 class StaticSoundSample : public BaseSoundSample
 {
 public:
+	/**
+	 * Ctor.
+	 *
+	 * @param resource Resource associated with this sample
+	 *
+	 * @param playsLocal ??? (not used)
+	 *
+	 * @param volume Volume for the sample (not used)
+	 */
 	StaticSoundSample(const ResourceWrapper& resource, bool playsLocal, float volume);
+
+	/**
+	 * Dtor.
+	 */
 	~StaticSoundSample();
 
 	/**
@@ -203,6 +217,8 @@ private:
 /**
  * The class StreamedSoundSample is responsible to keep track of samples that
  * often need updates and requires more than a buffer to stream data.
+ *
+ * \todo not implemented
  */
 // class StreamedSoundSample : public BaseSoundSample
 // {

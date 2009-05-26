@@ -23,7 +23,6 @@
 
 #include "SoundSample.h"
 
-
 #include "framework/LoggingInstance.h"
 
 #include "SoundService.h"
@@ -40,10 +39,9 @@ namespace Ember
 {
 
 StaticSoundBinding::StaticSoundBinding(SoundSource& source, StaticSoundSample& sample)
-: SoundBinding(source)
-, mSample(sample)
+: SoundBinding(source), mSample(sample)
 {
-	///Bind it to the buffer.
+	// Bind it to the buffer.
 	alSourcei(source.getALSource(), AL_BUFFER, sample.getBuffer());
 	SoundGeneral::checkAlError("Binding sound source to static sound buffer.");
 }
@@ -60,16 +58,14 @@ StaticSoundSample::StaticSoundSample(const ResourceWrapper& resource, bool plays
 	mType = SoundGeneral::SAMPLE_WAV;
 	mBuffer = alutCreateBufferFromFileImage(mResource.getDataPtr(), mResource.getSize());
 	
-	if (!SoundGeneral::checkAlError("Generated buffer for static sample."))
-	{
+	if (!SoundGeneral::checkAlError("Generated buffer for static sample.")) {
 		alDeleteBuffers(1, &mBuffer);
 	}
 }
 
 StaticSoundSample::~StaticSoundSample()
 {
-	if (alIsBuffer(mBuffer))
-	{
+	if (alIsBuffer(mBuffer)) {
 		alDeleteBuffers(1, &mBuffer);
 		SoundGeneral::checkAlError("Deleting static sound buffers.");
 	}
