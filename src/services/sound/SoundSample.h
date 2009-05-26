@@ -35,52 +35,6 @@
 namespace Ember
 {
 class SoundSource;
-class StaticSoundSample;
-
-
-/**
- * @brief A binding to a "static" sound source, i.e. a sound source which
- * doesn't have to be updated.
- *
- * A "static" sound is one that is small enough to fit into one continous
- * buffer, and thus doesn't need to be dynamically updated as is the case with
- * "streaming" sounds. As a result, this binding is very simple and will just
- * bind the sound data to the source in the constructor, without having to
- * provide any functionality in the update() method.
- *
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
- */
-class StaticSoundBinding : public SoundBinding
-{
-public:
-
-	/**
-	 * @brief Ctor. All bindings between the buffer and the sound source will occur here.
-	 *
-	 * @param source The sound source.
-	 *
-	 * @param sample The static sound sample to bind to the source.
-	 */
-	StaticSoundBinding(SoundSource& source, StaticSoundSample& sample);
-
-	/**
-	 * @copydoc SoundBinding::update()
-	 */
-	virtual void update() {
-		// Since it's a static sound we don't need to update anything.
-	}
-
-protected:
-
-	/**
-	 * @brief The static sound samle used for binding.
-	 *
-	 * There's really no need to keep this around here, since the binding
-	 * will occur in the constructor, but hey, someday we might provide some
-	 * kind of dynamic unloading/reloading...
-	 */
-	StaticSoundSample& mSample;
-};
 
 
 /**
@@ -211,6 +165,51 @@ private:
 	 * @brief The resource wrapper instance which holds the actual data.
 	 */
 	ResourceWrapper mResource;
+};
+
+
+/**
+ * @brief A binding to a "static" sound source, i.e. a sound source which
+ * doesn't have to be updated.
+ *
+ * A "static" sound is one that is small enough to fit into one continous
+ * buffer, and thus doesn't need to be dynamically updated as is the case with
+ * "streaming" sounds. As a result, this binding is very simple and will just
+ * bind the sound data to the source in the constructor, without having to
+ * provide any functionality in the update() method.
+ *
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
+class StaticSoundBinding : public SoundBinding
+{
+public:
+
+	/**
+	 * @brief Ctor. All bindings between the buffer and the sound source will occur here.
+	 *
+	 * @param source The sound source.
+	 *
+	 * @param sample The static sound sample to bind to the source.
+	 */
+	StaticSoundBinding(SoundSource& source, StaticSoundSample& sample);
+
+	/**
+	 * @copydoc SoundBinding::update()
+	 */
+	virtual void update() {
+		// Since it's a static sound we don't need to update anything.
+	}
+
+protected:
+
+	/**
+	 * @brief The static sound samle used for binding.
+	 *
+	 * There's really no need to keep this around here, since the binding
+	 * will occur in the constructor, but hey, someday we might provide some
+	 * kind of dynamic unloading/reloading...
+	 */
+	StaticSoundSample& mSample;
 };
 
 
