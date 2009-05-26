@@ -109,8 +109,6 @@ Service::Status SoundService::start()
 	
 	return Service::OK;
 }
-	
-
 
 /* Interface method for stopping this service */
 void SoundService::stop(int code)
@@ -190,46 +188,6 @@ bool SoundService::unregisterStream(const StreamedSoundSample* sample)
 // 		#endif
 
 	return false;
-}
-
-void SoundService::updateListenerPosition(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation)
-{
-	if (!isEnabled()) {
-		return;
-	}
-
-	alListener3f(AL_POSITION, pos.x(), pos.y(), pos.z());
-	SoundGeneral::checkAlError("Setting the listener position.");
-
-	///Set the direction of the listener.
-	///These conversions are however incorrect, we'll have to fix it. /ehj
-	WFMath::RotMatrix<3> rotMatrix(orientation);
-	WFMath::Vector<3> vectors[3];
-	
-	for (size_t iCol = 0; iCol < 3; iCol++) {
-		vectors[iCol].x() = rotMatrix.elem(0, iCol);
-		vectors[iCol].y() = rotMatrix.elem(1, iCol);
-		vectors[iCol].z() = rotMatrix.elem(2, iCol);
-	}
-	
-	ALfloat aluVectors[6];
-	aluVectors[0] = vectors[1].x();
-	aluVectors[1] = vectors[1].y();
-	aluVectors[2] = vectors[1].z();
-	aluVectors[3] = vectors[2].x();
-	aluVectors[4] = vectors[2].y();
-	aluVectors[5] = vectors[2].z();
-	
-/*        ALfloat aluVectors[6];
-        aluVectors[0] = rotMatrix.elem(0, 1);
-        aluVectors[1] = rotMatrix.elem(1, 1);
-        aluVectors[2] = rotMatrix.elem(2, 1);
-        aluVectors[3] = rotMatrix.elem(0, 2);
-        aluVectors[4] = rotMatrix.elem(1, 2);
-        aluVectors[5] = rotMatrix.elem(2, 2);    */    
-	
-	alListenerfv(AL_ORIENTATION, aluVectors);
-	SoundGeneral::checkAlError("Setting the listener orientation.");
 }
 
 void SoundService::updateListenerPosition(const WFMath::Point<3>& pos, const WFMath::Vector<3>& direction, const WFMath::Vector<3> up)

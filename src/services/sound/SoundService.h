@@ -151,15 +151,6 @@ public:
 	 *
 	 * @param position The new listener position.
 	 *
-	 * @param orientation The listener orientation.
-	 */
-	void updateListenerPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation);
-
-	/**
-	 * @brief Update the position (in world coordinates) of the listener
-	 *
-	 * @param position The new listener position.
-	 *
 	 * @param direction The direction vector of the listener.
 	 *
 	 * @param up The up vector of the listener.
