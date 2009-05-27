@@ -22,15 +22,13 @@
 #include "config.h"
 #endif
 
-#include "SoundSample.h"
+#include "SoundService.h"
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 #include "framework/LoggingInstance.h"
-#include "framework/ConsoleBackend.h"
-#include "framework/Tokeniser.h"
 
-#include "SoundService.h"
+#include "SoundSample.h"
 #include "SoundInstance.h"
 
 #include <map>
@@ -42,6 +40,7 @@
 #else
 #include <ALUT/alut.h>
 #endif
+
 
 namespace Ember
 {
@@ -239,7 +238,6 @@ BaseSoundSample* SoundService::createOrRetrieveSoundSample(const std::string& so
 		}
 	}
 	return 0;
-	
 }
 
 bool SoundService::destroySoundSample(const std::string& soundPath)

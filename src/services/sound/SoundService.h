@@ -23,13 +23,12 @@
 
 #include "framework/Service.h"
 #include "framework/ConsoleObject.h"
-#include "SoundGeneral.h"
 
 #include <wfmath/vector.h>
 #include <wfmath/quaternion.h>
 #include <wfmath/point.h>
 
-#include <vector>
+#include <list>
 #include <map>
 
 namespace Ember {
