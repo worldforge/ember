@@ -164,7 +164,7 @@ class Service : public sigc::trackable
 
 
     /** Returns true if the service is currently running. */
-    virtual bool isRunning()
+    virtual bool isRunning() const
     {
     	return myRunning;
     }
@@ -177,7 +177,7 @@ class Service : public sigc::trackable
      * (If everything is fine, then this can be empty, as the status code can be
      * used to determine this.)
      */
-    virtual std::string getStatusText()
+    virtual std::string getStatusText() const
     {
     	return myStatusText;
     }
