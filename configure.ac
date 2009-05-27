@@ -358,6 +358,17 @@ PKG_CHECK_MODULES(SIG, [sigc++-2.0 >= 2.0],
       AC_MSG_ERROR([Couldn't find SIGC++2.0])
   ])
 
+# Check for Boost::Thread
+AC_CHECK_LIB([boost_thread-mt], [main],
+    [
+        LIBS="$LIBS -lboost_thread-mt"
+    ],
+    [
+        AC_MSG_ERROR([Couldn't find Boost::Thread library.])
+    ]
+)
+
+
 # Check for the WorldForge libs
 PKG_CHECK_MODULES(WF, [eris-1.3 >= 1.3.14 \
  varconf-1.0 >= 0.6.5 mercator-0.2 >= 0.2.6 atlascpp-0.6 >= 0.6.0 wfmath-0.3 >= 0.3.9 libwfut-0.2 >= 0.2.0],
@@ -418,22 +429,6 @@ if test "$ac_use_debug_code" = "yes"; then
 else
       CFLAGS="$CFLAGS -DNDEBUG"
       CXXFLAGS="$CXXFLAGS -DNDEBUG"
-fi
-
-#multi threading
-AC_ARG_ENABLE(thread_safe,[  --enable-multithread     creates multi threaded code [default=no]],
-[ 
-   if test x$enableval = xno; then 
-		ac_use_thread_code="no"	
-   else 
-		ac_use_thread_code="yes"
-   fi
-], [ac_use_thread_code="no"])
-
-if test "$ac_use_thread_code" = "yes"; then
-      CFLAGS="$CFLAGS -DTHREAD_SAFE"
-      CXXFLAGS="$CXXFLAGS -DTHREAD_SAFE"
-		LIBS="$LIBS -lpthread"
 fi
 
 # gprof debugging option
