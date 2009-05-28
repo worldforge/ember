@@ -55,12 +55,6 @@ SoundService::SoundService()
 {
 	setName("Sound Service");
 	setDescription("Service for reproduction of sound effects and background music");
-
-	#ifdef THREAD_SAFE
-	pthread_mutex_init(&mGroupsMutex, NULL);
-	pthread_mutex_init(&mSamplesMutex, NULL);
-	pthread_mutex_init(&mGroupModelsMutex, NULL);
-	#endif
 }
 
 /* dtor */

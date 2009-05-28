@@ -210,16 +210,6 @@ private:
 	 */
 	SoundSampleStore mBaseSamples;
 
-	#ifdef THREAD_SAFE
-	/**
-	* In case we are using threads, we must lock the mutexes to 
-	* prevent incorrect writing to the sample lists
-	*/
-	pthread_mutex_t mGroupModelsMutex;
-	pthread_mutex_t mGroupsMutex;
-	pthread_mutex_t mSamplesMutex;
-	#endif
-	
 	#ifdef __WIN32__
 	/**
 	 * @brief The main OpenAL context.
