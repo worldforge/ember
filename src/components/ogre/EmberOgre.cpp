@@ -42,7 +42,7 @@ http://www.gnu.org/copyleft/lesser.txt.
     #include <io.h> // for _access, Win32 version of stat()
     #include <direct.h> // for _mkdir
 //	#include <sys/stat.h>
-	
+
 	#include <iostream>
 	#include <fstream>
 	#include <ostream>
@@ -96,8 +96,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "environment/meshtree/TParameters.h"
 #include "environment/Tree.h"
 
-#include "carpenter/Carpenter.h"
-#include "carpenter/BluePrint.h"
+//#include "carpenter/Carpenter.h"
+//#include "carpenter/BluePrint.h"
 
 #include <OgreSceneManager.h>
 #include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
@@ -121,8 +121,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 
 
-#include "jesus/Jesus.h"
-#include "jesus/XMLJesusSerializer.h"
+//#include "jesus/Jesus.h"
+//#include "jesus/XMLJesusSerializer.h"
 
 #include "framework/osdir.h"
 
@@ -160,13 +160,13 @@ namespace EmberOgre {
 			if (ret == 0) {
 				///copy conf file from shared
 				std::ifstream  instream ((originalConfigFileDir + filename).c_str());
-				std::ofstream  outstream (filename.c_str()); 
+				std::ofstream  outstream (filename.c_str());
 				outstream <<  instream.rdbuf();
 			}
 		}
 	}
 
-    
+
 
 EmberOgre::EmberOgre() :
 mAvatar(0),
@@ -176,7 +176,7 @@ mSceneMgr(0),
 mWindow(0),
 mShaderManager(0),
 mGeneralCommandMapper(std::auto_ptr<InputCommandMapper>(new InputCommandMapper("general"))),
-mEmberEntityFactory(0), 
+mEmberEntityFactory(0),
 mTerrainGenerator(0),
 mSoundManager(0),
 mMotionManager(0),
@@ -187,12 +187,12 @@ mTerrainLayerManager(0),
 mEntityRecipeManager(0),
 mMoveManager(0),
 mJesus(0),
-mLogObserver(0), 
+mLogObserver(0),
 mMaterialEditor(0),
 mScriptingResourceProvider(0),
 mSoundResourceProvider(0),
-mCollisionManager(0),
-mCollisionDetectorVisualizer(0),
+//mCollisionManager(0),
+//mCollisionDetectorVisualizer(0),
 mResourceLoader(0),
 mOgreLogManager(0),
 mIsInPausedMode(false)
@@ -202,17 +202,17 @@ mIsInPausedMode(false)
 
 EmberOgre::~EmberOgre()
 {
-	delete mCollisionDetectorVisualizer;
-	delete mCollisionManager;
+//	delete mCollisionDetectorVisualizer;
+//	delete mCollisionManager;
 	delete mMaterialEditor;
-	delete mJesus;
+//	delete mJesus;
 	delete mMoveManager;
-	
+
 	///The factory will be deleted by the mWorldView when that is deleted later on, so we shall not delete it here
 // 	delete mEmberEntityFactory;
 	delete mAvatarController;
 	delete mAvatar;
-	
+
 	///start with deleting the eris world, then shut down ogre
 // 	delete mWorldView;
 
@@ -224,7 +224,7 @@ EmberOgre::~EmberOgre()
 
 	Ember::EmberServices::getSingleton().getSoundService()->setResourceProvider(0);
 	delete mSoundManager;
-	
+
 	Ember::EmberServices::getSingleton().getScriptingService()->setResourceProvider(0);
 
 	delete mGUIManager;
@@ -235,28 +235,28 @@ EmberOgre::~EmberOgre()
 
 	///we need to make sure that all Models are destroyed before Ogre begins destroying other movable objects (such as Entities)
 	///this is because Model internally uses Entities, so if those Entities are destroyed by Ogre before the Models are destroyed, the Models will try to delete them again, causing segfaults and other wickedness
-	///by deleting the model manager we'll assure that 
+	///by deleting the model manager we'll assure that
 	delete mModelDefinitionManager;
 
 // 	if (mWindow) {
 // 		mRoot->getRenderSystem()->destroyRenderTarget(mWindow->getName());
 // 	}
-	
+
 	delete mShaderManager;
-	
+
 	if (mOgreSetup.get()) {
 		mOgreSetup->shutdown();
 		mOgreSetup.reset();
 	}
-	
+
 	///Ogre is destroyed already, so we can't deregister this: we'll just destroy it
 	delete mLogObserver;
 	OGRE_DELETE mOgreLogManager;
-	
+
 	///delete this first after Ogre has been shut down, since it then deletes the EmberOgreFileSystemFactory instance, and that can only be done once Ogre is shutdown
 	delete mResourceLoader;
-	
-	
+
+
 /*	delete mOgreResourceLoader;
 //	mSceneMgr->shutdown();
 //		delete mWorldView;
@@ -272,10 +272,10 @@ EmberOgre::~EmberOgre()
 /*	if (mEmberEntityFactory)
 		delete mEmberEntityFactory;*/
 //		delete mRoot;
-	
-		
-		
-		
+
+
+
+
 
 }
 
@@ -313,7 +313,7 @@ void EmberOgre::shutdownGui()
 	mGUIManager = 0;
 }
 
-    
+
 // These internal methods package up the stages in the startup process
 /** Sets up the application - returns false if the user chooses to abandon configuration. */
 bool EmberOgre::setup()
@@ -348,7 +348,7 @@ bool EmberOgre::setup()
 	mOgreSetup = std::auto_ptr<OgreSetup>(new OgreSetup);
 
 	mLogObserver = new OgreLogObserver();
-	
+
 	///if we do this we will override the automatic creation of a LogManager and can thus route all logging from ogre to the ember log
 	mOgreLogManager = OGRE_NEW Ogre::LogManager();
 	Ogre::LogManager::getSingleton().createLog("Ogre", true, false, true);
@@ -363,20 +363,20 @@ bool EmberOgre::setup()
 
 	///Create the model definition manager
 	mModelDefinitionManager = new Model::ModelDefinitionManager();
-	
+
 	mModelMappingManager = new Model::Mapping::EmberModelMappingManager();
-	
+
 	mTerrainLayerManager = new Terrain::TerrainLayerDefinitionManager();
 
 	// Sounds
 	mSoundManager = new SoundDefinitionManager();
-	
+
 	mEntityRecipeManager = new EntityRecipeManager();
-	
+
 	///Create a resource loader which loads all the resources we need.
 	mResourceLoader = new OgreResourceLoader();
 	mResourceLoader->initialize();
-	
+
 	///check if we should preload the media
 	bool preloadMedia = configSrv->itemExists("media", "preloadmedia") && (bool)configSrv->getValue("media", "preloadmedia");
 	bool useWfut = configSrv->itemExists("wfut", "enabled") && (bool)configSrv->getValue("wfut", "enabled");
@@ -385,78 +385,78 @@ bool EmberOgre::setup()
 	bool carryOn = mOgreSetup->configure();
 	if (!carryOn) return false;
 	mWindow = mOgreSetup->getRenderWindow();
-	
-	
+
+
 	///start with the bootstrap resources, after those are loaded we can show the LoadingBar
 	mResourceLoader->loadBootstrap();
-	
-	
+
+
 	mSceneMgr = mOgreSetup->chooseSceneManager();
-	
+
 	///create the main camera, we will of course have a couple of different cameras, but this will be the main one
 	Ogre::Camera* camera = mSceneMgr->createCamera("MainCamera");
 	Ogre::Viewport* viewPort = mWindow->addViewport(camera);
 	///set the background colour to black
 	viewPort->setBackgroundColour(Ogre::ColourValue(0,0,0));
 	camera->setAspectRatio(Ogre::Real(viewPort->getActualWidth()) / Ogre::Real(viewPort->getActualHeight()));
-	
+
 	///The input object must know the resoluton of the screen
 	unsigned int height, width, depth;
 	int top, left;
 	mWindow->getMetrics(width, height, depth, left, top);
 	Ember::Input::getSingleton().initialize(width, height);
-	
+
 	///bind general commands
 	mGeneralCommandMapper->readFromConfigSection("key_bindings_general");
 	mGeneralCommandMapper->bindToInput(Ember::Input::getSingleton());
-	
+
 	///we need a nice loading bar to show the user how far the setup has progressed
 	Gui::LoadingBar loadingBar;
-	
+
 	Gui::LoadingBarSection wfutSection(loadingBar, 0.2, "Media update");
 	loadingBar.addSection(&wfutSection);
 	Gui::WfutLoadingBarSection wfutLoadingBarSection(wfutSection);
-	
+
 	Gui::LoadingBarSection resourceGroupSection(loadingBar, 0.8, "Resource loading");
 	loadingBar.addSection(&resourceGroupSection);
 	unsigned int numberOfSections = mResourceLoader->numberOfSections() - 1; ///remove bootstrap since that's already loaded
 	Gui::ResourceGroupLoadingBarSection resourceGroupSectionListener(resourceGroupSection, numberOfSections, (preloadMedia ? numberOfSections : 0 ), 0.7);
-	
+
 	loadingBar.start(mWindow);
 	loadingBar.setVersionText(std::string("Version ") + VERSION );
-	
+
 	/// Turn off rendering of everything except overlays
 	mSceneMgr->clearSpecialCaseRenderQueues();
 	mSceneMgr->addSpecialCaseRenderQueue(Ogre::RENDER_QUEUE_OVERLAY);
 	mSceneMgr->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_INCLUDE);
-	
+
 	if (useWfut) {
 		S_LOG_INFO("Updating media.");
 		MediaUpdater updater;
 		updater.performUpdate();
 	}
-	
+
 	///create the collision manager
-	mCollisionManager = new OgreOpcode::CollisionManager(mSceneMgr);
-	mCollisionDetectorVisualizer = new OpcodeCollisionDetectorVisualizer();
-	
+//	mCollisionManager = new OgreOpcode::CollisionManager(mSceneMgr);
+//	mCollisionDetectorVisualizer = new OpcodeCollisionDetectorVisualizer();
+
 	mResourceLoader->loadGui();
 	mResourceLoader->loadGeneral();
 
 	/// Create shader manager
 	mShaderManager = new ShaderManager;
-	
+
 	///add ourself as a frame listener
 	Ogre::Root::getSingleton().addFrameListener(this);
 
 	///should media be preloaded?
 	if (preloadMedia)
-	{ 
+	{
 		S_LOG_INFO( "Begin preload.");
 		mResourceLoader->preloadMedia();
 
 		S_LOG_INFO( "End preload.");
-	}	
+	}
 	try {
 		mGUIManager = new GUIManager(mWindow, mSceneMgr);
 		EventGUIManagerCreated.emit(*mGUIManager);
@@ -464,25 +464,25 @@ bool EmberOgre::setup()
 		///we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
 		throw Ember::Exception("Could not load gui, aborting. Make sure that all media got downloaded and installed correctly.");
 	}
-    
-	
+
+
 
 	if (chdir(configSrv->getHomeDirectory().c_str())) {
 		S_LOG_WARNING("Failed to change directory to '"<< configSrv->getHomeDirectory() << "'");
 	}
-	
+
 	// Avatar
 	mAvatar = new Avatar();
-	
+
 	mAvatarController = new AvatarController(*mAvatar, *mWindow, *mGUIManager, *camera);
 	EventAvatarControllerCreated.emit(*mAvatarController);
-	
+
 	mTerrainGenerator = new Terrain::TerrainGenerator(new EmberPagingSceneManagerAdapter(mSceneMgr));
 	EventTerrainGeneratorCreated.emit(*mTerrainGenerator);
 	mMotionManager = new MotionManager();
 // 	mMotionManager->setTerrainGenerator(mTerrainGenerator);
 	EventMotionManagerCreated.emit(*mMotionManager);
-	
+
 //	mSceneMgr->setPrimaryCamera(mAvatar->getAvatarCamera()->getCamera());
 
 	mMoveManager = new EntityMoveManager();
@@ -492,7 +492,7 @@ bool EmberOgre::setup()
 
 	mRoot->addFrameListener(mMotionManager);
 	new ConsoleObjectImpl();
-	
+
 
 	try {
 		mGUIManager->initialize();
@@ -539,7 +539,7 @@ void EmberOgre::checkForConfigFiles()
 
 	const std::string& sharePath(Ember::EmberServices::getSingleton().getConfigService()->getSharedConfigDirectory());
 
-	///make sure that there are files 
+	///make sure that there are files
 	assureConfigFile("ogre.cfg", sharePath);
 }
 
@@ -549,28 +549,28 @@ void EmberOgre::preloadMedia(void)
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingleton().getConfigService();
-	
+
 
 	std::vector<std::string> shaderTextures;
-	
+
 	shaderTextures.push_back(std::string(configSrv->getValue("shadertextures", "rock")));
 	shaderTextures.push_back(std::string(configSrv->getValue("shadertextures", "sand")));
 	shaderTextures.push_back(std::string(configSrv->getValue("shadertextures", "grass")));
-	
+
 	for (std::vector<std::string>::iterator I = shaderTextures.begin(); I != shaderTextures.end(); ++I) {
 		try {
 			Ogre::TextureManager::getSingleton().load(*I, "General");
 		} catch (const Ogre::Exception& e) {
 			S_LOG_FAILURE( "Error when loading texture " << *I << ".\n\rError message: " << e.getDescription());
 		}
-	}	
-	
+	}
+
 	//only autogenerate trees if we're not using the pregenerated ones
- 	if (configSrv->itemExists("tree", "usedynamictrees") && ((bool)configSrv->getValue("tree", "usedynamictrees"))) { 
+ 	if (configSrv->itemExists("tree", "usedynamictrees") && ((bool)configSrv->getValue("tree", "usedynamictrees"))) {
 		Environment::Tree tree;
 		tree.makeMesh("GeneratedTrees/European_Larch", Ogre::TParameters::European_Larch);
 		tree.makeMesh("GeneratedTrees/Fir", Ogre::TParameters::Fir);
- 	}	
+ 	}
 
 
 
@@ -579,86 +579,88 @@ void EmberOgre::preloadMedia(void)
 
 void EmberOgre::setupJesus()
 {
-	const std::string datadir = Ember::EmberServices::getSingleton().getConfigService()->getSharedDataDirectory();
+	//@note Disabled for now since it's not really used. Perhaps we should put this into a more dynamically loadable structure?
 
-	Carpenter::Carpenter* carpenter = new Carpenter::Carpenter();
-	mJesus = new Jesus(carpenter);
-	XMLJesusSerializer serializer(mJesus);
-
-	std::string dir(Ember::EmberServices::getSingleton().getConfigService()->getSharedDataDirectory() + "carpenter/blockspec");
-
-	std::string filename;
-
-	//oslink::directory needs to be destroyed before a new one can be used, regular copy constructor doesn't seem to work
-	//we could also use new/delete, but scopes works as well
-	{
-		oslink::directory osdir(dir);
-		while (osdir) {
-			filename = osdir.next();
-			S_LOG_VERBOSE( "Loading blockspec: " << filename );
-			serializer.loadBlockSpec(dir + "/" + filename);
-		}
-	}
-	//load all buildingblockspecs
-	dir = Ember::EmberServices::getSingleton().getConfigService()->getSharedDataDirectory() + "carpenter/modelblockspecs";
-		{
-		oslink::directory osdir(dir);
-		while (osdir) {
-			filename = osdir.next();
-			S_LOG_VERBOSE( "Loading buildingblockspecC: " << filename);
-			serializer.loadBuildingBlockSpecDefinition(dir + "/" + filename);
-		}
-	}
-	//load all modelmappings
-	dir = Ember::EmberServices::getSingleton().getConfigService()->getSharedDataDirectory() + "jesus/modelmappings";
-	{
-		oslink::directory osdir(dir);
-		while (osdir) {
-			filename = osdir.next();
-			S_LOG_VERBOSE( "Loading modelmapping: " <<  filename );
-			serializer.loadModelBlockMapping(dir + "/" + filename);
-		}
-	}
-	
-	//load all global blueprints
-	dir = Ember::EmberServices::getSingleton().getConfigService()->getSharedDataDirectory() + "carpenter/blueprints";
-	{
-		oslink::directory osdir(dir);
-		while (osdir) {
-			filename = osdir.next();
-			S_LOG_VERBOSE(  "Loading blueprint: " << filename );
-			Carpenter::BluePrint* blueprint = serializer.loadBlueprint(dir + "/" + filename);
-			if (blueprint) {
-				blueprint->compile();
-				bool result = mJesus->addBluePrint(blueprint);
-				if (!result)
-				{
-					S_LOG_FAILURE( "Could not add blueprint: " << filename);
-				}
-			}
-		}
-	}
-	//load all local blueprints
-	dir = Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "carpenter/blueprints";
-	{
-		oslink::directory osdir(dir);
-		while (osdir) {
-			filename = osdir.next();
-			S_LOG_VERBOSE( "Loading local blueprint: " << filename );
-			Carpenter::BluePrint* blueprint = serializer.loadBlueprint(dir + "/" + filename);
-			if (blueprint) {
-				blueprint->compile();
-				bool result = mJesus->addBluePrint(blueprint);
-				if (!result)
-				{
-					S_LOG_FAILURE(  "Could not add blueprint: " << filename );
-				}
-			}
-		}
-	}
-
-
-	EventCreatedJesus.emit(mJesus);
+//	const std::string datadir = Ember::EmberServices::getSingleton().getConfigService()->getSharedDataDirectory();
+//
+//	Carpenter::Carpenter* carpenter = new Carpenter::Carpenter();
+//	mJesus = new Jesus(carpenter);
+//	XMLJesusSerializer serializer(mJesus);
+//
+//	std::string dir(Ember::EmberServices::getSingleton().getConfigService()->getSharedDataDirectory() + "carpenter/blockspec");
+//
+//	std::string filename;
+//
+//	//oslink::directory needs to be destroyed before a new one can be used, regular copy constructor doesn't seem to work
+//	//we could also use new/delete, but scopes works as well
+//	{
+//		oslink::directory osdir(dir);
+//		while (osdir) {
+//			filename = osdir.next();
+//			S_LOG_VERBOSE( "Loading blockspec: " << filename );
+//			serializer.loadBlockSpec(dir + "/" + filename);
+//		}
+//	}
+//	//load all buildingblockspecs
+//	dir = Ember::EmberServices::getSingleton().getConfigService()->getSharedDataDirectory() + "carpenter/modelblockspecs";
+//		{
+//		oslink::directory osdir(dir);
+//		while (osdir) {
+//			filename = osdir.next();
+//			S_LOG_VERBOSE( "Loading buildingblockspecC: " << filename);
+//			serializer.loadBuildingBlockSpecDefinition(dir + "/" + filename);
+//		}
+//	}
+//	//load all modelmappings
+//	dir = Ember::EmberServices::getSingleton().getConfigService()->getSharedDataDirectory() + "jesus/modelmappings";
+//	{
+//		oslink::directory osdir(dir);
+//		while (osdir) {
+//			filename = osdir.next();
+//			S_LOG_VERBOSE( "Loading modelmapping: " <<  filename );
+//			serializer.loadModelBlockMapping(dir + "/" + filename);
+//		}
+//	}
+//
+//	//load all global blueprints
+//	dir = Ember::EmberServices::getSingleton().getConfigService()->getSharedDataDirectory() + "carpenter/blueprints";
+//	{
+//		oslink::directory osdir(dir);
+//		while (osdir) {
+//			filename = osdir.next();
+//			S_LOG_VERBOSE(  "Loading blueprint: " << filename );
+//			Carpenter::BluePrint* blueprint = serializer.loadBlueprint(dir + "/" + filename);
+//			if (blueprint) {
+//				blueprint->compile();
+//				bool result = mJesus->addBluePrint(blueprint);
+//				if (!result)
+//				{
+//					S_LOG_FAILURE( "Could not add blueprint: " << filename);
+//				}
+//			}
+//		}
+//	}
+//	//load all local blueprints
+//	dir = Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "carpenter/blueprints";
+//	{
+//		oslink::directory osdir(dir);
+//		while (osdir) {
+//			filename = osdir.next();
+//			S_LOG_VERBOSE( "Loading local blueprint: " << filename );
+//			Carpenter::BluePrint* blueprint = serializer.loadBlueprint(dir + "/" + filename);
+//			if (blueprint) {
+//				blueprint->compile();
+//				bool result = mJesus->addBluePrint(blueprint);
+//				if (!result)
+//				{
+//					S_LOG_FAILURE(  "Could not add blueprint: " << filename );
+//				}
+//			}
+//		}
+//	}
+//
+//
+//	EventCreatedJesus.emit(mJesus);
 }
 
 void EmberOgre::createScene(void)
@@ -677,7 +679,7 @@ void EmberOgre::Server_GotView(Eris::View* view)
 
 
 
-void EmberOgre::Server_GotConnection(Eris::Connection* connection) 
+void EmberOgre::Server_GotConnection(Eris::Connection* connection)
 {
 	//EventCreatedAvatarEntity.connect(sigc::mem_fun(*mAvatar, &Avatar::createdAvatarEmberEntity));
 	EventCreatedEmberEntityFactory.emit(mEmberEntityFactory);
@@ -755,7 +757,7 @@ ShaderManager* EmberOgre::getShaderManager() const
 // // {
 // // 	mPollEris = doPoll;
 // // }
-// // 
+// //
 // // bool EmberOgre::getErisPolling() const
 // // {
 // // 	return mPollEris;
@@ -771,19 +773,19 @@ void EmberOgre::Application_ServicesInitialized()
 {
 	Ember::EmberServices::getSingleton().getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotConnection));
 	Ember::EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotView));
-	
+
 	mScriptingResourceProvider = std::auto_ptr<OgreResourceProvider>(new OgreResourceProvider("Scripting"));
 	Ember::EmberServices::getSingleton().getScriptingService()->setResourceProvider(mScriptingResourceProvider.get());
 	///register the lua scripting provider
 	Ember::EmberServices::getSingleton().getScriptingService()->registerScriptingProvider(new LuaScriptingProvider());
-	
+
 	mSoundResourceProvider = std::auto_ptr<OgreResourceProvider>(new OgreResourceProvider("General"));
 	Ember::EmberServices::getSingleton().getSoundService()->setResourceProvider(mSoundResourceProvider.get());
-	
+
 }
 
-Eris::View* EmberOgre::getMainView() 
-{ 
+Eris::View* EmberOgre::getMainView()
+{
 	return Ember::Application::getSingleton().getMainView();
 }
 

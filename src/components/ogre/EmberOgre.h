@@ -492,12 +492,12 @@ protected:
 	/**
 	 * @brief The collision manager, responsible for handling collisions of the geometry in the world.
 	 */
-	OgreOpcode::CollisionManager* mCollisionManager;
+//	OgreOpcode::CollisionManager* mCollisionManager;
 
 	/**
 	 * @brief Responsible for visualizing collisions.
 	 */
-	OpcodeCollisionDetectorVisualizer* mCollisionDetectorVisualizer;
+//	OpcodeCollisionDetectorVisualizer* mCollisionDetectorVisualizer;
 
 	/**
 	 *@brief Handles loading of resources. This will also take care of registering our own Ogre::ArchiveFactory instance, so it needs to be destroyed first after ogre is shutdown (since there's no way to remove an already added ArchiveFactory instance from Ogre).

@@ -1,7 +1,7 @@
 $#include "required.h"
 
 
-$pfile "Carpenter.pkg"
+//$pfile "Carpenter.pkg"
 
 
 $pfile "AvatarCamera.pkg"
@@ -46,7 +46,7 @@ $pfile "EntityIconDragDropTarget.pkg"
 $pfile "Model.pkg"
 $pfile "SubModel.pkg"
 $pfile "ModelDefinition.pkg"
-$pfile "Jesus.pkg"
+//$pfile "Jesus.pkg"
 
 $pfile "MathConverter.pkg"
 
@@ -112,7 +112,7 @@ class EmberOgre
 	EmberEntity* getEmberEntity(const std::string & eid);
 	
 	
-	Jesus* getJesus() const;
+//	Jesus* getJesus() const;
 	
 	Ogre::RenderWindow* getRenderWindow() const;
 	

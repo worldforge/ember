@@ -8,16 +8,16 @@ noinst_LTLIBRARIES = libEmberOgre.la
 
 
 libEmberOgre_la_LIBADD = \
-	$(top_builddir)/src/components/ogre/SceneManagers/EmberPagingSceneManager/src/libEmberPagingSceneManager.la $(top_builddir)/src/components/ogre/carpenter/libCarpenter.la \
-	$(top_builddir)/src/components/ogre/environment/libEnvironment.la $(top_builddir)/src/components/ogre/jesus/libJesus.la $(top_builddir)/src/components/ogre/manipulation/libmanipulation.la \
+	$(top_builddir)/src/components/ogre/SceneManagers/EmberPagingSceneManager/src/libEmberPagingSceneManager.la \
+	$(top_builddir)/src/components/ogre/environment/libEnvironment.la $(top_builddir)/src/components/ogre/manipulation/libmanipulation.la \
 	$(top_builddir)/src/components/ogre/model/libModel.la $(top_builddir)/src/components/ogre/model/mapping/libMapping.la \
-	$(top_builddir)/src/components/ogre/ogreopcode/src/libOgreOpcode.la \
 	$(top_builddir)/src/components/ogre/scripting/bindings/lua/helpers/liblua_Helpers.la \
 	$(top_builddir)/src/components/ogre/scripting/bindings/lua/liblua_EmberOgre.la \
 	$(top_builddir)/src/components/ogre/scripting/bindings/lua/ogre/liblua_Ogre.la $(top_builddir)/src/components/ogre/scripting/libScripting.la \
 	$(top_builddir)/src/components/ogre/sound/libSound.la $(top_builddir)/src/components/ogre/terrain/libTerrain.la \
 	$(top_builddir)/src/components/ogre/widgets/libWidgets.la $(top_builddir)/src/components/ogre/gui/libGui.la
         
+#	$(top_builddir)/src/components/ogre/jesus/libJesus.la $(top_builddir)/src/components/ogre/carpenter/libCarpenter.la $(top_builddir)/src/components/ogre/ogreopcode/src/libOgreOpcode.la 
 
 
 libEmberOgre_la_SOURCES = AttributeObserver.cpp Avatar.cpp AvatarCamera.cpp \
@@ -28,10 +28,10 @@ libEmberOgre_la_SOURCES = AttributeObserver.cpp Avatar.cpp AvatarCamera.cpp \
 	EmberPhysicalEntity.cpp EntityWorldPickListener.cpp GUICEGUIAdapter.cpp GUIManager.cpp \
 	MediaUpdater.cpp MeshCollisionDetector.cpp MeshSerializerListener.cpp ModelMount.cpp \
 	MotionManager.cpp MousePicker.cpp OgreInfo.cpp OgreLogObserver.cpp OgreResourceLoader.cpp \
-	OgreResourceProvider.cpp OgreSetup.cpp OpcodeCollisionDetector.cpp \
-	OpcodeCollisionDetectorVisualizer.cpp ShaderManager.cpp ShadowCameraSetup.cpp SimpleRenderContext.cpp \
+	OgreResourceProvider.cpp OgreSetup.cpp  \
+	 ShaderManager.cpp ShadowCameraSetup.cpp SimpleRenderContext.cpp \
 	WorldEmberEntity.cpp XMLHelper.cpp
-
+# OpcodeCollisionDetector.cpp  OpcodeCollisionDetectorVisualizer.cpp
 confdir = $(sysconfdir)/ember
 dist_conf_DATA = ogre.cfg resources.cfg terrain.cfg
 
@@ -45,7 +45,7 @@ noinst_HEADERS = AttributeObserver.h Avatar.h AvatarCamera.h AvatarController.h 
 	IWorldPickListener.h MathConverter.h MediaUpdater.h MeshCollisionDetector.h \
 	MeshSerializerListener.h ModelMount.h MotionManager.h MousePicker.h OgreIncludes.h OgreInfo.h \
 	OgreLogObserver.h OgreResourceLoader.h OgreResourceProvider.h OgreSetup.h \
-	OpcodeCollisionDetector.h OpcodeCollisionDetectorVisualizer.h ShaderManager.h ShadowCameraSetup.h \
+	 ShaderManager.h ShadowCameraSetup.h \
 	SimpleRenderContext.h Types.h WorldEmberEntity.h XMLHelper.h
-	
+#OpcodeCollisionDetector.h OpcodeCollisionDetectorVisualizer.h
 #libEmberOgre_la_LDFLAGS = -no-undefined
