@@ -25,7 +25,6 @@
 
 #include "framework/LoggingInstance.h"
 
-#include "SoundService.h"
 #include "SoundSource.h"
 
 #ifndef __WIN32__
