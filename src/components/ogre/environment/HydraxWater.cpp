@@ -1,7 +1,7 @@
 //
 // C++ Implementation: HydraxWater
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -57,82 +57,83 @@ bool HydraxWater::isSupported() const
 
 bool HydraxWater::initialize()
 {
-	try {
-	// Init Hydrax
-	
-		// Create Hydrax object
-		mHydrax = new Hydrax::Hydrax(&mSceneMgr, &mCamera, mCamera.getViewport());
-	
-		// Create our projected grid module
-		Hydrax::Module::ProjectedGrid *mModule = new Hydrax::Module::ProjectedGrid(// Hydrax parent pointer
-												mHydrax,
-												// Noise module
-												new Hydrax::Noise::Perlin(/*Generic one*/),
-												// Base plane
-												Ogre::Plane(Ogre::Vector3(0,1,0), Ogre::Vector3(0,0,0)),
-												// Normal mode
-												Hydrax::MaterialManager::NM_VERTEX,
-												// Projected grid options
-												Hydrax::Module::ProjectedGrid::Options(16));
-	
-		// Set our module
-		mHydrax->setModule(static_cast<Hydrax::Module::Module*>(mModule));
-	
-		// Load all parameters from config file
-		// Remarks: The config file must be in Hydrax resource group.
-		// All parameters can be set/updated directly by code(Like previous versions),
-		// but due to the high number of customizable parameters, Hydrax 0.4 allows save/load config files.
-		
-		std::string configFilename(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory() + "hydrax.cfg");
-		
-		struct stat theStat;
-		int ret = stat(configFilename.c_str(), &theStat);
-		if (ret) {
-			S_LOG_FAILURE("Could not find file "<< configFilename);
-			return false;
-		}
-		std::ifstream *filestream = OGRE_NEW_T(std::ifstream, Ogre::MEMCATEGORY_GENERAL)();
-		filestream->open(configFilename.c_str(), std::ios::in);
-	
-		if (filestream->fail())
-		{
-			S_LOG_FAILURE("Could not open file "<< configFilename);
-			delete filestream;
-			return false;
-		}
-	
-		///this will envelope the file stream pointer and delete it when it's destroyed itself
-		Ogre::FileStreamDataStream* stream = OGRE_NEW Ogre::FileStreamDataStream(configFilename, filestream, theStat.st_size, true);
-		Ogre::DataStreamPtr dataPtr(stream);
-	
-		if (stream->size() == 0) {
-			S_LOG_FAILURE("Zero size file found at "<< configFilename);
-			return false;
-		}
-		
-		Ogre::ConfigFile configFile;
-	
-		configFile.load(dataPtr);	
-		
-		mHydrax->loadCfg(configFile);
-	
-		// Create water
-		mHydrax->create();
-		
-		Ogre::Root::getSingleton().addFrameListener(this);
-		
-		return true;
-	} catch (const std::exception& ex)
-	{
-		S_LOG_FAILURE("Error when creating hydrax water: " << ex.what());
-		return false;
-	}
+	//TODO: reactivate if we get hydrax to perform better
+//	try {
+//	// Init Hydrax
+//
+//		// Create Hydrax object
+//		mHydrax = new Hydrax::Hydrax(&mSceneMgr, &mCamera, mCamera.getViewport());
+//
+//		// Create our projected grid module
+//		Hydrax::Module::ProjectedGrid *mModule = new Hydrax::Module::ProjectedGrid(// Hydrax parent pointer
+//												mHydrax,
+//												// Noise module
+//												new Hydrax::Noise::Perlin(/*Generic one*/),
+//												// Base plane
+//												Ogre::Plane(Ogre::Vector3(0,1,0), Ogre::Vector3(0,0,0)),
+//												// Normal mode
+//												Hydrax::MaterialManager::NM_VERTEX,
+//												// Projected grid options
+//												Hydrax::Module::ProjectedGrid::Options(16));
+//
+//		// Set our module
+//		mHydrax->setModule(static_cast<Hydrax::Module::Module*>(mModule));
+//
+//		// Load all parameters from config file
+//		// Remarks: The config file must be in Hydrax resource group.
+//		// All parameters can be set/updated directly by code(Like previous versions),
+//		// but due to the high number of customizable parameters, Hydrax 0.4 allows save/load config files.
+//
+//		std::string configFilename(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory() + "hydrax.cfg");
+//
+//		struct stat theStat;
+//		int ret = stat(configFilename.c_str(), &theStat);
+//		if (ret) {
+//			S_LOG_FAILURE("Could not find file "<< configFilename);
+//			return false;
+//		}
+//		std::ifstream *filestream = OGRE_NEW_T(std::ifstream, Ogre::MEMCATEGORY_GENERAL)();
+//		filestream->open(configFilename.c_str(), std::ios::in);
+//
+//		if (filestream->fail())
+//		{
+//			S_LOG_FAILURE("Could not open file "<< configFilename);
+//			delete filestream;
+//			return false;
+//		}
+//
+//		///this will envelope the file stream pointer and delete it when it's destroyed itself
+//		Ogre::FileStreamDataStream* stream = OGRE_NEW Ogre::FileStreamDataStream(configFilename, filestream, theStat.st_size, true);
+//		Ogre::DataStreamPtr dataPtr(stream);
+//
+//		if (stream->size() == 0) {
+//			S_LOG_FAILURE("Zero size file found at "<< configFilename);
+//			return false;
+//		}
+//
+//		Ogre::ConfigFile configFile;
+//
+//		configFile.load(dataPtr);
+//
+//		mHydrax->loadCfg(configFile);
+//
+//		// Create water
+//		mHydrax->create();
+//
+//		Ogre::Root::getSingleton().addFrameListener(this);
+//
+//		return true;
+//	} catch (const std::exception& ex)
+//	{
+//		S_LOG_FAILURE("Error when creating hydrax water: " << ex.what());
+//		return false;
+//	}
 
 }
 
 bool HydraxWater::frameStarted(const Ogre::FrameEvent& event)
 {
-	mHydrax->update(event.timeSinceLastFrame);
+//	mHydrax->update(event.timeSinceLastFrame);
 	return true;
 }
 

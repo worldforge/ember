@@ -1,4 +1,5 @@
-SUBDIRS = caelum meshtree pagedgeometry hydrax
+SUBDIRS = caelum pagedgeometry 
+#meshtree hydrax 
 
 INCLUDES = -I$(top_srcdir)/src -I$(top_builddir)/src
 

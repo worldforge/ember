@@ -1,6 +1,7 @@
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
-SUBDIRS = SceneManagers carpenter cegui environment gui jesus \
-	manipulation model modeldefinitions sounddefinitions ogreopcode scripting sound terrain widgets
+SUBDIRS = SceneManagers cegui environment gui  \
+	manipulation model modeldefinitions sounddefinitions scripting sound terrain widgets
+#carpenter jesus ogreopcode
 
 noinst_LTLIBRARIES = libEmberOgre.la
 
