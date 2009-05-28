@@ -14,7 +14,6 @@ noinst_HEADERS = \
 			OgrePagingLandScapeCamera.h \
 			OgrePagingLandScapeData2D.h \
 			OgrePagingLandScapeData2DManager.h \
-			OgrePagingLandScapeData2D_Spline.h \
 			OgrePagingLandScapeHorizon.h \
 			OgrePagingLandScapeIndexBuffer.h \
 			OgrePagingLandScapeListener.h \
@@ -62,7 +61,7 @@ EmberPagingSceneManagerAdapter.h \
 EmberTerrainPageBridge.h
 
 
-
+#			OgrePagingLandScapeData2D_Spline.h \
 # 			OgrePagingLandScapeTexture_Splatting2.h \
 # 			OgrePagingLandScapeTexture_Splatting2Edit.h \
 # 			OgrePagingLandScapeTexture_Splatting3.h \
