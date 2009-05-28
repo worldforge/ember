@@ -92,8 +92,10 @@ void Foliage::initialize()
 				} else if (J->getRenderTechnique() == "shrubbery") {
 					foliageBase = new ShrubberyFoliage(*layerDef, *J);
 				}
-				foliageBase->initialize();
-				mFoliages.push_back(foliageBase);
+				if (foliageBase) {
+					foliageBase->initialize();
+					mFoliages.push_back(foliageBase);
+				}
 			} catch (const std::exception& ex)
 			{
 				S_LOG_FAILURE("Error when creating foliage. Message: " << ex.what());
