@@ -45,6 +45,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreHighLevelGpuProgram.h>
 #include <OgreHighLevelGpuProgramManager.h>
 
+using namespace Ogre;
 namespace PagedGeometry {
 
 class GrassLayer;
@@ -360,6 +361,34 @@ public:
 	 */
 	virtual unsigned int calculateMaxGrassCount(float densityFactor, float volume) = 0;
 
+	/** \brief Set the maximum slope a grass of blade can be placed on.
+	\param maxSlopeRatio The maximum slope (h/w ratio) a grass blade is allowed to be placed on.
+
+	This function can be used to set the maximum slope you want your grass to be placed on
+	(although it doesn't work for sprite grass). By default grass is allowed on any slope.
+
+	This version of setMaxSlope() accepts a slope ratio value, where ATan(maxSlopeRatio) =
+	maxSlopeAngle. If you wish to provide a maximum slope as an angle, either use the other
+	overload of this function, or convert your angle to a slope ratio first with Tan().*/
+	void setMaxSlope(const float maxSlopeRatio) { maxSlope = maxSlopeRatio; }
+
+	void setMaxSlope(Ogre::Radian maxSlopeAngle) {
+		if (maxSlopeAngle > Ogre::Degree(89.99f))
+			maxSlopeAngle = Ogre::Degree(89.99f);
+		if (maxSlopeAngle < Ogre::Degree(0))
+			maxSlopeAngle = Ogre::Degree(0);
+
+		maxSlope = Ogre::Math::Tan(maxSlopeAngle);
+	}
+
+	/** \brief Get the maximum slope a grass blade can be placed on (as set by setMaxSlope()).
+	\returns The currently set maximum slope ratio value (not an angle).
+
+	This returns the currently set maximum slope which is used to determine what ground is too steep
+	for grass to be placed on. Note that this returns the slope as a slope ratio, not an angle. If you
+	need an angle value, convert with ATan() (maxSlopeAngle = ATan(maxSlopeRatio)).*/
+	float getMaxSlope() const { return maxSlope; }
+
 protected:
 
 	//Used by GrassLoader::loadPage() - populates an array with grass.
@@ -373,6 +402,7 @@ protected:
 	Ogre::MaterialPtr material;
 	float minWidth, maxWidth;
 	float minHeight, maxHeight;
+	float maxSlope;
 
 	FadeTechnique fadeTechnique;
 	GrassTechnique renderTechnique;
@@ -425,34 +455,6 @@ public:
 	Similarly, setting maxHeight to 0 means grass has no maximum height - it can grow as high
 	as necessary. */
 	void setHeightRange(float minHeight, float maxHeight = 0) { minY = minHeight; maxY = maxHeight; }
-
-	/** \brief Set the maximum slope a grass of blade can be placed on.
-	\param maxSlopeRatio The maximum slope (h/w ratio) a grass blade is allowed to be placed on.
-
-	This function can be used to set the maximum slope you want your grass to be placed on
-	(although it doesn't work for sprite grass). By default grass is allowed on any slope.
-
-	This version of setMaxSlope() accepts a slope ratio value, where ATan(maxSlopeRatio) =
-	maxSlopeAngle. If you wish to provide a maximum slope as an angle, either use the other
-	overload of this function, or convert your angle to a slope ratio first with Tan().*/
-	void setMaxSlope(const float maxSlopeRatio) { maxSlope = maxSlopeRatio; }
-
-	void setMaxSlope(Ogre::Radian maxSlopeAngle) {
-		if (maxSlopeAngle > Ogre::Degree(89.99f))
-			maxSlopeAngle = Ogre::Degree(89.99f);
-		if (maxSlopeAngle < Ogre::Degree(0))
-			maxSlopeAngle = Ogre::Degree(0);
-
-		maxSlope = Ogre::Math::Tan(maxSlopeAngle);
-	}
-
-	/** \brief Get the maximum slope a grass blade can be placed on (as set by setMaxSlope()).
-	\returns The currently set maximum slope ratio value (not an angle).
-
-	This returns the currently set maximum slope which is used to determine what ground is too steep
-	for grass to be placed on. Note that this returns the slope as a slope ratio, not an angle. If you
-	need an angle value, convert with ATan() (maxSlopeAngle = ATan(maxSlopeRatio)).*/
-	float getMaxSlope() const { return maxSlope; }
 
 	/** \brief Sets the density map used for this grass layer
 	\param mapFile The density map image
@@ -614,7 +616,6 @@ private:
 
 	//Grass material/shape properties
 	float density;
-	float maxSlope;
 	float minY, maxY;
 
 
@@ -743,6 +744,10 @@ void GrassLoader<TGrassLayer>::loadPage(PageInfo &page)
 	Ogre::uint32 seed = (xSeed << 16) | zSeed;
 	srand(seed);
 
+	//Keep a list of a generated meshes
+	std::vector<Mesh*> *meshList = new std::vector<Mesh*>();
+	page.userData = (void*)meshList;
+
 	typename std::list<TGrassLayer*>::iterator it;
 	for (it = layerList.begin(); it != layerList.end(); ++it){
 		TGrassLayer *layer = *it;
@@ -783,10 +788,7 @@ void GrassLoader<TGrassLayer>::loadPage(PageInfo &page)
 			geom->getSceneManager()->destroyEntity(entity);
 
 			//Store the mesh pointer
-			page.userData = mesh;
-		} else {
-			//No mesh
-			page.userData = NULL;
+			meshList->push_back(mesh);
 		}
 
 		//Delete the position list
@@ -797,10 +799,15 @@ void GrassLoader<TGrassLayer>::loadPage(PageInfo &page)
 template <class TGrassLayer>
 void GrassLoader<TGrassLayer>::unloadPage(const PageInfo &page)
 {
-	//Unload mesh
-	Ogre::Mesh *mesh = (Ogre::Mesh*)page.userData;
-	if (mesh)
-		Ogre::MeshManager::getSingleton().remove(mesh->getName());
+	//Unload meshes
+	std::vector<Mesh*> *meshList = (std::vector<Mesh*>*)page.userData;
+	std::vector<Mesh*>::iterator i;
+	for (i = meshList->begin(); i != meshList->end(); ++i) {
+		Mesh *mesh = *i;
+		MeshManager::getSingleton().remove(mesh->getName());
+	}
+	meshList->clear();
+	delete meshList;
 }
 template <class TGrassLayer>
 Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_QUAD(PageInfo &page, TGrassLayer *layer, float *grassPositions, unsigned int grassCount)
@@ -945,36 +952,36 @@ Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, T
 	quadCount = grassCount * 2;
 
 	//Create manual mesh to store grass quads
-	Ogre::MeshPtr mesh = Ogre::MeshManager::getSingleton().createManual(getUniqueID(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-	Ogre::SubMesh *subMesh = mesh->createSubMesh();
+	MeshPtr mesh = MeshManager::getSingleton().createManual(getUniqueID(), ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	SubMesh *subMesh = mesh->createSubMesh();
 	subMesh->useSharedVertices = false;
 
 	//Setup vertex format information
-	subMesh->vertexData = new Ogre::VertexData;
+	subMesh->vertexData = new VertexData;
 	subMesh->vertexData->vertexStart = 0;
 	subMesh->vertexData->vertexCount = 4 * quadCount;
 
-	Ogre::VertexDeclaration* dcl = subMesh->vertexData->vertexDeclaration;
+	VertexDeclaration* dcl = subMesh->vertexData->vertexDeclaration;
 	size_t offset = 0;
-	dcl->addElement(0, offset, Ogre::VET_FLOAT3, Ogre::VES_POSITION);
-	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
-	dcl->addElement(0, offset, Ogre::VET_COLOUR, Ogre::VES_DIFFUSE);
-	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_COLOUR);
-	dcl->addElement(0, offset, Ogre::VET_FLOAT2, Ogre::VES_TEXTURE_COORDINATES);
-	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT2);
+	dcl->addElement(0, offset, VET_FLOAT3, VES_POSITION);
+	offset += VertexElement::getTypeSize(VET_FLOAT3);
+	dcl->addElement(0, offset, VET_COLOUR, VES_DIFFUSE);
+	offset += VertexElement::getTypeSize(VET_COLOUR);
+	dcl->addElement(0, offset, VET_FLOAT2, VES_TEXTURE_COORDINATES);
+	offset += VertexElement::getTypeSize(VET_FLOAT2);
 
 	//Populate a new vertex buffer with grass
-	Ogre::HardwareVertexBufferSharedPtr vbuf = Ogre::HardwareBufferManager::getSingleton()
-		.createVertexBuffer(offset, subMesh->vertexData->vertexCount, Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY, false);
-	float* pReal = static_cast<float*>(vbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD));
+	HardwareVertexBufferSharedPtr vbuf = HardwareBufferManager::getSingleton()
+		.createVertexBuffer(offset, subMesh->vertexData->vertexCount, HardwareBuffer::HBU_STATIC_WRITE_ONLY, false);
+	float* pReal = static_cast<float*>(vbuf->lock(HardwareBuffer::HBL_DISCARD));
 
 	//Calculate size variance
 	float rndWidth = layer->maxWidth - layer->minWidth;
 	float rndHeight = layer->maxHeight - layer->minHeight;
 
-	float minY = Ogre::Math::POS_INFINITY, maxY = Ogre::Math::NEG_INFINITY;
+	float minY = Math::POS_INFINITY, maxY = Math::NEG_INFINITY;
 	float *posPtr = grassPositions;	//Position array "iterator"
-	for (Ogre::uint16 i = 0; i < grassCount; ++i)
+	for (uint16 i = 0; i < grassCount; ++i)
 	{
 		//Get the x and z positions from the position array
 		float x = *posPtr++;
@@ -983,20 +990,15 @@ Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, T
 		//Get the color at the grass position
 		Ogre::uint32 color(layer->getColorAt(x, z));
 
-// 		if (layer->colorMap)
-// 			color = layer->colorMap->getColorAt(x, z);
-// 		else
-// 			color = 0xFFFFFFFF;
-
 		//Calculate size
-		float rnd = Ogre::Math::UnitRandom();	//The same rnd value is used for width and height to maintain aspect ratio
+		float rnd = Math::UnitRandom();	//The same rnd value is used for width and height to maintain aspect ratio
 		float halfScaleX = (layer->minWidth + rndWidth * rnd) * 0.5f;
 		float scaleY = (layer->minHeight + rndHeight * rnd);
 
 		//Calculate rotation
-		float angle = Ogre::Math::RangeRandom(0, Ogre::Math::TWO_PI);
-		float xTrans = Ogre::Math::Cos(angle) * halfScaleX;
-		float zTrans = Ogre::Math::Sin(angle) * halfScaleX;
+		float angle = Math::RangeRandom(0, Math::TWO_PI);
+		float xTrans = Math::Cos(angle) * halfScaleX;
+		float zTrans = Math::Sin(angle) * halfScaleX;
 
 		//Calculate heights and edge positions
 		float x1 = x - xTrans, z1 = z - zTrans;
@@ -1006,6 +1008,13 @@ Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, T
 		if (heightFunction){
 			y1 = heightFunction(x1, z1, heightFunctionUserData);
 			y2 = heightFunction(x2, z2, heightFunctionUserData);
+
+			if (layer->getMaxSlope() < (Math::Abs(y1 - y2) / (halfScaleX * 2))) {
+				//Degenerate the face
+				x2 = x1;
+				y2 = y1;
+				z2 = z1;
+			}
 		} else {
 			y1 = 0;
 			y2 = 0;
@@ -1013,19 +1022,19 @@ Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, T
 
 		//Add vertices
 		*pReal++ = (x1 - page.centerPoint.x); *pReal++ = (y1 + scaleY); *pReal++ = (z1 - page.centerPoint.z);	//pos
-		*((Ogre::uint32*)pReal++) = color;							//color
+		*((uint32*)pReal++) = color;							//color
 		*pReal++ = 0; *pReal++ = 0;								//uv
 
 		*pReal++ = (x2 - page.centerPoint.x); *pReal++ = (y2 + scaleY); *pReal++ = (z2 - page.centerPoint.z);	//pos
-		*((Ogre::uint32*)pReal++) = color;							//color
+		*((uint32*)pReal++) = color;							//color
 		*pReal++ = 1; *pReal++ = 0;								//uv
 
 		*pReal++ = (x1 - page.centerPoint.x); *pReal++ = (y1); *pReal++ = (z1 - page.centerPoint.z);			//pos
-		*((Ogre::uint32*)pReal++) = color;							//color
+		*((uint32*)pReal++) = color;							//color
 		*pReal++ = 0; *pReal++ = 1;								//uv
 
 		*pReal++ = (x2 - page.centerPoint.x); *pReal++ = (y2); *pReal++ = (z2 - page.centerPoint.z);			//pos
-		*((Ogre::uint32*)pReal++) = color;							//color
+		*((uint32*)pReal++) = color;							//color
 		*pReal++ = 1; *pReal++ = 1;								//uv
 
 		//Update bounds
@@ -1040,6 +1049,13 @@ Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, T
 
 		float y3, y4;
 		if (heightFunction){
+			if (layer->getMaxSlope() < (Math::Abs(y1 - y2) / (halfScaleX * 2))) {
+				//Degenerate the face
+				x2 = x1;
+				y2 = y1;
+				z2 = z1;
+			}
+
 			y3 = heightFunction(x3, z3, heightFunctionUserData);
 			y4 = heightFunction(x4, z4, heightFunctionUserData);
 		} else {
@@ -1049,19 +1065,19 @@ Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, T
 
 		//Add vertices
 		*pReal++ = (x3 - page.centerPoint.x); *pReal++ = (y3 + scaleY); *pReal++ = (z3 - page.centerPoint.z);	//pos
-		*((Ogre::uint32*)pReal++) = color;							//color
+		*((uint32*)pReal++) = color;							//color
 		*pReal++ = 0; *pReal++ = 0;								//uv
 
 		*pReal++ = (x4 - page.centerPoint.x); *pReal++ = (y4 + scaleY); *pReal++ = (z4 - page.centerPoint.z);	//pos
-		*((Ogre::uint32*)pReal++) = color;							//color
+		*((uint32*)pReal++) = color;							//color
 		*pReal++ = 1; *pReal++ = 0;								//uv
 
 		*pReal++ = (x3 - page.centerPoint.x); *pReal++ = (y3); *pReal++ = (z3 - page.centerPoint.z);			//pos
-		*((Ogre::uint32*)pReal++) = color;							//color
+		*((uint32*)pReal++) = color;							//color
 		*pReal++ = 0; *pReal++ = 1;								//uv
 
 		*pReal++ = (x4 - page.centerPoint.x); *pReal++ = (y4); *pReal++ = (z4 - page.centerPoint.z);			//pos
-		*((Ogre::uint32*)pReal++) = color;							//color
+		*((uint32*)pReal++) = color;							//color
 		*pReal++ = 1; *pReal++ = 1;								//uv
 
 		//Update bounds
@@ -1077,12 +1093,12 @@ Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, T
 	//Populate index buffer
 	subMesh->indexData->indexStart = 0;
 	subMesh->indexData->indexCount = 6 * quadCount;
-	subMesh->indexData->indexBuffer = Ogre::HardwareBufferManager::getSingleton()
-		.createIndexBuffer(Ogre::HardwareIndexBuffer::IT_16BIT, subMesh->indexData->indexCount, Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
-	Ogre::uint16* pI = static_cast<Ogre::uint16*>(subMesh->indexData->indexBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD));
-	for (Ogre::uint16 i = 0; i < quadCount; ++i)
+	subMesh->indexData->indexBuffer = HardwareBufferManager::getSingleton()
+		.createIndexBuffer(HardwareIndexBuffer::IT_16BIT, subMesh->indexData->indexCount, HardwareBuffer::HBU_STATIC_WRITE_ONLY);
+	uint16* pI = static_cast<uint16*>(subMesh->indexData->indexBuffer->lock(HardwareBuffer::HBL_DISCARD));
+	for (uint16 i = 0; i < quadCount; ++i)
 	{
-		Ogre::uint16 offset = i * 4;
+		uint16 offset = i * 4;
 
 		*pI++ = 0 + offset;
 		*pI++ = 2 + offset;
@@ -1096,15 +1112,15 @@ Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, T
 	subMesh->indexData->indexBuffer->unlock();
 
 	//Finish up mesh
-	Ogre::AxisAlignedBox bounds(page.bounds.left - page.centerPoint.x, minY, page.bounds.top - page.centerPoint.z,
+	AxisAlignedBox bounds(page.bounds.left - page.centerPoint.x, minY, page.bounds.top - page.centerPoint.z,
 		page.bounds.right - page.centerPoint.x, maxY, page.bounds.bottom - page.centerPoint.z);
 	mesh->_setBounds(bounds);
-	Ogre::Vector3 temp = bounds.getMaximum() - bounds.getMinimum();
+	Vector3 temp = bounds.getMaximum() - bounds.getMinimum();
 	mesh->_setBoundingSphereRadius(temp.length() * 0.5f);
 
-	Ogre::LogManager::getSingleton().setLogDetail(static_cast<Ogre::LoggingLevel>(0));
+	LogManager::getSingleton().setLogDetail(static_cast<LoggingLevel>(0));
 	mesh->load();
-	Ogre::LogManager::getSingleton().setLogDetail(Ogre::LL_NORMAL);
+	LogManager::getSingleton().setLogDetail(LL_NORMAL);
 
 	//Apply grass material to mesh
 	subMesh->setMaterialName(layer->material->getName());
@@ -1121,38 +1137,38 @@ Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_SPRITE(PageInfo &page, TGras
 	quadCount = grassCount;
 
 	//Create manual mesh to store grass quads
-	Ogre::MeshPtr mesh = Ogre::MeshManager::getSingleton().createManual(getUniqueID(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-	Ogre::SubMesh *subMesh = mesh->createSubMesh();
+	MeshPtr mesh = MeshManager::getSingleton().createManual(getUniqueID(), ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	SubMesh *subMesh = mesh->createSubMesh();
 	subMesh->useSharedVertices = false;
 
 	//Setup vertex format information
-	subMesh->vertexData = new Ogre::VertexData;
+	subMesh->vertexData = new VertexData;
 	subMesh->vertexData->vertexStart = 0;
 	subMesh->vertexData->vertexCount = 4 * quadCount;
 
-	Ogre::VertexDeclaration* dcl = subMesh->vertexData->vertexDeclaration;
+	VertexDeclaration* dcl = subMesh->vertexData->vertexDeclaration;
 	size_t offset = 0;
-	dcl->addElement(0, offset, Ogre::VET_FLOAT3, Ogre::VES_POSITION);
-	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
-	dcl->addElement(0, offset, Ogre::VET_FLOAT4, Ogre::VES_NORMAL);
-	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT4);
-	dcl->addElement(0, offset, Ogre::VET_COLOUR, Ogre::VES_DIFFUSE);
-	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_COLOUR);
-	dcl->addElement(0, offset, Ogre::VET_FLOAT2, Ogre::VES_TEXTURE_COORDINATES);
-	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT2);
+	dcl->addElement(0, offset, VET_FLOAT3, VES_POSITION);
+	offset += VertexElement::getTypeSize(VET_FLOAT3);
+	dcl->addElement(0, offset, VET_FLOAT4, VES_NORMAL);
+	offset += VertexElement::getTypeSize(VET_FLOAT4);
+	dcl->addElement(0, offset, VET_COLOUR, VES_DIFFUSE);
+	offset += VertexElement::getTypeSize(VET_COLOUR);
+	dcl->addElement(0, offset, VET_FLOAT2, VES_TEXTURE_COORDINATES);
+	offset += VertexElement::getTypeSize(VET_FLOAT2);
 
 	//Populate a new vertex buffer with grass
-	Ogre::HardwareVertexBufferSharedPtr vbuf = Ogre::HardwareBufferManager::getSingleton()
-		.createVertexBuffer(offset, subMesh->vertexData->vertexCount, Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY, false);
-	float* pReal = static_cast<float*>(vbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD));
+	HardwareVertexBufferSharedPtr vbuf = HardwareBufferManager::getSingleton()
+		.createVertexBuffer(offset, subMesh->vertexData->vertexCount, HardwareBuffer::HBU_STATIC_WRITE_ONLY, false);
+	float* pReal = static_cast<float*>(vbuf->lock(HardwareBuffer::HBL_DISCARD));
 
 	//Calculate size variance
 	float rndWidth = layer->maxWidth - layer->minWidth;
 	float rndHeight = layer->maxHeight - layer->minHeight;
 
-	float minY = Ogre::Math::POS_INFINITY, maxY = Ogre::Math::NEG_INFINITY;
+	float minY = Math::POS_INFINITY, maxY = Math::NEG_INFINITY;
 	float *posPtr = grassPositions;	//Position array "iterator"
-	for (Ogre::uint16 i = 0; i < grassCount; ++i)
+	for (uint16 i = 0; i < grassCount; ++i)
 	{
 		//Get the x and z positions from the position array
 		float x = *posPtr++;
@@ -1173,13 +1189,13 @@ Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_SPRITE(PageInfo &page, TGras
 		Ogre::uint32 color(layer->getColorAt(x, z));
 
 		//Calculate size
-		float rnd = Ogre::Math::UnitRandom();	//The same rnd value is used for width and height to maintain aspect ratio
+		float rnd = Math::UnitRandom();	//The same rnd value is used for width and height to maintain aspect ratio
 		float halfXScale = (layer->minWidth + rndWidth * rnd) * 0.5f;
 		float scaleY = (layer->minHeight + rndHeight * rnd);
 
 		//Randomly mirror grass textures
 		float uvLeft, uvRight;
-		if (Ogre::Math::UnitRandom() > 0.5f){
+		if (Math::UnitRandom() > 0.5f){
 			uvLeft = 0;
 			uvRight = 1;
 		} else {
@@ -1190,22 +1206,22 @@ Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_SPRITE(PageInfo &page, TGras
 		//Add vertices
 		*pReal++ = x1; *pReal++ = y; *pReal++ = z1;					//center position
 		*pReal++ = -halfXScale; *pReal++ = scaleY; *pReal++ = 0; *pReal++ = 0;	//normal (used to store relative corner positions)
-		*((Ogre::uint32*)pReal++) = color;								//color
+		*((uint32*)pReal++) = color;								//color
 		*pReal++ = uvLeft; *pReal++ = 0;							//uv
 
 		*pReal++ = x1; *pReal++ = y; *pReal++ = z1;					//center position
 		*pReal++ = +halfXScale; *pReal++ = scaleY; *pReal++ = 0; *pReal++ = 0;	//normal (used to store relative corner positions)
-		*((Ogre::uint32*)pReal++) = color;								//color
+		*((uint32*)pReal++) = color;								//color
 		*pReal++ = uvRight; *pReal++ = 0;							//uv
 
 		*pReal++ = x1; *pReal++ = y; *pReal++ = z1;					//center position
 		*pReal++ = -halfXScale; *pReal++ = 0.0f; *pReal++ = 0; *pReal++ = 0;		//normal (used to store relative corner positions)
-		*((Ogre::uint32*)pReal++) = color;								//color
+		*((uint32*)pReal++) = color;								//color
 		*pReal++ = uvLeft; *pReal++ = 1;							//uv
 
 		*pReal++ = x1; *pReal++ = y; *pReal++ = z1;					//center position
 		*pReal++ = +halfXScale; *pReal++ = 0.0f; *pReal++ = 0; *pReal++ = 0;		//normal (used to store relative corner positions)
-		*((Ogre::uint32*)pReal++) = color;								//color
+		*((uint32*)pReal++) = color;								//color
 		*pReal++ = uvRight; *pReal++ = 1;							//uv
 
 		//Update bounds
@@ -1219,12 +1235,12 @@ Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_SPRITE(PageInfo &page, TGras
 	//Populate index buffer
 	subMesh->indexData->indexStart = 0;
 	subMesh->indexData->indexCount = 6 * quadCount;
-	subMesh->indexData->indexBuffer = Ogre::HardwareBufferManager::getSingleton()
-		.createIndexBuffer(Ogre::HardwareIndexBuffer::IT_16BIT, subMesh->indexData->indexCount, Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
-	Ogre::uint16* pI = static_cast<Ogre::uint16*>(subMesh->indexData->indexBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD));
-	for (Ogre::uint16 i = 0; i < quadCount; ++i)
+	subMesh->indexData->indexBuffer = HardwareBufferManager::getSingleton()
+		.createIndexBuffer(HardwareIndexBuffer::IT_16BIT, subMesh->indexData->indexCount, HardwareBuffer::HBU_STATIC_WRITE_ONLY);
+	uint16* pI = static_cast<uint16*>(subMesh->indexData->indexBuffer->lock(HardwareBuffer::HBL_DISCARD));
+	for (uint16 i = 0; i < quadCount; ++i)
 	{
-		Ogre::uint16 offset = i * 4;
+		uint16 offset = i * 4;
 
 		*pI++ = 0 + offset;
 		*pI++ = 2 + offset;
@@ -1238,15 +1254,15 @@ Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_SPRITE(PageInfo &page, TGras
 	subMesh->indexData->indexBuffer->unlock();
 
 	//Finish up mesh
-	Ogre::AxisAlignedBox bounds(page.bounds.left - page.centerPoint.x, minY, page.bounds.top - page.centerPoint.z,
+	AxisAlignedBox bounds(page.bounds.left - page.centerPoint.x, minY, page.bounds.top - page.centerPoint.z,
 		page.bounds.right - page.centerPoint.x, maxY, page.bounds.bottom - page.centerPoint.z);
 	mesh->_setBounds(bounds);
-	Ogre::Vector3 temp = bounds.getMaximum() - bounds.getMinimum();
+	Vector3 temp = bounds.getMaximum() - bounds.getMinimum();
 	mesh->_setBoundingSphereRadius(temp.length() * 0.5f);
 
-	Ogre::LogManager::getSingleton().setLogDetail(static_cast<Ogre::LoggingLevel>(0));
+	LogManager::getSingleton().setLogDetail(static_cast<LoggingLevel>(0));
 	mesh->load();
-	Ogre::LogManager::getSingleton().setLogDetail(Ogre::LL_NORMAL);
+	LogManager::getSingleton().setLogDetail(LL_NORMAL);
 
 	//Apply grass material to mesh
 	subMesh->setMaterialName(layer->material->getName());
