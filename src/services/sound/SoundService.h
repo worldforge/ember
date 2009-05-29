@@ -77,7 +77,7 @@ public:
 	/**
 	 * @copydoc ConsoleObject::runCommand()
 	 */
-	void runCommand(const std::string &command, const std::string &args);
+	void runCommand(const std::string& command, const std::string& args);
 	
 	
 	/**
@@ -119,7 +119,7 @@ public:
 	 * @param direction The direction vector of the listener.
 	 * @param up The up vector of the listener.
 	 */
-	void updateListenerPosition(const WFMath::Point<3>& pos, const WFMath::Vector<3>& direction, const WFMath::Vector<3> up);
+	void updateListenerPosition(const WFMath::Point<3>& pos, const WFMath::Vector<3>& direction, const WFMath::Vector<3>& up);
 	
 	/**
 	 * @brief Call this each frame to update the sound samples.

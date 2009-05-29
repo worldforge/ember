@@ -138,7 +138,7 @@ bool SoundService::isEnabled() const
 	return mEnabled;
 }
 
-void SoundService::runCommand(const std::string &command, const std::string &args)
+void SoundService::runCommand(const std::string& command, const std::string& args)
 {
 }
 
@@ -182,7 +182,7 @@ bool SoundService::unregisterStream(const StreamedSoundSample* sample)
 	return false;
 }
 
-void SoundService::updateListenerPosition(const WFMath::Point<3>& pos, const WFMath::Vector<3>& direction, const WFMath::Vector<3> up)
+void SoundService::updateListenerPosition(const WFMath::Point<3>& pos, const WFMath::Vector<3>& direction, const WFMath::Vector<3>& up)
 {
 	if (!isEnabled()) {
 		return;
