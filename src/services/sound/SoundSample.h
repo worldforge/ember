@@ -1,20 +1,20 @@
 /*
- * Copyright (C) 2008 Romulo Fernandes Machado (nightz)
- *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
- * details.
- *
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 675 Mass
- * Ave, Cambridge, MA 02139, USA.
- */
+    Copyright (C) 2008 Romulo Fernandes Machado (nightz)
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
 
 #ifndef SOUND_SAMPLE_H
 #define SOUND_SAMPLE_H
@@ -59,41 +59,23 @@ public:
 
 	/**
 	 * @brief Returns the number of buffers stored for this sample.
-	 *
 	 * @return The number of buffers.
 	 */
 	virtual unsigned int getNumberOfBuffers() const = 0;
 	
 	/**
 	 * @brief Returns a store of the sound data buffers stored by this sample.
-	 *
-	 * The buffers will be returned as ALuint which is the internal buffer
-	 * reference within OpenAL. Any further operation on the buffer must
-	 * therefore go through OpenAL (i.e. the values returned are _not_
-	 * memory pointers).
-	 *
+	 * The buffers will be returned as ALuint which is the internal buffer reference within OpenAL. Any further operation on the buffer must therefore go through OpenAL (i.e. the values returned are _not_ memory pointers).
 	 * @return A store of OpenAL buffer identifiers.
 	 */
 	virtual BufferStore getBuffers() const = 0;
 	
 	/**
-	 * @brief Creates a new binding to this buffer, to be used together with
-	 * an instance of SoundInstance.
-	 *
-	 * If you want the sound held by this buffer to be played, one way would
-	 * be to call this to create a binding which you then feed to an
-	 * instance of SoundInstance.
-	 *
-	 * Note that ownership of the created binding is transferred to the
-	 * caller, and thus it's the caller's responsibility to make sure it's
-	 * properly deleted. Under normal circumstances that will be taken care
-	 * of by SoundInstance however.
-	 *
+	 * @brief Creates a new binding to this buffer, to be used together with an instance of SoundInstance.
+	 * If you want the sound held by this buffer to be played, one way would be to call this to create a binding which you then feed to an instance of SoundInstance.
+	 * Note that ownership of the created binding is transferred to the caller, and thus it's the caller's responsibility to make sure it's properly deleted. Under normal circumstances that will be taken care of by SoundInstance however.
 	 * @see SoundInstance::bind()
-	 *
-	 * @param source The sound source to which we should bind this sound
-	 * sample.
-	 *
+	 * @param source The sound source to which we should bind this sound sample.
 	 * @return A new sound binding instance.
 	 */
 	virtual SoundBinding* createBinding(SoundSource& source) = 0;
@@ -112,19 +94,15 @@ protected:
 };
 
 /**
- * The class StaticSoundSample is responsible to keep track of samples that
- * doesnt need often updates and only have one buffer
+ * The class StaticSoundSample is responsible to keep track of samples that doesnt need often updates and only have one buffer
  */
 class StaticSoundSample : public BaseSoundSample
 {
 public:
 	/**
 	 * Ctor.
-	 *
 	 * @param resource Resource associated with this sample
-	 *
 	 * @param playsLocal ??? (not used)
-	 *
 	 * @param volume Volume for the sample (not used)
 	 */
 	StaticSoundSample(const ResourceWrapper& resource, bool playsLocal, float volume);
@@ -168,15 +146,8 @@ private:
 
 
 /**
- * @brief A binding to a "static" sound source, i.e. a sound source which
- * doesn't have to be updated.
- *
- * A "static" sound is one that is small enough to fit into one continous
- * buffer, and thus doesn't need to be dynamically updated as is the case with
- * "streaming" sounds. As a result, this binding is very simple and will just
- * bind the sound data to the source in the constructor, without having to
- * provide any functionality in the update() method.
- *
+ * @brief A binding to a "static" sound source, i.e. a sound source which doesn't have to be updated.
+ * A "static" sound is one that is small enough to fit into one continous buffer, and thus doesn't need to be dynamically updated as is the case with "streaming" sounds. As a result, this binding is very simple and will just bind the sound data to the source in the constructor, without having to provide any functionality in the update() method.
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
 class StaticSoundBinding : public SoundBinding
@@ -185,9 +156,7 @@ public:
 
 	/**
 	 * @brief Ctor. All bindings between the buffer and the sound source will occur here.
-	 *
 	 * @param source The sound source.
-	 *
 	 * @param sample The static sound sample to bind to the source.
 	 */
 	StaticSoundBinding(SoundSource& source, StaticSoundSample& sample);
@@ -203,18 +172,14 @@ protected:
 
 	/**
 	 * @brief The static sound samle used for binding.
-	 *
-	 * There's really no need to keep this around here, since the binding
-	 * will occur in the constructor, but hey, someday we might provide some
-	 * kind of dynamic unloading/reloading...
+	 * There's really no need to keep this around here, since the binding will occur in the constructor, but hey, someday we might provide some kind of dynamic unloading/reloading...
 	 */
 	StaticSoundSample& mSample;
 };
 
 
 /**
- * The class StreamedSoundSample is responsible to keep track of samples that
- * often need updates and requires more than a buffer to stream data.
+ * The class StreamedSoundSample is responsible to keep track of samples that often need updates and requires more than a buffer to stream data.
  *
  * \todo not implemented
  */
