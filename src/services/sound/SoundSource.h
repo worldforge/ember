@@ -38,10 +38,7 @@ namespace Ember {
 
 /**
  * @brief Represents a sound source in the 3d world.
- *
- * An instance of this class mainly envelopes an OpenAL soundsource, allocating
- * it when it's created and removing it at destruction time.
- *
+ * An instance of this class mainly envelopes an OpenAL soundsource, allocating it when it's created and removing it at destruction time.
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
 class SoundSource
