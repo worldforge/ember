@@ -239,7 +239,7 @@ bool MovableObjectRenderer::frameStarted(const Ogre::FrameEvent& event)
 //	S_LOG_VERBOSE(mImage->getName().c_str() << " visible: " << (mActive && mImage->isVisible()));
 	///if the window isn't shown, don't update the render texture
 	mTexture->getRenderContext()->setActive(mActive && mImage->isVisible());
-	if (mActive && mImage->isVisible()) {
+	if (mActive && mImage->isVisible() && mTexture->getRenderContext()->getRenderTexture()) {
 		mTexture->getRenderContext()->getRenderTexture()->update();
 	}
 	return true;
@@ -247,7 +247,9 @@ bool MovableObjectRenderer::frameStarted(const Ogre::FrameEvent& event)
 
 void MovableObjectRenderer::updateRender()
 {
-	mTexture->getRenderContext()->getRenderTexture()->update();
+	if (mTexture->getRenderContext()->getRenderTexture()) {
+		mTexture->getRenderContext()->getRenderTexture()->update();
+	}
 }
 
 void MovableObjectRenderer::setBackgroundColour(const Ogre::ColourValue& colour)

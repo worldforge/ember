@@ -254,7 +254,6 @@ void SimpleRenderContext::createImage(const std::string& prefix)
 	mWidth = Ogre::Bitwise::firstPO2From(mWidth);
 	mHeight = Ogre::Bitwise::firstPO2From(mHeight);
 
-
 	///first, create a RenderTexture to which the Ogre renderer should render the image
 	S_LOG_VERBOSE("Creating new rendertexture " << (prefix + "_SimpleRenderContextRenderTexture") << " with w:" << mWidth << " h:" << mHeight);
 	Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().createManual(prefix + "_SimpleRenderContextRenderTexture", "Gui", Ogre::TEX_TYPE_2D, mWidth, mHeight, 0, Ogre::PF_A8R8G8B8,Ogre::TU_RENDERTARGET, &mResourceLoader);
@@ -307,13 +306,17 @@ void SimpleRenderContext::setCameraPositionMode(SimpleRenderContext::CameraPosit
 void SimpleRenderContext::setBackgroundColour(const Ogre::ColourValue& colour)
 {
 	mBackgroundColour = colour;
-	mViewPort->setBackgroundColour(colour);
+	if (mViewPort) {
+		mViewPort->setBackgroundColour(colour);
+	}
 }
 
 void SimpleRenderContext::setBackgroundColour(float red, float green, float blue, float alpha)
 {
 	mBackgroundColour = Ogre::ColourValue(red, green, blue, alpha);
-	mViewPort->setBackgroundColour(mBackgroundColour);
+	if (mViewPort) {
+		mViewPort->setBackgroundColour(mBackgroundColour);
+	}
 }
 
 

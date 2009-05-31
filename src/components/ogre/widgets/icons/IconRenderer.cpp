@@ -110,7 +110,9 @@ void IconRenderer::performRendering(Model::Model* model, Icon* icon)
 
 		///the problem with PBuffer and Copy might be that we need to wait a little before we try to blit, since it's not guaranteed that the content will be correctly rendered (since the render ops are queued to the GPU)
 		///thus we need to create some kind of frame listener callback mechanism
- 		mRenderContext->getViewport()->update();
+		if (mRenderContext->getViewport()) {
+			mRenderContext->getViewport()->update();
+		}
 
 // 		SDL_Delay(1000);
 // 		blitRenderToIcon(icon);
@@ -122,24 +124,26 @@ void IconRenderer::performRendering(Model::Model* model, Icon* icon)
 
 void IconRenderer::blitRenderToIcon(Icon* icon)
 {
-	Ogre::HardwarePixelBufferSharedPtr srcBuffer = mRenderContext->getTexture()->getBuffer();
-	Ogre::HardwarePixelBufferSharedPtr dstBuffer = icon->getImageStoreEntry()->getTexture()->getBuffer();
+	if (!mRenderContext->getTexture().isNull()) {
+		Ogre::HardwarePixelBufferSharedPtr srcBuffer = mRenderContext->getTexture()->getBuffer();
+		Ogre::HardwarePixelBufferSharedPtr dstBuffer = icon->getImageStoreEntry()->getTexture()->getBuffer();
 
-	Ogre::Box sourceBox(0, 0, mRenderContext->getRenderTexture()->getWidth(), mRenderContext->getRenderTexture()->getHeight());
-// 	Ogre::PixelBox sourceLockedBox = srcBuffer->lock(sourceBox, Ogre::HardwareBuffer::HBL_READ_ONLY);
+		Ogre::Box sourceBox(0, 0, mRenderContext->getRenderTexture()->getWidth(), mRenderContext->getRenderTexture()->getHeight());
+	// 	Ogre::PixelBox sourceLockedBox = srcBuffer->lock(sourceBox, Ogre::HardwareBuffer::HBL_READ_ONLY);
 
-	Ogre::Box dstBox = icon->getImageStoreEntry()->getBox();
-// 	Ogre::PixelBox dstLockedBox = dstBuffer->lock(dstBox, Ogre::HardwareBuffer::HBL_NORMAL);
+		Ogre::Box dstBox = icon->getImageStoreEntry()->getBox();
+	// 	Ogre::PixelBox dstLockedBox = dstBuffer->lock(dstBox, Ogre::HardwareBuffer::HBL_NORMAL);
 
-/*	Ogre::MemoryDataStream* dataStream = new Ogre::MemoryDataStream(sourceBox.getWidth() * sourceBox.getHeight() * 4, true);
-	Ogre::DataStreamPtr imageDataStreamPtr(dataStream);*/
+	/*	Ogre::MemoryDataStream* dataStream = new Ogre::MemoryDataStream(sourceBox.getWidth() * sourceBox.getHeight() * 4, true);
+		Ogre::DataStreamPtr imageDataStreamPtr(dataStream);*/
 
 
-/*	Ogre::Image image;
-	image.loadRawData(imageDataStreamPtr, sourceBox.getWidth(), sourceBox.getHeight(), Ogre::PF_A8R8G8B8);*/
+	/*	Ogre::Image image;
+		image.loadRawData(imageDataStreamPtr, sourceBox.getWidth(), sourceBox.getHeight(), Ogre::PF_A8R8G8B8);*/
 
- 	srcBuffer->blitToMemory(icon->getImageStoreEntry()->getImagePixelBox());
- 	dstBuffer->blitFromMemory(icon->getImageStoreEntry()->getImagePixelBox(), dstBox);
+		srcBuffer->blitToMemory(icon->getImageStoreEntry()->getImagePixelBox());
+		dstBuffer->blitFromMemory(icon->getImageStoreEntry()->getImagePixelBox(), dstBox);
+	}
 //  	static int counter(0);
 //  	std::stringstream ss;
 //  	ss << "/home/erik/skit/temp_" << counter++ << ".jpg";
