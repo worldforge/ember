@@ -7,15 +7,7 @@
 -----------------------------------------
 
 
-EntityPicker = {connectors={}}
-
---local EntityPicker.mainWindow
-EntityPicker.menuWindow = nil
-EntityPicker.entityName = nil
-EntityPicker.useButtons = {}
-EntityPicker.entity = nil
-EntityPicker.position = nil
-EntityPicker.buttons = {}
+EntityPicker = {connectors={}, menuWindow = nil, entityName = nil, useButtons = {}, entityId = nil, position = nil, buttons = {}}
 
 EntityPicker.widget = guiManager:createWidget()
 
@@ -105,12 +97,13 @@ end
 function EntityPicker.pickedEntity(result, args)
 	
 	if args.pickType == EmberOgre.MPT_CLICK then
-		EntityPicker.entity = result.entity
+		local entity = result.entity
+		EntityPicker.entityId = entity:getId()
 		--we must make a copy, else the vector object will be deleted by C++ and we'll end up with garbage
 		EntityPicker.position = Ogre.Vector3:new_local(result.position)
 		local point = CEGUI.Vector2:new_local(args.windowX, args.windowY)
 		
-		if (EntityPicker.entity:getId() == '0') then
+		if (entity:getId() == '0') then
 			EntityPicker.buttons.move:setVisible(false)
 			EntityPicker.buttons.take:setVisible(false)
 			EntityPicker.buttons.attack:setVisible(false)
@@ -127,21 +120,21 @@ function EntityPicker.pickedEntity(result, args)
 -- 			EntityPicker.buttons.eat:setVisible(false)
 -- 		end
 			
-		EntityPicker.checkUse()
-		EntityPicker.showMenu(point)
+		EntityPicker.checkUse(entity)
+		EntityPicker.showMenu(point, entity)
 		local name
 		--if the entity has a name, use it, else use the type name
 		--perhaps we should prefix the type name with an "a" or "an"?
-		if EntityPicker.entity:getName() ~= "" then
-			name = EntityPicker.entity:getName()
+		if entity:getName() ~= "" then
+			name = entity:getName()
 		else
-			name = EntityPicker.entity:getType():getName()
+			name = entity:getType():getName()
 		end	
 		EntityPicker.entityName:setText(name)
 	end
 end
 
-function EntityPicker.checkUse()
+function EntityPicker.checkUse(entity)
 	--try to find the default operation for the wielded entity
 	for i,v in ipairs(EntityPicker.useButtons) do
 		v.button:setVisible(false)
@@ -150,13 +143,13 @@ function EntityPicker.checkUse()
 	local currentButtonIndex = 0
 	
 	--first fill up with actions defined for the entity being picked
-	local actionList = EntityPicker.entity:getActions();
+	local actionList = entity:getActions();
 	if actionList:size() > 0 then 
 		for i = 0, actionList:size() - 1 do
 			currentButtonIndex = currentButtonIndex + 1
 			local action = actionList[i]
 			local currentButton = EntityPicker.useButtons[currentButtonIndex]
-			EntityPicker.addAction(currentButton, EntityPicker.entity, action)
+			EntityPicker.addAction(currentButton, entity:getId(), action)
 		end
 	end	
 	
@@ -169,16 +162,19 @@ function EntityPicker.checkUse()
 				currentButtonIndex = currentButtonIndex + 1
 				local defaultOp = operatorList[i]
 				local currentButton = EntityPicker.useButtons[currentButtonIndex]
-				EntityPicker.addUse(currentButton, EntityPicker.entity, wieldedEntity, defaultOp)
+				EntityPicker.addUse(currentButton, entity:getId(), wieldedEntity, defaultOp)
 			end
 		end
 	end
 end
 
-function EntityPicker.addUse(buttonWrapper, entity, wieldedEntity, operation)
+function EntityPicker.addUse(buttonWrapper, entityId, wieldedEntity, operation)
 	buttonWrapper.clickedHandler = function()
-		emberServices:getServerService():use(EntityPicker.entity, EmberOgre.Ogre2Atlas(EntityPicker.position), operation)
-		guiManager:EmitEntityAction("use", EntityPicker.entity)
+		local entity = emberOgre:getEmberEntity(entityId)
+		if entity ~= nil then
+			emberServices:getServerService():use(entity, EmberOgre.Ogre2Atlas(EntityPicker.position), operation)
+			guiManager:EmitEntityAction("use", entity)
+		end
 		EntityPickerWidget_removeMenu()
 	end	
 	
@@ -191,10 +187,13 @@ function EntityPicker.addUse(buttonWrapper, entity, wieldedEntity, operation)
 	end
 end
 
-function EntityPicker.addAction(buttonWrapper, entity, action)
+function EntityPicker.addAction(buttonWrapper, entityId, action)
 	buttonWrapper.clickedHandler = function()
-		emberServices:getServerService():actuate(EntityPicker.entity, action)
-		guiManager:EmitEntityAction("actuate", EntityPicker.entity)
+		local entity = emberOgre:getEmberEntity(entityId)
+		if entity ~= nil then
+			emberServices:getServerService():actuate(entity, action)
+			guiManager:EmitEntityAction("actuate", entity)
+		end
 		EntityPickerWidget_removeMenu()
 	end	
 	
@@ -208,71 +207,90 @@ end
 --	end
 --end
 
+--Tries to find the selected entity (it might have disappeared from the world in the span of clicking on it and selecting an action) and if it can be found it will call the supplied function with the entity as the first argument.
+--This allows you to easily specify functions to call when there is a selected entity. If no entity can be found nothing will happen.
+function EntityPicker.doWithPickedEntity(aFunction)
+	local entity = emberOgre:getEmberEntity(EntityPicker.entityId)
+	if entity ~= nil then
+		aFunction(entity)
+	end
+end
+
 function EntityPicker.buttonMoveto_Click(args)
 	emberOgre:getAvatarController():moveToPoint(EntityPicker.position)
 	EntityPickerWidget_removeMenu()
 end
 
 function EntityPicker.buttonTeleportto_Click(args)
-	emberOgre:getAvatarController():teleportTo(EntityPicker.position, EntityPicker.entity)
+	EntityPicker.doWithPickedEntity(function (entity)
+		emberOgre:getAvatarController():teleportTo(EntityPicker.position, entity)
+	end)
 	EntityPickerWidget_removeMenu()
 end
 
 function EntityPicker.buttonTouch_Click(args)
+	EntityPicker.doWithPickedEntity(function (entity)
+		emberServices:getServerService():touch(entity)
+		guiManager:EmitEntityAction("touch", entity)
+	end)
 	--print("Type: ", tolua.type(EntityPicker.position))
-	emberServices:getServerService():touch(EntityPicker.entity)
-	guiManager:EmitEntityAction("touch", EntityPicker.entity)
 	EntityPickerWidget_removeMenu()
 end
 
 function EntityPicker.buttonTake_Click(args)
-	emberServices:getServerService():take(EntityPicker.entity)
-	guiManager:EmitEntityAction("take", EntityPicker.entity)
+	EntityPicker.doWithPickedEntity(function (entity)
+		emberServices:getServerService():take(entity)
+		guiManager:EmitEntityAction("take", entity)
+	end)
 	EntityPickerWidget_removeMenu()
 end
 
 function EntityPicker.buttonGive_Click(args)
-	guiManager:EmitEntityAction("give", EntityPicker.entity)
+	EntityPicker.doWithPickedEntity(function (entity)
+		guiManager:EmitEntityAction("give", entity)
+	end)
 	EntityPickerWidget_removeMenu()
 end
 
 function EntityPicker.buttonInspect_Click(args)
-	guiManager:EmitEntityAction("inspect", EntityPicker.entity)
+	EntityPicker.doWithPickedEntity(function (entity)
+		guiManager:EmitEntityAction("inspect", entity)
+	end)
 	EntityPickerWidget_removeMenu()
 end
 
 function EntityPicker.buttonMove_Click(args)
-	guiManager:EmitEntityAction("move", EntityPicker.entity)
+	EntityPicker.doWithPickedEntity(function (entity)
+		guiManager:EmitEntityAction("move", entity)
+	end)
 	EntityPickerWidget_removeMenu()
 end
 
 function EntityPicker.buttonUse_Click(args)
---	emberServices:getServerService():use(EntityPicker.entity, EmberOgre.Ogre2Atlas(tolua.cast(EntityPicker.position, "Ogre::Vector<3>")))
-	emberServices:getServerService():use(EntityPicker.entity, EmberOgre.Ogre2Atlas(EntityPicker.position))
-	guiManager:EmitEntityAction("use", EntityPicker.entity)
+	EntityPicker.doWithPickedEntity(function (entity)
+	--	emberServices:getServerService():use(entity, EmberOgre.Ogre2Atlas(tolua.cast(EntityPicker.position, "Ogre::Vector<3>")))
+		emberServices:getServerService():use(entity, EmberOgre.Ogre2Atlas(EntityPicker.position))
+		guiManager:EmitEntityAction("use", entity)
+	end)
 	EntityPickerWidget_removeMenu()
 end
 
 function EntityPicker.editButton_Click(args)
-	guiManager:EmitEntityAction("edit", EntityPicker.entity)
+	EntityPicker.doWithPickedEntity(function (entity)
+		guiManager:EmitEntityAction("edit", entity)
+	end)
 	EntityPickerWidget_removeMenu()
 end
 
 function EntityPicker.attackButton_Click(args)
-	emberServices:getServerService():attack(EntityPicker.entity)
-	guiManager:EmitEntityAction("attack", EntityPicker.entity)
+	EntityPicker.doWithPickedEntity(function (entity)
+		emberServices:getServerService():attack(entity)
+		guiManager:EmitEntityAction("attack", entity)
+	end)
 	EntityPickerWidget_removeMenu()
 end
 
--- function EntityPicker.eatButton_Click(args)
--- 	emberServices:getServerService():use(EntityPicker.entity, EmberOgre.Ogre2Atlas(EntityPicker.position))
--- 	guiManager:EmitEntityAction("eat", EntityPicker.entity)
--- 	EntityPickerWidget_removeMenu()
--- end
-
-
 function EntityPickerWidget_removeMenu()
-	
 	EntityPicker.widget:hide()
 end
 
