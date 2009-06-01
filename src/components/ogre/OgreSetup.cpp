@@ -413,6 +413,24 @@ bool OgreSetup::configure(void)
 
 	mRenderWindow = mRoot->createRenderWindow("MainWindow", width, height, false, &misc);
 
+	//Due to a bug in the ATI drivers which results in random corruption of the GL stack when using the GLEW_SGIS_generate_mipmap extension we need to deactivate this for ATI cards with certain drivers.
+	if (mRoot->getRenderSystem()->getCapabilities()->getVendor() == Ogre::GPU_ATI) {
+		S_LOG_WARNING("You're running a version of the ATI driver which has a known issue with an extension which will result in random crashes. I will now try to disable the extension. This will remove the random crashes, but might lead to other graphical issues. In addition, there will be an unavoidable crash when shutting down Ember. If you can, try to update your ATI driver to a newer version.");
+		Ogre::RenderSystemCapabilities *caps = mRoot->getRenderSystem()->createRenderSystemCapabilities();
+		caps->unsetCapability(Ogre::RSC_AUTOMIPMAP);
+		mRoot->getRenderSystem()->useCustomRenderSystemCapabilities(caps);
+
+		mRoot->getRenderSystem()->destroyRenderWindow(mRenderWindow->getName());
+		//We would like to call "reinitialise", but it unfortunately calls _initialise(true...), which will create a new window, so we need to call these methods directly
+		//	mRoot->getRenderSystem()->reinitialise();
+		mRoot->getRenderSystem()->shutdown();
+		mRoot->getRenderSystem()->_initialise(false, "Ember");
+
+		mRenderWindow = mRoot->createRenderWindow("MainWindow", width, height, false, &misc);
+	}
+
+
+
 	///we need to set the window to be active and visible by ourselves, since GLX by default sets it to false, but then activates it upon receiving some X event (which it will never recieve since we'll use SDL).
 	///see OgreGLXWindow.cpp
 	mRenderWindow->setActive(true);
@@ -827,7 +845,7 @@ void OgreSetup::setStandardValues()
 	///remove padding for bounding boxes
 	Ogre::MeshManager::getSingletonPtr()->setBoundsPaddingFactor(0);
 
-	///all new movable objects shall by default be unpickable; it's up to the objects themselved to make themselves pickable
+	///all new movable objects shall by default be unpickable; it's up to the objects themselves to make themselves pickable
 	Ogre::MovableObject::setDefaultQueryFlags(0);
 }
 
