@@ -210,10 +210,7 @@ end
 --Tries to find the selected entity (it might have disappeared from the world in the span of clicking on it and selecting an action) and if it can be found it will call the supplied function with the entity as the first argument.
 --This allows you to easily specify functions to call when there is a selected entity. If no entity can be found nothing will happen.
 function EntityPicker.doWithPickedEntity(aFunction)
-	local entity = emberOgre:getEmberEntity(EntityPicker.entityId)
-	if entity ~= nil then
-		aFunction(entity)
-	end
+	emberOgre:doWithEntity(EntityPicker.entityId, aFunction)
 end
 
 function EntityPicker.buttonMoveto_Click(args)

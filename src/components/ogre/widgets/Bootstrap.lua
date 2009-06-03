@@ -18,6 +18,25 @@ root = guiSystem:getGUISheet()
 --This is the main ember object. You can usually use any of it's many get*() methods to access other parts of the system.
 emberOgre = EmberOgre.EmberOgre:getSingleton()
 
+--Tries to find the selected entity, and if found performs a function on it. If it's not found, and optional function can be performed with the entity id as argument.
+--This allows you to safely perform actions on an entity which might have disappeared from the scene.
+--@param entityId The id of the entity.
+--@param doIfEntityFound The function to call if the entity is found. The first argument is the entity.
+--@param doIfEntityNotFound An optional function which will be called if the entity isn't found. The first argument is the entity id.
+emberOgre.doWithEntity = function(this, entityId, doIfEntityFound, doIfEntityNotFound)
+	if entityId ~= nil then
+		local entity = this:getEmberEntity(entityId)
+		if entity ~= nil then
+			doIfEntityFound(entity)
+		else 
+			if doIfEntityNotFound ~= nil then
+				doIfEntityNotFound(entityId)
+			end
+		end
+	end
+end
+
+
 --The GUIManager handles higher level gui actions. It doesn't know anything about the lua or CEGUI world, but has some useful events, for example EventFrameStarted which is emitted every frame.
 --Also, when you create a new widget you have to use the createWidget() method.
 guiManager = EmberOgre.GUIManager:getSingleton()

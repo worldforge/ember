@@ -5,7 +5,7 @@
 -----------------------------------------
 Give = {connectors={}}
 Give.listbox = nil
-Give.targetEntity = nil
+Give.targetEntityId = nil
 Give.listboxMap = {}
 Give.widget = guiManager:createWidget()
 
@@ -56,7 +56,9 @@ function Give.Give_Click(args)
 		local entityId = item:getID()
 		local entity = emberOgre:getEmberEntity(entityId);
 		if (entity ~= nil) then
-			emberServices:getServerService():place(entity, Give.targetEntity)
+			emberOgre:doWithEntity(Give.targetEntityId, function (targetEntity) 
+				emberServices:getServerService():place(entity, targetEntity)
+			end);
 		end
 		item = Give.listbox:getNextSelected(item)
 	end
@@ -74,7 +76,7 @@ function Give.handleAction(action, entity)
 end
 
 function Give.show(entity)
-	Give.targetEntity = entity
+	Give.targetEntityId = entity:getId()
 	Give.widget:show()
 	local textWidget = Give.widget:getWindow("Text")
 	local text = "Give to " .. entity:getName() .. " ( a " .. entity:getType():getName() .. ")"
