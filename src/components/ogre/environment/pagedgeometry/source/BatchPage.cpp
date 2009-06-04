@@ -323,6 +323,9 @@ void BatchPage::_updateShaders()
 
 			vertexShader->setParameter("entry_point", "main");
 			vertexShader->load();
+			if (vertexShader->hasCompileError()) {
+				OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, "Error loading the batching vertex shader.", "BatchPage::_updateShaders()");
+			}
 		}
 
 		if (HighLevelGpuProgramManager::getSingleton().getByName("BatchFragStandard").isNull()){
@@ -331,7 +334,7 @@ void BatchPage::_updateShaders()
 			String fragmentProgSource = "void main \n"
 			"( \n"
 			"    float2              iTexcoord	: TEXCOORD0, \n"
-			"	float				iFog 		: FOG, \n"
+			"	float				iFog 		: FOG \n"
 			"	out float4          oColour		: COLOR, \n"
 			"    uniform sampler2D   diffuseTexture: TEXUNIT0 \n"
 			") \n"
@@ -359,6 +362,9 @@ void BatchPage::_updateShaders()
 
 			fragShader->setParameter("entry_point", "main");
 			fragShader->load();
+			if (fragShader->hasCompileError()) {
+				OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, "Error loading the batching fragment shader.", "BatchPage::_updateShaders()");
+			}
 		}
 		//Now that the shader is ready to be applied, apply it
 		StringUtil::StrStreamType materialSignature;
