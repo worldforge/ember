@@ -20,17 +20,14 @@
 #ifndef SOUNDSERVICE_H
 #define SOUNDSERVICE_H
 
-//include the EmberServices here since that's the main way of reaching the sound service instance
-#include "../EmberServices.h"
 #include "framework/Service.h"
 #include "framework/ConsoleObject.h"
-#include "SoundGeneral.h"
 
 #include <wfmath/vector.h>
 #include <wfmath/quaternion.h>
 #include <wfmath/point.h>
 
-#include <vector>
+#include <list>
 #include <map>
 
 namespace Ember {
@@ -45,42 +42,42 @@ class BaseSoundSample;
  * @brief A service responsible for playing and managing sounds.
  * In normal operations, the only way to play a sound is to first request a new instance of SoundInstance throug createInstance(), binding that instance to one or many sound samples and then asking the SoundInstance to start playing. Once the SoundInstance is done playing it should be returned through destroyInstance(). Since it's expected that not too many sounds should be playing at one time it's not expected to be too many live instances of SoundInstance at any time.
  * Before you can start requesting sound instances and binding them to samples you must however set up the service. The first thing that needs to be set up is a resource provider through the IResourceProvider interface. The resource provider is responsible for providing any resource when so asked, and is the main interface into the actual sound data.
- *
  * @author Romulo Fernandes Machado (nightz)
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
 class SoundService: public Service, public ConsoleObject
 {
 /**
-@note This is a list because we want to allow removal or insertion in the list while we're iterating over it (which isn't allowed with a vector).
-*/
+ * @note This is a list because we want to allow removal or insertion in the list while we're iterating over it (which isn't allowed with a vector).
+ */
 typedef std::list<SoundInstance*> SoundInstanceStore;
 typedef std::map<std::string, BaseSoundSample*> SoundSampleStore;
 
 public:
 	/**
-	* @brief Ctor.
-	*/
+	 * @brief Ctor.
+	 */
 	SoundService();
+
 	/**
 	 * @brief Dtor.
 	 */
 	virtual ~SoundService();
 
 	/**
-	* @brief Start the sound service.
-	*/
+	 * @copydoc Service::start()
+	 */
 	Service::Status start();
 
 	/**
-	* @brief Stop the sound service.
-	*/
+	 * @copydoc Service::stop()
+	 */
 	void stop(int code);
 
 	/**
-	* From console you can call functions to the Sound Service
-	*/
-	void runCommand(const std::string &command, const std::string &args);
+	 * @copydoc ConsoleObject::runCommand()
+	 */
+	void runCommand(const std::string& command, const std::string& args);
 	
 	
 	/**
@@ -96,47 +93,33 @@ public:
 	 * @brief Destroys the specified sound sample.
 	 * Call this to destroy a specified sound sample. If no sound sample with the specified path can be found nothing will happen.
 	 * Normally you would never call this since all sound samples will be destroyed automatically when the service shuts down.
-	 * Caution! If you destroy a sound sample that is in use by a SoundInstance you will probably get memory corruption and crashes as a result!
+	 * @note Caution! If you destroy a sound sample that is in use by a SoundInstance you will probably get memory corruption and crashes as a result!
 	 * @param soundPath The path to the sound data.
 	 * @return True if the sound sample could be destroyed, false if it for some reason couldn't be destroyed, or if there was no such sound sample registered.
 	 */
 	bool destroySoundSample(const std::string& soundPath);
 
 	/**
-	* Register individual StreamedSamples to keep updated
-	* on the cycle calls
-	*
-	* @param copy The StreamedSoundSample to be registered
-	*/
+	 * Register individual StreamedSamples to keep updated on the cycle calls
+	 * @param copy The StreamedSoundSample to be registered
+	 */
 	void registerStream(StreamedSoundSample* copy);
 
 	/**
-	* Unregister streamed allocate sound buffers
-	* This will only remove it from the service list
-	* it will not deallocate the data.
-	*
-	* @param sample A pointer to the sample to be unregistered
-	* @return The status of the unregistration.
-	*/
+	 * Unregister streamed allocate sound buffers.
+	 * This will only remove it from the service list it will not deallocate the data.
+	 * @param sample A pointer to the sample to be unregistered
+	 * @return The status of the unregistration.
+	 */
 	bool unregisterStream(const StreamedSoundSample* sample);
 
-
 	/**
-	* @brief Update the position (in world coordinates) of the listener
-	*
-	* @param position The new listener position.
-	* @param orientation The listener orientation.
-	*/
-	void updateListenerPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation);
-
-	/**
-	* @brief Update the position (in world coordinates) of the listener
-	*
-	* @param position The new listener position.
-	* @param direction The direction vector of the listener.
-	* @param up The up vector of the listener.
-	*/
-	void updateListenerPosition(const WFMath::Point<3>& pos, const WFMath::Vector<3>& direction, const WFMath::Vector<3> up);
+	 * @brief Update the position (in world coordinates) of the listener
+	 * @param position The new listener position.
+	 * @param direction The direction vector of the listener.
+	 * @param up The up vector of the listener.
+	 */
+	void updateListenerPosition(const WFMath::Point<3>& pos, const WFMath::Vector<3>& direction, const WFMath::Vector<3>& up);
 	
 	/**
 	 * @brief Call this each frame to update the sound samples.
@@ -190,27 +173,16 @@ private:
 	 */
 	SoundSampleStore mBaseSamples;
 
-
-	#ifdef THREAD_SAFE
-	/**
-	* In case we are using threads, we must lock the mutexes to 
-	* prevent incorrect writing to the sample lists
-	*/
-	pthread_mutex_t mGroupModelsMutex;
-	pthread_mutex_t mGroupsMutex;
-	pthread_mutex_t mSamplesMutex;
-	#endif
-	
 	#ifdef __WIN32__
-		/**
-		 * @brief The main OpenAL context.
-		 */
-		ALCcontext *mContext;
-		
-		/**
-		 * @brief The main OpenAL device.
-		 */
-		ALCdevice *mDevice;
+	/**
+	 * @brief The main OpenAL context.
+	 */
+	ALCcontext* mContext;
+
+	/**
+	 * @brief The main OpenAL device.
+	 */
+	ALCdevice* mDevice;
 	#endif
 	
 	/**

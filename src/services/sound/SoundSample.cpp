@@ -1,19 +1,19 @@
 /*
-  Copyright (C) 2008 Romulo Fernandes Machado (nightz)
+    Copyright (C) 2008 Romulo Fernandes Machado (nightz)
 
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  (at your option) any later version.
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #ifdef HAVE_CONFIG_H
@@ -22,13 +22,8 @@
 
 #include "SoundSample.h"
 
-
 #include "framework/LoggingInstance.h"
 
-#include <map>
-
-#include "SoundGeneral.h"
-#include "SoundService.h"
 #include "SoundSource.h"
 
 #ifndef __WIN32__
@@ -37,19 +32,19 @@
 #include <ALUT/alut.h>
 #endif
 
+
 namespace Ember
 {
 
 StaticSoundBinding::StaticSoundBinding(SoundSource& source, StaticSoundSample& sample)
-: SoundBinding(source)
-, mSample(sample)
+: SoundBinding(source), mSample(sample)
 {
-	///Bind it to the buffer.
+	// Bind it to the buffer.
 	alSourcei(source.getALSource(), AL_BUFFER, sample.getBuffer());
 	SoundGeneral::checkAlError("Binding sound source to static sound buffer.");
 }
 
-SoundGeneral::SoundSampleType BaseSoundSample::getType()
+SoundGeneral::SoundSampleType BaseSoundSample::getType() const
 {
 	return mType;
 }
@@ -61,27 +56,25 @@ StaticSoundSample::StaticSoundSample(const ResourceWrapper& resource, bool plays
 	mType = SoundGeneral::SAMPLE_WAV;
 	mBuffer = alutCreateBufferFromFileImage(mResource.getDataPtr(), mResource.getSize());
 	
-	if (!SoundGeneral::checkAlError("Generated buffer for static sample."))
-	{
+	if (!SoundGeneral::checkAlError("Generated buffer for static sample.")) {
 		alDeleteBuffers(1, &mBuffer);
 	}
 }
 
 StaticSoundSample::~StaticSoundSample()
 {
-	if (alIsBuffer(mBuffer))
-	{
+	if (alIsBuffer(mBuffer)) {
 		alDeleteBuffers(1, &mBuffer);
 		SoundGeneral::checkAlError("Deleting static sound buffers.");
 	}
 }
 
-ALuint StaticSoundSample::getBuffer()
+ALuint StaticSoundSample::getBuffer() const
 {
 	return mBuffer;
 }
 	
-BaseSoundSample::BufferStore StaticSoundSample::getBuffers()
+BaseSoundSample::BufferStore StaticSoundSample::getBuffers() const
 {
 	BaseSoundSample::BufferStore buffers;
 	buffers.push_back(mBuffer);
@@ -94,22 +87,10 @@ SoundBinding* StaticSoundSample::createBinding(SoundSource& source)
 	return new StaticSoundBinding(source, *this);
 }
 
-unsigned int StaticSoundSample::getNumberOfBuffers()
+unsigned int StaticSoundSample::getNumberOfBuffers() const
 {
 	return 1;
 }
-
-// 	void StaticSoundSample::play()
-// 	{
-// 		alSourcePlay(mSource);
-// 		checkAlError();
-// 	}
-// 
-// 	void StaticSoundSample::stop()
-// 	{
-// 		alSourceStop(mSource);
-// 		checkAlError();
-// 	}
 
 	// Streamed (OGG)
 // 	StreamedSoundSample::StreamedSoundSample(const std::string& filename, bool playsLocal, float volume)

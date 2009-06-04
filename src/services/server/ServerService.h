@@ -21,6 +21,7 @@
 
 #include <framework/Service.h>
 #include <framework/ConsoleObject.h>
+#include <framework/ConsoleCommandWrapper.h>
 
 #include <Atlas/Objects/RootOperation.h>
 #include <Eris/BaseConnection.h>

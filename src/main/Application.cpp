@@ -120,9 +120,7 @@ void Application::mainLoopStep()
 		input.processInput();
 		EventAfterInputProcessing.emit();
 		mOgreView->renderOneFrame();
-		#ifndef THREAD_SAFE
 		EmberServices::getSingleton().getSoundService()->cycle();
-		#endif
 	} catch (const std::exception& ex)
 	{
 		S_LOG_CRITICAL("Got exception, shutting down. " << ex.what());
@@ -257,14 +255,6 @@ Eris::View* Application::getMainView()
 	return mWorldView;
 }
 
-void* startSoundServiceCycle(void* arg)
-{
-	while (1)
-	{
-		EmberServices::getSingleton().getSoundService()->cycle();
-	}
-}
-
 void Application::start()
 {
 	try {
@@ -281,12 +271,6 @@ void Application::start()
 		S_LOG_CRITICAL("Unknown error when setting up Ogre.");
 		return;
 	}
-
-	// Start the SoundService thread
-	#ifdef THREAD_SAFE
-	pthread_t soundThread;
-	pthread_create(&soundThread, NULL, startSoundServiceCycle, NULL);
-	#endif
 
 	mainLoop();
 }

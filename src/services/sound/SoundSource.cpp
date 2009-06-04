@@ -20,11 +20,15 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
 #include "SoundSource.h"
+
+#include "SoundGeneral.h"
+
 #include "framework/LoggingInstance.h"
 #include "framework/Exception.h"
 
@@ -55,20 +59,19 @@ SoundSource::SoundSource()
 
 }
 
-
 SoundSource::~SoundSource()
 {
 	alDeleteSources(1, &mALSource);
 	SoundGeneral::checkAlError("Deleting sound source.");
 }
 
-void SoundSource::setPosition(const WFMath::Point<3> &pos)
+void SoundSource::setPosition(const WFMath::Point<3>& pos)
 {
 	alSource3f(mALSource, AL_POSITION, pos.x(), pos.y(), pos.z());
 	SoundGeneral::checkAlError("Setting sound source position.");
 }
 
-void SoundSource::setVelocity(const WFMath::Vector<3> &vel)
+void SoundSource::setVelocity(const WFMath::Vector<3>& vel)
 {
 	alSource3f(mALSource, AL_VELOCITY, vel.x(), vel.y(), vel.z());
 	SoundGeneral::checkAlError("Setting sound source velocity.");

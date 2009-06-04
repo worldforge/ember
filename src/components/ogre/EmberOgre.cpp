@@ -67,7 +67,6 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "services/config/ConfigService.h"
 #include "services/sound/SoundService.h"
 #include "services/scripting/ScriptingService.h"
-#include "framework/ConsoleBackend.h"
 #include "framework/ConsoleObject.h" //TODO: this will be included in a different class
 #include "framework/LoggingInstance.h"
 
@@ -116,10 +115,6 @@ http://www.gnu.org/copyleft/lesser.txt.
 // ------------------------------
 // Include Ember header files
 // ------------------------------
-
-#include "framework/ConsoleBackend.h"
-
-
 
 //#include "jesus/Jesus.h"
 //#include "jesus/XMLJesusSerializer.h"
@@ -519,7 +514,6 @@ bool EmberOgre::setup()
 	loadingBar.finish();
 
 	return true;
-
 }
 
 
@@ -687,7 +681,8 @@ void EmberOgre::Server_GotConnection(Eris::Connection* connection)
 
 
 
-Avatar* EmberOgre::getAvatar() const {
+Avatar* EmberOgre::getAvatar() const
+{
 	return mAvatar;
 }
 

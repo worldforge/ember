@@ -23,8 +23,6 @@
 #include <string>
 
 
-// #define OGG_BUFFER_SIZE (4096 * 8)
-
 namespace Ember 
 {
 class SoundGeneral
@@ -41,9 +39,9 @@ public:
 	/**
 	 * @brief Checks for any errors in the OpenAL context.
 	 * If an error has occurred, it's logged and this method returns false.
-	 * Make sure to call this after you've interacted with OpenAL to make sure that the internal error state is reset in time for the next call to OpenAL. If not, the errors will carry over.
-	 * @param  description If an error occurs, an entry will be written to the log. If you provide a description this will be added too, which might be good when looking through the log and figuring out what's wrong.
-	 * @return False if an error has occurred, else true.
+	 * Make sure to call this after you've interacted with OpenAL, so the internal error state is reset before the next call to OpenAL (otherwise the errors will carry over).
+	 * @param description When an error occurs, an entry will be written to the log; and this "description" will be appended, thus helping to identify each entry.
+	 * @return False if an error has occurred, true otherwise.
 	 */
 	static bool checkAlError(const std::string& description = "");
 };

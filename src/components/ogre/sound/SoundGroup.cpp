@@ -30,6 +30,7 @@
 // to this
 #include <sys/time.h>
 
+#include "services/EmberServices.h"
 #include "services/sound/SoundService.h"
 #include "services/sound/SoundInstance.h"
 #include "services/sound/SoundSource.h"

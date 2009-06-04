@@ -24,7 +24,6 @@
 #include "framework/Service.h"
 #include "framework/ConsoleBackend.h"
 #include "services/EmberServices.h"
-#include "services/sound/SoundService.h"
 #include "EmberEntityFactory.h"
 #include "MotionManager.h"
 #include "GUIManager.h"
@@ -311,7 +310,7 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
 	/// Make the message appear in the chat box
 	GUIManager::getSingleton().AppendIGChatLine.emit(msg, this);
 
-	/// Make a sound in OpenAL
+	/// Make a sound in OpenAL -- mafm: call doesn't exist
 	//	Ember::EmberServices::getSingleton().getSoundService()->playTalk(msg,
 	//		getPosition(),getOrientation());
 

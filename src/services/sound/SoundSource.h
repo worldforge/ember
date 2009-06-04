@@ -20,13 +20,14 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+
 #ifndef EMBERSOUNDSOURCE_H
 #define EMBERSOUNDSOURCE_H
 
-#include "SoundGeneral.h"
 #include <wfmath/vector.h>
 #include <wfmath/quaternion.h>
 #include <wfmath/point.h>
+
 #ifdef __APPLE__
 #include <OpenAL/al.h>
 #else
@@ -36,10 +37,10 @@
 namespace Ember {
 
 /**
-@brief Represents a sound source in the 3d world.
-An instance of this class mainly envelopes an OpenAL soundsource, allocating it when it's created and removing it at destruction time.
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
+ * @brief Represents a sound source in the 3d world.
+ * An instance of this class mainly envelopes an OpenAL soundsource, allocating it when it's created and removing it at destruction time.
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
 class SoundSource
 {
 friend class SoundInstance;
@@ -71,7 +72,7 @@ public:
 	
 	/**
 	* @brief Return openAl source within this sample
-	* @return 
+	* @return The identifier of the source
 	*/
 	ALuint getALSource() const;
 	

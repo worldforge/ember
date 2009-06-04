@@ -25,12 +25,12 @@
 #define CONSOLEOBJECT_H
 
 // Included headers from the current project
+#include "framework/ConsoleCommandWrapper.h"
 
 // Included custom library headers
 
 // Included system headers
 #include <string>
-#include "framework/ConsoleCommandWrapper.h"
 
 namespace Ember {
 /**
@@ -65,7 +65,7 @@ public:
    * "command" is a command that has been previously registered with the console
    * "args" is the argument string that has been provided for the command
    */ 
-  virtual void runCommand(const std::string &command, const std::string &args) = 0;
+  virtual void runCommand(const std::string& command, const std::string& args) = 0;
 };
 
 } /* namespace Ember */

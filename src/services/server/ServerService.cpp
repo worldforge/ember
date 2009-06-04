@@ -52,8 +52,6 @@
 
 #include "OOGChat.h"
 
-#include "framework/ConsoleCommandWrapper.h"
-
 
 
 namespace Ember

@@ -19,6 +19,7 @@
 
 #include "SoundGeneral.h"
 #include "framework/LoggingInstance.h"
+
 #ifdef __APPLE__
 #include <OpenAL/al.h>
 #else
@@ -31,21 +32,22 @@
 #include <ALUT/alut.h>
 #endif
 
-namespace Ember 
+
+namespace Ember
 {
 	bool SoundGeneral::checkAlError(const std::string& description)
 	{
 		ALenum error = alGetError();
 		if (error == AL_NO_ERROR) {
 			return true;
-		}
-		
-		if (description != "") {
-			S_LOG_FAILURE("OpenAl error: " << alutGetErrorString(error));
 		} else {
-			S_LOG_FAILURE("OpenAl error: " << alutGetErrorString(error) << "\nDescription: " << description);
+			if (description == "") {
+				S_LOG_FAILURE("OpenAl error: " << alutGetErrorString(error));
+			} else {
+				S_LOG_FAILURE("OpenAl error: " << alutGetErrorString(error)
+					      << "\nDescription: " << description);
+			}
+			return false;
 		}
-		return false;
 	}
-
 }
