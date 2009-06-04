@@ -43,7 +43,7 @@ void BatchPage::init(PagedGeometry *geom, const Any &data)
 	if ( datacast < 0)
 		OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS,"Data of BatchPage must be a positive integer. It representing the LOD level this detail level stores.","BatchPage::BatchPage");
 #endif
-	mLODLevel = datacast; 
+	mLODLevel = datacast;
 
 	sceneMgr = geom->getSceneManager();
 	batch = new BatchedGeometry(sceneMgr, geom->getSceneNode());
@@ -78,7 +78,7 @@ void BatchPage::addEntity(Entity *ent, const Vector3 &position, const Quaternion
 		Ogre::LogManager::getSingleton().logMessage( "BatchPage::addEntity: " + ent->getName() + " entity has less than " + Ogre::StringConverter::toString(mLODLevel) + " manual lod level(s). Performance warning.");
 #endif
 
-	if (mLODLevel == 0 || numManLod == 0) 
+	if (mLODLevel == 0 || numManLod == 0)
 		batch->addEntity(ent, position, rotation, scale, color);
 	else
 	{
@@ -218,7 +218,7 @@ void BatchPage::_updateShaders()
 				"	float3 normal    : NORMAL,	\n"
 				"	out float4 oPosition : POSITION, \n";
 
-			if (subBatch->vertexData->vertexDeclaration->findElementBySemantic(VES_DIFFUSE) != NULL) vertexProgSource += 
+			if (subBatch->vertexData->vertexDeclaration->findElementBySemantic(VES_DIFFUSE) != NULL) vertexProgSource +=
 				"	float4 iColor    : COLOR, \n";
 
 			int texNum = 0;
@@ -233,7 +233,7 @@ void BatchPage::_updateShaders()
 						case VET_FLOAT4: uvType = "float4"; break;
 					}
 
-					vertexProgSource += 
+					vertexProgSource +=
 					"	" + uvType + " iUV" + StringConverter::toString(texNum) + "			: TEXCOORD" + StringConverter::toString(texNum) + ",	\n"
 					"	out " + uvType + " oUV" + StringConverter::toString(texNum) + "		: TEXCOORD" + StringConverter::toString(texNum) + ",	\n";
 
@@ -243,7 +243,8 @@ void BatchPage::_updateShaders()
 
 			vertexProgSource +=
 				"	out float oFog : FOG,	\n"
-				"	out float4 oColor : COLOR, \n";
+				"	out float4 oColor : COLOR, \n"
+			    "	uniform float4 iFogParams,	\n";
 
 			if (lightingEnabled) vertexProgSource +=
 				"	uniform float4 objSpaceLight,	\n"
@@ -264,12 +265,12 @@ void BatchPage::_updateShaders()
 				vertexProgSource +=
 				"	float3 light = normalize(objSpaceLight.xyz - (iPosition.xyz * objSpaceLight.w)); \n"
 				"	float diffuseFactor = max(dot(normal, light), 0); \n";
-				if (subBatch->vertexData->vertexDeclaration->findElementBySemantic(VES_DIFFUSE) != NULL) 
+				if (subBatch->vertexData->vertexDeclaration->findElementBySemantic(VES_DIFFUSE) != NULL)
 					vertexProgSource += "oColor = (lightAmbient + diffuseFactor * lightDiffuse) * iColor; \n";
 				else
 					vertexProgSource += "oColor = (lightAmbient + diffuseFactor * lightDiffuse); \n";
 			} else {
-				if (subBatch->vertexData->vertexDeclaration->findElementBySemantic(VES_DIFFUSE) != NULL) 
+				if (subBatch->vertexData->vertexDeclaration->findElementBySemantic(VES_DIFFUSE) != NULL)
 					vertexProgSource += "oColor = iColor; \n";
 				else
 					vertexProgSource += "oColor = float4(1, 1, 1, 1); \n";
@@ -284,16 +285,23 @@ void BatchPage::_updateShaders()
 			for (unsigned short i = 0; i < subBatch->vertexData->vertexDeclaration->getElementCount(); ++i) {
 				const VertexElement *el = subBatch->vertexData->vertexDeclaration->getElement(i);
 				if (el->getSemantic() == VES_TEXTURE_COORDINATES) {
-					vertexProgSource += 
+					vertexProgSource +=
 					"	oUV" + StringConverter::toString(texNum) + " = iUV" + StringConverter::toString(texNum) + ";	\n";
 					++texNum;
 				}
 			}
 
 			vertexProgSource +=
-				"	oPosition = mul(worldViewProj, iPosition);  \n"
-				"	oFog = oPosition.z; \n"
-				"}"; 
+				"	oPosition = mul(worldViewProj, iPosition);  \n";
+			if (sceneMgr->getFogMode() == Ogre::FOG_EXP2) {
+				vertexProgSource +=
+//					"	oFog = 0; \n";
+					"	oFog = 1 - clamp (pow (2.71828, -oPosition.z * iFogParams.x), 0, 1); \n";
+			} else {
+				vertexProgSource +=
+					"	oFog = oPosition.z; \n";
+			}
+			vertexProgSource += "}";
 
 			String shaderLanguage;
 			if (Root::getSingleton().getRenderSystem()->getName() == "Direct3D9 Rendering Subsystem")
@@ -317,6 +325,41 @@ void BatchPage::_updateShaders()
 			vertexShader->load();
 		}
 
+		if (HighLevelGpuProgramManager::getSingleton().getByName("BatchFragStandard").isNull()){
+			Pass *pass = mat->getTechnique(0)->getPass(0);
+
+			String fragmentProgSource = "void main \n"
+			"( \n"
+			"    float2              iTexcoord	: TEXCOORD0, \n"
+			"	float				iFog 		: FOG, \n"
+			"	out float4          oColour		: COLOR, \n"
+			"    uniform sampler2D   diffuseTexture: TEXUNIT0 \n"
+			") \n"
+			"{ \n"
+			"		oColour = tex2D(diffuseTexture, iTexcoord.xy ); \n"
+			"}";
+
+			String shaderLanguage;
+			if (Root::getSingleton().getRenderSystem()->getName() == "Direct3D9 Rendering Subsystem")
+				shaderLanguage = "hlsl";
+			else
+				shaderLanguage = "cg";
+
+			HighLevelGpuProgramPtr fragShader = HighLevelGpuProgramManager::getSingleton().createProgram(
+				"BatchFrag",
+				ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+				shaderLanguage, GPT_FRAGMENT_PROGRAM);
+
+			fragShader->setSource(fragmentProgSource);
+
+			if (shaderLanguage == "hlsl")
+				fragShader->setParameter("target", "ps_2_0");
+			else
+				fragShader->setParameter("profiles", "ps_2_0 arbfp1");
+
+			fragShader->setParameter("entry_point", "main");
+			fragShader->load();
+		}
 		//Now that the shader is ready to be applied, apply it
 		StringUtil::StrStreamType materialSignature;
 		materialSignature << "BatchMat|";
@@ -342,8 +385,12 @@ void BatchPage::_updateShaders()
 					if (pass->getVertexProgramName() == "")
 						pass->setVertexProgram(vertexProgName);
 
+					if (pass->getFragmentProgramName() == "")
+						pass->setFragmentProgram("BatchFrag");
+
 					try{
 						GpuProgramParametersSharedPtr params = pass->getVertexProgramParameters();
+						params->setIgnoreMissingParams(true);
 
 						if (lightingEnabled) {
 							params->setNamedAutoConstant("objSpaceLight", GpuProgramParameters::ACT_LIGHT_POSITION_OBJECT_SPACE);
@@ -352,7 +399,8 @@ void BatchPage::_updateShaders()
 							//params->setNamedAutoConstant("matAmbient", GpuProgramParameters::ACT_SURFACE_AMBIENT_COLOUR);
 						}
 
-						params->setNamedAutoConstant("worldViewProj", GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+//						params->setNamedAutoConstant("iFogParams", GpuProgramParameters::ACT_FOG_PARAMS);
+ 						params->setNamedAutoConstant("worldViewProj", GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
 
 						if (fadeEnabled){
 							params->setNamedAutoConstant("camPos", GpuProgramParameters::ACT_CAMERA_POSITION_OBJECT_SPACE);
