@@ -295,7 +295,6 @@ void BatchPage::_updateShaders()
 				"	oPosition = mul(worldViewProj, iPosition);  \n";
 			if (sceneMgr->getFogMode() == Ogre::FOG_EXP2) {
 				vertexProgSource +=
-//					"	oFog = 0; \n";
 					"	oFog = 1 - clamp (pow (2.71828, -oPosition.z * iFogParams.x), 0, 1); \n";
 			} else {
 				vertexProgSource +=
@@ -328,19 +327,22 @@ void BatchPage::_updateShaders()
 			}
 		}
 
+		//We also need a fragment program to go with our vertex program. Especially on ATI cards on Linux where we can't mix shaders and the fixed function pipeline.
 		if (HighLevelGpuProgramManager::getSingleton().getByName("BatchFragStandard").isNull()){
 			Pass *pass = mat->getTechnique(0)->getPass(0);
 
 			String fragmentProgSource = "void main \n"
-			"( \n"
-			"    float2              iTexcoord	: TEXCOORD0, \n"
-			"	float				iFog 		: FOG \n"
-			"	out float4          oColour		: COLOR, \n"
-			"    uniform sampler2D   diffuseTexture: TEXUNIT0 \n"
-			") \n"
-			"{ \n"
-			"		oColour = tex2D(diffuseTexture, iTexcoord.xy ); \n"
-			"}";
+				"( \n"
+				"    float2				iTexcoord		: TEXCOORD0, \n"
+				"	 float				iFog 			: FOG, \n"
+				"	 out float4         oColour			: COLOR, \n"
+				"    uniform sampler2D  diffuseTexture	: TEXUNIT0, \n"
+				"    uniform float3		iFogColour \n"
+				") \n"
+				"{ \n"
+				"	oColour = tex2D(diffuseTexture, iTexcoord.xy); \n"
+				"   oColour.xyz = lerp(oColour.xyz, iFogColour, iFog);\n"
+				"}";
 
 			String shaderLanguage;
 			if (Root::getSingleton().getRenderSystem()->getName() == "Direct3D9 Rendering Subsystem")
@@ -405,7 +407,7 @@ void BatchPage::_updateShaders()
 							//params->setNamedAutoConstant("matAmbient", GpuProgramParameters::ACT_SURFACE_AMBIENT_COLOUR);
 						}
 
-//						params->setNamedAutoConstant("iFogParams", GpuProgramParameters::ACT_FOG_PARAMS);
+						params->setNamedAutoConstant("iFogParams", GpuProgramParameters::ACT_FOG_PARAMS);
  						params->setNamedAutoConstant("worldViewProj", GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
 
 						if (fadeEnabled){
@@ -421,6 +423,11 @@ void BatchPage::_updateShaders()
 							if (pass->getAlphaRejectFunction() == CMPF_ALWAYS_PASS)
 								pass->setSceneBlending(SBT_TRANSPARENT_ALPHA);
 						}
+
+						params = pass->getFragmentProgramParameters();
+						params->setIgnoreMissingParams(true);
+ 						params->setNamedAutoConstant("iFogColour", GpuProgramParameters::ACT_FOG_COLOUR);
+
 					}
 					catch (...) {
 						OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, "Error configuring batched geometry transitions. If you're using materials with custom vertex shaders, they will need to implement fade transitions to be compatible with BatchPage.", "BatchPage::_updateShaders()");
