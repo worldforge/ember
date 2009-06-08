@@ -26,9 +26,11 @@
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 
-#include <OgreResourceManager.h>
 #include "framework/Singleton.h"
 #include "ModelDefinition.h"
+
+#include <OgreResourceManager.h>
+
 
 namespace EmberOgre {
 namespace Model {
@@ -36,23 +38,27 @@ namespace Model {
 class ModelFactory;
 class ModelBackgroundLoader;
 
+
 /**
-@brief Manages all of the ModelDefinition instances.
-Responsible for creating, managing, and destroying ModelDefinition instances.
-@author Erik Hjortsberg
-*/
+ *
+ * @brief Manages all of the ModelDefinition instances.
+ *
+ * Responsible for creating, managing, and destroying ModelDefinition instances.
+ *
+ * @author Erik Hjortsberg
+ */
 class ModelDefinitionManager: public Ogre::ResourceManager, public Ember::Singleton<ModelDefinitionManager>
 {
 public:
-    /**
-     * @brief Ctor.
-     */
-    ModelDefinitionManager();
+	/**
+	 * @brief Ctor.
+	 */
+	ModelDefinitionManager();
     
-    /**
-     * @brief Dtor.
-     */
-    virtual ~ModelDefinitionManager();
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~ModelDefinitionManager();
     
 	virtual Ogre::ResourcePtr create(const Ogre::String& name, const Ogre::String& group, 
 		bool isManual = false, Ogre::ManualResourceLoader* loader = 0, 
@@ -63,7 +69,7 @@ public:
 	 * @param stream The stream containing the script definition.
 	 * @param groupName
 	 */
-	virtual void parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName);
+	virtual void parseScript (Ogre::DataStreamPtr& stream, const Ogre::String& groupName);
 	
 	/**
 	 * @brief Exports a modeldefinition to a file.

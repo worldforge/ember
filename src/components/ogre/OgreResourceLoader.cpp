@@ -35,16 +35,18 @@
 #include "EmberOgreFileSystem.h"
 
 #include "framework/osdir.h"
-#include <fstream>
 #include <OgreArchiveManager.h>
+
+#include <fstream>
+
 
 namespace EmberOgre {
 
-OgreResourceLoader::OgreResourceLoader() : mLoadRecursive(false)
+OgreResourceLoader::OgreResourceLoader() :
+	mLoadRecursive(false)
 {
 	mFileSystemArchiveFactory = new ::EmberOgre::FileSystemArchiveFactory();
 	Ogre::ArchiveManager::getSingleton().addArchiveFactory( mFileSystemArchiveFactory );
-
 }
 
 
@@ -60,15 +62,15 @@ void OgreResourceLoader::initialize()
 	///check from the config if we should load media recursively
 	///this is needed for most authoring, since it allows us to find all meshes before they are loaded
 	if (configSrv->itemExists("media", "loadmediarecursive")) {
-			mLoadRecursive = (bool)configSrv->getValue("media", "loadmediarecursive");
+		mLoadRecursive = (bool)configSrv->getValue("media", "loadmediarecursive");
 	}
 
 // 	chdir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str());
-    ///load the resource file
-    const std::string configPath(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory() + "/resources.cfg");
-    S_LOG_VERBOSE("Loading resources definitions from " << configPath);
-    mConfigFile.load(configPath);
 
+	///load the resource file
+	const std::string configPath(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory() + "/resources.cfg");
+	S_LOG_VERBOSE("Loading resources definitions from " << configPath);
+	mConfigFile.load(configPath);
 }
 
 unsigned int OgreResourceLoader::numberOfSections()
@@ -173,15 +175,7 @@ void OgreResourceLoader::preloadMedia()
 {
 	try {
 		Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("General");
-	} catch (const Ogre::Exception& ex) {
-		S_LOG_FAILURE("An error occurred when preloading media. Message:\n\t"<< ex.getFullDescription());
-	}
-	try {
 		Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("Gui");
-	} catch (const Ogre::Exception& ex) {
-		S_LOG_FAILURE("An error occurred when preloading media. Message:\n\t"<< ex.getFullDescription());
-	}
-	try {
 		Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("ModelDefinitions");
 	} catch (const Ogre::Exception& ex) {
 		S_LOG_FAILURE("An error occurred when preloading media. Message:\n\t"<< ex.getFullDescription());

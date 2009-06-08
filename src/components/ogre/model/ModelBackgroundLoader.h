@@ -43,7 +43,7 @@ class ModelBackgroundLoader
 {
 public:
 	/**
-	 * @brief The diffrent loading states of the Model.
+	 * @brief The different loading states of the Model.
 	 * Loading normally progresses through these states in order.
 	*/
 	enum LoadingState {

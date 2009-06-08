@@ -44,8 +44,8 @@ namespace Model {
 
 ModelDefinitionManager::ModelDefinitionManager() : mShowModels(true), mModelFactory(0)
 {
-    mLoadOrder = 300.0f;
-    mResourceType = "ModelDefinition";
+	mLoadOrder = 300.0f;
+	mResourceType = "ModelDefinition";
 
 	mScriptPatterns.push_back("*.modeldef");
 	mScriptPatterns.push_back("*.modeldef.xml");

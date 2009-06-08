@@ -36,19 +36,19 @@ class FileSystemArchiveFactory;
 */
 class OgreResourceLoader{
 public:
-    OgreResourceLoader();
+	OgreResourceLoader();
 
-    ~OgreResourceLoader();
+	~OgreResourceLoader();
 
 	void initialize();
 
-    void loadBootstrap();
-    void loadGui();
-    void loadGeneral();
+	void loadBootstrap();
+	void loadGui();
+	void loadGeneral();
 
-    void preloadMedia();
+	void preloadMedia();
 
-    unsigned int numberOfSections();
+	unsigned int numberOfSections();
 
 protected:
 	bool mLoadRecursive;
