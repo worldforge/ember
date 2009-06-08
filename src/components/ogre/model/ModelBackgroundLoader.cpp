@@ -75,10 +75,8 @@ bool ModelBackgroundLoader::poll()
 	} else if (mState == LS_MESH_PREPARING) {
 		if (mTickets.size() > 0) {
 			for (TicketStore::iterator I = mTickets.begin(); I != mTickets.end(); ) {
-				TicketStore::iterator I_copy = I;
-				++I;
-				if (Ogre::ResourceBackgroundQueue::getSingleton().isProcessComplete(*I_copy)) {
-					mTickets.erase(I_copy);
+				if (Ogre::ResourceBackgroundQueue::getSingleton().isProcessComplete(*I)) {
+					I = mTickets.erase(I);
 				}
 			}
 		}
@@ -117,10 +115,8 @@ bool ModelBackgroundLoader::poll()
 	} else if (mState == LS_MATERIAL_PREPARING) {
 		if (mTickets.size() > 0) {
 			for (TicketStore::iterator I = mTickets.begin(); I != mTickets.end(); ) {
-				TicketStore::iterator I_copy = I;
-				++I;
-				if (Ogre::ResourceBackgroundQueue::getSingleton().isProcessComplete(*I_copy)) {
-					mTickets.erase(I_copy);
+				if (Ogre::ResourceBackgroundQueue::getSingleton().isProcessComplete(*I)) {
+					I = mTickets.erase(I);
 				}
 			}
 		}
@@ -153,7 +149,6 @@ const ModelBackgroundLoader::LoadingState ModelBackgroundLoader::getState() cons
 {
 	return mState;
 }
-
 
 void ModelBackgroundLoader::reloadModel()
 {
