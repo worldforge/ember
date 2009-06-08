@@ -106,7 +106,7 @@ void ModelDefinition::unloadImpl(void)
 {
 }
 
-bool ModelDefinition::isValid(void)
+bool ModelDefinition::isValid(void) const
 {
 	return mIsValid;
 }
@@ -287,7 +287,7 @@ SubModelDefinition::~SubModelDefinition()
 	}
 }
 
-ModelDefinition& SubModelDefinition::getModelDefinition()
+const ModelDefinition& SubModelDefinition::getModelDefinition() const
 {
 	return mModelDef;
 }
@@ -297,15 +297,14 @@ const std::string& SubModelDefinition::getMeshName() const
 	return mMeshName;
 }
 
-
 PartDefinition* SubModelDefinition::createPartDefinition(const std::string& partname)
 {
 	PartDefinition* def = new PartDefinition(partname, *this);
 	mParts.push_back(def);
 	return def;
-	
 }
-const std::vector<PartDefinition*>& SubModelDefinition::getPartDefinitions()
+
+const std::vector<PartDefinition*>& SubModelDefinition::getPartDefinitions() const
 {
 	return mParts;
 }

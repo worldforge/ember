@@ -25,15 +25,14 @@
 #define EMBEROGREMODELDEFINITION_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
-#include <map>
-#include <vector>
 #include <OgreQuaternion.h>
 #include <OgreVector3.h>
 #include <OgreLight.h>
 #include <OgreColourValue.h>
 #include <OgreResource.h>
 #include <OgreSharedPtr.h>
-//#include <ext/hash_map>
+#include <map>
+#include <vector>
 
 namespace EmberOgre {
 namespace Model {
@@ -159,10 +158,10 @@ public:
 	const std::string& getMeshName() const;
 
 	PartDefinition* createPartDefinition(const std::string& partname);
-	const PartDefinitionsStore& getPartDefinitions();
+	const PartDefinitionsStore& getPartDefinitions() const;
 	void removePartDefinition(PartDefinition* def);
 
-	ModelDefinition& getModelDefinition();
+	const ModelDefinition& getModelDefinition() const;
 
 private:
 	SubModelDefinition(const std::string& meshname, ModelDefinition& modelDef);
@@ -290,9 +289,9 @@ public:
 	ModelDefinition(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
 		const Ogre::String& group, bool isManual = false, Ogre::ManualResourceLoader* loader = 0);
 
-    virtual ~ModelDefinition();
+	virtual ~ModelDefinition();
 
-    bool isValid(void);
+	bool isValid(void) const;
 	void setValid(bool valid);
 
 	//Ogre resource virtual functions
@@ -560,7 +559,7 @@ public:
         ModelDefnPtr(const Ogre::ResourcePtr& r);
         /// Operator used to convert a ResourcePtr to a ModelDefnPtr
         ModelDefnPtr& operator=(const Ogre::ResourcePtr& r);
-    protected:
+protected:
         /// Override destroy since we need to delete Mesh after fully defined
 //         void destroy(void);
 };
