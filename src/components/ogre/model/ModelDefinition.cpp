@@ -126,7 +126,7 @@ ViewDefinition* ModelDefinition::createViewDefinition(const std::string& viewnam
 	}
 }
 
-const ViewDefinitionStore& ModelDefinition::getViewDefinitions()
+const ViewDefinitionStore& ModelDefinition::getViewDefinitions() const
 {
 	return mViews;
 }
@@ -169,7 +169,7 @@ bool ModelDefinition::getShowContained() const
 	return mShowContained;
 }
 
-void ModelDefinition::getShowContained(bool show)
+void ModelDefinition::setShowContained(bool show)
 {
 	mShowContained = show;
 }
@@ -209,7 +209,7 @@ SubModelDefinition* ModelDefinition::createSubModelDefinition(const std::string&
 	return def;
 }
 
-const std::vector<SubModelDefinition*>& ModelDefinition::getSubModelDefinitions()
+const std::vector<SubModelDefinition*>& ModelDefinition::getSubModelDefinitions() const
 {
 	return mSubModels;
 }
@@ -234,12 +234,12 @@ ActionDefinition* ModelDefinition::createActionDefinition(const std::string& act
 	return def;
 }
 
-const ActionDefinitionsStore& ModelDefinition::getActionDefinitions()
+const ActionDefinitionsStore& ModelDefinition::getActionDefinitions() const
 {
 	return mActions;
 }
 
-const AttachPointDefinitionStore& ModelDefinition::getAttachPointsDefinitions()
+const AttachPointDefinitionStore& ModelDefinition::getAttachPointsDefinitions() const
 {
 	return mAttachPoints;
 }
@@ -336,7 +336,7 @@ PartDefinition::~PartDefinition()
 	}
 }
 
-SubModelDefinition& PartDefinition::getSubModelDefinition()
+const SubModelDefinition& PartDefinition::getSubModelDefinition() const
 {
 	return mSubModelDef;
 }
@@ -386,7 +386,7 @@ SubEntityDefinition* PartDefinition::createSubEntityDefinition(unsigned int subE
 	return def;
 }
 
-const std::vector<SubEntityDefinition*>& PartDefinition::getSubEntityDefinitions()
+const std::vector<SubEntityDefinition*>& PartDefinition::getSubEntityDefinitions() const
 {
 	return mSubEntities;
 }
@@ -415,7 +415,7 @@ SubEntityDefinition::SubEntityDefinition(const std::string& subEntityName, PartD
 	return def;*/
 }
 
-PartDefinition& SubEntityDefinition::getPartDefinition()
+const PartDefinition& SubEntityDefinition::getPartDefinition() const
 {
 	return mPartDef;
 }
@@ -462,7 +462,7 @@ AnimationPartDefinition* AnimationDefinition::createAnimationPartDefinition(cons
 	return def;
 }
 
-const AnimationPartDefinitionsStore& AnimationDefinition::getAnimationPartDefinitions()
+const AnimationPartDefinitionsStore& AnimationDefinition::getAnimationPartDefinitions() const
 {
 	return mAnimationParts;
 }
@@ -497,7 +497,7 @@ AnimationDefinition* ActionDefinition::createAnimationDefinition(int iterations)
 	return def;
 }
 
-const AnimationDefinitionsStore& ActionDefinition::getAnimationDefinitions()
+const AnimationDefinitionsStore& ActionDefinition::getAnimationDefinitions() const
 {
 	return mAnimations;
 }
@@ -518,7 +518,7 @@ SoundDefinition* ActionDefinition::createSoundDefinition(const std::string& grou
 	return def;
 }
 
-const SoundDefinitionsStore& ActionDefinition::getSoundDefinitions()
+const SoundDefinitionsStore& ActionDefinition::getSoundDefinitions() const
 {
 	return mSounds;
 }

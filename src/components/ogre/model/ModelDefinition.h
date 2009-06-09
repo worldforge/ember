@@ -105,7 +105,7 @@ public:
 	const std::string& getMaterialName() const;
 	void setMaterialName(const std::string& materialName);
 
-	PartDefinition& getPartDefinition();
+	const PartDefinition& getPartDefinition() const;
 
 private:
 	SubEntityDefinition(const std::string& subEntityName, PartDefinition& partdef);
@@ -134,10 +134,10 @@ public:
 
 	SubEntityDefinition* createSubEntityDefinition(const std::string& subEntityName);
 	SubEntityDefinition* createSubEntityDefinition(unsigned int subEntityIndex);
-	const SubEntityDefinitionsStore& getSubEntityDefinitions();
+	const SubEntityDefinitionsStore& getSubEntityDefinitions() const;
 	void removeSubEntityDefinition(SubEntityDefinition* def);
 
-	SubModelDefinition& getSubModelDefinition();
+	const SubModelDefinition& getSubModelDefinition() const;
 
 private:
 	PartDefinition(const std::string& name, SubModelDefinition& subModelDef);
@@ -210,7 +210,7 @@ friend class ActionDefinition;
 public:
 	~AnimationDefinition();
 	AnimationPartDefinition* createAnimationPartDefinition(const std::string& ogreAnimationName, Ogre::Real weight = 1);
-	const AnimationPartDefinitionsStore& getAnimationPartDefinitions();
+	const AnimationPartDefinitionsStore& getAnimationPartDefinitions() const;
 	void removeAnimationPartDefinition(AnimationPartDefinition* def);
 
 	const std::string& getName() const;
@@ -237,12 +237,12 @@ public:
 	~ActionDefinition();
 
 	AnimationDefinition* createAnimationDefinition(int iterations = 1);
-	const AnimationDefinitionsStore& getAnimationDefinitions();
+	const AnimationDefinitionsStore& getAnimationDefinitions() const;
 	void removeAnimationDefinition(AnimationDefinition* def);
 
 	SoundDefinition* createSoundDefinition(const std::string& groupName, unsigned int play);
 
-	const SoundDefinitionsStore& getSoundDefinitions();
+	const SoundDefinitionsStore& getSoundDefinitions() const;
 	void removeSoundDefinition(SoundDefinition* def);
 
 	const std::string& getName() const;
@@ -331,7 +331,7 @@ public:
 	 * @return true if contained entities should be shown, else false
 	 */
 	bool getShowContained() const;
-	void getShowContained(bool show);
+	void setShowContained(bool show);
 
 	/**
 	 *    If set to something else than 0, all models beyond this distance won't be shown.
@@ -379,7 +379,7 @@ public:
 	 *    Returns all SubModelDefinitions defined.
 	 * @return The SubModelDefinitions store.
 	 */
-	const SubModelDefinitionsStore& getSubModelDefinitions();
+	const SubModelDefinitionsStore& getSubModelDefinitions() const;
 
 	/**
 	 *    Removes a certain SubModelDefinition.
@@ -398,7 +398,7 @@ public:
 	 *    Returns all ActionDefinitions defined.
 	 * @return
 	 */
-	const ActionDefinitionsStore& getActionDefinitions();
+	const ActionDefinitionsStore& getActionDefinitions() const;
 
 	/**
 	 *    Removes a certain ActionDefinition.
@@ -406,7 +406,7 @@ public:
 	 */
 	void removeActionDefinition(ActionDefinition* def);
 
-	const AttachPointDefinitionStore& getAttachPointsDefinitions();
+	const AttachPointDefinitionStore& getAttachPointsDefinitions() const;
 
 	/**
 	Creates and returns a new ViewDefinition with the supplied name.
@@ -419,7 +419,7 @@ public:
 	 * Returns all views defined.
 	 * @return
 	 */
-	const ViewDefinitionStore& getViewDefinitions();
+	const ViewDefinitionStore& getViewDefinitions() const;
 
 	/**
 	 * Removed a named view. If no view can be found, no exception will be thrown.

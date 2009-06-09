@@ -13331,7 +13331,7 @@ static int tolua_EmberOgre_EmberOgre_Model_ModelDefinition_getShowContained01(lu
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getShowContained'",NULL);
 #endif
   {
-   self->getShowContained(show);
+   self->setShowContained(show);
   }
  }
  return 0;
