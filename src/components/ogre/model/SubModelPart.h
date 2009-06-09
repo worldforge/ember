@@ -25,8 +25,14 @@
 #define SUBMODELPART_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
-#include <OgreEntity.h>
-#include <OgreMovableObject.h>
+
+#include <set>
+#include <vector>
+
+namespace Ogre {
+	class SubEntity;
+}
+
 
 namespace EmberOgre {
 namespace Model {
@@ -36,11 +42,13 @@ class Model;
 class ModelDefinition;
 class SubEntityDefinition;
 
-struct SubModelPartEntity
+class SubModelPartEntity
 {
 public:
-	SubEntityDefinition* Definition;
+	SubModelPartEntity(Ogre::SubEntity* s, SubEntityDefinition* d) : Definition(d), SubEntity(s) {}
+
 	Ogre::SubEntity* SubEntity;
+	SubEntityDefinition* Definition;
 };
 
 
@@ -55,7 +63,7 @@ public:
 
 
 	bool addSubEntity(Ogre::SubEntity* subentity, SubEntityDefinition* definition);
- 	bool removeSubEntity(Ogre::SubEntity* subentity);
+ 	bool removeSubEntity(const Ogre::SubEntity* subentity);
  	
  	void show();
  	void hide();

@@ -26,8 +26,9 @@
 #endif
 
 #include "SubModelPart.h"
-#include "Model.h"
-#include "SubModel.h"
+
+#include "ModelDefinition.h"
+
 #include <OgreSubEntity.h>
 #include <OgreSubMesh.h>
 
@@ -36,22 +37,21 @@ namespace Model {
 
 SubModelPart::SubModelPart(std::string name)
 : mName(name)
-{}
+{
+}
+
 SubModelPart::~SubModelPart()
 {
 	//no need to try to delete the Ogre::Subentities in the mSubEntities store, since Ogre will take care of this
 }
 
-
 bool SubModelPart::addSubEntity(Ogre::SubEntity* subentity, SubEntityDefinition* definition)
 {
-	SubModelPartEntity modelPartEntity;
-	modelPartEntity.Definition = definition;
-	modelPartEntity.SubEntity = subentity;
-	mSubEntities.push_back(modelPartEntity);
+	mSubEntities.push_back(SubModelPartEntity(subentity, definition));
 	return true;
 }
-bool SubModelPart::removeSubEntity(Ogre::SubEntity* subentity)
+
+bool SubModelPart::removeSubEntity(const Ogre::SubEntity* subentity)
 {
 	for (SubModelPartEntityStore::iterator I = mSubEntities.begin(); I != mSubEntities.end(); ++I)
 	{
@@ -70,8 +70,7 @@ const std::string& SubModelPart::getName() const
 
 void SubModelPart::show()
 {
-	SubModelPartEntityStore::const_iterator I;
-	for (I = mSubEntities.begin(); I != mSubEntities.end(); I++) {
+	for (SubModelPartEntityStore::const_iterator I = mSubEntities.begin(); I != mSubEntities.end(); ++I) {
 		if (I->Definition && I->Definition->getMaterialName() != "") {
 			I->SubEntity->setMaterialName(I->Definition->getMaterialName());
 		} else {
@@ -85,8 +84,7 @@ void SubModelPart::show()
 
 void SubModelPart::hide()
 {
-	SubModelPartEntityStore::const_iterator I;
-	for (I = mSubEntities.begin(); I != mSubEntities.end(); I++) {
+	for (SubModelPartEntityStore::const_iterator I = mSubEntities.begin(); I != mSubEntities.end(); ++I) {
 		I->SubEntity->setVisible(false);
 	}
 }
