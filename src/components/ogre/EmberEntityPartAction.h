@@ -22,13 +22,14 @@
 //
 #ifndef EMBEROGREEMBERENTITYPARTACTION_H
 #define EMBEROGREEMBERENTITYPARTACTION_H
-#include "EmberOgrePrerequisites.h"
-#include "EmberPhysicalEntity.h"
 
-#include "model/mapping/ModelMapping.h"
+#include "EmberOgrePrerequisites.h"
 #include "model/mapping/Actions/Action.h"
 
 namespace EmberOgre {
+
+class EmberPhysicalEntity;
+
 
 /**
 	Show a certain part of a Model.
@@ -37,7 +38,7 @@ namespace EmberOgre {
 class EmberEntityPartAction : public Model::Mapping::Actions::Action
 {
 public:
-	EmberEntityPartAction(EmberPhysicalEntity& entity, std::string partName);
+	EmberEntityPartAction(EmberPhysicalEntity& entity, const std::string& partName);
 	~EmberEntityPartAction();
 	
 	virtual void activate();

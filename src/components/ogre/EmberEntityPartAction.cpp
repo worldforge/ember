@@ -25,13 +25,14 @@
 #endif
 #include "EmberEntityPartAction.h"
 
+#include "EmberPhysicalEntity.h"
 #include "model/Model.h"
 
 
 namespace EmberOgre {
 
 
-EmberEntityPartAction::EmberEntityPartAction(EmberPhysicalEntity& entity, std::string partName)
+EmberEntityPartAction::EmberEntityPartAction(EmberPhysicalEntity& entity, const std::string& partName)
 : mEntity(entity), mPartName(partName)
 {
 }
