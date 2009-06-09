@@ -35,7 +35,7 @@
 namespace EmberOgre {
 namespace Model {
 
-SubModelPart::SubModelPart(std::string name)
+SubModelPart::SubModelPart(const std::string& name)
 : mName(name)
 {
 }

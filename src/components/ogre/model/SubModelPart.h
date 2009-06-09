@@ -58,7 +58,7 @@ public:
 	typedef std::set<Ogre::SubEntity*> SubEntitySet;
 	typedef std::vector<SubModelPartEntity> SubModelPartEntityStore;
 
-	SubModelPart(std::string name);
+	SubModelPart(const std::string& name);
 	virtual ~SubModelPart();
 
 
