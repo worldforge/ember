@@ -24,6 +24,9 @@
 
 #include "EmberEntity.h"
 
+#include <list>
+#include <vector>
+
 namespace EmberOgre
 {
 
@@ -38,7 +41,7 @@ namespace Mapping
 class ModelMapping;
 }
 }
-;
+
 
 class EmberEntity;
 class SoundEntity;
@@ -181,18 +184,12 @@ protected:
 	bool needSoundEntity();
 
 	/**
-	 *    Shows a certain part of the model.
+	 *    Shows/hides a certain part of the model.
 	 *    This method is normally called by an instance of EmberEntityPartAction.
 	 * @param partName The part to show.
+	 * @param visible Whether to have it visible or not.
 	 */
-	void showModelPart(const std::string& partName);
-
-	/**
-	 *    Hides a certain part of the model.
-	 *    This method is normally called by an instance of EmberEntityPartAction.
-	 * @param partName The part to hide.
-	 */
-	void hideModelPart(const std::string& partName);
+	void setModelPartVisible(const std::string& partName, bool visible);
 
 	virtual void setClientVisible(bool visible);
 

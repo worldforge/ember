@@ -26,7 +26,6 @@
 #include "EmberEntityPartAction.h"
 
 #include "EmberPhysicalEntity.h"
-#include "model/Model.h"
 
 
 namespace EmberOgre {
@@ -45,22 +44,13 @@ EmberEntityPartAction::~EmberEntityPartAction()
 void EmberEntityPartAction::activate()
 {
 	S_LOG_VERBOSE("Showing part " << mPartName);
-	mEntity.showModelPart(mPartName);
-// 	Model::Model* model = mEntity.getModel();
-// 	if (model) {
-// 		model->showPart(mPartName);
-// 		
-// 	}
+	mEntity.setModelPartVisible(mPartName, true);
 }
 
 void EmberEntityPartAction::deactivate()
 {
 	S_LOG_VERBOSE("Hiding part " << mPartName);
-	mEntity.hideModelPart(mPartName);
-// 	Model::Model* model = mEntity.getModel();
-// 	if (model) {
-// 		model->hidePart(mPartName, false);
-// 	}
+	mEntity.setModelPartVisible(mPartName, false);
 } 
 
 }

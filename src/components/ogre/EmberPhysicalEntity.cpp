@@ -154,35 +154,23 @@ void EmberPhysicalEntity::setModel(const std::string& modelName)
 	mModelMount = new ModelMount(*mModel, getSceneNode());
 }
 
-void EmberPhysicalEntity::showModelPart(const std::string& partName)
+void EmberPhysicalEntity::setModelPartVisible(const std::string& partName, bool visible)
 {
-	Model::Model* model = getModel();
-	if (model)
-	{
-		model->showPart(partName);
+	if (mModel) {
+		if (visible) {
+			mModel->showPart(partName);
+		} else {
+			mModel->hidePart(partName);
+		}
 
 		///if we already have set up a collision object we must reload it
-		EmberEntityUserObject* userObject = static_cast<EmberEntityUserObject*> (getModel()->getUserObject());
+		EmberEntityUserObject* userObject = static_cast<EmberEntityUserObject*> (mModel->getUserObject());
 		if (userObject && userObject->getCollisionDetector())
 		{
 			userObject->getCollisionDetector()->reload();
 		}
-	}
-}
-
-void EmberPhysicalEntity::hideModelPart(const std::string& partName)
-{
-	Model::Model* model = getModel();
-	if (model)
-	{
-		model->hidePart(partName);
-
-		///if we already have set up a collision object we must reload it
-		EmberEntityUserObject* userObject = static_cast<EmberEntityUserObject*> (getModel()->getUserObject());
-		if (userObject && userObject->getCollisionDetector())
-		{
-			userObject->getCollisionDetector()->reload();
-		}
+	} else {
+		S_LOG_FAILURE("Could not find model when trying to set part visibility: " << partName);
 	}
 }
 
