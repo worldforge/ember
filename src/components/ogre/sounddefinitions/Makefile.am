@@ -15,7 +15,7 @@ uninstall-local:
 # 	find $(DESTDIR)$(datadir)/ember/media/shared/sounddefinitions -name  \*.sounddef.xml | xargs rm -f
 
 check-local:
-	@for rule in `find $(top_srcdir)/src/components/ogre/sounddefinitions \*.sounddef -or -name \*.sounddef.xml` ; do \
+	@set -e; for rule in `find $(top_srcdir)/src/components/ogre/sounddefinitions \*.sounddef -or -name \*.sounddef.xml` ; do \
 		echo $(XMLLINT) -noout $$rule; \
 		$(XMLLINT) -noout $$rule; \
 	done;
