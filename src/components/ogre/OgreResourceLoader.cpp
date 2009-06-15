@@ -173,14 +173,16 @@ void OgreResourceLoader::loadGeneral()
 
 void OgreResourceLoader::preloadMedia()
 {
-	try {
-		Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("General");
-		Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("Gui");
-		Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("ModelDefinitions");
-	} catch (const Ogre::Exception& ex) {
-		S_LOG_FAILURE("An error occurred when preloading media. Message:\n\t"<< ex.getFullDescription());
-	}
+	// resource groups to be loaded
+	const char* resourceGroup[] = { "General", "Gui", "ModelDefinitions" };
 
+	for (size_t i = 0; i < (sizeof(resourceGroup)/sizeof(const char*)); ++i) {
+		try {
+			Ogre::ResourceGroupManager::getSingleton().loadResourceGroup(resourceGroup[i]);
+		} catch (const Ogre::Exception& ex) {
+			S_LOG_FAILURE("An error occurred when preloading media. Message:\n\t"<< ex.getFullDescription());
+		}
+	}
 
 // 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 //
