@@ -189,7 +189,7 @@ protected:
 	 * @param partName The part to show.
 	 * @param visible Whether to have it visible or not.
 	 */
-	void setModelPartVisible(const std::string& partName, bool visible);
+	void setModelPartShown(const std::string& partName, bool visible);
 
 	virtual void setClientVisible(bool visible);
 

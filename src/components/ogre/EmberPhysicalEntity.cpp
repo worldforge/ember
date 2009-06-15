@@ -154,7 +154,7 @@ void EmberPhysicalEntity::setModel(const std::string& modelName)
 	mModelMount = new ModelMount(*mModel, getSceneNode());
 }
 
-void EmberPhysicalEntity::setModelPartVisible(const std::string& partName, bool visible)
+void EmberPhysicalEntity::setModelPartShown(const std::string& partName, bool visible)
 {
 	if (mModel) {
 		if (visible) {
