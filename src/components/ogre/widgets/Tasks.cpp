@@ -27,6 +27,20 @@
 #include "Tasks.h"
 
 #include "../EmberOgre.h"
+#include "../Avatar.h"
+
+#include <Atlas/Objects/Entity.h>
+#include <Atlas/Objects/Operation.h>
+
+#include <Eris/TypeInfo.h>
+#include <Eris/Connection.h>
+
+#include "../EmberEntity.h"
+#include "../EmberPhysicalEntity.h"
+#include "../AvatarEmberEntity.h"
+
+#include "services/EmberServices.h"
+#include "services/server/ServerService.h"
 
 #include <iostream>
 
@@ -46,6 +60,22 @@ Tasks::~Tasks()
 void Tasks::doSomething()
 {
 	std::cout << "Did something\n";
+
+	Atlas::Objects::Operation::Set s;
+
+	Atlas::Message::MapType task_args;
+	task_args["name"] = "twist";
+	task_args["param"] = "value";
+
+	Atlas::Message::MapType args;
+	args["tasks"] = task_args;
+
+	Atlas::Message::ListType sargsList(1, args);
+	s->setArgsAsList(sargsList);
+	s->setFrom(EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity()->getId());
+
+	Ember::EmberServices::getSingleton().getServerService()->getConnection()->send(s);
+
 }
 
 }
