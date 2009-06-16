@@ -91,6 +91,7 @@ $pfile "AuthoringManager.pkg"
 $pfile "RawTypeInfoRepository.pkg"
 $pfile "AtlasObjectDecoder.pkg"
 
+$pfile "Tasks.pkg"
 
 $pfile "stdlib.pkg"
 
