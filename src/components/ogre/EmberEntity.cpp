@@ -39,8 +39,6 @@
 #include "terrain/TerrainGenerator.h"
 #include "terrain/TerrainPage.h"
 
-#include <Mercator/Area.h>
-#include <Mercator/TerrainMod.h>
 //#include <Atlas/Objects/ObjectsFwd.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/View.h>

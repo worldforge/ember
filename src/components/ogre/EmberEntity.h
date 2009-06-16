@@ -35,12 +35,6 @@ namespace Ogre
 	class OOBBWireBoundingBox;
 }
 
-namespace Mercator
-{
-	class Area;
-	class TerrainMod;
-}
-
 namespace Eris
 {
 	class View;
