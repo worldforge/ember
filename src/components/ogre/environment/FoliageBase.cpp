@@ -42,8 +42,6 @@
 
 #include "pagedgeometry/include/PagedGeometry.h"
 
-#include <Mercator/Area.h>
-
 using namespace EmberOgre::Terrain;
 
 namespace EmberOgre {
