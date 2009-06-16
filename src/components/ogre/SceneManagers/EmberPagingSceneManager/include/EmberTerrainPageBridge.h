@@ -25,10 +25,6 @@
 
 #include "terrain/ITerrainPageBridge.h"
 
-namespace Ogre
-{
-}
-
 namespace EmberOgre {
 
 class EmberPagingLandScapeData2D_HeightField;
@@ -40,19 +36,17 @@ class EmberPagingLandScapeData2D_HeightField;
 class EmberTerrainPageBridge : public ::EmberOgre::Terrain::ITerrainPageBridge
 {
 public:
-    EmberTerrainPageBridge(EmberPagingLandScapeData2D_HeightField& heightField);
+	EmberTerrainPageBridge(EmberPagingLandScapeData2D_HeightField& heightField);
 
-    virtual ~EmberTerrainPageBridge();
-	
+	virtual ~EmberTerrainPageBridge();
+
 	void updateTerrain();
 
 protected:
-
 	/**
-	@brief The heightfield instance to which this bridge is connected.
-	*/
+	 * @brief The heightfield instance to which this bridge is connected.
+	 */
 	EmberPagingLandScapeData2D_HeightField& mHeightField;
-
 };
 
 }
