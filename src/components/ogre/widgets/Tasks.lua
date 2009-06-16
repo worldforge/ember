@@ -10,6 +10,7 @@ Tasks.currentTask = nil
 
 function Tasks.Progressed()
 	Tasks.progressBar:setProgress(Tasks.currentTask:progress())
+	Tasks.helper:doSomething()
 end
 
 function Tasks.Cancelled()

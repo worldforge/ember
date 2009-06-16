@@ -45,6 +45,7 @@ Tasks::~Tasks()
 
 void Tasks::doSomething()
 {
+	std::cout << "Did something\n";
 }
 
 }
