@@ -107,8 +107,8 @@ public:
 	 */
 	bool intersects();
 
-	Mercator::Shader* getShader();
-	int getSurfaceIndex();
+	Mercator::Shader* getShader() const;
+	int getSurfaceIndex() const;
 	Mercator::Surface* getSurfaceForSegment(Mercator::Segment* segment) const;
 
 	float getScale() const;

@@ -248,11 +248,11 @@ void TerrainPageSurfaceLayer::setNormalTextureName(const std::string& textureNam
 	mNormalTextureName = textureName;
 }
 
-Mercator::Shader* TerrainPageSurfaceLayer::getShader()
+Mercator::Shader* TerrainPageSurfaceLayer::getShader() const
 {
 	return mShader;
 }
-int TerrainPageSurfaceLayer::getSurfaceIndex()
+int TerrainPageSurfaceLayer::getSurfaceIndex() const
 {
 	return mSurfaceIndex;
 }
