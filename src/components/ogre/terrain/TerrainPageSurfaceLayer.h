@@ -69,7 +69,7 @@ public:
      * @see createCoverageImage()
      * @return A pointer to an Ogre::Image or null if none created.
      */
-    Ogre::Image* getCoverageImage();
+    Ogre::Image* getCoverageImage() const;
 
     /**
      * @brief Destroys the coverage Ogre::Image held by this instance.
@@ -109,7 +109,7 @@ public:
 
 	Mercator::Shader* getShader() const;
 	int getSurfaceIndex() const;
-	Mercator::Surface* getSurfaceForSegment(Mercator::Segment* segment) const;
+	Mercator::Surface* getSurfaceForSegment(const Mercator::Segment* segment) const;
 
 	float getScale() const;
 	void setScale(float scale);
