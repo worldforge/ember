@@ -514,7 +514,7 @@ protected:
 	/**
 	 *    @brief Iterates through all TerrainPages and shows or hides the foliage.
 	 */
-	void updateFoliageVisibilty();
+	void updateFoliageVisibility();
 
 	/**
 	 *    @brief Catch changes to the configuration.

@@ -606,7 +606,7 @@ TerrainPage* TerrainGenerator::createPage(const TerrainPosition& pos)
 	return page;
 }
 
-void TerrainGenerator::updateFoliageVisibilty()
+void TerrainGenerator::updateFoliageVisibility()
 {
 	bool showFoliage = isFoliageShown();
 
@@ -624,7 +624,7 @@ void TerrainGenerator::ConfigService_EventChangedConfigItem(const std::string& s
 {
 	if (section == "graphics") {
 		if (key == "foliage") {
-			updateFoliageVisibilty();
+			updateFoliageVisibility();
 		}
 	}
 }
