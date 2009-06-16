@@ -72,7 +72,7 @@ namespace EmberOgre {
 namespace Terrain {
 
 
-TerrainPage::TerrainPage(TerrainPosition position, const std::map<const Mercator::Shader*, TerrainShader*> shaderMap, TerrainGenerator* generator) 
+TerrainPage::TerrainPage(TerrainPosition position, TerrainGenerator* generator) 
 : mGenerator(generator)
 , mPosition(position)
 , mTerrainSurface(new TerrainPageSurface(*this))
@@ -128,7 +128,7 @@ Mercator::Segment* TerrainPage::getSegmentAtLocalIndex(int indexX, int indexY) c
 	return mGenerator->getTerrain().getSegment(segX, segY);
 }
 
-Mercator::Segment* TerrainPage::getSegmentAtLocalPosition(const TerrainPosition& pos) const
+const Mercator::Segment* TerrainPage::getSegmentAtLocalPosition(const TerrainPosition& pos) const
 {
 	int ix = I_ROUND(floor(pos.x() / 64));
 	int iy = I_ROUND(floor(pos.y() / 64));
@@ -144,7 +144,7 @@ Mercator::Segment* TerrainPage::getSegmentAtLocalPosition(const TerrainPosition&
     return J->second;
 }
 
-Mercator::Segment* TerrainPage::getSegmentAtLocalPosition(const TerrainPosition& pos, TerrainPosition& localPositionInSegment) const
+const Mercator::Segment* TerrainPage::getSegmentAtLocalPosition(const TerrainPosition& pos, TerrainPosition& localPositionInSegment) const
 {
 	int ix = I_ROUND(floor(pos.x() / 64));
 	int iy = I_ROUND(floor(pos.y() / 64));
@@ -175,19 +175,19 @@ int TerrainPage::getNumberOfSegmentsPerAxis() const
 	return (getPageSize() - 1) / 64;
 }
 	
-float TerrainPage::getMaxHeight()
+float TerrainPage::getMaxHeight() const
 {
 	float max = -std::numeric_limits<float>::max();
-	for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
+	for (SegmentVector::const_iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
 		max = std::max<float>(max, I->segment->getMax());
 	}
 	return max;
 }
 	
-float TerrainPage::getMinHeight()
+float TerrainPage::getMinHeight() const
 {
 	float min = std::numeric_limits<float>::max();
-	for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
+	for (SegmentVector::const_iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
 		min = std::min<float>(min, I->segment->getMin());
 	}
 	return min;
@@ -236,7 +236,7 @@ Ogre::MaterialPtr TerrainPage::generateTerrainMaterials(bool reselectTechnique) 
 	return mTerrainSurface->getMaterial();
 }
 
-SegmentVector& TerrainPage::getValidSegments()
+const SegmentVector& TerrainPage::getValidSegments() const
 {
 	return mValidSegments;
 }
@@ -253,7 +253,7 @@ const TerrainPosition& TerrainPage::getWFPosition() const
 }
 
 
-Ogre::MaterialPtr TerrainPage::getMaterial()
+const Ogre::MaterialPtr TerrainPage::getMaterial() const
 {
 //	generateTerrainMaterials();
 	return mTerrainSurface->getMaterial();
@@ -331,17 +331,17 @@ const WFMath::AxisBox<2>& TerrainPage::getExtent() const
 	return mExtent;
 }
 
-TerrainPageSurface* TerrainPage::getSurface() const
+const TerrainPageSurface* TerrainPage::getSurface() const
 {
 	return mTerrainSurface.get();
 }
 
-TerrainPageFoliage* TerrainPage::getPageFoliage() const
+const TerrainPageFoliage* TerrainPage::getPageFoliage() const
 {
 	return mPageFoliage.get();
 }
 
-TerrainPageShadow& TerrainPage::getPageShadow()
+const TerrainPageShadow& TerrainPage::getPageShadow() const
 {
 	return mShadow;
 }
@@ -424,7 +424,7 @@ bool TerrainPage::getNormal(const TerrainPosition& localPosition, WFMath::Vector
 // 	float height;
 // 	return mGenerator->getTerrain().getHeightAndNormal(mExtent.lowCorner().x() + localPosition.x(), mExtent.lowCorner().y() + localPosition.y(), height, normal);
 
-	Mercator::Segment* segment(getSegmentAtLocalPosition(localPosition));
+	const Mercator::Segment* segment(getSegmentAtLocalPosition(localPosition));
 	if (segment) {
 		int resolution = segment->getResolution();
 		size_t xPos = localPosition.x() - (I_ROUND(floor(localPosition.x() / resolution)) * resolution);

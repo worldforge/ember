@@ -24,7 +24,6 @@
 #define EMBEROGRETERRAINPAGE_H
 
 #include "../EmberOgrePrerequisites.h"
-
 #include "../Types.h"
 
 #include "TerrainPageShadow.h"
@@ -72,9 +71,6 @@ class TerrainPageSurfaceLayer;
 class ITerrainPageBridge;
 class terrainModListEntry;
 
-TYPEDEF_STL_MAP(const Mercator::Shader*, TerrainShader*, ShaderMap);
-
-
 
 /**
 
@@ -92,9 +88,9 @@ friend class TerrainPageShadow;
 friend class ITerrainPageShadowTechnique;
 public:
 
-    TerrainPage(TerrainPosition position, const std::map<const Mercator::Shader*, TerrainShader*> shaderMap, TerrainGenerator* generator);
+	TerrainPage(TerrainPosition position, TerrainGenerator* generator);
 
-    ~TerrainPage();
+	~TerrainPage();
 
 
 	/**
@@ -109,13 +105,13 @@ public:
 	 *    The max height of this page
 	 * @return
 	 */
-	float getMaxHeight();
+	float getMaxHeight() const;
 
 	/**
 	 *    The minimum height of this page
 	 * @return
 	 */
-	float getMinHeight();
+	float getMinHeight() const;
 
 
 	/**
@@ -147,7 +143,7 @@ public:
 	 *    The material used for the page
 	 * @return
 	 */
-	Ogre::MaterialPtr getMaterial();
+	const Ogre::MaterialPtr getMaterial() const;
 
 	/**
 	 *    creates a new foliage for this page, but does not show it yet
@@ -193,7 +189,7 @@ public:
 
 	void populateSurface(TerrainShader* shader);
 
-	int getPageSize() const ;
+	int getPageSize() const;
 
 	void update();
 
@@ -207,7 +203,7 @@ public:
 	 */
 	int getAlphaTextureSize() const;
 
-	SegmentVector& getValidSegments();
+	const SegmentVector& getValidSegments() const;
 
 	/**
 	 *    Gets the extent of this page in meters, in worldforge space.
@@ -217,18 +213,18 @@ public:
 
 // 	const PlantsStore& getPlants() const;
 
-	TerrainPageSurface* getSurface() const;
+	const TerrainPageSurface* getSurface() const;
 
-	TerrainPageFoliage* getPageFoliage() const;
+	const TerrainPageFoliage* getPageFoliage() const;
 
-	TerrainPageShadow& getPageShadow();
+	const TerrainPageShadow& getPageShadow() const;
 
 	/**
 	 *    Gets the segment positioned at the supplied position in local space.
 	 * @param pos A Wordforge position in local space, i.e. > 0 && < [width in meters of the page]
 	 * @return A pointer to Mercator::Segment or null.
 	 */
-	Mercator::Segment* getSegmentAtLocalPosition(const TerrainPosition& pos) const;
+	const Mercator::Segment* getSegmentAtLocalPosition(const TerrainPosition& pos) const;
 
 	/**
 	 *    Gets the segment positioned at the supplied position in local space and also translates the supplied position into a local position in the returned segment.
@@ -236,7 +232,7 @@ public:
 	 * @param localPositionInSegment The resulting position in the segment space.
 	 * @return A pointer to Mercator::Segment or null.
 	 */
-	Mercator::Segment* getSegmentAtLocalPosition(const TerrainPosition& pos, TerrainPosition& localPositionInSegment) const;
+	const Mercator::Segment* getSegmentAtLocalPosition(const TerrainPosition& pos, TerrainPosition& localPositionInSegment) const;
 
 
 	/**
@@ -326,7 +322,7 @@ private:
 
 };
 
-inline int TerrainPage::getAlphaTextureSize( ) const
+inline int TerrainPage::getAlphaTextureSize() const
 {
 	return (getPageSize() - 1);
 

@@ -33,32 +33,34 @@
 #include "../EmberEntityFactory.h"
 #include "../ShaderManager.h"
 
-#include <Eris/Entity.h>
-#include <Eris/View.h>
-#include <Eris/TerrainMod.h>
-
 #include "TerrainShader.h"
-#include "../environment/Foliage.h"
-#include "../environment/Forest.h"
 #include "ISceneManagerAdapter.h"
 
 
 #include "TerrainPage.h"
+#include "TerrainPageShadow.h"
 #include "TerrainArea.h"
 #include "TerrainMod.h"
-#include <Mercator/Area.h>
-#include <Mercator/Segment.h>
-#include <Mercator/Terrain.h>
-#include <Mercator/TerrainMod.h>
-#include <Mercator/Surface.h>
-#include <Mercator/Terrain.h>
 
 #include "TerrainLayerDefinitionManager.h"
 #include "TerrainLayerDefinition.h"
 #include "TerrainPageSurfaceLayer.h"
 #include "../AvatarCamera.h"
 
+#include "../environment/Foliage.h"
+#include "../environment/Forest.h"
 #include "../environment/Environment.h"
+
+#include <Eris/Entity.h>
+#include <Eris/View.h>
+#include <Eris/TerrainMod.h>
+
+#include <Mercator/Area.h>
+#include <Mercator/Segment.h>
+#include <Mercator/Terrain.h>
+#include <Mercator/TerrainMod.h>
+#include <Mercator/Surface.h>
+#include <Mercator/Terrain.h>
 
 #include <sigc++/object_slot.h>
 #include <sigc++/bind.h>
@@ -85,12 +87,6 @@
     #define I_ROUND(_x) ((int)::rint(_x))
 #else
     #define I_ROUND(_x) ((int)(_x))
-#endif
-
-#ifdef HAVE_FABSF
-    #define F_ABS(_x) (::fabsf(_x))
-#else
-    #define F_ABS(_x) (::fabs(_x))
 #endif
 
 using namespace Ogre;
@@ -589,7 +585,7 @@ TerrainPage* TerrainGenerator::createPage(const TerrainPosition& pos)
 	///since we initialized all terrain in initTerrain we can count on all terrain segments being created and populated already
 
 
-	TerrainPage* page = new TerrainPage(TerrainPosition(pos), mShaderMap, this);
+	TerrainPage* page = new TerrainPage(TerrainPosition(pos), this);
 	//mPages[ss.str()] = page;
 
 	std::stringstream ss;
@@ -804,11 +800,8 @@ void TerrainGenerator::getShadowColourAt(const Ogre::Vector2& position, Ogre::ui
 	//TODO: add caching of the last fetched terrain page and first check if the position isn't at that page, since we'll in most cass will call this method with positions that are close to eachother
 	TerrainPosition wfPos(Ogre2Atlas(position));
 	TerrainPage* terrainPage = getTerrainPageAtPosition(wfPos);
-	TerrainPageShadow& terrainShadow = terrainPage->getPageShadow();
-
 	Ogre::TRect<float> ogrePageExtent = Atlas2Ogre(terrainPage->getExtent());
-	terrainShadow.getShadowColourAt(Ogre::Vector2(position.x - ogrePageExtent.left, position.y - ogrePageExtent.top), colour);
-
+	terrainPage->getPageShadow().getShadowColourAt(Ogre::Vector2(position.x - ogrePageExtent.left, position.y - ogrePageExtent.top), colour);
 }
 
 void TerrainGenerator::getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour) const
@@ -816,9 +809,8 @@ void TerrainGenerator::getShadowColourAt(const Ogre::Vector2& position, Ogre::Co
 	//TODO: add caching of the last fetched terrain page and first check if the position isn't at that page, since we'll in most cass will call this method with positions that are close to eachother
 	TerrainPosition wfPos(Ogre2Atlas(position));
 	TerrainPage* terrainPage = getTerrainPageAtPosition(wfPos);
-	TerrainPageShadow& terrainShadow = terrainPage->getPageShadow();
 	Ogre::TRect<float> ogrePageExtent = Atlas2Ogre(terrainPage->getExtent());
-	terrainShadow.getShadowColourAt(Ogre::Vector2(position.x - ogrePageExtent.left, position.y - ogrePageExtent.top), colour);
+	terrainPage->getPageShadow().getShadowColourAt(Ogre::Vector2(position.x - ogrePageExtent.left, position.y - ogrePageExtent.top), colour);
 }
 
 bool TerrainGenerator::getNormal(const TerrainPosition& worldPosition, WFMath::Vector<3>& normal) const
