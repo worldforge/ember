@@ -35,14 +35,16 @@
 #include "terrain/TerrainPage.h"
 #include "terrain/TerrainGenerator.h"
 
-#include <OgreCodec.h>
-#include <OgreImage.h>
-#include <OgreImageCodec.h>
+//#include <OgreCodec.h>
+//#include <OgreImage.h>
+//#include <OgreImageCodec.h>
 using namespace Ogre;
+
+
 namespace EmberOgre
 {
 	
-EmberPagingLandScapeData2D_HeightField::EmberPagingLandScapeData2D_HeightField(Ogre::PagingLandScapeData2DManager *pageMgr) 
+EmberPagingLandScapeData2D_HeightField::EmberPagingLandScapeData2D_HeightField(Ogre::PagingLandScapeData2DManager* pageMgr) 
 : Ogre::PagingLandScapeData2D(pageMgr), mBridge(0)
 {
 	///set it to something, so it doesn't default to a crazy number (like 5.79555e+022) since that will break stuff later on
@@ -50,7 +52,7 @@ EmberPagingLandScapeData2D_HeightField::EmberPagingLandScapeData2D_HeightField(O
 	mMaxheight = 1;
 }
 	
-bool EmberPagingLandScapeData2D_HeightField::_load( const Ogre::uint x, const Ogre::uint z )
+bool EmberPagingLandScapeData2D_HeightField::_load(unsigned int x, unsigned int z)
 {
 // 	assert(!mTerrainPage);
 	assert(!mHeightData);
@@ -59,7 +61,7 @@ bool EmberPagingLandScapeData2D_HeightField::_load( const Ogre::uint x, const Og
 	mXDimension = mZDimension = terrainGenerator->getPageIndexSize();
 
 	mMaxArrayPos = mSize * mSize;
-	mHeightData = new Real[mMaxArrayPos];
+	mHeightData = new Ogre::Real[mMaxArrayPos];
 	Terrain::TerrainPage* terrainPage(terrainGenerator->getTerrainPageAtIndex(Ogre::Vector2(x,z)));
 	//should always return a TerrainPage*
 	assert(terrainPage);
@@ -97,7 +99,7 @@ bool EmberPagingLandScapeData2D_HeightField::_load( const Ogre::uint x, const Og
 	return true;
 }
 
-EmberPagingLandScapeData2D_HeightField::~EmberPagingLandScapeData2D_HeightField( void )
+EmberPagingLandScapeData2D_HeightField::~EmberPagingLandScapeData2D_HeightField()
 {
 	if (mBridge) {
 // 		mTerrainPage->unregisterBridge();
@@ -114,41 +116,32 @@ void EmberPagingLandScapeData2D_HeightField::setMaxHeight(float maxHeight)
 }
 
 
-PagingLandScapeData2D* EmberPagingLandScapeData2D_HeightField::newPage( )
+PagingLandScapeData2D* EmberPagingLandScapeData2D_HeightField::newPage()
 {
 	return new EmberPagingLandScapeData2D_HeightField(mParent);
 }
 
 
-const ColourValue EmberPagingLandScapeData2D_HeightField::getBase (const Real mX, const Real mZ)
+Ogre::ColourValue EmberPagingLandScapeData2D_HeightField::getBase(const Ogre::Real& mX, const Ogre::Real& mZ) const
 {
-
 	return ColourValue::White;
-
 }
 
-    //-----------------------------------------------------------------------
-const ColourValue EmberPagingLandScapeData2D_HeightField::getCoverage (const Real mX, const Real mZ)
+Ogre::ColourValue EmberPagingLandScapeData2D_HeightField::getCoverage(const Ogre::Real& mX, const Ogre::Real& mZ) const
 {
-
 	return ColourValue::Blue;
 }
 
-    //-----------------------------------------------------------------------
-const Real EmberPagingLandScapeData2D_HeightField::getShadow (const Real mX, const Real mZ,
-			const bool &positive)
+Ogre::Real EmberPagingLandScapeData2D_HeightField::getShadow(const Ogre::Real& mX, const Ogre::Real& mZ, bool positive) const
 {
-
 	return 0.0f;
-
 }
 
-    //-----------------------------------------------------------------------
-const Vector3 EmberPagingLandScapeData2D_HeightField::getNormal (const Real localPageX, const Real localPageZ)
+Ogre::Vector3 EmberPagingLandScapeData2D_HeightField::getNormal(const Ogre::Real& localPageX, const Ogre::Real& localPageZ) const
 {
 	///Use the bridge for quicker lookup.
 	if (mBridge) {
-		Terrain::TerrainPage* terrainPage(mBridge->getTerrainPage());
+		const Terrain::TerrainPage* terrainPage(mBridge->getTerrainPage());
 		if (terrainPage) {
 			WFMath::Vector<3> normal;
 			if (terrainPage->getNormal(TerrainPosition(localPageX, 512 - localPageZ), normal)) {
@@ -164,18 +157,17 @@ const Vector3 EmberPagingLandScapeData2D_HeightField::getNormal (const Real loca
 	return Atlas2Ogre(normal);*/
 // 	return Ogre::PagingLandScapeData2D::getNormal(x, z);
 }
-    //-----------------------------------------------------------------------
+
 void EmberPagingLandScapeData2D_HeightField::_save()
 {
 	S_LOG_VERBOSE("Saving terrain page at x: " << mPageX << " z:" << mPageZ << ".");
 }
-    //-----------------------------------------------------------------------
-    //-----------------------------------------------------------------------
+
 void EmberPagingLandScapeData2D_HeightField::_load()
 {
 	S_LOG_VERBOSE("Loading (_load()) terrain page at x: " << mPageX << " z:" << mPageZ << ".");
 }
-    //-----------------------------------------------------------------------
+
 void EmberPagingLandScapeData2D_HeightField::_unload()
 {
 	S_LOG_VERBOSE("Unloading terrain page at x: " << mPageX << " z:" << mPageZ << ".");
@@ -187,7 +179,7 @@ void EmberPagingLandScapeData2D_HeightField::_unload()
 	mBridge = 0;
 }
 
-const Ogre::Real EmberPagingLandScapeData2D_HeightField::getMaxAbsoluteHeight(void) const
+Ogre::Real EmberPagingLandScapeData2D_HeightField::getMaxAbsoluteHeight() const
 {
 	///return a totally arbitrary high enough value
 	return 250.0f;

@@ -44,13 +44,14 @@ email                : spoke@supercable.es & tuan.kuranes@free.fr
 
 namespace Ogre
 {
-	PagingLandScapeData2D::PagingLandScapeData2D(PagingLandScapeData2DManager *pageMgr):
-		mParent(pageMgr),
-		mHeightData (0),
-		mIsLoaded (false),
-		mIsModified (false),
-		mIsRectModified (false),
-		mRect (0, 0, 0, 0, 0, 1)
+
+PagingLandScapeData2D::PagingLandScapeData2D(PagingLandScapeData2DManager* pageMgr):
+	mParent(pageMgr),
+	mHeightData (0),
+	mIsLoaded (false),
+	mIsModified (false),
+	mIsRectModified (false),
+	mRect (0, 0, 0, 0, 0, 1)
 {
 }
 
@@ -73,7 +74,7 @@ void PagingLandScapeData2D::uninit()
 }
 
 //-----------------------------------------------------------------------
-bool PagingLandScapeData2D::load(const unsigned int x, const unsigned int z)
+bool PagingLandScapeData2D::load(unsigned int x, unsigned int z)
 {
 	if (!mIsLoaded)
 	{
@@ -141,7 +142,7 @@ void PagingLandScapeData2D::computePowerof2PlusOneSize()
 }
 
 //-----------------------------------------------------------------------
-bool PagingLandScapeData2D::_checkSize(const size_t s)
+bool PagingLandScapeData2D::_checkSize(size_t s)
 {
 	// ispow2 - 1
 	const int p = static_cast <unsigned int> (s - 1); 
@@ -152,7 +153,7 @@ bool PagingLandScapeData2D::_checkSize(const size_t s)
 #ifndef _MAPSPLITTER
 
 //-----------------------------------------------------------------------
-void PagingLandScapeData2D::resetDeformationRectangle ()
+void PagingLandScapeData2D::resetDeformationRectangle()
 {
 	mRect.left = 0;
 	mRect.right = 0;
@@ -162,13 +163,13 @@ void PagingLandScapeData2D::resetDeformationRectangle ()
 }
 
 //-----------------------------------------------------------------------
-Image::Box PagingLandScapeData2D::getDeformationRectangle ()
+const Image::Box& PagingLandScapeData2D::getDeformationRectangle() const
 {
 	return mRect;
 }
 
 //-----------------------------------------------------------------------
-void PagingLandScapeData2D::adjustDeformationRectangle(const unsigned int x, const unsigned int z)
+void PagingLandScapeData2D::adjustDeformationRectangle(unsigned int x, unsigned int z)
 {
 	if (mIsRectModified)
 	{
@@ -207,8 +208,7 @@ void PagingLandScapeData2D::adjustDeformationRectangle(const unsigned int x, con
 }
 
 //-----------------------------------------------------------------------
-const bool PagingLandScapeData2D::deformHeight(const Vector3 &deformationPoint,
-					       Real &modificationHeight)
+bool PagingLandScapeData2D::deformHeight(const Vector3& deformationPoint, Real& modificationHeight)
 {
 	// adjust x and z to be local to page
 	const int x = static_cast<int> (deformationPoint.x - mShiftX);
@@ -222,9 +222,7 @@ const bool PagingLandScapeData2D::deformHeight(const Vector3 &deformationPoint,
 } 
 
 //-----------------------------------------------------------------------
-const bool PagingLandScapeData2D::deformHeight(const unsigned int x,
-					       const unsigned int z,
-					       Real &modificationHeight)
+bool PagingLandScapeData2D::deformHeight(unsigned int x, unsigned int z, Real& modificationHeight)
 {
 	const unsigned int arraypos = static_cast <unsigned int> (z * mSize + x);
 	assert (mHeightData && arraypos < mMaxArrayPos);
@@ -251,12 +249,10 @@ const bool PagingLandScapeData2D::deformHeight(const unsigned int x,
 		modificationHeight = newH;
 	}
 	return did_modif;
-
 }   
 
 //-----------------------------------------------------------------------
-bool PagingLandScapeData2D::setHeight(const unsigned int x, const unsigned int z,
-				      const unsigned int Pos, const Real h)
+bool PagingLandScapeData2D::setHeight(unsigned int x, unsigned int z, unsigned int Pos, const Real& h)
 {
 	if (mHeightData[Pos] != h)
 	{
@@ -370,8 +366,7 @@ bool PagingLandScapeData2D::setHeight(const unsigned int x, const unsigned int z
 }
 
 //-----------------------------------------------------------------------
-bool PagingLandScapeData2D::setHeight(const unsigned int x, const unsigned int z, 
-				      const Real h)
+bool PagingLandScapeData2D::setHeight(unsigned int x, unsigned int z, const Real& h)
 {
 	const unsigned int Pos = static_cast <unsigned int> ((z * mSize)+ x);
 	assert  (mHeightData &&  mMaxArrayPos > Pos); 
@@ -380,7 +375,7 @@ bool PagingLandScapeData2D::setHeight(const unsigned int x, const unsigned int z
 #endif //_MAPSPLITTER
 
 //-----------------------------------------------------------------------
-const Vector3 PagingLandScapeData2D::getNormal (const Real mX, const Real mZ)
+Vector3 PagingLandScapeData2D::getNormal(const Real& mX, const Real& mZ) const
 {
 	// First General method : (9 adds and 6 muls + a normalization)
 	//        *---v3--*

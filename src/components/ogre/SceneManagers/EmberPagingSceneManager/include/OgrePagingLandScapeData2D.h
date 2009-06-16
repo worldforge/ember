@@ -31,21 +31,21 @@ namespace Ogre
 class PagingLandScapeData2D
 {
 public:
-	PagingLandScapeData2D(PagingLandScapeData2DManager *pageMgr);
+	PagingLandScapeData2D(PagingLandScapeData2DManager* pageMgr);
 
-	virtual ~PagingLandScapeData2D(void);
+	virtual ~PagingLandScapeData2D();
 
 	virtual PagingLandScapeData2D* newPage() = 0;
 
-	virtual String getName() const= 0;
-	virtual bool load(const unsigned int mX, const unsigned int mZ);
+	virtual Ogre::String getName() const = 0;
+	virtual bool load(unsigned int mX, unsigned int mZ);
 
-	virtual void load(void);
+	virtual void load();
 
-	virtual void init(void);
-	virtual void uninit(void);
+	virtual void init();
+	virtual void uninit();
 
-	virtual void unload(void);
+	virtual void unload();
 
 #ifndef _MAPSPLITTER
 	/**
@@ -58,7 +58,7 @@ public:
 	 *        Give some info on tile to 
 	 *       help coordinate system change
 	 */
-	const bool deformHeight(const Vector3& deformationPoint, Real &modificationHeight);
+	bool deformHeight(const Vector3& deformationPoint, Ogre::Real& modificationHeight);
 
 	/**
 	 *
@@ -70,11 +70,11 @@ public:
 	 * \param &modificationHeight 
 	 *        What modification do to terrain
 	 */
-	const bool deformHeight(const unsigned int x, const unsigned int z, Real &modificationHeight);
+	bool deformHeight(unsigned int x, unsigned int z, Ogre::Real& modificationHeight);
 
 
-	bool setHeight(const unsigned int x, const unsigned int z, const Real h);
-	bool setHeight(const unsigned int x, const unsigned int z, const unsigned int Pos, const Real h);
+	bool setHeight(unsigned int x, unsigned int z, const Ogre::Real& h);
+	bool setHeight(unsigned int x, unsigned int z, unsigned int Pos, const Ogre::Real& h);
 	/**
 	 *
 	 *    get smallest rectangle containing all deformation
@@ -83,7 +83,7 @@ public:
 	 * \return Box struct describing rectangle
 	 *        
 	 */
-	Image::Box getDeformationRectangle(void);
+	const Image::Box& getDeformationRectangle() const;
 
 	/**
 	 *
@@ -93,44 +93,45 @@ public:
 	 * \param &z 
 	 *       z Position on 2d height grid
 	 */
-	void adjustDeformationRectangle(const unsigned int x, const unsigned int z);
+	void adjustDeformationRectangle(unsigned int x, unsigned int z);
 
 	/**
 	 *
 	 *    Reset Deformation rectangle
 	 */
-	void resetDeformationRectangle(void);
+	void resetDeformationRectangle();
 #endif // _MAPSPLITTER
 
-	virtual const Vector3 getNormal(const Real mX, const Real mZ);
-	virtual const ColourValue getBase(const Real mX, const Real mZ) const 
+	virtual Ogre::Vector3 getNormal(const Ogre::Real& mX, const Ogre::Real& mZ) const;
+
+	virtual Ogre::ColourValue getBase(const Ogre::Real& mX, const Ogre::Real& mZ) const 
 	{
 		return ColourValue::White;
-	};
+	}
 
-	virtual const ColourValue getCoverage(const Real mX, const Real mZ) const 
+	virtual Ogre::ColourValue getCoverage(const Ogre::Real& mX, const Ogre::Real& mZ) const 
 	{
 		return ColourValue::White;
-	};
+	}
 
-	virtual const Real getShadow(const Real mX, const Real mZ, const bool& positive) const 
+	virtual Ogre::Real getShadow(const Ogre::Real& mX, const Ogre::Real& mZ, bool positive) const 
 	{
 		return 0.0f;
-	};
-	//-----------------------------------------------------------------------
-	const Real getShiftX() const
+	}
+
+	const Ogre::Real& getShiftX() const
 	{   
 		return mShiftX;
 	}
-	//-----------------------------------------------------------------------
-	const Real getShiftZ() const
+
+	const Ogre::Real& getShiftZ() const
 	{   
 		return mShiftZ;
 	}
-	//-----------------------------------------------------------------------
-	inline const Real getHeightAbsolute(const Real x, const Real z) const
+
+	inline Ogre::Real getHeightAbsolute(const Ogre::Real& x, const Ogre::Real& z) const
 	{   
-		const Vector3 &invScale = mParent->getOptions()->invScale;
+		const Vector3& invScale = mParent->getOptions()->invScale;
 
 		// adjust x and z to be local to page
 		int i_x = static_cast<int> (x * invScale.x - mShiftX);
@@ -138,7 +139,7 @@ public:
 
 		// due to Real imprecision on Reals, we have to use boundaries here
 		// otherwise we'll hit asserts.
-		int size =  static_cast<int> (mSize-1);
+		int size = static_cast<int> (mSize-1);
 		if (i_x > size)
 			i_x = size; 
 		else if (i_x < 0)
@@ -157,67 +158,68 @@ public:
 		return mHeightData[arraypos];
 	}
 
-
-	inline const Real getHeight(const Real x, const Real z) const 
+	inline Ogre::Real getHeight(const Ogre::Real& x, const Ogre::Real& z) const 
 	{
                 assert (z < mSize && x < mSize);
                 assert (mHeightData);                
                 const unsigned int Pos = static_cast< unsigned int > (z * mSize + x);
                 assert (mMaxArrayPos > Pos);
                 return mHeightData[ Pos ];    
-	};
+	}
 
-	inline const Real getHeight(const unsigned int x, const unsigned int z) const 
+	inline Ogre::Real getHeight(unsigned int x, unsigned int z) const 
 	{
                 assert (mHeightData);
                 assert (z < mSize && x < mSize);
                 const unsigned int Pos = static_cast <unsigned int> (z * mSize + x);
                 assert (mMaxArrayPos > Pos);
                 return mHeightData[ Pos ];  
-	};
+	}
 
-	inline const Real getHeight(const int x, const int z) const 
+	inline Ogre::Real getHeight(int x, int z) const 
 	{
                 assert (mHeightData);
                 assert (static_cast< unsigned int >(z) < mSize && static_cast< unsigned int >(x) < mSize);
                 const unsigned int Pos = static_cast< unsigned int >(z * mSize + x);
                 assert (mMaxArrayPos > Pos);
                 return mHeightData[ Pos ]; 
-	};
+	}
 
-	inline const Real getHeight(const unsigned int pos) const 
+	inline Ogre::Real getHeight(unsigned int pos) const 
 	{
 		assert (mHeightData);
 		assert (mMaxArrayPos > pos);
 		return mHeightData[ pos ]; 
-	};
-	inline const Real getMaxHeight(void) const 
+	}
+
+	inline Ogre::Real getMaxHeight() const 
 	{
 		return mMaxheight;
-	};
-	// useful to know max height before data is loaded.
-	virtual const Real getMaxAbsoluteHeight(void) const = 0;
+	}
 
-	Real* getHeightData(void)
+	// useful to know max height before data is loaded.
+	virtual Ogre::Real getMaxAbsoluteHeight() const = 0;
+
+	Ogre::Real* getHeightData() const
 	{
 		return mHeightData;
-	};
+	}
 
-	bool isLoaded(void) const  {return mIsLoaded;};
+	bool isLoaded() const { return mIsLoaded; };
 
-	void computePowerof2PlusOneSize(void);
+	void computePowerof2PlusOneSize();
             
-	virtual size_t getXDimension(void) const 
+	virtual size_t getXDimension() const 
 	{
 		return mXDimension;
-	};
+	}
 
-	virtual size_t getZDimension(void) const 
+	virtual size_t getZDimension() const 
 	{
 		return mZDimension;
-	};
+	}
 
-	virtual size_t getSize(void) const 
+	virtual size_t getSize() const 
 	{
 		return mSize;
 	};
@@ -226,19 +228,20 @@ public:
 	{
 		X = mPageX;
 		Z = mPageZ;
-	};
-	inline bool isCoord(const unsigned int x, const unsigned int z) const {return (mPageX == x && mPageZ == z);};
+	}
+
+	inline bool isCoord(unsigned int x, unsigned int z) const { return (mPageX == x && mPageZ == z); };
 
 
 protected:
-	virtual void _save(void) = 0;
-	virtual bool _load(const unsigned int x, const unsigned int z) = 0;
-	virtual void _load(void) = 0;
-	virtual void _unload(void) = 0;
-	bool _checkSize(const size_t s);
+	virtual void _save() = 0;
+	virtual bool _load(unsigned int x, unsigned int z) = 0;
+	virtual void _load() = 0;
+	virtual void _unload() = 0;
+	bool _checkSize(size_t s);
 
 	//  computed Height Data  (scaled)
-	Real *mHeightData;
+	Real* mHeightData;
 	//  maximum position in Array
 	unsigned int mMaxArrayPos;
 	//  data side maximum size
@@ -270,9 +273,9 @@ protected:
 	Real mShiftX;
 	// coordinate shift based on page number
 	Real mShiftZ;
-	PagingLandScapeData2DManager *mParent;
+	PagingLandScapeData2DManager* mParent;
 
-private :
+private:
 	Image::Box mRect;
 };
 

@@ -44,26 +44,26 @@ The PagingLandscape SceneManager comes with a whole set of different heightfield
 	class EmberPagingLandScapeData2D_HeightField: public Ogre::PagingLandScapeData2D
 	{
 		public:
-			EmberPagingLandScapeData2D_HeightField(Ogre::PagingLandScapeData2DManager *pageMgr);
-			virtual Ogre::String getName() const {return Ogre::String("EmberHeightField");}
-			virtual ~EmberPagingLandScapeData2D_HeightField( void );
+			EmberPagingLandScapeData2D_HeightField(Ogre::PagingLandScapeData2DManager* pageMgr);
+			virtual Ogre::String getName() const { return Ogre::String("EmberHeightField"); }
+			virtual ~EmberPagingLandScapeData2D_HeightField();
 
-			virtual const Ogre::Vector3 getNormal( const Ogre::Real localPageX, const Ogre::Real localPageZ);
-			virtual const Ogre::ColourValue getBase( const Ogre::Real mX, const Ogre::Real mZ );
-			virtual const Ogre::ColourValue getCoverage( const Ogre::Real mX, const Ogre::Real mZ );
-			virtual const Ogre::Real getShadow( const Ogre::Real mX, const Ogre::Real mZ, const bool& positive );
+			virtual Ogre::Vector3 getNormal(const Ogre::Real& localPageX, const Ogre::Real& localPageZ) const;
+			virtual Ogre::ColourValue getBase(const Ogre::Real& mX, const Ogre::Real& mZ) const;
+			virtual Ogre::ColourValue getCoverage(const Ogre::Real& mX, const Ogre::Real& mZ) const;
+			virtual Ogre::Real getShadow(const Ogre::Real& mX, const Ogre::Real& mZ, bool positive) const;
 
 			virtual Ogre::PagingLandScapeData2D* newPage();
 
-			virtual const Ogre::Real getMaxAbsoluteHeight(void) const;
+			virtual Ogre::Real getMaxAbsoluteHeight() const;
 
 			void setMaxHeight(float maxHeight);
 		protected:
 
-			virtual void _save( void );
-			virtual bool _load( const unsigned int x, const unsigned int z );
-			virtual void _load( void );
-			virtual void _unload( void );
+			virtual void _save();
+			virtual bool _load(unsigned int x, unsigned int z);
+			virtual void _load();
+			virtual void _unload();
 
 		private:
 			/**
