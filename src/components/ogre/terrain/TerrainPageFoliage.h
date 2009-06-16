@@ -23,11 +23,15 @@
 #ifndef EMBEROGRE_TERRAINTERRAINPAGEFOLIAGE_H
 #define EMBEROGRE_TERRAINTERRAINPAGEFOLIAGE_H
 
-#include <vector>
 #include <OgreCommon.h>
 #include <OgreSharedPtr.h>
 #include <OgreDataStream.h>
 #include <OgreMemoryAllocatorConfig.h>
+
+#include <string>
+#include <map>
+#include <vector>
+
 
 namespace Ogre
 {
@@ -95,7 +99,7 @@ public:
 	 * @param area The enclosing area.
 	 * @param store The store in which to place the plants.
 	 */
-	void getPlantsForArea(const TerrainLayerDefinition& layerDef, unsigned char threshold, const std::string& plantType, Ogre::TRect<float> area, PlantStore& store);
+	void getPlantsForArea(const TerrainLayerDefinition& layerDef, unsigned char threshold, const std::string& plantType, Ogre::TRect<float> area, PlantStore& store) const;
 
 	TerrainPage& getTerrainPage() const;
 

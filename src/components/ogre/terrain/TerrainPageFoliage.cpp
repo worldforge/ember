@@ -45,22 +45,6 @@
 #include <OgreMath.h>
 #include <OgreVector2.h>
 
-#ifdef HAVE_LRINTF
-    #define I_ROUND(_x) (::lrintf(_x))
-#elif defined(HAVE_RINTF)
-    #define I_ROUND(_x) ((int)::rintf(_x))
-#elif defined(HAVE_RINT)
-    #define I_ROUND(_x) ((int)::rint(_x))
-#else
-    #define I_ROUND(_x) ((int)(_x))
-#endif
-
-#ifdef HAVE_FABSF
-    #define F_ABS(_x) (::fabsf(_x))
-#else
-    #define F_ABS(_x) (::fabs(_x))
-#endif
-
 
 
 namespace EmberOgre {
@@ -159,7 +143,7 @@ const TerrainPageFoliage::PlantStoreMap& TerrainPageFoliage::getPlants() const
 	return mPlantStores;
 }
 
-void TerrainPageFoliage::getPlantsForArea(const TerrainLayerDefinition& layerDef, unsigned char threshold, const std::string& plantType, Ogre::TRect<float> area, TerrainPageFoliage::PlantStore& store)
+void TerrainPageFoliage::getPlantsForArea(const TerrainLayerDefinition& layerDef, unsigned char threshold, const std::string& plantType, Ogre::TRect<float> area, TerrainPageFoliage::PlantStore& store) const
 {
 	PlantBatchStore& plantBatchStore = mPlantStores[plantType];
 	TerrainPosition localPositionInSegment;
