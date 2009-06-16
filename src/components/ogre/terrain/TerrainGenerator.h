@@ -197,13 +197,13 @@ public:
 	 * @param pos A position in the world.
 	 * @return true if the terrain at the position is valid.
 	 */
-	bool isValidTerrainAt(const TerrainPosition& pos);
+	bool isValidTerrainAt(const TerrainPosition& pos) const;
 	
 	/**
 	 * @brief Provides access to the underlying Mercator::Terrain object.
 	 * @return The main terrain object.
 	 */
-	Mercator::Terrain& getTerrain();
+	const Mercator::Terrain& getTerrain() const;
 	
 	/**
 	 * @brief Gets the max boundaries of the terrain.
@@ -222,14 +222,14 @@ public:
 	 * (note that this is different from Mercator segments, which always are of size 64)
 	 * @return 
 	 */
-	int getPageMetersSize();
+	int getPageMetersSize() const;
 	
 
 	/**
 	 * @brief Gets the size of one page as indices.
 	 * @return 
 	 */
-	int getPageIndexSize() ;
+	int getPageIndexSize() const;
 		
 	/**
 	 * @brief Adds a new Mercator::Area to the terrain.
@@ -257,12 +257,12 @@ public:
 	 * @param worldPosition The position in world space to get the terrain page for.
 	 * @return An terrain page, or null of no page can be found at the specified position.
 	 */
-	TerrainPage* getTerrainPageAtPosition(const TerrainPosition& worldPosition);
+	TerrainPage* getTerrainPageAtPosition(const TerrainPosition& worldPosition) const;
 
 	/**
 	 * @copydoc Ember::ConsoleObject::runCommand 
 	 */
-	virtual	void runCommand(const std::string &command, const std::string &args);
+	virtual	void runCommand(const std::string& command, const std::string& args);
 	
 	/**
 	 * @brief Rebuilds the Mercator height map, effectively regenerating the terrain.
@@ -326,14 +326,14 @@ public:
 	 * @param position The position in the world.
 	 * @param colour The shadow colour will be put into this value.
 	 */
-	void getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour);
+	void getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour) const;
 	
 	/**
 	 * @brief Gets the shadow colour at the supplied position.
 	 * @param position The position in the world.
 	 * @param colour The shadow colour will be put into this value.
 	 */
-	void getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour);
+	void getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour) const;
 
 	/**
 	 * @brief Gets the normal at the specified world position.

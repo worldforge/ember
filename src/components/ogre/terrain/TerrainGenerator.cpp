@@ -147,7 +147,7 @@ TerrainGenerator::~TerrainGenerator()
 	//delete mTerrainPageSource;
 }
 
-Mercator::Terrain& TerrainGenerator::getTerrain()
+const Mercator::Terrain& TerrainGenerator::getTerrain() const
 {
 	return *mTerrain;
 }
@@ -211,7 +211,6 @@ void TerrainGenerator::addTerrainMod(TerrainMod* terrainMod)
 	std::vector<TerrainPosition> updatedPositions;
 	updatedPositions.push_back(TerrainPosition(mod->bbox().getCenter().x(), mod->bbox().getCenter().y()));
 	reloadTerrain(updatedPositions);
-
 }
 
 void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
@@ -434,12 +433,12 @@ bool TerrainGenerator::frameEnded(const Ogre::FrameEvent & evt)
 //
 // }
 
-int TerrainGenerator::getPageIndexSize()
+int TerrainGenerator::getPageIndexSize() const
 {
 	return mSceneManagerAdapter->getPageSize();
 }
 
-int TerrainGenerator::getPageMetersSize()
+int TerrainGenerator::getPageMetersSize() const
 {
 	return getPageIndexSize() - 1;
 }
@@ -525,17 +524,15 @@ void TerrainGenerator::prepareAllSegments()
 }
 
 
-bool TerrainGenerator::isValidTerrainAt(const TerrainPosition& position)
+bool TerrainGenerator::isValidTerrainAt(const TerrainPosition& position) const
 {
-// /*	int x = (int)position.x();
-// 	int y = (int)position.y();*/
-	Mercator::Segment* segment = mTerrain->getSegment(position.x(),position.y());
-	return (segment &&	segment->isValid());
+	const Mercator::Segment* segment = mTerrain->getSegment(position.x(), position.y());
+	return (segment && segment->isValid());
 //	return (segment &&	segment->isValid() && getMaterialForSegment(position));
 }
 
 
-TerrainPage* TerrainGenerator::getTerrainPageAtPosition(const TerrainPosition& worldPosition)
+TerrainPage* TerrainGenerator::getTerrainPageAtPosition(const TerrainPosition& worldPosition) const
 {
 
 	int xRemainder = static_cast<int>(getMin().x()) % (getPageMetersSize());
@@ -545,9 +542,9 @@ TerrainPage* TerrainGenerator::getTerrainPageAtPosition(const TerrainPosition& w
 	int yIndex = static_cast<int>(ceil((worldPosition.y() + yRemainder) / (getPageMetersSize())));
 // 	int yIndex = static_cast<int>(floor((worldPosition.y() + yRemainder) / (getPageMetersSize())));
 
-	TerrainPagestore::iterator I = mTerrainPages.find(xIndex);
+	TerrainPagestore::const_iterator I = mTerrainPages.find(xIndex);
 	if (I != mTerrainPages.end()) {
-		TerrainPagecolumn::iterator J = I->second.find(yIndex);
+		TerrainPagecolumn::const_iterator J = I->second.find(yIndex);
 		if (J != I->second.end()) {
 			return J->second;
 		}
@@ -610,11 +607,7 @@ TerrainPage* TerrainGenerator::createPage(const TerrainPosition& pos)
 		page->showFoliage();
 	}
 
-
-
 	return page;
-
-
 }
 
 void TerrainGenerator::updateFoliageVisibilty()
@@ -795,7 +788,7 @@ const TerrainPosition TerrainGenerator::getMin( ) const
 // 	return TerrainPosition(mXmin * 64, mYmin * 64);
 }
 
-void TerrainGenerator::runCommand(const std::string &command, const std::string &args)
+void TerrainGenerator::runCommand(const std::string& command, const std::string& args)
 {
 	if (UpdateShadows == command) {
 		updateShadows();
@@ -806,7 +799,7 @@ const TerrainInfo & TerrainGenerator::getTerrainInfo( ) const
 	return *mTerrainInfo;
 }
 
-void TerrainGenerator::getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour)
+void TerrainGenerator::getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour) const
 {
 	//TODO: add caching of the last fetched terrain page and first check if the position isn't at that page, since we'll in most cass will call this method with positions that are close to eachother
 	TerrainPosition wfPos(Ogre2Atlas(position));
@@ -818,7 +811,7 @@ void TerrainGenerator::getShadowColourAt(const Ogre::Vector2& position, Ogre::ui
 
 }
 
-void TerrainGenerator::getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour)
+void TerrainGenerator::getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour) const
 {
 	//TODO: add caching of the last fetched terrain page and first check if the position isn't at that page, since we'll in most cass will call this method with positions that are close to eachother
 	TerrainPosition wfPos(Ogre2Atlas(position));
