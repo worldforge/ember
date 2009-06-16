@@ -215,7 +215,7 @@ namespace Ogre
 		// Morph
 		/** Returns the  vertex coord for the given coordinates */
 		inline Real _vertex(const int x, const int z, const int n) const;
-		Real* mHeightfield;
+		const Ogre::Real* mHeightfield;
 		/// The previous 'next' LOD level down, for frame coherency
 		int mLastNextLevel; 
 		/// The morph factor between this and the next LOD level down

@@ -101,7 +101,7 @@ public:
 
 protected:
 
-	void compute(PagingLandScapeData2D* data, const Image::Box& dataRect, const Image::Box& textureRect);
+	void compute(const PagingLandScapeData2D* data, const Image::Box& dataRect, const Image::Box& textureRect);
 
 	void computePointAlpha(unsigned int imagePos, Ogre::Real height, Ogre::Real slope);
 

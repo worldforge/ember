@@ -894,7 +894,7 @@ void PagingLandScapeTexture::updated()
 }
 
 //-----------------------------------------------------------------------
-void PagingLandScapeTexture::compute(PagingLandScapeData2D* data, const Image::Box& dataRect, const Image::Box& textureRect)
+void PagingLandScapeTexture::compute(const PagingLandScapeData2D* data, const Image::Box& dataRect, const Image::Box& textureRect)
 {
 	assert (mNumTexture > 0);
         const size_t heightfiledsize = mParent->getOptions()->PageSize - 1;
