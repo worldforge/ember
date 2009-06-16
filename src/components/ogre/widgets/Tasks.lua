@@ -74,6 +74,9 @@ end
 
 function Tasks.buildWidget()
 
+	-- Initializing helper classes
+	Tasks.helper = EmberOgre.Gui.Tasks()
+
 	Tasks.widget = guiManager:createWidget()
 	Tasks.widget:loadMainSheet("Tasks.layout", "Tasks/")
 	
