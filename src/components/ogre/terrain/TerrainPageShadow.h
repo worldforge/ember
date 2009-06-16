@@ -23,8 +23,15 @@
 #ifndef EMBEROGRETERRAINPAGESHADOW_H
 #define EMBEROGRETERRAINPAGESHADOW_H
 #include "../EmberOgrePrerequisites.h"
+
 #include <OgreTexture.h>
 #include <OgreVector3.h>
+
+namespace Ogre {
+	class ColourValue;
+	class Image;
+	class Vector2;
+}
 
 namespace EmberOgre {
 namespace Terrain {
@@ -54,24 +61,24 @@ protected:
 class TerrainPageShadow
 {
 public:
-    TerrainPageShadow(TerrainPage& terrainPage);
+	TerrainPageShadow(TerrainPage& terrainPage);
 
-    virtual ~TerrainPageShadow();
+	virtual ~TerrainPageShadow();
 
-    void setShadowTechnique(ITerrainPageShadowTechnique* shadowTechnique);
+	void setShadowTechnique(ITerrainPageShadowTechnique* shadowTechnique);
 
-    void setLightDirection(const Ogre::Vector3& lightDirection);
+	void setLightDirection(const Ogre::Vector3& lightDirection);
 
-    void createShadowData(unsigned char* data);
+	void createShadowData(unsigned char* data);
 
-    Ogre::TexturePtr getTexture();
+	Ogre::TexturePtr getTexture() const;
 	void updateShadow();
 	void createImage();
 
 	Ogre::Image* getImage() const;
 
-	void getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour);
-	void getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour);
+	void getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour) const;
+	void getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour) const;
 
 
 protected:

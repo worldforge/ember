@@ -25,19 +25,19 @@
 #endif
 
 #include "TerrainPageShadow.h"
+
 #include "TerrainPage.h"
 #include "TerrainGenerator.h"
-#include "../EmberOgrePrerequisites.h"
 #include "../MathConverter.h"
-#include "services/EmberServices.h"
-#include "services/config/ConfigService.h"
-#include <wfmath/stream.h>
+
 #include <OgreColourValue.h>
 #include <OgreRoot.h>
 #include <OgreTextureManager.h>
 #include <OgreColourValue.h>
 #include <OgreHardwarePixelBuffer.h>
-#include <OgreMaterial.h>
+#include <OgreImage.h>
+
+
 namespace EmberOgre {
 namespace Terrain {
 
@@ -159,7 +159,7 @@ void TerrainPageShadow::createImage()
 	mTexture->loadImage(*mImage);
 }
 
-Ogre::TexturePtr TerrainPageShadow::getTexture()
+Ogre::TexturePtr TerrainPageShadow::getTexture() const
 {
 	return mTexture;
 }
@@ -175,7 +175,7 @@ void TerrainPageShadow::setShadowTechnique(ITerrainPageShadowTechnique* shadowTe
 	mShadowTechnique = shadowTechnique;
 }
 
-void TerrainPageShadow::getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour)
+void TerrainPageShadow::getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour) const
 {
 	if (mImage) {
 		unsigned char val(mImage->getData()[static_cast<size_t>((mImage->getWidth() * static_cast<unsigned int>(position.y)) + static_cast<unsigned int>(position.x))]);
@@ -188,7 +188,7 @@ void TerrainPageShadow::getShadowColourAt(const Ogre::Vector2& position, Ogre::u
 	}
 }
 
-void TerrainPageShadow::getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour)
+void TerrainPageShadow::getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour) const
 {
 	if (mImage) {
 		float val(mImage->getData()[static_cast<size_t>((mImage->getWidth() * static_cast<unsigned int>(position.y)) + static_cast<unsigned int>(position.x))] / 255.0f);
