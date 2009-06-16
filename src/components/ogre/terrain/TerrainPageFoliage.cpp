@@ -145,14 +145,32 @@ const TerrainPageFoliage::PlantStoreMap& TerrainPageFoliage::getPlants() const
 
 void TerrainPageFoliage::getPlantsForArea(const TerrainLayerDefinition& layerDef, unsigned char threshold, const std::string& plantType, Ogre::TRect<float> area, TerrainPageFoliage::PlantStore& store) const
 {
-	PlantBatchStore& plantBatchStore = mPlantStores[plantType];
+	//const PlantBatchStore& plantBatchStore = mPlantStores[plantType];
+	PlantStoreMap::const_iterator plantStoreMapIt = mPlantStores.find(plantType);
+	if (plantStoreMapIt == mPlantStores.end()) {
+		S_LOG_WARNING("Plant type ' " << plantType << "' doesn't exist in PlantStore");
+		return;
+	}
+
 	TerrainPosition localPositionInSegment;
 	const int batchX = Ogre::Math::Floor(area.left / mGenerator.getFoliageBatchSize());
 	const int batchY = Ogre::Math::Floor(area.top / mGenerator.getFoliageBatchSize());
-	PlantStore& plants = plantBatchStore[batchX][batchY];
+
+	//const PlantStore& plants = plantBatchStore[batchX][batchY];
+	PlantBatchStore::const_iterator plantBatchStoreIt = (*plantStoreMapIt).second.find(batchX);
+	if (plantBatchStoreIt == (*plantStoreMapIt).second.end()) {
+		S_LOG_WARNING("BatchX ' " << batchX << "' doesn't exist in PlantBatchStore");
+		return;
+	}
+	PlantBatchColumn::const_iterator plantBatchColumnIt = (*plantBatchStoreIt).second.find(batchY);
+	if (plantBatchColumnIt == (*plantBatchStoreIt).second.end()) {
+		S_LOG_WARNING("BatchY ' " << batchY << "' doesn't exist in PlantBatchColumn");
+		return;
+	}
+	const PlantStore& plants = (*plantBatchColumnIt).second;
 	store.reserve(plants.size());
 
-	for (PlantStore::iterator I = plants.begin(); I != plants.end(); ++I) {
+	for (PlantStore::const_iterator I = plants.begin(); I != plants.end(); ++I) {
 		if (I->x >= area.left && I->x <= area.right && I->y >= area.top && I->y <= area.bottom) {
 
 			#if 1
@@ -160,7 +178,7 @@ void TerrainPageFoliage::getPlantsForArea(const TerrainLayerDefinition& layerDef
 			float x = I->x;
 			float y = mCoverageMapPixelWidth - I->y;
 
-			Mercator::Segment* segment = mTerrainPage.getSegmentAtLocalPosition(TerrainPosition(x, y), localPositionInSegment);
+			const Mercator::Segment* segment = mTerrainPage.getSegmentAtLocalPosition(TerrainPosition(x, y), localPositionInSegment);
 			if ((segment == 0) || (!segment->isValid())) {
 				continue;
 			}
