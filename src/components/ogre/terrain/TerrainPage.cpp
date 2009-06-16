@@ -28,25 +28,12 @@
 
 #include "TerrainPage.h"
 
-#include <OgreStringConverter.h>
-#include <OgreRenderSystemCapabilities.h>
 #include "TerrainShader.h"
 #include "TerrainPageSurfaceLayer.h"
 #include "ITerrainPageBridge.h"
 
 #include "../EmberOgre.h"
 #include "../MathConverter.h"
-
-#include <OgreRenderSystemCapabilities.h>
-
-#include <OgreCodec.h>
-#include <OgreImage.h>
-#include <OgreImageCodec.h>
-#include <OgreTextureManager.h>
-#include <OgreCommon.h>
-
-// #include <IL/il.h>
-// #include <IL/ilu.h>
 
 #include "../environment/Foliage.h"
 #include "TerrainGenerator.h"
@@ -57,33 +44,27 @@
 #include "TerrainPageFoliage.h"
 #include "ISceneManagerAdapter.h"
 
-#include <Mercator/Segment.h>
-#include <Mercator/Shader.h>
-
-#include <OgreHardwarePixelBuffer.h>
-
 #include "framework/LoggingInstance.h"
 #include "services/config/ConfigService.h"
 
 #include "framework/osdir.h"
 
+#include <wfmath/axisbox.h>
+#include <wfmath/vector.h>
+
+#include <Mercator/Segment.h>
+#include <Mercator/Shader.h>
+
+
 #ifdef HAVE_LRINTF
-    #define I_ROUND(_x) (::lrintf(_x)) 
+    #define I_ROUND(_x) (::lrintf(_x))
 #elif defined(HAVE_RINTF)
-    #define I_ROUND(_x) ((int)::rintf(_x)) 
+    #define I_ROUND(_x) ((int)::rintf(_x))
 #elif defined(HAVE_RINT)
-    #define I_ROUND(_x) ((int)::rint(_x)) 
+    #define I_ROUND(_x) ((int)::rint(_x))
 #else
-    #define I_ROUND(_x) ((int)(_x)) 
+    #define I_ROUND(_x) ((int)(_x))
 #endif
-
-#ifdef HAVE_FABSF
-    #define F_ABS(_x) (::fabsf(_x))
-#else
-    #define F_ABS(_x) (::fabs(_x))
-#endif
-
-//#include <fenv.h>
 
 using namespace EmberOgre::Environment;
 
@@ -91,8 +72,6 @@ namespace EmberOgre {
 namespace Terrain {
 
 
-
-// 
 TerrainPage::TerrainPage(TerrainPosition position, const std::map<const Mercator::Shader*, TerrainShader*> shaderMap, TerrainGenerator* generator) 
 : mGenerator(generator)
 , mPosition(position)
@@ -226,8 +205,7 @@ void TerrainPage::update()
 	Ogre::Vector2 adjustedOgrePos(targetPage.x + mGenerator->getTerrainInfo().getPageOffsetY(), targetPage.y + mGenerator->getTerrainInfo().getPageOffsetX());
 	
 	S_LOG_VERBOSE("Updating terrain page at position x: " << adjustedOgrePos.x << " y: " << adjustedOgrePos.y);
-	mGenerator->getAdapter()->reloadPage(static_cast<unsigned int>(adjustedOgrePos.x), static_cast<unsigned int>(adjustedOgrePos.y)); 
-
+	mGenerator->getAdapter()->reloadPage(static_cast<unsigned int>(adjustedOgrePos.x), static_cast<unsigned int>(adjustedOgrePos.y));
 }
 
 void TerrainPage::setupShadowTechnique()

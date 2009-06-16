@@ -25,12 +25,25 @@
 
 #include "../EmberOgrePrerequisites.h"
 
-#include <Mercator/Terrain.h>
-#include <Mercator/Segment.h>
-#include <Mercator/Surface.h>
-#include <Mercator/TerrainMod.h>
 #include "../Types.h"
+
+#include "TerrainPageShadow.h"
+
+#include <Mercator/Terrain.h>
+
+#include <wfmath/point.h> // <wfmath/axisbox.h> doesn't include it at this point
+
 #include <vector>
+
+
+namespace WFMath {
+	template<int> class AxisBox;
+	template<int> class Vector;
+}
+
+namespace Mercator {
+	class Segment;
+}
 
 namespace EmberOgre {
 
@@ -42,8 +55,6 @@ struct PageSegment
 
 typedef std::vector<PageSegment> SegmentVector;
 }
-
-#include "TerrainPageShadow.h"
 
 namespace Ogre
 {
