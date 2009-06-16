@@ -30,16 +30,16 @@
 namespace EmberOgre
 {
 
-	EmberPagingLandScapeTexture::EmberPagingLandScapeTexture(Ogre::PagingLandScapeTextureManager *pageMgr)
+	EmberPagingLandScapeTexture::EmberPagingLandScapeTexture(Ogre::PagingLandScapeTextureManager* pageMgr)
 		: Ogre::PagingLandScapeTexture(pageMgr, "EmberTexture", 1, false)
 	{
 	}
 
-	EmberPagingLandScapeTexture::~EmberPagingLandScapeTexture( void )
+	EmberPagingLandScapeTexture::~EmberPagingLandScapeTexture()
 	{
 	}
 
-	Ogre::PagingLandScapeTexture* EmberPagingLandScapeTexture::newTexture( )
+	Ogre::PagingLandScapeTexture* EmberPagingLandScapeTexture::newTexture()
 	{
 		return new EmberPagingLandScapeTexture(mParent);
 	}
@@ -50,11 +50,11 @@ namespace EmberOgre
 		return true;
 	}
 
-	void EmberPagingLandScapeTexture::setOptions(void)
-    {
-    }
+	void EmberPagingLandScapeTexture::setOptions()
+	{
+	}
 
-	void EmberPagingLandScapeTexture::_loadMaterial( )
+	void EmberPagingLandScapeTexture::_loadMaterial()
 	{
 		Terrain::TerrainGenerator* terrainGenerator = EmberOgre::getSingleton().getTerrainGenerator();
 		Terrain::TerrainPage* page = terrainGenerator->getTerrainPageAtIndex(Ogre::Vector2(mDataX, mDataZ));
@@ -62,7 +62,6 @@ namespace EmberOgre
 		if (page) {
 			mMaterial = page->getMaterial();
 		}
-
 	}
 
 	void EmberPagingLandScapeTexture::_unloadMaterial()

@@ -42,20 +42,18 @@ class EmberPagingLandScapeTexture : public Ogre::PagingLandScapeTexture
 {
 
 public:
- 	EmberPagingLandScapeTexture(Ogre::PagingLandScapeTextureManager *pageMgr);
-	virtual ~EmberPagingLandScapeTexture( void );
-	
-	virtual Ogre::String getName() const {return Ogre::String("EmberTexture");}
+ 	EmberPagingLandScapeTexture(Ogre::PagingLandScapeTextureManager* pageMgr);
+	virtual ~EmberPagingLandScapeTexture();
 
-	virtual Ogre::PagingLandScapeTexture* newTexture( );
-	virtual bool isMaterialSupported(bool recursive = true); 
-	void setOptions(void);
+	virtual Ogre::String getName() const { return Ogre::String("EmberTexture"); }
+
+	virtual Ogre::PagingLandScapeTexture* newTexture();
+	virtual bool isMaterialSupported(bool recursive = true);
+	void setOptions();
 
 protected:
-	virtual void _loadMaterial( void );
-		
-	virtual void _unloadMaterial( void );
-	
+	virtual void _loadMaterial();
+	virtual void _unloadMaterial();
 };
 	
 }
