@@ -671,23 +671,23 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 	std::vector<TerrainPosition> updatedPositions;
 	bool wasUpdate = false;
 	for (TerrainDefPointStore::const_iterator I = terrainPoints.begin(); I != terrainPoints.end(); ++I) {
-
-        Mercator::BasePoint bp;
-        if (mTerrain->getBasePoint(static_cast<int>(I->getPosition().x()), static_cast<int>(I->getPosition().y()), bp) && (I->getHeight() == bp.height())) {
+		Mercator::BasePoint bp;
+		if (mTerrain->getBasePoint(static_cast<int>(I->getPosition().x()), static_cast<int>(I->getPosition().y()), bp) && (I->getHeight() == bp.height())) {
 			S_LOG_VERBOSE( "Point [" << I->getPosition().x() << "," << I->getPosition().y() << " unchanged");
-            continue;
-        } else {
-        	wasUpdate = true;
+			continue;
+		} else {
+			wasUpdate = true;
 			S_LOG_VERBOSE( "Setting base point [" << I->getPosition().x() << "," << I->getPosition().y() << " to height " << I->getHeight());
-        }
-        bp.height() = I->getHeight();
-        /// FIXME Sort out roughness and falloff, and generally
-        /// verify this code is the same as that in Terrain layer
-        mTerrain->setBasePoint(static_cast<int>(I->getPosition().x()), static_cast<int>(I->getPosition().y()), bp);
-        mTerrainInfo->setBasePoint(I->getPosition(), bp);
+		}
+		bp.height() = I->getHeight();
+
+		/// FIXME Sort out roughness and falloff, and generally
+		/// verify this code is the same as that in Terrain layer
+		mTerrain->setBasePoint(static_cast<int>(I->getPosition().x()), static_cast<int>(I->getPosition().y()), bp);
+		mTerrainInfo->setBasePoint(I->getPosition(), bp);
 		updatedPositions.push_back(TerrainPosition(I->getPosition().x() * mTerrain->getResolution(), I->getPosition().y() * mTerrain->getResolution()));
 	}
-    mSegments = &mTerrain->getTerrain();
+	mSegments = &mTerrain->getTerrain();
 
 	buildHeightmap();
 
