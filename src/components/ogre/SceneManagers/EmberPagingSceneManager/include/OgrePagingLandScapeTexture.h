@@ -19,6 +19,7 @@
 #define PAGINGLandScapeTEXTURE_H
 
 #include "OgrePagingLandScapePrerequisites.h"
+#include <OgreGpuProgram.h>
 
 namespace Ogre
 {
