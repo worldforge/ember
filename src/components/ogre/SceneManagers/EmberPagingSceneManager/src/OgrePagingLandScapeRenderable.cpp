@@ -271,11 +271,11 @@ namespace Ogre
 		//}
         // case renderable was queued before page was unloaded
         // when loaded, page exists no more.
-        PagingLandScapeData2D *data = mParent->getSceneManager()->getData2DManager()->getData2D(mInfo->mPageX, mInfo->mPageZ);
+        PagingLandScapeData2D* data = mParent->getSceneManager()->getData2DManager()->getData2D(mInfo->mPageX, mInfo->mPageZ);
         // Page could be unloaded since renderable queued...
         if (data == 0 || !data->isLoaded())
             return false;
-        mHeightfield = data->getHeightData ();
+        mHeightfield = data->getHeightData();
         if (mHeightfield == 0)
             return false;
 
