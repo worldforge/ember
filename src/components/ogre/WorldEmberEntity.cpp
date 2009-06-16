@@ -44,7 +44,7 @@
 #include "AvatarCamera.h"
 #include "MathConverter.h"
 
-#include <Mercator/Area.h>
+#include <Mercator/Shader.h>
 #include <Mercator/FillShader.h>
 #include <Mercator/ThresholdShader.h>
 #include <Mercator/DepthShader.h>
