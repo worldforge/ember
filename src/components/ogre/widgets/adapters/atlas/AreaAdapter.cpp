@@ -25,13 +25,10 @@
 #endif
 
 #include "AreaAdapter.h"
-#include "components/ogre/terrain/TerrainArea.h"
 #include "components/ogre/terrain/TerrainAreaParser.h"
 #include "components/ogre/EmberOgre.h"
-#include "components/ogre/terrain/TerrainGenerator.h"
 #include "../../ColouredListItem.h"
 #include "components/ogre/manipulation/PolygonPointPickListener.h"
-#include "components/ogre/AvatarCamera.h"
 
 #include "PolygonAdapter.h"
 

@@ -63,7 +63,7 @@
 #include <elements/CEGUITree.h> 
 #include "framework/ConsoleBackend.h"
 
-#include "../terrain/TerrainGenerator.h"
+//#include "../terrain/TerrainGenerator.h"
 #include <Mercator/Area.h>
 
 namespace EmberOgre {
