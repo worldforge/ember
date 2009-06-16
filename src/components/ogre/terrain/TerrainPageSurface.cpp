@@ -88,7 +88,7 @@ const TerrainPosition& TerrainPageSurface::getWFPosition() const
 }
 
 
-SegmentVector& TerrainPageSurface::getValidSegments()
+const SegmentVector& TerrainPageSurface::getValidSegments() const
 {
 	return mTerrainPage.getValidSegments();
 }
@@ -104,7 +104,7 @@ unsigned int TerrainPageSurface::getPixelWidth() const
 	return mTerrainPage.getAlphaTextureSize();
 }
 
-Ogre::MaterialPtr TerrainPageSurface::getMaterial()
+const Ogre::MaterialPtr TerrainPageSurface::getMaterial() const
 {
 	return mMaterial;
 }

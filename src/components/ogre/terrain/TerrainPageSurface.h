@@ -23,12 +23,12 @@
 #ifndef EMBEROGRETERRAINPAGESURFACE_H
 #define EMBEROGRETERRAINPAGESURFACE_H
 
-#include <list>
 #include "../EmberOgrePrerequisites.h"
 #include "../Types.h"
 #include "TerrainPage.h"
 #include <OgreMaterial.h>
 
+#include <map>
 
 namespace Mercator
 {
@@ -64,7 +64,7 @@ public:
 	 */
 	const TerrainPosition& getWFPosition() const;
 
-	SegmentVector& getValidSegments();
+	const SegmentVector& getValidSegments() const;
 
 	/**
 	 *    The number of Mercator::Segments for each axis. I.e. the root of the total number of segments.
@@ -74,7 +74,7 @@ public:
 
 	TerrainPageSurfaceLayer* createSurfaceLayer(const TerrainLayerDefinition& definition, int surfaceIndex, Mercator::Shader* shader);
 
-	Ogre::MaterialPtr getMaterial();
+	const Ogre::MaterialPtr getMaterial() const;
 
 	/**
 	 * @brief Recompiles the material.
