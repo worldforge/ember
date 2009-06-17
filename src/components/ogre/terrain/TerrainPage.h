@@ -187,8 +187,6 @@ public:
 
 	void populateSurfaces();
 
-	void populateSurface(TerrainShader* shader);
-
 	int getPageSize() const;
 
 	void update();
