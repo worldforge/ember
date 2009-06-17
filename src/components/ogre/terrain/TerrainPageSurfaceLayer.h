@@ -105,7 +105,7 @@ public:
 	 * We only want to add surface layers which we know intersects the page, so always call this before adding a layer.
 	 * @return True if it intersects, else false.
 	 */
-	bool intersects();
+	bool intersects() const;
 
 	Mercator::Shader* getShader() const;
 	int getSurfaceIndex() const;

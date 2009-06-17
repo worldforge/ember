@@ -83,7 +83,7 @@ bool TerrainPageSurfaceLayer::unloadTexture()
 }
 
 
-bool TerrainPageSurfaceLayer::intersects()
+bool TerrainPageSurfaceLayer::intersects() const
 {
 	///check if at least one surface intersects
 	for (SegmentVector::const_iterator I = mTerrainPageSurface.getValidSegments().begin(); I != mTerrainPageSurface.getValidSegments().end(); ++I) {
