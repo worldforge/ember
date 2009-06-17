@@ -15,6 +15,7 @@ AC_LIBTOOL_DLOPEN
 AC_PREREQ(2.50)
 AC_COPYRIGHT([This script is under the GPL and is owned by the people in AUTHORS])
 
+AC_DISABLE_SHARED
 
 # Checks for Programs
 AC_PROG_CXX
