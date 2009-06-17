@@ -32,6 +32,7 @@
 #include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/Operation.h>
 
+#include <Eris/Account.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/Connection.h>
 
@@ -69,10 +70,11 @@ void Tasks::doSomething()
 
 	Atlas::Message::MapType args;
 	args["tasks"] = task_args;
+	args["id"] = EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity()->getId();
 
 	Atlas::Message::ListType sargsList(1, args);
 	s->setArgsAsList(sargsList);
-	s->setFrom(EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity()->getId());
+	s->setFrom(Ember::EmberServices::getSingleton().getServerService()->getAccount()->getId());
 
 	Ember::EmberServices::getSingleton().getServerService()->getConnection()->send(s);
 
