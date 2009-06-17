@@ -130,6 +130,8 @@ public:
 	 */
 	Eris::Connection* getConnection() const;
 
+	Eris::Account* getAccount();
+
 	/**
 	 *    Tells the server to try to move the user to the specified point.
 	 * @param dest
@@ -365,6 +367,11 @@ inline Eris::Connection* ServerService::getConnection() const
 {
 	return mConn;
 }
+inline Eris::Account* ServerService::getAccount()
+{
+	return mAccount;
+}
+
 
 } // namespace Ember
 
