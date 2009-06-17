@@ -55,14 +55,14 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 	fadeEnabled = false;
 	bbOrigin = BBO_CENTER;
 	subMesh = NULL;
-	
+
 	//Fall back to BB_METHOD_COMPATIBLE if vertex shaders are not available
 	if (renderMethod == BB_METHOD_ACCELERATED){
 		const RenderSystemCapabilities *caps = Root::getSingleton().getRenderSystem()->getCapabilities();
 		if (!caps->hasCapability(RSC_VERTEX_PROGRAM))
 			renderMethod = BB_METHOD_COMPATIBLE;
 	}
-	
+
 	node = rootSceneNode->createChildSceneNode();
 	entityName = getUniqueID("SBSentity");
 
@@ -72,14 +72,55 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 
 		uFactor = 1.0f;
 		vFactor = 1.0f;
-		
+
 		//Load vertex shader to align billboards to face the camera (if not loaded already)
 		if (++selfInstances == 1){
+			//We also need a fragment program to go with our vertex program. Especially on ATI cards on Linux where we can't mix shaders and the fixed function pipeline.
+			if (HighLevelGpuProgramManager::getSingleton().getByName("ImposterFragStandard").isNull()){
+				String fragmentProgSource = "void main \n"
+					"( \n"
+					"    float2				iTexcoord		: TEXCOORD0, \n"
+					"	 float				iFog 			: FOG, \n"
+					"	 out float4         oColour			: COLOR, \n"
+					"    uniform sampler2D  diffuseTexture	: TEXUNIT0, \n"
+					"    uniform float3		iFogColour \n"
+					") \n"
+					"{ \n"
+					"	oColour = tex2D(diffuseTexture, iTexcoord.xy); \n"
+					"   oColour.xyz = lerp(oColour.xyz, iFogColour, iFog);\n"
+					"}";
+
+				String shaderLanguage;
+				if (Root::getSingleton().getRenderSystem()->getName() == "Direct3D9 Rendering Subsystem")
+					shaderLanguage = "hlsl";
+				else
+					shaderLanguage = "cg";
+
+				HighLevelGpuProgramPtr fragShader = HighLevelGpuProgramManager::getSingleton().createProgram(
+					"BatchFrag",
+					ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+					shaderLanguage, GPT_FRAGMENT_PROGRAM);
+
+				fragShader->setSource(fragmentProgSource);
+
+				if (shaderLanguage == "hlsl")
+					fragShader->setParameter("target", "ps_2_0");
+				else
+					fragShader->setParameter("profiles", "ps_2_0 arbfp1");
+
+				fragShader->setParameter("entry_point", "main");
+				fragShader->load();
+				if (fragShader->hasCompileError()) {
+					OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, "Error loading the imposter fragment shader.", "StaticBillboardSet::StaticBillboardSet()");
+				}
+			}
+
+
 			//First shader, simple camera-alignment
 			HighLevelGpuProgramPtr vertexShader;
 			vertexShader = HighLevelGpuProgramManager::getSingleton().getByName("Sprite_vp");
 			if (vertexShader.isNull()){
-				String vertexProg = 
+				String vertexProg =
 					"void Sprite_vp(	\n"
 					"	float4 position : POSITION,	\n"
 					"	float3 normal   : NORMAL,	\n"
@@ -98,18 +139,18 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 					"	float4 vCenter = float4( position.x, position.y, position.z, 1.0f );	\n"
 					"	float4 vScale = float4( normal.x, normal.y, normal.x, 1.0f );	\n"
 					"	oPosition = mul( worldViewProj, vCenter + (preRotatedQuad[normal.z] * vScale) );  \n"
-					
+
 					//Color
 					"	oColor = color;   \n"
-					
+
 					//UV Scroll
 					"	oUv = uv;	\n"
 					"	oUv.x += uScroll; \n"
 					"	oUv.y += vScroll; \n"
-					
+
 					//Fog
 					"	oFog = oPosition.z; \n"
-					"}"; 
+					"}";
 
 				String shaderLanguage;
 				if (Root::getSingleton().getRenderSystem()->getName() == "Direct3D9 Rendering Subsystem")
@@ -131,12 +172,12 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 				vertexShader->setParameter("entry_point", "Sprite_vp");
 				vertexShader->load();
 			}
-			
+
 			//Second shader, camera alignment and distance based fading
 			HighLevelGpuProgramPtr vertexShader2;
 			vertexShader2 = HighLevelGpuProgramManager::getSingleton().getByName("SpriteFade_vp");
 			if (vertexShader2.isNull()){
-				String vertexProg2 = 
+				String vertexProg2 =
 					"void SpriteFade_vp(	\n"
 					"	float4 position : POSITION,	\n"
 					"	float3 normal   : NORMAL,	\n"
@@ -160,13 +201,13 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 					"	float4 vCenter = float4( position.x, position.y, position.z, 1.0f );	\n"
 					"	float4 vScale = float4( normal.x, normal.y, normal.x, 1.0f );	\n"
 					"	oPosition = mul( worldViewProj, vCenter + (preRotatedQuad[normal.z] * vScale) );  \n"
-					
+
 					"	oColor.rgb = color.rgb;   \n"
 
 					//Fade out in the distance
 					"	float dist = distance(camPos.xz, position.xz);	\n"
 					"	oColor.a = (invisibleDist - dist) / fadeGap;   \n"
-					
+
 					//UV scroll
 					"	oUv = uv;	\n"
 					"	oUv.x += uScroll; \n"
@@ -174,7 +215,7 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 
 					//Fog
 					"	oFog = oPosition.z; \n"
-					"}"; 
+					"}";
 
 				String shaderLanguage;
 				if (Root::getSingleton().getRenderSystem()->getName() == "Direct3D9 Rendering Subsystem")
@@ -243,7 +284,7 @@ void StaticBillboardSet::clear()
 			node->detachAllObjects();
 			sceneMgr->destroyEntity(entity);
 			entity = 0;
-			
+
 			//Delete mesh
 			assert(!mesh.isNull());
 			String meshName(mesh->getName());
@@ -276,7 +317,7 @@ void StaticBillboardSet::build()
 			node->detachAllObjects();
 			sceneMgr->destroyEntity(entity);
 			entity = 0;
-			
+
 			//Delete mesh
 			assert(!mesh.isNull());
 			String meshName(mesh->getName());
@@ -298,7 +339,7 @@ void StaticBillboardSet::build()
 		subMesh->vertexData = new VertexData;
 		subMesh->vertexData->vertexStart = 0;
 		subMesh->vertexData->vertexCount = 4 * billboardBuffer.size();
-		
+
 		VertexDeclaration* dcl = subMesh->vertexData->vertexDeclaration;
 		size_t offset = 0;
 		dcl->addElement(0, offset, VET_FLOAT3, VES_POSITION);
@@ -314,7 +355,7 @@ void StaticBillboardSet::build()
 		HardwareVertexBufferSharedPtr vbuf = HardwareBufferManager::getSingleton()
 											.createVertexBuffer(offset, subMesh->vertexData->vertexCount, HardwareBuffer::HBU_STATIC_WRITE_ONLY, false);
 		float* pReal = static_cast<float*>(vbuf->lock(HardwareBuffer::HBL_DISCARD));
-		
+
 		float minX = Math::POS_INFINITY, minY = Math::POS_INFINITY, minZ = Math::POS_INFINITY;
 		float maxX = Math::NEG_INFINITY, maxY = Math::NEG_INFINITY, maxZ = Math::NEG_INFINITY;
 
@@ -326,7 +367,7 @@ void StaticBillboardSet::build()
 			StaticBillboard *bb = (*i1);
 			float halfXScale = bb->xScale * 0.5f;
 			float halfYScale = bb->yScale * 0.5f;
-			
+
 			// position
 			*pReal++ = bb->position.x;
 			*pReal++ = bb->position.y;
@@ -340,7 +381,7 @@ void StaticBillboardSet::build()
 			// uv
 			*pReal++ = (bb->texcoordIndexU * uFactor);
 			*pReal++ = (bb->texcoordIndexV * vFactor);
-			
+
 			// position
 			*pReal++ = bb->position.x;
 			*pReal++ = bb->position.y;
@@ -382,7 +423,7 @@ void StaticBillboardSet::build()
 			// uv
 			*pReal++ = ((bb->texcoordIndexU + 1) * uFactor);
 			*pReal++ = ((bb->texcoordIndexV + 1) * vFactor);
-			
+
 			//Update bounding box
 			if (bb->position.x - halfXScale < minX) minX = bb->position.x - halfXScale;
 			if (bb->position.x + halfXScale > maxX) maxX = bb->position.x + halfXScale;
@@ -390,15 +431,15 @@ void StaticBillboardSet::build()
 			if (bb->position.y + halfYScale > maxY) maxY = bb->position.y + halfYScale;
 			if (bb->position.z - halfXScale < minZ) minZ = bb->position.z - halfXScale;
 			if (bb->position.z + halfXScale > maxZ) maxZ = bb->position.z + halfXScale;
-			
+
 			delete bb;
 			++i1;
 		}
 		AxisAlignedBox bounds(minX, minY, minZ, maxX, maxY, maxZ);
-		
+
 		vbuf->unlock();
 		subMesh->vertexData->vertexBufferBinding->setBinding(0, vbuf);
-		
+
 		//Populate index buffer
 		subMesh->indexData->indexStart = 0;
 		subMesh->indexData->indexCount = 6 * billboardBuffer.size();
@@ -417,7 +458,7 @@ void StaticBillboardSet::build()
 			*pI++ = 2 + offset;
 			*pI++ = 3 + offset;
 		}
-		
+
 		subMesh->indexData->indexBuffer->unlock();
 
 		//Finish up mesh
@@ -431,7 +472,7 @@ void StaticBillboardSet::build()
 
 		//Empty the billboardBuffer now, because all billboards have been built
 		billboardBuffer.clear();
-		
+
 		//Create an entity for the mesh
 		entity = sceneMgr->createEntity(entityName, mesh->getName());
 		entity->setCastShadows(false);
@@ -471,7 +512,7 @@ void StaticBillboardSet::setMaterial(const String &materialName)
 			} else {
 				SBMaterialRef::addMaterialRef(materialPtr, bbOrigin);
 			}
-			
+
 			//Apply material to entity
 			if (entity){
 				if (fadeEnabled){
@@ -507,7 +548,7 @@ void StaticBillboardSet::setFade(bool enabled, Real visibleDist, Real invisibleD
 
 			fadeMaterialPtr = getFadeMaterial(visibleDist, invisibleDist);
 			SBMaterialRef::addMaterialRef(fadeMaterialPtr, bbOrigin);
-			
+
 			//Apply material to entity
 			if (entity)
 				entity->setMaterialName(fadeMaterialPtr->getName());
@@ -522,7 +563,7 @@ void StaticBillboardSet::setFade(bool enabled, Real visibleDist, Real invisibleD
 				assert(!materialPtr.isNull());
 				SBMaterialRef::removeMaterialRef(fadeMaterialPtr);
 				SBMaterialRef::addMaterialRef(materialPtr, bbOrigin);
-				
+
 				//Apply material to entity
 				if (entity)
 					entity->setMaterialName(materialPtr->getName());
@@ -569,6 +610,7 @@ MaterialPtr StaticBillboardSet::getFadeMaterial(Real visibleDist, Real invisible
 
 				//Setup vertex program
 				pass->setVertexProgram("SpriteFade_vp");
+				pass->setFragmentProgram("ImposterFragStandard");
 				GpuProgramParametersSharedPtr params = pass->getVertexProgramParameters();
 				params->setNamedAutoConstant("worldViewProj", GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
 				params->setNamedAutoConstant("uScroll", GpuProgramParameters::ACT_CUSTOM);
@@ -585,7 +627,7 @@ MaterialPtr StaticBillboardSet::getFadeMaterial(Real visibleDist, Real invisible
 				//Set fade ranges
 				params->setNamedConstant("invisibleDist", invisibleDist);
 				params->setNamedConstant("fadeGap", invisibleDist - visibleDist);
-				
+
 				pass->setSceneBlending(SBT_TRANSPARENT_ALPHA);
 				//pass->setAlphaRejectFunction(CMPF_ALWAYS_PASS);
 				//pass->setDepthWriteEnabled(false);
@@ -608,7 +650,7 @@ void StaticBillboardSet::updateAll(const Vector3 &cameraDirection)
 		Vector3 vUp = forward.crossProduct(vRight);
 		vRight.normalise();
 		vUp.normalise();
-		
+
 		//Even if camera is upside down, the billboards should remain upright
 		if (vUp.y < 0) vUp *= -1;
 
@@ -646,6 +688,7 @@ void StaticBillboardSet::updateAll(const Vector3 &cameraDirection)
 			Pass *p = mat->getTechnique(0)->getPass(0);
 			if(!p->hasVertexProgram()){
 				p->setVertexProgram("Sprite_vp");
+				p->setFragmentProgram("ImposterFragStandard");
 				p->getVertexProgramParameters()->setNamedAutoConstant("worldViewProj", GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
 				p->getVertexProgramParameters()->setNamedAutoConstant("uScroll", GpuProgramParameters::ACT_CUSTOM);
 				p->getVertexProgramParameters()->setNamedAutoConstant("vScroll", GpuProgramParameters::ACT_CUSTOM);
@@ -654,7 +697,7 @@ void StaticBillboardSet::updateAll(const Vector3 &cameraDirection)
 				p->getVertexProgramParameters()->setNamedAutoConstant("preRotatedQuad[2]", GpuProgramParameters::ACT_CUSTOM);
 				p->getVertexProgramParameters()->setNamedAutoConstant("preRotatedQuad[3]", GpuProgramParameters::ACT_CUSTOM);
 			}
-			
+
 			//Update the vertex shader parameters
 			GpuProgramParametersSharedPtr params = p->getVertexProgramParameters();
 			params->setNamedConstant("preRotatedQuad[0]", preRotatedQuad, 4);
