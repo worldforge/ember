@@ -75,8 +75,9 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 
 		//Load vertex shader to align billboards to face the camera (if not loaded already)
 		if (++selfInstances == 1){
+			const std::string fragmentProgramName("ImposterFragStandard");
 			//We also need a fragment program to go with our vertex program. Especially on ATI cards on Linux where we can't mix shaders and the fixed function pipeline.
-			if (HighLevelGpuProgramManager::getSingleton().getByName("ImposterFragStandard").isNull()){
+			if (HighLevelGpuProgramManager::getSingleton().getByName(fragmentProgramName).isNull()){
 				String fragmentProgSource = "void main \n"
 					"( \n"
 					"    float2				iTexcoord		: TEXCOORD0, \n"
@@ -97,7 +98,7 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 					shaderLanguage = "cg";
 
 				HighLevelGpuProgramPtr fragShader = HighLevelGpuProgramManager::getSingleton().createProgram(
-					"BatchFrag",
+					fragmentProgramName,
 					ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
 					shaderLanguage, GPT_FRAGMENT_PROGRAM);
 
