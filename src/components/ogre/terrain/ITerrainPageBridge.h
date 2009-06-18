@@ -41,8 +41,14 @@ class ITerrainPageBridge
 {
 friend class TerrainPage;
 public:
+	/**
+	 *    @brief Ctor.
+	 */
 	ITerrainPageBridge() : mTerrainPage(0) {}
-	virtual ~ITerrainPageBridge() {};
+	/**
+	 *    @brief Ctor.
+	 */
+	virtual ~ITerrainPageBridge() {}
 	
 	
 	/**
