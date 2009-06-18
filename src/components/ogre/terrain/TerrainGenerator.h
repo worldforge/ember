@@ -456,8 +456,6 @@ protected:
 	
 	Ogre::Real mHeightMax, mHeightMin;
 	
-	const std::map<int, std::map<int, Mercator::Segment*> >* mSegments;
-	
 	/**
 	 * the min and max indices for segments
 	 */

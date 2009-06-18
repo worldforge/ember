@@ -74,8 +74,6 @@
     #include <io.h> // for _access, Win32 version of stat()
     #include <direct.h> // for _mkdir
 #endif
-#include "framework/ConsoleBackend.h"
-#include "framework/Tokeniser.h"
 
 #include <limits>
 
@@ -101,7 +99,6 @@ mTerrainInfo(new TerrainInfo()),
 mTerrain(0),
 mHeightMax(std::numeric_limits<Ogre::Real>::min()),
 mHeightMin(std::numeric_limits<Ogre::Real>::max()),
-mSegments(0),
 mHasTerrainInfo(false),
 mSceneManagerAdapter(0),
 mFoliageBatchSize(32)
@@ -444,10 +441,9 @@ void TerrainGenerator::buildHeightmap()
 	///initialize all terrain here, since we need to do that in order to get the correct height for placement even though the terrain might not show up in the SceneManager yet
 
 	///note that we want to use int's here, since a call to getSegment(float, float) is very much different from a call to getSegment(int, int)
-	int i,j;
 	const WFMath::AxisBox<2>& segmentBbox = mTerrainInfo->getWorldSizeInSegments();
-	for (i = static_cast<int>(segmentBbox.lowCorner().x()); i < segmentBbox.highCorner().x(); ++i) {
-		for (j = static_cast<int>(segmentBbox.lowCorner().y()); j < segmentBbox.highCorner().y(); ++j) {
+	for (int i = static_cast<int>(segmentBbox.lowCorner().x()); i < segmentBbox.highCorner().x(); ++i) {
+		for (int j = static_cast<int>(segmentBbox.lowCorner().y()); j < segmentBbox.highCorner().y(); ++j) {
 			Mercator::Segment* segment = mTerrain->getSegment(i, j);
 			if (segment) {
 				//S_LOG_VERBOSE("Preparing segment at position: x=" << i << " y=" << j );
@@ -459,8 +455,6 @@ void TerrainGenerator::buildHeightmap()
 			}
 		}
 	}
-
-
 }
 
 // void TerrainGenerator::createShaders(WorldEmberEntity* worldEntity)
@@ -641,26 +635,20 @@ bool TerrainGenerator::isFoliageShown() const
 
 float TerrainGenerator::getHeight(const TerrainPosition& point) const
 {
-
-	float height = 0;
-	WFMath::Vector<3> vector;
-
-	bool success = mTerrain->getHeightAndNormal(point.x(), point.y(), height, vector);
-	if (success) {
+	float height = mTerrain->get(point.x(), point.y());
+	if (height == Mercator::Terrain::defaultLevel) {
+		///make undefined ground be one meter below the water
+		return -1.0f;
+	} else {
 		return height;
 	}
-
-///make undefined ground be one meter below the water
-	return -1;
-
 }
 
 void TerrainGenerator::updateShadows()
 {
 	Ogre::Vector3 sunDirection = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection();
 
-	PageStore::iterator I = mPages.begin();
-	for(;I != mPages.end(); ++I) {
+	for (PageStore::iterator I = mPages.begin(); I != mPages.end(); ++I) {
 		I->second->updateShadow(sunDirection);
 	}
 }
@@ -687,7 +675,6 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 		mTerrainInfo->setBasePoint(I->getPosition(), bp);
 		updatedPositions.push_back(TerrainPosition(I->getPosition().x() * mTerrain->getResolution(), I->getPosition().y() * mTerrain->getResolution()));
 	}
-	mSegments = &mTerrain->getTerrain();
 
 	buildHeightmap();
 
@@ -712,7 +699,6 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 			reloadTerrain(updatedPositions);
 		}
 	}
-
 
 	return true;
 }
