@@ -132,16 +132,16 @@ const Mercator::Segment* TerrainPage::getSegmentAtLocalPosition(const TerrainPos
 {
 	int ix = I_ROUND(floor(pos.x() / 64));
 	int iy = I_ROUND(floor(pos.y() / 64));
-    
-    Mercator::Terrain::Segmentstore::const_iterator I = mLocalSegments.find(ix);
-    if (I == mLocalSegments.end()) {
-        return 0;
-    }
-    Mercator::Terrain::Segmentcolumn::const_iterator J = I->second.find(iy);
-    if (J == I->second.end()) {
-        return 0;
-    }
-    return J->second;
+
+	Mercator::Terrain::Segmentstore::const_iterator I = mLocalSegments.find(ix);
+	if (I == mLocalSegments.end()) {
+		return 0;
+	}
+	Mercator::Terrain::Segmentcolumn::const_iterator J = I->second.find(iy);
+	if (J == I->second.end()) {
+		return 0;
+	}
+	return J->second;
 }
 
 const Mercator::Segment* TerrainPage::getSegmentAtLocalPosition(const TerrainPosition& pos, TerrainPosition& localPositionInSegment) const
@@ -151,18 +151,17 @@ const Mercator::Segment* TerrainPage::getSegmentAtLocalPosition(const TerrainPos
 	
 	localPositionInSegment.x() = pos.x() - (ix * 64);
 	localPositionInSegment.y() = pos.y() - (iy * 64);
-    
-    Mercator::Terrain::Segmentstore::const_iterator I = mLocalSegments.find(ix);
-    if (I == mLocalSegments.end()) {
-        return 0;
-    }
-    Mercator::Terrain::Segmentcolumn::const_iterator J = I->second.find(iy);
-    if (J == I->second.end()) {
-        return 0;
-    }
-    return J->second;	
-}
 
+	Mercator::Terrain::Segmentstore::const_iterator I = mLocalSegments.find(ix);
+	if (I == mLocalSegments.end()) {
+		return 0;
+	}
+	Mercator::Terrain::Segmentcolumn::const_iterator J = I->second.find(iy);
+	if (J == I->second.end()) {
+		return 0;
+	}
+	return J->second;
+}
 
 int TerrainPage::getPageSize() const 
 {
@@ -177,7 +176,7 @@ int TerrainPage::getNumberOfSegmentsPerAxis() const
 	
 float TerrainPage::getMaxHeight() const
 {
-	float max = -std::numeric_limits<float>::max();
+	float max = std::numeric_limits<float>::min();
 	for (SegmentVector::const_iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
 		max = std::max<float>(max, I->segment->getMax());
 	}
@@ -230,8 +229,8 @@ void TerrainPage::updateShadow(const Ogre::Vector3& lightDirection)
 }
 
 
-Ogre::MaterialPtr TerrainPage::generateTerrainMaterials(bool reselectTechnique) {
-
+Ogre::MaterialPtr TerrainPage::generateTerrainMaterials(bool reselectTechnique)
+{
 	mTerrainSurface->recompileMaterial(reselectTechnique);
 	return mTerrainSurface->getMaterial();
 }
@@ -240,7 +239,6 @@ const SegmentVector& TerrainPage::getValidSegments() const
 {
 	return mValidSegments;
 }
-
 
 long TerrainPage::getVerticeCount() const
 {
@@ -251,7 +249,6 @@ const TerrainPosition& TerrainPage::getWFPosition() const
 {
 	return mPosition;
 }
-
 
 const Ogre::MaterialPtr TerrainPage::getMaterial() const
 {
