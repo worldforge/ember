@@ -57,7 +57,7 @@ bool EmberPagingLandScapeData2D_HeightField::_load(unsigned int x, unsigned int 
 // 	assert(!mTerrainPage);
 	assert(!mHeightData);
 	assert(!mBridge);
-	Terrain::TerrainGenerator* terrainGenerator = EmberOgre::getSingleton().getTerrainGenerator();
+	const Terrain::TerrainGenerator* terrainGenerator = EmberOgre::getSingleton().getTerrainGenerator();
 	mXDimension = mZDimension = terrainGenerator->getPageIndexSize();
 
 	mMaxArrayPos = mSize * mSize;
@@ -67,8 +67,8 @@ bool EmberPagingLandScapeData2D_HeightField::_load(unsigned int x, unsigned int 
 	assert(terrainPage);
 	mBridge = new EmberTerrainPageBridge(*this);
 	terrainPage->registerBridge(mBridge);
-	mBridge->updateTerrain();	
-	
+	mBridge->updateTerrain();
+
 /*	mTerrainPage->bindToOgreHeightData(mHeightData);
 	mTerrainPage->updateOgreHeightData();*/
 	
@@ -188,4 +188,4 @@ Ogre::Real EmberPagingLandScapeData2D_HeightField::getMaxAbsoluteHeight() const
 
 
 
-};
+}
