@@ -1,20 +1,20 @@
 #! /bin/sh
 
 #automates the creation of the needed media
-#usage: ./make_dist_media.sh <local directory> <image pixel max with/height>
+#usage: ./make_dist_media.sh <media svn directory> <local directory> <image pixel max with/height>
 #example: ./make_dist_media.sh media-dev 256
 #note that the script must be run in the ember source root dir
 
 current=${PWD}
-media_dir=${current}/$1
-textureSize=$2
-original_media=${PWD}/media
+original_media=$1
+media_dir=$2
+textureSize=$3
 user_dir=${media_dir}/media/user
 shared_dir=${media_dir}/media/shared
 
-srcdir=${PWD}/src
+srcdir=${PWD}
 
-ogre_dir=${original_media}/common/resources/ogre
+ogre_dir=${original_media}/resources/ogre
 script_dir=${ogre_dir}/scripts
 material_dir=${script_dir}/materials
 overlay_dir=${script_dir}/overlays
@@ -35,9 +35,9 @@ grep -rIE --no-filename "^[^/].*set_texture_alias DiffuseMap "  ${material_dir}/
 # grep -rIE --no-filename "^[^/].*set_texture_alias NormalMap 3d"  ${original_media}/materials/scripts/*.material | sed -e 's/set_texture_alias NormalMap 3d_/3d_/g' >> common_textures.list
 grep -rIE --no-filename "^[^/].*set_texture_alias NormalHeightMap "  ${material_dir}/*.material | sed -e 's/set_texture_alias NormalHeightMap //g' >> common_textures.list
 grep -rIE --no-filename "^[^/].*set_texture_alias SpecularMap "  ${material_dir}/*.material | sed -e 's/set_texture_alias SpecularMap //g' >> common_textures.list
-grep -orIE --no-filename "icon=\"[^\"]*\"" ${original_media}/modeldefinitions/*.modeldef | sed -e 's/icon=\"//g' | sed -e 's/\"//g' >> common_textures.list
-grep -orIE --no-filename "diffusetexture=\"[^\"]*\"" ${original_media}/modeldefinitions/*.terrain | sed -e 's/diffusetexture=\"//g' | sed -e 's/\"//g' >> common_textures.list
-grep -orIE --no-filename "normalmaptexture=\"[^\"]*\"" ${original_media}/modeldefinitions/*.terrain | sed -e 's/normalmaptexture=\"//g' | sed -e 's/\"//g' >> common_textures.list
+grep -orIE --no-filename "icon=\"[^\"]*\"" ${srcdir}/src/components/ogre/modeldefinitions/*.modeldef | sed -e 's/icon=\"//g' | sed -e 's/\"//g' >> common_textures.list
+grep -orIE --no-filename "diffusetexture=\"[^\"]*\"" ${srcdir}/src/components/ogre/modeldefinitions/*.terrain | sed -e 's/diffusetexture=\"//g' | sed -e 's/\"//g' >> common_textures.list
+grep -orIE --no-filename "normalmaptexture=\"[^\"]*\"" ${srcdir}/src/components/ogre/modeldefinitions/*.terrain | sed -e 's/normalmaptexture=\"//g' | sed -e 's/\"//g' >> common_textures.list
 
 #remove all duplicates
 sort --unique common_textures.list > common_textures_cleaned.list
@@ -49,7 +49,7 @@ sort --unique common_textures.list > common_textures_cleaned.list
 echo "Converting images"
 for filename in `cat ${shared_dir}/common_textures_cleaned.list `
 do
-	origfile="${original_media}/common/${filename}"
+	origfile="${original_media}/${filename}"
 	newfile="${shared_dir}/common/${filename}"
 	if [ ! -e $origfile ]
 	then
@@ -75,11 +75,11 @@ done
 #copy all meshes in use
 echo "Copying meshes"
 cd ${shared_dir}
-grep -orIE --no-filename "mesh=\"[^\"]*\"" ${original_media}/modeldefinitions/*.modeldef | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' > ${shared_dir}/common_meshes.list
+grep -orIE --no-filename "mesh=\"[^\"]*\"" ${srcdir}/src/components/ogre/modeldefinitions/*.modeldef | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' > ${shared_dir}/common_meshes.list
 # grep -orIE --no-filename "mesh=\"junk[^\"]*\"" ${original_media}/modeldefinitions/*.modeldef | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> ${shared_dir}/common_meshes.list
-grep -orIE --no-filename "mesh=\"[^\"]*\"" ${original_media}/modeldefinitions/*.modeldef.xml | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> ${shared_dir}/common_meshes.list
+grep -orIE --no-filename "mesh=\"[^\"]*\"" ${srcdir}/src/components/ogre/modeldefinitions/*.modeldef.xml | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> ${shared_dir}/common_meshes.list
 # grep -orIE --no-filename "mesh=\"junk[^\"]*\"" ${original_media}/modeldefinitions/*.modeldef.xml | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> ${shared_dir}/common_meshes.list
-cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_meshes.list ` | ( cd ${shared_dir}/common; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${original_media} ; tar cf - `cat ${shared_dir}/common_meshes.list ` | ( cd ${shared_dir}/common; tar --keep-newer-files -xvf -) 2>  /dev/null
 # exit
 # mkdir -p ${shared_dir}/models
 # cd ${original_media}/models ; tar cf - `find -L . -iname \*.mesh` | ( cd ${shared_dir}/models; tar --keep-newer-files -xvf -) 2>  /dev/null
@@ -87,8 +87,8 @@ cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_meshes.list ` |
 
 echo "Copying skeletons"
 #just copy all skeletons, since the method involving meshmagick can't resolve the correct file name when using relative skeleton names
-cd ${original_media}/common/3d_objects ; tar cf - `find -L . -iname \*.skeleton` | ( cd ${shared_dir}/common/3d_objects; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${original_media}/common/3d_skeletons ; tar cf - `find -L . -iname \*.skeleton` | ( cd ${shared_dir}/common/3d_skeletons; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${original_media}/3d_objects ; tar cf - `find -L . -iname \*.skeleton` | ( cd ${shared_dir}/common/3d_objects; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${original_media}/3d_skeletons ; tar cf - `find -L . -iname \*.skeleton` | ( cd ${shared_dir}/common/3d_skeletons; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 # #use meshmagick to figure out the needed skeletons
 # for filename in `find ${shared_dir}/common -name "*.mesh"`
@@ -103,13 +103,13 @@ cd ${original_media}/common/3d_skeletons ; tar cf - `find -L . -iname \*.skeleto
 #copy all sounds in use
 echo "Copying sounds"
 cd ${shared_dir}
-grep -orIE --no-filename "filename=\"[^\"]*\"" ${original_media}/sounddefinitions/*.sounddef | sed -e 's/filename=\"//g' | sed -e 's/\"//g' > ${shared_dir}/common_sounds.list
-cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_sounds.list ` | ( cd ${shared_dir}/common; tar --keep-newer-files -xvf -) 2>  /dev/null
+grep -orIE --no-filename "filename=\"[^\"]*\"" ${srcdir}/src/components/ogre/sounddefinitions/*.sounddef | sed -e 's/filename=\"//g' | sed -e 's/\"//g' > ${shared_dir}/common_sounds.list
+cd ${original_media} ; tar cf - `cat ${shared_dir}/common_sounds.list ` | ( cd ${shared_dir}/common; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 
 cd ${shared_dir}
-cp -a ${original_media}/common/LICENSING.txt .
-cp -a ${original_media}/common/COPYING.txt .
+cp -a ${original_media}/LICENSING.txt .
+cp -a ${original_media}/COPYING.txt .
 
 # echo "Copying sounds"
 # mkdir -p ${shared_dir}/sounds
@@ -118,8 +118,8 @@ cp -a ${original_media}/common/COPYING.txt .
 
 echo "Copying gui files"
 cd ${shared_dir}
-grep -orIE --no-filename "Imagefile=\"[^\"]*\"" ${srcdir}/components/ogre/cegui/datafiles/imagesets/*.imageset | sed -e 's/Imagefile=\"//g' | sed -e 's/\"//g' > ${shared_dir}/media_textures.list
-cd ${original_media}/common/ ; tar cf - `cat ${shared_dir}/media_textures.list ` | ( cd ${shared_dir}/common; tar --keep-newer-files -xvf -) 2>  /dev/null
+grep -orIE --no-filename "Imagefile=\"[^\"]*\"" ${srcdir}/src/components/ogre/cegui/datafiles/imagesets/*.imageset | sed -e 's/Imagefile=\"//g' | sed -e 's/\"//g' > ${shared_dir}/media_textures.list
+cd ${original_media} ; tar cf - `cat ${shared_dir}/media_textures.list ` | ( cd ${shared_dir}/common; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 
 echo "Copying shared media packs"
@@ -129,7 +129,7 @@ cd ${original_media} ; tar cf - `cat ${shared_dir}/shared_packs.list ` | ( cd ${
 
 echo "Copy fonts"
 mkdir -p ${shared_dir}/common/themes/ember/gui/fonts
-cp -a ${original_media}/common/themes/ember/gui/fonts/* ${shared_dir}/common/themes/ember/gui/fonts
+cp -a ${original_media}/themes/ember/gui/fonts/* ${shared_dir}/common/themes/ember/gui/fonts
 
 echo "Copying materials"
 shared_ogre_dir=${shared_dir}/common/resources/ogre
@@ -157,15 +157,15 @@ cd ${ogre_dir}/textures ; tar cf - `find . -iname \*.jpg` | ( cd ${shared_ogre_d
 
 echo "Copying core files"
 mkdir -p ${shared_dir}/core
-for filename in `cat ${original_media}/core/EmberCore.files `
+for filename in `cat ${srcdir}/media/core/EmberCore.files `
 do
-	cp -uf ${original_media}/common/${filename} ${shared_dir}/core
+	cp -uf ${original_media}/${filename} ${shared_dir}/core
 done
 
 echo "Copying Caelum files"
 #don't include any hidden directories since they are subversion directories
 mkdir -p ${shared_dir}/common/resources/ogre/caelum
-cd ${original_media}/common/resources/ogre/caelum
+cd ${original_media}/resources/ogre/caelum
 for filename in `find . ! -regex '.*/\..*' `
 do
 	echo $filename
@@ -227,9 +227,9 @@ cd ${user_dir}
 
 
 cd ${user_dir}
-cp -a ${original_media}/README .
-cp -a ${original_media}/common/LICENSING.txt .
-cp -a ${original_media}/common/COPYING.txt .
+cp -a ${srcdir}/media/README .
+cp -a ${original_media}/LICENSING.txt .
+cp -a ${original_media}/COPYING.txt .
 
 echo "Cleanup"
 rm -f ${shared_dir}/common_textures.list
