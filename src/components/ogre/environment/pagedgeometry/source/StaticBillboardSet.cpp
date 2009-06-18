@@ -112,7 +112,7 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 				fragShader->setParameter("entry_point", "main");
 				fragShader->load();
 				if (fragShader->hasCompileError()) {
-					OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, "Error loading the imposter fragment shader.", "StaticBillboardSet::StaticBillboardSet()");
+					Ogre::LogManager::getSingleton().getDefaultLog()->logMessage("Error loading the billboard fragment shader.");
 				}
 			}
 
@@ -172,6 +172,9 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 
 				vertexShader->setParameter("entry_point", "Sprite_vp");
 				vertexShader->load();
+				if (vertexShader->hasCompileError()) {
+					Ogre::LogManager::getSingleton().getDefaultLog()->logMessage("Error loading the billboard vertex shader.");
+				}
 			}
 
 			//Second shader, camera alignment and distance based fading
@@ -237,6 +240,9 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 
 				vertexShader2->setParameter("entry_point", "SpriteFade_vp");
 				vertexShader2->load();
+				if (vertexShader2->hasCompileError()) {
+					Ogre::LogManager::getSingleton().getDefaultLog()->logMessage("Error loading the billboard vertex shader.");
+				}
 			}
 
 		}
@@ -613,6 +619,7 @@ MaterialPtr StaticBillboardSet::getFadeMaterial(Real visibleDist, Real invisible
 				pass->setVertexProgram("SpriteFade_vp");
 				pass->setFragmentProgram("ImposterFragStandard");
 				GpuProgramParametersSharedPtr params = pass->getVertexProgramParameters();
+				params->setIgnoreMissingParams(true);
 				params->setNamedAutoConstant("worldViewProj", GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
 				params->setNamedAutoConstant("uScroll", GpuProgramParameters::ACT_CUSTOM);
 				params->setNamedAutoConstant("vScroll", GpuProgramParameters::ACT_CUSTOM);
@@ -632,6 +639,11 @@ MaterialPtr StaticBillboardSet::getFadeMaterial(Real visibleDist, Real invisible
 				pass->setSceneBlending(SBT_TRANSPARENT_ALPHA);
 				//pass->setAlphaRejectFunction(CMPF_ALWAYS_PASS);
 				//pass->setDepthWriteEnabled(false);
+
+				params = pass->getFragmentProgramParameters();
+				params->setIgnoreMissingParams(true);
+				params->setNamedAutoConstant("iFogColour", GpuProgramParameters::ACT_FOG_COLOUR);
+
 			}
 		}
 
