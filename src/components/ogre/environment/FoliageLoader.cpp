@@ -68,10 +68,10 @@ void FoliageLoader::loadPage(::PagedGeometry::PageInfo &page)
 	///make these static for fast lookup
 	static Ogre::Vector2 pos2D;
 	static Ogre::ColourValue colour(1,1,1,1);
-	static Terrain::TerrainGenerator* terrainGenerator(EmberOgre::getSingleton().getTerrainGenerator());
+	static const Terrain::TerrainGenerator* terrainGenerator(EmberOgre::getSingleton().getTerrainGenerator());
 
 	TerrainPosition wfPos(Ogre2Atlas_TerrainPosition(page.centerPoint));
-	TerrainPage* terrainPage = terrainGenerator->getTerrainPageAtPosition(wfPos);
+	const TerrainPage* terrainPage = terrainGenerator->getTerrainPageAtPosition(wfPos);
 	if (terrainPage) {
 		Ogre::TRect<float> ogrePageExtent = Atlas2Ogre(terrainPage->getExtent());
 		Ogre::TRect<float> adjustedBounds = Ogre::TRect<float>(page.bounds.left - ogrePageExtent.left, page.bounds.top - ogrePageExtent.top, page.bounds.right - ogrePageExtent.left, page.bounds.bottom - ogrePageExtent.top);

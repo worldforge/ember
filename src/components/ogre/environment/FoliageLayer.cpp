@@ -121,7 +121,7 @@ Ogre::uint32 FoliageLayer::getColorAt(float x, float z)
 	///make these static for fast lookup
 	static Ogre::Vector2 pos;
 	static Ogre::uint32 colour;
-	static Terrain::TerrainGenerator* terrainGenerator(EmberOgre::getSingleton().getTerrainGenerator());
+	static const Terrain::TerrainGenerator* terrainGenerator(EmberOgre::getSingleton().getTerrainGenerator());
 	pos.x = x;
 	pos.y = z;
 	terrainGenerator->getShadowColourAt(pos, colour);

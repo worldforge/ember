@@ -53,7 +53,7 @@ EntityPolygonPositionProvider::EntityPolygonPositionProvider(EmberEntity& entity
 float EntityPolygonPositionProvider::getHeightForPosition(const WFMath::Point<2>& localPosition)
 {
 	///TODO: refactor into a better structure, so that we don't have to know about the terrain
-	::EmberOgre::Terrain::TerrainGenerator* terrain = EmberOgre::getSingleton().getTerrainGenerator();
+	const ::EmberOgre::Terrain::TerrainGenerator* terrain = EmberOgre::getSingleton().getTerrainGenerator();
 	if (terrain) {
 		Ogre::Vector3 parentPos = mEntity.getSceneNode()->_getDerivedPosition();
 		Ogre::Vector3 localPos(localPosition.x(), 0, -localPosition.y());
