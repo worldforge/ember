@@ -103,16 +103,9 @@ public:
 
 	/**
 	 *    The max height of this page
-	 * @return
+	 * @return Max height
 	 */
 	float getMaxHeight() const;
-
-	/**
-	 *    The minimum height of this page
-	 * @return
-	 */
-	float getMinHeight() const;
-
 
 	/**
 	 * @brief Generates the terrain materials needed.
@@ -128,9 +121,9 @@ public:
 
 	/**
 	 *    The total number of vertices used for this page
-	 * @return
+	 * @return Number of vertices
 	 */
-	long getVerticeCount() const;
+	int getVerticeCount() const;
 
 	/**
 	 *    The position of the page in Worldforge space
