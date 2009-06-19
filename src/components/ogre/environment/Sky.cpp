@@ -25,9 +25,7 @@
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 #include "../EmberOgre.h"
-#include "../terrain/TerrainGenerator.h"
 #include "framework/Tokeniser.h"
-#include "../AvatarCamera.h"
 
 
 
@@ -41,26 +39,22 @@ namespace EmberOgre {
 
 namespace Environment {
 
-Sky::Sky(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
-{
 
-	createSimpleSky(camera, sceneMgr);
+Sky::Sky(Ogre::SceneManager* sceneMgr)
+{
+	createSimpleSky(sceneMgr);
 
 	updateFogValuesFromConfig();
 	Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &Sky::ConfigService_EventChangedConfigItem));
 }
 
-
-void Sky::createSimpleSky(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr) {
-  sceneMgr->setSkyBox(true, "/global/environment/sky/day", 253);
-
-  updateFogValuesFromConfig();
-  Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &Sky::ConfigService_EventChangedConfigItem));
-}
-
-
 Sky::~Sky()
 {
+}
+
+void Sky::createSimpleSky(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr)
+{
+	sceneMgr->setSkyBox(true, "/global/environment/sky/day", 253);
 }
 
 void Sky::updateFogValuesFromConfig()
@@ -68,16 +62,17 @@ void Sky::updateFogValuesFromConfig()
 	Ogre::ColourValue fadeColour(0.9,0.9,0.9);
 	float fogstartDistance = 96; //default for fog
 	float fogmaxDistance = 256; //default for fog gradient endind (i.e. where the fog is at 100%)
-	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("graphics", "fogstart")) {
-		fogstartDistance = static_cast<double>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("graphics", "fogstart"));
+	const ConfigService* cfgService = Ember::EmberServices::getSingletonPtr()->getConfigService();
+	if (cfgService->itemExists("graphics", "fogstart")) {
+		fogstartDistance = static_cast<double>(cfgService->getValue("graphics", "fogstart"));
 	}
-	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("graphics", "fogmax")) {
-		fogmaxDistance = static_cast<double>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("graphics", "fogmax"));
+	if (cfgService->itemExists("graphics", "fogmax")) {
+		fogmaxDistance = static_cast<double>(cfgService->getValue("graphics", "fogmax"));
 	}
-	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("graphics", "fogcolour")) {
-		varconf::Variable var = Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("graphics", "fogcolour");
+	if (cfgService->itemExists("graphics", "fogcolour")) {
+		varconf::Variable var = cfgService->getValue("graphics", "fogcolour");
 		std::string stringValue(var);
-		
+
 		Ember::Tokeniser tokeniser;
 		tokeniser.initTokens(stringValue);
 		std::string r = tokeniser.nextToken();
@@ -101,14 +96,11 @@ void Sky::ConfigService_EventChangedConfigItem(const std::string& section, const
 	}
 }
 
-void Sky::setFogValues(float start, float end, Ogre::ColourValue colour) 
+void Sky::setFogValues(float start, float end, const Ogre::ColourValue& colour) 
 {
 	Ogre::SceneManager* sceneMgr = EmberOgre::getSingleton().getSceneManager();
-	sceneMgr->setFog( Ogre::FOG_LINEAR, colour, .001, start, end);
+	sceneMgr->setFog(Ogre::FOG_LINEAR, colour, .001, start, end);
 	
-//	EmberOgre::getSingleton().getTerrainGenerator()->getTerrainOptions().fogEnd = fogendDistance * fogendDistance;
-
-  
   	try {
 		//set up values for the splatting shader and the linear fog shader
 		Ogre::HighLevelGpuProgramPtr splatProgram = Ogre::HighLevelGpuProgramManager::getSingleton().getByName("splat_cg");

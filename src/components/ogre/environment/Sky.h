@@ -25,15 +25,13 @@
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 
-// ------------------------------
-// Include sigc header files
-// ------------------------------
-// #include <sigc++/object.h>
-// #include <sigc++/connection.h>
 #include <sigc++/trackable.h>
 
-#include <OgreColourValue.h>
 
+namespace Ogre {
+	class ColourValue;
+	class SceneManager;
+}
 
 namespace EmberOgre {
 
@@ -43,18 +41,20 @@ namespace Environment {
 /**
 @author Erik Hjortsberg
 */
-class Sky:  public sigc::trackable
+class Sky : public sigc::trackable
 {
 public:
-    Sky(::Ogre::Camera* camera, Ogre::SceneManager* sceneMgr);
+	Sky(Ogre::SceneManager* sceneMgr);
 
-    ~Sky();
-	void updateFogValuesFromConfig();
+	~Sky();
 private:
-	
-	void createSimpleSky(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr);	
-	
-	void setFogValues(float start, float end, Ogre::ColourValue colour);
+
+	void createSimpleSky(Ogre::SceneManager* sceneMgr);	
+
+	void updateFogValuesFromConfig();
+
+	void setFogValues(float start, float end, const Ogre::ColourValue& colour);
+
 	void ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key);
 
 };
