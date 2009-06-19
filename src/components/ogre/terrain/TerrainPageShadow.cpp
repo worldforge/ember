@@ -27,7 +27,6 @@
 #include "TerrainPageShadow.h"
 
 #include "TerrainPage.h"
-#include "TerrainGenerator.h"
 #include "../MathConverter.h"
 
 #include <OgreColourValue.h>
@@ -42,7 +41,7 @@ namespace EmberOgre {
 namespace Terrain {
 
 
-void SimpleTerrainPageShadowTechnique::createShadowData(TerrainPage& page, TerrainGenerator* generator, unsigned char* data, const Ogre::Vector3& lightDirection, const Ogre::ColourValue& lightColour)
+void SimpleTerrainPageShadowTechnique::createShadowData(TerrainPage& page, unsigned char* data, const Ogre::Vector3& lightDirection, const Ogre::ColourValue& lightColour)
 {
 
 	int pageSizeInVertices = page.getPageSize();
@@ -67,7 +66,6 @@ void SimpleTerrainPageShadowTechnique::createShadowData(TerrainPage& page, Terra
 		for (int j = 0; j < pageSizeInMeters; ++j) {
 // 			float height;
 			WFMath::Vector<3> normal;
- 			//if (generator->getTerrain().getHeightAndNormal(position.x(), position.y(), height, normal)) {
  			if (page.getNormal(position, normal)) {
 				float dotProduct = WFMath::Dot(normal.normalize(1), wfLightDirection);
 
@@ -124,7 +122,7 @@ void TerrainPageShadow::createShadowData(unsigned char* data)
 	if (!mShadowTechnique) {
 		S_LOG_WARNING("Trying to create shadow data without have a technique set.");
 	} else {
-		mShadowTechnique->createShadowData(mTerrainPage, mTerrainPage.mGenerator, data, mLightDirection, Ogre::ColourValue(1,1,1));
+		mShadowTechnique->createShadowData(mTerrainPage, data, mLightDirection, Ogre::ColourValue(1,1,1));
 	}
 }
 

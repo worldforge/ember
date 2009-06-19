@@ -37,12 +37,11 @@ namespace EmberOgre {
 namespace Terrain {
 
 class TerrainPage;
-class TerrainGenerator;
 
 class ITerrainPageShadowTechnique
 {
 public:
-    virtual void createShadowData(TerrainPage& page, TerrainGenerator* generator, unsigned char* data, const Ogre::Vector3& lightDirection, const Ogre::ColourValue& lightColour) = 0;
+    virtual void createShadowData(TerrainPage& page, unsigned char* data, const Ogre::Vector3& lightDirection, const Ogre::ColourValue& lightColour) = 0;
 
 protected:
 };
@@ -50,7 +49,7 @@ protected:
 class SimpleTerrainPageShadowTechnique : public ITerrainPageShadowTechnique
 {
 public:
-    virtual void createShadowData(TerrainPage& page, TerrainGenerator* generator, unsigned char* data, const Ogre::Vector3& lightDirection, const Ogre::ColourValue& lightColour);
+    virtual void createShadowData(TerrainPage& page, unsigned char* data, const Ogre::Vector3& lightDirection, const Ogre::ColourValue& lightColour);
 
 protected:
 };
