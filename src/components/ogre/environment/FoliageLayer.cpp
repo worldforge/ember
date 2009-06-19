@@ -86,7 +86,7 @@ unsigned int FoliageLayer::_populateGrassList(PageInfo page, float *posBuff, uns
 {
 	unsigned int finalGrassCount = 0;
 	TerrainPosition wfPos(Ogre2Atlas_TerrainPosition(page.centerPoint));
-	TerrainPage* terrainPage = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPageAtPosition(wfPos);
+	const TerrainPage* terrainPage = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPageAtPosition(wfPos);
 	if (terrainPage) {
 		Ogre::TRect<float> ogrePageExtent = Atlas2Ogre(terrainPage->getExtent());
 		Ogre::TRect<float> adjustedBounds = Ogre::TRect<float>(page.bounds.left - ogrePageExtent.left, page.bounds.top - ogrePageExtent.top, page.bounds.right - ogrePageExtent.left, page.bounds.bottom - ogrePageExtent.top);

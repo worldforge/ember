@@ -127,8 +127,8 @@ void FoliageBase::TerrainGenerator_AfterTerrainUpdate(std::vector<TerrainPositio
 //HACK: for some reason I couldn't get the code below to work as it should, so we'll go with the brute way of just reloading all geometry. Newer versions of PagedGeometry contains additional methods for reloading sections of the geometry which we shoudl be able to use once we've updated the version used in Ember.
 #if 0		
 		Ogre::Real pageSize(mPagedGeometry->getPageSize());
-		for (std::set< ::EmberOgre::Terrain::TerrainPage* >::iterator I = pages.begin(); I != pages.end(); ++I) {
-			::EmberOgre::Terrain::TerrainPage* page(*I);
+		for (std::set< ::EmberOgre::Terrain::TerrainPage* >::const_iterator I = pages.begin(); I != pages.end(); ++I) {
+			const ::EmberOgre::Terrain::TerrainPage* page(*I);
 			const Ogre::TRect<Ogre::Real> ogreExtent(Atlas2Ogre(page->getExtent()));
 			
 			///update all paged geometry pages that are within the extent of the terrain page
