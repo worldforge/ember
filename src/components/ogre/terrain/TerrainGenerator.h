@@ -20,7 +20,7 @@
 #ifndef TERRAINGENERATOR_H
 #define TERRAINGENERATOR_H
 
-#include "../Types.h"
+#include "components/ogre/Types.h"
 #include "framework/ConsoleObject.h"
 
 #include <wfmath/point.h> //needed for the terrain position
