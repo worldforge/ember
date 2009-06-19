@@ -62,7 +62,7 @@ public:
 
 	void initialize();
 
-	bool frameStarted(const Ogre::FrameEvent& evt);
+	virtual bool frameStarted(const Ogre::FrameEvent& evt);
 
 protected:
 	EntityStore mEntities;
