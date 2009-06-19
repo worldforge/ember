@@ -39,8 +39,6 @@
 #include "../terrain/TerrainInfo.h"
 #include "../terrain/TerrainGenerator.h"
 #include "../terrain/TerrainLayerDefinition.h"
-#include "../terrain/TerrainArea.h"
-#include "../terrain/TerrainShader.h"
 
 #include "../terrain/ISceneManagerAdapter.h"
 

@@ -77,7 +77,7 @@ WorldEmberEntity::~WorldEmberEntity()
 void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
 	///create the foliage
-	mFoliage = new Environment::Foliage(EmberOgre::getSingleton().getSceneManager());
+	mFoliage = new Environment::Foliage();
 	EventFoliageCreated.emit();
 
 	EmberEntity::init(ge, fromCreateOp);

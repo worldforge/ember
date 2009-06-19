@@ -34,19 +34,10 @@
 #include "ShrubberyFoliage.h"
 
 #include "components/ogre/EmberOgre.h"
-#include "components/ogre/terrain/TerrainGenerator.h"
 
-
-#include "../AvatarCamera.h"
 #include "../EmberOgre.h"
-#include "../terrain/TerrainGenerator.h"
 #include "../terrain/TerrainLayerDefinition.h"
 #include "../terrain/TerrainLayerDefinitionManager.h"
-#include "../terrain/ISceneManagerAdapter.h"
-
-#include "pagedgeometry/include/PagedGeometry.h"
-#include "pagedgeometry/include/BatchPage.h"
-#include "pagedgeometry/include/GrassLoader.h"
 
 #include <OgreRoot.h>
 
@@ -59,13 +50,10 @@ namespace EmberOgre {
 namespace Environment {
 
 
-Foliage::Foliage( Ogre::SceneManager* sceneMgr)
-:  mSceneMgr(sceneMgr)
+Foliage::Foliage()
 {
 	Ogre::Root::getSingleton().addFrameListener(this);
-
 }
-
 
 Foliage::~Foliage()
 {
@@ -110,7 +98,7 @@ void Foliage::initialize()
 }
 
 
-bool Foliage::frameStarted(const Ogre::FrameEvent & evt)
+bool Foliage::frameStarted(const Ogre::FrameEvent& evt)
 {
 	for (FoliageStore::iterator I = mFoliages.begin(); I != mFoliages.end(); ++I) {
 		(*I)->frameStarted(evt);

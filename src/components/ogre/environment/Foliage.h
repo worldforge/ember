@@ -25,15 +25,12 @@
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "framework/Singleton.h"
-#include <wfmath/axisbox.h>
 #include <OgreFrameListener.h>
 
 namespace PagedGeometry {
-
-class PagedGeometry;
-// class GrassLoader<GrassLayer>;
-// class GrassLayer;
+	class PagedGeometry;
 }
+
 namespace EmberOgre {
 
 namespace Terrain
@@ -48,7 +45,6 @@ class FoliageLayer;
 class FoliageImpl;
 class FoliageBase;
 
-//class GroundCover;
 /**
 @author Erik Hjortsberg
 */
@@ -59,27 +55,24 @@ public:
 
 	typedef std::map<const std::string, Ogre::Entity* > EntityStore;
 	typedef std::vector<FoliageBase*> FoliageStore;
-    Foliage(Ogre::SceneManager* mSceneMgr);
 
-    ~Foliage();
+	Foliage();
 
-	bool frameStarted(const Ogre::FrameEvent & evt);
-
-	Ogre::Entity* getEntity(const std::string& name);
+	~Foliage();
 
 	void initialize();
+
+	bool frameStarted(const Ogre::FrameEvent& evt);
 
 protected:
 	EntityStore mEntities;
 
-	void createGrassMesh();
-
-
-	Ogre::SceneManager* mSceneMgr;
-
 	FoliageImpl* mImpl;
 
 	FoliageStore mFoliages;
+
+
+	void createGrassMesh();
 };
 
 }
