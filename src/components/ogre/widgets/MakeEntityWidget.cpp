@@ -26,6 +26,18 @@
 
 #include "MakeEntityWidget.h"
 #include "ColouredListItem.h"
+#include "ModelRenderer.h"
+
+#include "../EmberOgre.h"
+#include "../MathConverter.h"
+#include "../Avatar.h"
+#include "../AvatarEmberEntity.h"
+#include "../EmberEntity.h"
+#include "../EmberPhysicalEntity.h"
+
+#include "services/EmberServices.h"
+#include "services/server/ServerService.h"
+#include "framework/LoggingInstance.h"
 
 #include <Eris/TypeService.h>
 #include <Eris/Connection.h>
@@ -33,25 +45,12 @@
 #include <Eris/Avatar.h>
 #include <Eris/View.h>
 
-#include "services/EmberServices.h"
-#include "services/server/ServerService.h"
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Message/Element.h>
+
 #include <wfmath/atlasconv.h>
 
-#include "../EmberOgre.h"
-#include "../MathConverter.h"
-#include "framework/LoggingInstance.h"
-#include "../Avatar.h"
-
-
-
-#include "../EmberEntity.h"
-#include "../EmberPhysicalEntity.h"
-// #include "../PersonEmberEntity.h"
-#include "../AvatarEmberEntity.h"
-
-#include "ModelRenderer.h"
+#include <Mercator/Area.h>
 
 #include <CEGUIWindow.h>
 #include <elements/CEGUIListbox.h> 
@@ -61,10 +60,7 @@
 #include <elements/CEGUIPushButton.h> 
 #include <elements/CEGUIGUISheet.h> 
 #include <elements/CEGUITree.h> 
-#include "framework/ConsoleBackend.h"
 
-//#include "../terrain/TerrainGenerator.h"
-#include <Mercator/Area.h>
 
 namespace EmberOgre {
 namespace Gui {
@@ -242,7 +238,7 @@ void MakeEntityWidget::runCommand(const std::string &command, const std::string 
 // 			
 // 		}
 // 
-// 		EmberOgre::getSingleton().getTerrainGenerator()->addArea(area); 
+// 		EmberOgre::getSingleton().getTer rain Gene rator()->addArea(area); // name splitted up to not appear while grepping
 
 	} else {
 		Widget::runCommand(command, args);
