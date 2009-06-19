@@ -31,8 +31,6 @@
 #include "FoliageLayer.h"
 
 #include "components/ogre/EmberOgre.h"
-#include "components/ogre/terrain/TerrainGenerator.h"
-
 
 #include "../AvatarCamera.h"
 #include "../EmberOgre.h"
@@ -82,8 +80,8 @@ void GrassFoliage::initialize()
 {
 	Ogre::Camera& camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
 	mPagedGeometry = new ::PagedGeometry::PagedGeometry(&camera, EmberOgre::getSingleton().getTerrainGenerator()->getFoliageBatchSize());
-	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainInfo().getWorldSizeInIndices();	
-	
+	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainInfo().getWorldSizeInIndices();
+
 	::PagedGeometry::TBounds ogreBounds(Atlas2Ogre(worldSize));
 	if (ogreBounds.width() != ogreBounds.height()) {
 		if (ogreBounds.width() > ogreBounds.height()) {

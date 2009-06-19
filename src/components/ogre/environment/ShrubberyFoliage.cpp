@@ -32,8 +32,6 @@
 #include "FoliageLoader.h"
 
 #include "components/ogre/EmberOgre.h"
-#include "components/ogre/terrain/TerrainGenerator.h"
-
 
 #include "../AvatarCamera.h"
 #include "../EmberOgre.h"
