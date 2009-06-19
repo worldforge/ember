@@ -57,7 +57,7 @@ bool EmberPagingLandScapeData2D_HeightField::_load(unsigned int x, unsigned int 
 // 	assert(!mTerrainPage);
 	assert(!mHeightData);
 	assert(!mBridge);
-	const Terrain::TerrainGenerator* terrainGenerator = EmberOgre::getSingleton().getTerrainGenerator();
+	Terrain::TerrainGenerator* terrainGenerator = EmberOgre::getSingleton().getTerrainGenerator();
 	mXDimension = mZDimension = terrainGenerator->getPageIndexSize();
 
 	mMaxArrayPos = mSize * mSize;

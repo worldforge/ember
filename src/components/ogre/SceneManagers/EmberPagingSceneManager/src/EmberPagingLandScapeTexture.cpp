@@ -56,8 +56,8 @@ namespace EmberOgre
 
 	void EmberPagingLandScapeTexture::_loadMaterial()
 	{
-		const Terrain::TerrainGenerator* terrainGenerator = EmberOgre::getSingleton().getTerrainGenerator();
-		const Terrain::TerrainPage* page = terrainGenerator->getTerrainPageAtIndex(Ogre::Vector2(mDataX, mDataZ));
+		Terrain::TerrainGenerator* terrainGenerator = EmberOgre::getSingleton().getTerrainGenerator();
+		Terrain::TerrainPage* page = terrainGenerator->getTerrainPageAtIndex(Ogre::Vector2(mDataX, mDataZ));
 		assert(page);
 		if (page) {
 			mMaterial = page->getMaterial();
