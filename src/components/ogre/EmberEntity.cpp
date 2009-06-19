@@ -36,8 +36,6 @@
 #include <OgreException.h>
 #include <OgreMaterialManager.h>
 
-#include "terrain/TerrainGenerator.h"
-#include "terrain/TerrainPage.h"
 
 //#include <Atlas/Objects/ObjectsFwd.h>
 #include <Eris/TypeInfo.h>
@@ -48,7 +46,6 @@
 #include <Atlas/Message/MEncoder.h>
 #include <Atlas/Message/QueuedDecoder.h>
 
-#include "model/Model.h"
 
 using namespace Ogre;
 

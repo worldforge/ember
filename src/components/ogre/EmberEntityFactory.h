@@ -45,7 +45,6 @@ class TerrainGenerator;
 }
 
 class AvatarEmberEntity;
-class EmberTerrainPageSource;
 class EmberPhysicalEntity;
 class EmberEntity;
 class ViewEmberEntity;
