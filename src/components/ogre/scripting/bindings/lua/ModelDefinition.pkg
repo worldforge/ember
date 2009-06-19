@@ -136,8 +136,8 @@ class ModelDefinition : public Ogre::Resource {
 	 Defaults to true.
 	 * @return true if contained entities should be shown, else false
 	 */
-	bool getShowContained();
-	void getShowContained(bool show);
+	bool getShowContained() const;
+	void setShowContained(bool show);
 	
 	/**
 	 *    Returns a vector defining how much, if ever, contained entities should be offset.
