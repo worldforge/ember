@@ -21,7 +21,17 @@
 #endif
 
 #include "TerrainGenerator.h"
+
+#include "ISceneManagerAdapter.h"
+#include "TerrainShader.h"
+#include "TerrainPage.h"
+#include "TerrainPageShadow.h"
+#include "TerrainArea.h"
+#include "TerrainMod.h"
 #include "TerrainInfo.h"
+#include "TerrainLayerDefinitionManager.h"
+#include "TerrainLayerDefinition.h"
+#include "TerrainPageSurfaceLayer.h"
 
 #include "framework/LoggingInstance.h"
 #include "services/config/ConfigService.h"
@@ -29,23 +39,10 @@
 #include "../MathConverter.h"
 #include "../EmberOgre.h"
 #include "../EmberEntity.h"
-#include "../WorldEmberEntity.h"
 #include "../EmberEntityFactory.h"
-#include "../ShaderManager.h"
-
-#include "TerrainShader.h"
-#include "ISceneManagerAdapter.h"
-
-
-#include "TerrainPage.h"
-#include "TerrainPageShadow.h"
-#include "TerrainArea.h"
-#include "TerrainMod.h"
-
-#include "TerrainLayerDefinitionManager.h"
-#include "TerrainLayerDefinition.h"
-#include "TerrainPageSurfaceLayer.h"
 #include "../AvatarCamera.h"
+#include "../ShaderManager.h"
+#include "../WorldEmberEntity.h"
 
 #include "../environment/Foliage.h"
 #include "../environment/Forest.h"
@@ -686,10 +683,7 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 // 		}
 // 	}
 
-	///check if the size of the world has been changed
-// 	if (Xmin != mXmin || Xmax != mXmax || Ymin != mYmin || Ymax != mYmax) {
-		EventWorldSizeChanged.emit();
-// 	}
+	EventWorldSizeChanged.emit();
 
 	if (!mHasTerrainInfo) {
 		mHasTerrainInfo = true;
@@ -761,13 +755,11 @@ void TerrainGenerator::updateEntityPosition(EmberEntity* entity, const std::set<
 const TerrainPosition TerrainGenerator::getMax( ) const
 {
 	return mTerrainInfo->getWorldSizeInIndices().highCorner();
-// 	return TerrainPosition(mXmax * 64, mYmax * 64);
 }
 
 const TerrainPosition TerrainGenerator::getMin( ) const
 {
 	return mTerrainInfo->getWorldSizeInIndices().lowCorner();
-// 	return TerrainPosition(mXmin * 64, mYmin * 64);
 }
 
 void TerrainGenerator::runCommand(const std::string& command, const std::string& args)

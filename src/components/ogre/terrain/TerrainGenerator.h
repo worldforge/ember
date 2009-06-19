@@ -20,34 +20,24 @@
 #ifndef TERRAINGENERATOR_H
 #define TERRAINGENERATOR_H
 
+#include "../Types.h"
+#include "framework/ConsoleObject.h"
 
 #include <wfmath/point.h> //needed for the terrain position
 
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
 
-#include "framework/ConsoleObject.h"
-
-#include "../Types.h"
 #include <OgreFrameListener.h>
 
-namespace Ogre
-{
+namespace Ogre {
 	class TerrainOptions;
 }
 
-namespace Eris
-{
-	class Entity;
-	class View;
-}
-
-namespace Mercator
-{
+namespace Mercator {
 	class Area;
 	class Terrain;
 	class Shader;
-	class Segment;
 	class TerrainMod;
 }
 
@@ -56,11 +46,6 @@ class EmberEntity;
 class EmberEntityFactory;
 class EmberPagingSceneManager;
 class ShaderManager;
-
-namespace Environment
-{
-	class Environment;
-}
 
 namespace Terrain {
 	
@@ -77,7 +62,7 @@ class ISceneManagerAdapter;
 @brief Defines the height of a special "base point" in the terrain. 
 These base points are then user by Mercator::Terrain for generating the actual terrain.
 */
-struct TerrainDefPoint
+class TerrainDefPoint
 {
 	public:
 	/**
@@ -123,8 +108,7 @@ struct TerrainDefPoint
  * It works closely with EmberTerrainPageSource.
  * 
  */
-class TerrainGenerator :  public Ogre::FrameListener, 
-public sigc::trackable, public Ember::ConsoleObject
+class TerrainGenerator : public Ogre::FrameListener, public sigc::trackable, public Ember::ConsoleObject
 {
 public:
 
@@ -168,10 +152,8 @@ public:
 	 */
 	virtual bool frameEnded(const Ogre::FrameEvent & evt);
 
-// 	void prepareSegments(long segmentXStart, long segmentZStart, long numberOfSegments, bool alsoPushOntoTerrain);
-
 	/**
-	 * @brief Prepares all segments aquired from Mercator. Note that this can be very, very expensive if there's a lot of terrain defined.
+	 * @brief Prepares all segments acquired from Mercator. Note that this can be very, very expensive if there's a lot of terrain defined.
 	 */
 	void prepareAllSegments();
 	
@@ -389,7 +371,6 @@ public:
 	unsigned int getFoliageBatchSize() const;
 	
 protected:
-
 	/**
 	 * @brief Encapsules a shader update request.
 	 */
@@ -402,18 +383,30 @@ protected:
 		AreaStore Areas;
 		
 		/**
-		 * @brief If this is set to true, all geomtry should be updated, no matter what areas are specified in Areas.
+		 * @brief If this is set to true, all geometry should be updated, no matter what areas are specified in Areas.
 		 */
 		bool UpdateAll;
 	};
 
+	typedef std::map<int,TerrainShader*> AreaShaderstore;
+	
+	typedef std::map<TerrainShader*, ShaderUpdateRequest> ShaderUpdateSet;
+	
+	typedef std::map<std::string, TerrainPage*> PageStore;
+	/**
+	A type for use when keeping track of changes done to areas. We use instances of Mercator::Area instead of pointers or references since we want to batch the updates, and the original area instances might not be around at that time.
+	*/
+	typedef std::map<TerrainShader*, std::vector<Mercator::Area> > TerrainAreaMap;
+
+	typedef std::multimap<const std::string, Mercator::TerrainMod*> TerrainModMap;
+
+	typedef std::map<const Mercator::Shader*, TerrainShader*> ShaderStore;
+	
 	/**
 	@brief Information about the world, such as size and number of pages.
 	*/
 	std::auto_ptr<TerrainInfo> mTerrainInfo;
 
-	typedef std::map<int,TerrainShader*> AreaShaderstore;
-	
 	/**
 	@brief We use this to keep track on the terrain shaders used for areas, stored with the layer id as the key.
 	*/
@@ -427,8 +420,6 @@ protected:
 	 */
 	void markShaderForUpdate(TerrainShader* shader,  Mercator::Area* terrainArea = 0);
 	
-	typedef std::map<TerrainShader*, ShaderUpdateRequest> ShaderUpdateSet;
-	
 	/**
 	 * @brief Stores the shaders needing update, to be processed on the next frame.
 	 * For performance reasons we try to batch all shaders updates together, rather than doing them one by one. This is done by adding the shaders needing update to this store, and then on frameEnded processing them.
@@ -437,17 +428,10 @@ protected:
 	 */
 	ShaderUpdateSet mShadersToUpdate;
 	
-	typedef std::map<std::string, TerrainPage*> PageStore;
 	PageStore mPages;
 	
-	/**
-	A type for use when keeping track of changes done to areas. We use instances of Mercator::Area instead of pointers or references since we want to batch the updates, and the original area instances might not be around at that time.
-	*/
-	typedef std::map<TerrainShader*, std::vector<Mercator::Area> > TerrainAreaMap;
 	TerrainAreaMap mChangedTerrainAreas;
 
-
-	typedef std::multimap<const std::string, Mercator::TerrainMod*> TerrainModMap;
 	TerrainModMap mTerrainMods;
 	
 	TerrainPagestore mTerrainPages;
@@ -456,19 +440,12 @@ protected:
 	
 	Ogre::Real mHeightMax, mHeightMin;
 	
-	/**
-	 * the min and max indices for segments
-	 */
-// 	int mXmin, mXmax, mYmin, mYmax;
-	
 	void loadTerrainOptions();
 	
 	/**
 	true if we have some kind of terrain info, i.e. if mX* and mY* are valid
 	*/
 	bool mHasTerrainInfo;
-	
-	
 
 	/**
 	 *   Creates a new TerrainPage and puts it in mTerrainPages
@@ -476,8 +453,6 @@ protected:
 	 */
 	TerrainPage* createPage(const TerrainPosition& pos);
 
-	
-	typedef std::map<const Mercator::Shader*, TerrainShader*> ShaderStore;
 	
 	/**
 	 * This holds a map of the TerrainShaders
