@@ -18,7 +18,9 @@
 
 #ifndef DIMEENTITYFACTORY_H
 #define DIMEENTITYFACTORY_H
+
 #include "EmberOgrePrerequisites.h"
+#include "framework/ConsoleObject.h"
 
 #include <Eris/Factory.h>
 
@@ -27,7 +29,6 @@
 #include <sigc++/trackable.h>
 #include <set>
 
-#include "framework/ConsoleObject.h"
 namespace Eris
 {
 	class Entity;
@@ -38,11 +39,6 @@ namespace Eris
 }
 
 namespace EmberOgre {
-
-namespace Terrain
-{
-class TerrainGenerator;
-}
 
 class AvatarEmberEntity;
 class EmberPhysicalEntity;
@@ -69,7 +65,7 @@ public:
 	/**
 	Default constructor. This should be instantiated by EmberOgre or similiar high level object. Note that Eris upon shutdown will delete all registered factories, so don't delete an instance of this yourself.
 	*/
-	EmberEntityFactory(Eris::View* view, Terrain::TerrainGenerator* terrainGenerator, Eris::TypeService* typeService);
+	EmberEntityFactory(Eris::View* view, Eris::TypeService* typeService);
 	virtual ~EmberEntityFactory();
 
 	/**
@@ -136,9 +132,6 @@ protected:
 
 	void gotAvatarCharacter(Eris::Entity* entity);
 
-
-
-	Terrain::TerrainGenerator* mTerrainGenerator;
 	Eris::TypeService* mTypeService;
 	Eris::TypeInfo* mTerrainType;
 

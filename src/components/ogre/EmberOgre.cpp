@@ -668,7 +668,7 @@ void EmberOgre::createScene(void)
 void EmberOgre::Server_GotView(Eris::View* view)
 {
 // 	mWorldView = view;
-	mEmberEntityFactory = new EmberEntityFactory(view, mTerrainGenerator, Ember::EmberServices::getSingleton().getServerService()->getConnection()->getTypeService());
+	mEmberEntityFactory = new EmberEntityFactory(view, Ember::EmberServices::getSingleton().getServerService()->getConnection()->getTypeService());
 }
 
 

@@ -121,7 +121,7 @@ public:
 	 * @param sceneManager The main Ogre scene manager.
 	 * @param terrainGenerator The terrain generator instance.
 	 */
-	WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Terrain::TerrainGenerator* terrainGenerator);
+	WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager);
 	
 	/**
 	 * @brief Dtor

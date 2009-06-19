@@ -52,15 +52,17 @@
 #include <Mercator/ShaderFactory.h>
 
 namespace EmberOgre {
-WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager, Terrain::TerrainGenerator* terrainGenerator) : 
+
+WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager) :
 EmberEntity(id, ty, vw, sceneManager)
-, mTerrainGenerator(terrainGenerator)
+, mTerrainGenerator(0)
 , mFoliage(0)
 , mEnvironment(0)
 , mTerrainParser(0)
 , mFoliageInitializer(0)
 , mHasBeenInitialized(false)
 {
+	mTerrainGenerator = EmberOgre::getSingleton().getTerrainGenerator();
 	mWorldPosition.LatitudeDegrees = 0;
 	mWorldPosition.LongitudeDegrees = 0;
 	sceneManager->getRootSceneNode()->addChild(getSceneNode());

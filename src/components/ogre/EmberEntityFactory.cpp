@@ -43,11 +43,7 @@
 #include "model/ModelDefinitionManager.h"
 #include "model/mapping/EmberModelMappingManager.h"
 
-
-
-#include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
-#include "terrain/TerrainGenerator.h"
 
 #include "Avatar.h"
 
@@ -72,10 +68,9 @@
 namespace EmberOgre {
 
 
-EmberEntityFactory::EmberEntityFactory(Eris::View* view, Terrain::TerrainGenerator* terrainGenerator, Eris::TypeService* typeService)
+EmberEntityFactory::EmberEntityFactory(Eris::View* view, Eris::TypeService* typeService)
 : ShowModels("showmodels", this, "Show or hide models.")
 , DumpAttributes("dump_attributes", this, "Dumps the attributes of a supplied entity to a file. If no entity id is supplied the current avatar will be used.")
-, mTerrainGenerator(terrainGenerator)
 , mTypeService(typeService)
 , mTerrainType(0)
 , mWorldEntity(0)
@@ -86,7 +81,6 @@ EmberEntityFactory::EmberEntityFactory(Eris::View* view, Terrain::TerrainGenerat
 	mTerrainType = mTypeService->getTypeByName("world");
 	
 	getErisAvatar()->GotCharacterEntity.connect(sigc::mem_fun(*this, &EmberEntityFactory::gotAvatarCharacter));
-	
 }
 
 
@@ -155,10 +149,11 @@ bool EmberEntityFactory::accept(const Atlas::Objects::Entity::RootEntity &ge, Er
 }
 
 
-Eris::Entity* EmberEntityFactory::createWorld(const Atlas::Objects::Entity::RootEntity & ge, Eris::TypeInfo* type, Eris::View *world) {
+Eris::Entity* EmberEntityFactory::createWorld(const Atlas::Objects::Entity::RootEntity & ge, Eris::TypeInfo* type, Eris::View *world)
+{
 	assert(!mWorldEntity);
-	mWorldEntity = new WorldEmberEntity(ge->getId(), type, world, EmberOgre::getSingleton().getSceneManager(), mTerrainGenerator);
-    return mWorldEntity;
+	mWorldEntity = new WorldEmberEntity(ge->getId(), type, world, EmberOgre::getSingleton().getSceneManager());
+	return mWorldEntity;
 }
 
 WorldEmberEntity* EmberEntityFactory::getWorld() const
