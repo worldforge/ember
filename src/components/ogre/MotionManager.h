@@ -20,19 +20,21 @@
 #define MOTIONMANAGER_H
 
 #include "EmberOgrePrerequisites.h"
-#include <OgrePredefinedControllers.h> 
 #include "framework/Singleton.h"
+
+#include <OgreFrameListener.h>
+
 
 namespace EmberOgre {
 
 class EmberEntity;
 class EmberPhysicalEntity;
-// class TerrainGenerator;
 
 /**
  * This class will be responsible for making sure that entites moves
  * in a nice and fluid way. Eventually we'll also implement physics, perhaps it 
  * will go into here.
+ *
  * The manager also takes care of keeping tabs on all animations.
  */
 class MotionManager : public Ogre::FrameListener, public Ember::Singleton<MotionManager> {
@@ -45,12 +47,14 @@ public:
 	{
 		size_t AnimatedEntities;
 		size_t MovingEntities;
-		size_t Animations;
 	};
 
+	/** Ctor
+	 */
 	MotionManager();
+	/** Dtor
+	 */
 	virtual ~MotionManager();
-	//static MotionManager & getSingleton(void);
 	
 	/**
 	 * Adds a EmberEntity to the movement list.
@@ -58,78 +62,58 @@ public:
 	 * new positions for the entity will be calculated for each frame.
 	 */
 	void addEntity(EmberEntity* entity);
+	/**
+	 * Removes a EmberEntity from the movement list.
+	 * New positions for the entity will NOT be calculated for each frame.
+	 */
 	void removeEntity(EmberEntity* entity);
 	
 	/**
-	 * Registers an animationState. After registration it will be enough to use
-	 * AnimationState::enabled(bool) to toggle the animation on and off
+	 * Adds a EmberPhysicalEntity to the movement list.
+	 * That means that until removeAnimatedEntity is called for the specific entity
+	 * new positions (and animations) for the entity will be calculated for each frame.
 	 */
-	void addAnimation(Ogre::AnimationState* animationState);
-	/**
-	 * Deregisters an animationState
-	 */
-	void removeAnimation(Ogre::AnimationState* animationState);
-	/**
-	 * Pauses the supplies animationState
-	 */
-	void pauseAnimation(Ogre::AnimationState* animationState);
-	/**
-	 * Unpauses (starts) an already paused animationState
-	 */
-	void unpauseAnimation(Ogre::AnimationState* animationState);
-	
 	void addAnimatedEntity(EmberPhysicalEntity* entity);
+	/**
+	 * Removes a EmberPhysicalEntity from the movement list.
+	 * New positions (and animations) for the entity will NOT be calculated for each frame.
+	 */
 	void removeAnimatedEntity(EmberPhysicalEntity* entity);
-	
-/*	void addAction(Action* action);
-	void removeAction(Action* action);*/
-	
-
 
 	/**
-	 * Methods from Ogre::FrameListener
+	 * @see Ogre::FrameListener::frameStarted
 	 */
 	bool frameStarted(const Ogre::FrameEvent& event);
+	/**
+	 * @see Ogre::FrameListener::frameEnded
+	 */
 	bool frameEnded(const Ogre::FrameEvent& event);
 	
 	/**
-	 * Adjusts the height of the supplied node
-	 */
-	//void adjustHeightPositionForNode(Ogre::SceneNode* sceneNode);
-
-// 	void setTerrainGenerator(TerrainGenerator* generator);
-	
-	/**
 	 *    Gets info about the MotionManager.
-	 * @return 
+	 * @return Information about the motion manager
 	 */
 	const MotionManagerInfo& getInfo() const;
 	
 private:
 
 	typedef std::map<std::string , EmberPhysicalEntity*> EntityStore;
+
+
+	/** Information about this manager
+	 */
+	MotionManagerInfo mInfo;
+
+	/**
+	 * This contains all of the entities that will be moved each frame
+	 */
+	std::set<EmberEntity*> mMotionSet;
+
+	/**
+	 * This contains all of the entities that will be moved (and animated) each frame
+	 */
 	EntityStore mAnimatedEntities;
 
-
-	MotionManagerInfo mInfo;
-// 	typedef std::set<Action*> ActionStore;
-// 	ActionStore mActions;
-
-	/**
-	 * A pointer to the applications ControllerManager. This will take care of 
-	 * keeping tabs on all controllers.
-	 */
-	Ogre::ControllerManager* mControllerManager;
-	typedef Ogre::Controller<Ogre::Real> animationControllerType;
-	typedef std::map<Ogre::AnimationState*, animationControllerType*> animationStateMap;
-	typedef std::set<Ogre::AnimationState*> AnimationStateSet;
-	/**
-	 * A map of AnimationState's and their corresponding Controllers
-	 */
-	AnimationStateSet mAnimations;
-
-
-	//static MotionManager* _instance;
 
 	/** This method will iterate over all registered moving entities and update
 	 * their positions.
@@ -140,20 +124,6 @@ private:
 	 * those that are enabled
 	 */
 	void doAnimationUpdate(Ogre::Real timeSlice);
-
-
-	/** 
-	 * Update the motion for a single EmberEntity
-	 */
-	void updateMotionForEntity(EmberEntity* entity, Ogre::Real timeSlice);
-
-	/**
-	 * This contains all of the entities that will be moved each frame
-	 */
-	std::set<EmberEntity*> mMotionSet;
-	
-// 	TerrainGenerator* mTerrainGenerator;
-	
 };
 
 inline const MotionManager::MotionManagerInfo& MotionManager::getInfo() const

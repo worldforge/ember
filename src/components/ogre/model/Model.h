@@ -391,7 +391,6 @@ protected:
 
 	ModelBackgroundLoader* mBackgroundLoader;
 
-	//void enableAnimation(const std::string& nameOfAnimation,bool enable);
 };
 
 // Ogre::Real Model::getRenderingDistance   (   void    )    const

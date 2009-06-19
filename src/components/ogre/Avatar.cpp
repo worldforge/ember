@@ -246,7 +246,6 @@ void Avatar::adjustAvatarToNewPosition(AvatarControllerMovement* movement)
 	if (mErisAvatarEntity) {
 		mErisAvatarEntity->adjustPosition();
 	}
-//	MotionManager::getSingleton().adjustHeightPositionForNode(mAvatarNode);
 }
 
 
