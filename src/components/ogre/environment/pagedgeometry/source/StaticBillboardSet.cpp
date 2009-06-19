@@ -131,6 +131,7 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 					"	out float2 oUv       : TEXCOORD0,	\n"
 					"	out float4 oColor    : COLOR, \n"
 					"	out float oFog       : FOG,	\n"
+				    "	uniform float4 iFogParams,	\n"
 					"	uniform float4x4 worldViewProj,	\n"
 					"	uniform float    uScroll, \n"
 					"	uniform float    vScroll, \n"
@@ -147,10 +148,17 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 					//UV Scroll
 					"	oUv = uv;	\n"
 					"	oUv.x += uScroll; \n"
-					"	oUv.y += vScroll; \n"
+					"	oUv.y += vScroll; \n";
 
 					//Fog
-					"	oFog = oPosition.z; \n"
+					if (mgr->getFogMode() == Ogre::FOG_EXP2) {
+						vertexProg +=
+							"	oFog = 1 - clamp (pow (2.71828, -oPosition.z * iFogParams.x), 0, 1); \n";
+					} else {
+						vertexProg +=
+							"	oFog = oPosition.z; \n";
+					}
+					vertexProg +=
 					"}";
 
 				String shaderLanguage;
@@ -192,6 +200,7 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 					"	out float4 oColor    : COLOR, \n"
 					"	out float oFog       : FOG,	\n"
 					"	uniform float4x4 worldViewProj,	\n"
+				    "	uniform float4 iFogParams,	\n"
 
 					"	uniform float3 camPos, \n"
 					"	uniform float fadeGap, \n"
@@ -215,10 +224,17 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 					//UV scroll
 					"	oUv = uv;	\n"
 					"	oUv.x += uScroll; \n"
-					"	oUv.y += vScroll; \n"
+					"	oUv.y += vScroll; \n";
 
 					//Fog
-					"	oFog = oPosition.z; \n"
+					if (mgr->getFogMode() == Ogre::FOG_EXP2) {
+						vertexProg2 +=
+							"	oFog = 1 - clamp (pow (2.71828, -oPosition.z * iFogParams.x), 0, 1); \n";
+					} else {
+						vertexProg2 +=
+							"	oFog = oPosition.z; \n";
+					}
+					vertexProg2 +=
 					"}";
 
 				String shaderLanguage;
@@ -621,6 +637,7 @@ MaterialPtr StaticBillboardSet::getFadeMaterial(Real visibleDist, Real invisible
 				GpuProgramParametersSharedPtr params = pass->getVertexProgramParameters();
 				params->setIgnoreMissingParams(true);
 				params->setNamedAutoConstant("worldViewProj", GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+				params->setNamedAutoConstant("iFogParams", GpuProgramParameters::ACT_FOG_PARAMS);
 				params->setNamedAutoConstant("uScroll", GpuProgramParameters::ACT_CUSTOM);
 				params->setNamedAutoConstant("vScroll", GpuProgramParameters::ACT_CUSTOM);
 				params->setNamedAutoConstant("preRotatedQuad[0]", GpuProgramParameters::ACT_CUSTOM);
@@ -701,7 +718,8 @@ void StaticBillboardSet::updateAll(const Vector3 &cameraDirection)
 			Pass *p = mat->getTechnique(0)->getPass(0);
 			if(!p->hasVertexProgram()){
 				p->setVertexProgram("Sprite_vp");
-				p->setFragmentProgram("ImposterFragStandard");
+				p->getVertexProgramParameters()->setIgnoreMissingParams(true);
+				p->getVertexProgramParameters()->setNamedAutoConstant("iFogParams", GpuProgramParameters::ACT_FOG_PARAMS);
 				p->getVertexProgramParameters()->setNamedAutoConstant("worldViewProj", GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
 				p->getVertexProgramParameters()->setNamedAutoConstant("uScroll", GpuProgramParameters::ACT_CUSTOM);
 				p->getVertexProgramParameters()->setNamedAutoConstant("vScroll", GpuProgramParameters::ACT_CUSTOM);
@@ -709,6 +727,9 @@ void StaticBillboardSet::updateAll(const Vector3 &cameraDirection)
 				p->getVertexProgramParameters()->setNamedAutoConstant("preRotatedQuad[1]", GpuProgramParameters::ACT_CUSTOM);
 				p->getVertexProgramParameters()->setNamedAutoConstant("preRotatedQuad[2]", GpuProgramParameters::ACT_CUSTOM);
 				p->getVertexProgramParameters()->setNamedAutoConstant("preRotatedQuad[3]", GpuProgramParameters::ACT_CUSTOM);
+				p->setFragmentProgram("ImposterFragStandard");
+				p->getFragmentProgramParameters()->setIgnoreMissingParams(true);
+				p->getFragmentProgramParameters()->setNamedAutoConstant("iFogColour", GpuProgramParameters::ACT_FOG_COLOUR);
 			}
 
 			//Update the vertex shader parameters
