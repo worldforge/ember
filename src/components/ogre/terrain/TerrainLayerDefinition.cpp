@@ -106,6 +106,20 @@ TerrainLayerDefinition::StringParamStore& TerrainFoliageDefinition::getParameter
 	return mParameters;
 }
 
+const std::string& TerrainFoliageDefinition::getParameter(const std::string & key) const
+{
+	static std::string empty("");
+	TerrainLayerDefinition::StringParamStore::const_iterator I = mParameters.find(key);
+	if (I != mParameters.end()) {
+		return I->second;
+	}
+	return empty;
+}
+
+bool TerrainFoliageDefinition::hasParameter(const std::string& key) const
+{
+	return mParameters.find(key) != mParameters.end();
+}
 
 const std::string& TerrainFoliageDefinition::getPlantType() const
 {
@@ -113,7 +127,7 @@ const std::string& TerrainFoliageDefinition::getPlantType() const
 }
 
 
-void TerrainFoliageDefinition::setPlantType ( const std::string& theValue )
+void TerrainFoliageDefinition::setPlantType(const std::string& theValue)
 {
 	mPlantType = theValue;
 }
@@ -129,45 +143,26 @@ TerrainLayerDefinition::TerrainFoliageDefinitionStore& TerrainLayerDefinition::g
 	return mFoliages;
 }
 
-bool TerrainFoliageDefinition::hasParameter(const std::string& key) const
-{
-	return mParameters.find(key) != mParameters.end();
-}
-
-}
-
-}
-
-const std::string& EmberOgre::Terrain::TerrainFoliageDefinition::getPopulationTechnique() const
+const std::string& TerrainFoliageDefinition::getPopulationTechnique() const
 {
 	return mPopulationTechnique;
 }
 
-void EmberOgre::Terrain::TerrainFoliageDefinition::setPopulationTechnique ( const std::string& theValue )
+void TerrainFoliageDefinition::setPopulationTechnique(const std::string& theValue)
 {
 	mPopulationTechnique = theValue;
 }
 
-const std::string& EmberOgre::Terrain::TerrainFoliageDefinition::getRenderTechnique() const
+const std::string& TerrainFoliageDefinition::getRenderTechnique() const
 {
 	return mRenderTechnique;
 }
 
-void EmberOgre::Terrain::TerrainFoliageDefinition::setRenderTechnique ( const std::string& theValue )
+void TerrainFoliageDefinition::setRenderTechnique(const std::string& theValue)
 {
 	mRenderTechnique = theValue;
 }
 
-
-const std::string& EmberOgre::Terrain::TerrainFoliageDefinition::getParameter(const std::string & key) const
-{
-	static std::string empty("");
-	EmberOgre::Terrain::TerrainLayerDefinition::StringParamStore::const_iterator I = mParameters.find(key);
-	if (I != mParameters.end()) {
-		return I->second;
-	}
-	return empty;
 }
-
-
+}
 

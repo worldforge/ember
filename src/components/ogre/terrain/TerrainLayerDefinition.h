@@ -22,9 +22,12 @@
 //
 #ifndef EMBEROGRE_TERRAINTERRAINLAYERDEFINITION_H
 #define EMBEROGRE_TERRAINTERRAINLAYERDEFINITION_H
+
 #include <string>
 #include <map>
 #include <vector>
+
+
 namespace EmberOgre {
 
 namespace Terrain {
@@ -34,7 +37,7 @@ class TerrainFoliageDefinition;
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class TerrainLayerDefinition{
+class TerrainLayerDefinition {
 public:
 	typedef std::map<std::string, std::string> StringParamStore;
 	typedef std::vector<TerrainFoliageDefinition> TerrainFoliageDefinitionStore;
@@ -95,13 +98,13 @@ public:
 	const std::string& getParameter(const std::string& key) const;
 	bool hasParameter(const std::string& key) const;
 
-	void setPlantType ( const std::string& theValue );
+	void setPlantType(const std::string& theValue);
 	const std::string& getPlantType() const;
 
-	void setPopulationTechnique ( const std::string& theValue );
+	void setPopulationTechnique (const std::string& theValue);
 	const std::string& getPopulationTechnique() const;
 	
-	void setRenderTechnique ( const std::string& theValue );
+	void setRenderTechnique (const std::string& theValue);
 	const std::string& getRenderTechnique() const;
 	
 protected:
@@ -109,7 +112,6 @@ protected:
 	std::string mPlantType;
 	std::string mPopulationTechnique;
 	std::string mRenderTechnique;
-	
 };
 
 }
