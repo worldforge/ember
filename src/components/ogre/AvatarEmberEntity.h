@@ -20,6 +20,9 @@
 #ifndef AVATAREMBERENTITY_H
 #define AVATAREMBERENTITY_H
 
+#include "EmberPhysicalEntity.h"
+#include "framework/ConsoleBackend.h"
+
 namespace Eris
 {
 	class Entity;
