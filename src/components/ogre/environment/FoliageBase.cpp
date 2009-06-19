@@ -32,7 +32,6 @@
 #include "../MathConverter.h"
 #include "../terrain/TerrainArea.h"
 #include "../terrain/TerrainShader.h"
-
 #include "../terrain/TerrainLayerDefinition.h"
 #include "../terrain/TerrainPageSurfaceLayer.h"
 #include "../terrain/TerrainPageSurface.h"
@@ -146,10 +145,12 @@ void FoliageBase::TerrainGenerator_AfterTerrainUpdate(std::vector<TerrainPositio
 //Gets the height of the terrain at the specified x/z coordinate
 //The userData parameter isn't used in this implementation of a height function, since
 //there's no need for extra data other than the x/z coordinates.
-float getTerrainHeight(const float x, const float z, void *userData){
-//	return 1;
+float getTerrainHeight(float x, float z, void* userData)
+{
 	return EmberOgre::getSingleton().getTerrainGenerator()->getHeight(TerrainPosition(x, -z));
 }
+
+
 }
 
 }

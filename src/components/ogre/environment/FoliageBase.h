@@ -23,8 +23,13 @@
 #ifndef EMBEROGRE_ENVIRONMENTFOLIAGEBASE_H
 #define EMBEROGRE_ENVIRONMENTFOLIAGEBASE_H
 
-#include <OgreFrameListener.h>
 #include "../terrain/TerrainGenerator.h"
+
+#include <sigc++/trackable.h>
+
+#include <set>
+#include <vector>
+
 
 namespace PagedGeometry {
 class PagedGeometry;
@@ -34,10 +39,11 @@ namespace EmberOgre {
 
 namespace Terrain
 {
-class TerrainFoliageDefinition;
-class TerrainLayerDefinition;
-class TerrainShader;
-class TerrainArea;
+	class TerrainArea;
+	class TerrainFoliageDefinition;
+	class TerrainLayerDefinition;
+	class TerrainPage;
+	class TerrainShader;
 }
 
 namespace Environment {
@@ -73,9 +79,9 @@ public:
 	 */
 	virtual ~FoliageBase();
 	
-	virtual void frameStarted(const Ogre::FrameEvent & evt) {};
-	
 	virtual void initialize() = 0;
+
+	virtual void frameStarted(const Ogre::FrameEvent & evt) = 0;
 
 protected:
 
@@ -92,7 +98,7 @@ protected:
 
 };
 
-float getTerrainHeight(const float x, const float z, void *userData = 0);
+float getTerrainHeight(float x, float z, void* userData = 0);
 
 }
 

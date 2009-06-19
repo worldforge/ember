@@ -88,7 +88,6 @@ void ShrubberyFoliage::initialize()
 
 void ShrubberyFoliage::frameStarted(const Ogre::FrameEvent & evt)
 {
-
 	if (mPagedGeometry) {
 		try {
 			mPagedGeometry->update();

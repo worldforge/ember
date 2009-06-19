@@ -157,8 +157,7 @@ void GrassFoliage::initialize()
 }
 
 void GrassFoliage::frameStarted(const Ogre::FrameEvent & evt)
-{	
-	
+{
 	if (mPagedGeometry) {
 		try {
 			mPagedGeometry->update();
@@ -170,7 +169,7 @@ void GrassFoliage::frameStarted(const Ogre::FrameEvent & evt)
 			mGrassLoader = 0;
 			mPagedGeometry = 0;
 		}
-	}	
+	}
 }
 
 }

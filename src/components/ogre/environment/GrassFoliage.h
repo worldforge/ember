@@ -28,10 +28,7 @@
 #include "pagedgeometry/include/GrassLoader.h"
 
 namespace PagedGeometry {
-
 class PagedGeometry;
-// class GrassLoader<GrassLayer>;
-// class GrassLayer;
 }
 
 namespace EmberOgre {
@@ -70,8 +67,6 @@ protected:
 	float mMinWidth;
 	float mMaxWidth;
 
-	
-	
 };
 
 }
