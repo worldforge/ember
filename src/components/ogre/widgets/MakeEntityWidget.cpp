@@ -50,8 +50,6 @@
 
 #include <wfmath/atlasconv.h>
 
-#include <Mercator/Area.h>
-
 #include <CEGUIWindow.h>
 #include <elements/CEGUIListbox.h> 
 #include <elements/CEGUIListboxItem.h> 
