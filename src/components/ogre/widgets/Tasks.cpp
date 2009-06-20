@@ -68,9 +68,13 @@ void Tasks::doSomething()
 	task_args["name"] = "twist";
 	task_args["param"] = "value";
 
+	Atlas::Message::ListType list;
+	list.push_back(task_args);
+
 	Atlas::Message::MapType args;
-	args["tasks"] = task_args;
+	args["tasks"] = list;
 	args["id"] = EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity()->getId();
+	args["objtype"] = "obj";
 
 	Atlas::Message::ListType sargsList(1, args);
 	s->setArgsAsList(sargsList);
