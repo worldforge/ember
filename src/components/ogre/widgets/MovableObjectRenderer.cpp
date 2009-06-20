@@ -239,16 +239,20 @@ bool MovableObjectRenderer::frameStarted(const Ogre::FrameEvent& event)
 //	S_LOG_VERBOSE(mImage->getName().c_str() << " visible: " << (mActive && mImage->isVisible()));
 	///if the window isn't shown, don't update the render texture
 	mTexture->getRenderContext()->setActive(mActive && mImage->isVisible());
-	if (mActive && mImage->isVisible() && mTexture->getRenderContext()->getRenderTexture()) {
-		mTexture->getRenderContext()->getRenderTexture()->update();
+	if (mActive && mImage->isVisible()) {
+		updateRender();
 	}
 	return true;
 }
 
 void MovableObjectRenderer::updateRender()
 {
-	if (mTexture->getRenderContext()->getRenderTexture()) {
-		mTexture->getRenderContext()->getRenderTexture()->update();
+	try {
+		if (mTexture->getRenderContext()->getRenderTexture()) {
+			mTexture->getRenderContext()->getRenderTexture()->update();
+		}
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Error when updating render for MovableObjectRenderer: " << ex.what());
 	}
 }
 

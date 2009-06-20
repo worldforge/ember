@@ -150,7 +150,7 @@ namespace Gui {
 			///make the black blocking block a little bit smaller and move it to the right
 			mLoadingBarElement->setWidth(mProgressBarMaxSize * (1 - progress));
 			mLoadingBarElement->setLeft(mProgressBarMaxLeft + (mProgressBarMaxSize * progress));
-			mWindow->update();
+			updateRender();
 		}
 		mProgress = progress;
 	}
@@ -164,7 +164,7 @@ namespace Gui {
 	{
 		if (mLoadingCommentElement) {
 			mLoadingCommentElement->setCaption(caption);
-			mWindow->update();
+			updateRender();
 		}
 	}
 
@@ -172,7 +172,16 @@ namespace Gui {
 	{
 		if (mVersionElement) {
 			mVersionElement->setCaption(versionText);
+			updateRender();
+		}
+	}
+
+	void LoadingBar::updateRender()
+	{
+		try {
 			mWindow->update();
+		} catch (const std::exception& ex) {
+			S_LOG_FAILURE("Error when updating render for loading bar: " << ex.what());
 		}
 	}
 

@@ -111,7 +111,11 @@ void IconRenderer::performRendering(Model::Model* model, Icon* icon)
 		///the problem with PBuffer and Copy might be that we need to wait a little before we try to blit, since it's not guaranteed that the content will be correctly rendered (since the render ops are queued to the GPU)
 		///thus we need to create some kind of frame listener callback mechanism
 		if (mRenderContext->getViewport()) {
-			mRenderContext->getViewport()->update();
+			try {
+				mRenderContext->getViewport()->update();
+			} catch (const std::exception& ex) {
+				S_LOG_FAILURE("Error when updating render for IconRenderer: " << ex.what());
+			}
 		}
 
 // 		SDL_Delay(1000);

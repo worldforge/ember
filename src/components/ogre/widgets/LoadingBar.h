@@ -48,6 +48,7 @@ public:
 
 private:
 	void deactivate();
+
 	float mSize;
 	LoadingBar& mLoadingBar;
 	float mAccumulatedSize;
@@ -137,6 +138,13 @@ protected:
 	Ogre::OverlayElement* mLoadingDescriptionElement;
 	Ogre::OverlayElement* mLoadingCommentElement;
 	Ogre::OverlayElement* mVersionElement;
+
+	/**
+	 * @brief Updates the render of the loading bar.
+	 *
+	 * Be sure to call this after each change, else nothing will be updated to the user.
+	 */
+	void updateRender();
 
 public:
 	LoadingBar();

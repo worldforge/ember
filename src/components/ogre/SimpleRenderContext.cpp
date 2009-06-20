@@ -49,7 +49,11 @@ SimpleRenderContextResourceLoader::SimpleRenderContextResourceLoader(SimpleRende
 void SimpleRenderContextResourceLoader::loadResource (Ogre::Resource *resource)
 {
 	if (resource->getLoadingState() == Ogre::Resource::LOADSTATE_UNLOADED) {
-		mRenderContext.getRenderTexture()->update();
+		try {
+			mRenderContext.getRenderTexture()->update();
+		} catch (const std::exception& ex) {
+			S_LOG_FAILURE("Error when updating render for SimpleRenderContext, after the resource has been reloaded: " << ex.what());
+		}
 	}
 }
 
