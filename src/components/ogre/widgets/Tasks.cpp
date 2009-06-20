@@ -31,6 +31,7 @@
 
 #include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
 
 #include <Eris/Account.h>
 #include <Eris/TypeInfo.h>
@@ -71,13 +72,12 @@ void Tasks::doSomething()
 	Atlas::Message::ListType list;
 	list.push_back(task_args);
 
-	Atlas::Message::MapType args;
-	args["tasks"] = list;
-	args["id"] = EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity()->getId();
-	args["objtype"] = "obj";
+	Atlas::Objects::Entity::Anonymous obj;
+	obj->setAttr("id", EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity()->getId());
+	obj->setAttr("objtype", "obj");
+	obj->setAttr("tasks", list);
 
-	Atlas::Message::ListType sargsList(1, args);
-	s->setArgsAsList(sargsList);
+	s->setArgs1(obj);
 	s->setFrom(Ember::EmberServices::getSingleton().getServerService()->getAccount()->getId());
 
 	Ember::EmberServices::getSingleton().getServerService()->getConnection()->send(s);
