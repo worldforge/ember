@@ -88,8 +88,10 @@ TerrainPage::TerrainPage(TerrainPosition position, TerrainGenerator& generator)
 	for (int y = 0; y < getNumberOfSegmentsPerAxis(); ++y) {
 		for (int x = 0; x < getNumberOfSegmentsPerAxis(); ++x) {
 			Mercator::Segment* segment = getSegmentAtLocalIndex(x,y);
-			if (segment && segment->isValid()) {
- 				//S_LOG_VERBOSE("Segment is valid.");
+			if (segment) {
+				if (!segment->isValid()) {
+					segment->populate();
+				}
 				PageSegment pageSegment;
 				pageSegment.pos = TerrainPosition(x,y);
 				pageSegment.segment = segment;
@@ -408,6 +410,9 @@ bool TerrainPage::getNormal(const TerrainPosition& localPosition, WFMath::Vector
 
 	const Mercator::Segment* segment(getSegmentAtLocalPosition(localPosition));
 	if (segment) {
+		if (!segment->getNormals()) {
+			segment->populateNormals();
+		}
 		int resolution = segment->getResolution();
 		size_t xPos = localPosition.x() - (I_ROUND(floor(localPosition.x() / resolution)) * resolution);
 		size_t yPos = localPosition.y() - (I_ROUND(floor(localPosition.y() / resolution)) * resolution);

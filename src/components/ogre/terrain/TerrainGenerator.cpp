@@ -438,20 +438,20 @@ void TerrainGenerator::buildHeightmap()
 	///initialize all terrain here, since we need to do that in order to get the correct height for placement even though the terrain might not show up in the SceneManager yet
 
 	///note that we want to use int's here, since a call to getSegment(float, float) is very much different from a call to getSegment(int, int)
-	const WFMath::AxisBox<2>& segmentBbox = mTerrainInfo->getWorldSizeInSegments();
-	for (int i = static_cast<int>(segmentBbox.lowCorner().x()); i < segmentBbox.highCorner().x(); ++i) {
-		for (int j = static_cast<int>(segmentBbox.lowCorner().y()); j < segmentBbox.highCorner().y(); ++j) {
-			Mercator::Segment* segment = mTerrain->getSegment(i, j);
-			if (segment) {
-				//S_LOG_VERBOSE("Preparing segment at position: x=" << i << " y=" << j );
-				segment->populate();
-				segment->populateNormals();
-				segment->populateSurfaces();
-				mHeightMax = std::max(mHeightMax, segment->getMax());
-				mHeightMin = std::min(mHeightMin, segment->getMin());
-			}
-		}
-	}
+//	const WFMath::AxisBox<2>& segmentBbox = mTerrainInfo->getWorldSizeInSegments();
+//	for (int i = static_cast<int>(segmentBbox.lowCorner().x()); i < segmentBbox.highCorner().x(); ++i) {
+//		for (int j = static_cast<int>(segmentBbox.lowCorner().y()); j < segmentBbox.highCorner().y(); ++j) {
+//			Mercator::Segment* segment = mTerrain->getSegment(i, j);
+//			if (segment) {
+//				//S_LOG_VERBOSE("Preparing segment at position: x=" << i << " y=" << j );
+//				segment->populate();
+//				segment->populateNormals();
+//				segment->populateSurfaces();
+//				mHeightMax = std::max(mHeightMax, segment->getMax());
+//				mHeightMin = std::min(mHeightMin, segment->getMin());
+//			}
+//		}
+//	}
 }
 
 // void TerrainGenerator::createShaders(WorldEmberEntity* worldEntity)
