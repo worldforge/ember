@@ -73,8 +73,8 @@ void Tasks::doSomething()
 	list.push_back(task_args);
 
 	Atlas::Objects::Entity::Anonymous obj;
-	obj->setAttr("id", EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity()->getId());
-	obj->setAttr("objtype", "obj");
+	obj->setId(EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity()->getId());
+	obj->setObjtype("obj");
 	obj->setAttr("tasks", list);
 
 	s->setArgs1(obj);
