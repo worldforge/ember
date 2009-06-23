@@ -414,6 +414,8 @@ bool OgreSetup::configure(void)
 	mRenderWindow = mRoot->createRenderWindow("MainWindow", width, height, false, &misc);
 
 	//Due to a bug in the ATI drivers which results in random corruption of the GL stack when using the GLEW_SGIS_generate_mipmap extension we need to deactivate this for ATI cards with certain drivers.
+	//From version 1.6.3 and onwards this is deactivated in Ogre.
+#if OGRE_VERSION_MAJOR <= 1 && OGRE_VERSION_MINOR <= 6 && OGRE_VERSION_PATH <= 2
 	if (mRoot->getRenderSystem()->getCapabilities()->getVendor() == Ogre::GPU_ATI) {
 		S_LOG_WARNING("You're running a version of the ATI driver which has a known issue with an extension which will result in random crashes. I will now try to disable the extension. This will remove the random crashes, but might lead to other graphical issues. In addition, there will be an unavoidable crash when shutting down Ember. If you can, try to update your ATI driver to a newer version.");
 		Ogre::RenderSystemCapabilities *caps = mRoot->getRenderSystem()->createRenderSystemCapabilities();
@@ -428,6 +430,7 @@ bool OgreSetup::configure(void)
 
 		mRenderWindow = mRoot->createRenderWindow("MainWindow", width, height, false, &misc);
 	}
+#endif
 
 
 
