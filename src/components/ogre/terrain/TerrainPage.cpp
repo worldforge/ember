@@ -1,7 +1,7 @@
 //
 // C++ Implementation: TerrainPage
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -72,7 +72,7 @@ namespace EmberOgre {
 namespace Terrain {
 
 
-TerrainPage::TerrainPage(TerrainPosition position, TerrainGenerator* generator) 
+TerrainPage::TerrainPage(TerrainPosition position, TerrainGenerator& generator)
 : mGenerator(generator)
 , mPosition(position)
 , mTerrainSurface(new TerrainPageSurface(*this))
@@ -80,7 +80,7 @@ TerrainPage::TerrainPage(TerrainPosition position, TerrainGenerator* generator)
 , mShadowTechnique(0)
 , mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), (mPosition.y() - 1) * (getPageSize() - 1)), WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), (mPosition.y()) * (getPageSize() - 1))
 )
-, mPageFoliage(new TerrainPageFoliage(*mGenerator, *this))
+, mPageFoliage(new TerrainPageFoliage(mGenerator, *this))
 , mBridge(0)
 {
 
@@ -115,17 +115,17 @@ TerrainPage::~TerrainPage()
 
 Mercator::Segment* TerrainPage::getSegmentAtLocalIndex(int indexX, int indexY) const
 {
-// 	const TerrainInfo& info = mGenerator->getTerrainInfo();
+// 	const TerrainInfo& info = mGenerator.getTerrainInfo();
 	int segmentsPerAxis = getNumberOfSegmentsPerAxis();
 	//the mPosition is in the middle of the page, so we have to use an offset to get the real segment position
 	//int segmentOffset = static_cast<int>(info.getWorldSizeInSegments(). x() * 0.5);
 	int segmentOffset = segmentsPerAxis;
 	int segX = (int)((mPosition.x() * segmentsPerAxis) + indexX);
 	int segY = (int)((mPosition.y() * segmentsPerAxis) + indexY) - segmentOffset;
-	
+
 	//S_LOG_VERBOSE("Added segment with position " << segX << ":" << segY);
 
-	return mGenerator->getTerrain().getSegment(segX, segY);
+	return mGenerator.getTerrain().getSegment(segX, segY);
 }
 
 const Mercator::Segment* TerrainPage::getSegmentAtLocalPosition(const TerrainPosition& pos) const
@@ -148,7 +148,7 @@ const Mercator::Segment* TerrainPage::getSegmentAtLocalPosition(const TerrainPos
 {
 	int ix = I_ROUND(floor(pos.x() / 64));
 	int iy = I_ROUND(floor(pos.y() / 64));
-	
+
 	localPositionInSegment.x() = pos.x() - (ix * 64);
 	localPositionInSegment.y() = pos.y() - (iy * 64);
 
@@ -163,11 +163,11 @@ const Mercator::Segment* TerrainPage::getSegmentAtLocalPosition(const TerrainPos
 	return J->second;
 }
 
-int TerrainPage::getPageSize() const 
+int TerrainPage::getPageSize() const
 {
-	return mGenerator->getPageIndexSize();
+	return mGenerator.getPageIndexSize();
 }
-		
+
 int TerrainPage::getVerticeCount() const
 {
 	return (getPageSize() * getPageSize());
@@ -177,7 +177,7 @@ int TerrainPage::getNumberOfSegmentsPerAxis() const
 {
 	return (getPageSize() - 1) / 64;
 }
-	
+
 float TerrainPage::getMaxHeight() const
 {
 	float max = std::numeric_limits<float>::min();
@@ -186,20 +186,20 @@ float TerrainPage::getMaxHeight() const
 	}
 	return max;
 }
-	
+
 void TerrainPage::update()
 {
 	if (mBridge) {
 		mBridge->updateTerrain();
 	}
-	
+
 	Ogre::Vector2 targetPage = Atlas2Ogre_Vector2(mPosition);
-	
+
 	///note that we've switched the x and y offset here, since the terraininfo is in WF coords, but we now want Ogre coords
-	Ogre::Vector2 adjustedOgrePos(targetPage.x + mGenerator->getTerrainInfo().getPageOffsetY(), targetPage.y + mGenerator->getTerrainInfo().getPageOffsetX());
-	
+	Ogre::Vector2 adjustedOgrePos(targetPage.x + mGenerator.getTerrainInfo().getPageOffsetY(), targetPage.y + mGenerator.getTerrainInfo().getPageOffsetX());
+
 	S_LOG_VERBOSE("Updating terrain page at position x: " << adjustedOgrePos.x << " y: " << adjustedOgrePos.y);
-	mGenerator->getAdapter()->reloadPage(static_cast<unsigned int>(adjustedOgrePos.x), static_cast<unsigned int>(adjustedOgrePos.y));
+	mGenerator.getAdapter()->reloadPage(static_cast<unsigned int>(adjustedOgrePos.x), static_cast<unsigned int>(adjustedOgrePos.y));
 }
 
 void TerrainPage::setupShadowTechnique()
@@ -265,16 +265,16 @@ void TerrainPage::updateOgreHeightData(Ogre::Real* heightData)
 	if (heightData) {
 		const int pageSizeInVertices = getPageSize();
 		const int pageSizeInMeters = pageSizeInVertices - 1;
-		
+
 		///since Ogre uses a different coord system than WF, we have to do some conversions here
 		TerrainPosition origPosition(mPosition);
 		///start in one of the corners...
 		origPosition[0] = (mPosition[0] * pageSizeInMeters);
 		origPosition[1] = (mPosition[1] * pageSizeInMeters);
-		
+
 		S_LOG_INFO("Page x:" << mPosition.x() << " y:" << mPosition.y() << " starts at x:" << origPosition.x() << " y:" << origPosition.y());
 
-		const Mercator::Terrain& terrain = mGenerator->getTerrain();
+		const Mercator::Terrain& terrain = mGenerator.getTerrain();
 		TerrainPosition position(origPosition);
 
 		for (int i = 0; i < pageSizeInVertices; ++i) {
@@ -283,8 +283,8 @@ void TerrainPage::updateOgreHeightData(Ogre::Real* heightData)
 				*(heightData++) = terrain.get(position.x(), position.y());
 			}
 		}
-		
-		mGenerator->EventTerrainPageGeometryUpdated.emit(*this);
+
+		mGenerator.EventTerrainPageGeometryUpdated.emit(*this);
 	}
 }
 
@@ -382,10 +382,10 @@ TerrainPageSurfaceLayer* TerrainPage::updateShaderTexture(TerrainShader* shader,
 		layer = mTerrainSurface->updateLayer(shader->getTerrainIndex(), repopulate);
 		mTerrainSurface->recompileMaterial(false);
 	}
-	
+
 	mPageFoliage->generateCoverageMap();
 	return layer;
-	
+
 }
 
 void TerrainPage::registerBridge(ITerrainPageBridge* bridge)
@@ -393,7 +393,7 @@ void TerrainPage::registerBridge(ITerrainPageBridge* bridge)
 	mBridge = bridge;
 	mBridge->bindToTerrainPage(this);
 }
-	
+
 void TerrainPage::unregisterBridge()
 {
 	///we're not responsible for this one, so we don't destroy it here
@@ -404,7 +404,7 @@ bool TerrainPage::getNormal(const TerrainPosition& localPosition, WFMath::Vector
 {
 
 // 	float height;
-// 	return mGenerator->getTerrain().getHeightAndNormal(mExtent.lowCorner().x() + localPosition.x(), mExtent.lowCorner().y() + localPosition.y(), height, normal);
+// 	return mGenerator.getTerrain().getHeightAndNormal(mExtent.lowCorner().x() + localPosition.x(), mExtent.lowCorner().y() + localPosition.y(), height, normal);
 
 	const Mercator::Segment* segment(getSegmentAtLocalPosition(localPosition));
 	if (segment) {

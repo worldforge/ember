@@ -88,7 +88,7 @@ friend class TerrainPageShadow;
 friend class ITerrainPageShadowTechnique;
 public:
 
-	TerrainPage(TerrainPosition position, TerrainGenerator* generator);
+	TerrainPage(TerrainPosition position, TerrainGenerator& generator);
 
 	~TerrainPage();
 
@@ -252,16 +252,15 @@ public:
 
 private:
 
+	/**
+	 * @brief A store of the valid mercator segments which make up this page.
+	 */
 	SegmentVector mValidSegments;
 
-
 	/**
-	this holds a map of the area, to be used in a map widget etc.
-	*/
-	Ogre::TexturePtr mMap;
-
-
-	TerrainGenerator* mGenerator;
+	 * @brief The main terrain generator, which acts as a hub for all terrain functionality.
+	 */
+	TerrainGenerator& mGenerator;
 
 	/**
 	Internal position
@@ -270,7 +269,7 @@ private:
 
 
 	/**
-	 *    gets a segment for the x and y position in the page
+	 * @brief Gets a segment for the x and y position in the page.
 	 * @param x
 	 * @param y
 	 * @return

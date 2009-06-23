@@ -576,7 +576,7 @@ TerrainPage* TerrainGenerator::createPage(const TerrainPosition& pos)
 	///since we initialized all terrain in initTerrain we can count on all terrain segments being created and populated already
 
 
-	TerrainPage* page = new TerrainPage(TerrainPosition(pos), this);
+	TerrainPage* page = new TerrainPage(TerrainPosition(pos), *this);
 	//mPages[ss.str()] = page;
 
 	std::stringstream ss;

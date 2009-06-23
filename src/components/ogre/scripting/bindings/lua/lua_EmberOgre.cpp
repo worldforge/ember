@@ -4187,7 +4187,7 @@ static int tolua_EmberOgre_EmberOgre_Terrain_TerrainArea_new00(lua_State* tolua_
  {
   EmberOgre::EmberEntity* entity = ((EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,2,0));
   {
-   EmberOgre::Terrain::TerrainArea* tolua_ret = (EmberOgre::Terrain::TerrainArea*)  new EmberOgre::Terrain::TerrainArea(entity);
+   EmberOgre::Terrain::TerrainArea* tolua_ret = (EmberOgre::Terrain::TerrainArea*)  new EmberOgre::Terrain::TerrainArea(*entity);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Terrain::TerrainArea");
   }
  }
@@ -4217,7 +4217,7 @@ static int tolua_EmberOgre_EmberOgre_Terrain_TerrainArea_new00_local(lua_State* 
  {
   EmberOgre::EmberEntity* entity = ((EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,2,0));
   {
-   EmberOgre::Terrain::TerrainArea* tolua_ret = (EmberOgre::Terrain::TerrainArea*)  new EmberOgre::Terrain::TerrainArea(entity);
+   EmberOgre::Terrain::TerrainArea* tolua_ret = (EmberOgre::Terrain::TerrainArea*)  new EmberOgre::Terrain::TerrainArea(*entity);
    tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::Terrain::TerrainArea");
   }
  }

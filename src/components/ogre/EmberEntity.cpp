@@ -151,7 +151,7 @@ bool EmberEntity::createDependentObject(const std::string& attributeName)
 	///if we do have an mTerrainArea instance, all updates will be taken care of by that instead and we can ignore this
 	if (attributeName == "area" && !mTerrainArea.get())
 	{
-		mTerrainArea = std::auto_ptr<Terrain::TerrainArea>(new Terrain::TerrainArea(this));
+		mTerrainArea = std::auto_ptr<Terrain::TerrainArea>(new Terrain::TerrainArea(*this));
 		if (mTerrainArea->init())
 		{
 			addArea(mTerrainArea.get());
