@@ -44,8 +44,6 @@ namespace Mercator {
 
 namespace EmberOgre {
 class EmberEntity;
-class EmberEntityFactory;
-class EmberPagingSceneManager;
 class ShaderManager;
 
 namespace Terrain {
