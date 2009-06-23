@@ -53,7 +53,6 @@ class Input;
 namespace EmberOgre {
 
 class EmberEntity;
-class TerrainGenerator;
 class MousePicker;
 class GUICEGUIAdapter;
 class EntityWorldPickListener;
