@@ -575,11 +575,11 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 	for (TerrainDefPointStore::const_iterator I = terrainPoints.begin(); I != terrainPoints.end(); ++I) {
 		Mercator::BasePoint bp;
 		if (mTerrain->getBasePoint(static_cast<int>(I->getPosition().x()), static_cast<int>(I->getPosition().y()), bp) && (I->getHeight() == bp.height())) {
-			S_LOG_VERBOSE( "Point [" << I->getPosition().x() << "," << I->getPosition().y() << " unchanged");
+			S_LOG_VERBOSE( "Point [" << I->getPosition().x() << "," << I->getPosition().y() << "] unchanged");
 			continue;
 		} else {
 			wasUpdate = true;
-			S_LOG_VERBOSE( "Setting base point [" << I->getPosition().x() << "," << I->getPosition().y() << " to height " << I->getHeight());
+			S_LOG_VERBOSE( "Setting base point [" << I->getPosition().x() << "," << I->getPosition().y() << "] to height " << I->getHeight());
 		}
 		bp.height() = I->getHeight();
 
