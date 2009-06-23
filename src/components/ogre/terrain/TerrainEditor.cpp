@@ -570,11 +570,6 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 
 	}
 
-// 	for (TerrainGenerator::TerrainPagestore::const_iterator I = terrainGenerator->getTerrainPages().begin();I != terrainGenerator->getTerrainPages().end(); ++I) {
-// 		for (TerrainGenerator::TerrainPagecolumn::const_iterator J = I->second.begin();J != I->second.end(); ++J) {
-// 			pagesToUpdate.insert(J->second);
-// 		}
-// 	}
 	EmberOgre::getSingleton().getTerrainGenerator()->updateTerrain(pointStore);
 
 
