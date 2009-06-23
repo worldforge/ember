@@ -571,14 +571,12 @@ void TerrainGenerator::updateShadows()
 bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 {
 	std::vector<TerrainPosition> updatedPositions;
-	bool wasUpdate = false;
 	for (TerrainDefPointStore::const_iterator I = terrainPoints.begin(); I != terrainPoints.end(); ++I) {
 		Mercator::BasePoint bp;
 		if (mTerrain->getBasePoint(static_cast<int>(I->getPosition().x()), static_cast<int>(I->getPosition().y()), bp) && (I->getHeight() == bp.height())) {
 			S_LOG_VERBOSE( "Point [" << I->getPosition().x() << "," << I->getPosition().y() << "] unchanged");
 			continue;
 		} else {
-			wasUpdate = true;
 			S_LOG_VERBOSE( "Setting base point [" << I->getPosition().x() << "," << I->getPosition().y() << "] to height " << I->getHeight());
 		}
 		bp.height() = I->getHeight();
@@ -594,7 +592,7 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 	if (!mHasTerrainInfo) {
 		mHasTerrainInfo = true;
 	} else {
-		if (wasUpdate) {
+		if (!updatedPositions.empty()) {
 			///if it's an update, we need to reload all pages and adjust all entity positions
 			reloadTerrain(updatedPositions);
 		}
