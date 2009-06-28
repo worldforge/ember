@@ -45,6 +45,7 @@ namespace Terrain {
 
 class TerrainPageSurface;
 class TerrainLayerDefinition;
+class TerrainPageGeometry;
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -60,7 +61,7 @@ public:
      * Updates the coverage image with data from Mercator. The image will only be updated if it has been created. If not, nothing will happen.
      * @see createCoverageImage
      */
-    void updateCoverageImage();
+    void updateCoverageImage(const TerrainPageGeometry& geometry);
 
     /**
      * @brief Gets the Ogre Image instance which is the coverage image.
@@ -105,7 +106,7 @@ public:
 	 * We only want to add surface layers which we know intersects the page, so always call this before adding a layer.
 	 * @return True if it intersects, else false.
 	 */
-	bool intersects() const;
+	bool intersects(const TerrainPageGeometry& geometry) const;
 
 	Mercator::Shader* getShader() const;
 	int getSurfaceIndex() const;
@@ -116,7 +117,7 @@ public:
 
 	const TerrainLayerDefinition& getDefinition() const;
 
-	void populate();
+	void populate(const TerrainPageGeometry& geometry);
 
 	Ogre::TexturePtr createTexture();
 	bool unloadTexture();

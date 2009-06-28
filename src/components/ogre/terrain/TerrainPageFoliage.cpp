@@ -31,6 +31,8 @@
 #include "TerrainLayerDefinitionManager.h"
 #include "TerrainGenerator.h"
 #include "TerrainShader.h"
+#include "TerrainPageGeometry.h"
+#include "PlantAreaQuery.h"
 
 
 #include "framework/LoggingInstance.h"
@@ -143,18 +145,18 @@ const TerrainPageFoliage::PlantStoreMap& TerrainPageFoliage::getPlants() const
 	return mPlantStores;
 }
 
-void TerrainPageFoliage::getPlantsForArea(const TerrainLayerDefinition& layerDef, unsigned char threshold, const std::string& plantType, Ogre::TRect<float> area, TerrainPageFoliage::PlantStore& store) const
+void TerrainPageFoliage::getPlantsForArea(const TerrainPageGeometry& geometry, PlantAreaQuery& query) const
 {
 	//const PlantBatchStore& plantBatchStore = mPlantStores[plantType];
-	PlantStoreMap::const_iterator plantStoreMapIt = mPlantStores.find(plantType);
+	PlantStoreMap::const_iterator plantStoreMapIt = mPlantStores.find(query.getPlantType());
 	if (plantStoreMapIt == mPlantStores.end()) {
-		S_LOG_WARNING("Plant type ' " << plantType << "' doesn't exist in PlantStore");
+		S_LOG_WARNING("Plant type ' " << query.getPlantType() << "' doesn't exist in PlantStore");
 		return;
 	}
 
 	TerrainPosition localPositionInSegment;
-	const int batchX = Ogre::Math::Floor(area.left / mGenerator.getFoliageBatchSize());
-	const int batchY = Ogre::Math::Floor(area.top / mGenerator.getFoliageBatchSize());
+	const int batchX = Ogre::Math::Floor(query.getArea().left / mGenerator.getFoliageBatchSize());
+	const int batchY = Ogre::Math::Floor(query.getArea().top / mGenerator.getFoliageBatchSize());
 
 	//const PlantStore& plants = plantBatchStore[batchX][batchY];
 	PlantBatchStore::const_iterator plantBatchStoreIt = (*plantStoreMapIt).second.find(batchX);
@@ -168,17 +170,18 @@ void TerrainPageFoliage::getPlantsForArea(const TerrainLayerDefinition& layerDef
 		return;
 	}
 	const PlantStore& plants = (*plantBatchColumnIt).second;
+	PlantStore& store = query.getStore();
 	store.reserve(plants.size());
 
 	for (PlantStore::const_iterator I = plants.begin(); I != plants.end(); ++I) {
-		if (I->x >= area.left && I->x <= area.right && I->y >= area.top && I->y <= area.bottom) {
+		if (I->x >= query.getArea().left && I->x <= query.getArea().right && I->y >= query.getArea().top && I->y <= query.getArea().bottom) {
 
 			#if 1
 			unsigned char combinedCoverage(0);
 			float x = I->x;
 			float y = mCoverageMapPixelWidth - I->y;
 
-			const Mercator::Segment* segment = mTerrainPage.getSegmentAtLocalPosition(TerrainPosition(x, y), localPositionInSegment);
+			const Mercator::Segment* segment = geometry.getSegmentAtLocalPosition(TerrainPosition(x, y), localPositionInSegment);
 			if ((segment == 0) || (!segment->isValid())) {
 				continue;
 			}
@@ -194,11 +197,11 @@ void TerrainPageFoliage::getPlantsForArea(const TerrainLayerDefinition& layerDef
 						unsigned char localCoverage((*surface)(static_cast<unsigned int>(localPositionInSegment.x()), static_cast<unsigned int>(localPositionInSegment.y()), 0));
 						combinedCoverage -= std::min<unsigned char>(localCoverage, combinedCoverage);
 					}
-				} else if (!activeLayer && &currentLayerDef == &layerDef) {
+				} else if (!activeLayer && &currentLayerDef == &query.getLayerDef()) {
 					Mercator::Surface* surface = J->second->getSurfaceForSegment(segment);
 					if (surface && surface->isValid()) {
 						combinedCoverage = (*surface)(static_cast<unsigned int>(localPositionInSegment.x()), static_cast<unsigned int>(localPositionInSegment.y()), 0);
-						if (combinedCoverage >= threshold) {
+						if (combinedCoverage >= query.getThreshold()) {
 							activeLayer = J->second;
 						} else {
 							break;
@@ -208,7 +211,7 @@ void TerrainPageFoliage::getPlantsForArea(const TerrainLayerDefinition& layerDef
 					}
 				}
 			}
-			if (combinedCoverage >= threshold) {
+			if (combinedCoverage >= query.getThreshold()) {
 				store.push_back(*I);
 			}
 

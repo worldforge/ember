@@ -1,7 +1,7 @@
 //
 // C++ Implementation: TerrainPageGeometry
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -26,17 +26,160 @@
 
 #include "TerrainPageGeometry.h"
 
-namespace EmberOgre {
-namespace Terrain {
+#include "TerrainPage.h"
+#include <Mercator/Segment.h>
+#include <Mercator/Terrain.h>
 
-TerrainPageGeometry::TerrainPageGeometry()
+#ifdef HAVE_LRINTF
+    #define I_ROUND(_x) (::lrintf(_x))
+#elif defined(HAVE_RINTF)
+    #define I_ROUND(_x) ((int)::rintf(_x))
+#elif defined(HAVE_RINT)
+    #define I_ROUND(_x) ((int)::rint(_x))
+#else
+    #define I_ROUND(_x) ((int)(_x))
+#endif
+
+namespace EmberOgre
+{
+namespace Terrain
+{
+
+TerrainPageGeometry::TerrainPageGeometry(TerrainPage& page) :
+	mPage(page)
 {
 }
-
 
 TerrainPageGeometry::~TerrainPageGeometry()
 {
 }
 
+void TerrainPageGeometry::init(const Mercator::Terrain& terrain)
+{
+	for (int y = 0; y < mPage.getNumberOfSegmentsPerAxis(); ++y) {
+		for (int x = 0; x < mPage.getNumberOfSegmentsPerAxis(); ++x) {
+			Mercator::Segment* segment = getSegmentAtLocalIndex(terrain, x,y);
+			if (segment) {
+				if (!segment->isValid()) {
+					segment->populate();
+					segment->populateNormals();
+				}
+				PageSegment pageSegment;
+				pageSegment.index = TerrainPosition(x,y);
+				pageSegment.segment = segment;
+				mValidSegments.push_back(pageSegment);
+			}
+			mLocalSegments[x][y] = segment;
+		}
+	}
+	S_LOG_VERBOSE("Number of valid segments: " << mValidSegments.size());
+
+}
+
+float TerrainPageGeometry::getMaxHeight() const
+{
+	float max = std::numeric_limits<float>::min();
+	for (SegmentVector::const_iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
+		max = std::max<float>(max, I->segment->getMax());
+	}
+	return max;
+}
+void TerrainPageGeometry::updateOgreHeightData(float* heightData)
+{
+	int i = 0;
+	for (Mercator::Terrain::Segmentstore::const_iterator I = mLocalSegments.begin(); I != mLocalSegments.end(); ++I) {
+		++i;
+		int j = 0;
+		for (Mercator::Terrain::Segmentcolumn::const_iterator J = I->second.begin(); J != I->second.end(); ++J) {
+			++j;
+			Mercator::Segment* segment = J->second;
+			if (segment) {
+				blitSegmentToOgre(heightData, *segment, i * 64, (mPage.getNumberOfSegmentsPerAxis() - j - 1) * 64);
+			}
+		}
+	}
+}
+
+void TerrainPageGeometry::blitSegmentToOgre(float* ogreHeightData, Mercator::Segment& segment, int startX, int startY)
+{
+
+	int width = 64;
+	int finalBitmapWidth = mPage.getPageSize();
+
+	float* segmentHeightPtr = segment.getPoints();
+
+	float* start = ogreHeightData + (finalBitmapWidth * (startY - 1)) + ((startX - 1));
+	float* end = start + (width * finalBitmapWidth) + width;
+	///we need to do this to get the alignment correct
+	segmentHeightPtr += (width + 1);
+
+	float* tempPtr = end + 1 ;
+	for (unsigned int i = 0; i < width; ++i)
+	{
+		tempPtr -= width;
+		for (unsigned int j = 0; j < width; ++j)
+		{
+			*(tempPtr) = *(segmentHeightPtr + j);
+			tempPtr += 1;
+		}
+		tempPtr -= finalBitmapWidth;
+		segmentHeightPtr += (width + 1);
+	}
+}
+
+Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalIndex(const Mercator::Terrain& terrain, int indexX, int indexY) const
+{
+// 	const TerrainInfo& info = mGenerator.getTerrainInfo();
+	int segmentsPerAxis = mPage.getNumberOfSegmentsPerAxis();
+	//the mPosition is in the middle of the page, so we have to use an offset to get the real segment position
+	//int segmentOffset = static_cast<int>(info.getWorldSizeInSegments(). x() * 0.5);
+	int segmentOffset = segmentsPerAxis;
+	int segX = (int)((mPage.getWFPosition().x() * segmentsPerAxis) + indexX);
+	int segY = (int)((mPage.getWFPosition().y() * segmentsPerAxis) + indexY) - segmentOffset;
+
+	//S_LOG_VERBOSE("Added segment with position " << segX << ":" << segY);
+
+	return terrain.getSegment(segX, segY);
+}
+
+const Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalPosition(const TerrainPosition& pos) const
+{
+	int ix = I_ROUND(floor(pos.x() / 64));
+	int iy = I_ROUND(floor(pos.y() / 64));
+
+	Mercator::Terrain::Segmentstore::const_iterator I = mLocalSegments.find(ix);
+	if (I == mLocalSegments.end()) {
+		return 0;
+	}
+	Mercator::Terrain::Segmentcolumn::const_iterator J = I->second.find(iy);
+	if (J == I->second.end()) {
+		return 0;
+	}
+	return J->second;
+}
+
+const Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalPosition(const TerrainPosition& pos, TerrainPosition& localPositionInSegment) const
+{
+	int ix = I_ROUND(floor(pos.x() / 64));
+	int iy = I_ROUND(floor(pos.y() / 64));
+
+	localPositionInSegment.x() = pos.x() - (ix * 64);
+	localPositionInSegment.y() = pos.y() - (iy * 64);
+
+	Mercator::Terrain::Segmentstore::const_iterator I = mLocalSegments.find(ix);
+	if (I == mLocalSegments.end()) {
+		return 0;
+	}
+	Mercator::Terrain::Segmentcolumn::const_iterator J = I->second.find(iy);
+	if (J == I->second.end()) {
+		return 0;
+	}
+	return J->second;
+}
+
+const SegmentVector& TerrainPageGeometry::getValidSegments() const
+{
+	return mValidSegments;
+}
 }
 }

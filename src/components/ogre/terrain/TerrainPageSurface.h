@@ -44,6 +44,7 @@ class TerrainPageSurfaceLayer;
 class TerrainPage;
 class TerrainPageSurfaceCompiler;
 class TerrainPageShadow;
+class TerrainPageGeometry;
 class TerrainLayerDefinition;
 
 /**
@@ -64,7 +65,7 @@ public:
 	 */
 	const TerrainPosition& getWFPosition() const;
 
-	const SegmentVector& getValidSegments() const;
+//	const SegmentVector& getValidSegments() const;
 
 	/**
 	 *    The number of Mercator::Segments for each axis. I.e. the root of the total number of segments.
@@ -80,13 +81,13 @@ public:
 	 * @brief Recompiles the material.
 	 * @param reselectTechnique If true, we'll also see if we need to reselect the technique to use.
 	 */
-	void recompileMaterial(bool reselectTechnique);
+	void recompileMaterial(const TerrainPageGeometry& geometry, bool reselectTechnique);
 
 	void setShadow(TerrainPageShadow* shadow);
 
 	const TerrainPageSurfaceLayerStore& getLayers() const;
 
-	TerrainPageSurfaceLayer* updateLayer(int layerIndex, bool repopulate);
+	TerrainPageSurfaceLayer* updateLayer(TerrainPageGeometry& geometry, int layerIndex, bool repopulate);
 
 protected:
 

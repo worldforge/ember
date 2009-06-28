@@ -57,10 +57,10 @@ TerrainPageSurfaceCompilerShaderPassCoverageBatch::~TerrainPageSurfaceCompilerSh
 	OGRE_DELETE mCombinedCoverageDataStream;
 }
 
-void TerrainPageSurfaceCompilerShaderPassCoverageBatch::addLayer(TerrainPageSurfaceLayer* layer)
+void TerrainPageSurfaceCompilerShaderPassCoverageBatch::addLayer(const TerrainPageGeometry& geometry, TerrainPageSurfaceLayer* layer)
 {
 	layer->createCoverageImage();
-	layer->updateCoverageImage();
+	layer->updateCoverageImage(geometry);
 	addCoverage(layer->getCoverageImage(), mLayers.size(), 4);
 	mLayers.push_back(layer);
 	layer->destroyCoverageImage();
@@ -175,7 +175,7 @@ void TerrainPageSurfaceCompilerTechniqueShader::reset()
 }
 
 
-bool TerrainPageSurfaceCompilerTechniqueShader::compileMaterial(Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow)
+bool TerrainPageSurfaceCompilerTechniqueShader::compileMaterial(const TerrainPageGeometry& geometry, Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow)
 {
 	reset();
 	material->removeAllTechniques();
@@ -195,8 +195,8 @@ bool TerrainPageSurfaceCompilerTechniqueShader::compileMaterial(Ogre::MaterialPt
 					if (I == terrainPageSurfaces.begin()) {
 						shaderPass->setBaseLayer(surfaceLayer);
 					} else {
-						if (surfaceLayer->intersects()) {
-							shaderPass->addLayer(surfaceLayer);
+						if (surfaceLayer->intersects(geometry)) {
+							shaderPass->addLayer(geometry, surfaceLayer);
 						}
 					}
 				} else {
@@ -215,8 +215,8 @@ bool TerrainPageSurfaceCompilerTechniqueShader::compileMaterial(Ogre::MaterialPt
 					if (I == terrainPageSurfaces.begin()) {
 						shaderPass->setBaseLayer(surfaceLayer);
 					} else {
-						if (surfaceLayer->intersects()) {
-							shaderPass->addLayer(surfaceLayer);
+						if (surfaceLayer->intersects(geometry)) {
+							shaderPass->addLayer(geometry, surfaceLayer);
 						}
 					}
 				} else {
@@ -245,8 +245,8 @@ bool TerrainPageSurfaceCompilerTechniqueShader::compileMaterial(Ogre::MaterialPt
 				if (I == terrainPageSurfaces.begin()) {
 					shaderPass->setBaseLayer(surfaceLayer);
 				} else {
-					if (surfaceLayer->intersects()) {
-						shaderPass->addLayer(surfaceLayer);
+					if (surfaceLayer->intersects(geometry)) {
+						shaderPass->addLayer(geometry, surfaceLayer);
 					}
 				}
 			} else {
@@ -331,7 +331,7 @@ TerrainPageSurfaceCompilerShaderPassCoverageBatch* TerrainPageSurfaceCompilerSha
 }
 
 
-void TerrainPageSurfaceCompilerShaderPass::addLayer(TerrainPageSurfaceLayer* layer)
+void TerrainPageSurfaceCompilerShaderPass::addLayer(const TerrainPageGeometry& geometry, TerrainPageSurfaceLayer* layer)
 {
 // 	Ogre::ushort numberOfTextureUnitsOnCard = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits();
 // // 	if (mCurrentLayerIndex < std::min<unsigned short>(numberOfTextureUnitsOnCard - 1, 4)) {
@@ -342,7 +342,7 @@ void TerrainPageSurfaceCompilerShaderPass::addLayer(TerrainPageSurfaceLayer* lay
 // 		textureUnitState->setTextureCoordSet(0);
 // 		textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 
-		getCurrentBatch()->addLayer(layer);
+		getCurrentBatch()->addLayer(geometry, layer);
 
 // 		mCurrentLayerIndex++;
 		mScales[mLayers.size()] = layer->getScale();

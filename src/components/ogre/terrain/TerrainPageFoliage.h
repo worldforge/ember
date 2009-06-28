@@ -1,7 +1,7 @@
 //
 // C++ Interface: TerrainPageFoliage
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -49,7 +49,8 @@ class TerrainPageSurface;
 class TerrainPage;
 class TerrainPageFoliage;
 class TerrainLayerDefinition;
-
+class TerrainPageGeometry;
+class PlantAreaQuery;
 // struct PlantPosition
 // {
 // 	Ogre::Vector2 pos;
@@ -63,7 +64,7 @@ class TerrainLayerDefinition;
 class TerrainPageFoliage
 {
 public:
-	/** 
+	/**
 	A store of plant positions. We keep this in ogre space for performance reasons.
 	*/
 	typedef std::vector<Ogre::Vector2, Ogre::STLAllocator<Ogre::Vector2, Ogre::CategorisedAlignAllocPolicy<Ogre::MEMCATEGORY_GEOMETRY> > > PlantStore;
@@ -79,19 +80,19 @@ public:
 	 *    Generates the plant positions for all registered plant types.
 	 */
 	void generatePlantPositions();
-	
-	
+
+
 	/**
 	 *    Regenerates the coverage map which can be used for quick lookup for plant probability.
 	 */
 	void generateCoverageMap();
-	
+
 	/**
 	 *    Gets all plants.
-	 * @return 
+	 * @return
 	 */
 	const PlantStoreMap& getPlants() const;
-	
+
 	/**
 	 *    Place the plants for the supplied area in the supplied store.
 	 * @param layer The layer which we should use as base for determining what plants to get.
@@ -99,18 +100,18 @@ public:
 	 * @param area The enclosing area.
 	 * @param store The store in which to place the plants.
 	 */
-	void getPlantsForArea(const TerrainLayerDefinition& layerDef, unsigned char threshold, const std::string& plantType, Ogre::TRect<float> area, PlantStore& store) const;
+	void getPlantsForArea(const TerrainPageGeometry& geometry, PlantAreaQuery& query) const;
 
 	TerrainPage& getTerrainPage() const;
 
 	unsigned int getCoverageMapPixelWidth() const;
-	
+
 protected:
 	/**
 	The positions of the plants. These are precalulcated and not changed.
 	*/
 	PlantStoreMap mPlantStores;
-	
+
 	TerrainGenerator& mGenerator;
 	TerrainPage& mTerrainPage;
 	/**
@@ -119,11 +120,11 @@ protected:
 	*/
 	Ogre::MemoryDataStream* mFoliageCoverageDataStream;
 	Ogre::DataStreamPtr mFoliageCoverageDataStreamPtr;
-	
+
 	unsigned int mCoverageMapPixelWidth;
-	
+
 	void setupBatches();
-	
+
 };
 
 class PlantPopulator
@@ -132,7 +133,7 @@ public:
 
 	PlantPopulator(TerrainPageFoliage& terrainPageFoliage);
 	virtual ~PlantPopulator();
-	
+
 	virtual void populate(TerrainPageFoliage::PlantBatchStore& plantBatchStore, int plantIndex, unsigned int batchSize) = 0;
 
 protected:
@@ -146,7 +147,7 @@ class ClusterPopulator : public PlantPopulator
 public:
 	ClusterPopulator(TerrainPageFoliage& terrainPageFoliage);
 	virtual ~ClusterPopulator();
-	
+
 	virtual void populate(TerrainPageFoliage::PlantBatchStore& plantBatchStore, int plantIndex, unsigned int batchSize);
 
 	void setMinClusterRadius ( float theValue );

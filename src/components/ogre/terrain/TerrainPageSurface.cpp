@@ -28,6 +28,7 @@
 #include "TerrainPageShadow.h"
 #include "TerrainPageSurfaceLayer.h"
 #include "TerrainPageSurfaceCompiler.h"
+#include "TerrainPageGeometry.h"
 #include "TerrainLayerDefinition.h"
 #include "../MathConverter.h"
 #include <OgreMaterialManager.h>
@@ -68,14 +69,14 @@ const TerrainPageSurface::TerrainPageSurfaceLayerStore& TerrainPageSurface::getL
 	return mLayers;
 }
 
-TerrainPageSurfaceLayer* TerrainPageSurface::updateLayer(int layerIndex, bool repopulate)
+TerrainPageSurfaceLayer* TerrainPageSurface::updateLayer(TerrainPageGeometry& geometry, int layerIndex, bool repopulate)
 {
 	TerrainPageSurfaceLayerStore::iterator I = mLayers.find(layerIndex);
 	if (I != mLayers.end()) {
 		if (repopulate) {
-			I->second->populate();
+			I->second->populate(geometry);
 		}
-		I->second->updateCoverageImage();
+		I->second->updateCoverageImage(geometry);
 		return I->second;
 	}
 	return 0;
@@ -88,10 +89,10 @@ const TerrainPosition& TerrainPageSurface::getWFPosition() const
 }
 
 
-const SegmentVector& TerrainPageSurface::getValidSegments() const
-{
-	return mTerrainPage.getValidSegments();
-}
+//const SegmentVector& TerrainPageSurface::getValidSegments() const
+//{
+//	return mTerrainPage.getValidSegments();
+//}
 
 
 int TerrainPageSurface::getNumberOfSegmentsPerAxis() const
@@ -109,7 +110,7 @@ const Ogre::MaterialPtr TerrainPageSurface::getMaterial() const
 	return mMaterial;
 }
 
-void TerrainPageSurface::recompileMaterial(bool reselectTechnique)
+void TerrainPageSurface::recompileMaterial(const TerrainPageGeometry& geometry, bool reselectTechnique)
 {
 // 	if (!mMaterial.isNull()) {
 // 		mMaterial->unload();
@@ -119,7 +120,7 @@ void TerrainPageSurface::recompileMaterial(bool reselectTechnique)
 		 mSurfaceCompiler.reset(new TerrainPageSurfaceCompiler());
 	}
 
-	mSurfaceCompiler->compileMaterial(mMaterial, mLayers, mShadow, mTerrainPage);
+	mSurfaceCompiler->compileMaterial(geometry, mMaterial, mLayers, mShadow, mTerrainPage);
 	//mMaterial->reload();
 
 	updateSceneManagersAfterMaterialsChange();

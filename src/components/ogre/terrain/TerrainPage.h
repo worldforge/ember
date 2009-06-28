@@ -44,16 +44,6 @@ namespace Mercator {
 	class Segment;
 }
 
-namespace EmberOgre {
-
-struct PageSegment
-{
-	TerrainPosition pos;
-	Mercator::Segment* segment;
-};
-
-typedef std::vector<PageSegment> SegmentVector;
-}
 
 namespace Ogre
 {
@@ -69,7 +59,9 @@ class TerrainPage;
 class TerrainPageFoliage;
 class TerrainPageSurfaceLayer;
 class ITerrainPageBridge;
-class terrainModListEntry;
+//class terrainModListEntry;
+class TerrainPageGeometry;
+class PlantAreaQuery;
 
 
 /**
@@ -100,12 +92,6 @@ public:
 	 */
 	int getNumberOfSegmentsPerAxis() const;
 
-
-	/**
-	 *    The max height of this page
-	 * @return Max height
-	 */
-	float getMaxHeight() const;
 
 	/**
 	 * @brief Generates the terrain materials needed.
@@ -178,7 +164,7 @@ public:
 	 */
 	void updateAllShaderTextures(bool repopulate = true);
 
-	void populateSurfaces();
+//	void populateSurfaces();
 
 	int getPageSize() const;
 
@@ -194,7 +180,11 @@ public:
 	 */
 	int getAlphaTextureSize() const;
 
-	const SegmentVector& getValidSegments() const;
+	/**
+	 *    The max height of this page
+	 * @return Max height
+	 */
+	float getMaxHeight() const;
 
 	/**
 	 *    Gets the extent of this page in meters, in worldforge space.
@@ -206,24 +196,19 @@ public:
 
 	const TerrainPageSurface* getSurface() const;
 
-	const TerrainPageFoliage* getPageFoliage() const;
+	/**
+	 *    Place the plants for the supplied area in the supplied store.
+	 * @param layer The layer which we should use as base for determining what plants to get.
+	 * @param plantType The plant type.
+	 * @param area The enclosing area.
+	 * @param store The store in which to place the plants.
+	 */
+	void getPlantsForArea(PlantAreaQuery& query) const;
+
+	//	const TerrainPageFoliage* getPageFoliage() const;
 
 	const TerrainPageShadow& getPageShadow() const;
 
-	/**
-	 *    Gets the segment positioned at the supplied position in local space.
-	 * @param pos A Wordforge position in local space, i.e. > 0 && < [width in meters of the page]
-	 * @return A pointer to Mercator::Segment or null.
-	 */
-	const Mercator::Segment* getSegmentAtLocalPosition(const TerrainPosition& pos) const;
-
-	/**
-	 *    Gets the segment positioned at the supplied position in local space and also translates the supplied position into a local position in the returned segment.
-	 * @param pos A Wordforge position in local space, i.e. > 0 && < [width in meters of the page]
-	 * @param localPositionInSegment The resulting position in the segment space.
-	 * @return A pointer to Mercator::Segment or null.
-	 */
-	const Mercator::Segment* getSegmentAtLocalPosition(const TerrainPosition& pos, TerrainPosition& localPositionInSegment) const;
 
 
 	/**
@@ -252,10 +237,6 @@ public:
 
 private:
 
-	/**
-	 * @brief A store of the valid mercator segments which make up this page.
-	 */
-	SegmentVector mValidSegments;
 
 	/**
 	 * @brief The main terrain generator, which acts as a hub for all terrain functionality.
@@ -267,21 +248,13 @@ private:
 	*/
 	TerrainPosition mPosition;
 
-
-	/**
-	 * @brief Gets a segment for the x and y position in the page.
-	 * @param x
-	 * @param y
-	 * @return
-	 */
-	Mercator::Segment* getSegmentAtLocalIndex(int indexX, int indexY) const;
-
+	std::auto_ptr<TerrainPageGeometry> mGeometry;
 
 
 
 	/**
-	* How much to scale the alpha map. This is done to avoid pixelated terrain (a blur filter is applied).
-	This value is taken from the config file.
+	* @brief How much to scale the alpha map. This is done to avoid pixelated terrain (a blur filter is applied).
+	* This value is taken from the config file.
 	*/
 	unsigned int getAlphaMapScale() const;
 
@@ -296,11 +269,6 @@ private:
 	const WFMath::AxisBox<2> mExtent;
 	std::auto_ptr<TerrainPageFoliage> mPageFoliage;
 
-	/**
-	A local copy of the segments for fast lookup. This will also include nonvalid segments.
-	The keys will be the local indices.
-	*/
-	Mercator::Terrain::Segmentstore mLocalSegments;
 
 
 	/**

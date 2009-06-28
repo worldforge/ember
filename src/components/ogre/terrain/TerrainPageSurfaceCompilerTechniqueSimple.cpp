@@ -26,6 +26,7 @@
 
 #include "TerrainPageSurfaceCompilerTechniqueSimple.h"
 #include "TerrainPageSurfaceLayer.h"
+#include "TerrainPageGeometry.h"
 #include <OgreTechnique.h>
 #include <OgrePass.h>
 #include <OgreTextureUnitState.h>
@@ -34,7 +35,7 @@ namespace EmberOgre {
 
 namespace Terrain {
 
-bool TerrainPageSurfaceCompilerTechniqueSimple::compileMaterial(Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow)
+bool TerrainPageSurfaceCompilerTechniqueSimple::compileMaterial(const TerrainPageGeometry& geometry, Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow)
 {
 	material->removeAllTechniques();
 	Ogre::Technique* technique = material->createTechnique();
@@ -49,8 +50,8 @@ bool TerrainPageSurfaceCompilerTechniqueSimple::compileMaterial(Ogre::MaterialPt
 			textureUnitState->setTextureName(surfaceLayer->getDiffuseTextureName());
 			textureUnitState->setTextureCoordSet(0);
 		} else {
-			if (surfaceLayer->intersects()) {
-				addPassToTechnique(technique, surfaceLayer);
+			if (surfaceLayer->intersects(geometry)) {
+				addPassToTechnique(geometry, technique, surfaceLayer);
 			}
 		}
 	}
@@ -138,7 +139,7 @@ void TerrainPageSurfaceCompilerTechniqueSimple::setPage(TerrainPage* page)
 //
 // }
 //
-Ogre::Pass* TerrainPageSurfaceCompilerTechniqueSimple::addPassToTechnique(Ogre::Technique* technique, TerrainPageSurfaceLayer* layer) {
+Ogre::Pass* TerrainPageSurfaceCompilerTechniqueSimple::addPassToTechnique(const TerrainPageGeometry& geometry, Ogre::Technique* technique, TerrainPageSurfaceLayer* layer) {
 	///check if we instead can reuse the existing pass
 // 	if (technique->getNumPasses() != 0) {
 // 		Ogre::Pass* pass = technique->getPass(technique->getNumPasses() - 1);
@@ -155,13 +156,13 @@ Ogre::Pass* TerrainPageSurfaceCompilerTechniqueSimple::addPassToTechnique(Ogre::
 	if (layer->getCoverageTextureName() == "") {
 		///no texture yet; let's create one
 		layer->createCoverageImage();
-		layer->updateCoverageImage();
+		layer->updateCoverageImage(geometry);
 		layer->createTexture();
 // 		layer->destroyCoverageImage();
 	} else {
 		///a texture exists, so we just need to update the image
 // 		layer->createCoverageImage();
-		layer->updateCoverageImage(); ///calling this will also update the texture since the method will blit the image onto it
+		layer->updateCoverageImage(geometry); ///calling this will also update the texture since the method will blit the image onto it
 // 		layer->destroyCoverageImage();
 	}
 

@@ -34,12 +34,13 @@ namespace Terrain {
 class TerrainPageSurfaceLayer;
 class TerrainPageShadow;
 class TerrainPage;
+class TerrainPageGeometry;
 
 class TerrainPageSurfaceCompilerTechnique
 {
 public:
 	virtual ~TerrainPageSurfaceCompilerTechnique() {}
-    virtual bool compileMaterial(Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow) = 0;
+    virtual bool compileMaterial(const TerrainPageGeometry& geometry, Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow) = 0;
     virtual void setPage(TerrainPage* page) = 0;
 
 protected:
@@ -54,12 +55,12 @@ public:
 
     virtual ~TerrainPageSurfaceCompiler();
 
-    void compileMaterial(Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow, TerrainPage& page);
+    void compileMaterial(const TerrainPageGeometry& geometry, Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow, TerrainPage& page);
 
 private:
 
 	void selectTechnique();
-	void fallback(Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow, TerrainPage& page);
+	void fallback(const TerrainPageGeometry& geometry, Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow, TerrainPage& page);
 	std::auto_ptr<TerrainPageSurfaceCompilerTechnique> mTechnique;
 
 };

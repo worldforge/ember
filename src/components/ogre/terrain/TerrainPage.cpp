@@ -28,6 +28,8 @@
 
 #include "TerrainPage.h"
 
+
+#include "TerrainPageGeometry.h"
 #include "TerrainShader.h"
 #include "TerrainPageSurfaceLayer.h"
 #include "ITerrainPageBridge.h"
@@ -42,6 +44,7 @@
 #include "TerrainPageSurface.h"
 #include "TerrainLayerDefinition.h"
 #include "TerrainPageFoliage.h"
+#include "PlantAreaQuery.h"
 #include "ISceneManagerAdapter.h"
 
 #include "framework/LoggingInstance.h"
@@ -66,6 +69,8 @@
     #define I_ROUND(_x) ((int)(_x))
 #endif
 
+
+
 using namespace EmberOgre::Environment;
 
 namespace EmberOgre {
@@ -75,6 +80,7 @@ namespace Terrain {
 TerrainPage::TerrainPage(TerrainPosition position, TerrainGenerator& generator)
 : mGenerator(generator)
 , mPosition(position)
+, mGeometry(new TerrainPageGeometry(*this))
 , mTerrainSurface(new TerrainPageSurface(*this))
 , mShadow(*this)
 , mShadowTechnique(0)
@@ -85,22 +91,7 @@ TerrainPage::TerrainPage(TerrainPosition position, TerrainGenerator& generator)
 {
 
 	S_LOG_VERBOSE("Creating TerrainPage at position " << position.x() << ":" << position.y());
-	for (int y = 0; y < getNumberOfSegmentsPerAxis(); ++y) {
-		for (int x = 0; x < getNumberOfSegmentsPerAxis(); ++x) {
-			Mercator::Segment* segment = getSegmentAtLocalIndex(x,y);
-			if (segment) {
-				if (!segment->isValid()) {
-					segment->populate();
-				}
-				PageSegment pageSegment;
-				pageSegment.pos = TerrainPosition(x,y);
-				pageSegment.segment = segment;
-				mValidSegments.push_back(pageSegment);
-			}
-			mLocalSegments[x][y] = segment;
-		}
-	}
-	S_LOG_VERBOSE("Number of valid segments: " << mValidSegments.size());
+	mGeometry->init(mGenerator.getTerrain());
 	setupShadowTechnique();
 	mTerrainSurface->setShadow(&mShadow);
 
@@ -115,54 +106,9 @@ TerrainPage::~TerrainPage()
 	}
 }
 
-Mercator::Segment* TerrainPage::getSegmentAtLocalIndex(int indexX, int indexY) const
+float TerrainPage::getMaxHeight() const
 {
-// 	const TerrainInfo& info = mGenerator.getTerrainInfo();
-	int segmentsPerAxis = getNumberOfSegmentsPerAxis();
-	//the mPosition is in the middle of the page, so we have to use an offset to get the real segment position
-	//int segmentOffset = static_cast<int>(info.getWorldSizeInSegments(). x() * 0.5);
-	int segmentOffset = segmentsPerAxis;
-	int segX = (int)((mPosition.x() * segmentsPerAxis) + indexX);
-	int segY = (int)((mPosition.y() * segmentsPerAxis) + indexY) - segmentOffset;
-
-	//S_LOG_VERBOSE("Added segment with position " << segX << ":" << segY);
-
-	return mGenerator.getTerrain().getSegment(segX, segY);
-}
-
-const Mercator::Segment* TerrainPage::getSegmentAtLocalPosition(const TerrainPosition& pos) const
-{
-	int ix = I_ROUND(floor(pos.x() / 64));
-	int iy = I_ROUND(floor(pos.y() / 64));
-
-	Mercator::Terrain::Segmentstore::const_iterator I = mLocalSegments.find(ix);
-	if (I == mLocalSegments.end()) {
-		return 0;
-	}
-	Mercator::Terrain::Segmentcolumn::const_iterator J = I->second.find(iy);
-	if (J == I->second.end()) {
-		return 0;
-	}
-	return J->second;
-}
-
-const Mercator::Segment* TerrainPage::getSegmentAtLocalPosition(const TerrainPosition& pos, TerrainPosition& localPositionInSegment) const
-{
-	int ix = I_ROUND(floor(pos.x() / 64));
-	int iy = I_ROUND(floor(pos.y() / 64));
-
-	localPositionInSegment.x() = pos.x() - (ix * 64);
-	localPositionInSegment.y() = pos.y() - (iy * 64);
-
-	Mercator::Terrain::Segmentstore::const_iterator I = mLocalSegments.find(ix);
-	if (I == mLocalSegments.end()) {
-		return 0;
-	}
-	Mercator::Terrain::Segmentcolumn::const_iterator J = I->second.find(iy);
-	if (J == I->second.end()) {
-		return 0;
-	}
-	return J->second;
+	return mGeometry->getMaxHeight();
 }
 
 int TerrainPage::getPageSize() const
@@ -180,14 +126,7 @@ int TerrainPage::getNumberOfSegmentsPerAxis() const
 	return (getPageSize() - 1) / 64;
 }
 
-float TerrainPage::getMaxHeight() const
-{
-	float max = std::numeric_limits<float>::min();
-	for (SegmentVector::const_iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
-		max = std::max<float>(max, I->segment->getMax());
-	}
-	return max;
-}
+
 
 void TerrainPage::update()
 {
@@ -228,14 +167,11 @@ void TerrainPage::updateShadow(const Ogre::Vector3& lightDirection)
 
 Ogre::MaterialPtr TerrainPage::generateTerrainMaterials(bool reselectTechnique)
 {
-	mTerrainSurface->recompileMaterial(reselectTechnique);
+	mTerrainSurface->recompileMaterial(*mGeometry, reselectTechnique);
 	return mTerrainSurface->getMaterial();
 }
 
-const SegmentVector& TerrainPage::getValidSegments() const
-{
-	return mValidSegments;
-}
+
 
 const TerrainPosition& TerrainPage::getWFPosition() const
 {
@@ -320,10 +256,16 @@ const TerrainPageSurface* TerrainPage::getSurface() const
 	return mTerrainSurface.get();
 }
 
-const TerrainPageFoliage* TerrainPage::getPageFoliage() const
+//const TerrainPageFoliage* TerrainPage::getPageFoliage() const
+//{
+//	return mPageFoliage.get();
+//}
+
+void TerrainPage::getPlantsForArea(PlantAreaQuery& query) const
 {
-	return mPageFoliage.get();
+	mPageFoliage->getPlantsForArea(*mGeometry, query);
 }
+
 
 const TerrainPageShadow& TerrainPage::getPageShadow() const
 {
@@ -335,30 +277,30 @@ const TerrainPageShadow& TerrainPage::getPageShadow() const
 TerrainPageSurfaceLayer* TerrainPage::addShader(TerrainShader* shader)
 {
 	TerrainPageSurfaceLayer* layer = mTerrainSurface->createSurfaceLayer(*shader->getLayerDefinition(), shader->getTerrainIndex(), shader->getShader());
-	layer->populate();
+	layer->populate(*mGeometry);
 	layer->setDiffuseTextureName(shader->getLayerDefinition()->getDiffuseTextureName());
 	layer->setNormalTextureName(shader->getLayerDefinition()->getNormalMapTextureName());
 	///get the scale by dividing the total size of the page with the size of each tile
 	float scale = getAlphaTextureSize() / shader->getLayerDefinition()->getTileSize();
 	layer->setScale(scale);
-	layer->updateCoverageImage();
+	layer->updateCoverageImage(*mGeometry);
 	return layer;
 }
 
 
 
-void TerrainPage::populateSurfaces()
-{
- //   _fpreset();
-	//_controlfp(_PC_64, _MCW_PC);
-	//_controlfp(_RC_NEAR, _MCW_RC);
-
-
-	for (SegmentVector::iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
-		I->segment->populateSurfaces();
-	}
-//	fesetround(FE_DOWNWARD);
-}
+//void TerrainPage::populateSurfaces()
+//{
+// //   _fpreset();
+//	//_controlfp(_PC_64, _MCW_PC);
+//	//_controlfp(_RC_NEAR, _MCW_RC);
+//
+//
+//	for (SegmentVector::iterator I = mGeometry->getValidSegments().begin(); I != mGeometry->getValidSegments().end(); ++I) {
+//		I->segment->populateSurfaces();
+//	}
+////	fesetround(FE_DOWNWARD);
+//}
 
 
 void TerrainPage::updateAllShaderTextures(bool repopulate)
@@ -368,9 +310,9 @@ void TerrainPage::updateAllShaderTextures(bool repopulate)
 	///skip the first texture, since it's the ground, and doesn't have an alpha texture
 	++I;
 	for (; I != mTerrainSurface->getLayers().end(); ++I) {
-		mTerrainSurface->updateLayer(I->first, repopulate);
+		mTerrainSurface->updateLayer(*mGeometry, I->first, repopulate);
 	}
-	mTerrainSurface->recompileMaterial(false);
+	mTerrainSurface->recompileMaterial(*mGeometry, false);
 	mPageFoliage->generateCoverageMap();
 }
 
@@ -379,10 +321,10 @@ TerrainPageSurfaceLayer* TerrainPage::updateShaderTexture(TerrainShader* shader,
 	TerrainPageSurfaceLayer* layer;
 	if (mTerrainSurface->getLayers().find(shader->getTerrainIndex()) == mTerrainSurface->getLayers().end()) {
 		layer = addShader(shader);
-		mTerrainSurface->recompileMaterial(false);
+		mTerrainSurface->recompileMaterial(*mGeometry, false);
 	} else {
-		layer = mTerrainSurface->updateLayer(shader->getTerrainIndex(), repopulate);
-		mTerrainSurface->recompileMaterial(false);
+		layer = mTerrainSurface->updateLayer(*mGeometry, shader->getTerrainIndex(), repopulate);
+		mTerrainSurface->recompileMaterial(*mGeometry, false);
 	}
 
 	mPageFoliage->generateCoverageMap();
@@ -408,11 +350,8 @@ bool TerrainPage::getNormal(const TerrainPosition& localPosition, WFMath::Vector
 // 	float height;
 // 	return mGenerator.getTerrain().getHeightAndNormal(mExtent.lowCorner().x() + localPosition.x(), mExtent.lowCorner().y() + localPosition.y(), height, normal);
 
-	const Mercator::Segment* segment(getSegmentAtLocalPosition(localPosition));
+	const Mercator::Segment* segment(mGeometry->getSegmentAtLocalPosition(localPosition));
 	if (segment) {
-		if (!segment->getNormals()) {
-			segment->populateNormals();
-		}
 		int resolution = segment->getResolution();
 		size_t xPos = localPosition.x() - (I_ROUND(floor(localPosition.x() / resolution)) * resolution);
 		size_t yPos = localPosition.y() - (I_ROUND(floor(localPosition.y() / resolution)) * resolution);
