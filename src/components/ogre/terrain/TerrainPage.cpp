@@ -201,26 +201,27 @@ unsigned int TerrainPage::getAlphaMapScale() const
 void TerrainPage::updateOgreHeightData(Ogre::Real* heightData)
 {
 	if (heightData) {
-		const int pageSizeInVertices = getPageSize();
-		const int pageSizeInMeters = pageSizeInVertices - 1;
-
-		///since Ogre uses a different coord system than WF, we have to do some conversions here
-		TerrainPosition origPosition(mPosition);
-		///start in one of the corners...
-		origPosition[0] = (mPosition[0] * pageSizeInMeters);
-		origPosition[1] = (mPosition[1] * pageSizeInMeters);
-
-		S_LOG_INFO("Page x:" << mPosition.x() << " y:" << mPosition.y() << " starts at x:" << origPosition.x() << " y:" << origPosition.y());
-
-		const Mercator::Terrain& terrain = mGenerator.getTerrain();
-		TerrainPosition position(origPosition);
-
-		for (int i = 0; i < pageSizeInVertices; ++i) {
-			position[1] = origPosition[1] - i;
-			for (position[0] = origPosition[0]; position[0] < (origPosition[0] + pageSizeInVertices); ++(position[0])) {
-				*(heightData++) = terrain.get(position.x(), position.y());
-			}
-		}
+		mGeometry->updateOgreHeightData(heightData);
+//		const int pageSizeInVertices = getPageSize();
+//		const int pageSizeInMeters = pageSizeInVertices - 1;
+//
+//		///since Ogre uses a different coord system than WF, we have to do some conversions here
+//		TerrainPosition origPosition(mPosition);
+//		///start in one of the corners...
+//		origPosition[0] = (mPosition[0] * pageSizeInMeters);
+//		origPosition[1] = (mPosition[1] * pageSizeInMeters);
+//
+//		S_LOG_INFO("Page x:" << mPosition.x() << " y:" << mPosition.y() << " starts at x:" << origPosition.x() << " y:" << origPosition.y());
+//
+//		const Mercator::Terrain& terrain = mGenerator.getTerrain();
+//		TerrainPosition position(origPosition);
+//
+//		for (int i = 0; i < pageSizeInVertices; ++i) {
+//			position[1] = origPosition[1] - i;
+//			for (position[0] = origPosition[0]; position[0] < (origPosition[0] + pageSizeInVertices); ++(position[0])) {
+//				*(heightData++) = terrain.get(position.x(), position.y());
+//			}
+//		}
 
 		mGenerator.EventTerrainPageGeometryUpdated.emit(*this);
 	}

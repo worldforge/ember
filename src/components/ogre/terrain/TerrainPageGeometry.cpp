@@ -72,7 +72,7 @@ void TerrainPageGeometry::init(const Mercator::Terrain& terrain)
 			mLocalSegments[x][y] = segment;
 		}
 	}
-	S_LOG_VERBOSE("Number of valid segments: " << mValidSegments.size());
+//	S_LOG_VERBOSE("Number of valid segments: " << mValidSegments.size());
 
 }
 
@@ -88,15 +88,15 @@ void TerrainPageGeometry::updateOgreHeightData(float* heightData)
 {
 	int i = 0;
 	for (Mercator::Terrain::Segmentstore::const_iterator I = mLocalSegments.begin(); I != mLocalSegments.end(); ++I) {
-		++i;
 		int j = 0;
 		for (Mercator::Terrain::Segmentcolumn::const_iterator J = I->second.begin(); J != I->second.end(); ++J) {
-			++j;
 			Mercator::Segment* segment = J->second;
 			if (segment) {
 				blitSegmentToOgre(heightData, *segment, i * 64, (mPage.getNumberOfSegmentsPerAxis() - j - 1) * 64);
 			}
+			++j;
 		}
+		++i;
 	}
 }
 
@@ -129,15 +129,11 @@ void TerrainPageGeometry::blitSegmentToOgre(float* ogreHeightData, Mercator::Seg
 
 Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalIndex(const Mercator::Terrain& terrain, int indexX, int indexY) const
 {
-// 	const TerrainInfo& info = mGenerator.getTerrainInfo();
 	int segmentsPerAxis = mPage.getNumberOfSegmentsPerAxis();
-	//the mPosition is in the middle of the page, so we have to use an offset to get the real segment position
-	//int segmentOffset = static_cast<int>(info.getWorldSizeInSegments(). x() * 0.5);
 	int segmentOffset = segmentsPerAxis;
 	int segX = (int)((mPage.getWFPosition().x() * segmentsPerAxis) + indexX);
 	int segY = (int)((mPage.getWFPosition().y() * segmentsPerAxis) + indexY) - segmentOffset;
 
-	//S_LOG_VERBOSE("Added segment with position " << segX << ":" << segY);
 
 	return terrain.getSegment(segX, segY);
 }
