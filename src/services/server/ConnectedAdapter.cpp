@@ -1,7 +1,7 @@
 //
 // C++ Implementation: ConnectedAdapter
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -35,9 +35,11 @@
 #include <Eris/Entity.h>
 
 #include <Atlas/Objects/Operation.h>
+#include <wfmath/stream.h>
 
 #include "framework/LoggingInstance.h"
 #include "framework/ConsoleBackend.h"
+#include <sstream>
 
 
 namespace Ember {
@@ -97,11 +99,11 @@ void ConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity) {
 
 // void ConnectedAdapter::teleportTo(const WFMath::Point<3>& dest)
 // {
-// 
+//
 // }
 
 
-void ConnectedAdapter::touch(Eris::Entity* entity) 
+void ConnectedAdapter::touch(Eris::Entity* entity)
 {
 	try {
 		mAvatar->touch(entity);
@@ -114,8 +116,8 @@ void ConnectedAdapter::touch(Eris::Entity* entity)
 	{
 		S_LOG_WARNING("Got unknown error on touching: " << except.what());
 	}
-}   		
- 
+}
+
 void ConnectedAdapter::emote(const std::string& emote)
 {
 	try {
@@ -131,7 +133,7 @@ void ConnectedAdapter::emote(const std::string& emote)
 	}
 }
 
-void ConnectedAdapter::take(Eris::Entity* entity) 
+void ConnectedAdapter::take(Eris::Entity* entity)
 {
 	try {
 		mAvatar->take(entity);
@@ -144,9 +146,9 @@ void ConnectedAdapter::take(Eris::Entity* entity)
 	{
 		S_LOG_WARNING("Got unknown error on taking: " << except.what());
 	}
-}   		
+}
 
-void ConnectedAdapter::drop(Eris::Entity* entity, const WFMath::Vector<3>& offset) 
+void ConnectedAdapter::drop(Eris::Entity* entity, const WFMath::Vector<3>& offset)
 {
 	try {
 		mAvatar->drop(entity, offset);
@@ -159,7 +161,7 @@ void ConnectedAdapter::drop(Eris::Entity* entity, const WFMath::Vector<3>& offse
 	{
 		S_LOG_WARNING("Got unknown error on dropping: " << except.what());
 	}
-}   		
+}
 void ConnectedAdapter::place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos)
 {
 	///use the existing orientation
@@ -169,27 +171,30 @@ void ConnectedAdapter::place(Eris::Entity* entity, Eris::Entity* target, const W
 void ConnectedAdapter::place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orient)
 {
 	try {
+		std::stringstream ss;
+		ss << "Placing " << entity->getName() << " inside " << target->getName() << " at position "<< pos << " and orientation " << orient << ".";
+		S_LOG_VERBOSE(ss.str());
 		/// we want to do orientation too so we can't use the Avatar::place method until that's updated
 		Atlas::Objects::Entity::Anonymous what;
 		what->setLoc(target->getId());
 		what->setPosAsList(Atlas::Message::Element(pos.toAtlas()).asList());
-		what->setAttr("orientation", orient.toAtlas());			
-		
+		what->setAttr("orientation", orient.toAtlas());
+
 		what->setId(entity->getId());
-	
+
 		Atlas::Objects::Operation::Move moveOp;
 		moveOp->setFrom(mAvatar->getEntity()->getId());
 		moveOp->setArgs1(what);
-		
+
 		///if the avatar is a "creator", i.e. and admin, we will set the TO property
 		///this will bypass all of the server's filtering, allowing us to place any entity, unrelated to if it's too heavy or belong to someone else
 		if (mAvatar->getEntity()->getType()->isA(mConnection->getTypeService()->getTypeByName("creator"))) {
 			moveOp->setTo(entity->getId());
 		}
-	
-		mConnection->send(moveOp);	
-	
-	
+
+		mConnection->send(moveOp);
+
+
 // 			mAvatar->place(entity, target, pos, orient);
 	}
 	catch (const Eris::BaseException& except)
@@ -200,13 +205,13 @@ void ConnectedAdapter::place(Eris::Entity* entity, Eris::Entity* target, const W
 	{
 		S_LOG_WARNING("Got unknown error on dropping: " << except.what());
 	}
-}   		
+}
 
 void ConnectedAdapter::wield(Eris::Entity* entity)
 {
 	try {
 		mAvatar->wield(entity);
-		
+
 	}
 	catch (const Eris::BaseException& except)
 	{
@@ -216,12 +221,14 @@ void ConnectedAdapter::wield(Eris::Entity* entity)
 	{
 		S_LOG_WARNING("Got unknown error on wielding: " << except.what());
 	}
-}   		
+}
 
 void ConnectedAdapter::use(Eris::Entity* entity, WFMath::Point<3> pos, const std::string& operation)
 {
 	try {
-		S_LOG_VERBOSE("Using " << entity->getName() << " with operation '" << operation << "'.");
+		std::stringstream ss;
+		ss << pos;
+		S_LOG_VERBOSE("Using " << entity->getName() << " with operation '" << operation << "' at position "<< ss.str() << ".");
 		mAvatar->useOn(entity, pos, operation);
 	}
 	catch (const Eris::BaseException& except)
@@ -232,7 +239,7 @@ void ConnectedAdapter::use(Eris::Entity* entity, WFMath::Point<3> pos, const std
 	{
 		S_LOG_WARNING("Got unknown error on using: " << except.what());
 	}
-}   		
+}
 
 void ConnectedAdapter::useStop()
 {
@@ -247,7 +254,7 @@ void ConnectedAdapter::useStop()
 	{
 		S_LOG_WARNING("Got unknown error on stopping using: " << except.what());
 	}
-}   
+}
 
 void ConnectedAdapter::actuate(Eris::Entity* entity, const std::string& action)
 {
@@ -255,14 +262,14 @@ void ConnectedAdapter::actuate(Eris::Entity* entity, const std::string& action)
 	Atlas::Objects::Entity::Anonymous what;
 	what->setId(entity->getId());
 // 	what->setObjtype("obj");
-	
+
 	Atlas::Objects::Operation::RootOperation actionOp;
 	actionOp->setObjtype("op");
 	actionOp->setArgs1(what);
 	std::list<std::string> actionParents;
 	actionParents.push_back(action);
 	actionOp->setParents(actionParents);
-	
+
 	Atlas::Objects::Operation::RootOperation actuateOp;
 	actuateOp->setObjtype("op");
 	actuateOp->setArgs1(actionOp);
@@ -273,7 +280,7 @@ void ConnectedAdapter::actuate(Eris::Entity* entity, const std::string& action)
 
 
 	S_LOG_INFO("Actuating entity with id " << entity->getId() << ", named " << entity->getName() << " with action '" << action << "'.");
-	mConnection->send(actuateOp);	
+	mConnection->send(actuateOp);
 }
 
 void ConnectedAdapter::deleteEntity(Eris::Entity* entity)
@@ -281,14 +288,14 @@ void ConnectedAdapter::deleteEntity(Eris::Entity* entity)
 	try {
 		Atlas::Objects::Entity::Anonymous what;
 		what->setId(entity->getId());
-		
+
 		Atlas::Objects::Operation::Delete deleteOp;
 		deleteOp->setFrom(mAvatar->getEntity()->getId());
 		deleteOp->setTo(entity->getId());
 		deleteOp->setArgs1(what);
-		
+
 		S_LOG_INFO("Deleting entity with id " << entity->getId() << ", named " << entity->getName());
-		mConnection->send(deleteOp);	
+		mConnection->send(deleteOp);
 	}
 	catch (const Eris::BaseException& except)
 	{
@@ -299,23 +306,23 @@ void ConnectedAdapter::deleteEntity(Eris::Entity* entity)
 		S_LOG_WARNING("Got unknown error on deleting entity: " << except.what());
 	}
 }
-	
+
 void ConnectedAdapter::setAttributes(Eris::Entity* entity, Atlas::Message::MapType& elements)
 {
 	try {
 		Atlas::Objects::Entity::Anonymous what;
 		what->setId(entity->getId());
 		for(Atlas::Message::MapType::iterator I = elements.begin(); I != elements.end(); ++I) {
-			what->setAttr(I->first, I->second);			
+			what->setAttr(I->first, I->second);
 		}
-		
+
 		Atlas::Objects::Operation::Set setOp;
 		setOp->setFrom(mAvatar->getEntity()->getId());
 		//setOp->setTo(entity->getId());
 		setOp->setArgs1(what);
-		
+
 		S_LOG_INFO("Setting attributes of entity with id " << entity->getId() << ", named " << entity->getName());
-		mConnection->send(setOp);	
+		mConnection->send(setOp);
 	}
 	catch (const Eris::BaseException& except)
 	{
@@ -326,8 +333,8 @@ void ConnectedAdapter::setAttributes(Eris::Entity* entity, Atlas::Message::MapTy
 		S_LOG_WARNING("Got unknown error on setting attributes on entity: " << except.what());
 	}
 }
-	
-	
+
+
 void ConnectedAdapter::attack(Eris::Entity* entity)
 {
 	try {
@@ -348,14 +355,14 @@ void ConnectedAdapter::eat(Eris::Entity* entity)
 	try {
 		Atlas::Objects::Entity::Anonymous what;
 		what->setId(entity->getId());
-		
+
 		Atlas::Objects::Operation::Generic op;
 		op->setType("eat", -1);
 		op->setFrom(mAvatar->getEntity()->getId());
 		op->setArgs1(what);
-		
+
 		S_LOG_INFO("Eating entity with id " << entity->getId() << ", named " << entity->getName());
-		mConnection->send(op);	
+		mConnection->send(op);
 	}
 	catch (const Eris::BaseException& except)
 	{
@@ -367,12 +374,12 @@ void ConnectedAdapter::eat(Eris::Entity* entity)
 	}
 }
 
-		
-void ConnectedAdapter::say(const std::string &message) 
+
+void ConnectedAdapter::say(const std::string &message)
 {
 	try {
 		mAvatar->say(message);
-		
+
 		std::string msg;
 		msg = "Saying: [" + message + "]. ";
 		ConsoleBackend::getSingletonPtr()->pushMessage(msg);
@@ -385,27 +392,27 @@ void ConnectedAdapter::say(const std::string &message)
 	catch (const std::runtime_error& except)
 	{
 		S_LOG_WARNING("Got unknown error on say: " << except.what());
-	}	
+	}
 }
 
-void ConnectedAdapter::adminTell(const std::string& entityId, const std::string& attribute, const std::string &value) 
+void ConnectedAdapter::adminTell(const std::string& entityId, const std::string& attribute, const std::string &value)
 {
 	try {
-		
+
 		Atlas::Objects::Entity::Anonymous what;
 		what->setAttr(attribute, value);
 		Atlas::Objects::Operation::Talk talk;
 		talk->setFrom(entityId);
 		talk->setTo(entityId);
 		talk->setArgs1(what);
-		
+
 		Atlas::Objects::Operation::Sound sound;
 		sound->setFrom(mAvatar->getEntity()->getId());
 		sound->setTo(entityId);
 		sound->setArgs1(talk);
-		
+
 		mConnection->send(sound);
-		
+
 	}
 	catch (const Eris::BaseException& except)
 	{
@@ -414,7 +421,7 @@ void ConnectedAdapter::adminTell(const std::string& entityId, const std::string&
 	catch (const std::runtime_error& except)
 	{
 		S_LOG_WARNING("Got unknown error on admin_tell: " << except.what());
-	}	
+	}
 }
 
 }
