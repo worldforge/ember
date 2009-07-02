@@ -54,6 +54,8 @@ src/stamp-h1
 # ignore Eclipse project files
 .project
 .cproject
+.settings
+.cdtconfig*
 *.orig
 media*
 *.log
