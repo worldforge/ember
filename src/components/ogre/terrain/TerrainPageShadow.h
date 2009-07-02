@@ -37,11 +37,12 @@ namespace EmberOgre {
 namespace Terrain {
 
 class TerrainPage;
+class TerrainPageGeometry;
 
 class ITerrainPageShadowTechnique
 {
 public:
-    virtual void createShadowData(TerrainPage& page, unsigned char* data, const Ogre::Vector3& lightDirection, const Ogre::ColourValue& lightColour) = 0;
+    virtual void createShadowData(const TerrainPage& page, const TerrainPageGeometry& geometry, unsigned char* data, const Ogre::Vector3& lightDirection, const Ogre::ColourValue& lightColour) = 0;
 
 protected:
 };
@@ -49,7 +50,7 @@ protected:
 class SimpleTerrainPageShadowTechnique : public ITerrainPageShadowTechnique
 {
 public:
-    virtual void createShadowData(TerrainPage& page, unsigned char* data, const Ogre::Vector3& lightDirection, const Ogre::ColourValue& lightColour);
+    virtual void createShadowData(const TerrainPage& page, const TerrainPageGeometry& geometry, unsigned char* data, const Ogre::Vector3& lightDirection, const Ogre::ColourValue& lightColour);
 
 protected:
 };
@@ -60,7 +61,7 @@ protected:
 class TerrainPageShadow
 {
 public:
-	TerrainPageShadow(TerrainPage& terrainPage);
+	TerrainPageShadow(const TerrainPage& terrainPage);
 
 	virtual ~TerrainPageShadow();
 
@@ -68,11 +69,11 @@ public:
 
 	void setLightDirection(const Ogre::Vector3& lightDirection);
 
-	void createShadowData(unsigned char* data);
+	void createShadowData(unsigned char* data, const TerrainPageGeometry& geometry);
 
 	Ogre::TexturePtr getTexture() const;
-	void updateShadow();
-	void createImage();
+	void updateShadow(const TerrainPageGeometry& geometry);
+	void createImage(const TerrainPageGeometry& geometry);
 
 	Ogre::Image* getImage() const;
 
@@ -81,7 +82,7 @@ public:
 
 
 protected:
-	TerrainPage& mTerrainPage;
+	const TerrainPage& mTerrainPage;
 	Ogre::Vector3 mLightDirection;
 	Ogre::Image* mImage;
 	Ogre::TexturePtr mTexture;

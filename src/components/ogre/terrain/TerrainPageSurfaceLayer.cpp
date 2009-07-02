@@ -86,8 +86,9 @@ bool TerrainPageSurfaceLayer::unloadTexture()
 
 bool TerrainPageSurfaceLayer::intersects(const TerrainPageGeometry& geometry) const
 {
+	const SegmentVector validSegments = geometry.getValidSegments();
 	///check if at least one surface intersects
-	for (SegmentVector::const_iterator I = geometry.getValidSegments().begin(); I != geometry.getValidSegments().end(); ++I) {
+	for (SegmentVector::const_iterator I = validSegments.begin(); I != validSegments.end(); ++I) {
 		if (mShader->checkIntersect(*I->segment)) {
 			return true;
 		}
@@ -171,7 +172,8 @@ void TerrainPageSurfaceLayer::updateCoverageImage(const TerrainPageGeometry& geo
 		///reset the coverage image
 		memset(mCoverageDataStream->getPtr(), '\0', mCoverageDataStream->size());
 
-		for (SegmentVector::const_iterator I = geometry.getValidSegments().begin(); I != geometry.getValidSegments().end(); ++I) {
+		SegmentVector validSegments = geometry.getValidSegments();
+		for (SegmentVector::const_iterator I = validSegments.begin(); I != validSegments.end(); ++I) {
 			if (mShader->checkIntersect(*I->segment)) {
 				Mercator::Surface* surface = getSurfaceForSegment(I->segment);
 				if (surface && surface->isValid()) {
@@ -265,7 +267,8 @@ const TerrainLayerDefinition& TerrainPageSurfaceLayer::getDefinition() const
 
 void TerrainPageSurfaceLayer::populate(const TerrainPageGeometry& geometry)
 {
-	for (SegmentVector::const_iterator I = geometry.getValidSegments().begin(); I != geometry.getValidSegments().end(); ++I) {
+	const SegmentVector validSegments = geometry.getValidSegments();
+	for (SegmentVector::const_iterator I = validSegments.begin(); I != validSegments.end(); ++I) {
 		#if 0
 		//the current Mercator code works such that whenever an Area is added to Terrain, _all_ surfaces for the affected segments are invalidated, thus requiering a total repopulation of the segment
 		//If however that code was changed to only invalidate the affected surface the code below would be very much handy
@@ -277,8 +280,6 @@ void TerrainPageSurfaceLayer::populate(const TerrainPageGeometry& geometry)
 
 		Mercator::Segment* segment(I->segment);
 
-		segment->populate();
-		segment->populateNormals();
 		Mercator::Segment::Surfacestore::iterator I(segment->getSurfaces().find(mSurfaceIndex));
 		if (I == segment->getSurfaces().end()) {
 			///the segment doesn't contain this surface yet, lets add it
@@ -286,10 +287,7 @@ void TerrainPageSurfaceLayer::populate(const TerrainPageGeometry& geometry)
 				S_LOG_VERBOSE("Adding new surface with id " << mSurfaceIndex << " to segment at x: " << segment->getXRef() << " y: " << segment->getYRef());
 				Mercator::Segment::Surfacestore & sss = segment->getSurfaces();
 				sss[mSurfaceIndex] = mShader->newSurface(*segment);
-// 				sss[mSurfaceIndex]->populate();
 			}
-/*		} else {
-			I->second->populate();*/
 		}
 		///NOTE: we have to repopulate all surfaces mainly to get the foliage to work.
 		segment->populateSurfaces();

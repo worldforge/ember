@@ -64,27 +64,14 @@ An instance of this is then used by TerrainPage and passed on to the other Terra
 
 @note Be sure to call init() before an instance of this can be used.
 */
-class TerrainPageGeometry{
+class TerrainPageGeometry
+{
+friend class TerrainPage;
 public:
-
-	/**
-	 * @brief Ctor.
-	 * @note Be sure to call init() before this instance can be used.
-	 * @param page The TerrainPage instance to which this geometry belongs.
-	 */
-	TerrainPageGeometry(TerrainPage& page);
-
 	/**
 	 * @brief Dtor.
 	 */
 	~TerrainPageGeometry();
-
-	/**
-	 * @brief Initializes the geometry.
-	 * This must always be called before an instance of this can be used.
-	 * During initialization, the segments which make up this geometry will be collected, and populated.
-	 */
-	void init(const Mercator::Terrain& terrain);
 
 	/**
 	 * @brief The max height of this page
@@ -116,15 +103,17 @@ public:
 	/**
 	 * @brief Gets the collection of valid segments which make up this geometry.
 	 */
-	const SegmentVector& getValidSegments() const;
-
-private:
+	const SegmentVector getValidSegments() const;
 
 	/**
-	 * @brief A store of the valid mercator segments which make up this page.
+	 * @brief Gets the normal at the specified local position.
+	 * @param localPosition The position, local to the page.
+	 * @param normal The normal will be placed here.
+	 * @return True if a valid normal could be found at the specified position.
 	 */
-	SegmentVector mValidSegments;
+	bool getNormal(const TerrainPosition& localPosition, WFMath::Vector<3>& normal) const;
 
+private:
 
 	/**
 	 * @brief The page to which this geometry belongs.
@@ -136,6 +125,28 @@ private:
 	 * The keys will be the local indices.
 	 */
 	Mercator::Terrain::Segmentstore mLocalSegments;
+
+	/**
+	 * @brief Ctor.
+	 * @note Be sure to call init() before this instance can be used.
+	 * Private so that only TerrainPage can create an instance of this.
+	 * @param page The TerrainPage instance to which this geometry belongs.
+	 */
+	TerrainPageGeometry(TerrainPage& page);
+
+	/**
+	 * @brief Initializes the geometry.
+	 * This must always be called before an instance of this can be used.
+	 * During initialization, the segments which make up this geometry will be collected, and populated.
+	 * Private so that only TerrainPage can initialize it.
+	 */
+	void init(const Mercator::Terrain& terrain);
+
+	/**
+	 * @brief Repopulates the segments which make up the page.
+	 * Private so that only TerrainPage can repopulate it.
+	 */
+	void repopulate();
 
 	/**
 	 * @brief Blits a Mercator::Segment heightmap to a larger ogre height map.

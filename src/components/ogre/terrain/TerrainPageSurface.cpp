@@ -88,13 +88,6 @@ const TerrainPosition& TerrainPageSurface::getWFPosition() const
 	return mTerrainPage.getWFPosition();
 }
 
-
-//const SegmentVector& TerrainPageSurface::getValidSegments() const
-//{
-//	return mTerrainPage.getValidSegments();
-//}
-
-
 int TerrainPageSurface::getNumberOfSegmentsPerAxis() const
 {
 	return mTerrainPage.getNumberOfSegmentsPerAxis();

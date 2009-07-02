@@ -56,6 +56,7 @@ TerrainPageGeometry::~TerrainPageGeometry()
 
 void TerrainPageGeometry::init(const Mercator::Terrain& terrain)
 {
+	mLocalSegments.clear();
 	for (int y = 0; y < mPage.getNumberOfSegmentsPerAxis(); ++y) {
 		for (int x = 0; x < mPage.getNumberOfSegmentsPerAxis(); ++x) {
 			Mercator::Segment* segment = getSegmentAtLocalIndex(terrain, x,y);
@@ -64,22 +65,33 @@ void TerrainPageGeometry::init(const Mercator::Terrain& terrain)
 					segment->populate();
 					segment->populateNormals();
 				}
-				PageSegment pageSegment;
-				pageSegment.index = TerrainPosition(x,y);
-				pageSegment.segment = segment;
-				mValidSegments.push_back(pageSegment);
 			}
 			mLocalSegments[x][y] = segment;
 		}
 	}
-//	S_LOG_VERBOSE("Number of valid segments: " << mValidSegments.size());
-
 }
+
+void TerrainPageGeometry::repopulate()
+{
+	for (Mercator::Terrain::Segmentstore::const_iterator I = mLocalSegments.begin(); I != mLocalSegments.end(); ++I) {
+		for (Mercator::Terrain::Segmentcolumn::const_iterator J = I->second.begin(); J != I->second.end(); ++J) {
+			Mercator::Segment* segment = J->second;
+			if (segment) {
+				if (!segment->isValid()) {
+					segment->populate();
+					segment->populateNormals();
+				}
+			}
+		}
+	}
+}
+
 
 float TerrainPageGeometry::getMaxHeight() const
 {
+	SegmentVector validSegments = getValidSegments();
 	float max = std::numeric_limits<float>::min();
-	for (SegmentVector::const_iterator I = mValidSegments.begin(); I != mValidSegments.end(); ++I) {
+	for (SegmentVector::const_iterator I = validSegments.begin(); I != validSegments.end(); ++I) {
 		max = std::max<float>(max, I->segment->getMax());
 	}
 	return max;
@@ -173,9 +185,40 @@ const Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalPosition(const Te
 	return J->second;
 }
 
-const SegmentVector& TerrainPageGeometry::getValidSegments() const
+const SegmentVector TerrainPageGeometry::getValidSegments() const
 {
-	return mValidSegments;
+	SegmentVector validSegments;
+	for (Mercator::Terrain::Segmentstore::const_iterator I = mLocalSegments.begin(); I != mLocalSegments.end(); ++I) {
+		for (Mercator::Terrain::Segmentcolumn::const_iterator J = I->second.begin(); J != I->second.end(); ++J) {
+			Mercator::Segment* segment = J->second;
+			if (segment) {
+				if (segment->isValid()) {
+					PageSegment pageSegment;
+					pageSegment.index = TerrainPosition(I->first, J->first);
+					pageSegment.segment = segment;
+
+					validSegments.push_back(pageSegment);
+				}
+			}
+		}
+	}
+	return validSegments;
+}
+
+bool TerrainPageGeometry::getNormal(const TerrainPosition& localPosition, WFMath::Vector<3>& normal) const
+{
+
+	const Mercator::Segment* segment(getSegmentAtLocalPosition(localPosition));
+	if (segment && segment->getNormals()) {
+		int resolution = segment->getResolution();
+		size_t xPos = localPosition.x() - (I_ROUND(floor(localPosition.x() / resolution)) * resolution);
+		size_t yPos = localPosition.y() - (I_ROUND(floor(localPosition.y() / resolution)) * resolution);
+		size_t normalPos = (yPos * segment->getSize() * 3) + (xPos * 3);
+		normal = WFMath::Vector<3>(segment->getNormals()[normalPos], segment->getNormals()[normalPos + 1], segment->getNormals()[normalPos] + 2);
+		return true;
+	} else {
+		return false;
+	}
 }
 }
 }

@@ -130,6 +130,7 @@ int TerrainPage::getNumberOfSegmentsPerAxis() const
 
 void TerrainPage::update()
 {
+	mGeometry->repopulate();
 	if (mBridge) {
 		mBridge->updateTerrain();
 	}
@@ -154,14 +155,16 @@ void TerrainPage::setupShadowTechnique()
 
 void TerrainPage::createShadow(const Ogre::Vector3& lightDirection)
 {
+	mGeometry->repopulate();
 	mShadow.setLightDirection(lightDirection);
-	mShadow.createImage();
+	mShadow.createImage(*mGeometry);
 }
 
 void TerrainPage::updateShadow(const Ogre::Vector3& lightDirection)
 {
+	mGeometry->repopulate();
 	mShadow.setLightDirection(lightDirection);
-	mShadow.updateShadow();
+	mShadow.updateShadow(*mGeometry);
 }
 
 
@@ -202,31 +205,14 @@ void TerrainPage::updateOgreHeightData(Ogre::Real* heightData)
 {
 	if (heightData) {
 		mGeometry->updateOgreHeightData(heightData);
-//		const int pageSizeInVertices = getPageSize();
-//		const int pageSizeInMeters = pageSizeInVertices - 1;
-//
-//		///since Ogre uses a different coord system than WF, we have to do some conversions here
-//		TerrainPosition origPosition(mPosition);
-//		///start in one of the corners...
-//		origPosition[0] = (mPosition[0] * pageSizeInMeters);
-//		origPosition[1] = (mPosition[1] * pageSizeInMeters);
-//
-//		S_LOG_INFO("Page x:" << mPosition.x() << " y:" << mPosition.y() << " starts at x:" << origPosition.x() << " y:" << origPosition.y());
-//
-//		const Mercator::Terrain& terrain = mGenerator.getTerrain();
-//		TerrainPosition position(origPosition);
-//
-//		for (int i = 0; i < pageSizeInVertices; ++i) {
-//			position[1] = origPosition[1] - i;
-//			for (position[0] = origPosition[0]; position[0] < (origPosition[0] + pageSizeInVertices); ++(position[0])) {
-//				*(heightData++) = terrain.get(position.x(), position.y());
-//			}
-//		}
-
 		mGenerator.EventTerrainPageGeometryUpdated.emit(*this);
 	}
 }
 
+bool TerrainPage::getNormal(const TerrainPosition& localPosition, WFMath::Vector<3>& normal) const
+{
+	return mGeometry->getNormal(localPosition, normal);
+}
 
 void TerrainPage::showFoliage()
 {
@@ -345,24 +331,7 @@ void TerrainPage::unregisterBridge()
 	mBridge = 0;
 }
 
-bool TerrainPage::getNormal(const TerrainPosition& localPosition, WFMath::Vector<3>& normal) const
-{
 
-// 	float height;
-// 	return mGenerator.getTerrain().getHeightAndNormal(mExtent.lowCorner().x() + localPosition.x(), mExtent.lowCorner().y() + localPosition.y(), height, normal);
-
-	const Mercator::Segment* segment(mGeometry->getSegmentAtLocalPosition(localPosition));
-	if (segment) {
-		int resolution = segment->getResolution();
-		size_t xPos = localPosition.x() - (I_ROUND(floor(localPosition.x() / resolution)) * resolution);
-		size_t yPos = localPosition.y() - (I_ROUND(floor(localPosition.y() / resolution)) * resolution);
-		size_t normalPos = (yPos * segment->getSize() * 3) + (xPos * 3);
-		normal = WFMath::Vector<3>(segment->getNormals()[normalPos], segment->getNormals()[normalPos + 1], segment->getNormals()[normalPos] + 2);
-		return true;
-	} else {
-		return false;
-	}
-}
 
 
 

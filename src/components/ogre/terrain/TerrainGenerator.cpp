@@ -393,36 +393,6 @@ bool TerrainGenerator::frameEnded(const Ogre::FrameEvent & evt)
 
 }
 
-// void TerrainGenerator::prepareSegments(long segmentXStart, long segmentZStart, long numberOfSegments, bool alsoPushOntoTerrain)
-// {
-// //TODO: implement!
-//
-//
-// // 	int i,j;
-// // 	for (i = segmentXStart; i < segmentXStart + numberOfSegments; ++i) {
-// // 		for (j = segmentZStart; j < segmentZStart + numberOfSegments; ++j) {
-// // 			if (i >= mXmin && i <= mXmax && j >= mYmin && j <=mYmax) {
-// // 				mTerrain->getSegment(i, j)->populate();
-// // 				mTerrain->getSegment(i, j)->populateNormals();
-// // 				mTerrain->getSegment(i, j)->populateSurfaces();
-// // 				TerrainPosition pos(i,j);
-// // 				generateTerrainMaterials(mTerrain->getSegment(i, j), pos);
-// // 				if (alsoPushOntoTerrain) {
-// // 					TerrainPosition pos(i, j);
-// // 					mTerrainPageSource->pushPage(pos);
-// // 				}
-// // 			}
-// // 		}
-// // 	}
-// // //	generateUnderVegetation(0, 0, 1);
-// // //	generateUnderVegetation(segmentXStart, segmentZStart, numberOfSegments);
-// // 	mTerrainPageSource->setHasTerrain(true);
-// // 	if (alsoPushOntoTerrain) {
-// // 		mTerrainPageSource->resizeTerrain();
-// // 	}
-//
-// }
-
 int TerrainGenerator::getPageIndexSize() const
 {
 	return mSceneManagerAdapter->getPageSize();
@@ -447,7 +417,6 @@ void TerrainGenerator::prepareAllSegments()
 	//_controlfp(_RC_NEAR, _MCW_RC);
 
 
-//	getAdapter()->setWorldPagesDimensions(mTerrainInfo->getTotalNumberOfPagesX(), mTerrainInfo->getTotalNumberOfPagesY(), mTerrainInfo->getPageOffsetX(), mTerrainInfo->getPageOffsetY());
 	getAdapter()->setWorldPagesDimensions(mTerrainInfo->getTotalNumberOfPagesY(), mTerrainInfo->getTotalNumberOfPagesX(), mTerrainInfo->getPageOffsetY(), mTerrainInfo->getPageOffsetX());
 
 
@@ -496,7 +465,6 @@ TerrainPage* TerrainGenerator::getTerrainPageAtPosition(const TerrainPosition& w
 
 	int xIndex = static_cast<int>(floor((worldPosition.x() + xRemainder) / (getPageMetersSize())));
 	int yIndex = static_cast<int>(ceil((worldPosition.y() + yRemainder) / (getPageMetersSize())));
-// 	int yIndex = static_cast<int>(floor((worldPosition.y() + yRemainder) / (getPageMetersSize())));
 
 	TerrainPagestore::const_iterator I = mTerrainPages.find(xIndex);
 	if (I != mTerrainPages.end()) {
@@ -512,7 +480,6 @@ TerrainPage* TerrainGenerator::getTerrainPageAtPosition(const TerrainPosition& w
 TerrainPage* TerrainGenerator::getTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition, bool createIfMissing)
 {
 	//_fpreset();
-	//S_LOG_INFO("Requesting page at ogre position x: " << ogreIndexPosition.x << " y: " << ogreIndexPosition.y);
 
 	///TerrainInfo deals with WF space, so we need to flip the x and y offsets here (as it's in Ogre space)
 	Ogre::Vector2 adjustedOgrePos(ogreIndexPosition.x - mTerrainInfo->getPageOffsetY(), ogreIndexPosition.y - mTerrainInfo->getPageOffsetX());
@@ -524,8 +491,6 @@ TerrainPage* TerrainGenerator::getTerrainPageAtIndex(const Ogre::Vector2& ogreIn
 
 	if (mTerrainPages[x][y] == 0) {
 		if (createIfMissing) {
-
-			//TerrainPosition adjustedPos(pos.x() - pageOffsetX, pos.y() - pageOffsetY);
 
 			mTerrainPages[x][y] = createPage(pos);
 			assert(mTerrainPages[x][y]);
@@ -546,7 +511,6 @@ TerrainPage* TerrainGenerator::createPage(const TerrainPosition& pos)
 
 
 	TerrainPage* page = new TerrainPage(TerrainPosition(pos), *this);
-	//mPages[ss.str()] = page;
 
 	std::stringstream ss;
 	ss << pos.x() << "x" << pos.y();
@@ -636,8 +600,7 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 		}
 		bp.height() = I->getHeight();
 
-		/// FIXME Sort out roughness and falloff, and generally
-		/// verify this code is the same as that in Terrain layer
+		/// FIXME Sort out roughness and falloff, and generally verify this code is the same as that in Terrain layer
 		mTerrain->setBasePoint(static_cast<int>(I->getPosition().x()), static_cast<int>(I->getPosition().y()), bp);
 		mTerrainInfo->setBasePoint(I->getPosition(), bp);
 		updatedPositions.push_back(TerrainPosition(I->getPosition().x() * mTerrain->getResolution(), I->getPosition().y() * mTerrain->getResolution()));

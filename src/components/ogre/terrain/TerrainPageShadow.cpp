@@ -27,6 +27,7 @@
 #include "TerrainPageShadow.h"
 
 #include "TerrainPage.h"
+#include "TerrainPageGeometry.h"
 #include "../MathConverter.h"
 
 #include <OgreColourValue.h>
@@ -41,7 +42,7 @@ namespace EmberOgre {
 namespace Terrain {
 
 
-void SimpleTerrainPageShadowTechnique::createShadowData(TerrainPage& page, unsigned char* data, const Ogre::Vector3& lightDirection, const Ogre::ColourValue& lightColour)
+void SimpleTerrainPageShadowTechnique::createShadowData(const TerrainPage& page, const TerrainPageGeometry& geometry, unsigned char* data, const Ogre::Vector3& lightDirection, const Ogre::ColourValue& lightColour)
 {
 
 	int pageSizeInVertices = page.getPageSize();
@@ -66,7 +67,7 @@ void SimpleTerrainPageShadowTechnique::createShadowData(TerrainPage& page, unsig
 		for (int j = 0; j < pageSizeInMeters; ++j) {
 // 			float height;
 			WFMath::Vector<3> normal;
- 			if (page.getNormal(position, normal)) {
+ 			if (geometry.getNormal(position, normal)) {
 				float dotProduct = WFMath::Dot(normal.normalize(1), wfLightDirection);
 
 //correct
@@ -92,7 +93,7 @@ void SimpleTerrainPageShadowTechnique::createShadowData(TerrainPage& page, unsig
 
 
 
-TerrainPageShadow::TerrainPageShadow(TerrainPage& terrainPage)
+TerrainPageShadow::TerrainPageShadow(const TerrainPage& terrainPage)
 : mTerrainPage(terrainPage)
 , mImage(0)
 , mShadowChunk(0)
@@ -117,20 +118,20 @@ void TerrainPageShadow::setLightDirection(const Ogre::Vector3& lightDirection)
 	mLightDirection = lightDirection;
 }
 
-void TerrainPageShadow::createShadowData(unsigned char* data)
+void TerrainPageShadow::createShadowData(unsigned char* data, const TerrainPageGeometry& geometry)
 {
 	if (!mShadowTechnique) {
 		S_LOG_WARNING("Trying to create shadow data without have a technique set.");
 	} else {
-		mShadowTechnique->createShadowData(mTerrainPage, data, mLightDirection, Ogre::ColourValue(1,1,1));
+		mShadowTechnique->createShadowData(mTerrainPage, geometry, data, mLightDirection, Ogre::ColourValue(1,1,1));
 	}
 }
 
-void TerrainPageShadow::updateShadow()
+void TerrainPageShadow::updateShadow(const TerrainPageGeometry& geometry)
 {
 	assert(mShadowChunk);
 	assert(mImage);
-	createShadowData(mShadowChunk->getPtr());
+	createShadowData(mShadowChunk->getPtr(), geometry);
 
 	Ogre::HardwarePixelBufferSharedPtr hardwareBuffer = mTexture->getBuffer();
 
@@ -140,7 +141,7 @@ void TerrainPageShadow::updateShadow()
 }
 
 
-void TerrainPageShadow::createImage()
+void TerrainPageShadow::createImage(const TerrainPageGeometry& geometry)
 {
 	assert(!mShadowChunk);
 	mShadowChunk = OGRE_NEW Ogre::MemoryDataStream(mTerrainPage.getAlphaTextureSize() * mTerrainPage.getAlphaTextureSize() * 1, true);
@@ -148,7 +149,7 @@ void TerrainPageShadow::createImage()
 	memset( mShadowChunk->getPtr(), '\0', mShadowChunk->size());
 
 
-	createShadowData(mShadowChunk->getPtr());
+	createShadowData(mShadowChunk->getPtr(), geometry);
 
 
 	mImage = OGRE_NEW Ogre::Image();
