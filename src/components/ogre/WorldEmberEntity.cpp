@@ -83,16 +83,16 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 	EventFoliageCreated.emit();
 
 	EmberEntity::init(ge, fromCreateOp);
-	
+
 	///set the position to always 0, 0, 0
 	mOgreNode->setPosition(Ogre::Vector3(0, 0, 0));
-	
+
 	mEnvironment = new Environment::Environment(new Environment::CaelumEnvironment( EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), EmberOgre::getSingleton().getMainCamera()->getCamera()), new Environment::SimpleEnvironment(EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), EmberOgre::getSingleton().getMainCamera()->getCamera()));
 	EventEnvironmentCreated.emit();
-	
+
 	///we will wait with creating the terrain and initialing the environment until we've got a onVisibilityChanged call, since the Eris::Calendar functionality depends on the world entity object to be fully constructed and initialized to work. By waiting until onVisibilityChanged is called we guarantee that the Calendar will get the correct server time
-	
-	
+
+
 }
 
 void WorldEmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::Element& v)
@@ -126,7 +126,7 @@ void TerrainParser::updateTerrain(const Atlas::Message::Element& terrain)
 	{
 		S_LOG_FAILURE("No terrain points");
 	}
-	
+
 	Terrain::TerrainGenerator::TerrainDefPointStore pointStore;
 	if (I->second.isList())
 	{
@@ -143,7 +143,7 @@ void TerrainParser::updateTerrain(const Atlas::Message::Element& terrain)
 				S_LOG_INFO("Point without 3 nums.");
 				continue;
 			}
-	
+
 			Terrain::TerrainDefPoint defPoint(static_cast<int>(point[0].asNum()), static_cast<int>(point[1].asNum()), static_cast<float>(point[3].asNum()));
 			pointStore.push_back(defPoint);
 		}
@@ -196,7 +196,7 @@ void TerrainParser::createShaders(const Atlas::Message::Element& surfaces)
 				std::string name;
 				std::string pattern;
 				const Atlas::Message::MapType& surfaceMap(I->asMap());
-				
+
 				Mercator::Shader::Parameters params;
 				if (surfaceMap.count("params")) {
 					const Atlas::Message::Element& paramsElem(surfaceMap.find("params")->second);
@@ -208,7 +208,7 @@ void TerrainParser::createShaders(const Atlas::Message::Element& surfaces)
 						}
 					}
 				}
-	
+
 				if (surfaceMap.count("name")) {
 					const Atlas::Message::Element& nameElem(surfaceMap.find("name")->second);
 					if (nameElem.isString()) {
@@ -250,18 +250,18 @@ void TerrainParser::createDefaultShaders()
 	{
 		mTerrainGenerator->createShader(def,  new Mercator::BandShader(-2.f, 1.5f));
 	}
-	
+
 	if ((def = terrainManager.getDefinitionForShader("grass")))
 	{
 		mTerrainGenerator->createShader(def,   new Mercator::GrassShader(1.f, 80.f, .5f, 1.f));
 	}
-	
+
 	//      createShader(std::string(configSrv->getValue("shadertextures", "snow")), new Mercator::HighShader(110.f)); // Snow
 	//      createShader(std::string(configSrv->getValue("shadertextures", "seabottom")), new Mercator::DepthShader(0.f, -10.f)); // Underwater
-	
-	
+
+
 	//    this->addShader(new TerrainShader(std::string(configSrv->getVariable("Shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f))); // Grass
-	
+
 
 }
 
@@ -269,19 +269,21 @@ void TerrainParser::createDefaultShaders()
 void WorldEmberEntity::adjustPositionForContainedNode(EmberEntity* const entity, const Ogre::Vector3& position)
 {
 	Ogre::SceneNode* sceneNode = entity->getSceneNode();
-	
+
 	if (entity->getMovementMode() == EmberEntity::MM_FLOATING) {
 		sceneNode->setPosition(position.x, 0,position.z);
 	} else if (entity->getMovementMode() == EmberEntity::MM_SWIMMING) {
 		///if it's swimming, make sure that it's between the sea bottom and the surface
 		const TerrainPosition pos = Ogre2Atlas_TerrainPosition(position);
-		float height = mTerrainGenerator->getHeight(pos);
-		if (position.y < height) {
-			sceneNode->setPosition(position.x, height,position.z);
-		} else if (position.y > 0) {
-			sceneNode->setPosition(position.x, 0,position.z);
+		float height = 0;
+		if (mTerrainGenerator->getHeight(pos, height)) {
+			if (position.y < height) {
+				sceneNode->setPosition(position.x, height,position.z);
+			} else if (position.y > 0) {
+				sceneNode->setPosition(position.x, 0,position.z);
+			}
 		}
-		
+
 	} else {
 		///get the height from Mercator through the TerrainGenerator
 /*		assert(mTerrainGenerator);
@@ -299,8 +301,10 @@ const Ogre::Vector3& WorldEmberEntity::getOffsetForContainedNode(const Ogre::Vec
 	assert(mTerrainGenerator);
 	///NOTE: won't work with threading!
 	static Ogre::Vector3 offset = Ogre::Vector3::ZERO;
-	float height = mTerrainGenerator->getHeight(Ogre2Atlas_TerrainPosition(localPosition));
-	offset.y = height - localPosition.y;
+	float height = 0;
+	if (mTerrainGenerator->getHeight(Ogre2Atlas_TerrainPosition(localPosition), height)) {
+		offset.y = height - localPosition.y;
+	}
 	return offset;
 	//return mTerrainGenerator->getHeight(position);
 
@@ -342,17 +346,17 @@ void WorldEmberEntity::onVisibilityChanged(bool vis)
 			mTerrainParser->createDefaultShaders();
 			hasValidShaders = true;
 		}
-		
-		
-		
+
+
+
 		///prepare all the segments in advance
 		mTerrainGenerator->prepareAllSegments();
-		
+
 		//mTerrainGenerator->prepareSegments(0,0,1,true);
-		
+
 		///TODO: Parse world location data when it's available
 		mEnvironment->setWorldPosition(mWorldPosition.LongitudeDegrees, mWorldPosition.LatitudeDegrees);
-		
+
 		///wait a little with initializing the foliage
 		mFoliageInitializer = std::auto_ptr<DelayedFoliageInitializer>(new DelayedFoliageInitializer(mFoliage, getView(), 1000, 15000));
 		mHasBeenInitialized = true;
@@ -364,7 +368,7 @@ void WorldEmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 {
 	Eris::Entity::onLocationChanged(oldLocation);
 }
- 
+
 void WorldEmberEntity::addArea(Terrain::TerrainArea* area)
 {
 	mTerrainGenerator->addArea(area);

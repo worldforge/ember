@@ -1,7 +1,7 @@
 //
 // C++ Implementation: FoliageBase
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -53,11 +53,11 @@ FoliageBase::FoliageBase(const Terrain::TerrainLayerDefinition& terrainLayerDefi
 , mPagedGeometry(0)
 {
 	initializeDependentLayers();
-	
+
 	EmberOgre::getSingleton().getTerrainGenerator()->EventLayerUpdated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainGenerator_LayerUpdated));
 	EmberOgre::getSingleton().getTerrainGenerator()->EventShaderCreated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainGenerator_EventShaderCreated));
 	EmberOgre::getSingleton().getTerrainGenerator()->EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &FoliageBase::TerrainGenerator_AfterTerrainUpdate));
-	
+
 }
 
 FoliageBase::~FoliageBase()
@@ -105,7 +105,7 @@ void FoliageBase::TerrainGenerator_LayerUpdated(Terrain::TerrainShader* shader, 
 				}
 			} else {
 				mPagedGeometry->reloadGeometry();
-			}	
+			}
 		}
 	}
 }
@@ -124,12 +124,12 @@ void FoliageBase::TerrainGenerator_AfterTerrainUpdate(std::vector<TerrainPositio
 	if (mPagedGeometry) {
 		mPagedGeometry->reloadGeometry();
 //HACK: for some reason I couldn't get the code below to work as it should, so we'll go with the brute way of just reloading all geometry. Newer versions of PagedGeometry contains additional methods for reloading sections of the geometry which we shoudl be able to use once we've updated the version used in Ember.
-#if 0		
+#if 0
 		Ogre::Real pageSize(mPagedGeometry->getPageSize());
 		for (std::set< ::EmberOgre::Terrain::TerrainPage* >::const_iterator I = pages.begin(); I != pages.end(); ++I) {
 			const ::EmberOgre::Terrain::TerrainPage* page(*I);
 			const Ogre::TRect<Ogre::Real> ogreExtent(Atlas2Ogre(page->getExtent()));
-			
+
 			///update all paged geometry pages that are within the extent of the terrain page
 			Ogre::Vector3 pos(ogreExtent.left, 0, ogreExtent.top);
 			for (; pos.x < ogreExtent.right; pos.x += pageSize) {
@@ -147,7 +147,9 @@ void FoliageBase::TerrainGenerator_AfterTerrainUpdate(std::vector<TerrainPositio
 //there's no need for extra data other than the x/z coordinates.
 float getTerrainHeight(float x, float z, void* userData)
 {
-	return EmberOgre::getSingleton().getTerrainGenerator()->getHeight(TerrainPosition(x, -z));
+	float height = 0;
+	EmberOgre::getSingleton().getTerrainGenerator()->getHeight(TerrainPosition(x, -z), height);
+	return height;
 }
 
 

@@ -86,19 +86,22 @@ void FoliageLoader::loadPage(::PagedGeometry::PageInfo &page)
 		PlantAreaQuery query(mTerrainLayerDefinition, threshold, mFoliageDefinition.getPlantType(), adjustedBounds, plants);
 		terrainPage->getPlantsForArea(query);
 		for (TerrainPageFoliage::PlantStore::const_iterator I = plants.begin(); I != plants.end(); ++I) {
-			Ogre::Vector3 pos(I->x + ogrePageExtent.left, terrainGenerator->getHeight(TerrainPosition(I->x + ogrePageExtent.left, -(I->y + ogrePageExtent.top))), I->y + ogrePageExtent.top);
+			float height = 0;
+			if (terrainGenerator->getHeight(TerrainPosition(I->x + ogrePageExtent.left, -(I->y + ogrePageExtent.top)), height)) {
+				Ogre::Vector3 pos(I->x + ogrePageExtent.left, height, I->y + ogrePageExtent.top);
 
-			float scale = Ogre::Math::RangeRandom(mMinScale, mMaxScale);
-			pos2D.x = pos.x;
-			pos2D.y = pos.z;
-// 			terrainGenerator->getShadowColourAt(pos2D, colour);
+				float scale = Ogre::Math::RangeRandom(mMinScale, mMaxScale);
+				pos2D.x = pos.x;
+				pos2D.y = pos.z;
+	// 			terrainGenerator->getShadowColourAt(pos2D, colour);
 
-			//Get rotation
-			Ogre::Degree angle(Ogre::Math::RangeRandom(0, 360.0f));
-			Ogre::Quaternion rot(angle, Ogre::Vector3::UNIT_Y);
+				//Get rotation
+				Ogre::Degree angle(Ogre::Math::RangeRandom(0, 360.0f));
+				Ogre::Quaternion rot(angle, Ogre::Vector3::UNIT_Y);
 
 
-			addEntity(mEntity, pos, rot, Ogre::Vector3(scale,scale,scale), colour);
+				addEntity(mEntity, pos, rot, Ogre::Vector3(scale,scale,scale), colour);
+			}
 		}
 	}
 }

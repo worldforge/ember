@@ -98,7 +98,7 @@ public:
 	 * @param atPosition The position, in world space, to get the height for.
 	 * @return The height, in world space, at the specified position.
 	 */
-	virtual float getHeight(const WFMath::Point<2>& atPosition) const;
+	//virtual float getHeight(const WFMath::Point<2>& atPosition) const;
 	
 	/**
 	 *    @brief Updates the terrain with new terrain points.
