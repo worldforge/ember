@@ -249,12 +249,6 @@ public:
 	virtual	void runCommand(const std::string& command, const std::string& args);
 
 	/**
-	 * @brief Rebuilds the Mercator height map, effectively regenerating the terrain.
-	 * Note that this only regenerates the Mercator height map, and won't update the Ogre representation.
-	 */
-	void buildHeightmap();
-
-	/**
 	 * @brief Accessor for the main terrain info instance.
 	 * @return An instance of TerrainInfo containing all relevant terrain info.
 	 */

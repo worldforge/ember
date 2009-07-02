@@ -175,12 +175,6 @@ public:
 	 * @return An terrain page, or null of no page can be found at the specified position.
 	 */
 	TerrainPage* getTerrainPageAtPosition(const WFMath::Point<2>& worldPosition);
-
-	/**
-	 * @brief Rebuilds the Mercator height map, effectively regenerating the terrain.
-	 * Note that this only regenerates the Mercator height map, and won't update the Ogre representation.
-	 */
-	void buildHeightmap();
 	
 	/**
 	 * @brief Accessor for the main terrain info instance.

@@ -433,37 +433,6 @@ int TerrainGenerator::getPageMetersSize() const
 	return getPageIndexSize() - 1;
 }
 
-void TerrainGenerator::buildHeightmap()
-{
-	///initialize all terrain here, since we need to do that in order to get the correct height for placement even though the terrain might not show up in the SceneManager yet
-
-	///note that we want to use int's here, since a call to getSegment(float, float) is very much different from a call to getSegment(int, int)
-//	const WFMath::AxisBox<2>& segmentBbox = mTerrainInfo->getWorldSizeInSegments();
-//	for (int i = static_cast<int>(segmentBbox.lowCorner().x()); i < segmentBbox.highCorner().x(); ++i) {
-//		for (int j = static_cast<int>(segmentBbox.lowCorner().y()); j < segmentBbox.highCorner().y(); ++j) {
-//			Mercator::Segment* segment = mTerrain->getSegment(i, j);
-//			if (segment) {
-//				//S_LOG_VERBOSE("Preparing segment at position: x=" << i << " y=" << j );
-//				segment->populate();
-//				segment->populateNormals();
-//				segment->populateSurfaces();
-//				mHeightMax = std::max(mHeightMax, segment->getMax());
-//				mHeightMin = std::min(mHeightMin, segment->getMin());
-//			}
-//		}
-//	}
-}
-
-// void TerrainGenerator::createShaders(WorldEmberEntity* worldEntity)
-// {
-// 	if (worldEntity) {
-// 		if (worldEntity->hasAttr("surfaces")) {
-//
-// 		}
-// 	}
-// }
-
-
 void TerrainGenerator::registerSceneManagerAdapter(ISceneManagerAdapter* adapter)
 {
 	mSceneManagerAdapter = adapter;
@@ -673,16 +642,6 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 		mTerrainInfo->setBasePoint(I->getPosition(), bp);
 		updatedPositions.push_back(TerrainPosition(I->getPosition().x() * mTerrain->getResolution(), I->getPosition().y() * mTerrain->getResolution()));
 	}
-
-	buildHeightmap();
-
-	///for some yet undetermined reason we'll get blank segments seeminly at random in the terrain if we'll load it dynamically when requested by the scene manager, so avoid that we'll initialize everything now
-	///HACK: this is of course just a temporary fix
-// 	for (int i = 0; i < mTerrainInfo->getTotalNumberOfPagesX(); ++i) {
-// 		for (int j = 0; j < mTerrainInfo->getTotalNumberOfPagesY(); ++j) {
-// 			getTerrainPage(Ogre::Vector2(i, j), true);
-// 		}
-// 	}
 
 	EventWorldSizeChanged.emit();
 

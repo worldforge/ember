@@ -255,14 +255,6 @@ void TerrainParser::createDefaultShaders()
 	{
 		mTerrainGenerator.createShader(def,   new Mercator::GrassShader(1.f, 80.f, .5f, 1.f));
 	}
-
-	//      createShader(std::string(configSrv->getValue("shadertextures", "snow")), new Mercator::HighShader(110.f)); // Snow
-	//      createShader(std::string(configSrv->getValue("shadertextures", "seabottom")), new Mercator::DepthShader(0.f, -10.f)); // Underwater
-
-
-	//    this->addShader(new TerrainShader(std::string(configSrv->getVariable("Shadertextures", "grass")), new Mercator::GrassShader(1.f, 80.f, .5f, 1.f))); // Grass
-
-
 }
 
 
@@ -306,7 +298,6 @@ const Ogre::Vector3& WorldEmberEntity::getOffsetForContainedNode(const Ogre::Vec
 		offset.y = height - localPosition.y;
 	}
 	return offset;
-	//return mTerrainGenerator->getHeight(position);
 
 }
 
@@ -314,11 +305,7 @@ const Ogre::Vector3& WorldEmberEntity::getOffsetForContainedNode(const Ogre::Vec
 void WorldEmberEntity::onMoved(){
 	Eris::Entity::onMoved();
 }
-//  void WorldEmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talk)
-//  {
-//  	Eris::Entity::onTalk(talk);
-//  }
-//	virtual void setContainer(Entity *pr);
+
 void WorldEmberEntity::onVisibilityChanged(bool vis)
 {
 	///we do our initialization of the terrain and environment here instead of at onInit since that way we can guarantee that Eris::Calendar will work as it should (which is used to get the correct server time)
@@ -348,13 +335,10 @@ void WorldEmberEntity::onVisibilityChanged(bool vis)
 				hasValidShaders = true;
 			}
 
-
-
 			///prepare all the segments in advance
 			mTerrainGenerator->prepareAllSegments();
 		}
 
-		//mTerrainGenerator->prepareSegments(0,0,1,true);
 
 		///TODO: Parse world location data when it's available
 		mEnvironment->setWorldPosition(mWorldPosition.LongitudeDegrees, mWorldPosition.LatitudeDegrees);
