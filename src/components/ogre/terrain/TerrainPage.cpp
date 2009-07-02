@@ -292,6 +292,7 @@ TerrainPageSurfaceLayer* TerrainPage::addShader(TerrainShader* shader)
 
 void TerrainPage::updateAllShaderTextures(bool repopulate)
 {
+	mGeometry->repopulate();
 	TerrainPageSurface::TerrainPageSurfaceLayerStore::const_iterator I = mTerrainSurface->getLayers().begin();
 
 	///skip the first texture, since it's the ground, and doesn't have an alpha texture

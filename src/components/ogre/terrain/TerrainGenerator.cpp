@@ -352,10 +352,6 @@ bool TerrainGenerator::frameEnded(const Ogre::FrameEvent & evt)
 {
 	//update shaders that needs updating
 	if (mShadersToUpdate.size()) {
-// 		for (PageStore::iterator J = mPages.begin(); J != mPages.end(); ++J) {
-// 			J->second->populateSurfaces();
-// 		}
-
 		///use a reverse iterator, since we need to update top most layers first, since lower layers might depend on them for their foliage positions
 		for (ShaderUpdateSet::reverse_iterator I = mShadersToUpdate.rbegin(); I != mShadersToUpdate.rend(); ++I) {
 			const ShaderUpdateRequest& updateRequest = I->second;
