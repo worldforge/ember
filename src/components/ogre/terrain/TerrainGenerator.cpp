@@ -594,6 +594,11 @@ TerrainPage* TerrainGenerator::createPage(const TerrainPosition& pos)
 		page->showFoliage();
 	}
 
+	//Since the height data for the page probably wasn't correctly set up before the page was created, we should adjust the positions for the entities that are placed on the page.
+	std::set<TerrainPage*> pagesToUpdate;
+	pagesToUpdate.insert(page);
+	updateEntityPositions(pagesToUpdate);
+
 	return page;
 }
 
