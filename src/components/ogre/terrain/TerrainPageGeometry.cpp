@@ -92,7 +92,7 @@ void TerrainPageGeometry::updateOgreHeightData(float* heightData)
 		for (Mercator::Terrain::Segmentcolumn::const_iterator J = I->second.begin(); J != I->second.end(); ++J) {
 			Mercator::Segment* segment = J->second;
 			if (segment) {
-				blitSegmentToOgre(heightData, *segment, i * 64, (mPage.getNumberOfSegmentsPerAxis() - j - 1) * 64);
+				blitSegmentToOgre(heightData, *segment, (i * 64), ((mPage.getNumberOfSegmentsPerAxis() - j - 1) * 64));
 			}
 			++j;
 		}
@@ -108,16 +108,16 @@ void TerrainPageGeometry::blitSegmentToOgre(float* ogreHeightData, Mercator::Seg
 
 	float* segmentHeightPtr = segment.getPoints();
 
-	float* start = ogreHeightData + (finalBitmapWidth * (startY - 1)) + ((startX - 1));
+	float* start = ogreHeightData + (finalBitmapWidth * (startY)) + ((startX));
 	float* end = start + (width * finalBitmapWidth) + width;
 	///we need to do this to get the alignment correct
-	segmentHeightPtr += (width + 1);
+	//segmentHeightPtr += (width + 1);
 
 	float* tempPtr = end + 1 ;
-	for (unsigned int i = 0; i < width; ++i)
+	for (unsigned int i = 0; i < width + 1; ++i)
 	{
-		tempPtr -= width;
-		for (unsigned int j = 0; j < width; ++j)
+		tempPtr -= width + 1;
+		for (unsigned int j = 0; j < width + 1; ++j)
 		{
 			*(tempPtr) = *(segmentHeightPtr + j);
 			tempPtr += 1;
