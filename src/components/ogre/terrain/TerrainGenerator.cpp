@@ -630,15 +630,11 @@ bool TerrainGenerator::isFoliageShown() const
 
 
 
-float TerrainGenerator::getHeight(const TerrainPosition& point) const
+bool TerrainGenerator::getHeight(const TerrainPosition& point, float& height) const
 {
-	float height = mTerrain->get(point.x(), point.y());
-	if (height == Mercator::Terrain::defaultLevel) {
-		///make undefined ground be one meter below the water
-		return -1.0f;
-	} else {
-		return height;
-	}
+	WFMath::Vector<3> vector;
+
+	return mTerrain->getHeightAndNormal(point.x(), point.y(), height, vector);
 }
 
 void TerrainGenerator::updateShadows()

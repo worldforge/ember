@@ -48,7 +48,7 @@ class EmberPagingSceneManager;
 class ShaderManager;
 
 namespace Terrain {
-	
+
 class TerrainShader;
 class TerrainInfo;
 class TerrainPage;
@@ -59,7 +59,7 @@ class TerrainPageSurfaceLayer;
 class ISceneManagerAdapter;
 
 /**
-@brief Defines the height of a special "base point" in the terrain. 
+@brief Defines the height of a special "base point" in the terrain.
 These base points are then user by Mercator::Terrain for generating the actual terrain.
 */
 class TerrainDefPoint
@@ -72,25 +72,25 @@ class TerrainDefPoint
 	* @param terrainHeight The height of the point, in world units.
 	*/
 	TerrainDefPoint(float x, float y, float terrainHeight) : mPosition(x,y), mHeight(terrainHeight) {}
-	
+
 	/**
 	 * @brief Gets the position of the definition point, in world units.
 	 * @return The position of the point.
 	 */
 	const TerrainPosition& getPosition() const;
-	
+
 	/**
 	 * @brief Gets the height of the definition point, in world units.
 	 * @return The height of the point.
 	 */
 	float getHeight() const;
-	
+
 	private:
 	/**
 	The position of the point, in world units.
 	*/
 	TerrainPosition mPosition;
-	
+
 	/**
 	The height of the point, in world units.
 	*/
@@ -104,9 +104,9 @@ class TerrainDefPoint
  * This class takes care of generating terrain for Ogre's scenemanager.
  * This involves getting terrain from Mercator, converting this to ogre
  * format and creating materials to make it look good.
- * 
+ *
  * It works closely with EmberTerrainPageSource.
- * 
+ *
  */
 class TerrainGenerator : public Ogre::FrameListener, public sigc::trackable, public Ember::ConsoleObject
 {
@@ -116,7 +116,7 @@ public:
 	 * @brief A type used for storing changes to aeas. We use instances instead of pointers or references since this type will be used in delayed updating, where the originating instance might not any longer be around.
 	*/
 	typedef std::vector<WFMath::AxisBox<2> > AreaStore;
-	
+
 	/**
 	 * @brief A type used for storing the terrain definition points.
 	 */
@@ -126,29 +126,29 @@ public:
 	 * @brief STL map to store sparse array of TerrainPage pointers.
 	 */
 	typedef std::map<int, TerrainPage *> TerrainPagecolumn;
-	
+
 	/**
 	* @brief STL map to store sparse array of TerrainPage pointer columns.
 	*/
 	typedef std::map<int, TerrainPagecolumn > TerrainPagestore;
-	
+
 	/**
 	 * @brief Default ctor.
 	 * @param adapter An adapter which binds the terrain to a scene manager. The terrain generator will take ownership of the adapter and will destroy it upon it's destruction.
 	 */
 	TerrainGenerator(ISceneManagerAdapter* adapter);
-	
-	
+
+
 	/**
 	 * @brief Dtor.
 	 */
 	virtual ~TerrainGenerator();
 
-	
+
 	/**
 	 * @brief At each frame, we check for updates shaders and updates the terrain. This is because we want to batch together changes.
-	 * @param evt 
-	 * @return 
+	 * @param evt
+	 * @return
 	 */
 	virtual bool frameEnded(const Ogre::FrameEvent & evt);
 
@@ -156,15 +156,17 @@ public:
 	 * @brief Prepares all segments acquired from Mercator. Note that this can be very, very expensive if there's a lot of terrain defined.
 	 */
 	void prepareAllSegments();
-	
+
 	/**
 	 * @brief Returns the height at the specified position in the world.
 	 * This will be done using the underlying Mercator data, which depending on LOD techniques used can differ some from the actual graphical representation.
+	 * @note The method used for lookup does interpolation, so it's a little bit more expensive than doing a instant data lookup. Calling this is therefore not recommended if you're building height data, but suitable if you're placing entities on the terrain and need a perfect height.
 	 * @param atPosition The position, in world space, to get the height for.
-	 * @return The height, in world space, at the specified position.
+	 * @param height The height, in world space, at the specified position.
+	 * @returns True if there was a valid, populated segment at the position (and therefore also a valid height).
 	 */
-	virtual float getHeight(const TerrainPosition& atPosition) const;
-	
+	virtual bool getHeight(const TerrainPosition& atPosition, float& height) const;
+
 	/**
 	 * @brief Updates the terrain with new terrain points.
 	 * @param terrainIndexPoints A list of terrain index points, i.e. points positioned using the base point positioning scale. In normal setup that's 64 meters per index point, so an index point of 2:1 would translate to real world coords of 128:64
@@ -180,42 +182,42 @@ public:
 	 * @return true if the terrain at the position is valid.
 	 */
 	bool isValidTerrainAt(const TerrainPosition& pos) const;
-	
+
 	/**
 	 * @brief Provides access to the underlying Mercator::Terrain object.
 	 * @return The main terrain object.
 	 */
 	const Mercator::Terrain& getTerrain() const;
-	
+
 	/**
 	 * @brief Gets the max boundaries of the terrain.
-	 * @return 
+	 * @return
 	 */
 	const TerrainPosition getMax() const;
-	
+
 	/**
 	 * @brief Gets the min boundaries of the terrain.
-	 * @return 
+	 * @return
 	 */
 	const TerrainPosition getMin() const;
-	
+
 	/**
 	 * @brief Gets the size of one terrain segment.
 	 * (note that this is different from Mercator segments, which always are of size 64)
-	 * @return 
+	 * @return
 	 */
 	int getPageMetersSize() const;
-	
+
 
 	/**
 	 * @brief Gets the size of one page as indices.
-	 * @return 
+	 * @return
 	 */
 	int getPageIndexSize() const;
-		
+
 	/**
 	 * @brief Adds a new Mercator::Area to the terrain.
-	 * @param area 
+	 * @param area
 	 */
 	void addArea(TerrainArea* terrainArea);
 
@@ -224,7 +226,7 @@ public:
 	 * @param mod
 	 */
 	void addTerrainMod(TerrainMod* terrainMod);
-	
+
 	/**
 	 * @brief Returns a TerrainPage, creating one if there's no existing and so requested.
 	 * If createIfMissing is true and there is no yet existing, a new one is created.
@@ -233,7 +235,7 @@ public:
 	 * @return An instance of terrain page, or null if there was no existing one and createIfMissing was set to false.
 	 */
 	TerrainPage* getTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition, bool createIfMissing = true);
-	
+
 	/**
 	 * @brief Gets the page at the specified position in the world. If no page can be found, a null pointer is returned.
 	 * @param worldPosition The position in world space to get the terrain page for.
@@ -242,74 +244,74 @@ public:
 	TerrainPage* getTerrainPageAtPosition(const TerrainPosition& worldPosition) const;
 
 	/**
-	 * @copydoc Ember::ConsoleObject::runCommand 
+	 * @copydoc Ember::ConsoleObject::runCommand
 	 */
 	virtual	void runCommand(const std::string& command, const std::string& args);
-	
+
 	/**
 	 * @brief Rebuilds the Mercator height map, effectively regenerating the terrain.
 	 * Note that this only regenerates the Mercator height map, and won't update the Ogre representation.
 	 */
 	void buildHeightmap();
-	
+
 	/**
 	 * @brief Accessor for the main terrain info instance.
 	 * @return An instance of TerrainInfo containing all relevant terrain info.
 	 */
 	const TerrainInfo& getTerrainInfo() const;
-	
+
 	/**
 	 * @brief Emitted when the size of the world has changed.
 	 */
 	sigc::signal<void> EventWorldSizeChanged;
-	
-	
+
+
 	/**
 	 *    @brief Registers to the scene manager adapter to be used by the generator.
 	 * The adapter acts as a bridge between the generator and the actual scene manager, allowing a certain degree of decoupling.
 	 * @param adapter The adapter to use.
 	 */
 	void registerSceneManagerAdapter(ISceneManagerAdapter* adapter);
-	
+
 	/**
 	 * @brief Gets the adapter used to bind this generator to a scene manager.
 	 * @return The adapter in use, or null if there is no one registered yet.
 	 */
 	ISceneManagerAdapter* getAdapter() const;
-	
+
 	/**
 	 * @brief Accessor for all instances of TerrainPage that are registered with the generator.
 	 * @return A store of TerrainPage instances.
 	 */
 	const TerrainPagestore& getTerrainPages() const;
-	
+
 	/**
 	 * @brief Create and registers a new texture shader.
 	 * @param layerDef The terrain layer defintiion to use. This will be used to determine what textures and materials to use for rendering the layer defined by the shader.
 	 * @param mercatorShader The Mercator::Shader to use.
-	 * @return 
+	 * @return
 	 */
 	TerrainShader* createShader(const TerrainLayerDefinition* layerDef, Mercator::Shader* mercatorShader);
-	
-	
+
+
 	/**
 	 * @brief Regenerates all terrain shadow maps.
 	 */
 	void updateShadows();
-	
+
 	/**
 	 * @brief Console command for updating all terrain shadow maps.
 	 */
 	const Ember::ConsoleCommandWrapper UpdateShadows;
-	
-	
+
+
 	/**
 	 * @brief Gets the shadow colour at the supplied position.
 	 * @param position The position in the world.
 	 * @param colour The shadow colour will be put into this value.
 	 */
 	void getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour) const;
-	
+
 	/**
 	 * @brief Gets the shadow colour at the supplied position.
 	 * @param position The position in the world.
@@ -325,37 +327,37 @@ public:
 	 * @return True if a valid segment and normal could be found at the specified world position.
 	 */
 	bool getNormal(const TerrainPosition& worldPosition, WFMath::Vector<3>& normal) const;
-	
+
 	/**
 	@brief Emitted when a layer is updated.
 	The vector parameter is either null if the update can't be constrained to any areas, or an vector of areas if it can.
 	*/
 	sigc::signal<void, TerrainShader*, AreaStore* > EventLayerUpdated;
-	
+
 	/**
 	@brief Emitted when a new shader is created.
 	The shader paremeter is the newly created shader.
 	*/
 	sigc::signal<void, TerrainShader*> EventShaderCreated;
-	
+
 	/**
 	@brief Emitted before the terrain geometry is changed.
-	
+
 	When the terrain geometry is about to be changed this signal is emitted.
 	The first parameter is the TerrainPositions that were updated, i.e. the BasePoints that were changed. The terrain is generated from a series of base points, in the default setting dispersed with 64 meters between them.
 	The second parameter is the pages that will be updated.
 	*/
 	sigc::signal<void, std::vector<TerrainPosition>&, std::set<TerrainPage*>&> EventBeforeTerrainUpdate;
-	
+
 	/**
 	@brief Emitted after the terrain geometry has changed.
-	
+
 	When the terrain geometry has been changed this signal is emitted.
 	The first parameter is the TerrainPositions that were updated, i.e. the BasePoints that were changed. The terrain is generated from a series of base points, in the default setting dispersed with 64 meters between them.
 	The second parameter is the pages that were updated.
 	*/
 	sigc::signal<void, std::vector<TerrainPosition>&, std::set<TerrainPage*>&> EventAfterTerrainUpdate;
-	
+
 	/**
 	 * @brief Emitted when a terrain page has had its geometry updated.
 	 *
@@ -363,13 +365,13 @@ public:
 	 * @warning You must not do any rendering directly in the methods listening for this event, since that can lead to strange behaviour in the scene manager. The reason is that this event is emitted while already in the rendering loop, and entering the render loop again at that point will lead to some very inconsistent states.
 	 */
 	sigc::signal<void, TerrainPage&> EventTerrainPageGeometryUpdated;
-	
+
 	/**
 	 * @brief Gets the size of each foliage batch. This is used by the foliage system for setting up batch system for performance.
-	 * @return The size of on foliage batch, in world units. 
+	 * @return The size of on foliage batch, in world units.
 	 */
 	unsigned int getFoliageBatchSize() const;
-	
+
 protected:
 	/**
 	 * @brief Encapsules a shader update request.
@@ -381,7 +383,7 @@ protected:
 		 * Unless UpdateAll is true, this should be used for determining what geometry needs updating.
 		 */
 		AreaStore Areas;
-		
+
 		/**
 		 * @brief If this is set to true, all geometry should be updated, no matter what areas are specified in Areas.
 		 */
@@ -389,9 +391,9 @@ protected:
 	};
 
 	typedef std::map<int,TerrainShader*> AreaShaderstore;
-	
+
 	typedef std::map<TerrainShader*, ShaderUpdateRequest> ShaderUpdateSet;
-	
+
 	typedef std::map<std::string, TerrainPage*> PageStore;
 	/**
 	A type for use when keeping track of changes done to areas. We use instances of Mercator::Area instead of pointers or references since we want to batch the updates, and the original area instances might not be around at that time.
@@ -401,7 +403,7 @@ protected:
 	typedef std::multimap<const std::string, Mercator::TerrainMod*> TerrainModMap;
 
 	typedef std::map<const Mercator::Shader*, TerrainShader*> ShaderStore;
-	
+
 	/**
 	@brief Information about the world, such as size and number of pages.
 	*/
@@ -419,7 +421,7 @@ protected:
 	 * @param terrainArea If an area is specified here, only pages touched by the area will be updated.
 	 */
 	void markShaderForUpdate(TerrainShader* shader,  Mercator::Area* terrainArea = 0);
-	
+
 	/**
 	 * @brief Stores the shaders needing update, to be processed on the next frame.
 	 * For performance reasons we try to batch all shaders updates together, rather than doing them one by one. This is done by adding the shaders needing update to this store, and then on frameEnded processing them.
@@ -427,21 +429,21 @@ protected:
 	 * @see frameEnded
 	 */
 	ShaderUpdateSet mShadersToUpdate;
-	
+
 	PageStore mPages;
-	
+
 	TerrainAreaMap mChangedTerrainAreas;
 
 	TerrainModMap mTerrainMods;
-	
+
 	TerrainPagestore mTerrainPages;
-	
+
 	Mercator::Terrain* mTerrain;
-	
+
 	Ogre::Real mHeightMax, mHeightMin;
-	
+
 	void loadTerrainOptions();
-	
+
 	/**
 	true if we have some kind of terrain info, i.e. if mX* and mY* are valid
 	*/
@@ -449,22 +451,22 @@ protected:
 
 	/**
 	 *   Creates a new TerrainPage and puts it in mTerrainPages
-	 * @param pos 
+	 * @param pos
 	 */
 	TerrainPage* createPage(const TerrainPosition& pos);
 
-	
+
 	/**
 	 * This holds a map of the TerrainShaders
 	 */
 	ShaderStore mShaderMap;
-	
+
 	/**
 	@brief A list of the shaders, which will all be used on all Pages.
 	*/
 	std::list<TerrainShader*> mBaseShaders;
-	 
-	
+
+
 	/**
 	 * @brief Reloads the terrain found at the specified positions.
 	 * Calling this method will update both the internal Mercator heightfield data as well as the Ogre graphical representation.
@@ -476,14 +478,14 @@ protected:
 	void updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate);
 	void updateEntityPosition(EmberEntity* entity, const std::set<TerrainPage*>& pagesToUpdate);
 
-	
+
 	/**
 	 *    @brief Whether the foliage should be shown or not.
 	 *    @note If the GPU doesn't support the required shaders, this will return false even though it's set in the config.
-	 * @return 
+	 * @return
 	 */
 	bool isFoliageShown() const;
-	
+
 	/**
 	 *    @brief Iterates through all TerrainPages and shows or hides the foliage.
 	 */
@@ -491,43 +493,43 @@ protected:
 
 	/**
 	 *    @brief Catch changes to the configuration.
-	 * @param section 
-	 * @param key 
+	 * @param section
+	 * @param key
 	 */
 	void ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key);
-	
+
 	/**
 	Listen to changes in areas.
 	*/
 	void TerrainArea_Changed(TerrainArea* terrainArea);
-	
+
 	/**
 	 * @brief Listen to removal of terrain areas and trigger an update of the terrain.
 	 * @param terrainArea The area being removed.
 	 */
 	void TerrainArea_Removed(TerrainArea* terrainArea);
-	
+
 	/**
 	 * @brief Listen to swapping of terrain areas and trigger an update of the terrain.
 	 * @param oldArea The area being removed.
 	 * @param terrainArea The terrain area.
 	 */
 	void TerrainArea_Swapped(Mercator::Area& oldArea, TerrainArea* terrainArea);
-	
+
 	/**
 	Listen to changes in terrain mods.
 	*/
 	void TerrainMod_Changed(TerrainMod* terrainMod);
-	
+
 	/**
 	@brief An adapter class which allows us to access the Ogre scene manager.
 	Note that even though this is passed as a parameter in the constructor, this class is then responsible for its destruction.
 	*/
 	void TerrainMod_Deleted(TerrainMod* terrainMod);
 	ISceneManagerAdapter* mSceneManagerAdapter;
-	
+
 	unsigned int mFoliageBatchSize;
-	
+
 	/**
 	 * @brief Listen to graphic level updates and ask the pages to regenerate their materials (since they will use different materials depending on the level chosen).
 	 * @param shaderManager The shader manager, which contains information on the graphics level set.
@@ -550,7 +552,7 @@ inline const TerrainPosition& TerrainDefPoint::getPosition() const
 {
 	return mPosition;
 }
-	
+
 inline float TerrainDefPoint::getHeight() const
 {
 	return mHeight;
