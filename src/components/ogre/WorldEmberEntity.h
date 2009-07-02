@@ -48,8 +48,8 @@ class DelayedFoliageInitializer;
 class TerrainParser
 {
 public:
-	TerrainParser(Terrain::TerrainGenerator* terrainGenerator);
-	
+	TerrainParser(Terrain::TerrainGenerator& terrainGenerator);
+
 	/**
 	 * @brief Extracts terrain updates from the element and updates the terrain.
 	 * @param terrain The element containing the terrain data.
@@ -61,8 +61,8 @@ public:
 	 * @param surfaces The element containing the surface data.
 	 */
 	void createShaders(const Atlas::Message::Element& surfaces);
-	
-	
+
+
 	/**
 	 * @brief A fall back method which will create default shaders. This is used only if no valid surface information could be found (for example if a very old version of the server is used).
 	 */
@@ -73,7 +73,7 @@ private:
 	/**
 	 * @brief The terrain generator instance used in the system.
 	 */
-	Terrain::TerrainGenerator* mTerrainGenerator;
+	Terrain::TerrainGenerator& mTerrainGenerator;
 };
 
 class EmberEntity;
@@ -105,7 +105,7 @@ public:
 		 * @brief The longitude, in degrees.
 		 */
 		float LongitudeDegrees;
-		
+
 		/**
 		 * @brief The longitude, in degrees.
 		 */
@@ -122,7 +122,7 @@ public:
 	 * @param terrainGenerator The terrain generator instance.
 	 */
 	WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager);
-	
+
 	/**
 	 * @brief Dtor
 	 */
@@ -130,34 +130,34 @@ public:
 
 	/**
 	 * @brief This implementation will adjust the contained entity so that it in normal operation snaps to the terrain.
-	 * @param entity 
-	 * @param position 
+	 * @param entity
+	 * @param position
 	 */
-	virtual void adjustPositionForContainedNode(EmberEntity* const entity, const Ogre::Vector3& position);
-	
+	virtual void adjustPositionForContainedNode(const EmberEntity& entity, const Ogre::Vector3& position);
+
 	/**
 	 * @brief Gets the main Environment object of the world.
 	 * @return An environment object, or null if none has been created yet.
 	 */
 	Environment::Environment* getEnvironment() const;
-	
+
 	/**
 	 * @brief Gets the main Foliage object of the world. Note that the initialization of the foliage might be delayed.
 	 * @return A foliage object, or null if none created.
 	 */
 	Environment::Foliage* getFoliage() const;
-	
+
 	/**
 	 * @brief Gets the position of the world, as expressed in degrees of longitude and latitude.
 	 * @return The position of the world.
 	 */
 	const WorldPosition& getWorldPosition() const;
-	
+
 	/**
 	 * @brief Emitted when the foliage has been created.
 	 */
 	sigc::signal<void> EventFoliageCreated;
-	
+
 	/**
 	 * @brief Emitted when the environment has been created.
 	 */
@@ -166,24 +166,24 @@ public:
 
 
 protected:
-	virtual const Ogre::Vector3& getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity);
+	virtual const Ogre::Vector3& getOffsetForContainedNode(const Ogre::Vector3& position, const EmberEntity& entity);
 	Terrain::TerrainGenerator* mTerrainGenerator;
-	
+
     virtual void init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp);
 
 	virtual void onMoved();
-	
+
 	virtual void onAttrChanged(const std::string& str, const Atlas::Message::Element& v);
-	
+
 // 	virtual void onTalk(const Atlas::Objects::Operation::RootOperation& talk);
 //	virtual void setContainer(Entity *pr);
 	virtual void onVisibilityChanged(bool vis);
 	virtual void onLocationChanged(Eris::Entity *oldLocation);
 
-	
+
 	/**
 	 * @brief Adds an area to the world. This method will in turn interface with the TerrainGenerator.
-	 * @param area 
+	 * @param area
 	 */
 	void addArea(Terrain::TerrainArea* area);
 
@@ -192,33 +192,33 @@ protected:
 	 * @param mod
 	 */
 	void addTerrainMod(Terrain::TerrainMod* mod);
-	
+
 	/**
 	 * @brief The foliage system which provides different foliage functions.
 	 */
 	Environment::Foliage* mFoliage;
-	
+
 	/**
 	 * @brief The main environment object. There should only be one in the system, and it's kept here.
 	 */
 	Environment::Environment* mEnvironment;
-	
+
 	/**
 	 * @brief Parses terrain information from the Atlas data sent from the server.
 	 */
 	std::auto_ptr<TerrainParser> mTerrainParser;
-	
+
 	/**
 	 * @brief Takes care of delaying the initialization of the foliage.
 	 */
 	std::auto_ptr<DelayedFoliageInitializer> mFoliageInitializer;
-	
+
 	/**
 	 * @brief True if the world has been intialized.
 	 * This defaults to false, and is set to true when all dependent objects have been created. It's mainly used for preventing duplicate initializations.
 	 */
 	bool mHasBeenInitialized;
-	
+
 	/**
 	 * @brief The position of the world on a spherical (planetoid) body.
 	 */
@@ -252,27 +252,27 @@ public:
 	 * @param intervalMs In milliseconds how often to check if the queue is empty or time has elapsed. Defaults to 1 second.
 	 * @param maxTimeMs In missiseconds the max time to wait until we initialize the foliage anyway.
 	 */
-	DelayedFoliageInitializer(Environment::Foliage* foliage, Eris::View* view, unsigned int intervalMs = 1000, unsigned int maxTimeMs = 15000);
-	
+	DelayedFoliageInitializer(Environment::Foliage& foliage, Eris::View& view, unsigned int intervalMs = 1000, unsigned int maxTimeMs = 15000);
+
 	/**
 	 * @brief Dtor.
 	 */
 	virtual ~DelayedFoliageInitializer();
-	
+
 protected:
-	Environment::Foliage* mFoliage;
-	Eris::View* mView;
+	Environment::Foliage& mFoliage;
+	Eris::View& mView;
 	unsigned int mIntervalMs;
 	unsigned int mMaxTimeMs;
-	
+
 	std::auto_ptr<Eris::Timeout> mTimeout;
 	unsigned int mTotalElapsedTime;
-	
+
 	/**
 	 * @brief Called when the time out has expired. We'll check for if either the set max time has elapsed, or if there's no more entities in the sight queue, and if so initialize the foliage. If not we'll just extend the waiting time.
 	 */
 	void timout_Expired();
-	
+
 };
 
 }

@@ -631,7 +631,7 @@ void EmberPhysicalEntity::scaleNode()
 	}
 }
 
-const Ogre::Vector3& EmberPhysicalEntity::getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity)
+const Ogre::Vector3& EmberPhysicalEntity::getOffsetForContainedNode(const Ogre::Vector3& position, const EmberEntity& entity)
 {
 	///if the model has an offset specified, use that, else just send to the base class
 	const Ogre::Vector3& offset(getModel()->getDefinition()->getContentOffset());

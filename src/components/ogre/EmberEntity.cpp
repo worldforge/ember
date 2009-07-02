@@ -406,12 +406,12 @@ void EmberEntity::adjustPosition(const Ogre::Vector3& position)
 		EmberEntity* container = getEmberLocation();
 		if (container)
 		{
-			container->adjustPositionForContainedNode(this, position);
+			container->adjustPositionForContainedNode(*this, position);
 		}
 	}
 }
 
-const Ogre::Vector3& EmberEntity::getOffsetForContainedNode(const Ogre::Vector3& localPosition, EmberEntity* const entity)
+const Ogre::Vector3& EmberEntity::getOffsetForContainedNode(const Ogre::Vector3& localPosition, const EmberEntity& entity)
 {
 	///send it upwards until we get a an entity which knows how to set the position (we'll in most cases end up in the world which will adjust the height a bit)
 	EmberEntity* container = getEmberLocation();
@@ -427,10 +427,10 @@ const Ogre::Vector3& EmberEntity::getOffsetForContainedNode(const Ogre::Vector3&
 
 }
 
-void EmberEntity::adjustPositionForContainedNode(EmberEntity* const entity, const Ogre::Vector3& position)
+void EmberEntity::adjustPositionForContainedNode(const EmberEntity& entity, const Ogre::Vector3& position)
 {
 
-	Ogre::SceneNode* sceneNode = entity->getSceneNode();
+	Ogre::SceneNode* sceneNode = entity.getSceneNode();
 	//Ogre::Vector3 position = sceneNode->getPosition();
 	const Ogre::Vector3& offset = getOffsetForContainedNode(position, entity);
 	if (offset != Ogre::Vector3::ZERO)

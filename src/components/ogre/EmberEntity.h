@@ -112,7 +112,7 @@ public:
 	 * @param entity The entity to adjust.
 	 * @param position The current position of the entity.
 	 */
-	virtual void adjustPositionForContainedNode(EmberEntity* const entity, const Ogre::Vector3& position);
+	virtual void adjustPositionForContainedNode(const EmberEntity& entity, const Ogre::Vector3& position);
 
 
 	/**
@@ -328,7 +328,7 @@ protected:
 	 * @param entity The entity to get an adjusted position for.
 	 * @return The offset by which to adjust the contained node.
 	 */
-	virtual const Ogre::Vector3& getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity);
+	virtual const Ogre::Vector3& getOffsetForContainedNode(const Ogre::Vector3& position, const EmberEntity& entity);
 
 
 	/**

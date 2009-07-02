@@ -107,7 +107,7 @@ void WorldEmberEntity::onAttrChanged(const std::string& str, const Atlas::Messag
 	Entity::onAttrChanged(str, v);
 }
 
-TerrainParser::TerrainParser(Terrain::TerrainGenerator* terrainGenerator)
+TerrainParser::TerrainParser(Terrain::TerrainGenerator& terrainGenerator)
 : mTerrainGenerator(terrainGenerator)
 {
 }
@@ -170,7 +170,7 @@ void TerrainParser::updateTerrain(const Atlas::Message::Element& terrain)
 		S_LOG_FAILURE("Terrain is the wrong type");
 		return;
 	}
-	mTerrainGenerator->updateTerrain(pointStore);
+	mTerrainGenerator.updateTerrain(pointStore);
 
 }
 
@@ -222,7 +222,7 @@ void TerrainParser::createShaders(const Atlas::Message::Element& surfaces)
 									Mercator::Shader* shader = Mercator::ShaderFactories::instance().newShader(pattern, params);
 									if (shader) {
 										isValid = true;
-										mTerrainGenerator->createShader(def, shader);
+										mTerrainGenerator.createShader(def, shader);
 									}
 								}
 							}
@@ -244,16 +244,16 @@ void TerrainParser::createDefaultShaders()
 	Terrain::TerrainLayerDefinition* def(0);
 	if ((def = terrainManager.getDefinitionForShader("rock")))
 	{
-		mTerrainGenerator->createShader(def, new Mercator::FillShader());
+		mTerrainGenerator.createShader(def, new Mercator::FillShader());
 	}
 	if ((def = terrainManager.getDefinitionForShader("sand")))
 	{
-		mTerrainGenerator->createShader(def,  new Mercator::BandShader(-2.f, 1.5f));
+		mTerrainGenerator.createShader(def,  new Mercator::BandShader(-2.f, 1.5f));
 	}
 
 	if ((def = terrainManager.getDefinitionForShader("grass")))
 	{
-		mTerrainGenerator->createShader(def,   new Mercator::GrassShader(1.f, 80.f, .5f, 1.f));
+		mTerrainGenerator.createShader(def,   new Mercator::GrassShader(1.f, 80.f, .5f, 1.f));
 	}
 
 	//      createShader(std::string(configSrv->getValue("shadertextures", "snow")), new Mercator::HighShader(110.f)); // Snow
@@ -266,13 +266,13 @@ void TerrainParser::createDefaultShaders()
 }
 
 
-void WorldEmberEntity::adjustPositionForContainedNode(EmberEntity* const entity, const Ogre::Vector3& position)
+void WorldEmberEntity::adjustPositionForContainedNode(const EmberEntity& entity, const Ogre::Vector3& position)
 {
-	Ogre::SceneNode* sceneNode = entity->getSceneNode();
+	Ogre::SceneNode* sceneNode = entity.getSceneNode();
 
-	if (entity->getMovementMode() == EmberEntity::MM_FLOATING) {
+	if (entity.getMovementMode() == EmberEntity::MM_FLOATING) {
 		sceneNode->setPosition(position.x, 0,position.z);
-	} else if (entity->getMovementMode() == EmberEntity::MM_SWIMMING) {
+	} else if (entity.getMovementMode() == EmberEntity::MM_SWIMMING) {
 		///if it's swimming, make sure that it's between the sea bottom and the surface
 		const TerrainPosition pos = Ogre2Atlas_TerrainPosition(position);
 		float height = 0;
@@ -296,7 +296,7 @@ void WorldEmberEntity::adjustPositionForContainedNode(EmberEntity* const entity,
 
 }
 
-const Ogre::Vector3& WorldEmberEntity::getOffsetForContainedNode(const Ogre::Vector3& localPosition, EmberEntity* const entity)
+const Ogre::Vector3& WorldEmberEntity::getOffsetForContainedNode(const Ogre::Vector3& localPosition, const EmberEntity& entity)
 {
 	assert(mTerrainGenerator);
 	///NOTE: won't work with threading!
@@ -324,33 +324,35 @@ void WorldEmberEntity::onVisibilityChanged(bool vis)
 	///we do our initialization of the terrain and environment here instead of at onInit since that way we can guarantee that Eris::Calendar will work as it should (which is used to get the correct server time)
 	if (!mHasBeenInitialized) {
 		mEnvironment->initialize();
-		mTerrainParser = std::auto_ptr<TerrainParser>(new TerrainParser(mTerrainGenerator));
-		bool hasValidShaders = false;
-		if (hasAttr("terrain")) {
-			const Atlas::Message::Element& terrainElement = valueOfAttr("terrain");
-			if (terrainElement.isMap()) {
-				const Atlas::Message::MapType& terrainMap(terrainElement.asMap());
-				if (terrainMap.count("surfaces")) {
-					const Atlas::Message::Element& surfaceElement(terrainMap.find("surfaces")->second);
-					mTerrainParser->createShaders(surfaceElement);
+		if (mTerrainGenerator) {
+			mTerrainParser = std::auto_ptr<TerrainParser>(new TerrainParser(*mTerrainGenerator));
+			bool hasValidShaders = false;
+			if (hasAttr("terrain")) {
+				const Atlas::Message::Element& terrainElement = valueOfAttr("terrain");
+				if (terrainElement.isMap()) {
+					const Atlas::Message::MapType& terrainMap(terrainElement.asMap());
+					if (terrainMap.count("surfaces")) {
+						const Atlas::Message::Element& surfaceElement(terrainMap.find("surfaces")->second);
+						mTerrainParser->createShaders(surfaceElement);
+						hasValidShaders = true;
+					}
+				}
+				if (!hasValidShaders) {
+					mTerrainParser->createDefaultShaders();
 					hasValidShaders = true;
 				}
+				mTerrainParser->updateTerrain(terrainElement);
 			}
 			if (!hasValidShaders) {
 				mTerrainParser->createDefaultShaders();
 				hasValidShaders = true;
 			}
-			mTerrainParser->updateTerrain(terrainElement);
+
+
+
+			///prepare all the segments in advance
+			mTerrainGenerator->prepareAllSegments();
 		}
-		if (!hasValidShaders) {
-			mTerrainParser->createDefaultShaders();
-			hasValidShaders = true;
-		}
-
-
-
-		///prepare all the segments in advance
-		mTerrainGenerator->prepareAllSegments();
 
 		//mTerrainGenerator->prepareSegments(0,0,1,true);
 
@@ -358,7 +360,9 @@ void WorldEmberEntity::onVisibilityChanged(bool vis)
 		mEnvironment->setWorldPosition(mWorldPosition.LongitudeDegrees, mWorldPosition.LatitudeDegrees);
 
 		///wait a little with initializing the foliage
-		mFoliageInitializer = std::auto_ptr<DelayedFoliageInitializer>(new DelayedFoliageInitializer(mFoliage, getView(), 1000, 15000));
+		if (mFoliage) {
+			mFoliageInitializer = std::auto_ptr<DelayedFoliageInitializer>(new DelayedFoliageInitializer(*mFoliage, *getView(), 1000, 15000));
+		}
 		mHasBeenInitialized = true;
 	}
 
@@ -389,7 +393,7 @@ Environment::Foliage* WorldEmberEntity::getFoliage() const
 	return mFoliage;
 }
 
-DelayedFoliageInitializer::DelayedFoliageInitializer(Environment::Foliage* foliage, Eris::View* view, unsigned int intervalMs, unsigned int maxTimeMs)
+DelayedFoliageInitializer::DelayedFoliageInitializer(Environment::Foliage& foliage, Eris::View& view, unsigned int intervalMs, unsigned int maxTimeMs)
 : mFoliage(foliage)
 , mView(view)
 , mIntervalMs(intervalMs)
@@ -412,10 +416,8 @@ DelayedFoliageInitializer::~DelayedFoliageInitializer()
 void DelayedFoliageInitializer::timout_Expired()
 {
 	///load the foliage if either all queues entities have been loaded, or 15 seconds has elapsed
-	if (mView->lookQueueSize() == 0 || mTotalElapsedTime > mMaxTimeMs) {
-		if (mFoliage) {
-			mFoliage->initialize();
-		}
+	if (mView.lookQueueSize() == 0 || mTotalElapsedTime > mMaxTimeMs) {
+		mFoliage.initialize();
 	} else {
 		mTotalElapsedTime += mIntervalMs;
 		mTimeout->reset(mIntervalMs);

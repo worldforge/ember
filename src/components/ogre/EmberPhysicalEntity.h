@@ -193,7 +193,7 @@ protected:
 
 	virtual void setClientVisible(bool visible);
 
-	virtual const Ogre::Vector3& getOffsetForContainedNode(const Ogre::Vector3& position, EmberEntity* const entity);
+	virtual const Ogre::Vector3& getOffsetForContainedNode(const Ogre::Vector3& position, const EmberEntity& entity);
 
 	/**
 	 *   creates EmberEntityUserObjects, connects them and sets up the collision detection system
