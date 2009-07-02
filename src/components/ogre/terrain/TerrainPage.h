@@ -66,9 +66,10 @@ class PlantAreaQuery;
 
 /**
 
-@brief Reprents one terrain page.
+@brief Represents one terrain page.
 
 This is a bridge class between one Ogre terrain page instance and one or many Mercator::Segment. Since each Segment is 64x64 meters, but one Ogre page often is much larger, we need to combine many Segments for every single Ogre page.
+All segments used will be contained in an instance of TerrainPageGeometry. Thus each instance of this holds a corresponding instance of TerrainPageGeometry.
 
 Instances of this is created by TerrainGenerator.
 One terrain page is composed of both height data, a material, textures for the material and plant positions for the foliage system. This class handles all of these, some of them directly and some by other classes.
@@ -80,8 +81,16 @@ friend class TerrainPageShadow;
 friend class ITerrainPageShadowTechnique;
 public:
 
+	/**
+	 * @brief Ctor.
+	 * @param position The page index in WF space.
+	 * @param generator The terrain generator.
+	 */
 	TerrainPage(TerrainPosition position, TerrainGenerator& generator);
 
+	/**
+	 * @brief Dtor.
+	 */
 	~TerrainPage();
 
 
@@ -101,66 +110,66 @@ public:
 	Ogre::MaterialPtr generateTerrainMaterials(bool reselectTechnique);
 
 	/**
-	 *    Fills the bound height data with height data. If no buffer has been bound nothing will be done.
+	 * @brief Fills the bound height data with height data. If no buffer has been bound nothing will be done.
 	 */
 	void updateOgreHeightData(Ogre::Real* heightData);
 
 	/**
-	 *    The total number of vertices used for this page
-	 * @return Number of vertices
+	 * @brief The total number of vertices used for this page.
+	 * @return Number of vertices.
 	 */
 	int getVerticeCount() const;
 
 	/**
-	 *    The position of the page in Worldforge space
+	 * @brief The position of the page in Worldforge space.
 	 * @return
 	 */
 	const TerrainPosition& getWFPosition() const;
 
 
 	/**
-	 *    The material used for the page
+	 * @brief The material used for the page.
 	 * @return
 	 */
 	const Ogre::MaterialPtr getMaterial() const;
 
 	/**
-	 *    creates a new foliage for this page, but does not show it yet
+	 * @brief Creates a new foliage for this page, but does not show it yet.
 	 */
 	void prepareFoliage();
 
 	/**
-	 *    shows the foliage for this page, if no foliage exists it's created
+	 * @brief Shows the foliage for this page, if no foliage exists it's created.
 	 */
 	void showFoliage();
 
 
 	/**
-	 *    hides the foliage for this page, but does not destroy it
+	 * @brief Hides the foliage for this page, but does not destroy it.
 	 */
 	void hideFoliage();
 
 
 	/**
-	 *    destroys the foliage for this page
+	 * @brief Destroys the foliage for this page.
 	 */
 	void destroyFoliage();
 
 	/**
-	 *    this adds a shader to the page, meaning that it will be used in rendering
-	 * @param shader
+	 * @brief Adds a shader to the page, meaning that it will be used in rendering.
+	 * @param shader The new shader to add.
 	 */
 	TerrainPageSurfaceLayer* addShader(TerrainShader* shader);
 
 	/**
-	 *    Updates the shader texture for the specific shader
-	 * @param shader
+	 * @brief Updates the shader texture for the specific shader.
+	 * @param shader The shader to update.
 	 */
 	TerrainPageSurfaceLayer* updateShaderTexture(TerrainShader* shader, bool repopulate = true);
 
 	/**
-	 *    Updates all the shader textures of the page.
-	 *    You should usually call this after you've made a change to the terrain and already have called populateSurfaces()
+	 * @brief Updates all the shader textures of the page.
+	 * You should usually call this after you've made a change to the terrain and already have called populateSurfaces().
 	 */
 	void updateAllShaderTextures(bool repopulate = true);
 
@@ -170,24 +179,32 @@ public:
 
 	void update();
 
+	/**
+	 * @brief Creates a shadow texture for the page.
+	 * @param lightDirection The direction of the light, in world space.
+	 */
 	void createShadow(const Ogre::Vector3& lightDirection);
 
+	/**
+	 * @brief Updates the shadow texture for the page.
+	 * @param lightDirection The direction of the light, in world space.
+	 */
 	void updateShadow(const Ogre::Vector3& lightDirection);
 
-		/**
-	 *    The size in pixels of one side of the AlphaTexture. This is in sizes of 64.
+	/**
+	 * @brief The size in pixels of one side of the AlphaTexture. This is in sizes of 64.
 	 * @return
 	 */
 	int getAlphaTextureSize() const;
 
 	/**
-	 *    The max height of this page
+	 * @brief The max height of this page
 	 * @return Max height
 	 */
 	float getMaxHeight() const;
 
 	/**
-	 *    Gets the extent of this page in meters, in worldforge space.
+	 * @brief Gets the extent of this page in meters, in worldforge space.
 	 * @return
 	 */
 	const WFMath::AxisBox<2>& getExtent() const;
@@ -197,7 +214,7 @@ public:
 	const TerrainPageSurface* getSurface() const;
 
 	/**
-	 *    Place the plants for the supplied area in the supplied store.
+	 * @brief Place the plants for the supplied area in the supplied store.
 	 * @param layer The layer which we should use as base for determining what plants to get.
 	 * @param plantType The plant type.
 	 * @param area The enclosing area.
@@ -205,22 +222,24 @@ public:
 	 */
 	void getPlantsForArea(PlantAreaQuery& query) const;
 
-	//	const TerrainPageFoliage* getPageFoliage() const;
-
+	/**
+	 * @brief Gets the shadow instance belonging to this page.
+	 * @returns The shadow instance which handles the shadow update and generation for this page.
+	 */
 	const TerrainPageShadow& getPageShadow() const;
 
 
 
 	/**
-	 *    @brief Binds a bridge instance to this page.
+	 * @brief Binds a bridge instance to this page.
 	 * The bridge will be responsible for updating the terrain engine after the Mercator terrain has changed.
 	 * This class won't take ownership of the bridge, so it's up to the calling class to make sure that it's properly destroyed, and when so also calling @see unregisterBridge()
-	 * @param bridge A vlid bridge instance.
+	 * @param bridge A valid bridge instance.
 	 */
 	void registerBridge(ITerrainPageBridge* bridge);
 
 	/**
-	 *    @brief Unregisters the current terrain bridge.
+	 * @brief Unregisters the current terrain bridge.
 	 * Make sure to call this when the bridge is destroyed, so as not to leave any dangling pointers. This won't however delete the bridge.
 	 */
 	void unregisterBridge();
@@ -237,20 +256,21 @@ public:
 
 private:
 
-
 	/**
 	 * @brief The main terrain generator, which acts as a hub for all terrain functionality.
 	 */
 	TerrainGenerator& mGenerator;
 
 	/**
-	Internal position
-	*/
+	 * @brief Internal position
+	 */
 	TerrainPosition mPosition;
 
+	/**
+	 * @brief The geometry of this page.
+	 * This instance isn't exposed outside of this page, but passed on to the different instance which provide supporting features for the page (foliage, surface etc.).
+	 */
 	std::auto_ptr<TerrainPageGeometry> mGeometry;
-
-
 
 	/**
 	* @brief How much to scale the alpha map. This is done to avoid pixelated terrain (a blur filter is applied).
@@ -264,17 +284,17 @@ private:
 	void setupShadowTechnique();
 
 	/**
-	The extent of this page in meters, in WF space.
-	*/
+	 * @brief The extent of this page in meters, in WF space.
+	 */
 	const WFMath::AxisBox<2> mExtent;
 	std::auto_ptr<TerrainPageFoliage> mPageFoliage;
 
 
 
 	/**
-	@brief Bridge to the ogre terrain engine.
-	When the terrain data is changed we need to also update the actual ingame representation that the terrain engine provides. This instance will take care of that.
-	*/
+	 *@brief Bridge to the ogre terrain engine.
+	 * When the terrain data is changed we need to also update the actual ingame representation that the terrain engine provides. This instance will take care of that.
+	 */
 	ITerrainPageBridge* mBridge;
 
 

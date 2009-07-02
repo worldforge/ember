@@ -56,44 +56,66 @@ typedef std::vector<PageSegment> SegmentVector;
 class TerrainPage;
 
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-	@brief Handles the geometry of a terrain page.
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@brief Handles the geometry of a terrain page.
+
+Each instance of TerrainPage holds a corresponding instance of this. The main purpose of this class is to provide a central place where all actions which alters and populates the Mercator::Segment instances which makes up a page occurs.
+An instance of this is then used by TerrainPage and passed on to the other TerrainPage* classes which provide terrain page functions such as foliage, surfaces etc.
+
+@note Be sure to call init() before an instance of this can be used.
 */
 class TerrainPageGeometry{
 public:
+
+	/**
+	 * @brief Ctor.
+	 * @note Be sure to call init() before this instance can be used.
+	 * @param page The TerrainPage instance to which this geometry belongs.
+	 */
 	TerrainPageGeometry(TerrainPage& page);
 
+	/**
+	 * @brief Dtor.
+	 */
 	~TerrainPageGeometry();
 
+	/**
+	 * @brief Initializes the geometry.
+	 * This must always be called before an instance of this can be used.
+	 * During initialization, the segments which make up this geometry will be collected, and populated.
+	 */
 	void init(const Mercator::Terrain& terrain);
 
 	/**
-	 *    The max height of this page
+	 * @brief The max height of this page
 	 * @return Max height
 	 */
 	float getMaxHeight() const;
 
 
 	/**
-	 *    Fills the bound height data with height data. If no buffer has been bound nothing will be done.
+	 * @brief Fills the bound height data with height data. If no buffer has been bound nothing will be done.
 	 */
 	void updateOgreHeightData(float* heightData);
 
 	/**
-	 *    Gets the segment positioned at the supplied position in local space.
+	 * @brief Gets the segment positioned at the supplied position in local space.
 	 * @param pos A Wordforge position in local space, i.e. > 0 && < [width in meters of the page]
 	 * @return A pointer to Mercator::Segment or null.
 	 */
 	const Mercator::Segment* getSegmentAtLocalPosition(const TerrainPosition& pos) const;
 
 	/**
-	 *    Gets the segment positioned at the supplied position in local space and also translates the supplied position into a local position in the returned segment.
+	 * @brief Gets the segment positioned at the supplied position in local space and also translates the supplied position into a local position in the returned segment.
 	 * @param pos A Wordforge position in local space, i.e. > 0 && < [width in meters of the page]
 	 * @param localPositionInSegment The resulting position in the segment space.
 	 * @return A pointer to Mercator::Segment or null.
 	 */
 	const Mercator::Segment* getSegmentAtLocalPosition(const TerrainPosition& pos, TerrainPosition& localPositionInSegment) const;
 
+	/**
+	 * @brief Gets the collection of valid segments which make up this geometry.
+	 */
 	const SegmentVector& getValidSegments() const;
 
 private:
@@ -104,21 +126,31 @@ private:
 	SegmentVector mValidSegments;
 
 
+	/**
+	 * @brief The page to which this geometry belongs.
+	 */
 	TerrainPage& mPage;
 
 	/**
-	A local copy of the segments for fast lookup. This will also include nonvalid segments.
-	The keys will be the local indices.
-	*/
+	 * @brief A local copy of the segments for fast lookup. This will also include nonvalid segments.
+	 * The keys will be the local indices.
+	 */
 	Mercator::Terrain::Segmentstore mLocalSegments;
 
+	/**
+	 * @brief Blits a Mercator::Segment heightmap to a larger ogre height map.
+	 * @param ogreHeightData The Ogre height data. This is guaranteed to be <page size> * <page size>.
+	 * @param segment The segment to blit.
+	 * @param startX The starting x position in Ogre space.
+	 * @param startY The starting y position in Ogre space.
+	 */
 	void blitSegmentToOgre(float* ogreHeightData, Mercator::Segment& segment, int startX, int startY);
 
 	/**
 	 * @brief Gets a segment for the x and y position in the page.
-	 * @param x
-	 * @param y
-	 * @return
+	 * @param x Local x index.
+	 * @param y Local y index.
+	 * @return A segment instance, or null if none could be found.
 	 */
 	Mercator::Segment* getSegmentAtLocalIndex(const Mercator::Terrain& terrain, int indexX, int indexY) const;
 
