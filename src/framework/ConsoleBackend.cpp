@@ -120,16 +120,20 @@ void ConsoleBackend::registerCommand(const std::string &command, ConsoleObject *
 		S_LOG_INFO("Registering: " << command);
 	}
 
-	ConsoleObjectEntry entry;
-	entry.Object = object;
-	entry.Description = description;
-	// Assign the ConsoleObject to the command
-	mRegisteredCommands[command] = entry;
+	if (mRegisteredCommands.count(command) > 0) {
+		S_LOG_WARNING("The command '" + command + "' already has been registered.");
+	} else {
+		ConsoleObjectEntry entry;
+		entry.Object = object;
+		entry.Description = description;
+		// Assign the ConsoleObject to the command
+		mRegisteredCommands[command] = entry;
 
-	// prepare the prefix map to have fast access to commands
-	for(std::string::size_type i = 1; i <= command.length(); ++i)
-	{
-		mPrefixes[command.substr(0, i)].insert(command);
+		// prepare the prefix map to have fast access to commands
+		for(std::string::size_type i = 1; i <= command.length(); ++i)
+		{
+			mPrefixes[command.substr(0, i)].insert(command);
+		}
 	}
 }
 
