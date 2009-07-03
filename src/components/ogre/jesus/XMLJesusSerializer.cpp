@@ -90,7 +90,7 @@ bool XMLJesusSerializer::loadModelBlockMapping(const std::string& filename)
 		
 		std::string blocktype(tmp);
 		
-		mJesus->mModelMappings[blocktype] = model;
+		mJesus->mEntityMappings[blocktype] = model;
 	}	
 	
 	return true;

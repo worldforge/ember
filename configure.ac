@@ -530,6 +530,7 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/SceneManagers/EmberPagingSceneManager/Makefile
 		 src/components/ogre/SceneManagers/EmberPagingSceneManager/src/Makefile
 		 src/components/ogre/SceneManagers/EmberPagingSceneManager/include/Makefile
+		 src/components/entitymapping/Makefile
 		 media/Makefile
 		 media/packs/Makefile
 ])

@@ -68,7 +68,7 @@ class SoundDefinitionManager;
 namespace Model {
 	class ModelDefinitionManager;
 	namespace Mapping {
-		class EmberModelMappingManager;
+		class EmberEntityMappingManager;
 	}
 }
 
@@ -447,7 +447,7 @@ protected:
 	/**
 	 * @brief Handles all model mappings.
 	 */
-	Model::Mapping::EmberModelMappingManager* mModelMappingManager;
+	Model::Mapping::EmberEntityMappingManager* mEntityMappingManager;
 
 	/**
 	 * @brief Responsible for handling all terrain layers.

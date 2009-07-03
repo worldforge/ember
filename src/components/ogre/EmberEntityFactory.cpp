@@ -41,7 +41,7 @@
 #include "model/Model.h"
 #include "model/ModelDefinition.h"
 #include "model/ModelDefinitionManager.h"
-#include "model/mapping/EmberModelMappingManager.h"
+#include "model/mapping/EmberEntityMappingManager.h"
 
 #include "framework/Tokeniser.h"
 
@@ -57,7 +57,7 @@
     #include <io.h> // for _access, Win32 version of stat()
     #include <direct.h> // for _mkdir
 //	#include <sys/stat.h>
-	
+
 	#include <iostream>
 	#include <fstream>
 	#include <ostream>
@@ -77,9 +77,9 @@ EmberEntityFactory::EmberEntityFactory(Eris::View* view, Eris::TypeService* type
 , mView(view)
 {
 	mView->registerFactory(this);
-	
+
 	mTerrainType = mTypeService->getTypeByName("world");
-	
+
 	getErisAvatar()->GotCharacterEntity.connect(sigc::mem_fun(*this, &EmberEntityFactory::gotAvatarCharacter));
 }
 
@@ -94,14 +94,14 @@ EmberEntityFactory::~EmberEntityFactory()
 /// create whatever entity the client desires
 Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View* w)
 {
-	
+
 	Eris::Entity* emberEntity(0);
-    
+
     if (ge->getId() == getErisAvatar()->getId()) {
-   	
+
     	AvatarEmberEntity* avatarEntity = createAvatarEntity(ge, type,  w);
     	emberEntity = avatarEntity;
- 
+
     } else if (type->isA(mTerrainType)) {
 
     	emberEntity = createWorld(ge, type, w);
@@ -110,7 +110,7 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Root
 		///assume that it's not physical until we have a model defintion which don't want to hide the model
 		///In the future we want to refactor the way we deal with EmberEntity and EmberPhysicalEntity, so that we only have one class (EmberEntity) which in turn holds a reference to a graphical representation instance. Until then we have to do with this though.
 		bool isPhysical = false;
-		Model::Mapping::Definitions::ModelMappingDefinition* mappingDef(Model::Mapping::EmberModelMappingManager::getSingleton().getManager().getDefinitionForType(type));
+		Model::Mapping::Definitions::EntityMappingDefinition* mappingDef(Model::Mapping::EmberEntityMappingManager::getSingleton().getManager().getDefinitionForType(type));
 		if (mappingDef) {
 			///we have a mapping defintion, so it's probably physical, lets just see that the first action isn't to hide the model
 			isPhysical = true;
@@ -125,17 +125,17 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Root
 				}
 			}
 		}
-			
+
 		if (!isPhysical) {
 			S_LOG_VERBOSE("Creating immaterial entity.");
-		
+
 			///we don't want this to have any Ogre::Entity
 			emberEntity = new EmberEntity(ge->getId(), type, w, EmberOgre::getSingleton().getSceneManager());
-		
+
 		} else {
-		
+
 			emberEntity = createPhysicalEntity(ge, type, w);
-		
+
 		}
     }
 
@@ -167,18 +167,18 @@ void EmberEntityFactory::gotAvatarCharacter(Eris::Entity* entity)
 	EmberOgre::getSingleton().getAvatar()->createdAvatarEmberEntity(avatarEntity);
    	EmberOgre::getSingleton().EventCreatedAvatarEntity.emit(avatarEntity);
 }
-	
+
 
 
 
 
 
 EmberPhysicalEntity* EmberEntityFactory::createPhysicalEntity(const Atlas::Objects::Entity::RootEntity &ge,Eris::TypeInfo* type, Eris::View *world) {
-	
+
 	EmberPhysicalEntity* entity = new EmberPhysicalEntity(ge->getId(), type, world, EmberOgre::getSingleton().getSceneManager());
-	
+
 	return entity;
-	
+
 }
 
 AvatarEmberEntity* EmberEntityFactory::createAvatarEntity(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View *world)
@@ -201,19 +201,19 @@ void EmberEntityFactory::dumpAttributesOfEntity(const std::string& entityId) con
 	if (entity) {
 		///make sure the directory exists
 		std::string dir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/entityexport/");
-		
+
 		if (!oslink::directory(dir).isExisting()) {
 			S_LOG_INFO("Creating directory " << dir);
 #ifdef __WIN32__
 			mkdir(dir.c_str());
-#else 
+#else
 			mkdir(dir.c_str(), S_IRWXU);
 #endif
 		}
-		
+
 		const std::string fileName(dir + entityId + ".atlas");
 		std::fstream exportFile(fileName.c_str(), std::fstream::out);
-	
+
 		S_LOG_INFO("Dumping attributes to " << fileName);
 		entity->dumpAttributes(exportFile, std::cout);
 		Ember::ConsoleBackend::getSingletonPtr()->pushMessage(std::string("Dumped attributes to ") + fileName);

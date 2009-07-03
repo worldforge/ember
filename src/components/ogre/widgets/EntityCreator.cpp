@@ -53,11 +53,11 @@
 
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelDefinitionManager.h"
-#include "components/ogre/model/mapping/ModelMappingManager.h"
-#include "components/ogre/model/mapping/EmberModelMappingManager.h"
-#include "components/ogre/model/mapping/ModelMapping.h"
-#include "components/ogre/model/mapping/Definitions/ModelMappingDefinition.h"
-#include "components/ogre/model/mapping/IActionCreator.h"
+#include "components/entitymapping/EntityMappingManager.h"
+#include "components/ogre/model/mapping/EmberEntityMappingManager.h"
+#include "components/entitymapping/EntityMapping.h"
+#include "components/entitymapping/Definitions/EntityMappingDefinition.h"
+#include "components/entitymapping/IActionCreator.h"
 #include "main/Application.h"
 
 #include <CEGUIWindow.h>
@@ -197,7 +197,7 @@ void EntityCreator::createEntity()
 
 		// Making model from temporary entity
 		EntityCreatorActionCreator actionCreator(*this);
-		std::auto_ptr<Model::Mapping::ModelMapping> modelMapping(Model::Mapping::EmberModelMappingManager::getSingleton().getManager().createMapping(mEntity, &actionCreator));
+		std::auto_ptr<Model::Mapping::EntityMapping> modelMapping(Model::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(mEntity, &actionCreator));
 		if (modelMapping.get()) {
 			modelMapping->initialize();
 		}

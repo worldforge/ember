@@ -1,5 +1,5 @@
 //
-// C++ Implementation: EmberModelMappingManager
+// C++ Implementation: EmberEntityMappingManager
 //
 // Description: 
 //
@@ -24,7 +24,7 @@
 #include "config.h"
 #endif
 
-#include "EmberModelMappingManager.h"
+#include "EmberEntityMappingManager.h"
 #include "framework/tinyxml/tinyxml.h"
 
 #include "services/EmberServices.h"
@@ -36,7 +36,7 @@
 using namespace EmberOgre::Model::Mapping;
 
 
-template<> EmberOgre::Model::Mapping::EmberModelMappingManager* Ember::Singleton<EmberOgre::Model::Mapping::EmberModelMappingManager>::ms_Singleton = 0;
+template<> EmberOgre::Model::Mapping::EmberEntityMappingManager* Ember::Singleton<EmberOgre::Model::Mapping::EmberEntityMappingManager>::ms_Singleton = 0;
 
 namespace EmberOgre {
 
@@ -44,10 +44,10 @@ namespace Model {
 
 namespace Mapping {
 
-EmberModelMappingManager::EmberModelMappingManager() : mModelMappingManager(), mXmlSerializer(mModelMappingManager)
+EmberEntityMappingManager::EmberEntityMappingManager() : mEntityMappingManager(), mXmlSerializer(mEntityMappingManager)
 {
     mLoadOrder = 300.0f;
-    mResourceType = "ModelMappingDefinition";
+    mResourceType = "EntityMappingDefinition";
         
 	mScriptPatterns.push_back("*.modelmap");
 	mScriptPatterns.push_back("*.modelmap.xml");
@@ -55,20 +55,20 @@ EmberModelMappingManager::EmberModelMappingManager() : mModelMappingManager(), m
 
 	Ogre::ResourceGroupManager::getSingleton()._registerResourceManager(mResourceType, this);
 	
-	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EmberModelMappingManager::ServerService_GotConnection));
+	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EmberEntityMappingManager::ServerService_GotConnection));
 	
 	
 }
 
 
-EmberModelMappingManager::~EmberModelMappingManager()
+EmberEntityMappingManager::~EmberEntityMappingManager()
 {
 	Ogre::ResourceGroupManager::getSingleton()._unregisterResourceManager(mResourceType);
 	Ogre::ResourceGroupManager::getSingleton()._unregisterScriptLoader(this);
 }
 
 
-void EmberModelMappingManager::parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName)
+void EmberEntityMappingManager::parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName)
 {
 	TiXmlDocument xmlDoc;
 	XMLHelper xmlHelper;
@@ -79,7 +79,7 @@ void EmberModelMappingManager::parseScript (Ogre::DataStreamPtr &stream, const O
 	mXmlSerializer.parseScript(xmlDoc);
 }
 
-Ogre::Resource* EmberModelMappingManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, 
+Ogre::Resource* EmberEntityMappingManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, 
     const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, 
     const Ogre::NameValuePairList* createParams)
 {
@@ -87,8 +87,8 @@ Ogre::Resource* EmberModelMappingManager::createImpl(const Ogre::String& name, O
 }
 
 
-void EmberModelMappingManager::ServerService_GotConnection(Eris::Connection* connection) {
-	mModelMappingManager.setTypeService(connection->getTypeService());
+void EmberEntityMappingManager::ServerService_GotConnection(Eris::Connection* connection) {
+	mEntityMappingManager.setTypeService(connection->getTypeService());
 }
 
 

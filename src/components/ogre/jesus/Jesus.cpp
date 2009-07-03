@@ -217,8 +217,8 @@ std::vector<AttachPointNode*> ModelBlock::getAttachPointNodes() const
 
 Model::Model* Jesus::createModelForBlockType(const std::string& blockType, const std::string& modelName)
 {
-	std::map<std::string, std::string>::iterator I = mModelMappings.find(blockType);
-	if (I == mModelMappings.end()) {
+	std::map<std::string, std::string>::iterator I = mEntityMappings.find(blockType);
+	if (I == mEntityMappings.end()) {
 		return 0;
 	}
 	Model::Model* aModel = Model::Model::createModel(EmberOgre::getSingleton().getSceneManager(), I->second, modelName);

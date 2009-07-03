@@ -29,9 +29,9 @@
 #include "model/ParticleSystemBinding.h"
 #include "model/Action.h"
 
-#include "model/mapping/EmberModelMappingManager.h"
-#include "model/mapping/ModelMapping.h"
-#include "model/mapping/ModelMappingManager.h"
+#include "model/mapping/EmberEntityMappingManager.h"
+#include "components/entitymapping/EntityMapping.h"
+#include "components/entitymapping/EntityMappingManager.h"
 
 #include "environment/Environment.h"
 #include "environment/Forest.h"
@@ -72,14 +72,14 @@ const char * const EmberPhysicalEntity::ACTION_SWIM("__movement_swim");
 const char * const EmberPhysicalEntity::ACTION_FLOAT("__movement_float");
 
 EmberPhysicalEntity::EmberPhysicalEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager) :
-	EmberEntity(id, ty, vw, sceneManager), mCurrentMovementAction(0), mActiveAction(0), mModelAttachedTo(0), mModelMarkedToAttachTo(0), mModel(0), mModelMount(0), mSoundEntity(0), mModelMapping(0)
+	EmberEntity(id, ty, vw, sceneManager), mCurrentMovementAction(0), mActiveAction(0), mModelAttachedTo(0), mModelMarkedToAttachTo(0), mModel(0), mModelMount(0), mSoundEntity(0), mEntityMapping(0)
 {
 }
 
 EmberPhysicalEntity::~EmberPhysicalEntity()
 {
 	delete mSoundEntity;
-	delete mModelMapping;
+	delete mEntityMapping;
 	delete mModelAttachedTo;
 	delete mModelMarkedToAttachTo;
 
@@ -218,11 +218,11 @@ void EmberPhysicalEntity::setSounds()
 void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
 	/// we need a model mapping
-	createModelMapping();
+	createEntityMapping();
 
-	assert(mModelMapping);
+	assert(mEntityMapping);
 	///calling this will result in a call to setModel(...)
-	mModelMapping->initialize();
+	mEntityMapping->initialize();
 
 	///if the model mapping framework couldn't produce a model to use, we'll fall back to the placeholder
 	if (!mModel)
@@ -307,12 +307,12 @@ void EmberPhysicalEntity::initFromModel()
 
 }
 
-void EmberPhysicalEntity::createModelMapping()
+void EmberPhysicalEntity::createEntityMapping()
 {
-	delete mModelMapping;
+	delete mEntityMapping;
 	///the creator binds the model mapping and this instance together by creating instance of EmberEntityModelAction and EmberEntityPartAction which in turn calls the setModel(..) and show/hideModelPart(...) methods.
 	EmberEntityActionCreator creator(*this);
-	mModelMapping = ::EmberOgre::Model::Mapping::EmberModelMappingManager::getSingleton().getManager().createMapping(this, &creator);
+	mEntityMapping = ::EmberOgre::Model::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(this, &creator);
 }
 
 void EmberPhysicalEntity::connectEntities()

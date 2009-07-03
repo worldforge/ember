@@ -6,7 +6,7 @@ ember_bin_SOURCES = Application.cpp ConfigBoundLogObserver.cpp Ember.cpp
 
 ember_bin_LDADD = $(top_builddir)/src/components/ogre/libEmberOgre.la \
 	$(top_builddir)/src/extensions/libExtensions.la $(top_builddir)/src/services/libServices.la $(top_builddir)/src/framework/libFramework.la \
-	 $(top_builddir)/src/main/bindings/lua/liblua_Main.la
+	 $(top_builddir)/src/main/bindings/lua/liblua_Main.la  $(top_builddir)/src/components/entitymapping/libEntityMapping.la
 
 
 

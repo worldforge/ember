@@ -1,5 +1,5 @@
 //
-// C++ Implementation: XMLModelMappingDefinitionSerializer
+// C++ Implementation: XMLEntityMappingDefinitionSerializer
 //
 // Description: 
 //
@@ -24,7 +24,7 @@
 #include "config.h"
 #endif
 
-#include "XMLModelMappingDefinitionSerializer.h"
+#include "XMLEntityMappingDefinitionSerializer.h"
 //#include "components/ogre/EmberOgrePrerequisites.h"
 
 namespace EmberOgre {
@@ -35,17 +35,17 @@ namespace Mapping {
 
 using namespace Definitions;
 
-XMLModelMappingDefinitionSerializer::XMLModelMappingDefinitionSerializer(EmberOgre::Model::Mapping::ModelMappingManager& modelMappingManager)
-: mModelMappingManager(modelMappingManager)
+XMLEntityMappingDefinitionSerializer::XMLEntityMappingDefinitionSerializer(EmberOgre::Model::Mapping::EntityMappingManager& modelMappingManager)
+: mEntityMappingManager(modelMappingManager)
 {
 }
 
 
-XMLModelMappingDefinitionSerializer::~XMLModelMappingDefinitionSerializer()
+XMLEntityMappingDefinitionSerializer::~XMLEntityMappingDefinitionSerializer()
 {
 }
 
-void XMLModelMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocument)
+void XMLEntityMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocument)
 {
 
 	TiXmlElement* rootElem = xmlDocument.RootElement();
@@ -61,11 +61,11 @@ void XMLModelMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocument
 			} else {
 				try {
 					const std::string name(tmp);
-					ModelMappingDefinition* definition = new ModelMappingDefinition();
+					EntityMappingDefinition* definition = new EntityMappingDefinition();
 					definition->setName(name);
 					TiXmlElement* matchElement = smElem->FirstChildElement();
 					parseMatchElement(*definition, definition->getRoot(), matchElement);
-					mModelMappingManager.addDefinition(definition);
+					mEntityMappingManager.addDefinition(definition);
 				} catch (std::exception ex) {
 					//S_LOG_FAILURE(ex.what());
 				} catch (...) {
@@ -84,9 +84,9 @@ void XMLModelMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocument
 				continue;
 			} else {
 				const std::string name(tmp);
-				ModelMappingDefinition* definition(0);
+				EntityMappingDefinition* definition(0);
 				try {
-					definition = new ModelMappingDefinition();
+					definition = new EntityMappingDefinition();
 					definition->setName(name);
 					definition->getRoot().setType("entitytype");
 					CaseDefinition caseDef;
@@ -106,7 +106,7 @@ void XMLModelMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocument
 					//S_LOG_FAILURE("Error when reading model mapping with name " << name);
 				}
 				if (definition) {
-					mModelMappingManager.addDefinition(definition);
+					mEntityMappingManager.addDefinition(definition);
 				}
 			}
 		}	
@@ -122,9 +122,9 @@ void XMLModelMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocument
 				continue;
 			} else {
 				const std::string name(tmp);
-				ModelMappingDefinition* definition(0);
+				EntityMappingDefinition* definition(0);
 				try {
-					definition = new ModelMappingDefinition();
+					definition = new EntityMappingDefinition();
 					definition->setName(name);
 					definition->getRoot().setType("entitytype");
 					CaseDefinition caseDef;
@@ -152,14 +152,14 @@ void XMLModelMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocument
 					delete definition;
 				}
 				if (definition) {
-					mModelMappingManager.addDefinition(definition);
+					mEntityMappingManager.addDefinition(definition);
 				}
 			}
 		}
 	}
 }
 
-void XMLModelMappingDefinitionSerializer::parseMatchElement(ModelMappingDefinition& definition, MatchDefinition& matchDef, TiXmlElement* element)
+void XMLEntityMappingDefinitionSerializer::parseMatchElement(EntityMappingDefinition& definition, MatchDefinition& matchDef, TiXmlElement* element)
 {
 	std::string caseType("");
 	if (std::string(element->Value()) == std::string("entitymatch")) {
@@ -194,7 +194,7 @@ void XMLModelMappingDefinitionSerializer::parseMatchElement(ModelMappingDefiniti
 	}
 }
 
-void XMLModelMappingDefinitionSerializer::parseCaseElement(ModelMappingDefinition& definition, CaseDefinition& caseDef, TiXmlElement* element)
+void XMLEntityMappingDefinitionSerializer::parseCaseElement(EntityMappingDefinition& definition, CaseDefinition& caseDef, TiXmlElement* element)
 {
 	for (TiXmlAttribute* attribute = element->FirstAttribute();
             attribute != 0; attribute = attribute->Next())
@@ -230,7 +230,7 @@ void XMLModelMappingDefinitionSerializer::parseCaseElement(ModelMappingDefinitio
 	}
 }
 
-void XMLModelMappingDefinitionSerializer::parseActionElement(ModelMappingDefinition& definition, ActionDefinition& actionDef, TiXmlElement* element)
+void XMLEntityMappingDefinitionSerializer::parseActionElement(EntityMappingDefinition& definition, ActionDefinition& actionDef, TiXmlElement* element)
 {
 	for (TiXmlAttribute* attribute = element->FirstAttribute();
             attribute != 0; attribute = attribute->Next())

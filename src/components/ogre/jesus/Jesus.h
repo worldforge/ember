@@ -132,7 +132,7 @@ protected:
 	a map of what Model should represent a certain Carpenter::BuildingBlockSpec
 	the first value is the name of the Carpenter::BuildingBlockSpec and the second value is the name of the Model
 	*/
-	std::map<std::string, std::string> mModelMappings;
+	std::map<std::string, std::string> mEntityMappings;
 	Carpenter::Carpenter* mCarpenter;
 
 	/**
@@ -233,7 +233,7 @@ inline Construction* ModelBlock::getConstruction() const { return mConstruction;
 /**
 	Mapping between a Carpenter block type and a Ember Model.
 */
-struct ModelMapping
+struct EntityMapping
 {
 
 public:

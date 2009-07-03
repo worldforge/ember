@@ -38,7 +38,7 @@ class Model;
 class Action;
 namespace Mapping
 {
-class ModelMapping;
+class EntityMapping;
 }
 }
 
@@ -60,7 +60,7 @@ typedef std::vector<Ogre::SceneNode*> SceneNodeStore;
  * This means that child nodes will be children of the node held in EmberEntity, not children of the "scale node".
  * The handling of the scale node and the update of the Model's scaling and orientation is done through the ModelMount class.
  *
- * When the node is created we use the Model::ModelMapping framework to determine what Model to show. This happens in the init(...) method. As data is updated the Model::ModelMapping framework might trigger certain parts of the Model to be hidden or shown, as well as a new model to be shown.
+ * When the node is created we use the Model::EntityMapping framework to determine what Model to show. This happens in the init(...) method. As data is updated the Model::EntityMapping framework might trigger certain parts of the Model to be hidden or shown, as well as a new model to be shown.
  *
  * This class also takes care of updating all actions that needs to be executed (for example animations and sounds) as the entity moves or performs actions.
  */
@@ -204,7 +204,7 @@ protected:
 	/**
 	 *    Creates the model mapping for this entity. Call this once when initializing the entity.
 	 */
-	void createModelMapping();
+	void createEntityMapping();
 
 	/**
 	 *    Called when the bounding box has changed.
@@ -354,7 +354,7 @@ protected:
 	/**
 	 * @brief The model mapping used for this entity.
 	 */
-	Model::Mapping::ModelMapping* mModelMapping;
+	Model::Mapping::EntityMapping* mEntityMapping;
 
 	/**
 	 * @brief Keep track of the light nodes.

@@ -1,7 +1,7 @@
 //
 // C++ Interface: EmberEntityActionCreator
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -25,10 +25,10 @@
 #include "EmberOgrePrerequisites.h"
 #include "EmberPhysicalEntity.h"
 
-#include "model/mapping/ModelMapping.h"
-#include "model/mapping/Definitions/ModelMappingDefinition.h"
-#include "model/mapping/ModelMappingManager.h"
-#include "model/mapping/IActionCreator.h"
+#include "components/entitymapping/EntityMapping.h"
+#include "components/entitymapping/Definitions/EntityMappingDefinition.h"
+#include "components/entitymapping/EntityMappingManager.h"
+#include "components/entitymapping/IActionCreator.h"
 
 namespace EmberOgre {
 
@@ -41,7 +41,7 @@ public:
     EmberEntityActionCreator(EmberPhysicalEntity& entity);
 
     ~EmberEntityActionCreator();
-	virtual void createActions(Model::Mapping::ModelMapping& modelMapping, Model::Mapping::Cases::CaseBase* aCase, Model::Mapping::Definitions::CaseDefinition& caseDefinition);
+	virtual void createActions(Model::Mapping::EntityMapping& modelMapping, Model::Mapping::Cases::CaseBase* aCase, Model::Mapping::Definitions::CaseDefinition& caseDefinition);
 protected:
 	EmberPhysicalEntity& mEntity;
 

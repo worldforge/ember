@@ -103,7 +103,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManagerAdapter.h"
 #include "model/ModelDefinitionManager.h"
 #include "model/ModelDefinition.h"
-#include "model/mapping/EmberModelMappingManager.h"
+#include "model/mapping/EmberEntityMappingManager.h"
 
 #include "ogreopcode/include/OgreCollisionManager.h"
 #include "OpcodeCollisionDetectorVisualizer.h"
@@ -177,7 +177,7 @@ mSoundManager(0),
 mMotionManager(0),
 mGUIManager(0),
 mModelDefinitionManager(0),
-mModelMappingManager(0),
+mEntityMappingManager(0),
 mTerrainLayerManager(0),
 mEntityRecipeManager(0),
 mMoveManager(0),
@@ -226,7 +226,7 @@ EmberOgre::~EmberOgre()
 
 	delete mEntityRecipeManager;
 	delete mTerrainLayerManager;
-	delete mModelMappingManager;
+	delete mEntityMappingManager;
 
 	///we need to make sure that all Models are destroyed before Ogre begins destroying other movable objects (such as Entities)
 	///this is because Model internally uses Entities, so if those Entities are destroyed by Ogre before the Models are destroyed, the Models will try to delete them again, causing segfaults and other wickedness
@@ -363,7 +363,7 @@ bool EmberOgre::setup()
 	///Create the model definition manager
 	mModelDefinitionManager = new Model::ModelDefinitionManager();
 
-	mModelMappingManager = new Model::Mapping::EmberModelMappingManager();
+	mEntityMappingManager = new Model::Mapping::EmberEntityMappingManager();
 
 	mTerrainLayerManager = new Terrain::TerrainLayerDefinitionManager();
 

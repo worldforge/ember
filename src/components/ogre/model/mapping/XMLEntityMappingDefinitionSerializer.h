@@ -1,7 +1,7 @@
 //
-// C++ Interface: XMLModelMappingDefinitionSerializer
+// C++ Interface: XMLEntityMappingDefinitionSerializer
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -27,8 +27,8 @@
 #include "config.h"
 #endif
 #include "framework/tinyxml/tinyxml.h"
-#include "Definitions/ModelMappingDefinition.h"
-#include "ModelMappingManager.h"
+#include "components/entitymapping/Definitions/EntityMappingDefinition.h"
+#include "components/entitymapping/EntityMappingManager.h"
 
 #include <vector>
 
@@ -39,26 +39,26 @@ namespace Model {
 namespace Mapping {
 
 /**
-	Serialized model definitions from xml files. 
+	Serialized model definitions from xml files.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class XMLModelMappingDefinitionSerializer{
+class XMLEntityMappingDefinitionSerializer{
 public:
-    XMLModelMappingDefinitionSerializer(ModelMappingManager& modelMappingManager);
+    XMLEntityMappingDefinitionSerializer(EntityMappingManager& modelMappingManager);
 
-    ~XMLModelMappingDefinitionSerializer();
-    
+    ~XMLEntityMappingDefinitionSerializer();
+
     /**
     Parse the xml document and create definitions from the data.
     @param xmlDocument A valid xml document instance.
     */
     void parseScript(TiXmlDocument& xmlDocument);
 protected:
-	void parseMatchElement(Definitions::ModelMappingDefinition& definition, Definitions::MatchDefinition& matchDef, TiXmlElement* element);
-	void parseCaseElement(Definitions::ModelMappingDefinition& definition, Definitions::CaseDefinition& caseDef, TiXmlElement* element);
-	void parseActionElement(Definitions::ModelMappingDefinition& definition, Definitions::ActionDefinition& actionDef, TiXmlElement* element);
+	void parseMatchElement(Definitions::EntityMappingDefinition& definition, Definitions::MatchDefinition& matchDef, TiXmlElement* element);
+	void parseCaseElement(Definitions::EntityMappingDefinition& definition, Definitions::CaseDefinition& caseDef, TiXmlElement* element);
+	void parseActionElement(Definitions::EntityMappingDefinition& definition, Definitions::ActionDefinition& actionDef, TiXmlElement* element);
 
-	ModelMappingManager& mModelMappingManager;
+	EntityMappingManager& mEntityMappingManager;
 
 
 };
