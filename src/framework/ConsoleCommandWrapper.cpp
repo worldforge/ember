@@ -40,7 +40,7 @@ ConsoleCommandWrapper::ConsoleCommandWrapper(std::string command, ConsoleObject 
 	if (Ember::ConsoleBackend::getSingletonPtr()) {
 		Ember::ConsoleBackend::getSingletonPtr()->registerCommand(mCommand, object, mDescription, suppressLogging);
 		if (mInverseCommand != "") {
-			Ember::ConsoleBackend::getSingletonPtr()->registerCommand(mInverseCommand, object, std::string("Releases the command ") + mCommand);
+			Ember::ConsoleBackend::getSingletonPtr()->registerCommand(mInverseCommand, object, std::string("Releases the command ") + mCommand, suppressLogging);
 		}
 	} else {
 		S_LOG_WARNING("Could not register command "<< command << " since there was no console backend.");
@@ -51,6 +51,9 @@ ConsoleCommandWrapper::~ConsoleCommandWrapper()
 {
 	if (Ember::ConsoleBackend::getSingletonPtr()) {
 		Ember::ConsoleBackend::getSingletonPtr()->deregisterCommand(mCommand, mSuppressLogging);
+		if (mInverseCommand != "") {
+			Ember::ConsoleBackend::getSingletonPtr()->deregisterCommand(mInverseCommand, mSuppressLogging);
+		}
 	}
 }
 
