@@ -150,7 +150,7 @@ void TerrainPageFoliage::getPlantsForArea(const TerrainPageGeometry& geometry, P
 	//const PlantBatchStore& plantBatchStore = mPlantStores[plantType];
 	PlantStoreMap::const_iterator plantStoreMapIt = mPlantStores.find(query.getPlantType());
 	if (plantStoreMapIt == mPlantStores.end()) {
-		S_LOG_WARNING("Plant type ' " << query.getPlantType() << "' doesn't exist in PlantStore");
+		S_LOG_WARNING("Plant type '" << query.getPlantType() << "' doesn't exist in PlantStore");
 		return;
 	}
 
@@ -160,13 +160,12 @@ void TerrainPageFoliage::getPlantsForArea(const TerrainPageGeometry& geometry, P
 
 	//const PlantStore& plants = plantBatchStore[batchX][batchY];
 	PlantBatchStore::const_iterator plantBatchStoreIt = (*plantStoreMapIt).second.find(batchX);
+	//Note that the plantBatchStore is parsely populated, so we expect that there will be batches missing (i.e. no plants have been placed there).
 	if (plantBatchStoreIt == (*plantStoreMapIt).second.end()) {
-		S_LOG_WARNING("BatchX ' " << batchX << "' doesn't exist in PlantBatchStore");
 		return;
 	}
 	PlantBatchColumn::const_iterator plantBatchColumnIt = (*plantBatchStoreIt).second.find(batchY);
 	if (plantBatchColumnIt == (*plantBatchStoreIt).second.end()) {
-		S_LOG_WARNING("BatchY ' " << batchY << "' doesn't exist in PlantBatchColumn");
 		return;
 	}
 	const PlantStore& plants = (*plantBatchColumnIt).second;
