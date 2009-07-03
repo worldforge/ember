@@ -1,7 +1,7 @@
 //
 // C++ Implementation: InputCommandMapper
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
@@ -11,12 +11,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -54,24 +54,30 @@ InputCommandMapper::~InputCommandMapper()
 
 void InputCommandMapper::readFromConfigSection(const std::string& sectionName)
 {
-	
+
 	///get the mappings from the config service
 	const Ember::ConfigService::SectionMap& section = Ember::EmberServices::getSingleton().getConfigService()->getSection(sectionName);
-	
+
 	for (Ember::ConfigService::SectionMap::const_iterator I = section.begin(); I != section.end(); ++I) {
 		bindCommand(std::string(I->first), std::string(I->second));
 	}
-	
+
 }
 
 void InputCommandMapper::Input_EventKeyPressed(const SDL_keysym& key, Input::InputMode inputMode)
 {
 	if (mEnabled && isActiveForInputMode(inputMode)) {
 		///check if we have any key with a matching command
-		const std::string& command = getCommandForKey(key.sym);
-		if (command != "") {
-			Ember::ConsoleBackend* myBackend = Ember::ConsoleBackend::getSingletonPtr();
-			myBackend->runCommand(command, false);
+		KeyMapStore::const_iterator keyI = mKeymap.find(key.sym);
+		if (keyI != mKeymap.end()) {
+			std::pair<KeyCommandStore::iterator, KeyCommandStore::iterator> commandsI = mKeyCommands.equal_range(keyI->second);
+			for (KeyCommandStore::iterator I = commandsI.first; I != commandsI.second; ++I) {
+				const std::string& command(I->second);
+				if (command != "") {
+					Ember::ConsoleBackend& myBackend = Ember::ConsoleBackend::getSingleton();
+					myBackend.runCommand(command, false);
+				}
+			}
 		}
 	}
 }
@@ -82,12 +88,18 @@ void InputCommandMapper::Input_EventKeyReleased(const SDL_keysym& key, Input::In
 	if (mEnabled && isActiveForInputMode(inputMode)) {
 		///check if we have any key with a matching command
 		///only check for commands that start with a "+"
-		const std::string& command = getCommandForKey(key.sym);
-		if (command != "") {
-			Ember::ConsoleBackend* myBackend = Ember::ConsoleBackend::getSingletonPtr();
-			if (command[0] == '+') {
-				///remove the "+" and replace it with "-"
-				myBackend->runCommand("-" + std::string(command).erase(0, 1), false);
+		KeyMapStore::const_iterator keyI = mKeymap.find(key.sym);
+		if (keyI != mKeymap.end()) {
+			std::pair<KeyCommandStore::iterator, KeyCommandStore::iterator> commandsI = mKeyCommands.equal_range(keyI->second);
+			for (KeyCommandStore::iterator I = commandsI.first; I != commandsI.second; ++I) {
+				const std::string& command(I->second);
+				if (command != "") {
+					if (command[0] == '+') {
+						Ember::ConsoleBackend& myBackend = Ember::ConsoleBackend::getSingleton();
+						///remove the "+" and replace it with "-"
+						myBackend.runCommand("-" + std::string(command).erase(0, 1), false);
+					}
+				}
 			}
 		}
 	}
@@ -115,7 +127,7 @@ bool InputCommandMapper::isActiveForInputMode(Input::InputMode mode) const
 void InputCommandMapper::bindCommand(const std::string& key, const std::string& command)
 {
 	S_LOG_INFO("Binding key " << key << " to command " << command << " for state " << getState() << ".");
-	mKeyCommands[key] = command;
+	mKeyCommands.insert(KeyCommandStore::value_type(key, command));
 }
 
 void InputCommandMapper::unbindCommand(const std::string& key)
@@ -124,44 +136,55 @@ void InputCommandMapper::unbindCommand(const std::string& key)
 	mKeyCommands.erase(key);
 }
 
-const std::string& InputCommandMapper::getCommandForKey(SDLKey key)
+void InputCommandMapper::unbindCommand(const std::string& key, const std::string& command)
 {
-	KeyMapStore::const_iterator I = mKeymap.find(key);
-	if (I != mKeymap.end()) {
-		KeyCommandStore::const_iterator J = mKeyCommands.find(I->second);
-		if (J != mKeyCommands.end()) {
-			return J->second;
+	std::pair<KeyCommandStore::iterator, KeyCommandStore::iterator> commandsI = mKeyCommands.equal_range(key);
+	for (KeyCommandStore::iterator I = commandsI.first; I != commandsI.second; ++I) {
+		if (I->second == command) {
+			mKeyCommands.erase(I);
 		}
 	}
-	///if we don't find anything, return an empty string
-	static std::string empty("");
-	return empty;
 }
 
 
+//const std::string& InputCommandMapper::getCommandForKey(SDLKey key)
+//{
+//	KeyMapStore::const_iterator I = mKeymap.find(key);
+//	if (I != mKeymap.end()) {
+//		KeyCommandStore::const_iterator J = mKeyCommands.find(I->second);
+//		if (J != mKeyCommands.end()) {
+//			return J->second;
+//		}
+//	}
+//	///if we don't find anything, return an empty string
+//	static std::string empty("");
+//	return empty;
+//}
+
+
 // std::string Bindings::getBindingForKeysym(const SDL_keysym& key) {
-//   
+//
 //   std::map<int, std::string>::const_iterator I = m_keymap.find(key.sym);
 //   if (I == m_keymap.end()) return ""; // un-mapped basic keysym
 //   const std::string & plainName = I->second;
 //   std::string decoratedName = plainName;
-//     
+//
 //   if (key.mod & KMOD_SHIFT)
-//     decoratedName = "shift_" + decoratedName;    
-//     
+//     decoratedName = "shift_" + decoratedName;
+//
 //   if (key.mod & KMOD_ALT)
 //     decoratedName = "alt_" + decoratedName;
-//     
+//
 //   if (key.mod & KMOD_CTRL)
 //     decoratedName = "ctrl_" + decoratedName;
-//     
+//
 //   m_bindings->clean(decoratedName);
 //   if (m_bindings->findItem("key_bindings", decoratedName))
 //     return m_bindings->getItem("key_bindings", decoratedName);
-//     
+//
 //   if (m_bindings->findItem("key_bindings", plainName))
 //     return m_bindings->getItem("key_bindings", plainName);
-//     
+//
 //   std::cout << "no binding specified for key " << decoratedName << std::endl;
 //   return "";
 // }
