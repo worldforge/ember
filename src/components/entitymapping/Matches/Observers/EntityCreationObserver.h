@@ -25,7 +25,7 @@
 
 #include <sigc++/trackable.h>
 #include "../OutfitMatch.h"
-#include "../../ModelMapping.h"
+#include "../../EntityMapping.h"
 #include <Eris/View.h>
 
 namespace EmberOgre {

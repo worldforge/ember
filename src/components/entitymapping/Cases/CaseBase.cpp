@@ -26,7 +26,7 @@
 
 #include "CaseBase.h"
 
-#include "../ModelMapping.h"
+#include "../EntityMapping.h"
 #include "../Actions/Action.h"
 
 namespace EmberOgre {

@@ -1,5 +1,5 @@
 //
-// C++ Interface: ModelMappingManager
+// C++ Interface: EntityMappingManager
 //
 // Description: 
 //
@@ -40,8 +40,8 @@
 #include <Eris/TypeInfo.h>
 #include <Eris/Entity.h>
 
-#include "Definitions/ModelMappingDefinition.h"
-#include "ModelMapping.h"
+#include "Definitions/EntityMappingDefinition.h"
+#include "EntityMapping.h"
 
 
 namespace EmberOgre {
@@ -50,29 +50,29 @@ namespace Model {
 
 namespace Mapping {
 
-class ModelMapping;
+class EntityMapping;
 class IActionCreator;
 
 
 
 /**
-	Handles all ModelMapping instances, as well as creation and setup.
+	Handles all EntityMapping instances, as well as creation and setup.
 	
 	Applications are expected to add definitions to the manager through the addDefinition(...) method. Definitions are managed by the manager and will be deleted by this upon destruction.
-	New ModelMapping instances are created by calling createMapping(...). It's up to the application to delete all ModelMapping instances created by the manager.
+	New EntityMapping instances are created by calling createMapping(...). It's up to the application to delete all EntityMapping instances created by the manager.
 
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class ModelMappingManager{
+class EntityMappingManager{
 public:
-	typedef std::map<std::string, Definitions::ModelMappingDefinition*> ModelMappingDefinitionStore;
+	typedef std::map<std::string, Definitions::EntityMappingDefinition*> EntityMappingDefinitionStore;
 	
 	/**
 	Default constructor.
 	*/
-    ModelMappingManager();
+    EntityMappingManager();
 
-    ~ModelMappingManager();
+    ~EntityMappingManager();
     
     /**
     Sets the type service. Applications are required to set this before calling createMapping(...)
@@ -84,22 +84,22 @@ public:
     Adds a definition to the manager. This definition will be deleted by the manager upon destruction.
     @param definition A valid definition.
     */
-    void addDefinition(Definitions::ModelMappingDefinition* definition);
+    void addDefinition(Definitions::EntityMappingDefinition* definition);
     
     
     /**
     Queries the internal list of definitions and return the defintion that's most suited for the supplied type.
     @param typeInfo An eris type info instance.
     */
-    Definitions::ModelMappingDefinition* getDefinitionForType(Eris::TypeInfo* typeInfo);
+    Definitions::EntityMappingDefinition* getDefinitionForType(Eris::TypeInfo* typeInfo);
     
     /**
-    Creates a new ModelMapping instance. This will not be handled by the manager and needs to be deleted by the application when suitable.
-    Remember to call ModelMapping::initialize(...). 
+    Creates a new EntityMapping instance. This will not be handled by the manager and needs to be deleted by the application when suitable.
+    Remember to call EntityMapping::initialize(...). 
     @param entity An eris type info instance.
     @param actionCreator An eris type info instance.
     */
-    ModelMapping* createMapping(Eris::Entity* entity, IActionCreator* actionCreator);
+    EntityMapping* createMapping(Eris::Entity* entity, IActionCreator* actionCreator);
     
     /**
      * Utility method for splitting a string into a vector of strings 
@@ -114,15 +114,15 @@ protected:
 
 
 	
-	ModelMappingDefinitionStore mDefinitions;
+	EntityMappingDefinitionStore mDefinitions;
 	
-	ModelMappingDefinitionStore mEntityTypeMappings;
+	EntityMappingDefinitionStore mEntityTypeMappings;
 
 	Eris::TypeService* mTypeService;
 	
 };
 
-inline void ModelMappingManager::setTypeService(Eris::TypeService* typeService)
+inline void EntityMappingManager::setTypeService(Eris::TypeService* typeService)
 {
 	mTypeService = typeService;
 }

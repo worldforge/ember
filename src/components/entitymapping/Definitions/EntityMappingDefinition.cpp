@@ -1,5 +1,5 @@
 //
-// C++ Interface: ModelMappingDefinition
+// C++ Implementation: EntityMappingDefinition
 //
 // Description: 
 //
@@ -20,19 +20,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBEROGRE_MODEL_MAPPINGMODELMAPPINGDEFINITION_H
-#define EMBEROGRE_MODEL_MAPPINGMODELMAPPINGDEFINITION_H
-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
-
-#include <vector>
-#include <map>
-#include <string>
-
-#include "MatchDefinition.h"
+#include "EntityMappingDefinition.h"
 
 namespace EmberOgre {
 
@@ -42,31 +34,32 @@ namespace Mapping {
 
 namespace Definitions {
 
-
-
-/**
-	A definition for a ModelMapping.
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
-class ModelMappingDefinition
+EntityMappingDefinition::EntityMappingDefinition()
 {
-public:
-    ModelMappingDefinition();
+}
 
-    ~ModelMappingDefinition();
-    
-    const std::string& getName() const;
-    void setName(std::string name);
-    
-    MatchDefinition& getRoot();
-    const MatchDefinition& getRoot() const;
-protected:
-	MatchDefinition mRootMatch;
-	std::string mName;
-};
+EntityMappingDefinition::~EntityMappingDefinition()
+{
+}
 
 
+const std::string& EntityMappingDefinition::getName() const 
+{ 
+	return mName; 
+}
+void EntityMappingDefinition::setName(std::string name) 
+{ 
+	mName = name; 
+}
 
+MatchDefinition& EntityMappingDefinition::getRoot() 
+{ 
+	return mRootMatch;
+}
+
+const MatchDefinition& EntityMappingDefinition::getRoot() const
+{ 
+	return mRootMatch;
 }
 
 }
@@ -75,4 +68,4 @@ protected:
 
 }
 
-#endif
+}

@@ -1,5 +1,5 @@
 //
-// C++ Implementation: ModelMappingCreator
+// C++ Implementation: EntityMappingCreator
 //
 // Description: 
 //
@@ -24,9 +24,9 @@
 #include "config.h"
 #endif
 
-#include "ModelMappingCreator.h"
-#include "ModelMapping.h"
-#include "ModelMappingManager.h"
+#include "EntityMappingCreator.h"
+#include "EntityMapping.h"
+#include "EntityMappingManager.h"
 
 #include "Cases/OutfitCase.h"
 #include "Cases/AttributeCase.h"
@@ -77,23 +77,23 @@ static const CaseDefinition::ParameterEntry* findCaseParameter(const CaseDefinit
 	return 0;
 }
 
-ModelMappingCreator::ModelMappingCreator(ModelMappingDefinition* definition, Eris::Entity* entity, IActionCreator* actionCreator, Eris::TypeService* typeService) : mActionCreator(actionCreator), mEntity(entity), mModelMap(0), mDefinition(definition), mTypeService(typeService)
+EntityMappingCreator::EntityMappingCreator(EntityMappingDefinition* definition, Eris::Entity* entity, IActionCreator* actionCreator, Eris::TypeService* typeService) : mActionCreator(actionCreator), mEntity(entity), mModelMap(0), mDefinition(definition), mTypeService(typeService)
 {
 }
 
 
-ModelMappingCreator::~ModelMappingCreator()
+EntityMappingCreator::~EntityMappingCreator()
 {
 }
 
-ModelMapping* ModelMappingCreator::create() 
+EntityMapping* EntityMappingCreator::create() 
 {
 	return createMapping();
 }
 
 
-ModelMapping* ModelMappingCreator::createMapping() {
-	mModelMap = new ModelMapping(mEntity);
+EntityMapping* EntityMappingCreator::createMapping() {
+	mModelMap = new EntityMapping(mEntity);
 	addEntityTypeCases(&mModelMap->getRootEntityMatch(), mDefinition->getRoot());
 	
 	///since we already have the entity, we can perform a check right away
@@ -102,7 +102,7 @@ ModelMapping* ModelMappingCreator::createMapping() {
 	return mModelMap;
 }
 
-void ModelMappingCreator::addEntityTypeCases(EntityTypeMatch* entityTypeMatch, MatchDefinition& matchDefinition) {
+void EntityMappingCreator::addEntityTypeCases(EntityTypeMatch* entityTypeMatch, MatchDefinition& matchDefinition) {
 	MatchDefinition::CaseStore::iterator endI = matchDefinition.getCases().end();
 	for (MatchDefinition::CaseStore::iterator I = matchDefinition.getCases().begin(); I != endI; ++I) {
 		if (mTypeService) {
@@ -115,7 +115,7 @@ void ModelMappingCreator::addEntityTypeCases(EntityTypeMatch* entityTypeMatch, M
 			}
 			
 /*			const std::string& entityName = I->getProperties()["equals"];
-			std::vector<std::string> splitNames = ModelMappingManager::splitString(entityName, "|", 100);
+			std::vector<std::string> splitNames = EntityMappingManager::splitString(entityName, "|", 100);
 			for (std::vector<std::string>::const_iterator J = splitNames.begin(); J != splitNames.end(); ++J) {
 				aCase->addEntityType(mTypeService->getTypeByName(*J));
 			}*/
@@ -133,7 +133,7 @@ void ModelMappingCreator::addEntityTypeCases(EntityTypeMatch* entityTypeMatch, M
 	}
 }
 
-void ModelMappingCreator::addOutfitCases(OutfitMatch* match, MatchDefinition& matchDefinition)
+void EntityMappingCreator::addOutfitCases(OutfitMatch* match, MatchDefinition& matchDefinition)
 {
 	MatchDefinition::CaseStore::iterator endI = matchDefinition.getCases().end();
 	for (MatchDefinition::CaseStore::iterator I = matchDefinition.getCases().begin(); I != endI; ++I) {
@@ -146,7 +146,7 @@ void ModelMappingCreator::addOutfitCases(OutfitMatch* match, MatchDefinition& ma
 				}
 			}
 /*			const std::string& entityName = I->getProperties()["equals"];
-			std::vector<std::string> splitNames = ModelMappingManager::splitString(entityName, "|", 100);
+			std::vector<std::string> splitNames = EntityMappingManager::splitString(entityName, "|", 100);
 			for (std::vector<std::string>::const_iterator J = splitNames.begin(); J != splitNames.end(); ++J) {
 				aCase->addEntityType(mTypeService->getTypeByName(*J));
 			}*/
@@ -165,7 +165,7 @@ void ModelMappingCreator::addOutfitCases(OutfitMatch* match, MatchDefinition& ma
 }
 
 
-Cases::AttributeComparers::AttributeComparerWrapper* ModelMappingCreator::getAttributeCaseComparer(AttributeMatch* match, MatchDefinition& matchDefinition, CaseDefinition& caseDefinition)
+Cases::AttributeComparers::AttributeComparerWrapper* EntityMappingCreator::getAttributeCaseComparer(AttributeMatch* match, MatchDefinition& matchDefinition, CaseDefinition& caseDefinition)
 {
 	const std::string& matchType = matchDefinition.getProperties()["type"];
 	
@@ -190,7 +190,7 @@ Cases::AttributeComparers::AttributeComparerWrapper* ModelMappingCreator::getAtt
 	
 }
 
-AttributeComparers::NumericComparer* ModelMappingCreator::createNumericComparer(CaseDefinition& caseDefinition)
+AttributeComparers::NumericComparer* EntityMappingCreator::createNumericComparer(CaseDefinition& caseDefinition)
 {
 	const CaseDefinition::ParameterEntry* param(0);
 	
@@ -229,7 +229,7 @@ AttributeComparers::NumericComparer* ModelMappingCreator::createNumericComparer(
 }
 
 
-void ModelMappingCreator::addAttributeCases(AttributeMatch* match, MatchDefinition& matchDefinition) {
+void EntityMappingCreator::addAttributeCases(AttributeMatch* match, MatchDefinition& matchDefinition) {
 	MatchDefinition::CaseStore::iterator endI = matchDefinition.getCases().end();
 	for (MatchDefinition::CaseStore::iterator I = matchDefinition.getCases().begin(); I != endI; ++I) {
 		Cases::AttributeComparers::AttributeComparerWrapper* wrapper = getAttributeCaseComparer(match, matchDefinition, *I);
@@ -251,7 +251,7 @@ void ModelMappingCreator::addAttributeCases(AttributeMatch* match, MatchDefiniti
 	
 }
 
-void ModelMappingCreator::addMatch(CaseBase* aCase, MatchDefinition& matchDefinition) {
+void EntityMappingCreator::addMatch(CaseBase* aCase, MatchDefinition& matchDefinition) {
 	if (matchDefinition.getType() == "attribute") {
 		addAttributeMatch(aCase, matchDefinition);
 	} else if (matchDefinition.getType() == "entitytype") {
@@ -261,7 +261,7 @@ void ModelMappingCreator::addMatch(CaseBase* aCase, MatchDefinition& matchDefini
 	}
 }
 
-void ModelMappingCreator::addAttributeMatch(CaseBase* aCase, MatchDefinition& matchDefinition) {
+void EntityMappingCreator::addAttributeMatch(CaseBase* aCase, MatchDefinition& matchDefinition) {
 	const std::string& attributeName = matchDefinition.getProperties()["attribute"];
 	
 	std::string internalAttributeName("");
@@ -286,7 +286,7 @@ void ModelMappingCreator::addAttributeMatch(CaseBase* aCase, MatchDefinition& ma
 	
 }
 
-void ModelMappingCreator::addEntityTypeMatch(CaseBase* aCase, MatchDefinition& matchDefinition) {
+void EntityMappingCreator::addEntityTypeMatch(CaseBase* aCase, MatchDefinition& matchDefinition) {
 	EntityTypeMatch* match = new EntityTypeMatch();
 	aCase->addMatch( match);
 	addEntityTypeCases(match, matchDefinition);
@@ -295,7 +295,7 @@ void ModelMappingCreator::addEntityTypeMatch(CaseBase* aCase, MatchDefinition& m
 // 	match->testEntity(mEntity);
 }
 
-void ModelMappingCreator::addOutfitMatch(CaseBase* aCase, MatchDefinition& matchDefinition)
+void EntityMappingCreator::addOutfitMatch(CaseBase* aCase, MatchDefinition& matchDefinition)
 {
 	const std::string& attachmentName = matchDefinition.getProperties()["attachment"];
 	OutfitMatch* match = new OutfitMatch(attachmentName, mEntity->getView());

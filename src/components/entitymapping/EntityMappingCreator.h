@@ -1,5 +1,5 @@
 //
-// C++ Interface: ModelMappingCreator
+// C++ Interface: EntityMappingCreator
 //
 // Description: 
 //
@@ -23,7 +23,7 @@
 #ifndef EMBEROGRE_MODEL_MAPPINGMODELMAPPINGCREATOR_H
 #define EMBEROGRE_MODEL_MAPPINGMODELMAPPINGCREATOR_H
 
-#include "Definitions/ModelMappingDefinition.h"
+#include "Definitions/EntityMappingDefinition.h"
 namespace Eris
 {
 class Entity;
@@ -37,7 +37,7 @@ namespace Model {
 namespace Mapping {
 
 namespace Definitions {
-class ModelMappingDefinition;
+class EntityMappingDefinition;
 }
 
 namespace Matches {
@@ -56,15 +56,15 @@ class AttributeCase;
 class OutfitCase;
 class CaseBase;
 }
-class ModelMapping;
+class EntityMapping;
 class IActionCreator;
 /**
-	Creates a ModelMapping instances from the supplied definition.
+	Creates a EntityMapping instances from the supplied definition.
 
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 
-class ModelMappingCreator
+class EntityMappingCreator
 {
 public:
 	/**
@@ -74,22 +74,22 @@ public:
 	 * @param actionCreator Client supplied action creator.
 	 * @param typeService A valid typeservice instance.
 	 */
-	ModelMappingCreator( Definitions::ModelMappingDefinition* definition, Eris::Entity* entity, IActionCreator* actionCreator, Eris::TypeService* typeService);
+	EntityMappingCreator( Definitions::EntityMappingDefinition* definition, Eris::Entity* entity, IActionCreator* actionCreator, Eris::TypeService* typeService);
 	
-	~ModelMappingCreator();
+	~EntityMappingCreator();
 	
 	
 	/**
-	 *    Creates a new ModelMapping instance. 
+	 *    Creates a new EntityMapping instance. 
 	 */
-	ModelMapping* create();
+	EntityMapping* create();
 
 protected:
 
 	/**
 	Main entry point for mapping creation.
 	*/
-	ModelMapping* createMapping();
+	EntityMapping* createMapping();
 	
 	/**
 	 * Adds EntityTypeCases to the supplied match. 
@@ -157,8 +157,8 @@ protected:
 
 	IActionCreator* mActionCreator;
 	Eris::Entity* mEntity;
-	ModelMapping* mModelMap;
-	Definitions::ModelMappingDefinition* mDefinition;
+	EntityMapping* mModelMap;
+	Definitions::EntityMappingDefinition* mDefinition;
 	Eris::TypeService* mTypeService;
 };
 

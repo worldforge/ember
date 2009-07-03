@@ -1,1 +1,1 @@
-SUBDIRS = ogre
+SUBDIRS = ogre entitymapping

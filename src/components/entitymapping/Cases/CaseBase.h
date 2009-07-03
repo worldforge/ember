@@ -50,7 +50,7 @@ namespace Cases {
 /**
 	@brief Base class for all Cases.
 	A Case containes zero or many Actions, which will be activated when the Case is activated. A Case also contains zero or many child Matches.
-	A Case is activated when it's true and all it's parent cases, all the way up to the root of the ModelMapping, also are true.
+	A Case is activated when it's true and all it's parent cases, all the way up to the root of the EntityMapping, also are true.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class CaseBase 

@@ -1,5 +1,5 @@
 //
-// C++ Implementation: ModelMapping
+// C++ Implementation: EntityMapping
 //
 // Description: 
 //
@@ -24,7 +24,7 @@
 #include "config.h"
 #endif
 
-#include "ModelMapping.h"
+#include "EntityMapping.h"
 #include <Eris/View.h>
 #include "Cases/CaseBase.h"
 
@@ -35,21 +35,21 @@ namespace Model {
 namespace Mapping {
 	
 
-ModelMapping::ModelMapping(Eris::Entity* entity): mEntity(entity) 
+EntityMapping::EntityMapping(Eris::Entity* entity): mEntity(entity) 
 {
 }
 
-ModelMapping::~ModelMapping()
+EntityMapping::~EntityMapping()
 {
 }
 
-Matches::EntityTypeMatch& ModelMapping::getRootEntityMatch() 
+Matches::EntityTypeMatch& EntityMapping::getRootEntityMatch() 
 { 
 	return mRootEntityMatch;
 }
 
 
-void ModelMapping::initialize()
+void EntityMapping::initialize()
 {
 	mRootEntityMatch.evaluateChanges();
 }

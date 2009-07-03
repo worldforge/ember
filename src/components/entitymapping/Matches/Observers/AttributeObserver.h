@@ -24,7 +24,7 @@
 #define EMBEROGRE_MODEL_MAPPING_MATCHES_OBSERVERSATTRIBUTEOBSERVER_H
 
 #include <sigc++/trackable.h>
-#include "../../ModelMapping.h"
+#include "../../EntityMapping.h"
 #include "../AbstractMatch.h"
 
 #include <Eris/Entity.h>

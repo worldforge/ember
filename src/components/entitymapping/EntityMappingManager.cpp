@@ -1,5 +1,5 @@
 //
-// C++ Implementation: ModelMappingManager
+// C++ Implementation: EntityMappingManager
 //
 // Description: 
 //
@@ -24,9 +24,9 @@
 #include "config.h"
 #endif
 
-#include "ModelMappingManager.h"
+#include "EntityMappingManager.h"
 
-#include "ModelMappingCreator.h"
+#include "EntityMappingCreator.h"
 namespace EmberOgre {
 
 namespace Model {
@@ -35,21 +35,21 @@ namespace Mapping {
 
 using namespace Definitions;
 
-ModelMappingManager::ModelMappingManager() 
+EntityMappingManager::EntityMappingManager() 
 : mTypeService(0) 
 {
 }
 
 
-ModelMappingManager::~ModelMappingManager()
+EntityMappingManager::~EntityMappingManager()
 {
-	for (ModelMappingDefinitionStore::iterator I = mDefinitions.begin(); I != mDefinitions.end(); ++I) {
+	for (EntityMappingDefinitionStore::iterator I = mDefinitions.begin(); I != mDefinitions.end(); ++I) {
 		delete I->second;
 	}
 }
 
 
-std::vector<std::string> ModelMappingManager::splitString( const std::string& str, const std::string& delims, unsigned int maxSplits)
+std::vector<std::string> EntityMappingManager::splitString( const std::string& str, const std::string& delims, unsigned int maxSplits)
 {
 	// static unsigned dl;
 	std::vector<std::string> ret;
@@ -89,9 +89,9 @@ std::vector<std::string> ModelMappingManager::splitString( const std::string& st
 	return ret;
 }
 
-void ModelMappingManager::addDefinition(ModelMappingDefinition* definition)
+void EntityMappingManager::addDefinition(EntityMappingDefinition* definition)
 {
-	std::pair<ModelMappingDefinitionStore::iterator, bool> result = mDefinitions.insert(ModelMappingDefinitionStore::value_type(definition->getName(), definition));
+	std::pair<EntityMappingDefinitionStore::iterator, bool> result = mDefinitions.insert(EntityMappingDefinitionStore::value_type(definition->getName(), definition));
 	
 	///If it was already added, delete the definition now.
 	if (!result.second) {
@@ -113,10 +113,10 @@ void ModelMappingManager::addDefinition(ModelMappingDefinition* definition)
 	}
 }
 
-ModelMappingDefinition* ModelMappingManager::getDefinitionForType(Eris::TypeInfo* typeInfo) {
+EntityMappingDefinition* EntityMappingManager::getDefinitionForType(Eris::TypeInfo* typeInfo) {
 	bool noneThere = false;
 	while (!noneThere) {
-		std::map<std::string, ModelMappingDefinition*>::iterator I = mEntityTypeMappings.find(typeInfo->getName());
+		std::map<std::string, EntityMappingDefinition*>::iterator I = mEntityTypeMappings.find(typeInfo->getName());
 		if (I != mEntityTypeMappings.end()) {
 			return I->second;
 		} else {
@@ -130,11 +130,11 @@ ModelMappingDefinition* ModelMappingManager::getDefinitionForType(Eris::TypeInfo
 	return 0;
 }
 
-ModelMapping* ModelMappingManager::createMapping(Eris::Entity* entity, IActionCreator* actionCreator) {
+EntityMapping* EntityMappingManager::createMapping(Eris::Entity* entity, IActionCreator* actionCreator) {
 	Eris::TypeInfo* type = entity->getType();
-	ModelMappingDefinition* definition = getDefinitionForType(type);
+	EntityMappingDefinition* definition = getDefinitionForType(type);
 	if (definition) {
-		ModelMappingCreator creator(definition, entity, actionCreator, mTypeService);
+		EntityMappingCreator creator(definition, entity, actionCreator, mTypeService);
 		return creator.create();
 	}
 	return 0;
