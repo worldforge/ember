@@ -36,9 +36,8 @@ namespace EmberOgre
 namespace Manipulation
 {
 EntityMoverBase::EntityMoverBase(Eris::Entity& entity, Ogre::SceneNode* node) :
-	mEntity(entity), mNode(node), mSnapping(new Manipulation::SnapToMovement(entity, *node, 2.0f, true))
+	mEntity(entity), mNode(node), mSnapping(0), SnapTo("+snaptomovement", this, "Activates the 'snap to' behavior when moving an entity.", true)
 {
-
 }
 
 EntityMoverBase::~EntityMoverBase()
@@ -114,6 +113,28 @@ void EntityMoverBase::setOrientation(const WFMath::Quaternion& rotation)
 void EntityMoverBase::newEntityPosition(const Ogre::Vector3& position)
 {
 }
+
+void EntityMoverBase::runCommand(const std::string &command, const std::string &args)
+{
+	if (SnapTo == command) {
+		setSnapToEnabled(true);
+	} else if (SnapTo.getInverseCommand() == command) {
+		setSnapToEnabled(false);
+	}
+
+}
+void EntityMoverBase::setSnapToEnabled(bool snapTo)
+{
+	if (snapTo) {
+		if (!mSnapping.get()) {
+			mSnapping.reset(new Manipulation::SnapToMovement(mEntity, *mNode, 2.0f, true));
+			setPosition(Ogre2Atlas(mNode->getPosition()));
+		}
+	} else {
+		mSnapping.reset();
+	}
+}
+
 
 }
 }

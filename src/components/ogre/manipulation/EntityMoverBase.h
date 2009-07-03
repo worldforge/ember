@@ -24,6 +24,7 @@
 #ifndef ENTITYMOVERBASE_H_
 #define ENTITYMOVERBASE_H_
 #include "IMovementBridge.h"
+#include "framework/ConsoleObject.h"
 #include <wfmath/point.h>
 #include <memory>
 
@@ -43,9 +44,10 @@ class SnapToMovement;
  * @brief Base class for all movement bridges which are moving entities.
  *
  * By subclassing from this you'll get a lot of boiler plate code, as well as automatic snap-to behavior.
+ * The snap to behavior is off by default, but can be toggled through the SnapTo command wrapper object. This maps to the "+snaptomovement" command.
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
-class EntityMoverBase: public IMovementBridge
+class EntityMoverBase: public IMovementBridge, public Ember::ConsoleObject
 {
 public:
 	/**
@@ -67,6 +69,25 @@ public:
 	virtual void setRotation(int axis, WFMath::CoordType angle);
 	virtual void setOrientation(const WFMath::Quaternion& rotation);
 	virtual void yaw(WFMath::CoordType angle);
+
+	/**
+	 * @brief Allows toggling of the snap to functionality through the +snaptomovement command.
+	 */
+	const Ember::ConsoleCommandWrapper SnapTo;
+
+	/**
+	 * @brief Reimplements the ConsoleObject::runCommand method
+	 * @param command
+	 * @param args
+	 */
+	virtual	void runCommand(const std::string &command, const std::string &args);
+
+	/**
+	 * @brief Sets whether snap to functionality should be enabled.
+	 * This allows moved entities to "snap to" other entities in the world.
+	 * @param snapTo If true, snap to functionality is enabled.
+	 */
+	void setSnapToEnabled(bool snapTo);
 
 protected:
 
