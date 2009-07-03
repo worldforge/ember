@@ -105,15 +105,10 @@ mFoliageBatchSize(32)
 
 	loadTerrainOptions();
 	mTerrainInfo->setPageIndicesSize(adapter->getPageSize());
-	mTerrain = new Mercator::Terrain(Mercator::Terrain::SHADED); //, mOptions.pageSize - 1);
+	mTerrain = new Mercator::Terrain(Mercator::Terrain::SHADED);
 
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
-//	mTerrainPageSource = new EmberTerrainPageSource(this);
-//	EmberOgre::getSingleton().getSceneManager()->registerPageSource(EmberTerrainPageSource::Name, mTerrainPageSource);
 
-
-
-//	EmberOgre::getSingleton().getSceneManager()->setWorldGeometry(mOptions);
 	Ogre::Root::getSingleton().addFrameListener(this);
 
 	configSrv->EventChangedConfigItem.connect(sigc::mem_fun(*this, &TerrainGenerator::ConfigService_EventChangedConfigItem));
@@ -134,7 +129,6 @@ TerrainGenerator::~TerrainGenerator()
 
 	delete mSceneManagerAdapter;
 	delete mTerrain;
-	//delete mTerrainPageSource;
 }
 
 const Mercator::Terrain& TerrainGenerator::getTerrain() const
@@ -323,11 +317,10 @@ void TerrainGenerator::TerrainArea_Swapped(Mercator::Area& oldArea, TerrainArea*
 	mTerrain->addArea(area);
 	if (!mAreaShaders.count(area->getLayer())) {
 		S_LOG_VERBOSE("Shader does not exists, creating new.");
-		TerrainShader* shader;
 		///try to get the materialdefinition for this kind of area
 		const TerrainLayerDefinition* layerDef = TerrainLayerDefinitionManager::getSingleton().getDefinitionForArea(area->getLayer());
 		if (layerDef) {
-			shader = createShader(layerDef, new Mercator::AreaShader(area->getLayer()));
+			TerrainShader* shader = createShader(layerDef, new Mercator::AreaShader(area->getLayer()));
 			mAreaShaders[area->getLayer()] = shader;
 		}
 	}

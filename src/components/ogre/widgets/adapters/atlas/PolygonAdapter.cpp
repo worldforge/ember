@@ -60,8 +60,8 @@ float EntityPolygonPositionProvider::getHeightForPosition(const WFMath::Point<2>
 		localPos = mEntity.getSceneNode()->_getDerivedOrientation() * localPos;
 		WFMath::Point<3> worldPos = Ogre2Atlas(parentPos + localPos);
 		float height = 0;
-		if (terrain->getHeight(WFMath::Point<2>(worldPos.x(), worldPos.y()), height) - worldPos.z()) {
-			return height;
+		if (terrain->getHeight(WFMath::Point<2>(worldPos.x(), worldPos.y()), height)) {
+			return height - worldPos.z();
 		}
 	}
 	return 0;
