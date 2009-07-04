@@ -35,13 +35,13 @@ namespace EmberOgre {
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class EmberEntityActionCreator : public Model::Mapping::IActionCreator
+class EmberEntityActionCreator : public Ember::EntityMapping::IActionCreator
 {
 public:
     EmberEntityActionCreator(EmberPhysicalEntity& entity);
 
     ~EmberEntityActionCreator();
-	virtual void createActions(Model::Mapping::EntityMapping& modelMapping, Model::Mapping::Cases::CaseBase* aCase, Model::Mapping::Definitions::CaseDefinition& caseDefinition);
+	virtual void createActions(Ember::EntityMapping::EntityMapping& modelMapping, Ember::EntityMapping::Cases::CaseBase* aCase, Ember::EntityMapping::Definitions::CaseDefinition& caseDefinition);
 protected:
 	EmberPhysicalEntity& mEntity;
 

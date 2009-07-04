@@ -1,7 +1,7 @@
 //
 // C++ Implementation: XMLEntityMappingDefinitionSerializer
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -26,16 +26,17 @@
 
 #include "XMLEntityMappingDefinitionSerializer.h"
 //#include "components/ogre/EmberOgrePrerequisites.h"
-
+using namespace Ember::EntityMapping;
+using namespace Ember::EntityMapping::Definitions;
 namespace EmberOgre {
 
 namespace Model {
 
 namespace Mapping {
 
-using namespace Definitions;
 
-XMLEntityMappingDefinitionSerializer::XMLEntityMappingDefinitionSerializer(EmberOgre::Model::Mapping::EntityMappingManager& modelMappingManager)
+
+XMLEntityMappingDefinitionSerializer::XMLEntityMappingDefinitionSerializer(EntityMappingManager& modelMappingManager)
 : mEntityMappingManager(modelMappingManager)
 {
 }
@@ -49,7 +50,7 @@ void XMLEntityMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocumen
 {
 
 	TiXmlElement* rootElem = xmlDocument.RootElement();
-	
+
 	if (rootElem) {
 
 		for (TiXmlElement* smElem = rootElem->FirstChildElement("modelmapping");
@@ -72,10 +73,10 @@ void XMLEntityMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocumen
 					//S_LOG_FAILURE("Error when reading model mapping with name " << name);
 				}
 			}
-					
+
 		}
-		
-		
+
+
 		for (TiXmlElement* smElem = rootElem->FirstChildElement("nomodel");
 				smElem != 0; smElem = smElem->NextSiblingElement("nomodel"))
 		{
@@ -94,10 +95,10 @@ void XMLEntityMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocumen
 					caseDef.getCaseParameters().push_back(CaseDefinition::ParameterEntry("equals", name));
 					ActionDefinition actionDef;
 					actionDef.setType("hide-model");
-					
+
 					caseDef.getActions().push_back(actionDef);
 					definition->getRoot().getCases().push_back(caseDef);
-				
+
 				} catch (std::exception ex) {
 					delete definition;
 					//S_LOG_FAILURE(ex.what());
@@ -109,8 +110,8 @@ void XMLEntityMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocumen
 					mEntityMappingManager.addDefinition(definition);
 				}
 			}
-		}	
-		
+		}
+
 		///Check for automodelmapping elements, which allow for a quick mapping between a entity type and a model.
 		///format: <automodelmapping name="oak">
 		///or: <automodelmapping name="oak" modelname="oak_1">
@@ -132,7 +133,7 @@ void XMLEntityMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocumen
 					caseDef.getCaseParameters().push_back(CaseDefinition::ParameterEntry("equals", name));
 					ActionDefinition actionDef;
 					actionDef.setType("display-model");
-					
+
 					///check if a model name is set
 					const char* tmpModelName = smElem->Attribute("modelname");
 					if (tmpModelName) {
@@ -140,10 +141,10 @@ void XMLEntityMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocumen
 					} else {
 						actionDef.setValue(name);
 					}
-					
+
 					caseDef.getActions().push_back(actionDef);
 					definition->getRoot().getCases().push_back(caseDef);
-				
+
 				} catch (std::exception ex) {
 					delete definition;
 					//S_LOG_FAILURE(ex.what());
@@ -168,20 +169,20 @@ void XMLEntityMappingDefinitionSerializer::parseMatchElement(EntityMappingDefini
 	} else if (std::string(element->Value()) == std::string("attributematch")) {
 		matchDef.setType("attribute");
 		caseType = "attributecase";
-	
+
 /*		const char* tmp =  smElem->Attribute("attribute");
 		matchDef.getProperties()["attribute"] = std::string(tmp);*/
 	} else if (std::string(element->Value()) == std::string("outfitmatch")) {
 		matchDef.setType("outfit");
 		caseType = "outfitcase";
 	}
-	
+
 	for (TiXmlAttribute* attribute = element->FirstAttribute();
             attribute != 0; attribute = attribute->Next())
     {
     	matchDef.getProperties()[attribute->Name()] = attribute->Value();
 	}
-	
+
 	if (!element->NoChildren()) {
 		for (TiXmlElement* childElement = element->FirstChildElement();
 				childElement != 0; childElement = childElement->NextSiblingElement())
@@ -201,8 +202,8 @@ void XMLEntityMappingDefinitionSerializer::parseCaseElement(EntityMappingDefinit
     {
     	caseDef.getProperties()[attribute->Name()] = attribute->Value();
 	}
-	
-	
+
+
 	if (!element->NoChildren()) {
 		for (TiXmlElement* childElement = element->FirstChildElement();
 				childElement != 0; childElement = childElement->NextSiblingElement())
@@ -221,7 +222,7 @@ void XMLEntityMappingDefinitionSerializer::parseCaseElement(EntityMappingDefinit
 					}
 				}
 			} else {
-				///we'll assume it's a match 
+				///we'll assume it's a match
 				MatchDefinition matchDef;
 				parseMatchElement(definition, matchDef, childElement);
 				caseDef.getMatches().push_back(matchDef);
@@ -242,7 +243,7 @@ void XMLEntityMappingDefinitionSerializer::parseActionElement(EntityMappingDefin
 	if (textNode) {
 		actionDef.setValue(textNode->Value());
 	}
-	
+
 }
 }
 

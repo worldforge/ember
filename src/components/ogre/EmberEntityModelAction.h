@@ -35,7 +35,7 @@ namespace EmberOgre {
 	Show a certain Model.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class EmberEntityModelAction : public Model::Mapping::Actions::Action
+class EmberEntityModelAction : public Ember::EntityMapping::Actions::Action
 {
 public:
 	EmberEntityModelAction(EmberPhysicalEntity& entity, std::string modelName);

@@ -1,7 +1,7 @@
 //
 // C++ Interface: HeightComparerWrapper
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -32,11 +32,11 @@ class Entity;
 }
 
 
-namespace EmberOgre {
+namespace Ember {
 
-namespace Model {
 
-namespace Mapping {
+
+namespace EntityMapping {
 
 namespace Cases {
 
@@ -52,13 +52,13 @@ class HeightComparerWrapper : public AttributeComparerWrapper
 {
 public:
 	/**
-	* Default constructor. 
+	* Default constructor.
 	* @param comparer The NumericComparer to use for comparison.
-	* @param entity 
+	* @param entity
 	*/
 	HeightComparerWrapper(NumericComparer* comparer, Eris::Entity* entity);
 	virtual ~HeightComparerWrapper() {}
-	
+
 	/**
 	Test the height. The attribute passed will be ignored.
 	*/
@@ -68,8 +68,6 @@ protected:
 	std::auto_ptr<NumericComparer> mNumericComparer;
 	Eris::Entity* mEntity;
 };
-}
-
 }
 
 }

@@ -64,7 +64,7 @@
 #else
 	#include <dirent.h>
 #endif
-
+using namespace Ember::EntityMapping;
 namespace EmberOgre {
 
 
@@ -110,13 +110,13 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Root
 		///assume that it's not physical until we have a model defintion which don't want to hide the model
 		///In the future we want to refactor the way we deal with EmberEntity and EmberPhysicalEntity, so that we only have one class (EmberEntity) which in turn holds a reference to a graphical representation instance. Until then we have to do with this though.
 		bool isPhysical = false;
-		Model::Mapping::Definitions::EntityMappingDefinition* mappingDef(Model::Mapping::EmberEntityMappingManager::getSingleton().getManager().getDefinitionForType(type));
+		Definitions::EntityMappingDefinition* mappingDef(::EmberOgre::Model::Mapping::EmberEntityMappingManager::getSingleton().getManager().getDefinitionForType(type));
 		if (mappingDef) {
 			///we have a mapping defintion, so it's probably physical, lets just see that the first action isn't to hide the model
 			isPhysical = true;
-			const Model::Mapping::Definitions::MatchDefinition::CaseStore& cases(mappingDef->getRoot().getCases());
+			const Definitions::MatchDefinition::CaseStore& cases(mappingDef->getRoot().getCases());
 			if (cases.begin() != cases.end()) {
-				const Model::Mapping::Definitions::CaseDefinition::ActionStore& actions(cases.begin()->getActions());
+				const Definitions::CaseDefinition::ActionStore& actions(cases.begin()->getActions());
 				if (actions.begin() != actions.end()) {
 					if (actions.begin()->getType() == "hide-model") {
 						///ok, the first action is to hide the model, so we'll have to assume that it's a non physical type

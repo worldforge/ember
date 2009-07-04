@@ -56,7 +56,7 @@ public:
 	/**
 	Accessor for the main EntityMappingManager instance.
 	*/
-	EntityMappingManager& getManager();
+	Ember::EntityMapping::EntityMappingManager& getManager();
 
 	/**
 	Method called by Ogre. Will parse the script supplied in the stream object.
@@ -67,7 +67,7 @@ protected:
 	/**
 	Internal instance of the EntityMappingManager.
 	*/
-	EntityMappingManager mEntityMappingManager;
+	Ember::EntityMapping::EntityMappingManager mEntityMappingManager;
 
 	/**
 	Serializer for xml.
@@ -88,7 +88,7 @@ protected:
 
 };
 
-inline EntityMappingManager& EmberEntityMappingManager::getManager()
+inline Ember::EntityMapping::EntityMappingManager& EmberEntityMappingManager::getManager()
 {
 	return mEntityMappingManager;
 }

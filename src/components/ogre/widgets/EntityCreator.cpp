@@ -197,7 +197,7 @@ void EntityCreator::createEntity()
 
 		// Making model from temporary entity
 		EntityCreatorActionCreator actionCreator(*this);
-		std::auto_ptr<Model::Mapping::EntityMapping> modelMapping(Model::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(mEntity, &actionCreator));
+		std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(Model::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(mEntity, &actionCreator));
 		if (modelMapping.get()) {
 			modelMapping->initialize();
 		}

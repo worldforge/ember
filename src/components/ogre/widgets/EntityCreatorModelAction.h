@@ -36,7 +36,7 @@ class EntityCreator;
 /**
  * @brief Shows or hides specific model in entity creator preview.
  */
-class EntityCreatorModelAction : public ::EmberOgre::Model::Mapping::Actions::Action
+class EntityCreatorModelAction : public Ember::EntityMapping::Actions::Action
 {
 public:
 	EntityCreatorModelAction(EntityCreator& entityCreator, std::string modelName);

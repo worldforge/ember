@@ -542,13 +542,13 @@ bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args)
 			Eris::TypeService* typeService = Ember::EmberServices::getSingletonPtr()->getServerService()->getConnection()->getTypeService();
  			Eris::TypeInfo* erisType = typeService->getTypeByName(type);
  			if (erisType) {
-				const Model::Mapping::Definitions::EntityMappingDefinition* definition = Model::Mapping::EmberEntityMappingManager::getSingleton().getManager().getDefinitionForType(erisType);
+				const Ember::EntityMapping::Definitions::EntityMappingDefinition* definition = Model::Mapping::EmberEntityMappingManager::getSingleton().getManager().getDefinitionForType(erisType);
 				if (definition) {
-					Model::Mapping::Definitions::MatchDefinition::CaseStore::const_iterator first = definition->getRoot().getCases().begin();
+					Ember::EntityMapping::Definitions::MatchDefinition::CaseStore::const_iterator first = definition->getRoot().getCases().begin();
 					if (first != definition->getRoot().getCases().end()) {
-						const Model::Mapping::Definitions::CaseDefinition& firstCase = *first;
+						const Ember::EntityMapping::Definitions::CaseDefinition& firstCase = *first;
 						if (firstCase.getActions().begin() != firstCase.getActions().end()) {
-							const Model::Mapping::Definitions::ActionDefinition& firstAction = *firstCase.getActions().begin();
+							const Ember::EntityMapping::Definitions::ActionDefinition& firstAction = *firstCase.getActions().begin();
 							if (firstAction.getType() == "display-model") {
 								///update the model preview window
 								mModelPreviewRenderer->showModel(firstAction.getValue());

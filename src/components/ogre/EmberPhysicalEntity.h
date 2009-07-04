@@ -27,6 +27,14 @@
 #include <list>
 #include <vector>
 
+namespace Ember
+{
+namespace EntityMapping
+{
+class EntityMapping;
+}
+}
+
 namespace EmberOgre
 {
 
@@ -36,10 +44,7 @@ class ActionDefinition;
 class SoundDefinition;
 class Model;
 class Action;
-namespace Mapping
-{
-class EntityMapping;
-}
+
 }
 
 
@@ -354,7 +359,7 @@ protected:
 	/**
 	 * @brief The model mapping used for this entity.
 	 */
-	Model::Mapping::EntityMapping* mEntityMapping;
+	Ember::EntityMapping::EntityMapping* mEntityMapping;
 
 	/**
 	 * @brief Keep track of the light nodes.

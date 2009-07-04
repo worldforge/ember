@@ -29,7 +29,7 @@
 #include "EmberEntityPartAction.h"
 #include "components/entitymapping/Cases/CaseBase.h"
 
-using namespace EmberOgre::Model::Mapping;
+using namespace Ember::EntityMapping;
 
 namespace EmberOgre {
 

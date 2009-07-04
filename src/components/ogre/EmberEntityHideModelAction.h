@@ -33,7 +33,7 @@ namespace EmberOgre {
 	Hide the current model.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class EmberEntityHideModelAction : public Model::Mapping::Actions::Action
+class EmberEntityHideModelAction : public Ember::EntityMapping::Actions::Action
 {
 public:
     EmberEntityHideModelAction(EmberPhysicalEntity& entity);

@@ -35,7 +35,7 @@ class EmberPhysicalEntity;
 	Show a certain part of a Model.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class EmberEntityPartAction : public Model::Mapping::Actions::Action
+class EmberEntityPartAction : public Ember::EntityMapping::Actions::Action
 {
 public:
 	EmberEntityPartAction(EmberPhysicalEntity& entity, const std::string& partName);

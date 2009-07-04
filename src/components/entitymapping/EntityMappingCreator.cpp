@@ -1,7 +1,7 @@
 //
 // C++ Implementation: EntityMappingCreator
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -55,11 +55,11 @@
 
 #include "IActionCreator.h"
 
-namespace EmberOgre {
+namespace Ember {
 
-namespace Model {
 
-namespace Mapping {
+
+namespace EntityMapping {
 
 using namespace Definitions;
 using namespace Matches;
@@ -86,7 +86,7 @@ EntityMappingCreator::~EntityMappingCreator()
 {
 }
 
-EntityMapping* EntityMappingCreator::create() 
+EntityMapping* EntityMappingCreator::create()
 {
 	return createMapping();
 }
@@ -95,7 +95,7 @@ EntityMapping* EntityMappingCreator::create()
 EntityMapping* EntityMappingCreator::createMapping() {
 	mModelMap = new EntityMapping(mEntity);
 	addEntityTypeCases(&mModelMap->getRootEntityMatch(), mDefinition->getRoot());
-	
+
 	///since we already have the entity, we can perform a check right away
 	mModelMap->getRootEntityMatch().setEntity(mEntity);
 // 	mModelMap->getRootEntityMatch().testEntity(mEntity);
@@ -107,13 +107,13 @@ void EntityMappingCreator::addEntityTypeCases(EntityTypeMatch* entityTypeMatch, 
 	for (MatchDefinition::CaseStore::iterator I = matchDefinition.getCases().begin(); I != endI; ++I) {
 		if (mTypeService) {
 			EntityTypeCase* aCase = new EntityTypeCase();
-			
+
 			for (CaseDefinition::ParameterStore::iterator J = I->getCaseParameters().begin(); J != I->getCaseParameters().end(); ++J) {
 				if (J->first == "equals") {
 					aCase->addEntityType(mTypeService->getTypeByName(J->second));
 				}
 			}
-			
+
 /*			const std::string& entityName = I->getProperties()["equals"];
 			std::vector<std::string> splitNames = EntityMappingManager::splitString(entityName, "|", 100);
 			for (std::vector<std::string>::const_iterator J = splitNames.begin(); J != splitNames.end(); ++J) {
@@ -139,7 +139,7 @@ void EntityMappingCreator::addOutfitCases(OutfitMatch* match, MatchDefinition& m
 	for (MatchDefinition::CaseStore::iterator I = matchDefinition.getCases().begin(); I != endI; ++I) {
 		if (mTypeService) {
 			OutfitCase* aCase = new OutfitCase();
-			
+
 			for (CaseDefinition::ParameterStore::iterator J = I->getCaseParameters().begin(); J != I->getCaseParameters().end(); ++J) {
 				if (J->first == "equals") {
 					aCase->addEntityType(mTypeService->getTypeByName(J->second));
@@ -168,7 +168,7 @@ void EntityMappingCreator::addOutfitCases(OutfitMatch* match, MatchDefinition& m
 Cases::AttributeComparers::AttributeComparerWrapper* EntityMappingCreator::getAttributeCaseComparer(AttributeMatch* match, MatchDefinition& matchDefinition, CaseDefinition& caseDefinition)
 {
 	const std::string& matchType = matchDefinition.getProperties()["type"];
-	
+
 	if ((matchType == "") || (matchType == "string")) {
 		///default is string comparison
 		if (const CaseDefinition::ParameterEntry* param = findCaseParameter(caseDefinition.getCaseParameters(), "equals")) {
@@ -176,7 +176,7 @@ Cases::AttributeComparers::AttributeComparerWrapper* EntityMappingCreator::getAt
 		} else {
 			return new AttributeComparers::StringComparerWrapper(new AttributeComparers::StringComparer(""));
 		}
-/*		
+/*
 		const std::string& attributeValue = caseDefinition.getProperties()["equals"];
 		return new AttributeComparers::StringComparerWrapper(new AttributeComparers::StringComparer(attributeValue));*/
 	} else if (matchType == "numeric") {
@@ -187,21 +187,21 @@ Cases::AttributeComparers::AttributeComparerWrapper* EntityMappingCreator::getAt
 		}
 	}
 	return 0;
-	
+
 }
 
 AttributeComparers::NumericComparer* EntityMappingCreator::createNumericComparer(CaseDefinition& caseDefinition)
 {
 	const CaseDefinition::ParameterEntry* param(0);
-	
+
 // 	DefinitionBase::PropertiesMap::const_iterator value;
 // 	DefinitionBase::PropertiesMap::const_iterator end = caseDefinition.getProperties().end();
 // 	value = caseDefinition.getProperties().find("equals");
-	
+
 	if ((param = findCaseParameter(caseDefinition.getCaseParameters(), "equals"))) {
 		return new AttributeComparers::NumericEqualsComparer(atof(param->second.c_str()));
 	}
-	
+
 	///If both a min and max value is set, it's a range comparer
 	AttributeComparers::NumericComparer *mMin(0), *mMax(0);
 	if ((param = findCaseParameter(caseDefinition.getCaseParameters(), "lesser"))) {
@@ -209,13 +209,13 @@ AttributeComparers::NumericComparer* EntityMappingCreator::createNumericComparer
 	} else if ((param = findCaseParameter(caseDefinition.getCaseParameters(), "lesserequals"))) {
 		mMin = new AttributeComparers::NumericEqualsOrLesserComparer(atof(param->second.c_str()));
 	}
-	
+
 	if ((param = findCaseParameter(caseDefinition.getCaseParameters(), "greater"))) {
 		mMax = new AttributeComparers::NumericGreaterComparer(atof(param->second.c_str()));
 	} else if ((param = findCaseParameter(caseDefinition.getCaseParameters(), "greaterequals"))) {
 		mMax = new AttributeComparers::NumericEqualsOrGreaterComparer(atof(param->second.c_str()));
 	}
-	
+
 	///check if we have both min and max set, and if so we should use a range comparer
 	if (mMin && mMax) {
 		return new AttributeComparers::NumericRangeComparer(mMin, mMax);
@@ -235,11 +235,11 @@ void EntityMappingCreator::addAttributeCases(AttributeMatch* match, MatchDefinit
 		Cases::AttributeComparers::AttributeComparerWrapper* wrapper = getAttributeCaseComparer(match, matchDefinition, *I);
 		if (wrapper) {
 			AttributeCase* aCase = new AttributeCase(wrapper);
-			
+
 			if (mActionCreator) {
 				mActionCreator->createActions(*mModelMap, aCase, *I);
 			}
-	
+
 			CaseDefinition::MatchStore::iterator endJ = I->getMatches().end();
 			for (CaseDefinition::MatchStore::iterator J = I->getMatches().begin(); J != endJ; ++J) {
 				addMatch(aCase, *J);
@@ -248,7 +248,7 @@ void EntityMappingCreator::addAttributeCases(AttributeMatch* match, MatchDefinit
 			aCase->setParentMatch( match);
 		}
 	}
-	
+
 }
 
 void EntityMappingCreator::addMatch(CaseBase* aCase, MatchDefinition& matchDefinition) {
@@ -263,7 +263,7 @@ void EntityMappingCreator::addMatch(CaseBase* aCase, MatchDefinition& matchDefin
 
 void EntityMappingCreator::addAttributeMatch(CaseBase* aCase, MatchDefinition& matchDefinition) {
 	const std::string& attributeName = matchDefinition.getProperties()["attribute"];
-	
+
 	std::string internalAttributeName("");
 	const std::string& matchType = matchDefinition.getProperties()["type"];
 	///TODO: make this check better
@@ -275,22 +275,22 @@ void EntityMappingCreator::addAttributeMatch(CaseBase* aCase, MatchDefinition& m
 	if (internalAttributeName == "") {
 		internalAttributeName = attributeName;
 	}
-	
+
 	AttributeMatch* match = new AttributeMatch(attributeName, internalAttributeName);
 	aCase->addMatch( match);
-	
+
 	AttributeObserver* observer = new AttributeObserver(match, internalAttributeName);
 	match->setAttributeObserver(observer);
-	
+
 	addAttributeCases(match, matchDefinition);
-	
+
 }
 
 void EntityMappingCreator::addEntityTypeMatch(CaseBase* aCase, MatchDefinition& matchDefinition) {
 	EntityTypeMatch* match = new EntityTypeMatch();
 	aCase->addMatch( match);
 	addEntityTypeCases(match, matchDefinition);
-	
+
 	///since we already have the entity, we can perform a check right away
 // 	match->testEntity(mEntity);
 }
@@ -300,19 +300,17 @@ void EntityMappingCreator::addOutfitMatch(CaseBase* aCase, MatchDefinition& matc
 	const std::string& attachmentName = matchDefinition.getProperties()["attachment"];
 	OutfitMatch* match = new OutfitMatch(attachmentName, mEntity->getView());
 	aCase->addMatch( match);
-	
+
 	addOutfitCases(match, matchDefinition);
-	
-	
+
+
 	///observe the attribute by the use of an AttributeObserver
 	AttributeObserver* observer= new AttributeObserver(match, "outfit");
 	match->setAttributeObserver(observer);
-	
+
 	EntityCreationObserver* entityObserver = new EntityCreationObserver(*match);
 	match->setEntityCreationObserver(entityObserver);
 
-	
-}
 
 }
 

@@ -1,7 +1,7 @@
 //
 // C++ Implementation: EmberEntityMappingManager
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -33,7 +33,7 @@
 
 #include <Eris/Connection.h>
 
-using namespace EmberOgre::Model::Mapping;
+using namespace Ember::EntityMapping;
 
 
 template<> EmberOgre::Model::Mapping::EmberEntityMappingManager* Ember::Singleton<EmberOgre::Model::Mapping::EmberEntityMappingManager>::ms_Singleton = 0;
@@ -48,16 +48,16 @@ EmberEntityMappingManager::EmberEntityMappingManager() : mEntityMappingManager()
 {
     mLoadOrder = 300.0f;
     mResourceType = "EntityMappingDefinition";
-        
+
 	mScriptPatterns.push_back("*.modelmap");
 	mScriptPatterns.push_back("*.modelmap.xml");
 	Ogre::ResourceGroupManager::getSingleton()._registerScriptLoader(this);
 
 	Ogre::ResourceGroupManager::getSingleton()._registerResourceManager(mResourceType, this);
-	
+
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EmberEntityMappingManager::ServerService_GotConnection));
-	
-	
+
+
 }
 
 
@@ -79,8 +79,8 @@ void EmberEntityMappingManager::parseScript (Ogre::DataStreamPtr &stream, const 
 	mXmlSerializer.parseScript(xmlDoc);
 }
 
-Ogre::Resource* EmberEntityMappingManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, 
-    const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, 
+Ogre::Resource* EmberEntityMappingManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle,
+    const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader,
     const Ogre::NameValuePairList* createParams)
 {
 	return 0;

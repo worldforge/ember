@@ -33,6 +33,7 @@
 #include "components/entitymapping/Definitions/CaseDefinition.h"
 #include "components/entitymapping/Cases/CaseBase.h"
 
+using namespace Ember::EntityMapping;
 namespace EmberOgre {
 
 namespace Gui {
@@ -46,10 +47,10 @@ EntityCreatorActionCreator::~EntityCreatorActionCreator()
 {
 }
 
-void EntityCreatorActionCreator::createActions(Model::Mapping::EntityMapping& modelMapping, Model::Mapping::Cases::CaseBase* aCase, Model::Mapping::Definitions::CaseDefinition& caseDefinition)
+void EntityCreatorActionCreator::createActions(Ember::EntityMapping::EntityMapping& modelMapping, Ember::EntityMapping::Cases::CaseBase* aCase, Ember::EntityMapping::Definitions::CaseDefinition& caseDefinition)
 {
-	::EmberOgre::Model::Mapping::Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
-	for (::EmberOgre::Model::Mapping::Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
+	Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
+	for (Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
 		if (J->getType() == "display-part") {
 			EntityCreatorPartAction* action = new EntityCreatorPartAction(mEntityCreator, J->getValue());
 			aCase->addAction(action);

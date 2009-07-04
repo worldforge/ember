@@ -35,7 +35,7 @@ class EntityCreator;
 /**
  * Shows or hides specific model in entity creator preview.
  */
-class EntityCreatorHideModelAction : public Model::Mapping::Actions::Action
+class EntityCreatorHideModelAction : public Ember::EntityMapping::Actions::Action
 {
 public:
 	EntityCreatorHideModelAction(EntityCreator& entityCreator);

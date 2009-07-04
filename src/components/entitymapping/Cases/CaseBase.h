@@ -1,7 +1,7 @@
 //
 // C++ Interface: CaseBase
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -31,11 +31,11 @@ class Entity;
 }
 
 
-namespace EmberOgre {
+namespace Ember {
 
-namespace Model {
 
-namespace Mapping {
+
+namespace EntityMapping {
 
 namespace Actions {
 class Action;
@@ -53,7 +53,7 @@ namespace Cases {
 	A Case is activated when it's true and all it's parent cases, all the way up to the root of the EntityMapping, also are true.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class CaseBase 
+class CaseBase
 {
 public:
 	typedef std::vector<Actions::Action*> ActionStore;
@@ -61,27 +61,27 @@ public:
 
 	CaseBase();
 	virtual ~CaseBase();
-	
+
 	void setParentCase(CaseBase* aCase);
 
 	/**
-	 * Returns whether this invidivual case is true. 
-	 * @return 
+	 * Returns whether this invidivual case is true.
+	 * @return
 	 */
 	bool getIsTrue();
-	
+
 	/**
 	 *    Returns whether this case is active.
-	 * @return 
+	 * @return
 	 */
 	bool getIsActive();
-	
+
 	/**
 	 * Returns whether this case is true and all of its parent cases, all the way up to the root, also are true.
-	 * @return 
+	 * @return
 	 */
 	bool getIsTrueToRoot();
-	
+
 	/**
 	Adds an Action to this case.
 	*/
@@ -90,7 +90,7 @@ public:
 	Gets a list of all the actions contained by this Case.
 	*/
 	const ActionStore& getActions();
-	
+
 	/**
 	Activates all actions in the Case. Also switches the mActive flag.
 	*/
@@ -113,50 +113,50 @@ public:
 	Evaluates all changes, and if a change has occurred, adds itself to the supplied ChangeContext instance.
 	*/
 	void evaluateChanges(ChangeContext& changeContext);
-	
+
 	/**
 	Sets the entity that this Case will attach itself to.
 	*/
 	virtual void setEntity(Eris::Entity* entity);
-	
+
 protected:
 	ActionStore mActions;
 
 	CaseBase* mParentCase;
 	bool mIsTrue, mIsActive;
-	
+
 	void setState(bool state);
-	
+
 	MatchBaseStore mMatches;
-	
+
 };
 
-inline void CaseBase::setState(bool state) 
+inline void CaseBase::setState(bool state)
 {
 	mIsTrue = state;
 }
 
-inline const CaseBase::MatchBaseStore& CaseBase::getMatches() 
+inline const CaseBase::MatchBaseStore& CaseBase::getMatches()
 {
 	return mMatches;
 }
-	
-inline const CaseBase::ActionStore& CaseBase::getActions() 
-{ 
-	return mActions; 
+
+inline const CaseBase::ActionStore& CaseBase::getActions()
+{
+	return mActions;
 };
 
 inline void CaseBase::setParentCase(CaseBase* aCase) {
-	mParentCase = aCase; 
+	mParentCase = aCase;
 }
 
-inline bool CaseBase::getIsTrue() 
-{ 
-	return mIsTrue; 
+inline bool CaseBase::getIsTrue()
+{
+	return mIsTrue;
 }
 
-inline bool CaseBase::getIsActive() 
-{ 
+inline bool CaseBase::getIsActive()
+{
 	return mIsActive;
 }
 
@@ -167,9 +167,7 @@ inline bool CaseBase::getIsTrueToRoot() {
 		return mIsTrue && mParentCase->getIsTrueToRoot();
 	}
 }
-	
 
-}
 
 }
 

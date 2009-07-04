@@ -52,7 +52,7 @@ namespace Icons {
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class IconActionCreator : public Model::Mapping::IActionCreator
+class IconActionCreator : public Ember::EntityMapping::IActionCreator
 {
 public:
 
@@ -62,10 +62,10 @@ IconActionCreator(Eris::Entity& entity): mEntity(entity), mModelName("")
 
 ~IconActionCreator() {}
 
-virtual void createActions(Model::Mapping::EntityMapping& modelMapping, Model::Mapping::Cases::CaseBase* aCase, Model::Mapping::Definitions::CaseDefinition& caseDefinition)
+virtual void createActions(Ember::EntityMapping::EntityMapping& modelMapping, Ember::EntityMapping::Cases::CaseBase* aCase, Ember::EntityMapping::Definitions::CaseDefinition& caseDefinition)
 {
-	Model::Mapping::Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
-	for (Model::Mapping::Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
+	Ember::EntityMapping::Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
+	for (Ember::EntityMapping::Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
 		if (J->getType() == "display-model") {
 			mModelName = J->getValue();
 		}
@@ -107,7 +107,7 @@ Icon* IconManager::getIcon(int pixelWidth, EmberEntity* entity)
 			return mIconStore.getIcon(key);
 		} else {
 			IconActionCreator actionCreator(*entity);
-			std::auto_ptr<Model::Mapping::EntityMapping> modelMapping(::EmberOgre::Model::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, &actionCreator));
+			std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(::EmberOgre::Model::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, &actionCreator));
 			std::string modelName;
 			if (modelMapping.get()) {
 				modelMapping->initialize();
@@ -172,7 +172,7 @@ Icon* IconManager::getIcon(int pixelWidth, Eris::TypeInfo* erisType)
 				if (view) {
 					Eris::Entity dummyEntity("-1", erisType, view);
 					IconActionCreator actionCreator(dummyEntity);
-					std::auto_ptr<Model::Mapping::EntityMapping> modelMapping(::EmberOgre::Model::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(&dummyEntity, &actionCreator));
+					std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(::EmberOgre::Model::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(&dummyEntity, &actionCreator));
 					std::string modelName;
 					if (modelMapping.get()) {
 						modelMapping->initialize();
