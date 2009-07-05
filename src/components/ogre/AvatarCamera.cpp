@@ -595,7 +595,7 @@ bool AvatarCamera::frameStarted(const Ogre::FrameEvent& event)
 	}
 
 	/// Update avatar entity position in sound service
-	Ember::EmberServices::getSingleton().getSoundService()->updateListenerPosition(Ogre2Atlas(mCamera.getDerivedPosition()), Ogre2Atlas_Vector3(mCamera.getDirection()), Ogre2Atlas_Vector3(mCamera.getUp()));
+	Ember::EmberServices::getSingleton().getSoundService()->updateListenerPosition(Convert::toWF<WFMath::Point<3> >(mCamera.getDerivedPosition()), Convert::toWF<WFMath::Vector<3> >(mCamera.getDirection()), Convert::toWF<WFMath::Vector<3> >(mCamera.getUp()));
 
 	return true;
 }

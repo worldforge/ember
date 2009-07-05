@@ -86,7 +86,7 @@ Atlas::Message::MapType ModelDefinitionAtlasComposer::compose(Model* model, cons
 	if (scale != 0 && scale != 1.0f) {
 		aabb.scale(Ogre::Vector3(scale, scale, scale));
 	}
-	WFMath::AxisBox<3> wfmathAabb(Ogre2Atlas(aabb));
+	WFMath::AxisBox<3> wfmathAabb(Convert::toWF(aabb));
 	
 	bboxMap["default"] = wfmathAabb.toAtlas();
 	bboxMap["visibility"] = StringType("public");

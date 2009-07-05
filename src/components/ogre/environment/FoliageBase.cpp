@@ -94,7 +94,7 @@ void FoliageBase::TerrainGenerator_LayerUpdated(Terrain::TerrainShader* shader, 
 			///if there are areas sent, the update only affect those and we only need to update the affected areas
 			if (areas) {
 				for (TerrainGenerator::AreaStore::iterator I = areas->begin(); I != areas->end(); ++I) {
-					const Ogre::TRect<Ogre::Real> ogreExtent(Atlas2Ogre(*I));
+					const Ogre::TRect<Ogre::Real> ogreExtent(Convert::toOgre(*I));
 					Ogre::Real pageSize(mPagedGeometry->getPageSize());
 					Ogre::Vector3 pos(ogreExtent.left, 0, ogreExtent.top);
 					for (; pos.x < ogreExtent.right; pos.x += pageSize) {
@@ -128,7 +128,7 @@ void FoliageBase::TerrainGenerator_AfterTerrainUpdate(std::vector<TerrainPositio
 		Ogre::Real pageSize(mPagedGeometry->getPageSize());
 		for (std::set< ::EmberOgre::Terrain::TerrainPage* >::const_iterator I = pages.begin(); I != pages.end(); ++I) {
 			const ::EmberOgre::Terrain::TerrainPage* page(*I);
-			const Ogre::TRect<Ogre::Real> ogreExtent(Atlas2Ogre(page->getExtent()));
+			const Ogre::TRect<Ogre::Real> ogreExtent(Convert::toOgre(page->getExtent()));
 
 			///update all paged geometry pages that are within the extent of the terrain page
 			Ogre::Vector3 pos(ogreExtent.left, 0, ogreExtent.top);

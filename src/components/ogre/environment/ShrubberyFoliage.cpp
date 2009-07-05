@@ -67,7 +67,7 @@ void ShrubberyFoliage::initialize()
 	mPagedGeometry = new ::PagedGeometry::PagedGeometry(&camera, EmberOgre::getSingleton().getTerrainGenerator()->getFoliageBatchSize());
 	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainInfo().getWorldSizeInIndices();
 
-	::PagedGeometry::TBounds ogreBounds(Atlas2Ogre(worldSize));
+	::PagedGeometry::TBounds ogreBounds(Convert::toOgre(worldSize));
 	if (ogreBounds.width() != ogreBounds.height()) {
 		if (ogreBounds.width() > ogreBounds.height()) {
 			float difference = ogreBounds.width() - ogreBounds.height();

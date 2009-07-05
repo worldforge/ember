@@ -86,10 +86,10 @@ unsigned int FoliageLayer::calculateMaxGrassCount(float densityFactor, float vol
 unsigned int FoliageLayer::_populateGrassList(PageInfo page, float *posBuff, unsigned int grassCount)
 {
 	unsigned int finalGrassCount = 0;
-	TerrainPosition wfPos(Ogre2Atlas_TerrainPosition(page.centerPoint));
+	TerrainPosition wfPos(Convert::toWF<TerrainPosition>(page.centerPoint));
 	const TerrainPage* terrainPage = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPageAtPosition(wfPos);
 	if (terrainPage) {
-		Ogre::TRect<float> ogrePageExtent = Atlas2Ogre(terrainPage->getExtent());
+		Ogre::TRect<float> ogrePageExtent = Convert::toOgre(terrainPage->getExtent());
 		Ogre::TRect<float> adjustedBounds = Ogre::TRect<float>(page.bounds.left - ogrePageExtent.left, page.bounds.top - ogrePageExtent.top, page.bounds.right - ogrePageExtent.left, page.bounds.bottom - ogrePageExtent.top);
 		TerrainPageFoliage::PlantStore plants;
 		unsigned char threshold(100);
@@ -99,7 +99,7 @@ unsigned int FoliageLayer::_populateGrassList(PageInfo page, float *posBuff, uns
 
 		PlantAreaQuery query(*mTerrainLayerDefinition, threshold, mFoliageDefinition->getPlantType(), adjustedBounds, plants);
 		terrainPage->getPlantsForArea(query);
-// 		WFMath::AxisBox<2> wfBounds = Ogre2Atlas(page.bounds);
+// 		WFMath::AxisBox<2> wfBounds = Convert::toWF(page.bounds);
 		for (TerrainPageFoliage::PlantStore::const_iterator I = plants.begin(); I != plants.end(); ++I) {
 			if (finalGrassCount == grassCount) {
 				break;
@@ -108,7 +108,7 @@ unsigned int FoliageLayer::_populateGrassList(PageInfo page, float *posBuff, uns
 /*			posInWorld.x() = (*I).x() + (terrainPage->getExtent().lowCorner().x());
 			posInWorld.y() = (*I).y() + (terrainPage->getExtent().lowCorner().y());
 			if (WFMath::Contains<2>(wfBounds, posInWorld, true)) {
-				Ogre::Vector2 ogrePos = Atlas2Ogre_Vector2(posInWorld);*/
+				Ogre::Vector2 ogrePos = Convert::toOgre_Vector2(posInWorld);*/
 				*posBuff++ = I->x + ogrePageExtent.left;
 				*posBuff++ = I->y + ogrePageExtent.top;
 				finalGrassCount++;

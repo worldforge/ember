@@ -46,13 +46,13 @@ EntityMoverBase::~EntityMoverBase()
 
 const WFMath::Quaternion& EntityMoverBase::getOrientation() const
 {
-	mOrientation = Ogre2Atlas(mNode->_getDerivedOrientation());
+	mOrientation = Convert::toWF(mNode->_getDerivedOrientation());
 	return mOrientation;
 }
 
 const WFMath::Point<3>& EntityMoverBase::getPosition() const
 {
-	mPosition = Ogre2Atlas(mNode->_getDerivedPosition());
+	mPosition = Convert::toWF<WFMath::Point<3> >(mNode->_getDerivedPosition());
 	return mPosition;
 }
 
@@ -74,7 +74,7 @@ void EntityMoverBase::setPosition(const WFMath::Point<3>& position)
 		{
 			posOffset = mNode->getParent()->_getDerivedPosition();
 		}
-		mNode->setPosition(Atlas2Ogre(finalPosition) - posOffset);
+		mNode->setPosition(Convert::toOgre(finalPosition) - posOffset);
 		newEntityPosition(mNode->getPosition());
 	}
 }
@@ -82,7 +82,7 @@ void EntityMoverBase::move(const WFMath::Vector<3>& directionVector)
 {
 	if (directionVector.isValid())
 	{
-		mNode->translate(Atlas2Ogre(directionVector));
+		mNode->translate(Convert::toOgre(directionVector));
 		newEntityPosition(mNode->getPosition());
 	}
 }
@@ -106,7 +106,7 @@ void EntityMoverBase::setOrientation(const WFMath::Quaternion& rotation)
 		{
 			rotOffset = mNode->getParent()->_getDerivedOrientation();
 		}
-		mNode->setOrientation(Atlas2Ogre(rotation) - rotOffset);
+		mNode->setOrientation(Convert::toOgre(rotation) - rotOffset);
 	}
 }
 
@@ -128,7 +128,7 @@ void EntityMoverBase::setSnapToEnabled(bool snapTo)
 	if (snapTo) {
 		if (!mSnapping.get()) {
 			mSnapping.reset(new Manipulation::SnapToMovement(mEntity, *mNode, 2.0f, true));
-			setPosition(Ogre2Atlas(mNode->getPosition()));
+			setPosition(Convert::toWF<WFMath::Point<3> >(mNode->getPosition()));
 		}
 	} else {
 		mSnapping.reset();

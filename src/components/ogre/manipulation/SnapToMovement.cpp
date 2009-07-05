@@ -100,7 +100,7 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 		if (currentPoint.isValid() && nodeIterator != mDebugNodes.end()) {
 
 			Ogre::SceneNode* node = *nodeIterator;
-			node->setPosition(Atlas2Ogre(currentPoint));
+			node->setPosition(Convert::toOgre(currentPoint));
 			node->setVisible(true);
 			nodeIterator++;
 		}
@@ -134,7 +134,7 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 						Ogre::SceneNode* currentNode(0);
 						if (nodeIterator != mDebugNodes.end()) {
 							currentNode = *nodeIterator;
-							currentNode->setPosition(Atlas2Ogre(point));
+							currentNode->setPosition(Convert::toOgre(point));
 							currentNode->setVisible(true);
 							nodeIterator++;
 						}

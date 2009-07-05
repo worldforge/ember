@@ -77,7 +77,7 @@ void Forest::initialize()
 		mTrees->setCamera(&camera);	//Set the camera so PagedGeometry knows how to calculate LODs
 		mTrees->setPageSize(64);	//Set the size of each page of geometry
 		
-		::PagedGeometry::TBounds ogreBounds(Atlas2Ogre(worldSize));
+		::PagedGeometry::TBounds ogreBounds(Convert::toOgre(worldSize));
 		if (ogreBounds.width() != ogreBounds.height()) {
 			if (ogreBounds.width() > ogreBounds.height()) {
 				float difference = ogreBounds.width() - ogreBounds.height();
@@ -95,7 +95,7 @@ void Forest::initialize()
 	
 		//Create a new TreeLoader2D object
 		mEntityLoader = new EmberEntityLoader(*mTrees, 64);
-	// 	mTreeLoader = new PagedGeometry::TreeLoader3D(mTrees, Atlas2Ogre(worldSize));
+	// 	mTreeLoader = new PagedGeometry::TreeLoader3D(mTrees, Convert::toOgre(worldSize));
 		mTrees->setPageLoader(mEntityLoader);	//Assign the "treeLoader" to be used to load geometry for the PagedGeometry instance	
 	}
 }

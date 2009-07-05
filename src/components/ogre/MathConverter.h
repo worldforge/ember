@@ -96,96 +96,80 @@ Description:	Point, Vector and Quaternion converter
 namespace EmberOgre {
 
 /**
- * @brief Converts a 2d WFMath::Point<2> into a 3d Ogre vector.
- * The vertical position of the resulting vector will be zero.
- * @param p A 2d Worldforge position.
- * @return A 3d Ogre vector.
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief Useful conversion method, for converting between Ogre and Worldforge space.
  */
-Ogre::Vector3 Atlas2Ogre(const WFMath::Point<2>& p);
-
+class Convert {
+public:
 /**
- * @brief Converts a 2d WFMath::Point<2> into a 2d Ogre vector.
+ * @brief Converts a 2d WFMath::Point<2> into an Ogre structure.
  * @param p A 2d Worldforge position.
- * @return A 2d Ogre vector.
  */
-Ogre::Vector2 Atlas2Ogre_Vector2(const WFMath::Point<2>& p);
+template <typename T>
+static T toOgre(const WFMath::Point<2>& p);
 
 /**
  * @brief Converts a 2d vector into a 2d Ogre vector.
  * @param p A 2d Worldforge vector.
  * @return A 2d Ogre vector.
  */
-Ogre::Vector2 Atlas2Ogre(const WFMath::Vector<2>& p);
+static Ogre::Vector2 toOgre(const WFMath::Vector<2>& p);
 
 /**
- * @brief Converts an Ogre 3d vector into a Worldforge 3d point.
+ * @brief Converts an Ogre 3d vector into a Worldforge structure.
  * @param p A 3d Ogre vector.
- * @return A 3d Worldforge point.
  */
-WFMath::Point<3> Ogre2Atlas(const Ogre::Vector3& p);
+template <typename T>
+static T toWF(const Ogre::Vector3& p);
 
 /**
  * @brief Converts an Ogre 2d vector into a Worldforge 2d point.
  * @param p A 2d Ogre vector.
  * @return A 2d Worldforge point.
  */
-WFMath::Point<2> Ogre2Atlas(const Ogre::Vector2& p);
-
-/**
- * @brief Converts an Ogre 3d vector into a Worldforge 2d point.
- * @param p A 3d Ogre vector.
- * @return A 2d Worldforge point.
- */
-WFMath::Point<2> Ogre2Atlas_TerrainPosition(const Ogre::Vector3& p);
-
-/**
- * @brief Converts an Ogre 3d vector into a Worldforge 3d vector.
- * @param p A 3d Ogre vector.
- * @return A 3d Worldforge vector.
- */
-WFMath::Vector<3> Ogre2Atlas_Vector3(const Ogre::Vector3& p);
+static WFMath::Point<2> toWF(const Ogre::Vector2& p);
 
 /**
  * @brief Converts a Worldforge 3d point into an Ogre 3d vector.
  * @param p A 3d Worldforge point.
  * @return A 3d Ogre vector.
  */
-Ogre::Vector3 Atlas2Ogre(const WFMath::Point<3>& p);
+static Ogre::Vector3 toOgre(const WFMath::Point<3>& p);
 
 /**
  * @brief Converts a Worldforge 3d vector into an Ogre 3d vector.
  * @param v A 3d Worldforge vector.
  * @return A 3d Ogre vector.
  */
-Ogre::Vector3 Atlas2Ogre(const WFMath::Vector<3>& v);
+static Ogre::Vector3 toOgre(const WFMath::Vector<3>& v);
 
 /**
  * @brief Converts a Worldforge quaternion into an Ogre quaternion.
  * @param aq A Worldforge quaternion.
  * @return An Ogre quaternion.
  */
-Ogre::Quaternion Atlas2Ogre(const WFMath::Quaternion& aq);
+static Ogre::Quaternion toOgre(const WFMath::Quaternion& aq);
 
 /**
  * @brief Converts an Ogre quaternion into a Worldforge quaternion.
  * @param aq An Ogre quaternion.
  * @return A Worldforge quaternion.
  */
-WFMath::Quaternion Ogre2Atlas(const Ogre::Quaternion& aq);
+static WFMath::Quaternion toWF(const Ogre::Quaternion& aq);
 
 /**
  * @brief Converts a Worldforge 3d axisbox into an Ogre 3d axisbox.
  * @param axisBox A Worldforge 3d axisbox.
  * @return An Ogre 3d axisbox.
  */
-Ogre::AxisAlignedBox Atlas2Ogre(const WFMath::AxisBox<3>& axisBox);
+static Ogre::AxisAlignedBox toOgre(const WFMath::AxisBox<3>& axisBox);
 
 /**
  * @brief Converts a Worldforge 2d axisbox into an Ogre TRect.
  * @param atlasBox A Worldforge 2d axisbox.
  * @return An Ogre TRect.
  */
-Ogre::TRect<Ogre::Real> Atlas2Ogre(const WFMath::AxisBox<2>& atlasBox);
+static Ogre::TRect<Ogre::Real> toOgre(const WFMath::AxisBox<2>& atlasBox);
 
 
 /**
@@ -193,87 +177,94 @@ Ogre::TRect<Ogre::Real> Atlas2Ogre(const WFMath::AxisBox<2>& atlasBox);
  * @param axisBox An Ogre 3d axisbox.
  * @return A Worldforge 3d axisbox.
  */
-WFMath::AxisBox<3> Ogre2Atlas(const Ogre::AxisAlignedBox& axisBox);
+static WFMath::AxisBox<3> toWF(const Ogre::AxisAlignedBox& axisBox);
 
 /**
  * @brief Converts an Ogre TRect into a Worldforge 2d axisbox.
  * @param bounds An Ogre TRect instance.
  * @return A Worldforge 2d axisbox.
  */
-WFMath::AxisBox<2> Ogre2Atlas(const Ogre::TRect<Ogre::Real>& bounds);
+static WFMath::AxisBox<2> toWF(const Ogre::TRect<Ogre::Real>& bounds);
 
+};
 
 ///Implementations
 
-inline Ogre::Vector3 Atlas2Ogre(const WFMath::Point<2>& p) {
+template<>
+inline Ogre::Vector3 Convert::toOgre<Ogre::Vector3>(const WFMath::Point<2>& p) {
 	return Ogre::Vector3(p.x(),0,-p.y());
 }
 
-inline Ogre::Vector2 Atlas2Ogre(const WFMath::Vector<2>& p) {
+template<>
+inline Ogre::Vector2 Convert::toOgre<Ogre::Vector2>(const WFMath::Point<2>& p) {
 	return Ogre::Vector2(p.x(),-p.y());
 }
 
-inline Ogre::Vector2 Atlas2Ogre_Vector2(const WFMath::Point<2>& p) {
+inline Ogre::Vector2 Convert::toOgre(const WFMath::Vector<2>& p) {
 	return Ogre::Vector2(p.x(),-p.y());
 }
 
-inline WFMath::Point<3> Ogre2Atlas(const Ogre::Vector3& p) {
-	return WFMath::Point<3>(p.x,-p.z,p.y);
-}
 
-inline WFMath::Point<2> Ogre2Atlas(const Ogre::Vector2& p) {
+inline WFMath::Point<2> Convert::toWF(const Ogre::Vector2& p) {
 	return WFMath::Point<2>(p.x,-p.y);
 }
 
-inline WFMath::Point<2> Ogre2Atlas_TerrainPosition(const Ogre::Vector3& p) {
+template<>
+inline WFMath::Point<3> Convert::toWF<WFMath::Point<3> >(const Ogre::Vector3& p) {
+	return WFMath::Point<3>(p.x,-p.z,p.y);
+}
+
+template<>
+inline WFMath::Point<2> Convert::toWF<WFMath::Point<2> >(const Ogre::Vector3& p) {
 	return WFMath::Point<2>(p.x,-p.z);
 }
 
-inline WFMath::Vector<3> Ogre2Atlas_Vector3(const Ogre::Vector3& p) {
+template<>
+inline WFMath::Vector<3> Convert::toWF<WFMath::Vector<3> >(const Ogre::Vector3& p) {
 	return WFMath::Vector<3>(p.x,-p.z,p.y);
 }
 
-inline Ogre::Vector3 Atlas2Ogre(const WFMath::Point<3>& p){
+inline Ogre::Vector3 Convert::toOgre(const WFMath::Point<3>& p){
 	return Ogre::Vector3(p.x(),p.z(),-p.y());
 }
 
-inline Ogre::Vector3 Atlas2Ogre(const WFMath::Vector<3>& v){
+inline Ogre::Vector3 Convert::toOgre(const WFMath::Vector<3>& v){
 	return Ogre::Vector3(v.x(),v.z(),-v.y());
 }
 
-inline Ogre::Quaternion Atlas2Ogre(const WFMath::Quaternion& aq){
+inline Ogre::Quaternion Convert::toOgre(const WFMath::Quaternion& aq){
 	if (!aq.isValid()) {
 		return Ogre::Quaternion::IDENTITY;
 	}
 	return Ogre::Quaternion(aq.scalar(),aq.vector().x(),aq.vector().z(),-aq.vector().y());
 }
 
-inline WFMath::Quaternion Ogre2Atlas(const Ogre::Quaternion& aq){
+inline WFMath::Quaternion Convert::toWF(const Ogre::Quaternion& aq){
 	return WFMath::Quaternion(aq.w,aq.x,-aq.z,aq.y);
 }
 
-inline Ogre::AxisAlignedBox Atlas2Ogre(const WFMath::AxisBox<3>& axisBox){
+inline Ogre::AxisAlignedBox Convert::toOgre(const WFMath::AxisBox<3>& axisBox){
 	if (!axisBox.isValid()) {
 		return Ogre::AxisAlignedBox();
 	}
 	return Ogre::AxisAlignedBox(axisBox.lowCorner().x(), axisBox.lowCorner().z(), -axisBox.highCorner().y(), axisBox.highCorner().x(), axisBox.highCorner().z(), -axisBox.lowCorner().y());
 }
 
-inline Ogre::TRect<Ogre::Real> Atlas2Ogre(const WFMath::AxisBox<2>& atlasBox) {
+inline Ogre::TRect<Ogre::Real> Convert::toOgre(const WFMath::AxisBox<2>& atlasBox) {
 	if (!atlasBox.isValid()) {
 		return Ogre::TRect<Ogre::Real>();
 	}
 	return Ogre::TRect<Ogre::Real>(atlasBox.lowCorner().x(), -atlasBox.highCorner().y(), atlasBox.highCorner().x(), -atlasBox.lowCorner().y());
 }
 
-inline WFMath::AxisBox<3> Ogre2Atlas(const Ogre::AxisAlignedBox& axisBox){
+inline WFMath::AxisBox<3> Convert::toWF(const Ogre::AxisAlignedBox& axisBox){
 	if (axisBox.isNull() || axisBox.isInfinite()) {
 		return WFMath::AxisBox<3>();
 	}
 	return WFMath::AxisBox<3>(WFMath::Point<3>(axisBox.getMinimum().x, -axisBox.getMaximum().z, axisBox.getMinimum().y), WFMath::Point<3>(axisBox.getMaximum().x, -axisBox.getMinimum().z, axisBox.getMaximum().y));
 }
 
-inline WFMath::AxisBox<2> Ogre2Atlas(const Ogre::TRect<Ogre::Real>& bounds){
+inline WFMath::AxisBox<2> Convert::toWF(const Ogre::TRect<Ogre::Real>& bounds){
 	return WFMath::AxisBox<2>(WFMath::Point<2>(bounds.left, -bounds.top), WFMath::Point<2>(bounds.right, -bounds.bottom));
 }
 

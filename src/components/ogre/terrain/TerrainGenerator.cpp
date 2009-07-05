@@ -473,7 +473,7 @@ TerrainPage* TerrainGenerator::getTerrainPageAtIndex(const Ogre::Vector2& ogreIn
 	///TerrainInfo deals with WF space, so we need to flip the x and y offsets here (as it's in Ogre space)
 	Ogre::Vector2 adjustedOgrePos(ogreIndexPosition.x - mTerrainInfo->getPageOffsetY(), ogreIndexPosition.y - mTerrainInfo->getPageOffsetX());
 
-	TerrainPosition pos(Ogre2Atlas(adjustedOgrePos));
+	TerrainPosition pos(Convert::toWF(adjustedOgrePos));
 
 	int x = static_cast<int>(pos.x());
 	int y = static_cast<int>(pos.y());
@@ -688,18 +688,18 @@ const TerrainInfo & TerrainGenerator::getTerrainInfo( ) const
 void TerrainGenerator::getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour) const
 {
 	//TODO: add caching of the last fetched terrain page and first check if the position isn't at that page, since we'll in most cass will call this method with positions that are close to eachother
-	TerrainPosition wfPos(Ogre2Atlas(position));
+	TerrainPosition wfPos(Convert::toWF(position));
 	TerrainPage* terrainPage = getTerrainPageAtPosition(wfPos);
-	Ogre::TRect<float> ogrePageExtent = Atlas2Ogre(terrainPage->getExtent());
+	Ogre::TRect<float> ogrePageExtent = Convert::toOgre(terrainPage->getExtent());
 	terrainPage->getPageShadow().getShadowColourAt(Ogre::Vector2(position.x - ogrePageExtent.left, position.y - ogrePageExtent.top), colour);
 }
 
 void TerrainGenerator::getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour) const
 {
 	//TODO: add caching of the last fetched terrain page and first check if the position isn't at that page, since we'll in most cass will call this method with positions that are close to eachother
-	TerrainPosition wfPos(Ogre2Atlas(position));
+	TerrainPosition wfPos(Convert::toWF(position));
 	TerrainPage* terrainPage = getTerrainPageAtPosition(wfPos);
-	Ogre::TRect<float> ogrePageExtent = Atlas2Ogre(terrainPage->getExtent());
+	Ogre::TRect<float> ogrePageExtent = Convert::toOgre(terrainPage->getExtent());
 	terrainPage->getPageShadow().getShadowColourAt(Ogre::Vector2(position.x - ogrePageExtent.left, position.y - ogrePageExtent.top), colour);
 }
 

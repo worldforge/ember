@@ -71,10 +71,10 @@ void FoliageLoader::loadPage(::PagedGeometry::PageInfo &page)
 	static Ogre::ColourValue colour(1,1,1,1);
 	static const Terrain::TerrainGenerator* terrainGenerator(EmberOgre::getSingleton().getTerrainGenerator());
 
-	TerrainPosition wfPos(Ogre2Atlas_TerrainPosition(page.centerPoint));
+	TerrainPosition wfPos(Convert::toWF<TerrainPosition>(page.centerPoint));
 	const TerrainPage* terrainPage = terrainGenerator->getTerrainPageAtPosition(wfPos);
 	if (terrainPage) {
-		Ogre::TRect<float> ogrePageExtent = Atlas2Ogre(terrainPage->getExtent());
+		Ogre::TRect<float> ogrePageExtent = Convert::toOgre(terrainPage->getExtent());
 		Ogre::TRect<float> adjustedBounds = Ogre::TRect<float>(page.bounds.left - ogrePageExtent.left, page.bounds.top - ogrePageExtent.top, page.bounds.right - ogrePageExtent.left, page.bounds.bottom - ogrePageExtent.top);
 		TerrainPageFoliage::PlantStore plants;
 

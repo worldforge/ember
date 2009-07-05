@@ -219,14 +219,14 @@ void Avatar::attemptMove(AvatarControllerMovement& movement)
 
 
 		///Save the five latest orientations sent to the server, so we can later when we recieve an update from the server we can recognize that it's our own updates and ignore them.
-		mLastOrientations.push_back(Ogre2Atlas(newMovementState.orientation));
+		mLastOrientations.push_back(Convert::toWF(newMovementState.orientation));
 		if (mLastOrientations.size() > 5) {
 			mLastOrientations.erase(mLastOrientations.begin());
 		}
 		//for now we'll only send velocity
-		Ember::EmberServices::getSingletonPtr()->getServerService()->moveInDirection(Ogre2Atlas_Vector3(newMovementState.orientation * newMovementState.velocity), Ogre2Atlas(newMovementState.orientation));
+		Ember::EmberServices::getSingletonPtr()->getServerService()->moveInDirection(Convert::toWF<WFMath::Vector<3> >(newMovementState.orientation * newMovementState.velocity), Convert::toWF(newMovementState.orientation));
 
-//		Ember::EmberServices::getSingletonPtr()->getServerService()->moveInDirection(Ogre2Atlas(mCurrentMovementState.velocity), Ogre2Atlas(mCurrentMovementState.orientation));
+//		Ember::EmberServices::getSingletonPtr()->getServerService()->moveInDirection(Convert::toWF(mCurrentMovementState.velocity), Convert::toWF(mCurrentMovementState.orientation));
 
 	} else {
 		mTimeSinceLastServerMessage += timeSlice * 1000;
@@ -320,9 +320,9 @@ void Avatar::movedInWorld()
 			}
 		}
 		if (!isOwnRotation) {
-			mAvatarNode->setOrientation(Atlas2Ogre(orient));
+			mAvatarNode->setOrientation(Convert::toOgre(orient));
 		}
-		mAvatarNode->setPosition(Atlas2Ogre(mErisAvatarEntity->getPosition()));
+		mAvatarNode->setPosition(Convert::toOgre(mErisAvatarEntity->getPosition()));
 		///we must set this, else ember will think that we've rotated the avatar ourselves and try to send an update to the server
 		mMovementStateAtLastServerMessage.orientation = mAvatarNode->getOrientation();
 		mHasChangedLocation = false;

@@ -197,7 +197,7 @@ void OverlayCompassImpl::reposition(float x, float y)
 void OverlayCompassImpl::rotate(const Ogre::Degree& degree)
 {
 	return;
-// 	Point<2> center = Ogre2Atlas(mMap->getView().getRelativeViewPosition());
+// 	Point<2> center = Convert::toWF(mMap->getView().getRelativeViewPosition());
 // 	Vector<2> dimensions(0.5, 0.5);
 // 	Quaternion qRot;
 // 	qRot = qRot.rotation(2, degree);

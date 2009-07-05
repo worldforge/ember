@@ -145,7 +145,7 @@ Ogre::Vector3 EmberPagingLandScapeData2D_HeightField::getNormal(const Ogre::Real
 		if (terrainPage) {
 			WFMath::Vector<3> normal;
 			if (terrainPage->getNormal(TerrainPosition(localPageX, 512 - localPageZ), normal)) {
-				return Atlas2Ogre(normal);
+				return Convert::toOgre(normal);
 			}
 		}
 	}

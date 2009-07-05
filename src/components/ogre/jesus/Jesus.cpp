@@ -73,7 +73,7 @@ Jesus::~Jesus()
 AttachPointNode::AttachPointNode(ModelBlock* modelBlock, Ogre::SceneNode* modelNode, const Carpenter::AttachPoint* attachPoint, Ogre::ColourValue colour,Ogre::BillboardSet* billboardSet )
 : mModelBlock(modelBlock), mModelNode(modelNode), mAttachPoint(attachPoint), mColour(colour), mController(0)
 {
-	Ogre::Vector3 position = Atlas2Ogre(attachPoint->getPosition());
+	Ogre::Vector3 position = Convert::toOgre(attachPoint->getPosition());
 	std::string name = modelNode->getName() + "_" + attachPoint->getAttachPair()->getName() + "_" + attachPoint->getName();
 
 /*	mPointerNode = mModelNode->createChildSceneNode ();
@@ -85,8 +85,8 @@ AttachPointNode::AttachPointNode(ModelBlock* modelBlock, Ogre::SceneNode* modelN
 	WFMath::Quaternion quat;
 	quat.rotation(WFMath::Vector<3>(1,-1,1), attachPoint->getNormal());
 
-	//Ogre::Vector3 normal = Atlas2Ogre(attachPoint->getNormal());
-	mPointerNode->setOrientation(Atlas2Ogre(quat));*/
+	//Ogre::Vector3 normal = Convert::toOgre(attachPoint->getNormal());
+	mPointerNode->setOrientation(Convert::toOgre(quat));*/
 
 // 	mFlare = billboardSet->createBillboard(modelBlock->getBuildingBlock()->getWorldPositionForPoint(attachPoint) , colour);
 	mFlare = billboardSet->createBillboard(position , colour);
@@ -255,7 +255,7 @@ ModelBlock::ModelBlock(Ogre::SceneNode* baseNode,const  Carpenter::BuildingBlock
 {
 
 
-	mNode = baseNode->createChildSceneNode(Atlas2Ogre(buildingBlock->getPosition()), Atlas2Ogre(buildingBlock->getOrientation()));
+	mNode = baseNode->createChildSceneNode(Convert::toOgre(buildingBlock->getPosition()), Convert::toOgre(buildingBlock->getOrientation()));
 
 
 	mPointBillBoardSet = mNode->getCreator()->createBillboardSet( std::string("__construction_") + construction->getBluePrint()->getName() + "_" + buildingBlock->getName() + "_billboardset__" + mNode->getName());

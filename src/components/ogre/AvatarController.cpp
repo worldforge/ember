@@ -304,7 +304,7 @@ void AvatarController::moveToPoint(const Ogre::Vector3& point)
 		mDecalNode->setVisible(true);
 	}
 
-	WFMath::Vector<3> atlasVector = Ogre2Atlas_Vector3(point);
+	WFMath::Vector<3> atlasVector = Convert::toWF<WFMath::Vector<3> >(point);
 	WFMath::Point<3> atlasPos(atlasVector.x(), atlasVector.y(), atlasVector.z());
 /*	WFMath::Point<3> atlas2dPos(atlasVector.x(), atlasVector.y(), 0);
 	WFMath::Point<3> avatar2dPos(mAvatar.getAvatarEmberEntity()->getPosition().x(), mAvatar.getAvatarEmberEntity()->getPosition().y(), 0);
@@ -322,7 +322,7 @@ void AvatarController::moveToPoint(const Ogre::Vector3& point)
 
 void AvatarController::teleportTo(const Ogre::Vector3& point, EmberEntity* locationEntity)
 {
-	WFMath::Vector<3> atlasVector = Ogre2Atlas_Vector3(point);
+	WFMath::Vector<3> atlasVector = Convert::toWF<WFMath::Vector<3> >(point);
 	WFMath::Point<3> atlasPos(atlasVector.x(), atlasVector.y(), atlasVector.z());
 
 

@@ -21,21 +21,98 @@ class TerrainPosition
 
 
 
+class Convert {
+public:
+/**
+ * @brief Converts a 2d WFMath::Point<2> into a 3d Ogre vector.
+ * The vertical position of the resulting vector will be zero.
+ * @param p A 2d Worldforge position.
+ * @return A 3d Ogre vector.
+ */
+static Ogre::Vector3 toOgre<Ogre::Vector3 > @ toOgre_Vector3(const WFMath::Point<2>& p);
+static Ogre::Vector2 toOgre<Ogre::Vector2 > @ toOgre_Vector2(const WFMath::Point<2>& p);
 
-Ogre::Vector3 Atlas2Ogre(const TerrainPosition& p);
+/**
+ * @brief Converts a 2d vector into a 2d Ogre vector.
+ * @param p A 2d Worldforge vector.
+ * @return A 2d Ogre vector.
+ */
+static Ogre::Vector2 toOgre(const WFMath::Vector<2>& p);
 
-WFMath::Point<3> Ogre2Atlas(const Ogre::Vector3& p);
+/**
+ * @brief Converts an Ogre 3d vector into a Worldforge 3d point.
+ * @param p A 3d Ogre vector.
+ * @return A 3d Worldforge point.
+ */
+static WFMath::Point<3> toWF<WFMath::Point<3> > @ toWF_Point3(const Ogre::Vector3& p);
+static WFMath::Point<2> toWF<WFMath::Point<2> > @ toWF_Point2(const Ogre::Vector3& p);
+static WFMath::Vector<3> toWF<WFMath::Vector<3> > @ toWF_Vector3(const Ogre::Vector3& p);
 
-TerrainPosition Ogre2Atlas(const Ogre::Vector2& p) ;
+/**
+ * @brief Converts an Ogre 2d vector into a Worldforge 2d point.
+ * @param p A 2d Ogre vector.
+ * @return A 2d Worldforge point.
+ */
+static WFMath::Point<2> toWF(const Ogre::Vector2& p);
 
-TerrainPosition Ogre2Atlas_TerrainPosition(const Ogre::Vector3& p);
-WFMath::Vector<3> Ogre2Atlas_Vector3(const Ogre::Vector3& p);
+/**
+ * @brief Converts a Worldforge 3d point into an Ogre 3d vector.
+ * @param p A 3d Worldforge point.
+ * @return A 3d Ogre vector.
+ */
+static Ogre::Vector3 toOgre(const WFMath::Point<3>& p);
 
-Ogre::Vector3 Atlas2Ogre(const WFMath::Point<3>& p);
-Ogre::Vector3 Atlas2Ogre(const WFMath::Vector<3>& v);
+/**
+ * @brief Converts a Worldforge 3d vector into an Ogre 3d vector.
+ * @param v A 3d Worldforge vector.
+ * @return A 3d Ogre vector.
+ */
+static Ogre::Vector3 toOgre(const WFMath::Vector<3>& v);
 
-Ogre::Quaternion Atlas2Ogre(const WFMath::Quaternion& aq);
-WFMath::Quaternion Ogre2Atlas(const Ogre::Quaternion& aq);
+/**
+ * @brief Converts a Worldforge quaternion into an Ogre quaternion.
+ * @param aq A Worldforge quaternion.
+ * @return An Ogre quaternion.
+ */
+static Ogre::Quaternion toOgre(const WFMath::Quaternion& aq);
+
+/**
+ * @brief Converts an Ogre quaternion into a Worldforge quaternion.
+ * @param aq An Ogre quaternion.
+ * @return A Worldforge quaternion.
+ */
+static WFMath::Quaternion toWF(const Ogre::Quaternion& aq);
+
+/**
+ * @brief Converts a Worldforge 3d axisbox into an Ogre 3d axisbox.
+ * @param axisBox A Worldforge 3d axisbox.
+ * @return An Ogre 3d axisbox.
+ */
+//static Ogre::AxisAlignedBox toOgre(const WFMath::AxisBox<3>& axisBox);
+
+/**
+ * @brief Converts a Worldforge 2d axisbox into an Ogre TRect.
+ * @param atlasBox A Worldforge 2d axisbox.
+ * @return An Ogre TRect.
+ */
+//static Ogre::TRect<Ogre::Real> toOgre(const WFMath::AxisBox<2>& atlasBox);
+
+
+/**
+ * @brief Converts an Ogre 3d axisbox into a Worldforge 3d axisbox.
+ * @param axisBox An Ogre 3d axisbox.
+ * @return A Worldforge 3d axisbox.
+ */
+//static WFMath::AxisBox<3> toWF(const Ogre::AxisAlignedBox& axisBox);
+
+/**
+ * @brief Converts an Ogre TRect into a Worldforge 2d axisbox.
+ * @param bounds An Ogre TRect instance.
+ * @return A Worldforge 2d axisbox.
+ */
+//static WFMath::AxisBox<2> toWF(const Ogre::TRect<Ogre::Real>& bounds);
+
+};
 
 }
 

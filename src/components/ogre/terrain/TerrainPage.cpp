@@ -135,7 +135,7 @@ void TerrainPage::update()
 		mBridge->updateTerrain();
 	}
 
-	Ogre::Vector2 targetPage = Atlas2Ogre_Vector2(mPosition);
+	Ogre::Vector2 targetPage = Convert::toOgre<Ogre::Vector2>(mPosition);
 
 	///note that we've switched the x and y offset here, since the terraininfo is in WF coords, but we now want Ogre coords
 	Ogre::Vector2 adjustedOgrePos(targetPage.x + mGenerator.getTerrainInfo().getPageOffsetY(), targetPage.y + mGenerator.getTerrainInfo().getPageOffsetX());

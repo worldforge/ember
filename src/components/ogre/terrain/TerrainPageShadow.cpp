@@ -55,7 +55,7 @@ void SimpleTerrainPageShadowTechnique::createShadowData(const TerrainPage& page,
 /*	origPosition[0] = (page.getWFPosition()[0] * (pageSizeInMeters));
 	origPosition[1] = (page.getWFPosition()[1] * (pageSizeInMeters));*/
 
-	WFMath::Vector<3> wfLightDirection = Ogre2Atlas_Vector3(lightDirection);
+	WFMath::Vector<3> wfLightDirection = Convert::toWF<WFMath::Vector<3> >(lightDirection);
 	wfLightDirection = wfLightDirection.normalize(1);
 
 

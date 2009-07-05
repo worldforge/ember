@@ -46,7 +46,7 @@ void EntityMover::finalizeMovement()
 	if (mEntity.getLocation())
 	{
 		///send to server
-		Ember::EmberServices::getSingleton().getServerService()->place(&mEntity, mEntity.getLocation(), Ogre2Atlas(mEntity.getSceneNode()->getPosition()), Ogre2Atlas(mEntity.getSceneNode()->getOrientation()));
+		Ember::EmberServices::getSingleton().getServerService()->place(&mEntity, mEntity.getLocation(), Convert::toWF<WFMath::Point<3> >(mEntity.getSceneNode()->getPosition()), Convert::toWF(mEntity.getSceneNode()->getOrientation()));
 	}
 	mManager.EventFinishedMoving.emit();
 

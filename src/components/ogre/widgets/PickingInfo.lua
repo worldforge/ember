@@ -31,7 +31,7 @@ function PickingInfo.pickedEntity(result, args)
 			--we must make a copy, else the vector object will be deleted by C++ and we'll end up with garbage
 			local ogrePos = Ogre.Vector3:new_local(result.position)
 			--we should use a worldforge position, but we haven't yet added lua bindings for wfmath, so we'll just manually convert the ogre values
-	-- 		local wfPos = EmberOgre.Ogre2Atlas_Vector3(ogrePos)
+	-- 		local wfPos = EmberOgre.Convret.toWF_Vector3(ogrePos)
 			local infoString = string.format([[Entity: %q (id: %q type: %q)
 WF pos:
   x: %.2f y: %.2f z: %.2f

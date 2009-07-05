@@ -266,7 +266,7 @@ void WorldEmberEntity::adjustPositionForContainedNode(const EmberEntity& entity,
 		sceneNode->setPosition(position.x, 0,position.z);
 	} else if (entity.getMovementMode() == EmberEntity::MM_SWIMMING) {
 		///if it's swimming, make sure that it's between the sea bottom and the surface
-		const TerrainPosition pos = Ogre2Atlas_TerrainPosition(position);
+		const TerrainPosition pos = Convert::toWF<TerrainPosition>(position);
 		float height = 0;
 		if (mTerrainGenerator->getHeight(pos, height)) {
 			if (position.y < height) {
@@ -280,7 +280,7 @@ void WorldEmberEntity::adjustPositionForContainedNode(const EmberEntity& entity,
 		///get the height from Mercator through the TerrainGenerator
 /*		assert(mTerrainGenerator);
 //		TerrainPosition pos(entity->getPredictedPos().x(), entity->getPredictedPos().y());
-		TerrainPosition pos = Ogre2Atlas_TerrainPosition(position);
+		TerrainPosition pos = Convert::toWF_TerrainPosition(position);
 		float height = mTerrainGenerator->getHeight(pos);*/
 		EmberEntity::adjustPositionForContainedNode(entity, position);
 		//sceneNode->setPosition(getOffsetForContainedNode(position, entity));
@@ -294,7 +294,7 @@ const Ogre::Vector3& WorldEmberEntity::getOffsetForContainedNode(const Ogre::Vec
 	///NOTE: won't work with threading!
 	static Ogre::Vector3 offset = Ogre::Vector3::ZERO;
 	float height = 0;
-	if (mTerrainGenerator->getHeight(Ogre2Atlas_TerrainPosition(localPosition), height)) {
+	if (mTerrainGenerator->getHeight(Convert::toWF<TerrainPosition>(localPosition), height)) {
 		offset.y = height - localPosition.y;
 	}
 	return offset;

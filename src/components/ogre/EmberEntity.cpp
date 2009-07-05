@@ -187,12 +187,12 @@ void EmberEntity::synchronizeWithServer()
 {
 	if (getPosition().isValid())
 	{
-		getSceneNode()->setPosition(Atlas2Ogre(getPredictedPos()));
+		getSceneNode()->setPosition(Convert::toOgre(getPredictedPos()));
 		adjustPosition();
 	}
 	if (getOrientation().isValid())
 	{
-		getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
+		getSceneNode()->setOrientation(Convert::toOgre(getOrientation()));
 	}
 }
 
@@ -212,7 +212,7 @@ void EmberEntity::createSceneNode(Ogre::SceneManager* sceneManager)
 
 void EmberEntity::updateMotion(Ogre::Real timeSlice)
 {
-	getSceneNode()->setPosition(Atlas2Ogre(getPredictedPos()));
+	getSceneNode()->setPosition(Convert::toOgre(getPredictedPos()));
 	adjustPosition();
 
 	//if there's a debug bounding box for the eris entity, update it's position
@@ -228,7 +228,7 @@ void EmberEntity::onMoved()
 {
 	Eris::Entity::onMoved();
 	const WFMath::Quaternion& orient = getOrientation();
-	getSceneNode()->setOrientation(Atlas2Ogre(orient));
+	getSceneNode()->setOrientation(Convert::toOgre(orient));
 	updateMotion(0);
 }
 
@@ -391,7 +391,7 @@ void EmberEntity::adjustPosition()
 {
 	if (getPredictedPos().isValid())
 	{
-		adjustPosition(Atlas2Ogre(getPredictedPos()));
+		adjustPosition(Convert::toOgre(getPredictedPos()));
 	}
 }
 
@@ -479,7 +479,7 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 		if (getPosition().isValid())
 		{
 			///Note that in some instances, for instance when the avatar enters the sty, the position isn't updated yet, which will make the avatar "snap" to an incorrect position (since the parent node has changed) until next frame, when the position should have been updated.
-			getSceneNode()->setPosition(Atlas2Ogre(getPredictedPos()));
+			getSceneNode()->setPosition(Convert::toOgre(getPredictedPos()));
 			adjustPosition();
 			std::stringstream ss;
 			ss << getPredictedPos();
@@ -487,7 +487,7 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 		}
 		if (getOrientation().isValid())
 		{
-			getSceneNode()->setOrientation(Atlas2Ogre(getOrientation()));
+			getSceneNode()->setOrientation(Convert::toOgre(getOrientation()));
 			std::stringstream ss;
 			ss << getOrientation();
 			S_LOG_VERBOSE("New orientation for entity: " << this->getId() << " (" << this->getName() << " ) :" << ss.str());
@@ -696,15 +696,15 @@ void EmberEntity::showErisBoundingBox(bool show)
 		///if there's no bounding box defined for this entity, show one that is 0.2 meters across in all direction
 		if (hasBBox())
 		{
-			mErisEntityBoundingBox->setupBoundingBox(Atlas2Ogre(getBBox()));
+			mErisEntityBoundingBox->setupBoundingBox(Convert::toOgre(getBBox()));
 		}
 		else
 		{
 			mErisEntityBoundingBox->setupBoundingBox(Ogre::AxisAlignedBox(-0.1, -0.1, -0.1, 0.1, 0.1, 0.1));
 		}
 
-		boundingBoxNode->setPosition(Atlas2Ogre(getPredictedPos()));
-		boundingBoxNode->setOrientation(Atlas2Ogre(getOrientation()));
+		boundingBoxNode->setPosition(Convert::toOgre(getPredictedPos()));
+		boundingBoxNode->setOrientation(Convert::toOgre(getOrientation()));
 	}
 	mErisEntityBoundingBox->setVisible(show);
 
@@ -725,7 +725,7 @@ void EmberEntity::onBboxChanged()
 {
 	if (mErisEntityBoundingBox)
 	{
-		mErisEntityBoundingBox->setupBoundingBox(Atlas2Ogre(getBBox()));
+		mErisEntityBoundingBox->setupBoundingBox(Convert::toOgre(getBBox()));
 	}
 }
 

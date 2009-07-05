@@ -246,7 +246,7 @@ void TerrainEditor::createOverlay()
 				const Mercator::BasePoint& basepoint(J->second);
 				Ogre::SceneNode* basepointNode = mOverlayNode->createChildSceneNode();
 				TerrainPosition tPos(x*64,y*64);
-				Ogre::Vector3 ogrePos = Atlas2Ogre(tPos);
+				Ogre::Vector3 ogrePos = Convert::toOgre<Ogre::Vector3>(tPos);
 				ogrePos.y = basepoint.height();
 				basepointNode->setPosition(ogrePos);
 				basepointNode->attachObject(entity);
@@ -541,7 +541,7 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 		pointStore.push_back(defPoint);
 
 
-// 		Ogre::Vector3 markerPos = Atlas2Ogre(I->getPosition());
+// 		Ogre::Vector3 markerPos = Convert::toOgre(I->getPosition());
 //
 // 		markerPos *= 64;
 // 		Ogre::PagingLandScapeTile* tile;

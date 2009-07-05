@@ -76,7 +76,7 @@ bool MovementAdapterWorkerDiscrete::injectMouseMove(const Ember::MouseMotion& mo
 // 	}
 
 	///move it relative to the camera
-	direction = direction.rotate(Ogre2Atlas(EmberOgre::getSingleton().getMainCamera()->getOrientation()));
+	direction = direction.rotate(Convert::toWF(EmberOgre::getSingleton().getMainCamera()->getOrientation()));
 
 	getBridge()->move( direction);//move the entity a fixed distance for each mouse movement.
 
@@ -114,7 +114,7 @@ void MovementAdapterWorkerTerrainCursor::updatePosition(bool forceUpdate)
 {
 	const Ogre::Vector3* position(0);
 	if (EmberOgre::getSingleton().getMainCamera()->getTerrainCursor().getTerrainCursorPosition(&position) || forceUpdate) {
-		getBridge()->setPosition(Ogre2Atlas(*position));
+		getBridge()->setPosition(Convert::toWF<WFMath::Point<3> >(*position));
 	}
 }
 

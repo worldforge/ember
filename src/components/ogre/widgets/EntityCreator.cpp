@@ -129,7 +129,7 @@ void EntityCreator::startCreation()
 	// Making inital position (orientation is preserved)
 	Ogre::Vector3 o_vector(2,0,0);
 	Ogre::Vector3 o_pos = avatar->getSceneNode()->getPosition() + (avatar->getSceneNode()->getOrientation() * o_vector);
-	mPos = Ogre2Atlas(o_pos);
+	mPos = Convert::toWF<WFMath::Point<3> >(o_pos);
 
 	mRecipeConnection = mRecipe->EventValueChanged.connect( sigc::mem_fun(*this, &EntityCreator::adapterValueChanged) );
 
@@ -241,12 +241,12 @@ void EntityCreator::setModel(const std::string& modelName)
 	initFromModel();
 
 	// Setting inital position and orientation
-	mEntityNode->setPosition(Atlas2Ogre(mPos));
+	mEntityNode->setPosition(Convert::toOgre(mPos));
 	if (mRandomizeOrientation) {
 		WFMath::MTRand rng;
 		mOrientation.rotation(2, rng.rand() * 360.0f);
 	}
-	mEntityNode->setOrientation(Atlas2Ogre(mOrientation));
+	mEntityNode->setOrientation(Convert::toOgre(mOrientation));
 }
 
 void EntityCreator::showModelPart(const std::string& partName)
@@ -299,8 +299,8 @@ void EntityCreator::adapterValueChanged()
 void EntityCreator::finalizeCreation()
 {
 	// Final position
-	mEntityMessage["pos"] = Ogre2Atlas(mEntityNode->getPosition()).toAtlas();
-	mEntityMessage["orientation"] = Ogre2Atlas(mEntityNode->getOrientation()).toAtlas();
+	mEntityMessage["pos"] = Convert::toWF<WFMath::Point<3> >(mEntityNode->getPosition()).toAtlas();
+	mEntityMessage["orientation"] = Convert::toWF(mEntityNode->getOrientation()).toAtlas();
 
 	// Making create operation message
 	Atlas::Objects::Operation::Create c;

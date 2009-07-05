@@ -192,7 +192,7 @@ bool InventoryWidget::Drop_Click(const CEGUI::EventArgs& args)
 		Ogre::Vector3 o_pos = EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity()->getSceneNode()->getOrientation() * o_vector;
 
 		EmberEntity* entity = static_cast<EmberEntity*>(item->getUserData());
-		Ember::EmberServices::getSingletonPtr()->getServerService()->drop(entity, Ogre2Atlas_Vector3(o_pos));
+		Ember::EmberServices::getSingletonPtr()->getServerService()->drop(entity, Convert::toWF_Vector3(o_pos));
 	}
 	return true;
 }

@@ -109,7 +109,7 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 			
 			///Note that after the Model has been scaled using the bounding box, it can still be scaled additionally through the "scale" setting in the ModelDefinition.
 			
-			Ogre::AxisAlignedBox ogreBbox(Atlas2Ogre(*wfBbox));
+			Ogre::AxisAlignedBox ogreBbox(Convert::toOgre(*wfBbox));
 			
 			const Ogre::Vector3& ogreMax(ogreBbox.getMaximum());
 			const Ogre::Vector3& ogreMin(ogreBbox.getMinimum());

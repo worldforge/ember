@@ -1,7 +1,7 @@
 //
 // C++ Implementation: MakeEntityWidget
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2004
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -51,13 +51,13 @@
 #include <wfmath/atlasconv.h>
 
 #include <CEGUIWindow.h>
-#include <elements/CEGUIListbox.h> 
-#include <elements/CEGUIListboxItem.h> 
-#include <elements/CEGUIListboxTextItem.h> 
-#include <elements/CEGUIEditbox.h> 
-#include <elements/CEGUIPushButton.h> 
-#include <elements/CEGUIGUISheet.h> 
-#include <elements/CEGUITree.h> 
+#include <elements/CEGUIListbox.h>
+#include <elements/CEGUIListboxItem.h>
+#include <elements/CEGUIListboxTextItem.h>
+#include <elements/CEGUIEditbox.h>
+#include <elements/CEGUIPushButton.h>
+#include <elements/CEGUIGUISheet.h>
+#include <elements/CEGUITree.h>
 
 
 namespace EmberOgre {
@@ -76,7 +76,7 @@ MakeEntityWidget::MakeEntityWidget()
 
 }
 
-	
+
 MakeEntityWidget::~MakeEntityWidget()
 {
 	delete mModelPreviewRenderer;
@@ -86,24 +86,24 @@ void MakeEntityWidget::buildWidget()
 {
 
 	loadMainSheet("MakeEntityWidget.layout", "MakeEntity/");
-	
+
 	mTypeTree = static_cast<CEGUI::Tree*>(getWindow("TypeList"));
 	mTypeTree->setItemTooltipsEnabled(true);
 	mTypeTree->setSortingEnabled(true);
-	
+
 	mName = static_cast<CEGUI::Editbox*>(getWindow("Name"));
-	
+
 	CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(getWindow("CreateButton"));
-	
+
 	BIND_CEGUI_EVENT(button, CEGUI::PushButton::EventClicked,MakeEntityWidget::createButton_Click );
 	BIND_CEGUI_EVENT(mTypeTree, CEGUI::Tree::EventSelectionChanged ,MakeEntityWidget::typeTree_ItemSelectionChanged );
 
-	
+
 
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &MakeEntityWidget::connectedToServer));
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotAvatar.connect(sigc::mem_fun(*this, &MakeEntityWidget::gotAvatar));
-	
-	
+
+
 	createPreviewTexture();
 
 	registerConsoleVisibilityToggleCommand("entitycreator");
@@ -155,7 +155,7 @@ void MakeEntityWidget::loadAllTypes()
 			const Eris::TypeInfoSet children = typeInfo->getChildren();
 			Eris::TypeInfoSet::const_iterator I = children.begin();
 			Eris::TypeInfoSet::const_iterator I_end = children.end();
-			
+
 			for (;I != I_end; ++I)
 			{
 				addToTree(*I, 0, true);
@@ -182,33 +182,33 @@ void MakeEntityWidget::addToTree(Eris::TypeInfo* typeInfo, CEGUI::TreeItem* pare
 	}
 	mTypes[typeInfo] = item;
 
-	
+
 	if (addRecursive) {
 		const Eris::TypeInfoSet children = typeInfo->getChildren();
 		Eris::TypeInfoSet::const_iterator I = children.begin();
 		Eris::TypeInfoSet::const_iterator I_end = children.end();
-		
+
 		for (;I != I_end; ++I)
 		{
 			addToTree(*I, item, addRecursive);
 		}
 	}
-	
+
 }
 
 void MakeEntityWidget::boundAType(Eris::TypeInfo* typeInfo)
 {
 
 	Eris::TypeInfo* gameEntityType = mConn->getTypeService()->getTypeByName("game_entity");
-	
+
 	if (gameEntityType != 0 && typeInfo->isA(gameEntityType)) {
 		if (typeInfo->getParents().size()) {
 			Eris::TypeInfo* parentType = *typeInfo->getParents().begin();
 			CEGUI::TreeItem* parent = mTypeTree->findFirstItemWithText(parentType->getName());
 			addToTree(typeInfo, parent);
 		}
-		
-	}	
+
+	}
 
 }
 
@@ -224,7 +224,7 @@ void MakeEntityWidget::runCommand(const std::string &command, const std::string 
 // 	} else if (command == "testarea") {
 // 		Mercator::Area* area = new Mercator::Area(7, false);
 // 		WFMath::Polygon<2> poly;
-// 
+//
 // 		float  points[] = { -26,-62, -36,-31, -26,-14, 2,-1, 22, 40, 132,122, 140,127, 144.5, 146.5, 169, 153, 169,155, 142.5,148.5, 138,129, 130,124, 18,40, -2, 0, -28,-12, -38,-29, -29,-62 };
 // 	//	float  points[] = { -26,-62, -36,-31, -26,-14, 2,-1, 22, 40 };
 // 		for (int i = 0; i < 36; i += 2) {
@@ -233,9 +233,9 @@ void MakeEntityWidget::runCommand(const std::string &command, const std::string 
 // 		}
 // 		if (poly.numCorners()) {
 //     		area->setShape(poly);
-// 			
+//
 // 		}
-// 
+//
 // 		EmberOgre::getSingleton().getTer rain Gene rator()->addArea(area); // name splitted up to not appear while grepping
 
 	} else {
@@ -268,7 +268,7 @@ bool MakeEntityWidget::typeTree_ItemSelectionChanged(const CEGUI::EventArgs& arg
 
 bool MakeEntityWidget::createButton_Click(const CEGUI::EventArgs& args)
 {
-	
+
 	Eris::TypeInfo* typeInfo = getSelectedTypeInfo();
 	if (typeInfo) {
 		createEntityOfType(typeInfo);
@@ -308,18 +308,18 @@ void MakeEntityWidget::createEntityOfType(Eris::TypeInfo* typeinfo)
 	if (avatar->getType()->isA(mConn->getTypeService()->getTypeByName("creator"))) {
 		c->setTo(avatar->getId());
 	}
-	
+
 	Atlas::Message::MapType msg;
 	msg["loc"] = avatar->getLocation()->getId();
-	
+
 	Ogre::Vector3 o_vector(2,0,0);
 	Ogre::Vector3 o_pos = avatar->getSceneNode()->getPosition() + (avatar->getSceneNode()->getOrientation() * o_vector);
-	
+
 // 	WFMath::Vector<3> vector(0,2,0);
 // 	WFMath::Point<3> pos = avatar->getPosition() + (avatar->getOrientation() * vector);
-	WFMath::Point<3> pos = Ogre2Atlas(o_pos);
+	WFMath::Point<3> pos = Convert::toWF<WFMath::Point<3> >(o_pos);
 	WFMath::Quaternion orientation = avatar->getOrientation();
-	
+
 	msg["pos"] = pos.toAtlas();
 	if (mName->getText().length() > 0) {
 		msg["name"] = mName->getText().c_str();
@@ -328,7 +328,7 @@ void MakeEntityWidget::createEntityOfType(Eris::TypeInfo* typeinfo)
 	}
 	msg["parents"] = Atlas::Message::ListType(1, typeinfo->getName());
 	msg["orientation"] = orientation.toAtlas();
-	
+
 	c->setArgsAsList(Atlas::Message::ListType(1, msg));
 	mConn->send(c);
 	std::stringstream ss;

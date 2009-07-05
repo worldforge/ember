@@ -49,7 +49,7 @@ unsigned int PolygonPoint::sPointCounter = 0;
 PolygonPoint::PolygonPoint(Polygon& polygon, const WFMath::Point<2>& localPosition)
 : mPolygon(polygon), mUserObject(*this), mNode(0), mEntity(0)
 {
-	Ogre::Vector3 nodePosition = Atlas2Ogre(localPosition);
+	Ogre::Vector3 nodePosition = Convert::toOgre<Ogre::Vector3>(localPosition);
 	if (polygon.getPositionProvider()) {
 		nodePosition.y = polygon.getPositionProvider()->getHeightForPosition(localPosition);
 	}
@@ -116,7 +116,7 @@ void PolygonPoint::setLocalPosition(const WFMath::Point<2>& position)
 	mNode->setPosition(position.x(), mNode->getPosition().y, -position.y());
 	if (mPolygon.getPositionProvider()) {
 		Ogre::Vector3 pos = getNode()->getPosition();
-		pos.y = mPolygon.getPositionProvider()->getHeightForPosition(Ogre2Atlas_TerrainPosition(pos));
+		pos.y = mPolygon.getPositionProvider()->getHeightForPosition(Convert::toWF<WFMath::Point<2> >(pos));
 		getNode()->setPosition(pos);
 	}
 }
@@ -142,11 +142,11 @@ void PolygonPoint::setLocalPosition(const WFMath::Point<2>& position)
 
 void PolygonPoint::translate(const WFMath::Vector<2>& translation)
 {
-	Ogre::Vector2 ogrePos = Atlas2Ogre(translation);
+	Ogre::Vector2 ogrePos = Convert::toOgre(translation);
 	getNode()->translate(Ogre::Vector3(ogrePos.x, 0, ogrePos.y));
 	if (mPolygon.getPositionProvider()) {
 		Ogre::Vector3 pos = getNode()->getPosition();
-		pos.y = mPolygon.getPositionProvider()->getHeightForPosition(Ogre2Atlas_TerrainPosition(pos));
+		pos.y = mPolygon.getPositionProvider()->getHeightForPosition(Convert::toWF<WFMath::Point<2> >(pos));
 		getNode()->setPosition(pos);
 	}
 	mPolygon.updateRender();

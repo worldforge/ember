@@ -392,7 +392,7 @@ void EmberPhysicalEntity::attachToPointOnModel(const std::string& point, Model::
 		for (unsigned int i = 0; i < numContained(); ++i)
 		{
 			EmberEntity* entity = static_cast<EmberEntity*>(getContained(i));
-			entity->attachToPointOnModel(point, model, getScaleNode()->getOrientation() * orientation* Atlas2Ogre(entity->getOrientation()), getScaleNode()->getPosition() + offset + Atlas2Ogre(entity->getPosition()));
+			entity->attachToPointOnModel(point, model, getScaleNode()->getOrientation() * orientation* Convert::toOgre(entity->getOrientation()), getScaleNode()->getPosition() + offset + Convert::toOgre(entity->getPosition()));
 		}
 
 	}
@@ -587,8 +587,8 @@ void EmberPhysicalEntity::onChildAdded(Entity *e)
 		if (mModelAttachedTo)
 		{
 			EmberEntity* emberEntity = static_cast<EmberEntity*> (e);
-	//		entity->attachToPointOnModel(point, model, getScaleNode()->getOrientation() * orientation* Atlas2Ogre(entity->getOrientation()), getScaleNode()->getPosition() + offset + Atlas2Ogre(entity->getPosition()));
-			emberEntity->attachToPointOnModel(mModelAttachedTo->attachPoint, mModelAttachedTo->model, Atlas2Ogre(getOrientation()) * mModelAttachedTo->orientation * Atlas2Ogre(emberEntity->getOrientation()), Atlas2Ogre(getPosition()) + mModelAttachedTo->offset + Atlas2Ogre(emberEntity->getPosition()));
+	//		entity->attachToPointOnModel(point, model, getScaleNode()->getOrientation() * orientation* Convert::toOgre(entity->getOrientation()), getScaleNode()->getPosition() + offset + Convert::toOgre(entity->getPosition()));
+			emberEntity->attachToPointOnModel(mModelAttachedTo->attachPoint, mModelAttachedTo->model, Convert::toOgre(getOrientation()) * mModelAttachedTo->orientation * Convert::toOgre(emberEntity->getOrientation()), Convert::toOgre(getPosition()) + mModelAttachedTo->offset + Convert::toOgre(emberEntity->getPosition()));
 		}
 	}
 
