@@ -29,7 +29,7 @@
 #include "GUIManager.h"
 #include "terrain/TerrainArea.h"
 #include "terrain/TerrainMod.h"
-#include "MathConverter.h"
+#include "Convert.h"
 
 #include "EmberOgre.h"
 #include <OgreWireBoundingBox.h>

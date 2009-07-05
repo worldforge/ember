@@ -37,7 +37,7 @@
 #include "pagedgeometry/include/PassiveEntityPage.h"
 #include "pagedgeometry/include/BatchedGeometry.h"
 
-#include "../MathConverter.h"
+#include "../Convert.h"
 #include "../AvatarCamera.h"
 #include "../EmberOgre.h"
 #include "../terrain/TerrainInfo.h"

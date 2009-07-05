@@ -31,7 +31,7 @@
 #include <wfmath/vector.h>
 #include <wfmath/polygon.h>
 
-#include "../MathConverter.h"
+#include "../Convert.h"
 #include "../EmberOgre.h"
 #include "framework/LoggingInstance.h"
 

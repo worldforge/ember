@@ -42,7 +42,7 @@
 #include "EmberOgre.h"
 #include "Avatar.h"
 #include "AvatarCamera.h"
-#include "MathConverter.h"
+#include "Convert.h"
 
 #include <Mercator/Shader.h>
 #include <Mercator/FillShader.h>

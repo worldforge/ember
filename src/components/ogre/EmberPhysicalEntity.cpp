@@ -38,7 +38,7 @@
 #include "EmberEntityFactory.h"
 #include "WorldEmberEntity.h"
 
-#include "MathConverter.h"
+#include "Convert.h"
 #include "EmberEntityActionCreator.h"
 
 #include "MousePicker.h"

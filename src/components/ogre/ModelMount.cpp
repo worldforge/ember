@@ -27,7 +27,7 @@
 #include "ModelMount.h"
 #include <Ogre.h>
 #include "components/ogre/model/Model.h"
-#include "MathConverter.h"
+#include "Convert.h"
 
 namespace EmberOgre {
 

@@ -42,7 +42,7 @@
 #include <wfmath/atlasconv.h>
 #include <wfmath/MersenneTwister.h>
 #include <Eris/TypeInfo.h>
-#include "../MathConverter.h"
+#include "../Convert.h"
 
 #include "../EmberOgre.h"
 #include "../Avatar.h"

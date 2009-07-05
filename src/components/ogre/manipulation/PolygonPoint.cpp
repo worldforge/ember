@@ -31,7 +31,7 @@
 
 #include "MovementAdapter.h"
 
-#include "../MathConverter.h"
+#include "../Convert.h"
 #include "../MousePicker.h"
 #include "framework/LoggingInstance.h"
 

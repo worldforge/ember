@@ -29,7 +29,7 @@
 #include "framework/LoggingInstance.h"
 
 #include "../EmberOgre.h"
-#include "../MathConverter.h"
+#include "../Convert.h"
 #include "../terrain/TerrainArea.h"
 #include "../terrain/TerrainShader.h"
 #include "../terrain/TerrainLayerDefinition.h"

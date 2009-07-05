@@ -36,7 +36,7 @@
 #include "framework/LoggingInstance.h"
 #include "services/config/ConfigService.h"
 
-#include "../MathConverter.h"
+#include "../Convert.h"
 #include "../EmberOgre.h"
 #include "../EmberEntity.h"
 #include "../EmberEntityFactory.h"

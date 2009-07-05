@@ -30,7 +30,7 @@
 #include "TerrainPageSurfaceCompiler.h"
 #include "TerrainPageGeometry.h"
 #include "TerrainLayerDefinition.h"
-#include "../MathConverter.h"
+#include "../Convert.h"
 #include <OgreMaterialManager.h>
 #include <OgreRoot.h>
 #include <OgreSceneManager.h>

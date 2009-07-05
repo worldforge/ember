@@ -35,7 +35,7 @@
 #include "ITerrainPageBridge.h"
 
 #include "../EmberOgre.h"
-#include "../MathConverter.h"
+#include "../Convert.h"
 
 #include "../environment/Foliage.h"
 #include "TerrainGenerator.h"

@@ -29,7 +29,7 @@
 #include "Polygon.h"
 #include "services/input/Input.h"
 
-#include "../MathConverter.h"
+#include "../Convert.h"
 #include <OgreSceneNode.h>
 
 namespace EmberOgre {

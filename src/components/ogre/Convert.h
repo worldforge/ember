@@ -1,6 +1,6 @@
 /*
 -----------------------------------------------------------------------------
-MathConverter.h by Miguel Guzman Miranda (Aglanor)
+Convert.h by Miguel Guzman Miranda (Aglanor)
 Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
 
 Copyright � 2003 The Worldforge Project (http://www.worldforge.org)
@@ -12,7 +12,7 @@ See file COPYING for details.
 -----------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------
-Filename:    MathConverter.h
+Filename:    Convert.h
 Description:	Point, Vector and Quaternion converter
 	for world-centric coordinates (Atlas-wfmath like)
 	to/from screen-centric coordinates (Ogre like).

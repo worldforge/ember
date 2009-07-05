@@ -35,7 +35,7 @@
 
 #include "components/ogre/jesus/Jesus.h"
 
-#include "components/ogre/MathConverter.h"
+#include "components/ogre/Convert.h"
 
 #include "components/ogre/widgets/MovableObjectRenderer.h"
 #include "components/ogre/widgets/OgreEntityRenderer.h"

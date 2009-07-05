@@ -27,7 +27,7 @@
 #include "FoliageLoader.h"
 #include "../terrain/TerrainLayerDefinition.h"
 
-#include "../MathConverter.h"
+#include "../Convert.h"
 #include "../EmberOgre.h"
 #include "../terrain/PlantAreaQuery.h"
 #include "../terrain/TerrainGenerator.h"

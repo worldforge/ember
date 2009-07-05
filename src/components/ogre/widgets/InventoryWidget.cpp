@@ -35,7 +35,7 @@
 #include "../EmberEntityFactory.h"
 #include "../EmberOgre.h"
 #include "../Avatar.h"
-#include "../MathConverter.h"
+#include "../Convert.h"
 #include "../GUIManager.h"
 #include <Eris/TypeInfo.h>
 

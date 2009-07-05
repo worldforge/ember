@@ -29,7 +29,7 @@
 #include "ModelRenderer.h"
 
 #include "../EmberOgre.h"
-#include "../MathConverter.h"
+#include "../Convert.h"
 #include "../Avatar.h"
 #include "../AvatarEmberEntity.h"
 #include "../EmberEntity.h"

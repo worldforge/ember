@@ -27,7 +27,7 @@
 #include "SnapToMovement.h"
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/EmberEntityUserObject.h"
-#include "components/ogre/MathConverter.h"
+#include "components/ogre/Convert.h"
 
 #include <wfmath/rotbox.h>
 #include <Eris/Entity.h>

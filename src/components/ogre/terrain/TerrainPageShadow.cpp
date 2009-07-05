@@ -28,7 +28,7 @@
 
 #include "TerrainPage.h"
 #include "TerrainPageGeometry.h"
-#include "../MathConverter.h"
+#include "../Convert.h"
 
 #include <OgreColourValue.h>
 #include <OgreRoot.h>

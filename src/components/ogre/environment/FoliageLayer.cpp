@@ -27,7 +27,7 @@
 #include "FoliageLayer.h"
 #include "pagedgeometry/include/PagedGeometry.h"
 #include "pagedgeometry/include/PropertyMaps.h"
-#include "../MathConverter.h"
+#include "../Convert.h"
 #include "../EmberOgre.h"
 #include "../terrain/PlantAreaQuery.h"
 #include "../terrain/TerrainGenerator.h"

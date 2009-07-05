@@ -31,7 +31,7 @@
 #include "../AvatarCamera.h"
 #include "../AvatarTerrainCursor.h"
 #include "../GUIManager.h"
-#include "../MathConverter.h"
+#include "../Convert.h"
 #include <OgreRoot.h>
 //#include "../input/Input.h"
 

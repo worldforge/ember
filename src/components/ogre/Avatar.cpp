@@ -42,7 +42,7 @@
 #include "model/Model.h"
 #include "model/SubModel.h"
 #include "EmberOgre.h"
-#include "MathConverter.h"
+#include "Convert.h"
 #include "services/input/Input.h"
 
 #include <Eris/Avatar.h>

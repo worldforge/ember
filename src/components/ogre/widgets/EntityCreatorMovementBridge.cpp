@@ -28,7 +28,7 @@
 #include "EntityCreator.h"
 #include "components/ogre/manipulation/DetachedEntity.h"
 #include <OgreSceneNode.h>
-#include "../MathConverter.h"
+#include "../Convert.h"
 
 namespace EmberOgre {
 

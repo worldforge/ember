@@ -30,7 +30,7 @@
 #include "EmberPagingSceneManager.h"
 #include "EmberTerrainPageBridge.h"
 
-#include "MathConverter.h"
+#include "Convert.h"
 #include "EmberOgre.h"
 #include "terrain/TerrainPage.h"
 #include "terrain/TerrainGenerator.h"

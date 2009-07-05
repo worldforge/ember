@@ -42,7 +42,7 @@ noinst_HEADERS = AttributeObserver.h Avatar.h AvatarCamera.h AvatarController.h 
 	EmberEntityHideModelAction.h EmberEntityModelAction.h EmberEntityPartAction.h \
 	EmberEntityUserObject.h EmberOgre.h EmberOgreFileSystem.h EmberOgrePrerequisites.h \
 	EmberPhysicalEntity.h EntityWorldPickListener.h GUICEGUIAdapter.h GUIManager.h \
-	IWorldPickListener.h MathConverter.h MediaUpdater.h MeshCollisionDetector.h \
+	IWorldPickListener.h Convert.h MediaUpdater.h MeshCollisionDetector.h \
 	MeshSerializerListener.h ModelMount.h MotionManager.h MousePicker.h OgreIncludes.h OgreInfo.h \
 	OgreLogObserver.h OgreResourceLoader.h OgreResourceProvider.h OgreSetup.h \
 	 ShaderManager.h ShadowCameraSetup.h \

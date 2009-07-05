@@ -36,7 +36,7 @@
 #include <Ogre.h>
 #include <wfmath/axisbox.h>
 #include <wfmath/atlasconv.h>
-#include "../MathConverter.h"
+#include "../Convert.h"
 #include "services/config/ConfigService.h"
 
 #include "framework/osdir.h"
