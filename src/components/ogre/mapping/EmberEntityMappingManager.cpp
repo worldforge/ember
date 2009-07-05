@@ -47,8 +47,8 @@ EmberEntityMappingManager::EmberEntityMappingManager() : mEntityMappingManager()
     mLoadOrder = 300.0f;
     mResourceType = "EntityMappingDefinition";
 
-	mScriptPatterns.push_back("*.modelmap");
-	mScriptPatterns.push_back("*.modelmap.xml");
+	mScriptPatterns.push_back("*.entitymap");
+	mScriptPatterns.push_back("*.entitymap.xml");
 	Ogre::ResourceGroupManager::getSingleton()._registerScriptLoader(this);
 
 	Ogre::ResourceGroupManager::getSingleton()._registerResourceManager(mResourceType, this);

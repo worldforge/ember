@@ -34,8 +34,8 @@ namespace Mapping {
 
 
 
-XMLEntityMappingDefinitionSerializer::XMLEntityMappingDefinitionSerializer(EntityMappingManager& modelMappingManager)
-: mEntityMappingManager(modelMappingManager)
+XMLEntityMappingDefinitionSerializer::XMLEntityMappingDefinitionSerializer(EntityMappingManager& entitymappingManager)
+: mEntityMappingManager(entitymappingManager)
 {
 }
 
@@ -51,8 +51,8 @@ void XMLEntityMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocumen
 
 	if (rootElem) {
 
-		for (TiXmlElement* smElem = rootElem->FirstChildElement("modelmapping");
-				smElem != 0; smElem = smElem->NextSiblingElement("modelmapping"))
+		for (TiXmlElement* smElem = rootElem->FirstChildElement("entitymapping");
+				smElem != 0; smElem = smElem->NextSiblingElement("entitymapping"))
 		{
 			const char* tmp =  smElem->Attribute("name");
 			if (!tmp) {
@@ -110,11 +110,11 @@ void XMLEntityMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocumen
 			}
 		}
 
-		///Check for automodelmapping elements, which allow for a quick mapping between a entity type and a model.
-		///format: <automodelmapping name="oak">
-		///or: <automodelmapping name="oak" modelname="oak_1">
-		for (TiXmlElement* smElem = rootElem->FirstChildElement("automodelmapping");
-				smElem != 0; smElem = smElem->NextSiblingElement("automodelmapping"))
+		///Check for autoentitymapping elements, which allow for a quick mapping between a entity type and a model.
+		///format: <autoentitymapping name="oak">
+		///or: <autoentitymapping name="oak" modelname="oak_1">
+		for (TiXmlElement* smElem = rootElem->FirstChildElement("autoentitymapping");
+				smElem != 0; smElem = smElem->NextSiblingElement("autoentitymapping"))
 		{
 			const char* tmp =  smElem->Attribute("name");
 			if (!tmp) {
