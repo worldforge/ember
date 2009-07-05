@@ -30,8 +30,6 @@ using namespace Ember::EntityMapping;
 using namespace Ember::EntityMapping::Definitions;
 namespace EmberOgre {
 
-namespace Model {
-
 namespace Mapping {
 
 
@@ -245,8 +243,6 @@ void XMLEntityMappingDefinitionSerializer::parseActionElement(EntityMappingDefin
 	}
 
 }
-}
-
 }
 
 }

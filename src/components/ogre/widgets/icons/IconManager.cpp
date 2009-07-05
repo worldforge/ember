@@ -33,7 +33,7 @@
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelDefinitionManager.h"
 #include "components/entitymapping/EntityMappingManager.h"
-#include "components/ogre/model/mapping/EmberEntityMappingManager.h"
+#include "components/ogre/mapping/EmberEntityMappingManager.h"
 #include "components/entitymapping/EntityMapping.h"
 #include "components/entitymapping/Definitions/EntityMappingDefinition.h"
 #include "components/entitymapping/IActionCreator.h"
@@ -107,7 +107,7 @@ Icon* IconManager::getIcon(int pixelWidth, EmberEntity* entity)
 			return mIconStore.getIcon(key);
 		} else {
 			IconActionCreator actionCreator(*entity);
-			std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(::EmberOgre::Model::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, &actionCreator));
+			std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(::EmberOgre::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, &actionCreator));
 			std::string modelName;
 			if (modelMapping.get()) {
 				modelMapping->initialize();
@@ -172,7 +172,7 @@ Icon* IconManager::getIcon(int pixelWidth, Eris::TypeInfo* erisType)
 				if (view) {
 					Eris::Entity dummyEntity("-1", erisType, view);
 					IconActionCreator actionCreator(dummyEntity);
-					std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(::EmberOgre::Model::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(&dummyEntity, &actionCreator));
+					std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(::EmberOgre::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(&dummyEntity, &actionCreator));
 					std::string modelName;
 					if (modelMapping.get()) {
 						modelMapping->initialize();

@@ -13,4 +13,3 @@ noinst_HEADERS = Action.h AnimationSet.h Model.h ModelBackgroundLoader.h \
 	ModelDefinition.h ModelDefinitionAtlasComposer.h ModelDefinitionManager.h ModelPart.h \
 	ParticleSystem.h ParticleSystemBinding.h SubModel.h SubModelPart.h \
 	XMLModelDefinitionSerializer.h
-SUBDIRS = mapping

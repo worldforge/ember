@@ -41,7 +41,7 @@
 #include "model/Model.h"
 #include "model/ModelDefinition.h"
 #include "model/ModelDefinitionManager.h"
-#include "model/mapping/EmberEntityMappingManager.h"
+#include "mapping/EmberEntityMappingManager.h"
 
 #include "framework/Tokeniser.h"
 
@@ -110,7 +110,7 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Root
 		///assume that it's not physical until we have a model defintion which don't want to hide the model
 		///In the future we want to refactor the way we deal with EmberEntity and EmberPhysicalEntity, so that we only have one class (EmberEntity) which in turn holds a reference to a graphical representation instance. Until then we have to do with this though.
 		bool isPhysical = false;
-		Definitions::EntityMappingDefinition* mappingDef(::EmberOgre::Model::Mapping::EmberEntityMappingManager::getSingleton().getManager().getDefinitionForType(type));
+		Definitions::EntityMappingDefinition* mappingDef(::EmberOgre::Mapping::EmberEntityMappingManager::getSingleton().getManager().getDefinitionForType(type));
 		if (mappingDef) {
 			///we have a mapping defintion, so it's probably physical, lets just see that the first action isn't to hide the model
 			isPhysical = true;

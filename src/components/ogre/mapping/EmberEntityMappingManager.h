@@ -33,8 +33,6 @@
 
 namespace EmberOgre {
 
-namespace Model {
-
 namespace Mapping {
 
 
@@ -93,7 +91,6 @@ inline Ember::EntityMapping::EntityMappingManager& EmberEntityMappingManager::ge
 	return mEntityMappingManager;
 }
 
-}
 }
 }
 

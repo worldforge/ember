@@ -29,7 +29,7 @@
 #include "model/ParticleSystemBinding.h"
 #include "model/Action.h"
 
-#include "model/mapping/EmberEntityMappingManager.h"
+#include "mapping/EmberEntityMappingManager.h"
 #include "components/entitymapping/EntityMapping.h"
 #include "components/entitymapping/EntityMappingManager.h"
 
@@ -312,7 +312,7 @@ void EmberPhysicalEntity::createEntityMapping()
 	delete mEntityMapping;
 	///the creator binds the model mapping and this instance together by creating instance of EmberEntityModelAction and EmberEntityPartAction which in turn calls the setModel(..) and show/hideModelPart(...) methods.
 	EmberEntityActionCreator creator(*this);
-	mEntityMapping = ::EmberOgre::Model::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(this, &creator);
+	mEntityMapping = ::EmberOgre::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(this, &creator);
 }
 
 void EmberPhysicalEntity::connectEntities()

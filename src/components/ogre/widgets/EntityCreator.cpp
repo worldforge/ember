@@ -54,7 +54,7 @@
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelDefinitionManager.h"
 #include "components/entitymapping/EntityMappingManager.h"
-#include "components/ogre/model/mapping/EmberEntityMappingManager.h"
+#include "components/ogre/mapping/EmberEntityMappingManager.h"
 #include "components/entitymapping/EntityMapping.h"
 #include "components/entitymapping/Definitions/EntityMappingDefinition.h"
 #include "components/entitymapping/IActionCreator.h"
@@ -197,7 +197,7 @@ void EntityCreator::createEntity()
 
 		// Making model from temporary entity
 		EntityCreatorActionCreator actionCreator(*this);
-		std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(Model::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(mEntity, &actionCreator));
+		std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(mEntity, &actionCreator));
 		if (modelMapping.get()) {
 			modelMapping->initialize();
 		}

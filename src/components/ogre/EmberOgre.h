@@ -65,11 +65,12 @@ class TerrainLayerDefinitionManager;
 
 class SoundDefinitionManager;
 
+namespace Mapping {
+	class EmberEntityMappingManager;
+}
+
 namespace Model {
 	class ModelDefinitionManager;
-	namespace Mapping {
-		class EmberEntityMappingManager;
-	}
 }
 
 class CameraRotator;
@@ -447,7 +448,7 @@ protected:
 	/**
 	 * @brief Handles all model mappings.
 	 */
-	Model::Mapping::EmberEntityMappingManager* mEntityMappingManager;
+	Mapping::EmberEntityMappingManager* mEntityMappingManager;
 
 	/**
 	 * @brief Responsible for handling all terrain layers.

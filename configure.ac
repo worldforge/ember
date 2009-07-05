@@ -518,7 +518,7 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/environment/pagedgeometry/Makefile
 		 src/components/ogre/environment/Makefile
 		 src/components/ogre/model/Makefile
-		 src/components/ogre/model/mapping/Makefile
+		 src/components/ogre/mapping/Makefile
 		 src/components/ogre/modeldefinitions/Makefile
 		 src/components/ogre/sounddefinitions/Makefile
 		 src/components/ogre/carpenter/Makefile

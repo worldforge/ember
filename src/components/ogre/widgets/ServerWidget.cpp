@@ -63,7 +63,7 @@
 #include "components/entitymapping/Definitions/MatchDefinition.h"
 #include "components/entitymapping/Definitions/CaseDefinition.h"
 #include "components/entitymapping/Definitions/ActionDefinition.h"
-#include "components/ogre/model/mapping/EmberEntityMappingManager.h"
+#include "components/ogre/mapping/EmberEntityMappingManager.h"
 
 
 using namespace CEGUI;
@@ -542,7 +542,7 @@ bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args)
 			Eris::TypeService* typeService = Ember::EmberServices::getSingletonPtr()->getServerService()->getConnection()->getTypeService();
  			Eris::TypeInfo* erisType = typeService->getTypeByName(type);
  			if (erisType) {
-				const Ember::EntityMapping::Definitions::EntityMappingDefinition* definition = Model::Mapping::EmberEntityMappingManager::getSingleton().getManager().getDefinitionForType(erisType);
+				const Ember::EntityMapping::Definitions::EntityMappingDefinition* definition = Mapping::EmberEntityMappingManager::getSingleton().getManager().getDefinitionForType(erisType);
 				if (definition) {
 					Ember::EntityMapping::Definitions::MatchDefinition::CaseStore::const_iterator first = definition->getRoot().getCases().begin();
 					if (first != definition->getRoot().getCases().end()) {

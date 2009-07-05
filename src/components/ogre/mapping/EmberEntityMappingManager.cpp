@@ -36,11 +36,9 @@
 using namespace Ember::EntityMapping;
 
 
-template<> EmberOgre::Model::Mapping::EmberEntityMappingManager* Ember::Singleton<EmberOgre::Model::Mapping::EmberEntityMappingManager>::ms_Singleton = 0;
+template<> EmberOgre::Mapping::EmberEntityMappingManager* Ember::Singleton<EmberOgre::Mapping::EmberEntityMappingManager>::ms_Singleton = 0;
 
 namespace EmberOgre {
-
-namespace Model {
 
 namespace Mapping {
 
@@ -93,8 +91,6 @@ void EmberEntityMappingManager::ServerService_GotConnection(Eris::Connection* co
 
 
 
-
-}
 
 }
 

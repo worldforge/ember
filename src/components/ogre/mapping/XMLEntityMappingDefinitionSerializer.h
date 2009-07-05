@@ -34,8 +34,6 @@
 
 namespace EmberOgre {
 
-namespace Model {
-
 namespace Mapping {
 
 /**
@@ -62,8 +60,6 @@ protected:
 
 
 };
-
-}
 
 }
 

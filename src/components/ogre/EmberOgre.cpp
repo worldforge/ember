@@ -103,7 +103,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManagerAdapter.h"
 #include "model/ModelDefinitionManager.h"
 #include "model/ModelDefinition.h"
-#include "model/mapping/EmberEntityMappingManager.h"
+#include "mapping/EmberEntityMappingManager.h"
 
 #include "ogreopcode/include/OgreCollisionManager.h"
 #include "OpcodeCollisionDetectorVisualizer.h"
@@ -363,7 +363,7 @@ bool EmberOgre::setup()
 	///Create the model definition manager
 	mModelDefinitionManager = new Model::ModelDefinitionManager();
 
-	mEntityMappingManager = new Model::Mapping::EmberEntityMappingManager();
+	mEntityMappingManager = new Mapping::EmberEntityMappingManager();
 
 	mTerrainLayerManager = new Terrain::TerrainLayerDefinitionManager();
 

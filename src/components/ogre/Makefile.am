@@ -1,6 +1,6 @@
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
 SUBDIRS = SceneManagers cegui environment gui  \
-	manipulation model modeldefinitions sounddefinitions scripting sound terrain widgets
+	manipulation model modeldefinitions sounddefinitions scripting sound terrain widgets mapping
 #carpenter jesus ogreopcode
 
 noinst_LTLIBRARIES = libEmberOgre.la
@@ -10,7 +10,7 @@ noinst_LTLIBRARIES = libEmberOgre.la
 libEmberOgre_la_LIBADD = \
 	$(top_builddir)/src/components/ogre/SceneManagers/EmberPagingSceneManager/src/libEmberPagingSceneManager.la \
 	$(top_builddir)/src/components/ogre/environment/libEnvironment.la $(top_builddir)/src/components/ogre/manipulation/libmanipulation.la \
-	$(top_builddir)/src/components/ogre/model/libModel.la $(top_builddir)/src/components/ogre/model/mapping/libMapping.la \
+	$(top_builddir)/src/components/ogre/model/libModel.la $(top_builddir)/src/components/ogre/mapping/libMapping.la \
 	$(top_builddir)/src/components/ogre/scripting/bindings/lua/helpers/liblua_Helpers.la \
 	$(top_builddir)/src/components/ogre/scripting/bindings/lua/liblua_EmberOgre.la \
 	$(top_builddir)/src/components/ogre/scripting/bindings/lua/ogre/liblua_Ogre.la $(top_builddir)/src/components/ogre/scripting/libScripting.la \
