@@ -723,19 +723,20 @@ void GrassLoader<TGrassLayer>::frameUpdate()
 
 		layer->_updateShaders();
 
-		Ogre::GpuProgramParametersSharedPtr params = layer->material->getTechnique(0)->getPass(0)->getVertexProgramParameters();
-		if (layer->animate){
-			//Increment animation frame
-			layer->waveCount += ellapsed * (layer->animSpeed * Ogre::Math::PI);
-			if (layer->waveCount > Ogre::Math::PI*2) layer->waveCount -= Ogre::Math::PI*2;
+		if (layer->material->getNumSupportedTechniques()) {
+			Ogre::GpuProgramParametersSharedPtr params = layer->material->getSupportedTechnique(0)->getPass(0)->getVertexProgramParameters();
+			if (!params.isNull() && layer->animate){
+				//Increment animation frame
+				layer->waveCount += ellapsed * (layer->animSpeed * Ogre::Math::PI);
+				if (layer->waveCount > Ogre::Math::PI*2) layer->waveCount -= Ogre::Math::PI*2;
 
-			//Set vertex shader parameters
-			params->setNamedConstant("time", layer->waveCount);
-			params->setNamedConstant("frequency", layer->animFreq);
+				//Set vertex shader parameters
+				params->setNamedConstant("time", layer->waveCount);
+				params->setNamedConstant("frequency", layer->animFreq);
 
-			Ogre::Vector3 direction = windDir * layer->animMag;
-			params->setNamedConstant("direction", Ogre::Vector4(direction.x, direction.y, direction.z, 0));
-
+				Ogre::Vector3 direction = windDir * layer->animMag;
+				params->setNamedConstant("direction", Ogre::Vector4(direction.x, direction.y, direction.z, 0));
+			}
 		}
 	}
 }
