@@ -3,9 +3,9 @@ Copyright (c) 2006 John Judnich
 
 This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
 Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
-    1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
-    2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
-    3. This notice may not be removed or altered from any source distribution.
+	1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
+	2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
+	3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------------*/
 
 //PagedGeometry.h
@@ -22,7 +22,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 using namespace Ogre;
 using namespace std;
 
-namespace PagedGeometry {
+namespace Forests {
 
 //-------------------------------------------------------------------------------------
 PagedGeometry::PagedGeometry(Camera* cam, const Real pageSize)
@@ -63,6 +63,8 @@ PagedGeometry::PagedGeometry(Camera* cam, const Real pageSize)
 	//Misc.
 	pageLoader = NULL;
 	geometryAllowedVisible = true;
+	tempdir=""; // empty for current working directory
+	shadersEnabled = true; // enable shaders by default
 }
 
 PagedGeometry::~PagedGeometry()
@@ -75,6 +77,11 @@ PagedGeometry::~PagedGeometry()
 
 	//Remove all page managers and the geometry associated with them
 	removeDetailLevels();
+}
+
+void PagedGeometry::setTempDir(Ogre::String dir)
+{
+   tempdir = dir;
 }
 
 void PagedGeometry::setPageLoader(PageLoader *loader)
@@ -260,9 +267,16 @@ void PagedGeometry::reloadGeometryPage(const Vector3 &point)
 #endif
 
 	std::list<GeometryPageManager *>::iterator it;
-	for (it = managerList.begin(); it != managerList.end(); ++it){
+	for (it = managerList.begin(); it != managerList.end(); ++it)
+	{
 		GeometryPageManager *mgr = *it;
-		mgr->reloadGeometryPage(point);
+		mgr->reloadGeometryPage(
+#ifdef PAGEDGEOMETRY_ALTERNATE_COORDSYSTEM
+			_convertToLocal(point)
+#else
+			point
+#endif
+			);
 	}
 }
 
@@ -271,14 +285,17 @@ void PagedGeometry::reloadGeometryPages(const Ogre::Vector3 &center, Real radius
 	if (!pageLoader)
 		return;
 
-#ifdef PAGEDGEOMETRY_ALTERNATE_COORDSYSTEM
-	center = _convertToLocal(center);
-#endif
-
 	std::list<GeometryPageManager *>::iterator it;
-	for (it = managerList.begin(); it != managerList.end(); ++it){
+	for (it = managerList.begin(); it != managerList.end(); ++it)
+	{
 		GeometryPageManager *mgr = *it;
-		mgr->reloadGeometryPages(center, radius);
+		mgr->reloadGeometryPages(
+#ifdef PAGEDGEOMETRY_ALTERNATE_COORDSYSTEM
+			_convertToLocal(center)
+#else
+			center
+#endif
+			, radius);
 	}
 }
 
@@ -367,7 +384,7 @@ float PagedGeometry::getCustomParam(string entity, string paramName, float defau
 
 float PagedGeometry::getCustomParam(string paramName, float defaultParamValue) const
 {
-	map<string, float>::const_iterator it;
+	std::map<string, float>::const_iterator it;
 	it = customParam.find(paramName);
 	if (it != customParam.end()) {
 		float x = it->second;
@@ -1022,6 +1039,8 @@ GeometryPage::GeometryPage()
 	_inactiveTime = 0; _xIndex = _zIndex = 0; 
 	_centerPoint = Ogre::Vector3::ZERO; 
 	_userData = NULL;
+	mHasQueryFlag = false;
+	mQueryFlag = 0;
 }
 
 void GeometryPage::addEntityToBoundingBox(Ogre::Entity *ent, const Ogre::Vector3 &position, const Ogre::Quaternion &rotation, const Ogre::Vector3 &scale)

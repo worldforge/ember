@@ -18,7 +18,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreQuaternion.h>
 using namespace Ogre;
 
-namespace PagedGeometry {
+namespace Forests {
 
 TreeLoader3D::TreeLoader3D(PagedGeometry *geom, const TBounds &bounds)
 {

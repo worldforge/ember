@@ -24,7 +24,7 @@
 #define EMBEROGRE_ENVIRONMENTFOLIAGELAYER_H
 
 #include "pagedgeometry/include/GrassLoader.h"
-namespace PagedGeometry
+namespace Forests
 {
 	class PagedGeometry;
 	class ColorMap;
@@ -45,10 +45,10 @@ namespace Environment {
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class FoliageLayer : public PagedGeometry::GrassLayerBase
+class FoliageLayer : public Forests::GrassLayerBase
 {
 public:
-    FoliageLayer(PagedGeometry::PagedGeometry *geom, PagedGeometry::GrassLoader<FoliageLayer> *ldr);
+    FoliageLayer(Forests::PagedGeometry *geom, Forests::GrassLoader<FoliageLayer> *ldr);
 
     virtual ~FoliageLayer();
 	/**
@@ -64,12 +64,12 @@ public:
 	void configure(const Terrain::TerrainLayerDefinition* terrainLayerDefinition, const Terrain::TerrainFoliageDefinition* foliageDefinition);
 	
 protected: 
-	friend class PagedGeometry::GrassLoader<FoliageLayer>;
+	friend class Forests::GrassLoader<FoliageLayer>;
 
 	//Used by GrassLoader::loadPage() - populates an array with grass.
 	//Returns the final number of grasses, which will always be <= grassCount
-	virtual unsigned int _populateGrassList(PagedGeometry::PageInfo page, float *posBuff, unsigned int grassCount);
-	PagedGeometry::GrassLoader<FoliageLayer> *parent;
+	virtual unsigned int _populateGrassList(Forests::PageInfo page, float *posBuff, unsigned int grassCount);
+	Forests::GrassLoader<FoliageLayer> *parent;
 	
 	const Terrain::TerrainLayerDefinition* mTerrainLayerDefinition;
 	const Terrain::TerrainFoliageDefinition* mFoliageDefinition;

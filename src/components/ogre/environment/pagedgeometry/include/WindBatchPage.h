@@ -21,7 +21,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgrePrerequisites.h>
 #include <OgreStringConverter.h>
 
-namespace PagedGeometry {
+namespace Forests {
 
 class PagedGeometry;
 

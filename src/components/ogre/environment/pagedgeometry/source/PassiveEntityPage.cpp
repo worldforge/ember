@@ -24,14 +24,14 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreStringConverter.h>
 using namespace Ogre;
 
-namespace PagedGeometry {
+namespace Forests {
 
 //-------------------------------------------------------------------------------------
 
 unsigned long PassiveEntityPage::GUID = 0;
 
 
-void PassiveEntityPage::init(::PagedGeometry::PagedGeometry *geom, const Ogre::Any &data)
+void PassiveEntityPage::init(::Forests::PagedGeometry *geom, const Ogre::Any &data)
 {
 	sceneMgr = geom->getSceneManager();
 }

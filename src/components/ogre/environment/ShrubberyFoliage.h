@@ -25,7 +25,7 @@
 
 #include "FoliageBase.h"
 
-namespace PagedGeometry {
+namespace Forests {
 class PagedGeometry;
 }
 

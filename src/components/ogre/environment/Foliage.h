@@ -27,7 +27,7 @@
 #include "framework/Singleton.h"
 #include <OgreFrameListener.h>
 
-namespace PagedGeometry {
+namespace Forests {
 	class PagedGeometry;
 }
 

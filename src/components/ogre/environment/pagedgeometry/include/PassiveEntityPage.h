@@ -18,7 +18,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <Ogre.h>
 #include "PagedGeometry.h"
 
-namespace PagedGeometry {
+namespace Forests {
 
 /**
 \brief The PassiveEntityPage class renders entities as entities (no optimization).
@@ -29,7 +29,7 @@ class PassiveEntityPage: public GeometryPage
 public:
 	typedef std::vector<std::pair<Ogre::SceneNode*, Ogre::Entity*> > EntityStore;
 
-	void init(::PagedGeometry::PagedGeometry *geom, const Ogre::Any &data);
+	void init(::Forests::PagedGeometry *geom, const Ogre::Any &data);
 	PassiveEntityPage();
 	~PassiveEntityPage();
 

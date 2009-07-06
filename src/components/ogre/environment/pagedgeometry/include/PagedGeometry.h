@@ -3,10 +3,14 @@ Copyright (c) 2006 John Judnich
 
 This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
 Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
-    1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
-    2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
-    3. This notice may not be removed or altered from any source distribution.
+	1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
+	2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
+	3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------------*/
+
+#define PAGEDGEOMETRY_VERSION_MAJOR 1
+#define PAGEDGEOMETRY_VERSION_MINOR 0
+#define PAGEDGEOMETRY_VERSION_PATCH 7
 
 //PagedGeometry.h
 //Main header file for the PagedGeometry engine.
@@ -103,8 +107,9 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreCamera.h>
 #include <OgreVector3.h>
 #include <OgreTimer.h>
+#include <OgreMesh.h>
 
-namespace PagedGeometry {
+namespace Forests {
 
 class GeometryPageManager;
 class PageLoader;
@@ -180,6 +185,12 @@ public:
 	that are relatively far apart, consider using bounded mode.
 	*/
 	void setCamera(Ogre::Camera *cam);
+
+	/**
+	\brief Sets the output directory for the imposter pages
+	*/
+	void setTempDir(Ogre::String dir);
+	Ogre::String getTempdir() { return this->tempdir; };
 
 	/**
 	\brief Gets the camera which is used to calculate levels of detail.
@@ -451,7 +462,7 @@ public:
 	\see The GeometryPage class documention for more information on adding custom
 	page types.
 	*/
-	template <class PageType> inline GeometryPageManager* addDetailLevel(Ogre::Real maxRange, Ogre::Real transitionLength = 0, const Ogre::Any &data = Ogre::Any());
+	template <class PageType> inline GeometryPageManager* addDetailLevel(Ogre::Real maxRange, Ogre::Real transitionLength = 0, const Ogre::Any &data = Ogre::Any(), Ogre::uint32 queryFlag = 0);
 
 	/**
 	\brief Removes all detail levels from the PagedGeometry object.
@@ -650,6 +661,12 @@ public:
 	*/
 	bool getVisible() { return geometryAllowedVisible; }
 
+	/**
+	\brief disables the use of shaders
+	*/
+	void setShadersEnabled(bool value) { shadersEnabled=value; }
+	bool getShadersEnabled() { return shadersEnabled; }
+
 	/*
 	\brief Immediately loads visible geometry.
 	\param maxTime The maximum amount of time (in milliseconds) which cacheGeometry()
@@ -738,6 +755,7 @@ protected:
 
 	Ogre::SceneManager *sceneMgr;
 	Ogre::SceneNode *rootNode;				//PagedGeometry's own "root" node
+	bool shadersEnabled;
 
 	bool geometryAllowedVisible;	//If set to false, all geometry managed by this PagedGeometry is hidden
 
@@ -766,6 +784,7 @@ protected:
 	//Time-related data
 	Ogre::Timer timer;
 	unsigned long lastTime;
+	Ogre::String tempdir;
 
 private:
 	std::map<std::string, float> customParam;
@@ -858,6 +877,22 @@ public:
 	*/
 	virtual void init(PagedGeometry *geom, const Ogre::Any &data) = 0;
 	
+	void setQueryFlag(Ogre::uint32 flag)
+	{
+		mHasQueryFlag = true;
+		mQueryFlag = flag;
+	};
+
+	bool hasQueryFlag()
+	{
+		return mHasQueryFlag;
+	};
+
+	Ogre::uint32 getQueryFlag()
+	{
+		return mQueryFlag;
+	};
+
 	/**
 	\brief Prepare a geometry page for entities
 	\param left The minimum x-coordinate any entities will have.
@@ -1046,6 +1081,9 @@ private:
 	bool _trueBoundsUndefined;			//Flag indicating if _trueBounds has not been defined yet
 
 	void *_userData;	//Misc. data associated with this page by the PageLoader
+
+	bool mHasQueryFlag;
+	Ogre::uint32 mQueryFlag;
 };
 
 
@@ -1121,6 +1159,8 @@ struct PageInfo
 	PageLoader::unloadPage() is called.
 	*/
 	void *userData;
+
+	std::vector<Ogre::Mesh*> meshList;
 };
 
 /**
@@ -1413,7 +1453,7 @@ public:
 	inline TPGeometryPages getLoadedPages() const { return loadedList; }
 
 	/** \brief Internal function - DO NOT USE */
-	template <class PageType> void initPages(const TBounds& bounds, const Ogre::Any &data = Ogre::Any());
+	template <class PageType> void initPages(const TBounds& bounds, const Ogre::Any &data = Ogre::Any(), Ogre::uint32 queryFlag = 0);
 
 	/** \brief Internal function - DO NOT USE */
 	void update(unsigned long deltaTime, Ogre::Vector3 &camPos, Ogre::Vector3 &camSpeed, bool &enableCache, GeometryPageManager *prevManager);
@@ -1502,7 +1542,7 @@ private:
 
 //-------------------------------------------------------------------------------------
 
-template <class PageType> inline GeometryPageManager* PagedGeometry::addDetailLevel(Ogre::Real maxRange, Ogre::Real transitionLength, const Ogre::Any &data)
+template <class PageType> inline GeometryPageManager* PagedGeometry::addDetailLevel(Ogre::Real maxRange, Ogre::Real transitionLength, const Ogre::Any &data, Ogre::uint32 queryFlag)
 {
 	//Create a new page manager
 	GeometryPageManager *mgr = new GeometryPageManager(this);
@@ -1516,12 +1556,12 @@ template <class PageType> inline GeometryPageManager* PagedGeometry::addDetailLe
 	_addDetailLevel(mgr, maxRange, transitionLength);
 	
 	//And initialize the paged (dependent on maximum viewing distance)
-	mgr->initPages<PageType>(getBounds(), data);
+	mgr->initPages<PageType>(getBounds(), data, queryFlag);
 
 	return mgr;
 }
 
-template <class PageType> inline void GeometryPageManager::initPages(const TBounds& bounds, const Ogre::Any &data)
+template <class PageType> inline void GeometryPageManager::initPages(const TBounds& bounds, const Ogre::Any &data, Ogre::uint32 queryFlag)
 {
 	// Calculate grid size, if left is Real minimum, it means that bounds are infinite
 	// scrollBuffer is used as a flag. If it is allocated than infinite bounds are used
@@ -1578,6 +1618,7 @@ template <class PageType> inline void GeometryPageManager::initPages(const TBoun
 			page->_visible = false;
 			page->_userData = 0;
 			page->_fadeEnable = false;
+			page->setQueryFlag(queryFlag);
 			
 			page->clearBoundingBox();
 

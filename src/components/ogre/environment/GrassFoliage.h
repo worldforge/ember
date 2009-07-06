@@ -27,7 +27,7 @@
 
 #include "pagedgeometry/include/GrassLoader.h"
 
-namespace PagedGeometry {
+namespace Forests {
 class PagedGeometry;
 }
 
@@ -59,8 +59,8 @@ public:
 
 protected:
 	
-	::PagedGeometry::PagedGeometry* mGrass;
-	::PagedGeometry::GrassLoader<FoliageLayer>* mGrassLoader;
+	::Forests::PagedGeometry* mGrass;
+	::Forests::GrassLoader<FoliageLayer>* mGrassLoader;
 	
 	float mMinHeight;
 	float mMaxHeight;

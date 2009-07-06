@@ -43,14 +43,14 @@ namespace Environment {
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class FoliageLoader : public ::PagedGeometry::PageLoader
+class FoliageLoader : public ::Forests::PageLoader
 {
 public:
     FoliageLoader(const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition);
 
     virtual ~FoliageLoader();
 
-	virtual void loadPage(::PagedGeometry::PageInfo &page);
+	virtual void loadPage(::Forests::PageInfo &page);
 
 protected:
 

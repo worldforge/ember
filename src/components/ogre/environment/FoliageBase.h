@@ -31,7 +31,7 @@
 #include <vector>
 
 
-namespace PagedGeometry {
+namespace Forests {
 class PagedGeometry;
 }
 
@@ -87,7 +87,7 @@ protected:
 
 	const Terrain::TerrainLayerDefinition& mTerrainLayerDefinition;
 	const Terrain::TerrainFoliageDefinition& mFoliageDefinition;
-	::PagedGeometry::PagedGeometry* mPagedGeometry;
+	::Forests::PagedGeometry* mPagedGeometry;
 	
 	TerrainLayerDefinitionStore mDependentDefinitions;
 	

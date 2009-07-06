@@ -40,7 +40,7 @@ using namespace Ogre;
 #endif
 
 
-namespace PagedGeometry {
+namespace Forests {
 
 //-------------------------------------------------------------------------------------
 
@@ -66,7 +66,7 @@ void BatchedGeometry::addEntity(Entity *ent, const Vector3 &position, const Quat
 	MeshPtr mesh = ent->getMesh();
 
 	//If shared vertex data is used, extract into non-shared data
-	extractVertexDataFromShared(mesh);
+	extractVertexDataFromShared(mesh);	
 
 	//For each subentity
 	for (uint32 i = 0; i < ent->getNumSubEntities(); ++i){
@@ -78,7 +78,7 @@ void BatchedGeometry::addEntity(Entity *ent, const Vector3 &position, const Quat
 		if (subMesh->vertexData == NULL)
 			OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, "SubMesh vertex data not found!", "BatchedGeometry::addEntity()");
 		String formatStr = getFormatString(subEntity);
-
+		
 		//If a batch using an identical format exists...
 		SubBatch *batch;
 		SubBatchMap::iterator batchIter = subBatchMap.find(formatStr);
@@ -100,7 +100,7 @@ void BatchedGeometry::addEntity(Entity *ent, const Vector3 &position, const Quat
 	mat.setScale(scale);
 	AxisAlignedBox entBounds = ent->getBoundingBox();
 	entBounds.transform(mat);
-
+	
 	if (boundsUndefined){
 		bounds.setMinimum(entBounds.getMinimum() + position);
 		bounds.setMaximum(entBounds.getMaximum() + position);
@@ -122,12 +122,12 @@ uint32 CountUsedVertices(IndexData *id, std::map<uint32, uint32> &ibmap)
 	switch (id->indexBuffer->getType()) {
 		case HardwareIndexBuffer::IT_16BIT:
 			{
-				uint16 *data = (uint16*)id->indexBuffer->lock(id->indexStart * sizeof(uint16),
+				uint16 *data = (uint16*)id->indexBuffer->lock(id->indexStart * sizeof(uint16), 
 					id->indexCount * sizeof(uint16), HardwareBuffer::HBL_READ_ONLY);
 
 				for (i = 0; i < id->indexCount; i++) {
 					uint16 index = data[i];
-					if (ibmap.find(index) == ibmap.end()) ibmap[index] = ibmap.size();
+					if (ibmap.find(index) == ibmap.end()) ibmap[index] = (uint32)(ibmap.size());
 				}
 				count = (uint32)ibmap.size();
 				id->indexBuffer->unlock();
@@ -136,12 +136,12 @@ uint32 CountUsedVertices(IndexData *id, std::map<uint32, uint32> &ibmap)
 
 		case HardwareIndexBuffer::IT_32BIT:
 			{
-				uint32 *data = (uint32*)id->indexBuffer->lock(id->indexStart * sizeof(uint32),
+				uint32 *data = (uint32*)id->indexBuffer->lock(id->indexStart * sizeof(uint32), 
 					id->indexCount * sizeof(uint32), HardwareBuffer::HBL_READ_ONLY);
 
 				for (i = 0; i < id->indexCount; i++) {
 					uint32 index = data[i];
-					if (ibmap.find(index) == ibmap.end()) ibmap[index] = ibmap.size();
+					if (ibmap.find(index) == ibmap.end()) ibmap[index] = (uint32)(ibmap.size());
 				}
 				count = (uint32)ibmap.size();
 				id->indexBuffer->unlock();
@@ -212,7 +212,7 @@ void BatchedGeometry::extractVertexDataFromShared(MeshPtr mesh)
 		switch (indexData->indexBuffer->getType()) {
 			case HardwareIndexBuffer::IT_16BIT:
 				{
-					uint16 *data = (uint16*)indexData->indexBuffer->lock(indexData->indexStart * sizeof(uint16),
+					uint16 *data = (uint16*)indexData->indexBuffer->lock(indexData->indexStart * sizeof(uint16), 
 						indexData->indexCount * sizeof(uint16), HardwareBuffer::HBL_NORMAL);
 
 					for (uint32 i = 0; i < indexData->indexCount; i++) {
@@ -225,7 +225,7 @@ void BatchedGeometry::extractVertexDataFromShared(MeshPtr mesh)
 
 			case HardwareIndexBuffer::IT_32BIT:
 				{
-					uint32 *data = (uint32*)indexData->indexBuffer->lock(indexData->indexStart * sizeof(uint32),
+					uint32 *data = (uint32*)indexData->indexBuffer->lock(indexData->indexStart * sizeof(uint32), 
 						indexData->indexCount * sizeof(uint32), HardwareBuffer::HBL_NORMAL);
 
 					for (uint32 i = 0; i < indexData->indexCount; i++) {
@@ -289,7 +289,7 @@ void BatchedGeometry::build()
 		bounds.setMinimum(bounds.getMinimum() - center);	//Center the bounding box
 		bounds.setMaximum(bounds.getMaximum() - center);	//Center the bounding box
 		radius = bounds.getMaximum().length();	//Calculate BB radius
-
+		
 		//Create scene node
 		sceneNode = parentSceneNode->createChildSceneNode(center);
 
@@ -306,7 +306,7 @@ void BatchedGeometry::build()
 
 		built = true;
 	}
-
+	
 }
 
 void BatchedGeometry::clear()
@@ -440,7 +440,7 @@ Material *BatchedGeometry::SubBatch::getMaterialClone(Material &mat)
 	MaterialPtr clonedMat = MaterialManager::getSingleton().getByName(clonedName);
 	if (clonedMat.isNull())
 		clonedMat = mat.clone(clonedName);
-
+	
 	return clonedMat.getPointer();
 }
 
@@ -517,7 +517,7 @@ void BatchedGeometry::SubBatch::build()
 		HardwareVertexBufferSharedPtr buffer = HardwareBufferManager::getSingleton()
 			.createVertexBuffer(vertDecl->getVertexSize(i), vertexData->vertexCount, HardwareBuffer::HBU_STATIC_WRITE_ONLY);
 		vertBinding->setBinding(i, buffer);
-
+		
 		vertexBuffers.push_back(static_cast<uchar*>(buffer->lock(HardwareBuffer::HBL_DISCARD)));
 		vertexBufferElements.push_back(vertDecl->findElementsBySource(i));
 	}
@@ -532,7 +532,7 @@ void BatchedGeometry::SubBatch::build()
 			HardwareVertexBufferSharedPtr buffer = HardwareBufferManager::getSingleton()
 				.createVertexBuffer(vertDecl->getVertexSize(i), vertexData->vertexCount, HardwareBuffer::HBU_STATIC_WRITE_ONLY);
 			vertBinding->setBinding(i, buffer);
-
+			
 			vertexBuffers.push_back(static_cast<uchar*>(buffer->lock(HardwareBuffer::HBL_DISCARD)));
 			vertexBufferElements.push_back(vertDecl->findElementsBySource(i));
 
@@ -586,7 +586,7 @@ void BatchedGeometry::SubBatch::build()
 							tmp.x = *sourcePtr++;
 							tmp.y = *sourcePtr++;
 							tmp.z = *sourcePtr++;
-
+							
 							//Transform
 							tmp = (queuedMesh.orientation * (tmp * queuedMesh.scale)) + queuedMesh.position;
 							tmp -= batchCenter;		//Adjust for batch center
@@ -655,7 +655,7 @@ void BatchedGeometry::SubBatch::build()
 				//Get the locked output buffer
 				uint32 *startPtr = (uint32*)vertexBuffers[vertBinding->getBufferCount()-1];
 				uint32 *endPtr = startPtr + sourceVertexData->vertexCount;
-
+				
 				//Generate color
 				uint8 tmpR = queuedMesh.color.r * 255;
 				uint8 tmpG = queuedMesh.color.g * 255;
@@ -684,7 +684,7 @@ void BatchedGeometry::SubBatch::build()
 			while (source != sourceEnd) {
 				*indexBuffer32++ = static_cast<uint32>(*source++ + indexOffset);
 			}
-
+			
 			//Unlock the input buffer
 			sourceIndexData->indexBuffer->unlock();
 
@@ -769,7 +769,7 @@ void BatchedGeometry::SubBatch::addSelfToRenderQueue(RenderQueue *queue, uint8 g
 		//Update material technique based on camera distance
 		assert(!material.isNull());
 		bestTechnique = material->getBestTechnique(material->getLodIndex(parent->minDistanceSquared * parent->minDistanceSquared));
-
+			
 		//Add to render queue
 		queue->addRenderable(this, group);
 	}

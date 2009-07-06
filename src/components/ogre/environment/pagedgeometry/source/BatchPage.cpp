@@ -3,9 +3,9 @@ Copyright (c) 2006 John Judnich
 
 This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
 Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
-    1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
-    2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
-    3. This notice may not be removed or altered from any source distribution.
+	1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
+	2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
+	3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------------*/
 
 //BatchPage.cpp
@@ -27,7 +27,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreLogManager.h>
 using namespace Ogre;
 
-namespace PagedGeometry {
+namespace Forests {
 
 //-------------------------------------------------------------------------------------
 
@@ -43,18 +43,26 @@ void BatchPage::init(PagedGeometry *geom, const Any &data)
 	if ( datacast < 0)
 		OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS,"Data of BatchPage must be a positive integer. It representing the LOD level this detail level stores.","BatchPage::BatchPage");
 #endif
-	mLODLevel = datacast;
+	mLODLevel = datacast; 
 
 	sceneMgr = geom->getSceneManager();
 	batch = new BatchedGeometry(sceneMgr, geom->getSceneNode());
 
 	fadeEnabled = false;
 
-	const RenderSystemCapabilities *caps = Root::getSingleton().getRenderSystem()->getCapabilities();
-	if (caps->hasCapability(RSC_VERTEX_PROGRAM))
-		shadersSupported = true;
-	else
+	if(!geom->getShadersEnabled())
+	{
+		// shaders disabled by config
 		shadersSupported = false;
+	} else
+	{
+		// determine if shaders available
+		const RenderSystemCapabilities *caps = Root::getSingleton().getRenderSystem()->getCapabilities();
+		if (caps->hasCapability(RSC_VERTEX_PROGRAM))
+			shadersSupported = true;
+		else
+			shadersSupported = false;
+	}
 
 	++refCount;
 }
@@ -78,7 +86,7 @@ void BatchPage::addEntity(Entity *ent, const Vector3 &position, const Quaternion
 		Ogre::LogManager::getSingleton().logMessage( "BatchPage::addEntity: " + ent->getName() + " entity has less than " + Ogre::StringConverter::toString(mLODLevel) + " manual lod level(s). Performance warning.");
 #endif
 
-	if (mLODLevel == 0 || numManLod == 0)
+	if (mLODLevel == 0 || numManLod == 0) 
 		batch->addEntity(ent, position, rotation, scale, color);
 	else
 	{
@@ -190,7 +198,8 @@ void BatchPage::_updateShaders()
 		if (subBatch->vertexData->vertexDeclaration->findElementBySemantic(VES_DIFFUSE) != NULL)
 			tmpName << "clr_";
 
-		for (unsigned short i = 0; i < subBatch->vertexData->vertexDeclaration->getElementCount(); ++i) {
+		for (unsigned short i = 0; i < subBatch->vertexData->vertexDeclaration->getElementCount(); ++i)
+		{
 			const VertexElement *el = subBatch->vertexData->vertexDeclaration->getElement(i);
 			if (el->getSemantic() == VES_TEXTURE_COORDINATES) {
 				String uvType = "";
@@ -208,105 +217,179 @@ void BatchPage::_updateShaders()
 
 		const String vertexProgName = tmpName.str();
 
+		String shaderLanguage;
+		if (Root::getSingleton().getRenderSystem()->getName() == "Direct3D9 Rendering Subsystem")
+			shaderLanguage = "hlsl";
+		else if(Root::getSingleton().getRenderSystem()->getName() == "OpenGL Rendering Subsystem")
+			shaderLanguage = "glsl";
+		else
+			shaderLanguage = "cg";
+
 		//If the shader hasn't been created yet, create it
-		if (HighLevelGpuProgramManager::getSingleton().getByName(vertexProgName).isNull()){
+		if (HighLevelGpuProgramManager::getSingleton().getByName(vertexProgName).isNull())
+		{
 			Pass *pass = mat->getTechnique(0)->getPass(0);
+			String vertexProgSource;
 
-			String vertexProgSource =
-				"void main( \n"
-				"	float4 iPosition : POSITION, \n"
-				"	float3 normal    : NORMAL,	\n"
-				"	out float4 oPosition : POSITION, \n";
+			if(!shaderLanguage.compare("hlsl") || !shaderLanguage.compare("cg"))
+			{
 
-			if (subBatch->vertexData->vertexDeclaration->findElementBySemantic(VES_DIFFUSE) != NULL) vertexProgSource +=
-				"	float4 iColor    : COLOR, \n";
+				vertexProgSource =
+					"void main( \n"
+					"	float4 iPosition : POSITION, \n"
+					"	float3 normal    : NORMAL,	\n"
+					"	out float4 oPosition : POSITION, \n";
 
-			int texNum = 0;
-			for (unsigned short i = 0; i < subBatch->vertexData->vertexDeclaration->getElementCount(); ++i) {
-				const VertexElement *el = subBatch->vertexData->vertexDeclaration->getElement(i);
-				if (el->getSemantic() == VES_TEXTURE_COORDINATES) {
-					String uvType = "";
-					switch (el->getType()) {
-						case VET_FLOAT1: uvType = "float"; break;
-						case VET_FLOAT2: uvType = "float2"; break;
-						case VET_FLOAT3: uvType = "float3"; break;
-						case VET_FLOAT4: uvType = "float4"; break;
+				if (subBatch->vertexData->vertexDeclaration->findElementBySemantic(VES_DIFFUSE) != NULL) vertexProgSource +=
+					"	float4 iColor    : COLOR, \n";
+
+				unsigned texNum = 0;
+				for (unsigned short i = 0; i < subBatch->vertexData->vertexDeclaration->getElementCount(); ++i) {
+					const VertexElement *el = subBatch->vertexData->vertexDeclaration->getElement(i);
+					if (el->getSemantic() == VES_TEXTURE_COORDINATES) {
+						String uvType = "";
+						switch (el->getType()) {
+							case VET_FLOAT1: uvType = "float"; break;
+							case VET_FLOAT2: uvType = "float2"; break;
+							case VET_FLOAT3: uvType = "float3"; break;
+							case VET_FLOAT4: uvType = "float4"; break;
+						}
+
+						vertexProgSource +=
+						"	" + uvType + " iUV" + StringConverter::toString(texNum) + "			: TEXCOORD" + StringConverter::toString(texNum) + ",	\n"
+						"	out " + uvType + " oUV" + StringConverter::toString(texNum) + "		: TEXCOORD" + StringConverter::toString(texNum) + ",	\n";
+
+						++texNum;
 					}
-
-					vertexProgSource +=
-					"	" + uvType + " iUV" + StringConverter::toString(texNum) + "			: TEXCOORD" + StringConverter::toString(texNum) + ",	\n"
-					"	out " + uvType + " oUV" + StringConverter::toString(texNum) + "		: TEXCOORD" + StringConverter::toString(texNum) + ",	\n";
-
-					++texNum;
 				}
-			}
 
-			vertexProgSource +=
-				"	out float oFog : FOG,	\n"
+				vertexProgSource +=
+					"	out float oFog : FOG,	\n"
 				"	out float4 oColor : COLOR, \n"
 			    "	uniform float4 iFogParams,	\n";
 
-			if (lightingEnabled) vertexProgSource +=
-				"	uniform float4 objSpaceLight,	\n"
-				"	uniform float4 lightDiffuse,	\n"
-				"	uniform float4 lightAmbient,	\n";
+				if (lightingEnabled) vertexProgSource +=
+					"	uniform float4 objSpaceLight,	\n"
+					"	uniform float4 lightDiffuse,	\n"
+					"	uniform float4 lightAmbient,	\n";
 
-			if (fadeEnabled) vertexProgSource +=
-				"	uniform float3 camPos, \n";
+				if (fadeEnabled) vertexProgSource +=
+					"	uniform float3 camPos, \n";
 
-			vertexProgSource +=
-				"	uniform float4x4 worldViewProj,	\n"
-				"	uniform float fadeGap, \n"
-				"   uniform float invisibleDist )\n"
-				"{	\n";
-
-			if (lightingEnabled) {
-				//Perform lighting calculations (no specular)
 				vertexProgSource +=
-				"	float3 light = normalize(objSpaceLight.xyz - (iPosition.xyz * objSpaceLight.w)); \n"
-				"	float diffuseFactor = max(dot(normal, light), 0); \n";
-				if (subBatch->vertexData->vertexDeclaration->findElementBySemantic(VES_DIFFUSE) != NULL)
-					vertexProgSource += "oColor = (lightAmbient + diffuseFactor * lightDiffuse) * iColor; \n";
-				else
-					vertexProgSource += "oColor = (lightAmbient + diffuseFactor * lightDiffuse); \n";
-			} else {
-				if (subBatch->vertexData->vertexDeclaration->findElementBySemantic(VES_DIFFUSE) != NULL)
-					vertexProgSource += "oColor = iColor; \n";
-				else
-					vertexProgSource += "oColor = float4(1, 1, 1, 1); \n";
-			}
+					"	uniform float4x4 worldViewProj,	\n"
+					"	uniform float fadeGap, \n"
+					"   uniform float invisibleDist )\n"
+					"{	\n";
 
-			if (fadeEnabled) vertexProgSource +=
-				//Fade out in the distance
-				"	float dist = distance(camPos.xz, iPosition.xz);	\n"
-				"	oColor.a *= (invisibleDist - dist) / fadeGap;   \n";
-
-			texNum = 0;
-			for (unsigned short i = 0; i < subBatch->vertexData->vertexDeclaration->getElementCount(); ++i) {
-				const VertexElement *el = subBatch->vertexData->vertexDeclaration->getElement(i);
-				if (el->getSemantic() == VES_TEXTURE_COORDINATES) {
+				if (lightingEnabled) {
+					//Perform lighting calculations (no specular)
 					vertexProgSource +=
-					"	oUV" + StringConverter::toString(texNum) + " = iUV" + StringConverter::toString(texNum) + ";	\n";
-					++texNum;
+					"	float3 light = normalize(objSpaceLight.xyz - (iPosition.xyz * objSpaceLight.w)); \n"
+					"	float diffuseFactor = max(dot(normal, light), 0); \n";
+					if (subBatch->vertexData->vertexDeclaration->findElementBySemantic(VES_DIFFUSE) != NULL)
+						vertexProgSource += "oColor = (lightAmbient + diffuseFactor * lightDiffuse) * iColor; \n";
+					else
+						vertexProgSource += "oColor = (lightAmbient + diffuseFactor * lightDiffuse); \n";
+				} else {
+					if (subBatch->vertexData->vertexDeclaration->findElementBySemantic(VES_DIFFUSE) != NULL)
+						vertexProgSource += "oColor = iColor; \n";
+					else
+						vertexProgSource += "oColor = float4(1, 1, 1, 1); \n";
 				}
+
+				if (fadeEnabled) vertexProgSource +=
+					//Fade out in the distance
+					"	float dist = distance(camPos.xz, iPosition.xz);	\n"
+					"	oColor.a *= (invisibleDist - dist) / fadeGap;   \n";
+
+				texNum = 0;
+				for (unsigned short i = 0; i < subBatch->vertexData->vertexDeclaration->getElementCount(); ++i) {
+					const VertexElement *el = subBatch->vertexData->vertexDeclaration->getElement(i);
+					if (el->getSemantic() == VES_TEXTURE_COORDINATES) {
+						vertexProgSource +=
+						"	oUV" + StringConverter::toString(texNum) + " = iUV" + StringConverter::toString(texNum) + ";	\n";
+						++texNum;
+					}
+				}
+
+				vertexProgSource +=
+					"	oPosition = mul(worldViewProj, iPosition);  \n"
+					"	oFog = oPosition.z; \n"
+					"}";
 			}
 
-			vertexProgSource +=
-				"	oPosition = mul(worldViewProj, iPosition);  \n";
-			if (sceneMgr->getFogMode() == Ogre::FOG_EXP2) {
-				vertexProgSource +=
-					"	oFog = 1 - clamp (pow (2.71828, -oPosition.z * iFogParams.x), 0, 1); \n";
-			} else {
-				vertexProgSource +=
-					"	oFog = oPosition.z; \n";
-			}
-			vertexProgSource += "}";
+			if(!shaderLanguage.compare("glsl"))
+			{
+				vertexProgSource =
+					"uniform float fadeGap;        \n"
+					"uniform float invisibleDist;   \n";
 
-			String shaderLanguage;
-			if (Root::getSingleton().getRenderSystem()->getName() == "Direct3D9 Rendering Subsystem")
-				shaderLanguage = "hlsl";
-			else
-				shaderLanguage = "cg";
+				if (lightingEnabled) vertexProgSource +=
+					"uniform vec4 objSpaceLight;   \n"
+					"uniform vec4 lightDiffuse;	   \n"
+					"uniform vec4 lightAmbient;	   \n";
+
+				if (fadeEnabled) vertexProgSource +=
+					"uniform vec3 camPos;          \n";
+
+				vertexProgSource +=
+					"void main() \n"
+					"{ \n";
+
+				if (lightingEnabled)
+				{
+					//Perform lighting calculations (no specular)
+					vertexProgSource +=
+					"   vec3 light = normalize(objSpaceLight.xyz - (gl_Vertex.xyz * objSpaceLight.w)); \n"
+					"   float diffuseFactor = max(dot(gl_Normal, light), 0.0); \n";
+					if (subBatch->vertexData->vertexDeclaration->findElementBySemantic(VES_DIFFUSE) != NULL)
+					{
+						vertexProgSource += "   gl_FrontColor = (lightAmbient + diffuseFactor * lightDiffuse) * gl_Color; \n";
+					}
+					else
+					{
+						vertexProgSource += "   gl_FrontColor = (lightAmbient + diffuseFactor * lightDiffuse); \n";
+					}
+				}
+				else
+				{
+					if (subBatch->vertexData->vertexDeclaration->findElementBySemantic(VES_DIFFUSE) != NULL)
+					{
+						vertexProgSource += "   gl_FrontColor = gl_Color; \n";
+					}
+					else
+					{
+						vertexProgSource += "   gl_FrontColor = vec4(1.0, 1.0, 1.0, 1.0); \n";
+					}
+				}
+
+				if (fadeEnabled)
+				{
+					vertexProgSource +=
+					//Fade out in the distance
+					"   float dist = distance(camPos.xz, gl_Vertex.xz);	\n"
+					"   gl_FrontColor.a *= (invisibleDist - dist) / fadeGap;   \n";
+				}
+
+				unsigned texNum = 0;
+				for (unsigned short i = 0; i < subBatch->vertexData->vertexDeclaration->getElementCount(); ++i)
+				{
+					const VertexElement *el = subBatch->vertexData->vertexDeclaration->getElement(i);
+					if (el->getSemantic() == VES_TEXTURE_COORDINATES)
+					{
+						vertexProgSource +=
+						"   gl_TexCoord[" + StringConverter::toString(texNum) + "] = gl_MultiTexCoord" + StringConverter::toString(texNum) + ";	\n";
+						++texNum;
+					}
+				}
+
+				vertexProgSource +=
+					"   gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;  \n"
+					"   gl_FogFragCoord = gl_Position.z; \n"
+					"}";
+			}
+
 
 			HighLevelGpuProgramPtr vertexShader = HighLevelGpuProgramManager::getSingleton().createProgram(
 				vertexProgName,
@@ -316,11 +399,17 @@ void BatchPage::_updateShaders()
 			vertexShader->setSource(vertexProgSource);
 
 			if (shaderLanguage == "hlsl")
+			{
 				vertexShader->setParameter("target", "vs_1_1");
-			else
+				vertexShader->setParameter("entry_point", "main");
+			}
+			else if(shaderLanguage == "cg")
+			{
 				vertexShader->setParameter("profiles", "vs_1_1 arbvp1");
+				vertexShader->setParameter("entry_point", "main");
+			}
+			// GLSL can only have one entry point "main".
 
-			vertexShader->setParameter("entry_point", "main");
 			vertexShader->load();
 			if (vertexShader->hasCompileError()) {
 				OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, "Error loading the batching vertex shader.", "BatchPage::_updateShaders()");
@@ -407,10 +496,14 @@ void BatchPage::_updateShaders()
 							//params->setNamedAutoConstant("matAmbient", GpuProgramParameters::ACT_SURFACE_AMBIENT_COLOUR);
 						}
 
-						params->setNamedAutoConstant("iFogParams", GpuProgramParameters::ACT_FOG_PARAMS);
- 						params->setNamedAutoConstant("worldViewProj", GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+						if(shaderLanguage.compare("glsl"))
+						{
+							//glsl can use the built in gl_ModelViewProjectionMatrix
+							params->setNamedAutoConstant("worldViewProj", GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+						}
 
-						if (fadeEnabled){
+						if (fadeEnabled)
+						{
 							params->setNamedAutoConstant("camPos", GpuProgramParameters::ACT_CAMERA_POSITION_OBJECT_SPACE);
 
 							//Set fade ranges

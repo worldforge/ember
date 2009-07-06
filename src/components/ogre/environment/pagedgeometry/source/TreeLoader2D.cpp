@@ -20,7 +20,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreStringConverter.h>
 using namespace Ogre;
 
-namespace PagedGeometry {
+namespace Forests {
 
 TreeLoader2D::TreeLoader2D(PagedGeometry *geom, const TBounds &bounds)
 {

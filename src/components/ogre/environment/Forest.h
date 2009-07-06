@@ -26,7 +26,7 @@
 #include <OgreMath.h>
 #include <OgreFrameListener.h>
 
-namespace PagedGeometry {
+namespace Forests {
 class PagedGeometry;
 class TreeLoader3D;
 }
@@ -67,8 +67,8 @@ public:
 protected:
 
 
-	PagedGeometry::PagedGeometry *mTrees;
-	PagedGeometry::TreeLoader3D *mTreeLoader;
+	Forests::PagedGeometry *mTrees;
+	Forests::TreeLoader3D *mTreeLoader;
 	EmberEntityLoader* mEntityLoader;
 
 };

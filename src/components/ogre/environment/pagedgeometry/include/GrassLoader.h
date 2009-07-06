@@ -46,7 +46,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreHighLevelGpuProgramManager.h>
 
 using namespace Ogre;
-namespace PagedGeometry {
+namespace Forests {
 
 class GrassLayer;
 class GrassLayerBase;
@@ -56,13 +56,12 @@ class GrassLayerBase;
 Using a GrassLoader is simple - simply create an instance, attach it to your PagedGeometry object
 with PagedGeometry::setPageLoader(), and add your grass. Important: For best performance, it is
 recommended that you use GrassPage (included in GrassLoader.h) to display geometry loaded by GrassLoader.
-
 This page type is designed for best performance with this grass system. BatchPage
 will work, although performance will be reduced slightly, and ImpostorPage will run extremely slow.
 
 When creating a GrassLoader you must specify the class which will be used for creating layers. By default a GrassLayer class is provided, which can be used as this:
 \code
-	::PagedGeometry::GrassLoader<GrassLayer> loader = new ::PagedGeometry::GrassLoader<GrassLayer>(grass);
+	::Forests::GrassLoader<GrassLayer> loader = new ::Forests::GrassLoader<GrassLayer>(grass);
 \endcode
 It's also possible for you to provide your own GrassLayer implementation by overriding the class GrassLayerBase. This will allow you to have much more control over how the grass is placed.
 
@@ -127,6 +126,9 @@ public:
 	\note This only affects grass layers which have breeze animations enabled.
 	*/
 	inline void setWindDirection(Ogre::Vector3 &dir) { windDir = dir; }
+
+	inline void setBuildEdgesEnabled(bool value) { autoEdgeBuildEnabled=value; }
+	inline bool getBuildEdgesEnabled() { return autoEdgeBuildEnabled; }
 
 	/** \brief Returns the global wind direction for this GrassLoader.
 
@@ -237,15 +239,14 @@ private:
 	Ogre::Vector3 windDir;
 	unsigned long lastTime;
 
+	bool autoEdgeBuildEnabled;
+
 	static unsigned long GUID;
 	static inline Ogre::String getUniqueID()
 	{
 		return "GrassLDR" + Ogre::StringConverter::toString(++GUID);
 	}
 };
-
-
-
 
 
 /** \brief A technique used to render grass. Passed to GrassLayer::setRenderTechnique(). */
@@ -316,6 +317,10 @@ public:
 	when animation is disabled.
 	*/
 	void setAnimationEnabled(bool enabled);
+
+	/** \brief Enables/disables lighting on this layer
+	*/
+	void setLightingEnabled(bool enabled);
 
 	/** \brief Sets how far grass should sway back and forth
 
@@ -411,7 +416,7 @@ protected:
 	Ogre::TRect<Ogre::Real> mapBounds;
 
 	//Grass shader properties
-	bool animate, blend, shaderNeedsUpdate;
+	bool animate, blend, lighting, shaderNeedsUpdate;
 	float animMag, animSpeed, animFreq;
 
 	//Current frame of animation for this layer

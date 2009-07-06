@@ -76,7 +76,7 @@ struct EntityInstance
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-	@brief A specialized implementation of PagedGeometry::PageLoader used for positioning instances of EmberPhysicalEntity 
+	@brief A specialized implementation of Forests::PageLoader used for positioning instances of EmberPhysicalEntity 
 	
 	This acts like a bridge between the Ember and the PagedGeometry systems, allowing EmberPhysicalEntity instances from the former being represented in the latter. Entities that are handled by this will be graphically represented through the PagedGeometry engine, rather than by using instances of Model. The class will take care of listening to movement updates and deletions from the entity, automatically updating the paged geometry when the entity changes.
 	
@@ -85,7 +85,7 @@ struct EntityInstance
 	
 	The storage of entities can either use a straight up map, or use batches, where each batch corresponds to a page in the paged geometry. The latter is more efficient when generating the pages needed by the paged geometry engine, but requires more memory and is less effective when adding or removing entities. The batching can be turned on and off through the EMBERENTITYLOADER_USEBATCH define.
 */
-class EmberEntityLoader : public ::PagedGeometry::PageLoader
+class EmberEntityLoader : public ::Forests::PageLoader
 {
 public:
 	typedef std::map<std::string, EntityInstance> EntityMap;
@@ -98,7 +98,7 @@ public:
      * @param geom The geometry for which this class will provide entity loading.
      * @param batchSize The size of each batch. Only relevant if batching is used.
      */
-    EmberEntityLoader(::PagedGeometry::PagedGeometry &geom, unsigned int batchSize);
+    EmberEntityLoader(::Forests::PagedGeometry &geom, unsigned int batchSize);
 
     /**
      * Dtor.
@@ -120,9 +120,9 @@ public:
 	void removeEmberEntity(EmberPhysicalEntity* entity);
 	
 	/**
-	 * @copydoc PagedGeometry::PageLoader::loadPage() 
+	 * @copydoc Forests::PageLoader::loadPage() 
 	 */
-	virtual void loadPage(::PagedGeometry::PageInfo &page);
+	virtual void loadPage(::Forests::PageInfo &page);
    
 protected:
 #if EMBERENTITYLOADER_USEBATCH
@@ -145,7 +145,7 @@ protected:
 	/**
 	@brief The main paged geometry instance which will handle all rendering.
 	*/
-	::PagedGeometry::PagedGeometry &mGeom;
+	::Forests::PagedGeometry &mGeom;
 
 	/**
 	@brief The size, in world units, for each batch. Only relevant if batching is used.

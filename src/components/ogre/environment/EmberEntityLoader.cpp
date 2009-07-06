@@ -40,7 +40,7 @@ namespace EmberOgre {
 
 namespace Environment {
 
-EmberEntityLoader::EmberEntityLoader(::PagedGeometry::PagedGeometry &geom, unsigned int batchSize)
+EmberEntityLoader::EmberEntityLoader(::Forests::PagedGeometry &geom, unsigned int batchSize)
 : mGeom(geom), mBatchSize(batchSize)
 {
 }
@@ -164,7 +164,7 @@ EmberEntityLoader::EntityMap* EmberEntityLoader::getStoreForEntity(EmberPhysical
 }
 
 
-void EmberEntityLoader::loadPage(::PagedGeometry::PageInfo & page)
+void EmberEntityLoader::loadPage(::Forests::PageInfo & page)
 {
 	static Ogre::ColourValue colour(1,1,1,1);
 	

@@ -21,7 +21,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreStringConverter.h>
 using namespace Ogre;
 
-namespace PagedGeometry {
+namespace Forests {
 
 std::map<String, DensityMap*> DensityMap::selfList;
 

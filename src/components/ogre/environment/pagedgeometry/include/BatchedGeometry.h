@@ -21,7 +21,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreSceneNode.h>
 #include <OgreMaterialManager.h>
 
-namespace PagedGeometry {
+namespace Forests {
 
 class BatchedGeometry: public Ogre::MovableObject
 {

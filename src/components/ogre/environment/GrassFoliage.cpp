@@ -79,10 +79,10 @@ GrassFoliage::~GrassFoliage()
 void GrassFoliage::initialize()
 {
 	Ogre::Camera& camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
-	mPagedGeometry = new ::PagedGeometry::PagedGeometry(&camera, EmberOgre::getSingleton().getTerrainGenerator()->getFoliageBatchSize());
+	mPagedGeometry = new ::Forests::PagedGeometry(&camera, EmberOgre::getSingleton().getTerrainGenerator()->getFoliageBatchSize());
 	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainInfo().getWorldSizeInIndices();
 
-	::PagedGeometry::TBounds ogreBounds(Convert::toOgre(worldSize));
+	::Forests::TBounds ogreBounds(Convert::toOgre(worldSize));
 	if (ogreBounds.width() != ogreBounds.height()) {
 		if (ogreBounds.width() > ogreBounds.height()) {
 			float difference = ogreBounds.width() - ogreBounds.height();
@@ -94,10 +94,10 @@ void GrassFoliage::initialize()
 	}
 	mPagedGeometry->setBounds(ogreBounds);
 	
-	mPagedGeometry->addDetailLevel<PagedGeometry::GrassPage>(96);
+	mPagedGeometry->addDetailLevel<Forests::GrassPage>(96);
 	
 	//Create a GrassLoader object
-	mGrassLoader = new ::PagedGeometry::GrassLoader<FoliageLayer>(mPagedGeometry);
+	mGrassLoader = new ::Forests::GrassLoader<FoliageLayer>(mPagedGeometry);
  	mPagedGeometry->setPageLoader(mGrassLoader);	//Assign the "treeLoader" to be used to load 
 	mGrassLoader->setHeightFunction(&getTerrainHeight);
 
@@ -129,27 +129,27 @@ void GrassFoliage::initialize()
 	if (mFoliageDefinition.hasParameter("fadeTech")) {
 		const std::string& fadeTech(mFoliageDefinition.getParameter("fadeTech"));
 		if (fadeTech == "alphagrow") {
-			l->setFadeTechnique(::PagedGeometry::FADETECH_ALPHAGROW);	//Distant grass should slowly fade in
+			l->setFadeTechnique(::Forests::FADETECH_ALPHAGROW);	//Distant grass should slowly fade in
 		} else if (fadeTech == "grow") {
-			l->setFadeTechnique(::PagedGeometry::FADETECH_GROW);	//Distant grass should slowly fade in
+			l->setFadeTechnique(::Forests::FADETECH_GROW);	//Distant grass should slowly fade in
 		} else {
-			l->setFadeTechnique(::PagedGeometry::FADETECH_ALPHA);	//Distant grass should slowly fade in
+			l->setFadeTechnique(::Forests::FADETECH_ALPHA);	//Distant grass should slowly fade in
 		}
 	} else {
-		l->setFadeTechnique(::PagedGeometry::FADETECH_ALPHA);	//Distant grass should slowly fade in
+		l->setFadeTechnique(::Forests::FADETECH_ALPHA);	//Distant grass should slowly fade in
 	}	
 // 	l->setDensity(1.5f);				//Relatively dense grass
 	if (mFoliageDefinition.hasParameter("renderTech")) {
 		const std::string& renderTech(mFoliageDefinition.getParameter("renderTech"));
 		if (renderTech == "quad") {
-			l->setRenderTechnique(::PagedGeometry::GRASSTECH_QUAD);
+			l->setRenderTechnique(::Forests::GRASSTECH_QUAD);
 		} else if (renderTech == "sprite") {
-			l->setRenderTechnique(::PagedGeometry::GRASSTECH_SPRITE);
+			l->setRenderTechnique(::Forests::GRASSTECH_SPRITE);
 		} else {
-			l->setRenderTechnique(::PagedGeometry::GRASSTECH_CROSSQUADS);	//Draw grass as scattered quads
+			l->setRenderTechnique(::Forests::GRASSTECH_CROSSQUADS);	//Draw grass as scattered quads
 		}
 	} else {
-		l->setRenderTechnique(::PagedGeometry::GRASSTECH_CROSSQUADS);	//Draw grass as scattered quads
+		l->setRenderTechnique(::Forests::GRASSTECH_CROSSQUADS);	//Draw grass as scattered quads
 	}	
 
 	l->setMapBounds(Convert::toOgre(worldSize));	

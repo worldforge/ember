@@ -30,7 +30,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreSceneNode.h>
 #include <OgreStringConverter.h>
 
-namespace PagedGeometry {
+namespace Forests {
 
 class SBMaterialRef;
 typedef std::map<Ogre::Material*, SBMaterialRef*> SBMaterialRefList;

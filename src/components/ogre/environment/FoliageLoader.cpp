@@ -64,7 +64,7 @@ FoliageLoader::~FoliageLoader()
 {
 }
 
-void FoliageLoader::loadPage(::PagedGeometry::PageInfo &page)
+void FoliageLoader::loadPage(::Forests::PageInfo &page)
 {
 	///make these static for fast lookup
 	static Ogre::Vector2 pos2D;

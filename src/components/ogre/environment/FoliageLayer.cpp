@@ -38,14 +38,14 @@
 #include "framework/LoggingInstance.h"
 #include <wfmath/intersect.h>
 
-using namespace PagedGeometry;
+using namespace Forests;
 using namespace Ogre;
 using namespace EmberOgre::Terrain;
 namespace EmberOgre {
 
 namespace Environment {
 
-FoliageLayer::FoliageLayer(::PagedGeometry::PagedGeometry *geom, GrassLoader<FoliageLayer> *ldr)
+FoliageLayer::FoliageLayer(::Forests::PagedGeometry *geom, GrassLoader<FoliageLayer> *ldr)
 : mTerrainLayerDefinition(0), mFoliageDefinition(0)
 {
 	FoliageLayer::geom = geom;

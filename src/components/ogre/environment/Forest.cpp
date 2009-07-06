@@ -73,11 +73,11 @@ void Forest::initialize()
 		
 		Ogre::Camera& camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
 		
-		mTrees = new PagedGeometry::PagedGeometry();
+		mTrees = new Forests::PagedGeometry();
 		mTrees->setCamera(&camera);	//Set the camera so PagedGeometry knows how to calculate LODs
 		mTrees->setPageSize(64);	//Set the size of each page of geometry
 		
-		::PagedGeometry::TBounds ogreBounds(Convert::toOgre(worldSize));
+		::Forests::TBounds ogreBounds(Convert::toOgre(worldSize));
 		if (ogreBounds.width() != ogreBounds.height()) {
 			if (ogreBounds.width() > ogreBounds.height()) {
 				float difference = ogreBounds.width() - ogreBounds.height();
@@ -88,14 +88,14 @@ void Forest::initialize()
 			}
 		}
 		mTrees->setBounds(ogreBounds);
-	// 	mTrees->addDetailLevel<PagedGeometry::BatchPage>(150, 50);		//Use batches up to 150 units away, and fade for 30 more units
-	//  mTrees->addDetailLevel<PagedGeometry::DummyPage>(100, 0);		//Use batches up to 150 units away, and fade for 30 more units 	
-		mTrees->addDetailLevel<PagedGeometry::PassiveEntityPage>(150, 0);		//Use standard entities up to 150 units away, and don't fade since the PassiveEntityPage doesn't support this (yet)
-		mTrees->addDetailLevel<PagedGeometry::ImpostorPage>(500, 50);	//Use impostors up to 400 units, and for for 50 more units
+	// 	mTrees->addDetailLevel<Forests::BatchPage>(150, 50);		//Use batches up to 150 units away, and fade for 30 more units
+	//  mTrees->addDetailLevel<Forests::DummyPage>(100, 0);		//Use batches up to 150 units away, and fade for 30 more units 	
+		mTrees->addDetailLevel<Forests::PassiveEntityPage>(150, 0);		//Use standard entities up to 150 units away, and don't fade since the PassiveEntityPage doesn't support this (yet)
+		mTrees->addDetailLevel<Forests::ImpostorPage>(500, 50);	//Use impostors up to 400 units, and for for 50 more units
 	
 		//Create a new TreeLoader2D object
 		mEntityLoader = new EmberEntityLoader(*mTrees, 64);
-	// 	mTreeLoader = new PagedGeometry::TreeLoader3D(mTrees, Convert::toOgre(worldSize));
+	// 	mTreeLoader = new Forests::TreeLoader3D(mTrees, Convert::toOgre(worldSize));
 		mTrees->setPageLoader(mEntityLoader);	//Assign the "treeLoader" to be used to load geometry for the PagedGeometry instance	
 	}
 }

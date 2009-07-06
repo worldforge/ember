@@ -17,7 +17,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreRoot.h>
 #include <OgreRenderSystem.h>
 
-namespace PagedGeometry {
+namespace Forests {
 
 /** \brief Specifies which color channel(s) to extract from an image */
 enum MapChannel {

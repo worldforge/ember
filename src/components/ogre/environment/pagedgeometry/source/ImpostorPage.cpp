@@ -26,7 +26,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreHardwarePixelBuffer.h>
 using namespace Ogre;
 
-namespace PagedGeometry {
+namespace Forests {
 
 //-------------------------------------------------------------------------------------
 
@@ -45,7 +45,7 @@ void ImpostorPage::init(PagedGeometry *geom, const Ogre::Any &data)
 
 	//Init. variables
 	setBlendMode(ALPHA_REJECT_IMPOSTOR);
-
+		
 	if (++selfInstances == 1){
 		//Set up a single instance of a scene node which will be used when rendering impostor textures
 		geom->getSceneNode()->createChildSceneNode("ImpostorPage::renderNode");
@@ -76,7 +76,7 @@ void ImpostorPage::setRegion(Ogre::Real left, Ogre::Real top, Ogre::Real right, 
 	//Calculate center of region
 	center.x = (left + right) * 0.5f;
 	center.z = (top + bottom) * 0.5f;
-
+	
 	center.y = 0.0f;	//The center.y value is calculated when the entities are added
 	aveCount = 0;
 }
@@ -148,7 +148,7 @@ void ImpostorPage::update()
 {
 	//Calculate the direction the impostor batches should be facing
 	Vector3 camPos = geom->_convertToLocal(geom->getCamera()->getDerivedPosition());
-
+	
 	//Update all batches
 	float distX = camPos.x - center.x;
 	float distZ = camPos.z - center.z;
@@ -198,7 +198,7 @@ ImpostorBatch::ImpostorBatch(ImpostorPage *group, Entity *entity)
 {
 	//Render impostor texture for this entity
 	tex = ImpostorTexture::getTexture(group, entity);
-
+	
 	//Create billboard set
 	bbset = new StaticBillboardSet(group->sceneMgr, group->geom->getSceneNode());
 	bbset->setTextureStacksAndSlices(IMPOSTOR_PITCH_ANGLES, IMPOSTOR_YAW_ANGLES);
@@ -242,7 +242,7 @@ ImpostorBatch *ImpostorBatch::getBatch(ImpostorPage *group, Entity *entity)
 		//Add it to the impostorBatches list
 		typedef std::pair<String, ImpostorBatch *> ListItem;
 		group->impostorBatches.insert(ListItem(entityKey, batch));
-
+		
 		//Return it
 		return batch;
 	}
@@ -269,7 +269,7 @@ void ImpostorBatch::setAngle(float pitchDeg, float yawDeg)
 	if (newPitchIndex > IMPOSTOR_PITCH_ANGLES-1) newPitchIndex = IMPOSTOR_PITCH_ANGLES-1;
 	if (newPitchIndex < 0) newPitchIndex = 0;
 #endif
-
+	
 	//Calculate yaw material index
 	int newYawIndex;
 	if (yawDeg > 0) {
@@ -277,7 +277,7 @@ void ImpostorBatch::setAngle(float pitchDeg, float yawDeg)
 	} else {
 		newYawIndex = (int)(IMPOSTOR_YAW_ANGLES + IMPOSTOR_YAW_ANGLES * (yawDeg / 360.0f) + 0.5f) % IMPOSTOR_YAW_ANGLES;
 	}
-
+	
 	//Change materials if necessary
 	if (newPitchIndex != pitchIndex || newYawIndex != yawIndex){
 		pitchIndex = newPitchIndex;
@@ -339,12 +339,13 @@ ImpostorTexture::ImpostorTexture(ImpostorPage *group, Entity *entity)
 	//Store scene manager and entity
 	ImpostorTexture::sceneMgr = group->sceneMgr;
 	ImpostorTexture::entity = entity;
+	ImpostorTexture::group = group;
 
 	//Add self to list of ImpostorTexture's
 	entityKey = ImpostorBatch::generateEntityKey(entity);
 	typedef std::pair<String, ImpostorTexture *> ListItem;
 	selfList.insert(ListItem(entityKey, this));
-
+	
 	//Calculate the entity's bounding box and it's diameter
 	boundingBox = entity->getBoundingBox();
 
@@ -358,10 +359,10 @@ ImpostorTexture::ImpostorTexture(ImpostorPage *group, Entity *entity)
 
 	entityDiameter = 2.0f * entityRadius;
 	entityCenter = boundingBox.getCenter();
-
+	
 	//Render impostor textures
 	renderTextures(false);
-
+	
 	//Set up materials
 	for (int o = 0; o < IMPOSTOR_YAW_ANGLES; ++o){
 	for (int i = 0; i < IMPOSTOR_PITCH_ANGLES; ++i){
@@ -369,21 +370,21 @@ ImpostorTexture::ImpostorTexture(ImpostorPage *group, Entity *entity)
 
 		Material *m = material[i][o].getPointer();
 		Pass *p = m->getTechnique(0)->getPass(0);
-
+		
 		TextureUnitState *t = p->createTextureUnitState(texture->getName());
-
+		
 		t->setTextureUScroll((float)o / IMPOSTOR_YAW_ANGLES);
 		t->setTextureVScroll((float)i / IMPOSTOR_PITCH_ANGLES);
 
 		p->setLightingEnabled(false);
 		m->setReceiveShadows(false);
-
+		
 		if (group->getBlendMode() == ALPHA_REJECT_IMPOSTOR){
 			p->setAlphaRejectSettings(CMPF_GREATER_EQUAL, 128);
 			//p->setAlphaRejectSettings(CMPF_GREATER_EQUAL, 64);
 		} else if (group->getBlendMode() == ALPHA_BLEND_IMPOSTOR){
 			p->setSceneBlending(SBF_SOURCE_ALPHA, SBF_ONE_MINUS_SOURCE_ALPHA);
-			p->setDepthWriteEnabled(false);
+			p->setDepthWriteEnabled(false);  
 		}
 	}
 	}
@@ -408,11 +409,11 @@ ImpostorTexture::~ImpostorTexture()
 	//Delete textures
 	assert(!texture.isNull());
 	String texName(texture->getName());
-
+		
 	texture.setNull();
 	if (TextureManager::getSingletonPtr())
 		TextureManager::getSingleton().remove(texName);
-
+	
 	//Delete materials
 	for (int o = 0; o < IMPOSTOR_YAW_ANGLES; ++o){
 	for (int i = 0; i < IMPOSTOR_PITCH_ANGLES; ++i){
@@ -424,7 +425,7 @@ ImpostorTexture::~ImpostorTexture()
 			MaterialManager::getSingleton().remove(matName);
 	}
 	}
-
+	
 	//Remove self from list of ImpostorTexture's
 	selfList.erase(entityKey);
 }
@@ -470,11 +471,11 @@ void ImpostorTexture::renderTextures(bool force)
 				TEX_TYPE_2D, textureSize * IMPOSTOR_YAW_ANGLES, textureSize * IMPOSTOR_PITCH_ANGLES, 0, PF_A8R8G8B8, TU_RENDERTARGET, loader.get());
 	}
 	renderTexture->setNumMipmaps(MIP_UNLIMITED);
-
+	
 	//Set up render target
-	renderTarget = renderTexture->getBuffer()->getRenderTarget();
+	renderTarget = renderTexture->getBuffer()->getRenderTarget(); 
 	renderTarget->setAutoUpdated(false);
-
+	
 	//Set up camera
 	camNode = sceneMgr->getSceneNode("ImpostorPage::cameraNode");
 	renderCamera = sceneMgr->createCamera(getUniqueID("ImpostorCam"));
@@ -485,27 +486,27 @@ void ImpostorTexture::renderTextures(bool force)
 	renderViewport->setClearEveryFrame(true);
 	renderViewport->setShadowsEnabled(false);
 	renderViewport->setBackgroundColour(ImpostorPage::impostorBackgroundColor);
-
+	
 	//Set up scene node
 	SceneNode* node = sceneMgr->getSceneNode("ImpostorPage::renderNode");
-
+	
 	Ogre::SceneNode* oldSceneNode = entity->getParentSceneNode();
 	if (oldSceneNode) {
 		oldSceneNode->detachObject(entity);
 	}
 	node->attachObject(entity);
 	node->setPosition(-entityCenter);
-
+	
 	//Set up camera FOV
 	const Real objDist = entityRadius * 100;
-	const Real nearDist = objDist - (entityRadius + 1);
+	const Real nearDist = objDist - (entityRadius + 1); 
 	const Real farDist = objDist + (entityRadius + 1);
-
+	
 	renderCamera->setAspectRatio(1.0f);
 	renderCamera->setFOVy(Math::ATan(entityDiameter / objDist));
 	renderCamera->setNearClipDistance(nearDist);
 	renderCamera->setFarClipDistance(farDist);
-
+	
 	//Disable mipmapping (without this, masked textures look bad)
 	MaterialManager *mm = MaterialManager::getSingletonPtr();
 	FilterOptions oldMinFilter = mm->getDefaultTextureFiltering(FT_MIN);
@@ -520,11 +521,11 @@ void ImpostorTexture::renderTextures(bool force)
 	Real oldFogStart = sceneMgr->getFogStart();
 	Real oldFogEnd = sceneMgr->getFogEnd();
 	sceneMgr->setFog(Ogre::FOG_EXP2, Ogre::ColourValue(0,0,0,0), 0.0f, 0.0f, 0.0f); ///Ember change
-
+	
 	// Get current status of the queue mode
 	Ogre::SceneManager::SpecialCaseRenderQueueMode OldSpecialCaseRenderQueueMode = sceneMgr->getSpecialCaseRenderQueueMode();
 	//Only render the entity
-	sceneMgr->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_INCLUDE);
+	sceneMgr->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_INCLUDE); 
 	sceneMgr->addSpecialCaseRenderQueue(RENDER_QUEUE_6 + 1);
 
 	uint8 oldRenderQueueGroup = entity->getRenderQueueGroup();
@@ -548,7 +549,9 @@ void ImpostorTexture::renderTextures(bool force)
 	for (i = 0; i < sizeof(key); ++i)
 		key[i] = (key[i] % 26) + 'A';
 
-	ResourceGroupManager::getSingleton().addResourceLocation(".", "FileSystem", "BinFolder");
+	String tempdir = this->group->geom->getTempdir();
+	ResourceGroupManager::getSingleton().addResourceLocation(tempdir, "FileSystem", "BinFolder");
+
 	String fileNamePNG = "Impostor." + String(key, sizeof(key)) + '.' + StringConverter::toString(textureSize) + ".png";
 	String fileNameDDS = "Impostor." + String(key, sizeof(key)) + '.' + StringConverter::toString(textureSize) + ".dds";
 
@@ -582,21 +585,22 @@ void ImpostorTexture::renderTextures(bool force)
 
 			for (int i = 0; i < IMPOSTOR_YAW_ANGLES; ++i){ //8 yaw angle renders
 				Radian yaw = Degree((360.0f * i) * xDivFactor); //0, 45, 90, 135, 180, 225, 270, 315
-
+					
 				//Position camera
 				camNode->setPosition(0, 0, 0);
                 camNode->setOrientation(Quaternion(yaw, Vector3::UNIT_Y) * Quaternion(-pitch, Vector3::UNIT_X));
                 camNode->translate(Vector3(0, 0, objDist), Node::TS_LOCAL);
-
+						
 				//Render the impostor
 				renderViewport->setDimensions((float)(i) * xDivFactor, (float)(o) * yDivFactor, xDivFactor, yDivFactor);
 				renderTarget->update();
 			}
 		}
-
+	
 #ifdef IMPOSTOR_FILE_SAVE
-		//Save RTT to file
-		renderTarget->writeContentsToFile(fileNamePNG);
+		//Save RTT to file with respecting the temp dir
+		String tempFileName = tempdir.empty()?fileNamePNG:tempdir + fileNamePNG;
+		renderTarget->writeContentsToFile(tempFileName);
 
 		//Load the render into the appropriate texture view
 		texture = TextureManager::getSingleton().load(fileNamePNG, "BinFolder", TEX_TYPE_2D, MIP_UNLIMITED);
@@ -604,14 +608,14 @@ void ImpostorTexture::renderTextures(bool force)
 		texture = renderTexture;
 #endif
 	}
-
+	
 
 	entity->setVisible(oldVisible);
 	entity->setRenderQueueGroup(oldRenderQueueGroup);
 	entity->setRenderingDistance(oldMaxDistance);
 	sceneMgr->removeSpecialCaseRenderQueue(RENDER_QUEUE_6 + 1);
 	// Restore original state
-	sceneMgr->setSpecialCaseRenderQueueMode(OldSpecialCaseRenderQueueMode);
+	sceneMgr->setSpecialCaseRenderQueueMode(OldSpecialCaseRenderQueueMode); 
 
 	//Re-enable mipmapping
 	mm->setDefaultTextureFiltering(oldMinFilter, oldMagFilter, oldMipFilter);
@@ -622,7 +626,7 @@ void ImpostorTexture::renderTextures(bool force)
 	//Delete camera
 	renderTarget->removeViewport(0);
 	renderCamera->getSceneManager()->destroyCamera(renderCamera);
-
+	
 	//Delete scene node
 	node->detachAllObjects();
 	if (oldSceneNode) {
@@ -676,11 +680,11 @@ ImpostorTexture *ImpostorTexture::getTexture(ImpostorPage *group, Entity *entity
 	String entityKey = ImpostorBatch::generateEntityKey(entity);
 	std::map<String, ImpostorTexture *>::iterator iter;
 	iter = selfList.find(entityKey);
-
+	
 	//If found..
 	if (iter != selfList.end()){
 		//Return it
-		return iter->second;
+		return iter->second;		
 	} else {
 		if (group){
 			//Otherwise, return a new texture
