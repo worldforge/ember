@@ -60,7 +60,7 @@ FoliageLayer::FoliageLayer(::Forests::PagedGeometry *geom, GrassLoader<FoliageLa
 	animSpeed = 1.0f;
 	animFreq = 1.0f;
 	waveCount = 0.0f;
-	animate = false;
+	animate = true;
 	blend = false;
 	shaderNeedsUpdate = true;
 }
