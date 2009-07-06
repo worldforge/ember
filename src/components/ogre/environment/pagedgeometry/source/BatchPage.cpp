@@ -43,7 +43,7 @@ void BatchPage::init(PagedGeometry *geom, const Any &data)
 	if ( datacast < 0)
 		OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS,"Data of BatchPage must be a positive integer. It representing the LOD level this detail level stores.","BatchPage::BatchPage");
 #endif
-	mLODLevel = datacast; 
+	mLODLevel = datacast;
 
 	sceneMgr = geom->getSceneManager();
 	batch = new BatchedGeometry(sceneMgr, geom->getSceneNode());
@@ -86,7 +86,7 @@ void BatchPage::addEntity(Entity *ent, const Vector3 &position, const Quaternion
 		Ogre::LogManager::getSingleton().logMessage( "BatchPage::addEntity: " + ent->getName() + " entity has less than " + Ogre::StringConverter::toString(mLODLevel) + " manual lod level(s). Performance warning.");
 #endif
 
-	if (mLODLevel == 0 || numManLod == 0) 
+	if (mLODLevel == 0 || numManLod == 0)
 		batch->addEntity(ent, position, rotation, scale, color);
 	else
 	{
@@ -312,11 +312,16 @@ void BatchPage::_updateShaders()
 						++texNum;
 					}
 				}
-
 				vertexProgSource +=
-					"	oPosition = mul(worldViewProj, iPosition);  \n"
-					"	oFog = oPosition.z; \n"
-					"}";
+					"	oPosition = mul(worldViewProj, iPosition);  \n";
+				if (sceneMgr->getFogMode() == Ogre::FOG_EXP2) {
+					vertexProgSource +=
+						"	oFog = 1 - clamp (pow (2.71828, -oPosition.z * iFogParams.x), 0, 1); \n";
+				} else {
+					vertexProgSource +=
+						"	oFog = oPosition.z; \n";
+				}
+				vertexProgSource += "}";
 			}
 
 			if(!shaderLanguage.compare("glsl"))
@@ -385,9 +390,16 @@ void BatchPage::_updateShaders()
 				}
 
 				vertexProgSource +=
-					"   gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;  \n"
-					"   gl_FogFragCoord = gl_Position.z; \n"
-					"}";
+					"   gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;  \n";
+				if (sceneMgr->getFogMode() == Ogre::FOG_EXP2) {
+					vertexProgSource +=
+						"	gl_FogFragCoord = clamp(exp(- gl_Fog.density * gl_Fog.density * gl_Position.z * gl_Position.z), 0.0, 1.0); \n";
+				} else {
+					vertexProgSource +=
+						"	gl_FogFragCoord = gl_Position.z; \n";
+				}
+
+				vertexProgSource +=	"}";
 			}
 
 
@@ -500,6 +512,8 @@ void BatchPage::_updateShaders()
 						{
 							//glsl can use the built in gl_ModelViewProjectionMatrix
 							params->setNamedAutoConstant("worldViewProj", GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+						} else {
+							params->setNamedAutoConstant("iFogParams", GpuProgramParameters::ACT_FOG_PARAMS);
 						}
 
 						if (fadeEnabled)

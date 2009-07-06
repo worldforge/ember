@@ -626,9 +626,16 @@ void GrassLayerBase::_updateShaders()
 						vertexProgSource +=
 						"    gl_Position = gl_ModelViewProjectionMatrix * position; \n"
 						"    gl_FrontColor = color; \n"
-						"    gl_TexCoord[0] = gl_MultiTexCoord0; \n"
-						"    gl_FogFragCoord = gl_Position.z; \n"
-						"}";
+						"    gl_TexCoord[0] = gl_MultiTexCoord0; \n";
+						if (geom->getSceneManager()->getFogMode() == Ogre::FOG_EXP2) {
+							vertexProgSource +=
+								"	gl_FogFragCoord = clamp(exp(- gl_Fog.density * gl_Fog.density * gl_Position.z * gl_Position.z), 0.0, 1.0); \n";
+						} else {
+							vertexProgSource +=
+								"	gl_FogFragCoord = gl_Position.z; \n";
+						}
+
+						vertexProgSource +=	"}";
 					}
 
 					vertexShader = HighLevelGpuProgramManager::getSingleton().createProgram(
