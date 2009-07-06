@@ -1,7 +1,7 @@
 INCLUDES = -I$(top_builddir)/src -I$(top_srcdir)/src
 METASOURCES = AUTO
-noinst_LTLIBRARIES = libIcons.la
+noinst_LIBRARIES = libIcons.a
 noinst_HEADERS = Icon.h IconImageStore.h IconManager.h IconRenderer.h \
 	IconStore.h
-libIcons_la_SOURCES = Icon.cpp IconImageStore.cpp IconManager.cpp \
+libIcons_a_SOURCES = Icon.cpp IconImageStore.cpp IconManager.cpp \
 	IconRenderer.cpp IconStore.cpp

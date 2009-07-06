@@ -1,8 +1,8 @@
 INCLUDES = $(STLPORT_CFLAGS) -I$(top_srcdir)/src -I$(top_srcdir)/src/components/ogre  -I$(top_builddir)/src -I$(top_srcdir)/src/components/ogre/SceneManagers/EmberPagingSceneManager/include 
 
-noinst_LTLIBRARIES = libEmberPagingSceneManager.la
+noinst_LIBRARIES = libEmberPagingSceneManager.a
 
-libEmberPagingSceneManager_la_SOURCES = \
+libEmberPagingSceneManager_a_SOURCES = \
 						DRGNURBSSurface.cpp \
 						filetutils.cpp \
 						OgrePagingLandScapeOctreeAxisAlignedBoxSceneQuery.cpp \
@@ -52,7 +52,7 @@ libEmberPagingSceneManager_la_SOURCES = \
 						EmberPagingLandScapeTexture.cpp \
 						EmberPagingSceneManagerAdapter.cpp \
 						EmberTerrainPageBridge.cpp
-libEmberPagingSceneManager_la_LDFLAGS = -no-undefined
+libEmberPagingSceneManager_a_LDFLAGS = -no-undefined
 
 #						OgrePagingLandScapeData2D_HeightField.cpp \
 # 						OgrePagingLandScapeData2D_HeightFieldN.cpp \

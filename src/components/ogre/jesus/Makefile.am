@@ -15,8 +15,8 @@ uninstall-local:
 
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src
 METASOURCES = AUTO
-noinst_LTLIBRARIES = libJesus.la
+noinst_LIBRARIES = libJesus.a
 noinst_HEADERS = Jesus.h JesusMousePicker.h JesusPickerObject.h \
 	XMLJesusSerializer.h
-libJesus_la_SOURCES = Jesus.cpp JesusMousePicker.cpp JesusPickerObject.cpp \
+libJesus_a_SOURCES = Jesus.cpp JesusMousePicker.cpp JesusPickerObject.cpp \
 	XMLJesusSerializer.cpp

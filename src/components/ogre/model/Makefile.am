@@ -1,8 +1,8 @@
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src
 
-noinst_LTLIBRARIES = libModel.la
+noinst_LIBRARIES = libModel.a
 
-libModel_la_SOURCES = Action.cpp AnimationSet.cpp Model.cpp \
+libModel_a_SOURCES = Action.cpp AnimationSet.cpp Model.cpp \
 	ModelBackgroundLoader.cpp ModelDefinition.cpp ModelDefinitionAtlasComposer.cpp \
 	ModelDefinitionManager.cpp ModelPart.cpp ParticleSystem.cpp ParticleSystemBinding.cpp SubModel.cpp \
 	SubModelPart.cpp XMLModelDefinitionSerializer.cpp

@@ -1,8 +1,8 @@
 INCLUDES = -I$(top_builddir)/src -I$(top_srcdir)/src
 METASOURCES = AUTO
-libAdapters_la_LDFLAGS = -no-undefined
-noinst_LTLIBRARIES = libAdapters.la
+libAdapters_a_LDFLAGS = -no-undefined
+noinst_LIBRARIES = libAdapters.a
 noinst_HEADERS = ListBinder.h
-libAdapters_la_SOURCES = ListBinder.cpp
+libAdapters_a_SOURCES = ListBinder.cpp
 
 SUBDIRS = atlas

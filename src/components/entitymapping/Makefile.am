@@ -1,7 +1,7 @@
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src
 METASOURCES = AUTO
 
-noinst_LTLIBRARIES = libEntityMapping.la
+noinst_LIBRARIES = libEntityMapping.a
 noinst_HEADERS = Actions/Action.h Actions/DummyAction.h Cases/AttributeCase.h \
 	Cases/AttributeComparers/AttributeComparerWrapper.h Cases/AttributeComparers/HeightComparerWrapper.h \
 	Cases/AttributeComparers/NumericComparer.h Cases/AttributeComparers/NumericComparerWrapper.h \
@@ -16,7 +16,7 @@ noinst_HEADERS = Actions/Action.h Actions/DummyAction.h Cases/AttributeCase.h \
 	Matches/AttributeDependentMatch.h Matches/AttributeMatch.h Matches/EntityTypeMatch.h Matches/MatchBase.h \
 	Matches/Observers/AttributeObserver.h Matches/Observers/EntityCreationObserver.h Matches/OutfitMatch.h \
 	EntityMapping.h EntityMappingCreator.h EntityMappingManager.h 
-libEntityMapping_la_SOURCES = Actions/Action.cpp Actions/DummyAction.cpp \
+libEntityMapping_a_SOURCES = Actions/Action.cpp Actions/DummyAction.cpp \
 	Cases/AttributeCase.cpp Cases/AttributeComparers/AttributeComparerWrapper.cpp \
 	Cases/AttributeComparers/HeightComparerWrapper.cpp Cases/AttributeComparers/NumericComparer.cpp \
 	Cases/AttributeComparers/NumericComparerWrapper.cpp Cases/AttributeComparers/NumericEqualsComparer.cpp \

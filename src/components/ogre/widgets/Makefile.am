@@ -18,8 +18,8 @@ uninstall-local:
 
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src
 METASOURCES = AUTO
-noinst_LTLIBRARIES = libWidgets.la
-libWidgets_la_SOURCES = AssetsManager.cpp ColouredListItem.cpp Compass.cpp \
+noinst_LIBRARIES = libWidgets.a
+libWidgets_a_SOURCES = AssetsManager.cpp ColouredListItem.cpp Compass.cpp \
 	ConsoleAdapter.cpp EntityCEGUITexture.cpp EntityCreator.cpp EntityCreatorActionCreator.cpp \
 	EntityCreatorHideModelAction.cpp EntityCreatorModelAction.cpp EntityCreatorMovement.cpp \
 	EntityCreatorMovementBridge.cpp EntityCreatorPartAction.cpp EntityEditor.cpp EntityIcon.cpp \
@@ -40,6 +40,6 @@ noinst_HEADERS = AssetsManager.h ColouredListItem.h Compass.h ConsoleAdapter.h \
 	Vector3Adapter.h Widget.h WidgetDefinitions.h WidgetPool.h
 #TerrainEdit.h Map.h JesusEdit.h 
 SUBDIRS = adapters icons
-libWidgets_la_LIBADD = \
-	$(top_builddir)/src/components/ogre/widgets/adapters/atlas/libAtlas.la 	$(top_builddir)/src/components/ogre/widgets/adapters/libAdapters.la $(top_builddir)/src/components/ogre/widgets/icons/libIcons.la
-libWidgets_la_LDFLAGS = -no-undefined
+libWidgets_a_LIBADD = \
+	$(top_builddir)/src/components/ogre/widgets/adapters/atlas/libAtlas.a 	$(top_builddir)/src/components/ogre/widgets/adapters/libAdapters.a $(top_builddir)/src/components/ogre/widgets/icons/libIcons.a
+libWidgets_a_LDFLAGS = -no-undefined

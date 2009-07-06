@@ -1,6 +1,6 @@
 INCLUDES = -I$(top_srcdir)/src -I$(top_builddir)/src
 
-noinst_LTLIBRARIES = libMetaserverService.la
+noinst_LIBRARIES = libMetaserverService.a
 
-libMetaserverService_la_SOURCES = MetaserverService.cpp 
+libMetaserverService_a_SOURCES = MetaserverService.cpp 
 noinst_HEADERS = MetaserverService.h

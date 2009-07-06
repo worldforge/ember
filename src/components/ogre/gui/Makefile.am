@@ -1,5 +1,5 @@
 INCLUDES = -DPREFIX=\"@prefix@\" -I$(top_builddir)/src -I$(top_srcdir)/src
 METASOURCES = AUTO
-noinst_LTLIBRARIES = libGui.la
+noinst_LIBRARIES = libGui.a
 noinst_HEADERS = ActiveWidgetHandler.h CEGUILogger.h
-libGui_la_SOURCES = ActiveWidgetHandler.cpp CEGUILogger.cpp
+libGui_a_SOURCES = ActiveWidgetHandler.cpp CEGUILogger.cpp

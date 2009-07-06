@@ -3,24 +3,24 @@ SUBDIRS = SceneManagers cegui environment gui  \
 	manipulation model modeldefinitions sounddefinitions scripting sound terrain widgets mapping
 #carpenter jesus ogreopcode
 
-noinst_LTLIBRARIES = libEmberOgre.la
+noinst_LIBRARIES = libEmberOgre.a
 
 
 
-libEmberOgre_la_LIBADD = \
-	$(top_builddir)/src/components/ogre/SceneManagers/EmberPagingSceneManager/src/libEmberPagingSceneManager.la \
-	$(top_builddir)/src/components/ogre/environment/libEnvironment.la $(top_builddir)/src/components/ogre/manipulation/libmanipulation.la \
-	$(top_builddir)/src/components/ogre/model/libModel.la $(top_builddir)/src/components/ogre/mapping/libMapping.la \
-	$(top_builddir)/src/components/ogre/scripting/bindings/lua/helpers/liblua_Helpers.la \
-	$(top_builddir)/src/components/ogre/scripting/bindings/lua/liblua_EmberOgre.la \
-	$(top_builddir)/src/components/ogre/scripting/bindings/lua/ogre/liblua_Ogre.la $(top_builddir)/src/components/ogre/scripting/libScripting.la \
-	$(top_builddir)/src/components/ogre/sound/libSound.la $(top_builddir)/src/components/ogre/terrain/libTerrain.la \
-	$(top_builddir)/src/components/ogre/widgets/libWidgets.la $(top_builddir)/src/components/ogre/gui/libGui.la
+libEmberOgre_a_LIBADD = \
+	$(top_builddir)/src/components/ogre/SceneManagers/EmberPagingSceneManager/src/libEmberPagingSceneManager.a \
+	$(top_builddir)/src/components/ogre/environment/libEnvironment.a $(top_builddir)/src/components/ogre/manipulation/libmanipulation.a \
+	$(top_builddir)/src/components/ogre/model/libModel.a $(top_builddir)/src/components/ogre/mapping/libMapping.a \
+	$(top_builddir)/src/components/ogre/scripting/bindings/lua/helpers/liblua_Helpers.a \
+	$(top_builddir)/src/components/ogre/scripting/bindings/lua/liblua_EmberOgre.a \
+	$(top_builddir)/src/components/ogre/scripting/bindings/lua/ogre/liblua_Ogre.a $(top_builddir)/src/components/ogre/scripting/libScripting.a \
+	$(top_builddir)/src/components/ogre/sound/libSound.a $(top_builddir)/src/components/ogre/terrain/libTerrain.a \
+	$(top_builddir)/src/components/ogre/widgets/libWidgets.a $(top_builddir)/src/components/ogre/gui/libGui.a
         
-#	$(top_builddir)/src/components/ogre/jesus/libJesus.la $(top_builddir)/src/components/ogre/carpenter/libCarpenter.la $(top_builddir)/src/components/ogre/ogreopcode/src/libOgreOpcode.la 
+#	$(top_builddir)/src/components/ogre/jesus/libJesus.a $(top_builddir)/src/components/ogre/carpenter/libCarpenter.a $(top_builddir)/src/components/ogre/ogreopcode/src/libOgreOpcode.a 
 
 
-libEmberOgre_la_SOURCES = AttributeObserver.cpp Avatar.cpp AvatarCamera.cpp \
+libEmberOgre_a_SOURCES = AttributeObserver.cpp Avatar.cpp AvatarCamera.cpp \
 	AvatarController.cpp AvatarEmberEntity.cpp AvatarLogger.cpp AvatarTerrainCursor.cpp \
 	CameraMount.cpp ConsoleObjectImpl.cpp EmberEntity.cpp EmberEntityActionCreator.cpp \
 	EmberEntityFactory.cpp EmberEntityHideModelAction.cpp EmberEntityModelAction.cpp \
