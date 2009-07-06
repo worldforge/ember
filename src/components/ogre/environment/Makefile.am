@@ -13,7 +13,6 @@ libEnvironment_a_SOURCES = CaelumEnvironment.cpp CaelumSky.cpp CaelumSun.cpp \
 	FoliageLoader.cpp Forest.cpp GrassFoliage.cpp HydraxWater.cpp LensFlare.cpp \
 	ShrubberyFoliage.cpp SimpleEnvironment.cpp SimpleWater.cpp Sun.cpp Tree.cpp Water.cpp
 
-libEnvironment_a_LIBADD = caelum/libCaelum.a pagedgeometry/libpagedgeometry.a
 #meshtree/libMeshTree.a  hydrax/libHydrax.a
 noinst_HEADERS = CaelumEnvironment.h CaelumSky.h CaelumSun.h \
 	EmberEntityLoader.h Environment.h Foliage.h FoliageBase.h FoliageLayer.h FoliageLoader.h \

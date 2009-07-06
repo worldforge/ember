@@ -4,9 +4,6 @@ SUBDIRS = bindings
 
 noinst_LIBRARIES = libFramework.a
 
-libFramework_a_LIBADD = \
-	$(top_builddir)/src/framework/bindings/lua/atlas/liblua_Atlas.a $(top_builddir)/src/framework/bindings/lua/eris/liblua_Eris.a \
-	$(top_builddir)/src/framework/bindings/lua/liblua_Framework.a
 libFramework_a_SOURCES = ConsoleBackend.cpp ConsoleCommandWrapper.cpp \
 	Exception.cpp Log.cpp LogObserver.cpp LoggingInstance.cpp StreamLogObserver.cpp \
 	Tokeniser.cpp XMLCodec.cpp binreloc.c scrap.c 

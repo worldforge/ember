@@ -4,8 +4,6 @@ METASOURCES = AUTO
 
 SUBDIRS = Opcode
 noinst_LIBRARIES = libOgreOpcode.a
-libOgreOpcode_a_LIBADD = \
-	$(top_builddir)/src/components/ogre/ogreopcode/src/Opcode/libOpcode.a
 
 libOgreOpcode_a_SOURCES = BP_Endpoint.cpp BP_Proxy.cpp BP_Scene.cpp IOgreCollisionShape.cpp OgreBoxCollisionShape.cpp OgreCapsule.cpp OgreCollisionContext.cpp OgreCollisionManager.cpp OgreCollisionObject.cpp OgreEntityCollisionShape.cpp OgreMeshCollisionShape.cpp OgreOpcodeCharacterController.cpp OgreOpcodeDebugObject.cpp OgreOpcodeLine.cpp OgreOpcodeMath.cpp OgreOpcodeRay.cpp OgreOpcodeTerrainData.cpp OgreOrientedBox.cpp OgrePtrCollisionShape.cpp OgreSphereMeshCollisionShape.cpp OgreTerrainCollisionShape.cpp OgreTriangle.cpp
 
