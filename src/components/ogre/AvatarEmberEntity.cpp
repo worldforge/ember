@@ -80,7 +80,7 @@ void AvatarEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool 
 {
 	EmberPhysicalEntity::init(ge, fromCreateOp);
 	mModel->setQueryFlags(MousePicker::CM_AVATAR);
-	
+
 
 }
 
@@ -88,10 +88,11 @@ void AvatarEmberEntity::onMoved()
 {
 	///If there's an avatar connected we'll let that handle the update of the Ogre node, and bypass the EmberPhysicalEntity
 	if (getAvatar()) {
+		parseMovementMode();
 		getAvatar()->movedInWorld();
 		Eris::Entity::onMoved();
 	} else {
-		EmberPhysicalEntity::onMoved();	
+		EmberPhysicalEntity::onMoved();
 	}
 }
 
@@ -101,7 +102,7 @@ void AvatarEmberEntity::onImaginary(const Atlas::Objects::Root& act)
     if (act->copyAttr("description", attr) != 0 || !attr.isString()) {
         return;
     }
-    
+
 	/// Make the message appear in the chat box
 	GUIManager::getSingleton().AppendAvatarImaginary.emit(getName() + " " + attr.String());
 }
@@ -122,18 +123,18 @@ void AvatarEmberEntity::handleTalk(const std::string &msg)
 void AvatarEmberEntity::setVisible(bool vis)
 {
 	//TODO
-	//mOgreEntity->setVisible(true);	
+	//mOgreEntity->setVisible(true);
 }
 */
 
-//void AvatarEmberEntity::addMember(Entity *e) 
-void AvatarEmberEntity::onChildAdded(Entity *e) 
+//void AvatarEmberEntity::addMember(Entity *e)
+void AvatarEmberEntity::onChildAdded(Entity *e)
 {
 	//mAvatar->EventAddedEntityToInventory.emit(static_cast<EmberEntity*>(e));
 	EmberOgre::getSingleton().getAvatar()->mEntitiesToBeAddedToInventory.insert(e);
 	//PersonEmberEntity::addMember(e);
 	EmberPhysicalEntity::onChildAdded(e);
-	
+
 }
 
 
@@ -143,7 +144,7 @@ void AvatarEmberEntity::onChildRemoved(Entity *e)
 	EmberOgre::getSingleton().getAvatar()->EventRemovedEntityFromInventory.emit(static_cast<EmberEntity*>(e));
 	EmberPhysicalEntity::onChildRemoved(e);
 //	mAvatar->mEntitiesToBeRemovedFromInventory.insert(e);
-//	PersonEmberEntity::rmvMember(e);	
+//	PersonEmberEntity::rmvMember(e);
 }
 
 
@@ -151,30 +152,30 @@ void AvatarEmberEntity::onChildRemoved(Entity *e)
 // void AvatarEmberEntity::onLocationChanged(Eris::Entity *oldLocation, Eris::Entity *newLocation)
 // {
 // 	return EmberEntity::onLocationChanged(oldLocation, newLocation);
-// 	
-// 	
-// 	
+//
+//
+//
 // 	Ogre::Vector3 oldWorldPosition = getSceneNode()->getWorldPosition();
 // 	EmberEntity* EmberEntity = dynamic_cast<EmberEntity*>(newLocation);
 // 	Ogre::SceneNode* newOgreParentNode = EmberEntity->getSceneNode();
-// 	
+//
 // /*	if (EmberEntity)
 // 	{
 // 		newOgreParentNode = EmberEntity->getSceneNode();
 // 	} else {
 // 		newOgreParentNode = EmberOgre::getSingleton().getSceneManager()->getSceneNode(newLocation->getId());
 // 	}*/
-// 		
+//
 // 	if (getSceneNode()->getParent()) {
 // 		//detach from our current object and add to the new entity
 // 		getSceneNode()->getParent()->removeChild(getSceneNode()->getName());
 // 	}
 // 	newOgreParentNode->addChild(getSceneNode());
-// 	
-// 
+//
+//
 // //	Entity::setContainer(pr);
 // 	Eris::Entity::onLocationChanged(oldLocation, newLocation);
-// 	
+//
 // 	//we adjust the entity so it retains it's former position in the world
 // 	Ogre::Vector3 newWorldPosition = getSceneNode()->getWorldPosition();
 // 	getSceneNode()->translate(oldWorldPosition - newWorldPosition);
@@ -182,7 +183,7 @@ void AvatarEmberEntity::onChildRemoved(Entity *e)
 
 Ogre::SceneNode* AvatarEmberEntity::getAvatarSceneNode()
 {
-	return getScaleNode();	
+	return getScaleNode();
 }
 
 
