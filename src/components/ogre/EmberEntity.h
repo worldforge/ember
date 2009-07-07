@@ -67,21 +67,22 @@ public:
 	enum MovementMode
 	{
 		MM_DEFAULT = 0,
-		MM_STANDING = 1,
-		MM_FLOATING = 2,
-		MM_PROJECTILE = 3,
-		MM_SWIMMING = 4,
-		MM_WALKING = 5,
-		MM_RUNNING = 6,
-		MM_FIXED = 7
+		MM_SWIMMING = 1,
+		MM_WALKING = 2,
+		MM_RUNNING = 3
 	};
 
-	static const std::string MODE_STANDING;
-	static const std::string MODE_RUNNING;
-	static const std::string MODE_WALKING;
-	static const std::string MODE_SWIMMING;
+	enum PositioningMode
+	{
+		PM_DEFAULT = 0,
+		PM_FLOATING = 1,
+		PM_PROJECTILE = 2,
+		PM_FIXED = 3
+	};
+
 	static const std::string MODE_FLOATING;
 	static const std::string MODE_FIXED;
+	static const std::string MODE_PROJECTILE;
 
 	/**
 	The material used for showing the eris bbox.
@@ -204,10 +205,16 @@ public:
 	bool isInitialized() const;
 
 	/**
-	 * @brief The mode the entity is in, like walking, running, swimming etc.
+	 * @brief The movement mode the entity is in, like walking, running, swimming etc.
 	 * @return The current movement mode of the entity.
 	 */
 	MovementMode getMovementMode() const;
+
+	/**
+	 * @brief The movement mode the entity is in, like walking, running, swimming etc.
+	 * @return The current movement mode of the entity.
+	 */
+	PositioningMode getPositioningMode() const;
 
 	/**
 	 * @brief Call this method once per frame to update the motion of the entity
@@ -316,7 +323,16 @@ public:
 	 * The parameter sent is the new movement mode.
 	 * This event will be emitted before the actual mode is changed, so you can call getMovementMode() to get the current movement mode, before the new one is in effect.
 	 */
-	sigc::signal<void, MovementMode> EventModeChanged;
+	sigc::signal<void, MovementMode> EventMovementModeChanged;
+
+	/**
+	 * @brief Emitted when the positioning mode has changed.
+	 * The entity is placed in the world differently depending on the "positioning mode". The default mode is to be gravity affected, i.e. fall to the ground.
+	 * In a simplified simulation this will in most cases mean that the entity is snapped to the terrain. However, there are other options, such as "fixed" or "floating".
+	 * The parameter sent is the new positioning mode.
+	 * This event will be emitted before the actual mode is changed, so you can call getPositioningMode() to get the current positioning mode, before the new one is in effect.
+	 */
+	sigc::signal<void, PositioningMode> EventPositioningModeChanged;
 
 protected:
 
@@ -384,10 +400,16 @@ protected:
 	/**
 	 * @brief Called when the movement mode of the entity changes.
 	 * For example when the entity changes from standing to walking.
-	 * Depending on the kind of movement mode the entity needs to be adjusted in the world accordinly. For example, when the entity is walking it should snap to the terrain, in contrast to when the mode is "fixed" where it wouldn't snap to the terrain.
 	 * @param newMode The new movement mode.
 	 */
-	virtual void onModeChanged(MovementMode newMode);
+	virtual void onMovementModeChanged(MovementMode newMode);
+
+	/**
+	 * @brief Called when the positioning mode of the entity changes.
+	 * Depending on the kind of positioning mode the entity needs to be adjusted in the world accordinly. For example, when the entity is gravity affected (the default) it should snap to the terrain, in contrast to when the mode is "fixed" where it wouldn't snap to the terrain.
+	 * @param newMode The new movement mode.
+	 */
+	virtual void onPositioningModeChanged(PositioningMode newMode);
 
 	/**
 	 * @brief Called when the bounding box has changed.
@@ -479,17 +501,27 @@ protected:
 	std::auto_ptr<Terrain::TerrainMod> mTerrainMod;
 
 	/**
-	* @brief The mode the entity is in, like walking, running, swimming etc.
+	* @brief The movement mode the entity is in, like walking, running, swimming etc.
 	*/
 	MovementMode mMovementMode;
 
+	/**
+	* @brief The positioning mode the entity is in, like gravity affected, fixed or floating.
+	*/
+	PositioningMode mPositioningMode;
 
 	/**
-	 * @brief Parses the current mode from the submitted element, which should be taken from the "mode" attribute.
-	 * This method will in turn call onModeChanged if the mode is changed
+	 * @brief Parses the current positioning mode from the submitted element, which should be taken from the "mode" attribute.
+	 * This method will in turn call onPositioningModeChanged if the mode is changed
 	 * @param v The element that contains the mode attribute, should be the "mode" attribute in the root attributes map.
 	 */
-	void parseModeChange(const Atlas::Message::Element& v);
+	void parsePositioningModeChange(const Atlas::Message::Element& v);
+
+	/**
+	 * @brief Parses and sets the movement mode.
+	 * The movement mode is determined mainly from whether the entity is moving or not. The speed of the movement also affects the mode.
+	 */
+	virtual void parseMovementMode();
 };
 
 
@@ -504,6 +536,10 @@ inline EmberEntity::MovementMode EmberEntity::getMovementMode() const
 	return mMovementMode;
 }
 
+inline EmberEntity::PositioningMode EmberEntity::getPositioningMode() const
+{
+	return mPositioningMode;
+}
 
 }
 

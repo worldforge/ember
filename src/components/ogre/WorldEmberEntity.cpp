@@ -262,7 +262,7 @@ void WorldEmberEntity::adjustPositionForContainedNode(const EmberEntity& entity,
 {
 	Ogre::SceneNode* sceneNode = entity.getSceneNode();
 
-	if (entity.getMovementMode() == EmberEntity::MM_FLOATING) {
+	if (entity.getPositioningMode() == EmberEntity::PM_FLOATING) {
 		sceneNode->setPosition(position.x, 0,position.z);
 	} else if (entity.getMovementMode() == EmberEntity::MM_SWIMMING) {
 		///if it's swimming, make sure that it's between the sea bottom and the surface

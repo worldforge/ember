@@ -220,7 +220,7 @@ protected:
 	 * @brief Called when the movement mode has changed. We might want to update the animation of the entity, for example if it's a human.
 	 * @param newMode
 	 */
-	virtual void onModeChanged(MovementMode newMode);
+	virtual void onMovementModeChanged(MovementMode newMode);
 
 	/**
 	 The current movement action of the entity, for example a walk action or a run action.

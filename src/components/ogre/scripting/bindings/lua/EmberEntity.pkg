@@ -4,15 +4,19 @@ class EmberEntity : public Eris::Entity {
 	enum MovementMode
 	{
 		MM_DEFAULT = 0,
-		MM_STANDING = 1,
-		MM_FLOATING = 2,
-		MM_PROJECTILE = 3,
-		MM_SWIMMING = 4,
-		MM_WALKING = 5,
-		MM_RUNNING = 6,
-		MM_FIXED = 7  
+		MM_SWIMMING = 1,
+		MM_WALKING = 2,
+		MM_RUNNING = 3
 	};
 
+	enum PositioningMode
+	{
+		PM_DEFAULT = 0,
+		PM_FLOATING = 1,
+		PM_PROJECTILE = 2,
+		PM_FIXED = 3
+	};
+	
 	Ogre::SceneNode* getSceneNode() const;
 	
 	bool hasSuggestedResponses() const;
@@ -25,7 +29,17 @@ class EmberEntity : public Eris::Entity {
 	
 	inline bool isInitialized() const;
 
-	inline MovementMode getMovementMode() const;
+	/**
+	 * @brief The movement mode the entity is in, like walking, running, swimming etc.
+	 * @return The current movement mode of the entity.
+	 */
+	MovementMode getMovementMode() const;
+
+	/**
+	 * @brief The movement mode the entity is in, like walking, running, swimming etc.
+	 * @return The current movement mode of the entity.
+	 */
+	PositioningMode getPositioningMode() const;
 	
 	
 	virtual void showOgreBoundingBox(bool show);

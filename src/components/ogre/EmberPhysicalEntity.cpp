@@ -235,7 +235,7 @@ void EmberPhysicalEntity::init(const Atlas::Objects::Entity::RootEntity &ge, boo
 	setSounds();
 
 	///start out with the default movement mode
-	onModeChanged(EmberEntity::MM_DEFAULT);
+	onMovementModeChanged(EmberEntity::MM_DEFAULT);
 
 	EmberEntity::init(ge, fromCreateOp);
 	getModel()->setQueryFlags(MousePicker::CM_ENTITY);
@@ -450,7 +450,7 @@ void EmberPhysicalEntity::Model_Reloaded()
 {
 	initFromModel();
 	///Retrigger a movement change so that animations can be stopped and started now that the model has changed.
-	onModeChanged(mMovementMode);
+	onMovementModeChanged(mMovementMode);
 	attachAllEntities();
 }
 
@@ -511,7 +511,7 @@ void EmberPhysicalEntity::onAttrChanged(const std::string& str, const Atlas::Mes
 
 }
 
-void EmberPhysicalEntity::onModeChanged(MovementMode newMode)
+void EmberPhysicalEntity::onMovementModeChanged(MovementMode newMode)
 {
 	/*	if (newMode != mMovementMode)
 	 {*/
@@ -572,7 +572,7 @@ void EmberPhysicalEntity::onModeChanged(MovementMode newMode)
 	//might set mCurrentMovementAction to 0
 	// 	}
 
-	EmberEntity::onModeChanged(newMode);
+	EmberEntity::onMovementModeChanged(newMode);
 }
 
 void EmberPhysicalEntity::onChildAdded(Entity *e)

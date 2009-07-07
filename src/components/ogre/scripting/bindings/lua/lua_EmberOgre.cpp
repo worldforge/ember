@@ -2434,6 +2434,38 @@ static int tolua_EmberOgre_EmberOgre_EmberEntity_getMovementMode00(lua_State* to
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: getPositioningMode of class  EmberOgre::EmberEntity */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EmberEntity_getPositioningMode00
+static int tolua_EmberOgre_EmberOgre_EmberEntity_getPositioningMode00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::EmberEntity",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::EmberEntity* self = (const EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getPositioningMode'",NULL);
+#endif
+  {
+   EmberOgre::EmberEntity::PositioningMode tolua_ret = (EmberOgre::EmberEntity::PositioningMode)  self->getPositioningMode();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getPositioningMode'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: showOgreBoundingBox of class  EmberOgre::EmberEntity */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EmberEntity_showOgreBoundingBox00
 static int tolua_EmberOgre_EmberOgre_EmberEntity_showOgreBoundingBox00(lua_State* tolua_S)
@@ -22969,13 +23001,13 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
    tolua_cclass(tolua_S,"EmberEntity","EmberOgre::EmberEntity","Eris::Entity",NULL);
    tolua_beginmodule(tolua_S,"EmberEntity");
     tolua_constant(tolua_S,"MM_DEFAULT",EmberOgre::EmberEntity::MM_DEFAULT);
-    tolua_constant(tolua_S,"MM_STANDING",EmberOgre::EmberEntity::MM_STANDING);
-    tolua_constant(tolua_S,"MM_FLOATING",EmberOgre::EmberEntity::MM_FLOATING);
-    tolua_constant(tolua_S,"MM_PROJECTILE",EmberOgre::EmberEntity::MM_PROJECTILE);
     tolua_constant(tolua_S,"MM_SWIMMING",EmberOgre::EmberEntity::MM_SWIMMING);
     tolua_constant(tolua_S,"MM_WALKING",EmberOgre::EmberEntity::MM_WALKING);
     tolua_constant(tolua_S,"MM_RUNNING",EmberOgre::EmberEntity::MM_RUNNING);
-    tolua_constant(tolua_S,"MM_FIXED",EmberOgre::EmberEntity::MM_FIXED);
+    tolua_constant(tolua_S,"PM_DEFAULT",EmberOgre::EmberEntity::PM_DEFAULT);
+    tolua_constant(tolua_S,"PM_FLOATING",EmberOgre::EmberEntity::PM_FLOATING);
+    tolua_constant(tolua_S,"PM_PROJECTILE",EmberOgre::EmberEntity::PM_PROJECTILE);
+    tolua_constant(tolua_S,"PM_FIXED",EmberOgre::EmberEntity::PM_FIXED);
     tolua_function(tolua_S,"getSceneNode",tolua_EmberOgre_EmberOgre_EmberEntity_getSceneNode00);
     tolua_function(tolua_S,"hasSuggestedResponses",tolua_EmberOgre_EmberOgre_EmberEntity_hasSuggestedResponses00);
     tolua_function(tolua_S,"getSuggestedResponses",tolua_EmberOgre_EmberOgre_EmberEntity_getSuggestedResponses00);
@@ -22983,6 +23015,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"getEmberLocation",tolua_EmberOgre_EmberOgre_EmberEntity_getEmberLocation00);
     tolua_function(tolua_S,"isInitialized",tolua_EmberOgre_EmberOgre_EmberEntity_isInitialized00);
     tolua_function(tolua_S,"getMovementMode",tolua_EmberOgre_EmberOgre_EmberEntity_getMovementMode00);
+    tolua_function(tolua_S,"getPositioningMode",tolua_EmberOgre_EmberOgre_EmberEntity_getPositioningMode00);
     tolua_function(tolua_S,"showOgreBoundingBox",tolua_EmberOgre_EmberOgre_EmberEntity_showOgreBoundingBox00);
     tolua_function(tolua_S,"showErisBoundingBox",tolua_EmberOgre_EmberOgre_EmberEntity_showErisBoundingBox00);
     tolua_function(tolua_S,"getShowOgreBoundingBox",tolua_EmberOgre_EmberOgre_EmberEntity_getShowOgreBoundingBox00);

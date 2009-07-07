@@ -71,12 +71,10 @@ public:
 namespace EmberOgre
 {
 
-const std::string EmberEntity::MODE_STANDING("standing");
-const std::string EmberEntity::MODE_RUNNING("running");
-const std::string EmberEntity::MODE_WALKING("walking");
-const std::string EmberEntity::MODE_SWIMMING("swimming");
 const std::string EmberEntity::MODE_FLOATING("floating");
 const std::string EmberEntity::MODE_FIXED("fixed");
+const std::string EmberEntity::MODE_PROJECTILE("projectile");
+
 
 const std::string EmberEntity::BboxMaterialName("BaseYellowNoLightning");
 
@@ -226,6 +224,7 @@ void EmberEntity::updateMotion(Ogre::Real timeSlice)
 
 void EmberEntity::onMoved()
 {
+	parseMovementMode();
 	Eris::Entity::onMoved();
 	const WFMath::Quaternion& orient = getOrientation();
 	getSceneNode()->setOrientation(Convert::toOgre(orient));
@@ -397,7 +396,7 @@ void EmberEntity::adjustPosition()
 
 void EmberEntity::adjustPosition(const Ogre::Vector3& position)
 {
-	if (mMovementMode == MM_FIXED)
+	if (mPositioningMode == PM_FIXED)
 	{
 
 	}
@@ -579,7 +578,7 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
 {
 	if (str == "mode")
 	{
-		parseModeChange(v);
+		parsePositioningModeChange(v);
 	}
 	else if (str == "bbox")
 	{
@@ -599,53 +598,66 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
 
 }
 
-void EmberEntity::parseModeChange(const Atlas::Message::Element& v)
+void EmberEntity::parseMovementMode()
+{
+	MovementMode newMode = MM_DEFAULT;
+	if (isMoving()) {
+		const WFMath::Vector<3> velocity = getPredictedVelocity();
+		if (velocity.isValid()) {
+			if (velocity.mag() > 2.6) {
+				newMode = MM_RUNNING;
+			} else {
+				newMode = MM_WALKING;
+			}
+		}
+	}
+	if (newMode != mMovementMode) {
+		onMovementModeChanged(newMode);
+	}
+}
+
+
+void EmberEntity::parsePositioningModeChange(const Atlas::Message::Element& v)
 {
 	const std::string& mode = v.asString();
-	MovementMode newMode;
+	PositioningMode newMode;
 	if (mode.empty())
 	{
-		newMode = MM_DEFAULT;
-	}
-	else if (mode == MODE_STANDING)
-	{
-		newMode = MM_STANDING;
-	}
-	else if (mode == MODE_RUNNING)
-	{
-		newMode = MM_RUNNING;
-	}
-	else if (mode == MODE_WALKING)
-	{
-		newMode = MM_WALKING;
-	}
-	else if (mode == MODE_SWIMMING)
-	{
-		newMode = MM_SWIMMING;
+		newMode = PM_DEFAULT;
 	}
 	else if (mode == MODE_FLOATING)
 	{
-		newMode = MM_FLOATING;
+		newMode = PM_FLOATING;
 	}
 	else if (mode == MODE_FIXED)
 	{
-		newMode = MM_FIXED;
+		newMode = PM_FIXED;
+	}
+	else if (mode == MODE_PROJECTILE)
+	{
+		newMode = PM_PROJECTILE;
 	}
 	else
 	{
-		newMode = MM_DEFAULT;
+		newMode = PM_DEFAULT;
 	}
 
-	onModeChanged(newMode);
+	onPositioningModeChanged(newMode);
 }
 
-void EmberEntity::onModeChanged(MovementMode newMode)
+void EmberEntity::onPositioningModeChanged(PositioningMode newMode)
 {
-	if (newMode == MM_FIXED)
+	if (newMode != mPositioningMode)
 	{
 		adjustPosition();
 	}
-	EventModeChanged.emit(newMode);
+	EventPositioningModeChanged.emit(newMode);
+	mPositioningMode = newMode;
+}
+
+void EmberEntity::onMovementModeChanged(MovementMode newMode)
+{
+	EventMovementModeChanged.emit(newMode);
 	mMovementMode = newMode;
 }
 
