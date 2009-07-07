@@ -45,8 +45,8 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainPageGeometry::TerrainPageGeometry(TerrainPage& page) :
-	mPage(page)
+TerrainPageGeometry::TerrainPageGeometry(TerrainPage& page, float defaultHeight) :
+	mPage(page), mDefaultHeight(defaultHeight)
 {
 }
 
@@ -98,12 +98,17 @@ float TerrainPageGeometry::getMaxHeight() const
 }
 void TerrainPageGeometry::updateOgreHeightData(float* heightData)
 {
+	//Set the height of any unitialized part to the default height. This might be optimized better though.
+	for (unsigned int i = 0; i < sizeof(heightData); ++i) {
+		*(heightData++) = mDefaultHeight;
+	}
+
 	int i = 0;
 	for (Mercator::Terrain::Segmentstore::const_iterator I = mLocalSegments.begin(); I != mLocalSegments.end(); ++I) {
 		int j = 0;
 		for (Mercator::Terrain::Segmentcolumn::const_iterator J = I->second.begin(); J != I->second.end(); ++J) {
 			Mercator::Segment* segment = J->second;
-			if (segment) {
+			if (segment && segment->isValid()) {
 				blitSegmentToOgre(heightData, *segment, (i * 64), ((mPage.getNumberOfSegmentsPerAxis() - j - 1) * 64));
 			}
 			++j;

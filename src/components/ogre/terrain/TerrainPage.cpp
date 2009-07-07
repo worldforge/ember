@@ -80,7 +80,7 @@ namespace Terrain {
 TerrainPage::TerrainPage(TerrainPosition position, TerrainGenerator& generator)
 : mGenerator(generator)
 , mPosition(position)
-, mGeometry(new TerrainPageGeometry(*this))
+, mGeometry(new TerrainPageGeometry(*this, -15))
 , mTerrainSurface(new TerrainPageSurface(*this))
 , mShadow(*this)
 , mShadowTechnique(0)

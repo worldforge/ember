@@ -131,8 +131,9 @@ private:
 	 * @note Be sure to call init() before this instance can be used.
 	 * Private so that only TerrainPage can create an instance of this.
 	 * @param page The TerrainPage instance to which this geometry belongs.
+	 * @param defaultHeight The default height of any parts of the terrain where no segment has been initialized.
 	 */
-	TerrainPageGeometry(TerrainPage& page);
+	TerrainPageGeometry(TerrainPage& page, float defaultHeight);
 
 	/**
 	 * @brief Initializes the geometry.
@@ -165,6 +166,10 @@ private:
 	 */
 	Mercator::Segment* getSegmentAtLocalIndex(const Mercator::Terrain& terrain, int indexX, int indexY) const;
 
+	/**
+	 * @brief The default height of any parts of the terrain where no segment has been initialized.
+	 */
+	float mDefaultHeight;
 };
 }
 }
