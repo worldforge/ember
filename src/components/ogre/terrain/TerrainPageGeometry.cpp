@@ -98,7 +98,7 @@ float TerrainPageGeometry::getMaxHeight() const
 }
 void TerrainPageGeometry::updateOgreHeightData(float* heightData)
 {
-	//Set the height of any unitialized part to the default height. This might be optimized better though.
+	//Set the height of any uninitialized part to the default height. This might be optimized better though.
 	for (unsigned int i = 0; i < sizeof(heightData); ++i) {
 		*(heightData++) = mDefaultHeight;
 	}
