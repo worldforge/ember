@@ -62,6 +62,7 @@ bool EmberPagingLandScapeData2D_HeightField::_load(unsigned int x, unsigned int 
 
 	mMaxArrayPos = mSize * mSize;
 	mHeightData = new Ogre::Real[mMaxArrayPos];
+	memset(mHeightData, '\0', mMaxArrayPos); //set the height at zero for uninitialized terrain
 	Terrain::TerrainPage* terrainPage(terrainGenerator->getTerrainPageAtIndex(Ogre::Vector2(x,z)));
 	//should always return a TerrainPage*
 	assert(terrainPage);
