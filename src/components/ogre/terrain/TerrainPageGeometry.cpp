@@ -98,9 +98,11 @@ float TerrainPageGeometry::getMaxHeight() const
 }
 void TerrainPageGeometry::updateOgreHeightData(float* heightData)
 {
+	float* heightDataPtr = heightData;
+	unsigned int sizeOfBitmap = mPage.getVerticeCount();
 	//Set the height of any uninitialized part to the default height. This might be optimized better though.
-	for (unsigned int i = 0; i < sizeof(heightData); ++i) {
-		*(heightData++) = mDefaultHeight;
+	for (unsigned int i = 0; i < sizeOfBitmap; ++i) {
+		*(heightDataPtr++) = mDefaultHeight;
 	}
 
 	int i = 0;
