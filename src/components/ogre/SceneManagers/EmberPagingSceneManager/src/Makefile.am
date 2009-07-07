@@ -52,7 +52,6 @@ libEmberPagingSceneManager_a_SOURCES = \
 						EmberPagingLandScapeTexture.cpp \
 						EmberPagingSceneManagerAdapter.cpp \
 						EmberTerrainPageBridge.cpp
-libEmberPagingSceneManager_a_LDFLAGS = -no-undefined
 
 #						OgrePagingLandScapeData2D_HeightField.cpp \
 # 						OgrePagingLandScapeData2D_HeightFieldN.cpp \

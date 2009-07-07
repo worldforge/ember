@@ -1,6 +1,5 @@
 INCLUDES = -I$(top_builddir)/src -I$(top_srcdir)/src
 METASOURCES = AUTO
-libAtlas_a_LDFLAGS = -no-undefined
 noinst_LIBRARIES = libAtlas.a
 noinst_HEADERS = AdapterBase.h AdapterFactory.h AreaAdapter.h CustomAdapter.h \
 	ListAdapter.h MapAdapter.h NumberAdapter.h OrientationAdapter.h PolygonAdapter.h \

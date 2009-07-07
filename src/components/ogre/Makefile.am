@@ -35,4 +35,3 @@ noinst_HEADERS = AttributeObserver.h Avatar.h AvatarCamera.h AvatarController.h 
 	 ShaderManager.h ShadowCameraSetup.h \
 	SimpleRenderContext.h Types.h WorldEmberEntity.h XMLHelper.h
 #OpcodeCollisionDetector.h OpcodeCollisionDetectorVisualizer.h
-#libEmberOgre_la_LDFLAGS = -no-undefined

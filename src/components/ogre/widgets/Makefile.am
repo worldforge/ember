@@ -40,4 +40,4 @@ noinst_HEADERS = AssetsManager.h ColouredListItem.h Compass.h ConsoleAdapter.h \
 	Vector3Adapter.h Widget.h WidgetDefinitions.h WidgetPool.h
 #TerrainEdit.h Map.h JesusEdit.h 
 SUBDIRS = adapters icons
-libWidgets_a_LDFLAGS = -no-undefined
+

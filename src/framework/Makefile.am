@@ -12,7 +12,6 @@ noinst_HEADERS = ConsoleBackend.h ConsoleCommandWrapper.h ConsoleObject.h \
 	Exception.h IGameView.h IResourceProvider.h IScriptingProvider.h Log.h \
 	LogObserver.h LoggingInstance.h Service.h Singleton.h StreamLogObserver.h Tokeniser.h \
 	XMLCodec.h binreloc.h float_cast.h osdir.h scrap.h 
-libFramework_a_LDFLAGS = -no-undefined
 
 if !HAVE_LIBTINYXML
 libFramework_a_SOURCES += tinyxml/tinystr.cpp tinyxml/tinyxml.cpp tinyxml/tinyxmlerror.cpp \
