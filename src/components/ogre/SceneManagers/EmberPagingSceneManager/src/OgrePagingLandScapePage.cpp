@@ -50,7 +50,7 @@
 
 namespace Ogre
 {
-	PagingLandScapePage::PagingLandScapePage(PagingLandScapePageManager *pageMgr) :
+	PagingLandScapePage::PagingLandScapePage(PagingLandScapePageManager* pageMgr) :
 		mParent (pageMgr),
 		mIsLoading (false),
 		mIsPreLoading (false),
@@ -345,12 +345,12 @@ namespace Ogre
 		}
 	}
 	//-----------------------------------------------------------------------
-	void PagingLandScapePage::touch ()
+	void PagingLandScapePage::touch()
 	{ 
 		mTimeUntouched = mParent->getOptions()->PageInvisibleUnloadFrames;
 	}
 	//-----------------------------------------------------------------------
-	const bool PagingLandScapePage::unloadUntouched ()        
+	const bool PagingLandScapePage::unloadUntouched()
 	{ 
 		if (mTimeUntouched == 0)
 			return true;
@@ -448,8 +448,8 @@ namespace Ogre
 				}
 			}
 
-			PagingLandScapePageManager * const pageMgr = mParent;
-			PagingLandScapePage *n;
+			PagingLandScapePageManager* const pageMgr = mParent;
+			PagingLandScapePage* n;
 
 			n = pageMgr->getPage (mTableX, mTableZ + 1, false);
 			_setNeighbor(SOUTH, n);
@@ -521,7 +521,7 @@ namespace Ogre
 	}
 	//-----------------------------------------------------------------------
 	void PagingLandScapePage::unloadTexture()
-	{        
+	{
 		unload();
 		if (mIsTextureLoaded) 
 		{
@@ -550,7 +550,7 @@ namespace Ogre
 			}
 		} 
 	}
-    
+
 	//-----------------------------------------------------------------------
 	void PagingLandScapePage::postUnload()
 	{
@@ -567,7 +567,7 @@ namespace Ogre
 	}
 
 	//-----------------------------------------------------------------------
-	int PagingLandScapePage::isCameraIn(const Vector3 & pos) const
+	int PagingLandScapePage::isCameraIn(const Vector3& pos) const
 	{
 		if (mBounds.intersects(pos))
 		{
@@ -649,7 +649,7 @@ namespace Ogre
 		}
 	}
 	//-----------------------------------------------------------------------
-	bool PagingLandScapePage::_Notify(const Vector3 &pos, const PagingLandScapeCamera * const Cam)
+	bool PagingLandScapePage::_Notify(const Vector3& pos, const PagingLandScapeCamera* const Cam)
 	{
 		if (mIsLoaded && mIsLoadable)
 		{
