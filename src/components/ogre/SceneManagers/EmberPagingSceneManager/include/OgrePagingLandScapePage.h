@@ -45,12 +45,12 @@ namespace Ogre
 			return mNeighbors[ n ];
 		}
 
-		PagingLandScapeTile* getTile(const unsigned int i , const unsigned int j) const;
+		PagingLandScapeTile* getTile(unsigned int i , unsigned int j) const;
 
 		PagingLandScapeTile* getTile(const Vector3& pos);
 
 	        /** Whole Map changes */
-		void init(const unsigned int tableX, const unsigned int tableZ);
+		void init(unsigned int tableX, unsigned int tableZ);
 
 	        /** Release the page, but keep it reusable if Whole Map changes */
 		void uninit();
@@ -106,27 +106,27 @@ namespace Ogre
 			mIsTextureunloading = false;
 		}
         
-		const bool isLoaded() const 
+		bool isLoaded() const 
 		{
 			return mIsLoaded;
 		}
 
-		const bool isPreLoaded() const 
+		bool isPreLoaded() const 
 		{
 			return mIsPreLoaded;
 		}
 
-		const bool isTextureLoaded() const 
+		bool isTextureLoaded() const 
 		{
 			return mIsTextureLoaded;
 		}
 
-		const bool isLoadable() const 
+		bool isLoadable() const 
 		{
 			return mIsLoadable;
 		}
 
-		const bool unloadUntouched();
+		bool unloadUntouched();
 		void touch();
 
 		bool isVisible() const 
@@ -139,7 +139,7 @@ namespace Ogre
 	        int isCameraIn(const Vector3& pos) const;
 
 	        bool _Notify(const Vector3& pos, const PagingLandScapeCamera* const Cam);
-		void _Show(const bool do_show);
+		void _Show(bool do_show);
 
 		void getCoordinates(unsigned int& X, unsigned int& Z) const 
 		{
@@ -163,7 +163,7 @@ namespace Ogre
 
 		void setMapMaterial();
 
-		inline bool isCoord(const unsigned int x, const unsigned int z) { return (mTableZ == z && mTableX == x); }
+		inline bool isCoord(unsigned int x, unsigned int z) { return (mTableZ == z && mTableX == x); }
 			
 		SceneNode* getSceneNode() { return mPageNode; }
 		const AxisAlignedBox& getWorldBbox() const { return mBounds; }

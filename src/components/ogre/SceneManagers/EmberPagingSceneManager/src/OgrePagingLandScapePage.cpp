@@ -75,7 +75,7 @@ namespace Ogre
 	{
 	}
 	//-----------------------------------------------------------------------
-	void PagingLandScapePage::init (const unsigned int tableX, const unsigned int tableZ)
+	void PagingLandScapePage::init (unsigned int tableX, unsigned int tableZ)
 	{ 
 		assert (!mIsLoading);
 		assert (!mIsPreLoading);
@@ -350,7 +350,7 @@ namespace Ogre
 		mTimeUntouched = mParent->getOptions()->PageInvisibleUnloadFrames;
 	}
 	//-----------------------------------------------------------------------
-	const bool PagingLandScapePage::unloadUntouched()
+	bool PagingLandScapePage::unloadUntouched()
 	{ 
 		if (mTimeUntouched == 0)
 			return true;
@@ -589,7 +589,7 @@ namespace Ogre
 		}
 	}
 	//-----------------------------------------------------------------------
-	void PagingLandScapePage::_Show(const bool do_show)
+	void PagingLandScapePage::_Show(bool do_show)
 	{
 		assert (mPageNode);
 		if (do_show) 
@@ -690,7 +690,7 @@ namespace Ogre
 	}
 
 	//-----------------------------------------------------------------------
-	PagingLandScapeTile *PagingLandScapePage::getTile(const Vector3& pos)
+	PagingLandScapeTile* PagingLandScapePage::getTile(const Vector3& pos)
 	{
 		if (mIsLoaded && mIsLoadable)
 		{
@@ -740,7 +740,7 @@ namespace Ogre
 		}
 	}
 	//-------------------------------------------------------------------------
-	PagingLandScapeTile* PagingLandScapePage::getTile(const unsigned int i , const unsigned int j) const
+	PagingLandScapeTile* PagingLandScapePage::getTile(unsigned int i , unsigned int j) const
 	{
 		if (mIsLoaded)
 		{
