@@ -110,46 +110,43 @@ namespace Ogre
 		const Real factorX = size * opt->scale.x;
 		const Real factorZ = size * opt->scale.z;
 
-		mIniX = static_cast<Real> (static_cast<int> (mTableX + mTableX - opt->world_width)) * 0.5f * factorX + opt->position.x;		
-		mIniZ = static_cast<Real> (static_cast<int> (mTableZ + mTableZ - opt->world_height)) * 0.5f * factorZ + opt->position.z;	
+		Real iniX = static_cast<Real> (static_cast<int> (mTableX + mTableX - opt->world_width)) * 0.5f * factorX + opt->position.x;		
+		Real iniZ = static_cast<Real> (static_cast<int> (mTableZ + mTableZ - opt->world_height)) * 0.5f * factorZ + opt->position.z;	
 
 		// Set node position
-		mPageNode->setPosition(static_cast<Real> (mIniX) , 
+		mPageNode->setPosition(static_cast<Real> (iniX) , 
 				       opt->position.y, 
-				       static_cast<Real> (mIniZ));
+				       static_cast<Real> (iniZ));
 
-		const Real EndX = mIniX + factorX;
-		const Real EndZ = mIniZ + factorZ;
+		const Real EndX = iniX + factorX;
+		const Real EndZ = iniZ + factorZ;
 		const Real MaxHeight = mParent->getSceneManager()->getData2DManager()->getMaxHeight(mTableX, mTableZ);
 		const Real chgfactor = opt->change_factor;
 
-		mBounds.setExtents(mIniX , 
+		mBounds.setExtents(iniX , 
 				   0.0f, 
-				   mIniZ , 
+				   iniZ , 
 				   EndX , 
 				   MaxHeight, 
 				   EndZ);
 
 		//Change Zone of this page
-		mBoundsInt.setExtents(mIniX + chgfactor, 
+		mBoundsInt.setExtents(iniX + chgfactor, 
 				      0.0f, 
-				      mIniZ + chgfactor,
+				      iniZ + chgfactor,
 				      EndX - chgfactor, 
 				      MaxHeight, 
 				      EndZ - chgfactor	);
-
-         
-		mBoundsExt.setExtents(mIniX - factorX * 1.5f, 
+ 
+		mBoundsExt.setExtents(iniX - factorX * 1.5f, 
 				      - MaxHeight * 1.5f, 
-				      mIniZ - factorZ * 1.5f,
+				      iniZ - factorZ * 1.5f,
 
-				      mIniX + factorX * 1.5f, 
+				      iniX + factorX * 1.5f, 
 				      MaxHeight * 1.5f , 
-				      mIniZ + factorZ * 1.5f);
+				      iniZ + factorZ * 1.5f);
 
 		mWorldPosition = mBounds.getCenter();
-
-
 
 		if (opt->BigImage)
 		{

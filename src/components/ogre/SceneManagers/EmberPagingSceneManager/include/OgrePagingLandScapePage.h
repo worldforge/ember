@@ -196,9 +196,6 @@ namespace Ogre
 
 		unsigned int mNumTiles;
 
-	        Real mIniX;	//, mEndX;	// Max and Min values of the terrain
-	        Real mIniZ;	//, mEndZ;
-
 		PagingLandScapePage* mNeighbors[4];
 
 	        // Change Zone values
