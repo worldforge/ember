@@ -58,7 +58,12 @@ namespace Ogre
 		mIsTextureLoading (false)
 	{
 		touch();
-		resetNeighbors();
+
+		// initialize own neighbors
+		mNeighbors[NORTH] = 0;
+		mNeighbors[SOUTH] = 0;
+		mNeighbors[EAST] = 0;
+		mNeighbors[WEST] = 0;
 	}
 	//-----------------------------------------------------------------------
 	PagingLandScapePage::~PagingLandScapePage()
