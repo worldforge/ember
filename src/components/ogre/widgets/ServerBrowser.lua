@@ -49,6 +49,17 @@ function ServerBrowser.buildWidget()
 	ServerBrowser.connectToMetaServer()
 	ServerBrowser.widget:show()
 	ServerBrowser.widget:getMainWindow():activate()
+	
+	--If the "autoconnect" value is set, try to connect to the specified server
+	if emberServices:getConfigService():itemExists("metaserver", "autoconnect") then
+		local serverConfAddress = emberServices:getConfigService():getValue("metaserver", "autoconnect")
+		if serverConfAddress ~= nil then
+			if serverConfAddress:is_string() then
+				local address = serverConfAddress:as_string()
+				Ember.EmberServices:getSingleton():getServerService():connect(address)
+			end
+		end
+    end
 
 end
 
