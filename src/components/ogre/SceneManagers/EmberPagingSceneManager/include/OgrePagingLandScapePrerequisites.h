@@ -128,19 +128,6 @@ namespace Ogre
     class PagingLandScapePageRenderable;
     class PagingLandScapePageManager;
 
-#define PAGE_INSIDE  0x00000001
-#define PAGE_CHANGE  0x00000002
-#define PAGE_OUTSIDE 0x00000004
-
-
-enum PageState
-{
-	inited,
-	Preloaded,
-	Textureloaded,
-	Loaded
-};
-
 enum PageQueuingState
 {
 	queuednone,
