@@ -70,7 +70,7 @@ namespace Ogre
 		mFreePages.clear();
     }
     //-----------------------------------------------------------------------
-    PagingLandScapePageManager::~PagingLandScapePageManager(void)
+    PagingLandScapePageManager::~PagingLandScapePageManager()
     {
 		reset();
 		// could save a delete if texture type is the same... ?
@@ -83,7 +83,7 @@ namespace Ogre
 		}
     }
     //----------------------------------------------------------------------- 
-    void PagingLandScapePageManager::reset(void)
+    void PagingLandScapePageManager::reset()
     {	
 		std::for_each(mActivePages.begin(), mActivePages.end(), 
 			std::mem_fun(&PagingLandScapePage::uninit));
@@ -107,19 +107,19 @@ namespace Ogre
         mEnabled = false;
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapePageManager::load(void)
+    void PagingLandScapePageManager::load()
     {
         WorldDimensionChange ();
         mEnabled = true;
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapePageManager::clear(void)
+    void PagingLandScapePageManager::clear()
     {
         // before calling the scene manager node clearing
 		reset();
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapePageManager::WorldDimensionChange(void)
+    void PagingLandScapePageManager::WorldDimensionChange()
     {
         const unsigned int newWidth = mOptions->world_width; 
         const unsigned int newHeight = mOptions->world_height;
@@ -131,18 +131,18 @@ namespace Ogre
         mHeight = newHeight;
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapePageManager::setMapMaterial(void)
+    void PagingLandScapePageManager::setMapMaterial()
     {
         std::for_each(mActivePages.begin(), mActivePages.end(), 
 					std::mem_fun(&PagingLandScapePage::setMapMaterial));
     }
     //-----------------------------------------------------------------------
-    void PagingLandScapePageManager::_updateLod(void)
+    void PagingLandScapePageManager::_updateLod()
     {
         PagingLandScapePageList::iterator lend = mLoadedPages.end();
         for (PagingLandScapePageList::iterator l = mLoadedPages.begin(); l != lend; ++l)
         { 
-            (*l)->_updateLod();
+            (*l)->updateLod();
         }
     }
     //-----------------------------------------------------------------------
@@ -207,7 +207,7 @@ namespace Ogre
 			// Create new pages
 			for (size_t i = pool_size; i < new_pool_size; ++i)
 			{
-				p = new PagingLandScapePage (this);
+				p = new PagingLandScapePage(*this);
 				mPagePool[i] = p;
 				mFreePages.push_back (p);
 			}
@@ -241,7 +241,7 @@ namespace Ogre
 				PagingLandScapePageList::iterator l, lend = mActivePages.end();
 				for (l = mActivePages.begin(); l != lend; ++l)
 				{
-					if ((*l)->isCoord(x, z))
+					if ((*l)->doCoordinatesMatch(x, z))
 						return (*l);
 				}
 			}
@@ -289,7 +289,7 @@ namespace Ogre
 		}
 		else
 		{
-			p->touch ();   
+			p->touch();   
 		}
 	}
 
@@ -323,7 +323,7 @@ namespace Ogre
 			if ((z >= iniZ) && (z <= finZ) && (x >= iniX) && (x <= finX))
 			{
 				// inform pages we are near Camera on next render.
-				if (p->_Notify (pos, cam))
+				if (p->notify(pos, cam))
 				{
 					// get pages that needs modification and Are visible..                 
 					PagingLandScapeTexture * const tex = mTexture->getTexture(x, z);
@@ -336,7 +336,7 @@ namespace Ogre
 			}
 			else
 			{
-				p->_Show (false);
+				p->show(false);
 			}
 		} 
 
@@ -415,7 +415,7 @@ namespace Ogre
 						p->mIsPreLoading = true;	
 					}
 				}
-				p->touch ();
+				p->touch();
 			}
 		}
 		mTimePreLoaded = mPageLoadInterval;
@@ -470,7 +470,7 @@ namespace Ogre
 			}
 
 			// Update current Cam Tile info.
-			if (p->isLoadable())
+			if (p->isPreLoaded())
 			{	
 				PagingLandScapeTile * const t = getTile (pos.x, pos.z, i, j, true);
 				if (t && t != oldTile)
@@ -705,7 +705,7 @@ namespace Ogre
 		assert (!p->mIsLoading && !p->mIsTextureLoading && !p->mIsPreLoading);
     }
     //-----------------------------------------------------------------------
-    unsigned int PagingLandScapePageManager::getCurrentCameraPageX(void) const
+    unsigned int PagingLandScapePageManager::getCurrentCameraPageX() const
     {
         if (mCurrentcam)
 		{
@@ -716,7 +716,7 @@ namespace Ogre
     }
 
     //-----------------------------------------------------------------------
-    unsigned int PagingLandScapePageManager::getCurrentCameraPageZ(void) const
+    unsigned int PagingLandScapePageManager::getCurrentCameraPageZ() const
     {
         if (mCurrentcam)
 		{
@@ -726,7 +726,7 @@ namespace Ogre
     }
 
     //-----------------------------------------------------------------------
-    unsigned int PagingLandScapePageManager::getCurrentCameraTileX(void) const
+    unsigned int PagingLandScapePageManager::getCurrentCameraTileX() const
     {
         if (mCurrentcam)
 		{
@@ -736,7 +736,7 @@ namespace Ogre
     }
 
     //-----------------------------------------------------------------------
-    unsigned int PagingLandScapePageManager::getCurrentCameraTileZ(void) const
+    unsigned int PagingLandScapePageManager::getCurrentCameraTileZ() const
     {
         if (mCurrentcam)
 		{
@@ -750,40 +750,40 @@ namespace Ogre
         mLoadedPages.push_back (p);
     }
     //-----------------------------------------------------------------------
-    int PagingLandScapePageManager::getLoadedPageSize(void) const
+    int PagingLandScapePageManager::getLoadedPageSize() const
     {
 	    return static_cast< int >(mLoadedPages.size());
     }
     //-----------------------------------------------------------------------
-    int PagingLandScapePageManager::getUnloadedPagesSize(void) const
+    int PagingLandScapePageManager::getUnloadedPagesSize() const
     {
 	    return static_cast< int >(mWidth*mHeight - mLoadedPages.size());
     }
     //-----------------------------------------------------------------------
-    int PagingLandScapePageManager::getTextureLoadedPageSize(void) const
+    int PagingLandScapePageManager::getTextureLoadedPageSize() const
     {
 	    return static_cast< int >(mTextureLoadedPages.size());
     }
 
     //-----------------------------------------------------------------------
-    int PagingLandScapePageManager::getPreLoadedPageSize(void) const
+    int PagingLandScapePageManager::getPreLoadedPageSize() const
     {
 	    return static_cast< int >(mPreLoadedPages.size());
     }
     //-----------------------------------------------------------------------
-    int PagingLandScapePageManager::getPagePreloadQueueSize(void) const
+    int PagingLandScapePageManager::getPagePreloadQueueSize() const
     {
 	    return static_cast< int >(mPagePreloadQueue.getSize());
     }
 
     //-----------------------------------------------------------------------
-    int PagingLandScapePageManager::getPageTextureloadQueueSize(void) const
+    int PagingLandScapePageManager::getPageTextureloadQueueSize() const
     {
 	    return static_cast< int >(mPageTextureloadQueue.getSize());
     }
 
     //-----------------------------------------------------------------------
-    int PagingLandScapePageManager::getPageLoadQueueSize(void) const
+    int PagingLandScapePageManager::getPageLoadQueueSize() const
     {
 	    return static_cast< int >(mPageLoadQueue.getSize());
     }
