@@ -121,6 +121,7 @@ namespace Ogre
 
 		touch();
 
+		// set new state
 		mPageState = STATE_INITED;
 	}
 	//-----------------------------------------------------------------------
@@ -171,14 +172,16 @@ namespace Ogre
 					}
 				}
 			}
+
+			// set new state
+			mPageState = STATE_LOADED;
+
 		} else {
 			S_LOG_WARNING("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") already loaded, proceeding to show it");
 		}
 
 		// fire event
 		fireEvent(EVENT_LOADED);
-
-		mPageState = STATE_LOADED;
 
 		show(true);
 	}
@@ -194,6 +197,8 @@ namespace Ogre
 		if (mPageState == STATE_PRELOADED) {
 			S_LOG_VERBOSE("Loading texture for PagingLandScapePage at (" << mTableX << ", " << mTableZ << ")");
 			mPageMgr.getSceneManager()->getTextureManager()->load(mTableX, mTableZ);
+
+			// set new state
 			mPageState = STATE_TEXTURELOADED;
 		} else {
 			S_LOG_WARNING("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") already has a texture loaded (or is not preloaded), ignoring request");
@@ -208,12 +213,16 @@ namespace Ogre
 			S_LOG_VERBOSE("Preloading PagingLandScapePage at (" << mTableX << ", " << mTableZ << ")");
 			bool loadable = mPageMgr.getSceneManager()->getData2DManager()->load(mTableX, mTableZ);
 			if (!loadable) {
-				S_LOG_WARNING("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") is not loadable");
+				// set new state
 				mPageState = STATE_NOTLOADABLE;
+
+				S_LOG_WARNING("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") is not loadable");
 			} else {
-				mPageState = STATE_PRELOADED;
 				// fire event
 				fireEvent(EVENT_PRELOADED);
+
+				// set new state
+				mPageState = STATE_PRELOADED;
 			}
 		} else {
 			S_LOG_WARNING("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") already preloaded (or not inited), ignoring request");
@@ -273,6 +282,8 @@ namespace Ogre
 		// restore state
 		mBounds.setNull();
 		mWorldPosition = Ogre::Vector3::ZERO;
+
+		// set new state
 		mPageState = STATE_UNINITED;
 	}
 
