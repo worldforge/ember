@@ -531,7 +531,7 @@ namespace Ogre
 
 		PagingLandScapeTile* tile = getTile(x, z);
 		if (tile && tile->isLoaded()) {
-			return getTile(x, z);
+			return tile;
 		} else {
 			return 0;
 		}
