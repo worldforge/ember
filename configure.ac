@@ -476,6 +476,7 @@ AC_CONFIG_FILES([Makefile
 		 src/framework/bindings/lua/Makefile
 		 src/framework/bindings/lua/eris/Makefile
 		 src/framework/bindings/lua/atlas/Makefile
+		 src/framework/bindings/lua/varconf/Makefile
 		 src/services/Makefile
 		 src/services/config/Makefile
 		 src/services/logging/Makefile

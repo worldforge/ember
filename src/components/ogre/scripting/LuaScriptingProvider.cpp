@@ -59,6 +59,7 @@ TOLUA_API int tolua_Framework_open (lua_State* tolua_S);
 TOLUA_API int tolua_Application_open (lua_State* tolua_S);
 TOLUA_API int tolua_atlas_adapters_open (lua_State* tolua_S);
 TOLUA_API int tolua_Atlas_open (lua_State* tolua_S);
+TOLUA_API int tolua_Varconf_open (lua_State* tolua_S);
 
 namespace EmberOgre {
 
@@ -106,6 +107,7 @@ void LuaScriptingProvider::initialize()
 	tolua_Application_open(mLuaState);
 	tolua_atlas_adapters_open(mLuaState);
 	tolua_Atlas_open(mLuaState);
+	tolua_Varconf_open(mLuaState);
 	LuaConnector::setState(mLuaState);
 }
 

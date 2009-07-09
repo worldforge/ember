@@ -1,0 +1,50 @@
+/*
+ *  variable.h - interface for typeless value container class
+ *  Copyright (C) 2001, Stefanus Du Toit, Joseph Zupko
+ *            (C) 2001-2006 Alistair Riddoch
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ *  Contact:  Joseph Zupko
+ *            jaz147@psu.edu
+ *
+ *            189 Reese St.
+ *            Old Forge, PA 18518
+ */
+
+$#include <varconf/variable.h>
+ 
+namespace varconf {
+
+class Variable  {
+public:
+
+  virtual ~Variable();
+
+  operator bool();
+  operator int();
+  operator double();
+  std::string as_string() const;
+
+  bool is_bool() const;
+  bool is_int()  const;
+  bool is_double() const;
+  bool is_string() const;
+  bool is_array() const;
+};
+
+} // namespace varconf
+
+
