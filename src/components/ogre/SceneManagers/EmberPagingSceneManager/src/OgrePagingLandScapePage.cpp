@@ -336,90 +336,121 @@ namespace Ogre
 		mNeighbors[WEST] = 0;
 	}
 	//-----------------------------------------------------------------------
-	void PagingLandScapePage::setNeighbor(Neighbor n, PagingLandScapePage* p) // mafm: optimize, factor out code
+	void PagingLandScapePage::setNeighbor(Neighbor n, PagingLandScapePage* p)
 	{
+		// set page neighbor
 		mNeighbors[n] = p;
 	 
+		// if neigther are loaded, nothing else to do
 		const bool thisLoaded = isLoaded();
 		const bool neighLoaded = p && p->isLoaded();
-
-		if (!thisLoaded && !neighLoaded)
+		if (!thisLoaded && !neighLoaded) {
 			return;
+		}
 
 		assert (!thisLoaded || (thisLoaded && !mTiles.empty()));
-		const unsigned int numTiles = mNumTiles;
-		switch (n)
-		{
+
+		// tiles, 0 if not loaded
+		PagingLandScapeTile* tileInCurrPage = 0;
+		PagingLandScapeTile* tileInNeighborPage = 0;
+
+		// indices for borders
+		const unsigned int iNorthBorder = 0;
+		const unsigned int iSouthBorder = mNumTiles - 1;
+		const unsigned int iEastBorder = mNumTiles - 1;
+		const unsigned int iWestBorder = 0;
+
+		// walk the tiles in each border, and set roles accordingly
+		switch (n) {
 		case EAST:
 		{
-			const unsigned int i = numTiles - 1;
-			for (unsigned int j = 0; j < numTiles; j++)
-			{	
-				PagingLandScapeTile *t_nextpage = 0;
-				PagingLandScapeTile *t_currpage = 0;
-				if (thisLoaded)
-					t_currpage =  mTiles[ i ][ j ];
-				if (neighLoaded)
-					t_nextpage =  p->getTile  (0 , j);
-				if (thisLoaded)
-					t_currpage->_setNeighbor(EAST, t_nextpage);
-				if (neighLoaded)
-					t_nextpage->_setNeighbor(WEST, t_currpage);
+			for (unsigned int j = 0; j < mNumTiles; ++j) {
+				if (thisLoaded) {
+					// tiles of this page along east border
+					tileInCurrPage = mTiles[iEastBorder][j];
+				}
+
+				if (neighLoaded) {
+					// tiles of neighbor page along west border
+					tileInNeighborPage = p->getTile(iWestBorder, j);
+				}
+
+				// set neighbor tiles
+				if (tileInCurrPage) {
+					tileInCurrPage->_setNeighbor(EAST, tileInNeighborPage);
+				}
+				if (tileInNeighborPage) {
+					tileInNeighborPage->_setNeighbor(WEST, tileInCurrPage);
+				}
 			}
-				
 		}
 		break;
 		case WEST:
 		{
-			const unsigned int i = numTiles - 1;
-			for (unsigned int j = 0; j < numTiles; j++)
-			{	
-				PagingLandScapeTile *t_nextpage = 0;
-				PagingLandScapeTile *t_currpage = 0;
-				if (thisLoaded)
-					t_currpage =  mTiles[ 0 ][ j ];
-				if (neighLoaded)
-					t_nextpage =  p->getTile  (i , j);
-				if (thisLoaded)
-					t_currpage->_setNeighbor(WEST, t_nextpage);
-				if (neighLoaded)
-					t_nextpage->_setNeighbor(EAST, t_currpage);
+			for (unsigned int j = 0; j < mNumTiles; ++j) {
+				if (thisLoaded) {
+					// tiles of this page along west border
+					tileInCurrPage = mTiles[iWestBorder][j];
+				}
+
+				if (neighLoaded) {
+					// tiles of neighbor page along east border
+					tileInNeighborPage = p->getTile(iEastBorder, j);
+				}
+
+				// set neighbor tiles
+				if (tileInCurrPage) {
+					tileInCurrPage->_setNeighbor(WEST, tileInNeighborPage);
+				}
+				if (tileInNeighborPage) {
+					tileInNeighborPage->_setNeighbor(EAST, tileInCurrPage);
+				}
 			}
 		}
-		break;		
+		break;
 		case NORTH:
 		{
-			const unsigned int j = numTiles - 1;
-			for (unsigned int i = 0; i < numTiles; i++)
-			{	
-				PagingLandScapeTile *t_nextpage = 0;
-				PagingLandScapeTile *t_currpage = 0;
-				if (thisLoaded)
-					t_currpage =  mTiles[ i ][ 0 ];
-				if (neighLoaded)
-					t_nextpage =  p->getTile  (i , j);
-				if (thisLoaded)
-					t_currpage->_setNeighbor(NORTH, t_nextpage);
-				if (neighLoaded)
-					t_nextpage->_setNeighbor(SOUTH, t_currpage);
+			for (unsigned int i = 0; i < mNumTiles; ++i) {
+				if (thisLoaded) {
+					// tiles of this page along north border
+					tileInCurrPage = mTiles[i][iNorthBorder];
+				}
+
+				if (neighLoaded) {
+					// tiles of neighbor page along south border
+					tileInNeighborPage = p->getTile(i, iSouthBorder);
+				}
+
+				// set neighbor tiles
+				if (tileInCurrPage) {
+					tileInCurrPage->_setNeighbor(NORTH, tileInNeighborPage);
+				}
+				if (tileInNeighborPage) {
+					tileInNeighborPage->_setNeighbor(SOUTH, tileInCurrPage);
+				}
 			}
 		}
 		break;
 		case SOUTH:
 		{
-			const unsigned int j = numTiles - 1;
-			for (unsigned int i = 0; i < numTiles; i++)
-			{	
-				PagingLandScapeTile *t_nextpage = 0;
-				PagingLandScapeTile *t_currpage = 0;
-				if (thisLoaded)
-					t_currpage =  mTiles[ i ][ j ];
-				if (neighLoaded)
-					t_nextpage =  p->getTile  (i , 0);
-				if (thisLoaded)
-					t_currpage->_setNeighbor(SOUTH, t_nextpage);
-				if (neighLoaded)
-					t_nextpage->_setNeighbor(NORTH, t_currpage);
+			for (unsigned int i = 0; i < mNumTiles; ++i) {
+				if (thisLoaded) {
+					// tiles of this page along south border
+					tileInCurrPage = mTiles[i][iSouthBorder];
+				}
+
+				if (neighLoaded) {
+					// tiles of neighbor page along north border
+					tileInNeighborPage = p->getTile(i, iNorthBorder);
+				}
+
+				// set neighbor tiles
+				if (tileInCurrPage) {
+					tileInCurrPage->_setNeighbor(SOUTH, tileInNeighborPage);
+				}
+				if (tileInNeighborPage) {
+					tileInNeighborPage->_setNeighbor(NORTH, tileInCurrPage);
+				}
 			}
 		}
 		break;
