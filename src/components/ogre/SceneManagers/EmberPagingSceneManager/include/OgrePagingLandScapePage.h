@@ -4,6 +4,9 @@
   begin                : Sat Mar 08 2003
   copyright            : (C) 2003-2006 by Jose A. Milan and Tuan Kuranes
   email                : spoke2@supercable.es && tuan.kuranes@free.fr
+
+  * Copyright (C) 2009 Manuel A. Fernandez Montecelo <manuel.montezelo@gmail.com>
+
 ***************************************************************************/
 
 /***************************************************************************
@@ -22,32 +25,23 @@
 
 namespace Ogre
 {
+	/** Class representing a terrain page for the Paging LandScape
+	 */
 	class _OgrePagingLandScapeExport PagingLandScapePage
 	{
         public:
-	        PagingLandScapePage(PagingLandScapePageManager* pageMgr);
 
+	        bool mIsLoading;
+	        bool mIsPreLoading;
+		bool mIsTextureLoading;
+
+
+
+	        /** Ctor. */
+	        PagingLandScapePage(PagingLandScapePageManager& pageMgr);
+
+	        /** Dtor. */
 	        virtual ~PagingLandScapePage();
-
-	        /** Sets the appropriate neighbor for this TerrainRenderable.  Neighbors are necessary
-		    to know when to bridge between LODs.
-		*/
-		void _setNeighbor(const Neighbor& n, PagingLandScapePage* p);
-
-		/** Returns the page's scene node
-		 */
-		SceneNode* getPageNode() const { return mPageNode; }
-
-		/** Returns the neighbor TerrainRenderable.
-		 */
-		PagingLandScapePage* _getNeighbor(const Neighbor& n) const
-		{
-			return mNeighbors[ n ];
-		}
-
-		PagingLandScapeTile* getTile(unsigned int i , unsigned int j) const;
-
-		PagingLandScapeTile* getTile(const Vector3& pos);
 
 	        /** Whole Map changes */
 		void init(unsigned int tableX, unsigned int tableZ);
@@ -55,162 +49,178 @@ namespace Ogre
 	        /** Release the page, but keep it reusable if Whole Map changes */
 		void uninit();
 
-	        /** Pre-loads the LandScape data using parameters int he given in the constructor. */
-	        void preload();
-
-	        /** Loads the LandScape tiles using parameters int he given in the constructor. */
+	        /** Loads the LandScape tiles using parameters given in the constructor. */
 	        void load();
 
-	        /** Unloads the LandScape data, then reloads it */
-		void reload();
-
-	        /** Loads the LandScape texture using parameters int he given in the constructor. */
+	        /** Loads the LandScape texture using parameters given in the constructor. */
 		void loadTexture();
 
-	        /** Unloads the LandScape texture, but doesn't destroy the LandScape data. */
-		void unloadTexture();
+	        /** Pre-loads the LandScape data using parameters given in the constructor. */
+	        void preload();
 
-	        /** Unloads the LandScape data, but doesn't destroy the LandScape page. */
-	        void unload();
+	        /** Show/hide the page */
+		void show(bool do_show);
 
-	        /** Post Unloads the LandScape data, but doesn't destroy the LandScape page. */
-	        void postUnload();
-            
-	        void unsetLoading()
-		{
-			mIsLoading = false;
-		}
-
-	        void unsetPreLoading()
-		{
-			mIsPreLoading = false;
-		}
-
-	        void unsetTextureLoading()
-		{
-			mIsTextureLoading = false;
-		}
-
-	        void unsetUnloading()
-		{
-			mIsUnloading = false;
-		}
-
-	        void unsetPostUnloading()
-		{
-			mIsPostUnloading = false;
-		}
-
-		void unsetTextureunloading()
-		{
-			mIsTextureunloading = false;
-		}
-        
-		bool isLoaded() const 
-		{
-			return mIsLoaded;
-		}
-
-		bool isPreLoaded() const 
-		{
-			return mIsPreLoaded;
-		}
-
-		bool isTextureLoaded() const 
-		{
-			return mIsTextureLoaded;
-		}
-
-		bool isLoadable() const 
-		{
-			return mIsLoadable;
-		}
-
-		bool unloadUntouched();
-		void touch();
-
-		bool isVisible() const 
-		{
-			return mVisible;
-		}
-
-	        /** Returns if the camera is over this LandScape page.
-		 */
-	        int isCameraIn(const Vector3& pos) const;
-
-	        bool _Notify(const Vector3& pos, const PagingLandScapeCamera* const Cam);
-		void _Show(bool do_show);
-
-		void getCoordinates(unsigned int& X, unsigned int& Z) const 
-		{
-			X = mTableX;
-			Z = mTableZ;
-		}
-
-
-	        bool mIsLoading;
-	        bool mIsPreLoading;
-		bool mIsTextureLoading;
-
-	        bool mIsUnloading;
-	        bool mIsPostUnloading;
-		bool mIsTextureunloading;
+		/** Set material map of the page */
+		void setMapMaterial();
 
 		/** Sets the render queue group which the tiles should be rendered in. */
 		void setRenderQueue(uint8 qid);
 
-		void _updateLod();
-
-		void setMapMaterial();
-
-		inline bool isCoord(unsigned int x, unsigned int z) { return (mTableZ == z && mTableX == x); }
-			
-		SceneNode* getSceneNode() { return mPageNode; }
-		const AxisAlignedBox& getWorldBbox() const { return mBounds; }
-		const Vector3& getCenter() const { return mWorldPosition; }
-			
+		/** Update the terrain data */
 		void updateTerrain();
-			
+
+		/** Update Level of Detail. */
+		void updateLod();
+
+		/** Notify the tiles that we are near the camera on next render
+		 *
+		 * @return true when loaded and tiles were notified
+		 */
+	        bool notify(const Vector3& pos, const PagingLandScapeCamera* cam);
+
+		/** Touch the page when there are operations (marking is at being recently used) */
+		void touch();
+
+		/** Unload unused pages */
+		bool unloadUntouched();
+
+		/** Get tile at the given position (checking that it's loaded).
+		 *
+		 * @return 0 for invalid or unloaded page, the pointer otherwise
+		 */
+		PagingLandScapeTile* getTile(const Vector3& pos) const;
+		/** Get tile at the given indices in the matrix holding them.
+		 *
+		 * @return 0 for invalid page, the pointer otherwise
+		 */
+		PagingLandScapeTile* getTile(unsigned int i , unsigned int j) const;
+
+	        /** Get coordinates of the page */
+		inline void getCoordinates(unsigned int& x, unsigned int& z) const
+		{
+			x = mTableX;
+			z = mTableZ;
+		}
+
+	        /** Check whether the coordinates match those of the page */
+		inline bool doCoordinatesMatch(unsigned int x, unsigned int z)
+		{
+			return (mTableZ == z && mTableX == x);
+		}
+
+		/** Get the SceneNode */
+		inline SceneNode* getSceneNode()
+		{
+			return mPageNode;
+		}
+
+		/** Get the center position of the page */
+		inline const Vector3& getCenter() const
+		{
+			return mWorldPosition;
+		}
+
+		/** Whether the page is loaded */
+		inline bool isLoaded() const 
+		{
+			return (mPageState == STATE_LOADED);
+		}
+
+		/** Whether the page is preloaded */
+		inline bool isPreLoaded() const 
+		{
+			return (mPageState == STATE_PRELOADED);
+		}
+
+		/** Whether the page has the texture loaded */
+		inline bool isTextureLoaded() const 
+		{
+			return (mPageState == STATE_TEXTURELOADED);
+		}
+
+		/** Whether the page is visible loaded */
+		inline bool isVisible() const 
+		{
+			return mVisible;
+		}
+
         protected:
-	        SceneNode* mPageNode;
+		/** Possible states of the page */
+		enum PageState
+		{
+			STATE_UNINITED,
+			STATE_INITED,
+			STATE_PRELOADED,
+			STATE_TEXTURELOADED,
+			STATE_LOADED,
+			STATE_NOTLOADABLE,
+			LOADING,
+			UNLOADING,
+			UNLOADED,
+			TEXTUREUNLOADING,
+			TEXTUREUNLOADED
+		};
 
-	        PagingLandScapeTiles mTiles;
+		/** Events emitted by this class */
+		enum EventType {
+			EVENT_PRELOADED,
+			EVENT_LOADED,
+			EVENT_UNLOADED,
+			EVENT_POSTUNLOADED,
+			EVENT_SHOW,
+			EVENT_HIDE
+		};
 
-	        bool mIsLoaded;
-	        bool mIsPreLoaded;
-		bool mIsTextureLoaded; 
-            
-		// if data needed for this page doesn't exists
-		bool mIsLoadable;
 
-		bool mVisible; 
-		// ensure page is not flickering due to shadow passes
-		// as it unload instantly
-		// but loading is queued
-		// if not page not showed until mVisibletouch==0 it becomes invisible
-		//size_t mVisibletouch;
+		/// Reference to the manager
+		PagingLandScapePageManager& mPageMgr;
 
-		// Position of this Terrain Page in the Terrain Page Array
-	        unsigned int mTableX;	
+		/// State of this page
+		PageState mPageState;
+
+		/// Position of this Terrain Page in the Terrain Page Array
+	        unsigned int mTableX;
+		/// Position of this Terrain Page in the Terrain Page Array
 	        unsigned int mTableZ;
-
-		unsigned int mNumTiles;
-
-		PagingLandScapePage* mNeighbors[4];
-
-	        // Change Zone values
+	        /// Bounds of the terrain page
 	        AxisAlignedBox mBounds;
-	        AxisAlignedBox mBoundsInt;
-	        AxisAlignedBox mBoundsExt;
+	        /// Position in the world of the terrain page
 		Vector3 mWorldPosition;
 
-		PagingLandScapePageRenderable* mRenderable;
+		/// Whether the page is visible or not
+		bool mVisible;
 
+		/// Variable to control if it's been used recently
 		unsigned int mTimeUntouched;
 
-		PageState pageState;
-		PageQueuingState pageQueingState;
-		PagingLandScapePageManager* mParent;
+		/// SceneNode corresponding to this Terrain Page
+		Ogre::SceneNode* mPageNode;
+
+		/// Renderable for this page
+		PagingLandScapePageRenderable* mRenderable;
+
+		/// Number of tiles of the page
+		unsigned int mNumTiles;
+		/// Tiles of the page
+	        PagingLandScapeTiles mTiles;
+
+		/// Neighbor pages
+		PagingLandScapePage* mNeighbors[4];
+
+
+	        /** Sets neighbors. */
+		void setNeighbors();
+	        /** Reset neighbors. */
+		void resetNeighbors();
+	        /** Sets the appropriate neighbor for this TerrainRenderable.
+		 * Neighbors are necessary to know when to bridge between LODs.
+		 */
+		void setNeighbor(Neighbor n, PagingLandScapePage* p);
+
+	        /** Fire event */
+		void fireEvent(EventType type);
+
 	};
 
 }

@@ -4,6 +4,9 @@
 	begin                : Sat Mar 08 2003
 	copyright            : (C) 2003-2006 by Jose A. Milan and Tuan Kuranes
 	email                : spoke2@supercable.es && tuan.kuranes@free.fr
+
+  * Copyright (C) 2009 Manuel A. Fernandez Montecelo <manuel.montezelo@gmail.com>
+
 ***************************************************************************/
 
 /***************************************************************************
@@ -15,239 +18,319 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "OgrePagingLandScapePrecompiledHeaders.h"
+#include "OgrePagingLandScapePage.h"
 
-#include "OgreVector3.h"
-#include "OgreColourValue.h"
-
-#include "OgreMovableObject.h"
-#include "OgreAxisAlignedBox.h"
-
-#include "OgreCamera.h"
-
-#include "OgreStringConverter.h"
-#include "OgreSceneNode.h"
-#include "OgreException.h"
-
-#include "OgrePagingLandScapeOptions.h"
 #include "OgrePagingLandScapeCamera.h"
-#include "OgrePagingLandScapePageManager.h"
-#include "OgrePagingLandScapeRenderableManager.h"
-#include "OgrePagingLandScapeData2DManager.h"
 #include "OgrePagingLandScapeData2D.h"
-#include "OgrePagingLandScapeTileInfo.h"
+#include "OgrePagingLandScapeData2DManager.h"
+#include "OgrePagingLandScapeListenerManager.h"
+#include "OgrePagingLandScapeOptions.h"
+#include "OgrePagingLandScapePageManager.h"
+#include "OgrePagingLandScapePageRenderable.h"
+#include "OgrePagingLandScapeRenderableManager.h"
+#include "OgrePagingLandScapeSceneManager.h"
+#include "OgrePagingLandScapeTextureManager.h"
 #include "OgrePagingLandScapeTile.h"
 #include "OgrePagingLandScapeTileManager.h"
-#include "OgrePagingLandScapeTextureManager.h"
 
-#include "OgrePagingLandScapePage.h"
-#include "OgrePagingLandScapePageRenderable.h"
-#include "OgrePagingLandScapeListenerManager.h"
+#include "framework/LoggingInstance.h"
 
-#include "OgrePagingLandScapeSceneManager.h"
+#include <OgreAxisAlignedBox.h>
+#include <OgreSceneNode.h>
+#include <OgreStringConverter.h>
+#include <OgreVector3.h>
 
-#include "OgrePagingLandScapeHorizon.h"
 
 namespace Ogre
 {
-	PagingLandScapePage::PagingLandScapePage(PagingLandScapePageManager* pageMgr) :
-		mParent (pageMgr),
+	PagingLandScapePage::PagingLandScapePage(PagingLandScapePageManager& pageMgr) :
+		mPageMgr(pageMgr),
+		mPageState(STATE_UNINITED),
+		mTableX(0),
+		mTableZ(0),
+		mWorldPosition(Ogre::Vector3::ZERO),
+		mVisible(false),
+		mPageNode(0),
+		mRenderable(0),
+		mNumTiles(0),
 		mIsLoading (false),
 		mIsPreLoading (false),
-		mIsTextureLoading (false),
-		mIsUnloading (false),
-		mIsPostUnloading (false),
-		mIsTextureunloading (false),
-		mIsLoaded (false),
-		mIsTextureLoaded (false),
-		mIsPreLoaded (false), 
-		mIsLoadable(true),		
-		mPageNode (0),
-		mRenderable(0)
-	{  
-		for (unsigned int i = 0; i < 4; i++)
-		{
-			mNeighbors[i] = 0;
-		}
+		mIsTextureLoading (false)
+	{
+		touch();
+		resetNeighbors();
 	}
 	//-----------------------------------------------------------------------
 	PagingLandScapePage::~PagingLandScapePage()
 	{
 	}
 	//-----------------------------------------------------------------------
-	void PagingLandScapePage::init (unsigned int tableX, unsigned int tableZ)
-	{ 
-		assert (!mIsLoading);
-		assert (!mIsPreLoading);
-		assert (!mIsTextureLoading);
-		assert (!mIsUnloading);
+	void PagingLandScapePage::init(unsigned int tableX, unsigned int tableZ)
+	{
+		if (mPageState != STATE_UNINITED) {
+			S_LOG_WARNING("PagingLandScapePage at (" << tableX << ", " << tableZ << ") already inited, ignoring request");
+			return;
+		}
 
-		assert (!mIsPostUnloading);
-		assert (!mIsTextureunloading);
-		assert (!mIsLoaded);
-		assert (!mIsTextureLoaded);
-		assert (!mIsPreLoaded);
-		assert (mIsLoadable);
-
-
+		S_LOG_VERBOSE("Initing PagingLandScapePage at (" << tableX << ", " << tableZ << ")");
 
 		mTableX = tableX;
 		mTableZ = tableZ;
-		//create a LandScape node that handles pages and tiles
-		const String NodeName =  "PagingLandScapePage." 
-			+ StringConverter::toString(mTableX) + "." + 
-			StringConverter::toString(mTableZ);
-		
-		mPageNode = mParent->getSceneManager()->createSceneNode (NodeName + ".Node");     
 
+		// create a LandScape node that handles pages and tiles
+		const String NodeName = "PagingLandScapePage."
+			+ StringConverter::toString(mTableX) + "."
+			+ StringConverter::toString(mTableZ) + ".Node";
+		mPageNode = mPageMgr.getSceneManager()->createSceneNode(NodeName);
 
-		const PagingLandScapeOptions * const opt = mParent->getOptions();
-		mNumTiles = opt->NumTiles;
+		// boundaries of this page, the middle page is at world coordinates 0,0
+		const PagingLandScapeOptions* options = mPageMgr.getOptions();
+		mNumTiles = options->NumTiles;
 
-		const unsigned int size = opt->PageSize - 1;
-		// Boundaries of this page
-		// the middle page is at world coordinates 0,0
-		const Real factorX = size * opt->scale.x;
-		const Real factorZ = size * opt->scale.z;
+		const unsigned int size = options->PageSize - 1;
+		const Real factorX = size * options->scale.x;
+		const Real factorZ = size * options->scale.z;
 
-		Real iniX = static_cast<Real> (static_cast<int> (mTableX + mTableX - opt->world_width)) * 0.5f * factorX + opt->position.x;		
-		Real iniZ = static_cast<Real> (static_cast<int> (mTableZ + mTableZ - opt->world_height)) * 0.5f * factorZ + opt->position.z;	
+		const Real iniX = static_cast<Real>(static_cast<int>(mTableX + mTableX - options->world_width)) * 0.5f * factorX + options->position.x;		
+		const Real iniZ = static_cast<Real>(static_cast<int>(mTableZ + mTableZ - options->world_height)) * 0.5f * factorZ + options->position.z;	
+		const Real endX = iniX + factorX;
+		const Real endZ = iniZ + factorZ;
+		const Real minHeight = 0.0f;
+		const Real maxHeight = mPageMgr.getSceneManager()->getData2DManager()->getMaxHeight(mTableX, mTableZ);
 
-		// Set node position
-		mPageNode->setPosition(static_cast<Real> (iniX) , 
-				       opt->position.y, 
-				       static_cast<Real> (iniZ));
+		// set node position
+		mPageNode->setPosition(iniX, options->position.y, iniZ);
 
-		const Real EndX = iniX + factorX;
-		const Real EndZ = iniZ + factorZ;
-		const Real MaxHeight = mParent->getSceneManager()->getData2DManager()->getMaxHeight(mTableX, mTableZ);
-		const Real chgfactor = opt->change_factor;
-
-		mBounds.setExtents(iniX , 
-				   0.0f, 
-				   iniZ , 
-				   EndX , 
-				   MaxHeight, 
-				   EndZ);
-
-		//Change Zone of this page
-		mBoundsInt.setExtents(iniX + chgfactor, 
-				      0.0f, 
-				      iniZ + chgfactor,
-				      EndX - chgfactor, 
-				      MaxHeight, 
-				      EndZ - chgfactor	);
- 
-		mBoundsExt.setExtents(iniX - factorX * 1.5f, 
-				      - MaxHeight * 1.5f, 
-				      iniZ - factorZ * 1.5f,
-
-				      iniX + factorX * 1.5f, 
-				      MaxHeight * 1.5f , 
-				      iniZ + factorZ * 1.5f);
-
+		// set bounds
+		mBounds.setExtents(iniX, minHeight, iniZ,
+				   endX, maxHeight, endZ);
 		mWorldPosition = mBounds.getCenter();
 
-		if (opt->BigImage)
-		{
-			mRenderable = new PagingLandScapePageRenderable(mParent,
-									mPageNode->getName () + "rend", 
+		// create renderable
+		if (options->BigImage) {
+			mRenderable = new PagingLandScapePageRenderable(&mPageMgr,
+									mPageNode->getName() + "rend", 
 									mTableX, mTableZ,
 									mBounds);
 			mPageNode->attachObject(mRenderable);
-			mRenderable->load ();
+			mRenderable->load();
 		}
 
-		PagingLandScapePageManager * const pageMgr = mParent;
-		PagingLandScapePage *n;
-		n = pageMgr->getPage (tableX, tableZ + 1, false);
-		_setNeighbor(SOUTH, n);
-		if (n)
-			n->_setNeighbor(NORTH, this);
+		// set neighbors
+		setNeighbors();
 
-		n = pageMgr->getPage (tableX, tableZ - 1, false);
-		_setNeighbor(NORTH, n);
-		if (n)
-			n->_setNeighbor(SOUTH, this);
+		touch();
 
-		n = pageMgr->getPage (tableX + 1, tableZ, false);
-		_setNeighbor(EAST, n);
-		if (n)
-			n->_setNeighbor(WEST, this);
-
-		n = pageMgr->getPage (tableX - 1, tableZ, false);
-		_setNeighbor(WEST, n);
-		if (n)
-			n->_setNeighbor(EAST, this);
-
-		mVisible = false;
-
-		touch ();
+		mPageState = STATE_INITED;
 	}
 	//-----------------------------------------------------------------------
-	void PagingLandScapePage::uninit ()
+	void PagingLandScapePage::load()
 	{
-		postUnload ();  
-		assert (mTiles.empty());
+		touch();
 
-		if (mParent->getOptions()->BigImage)
-		{
-			mPageNode->detachObject (mRenderable->getName());
+		if (isLoaded()) {
+			S_LOG_WARNING("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") already loaded, ignoring request");
+			return;
+		}
+
+		S_LOG_VERBOSE("Loading PagingLandScapePage at (" << mTableX << ", " << mTableZ << ")");
+
+		if (mPageState == STATE_INITED) {
+			preload();
+		}
+
+		if (mPageState == STATE_PRELOADED) {
+			loadTexture();
+		}
+
+		if (mPageState == STATE_TEXTURELOADED) {
+			// initialize tile containers
+			mTiles.reserve(mNumTiles);
+			mTiles.resize(mNumTiles);
+			for (size_t i = 0; i < mNumTiles; ++i) {
+				mTiles[i].reserve(mNumTiles);
+				mTiles[i].resize(mNumTiles);
+			}
+
+			// initialize tiles
+			PagingLandScapeTileManager* tileMgr = mPageMgr.getSceneManager()->getTileManager();
+			for (size_t i = 0; i < mTiles.size(); ++i) {
+				for (size_t j = 0; j < mTiles[i].size(); ++j) {
+					PagingLandScapeTile* tile = tileMgr->getTile();
+					assert (tile);
+					mTiles[i][j] = tile;
+					tile->init(mPageNode, mTableX, mTableZ, i, j);
+					// set up tile neighbors
+					if (j > 0) {
+						tile->_setNeighbor(NORTH, mTiles[i][j-1]);
+						mTiles[i][j-1]->_setNeighbor(SOUTH, tile);
+					}
+					if (i > 0)	{
+						tile->_setNeighbor(WEST, mTiles[i-1][j]);
+						mTiles[i-1][j]->_setNeighbor(EAST, tile);    
+					}
+				}
+			}
+		} else {
+			S_LOG_WARNING("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") already loaded, proceeding to show it");
+		}
+
+		// fire event
+		fireEvent(EVENT_LOADED);
+
+		mPageState = STATE_LOADED;
+
+		show(true);
+	}
+	//-----------------------------------------------------------------------
+	void PagingLandScapePage::loadTexture()
+	{
+		touch();
+
+		if (mPageState == STATE_INITED) {
+			preload();
+		}
+
+		if (mPageState == STATE_PRELOADED) {
+			S_LOG_VERBOSE("Loading texture for PagingLandScapePage at (" << mTableX << ", " << mTableZ << ")");
+			mPageMgr.getSceneManager()->getTextureManager()->load(mTableX, mTableZ);
+			mPageState = STATE_TEXTURELOADED;
+		} else {
+			S_LOG_WARNING("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") already has a texture loaded (or is not preloaded), ignoring request");
+		}
+	}
+	//-----------------------------------------------------------------------
+	void PagingLandScapePage::preload()
+	{
+		touch();
+
+		if (mPageState == STATE_INITED) {
+			S_LOG_VERBOSE("Preloading PagingLandScapePage at (" << mTableX << ", " << mTableZ << ")");
+			bool loadable = mPageMgr.getSceneManager()->getData2DManager()->load(mTableX, mTableZ);
+			if (!loadable) {
+				S_LOG_WARNING("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") is not loadable");
+				mPageState = STATE_NOTLOADABLE;
+			} else {
+				mPageState = STATE_PRELOADED;
+				// fire event
+				fireEvent(EVENT_PRELOADED);
+			}
+		} else {
+			S_LOG_WARNING("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") already preloaded (or not inited), ignoring request");
+		}
+	}
+	//-----------------------------------------------------------------------
+	void PagingLandScapePage::uninit()
+	{
+		if (mPageState == STATE_UNINITED) {
+			S_LOG_WARNING("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") already uninited, ignoring request");
+			return;
+		}
+
+		S_LOG_VERBOSE("Uniniting PagingLandScapePage at (" << mTableX << ", " << mTableZ << ")");
+
+		// unload, if loaded
+		if (isLoaded()) {
+			// hide
+			show(false);
+
+			// unload the tiles
+			for (size_t i = 0; i < mTiles.size(); ++i) {
+				for (size_t j = 0; j < mTiles[i].size(); ++j) {
+					mTiles[i][j]->uninit();
+				}
+			}
+			mTiles.clear();
+
+			// fire event
+			fireEvent(EVENT_UNLOADED);
+
+			// unload texture
+			mPageMgr.getSceneManager()->getTextureManager()->unload(mTableX, mTableZ);
+
+			// post unload
+			mPageMgr.getSceneManager()->getData2DManager()->unload(mTableX, mTableZ);
+			fireEvent(EVENT_POSTUNLOADED);
+		}
+
+		// destroy renderable
+		if (mPageMgr.getOptions()->BigImage) {
+			mPageNode->detachObject(mRenderable->getName());
 			delete mRenderable;
+			mRenderable = 0;
 		}	
 
-		assert (mPageNode);
-		mPageNode->removeAndDestroyAllChildren ();
-		mParent->getSceneManager()->destroySceneNode (mPageNode->getName ());
-		mPageNode = 0;
-       
-
-		PagingLandScapePage *n = mNeighbors[NORTH];
-		if (n)
-		{
-			n->_setNeighbor(SOUTH, 0);
-			mNeighbors[NORTH] = 0;
+		// destroy page node
+		if (mPageNode) {
+			mPageNode->removeAndDestroyAllChildren();
+			mPageMgr.getSceneManager()->destroySceneNode(mPageNode->getName());
+			mPageNode = 0;
 		}
-		n = mNeighbors[SOUTH];
-		if (n)
-		{
-			n->_setNeighbor(NORTH, 0);
-			mNeighbors[SOUTH] = 0;
+
+		// update neighbors (tell them that we're gone)
+		resetNeighbors();
+
+		// restore state
+		mBounds.setNull();
+		mWorldPosition = Ogre::Vector3::ZERO;
+		mPageState = STATE_UNINITED;
+	}
+
+	//-----------------------------------------------------------------------
+	void PagingLandScapePage::setNeighbors()
+	{
+		PagingLandScapePage* neighbor = 0;
+		neighbor = mPageMgr.getPage(mTableX, mTableZ + 1, false);
+		if (neighbor) {
+			setNeighbor(SOUTH, neighbor);
+			neighbor->setNeighbor(NORTH, this);
 		}
-		n = mNeighbors[EAST];
-		if (n)
-		{
-			n->_setNeighbor(WEST, 0);
-			mNeighbors[EAST] = 0;
+		neighbor = mPageMgr.getPage(mTableX, mTableZ - 1, false);
+		if (neighbor) {
+			setNeighbor(NORTH, neighbor);
+			neighbor->setNeighbor(SOUTH, this);
 		}
-		n = mNeighbors[WEST];
-		if (n)
-		{
-			n->_setNeighbor(EAST, 0);
-			mNeighbors[WEST] = 0;
-		}	
-		// restore init state.
-		mIsLoading = false;
-		mIsPreLoading = false;
-		mIsTextureLoading = false;
-
-		mIsUnloading = false;
-		mIsPostUnloading = false;
-		mIsTextureunloading = false;
-
-		mIsLoaded = false;
-		mIsTextureLoaded = false;
-		mIsPreLoaded = false;      
-
-		mIsLoadable = true;
+		neighbor = mPageMgr.getPage(mTableX + 1, mTableZ, false);
+		if (neighbor) {
+			setNeighbor(EAST, neighbor);
+			neighbor->setNeighbor(WEST, this);
+		}
+		neighbor = mPageMgr.getPage(mTableX - 1, mTableZ, false);
+		if (neighbor) {
+			setNeighbor(WEST, neighbor);
+			neighbor->setNeighbor(EAST, this);
+		}
 	}
 	//-----------------------------------------------------------------------
-	void PagingLandScapePage::_setNeighbor(const Neighbor& n, PagingLandScapePage* p)
+	void PagingLandScapePage::resetNeighbors()
 	{
-		mNeighbors[ n ] = p;
+		// update neighbors (tell them that we're gone)
+		if (mNeighbors[NORTH]) {
+			mNeighbors[NORTH]->setNeighbor(SOUTH, 0);
+		}
+		if (mNeighbors[SOUTH]) {
+			mNeighbors[SOUTH]->setNeighbor(NORTH, 0);
+		}
+		if (mNeighbors[EAST]) {
+			mNeighbors[EAST]->setNeighbor(WEST, 0);
+		}
+		if (mNeighbors[WEST]) {
+			mNeighbors[WEST]->setNeighbor(EAST, 0);
+		}
+
+		// reset own neighbors
+		mNeighbors[NORTH] = 0;
+		mNeighbors[SOUTH] = 0;
+		mNeighbors[EAST] = 0;
+		mNeighbors[WEST] = 0;
+	}
+	//-----------------------------------------------------------------------
+	void PagingLandScapePage::setNeighbor(Neighbor n, PagingLandScapePage* p) // mafm: optimize, factor out code
+	{
+		mNeighbors[n] = p;
 	 
-		const bool thisLoaded = mIsLoaded;
-		const bool neighLoaded = p && p->isLoaded() && p->isLoadable();
+		const bool thisLoaded = isLoaded();
+		const bool neighLoaded = p && p->isLoaded();
 
 		if (!thisLoaded && !neighLoaded)
 			return;
@@ -336,383 +419,131 @@ namespace Ogre
 	//-----------------------------------------------------------------------
 	void PagingLandScapePage::setMapMaterial()
 	{    
-		if (mParent->getOptions()->BigImage)
-		{
-			mRenderable->setMaterial (mParent->getSceneManager()->getTextureManager()->getMapMaterial());
+		if (mPageMgr.getOptions()->BigImage) {
+			mRenderable->setMaterial(mPageMgr.getSceneManager()->getTextureManager()->getMapMaterial());
 		}
 	}
 	//-----------------------------------------------------------------------
 	void PagingLandScapePage::touch()
 	{ 
-		mTimeUntouched = mParent->getOptions()->PageInvisibleUnloadFrames;
+		mTimeUntouched = mPageMgr.getOptions()->PageInvisibleUnloadFrames;
 	}
 	//-----------------------------------------------------------------------
 	bool PagingLandScapePage::unloadUntouched()
-	{ 
-		if (mTimeUntouched == 0)
+	{
+		if (mTimeUntouched == 0) {
 			return true;
-		mTimeUntouched--; 
-		return false;
-	}
-	//-----------------------------------------------------------------------
-	void PagingLandScapePage::preload()
-	{
-		touch ();
-
-		if (mIsPreLoaded)
-			return;
-
-		mIsLoadable = mParent->getSceneManager()->getData2DManager()->load (mTableX, mTableZ);
-
-		mIsPreLoaded = true;
-
-		mParent->getSceneManager()->getListenerManager()->firePagePreloaded(mTableX, mTableZ, 
-										    mParent->getSceneManager()->getData2DManager()->getData2D(mTableX, mTableZ)->getHeightData(),
-										    mBounds);
-	}
-	//-----------------------------------------------------------------------
-	void PagingLandScapePage::loadTexture()
-	{        
-		touch ();
-		if (!mIsPreLoaded)
-			preload ();
-		if (!mIsTextureLoaded) 
-		{
-			if (mIsLoadable)
-				mParent->getSceneManager()->getTextureManager()->load(mTableX, mTableZ);
-			mIsTextureLoaded = true;
+		} else {
+			--mTimeUntouched; 
+			return false;
 		}
 	}
 	//-----------------------------------------------------------------------
-	void PagingLandScapePage::load()
-	{
-		touch ();
-		if (mIsLoaded)
-			return;
-		if (!mIsPreLoaded)
-			preload ();
-		if (!mIsTextureLoaded)
-			loadTexture ();
-
-		assert (mTiles.empty());
-
-		//mVisibletouch = 0;
-		mIsLoaded = true;
-		//mPageNode->showBoundingBox (true) ;
-		if (mIsLoadable)
-		{
-			const unsigned int numTiles = mNumTiles;
-			unsigned int i, j;
-
-			mTiles.reserve (numTiles);
-			mTiles.resize (numTiles);
-
-			for (i = 0; i < numTiles; ++i)
-			{
-				mTiles[i].reserve (numTiles);
-				mTiles[i].resize (numTiles);
-			} 
-
-			PagingLandScapeTile *tile;
-			PagingLandScapeTileManager * const tileMgr = mParent->getSceneManager()->getTileManager();
-			for (i = 0; i < numTiles; ++i)
-			{
-				for (j = 0; j < numTiles; ++j)
-				{
-					//char name[ 24 ];
-					//sprintf(name, "page[%d,%d][%d,%d]", mTableX, mTableZ, i, j);
-
-					tile = tileMgr->getTile ();
-					assert (tile);
-					mTiles[ i ][ j ] = tile;
-					tile->init (mPageNode, mTableX, mTableZ, i, j);
-				}
-			}
-			for (i = 0; i < numTiles; ++i)
-			{
-				for (j = 0; j < numTiles; ++j)
-				{		
-					if (j != numTiles - 1)
-					{
-						mTiles[ i ][ j ]-> _setNeighbor(SOUTH, mTiles[ i ][ j + 1 ]);
-						mTiles[ i ][ j + 1 ] ->_setNeighbor(NORTH, mTiles[ i ][ j ]);
-					}
-					if (i != numTiles - 1)
-					{
-						mTiles[ i ][ j ]->_setNeighbor(EAST, mTiles[ i + 1 ][ j ]);
-						mTiles[ i + 1 ][ j ]->_setNeighbor(WEST, mTiles[ i ][ j ]);    
-					}           
-				}
-			}
-
-			PagingLandScapePageManager* const pageMgr = mParent;
-			PagingLandScapePage* n;
-
-			n = pageMgr->getPage (mTableX, mTableZ + 1, false);
-			_setNeighbor(SOUTH, n);
-			if (n)
-				n->_setNeighbor(NORTH, this);
-
-			n = pageMgr->getPage (mTableX, mTableZ - 1, false);
-			_setNeighbor(NORTH, n);
-			if (n)
-				n->_setNeighbor(SOUTH, this);
-
-			n = pageMgr->getPage (mTableX + 1, mTableZ, false);
-			_setNeighbor(EAST, n);
-			if (n)
-				n->_setNeighbor(WEST, this);
-
-			n = pageMgr->getPage (mTableX - 1, mTableZ, false);
-			_setNeighbor(WEST, n);
-			if (n)
-				n->_setNeighbor(EAST, this);
-
-		}
-        
-		mParent->getSceneManager()->getListenerManager()->firePageLoaded(mTableX, mTableZ, 
-										 mParent->getSceneManager()->getData2DManager()->getData2D(mTableX, mTableZ)->getHeightData(),
-										 mBounds);
-
-		_Show(true);
-	}
-
-	//-----------------------------------------------------------------------
-	void PagingLandScapePage::unload()
-	{
-		if (mIsLoaded)
-		{
-
-			assert (!mTiles.empty());
-
-			// must be 0 to make sure page is really set as non visible
-			//mVisibletouch = 0;
-			//if (mVisible)
-			_Show (false);
-
-			// Unload the Tiles
-			PagingLandScapeTiles::iterator iend = mTiles.end();
-			for (PagingLandScapeTiles::iterator it = mTiles.begin(); 
-			     it != iend; 
-			     ++it)
-			{
-                
-				std::for_each(it->begin (), 
-					      it->end (),  
-					      std::mem_fun(&PagingLandScapeTile::uninit));
-
-				it->clear();   
-			} 
-			mTiles.clear();
-			assert (mTiles.empty());
-
-			mIsLoaded = false;       
-     
-			mParent->getSceneManager()->getListenerManager()->firePageUnloaded(mTableX, mTableZ, 
-											   mParent->getSceneManager()->getData2DManager()->getData2D(mTableX, mTableZ)->getHeightData(),
-											   mBounds);
-			assert (mPageNode);
-			assert (mPageNode->getParent () == 0);
-
-		}
-	}
-	//-----------------------------------------------------------------------
-	void PagingLandScapePage::unloadTexture()
-	{
-		unload();
-		if (mIsTextureLoaded) 
-		{
-			if (mIsLoadable)
-				mParent->getSceneManager()->getTextureManager()->unload(mTableX, mTableZ);
-			mIsTextureLoaded = false;
-		}
-	}
-    
 	void PagingLandScapePage::updateTerrain()
 	{
-		const PagingLandScapeOptions * const opt = mParent->getOptions();
-		PagingLandScapeTiles::iterator iend = mTiles.end();
-		for (PagingLandScapeTiles::iterator it = mTiles.begin(); 
-		     it != iend; 
-		     ++it)
-		{
-		
-			for (PagingLandScapeTileRow::iterator I = it->begin(); I != it->end(); ++I) {
-				///we need to adjust the deformation rectangle for the whole tile/renderable so to force a recalculation of the bounding box and the LOD calculation
-				if ((*I)->getRenderable()) {
-					(*I)->getRenderable()->adjustDeformationRectangle(0, 0);
-					(*I)->getRenderable()->adjustDeformationRectangle(opt->TileSize - 1, opt->TileSize - 1);
+		const unsigned int size = mPageMgr.getOptions()->TileSize - 1;
+		for (size_t i = 0; i < mTiles.size(); ++i) {
+			for (size_t j = 0; j < mTiles[i].size(); ++j) {
+				PagingLandScapeTile* tile = mTiles[i][j];
+				/// we need to adjust the deformation rectangle for the whole tile/renderable so to force a recalculation of the bounding box and the LOD calculation
+				if (tile->getRenderable()) {
+					tile->getRenderable()->adjustDeformationRectangle(0, 0);
+					tile->getRenderable()->adjustDeformationRectangle(size, size);
 				}
-				(*I)->updateTerrain();
+				tile->updateTerrain();
 			}
-		} 
-	}
-
-	//-----------------------------------------------------------------------
-	void PagingLandScapePage::postUnload()
-	{
-		unloadTexture ();
-		if (mIsPreLoaded)
-		{
-			mIsPreLoaded = false;
-
-			if (mIsLoadable)
-				mParent->getSceneManager()->getData2DManager()->unload(mTableX, mTableZ);
-
-			mParent->getSceneManager()->getListenerManager()->firePagePostunloaded (mTableX, mTableZ);
-		}
-	}
-
-	//-----------------------------------------------------------------------
-	int PagingLandScapePage::isCameraIn(const Vector3& pos) const
-	{
-		if (mBounds.intersects(pos))
-		{
-			if (mBoundsInt.intersects(pos))
-			{
-				// Full into this page
-				return PAGE_INSIDE;
-			}
-			else
-			{
-				// Over the change zone
-				return PAGE_CHANGE;
-			}
-		}
-		else
-		{
-			// Not in this page
-			return PAGE_OUTSIDE;
 		}
 	}
 	//-----------------------------------------------------------------------
-	void PagingLandScapePage::_Show(bool do_show)
+	void PagingLandScapePage::show(bool do_show)
 	{
-		assert (mPageNode);
-		if (do_show) 
-		{
+		if (mPageState != STATE_LOADED) {
+			S_LOG_WARNING("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") not loaded, ignoring show() request");
+			return;
+		}
+
+		S_LOG_VERBOSE("Showing/hiding PagingLandScapePage at (" << mTableX << ", " << mTableZ << ")");
+
+		// set tiles in use or not according with visibility
+		for (size_t i = 0; i < mTiles.size(); ++i) {
+			for (size_t j = 0; j < mTiles[i].size(); ++j) {
+				mTiles[i][j]->setInUse(do_show);
+			}
+		}
+
+		if (do_show) {
 			assert (!mVisible);
 
-			if (!mPageNode->getParent ())
-				mParent->getSceneManager()->getRootSceneNode()->addChild (mPageNode);
-
-			mParent->getSceneManager()->getListenerManager()->firePageShow (mTableX, mTableZ, 
-											mParent->getSceneManager()->getData2DManager()->getData2D(mTableX, mTableZ)->getHeightData(),
-											mBounds);
-                
-			if (mIsLoadable)
-			{
-				unsigned int i,k;
-				for (i = 0; i < mNumTiles; ++i)
-				{
-					PagingLandScapeTileRow &tr = mTiles[ i ];
-					for (k = 0; k < mNumTiles; ++k)
-					{
-						tr[ k ]->setInUse(true);
-					}
-				}
+			// add node to the scene
+			if (!mPageNode->getParent()) {
+				mPageMgr.getSceneManager()->getRootSceneNode()->addChild(mPageNode);
 			}
+
 			mVisible = true;
-		}
-		else if (mVisible)
-		{
-			assert (do_show == false);
-			//if (mVisibletouch == 0)
-			{
-				if (mPageNode->getParent ())
-					mParent->getSceneManager()->getRootSceneNode()->removeChild (mPageNode->getName ());
+			// fire event
+			fireEvent(EVENT_SHOW);
 
-				mParent->getSceneManager()->getListenerManager()->firePageHide (mTableX, mTableZ, 
-												mParent->getSceneManager()->getData2DManager()->getData2D(mTableX, mTableZ)->getHeightData(),
-												mBounds);
-				if (mIsLoadable)
-				{
-					unsigned int i,k;
-					for (i = 0; i < mNumTiles; ++i)
-					{
-						PagingLandScapeTileRow &tr = mTiles[ i ];
-						for (k = 0; k < mNumTiles; ++k)
-						{
-							tr[ k ]->setInUse (false);
-						}
-					}
-				}
-				mVisible = false;
+		} else {
+			assert (mVisible);
+
+			// remove node from the scene
+			if (mPageNode->getParent()) {
+				mPageMgr.getSceneManager()->getRootSceneNode()->removeChild(mPageNode->getName());
 			}
-			//else
-			//{
-			//    mVisibletouch--;
-			//}
+
+			mVisible = false;
+			// fire event
+			fireEvent(EVENT_HIDE);
 		}
 	}
 	//-----------------------------------------------------------------------
-	bool PagingLandScapePage::_Notify(const Vector3& pos, const PagingLandScapeCamera* const Cam)
+	bool PagingLandScapePage::notify(const Vector3& pos, const PagingLandScapeCamera* cam)
 	{
-		if (mIsLoaded && mIsLoadable)
-		{
-			// ((pos - mWorldPosition).squaredLength() < mParent->getOptions()->page_factor ?
-			if (
-				1
-				//Cam->isVisible (mBoundsExt) 
-				//&& 
-				// if we use an Horizon Visibility Map
-				//( !(mParent->getOptions()->VisMap)  
-				//  || (mParent->getOptions()->VisMap 
-				//      && mParent->getSceneManager()->getHorizon()->IsPageVisible (Cam, mTableX, mTableZ)))
-                
-				)
-			{         
-				touch();
-				//if (!mVisible)
-				//	_Show (true);
-				//mVisibletouch = 30;
-				for (unsigned int i = 0; i < mNumTiles; i++)
-				{
-					PagingLandScapeTileRow &tr = mTiles[ i ];
-					for (unsigned int k = 0; k < mNumTiles; k++)
-					{                 
-						tr[ k ]->_Notify(pos, Cam);
-					}
+		if (mPageState == STATE_LOADED)	{
+			touch();
+
+			for (size_t i = 0; i < mTiles.size(); ++i) {
+				for (size_t j = 0; j < mTiles[i].size(); ++j) {
+					mTiles[i][j]->_Notify(pos, cam);
 				}
-				return true;
 			}
-			else if (mVisible)
-			{
-				// if it was visible it needs to change its state
-				//_Show (false);
-				return false;
-			}
+
+			return true;
 		}
 		return false;
 	}
-
 	//-----------------------------------------------------------------------
-	PagingLandScapeTile* PagingLandScapePage::getTile(const Vector3& pos)
+	PagingLandScapeTile* PagingLandScapePage::getTile(const Vector3& pos) const
 	{
-		if (mIsLoaded && mIsLoadable)
-		{
-			const unsigned int x =  static_cast<unsigned int> (pos.x / mParent->getOptions()->scale.x / (mParent->getOptions()->TileSize));
-			const unsigned int z =  static_cast<unsigned int> (pos.z / mParent->getOptions()->scale.z / (mParent->getOptions()->TileSize));
+		const size_t x = static_cast<unsigned int>(pos.x / mPageMgr.getOptions()->scale.x / (mPageMgr.getOptions()->TileSize));
+		const size_t z = static_cast<unsigned int>(pos.z / mPageMgr.getOptions()->scale.z / (mPageMgr.getOptions()->TileSize));
 
-			assert (mTiles[x][z] && mTiles[x][z]-> isLoaded ());
-			return mTiles[x][z];
+		PagingLandScapeTile* tile = getTile(x, z);
+		if (tile && tile->isLoaded()) {
+			return getTile(x, z);
+		} else {
+			return 0;
 		}
-		return 0;
 	}
 	//-------------------------------------------------------------------------
-	void PagingLandScapePage::_updateLod()
+	PagingLandScapeTile* PagingLandScapePage::getTile(unsigned int i, unsigned int j) const
 	{
-		if (mIsLoaded && mIsLoadable)
-		{
-			unsigned int i,k;
-			for (i = 0; i < mNumTiles; ++i)
-			{
-				PagingLandScapeTileRow &tr = mTiles[ i ];
-				for (k = 0; k < mNumTiles; ++k)
-				{
-					PagingLandScapeTile *t = tr[ k ];
-					if (t->isVisible())
+		if (mPageState == STATE_LOADED && (i < mTiles.size()) && (j < mTiles[i].size())) {
+			return mTiles[i][j];
+		} else {
+			return 0;
+		}
+	}
+	//-------------------------------------------------------------------------
+	void PagingLandScapePage::updateLod()
+	{
+		if (mPageState == STATE_LOADED) {
+			for (size_t i = 0; i < mTiles.size(); ++i) {
+				for (size_t j = 0; j < mTiles[i].size(); ++j) {
+					PagingLandScapeTile* t = mTiles[i][j];
+					if (t->isVisible()) {
 						t->_updateLod();
+					}
 				}
 			}
 		}
@@ -720,38 +551,69 @@ namespace Ogre
 	//-------------------------------------------------------------------------
 	void PagingLandScapePage::setRenderQueue(uint8 qid)
 	{
-		if (mVisible && 
-		    mIsLoadable)
-		{
-			unsigned int i,k;
-			for (i = 0; i < mNumTiles; ++i)
-			{
-				PagingLandScapeTileRow &tr = mTiles[ i ];
-				for (k = 0; k < mNumTiles; ++k)
-				{
-					PagingLandScapeTile *t = tr[ k ];
-					if (t->isVisible())
+		if (mPageState == STATE_LOADED && mVisible) {
+			for (size_t i = 0; i < mTiles.size(); ++i) {
+				for (size_t j = 0; j < mTiles[i].size(); ++j) {
+					PagingLandScapeTile* t = mTiles[i][j];
+					if (t->isVisible()) {
 						t->setRenderQueueGroup(qid);
+					}
 				}
 			}
 		}
 	}
-	//-------------------------------------------------------------------------
-	PagingLandScapeTile* PagingLandScapePage::getTile(unsigned int i , unsigned int j) const
+	//-----------------------------------------------------------------------
+	void PagingLandScapePage::fireEvent(EventType type)
 	{
-		if (mIsLoaded)
+		Ogre::PagingLandScapeListenerManager* listenerMgr = mPageMgr.getSceneManager()->getListenerManager();
+		Ogre::PagingLandScapeData2DManager* data2dMgr = mPageMgr.getSceneManager()->getData2DManager();
+
+		switch (type) {
+		case EVENT_PRELOADED:
 		{
-			assert (!mTiles.empty());
-
-			assert (i < mParent->getOptions()->NumTiles);
-			assert (j < mParent->getOptions()->NumTiles);
-
-			assert (i < mTiles.size());
-			assert (j < mTiles[i].size());
-
-			return mTiles[i][j];
+			listenerMgr->firePagePreloaded(mTableX, mTableZ, 
+						       data2dMgr->getData2D(mTableX, mTableZ)->getHeightData(),
+						       mBounds);
 		}
-		return 0;
+		break;
+		case EVENT_LOADED:
+		{
+			listenerMgr->firePageLoaded(mTableX, mTableZ, 
+						    data2dMgr->getData2D(mTableX, mTableZ)->getHeightData(),
+						    mBounds);
+
+		}
+		break;
+		case EVENT_UNLOADED:
+		{
+			listenerMgr->firePageUnloaded(mTableX, mTableZ, 
+						      data2dMgr->getData2D(mTableX, mTableZ)->getHeightData(),
+						      mBounds);
+		}
+		break;
+		case EVENT_POSTUNLOADED:
+		{
+			listenerMgr->firePagePostunloaded(mTableX, mTableZ);
+		}
+		break;
+		case EVENT_SHOW:
+		{
+			listenerMgr->firePageShow(mTableX, mTableZ, 
+						  data2dMgr->getData2D(mTableX, mTableZ)->getHeightData(),
+						  mBounds);
+		}
+		break;
+		case EVENT_HIDE:
+		{
+			listenerMgr->firePageHide(mTableX, mTableZ, 
+						  data2dMgr->getData2D(mTableX, mTableZ)->getHeightData(),
+						  mBounds);
+		}
+		break;
+		default:
+			// nothing, shouldn't happen
+			break;
+		}
 	}
 
 } //namespace
