@@ -19,18 +19,19 @@
 #define PAGINGLandScapePAGEMANAGER_H
 
 #include "OgrePagingLandScapePrerequisites.h"
-#include "OgreSingleton.h"
-#include "OgreFrameListener.h"
+#include "OgrePagingLandScapeOptions.h"
+#include "OgrePagingLandScapePage.h"
 #include "OgrePagingLandScapeQueue.h"
 
-#include "OgrePagingLandScapePage.h"
+#include "OgreFrameListener.h"
+
 
 namespace Ogre
 {
 	class _OgrePagingLandScapeExport PagingLandScapePageManager : public FrameListener
 	{
         public:
-	        
+
 		///ctor
 		PagingLandScapePageManager(PagingLandScapeSceneManager * scnMgr);
 		///dtor
@@ -46,7 +47,7 @@ namespace Ogre
 		/// used to load first page earlier than first updatePaging() call
 		/// say like just after scene manager setWorldGeom()
 		void LoadFirstPage(PagingLandScapeCamera* cam);
-		/// Make sure page under camera is loaded, 
+		/// Make sure page under camera is loaded,
 		/// that neighbor pages are preLoaded, preLoading
 		/// and process queues accordingly
 	        void updatePaging(PagingLandScapeCamera* cam);
