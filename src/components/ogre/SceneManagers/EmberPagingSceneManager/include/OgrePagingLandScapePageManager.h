@@ -23,17 +23,18 @@
 #include "OgrePagingLandScapePage.h"
 #include "OgrePagingLandScapeQueue.h"
 
-#include "OgreFrameListener.h"
+#include <OgreFrameListener.h>
 
 
 namespace Ogre
 {
+
 	class _OgrePagingLandScapeExport PagingLandScapePageManager : public FrameListener
 	{
         public:
 
 		///ctor
-		PagingLandScapePageManager(PagingLandScapeSceneManager * scnMgr);
+		PagingLandScapePageManager(PagingLandScapeSceneManager* scnMgr);
 		///dtor
 	        ~PagingLandScapePageManager();
 
@@ -44,55 +45,36 @@ namespace Ogre
 		/// reset paging but keep page pool in memory
 		void reset();
 
-		/// used to load first page earlier than first updatePaging() call
-		/// say like just after scene manager setWorldGeom()
+		/// used to load first page earlier than first updatePaging() call say like just after scene manager setWorldGeom()
 		void LoadFirstPage(PagingLandScapeCamera* cam);
-		/// Make sure page under camera is loaded,
-		/// that neighbor pages are preLoaded, preLoading
-		/// and process queues accordingly
+		/// Make sure page under camera is loaded, that neighbor pages are preLoaded, preLoading and process queues accordingly
 	        void updatePaging(PagingLandScapeCamera* cam);
 
-		// recursively call LOD update on all page and tiles
+		/// recursively call LOD update on all page and tiles
 		void _updateLod();
 			
-		// load everything around camera just now.
-		void loadNow(PagingLandScapeCamera *cam);
-		// Make sure page gets into loaded page list when loaded from outside 
-		// ie "LoadNow" getOption
-		void addLoadedPage(PagingLandScapePage *p);
+		/// load everything around camera just now.
+		void loadNow(PagingLandScapeCamera* cam);
+		/// Make sure page gets into loaded page list when loaded from outside ie "LoadNow" getOption
+		void addLoadedPage(PagingLandScapePage* p);
 
-		/// if page is already instantiated get page at this pos,
-		/// otherwise allocate one, if alwaysReturn is set true.
-		PagingLandScapePage* getPage(const unsigned int i , const unsigned int j,
-					     const bool alwaysReturn = true);
+		/// if page is already instantiated get page at this pos, otherwise allocate one, if alwaysReturn is set true.
+		PagingLandScapePage* getPage(unsigned int i, unsigned int j, bool alwaysReturn = true);
 		/// Instantiate a new page from pool.
-		PagingLandScapePage* getNewPage(const unsigned int i , const unsigned int j);
+		PagingLandScapePage* getNewPage(unsigned int i, unsigned int j);
 		/// Return a page to the pool.
-		void releasePage (PagingLandScapePage*p );
+		void releasePage (PagingLandScapePage* p);
 
-		/// get Tile at absolute position in space, return answer even when position is outside landscape
-		/// when alwaysAnswer is true
-		PagingLandScapeTile* getTile(const Real posx, const Real posz, bool alwaysAnswer);
-		/// get Tile at absolute position but unscaled by landscape scale in space, 
-		/// return answer even when position is outside landscape
-		/// when alwaysAnswer is true
-		PagingLandScapeTile* getTileUnscaled(const Real posx, const Real posz, bool alwaysAnswer);
-		// get Tile at relative position (in the page containing the tile page coordinate system) in space, 
-		/// return answer even when position is outside landscape
-		/// when alwaysAnswer is true
-		PagingLandScapeTile* getTile(const Real posx, const Real posz, 
-					     const unsigned int pagex, const unsigned int pagez, 
-					     bool alwaysAnswer);
-		// get Tile at relative position but unscaled by landscape scale (in the page containing the tile page coordinate system) in space, 
-		/// return answer even when position is outside landscape
-		/// when alwaysAnswer is true
-		PagingLandScapeTile* getTileUnscaled(const Real posx, const Real posz, 
-						     const unsigned int pagex, const unsigned int pagez, 
-						     bool alwaysAnswer);
-		// get Tile at relative position but unscaled by landscape scale (in the page containing the tile page coordinate system) in space, 
-		/// return answer even when position is outside landscape
-		/// when alwaysAnswer is true
-		PagingLandScapeTile* getTilePage (unsigned int &posx, unsigned int &posz, const unsigned int pagex, const unsigned int pagez);
+		/// get Tile at absolute position in space, return answer even when position is outside landscape when alwaysAnswer is true
+		PagingLandScapeTile* getTile(Real posx, Real posz, bool alwaysAnswer);
+		/// get Tile at absolute position but unscaled by landscape scale in space, return answer even when position is outside landscape when alwaysAnswer is true
+		PagingLandScapeTile* getTileUnscaled(Real posx, Real posz, bool alwaysAnswer);
+		/// get Tile at relative position (in the page containing the tile page coordinate system) in space, return answer even when position is outside landscape when alwaysAnswer is true
+		PagingLandScapeTile* getTile(Real posx, Real posz, unsigned int pagex, unsigned int pagez, bool alwaysAnswer);
+		/// get Tile at relative position but unscaled by landscape scale (in the page containing the tile page coordinate system) in space, return answer even when position is outside landscape when alwaysAnswer is true
+		PagingLandScapeTile* getTileUnscaled(Real posx, Real posz,  unsigned int pagex, unsigned int pagez, bool alwaysAnswer);
+		/// get Tile at relative position but unscaled by landscape scale (in the page containing the tile page coordinate system) in space, return answer even when position is outside landscape when alwaysAnswer is true
+		PagingLandScapeTile* getTilePage (unsigned int& posx, unsigned int& posz, unsigned int pagex, unsigned int pagez);
 
 		void getGlobalToPage(Real& x, Real& z) const;
 		/** Get the Page indices from a position
@@ -101,16 +83,16 @@ namespace Ogre
 		    @param x	result placed in reference to the x index of the page
 		    @param z	result placed in reference to the z index of the page
 		*/
-		inline bool getPageIndices(const Real posx, const Real posz, unsigned int& x, unsigned int& z, bool alwaysAnswer) const
+		inline bool getPageIndices(Real posx, Real posz, unsigned int& x, unsigned int& z, bool alwaysAnswer) const
 		{
 			if (alwaysAnswer)
 			{
-				getNearestPageIndicesUnscaled(posx * mOptions->invScale.x, posz* mOptions->invScale.z, x, z);
+				getNearestPageIndicesUnscaled(posx * mOptions->invScale.x, posz * mOptions->invScale.z, x, z);
 				return true;
 			}
 			else
 			{
-				return getRealPageIndicesUnscaled(posx * mOptions->invScale.x, posz* mOptions->invScale.z, x, z);
+				return getRealPageIndicesUnscaled(posx * mOptions->invScale.x, posz * mOptions->invScale.z, x, z);
 			}
 		}
 		/** Get the Page indices from a position, returning page only if position is in.
@@ -119,9 +101,7 @@ namespace Ogre
 		    @param x	result placed in reference to the x index of the page
 		    @param z	result placed in reference to the z index of the page
 		*/
-		inline bool getRealPageIndicesUnscaled(const Real posx, const Real posz, 
-						       unsigned int& x, unsigned int& z) 
-			const
+		inline bool getRealPageIndicesUnscaled(Real posx, Real posz, unsigned int& x, unsigned int& z) const
 		{      
 			const Real lx = ((posx + mOptions->maxUnScaledX) * mOptions->invPageSizeMinusOne);
 			const Real lz = ((posz + mOptions->maxUnScaledZ) * mOptions->invPageSizeMinusOne);
@@ -145,7 +125,7 @@ namespace Ogre
 		    @param x	result placed in reference to the x index of the page
 		    @param z	result placed in reference to the z index of the page
 		*/
-		void getNearestPageIndicesUnscaled(const Real posx, const Real posz, unsigned int& x, unsigned int& z) const; 
+		void getNearestPageIndicesUnscaled(Real posx, Real posz, unsigned int& x, unsigned int& z) const; 
 
 		/** Get the Tile indices from a position
 		    @param posx the world position vector. 
@@ -155,7 +135,7 @@ namespace Ogre
 		    @param x	result placed in reference to the x index of the page
 		    @param z	result placed in reference to the z index of the page
 		*/
-		bool getTileIndices(const Real posx, const Real posz, const unsigned int pagex, const unsigned int pagez, unsigned int& x, unsigned int& z, bool alwaysAnswer) const;
+		bool getTileIndices(Real posx, Real posz, unsigned int pagex, unsigned int pagez, unsigned int& x, unsigned int& z, bool alwaysAnswer) const;
 
 		/** Get the Tile indices from a position, returning tile only if position is in.
 		    @param posx the world position vector but unscaled. 
@@ -163,9 +143,7 @@ namespace Ogre
 		    @param x	result placed in reference to the x index of the page
 		    @param z	result placed in reference to the z index of the page
 		*/
-		inline bool getRealTileIndicesUnscaled(const Real posx, const Real posz, 
-						       const unsigned int pagex, const unsigned int pagez, 
-						       unsigned int& x, unsigned int& z) const
+		inline bool getRealTileIndicesUnscaled(Real posx, Real posz, unsigned int pagex, unsigned int pagez, unsigned int& x, unsigned int& z) const
 		{
 			// adjust x and z to be local to page
 			const int pSize = mOptions->PageSize - 1;
@@ -195,12 +173,12 @@ namespace Ogre
 		    @param x	result placed in reference to the x index of the page
 		    @param z	result placed in reference to the z index of the page
 		*/
-		void getNearestTileIndicesUnscaled(const Real posx, const Real posz, const unsigned int pagex, const unsigned int pagez, unsigned int& x, unsigned int& z) const;
+		void getNearestTileIndicesUnscaled(Real posx, Real posz, unsigned int pagex, unsigned int pagez, unsigned int& x, unsigned int& z) const;
 
 		void setTerrainReady(bool isready)
 		{
 			mTerrainReady = isready;
-		};
+		}
 
 
 		void removeFromQueues(PagingLandScapePage* p);
@@ -212,7 +190,7 @@ namespace Ogre
 		RenderQueueGroupID getRenderQueueGroupID()
 		{
 			return mRenderQueueGroupID;
-		};
+		}
 
 		void setMapMaterial();
 		void WorldDimensionChange();
@@ -242,40 +220,40 @@ namespace Ogre
 		/// getter
 		int getUnloadedPagesSize() const;
 
-		RenderQueueGroupID getPageRenderQueue(){return mRenderQueueGroupID;};
+		RenderQueueGroupID getPageRenderQueue() { return mRenderQueueGroupID; }
 
-		PagingLandScapeOptions*		getOptions(){return mOptions;}
-		PagingLandScapeSceneManager* getSceneManager(){return mSceneManager;}
+		PagingLandScapeOptions* getOptions() { return mOptions; }
+		PagingLandScapeSceneManager* getSceneManager() { return mSceneManager; }
 
-		bool isEnabled ()const {return mEnabled;}
-		void setEnabled (const bool enabled){mEnabled = enabled;}
+		bool isEnabled() const { return mEnabled; }
+		void setEnabled(bool enabled) { mEnabled = enabled; }
 
         protected:
 
-		PagingLandScapeOptions*		mOptions;
-		PagingLandScapeSceneManager *mSceneManager;
+		PagingLandScapeOptions*	mOptions;
+		PagingLandScapeSceneManager* mSceneManager;
 
 
 
 		void processUnloadQueues();
 		void processLoadQueues();
 		void updateLoadedPages();
-		void queuePageNeighbors ();
+		void queuePageNeighbors();
 
 		void makePageLoadedNow(PagingLandScapePage* p);
-		PagingLandScapePage* find_nearest(const Vector3& pos, const unsigned int x, const unsigned int z, PagingLandScapePageList& mQueue) const;
+		PagingLandScapePage* find_nearest(const Vector3& pos, unsigned int x, unsigned int z, PagingLandScapePageList& mQueue) const;
 
-		PagingLandScapeData2DManager*     mData2d;
-		PagingLandScapeTextureManager*    mTexture;
+		PagingLandScapeData2DManager* mData2d;
+		PagingLandScapeTextureManager* mTexture;
 		PagingLandScapeRenderableManager* mRenderablesMgr;
 
 	        /** LandScape pages for the terrain.
 		 */
 	        //PagingLandScapePages mPages;
 
-		PagingLandScapeQueue <PagingLandScapePage> mPageLoadQueue;
-		PagingLandScapeQueue <PagingLandScapePage> mPagePreloadQueue;
-		PagingLandScapeQueue <PagingLandScapePage> mPageTextureloadQueue;
+		PagingLandScapeQueue<PagingLandScapePage> mPageLoadQueue;
+		PagingLandScapeQueue<PagingLandScapePage> mPagePreloadQueue;
+		PagingLandScapeQueue<PagingLandScapePage> mPageTextureloadQueue;
 
 		PagingLandScapePageList mLoadedPages;
 		PagingLandScapePageList mPreLoadedPages;
@@ -302,8 +280,7 @@ namespace Ogre
 
 		RenderQueueGroupID mRenderQueueGroupID;
 
-		//if not queued to be removed from frame listener
-		//or SM is in paused State
+		/// If not queued to be removed from frame listener or SM is in paused State
 		bool mEnabled;
 	};
 
