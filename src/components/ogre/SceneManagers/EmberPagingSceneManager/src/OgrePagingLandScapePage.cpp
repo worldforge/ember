@@ -121,9 +121,6 @@ namespace Ogre
 			mRenderable->load();
 		}
 
-		// set neighbors
-		setNeighbors();
-
 		touch();
 
 		// set new state
@@ -166,17 +163,23 @@ namespace Ogre
 					assert (tile);
 					mTiles[i][j] = tile;
 					tile->init(mPageNode, mTableX, mTableZ, i, j);
-					// set up tile neighbors
+
+					// set up tile neighbors within page
 					if (j > 0) {
-						tile->_setNeighbor(NORTH, mTiles[i][j-1]);
-						mTiles[i][j-1]->_setNeighbor(SOUTH, tile);
+						PagingLandScapeTile* northTile = mTiles[i][j-1];
+						tile->_setNeighbor(NORTH, northTile);
+						northTile->_setNeighbor(SOUTH, tile);
 					}
-					if (i > 0)	{
-						tile->_setNeighbor(WEST, mTiles[i-1][j]);
-						mTiles[i-1][j]->_setNeighbor(EAST, tile);    
+					if (i > 0) {
+						PagingLandScapeTile* westTile = mTiles[i-1][j];
+						tile->_setNeighbor(WEST, westTile);
+						westTile->_setNeighbor(EAST, tile);    
 					}
 				}
 			}
+
+			// set page neighbors
+			setNeighbors();
 
 			// set new state
 			mPageState = STATE_LOADED;
