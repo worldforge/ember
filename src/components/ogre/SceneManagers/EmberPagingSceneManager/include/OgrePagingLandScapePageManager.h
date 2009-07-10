@@ -34,14 +34,14 @@ namespace Ogre
 			///ctor
 			PagingLandScapePageManager(PagingLandScapeSceneManager * scnMgr);
 			///dtor
-	        ~PagingLandScapePageManager(void);
+	        ~PagingLandScapePageManager();
 
 			/// upon new landscape
-			void load(void);
+			void load();
 			/// empty before loading a landscape or final deletion
-            void clear(void);
+            void clear();
 			/// reset paging but keep page pool in memory
-            void reset(void);
+            void reset();
 
 			/// used to load first page earlier than first updatePaging() call
 			/// say like just after scene manager setWorldGeom()
@@ -52,7 +52,7 @@ namespace Ogre
 	        void updatePaging(PagingLandScapeCamera* cam);
 
 			// recursively call LOD update on all page and tiles
-			void _updateLod(void);
+			void _updateLod();
 			
 			// load everything around camera just now.
             void loadNow(PagingLandScapeCamera *cam);
@@ -208,38 +208,38 @@ namespace Ogre
 			bool frameEnded(const FrameEvent& evt);
 
 			void setWorldGeometryRenderQueue(uint8 qid);
-			RenderQueueGroupID getRenderQueueGroupID(void)
+			RenderQueueGroupID getRenderQueueGroupID()
 			{
 				return mRenderQueueGroupID;
 			};
 
-			void setMapMaterial(void);
-			void WorldDimensionChange(void);
+			void setMapMaterial();
+			void WorldDimensionChange();
 
 
 
 			/// getter
-			unsigned int getCurrentCameraPageX(void) const;
+			unsigned int getCurrentCameraPageX() const;
 			/// getter
-			unsigned int getCurrentCameraPageZ(void) const;
+			unsigned int getCurrentCameraPageZ() const;
 			/// getter
-			unsigned int getCurrentCameraTileX(void) const;
+			unsigned int getCurrentCameraTileX() const;
 			/// getter
-            unsigned int getCurrentCameraTileZ(void) const;
+            unsigned int getCurrentCameraTileZ() const;
 			/// getter
-			int getPagePreloadQueueSize(void) const;
+			int getPagePreloadQueueSize() const;
 			/// getter
-			int getPageLoadQueueSize(void) const;
+			int getPageLoadQueueSize() const;
 			/// getter
-            int getPageTextureloadQueueSize(void) const;
+            int getPageTextureloadQueueSize() const;
 			/// getter
-			int getLoadedPageSize(void) const;
+			int getLoadedPageSize() const;
 			/// getter
-			int getPreLoadedPageSize(void) const;
+			int getPreLoadedPageSize() const;
 			/// getter
-			int getTextureLoadedPageSize(void) const;
+			int getTextureLoadedPageSize() const;
 			/// getter
-			int getUnloadedPagesSize(void) const;
+			int getUnloadedPagesSize() const;
 
             RenderQueueGroupID getPageRenderQueue(){return mRenderQueueGroupID;};
 
