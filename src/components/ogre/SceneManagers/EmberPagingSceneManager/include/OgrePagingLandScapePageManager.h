@@ -275,7 +275,6 @@ namespace Ogre
 		bool mTerrainReady;
 		bool mOnFrame;
 
-		unsigned int mRenderableLoadInterval;
 		unsigned int mPageLoadInterval;
 
 		RenderQueueGroupID mRenderQueueGroupID;
