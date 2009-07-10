@@ -128,14 +128,6 @@ namespace Ogre
     class PagingLandScapePageRenderable;
     class PagingLandScapePageManager;
 
-enum PageQueuingState
-{
-	queuednone,
-	queuedPreload,
-	queuedTextureLoad,
-	queuedLoad
-};
-
 	typedef std::list< PagingLandScapePage* > PagingLandScapePageList;
 	typedef std::vector< PagingLandScapePage* > PagingLandScapePageArray;
     typedef PagingLandScapePageArray PagingLandScapePageRow;
