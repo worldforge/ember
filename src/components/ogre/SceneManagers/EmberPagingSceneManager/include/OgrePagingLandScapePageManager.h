@@ -38,6 +38,9 @@ namespace Ogre
 		///dtor
 	        ~PagingLandScapePageManager();
 
+		/** Set world dimension-related data */
+		void WorldDimensionChange();
+
 		/// upon new landscape
 		void load();
 		/// empty before loading a landscape or final deletion
@@ -190,8 +193,6 @@ namespace Ogre
 		}
 
 		void setMapMaterial();
-		void WorldDimensionChange();
-
 
 
 		/// getter
@@ -280,8 +281,9 @@ namespace Ogre
 		bool mEnabled;
 
 
-		/// Return a page to the pool.
-		void releasePage (PagingLandScapePage* p);
+		/** Return a page to the pool. */
+		void releasePage(PagingLandScapePage* p);
+
 	};
 
 }
