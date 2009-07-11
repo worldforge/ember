@@ -62,9 +62,6 @@ namespace Ogre
 		PagingLandScapePage* getPage(unsigned int i, unsigned int j, bool alwaysReturn = true);
 		/// Instantiate a new page from pool.
 		PagingLandScapePage* getNewPage(unsigned int i, unsigned int j);
-		/// Return a page to the pool.
-		void releasePage (PagingLandScapePage* p);
-
 		/// get Tile at absolute position in space, return answer even when position is outside landscape when alwaysAnswer is true
 		PagingLandScapeTile* getTile(Real posx, Real posz, bool alwaysAnswer);
 		/// get Tile at absolute position but unscaled by landscape scale in space, return answer even when position is outside landscape when alwaysAnswer is true
@@ -281,6 +278,10 @@ namespace Ogre
 
 		/// If not queued to be removed from frame listener or SM is in paused State
 		bool mEnabled;
+
+
+		/// Return a page to the pool.
+		void releasePage (PagingLandScapePage* p);
 	};
 
 }
