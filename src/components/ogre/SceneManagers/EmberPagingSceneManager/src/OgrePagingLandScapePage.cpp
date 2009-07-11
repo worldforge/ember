@@ -46,16 +46,14 @@ namespace Ogre
 	PagingLandScapePage::PagingLandScapePage(PagingLandScapePageManager& pageMgr) :
 		mPageMgr(pageMgr),
 		mPageState(STATE_UNINITED),
+		mPageInQueue(QUEUE_NONE),
 		mTableX(0),
 		mTableZ(0),
 		mWorldPosition(Ogre::Vector3::ZERO),
 		mVisible(false),
 		mPageNode(0),
 		mRenderable(0),
-		mNumTiles(0),
-		mIsLoading (false),
-		mIsPreLoading (false),
-		mIsTextureLoading (false)
+		mNumTiles(0)
 	{
 		touch();
 

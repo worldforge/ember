@@ -102,7 +102,7 @@ namespace Ogre
 	//-----------------------------------------------------------------------
 	void PagingLandScapePageManager::load()
 	{
-		WorldDimensionChange ();
+		WorldDimensionChange();
 		mEnabled = true;
 	}
 	//-----------------------------------------------------------------------
@@ -385,7 +385,7 @@ namespace Ogre
 				// that means they can be loaded too.
 				p = getPage (i, j, true);
 
-				if (!(p->mIsLoading || p->isLoaded()))
+				if (!(p->isInLoadQueue() || p->isLoaded()))
 				{                        
 					if((j >= iniZ) && (j <= finZ) && (i >= iniX) && (i <= finX))
 					{
@@ -394,17 +394,17 @@ namespace Ogre
 						// be below camera very soon.
 						removeFromQueues (p);
 						mPageLoadQueue.push (p);                            
-						p->mIsLoading = true;
+						p->setInQueue(PagingLandScapePage::QUEUE_LOAD);
 					}
-					else if (!p->mIsTextureLoading && 
+					else if (!p->isInTextureloadQueue() && 
 					         !p->isTextureLoaded() && 
-					         !p->mIsPreLoading &&
+					         !p->isInPreloadQueue() &&
 					         !p->isPreLoaded())
 					{
 						//  must be at least preloading. 
 						removeFromQueues (p);
 						mPagePreloadQueue.push (p);                    
-						p->mIsPreLoading = true;	
+						p->setInQueue(PagingLandScapePage::QUEUE_PRELOAD);
 					}
 				}
 				p->touch();
@@ -559,12 +559,12 @@ namespace Ogre
 		for (itq = mPagePreloadQueue.begin (); itq != mPagePreloadQueue.end ();)
 		{
 			assert (!(*itq)->isLoaded() && !(*itq)->isPreLoaded() && !(*itq)->isTextureLoaded());
-			assert (!(*itq)->mIsLoading && !(*itq)->mIsTextureLoading);
+			assert ((*itq)->isInPreloadQueue());
 			if ((*itq)->unloadUntouched ())
 			{
 				p = *itq;
 				// remove from queue
-				p->mIsPreLoading = false;
+				p->setInQueue(PagingLandScapePage::QUEUE_NONE);
 				itq = mPagePreloadQueue.erase (itq);
 				// remove from active pages 
 				//(must be removed from queue first)
@@ -578,12 +578,12 @@ namespace Ogre
 		for (itq = mPageTextureloadQueue.begin(); itq != mPageTextureloadQueue.end();)
 		{
 			assert (!(*itq)->isLoaded() && (*itq)->isPreLoaded() && !(*itq)->isTextureLoaded());
-			assert (!(*itq)->mIsLoading && (*itq)->mIsTextureLoading && !(*itq)->mIsPreLoading);
+			assert ((*itq)->isInTextureloadQueue());
 			if ((*itq)->unloadUntouched ())
 			{
 				p = *itq;
 				// remove from queue
-				p->mIsTextureLoading = false;
+				p->setInQueue(PagingLandScapePage::QUEUE_NONE);
 				itq = mPageTextureloadQueue.erase (itq); 
 				// remove from active pages 
 				//(must be removed from queue first)
@@ -597,12 +597,12 @@ namespace Ogre
 		for (itq = mPageLoadQueue.begin (); itq != mPageLoadQueue.end ();)
 		{
 			assert (!(*itq)->isLoaded());
-			assert ((*itq)->mIsLoading && !(*itq)->mIsTextureLoading && !(*itq)->mIsPreLoading);
+			assert ((*itq)->isInLoadQueue());
 			if ((*itq)->unloadUntouched ())
 			{
 				p = *itq;
 				// remove from queue
-				p->mIsLoading = false; 
+				p->setInQueue(PagingLandScapePage::QUEUE_NONE);
 				itq = mPageLoadQueue.erase (itq); 
 				// remove from active pages 
 				//(must be removed from queue first)				 
@@ -635,10 +635,10 @@ namespace Ogre
 					//	We to Load nearest page in non-empty queue
 					PagingLandScapePage *p = mPageLoadQueue.find_nearest (pos);
 					assert (p && !p->isLoaded ());
-					assert (!p->mIsTextureLoading && !p->mIsPreLoading);
+					assert (p->isInLoadQueue());
 					p->load ();
 
-					p->mIsLoading = false;   
+					p->setInQueue(PagingLandScapePage::QUEUE_NONE);
 					mLoadedPages.push_back (p);
 					mTextureLoadedPages.remove (p);
 					mNextQueueFrameCount = mPageLoadInterval;
@@ -648,10 +648,10 @@ namespace Ogre
 					//	We TextureLoad nearest page in non-empty queue
 					PagingLandScapePage *p = mPageTextureloadQueue.find_nearest (pos);
 					assert (p && !p->isTextureLoaded());
-					assert (!p->mIsLoading && !p->mIsPreLoading);
+					assert (p->isInTextureloadQueue());
 					p->loadTexture ();
 
-					p->mIsTextureLoading = false;   
+					p->setInQueue(PagingLandScapePage::QUEUE_NONE);
 					mTextureLoadedPages.push_back (p);
 					mPreLoadedPages.remove (p);
 					// do not automatically push to level up.
@@ -663,13 +663,12 @@ namespace Ogre
 					//	We PreLoad nearest page in non-empty queue
 					PagingLandScapePage *p = mPagePreloadQueue.find_nearest (pos);
 					assert (p && !p->isPreLoaded());
-					assert (!p->mIsLoading && !p->mIsTextureLoading);
+					assert (p->isInPreloadQueue());
 					p->preload ();
 
-					p->mIsPreLoading = false;
 					mPreLoadedPages.push_back (p);
 					mPageTextureloadQueue.push (p);
-					p->mIsTextureLoading = true;
+					p->setInQueue(PagingLandScapePage::QUEUE_TEXTURELOAD);
 					mNextQueueFrameCount = mPageLoadInterval;
 				}
 			}
@@ -679,22 +678,20 @@ namespace Ogre
 	void PagingLandScapePageManager::removeFromQueues(PagingLandScapePage* p)
 	{
 		assert (p);
-		if (p->mIsLoading)
+		if (p->isInLoadQueue())
 		{
-			p->mIsLoading = false;
-			mPageLoadQueue.remove (p);	
+			mPageLoadQueue.remove(p);
 		}
-		else if (p->mIsTextureLoading)
+		else if (p->isInTextureloadQueue())
 		{
-			p->mIsTextureLoading = false;
-			mPageTextureloadQueue.remove (p);
+			mPageTextureloadQueue.remove(p);
 		}
-		else if (p->mIsPreLoading)
+		else if (p->isInPreloadQueue())
 		{
-			p->mIsPreLoading = false;
-			mPagePreloadQueue.remove (p);
+			mPagePreloadQueue.remove(p);
 		}
-		assert (!p->mIsLoading && !p->mIsTextureLoading && !p->mIsPreLoading);
+		p->setInQueue(PagingLandScapePage::QUEUE_NONE);
+		assert (p->isNotInAnyQueue());
 	}
 	//-----------------------------------------------------------------------
 	unsigned int PagingLandScapePageManager::getCurrentCameraPageX() const

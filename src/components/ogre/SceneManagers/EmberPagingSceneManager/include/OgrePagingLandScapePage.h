@@ -30,11 +30,13 @@ namespace Ogre
 	class _OgrePagingLandScapeExport PagingLandScapePage
 	{
         public:
-
-	        bool mIsLoading;
-	        bool mIsPreLoading;
-		bool mIsTextureLoading;
-
+		/** Possible queues in which the page lives */
+		enum PageInQueue {
+			QUEUE_NONE,
+			QUEUE_PRELOAD,
+			QUEUE_TEXTURELOAD,
+			QUEUE_LOAD
+		};
 
 
 	        /** Ctor. */
@@ -145,10 +147,35 @@ namespace Ogre
 			return mVisible;
 		}
 
+		/** Whether the page is in the corresponding queue */
+		inline bool isInPreloadQueue() const 
+		{
+			return (mPageInQueue == QUEUE_PRELOAD);
+		}
+		/** Whether the page is in the corresponding queue */
+		inline bool isInTextureloadQueue() const 
+		{
+			return (mPageInQueue == QUEUE_TEXTURELOAD);
+		}
+		/** Whether the page is in the corresponding queue */
+		inline bool isInLoadQueue() const 
+		{
+			return (mPageInQueue == QUEUE_LOAD);
+		}
+		/** Whether the page is not in any queue */
+		inline bool isNotInAnyQueue() const 
+		{
+			return (mPageInQueue == QUEUE_NONE);
+		}
+		/** Set the page in the corresponding queue */
+		inline void setInQueue(PageInQueue queue) 
+		{
+			mPageInQueue = queue;
+		}
+
         protected:
 		/** Possible states of the page */
-		enum PageState
-		{
+		enum PageState {
 			STATE_UNINITED,
 			STATE_INITED,
 			STATE_PRELOADED,
@@ -178,6 +205,9 @@ namespace Ogre
 
 		/// State of this page
 		PageState mPageState;
+
+		/// Queue in which this page lives at a given moment
+		PageInQueue mPageInQueue;
 
 		/// Position of this Terrain Page in the Terrain Page Array
 	        unsigned int mTableX;
