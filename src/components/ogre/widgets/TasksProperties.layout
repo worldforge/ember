@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
+		<Property Name='Visible' Value='false'/>
+		<Property Name='UnifiedPosition' Value='{{1.0,-450},{1.0,-220}}'/>
+		<Property Name='UnifiedSize' Value='{{0,400},{0,200}}'/>
+		<Property Name='Alpha' Value='0.6'/>
+		<Property Name='Text' Value='Tasks Properties'/>
+		<Window Type='DefaultGUISheet' Name='InnerWindow'>
+			<Property Name='UnifiedPosition' Value='{{0.00,4.0},{0.0,20.0}}'/>
+			<Property Name='UnifiedSize' Value='{{1.00,-8.0},{1.00,-24.0}}'/>
+			<Property Name='InheritsAlpha' Value='True'/>
+			<Window Type='EmberLook/Button' Name='Create'>
+				<Property Name='UnifiedPosition' Value='{{0,0},{1,-25}}'/>
+				<Property Name='UnifiedSize' Value='{{0,100},{0,25}}'/>
+				<Property Name='Text' Value='Create'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Event Name="Clicked" Function="TasksProperties.Create_Click" />
+			</Window>
+			<Window Type='DefaultGUISheet' Name='CreateSection'>
+				<Property Name='UnifiedPosition' Value='{{0,100},{0,0}}'/>
+				<Property Name='UnifiedSize' Value='{{1,-100},{1,0}}'/>
+				<Property Name='Visible' Value='false'/>
+				<Window Type='EmberLook/StaticText' Name='RecipeDescription'>
+					<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+					<Property Name='UnifiedSize' Value='{{1,0},{0,50}}'/>
+					<Property Name='FrameEnabled' Value='false' />
+					<Property Name='BackgroundEnabled' Value='false' />
+				</Window>
+				<Window Type='DefaultGUISheet' Name='AdaptersContainer'>
+					<Property Name='UnifiedPosition' Value='{{0,0},{0,75}}'/>
+					<Property Name='UnifiedSize' Value='{{1,0},{1,-75}}'/>
+				</Window>
+			</Window>
+			<Window Type='EmberLook/StaticText' Name='WaitForTypeInfo'>
+				<Property Name='UnifiedPosition' Value='{{0,100},{0,0}}'/>
+				<Property Name='UnifiedSize' Value='{{1,-100},{1,0}}'/>
+				<Property Name='Visible' Value='false'/>
+				<Property Name='FrameEnabled' Value='false' />
+				<Property Name='BackgroundEnabled' Value='false' />
+				<Property Name='Text' Value='Waiting for type info from the server...' />
+			</Window>
+		</Window>
+	</Window>
+</GUILayout>
