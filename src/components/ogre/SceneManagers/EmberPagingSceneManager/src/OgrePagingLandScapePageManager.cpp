@@ -288,54 +288,37 @@ namespace Ogre
 	//-----------------------------------------------------------------------
 	void PagingLandScapePageManager::updateLoadedPages()
 	{
-		PagingLandScapeCamera* const cam = mCurrentcam;
-
 		// Make any pending updates to the calculated frustum
-		cam->updateView();
+		mCurrentcam->updateView();
 
-		const Vector3 pos (cam->getDerivedPosition().x, 127.0f,cam->getDerivedPosition().z);
-		// hide page not visible by this Camera
-		// Notify those Page (update tile vis/ rend load on cam distance)
-		// update Page Texture if needed
+		const Vector3 pos(mCurrentcam->getDerivedPosition().x, 127.0f, mCurrentcam->getDerivedPosition().z);
 
-		const unsigned int iniX = cam->mIniX;
-		const unsigned int finX = cam->mFinX;
+		for (PagingLandScapePageList::iterator it = mLoadedPages.begin(); it != mLoadedPages.end(); ++it) {
+			PagingLandScapePage* p = (*it);
 
-		const unsigned int iniZ = cam->mIniZ;
-		const unsigned int finZ = cam->mFinZ;
-
-		PagingLandScapePage *p;
-		const bool lightchange = mOptions->lightmoved;
-		PagingLandScapePageList::iterator l, lend = mLoadedPages.end ();
-		for (l = mLoadedPages.begin (); l != lend; ++l)
-		{
-			p = (*l);
 			unsigned int x, z;
-			p->getCoordinates (x, z);
-			if ((z >= iniZ) && (z <= finZ) && (x >= iniX) && (x <= finX))
-			{
-				// inform pages we are near Camera on next render.
-				if (p->notify(pos, cam))
-				{
-					// get pages that needs modification and Are visible..                 
-					PagingLandScapeTexture * const tex = mTexture->getTexture(x, z);
+			p->getCoordinates(x, z);
+			if ((z >= mCurrentcam->mIniZ) && (z <= mCurrentcam->mFinZ) && (x >= mCurrentcam->mIniX) && (x <= mCurrentcam->mFinX)) {
+				// inform pages that they are near Camera on next render.
+				if (p->notify(pos, mCurrentcam)) {
+					// get pages that need modification and are visible..
+					PagingLandScapeTexture* tex = mTexture->getTexture(x, z);
 					assert(tex);
-					if (lightchange)
+
+					// update Page Texture if needed
+					if (mOptions->lightmoved)
 						tex->lightUpdate();
 					if (tex->needUpdate())
 						tex->update();
 				}
-			}
-			else
-			{
+			} else {
+				// hide page not visible by this Camera
 				p->show(false);
 			}
-		} 
+		}
 
-
-
-		if (lightchange)
-			mOptions->lightmoved = false;
+		// reset state variable
+		mOptions->lightmoved = false;
 	}
 	//-----------------------------------------------------------------------
 	void PagingLandScapePageManager::loadNow(PagingLandScapeCamera* cam)
