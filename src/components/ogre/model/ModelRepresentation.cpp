@@ -63,7 +63,7 @@
 namespace EmberOgre {
 namespace Model {
 
-std::string ModelRepresentation::sTypeName("Model");
+std::string ModelRepresentation::sTypeName("ModelRepresentation");
 
 const char * const ModelRepresentation::ACTION_STAND("__movement_idle");
 const char * const ModelRepresentation::ACTION_RUN("__movement_run");

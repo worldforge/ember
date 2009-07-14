@@ -801,6 +801,9 @@ EmberEntity* EmberEntity::getEmberLocation() const
 
 const Ogre::AxisAlignedBox& EmberEntity::getWorldBoundingBox(bool derive) const
 {
+//	if (mGraphicalRepresentation) {
+//		return mGraphicalRepresentation->getWorldBoundingBox(derive);
+//	}
 	static Ogre::AxisAlignedBox boundingBox(0, 0, 0, 0, 0, 0);
 	return boundingBox;
 }

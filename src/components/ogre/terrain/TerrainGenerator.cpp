@@ -414,7 +414,6 @@ void TerrainGenerator::prepareAllSegments()
 	float heightMin = mHeightMin;
 	float heightMax = mHeightMax;
 	if (heightMax < heightMin) {
-		S_LOG_WARNING("It seems like the world haven't been properly initialized. Perhaps the server has an invalid terrain?");
 		heightMin = -100;
 		heightMax = 100;
 	}

@@ -25,13 +25,30 @@ namespace EmberOgre {
 
 class EmberEntity;
 
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief A graphical representation of an entity.
+ *
+ * The entities can be represented through many means inside the world. The most common case would probably be to use an instance of Model, through the ModelRepresentation class, but there are many other cases where another representation would be suitable.
+ * All of these representations share this common interface. An instance of this is normally held by an EmberEntity instance.
+ *
+ * Most of the subclasses of this are expected to provide methods for safely casting into the concrete subclass. The getType() method is expected to be used for helping with this.
+ */
 class IGraphicalRepresentation
 {
 public:
 
+	/**
+	  * @brief Dtor.
+	  */
 	virtual ~IGraphicalRepresentation() {}
 
+	/**
+	 * @brief Gets the unique type name for a subclass of this.
+	 * The main purpose of this is to allow late binding casts, so that it's possible to more safely cast an instance into a concrete subclass.
+	 */
 	virtual const std::string& getType() const = 0;
+
 	/**
 	 * General method for turning on and off debug visualizations. Subclasses might support more types of visualizations than the ones defined here.
 	 * @param visualization The type of visualization. Currently supports "OgreBBox" and "ErisBBox".

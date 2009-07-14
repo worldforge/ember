@@ -65,32 +65,82 @@ class IGraphicalRepresentation;
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief A representation of an Eris::Entity, ie. a world entity.
- * Note that most entities in the game world will be of type EmberPhysicalEntity as they will have some sort of physical representation.
- * This is however the base class for all entities in the world. All entities, even those that are standard instances of this and therefore doesn't have any Model attached to them, are however represented in the Ogre scenegraph through an Ogre::SceneNode, as accessed through getSceneNode().
+ *
+ * This is the base class for any entities in the world. It's therefore safe to case any instance of Eris::Entity into this class.
+ * Any entity which has a graphical representation in the world, and under normal circumstances that's the most of them, will have mGraphicalRepresentation set to a subclass of IGraphicalRepresentation.
  */
 class EmberEntity : public Eris::Entity {
 	friend class EmberEntityFactory;
 public:
 
 
+	/**
+	 * @brief The movement modes the entity can be in.
+	 */
 	enum MovementMode
 	{
+		/**
+		 * @brief The default movement mode, when the entity is idle and not moving.
+		 */
 		MM_DEFAULT = 0,
+
+		/**
+		 * @brief Swimming through water.
+		 */
 		MM_SWIMMING = 1,
+
+		/**
+		 * @brief Walking at a normal pace.
+		 */
 		MM_WALKING = 2,
+
+		/**
+		 * @brief Running.
+		 */
 		MM_RUNNING = 3
 	};
 
+	/**
+	 * @brief The different positioning modes the entity can be in.
+	 * The positioning mode determines how the entity can be adjusted in the world.
+	 */
 	enum PositioningMode
 	{
+		/**
+		 * @brief The default mode, where the entity is affected by gravity.
+		 * In most circumstances this means that it will snap to the ground, or any object below it.
+		 */
 		PM_DEFAULT = 0,
+
+		/**
+		 * @brief Floating on top of an entity. Usually a mass of water.
+		 */
 		PM_FLOATING = 1,
+
+		/**
+		 * @brief Moving as a projectile through the world.
+		 */
 		PM_PROJECTILE = 2,
+
+		/**
+		 * @brief Fixed in the world. This means that the position of the entity won't be adjusted (i.e. not affected by gravity etc.).
+		 */
 		PM_FIXED = 3
 	};
 
+	/**
+	 * @brief The name of the "floating" positioning mode.
+	 */
 	static const std::string MODE_FLOATING;
+
+	/**
+	 * @brief The name of the "fixed" positioning mode.
+	 */
 	static const std::string MODE_FIXED;
+
+	/**
+	 * @brief The name of the "projectile" positioning mode.
+	 */
 	static const std::string MODE_PROJECTILE;
 
 	/**
@@ -176,7 +226,7 @@ public:
 	 * When talking to entities in the world (for example NPCs) the can sometimes be a specified list of suggested responses.
 	 * @return A vector of the suggested responses.
 	 */
-	const std::vector< std::string >& getSuggestedResponses() const;
+	const std::vector<std::string>& getSuggestedResponses() const;
 
 
 	/**
@@ -323,10 +373,20 @@ public:
 	 */
 	bool getVisualize(const std::string& visualization) const;
 
+	/**
+	 * @brief Gets the graphical representation of this entity.
+	 * Not all entities will have graphical representations, so you must always make sure to check for null on the result.
+	 * Most graphical representation classes will also contain methods for safely casting into the concrete subclass.
+	 * @returns The graphical representation, or null if there are none.
+	 */
 	IGraphicalRepresentation* getGraphicalRepresentation() const;
 
+	/**
+	 * @brief Sets the graphical representation to be used.
+	 * If any previous graphical representation has been set, it will be deleted.
+	 * @param graphicalRepresentation The new graphical representation. Ownership will be transferred to this class.
+	 */
 	void setGraphicalRepresentation(IGraphicalRepresentation* graphicalRepresentation);
-
 
 	/**
 	 * @brief Emitted when the visibility of the entity has changed.
@@ -528,6 +588,10 @@ protected:
 	*/
 	PositioningMode mPositioningMode;
 
+	/**
+	 * @brief The graphical representation used for representing this entity.
+	 * Some entities won't have any graphical representation, and this will in those cases be null.
+	 */
 	IGraphicalRepresentation* mGraphicalRepresentation;
 
 	/**
@@ -551,7 +615,6 @@ protected:
 };
 
 
-///inline implementations
 inline bool EmberEntity::isInitialized() const
 {
 	return mIsInitialized;

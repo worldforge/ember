@@ -51,34 +51,77 @@ typedef std::vector<ActionDefinition*> ActionDefinitionsStore;
 typedef std::vector<SoundDefinition*> SoundDefinitionsStore;
 typedef std::vector<Ogre::SceneNode*> SceneNodeStore;
 
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ *
+ * @brief Represents an entity through a Model instance.
+ *
+ * An instance of this binds an EmberEntity instance and a Model instance together. It's normally not meant to be created externally.
+ * You can access instances of it attached to an entity through the ModelRepresentationManager class.
+ */
 class ModelRepresentation : public IGraphicalRepresentation, public virtual sigc::trackable, public IAnimated
 {
 public:
 
 	/**
-	 Keep static references to the names of the special actions connected to movements.
+	 * @brief The name of the normal standing action.
 	 */
 	static const char * const ACTION_STAND;
+
+	/**
+	 * @brief The name of the running action.
+	 */
 	static const char * const ACTION_RUN;
+	/**
+	 * @brief The name of the walking action.
+	 */
 	static const char * const ACTION_WALK;
+	/**
+	 * @brief The name of the swimming action.
+	 */
 	static const char * const ACTION_SWIM;
+	/**
+	 * @brief The name of the float action.
+	 */
 	static const char * const ACTION_FLOAT;
 
+	/**
+	 * @brief Ctor.
+	 * @param entity The entity instance to bind to.
+	 * @param model The model instance used.
+	 */
 	ModelRepresentation(EmberEntity& entity, Model& model);
 
+	/**
+	 * @brief Dtor.
+	 */
     virtual ~ModelRepresentation();
 
 
+    /**
+     * @copydoc EmberOgre::IGraphicalRepresentation::getType()
+     */
 	virtual const std::string& getType() const;
 
+	/**
+	 * @brief Gets the shared class type name, which is the same one returned through getType().
+	 * This can be used to do lookups to see whether any instance of IGraphicalRepresentation if an instance of this class.
+	 * @returns The string "ModelRepresentation".
+	 */
 	static const std::string& getTypeNameForClass();
 
+	/**
+	 * @brief Gets the entity which this representation is connected to.
+	 */
     EmberEntity & getEntity() const;
 
+    /**
+     * @brief Gets the model which this representation shows.
+     */
     Model & getModel() const;
 
 	/**
-	 *    Returns the "scale node", which is the Ogre::SceneNode to which the Model instance is attached. This is separate from the Ogre::SceneNode in EmberEntity since we want to be able to scale the node without also scaling the attached nodes (such as any wielded entity).
+	 * @brief Returns the "scale node", which is the Ogre::SceneNode to which the Model instance is attached. This is separate from the Ogre::SceneNode in EmberEntity since we want to be able to scale the node without also scaling the attached nodes (such as any wielded entity).
 	 * @return An Ogre::SceneNode, to which the Model::Model instance is attached.
 	 */
 	Ogre::SceneNode* getScaleNode() const;
@@ -87,19 +130,19 @@ public:
 	void detachFromModel();
 
 	/**
-	 *    Updates the animation. This is normally called by MotionManager.
+	 * @brief Updates the animation. This is normally called by MotionManager.
 	 * @param timeSlice time to update with.
 	 */
 	void updateAnimation(Ogre::Real timeSlice);
 
 	/**
-	 *    Sets whether the ogre axis aligned bounding box should be shown or not.
+	 * @brief Sets whether the ogre axis aligned bounding box should be shown or not.
 	 * @param show whether to show the ogre bounding box
 	 */
 	void showOgreBoundingBox(bool show);
 
 	/**
-	 * Gets whether the ogre axis aligned bounding box should be shown or not.
+	 * @brief Gets whether the ogre axis aligned bounding box should be shown or not.
 	 * @return true if the bounding box is shown
 	 */
 	bool getShowOgreBoundingBox() const;
@@ -115,29 +158,29 @@ public:
 	const Ogre::Sphere & getWorldBoundingSphere(bool derive = true) const;
 
 	/**
-	 * Called by a contained member to see if the member is allowed to be shown.
+	 * @brief Called by a contained member to see if the member is allowed to be shown.
 	 * This can be reimplemented in a subclass such as AvatarEmberEntity to
 	 * disallow things that belongs to a characters inventory to be shown.
 	 */
 	bool allowVisibilityOfMember(EmberEntity* entity);
 
 	/**
-	 * General method for turning on and off debug visualizations. Subclasses might support more types of visualizations than the ones defined here.
+	 * @brief General method for turning on and off debug visualizations. Subclasses might support more types of visualizations than the ones defined here.
 	 * @param visualization The type of visualization. Currently supports "OgreBBox" and "ErisBBox".
 	 * @param visualize Whether to visualize or not.
 	 */
 	void setVisualize(const std::string& visualization, bool visualize);
 
 	/**
-	 *    Gets whether a certain visualization is turned on or off.
+	 * @brief Gets whether a certain visualization is turned on or off.
 	 * @param visualization The type of visualization. Currently supports "OgreBBox" and "ErisBBox".
 	 * @return true if visualization is turned on, else false
 	 */
 	bool getVisualize(const std::string& visualization) const;
 
 	/**
-	 *    Shows/hides a certain part of the model.
-	 *    This method is normally called by an instance of EmberEntityPartAction.
+	 * @brief Shows/hides a certain part of the model.
+	 * This method is normally called by an instance of EmberEntityPartAction.
 	 * @param partName The part to show.
 	 * @param visible Whether to have it visible or not.
 	 */
@@ -318,8 +361,14 @@ protected:
 	 */
 	SceneNodeStore mLightNodes;
 
+	/**
+	 * @brief The entity which this representation is bound to.
+	 */
     EmberEntity & mEntity;
 
+    /**
+     * @brief The type name for the class.
+     */
     static std::string sTypeName;
 };
 
