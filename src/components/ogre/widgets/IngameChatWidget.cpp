@@ -205,15 +205,16 @@ bool IngameChatWidget::MovableObjectListener::objectRendering (const Ogre::Movab
 
 
 IngameChatWidget::EntityObserver::EntityObserver(IngameChatWidget& chatWidget, Model::ModelRepresentation& modelRepresentation)
-: mChatWidget(chatWidget), mEntity(&modelRepresentation.getEntity()), mLabel(0), mMovableObjectListener(*this, modelRepresentation)
+: mChatWidget(chatWidget), mModelRepresentation(modelRepresentation), mLabel(0), mMovableObjectListener(*this, modelRepresentation)
 {
-	mEntity->VisibilityChanged.connect(sigc::mem_fun(*this, &EntityObserver::entity_VisibilityChanged));
-	mEntity->BeingDeleted.connect(sigc::mem_fun(*this, &EntityObserver::entity_BeingDeleted));
-	mEntity->Say.connect(sigc::mem_fun(*this, &EntityObserver::entity_Say));
+	EmberEntity& entity(modelRepresentation.getEntity());
+	entity.VisibilityChanged.connect(sigc::mem_fun(*this, &EntityObserver::entity_VisibilityChanged));
+	entity.BeingDeleted.connect(sigc::mem_fun(*this, &EntityObserver::entity_BeingDeleted));
+	entity.Say.connect(sigc::mem_fun(*this, &EntityObserver::entity_Say));
 
 	mExternalSlot = sigc::mem_fun(*this, &IngameChatWidget::EntityObserver::entity_attributeChanged);
-	mEntity->observe("external", mExternalSlot);
-	mEntity->observe("name", mExternalSlot);
+	entity.observe("external", mExternalSlot);
+	entity.observe("name", mExternalSlot);
 }
 
 IngameChatWidget::EntityObserver::~EntityObserver()
@@ -267,7 +268,7 @@ void IngameChatWidget::EntityObserver::updateLabel(const Ogre::Camera * camera)
 	//	Ogre::Vector3 entityWorldCoords = window->getEntity()->getSceneNode()->_getWorldAABB().getCenter();
 	// 	const Ogre::Vector3& cameraCoords = camera->getDerivedPosition();
 	///getWorldPosition is faster than getting the center of the boundingbox...
-		Ogre::Vector3 diff = mEntity->getSceneNode()->_getDerivedPosition() - camera->getDerivedPosition();
+		Ogre::Vector3 diff = mModelRepresentation.getEntity().getSceneNode()->_getDerivedPosition() - camera->getDerivedPosition();
 
 		///remove the window if it's either too far away
 		if (diff.length() > mChatWidget.mDistanceShown) {
@@ -286,7 +287,7 @@ void IngameChatWidget::EntityObserver::showLabel()
 {
 	if (!mLabel) {
 		mLabel = mChatWidget.getLabelPool().checkoutWidget();
-		mLabel->setEntity(mEntity);
+		mLabel->setModelRepresentation(&mModelRepresentation);
 	}
 	mMovableObjectListener.setObserving(true);
 }
@@ -309,7 +310,7 @@ void IngameChatWidget::EntityObserver::hideLabel()
 
 IngameChatWidget::Label::Label( Window * window, WindowManager * windowManager, IngameChatWidget& containerWidget, const std::string& prefix)
  : mWindow(window),
- mEntity(0),
+ mModelRepresentation(0),
  mWindowManager(windowManager),
  mContainerWidget(containerWidget),
  mActive(false),
@@ -337,8 +338,8 @@ void IngameChatWidget::Label::placeWindowOnEntity()
 	Ogre::Vector2 screenCoords;
 
 	bool result = false;
-	Ogre::Vector3 entityWorldCoords = getEntity()->getWorldBoundingSphere().getCenter();
-	entityWorldCoords.y = getEntity()->getWorldBoundingBox().getMaximum().y;
+	Ogre::Vector3 entityWorldCoords = mModelRepresentation->getWorldBoundingSphere().getCenter();
+	entityWorldCoords.y = mModelRepresentation->getWorldBoundingBox().getMaximum().y;
 	///check what the new position is in screen coords
 	result = EmberOgre::getSingletonPtr()->getMainCamera()->worldToScreen(entityWorldCoords, screenCoords);
 
@@ -370,9 +371,9 @@ void IngameChatWidget::Label::frameStarted( const Ogre::FrameEvent & event )
 	}
 }
 
-void IngameChatWidget::Label::setEntity(EmberEntity* entity)
+void IngameChatWidget::Label::setModelRepresentation(Model::ModelRepresentation* modelRepresentation)
 {
-	mEntity = entity;
+	mModelRepresentation = modelRepresentation;
 	try {
 		updateEntityName();
 	} catch (const Exception& ex) {
@@ -382,13 +383,13 @@ void IngameChatWidget::Label::setEntity(EmberEntity* entity)
 
 void IngameChatWidget::Label::updateEntityName()
 {
-	std::string entityName(mEntity->getName());
+	std::string entityName(getEntity()->getName());
 //	Window* nameWidget = static_cast<Window*>(mWindow->getChild(mPrefix + "EntityName"));
 	///if the entity is controlled by a player, mark that
-	if (mEntity->hasAttr("external")) {
-		const Atlas::Message::Element& externalAttr = mEntity->valueOfAttr("external");
+	if (getEntity()->hasAttr("external")) {
+		const Atlas::Message::Element& externalAttr = getEntity()->valueOfAttr("external");
 		if (externalAttr.isNum() && externalAttr.asNum() == 1) {
-			entityName = "!" + mEntity->getName() + "!";
+			entityName = "!" + getEntity()->getName() + "!";
 		}
 	}
 	mWindow->setText(entityName);
@@ -397,7 +398,7 @@ void IngameChatWidget::Label::updateEntityName()
 
 EmberEntity * IngameChatWidget::Label::getEntity( )
 {
-	return mEntity;
+	return &mModelRepresentation->getEntity();
 }
 
 void IngameChatWidget::Label::setActive(bool active)

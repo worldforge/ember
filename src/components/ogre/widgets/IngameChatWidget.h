@@ -82,7 +82,7 @@ class IngameChatWidget : public Widget, public Ember::ConfigListenerContainer {
 
 		protected:
 			IngameChatWidget& mChatWidget;
-			EmberEntity* mEntity;
+			Model::ModelRepresentation& mModelRepresentation;
 			Label* mLabel;
 			MovableObjectListener mMovableObjectListener;
 			Eris::Entity::AttrChangedSlot mExternalSlot; //, mNameSlot;
@@ -119,11 +119,11 @@ class IngameChatWidget : public Widget, public Ember::ConfigListenerContainer {
 
 
 			/**
-			gets the entity the window belongs to
-			*/
+			 * @brief Gets the entity the window belongs to
+			 */
 			EmberEntity* getEntity();
 
-			void setEntity(EmberEntity* entity);
+			void setModelRepresentation(Model::ModelRepresentation* modelRepresentation);
 
 			void setActive(bool active);
 			bool getActive() const;
@@ -147,7 +147,7 @@ class IngameChatWidget : public Widget, public Ember::ConfigListenerContainer {
 		protected:
 
 			CEGUI::Window* mWindow;
-			EmberEntity* mEntity;
+			Model::ModelRepresentation* mModelRepresentation;
 			std::vector<CEGUI::Window*> mResponseTextWidgets;
 			CEGUI::WindowManager* mWindowManager;
 			IngameChatWidget& mContainerWidget;
