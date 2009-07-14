@@ -333,66 +333,48 @@ namespace Ogre
 			processLoadQueues();// fill pages queues
 			updateLoadedPages();// fill tiles queues
 			mTerrainReady = mRenderablesMgr->executeRenderableLoading(pos); // load renderables
-			mNextQueueFrameCount = -1;
+			--mNextQueueFrameCount;
 		}
-		//assert ()
 	}
 	//-----------------------------------------------------------------------
 	void PagingLandScapePageManager::queuePageNeighbors()
 	{
-		const PagingLandScapeCamera * const cam = mCurrentcam;
 		// Queue the rest				
 		// Loading  must be done one by one to avoid FPS drop, so they are queued.
 		// We must load the next visible LandScape pages, 
 		// check the LandScape boundaries	
 
-		const unsigned int preIniX = cam->mPreIniX;
-		const unsigned int preFinX = cam->mPreFinX;
+		for (unsigned int i = mCurrentcam->mPreIniX; i <= mCurrentcam->mPreFinX; i++) {
+			for (unsigned int j = mCurrentcam->mPreIniZ; j <= mCurrentcam->mPreFinZ; j++) {
+				// pages in this zone around camera, must be at
+				// least preloading.  that means they can be
+				// loaded too.
+				PagingLandScapePage* p = getPage(i, j, true);
 
-		const unsigned int preIniZ = cam->mPreIniZ;
-		const unsigned int preFinZ = cam->mPreFinZ;
-
-		const unsigned int iniX = cam->mIniX;
-		const unsigned int finX = cam->mFinX;
-
-		const unsigned int iniZ = cam->mIniZ;
-		const unsigned int finZ = cam->mFinZ;
-
-		PagingLandScapePage *p;
-		for (unsigned int i = preIniX; i <= preFinX; i++)
-		{
-			for (unsigned int j = preIniZ; j <= preFinZ; j++)
-			{
-				// pages here, in this zone around camera,
-				// must be at least preloading. 
-				// that means they can be loaded too.
-				p = getPage (i, j, true);
-
-				if (!(p->isInLoadQueue() || p->isLoaded()))
-				{                        
-					if((j >= iniZ) && (j <= finZ) && (i >= iniX) && (i <= finX))
-					{
-						// pages here, in this tighter zone around camera,
-						// must be Loading or Loaded as they may 
-						// be below camera very soon.
-						removeFromQueues (p);
-						mPageLoadQueue.push (p);                            
+				if (!(p->isInLoadQueue() || p->isLoaded())) {                        
+					if ((j >= mCurrentcam->mIniZ) && (j <= mCurrentcam->mFinZ) && (i >= mCurrentcam->mIniX) && (i <= mCurrentcam->mFinX)) {
+						// pages in this tighter zone
+						// around camera must be Loading
+						// or Loaded as they may be
+						// below camera very soon.
+						removeFromQueues(p);
+						mPageLoadQueue.push(p); 
 						p->setInQueue(PagingLandScapePage::QUEUE_LOAD);
-					}
-					else if (!p->isInTextureloadQueue() && 
-					         !p->isTextureLoaded() && 
-					         !p->isInPreloadQueue() &&
-					         !p->isPreLoaded())
-					{
-						//  must be at least preloading. 
-						removeFromQueues (p);
-						mPagePreloadQueue.push (p);                    
+					} else if (!p->isInTextureloadQueue() && 
+						   !p->isTextureLoaded() && 
+						   !p->isInPreloadQueue() &&
+						   !p->isPreLoaded()) {
+						// must be at least preloading
+						removeFromQueues(p);
+						mPagePreloadQueue.push(p);
 						p->setInQueue(PagingLandScapePage::QUEUE_PRELOAD);
 					}
 				}
+
 				p->touch();
 			}
 		}
+
 		mTimePreLoaded = mPageLoadInterval;
 	}
 	//-----------------------------------------------------------------------
@@ -661,19 +643,16 @@ namespace Ogre
 	void PagingLandScapePageManager::removeFromQueues(PagingLandScapePage* p)
 	{
 		assert (p);
-		if (p->isInLoadQueue())
-		{
+
+		if (p->isInLoadQueue())	{
 			mPageLoadQueue.remove(p);
-		}
-		else if (p->isInTextureloadQueue())
-		{
+		} else if (p->isInTextureloadQueue()) {
 			mPageTextureloadQueue.remove(p);
-		}
-		else if (p->isInPreloadQueue())
-		{
+		} else if (p->isInPreloadQueue()) {
 			mPagePreloadQueue.remove(p);
 		}
 		p->setInQueue(PagingLandScapePage::QUEUE_NONE);
+
 		assert (p->isNotInAnyQueue());
 	}
 	//-----------------------------------------------------------------------
