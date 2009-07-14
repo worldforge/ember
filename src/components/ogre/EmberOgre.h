@@ -149,8 +149,6 @@ public:
 	virtual bool frameStarted(const Ogre::FrameEvent & evt);
 	virtual bool frameEnded(const Ogre::FrameEvent & evt);
 
-// 	void shutdown();
-
 	/**
 	 * @brief Initialize all Ember services needed for this application
 	 * @param  the prefix for the application, not appliable if running under win32
@@ -158,11 +156,6 @@ public:
 	 */
 	void initializeEmberServices(const std::string& prefix, const std::string& homeDir);
 
-
-
-
-	// TODO: possibly we'd like to do the following in a different way,
-	// perhaps refactoring stuff
 	/**
 	 * @brief Gets the main avatar instance.
 	 * @return The main avatar instance. This is currently valid even before the user has logged in to a server, but this will probably change in the future.
@@ -235,7 +228,7 @@ public:
 	 * @brief Returns the main Jesus object, which should be used as the main entry into the Jesus subsystem.
 	 * @return The main Jesus instance.
 	 */
-	Jesus* getJesus() const;
+//	Jesus* getJesus() const;
 
 	/**
 	 * @brief Gets the main render window.
@@ -257,8 +250,7 @@ public:
 	/**
 	 * @brief Emitted when the Jesus subsystem has been created.
 	 */
-	sigc::signal<void, Jesus*> EventCreatedJesus;
-
+//	sigc::signal<void, Jesus*> EventCreatedJesus;
 
 	/**
 	 * @brief Returns the scenenode of the world entity.
@@ -298,11 +290,6 @@ public:
 	 * @brief Emitted after the AvatarController has been created
 	 */
 	sigc::signal<void, AvatarController&> EventAvatarControllerCreated;
-
-	/**
-	 * @brief Emitted after the base Ogre scene has been created
-	 */
-	sigc::signal<void> EventSceneCreated;
 
 	/**
 	 * @brief Emitted before the main Ogre render window is rendered.
@@ -359,8 +346,8 @@ protected:
 	Eris::View* getMainView();
 
 	/**
-		* @brief The main user avatar
-		*/
+	 * @brief The main user avatar
+	 */
 	Avatar* mAvatar;
 
 	/**
@@ -399,15 +386,9 @@ protected:
 	EmberEntityFactory* mEmberEntityFactory;
 
 	/**
-	 * @brief Creates the basic scene with a single avatar, just for testing purpose.
-	 * NOTE: remove this when going final
-	 */
-	void createScene(void);
-
-	/**
 	 * @brief Sets up Jesus. This inialized the mJesus member and loads all building blocks, blueprint and modelblocks etc.
 	 */
-	void setupJesus();
+//	void setupJesus();
 
 	/**
 	 * @brief Preloads the media, thus avoiding frame rate drops ingame.
@@ -470,11 +451,11 @@ protected:
 	 * @brief Main entry point for the Jesus system (which is an Ember wrapper for the Carpenter lib)
 	 * @note The Jesus and Carpenter system hasn't been touched in quite a while, and it's not certain that it will remain in Ember.
 	 */
-	Jesus* mJesus;
+//	Jesus* mJesus;
 
 	/**
-	The main log observer used for all logging. This will send Ogre logging events on to the internal Ember logging framework.
-	*/
+	 * @brief The main log observer used for all logging. This will send Ogre logging events on to the internal Ember logging framework.
+	 */
 	OgreLogObserver* mLogObserver;
 
 	/**
@@ -482,6 +463,9 @@ protected:
 	 */
 	MaterialEditor* mMaterialEditor;
 
+	/**
+	 * @brief Manages the model representation instances and allows for access of a specific model representation attached to any entity.
+	 */
 	Model::ModelRepresentationManager* mModelRepresentationManager;
 
 	/**
@@ -490,7 +474,14 @@ protected:
 	 */
 	void Application_ServicesInitialized();
 
+	/**
+	 * @brief The scripting resource provider, which loads scripts using the Ogre resource system.
+	 */
 	std::auto_ptr<OgreResourceProvider> mScriptingResourceProvider;
+
+	/**
+	 * @brief The sound resource provider, which loads sounds using the Ogre resource system.
+	 */
 	std::auto_ptr<OgreResourceProvider> mSoundResourceProvider;
 
 	/**
@@ -526,10 +517,6 @@ inline EntityMoveManager* EmberOgre::getMoveManager() const
 	return mMoveManager;
 }
 
-inline Jesus* EmberOgre::getJesus() const
-{
-	return mJesus;
-}
 inline Ogre::RenderWindow* EmberOgre::getRenderWindow() const
 {
 	return mWindow;

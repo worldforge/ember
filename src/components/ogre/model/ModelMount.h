@@ -1,7 +1,7 @@
 //
 // C++ Interface: ModelMount
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -24,6 +24,11 @@
 #define EMBEROGREMODELMOUNT_H
 
 #include <wfmath/axisbox.h>
+
+namespace WFMath
+{
+template <int> class AxisBox;
+}
 
 namespace Ogre {
 	class SceneNode;
@@ -34,7 +39,6 @@ namespace EmberOgre {
 
 namespace Model {
 	class Model;
-}
 
 /**
 	@brief Acts as a mount for a model, connecting it to two scene nodes.
@@ -57,54 +61,54 @@ public:
 	 * The scale node will be destroyed here.
 	 */
 	virtual ~ModelMount();
-	
+
 	/**
 	 * @brief Gets the main node. This is the node to use when positioning or rotating the Model.
 	 * @return The main node.
 	 */
 	Ogre::SceneNode* getMainNode() const;
- 
+
 	/**
 	 * @brief Gets the scale node. This is the node to which the Model is directly attached to. It should normally never be altered outside of this class.
 	 * Under normal circumstances the scale node is handed solely by this class and should never be modified from outside functionality. Accessing through this method is mainly for lookup purposes, when you need to read the orientation or scale of the bounding box.
 	 * @return The scale node, to which the Model is attached.
 	 */
 	Ogre::SceneNode* getScaleNode() const;
-	
+
 	/**
 	 * @brief Gets the Model instance to which this mount is attached.
 	 * @return The model instance.
 	 */
 	::EmberOgre::Model::Model& getModel() const;
-	
+
 	/**
 	 * @brief Rescales the model according to the bounding box.
 	 * @param wfBbox The bounding box to the model should be scaled. If you don't have an axis box available, just send null.
 	 */
 	void rescale(const WFMath::AxisBox<3>* wfBbox);
-	
+
 // 	const Ogre::Vector3 calculateScaling(::EmberOgre::Model::Model& model, const WFMath::AxisBox<3>* wfBbox);
-	
-	
+
+
 protected:
 	/**
 	 *@brief The Model which this mount is attached to.
 	 */
 	::EmberOgre::Model::Model& mModel;
-	
+
 	/**
 	 * @brief The inner scale node, to which the model is attached to.
 	 * It's this node that we'll change the orientation and position of. This node should never be touched by outside functionality.
 	 */
 	Ogre::SceneNode* mScaleNode;
-	
+
 	/**
 	 * @brief The main node, to which the scale node is attached.
 	 * This node is the external node, used for positioning the Model.
 	 */
 	Ogre::SceneNode* mMainNode;
-	
-	
+
+
 	/**
 	 * @brief Resets all scaling and rotation
 	 */
@@ -116,12 +120,12 @@ protected:
 	 * @param wfBbox The bounding box, in WF space, for which we should scale the node, or null if there's no bbox available.
 	 */
 	void scaleNode(const WFMath::AxisBox<3>* wfBbox);
-	
+
 	/**
 	 * @brief Gets the active scaling node. If the model is attached to a node already, this will be used, else the mScaleNode will be used.
 	 * @return The active scaling node.
 	 */
-	Ogre::Node* getActiveScaleNode() const;	
+	Ogre::Node* getActiveScaleNode() const;
 
 };
 
@@ -136,6 +140,7 @@ inline ::EmberOgre::Model::Model& ModelMount::getModel() const
 	return mModel;
 }
 
+}
 
 }
 

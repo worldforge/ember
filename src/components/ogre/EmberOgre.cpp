@@ -182,7 +182,7 @@ mEntityMappingManager(0),
 mTerrainLayerManager(0),
 mEntityRecipeManager(0),
 mMoveManager(0),
-mJesus(0),
+//mJesus(0),
 mLogObserver(0),
 mMaterialEditor(0),
 mScriptingResourceProvider(0),
@@ -504,10 +504,6 @@ bool EmberOgre::setup()
 		throw Ember::Exception("Could not initialize gui, aborting. Make sure that all media got downloaded and installed correctly.");
 	}
 
-	/// Create the scene
-	createScene();
-	EventSceneCreated.emit();
-
 	///this should be in a separate class, a separate plugin even
 	///disable for now, since it's not used
 	//setupJesus();
@@ -580,8 +576,8 @@ void EmberOgre::preloadMedia(void)
 
 }
 
-void EmberOgre::setupJesus()
-{
+//void EmberOgre::setupJesus()
+//{
 	//@note Disabled for now since it's not really used. Perhaps we should put this into a more dynamically loadable structure?
 
 //	const std::string datadir = Ember::EmberServices::getSingleton().getConfigService()->getSharedDataDirectory();
@@ -664,15 +660,7 @@ void EmberOgre::setupJesus()
 //
 //
 //	EventCreatedJesus.emit(mJesus);
-}
-
-void EmberOgre::createScene(void)
-{
-
-	///initially, while in the "void", we'll use a clear ambient light
-	mSceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
-
-}
+//}
 
 void EmberOgre::Server_GotView(Eris::View* view)
 {

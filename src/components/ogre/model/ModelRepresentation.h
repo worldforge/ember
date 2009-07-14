@@ -36,7 +36,7 @@ class Entity;
 namespace EmberOgre {
 class EmberEntity;
 class SoundEntity;
-class ModelMount;
+
 
 namespace Model {
 
@@ -44,7 +44,7 @@ class ActionDefinition;
 class SoundDefinition;
 class Model;
 class Action;
-
+class ModelMount;
 
 typedef std::list<Action*> ActionStore;
 typedef std::vector<ActionDefinition*> ActionDefinitionsStore;

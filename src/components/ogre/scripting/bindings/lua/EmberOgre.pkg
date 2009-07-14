@@ -118,7 +118,7 @@ class EmberOgre
 	
 	sigc::signal<void, EmberOgre::EmberEntityFactory*> EventCreatedEmberEntityFactory;
 	sigc::signal<void, EmberOgre::AvatarEmberEntity*> EventCreatedAvatarEntity;
-	sigc::signal<void, EmberOgre::Jesus*> EventCreatedJesus;
+//	sigc::signal<void, EmberOgre::Jesus*> EventCreatedJesus;
 	
 	/**
 	 * returns the scenenode of the world entity
@@ -143,8 +143,6 @@ class EmberOgre
 	sigc::signal<void, EmberOgre::Terrain::TerrainGenerator&> EventTerrainGeneratorCreated;
 	
 	sigc::signal<void, EmberOgre::AvatarController&> EventAvatarControllerCreated;
-	
-	sigc::signal<void> EventSceneCreated;
 	
 	
 };

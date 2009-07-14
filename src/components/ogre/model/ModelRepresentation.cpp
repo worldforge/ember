@@ -38,7 +38,7 @@
 #include "components/ogre/Convert.h"
 
 #include "components/ogre/MousePicker.h"
-#include "components/ogre/ModelMount.h"
+#include "ModelMount.h"
 
 #include "components/ogre/EmberEntityUserObject.h"
 #include "components/ogre/OpcodeCollisionDetector.h"

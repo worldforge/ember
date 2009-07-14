@@ -42,7 +42,9 @@ class TypeInfo;
 namespace EmberOgre {
 
 class DetachedEntity;
+namespace Model {
 class ModelMount;
+}
 namespace Gui {
 
 class EntityCreatorInputAdapter;
@@ -239,7 +241,7 @@ protected:
 	 */
 	Ogre::SceneNode* mEntityNode;
 
-	ModelMount* mModelMount;
+	Model::ModelMount* mModelMount;
 
 	/**
 	 * Preview model.

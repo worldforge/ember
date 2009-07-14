@@ -49,10 +49,10 @@
 
 #include "../EmberPhysicalEntity.h"
 #include "../AvatarEmberEntity.h"
-#include "../ModelMount.h"
 
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelDefinitionManager.h"
+#include "components/ogre/model/ModelMount.h"
 #include "components/entitymapping/EntityMappingManager.h"
 #include "components/ogre/mapping/EmberEntityMappingManager.h"
 #include "components/entitymapping/EntityMapping.h"
@@ -62,6 +62,7 @@
 
 #include <CEGUIWindow.h>
 #include <OgreRoot.h>
+#include <wfmath/axisbox.h>
 
 using namespace Ember;
 namespace EmberOgre {
@@ -236,7 +237,7 @@ void EntityCreator::setModel(const std::string& modelName)
 	}
 
 
-	mModelMount = new ModelMount(*mModel, mEntityNode);
+	mModelMount = new Model::ModelMount(*mModel, mEntityNode);
 
 	initFromModel();
 
