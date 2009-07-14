@@ -475,106 +475,80 @@ namespace Ogre
 		// Check for pages that need to be unloaded.
 		// if touched, that means they didn't have been touch by any cameras
 		// for several frames and thus need to be unloaded.
-		PagingLandScapePage *p;
+
 		// LIST CHECKS
 		PagingLandScapePageList::iterator itl;
-		for (itl = mPreLoadedPages.begin (); itl != mPreLoadedPages.end ();)
-		{
-			if ((*itl)->unloadUntouched ())
-			{
-				p = *itl;
-				releasePage (p);
-				itl = mPreLoadedPages.erase (itl); 
-			}
-			else
-			{
+		for (itl = mPreLoadedPages.begin(); itl != mPreLoadedPages.end();) {
+			if ((*itl)->unloadUntouched()) {
+				releasePage(*itl);
+				itl = mPreLoadedPages.erase(itl);
+			} else {
 				++itl;
 			}
 		}
-		for (itl = mTextureLoadedPages.begin (); itl != mTextureLoadedPages.end ();)
-		{
-			if ((*itl)->unloadUntouched ())
-			{
-				p = *itl;
-				releasePage (p);
-				itl = mTextureLoadedPages.erase (itl); 
-			}
-			else
-			{
+		for (itl = mTextureLoadedPages.begin(); itl != mTextureLoadedPages.end();) {
+			if ((*itl)->unloadUntouched()) {
+				releasePage(*itl);
+				itl = mTextureLoadedPages.erase(itl);
+			} else {
 				++itl;
 			}
 		}
-		for (itl = mLoadedPages.begin (); itl != mLoadedPages.end ();)
-		{             
-			if ((*itl)->unloadUntouched ())
-			{
-				p = *itl;
-				releasePage (p);
-				itl = mLoadedPages.erase (itl); 
-			}
-			else
-			{
+		for (itl = mLoadedPages.begin(); itl != mLoadedPages.end();) {             
+			if ((*itl)->unloadUntouched()) {
+				releasePage(*itl);
+				itl = mLoadedPages.erase(itl);
+			} else {
 				++itl;
-			}  
+			}
 		}
 
 		// QUEUES CHECKS
 		// check queues for page that need to be excluded from queues
+		PagingLandScapePage* p = 0;
 		PagingLandScapeQueue<PagingLandScapePage>::MsgQueType::iterator itq;
-		for (itq = mPagePreloadQueue.begin (); itq != mPagePreloadQueue.end ();)
-		{
+		for (itq = mPagePreloadQueue.begin(); itq != mPagePreloadQueue.end();) {
 			assert (!(*itq)->isLoaded() && !(*itq)->isPreLoaded() && !(*itq)->isTextureLoaded());
 			assert ((*itq)->isInPreloadQueue());
-			if ((*itq)->unloadUntouched ())
-			{
+			if ((*itq)->unloadUntouched()) {
 				p = *itq;
 				// remove from queue
 				p->setInQueue(PagingLandScapePage::QUEUE_NONE);
 				itq = mPagePreloadQueue.erase (itq);
 				// remove from active pages 
 				//(must be removed from queue first)
-				releasePage (p);  
-			}
-			else
-			{
+				releasePage(p);
+			} else {
 				++itq;
 			}
 		}
-		for (itq = mPageTextureloadQueue.begin(); itq != mPageTextureloadQueue.end();)
-		{
+		for (itq = mPageTextureloadQueue.begin(); itq != mPageTextureloadQueue.end();) {
 			assert (!(*itq)->isLoaded() && (*itq)->isPreLoaded() && !(*itq)->isTextureLoaded());
 			assert ((*itq)->isInTextureloadQueue());
-			if ((*itq)->unloadUntouched ())
-			{
+			if ((*itq)->unloadUntouched()) {
 				p = *itq;
 				// remove from queue
 				p->setInQueue(PagingLandScapePage::QUEUE_NONE);
-				itq = mPageTextureloadQueue.erase (itq); 
+				itq = mPageTextureloadQueue.erase(itq); 
 				// remove from active pages 
 				//(must be removed from queue first)
-				releasePage (p);  
-			}
-			else
-			{
+				releasePage(p);
+			} else {
 				++itq;
 			}
 		}
-		for (itq = mPageLoadQueue.begin (); itq != mPageLoadQueue.end ();)
-		{
+		for (itq = mPageLoadQueue.begin(); itq != mPageLoadQueue.end();) {
 			assert (!(*itq)->isLoaded());
 			assert ((*itq)->isInLoadQueue());
-			if ((*itq)->unloadUntouched ())
-			{
+			if ((*itq)->unloadUntouched()) {
 				p = *itq;
 				// remove from queue
 				p->setInQueue(PagingLandScapePage::QUEUE_NONE);
-				itq = mPageLoadQueue.erase (itq); 
+				itq = mPageLoadQueue.erase(itq); 
 				// remove from active pages 
 				//(must be removed from queue first)				 
-				releasePage (p);  
-			}
-			else
-			{
+				releasePage(p);
+			} else {
 				++itq;
 			}
 		}
