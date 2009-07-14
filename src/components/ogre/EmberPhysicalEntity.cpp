@@ -123,35 +123,35 @@ EmberEntity* EmberPhysicalEntity::getEntityAttachedToPoint(const std::string& at
 
 void EmberPhysicalEntity::setModel(const std::string& modelName)
 {
-
-	if (mModel)
-	{
-		if (mModel->getDefinition()->getName() == modelName)
-		{
-			return;
-		}
-		else
-		{
-			///Reset the model mount to start with.
-			delete mModelMount;
-			mModelMount = 0;
-			getSceneManager()->destroyMovableObject(mModel);
-		}
-	}
-	mModel = Model::Model::createModel(EmberOgre::getSingleton().getSceneManager(), modelName, getId());
-
-	///if the model definition isn't valid, use a placeholder
-	if (!mModel->getDefinition()->isValid())
-	{
-		S_LOG_FAILURE( "Could not find " << modelName << ", using placeholder.");
-		///add a placeholder model
-		Model::ModelDefnPtr modelDef = mModel->getDefinition();
-		modelDef->createSubModelDefinition("3d_objects/primitives/models/box.mesh")->createPartDefinition("main")->setShow(true);
-		modelDef->setValid(true);
-		modelDef->reloadAllInstances();
-	}
-
-	mModelMount = new ModelMount(*mModel, getSceneNode());
+//
+//	if (mModel)
+//	{
+//		if (mModel->getDefinition()->getName() == modelName)
+//		{
+//			return;
+//		}
+//		else
+//		{
+//			///Reset the model mount to start with.
+//			delete mModelMount;
+//			mModelMount = 0;
+//			getSceneManager()->destroyMovableObject(mModel);
+//		}
+//	}
+//	mModel = Model::Model::createModel(EmberOgre::getSingleton().getSceneManager(), modelName, getId());
+//
+//	///if the model definition isn't valid, use a placeholder
+//	if (!mModel->getDefinition()->isValid())
+//	{
+//		S_LOG_FAILURE( "Could not find " << modelName << ", using placeholder.");
+//		///add a placeholder model
+//		Model::ModelDefnPtr modelDef = mModel->getDefinition();
+//		modelDef->createSubModelDefinition("3d_objects/primitives/models/box.mesh")->createPartDefinition("main")->setShow(true);
+//		modelDef->setValid(true);
+//		modelDef->reloadAllInstances();
+//	}
+//
+//	mModelMount = new ModelMount(*mModel, getSceneNode());
 }
 
 void EmberPhysicalEntity::setModelPartShown(const std::string& partName, bool visible)

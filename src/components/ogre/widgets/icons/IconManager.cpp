@@ -100,59 +100,58 @@ IconManager::~IconManager()
 
 Icon* IconManager::getIcon(int pixelWidth, EmberEntity* entity)
 {
-	EmberPhysicalEntity* physEntity = dynamic_cast<EmberPhysicalEntity*>(entity);
-	if (physEntity) {
-		std::string key = "entity_" + physEntity->getId();
-		if (mIconStore.hasIcon(key)) {
-			return mIconStore.getIcon(key);
-		} else {
-			IconActionCreator actionCreator(*entity);
-			std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(::EmberOgre::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, &actionCreator));
-			std::string modelName;
-			if (modelMapping.get()) {
-				modelMapping->initialize();
-				modelName = actionCreator.getModelName();
-			}
-			///if there's no model defined for this use the placeholder model
-			if (modelName == "") {
-				modelName = "placeholder";
-			}
-			Ogre::ResourcePtr modelDefPtr = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
-			if (!modelDefPtr.isNull()) {
-				Model::ModelDefinition* modelDef = static_cast< Model::ModelDefinition*>(modelDefPtr.get());
-				const std::string& iconPath(modelDef->getIconPath());
-				if (iconPath != "") {
 
-					Ogre::TexturePtr texPtr;
-					try {
-						if (Ogre::TextureManager::getSingleton().resourceExists(iconPath)) {
-							texPtr = static_cast<Ogre::TexturePtr>(Ogre::TextureManager::getSingleton().getByName(iconPath));
-							///try to load it to make sure that's it a working image
-							texPtr->load();
-						}
-						if (texPtr.isNull()) {
-							texPtr = Ogre::TextureManager::getSingleton().load(iconPath, "Gui");
-						}
-					} catch (...) {
-						S_LOG_WARNING("Error when trying to load the icon " << iconPath <<". The icon will be rendered dynamically.");
-						texPtr.setNull();
+	std::string key = "entity_" + entity->getId();
+	if (mIconStore.hasIcon(key)) {
+		return mIconStore.getIcon(key);
+	} else {
+		IconActionCreator actionCreator(*entity);
+		std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(::EmberOgre::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, &actionCreator));
+		std::string modelName;
+		if (modelMapping.get()) {
+			modelMapping->initialize();
+			modelName = actionCreator.getModelName();
+		}
+		///if there's no model defined for this use the placeholder model
+		if (modelName == "") {
+			modelName = "placeholder";
+		}
+		Ogre::ResourcePtr modelDefPtr = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
+		if (!modelDefPtr.isNull()) {
+			Model::ModelDefinition* modelDef = static_cast< Model::ModelDefinition*>(modelDefPtr.get());
+			const std::string& iconPath(modelDef->getIconPath());
+			if (iconPath != "") {
+
+				Ogre::TexturePtr texPtr;
+				try {
+					if (Ogre::TextureManager::getSingleton().resourceExists(iconPath)) {
+						texPtr = static_cast<Ogre::TexturePtr>(Ogre::TextureManager::getSingleton().getByName(iconPath));
+						///try to load it to make sure that's it a working image
+						texPtr->load();
 					}
-					if (!texPtr.isNull()) {
-						Icon* icon = mIconStore.createIcon(key, texPtr);
-						return icon;
+					if (texPtr.isNull()) {
+						texPtr = Ogre::TextureManager::getSingleton().load(iconPath, "Gui");
 					}
+				} catch (...) {
+					S_LOG_WARNING("Error when trying to load the icon " << iconPath <<". The icon will be rendered dynamically.");
+					texPtr.setNull();
+				}
+				if (!texPtr.isNull()) {
+					Icon* icon = mIconStore.createIcon(key, texPtr);
+					return icon;
 				}
 			}
-			Icon* icon = mIconStore.createIcon(key);
-			if (icon) {
-				///update the model preview window
-// 				Model::Model* model = Model::Model::createModel(mIconRenderer.getRenderContext()->getSceneManager(), modelName);
-				mIconRenderer.render(modelName, icon);
-// 				mIconRenderer.getRenderContext()->getSceneManager()->destroyMovableObject(model);
-			}
-			return icon;
 		}
+		Icon* icon = mIconStore.createIcon(key);
+		if (icon) {
+			///update the model preview window
+// 				Model::Model* model = Model::Model::createModel(mIconRenderer.getRenderContext()->getSceneManager(), modelName);
+			mIconRenderer.render(modelName, icon);
+// 				mIconRenderer.getRenderContext()->getSceneManager()->destroyMovableObject(model);
+		}
+		return icon;
 	}
+
 	return 0;
 }
 

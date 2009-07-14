@@ -349,7 +349,7 @@ void Avatar::createdAvatarEmberEntity(AvatarEmberEntity *emberEntity)
 	}
 
 	mAvatarNode = emberEntity->getSceneNode();
-	mAvatarModel = emberEntity->getModel();
+//	mAvatarModel = emberEntity->getModel();
 
 	mErisAvatarEntity = emberEntity;
 	emberEntity->setAvatar(this);

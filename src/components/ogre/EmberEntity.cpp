@@ -30,6 +30,9 @@
 #include "terrain/TerrainArea.h"
 #include "terrain/TerrainMod.h"
 #include "Convert.h"
+#include "EmberEntityActionCreator.h"
+#include "IGraphicalRepresentation.h"
+#include "mapping/EmberEntityMappingManager.h"
 
 #include "EmberOgre.h"
 #include <OgreWireBoundingBox.h>
@@ -79,7 +82,7 @@ const std::string EmberEntity::MODE_PROJECTILE("projectile");
 const std::string EmberEntity::BboxMaterialName("BaseYellowNoLightning");
 
 EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager) :
-	Eris::Entity(id, ty, vw), mIsInitialized(false), mIsInMotionManager(false), mErisEntityBoundingBox(0), mOgreNode(0), mTerrainArea(0), mTerrainMod(0), mMovementMode(MM_DEFAULT)
+	Eris::Entity(id, ty, vw), mIsInitialized(false), mIsInMotionManager(false), mErisEntityBoundingBox(0), mOgreNode(0), mTerrainArea(0), mTerrainMod(0), mMovementMode(MM_DEFAULT), mGraphicalRepresentation(0), mEntityMapping(0)
 {
 	createSceneNode(sceneManager);
 }
@@ -109,12 +112,28 @@ EmberEntity::~EmberEntity()
 		mErisEntityBoundingBox->getParentSceneNode()->getCreator()->destroySceneNode(mErisEntityBoundingBox->getParentSceneNode()->getName());
 	}
 	OGRE_DELETE mErisEntityBoundingBox;
-
+	delete mEntityMapping;
+	delete mGraphicalRepresentation;
 	//mSceneManager->destroySceneNode(getSceneNode()->getName());
 }
 
 void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
+
+	/// we need a model mapping
+	createEntityMapping();
+
+	assert(mEntityMapping);
+
+	///calling this will result in a call to setModel(...)
+	mEntityMapping->initialize();
+
+	// Setup Sounds
+//	setSounds();
+
+	///start out with the default movement mode
+	onMovementModeChanged(EmberEntity::MM_DEFAULT);
+
 	Eris::Entity::init(ge, fromCreateOp);
 
 	synchronizeWithServer();
@@ -180,6 +199,15 @@ bool EmberEntity::createDependentObject(const std::string& attributeName)
 	}
 	return false;
 }
+
+void EmberEntity::createEntityMapping()
+{
+	delete mEntityMapping;
+	///the creator binds the model mapping and this instance together by creating instance of EmberEntityModelAction and EmberEntityPartAction which in turn calls the setModel(..) and show/hideModelPart(...) methods.
+	EmberEntityActionCreator creator(*this);
+	mEntityMapping = ::EmberOgre::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(this, &creator);
+}
+
 
 void EmberEntity::synchronizeWithServer()
 {
@@ -542,6 +570,9 @@ void EmberEntity::onImaginary(const Atlas::Objects::Root& act)
 
 bool EmberEntity::allowVisibilityOfMember(EmberEntity* entity)
 {
+	if (mGraphicalRepresentation) {
+		return mGraphicalRepresentation->allowVisibilityOfMember(entity);
+	}
 	return true;
 }
 
@@ -663,27 +694,34 @@ void EmberEntity::onMovementModeChanged(MovementMode newMode)
 
 void EmberEntity::setVisualize(const std::string& visualization, bool visualize)
 {
-	if (visualization == "OgreBBox")
-	{
-		showOgreBoundingBox(visualize);
+	if (mGraphicalRepresentation) {
+		mGraphicalRepresentation->setVisualize(visualization, visualize);
 	}
-	else if (visualization == "ErisBBox")
-	{
-		showErisBoundingBox(visualize);
-	}
+//	if (visualization == "OgreBBox")
+//	{
+//		showOgreBoundingBox(visualize);
+//	}
+//	else if (visualization == "ErisBBox")
+//	{
+//		showErisBoundingBox(visualize);
+//	}
 }
 
 bool EmberEntity::getVisualize(const std::string& visualization) const
 {
-	if (visualization == "OgreBBox")
-	{
-		return getShowOgreBoundingBox();
-	}
-	else if (visualization == "ErisBBox")
-	{
-		return getShowErisBoundingBox();
+	if (mGraphicalRepresentation) {
+		return mGraphicalRepresentation->getVisualize(visualization);
 	}
 	return false;
+//	if (visualization == "OgreBBox")
+//	{
+//		return getShowOgreBoundingBox();
+//	}
+//	else if (visualization == "ErisBBox")
+//	{
+//		return getShowErisBoundingBox();
+//	}
+//	return false;
 }
 
 void EmberEntity::showOgreBoundingBox(bool show)
@@ -836,4 +874,17 @@ void EmberEntity::dumpAttributes(std::iostream& outstream, std::ostream& logOuts
 	formatter.streamEnd();
 }
 
+IGraphicalRepresentation* EmberEntity::getGraphicalRepresentation() const
+{
+	return mGraphicalRepresentation;
+}
+
+void EmberEntity::setGraphicalRepresentation(IGraphicalRepresentation* graphicalRepresentation)
+{
+	if (graphicalRepresentation != mGraphicalRepresentation)
+	{
+		delete mGraphicalRepresentation;
+	}
+	mGraphicalRepresentation = graphicalRepresentation;
+}
 }

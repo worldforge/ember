@@ -41,7 +41,6 @@ namespace Eris
 namespace EmberOgre {
 
 class AvatarEmberEntity;
-class EmberPhysicalEntity;
 class EmberEntity;
 class ViewEmberEntity;
 class WorldEmberEntity;
@@ -121,10 +120,6 @@ protected:
 	Creates a WorldEmberEntity instance.
 	*/
 	Eris::Entity* createWorld(const Atlas::Objects::Entity::RootEntity & ge,Eris::TypeInfo* type, Eris::View *world);
-	/**
-	Creates a EmberPhysicalEntity instance.
-	*/
-	EmberPhysicalEntity* createPhysicalEntity(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View *world);
 	/**
 	Creates a AvatarEmberEntity instance.
 	*/

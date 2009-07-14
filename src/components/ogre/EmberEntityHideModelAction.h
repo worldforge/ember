@@ -24,19 +24,19 @@
 #define EMBEROGREEMBERENTITYHIDEMODELACTION_H
 
 #include "EmberOgrePrerequisites.h"
-#include "EmberPhysicalEntity.h"
+#include "EmberEntity.h"
 
 #include "components/entitymapping/Actions/Action.h"
 namespace EmberOgre {
 
 /**
-	Hide the current model.
+	@brief Hides the current graphical representation when activated.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class EmberEntityHideModelAction : public Ember::EntityMapping::Actions::Action
 {
 public:
-    EmberEntityHideModelAction(EmberPhysicalEntity& entity);
+    EmberEntityHideModelAction(EmberEntity& entity);
 
     virtual ~EmberEntityHideModelAction();
 
@@ -44,7 +44,7 @@ public:
 	virtual void deactivate();
 
 protected:
-	EmberPhysicalEntity& mEntity;
+	EmberEntity& mEntity;
 
 };
 

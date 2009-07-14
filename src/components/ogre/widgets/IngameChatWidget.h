@@ -31,9 +31,11 @@
 
 namespace EmberOgre {
 
+namespace Model {
+class ModelRepresentation;
+}
 class GUIManager;
 class Widget;
-class EmberPhysicalEntity;
 class EmberEntity;
 
 namespace Gui {
@@ -59,7 +61,7 @@ class IngameChatWidget : public Widget, public Ember::ConfigListenerContainer {
 	class MovableObjectListener : public Ogre::MovableObject::Listener
 	{
 		public:
-			MovableObjectListener(EntityObserver& entityObserver, EmberPhysicalEntity* entity);
+			MovableObjectListener(EntityObserver& entityObserver, Model::ModelRepresentation& modelRepresentation);
 			virtual ~MovableObjectListener();
 
 			virtual bool objectRendering (const Ogre::MovableObject * movableObject, const Ogre::Camera * camera);
@@ -67,20 +69,20 @@ class IngameChatWidget : public Widget, public Ember::ConfigListenerContainer {
 
 		private:
 			EntityObserver& mEntityObserver;
-			EmberPhysicalEntity* mEntity;
+			Model::ModelRepresentation& mModelRepresentation;
 			bool mIsObserving;
 	};
 
 	class EntityObserver : public virtual sigc::trackable
 	{
 		public:
-			EntityObserver(IngameChatWidget& chatWidget, EmberPhysicalEntity* entity);
+			EntityObserver(IngameChatWidget& chatWidget, Model::ModelRepresentation& modelRepresentation);
 			virtual ~EntityObserver();
 			void updateLabel(const Ogre::Camera * camera);
 
 		protected:
 			IngameChatWidget& mChatWidget;
-			EmberPhysicalEntity* mEntity;
+			EmberEntity* mEntity;
 			Label* mLabel;
 			MovableObjectListener mMovableObjectListener;
 			Eris::Entity::AttrChangedSlot mExternalSlot; //, mNameSlot;

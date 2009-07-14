@@ -24,7 +24,7 @@
 #define EMBEROGREEMBERENTITYMODELACTION_H
 
 #include "EmberOgrePrerequisites.h"
-#include "EmberPhysicalEntity.h"
+#include "EmberEntity.h"
 
 // #include "model/mapping/EntityMapping.h"
 #include "components/entitymapping/Actions/Action.h"
@@ -38,14 +38,14 @@ namespace EmberOgre {
 class EmberEntityModelAction : public Ember::EntityMapping::Actions::Action
 {
 public:
-	EmberEntityModelAction(EmberPhysicalEntity& entity, std::string modelName);
+	EmberEntityModelAction(EmberEntity& entity, std::string modelName);
 	~EmberEntityModelAction();
 
 	virtual void activate();
 	virtual void deactivate();
 
 protected:
-	EmberPhysicalEntity& mEntity;
+	EmberEntity& mEntity;
 
 	std::string mModelName;
 };

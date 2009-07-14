@@ -1,5 +1,12 @@
 namespace EmberOgre {
 
+class IAnimated
+{
+public:
+	void updateAnimation(float timeSlice);
+};
+
+
 class MotionManager  {
 	//from Singleton
 	struct MotionManagerInfo
@@ -13,8 +20,17 @@ class MotionManager  {
 	void addEntity(EmberEntity* entity);
 	void removeEntity(EmberEntity* entity);
 	
-	void addAnimatedEntity(EmberPhysicalEntity* entity);
-	void removeAnimatedEntity(EmberPhysicalEntity* entity);	
+	/**
+	 * Adds a EmberPhysicalEntity to the movement list.
+	 * That means that until removeAnimatedEntity is called for the specific entity
+	 * new positions (and animations) for the entity will be calculated for each frame.
+	 */
+	void addAnimatedEntity(const std::string& id, IAnimated* entity);
+	/**
+	 * Removes a EmberPhysicalEntity from the movement list.
+	 * New positions (and animations) for the entity will NOT be calculated for each frame.
+	 */
+	void removeAnimatedEntity(const std::string& id);
 	
 	/**
 	 *    Gets info about the MotionManager.

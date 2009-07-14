@@ -38,7 +38,8 @@
 namespace EmberOgre {
 
 
-AvatarEmberEntity::AvatarEmberEntity(const std::string& id, Eris::TypeInfo* type, Eris::View* vw, Ogre::SceneManager* sceneManager, Eris::Avatar* erisAvatar) : EmberPhysicalEntity(id, type, vw, sceneManager),  SetAttachedOrientation("setattachedorientation", this, "Sets the orienation of an item attached to the avatar: <attachpointname> <x> <y> <z> <degrees>"),
+AvatarEmberEntity::AvatarEmberEntity(const std::string& id, Eris::TypeInfo* type, Eris::View* vw, Ogre::SceneManager* sceneManager, Eris::Avatar* erisAvatar)
+: EmberEntity(id, type, vw, sceneManager),  SetAttachedOrientation("setattachedorientation", this, "Sets the orienation of an item attached to the avatar: <attachpointname> <x> <y> <z> <degrees>"),
 mAvatar(0), mErisAvatar(erisAvatar)
 {
 }
@@ -49,37 +50,37 @@ AvatarEmberEntity::~AvatarEmberEntity()
 
 void AvatarEmberEntity::runCommand(const std::string &command, const std::string &args)
 {
-	if(SetAttachedOrientation == command) {
-		Ember::Tokeniser tokeniser;
-		tokeniser.initTokens(args);
-		std::string attachPointName = tokeniser.nextToken();
-		if (attachPointName != "") {
-			std::string x = tokeniser.nextToken();
-			std::string y = tokeniser.nextToken();
-			std::string z = tokeniser.nextToken();
-			std::string degrees = tokeniser.nextToken();
-			if (x != "" && y != "" && z != "" && degrees != "") {
-				Ogre::Degree ogreDegrees(Ogre::StringConverter::parseReal(degrees));
-				Ogre::Quaternion rotation(ogreDegrees, Ogre::Vector3(Ogre::StringConverter::parseReal(x), Ogre::StringConverter::parseReal(y), Ogre::StringConverter::parseReal(z)));
-				if (getModel()) {
-					const Model::Model::AttachPointWrapperStore* attachPoints = getModel()->getAttachedPoints();
-					if (attachPoints) {
-						for (Model::Model::AttachPointWrapperStore::const_iterator I = attachPoints->begin(); I != attachPoints->end(); ++I) {
-							if (I->AttachPointName == attachPointName) {
-								I->TagPoint->setOrientation(rotation);
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+//	if(SetAttachedOrientation == command) {
+//		Ember::Tokeniser tokeniser;
+//		tokeniser.initTokens(args);
+//		std::string attachPointName = tokeniser.nextToken();
+//		if (attachPointName != "") {
+//			std::string x = tokeniser.nextToken();
+//			std::string y = tokeniser.nextToken();
+//			std::string z = tokeniser.nextToken();
+//			std::string degrees = tokeniser.nextToken();
+//			if (x != "" && y != "" && z != "" && degrees != "") {
+//				Ogre::Degree ogreDegrees(Ogre::StringConverter::parseReal(degrees));
+//				Ogre::Quaternion rotation(ogreDegrees, Ogre::Vector3(Ogre::StringConverter::parseReal(x), Ogre::StringConverter::parseReal(y), Ogre::StringConverter::parseReal(z)));
+//				if (getModel()) {
+//					const Model::Model::AttachPointWrapperStore* attachPoints = getModel()->getAttachedPoints();
+//					if (attachPoints) {
+//						for (Model::Model::AttachPointWrapperStore::const_iterator I = attachPoints->begin(); I != attachPoints->end(); ++I) {
+//							if (I->AttachPointName == attachPointName) {
+//								I->TagPoint->setOrientation(rotation);
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+//	}
 }
 
 void AvatarEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
-	EmberPhysicalEntity::init(ge, fromCreateOp);
-	mModel->setQueryFlags(MousePicker::CM_AVATAR);
+//	EmberPhysicalEntity::init(ge, fromCreateOp);
+//	mModel->setQueryFlags(MousePicker::CM_AVATAR);
 
 
 }
@@ -91,8 +92,8 @@ void AvatarEmberEntity::onMoved()
 		parseMovementMode();
 		getAvatar()->movedInWorld();
 		Eris::Entity::onMoved();
-	} else {
-		EmberPhysicalEntity::onMoved();
+//	} else {
+//		EmberPhysicalEntity::onMoved();
 	}
 }
 
@@ -133,7 +134,7 @@ void AvatarEmberEntity::onChildAdded(Entity *e)
 	//mAvatar->EventAddedEntityToInventory.emit(static_cast<EmberEntity*>(e));
 	EmberOgre::getSingleton().getAvatar()->mEntitiesToBeAddedToInventory.insert(e);
 	//PersonEmberEntity::addMember(e);
-	EmberPhysicalEntity::onChildAdded(e);
+//	EmberPhysicalEntity::onChildAdded(e);
 
 }
 
@@ -142,7 +143,7 @@ void AvatarEmberEntity::onChildAdded(Entity *e)
 void AvatarEmberEntity::onChildRemoved(Entity *e)
 {
 	EmberOgre::getSingleton().getAvatar()->EventRemovedEntityFromInventory.emit(static_cast<EmberEntity*>(e));
-	EmberPhysicalEntity::onChildRemoved(e);
+//	EmberPhysicalEntity::onChildRemoved(e);
 //	mAvatar->mEntitiesToBeRemovedFromInventory.insert(e);
 //	PersonEmberEntity::rmvMember(e);
 }
@@ -183,7 +184,8 @@ void AvatarEmberEntity::onChildRemoved(Entity *e)
 
 Ogre::SceneNode* AvatarEmberEntity::getAvatarSceneNode()
 {
-	return getScaleNode();
+	return getSceneNode();
+//	return getScaleNode();
 }
 
 

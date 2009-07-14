@@ -1,7 +1,7 @@
 //
 // C++ Implementation: EmberEntityPartAction
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -25,13 +25,15 @@
 #endif
 #include "EmberEntityPartAction.h"
 
-#include "EmberPhysicalEntity.h"
+#include "EmberEntity.h"
+#include "components/ogre/model/ModelRepresentation.h"
+#include "components/ogre/model/ModelRepresentationManager.h"
 
 
 namespace EmberOgre {
 
 
-EmberEntityPartAction::EmberEntityPartAction(EmberPhysicalEntity& entity, const std::string& partName)
+EmberEntityPartAction::EmberEntityPartAction(EmberEntity& entity, const std::string& partName)
 : mEntity(entity), mPartName(partName)
 {
 }
@@ -44,13 +46,19 @@ EmberEntityPartAction::~EmberEntityPartAction()
 void EmberEntityPartAction::activate()
 {
 	S_LOG_VERBOSE("Showing part " << mPartName);
-	mEntity.setModelPartShown(mPartName, true);
+	Model::ModelRepresentation* representation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(mEntity);
+	if (representation) {
+		representation->setModelPartShown(mPartName, true);
+	}
 }
 
 void EmberEntityPartAction::deactivate()
 {
 	S_LOG_VERBOSE("Hiding part " << mPartName);
-	mEntity.setModelPartShown(mPartName, false);
-} 
+	Model::ModelRepresentation* representation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(mEntity);
+	if (representation) {
+		representation->setModelPartShown(mPartName, false);
+	}
+}
 
 }

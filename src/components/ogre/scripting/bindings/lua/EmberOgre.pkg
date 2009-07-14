@@ -10,7 +10,6 @@ $pfile "Avatar.pkg"
 $pfile "EmberEntityFactory.pkg"
 
 $pfile "EmberEntity.pkg"
-$pfile "EmberPhysicalEntity.pkg"
 $pfile "AvatarEmberEntity.pkg"
 $pfile "WorldEmberEntity.pkg"
 

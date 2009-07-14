@@ -23,7 +23,6 @@
 #ifndef EMBEROGREEMBERENTITYACTIONCREATOR_H
 #define EMBEROGREEMBERENTITYACTIONCREATOR_H
 #include "EmberOgrePrerequisites.h"
-#include "EmberPhysicalEntity.h"
 
 #include "components/entitymapping/EntityMapping.h"
 #include "components/entitymapping/Definitions/EntityMappingDefinition.h"
@@ -32,18 +31,20 @@
 
 namespace EmberOgre {
 
+class EmberEntity;
+
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class EmberEntityActionCreator : public Ember::EntityMapping::IActionCreator
 {
 public:
-    EmberEntityActionCreator(EmberPhysicalEntity& entity);
+    EmberEntityActionCreator(EmberEntity& entity);
 
     ~EmberEntityActionCreator();
 	virtual void createActions(Ember::EntityMapping::EntityMapping& modelMapping, Ember::EntityMapping::Cases::CaseBase* aCase, Ember::EntityMapping::Definitions::CaseDefinition& caseDefinition);
 protected:
-	EmberPhysicalEntity& mEntity;
+	EmberEntity& mEntity;
 
 
 };

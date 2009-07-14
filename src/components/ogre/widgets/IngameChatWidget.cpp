@@ -1,7 +1,7 @@
 //
 // C++ Implementation: IngameChatWidget
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -33,8 +33,8 @@
 #include <CEGUIWindowManager.h>
 #include <CEGUIExceptions.h>
 #include <CEGUIFont.h>
-#include <elements/CEGUIListbox.h> 
-#include <elements/CEGUIListboxTextItem.h> 
+#include <elements/CEGUIListbox.h>
+#include <elements/CEGUIListboxTextItem.h>
 #include <elements/CEGUIPushButton.h>
 #include <elements/CEGUIGUISheet.h>
 #include <Eris/View.h>
@@ -48,7 +48,8 @@
 #include "../Avatar.h"
 
 #include "../EmberEntity.h"
-#include "../EmberPhysicalEntity.h"
+#include "components/ogre/model/ModelRepresentationManager.h"
+#include "components/ogre/model/ModelRepresentation.h"
 #include "../model/Model.h"
 #include "../AvatarEmberEntity.h"
 
@@ -65,7 +66,7 @@ namespace Gui {
 IngameChatWidget::IngameChatWidget()
 : mTimeShown(0), mDistanceShown(100), mLabelCreator(*this), mLabelPool(mLabelCreator), mChatTextCreator(*this), mChatTextPool(mChatTextCreator), mAvatarEntityId(""), mMainCamera(EmberOgre::getSingleton().getMainCamera()->getCamera())
 {
-	
+
 	registerConfigListener("ingamechatwidget", "timeshown", sigc::mem_fun(*this, &IngameChatWidget::Config_TimeShown));	registerConfigListener("ingamechatwidget", "distanceshown", sigc::mem_fun(*this, &IngameChatWidget::Config_DistanceShown));
 
 
@@ -77,16 +78,16 @@ IngameChatWidget::~IngameChatWidget()
 
 void IngameChatWidget::buildWidget()
 {
-	
+
 	mLabelSheet = mWindowManager->createWindow("DefaultGUISheet", "IngameChatWidget/LabelSheet");
 	mLabelSheet->setMousePassThroughEnabled(true);
 	mLabelSheet->setRiseOnClickEnabled(false);
 	getMainSheet()->addChildWindow(mLabelSheet);
-	
+
 	mLabelPool.initializePool(15);
 	mChatTextPool.initializePool(5);
 	Ember::EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &IngameChatWidget::ServerService_GotView));
-		
+
 }
 
 void IngameChatWidget::Config_TimeShown(const std::string& section, const std::string& key, varconf::Variable& variable)
@@ -107,7 +108,8 @@ Window* IngameChatWidget::getLabelSheet()
 
 void IngameChatWidget::ServerService_GotView(Eris::View* view)
 {
-	Eris::TypeService* typeService = Ember::EmberServices::getSingleton().getServerService()->getConnection()->getTypeService();	mLabelTypes.push_back(typeService->getTypeByName("character"));
+	Eris::TypeService* typeService = Ember::EmberServices::getSingleton().getServerService()->getConnection()->getTypeService();
+	mLabelTypes.push_back(typeService->getTypeByName("character"));
 
 	view->EntitySeen.connect(sigc::mem_fun(*this, &IngameChatWidget::View_EntitySeen));
 	mAvatarEntityId = view->getAvatar()->getId();
@@ -117,12 +119,13 @@ void IngameChatWidget::ServerService_GotView(Eris::View* view)
 
 void IngameChatWidget::View_EntitySeen(Eris::Entity* entity)
 {
-	EmberPhysicalEntity* physEntity = dynamic_cast<EmberPhysicalEntity*>(entity);
-	if (physEntity) {
+	EmberEntity* emberEntity = static_cast<EmberEntity*>(entity);
+	Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(*emberEntity);
+	if (modelRepresentation) {
 		for (TypeInfoStore::iterator I = mLabelTypes.begin(); I != mLabelTypes.end(); ++I) {
 			if (entity->getType()->isA(*I)) {
 				if (mAvatarEntityId != entity->getId()) {
-					EntityObserver* observer = new EntityObserver(*this, physEntity);
+					EntityObserver* observer = new EntityObserver(*this, *modelRepresentation);
 					mEntityObservers.push_back(observer);
 				}
 				break;
@@ -172,8 +175,8 @@ void IngameChatWidget::removeWidget(const std::string& windowName)
 
 
 
-IngameChatWidget::MovableObjectListener::MovableObjectListener(EntityObserver& entityObserver, EmberPhysicalEntity* entity)
-: mEntityObserver(entityObserver), mEntity(entity), mIsObserving(false)
+IngameChatWidget::MovableObjectListener::MovableObjectListener(EntityObserver& entityObserver, Model::ModelRepresentation& modelRepresentation)
+: mEntityObserver(entityObserver), mModelRepresentation(modelRepresentation), mIsObserving(false)
 {
 }
 
@@ -186,9 +189,9 @@ void IngameChatWidget::MovableObjectListener::setObserving(bool isObserving)
 {
 	if (isObserving) {
 		///TODO: make sure that this doesn't interfere with other listeners
-		mEntity->getModel()->setListener(this);
+		mModelRepresentation.getModel().setListener(this);
 	} else {
-		mEntity->getModel()->setListener(0);
+		mModelRepresentation.getModel().setListener(0);
 	}
 }
 
@@ -201,16 +204,16 @@ bool IngameChatWidget::MovableObjectListener::objectRendering (const Ogre::Movab
 
 
 
-IngameChatWidget::EntityObserver::EntityObserver(IngameChatWidget& chatWidget, EmberPhysicalEntity* entity)
-: mChatWidget(chatWidget), mEntity(entity), mLabel(0), mMovableObjectListener(*this, entity)
+IngameChatWidget::EntityObserver::EntityObserver(IngameChatWidget& chatWidget, Model::ModelRepresentation& modelRepresentation)
+: mChatWidget(chatWidget), mEntity(&modelRepresentation.getEntity()), mLabel(0), mMovableObjectListener(*this, modelRepresentation)
 {
-	entity->VisibilityChanged.connect(sigc::mem_fun(*this, &EntityObserver::entity_VisibilityChanged));
-	entity->BeingDeleted.connect(sigc::mem_fun(*this, &EntityObserver::entity_BeingDeleted));
-	entity->Say.connect(sigc::mem_fun(*this, &EntityObserver::entity_Say));
-	
+	mEntity->VisibilityChanged.connect(sigc::mem_fun(*this, &EntityObserver::entity_VisibilityChanged));
+	mEntity->BeingDeleted.connect(sigc::mem_fun(*this, &EntityObserver::entity_BeingDeleted));
+	mEntity->Say.connect(sigc::mem_fun(*this, &EntityObserver::entity_Say));
+
 	mExternalSlot = sigc::mem_fun(*this, &IngameChatWidget::EntityObserver::entity_attributeChanged);
-	entity->observe("external", mExternalSlot);
-	entity->observe("name", mExternalSlot);
+	mEntity->observe("external", mExternalSlot);
+	mEntity->observe("name", mExternalSlot);
 }
 
 IngameChatWidget::EntityObserver::~EntityObserver()
@@ -235,15 +238,15 @@ void IngameChatWidget::EntityObserver::entity_BeingDeleted()
 void IngameChatWidget::EntityObserver::entity_Say(const Atlas::Objects::Root& talk)
 {
 	if (mLabel) {
-		
+
 		if (!talk->hasAttr("say")) {
 			return;
 		}
 		const std::string& msg = talk->getAttr("say").asString();
-		
+
 		mLabel->updateText(msg);
 	}
-	
+
 }
 
 void IngameChatWidget::EntityObserver::entity_attributeChanged(const Atlas::Message::Element& attributeValue)
@@ -265,7 +268,7 @@ void IngameChatWidget::EntityObserver::updateLabel(const Ogre::Camera * camera)
 	// 	const Ogre::Vector3& cameraCoords = camera->getDerivedPosition();
 	///getWorldPosition is faster than getting the center of the boundingbox...
 		Ogre::Vector3 diff = mEntity->getSceneNode()->_getDerivedPosition() - camera->getDerivedPosition();
-		
+
 		///remove the window if it's either too far away
 		if (diff.length() > mChatWidget.mDistanceShown) {
 	// 		mLabel->setActive(false);
@@ -276,7 +279,7 @@ void IngameChatWidget::EntityObserver::updateLabel(const Ogre::Camera * camera)
 			mLabel->placeWindowOnEntity();*/
 		}
 	}
-	
+
 }
 
 void IngameChatWidget::EntityObserver::showLabel()
@@ -305,9 +308,9 @@ void IngameChatWidget::EntityObserver::hideLabel()
 
 
 IngameChatWidget::Label::Label( Window * window, WindowManager * windowManager, IngameChatWidget& containerWidget, const std::string& prefix)
- : mWindow(window), 
- mEntity(0), 
- mWindowManager(windowManager), 
+ : mWindow(window),
+ mEntity(0),
+ mWindowManager(windowManager),
  mContainerWidget(containerWidget),
  mActive(false),
  mPrefix(prefix),
@@ -332,13 +335,13 @@ void IngameChatWidget::Label::placeWindowOnEntity()
 {
 	///make sure that the window stays on the entity
 	Ogre::Vector2 screenCoords;
-	
+
 	bool result = false;
 	Ogre::Vector3 entityWorldCoords = getEntity()->getWorldBoundingSphere().getCenter();
 	entityWorldCoords.y = getEntity()->getWorldBoundingBox().getMaximum().y;
 	///check what the new position is in screen coords
 	result = EmberOgre::getSingletonPtr()->getMainCamera()->worldToScreen(entityWorldCoords, screenCoords);
-	
+
 	if (result) {
 		mWindow->setVisible(true);
 		mWindow->setPosition(UVector2(UDim(screenCoords.x, -(mWindow->getWidth().asAbsolute(0) * 0.5)), UDim(screenCoords.y,  -(mWindow->getHeight().asAbsolute(0) * 0.5))));
@@ -360,7 +363,7 @@ void IngameChatWidget::Label::frameStarted( const Ogre::FrameEvent & event )
 			}
 		}
 // 		placeWindowOnEntity();
-		
+
 // 		increaseElapsedTime(event.timeSinceLastFrame);
 	} else {
 		setActive(false);
@@ -481,7 +484,7 @@ bool IngameChatWidget::ChatText::frameStarted( const Ogre::FrameEvent & event )
 		}
 	}
 	return true;
-	
+
 }
 
 void IngameChatWidget::ChatText::increaseElapsedTime( float timeSlice )
@@ -494,12 +497,12 @@ void IngameChatWidget::ChatText::updateText(const std::string & line)
 // 	GUISheet* textWidget = static_cast<GUISheet*>(mWindow->getChild(mPrefix + "Text"));
 	mTextWidget->setText(line);
 	mElapsedTimeSinceLastUpdate = 0;
-	
+
 	if (mLabel->getEntity()->hasSuggestedResponses())
 	{
 // 		Window* responseWidget = static_cast<Window*>(mWindow->getChild(mPrefix + "ResponseList"));
-			
-		
+
+
 		//remove all existing response windows
 		std::vector<Window*>::const_iterator responses_I = mResponseTextWidgets.begin();
 		std::vector<Window*>::const_iterator responses_I_end = mResponseTextWidgets.end();
@@ -508,7 +511,7 @@ void IngameChatWidget::ChatText::updateText(const std::string & line)
 			WindowManager::getSingleton().destroyWindow(*responses_I);
 		}
 		mResponseTextWidgets.clear();
-		
+
 
 		//for each response, create a button
 		const std::vector<std::string>& responses = mLabel->getEntity()->getSuggestedResponses();
@@ -516,21 +519,21 @@ void IngameChatWidget::ChatText::updateText(const std::string & line)
 		std::vector<std::string>::const_iterator I_end = responses.end();
 		int i = 0;
 		std::stringstream ss;
-		
+
 		float heightSize = 1.0f;
 		if (responses.size() > 0) {
 			heightSize = 1.0f / responses.size();
 		}
-		
+
 		for (;I != I_end; ++I)
 		{
 			std::stringstream ss_;
 			ss_ << i;
 			PushButton* responseTextButton = static_cast<PushButton*>(WindowManager::getSingleton().createWindow(GUIManager::getSingleton().getDefaultScheme() + "/Button", mPrefix + "Response/" + ss_.str()));
 			GUISheet* responseText = static_cast<GUISheet*>(WindowManager::getSingleton().createWindow(GUIManager::getSingleton().getDefaultScheme() + "/StaticText", mPrefix + "ResponseText/" + ss_.str()));
-			
-			
-			
+
+
+
 			BIND_CEGUI_EVENT(responseTextButton, PushButton::EventClicked, IngameChatWidget::ChatText::buttonResponse_Click );
 			responseText->setText(*I);
 			responseText->setSize(UVector2(UDim(0.8f, 0), UDim(0.9f, 0)));
@@ -540,32 +543,32 @@ void IngameChatWidget::ChatText::updateText(const std::string & line)
  			responseText->setProperty("BackgroundEnabled", "false");
  			responseText->setProperty("Font", "DejaVuSans-Bold-8");
  			responseText->setProperty("TextColours", "tl:FFFFFFFF tr:FFFFFFFF bl:FFffc990 br:FFffc990");
-			
-			
+
+
 			responseText->setInheritsAlpha(true);
 			///we need to disable and deactivate it so it won't recieve any input (input should go to the button instead)
 			responseText->deactivate();
 			responseText->disable();
-			
-			
+
+
 			responseTextButton->setSize(UVector2(UDim(1.0f, 0), UDim(heightSize, 0.0f)));
 			responseTextButton->setPosition(UVector2(UDim(0.0f, 0),UDim(i * heightSize, 0.0f)));
-			responseTextButton->setInheritsAlpha(true);	
+			responseTextButton->setInheritsAlpha(true);
 			///hide the button
-			//responseTextButton->setAlpha(0.0f);	
+			//responseTextButton->setAlpha(0.0f);
 			responseTextButton->addChildWindow(responseText);
 			responseTextButton->setTooltipText(*I);
 			mResponseWidget->addChildWindow(responseTextButton);
 			mResponseTextWidgets.push_back(responseTextButton);
-			
+
 			++i;
-			
+
 // 			ss << *I << "\n";
 		}
 		//responseWidget->setText(ss.str());
-		
+
 	}
-	
+
 
 }
 

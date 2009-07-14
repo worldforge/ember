@@ -28,12 +28,13 @@
 #include "EmberEntityHideModelAction.h"
 #include "EmberEntityPartAction.h"
 #include "components/entitymapping/Cases/CaseBase.h"
+#include "EmberEntity.h"
 
 using namespace Ember::EntityMapping;
 
 namespace EmberOgre {
 
-EmberEntityActionCreator::EmberEntityActionCreator(EmberPhysicalEntity& entity)
+EmberEntityActionCreator::EmberEntityActionCreator(EmberEntity& entity)
 : mEntity(entity)
 {
 }

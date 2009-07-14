@@ -1,7 +1,7 @@
 //
 // C++ Implementation: EmberEntityLoader
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -25,7 +25,6 @@
 #endif
 
 #include "EmberEntityLoader.h"
-#include "../EmberPhysicalEntity.h"
 
 #include <OgreSceneNode.h>
 #include <OgreColourValue.h>
@@ -33,6 +32,8 @@
 #include "../model/Model.h"
 #include "../model/ModelDefinition.h"
 #include "../model/SubModel.h"
+#include "components/ogre/EmberEntity.h"
+#include "components/ogre/model/ModelRepresentation.h"
 
 #include <sigc++/bind.h>
 
@@ -70,41 +71,42 @@ EmberEntityLoader::~EmberEntityLoader()
 #endif
 }
 
-void EmberEntityLoader::addEmberEntity(EmberPhysicalEntity * entity)
+void EmberEntityLoader::addEmberEntity(Model::ModelRepresentation * modelRepresentation)
 {
-	if (!entity) {
+	if (!modelRepresentation) {
 		S_LOG_WARNING("Tried to add a null ref entity to the paged geometry.");
 		return;
 	}
-	EntityInstance instance;
-	instance.movedConnection = entity->Moved.connect(sigc::bind(sigc::mem_fun(*this, &EmberEntityLoader::EmberEntity_Moved), entity));
-	instance.beingDeletedConnection = entity->BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &EmberEntityLoader::EmberEntity_BeingDeleted), entity));
-	instance.visibilityChangedConnection = entity->VisibilityChanged.connect(sigc::bind(sigc::mem_fun(*this, &EmberEntityLoader::EmberEntity_VisibilityChanged), entity));
-	instance.entity = entity;
-	
-	Ogre::Vector3 position(entity->getSceneNode()->_getDerivedPosition());
+	EmberEntity& entity = modelRepresentation->getEntity();
+	ModelRepresentationInstance instance;
+	instance.movedConnection = entity.Moved.connect(sigc::bind(sigc::mem_fun(*this, &EmberEntityLoader::EmberEntity_Moved), &entity));
+	instance.beingDeletedConnection = entity.BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &EmberEntityLoader::EmberEntity_BeingDeleted), &entity));
+	instance.visibilityChangedConnection = entity.VisibilityChanged.connect(sigc::bind(sigc::mem_fun(*this, &EmberEntityLoader::EmberEntity_VisibilityChanged), &entity));
+	instance.modelRepresentation = modelRepresentation;
+
+	Ogre::Vector3 position(entity.getSceneNode()->_getDerivedPosition());
 	instance.lastPosition = position;
 #if EMBERENTITYLOADER_USEBATCH
 	const int batchX = Ogre::Math::Floor(position.x / mBatchSize);
 	const int batchY = Ogre::Math::Floor(position.y / mBatchSize);
 	mEntityLookup[entity] = std::pair<int, int>(batchX, batchY);
-	
+
 	EntityMap& entities(mEntities[batchX][batchY]);
 #else
 	EntityMap& entities(mEntities);
 #endif
-	
-	entities[entity->getId()] = instance;
+
+	entities[entity.getId()] = instance;
 
 	///Rebuild geometry if necessary
 	mGeom.reloadGeometryPage(position);
-	
+
 
 
 
 }
 
-void EmberEntityLoader::removeEmberEntity(EmberPhysicalEntity * entity)
+void EmberEntityLoader::removeEmberEntity(EmberEntity* entity)
 {
 	if (!entity) {
 		S_LOG_WARNING("Tried to remove a null ref entity from the paged geometry.");
@@ -136,13 +138,13 @@ void EmberEntityLoader::removeEmberEntity(EmberPhysicalEntity * entity)
 		I->second.beingDeletedConnection.disconnect();
 		mEntities.erase(I);
 	}
-	
+
 #endif
 	///Rebuild geometry if necessary.
 	mGeom.reloadGeometryPage(entity->getSceneNode()->_getDerivedPosition());
 }
 
-EmberEntityLoader::EntityMap* EmberEntityLoader::getStoreForEntity(EmberPhysicalEntity* entity)
+EmberEntityLoader::EntityMap* EmberEntityLoader::getStoreForEntity(EmberEntity* entity)
 {
 #if EMBERENTITYLOADER_USEBATCH
 	EntityLookup::iterator I = mEntityLookup.find(entity);
@@ -167,8 +169,8 @@ EmberEntityLoader::EntityMap* EmberEntityLoader::getStoreForEntity(EmberPhysical
 void EmberEntityLoader::loadPage(::Forests::PageInfo & page)
 {
 	static Ogre::ColourValue colour(1,1,1,1);
-	
-	
+
+
 #if EMBERENTITYLOADER_USEBATCH
 	const int batchX = static_cast<int>(Ogre::Math::Floor(page.bounds.left/ mBatchSize));
 	const int batchY = static_cast<int>(Ogre::Math::Floor(page.bounds.top / mBatchSize));
@@ -176,21 +178,22 @@ void EmberEntityLoader::loadPage(::Forests::PageInfo & page)
 #else
 	EntityMap& entities(mEntities);
 #endif
-	
+
 	for (EntityMap::iterator I = entities.begin(); I != entities.end(); ++I) {
-		EntityInstance& instance(I->second);
-		EmberPhysicalEntity* emberEntity(instance.entity);
-		if (emberEntity->isVisible()) {
-			Ogre::SceneNode* sceneNode(emberEntity->getSceneNode());
+		ModelRepresentationInstance& instance(I->second);
+		Model::ModelRepresentation* modelRepresentation(instance.modelRepresentation);
+		EmberEntity& emberEntity = modelRepresentation->getEntity();
+		if (emberEntity.isVisible()) {
+			Ogre::SceneNode* sceneNode(emberEntity.getSceneNode());
 			const Ogre::Vector3& pos(sceneNode->_getDerivedPosition());
-			Model::Model* model(emberEntity->getModel());
+			Model::Model& model(modelRepresentation->getModel());
 			if (pos.x > page.bounds.left && pos.x < page.bounds.right && pos.z > page.bounds.top && pos.z < page.bounds.bottom) {
-				for (Model::Model::SubModelSet::const_iterator J = model->getSubmodels().begin(); J != model->getSubmodels().end(); ++J) {
+				for (Model::Model::SubModelSet::const_iterator J = model.getSubmodels().begin(); J != model.getSubmodels().end(); ++J) {
 	// 				if (!(*J)->getEntity()->getParentSceneNode()) {
 	// 					model->getParentSceneNode()->attachObject((*J)->getEntity());
 	// 				}
 	//  				if ((*J)->getEntity()->isVisible()) {
-						addEntity((*J)->getEntity(), emberEntity->getScaleNode()->_getDerivedPosition(), emberEntity->getScaleNode()->_getDerivedOrientation(), 	emberEntity->getScaleNode()->_getDerivedScale(), colour);
+						addEntity((*J)->getEntity(), modelRepresentation->getScaleNode()->_getDerivedPosition(), modelRepresentation->getScaleNode()->_getDerivedOrientation(), modelRepresentation->getScaleNode()->_getDerivedScale(), colour);
 	// 					(*J)->getEntity()->setVisible(false);
 	//  				}
 				}
@@ -199,26 +202,26 @@ void EmberEntityLoader::loadPage(::Forests::PageInfo & page)
 	}
 }
 
-void EmberEntityLoader::EmberEntity_Moved(EmberPhysicalEntity* entity)
+void EmberEntityLoader::EmberEntity_Moved(EmberEntity* entity)
 {
 	EntityMap* entityMap(getStoreForEntity(entity));
 	if (entityMap) {
 		EntityMap::iterator I = entityMap->find(entity->getId());
 		if (I != entityMap->end()) {
-			EntityInstance& instance(I->second);
+			ModelRepresentationInstance& instance(I->second);
 			mGeom.reloadGeometryPage(instance.lastPosition);
-			mGeom.reloadGeometryPage(instance.entity->getSceneNode()->_getDerivedPosition());
-			instance.lastPosition = instance.entity->getSceneNode()->_getDerivedPosition();
+			mGeom.reloadGeometryPage(entity->getSceneNode()->_getDerivedPosition());
+			instance.lastPosition = entity->getSceneNode()->_getDerivedPosition();
 		}
 	}
 }
 
-void EmberEntityLoader::EmberEntity_BeingDeleted(EmberPhysicalEntity* entity)
+void EmberEntityLoader::EmberEntity_BeingDeleted(EmberEntity* entity)
 {
 	removeEmberEntity(entity);
 }
 
-void EmberEntityLoader::EmberEntity_VisibilityChanged(bool visible, EmberPhysicalEntity* entity)
+void EmberEntityLoader::EmberEntity_VisibilityChanged(bool visible, EmberEntity* entity)
 {
 	///When the visibility changes, we only need to reload the page the entity is on.
 	mGeom.reloadGeometryPage(entity->getSceneNode()->_getDerivedPosition());

@@ -20,7 +20,7 @@
 #ifndef AVATAREMBERENTITY_H
 #define AVATAREMBERENTITY_H
 
-#include "EmberPhysicalEntity.h"
+#include "EmberEntity.h"
 #include "framework/ConsoleBackend.h"
 
 namespace Eris
@@ -43,45 +43,46 @@ class Avatar;
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  *
  * @brief This is the main player avatar. We want this one to behave a little different than the other game entities, thus it has it's own subclass.
- * 
+ *
  * One thing that makes this different from other entities is that we don't always respect position updates from the server as we would do with other entities. The main reason is that the user might have moved the avatar in the interim between sending updates to the server and recieving them, so we don't want the client to constantly relocating the avatar when it moves.
+ * TODO: remove this class, so that any entity can be controlled
  */
-class AvatarEmberEntity 
-: public EmberPhysicalEntity,
+class AvatarEmberEntity
+: public EmberEntity,
 public Ember::ConsoleObject
 {
 public:
 
 	AvatarEmberEntity(const std::string& id, Eris::TypeInfo* type, Eris::View* vw, Ogre::SceneManager* sceneManager, Eris::Avatar* erisAvatar);
 	virtual ~AvatarEmberEntity();
-	
+
 	/**
-	 * used by the main application to set the EmberOgre::Avatar connected to this instance 
+	 * used by the main application to set the EmberOgre::Avatar connected to this instance
 	 */
 	void setAvatar(Avatar* avatar);
 	Avatar* getAvatar();
-	
+
 	/**
 	 * returns the Ogre::SceneNode which represents the avatar
 	 */
 	Ogre::SceneNode* getAvatarSceneNode();
-	
+
 	/**
 	 *    Returns the Eris Avatar instance.
-	 * @return 
+	 * @return
 	 */
 	inline Eris::Avatar* getErisAvatar();
 
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method
-	 * @param command 
-	 * @param args 
+	 * @param command
+	 * @param args
 	 */
 	virtual	void runCommand(const std::string &command, const std::string &args);
 
 	const Ember::ConsoleCommandWrapper SetAttachedOrientation;
 
-protected: 
+protected:
 
 	virtual void onChildAdded(Entity *e);
 	virtual void onChildRemoved(Entity *e);
@@ -92,7 +93,7 @@ protected:
 	virtual void onImaginary(const Atlas::Objects::Root& act);
 /*	virtual void addMember(Entity *e);
 	virtual void rmvMember(Entity *e);*/
-	//virtual void setVisible(bool vis);	
+	//virtual void setVisible(bool vis);
 	//virtual void setContainer(Eris::Entity *pr);
 	//virtual void onLocationChanged(Eris::Entity *oldLocation, Eris::Entity *newLocation);
     virtual void init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp);
@@ -103,17 +104,17 @@ protected:
 };
 
 ///inline implementations
-inline void AvatarEmberEntity::setAvatar(Avatar* avatar) 
+inline void AvatarEmberEntity::setAvatar(Avatar* avatar)
 {
 	mAvatar = avatar;
 }
-inline Avatar* AvatarEmberEntity::getAvatar() 
+inline Avatar* AvatarEmberEntity::getAvatar()
 {
 	return mAvatar;
 }
-inline Eris::Avatar* AvatarEmberEntity::getErisAvatar() 
+inline Eris::Avatar* AvatarEmberEntity::getErisAvatar()
 {
-	return mErisAvatar;	
+	return mErisAvatar;
 }
 
 }

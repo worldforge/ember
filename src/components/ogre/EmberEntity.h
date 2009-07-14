@@ -40,6 +40,14 @@ namespace Eris
 	class View;
 }
 
+namespace Ember
+{
+namespace EntityMapping
+{
+class EntityMapping;
+}
+}
+
 namespace EmberOgre {
 
 namespace Model {
@@ -53,6 +61,7 @@ namespace Terrain
 }
 
 class EmberEntityFactory;
+class IGraphicalRepresentation;
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief A representation of an Eris::Entity, ie. a world entity.
@@ -105,6 +114,11 @@ public:
 	 */
 	virtual ~EmberEntity();
 
+
+	/**
+	 *    Creates the model mapping for this entity. Call this once when initializing the entity.
+	 */
+	void createEntityMapping();
 
 	/**
 	 * @brief Called by contained entites to determine how they should be adjusted, for example snap to the ground.
@@ -299,7 +313,7 @@ public:
 	 * @param visualization The type of visualization. Currently supports "OgreBBox" and "ErisBBox".
 	 * @param visualize Whether to visualize or not.
 	 */
-	virtual void setVisualize(const std::string& visualization, bool visualize);
+	void setVisualize(const std::string& visualization, bool visualize);
 
 
 	/**
@@ -307,7 +321,11 @@ public:
 	 * @param visualization The type of visualization. Currently supports "OgreBBox" and "ErisBBox".
 	 * @return true if visualization is turned on, else false
 	 */
-	virtual bool getVisualize(const std::string& visualization) const;
+	bool getVisualize(const std::string& visualization) const;
+
+	IGraphicalRepresentation* getGraphicalRepresentation() const;
+
+	void setGraphicalRepresentation(IGraphicalRepresentation* graphicalRepresentation);
 
 
 	/**
@@ -510,6 +528,13 @@ protected:
 	*/
 	PositioningMode mPositioningMode;
 
+	IGraphicalRepresentation* mGraphicalRepresentation;
+
+	/**
+	 * @brief The model mapping used for this entity.
+	 */
+	Ember::EntityMapping::EntityMapping* mEntityMapping;
+
 	/**
 	 * @brief Parses the current positioning mode from the submitted element, which should be taken from the "mode" attribute.
 	 * This method will in turn call onPositioningModeChanged if the mode is changed
@@ -522,6 +547,7 @@ protected:
 	 * The movement mode is determined mainly from whether the entity is moving or not. The speed of the movement also affects the mode.
 	 */
 	virtual void parseMovementMode();
+
 };
 
 

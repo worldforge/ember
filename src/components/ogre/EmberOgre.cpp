@@ -103,6 +103,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManagerAdapter.h"
 #include "model/ModelDefinitionManager.h"
 #include "model/ModelDefinition.h"
+#include "model/ModelRepresentationManager.h"
 #include "mapping/EmberEntityMappingManager.h"
 
 #include "ogreopcode/include/OgreCollisionManager.h"
@@ -190,13 +191,15 @@ mSoundResourceProvider(0),
 //mCollisionDetectorVisualizer(0),
 mResourceLoader(0),
 mOgreLogManager(0),
-mIsInPausedMode(false)
+mIsInPausedMode(false),
+mModelRepresentationManager(0)
 {
 	Ember::Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
 }
 
 EmberOgre::~EmberOgre()
 {
+	delete mModelRepresentationManager;
 //	delete mCollisionDetectorVisualizer;
 //	delete mCollisionManager;
 	delete mMaterialEditor;
@@ -514,6 +517,8 @@ bool EmberOgre::setup()
 	mSceneMgr->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_EXCLUDE);
 
 	mMaterialEditor = new MaterialEditor();
+
+	mModelRepresentationManager = new Model::ModelRepresentationManager();
 
 	loadingBar.finish();
 

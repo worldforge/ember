@@ -28,11 +28,16 @@
 namespace EmberOgre {
 
 class EmberEntity;
-class EmberPhysicalEntity;
+
+class IAnimated
+{
+public:
+	virtual void updateAnimation(float timeSlice) = 0;
+};
 
 /**
  * This class will be responsible for making sure that entites moves
- * in a nice and fluid way. Eventually we'll also implement physics, perhaps it 
+ * in a nice and fluid way. Eventually we'll also implement physics, perhaps it
  * will go into here.
  *
  * The manager also takes care of keeping tabs on all animations.
@@ -55,7 +60,7 @@ public:
 	/** Dtor
 	 */
 	virtual ~MotionManager();
-	
+
 	/**
 	 * Adds a EmberEntity to the movement list.
 	 * That means that until removeEntity is called for the specific entity
@@ -67,18 +72,18 @@ public:
 	 * New positions for the entity will NOT be calculated for each frame.
 	 */
 	void removeEntity(EmberEntity* entity);
-	
+
 	/**
 	 * Adds a EmberPhysicalEntity to the movement list.
 	 * That means that until removeAnimatedEntity is called for the specific entity
 	 * new positions (and animations) for the entity will be calculated for each frame.
 	 */
-	void addAnimatedEntity(EmberPhysicalEntity* entity);
+	void addAnimatedEntity(const std::string& id, IAnimated* entity);
 	/**
 	 * Removes a EmberPhysicalEntity from the movement list.
 	 * New positions (and animations) for the entity will NOT be calculated for each frame.
 	 */
-	void removeAnimatedEntity(EmberPhysicalEntity* entity);
+	void removeAnimatedEntity(const std::string& id);
 
 	/**
 	 * @see Ogre::FrameListener::frameStarted
@@ -88,16 +93,16 @@ public:
 	 * @see Ogre::FrameListener::frameEnded
 	 */
 	bool frameEnded(const Ogre::FrameEvent& event);
-	
+
 	/**
 	 *    Gets info about the MotionManager.
 	 * @return Information about the motion manager
 	 */
 	const MotionManagerInfo& getInfo() const;
-	
+
 private:
 
-	typedef std::map<std::string , EmberPhysicalEntity*> EntityStore;
+	typedef std::map<std::string , IAnimated*> AnimatedStore;
 
 
 	/** Information about this manager
@@ -112,7 +117,7 @@ private:
 	/**
 	 * This contains all of the entities that will be moved (and animated) each frame
 	 */
-	EntityStore mAnimatedEntities;
+	AnimatedStore mAnimatedEntities;
 
 
 	/** This method will iterate over all registered moving entities and update

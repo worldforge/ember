@@ -107,36 +107,7 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Root
     	emberEntity = createWorld(ge, type, w);
 
     } else {
-		///assume that it's not physical until we have a model defintion which don't want to hide the model
-		///In the future we want to refactor the way we deal with EmberEntity and EmberPhysicalEntity, so that we only have one class (EmberEntity) which in turn holds a reference to a graphical representation instance. Until then we have to do with this though.
-		bool isPhysical = false;
-		Definitions::EntityMappingDefinition* mappingDef(::EmberOgre::Mapping::EmberEntityMappingManager::getSingleton().getManager().getDefinitionForType(type));
-		if (mappingDef) {
-			///we have a mapping defintion, so it's probably physical, lets just see that the first action isn't to hide the model
-			isPhysical = true;
-			const Definitions::MatchDefinition::CaseStore& cases(mappingDef->getRoot().getCases());
-			if (cases.begin() != cases.end()) {
-				const Definitions::CaseDefinition::ActionStore& actions(cases.begin()->getActions());
-				if (actions.begin() != actions.end()) {
-					if (actions.begin()->getType() == "hide-model") {
-						///ok, the first action is to hide the model, so we'll have to assume that it's a non physical type
-						isPhysical = false;
-					}
-				}
-			}
-		}
-
-		if (!isPhysical) {
-			S_LOG_VERBOSE("Creating immaterial entity.");
-
-			///we don't want this to have any Ogre::Entity
-			emberEntity = new EmberEntity(ge->getId(), type, w, EmberOgre::getSingleton().getSceneManager());
-
-		} else {
-
-			emberEntity = createPhysicalEntity(ge, type, w);
-
-		}
+		emberEntity = new EmberEntity(ge->getId(), type, w, EmberOgre::getSingleton().getSceneManager());
     }
 
 	S_LOG_VERBOSE("Entity added to game view.");
@@ -166,19 +137,6 @@ void EmberEntityFactory::gotAvatarCharacter(Eris::Entity* entity)
 	AvatarEmberEntity* avatarEntity = static_cast<AvatarEmberEntity*>(entity);
 	EmberOgre::getSingleton().getAvatar()->createdAvatarEmberEntity(avatarEntity);
    	EmberOgre::getSingleton().EventCreatedAvatarEntity.emit(avatarEntity);
-}
-
-
-
-
-
-
-EmberPhysicalEntity* EmberEntityFactory::createPhysicalEntity(const Atlas::Objects::Entity::RootEntity &ge,Eris::TypeInfo* type, Eris::View *world) {
-
-	EmberPhysicalEntity* entity = new EmberPhysicalEntity(ge->getId(), type, world, EmberOgre::getSingleton().getSceneManager());
-
-	return entity;
-
 }
 
 AvatarEmberEntity* EmberEntityFactory::createAvatarEntity(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View *world)

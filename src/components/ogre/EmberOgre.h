@@ -71,6 +71,7 @@ namespace Mapping {
 
 namespace Model {
 	class ModelDefinitionManager;
+	class ModelRepresentationManager;
 }
 
 class CameraRotator;
@@ -480,6 +481,8 @@ protected:
 	 * @brief Helper object that allows for easy Ogre material editing.
 	 */
 	MaterialEditor* mMaterialEditor;
+
+	Model::ModelRepresentationManager* mModelRepresentationManager;
 
 	/**
 	 * @brief Listen for when all of the application services has been initialized and then register needed objects with them.

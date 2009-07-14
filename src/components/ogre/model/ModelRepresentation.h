@@ -1,6 +1,5 @@
 /*
- Copyright (C) 2004  Erik Hjortsberg
- some parts Copyright (C) 2004 bad_camel at Ogre3d forums
+ Copyright (C) 2009 erik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,63 +16,43 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef EMBEROGRE_EMBERPHYSICALENTITY_H
-#define EMBEROGRE_EMBERPHYSICALENTITY_H
-
-#include "EmberOgrePrerequisites.h"
-
-#include "EmberEntity.h"
-
-#include <list>
+#include "components/ogre/IGraphicalRepresentation.h"
+#include "components/ogre/OgreIncludes.h"
+#include "components/ogre/EmberEntity.h"
+#include "components/ogre/MotionManager.h"
 #include <vector>
+#include <list>
+#include <OgreMath.h>
+#include <Eris/Types.h>
+#include <sigc++/trackable.h>
 
-namespace Ember
-{
-namespace EntityMapping
-{
-class EntityMapping;
+#ifndef MODELREPRESENTATION_H_
+#define MODELREPRESENTATION_H_
+
+namespace Eris {
+class Entity;
 }
-}
 
-namespace EmberOgre
-{
+namespace EmberOgre {
+class EmberEntity;
+class SoundEntity;
+class ModelMount;
 
-namespace Model
-{
+namespace Model {
+
 class ActionDefinition;
 class SoundDefinition;
 class Model;
 class Action;
 
-}
 
-
-class EmberEntity;
-class SoundEntity;
-class ModelMount;
-
-typedef std::list<Model::Action*> ActionStore;
-typedef std::vector<Model::ActionDefinition*> ActionDefinitionsStore;
-typedef std::vector<Model::SoundDefinition*> SoundDefinitionsStore;
+typedef std::list<Action*> ActionStore;
+typedef std::vector<ActionDefinition*> ActionDefinitionsStore;
+typedef std::vector<SoundDefinition*> SoundDefinitionsStore;
 typedef std::vector<Ogre::SceneNode*> SceneNodeStore;
 
-/**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
- * @brief Represents a Ember entity with a physical representation in the world.
- * This is presented by an instance of Model::Model, available through getModel().
- * The Model instance is attached to an instance of Ogre::SceneNode which can be accessed through getScaleNode(). This in turn is attached to the Ogre::SceneNode held by EmberEntity. The reason for this is that we want to be able to scale the Model without affecting child nodes. As an example, a character holding a sword might be scaled without the sword being scaled.
- * This means that child nodes will be children of the node held in EmberEntity, not children of the "scale node".
- * The handling of the scale node and the update of the Model's scaling and orientation is done through the ModelMount class.
- *
- * When the node is created we use the Model::EntityMapping framework to determine what Model to show. This happens in the init(...) method. As data is updated the Model::EntityMapping framework might trigger certain parts of the Model to be hidden or shown, as well as a new model to be shown.
- *
- * This class also takes care of updating all actions that needs to be executed (for example animations and sounds) as the entity moves or performs actions.
- */
-class EmberPhysicalEntity: public EmberEntity
+class ModelRepresentation : public IGraphicalRepresentation, public virtual sigc::trackable, public IAnimated
 {
-	friend class EmberEntityModelAction;
-	friend class EmberEntityPartAction;
-	friend class EmberEntityHideModelAction;
 public:
 
 	/**
@@ -85,24 +64,18 @@ public:
 	static const char * const ACTION_SWIM;
 	static const char * const ACTION_FLOAT;
 
-	/**
-	 *    Ctor.
-	 * @param id
-	 * @param ty
-	 * @param vw
-	 * @param sceneManager
-	 */
-	EmberPhysicalEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager);
+	ModelRepresentation(EmberEntity& entity, Model& model);
 
-	/**
-	 *    Dtor.
-	 */
-	virtual ~EmberPhysicalEntity();
+    virtual ~ModelRepresentation();
 
-	/**
-	 * return the Model of this object
-	 */
-	Model::Model* getModel() const;
+
+	virtual const std::string& getType() const;
+
+	static const std::string& getTypeNameForClass();
+
+    EmberEntity & getEntity() const;
+
+    Model & getModel() const;
 
 	/**
 	 *    Returns the "scale node", which is the Ogre::SceneNode to which the Model instance is attached. This is separate from the Ogre::SceneNode in EmberEntity since we want to be able to scale the node without also scaling the attached nodes (such as any wielded entity).
@@ -110,10 +83,8 @@ public:
 	 */
 	Ogre::SceneNode* getScaleNode() const;
 
-	virtual void attachToPointOnModel(const std::string& point, Model::Model* model, Ogre::Quaternion orientation = Ogre::Quaternion::IDENTITY, Ogre::Vector3 offset = Ogre::Vector3::ZERO);
-	virtual void detachFromModel();
-
-	virtual void updateMotion(Ogre::Real timeSlice);
+	void attachToPointOnModel(const std::string& point, Model* model, Ogre::Quaternion orientation = Ogre::Quaternion::IDENTITY, Ogre::Vector3 offset = Ogre::Vector3::ZERO);
+	void detachFromModel();
 
 	/**
 	 *    Updates the animation. This is normally called by MotionManager.
@@ -125,68 +96,44 @@ public:
 	 *    Sets whether the ogre axis aligned bounding box should be shown or not.
 	 * @param show whether to show the ogre bounding box
 	 */
-	virtual void showOgreBoundingBox(bool show);
+	void showOgreBoundingBox(bool show);
 
 	/**
 	 * Gets whether the ogre axis aligned bounding box should be shown or not.
 	 * @return true if the bounding box is shown
 	 */
-	virtual bool getShowOgreBoundingBox() const;
+	bool getShowOgreBoundingBox() const;
 
 	/**
-	 *    Returns the entity that's attched to the specified point, if there is such
+	 * @brief Returns the entity that's attached to the specified point, if there is such
 	 * @param attachPoint
 	 * @return a pointer to the EmberEntity, or 0 if none found
 	 */
 	EmberEntity* getEntityAttachedToPoint(const std::string& attachPoint);
 
-	virtual const Ogre::AxisAlignedBox& getWorldBoundingBox(bool derive = true) const;
-	virtual const Ogre::Sphere & getWorldBoundingSphere(bool derive = true) const;
+	const Ogre::AxisAlignedBox& getWorldBoundingBox(bool derive = true) const;
+	const Ogre::Sphere & getWorldBoundingSphere(bool derive = true) const;
 
 	/**
 	 * Called by a contained member to see if the member is allowed to be shown.
 	 * This can be reimplemented in a subclass such as AvatarEmberEntity to
 	 * disallow things that belongs to a characters inventory to be shown.
 	 */
-	virtual bool allowVisibilityOfMember(EmberEntity* entity);
+	bool allowVisibilityOfMember(EmberEntity* entity);
 
 	/**
 	 * General method for turning on and off debug visualizations. Subclasses might support more types of visualizations than the ones defined here.
 	 * @param visualization The type of visualization. Currently supports "OgreBBox" and "ErisBBox".
 	 * @param visualize Whether to visualize or not.
 	 */
-	virtual void setVisualize(const std::string& visualization, bool visualize);
+	void setVisualize(const std::string& visualization, bool visualize);
 
 	/**
 	 *    Gets whether a certain visualization is turned on or off.
 	 * @param visualization The type of visualization. Currently supports "OgreBBox" and "ErisBBox".
 	 * @return true if visualization is turned on, else false
 	 */
-	virtual bool getVisualize(const std::string& visualization) const;
-
-protected:
-
-	struct ModelAttachment
-	{
-		Model::Model* model;
-		std::string attachPoint;
-		Ogre::Vector3 offset;
-		Ogre::Quaternion orientation;
-	};
-
-	/**
-	 *    Tells the entity to use the model with the supplied name. This will trigger a creation of a Model::Model instance.
-	 *    This method is normally called by an instance of EmberEntityModelAction.
-	 * @param modelName The name of the model to use.
-	 */
-	void setModel(const std::string& modelName);
-
-	/**
-	 * Tells the entity to retrieve it sound actions from
-	 * the model definition manager
-	 */
-	void setSounds();
-	bool needSoundEntity();
+	bool getVisualize(const std::string& visualization) const;
 
 	/**
 	 *    Shows/hides a certain part of the model.
@@ -196,9 +143,28 @@ protected:
 	 */
 	void setModelPartShown(const std::string& partName, bool visible);
 
-	virtual void setClientVisible(bool visible);
+protected:
 
-	virtual const Ogre::Vector3& getOffsetForContainedNode(const Ogre::Vector3& position, const EmberEntity& entity);
+	struct ModelAttachment
+	{
+		Model* model;
+		std::string attachPoint;
+		Ogre::Vector3 offset;
+		Ogre::Quaternion orientation;
+	};
+
+	/**
+	 * Tells the entity to retrieve it sound actions from
+	 * the model definition manager
+	 */
+	void setSounds();
+	bool needSoundEntity();
+
+
+
+	void setClientVisible(bool visible);
+
+	const Ogre::Vector3& getOffsetForContainedNode(const Ogre::Vector3& position, const EmberEntity& entity);
 
 	/**
 	 *   creates EmberEntityUserObjects, connects them and sets up the collision detection system
@@ -209,18 +175,18 @@ protected:
 	/**
 	 *    Called when the bounding box has changed.
 	 */
-	virtual void onBboxChanged();
+	void bboxChanged();
 
 	/**
 	 * @brief Called when the movement mode has changed. We might want to update the animation of the entity, for example if it's a human.
 	 * @param newMode
 	 */
-	virtual void onMovementModeChanged(MovementMode newMode);
+	void entity_MovementModeChanged(EmberEntity::MovementMode newMode);
 
 	/**
 	 The current movement action of the entity, for example a walk action or a run action.
 	 */
-	Model::Action* mCurrentMovementAction;
+	Action* mCurrentMovementAction;
 
 	/**
 	 All the active actions, except the movement action (since it's stored in mCurrentMovementAction).
@@ -228,7 +194,7 @@ protected:
 	 NOTE: we currently don't allow for multiple actions playing at the same time
 	 */
 	//ActionStore mActiveActions;
-	Model::Action* mActiveAction;
+	Action* mActiveAction;
 
 	/**
 	 If the entity is attached to another entity, this is the model to which it is attached to.
@@ -241,9 +207,9 @@ protected:
 	 */
 	ModelAttachment* mModelMarkedToAttachTo;
 
-	virtual void onChildAdded(Entity *e);
-	virtual void onChildRemoved(Entity *e);
-	virtual void onLocationChanged(Entity *oldLocation);
+	virtual void entity_ChildAdded(Eris::Entity *e);
+	virtual void entity_ChildRemoved(Eris::Entity *e);
+	virtual void entity_LocationChanged(Eris::Entity *oldLocation);
 
 	/**
 	 * @brief Detaches an entity which is already wielded.
@@ -281,17 +247,20 @@ protected:
 	 */
 	void processOutfit(const Atlas::Message::MapType & outfitMap);
 
+	void entity_Changed(const Eris::StringSet& attributeIds);
+
+
 	/**
 	 *    Overridden from Eris::Entity
 	 * @param str
 	 * @param v
 	 */
-	virtual void onAttrChanged(const std::string& str, const Atlas::Message::Element& v);
+	virtual void attrChanged(const std::string& str, const Atlas::Message::Element& v);
 	/**
 	 *    Overridden from Eris::Entity
 	 * @param act
 	 */
-	virtual void onAction(const Atlas::Objects::Operation::RootOperation& act);
+	virtual void entity_Acted(const Atlas::Objects::Operation::RootOperation& act);
 
 	typedef std::map<std::string, std::string> AttachedEntitiesStore;
 	/**
@@ -299,31 +268,24 @@ protected:
 	 */
 	AttachedEntitiesStore mAttachedEntities;
 
-	//	virtual void onMoved();
 	/**
 	 *    Overridden from Eris::Entity
 	 * @param moving
 	 */
-	virtual void setMoving(bool moving);
-
-	/**
-	 *    Overridden from Eris::Entity
-	 * @param ge
-	 */
-	virtual void init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp);
+//	void setMoving(bool moving);
 
 	/**
 	 * @brief Scales the Ogre::SceneNode to the size of the AxisBox defined by Eris::Entity.
 	 * Note that this method in its default implementation will just call ModelMount::rescale
 	 */
-	virtual void scaleNode();
+	void scaleNode();
 
 	/**
 	 * @brief The model of the entity.
 	 * This is the main graphical representation of this entity.
 	 * Note that the Model won't be directly connected to the main scene node, instead the mModelMount instance will take care of setting everything up to use an intermediary "scale node".
 	 */
-	Model::Model* mModel;
+	Model& mModel;
 
 	/**
 	 * @brief The model mount, which takes care of setting up and handling the rotation and orientation of the model.
@@ -339,12 +301,12 @@ protected:
 	/**
 	 * @brief When the Model is reloaded we need to update with the new values.
 	 */
-	void Model_Reloaded();
+	void model_Reloaded();
 
 	/**
 	 * @brief When the Model is reset we need to clean up and remove all attachments from it.
 	 */
-	void Model_Resetting();
+	void model_Resetting();
 
 	/**
 	 * @brief Initialize position and scaling of the scale node with values from the Model, as well as set up any alternative rendering techniques.
@@ -352,21 +314,15 @@ protected:
 	void initFromModel();
 
 	/**
-	 * @brief The model mapping used for this entity.
-	 */
-	Ember::EntityMapping::EntityMapping* mEntityMapping;
-
-	/**
 	 * @brief Keep track of the light nodes.
 	 */
 	SceneNodeStore mLightNodes;
 
+    EmberEntity & mEntity;
+
+    static std::string sTypeName;
 };
 
-inline Model::Model* EmberPhysicalEntity::getModel() const
-{
-	return mModel;
 }
-
 }
-#endif // EMBEROGRE_EMBERPHYSICALENTITY_H
+#endif /* MODELREPRESENTATION_H_ */

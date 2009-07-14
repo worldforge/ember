@@ -23,7 +23,6 @@
 #include "MotionManager.h"
 
 #include "EmberEntity.h"
-#include "EmberPhysicalEntity.h"
 
 
 template<> EmberOgre::MotionManager* Ember::Singleton<EmberOgre::MotionManager>::ms_Singleton = 0;
@@ -50,7 +49,7 @@ void MotionManager::doMotionUpdate(Ogre::Real timeSlice)
 
 void MotionManager::doAnimationUpdate(Ogre::Real timeSlice)
 {
-	for (EntityStore::iterator I = mAnimatedEntities.begin(); I != mAnimatedEntities.end(); ++I) {
+	for (AnimatedStore::iterator I = mAnimatedEntities.begin(); I != mAnimatedEntities.end(); ++I) {
 		I->second->updateAnimation(timeSlice);
 	}
 }
@@ -80,15 +79,15 @@ void MotionManager::removeEntity(EmberEntity* entity)
 	mInfo.MovingEntities = mMotionSet.size();
 }
 
-void MotionManager::addAnimatedEntity(EmberPhysicalEntity* entity)
+void MotionManager::addAnimatedEntity(const std::string& id, IAnimated* entity)
 {
-	mAnimatedEntities[entity->getId()] = entity;
+	mAnimatedEntities[id] = entity;
 	mInfo.AnimatedEntities = mAnimatedEntities.size();
 }
 
-void MotionManager::removeAnimatedEntity(EmberPhysicalEntity* entity)
+void MotionManager::removeAnimatedEntity(const std::string& id)
 {
-	mAnimatedEntities.erase(entity->getId());
+	mAnimatedEntities.erase(id);
 	mInfo.AnimatedEntities = mAnimatedEntities.size();
 }
 

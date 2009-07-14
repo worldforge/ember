@@ -28,7 +28,7 @@
 
 namespace EmberOgre {
 
-class EmberPhysicalEntity;
+class EmberEntity;
 
 
 /**
@@ -38,14 +38,14 @@ class EmberPhysicalEntity;
 class EmberEntityPartAction : public Ember::EntityMapping::Actions::Action
 {
 public:
-	EmberEntityPartAction(EmberPhysicalEntity& entity, const std::string& partName);
+	EmberEntityPartAction(EmberEntity& entity, const std::string& partName);
 	~EmberEntityPartAction();
 
 	virtual void activate();
 	virtual void deactivate();
 
 protected:
-	EmberPhysicalEntity& mEntity;
+	EmberEntity& mEntity;
 
 	std::string mPartName;
 };

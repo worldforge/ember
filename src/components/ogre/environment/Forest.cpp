@@ -1,7 +1,7 @@
 //
 // C++ Implementation: Forest
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -70,13 +70,13 @@ void Forest::initialize()
 	S_LOG_INFO("Initializing forest.");
 	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainInfo().getWorldSizeInIndices();
 	if (worldSize.upperBound(0) - worldSize.lowerBound(0) > 0 && worldSize.upperBound(1) - worldSize.lowerBound(1) > 0) {
-		
+
 		Ogre::Camera& camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
-		
+
 		mTrees = new Forests::PagedGeometry();
 		mTrees->setCamera(&camera);	//Set the camera so PagedGeometry knows how to calculate LODs
 		mTrees->setPageSize(64);	//Set the size of each page of geometry
-		
+
 		::Forests::TBounds ogreBounds(Convert::toOgre(worldSize));
 		if (ogreBounds.width() != ogreBounds.height()) {
 			if (ogreBounds.width() > ogreBounds.height()) {
@@ -89,14 +89,14 @@ void Forest::initialize()
 		}
 		mTrees->setBounds(ogreBounds);
 	// 	mTrees->addDetailLevel<Forests::BatchPage>(150, 50);		//Use batches up to 150 units away, and fade for 30 more units
-	//  mTrees->addDetailLevel<Forests::DummyPage>(100, 0);		//Use batches up to 150 units away, and fade for 30 more units 	
+	//  mTrees->addDetailLevel<Forests::DummyPage>(100, 0);		//Use batches up to 150 units away, and fade for 30 more units
 		mTrees->addDetailLevel<Forests::PassiveEntityPage>(150, 0);		//Use standard entities up to 150 units away, and don't fade since the PassiveEntityPage doesn't support this (yet)
 		mTrees->addDetailLevel<Forests::ImpostorPage>(500, 50);	//Use impostors up to 400 units, and for for 50 more units
-	
+
 		//Create a new TreeLoader2D object
 		mEntityLoader = new EmberEntityLoader(*mTrees, 64);
 	// 	mTreeLoader = new Forests::TreeLoader3D(mTrees, Convert::toOgre(worldSize));
-		mTrees->setPageLoader(mEntityLoader);	//Assign the "treeLoader" to be used to load geometry for the PagedGeometry instance	
+		mTrees->setPageLoader(mEntityLoader);	//Assign the "treeLoader" to be used to load geometry for the PagedGeometry instance
 	}
 }
 
@@ -136,14 +136,14 @@ bool Forest::frameStarted(const Ogre::FrameEvent & evt)
 	return true;
 }
 
-void Forest::addEmberEntity(EmberPhysicalEntity * entity)
+void Forest::addEmberEntity(Model::ModelRepresentation* modelRepresentation)
 {
 	if (mEntityLoader) {
-		mEntityLoader->addEmberEntity(entity);
+		mEntityLoader->addEmberEntity(modelRepresentation);
 	}
 }
 
-void Forest::removeEmberEntity(EmberPhysicalEntity * entity)
+void Forest::removeEmberEntity(EmberEntity* entity)
 {
 	if (mEntityLoader) {
 		mEntityLoader->removeEmberEntity(entity);
