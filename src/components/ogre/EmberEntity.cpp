@@ -89,6 +89,7 @@ EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* 
 
 EmberEntity::~EmberEntity()
 {
+	delete mGraphicalRepresentation;
 	///detach all children so we don't destroy them
 	while (getSceneNode()->numChildren())
 	{
@@ -113,7 +114,6 @@ EmberEntity::~EmberEntity()
 	}
 	OGRE_DELETE mErisEntityBoundingBox;
 	delete mEntityMapping;
-	delete mGraphicalRepresentation;
 	//mSceneManager->destroySceneNode(getSceneNode()->getName());
 }
 
@@ -797,21 +797,6 @@ Ogre::SceneNode* EmberEntity::getSceneNode() const
 EmberEntity* EmberEntity::getEmberLocation() const
 {
 	return static_cast<EmberEntity*> (getLocation());
-}
-
-const Ogre::AxisAlignedBox& EmberEntity::getWorldBoundingBox(bool derive) const
-{
-//	if (mGraphicalRepresentation) {
-//		return mGraphicalRepresentation->getWorldBoundingBox(derive);
-//	}
-	static Ogre::AxisAlignedBox boundingBox(0, 0, 0, 0, 0, 0);
-	return boundingBox;
-}
-
-const Ogre::Sphere & EmberEntity::getWorldBoundingSphere(bool derive) const
-{
-	static Ogre::Sphere sphere;
-	return sphere;
 }
 
 std::vector<std::string> EmberEntity::getActions()
