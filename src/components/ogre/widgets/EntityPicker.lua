@@ -172,7 +172,7 @@ function EntityPicker.addUse(buttonWrapper, entityId, wieldedEntity, operation)
 	buttonWrapper.clickedHandler = function()
 		local entity = emberOgre:getEmberEntity(entityId)
 		if entity ~= nil then
-			emberServices:getServerService():use(entity, EmberOgre.Convert.toWF_Point3(EntityPicker.position), operation)
+			emberServices:getServerService():use(entity, EmberOgre.Convert:toWF_Point3(EntityPicker.position), operation)
 			guiManager:EmitEntityAction("use", entity)
 		end
 		EntityPickerWidget_removeMenu()
@@ -265,8 +265,8 @@ end
 
 function EntityPicker.buttonUse_Click(args)
 	EntityPicker.doWithPickedEntity(function (entity)
-	--	emberServices:getServerService():use(entity, EmberOgre.Convert.toWF_Point3(tolua.cast(EntityPicker.position, "Ogre::Vector<3>")))
-		emberServices:getServerService():use(entity, EmberOgre.Convert.toWF_Point3(EntityPicker.position))
+	--	emberServices:getServerService():use(entity, EmberOgre.Convert:toWF_Point3(tolua.cast(EntityPicker.position, "Ogre::Vector<3>")))
+		emberServices:getServerService():use(entity, EmberOgre.Convert:toWF_Point3(EntityPicker.position))
 		guiManager:EmitEntityAction("use", entity)
 	end)
 	EntityPickerWidget_removeMenu()
