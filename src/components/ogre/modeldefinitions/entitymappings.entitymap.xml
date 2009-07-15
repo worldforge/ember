@@ -919,6 +919,7 @@
 	<nomodel name="path" />
 	<nomodel name="ploughed_field" />
 	<nomodel name="weather" />
+	<nomodel name="world" />
 	<nomodel name="wall" /> <!-- This is the invisble wall for the houses -->
 
 </entitymappings>
