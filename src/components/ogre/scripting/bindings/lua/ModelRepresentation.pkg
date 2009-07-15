@@ -1,0 +1,98 @@
+/*
+ Copyright (C) 2009 Erik Hjortsberg
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+$#include "components/ogre/model/ModelRepresentation.h"
+
+namespace EmberOgre {
+
+namespace Model {
+
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ *
+ * @brief Represents an entity through a Model instance.
+ *
+ * An instance of this binds an EmberEntity instance and a Model instance together. It's normally not meant to be created externally.
+ * You can access instances of it attached to an entity through the ModelRepresentationManager class.
+ */
+class ModelRepresentation : public IGraphicalRepresentation
+{
+public:
+
+	/**
+	 * @brief Gets the shared class type name, which is the same one returned through getType().
+	 * This can be used to do lookups to see whether any instance of IGraphicalRepresentation if an instance of this class.
+	 * @returns The string "ModelRepresentation".
+	 */
+	static const std::string& getTypeNameForClass();
+
+	/**
+	 * @brief Gets the entity which this representation is connected to.
+	 */
+    EmberEntity& getEntity() const;
+
+    /**
+     * @brief Gets the model which this representation shows.
+     */
+    Model& getModel() const;
+
+	/**
+	 * @brief Returns the "scale node", which is the Ogre::SceneNode to which the Model instance is attached. This is separate from the Ogre::SceneNode in EmberEntity since we want to be able to scale the node without also scaling the attached nodes (such as any wielded entity).
+	 * @return An Ogre::SceneNode, to which the Model::Model instance is attached.
+	 */
+	Ogre::SceneNode* getScaleNode() const;
+
+	/**
+	 * @brief Sets whether the ogre axis aligned bounding box should be shown or not.
+	 * @param show whether to show the ogre bounding box
+	 */
+	void showOgreBoundingBox(bool show);
+
+	/**
+	 * @brief Gets whether the ogre axis aligned bounding box should be shown or not.
+	 * @return true if the bounding box is shown
+	 */
+	bool getShowOgreBoundingBox() const;
+
+	/**
+	 * @brief Returns the entity that's attached to the specified point, if there is such
+	 * @param attachPoint
+	 * @return a pointer to the EmberEntity, or 0 if none found
+	 */
+	EmberEntity* getEntityAttachedToPoint(const std::string& attachPoint);
+
+	/**
+	 * @brief Accesses the world bounding box of the model.
+	 * @param derive Whether to derive from attached objects too.
+	 * @return The world bounding box for this model, in world units.
+	 */
+	virtual const Ogre::AxisAlignedBox& getWorldBoundingBox(bool derive = true) const;
+
+
+	/**
+	 * @brief Accesses the world bounding sphere for this model.
+	 * @param derive
+	 * @return The world bounding sphere, in world units, for this model.
+	 */
+	virtual const Ogre::Sphere & getWorldBoundingSphere (bool derive=true) const;
+
+};
+
+}
+}
+
