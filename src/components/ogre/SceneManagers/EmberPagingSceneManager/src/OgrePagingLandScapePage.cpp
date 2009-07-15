@@ -182,12 +182,12 @@ namespace Ogre
 			// set new state
 			mPageState = STATE_LOADED;
 
+			// fire event
+			fireEvent(EVENT_LOADED);
+
 		} else {
 			S_LOG_WARNING("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") already loaded, proceeding to show it");
 		}
-
-		// fire event
-		fireEvent(EVENT_LOADED);
 
 		show(true);
 	}
@@ -224,11 +224,11 @@ namespace Ogre
 
 				S_LOG_WARNING("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") is not loadable");
 			} else {
-				// fire event
-				fireEvent(EVENT_PRELOADED);
-
 				// set new state
 				mPageState = STATE_PRELOADED;
+
+				// fire event
+				fireEvent(EVENT_PRELOADED);
 			}
 		} else {
 			S_LOG_WARNING("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") already preloaded (or not inited), ignoring request");
@@ -532,6 +532,7 @@ namespace Ogre
 			}
 
 			mVisible = true;
+
 			// fire event
 			fireEvent(EVENT_SHOW);
 
@@ -544,6 +545,7 @@ namespace Ogre
 			}
 
 			mVisible = false;
+
 			// fire event
 			fireEvent(EVENT_HIDE);
 		}
