@@ -297,24 +297,28 @@ namespace Ogre
 	void PagingLandScapePage::setNeighbors()
 	{
 		PagingLandScapePage* neighbor = 0;
+		// south
 		neighbor = mPageMgr.getPage(mTableX, mTableZ + 1, false);
+		setNeighbor(SOUTH, neighbor);
 		if (neighbor) {
-			setNeighbor(SOUTH, neighbor);
 			neighbor->setNeighbor(NORTH, this);
 		}
+		// north
 		neighbor = mPageMgr.getPage(mTableX, mTableZ - 1, false);
+		setNeighbor(NORTH, neighbor);
 		if (neighbor) {
-			setNeighbor(NORTH, neighbor);
 			neighbor->setNeighbor(SOUTH, this);
 		}
+		// east
 		neighbor = mPageMgr.getPage(mTableX + 1, mTableZ, false);
+		setNeighbor(EAST, neighbor);
 		if (neighbor) {
-			setNeighbor(EAST, neighbor);
 			neighbor->setNeighbor(WEST, this);
 		}
+		// west
 		neighbor = mPageMgr.getPage(mTableX - 1, mTableZ, false);
+		setNeighbor(WEST, neighbor);
 		if (neighbor) {
-			setNeighbor(WEST, neighbor);
 			neighbor->setNeighbor(EAST, this);
 		}
 	}
@@ -629,7 +633,6 @@ namespace Ogre
 			listenerMgr->firePageLoaded(mTableX, mTableZ, 
 						    data2dMgr->getData2D(mTableX, mTableZ)->getHeightData(),
 						    mBounds);
-
 		}
 		break;
 		case EVENT_UNLOADED:
