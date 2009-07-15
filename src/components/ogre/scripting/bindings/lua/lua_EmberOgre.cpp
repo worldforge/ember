@@ -14,8 +14,11 @@
 TOLUA_API int  tolua_EmberOgre_open (lua_State* tolua_S);
 
 #include "required.h"
+#include "components/ogre/IGraphicalRepresentation.h"
 #include "components/ogre/widgets/AssetsManager.h"
 #include "components/ogre/widgets/Compass.h"
+#include "components/ogre/model/ModelRepresentation.h"
+#include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/ogre/manipulation/GUIAdapter.h"
 #include "components/ogre/manipulation/EntityRecipe.h"
 #define __operator_ptr operator*
@@ -433,13 +436,14 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Terrain::TerrainShader*>");
  tolua_usertype(tolua_S,"EmberOgre::Gui::RenderedCompassImpl");
  tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainMod");
- tolua_usertype(tolua_S,"CEGUI::TreeItem");
+ tolua_usertype(tolua_S,"Eris::TypeInfo");
  tolua_usertype(tolua_S,"Ogre::SceneManager");
  tolua_usertype(tolua_S,"EmberOgre::SimpleRenderContext");
  tolua_usertype(tolua_S,"Mercator::BasePoint");
  tolua_usertype(tolua_S,"Ogre::Degree");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Gui::EntityIcon*>");
+ tolua_usertype(tolua_S,"EmberOgre::Environment::Foliage");
  tolua_usertype(tolua_S,"std::vector<EmberOgre::Model::ActionDefinition*>");
+ tolua_usertype(tolua_S,"EmberOgre::IGraphicalRepresentation");
  tolua_usertype(tolua_S,"EmberOgre::Gui::EntityEditor");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::GUIManager&>");
  tolua_usertype(tolua_S,"EmberOgre::Gui::CompassCameraAnchor");
@@ -450,7 +454,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"EmberOgre::Gui::Adapters::Atlas::MapAdapter");
  tolua_usertype(tolua_S,"EmberOgre::Gui::ICompassImpl");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Terrain::TerrainShader*,EmberOgre::Terrain::TerrainGenerator::AreaStore*>");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntity*>");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::AssetsManager");
  tolua_usertype(tolua_S,"sigc::signal<void,const EmberOgre::Terrain::TerrainEditAction*>");
  tolua_usertype(tolua_S,"Ogre::TRect<float>");
  tolua_usertype(tolua_S,"EmberOgre::Gui::EntityIconSlot");
@@ -475,65 +479,68 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Ember::ConsoleCommandWrapper");
  tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefinition");
  tolua_usertype(tolua_S,"WFMath::Quaternion");
+ tolua_usertype(tolua_S,"EmberOgre::AvatarControllerMovement");
  tolua_usertype(tolua_S,"Ember::Singleton<EntityRecipeManager>");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Terrain::TerrainGenerator&>");
  tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainShader");
  tolua_usertype(tolua_S,"EmberOgre::Model::AttachPointDefinition");
  tolua_usertype(tolua_S,"Atlas::Message::MapType");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::MotionManager&>");
  tolua_usertype(tolua_S,"sigc::signal<void,const std::string&,EmberOgre::EmberEntity*>");
  tolua_usertype(tolua_S,"EmberOgre::Avatar");
- tolua_usertype(tolua_S,"Ogre::SceneNode");
- tolua_usertype(tolua_S,"EmberOgre::Model::SubModelDefinition");
+ tolua_usertype(tolua_S,"CEGUI::Window");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntityFactory*>");
  tolua_usertype(tolua_S,"EmberOgre::AvatarMovementMode");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Terrain::TerrainGenerator&>");
+ tolua_usertype(tolua_S,"Ogre::RenderWindow");
  tolua_usertype(tolua_S,"Eris::Entity");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::MotionManager&>");
+ tolua_usertype(tolua_S,"EmberOgre::Model::Action");
  tolua_usertype(tolua_S,"EmberOgre::Gui::Compass");
  tolua_usertype(tolua_S,"sigc::signal<void,const std::string&>");
  tolua_usertype(tolua_S,"EmberOgre::EmberEntityFactory");
  tolua_usertype(tolua_S,"Ogre::Entity");
  tolua_usertype(tolua_S,"Ogre::Vector3");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntityFactory*>");
- tolua_usertype(tolua_S,"Ogre::RenderWindow");
- tolua_usertype(tolua_S,"EmberOgre::Gui::CompassThirdPersonCameraAnchor");
- tolua_usertype(tolua_S,"EmberOgre::Model::Action");
  tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator");
- tolua_usertype(tolua_S,"sigc::signal<void,const Ogre::ColourValue&>");
  tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore");
- tolua_usertype(tolua_S,"CEGUI::Window");
- tolua_usertype(tolua_S,"CEGUI::Image");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::CompassThirdPersonCameraAnchor");
+ tolua_usertype(tolua_S,"EmberOgre::MotionManager");
  tolua_usertype(tolua_S,"sigc::signal<void,const Atlas::Message::Element&>");
- tolua_usertype(tolua_S,"EmberOgre::Gui::Widget");
+ tolua_usertype(tolua_S,"sigc::signal<void,const Ogre::ColourValue&>");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::ModelRenderer");
  tolua_usertype(tolua_S,"EmberOgre::OgreInfo");
- tolua_usertype(tolua_S,"EmberOgre::AvatarEmberEntity");
- tolua_usertype(tolua_S,"EmberOgre::Gui::Icons::Icon");
- tolua_usertype(tolua_S,"EmberOgre::EntityRecipeManager");
- tolua_usertype(tolua_S,"Ogre::Radian");
- tolua_usertype(tolua_S,"CEGUI::Editbox");
+ tolua_usertype(tolua_S,"CEGUI::Image");
+ tolua_usertype(tolua_S,"EmberOgre::EntityRecipePtr");
  tolua_usertype(tolua_S,"EmberOgre::Terrain::Map");
  tolua_usertype(tolua_S,"EmberOgre::Gui::QuaternionAdapter");
- tolua_usertype(tolua_S,"EmberOgre::Model::ActionDefinition");
- tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainPage");
+ tolua_usertype(tolua_S,"EmberOgre::AvatarEmberEntity");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::Icons::Icon");
+ tolua_usertype(tolua_S,"EmberOgre::Model::SubModelDefinition");
+ tolua_usertype(tolua_S,"Ogre::Radian");
+ tolua_usertype(tolua_S,"CEGUI::Editbox");
  tolua_usertype(tolua_S,"Eris::Task");
  tolua_usertype(tolua_S,"std::vector<Eris::Task*>");
- tolua_usertype(tolua_S,"Ogre::ResourcePtr");
+ tolua_usertype(tolua_S,"EmberOgre::GUIAdaptersStore");
+ tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainPage");
+ tolua_usertype(tolua_S,"EmberOgre::Model::ActionDefinition");
+ tolua_usertype(tolua_S,"std::vector<std::string>");
+ tolua_usertype(tolua_S,"Ogre::MaterialPtr");
  tolua_usertype(tolua_S,"EmberOgre::EntityRecipe");
  tolua_usertype(tolua_S,"std::vector<EmberOgre::Terrain::TerrainDefPoint>");
  tolua_usertype(tolua_S,"EmberOgre::GUIAdaptersStore::const_iterator");
- tolua_usertype(tolua_S,"EmberOgre::TerrainPosition");
+ tolua_usertype(tolua_S,"Ember::Singleton<EmberOgre::EntityRecipeManager>");
  tolua_usertype(tolua_S,"Ogre::Viewport");
  tolua_usertype(tolua_S,"size_t");
- tolua_usertype(tolua_S,"std::vector<std::string>");
+ tolua_usertype(tolua_S,"Ogre::DataStreamPtr");
  tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainLayerDefinitionManager");
  tolua_usertype(tolua_S,"EmberOgre::AvatarCamera");
- tolua_usertype(tolua_S,"Ember::Singleton<EmberOgre::EntityRecipeManager>");
- tolua_usertype(tolua_S,"Ogre::DataStreamPtr");
+ tolua_usertype(tolua_S,"Ogre::ResourcePtr");
+ tolua_usertype(tolua_S,"EmberOgre::EntityRecipeManager");
  tolua_usertype(tolua_S,"CEGUI::ListboxItem");
  tolua_usertype(tolua_S,"CEGUI::Imageset");
  tolua_usertype(tolua_S,"EmberOgre::AvatarController");
  tolua_usertype(tolua_S,"EmberOgre::Model::Model");
  tolua_usertype(tolua_S,"EmberOgre::MousePickerArgs");
  tolua_usertype(tolua_S,"EmberOgre::Gui::ConsoleAdapter");
- tolua_usertype(tolua_S,"sigc::signal<void>");
+ tolua_usertype(tolua_S,"EmberOgre::GUIAdaptersStore::value_type");
  tolua_usertype(tolua_S,"std::vector<EmberOgre::Model::SubEntityDefinition*>");
  tolua_usertype(tolua_S,"EmberOgre::Terrain::MapView");
  tolua_usertype(tolua_S,"sigc::signal<void,Ogre::Camera&>");
@@ -541,66 +548,66 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"EmberOgre::Environment::ISky");
  tolua_usertype(tolua_S,"EmberOgre::Gui::IconBase");
  tolua_usertype(tolua_S,"std::map<int,EmberOgre::Terrain::TerrainGenerator::TerrainPagecolumn>");
- tolua_usertype(tolua_S,"EmberOgre::GUIAdaptersStore::value_type");
- tolua_usertype(tolua_S,"EmberOgre::GUIAdaptersStore");
- tolua_usertype(tolua_S,"EmberOgre::EntityRecipePtr");
  tolua_usertype(tolua_S,"Eris::TypeService");
- tolua_usertype(tolua_S,"std::map<std::string,EmberOgre::Model::ViewDefinition*>");
  tolua_usertype(tolua_S,"Ogre::ManualResourceLoader");
  tolua_usertype(tolua_S,"Ogre::ResourceHandle");
  tolua_usertype(tolua_S,"Ogre::String");
+ tolua_usertype(tolua_S,"std::map<std::string,EmberOgre::Model::ViewDefinition*>");
  tolua_usertype(tolua_S,"EmberOgre::GUIAdapter");
- tolua_usertype(tolua_S,"EmberOgre::Model::SubEntityDefinition");
  tolua_usertype(tolua_S,"EmberOgre::Environment::IWater");
  tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefinitionAtlasComposer");
  tolua_usertype(tolua_S,"Ogre::ResourceManager");
+ tolua_usertype(tolua_S,"EmberOgre::Model::SubEntityDefinition");
  tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefinitionManager");
  tolua_usertype(tolua_S,"sigc::signal<void,const EmberOgre::EntityPickResult&,const EmberOgre::MousePickerArgs&>");
  tolua_usertype(tolua_S,"EmberOgre::EntityWorldPickListener");
- tolua_usertype(tolua_S,"EmberOgre::AttributeObserver");
- tolua_usertype(tolua_S,"EmberOgre::Model::PartDefinition");
- tolua_usertype(tolua_S,"Ogre::MovableObject");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::Widget");
+ tolua_usertype(tolua_S,"EmberOgre::Model::ModelRepresentationManager");
  tolua_usertype(tolua_S,"EmberOgre::Gui::ListHolder");
+ tolua_usertype(tolua_S,"EmberOgre::AttributeObserver");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::OgreEntityRenderer");
+ tolua_usertype(tolua_S,"Ogre::MovableObject");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::MovableObjectRenderer");
  tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainEditor");
  tolua_usertype(tolua_S,"Mercator::Area");
  tolua_usertype(tolua_S,"EmberOgre::EmberEntity");
- tolua_usertype(tolua_S,"EmberOgre::Gui::ModelRenderer");
- tolua_usertype(tolua_S,"EmberOgre::Gui::OgreEntityRenderer");
- tolua_usertype(tolua_S,"EmberOgre::Gui::MovableObjectRenderer");
+ tolua_usertype(tolua_S,"EmberOgre::Model::ModelRepresentation");
  tolua_usertype(tolua_S,"Ogre::Light");
  tolua_usertype(tolua_S,"Ogre::RenderTexture");
- tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainPageSurfaceLayer");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Terrain::TerrainPage&>");
  tolua_usertype(tolua_S,"WFMath::Vector<3>");
  tolua_usertype(tolua_S,"WFMath::Point<3>");
+ tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainPageSurfaceLayer");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Terrain::TerrainPage&>");
  tolua_usertype(tolua_S,"WFMath::Vector<2>");
- tolua_usertype(tolua_S,"std::vector<EmberOgre::Model::PartDefinition*>");
+ tolua_usertype(tolua_S,"EmberOgre::TerrainPosition");
  tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefnPtr");
+ tolua_usertype(tolua_S,"std::vector<EmberOgre::Model::PartDefinition*>");
+ tolua_usertype(tolua_S,"Ogre::Resource");
  tolua_usertype(tolua_S,"EmberOgre::EntityPickResult");
  tolua_usertype(tolua_S,"CEGUI::PushButton");
- tolua_usertype(tolua_S,"EmberOgre::Gui::OverlayCompassImpl");
+ tolua_usertype(tolua_S,"std::vector<EmberOgre::Terrain::TerrainEditBasePointMovement>");
  tolua_usertype(tolua_S,"EmberOgre::Gui::Vector3Adapter");
- tolua_usertype(tolua_S,"Ogre::Resource");
+ tolua_usertype(tolua_S,"EmberOgre::Model::PartDefinition");
  tolua_usertype(tolua_S,"EmberOgre::Terrain::ISceneManagerAdapter");
  tolua_usertype(tolua_S,"EmberOgre::GUIManager");
- tolua_usertype(tolua_S,"std::vector<EmberOgre::Terrain::TerrainEditBasePointMovement>");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::AvatarController&>");
- tolua_usertype(tolua_S,"EmberOgre::Environment::Foliage");
- tolua_usertype(tolua_S,"CEGUI::Listbox");
  tolua_usertype(tolua_S,"Mercator::Shader");
- tolua_usertype(tolua_S,"EmberPhysicalEntity");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::AvatarController&>");
+ tolua_usertype(tolua_S,"EmberOgre::Model::SubModel");
+ tolua_usertype(tolua_S,"CEGUI::Listbox");
+ tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainGenerator");
+ tolua_usertype(tolua_S,"Ogre::Sphere");
  tolua_usertype(tolua_S,"EmberOgre::IAnimated");
  tolua_usertype(tolua_S,"CEGUI::ListboxTextItem");
- tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainGenerator");
- tolua_usertype(tolua_S,"EmberOgre::Model::SubModel");
+ tolua_usertype(tolua_S,"CEGUI::TreeItem");
+ tolua_usertype(tolua_S,"EmberOgre::Gui::OverlayCompassImpl");
  tolua_usertype(tolua_S,"EmberOgre::EmberOgre");
  tolua_usertype(tolua_S,"EmberOgre::Gui::EntityIconDragDropTarget");
  tolua_usertype(tolua_S,"CEGUI::DragContainer");
- tolua_usertype(tolua_S,"CEGUI::UVector2");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntity*>");
  tolua_usertype(tolua_S,"EmberOgre::Model::ViewDefinition");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Gui::EntityIcon*>");
+ tolua_usertype(tolua_S,"CEGUI::UVector2");
  tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainArea");
- tolua_usertype(tolua_S,"Eris::TypeInfo");
- tolua_usertype(tolua_S,"EmberOgre::AvatarControllerMovement");
  tolua_usertype(tolua_S,"Ogre::Real");
  tolua_usertype(tolua_S,"EmberOgre::Gui::Icons::IconManager");
  tolua_usertype(tolua_S,"EmberOgre::Gui::EntityIcon");
@@ -608,23 +615,23 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"EmberOgre::MotionManager::MotionManagerInfo");
  tolua_usertype(tolua_S,"Ogre::Quaternion");
  tolua_usertype(tolua_S,"EmberOgre::EntityMoveManager");
- tolua_usertype(tolua_S,"EmberOgre::Environment::IFog");
- tolua_usertype(tolua_S,"Ogre::MaterialPtr");
+ tolua_usertype(tolua_S,"EmberOgre::AvatarMovementState");
+ tolua_usertype(tolua_S,"EmberPhysicalEntity");
  tolua_usertype(tolua_S,"EmberOgre::Gui::EntityCreator");
- tolua_usertype(tolua_S,"EmberOgre::Gui::AssetsManager");
  tolua_usertype(tolua_S,"Ogre::TexturePtr");
+ tolua_usertype(tolua_S,"Ogre::uint32");
  tolua_usertype(tolua_S,"std::ostream");
  tolua_usertype(tolua_S,"Ogre::ColourValue");
  tolua_usertype(tolua_S,"Ogre::NameValuePairList");
  tolua_usertype(tolua_S,"EmberOgre::Environment::Environment");
- tolua_usertype(tolua_S,"EmberOgre::MotionManager");
+ tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainEditBasePointMovement");
  tolua_usertype(tolua_S,"EmberOgre::Gui::ColouredTreeItem");
  tolua_usertype(tolua_S,"EmberOgre::WorldEmberEntity");
- tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainEditBasePointMovement");
+ tolua_usertype(tolua_S,"EmberOgre::Environment::IFog");
  tolua_usertype(tolua_S,"EmberOgre::Terrain::TerrainEditAction");
- tolua_usertype(tolua_S,"EmberOgre::AvatarMovementState");
+ tolua_usertype(tolua_S,"sigc::signal<void>");
  tolua_usertype(tolua_S,"EmberOgre::Gui::ColouredListItem");
- tolua_usertype(tolua_S,"Ogre::uint32");
+ tolua_usertype(tolua_S,"Ogre::SceneNode");
  tolua_usertype(tolua_S,"EmberOgre::Gui::CEGUICompassImpl");
 }
 
@@ -2595,40 +2602,6 @@ static int tolua_EmberOgre_EmberOgre_EmberEntity_getShowErisBoundingBox00(lua_St
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: getWorldBoundingBox of class  EmberOgre::EmberEntity */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EmberEntity_getWorldBoundingBox00
-static int tolua_EmberOgre_EmberOgre_EmberEntity_getWorldBoundingBox00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"const EmberOgre::EmberEntity",0,&tolua_err) ||
-     !tolua_isboolean(tolua_S,2,1,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  const EmberOgre::EmberEntity* self = (const EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,1,0);
-  bool derive = ((bool)  tolua_toboolean(tolua_S,2,true));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getWorldBoundingBox'",NULL);
-#endif
-  {
-   const Ogre::AxisAlignedBox& tolua_ret = (const Ogre::AxisAlignedBox&)  self->getWorldBoundingBox(derive);
-   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const Ogre::AxisAlignedBox");
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getWorldBoundingBox'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* method: getDefaultUseOperators of class  EmberOgre::EmberEntity */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EmberEntity_getDefaultUseOperators00
 static int tolua_EmberOgre_EmberOgre_EmberEntity_getDefaultUseOperators00(lua_State* tolua_S)
@@ -3000,6 +2973,143 @@ static int tolua_set_EmberOgre__WorldEmberEntity_EventEnvironmentCreated(lua_Sta
   self->EventEnvironmentCreated = *((sigc::signal<void>*)  tolua_tousertype(tolua_S,2,0))
 ;
  return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getType of class  EmberOgre::IGraphicalRepresentation */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_IGraphicalRepresentation_getType00
+static int tolua_EmberOgre_EmberOgre_IGraphicalRepresentation_getType00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::IGraphicalRepresentation",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::IGraphicalRepresentation* self = (const EmberOgre::IGraphicalRepresentation*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getType'",NULL);
+#endif
+  {
+   const std::string tolua_ret = (const std::string)  self->getType();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getType'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setVisualize of class  EmberOgre::IGraphicalRepresentation */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_IGraphicalRepresentation_setVisualize00
+static int tolua_EmberOgre_EmberOgre_IGraphicalRepresentation_setVisualize00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::IGraphicalRepresentation",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::IGraphicalRepresentation* self = (EmberOgre::IGraphicalRepresentation*)  tolua_tousertype(tolua_S,1,0);
+  const std::string visualization = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  bool visualize = ((bool)  tolua_toboolean(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setVisualize'",NULL);
+#endif
+  {
+   self->setVisualize(visualization,visualize);
+   tolua_pushcppstring(tolua_S,(const char*)visualization);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setVisualize'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getVisualize of class  EmberOgre::IGraphicalRepresentation */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_IGraphicalRepresentation_getVisualize00
+static int tolua_EmberOgre_EmberOgre_IGraphicalRepresentation_getVisualize00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::IGraphicalRepresentation",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::IGraphicalRepresentation* self = (const EmberOgre::IGraphicalRepresentation*)  tolua_tousertype(tolua_S,1,0);
+  const std::string visualization = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getVisualize'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->getVisualize(visualization);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+   tolua_pushcppstring(tolua_S,(const char*)visualization);
+  }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getVisualize'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: allowVisibilityOfMember of class  EmberOgre::IGraphicalRepresentation */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_IGraphicalRepresentation_allowVisibilityOfMember00
+static int tolua_EmberOgre_EmberOgre_IGraphicalRepresentation_allowVisibilityOfMember00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::IGraphicalRepresentation",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"EmberOgre::EmberEntity",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::IGraphicalRepresentation* self = (EmberOgre::IGraphicalRepresentation*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::EmberEntity* entity = ((EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'allowVisibilityOfMember'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->allowVisibilityOfMember(entity);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'allowVisibilityOfMember'.",&tolua_err);
+ return 0;
+#endif
 }
 #endif //#ifndef TOLUA_DISABLE
 
@@ -11833,6 +11943,394 @@ static int tolua_EmberOgre_EmberOgre_Model_Model_getDisplaySkeleton00(lua_State*
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'getDisplaySkeleton'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getTypeNameForClass of class  EmberOgre::Model::ModelRepresentation */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getTypeNameForClass00
+static int tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getTypeNameForClass00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"EmberOgre::Model::ModelRepresentation",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   const std::string tolua_ret = (const std::string)  EmberOgre::Model::ModelRepresentation::getTypeNameForClass();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getTypeNameForClass'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getEntity of class  EmberOgre::Model::ModelRepresentation */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getEntity00
+static int tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getEntity00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Model::ModelRepresentation",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Model::ModelRepresentation* self = (const EmberOgre::Model::ModelRepresentation*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getEntity'",NULL);
+#endif
+  {
+   EmberOgre::EmberEntity& tolua_ret = (EmberOgre::EmberEntity&)  self->getEntity();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"EmberOgre::EmberEntity");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getEntity'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getModel of class  EmberOgre::Model::ModelRepresentation */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getModel00
+static int tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getModel00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Model::ModelRepresentation",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Model::ModelRepresentation* self = (const EmberOgre::Model::ModelRepresentation*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getModel'",NULL);
+#endif
+  {
+   EmberOgre::Model::Model& tolua_ret = (EmberOgre::Model::Model&)  self->getModel();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"EmberOgre::Model::Model");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getModel'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getScaleNode of class  EmberOgre::Model::ModelRepresentation */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getScaleNode00
+static int tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getScaleNode00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Model::ModelRepresentation",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Model::ModelRepresentation* self = (const EmberOgre::Model::ModelRepresentation*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getScaleNode'",NULL);
+#endif
+  {
+   Ogre::SceneNode* tolua_ret = (Ogre::SceneNode*)  self->getScaleNode();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::SceneNode");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getScaleNode'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: showOgreBoundingBox of class  EmberOgre::Model::ModelRepresentation */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_showOgreBoundingBox00
+static int tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_showOgreBoundingBox00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Model::ModelRepresentation",0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Model::ModelRepresentation* self = (EmberOgre::Model::ModelRepresentation*)  tolua_tousertype(tolua_S,1,0);
+  bool show = ((bool)  tolua_toboolean(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'showOgreBoundingBox'",NULL);
+#endif
+  {
+   self->showOgreBoundingBox(show);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'showOgreBoundingBox'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getShowOgreBoundingBox of class  EmberOgre::Model::ModelRepresentation */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getShowOgreBoundingBox00
+static int tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getShowOgreBoundingBox00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Model::ModelRepresentation",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Model::ModelRepresentation* self = (const EmberOgre::Model::ModelRepresentation*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getShowOgreBoundingBox'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->getShowOgreBoundingBox();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getShowOgreBoundingBox'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getEntityAttachedToPoint of class  EmberOgre::Model::ModelRepresentation */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getEntityAttachedToPoint00
+static int tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getEntityAttachedToPoint00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Model::ModelRepresentation",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Model::ModelRepresentation* self = (EmberOgre::Model::ModelRepresentation*)  tolua_tousertype(tolua_S,1,0);
+  const std::string attachPoint = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getEntityAttachedToPoint'",NULL);
+#endif
+  {
+   EmberOgre::EmberEntity* tolua_ret = (EmberOgre::EmberEntity*)  self->getEntityAttachedToPoint(attachPoint);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::EmberEntity");
+   tolua_pushcppstring(tolua_S,(const char*)attachPoint);
+  }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getEntityAttachedToPoint'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getWorldBoundingBox of class  EmberOgre::Model::ModelRepresentation */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getWorldBoundingBox00
+static int tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getWorldBoundingBox00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Model::ModelRepresentation",0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,2,1,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Model::ModelRepresentation* self = (const EmberOgre::Model::ModelRepresentation*)  tolua_tousertype(tolua_S,1,0);
+  bool derive = ((bool)  tolua_toboolean(tolua_S,2,true));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getWorldBoundingBox'",NULL);
+#endif
+  {
+   const Ogre::AxisAlignedBox& tolua_ret = (const Ogre::AxisAlignedBox&)  self->getWorldBoundingBox(derive);
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const Ogre::AxisAlignedBox");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getWorldBoundingBox'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getWorldBoundingSphere of class  EmberOgre::Model::ModelRepresentation */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getWorldBoundingSphere00
+static int tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getWorldBoundingSphere00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Model::ModelRepresentation",0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,2,1,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Model::ModelRepresentation* self = (const EmberOgre::Model::ModelRepresentation*)  tolua_tousertype(tolua_S,1,0);
+  bool derive = ((bool)  tolua_toboolean(tolua_S,2,true));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getWorldBoundingSphere'",NULL);
+#endif
+  {
+   const Ogre::Sphere& tolua_ret = (const Ogre::Sphere&)  self->getWorldBoundingSphere(derive);
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const Ogre::Sphere");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getWorldBoundingSphere'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getSingleton of class  EmberOgre::Model::ModelRepresentationManager */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Model_ModelRepresentationManager_getSingleton00
+static int tolua_EmberOgre_EmberOgre_Model_ModelRepresentationManager_getSingleton00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"EmberOgre::Model::ModelRepresentationManager",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   EmberOgre::Model::ModelRepresentationManager& tolua_ret = (EmberOgre::Model::ModelRepresentationManager&)  EmberOgre::Model::ModelRepresentationManager::getSingleton();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"EmberOgre::Model::ModelRepresentationManager");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getSingleton'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getModelForEntity of class  EmberOgre::Model::ModelRepresentationManager */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Model_ModelRepresentationManager_getModelForEntity00
+static int tolua_EmberOgre_EmberOgre_Model_ModelRepresentationManager_getModelForEntity00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Model::ModelRepresentationManager",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"EmberOgre::EmberEntity",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Model::ModelRepresentationManager* self = (const EmberOgre::Model::ModelRepresentationManager*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::EmberEntity* entity = ((EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getModelForEntity'",NULL);
+#endif
+  {
+   EmberOgre::Model::Model* tolua_ret = (EmberOgre::Model::Model*)  self->getModelForEntity(*entity);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Model::Model");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getModelForEntity'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getRepresentationForEntity of class  EmberOgre::Model::ModelRepresentationManager */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Model_ModelRepresentationManager_getRepresentationForEntity00
+static int tolua_EmberOgre_EmberOgre_Model_ModelRepresentationManager_getRepresentationForEntity00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Model::ModelRepresentationManager",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"EmberOgre::EmberEntity",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Model::ModelRepresentationManager* self = (const EmberOgre::Model::ModelRepresentationManager*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::EmberEntity* entity = ((EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getRepresentationForEntity'",NULL);
+#endif
+  {
+   EmberOgre::Model::ModelRepresentation* tolua_ret = (EmberOgre::Model::ModelRepresentation*)  self->getRepresentationForEntity(*entity);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Model::ModelRepresentation");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getRepresentationForEntity'.",&tolua_err);
  return 0;
 #endif
 }
@@ -22818,7 +23316,6 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"showErisBoundingBox",tolua_EmberOgre_EmberOgre_EmberEntity_showErisBoundingBox00);
     tolua_function(tolua_S,"getShowOgreBoundingBox",tolua_EmberOgre_EmberOgre_EmberEntity_getShowOgreBoundingBox00);
     tolua_function(tolua_S,"getShowErisBoundingBox",tolua_EmberOgre_EmberOgre_EmberEntity_getShowErisBoundingBox00);
-    tolua_function(tolua_S,"getWorldBoundingBox",tolua_EmberOgre_EmberOgre_EmberEntity_getWorldBoundingBox00);
     tolua_function(tolua_S,"getDefaultUseOperators",tolua_EmberOgre_EmberOgre_EmberEntity_getDefaultUseOperators00);
     tolua_function(tolua_S,"getActions",tolua_EmberOgre_EmberOgre_EmberEntity_getActions00);
     tolua_function(tolua_S,"setVisualize",tolua_EmberOgre_EmberOgre_EmberEntity_setVisualize00);
@@ -22842,6 +23339,16 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"getFoliage",tolua_EmberOgre_EmberOgre_WorldEmberEntity_getFoliage00);
     tolua_variable(tolua_S,"EventFoliageCreated",tolua_get_EmberOgre__WorldEmberEntity_EventFoliageCreated,tolua_set_EmberOgre__WorldEmberEntity_EventFoliageCreated);
     tolua_variable(tolua_S,"EventEnvironmentCreated",tolua_get_EmberOgre__WorldEmberEntity_EventEnvironmentCreated,tolua_set_EmberOgre__WorldEmberEntity_EventEnvironmentCreated);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"EmberOgre",0);
+  tolua_beginmodule(tolua_S,"EmberOgre");
+   tolua_cclass(tolua_S,"IGraphicalRepresentation","EmberOgre::IGraphicalRepresentation","",NULL);
+   tolua_beginmodule(tolua_S,"IGraphicalRepresentation");
+    tolua_function(tolua_S,"getType",tolua_EmberOgre_EmberOgre_IGraphicalRepresentation_getType00);
+    tolua_function(tolua_S,"setVisualize",tolua_EmberOgre_EmberOgre_IGraphicalRepresentation_setVisualize00);
+    tolua_function(tolua_S,"getVisualize",tolua_EmberOgre_EmberOgre_IGraphicalRepresentation_getVisualize00);
+    tolua_function(tolua_S,"allowVisibilityOfMember",tolua_EmberOgre_EmberOgre_IGraphicalRepresentation_allowVisibilityOfMember00);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"EmberOgre",0);
@@ -23496,6 +24003,36 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"getSubModel",tolua_EmberOgre_EmberOgre_Model_Model_getSubModel00);
      tolua_function(tolua_S,"setDisplaySkeleton",tolua_EmberOgre_EmberOgre_Model_Model_setDisplaySkeleton00);
      tolua_function(tolua_S,"getDisplaySkeleton",tolua_EmberOgre_EmberOgre_Model_Model_getDisplaySkeleton00);
+    tolua_endmodule(tolua_S);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"EmberOgre",0);
+  tolua_beginmodule(tolua_S,"EmberOgre");
+   tolua_module(tolua_S,"Model",0);
+   tolua_beginmodule(tolua_S,"Model");
+    tolua_cclass(tolua_S,"ModelRepresentation","EmberOgre::Model::ModelRepresentation","EmberOgre::IGraphicalRepresentation",NULL);
+    tolua_beginmodule(tolua_S,"ModelRepresentation");
+     tolua_function(tolua_S,"getTypeNameForClass",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getTypeNameForClass00);
+     tolua_function(tolua_S,"getEntity",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getEntity00);
+     tolua_function(tolua_S,"getModel",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getModel00);
+     tolua_function(tolua_S,"getScaleNode",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getScaleNode00);
+     tolua_function(tolua_S,"showOgreBoundingBox",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_showOgreBoundingBox00);
+     tolua_function(tolua_S,"getShowOgreBoundingBox",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getShowOgreBoundingBox00);
+     tolua_function(tolua_S,"getEntityAttachedToPoint",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getEntityAttachedToPoint00);
+     tolua_function(tolua_S,"getWorldBoundingBox",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getWorldBoundingBox00);
+     tolua_function(tolua_S,"getWorldBoundingSphere",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getWorldBoundingSphere00);
+    tolua_endmodule(tolua_S);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"EmberOgre",0);
+  tolua_beginmodule(tolua_S,"EmberOgre");
+   tolua_module(tolua_S,"Model",0);
+   tolua_beginmodule(tolua_S,"Model");
+    tolua_cclass(tolua_S,"ModelRepresentationManager","EmberOgre::Model::ModelRepresentationManager","",NULL);
+    tolua_beginmodule(tolua_S,"ModelRepresentationManager");
+     tolua_function(tolua_S,"getSingleton",tolua_EmberOgre_EmberOgre_Model_ModelRepresentationManager_getSingleton00);
+     tolua_function(tolua_S,"getModelForEntity",tolua_EmberOgre_EmberOgre_Model_ModelRepresentationManager_getModelForEntity00);
+     tolua_function(tolua_S,"getRepresentationForEntity",tolua_EmberOgre_EmberOgre_Model_ModelRepresentationManager_getRepresentationForEntity00);
     tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);

@@ -13,6 +13,8 @@ $pfile "EmberEntity.pkg"
 $pfile "AvatarEmberEntity.pkg"
 $pfile "WorldEmberEntity.pkg"
 
+$pfile "IGraphicalRepresentation.pkg"
+
 $pfile "Environment.pkg"
 
 
@@ -43,6 +45,8 @@ $pfile "EntityIconManager.pkg"
 $pfile "EntityIconDragDropTarget.pkg"
 
 $pfile "Model.pkg"
+$pfile "ModelRepresentation.pkg"
+$pfile "ModelRepresentationManager.pkg"
 $pfile "SubModel.pkg"
 $pfile "ModelDefinition.pkg"
 //$pfile "Jesus.pkg"
