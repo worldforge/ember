@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 erik
+ Copyright (C) 2009 Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -154,8 +154,20 @@ public:
 	 */
 	EmberEntity* getEntityAttachedToPoint(const std::string& attachPoint);
 
-	const Ogre::AxisAlignedBox& getWorldBoundingBox(bool derive = true) const;
-	const Ogre::Sphere & getWorldBoundingSphere(bool derive = true) const;
+	/**
+	 * @brief Accesses the world bounding box of the model.
+	 * @param derive Whether to derive from attached objects too.
+	 * @return The world bounding box for this model, in world units.
+	 */
+	virtual const Ogre::AxisAlignedBox& getWorldBoundingBox(bool derive = true) const;
+
+
+	/**
+	 * @brief Accesses the world bounding sphere for this model.
+	 * @param derive
+	 * @return The world bounding sphere, in world units, for this model.
+	 */
+	virtual const Ogre::Sphere & getWorldBoundingSphere (bool derive=true) const;
 
 	/**
 	 * @brief Called by a contained member to see if the member is allowed to be shown.
