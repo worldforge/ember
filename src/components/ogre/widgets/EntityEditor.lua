@@ -878,15 +878,6 @@ end
 function EntityEditor.refreshModelInfo(entity)
 	EntityEditor.modelTab.showOgreBbox:setSelected(entity:getShowOgreBoundingBox())
 	EntityEditor.modelTab.showErisBbox:setSelected(entity:getShowErisBoundingBox())
-	
---[[	local physEntity = entity
-	tolua.cast(physEntity, "const EmberOgre::EmberPhysicalEntity")
-	
-	local modelDef = physEntity:getModel():getDefinition()
-	local modelInfoText = "Model name: " .. physEntity:getModel():getName()
-	--modelInfoText = modelInfoText .. "\nModel type: " .. modelDef:getName()
-	--modelInfoText = modelInfoText .. "\nOgre node: " .. physEntity:getModel():getName()
-	EntityEditor.modelTab.modelInfo:setText(modelInfoText)]]
 end
 
 function EntityEditor.Entity_Changed(attributes)
