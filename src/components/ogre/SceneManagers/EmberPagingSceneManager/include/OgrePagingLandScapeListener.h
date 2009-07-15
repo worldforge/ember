@@ -20,42 +20,43 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
 -----------------------------------------------------------------------------*/
+
 #ifndef __PagingLandScapePageSourceListener_H__
 #define __PagingLandScapePageSourceListener_H__
 
-#include "OgrePagingLandScapePrerequisites.h"
-
-namespace Ogre 
+namespace Ogre
 {
-    /** Abstract class which classes can override to receive notifications
-        when a page is ready to be added to the terrain manager.
-    */
-    class _OgrePagingLandScapeExport PagingLandScapeListener
-    {
+	/** Abstract class which classes can override to receive notifications
+	 * when a page is ready to be added to the terrain manager.
+	 *
+	 * \todo mafm: not really used by anyone
+	 */
+	class _OgrePagingLandScapeExport PagingLandScapeListener
+	{
 
-        public:         
-			PagingLandScapeListener(){};
-			virtual ~PagingLandScapeListener(){};
-            /** Listener method called when a new page is about to be constructed. 
-            @param pagex, pagez The index of the page being constructed
-            @param heightData Array of normalised height data (0..1). The size of
-                this buffer will conform to the scene manager page size. The listener
-                may modify the data if it wishes.
-            */            
-            virtual void pagePreloaded(const size_t pagex, const size_t pagez, const Real* heightData, const AxisAlignedBox &Bbox){};
-            virtual void pageLoaded(const size_t pagex, const size_t pagez, const Real* heightData, const AxisAlignedBox &Bbox){};
-            virtual void pageUnloaded(const size_t pagex, const size_t pagez, const Real* heightData, const AxisAlignedBox &Bbox){};
-            virtual void pagePostunloaded(const size_t pagex, const size_t pagez){};
-            virtual void pageShow(const size_t pagex, const size_t pagez, const Real* heightData, const AxisAlignedBox &Bbox){};
-            virtual void pageHide(const size_t pagex, const size_t pagez, const Real* heightData, const AxisAlignedBox &Bbox) {};
-            virtual void tileLoaded(const size_t pagex, const size_t pagez, const size_t tilex, const size_t tilez, const AxisAlignedBox &Bbox){};
-            virtual void tileUnloaded(const size_t pagex, const size_t pagez, const size_t tilex, const size_t tilez, const AxisAlignedBox &Bbox){};
-            virtual void tileDeformed(const size_t pagex, const size_t pagez, const size_t tilex, const size_t tilez, const AxisAlignedBox &Bbox){};
-            virtual void tileShow(const size_t pagex, const size_t pagez, const size_t tilex, const size_t tilez, const AxisAlignedBox &Bbox){};
-            virtual void tileHide(const size_t pagex, const size_t pagez, const size_t tilex, const size_t tilez, const AxisAlignedBox &Bbox){};
-            virtual void terrainReady(void) {};
+        public:
+		PagingLandScapeListener() {}
+		virtual ~PagingLandScapeListener() {}
+		/** Listener method called when a new page is about to be constructed. 
+		    @param pagex, pagez The index of the page being constructed
+		    @param heightData Array of normalised height data (0..1). The size of
+		    this buffer will conform to the scene manager page size. The listener
+		    may modify the data if it wishes.
+		*/
+		virtual void pagePreloaded(size_t pagex, size_t pagez, const Real* heightData, const AxisAlignedBox& Bbox) {}
+		virtual void pageLoaded(size_t pagex, size_t pagez, const Real* heightData, const AxisAlignedBox& Bbox) {}
+		virtual void pageUnloaded(size_t pagex, size_t pagez, const Real* heightData, const AxisAlignedBox& Bbox) {}
+		virtual void pagePostunloaded(size_t pagex, size_t pagez) {}
+		virtual void pageShow(size_t pagex, size_t pagez, const Real* heightData, const AxisAlignedBox& Bbox) {}
+		virtual void pageHide(size_t pagex, size_t pagez, const Real* heightData, const AxisAlignedBox& Bbox) {}
+		virtual void tileLoaded(size_t pagex, size_t pagez, size_t tilex, size_t tilez, const AxisAlignedBox& Bbox) {}
+		virtual void tileUnloaded(size_t pagex, size_t pagez, size_t tilex, size_t tilez, const AxisAlignedBox& Bbox) {}
+		virtual void tileDeformed(size_t pagex, size_t pagez, size_t tilex, size_t tilez, const AxisAlignedBox& Bbox) {}
+		virtual void tileShow(size_t pagex, size_t pagez, size_t tilex, size_t tilez, const AxisAlignedBox& Bbox) {}
+		virtual void tileHide(size_t pagex, size_t pagez, size_t tilex, size_t tilez, const AxisAlignedBox& Bbox) {}
+		virtual void terrainReady() {}
 
-    };
+	};
 }
-#endif //__PagingLandScapePageSourceListener_H__
 
+#endif //__PagingLandScapePageSourceListener_H__

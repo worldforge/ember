@@ -33,6 +33,9 @@ namespace Ogre
 {
 	/** Simple manager class to hold onto a list of page source listeners 
 	across all sources.
+	*
+	*
+	* \todo mafm: not really used by anyone for listening to events, only firing them
 	*/
 	class _OgrePagingLandScapeExport PagingLandScapeListenerManager 
 	{
