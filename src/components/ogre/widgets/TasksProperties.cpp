@@ -1,5 +1,5 @@
 //
-// C++ Implementation: Tasks
+// C++ Implementation: TasksProperties
 //
 // Description:
 //
@@ -24,7 +24,7 @@
 #include "config.h"
 #endif
 
-#include "Tasks.h"
+#include "TasksProperties.h"
 
 #include "../EmberOgre.h"
 #include "../Avatar.h"
@@ -51,15 +51,15 @@ namespace EmberOgre {
 
 namespace Gui {
 
-Tasks::Tasks()
+TasksProperties::TasksProperties()
 {
 }
 
-Tasks::~Tasks()
+TasksProperties::~TasksProperties()
 {
 }
 
-void Tasks::doSomething()
+void TasksProperties::doSomething()
 {
 	std::cout << "Did something\n";
 
