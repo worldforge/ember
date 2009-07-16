@@ -124,7 +124,7 @@ public:
 	 * @brief Returns the "scale node", which is the Ogre::SceneNode to which the Model instance is attached. This is separate from the Ogre::SceneNode in EmberEntity since we want to be able to scale the node without also scaling the attached nodes (such as any wielded entity).
 	 * @return An Ogre::SceneNode, to which the Model::Model instance is attached.
 	 */
-	Ogre::SceneNode* getScaleNode() const;
+//	Ogre::SceneNode* getScaleNode() const;
 
 	void attachToPointOnModel(const std::string& point, Model* model, Ogre::Quaternion orientation = Ogre::Quaternion::IDENTITY, Ogre::Vector3 offset = Ogre::Vector3::ZERO);
 	void detachFromModel();
@@ -197,6 +197,8 @@ public:
 	 * @param visible Whether to have it visible or not.
 	 */
 	void setModelPartShown(const std::string& partName, bool visible);
+
+	Ogre::Vector3 getScale() const;
 
 protected:
 
@@ -342,11 +344,7 @@ protected:
 	 */
 	Model& mModel;
 
-	/**
-	 * @brief The model mount, which takes care of setting up and handling the rotation and orientation of the model.
-	 * This also owns the scale node, which will be destroyed when the mount is destroyed.
-	 */
-	ModelMount* mModelMount;
+
 
 	/**
 	 * @brief The sound entity this entitiy is connected to.

@@ -72,9 +72,8 @@ const char * const ModelRepresentation::ACTION_SWIM("__movement_swim");
 const char * const ModelRepresentation::ACTION_FLOAT("__movement_float");
 
 ModelRepresentation::ModelRepresentation(::EmberOgre::EmberEntity& entity, Model& model)
-: mEntity(entity), mModel(model), mCurrentMovementAction(0), mActiveAction(0), mModelAttachedTo(0), mModelMarkedToAttachTo(0), mModelMount(0), mSoundEntity(0)
+: mEntity(entity), mModel(model), mCurrentMovementAction(0), mActiveAction(0), mModelAttachedTo(0), mModelMarkedToAttachTo(0), mSoundEntity(0)
 {
-	mModelMount = new ModelMount(mModel, mEntity.getSceneNode());
 	mEntity.Acted.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Acted));
 	mEntity.LocationChanged.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_LocationChanged));
 	mEntity.Changed.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Changed));
@@ -99,20 +98,20 @@ ModelRepresentation::ModelRepresentation(::EmberOgre::EmberEntity& entity, Model
 	}
 
 	///NOTE: for now, add all particle systems. we will want to add some visibility flag or something in the future
-	for (ParticleSystemSet::iterator I = mModel.getParticleSystems().begin(); I != mModel.getParticleSystems().end(); ++I)
-	{
-		(*I)->getOgreParticleSystem()->detatchFromParent();
-		getScaleNode()->attachObject((*I)->getOgreParticleSystem());
-	}
-
-	for (LightSet::iterator I = mModel.getLights().begin(); I != mModel.getLights().end(); ++I)
-	{
-		I->light->detatchFromParent();
-		Ogre::SceneNode* lightNode = getScaleNode()->createChildSceneNode();
-		lightNode->attachObject(I->light);
-		lightNode->setPosition(I->position);
-		mLightNodes.push_back(lightNode);
-	}
+//	for (ParticleSystemSet::iterator I = mModel.getParticleSystems().begin(); I != mModel.getParticleSystems().end(); ++I)
+//	{
+//		(*I)->getOgreParticleSystem()->detatchFromParent();
+//		getScaleNode()->attachObject((*I)->getOgreParticleSystem());
+//	}
+//
+//	for (LightSet::iterator I = mModel.getLights().begin(); I != mModel.getLights().end(); ++I)
+//	{
+//		I->light->detatchFromParent();
+//		Ogre::SceneNode* lightNode = getScaleNode()->createChildSceneNode();
+//		lightNode->attachObject(I->light);
+//		lightNode->setPosition(I->position);
+//		mLightNodes.push_back(lightNode);
+//	}
 
 	///check if we should do delayed attachment
 	if (mModelMarkedToAttachTo)
@@ -129,9 +128,7 @@ ModelRepresentation::~ModelRepresentation()
 	delete mModelAttachedTo;
 	delete mModelMarkedToAttachTo;
 
-	///When the modelmount is deleted the scale node will also be destroyed.
-	///Note that there's no need to destroy the light nodes since they are attached to the scale node, which is deleted (along with its children) when the model mount is destroyed.
-	delete mModelMount;
+
 
 	delete mModel.getUserObject();
 	mModel._getManager()->destroyMovableObject(&mModel);
@@ -269,6 +266,13 @@ void ModelRepresentation::initFromModel()
 
 }
 
+Ogre::Vector3 ModelRepresentation::getScale() const
+{
+	if (mModel.getParentSceneNode()) {
+		return mModel.getParentSceneNode()->_getDerivedScale();
+	}
+}
+
 void ModelRepresentation::connectEntities()
 {
 	if (getModel().getUserObject())
@@ -283,14 +287,14 @@ void ModelRepresentation::connectEntities()
 
 }
 
-Ogre::SceneNode* ModelRepresentation::getScaleNode() const
-{
-	if (mModelMount)
-	{
-		return mModelMount->getScaleNode();
-	}
-	return 0;
-}
+//Ogre::SceneNode* ModelRepresentation::getScaleNode() const
+//{
+//	if (mModelMount)
+//	{
+//		return mModelMount->getScaleNode();
+//	}
+//	return 0;
+//}
 
 void ModelRepresentation::attachToPointOnModel(const std::string& point, Model::Model* model, Ogre::Quaternion orientation, Ogre::Vector3 offset)
 {
@@ -390,12 +394,13 @@ void ModelRepresentation::detachFromModel()
 
 void ModelRepresentation::showOgreBoundingBox(bool show)
 {
-	getScaleNode()->showBoundingBox(show);
+//	getScaleNode()->showBoundingBox(show);
 }
 
 bool ModelRepresentation::getShowOgreBoundingBox() const
 {
-	return getScaleNode()->getShowBoundingBox();
+	return false;
+//	return getScaleNode()->getShowBoundingBox();
 }
 
 void ModelRepresentation::model_Reloaded()
@@ -575,17 +580,17 @@ void ModelRepresentation::entity_LocationChanged(Eris::Entity *oldLocation)
 
 void ModelRepresentation::scaleNode()
 {
-	if (mModelMount)
-	{
-		if (mEntity.hasBBox())
-		{
-			mModelMount->rescale(&mEntity.getBBox());
-		}
-		else
-		{
-			mModelMount->rescale(0);
-		}
-	}
+//	if (mModelMount)
+//	{
+//		if (mEntity.hasBBox())
+//		{
+//			mModelMount->rescale(&mEntity.getBBox());
+//		}
+//		else
+//		{
+//			mModelMount->rescale(0);
+//		}
+//	}
 }
 
 const Ogre::Vector3& ModelRepresentation::getOffsetForContainedNode(const Ogre::Vector3& position, const EmberEntity& entity)
