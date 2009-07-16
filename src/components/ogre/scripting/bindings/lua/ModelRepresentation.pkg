@@ -55,7 +55,7 @@ public:
 	 * @brief Returns the "scale node", which is the Ogre::SceneNode to which the Model instance is attached. This is separate from the Ogre::SceneNode in EmberEntity since we want to be able to scale the node without also scaling the attached nodes (such as any wielded entity).
 	 * @return An Ogre::SceneNode, to which the Model::Model instance is attached.
 	 */
-	Ogre::SceneNode* getScaleNode() const;
+//	Ogre::SceneNode* getScaleNode() const;
 
 	/**
 	 * @brief Sets whether the ogre axis aligned bounding box should be shown or not.

@@ -12040,38 +12040,6 @@ static int tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getModel00(lua_St
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: getScaleNode of class  EmberOgre::Model::ModelRepresentation */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getScaleNode00
-static int tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getScaleNode00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"const EmberOgre::Model::ModelRepresentation",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  const EmberOgre::Model::ModelRepresentation* self = (const EmberOgre::Model::ModelRepresentation*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getScaleNode'",NULL);
-#endif
-  {
-   Ogre::SceneNode* tolua_ret = (Ogre::SceneNode*)  self->getScaleNode();
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::SceneNode");
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getScaleNode'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* method: showOgreBoundingBox of class  EmberOgre::Model::ModelRepresentation */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_showOgreBoundingBox00
 static int tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_showOgreBoundingBox00(lua_State* tolua_S)
@@ -24015,7 +23983,6 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"getTypeNameForClass",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getTypeNameForClass00);
      tolua_function(tolua_S,"getEntity",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getEntity00);
      tolua_function(tolua_S,"getModel",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getModel00);
-     tolua_function(tolua_S,"getScaleNode",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getScaleNode00);
      tolua_function(tolua_S,"showOgreBoundingBox",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_showOgreBoundingBox00);
      tolua_function(tolua_S,"getShowOgreBoundingBox",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getShowOgreBoundingBox00);
      tolua_function(tolua_S,"getEntityAttachedToPoint",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getEntityAttachedToPoint00);
