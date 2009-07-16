@@ -62,6 +62,8 @@ namespace Terrain
 
 class EmberEntityFactory;
 class IGraphicalRepresentation;
+class IEntityAttachment;
+
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief A representation of an Eris::Entity, ie. a world entity.
@@ -397,6 +399,9 @@ public:
 	 */
 	sigc::signal<void, PositioningMode> EventPositioningModeChanged;
 
+	void setAttachment(IEntityAttachment* attachment);
+	IEntityAttachment* getAttachment() const;
+
 protected:
 
 
@@ -596,6 +601,8 @@ protected:
 	 * The movement mode is determined mainly from whether the entity is moving or not. The speed of the movement also affects the mode.
 	 */
 	virtual void parseMovementMode();
+
+	IEntityAttachment* mAttachment;
 
 };
 

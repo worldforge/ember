@@ -29,6 +29,7 @@
 
 
 #include "EmberEntity.h"
+#include "WorldAttachment.h"
 #include "model/Model.h"
 #include "terrain/TerrainGenerator.h"
 #include "terrain/TerrainShader.h"
@@ -43,6 +44,7 @@
 #include "Avatar.h"
 #include "AvatarCamera.h"
 #include "Convert.h"
+#include "framework/Exception.h"
 
 #include <Mercator/Shader.h>
 #include <Mercator/FillShader.h>
@@ -65,7 +67,13 @@ EmberEntity(id, ty, vw, sceneManager)
 	mTerrainGenerator = EmberOgre::getSingleton().getTerrainGenerator();
 	mWorldPosition.LatitudeDegrees = 0;
 	mWorldPosition.LongitudeDegrees = 0;
-	sceneManager->getRootSceneNode()->addChild(getSceneNode());
+	Ogre::SceneNode* worldNode = sceneManager->getRootSceneNode()->createChildSceneNode("entity_" + getId());
+	if (worldNode) {
+		setAttachment(new WorldAttachment(*this, *worldNode));
+	} else {
+		throw Ember::Exception("Could not create world node.");
+	}
+//	sceneManager->getRootSceneNode()->addChild(getSceneNode());
 }
 
 WorldEmberEntity::~WorldEmberEntity()
@@ -83,9 +91,6 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 	EventFoliageCreated.emit();
 
 	EmberEntity::init(ge, fromCreateOp);
-
-	///set the position to always 0, 0, 0
-	mOgreNode->setPosition(Ogre::Vector3(0, 0, 0));
 
 	mEnvironment = new Environment::Environment(new Environment::CaelumEnvironment( EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), EmberOgre::getSingleton().getMainCamera()->getCamera()), new Environment::SimpleEnvironment(EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), EmberOgre::getSingleton().getMainCamera()->getCamera()));
 	EventEnvironmentCreated.emit();

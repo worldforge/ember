@@ -33,6 +33,7 @@
 #include "EmberEntityActionCreator.h"
 #include "IGraphicalRepresentation.h"
 #include "mapping/EmberEntityMappingManager.h"
+#include "IEntityAttachment.h"
 
 #include "EmberOgre.h"
 #include <OgreWireBoundingBox.h>
@@ -82,7 +83,7 @@ const std::string EmberEntity::MODE_PROJECTILE("projectile");
 const std::string EmberEntity::BboxMaterialName("BaseYellowNoLightning");
 
 EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager) :
-	Eris::Entity(id, ty, vw), mIsInitialized(false), mIsInMotionManager(false), mErisEntityBoundingBox(0), mOgreNode(0), mTerrainArea(0), mTerrainMod(0), mMovementMode(MM_DEFAULT), mGraphicalRepresentation(0), mEntityMapping(0)
+	Eris::Entity(id, ty, vw), mIsInitialized(false), mIsInMotionManager(false), mErisEntityBoundingBox(0), mOgreNode(0), mTerrainArea(0), mTerrainMod(0), mMovementMode(MM_DEFAULT), mGraphicalRepresentation(0), mEntityMapping(0), mAttachment(0)
 {
 	createSceneNode(sceneManager);
 }
@@ -462,7 +463,6 @@ void EmberEntity::adjustPositionForContainedNode(const EmberEntity& entity, cons
 	const Ogre::Vector3& offset = getOffsetForContainedNode(position, entity);
 	if (offset != Ogre::Vector3::ZERO)
 	{
-
 		sceneNode->setPosition(position + offset);
 	}
 
@@ -480,57 +480,65 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 	Eris::Entity::onLocationChanged(oldLocation);
 
 	///Ff we're attached to something, detach from it.
-	detachFromModel();
+//	detachFromModel();
 
 	///Before we detach ourselves from our current parent, we need to record our current position in the world. This will come in handy later on when we need to determine if we actually moved in the world space.
 	const Ogre::Vector3 oldWorldPosition = getSceneNode()->_getDerivedPosition();
 
 	///Get the new location. We use getEmberLocation() since we always know that all entities are of type EmberEntity.
 	EmberEntity* newLocationEntity = getEmberLocation();
-	if (getSceneNode()->getParentSceneNode())
-	{
-		///Detach from our current parent scene node, removing us from the scene node graph.
-		getSceneNode()->getParentSceneNode()->removeChild(getSceneNode()->getName());
-	}
-	if (!newLocationEntity)
-	{
-		///If there's no new location, just leave now. We've already removed ourselves from the scene node graph, so this entity is in effect in limbo.
-		return;
-	}
-	else
-	{
 
-		///Add ourselves to the scene node of our parent.
-		newLocationEntity->getSceneNode()->addChild(getSceneNode());
-		S_LOG_VERBOSE( "Entity: " << this->getId() << " (" << this->getName() << ") relocated to: "<< newLocationEntity->getId() << " (" << newLocationEntity->getName() << ")" );
-		if (getPosition().isValid())
-		{
-			///Note that in some instances, for instance when the avatar enters the sty, the position isn't updated yet, which will make the avatar "snap" to an incorrect position (since the parent node has changed) until next frame, when the position should have been updated.
-			getSceneNode()->setPosition(Convert::toOgre(getPredictedPos()));
-			adjustPosition();
-			std::stringstream ss;
-			ss << getPredictedPos();
-			S_LOG_VERBOSE("New position for entity: " << this->getId() << " (" << this->getName() << " ) :" << ss.str());
-		}
-		if (getOrientation().isValid())
-		{
-			getSceneNode()->setOrientation(Convert::toOgre(getOrientation()));
-			std::stringstream ss;
-			ss << getOrientation();
-			S_LOG_VERBOSE("New orientation for entity: " << this->getId() << " (" << this->getName() << " ) :" << ss.str());
-		}
-
-		checkClientVisibility(isVisible());
-
-		///we'll adjust the entity so it retains it's former position in the world, but only for moving entities
-		///since else we'll get a "gap" when we're waiting on updated positions from the server
-		///this isn't optimal
-		if (isMoving())
-		{
-			const Ogre::Vector3& newWorldPosition = getSceneNode()->_getDerivedPosition();
-			getSceneNode()->translate(oldWorldPosition - newWorldPosition);
-		}
+	if (newLocationEntity) {
+		IEntityAttachment* newAttachment = newLocationEntity->getAttachment()->attachEntity(*this);
+		setAttachment(newAttachment);
+	} else {
+		setAttachment(0);
 	}
+
+//	if (getSceneNode()->getParentSceneNode())
+//	{
+//		///Detach from our current parent scene node, removing us from the scene node graph.
+//		getSceneNode()->getParentSceneNode()->removeChild(getSceneNode()->getName());
+//	}
+//	if (!newLocationEntity)
+//	{
+//		///If there's no new location, just leave now. We've already removed ourselves from the scene node graph, so this entity is in effect in limbo.
+//		return;
+//	}
+//	else
+//	{
+//
+//		///Add ourselves to the scene node of our parent.
+//		newLocationEntity->getSceneNode()->addChild(getSceneNode());
+//		S_LOG_VERBOSE( "Entity: " << this->getId() << " (" << this->getName() << ") relocated to: "<< newLocationEntity->getId() << " (" << newLocationEntity->getName() << ")" );
+//		if (getPosition().isValid())
+//		{
+//			///Note that in some instances, for instance when the avatar enters the sty, the position isn't updated yet, which will make the avatar "snap" to an incorrect position (since the parent node has changed) until next frame, when the position should have been updated.
+//			getSceneNode()->setPosition(Convert::toOgre(getPredictedPos()));
+//			adjustPosition();
+//			std::stringstream ss;
+//			ss << getPredictedPos();
+//			S_LOG_VERBOSE("New position for entity: " << this->getId() << " (" << this->getName() << " ) :" << ss.str());
+//		}
+//		if (getOrientation().isValid())
+//		{
+//			getSceneNode()->setOrientation(Convert::toOgre(getOrientation()));
+//			std::stringstream ss;
+//			ss << getOrientation();
+//			S_LOG_VERBOSE("New orientation for entity: " << this->getId() << " (" << this->getName() << " ) :" << ss.str());
+//		}
+//
+//		checkClientVisibility(isVisible());
+//
+//		///we'll adjust the entity so it retains it's former position in the world, but only for moving entities
+//		///since else we'll get a "gap" when we're waiting on updated positions from the server
+//		///this isn't optimal
+//		if (isMoving())
+//		{
+//			const Ogre::Vector3& newWorldPosition = getSceneNode()->_getDerivedPosition();
+//			getSceneNode()->translate(oldWorldPosition - newWorldPosition);
+//		}
+//	}
 
 }
 
@@ -773,6 +781,9 @@ void EmberEntity::createErisBboxMaterial()
 
 void EmberEntity::onBboxChanged()
 {
+	if (mAttachment) {
+		mAttachment->updateScale();
+	}
 	if (mErisEntityBoundingBox)
 	{
 		mErisEntityBoundingBox->setupBoundingBox(Convert::toOgre(getBBox()));
@@ -875,4 +886,20 @@ void EmberEntity::setGraphicalRepresentation(IGraphicalRepresentation* graphical
 	}
 	mGraphicalRepresentation = graphicalRepresentation;
 }
+
+void EmberEntity::setAttachment(IEntityAttachment* attachment)
+{
+	if (attachment != mAttachment)
+	{
+		delete mAttachment;
+	}
+	mAttachment = attachment;
+
+}
+IEntityAttachment* EmberEntity::getAttachment() const
+{
+	return mAttachment;
+}
+
+
 }
