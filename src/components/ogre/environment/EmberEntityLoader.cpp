@@ -32,6 +32,7 @@
 #include "../model/Model.h"
 #include "../model/ModelDefinition.h"
 #include "../model/SubModel.h"
+#include "components/ogre/Convert.h"
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/model/ModelRepresentation.h"
 
@@ -193,7 +194,7 @@ void EmberEntityLoader::loadPage(::Forests::PageInfo & page)
 	// 					model->getParentSceneNode()->attachObject((*J)->getEntity());
 	// 				}
 	//  				if ((*J)->getEntity()->isVisible()) {
-						addEntity((*J)->getEntity(), modelRepresentation->getScaleNode()->_getDerivedPosition(), modelRepresentation->getScaleNode()->_getDerivedOrientation(), modelRepresentation->getScaleNode()->_getDerivedScale(), colour);
+						//addEntity((*J)->getEntity(), Convert::toOgre(emberEntity.getViewPosition()), Convert::toOgre(emberEntity.getViewOrientation()), modelRepresentation->getScale(), colour);
 	// 					(*J)->getEntity()->setVisible(false);
 	//  				}
 				}
