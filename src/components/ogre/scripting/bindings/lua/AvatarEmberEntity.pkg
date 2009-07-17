@@ -1,6 +1,6 @@
 namespace EmberOgre {
 
-class AvatarEmberEntity: public EmberPhysicalEntity {
+class AvatarEmberEntity: public EmberEntity {
 	Avatar* getAvatar();
 	
 	/**
