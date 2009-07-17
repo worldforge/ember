@@ -33,9 +33,9 @@ namespace EmberOgre {
 namespace Terrain {
 
 
-TerrainInfo::TerrainInfo()
+TerrainInfo::TerrainInfo(int pageIndicesSize)
 :  mXminBasePoint(0), mXmaxBasePoint(0), mYminBasePoint(0), mYmaxBasePoint(0),
-	 mXminBasePointAdjusted(0), mXmaxBasePointAdjusted(0), mYminBasePointAdjusted(0), mYmaxBasePointAdjusted(0)
+	 mXminBasePointAdjusted(0), mXmaxBasePointAdjusted(0), mYminBasePointAdjusted(0), mYmaxBasePointAdjusted(0), mPageIndicesSize(pageIndicesSize)
 {
 	recalculateSize();
 }

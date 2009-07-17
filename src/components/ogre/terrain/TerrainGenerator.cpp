@@ -92,7 +92,7 @@ namespace Terrain {
 TerrainGenerator::TerrainGenerator(ISceneManagerAdapter* adapter)
 :
 UpdateShadows("update_shadows", this, "Updates shadows in the terrain."),
-mTerrainInfo(new TerrainInfo()),
+mTerrainInfo(new TerrainInfo(adapter->getPageSize())),
 mTerrain(0),
 mHeightMax(std::numeric_limits<Ogre::Real>::min()),
 mHeightMin(std::numeric_limits<Ogre::Real>::max()),
@@ -104,7 +104,6 @@ mFoliageBatchSize(32)
 	registerSceneManagerAdapter( adapter);
 
 	loadTerrainOptions();
-	mTerrainInfo->setPageIndicesSize(adapter->getPageSize());
 	mTerrain = new Mercator::Terrain(Mercator::Terrain::SHADED);
 
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
