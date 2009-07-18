@@ -22,7 +22,8 @@
 
 #include "MotionManager.h"
 
-#include "EmberEntity.h"
+#include "IMovable.h"
+#include "IAnimated.h"
 
 
 template<> EmberOgre::MotionManager* Ember::Singleton<EmberOgre::MotionManager>::ms_Singleton = 0;
@@ -42,14 +43,14 @@ MotionManager::~MotionManager()
 
 void MotionManager::doMotionUpdate(Ogre::Real timeSlice)
 {
-	for (std::set<EmberEntity*>::iterator I = mMotionSet.begin(); I != mMotionSet.end(); ++I) {
+	for (MovableStore::const_iterator I = mMotionSet.begin(); I != mMotionSet.end(); ++I) {
 		(*I)->updateMotion(timeSlice);
 	}
 }
 
 void MotionManager::doAnimationUpdate(Ogre::Real timeSlice)
 {
-	for (AnimatedStore::iterator I = mAnimatedEntities.begin(); I != mAnimatedEntities.end(); ++I) {
+	for (AnimatedStore::const_iterator I = mAnimatedEntities.begin(); I != mAnimatedEntities.end(); ++I) {
 		I->second->updateAnimation(timeSlice);
 	}
 }
@@ -66,26 +67,26 @@ bool MotionManager::frameEnded(const Ogre::FrameEvent& event)
 	return true;
 }
 
-void MotionManager::addEntity(EmberEntity* entity)
+void MotionManager::addMovable(IMovable* movable)
 {
-	mMotionSet.insert(entity);
+	mMotionSet.insert(movable);
 	mInfo.MovingEntities = mMotionSet.size();
-	entity->updateMotion(0);
+	movable->updateMotion(0);
 }
 
-void MotionManager::removeEntity(EmberEntity* entity)
+void MotionManager::removeMovable(IMovable* movable)
 {
-	mMotionSet.erase(entity);
+	mMotionSet.erase(movable);
 	mInfo.MovingEntities = mMotionSet.size();
 }
 
-void MotionManager::addAnimatedEntity(const std::string& id, IAnimated* entity)
+void MotionManager::addAnimated(const std::string& id, IAnimated* animated)
 {
-	mAnimatedEntities[id] = entity;
+	mAnimatedEntities[id] = animated;
 	mInfo.AnimatedEntities = mAnimatedEntities.size();
 }
 
-void MotionManager::removeAnimatedEntity(const std::string& id)
+void MotionManager::removeAnimated(const std::string& id)
 {
 	mAnimatedEntities.erase(id);
 	mInfo.AnimatedEntities = mAnimatedEntities.size();

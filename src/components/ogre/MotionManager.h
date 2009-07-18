@@ -28,62 +28,65 @@
 namespace EmberOgre {
 
 class EmberEntity;
-
-class IAnimated
-{
-public:
-	virtual void updateAnimation(float timeSlice) = 0;
-};
+class IAnimated;
+class IMovable;
 
 /**
- * This class will be responsible for making sure that entites moves
- * in a nice and fluid way. Eventually we'll also implement physics, perhaps it
- * will go into here.
+ * @brief Responsible for making sure that movement and animation within the graphical system is managed and synchronized.
  *
- * The manager also takes care of keeping tabs on all animations.
+ * The main task of the manager is to keep track of all movables and animatables, i.e. implementations of IMovable and IAnimated, and make sure that these are asked to update their movement or animation when needed (usually each frame).
  */
 class MotionManager : public Ogre::FrameListener, public Ember::Singleton<MotionManager> {
 public:
 
 	/**
-	A struct containing information about the MotionManager.
-	*/
+	 * @brief Struct containing information about the MotionManager.
+	 */
 	struct MotionManagerInfo
 	{
 		size_t AnimatedEntities;
 		size_t MovingEntities;
 	};
 
-	/** Ctor
+	/**
+	 * @brief Ctor
 	 */
 	MotionManager();
-	/** Dtor
+
+	/**
+	 * @brief Dtor
 	 */
 	virtual ~MotionManager();
 
 	/**
-	 * Adds a EmberEntity to the movement list.
-	 * That means that until removeEntity is called for the specific entity
-	 * new positions for the entity will be calculated for each frame.
+	 * @brief Adds a movable to the movement list.
+	 * @param movable The movable instance to add to the movable list.
+	 * That means that until removeMovable is called for the specific movable it will recieve calls to updateMotion each frame.
+	 * It's safe to add the same movable multiple times.
 	 */
-	void addEntity(EmberEntity* entity);
-	/**
-	 * Removes a EmberEntity from the movement list.
-	 * New positions for the entity will NOT be calculated for each frame.
-	 */
-	void removeEntity(EmberEntity* entity);
+	void addMovable(IMovable* movable);
 
 	/**
-	 * Adds a EmberPhysicalEntity to the movement list.
-	 * That means that until removeAnimatedEntity is called for the specific entity
-	 * new positions (and animations) for the entity will be calculated for each frame.
+	 * @brief Removes a movable from the movement list.
+	 * @param movable The movable instance to add to the movable list.
+	 * It's safe to remove the same movable multiple times.
 	 */
-	void addAnimatedEntity(const std::string& id, IAnimated* entity);
+	void removeMovable(IMovable* movable);
+
 	/**
-	 * Removes a EmberPhysicalEntity from the movement list.
-	 * New positions (and animations) for the entity will NOT be calculated for each frame.
+	 * @brief Adds an animatable to the animation list.
+	 * That means that until removeAnimated is called for the specific animatable it will receive calls to updateAnimation each frame.
+	 * @param id The id of the animatable.
+	 * @param animatable The animatable instance.
 	 */
-	void removeAnimatedEntity(const std::string& id);
+	void addAnimated(const std::string& id, IAnimated* animatable);
+
+	/**
+	 * @brief Removes an animatable from the animation list.
+	 * @param The id of the animatable to remove.
+	 * It's safe to remove an animateble which is not in the current list.
+	 */
+	void removeAnimated(const std::string& id);
 
 	/**
 	 * @see Ogre::FrameListener::frameStarted
@@ -95,38 +98,47 @@ public:
 	bool frameEnded(const Ogre::FrameEvent& event);
 
 	/**
-	 *    Gets info about the MotionManager.
+	 * @brief Gets info about the MotionManager.
 	 * @return Information about the motion manager
 	 */
 	const MotionManagerInfo& getInfo() const;
 
 private:
 
+	/**
+	 * @brief A store of animatables, identified by a string.
+	 */
 	typedef std::map<std::string , IAnimated*> AnimatedStore;
 
+	/**
+	 * @brief A store of movables.
+	 */
+	typedef std::set<IMovable*> MovableStore;
 
-	/** Information about this manager
+
+	/**
+	 * @brief Information about this manager.
 	 */
 	MotionManagerInfo mInfo;
 
 	/**
-	 * This contains all of the entities that will be moved each frame
+	 * @brief Contains all of the entities that will be moved each frame.
 	 */
-	std::set<EmberEntity*> mMotionSet;
+	MovableStore mMotionSet;
 
 	/**
-	 * This contains all of the entities that will be moved (and animated) each frame
+	 * @brief Contains all of the entities that will be animated each frame.
 	 */
 	AnimatedStore mAnimatedEntities;
 
 
-	/** This method will iterate over all registered moving entities and update
-	 * their positions.
+	/**
+	 * @brief Will iterate over all registered movables and ask them to update their positions.
 	 */
 	void doMotionUpdate(Ogre::Real timeSlice);
 
-	/** This method will iterate over all registered animationStates and update
-	 * those that are enabled
+	/**
+	 * @brief Will iterate over all registered animatables and update those that are enabled.
 	 */
 	void doAnimationUpdate(Ogre::Real timeSlice);
 };
