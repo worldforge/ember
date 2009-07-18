@@ -36,6 +36,14 @@ ModelAttachment::ModelAttachment(EmberEntity& parentEntity, ModelRepresentation&
 	mModelMount = new ModelMount(mModelRepresentation.getModel(), mSceneNode);
 }
 
+ModelAttachment::ModelAttachment(const ModelAttachment& source)
+: OgreAttachment::OgreAttachment(source), mModelRepresentation(source.mModelRepresentation), mModelMount(source.mModelMount)
+{
+
+}
+
+
+
 ModelAttachment::~ModelAttachment()
 {
 	///When the modelmount is deleted the scale node will also be destroyed.
@@ -51,12 +59,24 @@ IGraphicalRepresentation* ModelAttachment::getGraphicalRepresentation() const
 
 IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 {
+	IEntityAttachment* newAttachment(0);
+	OgreAttachment* currentOgreAttachment = dynamic_cast<OgreAttachment*>(entity.getAttachment());
 	ModelRepresentation* modelRepresentation = ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity);
 	//Don't show a graphical representation if the model is set not to show any contained entities.
 	if (!mModelRepresentation.getModel().getDefinition()->getShowContained() && modelRepresentation) {
-		return new ModelAttachment(getAttachedEntity(), *modelRepresentation, *mSceneNode);
+		if (currentOgreAttachment) {
+			newAttachment = currentOgreAttachment->transferToNewParent(*this);
+			return newAttachment;
+		} else {
+			return new ModelAttachment(getAttachedEntity(), *modelRepresentation, *mSceneNode);
+		}
 	} else {
-		return new OgreAttachment(getAttachedEntity(), entity, *mSceneNode);
+		if (currentOgreAttachment) {
+			newAttachment = currentOgreAttachment->transferToNewParent(*this);
+			return newAttachment;
+		} else {
+			return new OgreAttachment(getAttachedEntity(), entity, *mSceneNode);
+		}
 	}
 }
 
@@ -75,6 +95,13 @@ void ModelAttachment::updateScale()
 	}
 }
 
+OgreAttachment* ModelAttachment::transferToNewParent(OgreAttachment& newParentAttachment)
+{
+	OgreAttachment* newAttachment = new ModelAttachment(*this);
+	mSceneNode = 0;
+	mModelMount = 0;
+	return newAttachment;
+}
 
 }
 }

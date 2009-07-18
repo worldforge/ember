@@ -20,6 +20,9 @@
 #define EMBEROGREOGREATTACHMENT_H_
 
 #include "components/ogre/IEntityAttachment.h"
+#include "components/ogre/IMovable.h"
+
+#include <sigc++/trackable.h>
 
 namespace Ogre {
 class SceneNode;
@@ -30,7 +33,7 @@ namespace EmberOgre {
 class IGraphicalRepresentation;
 class EmberEntity;
 
-class OgreAttachment : public IEntityAttachment
+class OgreAttachment : public IEntityAttachment, public virtual sigc::trackable, public IMovable
 {
 public:
 	OgreAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, Ogre::SceneNode& parentNode);
@@ -47,6 +50,11 @@ public:
 	virtual void updateScale();
 
 	void updatePosition();
+
+	virtual OgreAttachment* transferToNewParent(OgreAttachment& newParentAttachment);
+
+	virtual void updateMotion(float timeSlice);
+
 protected:
 
 
@@ -55,7 +63,10 @@ protected:
 
 	Ogre::SceneNode* mSceneNode;
 
+	OgreAttachment(const OgreAttachment& source);
+
 	void entity_Moved();
+	virtual void setupConnections();
 
 };
 

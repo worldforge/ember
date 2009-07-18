@@ -46,7 +46,11 @@ public:
 
 	void updateScale();
 
-private:
+	virtual OgreAttachment* transferToNewParent(OgreAttachment& newParentAttachment);
+
+protected:
+	ModelAttachment(const ModelAttachment& source);
+
 	ModelRepresentation& mModelRepresentation;
 
 	/**

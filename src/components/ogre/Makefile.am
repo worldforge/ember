@@ -33,5 +33,5 @@ noinst_HEADERS = AttributeObserver.h Avatar.h AvatarCamera.h AvatarController.h 
 	MeshSerializerListener.h MotionManager.h MousePicker.h OgreIncludes.h OgreInfo.h \
 	OgreLogObserver.h OgreResourceLoader.h OgreResourceProvider.h OgreSetup.h \
 	 ShaderManager.h ShadowCameraSetup.h \
-	SimpleRenderContext.h Types.h WorldEmberEntity.h XMLHelper.h IGraphicalRepresentation.h IEntityAttachment.h  WorldAttachment.h OgreAttachment.h
+	SimpleRenderContext.h Types.h WorldEmberEntity.h XMLHelper.h IGraphicalRepresentation.h IEntityAttachment.h  WorldAttachment.h OgreAttachment.h IMovable.h IAnimated.h
 #OpcodeCollisionDetector.h OpcodeCollisionDetectorVisualizer.h
