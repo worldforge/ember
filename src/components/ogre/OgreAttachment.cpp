@@ -96,6 +96,16 @@ void OgreAttachment::updateScale()
 {
 }
 
+void OgreAttachment::getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset)
+{
+	if (mParentEntity.getAttachment()) {
+		WFMath::Vector<3> localPositionShift(mChildEntity.getPredictedPos());
+		WFMath::Point<3> adjustedLocalPosition = localPosition + localPositionShift;
+		mParentEntity.getAttachment()->getOffsetForContainedNode(attachment, adjustedLocalPosition, offset);
+	}
+}
+
+
 void OgreAttachment::entity_Moved()
 {
 	updatePosition();
@@ -113,7 +123,12 @@ void OgreAttachment::entity_Moved()
 void OgreAttachment::updatePosition()
 {
 	if (mChildEntity.getPredictedPos().isValid()) {
-		mSceneNode->setPosition(Convert::toOgre(mChildEntity.getPredictedPos()));
+		WFMath::Point<3> predictedPos = mChildEntity.getPredictedPos();
+		WFMath::Vector<3> adjustedOffset = WFMath::Vector<3>::ZERO();
+		if (mParentEntity.getAttachment()) {
+			mParentEntity.getAttachment()->getOffsetForContainedNode(*this, predictedPos, adjustedOffset);
+		}
+		mSceneNode->setPosition(Convert::toOgre(mChildEntity.getPredictedPos() + adjustedOffset));
 		mSceneNode->setOrientation(Convert::toOgre(mChildEntity.getOrientation()));
 	}
 }

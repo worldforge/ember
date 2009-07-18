@@ -28,6 +28,11 @@ class SceneNode;
 
 namespace EmberOgre {
 
+namespace Terrain
+{
+class TerrainGenerator;
+}
+
 class IGraphicalRepresentation;
 class WorldEmberEntity;
 class EmberEntity;
@@ -36,7 +41,7 @@ class EmberEntity;
 class WorldAttachment : public IEntityAttachment
 {
 public:
-	WorldAttachment(WorldEmberEntity& worldEntity, Ogre::SceneNode& worldNode);
+	WorldAttachment(WorldEmberEntity& worldEntity, Ogre::SceneNode& worldNode, Terrain::TerrainGenerator& terrainGenerator);
 	virtual ~WorldAttachment();
 
 	virtual IGraphicalRepresentation* getGraphicalRepresentation() const;
@@ -49,10 +54,13 @@ public:
 
 	virtual void updateScale();
 
+	void getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset);
+
 protected:
 
 	WorldEmberEntity& mWorldEntity;
 	Ogre::SceneNode& mWorldNode;
+	Terrain::TerrainGenerator& mTerrainGenerator;
 
 };
 

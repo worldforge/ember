@@ -91,9 +91,9 @@ void AvatarEmberEntity::onMoved()
 	if (getAvatar()) {
 		parseMovementMode();
 		getAvatar()->movedInWorld();
-		Eris::Entity::onMoved();
-//	} else {
-//		EmberPhysicalEntity::onMoved();
+		EmberEntity::onMoved();
+	} else {
+		EmberEntity::onMoved();
 	}
 }
 

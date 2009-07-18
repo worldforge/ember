@@ -69,7 +69,7 @@ EmberEntity(id, ty, vw, sceneManager)
 	mWorldPosition.LongitudeDegrees = 0;
 	Ogre::SceneNode* worldNode = sceneManager->getRootSceneNode()->createChildSceneNode("entity_" + getId());
 	if (worldNode) {
-		setAttachment(new WorldAttachment(*this, *worldNode));
+		setAttachment(new WorldAttachment(*this, *worldNode, *mTerrainGenerator));
 	} else {
 		throw Ember::Exception("Could not create world node.");
 	}

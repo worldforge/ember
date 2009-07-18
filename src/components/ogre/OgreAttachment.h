@@ -49,6 +49,8 @@ public:
 
 	virtual void updateScale();
 
+	virtual void getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset);
+
 	void updatePosition();
 
 	virtual OgreAttachment* transferToNewParent(OgreAttachment& newParentAttachment);

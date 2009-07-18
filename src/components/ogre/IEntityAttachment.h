@@ -18,8 +18,14 @@
 
 #ifndef IENTITYATTACHMENT_H_
 #define IENTITYATTACHMENT_H_
-namespace EmberOgre {
 
+namespace WFMath
+{
+template<int> class Point;
+template<int> class Vector;
+}
+
+namespace EmberOgre {
 
 class IGraphicalRepresentation;
 class EmberEntity;
@@ -36,6 +42,15 @@ public:
 	virtual IEntityAttachment* attachEntity(EmberEntity& entity) = 0;
 
 	virtual void updateScale() = 0;
+
+	/**
+	 * @brief Gets the offset of a contained attachment.
+	 * The main reason for us wanting to offset contained attachments is that sometimes we want contained attachments to be adjusted to better fit the current mode. An example would be a table, where we want attachments that are contained by the table entity to appear to lie flat on the table. The server of course has some ideas about this, but depending on the actual model used this might look strange. We therefore adjust the contained attachments to better fit the actual in game representation.
+	 * @param attachment The attachment to get an adjusted position for.
+	 * @param localPosition The position of the attachment local to this attachment.
+	 * @param offset The offset which needs to be applied.
+	 */
+	virtual void getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset) = 0;
 
 };
 
