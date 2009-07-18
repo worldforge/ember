@@ -144,7 +144,7 @@ void TerrainGenerator::loadTerrainOptions()
 
 	getAdapter()->loadOptions(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory() + "terrain.cfg");
 
-	getAdapter()->setCamera( &EmberOgre::getSingleton().getMainCamera()->getCamera());
+	getAdapter()->setCamera(EmberOgre::getSingleton().getMainOgreCamera());
 
 }
 

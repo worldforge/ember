@@ -32,7 +32,7 @@ namespace Manipulation {
 class SnapToMovement;
 }
 
-class EmberEntity;
+class SceneNodeAttachment;
 class EntityMoveManager;
 
 /**
@@ -44,7 +44,7 @@ class EntityMover : public Manipulation::EntityMoverBase
 {
 public:
 
-	EntityMover(EmberEntity& entity, EntityMoveManager& manager);
+	EntityMover(SceneNodeAttachment& sceneNodeAttachment, EntityMoveManager& manager);
 	virtual ~EntityMover() {}
 
 	virtual void finalizeMovement();
@@ -57,7 +57,7 @@ protected:
 
 private:
 
-	EmberEntity& mEntity;
+	SceneNodeAttachment& mSceneNodeAttachment;
 	EntityMoveManager& mManager;
 
 };

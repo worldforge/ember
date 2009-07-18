@@ -620,7 +620,7 @@ void GUIManager::runCommand(const std::string &command, const std::string &args)
 // 	return mMousePickers.top();
 // }
 
-void GUIManager::EmberOgre_CreatedAvatarEntity(AvatarEmberEntity* entity)
+void GUIManager::EmberOgre_CreatedAvatarEntity(EmberEntity* entity)
 {
 	///switch to movement mode, since it appears most people don't know how to change from gui mode
 	getInput().setInputMode(Input::IM_MOVEMENT);

@@ -71,10 +71,10 @@ void Forest::initialize()
 	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainInfo().getWorldSizeInIndices();
 	if (worldSize.upperBound(0) - worldSize.lowerBound(0) > 0 && worldSize.upperBound(1) - worldSize.lowerBound(1) > 0) {
 
-		Ogre::Camera& camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
+		Ogre::Camera* camera = EmberOgre::getSingleton().getMainOgreCamera();
 
 		mTrees = new Forests::PagedGeometry();
-		mTrees->setCamera(&camera);	//Set the camera so PagedGeometry knows how to calculate LODs
+		mTrees->setCamera(camera);	//Set the camera so PagedGeometry knows how to calculate LODs
 		mTrees->setPageSize(64);	//Set the size of each page of geometry
 
 		::Forests::TBounds ogreBounds(Convert::toOgre(worldSize));

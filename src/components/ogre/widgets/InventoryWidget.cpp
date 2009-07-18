@@ -189,7 +189,7 @@ bool InventoryWidget::Drop_Click(const CEGUI::EventArgs& args)
 	if (item) {
 		//drop if one meter in front of the avatar
 		Ogre::Vector3 o_vector(1,0,0);
-		Ogre::Vector3 o_pos = EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity()->getSceneNode()->getOrientation() * o_vector;
+		Ogre::Vector3 o_pos = EmberOgre::getSingleton().getAvatar()->getEmberEntity()->getSceneNode()->getOrientation() * o_vector;
 
 		EmberEntity* entity = static_cast<EmberEntity*>(item->getUserData());
 		Ember::EmberServices::getSingletonPtr()->getServerService()->drop(entity, Convert::toWF_Vector3(o_pos));

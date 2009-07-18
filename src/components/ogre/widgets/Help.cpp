@@ -1,7 +1,7 @@
 //
 // C++ Implementation: Help
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -27,8 +27,8 @@
 #include "Help.h"
 #include "Widget.h"
 #include "../GUIManager.h"
-#include <CEGUIImagesetManager.h> 
-#include <CEGUIImageset.h> 
+#include <CEGUIImagesetManager.h>
+#include <CEGUIImageset.h>
 #include "framework/ConsoleBackend.h"
 #include <elements/CEGUIFrameWindow.h>
 #include <elements/CEGUIGUISheet.h>
@@ -37,9 +37,6 @@
 #include "services/config/ConfigService.h"
 
 #include "../EmberEntity.h"
-#include "../EmberPhysicalEntity.h"
-// #include "../PersonEmberEntity.h"
-#include "../AvatarEmberEntity.h"
 #include "../EmberOgre.h"
 
 #include <CEGUIWindowManager.h>
@@ -70,9 +67,9 @@ void Help::buildWidget()
 {
 
 	loadMainSheet("HelpWidget.layout", "Help/");
-	
+
 	enableCloseButton();
-	
+
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 
 	if (configSrv->itemExists("general", "startuphelp") && ((bool)configSrv->getValue("general", "startuphelp"))) {
@@ -113,7 +110,7 @@ void Help::runCommand(const std::string &command, const std::string &args)
 
 }
 
-void Help::EmberOgre_CreatedAvatarEntity(AvatarEmberEntity* entity)
+void Help::EmberOgre_CreatedAvatarEntity(EmberEntity* entity)
 {
 	///Show a small helpful blurb about the gui system
 	if (!mBlurb) {
@@ -126,8 +123,8 @@ void Help::EmberOgre_CreatedAvatarEntity(AvatarEmberEntity* entity)
 			//mEntityName->setBackgroundEnabled(false);
 			mBlurb->setProperty("HorzFormatting", "WordWrapLeftAligned");
 			mBlurb->setText("Click right mouse button to switch between MOVEMENT and INPUT MODE.");
-			
-			
+
+
 			getMainSheet()->addChildWindow(mBlurb);
 			mBlurb->setVisible(false);
 			mTimeBlurbShown = 0;
@@ -135,7 +132,7 @@ void Help::EmberOgre_CreatedAvatarEntity(AvatarEmberEntity* entity)
 			S_LOG_FAILURE("Error when creating help blurb. Message:\n" << ex.getMessage().c_str());
 		}
 	}
-	
+
 }
 
 void Help::frameStarted(const Ogre::FrameEvent& evt)
@@ -149,7 +146,7 @@ void Help::frameStarted(const Ogre::FrameEvent& evt)
 		} else {
 			mTimeBlurbShown += evt.timeSinceLastFrame;
 			mBlurb->setAlpha(1.0f - (mTimeBlurbShown / mTimeToShowBlurb));
-			
+
 			if (mTimeBlurbShown > mTimeToShowBlurb) {
 				mWindowManager->destroyWindow(mBlurb);
 				mBlurb = 0;

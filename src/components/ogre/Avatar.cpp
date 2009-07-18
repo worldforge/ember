@@ -37,6 +37,8 @@
 #include "AvatarController.h"
 #include "AvatarCamera.h"
 #include "AvatarLogger.h"
+#include "components/ogre/SceneNodeAttachment.h"
+#include "components/ogre/AvatarAttachmentController.h"
 
 #include "AvatarEmberEntity.h"
 #include "model/Model.h"
@@ -54,8 +56,8 @@
 namespace EmberOgre {
 
 
-Avatar::Avatar()
-: mErisAvatarEntity(0)
+Avatar::Avatar(EmberEntity& erisAvatarEntity)
+: mErisAvatarEntity(erisAvatarEntity)
 , mHasChangedLocation(false)
 , mChatLoggerParent(0)
 {
@@ -69,12 +71,6 @@ Avatar::Avatar()
 	mWalkSpeed = 2.47;
 	mRunSpeed = 5; ///5 seems to be the max speed in cyphesis
 
-
-	/// Create the Avatar tree of nodes, with a base entity
-	/// and attach all the needed cameras
-
-	createAvatar();
-
 	Ogre::Root::getSingleton().addFrameListener(this);
 
 	registerConfigListener("general","logchatmessages", sigc::mem_fun(*this, &Avatar::Config_LogChatMessages));
@@ -87,10 +83,28 @@ Avatar::Avatar()
 	mCurrentMovementState.orientation = Ogre::Quaternion::IDENTITY;
 	mCurrentMovementState.isRunning = false;
 
+	///check if the user is of type "creator" and thus an admin
+	Eris::TypeService* typeService = Ember::EmberServices::getSingleton().getServerService()->getConnection()->getTypeService();
+	if (mErisAvatarEntity.getType()->isA(typeService->getTypeByName("creator"))) {
+		mIsAdmin = true;
+	} else {
+		mIsAdmin = false;
+	}
+
+
+	mErisAvatarEntity.LocationChanged.connect(sigc::mem_fun(*this, &Avatar::avatar_LocationChanged));
+
+	mClientSideAvatarOrientation = mErisAvatarEntity.getOrientation();
+	mClientSideAvatarPosition = mErisAvatarEntity.getPredictedPos();
+
+	mErisAvatarEntity.setAttachmentControlDelegate(new AvatarAttachmentController(*this));
+
+
 }
 
 Avatar::~Avatar()
 {
+	Ogre::Root::getSingleton().removeFrameListener(this);
 
 }
 
@@ -99,11 +113,6 @@ void Avatar::setMinIntervalOfRotationChanges(Ogre::Real milliseconds)
 	mMinIntervalOfRotationChanges = milliseconds;
 }
 
-void Avatar::createAvatar()
-{
-	mAvatarNode = static_cast<Ogre::SceneNode*>(EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChild());
-	mAvatarNode->setPosition(Ogre::Vector3(0,0,0));
-}
 
 bool Avatar::frameStarted(const Ogre::FrameEvent & event)
 {
@@ -169,7 +178,7 @@ void Avatar::attemptMove(AvatarControllerMovement& movement)
 	///first we'll register the current state in newMovementState and compare to mCurrentMovementState
 	///that way we'll only send stuff to the server if our movement changes
 	AvatarMovementState newMovementState;
-	newMovementState.orientation = mAvatarNode->getOrientation();
+	newMovementState.orientation = getAvatarSceneNode()->getOrientation();
 	newMovementState.velocity = rawVelocity;// * newMovementState.orientation.xAxis();
 
 	if (move != Ogre::Vector3::ZERO) {
@@ -232,20 +241,20 @@ void Avatar::attemptMove(AvatarControllerMovement& movement)
 		mTimeSinceLastServerMessage += timeSlice * 1000;
 	}
 
-	if (newMovementState.isMoving) {
-		//do the actual movement of the avatar node
-		mAvatarNode->translate(mAvatarNode->getOrientation() * (rawVelocity * timeSlice));
-	}
+	mClientSideAvatarOrientation = Convert::toWF(newMovementState.orientation);
+
+	mClientSideAvatarPosition += Convert::toWF<WFMath::Vector<3> >(newMovementState.orientation * (rawVelocity * timeSlice));
+
+//	if (newMovementState.isMoving) {
+//		//do the actual movement of the avatar node
+//		mAvatarNode->translate(mAvatarNode->getOrientation() * (rawVelocity * timeSlice));
+//	}
 	mCurrentMovementState = newMovementState;
 
 }
 
 void Avatar::adjustAvatarToNewPosition(AvatarControllerMovement* movement)
 {
-	///allow the eris entity to adjust to the containing node
-	if (mErisAvatarEntity) {
-		mErisAvatarEntity->adjustPosition();
-	}
 }
 
 
@@ -264,14 +273,14 @@ void Avatar::attemptRotate(AvatarControllerMovement& movement)
 	//if we're moving we must sync the rotation with messages sent to the server
 	if (!movement.isMoving && fabs(getAvatarCamera()->getYaw().valueDegrees()) > mThresholdDegreesOfYawForAvatarRotation) {
 //		mAvatarNode->setOrientation(movement.cameraOrientation);
-		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,getAvatarCamera()->getYaw());
+//		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,getAvatarCamera()->getYaw());
 		Ogre::Degree yaw = getAvatarCamera()->getYaw();
 		getAvatarCamera()->yaw(-yaw);
 //		mAccumulatedHorizontalRotation = 0;
 	} else if (isOkayToSendRotationMovementChangeToServer() && (getAvatarCamera()->getYaw().valueDegrees())) {
 		// rotate the Avatar Node only in X position (no vertical rotation)
 //		mAvatarNode->setOrientation(movement.cameraOrientation);
-		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,getAvatarCamera()->getYaw());
+//		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,getAvatarCamera()->getYaw());
 		Ogre::Degree yaw = getAvatarCamera()->getYaw();
 		getAvatarCamera()->yaw(-yaw);
 
@@ -281,10 +290,24 @@ void Avatar::attemptRotate(AvatarControllerMovement& movement)
 
 }
 
+EmberEntity& Avatar::getEmberEntity()
+{
+	return mErisAvatarEntity;
+}
+
 bool Avatar::isOkayToSendRotationMovementChangeToServer()
 {
 	return mTimeSinceLastServerMessage > mMinIntervalOfRotationChanges;
 
+}
+
+Ogre::SceneNode* Avatar::getAvatarSceneNode() const
+{
+	SceneNodeAttachment* attachment = dynamic_cast<SceneNodeAttachment*>(mErisAvatarEntity.getAttachment());
+	if (attachment) {
+		return attachment->getSceneNode();
+	}
+	return 0;
 }
 
 AvatarCamera* Avatar::getAvatarCamera() const
@@ -292,15 +315,11 @@ AvatarCamera* Avatar::getAvatarCamera() const
 	return mAvatarController->getAvatarCamera();
 }
 
-AvatarEmberEntity* Avatar::getAvatarEmberEntity()
-{
-	return mErisAvatarEntity;
-}
-
-
 void Avatar::setAvatarController(AvatarController* avatarController)
 {
 	mAvatarController = avatarController;
+	mAvatarController->getAvatarCamera()->setAvatarNode(getAvatarSceneNode());
+	mAvatarController->attachCamera();
 }
 
 void Avatar::movedInWorld()
@@ -308,59 +327,33 @@ void Avatar::movedInWorld()
 	///only snap the avatar to the postition and orientation sent from the server if we're not moving or if we're not recently changed location
 	///The main reason when moving is that we don't want to have the avatar snapping back in the case of lag
 	///However, if we've just recently changed location, we need to also update the orientation to work with the new location.
-	if (!mCurrentMovementState.isMoving || mHasChangedLocation)
-	{
-		const WFMath::Quaternion& orient = mErisAvatarEntity->getOrientation();
-		bool isOwnRotation = false;
-		///Check if the new orientation is one that we sent ourself, and if so ignore it
-		for (std::list<WFMath::Quaternion>::const_iterator I = mLastOrientations.begin(); I != mLastOrientations.end(); ++I) {
-			if (orient == *I) {
-				isOwnRotation = true;
-				break;
-			}
-		}
-		if (!isOwnRotation) {
-			mAvatarNode->setOrientation(Convert::toOgre(orient));
-		}
-		mAvatarNode->setPosition(Convert::toOgre(mErisAvatarEntity->getPosition()));
-		///we must set this, else ember will think that we've rotated the avatar ourselves and try to send an update to the server
-		mMovementStateAtLastServerMessage.orientation = mAvatarNode->getOrientation();
-		mHasChangedLocation = false;
-	}
+//	if (!mCurrentMovementState.isMoving || mHasChangedLocation)
+//	{
+//		const WFMath::Quaternion& orient = mErisAvatarEntity->getOrientation();
+//		bool isOwnRotation = false;
+//		///Check if the new orientation is one that we sent ourself, and if so ignore it
+//		for (std::list<WFMath::Quaternion>::const_iterator I = mLastOrientations.begin(); I != mLastOrientations.end(); ++I) {
+//			if (orient == *I) {
+//				isOwnRotation = true;
+//				break;
+//			}
+//		}
+//		if (!isOwnRotation) {
+//			mAvatarNode->setOrientation(Convert::toOgre(orient));
+//		}
+//		mAvatarNode->setPosition(Convert::toOgre(mErisAvatarEntity->getPosition()));
+//		///we must set this, else ember will think that we've rotated the avatar ourselves and try to send an update to the server
+//		mMovementStateAtLastServerMessage.orientation = mAvatarNode->getOrientation();
+//		mHasChangedLocation = false;
+//	}
 }
 
 void Avatar::avatar_LocationChanged(Eris::Entity* entity)
 {
 	///if we've changed location, we need to update the orientation. This is done on the next onMoved event, which is why we must honour the updated values on next onMoved event, even though we might be moving.
 	mHasChangedLocation = true;
-}
-
-
-void Avatar::createdAvatarEmberEntity(AvatarEmberEntity *emberEntity)
-{
-	Ogre::SceneNode* oldAvatar = mAvatarNode;
-
-	///check if the user is of type "creator" and thus an admin
-	Eris::TypeService* typeService = emberEntity->getErisAvatar()->getConnection()->getTypeService();
-	if (emberEntity->getType()->isA(typeService->getTypeByName("creator"))) {
-		mIsAdmin = true;
-	} else {
-		mIsAdmin = false;
-	}
-
-	mAvatarNode = emberEntity->getSceneNode();
-//	mAvatarModel = emberEntity->getModel();
-
-	mErisAvatarEntity = emberEntity;
-	emberEntity->setAvatar(this);
-	mAvatarController->createAvatarCameras(emberEntity->getSceneNode());
-
-	EmberOgre::getSingleton().getSceneManager()->destroySceneNode(oldAvatar->getName());
-	Ember::Input::getSingleton().setMovementModeEnabled(true);
-
-	mErisAvatarEntity->LocationChanged.connect(sigc::mem_fun(*this, &Avatar::avatar_LocationChanged));
-
-	EventCreatedAvatarEntity.emit(emberEntity);
+	mClientSideAvatarOrientation = mErisAvatarEntity.getOrientation();
+	mClientSideAvatarPosition = mErisAvatarEntity.getPredictedPos();
 }
 
 void Avatar::Config_AvatarRotationUpdateFrequency(const std::string& section, const std::string& key, varconf::Variable& variable)
@@ -385,6 +378,17 @@ void Avatar::Config_LogChatMessages(const std::string& section, const std::strin
 	} else {
 		mChatLoggerParent.reset();
 	}
+}
+
+
+const WFMath::Point<3>& Avatar::getClientSideAvatarPosition() const
+{
+	return mClientSideAvatarPosition;
+}
+
+const WFMath::Quaternion& Avatar::getClientSideAvatarOrientation() const
+{
+	return mClientSideAvatarOrientation;
 }
 
 

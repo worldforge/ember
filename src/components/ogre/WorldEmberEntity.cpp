@@ -92,7 +92,7 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 
 	EmberEntity::init(ge, fromCreateOp);
 
-	mEnvironment = new Environment::Environment(new Environment::CaelumEnvironment( EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), EmberOgre::getSingleton().getMainCamera()->getCamera()), new Environment::SimpleEnvironment(EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), EmberOgre::getSingleton().getMainCamera()->getCamera()));
+	mEnvironment = new Environment::Environment(new Environment::CaelumEnvironment( EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), *EmberOgre::getSingleton().getMainOgreCamera()), new Environment::SimpleEnvironment(EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), *EmberOgre::getSingleton().getMainOgreCamera()));
 	EventEnvironmentCreated.emit();
 
 	///we will wait with creating the terrain and initialing the environment until we've got a onVisibilityChanged call, since the Eris::Calendar functionality depends on the world entity object to be fully constructed and initialized to work. By waiting until onVisibilityChanged is called we guarantee that the Calendar will get the correct server time
@@ -265,31 +265,31 @@ void TerrainParser::createDefaultShaders()
 
 void WorldEmberEntity::adjustPositionForContainedNode(const EmberEntity& entity, const Ogre::Vector3& position)
 {
-	Ogre::SceneNode* sceneNode = entity.getSceneNode();
-
-	if (entity.getPositioningMode() == EmberEntity::PM_FLOATING) {
-		sceneNode->setPosition(position.x, 0,position.z);
-	} else if (entity.getMovementMode() == EmberEntity::MM_SWIMMING) {
-		///if it's swimming, make sure that it's between the sea bottom and the surface
-		const TerrainPosition pos = Convert::toWF<TerrainPosition>(position);
-		float height = 0;
-		if (mTerrainGenerator->getHeight(pos, height)) {
-			if (position.y < height) {
-				sceneNode->setPosition(position.x, height,position.z);
-			} else if (position.y > 0) {
-				sceneNode->setPosition(position.x, 0,position.z);
-			}
-		}
-
-	} else {
-		///get the height from Mercator through the TerrainGenerator
-/*		assert(mTerrainGenerator);
-//		TerrainPosition pos(entity->getPredictedPos().x(), entity->getPredictedPos().y());
-		TerrainPosition pos = Convert::toWF_TerrainPosition(position);
-		float height = mTerrainGenerator->getHeight(pos);*/
-		EmberEntity::adjustPositionForContainedNode(entity, position);
-		//sceneNode->setPosition(getOffsetForContainedNode(position, entity));
-	}
+//	Ogre::SceneNode* sceneNode = entity.getSceneNode();
+//
+//	if (entity.getPositioningMode() == EmberEntity::PM_FLOATING) {
+//		sceneNode->setPosition(position.x, 0,position.z);
+//	} else if (entity.getMovementMode() == EmberEntity::MM_SWIMMING) {
+//		///if it's swimming, make sure that it's between the sea bottom and the surface
+//		const TerrainPosition pos = Convert::toWF<TerrainPosition>(position);
+//		float height = 0;
+//		if (mTerrainGenerator->getHeight(pos, height)) {
+//			if (position.y < height) {
+//				sceneNode->setPosition(position.x, height,position.z);
+//			} else if (position.y > 0) {
+//				sceneNode->setPosition(position.x, 0,position.z);
+//			}
+//		}
+//
+//	} else {
+//		///get the height from Mercator through the TerrainGenerator
+///*		assert(mTerrainGenerator);
+////		TerrainPosition pos(entity->getPredictedPos().x(), entity->getPredictedPos().y());
+//		TerrainPosition pos = Convert::toWF_TerrainPosition(position);
+//		float height = mTerrainGenerator->getHeight(pos);*/
+//		EmberEntity::adjustPositionForContainedNode(entity, position);
+//		//sceneNode->setPosition(getOffsetForContainedNode(position, entity));
+//	}
 
 }
 

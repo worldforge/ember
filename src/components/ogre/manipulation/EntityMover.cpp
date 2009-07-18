@@ -28,16 +28,17 @@
 #include "EntityMoveManager.h"
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
-#include "../EmberEntity.h"
-#include "../Convert.h"
+#include "components/ogre/EmberEntity.h"
+#include "components/ogre/SceneNodeAttachment.h"
+#include "components/ogre/Convert.h"
 
 #include <OgreSceneNode.h>
 
 namespace EmberOgre
 {
 
-EntityMover::EntityMover(EmberEntity& entity, EntityMoveManager& manager) :
-	EntityMoverBase(entity, entity.getSceneNode()), mEntity(entity), mManager(manager)
+EntityMover::EntityMover(SceneNodeAttachment& sceneNodeAttachment, EntityMoveManager& manager) :
+	EntityMoverBase(sceneNodeAttachment.getAttachedEntity(), sceneNodeAttachment.getSceneNode()), mSceneNodeAttachment(sceneNodeAttachment), mManager(manager)
 {
 }
 
@@ -46,20 +47,20 @@ void EntityMover::finalizeMovement()
 	if (mEntity.getLocation())
 	{
 		///send to server
-		Ember::EmberServices::getSingleton().getServerService()->place(&mEntity, mEntity.getLocation(), Convert::toWF<WFMath::Point<3> >(mEntity.getSceneNode()->getPosition()), Convert::toWF(mEntity.getSceneNode()->getOrientation()));
+		Ember::EmberServices::getSingleton().getServerService()->place(&mEntity, mEntity.getLocation(), mEntity.getPosition(), mEntity.getOrientation());
 	}
 	mManager.EventFinishedMoving.emit();
 
 }
 void EntityMover::cancelMovement()
 {
-	mEntity.synchronizeWithServer();
+	mSceneNodeAttachment.getAttachedEntity().synchronizeWithServer();
 	mManager.EventCancelledMoving.emit();
 }
 
 void EntityMover::newEntityPosition(const Ogre::Vector3& position)
 {
-	mEntity.adjustPosition(mEntity.getSceneNode()->getPosition());
+	mSceneNodeAttachment.getAttachedEntity().adjustPosition(mSceneNodeAttachment.getSceneNode()->getPosition());
 }
 
 }

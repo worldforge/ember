@@ -182,11 +182,11 @@ void AvatarEmberEntity::onChildRemoved(Entity *e)
 // 	getSceneNode()->translate(oldWorldPosition - newWorldPosition);
 // }
 
-Ogre::SceneNode* AvatarEmberEntity::getAvatarSceneNode()
-{
-	return getSceneNode();
-//	return getScaleNode();
-}
+//Ogre::SceneNode* AvatarEmberEntity::getAvatarSceneNode()
+//{
+//	return getSceneNode();
+////	return getScaleNode();
+//}
 
 
 

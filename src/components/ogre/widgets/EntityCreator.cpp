@@ -125,12 +125,12 @@ void EntityCreator::startCreation()
 		return;
 	}
 
-	AvatarEmberEntity* avatar = EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity();
+	EmberEntity& avatar = EmberOgre::getSingleton().getAvatar()->getEmberEntity();
 
 	// Making inital position (orientation is preserved)
-	Ogre::Vector3 o_vector(2,0,0);
-	Ogre::Vector3 o_pos = avatar->getSceneNode()->getPosition() + (avatar->getSceneNode()->getOrientation() * o_vector);
-	mPos = Convert::toWF<WFMath::Point<3> >(o_pos);
+	WFMath::Vector<3> offset(2, 0, 0);
+
+	mPos = avatar.getPosition() + offset.rotate(avatar.getOrientation());
 
 	mRecipeConnection = mRecipe->EventValueChanged.connect( sigc::mem_fun(*this, &EntityCreator::adapterValueChanged) );
 
@@ -174,7 +174,7 @@ void EntityCreator::createEntity()
 		return;
 	}
 
-	AvatarEmberEntity* avatar = EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity();
+	EmberEntity& avatar = EmberOgre::getSingleton().getAvatar()->getEmberEntity();
 
 	/*
 	if (mName->getText().length() > 0) {
@@ -183,7 +183,7 @@ void EntityCreator::createEntity()
 		msg["name"] = typeinfo->getName();
 	}
 	*/
-	mEntityMessage["loc"] = avatar->getLocation()->getId();
+	mEntityMessage["loc"] = avatar.getLocation()->getId();
 	mEntityMessage["name"] = erisType->getName();
 	mEntityMessage["parents"] = Atlas::Message::ListType(1, erisType->getName());
 
@@ -305,12 +305,12 @@ void EntityCreator::finalizeCreation()
 
 	// Making create operation message
 	Atlas::Objects::Operation::Create c;
-	AvatarEmberEntity* avatar = EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity();
-	c->setFrom(avatar->getId());
+	EmberEntity& avatar = EmberOgre::getSingleton().getAvatar()->getEmberEntity();
+	c->setFrom(avatar.getId());
 	///if the avatar is a "creator", i.e. and admin, we will set the TO property
 	///this will bypass all of the server's filtering, allowing us to create any entity and have it have a working mind too
-	if (avatar->getType()->isA(mConn->getTypeService()->getTypeByName("creator"))) {
-		c->setTo(avatar->getId());
+	if (avatar.getType()->isA(mConn->getTypeService()->getTypeByName("creator"))) {
+		c->setTo(avatar.getId());
 	}
 
 	c->setArgsAsList(Atlas::Message::ListType(1, mEntityMessage));

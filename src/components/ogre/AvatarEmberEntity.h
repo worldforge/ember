@@ -65,7 +65,7 @@ public:
 	/**
 	 * returns the Ogre::SceneNode which represents the avatar
 	 */
-	Ogre::SceneNode* getAvatarSceneNode();
+//	Ogre::SceneNode* getAvatarSceneNode();
 
 	/**
 	 *    Returns the Eris Avatar instance.

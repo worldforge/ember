@@ -63,8 +63,8 @@ ShrubberyFoliage::~ShrubberyFoliage()
 
 void ShrubberyFoliage::initialize()
 {
-	Ogre::Camera& camera = EmberOgre::getSingleton().getMainCamera()->getCamera();
-	mPagedGeometry = new ::Forests::PagedGeometry(&camera, EmberOgre::getSingleton().getTerrainGenerator()->getFoliageBatchSize());
+	Ogre::Camera* camera = EmberOgre::getSingleton().getMainOgreCamera();
+	mPagedGeometry = new ::Forests::PagedGeometry(camera, EmberOgre::getSingleton().getTerrainGenerator()->getFoliageBatchSize());
 	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainInfo().getWorldSizeInIndices();
 
 	::Forests::TBounds ogreBounds(Convert::toOgre(worldSize));

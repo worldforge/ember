@@ -53,11 +53,13 @@ public:
 
 	virtual void getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset);
 
-	virtual void setControllerDelegate(IAttachmentControlDelegate* controllerDelegate);
+	virtual void setControlDelegate(IAttachmentControlDelegate* controllerDelegate);
 
 	virtual SceneNodeAttachment* transferToNewParent(SceneNodeAttachment& newParentAttachment);
 
 	void setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation);
+
+	Ogre::SceneNode* getSceneNode() const;
 
 protected:
 

@@ -301,24 +301,24 @@ void MakeEntityWidget::createPreviewTexture()
 void MakeEntityWidget::createEntityOfType(Eris::TypeInfo* typeinfo)
 {
 	Atlas::Objects::Operation::Create c;
-	AvatarEmberEntity* avatar = EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity();
-	c->setFrom(avatar->getId());
+	EmberEntity& avatar = EmberOgre::getSingleton().getAvatar()->getEmberEntity();
+	c->setFrom(avatar.getId());
 	///if the avatar is a "creator", i.e. and admin, we will set the TO property
 	///this will bypass all of the server's filtering, allowing us to create any entity and have it have a working mind too
-	if (avatar->getType()->isA(mConn->getTypeService()->getTypeByName("creator"))) {
-		c->setTo(avatar->getId());
+	if (avatar.getType()->isA(mConn->getTypeService()->getTypeByName("creator"))) {
+		c->setTo(avatar.getId());
 	}
 
 	Atlas::Message::MapType msg;
-	msg["loc"] = avatar->getLocation()->getId();
+	msg["loc"] = avatar.getLocation()->getId();
 
 	Ogre::Vector3 o_vector(2,0,0);
-	Ogre::Vector3 o_pos = avatar->getSceneNode()->getPosition() + (avatar->getSceneNode()->getOrientation() * o_vector);
+	Ogre::Vector3 o_pos = Convert::toOgre(avatar.getPredictedPos()) + (Convert::toOgre(avatar.getOrientation()) * o_vector); //TODO: remove conversions
 
 // 	WFMath::Vector<3> vector(0,2,0);
 // 	WFMath::Point<3> pos = avatar->getPosition() + (avatar->getOrientation() * vector);
 	WFMath::Point<3> pos = Convert::toWF<WFMath::Point<3> >(o_pos);
-	WFMath::Quaternion orientation = avatar->getOrientation();
+	WFMath::Quaternion orientation = avatar.getOrientation();
 
 	msg["pos"] = pos.toAtlas();
 	if (mName->getText().length() > 0) {

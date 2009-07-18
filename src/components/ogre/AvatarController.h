@@ -117,7 +117,7 @@ public:
 
 
 
-	void createAvatarCameras(Ogre::SceneNode* avatarSceneNode);
+	void createAvatarCameras();
 
 	/**
 	 * Gets the AvatarCamera.

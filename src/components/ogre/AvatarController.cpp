@@ -115,9 +115,7 @@ AvatarController::AvatarController(Avatar& avatar, Ogre::RenderWindow& window, G
 
 	mMovementCommandMapper.restrictToInputMode(Input::IM_MOVEMENT );
 
-	createAvatarCameras(avatar.getAvatarSceneNode());
-	attachCamera();
-
+	createAvatarCameras();
 
 	mAvatar.setAvatarController(this);
 
@@ -140,10 +138,10 @@ AvatarController::~AvatarController()
 	delete mAvatarCamera;
 }
 
-void AvatarController::createAvatarCameras(Ogre::SceneNode* avatarSceneNode)
+void AvatarController::createAvatarCameras()
 {
 	if (mAvatarCamera == 0) {
-		mAvatarCamera = new AvatarCamera(avatarSceneNode, *EmberOgre::getSingleton().getSceneManager(), mWindow, Input::getSingleton(), mCamera);
+		mAvatarCamera = new AvatarCamera(*EmberOgre::getSingleton().getSceneManager(), mWindow, Input::getSingleton(), mCamera);
 	} else {
 		attachCamera();
 	}
@@ -307,9 +305,9 @@ void AvatarController::moveToPoint(const Ogre::Vector3& point)
 	WFMath::Vector<3> atlasVector = Convert::toWF<WFMath::Vector<3> >(point);
 	WFMath::Point<3> atlasPos(atlasVector.x(), atlasVector.y(), atlasVector.z());
 /*	WFMath::Point<3> atlas2dPos(atlasVector.x(), atlasVector.y(), 0);
-	WFMath::Point<3> avatar2dPos(mAvatar.getAvatarEmberEntity()->getPosition().x(), mAvatar.getAvatarEmberEntity()->getPosition().y(), 0);
+	WFMath::Point<3> avatar2dPos(mAvatar.getEmberEntity()->getPosition().x(), mAvatar.getEmberEntity()->getPosition().y(), 0);
 	WFMath::Vector<3> direction(1, 0, 0);
-	direction = direction.rotate(mAvatar.getAvatarEmberEntity()->getOrientation());
+	direction = direction.rotate(mAvatar.getEmberEntity()->getOrientation());
 	WFMath::Vector<3> directionToPoint = atlas2dPos - avatar2dPos;
 	WFMath::Quaternion rotation;
 	rotation = rotation.rotation(directionToPoint, direction);*/
@@ -326,7 +324,7 @@ void AvatarController::teleportTo(const Ogre::Vector3& point, EmberEntity* locat
 	WFMath::Point<3> atlasPos(atlasVector.x(), atlasVector.y(), atlasVector.z());
 
 
-	Ember::EmberServices::getSingletonPtr()->getServerService()->place(mAvatar.getAvatarEmberEntity(), locationEntity, atlasPos);
+	Ember::EmberServices::getSingletonPtr()->getServerService()->place(&mAvatar.getEmberEntity(), locationEntity, atlasPos);
 }
 
 

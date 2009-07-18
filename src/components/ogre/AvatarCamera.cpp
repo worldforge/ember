@@ -114,7 +114,7 @@ bool Recorder::frameStarted(const Ogre::FrameEvent& event)
 
 
 
-AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager& sceneManager, Ogre::RenderWindow& window, Input& input, Ogre::Camera& camera) :
+AvatarCamera::AvatarCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& window, Input& input, Ogre::Camera& camera) :
 	SetCameraDistance("setcameradistance", this, "Set the distance of the camera."),
 	ToggleRendermode("toggle_rendermode", this, "Toggle between wireframe and solid render modes."),
 	ToggleFullscreen("toggle_fullscreen", this, "Switch between windowed and full screen mode."),
@@ -140,7 +140,6 @@ AvatarCamera::AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager& scen
 {
 	createNodesForCamera();
 	createViewPort();
-	setAvatarNode(avatarNode);
 
 	/// Register this as a frame listener
 	Ogre::Root::getSingleton().addFrameListener(this);

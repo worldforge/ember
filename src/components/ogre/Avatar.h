@@ -25,6 +25,9 @@
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
 
+#include <wfmath/point.h>
+#include <wfmath/quaternion.h>
+
 #include "GUIManager.h"
 #include "services/config/ConfigListenerContainer.h"
 #include <memory>
@@ -81,7 +84,7 @@ public Ember::ConfigListenerContainer
 	/**
 	 *    Ctor.
 	 */
-	Avatar();
+	Avatar(EmberEntity& erisAvatarEntity);
 
 	/**
 	 *    Dtor.
@@ -109,12 +112,6 @@ public Ember::ConfigListenerContainer
 	virtual bool frameStarted(const Ogre::FrameEvent & event);
 
 	/**
-	 *    Call this when the Eris::Entity representing the avatar has been created.
-	 * @param EmberEntity
-	 */
-	void createdAvatarEmberEntity(AvatarEmberEntity *EmberEntity);
-
-	/**
 	 *    Call this when the avatar entity has moved in the world.
 	 */
 	void movedInWorld();
@@ -136,7 +133,7 @@ public Ember::ConfigListenerContainer
 	 *    Access for the Eris::Entity which represents the Avatar.
 	 * @return
 	 */
-	AvatarEmberEntity* getAvatarEmberEntity();
+	EmberEntity& getEmberEntity();
 
 
 	/**
@@ -158,14 +155,14 @@ public Ember::ConfigListenerContainer
 	sigc::signal<void, EmberEntity* > EventRemovedEntityFromInventory;
 
 	/**
-	Emitted when the avatar entity has been created.
-	*/
-	sigc::signal<void, AvatarEmberEntity*> EventCreatedAvatarEntity;
-
-	/**
 	True if the current user have admin rights, i.e. is a "creator".
 	*/
 	bool isAdmin() const;
+
+
+	const WFMath::Point<3>& getClientSideAvatarPosition() const;
+
+	const WFMath::Quaternion& getClientSideAvatarOrientation() const;
 
 protected:
 
@@ -238,14 +235,6 @@ protected:
 	 */
 	void attemptJump();
 
-
-	/**
-	 * Creates the avatar. We'll have to extend this functionality later on to
-	 * allow for different avatars.
-	 */
-	void createAvatar();
-
-
 	/**
 	 * Creates and sets up the different cameras.
 	 */
@@ -266,27 +255,9 @@ protected:
 	float mRunSpeed;
 
 	/**
-	 * The main avatar model
-	 */
-	Model::Model* mAvatarModel;
-
-	/**
-	 * The main avatar scenenode
-	 */
-	Ogre::SceneNode* mAvatarNode;
-
-
-
-	/** node for rotating the model for the entity
-	* if it's not looking in the -Z direction (default)
-	* To be removed once we've standarized on models
-	*/
-	Ogre::SceneNode* mAvatarModelNode;
-
-	/**
 	The Eris::Entity which represents the Avatar.
 	*/
-	AvatarEmberEntity* mErisAvatarEntity;
+	EmberEntity& mErisAvatarEntity;
 
 	/**
 	* this is used to make sure starts and stops of movement is only sent to the server once
@@ -372,16 +343,16 @@ protected:
 	 */
 	std::list<WFMath::Quaternion> mLastOrientations;
 
+	WFMath::Point<3> mClientSideAvatarPosition;
+
+	WFMath::Quaternion mClientSideAvatarOrientation;
+
 
 }; //End of class declaration
 
 inline bool Avatar::isAdmin() const
 {
 	return mIsAdmin;
-}
-inline Ogre::SceneNode* Avatar::getAvatarSceneNode() const
-{
-	return mAvatarNode;
 }
 
 }

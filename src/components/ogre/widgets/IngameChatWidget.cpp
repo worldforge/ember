@@ -64,7 +64,7 @@ namespace EmberOgre {
 namespace Gui {
 
 IngameChatWidget::IngameChatWidget()
-: mTimeShown(0), mDistanceShown(100), mLabelCreator(*this), mLabelPool(mLabelCreator), mChatTextCreator(*this), mChatTextPool(mChatTextCreator), mAvatarEntityId(""), mMainCamera(EmberOgre::getSingleton().getMainCamera()->getCamera())
+: mTimeShown(0), mDistanceShown(100), mLabelCreator(*this), mLabelPool(mLabelCreator), mChatTextCreator(*this), mChatTextPool(mChatTextCreator), mAvatarEntityId(""), mMainCamera(*EmberOgre::getSingleton().getMainOgreCamera())
 {
 
 	registerConfigListener("ingamechatwidget", "timeshown", sigc::mem_fun(*this, &IngameChatWidget::Config_TimeShown));	registerConfigListener("ingamechatwidget", "distanceshown", sigc::mem_fun(*this, &IngameChatWidget::Config_DistanceShown));
@@ -268,7 +268,7 @@ void IngameChatWidget::EntityObserver::updateLabel(const Ogre::Camera * camera)
 	//	Ogre::Vector3 entityWorldCoords = window->getEntity()->getSceneNode()->_getWorldAABB().getCenter();
 	// 	const Ogre::Vector3& cameraCoords = camera->getDerivedPosition();
 	///getWorldPosition is faster than getting the center of the boundingbox...
-		Ogre::Vector3 diff = mModelRepresentation.getEntity().getSceneNode()->_getDerivedPosition() - camera->getDerivedPosition();
+		Ogre::Vector3 diff = mModelRepresentation.getModel().getParentSceneNode()->_getDerivedPosition() - camera->getDerivedPosition();
 
 		///remove the window if it's either too far away
 		if (diff.length() > mChatWidget.mDistanceShown) {

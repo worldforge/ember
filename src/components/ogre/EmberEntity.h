@@ -63,6 +63,7 @@ namespace Terrain
 class EmberEntityFactory;
 class IGraphicalRepresentation;
 class IEntityAttachment;
+class IAttachmentControlDelegate;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -203,7 +204,7 @@ public:
 	 * All entities are always attached to an Ogre::SceneNode. Some subclasses, such as EmberPhysicalEntity, uses additional scene nodes for attaching the graphical representation, but true for all entities, even those that are just basic instances of EmberEntities, are that they will be represented in the Ogre world through a SceneNode.
 	 * @return The SceneNode to which this entity is attached.
 	 */
-	Ogre::SceneNode* getSceneNode() const;
+//	Ogre::SceneNode* getSceneNode() const;
 
 	/**
 	 * @brief Called by a contained member to see if the member is allowed to be shown.
@@ -417,6 +418,10 @@ public:
 	 */
 	IEntityAttachment* getAttachment() const;
 
+	void setAttachmentControlDelegate(IAttachmentControlDelegate* delegate);
+	IAttachmentControlDelegate* getAttachmentControlDelegate() const;
+
+
 protected:
 
 
@@ -540,7 +545,7 @@ protected:
 	 * @brief Creates the main scene node which holds the entity.
 	 * @param sceneManager The scene manager which should be used for creating the scene node.
 	 */
-	void createSceneNode(Ogre::SceneManager* sceneManager);
+//	void createSceneNode(Ogre::SceneManager* sceneManager);
 
 	/**
 	 * @brief Called by eris just after the entity has been put into the world.
@@ -564,12 +569,12 @@ protected:
 	/**
 	 * @brief The main SceneNode which holds the entity in the ogre world space.
 	 */
-	Ogre::SceneNode* mOgreNode;
+//	Ogre::SceneNode* mOgreNode;
 
 	/**
 	 * @brief Gets the scene manager that manages the Ogre scene node held by this.
 	 */
-	Ogre::SceneManager* getSceneManager();
+//	Ogre::SceneManager* getSceneManager();
 
 	/**
 	 * @brief If there's a terrain area belonging to this entity, that's stored here.
@@ -623,6 +628,8 @@ protected:
 	 * Since the graphical representation of an entity can be expressed in many different way, that is handled by an instance of IEntityAttachment and not by the entity itself.
 	 */
 	IEntityAttachment* mAttachment;
+
+	IAttachmentControlDelegate* mAttachmentControlDelegate;
 
 };
 

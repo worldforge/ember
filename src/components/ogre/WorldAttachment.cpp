@@ -85,7 +85,7 @@ void WorldAttachment::getOffsetForContainedNode(const IEntityAttachment& attachm
 	}
 }
 
-void WorldAttachment::setControllerDelegate(IAttachmentControlDelegate* controllerDelegate)
+void WorldAttachment::setControlDelegate(IAttachmentControlDelegate* controllerDelegate)
 {
 	//You can never control the world.
 }

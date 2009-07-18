@@ -123,7 +123,7 @@ protected:
 	/**
 	Creates a AvatarEmberEntity instance.
 	*/
-	AvatarEmberEntity* createAvatarEntity(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View *world);
+	EmberEntity* createAvatarEntity(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View *world);
 
 	void gotAvatarCharacter(Eris::Entity* entity);
 

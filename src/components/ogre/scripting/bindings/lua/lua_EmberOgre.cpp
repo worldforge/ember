@@ -474,7 +474,6 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"WFMath::Point<2>");
  tolua_usertype(tolua_S,"Mercator::Terrain");
  tolua_usertype(tolua_S,"sigc::signal<void,float>");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::AvatarEmberEntity*>");
  tolua_usertype(tolua_S,"EmberOgre::Environment::ISun");
  tolua_usertype(tolua_S,"Ember::ConsoleCommandWrapper");
  tolua_usertype(tolua_S,"EmberOgre::Model::ModelDefinition");
@@ -1991,9 +1990,9 @@ static int tolua_EmberOgre_EmberOgre_Avatar_setAvatarController00(lua_State* tol
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: getAvatarEmberEntity of class  EmberOgre::Avatar */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Avatar_getAvatarEmberEntity00
-static int tolua_EmberOgre_EmberOgre_Avatar_getAvatarEmberEntity00(lua_State* tolua_S)
+/* method: getEmberEntity of class  EmberOgre::Avatar */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Avatar_getEmberEntity00
+static int tolua_EmberOgre_EmberOgre_Avatar_getEmberEntity00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -2007,17 +2006,17 @@ static int tolua_EmberOgre_EmberOgre_Avatar_getAvatarEmberEntity00(lua_State* to
  {
   EmberOgre::Avatar* self = (EmberOgre::Avatar*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getAvatarEmberEntity'",NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getEmberEntity'",NULL);
 #endif
   {
-   EmberOgre::AvatarEmberEntity* tolua_ret = (EmberOgre::AvatarEmberEntity*)  self->getAvatarEmberEntity();
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::AvatarEmberEntity");
+   EmberOgre::EmberEntity& tolua_ret = (EmberOgre::EmberEntity&)  self->getEmberEntity();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"EmberOgre::EmberEntity");
   }
  }
  return 1;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getAvatarEmberEntity'.",&tolua_err);
+ tolua_error(tolua_S,"#ferror in function 'getEmberEntity'.",&tolua_err);
  return 0;
 #endif
 }
@@ -2209,38 +2208,6 @@ static int tolua_EmberOgre_EmberOgre_EmberEntityFactory_dumpAttributesOfEntity00
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'dumpAttributesOfEntity'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: getSceneNode of class  EmberOgre::EmberEntity */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EmberEntity_getSceneNode00
-static int tolua_EmberOgre_EmberOgre_EmberEntity_getSceneNode00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"const EmberOgre::EmberEntity",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  const EmberOgre::EmberEntity* self = (const EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getSceneNode'",NULL);
-#endif
-  {
-   Ogre::SceneNode* tolua_ret = (Ogre::SceneNode*)  self->getSceneNode();
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::SceneNode");
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getSceneNode'.",&tolua_err);
  return 0;
 #endif
 }
@@ -2814,38 +2781,6 @@ static int tolua_EmberOgre_EmberOgre_AvatarEmberEntity_getAvatar00(lua_State* to
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'getAvatar'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: getAvatarSceneNode of class  EmberOgre::AvatarEmberEntity */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_AvatarEmberEntity_getAvatarSceneNode00
-static int tolua_EmberOgre_EmberOgre_AvatarEmberEntity_getAvatarSceneNode00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::AvatarEmberEntity",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  EmberOgre::AvatarEmberEntity* self = (EmberOgre::AvatarEmberEntity*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getAvatarSceneNode'",NULL);
-#endif
-  {
-   Ogre::SceneNode* tolua_ret = (Ogre::SceneNode*)  self->getAvatarSceneNode();
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::SceneNode");
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getAvatarSceneNode'.",&tolua_err);
  return 0;
 #endif
 }
@@ -22788,7 +22723,7 @@ static int tolua_get_EmberOgre__EmberOgre_EventCreatedAvatarEntity(lua_State* to
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventCreatedAvatarEntity'",NULL);
 #endif
-  tolua_pushusertype(tolua_S,(void*)&self->EventCreatedAvatarEntity,"sigc::signal<void,EmberOgre::AvatarEmberEntity*>");
+  tolua_pushusertype(tolua_S,(void*)&self->EventCreatedAvatarEntity,"sigc::signal<void,EmberOgre::EmberEntity*>");
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
@@ -22801,10 +22736,10 @@ static int tolua_set_EmberOgre__EmberOgre_EventCreatedAvatarEntity(lua_State* to
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventCreatedAvatarEntity'",NULL);
-  if (!tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::AvatarEmberEntity*>",0,&tolua_err))
+  if (!tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::EmberEntity*>",0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->EventCreatedAvatarEntity = *((sigc::signal<void,EmberOgre::AvatarEmberEntity*>*)  tolua_tousertype(tolua_S,2,0))
+  self->EventCreatedAvatarEntity = *((sigc::signal<void,EmberOgre::EmberEntity*>*)  tolua_tousertype(tolua_S,2,0))
 ;
  return 0;
 }
@@ -23108,7 +23043,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"getAvatarCamera",tolua_EmberOgre_EmberOgre_Avatar_getAvatarCamera00);
     tolua_function(tolua_S,"getAvatarSceneNode",tolua_EmberOgre_EmberOgre_Avatar_getAvatarSceneNode00);
     tolua_function(tolua_S,"setAvatarController",tolua_EmberOgre_EmberOgre_Avatar_setAvatarController00);
-    tolua_function(tolua_S,"getAvatarEmberEntity",tolua_EmberOgre_EmberOgre_Avatar_getAvatarEmberEntity00);
+    tolua_function(tolua_S,"getEmberEntity",tolua_EmberOgre_EmberOgre_Avatar_getEmberEntity00);
     tolua_function(tolua_S,"setMinIntervalOfRotationChanges",tolua_EmberOgre_EmberOgre_Avatar_setMinIntervalOfRotationChanges00);
     tolua_variable(tolua_S,"EventAddedEntityToInventory",tolua_get_EmberOgre__Avatar_EventAddedEntityToInventory,tolua_set_EmberOgre__Avatar_EventAddedEntityToInventory);
     tolua_variable(tolua_S,"EventRemovedEntityFromInventory",tolua_get_EmberOgre__Avatar_EventRemovedEntityFromInventory,tolua_set_EmberOgre__Avatar_EventRemovedEntityFromInventory);
@@ -23135,7 +23070,6 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
     tolua_constant(tolua_S,"PM_FLOATING",EmberOgre::EmberEntity::PM_FLOATING);
     tolua_constant(tolua_S,"PM_PROJECTILE",EmberOgre::EmberEntity::PM_PROJECTILE);
     tolua_constant(tolua_S,"PM_FIXED",EmberOgre::EmberEntity::PM_FIXED);
-    tolua_function(tolua_S,"getSceneNode",tolua_EmberOgre_EmberOgre_EmberEntity_getSceneNode00);
     tolua_function(tolua_S,"hasSuggestedResponses",tolua_EmberOgre_EmberOgre_EmberEntity_hasSuggestedResponses00);
     tolua_function(tolua_S,"getSuggestedResponses",tolua_EmberOgre_EmberOgre_EmberEntity_getSuggestedResponses00);
     tolua_function(tolua_S,"setClientVisible",tolua_EmberOgre_EmberOgre_EmberEntity_setClientVisible00);
@@ -23159,7 +23093,6 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
    tolua_cclass(tolua_S,"AvatarEmberEntity","EmberOgre::AvatarEmberEntity","EmberOgre::EmberEntity",NULL);
    tolua_beginmodule(tolua_S,"AvatarEmberEntity");
     tolua_function(tolua_S,"getAvatar",tolua_EmberOgre_EmberOgre_AvatarEmberEntity_getAvatar00);
-    tolua_function(tolua_S,"getAvatarSceneNode",tolua_EmberOgre_EmberOgre_AvatarEmberEntity_getAvatarSceneNode00);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"EmberOgre",0);

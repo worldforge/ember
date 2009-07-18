@@ -192,7 +192,8 @@ mSoundResourceProvider(0),
 mResourceLoader(0),
 mOgreLogManager(0),
 mIsInPausedMode(false),
-mModelRepresentationManager(0)
+mModelRepresentationManager(0),
+mOgreMainCamera(0)
 {
 	Ember::Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
 }
@@ -396,11 +397,12 @@ bool EmberOgre::setup()
 	mSceneMgr = mOgreSetup->chooseSceneManager();
 
 	///create the main camera, we will of course have a couple of different cameras, but this will be the main one
-	Ogre::Camera* camera = mSceneMgr->createCamera("MainCamera");
-	Ogre::Viewport* viewPort = mWindow->addViewport(camera);
+	mOgreMainCamera = mSceneMgr->createCamera("MainCamera");
+	Ogre::Viewport* viewPort = mWindow->addViewport(mOgreMainCamera);
 	///set the background colour to black
 	viewPort->setBackgroundColour(Ogre::ColourValue(0,0,0));
-	camera->setAspectRatio(Ogre::Real(viewPort->getActualWidth()) / Ogre::Real(viewPort->getActualHeight()));
+	mOgreMainCamera->setAspectRatio(Ogre::Real(viewPort->getActualWidth()) / Ogre::Real(viewPort->getActualHeight()));
+
 
 	///The input object must know the resoluton of the screen
 	unsigned int height, width, depth;
@@ -473,24 +475,16 @@ bool EmberOgre::setup()
 		S_LOG_WARNING("Failed to change directory to '"<< configSrv->getHomeDirectory() << "'");
 	}
 
-	// Avatar
-	mAvatar = new Avatar();
-
-	mAvatarController = new AvatarController(*mAvatar, *mWindow, *mGUIManager, *camera);
-	EventAvatarControllerCreated.emit(*mAvatarController);
-
 	mTerrainGenerator = new Terrain::TerrainGenerator(new EmberPagingSceneManagerAdapter(mSceneMgr));
 	EventTerrainGeneratorCreated.emit(*mTerrainGenerator);
 	mMotionManager = new MotionManager();
-// 	mMotionManager->setTerrainGenerator(mTerrainGenerator);
 	EventMotionManagerCreated.emit(*mMotionManager);
 
-//	mSceneMgr->setPrimaryCamera(mAvatar->getAvatarCamera()->getCamera());
 
 	mMoveManager = new EntityMoveManager();
 
 
-
+	EventCreatedAvatarEntity.connect(sigc::mem_fun(*this, &EmberOgre::CreatedAvatarEntity));
 
 	mRoot->addFrameListener(mMotionManager);
 	new ConsoleObjectImpl();
@@ -521,6 +515,12 @@ bool EmberOgre::setup()
 	return true;
 }
 
+void EmberOgre::CreatedAvatarEntity(EmberEntity* entity)
+{
+	mAvatar = new Avatar(*entity);
+	mAvatarController = new AvatarController(*mAvatar, *mWindow, *mGUIManager, *mOgreMainCamera);
+	EventAvatarControllerCreated.emit(*mAvatarController);
+}
 
 EmberEntity* EmberOgre::getEmberEntity(const std::string & eid)
 {
@@ -707,11 +707,11 @@ Ogre::Root* EmberOgre::getOgreRoot() const
 
 Ogre::SceneNode * EmberOgre::getWorldSceneNode( ) const
 {
-	if (mEmberEntityFactory && mEmberEntityFactory->getWorld()) {
-		return mEmberEntityFactory->getWorld()->getSceneNode();
-	} else {
+//	if (mEmberEntityFactory && mEmberEntityFactory->getWorld()) {
+//		return mEmberEntityFactory->getWorld()->getSceneNode();
+//	} else {
 		return mSceneMgr->getRootSceneNode();
-	}
+//	}
 /*	Ogre::SceneNode* node = mSceneMgr->getSceneNode("0");
 	//TODO: implement better exception handling
 	if (node == 0)
@@ -729,6 +729,12 @@ AvatarCamera* EmberOgre::getMainCamera() const
 {
 	return mAvatar->getAvatarCamera();
 }
+
+Ogre::Camera* EmberOgre::getMainOgreCamera() const
+{
+	return mOgreMainCamera;
+}
+
 
 EmberEntityFactory* EmberOgre::getEntityFactory() const
 {

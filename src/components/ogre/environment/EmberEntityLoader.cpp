@@ -85,7 +85,7 @@ void EmberEntityLoader::addEmberEntity(Model::ModelRepresentation * modelReprese
 	instance.visibilityChangedConnection = entity.VisibilityChanged.connect(sigc::bind(sigc::mem_fun(*this, &EmberEntityLoader::EmberEntity_VisibilityChanged), &entity));
 	instance.modelRepresentation = modelRepresentation;
 
-	Ogre::Vector3 position(entity.getSceneNode()->_getDerivedPosition());
+	Ogre::Vector3 position(Convert::toOgre(entity.getViewPosition()));
 	instance.lastPosition = position;
 #if EMBERENTITYLOADER_USEBATCH
 	const int batchX = Ogre::Math::Floor(position.x / mBatchSize);
@@ -142,7 +142,7 @@ void EmberEntityLoader::removeEmberEntity(EmberEntity* entity)
 
 #endif
 	///Rebuild geometry if necessary.
-	mGeom.reloadGeometryPage(entity->getSceneNode()->_getDerivedPosition());
+	mGeom.reloadGeometryPage(Convert::toOgre(entity->getViewPosition()));
 }
 
 EmberEntityLoader::EntityMap* EmberEntityLoader::getStoreForEntity(EmberEntity* entity)
@@ -185,8 +185,7 @@ void EmberEntityLoader::loadPage(::Forests::PageInfo & page)
 		Model::ModelRepresentation* modelRepresentation(instance.modelRepresentation);
 		EmberEntity& emberEntity = modelRepresentation->getEntity();
 		if (emberEntity.isVisible()) {
-			Ogre::SceneNode* sceneNode(emberEntity.getSceneNode());
-			const Ogre::Vector3& pos(sceneNode->_getDerivedPosition());
+			const Ogre::Vector3& pos(Convert::toOgre(emberEntity.getViewPosition()));
 			Model::Model& model(modelRepresentation->getModel());
 			if (pos.x > page.bounds.left && pos.x < page.bounds.right && pos.z > page.bounds.top && pos.z < page.bounds.bottom) {
 				for (Model::Model::SubModelSet::const_iterator J = model.getSubmodels().begin(); J != model.getSubmodels().end(); ++J) {
@@ -211,8 +210,8 @@ void EmberEntityLoader::EmberEntity_Moved(EmberEntity* entity)
 		if (I != entityMap->end()) {
 			ModelRepresentationInstance& instance(I->second);
 			mGeom.reloadGeometryPage(instance.lastPosition);
-			mGeom.reloadGeometryPage(entity->getSceneNode()->_getDerivedPosition());
-			instance.lastPosition = entity->getSceneNode()->_getDerivedPosition();
+			mGeom.reloadGeometryPage(Convert::toOgre(entity->getViewPosition()));
+			instance.lastPosition = Convert::toOgre(entity->getViewPosition());
 		}
 	}
 }
@@ -225,7 +224,7 @@ void EmberEntityLoader::EmberEntity_BeingDeleted(EmberEntity* entity)
 void EmberEntityLoader::EmberEntity_VisibilityChanged(bool visible, EmberEntity* entity)
 {
 	///When the visibility changes, we only need to reload the page the entity is on.
-	mGeom.reloadGeometryPage(entity->getSceneNode()->_getDerivedPosition());
+	mGeom.reloadGeometryPage(Convert::toOgre(entity->getViewPosition()));
 }
 
 

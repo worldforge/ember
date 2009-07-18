@@ -446,7 +446,7 @@ void TerrainEditor::sendChangesToServer()
 
 		Atlas::Message::ListType sargsList(1, sarg);
 		s->setArgsAsList(sargsList);
-		s->setFrom(EmberOgre::getSingleton().getAvatar()->getAvatarEmberEntity()->getId());
+		s->setFrom(EmberOgre::getSingleton().getAvatar()->getEmberEntity().getId());
 
 		Ember::EmberServices::getSingleton().getServerService()->getConnection()->send(s);
 		S_LOG_INFO("Sent updated terrain to server (" << positions.size() << " base points updated).");

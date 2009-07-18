@@ -33,8 +33,6 @@
 
 #include "EmberEntity.h"
 #include "WorldEmberEntity.h"
-#include "EmberPhysicalEntity.h"
-#include "AvatarEmberEntity.h"
 #include "EmberOgre.h"
 
 
@@ -46,7 +44,7 @@
 #include "framework/Tokeniser.h"
 
 #include "Avatar.h"
-
+#include "framework/ConsoleBackend.h"
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 #include "framework/osdir.h"
@@ -99,13 +97,9 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Root
 
     if (ge->getId() == getErisAvatar()->getId()) {
 
-    	AvatarEmberEntity* avatarEntity = createAvatarEntity(ge, type,  w);
-    	emberEntity = avatarEntity;
-
+    	emberEntity = createAvatarEntity(ge, type,  w);
     } else if (type->isA(mTerrainType)) {
-
     	emberEntity = createWorld(ge, type, w);
-
     } else {
 		emberEntity = new EmberEntity(ge->getId(), type, w, EmberOgre::getSingleton().getSceneManager());
     }
@@ -134,14 +128,13 @@ WorldEmberEntity* EmberEntityFactory::getWorld() const
 
 void EmberEntityFactory::gotAvatarCharacter(Eris::Entity* entity)
 {
-	AvatarEmberEntity* avatarEntity = static_cast<AvatarEmberEntity*>(entity);
-	EmberOgre::getSingleton().getAvatar()->createdAvatarEmberEntity(avatarEntity);
+	EmberEntity* avatarEntity = static_cast<EmberEntity*>(entity);
    	EmberOgre::getSingleton().EventCreatedAvatarEntity.emit(avatarEntity);
 }
 
-AvatarEmberEntity* EmberEntityFactory::createAvatarEntity(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View *world)
+EmberEntity* EmberEntityFactory::createAvatarEntity(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View *world)
 {
-    return new AvatarEmberEntity(ge->getId(), type, world,EmberOgre::getSingleton().getSceneManager(), getErisAvatar());
+    return new EmberEntity(ge->getId(), type, world,EmberOgre::getSingleton().getSceneManager());
 }
 
 int EmberEntityFactory::priority() {

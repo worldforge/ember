@@ -199,6 +199,8 @@ public:
 	 */
 	AvatarCamera* getMainCamera() const;
 
+	Ogre::Camera* getMainOgreCamera() const;
+
 	/**
 	 * @brief Gets the avatar controller, which recieves input and makes sure that the Avatar is moved.
 	 * @return The avatar controller.
@@ -245,7 +247,7 @@ public:
 	/**
 	 * @brief Emitted when the avatar entity has been created.
 	 */
-	sigc::signal<void, AvatarEmberEntity*> EventCreatedAvatarEntity;
+	sigc::signal<void, EmberEntity*> EventCreatedAvatarEntity;
 
 	/**
 	 * @brief Emitted when the Jesus subsystem has been created.
@@ -402,6 +404,8 @@ protected:
 	 */
 	void checkForConfigFiles();
 
+	void CreatedAvatarEntity(EmberEntity* entity);
+
 	/**
 	 * @brief Responsible for handling of terrain.
 	 */
@@ -509,6 +513,8 @@ protected:
 	 * @brief Set this to true when we're not rendering. The reason is that later on, when we resume rendering, we need to reset the event times to prevent various particle effect strangeness.
 	 */
 	bool mIsInPausedMode;
+
+	Ogre::Camera* mOgreMainCamera;
 
 };
 

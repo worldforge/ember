@@ -20,7 +20,7 @@ class Avatar
 	
 	void setAvatarController(AvatarController* avatarController);
 	
-	AvatarEmberEntity* getAvatarEmberEntity();
+	EmberEntity& getEmberEntity();
 	
 	
 	/**

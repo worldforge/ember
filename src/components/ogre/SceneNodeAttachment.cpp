@@ -36,14 +36,16 @@
 namespace EmberOgre {
 
 SceneNodeAttachment::SceneNodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, Ogre::SceneNode& parentNode)
-: mParentEntity(parentEntity), mChildEntity(childEntity), mSceneNode(0), mAttachmentController(new SceneNodeController(*this))
+: mParentEntity(parentEntity), mChildEntity(childEntity), mSceneNode(0), mAttachmentController(0)
 {
+	setControlDelegate(mChildEntity.getAttachmentControlDelegate());
 	mSceneNode = parentNode.createChildSceneNode("entity_" + childEntity.getId());
 }
 
 SceneNodeAttachment::SceneNodeAttachment(const SceneNodeAttachment& source)
 : mParentEntity(source.mParentEntity), mChildEntity(source.mChildEntity), mSceneNode(source.mSceneNode), mAttachmentController(0)
 {
+	setControlDelegate(mChildEntity.getAttachmentControlDelegate());
 }
 
 
@@ -99,7 +101,7 @@ void SceneNodeAttachment::getOffsetForContainedNode(const IEntityAttachment& att
 	}
 }
 
-void SceneNodeAttachment::setControllerDelegate(IAttachmentControlDelegate* controllerDelegate)
+void SceneNodeAttachment::setControlDelegate(IAttachmentControlDelegate* controllerDelegate)
 {
 	delete mAttachmentController;
 	if (controllerDelegate) {
@@ -129,6 +131,11 @@ SceneNodeAttachment* SceneNodeAttachment::transferToNewParent(SceneNodeAttachmen
 	SceneNodeAttachment* newAttachment = new SceneNodeAttachment(*this);
 	mSceneNode = 0;
 	return newAttachment;
+}
+
+Ogre::SceneNode* SceneNodeAttachment::getSceneNode() const
+{
+	return mSceneNode;
 }
 
 

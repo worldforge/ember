@@ -53,7 +53,7 @@ public:
 	 */
 	virtual void getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset) = 0;
 
-	virtual void setControllerDelegate(IAttachmentControlDelegate* controllerDelegate) = 0;
+	virtual void setControlDelegate(IAttachmentControlDelegate* controllerDelegate) = 0;
 
 };
 

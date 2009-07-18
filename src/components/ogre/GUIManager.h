@@ -318,7 +318,7 @@ protected:
 	 *    hooked to EmberOgre::EventCreatedAvatarEntity, switches the input mode to movement mode
 	 * @param entity
 	 */
-	void EmberOgre_CreatedAvatarEntity(AvatarEmberEntity* entity);
+	void EmberOgre_CreatedAvatarEntity(EmberEntity* entity);
 
 	/**
 	 *    hooked to EmberOgre::EventAvatarControllerCreated, connects the mEntityWorldPickListener to the main AvatarCamera

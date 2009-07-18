@@ -36,6 +36,7 @@
 #include <wfmath/atlasconv.h>
 
 #include <OgreSceneNode.h>
+#include <OgreSceneManager.h>
 
 namespace EmberOgre {
 
@@ -55,9 +56,9 @@ float EntityPolygonPositionProvider::getHeightForPosition(const WFMath::Point<2>
 	///TODO: refactor into a better structure, so that we don't have to know about the terrain
 	const ::EmberOgre::Terrain::TerrainGenerator* terrain = EmberOgre::getSingleton().getTerrainGenerator();
 	if (terrain) {
-		Ogre::Vector3 parentPos = mEntity.getSceneNode()->_getDerivedPosition();
+		Ogre::Vector3 parentPos = Convert::toOgre(mEntity.getViewPosition());
 		Ogre::Vector3 localPos(localPosition.x(), 0, -localPosition.y());
-		localPos = mEntity.getSceneNode()->_getDerivedOrientation() * localPos;
+		localPos = Convert::toOgre(mEntity.getViewOrientation()) * localPos;
 		WFMath::Point<3> worldPos = Convert::toWF<WFMath::Point<3> >(parentPos + localPos);
 		float height = 0;
 		if (terrain->getHeight(WFMath::Point<2>(worldPos.x(), worldPos.y()), height)) {
@@ -116,21 +117,24 @@ void PolygonAdapter::toggleDisplayOfPolygon()
 		} else {
 			::Atlas::Message::Element areaElem(getChangedElement());
 
-			mPolygon = new ::EmberOgre::Manipulation::Polygon(mEntity->getSceneNode(), mPositionProvider);
+			Ogre::SceneNode* entitySceneNode = EmberOgre::getSingleton().getSceneManager()->getSceneNode("entity_" + mEntity->getId()); //HACK
+			if (entitySceneNode) {
+				mPolygon = new ::EmberOgre::Manipulation::Polygon(entitySceneNode, mPositionProvider);
 
 
-			if (areaElem.isMap()) {
-				try {
-					WFMath::Polygon<2> poly(areaElem);
-					mPolygon->loadFromShape(poly);
-					mPickListener = new ::EmberOgre::Manipulation::PolygonPointPickListener(*mPolygon);
-					mPickListener->EventPickedPoint.connect(sigc::mem_fun(*this, &PolygonAdapter::pickListener_PickedPoint));
-					EmberOgre::getSingleton().getMainCamera()->pushWorldPickListener(mPickListener);
-				} catch (const WFMath::_AtlasBadParse& ex) {
+				if (areaElem.isMap()) {
+					try {
+						WFMath::Polygon<2> poly(areaElem);
+						mPolygon->loadFromShape(poly);
+						mPickListener = new ::EmberOgre::Manipulation::PolygonPointPickListener(*mPolygon);
+						mPickListener->EventPickedPoint.connect(sigc::mem_fun(*this, &PolygonAdapter::pickListener_PickedPoint));
+						EmberOgre::getSingleton().getMainCamera()->pushWorldPickListener(mPickListener);
+					} catch (const WFMath::_AtlasBadParse& ex) {
+						createNewPolygon();
+					}
+				} else {
 					createNewPolygon();
 				}
-			} else {
-				createNewPolygon();
 			}
 		}
 	} else {
@@ -155,17 +159,22 @@ void PolygonAdapter::toggleDisplayOfPolygon()
 void PolygonAdapter::createNewPolygon()
 {
 	delete mPolygon;
-	mPolygon = new ::EmberOgre::Manipulation::Polygon(mEntity->getSceneNode(), mPositionProvider);
-	WFMath::Polygon<2> poly;
-	poly.addCorner(0, WFMath::Point<2>(-1, -1));
-	poly.addCorner(1, WFMath::Point<2>(-1, 1));
-	poly.addCorner(2, WFMath::Point<2>(1, 1));
-	poly.addCorner(3, WFMath::Point<2>(1, -1));
+	mPolygon = 0;
+	Ogre::SceneNode* entitySceneNode = EmberOgre::getSingleton().getSceneManager()->getSceneNode("entity_" + mEntity->getId()); //HACK
+	if (entitySceneNode) {
+		mPolygon = new ::EmberOgre::Manipulation::Polygon(entitySceneNode, mPositionProvider);
+		WFMath::Polygon<2> poly;
+		poly.addCorner(0, WFMath::Point<2>(-1, -1));
+		poly.addCorner(1, WFMath::Point<2>(-1, 1));
+		poly.addCorner(2, WFMath::Point<2>(1, 1));
+		poly.addCorner(3, WFMath::Point<2>(1, -1));
 
-	mPolygon->loadFromShape(poly);
-	mPickListener = new ::EmberOgre::Manipulation::PolygonPointPickListener(*mPolygon);
-	mPickListener->EventPickedPoint.connect(sigc::mem_fun(*this, &PolygonAdapter::pickListener_PickedPoint));
-	EmberOgre::getSingleton().getMainCamera()->pushWorldPickListener(mPickListener);
+		mPolygon->loadFromShape(poly);
+		mPickListener = new ::EmberOgre::Manipulation::PolygonPointPickListener(*mPolygon);
+		mPickListener->EventPickedPoint.connect(sigc::mem_fun(*this, &PolygonAdapter::pickListener_PickedPoint));
+		EmberOgre::getSingleton().getMainCamera()->pushWorldPickListener(mPickListener);
+	}
+
 }
 
 void PolygonAdapter::fillElementFromGui()

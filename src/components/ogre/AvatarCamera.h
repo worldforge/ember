@@ -115,7 +115,7 @@ public:
 	 * @param input
 	 * @param camera
 	 */
-	AvatarCamera(Ogre::SceneNode* avatarNode, Ogre::SceneManager& sceneManager, Ogre::RenderWindow& window, Ember::Input& input, Ogre::Camera& camera);
+	AvatarCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& window, Ember::Input& input, Ogre::Camera& camera);
 	virtual ~AvatarCamera();
 
 	/**

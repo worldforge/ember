@@ -83,28 +83,28 @@ const std::string EmberEntity::MODE_PROJECTILE("projectile");
 const std::string EmberEntity::BboxMaterialName("BaseYellowNoLightning");
 
 EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager) :
-	Eris::Entity(id, ty, vw), mIsInitialized(false), mIsInMotionManager(false), mErisEntityBoundingBox(0), mOgreNode(0), mTerrainArea(0), mTerrainMod(0), mMovementMode(MM_DEFAULT), mGraphicalRepresentation(0), mEntityMapping(0), mAttachment(0)
+	Eris::Entity(id, ty, vw), mIsInitialized(false), mIsInMotionManager(false), mErisEntityBoundingBox(0), mTerrainArea(0), mTerrainMod(0), mMovementMode(MM_DEFAULT), mGraphicalRepresentation(0), mEntityMapping(0), mAttachment(0), mAttachmentControlDelegate(0)
 {
-	createSceneNode(sceneManager);
+//	createSceneNode(sceneManager);
 }
 
 EmberEntity::~EmberEntity()
 {
 	delete mGraphicalRepresentation;
 	///detach all children so we don't destroy them
-	while (getSceneNode()->numChildren())
-	{
-		getSceneNode()->removeChild((short unsigned int) 0);
-	}
-	Ogre::SceneNode* parent = static_cast<Ogre::SceneNode*> (getSceneNode()->getParent());
-	if (parent)
-	{
-		parent->removeAndDestroyChild(getSceneNode()->getName());
-	}
-	else
-	{
-		getSceneNode()->getCreator()->destroySceneNode(getSceneNode()->getName());
-	}
+//	while (getSceneNode()->numChildren())
+//	{
+//		getSceneNode()->removeChild((short unsigned int) 0);
+//	}
+//	Ogre::SceneNode* parent = static_cast<Ogre::SceneNode*> (getSceneNode()->getParent());
+//	if (parent)
+//	{
+//		parent->removeAndDestroyChild(getSceneNode()->getName());
+//	}
+//	else
+//	{
+//		getSceneNode()->getCreator()->destroySceneNode(getSceneNode()->getName());
+//	}
 
 	if (mErisEntityBoundingBox)
 	{
@@ -214,42 +214,42 @@ void EmberEntity::createEntityMapping()
 
 void EmberEntity::synchronizeWithServer()
 {
-	if (getPosition().isValid())
-	{
-		getSceneNode()->setPosition(Convert::toOgre(getPredictedPos()));
-		adjustPosition();
-	}
-	if (getOrientation().isValid())
-	{
-		getSceneNode()->setOrientation(Convert::toOgre(getOrientation()));
-	}
+//	if (getPosition().isValid())
+//	{
+//		getSceneNode()->setPosition(Convert::toOgre(getPredictedPos()));
+//		adjustPosition();
+//	}
+//	if (getOrientation().isValid())
+//	{
+//		getSceneNode()->setOrientation(Convert::toOgre(getOrientation()));
+//	}
 }
 
-void EmberEntity::createSceneNode(Ogre::SceneManager* sceneManager)
-{
-	EmberEntity* container = getEmberLocation();
-	if (container == 0)
-	{
-		mOgreNode = sceneManager->createSceneNode(getId());
-	}
-	else
-	{
-		Ogre::SceneNode * node = container->getSceneNode();
-		mOgreNode = node->createChildSceneNode(getId());
-	}
-}
+//void EmberEntity::createSceneNode(Ogre::SceneManager* sceneManager)
+//{
+//	EmberEntity* container = getEmberLocation();
+//	if (container == 0)
+//	{
+//		mOgreNode = sceneManager->createSceneNode(getId());
+//	}
+//	else
+//	{
+//		Ogre::SceneNode * node = container->getSceneNode();
+//		mOgreNode = node->createChildSceneNode(getId());
+//	}
+//}
 
 void EmberEntity::updateMotion(Ogre::Real timeSlice)
 {
-	getSceneNode()->setPosition(Convert::toOgre(getPredictedPos()));
-	adjustPosition();
+//	getSceneNode()->setPosition(Convert::toOgre(getPredictedPos()));
+//	adjustPosition();
 
 	//if there's a debug bounding box for the eris entity, update it's position
-	if (mErisEntityBoundingBox)
-	{
-		mErisEntityBoundingBox->getParentSceneNode()->setPosition(getSceneNode()->getPosition());
-		mErisEntityBoundingBox->getParentSceneNode()->setOrientation(getSceneNode()->getOrientation());
-	}
+//	if (mErisEntityBoundingBox)
+//	{
+//		mErisEntityBoundingBox->getParentSceneNode()->setPosition(getSceneNode()->getPosition());
+//		mErisEntityBoundingBox->getParentSceneNode()->setOrientation(getSceneNode()->getOrientation());
+//	}
 
 }
 
@@ -257,8 +257,8 @@ void EmberEntity::onMoved()
 {
 	parseMovementMode();
 	Eris::Entity::onMoved();
-	const WFMath::Quaternion& orient = getOrientation();
-	getSceneNode()->setOrientation(Convert::toOgre(orient));
+//	const WFMath::Quaternion& orient = getOrientation();
+//	getSceneNode()->setOrientation(Convert::toOgre(orient));
 	updateMotion(0);
 }
 
@@ -396,23 +396,23 @@ void EmberEntity::checkClientVisibility(bool vis)
 void EmberEntity::setClientVisible(bool visible)
 {
 	///when entities are hidden, we detach them from the rendering scene graph altogether. this speeds up Ogre since it doesn't have to calculate visibility for nodes that are hidden anyway
-	if (!visible)
-	{
-		if (getSceneNode()->getParent())
-		{
-			getSceneNode()->getParent()->removeChild(getSceneNode());
-		}
-	}
-	else
-	{
-		if (getLocation())
-		{
-			if (!getSceneNode()->getParent())
-			{
-				getEmberLocation()->getSceneNode()->addChild(getSceneNode());
-			}
-		}
-	}
+//	if (!visible)
+//	{
+//		if (getSceneNode()->getParent())
+//		{
+//			getSceneNode()->getParent()->removeChild(getSceneNode());
+//		}
+//	}
+//	else
+//	{
+//		if (getLocation())
+//		{
+//			if (!getSceneNode()->getParent())
+//			{
+//				getEmberLocation()->getSceneNode()->addChild(getSceneNode());
+//			}
+//		}
+//	}
 	EventClientVisibilityChanged.emit(visible);
 	// 	getSceneNode()->setVisible(visible && getLocation(), false);
 }
@@ -441,32 +441,45 @@ void EmberEntity::adjustPosition(const Ogre::Vector3& position)
 	}
 }
 
+void EmberEntity::setAttachmentControlDelegate(IAttachmentControlDelegate* delegate)
+{
+	mAttachmentControlDelegate = delegate;
+	if (mAttachment) {
+		mAttachment->setControlDelegate(delegate);
+	}
+}
+
+IAttachmentControlDelegate* EmberEntity::getAttachmentControlDelegate() const
+{
+	return mAttachmentControlDelegate;
+}
+
 const Ogre::Vector3& EmberEntity::getOffsetForContainedNode(const Ogre::Vector3& localPosition, const EmberEntity& entity)
 {
 	///send it upwards until we get a an entity which knows how to set the position (we'll in most cases end up in the world which will adjust the height a bit)
-	EmberEntity* container = getEmberLocation();
-	if (container)
-	{
-		//TerrainPosition derivedPosition(getPredictedPos().x() + position.x(), getPredictedPos().y() + position.y());
-		return container->getOffsetForContainedNode(localPosition + getSceneNode()->getPosition(), entity);
-	}
-	else
-	{
-		return Ogre::Vector3::ZERO;
-	}
+//	EmberEntity* container = getEmberLocation();
+//	if (container)
+//	{
+//		//TerrainPosition derivedPosition(getPredictedPos().x() + position.x(), getPredictedPos().y() + position.y());
+//		return container->getOffsetForContainedNode(localPosition + getSceneNode()->getPosition(), entity);
+//	}
+//	else
+//	{
+//		return Ogre::Vector3::ZERO;
+//	}
 
 }
 
 void EmberEntity::adjustPositionForContainedNode(const EmberEntity& entity, const Ogre::Vector3& position)
 {
 
-	Ogre::SceneNode* sceneNode = entity.getSceneNode();
-	//Ogre::Vector3 position = sceneNode->getPosition();
-	const Ogre::Vector3& offset = getOffsetForContainedNode(position, entity);
-	if (offset != Ogre::Vector3::ZERO)
-	{
-		sceneNode->setPosition(position + offset);
-	}
+//	Ogre::SceneNode* sceneNode = entity.getSceneNode();
+//	//Ogre::Vector3 position = sceneNode->getPosition();
+//	const Ogre::Vector3& offset = getOffsetForContainedNode(position, entity);
+//	if (offset != Ogre::Vector3::ZERO)
+//	{
+//		sceneNode->setPosition(position + offset);
+//	}
 
 }
 
@@ -485,7 +498,7 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 //	detachFromModel();
 
 	///Before we detach ourselves from our current parent, we need to record our current position in the world. This will come in handy later on when we need to determine if we actually moved in the world space.
-	const Ogre::Vector3 oldWorldPosition = getSceneNode()->_getDerivedPosition();
+//	const Ogre::Vector3 oldWorldPosition = getSceneNode()->_getDerivedPosition();
 
 	///Get the new location. We use getEmberLocation() since we always know that all entities are of type EmberEntity.
 	EmberEntity* newLocationEntity = getEmberLocation();
@@ -736,7 +749,7 @@ bool EmberEntity::getVisualize(const std::string& visualization) const
 
 void EmberEntity::showOgreBoundingBox(bool show)
 {
-	getSceneNode()->showBoundingBox(show);
+//	getSceneNode()->showBoundingBox(show);
 }
 
 void EmberEntity::showErisBoundingBox(bool show)
@@ -794,18 +807,19 @@ void EmberEntity::onBboxChanged()
 
 bool EmberEntity::getShowOgreBoundingBox() const
 {
-	return getSceneNode()->getShowBoundingBox();
+	return false;
+//	return getSceneNode()->getShowBoundingBox();
 }
 bool EmberEntity::getShowErisBoundingBox() const
 {
 	return (mErisEntityBoundingBox && mErisEntityBoundingBox->isVisible());
 
 }
-
-Ogre::SceneNode* EmberEntity::getSceneNode() const
-{
-	return mOgreNode;
-}
+//
+//Ogre::SceneNode* EmberEntity::getSceneNode() const
+//{
+//	return mOgreNode;
+//}
 
 EmberEntity* EmberEntity::getEmberLocation() const
 {
@@ -853,11 +867,11 @@ std::vector<std::string> EmberEntity::getDefaultUseOperators()
 	return operators;
 }
 
-Ogre::SceneManager* EmberEntity::getSceneManager()
-{
-	assert(mOgreNode);
-	return mOgreNode->getCreator();
-}
+//Ogre::SceneManager* EmberEntity::getSceneManager()
+//{
+//	assert(mOgreNode);
+//	return mOgreNode->getCreator();
+//}
 
 void EmberEntity::dumpAttributes(std::iostream& outstream, std::ostream& logOutstream) const
 {

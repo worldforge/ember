@@ -17,8 +17,6 @@ class EmberEntity : public Eris::Entity {
 		PM_FIXED = 3
 	};
 	
-	Ogre::SceneNode* getSceneNode() const;
-	
 	bool hasSuggestedResponses() const;
 	
 	const std::vector< std::string >& getSuggestedResponses() const;
