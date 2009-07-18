@@ -105,9 +105,6 @@ EmberEntity::~EmberEntity()
 	{
 		getSceneNode()->getCreator()->destroySceneNode(getSceneNode()->getName());
 	}
-	///make sure it's not in the MotionManager
-	///TODO: keep a marker in the entity so we don't need to call this for all entities
-	MotionManager::getSingleton().removeEntity(this);
 
 	if (mErisEntityBoundingBox)
 	{
@@ -265,25 +262,25 @@ void EmberEntity::setMoving(bool moving)
 	// Call the overridden method
 	Eris::Entity::setMoving(moving);
 
-	MotionManager* motionManager = &MotionManager::getSingleton();
-	if (moving)
-	{
-		//the entity is moving
-		if (!mIsInMotionManager)
-		{
-			motionManager->addEntity(this);
-			mIsInMotionManager = true;
-		}
-	}
-	else
-	{
-		//the entity has stopped moving
-		if (mIsInMotionManager)
-		{
-			motionManager->removeEntity(this);
-			mIsInMotionManager = false;
-		}
-	}
+//	MotionManager* motionManager = &MotionManager::getSingleton();
+//	if (moving)
+//	{
+//		//the entity is moving
+//		if (!mIsInMotionManager)
+//		{
+//			motionManager->addEntity(this);
+//			mIsInMotionManager = true;
+//		}
+//	}
+//	else
+//	{
+//		//the entity has stopped moving
+//		if (mIsInMotionManager)
+//		{
+//			motionManager->removeEntity(this);
+//			mIsInMotionManager = false;
+//		}
+//	}
 }
 
 void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArgs)
