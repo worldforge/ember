@@ -158,6 +158,11 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 		createDependentObject("terrainmod");
 	}
 
+	//If the entity had no bounding box, the onBboxChanged will never have been called, and we want to do that now instead.
+	if (!hasBBox()) {
+		onBboxChanged();
+	}
+	EventInitComplete.emit();
 }
 
 bool EmberEntity::createDependentObject(const std::string& attributeName)

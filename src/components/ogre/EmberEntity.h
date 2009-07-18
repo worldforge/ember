@@ -399,7 +399,22 @@ public:
 	 */
 	sigc::signal<void, PositioningMode> EventPositioningModeChanged;
 
+	/**
+	 * @brief Emitted when initialization has completed.
+	 */
+	sigc::signal<void> EventInitComplete;
+
+	/**
+	 * @brief Sets the attachment to use.
+	 * @param attachment The new attachment to use. Ownership will be transferred to this instance.
+	 * If there's already an attachment set, it will be destroyed, unless it's the same instance as the supplied attachment.
+	 */
 	void setAttachment(IEntityAttachment* attachment);
+
+	/**
+	 * @brief Gets the attachment used for this entity.
+	 * @return The attachment used by this entity, or null if there is no attachment.
+	 */
 	IEntityAttachment* getAttachment() const;
 
 protected:
@@ -602,6 +617,11 @@ protected:
 	 */
 	virtual void parseMovementMode();
 
+	/**
+	 * @brief The attachment for this entity.
+	 *
+	 * Since the graphical representation of an entity can be expressed in many different way, that is handled by an instance of IEntityAttachment and not by the entity itself.
+	 */
 	IEntityAttachment* mAttachment;
 
 };
