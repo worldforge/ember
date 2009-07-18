@@ -56,6 +56,8 @@ public:
 
 	void getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset);
 
+	virtual void setControllerDelegate(IAttachmentControlDelegate* controllerDelegate);
+
 protected:
 
 	WorldEmberEntity& mWorldEntity;

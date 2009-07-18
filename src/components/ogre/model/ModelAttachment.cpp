@@ -25,19 +25,19 @@
 #include "components/ogre/model/ModelMount.h"
 #include "components/ogre/model/ModelRepresentation.h"
 #include "components/ogre/model/ModelRepresentationManager.h"
-#include "components/ogre/OgreAttachment.h"
+#include "components/ogre/SceneNodeAttachment.h"
 
 namespace EmberOgre {
 namespace Model {
 
 ModelAttachment::ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, Ogre::SceneNode& mParentNode)
-: OgreAttachment::OgreAttachment(parentEntity, modelRepresentation.getEntity(), mParentNode), mModelRepresentation(modelRepresentation), mModelMount(0)
+: SceneNodeAttachment::SceneNodeAttachment(parentEntity, modelRepresentation.getEntity(), mParentNode), mModelRepresentation(modelRepresentation), mModelMount(0)
 {
 	mModelMount = new ModelMount(mModelRepresentation.getModel(), mSceneNode);
 }
 
 ModelAttachment::ModelAttachment(const ModelAttachment& source)
-: OgreAttachment::OgreAttachment(source), mModelRepresentation(source.mModelRepresentation), mModelMount(source.mModelMount)
+: SceneNodeAttachment::SceneNodeAttachment(source), mModelRepresentation(source.mModelRepresentation), mModelMount(source.mModelMount)
 {
 
 }
@@ -60,22 +60,22 @@ IGraphicalRepresentation* ModelAttachment::getGraphicalRepresentation() const
 IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 {
 	IEntityAttachment* newAttachment(0);
-	OgreAttachment* currentOgreAttachment = dynamic_cast<OgreAttachment*>(entity.getAttachment());
+	SceneNodeAttachment* currentSceneNodeAttachment = dynamic_cast<SceneNodeAttachment*>(entity.getAttachment());
 	ModelRepresentation* modelRepresentation = ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity);
 	//Don't show a graphical representation if the model is set not to show any contained entities.
 	if (!mModelRepresentation.getModel().getDefinition()->getShowContained() && modelRepresentation) {
-		if (currentOgreAttachment) {
-			newAttachment = currentOgreAttachment->transferToNewParent(*this);
+		if (currentSceneNodeAttachment) {
+			newAttachment = currentSceneNodeAttachment->transferToNewParent(*this);
 			return newAttachment;
 		} else {
 			return new ModelAttachment(getAttachedEntity(), *modelRepresentation, *mSceneNode);
 		}
 	} else {
-		if (currentOgreAttachment) {
-			newAttachment = currentOgreAttachment->transferToNewParent(*this);
+		if (currentSceneNodeAttachment) {
+			newAttachment = currentSceneNodeAttachment->transferToNewParent(*this);
 			return newAttachment;
 		} else {
-			return new OgreAttachment(getAttachedEntity(), entity, *mSceneNode);
+			return new SceneNodeAttachment(getAttachedEntity(), entity, *mSceneNode);
 		}
 	}
 }
@@ -95,9 +95,9 @@ void ModelAttachment::updateScale()
 	}
 }
 
-OgreAttachment* ModelAttachment::transferToNewParent(OgreAttachment& newParentAttachment)
+SceneNodeAttachment* ModelAttachment::transferToNewParent(SceneNodeAttachment& newParentAttachment)
 {
-	OgreAttachment* newAttachment = new ModelAttachment(*this);
+	SceneNodeAttachment* newAttachment = new ModelAttachment(*this);
 	mSceneNode = 0;
 	mModelMount = 0;
 	return newAttachment;

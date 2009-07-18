@@ -28,6 +28,7 @@ template<int> class Vector;
 namespace EmberOgre {
 
 class IGraphicalRepresentation;
+class IAttachmentControlDelegate;
 class EmberEntity;
 
 class IEntityAttachment {
@@ -51,6 +52,8 @@ public:
 	 * @param offset The offset which needs to be applied.
 	 */
 	virtual void getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset) = 0;
+
+	virtual void setControllerDelegate(IAttachmentControlDelegate* controllerDelegate) = 0;
 
 };
 

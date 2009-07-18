@@ -16,12 +16,15 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "OgreAttachment.h"
+#include "SceneNodeAttachment.h"
 
 #include "components/ogre/IGraphicalRepresentation.h"
+#include "components/ogre/IAttachmentControlDelegate.h"
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/Convert.h"
 #include "components/ogre/MotionManager.h"
+#include "components/ogre/SceneNodeController.h"
+
 #include "components/ogre/model/ModelRepresentation.h"
 #include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/ogre/model/ModelAttachment.h"
@@ -31,23 +34,19 @@
 #include <OgreSceneManager.h>
 namespace EmberOgre {
 
-OgreAttachment::OgreAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, Ogre::SceneNode& parentNode)
-: mParentEntity(parentEntity), mChildEntity(childEntity), mSceneNode(0)
+SceneNodeAttachment::SceneNodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, Ogre::SceneNode& parentNode)
+: mParentEntity(parentEntity), mChildEntity(childEntity), mSceneNode(0), mAttachmentController(new SceneNodeController(*this))
 {
 	mSceneNode = parentNode.createChildSceneNode("entity_" + childEntity.getId());
-	mChildEntity.Moved.connect(sigc::mem_fun(*this, &OgreAttachment::entity_Moved));
-	setupConnections();
 }
 
-OgreAttachment::OgreAttachment(const OgreAttachment& source)
-: mParentEntity(source.mParentEntity), mChildEntity(source.mChildEntity), mSceneNode(source.mSceneNode)
+SceneNodeAttachment::SceneNodeAttachment(const SceneNodeAttachment& source)
+: mParentEntity(source.mParentEntity), mChildEntity(source.mChildEntity), mSceneNode(source.mSceneNode), mAttachmentController(0)
 {
-	mChildEntity.Moved.connect(sigc::mem_fun(*this, &OgreAttachment::entity_Moved));
-	setupConnections();
 }
 
 
-OgreAttachment::~OgreAttachment()
+SceneNodeAttachment::~SceneNodeAttachment()
 {
 	if (mSceneNode) {
 		Ogre::SceneNode* parent = static_cast<Ogre::SceneNode*> (mSceneNode->getParent());
@@ -62,41 +61,35 @@ OgreAttachment::~OgreAttachment()
 	}
 }
 
-void OgreAttachment::setupConnections()
-{
-	mChildEntity.Moved.connect(sigc::mem_fun(*this, &OgreAttachment::entity_Moved));
-
-}
-
-IGraphicalRepresentation* OgreAttachment::getGraphicalRepresentation() const
+IGraphicalRepresentation* SceneNodeAttachment::getGraphicalRepresentation() const
 {
 	return 0;
 }
 
-EmberEntity& OgreAttachment::getAttachedEntity() const
+EmberEntity& SceneNodeAttachment::getAttachedEntity() const
 {
 	return mChildEntity;
 }
 
-EmberEntity* OgreAttachment::getParentEntity() const
+EmberEntity* SceneNodeAttachment::getParentEntity() const
 {
 	return &mParentEntity;
 }
 
-IEntityAttachment* OgreAttachment::attachEntity(EmberEntity& entity)
+IEntityAttachment* SceneNodeAttachment::attachEntity(EmberEntity& entity)
 {
 	if (Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity)) {
 		return new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, *mSceneNode);
 	} else {
-		return new OgreAttachment(getAttachedEntity(), entity, *mSceneNode);
+		return new SceneNodeAttachment(getAttachedEntity(), entity, *mSceneNode);
 	}
 }
 
-void OgreAttachment::updateScale()
+void SceneNodeAttachment::updateScale()
 {
 }
 
-void OgreAttachment::getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset)
+void SceneNodeAttachment::getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset)
 {
 	if (mParentEntity.getAttachment()) {
 		WFMath::Vector<3> localPositionShift(mChildEntity.getPredictedPos());
@@ -105,43 +98,34 @@ void OgreAttachment::getOffsetForContainedNode(const IEntityAttachment& attachme
 	}
 }
 
-
-void OgreAttachment::entity_Moved()
+void SceneNodeAttachment::setControllerDelegate(IAttachmentControlDelegate* controllerDelegate)
 {
-	updatePosition();
-	MotionManager& motionManager = MotionManager::getSingleton();
-	if (mChildEntity.isMoving())
-	{
-		motionManager.addMovable(this);
-	}
-	else
-	{
-		motionManager.removeMovable(this);
+	delete mAttachmentController;
+	if (controllerDelegate) {
+		mAttachmentController = new SceneNodeController(*this);
+	} else {
+		mAttachmentController = new SceneNodeController(*this);
 	}
 }
 
-void OgreAttachment::updatePosition()
+void SceneNodeAttachment::setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation)
 {
-	if (mChildEntity.getPredictedPos().isValid()) {
-		WFMath::Point<3> predictedPos = mChildEntity.getPredictedPos();
+	if (position.isValid()) {
 		WFMath::Vector<3> adjustedOffset = WFMath::Vector<3>::ZERO();
 		if (mParentEntity.getAttachment()) {
-			mParentEntity.getAttachment()->getOffsetForContainedNode(*this, predictedPos, adjustedOffset);
+			mParentEntity.getAttachment()->getOffsetForContainedNode(*this, position, adjustedOffset);
 		}
-		mSceneNode->setPosition(Convert::toOgre(mChildEntity.getPredictedPos() + adjustedOffset));
-		mSceneNode->setOrientation(Convert::toOgre(mChildEntity.getOrientation()));
+		mSceneNode->setPosition(Convert::toOgre(position + adjustedOffset));
+		mSceneNode->setOrientation(Convert::toOgre(orientation));
 	}
 }
 
-void OgreAttachment::updateMotion(float timeSlice)
-{
-	updatePosition();
-}
 
 
-OgreAttachment* OgreAttachment::transferToNewParent(OgreAttachment& newParentAttachment)
+
+SceneNodeAttachment* SceneNodeAttachment::transferToNewParent(SceneNodeAttachment& newParentAttachment)
 {
-	OgreAttachment* newAttachment = new OgreAttachment(*this);
+	SceneNodeAttachment* newAttachment = new SceneNodeAttachment(*this);
 	mSceneNode = 0;
 	return newAttachment;
 }

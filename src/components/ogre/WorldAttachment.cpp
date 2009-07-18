@@ -24,7 +24,7 @@
 #include "components/ogre/model/ModelRepresentation.h"
 #include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/ogre/model/ModelAttachment.h"
-#include "components/ogre/OgreAttachment.h"
+#include "components/ogre/SceneNodeAttachment.h"
 #include "components/ogre/terrain/TerrainGenerator.h"
 #include "components/ogre/WorldEmberEntity.h"
 
@@ -68,7 +68,7 @@ IEntityAttachment* WorldAttachment::attachEntity(EmberEntity& entity)
 	if (Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity)) {
 		return new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, mWorldNode);
 	} else {
-		return new OgreAttachment(getAttachedEntity(), entity, mWorldNode);
+		return new SceneNodeAttachment(getAttachedEntity(), entity, mWorldNode);
 	}
 }
 
@@ -85,6 +85,10 @@ void WorldAttachment::getOffsetForContainedNode(const IEntityAttachment& attachm
 	}
 }
 
+void WorldAttachment::setControllerDelegate(IAttachmentControlDelegate* controllerDelegate)
+{
+	//You can never control the world.
+}
 
 }
 

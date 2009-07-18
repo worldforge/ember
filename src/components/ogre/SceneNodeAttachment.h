@@ -16,13 +16,14 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef EMBEROGREOGREATTACHMENT_H_
-#define EMBEROGREOGREATTACHMENT_H_
+#ifndef EMBEROGRESCENENODEATTACHMENT_H_
+#define EMBEROGRESCENENODEATTACHMENT_H_
 
 #include "components/ogre/IEntityAttachment.h"
-#include "components/ogre/IMovable.h"
 
-#include <sigc++/trackable.h>
+namespace WFMath {
+class Quaternion;
+}
 
 namespace Ogre {
 class SceneNode;
@@ -32,12 +33,13 @@ namespace EmberOgre {
 
 class IGraphicalRepresentation;
 class EmberEntity;
+class SceneNodeController;
 
-class OgreAttachment : public IEntityAttachment, public virtual sigc::trackable, public IMovable
+class SceneNodeAttachment : public IEntityAttachment
 {
 public:
-	OgreAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, Ogre::SceneNode& parentNode);
-	virtual ~OgreAttachment();
+	SceneNodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, Ogre::SceneNode& parentNode);
+	virtual ~SceneNodeAttachment();
 
 	virtual IGraphicalRepresentation* getGraphicalRepresentation() const;
 
@@ -51,11 +53,11 @@ public:
 
 	virtual void getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset);
 
-	void updatePosition();
+	virtual void setControllerDelegate(IAttachmentControlDelegate* controllerDelegate);
 
-	virtual OgreAttachment* transferToNewParent(OgreAttachment& newParentAttachment);
+	virtual SceneNodeAttachment* transferToNewParent(SceneNodeAttachment& newParentAttachment);
 
-	virtual void updateMotion(float timeSlice);
+	void setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation);
 
 protected:
 
@@ -65,12 +67,11 @@ protected:
 
 	Ogre::SceneNode* mSceneNode;
 
-	OgreAttachment(const OgreAttachment& source);
+	SceneNodeController* mAttachmentController;
 
-	void entity_Moved();
-	virtual void setupConnections();
+	SceneNodeAttachment(const SceneNodeAttachment& source);
 
 };
 
 }
-#endif /* EMBEROGREOGREATTACHMENT_H_ */
+#endif /* EMBEROGRESCENENODEATTACHMENT_H_ */

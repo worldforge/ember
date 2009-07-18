@@ -15,9 +15,9 @@ libEmberOgre_a_SOURCES = AttributeObserver.cpp Avatar.cpp AvatarCamera.cpp \
 	EntityWorldPickListener.cpp GUICEGUIAdapter.cpp GUIManager.cpp \
 	MediaUpdater.cpp MeshCollisionDetector.cpp MeshSerializerListener.cpp \
 	MotionManager.cpp MousePicker.cpp OgreInfo.cpp OgreLogObserver.cpp OgreResourceLoader.cpp \
-	OgreResourceProvider.cpp OgreSetup.cpp OgreAttachment.cpp \
+	OgreResourceProvider.cpp OgreSetup.cpp SceneNodeAttachment.cpp \
 	 ShaderManager.cpp ShadowCameraSetup.cpp SimpleRenderContext.cpp \
-	WorldEmberEntity.cpp XMLHelper.cpp WorldAttachment.cpp 
+	WorldEmberEntity.cpp XMLHelper.cpp WorldAttachment.cpp SceneNodeController.cpp
 # OpcodeCollisionDetector.cpp  OpcodeCollisionDetectorVisualizer.cpp
 confdir = $(sysconfdir)/ember
 dist_conf_DATA = ogre.cfg resources.cfg terrain.cfg
@@ -33,5 +33,5 @@ noinst_HEADERS = AttributeObserver.h Avatar.h AvatarCamera.h AvatarController.h 
 	MeshSerializerListener.h MotionManager.h MousePicker.h OgreIncludes.h OgreInfo.h \
 	OgreLogObserver.h OgreResourceLoader.h OgreResourceProvider.h OgreSetup.h \
 	 ShaderManager.h ShadowCameraSetup.h \
-	SimpleRenderContext.h Types.h WorldEmberEntity.h XMLHelper.h IGraphicalRepresentation.h IEntityAttachment.h  WorldAttachment.h OgreAttachment.h IMovable.h IAnimated.h
+	SimpleRenderContext.h Types.h WorldEmberEntity.h XMLHelper.h IGraphicalRepresentation.h IEntityAttachment.h  WorldAttachment.h SceneNodeAttachment.h IMovable.h IAnimated.h IAttachmentControlDelegate.h SceneNodeController.h
 #OpcodeCollisionDetector.h OpcodeCollisionDetectorVisualizer.h

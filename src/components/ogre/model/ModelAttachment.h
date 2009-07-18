@@ -19,7 +19,7 @@
 #ifndef MODELATTACHMENT_H_
 #define MODELATTACHMENT_H_
 
-#include "components/ogre/OgreAttachment.h"
+#include "components/ogre/SceneNodeAttachment.h"
 
 namespace EmberOgre {
 
@@ -33,7 +33,7 @@ namespace Model {
 class ModelMount;
 class ModelRepresentation;
 
-class ModelAttachment : public OgreAttachment
+class ModelAttachment : public SceneNodeAttachment
 {
 public:
 	ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, Ogre::SceneNode& parentNode);
@@ -46,7 +46,7 @@ public:
 
 	void updateScale();
 
-	virtual OgreAttachment* transferToNewParent(OgreAttachment& newParentAttachment);
+	virtual SceneNodeAttachment* transferToNewParent(SceneNodeAttachment& newParentAttachment);
 
 protected:
 	ModelAttachment(const ModelAttachment& source);
