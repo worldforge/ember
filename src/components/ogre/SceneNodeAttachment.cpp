@@ -24,6 +24,7 @@
 #include "components/ogre/Convert.h"
 #include "components/ogre/MotionManager.h"
 #include "components/ogre/SceneNodeController.h"
+#include "components/ogre/DelegatingSceneNodeController.h"
 
 #include "components/ogre/model/ModelRepresentation.h"
 #include "components/ogre/model/ModelRepresentationManager.h"
@@ -102,7 +103,7 @@ void SceneNodeAttachment::setControllerDelegate(IAttachmentControlDelegate* cont
 {
 	delete mAttachmentController;
 	if (controllerDelegate) {
-		mAttachmentController = new SceneNodeController(*this);
+		mAttachmentController = new DelegatingSceneNodeController(*this, *controllerDelegate);
 	} else {
 		mAttachmentController = new SceneNodeController(*this);
 	}

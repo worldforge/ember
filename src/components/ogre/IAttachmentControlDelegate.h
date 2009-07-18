@@ -19,10 +19,19 @@
 #ifndef IATTACHMENTCONTROLDELEGATE_H_
 #define IATTACHMENTCONTROLDELEGATE_H_
 
+namespace WFMath
+{
+template<int> class Point;
+class Quaternion;
+}
+
 namespace EmberOgre {
 
 class IAttachmentControlDelegate {
+public:
 
+	virtual const WFMath::Point<3>& getPosition() = 0;
+	virtual const WFMath::Quaternion& getOrientation() = 0;
 };
 
 }
