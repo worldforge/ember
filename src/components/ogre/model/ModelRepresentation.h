@@ -19,7 +19,7 @@
 #include "components/ogre/IGraphicalRepresentation.h"
 #include "components/ogre/OgreIncludes.h"
 #include "components/ogre/EmberEntity.h"
-#include "components/ogre/MotionManager.h"
+#include "components/ogre/IAnimated.h"
 #include <vector>
 #include <list>
 #include <OgreMath.h>

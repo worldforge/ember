@@ -136,7 +136,7 @@ ModelRepresentation::~ModelRepresentation()
 
 	///make sure it's not in the MotionManager
 	///TODO: keep a marker in the entity so we don't need to call this for all entities
-	MotionManager::getSingleton().removeAnimatedEntity(mEntity.getId());
+	MotionManager::getSingleton().removeAnimated(mEntity.getId());
 
 }
 
@@ -524,13 +524,13 @@ void ModelRepresentation::entity_MovementModeChanged(EmberEntity::MovementMode n
 		mCurrentMovementAction = newAction;
 		if (newAction)
 		{
-			MotionManager::getSingleton().addAnimatedEntity(mEntity.getId(), this);
+			MotionManager::getSingleton().addAnimated(mEntity.getId(), this);
 			//				mCurrentMovementAction->getAnimations()->setEnabled(true);
 
 		}
 		else
 		{
-			MotionManager::getSingleton().removeAnimatedEntity(mEntity.getId());
+			MotionManager::getSingleton().removeAnimated(mEntity.getId());
 		}
 	}
 	//might set mCurrentMovementAction to 0
@@ -746,7 +746,7 @@ void ModelRepresentation::entity_Acted(const Atlas::Objects::Operation::RootOper
 
 		if (newAction)
 		{
-			MotionManager::getSingleton().addAnimatedEntity(mEntity.getId(), this);
+			MotionManager::getSingleton().addAnimated(mEntity.getId(), this);
 			mActiveAction = newAction;
 			newAction->getAnimations().reset();
 			mCurrentMovementAction->getAnimations().reset();
