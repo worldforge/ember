@@ -8,7 +8,7 @@ noinst_LIBRARIES = libEmberOgre.a
 
 
 libEmberOgre_a_SOURCES = AttributeObserver.cpp Avatar.cpp \
-	MovementController.cpp AvatarEmberEntity.cpp AvatarLogger.cpp AvatarTerrainCursor.cpp \
+	MovementController.cpp AvatarLogger.cpp AvatarTerrainCursor.cpp \
 	CameraMount.cpp ConsoleObjectImpl.cpp EmberEntity.cpp EmberEntityActionCreator.cpp \
 	EmberEntityFactory.cpp EmberEntityHideModelAction.cpp EmberEntityModelAction.cpp \
 	EmberEntityPartAction.cpp EmberEntityUserObject.cpp EmberOgre.cpp EmberOgreFileSystem.cpp \
@@ -25,7 +25,7 @@ dist_conf_DATA = ogre.cfg resources.cfg terrain.cfg
 
 
 noinst_HEADERS = AttributeObserver.h Avatar.h MovementController.h \
-	AvatarEmberEntity.h AvatarLogger.h AvatarTerrainCursor.h CameraMount.h ConsoleObjectImpl.h \
+	AvatarLogger.h AvatarTerrainCursor.h CameraMount.h ConsoleObjectImpl.h \
 	EmberEntity.h EmberEntityActionCreator.h EmberEntityFactory.h \
 	EmberEntityHideModelAction.h EmberEntityModelAction.h EmberEntityPartAction.h \
 	EmberEntityUserObject.h EmberOgre.h EmberOgreFileSystem.h EmberOgrePrerequisites.h \

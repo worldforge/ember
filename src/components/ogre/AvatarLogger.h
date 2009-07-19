@@ -35,7 +35,6 @@ namespace EmberOgre {
 
 class Avatar;
 class EmberEntity;
-class AvatarEmberEntity;
 
 /**
 	Handles logging of ingame events such as chat to a file. The file will be created when an instance of this is created and the connection will be severed at its destruction.

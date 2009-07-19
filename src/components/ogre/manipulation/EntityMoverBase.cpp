@@ -23,8 +23,8 @@
 
 #include "EntityMoverBase.h"
 
-#include "../EmberEntity.h"
-#include "../Convert.h"
+#include "components/ogre/EmberEntity.h"
+#include "components/ogre/Convert.h"
 
 #include "SnapToMovement.h"
 

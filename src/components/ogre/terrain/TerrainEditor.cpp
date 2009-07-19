@@ -40,8 +40,6 @@
 
 #include "../EmberEntity.h"
 #include "../WorldEmberEntity.h"
-#include "../EmberPhysicalEntity.h"
-#include "../AvatarEmberEntity.h"
 
 #include "../EmberEntityFactory.h"
 

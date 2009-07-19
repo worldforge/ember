@@ -12,9 +12,6 @@
 #include "components/ogre/EmberEntityFactory.h"
 
 #include "components/ogre/EmberEntity.h"
-#include "components/ogre/EmberPhysicalEntity.h"
-// #include "components/ogre/PersonEmberEntity.h"
-#include "components/ogre/AvatarEmberEntity.h"
 #include "components/ogre/WorldEmberEntity.h"
 
 #include "components/ogre/environment/Environment.h"

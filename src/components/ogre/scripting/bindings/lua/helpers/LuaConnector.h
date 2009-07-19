@@ -54,7 +54,6 @@ class EmberEntity;
 struct EntityPickResult;
 struct MousePickerArgs;
 class EmberEntityFactory;
-class AvatarEmberEntity;
 class Jesus;
 namespace Terrain {
 class BasePointUserObject;
@@ -248,6 +247,7 @@ public:
 	static void pushValue(const Atlas::Message::Element& theValue, const std::string& luaTypename);
 	static void pushValue(const EmberOgre::MovementControllerMode::Mode& theValue, const std::string& luaTypename);
 	static void pushValue(const EmberOgre::Terrain::TerrainPage& theValue, const std::string& luaTypename);
+	static void pushValue(const EmberOgre::EmberEntity& theValue, const std::string& luaTypename);
 
 
  	LuaConnector(sigc::signal<void>& signal);
@@ -260,9 +260,9 @@ public:
 	LuaConnector(sigc::signal<void, Ember::Input::MouseButton, Ember::Input::InputMode>& signal);
 	LuaConnector(sigc::signal<void, Ember::Input::InputMode>& signal);
 	LuaConnector(sigc::signal<void, EmberEntityFactory*>& signal);
-	LuaConnector(sigc::signal<void, AvatarEmberEntity*>& signal);
 	LuaConnector(sigc::signal<void, Jesus*>& signal);
 	LuaConnector(sigc::signal<void, EmberEntity*>& signal);
+	LuaConnector(sigc::signal<void, EmberEntity&>& signal);
  	LuaConnector(sigc::signal<void, const std::string&>& signal);
  	LuaConnector(sigc::signal<bool, const std::string&>& signal);
  	LuaConnector(sigc::signal<void, const std::string&, const std::string&>& signal);

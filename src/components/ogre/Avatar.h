@@ -49,7 +49,6 @@ namespace Model {
 
 class EmberEntity;
 class MovementController;
-class AvatarEmberEntity;
 class AvatarLogger;
 class AvatarLoggerParent;
 
@@ -75,7 +74,6 @@ public Ogre::FrameListener,
 public Ember::ConfigListenerContainer
 {
 	friend class MovementController;
-	friend class AvatarEmberEntity;
 
     public:
 

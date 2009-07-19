@@ -20,8 +20,6 @@
 #include "config.h"
 #endif
 #include "EmberEntity.h"
-#include "EmberPhysicalEntity.h"
-// #include "PersonEmberEntity.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
 #include "Avatar.h"

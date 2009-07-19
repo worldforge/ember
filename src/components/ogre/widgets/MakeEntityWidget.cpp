@@ -31,13 +31,12 @@
 #include "../EmberOgre.h"
 #include "../Convert.h"
 #include "../Avatar.h"
-#include "../AvatarEmberEntity.h"
 #include "../EmberEntity.h"
-#include "../EmberPhysicalEntity.h"
 
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
 #include "framework/LoggingInstance.h"
+#include "framework/ConsoleBackend.h"
 
 #include <Eris/TypeService.h>
 #include <Eris/Connection.h>

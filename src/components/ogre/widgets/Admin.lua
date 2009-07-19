@@ -121,7 +121,7 @@ end
 
 --only show the admin menu if we're logged in as an admin
 function Admin.createdAvatarEmberEntity(avatarEntity)
-	if avatarEntity:getAvatar():isAdmin() then
+	if emberOgre:getAvatar():isAdmin() then
 		Admin.buildWidget()
 	end
 end

@@ -30,8 +30,8 @@ function Give.buildWidget()
 end
 
 function Give.createdAvatarEmberEntity(avatarEntity)
-	connect(Give.connectors, avatarEntity:getAvatar().EventAddedEntityToInventory, "Give.addedEntity")
-	connect(Give.connectors, avatarEntity:getAvatar().EventRemovedEntityFromInventory, "Give.removedEntity")
+	connect(Give.connectors, emberOgre:getAvatar().EventAddedEntityToInventory, "Give.addedEntity")
+	connect(Give.connectors, emberOgre:getAvatar().EventRemovedEntityFromInventory, "Give.removedEntity")
 end
 
 function Give.addedEntity(entity)

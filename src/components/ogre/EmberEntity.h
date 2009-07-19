@@ -200,15 +200,7 @@ public:
 	virtual void adjustPosition(const Ogre::Vector3& position);
 
 	/**
-	 * @brief Return the scenenode to which this entity belongs.
-	 * All entities are always attached to an Ogre::SceneNode. Some subclasses, such as EmberPhysicalEntity, uses additional scene nodes for attaching the graphical representation, but true for all entities, even those that are just basic instances of EmberEntities, are that they will be represented in the Ogre world through a SceneNode.
-	 * @return The SceneNode to which this entity is attached.
-	 */
-//	Ogre::SceneNode* getSceneNode() const;
-
-	/**
 	 * @brief Called by a contained member to see if the member is allowed to be shown.
-	 * This can be reimplemented in a subclass such as AvatarEmberEntity to disallow things that belongs to a characters inventory to be shown.
 	 * @param entity The entity which we want to check whether we should show or not.
 	 * @see setClientVisible()
 	 * @see checkClientVisibility()

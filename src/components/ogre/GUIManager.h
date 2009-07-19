@@ -55,7 +55,6 @@ namespace EmberOgre {
 class EmberEntity;
 class TerrainGenerator;
 class MousePicker;
-class AvatarEmberEntity;
 class GUICEGUIAdapter;
 class EntityWorldPickListener;
 class MovementController;
@@ -318,7 +317,7 @@ protected:
 	 *    hooked to EmberOgre::EventCreatedAvatarEntity, switches the input mode to movement mode
 	 * @param entity
 	 */
-	void EmberOgre_CreatedAvatarEntity(EmberEntity* entity);
+	void EmberOgre_CreatedAvatarEntity(EmberEntity& entity);
 
 	/**
 	 *    hooked to EmberOgre::EventMovementControllerCreated, connects the mEntityWorldPickListener to the main AvatarCamera

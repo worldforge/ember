@@ -1,7 +1,0 @@
-namespace EmberOgre {
-
-class AvatarEmberEntity: public EmberEntity {
-	Avatar* getAvatar();
-
-};
-}

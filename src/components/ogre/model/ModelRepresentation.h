@@ -171,8 +171,6 @@ public:
 
 	/**
 	 * @brief Called by a contained member to see if the member is allowed to be shown.
-	 * This can be reimplemented in a subclass such as AvatarEmberEntity to
-	 * disallow things that belongs to a characters inventory to be shown.
 	 */
 	bool allowVisibilityOfMember(EmberEntity* entity);
 

@@ -45,9 +45,7 @@
 
 #include "../EmberOgre.h"
 #include "../Avatar.h"
-
-#include "../EmberPhysicalEntity.h"
-#include "../AvatarEmberEntity.h"
+#include "components/ogre/EmberEntity.h"
 
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelDefinitionManager.h"

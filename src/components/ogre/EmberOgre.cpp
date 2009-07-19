@@ -484,9 +484,6 @@ bool EmberOgre::setup()
 
 	mMoveManager = new EntityMoveManager();
 
-
-	EventCreatedAvatarEntity.connect(sigc::mem_fun(*this, &EmberOgre::CreatedAvatarEntity));
-
 	mRoot->addFrameListener(mMotionManager);
 	new ConsoleObjectImpl();
 
@@ -518,13 +515,15 @@ bool EmberOgre::setup()
 	return true;
 }
 
-void EmberOgre::CreatedAvatarEntity(EmberEntity* entity)
+void EmberOgre::raiseCreatedAvatarEntity(EmberEntity& entity)
 {
-	mAvatar = new Avatar(*entity);
+	mAvatar = new Avatar(entity);
 	mMovementController = new MovementController(*mAvatar);
 	mMainCamera->setMovementProvider(mMovementController);
 	EventMovementControllerCreated.emit();
+	EventCreatedAvatarEntity.emit(entity);
 }
+
 
 EmberEntity* EmberOgre::getEmberEntity(const std::string & eid)
 {
@@ -676,7 +675,6 @@ void EmberOgre::Server_GotView(Eris::View* view)
 
 void EmberOgre::Server_GotConnection(Eris::Connection* connection)
 {
-	//EventCreatedAvatarEntity.connect(sigc::mem_fun(*mAvatar, &Avatar::createdAvatarEmberEntity));
 	EventCreatedEmberEntityFactory.emit(mEmberEntityFactory);
 }
 

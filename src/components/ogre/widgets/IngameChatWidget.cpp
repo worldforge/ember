@@ -50,7 +50,6 @@
 #include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/ogre/model/ModelRepresentation.h"
 #include "../model/Model.h"
-#include "../AvatarEmberEntity.h"
 #include "components/ogre/camera/MainCamera.h"
 
 #include "services/EmberServices.h"

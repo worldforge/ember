@@ -82,8 +82,6 @@ class Avatar;
 
 class MovementController;
 
-class AvatarEmberEntity;
-
 class EmberEntityFactory;
 
 class EmberPagingSceneManager;
@@ -245,7 +243,7 @@ public:
 	/**
 	 * @brief Emitted when the avatar entity has been created.
 	 */
-	sigc::signal<void, EmberEntity*> EventCreatedAvatarEntity;
+	sigc::signal<void, EmberEntity&> EventCreatedAvatarEntity;
 
 	/**
 	 * @brief Emitted when the Jesus subsystem has been created.
@@ -318,6 +316,8 @@ public:
      * Call this at closing time, right before you destroy the view and shut down the scripting service.
      */
     void shutdownGui();
+
+    void raiseCreatedAvatarEntity(EmberEntity& entity);
 
 protected:
 
@@ -401,8 +401,6 @@ protected:
 	 * Call this early on at application startup. If the required files cannot be found they are copied there from their default versions as installed in the shared location.
 	 */
 	void checkForConfigFiles();
-
-	void CreatedAvatarEntity(EmberEntity* entity);
 
 	/**
 	 * @brief Responsible for handling of terrain.

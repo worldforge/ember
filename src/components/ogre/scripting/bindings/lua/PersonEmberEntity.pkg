@@ -1,4 +1,0 @@
-namespace EmberOgre {
-class PersonEmberEntity : public EmberPhysicalEntity {
-};
-}

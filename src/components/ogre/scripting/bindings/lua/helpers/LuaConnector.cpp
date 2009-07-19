@@ -337,6 +337,11 @@ void LuaConnector::pushValue(const  EmberOgre::Terrain::TerrainPage& theValue, c
 {
 	tolua_pushusertype(EmberOgre::LuaConnector::getState(),(void*)&theValue, luaTypename.c_str());
 }
+void LuaConnector::pushValue(const  EmberOgre::EmberEntity& theValue, const std::string& luaTypename)
+{
+	tolua_pushusertype(EmberOgre::LuaConnector::getState(),(void*)&theValue, luaTypename.c_str());
+}
+
 
 
 LuaConnector::~LuaConnector()
@@ -497,14 +502,6 @@ LuaConnector::LuaConnector(sigc::signal<void, EmberEntityFactory*>& signal)
 		mConnector = new LuaConnectors::ConnectorOne<void, EmberEntityFactory*>(signal, luaTypes);
 	}
 }
-LuaConnector::LuaConnector(sigc::signal<void, AvatarEmberEntity*>& signal)
-{
-	if (checkSignalExistence(&signal)) {
-		LuaTypeStore luaTypes;
-		luaTypes.push_back("EmberOgre::AvatarEmberEntity");
-		mConnector = new LuaConnectors::ConnectorOne<void, AvatarEmberEntity*>(signal, luaTypes);
-	}
-}
 LuaConnector::LuaConnector(sigc::signal<void, Jesus*>& signal)
 {
 	if (checkSignalExistence(&signal)) {
@@ -519,6 +516,14 @@ LuaConnector::LuaConnector(sigc::signal<void, EmberEntity*>& signal)
 		LuaTypeStore luaTypes;
 		luaTypes.push_back("EmberOgre::EmberEntity");
 		mConnector = new LuaConnectors::ConnectorOne<void, EmberEntity*>(signal, luaTypes);
+	}
+}
+LuaConnector::LuaConnector(sigc::signal<void, EmberEntity&>& signal)
+{
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("EmberOgre::EmberEntity");
+		mConnector = new LuaConnectors::ConnectorOne<void, EmberEntity&>(signal, luaTypes);
 	}
 }
 

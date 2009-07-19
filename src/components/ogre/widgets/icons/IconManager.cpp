@@ -25,20 +25,20 @@
 #endif
 
 #include "IconManager.h"
-#include "../../EmberPhysicalEntity.h"
-#include "../../EmberEntity.h"
-#include <Eris/Entity.h>
-#include <Eris/TypeInfo.h>
-#include <Eris/View.h>
+
+#include "components/ogre/EmberEntity.h"
+#include "components/ogre/SimpleRenderContext.h"
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelDefinitionManager.h"
 #include "components/entitymapping/EntityMappingManager.h"
-#include "components/ogre/mapping/EmberEntityMappingManager.h"
 #include "components/entitymapping/EntityMapping.h"
 #include "components/entitymapping/Definitions/EntityMappingDefinition.h"
 #include "components/entitymapping/IActionCreator.h"
-#include "../../SimpleRenderContext.h"
+#include "components/ogre/mapping/EmberEntityMappingManager.h"
 #include "main/Application.h"
+#include <Eris/Entity.h>
+#include <Eris/TypeInfo.h>
+#include <Eris/View.h>
 
 #include <OgreTextureManager.h>
 

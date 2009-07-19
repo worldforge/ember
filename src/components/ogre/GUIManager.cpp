@@ -46,8 +46,6 @@
 #include "widgets/WidgetDefinitions.h"
 
 #include "EmberEntity.h"
-#include "EmberPhysicalEntity.h"
-#include "AvatarEmberEntity.h"
 
 #include "framework/IScriptingProvider.h"
 
@@ -281,7 +279,6 @@ void GUIManager::initialize()
 
 	std::vector<std::string> widgetsToLoad;
 	widgetsToLoad.push_back("IngameChatWidget");
-// 	widgetsToLoad.push_back("InventoryWidget");
 	widgetsToLoad.push_back("InspectWidget");
 	widgetsToLoad.push_back("MakeEntityWidget");
 //	widgetsToLoad.push_back("JesusEdit");
@@ -620,7 +617,7 @@ void GUIManager::runCommand(const std::string &command, const std::string &args)
 // 	return mMousePickers.top();
 // }
 
-void GUIManager::EmberOgre_CreatedAvatarEntity(EmberEntity* entity)
+void GUIManager::EmberOgre_CreatedAvatarEntity(EmberEntity& entity)
 {
 	///switch to movement mode, since it appears most people don't know how to change from gui mode
 	getInput().setInputMode(Input::IM_MOVEMENT);

@@ -1,7 +1,7 @@
 //
 // C++ Interface: MakeEntityWidget
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2004
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -40,7 +40,6 @@ namespace Eris
 
 namespace EmberOgre {
 
-class AvatarEmberEntity;
 namespace Gui {
 
 class ModelRenderer;
@@ -59,12 +58,12 @@ public:
     virtual ~MakeEntityWidget();
 	virtual void buildWidget();
 
-	
+
 	virtual void show();
 
 	const Ember::ConsoleCommandWrapper CreateEntity;
 	const Ember::ConsoleCommandWrapper Make;
-		
+
 	virtual void runCommand(const std::string &command, const std::string &args);
 
 protected:
@@ -78,35 +77,35 @@ protected:
 	Use a lookup map for the types and the corresponding tree item.
 	*/
 	std::map<Eris::TypeInfo*, CEGUI::TreeItem*> mTypes;
-	
+
 	CEGUI::Tree* mTypeTree;
 	CEGUI::Editbox* mName;
-	
+
 	/**
 	The main connection to the server.
 	*/
 	Eris::Connection* mConn;
-	
+
 	void gotAvatar(Eris::Avatar* avatar);
 	void connectedToServer(Eris::Connection* conn);
 	void boundAType(Eris::TypeInfo* typeInfo);
-	
+
 	bool createButton_Click(const CEGUI::EventArgs& args);
-	
+
 	bool typeTree_ItemSelectionChanged(const CEGUI::EventArgs& args);
-	
+
 	/**
 	 *    Gets the currently selected type info.
-	 * @return 
+	 * @return
 	 */
 	Eris::TypeInfo* getSelectedTypeInfo();
-	
-	
+
+
 	/**
 	Loads all types into the list
 	*/
 	void loadAllTypes();
-	
+
 	/**
 	 *    Adds a type info to the tree.
 	 * @param typeInfo The type info to add.
@@ -114,7 +113,7 @@ protected:
 	 * @param addRecursive If true, all the current children of the type will be added as well.
 	 */
 	void addToTree(Eris::TypeInfo* typeInfo, CEGUI::TreeItem* parent, bool addRecursive = false);
-	
+
 	void createEntityOfType(Eris::TypeInfo* typeinfo);
 
 	/**
@@ -124,7 +123,7 @@ protected:
 
 	void createPreviewTexture();
 	void updatePreview();
-	
+
 	/**
 	If true, the type tree has been initialized.
 	*/

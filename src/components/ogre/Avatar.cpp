@@ -33,7 +33,6 @@
 
 
 #include "EmberEntity.h"
-#include "EmberPhysicalEntity.h"
 #include "MovementController.h"
 #include "components/ogre/camera/MainCamera.h"
 #include "components/ogre/camera/ThirdPersonCameraMount.h"
@@ -41,7 +40,6 @@
 #include "components/ogre/SceneNodeAttachment.h"
 #include "components/ogre/AvatarAttachmentController.h"
 
-#include "AvatarEmberEntity.h"
 #include "model/Model.h"
 #include "model/SubModel.h"
 #include "EmberOgre.h"

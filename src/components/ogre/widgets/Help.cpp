@@ -110,7 +110,7 @@ void Help::runCommand(const std::string &command, const std::string &args)
 
 }
 
-void Help::EmberOgre_CreatedAvatarEntity(EmberEntity* entity)
+void Help::EmberOgre_CreatedAvatarEntity(EmberEntity& entity)
 {
 	///Show a small helpful blurb about the gui system
 	if (!mBlurb) {

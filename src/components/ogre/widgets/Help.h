@@ -68,7 +68,7 @@ protected:
 	 *    hooked to EmberOgre::EventCreatedAvatarEntity, show a help blurb about the movement mode
 	 * @param entity
 	 */
-	void EmberOgre_CreatedAvatarEntity(EmberEntity* entity);
+	void EmberOgre_CreatedAvatarEntity(EmberEntity& entity);
 
 };
 };

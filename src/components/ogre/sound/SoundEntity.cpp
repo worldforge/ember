@@ -22,21 +22,21 @@
 #endif
 
 #include "SoundEntity.h"
-
-#include "framework/LoggingInstance.h"
-
-#include "components/ogre/EmberPhysicalEntity.h"
-
-#include "services/sound/SoundInstance.h"
-#include "services/sound/SoundSource.h"
 #include "SoundAction.h"
+
 
 #include "components/ogre/model/ModelDefinition.h"
 #include "components/ogre/model/Model.h"
+#include "components/ogre/EmberEntity.h"
+
+#include "services/sound/SoundInstance.h"
+#include "services/sound/SoundSource.h"
+
+#include "framework/LoggingInstance.h"
 
 namespace EmberOgre
 {
-	SoundEntity::SoundEntity(EmberPhysicalEntity& parentEntity)
+	SoundEntity::SoundEntity(EmberEntity& parentEntity)
 	: mParentEntity(parentEntity), mCurrentMovementAction(0)
 	{
 		parentEntity.Acted.connect(sigc::mem_fun(*this, &SoundEntity::Entity_Action));
@@ -79,13 +79,13 @@ namespace EmberOgre
 	{
 		const std::list<std::string> &p = act->getParents();
 		std::list<std::string>::const_iterator I = p.begin();
-		
+
 		if (I != p.end()) {
 			const std::string& name = *I;
 			playAction(name);
 		}
 	}
-	
+
 	const SoundAction* SoundEntity::playMovementSound(const std::string& actionName)
 	{
 		ActionStore::iterator I = mMovementActions.find(actionName);
@@ -106,49 +106,49 @@ namespace EmberOgre
 		}
 		return mCurrentMovementAction;
 	}
-	
-	
+
+
 	void SoundEntity::createActions()
 	{
-		Model::Model* model = mParentEntity.getModel();
-		if (!model) {
-			S_LOG_FAILURE("Tried to create actions for a entity which has no model specified.");
-			return;
-		}
-		const Model::ActionDefinitionsStore& store = model->getDefinition()->getActionDefinitions();
-		for (ActionDefinitionsStore::const_iterator I = store.begin(); I != store.end(); ++I)
-		{
-			// Setup All Sound Actions
-			SoundDefinitionsStore::const_iterator J = (*I)->getSoundDefinitions().begin();
-			SoundDefinitionsStore::const_iterator J_end = (*I)->getSoundDefinitions().end();
-			for (; J != J_end; ++J)
-			{
-				Model::SoundDefinition* soundDef(*J);
-				if (!soundDef)
-				{
-					continue;
-				}
-
-				SoundAction* newAction = new SoundAction(*this);
-
-				newAction->setGroup(soundDef->groupName);
-				SoundGroup* newGroup = newAction->setGroup(soundDef->groupName);
-				if ((*I)->getName().find("__movement_") == 0) {
-					newAction->setIsLooping(true);
-					mMovementActions.insert(ActionStore::value_type((*I)->getName(), newAction));
-				} else {
-					newAction->setIsLooping(false);
-					mActions.insert(ActionStore::value_type((*I)->getName(), newAction));
-				}
-				break; //for now we'll only allow one group per action
-/*				if (newGroup)
-				{
-					newGroup->setPlayOrder(sound->playOrder);
-					S_LOG_INFO("Sound Group " + sound->groupName
-							+ " registered within entity");
-				}*/
-			}
-		}	
+//		Model::Model* model = mParentEntity.getModel();
+//		if (!model) {
+//			S_LOG_FAILURE("Tried to create actions for a entity which has no model specified.");
+//			return;
+//		}
+//		const Model::ActionDefinitionsStore& store = model->getDefinition()->getActionDefinitions();
+//		for (ActionDefinitionsStore::const_iterator I = store.begin(); I != store.end(); ++I)
+//		{
+//			// Setup All Sound Actions
+//			SoundDefinitionsStore::const_iterator J = (*I)->getSoundDefinitions().begin();
+//			SoundDefinitionsStore::const_iterator J_end = (*I)->getSoundDefinitions().end();
+//			for (; J != J_end; ++J)
+//			{
+//				Model::SoundDefinition* soundDef(*J);
+//				if (!soundDef)
+//				{
+//					continue;
+//				}
+//
+//				SoundAction* newAction = new SoundAction(*this);
+//
+//				newAction->setGroup(soundDef->groupName);
+//				SoundGroup* newGroup = newAction->setGroup(soundDef->groupName);
+//				if ((*I)->getName().find("__movement_") == 0) {
+//					newAction->setIsLooping(true);
+//					mMovementActions.insert(ActionStore::value_type((*I)->getName(), newAction));
+//				} else {
+//					newAction->setIsLooping(false);
+//					mActions.insert(ActionStore::value_type((*I)->getName(), newAction));
+//				}
+//				break; //for now we'll only allow one group per action
+///*				if (newGroup)
+//				{
+//					newGroup->setPlayOrder(sound->playOrder);
+//					S_LOG_INFO("Sound Group " + sound->groupName
+//							+ " registered within entity");
+//				}*/
+//			}
+//		}
 	}
 
 } // namespace Ember

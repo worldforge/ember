@@ -1,7 +1,7 @@
 //
 // C++ Implementation: JesusEdit
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -36,20 +36,17 @@
 #include "../carpenter/BluePrint.h"
 
 #include <CEGUIWindowManager.h>
-#include <CEGUIImagesetManager.h> 
-#include <CEGUIImageset.h> 
+#include <CEGUIImagesetManager.h>
+#include <CEGUIImageset.h>
 #include <elements/CEGUIListbox.h>
-#include <elements/CEGUIListboxItem.h> 
-#include <elements/CEGUIListboxTextItem.h> 
+#include <elements/CEGUIListboxItem.h>
+#include <elements/CEGUIListboxTextItem.h>
 #include <elements/CEGUIEditbox.h>
 
 #include "../EmberOgre.h"
 #include "../AvatarCamera.h"
 #include "../Avatar.h"
 #include "../EmberEntity.h"
-#include "../EmberPhysicalEntity.h"
-// #include "../PersonEmberEntity.h"
-#include "../AvatarEmberEntity.h"
 #include "../model/Model.h"
 #include "framework/ConsoleBackend.h"
 #include "../jesus/XMLJesusSerializer.h"
@@ -76,66 +73,66 @@ JesusEdit::~JesusEdit()
 
 void JesusEdit::onEventFirstTimeShown()
 {
-	
+
 	//bind buttons
 	CEGUI::PushButton* switchButton = static_cast<CEGUI::PushButton*>(getWindow("SwitchMode"));
 	BIND_CEGUI_EVENT(switchButton, CEGUI::PushButton::EventClicked, JesusEdit::SwitchMode_Click)
-	
+
 	CEGUI::PushButton* fileButton = static_cast<CEGUI::PushButton*>(getWindow("File"));
 	BIND_CEGUI_EVENT(fileButton, CEGUI::PushButton::EventClicked, JesusEdit::File_Click)
-	
+
 	mCreateNew = static_cast<CEGUI::PushButton*>(getWindow("CreateNew"));
 	BIND_CEGUI_EVENT(mCreateNew, CEGUI::PushButton::EventClicked, JesusEdit::CreateNew_Click)
-	
+
 	mCreate = static_cast<CEGUI::PushButton*>(getWindow("Create"));
 	BIND_CEGUI_EVENT(mCreate, CEGUI::PushButton::EventClicked, JesusEdit::Create_Click)
-	
+
 	mBind = static_cast<CEGUI::PushButton*>(getWindow("Bind"));
 	BIND_CEGUI_EVENT(mBind, CEGUI::PushButton::EventClicked, JesusEdit::Bind_Click)
-	
+
 	mRemove = static_cast<CEGUI::PushButton*>(getWindow("Remove"));
 	BIND_CEGUI_EVENT(mRemove, CEGUI::PushButton::EventClicked, JesusEdit::Remove_Click)
-	
-	
-	
+
+
+
 	mNewName = static_cast<CEGUI::Editbox*>(getWindow("NewName"));
-	
-	
-	
+
+
+
 	//bind lists
 	mCurrentBlocksList = static_cast<CEGUI::Listbox*>(getWindow("CurrentBlocks"));
 	BIND_CEGUI_EVENT(mCurrentBlocksList, CEGUI::Listbox::EventSelectionChanged, JesusEdit::CurrentBlocksList_SelectionChanged)
 	BIND_CEGUI_EVENT(mCurrentBlocksList, CEGUI::Listbox::EventListContentsChanged, JesusEdit::CurrentBlocksList_SelectionChanged)
-	
-	
+
+
 	mCurrentPointsList = static_cast<CEGUI::Listbox*>(getWindow("CurrentPoints"));
 	BIND_CEGUI_EVENT(mCurrentPointsList, CEGUI::Listbox::EventSelectionChanged, JesusEdit::CurrentPointsList_SelectionChanged)
 	BIND_CEGUI_EVENT(mCurrentPointsList, CEGUI::Listbox::EventListContentsChanged, JesusEdit::CurrentPointsList_SelectionChanged)
-	
+
 	mAvailableBlocksList = static_cast<CEGUI::Listbox*>(getWindow("AvailableBlocks"));
 	BIND_CEGUI_EVENT(mAvailableBlocksList, CEGUI::Listbox::EventSelectionChanged, JesusEdit::AvailableBlocksList_SelectionChanged)
 	BIND_CEGUI_EVENT(mAvailableBlocksList, CEGUI::Listbox::EventListContentsChanged, JesusEdit::AvailableBlocksList_SelectionChanged)
-	
+
 	mNewPointsList = static_cast<CEGUI::Listbox*>(getWindow("NewBlockPoints"));
 	BIND_CEGUI_EVENT(mNewPointsList, CEGUI::Listbox::EventSelectionChanged, JesusEdit::NewPointsList_SelectionChanged)
 	BIND_CEGUI_EVENT(mNewPointsList, CEGUI::Listbox::EventListContentsChanged, JesusEdit::NewPointsList_SelectionChanged)
-	
-	
-	
+
+
+
 	//bind external events
 	mMousePicker.EventPickedModelBlock.connect(sigc::mem_fun(*this, &JesusEdit::pickedModelBlock));
 	mMousePicker.EventPickedAttachPointNode.connect(sigc::mem_fun(*this, &JesusEdit::pickedAttachPointNode));
 	EmberOgre::getSingleton().EventCreatedJesus.connect(sigc::mem_fun(*this, &JesusEdit::createdJesus));
-	
-	getMainSheet()->addChildWindow(mMainWindow); 
-//	getMainSheet()->addChildWindow(mPreviewWindow); 
-	
+
+	getMainSheet()->addChildWindow(mMainWindow);
+//	getMainSheet()->addChildWindow(mPreviewWindow);
+
 	//make sure the buttons are disabled by default
 	updateBindingButton();
 	updateCreateButton();
-	
+
 	enableCloseButton();
-	
+
 }
 
 void JesusEdit::buildWidget()
@@ -145,7 +142,7 @@ void JesusEdit::buildWidget()
 
 
 	registerConsoleVisibilityToggleCommand("builder");
-	
+
 }
 
 
@@ -154,9 +151,9 @@ void JesusEdit::show()
 {
 	if (mJesus)
 	{
-		if (mMainWindow) 
+		if (mMainWindow)
 			mMainWindow->setVisible(true);
-		if (mPreview) 
+		if (mPreview)
 			mPreview->setVisible(true);
 		S_LOG_VERBOSE("Showing builder window.");
 	} else {
@@ -166,11 +163,11 @@ void JesusEdit::show()
 void JesusEdit::hide()
 {
 	S_LOG_VERBOSE("Hiding builder window.");
-	if (mMainWindow) 
+	if (mMainWindow)
 		mMainWindow->setVisible(false);
-	if (mPreview) 
+	if (mPreview)
 		mPreview->setVisible(false);
-	if (mFile) 
+	if (mFile)
 		mFile->hide();
 }
 
@@ -192,7 +189,7 @@ void JesusEdit::pickedModelBlock(ModelBlock* modelBlock, const MousePickerArgs&)
 	if (mCurrentConstruction != modelBlock->getConstruction()) {
 		loadConstruction(modelBlock->getConstruction());
 	}
-	
+
 	//use the lookup map to see what ListBoxItem corresponds to the picked ModleBlock
 	std::map<ModelBlock*, CEGUI::ListboxItem*>::iterator I = mCurrentBlocksListLookup.find(modelBlock);
 	if (I != mCurrentBlocksListLookup.end()) {
@@ -203,15 +200,15 @@ void JesusEdit::pickedModelBlock(ModelBlock* modelBlock, const MousePickerArgs&)
 
 }
 
-void JesusEdit::loadConstruction(Construction* construction) 
+void JesusEdit::loadConstruction(Construction* construction)
 {
 	mCurrentConstruction = construction;
 	mCurrentBlocksList->resetList();
 	mCurrentBlocksList->clearAllSelections();
 	mCurrentBlocksListLookup.clear();
 	std::vector<ModelBlock*> blocks = construction->getModelBlocks();
-	
-	for (std::vector<ModelBlock*>::iterator I = blocks.begin(); I != blocks.end(); ++I) 
+
+	for (std::vector<ModelBlock*>::iterator I = blocks.begin(); I != blocks.end(); ++I)
 	{
 		CEGUI::String name((*I)->getBuildingBlock()->getName());
 		CEGUI::ListboxItem* item = new Gui::ColouredListItem(name, 0, *I);
@@ -219,9 +216,9 @@ void JesusEdit::loadConstruction(Construction* construction)
 		//add to the lookup map
 		mCurrentBlocksListLookup.insert(std::map<ModelBlock*, CEGUI::ListboxItem*>::value_type(*I, item));
 	}
-	
+
 	//loadFromJesus(construction->getJesus());
-	
+
 }
 
 void JesusEdit::createdJesus(Jesus* jesus)
@@ -239,7 +236,7 @@ void JesusEdit::loadFromJesus(Jesus* jesus)
 	mAvailableBlocksList->resetList();
 	mAvailableBlocksList->clearAllSelections();
 	const std::map<const std::string , Carpenter::BuildingBlockSpec >* bblockSpecs = jesus->getCarpenter()->getBuildingBlockSpecs();
-	for (std::map<const std::string , Carpenter::BuildingBlockSpec >::const_iterator I = bblockSpecs->begin(); I != bblockSpecs->end(); ++I) 
+	for (std::map<const std::string , Carpenter::BuildingBlockSpec >::const_iterator I = bblockSpecs->begin(); I != bblockSpecs->end(); ++I)
 	{
 		ConstWrapper<const Carpenter::BuildingBlockSpec*>* holder = new ConstWrapper<const Carpenter::BuildingBlockSpec*>(&I->second);
 		CEGUI::String name(I->second.getName());
@@ -254,7 +251,7 @@ void JesusEdit::pickedAttachPointNode(AttachPointNode* pointNode, const MousePic
 	CEGUI::ListboxItem* item = mCurrentPointsListLookup.find(pointNode)->second;
 	mCurrentPointsList->ensureItemIsVisible(item);
 	mCurrentPointsList->setItemSelectState(item, true);
-	
+
 }
 
 bool JesusEdit::CurrentBlocksList_SelectionChanged( const CEGUI::EventArgs & args )
@@ -268,16 +265,16 @@ bool JesusEdit::CurrentBlocksList_SelectionChanged( const CEGUI::EventArgs & arg
 		ModelBlock* block = static_cast<ModelBlock*>(item->getUserData());
 		block->select();
 		mCurrentlySelectedBlock = block;
-		
+
 		fillAttachPointList(block);
 	} else {
 		mCurrentPointsList->resetList();
 		mCurrentPointsList->clearAllSelections();
 	}
 	updateRemoveButton();
-	
+
 	return true;
-	
+
 }
 
 bool JesusEdit::AvailableBlocksList_SelectionChanged( const CEGUI::EventArgs & args )
@@ -286,10 +283,10 @@ bool JesusEdit::AvailableBlocksList_SelectionChanged( const CEGUI::EventArgs & a
 	removeBindings();
 	if (bblockSpec) {
 		fillNewAttachPointList(bblockSpec->getBlockSpec());
-		
-		
+
+
 		mPreview->showBuildingBlock(bblockSpec->getName());
-		
+
 /*		mPreview->clearAndDestroyModel();
 		Model* model = EmberOgre::getSingleton().getJesus()->createModelForBlockType(bblockSpec->getName(),"JesusEditPreviewModel");
 		if (model) {
@@ -298,7 +295,7 @@ bool JesusEdit::AvailableBlocksList_SelectionChanged( const CEGUI::EventArgs & a
 	} else {
 		mNewPointsList->resetList();
 		mNewPointsList->clearAllSelections();
-	
+
 	}
 	updateCreateButton();
 	return true;
@@ -315,33 +312,33 @@ void JesusEdit::fillNewAttachPointList(const Carpenter::BlockSpec * blockspec )
 {
 	mNewPointsList->resetList();
 	mNewPointsList->clearAllSelections();
-	
+
 	const std::vector<const Carpenter::AttachPoint*> nodes = blockspec->getAllPoints();
-	for (std::vector<const Carpenter::AttachPoint*>::const_iterator I = nodes.begin(); I != nodes.end(); ++I) 
+	for (std::vector<const Carpenter::AttachPoint*>::const_iterator I = nodes.begin(); I != nodes.end(); ++I)
 	{
 		CEGUI::String name((*I)->getAttachPair()->getName() + "/" + (*I)->getName() + " ("+(*I)->getAttachPair()->getType() +")");
 		ConstWrapper<const Carpenter::AttachPoint*>* holder = new ConstWrapper<const Carpenter::AttachPoint*>(*I);
 		CEGUI::ListboxItem* item = new Gui::ColouredListItem(name, 0, holder);
 		mNewPointsList->addItem(item);
-		
+
 	}
 
 }
 
 
 void JesusEdit::fillAttachPointList(ModelBlock* block)
-{	
+{
 	mCurrentPointsList->resetList();
 	mCurrentPointsList->clearAllSelections();
-	
+
 	std::vector<AttachPointNode*> nodes = block->getAttachPointNodes();
-	for (std::vector<AttachPointNode*>::iterator I = nodes.begin(); I != nodes.end(); ++I) 
+	for (std::vector<AttachPointNode*>::iterator I = nodes.begin(); I != nodes.end(); ++I)
 	{
 		CEGUI::String name((*I)->getAttachPoint()->getAttachPair()->getName() + "/" + (*I)->getAttachPoint()->getName()+ " ("+(*I)->getAttachPoint()->getAttachPair()->getType() +")");
 		CEGUI::ListboxItem* item = new Gui::ColouredListItem(name, 0, *I);
 		mCurrentPointsList->addItem(item);
 		mCurrentPointsListLookup.insert(std::map<AttachPointNode*, CEGUI::ListboxItem*>::value_type(*I, item));
-		
+
 	}
 
 }
@@ -367,7 +364,7 @@ bool JesusEdit::CurrentPointsList_SelectionChanged( const CEGUI::EventArgs & arg
 	if (item) {
 		AttachPointNode* pointNode = static_cast<AttachPointNode*>(item->getUserData());
 		mCurrentlySelectedAttachPointNode = pointNode;
-		
+
 		pointNode->select();
 	}
 	updateBindingButton( );
@@ -426,7 +423,7 @@ void JesusEdit::updateBindingButton( )
 		}
 	}
 	mBind->setEnabled(enableButton);
-	
+
 }
 
 const Carpenter::AttachPoint * JesusEdit::getSelectedPointForCurrentBlock( ) const
@@ -458,11 +455,11 @@ bool JesusEdit::Create_Click( const CEGUI::EventArgs & args )
 		std::stringstream ss;
 		ss << mCurrentConstruction->getModelBlocks().size();
 		definition.mName = std::string("_buildingBlock") + ss.str();
-	}	
+	}
 	definition.mBuildingBlockSpec = getNewBuildingBlockSpec()->getName();
-	
+
 	Carpenter::BuildingBlock* bblock = mCurrentConstruction->getBluePrint()->createBuildingBlock(definition);
-	
+
 	std::vector< Carpenter::BuildingBlockBinding* > bindings = createBindingsForNewBlock(bblock);
 	mCurrentConstruction->getBluePrint()->placeBindings(bblock, createBindingsForNewBlock(bblock));
 	if (bblock->isAttached()) {
@@ -503,14 +500,14 @@ std::vector< Carpenter::BuildingBlockBinding* > JesusEdit::createBindingsForNewB
 	std::vector< Carpenter::BuildingBlockBinding* > blockBindings;
 	std::map<AttachPointNode*, const Carpenter::AttachPoint*>::iterator I = mBindings.begin();
 	std::map<AttachPointNode*, const Carpenter::AttachPoint*>::iterator I_end = mBindings.end();
-	
+
 	for (;I != I_end; ++I)
 	{
 		Carpenter::BuildingBlockBindingDefinition def;
 		Carpenter::BuildingBlockBinding* binding = mCurrentConstruction->getBluePrint()->addBinding(getSelectedBlock()->getBuildingBlock(), I->first->getAttachPoint(), newBlock, I->second);
 		if (binding) {
 			blockBindings.push_back(binding);
-		} 
+		}
 	}
 	return blockBindings;
 }
@@ -538,15 +535,15 @@ Construction* JesusEdit::createNewConstructionFromBlueprint(Carpenter::BluePrint
 
 	//create a new node on the same "level" as the avatar
 	Ogre::SceneNode* node =  EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
-	
+
 	Construction* construction = new Construction(blueprint, mJesus, node);
 	construction->buildFromBluePrint(true);
-	
+
 	//place the node in front of the avatar
 	Ogre::Vector3 o_vector(0,0,-5);
 	Ogre::Vector3 o_pos = camera->getPosition() + (camera->getOrientation(false) * o_vector);
 	node->setPosition(o_pos);
-	
+
 	//for now, don't rotate the construction, there are some bugs
 	//node->setOrientation(camera->getOrientation());
 
@@ -555,17 +552,17 @@ Construction* JesusEdit::createNewConstructionFromBlueprint(Carpenter::BluePrint
 }
 
 JesusEditPreview::JesusEditPreview(GUIManager* guiManager, Jesus* jesus)
-: 
-mJesus(jesus), 
-mConstruction(0), 
-mGuiManager(guiManager), 
-mBlueprint(0), 
-mMinCameraDistance(0.5), 
+:
+mJesus(jesus),
+mConstruction(0),
+mGuiManager(guiManager),
+mBlueprint(0),
+mMinCameraDistance(0.5),
 mMaxCameraDistance(40),
 mSelectedAttachPointNode(0)
 {
 	mPreviewWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout(mGuiManager->getLayoutDir() + "JesusEditPreview.layout", "JesusEditPreview/");
-	
+
 	guiManager->getMainSheet()->addChildWindow(mPreviewWindow);
 	createPreviewTexture();
 	setVisible(false);
@@ -595,18 +592,18 @@ void JesusEditPreview::showBuildingBlock(const std::string & spec)
 
 	mBlueprint = new Carpenter::BluePrint("preview", mJesus->getCarpenter());
 	mConstruction = new Construction(mBlueprint, mJesus, mTexture->getRenderContext()->getSceneNode());
-	
+
 	Carpenter::BuildingBlockDefinition def;
 	def.mName = "preview";
 	def.mBuildingBlockSpec = spec;
 	mBlock = mBlueprint->createBuildingBlock(def);
-	
+
 	mModelBlock = mConstruction->createModelBlock(mBlock, true);
 	mModelBlock->select();
-	
+
 	mTexture->getRenderContext()->repositionCamera();
 	mTexture->getRenderContext()->showFull(mModelBlock->getModel());
-	
+
 
 }
 
@@ -632,9 +629,9 @@ void JesusEditPreview::selectAttachPoint(const Carpenter::AttachPoint* point)
 		mSelectedAttachPointNode->deselect();
 		mSelectedAttachPointNode = 0;
 	}
-	
+
 	std::vector<AttachPointNode*> nodes = mModelBlock->getAttachPointNodes();
-	for (std::vector<AttachPointNode*>::iterator I = nodes.begin(); I != nodes.end(); ++I) 
+	for (std::vector<AttachPointNode*>::iterator I = nodes.begin(); I != nodes.end(); ++I)
 	{
 		if ((*I)->getAttachPoint() == point) {
 			mSelectedAttachPointNode = (*I);
@@ -654,7 +651,7 @@ void JesusEditPreview::createPreviewTexture()
 	mTexture = new EntityCEGUITexture(imageWidget->getName().c_str(), 256, 256);
 	imageWidget->setProperty("image", "set:" + mTexture->getImage()->getImagesetName() + " image:" + mTexture->getImage()->getName());
 
-	
+
 	mZoomSlider = static_cast<CEGUI::Slider*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditPreview/Zoom"));
 	BIND_CEGUI_EVENT(mZoomSlider, CEGUI::Slider::EventValueChanged, JesusEditPreview::Zoom_ValueChanged);
 
@@ -668,17 +665,17 @@ JesusEditFile::JesusEditFile(GUIManager* guiManager, JesusEdit* jesusEdit, Jesus
 	mBluePrintList = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditFile/Blueprints"));
 /*	BIND_CEGUI_EVENT(mBluePrintList, CEGUI::Listbox::EventSelectionChanged, JesusEditFile::BluePrintList_SelectionChanged)
 	BIND_CEGUI_EVENT(mBluePrintList, CEGUI::Listbox::EventListContentsChanged, JesusEditFile::BluePrintList_SelectionChanged)*/
-	
-	
+
+
 	mLoadButton = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditFile/Load"));
 	BIND_CEGUI_EVENT(mLoadButton, CEGUI::PushButton::EventClicked, JesusEditFile::Load_Click)
 	mSaveButton = static_cast<CEGUI::PushButton*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditFile/Save"));
 	BIND_CEGUI_EVENT(mSaveButton, CEGUI::PushButton::EventClicked, JesusEditFile::Save_Click)
 
 	mNewNameEditBox = static_cast<CEGUI::Editbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditFile/NewName"));
-	
+
 	guiManager->getMainSheet()->addChildWindow(mWindow);
-		
+
 	fillBluePrintList();
 
 }
@@ -686,36 +683,36 @@ JesusEditFile::JesusEditFile(GUIManager* guiManager, JesusEdit* jesusEdit, Jesus
 void JesusEditFile::fillBluePrintList()
 {
 	mBluePrintList->resetList();
-	
+
 	const std::map<std::string, Carpenter::BluePrint* >* blueprintMap = mJesus->getAllBluePrints();
-	
+
 	std::map<std::string, Carpenter::BluePrint* >::const_iterator I = blueprintMap->begin();
 	std::map<std::string, Carpenter::BluePrint* >::const_iterator I_end = blueprintMap->end();
-	
+
 	for (; I != I_end; ++I)
 	{
 		CEGUI::String name(I->first);
 		CEGUI::ListboxItem* item = new Gui::ColouredListItem(name, 0, 0);
 		mBluePrintList->addItem(item);
-		
+
 	}
-	
-	
-	
+
+
+
 }
-	
+
 bool JesusEditFile::Load_Click( const CEGUI::EventArgs & args )
 {
 	CEGUI::ListboxItem* item = mBluePrintList->getFirstSelectedItem();
 	if (item) {
 		std::string name(item->getText().c_str());
-	
+
 		Carpenter::BluePrint* blueprint = mJesus->getBluePrint(name);
 		if (blueprint) {
 			Construction* construction = mJesusEdit->createNewConstructionFromBlueprint(blueprint);
 			//load the construction in jesusEdit
 			mJesusEdit->loadConstruction(construction);
-		
+
 		}
 	}
 
@@ -727,7 +724,7 @@ bool JesusEditFile::Save_Click( const CEGUI::EventArgs & args )
 {
 
 	std::string name(mNewNameEditBox->getText().c_str());
-	
+
 	//check that there is a name
 	if (name != "") {
 		saveBluePrint(name, mJesusEdit->getConstruction()->getBluePrint());
@@ -736,7 +733,7 @@ bool JesusEditFile::Save_Click( const CEGUI::EventArgs & args )
 		} else {
 			//there is a blueprint already, but check if this is defined in the home dir
 		}*/
-		
+
 	}
 
 	return true;
@@ -759,7 +756,7 @@ void JesusEditFile::hide()
 {
 	mWindow->setVisible(false);
 }
-	
+
 void JesusEditFile::switchVisibility()
 {
 	if (mWindow->isVisible()) {
@@ -770,33 +767,33 @@ void JesusEditFile::switchVisibility()
 }
 
 
-	
+
 bool JesusEdit::CreateNew_Click( const CEGUI::EventArgs & args )
 {
 
 	Carpenter::BluePrint* blueprint = new Carpenter::BluePrint("blueprint", mJesus->getCarpenter());
-	
+
 	Carpenter::BuildingBlockDefinition definition;
 	definition.mName = mNewName->getText().c_str();
 	if (definition.mName == "") {
 		definition.mName = "startingblock";
-	}	
+	}
 	definition.mBuildingBlockSpec = getNewBuildingBlockSpec()->getName();
-	
-	
-// 	Carpenter::BuildingBlock* bblock = 
+
+
+// 	Carpenter::BuildingBlock* bblock =
 	blueprint->createBuildingBlock(definition);
 	blueprint->setStartingBlock(definition.mName);
 	blueprint->compile();
-		
+
 	Construction* construction = createNewConstructionFromBlueprint(blueprint);
 //	construction->createModelBlock(bblock, true);
 	removeBindings();
-	
-	
+
+
 	//load the construction in jesusEdit
 	loadConstruction(construction);
-	
+
 
 	return true;
 }
@@ -809,6 +806,6 @@ bool JesusEdit::File_Click(const CEGUI::EventArgs& args)
 	}
 	return true;
 }
-	
+
 }
 }

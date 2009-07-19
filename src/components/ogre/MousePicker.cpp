@@ -25,16 +25,13 @@
 #include "config.h"
 #endif
 
-#include "EmberEntity.h"
-#include "EmberOgre.h"
-//#include "EmberPhysicalEntity.h"
-//#include "PersonEmberEntity.h"
-//#include "AvatarEmberEntity.h"
-#include "components/ogre/camera/MainCamera.h"
-#include "GUIManager.h"
-//#include "MovementController.h"
-
 #include "MousePicker.h"
+#include "components/ogre/EmberEntity.h"
+#include "components/ogre/EmberOgre.h"
+#include "components/ogre/camera/MainCamera.h"
+#include "components/ogre/GUIManager.h"
+
+
 
 namespace EmberOgre {
 

@@ -10,7 +10,6 @@ $pfile "Avatar.pkg"
 $pfile "EmberEntityFactory.pkg"
 
 $pfile "EmberEntity.pkg"
-$pfile "AvatarEmberEntity.pkg"
 $pfile "WorldEmberEntity.pkg"
 
 $pfile "IGraphicalRepresentation.pkg"
@@ -121,7 +120,7 @@ class EmberOgre
 	
 	
 	sigc::signal<void, EmberOgre::EmberEntityFactory*> EventCreatedEmberEntityFactory;
-	sigc::signal<void, EmberOgre::EmberEntity*> EventCreatedAvatarEntity;
+	sigc::signal<void, EmberOgre::EmberEntity&> EventCreatedAvatarEntity;
 //	sigc::signal<void, EmberOgre::Jesus*> EventCreatedJesus;
 	
 	/**

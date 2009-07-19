@@ -37,7 +37,7 @@ function Chat.buildWidget()
 --	Chat.widget:hide()
 	Chat.widget:show()
 	--and show if when the avatar has been created (though this disallows out of game chat)
-	Chat.connectors.createdAvatarEmberEntity = EmberOgre.LuaConnector:new_local(emberOgre.EventCreatedAvatarEntity):connect("Chat.createdAvatarEmberEntity")
+	connect(Chat.connectors, emberOgre.EventCreatedAvatarEntity, "Chat.createdAvatarEmberEntity")
 	connect(Chat.connectors, console.GotMessage, "Chat.consoleGotMessage")
 	
 	Chat.consoleObject = EmberOgre.LuaConsoleObject:new_local("console_focus", "Chat.console_focus")

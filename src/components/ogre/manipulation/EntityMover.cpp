@@ -26,12 +26,12 @@
 
 #include "EntityMover.h"
 #include "EntityMoveManager.h"
-#include "services/EmberServices.h"
-#include "services/server/ServerService.h"
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/SceneNodeAttachment.h"
 #include "components/ogre/Convert.h"
 
+#include "services/EmberServices.h"
+#include "services/server/ServerService.h"
 #include <OgreSceneNode.h>
 
 namespace EmberOgre

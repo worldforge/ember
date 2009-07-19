@@ -128,8 +128,12 @@ WorldEmberEntity* EmberEntityFactory::getWorld() const
 
 void EmberEntityFactory::gotAvatarCharacter(Eris::Entity* entity)
 {
-	EmberEntity* avatarEntity = static_cast<EmberEntity*>(entity);
-   	EmberOgre::getSingleton().EventCreatedAvatarEntity.emit(avatarEntity);
+	if (entity) {
+		EmberEntity* avatarEntity = static_cast<EmberEntity*>(entity);
+		EmberOgre::getSingleton().raiseCreatedAvatarEntity(*avatarEntity);
+	} else {
+		S_LOG_CRITICAL("Somehow got a null avatar entity.");
+	}
 }
 
 EmberEntity* EmberEntityFactory::createAvatarEntity(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View *world)
