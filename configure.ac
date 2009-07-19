@@ -522,7 +522,6 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/mapping/Makefile
 		 src/components/ogre/modeldefinitions/Makefile
 		 src/components/ogre/sounddefinitions/Makefile
-		 src/components/ogre/carpenter/Makefile
 		 src/components/ogre/jesus/Makefile
 		 src/components/ogre/manipulation/Makefile
 		 src/components/ogre/manipulation/entityrecipes/Makefile
@@ -533,6 +532,7 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/SceneManagers/EmberPagingSceneManager/include/Makefile
 		 src/components/entitymapping/Makefile
 		 src/components/cegui/Makefile
+		 src/components/carpenter/Makefile
 		 media/Makefile
 		 media/packs/Makefile
 ])

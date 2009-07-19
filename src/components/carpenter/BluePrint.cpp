@@ -25,7 +25,7 @@
 #endif
 
 #include "BluePrint.h"
-#include <vector>
+#include "Carpenter.h"
 
 namespace Carpenter {
 
@@ -182,6 +182,11 @@ const AttachPair* BuildingBlock::getAttachPair(const std::string& name)
 	const BlockSpec* spec = mBuildingBlockSpec->getBlockSpec();
 	return spec->getAttachPair(name);
 
+}
+
+const BlockSpec* BuildingBlock::getBlockSpec() const
+{
+	return mBuildingBlockSpec->getBlockSpec();
 }
 
 void BluePrint::compile()

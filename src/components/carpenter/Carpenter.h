@@ -35,9 +35,6 @@
 #include <vector>
 #include <map>
 
-#include "../EmberOgrePrerequisites.h"
-//#include "../model/Model.h"
-
  namespace Carpenter {
 
 /**

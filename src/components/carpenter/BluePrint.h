@@ -31,9 +31,8 @@
 #include <wfmath/quaternion.h>
 
 #include <vector>
+#include <list>
 #include <map>
-
-#include "Carpenter.h"
 
 namespace Carpenter {
 
@@ -168,7 +167,6 @@ inline void BuildingBlock::setOrientation(WFMath::Quaternion orientation) { mOri
 inline const WFMath::Point<3>& BuildingBlock::getPosition() const { return mPosition;}
 inline const WFMath::Quaternion& BuildingBlock::getOrientation() const { return mOrientation;}
 inline const BuildingBlockSpec* BuildingBlock::getBuildingBlockSpec() const { return mBuildingBlockSpec; }
-inline const BlockSpec* BuildingBlock::getBlockSpec() const { return mBuildingBlockSpec->getBlockSpec(); }
 inline int BuildingBlock::getNumberOfChildBindings() const { return mChildBindings; }
 
 
