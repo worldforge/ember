@@ -231,23 +231,16 @@ protected:
 	void createAvatarCameras(Ogre::SceneNode* avatarSceneNode);
 
 	/**
-	 * How many meters per second the avatar can walk.
-	 * This should be set through some kind of rule checking with the server
-	 * depending on the character. To be done later.
-	 */
-	float mWalkSpeed;
-
-	/**
-	 * How many meters per second the avatar can run.
-	 * This should be set through some kind of rule checking with the server
-	 * depending on the character. To be done later.
-	 */
-	float mRunSpeed;
-
-	/**
 	The Eris::Entity which represents the Avatar.
 	*/
 	EmberEntity& mErisAvatarEntity;
+
+	/**
+	 * How many meters per second the avatar can move, at maximum speed.
+	 * This should be set through some kind of rule checking with the server
+	 * depending on the character. To be done later.
+	 */
+	float mMaxSpeed;
 
 	AvatarAttachmentController* mAvatarAttachmentController;
 
@@ -306,20 +299,12 @@ protected:
 	void Config_AvatarRotationUpdateFrequency(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 	/**
-	 *    Bind the walking speed to the input:walkspeed key. Note that this is capped in the end by the server.
+	 *    Bind the max speed to the input:runspeed key. Note that this is capped in the end by the server.
 	 * @param section
 	 * @param key
 	 * @param variable
 	 */
-	void Config_WalkSpeed(const std::string& section, const std::string& key, varconf::Variable& variable);
-
-	/**
-	 *    Bind the running speed to the input:runspeed key. Note that this is capped in the end by the server.
-	 * @param section
-	 * @param key
-	 * @param variable
-	 */
-	void Config_RunSpeed(const std::string& section, const std::string& key, varconf::Variable& variable);
+	void Config_MaxSpeed(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 
 	/**

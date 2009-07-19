@@ -56,6 +56,7 @@ namespace EmberOgre {
 
 Avatar::Avatar(EmberEntity& erisAvatarEntity)
 : mErisAvatarEntity(erisAvatarEntity)
+, mMaxSpeed(5)
 , mAvatarAttachmentController(new AvatarAttachmentController(*this))
 , mHasChangedLocation(false)
 , mChatLoggerParent(0)
@@ -67,17 +68,11 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity)
 	mAccumulatedHorizontalRotation = 0;
 	mThresholdDegreesOfYawForAvatarRotation = 100;
 
-
-	///these are the defaults, but if anything is set in the config file that will override these values as updateFromConfig is called
-	mWalkSpeed = 2.47;
-	mRunSpeed = 5; ///5 seems to be the max speed in cyphesis
-
 	Ogre::Root::getSingleton().addFrameListener(this);
 
 	registerConfigListener("general","logchatmessages", sigc::mem_fun(*this, &Avatar::Config_LogChatMessages));
 	registerConfigListener("general","avatarrotationupdatefrequency", sigc::mem_fun(*this, &Avatar::Config_AvatarRotationUpdateFrequency));
-	registerConfigListener("input","walkspeed", sigc::mem_fun(*this, &Avatar::Config_WalkSpeed));
-	registerConfigListener("input","runspeed", sigc::mem_fun(*this, &Avatar::Config_RunSpeed));
+	registerConfigListener("input","maxspeed", sigc::mem_fun(*this, &Avatar::Config_MaxSpeed));
 
 	mCurrentMovementState.isMoving = false;
 	mCurrentMovementState.velocity = Ogre::Vector3::ZERO;
@@ -155,7 +150,7 @@ bool Avatar::frameStarted(const Ogre::FrameEvent & event)
 
 void Avatar::moveClientSide(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement, float timeslice)
 {
-	WFMath::Vector<3> adjustedMovement(movement * timeslice * mRunSpeed);
+	WFMath::Vector<3> adjustedMovement(movement * timeslice * mMaxSpeed);
 	mClientSideAvatarPosition += adjustedMovement.rotate(orientation);
 
 	if (mErisAvatarEntity.getAttachment()) {
@@ -371,14 +366,9 @@ void Avatar::Config_AvatarRotationUpdateFrequency(const std::string& section, co
 	setMinIntervalOfRotationChanges(static_cast<double>(variable));
 }
 
-void Avatar::Config_WalkSpeed(const std::string& section, const std::string& key, varconf::Variable& variable)
+void Avatar::Config_MaxSpeed(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
-	mWalkSpeed = static_cast<double>(variable);
-}
-
-void Avatar::Config_RunSpeed(const std::string& section, const std::string& key, varconf::Variable& variable)
-{
-	mRunSpeed = static_cast<double>(variable);
+	mMaxSpeed = static_cast<double>(variable);
 }
 
 void Avatar::Config_LogChatMessages(const std::string& section, const std::string& key, varconf::Variable& variable)
