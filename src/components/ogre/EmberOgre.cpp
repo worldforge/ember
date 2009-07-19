@@ -71,6 +71,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "framework/LoggingInstance.h"
 
 #include "camera/MainCamera.h"
+#include "camera/ThirdPersonCameraMount.h"
+#include "components/ogre/AvatarCameraMotionHandler.h"
 // ------------------------------
 // Include OGRE Ember client files
 // ------------------------------
@@ -517,9 +519,13 @@ bool EmberOgre::setup()
 
 void EmberOgre::raiseCreatedAvatarEntity(EmberEntity& entity)
 {
+	//Set up the third person avatar camera and switch to it.
 	mAvatar = new Avatar(entity);
+	mAvatar->getCameraMount().setMotionHandler(new AvatarCameraMotionHandler(*mAvatar));
 	mMovementController = new MovementController(*mAvatar);
 	mMainCamera->setMovementProvider(mMovementController);
+	mMainCamera->attachToMount(&mAvatar->getCameraMount());
+
 	EventMovementControllerCreated.emit();
 	EventCreatedAvatarEntity.emit(entity);
 }

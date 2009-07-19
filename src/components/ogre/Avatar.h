@@ -46,9 +46,11 @@ namespace EmberOgre {
 namespace Model {
 	class Model;
 }
+namespace Camera {
+	class ThirdPersonCameraMount;
+}
 
 class EmberEntity;
-class MovementController;
 class AvatarLogger;
 class AvatarLoggerParent;
 
@@ -114,12 +116,6 @@ public Ember::ConfigListenerContainer
 //	void updateFrame(MovementControllerMovement& movement);
 
 	/**
-	 *    Sets the controller object responsible for controlling the avatar.
-	 * @param MovementController
-	 */
-	void setMovementController(MovementController* MovementController);
-
-	/**
 	 *    Access for the Eris::Entity which represents the Avatar.
 	 * @return
 	 */
@@ -149,11 +145,14 @@ public Ember::ConfigListenerContainer
 	*/
 	bool isAdmin() const;
 
+	void moveClientSide(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement);
+
 
 	const WFMath::Point<3>& getClientSideAvatarPosition() const;
 
 	const WFMath::Quaternion& getClientSideAvatarOrientation() const;
 
+	Camera::ThirdPersonCameraMount& getCameraMount() const;
 protected:
 
 	/**
@@ -257,11 +256,6 @@ protected:
 	AvatarMovementState mMovementStateAtLastServerMessage;
 
 	/**
-	The instance responsible for listening for movement updates and sending those to the server.
-	*/
-	MovementController* mMovementController;
-
-	/**
 	Keep a temporary list of entities that needs to be added to the inventory.
 	*/
 	std::set<Eris::Entity*> mEntitiesToBeAddedToInventory;
@@ -270,6 +264,8 @@ protected:
 	Keep a temporary list of entities that needs to be removed from the inventory.
 	*/
 	std::set<Eris::Entity*> mEntitiesToBeRemovedFromInventory;
+
+	std::auto_ptr<Camera::ThirdPersonCameraMount> mCameraMount;
 
 	/**
 	 * Listen for location changes, since after a location change we need to honour the onMoved updates even if we're in movement mode.

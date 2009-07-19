@@ -33,7 +33,6 @@
 
 
 #include "EmberEntity.h"
-#include "MovementController.h"
 #include "components/ogre/camera/MainCamera.h"
 #include "components/ogre/camera/ThirdPersonCameraMount.h"
 #include "AvatarLogger.h"
@@ -59,6 +58,8 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity)
 : mErisAvatarEntity(erisAvatarEntity)
 , mHasChangedLocation(false)
 , mChatLoggerParent(0)
+, mCameraMount(new Camera::ThirdPersonCameraMount(*EmberOgre::getSingleton().getSceneManager()))
+
 {
 	mTimeSinceLastServerMessage = 0;
 	setMinIntervalOfRotationChanges(1000); //milliseconds
@@ -98,15 +99,18 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity)
 
 	mErisAvatarEntity.setAttachmentControlDelegate(new AvatarAttachmentController(*this));
 
-	Camera::ThirdPersonCameraMount* mount = new Camera::ThirdPersonCameraMount(*EmberOgre::getSingleton().getSceneManager());
-	EmberOgre::getSingleton().getMainCamera()->attachToMount(mount);
-	mount->attachToNode(getAvatarSceneNode());
+	mCameraMount->attachToNode(getAvatarSceneNode());
 }
 
 Avatar::~Avatar()
 {
 	Ogre::Root::getSingleton().removeFrameListener(this);
 
+}
+
+Camera::ThirdPersonCameraMount& Avatar::getCameraMount() const
+{
+	return *mCameraMount;
 }
 
 void Avatar::setMinIntervalOfRotationChanges(Ogre::Real milliseconds)
@@ -147,6 +151,13 @@ bool Avatar::frameStarted(const Ogre::FrameEvent & event)
 	return true;
 }
 
+void Avatar::moveClientSide(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement)
+{
+	mClientSideAvatarOrientation = orientation;
+	mClientSideAvatarPosition += movement;
+
+	mErisAvatarEntity.updateMotion(0);
+}
 
 
 //void Avatar::updateFrame(MovementControllerMovement& movement)
@@ -309,13 +320,6 @@ Ogre::SceneNode* Avatar::getAvatarSceneNode() const
 		return attachment->getSceneNode();
 	}
 	return 0;
-}
-
-void Avatar::setMovementController(MovementController* MovementController)
-{
-//	mMovementController = MovementController;
-//	mMovementController->getAvatarCamera()->setAvatarNode(getAvatarSceneNode());
-//	mMovementController->attachCamera();
 }
 
 void Avatar::movedInWorld()

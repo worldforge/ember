@@ -252,6 +252,7 @@ bool MainCamera::frameStarted(const Ogre::FrameEvent& event)
 		} else {
 			mCameraMount->move(WFMath::Vector<3>::ZERO(), Convert::toWF(getOrientation()));
 		}
+		mCameraOrientationChangedThisFrame = false;
 	}
 	return true;
 }
