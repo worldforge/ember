@@ -19,11 +19,8 @@
 #ifndef EMBEROGRESCENENODEATTACHMENT_H_
 #define EMBEROGRESCENENODEATTACHMENT_H_
 
-#include "components/ogre/IEntityAttachment.h"
+#include "components/ogre/AttachmentBase.h"
 
-namespace WFMath {
-class Quaternion;
-}
 
 namespace Ogre {
 class SceneNode;
@@ -31,31 +28,19 @@ class SceneNode;
 
 namespace EmberOgre {
 
-class IGraphicalRepresentation;
-class EmberEntity;
+
 class SceneNodeController;
 
-class SceneNodeAttachment : public IEntityAttachment
+class SceneNodeAttachment : public AttachmentBase
 {
 public:
 	SceneNodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, Ogre::SceneNode& parentNode);
+	SceneNodeAttachment(SceneNodeAttachment& source, SceneNodeAttachment& newParentAttachment);
 	virtual ~SceneNodeAttachment();
-
-	virtual IGraphicalRepresentation* getGraphicalRepresentation() const;
-
-	virtual EmberEntity& getAttachedEntity() const;
-
-	virtual EmberEntity* getParentEntity() const;
-
-	virtual IEntityAttachment* attachEntity(EmberEntity& entity);
-
-	virtual void updateScale();
-
-	virtual void getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset);
 
 	virtual void setControlDelegate(IAttachmentControlDelegate* controllerDelegate);
 
-	virtual SceneNodeAttachment* transferToNewParent(SceneNodeAttachment& newParentAttachment);
+	virtual IEntityAttachment* attachEntity(EmberEntity& entity);
 
 	void setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation);
 
@@ -63,15 +48,9 @@ public:
 
 protected:
 
-
-	EmberEntity& mParentEntity;
-	EmberEntity& mChildEntity;
-
 	Ogre::SceneNode* mSceneNode;
 
 	SceneNodeController* mAttachmentController;
-
-	SceneNodeAttachment(const SceneNodeAttachment& source);
 
 };
 

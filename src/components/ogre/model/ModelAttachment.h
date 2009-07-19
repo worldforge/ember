@@ -33,10 +33,16 @@ namespace Model {
 class ModelMount;
 class ModelRepresentation;
 
+/**
+ * @brief Attachment for a ModelRepresentation instance.
+ *
+ * Use this attachment when you have a ModelRepresentation you need to attach to an entity.
+ */
 class ModelAttachment : public SceneNodeAttachment
 {
 public:
 	ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, Ogre::SceneNode& parentNode);
+	ModelAttachment(ModelAttachment& source, SceneNodeAttachment& newParentAttachment);
 
 	virtual ~ModelAttachment();
 
@@ -46,10 +52,8 @@ public:
 
 	void updateScale();
 
-	virtual SceneNodeAttachment* transferToNewParent(SceneNodeAttachment& newParentAttachment);
 
 protected:
-	ModelAttachment(const ModelAttachment& source);
 
 	ModelRepresentation& mModelRepresentation;
 
@@ -58,6 +62,7 @@ protected:
 	 * This also owns the scale node, which will be destroyed when the mount is destroyed.
 	 */
 	ModelMount* mModelMount;
+
 };
 
 }

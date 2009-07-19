@@ -19,6 +19,7 @@
 
 #include "components/ogre/IGraphicalRepresentation.h"
 #include "components/ogre/EmberEntity.h"
+#include "components/ogre/HiddenAttachment.h"
 #include "components/ogre/IEntityAttachment.h"
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelDefinition.h"
@@ -36,12 +37,11 @@ ModelAttachment::ModelAttachment(EmberEntity& parentEntity, ModelRepresentation&
 	mModelMount = new ModelMount(mModelRepresentation.getModel(), mSceneNode);
 }
 
-ModelAttachment::ModelAttachment(const ModelAttachment& source)
-: SceneNodeAttachment::SceneNodeAttachment(source), mModelRepresentation(source.mModelRepresentation), mModelMount(source.mModelMount)
+ModelAttachment::ModelAttachment(ModelAttachment& source, SceneNodeAttachment& newParentAttachment)
+: SceneNodeAttachment::SceneNodeAttachment(source, newParentAttachment), mModelRepresentation(source.mModelRepresentation), mModelMount(source.mModelMount)
 {
-
+	source.mModelMount = 0;
 }
-
 
 
 ModelAttachment::~ModelAttachment()
@@ -59,23 +59,23 @@ IGraphicalRepresentation* ModelAttachment::getGraphicalRepresentation() const
 
 IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 {
-	IEntityAttachment* newAttachment(0);
-	SceneNodeAttachment* currentSceneNodeAttachment = dynamic_cast<SceneNodeAttachment*>(entity.getAttachment());
-	ModelRepresentation* modelRepresentation = ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity);
 	//Don't show a graphical representation if the model is set not to show any contained entities.
-	if (mModelRepresentation.getModel().getDefinition()->getShowContained() && modelRepresentation) {
-		if (currentSceneNodeAttachment) {
-			newAttachment = currentSceneNodeAttachment->transferToNewParent(*this);
-			return newAttachment;
-		} else {
-			return new ModelAttachment(getAttachedEntity(), *modelRepresentation, *mSceneNode);
-		}
+	if (!mModelRepresentation.getModel().getDefinition()->getShowContained()) {
+		return new HiddenAttachment(getAttachedEntity(), entity);
 	} else {
-		if (currentSceneNodeAttachment) {
-			newAttachment = currentSceneNodeAttachment->transferToNewParent(*this);
-			return newAttachment;
+		ModelRepresentation* modelRepresentation = ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity);
+		SceneNodeAttachment* currentSceneNodeAttachment = dynamic_cast<SceneNodeAttachment*>(entity.getAttachment());
+		ModelAttachment* currentModelAttachment = dynamic_cast<ModelAttachment*>(entity.getAttachment());
+		if (currentModelAttachment) {
+			return new ModelAttachment(*currentModelAttachment, *this);
+		} else if (currentSceneNodeAttachment) {
+			return new SceneNodeAttachment(*currentSceneNodeAttachment, *this);
 		} else {
-			return new SceneNodeAttachment(getAttachedEntity(), entity, *mSceneNode);
+			if (modelRepresentation) {
+				return new ModelAttachment(getAttachedEntity(), *modelRepresentation, *mSceneNode);
+			} else {
+				return new SceneNodeAttachment(getAttachedEntity(), entity, *mSceneNode);
+			}
 		}
 	}
 }
@@ -93,14 +93,6 @@ void ModelAttachment::updateScale()
 			mModelMount->rescale(0);
 		}
 	}
-}
-
-SceneNodeAttachment* ModelAttachment::transferToNewParent(SceneNodeAttachment& newParentAttachment)
-{
-	SceneNodeAttachment* newAttachment = new ModelAttachment(*this);
-	mSceneNode = 0;
-	mModelMount = 0;
-	return newAttachment;
 }
 
 }

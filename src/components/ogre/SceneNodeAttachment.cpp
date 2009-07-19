@@ -22,7 +22,6 @@
 #include "components/ogre/IAttachmentControlDelegate.h"
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/Convert.h"
-#include "components/ogre/MotionManager.h"
 #include "components/ogre/SceneNodeController.h"
 #include "components/ogre/DelegatingSceneNodeController.h"
 
@@ -36,16 +35,17 @@
 namespace EmberOgre {
 
 SceneNodeAttachment::SceneNodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, Ogre::SceneNode& parentNode)
-: mParentEntity(parentEntity), mChildEntity(childEntity), mSceneNode(0), mAttachmentController(0)
+: AttachmentBase::AttachmentBase(parentEntity, childEntity), mSceneNode(0), mAttachmentController(0)
 {
 	setControlDelegate(mChildEntity.getAttachmentControlDelegate());
 	mSceneNode = parentNode.createChildSceneNode("entity_" + childEntity.getId());
 }
 
-SceneNodeAttachment::SceneNodeAttachment(const SceneNodeAttachment& source)
-: mParentEntity(source.mParentEntity), mChildEntity(source.mChildEntity), mSceneNode(source.mSceneNode), mAttachmentController(0)
+SceneNodeAttachment::SceneNodeAttachment(SceneNodeAttachment& source, SceneNodeAttachment& newParentAttachment)
+: AttachmentBase::AttachmentBase(newParentAttachment.getAttachedEntity(), source.getAttachedEntity()), mSceneNode(source.mSceneNode), mAttachmentController(0)
 {
 	setControlDelegate(mChildEntity.getAttachmentControlDelegate());
+	source.mSceneNode = 0;
 }
 
 
@@ -64,40 +64,22 @@ SceneNodeAttachment::~SceneNodeAttachment()
 	}
 }
 
-IGraphicalRepresentation* SceneNodeAttachment::getGraphicalRepresentation() const
-{
-	return 0;
-}
-
-EmberEntity& SceneNodeAttachment::getAttachedEntity() const
-{
-	return mChildEntity;
-}
-
-EmberEntity* SceneNodeAttachment::getParentEntity() const
-{
-	return &mParentEntity;
-}
-
 IEntityAttachment* SceneNodeAttachment::attachEntity(EmberEntity& entity)
 {
-	if (Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity)) {
-		return new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, *mSceneNode);
+
+	Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity);
+	SceneNodeAttachment* currentSceneNodeAttachment = dynamic_cast<SceneNodeAttachment*>(entity.getAttachment());
+	Model::ModelAttachment* currentModelAttachment = dynamic_cast<Model::ModelAttachment*>(entity.getAttachment());
+	if (currentModelAttachment) {
+		return new Model::ModelAttachment(*currentModelAttachment, *this);
+	} else if (currentSceneNodeAttachment) {
+		return new SceneNodeAttachment(*currentSceneNodeAttachment, *this);
 	} else {
-		return new SceneNodeAttachment(getAttachedEntity(), entity, *mSceneNode);
-	}
-}
-
-void SceneNodeAttachment::updateScale()
-{
-}
-
-void SceneNodeAttachment::getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset)
-{
-	if (mParentEntity.getAttachment()) {
-		WFMath::Vector<3> localPositionShift(mChildEntity.getPredictedPos());
-		WFMath::Point<3> adjustedLocalPosition = localPosition + localPositionShift;
-		mParentEntity.getAttachment()->getOffsetForContainedNode(attachment, adjustedLocalPosition, offset);
+		if (modelRepresentation) {
+			return new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, *mSceneNode);
+		} else {
+			return new SceneNodeAttachment(getAttachedEntity(), entity, *mSceneNode);
+		}
 	}
 }
 
@@ -124,14 +106,6 @@ void SceneNodeAttachment::setPosition(const WFMath::Point<3>& position, const WF
 }
 
 
-
-
-SceneNodeAttachment* SceneNodeAttachment::transferToNewParent(SceneNodeAttachment& newParentAttachment)
-{
-	SceneNodeAttachment* newAttachment = new SceneNodeAttachment(*this);
-	mSceneNode = 0;
-	return newAttachment;
-}
 
 Ogre::SceneNode* SceneNodeAttachment::getSceneNode() const
 {
