@@ -1,13 +1,5 @@
 namespace EmberOgre {
 
-struct AvatarMovementState
-{
-public:
-	bool isMoving;
-	bool isRunning;
-	Ogre::Vector3 velocity;
-	Ogre::Quaternion orientation;
-};
 	
 class Avatar 
 {

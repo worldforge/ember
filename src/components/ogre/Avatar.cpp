@@ -61,12 +61,8 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity)
 , mHasChangedLocation(false)
 , mChatLoggerParent(0)
 , mCameraMount(new Camera::ThirdPersonCameraMount(*EmberOgre::getSingleton().getSceneManager()))
-
 {
-	mTimeSinceLastServerMessage = 0;
 	setMinIntervalOfRotationChanges(1000); //milliseconds
-	mAccumulatedHorizontalRotation = 0;
-	mThresholdDegreesOfYawForAvatarRotation = 100;
 
 	Ember::Application::getSingleton().EventAfterInputProcessing.connect(sigc::mem_fun(*this, &Avatar::application_AfterInputProcessing));
 
@@ -74,10 +70,9 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity)
 	registerConfigListener("general","avatarrotationupdatefrequency", sigc::mem_fun(*this, &Avatar::Config_AvatarRotationUpdateFrequency));
 	registerConfigListener("input","maxspeed", sigc::mem_fun(*this, &Avatar::Config_MaxSpeed));
 
-	mCurrentMovementState.isMoving = false;
-	mCurrentMovementState.velocity = Ogre::Vector3::ZERO;
-	mCurrentMovementState.orientation = Ogre::Quaternion::IDENTITY;
-	mCurrentMovementState.isRunning = false;
+	mCurrentMovementState.velocity = WFMath::Vector<3>::ZERO();
+	mCurrentMovementState.orientation = WFMath::Quaternion().identity();
+	mCurrentMovementState.position = erisAvatarEntity.getPredictedPos();
 
 	///check if the user is of type "creator" and thus an admin
 	Eris::TypeService* typeService = Ember::EmberServices::getSingleton().getServerService()->getConnection()->getTypeService();
@@ -143,13 +138,16 @@ void Avatar::application_AfterInputProcessing(float timeSinceLastEvent)
 		mEntitiesToBeRemovedFromInventory.clear();
 	}*/
 
-
+	attemptMove();
 }
 
 void Avatar::moveClientSide(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement, float timeslice)
 {
+	mCurrentMovement = movement * mMaxSpeed;
+	mCurrentMovement.rotate(orientation);
 	WFMath::Vector<3> adjustedMovement(movement * timeslice * mMaxSpeed);
 	mClientSideAvatarPosition += adjustedMovement.rotate(orientation);
+	mClientSideAvatarOrientation = orientation;
 
 	if (mErisAvatarEntity.getAttachment()) {
 		mErisAvatarEntity.getAttachment()->updatePosition();
@@ -175,99 +173,63 @@ void Avatar::moveClientSide(const WFMath::Quaternion& orientation, const WFMath:
 //
 //}
 
-//void Avatar::attemptMove(MovementControllerMovement& movement)
-//{
-//	Ogre::Vector3 move = movement.movementDirection;
-//	bool isRunning = movement.mode == AvatarMovementMode::MM_RUN;
-//	Ogre::Real timeSlice = movement.timeSlice;
-//	float speed = isRunning ? mRunSpeed : mWalkSpeed;
-//	Ogre::Vector3 rawVelocity = move * speed;
-//
-//
-//	///first we'll register the current state in newMovementState and compare to mCurrentMovementState
-//	///that way we'll only send stuff to the server if our movement changes
-//	AvatarMovementState newMovementState;
-//	newMovementState.orientation = getAvatarSceneNode()->getOrientation();
-//	newMovementState.velocity = rawVelocity;// * newMovementState.orientation.xAxis();
-//
-//	if (move != Ogre::Vector3::ZERO) {
-//		newMovementState.isMoving = true;
-//		newMovementState.isRunning = isRunning;
-//	} else {
-//		newMovementState.isMoving = false;
-//		newMovementState.isRunning = false;
-//	}
-//	bool sendToServer = false;
-//
-//	//first we check if we are already moving
-//	if (!mCurrentMovementState.isMoving) {
-//		//we are not moving. Should we start to move?
-//		if (newMovementState.isMoving) {
-//			//we'll start moving
-//			//let's send the movement command to the server
-//			sendToServer = true;
-//
-//		} else if (!(newMovementState.orientation == mMovementStateAtLastServerMessage.orientation)) {
-//			//we have rotated since last server update
-//			//let's see if it's ok to send server message
-//			//if not we have to wait some more frames until we'll send an update
-//			if (isOkayToSendRotationMovementChangeToServer()) {
-//				sendToServer = true;
-//			}
-//		}
-//	} else {
-//		//we are already moving
-//		//let's see if we've changed speed or direction or even stopped
-//		if (!newMovementState.isMoving) {
-//			S_LOG_VERBOSE( "Avatar stopped moving.");
-//			//we have stopped; we must alert the server
-//			sendToServer = true;
-//		} else if (newMovementState.velocity != mCurrentMovementState.velocity || !(newMovementState.orientation == mCurrentMovementState.orientation)){
-//			//either the speed or the direction has changed
-//			sendToServer = true;
-//		}
-//	}
-//
-//
-//	if (sendToServer) {
-//		S_LOG_VERBOSE("Sending move op to server.");
-//		mMovementStateAtBeginningOfMovement = newMovementState;
-//		mMovementStateAtLastServerMessage = newMovementState;
-//		mTimeSinceLastServerMessage = 0;
-//
-//
-//		///Save the five latest orientations sent to the server, so we can later when we recieve an update from the server we can recognize that it's our own updates and ignore them.
-//		mLastOrientations.push_back(Convert::toWF(newMovementState.orientation));
-//		if (mLastOrientations.size() > 5) {
-//			mLastOrientations.erase(mLastOrientations.begin());
-//		}
-//		//for now we'll only send velocity
-//		Ember::EmberServices::getSingletonPtr()->getServerService()->moveInDirection(Convert::toWF<WFMath::Vector<3> >(newMovementState.orientation * newMovementState.velocity), Convert::toWF(newMovementState.orientation));
-//
-////		Ember::EmberServices::getSingletonPtr()->getServerService()->moveInDirection(Convert::toWF(mCurrentMovementState.velocity), Convert::toWF(mCurrentMovementState.orientation));
-//
-//	} else {
-//		mTimeSinceLastServerMessage += timeSlice * 1000;
-//	}
-//
-//	mClientSideAvatarOrientation = Convert::toWF(newMovementState.orientation);
-//
-//	mClientSideAvatarPosition += Convert::toWF<WFMath::Vector<3> >(newMovementState.orientation * (rawVelocity * timeSlice));
-//
-////	if (newMovementState.isMoving) {
-////		//do the actual movement of the avatar node
-////		mAvatarNode->translate(mAvatarNode->getOrientation() * (rawVelocity * timeSlice));
-////	}
-//	mCurrentMovementState = newMovementState;
+void Avatar::attemptMove()
+{
 
-//}
+	///first we'll register the current state in newMovementState and compare to mCurrentMovementState
+	///that way we'll only send stuff to the server if our movement changes
+	AvatarMovementState newMovementState;
+	newMovementState.orientation = mClientSideAvatarOrientation;
+	newMovementState.velocity = mCurrentMovement;
+	newMovementState.position = mClientSideAvatarPosition;
 
-//void Avatar::adjustAvatarToNewPosition(MovementControllerMovement* movement)
-//{
-//}
+	bool isMoving = mCurrentMovement.isValid() && mCurrentMovement != WFMath::Vector<3>::ZERO();
+	bool wasMoving = mCurrentMovementState.velocity.isValid() && mCurrentMovementState.velocity != WFMath::Vector<3>::ZERO();
+	bool sendToServer = false;
+
+	//first we check if we are already moving
+	if (!wasMoving) {
+		//we are not moving. Should we start to move?
+		if (isMoving) {
+			//we'll start moving
+			//let's send the movement command to the server
+			sendToServer = true;
+
+		}
+	} else {
+		//we are already moving
+		//let's see if we've changed speed or direction or even stopped
+		if (!isMoving) {
+			S_LOG_VERBOSE( "Avatar stopped moving.");
+			//we have stopped; we must alert the server
+			sendToServer = true;
+		} else if (newMovementState.velocity != mCurrentMovementState.velocity || !(newMovementState.orientation == mCurrentMovementState.orientation)){
+			//either the speed or the direction has changed
+			sendToServer = true;
+		}
+	}
 
 
-void Avatar::attemptJump() {}
+	if (sendToServer) {
+		S_LOG_VERBOSE("Sending move op to server.");
+
+		///Save the five latest orientations sent to the server, so we can later when we recieve an update from the server we can recognize that it's our own updates and ignore them.
+		long currentTime = Ember::EmberServices::getSingleton().getTimeService()->currentTimeMillis();
+		mLastTransmittedMovements.push_back(TimedMovementStateList::value_type(currentTime, newMovementState));
+		if (mLastTransmittedMovements.size() > 5) {
+			mLastTransmittedMovements.erase(mLastTransmittedMovements.begin());
+		}
+		Ember::EmberServices::getSingletonPtr()->getServerService()->moveInDirection(newMovementState.velocity.rotate(newMovementState.orientation), newMovementState.orientation);
+
+	}
+
+	mCurrentMovementState = newMovementState;
+
+	//After we're done, set the current movement to zero. This of course means that you can only call this method once per frame.
+	mCurrentMovement = WFMath::Vector<3>::ZERO();
+
+}
+
 
 
 //void Avatar::attemptRotate(MovementControllerMovement& movement)
@@ -306,8 +268,15 @@ EmberEntity& Avatar::getEmberEntity()
 
 bool Avatar::isOkayToSendRotationMovementChangeToServer()
 {
-	return mTimeSinceLastServerMessage > mMinIntervalOfRotationChanges;
-
+	//Just check if we've recently sent something to the server
+	if (!mLastTransmittedMovements.size()) {
+		return true;
+	}
+	long currentTime = Ember::EmberServices::getSingleton().getTimeService()->currentTimeMillis();
+	if ((currentTime - mLastTransmittedMovements.rbegin()->first) > mMinIntervalOfRotationChanges) {
+		return true;
+	}
+	return false;
 }
 
 Ogre::SceneNode* Avatar::getAvatarSceneNode() const
@@ -355,6 +324,11 @@ void Avatar::avatar_LocationChanged(Eris::Entity* entity)
 
 void Avatar::avatar_Moved()
 {
+	for (TimedMovementStateList::const_reverse_iterator I = mLastTransmittedMovements.rbegin(); I != mLastTransmittedMovements.rend(); ++I) {
+		if (WFMath::Distance(I->second.position, mErisAvatarEntity.getPosition()) < 2) {
+			return;
+		}
+	}
 	mClientSideAvatarOrientation = mErisAvatarEntity.getOrientation();
 	mClientSideAvatarPosition = mErisAvatarEntity.getPredictedPos();
 }
@@ -383,7 +357,7 @@ WFMath::Point<3> Avatar::getClientSideAvatarPosition() const
 {
 	//If the avatar entity is moving, we should prefer that position instead
 	//TODO: alter this so that we can override client movement ourselves, but only when we're moving on the client.
-	if (mErisAvatarEntity.isMoving()) {
+	if (mCurrentMovement == WFMath::Vector<3>::ZERO() && mErisAvatarEntity.isMoving()) {
 		return mErisAvatarEntity.getPredictedPos();
 	}
 	return mClientSideAvatarPosition;
@@ -394,18 +368,6 @@ WFMath::Quaternion Avatar::getClientSideAvatarOrientation() const
 	return mClientSideAvatarOrientation;
 }
 
-
-// void Avatar::touch(EmberEntity* entity)
-// {
-// 	Ember::EmberServices::getSingletonPtr()->getServerService()->touch(entity);
-// }
-
-/*
-Ogre::Camera* Avatar::getCamera() const
-{
-	return mMovementController->getCamera();
-}
-*/
 }
 
 

@@ -62,11 +62,12 @@ class AvatarAttachmentController;
 struct AvatarMovementState
 {
 public:
-	bool isMoving;
-	bool isRunning;
-	Ogre::Vector3 velocity;
-	Ogre::Quaternion orientation;
+	WFMath::Vector<3> velocity;
+	WFMath::Quaternion orientation;
+	WFMath::Point<3> position;
 };
+
+
 
 /**
  * This class holds the Avatar. In general it recieves instructions from mainly
@@ -104,13 +105,6 @@ public Ember::ConfigListenerContainer
 	 *    Call this when the avatar entity has moved in the world.
 	 */
 	void movedInWorld();
-
-
-	/**
-	 *    Called each frame.
-	 * @param movement
-	 */
-//	void updateFrame(MovementControllerMovement& movement);
 
 	/**
 	 *    Access for the Eris::Entity which represents the Avatar.
@@ -152,6 +146,8 @@ public Ember::ConfigListenerContainer
 	Camera::ThirdPersonCameraMount& getCameraMount() const;
 protected:
 
+	typedef std::list<std::pair<long, AvatarMovementState> > TimedMovementStateList;
+
 	/**
 	 * adjust the avatar to the new position in the terrain
 	 * for now this means setting the correct heigth
@@ -168,24 +164,10 @@ protected:
 	bool isOkayToSendRotationMovementChangeToServer();
 
 	/**
-	Time in milliseconds since we last sent an movement update to the server.
-	*/
-	Ogre::Real mTimeSinceLastServerMessage;
-
-	/**
 	In milliseconds, the minimum time we must wait between sending updates to the server. Set this higher to avoid spamming the server.
 	*/
 	Ogre::Real mMinIntervalOfRotationChanges;
 
-	/**
-	In degrees the minimum amount of degrees we can yaw the camera until we need to send an update to the server of our new position.
-	*/
-	Ogre::Real mThresholdDegreesOfYawForAvatarRotation;
-
-	/**
-	In degrees the accumulated yaw movement since we last sent an update to the server. If this exceeds mThresholdDegreesOfYawForAvatarRotation we need to send an update to the server.
-	*/
-	float mAccumulatedHorizontalRotation;
 
 	/**
 	 * Attempts to move the avatar in a certain direction
@@ -195,7 +177,7 @@ protected:
 	 * The parameter timeSlice denotes the slice of time under which the movement
 	 * shall take place.
 	 */
-//	void attemptMove(MovementControllerMovement& movement);
+	void attemptMove();
 
 	/**
 	 * Attempts to rotate the avatar to a certain direction
@@ -209,22 +191,6 @@ protected:
 //	void attemptRotate(MovementControllerMovement& movement);
 
 
-	/**
-	 * Attempts to stop the avatar.
-	 * This should work in most cases.
-	 *
-	 */
-	void attemptStop();
-
-	/**
-	 * Attempt to jump.
-	 */
-	void attemptJump();
-
-	/**
-	 * Creates and sets up the different cameras.
-	 */
-	void createAvatarCameras(Ogre::SceneNode* avatarSceneNode);
 
 	/**
 	The Eris::Entity which represents the Avatar.
@@ -244,8 +210,8 @@ protected:
 	* this is used to make sure starts and stops of movement is only sent to the server once
 	*/
 	AvatarMovementState mCurrentMovementState;
-	AvatarMovementState mMovementStateAtBeginningOfMovement; //this is perhaps not needed
-	AvatarMovementState mMovementStateAtLastServerMessage;
+
+	TimedMovementStateList mLastTransmittedMovements;
 
 	/**
 	Keep a temporary list of entities that needs to be added to the inventory.
@@ -319,6 +285,9 @@ protected:
 	WFMath::Point<3> mClientSideAvatarPosition;
 
 	WFMath::Quaternion mClientSideAvatarOrientation;
+
+	WFMath::Vector<3> mCurrentMovement;
+
 
 
 }; //End of class declaration

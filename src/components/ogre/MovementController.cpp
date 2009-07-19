@@ -60,14 +60,14 @@ MovementControllerInputListener::MovementControllerInputListener(MovementControl
 void MovementControllerInputListener::input_MouseButtonPressed(Input::MouseButton button, Input::InputMode mode)
 {
 	if (mode == Input::IM_MOVEMENT && button == Input::MouseButtonLeft) {
-		mController.mMovementDirection.x() = 1;
+		mController.mMovementDirection.y() = 1;
 	}
 }
 
 void MovementControllerInputListener::input_MouseButtonReleased(Input::MouseButton button, Input::InputMode mode)
 {
 	if (mode == Input::IM_MOVEMENT && button == Input::MouseButtonLeft) {
-		mController.mMovementDirection.x() = 0;
+		mController.mMovementDirection.y() = 0;
 	}
 }
 

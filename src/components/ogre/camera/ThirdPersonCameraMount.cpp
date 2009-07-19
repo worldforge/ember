@@ -98,6 +98,7 @@ Ogre::Degree ThirdPersonCameraMount::yaw(float relativeMovement)
 void ThirdPersonCameraMount::createNodesForCamera(Ogre::SceneManager& sceneManager)
 {
 	mAvatarCameraRootNode = sceneManager.createSceneNode("ThirdPersonCameraRootNode");
+	mAvatarCameraRootNode->setInheritOrientation(false);
 	//we need to adjust for the height of the avatar mesh
 	mAvatarCameraRootNode->setPosition(Ogre::Vector3(0,2,0));
 	//rotate to sync with WF world
