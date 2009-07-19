@@ -3,9 +3,9 @@
  *  Summary:    The class which initializes the GUI.
  *  Written by: nikal
  *
- *  Copyright (C) 2001, 2002 nikal. 
+ *  Copyright (C) 2001, 2002 nikal.
  *  This code is distributed under the GPL.
- *  See file COPYING for details. 
+ *  See file COPYING for details.
  *
 
  */
@@ -22,7 +22,7 @@
     #include <io.h> // for _access, Win32 version of stat()
     #include <direct.h> // for _mkdir
 //	#include <sys/stat.h>
-	
+
 	#include <iostream>
 	#include <fstream>
 	#include <ostream>
@@ -76,6 +76,10 @@ Application::Application(const std::string prefix, const std::string homeDir, co
 , mServices(0)
 , mWorldView(0)
 , mPollEris(true)
+, mLastTimeErisPollStart(0)
+, mLastTimeErisPollEnd(0)
+, mLastTimeInputProcessingStart(0)
+, mLastTimeInputProcessingEnd(0)
 , mConfigSettings(configSettings)
 , mConsoleBackend(new ConsoleBackend())
 , Quit("quit", this, "Quit Ember.")
@@ -105,20 +109,31 @@ void Application::registerComponents()
 }
 
 
-void Application::mainLoopStep() 
+void Application::mainLoopStep()
 {
+	Services::Time* timeService = EmberServices::getSingleton().getTimeService();
+	long currentTimeMillis(0);
 	try {
 		if (mPollEris) {
-			EventStartErisPoll.emit();
+			currentTimeMillis = timeService->currentTimeMillis();
+			EventStartErisPoll.emit((currentTimeMillis - mLastTimeErisPollStart) / 1000.0f);
+			mLastTimeErisPollStart = currentTimeMillis;
 			Eris::PollDefault::poll(1);
 			if (mWorldView)
 				mWorldView->update();
-			EventEndErisPoll.emit();
+			currentTimeMillis = timeService->currentTimeMillis();
+			EventEndErisPoll.emit((currentTimeMillis - mLastTimeErisPollEnd) / 1000.0f);
+			mLastTimeErisPollEnd = currentTimeMillis;
 		}
-		EventBeforeInputProcessing.emit();
+		currentTimeMillis = timeService->currentTimeMillis();
+		EventBeforeInputProcessing.emit((currentTimeMillis - mLastTimeInputProcessingStart) / 1000.0f);
+		mLastTimeInputProcessingStart = currentTimeMillis;
 		Ember::Input& input(Ember::Input::getSingleton());
 		input.processInput();
-		EventAfterInputProcessing.emit();
+
+		currentTimeMillis = timeService->currentTimeMillis();
+		EventAfterInputProcessing.emit((currentTimeMillis - mLastTimeInputProcessingEnd) / 1000.0f);
+		mLastTimeInputProcessingEnd = currentTimeMillis;
 		mOgreView->renderOneFrame();
 		EmberServices::getSingleton().getSoundService()->cycle();
 	} catch (const std::exception& ex)
@@ -136,9 +151,14 @@ void Application::mainLoopStep()
 	}
 }
 
-void Application::mainLoop() 
+void Application::mainLoop()
 {
-	while(mShouldQuit == false) 
+	long currentTimeMillis = EmberServices::getSingleton().getTimeService()->currentTimeMillis();
+	mLastTimeErisPollStart = currentTimeMillis;
+	mLastTimeErisPollEnd = currentTimeMillis;
+	mLastTimeInputProcessingStart = currentTimeMillis;
+	mLastTimeInputProcessingEnd = currentTimeMillis;
+	while(mShouldQuit == false)
 	{
 		mainLoopStep();
 	}
@@ -162,17 +182,17 @@ void Application::initializeServices()
 		EmberServices::getSingleton().getConfigService()->setHomeDirectory(mHomeDir);
 		std::cout << "Setting home directory to " << mHomeDir << std::endl;
 	}
-	
+
 	///output all logging to ember.log
 	std::string filename(EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/ember.log");
 	mLogOutStream = std::auto_ptr<std::ofstream>(new std::ofstream(filename.c_str()));
-	
+
 	///write to the log the version number
 	*mLogOutStream << "Ember version " << VERSION << std::endl;
-	
+
 	mLogObserver = new ConfigBoundLogObserver(*mLogOutStream);
 	Ember::Log::addObserver(mLogObserver);
-	
+
 	///default to INFO, though this can be changed by the config file
 	mLogObserver->setFilter(Ember::Log::INFO);
 
@@ -187,8 +207,8 @@ void Application::initializeServices()
 		mkdir(dirName.c_str(), S_IRWXU);
 #endif
 	}
-	
-	
+
+
 	int result = chdir(EmberServices::getSingleton().getConfigService()->getHomeDirectory().c_str());
 	if (result) {
 		S_LOG_WARNING("Could not change directory to '"<< EmberServices::getSingleton().getConfigService()->getHomeDirectory().c_str() <<"'.");
@@ -196,7 +216,7 @@ void Application::initializeServices()
 
 // 	const std::string& sharePath(EmberServices::getSingleton().getConfigService()->getSharedConfigDirectory());
 
-	///make sure that there are files 
+	///make sure that there are files
 	///assureConfigFile("ember.conf", sharePath);
 
 	///load the config file. Note that this will load the shared config file, and then the user config file if available (~/.ember/ember.conf)
@@ -220,7 +240,7 @@ void Application::initializeServices()
  	EmberServices::getSingleton().getMetaserverService()->start();
 	///hoho, we get linking errors if we don't do some calls to the service
 	EmberServices::getSingleton().getMetaserverService()->getMetaServer();
-	
+
 	/// Initialize the Server Service
 	S_LOG_INFO("Initializing server service");
 	EmberServices::getSingleton().getServerService()->start();
@@ -238,10 +258,10 @@ void Application::initializeServices()
 
 	S_LOG_INFO("Initializing wfut service");
  	EmberServices::getSingleton().getWfutService()->start();
- 	
- 	
+
+
 	EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &Application::Server_GotView));
- 	
+
  	EventServicesInitialized.emit();
 }
 
@@ -275,7 +295,7 @@ void Application::start()
 	mainLoop();
 }
 
-bool Application::shouldQuit() 
+bool Application::shouldQuit()
 {
 	return mShouldQuit;
 }
