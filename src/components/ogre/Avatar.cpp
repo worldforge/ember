@@ -56,6 +56,7 @@ namespace EmberOgre {
 
 Avatar::Avatar(EmberEntity& erisAvatarEntity)
 : mErisAvatarEntity(erisAvatarEntity)
+, mAvatarAttachmentController(new AvatarAttachmentController(*this))
 , mHasChangedLocation(false)
 , mChatLoggerParent(0)
 , mCameraMount(new Camera::ThirdPersonCameraMount(*EmberOgre::getSingleton().getSceneManager()))
@@ -93,11 +94,12 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity)
 
 
 	mErisAvatarEntity.LocationChanged.connect(sigc::mem_fun(*this, &Avatar::avatar_LocationChanged));
+	mErisAvatarEntity.Moved.connect(sigc::mem_fun(*this, &Avatar::avatar_Moved));
 
 	mClientSideAvatarOrientation = mErisAvatarEntity.getOrientation();
 	mClientSideAvatarPosition = mErisAvatarEntity.getPredictedPos();
 
-	mErisAvatarEntity.setAttachmentControlDelegate(new AvatarAttachmentController(*this));
+	mErisAvatarEntity.setAttachmentControlDelegate(mAvatarAttachmentController);
 
 	mCameraMount->attachToNode(getAvatarSceneNode());
 }
@@ -151,12 +153,14 @@ bool Avatar::frameStarted(const Ogre::FrameEvent & event)
 	return true;
 }
 
-void Avatar::moveClientSide(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement)
+void Avatar::moveClientSide(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement, float timeslice)
 {
-	mClientSideAvatarOrientation = orientation;
-	mClientSideAvatarPosition += movement;
+	WFMath::Vector<3> adjustedMovement(movement * timeslice * mRunSpeed);
+	mClientSideAvatarPosition += adjustedMovement.rotate(orientation);
 
-	mErisAvatarEntity.updateMotion(0);
+	if (mErisAvatarEntity.getAttachment()) {
+		mErisAvatarEntity.getAttachment()->updatePosition();
+	}
 }
 
 
@@ -356,6 +360,12 @@ void Avatar::avatar_LocationChanged(Eris::Entity* entity)
 	mClientSideAvatarPosition = mErisAvatarEntity.getPredictedPos();
 }
 
+void Avatar::avatar_Moved()
+{
+	mClientSideAvatarOrientation = mErisAvatarEntity.getOrientation();
+	mClientSideAvatarPosition = mErisAvatarEntity.getPredictedPos();
+}
+
 void Avatar::Config_AvatarRotationUpdateFrequency(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
 	setMinIntervalOfRotationChanges(static_cast<double>(variable));
@@ -381,12 +391,17 @@ void Avatar::Config_LogChatMessages(const std::string& section, const std::strin
 }
 
 
-const WFMath::Point<3>& Avatar::getClientSideAvatarPosition() const
+WFMath::Point<3> Avatar::getClientSideAvatarPosition() const
 {
+	//If the avatar entity is moving, we should prefer that position instead
+	//TODO: alter this so that we can override client movement ourselves, but only when we're moving on the client.
+	if (mErisAvatarEntity.isMoving()) {
+		return mErisAvatarEntity.getPredictedPos();
+	}
 	return mClientSideAvatarPosition;
 }
 
-const WFMath::Quaternion& Avatar::getClientSideAvatarOrientation() const
+WFMath::Quaternion Avatar::getClientSideAvatarOrientation() const
 {
 	return mClientSideAvatarOrientation;
 }

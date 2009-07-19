@@ -39,6 +39,15 @@ SceneNodeController::~SceneNodeController()
 
 void SceneNodeController::entity_Moved()
 {
+	movementUpdate();
+}
+
+void SceneNodeController::forceMovementUpdate()
+{
+	movementUpdate();
+}
+void SceneNodeController::movementUpdate()
+{
 	updatePosition();
 	MotionManager& motionManager = MotionManager::getSingleton();
 	if (mAttachment.getAttachedEntity().isMoving())
@@ -50,6 +59,7 @@ void SceneNodeController::entity_Moved()
 		motionManager.removeMovable(this);
 	}
 }
+
 
 void SceneNodeController::updateMotion(float timeSlice)
 {

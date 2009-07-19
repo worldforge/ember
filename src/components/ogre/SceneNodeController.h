@@ -43,10 +43,13 @@ public:
 
 	virtual void updateMotion(float timeSlice);
 
+	void forceMovementUpdate();
+
 protected:
 
 	SceneNodeAttachment& mAttachment;
 
+	void movementUpdate();
 	void entity_Moved();
 	virtual void updatePosition();
 

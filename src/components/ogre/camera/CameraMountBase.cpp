@@ -63,10 +63,10 @@ void CameraMountBase::detachFromCamera()
 
 }
 
-void CameraMountBase::move(const WFMath::Vector<3>& movement, const WFMath::Quaternion& orientation)
+void CameraMountBase::move(const WFMath::Vector<3>& movement, const WFMath::Quaternion& orientation, float timeslice)
 {
 	if (mMotionHandler) {
-		mMotionHandler->move(orientation, movement);
+		mMotionHandler->move(orientation, movement, timeslice);
 	}
 }
 

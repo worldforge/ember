@@ -120,21 +120,21 @@ void MovementController::runCommand(const std::string &command, const std::strin
 //			attachCamera();
 //		}
 	} else if (MovementMoveForward == command) {
-		mMovementDirection.x() = 1;
-	} else if (MovementMoveForward.getInverseCommand() == command) {
-		mMovementDirection.x() = 0;
-	} else if (MovementMoveBackward == command) {
-		mMovementDirection.x() = -1;
-	} else if (MovementMoveBackward.getInverseCommand() == command) {
-		mMovementDirection.x() = 0;
-	} else if (MovementStrafeLeft == command) {
-		mMovementDirection.y() = -1;
-	} else if (MovementStrafeLeft.getInverseCommand() == command) {
-		mMovementDirection.y() = 0;
-	} else if (MovementStrafeRight == command) {
 		mMovementDirection.y() = 1;
-	} else if (MovementStrafeRight.getInverseCommand() == command) {
+	} else if (MovementMoveForward.getInverseCommand() == command) {
 		mMovementDirection.y() = 0;
+	} else if (MovementMoveBackward == command) {
+		mMovementDirection.y() = -1;
+	} else if (MovementMoveBackward.getInverseCommand() == command) {
+		mMovementDirection.y() = 0;
+	} else if (MovementStrafeLeft == command) {
+		mMovementDirection.x() = -1;
+	} else if (MovementStrafeLeft.getInverseCommand() == command) {
+		mMovementDirection.x() = 0;
+	} else if (MovementStrafeRight == command) {
+		mMovementDirection.x() = 1;
+	} else if (MovementStrafeRight.getInverseCommand() == command) {
+		mMovementDirection.x() = 0;
 	} else if (MovementMoveUpwards == command) {
 		mMovementDirection.z() = 1;
 	} else if (MovementMoveUpwards.getInverseCommand() == command) {

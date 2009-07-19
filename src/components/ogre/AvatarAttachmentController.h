@@ -21,6 +21,8 @@
 
 #include "components/ogre/IAttachmentControlDelegate.h"
 #include <string>
+#include <wfmath/point.h>
+#include <wfmath/quaternion.h>
 
 namespace EmberOgre
 {
@@ -39,6 +41,8 @@ public:
 private:
 
 	Avatar& mAvatar;
+	mutable WFMath::Point<3> mPosition;
+	mutable WFMath::Quaternion mOrientation;
 };
 
 }

@@ -61,7 +61,7 @@ public:
 
  	virtual void detachFromCamera();
 
-	virtual void move(const WFMath::Vector<3>& movement, const WFMath::Quaternion& orientation);
+	virtual void move(const WFMath::Vector<3>& movement, const WFMath::Quaternion& orientation, float timeslice);
 
 
 protected:

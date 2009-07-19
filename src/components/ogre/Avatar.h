@@ -53,6 +53,7 @@ namespace Camera {
 class EmberEntity;
 class AvatarLogger;
 class AvatarLoggerParent;
+class AvatarAttachmentController;
 
 struct AvatarMovementState
 {
@@ -145,12 +146,12 @@ public Ember::ConfigListenerContainer
 	*/
 	bool isAdmin() const;
 
-	void moveClientSide(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement);
+	void moveClientSide(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement, float timeslice);
 
 
-	const WFMath::Point<3>& getClientSideAvatarPosition() const;
+	WFMath::Point<3> getClientSideAvatarPosition() const;
 
-	const WFMath::Quaternion& getClientSideAvatarOrientation() const;
+	WFMath::Quaternion getClientSideAvatarOrientation() const;
 
 	Camera::ThirdPersonCameraMount& getCameraMount() const;
 protected:
@@ -248,6 +249,8 @@ protected:
 	*/
 	EmberEntity& mErisAvatarEntity;
 
+	AvatarAttachmentController* mAvatarAttachmentController;
+
 	/**
 	* this is used to make sure starts and stops of movement is only sent to the server once
 	*/
@@ -272,6 +275,8 @@ protected:
 	 * @param entity
 	 */
 	void avatar_LocationChanged(Eris::Entity* entity);
+
+	void avatar_Moved();
 
 	/**
 	True if the current user have admin rights, i.e. is a "creator".

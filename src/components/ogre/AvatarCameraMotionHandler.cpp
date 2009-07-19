@@ -30,9 +30,9 @@ AvatarCameraMotionHandler::~AvatarCameraMotionHandler()
 {
 }
 
-void AvatarCameraMotionHandler::move(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement)
+void AvatarCameraMotionHandler::move(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement, float timeslice)
 {
-	mAvatar.moveClientSide(orientation, movement);
+	mAvatar.moveClientSide(orientation, movement, timeslice);
 
 }
 

@@ -30,7 +30,7 @@ public:
 	AvatarCameraMotionHandler(Avatar& avatar);
 	virtual ~AvatarCameraMotionHandler();
 
-	virtual void move(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement);
+	virtual void move(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement, float timeslice);
 private:
 	Avatar& mAvatar;
 };

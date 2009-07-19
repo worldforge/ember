@@ -54,6 +54,8 @@ public:
 
 	virtual void updateScale();
 
+	virtual void updatePosition();
+
 	void getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset);
 
 	virtual void setControlDelegate(IAttachmentControlDelegate* controllerDelegate);

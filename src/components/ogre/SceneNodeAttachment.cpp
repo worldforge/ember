@@ -112,5 +112,13 @@ Ogre::SceneNode* SceneNodeAttachment::getSceneNode() const
 	return mSceneNode;
 }
 
+void SceneNodeAttachment::updatePosition()
+{
+	if (mAttachmentController) {
+		mAttachmentController->forceMovementUpdate();
+	}
+
+}
+
 
 }

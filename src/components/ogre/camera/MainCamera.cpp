@@ -247,10 +247,10 @@ bool MainCamera::frameStarted(const Ogre::FrameEvent& event)
 		if (mMovementProvider) {
 			WFMath::Vector<3> movement = mMovementProvider->getMovementForCurrentFrame();
 			if (movement != WFMath::Vector<3>::ZERO() || mCameraOrientationChangedThisFrame) {
-				mCameraMount->move(movement, Convert::toWF(getOrientation()));
+				mCameraMount->move(movement, Convert::toWF(getOrientation()), event.timeSinceLastFrame);
 			}
 		} else {
-			mCameraMount->move(WFMath::Vector<3>::ZERO(), Convert::toWF(getOrientation()));
+			mCameraMount->move(WFMath::Vector<3>::ZERO(), Convert::toWF(getOrientation()), event.timeSinceLastFrame);
 		}
 		mCameraOrientationChangedThisFrame = false;
 	}

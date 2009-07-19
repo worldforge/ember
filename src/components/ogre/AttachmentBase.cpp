@@ -59,6 +59,10 @@ void AttachmentBase::updateScale()
 {
 }
 
+void AttachmentBase::updatePosition()
+{
+}
+
 void AttachmentBase::getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset)
 {
 	if (mParentEntity.getAttachment()) {

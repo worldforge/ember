@@ -74,7 +74,10 @@ IEntityAttachment* WorldAttachment::attachEntity(EmberEntity& entity)
 
 void WorldAttachment::updateScale()
 {
+}
 
+void WorldAttachment::updatePosition()
+{
 }
 
 void WorldAttachment::getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset)

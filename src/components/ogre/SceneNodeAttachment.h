@@ -46,6 +46,8 @@ public:
 
 	Ogre::SceneNode* getSceneNode() const;
 
+	virtual void updatePosition();
+
 protected:
 
 	Ogre::SceneNode* mSceneNode;

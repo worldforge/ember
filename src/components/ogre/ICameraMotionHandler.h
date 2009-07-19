@@ -32,7 +32,7 @@ class ICameraMotionHandler
 {
 public:
 
-	virtual void move(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement) = 0;
+	virtual void move(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement, float timeslice) = 0;
 };
 
 };

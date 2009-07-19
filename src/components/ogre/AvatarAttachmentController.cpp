@@ -20,8 +20,7 @@
 
 #include "components/ogre/Avatar.h"
 
-#include <wfmath/point.h>
-#include <wfmath/quaternion.h>
+
 namespace EmberOgre
 {
 
@@ -37,11 +36,13 @@ AvatarAttachmentController::~AvatarAttachmentController()
 
 const WFMath::Point<3>& AvatarAttachmentController::getPosition() const
 {
-	return mAvatar.getClientSideAvatarPosition();
+	mPosition = mAvatar.getClientSideAvatarPosition();
+	return mPosition;
 }
 const WFMath::Quaternion& AvatarAttachmentController::getOrientation() const
 {
-	return mAvatar.getClientSideAvatarOrientation();
+	mOrientation = mAvatar.getClientSideAvatarOrientation();
+	return mOrientation;
 }
 
 

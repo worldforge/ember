@@ -64,7 +64,7 @@ public:
 	 */
 	virtual const Ogre::Degree& getYaw() const = 0;
 
-	virtual void move(const WFMath::Vector<3>& movement, const WFMath::Quaternion& orientation) = 0;
+	virtual void move(const WFMath::Vector<3>& movement, const WFMath::Quaternion& orientation, float timeslice) = 0;
 
 	virtual void attachToCamera(MainCamera& camera) = 0;
 
