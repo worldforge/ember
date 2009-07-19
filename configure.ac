@@ -509,7 +509,6 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/ogreopcode/include/Opcode/Makefile
 		 src/components/ogre/Makefile
 		 src/components/ogre/gui/Makefile
-		 src/components/ogre/cegui/Makefile
 		 src/components/ogre/widgets/Makefile
 		 src/components/ogre/widgets/adapters/Makefile
 		 src/components/ogre/widgets/adapters/atlas/Makefile
@@ -533,6 +532,7 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/SceneManagers/EmberPagingSceneManager/src/Makefile
 		 src/components/ogre/SceneManagers/EmberPagingSceneManager/include/Makefile
 		 src/components/entitymapping/Makefile
+		 src/components/cegui/Makefile
 		 media/Makefile
 		 media/packs/Makefile
 ])
