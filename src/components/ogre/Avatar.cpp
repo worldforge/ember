@@ -22,34 +22,34 @@
 #endif
 #include "Avatar.h"
 
+#include "components/ogre/EmberOgre.h"
+#include "components/ogre/EmberEntity.h"
+#include "components/ogre/Convert.h"
+#include "components/ogre/AvatarLogger.h"
+#include "components/ogre/SceneNodeAttachment.h"
+#include "components/ogre/AvatarAttachmentController.h"
 
-#include <typeinfo>
+#include "components/ogre/camera/MainCamera.h"
+#include "components/ogre/camera/ThirdPersonCameraMount.h"
 
+#include "components/ogre/model/Model.h"
+#include "components/ogre/model/SubModel.h"
 
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
 #include "services/time/TimeService.h"
-
-
-#include "EmberEntity.h"
-#include "components/ogre/camera/MainCamera.h"
-#include "components/ogre/camera/ThirdPersonCameraMount.h"
-#include "AvatarLogger.h"
-#include "components/ogre/SceneNodeAttachment.h"
-#include "components/ogre/AvatarAttachmentController.h"
-
-#include "model/Model.h"
-#include "model/SubModel.h"
-#include "EmberOgre.h"
-#include "Convert.h"
 #include "services/input/Input.h"
+
+#include "main/Application.h"
 
 #include <Eris/Avatar.h>
 #include <Eris/Connection.h>
 #include <Eris/TypeInfo.h>
 
 #include <OgreRoot.h>
+
+#include <typeinfo>
 
 namespace EmberOgre {
 
@@ -68,7 +68,7 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity)
 	mAccumulatedHorizontalRotation = 0;
 	mThresholdDegreesOfYawForAvatarRotation = 100;
 
-	Ogre::Root::getSingleton().addFrameListener(this);
+	Ember::Application::getSingleton().EventAfterInputProcessing.connect(sigc::mem_fun(*this, &Avatar::application_AfterInputProcessing));
 
 	registerConfigListener("general","logchatmessages", sigc::mem_fun(*this, &Avatar::Config_LogChatMessages));
 	registerConfigListener("general","avatarrotationupdatefrequency", sigc::mem_fun(*this, &Avatar::Config_AvatarRotationUpdateFrequency));
@@ -101,7 +101,6 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity)
 
 Avatar::~Avatar()
 {
-	Ogre::Root::getSingleton().removeFrameListener(this);
 
 }
 
@@ -115,10 +114,8 @@ void Avatar::setMinIntervalOfRotationChanges(Ogre::Real milliseconds)
 	mMinIntervalOfRotationChanges = milliseconds;
 }
 
-
-bool Avatar::frameStarted(const Ogre::FrameEvent & event)
+void Avatar::application_AfterInputProcessing(float timeSinceLastEvent)
 {
-
 	if (mEntitiesToBeAddedToInventory.size() > 0) {
 		std::set<Eris::Entity*>::iterator I = mEntitiesToBeAddedToInventory.begin();
 		std::set<Eris::Entity*>::iterator I_end = mEntitiesToBeAddedToInventory.end();
@@ -145,7 +142,8 @@ bool Avatar::frameStarted(const Ogre::FrameEvent & event)
 
 		mEntitiesToBeRemovedFromInventory.clear();
 	}*/
-	return true;
+
+
 }
 
 void Avatar::moveClientSide(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement, float timeslice)

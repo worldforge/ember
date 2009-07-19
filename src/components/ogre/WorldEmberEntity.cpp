@@ -52,6 +52,8 @@
 #include <Mercator/GrassShader.h>
 #include <Mercator/ShaderFactory.h>
 
+#include <OgreSceneManager.h>
+
 namespace EmberOgre {
 
 WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager) :

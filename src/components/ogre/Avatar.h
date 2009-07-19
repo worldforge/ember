@@ -20,7 +20,9 @@
 
 #ifndef AVATAR_H
 #define AVATAR_H
-#include "EmberOgrePrerequisites.h"
+
+#include "components/ogre/EmberOgrePrerequisites.h"
+#include "services/config/ConfigListenerContainer.h"
 
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
@@ -28,9 +30,11 @@
 #include <wfmath/point.h>
 #include <wfmath/quaternion.h>
 
-#include "GUIManager.h"
-#include "services/config/ConfigListenerContainer.h"
+#include <OgreVector3.h>
+#include <OgreQuaternion.h>
+
 #include <memory>
+#include <set>
 
 namespace Eris {
 	class Entity;
@@ -73,7 +77,6 @@ public:
  */
 class Avatar :
 public sigc::trackable,
-public Ogre::FrameListener,
 public Ember::ConfigListenerContainer
 {
 	friend class MovementController;
@@ -96,13 +99,6 @@ public Ember::ConfigListenerContainer
 	 * @return
 	 */
 	Ogre::SceneNode* getAvatarSceneNode() const;
-
-	/**
-	 *    Called each frame.
-	 * @param event
-	 * @return
-	 */
-	virtual bool frameStarted(const Ogre::FrameEvent & event);
 
 	/**
 	 *    Call this when the avatar entity has moved in the world.
@@ -281,6 +277,7 @@ protected:
 	*/
 	bool mHasChangedLocation;
 
+	void application_AfterInputProcessing(float timeSinceLastEvent);
 
 	/**
 	 *    Listen for changes of the general:logchatmessages config key and create and destroy an instance of AvatarLogger (actually AvatarLoggerParent) accordingly.

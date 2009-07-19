@@ -27,6 +27,7 @@
 #include "AvatarLogger.h"
 #include "Avatar.h"
 #include "EmberEntity.h"
+#include "GUIManager.h"
 #include "services/config/ConfigService.h"
 #include "services/time/TimeService.h"
 
