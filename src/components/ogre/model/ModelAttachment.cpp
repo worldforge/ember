@@ -63,7 +63,7 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 	SceneNodeAttachment* currentSceneNodeAttachment = dynamic_cast<SceneNodeAttachment*>(entity.getAttachment());
 	ModelRepresentation* modelRepresentation = ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity);
 	//Don't show a graphical representation if the model is set not to show any contained entities.
-	if (!mModelRepresentation.getModel().getDefinition()->getShowContained() && modelRepresentation) {
+	if (mModelRepresentation.getModel().getDefinition()->getShowContained() && modelRepresentation) {
 		if (currentSceneNodeAttachment) {
 			newAttachment = currentSceneNodeAttachment->transferToNewParent(*this);
 			return newAttachment;
