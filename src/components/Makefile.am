@@ -1,1 +1,2 @@
-SUBDIRS = ogre entitymapping cegui carpenter
+SUBDIRS = ogre entitymapping cegui 
+#carpenter
