@@ -175,7 +175,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		mEntityWorldPickListener = new EntityWorldPickListener();
 
 		///don't connect it yet since there's no AvatarCamera yet, wait until that's created
-		EmberOgre::getSingleton().EventAvatarControllerCreated.connect(sigc::mem_fun(*this, &GUIManager::EmberOgre_AvatarControllerCreated));
+		EmberOgre::getSingleton().EventMovementControllerCreated.connect(sigc::mem_fun(*this, &GUIManager::EmberOgre_MovementControllerCreated));
 
 		getInput().EventKeyPressed.connect(sigc::mem_fun(*this, &GUIManager::pressedKey));
 		getInput().setInputMode(Input::IM_GUI);
@@ -626,7 +626,7 @@ void GUIManager::EmberOgre_CreatedAvatarEntity(EmberEntity* entity)
 	getInput().setInputMode(Input::IM_MOVEMENT);
 }
 
-void GUIManager::EmberOgre_AvatarControllerCreated(AvatarController& controller)
+void GUIManager::EmberOgre_MovementControllerCreated()
 {
 	EmberOgre::getSingleton().getMainCamera()->pushWorldPickListener(mEntityWorldPickListener);
 }

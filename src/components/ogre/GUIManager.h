@@ -58,7 +58,7 @@ class MousePicker;
 class AvatarEmberEntity;
 class GUICEGUIAdapter;
 class EntityWorldPickListener;
-class AvatarController;
+class MovementController;
 
 namespace Gui {
 class Widget;
@@ -321,10 +321,10 @@ protected:
 	void EmberOgre_CreatedAvatarEntity(EmberEntity* entity);
 
 	/**
-	 *    hooked to EmberOgre::EventAvatarControllerCreated, connects the mEntityWorldPickListener to the main AvatarCamera
+	 *    hooked to EmberOgre::EventMovementControllerCreated, connects the mEntityWorldPickListener to the main AvatarCamera
 	 * @param controller
 	 */
-	void EmberOgre_AvatarControllerCreated(AvatarController& controller);
+	void EmberOgre_MovementControllerCreated();
 
 // 	InputMode mPreviousInputMode;
 	void pressedKey(const SDL_keysym& key, Ember::Input::InputMode inputMode);

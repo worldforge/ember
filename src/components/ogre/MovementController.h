@@ -16,8 +16,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef AVATARCONTROLLER_H
-#define AVATARCONTROLLER_H
+#ifndef MovementController_H
+#define MovementController_H
 
 #include "EmberOgrePrerequisites.h"
 
@@ -29,26 +29,29 @@
 #include "services/input/InputCommandMapper.h"
 #include "framework/ConsoleObject.h"
 #include "EntityWorldPickListener.h"
+#include "components/ogre/IMovementProvider.h"
 #include <OgreVector3.h>
 #include <OgreQuaternion.h>
 #include <OgreFrameListener.h>
+
+#include <wfmath/vector.h>
 
 
 
 namespace EmberOgre {
 class Avatar;
 class EmberEntity;
-class AvatarCamera;
 
 class GUIManager;
 
 class InputManager;
-class AvatarController;
+class MovementController;
 
 /**
 The movement mode of the avatar, run or walk.
 */
-class AvatarMovementMode {
+class MovementControllerMode
+{
 public:
 	enum Mode
 	{
@@ -57,52 +60,36 @@ public:
 	};
 };
 
-
-/**
-Used for sending the current desired movement to the actual avatar.
-*/
-struct AvatarControllerMovement
-{
-	AvatarControllerMovement();
-
-	float rotationDegHoriz;
-	float rotationDegVert;
-	Ogre::Real timeSlice;
-	Ogre::Vector3 movementDirection;
-	AvatarMovementMode::Mode mode;
-	bool isMoving;
-	Ogre::Quaternion cameraOrientation;
-};
-
 /**
 Listens for left mouse button pressed in movement mode and moves the character forward.
 */
-class AvatarControllerInputListener
+class MovementControllerInputListener
 {
 public:
-	AvatarControllerInputListener(AvatarController& controller);
+	MovementControllerInputListener(MovementController& controller);
 
 protected:
 
 	void input_MouseButtonPressed(Ember::Input::MouseButton button, Ember::Input::InputMode mode);
 	void input_MouseButtonReleased(Ember::Input::MouseButton button, Ember::Input::InputMode mode);
-	AvatarController& mController;
+	MovementController& mController;
 };
 
 /**
 Controls the avatar. All avatar movement is handled by an instance of this class.
 */
-class AvatarController
+class MovementController
 : public Ogre::FrameListener,
 public sigc::trackable,
-public Ember::ConsoleObject
+public Ember::ConsoleObject,
+public IMovementProvider
 {
 public:
-    friend class AvatarControllerInputListener;
+    friend class MovementControllerInputListener;
 
-    AvatarController(Avatar& avatar, Ogre::RenderWindow& window, GUIManager& guiManager, Ogre::Camera& camera);
+    MovementController(Avatar& avatar);
 
-	virtual ~AvatarController();
+	virtual ~MovementController();
 
 	/**
 	Each frame we check if we should update the avatar.
@@ -113,47 +100,28 @@ public:
 	/**
 	Emitted when the movement mode changes between run and walk.
 	*/
-	sigc::signal<void, AvatarMovementMode::Mode> EventMovementModeChanged;
-
-
-
-	void createAvatarCameras();
-
-	/**
-	 * Gets the AvatarCamera.
-	 * @return
-	 */
-	AvatarCamera* getAvatarCamera() const;
-
-	/**
-	 *    Detaches the camera from the avatar and attaches it to the free flying node.
-	 */
-	void detachCamera();
-
-	/**
-	 *    Attaches the camera to the avatar.
-	 */
-	void attachCamera();
+	sigc::signal<void, MovementControllerMode::Mode> EventMovementModeChanged;
 
 	/**
 	 *    Gets the current movement for this frame.
 	 * @return
 	 */
-	const AvatarControllerMovement& getCurrentMovement() const;
+//	const MovementControllerMovement& getCurrentMovement() const;
 
 	const Ember::ConsoleCommandWrapper RunToggle;
 	const Ember::ConsoleCommandWrapper ToggleCameraAttached;
 
-	const Ember::ConsoleCommandWrapper CharacterMoveForward;
-	const Ember::ConsoleCommandWrapper CharacterMoveBackward;
-	const Ember::ConsoleCommandWrapper CharacterMoveDownwards;
-	const Ember::ConsoleCommandWrapper CharacterMoveUpwards;
-	const Ember::ConsoleCommandWrapper CharacterStrafeLeft;
-	const Ember::ConsoleCommandWrapper CharacterStrafeRight;
-/*	const Ember::ConsoleCommandWrapper CharacterRotateLeft;
-	const Ember::ConsoleCommandWrapper CharacterRotateRight;*/
+	const Ember::ConsoleCommandWrapper MovementMoveForward;
+	const Ember::ConsoleCommandWrapper MovementMoveBackward;
+	const Ember::ConsoleCommandWrapper MovementMoveDownwards;
+	const Ember::ConsoleCommandWrapper MovementMoveUpwards;
+	const Ember::ConsoleCommandWrapper MovementStrafeLeft;
+	const Ember::ConsoleCommandWrapper MovementStrafeRight;
+/*	const Ember::ConsoleCommandWrapper MovementRotateLeft;
+	const Ember::ConsoleCommandWrapper MovementRotateRight;*/
 
-	const Ember::ConsoleCommandWrapper MoveCameraTo;
+
+//	const Ember::ConsoleCommandWrapper MoveCameraTo;
 
 
 	/**
@@ -176,40 +144,21 @@ public:
 	 */
 	void teleportTo(const Ogre::Vector3& point, EmberEntity* locationEntity);
 
+
+	virtual WFMath::Vector<3> getMovementForCurrentFrame() const;
+
+	MovementControllerMode::Mode getMode() const;
+
 protected:
 
 	Ember::InputCommandMapper mMovementCommandMapper;
 
-	Ogre::RenderWindow& mWindow;
-
-	GUIManager& mGUIManager;
-
-
-// 	void checkMovementKeys(const Ogre::FrameEvent & event, const Input& input);
-
-
-	AvatarCamera* mAvatarCamera;
-	Ogre::Camera& mCamera;
-
-
-	/**
-	 * Avatar
-	 */
-	Avatar& mAvatar;
-
-    EmberEntity* mEntityUnderCursor;
-    EmberEntity* mSelectedEntity;
-
-    AvatarControllerMovement movementForFrame, mPreviousMovementForFrame;
-
-	Ogre::SceneNode* mFreeFlyingCameraNode;
-	bool mIsAttached;
 	/**
 	True if we're in running mode.
 	*/
 	bool mIsRunning;
 
-	Ogre::Vector3 mMovementDirection;
+	WFMath::Vector<3> mMovementDirection;
 
 	/**
 	Listen for double clicks and send the avatar to the double clicked position.
@@ -232,17 +181,13 @@ protected:
 	*/
 	Ogre::SceneNode* mDecalNode;
 
-	/**
-	Controller for making the decal pulsate a little.
-	@note Not used currently.
-	*/
-// 	Ogre::WaveformControllerFunction* mPulsatingController;
+	MovementControllerInputListener mControllerInputListener;
 
-	AvatarControllerInputListener mControllerInputListener;
+	Avatar& mAvatar;
 };
 
 
 
 }
 
-#endif // AvatarController_H
+#endif // MovementController_H

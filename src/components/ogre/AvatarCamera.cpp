@@ -24,6 +24,9 @@
 #include "EmberOgre.h"
 #include "EmberEntity.h"
 #include "Convert.h"
+#include "components/ogre/ICameraMotionHandler.h"
+#include "components/ogre/IMovementProvider.h"
+#include "components/ogre/IWorldPickListener.h"
 
 
 #include "services/EmberServices.h"
@@ -41,8 +44,8 @@
 
 #include "GUIManager.h"
 #include "services/input/Input.h"
+#include "services/input/InputCommandMapper.h"
 
-#include "IWorldPickListener.h"
 
 #include "framework/osdir.h"
 #include <OgreRoot.h>
@@ -112,92 +115,805 @@ bool Recorder::frameStarted(const Ogre::FrameEvent& event)
 
 
 
-AvatarCamera::AvatarCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& window, Input& input, Ogre::Camera& camera) :
-	SetCameraDistance("setcameradistance", this, "Set the distance of the camera."),
-	ToggleRendermode("toggle_rendermode", this, "Toggle between wireframe and solid render modes."),
-	ToggleFullscreen("toggle_fullscreen", this, "Switch between windowed and full screen mode."),
-	Screenshot("screenshot", this, "Take a screenshot and write to disk."),
-	Record("+record", this, "Record to disk."),
-	mInvertCamera(false),
-	mCamera(camera),
-	mAvatarNode(0),
-	mSceneManager(sceneManager),
+//AvatarCamera::AvatarCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& window, Input& input, Ogre::Camera& camera) :
+//	SetCameraDistance("setcameradistance", this, "Set the distance of the camera."),
+//	ToggleRendermode("toggle_rendermode", this, "Toggle between wireframe and solid render modes."),
+//	ToggleFullscreen("toggle_fullscreen", this, "Switch between windowed and full screen mode."),
+//	Screenshot("screenshot", this, "Take a screenshot and write to disk."),
+//	Record("+record", this, "Record to disk."),
+//	mInvertCamera(false),
+//	mCamera(camera),
+//	mAvatarNode(0),
+//	mSceneManager(sceneManager),
+//	mDegreeOfPitchPerSecond(50),
+//	mDegreeOfYawPerSecond(50),
+//	degreePitch(0),
+//	degreeYaw(0),
+//	mWindow(window),
+//	mViewPort(0),
+//	mClosestPickingDistance(10000),
+//	mLastPosition(Ogre::Vector3::ZERO),
+//	mAdjustTerrainRaySceneQuery(0),
+//	mCameraRaySceneQuery(0),
+//	mIsAdjustedToTerrain(true),
+//	mAvatarTerrainCursor(new AvatarTerrainCursor(*this))
+////	mLastOrientationOfTheCamera(avatar->getOrientation())
+//{
+//	createNodesForCamera();
+//	createViewPort();
+//
+//	/// Register this as a frame listener
+//	Ogre::Root::getSingleton().addFrameListener(this);
+//
+//	input.EventMouseMoved.connect(sigc::mem_fun(*this, &AvatarCamera::Input_MouseMoved));
+//
+//	Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &AvatarCamera::ConfigService_EventChangedConfigItem));
+//
+//	updateValuesFromConfig();
+//	createRayQueries();
+//}
+//
+//AvatarCamera::~AvatarCamera()
+//{
+//	Ogre::Root::getSingleton().removeFrameListener(this);
+//	EmberOgre::getSingleton().getSceneManager()->destroyQuery(mAdjustTerrainRaySceneQuery);
+//	EmberOgre::getSingleton().getSceneManager()->destroyQuery(mCameraRaySceneQuery);
+//}
+//
+//void AvatarCamera::createRayQueries()
+//{
+//    // attempt to create a query to get back terrain coords
+//	mAdjustTerrainRaySceneQuery = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery(mAdjustTerrainRay, Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
+//	///only test for terrain
+//	mAdjustTerrainRaySceneQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
+//	mAdjustTerrainRaySceneQuery->setSortByDistance(true);
+//	mAdjustTerrainRaySceneQuery->setQueryTypeMask(Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
+//
+//
+//	unsigned long queryMask = Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK;
+//	queryMask |= MousePicker::CM_AVATAR;
+//	queryMask |= MousePicker::CM_ENTITY;
+//	queryMask |= MousePicker::CM_NATURE;
+//	queryMask |= MousePicker::CM_UNDEFINED;
+//// 	queryMask |= Ogre::RSQ_FirstTerrain;
+//
+//	mCameraRaySceneQuery = mSceneManager.createRayQuery( Ogre::Ray(), queryMask);
+//	mCameraRaySceneQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
+//	mCameraRaySceneQuery->setSortByDistance(true);
+//
+//}
+//
+//
+//void AvatarCamera::createNodesForCamera()
+//{
+//	mAvatarCameraRootNode = mSceneManager.createSceneNode("AvatarCameraRootNode");
+//	//we need to adjust for the height of the avatar mesh
+//	mAvatarCameraRootNode->setPosition(Ogre::Vector3(0,2,0));
+//	//rotate to sync with WF world
+//    mAvatarCameraRootNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)-90);
+//
+//	mAvatarCameraPitchNode = mAvatarCameraRootNode->createChildSceneNode("AvatarCameraPitchNode");
+//	mAvatarCameraPitchNode->setPosition(Ogre::Vector3(0,0,0));
+//	mAvatarCameraNode = mAvatarCameraPitchNode->createChildSceneNode("AvatarCameraNode");
+//	setCameraDistance(10);
+//
+////	mCamera = mSceneManager.createCamera("AvatarCamera");
+//	mAvatarCameraNode->attachObject(&mCamera);
+//	// Look to the Avatar's head
+//	//mAvatar3pCamera->setAutoTracking(true, mAvatar1pCameraNode);
+//	mCamera.setNearClipDistance(0.5);
+//
+//	///set the far clip distance high to make sure that the sky is completely shown
+//	if (Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE))
+//	{
+///*		//NOTE: this won't currently work with the sky
+//		mCamera.setFarClipDistance(0);*/
+//
+//		mCamera.setFarClipDistance(10000);
+//	} else {
+//		mCamera.setFarClipDistance(10000);
+//	}
+//
+//	//create the nodes for the camera
+//	setMode(MODE_THIRD_PERSON);
+//// 	createViewPort();
+//}
+//
+//void AvatarCamera::setMode(Mode mode)
+//{
+//	mMode = mode;
+///*	if (mMode == MODE_THIRD_PERSON) {
+//		mCamera.setAutoTracking(true, mAvatarCameraRootNode);
+//	} else {
+//		mCamera.setAutoTracking(false);
+//	}*/
+//
+//
+//}
+//
+//const Ogre::Quaternion& AvatarCamera::getOrientation(bool onlyHorizontal) const {
+//	if (!onlyHorizontal) {
+//		return getCamera().getDerivedOrientation();
+//	} else {
+//		static Ogre::Quaternion quat;
+//		quat = getCamera().getDerivedOrientation();
+//		quat.x = 0;
+//		quat.z = 0;
+//		return quat;
+//	}
+//}
+//
+//const Ogre::Vector3& AvatarCamera::getPosition() const
+//{
+//	return mCamera.getDerivedPosition();
+//}
+//
+//void AvatarCamera::attach(Ogre::SceneNode* toNode) {
+//	mIsAttached = true;
+//	assert(mAvatarCameraRootNode);
+//	if (mAvatarCameraRootNode->getParent()) {
+//		mAvatarCameraRootNode->getParent()->removeChild(mAvatarCameraRootNode->getName());
+//	}
+//	toNode->addChild(mAvatarCameraRootNode);
+//
+//	setCameraDistance(10);
+//	mAvatarCameraNode->setOrientation(Ogre::Quaternion::IDENTITY);
+//	mAvatarCameraNode->_update(true, true);
+//	std::stringstream ss;
+//	ss << "Attached camera to node: " << toNode->getName() <<". New position: " << mCamera.getDerivedPosition() << " New orientation: " << mCamera.getDerivedOrientation();
+//	S_LOG_VERBOSE(ss.str());
+//}
+//
+//
+//void AvatarCamera::enableCompositor(const std::string& compositorName, bool enable)
+//{
+//	if (std::find(mLoadedCompositors.begin(), mLoadedCompositors.end(), compositorName) == mLoadedCompositors.end()) {
+//		Ogre::CompositorManager::getSingleton().addCompositor(mWindow.getViewport(0), compositorName);
+//	}
+//	Ogre::CompositorManager::getSingleton().setCompositorEnabled(mWindow.getViewport(0), compositorName, enable);
+//}
+//
+//void AvatarCamera::createViewPort()
+//{
+//
+////	Ogre::CompositorManager::getSingleton().addCompositor(mWindow.getViewport(0), "Bloom");
+//// 	Ogre::CompositorManager::getSingleton().setCompositorEnabled(mWindow.getViewport(0), "Bloom", true);
+//
+//// 	assert(mCamera);
+//// 	assert(!mViewPort);
+////     // Create 1st person viewport, entire window
+////     mViewPort = mWindow.addViewport(mCamera);
+////     mViewPort->setBackgroundColour(Ogre::ColourValue(0,0,0));
+////     mCamera.setAspectRatio(
+//// 		Ogre::Real(mViewPort->getActualWidth()) / Ogre::Real(mViewPort->getActualHeight()));
+//
+//
+//}
+//
+//
+//void AvatarCamera::toggleRenderMode()
+//{
+//	S_LOG_INFO("Switching render mode.");
+//	if (mCamera.getPolygonMode() == Ogre::PM_SOLID) {
+//		mCamera.setPolygonMode(Ogre::PM_WIREFRAME);
+//	} else {
+//		mCamera.setPolygonMode(Ogre::PM_SOLID);
+//	}
+//}
+//
+//void AvatarCamera::setAvatarNode(Ogre::SceneNode* sceneNode)
+//{
+//	mAvatarNode = sceneNode;
+//	attach(mAvatarNode);
+//}
+//
+//void AvatarCamera::setCameraDistance(Ogre::Real distance)
+//{
+//	mWantedCameraDistance = distance;
+//	_setCameraDistance(distance);
+//}
+//
+//void AvatarCamera::_setCameraDistance(Ogre::Real distance)
+//{
+//	mCurrentCameraDistance = distance;
+//	Ogre::Vector3 pos(0,0,distance);
+//	mAvatarCameraNode->setPosition(pos);
+//	markCameraNodeAsDirty();
+//	EventChangedCameraDistance.emit(distance);
+//}
+//
+//void AvatarCamera::pitch(Ogre::Degree degrees)
+//{
+//	if (mInvertCamera) {
+//		degrees -= degrees * 2;
+//	}
+//
+//	Ogre::SceneNode* node(mMode == MODE_THIRD_PERSON ? mAvatarCameraPitchNode : mAvatarCameraNode);
+//
+//	///prevent the camera from being turned upside down
+//	const Ogre::Quaternion& orientation(node->getOrientation());
+//	Ogre::Degree pitch(orientation.getPitch());
+//	if ((pitch.valueDegrees() + degrees.valueDegrees()) > 0) {
+//		degrees = std::min<float>(degrees.valueDegrees(), 90 - pitch.valueDegrees());
+//	} else {
+//		degrees = std::max<float>(degrees.valueDegrees(), -90 - pitch.valueDegrees());
+//	}
+//
+//	if (mMode == MODE_THIRD_PERSON) {
+//		degreePitch += degrees;
+//		node->pitch(degrees);
+//	} else {
+//		node->pitch(degrees);
+//	}
+//	///We need to manually update the node here to make sure that the derived orientation and position of the camera is updated.
+//	node->_update(true, false);
+//	markCameraNodeAsDirty();
+//}
+//void AvatarCamera::yaw(Ogre::Degree degrees)
+//{
+//	if (mMode == MODE_THIRD_PERSON) {
+//		degreeYaw += degrees;
+//		mAvatarCameraRootNode->yaw(degrees);
+//
+//		///We need to manually update the node here to make sure that the derived orientation and position of the camera is updated.
+//		mAvatarCameraRootNode->_update(true, false);
+//	} else {
+//		mAvatarCameraNode->yaw(degrees);
+//		///We need to manually update the node here to make sure that the derived orientation and position of the camera is updated.
+//		mAvatarCameraNode->_update(true, false);
+//	}
+//	markCameraNodeAsDirty();
+//}
+//
+//void AvatarCamera::markCameraNodeAsDirty()
+//{
+//	if (mCamera.getParentNode()) {
+//		///We need to mark the parent node of the camera as dirty. The update of the derived orientation and position of the node should normally occur when the scene tree is traversed, but in some instances we need to access the derived position or orientataion of the camera before the traversal occurs, and if we don't mark the node as dirty it won't be updated
+//		mCamera.getParentNode()->needUpdate(true);
+//	}
+//}
+//
+//void AvatarCamera::Input_MouseMoved(const MouseMotion& motion, Input::InputMode mode)
+///*(int xPosition, int yPosition, Ogre::Real xRelativeMovement, Ogre::Real yRelativeMovement, Ogre::Real timeSinceLastMovement)*/
+//{
+//	if (mode == Input::IM_MOVEMENT) {
+//		Ogre::Degree diffX(mDegreeOfYawPerSecond * motion.xRelativeMovement);
+//		Ogre::Degree diffY(mDegreeOfPitchPerSecond * motion.yRelativeMovement);
+//
+//		if (diffX.valueDegrees()) {
+//			this->yaw(diffX);
+//	//		this->yaw(diffX * e->timeSinceLastFrame);
+//		}
+//		if (diffY.valueDegrees()) {
+//			this->pitch(diffY);
+//	//		this->pitch(diffY * e->timeSinceLastFrame);
+//		}
+//
+//		if (diffY.valueDegrees() || diffX.valueDegrees()) {
+//			MovedCamera.emit(mCamera);
+//		}
+//	}
+//
+//
+//}
+//
+//
+//
+//
+//void AvatarCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePickerArgs& mousePickerArgs)
+//{
+//	S_LOG_INFO("Trying to pick an entity at mouse coords: "  << Ogre::StringConverter::toString(mouseX) << ":" << Ogre::StringConverter::toString(mouseY) << ".");
+//
+//	// get the terrain vector for mouse coords when a pick event happens
+//// 	mAvatarTerrainCursor->getTerrainCursorPosition();
+//
+//	/// Start a new ray query
+//	Ogre::Ray cameraRay = getCamera().getCameraToViewportRay( mouseX, mouseY );
+//
+//	mCameraRaySceneQuery->setRay(cameraRay);
+//	mCameraRaySceneQuery->execute();
+//
+//
+//	///now check the entity picking
+//	Ogre::RaySceneQueryResult& queryResult = mCameraRaySceneQuery->getLastResults();
+//	bool continuePicking = true;
+//
+//	for (WorldPickListenersStore::iterator I = mPickListeners.begin(); I != mPickListeners.end(); ++I) {
+//		(*I)->initializePickingContext();
+//	}
+//
+//
+//	Ogre::RaySceneQueryResult::iterator rayIterator = queryResult.begin( );
+//	Ogre::RaySceneQueryResult::iterator rayIterator_end = queryResult.end( );
+//	if (rayIterator != rayIterator_end) {
+//		for ( ; rayIterator != rayIterator_end && continuePicking; rayIterator++ ) {
+//			for (WorldPickListenersStore::iterator I = mPickListeners.begin(); I != mPickListeners.end(); ++I) {
+//				(*I)->processPickResult(continuePicking, *rayIterator, cameraRay, mousePickerArgs);
+//				if (!continuePicking) {
+//					break;
+//				}
+//			}
+//		}
+//	}
+//
+//	for (WorldPickListenersStore::iterator I = mPickListeners.begin(); I != mPickListeners.end(); ++I) {
+//		(*I)->endPickingContext(mousePickerArgs);
+//	}
+//}
+//
+//	bool AvatarCamera::worldToScreen(const Ogre::Vector3& worldPos, Ogre::Vector2& screenPos)
+//	{
+//
+//		Ogre::Vector3 hcsPosition = mCamera.getProjectionMatrix() * (mCamera.getViewMatrix() * worldPos);
+//
+//		if ((hcsPosition.x < -1.0f) ||
+//		(hcsPosition.x > 1.0f) ||
+//		(hcsPosition.y < -1.0f) ||
+//		(hcsPosition.y > 1.0f))
+//		return false;
+//
+//
+//		screenPos.x = (hcsPosition.x + 1) * 0.5;
+//		screenPos.y = (-hcsPosition.y + 1) * 0.5;
+//
+//		return true;
+//	}
+//
+//// 	void AvatarCamera::setClosestPickingDistance(Ogre::Real distance)
+//// 	{
+//// 		mClosestPickingDistance = distance;
+//// 	}
+////
+//// 	Ogre::Real AvatarCamera::getClosestPickingDistance()
+//// 	{
+//// 		return mClosestPickingDistance;
+//// 	}
+//
+//	bool AvatarCamera::adjustForTerrain()
+//	{
+//		/// We will shoot a ray from the camera base node to the camera. If it hits anything on the way we know that there's something between the camera and the avatar and we'll position the camera closer to the avatar. Thus we'll avoid having the camera dip below the terrain
+//		///For now we'll only check against the terrain
+//		const Ogre::Vector3 direction(-mCamera.getDerivedDirection());
+//		///If the direction if pointing straight upwards we'll end up in an infinite loop in the ray query
+//		if (direction.z != 0) {
+//
+//			mAdjustTerrainRay.setDirection(direction);
+//			mAdjustTerrainRay.setOrigin(mAvatarCameraRootNode->_getDerivedPosition());
+//
+// 			mAdjustTerrainRaySceneQuery->setRay(mAdjustTerrainRay);
+//
+//			mAdjustTerrainRaySceneQuery->execute();
+//
+//			Ogre::RaySceneQueryResult queryResult = mAdjustTerrainRaySceneQuery->getLastResults();
+//			Ogre::RaySceneQueryResult::iterator rayIterator = queryResult.begin( );
+//			for ( ; rayIterator != queryResult.end(); ++rayIterator ) {
+//				Ogre::RaySceneQueryResultEntry& entry = *rayIterator;
+//
+//				if (entry.worldFragment) {
+//					Ogre::Vector3 position = entry.worldFragment->singleIntersection;
+//					Ogre::Real distance = mAvatarCameraRootNode->_getDerivedPosition().distance(position);
+//					if (distance < mWantedCameraDistance) {
+//						_setCameraDistance(distance - 0.1);
+//						return true;
+//					} else {
+//						///we hit some terrain beyond the max distance of the camera, so set it to the "default" distance
+//						if (mWantedCameraDistance != mCurrentCameraDistance) {
+//							_setCameraDistance(mWantedCameraDistance);
+//						}
+//						return false;
+//					}
+//				}
+//			}
+//		}
+//		return false;
+//
+///*		Ogre::RaySceneQuery *raySceneQueryHeight = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery( Ogre::Ray(mCamera.getDerivedPosition(), Ogre::Vector3::NEGATIVE_UNIT_Y), Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
+//
+//
+//		raySceneQueryHeight->execute();
+//
+//		//first check the terrain picking
+//		Ogre::RaySceneQueryResult queryResult = raySceneQueryHeight->getLastResults();
+//
+//		if (queryResult.begin( ) != queryResult.end()) {
+//			Ogre::Vector3 position = queryResult.begin()->worldFragment->singleIntersection;
+//			Ogre::Real terrainHeight = position.y;
+//			//pad it a little
+//			//terrainHeight += 0.4;
+//			Ogre::Real cameraHeight = mCamera.getDerivedPosition().y;
+//			Ogre::Real cameraNodeHeight = mAvatarCameraNode->getWorldPosition().y;
+//			if (terrainHeight > cameraHeight) {
+//				mCamera.move(mCamera.getDerivedOrientation().Inverse() * Ogre::Vector3(0,terrainHeight - cameraHeight,0));
+////				mCamera.lookAt(mAvatarCameraRootNode->getPosition());
+//
+//			} else if (cameraHeight != cameraNodeHeight) {
+//				Ogre::Real newHeight = std::max<Ogre::Real>(terrainHeight, cameraNodeHeight);
+//				mCamera.move(Ogre::Vector3(0,newHeight - cameraHeight,0));
+//				mCamera.lookAt(mAvatarCameraRootNode->getWorldPosition());
+//
+//			}
+//
+//		}*/
+//
+//	}
+//
+//void AvatarCamera::runCommand(const std::string &command, const std::string &args)
+//{
+//	if(Screenshot == command) {
+//		//just take a screen shot
+//		takeScreenshot();
+//	} else if(SetCameraDistance == command)
+//	{
+//		Ember::Tokeniser tokeniser;
+//		tokeniser.initTokens(args);
+//		std::string distance = tokeniser.nextToken();
+//		if (distance != "") {
+//			float fDistance = Ogre::StringConverter::parseReal(distance);
+//			setCameraDistance(fDistance);
+//		}
+//	} else if (ToggleFullscreen == command){
+//		SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
+//
+//	} else if (ToggleRendermode == command) {
+//		toggleRenderMode();
+//	} else if (Record == command) {
+//		mRecorder.startRecording();
+//	} else if (Record.getInverseCommand() == command) {
+//		mRecorder.stopRecording();
+//	}
+//}
+//
+//void AvatarCamera::updateValuesFromConfig()
+//{
+//	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("input", "invertcamera")) {
+//		mInvertCamera = static_cast<bool>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("input", "invertcamera"));
+//	}
+//	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("input", "cameradegreespersecond")) {
+//		mDegreeOfPitchPerSecond = mDegreeOfYawPerSecond = (double)Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("input", "cameradegreespersecond");
+//	}
+//	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("input", "adjusttoterrain")) {
+//		mIsAdjustedToTerrain = static_cast<bool>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("input", "adjusttoterrain"));
+//	}
+//}
+//
+//void AvatarCamera::ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key)
+//{
+//	if (section == "input") {
+//		if (key == "invertcamera" || key == "cameradegreespersecond" || key == "adjusttoterrain") {
+//			updateValuesFromConfig();
+//		}
+//	}
+//}
+//
+//bool AvatarCamera::frameStarted(const Ogre::FrameEvent& event)
+//{
+//	if (mIsAdjustedToTerrain && mAvatarNode) {
+//		if (mCamera.getDerivedPosition() != mLastPosition) {
+//			adjustForTerrain();
+//			mLastPosition = mCamera.getDerivedPosition();
+//		}
+//	}
+//
+//	/// Update avatar entity position in sound service
+//	Ember::EmberServices::getSingleton().getSoundService()->updateListenerPosition(Convert::toWF<WFMath::Point<3> >(mCamera.getDerivedPosition()), Convert::toWF<WFMath::Vector<3> >(mCamera.getDirection()), Convert::toWF<WFMath::Vector<3> >(mCamera.getUp()));
+//
+//	return true;
+//}
+//
+//void AvatarCamera::pushWorldPickListener(IWorldPickListener* worldPickListener)
+//{
+//	mPickListeners.push_front(worldPickListener);
+//}
+//
+//void AvatarCamera::removeWorldPickListener(IWorldPickListener* worldPickListener)
+//{
+//	if (worldPickListener) {
+//		WorldPickListenersStore::iterator I = std::find(mPickListeners.begin(), mPickListeners.end(), worldPickListener);
+//		if (I != mPickListeners.end()) {
+//			mPickListeners.erase(I);
+//		}
+//	}
+//}
+//
+//
+//const std::string AvatarCamera::_takeScreenshot()
+//{
+//	// retrieve current time
+//	time_t rawtime;
+//	struct tm* timeinfo;
+//	time(&rawtime);
+//	timeinfo = localtime(&rawtime);
+//
+//	// construct filename string
+//	// padding with 0 for single-digit values
+//	std::stringstream filename;
+//	filename << "screenshot_" << ((*timeinfo).tm_year + 1900); // 1900 is year "0"
+//	int month = ((*timeinfo).tm_mon + 1); // January is month "0"
+//	if(month <= 9)
+//	{
+//		filename << "0";
+//	}
+//	filename << month;
+//	int day = (*timeinfo).tm_mday;
+//	if(day <= 9)
+//	{
+//		filename << "0";
+//	}
+//	filename << day << "_";
+//	int hour = (*timeinfo).tm_hour;
+//	if(hour <= 9)
+//	{
+//		filename << "0";
+//	}
+//	filename << hour;
+//	int min = (*timeinfo).tm_min;
+//	if(min <= 9)
+//	{
+//		filename << "0";
+//	}
+//	filename << min;
+//	int sec = (*timeinfo).tm_sec;
+//	if(sec <= 9)
+//	{
+//		filename << "0";
+//	}
+//	filename << sec << ".jpg";
+//
+//	const std::string dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/screenshots/";
+//	try {
+//		//make sure the directory exists
+//
+//		oslink::directory osdir(dir);
+//
+//		if (!osdir.isExisting()) {
+//#ifdef __WIN32__
+//			mkdir(dir.c_str());
+//#else
+//			mkdir(dir.c_str(), S_IRWXU);
+//#endif
+//		}
+//	} catch (const std::exception& ex) {
+//		S_LOG_FAILURE("Error when creating directory for screenshots. Message: " << std::string(ex.what()));
+//		throw Ember::Exception("Error when saving screenshot. Message: " + std::string(ex.what()));
+//	}
+//
+//	try {
+//		// take screenshot
+//		mWindow.writeContentsToFile(dir + filename.str());
+//	} catch (const Ogre::Exception& ex) {
+//		S_LOG_FAILURE("Could not write screenshot to disc. Message: "<< ex.getFullDescription());
+//		throw Ember::Exception("Error when saving screenshot. Message: " + ex.getDescription());
+//	}
+//	return dir + filename.str();
+//}
+//
+//void AvatarCamera::takeScreenshot()
+//{
+//	try {
+//		const std::string& result = _takeScreenshot();
+//		S_LOG_INFO(result);
+//		Ember::ConsoleBackend::getSingletonPtr()->pushMessage("Wrote image: " + result);
+//	} catch (const std::exception& ex) {
+//		Ember::ConsoleBackend::getSingletonPtr()->pushMessage(std::string("Error when saving screenshot: ") + ex.what());
+//	} catch (...) {
+//		Ember::ConsoleBackend::getSingletonPtr()->pushMessage("Unknown error when saving screenshot.");
+//	}
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+ThirdPersonCameraMount::ThirdPersonCameraMount(Ogre::SceneManager& sceneManager)
+:	SetCameraDistance("setcameradistance", this, "Set the distance of the camera."),
 	mDegreeOfPitchPerSecond(50),
 	mDegreeOfYawPerSecond(50),
-	degreePitch(0),
-	degreeYaw(0),
-	mWindow(window),
-	mViewPort(0),
-	mClosestPickingDistance(10000),
-	mLastPosition(Ogre::Vector3::ZERO),
 	mAdjustTerrainRaySceneQuery(0),
-	mCameraRaySceneQuery(0),
-	mIsAdjustedToTerrain(true),
-	mAvatarTerrainCursor(new AvatarTerrainCursor(*this))
-//	mLastOrientationOfTheCamera(avatar->getOrientation())
+	mIsAdjustedToTerrain(true)
 {
-	createNodesForCamera();
-	createViewPort();
-
-	/// Register this as a frame listener
-	Ogre::Root::getSingleton().addFrameListener(this);
-
-	input.EventMouseMoved.connect(sigc::mem_fun(*this, &AvatarCamera::Input_MouseMoved));
-
-	Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &AvatarCamera::ConfigService_EventChangedConfigItem));
-
-	updateValuesFromConfig();
-	createRayQueries();
+	createNodesForCamera(sceneManager);
+	createRayQueries(sceneManager);
 }
 
-AvatarCamera::~AvatarCamera()
+void ThirdPersonCameraMount::attachToNode(Ogre::SceneNode* sceneNode)
 {
-	Ogre::Root::getSingleton().removeFrameListener(this);
-	EmberOgre::getSingleton().getSceneManager()->destroyQuery(mAdjustTerrainRaySceneQuery);
-	EmberOgre::getSingleton().getSceneManager()->destroyQuery(mCameraRaySceneQuery);
+	if (sceneNode == mAvatarCameraRootNode->getParentSceneNode())
+	{
+		return;
+	}
+	if (mAvatarCameraRootNode->getParentSceneNode()) {
+		//first detach from our current node
+		mAvatarCameraRootNode->getParentSceneNode()->removeChild(mAvatarCameraRootNode);
+	}
+	if (sceneNode) {
+		sceneNode->addChild(mAvatarCameraRootNode);
+	}
 }
 
-void AvatarCamera::createRayQueries()
+Ogre::Degree ThirdPersonCameraMount::pitch(float relativeMovement)
 {
-    // attempt to create a query to get back terrain coords
-	mAdjustTerrainRaySceneQuery = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery(mAdjustTerrainRay, Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
-	///only test for terrain
-	mAdjustTerrainRaySceneQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
-	mAdjustTerrainRaySceneQuery->setSortByDistance(true);
-	mAdjustTerrainRaySceneQuery->setQueryTypeMask(Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
+	Ogre::Degree degrees(mDegreeOfPitchPerSecond * relativeMovement);
 
+	if (mInvertCamera) {
+		degrees -= degrees * 2;
+	}
 
-	unsigned long queryMask = Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK;
-	queryMask |= MousePicker::CM_AVATAR;
-	queryMask |= MousePicker::CM_ENTITY;
-	queryMask |= MousePicker::CM_NATURE;
-	queryMask |= MousePicker::CM_UNDEFINED;
-// 	queryMask |= Ogre::RSQ_FirstTerrain;
+	///prevent the camera from being turned upside down
+	const Ogre::Quaternion& orientation(mAvatarCameraPitchNode->getOrientation());
+	Ogre::Degree pitch(orientation.getPitch());
+	if ((pitch.valueDegrees() + degrees.valueDegrees()) > 0) {
+		degrees = std::min<float>(degrees.valueDegrees(), 90 - pitch.valueDegrees());
+	} else {
+		degrees = std::max<float>(degrees.valueDegrees(), -90 - pitch.valueDegrees());
+	}
 
-	mCameraRaySceneQuery = mSceneManager.createRayQuery( Ogre::Ray(), queryMask);
-	mCameraRaySceneQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
-	mCameraRaySceneQuery->setSortByDistance(true);
+	if (degrees.valueDegrees()) {
+		mAvatarCameraPitchNode->pitch(degrees);
 
+		///We need to manually update the node here to make sure that the derived orientation and position of the camera is updated.
+		mAvatarCameraPitchNode->_update(true, false);
+	}
+
+	//Return true if the current pitch has changed.
+	return degrees;
 }
 
-
-void AvatarCamera::createNodesForCamera()
+Ogre::Degree ThirdPersonCameraMount::yaw(float relativeMovement)
 {
-	mAvatarCameraRootNode = mSceneManager.createSceneNode("AvatarCameraRootNode");
+	Ogre::Degree degrees(mDegreeOfYawPerSecond * relativeMovement);
+
+	if (degrees.valueDegrees()) {
+		mAvatarCameraRootNode->yaw(degrees);
+
+		///We need to manually update the node here to make sure that the derived orientation and position of the camera is updated.
+		mAvatarCameraRootNode->_update(true, false);
+	}
+	return degrees;
+}
+
+void ThirdPersonCameraMount::createNodesForCamera(Ogre::SceneManager& sceneManager)
+{
+	mAvatarCameraRootNode = sceneManager.createSceneNode("ThirdPersonCameraRootNode");
 	//we need to adjust for the height of the avatar mesh
 	mAvatarCameraRootNode->setPosition(Ogre::Vector3(0,2,0));
 	//rotate to sync with WF world
     mAvatarCameraRootNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)-90);
 
-	mAvatarCameraPitchNode = mAvatarCameraRootNode->createChildSceneNode("AvatarCameraPitchNode");
+	mAvatarCameraPitchNode = mAvatarCameraRootNode->createChildSceneNode("ThirdPersonCameraPitchNode");
 	mAvatarCameraPitchNode->setPosition(Ogre::Vector3(0,0,0));
-	mAvatarCameraNode = mAvatarCameraPitchNode->createChildSceneNode("AvatarCameraNode");
+	mAvatarCameraNode = mAvatarCameraPitchNode->createChildSceneNode("ThirdPersonCameraNode");
 	setCameraDistance(10);
 
-//	mCamera = mSceneManager.createCamera("AvatarCamera");
-	mAvatarCameraNode->attachObject(&mCamera);
-	// Look to the Avatar's head
-	//mAvatar3pCamera->setAutoTracking(true, mAvatar1pCameraNode);
+}
+
+void ThirdPersonCameraMount::setCameraDistance(Ogre::Real distance)
+{
+	mWantedCameraDistance = distance;
+	_setCameraDistance(distance);
+}
+
+void ThirdPersonCameraMount::_setCameraDistance(Ogre::Real distance)
+{
+	mCurrentCameraDistance = distance;
+	Ogre::Vector3 pos(0,0,distance);
+	mAvatarCameraNode->setPosition(pos);
+	if (mCamera && mCamera->getParentNode()) {
+		///We need to mark the parent node of the camera as dirty. The update of the derived orientation and position of the node should normally occur when the scene tree is traversed, but in some instances we need to access the derived position or orientataion of the camera before the traversal occurs, and if we don't mark the node as dirty it won't be updated
+		mCamera->getParentNode()->needUpdate(true);
+	}
+	EventChangedCameraDistance.emit(distance);
+}
+
+void ThirdPersonCameraMount::createRayQueries(Ogre::SceneManager& sceneManager)
+{
+    // attempt to create a query to get back terrain coords
+	mAdjustTerrainRaySceneQuery = sceneManager.createRayQuery(mAdjustTerrainRay, Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
+	///only test for terrain
+	mAdjustTerrainRaySceneQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
+	mAdjustTerrainRaySceneQuery->setSortByDistance(true);
+	mAdjustTerrainRaySceneQuery->setQueryTypeMask(Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
+}
+
+void ThirdPersonCameraMount::attachToCamera(MainCamera& camera)
+{
+	CameraMountBase::attachToCamera(camera);
+	mAvatarCameraNode->attachObject(mCamera);
+}
+
+void ThirdPersonCameraMount::detachFromCamera()
+{
+	CameraMountBase::detachFromCamera();
+	mAvatarCameraNode->detachObject(mCamera);
+}
+
+void ThirdPersonCameraMount::runCommand(const std::string &command, const std::string &args)
+{
+	if(SetCameraDistance == command)
+	{
+		Ember::Tokeniser tokeniser;
+		tokeniser.initTokens(args);
+		std::string distance = tokeniser.nextToken();
+		if (distance != "") {
+			float fDistance = Ogre::StringConverter::parseReal(distance);
+			setCameraDistance(fDistance);
+		}
+	}
+}
+
+
+
+
+CameraMountBase::CameraMountBase()
+: mCamera(0), mMotionHandler(0)
+{
+
+}
+
+CameraMountBase::~CameraMountBase()
+{
+
+}
+
+const Ogre::Degree& CameraMountBase::getPitch() const
+{
+	throw Ember::Exception("Not implemented yet.");
+// 	return degreePitch;
+}
+
+const Ogre::Degree& CameraMountBase::getYaw() const
+{
+	throw Ember::Exception("Not implemented yet.");
+// 	return degreeYaw;
+}
+
+void CameraMountBase::attachToCamera(MainCamera& camera)
+{
+	mCamera = &camera.getCamera();
+}
+
+void CameraMountBase::detachFromCamera()
+{
+
+}
+
+void CameraMountBase::move(const WFMath::Vector<3>& movement, const WFMath::Quaternion& orientation)
+{
+	if (mMotionHandler) {
+		mMotionHandler->move(orientation, movement);
+	}
+}
+
+void CameraMountBase::setMotionHandler(ICameraMotionHandler* handler)
+{
+	mMotionHandler = handler;
+}
+
+
+
+
+
+MainCamera::MainCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& window, Input& input, Ogre::Camera& camera)
+:	ToggleRendermode("toggle_rendermode", this, "Toggle between wireframe and solid render modes."),
+	ToggleFullscreen("toggle_fullscreen", this, "Switch between windowed and full screen mode."),
+	Screenshot("screenshot", this, "Take a screenshot and write to disk."),
+	Record("+record", this, "Record to disk."),
+	mCamera(camera),
+	mCameraMount(0),
+	mWindow(window),
+	mClosestPickingDistance(10000),
+	mCameraRaySceneQuery(0),
+//	mAvatarTerrainCursor(new AvatarTerrainCursor(*this))
+	mCameraOrientationChangedThisFrame(false),
+	mMovementProvider(0)
+{
 	mCamera.setNearClipDistance(0.5);
 
 	///set the far clip distance high to make sure that the sky is completely shown
@@ -211,158 +927,53 @@ void AvatarCamera::createNodesForCamera()
 		mCamera.setFarClipDistance(10000);
 	}
 
-	//create the nodes for the camera
-	setMode(MODE_THIRD_PERSON);
-// 	createViewPort();
+	createRayQueries(sceneManager);
+
+	/// Register this as a frame listener
+	Ogre::Root::getSingleton().addFrameListener(this);
+
+	input.EventMouseMoved.connect(sigc::mem_fun(*this, &MainCamera::Input_MouseMoved));
+
 }
 
-void AvatarCamera::setMode(Mode mode)
+MainCamera::~MainCamera()
 {
-	mMode = mode;
-/*	if (mMode == MODE_THIRD_PERSON) {
-		mCamera.setAutoTracking(true, mAvatarCameraRootNode);
-	} else {
-		mCamera.setAutoTracking(false);
-	}*/
-
 
 }
 
-const Ogre::Quaternion& AvatarCamera::getOrientation(bool onlyHorizontal) const {
+Ogre::Camera& MainCamera::getCamera()
+{
+	return mCamera;
+}
+
+Ogre::Camera& MainCamera::getCamera() const
+{
+	return mCamera;
+}
+
+AvatarTerrainCursor& MainCamera::getTerrainCursor() const
+{
+	return *mAvatarTerrainCursor.get();
+}
+
+const Ogre::Quaternion& MainCamera::getOrientation(bool onlyHorizontal) const {
 	if (!onlyHorizontal) {
-		return getCamera().getDerivedOrientation();
+		return mCamera.getDerivedOrientation();
 	} else {
 		static Ogre::Quaternion quat;
-		quat = getCamera().getDerivedOrientation();
+		quat = mCamera.getDerivedOrientation();
 		quat.x = 0;
 		quat.z = 0;
 		return quat;
 	}
 }
 
-const Ogre::Vector3& AvatarCamera::getPosition() const
+const Ogre::Vector3& MainCamera::getPosition() const
 {
 	return mCamera.getDerivedPosition();
 }
 
-void AvatarCamera::attach(Ogre::SceneNode* toNode) {
-	mIsAttached = true;
-	assert(mAvatarCameraRootNode);
-	if (mAvatarCameraRootNode->getParent()) {
-		mAvatarCameraRootNode->getParent()->removeChild(mAvatarCameraRootNode->getName());
-	}
-	toNode->addChild(mAvatarCameraRootNode);
-
-	setCameraDistance(10);
-	mAvatarCameraNode->setOrientation(Ogre::Quaternion::IDENTITY);
-	mAvatarCameraNode->_update(true, true);
-	std::stringstream ss;
-	ss << "Attached camera to node: " << toNode->getName() <<". New position: " << mCamera.getDerivedPosition() << " New orientation: " << mCamera.getDerivedOrientation();
-	S_LOG_VERBOSE(ss.str());
-}
-
-
-void AvatarCamera::enableCompositor(const std::string& compositorName, bool enable)
-{
-	if (std::find(mLoadedCompositors.begin(), mLoadedCompositors.end(), compositorName) == mLoadedCompositors.end()) {
-		Ogre::CompositorManager::getSingleton().addCompositor(mWindow.getViewport(0), compositorName);
-	}
-	Ogre::CompositorManager::getSingleton().setCompositorEnabled(mWindow.getViewport(0), compositorName, enable);
-}
-
-void AvatarCamera::createViewPort()
-{
-
-//	Ogre::CompositorManager::getSingleton().addCompositor(mWindow.getViewport(0), "Bloom");
-// 	Ogre::CompositorManager::getSingleton().setCompositorEnabled(mWindow.getViewport(0), "Bloom", true);
-
-// 	assert(mCamera);
-// 	assert(!mViewPort);
-//     // Create 1st person viewport, entire window
-//     mViewPort = mWindow.addViewport(mCamera);
-//     mViewPort->setBackgroundColour(Ogre::ColourValue(0,0,0));
-//     mCamera.setAspectRatio(
-// 		Ogre::Real(mViewPort->getActualWidth()) / Ogre::Real(mViewPort->getActualHeight()));
-
-
-}
-
-
-void AvatarCamera::toggleRenderMode()
-{
-	S_LOG_INFO("Switching render mode.");
-	if (mCamera.getPolygonMode() == Ogre::PM_SOLID) {
-		mCamera.setPolygonMode(Ogre::PM_WIREFRAME);
-	} else {
-		mCamera.setPolygonMode(Ogre::PM_SOLID);
-	}
-}
-
-void AvatarCamera::setAvatarNode(Ogre::SceneNode* sceneNode)
-{
-	mAvatarNode = sceneNode;
-	attach(mAvatarNode);
-}
-
-void AvatarCamera::setCameraDistance(Ogre::Real distance)
-{
-	mWantedCameraDistance = distance;
-	_setCameraDistance(distance);
-}
-
-void AvatarCamera::_setCameraDistance(Ogre::Real distance)
-{
-	mCurrentCameraDistance = distance;
-	Ogre::Vector3 pos(0,0,distance);
-	mAvatarCameraNode->setPosition(pos);
-	markCameraNodeAsDirty();
-	EventChangedCameraDistance.emit(distance);
-}
-
-void AvatarCamera::pitch(Ogre::Degree degrees)
-{
-	if (mInvertCamera) {
-		degrees -= degrees * 2;
-	}
-
-	Ogre::SceneNode* node(mMode == MODE_THIRD_PERSON ? mAvatarCameraPitchNode : mAvatarCameraNode);
-
-	///prevent the camera from being turned upside down
-	const Ogre::Quaternion& orientation(node->getOrientation());
-	Ogre::Degree pitch(orientation.getPitch());
-	if ((pitch.valueDegrees() + degrees.valueDegrees()) > 0) {
-		degrees = std::min<float>(degrees.valueDegrees(), 90 - pitch.valueDegrees());
-	} else {
-		degrees = std::max<float>(degrees.valueDegrees(), -90 - pitch.valueDegrees());
-	}
-
-	if (mMode == MODE_THIRD_PERSON) {
-		degreePitch += degrees;
-		node->pitch(degrees);
-	} else {
-		node->pitch(degrees);
-	}
-	///We need to manually update the node here to make sure that the derived orientation and position of the camera is updated.
-	node->_update(true, false);
-	markCameraNodeAsDirty();
-}
-void AvatarCamera::yaw(Ogre::Degree degrees)
-{
-	if (mMode == MODE_THIRD_PERSON) {
-		degreeYaw += degrees;
-		mAvatarCameraRootNode->yaw(degrees);
-
-		///We need to manually update the node here to make sure that the derived orientation and position of the camera is updated.
-		mAvatarCameraRootNode->_update(true, false);
-	} else {
-		mAvatarCameraNode->yaw(degrees);
-		///We need to manually update the node here to make sure that the derived orientation and position of the camera is updated.
-		mAvatarCameraNode->_update(true, false);
-	}
-	markCameraNodeAsDirty();
-}
-
-void AvatarCamera::markCameraNodeAsDirty()
+void MainCamera::markCameraNodeAsDirty()
 {
 	if (mCamera.getParentNode()) {
 		///We need to mark the parent node of the camera as dirty. The update of the derived orientation and position of the node should normally occur when the scene tree is traversed, but in some instances we need to access the derived position or orientataion of the camera before the traversal occurs, and if we don't mark the node as dirty it won't be updated
@@ -370,34 +981,7 @@ void AvatarCamera::markCameraNodeAsDirty()
 	}
 }
 
-void AvatarCamera::Input_MouseMoved(const MouseMotion& motion, Input::InputMode mode)
-/*(int xPosition, int yPosition, Ogre::Real xRelativeMovement, Ogre::Real yRelativeMovement, Ogre::Real timeSinceLastMovement)*/
-{
-	if (mode == Input::IM_MOVEMENT) {
-		Ogre::Degree diffX(mDegreeOfYawPerSecond * motion.xRelativeMovement);
-		Ogre::Degree diffY(mDegreeOfPitchPerSecond * motion.yRelativeMovement);
-
-		if (diffX.valueDegrees()) {
-			this->yaw(diffX);
-	//		this->yaw(diffX * e->timeSinceLastFrame);
-		}
-		if (diffY.valueDegrees()) {
-			this->pitch(diffY);
-	//		this->pitch(diffY * e->timeSinceLastFrame);
-		}
-
-		if (diffY.valueDegrees() || diffX.valueDegrees()) {
-			MovedCamera.emit(mCamera);
-		}
-	}
-
-
-}
-
-
-
-
-void AvatarCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePickerArgs& mousePickerArgs)
+void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePickerArgs& mousePickerArgs)
 {
 	S_LOG_INFO("Trying to pick an entity at mouse coords: "  << Ogre::StringConverter::toString(mouseX) << ":" << Ogre::StringConverter::toString(mouseY) << ".");
 
@@ -438,116 +1022,43 @@ void AvatarCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const Mouse
 	}
 }
 
-	bool AvatarCamera::worldToScreen(const Ogre::Vector3& worldPos, Ogre::Vector2& screenPos)
-	{
+void MainCamera::setClosestPickingDistance(Ogre::Real distance)
+{
+	mClosestPickingDistance = distance;
+}
+Ogre::Real MainCamera::getClosestPickingDistance() const
+{
+	return mClosestPickingDistance;
+}
 
-		Ogre::Vector3 hcsPosition = mCamera.getProjectionMatrix() * (mCamera.getViewMatrix() * worldPos);
-
-		if ((hcsPosition.x < -1.0f) ||
-		(hcsPosition.x > 1.0f) ||
-		(hcsPosition.y < -1.0f) ||
-		(hcsPosition.y > 1.0f))
-		return false;
-
-
-		screenPos.x = (hcsPosition.x + 1) * 0.5;
-		screenPos.y = (-hcsPosition.y + 1) * 0.5;
-
-		return true;
-	}
-
-// 	void AvatarCamera::setClosestPickingDistance(Ogre::Real distance)
-// 	{
-// 		mClosestPickingDistance = distance;
-// 	}
-//
-// 	Ogre::Real AvatarCamera::getClosestPickingDistance()
-// 	{
-// 		return mClosestPickingDistance;
-// 	}
-
-	bool AvatarCamera::adjustForTerrain()
-	{
-		/// We will shoot a ray from the camera base node to the camera. If it hits anything on the way we know that there's something between the camera and the avatar and we'll position the camera closer to the avatar. Thus we'll avoid having the camera dip below the terrain
-		///For now we'll only check against the terrain
-		const Ogre::Vector3 direction(-mCamera.getDerivedDirection());
-		///If the direction if pointing straight upwards we'll end up in an infinite loop in the ray query
-		if (direction.z != 0) {
-
-			mAdjustTerrainRay.setDirection(direction);
-			mAdjustTerrainRay.setOrigin(mAvatarCameraRootNode->_getDerivedPosition());
-
- 			mAdjustTerrainRaySceneQuery->setRay(mAdjustTerrainRay);
-
-			mAdjustTerrainRaySceneQuery->execute();
-
-			Ogre::RaySceneQueryResult queryResult = mAdjustTerrainRaySceneQuery->getLastResults();
-			Ogre::RaySceneQueryResult::iterator rayIterator = queryResult.begin( );
-			for ( ; rayIterator != queryResult.end(); ++rayIterator ) {
-				Ogre::RaySceneQueryResultEntry& entry = *rayIterator;
-
-				if (entry.worldFragment) {
-					Ogre::Vector3 position = entry.worldFragment->singleIntersection;
-					Ogre::Real distance = mAvatarCameraRootNode->_getDerivedPosition().distance(position);
-					if (distance < mWantedCameraDistance) {
-						_setCameraDistance(distance - 0.1);
-						return true;
-					} else {
-						///we hit some terrain beyond the max distance of the camera, so set it to the "default" distance
-						if (mWantedCameraDistance != mCurrentCameraDistance) {
-							_setCameraDistance(mWantedCameraDistance);
-						}
-						return false;
-					}
-				}
-			}
-		}
-		return false;
-
-/*		Ogre::RaySceneQuery *raySceneQueryHeight = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery( Ogre::Ray(mCamera.getDerivedPosition(), Ogre::Vector3::NEGATIVE_UNIT_Y), Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
+void MainCamera::setMovementProvider(IMovementProvider* movementProvider)
+{
+	mMovementProvider = movementProvider;
+}
 
 
-		raySceneQueryHeight->execute();
+bool MainCamera::worldToScreen(const Ogre::Vector3& worldPos, Ogre::Vector2& screenPos)
+{
+	Ogre::Vector3 hcsPosition = mCamera.getProjectionMatrix() * (mCamera.getViewMatrix() * worldPos);
 
-		//first check the terrain picking
-		Ogre::RaySceneQueryResult queryResult = raySceneQueryHeight->getLastResults();
+	if ((hcsPosition.x < -1.0f) ||
+	(hcsPosition.x > 1.0f) ||
+	(hcsPosition.y < -1.0f) ||
+	(hcsPosition.y > 1.0f))
+	return false;
 
-		if (queryResult.begin( ) != queryResult.end()) {
-			Ogre::Vector3 position = queryResult.begin()->worldFragment->singleIntersection;
-			Ogre::Real terrainHeight = position.y;
-			//pad it a little
-			//terrainHeight += 0.4;
-			Ogre::Real cameraHeight = mCamera.getDerivedPosition().y;
-			Ogre::Real cameraNodeHeight = mAvatarCameraNode->getWorldPosition().y;
-			if (terrainHeight > cameraHeight) {
-				mCamera.move(mCamera.getDerivedOrientation().Inverse() * Ogre::Vector3(0,terrainHeight - cameraHeight,0));
-//				mCamera.lookAt(mAvatarCameraRootNode->getPosition());
 
-			} else if (cameraHeight != cameraNodeHeight) {
-				Ogre::Real newHeight = std::max<Ogre::Real>(terrainHeight, cameraNodeHeight);
-				mCamera.move(Ogre::Vector3(0,newHeight - cameraHeight,0));
-				mCamera.lookAt(mAvatarCameraRootNode->getWorldPosition());
+	screenPos.x = (hcsPosition.x + 1) * 0.5;
+	screenPos.y = (-hcsPosition.y + 1) * 0.5;
 
-			}
+	return true;}
 
-		}*/
 
-	}
-
-void AvatarCamera::runCommand(const std::string &command, const std::string &args)
+void MainCamera::runCommand(const std::string &command, const std::string &args)
 {
 	if(Screenshot == command) {
 		//just take a screen shot
 		takeScreenshot();
-	} else if(SetCameraDistance == command)
-	{
-		Ember::Tokeniser tokeniser;
-		tokeniser.initTokens(args);
-		std::string distance = tokeniser.nextToken();
-		if (distance != "") {
-			float fDistance = Ogre::StringConverter::parseReal(distance);
-			setCameraDistance(fDistance);
-		}
 	} else if (ToggleFullscreen == command){
 		SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
 
@@ -560,49 +1071,58 @@ void AvatarCamera::runCommand(const std::string &command, const std::string &arg
 	}
 }
 
-void AvatarCamera::updateValuesFromConfig()
+bool MainCamera::frameStarted(const Ogre::FrameEvent& event)
 {
-	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("input", "invertcamera")) {
-		mInvertCamera = static_cast<bool>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("input", "invertcamera"));
-	}
-	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("input", "cameradegreespersecond")) {
-		mDegreeOfPitchPerSecond = mDegreeOfYawPerSecond = (double)Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("input", "cameradegreespersecond");
-	}
-	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("input", "adjusttoterrain")) {
-		mIsAdjustedToTerrain = static_cast<bool>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("input", "adjusttoterrain"));
-	}
-}
-
-void AvatarCamera::ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key)
-{
-	if (section == "input") {
-		if (key == "invertcamera" || key == "cameradegreespersecond" || key == "adjusttoterrain") {
-			updateValuesFromConfig();
+	if (mCameraMount) {
+		if (mMovementProvider) {
+			WFMath::Vector<3> movement = mMovementProvider->getMovementForCurrentFrame();
+			if (movement != WFMath::Vector<3>::ZERO() || mCameraOrientationChangedThisFrame) {
+				mCameraMount->move(movement, Convert::toWF(getOrientation()));
+			}
+		} else {
+			mCameraMount->move(WFMath::Vector<3>::ZERO(), Convert::toWF(getOrientation()));
 		}
 	}
-}
-
-bool AvatarCamera::frameStarted(const Ogre::FrameEvent& event)
-{
-	if (mIsAdjustedToTerrain && mAvatarNode) {
-		if (mCamera.getDerivedPosition() != mLastPosition) {
-			adjustForTerrain();
-			mLastPosition = mCamera.getDerivedPosition();
-		}
-	}
-
-	/// Update avatar entity position in sound service
-	Ember::EmberServices::getSingleton().getSoundService()->updateListenerPosition(Convert::toWF<WFMath::Point<3> >(mCamera.getDerivedPosition()), Convert::toWF<WFMath::Vector<3> >(mCamera.getDirection()), Convert::toWF<WFMath::Vector<3> >(mCamera.getUp()));
-
 	return true;
 }
 
-void AvatarCamera::pushWorldPickListener(IWorldPickListener* worldPickListener)
+void MainCamera::Input_MouseMoved(const Ember::MouseMotion& motion, Ember::Input::InputMode mode)
 {
-	mPickListeners.push_front(worldPickListener);
+	if (mCameraMount) {
+		if (mode == Input::IM_MOVEMENT) {
+
+			bool moved = false;
+			if (motion.xRelativeMovement) {
+				moved = mCameraMount->yaw(motion.xRelativeMovement).valueDegrees() || moved;
+			}
+			if (motion.yRelativeMovement) {
+				moved = mCameraMount->pitch(motion.yRelativeMovement).valueDegrees() || moved;
+			}
+
+			if (moved) {
+				markCameraNodeAsDirty();
+				mCameraOrientationChangedThisFrame = true;
+				MovedCamera.emit(mCamera);
+			}
+		}
+	}
 }
 
-void AvatarCamera::removeWorldPickListener(IWorldPickListener* worldPickListener)
+void MainCamera::enableCompositor(const std::string& compositorName, bool enable)
+{
+	if (std::find(mLoadedCompositors.begin(), mLoadedCompositors.end(), compositorName) == mLoadedCompositors.end()) {
+		Ogre::CompositorManager::getSingleton().addCompositor(mWindow.getViewport(0), compositorName);
+	}
+	Ogre::CompositorManager::getSingleton().setCompositorEnabled(mWindow.getViewport(0), compositorName, enable);
+}
+
+void MainCamera::pushWorldPickListener(IWorldPickListener* worldPickListener)
+{
+	mPickListeners.push_front(worldPickListener);
+
+}
+
+void MainCamera::removeWorldPickListener(IWorldPickListener* worldPickListener)
 {
 	if (worldPickListener) {
 		WorldPickListenersStore::iterator I = std::find(mPickListeners.begin(), mPickListeners.end(), worldPickListener);
@@ -612,8 +1132,19 @@ void AvatarCamera::removeWorldPickListener(IWorldPickListener* worldPickListener
 	}
 }
 
+void MainCamera::toggleRenderMode()
+{
+	S_LOG_INFO("Switching render mode.");
+	if (mCamera.getPolygonMode() == Ogre::PM_SOLID) {
+		mCamera.setPolygonMode(Ogre::PM_WIREFRAME);
+	} else {
+		mCamera.setPolygonMode(Ogre::PM_SOLID);
+	}
 
-const std::string AvatarCamera::_takeScreenshot()
+}
+
+
+const std::string MainCamera::_takeScreenshot()
 {
 	// retrieve current time
 	time_t rawtime;
@@ -684,7 +1215,7 @@ const std::string AvatarCamera::_takeScreenshot()
 	return dir + filename.str();
 }
 
-void AvatarCamera::takeScreenshot()
+void MainCamera::takeScreenshot()
 {
 	try {
 		const std::string& result = _takeScreenshot();
@@ -697,88 +1228,30 @@ void AvatarCamera::takeScreenshot()
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void AvatarCameraMount::pitch(Ogre::Degree degrees)
+void MainCamera::createRayQueries(Ogre::SceneManager& sceneManager)
 {
-	if (mInvertCamera) {
-		degrees -= degrees * 2;
-	}
+	unsigned long queryMask = Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK;
+	queryMask |= MousePicker::CM_AVATAR;
+	queryMask |= MousePicker::CM_ENTITY;
+	queryMask |= MousePicker::CM_NATURE;
+	queryMask |= MousePicker::CM_UNDEFINED;
+// 	queryMask |= Ogre::RSQ_FirstTerrain;
 
-	///prevent the camera from being turned upside down
-	const Ogre::Quaternion& orientation(mAvatarCameraPitchNode->getOrientation());
-	Ogre::Degree pitch(orientation.getPitch());
-	if ((pitch.valueDegrees() + degrees.valueDegrees()) > 0) {
-		degrees = std::min<float>(degrees.valueDegrees(), 90 - pitch.valueDegrees());
-	} else {
-		degrees = std::max<float>(degrees.valueDegrees(), -90 - pitch.valueDegrees());
-	}
+	mCameraRaySceneQuery = sceneManager.createRayQuery( Ogre::Ray(), queryMask);
+	mCameraRaySceneQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
+	mCameraRaySceneQuery->setSortByDistance(true);
+}
 
-	if (mMode == MODE_THIRD_PERSON) {
-		degreePitch += degrees;
-		mAvatarCameraPitchNode->pitch(degrees);
-	} else {
-		mAvatarCameraPitchNode->pitch(degrees);
+ICameraMount* MainCamera::attachToMount(ICameraMount* newCameraMount)
+{
+	if (mCameraMount) {
+		mCameraMount->detachFromCamera();
+	}
+	mCameraMount = newCameraMount;
+	if (mCameraMount) {
+		mCameraMount->attachToCamera(*this);
 	}
 }
-void AvatarCameraMount::yaw(Ogre::Degree degrees)
-{
-// 	degreeYaw += degrees;
-	mAvatarCameraRootNode->yaw(degrees);
-
-	mAvatarCameraRootNode->needUpdate();
-
-}
-
-
-
-
-
-
-
-
-const Ogre::Quaternion& CameraMountBase::getOrientation(bool onlyHorizontal) const {
-	if (!onlyHorizontal) {
-		return mCamera->getDerivedOrientation();
-	} else {
-		static Ogre::Quaternion quat;
-		quat = mCamera->getDerivedOrientation();
-		quat.x = 0;
-		quat.z = 0;
-		return quat;
-	}
-}
-
-const Ogre::Vector3& CameraMountBase::getPosition() const
-{
-	return mCamera.getDerivedPosition();
-}
-
-const Ogre::Degree& CameraMountBase::getPitch() const
-{
-	throw Ember::Exception("Not implemented yet.");
-// 	return degreePitch;
-}
-
-const Ogre::Degree& CameraMountBase::getYaw() const
-{
-	throw Ember::Exception("Not implemented yet.");
-// 	return degreeYaw;
-}
-
 
 }
 

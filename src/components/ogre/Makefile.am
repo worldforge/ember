@@ -8,7 +8,7 @@ noinst_LIBRARIES = libEmberOgre.a
 
 
 libEmberOgre_a_SOURCES = AttributeObserver.cpp Avatar.cpp AvatarCamera.cpp \
-	AvatarController.cpp AvatarEmberEntity.cpp AvatarLogger.cpp AvatarTerrainCursor.cpp \
+	MovementController.cpp AvatarEmberEntity.cpp AvatarLogger.cpp AvatarTerrainCursor.cpp \
 	CameraMount.cpp ConsoleObjectImpl.cpp EmberEntity.cpp EmberEntityActionCreator.cpp \
 	EmberEntityFactory.cpp EmberEntityHideModelAction.cpp EmberEntityModelAction.cpp \
 	EmberEntityPartAction.cpp EmberEntityUserObject.cpp EmberOgre.cpp EmberOgreFileSystem.cpp \
@@ -24,7 +24,7 @@ confdir = $(sysconfdir)/ember
 dist_conf_DATA = ogre.cfg resources.cfg terrain.cfg
 
 
-noinst_HEADERS = AttributeObserver.h Avatar.h AvatarCamera.h AvatarController.h \
+noinst_HEADERS = AttributeObserver.h Avatar.h AvatarCamera.h MovementController.h \
 	AvatarEmberEntity.h AvatarLogger.h AvatarTerrainCursor.h CameraMount.h ConsoleObjectImpl.h \
 	EmberEntity.h EmberEntityActionCreator.h EmberEntityFactory.h \
 	EmberEntityHideModelAction.h EmberEntityModelAction.h EmberEntityPartAction.h \
@@ -36,5 +36,5 @@ noinst_HEADERS = AttributeObserver.h Avatar.h AvatarCamera.h AvatarController.h 
 	ShaderManager.h ShadowCameraSetup.h \
 	SimpleRenderContext.h Types.h WorldEmberEntity.h XMLHelper.h IGraphicalRepresentation.h \
 	IEntityAttachment.h  WorldAttachment.h SceneNodeAttachment.h IMovable.h IAnimated.h IAttachmentControlDelegate.h \
-	SceneNodeController.h DelegatingSceneNodeController.h AvatarAttachmentController.h
+	SceneNodeController.h DelegatingSceneNodeController.h AvatarAttachmentController.h IMovementProvider.h ICameraMotionHandler.h
 #OpcodeCollisionDetector.h OpcodeCollisionDetectorVisualizer.h

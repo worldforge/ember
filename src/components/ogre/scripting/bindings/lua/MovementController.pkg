@@ -1,0 +1,42 @@
+namespace EmberOgre {
+
+/**
+The movement mode of the avatar, run or walk.
+*/
+class MovementControllerMode 
+{
+public:	
+	enum Mode
+	{
+		MM_WALK = 0,
+		MM_RUN = 1
+	};
+};
+
+class MovementController
+{
+ 
+	/**
+	Emitted when the movement mode changes between run and walk.
+	*/
+	sigc::signal<void, MovementControllerMode::Mode> EventMovementModeChanged;
+
+	/**
+	Moves the avatar to the specified point.
+	A terrain decal will be shown.
+	*/
+	void moveToPoint(const Ogre::Vector3& point);
+
+	/**
+	 *    Teleports the avatar to the specified point.
+	 * @param point 
+	 * @param locationEntity 
+	 */
+	void teleportTo(const Ogre::Vector3& point, EmberOgre::EmberEntity* locationEntity);
+	
+	MovementControllerMode::Mode getMode() const;
+	
+
+};
+
+}

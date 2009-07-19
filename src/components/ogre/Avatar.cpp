@@ -34,7 +34,7 @@
 
 #include "EmberEntity.h"
 #include "EmberPhysicalEntity.h"
-#include "AvatarController.h"
+#include "MovementController.h"
 #include "AvatarCamera.h"
 #include "AvatarLogger.h"
 #include "components/ogre/SceneNodeAttachment.h"
@@ -99,7 +99,9 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity)
 
 	mErisAvatarEntity.setAttachmentControlDelegate(new AvatarAttachmentController(*this));
 
-
+	ThirdPersonCameraMount* mount = new ThirdPersonCameraMount(*EmberOgre::getSingleton().getSceneManager());
+	EmberOgre::getSingleton().getMainCamera()->attachToMount(mount);
+	mount->attachToNode(getAvatarSceneNode());
 }
 
 Avatar::~Avatar()
@@ -148,147 +150,147 @@ bool Avatar::frameStarted(const Ogre::FrameEvent & event)
 
 
 
-void Avatar::updateFrame(AvatarControllerMovement& movement)
-{
+//void Avatar::updateFrame(MovementControllerMovement& movement)
+//{
+//
+//	///for now we'll just rotate without notifying the server
+//	///except when moving!
+//	attemptRotate(movement);
+//
+//
+//	///this next method will however send send stuff to the server
+//	attemptMove(movement);
+//
+////	///only adjust if there is actual movement. If we adjust when there's only rotation we'll get a strange jerky effect (some bug I guess)
+////	if (movement.isMoving) {
+////		adjustAvatarToNewPosition(&movement);
+////	}
+//
+//}
 
-	///for now we'll just rotate without notifying the server
-	///except when moving!
-	attemptRotate(movement);
-
-
-	///this next method will however send send stuff to the server
-	attemptMove(movement);
-
-	///only adjust if there is actual movement. If we adjust when there's only rotation we'll get a strange jerky effect (some bug I guess)
-	if (movement.isMoving) {
-		adjustAvatarToNewPosition(&movement);
-	}
-
-}
-
-void Avatar::attemptMove(AvatarControllerMovement& movement)
-{
-	Ogre::Vector3 move = movement.movementDirection;
-	bool isRunning = movement.mode == AvatarMovementMode::MM_RUN;
-	Ogre::Real timeSlice = movement.timeSlice;
-	float speed = isRunning ? mRunSpeed : mWalkSpeed;
-	Ogre::Vector3 rawVelocity = move * speed;
-
-
-	///first we'll register the current state in newMovementState and compare to mCurrentMovementState
-	///that way we'll only send stuff to the server if our movement changes
-	AvatarMovementState newMovementState;
-	newMovementState.orientation = getAvatarSceneNode()->getOrientation();
-	newMovementState.velocity = rawVelocity;// * newMovementState.orientation.xAxis();
-
-	if (move != Ogre::Vector3::ZERO) {
-		newMovementState.isMoving = true;
-		newMovementState.isRunning = isRunning;
-	} else {
-		newMovementState.isMoving = false;
-		newMovementState.isRunning = false;
-	}
-	bool sendToServer = false;
-
-	//first we check if we are already moving
-	if (!mCurrentMovementState.isMoving) {
-		//we are not moving. Should we start to move?
-		if (newMovementState.isMoving) {
-			//we'll start moving
-			//let's send the movement command to the server
-			sendToServer = true;
-
-		} else if (!(newMovementState.orientation == mMovementStateAtLastServerMessage.orientation)) {
-			//we have rotated since last server update
-			//let's see if it's ok to send server message
-			//if not we have to wait some more frames until we'll send an update
-			if (isOkayToSendRotationMovementChangeToServer()) {
-				sendToServer = true;
-			}
-		}
-	} else {
-		//we are already moving
-		//let's see if we've changed speed or direction or even stopped
-		if (!newMovementState.isMoving) {
-			S_LOG_VERBOSE( "Avatar stopped moving.");
-			//we have stopped; we must alert the server
-			sendToServer = true;
-		} else if (newMovementState.velocity != mCurrentMovementState.velocity || !(newMovementState.orientation == mCurrentMovementState.orientation)){
-			//either the speed or the direction has changed
-			sendToServer = true;
-		}
-	}
-
-
-	if (sendToServer) {
-		S_LOG_VERBOSE("Sending move op to server.");
-		mMovementStateAtBeginningOfMovement = newMovementState;
-		mMovementStateAtLastServerMessage = newMovementState;
-		mTimeSinceLastServerMessage = 0;
-
-
-		///Save the five latest orientations sent to the server, so we can later when we recieve an update from the server we can recognize that it's our own updates and ignore them.
-		mLastOrientations.push_back(Convert::toWF(newMovementState.orientation));
-		if (mLastOrientations.size() > 5) {
-			mLastOrientations.erase(mLastOrientations.begin());
-		}
-		//for now we'll only send velocity
-		Ember::EmberServices::getSingletonPtr()->getServerService()->moveInDirection(Convert::toWF<WFMath::Vector<3> >(newMovementState.orientation * newMovementState.velocity), Convert::toWF(newMovementState.orientation));
-
-//		Ember::EmberServices::getSingletonPtr()->getServerService()->moveInDirection(Convert::toWF(mCurrentMovementState.velocity), Convert::toWF(mCurrentMovementState.orientation));
-
-	} else {
-		mTimeSinceLastServerMessage += timeSlice * 1000;
-	}
-
-	mClientSideAvatarOrientation = Convert::toWF(newMovementState.orientation);
-
-	mClientSideAvatarPosition += Convert::toWF<WFMath::Vector<3> >(newMovementState.orientation * (rawVelocity * timeSlice));
-
-//	if (newMovementState.isMoving) {
-//		//do the actual movement of the avatar node
-//		mAvatarNode->translate(mAvatarNode->getOrientation() * (rawVelocity * timeSlice));
+//void Avatar::attemptMove(MovementControllerMovement& movement)
+//{
+//	Ogre::Vector3 move = movement.movementDirection;
+//	bool isRunning = movement.mode == AvatarMovementMode::MM_RUN;
+//	Ogre::Real timeSlice = movement.timeSlice;
+//	float speed = isRunning ? mRunSpeed : mWalkSpeed;
+//	Ogre::Vector3 rawVelocity = move * speed;
+//
+//
+//	///first we'll register the current state in newMovementState and compare to mCurrentMovementState
+//	///that way we'll only send stuff to the server if our movement changes
+//	AvatarMovementState newMovementState;
+//	newMovementState.orientation = getAvatarSceneNode()->getOrientation();
+//	newMovementState.velocity = rawVelocity;// * newMovementState.orientation.xAxis();
+//
+//	if (move != Ogre::Vector3::ZERO) {
+//		newMovementState.isMoving = true;
+//		newMovementState.isRunning = isRunning;
+//	} else {
+//		newMovementState.isMoving = false;
+//		newMovementState.isRunning = false;
 //	}
-	mCurrentMovementState = newMovementState;
+//	bool sendToServer = false;
+//
+//	//first we check if we are already moving
+//	if (!mCurrentMovementState.isMoving) {
+//		//we are not moving. Should we start to move?
+//		if (newMovementState.isMoving) {
+//			//we'll start moving
+//			//let's send the movement command to the server
+//			sendToServer = true;
+//
+//		} else if (!(newMovementState.orientation == mMovementStateAtLastServerMessage.orientation)) {
+//			//we have rotated since last server update
+//			//let's see if it's ok to send server message
+//			//if not we have to wait some more frames until we'll send an update
+//			if (isOkayToSendRotationMovementChangeToServer()) {
+//				sendToServer = true;
+//			}
+//		}
+//	} else {
+//		//we are already moving
+//		//let's see if we've changed speed or direction or even stopped
+//		if (!newMovementState.isMoving) {
+//			S_LOG_VERBOSE( "Avatar stopped moving.");
+//			//we have stopped; we must alert the server
+//			sendToServer = true;
+//		} else if (newMovementState.velocity != mCurrentMovementState.velocity || !(newMovementState.orientation == mCurrentMovementState.orientation)){
+//			//either the speed or the direction has changed
+//			sendToServer = true;
+//		}
+//	}
+//
+//
+//	if (sendToServer) {
+//		S_LOG_VERBOSE("Sending move op to server.");
+//		mMovementStateAtBeginningOfMovement = newMovementState;
+//		mMovementStateAtLastServerMessage = newMovementState;
+//		mTimeSinceLastServerMessage = 0;
+//
+//
+//		///Save the five latest orientations sent to the server, so we can later when we recieve an update from the server we can recognize that it's our own updates and ignore them.
+//		mLastOrientations.push_back(Convert::toWF(newMovementState.orientation));
+//		if (mLastOrientations.size() > 5) {
+//			mLastOrientations.erase(mLastOrientations.begin());
+//		}
+//		//for now we'll only send velocity
+//		Ember::EmberServices::getSingletonPtr()->getServerService()->moveInDirection(Convert::toWF<WFMath::Vector<3> >(newMovementState.orientation * newMovementState.velocity), Convert::toWF(newMovementState.orientation));
+//
+////		Ember::EmberServices::getSingletonPtr()->getServerService()->moveInDirection(Convert::toWF(mCurrentMovementState.velocity), Convert::toWF(mCurrentMovementState.orientation));
+//
+//	} else {
+//		mTimeSinceLastServerMessage += timeSlice * 1000;
+//	}
+//
+//	mClientSideAvatarOrientation = Convert::toWF(newMovementState.orientation);
+//
+//	mClientSideAvatarPosition += Convert::toWF<WFMath::Vector<3> >(newMovementState.orientation * (rawVelocity * timeSlice));
+//
+////	if (newMovementState.isMoving) {
+////		//do the actual movement of the avatar node
+////		mAvatarNode->translate(mAvatarNode->getOrientation() * (rawVelocity * timeSlice));
+////	}
+//	mCurrentMovementState = newMovementState;
 
-}
+//}
 
-void Avatar::adjustAvatarToNewPosition(AvatarControllerMovement* movement)
-{
-}
+//void Avatar::adjustAvatarToNewPosition(MovementControllerMovement* movement)
+//{
+//}
 
 
 void Avatar::attemptJump() {}
 
 
-void Avatar::attemptRotate(AvatarControllerMovement& movement)
-{
-	//TODO: remove the direct references to AvatarCamera
-/*	float degHoriz = movement.rotationDegHoriz;
-	float degVert = movement.rotationDegVert;
-	Ogre::Real timeSlice = movement.timeSlice;*/
+//void Avatar::attemptRotate(MovementControllerMovement& movement)
+//{
+//	//TODO: remove the direct references to AvatarCamera
+///*	float degHoriz = movement.rotationDegHoriz;
+//	float degVert = movement.rotationDegVert;
+//	Ogre::Real timeSlice = movement.timeSlice;*/
+//
+////	mAccumulatedHorizontalRotation += (degHoriz * timeSlice);
+//
+//	//if we're moving we must sync the rotation with messages sent to the server
+//	if (!movement.isMoving && fabs(getAvatarCamera()->getYaw().valueDegrees()) > mThresholdDegreesOfYawForAvatarRotation) {
+////		mAvatarNode->setOrientation(movement.cameraOrientation);
+////		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,getAvatarCamera()->getYaw());
+//		Ogre::Degree yaw = getAvatarCamera()->getYaw();
+//		getAvatarCamera()->yaw(-yaw);
+////		mAccumulatedHorizontalRotation = 0;
+//	} else if (isOkayToSendRotationMovementChangeToServer() && (getAvatarCamera()->getYaw().valueDegrees())) {
+//		// rotate the Avatar Node only in X position (no vertical rotation)
+////		mAvatarNode->setOrientation(movement.cameraOrientation);
+////		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,getAvatarCamera()->getYaw());
+//		Ogre::Degree yaw = getAvatarCamera()->getYaw();
+//		getAvatarCamera()->yaw(-yaw);
+//
+////		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,mAccumulatedHorizontalRotation);
+////		mAccumulatedHorizontalRotation = 0;
+//	}
 
-//	mAccumulatedHorizontalRotation += (degHoriz * timeSlice);
-
-	//if we're moving we must sync the rotation with messages sent to the server
-	if (!movement.isMoving && fabs(getAvatarCamera()->getYaw().valueDegrees()) > mThresholdDegreesOfYawForAvatarRotation) {
-//		mAvatarNode->setOrientation(movement.cameraOrientation);
-//		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,getAvatarCamera()->getYaw());
-		Ogre::Degree yaw = getAvatarCamera()->getYaw();
-		getAvatarCamera()->yaw(-yaw);
-//		mAccumulatedHorizontalRotation = 0;
-	} else if (isOkayToSendRotationMovementChangeToServer() && (getAvatarCamera()->getYaw().valueDegrees())) {
-		// rotate the Avatar Node only in X position (no vertical rotation)
-//		mAvatarNode->setOrientation(movement.cameraOrientation);
-//		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,getAvatarCamera()->getYaw());
-		Ogre::Degree yaw = getAvatarCamera()->getYaw();
-		getAvatarCamera()->yaw(-yaw);
-
-//		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,mAccumulatedHorizontalRotation);
-//		mAccumulatedHorizontalRotation = 0;
-	}
-
-}
+//}
 
 EmberEntity& Avatar::getEmberEntity()
 {
@@ -310,16 +312,11 @@ Ogre::SceneNode* Avatar::getAvatarSceneNode() const
 	return 0;
 }
 
-AvatarCamera* Avatar::getAvatarCamera() const
+void Avatar::setMovementController(MovementController* MovementController)
 {
-	return mAvatarController->getAvatarCamera();
-}
-
-void Avatar::setAvatarController(AvatarController* avatarController)
-{
-	mAvatarController = avatarController;
-	mAvatarController->getAvatarCamera()->setAvatarNode(getAvatarSceneNode());
-	mAvatarController->attachCamera();
+//	mMovementController = MovementController;
+//	mMovementController->getAvatarCamera()->setAvatarNode(getAvatarSceneNode());
+//	mMovementController->attachCamera();
 }
 
 void Avatar::movedInWorld()
@@ -400,7 +397,7 @@ const WFMath::Quaternion& Avatar::getClientSideAvatarOrientation() const
 /*
 Ogre::Camera* Avatar::getCamera() const
 {
-	return mAvatarController->getCamera();
+	return mMovementController->getCamera();
 }
 */
 }

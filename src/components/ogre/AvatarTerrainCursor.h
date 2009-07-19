@@ -33,8 +33,6 @@
 
 namespace EmberOgre {
 
-	class AvatarCamera; // forward declaration
-
 	/**
 	Provides an easy way to get the terrain position currently under the cursor. An instance of this is usually held only by the AvatarCamera.
 	The class will take care of checking when either the mouse or camera has moved, and won't do a new ray check until any of those two has changed. This helps with keeping the performance up. It's therefore ok to call getTerrainCursorPosition every frame.
@@ -55,7 +53,7 @@ namespace EmberOgre {
 		const static int DEFAULT_THRESHOLD_MILLIS = 100;
 
 		/* C and D */
-		AvatarTerrainCursor(AvatarCamera& ac);
+		AvatarTerrainCursor(Ogre::Camera& camera);
 		virtual ~AvatarTerrainCursor();
 
 		/**
@@ -104,7 +102,7 @@ namespace EmberOgre {
 		/**
 		@brief Reference to main avatar camera.
 		*/
-		AvatarCamera& mCamera;
+		Ogre::Camera& mCamera;
 
 		/**
 		@brief The main ray query.

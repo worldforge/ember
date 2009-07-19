@@ -80,9 +80,9 @@ class CameraFrameListener;
 
 class Avatar;
 
-class AvatarCamera;
+class MainCamera;
 
-class AvatarController;
+class MovementController;
 
 class AvatarEmberEntity;
 
@@ -197,7 +197,7 @@ public:
 	 * @brief Gets the main camera, which is attached to the Avatar.
 	 * @return The main avatar camera.
 	 */
-	AvatarCamera* getMainCamera() const;
+	MainCamera* getMainCamera() const;
 
 	Ogre::Camera* getMainOgreCamera() const;
 
@@ -205,7 +205,7 @@ public:
 	 * @brief Gets the avatar controller, which recieves input and makes sure that the Avatar is moved.
 	 * @return The avatar controller.
 	 */
-	AvatarController* getAvatarController() const;
+	MovementController* getMovementController() const;
 
 	/**
 	 * @brief Gets the entity move manager, which handles movement of entities in the world by the user.
@@ -289,9 +289,9 @@ public:
 	sigc::signal<void, Terrain::TerrainGenerator&> EventTerrainGeneratorCreated;
 
 	/**
-	 * @brief Emitted after the AvatarController has been created
+	 * @brief Emitted after the MovementController has been created
 	 */
-	sigc::signal<void, AvatarController&> EventAvatarControllerCreated;
+	sigc::signal<void> EventMovementControllerCreated;
 
 	/**
 	 * @brief Emitted before the main Ogre render window is rendered.
@@ -355,7 +355,7 @@ protected:
 	/**
 	 * @brief When connected to a world, handles the avatar and patches mouse and keyboard movement events on the avatar.
 	 */
-	AvatarController* mAvatarController;
+	MovementController* mMovementController;
 
 	/**
 	 * @brief The main Ogre root object. All of Ogre is accessed through this.
@@ -514,6 +514,7 @@ protected:
 	 */
 	bool mIsInPausedMode;
 
+	MainCamera* mMainCamera;
 	Ogre::Camera* mOgreMainCamera;
 
 };

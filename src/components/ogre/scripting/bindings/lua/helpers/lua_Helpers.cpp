@@ -49,7 +49,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"sigc::signal<void,const std::string&,EmberOgre::EmberEntity*>");
  tolua_usertype(tolua_S,"sigc::signal<void,const std::string&,const std::string&>");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Terrain::TerrainPage&>");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::AvatarMovementMode::Mode>");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::MovementControllerMode::Mode>");
  tolua_usertype(tolua_S,"sigc::signal<void,float>");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Gui::EntityIcon*>");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntity*>");
@@ -1278,13 +1278,13 @@ static int tolua_Helpers_EmberOgre_LuaConnector_new22(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"EmberOgre::LuaConnector",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::AvatarMovementMode::Mode>",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::MovementControllerMode::Mode>",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  sigc::signal<void,EmberOgre::AvatarMovementMode::Mode>* signal = ((sigc::signal<void,EmberOgre::AvatarMovementMode::Mode>*)  tolua_tousertype(tolua_S,2,0));
+  sigc::signal<void,EmberOgre::MovementControllerMode::Mode>* signal = ((sigc::signal<void,EmberOgre::MovementControllerMode::Mode>*)  tolua_tousertype(tolua_S,2,0));
   {
    EmberOgre::LuaConnector* tolua_ret = (EmberOgre::LuaConnector*)  new EmberOgre::LuaConnector(*signal);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::LuaConnector");
@@ -1303,13 +1303,13 @@ static int tolua_Helpers_EmberOgre_LuaConnector_new22_local(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"EmberOgre::LuaConnector",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::AvatarMovementMode::Mode>",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::MovementControllerMode::Mode>",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  sigc::signal<void,EmberOgre::AvatarMovementMode::Mode>* signal = ((sigc::signal<void,EmberOgre::AvatarMovementMode::Mode>*)  tolua_tousertype(tolua_S,2,0));
+  sigc::signal<void,EmberOgre::MovementControllerMode::Mode>* signal = ((sigc::signal<void,EmberOgre::MovementControllerMode::Mode>*)  tolua_tousertype(tolua_S,2,0));
   {
    EmberOgre::LuaConnector* tolua_ret = (EmberOgre::LuaConnector*)  new EmberOgre::LuaConnector(*signal);
    tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::LuaConnector");

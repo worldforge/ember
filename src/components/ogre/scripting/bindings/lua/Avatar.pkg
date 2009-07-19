@@ -13,12 +13,12 @@ class Avatar
 {
 
 
-	AvatarCamera* getAvatarCamera() const;
+//	AvatarCamera* getAvatarCamera() const;
 	
 	Ogre::SceneNode* getAvatarSceneNode() const;
 
 	
-	void setAvatarController(AvatarController* avatarController);
+	void setMovementController(MovementController* movementController);
 	
 	EmberEntity& getEmberEntity();
 	

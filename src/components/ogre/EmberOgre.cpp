@@ -81,7 +81,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 #include "ConsoleObjectImpl.h"
 #include "Avatar.h"
-#include "AvatarController.h"
+#include "AvatarCamera.h"
+#include "MovementController.h"
 #include "EmberEntityFactory.h"
 #include "MotionManager.h"
 #include "AvatarCamera.h"
@@ -166,7 +167,7 @@ namespace EmberOgre {
 
 EmberOgre::EmberOgre() :
 mAvatar(0),
-mAvatarController(0),
+mMovementController(0),
 mRoot(0),
 mSceneMgr(0),
 mWindow(0),
@@ -193,6 +194,7 @@ mResourceLoader(0),
 mOgreLogManager(0),
 mIsInPausedMode(false),
 mModelRepresentationManager(0),
+mMainCamera(0),
 mOgreMainCamera(0)
 {
 	Ember::Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
@@ -209,7 +211,7 @@ EmberOgre::~EmberOgre()
 
 	///The factory will be deleted by the mWorldView when that is deleted later on, so we shall not delete it here
 // 	delete mEmberEntityFactory;
-	delete mAvatarController;
+	delete mMovementController;
 	delete mAvatar;
 
 	///start with deleting the eris world, then shut down ogre
@@ -266,7 +268,7 @@ EmberOgre::~EmberOgre()
 		delete mMotionManager;
 //	if (mAvatar)
 //		delete mAvatar;
-		delete mAvatarController;*/
+		delete mMovementController;*/
 //		delete mModelDefinitionManager;
 /*	if (mEmberEntityFactory)
 		delete mEmberEntityFactory;*/
@@ -510,7 +512,9 @@ bool EmberOgre::setup()
 
 	mModelRepresentationManager = new Model::ModelRepresentationManager();
 
+	mMainCamera = new MainCamera(*mSceneMgr, *mWindow, Ember::Input::getSingleton(), *mOgreMainCamera);
 	loadingBar.finish();
+
 
 	return true;
 }
@@ -518,8 +522,9 @@ bool EmberOgre::setup()
 void EmberOgre::CreatedAvatarEntity(EmberEntity* entity)
 {
 	mAvatar = new Avatar(*entity);
-	mAvatarController = new AvatarController(*mAvatar, *mWindow, *mGUIManager, *mOgreMainCamera);
-	EventAvatarControllerCreated.emit(*mAvatarController);
+	mMovementController = new MovementController(*mAvatar);
+	mMainCamera->setMovementProvider(mMovementController);
+	EventMovementControllerCreated.emit();
 }
 
 EmberEntity* EmberOgre::getEmberEntity(const std::string & eid)
@@ -725,9 +730,9 @@ Ogre::SceneNode* EmberOgre::getRootSceneNode() const
 }
 
 
-AvatarCamera* EmberOgre::getMainCamera() const
+MainCamera* EmberOgre::getMainCamera() const
 {
-	return mAvatar->getAvatarCamera();
+	return mMainCamera;
 }
 
 Ogre::Camera* EmberOgre::getMainOgreCamera() const
@@ -741,9 +746,9 @@ EmberEntityFactory* EmberOgre::getEntityFactory() const
 	return mEmberEntityFactory;
 }
 
-AvatarController* EmberOgre::getAvatarController() const
+MovementController* EmberOgre::getMovementController() const
 {
-	return mAvatarController;
+	return mMovementController;
 }
 
 ShaderManager* EmberOgre::getShaderManager() const

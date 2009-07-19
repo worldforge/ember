@@ -48,12 +48,10 @@ namespace Model {
 }
 
 class EmberEntity;
-class AvatarCamera;
-class AvatarController;
+class MovementController;
 class AvatarEmberEntity;
 class AvatarLogger;
 class AvatarLoggerParent;
-struct AvatarControllerMovement;
 
 struct AvatarMovementState
 {
@@ -66,7 +64,7 @@ public:
 
 /**
  * This class holds the Avatar. In general it recieves instructions from mainly
- * AvatarController to attempt to move or rotate the avatar. After checking
+ * MovementController to attempt to move or rotate the avatar. After checking
  * with the world rules if such a thing is allowed, the world node is manipulated.
  * If it's a movement it has to be animated.
  *
@@ -76,7 +74,7 @@ public sigc::trackable,
 public Ogre::FrameListener,
 public Ember::ConfigListenerContainer
 {
-	friend class AvatarController;
+	friend class MovementController;
 	friend class AvatarEmberEntity;
 
     public:
@@ -91,12 +89,6 @@ public Ember::ConfigListenerContainer
 	 */
 	virtual ~Avatar();
 
-
-	/**
-	 *    Gets the avatar camera.
-	 * @return
-	 */
-	AvatarCamera* getAvatarCamera() const;
 
 	/**
 	 *    Gets the scene node which the avatar is attached to.
@@ -121,13 +113,13 @@ public Ember::ConfigListenerContainer
 	 *    Called each frame.
 	 * @param movement
 	 */
-	void updateFrame(AvatarControllerMovement& movement);
+//	void updateFrame(MovementControllerMovement& movement);
 
 	/**
 	 *    Sets the controller object responsible for controlling the avatar.
-	 * @param avatarController
+	 * @param MovementController
 	 */
-	void setAvatarController(AvatarController* avatarController);
+	void setMovementController(MovementController* MovementController);
 
 	/**
 	 *    Access for the Eris::Entity which represents the Avatar.
@@ -173,7 +165,7 @@ protected:
 	 * be extended to also include stuff as positioning the avatars feet
 	 * right
 	 */
-	void adjustAvatarToNewPosition(AvatarControllerMovement* movement);
+//	void adjustAvatarToNewPosition(MovementControllerMovement* movement);
 
 	/**
 	 * This method will determine if it's ok to send a small movement change, such as
@@ -209,7 +201,7 @@ protected:
 	 * The parameter timeSlice denotes the slice of time under which the movement
 	 * shall take place.
 	 */
-	void attemptMove(AvatarControllerMovement& movement);
+//	void attemptMove(MovementControllerMovement& movement);
 
 	/**
 	 * Attempts to rotate the avatar to a certain direction
@@ -220,7 +212,7 @@ protected:
 	 * But when moving, rotation happens in interval
 	 *
 	 */
-	void attemptRotate(AvatarControllerMovement& movement);
+//	void attemptRotate(MovementControllerMovement& movement);
 
 
 	/**
@@ -269,7 +261,7 @@ protected:
 	/**
 	The instance responsible for listening for movement updates and sending those to the server.
 	*/
-	AvatarController* mAvatarController;
+	MovementController* mMovementController;
 
 	/**
 	Keep a temporary list of entities that needs to be added to the inventory.

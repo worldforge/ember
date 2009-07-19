@@ -214,13 +214,13 @@ function EntityPicker.doWithPickedEntity(aFunction)
 end
 
 function EntityPicker.buttonMoveto_Click(args)
-	emberOgre:getAvatarController():moveToPoint(EntityPicker.position)
+	emberOgre:getMovementController():moveToPoint(EntityPicker.position)
 	EntityPickerWidget_removeMenu()
 end
 
 function EntityPicker.buttonTeleportto_Click(args)
 	EntityPicker.doWithPickedEntity(function (entity)
-		emberOgre:getAvatarController():teleportTo(EntityPicker.position, entity)
+		emberOgre:getMovementController():teleportTo(EntityPicker.position, entity)
 	end)
 	EntityPickerWidget_removeMenu()
 end

@@ -1,118 +1,59 @@
 
 namespace EmberOgre {
 
-class AvatarCamera
+class MainCamera
 {
 public:
 
-	enum Mode {
-		MODE_THIRD_PERSON = 1,
-		MODE_FIRST_PERSON = 2
-	};
-	
 	/**
-	 * Pitches the camera the supplied degrees
+	 * @brief Accessor for the main Ogre::Camera instance.
+	 * @return The main Ogre::Camera instance.
 	 */
-	virtual void pitch(Ogre::Degree degrees);
-	
-	/**
-	 * Yaws the camera the supplied degrees
-	 */
-	virtual void yaw(Ogre::Degree degrees);
-	
-	/**
-	 * returns the current degrees of pitch from the cameras initial position
-	 */
-	const Ogre::Degree& getPitch() const;
-	
-	/**
-	 * returns the current degrees of yaw from the cameras initial position
-	 */
-	const Ogre::Degree& getYaw() const;
-	
-	/**
-	 * returns a pointer to the Ogre::Camera instance 
-	 */
-	Ogre::Camera& getCamera();
 	Ogre::Camera& getCamera() const;
-	
+
+
 	/**
-	 * Returns the current camera orientation in the world
+	 * @brief Returns the current camera orientation in the world
+	 * @param onlyHorizontal
+	 * @return
 	 */
-	const Ogre::Quaternion& getOrientation(bool onlyHorizontal = true) const;
-	
-	
+	const Ogre::Quaternion& getOrientation(bool onlyHorizontal) const;
+
 	/**
-	 *    Returns the position of the camera in the world.
-	 * @return 
+	 * @brief Returns the position of the camera in the world.
+	 * @return
 	 */
 	const Ogre::Vector3& getPosition() const;
-	
-	
-	void setMode(Mode mode);
-	
+
+
 	/**
-	 * sets the node to which the camera is attached
-	 */
-	virtual void setAvatarNode(Ogre::SceneNode* sceneNode);
-	
-	/**
-	* emitted when the camra moves
+	* @brief Emitted when the camera moves
 	*/
 	sigc::signal<void, Ogre::Camera&> MovedCamera;
-	
-	/**
-	* emitted when the distance between the camera and the avatar has changed
-    * @param Ogre::Real the new distance
-	*/
-	sigc::signal<void, float> EventChangedCameraDistance;
-	
-	void pickInWorld(float mouseX, float mouseY, const EmberOgre::MousePickerArgs& args);
 
-//	EmberOgre::EntityPickResult pickAnEntity(float mouseX, float mouseY);
-//	std::vector<Ogre::RaySceneQueryResultEntry> AvatarCamera::pickObject(float mouseX, float mouseY, std::vector<Ogre::UserDefinedObject*> exclude, unsigned long querymask );
 
-//	void setClosestPickingDistance(float distance);
-//	float getClosestPickingDistance();
+	void setClosestPickingDistance(float distance);
 
-	// worldToScreenPos 
-	// 
-	// returns true if the worldPos is on screen, putting the screen pos into the x & y of the 
-	// second Vector2 
-	// returns false if the worldPos is off screen 
-	// 
-	bool worldToScreen(const Ogre::Vector3& worldPos, Ogre::Vector2& screenPos);
+	float getClosestPickingDistance() const;
 
-	void attach(Ogre::SceneNode* toNode);
-	
-	/**
-	 *    Sets the distance from the camera to the avatar.
-	 * @param distance the new distance
-	 */
-	void setCameraDistance(float distance);
-	
 	/**
 	 *    Enables and disables a compositor by name.
-	 * @param compositorName 
-	 * @param enable 
+	 * @param compositorName
+	 * @param enable
 	 */
 	void enableCompositor(const std::string& compositorName, bool enable);
-	
+
 	/**
 		Toggles between wireframe and solid render mode.
 	*/
 	void toggleRenderMode();
-	
+
 	/**
-	 * takes a screen shot and writes it to disk 
+	 * takes a screen shot and writes it to disk
 	 */
 	void takeScreenshot();
 
-	/**
-	 * @brief Gets the root node, to which the whole camera mount is hinged on.
-	 * @return The root node of the camera mount.
-	 */
-	inline Ogre::SceneNode* getRootNode() const;
+
 
 };
 

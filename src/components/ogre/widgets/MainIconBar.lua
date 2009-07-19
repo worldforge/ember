@@ -62,14 +62,13 @@ function MainIconBar.buildWidget()
 	MainIconBar.movementModeIcon:getButton():subscribeEvent("Clicked", "MainIconBar.movement_Clicked")
 	
 	connect(MainIconBar.connectors, Ember.Input:getSingleton().EventChangedInputMode, "MainIconBar.Input_InputModeChanged")
-	connect(MainIconBar.connectors, emberOgre:getAvatarController().EventMovementModeChanged, "MainIconBar.AvatarController_MovementModeChanged")
 	
 	--position it in the lower left of the screen
 	local height = MainIconBar.iconBar:getAbsoluteHeight()
 	MainIconBar.iconBar:getWindow():setPosition(CEGUI.UVector2:new_local(CEGUI.UDim(0,0), CEGUI.UDim(1, -height)))
 	
 	
-	connect(MainIconBar.connectors, emberOgre.EventCreatedAvatarEntity, "MainIconBar.EmberOgre_createdAvatarEmberEntity")
+	connect(MainIconBar.connectors, emberOgre.EventMovementControllerCreated, "MainIconBar.EmberOgre_movementControllerCreated")
 
 end
 
@@ -108,7 +107,7 @@ function MainIconBar.Input_InputModeChanged(inputMode)
 end
 
 --When the movement mode is changed (i.e. walking or running) we need to update the images on the movement mode icon as well as the cursor image
-function MainIconBar.AvatarController_MovementModeChanged(mode)
+function MainIconBar.MovementController_MovementModeChanged(mode)
 	if MainIconBar.currentMode == Ember.Input.IM_MOVEMENT then
 		MainIconBar.checkMovementMode()
 	end
@@ -119,8 +118,8 @@ function MainIconBar.checkMovementMode()
 	if MainIconBar.originalCursorImage == nil then
 		MainIconBar.originalCursorImage = CEGUI.MouseCursor:getSingleton():getImage()
 	end
-	
-	if emberOgre:getAvatarController():getCurrentMovement().mode == EmberOgre.AvatarMovementMode.MM_RUN then
+
+	if emberOgre:getMovementController():getMode() == EmberOgre.MovementControllerMode.MM_RUN then
 		MainIconBar.movementModeIcon:setForeground(MainIconBar.movementImage_run)
 		CEGUI.MouseCursor:getSingleton():setImage(MainIconBar.movementImage_run)
 	else
@@ -130,8 +129,14 @@ function MainIconBar.checkMovementMode()
 end
 
 --Only show the movement icon when we've actually connected to a server; it makes no sense before that
-function MainIconBar.EmberOgre_createdAvatarEmberEntity(entity)
+function MainIconBar.EmberOgre_movementControllerCreated()
 	MainIconBar.movementModeIcon:getContainer():setVisible(true)
+	connect(MainIconBar.connectors, emberOgre:getMovementController().EventMovementModeChanged, 
+		function(mode)
+			if MainIconBar.currentMode == Ember.Input.IM_MOVEMENT then
+				MainIconBar.checkMovementMode()
+			end
+		end)
 end
 
 

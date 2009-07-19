@@ -1,7 +1,7 @@
 //
 // C++ Implementation: LuaConnectors
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -61,7 +61,7 @@ ConnectorBase::ConnectorBase(const LuaTypeStore& luaTypeNames)
 {
 }
 
-ConnectorBase::~ConnectorBase() 
+ConnectorBase::~ConnectorBase()
 {
 	mConnection.disconnect();
 }
@@ -95,7 +95,7 @@ template <typename Treturn, typename T0, typename T1, typename T2, typename T3> 
 	lua_State* state = EmberOgre::LuaConnector::getState();
 	int top = lua_gettop(state);
 	try {
-	
+
 		if (mLuaFunctionIndex == LUA_NOREF || Ember::EmberServices::getSingleton().getScriptingService()->getAlwaysLookup()) {
 			pushNamedFunction(state);
 			mLuaFunctionIndex = luaL_ref(state, LUA_REGISTRYINDEX);
@@ -103,17 +103,17 @@ template <typename Treturn, typename T0, typename T1, typename T2, typename T3> 
 
 		///get the lua function
 		lua_rawgeti(state, LUA_REGISTRYINDEX, mLuaFunctionIndex);
-	
+
 		LuaTypeStore::const_iterator I = mLuaTypeNames.begin();
-		if (I != mLuaTypeNames.end()) 
+		if (I != mLuaTypeNames.end())
 			EmberOgre::LuaConnector::pushValue(t0, (*I++));
-		if (I != mLuaTypeNames.end()) 
+		if (I != mLuaTypeNames.end())
 			EmberOgre::LuaConnector::pushValue(t1, (*I++));
-		if (I != mLuaTypeNames.end()) 
+		if (I != mLuaTypeNames.end())
 			EmberOgre::LuaConnector::pushValue(t2, (*I++));
-		if (I != mLuaTypeNames.end()) 
+		if (I != mLuaTypeNames.end())
 			EmberOgre::LuaConnector::pushValue(t3, (*I++));
-		
+
 		///push our error handling method before calling the code
 		int error_index = lua_gettop(state) - numberOfArguments;
 		#if LUA51
@@ -123,12 +123,12 @@ template <typename Treturn, typename T0, typename T1, typename T2, typename T3> 
 		lua_rawget(state, LUA_GLOBALSINDEX);  /* get traceback function */
 		#endif
 		lua_insert(state, error_index);/* put it under chunk and args */
-		
+
 		luaPop pop(state, 1); // pops error handler on exit
-		
+
 		/// call it
 		int error = lua_pcall(state,numberOfArguments,LUA_MULTRET,error_index);
-			
+
 		/// handle errors
 		if ( error )
 		{
@@ -137,7 +137,7 @@ template <typename Treturn, typename T0, typename T1, typename T2, typename T3> 
 // 			lua_pop(state,numberOfArguments);
 			throw Ember::Exception(msg);
 		}
-		
+
 //		Treturn& returnValue(0);
 		//return (Treturn)returnValueFromLua(state);
 		//return returnValue;
@@ -157,7 +157,7 @@ template <typename Treturn, typename T0, typename T1, typename T2, typename T3> 
 	{
 		lua_settop(state, top );
 		S_LOG_FAILURE("(LuaScriptModule) Unable to execute scripted event handler: " << mLuaMethod << "\n" << ex.what());
-	} catch (...) 
+	} catch (...)
 	{
 		lua_settop(state, top );
 		S_LOG_FAILURE("Unspecified error when executing: " << mLuaMethod  );
@@ -166,7 +166,7 @@ template <typename Treturn, typename T0, typename T1, typename T2, typename T3> 
 	return (Treturn)*test;*/
 }
 
-template<typename Treturn> 
+template<typename Treturn>
 Treturn ConnectorBase::returnValueFromLua(lua_State* state)
 {
 	return static_cast<Treturn>(lua_touserdata(state,-1));
@@ -176,43 +176,43 @@ Treturn ConnectorBase::returnValueFromLua(lua_State* state)
 // {
 // 	returnValueHolder = lua_toboolean(state,-1);
 // }
-// 
+//
 // void returnValueFromLua(lua_State* state)
 // {
 // }
 
-template <typename Treturn> 
+template <typename Treturn>
 ConnectorZero<Treturn>::ConnectorZero(sigc::signal<Treturn>& signal) :  ConnectorBase(), mSignal(signal)
 {
 	mConnection = mSignal.connect(sigc::mem_fun(*this, &ConnectorZero<Treturn>::signal_recieve));
 }
 
-template <typename Treturn, typename T0> 
+template <typename Treturn, typename T0>
 ConnectorOne<Treturn, T0>::ConnectorOne(sigc::signal<Treturn, T0>& signal, const LuaTypeStore& luaTypeNames) :  ConnectorBase(luaTypeNames), mSignal(signal)
 {
 	mConnection = mSignal.connect(sigc::mem_fun(*this, &ConnectorOne<Treturn, T0>::signal_recieve));
 }
 
-// template <typename Treturn, typename T0> 
+// template <typename Treturn, typename T0>
 // ConnectorOne<Treturn, T0>::ConnectorOne(SigC::Signal1<Treturn, T0>& signal, const LuaTypeStore& luaTypeNames) :
 //  ConnectorBase(luaTypeNames), mSignal_old(signal)
 // {
 // 	mConnection = mSignal_old.connect(sigc::mem_fun(*this, &ConnectorOne<Treturn, T0>::signal_recieve));
 // }
 
-template <typename Treturn, typename T0, typename T1> 
+template <typename Treturn, typename T0, typename T1>
 ConnectorTwo<Treturn, T0, T1>::ConnectorTwo(sigc::signal<Treturn, T0, T1>& signal, const LuaTypeStore& luaTypeNames) :  ConnectorBase(luaTypeNames), mSignal(signal)
 {
 	mConnection = mSignal.connect(sigc::mem_fun(*this, &ConnectorTwo<Treturn, T0, T1>::signal_recieve));
 }
 
-template <typename Treturn, typename T0, typename T1, typename T2> 
+template <typename Treturn, typename T0, typename T1, typename T2>
 ConnectorThree<Treturn, T0, T1, T2>::ConnectorThree(sigc::signal<Treturn, T0, T1, T2>& signal, const LuaTypeStore& luaTypeNames) :  ConnectorBase(luaTypeNames), mSignal(signal)
 {
 	mConnection = mSignal.connect(sigc::mem_fun(*this, &ConnectorThree<Treturn, T0, T1, T2>::signal_recieve));
 }
 
-template <typename Treturn, typename T0, typename T1, typename T2, typename T3> 
+template <typename Treturn, typename T0, typename T1, typename T2, typename T3>
 ConnectorFour<Treturn, T0, T1, T2, T3>::ConnectorFour(sigc::signal<Treturn, T0, T1, T2, T3>& signal, const LuaTypeStore& luaTypeNames) :  ConnectorBase(luaTypeNames), mSignal(signal)
 {
 	mConnection = mSignal.connect(sigc::mem_fun(*this, &ConnectorFour<Treturn, T0, T1, T2, T3>::signal_recieve));
@@ -264,12 +264,12 @@ void LuaConnector::pushValue(const Eris::ServerInfo& theValue, const std::string
 	tolua_pushusertype(EmberOgre::LuaConnector::getState(),(void*)&theValue, luaTypename.c_str());
 }
 
-void LuaConnector::pushValue(const std::string& theValue, const std::string& luaTypename) 
+void LuaConnector::pushValue(const std::string& theValue, const std::string& luaTypename)
 {
 	tolua_pushstring(EmberOgre::LuaConnector::getState(),theValue.c_str());
 }
 
-void LuaConnector::pushValue(LuaConnectors::Empty theValue, const std::string& luaTypename) 
+void LuaConnector::pushValue(LuaConnectors::Empty theValue, const std::string& luaTypename)
 {
 }
 
@@ -317,7 +317,7 @@ void LuaConnector::pushValue(const Input::InputMode& theValue, const std::string
 {
 	tolua_pushnumber(EmberOgre::LuaConnector::getState(), theValue);
 }
-	
+
 void LuaConnector::pushValue(const std::set<std::string>& theValue, const std::string& luaTypename)
 {
 	tolua_pushusertype(EmberOgre::LuaConnector::getState(),(void*)&theValue, luaTypename.c_str());
@@ -328,7 +328,7 @@ void LuaConnector::pushValue(const Atlas::Message::Element& theValue, const std:
 	tolua_pushusertype(EmberOgre::LuaConnector::getState(),(void*)&theValue, luaTypename.c_str());
 }
 
-void LuaConnector::pushValue(const EmberOgre::AvatarMovementMode::Mode& theValue, const std::string& luaTypename)
+void LuaConnector::pushValue(const EmberOgre::MovementControllerMode::Mode& theValue, const std::string& luaTypename)
 {
 	tolua_pushnumber(EmberOgre::LuaConnector::getState(), theValue);
 }
@@ -403,7 +403,7 @@ bool LuaConnector::checkSignalExistence(void* signal) {
 		return false;
 	}
 	return true;
-	
+
 }
 
 
@@ -604,12 +604,12 @@ LuaConnector::LuaConnector(sigc::signal<void, const Atlas::Message::Element&>& s
 	}
 }
 
-LuaConnector::LuaConnector(sigc::signal<void, EmberOgre::AvatarMovementMode::Mode>& signal)
+LuaConnector::LuaConnector(sigc::signal<void, EmberOgre::MovementControllerMode::Mode>& signal)
 {
 	if (checkSignalExistence(&signal)) {
 		LuaTypeStore luaTypes;
 		luaTypes.push_back("EmberOgre::AvatarMovementMode::Mode");
-		mConnector = new LuaConnectors::ConnectorOne<void, EmberOgre::AvatarMovementMode::Mode>(signal, luaTypes);
+		mConnector = new LuaConnectors::ConnectorOne<void, EmberOgre::MovementControllerMode::Mode>(signal, luaTypes);
 	}
 }
 

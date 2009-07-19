@@ -5,7 +5,7 @@ $#include "required.h"
 
 
 $pfile "AvatarCamera.pkg"
-$pfile "AvatarController.pkg"
+$pfile "MovementController.pkg"
 $pfile "Avatar.pkg"
 $pfile "EmberEntityFactory.pkg"
 
@@ -108,8 +108,8 @@ class EmberOgre
 	MotionManager* getMotionManager() const;
 	//Ogre::Root* getOgreRoot() const;
 	EmberEntityFactory* getEntityFactory() const;
-	AvatarCamera* getMainCamera() const;
-	AvatarController* getAvatarController() const;
+	MainCamera* getMainCamera() const;
+	MovementController* getMovementController() const;
 	EntityMoveManager* getMoveManager() const;
 	
 	EmberEntity* getEmberEntity(const std::string & eid);
@@ -146,7 +146,7 @@ class EmberOgre
 	
 	sigc::signal<void, EmberOgre::Terrain::TerrainGenerator&> EventTerrainGeneratorCreated;
 	
-	sigc::signal<void, EmberOgre::AvatarController&> EventAvatarControllerCreated;
+	sigc::signal<void> EventMovementControllerCreated;
 	
 	
 };

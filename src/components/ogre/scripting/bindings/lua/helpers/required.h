@@ -4,7 +4,7 @@
 // 
 // // #include <Eris/View.h>
 // 
-// #include "components/ogre/AvatarController.h"
+// #include "components/ogre/MovementController.h"
 // #include "components/ogre/Avatar.h"
 // #include "components/ogre/AvatarCamera.h"
 // #include "components/ogre/EmberOgre.h"
