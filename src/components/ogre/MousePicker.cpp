@@ -30,7 +30,7 @@
 //#include "EmberPhysicalEntity.h"
 //#include "PersonEmberEntity.h"
 //#include "AvatarEmberEntity.h"
-#include "AvatarCamera.h"
+#include "components/ogre/camera/MainCamera.h"
 #include "GUIManager.h"
 //#include "MovementController.h"
 
@@ -49,7 +49,7 @@ MousePicker::~MousePicker()
 
 void MousePicker::doMousePicking(const Ogre::Real x, const Ogre::Real y,const MousePickerArgs& args)
 {
-	MainCamera* camera = EmberOgre::getSingleton().getMainCamera();
+	Camera::MainCamera* camera = EmberOgre::getSingleton().getMainCamera();
 
 	if (camera) {
 		camera->pickInWorld(x, y, args);

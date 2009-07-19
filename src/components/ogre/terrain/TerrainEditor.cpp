@@ -30,7 +30,7 @@
 #include "../Convert.h"
 #include "../Avatar.h"
 #include "TerrainGenerator.h"
-#include "../AvatarCamera.h"
+#include "components/ogre/camera/MainCamera.h"
 #include "../GUIManager.h"
 
 #include <Atlas/Objects/Entity.h>

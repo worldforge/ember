@@ -31,7 +31,6 @@
 #include "components/ogre/manipulation/DetachedEntity.h"
 
 #include "../GUIManager.h"
-#include "../AvatarCamera.h"
 #include "../AvatarTerrainCursor.h"
 #include "components/ogre/widgets/adapters/atlas/AdapterFactory.h"
 #include "services/EmberServices.h"

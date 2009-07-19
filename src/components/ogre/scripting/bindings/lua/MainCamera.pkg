@@ -1,6 +1,6 @@
 
 namespace EmberOgre {
-
+namespace Camera {
 class MainCamera
 {
 public:
@@ -56,5 +56,5 @@ public:
 
 
 };
-
+}
 }

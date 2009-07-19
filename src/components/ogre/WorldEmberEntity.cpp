@@ -42,7 +42,6 @@
 #include "environment/SimpleEnvironment.h"
 #include "EmberOgre.h"
 #include "Avatar.h"
-#include "AvatarCamera.h"
 #include "Convert.h"
 #include "framework/Exception.h"
 

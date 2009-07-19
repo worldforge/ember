@@ -37,7 +37,6 @@
 #include "framework/LoggingInstance.h"
 #include "../EmberOgre.h"
 #include "../Avatar.h"
-#include "../AvatarCamera.h"
 
 using namespace EmberOgre::Terrain;
 

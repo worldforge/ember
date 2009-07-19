@@ -1,13 +1,13 @@
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
 SUBDIRS = SceneManagers environment gui  \
-	manipulation model modeldefinitions sounddefinitions scripting sound terrain widgets mapping
+	manipulation model modeldefinitions sounddefinitions scripting sound terrain widgets mapping camera
 #carpenter jesus ogreopcode
 
 noinst_LIBRARIES = libEmberOgre.a
 
 
 
-libEmberOgre_a_SOURCES = AttributeObserver.cpp Avatar.cpp AvatarCamera.cpp \
+libEmberOgre_a_SOURCES = AttributeObserver.cpp Avatar.cpp \
 	MovementController.cpp AvatarEmberEntity.cpp AvatarLogger.cpp AvatarTerrainCursor.cpp \
 	CameraMount.cpp ConsoleObjectImpl.cpp EmberEntity.cpp EmberEntityActionCreator.cpp \
 	EmberEntityFactory.cpp EmberEntityHideModelAction.cpp EmberEntityModelAction.cpp \
@@ -24,7 +24,7 @@ confdir = $(sysconfdir)/ember
 dist_conf_DATA = ogre.cfg resources.cfg terrain.cfg
 
 
-noinst_HEADERS = AttributeObserver.h Avatar.h AvatarCamera.h MovementController.h \
+noinst_HEADERS = AttributeObserver.h Avatar.h MovementController.h \
 	AvatarEmberEntity.h AvatarLogger.h AvatarTerrainCursor.h CameraMount.h ConsoleObjectImpl.h \
 	EmberEntity.h EmberEntityActionCreator.h EmberEntityFactory.h \
 	EmberEntityHideModelAction.h EmberEntityModelAction.h EmberEntityPartAction.h \

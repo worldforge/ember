@@ -44,7 +44,6 @@
 #include <Eris/Avatar.h>
 
 #include "../EmberOgre.h"
-#include "../AvatarCamera.h"
 #include "../Avatar.h"
 
 #include "../EmberEntity.h"
@@ -52,6 +51,7 @@
 #include "components/ogre/model/ModelRepresentation.h"
 #include "../model/Model.h"
 #include "../AvatarEmberEntity.h"
+#include "components/ogre/camera/MainCamera.h"
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"

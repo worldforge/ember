@@ -32,7 +32,6 @@
 
 #include "components/ogre/EmberOgre.h"
 
-#include "../AvatarCamera.h"
 #include "../EmberOgre.h"
 #include "../Convert.h"
 #include "../terrain/TerrainInfo.h"

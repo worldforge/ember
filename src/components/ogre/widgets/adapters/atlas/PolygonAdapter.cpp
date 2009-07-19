@@ -30,7 +30,7 @@
 #include "components/ogre/Convert.h"
 #include "components/ogre/terrain/TerrainGenerator.h"
 #include "components/ogre/manipulation/PolygonPointPickListener.h"
-#include "components/ogre/AvatarCamera.h"
+#include "components/ogre/camera/MainCamera.h"
 
 #include <wfmath/polygon.h>
 #include <wfmath/atlasconv.h>

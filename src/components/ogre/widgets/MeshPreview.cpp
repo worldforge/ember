@@ -30,7 +30,6 @@
 
 #include "framework/ConsoleBackend.h"
 #include "../EmberOgre.h"
-#include "../AvatarCamera.h"
 
 
 #include <elements/CEGUIListbox.h>

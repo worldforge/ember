@@ -74,13 +74,11 @@ namespace Model {
 	class ModelRepresentationManager;
 }
 
-class CameraRotator;
-
-class CameraFrameListener;
+namespace Camera {
+	class MainCamera;
+};
 
 class Avatar;
-
-class MainCamera;
 
 class MovementController;
 
@@ -197,7 +195,7 @@ public:
 	 * @brief Gets the main camera, which is attached to the Avatar.
 	 * @return The main avatar camera.
 	 */
-	MainCamera* getMainCamera() const;
+	Camera::MainCamera* getMainCamera() const;
 
 	Ogre::Camera* getMainOgreCamera() const;
 
@@ -514,7 +512,7 @@ protected:
 	 */
 	bool mIsInPausedMode;
 
-	MainCamera* mMainCamera;
+	Camera::MainCamera* mMainCamera;
 	Ogre::Camera* mOgreMainCamera;
 
 };

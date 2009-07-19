@@ -28,7 +28,7 @@
 #include "../EmberOgre.h"
 #include "IMovementBridge.h"
 #include "EntityMoveManager.h"
-#include "../AvatarCamera.h"
+#include "components/ogre/camera/MainCamera.h"
 #include "../AvatarTerrainCursor.h"
 #include "../GUIManager.h"
 #include "../Convert.h"

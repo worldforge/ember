@@ -35,7 +35,8 @@
 #include "EmberEntity.h"
 #include "EmberPhysicalEntity.h"
 #include "MovementController.h"
-#include "AvatarCamera.h"
+#include "components/ogre/camera/MainCamera.h"
+#include "components/ogre/camera/ThirdPersonCameraMount.h"
 #include "AvatarLogger.h"
 #include "components/ogre/SceneNodeAttachment.h"
 #include "components/ogre/AvatarAttachmentController.h"
@@ -99,7 +100,7 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity)
 
 	mErisAvatarEntity.setAttachmentControlDelegate(new AvatarAttachmentController(*this));
 
-	ThirdPersonCameraMount* mount = new ThirdPersonCameraMount(*EmberOgre::getSingleton().getSceneManager());
+	Camera::ThirdPersonCameraMount* mount = new Camera::ThirdPersonCameraMount(*EmberOgre::getSingleton().getSceneManager());
 	EmberOgre::getSingleton().getMainCamera()->attachToMount(mount);
 	mount->attachToNode(getAvatarSceneNode());
 }

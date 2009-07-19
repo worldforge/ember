@@ -25,9 +25,6 @@
 
 
 #include "EmberEntity.h"
-#include "EmberPhysicalEntity.h"
-#include "AvatarEmberEntity.h"
-#include "AvatarCamera.h"
 #include "GUIManager.h"
 #include "Avatar.h"
 #include "EmberOgre.h"

@@ -38,7 +38,6 @@
 #include "pagedgeometry/include/BatchedGeometry.h"
 
 #include "../Convert.h"
-#include "../AvatarCamera.h"
 #include "../EmberOgre.h"
 #include "../terrain/TerrainInfo.h"
 #include "../terrain/TerrainGenerator.h"

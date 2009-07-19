@@ -40,7 +40,6 @@
 #include "../EmberOgre.h"
 #include "../EmberEntity.h"
 #include "../EmberEntityFactory.h"
-#include "../AvatarCamera.h"
 #include "../ShaderManager.h"
 #include "../WorldEmberEntity.h"
 

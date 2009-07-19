@@ -526,6 +526,7 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/manipulation/Makefile
 		 src/components/ogre/manipulation/entityrecipes/Makefile
 		 src/components/ogre/terrain/Makefile
+		 src/components/ogre/camera/Makefile
 		 src/components/ogre/SceneManagers/Makefile
 		 src/components/ogre/SceneManagers/EmberPagingSceneManager/Makefile
 		 src/components/ogre/SceneManagers/EmberPagingSceneManager/src/Makefile

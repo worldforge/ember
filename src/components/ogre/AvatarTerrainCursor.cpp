@@ -26,7 +26,6 @@
 #endif
 
 #include "AvatarTerrainCursor.h"
-#include "AvatarCamera.h"
 #include "EmberOgrePrerequisites.h"
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"

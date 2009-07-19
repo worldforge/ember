@@ -6,7 +6,7 @@
 
 #include "components/ogre/MovementController.h"
 #include "components/ogre/Avatar.h"
-#include "components/ogre/AvatarCamera.h"
+#include "components/ogre/camera/MainCamera.h"
 #include "components/ogre/EmberOgre.h"
 
 #include "components/ogre/EmberEntityFactory.h"

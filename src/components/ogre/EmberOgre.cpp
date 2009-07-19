@@ -70,7 +70,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "framework/ConsoleObject.h" //TODO: this will be included in a different class
 #include "framework/LoggingInstance.h"
 
-
+#include "camera/MainCamera.h"
 // ------------------------------
 // Include OGRE Ember client files
 // ------------------------------
@@ -81,11 +81,10 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 #include "ConsoleObjectImpl.h"
 #include "Avatar.h"
-#include "AvatarCamera.h"
+#include "components/ogre/camera/MainCamera.h"
 #include "MovementController.h"
 #include "EmberEntityFactory.h"
 #include "MotionManager.h"
-#include "AvatarCamera.h"
 #include "GUIManager.h"
 #include "manipulation/EntityMoveManager.h"
 
@@ -512,7 +511,7 @@ bool EmberOgre::setup()
 
 	mModelRepresentationManager = new Model::ModelRepresentationManager();
 
-	mMainCamera = new MainCamera(*mSceneMgr, *mWindow, Ember::Input::getSingleton(), *mOgreMainCamera);
+	mMainCamera = new Camera::MainCamera(*mSceneMgr, *mWindow, Ember::Input::getSingleton(), *mOgreMainCamera);
 	loadingBar.finish();
 
 
@@ -730,7 +729,7 @@ Ogre::SceneNode* EmberOgre::getRootSceneNode() const
 }
 
 
-MainCamera* EmberOgre::getMainCamera() const
+Camera::MainCamera* EmberOgre::getMainCamera() const
 {
 	return mMainCamera;
 }

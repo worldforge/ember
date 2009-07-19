@@ -37,7 +37,7 @@
 #include "widgets/Widget.h"
 #include "MousePicker.h"
 
-#include "AvatarCamera.h"
+#include "components/ogre/camera/MainCamera.h"
 #include "EmberOgre.h"
 #include "services/input/Input.h"
 #include "gui/ActiveWidgetHandler.h"

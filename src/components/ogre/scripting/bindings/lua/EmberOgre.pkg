@@ -4,7 +4,7 @@ $#include "required.h"
 //$pfile "Carpenter.pkg"
 
 
-$pfile "AvatarCamera.pkg"
+$pfile "MainCamera.pkg"
 $pfile "MovementController.pkg"
 $pfile "Avatar.pkg"
 $pfile "EmberEntityFactory.pkg"
@@ -108,7 +108,7 @@ class EmberOgre
 	MotionManager* getMotionManager() const;
 	//Ogre::Root* getOgreRoot() const;
 	EmberEntityFactory* getEntityFactory() const;
-	MainCamera* getMainCamera() const;
+	EmberOgre::Camera::MainCamera* getMainCamera() const;
 	MovementController* getMovementController() const;
 	EntityMoveManager* getMoveManager() const;
 	
