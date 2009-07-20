@@ -1,7 +1,7 @@
 //
 // C++ Interface: Compass
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -57,27 +57,27 @@ public:
     Compass(ICompassImpl* compassImpl);
 
     virtual ~Compass();
-    
+
     Terrain::Map& getMap();
-    
+
     void reposition(float x, float y);
     void rotate(const Ogre::Degree& degree);
     void rotate(const Ogre::Radian& radian);
-    
+
     /**
      * @brief Refreshes the compass rendering.
      */
     void refresh();
-    
-    
+
+
 protected:
-	
+
 	/**
 	 * @brief The terrain map instance which is responsible for creating and updating the underlying map.
 	 * This is owned by this class.
 	 */
 	std::auto_ptr<Terrain::Map> mMap;
-	
+
 	/**
 	 * @brief The compass implementation, responsible for the actual transformation of the map texture info something which can be presented in the gui.
 	 */
@@ -91,7 +91,7 @@ public:
 	ICompassImpl();
     virtual void reposition(float x, float y) = 0;
     virtual void rotate(const Ogre::Degree& degree) = 0;
-    
+
     /**
      * @brief Refreshes the compass rendering.
      */
@@ -100,9 +100,9 @@ public:
 protected:
 
 	Terrain::Map* mMap;
-	
+
 	void setCompass(Compass* compass);
-	
+
 	virtual void _setCompass(Compass* compass) = 0;
 
 	Compass* mCompass;
@@ -114,14 +114,14 @@ public:
 	CEGUICompassImpl();
 	virtual ~CEGUICompassImpl();
     const CEGUI::Image* getViewImage();
-    
+
     virtual void reposition(float x, float y) ;
     virtual void rotate(const Ogre::Degree& degree);
     /**
      * @brief Refreshes the compass rendering.
      */
     virtual void refresh();
-    
+
 protected:
 	const CEGUI::Image* mViewImage;
 	TexturePair mTexturePair;
@@ -133,20 +133,20 @@ class OverlayCompassImpl : ICompassImpl
 public:
 	OverlayCompassImpl();
 	virtual ~OverlayCompassImpl();
-	
+
     virtual void reposition(float x, float y);
     virtual void rotate(const Ogre::Degree& degree);
     /**
      * @brief Refreshes the compass rendering.
      */
     virtual void refresh();
-    
+
 protected:
 
 	Ogre::Overlay* mCompassOverlay;
 	Ogre::MaterialPtr mCompassMaterial;
 	virtual void _setCompass(Compass* compass);
-	
+
 };
 
 /**
@@ -167,19 +167,19 @@ public:
 	 * @param materialName The name of the material to use for the pointer. The material must have a texture unit state named "Pointer", which must reside in the first pass.
 	 */
 	RenderedCompassPointer(std::string materialName = "/ui/compass/pointer");
-	
+
 	/**
 	 * @brief Dtor.
 	 * The scene manager and camera will be destroyed along with this instance.
 	 */
 	virtual ~RenderedCompassPointer();
-	
+
 	/**
 	 * @brief Sets the rotation of the arrow.
 	 * @param degree The new rotation of the arrow.
 	 */
 	void rotate(const Ogre::Degree& degree);
-	
+
 	/**
 	* @brief Gets the texture onto which the compass is rendered.
 	* @return The texture pointer.
@@ -191,42 +191,42 @@ protected:
 	@brief The texture into which the final compass texture will be rendered.
 	*/
 	Ogre::TexturePtr mTexture;
-	
+
 	/**
 	@brief The render texture representation of mTexture.
 	*/
 	Ogre::RenderTexture* mRenderTexture;
-	
+
 	/**
 	@brief The pointer material used in the rendering. By changing the rotation of the first texture we can simulate the pointer being rotated.
 	*/
 	Ogre::MaterialPtr mPointerMaterial;
-	
+
 	/**
 	 * @brief The camera used for rendering.
 	 */
 	Ogre::Camera* mCamera;
-	
+
 	/**
 	 * @brief The scene manager used for rendering. We use a completely separate scene manager to avoid interference with other scenes.
 	 */
 	Ogre::SceneManager* mSceneManager;
-	
+
 	/**
 	 * @brief The main viewport used by our camera.
 	 */
 	Ogre::Viewport* mViewport;
-	
+
 	/**
 	 * @brief The texture unit state onto which the pointer is projected. This will be rotated.
 	 */
 	Ogre::TextureUnitState* mPointerTUS;
-	
+
 	/**
 	 * @brief The rectangle used for rendering the pointer.
 	 */
 	Ogre::Rectangle2D* mPointerRectangle;
-	
+
 	/**
 	 * @brief The previous rotation of the pointer. This is used for preventing unnecessary rendering.
 	 */
@@ -251,28 +251,28 @@ public:
 	 * @param pointerMaterialName The name of the pointer ogre material, defaults to "/ui/compass/pointer". The material must have a texture unit state named "Pointer", which must reside in the first pass.
 	 */
 	RenderedCompassImpl(std::string compassMaterialName = "/ui/compass", std::string pointerMaterialName = "/ui/compass/pointer");
-	
+
 	/**
 	 * @brief Dtor.
 	 * The render texture which this instance owns will be destroyed along with this instance.
 	 */
 	virtual ~RenderedCompassImpl();
-	
+
     /**
      * @copydoc ICompassImpl::reposition
      */
     virtual void reposition(float x, float y);
-    
+
     /**
      * @copydoc ICompassImpl::rotate
      */
     virtual void rotate(const Ogre::Degree& degree);
-    
+
     /**
      * @brief Refreshes the compass rendering.
      */
     virtual void refresh();
-    
+
 	/**
 	* @brief Gets the texture onto which the compass is rendered.
 	* @return The texture pointer.
@@ -290,12 +290,12 @@ protected:
 	@brief The texture into which the final compass texture will be rendered.
 	*/
 	Ogre::TexturePtr mTexture;
-	
+
 	/**
 	@brief The render texture representation of mTexture.
 	*/
 	Ogre::RenderTexture* mRenderTexture;
-	
+
 	/**
 	@brief The compass material used in the rendering. By changing the offset of the first texture we can simulate the terrain being scrolled.
 	*/
@@ -303,50 +303,50 @@ protected:
 
 	/**
 	 * @brief When the owner compass instance is set, the render texture will be created and the compositior registered.
-	 * @param compass 
+	 * @param compass
 	 */
 	virtual void _setCompass(Compass* compass);
-	
+
 	/**
 	 * @brief The camera used for rendering.
 	 */
 	Ogre::Camera* mCamera;
-	
+
 	/**
 	 * @brief The scene manager used for rendering. We use a completely separate scene manager to avoid interference with other scenes.
 	 */
 	Ogre::SceneManager* mSceneManager;
-	
+
 	/**
 	 * @brief The main viewport used by our camera.
 	 */
 	Ogre::Viewport* mViewport;
-	
+
 	/**
 	 * @brief The texture unit state onto which the map is projected. This will be scrolled to simulate movement.
 	 */
 	Ogre::TextureUnitState* mCompassMaterialMapTUS;
-	
+
 	/**
 	 * @brief The last world position in the x axis, in ogre world units.
 	 */
 	float mX;
-	
+
 	/**
 	 * @brief The last world position in the y axis (really the ogre z axis), in ogre world units.
 	 */
 	float mY;
-	
+
 	/**
 	 * @brief The rectangle used for rendering the map background.
 	 */
 	Ogre::Rectangle2D* mMapRectangle;
-	
+
 	/**
 	 * @brief The pointer renderer instance, responsible for rotating the pointer arrow.
 	 */
 	RenderedCompassPointer mPointer;
-	
+
 	/**
 	 * @brief The name of the compass ogre material.
 	 */
@@ -369,7 +369,7 @@ friend class CompassSceneNodeAnchor;
 friend class CompassThirdPersonCameraAnchor;
 public:
 
-	
+
 	/**
 	 * @brief Dtor.
 	 */
@@ -388,28 +388,28 @@ protected:
 	 * @param orientation A reference to the orientation of the anchor. It's required that this instance survives the anchor, since it's through this that the anchor every frame checks for updates.
 	 */
 	CompassAnchor(Compass& compass, const Ogre::Vector3& position, const Ogre::Quaternion& orientation);
-	
+
 	/**
 	 * @brief The compass instance to which this anchor belongs to.
 	 * The anchor will make sure to tell the compass to update itself when needed.
 	 */
 	Compass& mCompass;
-	
+
 	/**
 	 * @brief The previous X position of the anchor in Ogre space. This is used for making sure that we only tell the compass to update itself when the anchor has moved.
 	 */
 	float mPreviousX;
-	
+
 	/**
 	 * @brief The previous Z position of the anchor in Ogre space. This is used for making sure that we only tell the compass to update itself when the anchor has moved.
 	 */
 	float mPreviousZ;
-	
+
 	/**
 	 * @brief A reference to the position of the anchor.
 	 */
 	const Ogre::Vector3& mPosition;
-	
+
 	/**
 	 * @brief A reference to the orienatation of the anchor.
 	 */
@@ -432,19 +432,19 @@ public:
 	 * @param camera The Ogre::Camera instance which we want the anchor to follow. When the camera moves the compass will move.
 	 */
 	CompassCameraAnchor(Compass& compass, Ogre::Camera* camera);
-	
+
 	/**
 	 * @brief Dtor.
 	 */
 	virtual ~CompassCameraAnchor();
 
 protected:
-	
+
 	/**
 	 * @brief The anchor instance which does the heavy lifting.
 	 */
 	CompassAnchor mAnchor;
-	
+
 	/**
 	 * @brief The camera to which an instance of this is attached.
 	 */
@@ -468,7 +468,7 @@ public:
 	 * @param sceneNode The Ogre::SceneNode instance which we want the anchor to follow. When the scene node moves the compass will move.
 	 */
 	CompassSceneNodeAnchor(Compass& compass, Ogre::SceneNode* sceneNode);
-	
+
 	/**
 	 * @brief Dtor.
 	 */
@@ -480,7 +480,7 @@ protected:
 	 * @brief The anchor instance which does the heavy lifting.
 	 */
 	CompassAnchor mAnchor;
-	
+
 	/**
 	 * @brief The scene node to which an instance of this is attached.
 	 */
@@ -489,7 +489,7 @@ protected:
 
 /**
 @brief An anchor implementation which will attach the anchor to both a certain Ogre::Camera instance and a scene node.
-The camera will be used for determining the direction of the compass and the scene node will be used to determine the position. This anchor is mainly useful for thir person cameras.
+The camera will be used for determining the direction of the compass and the scene node will be used to determine the position. This anchor is mainly useful for third person cameras.
 @see CompassAnchor
 
 @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -504,24 +504,24 @@ public:
 	 * @param camera The Ogre::Camera instance which we want the anchor to follow. When the camera moves the compass will move.
 	 */
 	CompassThirdPersonCameraAnchor(Compass& compass, Ogre::Camera* camera, Ogre::SceneNode* node);
-	
+
 	/**
 	 * @brief Dtor.
 	 */
 	virtual ~CompassThirdPersonCameraAnchor();
 
 protected:
-	
+
 	/**
 	 * @brief The anchor instance which does the heavy lifting.
 	 */
 	CompassAnchor mAnchor;
-	
+
 	/**
 	 * @brief The camera to which an instance of this is attached.
 	 */
 	Ogre::Camera* mCamera;
-	
+
 	/**
 	 * @brief The scene node to which an instance of this is attached.
 	 */
