@@ -20,7 +20,7 @@ function Inventory.CreatedAvatarEntity(avatarEntity)
 	connect(Inventory.connectors, emberOgre:getAvatar().EventRemovedEntityFromInventory, "Inventory.RemovedEntityFromInventory")
 	
 	Inventory.widget:registerConsoleVisibilityToggleCommand("inventory")
-	if avatarEntity:getAvatar():isAdmin() == false then
+	if emberOgre:getAvatar():isAdmin() == false then
 		Inventory.avatarEntity = avatarEntity
 		Inventory.setupDoll(avatarEntity)
 		connect(Inventory.connectors, avatarEntity.Changed, "Inventory.avatarEntity_Changed")
@@ -331,77 +331,78 @@ end
 
 function Inventory.setupDoll(avatarEntity)
 	Inventory.doll = {}
-	
-	Inventory.doll.image = Inventory.widget:getWindow("DollImage")
-	Inventory.doll.renderer = EmberOgre.Gui.ModelRenderer:new_local(Inventory.doll.image)
-	Inventory.doll.renderer:setActive(false)
-	Inventory.doll.renderer:setIsInputCatchingAllowed(false)
-	
-	Inventory.doll.renderer:showModel(avatarEntity:getModel():getDefinition():get():getName())
-	Inventory.doll.renderer:setCameraDistance(0.75)
-	Inventory.doll.renderer:updateRender()
-	
-	
-	Inventory.doll.righHand = {}
-	Inventory.doll.righHand.slot = Inventory.entityIconManager:createSlot(Inventory.iconsize)
-	Inventory.doll.righHand.container = Inventory.widget:getWindow("Doll/RightHand")
-	Inventory.doll.righHand.container:addChildWindow(Inventory.doll.righHand.slot:getWindow())
-	Inventory.doll.righHand.observer = EmberOgre.AttributeObserver:new_local(avatarEntity, "right_hand_wield")
-	Inventory.doll.righHand.attributeChanged = function(element)
-		if element:isString() then
-			--Check whether we should update the wielding slot.
-			local entityBucket = Inventory.icons[element:asString()]
-			if entityBucket ~= nil then
-				local newEntityIcon = entityBucket[1].entityIcon
-				local currentWieldedIcon = Inventory.doll.righHand.slot:getEntityIcon()
-				if currentWieldedIcon ~= newEntityIcon then
-					--If the new wielded entity isn't the same as the currently wielded icon, we need to put the new entity icon there and add the old wielded icon back to the inventory.
-					local oldIcon = Inventory.doll.righHand.slot:removeEntityIcon()
-					Inventory.doll.righHand.slot:addEntityIcon(newEntityIcon)
-					if oldIcon ~= nil then
-						local slotWrapper = Inventory.getFreeSlot()
-						local slot = slotWrapper.slot
-						slot:addEntityIcon(oldIcon)
+	local model = EmberOgre.Model.ModelRepresentationManager:getSingleton():getModelForEntity(avatarEntity)
+	if model ~= nil then
+		Inventory.doll.image = Inventory.widget:getWindow("DollImage")
+		Inventory.doll.renderer = EmberOgre.Gui.ModelRenderer:new_local(Inventory.doll.image)
+		Inventory.doll.renderer:setActive(false)
+		Inventory.doll.renderer:setIsInputCatchingAllowed(false)
+		
+		Inventory.doll.renderer:showModel(model:getDefinition():get():getName())
+		Inventory.doll.renderer:setCameraDistance(0.75)
+		Inventory.doll.renderer:updateRender()
+		
+		
+		Inventory.doll.righHand = {}
+		Inventory.doll.righHand.slot = Inventory.entityIconManager:createSlot(Inventory.iconsize)
+		Inventory.doll.righHand.container = Inventory.widget:getWindow("Doll/RightHand")
+		Inventory.doll.righHand.container:addChildWindow(Inventory.doll.righHand.slot:getWindow())
+		Inventory.doll.righHand.observer = EmberOgre.AttributeObserver:new_local(avatarEntity, "right_hand_wield")
+		Inventory.doll.righHand.attributeChanged = function(element)
+			if element:isString() then
+				--Check whether we should update the wielding slot.
+				local entityBucket = Inventory.icons[element:asString()]
+				if entityBucket ~= nil then
+					local newEntityIcon = entityBucket[1].entityIcon
+					local currentWieldedIcon = Inventory.doll.righHand.slot:getEntityIcon()
+					if currentWieldedIcon ~= newEntityIcon then
+						--If the new wielded entity isn't the same as the currently wielded icon, we need to put the new entity icon there and add the old wielded icon back to the inventory.
+						local oldIcon = Inventory.doll.righHand.slot:removeEntityIcon()
+						Inventory.doll.righHand.slot:addEntityIcon(newEntityIcon)
+						if oldIcon ~= nil then
+							local slotWrapper = Inventory.getFreeSlot()
+							local slot = slotWrapper.slot
+							slot:addEntityIcon(oldIcon)
+						end
 					end
+				else
+					log.warning("No inventory slot found for new wielded entity.")
 				end
-			else
-				log.warning("No inventory slot found for new wielded entity.")
 			end
 		end
-	end
-	Inventory.doll.righHand.attributeChanged_connector = EmberOgre.LuaConnector:new_local(Inventory.doll.righHand.observer.EventChanged):connect(Inventory.doll.righHand.attributeChanged)
-	Inventory.doll.righHand.entityIconDropped = function(entityIcon)
-		emberServices:getServerService():wield(entityIcon:getEntity())
-		local icon = Inventory.doll.righHand.slot:getEntityIcon()
-		if icon ~= null then
-			local slotWrapper = Inventory.getFreeSlot()
-			local slot = slotWrapper.slot
-			slot:addEntityIcon(icon)
+		Inventory.doll.righHand.attributeChanged_connector = EmberOgre.LuaConnector:new_local(Inventory.doll.righHand.observer.EventChanged):connect(Inventory.doll.righHand.attributeChanged)
+		Inventory.doll.righHand.entityIconDropped = function(entityIcon)
+			emberServices:getServerService():wield(entityIcon:getEntity())
+			local icon = Inventory.doll.righHand.slot:getEntityIcon()
+			if icon ~= null then
+				local slotWrapper = Inventory.getFreeSlot()
+				local slot = slotWrapper.slot
+				slot:addEntityIcon(icon)
+			end
+			Inventory.doll.righHand.slot:addEntityIcon(entityIcon)
 		end
-		Inventory.doll.righHand.slot:addEntityIcon(entityIcon)
-	end
-	Inventory.doll.righHand.entityIconDropped_connector = EmberOgre.LuaConnector:new_local(Inventory.doll.righHand.slot.EventIconDropped):connect(Inventory.doll.righHand.entityIconDropped)
-	
-	Inventory.doll.righHand.newEntityCreated = function(newEntity)
-		if avatarEntity:hasAttr("right_hand_wield") then
-			Inventory.doll.righHand.attributeChanged(avatarEntity:valueOfAttr("right_hand_wield"))
+		Inventory.doll.righHand.entityIconDropped_connector = EmberOgre.LuaConnector:new_local(Inventory.doll.righHand.slot.EventIconDropped):connect(Inventory.doll.righHand.entityIconDropped)
+		
+		Inventory.doll.righHand.newEntityCreated = function(newEntity)
+			if avatarEntity:hasAttr("right_hand_wield") then
+				Inventory.doll.righHand.attributeChanged(avatarEntity:valueOfAttr("right_hand_wield"))
+			end
 		end
+		table.insert(Inventory.newEntityListeners, Inventory.doll.righHand.newEntityCreated)	
+		
+		
+		Inventory.doll.torso = Inventory.createDollSlot("body", Inventory.widget:getWindow("Doll/Torso"), "Drop an entity here to attach it to the torso.")
+		Inventory.doll.torsoOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.torso, "body")
+		
+		Inventory.doll.head = Inventory.createDollSlot("head", Inventory.widget:getWindow("Doll/Head"), "Drop an entity here to attach it to the head.")
+		Inventory.doll.headOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.head, "head")
+	
+		Inventory.doll.legs = Inventory.createDollSlot("legs", Inventory.widget:getWindow("Doll/Legs"), "Drop an entity here to attach it to the legs.")
+		Inventory.doll.legsOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.legs, "legs")
+		
+		Inventory.doll.feet = Inventory.createDollSlot("feet", Inventory.widget:getWindow("Doll/Feet"), "Drop an entity here to attach it to the feet.")
+		Inventory.doll.feetOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.feet, "feet")
 	end
-	table.insert(Inventory.newEntityListeners, Inventory.doll.righHand.newEntityCreated)	
-	
-	
-	Inventory.doll.torso = Inventory.createDollSlot("body", Inventory.widget:getWindow("Doll/Torso"), "Drop an entity here to attach it to the torso.")
-	Inventory.doll.torsoOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.torso, "body")
-	
-	Inventory.doll.head = Inventory.createDollSlot("head", Inventory.widget:getWindow("Doll/Head"), "Drop an entity here to attach it to the head.")
-	Inventory.doll.headOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.head, "head")
-
-	Inventory.doll.legs = Inventory.createDollSlot("legs", Inventory.widget:getWindow("Doll/Legs"), "Drop an entity here to attach it to the legs.")
-	Inventory.doll.legsOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.legs, "legs")
-	
-	Inventory.doll.feet = Inventory.createDollSlot("feet", Inventory.widget:getWindow("Doll/Feet"), "Drop an entity here to attach it to the feet.")
-	Inventory.doll.feetOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.feet, "feet")
-	
 end
 
 function Inventory.updateDoll()
