@@ -128,10 +128,10 @@ AvatarTerrainCursor& MainCamera::getTerrainCursor() const
 
 const Ogre::Quaternion& MainCamera::getOrientation(bool onlyHorizontal) const {
 	if (!onlyHorizontal) {
-		return mCamera.getDerivedOrientation();
+		return mCamera.getRealOrientation();
 	} else {
 		static Ogre::Quaternion quat;
-		quat = mCamera.getDerivedOrientation();
+		quat = mCamera.getRealOrientation();
 		quat.x = 0;
 		quat.z = 0;
 		return quat;

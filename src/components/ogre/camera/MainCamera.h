@@ -91,7 +91,7 @@ public:
 	 * @param onlyHorizontal
 	 * @return
 	 */
-	const Ogre::Quaternion& getOrientation(bool onlyHorizontal = true) const;
+	const Ogre::Quaternion& getOrientation(bool onlyHorizontal = false) const;
 
 	/**
 	 * @brief Returns the position of the camera in the world.
