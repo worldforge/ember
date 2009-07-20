@@ -70,7 +70,7 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity)
 	registerConfigListener("general","avatarrotationupdatefrequency", sigc::mem_fun(*this, &Avatar::Config_AvatarRotationUpdateFrequency));
 	registerConfigListener("input","maxspeed", sigc::mem_fun(*this, &Avatar::Config_MaxSpeed));
 
-	mCurrentMovementState.velocity = WFMath::Vector<3>::ZERO();
+	mCurrentMovementState.movement = WFMath::Vector<3>::ZERO();
 	mCurrentMovementState.orientation = WFMath::Quaternion().identity();
 	mCurrentMovementState.position = erisAvatarEntity.getPredictedPos();
 
@@ -144,34 +144,24 @@ void Avatar::application_AfterInputProcessing(float timeSinceLastEvent)
 void Avatar::moveClientSide(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement, float timeslice)
 {
 	mCurrentMovement = movement * mMaxSpeed;
-	mCurrentMovement.rotate(orientation);
-	WFMath::Vector<3> adjustedMovement(movement * timeslice * mMaxSpeed);
-	mClientSideAvatarPosition += adjustedMovement.rotate(orientation);
-	mClientSideAvatarOrientation = orientation;
+	if (movement != WFMath::Vector<3>::ZERO()) {
 
-	if (mErisAvatarEntity.getAttachment()) {
-		mErisAvatarEntity.getAttachment()->updatePosition();
+		//We need to constraint the orientation to only around the z axis.
+		WFMath::Vector<3> rotator(1.0, 0.0, 0.0);
+		rotator.rotate(orientation);
+		WFMath::Quaternion adjustedOrientation;
+		adjustedOrientation.fromRotMatrix(WFMath::RotMatrix<3>().rotationZ(atan2(rotator.y(), rotator.x())));
+
+		mClientSideAvatarOrientation = adjustedOrientation;
+		mCurrentMovement.rotate(adjustedOrientation);
+		WFMath::Vector<3> adjustedMovement(movement * timeslice * mMaxSpeed);
+		mClientSideAvatarPosition += adjustedMovement.rotate(adjustedOrientation);
+
+		if (mErisAvatarEntity.getAttachment()) {
+			mErisAvatarEntity.getAttachment()->updatePosition();
+		}
 	}
 }
-
-
-//void Avatar::updateFrame(MovementControllerMovement& movement)
-//{
-//
-//	///for now we'll just rotate without notifying the server
-//	///except when moving!
-//	attemptRotate(movement);
-//
-//
-//	///this next method will however send send stuff to the server
-//	attemptMove(movement);
-//
-////	///only adjust if there is actual movement. If we adjust when there's only rotation we'll get a strange jerky effect (some bug I guess)
-////	if (movement.isMoving) {
-////		adjustAvatarToNewPosition(&movement);
-////	}
-//
-//}
 
 void Avatar::attemptMove()
 {
@@ -180,11 +170,11 @@ void Avatar::attemptMove()
 	///that way we'll only send stuff to the server if our movement changes
 	AvatarMovementState newMovementState;
 	newMovementState.orientation = mClientSideAvatarOrientation;
-	newMovementState.velocity = mCurrentMovement;
+	newMovementState.movement = mCurrentMovement;
 	newMovementState.position = mClientSideAvatarPosition;
 
 	bool isMoving = mCurrentMovement.isValid() && mCurrentMovement != WFMath::Vector<3>::ZERO();
-	bool wasMoving = mCurrentMovementState.velocity.isValid() && mCurrentMovementState.velocity != WFMath::Vector<3>::ZERO();
+	bool wasMoving = mCurrentMovementState.movement.isValid() && mCurrentMovementState.movement != WFMath::Vector<3>::ZERO();
 	bool sendToServer = false;
 
 	//first we check if we are already moving
@@ -203,7 +193,7 @@ void Avatar::attemptMove()
 			S_LOG_VERBOSE( "Avatar stopped moving.");
 			//we have stopped; we must alert the server
 			sendToServer = true;
-		} else if (newMovementState.velocity != mCurrentMovementState.velocity || !(newMovementState.orientation == mCurrentMovementState.orientation)){
+		} else if (newMovementState.movement != mCurrentMovementState.movement || !(newMovementState.orientation == mCurrentMovementState.orientation)){
 			//either the speed or the direction has changed
 			sendToServer = true;
 		}
@@ -219,7 +209,7 @@ void Avatar::attemptMove()
 		if (mLastTransmittedMovements.size() > 5) {
 			mLastTransmittedMovements.erase(mLastTransmittedMovements.begin());
 		}
-		Ember::EmberServices::getSingletonPtr()->getServerService()->moveInDirection(newMovementState.velocity.rotate(newMovementState.orientation), newMovementState.orientation);
+		Ember::EmberServices::getSingletonPtr()->getServerService()->moveInDirection(newMovementState.movement, newMovementState.orientation);
 
 	}
 
@@ -365,6 +355,9 @@ WFMath::Point<3> Avatar::getClientSideAvatarPosition() const
 
 WFMath::Quaternion Avatar::getClientSideAvatarOrientation() const
 {
+	if (mCurrentMovement == WFMath::Vector<3>::ZERO() && mErisAvatarEntity.isMoving()) {
+		return mErisAvatarEntity.getOrientation();
+	}
 	return mClientSideAvatarOrientation;
 }
 
