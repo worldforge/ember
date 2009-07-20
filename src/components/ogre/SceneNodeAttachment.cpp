@@ -62,6 +62,7 @@ SceneNodeAttachment::~SceneNodeAttachment()
 			mSceneNode->getCreator()->destroySceneNode(mSceneNode->getName());
 		}
 	}
+	delete mAttachmentController;
 }
 
 IEntityAttachment* SceneNodeAttachment::attachEntity(EmberEntity& entity)
