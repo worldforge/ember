@@ -5,16 +5,16 @@
 -----------------------------------------
 IndirectRenderingChecker = {}
 
-local ogreInfo = EmberOgre.OgreInfo:new_local()
 
-if ogreInfo:isIndirect() then
+if EmberOgre.OgreInfo:isIndirect() then
 	IndirectRenderingChecker.widget = guiManager:createWidget()
 	IndirectRenderingChecker.widget:loadMainSheet("IndirectRenderingChecker.layout", "IndirectRenderingChecker/")
+	IndirectRenderingChecker.widget:show()
+	IndirectRenderingChecker.widget:getMainWindow():setAlwaysOnTop(true)
 	
-	IndirectRenderingChecker.widget:getWindow("OkButton"):subscribeEvent("MouseClick", "IndirectRenderingChecker.OkButton_Click")
+	IndirectRenderingChecker.widget:getWindow("OkButton"):subscribeEvent("MouseClick", 
+		function()
+			IndirectRenderingChecker.widget:hide()
+		end)
 
-end
-
-function IndirectRenderingChecker.OkButton_Click(args)
-	IndirectRenderingChecker.widget:hide()
 end
