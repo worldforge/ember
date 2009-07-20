@@ -29,23 +29,34 @@ namespace EmberOgre {
 
 /**
 
-	Provides methods for getting some basic information about the Ogre environment.
+@brief Provides methods for getting some basic information about the Ogre environment, as well as utility method for working with Ogre.
 
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class OgreInfo{
+class OgreInfo
+{
 public:
 
     /**
-     * @brief True if the rendering is indirect, for example when using Mesa drivers on Linux. This will result in _very_ bad performance, and is usually caused by the user not having vendor drivers installed.
-     * @return
+     * @brief Checks if the rendering is indirect, for example when using Mesa drivers on Linux. This will result in _very_ bad performance, and is usually caused by the user not having vendor drivers installed.
+     * @return True if rendering is indirect.
      */
-    bool isIndirect() const;
+    static bool isIndirect();
 
+    /**
+     * @brief Creates a "unique" resource name.
+     * The way this is done is by appending the value of an internal counter on the supplied name.
+     * This of course doesn't guarantee that the name is unique, but with the counter being a long long int it should be fairly safe.
+     * @param resourceName The name of the resource.
+     * @return The supplied name with the value of an internal counter suffixed.
+     */
     static std::string createUniqueResourceName(const std::string& resourceName);
 
 private:
 
+	/**
+	 * @brief Internal counter for generating "unique" resource names.
+	 */
 	static long long int sResourceCounter;
 
 };

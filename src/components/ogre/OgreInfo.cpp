@@ -40,7 +40,7 @@ namespace EmberOgre {
 long long int OgreInfo::sResourceCounter(1);
 
 
-bool OgreInfo::isIndirect() const
+bool OgreInfo::isIndirect()
 {
 #ifdef WIN32
 	///TODO: add checks for win32 too
