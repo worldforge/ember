@@ -90,6 +90,7 @@ EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* 
 
 EmberEntity::~EmberEntity()
 {
+	delete mAttachment;
 	delete mGraphicalRepresentation;
 	///detach all children so we don't destroy them
 //	while (getSceneNode()->numChildren())
