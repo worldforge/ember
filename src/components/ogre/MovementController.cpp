@@ -24,21 +24,24 @@
 #include "MovementController.h"
 
 
-#include "EmberEntity.h"
-#include "GUIManager.h"
-#include "Avatar.h"
-#include "EmberOgre.h"
-// #include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
-#include "terrain/TerrainGenerator.h"
-#include "terrain/ISceneManagerAdapter.h"
-
+#include "components/ogre/EmberEntity.h"
+#include "components/ogre/GUIManager.h"
+#include "components/ogre/Avatar.h"
+#include "components/ogre/EmberOgre.h"
+#include "components/ogre/OgreInfo.h"
+#include "components/ogre/Convert.h"
+#include "components/ogre/FreeFlyingCameraMotionHandler.h"
+#include "components/ogre/camera/MainCamera.h"
+#include "components/ogre/camera/ThirdPersonCameraMount.h"
+#include "components/ogre/terrain/TerrainGenerator.h"
+#include "components/ogre/terrain/ISceneManagerAdapter.h"
 
 #include "services/input/Input.h"
-
-#include "framework/Tokeniser.h"
-#include "Convert.h"
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
+
+#include "framework/Tokeniser.h"
+#include "framework/LoggingInstance.h"
 
 #include <OgreRoot.h>
 
@@ -90,6 +93,8 @@ MovementController::MovementController(Avatar& avatar)
 , mDecalNode(0)
 , mControllerInputListener(*this)
 , mAvatar(avatar)
+, mFreeFlyingNode(0)
+, mIsFreeFlying(false)
 {
 
 	mMovementCommandMapper.restrictToInputMode(Input::IM_MOVEMENT );
@@ -99,11 +104,38 @@ MovementController::MovementController(Avatar& avatar)
 	mMovementCommandMapper.bindToInput(Input::getSingleton());
 	Ember::Input::getSingleton().setMovementModeEnabled(true);
 
+	try {
+		mFreeFlyingNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode(OgreInfo::createUniqueResourceName("FreeFlyingCameraNode"));
+		if (mFreeFlyingNode) {
+			mFreeFlyingNode->setPosition(Convert::toOgre(mAvatar.getEmberEntity().getPredictedPos()));
+			mFreeFlyingNode->translate(Ogre::Vector3(0, 3, 0)); //put it a little on top of the avatar node
+			mFreeFlyingMotionHandler = std::auto_ptr<FreeFlyingCameraMotionHandler>(new FreeFlyingCameraMotionHandler(*mFreeFlyingNode));
+			mCameraMount = std::auto_ptr<Camera::ThirdPersonCameraMount>(new Camera::ThirdPersonCameraMount(*EmberOgre::getSingleton().getSceneManager()));
+			mCameraMount->setMotionHandler(mFreeFlyingMotionHandler.get());
+			mCameraMount->attachToNode(mFreeFlyingNode);
+		}
+
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Error when setting up free flying camera mount. Message: " << ex.what());
+	}
+
 }
 MovementController::~MovementController()
 {
 	Ogre::Root::getSingleton().removeFrameListener(this);
 }
+
+void MovementController::setCameraFreeFlying(bool freeFlying)
+{
+	if (freeFlying) {
+		EmberOgre::getSingleton().getMainCamera()->attachToMount(mCameraMount.get());
+		mIsFreeFlying = true;
+	} else {
+		EmberOgre::getSingleton().getMainCamera()->attachToMount(&mAvatar.getCameraMount());
+		mIsFreeFlying = false;
+	}
+}
+
 
 
 void MovementController::runCommand(const std::string &command, const std::string &args)
@@ -114,11 +146,11 @@ void MovementController::runCommand(const std::string &command, const std::strin
 		mIsRunning = false;
 	} else if (ToggleCameraAttached == command)
 	{
-//		if (mIsAttached) {
-//			detachCamera();
-//		} else {
-//			attachCamera();
-//		}
+		if (mIsFreeFlying) {
+			setCameraFreeFlying(false);
+		} else {
+			setCameraFreeFlying(true);
+		}
 	} else if (MovementMoveForward == command) {
 		mMovementDirection.y() = 1;
 	} else if (MovementMoveForward.getInverseCommand() == command) {
@@ -175,25 +207,6 @@ bool MovementController::frameStarted(const Ogre::FrameEvent& event)
 			mDecalNode->setVisible(false);
 		}
 	}
-
-
-//	if (mIsAttached) {
-////		mAvatarCamera->adjustForTerrain();
-//		mAvatar.updateFrame(movementForFrame);
-//	} else {
-//		Ogre::Real scaler = 50;
-//		//make this inverse, so that when the run key is pressed, the free flying camera goes slower
-//		//this is since we assume that one wants to go fast when in free flying mode
-//		if (movementForFrame.mode == AvatarMovementMode::MM_RUN) {
-//			scaler = 10;
-//		}
-//		Ogre::Vector3 correctDirection(movementForFrame.movementDirection.z, movementForFrame.movementDirection.y, -movementForFrame.movementDirection.x);
-//		mFreeFlyingCameraNode->translate(mAvatarCamera->getOrientation(false) * (correctDirection * movementForFrame.timeSlice * scaler));
-//
-//	}
-//	mPreviousMovementForFrame = movementForFrame;
-
-
 
 	return true;
 }

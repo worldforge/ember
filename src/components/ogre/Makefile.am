@@ -18,7 +18,8 @@ libEmberOgre_a_SOURCES = AttributeObserver.cpp Avatar.cpp \
 	OgreResourceProvider.cpp OgreSetup.cpp SceneNodeAttachment.cpp \
 	ShaderManager.cpp ShadowCameraSetup.cpp SimpleRenderContext.cpp \
 	WorldEmberEntity.cpp XMLHelper.cpp WorldAttachment.cpp SceneNodeController.cpp \
-	DelegatingSceneNodeController.cpp AvatarAttachmentController.cpp HiddenAttachment.cpp AttachmentBase.cpp AvatarCameraMotionHandler.cpp
+	DelegatingSceneNodeController.cpp AvatarAttachmentController.cpp HiddenAttachment.cpp \
+	AttachmentBase.cpp AvatarCameraMotionHandler.cpp FreeFlyingCameraMotionHandler.cpp
 # OpcodeCollisionDetector.cpp  OpcodeCollisionDetectorVisualizer.cpp
 confdir = $(sysconfdir)/ember
 dist_conf_DATA = ogre.cfg resources.cfg terrain.cfg
@@ -35,6 +36,8 @@ noinst_HEADERS = AttributeObserver.h Avatar.h MovementController.h \
 	OgreLogObserver.h OgreResourceLoader.h OgreResourceProvider.h OgreSetup.h \
 	ShaderManager.h ShadowCameraSetup.h \
 	SimpleRenderContext.h Types.h WorldEmberEntity.h XMLHelper.h IGraphicalRepresentation.h \
-	IEntityAttachment.h  WorldAttachment.h SceneNodeAttachment.h IMovable.h IAnimated.h IAttachmentControlDelegate.h \
-	SceneNodeController.h DelegatingSceneNodeController.h AvatarAttachmentController.h IMovementProvider.h ICameraMotionHandler.h HiddenAttachment.h AttachmentBase.h AvatarCameraMotionHandler.h
+	IEntityAttachment.h  WorldAttachment.h SceneNodeAttachment.h IMovable.h IAnimated.h \
+	IAttachmentControlDelegate.h SceneNodeController.h DelegatingSceneNodeController.h \
+	AvatarAttachmentController.h IMovementProvider.h ICameraMotionHandler.h HiddenAttachment.h \
+	AttachmentBase.h AvatarCameraMotionHandler.h FreeFlyingCameraMotionHandler.h
 #OpcodeCollisionDetector.h OpcodeCollisionDetectorVisualizer.h

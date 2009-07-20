@@ -39,6 +39,11 @@
 
 
 namespace EmberOgre {
+
+namespace Camera {
+class ThirdPersonCameraMount;
+}
+class FreeFlyingCameraMotionHandler;
 class Avatar;
 class EmberEntity;
 
@@ -149,6 +154,9 @@ public:
 
 	MovementControllerMode::Mode getMode() const;
 
+	void setCameraFreeFlying(bool freeFlying);
+
+
 protected:
 
 	Ember::InputCommandMapper mMovementCommandMapper;
@@ -184,6 +192,11 @@ protected:
 	MovementControllerInputListener mControllerInputListener;
 
 	Avatar& mAvatar;
+
+	Ogre::SceneNode* mFreeFlyingNode;
+	std::auto_ptr<FreeFlyingCameraMotionHandler> mFreeFlyingMotionHandler;
+	std::auto_ptr<Camera::ThirdPersonCameraMount> mCameraMount;
+	bool mIsFreeFlying;
 };
 
 
