@@ -226,12 +226,17 @@ protected:
 	std::auto_ptr<Camera::ThirdPersonCameraMount> mCameraMount;
 
 	/**
-	 * Listen for location changes, since after a location change we need to honour the onMoved updates even if we're in movement mode.
+	 * @brief Listen for location changes, since after a location change we need to honour the onMoved updates even if we're in movement mode.
 	 * @param entity
 	 */
 	void avatar_LocationChanged(Eris::Entity* entity);
 
 	void avatar_Moved();
+
+	void entity_ChildAdded(Eris::Entity* childEntity);
+
+	void entity_ChildRemoved(Eris::Entity* childEntity);
+
 
 	/**
 	True if the current user have admin rights, i.e. is a "creator".

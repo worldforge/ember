@@ -85,6 +85,8 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity)
 
 	mErisAvatarEntity.LocationChanged.connect(sigc::mem_fun(*this, &Avatar::avatar_LocationChanged));
 	mErisAvatarEntity.Moved.connect(sigc::mem_fun(*this, &Avatar::avatar_Moved));
+	mErisAvatarEntity.ChildAdded.connect(sigc::mem_fun(*this, &Avatar::entity_ChildAdded));
+	mErisAvatarEntity.ChildRemoved.connect(sigc::mem_fun(*this, &Avatar::entity_ChildRemoved));
 
 	mClientSideAvatarOrientation = mErisAvatarEntity.getOrientation();
 	mClientSideAvatarPosition = mErisAvatarEntity.getPredictedPos();
@@ -116,7 +118,6 @@ void Avatar::application_AfterInputProcessing(float timeSinceLastEvent)
 		std::set<Eris::Entity*>::iterator I_end = mEntitiesToBeAddedToInventory.end();
 
 		for (; I != I_end; ++I) {
-			///no need to do dynamic cast here
 			EmberEntity* emberEntity = static_cast<EmberEntity*>(*I);
 			EventAddedEntityToInventory.emit(emberEntity);
 		}
@@ -322,6 +323,17 @@ void Avatar::avatar_Moved()
 	mClientSideAvatarOrientation = mErisAvatarEntity.getOrientation();
 	mClientSideAvatarPosition = mErisAvatarEntity.getPredictedPos();
 }
+
+void Avatar::entity_ChildAdded(Eris::Entity* childEntity)
+{
+	mEntitiesToBeAddedToInventory.insert(childEntity);
+}
+
+void Avatar::entity_ChildRemoved(Eris::Entity* childEntity)
+{
+	EventRemovedEntityFromInventory.emit(static_cast<EmberEntity*>(childEntity));
+}
+
 
 void Avatar::Config_AvatarRotationUpdateFrequency(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
