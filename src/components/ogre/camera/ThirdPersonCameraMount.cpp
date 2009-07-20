@@ -17,6 +17,7 @@
  */
 
 #include "ThirdPersonCameraMount.h"
+#include "components/ogre/OgreInfo.h"
 #include "framework/Tokeniser.h"
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
@@ -33,7 +34,8 @@ ThirdPersonCameraMount::ThirdPersonCameraMount(Ogre::SceneManager& sceneManager)
 	mDegreeOfPitchPerSecond(50),
 	mDegreeOfYawPerSecond(50),
 	mAdjustTerrainRaySceneQuery(0),
-	mIsAdjustedToTerrain(true)
+	mIsAdjustedToTerrain(true),
+	mInvertCamera(false)
 {
 	createNodesForCamera(sceneManager);
 	createRayQueries(sceneManager);
@@ -97,16 +99,16 @@ Ogre::Degree ThirdPersonCameraMount::yaw(float relativeMovement)
 
 void ThirdPersonCameraMount::createNodesForCamera(Ogre::SceneManager& sceneManager)
 {
-	mAvatarCameraRootNode = sceneManager.createSceneNode("ThirdPersonCameraRootNode");
+	mAvatarCameraRootNode = sceneManager.createSceneNode(OgreInfo::createUniqueResourceName("ThirdPersonCameraRootNode"));
 	mAvatarCameraRootNode->setInheritOrientation(false);
 	//we need to adjust for the height of the avatar mesh
 	mAvatarCameraRootNode->setPosition(Ogre::Vector3(0,2,0));
 	//rotate to sync with WF world
-    mAvatarCameraRootNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)-90);
+//    mAvatarCameraRootNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)-90);
 
-	mAvatarCameraPitchNode = mAvatarCameraRootNode->createChildSceneNode("ThirdPersonCameraPitchNode");
+	mAvatarCameraPitchNode = mAvatarCameraRootNode->createChildSceneNode(OgreInfo::createUniqueResourceName("ThirdPersonCameraPitchNode"));
 	mAvatarCameraPitchNode->setPosition(Ogre::Vector3(0,0,0));
-	mAvatarCameraNode = mAvatarCameraPitchNode->createChildSceneNode("ThirdPersonCameraNode");
+	mAvatarCameraNode = mAvatarCameraPitchNode->createChildSceneNode(OgreInfo::createUniqueResourceName("ThirdPersonCameraNode"));
 	setCameraDistance(10);
 
 }
