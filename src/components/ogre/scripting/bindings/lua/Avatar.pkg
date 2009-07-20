@@ -26,5 +26,19 @@ class Avatar
 	*/
 	inline bool isAdmin() const;
 	
+	/**
+	 * @brief Gets the client side position of the avatar.
+	 * This can differ from the position of the entity which represents the avatar, since the player can move the avatar before the server receives updates.
+	 * @return The position of the avatar, as the client sees it.
+	 */
+	WFMath::Point<3> getClientSideAvatarPosition() const;
+
+	/**
+	 * @brief Gets the client side orientation of the avatar.
+	 * This can differ from the orientation of the entity which represents the avatar, since the player can move the avatar before the server receives updates.
+	 * @return The orientation of the avatar, as the client sees it.
+	 */
+	WFMath::Quaternion getClientSideAvatarOrientation() const;
+
 };
 }

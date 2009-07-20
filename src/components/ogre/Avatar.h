@@ -85,36 +85,37 @@ public Ember::ConfigListenerContainer
     public:
 
 	/**
-	 *    Ctor.
+	 * @brief Ctor.
+	 * @param erisAvatarEntity The entity which represents the avatar.
 	 */
 	Avatar(EmberEntity& erisAvatarEntity);
 
 	/**
-	 *    Dtor.
+	 * @brief Dtor.
 	 */
 	virtual ~Avatar();
 
 
 	/**
-	 *    Gets the scene node which the avatar is attached to.
-	 * @return
+	 * @brief Gets the scene node which the avatar is attached to, if any.
+	 * @return The scene node to which the avatar entity is attached to, or null if the avatar isn't attached to any scene node.
 	 */
 	Ogre::SceneNode* getAvatarSceneNode() const;
 
 	/**
-	 *    Call this when the avatar entity has moved in the world.
+	 * @brief Call this when the avatar entity has moved in the world.
 	 */
 	void movedInWorld();
 
 	/**
-	 *    Access for the Eris::Entity which represents the Avatar.
+	 * @brief Accessor for the Eris::Entity which represents the Avatar.
 	 * @return
 	 */
 	EmberEntity& getEmberEntity();
 
 
 	/**
-	 *    sets the minimum interval to wait before sending new rotation changes to the server
+	 * @brief Sets the minimum interval to wait before sending new rotation changes to the server.
 	 *    this is not done instantly to prevent swamping of data to the server
 	 *    set this lower if you experience too jerky game play
 	 * @param milliseconds
@@ -122,40 +123,47 @@ public Ember::ConfigListenerContainer
 	void setMinIntervalOfRotationChanges(Ogre::Real milliseconds);
 
 	/**
-	Emitted when an entity is added to the inventory.
-	*/
+	 * @brief Emitted when an entity is added to the inventory.
+	 */
 	sigc::signal<void, EmberEntity* > EventAddedEntityToInventory;
 
 	/**
-	Emitted when an entity is removed from the inventory.
-	*/
+	 * @brief Emitted when an entity is removed from the inventory.
+	 */
 	sigc::signal<void, EmberEntity* > EventRemovedEntityFromInventory;
 
 	/**
-	True if the current user have admin rights, i.e. is a "creator".
-	*/
+	 * @brief True if the current user have admin rights, i.e. is a "creator".
+	 */
 	bool isAdmin() const;
 
 	void moveClientSide(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement, float timeslice);
 
 
+	/**
+	 * @brief Gets the client side position of the avatar.
+	 * This can differ from the position of the entity which represents the avatar, since the player can move the avatar before the server receives updates.
+	 * @return The position of the avatar, as the client sees it.
+	 */
 	WFMath::Point<3> getClientSideAvatarPosition() const;
 
+	/**
+	 * @brief Gets the client side orientation of the avatar.
+	 * This can differ from the orientation of the entity which represents the avatar, since the player can move the avatar before the server receives updates.
+	 * @return The orientation of the avatar, as the client sees it.
+	 */
 	WFMath::Quaternion getClientSideAvatarOrientation() const;
 
+	/**
+	 * @brief Gets the camera mount attached to the avatar.
+	 * @return The third person camera mount attached to the avatar.
+	 */
 	Camera::ThirdPersonCameraMount& getCameraMount() const;
+
 protected:
 
 	typedef std::list<std::pair<long, AvatarMovementState> > TimedMovementStateList;
 
-	/**
-	 * adjust the avatar to the new position in the terrain
-	 * for now this means setting the correct heigth
-	 * accoring to mercator terrain, but it will probably
-	 * be extended to also include stuff as positioning the avatars feet
-	 * right
-	 */
-//	void adjustAvatarToNewPosition(MovementControllerMovement* movement);
 
 	/**
 	 * This method will determine if it's ok to send a small movement change, such as
@@ -178,17 +186,6 @@ protected:
 	 * shall take place.
 	 */
 	void attemptMove();
-
-	/**
-	 * Attempts to rotate the avatar to a certain direction
-	 * Note that depending on what the rules allows (i.e. collision detection,
-	 * character rules etc.) the outcome of the attempt is uncertain.
-	 *
-	 * When standing still one can rotate how much one want.
-	 * But when moving, rotation happens in interval
-	 *
-	 */
-//	void attemptRotate(MovementControllerMovement& movement);
 
 
 
@@ -231,10 +228,19 @@ protected:
 	 */
 	void avatar_LocationChanged(Eris::Entity* entity);
 
+	/**
+	 * @brief Listen to avatar movement and update the internal representation of the position and orientation of the avatar if suitable.
+	 */
 	void avatar_Moved();
 
+	/**
+	 * @brief Listen to child entities being added to the avatar entity and add the entity to the queue of entities which should be emitted as added to the inventory at the next frame.
+	 */
 	void entity_ChildAdded(Eris::Entity* childEntity);
 
+	/**
+	 * @brief Listen to child entities being removed from the avatar entity and emit the inventory removal event.
+	 */
 	void entity_ChildRemoved(Eris::Entity* childEntity);
 
 

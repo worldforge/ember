@@ -413,6 +413,14 @@ public:
 	void setAttachmentControlDelegate(IAttachmentControlDelegate* delegate);
 	IAttachmentControlDelegate* getAttachmentControlDelegate() const;
 
+	/**
+	 * @brief Gets the entity attached to the named point.
+	 * @note This is just a temporary solution until we get better outfit functionality.
+	 * @param namedPoint A named point.
+	 * @return A child entity, or null if none found.
+	 */
+	EmberEntity* getAttachedEntity(const std::string& namedPoint);
+
 
 protected:
 

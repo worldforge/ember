@@ -107,7 +107,20 @@ class EmberOgre
 	MotionManager* getMotionManager() const;
 	//Ogre::Root* getOgreRoot() const;
 	EmberEntityFactory* getEntityFactory() const;
-	EmberOgre::Camera::MainCamera* getMainCamera() const;
+	
+	/**
+	 * @brief Gets the main camera.
+	 * @return The main camera.
+	 */
+	Camera::MainCamera* getMainCamera() const;
+
+	/**
+	 * @brief Gets the main Ogre camera.
+	 * @note This is a shortcut for calling getMainCamera()->getCamera().
+	 * @return The main Ogre camera.
+	 */
+	Ogre::Camera* getMainOgreCamera() const;
+	
 	MovementController* getMovementController() const;
 	EntityMoveManager* getMoveManager() const;
 	

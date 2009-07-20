@@ -918,5 +918,31 @@ IEntityAttachment* EmberEntity::getAttachment() const
 	return mAttachment;
 }
 
+EmberEntity* EmberEntity::getAttachedEntity(const std::string& namedPoint)
+{
+	//HACK: this is just a temporary solution
+	std::string id;
+	if (hasAttr("right_hand_wield"))
+	{
+		const Atlas::Message::Element& idElement = valueOfAttr("right_hand_wield");
+		id = idElement.asString();
+
+	}
+	else if (hasAttr("left_hand_wield"))
+	{
+		const Atlas::Message::Element& idElement = valueOfAttr("left_hand_wield");
+		id = idElement.asString();
+	}
+	if (id != "") {
+		for (int i = 0; i < numContained(); ++i) {
+			Eris::Entity* entity = getContained(i);
+			if (entity && entity->getId() == id) {
+				return static_cast<EmberEntity*>(entity);
+			}
+		}
+	}
+	return 0;
+}
+
 
 }

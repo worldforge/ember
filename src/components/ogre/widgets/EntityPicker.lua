@@ -154,7 +154,7 @@ function EntityPicker.checkUse(entity)
 	end	
 	
 	--then fill up with operations that can be performed with the currently wielded entity
---[[	local wieldedEntity = emberOgre:getAvatar():getEmberEntity():getEntityAttachedToPoint("right_hand_wield")
+	local wieldedEntity = emberOgre:getAvatar():getEmberEntity():getAttachedEntity("right_hand_wield")
 	if wieldedEntity then
 		local operatorList = wieldedEntity:getDefaultUseOperators();
 		if operatorList:size() > 0 then 
@@ -165,7 +165,7 @@ function EntityPicker.checkUse(entity)
 				EntityPicker.addUse(currentButton, entity:getId(), wieldedEntity, defaultOp)
 			end
 		end
-	end]]
+	end
 end
 
 function EntityPicker.addUse(buttonWrapper, entityId, wieldedEntity, operation)

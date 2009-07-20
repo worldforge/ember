@@ -190,11 +190,16 @@ public:
 	EmberEntityFactory* getEntityFactory() const;
 
 	/**
-	 * @brief Gets the main camera, which is attached to the Avatar.
-	 * @return The main avatar camera.
+	 * @brief Gets the main camera.
+	 * @return The main camera.
 	 */
 	Camera::MainCamera* getMainCamera() const;
 
+	/**
+	 * @brief Gets the main Ogre camera.
+	 * @note This is a shortcut for calling getMainCamera()->getCamera().
+	 * @return The main Ogre camera.
+	 */
 	Ogre::Camera* getMainOgreCamera() const;
 
 	/**
