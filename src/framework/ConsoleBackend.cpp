@@ -143,8 +143,13 @@ void ConsoleBackend::deregisterCommand(const std::string &command, bool suppress
 		S_LOG_INFO("Deregistering: " << command);
 	}
 
-	// Delete from the map
-	mRegisteredCommands.erase(mRegisteredCommands.find(command));
+	ConsoleObjectEntryStore::iterator I = mRegisteredCommands.find(command);
+	if (I == mRegisteredCommands.end()) {
+		S_LOG_WARNING("Trying to deregister command '" << command << "' which isn't registered.");
+	} else {
+		// Delete from the map
+		mRegisteredCommands.erase(I);
+	}
 }
 
 void ConsoleBackend::runCommand(const std::string &command, bool addToHistory)
