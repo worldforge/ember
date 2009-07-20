@@ -239,7 +239,7 @@ bool Water::initialize()
 		return true;
 	} catch (const std::exception& ex)
 	{
-		S_LOG_FAILURE("Error when creating water: " << ex.what());
+		S_LOG_FAILURE("Error when creating water." << ex);
 		return false;
 	}
 

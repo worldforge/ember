@@ -1,7 +1,7 @@
 //
 // C++ Implementation: LoggingInstance
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2009
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -27,6 +27,7 @@
 #include "LoggingInstance.h"
 #include <sstream>
 #include <cstdio>
+#include <exception>
 
 namespace Ember {
 
@@ -74,7 +75,7 @@ LoggingInstance & LoggingInstance::operator<< (const unsigned int uintToAdd)
 	std::stringstream ss;
 	ss << uintToAdd;
 	mMessage += ss.str();
-	
+
 	return *this;
 }
 
@@ -87,8 +88,7 @@ LoggingInstance & LoggingInstance::operator<< (const int intToAdd)
 	return *this;
 }
 
-LoggingInstance & LoggingInstance::
-operator<< (const Log::HexNumber & intHexToAdd)
+LoggingInstance & LoggingInstance::operator<< (const Log::HexNumber & intHexToAdd)
 {
 	char buffer[Log::NUMBER_BUFFER_SIZE];
 	sprintf (buffer, "%x", intHexToAdd.myNumber);
@@ -96,8 +96,7 @@ operator<< (const Log::HexNumber & intHexToAdd)
 	return *this;
 }
 
-LoggingInstance & LoggingInstance::
-operator<< (const double doubleToAdd)
+LoggingInstance & LoggingInstance::operator<< (const double doubleToAdd)
 {
 	std::stringstream ss;
 	ss << doubleToAdd;
@@ -114,8 +113,7 @@ LoggingInstance & LoggingInstance::operator<< (const long longToAdd)
 	return *this;
 }
 
-LoggingInstance & LoggingInstance::
-operator<< (const unsigned long ulongToAdd)
+LoggingInstance & LoggingInstance::operator<< (const unsigned long ulongToAdd)
 {
 	std::stringstream ss;
 	ss << ulongToAdd;
@@ -129,6 +127,13 @@ void LoggingInstance::operator<< (const Log::EndMessageEnum endMessage)
 	Log::sendMessage(mMessage, mFile, mLine, mImportance);
 	mMessage = "";
 }
+
+LoggingInstance& LoggingInstance::operator<< (const std::exception& exception)
+{
+	mMessage += "\n\tException: " + std::string(exception.what());
+	return *this;
+}
+
 
 
 }

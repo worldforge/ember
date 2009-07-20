@@ -1,7 +1,7 @@
 //
 // C++ Implementation: IconBase
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -26,8 +26,8 @@
 
 #include "IconBase.h"
 
-#include <CEGUIImagesetManager.h> 
-#include <CEGUIImageset.h> 
+#include <CEGUIImagesetManager.h>
+#include <CEGUIImageset.h>
 #include <elements/CEGUIFrameWindow.h>
 #include "../GUIManager.h"
 
@@ -52,14 +52,14 @@ IconBase::IconBase(const std::string& name, const Image* background, const Image
 	mButton->setPosition(UVector2(UDim(0, 0), UDim(0, 0)));
 	mButton->setVisible(true);
 	mButton->setEnabled(true);
-	
+
 	mButton->setProperty("BackImage", PropertyHelper::imageToString(background));
 	mButton->setProperty("FrontImage", PropertyHelper::imageToString(foreground));
 	mButton->setProperty("BorderNormalImage", PropertyHelper::imageToString(borderInactive));
 	mButton->setProperty("BorderHoverImage", PropertyHelper::imageToString(borderActive));
-	
+
 	mContainer->addChildWindow(mButton);
-	
+
 	mButton->render();
 
 
@@ -95,7 +95,7 @@ const Image* IconBase::loadImageFromImageset(const std::string & imagesetName, c
 			std::string imagesetFileName("cegui/datafiles/imagesets/" + imagesetName + ".imageset");
 			imageSet = ImagesetManager::getSingleton().createImageset(imagesetFileName);
 		} catch (const std::exception& ex) {
-			S_LOG_WARNING("Error when loading imageset " << imagesetName << ": " << ex.what());
+			S_LOG_WARNING("Error when loading imageset " << imagesetName << "." << ex);
 			return 0;
 		} catch (const CEGUI::Exception& ex) {
 			S_LOG_WARNING("Error when loading imageset " << imagesetName << ": " << ex.getMessage().c_str());
@@ -104,7 +104,7 @@ const Image* IconBase::loadImageFromImageset(const std::string & imagesetName, c
 	} else {
 		imageSet = ImagesetManager::getSingleton().getImageset(imagesetName);
 	}
-	
+
 	return &imageSet->getImage(image);
 
 }

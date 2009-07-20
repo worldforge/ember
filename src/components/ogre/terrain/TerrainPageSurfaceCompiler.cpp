@@ -58,7 +58,7 @@ void TerrainPageSurfaceCompiler::compileMaterial(const TerrainPageGeometry& geom
 		mTechnique->setPage(&page);
 		result = mTechnique->compileMaterial(geometry, material, terrainPageSurfaces, terrainPageShadow);
 	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when creating terrain material, falling back to safe technique. Error message: " << ex.what());
+		S_LOG_FAILURE("Error when creating terrain material, falling back to safe technique." << ex);
 		fallback(geometry, material, terrainPageSurfaces, terrainPageShadow, page);
 	}
 	if (!result) {

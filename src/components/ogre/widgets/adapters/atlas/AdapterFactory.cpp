@@ -1,7 +1,7 @@
 //
 // C++ Implementation: AdapterFactory
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -74,16 +74,16 @@ TAdapter* AdapterFactory::createAdapter(CEGUI::Window* container, const std::str
 	if (!verifyCorrectType<TAdapter>(element)) {
 		return 0;
 	}
-	
+
 	try {
 		return loadWindowIntoAdapter<TAdapter>(container, adapterPrefix, element, entity);
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_FAILURE("Error when creating adapter. " << ex.getMessage().c_str());
 		return 0;
 	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when loading adapter. " << ex.what());
+		S_LOG_FAILURE("Error when loading adapter. " << ex);
 		return 0;
-	}	
+	}
 }
 
 template <>
@@ -421,7 +421,7 @@ CEGUI::Window* AdapterFactory::loadLayoutIntoContainer(CEGUI::Window* container,
 {
 	try {
 		CEGUI::WindowManager& windowManager = CEGUI::WindowManager::getSingleton();
-	
+
 		std::string finalFileName(GUIManager::getSingleton().getLayoutDir() + layoutfile);
 		std::stringstream ss;
 		ss << mPrefix << adapterPrefix << (msAutoGenId++);
@@ -429,7 +429,7 @@ CEGUI::Window* AdapterFactory::loadLayoutIntoContainer(CEGUI::Window* container,
 		CEGUI::Window* window = windowManager.loadWindowLayout(finalFileName, mCurrentPrefix);
 		if (window) {
 			if (container) {
-				container->addChildWindow(window); 
+				container->addChildWindow(window);
 				container->setHeight(window->getHeight());
 				container->setWidth(window->getWidth());
 			}
@@ -442,7 +442,7 @@ CEGUI::Window* AdapterFactory::loadLayoutIntoContainer(CEGUI::Window* container,
 		S_LOG_FAILURE("Error when loading" << layoutfile <<": " << ex.getMessage().c_str());
 		return 0;
 	} catch (const std::exception& ex) {
-		S_LOG_WARNING("Error when loading " << layoutfile <<": " << ex.what());
+		S_LOG_WARNING("Error when loading " << layoutfile <<"." << ex);
 		return 0;
 	}
 }

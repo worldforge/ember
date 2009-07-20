@@ -57,10 +57,10 @@
 namespace Ember
 {
 
-ServerService::ServerService() : 
+ServerService::ServerService() :
 	mConn(0),
 	mAccount(0),
-	mView(0), 
+	mView(0),
 	mAvatar(0),
 	mOOGChat(0),
 	mConnected(false),
@@ -91,7 +91,7 @@ ServerService::~ServerService()
 	//delete mView;
 	delete mServerAdapter;
 }
-	
+
 /* Method for starting this service 	*/
 Service::Status ServerService::start()
 {
@@ -99,7 +99,7 @@ Service::Status ServerService::start()
 	setRunning( true );
 
 	return Service::OK;
-	
+
 }
 
 /* Interface method for stopping this service 	*/
@@ -122,7 +122,7 @@ bool ServerService::connect(const std::string& host, short port)
 		// this does not create a new connection.
 		// We are connected without debuging enabled thus the false
 		mConn = new Eris::Connection(std::string("Ember ") + VERSION,myHost, port, false);
-		
+
 		// Bind signals
 		mConn->Failure.connect(sigc::mem_fun(*this, &ServerService::gotFailure));
 		mConn->Connected.connect(sigc::mem_fun(*this, &ServerService::connected));
@@ -132,7 +132,7 @@ bool ServerService::connect(const std::string& host, short port)
 		//mConn->Timeout.connect(SigC::slot(*this, &ServerService::timeout));
 		// If the connection fails here an errnumber is returned
 		int errorno = mConn->connect();
-		if (errorno) 
+		if (errorno)
 		{
 			return false;
 		}
@@ -179,32 +179,22 @@ void ServerService::disconnect()
 		mAccount = 0;
 		delete tempAccount;
 	}
-	catch (const Eris::BaseException& except)
-	{
-		S_LOG_WARNING("Got error on account deletion:" << except._msg);
-		return;
-	}
 	catch (const std::exception& e)
 	{
-		S_LOG_WARNING("Got error on account deletion:" << e.what());
+		S_LOG_WARNING("Got error on account deletion." << e);
 		return;
 	}
 	catch (...)
 	{
-		S_LOG_WARNING( "Got unknown error on disconnect");
+		S_LOG_WARNING( "Got unknown error on account deletion.");
 		return;
 	}
 	try {
 		mConn->disconnect();
 	}
-	catch (const Eris::BaseException& except)
-	{
-		S_LOG_WARNING("Got error on disconnect:" << except._msg);
-		return;
-	}
 	catch (const std::exception& e)
 	{
-		S_LOG_WARNING("Got error on disconnect:" << e.what());
+		S_LOG_WARNING("Got error on disconnect." << e);
 		return;
 	}
 	catch (...)
@@ -214,17 +204,17 @@ void ServerService::disconnect()
 	}
 
 }
-	
+
 void ServerService::gotFailure(const std::string & msg)
 {
 	std::ostringstream temp;
 
 	temp << "Got Server error: " << msg;
 	S_LOG_WARNING(temp.str());
-	
+
 	ConsoleBackend::getSingletonPtr()->pushMessage(temp.str());
 }
-	
+
 void ServerService::connected()
 {
 	S_LOG_INFO("Connected");
@@ -240,11 +230,11 @@ void ServerService::connected()
 	mAccount->LogoutComplete.connect(sigc::mem_fun(*this,&ServerService::logoutComplete));
 	mAccount->AvatarSuccess.connect(sigc::mem_fun(*this,&ServerService::gotAvatarSuccess));
 	mAccount->AvatarDeactivated.connect(sigc::mem_fun(*this,&ServerService::gotAvatarDeactivated));
-	
+
 	GotAccount.emit(mAccount);
 	// Init OOGChat controller
 //     mOOGChat = new OOGChat(mAccount);
-	
+
 
 	ConsoleBackend::getSingletonPtr()->pushMessage("Connected to Server");
 }
@@ -287,7 +277,7 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 {
 	S_LOG_INFO("Got Character Info");
 	ConsoleBackend::getSingletonPtr()->pushMessage("Got character info");
-	
+
 	GotCharacterInfo.emit(info);
 }
 
@@ -306,8 +296,8 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 
   }
 
-//  void ServerService::loginFailure(Eris::LoginFailureType, const std::string &msg) 
-void ServerService::loginFailure(const std::string &msg) 
+//  void ServerService::loginFailure(Eris::LoginFailureType, const std::string &msg)
+void ServerService::loginFailure(const std::string &msg)
 {
 	std::ostringstream temp;
 
@@ -329,7 +319,7 @@ void ServerService::loginSuccess(){
 void ServerService::takeCharacter(const std::string &id){
 		mAccount->takeCharacter(id);
 }
-	
+
 void ServerService::gotAvatarSuccess(Eris::Avatar* avatar) {
 	//if we already have a avatar, do nothing
 	//TODO: perhaps signal an error?
@@ -384,34 +374,34 @@ void ServerService::logoutComplete(bool clean) {
 			disconnect();
 
 		// Create Account command
-		} else if (CreateAcc == command) {	
+		} else if (CreateAcc == command) {
 			if (!mAccount) return;
 			Tokeniser tokeniser = Tokeniser();
 			tokeniser.initTokens(args);
 			std::string uname = tokeniser.nextToken();
 			std::string password = tokeniser.nextToken();
 			std::string realname = tokeniser.remainingTokens();
-	
+
 			std::string msg;
 			msg = "Creating account: Name: [" + uname + "], Password: [" + password + "], Real Name: [" + realname + "]";
-			
+
 			try {
 				mAccount->createAccount(uname,realname,password);
-			} 
-			catch (const Eris::BaseException& except)
+			}
+			catch (const std::exception& except)
 			{
-				S_LOG_WARNING("Got Eris error on account creation: " << except._msg );
+				S_LOG_WARNING("Got error on account creation." << except);
 				return;
 			}
-			catch (const std::runtime_error& except)
+			catch (...)
 			{
-				S_LOG_WARNING("Got unknown error on account creation: " << except.what() );
+				S_LOG_WARNING("Got unknown error on account creation.");
 				return;
-			}      
-			
+			}
+
 		// Login command
 		} else if (Login == command) {
-	
+
 		// TODO: put this in a separate method
 			if (mAccount)
 			{
@@ -420,9 +410,9 @@ void ServerService::logoutComplete(bool clean) {
 				tokeniser.initTokens(args);
 				std::string userid = tokeniser.nextToken();
 				std::string password = tokeniser.remainingTokens();
-	
+
 				mAccount->login(userid,password);
-				
+
 				std::string msg;
 				msg = "Login: [" + userid + "," + password + "]";
 				ConsoleBackend::getSingletonPtr()->pushMessage(msg);
@@ -437,7 +427,7 @@ void ServerService::logoutComplete(bool clean) {
 			{
 				mAccount->logout();
 			}
-		
+
 		// Create Character command
 		} else if (CreateChar == command) {
 			// Split string into name/type/sex/description
@@ -446,8 +436,8 @@ void ServerService::logoutComplete(bool clean) {
 			std::string name = tokeniser.nextToken();
 			std::string sex  = tokeniser.nextToken();
 			std::string type = tokeniser.nextToken();
-			std::string description = tokeniser.remainingTokens();   
-				
+			std::string description = tokeniser.remainingTokens();
+
 			if (!createCharacter(name, sex, type, description)) {
 				return;
 			}
@@ -481,8 +471,8 @@ void ServerService::logoutComplete(bool clean) {
 					deleteEntity(entity);
 				}
 			}
-			
-			
+
+
 
 /*		// Touch Command
 		} else if (command==TOUCH) {
@@ -493,16 +483,16 @@ void ServerService::logoutComplete(bool clean) {
 				S_LOG_WARNING("No avatar.");
 				return;
 			}
-	
+
 			Atlas::Objects::Operation::Touch touch;
 			Atlas::Message::MapType opargs;
-	
+
 			opargs["id"] = args;
 			touch->setFrom(mAvatar->getId());
 			touch->setArgsAsList(Atlas::Message::ListType(1, opargs));
-	
+
 			mConn->send(touch);*/
-		} else if (AdminTell == command) 
+		} else if (AdminTell == command)
 		{
 			Tokeniser tokeniser = Tokeniser();
 			tokeniser.initTokens(args);
@@ -518,7 +508,7 @@ void ServerService::logoutComplete(bool clean) {
 			}
 		}
 	}
-	
+
 	bool ServerService::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description)
 	{
 		ConsoleBackend::getSingletonPtr()->pushMessage("Creating char...");
@@ -527,7 +517,7 @@ void ServerService::logoutComplete(bool clean) {
 			std::string msg;
 			msg = "Creating character: Name: [" + name + "], Sex: [" + sex + "], Type: [" + type + "], Desc: [" + description + "]";
 			ConsoleBackend::getSingletonPtr()->pushMessage(msg);
-			
+
 			S_LOG_INFO("Creating character.");
 			Atlas::Objects::Entity::RootEntity character;
 			character->setParentsAsList(Atlas::Message::ListType(1,type));
@@ -536,15 +526,15 @@ void ServerService::logoutComplete(bool clean) {
 			character->setAttr("description", description);
 			try {
 				mAccount->createCharacter(character);
-			} 
-			catch (const Eris::BaseException& except)
+			}
+			catch (const std::exception& except)
 			{
-				S_LOG_WARNING("Got Eris error on character creation: " << except._msg );
+				S_LOG_WARNING("Got Eris error on character creation." << except);
 				return false;
 			}
-			catch (const std::runtime_error& except)
+			catch (...)
 			{
-				S_LOG_WARNING("Got unknown error on character creation: " << except.what() );
+				S_LOG_WARNING("Got unknown error on character creation.");
 				return false;
 			}
 			S_LOG_INFO("Done creating character.");
@@ -559,7 +549,7 @@ void ServerService::logoutComplete(bool clean) {
 			ConsoleBackend::getSingletonPtr()->pushMessage("Not logged in. Can't create char...");
 		}
 
-	
+
 		return true;
 	}
 
@@ -575,7 +565,7 @@ void ServerService::logoutComplete(bool clean) {
 	void ServerService::moveInDirection(const WFMath::Vector<3>& velocity) {
 		mServerAdapter->moveInDirection(velocity);
 	}
-	
+
 // 	void ServerService::teleportTo(const WFMath::Point<3>& dest)
 // 	{
 // 		mServerAdapter->teleportTo(dest);
@@ -583,31 +573,31 @@ void ServerService::logoutComplete(bool clean) {
 
 
 
-	void ServerService::touch(Eris::Entity* entity) 
+	void ServerService::touch(Eris::Entity* entity)
 	{
 		mServerAdapter->touch(entity);
 	}
 
-	void ServerService::take(Eris::Entity* entity) 
+	void ServerService::take(Eris::Entity* entity)
 	{
 		mServerAdapter->take(entity);
 	}
-	
-	void ServerService::drop(Eris::Entity* entity, const WFMath::Vector<3>& offset) 
+
+	void ServerService::drop(Eris::Entity* entity, const WFMath::Vector<3>& offset)
 	{
 		mServerAdapter->drop(entity, offset);
-	}   
-	
+	}
+
 	void ServerService::place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos)
 	{
 		mServerAdapter->place(entity, target, pos);
 	}
-	
+
 	void ServerService::place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orient)
 	{
 		mServerAdapter->place(entity, target, pos, orient);
 	}
-	
+
 	void ServerService::wield(Eris::Entity* entity)
 	{
 		mServerAdapter->wield(entity);
@@ -622,7 +612,7 @@ void ServerService::logoutComplete(bool clean) {
 	{
 		mServerAdapter->useStop();
 	}
-	
+
 	void ServerService::actuate(Eris::Entity* entity, const std::string& action)
 	{
 		mServerAdapter->actuate(entity, action);
@@ -632,7 +622,7 @@ void ServerService::logoutComplete(bool clean) {
 	void ServerService::attack(Eris::Entity* entity)
 	{
 		mServerAdapter->attack(entity);
-	}   
+	}
 
 	void ServerService::eat(Eris::Entity* entity)
 	{
@@ -641,26 +631,26 @@ void ServerService::logoutComplete(bool clean) {
 
 	void ServerService::say(const std::string &message) {
 		mServerAdapter->say(message);
-	}	
-	
+	}
+
 	void ServerService::emote(const std::string &message) {
 		mServerAdapter->emote(message);
 	}
-	
+
 	void ServerService::deleteEntity(Eris::Entity* entity)
 	{
 		mServerAdapter->deleteEntity(entity);
 	}
-	
+
 	void ServerService::setAttributes(Eris::Entity* entity, Atlas::Message::MapType& attributes)
 	{
 		mServerAdapter->setAttributes(entity, attributes);
 	}
-	
+
 	void ServerService::adminTell(const std::string& entityId, const std::string& attribute, const std::string &value)
 	{
 		mServerAdapter->adminTell(entityId, attribute, value);
 	}
-	
- 
+
+
 } // namespace Ember

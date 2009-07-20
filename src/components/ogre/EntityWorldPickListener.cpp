@@ -52,7 +52,7 @@ EntityWorldPickListenerVisualizer::EntityWorldPickListenerVisualizer(EntityWorld
 		mEntity->setQueryFlags(MousePicker::CM_NONPICKABLE);
 		mDebugNode->attachObject(mEntity);
 	} catch (const std::exception& ex) {
-		S_LOG_WARNING("Error when creating picking visualizer: " << ex.what());
+		S_LOG_WARNING("Error when creating picking visualizer." << ex);
 	}
 
 	pickListener.EventPickedEntity.connect(sigc::mem_fun(*this, &EntityWorldPickListenerVisualizer::picker_EventPickedEntity));

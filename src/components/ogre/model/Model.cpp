@@ -263,7 +263,7 @@ bool Model::createActualModel()
 							}
 						} catch (const std::exception& ex)
 						{
-							S_LOG_WARNING("Error when getting sub entities for model " << mMasterModel->getName() << ": " << ex.what());
+							S_LOG_WARNING("Error when getting sub entities for model '" << mMasterModel->getName() << "'." << ex);
 						}
 					}
 				}

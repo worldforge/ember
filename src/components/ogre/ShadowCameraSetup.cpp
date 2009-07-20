@@ -1,7 +1,7 @@
 //
 // C++ Implementation: ShadowCameraSetup
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2009
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -95,7 +95,7 @@ void ShadowCameraSetup::Config_ShadowTextureSize(const std::string& section, con
 			mSceneMgr.setShadowTextureSize(static_cast<int>(variable));
 		}
 	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when setting shadow texture size: " << ex.what());
+		S_LOG_FAILURE("Error when setting shadow texture size." << ex);
 	}
 }
 void ShadowCameraSetup::Config_ShadowSplitPoints(const std::string& section, const std::string& key, varconf::Variable& variable)
@@ -112,7 +112,7 @@ void ShadowCameraSetup::Config_ShadowSplitPoints(const std::string& section, con
 			mPssmSetup->setSplitPoints(splitPointList);
 		}
 	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when setting shadow split points: " << ex.what());
+		S_LOG_FAILURE("Error when setting shadow split points." << ex);
 	}
 }
 void ShadowCameraSetup::Config_ShadowSplitPadding(const std::string& section, const std::string& key, varconf::Variable& variable)
@@ -122,7 +122,7 @@ void ShadowCameraSetup::Config_ShadowSplitPadding(const std::string& section, co
 			mPssmSetup->setSplitPadding(static_cast<double>(variable));
 		}
 	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when setting shadow split padding: " << ex.what());
+		S_LOG_FAILURE("Error when setting shadow split padding." << ex);
 	}
 }
 
@@ -136,7 +136,7 @@ void ShadowCameraSetup::Config_ShadowOptimalAdjustFactors(const std::string& sec
 			mPssmSetup->setOptimalAdjustFactor(2, atof(tokeniser.nextToken().c_str()));
 		}
 	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when setting shadow optimal adjust factors: " << ex.what());
+		S_LOG_FAILURE("Error when setting shadow optimal adjust factors." << ex);
 	}
 }
 
@@ -147,7 +147,7 @@ void ShadowCameraSetup::Config_ShadowUseAggressiveFocusRegion(const std::string&
 			mPssmSetup->setUseAggressiveFocusRegion(static_cast<bool>(variable));
 		}
 	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when setting shadow use aggressive focus region: " << ex.what());
+		S_LOG_FAILURE("Error when setting shadow use aggressive focus region." << ex);
 	}
 }
 
@@ -155,11 +155,11 @@ void ShadowCameraSetup::Config_ShadowFarDistance(const std::string& section, con
 {
 	try {
 		if (variable.is_bool()) {
-			S_LOG_VERBOSE("Setting shadow far distace: " << static_cast<double>(variable));
+			S_LOG_VERBOSE("Setting shadow far distance: " << static_cast<double>(variable));
 			mSceneMgr.setShadowFarDistance(static_cast<double>(variable));
 		}
 	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when setting shadow far distance: " << ex.what());
+		S_LOG_FAILURE("Error when setting shadow far distance." << ex);
 	}
 }
 

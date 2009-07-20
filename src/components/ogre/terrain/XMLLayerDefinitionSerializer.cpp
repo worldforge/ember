@@ -1,7 +1,7 @@
 //
 // C++ Implementation: XMLLayerDefinitionSerializer
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -74,7 +74,7 @@ void XMLLayerDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, cons
 					areaId = 0;
 				}
 			}
-			
+
 			if (shadername != "" || areaId != 0) {
 				///make sure that there's no preexisting shader defined
 				S_LOG_VERBOSE("Adding terrain layer definition for shader '" << shadername << "' and area index '"<< areaId << "'.");
@@ -82,15 +82,15 @@ void XMLLayerDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, cons
 					TerrainLayerDefinition* definition = new TerrainLayerDefinition();
 					definition->setShaderName(shadername);
 					definition->setAreaId(static_cast<unsigned int>(areaId));
-					
+
 					definition->setName(smElem->Attribute("name"));
 					definition->setDiffuseTextureName(smElem->Attribute("diffusetexture"));
 					definition->setNormalMapTextureName(smElem->Attribute("normalmaptexture"));
 					float tileSize;
-					if (smElem->QueryFloatAttribute("tilesize", &tileSize) == TIXML_SUCCESS) { 
+					if (smElem->QueryFloatAttribute("tilesize", &tileSize) == TIXML_SUCCESS) {
 						definition->setTileSize(tileSize);
 					}
-					
+
 					for (TiXmlElement* foliageElem = smElem->FirstChildElement("foliage");
 							foliageElem != 0; foliageElem = foliageElem->NextSiblingElement("foliage"))
 					{
@@ -108,10 +108,10 @@ void XMLLayerDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, cons
 						}
 						definition->getFoliages().push_back(foliageDef);
 					}
-					
+
 					mManager.addDefinition(definition);
 				} catch (const std::exception& ex) {
-					S_LOG_FAILURE(ex.what());
+					S_LOG_FAILURE("Error when reading terrain layer definition." << ex);
 				} catch (...) {
 					S_LOG_FAILURE("Error when reading terrain layer definition.");
 				}

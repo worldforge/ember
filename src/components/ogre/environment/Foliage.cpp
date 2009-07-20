@@ -86,11 +86,11 @@ void Foliage::initialize()
 				}
 			} catch (const std::exception& ex)
 			{
-				S_LOG_FAILURE("Error when creating foliage. Message: " << ex.what());
+				S_LOG_FAILURE("Error when creating foliage." << ex);
 				try {
 					delete foliageBase;
 				} catch (const std::exception& innerEx) {
-					S_LOG_FAILURE("Even got an error when deletin the foliage, things could get ugly from here on. Message: " << innerEx.what());
+					S_LOG_FAILURE("Even got an error when deleting the foliage, things could get ugly from here on." << innerEx);
 				}
 			}
 		}

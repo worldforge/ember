@@ -397,7 +397,7 @@ void ServerWidget::loginSuccess(Eris::Account* account)
 			saveCredentials();
 		} catch (const std::exception& ex)
 		{
-			S_LOG_FAILURE("Error when saving password: "<< ex.what());
+			S_LOG_FAILURE("Error when saving password."<< ex);
 		} catch (...) {
 			S_LOG_FAILURE("Unspecified error when saving password.");
 		}

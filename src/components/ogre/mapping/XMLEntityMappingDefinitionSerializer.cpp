@@ -25,6 +25,7 @@
 #endif
 
 #include "XMLEntityMappingDefinitionSerializer.h"
+#include "framework/LoggingInstance.h"
 //#include "components/ogre/EmberOgrePrerequisites.h"
 using namespace Ember::EntityMapping;
 using namespace Ember::EntityMapping::Definitions;
@@ -65,10 +66,10 @@ void XMLEntityMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocumen
 					TiXmlElement* matchElement = smElem->FirstChildElement();
 					parseMatchElement(*definition, definition->getRoot(), matchElement);
 					mEntityMappingManager.addDefinition(definition);
-				} catch (std::exception ex) {
-					//S_LOG_FAILURE(ex.what());
+				} catch (const std::exception& ex) {
+					S_LOG_FAILURE("Error when reading model mapping with name '" << tmp << "'." << ex);
 				} catch (...) {
-					//S_LOG_FAILURE("Error when reading model mapping with name " << name);
+					S_LOG_FAILURE("Error when reading model mapping with name '" << tmp << "'.");
 				}
 			}
 

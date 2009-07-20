@@ -92,7 +92,7 @@ void ShrubberyFoliage::frameStarted(const Ogre::FrameEvent & evt)
 			mPagedGeometry->update();
 		} catch (const Ogre::Exception& ex)
 		{
-			S_LOG_FAILURE("Error when updating shrubbery for terrain layer " << mTerrainLayerDefinition.getName() << " and areaId " << mTerrainLayerDefinition.getAreaId() << ". Will disable shrubbery.\n"<< ex.what());
+			S_LOG_FAILURE("Error when updating shrubbery for terrain layer " << mTerrainLayerDefinition.getName() << " and areaId " << mTerrainLayerDefinition.getAreaId() << ". Will disable shrubbery."<< ex);
 			delete mPagedGeometry;
 			delete mLoader;
 			mPagedGeometry = 0;

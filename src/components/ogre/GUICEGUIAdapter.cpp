@@ -1,7 +1,7 @@
 //
 // C++ Implementation: GUICEGUIAdapter
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -27,12 +27,12 @@
 
 #include <CEGUIExceptions.h>
 #include <CEGUIGlobalEventSet.h>
-#include <elements/CEGUIEditbox.h> 
+#include <elements/CEGUIEditbox.h>
 #include <elements/CEGUIMultiLineEditbox.h>
 
 namespace EmberOgre {
 
-GUICEGUIAdapter::GUICEGUIAdapter(CEGUI::System *system, CEGUI::OgreCEGUIRenderer *renderer): 
+GUICEGUIAdapter::GUICEGUIAdapter(CEGUI::System *system, CEGUI::OgreCEGUIRenderer *renderer):
 mGuiSystem(system)
 , mGuiRenderer(renderer)
 , mSelectedText(0)
@@ -142,18 +142,18 @@ mGuiSystem(system)
 	mKeyMap[SDLK_LCTRL] = CEGUI::Key::LeftControl;
 	mKeyMap[SDLK_RALT] = CEGUI::Key::RightAlt;
 	mKeyMap[SDLK_LALT] = CEGUI::Key::LeftAlt;
-	
-	
+
+
 	///set up the capturing of text selected event for the copy-and-paste functionality
-	
+
 //window->subscribeEvent(event, CEGUI::Event::Subscriber(&method, this));
-	
+
 	CEGUI::GlobalEventSet::getSingleton().subscribeEvent("MultiLineEditbox/TextSelectionChanged", CEGUI::Event::Subscriber(&GUICEGUIAdapter::MultiLineEditbox_selectionChangedHandler, this));
 	CEGUI::GlobalEventSet::getSingleton().subscribeEvent("Editbox/TextSelectionChanged", CEGUI::Event::Subscriber(&GUICEGUIAdapter::Editbox_selectionChangedHandler, this));
 	//CEGUI::GlobalEventSet::getSingleton().subscribeEvent("Editbox/TextSelectionChanged", &GUICEGUIAdapter::selectionChangedHandler);
-	
-	
-	
+
+
+
 }
 
 
@@ -173,7 +173,7 @@ bool GUICEGUIAdapter::MultiLineEditbox_selectionChangedHandler(const CEGUI::Even
 		S_LOG_VERBOSE("Selected text: " << selection);
 	}*/
 //	S_LOG_VERBOSE("Selected text.");
-	
+
 	return true;
 }
 
@@ -210,14 +210,14 @@ bool GUICEGUIAdapter::injectMouseButtonUp(const Ember::Input::MouseButton& butto
 	} else {
 		return true;
 	}
-	
+
 	try {
 		mGuiSystem->injectMouseButtonUp(ceguiButton);
 		return false;
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
 	} catch (const std::exception& e) {
-		S_LOG_WARNING("Error in CEGUI: " << e.what());
+		S_LOG_WARNING("Error in CEGUI." << e);
 	} catch (...) {
 		S_LOG_WARNING("Unknown error in CEGUI.");
 	}
@@ -250,7 +250,7 @@ bool GUICEGUIAdapter::injectMouseButtonDown(const Ember::Input::MouseButton& but
 	} else {
 		return true;
 	}
-	
+
 	try {
 		mGuiSystem->injectMouseButtonDown(ceguiButton);
 		return false;
@@ -303,7 +303,7 @@ bool GUICEGUIAdapter::injectKeyUp(const SDLKey& key)
 		S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
 	}
 	return true;
-	
+
 }
 
 

@@ -138,7 +138,7 @@ void Application::mainLoopStep()
 		EmberServices::getSingleton().getSoundService()->cycle();
 	} catch (const std::exception& ex)
 	{
-		S_LOG_CRITICAL("Got exception, shutting down. " << ex.what());
+		S_LOG_CRITICAL("Got exception, shutting down." << ex);
 		throw;
 	} catch (const std::string& ex)
 	{
@@ -284,7 +284,7 @@ void Application::start()
 		}
 	} catch (const std::exception& ex) {
 		std::cout << "Error when setting up Ogre: " << ex.what() << std::endl;
-		S_LOG_CRITICAL("Error when setting up Ogre: " << ex.what());
+		S_LOG_CRITICAL("Error when setting up Ogre." << ex);
 		return;
 	} catch (...) {
 		std::cout << "Unknown error when setting up Ogre." << std::endl;

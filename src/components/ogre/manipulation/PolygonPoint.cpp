@@ -69,7 +69,7 @@ PolygonPoint::PolygonPoint(Polygon& polygon, const WFMath::Point<2>& localPositi
 		mEntity->setUserObject(&mUserObject);
 
 	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when creating polygon point marker entity: " << ex.what());
+		S_LOG_FAILURE("Error when creating polygon point marker entity." << ex);
 		return;
 	}
 
@@ -87,7 +87,7 @@ PolygonPoint::~PolygonPoint()
 			mPolygon.getBaseNode()->removeAndDestroyChild(mNode->getName());
 		}
 	} catch (const std::exception& ex) {
-		S_LOG_WARNING("Error when deleting polygon point: " << ex.what());
+		S_LOG_WARNING("Error when deleting polygon point." << ex);
 	}
 }
 

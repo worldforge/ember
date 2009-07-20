@@ -1,7 +1,7 @@
 //
 // C++ Interface: LoggingInstance
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2009
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -49,8 +49,8 @@ public:
 	LoggingInstance(const std::string & file, const int line);
 
 	LoggingInstance(const std::string & file);
-	
-	
+
+
 	LoggingInstance& operator<< (const std::string & stringToAdd);
 
 	LoggingInstance& operator<< (const int intToAdd);
@@ -64,7 +64,9 @@ public:
 	LoggingInstance& operator<< (const Log::HexNumber & intHexToAdd);
 
 	LoggingInstance& operator<< (const double doubleToAdd);
-	
+
+	LoggingInstance& operator<< (const std::exception& exception);
+
 	/**
 	 * @brief At destruction the message will be written, if not already done.
 	 */
@@ -80,7 +82,7 @@ private:
 
 	/**
 	 * @brief This is private to prevent copying.
-	 * @param l 
+	 * @param l
 	 */
 	LoggingInstance(const LoggingInstance& l);
 
@@ -96,14 +98,14 @@ private:
 	* -1 indicates that no line option was set.
 	*/
 	int mLine;
-	
+
 
 	/**
 	* currently set importance (option; used by << streaming only)
 	* The default value is INFO.
 	*/
 	Log::MessageImportance mImportance;
-	
+
 	/**
 	currently given part of the message string (used by << streaming only)
 	*/

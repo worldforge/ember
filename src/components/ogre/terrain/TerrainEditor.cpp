@@ -232,7 +232,7 @@ void TerrainEditor::createOverlay()
 					entity->setRenderingDistance(300);
 					entity->setQueryFlags(MousePicker::CM_UNDEFINED);
 				} catch (const std::exception& ex) {
-					S_LOG_FAILURE("Error when creating base point marker entity: " << ex.what());
+					S_LOG_FAILURE("Error when creating base point marker entity." << ex);
 					continue;
 				}
 
@@ -458,12 +458,9 @@ void TerrainEditor::sendChangesToServer()
 		}
 		///clear all actions
 		mActions.clear();
-	}catch (const Atlas::Exception& ex)
-	{
-		S_LOG_FAILURE("Could not send terrain to server. Message: " << ex.what());
 	}catch (const std::exception& ex)
 	{
-		S_LOG_FAILURE("Could not send terrain to server. Message: " << ex.what());
+		S_LOG_FAILURE("Could not send terrain to server." << ex);
 	}
 
 }

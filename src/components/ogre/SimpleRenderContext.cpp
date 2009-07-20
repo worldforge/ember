@@ -52,7 +52,7 @@ void SimpleRenderContextResourceLoader::loadResource (Ogre::Resource *resource)
 		try {
 			mRenderContext.getRenderTexture()->update();
 		} catch (const std::exception& ex) {
-			S_LOG_FAILURE("Error when updating render for SimpleRenderContext, after the resource has been reloaded: " << ex.what());
+			S_LOG_FAILURE("Error when updating render for SimpleRenderContext, after the resource has been reloaded." << ex);
 		}
 	}
 }

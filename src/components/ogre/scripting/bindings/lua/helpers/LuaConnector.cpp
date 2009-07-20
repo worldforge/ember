@@ -156,7 +156,7 @@ template <typename Treturn, typename T0, typename T1, typename T2, typename T3> 
 	catch(const std::exception& ex )
 	{
 		lua_settop(state, top );
-		S_LOG_FAILURE("(LuaScriptModule) Unable to execute scripted event handler: " << mLuaMethod << "\n" << ex.what());
+		S_LOG_FAILURE("(LuaScriptModule) Unable to execute scripted event handler '" << mLuaMethod << "'." << ex);
 	} catch (...)
 	{
 		lua_settop(state, top );

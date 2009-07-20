@@ -258,7 +258,7 @@ void OgreResourceLoader::loadSection(const std::string& sectionName)
 				}
 				*/
 			} catch (const std::exception& ex) {
-				S_LOG_FAILURE("An error occurred when loading media from section '" << sectionName << "'. Message:\n\t"<< ex.what());
+				S_LOG_FAILURE("An error occurred when loading media from section '" << sectionName << "'." << ex);
 			} catch (...) {
 				S_LOG_FAILURE("An unknown error occurred when loading media from section '" << sectionName << "'.");
 			}

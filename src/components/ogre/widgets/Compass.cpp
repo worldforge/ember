@@ -255,7 +255,7 @@ void RenderedCompassImpl::reposition(float x, float y)
 		try {
 			mRenderTexture->update();
 		} catch (const std::exception& ex) {
-			S_LOG_FAILURE("Error when updating render for compass: " << ex.what());
+			S_LOG_FAILURE("Error when updating render for compass." << ex);
 		}
 	}
 	mX = x;

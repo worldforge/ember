@@ -372,16 +372,16 @@ const std::string MainCamera::_takeScreenshot()
 #endif
 		}
 	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when creating directory for screenshots. Message: " << std::string(ex.what()));
-		throw Ember::Exception("Error when saving screenshot. Message: " + std::string(ex.what()));
+		S_LOG_FAILURE("Error when creating directory for screenshots." << ex);
+		throw Ember::Exception("Error when saving screenshot.");
 	}
 
 	try {
 		// take screenshot
 		mWindow.writeContentsToFile(dir + filename.str());
-	} catch (const Ogre::Exception& ex) {
-		S_LOG_FAILURE("Could not write screenshot to disc. Message: "<< ex.getFullDescription());
-		throw Ember::Exception("Error when saving screenshot. Message: " + ex.getDescription());
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Could not write screenshot to disc." << ex);
+		throw Ember::Exception("Error when saving screenshot.");
 	}
 	return dir + filename.str();
 }

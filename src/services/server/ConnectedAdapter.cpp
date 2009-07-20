@@ -57,28 +57,19 @@ void ConnectedAdapter::moveToPoint(const WFMath::Point<3>& dest) {
 	try {
 		mAvatar->moveToPoint(dest);
 	}
-	catch (const Eris::BaseException& except)
+	catch (const std::exception& ex)
 	{
-		S_LOG_WARNING( "Got Eris error on moving: " << except._msg);
+		S_LOG_WARNING( "Got error on moving." << ex);
 	}
-	catch (const std::runtime_error& except)
-	{
-		S_LOG_WARNING("Got unknown error on moving: " << except.what());
-	}
-
 }
 
 void ConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation) {
 	try {
 		mAvatar->moveInDirection(velocity, orientation);
 	}
-	catch (const Eris::BaseException& except)
+	catch (const std::exception& ex)
 	{
-		S_LOG_WARNING("Got Eris error on moving: " << except._msg);
-	}
-	catch (const std::runtime_error& except)
-	{
-		S_LOG_WARNING("Got unknown error on moving: " << except.what());
+		S_LOG_WARNING("Got error on moving." << ex);
 	}
 }
 
@@ -87,13 +78,9 @@ void ConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity) {
 	try {
 		mAvatar->moveInDirection(velocity);
 	}
-	catch (const Eris::BaseException& except)
+	catch (const std::exception& ex)
 	{
-		S_LOG_WARNING("Got Eris error on moving: " << except._msg);
-	}
-	catch (const std::runtime_error& except)
-	{
-		S_LOG_WARNING("Got unknown error on moving: " << except.what());
+		S_LOG_WARNING("Got error on moving." << ex);
 	}
 }
 
@@ -108,13 +95,9 @@ void ConnectedAdapter::touch(Eris::Entity* entity)
 	try {
 		mAvatar->touch(entity);
 	}
-	catch (const Eris::BaseException& except)
+	catch (const std::exception& ex)
 	{
-		S_LOG_WARNING("Got Eris error on touching: " << except._msg);
-	}
-	catch (const std::runtime_error& except)
-	{
-		S_LOG_WARNING("Got unknown error on touching: " << except.what());
+		S_LOG_WARNING("Got error on touching." << ex);
 	}
 }
 
@@ -123,13 +106,9 @@ void ConnectedAdapter::emote(const std::string& emote)
 	try {
 		mAvatar->emote(emote);
 	}
-	catch (const Eris::BaseException& except)
+	catch (const std::exception& ex)
 	{
-		S_LOG_WARNING("Got Eris error on emoting: " << except._msg);
-	}
-	catch (const std::runtime_error& except)
-	{
-		S_LOG_WARNING("Got unknown error on emoting: " << except.what());
+		S_LOG_WARNING("Got error on emoting." << ex);
 	}
 }
 
@@ -138,13 +117,9 @@ void ConnectedAdapter::take(Eris::Entity* entity)
 	try {
 		mAvatar->take(entity);
 	}
-	catch (const Eris::BaseException& except)
+	catch (const std::exception& ex)
 	{
-		S_LOG_WARNING("Got Eris error on taking: " << except._msg);
-	}
-	catch (const std::runtime_error& except)
-	{
-		S_LOG_WARNING("Got unknown error on taking: " << except.what());
+		S_LOG_WARNING("Got error on taking." << ex);
 	}
 }
 
@@ -153,13 +128,9 @@ void ConnectedAdapter::drop(Eris::Entity* entity, const WFMath::Vector<3>& offse
 	try {
 		mAvatar->drop(entity, offset);
 	}
-	catch (const Eris::BaseException& except)
+	catch (const std::exception& ex)
 	{
-		S_LOG_WARNING("Got Eris error on dropping: " << except._msg);
-	}
-	catch (const std::runtime_error& except)
-	{
-		S_LOG_WARNING("Got unknown error on dropping: " << except.what());
+		S_LOG_WARNING("Got error on dropping." << ex);
 	}
 }
 void ConnectedAdapter::place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos)
@@ -197,13 +168,9 @@ void ConnectedAdapter::place(Eris::Entity* entity, Eris::Entity* target, const W
 
 // 			mAvatar->place(entity, target, pos, orient);
 	}
-	catch (const Eris::BaseException& except)
+	catch (const std::exception& ex)
 	{
-		S_LOG_WARNING("Got Eris error on dropping: " << except._msg);
-	}
-	catch (const std::runtime_error& except)
-	{
-		S_LOG_WARNING("Got unknown error on dropping: " << except.what());
+		S_LOG_WARNING("Got error on dropping." << ex);
 	}
 }
 
@@ -213,13 +180,9 @@ void ConnectedAdapter::wield(Eris::Entity* entity)
 		mAvatar->wield(entity);
 
 	}
-	catch (const Eris::BaseException& except)
+	catch (const std::exception& ex)
 	{
-		S_LOG_WARNING("Got Eris error on wielding: " << except._msg);
-	}
-	catch (const std::runtime_error& except)
-	{
-		S_LOG_WARNING("Got unknown error on wielding: " << except.what());
+		S_LOG_WARNING("Got error on wielding." << ex);
 	}
 }
 
@@ -231,13 +194,9 @@ void ConnectedAdapter::use(Eris::Entity* entity, WFMath::Point<3> pos, const std
 		S_LOG_VERBOSE("Using " << entity->getName() << " with operation '" << operation << "' at position "<< ss.str() << ".");
 		mAvatar->useOn(entity, pos, operation);
 	}
-	catch (const Eris::BaseException& except)
+	catch (const std::exception& ex)
 	{
-		S_LOG_WARNING("Got Eris error on using: " << except._msg);
-	}
-	catch (const std::runtime_error& except)
-	{
-		S_LOG_WARNING("Got unknown error on using: " << except.what());
+		S_LOG_WARNING("Got error on using." << ex);
 	}
 }
 
@@ -246,41 +205,43 @@ void ConnectedAdapter::useStop()
 	try {
 		mAvatar->useStop();
 	}
-	catch (const Eris::BaseException& except)
+	catch (const std::exception& ex)
 	{
-		S_LOG_WARNING("Got Eris error on stopping using: " << except._msg);
-	}
-	catch (const std::runtime_error& except)
-	{
-		S_LOG_WARNING("Got unknown error on stopping using: " << except.what());
+		S_LOG_WARNING("Got error on stopping using." << ex);
 	}
 }
 
 void ConnectedAdapter::actuate(Eris::Entity* entity, const std::string& action)
 {
+	try {
 
-	Atlas::Objects::Entity::Anonymous what;
-	what->setId(entity->getId());
-// 	what->setObjtype("obj");
+		Atlas::Objects::Entity::Anonymous what;
+		what->setId(entity->getId());
+	// 	what->setObjtype("obj");
 
-	Atlas::Objects::Operation::RootOperation actionOp;
-	actionOp->setObjtype("op");
-	actionOp->setArgs1(what);
-	std::list<std::string> actionParents;
-	actionParents.push_back(action);
-	actionOp->setParents(actionParents);
+		Atlas::Objects::Operation::RootOperation actionOp;
+		actionOp->setObjtype("op");
+		actionOp->setArgs1(what);
+		std::list<std::string> actionParents;
+		actionParents.push_back(action);
+		actionOp->setParents(actionParents);
 
-	Atlas::Objects::Operation::RootOperation actuateOp;
-	actuateOp->setObjtype("op");
-	actuateOp->setArgs1(actionOp);
-	std::list<std::string> actuateParents;
-	actuateParents.push_back("actuate");
-	actuateOp->setParents(actuateParents);
-	actuateOp->setFrom(mAvatar->getEntity()->getId());
+		Atlas::Objects::Operation::RootOperation actuateOp;
+		actuateOp->setObjtype("op");
+		actuateOp->setArgs1(actionOp);
+		std::list<std::string> actuateParents;
+		actuateParents.push_back("actuate");
+		actuateOp->setParents(actuateParents);
+		actuateOp->setFrom(mAvatar->getEntity()->getId());
 
 
-	S_LOG_INFO("Actuating entity with id " << entity->getId() << ", named " << entity->getName() << " with action '" << action << "'.");
-	mConnection->send(actuateOp);
+		S_LOG_INFO("Actuating entity with id " << entity->getId() << ", named " << entity->getName() << " with action '" << action << "'.");
+		mConnection->send(actuateOp);
+	}
+	catch (const std::exception& ex)
+	{
+		S_LOG_WARNING("Got error on actuating." << ex);
+	}
 }
 
 void ConnectedAdapter::deleteEntity(Eris::Entity* entity)
@@ -297,13 +258,9 @@ void ConnectedAdapter::deleteEntity(Eris::Entity* entity)
 		S_LOG_INFO("Deleting entity with id " << entity->getId() << ", named " << entity->getName());
 		mConnection->send(deleteOp);
 	}
-	catch (const Eris::BaseException& except)
+	catch (const std::exception& ex)
 	{
-		S_LOG_WARNING("Got Eris error on deleting entity: " << except._msg);
-	}
-	catch (const std::runtime_error& except)
-	{
-		S_LOG_WARNING("Got unknown error on deleting entity: " << except.what());
+		S_LOG_WARNING("Got error on deleting entity." << ex);
 	}
 }
 
@@ -324,13 +281,9 @@ void ConnectedAdapter::setAttributes(Eris::Entity* entity, Atlas::Message::MapTy
 		S_LOG_INFO("Setting attributes of entity with id " << entity->getId() << ", named " << entity->getName());
 		mConnection->send(setOp);
 	}
-	catch (const Eris::BaseException& except)
+	catch (const std::exception& ex)
 	{
-		S_LOG_WARNING("Got Eris error on setting attributes on entity: " << except._msg);
-	}
-	catch (const std::runtime_error& except)
-	{
-		S_LOG_WARNING("Got unknown error on setting attributes on entity: " << except.what());
+		S_LOG_WARNING("Got error on setting attributes on entity." << ex);
 	}
 }
 
@@ -340,13 +293,9 @@ void ConnectedAdapter::attack(Eris::Entity* entity)
 	try {
 		mAvatar->attack(entity);
 	}
-	catch (const Eris::BaseException& except)
+	catch (const std::exception& ex)
 	{
-		S_LOG_WARNING("Got Eris error on attack: " << except._msg);
-	}
-	catch (const std::runtime_error& except)
-	{
-		S_LOG_WARNING("Got unknown error on attack: " << except.what());
+		S_LOG_WARNING("Got error on attack." << ex);
 	}
 }
 
@@ -364,13 +313,9 @@ void ConnectedAdapter::eat(Eris::Entity* entity)
 		S_LOG_INFO("Eating entity with id " << entity->getId() << ", named " << entity->getName());
 		mConnection->send(op);
 	}
-	catch (const Eris::BaseException& except)
+	catch (const std::exception& ex)
 	{
-		S_LOG_WARNING("Got Eris error on eating entity: " << except._msg);
-	}
-	catch (const std::runtime_error& except)
-	{
-		S_LOG_WARNING("Got unknown error on eating entity: " << except.what());
+		S_LOG_WARNING("Got error on eating entity." << ex);
 	}
 }
 
@@ -385,13 +330,9 @@ void ConnectedAdapter::say(const std::string &message)
 		ConsoleBackend::getSingletonPtr()->pushMessage(msg);
 		S_LOG_VERBOSE( msg);
 	}
-	catch (const Eris::BaseException& except)
+	catch (const std::exception& ex)
 	{
-		S_LOG_WARNING("Got Eris error on say: " << except._msg);
-	}
-	catch (const std::runtime_error& except)
-	{
-		S_LOG_WARNING("Got unknown error on say: " << except.what());
+		S_LOG_WARNING("Got error on say." << ex);
 	}
 }
 
@@ -414,13 +355,9 @@ void ConnectedAdapter::adminTell(const std::string& entityId, const std::string&
 		mConnection->send(sound);
 
 	}
-	catch (const Eris::BaseException& except)
+	catch (const std::exception& ex)
 	{
-		S_LOG_WARNING("Got Eris error on admin_tell: " << except._msg);
-	}
-	catch (const std::runtime_error& except)
-	{
-		S_LOG_WARNING("Got unknown error on admin_tell: " << except.what());
+		S_LOG_WARNING("Got error on admin_tell." << ex);
 	}
 }
 

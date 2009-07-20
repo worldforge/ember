@@ -1,7 +1,7 @@
 //
 // C++ Implementation: ScriptingService
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -44,7 +44,7 @@ ScriptingService::ScriptingService()
 ScriptingService::~ScriptingService()
 {
 	stop(0);
-	for(ProviderStore::iterator I = mProviders.begin(); I != mProviders.end(); ++I) 
+	for(ProviderStore::iterator I = mProviders.begin(); I != mProviders.end(); ++I)
 	{
 		delete I->second;
 	}
@@ -53,7 +53,7 @@ ScriptingService::~ScriptingService()
 void ScriptingService::stop(int code)
 {
 	Service::stop(code);
-	for(ProviderStore::iterator I = mProviders.begin(); I != mProviders.end(); ++I) 
+	for(ProviderStore::iterator I = mProviders.begin(); I != mProviders.end(); ++I)
 	{
 		I->second->stop();
 	}
@@ -73,8 +73,8 @@ void ScriptingService::loadScript(const std::string& script)
 			S_LOG_FAILURE("Unable to find script file " + script + ".");
 			return;
 		}
-		
-		for(ProviderStore::iterator I = mProviders.begin(); I != mProviders.end(); ++I) 
+
+		for(ProviderStore::iterator I = mProviders.begin(); I != mProviders.end(); ++I)
 		{
 			//check if the provider will load the script
 			if (I->second->willLoadScript(script)) {
@@ -82,7 +82,7 @@ void ScriptingService::loadScript(const std::string& script)
 				try {
 					I->second->loadScript(resWrapper);
 				} catch (const std::exception& ex) {
-					S_LOG_WARNING("Error when loading script " << script << " with provider " << I->second->getName() << ". Message: " << ex.what());
+					S_LOG_WARNING("Error when loading script " << script << " with provider " << I->second->getName() << "." << ex);
 					scriptError(ex.what());
 				} catch (...) {
 					S_LOG_WARNING("Got unknown script error when loading the script " << script);
@@ -104,7 +104,7 @@ void ScriptingService::executeCode(const std::string& scriptCode, const std::str
 		try {
 			I->second->executeScript(scriptCode, callContext);
 		} catch (const std::exception& ex) {
-			S_LOG_WARNING("Error when executing script\n" << scriptCode << "\nwith provider " << I->second->getName() << ". Message: " << ex.what());
+			S_LOG_WARNING("Error when executing script\n" << scriptCode << "\nwith provider " << I->second->getName() << "." << ex);
 			scriptError(ex.what());
 		} catch (...) {
 			S_LOG_WARNING("Got unknown script error when executing the script " << scriptCode);
@@ -121,11 +121,8 @@ void ScriptingService::callFunction(const std::string& functionName, int narg, c
 	} else {
 		try {
 			I->second->callFunction(functionName, narg, callContext);
-		} catch (const Ember::Exception& ex) {
-			S_LOG_WARNING("Error when executing function '" << functionName << "' with provider " << I->second->getName() << ". Message: " << ex.getError());
-			scriptError(ex.getError());
 		} catch (const std::exception& ex) {
-			S_LOG_WARNING("Error when executing function '" << functionName << "' with provider " << I->second->getName() << ". Message: " << ex.what());
+			S_LOG_WARNING("Error when executing function '" << functionName << "' with provider " << I->second->getName() << "." << ex);
 			scriptError(ex.what());
 		} catch (...) {
 			S_LOG_WARNING("Got unknown script error when executing the function " << functionName);
@@ -134,7 +131,7 @@ void ScriptingService::callFunction(const std::string& functionName, int narg, c
 	}
 }
 
-sigc::signal<void, const std::string&>& ScriptingService::getEventScriptError() 
+sigc::signal<void, const std::string&>& ScriptingService::getEventScriptError()
 {
 	return mEventScriptError;
 }
@@ -183,19 +180,19 @@ void ScriptingService::runCommand(const std::string &command, const std::string 
 std::vector<std::string> ScriptingService::getProviderNames()
 {
 	std::vector<std::string> names;
-	for(ProviderStore::iterator I = mProviders.begin(); I != mProviders.end(); ++I) 
+	for(ProviderStore::iterator I = mProviders.begin(); I != mProviders.end(); ++I)
 	{
 		names.push_back(I->second->getName());
 	}
 	return names;
-	
+
 }
 
 Ember::IResourceProvider* ScriptingService::getResourceProvider()
 {
 	return mResourceProvider;
 }
-	
+
 void ScriptingService::setResourceProvider(Ember::IResourceProvider* resourceProvider)
 {
 	mResourceProvider = resourceProvider;

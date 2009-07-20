@@ -402,7 +402,7 @@ bool TerrainPageSurfaceCompilerShaderPass::finalize(bool useShadows, const std::
 		mPass->setFragmentProgram(fragmentProgramName);
 // 		mPass->setFragmentProgram("splatting_fragment_dynamic");
 	} catch (const Ogre::Exception& ex) {
-		S_LOG_WARNING("Error when setting fragment program '" << fragmentProgramName << "'. Message:\n" << ex.what());
+		S_LOG_WARNING("Error when setting fragment program '" << fragmentProgramName << "'." << ex);
 		return false;
 	}
 	try {
@@ -438,7 +438,7 @@ bool TerrainPageSurfaceCompilerShaderPass::finalize(bool useShadows, const std::
 		fpParams->setNamedAutoConstant("iLightPosition", Ogre::GpuProgramParameters::ACT_LIGHT_POSITION_OBJECT_SPACE_ARRAY, 3);
 		*/
 	} catch (const Ogre::Exception& ex) {
-		S_LOG_WARNING("Error when setting fragment program parameters. Message:\n" << ex.what());
+		S_LOG_WARNING("Error when setting fragment program parameters." << ex);
 		return false;
 	}
 
@@ -467,7 +467,7 @@ bool TerrainPageSurfaceCompilerShaderPass::finalize(bool useShadows, const std::
 		fpParams->setNamedAutoConstant("iFogParams", Ogre::GpuProgramParameters::ACT_FOG_PARAMS);
 		fpParams->setNamedAutoConstant("iWorldViewProj", Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX );
 	} catch (const Ogre::Exception& ex) {
-		S_LOG_WARNING("Error when setting fragment program parameters. Message:\n" << ex.what());
+		S_LOG_WARNING("Error when setting fragment program parameters." << ex);
 		return false;
 	}
 	return true;
@@ -638,7 +638,7 @@ bool TerrainPageSurfaceCompilerShaderNormalMappedPass::finalize()
 		///set how much the texture should tile
 		fpParams->setNamedConstant("iScales", mScales, 4); //4*4=16
 	} catch (const Ogre::Exception& ex) {
-		S_LOG_WARNING("Error when setting fragment program parameters. Message:\n" << ex.what());
+		S_LOG_WARNING("Error when setting fragment program parameters." << ex);
 		return false;
 	}
 
@@ -658,7 +658,7 @@ bool TerrainPageSurfaceCompilerShaderNormalMappedPass::finalize()
 		fpParams->setNamedAutoConstant("iLightAmbient", Ogre::GpuProgramParameters::ACT_AMBIENT_LIGHT_COLOUR);
 		fpParams->setNamedAutoConstant("iLightDiffuse", Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR);
 	} catch (const Ogre::Exception& ex) {
-		S_LOG_WARNING("Error when setting fragment program parameters. Message:\n" << ex.what());
+		S_LOG_WARNING("Error when setting fragment program parameters." << ex);
 		return false;
 	}
 	return true;

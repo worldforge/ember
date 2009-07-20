@@ -109,7 +109,7 @@ void Forest::addTree(Ogre::Entity *entity, const Ogre::Vector3 &position, Ogre::
 			mTreeLoader->addTree(entity, position, yaw, scale);
 		} catch (const std::exception& ex)
 		{
-			S_LOG_FAILURE("Error when adding tree: " << ex.what());
+			S_LOG_FAILURE("Error when adding tree." << ex);
 		}
 	} else {
 		S_LOG_WARNING("Could not add tree before the forest has been initialized.");
@@ -123,7 +123,7 @@ bool Forest::frameStarted(const Ogre::FrameEvent & evt)
 			mTrees->update();
 		} catch (const Ogre::Exception& ex)
 		{
-			S_LOG_FAILURE("Error when updating forest. Will disable forest.\n"<< ex.what());
+			S_LOG_FAILURE("Error when updating forest. Will disable forest."<< ex);
 			delete mTreeLoader;
 			delete mEntityLoader;
 			delete mTrees;

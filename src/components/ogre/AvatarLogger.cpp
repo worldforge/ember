@@ -71,7 +71,7 @@ AvatarLogger::AvatarLogger(EmberEntity& avatarEntity)
 		GUIManager::getSingleton().AppendIGChatLine.connect(sigc::mem_fun(*this, &AvatarLogger::GUIManager_AppendIGChatLine));
 
 	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when creating directory for logs. Message: " << std::string(ex.what()));
+		S_LOG_FAILURE("Error when creating directory for logs." << ex);
 	}
 }
 

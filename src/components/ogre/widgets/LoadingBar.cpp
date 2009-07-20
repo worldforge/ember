@@ -181,7 +181,7 @@ namespace Gui {
 		try {
 			mWindow->update();
 		} catch (const std::exception& ex) {
-			S_LOG_FAILURE("Error when updating render for loading bar: " << ex.what());
+			S_LOG_FAILURE("Error when updating render for loading bar." << ex);
 		}
 	}
 

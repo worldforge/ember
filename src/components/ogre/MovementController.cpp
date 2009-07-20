@@ -116,7 +116,7 @@ MovementController::MovementController(Avatar& avatar)
 		}
 
 	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when setting up free flying camera mount. Message: " << ex.what());
+		S_LOG_FAILURE("Error when setting up free flying camera mount." << ex);
 	}
 
 }
@@ -284,7 +284,7 @@ void MovementController::createDecal(Ogre::Vector3 position)
 // 		mPulsatingController = new Ogre::WaveformControllerFunction(Ogre::WFT_SINE, 1, 0.33, 0.25);
 	} catch (const Ogre::Exception& ex)
 	{
-		S_LOG_WARNING("Error when creating terrain decal: " << ex.what());
+		S_LOG_WARNING("Error when creating terrain decal." << ex);
 	}
 }
 

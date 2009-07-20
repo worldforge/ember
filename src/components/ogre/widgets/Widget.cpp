@@ -1,7 +1,7 @@
 //
 // C++ Implementation: Vector3Adapter
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -44,18 +44,18 @@ namespace EmberOgre {
 namespace Gui {
 
 	const std::string Widget::DEFAULT_TAB_GROUP("default");
-	
+
 	Widget::Widget() : mCommandSuffix(""), mMainWindow(0), mActiveWindowIsOpaque(true), mFirstTabWindow(0), mLastTabWindow(0), mWindowHasBeenShown(false)
 	{
 	}
-	
+
 	void Widget::init(GUIManager* guiManager)
 	{
 		mGuiManager = guiManager;
 		mWindowManager = &CEGUI::WindowManager::getSingleton();
 	}
-	
-	
+
+
 	Widget::~Widget()
 	{
 		if (mCommandSuffix != "") {
@@ -66,23 +66,23 @@ namespace Gui {
 		}
 		//mGuiManager->removeWidget(this);
 	}
-	
+
 	void Widget::frameStarted(const Ogre::FrameEvent& evt)
 	{
 		EventFrameStarted.emit(evt.timeSinceLastFrame);
 	}
-	
+
 	void Widget::buildWidget()
 	{}
 
 
 
-	CEGUI::Window* Widget::getMainSheet() { 
-		return mGuiManager->getMainSheet(); 
+	CEGUI::Window* Widget::getMainSheet() {
+		return mGuiManager->getMainSheet();
 	}
 
-		
-	CEGUI::Window* Widget::loadMainSheet(const std::string& filename, const std::string& prefix) { 
+
+	CEGUI::Window* Widget::loadMainSheet(const std::string& filename, const std::string& prefix) {
 		assert(mWindowManager && "You must call init() before you can call any other methods.");
 		mPrefix = prefix;
 		std::string finalFileName(mGuiManager->getLayoutDir() + filename);
@@ -91,13 +91,13 @@ namespace Gui {
 		} catch (const CEGUI::Exception& ex) {
 			S_LOG_FAILURE("Error when loading from " << filename << ".\nMessage: " <<  ex.getMessage().c_str());
 		} catch (const std::exception& ex) {
-			S_LOG_FAILURE("Error when loading from " << filename << ".\nMessage: " <<  ex.what());
+			S_LOG_FAILURE("Error when loading from " << filename << "." << ex);
 		} catch (...) {
 			S_LOG_FAILURE("Unknown error when loading from " << filename << ".");
 		}
 		if (mMainWindow) {
 			mOriginalWindowAlpha = mMainWindow->getAlpha();
-			getMainSheet()->addChildWindow(mMainWindow); 
+			getMainSheet()->addChildWindow(mMainWindow);
 			BIND_CEGUI_EVENT(mMainWindow, CEGUI::FrameWindow::EventActivated, Widget::MainWindow_Activated);
 			BIND_CEGUI_EVENT(mMainWindow, CEGUI::FrameWindow::EventDeactivated, Widget::MainWindow_Deactivated);
 			///we want to catch all click events, so we'll listen for the mouse button down event
@@ -108,11 +108,11 @@ namespace Gui {
 				///Set it up to listen for the first time the window is shown.
 				BIND_CEGUI_EVENT(mMainWindow, CEGUI::Window::EventShown, Widget::MainWindow_Shown);
 			}
-			
+
 		}
 		return mMainWindow;
 	}
-	
+
 	void  Widget::onEventFirstTimeShown()
 	{
 		mWindowHasBeenShown = true;
@@ -144,28 +144,28 @@ namespace Gui {
 	{
 		return mGuiManager->createWindow(windowType);
 	}
-	
+
 	CEGUI::Window* Widget::createWindow(const std::string& windowType, const std::string& windowName)
 	{
 		return mGuiManager->createWindow(windowType, windowName);
 	}
 
-	
-	
+
+
 	Widget* WidgetLoader::createWidget(const std::string& name) {
 
 		if (getFactories().find(name) == getFactories().end()) {
 			return 0;
 		}
-		
+
 		Widget* widget = getFactories()[name]();
 		return widget;
 	}
-	
+
 	WidgetLoader::WidgetLoader(const std::string& name, FactoryFunc functor)
 	{
 		getFactories().insert(WidgetFactoryMap::value_type(name, functor));
-		
+
 	}
 
 	WidgetFactoryMap& WidgetLoader::getFactories()
@@ -173,12 +173,12 @@ namespace Gui {
 		static WidgetFactoryMap* factoryMap = new WidgetFactoryMap();
 		return *factoryMap;
 	}
-	
+
 	void WidgetLoader::registerWidgetFactory(const std::string& name, FactoryFunc functor)
 	{
 		getFactories().insert(WidgetFactoryMap::value_type(name, functor));
 	}
-	
+
 	void WidgetLoader::removeAllWidgetFactories()
 	{
 		WidgetFactoryMap& factoryMap(getFactories());
@@ -187,13 +187,13 @@ namespace Gui {
 		}*/
 		factoryMap.clear();
 	}
-	
+
 	void Widget::registerConsoleVisibilityToggleCommand(const std::string & commandSuffix)
 	{
 		mCommandSuffix = commandSuffix;
 		Ember::ConsoleBackend::getSingletonPtr()->registerCommand("show_" + commandSuffix, this, std::string("Shows the ") + mCommandSuffix + " window.");
 		Ember::ConsoleBackend::getSingletonPtr()->registerCommand("hide_" + commandSuffix, this, std::string("Hides the ") + mCommandSuffix + " window.");
-	
+
 	}
 
 	void Widget::runCommand(const std::string &command, const std::string &args)
@@ -212,16 +212,16 @@ namespace Gui {
 	{
 		///removing and attaching the window is probably more efficient when it's hidden (i.e. it won't get any events at all and so on)
 		if (mMainWindow) {
-			getMainSheet()->addChildWindow(mMainWindow); 
+			getMainSheet()->addChildWindow(mMainWindow);
 			mMainWindow->setVisible(true);
 		}
 	}
-	
+
 	void  Widget::hide()
 	{
 		///see comment in show()
 		if (mMainWindow) {
-			getMainSheet()->removeChildWindow(mMainWindow); 
+			getMainSheet()->removeChildWindow(mMainWindow);
 			mMainWindow->setVisible(false);
 		}
 	}
@@ -231,33 +231,33 @@ namespace Gui {
 		hide();
 		return true;
 	}
-	
+
 	void Widget::enableCloseButton()
 	{
 		assert(mMainWindow);
 		BIND_CEGUI_EVENT(mMainWindow, CEGUI::FrameWindow::EventCloseClicked, Widget::MainWindow_CloseClick);
 	}
-		
+
 	CEGUI::Window* Widget::getMainWindow()
 	{
 		return mMainWindow;
 	}
-	
+
 	bool Widget::MainWindow_MouseButtonDown(const CEGUI::EventArgs& args)
 	{
 		///we'll return true here to prevent the event from propagating to other windows
 		return true;
 	}
-	
+
 	bool Widget::MainWindow_Activated(const CEGUI::EventArgs& args)
 	{
 		if (mMainWindow && mActiveWindowIsOpaque) {
 			mMainWindow->setAlpha(1.0);
-			
+
 		}
 		return true;
 	}
-	
+
 	bool Widget::MainWindow_Deactivated(const CEGUI::EventArgs& args)
 	{
 		if (mMainWindow && mActiveWindowIsOpaque) {
@@ -279,7 +279,7 @@ namespace Gui {
 	{
 		return mActiveWindowIsOpaque;
 	}
-	
+
 	void Widget::setIsActiveWindowOpaque(bool isOpaque)
 	{
 		mActiveWindowIsOpaque = isOpaque;
@@ -289,9 +289,9 @@ namespace Gui {
 	{
 		return mGuiManager->getDefaultScheme();
 	}
-	
-	
-	
+
+
+
 	bool Widget::TabbableWindow_KeyDown(const CEGUI::EventArgs& args)
 	{
 		const CEGUI::KeyEventArgs& keyEventArgs = static_cast<const CEGUI::KeyEventArgs&>(args);
@@ -323,7 +323,7 @@ namespace Gui {
 		}
 		return true;
 	}
-	
+
 	void Widget::addTabbableWindow(CEGUI::Window* window)
 	{
 		if (!mFirstTabWindow) {
@@ -335,12 +335,12 @@ namespace Gui {
 		mLastTabWindow = window;
 		BIND_CEGUI_EVENT(window, CEGUI::Window::EventKeyDown, Widget::TabbableWindow_KeyDown);
 	}
-	
+
 	void Widget::addEnterButton(CEGUI::Window* window)
 	{
 		mEnterButtons.push_back(window);
 	}
-	
+
 	void Widget::closeTabGroup()
 	{
 		if (mLastTabWindow && mFirstTabWindow) {
@@ -349,7 +349,7 @@ namespace Gui {
 		mFirstTabWindow = 0;
 		mLastTabWindow = 0;
 	}
-	
+
 // 	void addTabbableWindow(CEGUI::Window* window, const std::string& tabGroup)
 // 	{
 // 		WindowStore* store;
@@ -364,7 +364,7 @@ namespace Gui {
 // 		store->push_back(window);
 // 		BIND_CEGUI_EVENT(window, CEGUI::Window::EventKeyUp, Widget::TabbableWindow_KeyUp);
 // 	}
-	
+
 
 }
 }

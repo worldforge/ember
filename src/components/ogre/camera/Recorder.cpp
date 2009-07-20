@@ -63,15 +63,15 @@ bool Recorder::frameStarted(const Ogre::FrameEvent& event)
 			#endif
 			}
 		} catch (const std::exception& ex) {
-			S_LOG_FAILURE("Error when creating directory for screenshots. Message: " << std::string(ex.what()));
+			S_LOG_FAILURE("Error when creating directory for screenshots." << ex);
 			stopRecording();
 			return true;
 		}
 		try {
 			// take screenshot
 			EmberOgre::getSingleton().getRenderWindow()->writeContentsToFile(dir + filename.str());
-		} catch (const Ogre::Exception& ex) {
-			S_LOG_FAILURE("Could not write screenshot to disc. Message: "<< ex.getFullDescription());
+		} catch (const std::exception& ex) {
+			S_LOG_FAILURE("Could not write screenshot to disc." << ex);
 			stopRecording();
 			return true;
 		}

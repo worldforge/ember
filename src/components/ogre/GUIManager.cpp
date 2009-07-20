@@ -254,7 +254,7 @@ void GUIManager::initialize()
 // 		}
 		createWidget("Quit");
 	} catch (const std::exception& e) {
-		S_LOG_FAILURE("GUIManager - error when initializing widgets: " << e.what());
+		S_LOG_FAILURE("GUIManager - error when initializing widgets." << e);
 		throw e;
 	} catch (const CEGUI::Exception& e) {
 		S_LOG_FAILURE("GUIManager - error when initializing widgets: " << e.getMessage().c_str());
@@ -263,7 +263,7 @@ void GUIManager::initialize()
 	try {
 		mIconManager = new Gui::Icons::IconManager();
 	} catch (const std::exception& e) {
-		S_LOG_FAILURE("GUIManager - error when creating icon manager: " << e.what());
+		S_LOG_FAILURE("GUIManager - error when creating icon manager." << e);
 	} catch (const CEGUI::Exception& e) {
 		S_LOG_FAILURE("GUIManager - error when creating icon manager: " << e.getMessage().c_str());
 	}
@@ -271,7 +271,7 @@ void GUIManager::initialize()
 	try {
 		mEntityIconManager = new Gui::EntityIconManager(*this);
 	} catch (const std::exception& e) {
-		S_LOG_FAILURE("GUIManager - error when creating entity icon manager: " << e.what());
+		S_LOG_FAILURE("GUIManager - error when creating entity icon manager." << e);
 	} catch (const CEGUI::Exception& e) {
 		S_LOG_FAILURE("GUIManager - error when creating entity icon manager: " << e.getMessage().c_str());
 	}
@@ -291,7 +291,7 @@ void GUIManager::initialize()
 	///load the bootstrap script which will load all other scripts
 		Ember::EmberServices::getSingleton().getScriptingService()->loadScript("lua/Bootstrap.lua");
 	} catch (const std::exception& e) {
-		S_LOG_FAILURE("Error when loading bootstrap script. Error message: " << e.what());
+		S_LOG_FAILURE("Error when loading bootstrap script." << e);
 	} catch (const CEGUI::Exception& e) {
 		S_LOG_FAILURE("Error when loading bootstrap script. Error message: " << e.getMessage().c_str());
 	}
@@ -301,9 +301,9 @@ void GUIManager::initialize()
 			S_LOG_VERBOSE("Loading widget " << *I);
 			createWidget(*I);
 		} catch (const std::exception& e) {
-			S_LOG_FAILURE("Error when initializing widget " << *I << " : " << e.what());
+			S_LOG_FAILURE("Error when initializing widget " << *I << "." << e);
 		} catch (const CEGUI::Exception& e) {
-			S_LOG_FAILURE("Error when initializing widget " << *I << " : " << e.getMessage().c_str());
+			S_LOG_FAILURE("Error when initializing widget " << *I << ": " << e.getMessage().c_str());
 		}
 	}
 
@@ -338,7 +338,7 @@ CEGUI::Window* GUIManager::createWindow(const std::string& windowType, const std
 		S_LOG_FAILURE("Error when creating new window of type " << windowType << " with name " << windowName << ".\n" << ex.getMessage().c_str());
 		return 0;
 	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when creating new window of type " << windowType << " with name " << windowName << ".\n" << ex.what());
+		S_LOG_FAILURE("Error when creating new window of type " << windowType << " with name " << windowName << "." << ex);
 		return 0;
 	}
 }
@@ -363,7 +363,7 @@ Widget* GUIManager::createWidget(const std::string& name)
 		addWidget(widget);
 		S_LOG_INFO(  "Successfully loaded widget " << name );
 	} catch (const std::exception& e) {
-		S_LOG_FAILURE(  "Error when loading widget " << name << ": " << e.what());
+		S_LOG_FAILURE(  "Error when loading widget " << name << "." << e);
 		return 0;
 	} catch (const CEGUI::Exception& e) {
 		S_LOG_FAILURE(  "Error when loading widget " << name << ": " << e.getMessage().c_str());

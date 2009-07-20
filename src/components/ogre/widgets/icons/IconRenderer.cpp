@@ -114,7 +114,7 @@ void IconRenderer::performRendering(Model::Model* model, Icon* icon)
 			try {
 				mRenderContext->getViewport()->update();
 			} catch (const std::exception& ex) {
-				S_LOG_FAILURE("Error when updating render for IconRenderer: " << ex.what());
+				S_LOG_FAILURE("Error when updating render for IconRenderer." << ex);
 			}
 		}
 

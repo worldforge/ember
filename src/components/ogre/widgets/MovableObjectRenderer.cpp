@@ -252,7 +252,7 @@ void MovableObjectRenderer::updateRender()
 			mTexture->getRenderContext()->getRenderTexture()->update();
 		}
 	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when updating render for MovableObjectRenderer: " << ex.what());
+		S_LOG_FAILURE("Error when updating render for MovableObjectRenderer." << ex);
 	}
 }
 
@@ -279,11 +279,11 @@ void MovableObjectRenderer::showAxis()
 				try {
 					mAxesNode->attachObject(mAxisEntity);
 				} catch (const std::exception& ex) {
-					S_LOG_WARNING("Error when attaching axes mesh: "<< ex.what());
+					S_LOG_WARNING("Error when attaching axes mesh."<< ex);
 				}
 			}
 		} catch (const std::exception& ex) {
-			S_LOG_WARNING("Error when loading axes mesh: "<< ex.what());
+			S_LOG_WARNING("Error when loading axes mesh."<< ex);
 		}
 	}
 	mAxesNode->setVisible(true);

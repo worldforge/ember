@@ -305,7 +305,7 @@ bool EmberOgre::renderOneFrame()
 		try {
 			mRoot->renderOneFrame();
 		} catch (const std::exception& ex) {
-			S_LOG_FAILURE("Error when rending one frame in the main render loop: " << ex.what());
+			S_LOG_FAILURE("Error when rending one frame in the main render loop." << ex);
 		}
 	} else {
 		mIsInPausedMode = true;
