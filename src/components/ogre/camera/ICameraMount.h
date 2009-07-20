@@ -38,6 +38,10 @@ class MainCamera;
 class ICameraMount
 {
 public:
+
+	/**
+	 * @brief Dtor.
+	 */
 	virtual ~ICameraMount() {};
 
 	/**

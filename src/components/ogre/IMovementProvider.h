@@ -29,6 +29,15 @@ namespace EmberOgre {
 
 class IMovementProvider {
 public:
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~IMovementProvider() {};
+
+	/**
+	 * @brief Provide the movement for the current frame.
+	 * @return The movement for the current frame.
+	 */
 	virtual WFMath::Vector<3> getMovementForCurrentFrame() const = 0;
 };
 

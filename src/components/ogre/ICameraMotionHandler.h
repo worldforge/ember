@@ -28,10 +28,31 @@ class Quaternion;
 namespace EmberOgre
 {
 
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief Handles movement requests from the camera mount.
+ *
+ * Each camera mount can have an instance of this attached to it. When the camera receives instructions to move, it will issue a move request through this interface.
+ * It's then up to the implementations of this interface to determine what to do. Some implementations might want to only move the node that the camera is attached to, whilst other might want to move an entity instead.
+ */
 class ICameraMotionHandler
 {
 public:
 
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~ICameraMotionHandler() {};
+
+	/**
+	 * @brief Move in the specified direction and using the specified orientation.
+	 * It's up to the implementations of this interface to determine how they should react to a movement request.
+	 * Some implementations might want to move the camera, while other might instead want to move an entity or avatar.
+	 *
+	 * @param orientation The orientation during the movement.
+	 * @param movement The movement.
+	 * @param timeslice The time slice, in seconds, for this movement.
+	 */
 	virtual void move(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement, float timeslice) = 0;
 };
 

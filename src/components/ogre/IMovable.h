@@ -33,6 +33,12 @@ namespace EmberOgre
 class IMovable
 {
 public:
+
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~IMovable() {};
+
 	/**
 	 * @brief Called each frame to inform the implementation that it needs to update the motion.
 	 * @param timeSlice The current time slice, in seconds.

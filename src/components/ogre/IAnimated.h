@@ -34,6 +34,7 @@ namespace EmberOgre
 class IAnimated
 {
 public:
+	virtual ~IAnimated() {};
 	virtual void updateAnimation(float timeSlice) = 0;
 };
 

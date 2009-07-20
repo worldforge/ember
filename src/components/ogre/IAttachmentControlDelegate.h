@@ -29,6 +29,7 @@ namespace EmberOgre {
 
 class IAttachmentControlDelegate {
 public:
+	virtual ~IAttachmentControlDelegate() {};
 
 	virtual const WFMath::Point<3>& getPosition() const = 0;
 	virtual const WFMath::Quaternion& getOrientation() const = 0;
