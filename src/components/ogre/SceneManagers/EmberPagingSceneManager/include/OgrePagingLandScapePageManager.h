@@ -226,6 +226,9 @@ namespace Ogre
 		bool isEnabled() const { return mEnabled; }
 		void setEnabled(bool enabled) { mEnabled = enabled; }
 
+		/** Event of page being loaded, called by the page itself */
+		void eventPageLoaded(PagingLandScapePage* page);
+
         protected:
 
 		PagingLandScapeOptions*	mOptions;

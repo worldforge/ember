@@ -635,6 +635,7 @@ namespace Ogre
 			listenerMgr->firePageLoaded(mTableX, mTableZ, 
 						    data2dMgr->getData2D(mTableX, mTableZ)->getHeightData(),
 						    mBounds);
+			mPageMgr.eventPageLoaded(this);
 		}
 		break;
 		case EVENT_UNLOADED:

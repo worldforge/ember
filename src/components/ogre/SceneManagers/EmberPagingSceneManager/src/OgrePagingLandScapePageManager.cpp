@@ -572,10 +572,8 @@ namespace Ogre
 					assert (p->isInLoadQueue());
 					p->load();
 
-					p->setInQueue(PagingLandScapePage::QUEUE_NONE);
-					mLoadedPages.push_back(p);
-					mTextureLoadedPages.remove(p);
 					mNextQueueFrameCount = mPageLoadInterval;
+					// rest of processing after eventPageLoaded received 
 
 				} else if (!mPageTextureloadQueue.empty ()) {
 					// We TextureLoad nearest page in non-empty queue
@@ -931,5 +929,11 @@ namespace Ogre
 			}
 		}
 	}
-
+	//-------------------------------------------------------------------------
+	void PagingLandScapePageManager::eventPageLoaded(PagingLandScapePage* page)
+	{
+		page->setInQueue(PagingLandScapePage::QUEUE_NONE);
+		mLoadedPages.push_back(page);
+		mPreLoadedPages.remove(page);
+	}
 }
