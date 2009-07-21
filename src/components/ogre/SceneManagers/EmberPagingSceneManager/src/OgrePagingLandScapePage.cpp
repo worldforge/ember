@@ -217,19 +217,10 @@ namespace Ogre
 
 		if (mPageState == STATE_INITED) {
 			S_LOG_VERBOSE("Preloading PagingLandScapePage at (" << mTableX << ", " << mTableZ << ")");
-			bool loadable = mPageMgr.getSceneManager()->getData2DManager()->load(mTableX, mTableZ);
-			if (!loadable) {
-				// set new state
-				mPageState = STATE_NOTLOADABLE;
+			mPageMgr.getSceneManager()->getData2DManager()->load(mTableX, mTableZ);
 
-				S_LOG_WARNING("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") is not loadable");
-			} else {
-				// set new state
-				mPageState = STATE_PRELOADED;
-
-				// fire event
-				fireEvent(EVENT_PRELOADED);
-			}
+			// set new state
+			mPageState = STATE_PRELOADING;
 		} else {
 			S_LOG_WARNING("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") already preloaded (or not inited), ignoring request");
 		}
@@ -667,6 +658,27 @@ namespace Ogre
 		default:
 			// nothing, shouldn't happen
 			break;
+		}
+	}
+	//-------------------------------------------------------------------------
+	void PagingLandScapePage::eventData2DLoaded(bool operationOK)
+	{
+		if (mPageState == STATE_PRELOADING) {
+			S_LOG_VERBOSE("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") got Data2D loaded");
+			if (!operationOK) {
+				// set new state
+				mPageState = STATE_NOTLOADABLE;
+
+				S_LOG_WARNING("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") is not loadable");
+			} else {
+				// set new state
+				mPageState = STATE_PRELOADED;
+
+				// fire event
+				fireEvent(EVENT_PRELOADED);
+			}
+		} else {
+			S_LOG_WARNING("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") already preloaded (or not in preloading state), ignoring Data2DLoaded event");
 		}
 	}
 

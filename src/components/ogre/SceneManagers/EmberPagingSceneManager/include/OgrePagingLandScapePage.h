@@ -87,6 +87,9 @@ namespace Ogre
 		/** Unload unused pages */
 		bool unloadUntouched();
 
+		/** Event of the data for the page being loaded, called by the data 2D manager */
+		void eventData2DLoaded(bool operationOK);
+
 		/** Get tile at the given position (checking that it's loaded).
 		 *
 		 * @return 0 for invalid or unloaded page, the pointer otherwise
@@ -178,6 +181,7 @@ namespace Ogre
 		enum PageState {
 			STATE_UNINITED,
 			STATE_INITED,
+			STATE_PRELOADING,
 			STATE_PRELOADED,
 			STATE_TEXTURELOADED,
 			STATE_LOADED,

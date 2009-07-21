@@ -21,12 +21,14 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
+#include "EmberPagingLandScapeData2D_HeightField.h"
+
 #include "EmberOgrePrerequisites.h"
 #include "OgrePagingLandScapeOptions.h"
 
 #include "OgrePagingLandScapeData2DManager.h"
+#include "OgrePagingLandScapePageManager.h"
 
-#include "EmberPagingLandScapeData2D_HeightField.h"
 #include "EmberPagingSceneManager.h"
 #include "EmberTerrainPageBridge.h"
 
@@ -96,6 +98,7 @@ bool EmberPagingLandScapeData2D_HeightField::_load(unsigned int x, unsigned int 
 // 		ss << "/home/erik/skit/" << x << "_"<< z <<"." << extension;
 // 		pCodec->codeToFile(dataChunk, ss.str(), temp);
 
+	mParent->getSceneManager()->getPageManager()->getPage(x, z, false)->eventData2DLoaded(true);
 
 	return true;
 }
