@@ -216,11 +216,12 @@ namespace Ogre
 		touch();
 
 		if (mPageState == STATE_INITED) {
+			// set new state
+			mPageState = STATE_PRELOADING;
+
 			S_LOG_VERBOSE("Preloading PagingLandScapePage at (" << mTableX << ", " << mTableZ << ")");
 			mPageMgr.getSceneManager()->getData2DManager()->load(mTableX, mTableZ);
 
-			// set new state
-			mPageState = STATE_PRELOADING;
 		} else {
 			S_LOG_WARNING("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") already preloaded (or not inited), ignoring request");
 		}
