@@ -137,7 +137,8 @@ namespace Ogre
 		S_LOG_VERBOSE("Loading PagingLandScapePage at (" << mTableX << ", " << mTableZ << ")");
 
 		if (mPageState == STATE_INITED) {
-			preload();
+			preloadInBackground();
+			return;
 		}
 
 		if (mPageState == STATE_PRELOADED) {
@@ -193,7 +194,7 @@ namespace Ogre
 		show(true);
 	}
 	//-----------------------------------------------------------------------
-	void PagingLandScapePage::preload()
+	void PagingLandScapePage::preloadInBackground()
 	{
 		touch();
 
@@ -659,6 +660,9 @@ namespace Ogre
 
 				// fire event
 				fireEvent(EVENT_PRELOADED);
+
+				// load
+				load();
 			}
 		} else {
 			S_LOG_WARNING("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") already preloaded (or not in preloading state), ignoring Data2DLoaded event");

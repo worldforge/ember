@@ -84,10 +84,8 @@ namespace Ogre
 		mActivePages.clear(); 
 
 		mPageLoadQueue.clear();
-		mPagePreloadQueue.clear();
 
 		mLoadedPages.clear();
-		mPreLoadedPages.clear();
 
 		mWidth = 0;
 		mHeight = 0;
@@ -157,9 +155,7 @@ namespace Ogre
 		// load some pages that are still queued
 		processLoadQueues();
 
-		if (!mTerrainReady && 
-		    mPagePreloadQueue.empty() && 
-		    mPageLoadQueue.empty())
+		if (!mTerrainReady && mPageLoadQueue.empty())
 		{
 			mSceneManager->getListenerManager()->fireTerrainReady();// no more to load
 			mTerrainReady = true;
@@ -243,33 +239,11 @@ namespace Ogre
 		// update the camera page position
 		// does modify mIniX, mFinX, mIniZ, mFinZ
 
-		PagingLandScapePage *p = getPage (i, j, false);
+		PagingLandScapePage* p = getPage(i, j, false);
 		if (p) {
-			makePageLoadedNow (p);
-		}
-	}
-	//-----------------------------------------------------------------------
-	void PagingLandScapePageManager::makePageLoadedNow(PagingLandScapePage* p)
-	{
-		// Have the current page be loaded now !
-		if (!p->isLoaded())
-		{
-			// remove from lists it does belongs to
-			if (p->isPreLoaded())
-				mPreLoadedPages.remove (p);
-			// remove from queue it does belongs to
-			removeFromQueues (p);      
-			
 			p->load();
-			assert ( std::find(mLoadedPages.begin(), mLoadedPages.end(), p) == mLoadedPages.end());
-			mLoadedPages.push_back (p);
-		}
-		else
-		{
-			p->touch();   
 		}
 	}
-
 	//-----------------------------------------------------------------------
 	void PagingLandScapePageManager::updateLoadedPages()
 	{
@@ -311,7 +285,6 @@ namespace Ogre
 		updatePaging (cam);
 		const Vector3 pos (cam->getDerivedPosition().x, 127.0f, cam->getDerivedPosition().z);
 		while (!mTerrainReady || 
-		       !mPagePreloadQueue.empty() || 
 		       !mPageLoadQueue.empty())
 		{
 			processLoadQueues();// fill pages queues
@@ -343,12 +316,9 @@ namespace Ogre
 						removeFromQueues(p);
 						mPageLoadQueue.push(p); 
 						p->setInQueue(PagingLandScapePage::QUEUE_LOAD);
-					} else if (!p->isInPreloadQueue() &&
-						   !p->isPreLoaded()) {
+					} else {
 						// must be at least preloading
-						removeFromQueues(p);
-						mPagePreloadQueue.push(p);
-						p->setInQueue(PagingLandScapePage::QUEUE_PRELOAD);
+						p->preloadInBackground();
 					}
 				}
 
@@ -389,12 +359,12 @@ namespace Ogre
 
 			//gets page indices (if outside Terrain gets nearest page)
   			getPageIndices (pos.x, pos.z, i, j, true); 
-			PagingLandScapePage *p = getPage (i, j);
+			PagingLandScapePage* p = getPage (i, j);
 			
 			if (!p) {
 				return;
 			}
-			makePageLoadedNow (p);
+			p->load();
 
 			// update current Cam Page info 
 			if (oldPage != p)
@@ -455,16 +425,7 @@ namespace Ogre
 		// for several frames and thus need to be unloaded.
 
 		// LIST CHECKS
-		PagingLandScapePageList::iterator itl;
-		for (itl = mPreLoadedPages.begin(); itl != mPreLoadedPages.end();) {
-			if ((*itl)->unloadUntouched()) {
-				releasePage(*itl);
-				itl = mPreLoadedPages.erase(itl);
-			} else {
-				++itl;
-			}
-		}
-		for (itl = mLoadedPages.begin(); itl != mLoadedPages.end();) {             
+		for (PagingLandScapePageList::iterator itl = mLoadedPages.begin(); itl != mLoadedPages.end();) {             
 			if ((*itl)->unloadUntouched()) {
 				releasePage(*itl);
 				itl = mLoadedPages.erase(itl);
@@ -476,23 +437,7 @@ namespace Ogre
 		// QUEUES CHECKS
 		// check queues for page that need to be excluded from queues
 		PagingLandScapePage* p = 0;
-		PagingLandScapeQueue<PagingLandScapePage>::MsgQueType::iterator itq;
-		for (itq = mPagePreloadQueue.begin(); itq != mPagePreloadQueue.end();) {
-			assert (!(*itq)->isLoaded() && !(*itq)->isPreLoaded());
-			assert ((*itq)->isInPreloadQueue());
-			if ((*itq)->unloadUntouched()) {
-				p = *itq;
-				// remove from queue
-				p->setInQueue(PagingLandScapePage::QUEUE_NONE);
-				itq = mPagePreloadQueue.erase (itq);
-				// remove from active pages 
-				//(must be removed from queue first)
-				releasePage(p);
-			} else {
-				++itq;
-			}
-		}
-		for (itq = mPageLoadQueue.begin(); itq != mPageLoadQueue.end();) {
+		for (PagingLandScapeQueue<PagingLandScapePage>::MsgQueType::iterator itq = mPageLoadQueue.begin(); itq != mPageLoadQueue.end();) {
 			assert (!(*itq)->isLoaded());
 			assert ((*itq)->isInLoadQueue());
 			if ((*itq)->unloadUntouched()) {
@@ -526,17 +471,6 @@ namespace Ogre
 				p->load();
 
 				// rest of processing after eventPageLoaded received 
-
-			} else if (!mPagePreloadQueue.empty ()) {
-				// We PreLoad nearest page in non-empty queue
-				PagingLandScapePage* p = mPagePreloadQueue.find_nearest(pos);
-				assert (p && !p->isPreLoaded());
-				assert (p->isInPreloadQueue());
-				p->preload();
-
-				mPreLoadedPages.push_back(p);
-				mPageLoadQueue.push(p);
-				p->setInQueue(PagingLandScapePage::QUEUE_LOAD);
 			}
 		}
 	}
@@ -547,10 +481,8 @@ namespace Ogre
 
 		if (p->isInLoadQueue())	{
 			mPageLoadQueue.remove(p);
-		} else if (p->isInPreloadQueue()) {
-			mPagePreloadQueue.remove(p);
+			p->setInQueue(PagingLandScapePage::QUEUE_NONE);
 		}
-		p->setInQueue(PagingLandScapePage::QUEUE_NONE);
 
 		assert (p->isNotInAnyQueue());
 	}
@@ -609,17 +541,6 @@ namespace Ogre
 	{
 		return static_cast< int >(mWidth*mHeight - mLoadedPages.size());
 	}
-	//-----------------------------------------------------------------------
-	int PagingLandScapePageManager::getPreLoadedPageSize() const
-	{
-		return static_cast< int >(mPreLoadedPages.size());
-	}
-	//-----------------------------------------------------------------------
-	int PagingLandScapePageManager::getPagePreloadQueueSize() const
-	{
-		return static_cast< int >(mPagePreloadQueue.getSize());
-	}
-
 	//-----------------------------------------------------------------------
 	int PagingLandScapePageManager::getPageLoadQueueSize() const
 	{
@@ -843,12 +764,9 @@ namespace Ogre
 	void PagingLandScapePageManager::setWorldGeometryRenderQueue(uint8 qid)
 	{
 		PagingLandScapePageList::iterator l, lend = mLoadedPages.end();
-		for (l = mLoadedPages.begin(); l != lend; ++l)
-		{
+		for (l = mLoadedPages.begin(); l != lend; ++l) {
 			PagingLandScapePage* p = (*l);
-			{
-				p->setRenderQueue(qid);
-			}
+			p->setRenderQueue(qid);
 		}
 	}
 	//-------------------------------------------------------------------------
@@ -856,6 +774,5 @@ namespace Ogre
 	{
 		page->setInQueue(PagingLandScapePage::QUEUE_NONE);
 		mLoadedPages.push_back(page);
-		mPreLoadedPages.remove(page);
 	}
 }

@@ -1274,25 +1274,6 @@ namespace Ogre
 
 
 
-        if (strKey == "PagePreloadQueue")
-	    {
-            if (mPageManager)
-		        * static_cast < int * > (pDestValue) = mPageManager->getPagePreloadQueueSize();
-		    return true;
-	    }    
-	    if (strKey == "PageLoadQueue")
-	    {
-		    if (mPageManager)
-		        * static_cast < int * > (pDestValue) = mPageManager->getPageLoadQueueSize();
-		    return true;
-	    }
-	    
-        if (strKey == "PreLoadedPages")
-        {
-            if (mPageManager)
-		        * static_cast < int * > (pDestValue) = mPageManager->getPreLoadedPageSize();
-            return true;
-        }
         if (strKey == "LoadedPages")
         {
             if (mPageManager)

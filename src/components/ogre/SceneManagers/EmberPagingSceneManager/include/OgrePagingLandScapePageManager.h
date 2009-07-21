@@ -237,7 +237,6 @@ namespace Ogre
 		void updateLoadedPages();
 		void queuePageNeighbors();
 
-		void makePageLoadedNow(PagingLandScapePage* p);
 		PagingLandScapePage* find_nearest(const Vector3& pos, unsigned int x, unsigned int z, PagingLandScapePageList& mQueue) const;
 
 		PagingLandScapeData2DManager* mData2d;
@@ -249,10 +248,8 @@ namespace Ogre
 	        //PagingLandScapePages mPages;
 
 		PagingLandScapeQueue<PagingLandScapePage> mPageLoadQueue;
-		PagingLandScapeQueue<PagingLandScapePage> mPagePreloadQueue;
 
 		PagingLandScapePageList mLoadedPages;
-		PagingLandScapePageList mPreLoadedPages;
 
 		PagingLandScapePageList mActivePages;
 		PagingLandScapePageList mFreePages;

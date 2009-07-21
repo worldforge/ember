@@ -53,8 +53,8 @@ namespace Ogre
 	        /** Loads the LandScape tiles using parameters given in the constructor. */
 	        void load();
 
-	        /** Pre-loads the LandScape data using parameters given in the constructor. */
-	        void preload();
+	        /** Pre-loads the LandScape data using parameters given in the constructor.   It does so in a background thread.  */
+	        void preloadInBackground();
 
 	        /** Show/hide the page */
 		void show(bool do_show);
