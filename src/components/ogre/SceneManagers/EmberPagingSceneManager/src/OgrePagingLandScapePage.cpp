@@ -138,6 +138,7 @@ namespace Ogre
 
 		if (mPageState == STATE_INITED) {
 			preloadInBackground();
+			// it takes a while to do it, so we don't bother trying to load and failing
 			return;
 		}
 
