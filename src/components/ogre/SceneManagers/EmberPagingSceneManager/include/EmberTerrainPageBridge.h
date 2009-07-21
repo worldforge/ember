@@ -42,6 +42,8 @@ public:
 
 	void updateTerrain();
 
+	void terrainPageReady();
+
 protected:
 	/**
 	 * @brief The heightfield instance to which this bridge is connected.

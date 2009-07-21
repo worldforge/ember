@@ -59,6 +59,11 @@ public:
 	virtual void updateTerrain() = 0;
 	
 	/**
+	 *    @brief Notifies class in the ogre side about the page being ready (after being created or so).
+	 */
+	virtual void terrainPageReady() = 0;
+	
+	/**
 	 * @brief Accessor to the terrain page this bridge is bound to.
 	 * @return A pointer to the terrain page, or null if no page yet has been bound.
 	 */

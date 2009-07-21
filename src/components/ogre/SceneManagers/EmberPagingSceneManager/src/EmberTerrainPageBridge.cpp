@@ -50,4 +50,9 @@ void EmberTerrainPageBridge::updateTerrain()
 	mHeightField.setMaxHeight(mTerrainPage->getMaxHeight());
 }
 
+void EmberTerrainPageBridge::terrainPageReady()
+{
+	mHeightField.eventTerrainPageLoaded();
+}
+
 }
