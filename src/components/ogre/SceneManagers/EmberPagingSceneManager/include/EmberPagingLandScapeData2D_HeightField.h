@@ -33,7 +33,9 @@ namespace EmberOgre
 namespace Terrain {
 	class TerrainPage;
 }
-	class EmberTerrainPageBridge;
+
+class EmberTerrainPageBridge;
+
 /**
 * @brief A specialized class for loading 2D Data from Mercator, through an EmberOgre::TerrainPage class.
 
@@ -58,6 +60,9 @@ The PagingLandscape SceneManager comes with a whole set of different heightfield
 			virtual Ogre::Real getMaxAbsoluteHeight() const;
 
 			void setMaxHeight(float maxHeight);
+
+			void eventTerrainPageLoaded();
+
 		protected:
 
 			virtual void _save();

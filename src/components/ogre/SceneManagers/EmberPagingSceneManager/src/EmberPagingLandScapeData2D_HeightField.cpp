@@ -65,40 +65,8 @@ bool EmberPagingLandScapeData2D_HeightField::_load(unsigned int x, unsigned int 
 	mMaxArrayPos = mSize * mSize;
 	mHeightData = new Ogre::Real[mMaxArrayPos];
 
-	Terrain::TerrainPage* terrainPage(terrainGenerator->getTerrainPageAtIndex(Ogre::Vector2(x,z)));
-	//should always return a TerrainPage*
-	assert(terrainPage);
 	mBridge = new EmberTerrainPageBridge(*this);
-	terrainPage->registerBridge(mBridge);
-	mBridge->updateTerrain();
-
-/*	mTerrainPage->bindToOgreHeightData(mHeightData);
-	mTerrainPage->updateOgreHeightData();*/
-
-// 	char imageHeightData[mMaxArrayPos];
-// 	for (unsigned int i = 0; i <= mMaxArrayPos;++i) {
-// 		imageHeightData[i] = static_cast<char>(mHeightData[i]+ 50);
-// 	}
-//
-// Ogre::MemoryDataStreamPtr dataChunk(new Ogre::MemoryDataStream(imageHeightData, mMaxArrayPos));
-// 		const Ogre::String extension = "png";
-//
-// 		Ogre::ImageCodec::ImageData* imgData = new Ogre::ImageCodec::ImageData();
-// 		imgData->width = mSize;
-// 		imgData->height = mSize;
-//
-// 		imgData->depth =  1;
-// 		imgData->format = Ogre::PF_L8;
-//
-// 		Ogre::Codec * pCodec = Ogre::Codec::getCodec(extension);
-// 		// Write out
-// 		Ogre::SharedPtr<Ogre::Codec::CodecData> temp(imgData);
-//
-// 		std::stringstream ss;
-// 		ss << "/home/erik/skit/" << x << "_"<< z <<"." << extension;
-// 		pCodec->codeToFile(dataChunk, ss.str(), temp);
-
-	mParent->getSceneManager()->getPageManager()->getPage(x, z, false)->eventData2DLoaded(true);
+	terrainGenerator->setUpTerrainPageAtIndex(Ogre::Vector2(x,z), *mBridge);
 
 	return true;
 }
@@ -184,6 +152,13 @@ Ogre::Real EmberPagingLandScapeData2D_HeightField::getMaxAbsoluteHeight() const
 	//return mMaxheight;
 }
 
+void EmberPagingLandScapeData2D_HeightField::eventTerrainPageLoaded()
+{
+	mBridge->updateTerrain();
+
+	// notify that terrain data has been loaded
+	mParent->getSceneManager()->getPageManager()->getPage(mPageX, mPageZ, false)->eventData2DLoaded(true);
+}
 
 
 }
