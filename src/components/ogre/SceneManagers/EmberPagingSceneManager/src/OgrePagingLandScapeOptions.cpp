@@ -102,7 +102,6 @@ namespace Ogre
 
 	    max_adjacent_pages = 2;
 	    max_preload_pages = 3;
-		PageLoadInterval = 30;
 
 	    change_factor = 1;
 	    distanceLOD = 4;
@@ -906,7 +905,6 @@ namespace Ogre
 
 	    setUint (max_adjacent_pages, "MaxAdjacentPages");
 	    setUint (max_preload_pages, "MaxPreloadedPages");
-		setUint (PageLoadInterval, "PageLoadInterval");
 
 	    // Set up the LOD options For a Map
         setUint (maxRenderLevel, "MaxRenderLevel");

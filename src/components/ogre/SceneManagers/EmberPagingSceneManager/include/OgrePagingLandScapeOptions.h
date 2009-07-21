@@ -247,7 +247,6 @@ namespace Ogre
             Real TextureStretchFactor;
 
 			unsigned int RenderableLoadInterval;
-			unsigned int PageLoadInterval;
 
 			unsigned int TileInvisibleUnloadFrames;
 			unsigned int PageInvisibleUnloadFrames;

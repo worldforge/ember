@@ -267,9 +267,6 @@ namespace Ogre
 		unsigned int mWidth;
 		unsigned int mHeight;
 
-		int mNextQueueFrameCount;
-		int mTimePreLoaded;
-
 		int mPause;
 
 		PagingLandScapeCamera* mCurrentcam;
