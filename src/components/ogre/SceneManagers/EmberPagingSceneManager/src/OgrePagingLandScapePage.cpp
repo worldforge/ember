@@ -141,10 +141,11 @@ namespace Ogre
 		}
 
 		if (mPageState == STATE_PRELOADED) {
-			loadTexture();
-		}
 
-		if (mPageState == STATE_TEXTURELOADED) {
+			// load texture
+			S_LOG_VERBOSE("Loading texture for PagingLandScapePage at (" << mTableX << ", " << mTableZ << ")");
+			mPageMgr.getSceneManager()->getTextureManager()->load(mTableX, mTableZ);
+
 			// initialize tile containers
 			mTiles.reserve(mNumTiles);
 			mTiles.resize(mNumTiles);
@@ -190,25 +191,6 @@ namespace Ogre
 		}
 
 		show(true);
-	}
-	//-----------------------------------------------------------------------
-	void PagingLandScapePage::loadTexture()
-	{
-		touch();
-
-		if (mPageState == STATE_INITED) {
-			preload();
-		}
-
-		if (mPageState == STATE_PRELOADED) {
-			S_LOG_VERBOSE("Loading texture for PagingLandScapePage at (" << mTableX << ", " << mTableZ << ")");
-			mPageMgr.getSceneManager()->getTextureManager()->load(mTableX, mTableZ);
-
-			// set new state
-			mPageState = STATE_TEXTURELOADED;
-		} else {
-			S_LOG_WARNING("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") already has a texture loaded (or is not preloaded), ignoring request");
-		}
 	}
 	//-----------------------------------------------------------------------
 	void PagingLandScapePage::preload()

@@ -1280,12 +1280,6 @@ namespace Ogre
 		        * static_cast < int * > (pDestValue) = mPageManager->getPagePreloadQueueSize();
 		    return true;
 	    }    
-        if (strKey == "PageTextureloadQueue")
-	    {
-		    if (mPageManager)
-		        * static_cast < int * > (pDestValue) = mPageManager->getPageTextureloadQueueSize();
-		    return true;
-	    }
 	    if (strKey == "PageLoadQueue")
 	    {
 		    if (mPageManager)
@@ -1297,12 +1291,6 @@ namespace Ogre
         {
             if (mPageManager)
 		        * static_cast < int * > (pDestValue) = mPageManager->getPreLoadedPageSize();
-            return true;
-        }
-        if (strKey == "TextureLoadedPages")
-        {
-            if (mPageManager)
-		        * static_cast < int * > (pDestValue) = mPageManager->getTextureLoadedPageSize();
             return true;
         }
         if (strKey == "LoadedPages")

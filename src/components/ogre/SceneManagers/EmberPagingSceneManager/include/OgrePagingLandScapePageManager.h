@@ -208,13 +208,9 @@ namespace Ogre
 		/// getter
 		int getPageLoadQueueSize() const;
 		/// getter
-		int getPageTextureloadQueueSize() const;
-		/// getter
 		int getLoadedPageSize() const;
 		/// getter
 		int getPreLoadedPageSize() const;
-		/// getter
-		int getTextureLoadedPageSize() const;
 		/// getter
 		int getUnloadedPagesSize() const;
 
@@ -254,11 +250,9 @@ namespace Ogre
 
 		PagingLandScapeQueue<PagingLandScapePage> mPageLoadQueue;
 		PagingLandScapeQueue<PagingLandScapePage> mPagePreloadQueue;
-		PagingLandScapeQueue<PagingLandScapePage> mPageTextureloadQueue;
 
 		PagingLandScapePageList mLoadedPages;
 		PagingLandScapePageList mPreLoadedPages;
-		PagingLandScapePageList mTextureLoadedPages;
 
 		PagingLandScapePageList mActivePages;
 		PagingLandScapePageList mFreePages;

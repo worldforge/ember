@@ -34,7 +34,6 @@ namespace Ogre
 		enum PageInQueue {
 			QUEUE_NONE,
 			QUEUE_PRELOAD,
-			QUEUE_TEXTURELOAD,
 			QUEUE_LOAD
 		};
 
@@ -53,9 +52,6 @@ namespace Ogre
 
 	        /** Loads the LandScape tiles using parameters given in the constructor. */
 	        void load();
-
-	        /** Loads the LandScape texture using parameters given in the constructor. */
-		void loadTexture();
 
 	        /** Pre-loads the LandScape data using parameters given in the constructor. */
 	        void preload();
@@ -138,12 +134,6 @@ namespace Ogre
 			return (mPageState == STATE_PRELOADED);
 		}
 
-		/** Whether the page has the texture loaded */
-		inline bool isTextureLoaded() const 
-		{
-			return (mPageState == STATE_TEXTURELOADED);
-		}
-
 		/** Whether the page is visible loaded */
 		inline bool isVisible() const 
 		{
@@ -154,11 +144,6 @@ namespace Ogre
 		inline bool isInPreloadQueue() const 
 		{
 			return (mPageInQueue == QUEUE_PRELOAD);
-		}
-		/** Whether the page is in the corresponding queue */
-		inline bool isInTextureloadQueue() const 
-		{
-			return (mPageInQueue == QUEUE_TEXTURELOAD);
 		}
 		/** Whether the page is in the corresponding queue */
 		inline bool isInLoadQueue() const 
@@ -183,7 +168,6 @@ namespace Ogre
 			STATE_INITED,
 			STATE_PRELOADING,
 			STATE_PRELOADED,
-			STATE_TEXTURELOADED,
 			STATE_LOADED,
 			STATE_NOTLOADABLE
 		};
