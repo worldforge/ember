@@ -111,13 +111,10 @@ namespace Ogre
 	//-----------------------------------------------------------------------
 	void PagingLandScapePageManager::WorldDimensionChange()
 	{
-		const unsigned int newWidth = mOptions->world_width; 
-		const unsigned int newHeight = mOptions->world_height;
-
 		reset();
 
-		mWidth = newWidth; 
-		mHeight = newHeight;
+		mWidth = mOptions->world_width;
+		mHeight = mOptions->world_height;
 	}
 	//-----------------------------------------------------------------------
 	void PagingLandScapePageManager::setMapMaterial()
