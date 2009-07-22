@@ -1,7 +1,7 @@
 //
 // C++ Implementation: InspectWidget
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2004
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -34,9 +34,9 @@
 #include "../EmberOgre.h"
 
 #include <CEGUIWindowManager.h>
-#include <elements/CEGUIListbox.h> 
-#include <elements/CEGUIListboxTextItem.h> 
-#include <elements/CEGUIGUISheet.h> 
+#include <elements/CEGUIListbox.h>
+#include <elements/CEGUIListboxTextItem.h>
+#include <elements/CEGUIGUISheet.h>
 
 #include <Eris/TypeInfo.h>
 #include <Eris/View.h>
@@ -72,7 +72,7 @@ class Decoder : public Atlas::Message::DecoderBase {
 
 
 
-InspectWidget::InspectWidget() : 
+InspectWidget::InspectWidget() :
 Inspect("inspect", this, "Inspect an entity."),
 mCurrentEntity(0)
 {
@@ -96,31 +96,31 @@ void InspectWidget::entity_BeingDeleted()
 
 void InspectWidget::buildWidget()
 {
-	
+
 
 	loadMainSheet("InspectWidget.layout", "InspectWidget/");
 	mMainWindow->setVisible(false);
 //	mMainWindow->setAlwaysOnTop(true);
-	
+
 	mChildList = static_cast<CEGUI::Listbox*>(getWindow("ChildList"));
 	mInfo = static_cast<CEGUI::GUISheet*>(getWindow("EntityInfo"));
-	
-	
+
+
 	mGuiManager->EventEntityAction.connect(sigc::mem_fun(*this, &InspectWidget::handleAction));
 	enableCloseButton();
 
 	if (CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(getWindow("ShowOgreBoundingBox"))) {
 		BIND_CEGUI_EVENT(button, CEGUI::PushButton::EventClicked, InspectWidget::ShowOgreBoundingBox_Click);
 	}
-	
+
 	if (CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(getWindow("ShowErisBoundingBox"))) {
 		BIND_CEGUI_EVENT(button, CEGUI::PushButton::EventClicked, InspectWidget::ShowErisBoundingBox_Click);
 	}
-	
+
 	if (CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(getWindow("ShowCollision"))) {
 		BIND_CEGUI_EVENT(button, CEGUI::PushButton::EventClicked, InspectWidget::ShowCollision_Click);
 	}
-	
+
 }
 
 void InspectWidget::updateAttributeString()
@@ -146,7 +146,7 @@ void InspectWidget::runCommand(const std::string &command, const std::string &ar
 		} else {
 			Ember::ConsoleBackend::getSingletonPtr()->pushMessage("You must specifify a valid entity id to inspect.");
 		}
-		
+
 	} else {
 		Widget::runCommand(command, args);
 	}
@@ -170,19 +170,19 @@ void InspectWidget::handleAction(const std::string& action, EmberEntity* entity)
 void InspectWidget::startInspecting(EmberEntity* entity)
 {
 	disconnectFromEntity();
-	
+
 	show();
-	
+
 	mCurrentEntity = entity;
 	showEntityInfo(entity);
-	
+
 	mChangedConnection = entity->Changed.connect(sigc::mem_fun(*this, &InspectWidget::entity_Changed));
 	mChildAddedConnection = entity->ChildAdded.connect(sigc::mem_fun(*this, &InspectWidget::entity_ChildAdded));
 	mChildRemovedConnection = entity->ChildRemoved.connect(sigc::mem_fun(*this, &InspectWidget::entity_ChildRemoved));
 	mBeingDeletedConnection = entity->BeingDeleted.connect(sigc::mem_fun(*this, &InspectWidget::entity_BeingDeleted));
-	
+
 	updateAttributeString();
-	
+
 	fillChildrenList();
 
 }
@@ -196,12 +196,12 @@ void InspectWidget::frameStarted(const Ogre::FrameEvent & evt)
 
 void InspectWidget::showEntityInfo(EmberEntity* entity)
 {
-	
+
 	//TODO: restructure this so it won't be done all over each frame, instead cache the values and only update upon changes to the entity
 	Eris::Entity* parent = entity->getLocation();
 	std::stringstream ss;
 	ss.precision(4);
-	
+
 	ss << "Name: " << entity->getName() << "\n";
 	ss << "Id: " << entity->getId() << "\n";
 	ss << "Parent: ";
@@ -211,7 +211,7 @@ void InspectWidget::showEntityInfo(EmberEntity* entity)
 		ss << "none";
 	}
 	ss << "\n";
-	
+
 	if (entity->getPredictedPos().isValid()) {
 		ss << "PredPosition: " << entity->getPredictedPos() << "\n";
 	}
@@ -222,30 +222,30 @@ void InspectWidget::showEntityInfo(EmberEntity* entity)
 	if (velocity.isValid()) {
 		ss << "Velocity: " << velocity << ": " << sqrt(velocity.sqrMag()) << "\n";
 	}
-	
+
 	if (entity->getOrientation().isValid()) {
 		ss << "Orientation: " << entity->getOrientation() << "\n";
 	}
 	if (entity->getBBox().isValid()) {
 		ss << "Boundingbox: " << entity->getBBox() << "\n";
 	}
-	
+
 /*	std::set<std::string> parents = entity->getInherits();
-	
+
 	ss << "Inherits:\n";
 	std::set<std::string>::iterator I = parents.begin();
 	std::set<std::string>::iterator I_end = parents.end();
-	
+
 	for (; I != I_end; ++I) {
 		ss << "    " << *I;
 	}*/
-	
+
 	ss << "Type: " << entity->getType()->getName() << "\n";
-	
+
 	ss << "Attributes:\n";
-	
+
 	ss << mAttributesString;
-	
+
 //  	const Eris::Entity::AttrMap& attributes = entity->getAttributes();
 //  	for(Eris::Entity::AttrMap::const_iterator I = attributes.begin(); I != attributes.end(); ++I) {
 // 		if (I->second.isString()) {
@@ -263,11 +263,11 @@ void InspectWidget::showEntityInfo(EmberEntity* entity)
 // 	Decoder bridge;
 // 	Atlas::Codecs::Bach codec(ss, bridge);
 // 	Atlas::Objects::ObjectsEncoder enc(codec);
-// 	
+//
 // 	const Eris::Entity::AttrMap attributes = entity->getAttributes();
 // 	for(Eris::Entity::AttrMap::const_iterator I = attributes.begin(); I != attributes.end(); ++I) {
 // 		codec.streamBegin();
-// 
+//
 // 		I->second.sendContents(bridge);
 // 		//enc.streamObjectsMessage(I->second);
 // 		codec.streamEnd();
@@ -276,15 +276,15 @@ void InspectWidget::showEntityInfo(EmberEntity* entity)
 
 
 	mInfo->setText(ss.str());
-	
-	
+
+
 }
 
 void InspectWidget::fillChildrenList()
 {
 	unsigned int numberOfChildren = mCurrentEntity->numContained();
 	mChildList->resetList();
-	
+
 	for (unsigned int i = 0; i < numberOfChildren;  ++i) {
 		Eris::Entity* child = mCurrentEntity->getContained(i);
 		addChildToList(child);
@@ -335,9 +335,9 @@ bool InspectWidget::ShowCollision_Click(const CEGUI::EventArgs& args)
 
 bool InspectWidget::ShowOgreBoundingBox_Click(const CEGUI::EventArgs& args)
 {
-	if (mCurrentEntity) {
-		mCurrentEntity->showOgreBoundingBox(!mCurrentEntity->getShowOgreBoundingBox());
-	}
+//	if (mCurrentEntity) {
+//		mCurrentEntity->showOgreBoundingBox(!mCurrentEntity->getShowOgreBoundingBox());
+//	}
 	return true;
 }
 
@@ -371,7 +371,7 @@ const std::stringstream& AttributeTextBuilder::getText() const
 {
 	return mMainText;
 }
-	
+
 void AttributeTextBuilder::pad()
 {
 	for(int i = 0; i <= mLevel; ++i) {
@@ -391,7 +391,7 @@ void AttributeTextBuilder::parseElement(const Atlas::Message::Element& element)
 		parseList("", element.asList());
 	}
 }
-		
+
 void AttributeTextBuilder::parseString(const std::string& text)
 {
 	mMainText << ", " << text;
@@ -404,7 +404,7 @@ void AttributeTextBuilder::parseNumber(float number)
 }
 
 
-void AttributeTextBuilder::parseElement(const std::string& key, const Atlas::Message::Element& element) 
+void AttributeTextBuilder::parseElement(const std::string& key, const Atlas::Message::Element& element)
 {
 	if (key == "") {
 		parseElement(element);

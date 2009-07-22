@@ -64,17 +64,6 @@ public:
 	 */
 	virtual bool getVisualize(const std::string& visualization) const = 0;
 
-
-	/**
-	 * @brief Called by a contained member to see if the member is allowed to be shown.
-	 * @param entity The entity which we want to check whether we should show or not.
-	 * @see setClientVisible()
-	 * @see checkClientVisibility()
-	 * @return True if the entity should be shown, false if it should be hidden.
-	 */
-	virtual bool allowVisibilityOfMember(EmberEntity* entity) = 0;
-
-
 };
 }
 

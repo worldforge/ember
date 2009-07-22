@@ -1436,39 +1436,6 @@ static int tolua_EmberOgre_EmberOgre_EmberEntity_getSuggestedResponses00(lua_Sta
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: setClientVisible of class  EmberOgre::EmberEntity */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EmberEntity_setClientVisible00
-static int tolua_EmberOgre_EmberOgre_EmberEntity_setClientVisible00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::EmberEntity",0,&tolua_err) ||
-     !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  EmberOgre::EmberEntity* self = (EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,1,0);
-  bool visible = ((bool)  tolua_toboolean(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setClientVisible'",NULL);
-#endif
-  {
-   self->setClientVisible(visible);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'setClientVisible'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* method: getEmberLocation of class  EmberOgre::EmberEntity */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EmberEntity_getEmberLocation00
 static int tolua_EmberOgre_EmberOgre_EmberEntity_getEmberLocation00(lua_State* tolua_S)
@@ -1597,39 +1564,6 @@ static int tolua_EmberOgre_EmberOgre_EmberEntity_getPositioningMode00(lua_State*
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: showOgreBoundingBox of class  EmberOgre::EmberEntity */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EmberEntity_showOgreBoundingBox00
-static int tolua_EmberOgre_EmberOgre_EmberEntity_showOgreBoundingBox00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::EmberEntity",0,&tolua_err) ||
-     !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  EmberOgre::EmberEntity* self = (EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,1,0);
-  bool show = ((bool)  tolua_toboolean(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'showOgreBoundingBox'",NULL);
-#endif
-  {
-   self->showOgreBoundingBox(show);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'showOgreBoundingBox'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* method: showErisBoundingBox of class  EmberOgre::EmberEntity */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EmberEntity_showErisBoundingBox00
 static int tolua_EmberOgre_EmberOgre_EmberEntity_showErisBoundingBox00(lua_State* tolua_S)
@@ -1658,38 +1592,6 @@ static int tolua_EmberOgre_EmberOgre_EmberEntity_showErisBoundingBox00(lua_State
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'showErisBoundingBox'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: getShowOgreBoundingBox of class  EmberOgre::EmberEntity */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EmberEntity_getShowOgreBoundingBox00
-static int tolua_EmberOgre_EmberOgre_EmberEntity_getShowOgreBoundingBox00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"const EmberOgre::EmberEntity",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  const EmberOgre::EmberEntity* self = (const EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getShowOgreBoundingBox'",NULL);
-#endif
-  {
-   bool tolua_ret = (bool)  self->getShowOgreBoundingBox();
-   tolua_pushboolean(tolua_S,(bool)tolua_ret);
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getShowOgreBoundingBox'.",&tolua_err);
  return 0;
 #endif
 }
@@ -2170,40 +2072,6 @@ static int tolua_EmberOgre_EmberOgre_IGraphicalRepresentation_getVisualize00(lua
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'getVisualize'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: allowVisibilityOfMember of class  EmberOgre::IGraphicalRepresentation */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_IGraphicalRepresentation_allowVisibilityOfMember00
-static int tolua_EmberOgre_EmberOgre_IGraphicalRepresentation_allowVisibilityOfMember00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::IGraphicalRepresentation",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"EmberOgre::EmberEntity",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  EmberOgre::IGraphicalRepresentation* self = (EmberOgre::IGraphicalRepresentation*)  tolua_tousertype(tolua_S,1,0);
-  EmberOgre::EmberEntity* entity = ((EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'allowVisibilityOfMember'",NULL);
-#endif
-  {
-   bool tolua_ret = (bool)  self->allowVisibilityOfMember(entity);
-   tolua_pushboolean(tolua_S,(bool)tolua_ret);
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'allowVisibilityOfMember'.",&tolua_err);
  return 0;
 #endif
 }
@@ -22171,14 +22039,11 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
     tolua_constant(tolua_S,"PM_FIXED",EmberOgre::EmberEntity::PM_FIXED);
     tolua_function(tolua_S,"hasSuggestedResponses",tolua_EmberOgre_EmberOgre_EmberEntity_hasSuggestedResponses00);
     tolua_function(tolua_S,"getSuggestedResponses",tolua_EmberOgre_EmberOgre_EmberEntity_getSuggestedResponses00);
-    tolua_function(tolua_S,"setClientVisible",tolua_EmberOgre_EmberOgre_EmberEntity_setClientVisible00);
     tolua_function(tolua_S,"getEmberLocation",tolua_EmberOgre_EmberOgre_EmberEntity_getEmberLocation00);
     tolua_function(tolua_S,"isInitialized",tolua_EmberOgre_EmberOgre_EmberEntity_isInitialized00);
     tolua_function(tolua_S,"getMovementMode",tolua_EmberOgre_EmberOgre_EmberEntity_getMovementMode00);
     tolua_function(tolua_S,"getPositioningMode",tolua_EmberOgre_EmberOgre_EmberEntity_getPositioningMode00);
-    tolua_function(tolua_S,"showOgreBoundingBox",tolua_EmberOgre_EmberOgre_EmberEntity_showOgreBoundingBox00);
     tolua_function(tolua_S,"showErisBoundingBox",tolua_EmberOgre_EmberOgre_EmberEntity_showErisBoundingBox00);
-    tolua_function(tolua_S,"getShowOgreBoundingBox",tolua_EmberOgre_EmberOgre_EmberEntity_getShowOgreBoundingBox00);
     tolua_function(tolua_S,"getShowErisBoundingBox",tolua_EmberOgre_EmberOgre_EmberEntity_getShowErisBoundingBox00);
     tolua_function(tolua_S,"getDefaultUseOperators",tolua_EmberOgre_EmberOgre_EmberEntity_getDefaultUseOperators00);
     tolua_function(tolua_S,"getActions",tolua_EmberOgre_EmberOgre_EmberEntity_getActions00);
@@ -22205,7 +22070,6 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"getType",tolua_EmberOgre_EmberOgre_IGraphicalRepresentation_getType00);
     tolua_function(tolua_S,"setVisualize",tolua_EmberOgre_EmberOgre_IGraphicalRepresentation_setVisualize00);
     tolua_function(tolua_S,"getVisualize",tolua_EmberOgre_EmberOgre_IGraphicalRepresentation_getVisualize00);
-    tolua_function(tolua_S,"allowVisibilityOfMember",tolua_EmberOgre_EmberOgre_IGraphicalRepresentation_allowVisibilityOfMember00);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"EmberOgre",0);

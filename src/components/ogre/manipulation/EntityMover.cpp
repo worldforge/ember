@@ -54,13 +54,13 @@ void EntityMover::finalizeMovement()
 }
 void EntityMover::cancelMovement()
 {
-	mSceneNodeAttachment.getAttachedEntity().synchronizeWithServer();
+//	mSceneNodeAttachment.getAttachedEntity().synchronizeWithServer();
 	mManager.EventCancelledMoving.emit();
 }
 
 void EntityMover::newEntityPosition(const Ogre::Vector3& position)
 {
-	mSceneNodeAttachment.getAttachedEntity().adjustPosition(mSceneNodeAttachment.getSceneNode()->getPosition());
+//	mSceneNodeAttachment.getAttachedEntity().adjustPosition(mSceneNodeAttachment.getSceneNode()->getPosition());
 }
 
 }

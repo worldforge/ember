@@ -173,41 +173,13 @@ public:
 	 */
 	void createEntityMapping();
 
-	/**
-	 * @brief Called by contained entites to determine how they should be adjusted, for example snap to the ground.
-	 * For instance a house entitiy containing a player entity.
-	 * This should of course be extended to a more dynamic physics simulation in the future
-	 * @param entity The entity to adjust.
-	 * @param position The current position of the entity.
-	 */
-	virtual void adjustPositionForContainedNode(const EmberEntity& entity, const Ogre::Vector3& position);
-
 
 	/**
 	 * @brief Adjust the height of the entity so that it "snaps" to the ground or is otherwise adjusted, depending on the current movement mode.
 	 * This is most often done by making a call to the containing node's adjustPositionForContainedNode method.
 	 * @see adjustPositionForContainedNode()
 	 */
-	virtual void adjustPosition();
-
-	/**
-	 * @brief Adjust the height of the entity so that it "snaps" to the ground or is otherwise adjusted, depending on the current movement mode.
-	 * This is most often done by making a call to the containing node's
-	 * adjustPositionForContainedNode method.
-	 * @see adjustPositionForContainedNode()
-	 * @param position The current position.
-	 */
-	virtual void adjustPosition(const Ogre::Vector3& position);
-
-	/**
-	 * @brief Called by a contained member to see if the member is allowed to be shown.
-	 * @param entity The entity which we want to check whether we should show or not.
-	 * @see setClientVisible()
-	 * @see checkClientVisibility()
-	 * @return True if the entity should be shown, false if it should be hidden.
-	 */
-	virtual bool allowVisibilityOfMember(EmberEntity* entity);
-
+	void adjustPosition();
 
 	/**
 	 * @brief Returns true if the entity has a list of suggested responses to something this entity has said in the world.
@@ -223,16 +195,6 @@ public:
 	 */
 	const std::vector<std::string>& getSuggestedResponses() const;
 
-
-	/**
-	 * @brief Sets the visiblity of the graphical visibility of the entity.
-	 * This differs from the visibility set by the server, as found in Eris::Entity. The main reason for this is that we sometimes don't want to show all entities, even if the server says they're visible. An example would be items held as inventory by an entity, which we in most cases don't want to show as entitied directly.
-	 * @see Eris::Entity::setVisible()
-	 * @param visible True if the graphical representation should be shown, else false.
-	 */
-	virtual void setClientVisible(bool visible);
-
-
 	/**
 	 * @brief Gets the location (i.e. parent entity) as cast to an EmberEntity.
 	 * This behaves just like getLocation, but will always return an instance of EmberEntity. We can do this since we're guaranteed to only ever deal with instances of EmberEntity in the world, thanks to the EmberEntityFactory class.
@@ -241,19 +203,6 @@ public:
 	 * @return The location of this entity, i.e. the parent entity. If there's no parent entity available, null will be returned (i.e. if the entity is in limbo, or if it's the topmost entity).
 	 */
 	EmberEntity* getEmberLocation() const;
-
-	/**
-	 * @brief Attaches the entity to another entity (or in reality another Model).
-	 * @param point The point on the other entity to attach to.
-	 * @param model The model to which we should attach ourself.
-	 */
-	virtual void attachToPointOnModel(const std::string& point, Model::Model* model, Ogre::Quaternion orientation = Ogre::Quaternion::IDENTITY, Ogre::Vector3 offset = Ogre::Vector3::ZERO) {};
-
-	/**
-	 * @brief Detaches the entity from another entity (or in reality another Model).
-	 * While the implementation here is missing, it's expected that subclasses that deals with Models should implement this.
-	 */
-	virtual void detachFromModel() {};
 
 	/**
 	 * @brief Returns true if init(...) has been called and the entity been set up.
@@ -276,39 +225,19 @@ public:
 	PositioningMode getPositioningMode() const;
 
 	/**
-	 * @brief Call this method once per frame to update the motion of the entity
-	 * @param timeSlice Elapsed time since we last updated, in seconds.
-	 */
-	virtual void updateMotion(Ogre::Real timeSlice);
-
-	/**
-	 * @brief Shows the Ogre bounding box.
-	 * This is mainly useful for debugging or authoring.
-	 * @param show If true, the bounding box will be shown. If false, it will be hidden.
-	 */
-	virtual void showOgreBoundingBox(bool show);
-
-
-	/**
 	 * @brief Shows the eris/atlas bounding box.
 	 * This is mainly useful for debugging or authoring.
 	 * @see mErisEntityBoundingBox
 	 * @param show If true, the bounding box will be shown. If false, it will be hidden.
 	 */
-	virtual void showErisBoundingBox(bool show);
-
-	/**
-	 * @brief Returns whether the ogre bounding box is shown.
-	 * @return True if the ogre bounding box is shown.
-	 */
-	virtual bool getShowOgreBoundingBox() const;
+	void showErisBoundingBox(bool show);
 
 	/**
 	 * @brief Returns whether the eris/atlas bounding box is shown.
 	 * @see mErisEntityBoundingBox
 	 * @return True if the eris bounding box is shown.
 	 */
-	virtual bool getShowErisBoundingBox() const;
+	bool getShowErisBoundingBox() const;
 
 	/**
 	 *    Returns a list of the default use operators that can be used with this entity.
@@ -323,12 +252,6 @@ public:
 	 * @return A vector of actions, as strings.
 	 */
 	std::vector<std::string> getActions();
-
-	/**
-	 * @brief Synchronizes the position and orientation of the entity with the server.
-	 */
-	void synchronizeWithServer();
-
 
 	/**
 	 * @brief Dumps all of this entity's attributes to the supplied outstream.
@@ -367,13 +290,6 @@ public:
 	 * @param graphicalRepresentation The new graphical representation. Ownership will be transferred to this class.
 	 */
 	void setGraphicalRepresentation(IGraphicalRepresentation* graphicalRepresentation);
-
-	/**
-	 * @brief Emitted when the visibility of the entity has changed.
-	 * This differs from the visibility set by the server, as found in Eris::Entity. The main reason for this is that we sometimes don't want to show all entities, even if the server says they're visible. An example would be items held as inventory by an entity, which we in most cases don't want to show as entitied directly.
-	 */
-	sigc::signal<void, bool> EventClientVisibilityChanged;
-
 
 	/**
 	 * @brief Emitted when the movement mode has changed.
@@ -424,17 +340,6 @@ public:
 
 protected:
 
-
-	/**
-	 * @brief Gets the position of a contained node.
-	 * The main reason for us wanting to offset contained nodes is that sometimes we want contained nodes to be adjusted to better fit the current mode. An example would be a table, where we want nodes that are contained by the table entity to appear to lie flat on the table. The server of course has some ideas about this, but depending on the actual model used this might look strange. We therefore adjust the contained nodes to better fit the actual model.
-	 * @param position The current position of the contained node.
-	 * @param entity The entity to get an adjusted position for.
-	 * @return The offset by which to adjust the contained node.
-	 */
-	virtual const Ogre::Vector3& getOffsetForContainedNode(const Ogre::Vector3& position, const EmberEntity& entity);
-
-
 	/**
 	* @brief If this is true, init(...) has been called and the entity been set up.
 	* @see isInitialized().
@@ -451,18 +356,9 @@ protected:
 	 */
 	virtual void onMoved();
 	/**
-	 *    @copydoc Eris::Entity::setMoving()
-	 */
-	virtual void setMoving(bool moving);
-	/**
 	 *    @copydoc Eris::Entity::onTalk()
 	 */
 	virtual void onTalk(const Atlas::Objects::Operation::RootOperation& talk);
-//	virtual void setContainer(Entity *pr);
-	/**
-	 *    @copydoc Eris::Entity::onVisibilityChanged()
-	 */
-	virtual void onVisibilityChanged(bool vis);
 	/**
 	 *    @copydoc Eris::Entity::onLocationChanged()
 	 */
@@ -542,12 +438,6 @@ protected:
 	void createErisBboxMaterial();
 
 	/**
-	 * @brief Creates the main scene node which holds the entity.
-	 * @param sceneManager The scene manager which should be used for creating the scene node.
-	 */
-//	void createSceneNode(Ogre::SceneManager* sceneManager);
-
-	/**
 	 * @brief Called by eris just after the entity has been put into the world.
 	 * @param ge The root entity which contains all atlas data that define this entity.
 	 * @param fromCreateOp
@@ -555,26 +445,9 @@ protected:
 	virtual void init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp);
 
 	/**
-	 * @brief Checks whether the client represenation should be visible or not.
-	 * This differs from the visibility set by the server, as found in Eris::Entity. The main reason for this is that we sometimes don't want to show all entities, even if the server says they're visible. An example would be items held as inventory by an entity, which we in most cases don't want to show as entitied directly.
-	 * @param vis The original visiblity, as Eris::Entity sees it.
-	 */
-	virtual void checkClientVisibility(bool vis);
-
-	/**
 	@brief Sometimes when talking to an entity, the server will provide suggested responses. These are stored here.
 	*/
 	std::vector<std::string> mSuggestedResponses;
-
-	/**
-	 * @brief The main SceneNode which holds the entity in the ogre world space.
-	 */
-//	Ogre::SceneNode* mOgreNode;
-
-	/**
-	 * @brief Gets the scene manager that manages the Ogre scene node held by this.
-	 */
-//	Ogre::SceneManager* getSceneManager();
 
 	/**
 	 * @brief If there's a terrain area belonging to this entity, that's stored here.

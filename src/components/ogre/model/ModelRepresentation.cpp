@@ -754,11 +754,6 @@ void ModelRepresentation::entity_Acted(const Atlas::Objects::Operation::RootOper
 	}
 }
 
-bool ModelRepresentation::allowVisibilityOfMember(EmberEntity* entity)
-{
-	return mModel.getDefinition()->getShowContained();
-}
-
 void ModelRepresentation::setVisualize(const std::string& visualization, bool visualize)
 {
 	if (visualization == "CollisionObject")

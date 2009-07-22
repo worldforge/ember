@@ -170,11 +170,6 @@ public:
 	virtual const Ogre::Sphere & getWorldBoundingSphere (bool derive=true) const;
 
 	/**
-	 * @brief Called by a contained member to see if the member is allowed to be shown.
-	 */
-	bool allowVisibilityOfMember(EmberEntity* entity);
-
-	/**
 	 * @brief General method for turning on and off debug visualizations. Subclasses might support more types of visualizations than the ones defined here.
 	 * @param visualization The type of visualization. Currently supports "OgreBBox" and "ErisBBox".
 	 * @param visualize Whether to visualize or not.
