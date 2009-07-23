@@ -320,13 +320,13 @@ public:
 	@brief Emitted when a layer is updated.
 	The vector parameter is either null if the update can't be constrained to any areas, or an vector of areas if it can.
 	*/
-	sigc::signal<void, TerrainShader*, AreaStore* > EventLayerUpdated;
+	sigc::signal<void, const TerrainShader*, AreaStore* > EventLayerUpdated;
 
 	/**
 	@brief Emitted when a new shader is created.
 	The shader paremeter is the newly created shader.
 	*/
-	sigc::signal<void, TerrainShader*> EventShaderCreated;
+	sigc::signal<void, const TerrainShader*> EventShaderCreated;
 
 	/**
 	@brief Emitted before the terrain geometry is changed.
@@ -379,19 +379,19 @@ protected:
 		bool UpdateAll;
 	};
 
-	typedef std::map<int,TerrainShader*> AreaShaderstore;
+	typedef std::map<int, const TerrainShader*> AreaShaderstore;
 
-	typedef std::map<TerrainShader*, ShaderUpdateRequest> ShaderUpdateSet;
+	typedef std::map<const TerrainShader*, ShaderUpdateRequest> ShaderUpdateSet;
 
 	typedef std::map<std::string, TerrainPage*> PageStore;
 	/**
 	A type for use when keeping track of changes done to areas. We use instances of Mercator::Area instead of pointers or references since we want to batch the updates, and the original area instances might not be around at that time.
 	*/
-	typedef std::map<TerrainShader*, std::vector<Mercator::Area> > TerrainAreaMap;
+	typedef std::map<const TerrainShader*, std::vector<Mercator::Area> > TerrainAreaMap;
 
 	typedef std::multimap<const std::string, Mercator::TerrainMod*> TerrainModMap;
 
-	typedef std::map<const Mercator::Shader*, TerrainShader*> ShaderStore;
+	typedef std::map<const Mercator::Shader*, const TerrainShader*> ShaderStore;
 
 	/**
 	@brief Information about the world, such as size and number of pages.
@@ -409,7 +409,7 @@ protected:
 	 * @param shader The shader to update.
 	 * @param terrainArea If an area is specified here, only pages touched by the area will be updated.
 	 */
-	void markShaderForUpdate(TerrainShader* shader,  Mercator::Area* terrainArea = 0);
+	void markShaderForUpdate(const TerrainShader* shader,  Mercator::Area* terrainArea = 0);
 
 	/**
 	 * @brief Stores the shaders needing update, to be processed on the next frame.

@@ -328,7 +328,7 @@ void TerrainGenerator::TerrainArea_Swapped(Mercator::Area& oldArea, TerrainArea*
 	}
 
 }
-void TerrainGenerator::markShaderForUpdate(TerrainShader* shader, Mercator::Area* terrainArea)
+void TerrainGenerator::markShaderForUpdate(const TerrainShader* shader, Mercator::Area* terrainArea)
 {
 	ShaderUpdateRequest& updateRequest = mShadersToUpdate[shader];
 	if (terrainArea) {
@@ -661,12 +661,12 @@ void TerrainGenerator::updateEntityPosition(EmberEntity* entity, const std::set<
 }
 
 
-const TerrainPosition TerrainGenerator::getMax( ) const
+const TerrainPosition TerrainGenerator::getMax() const
 {
 	return mTerrainInfo->getWorldSizeInIndices().highCorner();
 }
 
-const TerrainPosition TerrainGenerator::getMin( ) const
+const TerrainPosition TerrainGenerator::getMin() const
 {
 	return mTerrainInfo->getWorldSizeInIndices().lowCorner();
 }
