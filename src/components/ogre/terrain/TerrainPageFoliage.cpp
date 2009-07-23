@@ -71,6 +71,7 @@ TerrainPageFoliage::~TerrainPageFoliage()
 void TerrainPageFoliage::generatePlantPositions()
 {
 	int index(0);
+	unsigned int foliageBatchSize = mGenerator.getFoliageBatchSize();
 	for (TerrainLayerDefinitionManager::DefinitionStore::const_iterator I = TerrainLayerDefinitionManager::getSingleton().getDefinitions().begin(); I != TerrainLayerDefinitionManager::getSingleton().getDefinitions().end(); ++I) {
 		const TerrainLayerDefinition* layerDef = *I;
 		for (TerrainLayerDefinition::TerrainFoliageDefinitionStore::const_iterator I = layerDef->getFoliages().begin(); I != layerDef->getFoliages().end(); ++I) {
@@ -84,7 +85,7 @@ void TerrainPageFoliage::generatePlantPositions()
 				populator.setDensity(atof(I->getParameter("density").c_str()));
 				populator.setFalloff(atof(I->getParameter("falloff").c_str()));
 
-				populator.populate(plants, index++, mGenerator.getFoliageBatchSize());
+				populator.populate(plants, index++, foliageBatchSize);
 			}
 		}
 	}
@@ -299,22 +300,22 @@ void EmberOgre::Terrain::ClusterPopulator::setClusterDistance ( float theValue )
 	mClusterDistance = theValue;
 }
 
-EmberOgre::Terrain::PlantPopulator::PlantPopulator(TerrainPageFoliage & terrainPageFoliage)
+EmberOgre::Terrain::PlantPopulator::PlantPopulator(const TerrainPageFoliage & terrainPageFoliage)
 : mTerrainPageFoliage(terrainPageFoliage)
 {
 
 }
 
-EmberOgre::Terrain::PlantPopulator::~ PlantPopulator()
+EmberOgre::Terrain::PlantPopulator::~PlantPopulator()
 {
 }
 
-EmberOgre::Terrain::ClusterPopulator::ClusterPopulator(TerrainPageFoliage & terrainPageFoliage)
+EmberOgre::Terrain::ClusterPopulator::ClusterPopulator(const TerrainPageFoliage& terrainPageFoliage)
 : EmberOgre::Terrain::ClusterPopulator::PlantPopulator(terrainPageFoliage)
 {
 }
 
-EmberOgre::Terrain::ClusterPopulator::~ ClusterPopulator()
+EmberOgre::Terrain::ClusterPopulator::~ClusterPopulator()
 {
 }
 

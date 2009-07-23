@@ -131,21 +131,21 @@ class PlantPopulator
 {
 public:
 
-	PlantPopulator(TerrainPageFoliage& terrainPageFoliage);
+	PlantPopulator(const TerrainPageFoliage& terrainPageFoliage);
 	virtual ~PlantPopulator();
 
 	virtual void populate(TerrainPageFoliage::PlantBatchStore& plantBatchStore, int plantIndex, unsigned int batchSize) = 0;
 
 protected:
 
-	TerrainPageFoliage& mTerrainPageFoliage;
+	const TerrainPageFoliage& mTerrainPageFoliage;
 
 };
 
 class ClusterPopulator : public PlantPopulator
 {
 public:
-	ClusterPopulator(TerrainPageFoliage& terrainPageFoliage);
+	ClusterPopulator(const TerrainPageFoliage& terrainPageFoliage);
 	virtual ~ClusterPopulator();
 
 	virtual void populate(TerrainPageFoliage::PlantBatchStore& plantBatchStore, int plantIndex, unsigned int batchSize);
