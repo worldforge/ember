@@ -160,13 +160,13 @@ public:
 	 * @brief Adds a shader to the page, meaning that it will be used in rendering.
 	 * @param shader The new shader to add.
 	 */
-	TerrainPageSurfaceLayer* addShader(TerrainShader* shader);
+	TerrainPageSurfaceLayer* addShader(const TerrainShader* shader);
 
 	/**
 	 * @brief Updates the shader texture for the specific shader.
 	 * @param shader The shader to update.
 	 */
-	TerrainPageSurfaceLayer* updateShaderTexture(TerrainShader* shader, bool repopulate = true);
+	TerrainPageSurfaceLayer* updateShaderTexture(const TerrainShader* shader, bool repopulate = true);
 
 	/**
 	 * @brief Updates all the shader textures of the page.

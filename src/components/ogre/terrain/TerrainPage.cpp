@@ -264,7 +264,7 @@ const TerrainPageShadow& TerrainPage::getPageShadow() const
 
 
 
-TerrainPageSurfaceLayer* TerrainPage::addShader(TerrainShader* shader)
+TerrainPageSurfaceLayer* TerrainPage::addShader(const TerrainShader* shader)
 {
 	TerrainPageSurfaceLayer* layer = mTerrainSurface->createSurfaceLayer(*shader->getLayerDefinition(), shader->getTerrainIndex(), shader->getShader());
 	layer->populate(*mGeometry);
@@ -307,7 +307,7 @@ void TerrainPage::updateAllShaderTextures(bool repopulate)
 	mPageFoliage->generateCoverageMap();
 }
 
-TerrainPageSurfaceLayer* TerrainPage::updateShaderTexture(TerrainShader* shader, bool repopulate)
+TerrainPageSurfaceLayer* TerrainPage::updateShaderTexture(const TerrainShader* shader, bool repopulate)
 {
 	TerrainPageSurfaceLayer* layer;
 	if (mTerrainSurface->getLayers().find(shader->getTerrainIndex()) == mTerrainSurface->getLayers().end()) {
