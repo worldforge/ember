@@ -73,7 +73,7 @@ public:
 	 */
 	int getNumberOfSegmentsPerAxis() const;
 
-	TerrainPageSurfaceLayer* createSurfaceLayer(const TerrainLayerDefinition& definition, int surfaceIndex, Mercator::Shader* shader);
+	TerrainPageSurfaceLayer* createSurfaceLayer(const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader* shader);
 
 	const Ogre::MaterialPtr getMaterial() const;
 

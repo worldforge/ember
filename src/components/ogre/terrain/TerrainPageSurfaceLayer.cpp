@@ -39,7 +39,7 @@
 namespace EmberOgre {
 namespace Terrain {
 
-TerrainPageSurfaceLayer::TerrainPageSurfaceLayer(TerrainPageSurface& terrainPageSurface, const TerrainLayerDefinition& definition, int surfaceIndex, Mercator::Shader* shader)
+TerrainPageSurfaceLayer::TerrainPageSurfaceLayer(TerrainPageSurface& terrainPageSurface, const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader* shader)
 : mTerrainPageSurface(terrainPageSurface)
 , mShader(shader)
 , mCoverageImage(0)
@@ -251,10 +251,6 @@ void TerrainPageSurfaceLayer::setNormalTextureName(const std::string& textureNam
 	mNormalTextureName = textureName;
 }
 
-Mercator::Shader* TerrainPageSurfaceLayer::getShader() const
-{
-	return mShader;
-}
 int TerrainPageSurfaceLayer::getSurfaceIndex() const
 {
 	return mSurfaceIndex;

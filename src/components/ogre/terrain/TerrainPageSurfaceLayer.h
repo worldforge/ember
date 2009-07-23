@@ -52,7 +52,7 @@ class TerrainPageGeometry;
 */
 class TerrainPageSurfaceLayer{
 public:
-    TerrainPageSurfaceLayer(TerrainPageSurface& terrainPageSurface, const TerrainLayerDefinition& definition, int surfaceIndex, Mercator::Shader* shader);
+    TerrainPageSurfaceLayer(TerrainPageSurface& terrainPageSurface, const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader* shader);
 
     virtual ~TerrainPageSurfaceLayer();
 
@@ -108,7 +108,6 @@ public:
 	 */
 	bool intersects(const TerrainPageGeometry& geometry) const;
 
-	Mercator::Shader* getShader() const;
 	int getSurfaceIndex() const;
 	Mercator::Surface* getSurfaceForSegment(const Mercator::Segment* segment) const;
 
@@ -125,7 +124,7 @@ public:
 
 protected:
 	TerrainPageSurface& mTerrainPageSurface;
-	Mercator::Shader* mShader;
+	const Mercator::Shader* mShader;
 	Ogre::Image* mCoverageImage;
 	Ogre::TexturePtr mTexture;
 
