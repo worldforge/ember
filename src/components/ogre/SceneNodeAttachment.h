@@ -20,6 +20,7 @@
 #define EMBEROGRESCENENODEATTACHMENT_H_
 
 #include "components/ogre/AttachmentBase.h"
+#include <sigc++/trackable.h>
 
 
 namespace Ogre {
@@ -31,7 +32,7 @@ namespace EmberOgre {
 
 class SceneNodeController;
 
-class SceneNodeAttachment : public AttachmentBase
+class SceneNodeAttachment : public AttachmentBase, public virtual sigc::trackable
 {
 public:
 	SceneNodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, Ogre::SceneNode& parentNode);
@@ -51,8 +52,14 @@ public:
 protected:
 
 	Ogre::SceneNode* mSceneNode;
+	Ogre::SceneNode& mParentNode;
 
 	SceneNodeController* mAttachmentController;
+
+	void setupListeners();
+
+	void entity_VisibilityChanged(bool visible);
+
 
 };
 

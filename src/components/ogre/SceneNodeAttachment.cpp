@@ -35,17 +35,19 @@
 namespace EmberOgre {
 
 SceneNodeAttachment::SceneNodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, Ogre::SceneNode& parentNode)
-: AttachmentBase::AttachmentBase(parentEntity, childEntity), mSceneNode(0), mAttachmentController(0)
+: AttachmentBase::AttachmentBase(parentEntity, childEntity), mSceneNode(0), mParentNode(parentNode), mAttachmentController(0)
 {
 	setControlDelegate(mChildEntity.getAttachmentControlDelegate());
 	mSceneNode = parentNode.createChildSceneNode("entity_" + childEntity.getId());
+	setupListeners();
 }
 
 SceneNodeAttachment::SceneNodeAttachment(SceneNodeAttachment& source, SceneNodeAttachment& newParentAttachment)
-: AttachmentBase::AttachmentBase(newParentAttachment.getAttachedEntity(), source.getAttachedEntity()), mSceneNode(source.mSceneNode), mAttachmentController(0)
+: AttachmentBase::AttachmentBase(newParentAttachment.getAttachedEntity(), source.getAttachedEntity()), mSceneNode(source.mSceneNode), mParentNode(*newParentAttachment.mSceneNode), mAttachmentController(0)
 {
 	setControlDelegate(mChildEntity.getAttachmentControlDelegate());
 	source.mSceneNode = 0;
+	setupListeners();
 }
 
 
@@ -64,6 +66,25 @@ SceneNodeAttachment::~SceneNodeAttachment()
 	}
 	delete mAttachmentController;
 }
+
+void SceneNodeAttachment::setupListeners()
+{
+	mChildEntity.VisibilityChanged.connect(sigc::mem_fun(this, &SceneNodeAttachment::entity_VisibilityChanged));
+}
+
+void SceneNodeAttachment::entity_VisibilityChanged(bool visible)
+{
+	if (!visible) {
+		if (mSceneNode->getParentSceneNode()) {
+			mSceneNode->getParentSceneNode()->removeChild(mSceneNode);
+		}
+	} else {
+		if (!mSceneNode->getParentSceneNode()) {
+			mParentNode.addChild(mSceneNode);
+		}
+	}
+}
+
 
 IEntityAttachment* SceneNodeAttachment::attachEntity(EmberEntity& entity)
 {
