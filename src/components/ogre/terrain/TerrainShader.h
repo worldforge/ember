@@ -33,10 +33,10 @@ class TerrainLayerDefinition;
 class TerrainShader{
 public:
 
-	TerrainShader(Mercator::Terrain* terrain, int terrainIndex, const TerrainLayerDefinition* layerDef, Mercator::Shader* shader);
+	TerrainShader(Mercator::Terrain* terrain, int terrainIndex, const TerrainLayerDefinition* layerDef, const Mercator::Shader* shader);
 	virtual ~TerrainShader();
 
-	Mercator::Shader* getShader() const;
+	const Mercator::Shader* getShader() const;
 
 	/**
 	 * @brief Adds a texture unit with a splatting alpha texture to the supplied pass.
@@ -70,7 +70,7 @@ public:
 
 protected:
 	const TerrainLayerDefinition* mLayerDef;
-	Mercator::Shader* mShader;
+	const Mercator::Shader* mShader;
 	Mercator::Terrain* mTerrain;
 	int mTerrainIndex;
 

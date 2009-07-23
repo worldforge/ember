@@ -29,7 +29,7 @@
 namespace EmberOgre {
 namespace Terrain {
 
-TerrainShader::TerrainShader(Mercator::Terrain* terrain, int terrainIndex, const TerrainLayerDefinition* layerDef, Mercator::Shader* shader)
+TerrainShader::TerrainShader(Mercator::Terrain* terrain, int terrainIndex, const TerrainLayerDefinition* layerDef, const Mercator::Shader* shader)
 : mLayerDef(layerDef)
 , mShader(shader)
 , mTerrain(terrain)
@@ -37,9 +37,7 @@ TerrainShader::TerrainShader(Mercator::Terrain* terrain, int terrainIndex, const
 // , mMaterial(0)
 // , mScale(32)
 {
-
 	mTerrain->addShader(shader, mTerrainIndex);
-
 }
 
 /*
@@ -66,7 +64,7 @@ Ogre::ushort TerrainShader::getMaxTextureUnits() const
  	return std::min<unsigned short>(4, Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits());
 }
 
-Mercator::Shader* TerrainShader::getShader() const
+const Mercator::Shader* TerrainShader::getShader() const
 {
 	return mShader;
 }
