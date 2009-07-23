@@ -78,7 +78,7 @@ void FoliageBase::initializeDependentLayers()
 	}
 }
 
-void FoliageBase::TerrainGenerator_LayerUpdated(Terrain::TerrainShader* shader, TerrainGenerator::AreaStore* areas)
+void FoliageBase::TerrainGenerator_LayerUpdated(const Terrain::TerrainShader* shader, TerrainGenerator::AreaStore* areas)
 {
 	if (mPagedGeometry) {
 		///check if the layer update affects this layer, either if it's the actual layer, or one of the dependent layers
@@ -110,7 +110,7 @@ void FoliageBase::TerrainGenerator_LayerUpdated(Terrain::TerrainShader* shader, 
 	}
 }
 
-void FoliageBase::TerrainGenerator_EventShaderCreated(Terrain::TerrainShader* shader)
+void FoliageBase::TerrainGenerator_EventShaderCreated(const Terrain::TerrainShader* shader)
 {
 	///we'll assume that all shaders that are created after this foliage has been created will affect it, so we'll add it to the dependent layers and reload the geometry
 	mDependentDefinitions.push_back(shader->getLayerDefinition());
