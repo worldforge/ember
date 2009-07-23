@@ -130,7 +130,7 @@ namespace Ogre
 		touch();
 
 		if (isLoaded()) {
-			S_LOG_WARNING("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") already loaded, ignoring request");
+			S_LOG_WARNING("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") already loading/loaded, ignoring load() request");
 			return;
 		}
 
@@ -188,6 +188,9 @@ namespace Ogre
 			// fire event
 			fireEvent(EVENT_LOADED);
 
+		} else if (mPageState == STATE_PRELOADING) {
+			// wait...
+			return;
 		} else {
 			S_LOG_WARNING("PagingLandScapePage at (" << mTableX << ", " << mTableZ << ") already loaded, proceeding to show it");
 		}

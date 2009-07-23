@@ -241,7 +241,8 @@ namespace Ogre
 
 		PagingLandScapePage* p = getPage(i, j, false);
 		if (p) {
-			p->load();
+			mPageLoadQueue.push(p); 
+			p->setInQueue(PagingLandScapePage::QUEUE_LOAD);
 		}
 	}
 	//-----------------------------------------------------------------------
@@ -364,7 +365,8 @@ namespace Ogre
 			if (!p) {
 				return;
 			}
-			p->load();
+			mPageLoadQueue.push(p); 
+			p->setInQueue(PagingLandScapePage::QUEUE_LOAD);
 
 			// update current Cam Page info 
 			if (oldPage != p)

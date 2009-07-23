@@ -154,6 +154,8 @@ Ogre::Real EmberPagingLandScapeData2D_HeightField::getMaxAbsoluteHeight() const
 
 void EmberPagingLandScapeData2D_HeightField::eventTerrainPageLoaded()
 {
+	S_LOG_VERBOSE("Terrain page at (" << mPageX << ", " << mPageZ << ") got TerrainPageLoaded event");
+
 	mBridge->updateTerrain();
 
 	// notify that terrain data has been loaded
