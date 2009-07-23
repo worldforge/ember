@@ -77,7 +77,7 @@ namespace EmberOgre {
 namespace Terrain {
 
 
-TerrainPage::TerrainPage(TerrainPosition position, TerrainGenerator& generator, ITerrainPageBridge* bridge)
+TerrainPage::TerrainPage(const TerrainPosition& position, TerrainGenerator& generator, ITerrainPageBridge* bridge)
 : mGenerator(generator)
 , mPosition(position)
 , mBridge(0)
