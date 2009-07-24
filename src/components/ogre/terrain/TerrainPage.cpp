@@ -335,6 +335,10 @@ void TerrainPage::unregisterBridge()
 	mBridge = 0;
 }
 
+void TerrainPage::notifyBridgePageReady()
+{
+	mBridge->terrainPageReady();
+}
 
 
 

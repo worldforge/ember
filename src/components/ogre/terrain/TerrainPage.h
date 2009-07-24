@@ -245,6 +245,11 @@ public:
 	 */
 	void unregisterBridge();
 
+	/**
+	 * @brief Notifies Ogre throught the bridge that page is ready.
+	 */
+	void notifyBridgePageReady();
+
 
 	/**
 	 * @brief Gets the normal at the specified local position.
