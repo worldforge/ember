@@ -35,12 +35,14 @@ ModelAttachment::ModelAttachment(EmberEntity& parentEntity, ModelRepresentation&
 : SceneNodeAttachment::SceneNodeAttachment(parentEntity, modelRepresentation.getEntity(), mParentNode), mModelRepresentation(modelRepresentation), mModelMount(0)
 {
 	mModelMount = new ModelMount(mModelRepresentation.getModel(), mSceneNode);
+	mModelMount->reset();
 }
 
 ModelAttachment::ModelAttachment(ModelAttachment& source, SceneNodeAttachment& newParentAttachment)
 : SceneNodeAttachment::SceneNodeAttachment(source, newParentAttachment), mModelRepresentation(source.mModelRepresentation), mModelMount(source.mModelMount)
 {
 	source.mModelMount = 0;
+	mModelMount->reset();
 }
 
 
