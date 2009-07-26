@@ -73,7 +73,7 @@ public:
 	 * Under normal circumstances the scale node is handed solely by this class and should never be modified from outside functionality. Accessing through this method is mainly for lookup purposes, when you need to read the orientation or scale of the bounding box.
 	 * @return The scale node, to which the Model is attached.
 	 */
-	Ogre::SceneNode* getScaleNode() const;
+//	Ogre::SceneNode* getScaleNode() const;
 
 	/**
 	 * @brief Gets the Model instance to which this mount is attached.
@@ -89,6 +89,11 @@ public:
 
 // 	const Ogre::Vector3 calculateScaling(::EmberOgre::Model::Model& model, const WFMath::AxisBox<3>* wfBbox);
 
+
+	/**
+	 * @brief Resets all scaling and rotation
+	 */
+	void reset();
 
 protected:
 	/**
@@ -109,10 +114,6 @@ protected:
 	Ogre::SceneNode* mMainNode;
 
 
-	/**
-	 * @brief Resets all scaling and rotation
-	 */
-	void reset();
 
 	/**
 	 * @brief Scales the scale node accoring to the submitted bounding box.

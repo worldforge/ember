@@ -78,11 +78,11 @@ Ogre::Node* ModelMount::getActiveScaleNode() const
 	}
 }
 
-Ogre::SceneNode* ModelMount::getScaleNode() const
-{
-	return mScaleNode;
-
-}
+//Ogre::SceneNode* ModelMount::getScaleNode() const
+//{
+//	return mScaleNode;
+//
+//}
 
 void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 {
