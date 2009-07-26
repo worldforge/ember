@@ -33,15 +33,24 @@ namespace EmberOgre
 namespace Camera
 {
 
-class ThirdPersonCameraMount : public CameraMountBase, public Ember::ConsoleObject
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief A third person camera mount, where the camera is circling a node. This node is then in most cases attached to an entity.
+ */
+class ThirdPersonCameraMount: public CameraMountBase, public Ember::ConsoleObject
 {
 public:
+
+	/**
+	 * @brief Ctor.
+	 * @param sceneManager A scene manager, needed for creating new node instances.
+	 */
 	ThirdPersonCameraMount(Ogre::SceneManager& sceneManager);
 
 	/**
-	* emitted when the distance between the camera and the avatar has changed
-    * @param Ogre::Real the new distance
-	*/
+	 * emitted when the distance between the camera and the avatar has changed
+	 * @param Ogre::Real the new distance
+	 */
 	sigc::signal<void, Ogre::Real> EventChangedCameraDistance;
 
 	/**
@@ -57,7 +66,6 @@ public:
 	 */
 	virtual void attachToNode(Ogre::SceneNode* sceneNode);
 
-
 	/**
 	 * @brief Pitches the camera the supplied degrees
 	 * @param degrees
@@ -70,23 +78,26 @@ public:
 	 */
 	virtual Ogre::Degree yaw(float relativeMovement);
 
- 	virtual void attachToCamera(MainCamera& camera);
-
- 	virtual void detachFromCamera();
+	/**
+	 * @copydoc ICameraMount::attachToCamera
+	 */
+	virtual void attachToCamera(MainCamera& camera);
 
 	/**
-	 *    Reimplements the ConsoleObject::runCommand method
-	 * @param command
-	 * @param args
+	 * @copydoc ICameraMount::detachFromCamera
 	 */
-	virtual	void runCommand(const std::string &command, const std::string &args);
+	virtual void detachFromCamera();
+
+	/**
+	 * @copydoc ConsoleObject::runCommand method
+	 */
+	virtual void runCommand(const std::string &command, const std::string &args);
 
 protected:
 
 	Ogre::SceneNode* mAvatarCameraRootNode;
 	Ogre::SceneNode* mAvatarCameraPitchNode;
 	Ogre::SceneNode* mAvatarCameraNode;
-
 
 	Ogre::Degree mDegreeOfPitchPerSecond;
 	Ogre::Degree mDegreeOfYawPerSecond;
@@ -100,22 +111,22 @@ protected:
 	bool mIsAdjustedToTerrain;
 
 	/**
-	If true, the camera is inverted in the y axis.
-	*/
+	 * @brief If true, the camera is inverted in the y axis.
+	 */
 	bool mInvertCamera;
 
 	/**
-	Creates the rays needed for mouse picking and camera adjustment.
-	*/
+	 * @brief Creates the rays needed for mouse picking and camera adjustment.
+	 */
 	void createRayQueries(Ogre::SceneManager& sceneManager);
 
 	/**
-	 * creates all nodes needed for the camera
+	 * @brief Creates all nodes needed for the camera.
 	 */
 	void createNodesForCamera(Ogre::SceneManager& sceneManager);
 
 	/**
-	 *    Internal method for setting the camera distance.
+	 * @brief Internal method for setting the camera distance.
 	 * @param distance the new distance
 	 */
 	void _setCameraDistance(Ogre::Real distance);
