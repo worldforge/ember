@@ -58,9 +58,10 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity)
 : mErisAvatarEntity(erisAvatarEntity)
 , mMaxSpeed(5)
 , mAvatarAttachmentController(new AvatarAttachmentController(*this))
+, mCameraMount(new Camera::ThirdPersonCameraMount(*EmberOgre::getSingleton().getSceneManager()))
+, mIsAdmin(false)
 , mHasChangedLocation(false)
 , mChatLoggerParent(0)
-, mCameraMount(new Camera::ThirdPersonCameraMount(*EmberOgre::getSingleton().getSceneManager()))
 {
 	setMinIntervalOfRotationChanges(1000); //milliseconds
 

@@ -663,7 +663,7 @@ EmberEntity* EmberEntity::getAttachedEntity(const std::string& namedPoint)
 		id = idElement.asString();
 	}
 	if (id != "") {
-		for (int i = 0; i < numContained(); ++i) {
+		for (unsigned int i = 0; i < numContained(); ++i) {
 			Eris::Entity* entity = getContained(i);
 			if (entity && entity->getId() == id) {
 				return static_cast<EmberEntity*>(entity);

@@ -8,6 +8,7 @@ ember_bin_LDADD = \
 	$(top_builddir)/src/components/ogre/SceneManagers/EmberPagingSceneManager/src/libEmberPagingSceneManager.a \
 	$(top_builddir)/src/components/ogre/environment/caelum/libCaelum.a \
 	$(top_builddir)/src/components/ogre/environment/pagedgeometry/libpagedgeometry.a \
+	$(top_builddir)/src/components/ogre/environment/meshtree/libMeshTree.a \
 	$(top_builddir)/src/components/ogre/environment/libEnvironment.a \
 	$(top_builddir)/src/components/ogre/gui/libGui.a \
 	$(top_builddir)/src/components/ogre/manipulation/libmanipulation.a \

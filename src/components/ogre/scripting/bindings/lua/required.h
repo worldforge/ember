@@ -30,8 +30,6 @@
 
 #include "components/ogre/widgets/Widget.h"
 
-#include "components/ogre/jesus/Jesus.h"
-
 #include "components/ogre/Convert.h"
 
 #include "components/ogre/widgets/MovableObjectRenderer.h"

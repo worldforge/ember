@@ -45,7 +45,7 @@ class SubEntityDefinition;
 class SubModelPartEntity
 {
 public:
-	SubModelPartEntity(Ogre::SubEntity* s, SubEntityDefinition* d) : Definition(d), SubEntity(s) {}
+	SubModelPartEntity(Ogre::SubEntity* s, SubEntityDefinition* d) : SubEntity(s), Definition(d) {}
 
 	Ogre::SubEntity* SubEntity;
 	SubEntityDefinition* Definition;
@@ -64,12 +64,12 @@ public:
 
 	bool addSubEntity(Ogre::SubEntity* subentity, SubEntityDefinition* definition);
  	bool removeSubEntity(const Ogre::SubEntity* subentity);
- 	
+
  	void show();
  	void hide();
- 	
+
  	const std::string& getName() const;
-	
+
 	const SubModelPartEntityStore& getSubentities() const;
 
 protected:

@@ -326,29 +326,11 @@ public:
 
 protected:
 
-	/**
-	 * @brief Sent from the server service when we've recieved a Eris::View instance from the server.
-	 * @param world
-	 */
-	void Server_GotView(Eris::View* world);
-
-	/**
-	 * @brief Sent from the server when we've successfully connected.
-	 * @param connection
-	 */
-	void Server_GotConnection(Eris::Connection* connection);
 
 	/**
 	 * @brief Utility object for setting up and tearing down ogre
 	 */
 	std::auto_ptr<OgreSetup> mOgreSetup;
-
-	/**
-	 * @brief Gets the main Eris View instance, which is the main inteface to the world.
-	 * The View can also be accessed through the Server service, but this can be used for convenience.
-	 * @return The main Eris View instance which represents the server world.
-	 */
-	Eris::View* getMainView();
 
 	/**
 	 * @brief The main user avatar
@@ -389,23 +371,6 @@ protected:
 	 * @brief Main factory for all entities created in the world.
 	 */
 	EmberEntityFactory* mEmberEntityFactory;
-
-	/**
-	 * @brief Sets up Jesus. This inialized the mJesus member and loads all building blocks, blueprint and modelblocks etc.
-	 */
-//	void setupJesus();
-
-	/**
-	 * @brief Preloads the media, thus avoiding frame rate drops ingame.
-	 * Note that preloading media can take quite a while.
-	 */
-	void preloadMedia();
-
-	/**
-	 * @brief Makes sure that there are files in ~/.ember.
-	 * Call this early on at application startup. If the required files cannot be found they are copied there from their default versions as installed in the shared location.
-	 */
-	void checkForConfigFiles();
 
 	/**
 	 * @brief Responsible for handling of terrain.
@@ -474,12 +439,6 @@ protected:
 	Model::ModelRepresentationManager* mModelRepresentationManager;
 
 	/**
-	 * @brief Listen for when all of the application services has been initialized and then register needed objects with them.
-	 * This should occur fairly early on in the application life cycle.
-	 */
-	void Application_ServicesInitialized();
-
-	/**
 	 * @brief The scripting resource provider, which loads scripts using the Ogre resource system.
 	 */
 	std::auto_ptr<OgreResourceProvider> mScriptingResourceProvider;
@@ -515,8 +474,59 @@ protected:
 	 */
 	bool mIsInPausedMode;
 
+	/**
+	 * @brief The main camera, which handles input to be shown in the main viewpoint.
+	 */
 	Camera::MainCamera* mMainCamera;
+
+	/**
+	 * @brief The Ogre main camera. This is in most cases handled by mMainCamera.
+	 */
 	Ogre::Camera* mOgreMainCamera;
+
+	/**
+	 * @brief Gets the main Eris View instance, which is the main inteface to the world.
+	 * The View can also be accessed through the Server service, but this can be used for convenience.
+	 * @return The main Eris View instance which represents the server world.
+	 */
+	Eris::View* getMainView();
+
+	/**
+	 * @brief Sent from the server service when we've recieved a Eris::View instance from the server.
+	 * @param world
+	 */
+	void Server_GotView(Eris::View* world);
+
+	/**
+	 * @brief Sent from the server when we've successfully connected.
+	 * @param connection
+	 */
+	void Server_GotConnection(Eris::Connection* connection);
+
+	/**
+	 * @brief Sets up Jesus. This inialized the mJesus member and loads all building blocks, blueprint and modelblocks etc.
+	 */
+//	void setupJesus();
+
+
+	/**
+	 * @brief Preloads the media, thus avoiding frame rate drops ingame.
+	 * Note that preloading media can take quite a while.
+	 */
+	void preloadMedia();
+
+	/**
+	 * @brief Makes sure that there are files in ~/.ember.
+	 * Call this early on at application startup. If the required files cannot be found they are copied there from their default versions as installed in the shared location.
+	 */
+	void checkForConfigFiles();
+
+	/**
+	 * @brief Listen for when all of the application services has been initialized and then register needed objects with them.
+	 * This should occur fairly early on in the application life cycle.
+	 */
+	void Application_ServicesInitialized();
+
 
 };
 

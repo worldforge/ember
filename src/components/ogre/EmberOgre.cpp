@@ -108,8 +108,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "model/ModelRepresentationManager.h"
 #include "mapping/EmberEntityMappingManager.h"
 
-#include "ogreopcode/include/OgreCollisionManager.h"
-#include "OpcodeCollisionDetectorVisualizer.h"
+//#include "ogreopcode/include/OgreCollisionManager.h"
+//#include "OpcodeCollisionDetectorVisualizer.h"
 
 #include "manipulation/EntityRecipeManager.h"
 
@@ -187,6 +187,7 @@ mMoveManager(0),
 //mJesus(0),
 mLogObserver(0),
 mMaterialEditor(0),
+mModelRepresentationManager(0),
 mScriptingResourceProvider(0),
 mSoundResourceProvider(0),
 //mCollisionManager(0),
@@ -194,7 +195,6 @@ mSoundResourceProvider(0),
 mResourceLoader(0),
 mOgreLogManager(0),
 mIsInPausedMode(false),
-mModelRepresentationManager(0),
 mMainCamera(0),
 mOgreMainCamera(0)
 {

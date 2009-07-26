@@ -36,7 +36,7 @@ namespace EmberOgre
 namespace Manipulation
 {
 EntityMoverBase::EntityMoverBase(Eris::Entity& entity, Ogre::SceneNode* node) :
-	mEntity(entity), mNode(node), mSnapping(0), SnapTo("+snaptomovement", this, "Activates the 'snap to' behavior when moving an entity.", true)
+	SnapTo("+snaptomovement", this, "Activates the 'snap to' behavior when moving an entity.", true), mEntity(entity), mNode(node), mSnapping(0)
 {
 }
 

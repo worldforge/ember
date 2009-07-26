@@ -128,7 +128,7 @@ bool HydraxWater::initialize()
 //		S_LOG_FAILURE("Error when creating hydrax water: " << ex.what());
 //		return false;
 //	}
-
+	return true;
 }
 
 bool HydraxWater::frameStarted(const Ogre::FrameEvent& event)

@@ -326,6 +326,13 @@ public:
 	 */
 	IEntityAttachment* getAttachment() const;
 
+	/**
+	 * @brief Sets a control delegate for the attachment.
+	 * The attachment instance, used to bind the graphical representation to the parent entity, normally directly accesses the position and orientation data from the entity.
+	 * However, in some cases you would want to provide the position and orientation data differently, for example when you want to alter the position of the entity on the client, independent of the server.
+	 * By using an instance of IAttachmentControlDelegate and setting it on the entity through this method you can achieve this.
+	 * @param delegate The delegate through which all queries about the position and orientation of the entity will go.
+	 */
 	void setAttachmentControlDelegate(IAttachmentControlDelegate* delegate);
 	IAttachmentControlDelegate* getAttachmentControlDelegate() const;
 

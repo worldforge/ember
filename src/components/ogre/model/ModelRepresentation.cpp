@@ -41,7 +41,7 @@
 #include "ModelMount.h"
 
 #include "components/ogre/EmberEntityUserObject.h"
-#include "components/ogre/OpcodeCollisionDetector.h"
+//#include "components/ogre/OpcodeCollisionDetector.h"
 #include "components/ogre/MeshCollisionDetector.h"
 
 #include "components/ogre/sound/SoundEntity.h"
@@ -75,7 +75,6 @@ ModelRepresentation::ModelRepresentation(::EmberOgre::EmberEntity& entity, Model
 : mEntity(entity), mModel(model), mCurrentMovementAction(0), mActiveAction(0), mModelAttachedTo(0), mModelMarkedToAttachTo(0), mSoundEntity(0)
 {
 	mEntity.Acted.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Acted));
-	mEntity.LocationChanged.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_LocationChanged));
 	mEntity.Changed.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Changed));
 	mEntity.ChildAdded.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_ChildAdded));
 	mEntity.ChildRemoved.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_ChildRemoved));
@@ -252,8 +251,6 @@ void ModelRepresentation::setClientVisible(bool visible)
 
 void ModelRepresentation::initFromModel()
 {
-	scaleNode();
-
 	connectEntities();
 
 	///see if we should use a rendering technique different from the default one (which is just using the Model::Model instance)
@@ -271,6 +268,7 @@ Ogre::Vector3 ModelRepresentation::getScale() const
 	if (mModel.getParentSceneNode()) {
 		return mModel.getParentSceneNode()->_getDerivedScale();
 	}
+	return Ogre::Vector3::UNIT_SCALE;
 }
 
 void ModelRepresentation::connectEntities()
@@ -455,8 +453,8 @@ void ModelRepresentation::attrChanged(const std::string& str, const Atlas::Messa
 	{
 		processWield(str, v);
 		return;
-	} if (str == "bbox") {
-		bboxChanged();
+//	} if (str == "bbox") {
+//		bboxChanged();
 	}
 
 	///check if the changed attribute should affect any particle systems
@@ -564,48 +562,15 @@ void ModelRepresentation::entity_ChildRemoved(Eris::Entity *e)
 
 }
 
-void ModelRepresentation::entity_LocationChanged(Eris::Entity *oldLocation)
-{
-//	bool requireRescaling = false;
-//	if (mModelAttachedTo)
-//	{
-//		requireRescaling = true;
-//	}
-//	EmberEntity::onLocationChanged(oldLocation);
-//	if (requireRescaling)
-//	{
-		scaleNode();
-//	}
-}
-
-void ModelRepresentation::scaleNode()
-{
-//	if (mModelMount)
-//	{
-//		if (mEntity.hasBBox())
-//		{
-//			mModelMount->rescale(&mEntity.getBBox());
-//		}
-//		else
-//		{
-//			mModelMount->rescale(0);
-//		}
-//	}
-}
-
 const Ogre::Vector3& ModelRepresentation::getOffsetForContainedNode(const Ogre::Vector3& position, const EmberEntity& entity)
 {
-//	///if the model has an offset specified, use that, else just send to the base class
-//	const Ogre::Vector3& offset(getModel().getDefinition()->getContentOffset());
-//	if (offset != Ogre::Vector3::ZERO)
-//	{
-//		return offset;
-//	}
-//	else
-//	{
-//		return EmberEntity::getOffsetForContainedNode(position, entity);
-//	}
-
+	///if the model has an offset specified, use that, else just send to the base class
+	const Ogre::Vector3& offset(getModel().getDefinition()->getContentOffset());
+	if (offset != Ogre::Vector3::ZERO)
+	{
+		return offset;
+	}
+	return Ogre::Vector3::ZERO;
 }
 
 void ModelRepresentation::updateAnimation(Ogre::Real timeSlice)
@@ -705,12 +670,6 @@ void ModelRepresentation::attachAllEntities()
 //	}
 }
 
-void ModelRepresentation::bboxChanged()
-{
-	///When the bounding box of the entity changes we'll also rescale the scaleNode (to which the Model is attached).
-	scaleNode();
-}
-
 const Ogre::AxisAlignedBox& ModelRepresentation::getWorldBoundingBox(bool derive) const
 {
 	return getModel().getWorldBoundingBox(derive);
@@ -775,8 +734,8 @@ bool ModelRepresentation::getVisualize(const std::string& visualization) const
 		{
 			return userObject->getCollisionDetector()->getVisualize();
 		}
-		return false;
 	}
+	return false;
 }
 
 

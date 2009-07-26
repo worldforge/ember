@@ -223,6 +223,34 @@ protected:
 	std::auto_ptr<Camera::ThirdPersonCameraMount> mCameraMount;
 
 	/**
+	True if the current user have admin rights, i.e. is a "creator".
+	*/
+	bool mIsAdmin;
+
+	/**
+	If set to true, the avatar has just changed location, so the next onMoved operation will contain the new orientation and position information for the new location.
+	*/
+	bool mHasChangedLocation;
+
+	/**
+	Holds the objects which logs ingame messages to a file. We don't hold a AvatarLogger instance directly, instead using the AvatarLoggerParent class, since we can't really create an instance of AvatarLogger until we've gotten an AvatarEmberEntity, and the AvatarLoggerParent class will take care of all that.
+	*/
+	std::auto_ptr<AvatarLoggerParent> mChatLoggerParent;
+
+	/**
+	 * @brief We save the five latest orientations that we send to the server.
+	 * The reason we do this is to be able to recognize updates sent from the server that's our own updates. Since there might be lag, these updates can arrive half a second or more after they were sent. They should thus be ignored to avoid the camera jumping all over the place.
+	 */
+	std::list<WFMath::Quaternion> mLastOrientations;
+
+	WFMath::Point<3> mClientSideAvatarPosition;
+
+	WFMath::Quaternion mClientSideAvatarOrientation;
+
+	WFMath::Vector<3> mCurrentMovement;
+
+
+	/**
 	 * @brief Listen for location changes, since after a location change we need to honour the onMoved updates even if we're in movement mode.
 	 * @param entity
 	 */
@@ -244,15 +272,7 @@ protected:
 	void entity_ChildRemoved(Eris::Entity* childEntity);
 
 
-	/**
-	True if the current user have admin rights, i.e. is a "creator".
-	*/
-	bool mIsAdmin;
 
-	/**
-	If set to true, the avatar has just changed location, so the next onMoved operation will contain the new orientation and position information for the new location.
-	*/
-	bool mHasChangedLocation;
 
 	void application_AfterInputProcessing(float timeSinceLastEvent);
 
@@ -281,23 +301,7 @@ protected:
 	void Config_MaxSpeed(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 
-	/**
-	Holds the objects which logs ingame messages to a file. We don't hold a AvatarLogger instance directly, instead using the AvatarLoggerParent class, since we can't really create an instance of AvatarLogger until we've gotten an AvatarEmberEntity, and the AvatarLoggerParent class will take care of all that.
-	*/
-	std::auto_ptr<AvatarLoggerParent> mChatLoggerParent;
 
-
-	/**
-	 * @brief We save the five latest orientations that we send to the server.
-	 * The reason we do this is to be able to recognize updates sent from the server that's our own updates. Since there might be lag, these updates can arrive half a second or more after they were sent. They should thus be ignored to avoid the camera jumping all over the place.
-	 */
-	std::list<WFMath::Quaternion> mLastOrientations;
-
-	WFMath::Point<3> mClientSideAvatarPosition;
-
-	WFMath::Quaternion mClientSideAvatarOrientation;
-
-	WFMath::Vector<3> mCurrentMovement;
 
 
 

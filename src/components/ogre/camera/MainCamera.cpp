@@ -422,6 +422,7 @@ ICameraMount* MainCamera::attachToMount(ICameraMount* newCameraMount)
 	if (mCameraMount) {
 		mCameraMount->attachToCamera(*this);
 	}
+	return mCameraMount;
 }
 
 }

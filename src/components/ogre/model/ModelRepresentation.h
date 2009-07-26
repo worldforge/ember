@@ -120,12 +120,6 @@ public:
      */
     Model & getModel() const;
 
-	/**
-	 * @brief Returns the "scale node", which is the Ogre::SceneNode to which the Model instance is attached. This is separate from the Ogre::SceneNode in EmberEntity since we want to be able to scale the node without also scaling the attached nodes (such as any wielded entity).
-	 * @return An Ogre::SceneNode, to which the Model::Model instance is attached.
-	 */
-//	Ogre::SceneNode* getScaleNode() const;
-
 	void attachToPointOnModel(const std::string& point, Model* model, Ogre::Quaternion orientation = Ogre::Quaternion::IDENTITY, Ogre::Vector3 offset = Ogre::Vector3::ZERO);
 	void detachFromModel();
 
@@ -203,35 +197,18 @@ protected:
 		Ogre::Quaternion orientation;
 	};
 
-	/**
-	 * Tells the entity to retrieve it sound actions from
-	 * the model definition manager
-	 */
-	void setSounds();
-	bool needSoundEntity();
-
-
-
-	void setClientVisible(bool visible);
-
-	const Ogre::Vector3& getOffsetForContainedNode(const Ogre::Vector3& position, const EmberEntity& entity);
 
 	/**
-	 *   creates EmberEntityUserObjects, connects them and sets up the collision detection system
-	 * @return
+	 * @brief The entity which this representation is bound to.
 	 */
-	void connectEntities();
+    EmberEntity & mEntity;
 
-	/**
-	 *    Called when the bounding box has changed.
+    /**
+	 * @brief The model of the entity.
+	 * This is the main graphical representation of this entity.
+	 * Note that the Model won't be directly connected to the main scene node, instead the mModelMount instance will take care of setting everything up to use an intermediary "scale node".
 	 */
-	void bboxChanged();
-
-	/**
-	 * @brief Called when the movement mode has changed. We might want to update the animation of the entity, for example if it's a human.
-	 * @param newMode
-	 */
-	void entity_MovementModeChanged(EmberEntity::MovementMode newMode);
+	Model& mModel;
 
 	/**
 	 The current movement action of the entity, for example a walk action or a run action.
@@ -257,9 +234,54 @@ protected:
 	 */
 	ModelAttachment* mModelMarkedToAttachTo;
 
-	virtual void entity_ChildAdded(Eris::Entity *e);
-	virtual void entity_ChildRemoved(Eris::Entity *e);
-	virtual void entity_LocationChanged(Eris::Entity *oldLocation);
+	typedef std::map<std::string, std::string> AttachedEntitiesStore;
+
+	/**
+	 * @brief A store of all attached entities, indexed by their id.
+	 */
+	AttachedEntitiesStore mAttachedEntities;
+
+	/**
+	 * @brief The sound entity this entity is connected to.
+	 */
+	SoundEntity* mSoundEntity;
+
+	/**
+	 * @brief Keep track of the light nodes.
+	 */
+	SceneNodeStore mLightNodes;
+
+    /**
+     * @brief The type name for the class.
+     */
+    static std::string sTypeName;
+
+	/**
+	 * Tells the entity to retrieve it sound actions from
+	 * the model definition manager
+	 */
+	void setSounds();
+
+	bool needSoundEntity();
+
+	void setClientVisible(bool visible);
+
+	const Ogre::Vector3& getOffsetForContainedNode(const Ogre::Vector3& position, const EmberEntity& entity);
+
+	/**
+	 *   creates EmberEntityUserObjects, connects them and sets up the collision detection system
+	 * @return
+	 */
+	void connectEntities();
+
+	/**
+	 * @brief Called when the movement mode has changed. We might want to update the animation of the entity, for example if it's a human.
+	 * @param newMode
+	 */
+	void entity_MovementModeChanged(EmberEntity::MovementMode newMode);
+
+	void entity_ChildAdded(Eris::Entity *e);
+	void entity_ChildRemoved(Eris::Entity *e);
 
 	/**
 	 * @brief Detaches an entity which is already wielded.
@@ -305,44 +327,12 @@ protected:
 	 * @param str
 	 * @param v
 	 */
-	virtual void attrChanged(const std::string& str, const Atlas::Message::Element& v);
+	void attrChanged(const std::string& str, const Atlas::Message::Element& v);
 	/**
 	 *    Overridden from Eris::Entity
 	 * @param act
 	 */
-	virtual void entity_Acted(const Atlas::Objects::Operation::RootOperation& act);
-
-	typedef std::map<std::string, std::string> AttachedEntitiesStore;
-	/**
-	 * @brief A store of all attached entities, indexed by their id.
-	 */
-	AttachedEntitiesStore mAttachedEntities;
-
-	/**
-	 *    Overridden from Eris::Entity
-	 * @param moving
-	 */
-//	void setMoving(bool moving);
-
-	/**
-	 * @brief Scales the Ogre::SceneNode to the size of the AxisBox defined by Eris::Entity.
-	 * Note that this method in its default implementation will just call ModelMount::rescale
-	 */
-	void scaleNode();
-
-	/**
-	 * @brief The model of the entity.
-	 * This is the main graphical representation of this entity.
-	 * Note that the Model won't be directly connected to the main scene node, instead the mModelMount instance will take care of setting everything up to use an intermediary "scale node".
-	 */
-	Model& mModel;
-
-
-
-	/**
-	 * @brief The sound entity this entitiy is connected to.
-	 */
-	SoundEntity* mSoundEntity;
+	void entity_Acted(const Atlas::Objects::Operation::RootOperation& act);
 
 	/**
 	 * @brief When the Model is reloaded we need to update with the new values.
@@ -359,20 +349,7 @@ protected:
 	 */
 	void initFromModel();
 
-	/**
-	 * @brief Keep track of the light nodes.
-	 */
-	SceneNodeStore mLightNodes;
 
-	/**
-	 * @brief The entity which this representation is bound to.
-	 */
-    EmberEntity & mEntity;
-
-    /**
-     * @brief The type name for the class.
-     */
-    static std::string sTypeName;
 };
 
 }
