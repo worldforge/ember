@@ -29,13 +29,8 @@ namespace EmberOgre
 namespace Camera
 {
 
-ThirdPersonCameraMount::ThirdPersonCameraMount(Ogre::SceneManager& sceneManager)
-:	SetCameraDistance("setcameradistance", this, "Set the distance of the camera."),
-	mDegreeOfPitchPerSecond(50),
-	mDegreeOfYawPerSecond(50),
-	mAdjustTerrainRaySceneQuery(0),
-	mIsAdjustedToTerrain(true),
-	mInvertCamera(false)
+ThirdPersonCameraMount::ThirdPersonCameraMount(Ogre::SceneManager& sceneManager) :
+	SetCameraDistance("setcameradistance", this, "Set the distance of the camera."), mDegreeOfPitchPerSecond(50), mDegreeOfYawPerSecond(50), mAdjustTerrainRaySceneQuery(0), mIsAdjustedToTerrain(true), mInvertCamera(false)
 {
 	createNodesForCamera(sceneManager);
 	createRayQueries(sceneManager);
@@ -43,8 +38,7 @@ ThirdPersonCameraMount::ThirdPersonCameraMount(Ogre::SceneManager& sceneManager)
 
 void ThirdPersonCameraMount::attachToNode(Ogre::SceneNode* sceneNode)
 {
-	if (sceneNode == mAvatarCameraRootNode->getParentSceneNode())
-	{
+	if (sceneNode == mAvatarCameraRootNode->getParentSceneNode()) {
 		return;
 	}
 	if (mAvatarCameraRootNode->getParentSceneNode()) {
@@ -69,7 +63,8 @@ Ogre::Degree ThirdPersonCameraMount::pitch(float relativeMovement)
 	Ogre::Degree pitch(orientation.getPitch());
 	if ((pitch.valueDegrees() + degrees.valueDegrees()) > 0) {
 		degrees = std::min<float>(degrees.valueDegrees(), 90 - pitch.valueDegrees());
-	} else {
+	}
+	else {
 		degrees = std::max<float>(degrees.valueDegrees(), -90 - pitch.valueDegrees());
 	}
 
@@ -102,12 +97,12 @@ void ThirdPersonCameraMount::createNodesForCamera(Ogre::SceneManager& sceneManag
 	mAvatarCameraRootNode = sceneManager.createSceneNode(OgreInfo::createUniqueResourceName("ThirdPersonCameraRootNode"));
 	mAvatarCameraRootNode->setInheritOrientation(false);
 	//we need to adjust for the height of the avatar mesh
-	mAvatarCameraRootNode->setPosition(Ogre::Vector3(0,2,0));
+	mAvatarCameraRootNode->setPosition(Ogre::Vector3(0, 2, 0));
 	//rotate to sync with WF world
-//    mAvatarCameraRootNode->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)-90);
+	mAvatarCameraRootNode->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(-90));
 
 	mAvatarCameraPitchNode = mAvatarCameraRootNode->createChildSceneNode(OgreInfo::createUniqueResourceName("ThirdPersonCameraPitchNode"));
-	mAvatarCameraPitchNode->setPosition(Ogre::Vector3(0,0,0));
+	mAvatarCameraPitchNode->setPosition(Ogre::Vector3(0, 0, 0));
 	mAvatarCameraNode = mAvatarCameraPitchNode->createChildSceneNode(OgreInfo::createUniqueResourceName("ThirdPersonCameraNode"));
 	setCameraDistance(10);
 
@@ -122,7 +117,7 @@ void ThirdPersonCameraMount::setCameraDistance(Ogre::Real distance)
 void ThirdPersonCameraMount::_setCameraDistance(Ogre::Real distance)
 {
 	mCurrentCameraDistance = distance;
-	Ogre::Vector3 pos(0,0,distance);
+	Ogre::Vector3 pos(0, 0, distance);
 	mAvatarCameraNode->setPosition(pos);
 	if (mCamera && mCamera->getParentNode()) {
 		///We need to mark the parent node of the camera as dirty. The update of the derived orientation and position of the node should normally occur when the scene tree is traversed, but in some instances we need to access the derived position or orientataion of the camera before the traversal occurs, and if we don't mark the node as dirty it won't be updated
@@ -133,7 +128,7 @@ void ThirdPersonCameraMount::_setCameraDistance(Ogre::Real distance)
 
 void ThirdPersonCameraMount::createRayQueries(Ogre::SceneManager& sceneManager)
 {
-    // attempt to create a query to get back terrain coords
+	// attempt to create a query to get back terrain coords
 	mAdjustTerrainRaySceneQuery = sceneManager.createRayQuery(mAdjustTerrainRay, Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
 	///only test for terrain
 	mAdjustTerrainRaySceneQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
@@ -155,8 +150,7 @@ void ThirdPersonCameraMount::detachFromCamera()
 
 void ThirdPersonCameraMount::runCommand(const std::string &command, const std::string &args)
 {
-	if(SetCameraDistance == command)
-	{
+	if (SetCameraDistance == command) {
 		Ember::Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string distance = tokeniser.nextToken();

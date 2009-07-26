@@ -154,6 +154,8 @@ void Avatar::moveClientSide(const WFMath::Quaternion& orientation, const WFMath:
 		adjustedOrientation.fromRotMatrix(WFMath::RotMatrix<3>().rotationZ(atan2(rotator.y(), rotator.x())));
 
 		mClientSideAvatarOrientation = adjustedOrientation;
+		//For some not quite explained reason we need to rotate the orientation 90 degrees around the z axis for the orientation to be correct.
+		mClientSideAvatarOrientation.rotate(WFMath::Quaternion(WFMath::Vector<3>(0, 0, 1), WFMath::Pi / 2));
 		mCurrentMovement.rotate(adjustedOrientation);
 		WFMath::Vector<3> adjustedMovement(movement * timeslice * mMaxSpeed);
 		mClientSideAvatarPosition += adjustedMovement.rotate(adjustedOrientation);
