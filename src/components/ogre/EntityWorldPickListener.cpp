@@ -24,10 +24,9 @@
 #include "config.h"
 #endif
 #include "EntityWorldPickListener.h"
+#include "ICollisionDetector.h"
 #include "EmberOgre.h"
 #include "EmberEntityUserObject.h"
-
-#include "model/Model.h"
 #include "EmberEntityFactory.h"
 
 #include "EmberEntity.h"
@@ -35,9 +34,12 @@
 
 #include "MousePicker.h"
 
+#include "model/Model.h"
+
 #include <OgreSceneQuery.h>
 #include <OgreRay.h>
 #include <OgreSceneManager.h>
+
 namespace EmberOgre {
 
 EntityWorldPickListenerVisualizer::EntityWorldPickListenerVisualizer(EntityWorldPickListener& pickListener)

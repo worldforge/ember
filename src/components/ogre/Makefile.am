@@ -39,5 +39,5 @@ noinst_HEADERS = AttributeObserver.h Avatar.h MovementController.h \
 	IEntityAttachment.h  WorldAttachment.h SceneNodeAttachment.h IMovable.h IAnimated.h \
 	IAttachmentControlDelegate.h SceneNodeController.h DelegatingSceneNodeController.h \
 	AvatarAttachmentController.h IMovementProvider.h ICameraMotionHandler.h HiddenAttachment.h \
-	AttachmentBase.h AvatarCameraMotionHandler.h FreeFlyingCameraMotionHandler.h
+	AttachmentBase.h AvatarCameraMotionHandler.h FreeFlyingCameraMotionHandler.h ICollisionDetector.h
 #OpcodeCollisionDetector.h OpcodeCollisionDetectorVisualizer.h

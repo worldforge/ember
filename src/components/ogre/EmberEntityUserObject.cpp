@@ -26,6 +26,7 @@
 #include "EmberEntityUserObject.h"
 //#include "ogreopcode/include/OgreCollisionObject.h"
 #include "EmberEntity.h"
+#include "ICollisionDetector.h"
 #include "model/Model.h"
 
 

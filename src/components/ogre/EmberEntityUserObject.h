@@ -40,54 +40,7 @@ namespace Model {
 	class Model;
 }
 class EmberEntity;
-
-
-struct CollisionResult
-{
-	bool collided;
-	Ogre::Vector3 position;
-	Ogre::Real distance;
-};
-
-/**
-@author Erik Hjortsberg
-
-* Interface for collision detectors, responsible for determining collision information for the entity that they are attached to.
-*/
-class ICollisionDetector
-{
-public:
-	virtual ~ICollisionDetector() {};
-
-	/**
-	 *    Testa whether the provided ray hits the entity.
-	 * @param ray The ray to test.
-	 * @param result The result of the collision. If the ray hits, the collision detector must update this object.
-	 */
-	virtual void testCollision(Ogre::Ray& ray, CollisionResult& result) = 0;
-	/**
-	 *    Refits the collision mesh against the entity. This is called to ensure that the collision mesh fits animated entities.
-	 */
-	virtual void refit() = 0;
-
-
-	/**
-	 *    Called when the entity changes, such as a subentity being hidden or shown. Implementations must reload the collision data.
-	 */
-	virtual void reload() = 0;
-
-	/**
-	 *    Sets whether the collision data should be visualized for debugging purposes.
-	 * @param visualize
-	 */
-	virtual void setVisualize(bool visualize) = 0;
-	/**
-	 *    Gets whether the collision data should be visualized for debugging purposes.
-	 * @return
-	 */
-	virtual bool getVisualize() const = 0;
-
-};
+class ICollisionDetector;
 
 
 /**

@@ -26,6 +26,7 @@
 #endif
 
 #include "MeshCollisionDetector.h"
+#include "ICollisionDetector.h"
 
 #include "EmberOgrePrerequisites.h"
 
