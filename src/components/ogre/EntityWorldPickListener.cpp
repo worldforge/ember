@@ -154,7 +154,7 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 				collisionDetector->testCollision(cameraRay, collisionResult);
 				if (collisionResult.collided) {
 					EntityPickResult result;
-					result.entity = anUserObject->getEmberEntity();
+					result.entity = &anUserObject->getEmberEntity();
 					result.position = collisionResult.position;
 					result.distance = collisionResult.distance;
 					if (mFurthestPickingDistance == 0) {

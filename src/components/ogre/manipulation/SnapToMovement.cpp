@@ -48,13 +48,13 @@ SnapToMovement::SnapToMovement(Eris::Entity& entity, Ogre::SceneNode& node, floa
 		Ogre::SceneManager* sceneMngr = mNode.getCreator();
 		for (int i = 0; i < 30; ++i) {
 			Ogre::SceneNode* node = sceneMngr->getRootSceneNode()->createChildSceneNode();
-			Ogre::Entity* entity = sceneMngr->createEntity(node->getName() + "_entity", "3d_objects/primitives/models/sphere.mesh");
+			Ogre::Entity* sphereEntity = sceneMngr->createEntity(node->getName() + "_entity", "3d_objects/primitives/models/sphere.mesh");
 			///start out with a normal material
-			entity->setMaterialName("/global/authoring/point");
-			entity->setRenderingDistance(300);
-	// 		entity->setQueryFlags(MousePicker::CM_UNDEFINED);
+			sphereEntity->setMaterialName("/global/authoring/point");
+			sphereEntity->setRenderingDistance(300);
+	// 		entity.setQueryFlags(MousePicker::CM_UNDEFINED);
 			node->setScale(0.25, 0.25, 0.25);
-			node->attachObject(entity);
+			node->attachObject(sphereEntity);
 			node->setVisible(false);
 			mDebugNodes.push_back(node);
 		}
@@ -79,8 +79,8 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 	for (std::vector<Ogre::SceneNode*>::iterator I = mDebugNodes.begin(); I != mDebugNodes.end(); ++I) {
 		Ogre::SceneNode* node = *I;
 		node->setVisible(false);
-		Ogre::Entity* entity = static_cast<Ogre::Entity*>(node->getAttachedObject(0));
-		entity->setMaterialName("/global/authoring/point");
+		Ogre::Entity* sphereEntity = static_cast<Ogre::Entity*>(node->getAttachedObject(0));
+		sphereEntity->setMaterialName("/global/authoring/point");
 	}
 
 	std::vector<Ogre::SceneNode*>::iterator nodeIterator = mDebugNodes.begin();
@@ -118,16 +118,16 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 			Ogre::MovableObject* movable = *I;
 			if (movable->getUserObject() != 0 && movable->getUserObject()->getTypeName() == "EmberEntityPickerObject") {
 				EmberEntityUserObject* anUserObject = static_cast<EmberEntityUserObject*>(movable->getUserObject());
-				EmberEntity* entity = anUserObject->getEmberEntity();
-				if (entity && entity != &mEntity && entity->hasBBox()) {
+				EmberEntity& entity = anUserObject->getEmberEntity();
+				if (&entity != &mEntity && entity.hasBBox()) {
 					///Ok, we have an entity which is close to our entity. Now check if any of the points of the bounding box is close.
-					WFMath::AxisBox<3> bbox = entity->getBBox();
+					WFMath::AxisBox<3> bbox = entity.getBBox();
 					WFMath::RotBox<3> rotbox;
 					rotbox.size() = bbox.highCorner() - bbox.lowCorner();
 					rotbox.corner0() = bbox.lowCorner();
 					rotbox.orientation().identity();
-					rotbox.rotatePoint(entity->getViewOrientation(), WFMath::Point<3>(0, 0, 0));
-					rotbox.shift(WFMath::Vector<3>(entity->getViewPosition()));
+					rotbox.rotatePoint(entity.getViewOrientation(), WFMath::Point<3>(0, 0, 0));
+					rotbox.shift(WFMath::Vector<3>(entity.getViewPosition()));
 
 					for (int i = 0; i < rotbox.numCorners(); ++i) {
 						WFMath::Point<3> point = rotbox.getCorner(i);
@@ -145,16 +145,18 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 							WFMath::CoordType distance = WFMath::Distance(currentPoint, point);
 							if (distance <= mSnapThreshold) {
 								if (currentNode) {
-									Ogre::Entity* entity = static_cast<Ogre::Entity*>(currentNode->getAttachedObject(0));
-									entity->setMaterialName("/global/authoring/point/moved");
+									Ogre::Entity* sphereEntity = static_cast<Ogre::Entity*>(currentNode->getAttachedObject(0));
+									if (sphereEntity) {
+										sphereEntity->setMaterialName("/global/authoring/point/moved");
+									}
 								}
 								if (!closestSnapping.get()) {
 									closestSnapping = std::auto_ptr<SnapPointCandidate>(new SnapPointCandidate());
-									closestSnapping->entity = entity;
+									closestSnapping->entity = &entity;
 									closestSnapping->distance = distance;
 									closestSnapping->adjustment = point - currentPoint;
 								} else if (distance < closestSnapping->distance){
-									closestSnapping->entity = entity;
+									closestSnapping->entity = &entity;
 									closestSnapping->distance = distance;
 									closestSnapping->adjustment = point - currentPoint;
 								}

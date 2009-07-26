@@ -29,16 +29,13 @@
 #include "ICollisionDetector.h"
 #include "model/Model.h"
 
-
-namespace EmberOgre {
+namespace EmberOgre
+{
 
 const Ogre::String EmberEntityUserObject::s_TypeName = "EmberEntityPickerObject";
 
-
-EmberEntityUserObject::EmberEntityUserObject(EmberEntity* emberEntity,  Model::Model* model, ICollisionDetector* collisionDetector)
-: mEmberEntity(emberEntity),
-mModel(model),
-mCollisionDetector(collisionDetector)
+EmberEntityUserObject::EmberEntityUserObject(EmberEntity& emberEntity, Model::Model& model, ICollisionDetector* collisionDetector) :
+	mEmberEntity(emberEntity), mModel(model), mCollisionDetector(collisionDetector)
 // mCollisionObjects(collisionObjects),
 {
 }
@@ -51,13 +48,13 @@ mCollisionDetector(collisionDetector)
 EmberEntityUserObject::~EmberEntityUserObject()
 {
 	delete mCollisionDetector;
-/*	OgreOpcode::CollisionContext* collideContext = OgreOpcode::CollisionManager::getSingletonPtr()->getDefaultContext();
-	for (EmberEntityUserObject::CollisionObjectStore::iterator I = mCollisionObjects.begin(); I != mCollisionObjects.end(); ++I)
-	{
-		collideContext->removeObject(*I);
-		OgreOpcode::CollisionManager::getSingleton().destroyShape((*I)->getShape());
-		delete *I;
-	}*/
+	/*	OgreOpcode::CollisionContext* collideContext = OgreOpcode::CollisionManager::getSingletonPtr()->getDefaultContext();
+	 for (EmberEntityUserObject::CollisionObjectStore::iterator I = mCollisionObjects.begin(); I != mCollisionObjects.end(); ++I)
+	 {
+	 collideContext->removeObject(*I);
+	 OgreOpcode::CollisionManager::getSingleton().destroyShape((*I)->getShape());
+	 delete *I;
+	 }*/
 }
 
 void EmberEntityUserObject::refit()
@@ -65,27 +62,26 @@ void EmberEntityUserObject::refit()
 	if (mCollisionDetector) {
 		mCollisionDetector->refit();
 	}
-/*	for (EmberEntityUserObject::CollisionObjectStore::iterator I = mCollisionObjects.begin(); I != mCollisionObjects.end(); ++I)
-	{
-		(*I)->refit();;
-	}*/
+	/*	for (EmberEntityUserObject::CollisionObjectStore::iterator I = mCollisionObjects.begin(); I != mCollisionObjects.end(); ++I)
+	 {
+	 (*I)->refit();;
+	 }*/
 }
 
-EmberEntity*  EmberEntityUserObject::getEmberEntity() const
+EmberEntity& EmberEntityUserObject::getEmberEntity() const
 {
 	return mEmberEntity;
 }
 
-Model::Model*  EmberEntityUserObject::getModel() const
+Model::Model& EmberEntityUserObject::getModel() const
 {
 	return mModel;
 }
 
-const Ogre::String & EmberEntityUserObject::getTypeName (void) const
+const Ogre::String& EmberEntityUserObject::getTypeName(void) const
 {
 	return s_TypeName;
 }
 
-
-
-};
+}
+;
