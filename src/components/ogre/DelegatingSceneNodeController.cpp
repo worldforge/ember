@@ -41,4 +41,9 @@ void DelegatingSceneNodeController::updatePosition()
 	mAttachment.setPosition(mAttachmentControlDelegate.getPosition(), mAttachmentControlDelegate.getOrientation());
 }
 
+IAttachmentControlDelegate* DelegatingSceneNodeController::getControlDelegate() const
+{
+	return &mAttachmentControlDelegate;
+}
+
 }

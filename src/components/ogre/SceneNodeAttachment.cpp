@@ -115,6 +115,15 @@ void SceneNodeAttachment::setControlDelegate(IAttachmentControlDelegate* control
 	}
 }
 
+IAttachmentControlDelegate* SceneNodeAttachment::getControlDelegate() const
+{
+	if (mAttachmentController) {
+		return mAttachmentController->getControlDelegate();
+	}
+	return 0;
+}
+
+
 void SceneNodeAttachment::setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation)
 {
 	if (position.isValid()) {

@@ -31,6 +31,8 @@ public:
 	DelegatingSceneNodeController(SceneNodeAttachment& attachment, IAttachmentControlDelegate& attachmentControlDelegate);
 	virtual ~DelegatingSceneNodeController();
 
+	virtual IAttachmentControlDelegate* getControlDelegate() const;
+
 private:
 
 	virtual void updatePosition();

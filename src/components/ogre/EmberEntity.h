@@ -354,11 +354,6 @@ protected:
 	bool mIsInitialized;
 
 	/**
-	@brief If true, the entity is already registered with the motion manager, so we don't need to add it again (which can be expensive since the motionmanager holds all entities needing updated motions in a std::set).
-	*/
-	bool mIsInMotionManager;
-
-	/**
 	 *    @copydoc Eris::Entity::onMoved()
 	 */
 	virtual void onMoved();

@@ -23,8 +23,10 @@
 #ifndef EMBEROGREENTITYMOVER_H
 #define EMBEROGREENTITYMOVER_H
 
-#include "../EmberOgrePrerequisites.h"
 #include "EntityMoverBase.h"
+#include "components/ogre/EmberOgrePrerequisites.h"
+#include "components/ogre/IAttachmentControlDelegate.h"
+
 #include <wfmath/point.h>
 
 namespace EmberOgre {
@@ -45,7 +47,7 @@ class EntityMover : public Manipulation::EntityMoverBase
 public:
 
 	EntityMover(SceneNodeAttachment& sceneNodeAttachment, EntityMoveManager& manager);
-	virtual ~EntityMover() {}
+	virtual ~EntityMover();
 
 	virtual void finalizeMovement();
 	virtual void cancelMovement();
@@ -54,11 +56,31 @@ protected:
 
 	virtual void newEntityPosition(const Ogre::Vector3& position);
 
+	void cleanup();
+
 
 private:
 
 	SceneNodeAttachment& mSceneNodeAttachment;
 	EntityMoveManager& mManager;
+
+	IAttachmentControlDelegate* mPreviousControlDelegate;
+	IAttachmentControlDelegate* mControlDelegate;
+
+};
+
+class EntityMoverControlDelegate : public IAttachmentControlDelegate
+{
+public:
+
+	EntityMoverControlDelegate(EntityMover& entityMover);
+
+	virtual const WFMath::Point<3>& getPosition() const;
+	virtual const WFMath::Quaternion& getOrientation() const;
+
+protected:
+	EntityMover& mEntityMover;
+
 
 };
 

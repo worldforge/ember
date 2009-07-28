@@ -106,6 +106,12 @@ public:
 	 */
 	virtual void setControlDelegate(IAttachmentControlDelegate* controllerDelegate) = 0;
 
+	/**
+	 * @brief Gets the control delegate.
+	 * @return The current control delegate, or null if none is set.
+	 */
+	virtual IAttachmentControlDelegate* getControlDelegate() const = 0;
+
 };
 
 }

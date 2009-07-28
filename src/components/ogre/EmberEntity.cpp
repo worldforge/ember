@@ -25,7 +25,6 @@
 #include "framework/ConsoleBackend.h"
 #include "services/EmberServices.h"
 #include "EmberEntityFactory.h"
-#include "MotionManager.h"
 #include "GUIManager.h"
 #include "terrain/TerrainArea.h"
 #include "terrain/TerrainMod.h"
@@ -83,7 +82,7 @@ const std::string EmberEntity::MODE_PROJECTILE("projectile");
 const std::string EmberEntity::BboxMaterialName("BaseYellowNoLightning");
 
 EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager) :
-	Eris::Entity(id, ty, vw), mIsInitialized(false), mIsInMotionManager(false), mErisEntityBoundingBox(0), mTerrainArea(0), mTerrainMod(0), mMovementMode(MM_DEFAULT), mGraphicalRepresentation(0), mEntityMapping(0), mAttachment(0), mAttachmentControlDelegate(0)
+	Eris::Entity(id, ty, vw), mIsInitialized(false), mErisEntityBoundingBox(0), mTerrainArea(0), mTerrainMod(0), mMovementMode(MM_DEFAULT), mGraphicalRepresentation(0), mEntityMapping(0), mAttachment(0), mAttachmentControlDelegate(0)
 {
 //	createSceneNode(sceneManager);
 }

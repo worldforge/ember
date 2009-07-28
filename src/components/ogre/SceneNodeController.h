@@ -27,6 +27,7 @@
 namespace EmberOgre {
 
 class SceneNodeAttachment;
+class IAttachmentControlDelegate;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -44,6 +45,8 @@ public:
 	virtual void updateMotion(float timeSlice);
 
 	void forceMovementUpdate();
+
+	virtual IAttachmentControlDelegate* getControlDelegate() const;
 
 protected:
 

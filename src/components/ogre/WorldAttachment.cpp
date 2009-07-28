@@ -93,5 +93,11 @@ void WorldAttachment::setControlDelegate(IAttachmentControlDelegate* controllerD
 	//You can never control the world.
 }
 
+IAttachmentControlDelegate* WorldAttachment::getControlDelegate() const
+{
+	return 0;
+}
+
+
 }
 

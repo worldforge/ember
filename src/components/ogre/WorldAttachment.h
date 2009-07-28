@@ -60,6 +60,8 @@ public:
 
 	virtual void setControlDelegate(IAttachmentControlDelegate* controllerDelegate);
 
+	virtual IAttachmentControlDelegate* getControlDelegate() const;
+
 protected:
 
 	WorldEmberEntity& mWorldEntity;

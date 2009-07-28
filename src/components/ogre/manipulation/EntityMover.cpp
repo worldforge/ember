@@ -38,8 +38,14 @@ namespace EmberOgre
 {
 
 EntityMover::EntityMover(SceneNodeAttachment& sceneNodeAttachment, EntityMoveManager& manager) :
-	EntityMoverBase(sceneNodeAttachment.getAttachedEntity(), sceneNodeAttachment.getSceneNode()), mSceneNodeAttachment(sceneNodeAttachment), mManager(manager)
+	EntityMoverBase(sceneNodeAttachment.getAttachedEntity(), sceneNodeAttachment.getSceneNode()), mSceneNodeAttachment(sceneNodeAttachment), mManager(manager), mPreviousControlDelegate(sceneNodeAttachment.getControlDelegate()), mControlDelegate(new EntityMoverControlDelegate(*this))
 {
+	sceneNodeAttachment.setControlDelegate(mControlDelegate);
+}
+
+EntityMover::~EntityMover()
+{
+	delete mControlDelegate;
 }
 
 void EntityMover::finalizeMovement()
@@ -47,20 +53,45 @@ void EntityMover::finalizeMovement()
 	if (mEntity.getLocation())
 	{
 		///send to server
-		Ember::EmberServices::getSingleton().getServerService()->place(&mEntity, mEntity.getLocation(), mEntity.getPosition(), mEntity.getOrientation());
+		Ember::EmberServices::getSingleton().getServerService()->place(&mEntity, mEntity.getLocation(), getPosition(), getOrientation());
 	}
+	mSceneNodeAttachment.updatePosition();
+	cleanup();
 	mManager.EventFinishedMoving.emit();
 
 }
 void EntityMover::cancelMovement()
 {
-//	mSceneNodeAttachment.getAttachedEntity().synchronizeWithServer();
+	cleanup();
+	mSceneNodeAttachment.updatePosition();
 	mManager.EventCancelledMoving.emit();
 }
 
+void EntityMover::cleanup()
+{
+	mSceneNodeAttachment.setControlDelegate(mPreviousControlDelegate);
+}
 void EntityMover::newEntityPosition(const Ogre::Vector3& position)
 {
-//	mSceneNodeAttachment.getAttachedEntity().adjustPosition(mSceneNodeAttachment.getSceneNode()->getPosition());
+	mSceneNodeAttachment.updatePosition();
 }
+
+
+EntityMoverControlDelegate::EntityMoverControlDelegate(EntityMover& entityMover)
+: mEntityMover(entityMover)
+{
+
+}
+
+const WFMath::Point<3>& EntityMoverControlDelegate::getPosition() const
+{
+	return mEntityMover.getPosition();
+}
+
+const WFMath::Quaternion& EntityMoverControlDelegate::getOrientation() const
+{
+	return mEntityMover.getOrientation();
+}
+
 
 }

@@ -21,15 +21,18 @@
 
 #include "components/ogre/IEntityAttachment.h"
 
-namespace WFMath {
+namespace WFMath
+{
 class Quaternion;
 }
 
-namespace Ogre {
+namespace Ogre
+{
 class SceneNode;
 }
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
 class IGraphicalRepresentation;
 class EmberEntity;
@@ -40,7 +43,7 @@ class IAttachmentControlDelegate;
  *
  * This basically means all attachments except the top world attachment.
  */
-class AttachmentBase : public IEntityAttachment
+class AttachmentBase: public IEntityAttachment
 {
 public:
 	AttachmentBase(EmberEntity& parentEntity, EmberEntity& childEntity);
@@ -59,6 +62,9 @@ public:
 	virtual void getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset);
 
 	virtual void setControlDelegate(IAttachmentControlDelegate* controllerDelegate);
+
+	virtual IAttachmentControlDelegate* getControlDelegate() const;
+
 protected:
 
 	EmberEntity& mParentEntity;
@@ -66,6 +72,5 @@ protected:
 
 };
 }
-
 
 #endif /* ATTACHMENTBASE_H_ */

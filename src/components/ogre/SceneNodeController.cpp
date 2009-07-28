@@ -71,5 +71,11 @@ void SceneNodeController::updatePosition()
 	mAttachment.setPosition(mAttachment.getAttachedEntity().getPredictedPos(), mAttachment.getAttachedEntity().getOrientation());
 }
 
+IAttachmentControlDelegate* SceneNodeController::getControlDelegate() const
+{
+	return 0;
+}
+
+
 
 }

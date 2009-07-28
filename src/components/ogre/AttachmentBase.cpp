@@ -19,16 +19,16 @@
 #include "AttachmentBase.h"
 
 #include "components/ogre/EmberEntity.h"
-#include "components/ogre/MotionManager.h"
 
 #include "components/ogre/model/ModelRepresentation.h"
 #include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/ogre/model/ModelAttachment.h"
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-AttachmentBase::AttachmentBase(EmberEntity& parentEntity, EmberEntity& childEntity)
-: mParentEntity(parentEntity), mChildEntity(childEntity)
+AttachmentBase::AttachmentBase(EmberEntity& parentEntity, EmberEntity& childEntity) :
+	mParentEntity(parentEntity), mChildEntity(childEntity)
 {
 }
 
@@ -53,6 +53,11 @@ EmberEntity* AttachmentBase::getParentEntity() const
 
 void AttachmentBase::setControlDelegate(IAttachmentControlDelegate* controllerDelegate)
 {
+}
+
+IAttachmentControlDelegate* AttachmentBase::getControlDelegate() const
+{
+	return 0;
 }
 
 void AttachmentBase::updateScale()

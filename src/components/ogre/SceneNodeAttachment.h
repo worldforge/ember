@@ -41,6 +41,8 @@ public:
 
 	virtual void setControlDelegate(IAttachmentControlDelegate* controllerDelegate);
 
+	virtual IAttachmentControlDelegate* getControlDelegate() const;
+
 	virtual IEntityAttachment* attachEntity(EmberEntity& entity);
 
 	void setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation);
