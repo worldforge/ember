@@ -20,50 +20,43 @@
 
 #include "components/ogre/IGraphicalRepresentation.h"
 #include "components/ogre/IAttachmentControlDelegate.h"
+#include "components/ogre/INodeProvider.h"
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/Convert.h"
 #include "components/ogre/SceneNodeController.h"
+#include "components/ogre/SceneNodeProvider.h"
 #include "components/ogre/DelegatingSceneNodeController.h"
 
 #include "components/ogre/model/ModelRepresentation.h"
 #include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/ogre/model/ModelAttachment.h"
-
+#include "components/ogre/model/Model.h"
 
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-SceneNodeAttachment::SceneNodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, Ogre::SceneNode& parentNode)
-: AttachmentBase::AttachmentBase(parentEntity, childEntity), mSceneNode(0), mParentNode(parentNode), mAttachmentController(0)
+SceneNodeAttachment::SceneNodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, INodeProvider* nodeProvider) :
+	AttachmentBase::AttachmentBase(parentEntity, childEntity), mSceneNode(0), mNodeProvider(nodeProvider), mAttachmentController(0)
 {
 	setControlDelegate(mChildEntity.getAttachmentControlDelegate());
-	mSceneNode = parentNode.createChildSceneNode("entity_" + childEntity.getId());
+	mSceneNode = &mNodeProvider->getNode();
+	//	mSceneNode = parentNode.createChildSceneNode("entity_" + childEntity.getId());
 	setupListeners();
 }
 
-SceneNodeAttachment::SceneNodeAttachment(SceneNodeAttachment& source, SceneNodeAttachment& newParentAttachment)
-: AttachmentBase::AttachmentBase(newParentAttachment.getAttachedEntity(), source.getAttachedEntity()), mSceneNode(source.mSceneNode), mParentNode(*newParentAttachment.mSceneNode), mAttachmentController(0)
+SceneNodeAttachment::SceneNodeAttachment(SceneNodeAttachment& source, SceneNodeAttachment& newParentAttachment) :
+	AttachmentBase::AttachmentBase(newParentAttachment.getAttachedEntity(), source.getAttachedEntity()), mSceneNode(source.mSceneNode), mAttachmentController(0)
 {
 	setControlDelegate(mChildEntity.getAttachmentControlDelegate());
 	source.mSceneNode = 0;
 	setupListeners();
 }
 
-
 SceneNodeAttachment::~SceneNodeAttachment()
 {
-	if (mSceneNode) {
-		Ogre::SceneNode* parent = static_cast<Ogre::SceneNode*> (mSceneNode->getParent());
-		if (parent)
-		{
-			parent->removeAndDestroyChild(mSceneNode->getName());
-		}
-		else
-		{
-			mSceneNode->getCreator()->destroySceneNode(mSceneNode->getName());
-		}
-	}
+	delete mNodeProvider;
 	delete mAttachmentController;
 }
 
@@ -75,32 +68,39 @@ void SceneNodeAttachment::setupListeners()
 void SceneNodeAttachment::entity_VisibilityChanged(bool visible)
 {
 	if (!visible) {
-		if (mSceneNode->getParentSceneNode()) {
-			mSceneNode->getParentSceneNode()->removeChild(mSceneNode);
+		if (mNodeProvider->getParentNode() && mSceneNode->getParent()) {
+			mNodeProvider->getParentNode()->removeChild(mSceneNode);
+//		} else {
+//			mSceneNode->setVisible(false);
 		}
-	} else {
-		if (!mSceneNode->getParentSceneNode()) {
-			mParentNode.addChild(mSceneNode);
+	}
+	else {
+		if (mNodeProvider->getParentNode() && !mSceneNode->getParent()) {
+			mNodeProvider->getParentNode()->addChild(mSceneNode);
+//		} else {
+//			mSceneNode->setVisible(true);
 		}
 	}
 }
-
 
 IEntityAttachment* SceneNodeAttachment::attachEntity(EmberEntity& entity)
 {
 
 	Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity);
-	SceneNodeAttachment* currentSceneNodeAttachment = dynamic_cast<SceneNodeAttachment*>(entity.getAttachment());
-	Model::ModelAttachment* currentModelAttachment = dynamic_cast<Model::ModelAttachment*>(entity.getAttachment());
+	SceneNodeAttachment* currentSceneNodeAttachment = dynamic_cast<SceneNodeAttachment*> (entity.getAttachment());
+	Model::ModelAttachment* currentModelAttachment = dynamic_cast<Model::ModelAttachment*> (entity.getAttachment());
 	if (currentModelAttachment) {
 		return new Model::ModelAttachment(*currentModelAttachment, *this);
-	} else if (currentSceneNodeAttachment) {
+	}
+	else if (currentSceneNodeAttachment) {
 		return new SceneNodeAttachment(*currentSceneNodeAttachment, *this);
-	} else {
+	}
+	else {
 		if (modelRepresentation) {
-			return new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, *mSceneNode);
-		} else {
-			return new SceneNodeAttachment(getAttachedEntity(), entity, *mSceneNode);
+			return new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, mNodeProvider->createChildProvider(&modelRepresentation->getModel()));
+		}
+		else {
+			return new SceneNodeAttachment(getAttachedEntity(), entity, mNodeProvider->createChildProvider(&modelRepresentation->getModel()));
 		}
 	}
 }
@@ -110,7 +110,8 @@ void SceneNodeAttachment::setControlDelegate(IAttachmentControlDelegate* control
 	delete mAttachmentController;
 	if (controllerDelegate) {
 		mAttachmentController = new DelegatingSceneNodeController(*this, *controllerDelegate);
-	} else {
+	}
+	else {
 		mAttachmentController = new SceneNodeController(*this);
 	}
 }
@@ -122,7 +123,6 @@ IAttachmentControlDelegate* SceneNodeAttachment::getControlDelegate() const
 	}
 	return 0;
 }
-
 
 void SceneNodeAttachment::setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation)
 {
@@ -136,9 +136,7 @@ void SceneNodeAttachment::setPosition(const WFMath::Point<3>& position, const WF
 	}
 }
 
-
-
-Ogre::SceneNode* SceneNodeAttachment::getSceneNode() const
+Ogre::Node* SceneNodeAttachment::getSceneNode() const
 {
 	return mSceneNode;
 }
@@ -150,6 +148,5 @@ void SceneNodeAttachment::updatePosition()
 	}
 
 }
-
 
 }

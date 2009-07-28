@@ -21,12 +21,14 @@
 #include "components/ogre/IGraphicalRepresentation.h"
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/IEntityAttachment.h"
+#include "components/ogre/SceneNodeAttachment.h"
+#include "components/ogre/WorldEmberEntity.h"
+#include "components/ogre/SceneNodeProvider.h"
 #include "components/ogre/model/ModelRepresentation.h"
 #include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/ogre/model/ModelAttachment.h"
-#include "components/ogre/SceneNodeAttachment.h"
 #include "components/ogre/terrain/TerrainGenerator.h"
-#include "components/ogre/WorldEmberEntity.h"
+
 
 #include <OgreSceneNode.h>
 #include <OgreVector3.h>
@@ -66,9 +68,9 @@ EmberEntity* WorldAttachment::getParentEntity() const
 IEntityAttachment* WorldAttachment::attachEntity(EmberEntity& entity)
 {
 	if (Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity)) {
-		return new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, mWorldNode);
+		return new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, new SceneNodeProvider(mWorldNode));
 	} else {
-		return new SceneNodeAttachment(getAttachedEntity(), entity, mWorldNode);
+		return new SceneNodeAttachment(getAttachedEntity(), entity, new SceneNodeProvider(mWorldNode));
 	}
 }
 

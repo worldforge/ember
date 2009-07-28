@@ -27,53 +27,47 @@
 
 namespace WFMath
 {
-template <int> class AxisBox;
+template<int> class AxisBox;
 }
 
-namespace Ogre {
-	class SceneNode;
-	class Node;
+namespace Ogre
+{
+class SceneNode;
+class Node;
+class MovableObject;
 }
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-namespace Model {
-	class Model;
+class INodeProvider;
+
+namespace Model
+{
+class Model;
 
 /**
-	@brief Acts as a mount for a model, connecting it to two scene nodes.
-	A model can contain internal orientation and offset data. This requires us to use two different scene nodes for each model instance. The inner most scene node, called the "scale node", is the one which the Model is attached to. This is then offset and oriented in relation to the outer scene node. Whenever we move the Model, we move only the outer scene node, leaving the inner scene node completely in the hands of the Model.
-	The scale node will be owned by this class.
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
-class ModelMount{
+ @brief Acts as a mount for a model, connecting it to two scene nodes.
+ A model can contain internal orientation and offset data. This requires us to use two different scene nodes for each model instance. The inner most scene node, called the "scale node", is the one which the Model is attached to. This is then offset and oriented in relation to the outer scene node. Whenever we move the Model, we move only the outer scene node, leaving the inner scene node completely in the hands of the Model.
+ The scale node will be owned by this class.
+ @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
+class ModelMount
+{
 public:
 
 	/**
-	* @brief Ctor.
-	* @param model The model which we need a mount for.
-	* @param mainNode The main node. A scale node will be created as a child, to which the model then will be attached. Ownership of the main node isn't transferred to this class, but the scale node that's created will be owned, and destroyed, by this class.
-	*/
-	ModelMount(::EmberOgre::Model::Model& model, Ogre::SceneNode* mainNode);
+	 * @brief Ctor.
+	 * @param model The model which we need a mount for.
+	 * @param mainNode The main node. A scale node will be created as a child, to which the model then will be attached. Ownership of the main node isn't transferred to this class, but the scale node that's created will be owned, and destroyed, by this class.
+	 */
+	ModelMount(::EmberOgre::Model::Model& model, INodeProvider* nodeProvider);
 
 	/**
 	 * @brief Dtor.
 	 * The scale node will be destroyed here.
 	 */
 	virtual ~ModelMount();
-
-	/**
-	 * @brief Gets the main node. This is the node to use when positioning or rotating the Model.
-	 * @return The main node.
-	 */
-	Ogre::SceneNode* getMainNode() const;
-
-	/**
-	 * @brief Gets the scale node. This is the node to which the Model is directly attached to. It should normally never be altered outside of this class.
-	 * Under normal circumstances the scale node is handed solely by this class and should never be modified from outside functionality. Accessing through this method is mainly for lookup purposes, when you need to read the orientation or scale of the bounding box.
-	 * @return The scale node, to which the Model is attached.
-	 */
-//	Ogre::SceneNode* getScaleNode() const;
 
 	/**
 	 * @brief Gets the Model instance to which this mount is attached.
@@ -87,7 +81,7 @@ public:
 	 */
 	void rescale(const WFMath::AxisBox<3>* wfBbox);
 
-// 	const Ogre::Vector3 calculateScaling(::EmberOgre::Model::Model& model, const WFMath::AxisBox<3>* wfBbox);
+	// 	const Ogre::Vector3 calculateScaling(::EmberOgre::Model::Model& model, const WFMath::AxisBox<3>* wfBbox);
 
 
 	/**
@@ -101,19 +95,7 @@ protected:
 	 */
 	::EmberOgre::Model::Model& mModel;
 
-	/**
-	 * @brief The inner scale node, to which the model is attached to.
-	 * It's this node that we'll change the orientation and position of. This node should never be touched by outside functionality.
-	 */
-	Ogre::SceneNode* mScaleNode;
-
-	/**
-	 * @brief The main node, to which the scale node is attached.
-	 * This node is the external node, used for positioning the Model.
-	 */
-	Ogre::SceneNode* mMainNode;
-
-
+	INodeProvider* mNodeProvider;
 
 	/**
 	 * @brief Scales the scale node accoring to the submitted bounding box.
@@ -129,12 +111,6 @@ protected:
 	Ogre::Node* getActiveScaleNode() const;
 
 };
-
-inline Ogre::SceneNode* ModelMount::getMainNode() const
-{
-	return mMainNode;
-}
-
 
 inline ::EmberOgre::Model::Model& ModelMount::getModel() const
 {

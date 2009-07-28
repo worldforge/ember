@@ -30,6 +30,8 @@
 namespace Ogre
 {
 class SceneNode;
+class Node;
+class SceneManager;
 }
 namespace Eris
 {
@@ -59,9 +61,10 @@ public:
 	 * @param entity The entity which is moved.
 	 * @param node The node to which the entity is attached.
 	 * @param snapThreshold The max distance, in world units, when looking for suitable snap targets.
+	 * @param sceneManager The scene manager in which the movement occurs.
 	 * @param showDebugOverlay Whether to show a debug overlay consisting of dots for the snapping.
 	 */
-	SnapToMovement(Eris::Entity& entity, Ogre::SceneNode& node, float snapThreshold, bool showDebugOverlay = false);
+	SnapToMovement(Eris::Entity& entity, Ogre::Node& node, float snapThreshold, Ogre::SceneManager& sceneManager, bool showDebugOverlay = false);
 
 	/**
 	 * @brief Dtor.
@@ -97,12 +100,14 @@ protected:
 	/**
 	 * @brief The node to which the entity is attached.
 	 */
-	Ogre::SceneNode& mNode;
+	Ogre::Node& mNode;
 
 	/**
 	 * @brief The max distance for when looking for entities to snap to.
 	 */
 	float mSnapThreshold;
+
+	Ogre::SceneManager& mSceneManager;
 
 	/**
 	 * @brief If debug overlay is shown, the scene nodes which contains the nodes will be stored here.

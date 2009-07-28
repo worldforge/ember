@@ -27,6 +27,7 @@
 #include "ModelMount.h"
 #include "Model.h"
 #include "components/ogre/Convert.h"
+#include "components/ogre/INodeProvider.h"
 #include <wfmath/axisbox.h>
 #include <Ogre.h>
 
@@ -34,18 +35,15 @@ namespace EmberOgre {
 
 namespace Model {
 
-ModelMount::ModelMount(EmberOgre::Model::Model& model, Ogre::SceneNode* mainNode)
-: mModel(model), mMainNode(mainNode)
+ModelMount::ModelMount(EmberOgre::Model::Model& model, INodeProvider* nodeProvider)
+: mModel(model), mNodeProvider(nodeProvider)
 {
-	mScaleNode = mMainNode->createChildSceneNode();
-	mScaleNode->attachObject(&mModel);
 }
 
 
 ModelMount::~ModelMount()
 {
-	mScaleNode->detachObject(&mModel);
-	mMainNode->removeAndDestroyChild(mScaleNode->getName());
+	delete mNodeProvider;
 }
 
 void ModelMount::rescale(const WFMath::AxisBox<3>* wfBbox)
@@ -74,15 +72,10 @@ Ogre::Node* ModelMount::getActiveScaleNode() const
 	if (mModel.getParentSceneNode()) {
 		return mModel.getParentNode();
 	} else {
-		return mScaleNode;
+		return &mNodeProvider->getNode();
 	}
 }
 
-//Ogre::SceneNode* ModelMount::getScaleNode() const
-//{
-//	return mScaleNode;
-//
-//}
 
 void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 {

@@ -25,17 +25,18 @@
 
 namespace Ogre {
 class SceneNode;
+class Node;
 }
 
 namespace EmberOgre {
 
-
+class INodeProvider;
 class SceneNodeController;
 
 class SceneNodeAttachment : public AttachmentBase, public virtual sigc::trackable
 {
 public:
-	SceneNodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, Ogre::SceneNode& parentNode);
+	SceneNodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, INodeProvider* nodeProvider);
 	SceneNodeAttachment(SceneNodeAttachment& source, SceneNodeAttachment& newParentAttachment);
 	virtual ~SceneNodeAttachment();
 
@@ -47,14 +48,14 @@ public:
 
 	void setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation);
 
-	Ogre::SceneNode* getSceneNode() const;
+	Ogre::Node* getSceneNode() const;
 
 	virtual void updatePosition();
 
 protected:
 
-	Ogre::SceneNode* mSceneNode;
-	Ogre::SceneNode& mParentNode;
+	Ogre::Node* mSceneNode;
+	INodeProvider* mNodeProvider;
 
 	SceneNodeController* mAttachmentController;
 

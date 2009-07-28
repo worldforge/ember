@@ -16,43 +16,40 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef MODELATTACHMENT_H_
-#define MODELATTACHMENT_H_
+#ifndef MODELATTACHEDATTACHMENT_H_
+#define MODELATTACHEDATTACHMENT_H_
 
-#include "components/ogre/SceneNodeAttachment.h"
+#include "components/ogre/AttachmentBase.h"
+#include <string>
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
 class IGraphicalRepresentation;
-class INodeProvider;
 class EmberEntity;
 
-namespace Model {
+namespace Model
+{
 
+class Model;
 class ModelMount;
 class ModelRepresentation;
+class ModelAttachment;
 
-/**
- * @brief Attachment for a ModelRepresentation instance.
- *
- * Use this attachment when you have a ModelRepresentation you need to attach to an entity.
- */
-class ModelAttachment : public SceneNodeAttachment
+class ModelAttachedAttachment: public AttachmentBase
 {
 public:
-	ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, INodeProvider* nodeProvider);
-	ModelAttachment(ModelAttachment& source, SceneNodeAttachment& newParentAttachment);
+	ModelAttachedAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, Model& rootModel, const std::string& attachPointName);
+	ModelAttachedAttachment(ModelAttachedAttachment& source, ModelAttachment& newParentAttachment);
 
-	virtual ~ModelAttachment();
+	virtual ~ModelAttachedAttachment();
 
 	virtual IGraphicalRepresentation* getGraphicalRepresentation() const;
 
 	virtual IEntityAttachment* attachEntity(EmberEntity& entity);
 
-	void updateScale();
-
-
 protected:
+
 
 	ModelRepresentation& mModelRepresentation;
 
@@ -62,9 +59,10 @@ protected:
 	 */
 	ModelMount* mModelMount;
 
+	Model& mRootModel;
 };
 
 }
 }
 
-#endif /* MODELATTACHMENT_H_ */
+#endif /* MODELATTACHEDATTACHMENT_H_ */

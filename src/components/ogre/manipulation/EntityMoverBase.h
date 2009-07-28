@@ -28,6 +28,10 @@
 #include <wfmath/point.h>
 #include <memory>
 
+namespace Ogre {
+class Node;
+}
+
 namespace Eris
 {
 class Entity;
@@ -55,7 +59,7 @@ public:
 	 * @param entity The entity which should be moved.
 	 * @param node The node to which the entity belongs.
 	 */
-	EntityMoverBase(Eris::Entity& entity, Ogre::SceneNode* node);
+	EntityMoverBase(Eris::Entity& entity, Ogre::Node* node);
 
 	/**
 	 * @brief Dtor.
@@ -106,7 +110,7 @@ protected:
 	/**
 	 * @brief The node to which the entity is attached.
 	 */
-	Ogre::SceneNode* mNode;
+	Ogre::Node* mNode;
 
 	/**
 	 * @brief The current orientation.

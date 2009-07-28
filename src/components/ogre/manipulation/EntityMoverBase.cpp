@@ -23,10 +23,12 @@
 
 #include "EntityMoverBase.h"
 
+#include "SnapToMovement.h"
+
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/Convert.h"
+#include "components/ogre/EmberOgre.h"
 
-#include "SnapToMovement.h"
 
 #include <Eris/Entity.h>
 #include <OgreSceneNode.h>
@@ -35,7 +37,7 @@ namespace EmberOgre
 {
 namespace Manipulation
 {
-EntityMoverBase::EntityMoverBase(Eris::Entity& entity, Ogre::SceneNode* node) :
+EntityMoverBase::EntityMoverBase(Eris::Entity& entity, Ogre::Node* node) :
 	SnapTo("+snaptomovement", this, "Activates the 'snap to' behavior when moving an entity.", true), mEntity(entity), mNode(node), mSnapping(0)
 {
 }
@@ -125,9 +127,9 @@ void EntityMoverBase::runCommand(const std::string &command, const std::string &
 }
 void EntityMoverBase::setSnapToEnabled(bool snapTo)
 {
-	if (snapTo) {
+	if (snapTo && EmberOgre::getSingleton().getSceneManager()) {
 		if (!mSnapping.get()) {
-			mSnapping.reset(new Manipulation::SnapToMovement(mEntity, *mNode, 2.0f, true));
+			mSnapping.reset(new Manipulation::SnapToMovement(mEntity, *mNode, 2.0f, *EmberOgre::getSingleton().getSceneManager(), true));
 			setPosition(Convert::toWF<WFMath::Point<3> >(mNode->getPosition()));
 		}
 	} else {

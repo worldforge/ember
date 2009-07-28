@@ -36,7 +36,7 @@ ThirdPersonCameraMount::ThirdPersonCameraMount(Ogre::SceneManager& sceneManager)
 	createRayQueries(sceneManager);
 }
 
-void ThirdPersonCameraMount::attachToNode(Ogre::SceneNode* sceneNode)
+void ThirdPersonCameraMount::attachToNode(Ogre::Node* sceneNode)
 {
 	if (sceneNode == mAvatarCameraRootNode->getParentSceneNode()) {
 		return;

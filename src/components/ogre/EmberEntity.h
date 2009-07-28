@@ -344,6 +344,8 @@ public:
 	 */
 	EmberEntity* getAttachedEntity(const std::string& namedPoint);
 
+	const std::string& getAttachPointForEntity(const EmberEntity& entity) const;
+
 
 protected:
 

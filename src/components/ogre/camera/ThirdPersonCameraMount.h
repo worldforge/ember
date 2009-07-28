@@ -64,7 +64,7 @@ public:
 	/**
 	 * sets the node to which the camera is attached
 	 */
-	virtual void attachToNode(Ogre::SceneNode* sceneNode);
+	virtual void attachToNode(Ogre::Node* sceneNode);
 
 	/**
 	 * @brief Pitches the camera the supplied degrees

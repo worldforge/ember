@@ -100,7 +100,7 @@ public Ember::ConfigListenerContainer
 	 * @brief Gets the scene node which the avatar is attached to, if any.
 	 * @return The scene node to which the avatar entity is attached to, or null if the avatar isn't attached to any scene node.
 	 */
-	Ogre::SceneNode* getAvatarSceneNode() const;
+	Ogre::Node* getAvatarSceneNode() const;
 
 	/**
 	 * @brief Call this when the avatar entity has moved in the world.

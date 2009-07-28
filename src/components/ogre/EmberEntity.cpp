@@ -649,28 +649,48 @@ IEntityAttachment* EmberEntity::getAttachment() const
 EmberEntity* EmberEntity::getAttachedEntity(const std::string& namedPoint)
 {
 	//HACK: this is just a temporary solution
-	std::string id;
-	if (hasAttr("right_hand_wield"))
+	if (hasAttr(namedPoint))
 	{
-		const Atlas::Message::Element& idElement = valueOfAttr("right_hand_wield");
-		id = idElement.asString();
-
-	}
-	else if (hasAttr("left_hand_wield"))
-	{
-		const Atlas::Message::Element& idElement = valueOfAttr("left_hand_wield");
-		id = idElement.asString();
-	}
-	if (id != "") {
-		for (unsigned int i = 0; i < numContained(); ++i) {
-			Eris::Entity* entity = getContained(i);
-			if (entity && entity->getId() == id) {
-				return static_cast<EmberEntity*>(entity);
+		const Atlas::Message::Element& idElement = valueOfAttr(namedPoint);
+		std::string id = idElement.asString();
+		if (id != "") {
+			for (unsigned int i = 0; i < numContained(); ++i) {
+				Eris::Entity* entity = getContained(i);
+				if (entity && entity->getId() == id) {
+					return static_cast<EmberEntity*>(entity);
+				}
 			}
 		}
 	}
+
+
 	return 0;
 }
+
+const std::string& EmberEntity::getAttachPointForEntity(const EmberEntity& entity) const
+{
+	static const std::string empty("");
+	static const std::string right_hand_wield("right_hand_wield");
+	static const std::string left_hand_wield("left_hand_wield");
+
+	if (hasAttr(right_hand_wield))
+	{
+		const Atlas::Message::Element& idElement = valueOfAttr(right_hand_wield);
+		if (entity.getId() == idElement.asString()) {
+			return right_hand_wield;
+		}
+
+	}
+	if (hasAttr(left_hand_wield))
+	{
+		const Atlas::Message::Element& idElement = valueOfAttr(left_hand_wield);
+		if (entity.getId() == idElement.asString()) {
+			return left_hand_wield;
+		}
+	}
+	return empty;
+}
+
 
 
 }

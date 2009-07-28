@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 erik
+ Copyright (C) 2009 Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -21,30 +21,33 @@
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/HiddenAttachment.h"
 #include "components/ogre/IEntityAttachment.h"
+#include "components/ogre/SceneNodeAttachment.h"
+#include "components/ogre/SceneNodeProvider.h"
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelDefinition.h"
 #include "components/ogre/model/ModelMount.h"
 #include "components/ogre/model/ModelRepresentation.h"
 #include "components/ogre/model/ModelRepresentationManager.h"
-#include "components/ogre/SceneNodeAttachment.h"
+#include "components/ogre/model/ModelAttachedAttachment.h"
 
-namespace EmberOgre {
-namespace Model {
-
-ModelAttachment::ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, Ogre::SceneNode& mParentNode)
-: SceneNodeAttachment::SceneNodeAttachment(parentEntity, modelRepresentation.getEntity(), mParentNode), mModelRepresentation(modelRepresentation), mModelMount(0)
+namespace EmberOgre
 {
-	mModelMount = new ModelMount(mModelRepresentation.getModel(), mSceneNode);
+namespace Model
+{
+
+ModelAttachment::ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, INodeProvider* nodeProvider) :
+	SceneNodeAttachment::SceneNodeAttachment(parentEntity, modelRepresentation.getEntity(), nodeProvider), mModelRepresentation(modelRepresentation), mModelMount(0)
+{
+	mModelMount = new ModelMount(mModelRepresentation.getModel(), nodeProvider->createChildProvider(&mModelRepresentation.getModel()));
 	mModelMount->reset();
 }
 
-ModelAttachment::ModelAttachment(ModelAttachment& source, SceneNodeAttachment& newParentAttachment)
-: SceneNodeAttachment::SceneNodeAttachment(source, newParentAttachment), mModelRepresentation(source.mModelRepresentation), mModelMount(source.mModelMount)
+ModelAttachment::ModelAttachment(ModelAttachment& source, SceneNodeAttachment& newParentAttachment) :
+	SceneNodeAttachment::SceneNodeAttachment(source, newParentAttachment), mModelRepresentation(source.mModelRepresentation), mModelMount(source.mModelMount)
 {
 	source.mModelMount = 0;
 	mModelMount->reset();
 }
-
 
 ModelAttachment::~ModelAttachment()
 {
@@ -58,40 +61,47 @@ IGraphicalRepresentation* ModelAttachment::getGraphicalRepresentation() const
 	return &mModelRepresentation;
 }
 
-
 IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 {
 	//Don't show a graphical representation if the model is set not to show any contained entities.
 	if (!mModelRepresentation.getModel().getDefinition()->getShowContained()) {
 		return new HiddenAttachment(getAttachedEntity(), entity);
-	} else {
+	}
+	else {
 		ModelRepresentation* modelRepresentation = ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity);
-		SceneNodeAttachment* currentSceneNodeAttachment = dynamic_cast<SceneNodeAttachment*>(entity.getAttachment());
-		ModelAttachment* currentModelAttachment = dynamic_cast<ModelAttachment*>(entity.getAttachment());
+		SceneNodeAttachment* currentSceneNodeAttachment = dynamic_cast<SceneNodeAttachment*> (entity.getAttachment());
+		ModelAttachment* currentModelAttachment = dynamic_cast<ModelAttachment*> (entity.getAttachment());
+		//		const std::string& attachPoint = getAttachedEntity().getAttachPointForEntity(entity);
+		//		if (attachPoint != "") {
+		//			return new ModelAttachedAttachment(getAttachedEntity(), *modelRepresentation, mModelRepresentation.getModel(), attachPoint);
+		//		}
+		//		else {
+
 		if (currentModelAttachment) {
 			return new ModelAttachment(*currentModelAttachment, *this);
-		} else if (currentSceneNodeAttachment) {
+		}
+		else if (currentSceneNodeAttachment) {
 			return new SceneNodeAttachment(*currentSceneNodeAttachment, *this);
-		} else {
+		}
+		else {
 			if (modelRepresentation) {
-				return new ModelAttachment(getAttachedEntity(), *modelRepresentation, *mSceneNode);
-			} else {
-				return new SceneNodeAttachment(getAttachedEntity(), entity, *mSceneNode);
+				return new ModelAttachment(getAttachedEntity(), *modelRepresentation, mNodeProvider->createChildProvider(&modelRepresentation->getModel()));
+			}
+			else {
+				return new SceneNodeAttachment(getAttachedEntity(), entity, mNodeProvider->createChildProvider());
 			}
 		}
+		//		}
 	}
 }
 
 void ModelAttachment::updateScale()
 {
-	if (mModelMount)
-	{
-		if (getAttachedEntity().hasBBox())
-		{
+	if (mModelMount) {
+		if (getAttachedEntity().hasBBox()) {
 			mModelMount->rescale(&getAttachedEntity().getBBox());
 		}
-		else
-		{
+		else {
 			mModelMount->rescale(0);
 		}
 	}

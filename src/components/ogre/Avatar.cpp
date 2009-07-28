@@ -273,7 +273,7 @@ bool Avatar::isOkayToSendRotationMovementChangeToServer()
 	return false;
 }
 
-Ogre::SceneNode* Avatar::getAvatarSceneNode() const
+Ogre::Node* Avatar::getAvatarSceneNode() const
 {
 	SceneNodeAttachment* attachment = dynamic_cast<SceneNodeAttachment*>(mErisAvatarEntity.getAttachment());
 	if (attachment) {

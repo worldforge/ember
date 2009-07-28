@@ -46,6 +46,7 @@
 #include "../EmberOgre.h"
 #include "../Avatar.h"
 #include "components/ogre/EmberEntity.h"
+#include "components/ogre/SceneNodeProvider.h"
 
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelDefinitionManager.h"
@@ -234,7 +235,7 @@ void EntityCreator::setModel(const std::string& modelName)
 	}
 
 
-	mModelMount = new Model::ModelMount(*mModel, mEntityNode);
+	mModelMount = new Model::ModelMount(*mModel, new SceneNodeProvider(*mEntityNode, mModel));
 
 	initFromModel();
 
