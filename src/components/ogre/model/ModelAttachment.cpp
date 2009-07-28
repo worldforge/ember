@@ -29,6 +29,8 @@
 #include "components/ogre/model/ModelRepresentation.h"
 #include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/ogre/model/ModelAttachedAttachment.h"
+#include "components/ogre/model/ModelBoneProvider.h"
+
 
 namespace EmberOgre
 {
@@ -63,32 +65,39 @@ IGraphicalRepresentation* ModelAttachment::getGraphicalRepresentation() const
 
 IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 {
+	const std::string& attachPoint = getAttachedEntity().getAttachPointForEntity(entity);
 	//Don't show a graphical representation if the model is set not to show any contained entities.
-	if (!mModelRepresentation.getModel().getDefinition()->getShowContained()) {
+	if (attachPoint == "" && !mModelRepresentation.getModel().getDefinition()->getShowContained()) {
 		return new HiddenAttachment(getAttachedEntity(), entity);
 	}
 	else {
 		ModelRepresentation* modelRepresentation = ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity);
 		SceneNodeAttachment* currentSceneNodeAttachment = dynamic_cast<SceneNodeAttachment*> (entity.getAttachment());
 		ModelAttachment* currentModelAttachment = dynamic_cast<ModelAttachment*> (entity.getAttachment());
-		//		const std::string& attachPoint = getAttachedEntity().getAttachPointForEntity(entity);
 		//		if (attachPoint != "") {
-		//			return new ModelAttachedAttachment(getAttachedEntity(), *modelRepresentation, mModelRepresentation.getModel(), attachPoint);
+		//			return new ModelAttachment(getAttachedEntity(), *modelRepresentation, );
 		//		}
 		//		else {
 
-		if (currentModelAttachment) {
+		if (attachPoint == "" && currentModelAttachment) {
 			return new ModelAttachment(*currentModelAttachment, *this);
 		}
-		else if (currentSceneNodeAttachment) {
+		else if (attachPoint == "" && currentSceneNodeAttachment) {
 			return new SceneNodeAttachment(*currentSceneNodeAttachment, *this);
 		}
 		else {
-			if (modelRepresentation) {
-				return new ModelAttachment(getAttachedEntity(), *modelRepresentation, mNodeProvider->createChildProvider());
+			INodeProvider* nodeProvider(0);
+			if (attachPoint != "") {
+				nodeProvider = new ModelBoneProvider(mModelRepresentation.getModel(), attachPoint, modelRepresentation->getModel());
 			}
 			else {
-				return new SceneNodeAttachment(getAttachedEntity(), entity, mNodeProvider->createChildProvider());
+				nodeProvider = mNodeProvider->createChildProvider();
+			}
+			if (modelRepresentation) {
+				return new ModelAttachment(getAttachedEntity(), *modelRepresentation, nodeProvider);
+			}
+			else {
+				return new SceneNodeAttachment(getAttachedEntity(), entity, nodeProvider);
 			}
 		}
 		//		}

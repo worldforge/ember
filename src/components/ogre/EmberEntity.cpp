@@ -300,7 +300,6 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 	{
 		///If it's the same location, don't do anything, but do add a warning to the log since this isn't supposed to happen.
 		S_LOG_WARNING( "Same new location as old for entity: " << this->getId() << " (" << this->getName() << ")" );
-		return Eris::Entity::onLocationChanged(oldLocation);
 	}
 	Eris::Entity::onLocationChanged(oldLocation);
 
@@ -390,6 +389,11 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
 		Entity::onAttrChanged(str, v);
 		onBboxChanged();
 		return;
+	} else if (str == "right_hand_wield") {
+		EmberEntity* childEntity = getAttachedEntity("right_hand_wield");
+		if (childEntity) {
+			childEntity->onLocationChanged(this);
+		}
 	}
 
 	///call this before checking for areas and terrainmods, since those instances created to handle that (TerrainMod and TerrainArea) will listen to the AttrChanged event, which would then be emitted after those have been created, causing duplicate regeneration from the same data
