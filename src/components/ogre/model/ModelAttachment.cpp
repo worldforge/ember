@@ -85,7 +85,7 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 		}
 		else {
 			if (modelRepresentation) {
-				return new ModelAttachment(getAttachedEntity(), *modelRepresentation, mNodeProvider->createChildProvider(&modelRepresentation->getModel()));
+				return new ModelAttachment(getAttachedEntity(), *modelRepresentation, mNodeProvider->createChildProvider());
 			}
 			else {
 				return new SceneNodeAttachment(getAttachedEntity(), entity, mNodeProvider->createChildProvider());
