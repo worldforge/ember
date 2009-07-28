@@ -77,7 +77,7 @@ namespace EmberOgre {
 namespace Terrain {
 
 
-TerrainPage::TerrainPage(const TerrainPosition& position, TerrainGenerator& generator, ITerrainPageBridge* bridge)
+TerrainPage::TerrainPage(const TerrainPosition& position, TerrainGenerator& generator)
 : mGenerator(generator)
 , mPosition(position)
 , mBridge(0)
@@ -94,8 +94,6 @@ TerrainPage::TerrainPage(const TerrainPosition& position, TerrainGenerator& gene
 	mGeometry->init(mGenerator.getTerrain());
 	setupShadowTechnique();
 	mTerrainSurface->setShadow(&mShadow);
-
-	registerBridge(bridge);
 }
 
 TerrainPage::~TerrainPage()

@@ -76,7 +76,7 @@ One terrain page is composed of both height data, a material, textures for the m
 
 @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class TerrainPage{
+class TerrainPage {
 friend class TerrainPageShadow;
 friend class ITerrainPageShadowTechnique;
 public:
@@ -85,9 +85,8 @@ public:
 	 * @brief Ctor.
 	 * @param position The page index in WF space.
 	 * @param generator The terrain generator.
-	 * @param bridge A valid bridge instance. The bridge will be responsible for updating the terrain engine after the Mercator terrain has changed.
 	 */
-	TerrainPage(const TerrainPosition& position, TerrainGenerator& generator, ITerrainPageBridge* bridge);
+	TerrainPage(const TerrainPosition& position, TerrainGenerator& generator);
 
 	/**
 	 * @brief Dtor.
