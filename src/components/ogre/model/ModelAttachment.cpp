@@ -48,7 +48,7 @@ ModelAttachment::ModelAttachment(ModelAttachment& source, SceneNodeAttachment& n
 	SceneNodeAttachment::SceneNodeAttachment(source, newParentAttachment), mModelRepresentation(source.mModelRepresentation), mModelMount(source.mModelMount)
 {
 	source.mModelMount = 0;
-	mModelMount->reset();
+	updateScale();
 }
 
 ModelAttachment::~ModelAttachment()

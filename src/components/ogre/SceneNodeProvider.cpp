@@ -19,6 +19,7 @@
 #include "SceneNodeProvider.h"
 
 #include <OgreSceneNode.h>
+#include <OgreMovableObject.h>
 
 namespace EmberOgre
 {
@@ -28,14 +29,18 @@ SceneNodeProvider::SceneNodeProvider(Ogre::SceneNode& parentNode, Ogre::MovableO
 {
 	mNode = parentNode.createChildSceneNode();
 	if (mAttachedObject) {
+		mAttachedObject->detatchFromParent();
 		mNode->attachObject(mAttachedObject);
 	}
 }
 
 SceneNodeProvider::~SceneNodeProvider()
 {
+	//Only detach if it's attached to ourselves
 	if (mAttachedObject) {
-		mNode->detachObject(mAttachedObject);
+		if (mAttachedObject->getParentNode() == mNode) {
+			mNode->detachObject(mAttachedObject);
+		}
 	}
 	mParentNode.removeAndDestroyChild(mNode->getName());
 }

@@ -307,8 +307,12 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 	EmberEntity* newLocationEntity = getEmberLocation();
 
 	if (newLocationEntity) {
-		IEntityAttachment* newAttachment = newLocationEntity->getAttachment()->attachEntity(*this);
-		setAttachment(newAttachment);
+		try {
+			IEntityAttachment* newAttachment = newLocationEntity->getAttachment()->attachEntity(*this);
+			setAttachment(newAttachment);
+		} catch (const std::exception& ex) {
+			S_LOG_WARNING("Problem when creating new attachment for entity." << ex);
+		}
 	} else {
 		setAttachment(0);
 	}

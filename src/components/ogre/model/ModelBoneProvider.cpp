@@ -29,12 +29,16 @@ namespace Model
 ModelBoneProvider::ModelBoneProvider(Model& parentModel, const std::string& attachPointName, Ogre::MovableObject& movableObject) :
 	mParentModel(parentModel), mNode(0), mAttachedObject(movableObject)
 {
+	movableObject.detatchFromParent();
 	mNode = mParentModel.attachObjectToAttachPoint(attachPointName, &movableObject);
 }
 
 ModelBoneProvider::~ModelBoneProvider()
 {
-	mParentModel.detachObjectFromBone(mAttachedObject.getName());
+	//Only detach if it's attached to ourselves
+	if (mAttachedObject.getParentNode() == mNode) {
+		mParentModel.detachObjectFromBone(mAttachedObject.getName());
+	}
 }
 
 Ogre::Node& ModelBoneProvider::getNode() const
