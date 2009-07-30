@@ -310,6 +310,10 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 		try {
 			IEntityAttachment* newAttachment = newLocationEntity->getAttachment()->attachEntity(*this);
 			setAttachment(newAttachment);
+			//If we're not initialized, we'll get a bounding box update soon, so we won't need to update the scale yet.
+			if (newAttachment && isInitialized()) {
+				newAttachment->updateScale();
+			}
 		} catch (const std::exception& ex) {
 			S_LOG_WARNING("Problem when creating new attachment for entity." << ex);
 		}
