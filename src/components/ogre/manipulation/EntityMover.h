@@ -34,7 +34,7 @@ namespace Manipulation {
 class SnapToMovement;
 }
 
-class SceneNodeAttachment;
+class NodeAttachment;
 class EntityMoveManager;
 
 /**
@@ -46,7 +46,7 @@ class EntityMover : public Manipulation::EntityMoverBase
 {
 public:
 
-	EntityMover(SceneNodeAttachment& sceneNodeAttachment, EntityMoveManager& manager);
+	EntityMover(NodeAttachment& NodeAttachment, EntityMoveManager& manager);
 	virtual ~EntityMover();
 
 	virtual void finalizeMovement();
@@ -61,7 +61,7 @@ protected:
 
 private:
 
-	SceneNodeAttachment& mSceneNodeAttachment;
+	NodeAttachment& mNodeAttachment;
 	EntityMoveManager& mManager;
 
 	IAttachmentControlDelegate* mPreviousControlDelegate;

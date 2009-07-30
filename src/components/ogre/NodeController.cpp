@@ -16,37 +16,37 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "SceneNodeController.h"
+#include "NodeController.h"
 
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/MotionManager.h"
-#include "components/ogre/SceneNodeAttachment.h"
+#include "components/ogre/NodeAttachment.h"
 
 #include <sigc++/signal.h>
 
 namespace EmberOgre {
 
-SceneNodeController::SceneNodeController(SceneNodeAttachment& attachment)
+NodeController::NodeController(NodeAttachment& attachment)
 : mAttachment(attachment)
 {
-	mAttachment.getAttachedEntity().Moved.connect(sigc::mem_fun(*this, &SceneNodeController::entity_Moved));
+	mAttachment.getAttachedEntity().Moved.connect(sigc::mem_fun(*this, &NodeController::entity_Moved));
 }
 
-SceneNodeController::~SceneNodeController()
+NodeController::~NodeController()
 {
 }
 
 
-void SceneNodeController::entity_Moved()
-{
-	movementUpdate();
-}
-
-void SceneNodeController::forceMovementUpdate()
+void NodeController::entity_Moved()
 {
 	movementUpdate();
 }
-void SceneNodeController::movementUpdate()
+
+void NodeController::forceMovementUpdate()
+{
+	movementUpdate();
+}
+void NodeController::movementUpdate()
 {
 	updatePosition();
 	MotionManager& motionManager = MotionManager::getSingleton();
@@ -61,17 +61,17 @@ void SceneNodeController::movementUpdate()
 }
 
 
-void SceneNodeController::updateMotion(float timeSlice)
+void NodeController::updateMotion(float timeSlice)
 {
 	updatePosition();
 }
 
-void SceneNodeController::updatePosition()
+void NodeController::updatePosition()
 {
 	mAttachment.setPosition(mAttachment.getAttachedEntity().getPredictedPos(), mAttachment.getAttachedEntity().getOrientation());
 }
 
-IAttachmentControlDelegate* SceneNodeController::getControlDelegate() const
+IAttachmentControlDelegate* NodeController::getControlDelegate() const
 {
 	return 0;
 }

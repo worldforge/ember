@@ -33,7 +33,7 @@
 #include "framework/ConsoleBackend.h"
 #include "../EmberOgre.h"
 #include "../EmberEntity.h"
-#include "components/ogre/SceneNodeAttachment.h"
+#include "components/ogre/NodeAttachment.h"
 
 
 
@@ -60,7 +60,7 @@ void EntityMoveManager::startMove(EmberEntity* entity)
 {
 	///disallow moving of the root entity
 	if (entity->getLocation()) {
-		SceneNodeAttachment* attachment = dynamic_cast<SceneNodeAttachment*>(entity->getAttachment()); //HACK
+		NodeAttachment* attachment = dynamic_cast<NodeAttachment*>(entity->getAttachment()); //HACK
 		if (attachment) {
 			EntityMover* mover = new EntityMover(*attachment, *this);
 			mMoveAdapter.attachToBridge(mover);

@@ -66,7 +66,7 @@ IEntityAttachment* ModelAttachedAttachment::attachEntity(EmberEntity& entity)
 //	}
 //	else {
 //		ModelRepresentation* modelRepresentation = ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity);
-//		SceneNodeAttachment* currentSceneNodeAttachment = dynamic_cast<SceneNodeAttachment*> (entity.getAttachment());
+//		NodeAttachment* currentNodeAttachment = dynamic_cast<NodeAttachment*> (entity.getAttachment());
 //		ModelAttachment* currentModelAttachment = dynamic_cast<ModelAttachment*> (entity.getAttachment());
 //		const std::string& attachPoint = getAttachedEntity().getAttachPointForEntity(entity);
 //		if (attachPoint != "") {
@@ -77,7 +77,7 @@ IEntityAttachment* ModelAttachedAttachment::attachEntity(EmberEntity& entity)
 //				return new ModelAttachment(getAttachedEntity(), *modelRepresentation, *mSceneNode);
 //			}
 //			else {
-//				return new SceneNodeAttachment(getAttachedEntity(), entity, *mSceneNode);
+//				return new NodeAttachment(getAttachedEntity(), entity, *mSceneNode);
 //			}
 //		}
 //	}

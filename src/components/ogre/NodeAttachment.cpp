@@ -16,16 +16,16 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "SceneNodeAttachment.h"
+#include "NodeAttachment.h"
 
 #include "components/ogre/IGraphicalRepresentation.h"
 #include "components/ogre/IAttachmentControlDelegate.h"
 #include "components/ogre/INodeProvider.h"
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/Convert.h"
-#include "components/ogre/SceneNodeController.h"
+#include "components/ogre/NodeController.h"
 #include "components/ogre/SceneNodeProvider.h"
-#include "components/ogre/DelegatingSceneNodeController.h"
+#include "components/ogre/DelegatingNodeController.h"
 
 #include "components/ogre/model/ModelRepresentation.h"
 #include "components/ogre/model/ModelRepresentationManager.h"
@@ -37,7 +37,7 @@
 namespace EmberOgre
 {
 
-SceneNodeAttachment::SceneNodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, INodeProvider* nodeProvider) :
+NodeAttachment::NodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, INodeProvider* nodeProvider) :
 	AttachmentBase::AttachmentBase(parentEntity, childEntity), mSceneNode(0), mNodeProvider(nodeProvider), mAttachmentController(0)
 {
 	setControlDelegate(mChildEntity.getAttachmentControlDelegate());
@@ -46,7 +46,7 @@ SceneNodeAttachment::SceneNodeAttachment(EmberEntity& parentEntity, EmberEntity&
 	setupListeners();
 }
 
-SceneNodeAttachment::SceneNodeAttachment(SceneNodeAttachment& source, SceneNodeAttachment& newParentAttachment) :
+NodeAttachment::NodeAttachment(NodeAttachment& source, NodeAttachment& newParentAttachment) :
 	AttachmentBase::AttachmentBase(newParentAttachment.getAttachedEntity(), source.getAttachedEntity()), mSceneNode(source.mSceneNode), mAttachmentController(0)
 {
 	setControlDelegate(mChildEntity.getAttachmentControlDelegate());
@@ -54,18 +54,18 @@ SceneNodeAttachment::SceneNodeAttachment(SceneNodeAttachment& source, SceneNodeA
 	setupListeners();
 }
 
-SceneNodeAttachment::~SceneNodeAttachment()
+NodeAttachment::~NodeAttachment()
 {
 	delete mNodeProvider;
 	delete mAttachmentController;
 }
 
-void SceneNodeAttachment::setupListeners()
+void NodeAttachment::setupListeners()
 {
-	mChildEntity.VisibilityChanged.connect(sigc::mem_fun(this, &SceneNodeAttachment::entity_VisibilityChanged));
+	mChildEntity.VisibilityChanged.connect(sigc::mem_fun(this, &NodeAttachment::entity_VisibilityChanged));
 }
 
-void SceneNodeAttachment::entity_VisibilityChanged(bool visible)
+void NodeAttachment::entity_VisibilityChanged(bool visible)
 {
 	if (!visible) {
 		if (mNodeProvider->getParentNode() && mSceneNode->getParent()) {
@@ -83,40 +83,40 @@ void SceneNodeAttachment::entity_VisibilityChanged(bool visible)
 	}
 }
 
-IEntityAttachment* SceneNodeAttachment::attachEntity(EmberEntity& entity)
+IEntityAttachment* NodeAttachment::attachEntity(EmberEntity& entity)
 {
 
 	Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity);
-	SceneNodeAttachment* currentSceneNodeAttachment = dynamic_cast<SceneNodeAttachment*> (entity.getAttachment());
+	NodeAttachment* currentNodeAttachment = dynamic_cast<NodeAttachment*> (entity.getAttachment());
 	Model::ModelAttachment* currentModelAttachment = dynamic_cast<Model::ModelAttachment*> (entity.getAttachment());
 	if (currentModelAttachment) {
 		return new Model::ModelAttachment(*currentModelAttachment, *this);
 	}
-	else if (currentSceneNodeAttachment) {
-		return new SceneNodeAttachment(*currentSceneNodeAttachment, *this);
+	else if (currentNodeAttachment) {
+		return new NodeAttachment(*currentNodeAttachment, *this);
 	}
 	else {
 		if (modelRepresentation) {
 			return new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, mNodeProvider->createChildProvider(&modelRepresentation->getModel()));
 		}
 		else {
-			return new SceneNodeAttachment(getAttachedEntity(), entity, mNodeProvider->createChildProvider(&modelRepresentation->getModel()));
+			return new NodeAttachment(getAttachedEntity(), entity, mNodeProvider->createChildProvider(&modelRepresentation->getModel()));
 		}
 	}
 }
 
-void SceneNodeAttachment::setControlDelegate(IAttachmentControlDelegate* controllerDelegate)
+void NodeAttachment::setControlDelegate(IAttachmentControlDelegate* controllerDelegate)
 {
 	delete mAttachmentController;
 	if (controllerDelegate) {
-		mAttachmentController = new DelegatingSceneNodeController(*this, *controllerDelegate);
+		mAttachmentController = new DelegatingNodeController(*this, *controllerDelegate);
 	}
 	else {
-		mAttachmentController = new SceneNodeController(*this);
+		mAttachmentController = new NodeController(*this);
 	}
 }
 
-IAttachmentControlDelegate* SceneNodeAttachment::getControlDelegate() const
+IAttachmentControlDelegate* NodeAttachment::getControlDelegate() const
 {
 	if (mAttachmentController) {
 		return mAttachmentController->getControlDelegate();
@@ -124,7 +124,7 @@ IAttachmentControlDelegate* SceneNodeAttachment::getControlDelegate() const
 	return 0;
 }
 
-void SceneNodeAttachment::setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation)
+void NodeAttachment::setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation)
 {
 	if (position.isValid()) {
 		WFMath::Vector<3> adjustedOffset = WFMath::Vector<3>::ZERO();
@@ -136,12 +136,12 @@ void SceneNodeAttachment::setPosition(const WFMath::Point<3>& position, const WF
 	}
 }
 
-Ogre::Node* SceneNodeAttachment::getSceneNode() const
+Ogre::Node* NodeAttachment::getSceneNode() const
 {
 	return mSceneNode;
 }
 
-void SceneNodeAttachment::updatePosition()
+void NodeAttachment::updatePosition()
 {
 	if (mAttachmentController) {
 		mAttachmentController->forceMovementUpdate();

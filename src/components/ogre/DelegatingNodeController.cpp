@@ -16,32 +16,32 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "DelegatingSceneNodeController.h"
+#include "DelegatingNodeController.h"
 
 #include "components/ogre/IAttachmentControlDelegate.h"
-#include "components/ogre/SceneNodeAttachment.h"
+#include "components/ogre/NodeAttachment.h"
 
 #include <wfmath/point.h>
 #include <wfmath/quaternion.h>
 
 namespace EmberOgre {
 
-DelegatingSceneNodeController::DelegatingSceneNodeController(SceneNodeAttachment& attachment, IAttachmentControlDelegate& attachmentControlDelegate)
-: SceneNodeController::SceneNodeController(attachment), mAttachmentControlDelegate(attachmentControlDelegate)
+DelegatingNodeController::DelegatingNodeController(NodeAttachment& attachment, IAttachmentControlDelegate& attachmentControlDelegate)
+: NodeController::NodeController(attachment), mAttachmentControlDelegate(attachmentControlDelegate)
 {
 
 }
 
-DelegatingSceneNodeController::~DelegatingSceneNodeController()
+DelegatingNodeController::~DelegatingNodeController()
 {
 }
 
-void DelegatingSceneNodeController::updatePosition()
+void DelegatingNodeController::updatePosition()
 {
 	mAttachment.setPosition(mAttachmentControlDelegate.getPosition(), mAttachmentControlDelegate.getOrientation());
 }
 
-IAttachmentControlDelegate* DelegatingSceneNodeController::getControlDelegate() const
+IAttachmentControlDelegate* DelegatingNodeController::getControlDelegate() const
 {
 	return &mAttachmentControlDelegate;
 }

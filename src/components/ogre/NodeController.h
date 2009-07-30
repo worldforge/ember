@@ -16,31 +16,31 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef SCENENODECONTROLLER_H_
-#define SCENENODECONTROLLER_H_
-
+#ifndef NodeController_H_
+#define NodeController_H_
 
 #include "components/ogre/IMovable.h"
 
 #include <sigc++/trackable.h>
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-class SceneNodeAttachment;
+class NodeAttachment;
 class IAttachmentControlDelegate;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
- * @brief Handles the position and orientation updates of a SceneNodeAttachment.
- * This functionality is separated from the SceneNodeAttachment so that it will be possible to intercept and alter it, as is the case when a player controls one of the entities.
+ * @brief Handles the position and orientation updates of a NodeAttachment.
+ * This functionality is separated from the NodeAttachment so that it will be possible to intercept and alter it, as is the case when a player controls one of the entities.
  * In normal behavior, all position and orientation updates are fetched from the entity to which the attachment is attached.
  * This class is however expected to be extended with a subclass which provides other behavior.
  */
-class SceneNodeController : public virtual sigc::trackable, public IMovable
+class NodeController: public virtual sigc::trackable, public IMovable
 {
 public:
-	SceneNodeController(SceneNodeAttachment& attachment);
-	virtual ~SceneNodeController();
+	NodeController(NodeAttachment& attachment);
+	virtual ~NodeController();
 
 	virtual void updateMotion(float timeSlice);
 
@@ -50,7 +50,7 @@ public:
 
 protected:
 
-	SceneNodeAttachment& mAttachment;
+	NodeAttachment& mAttachment;
 
 	void movementUpdate();
 	void entity_Moved();
@@ -60,4 +60,4 @@ protected:
 
 }
 
-#endif /* SCENENODECONTROLLER_H_ */
+#endif /* NodeController_H_ */

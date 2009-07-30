@@ -21,7 +21,7 @@
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/HiddenAttachment.h"
 #include "components/ogre/IEntityAttachment.h"
-#include "components/ogre/SceneNodeAttachment.h"
+#include "components/ogre/NodeAttachment.h"
 #include "components/ogre/SceneNodeProvider.h"
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelDefinition.h"
@@ -38,14 +38,14 @@ namespace Model
 {
 
 ModelAttachment::ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, INodeProvider* nodeProvider) :
-	SceneNodeAttachment::SceneNodeAttachment(parentEntity, modelRepresentation.getEntity(), nodeProvider), mModelRepresentation(modelRepresentation), mModelMount(0)
+	NodeAttachment::NodeAttachment(parentEntity, modelRepresentation.getEntity(), nodeProvider), mModelRepresentation(modelRepresentation), mModelMount(0)
 {
 	mModelMount = new ModelMount(mModelRepresentation.getModel(), nodeProvider->createChildProvider(&mModelRepresentation.getModel()));
 	mModelMount->reset();
 }
 
-ModelAttachment::ModelAttachment(ModelAttachment& source, SceneNodeAttachment& newParentAttachment) :
-	SceneNodeAttachment::SceneNodeAttachment(source, newParentAttachment), mModelRepresentation(source.mModelRepresentation), mModelMount(source.mModelMount)
+ModelAttachment::ModelAttachment(ModelAttachment& source, NodeAttachment& newParentAttachment) :
+	NodeAttachment::NodeAttachment(source, newParentAttachment), mModelRepresentation(source.mModelRepresentation), mModelMount(source.mModelMount)
 {
 	source.mModelMount = 0;
 	updateScale();
@@ -72,7 +72,7 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 	}
 	else {
 		ModelRepresentation* modelRepresentation = ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity);
-		SceneNodeAttachment* currentSceneNodeAttachment = dynamic_cast<SceneNodeAttachment*> (entity.getAttachment());
+		NodeAttachment* currentNodeAttachment = dynamic_cast<NodeAttachment*> (entity.getAttachment());
 		ModelAttachment* currentModelAttachment = dynamic_cast<ModelAttachment*> (entity.getAttachment());
 		//		if (attachPoint != "") {
 		//			return new ModelAttachment(getAttachedEntity(), *modelRepresentation, );
@@ -82,8 +82,8 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 		if (attachPoint == "" && currentModelAttachment) {
 			return new ModelAttachment(*currentModelAttachment, *this);
 		}
-		else if (attachPoint == "" && currentSceneNodeAttachment) {
-			return new SceneNodeAttachment(*currentSceneNodeAttachment, *this);
+		else if (attachPoint == "" && currentNodeAttachment) {
+			return new NodeAttachment(*currentNodeAttachment, *this);
 		}
 		else {
 			INodeProvider* nodeProvider(0);
@@ -97,7 +97,7 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 				return new ModelAttachment(getAttachedEntity(), *modelRepresentation, nodeProvider);
 			}
 			else {
-				return new SceneNodeAttachment(getAttachedEntity(), entity, nodeProvider);
+				return new NodeAttachment(getAttachedEntity(), entity, nodeProvider);
 			}
 		}
 		//		}

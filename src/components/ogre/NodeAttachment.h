@@ -16,29 +16,29 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef EMBEROGRESCENENODEATTACHMENT_H_
-#define EMBEROGRESCENENODEATTACHMENT_H_
+#ifndef EMBEROGRENodeAttachment_H_
+#define EMBEROGRENodeAttachment_H_
 
 #include "components/ogre/AttachmentBase.h"
 #include <sigc++/trackable.h>
 
-
-namespace Ogre {
-class SceneNode;
+namespace Ogre
+{
 class Node;
 }
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
 class INodeProvider;
-class SceneNodeController;
+class NodeController;
 
-class SceneNodeAttachment : public AttachmentBase, public virtual sigc::trackable
+class NodeAttachment: public AttachmentBase, public virtual sigc::trackable
 {
 public:
-	SceneNodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, INodeProvider* nodeProvider);
-	SceneNodeAttachment(SceneNodeAttachment& source, SceneNodeAttachment& newParentAttachment);
-	virtual ~SceneNodeAttachment();
+	NodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, INodeProvider* nodeProvider);
+	NodeAttachment(NodeAttachment& source, NodeAttachment& newParentAttachment);
+	virtual ~NodeAttachment();
 
 	virtual void setControlDelegate(IAttachmentControlDelegate* controllerDelegate);
 
@@ -57,14 +57,13 @@ protected:
 	Ogre::Node* mSceneNode;
 	INodeProvider* mNodeProvider;
 
-	SceneNodeController* mAttachmentController;
+	NodeController* mAttachmentController;
 
 	void setupListeners();
 
 	void entity_VisibilityChanged(bool visible);
 
-
 };
 
 }
-#endif /* EMBEROGRESCENENODEATTACHMENT_H_ */
+#endif /* EMBEROGRENodeAttachment_H_ */

@@ -16,20 +16,20 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef DELEGATINGSCENENODECONTROLLER_H_
-#define DELEGATINGSCENENODECONTROLLER_H_
+#ifndef DELEGATINGNodeController_H_
+#define DELEGATINGNodeController_H_
 
-#include "components/ogre/SceneNodeController.h"
+#include "components/ogre/NodeController.h"
 
 namespace EmberOgre {
 
 class IAttachmentControlDelegate;
 
-class DelegatingSceneNodeController : public SceneNodeController
+class DelegatingNodeController : public NodeController
 {
 public:
-	DelegatingSceneNodeController(SceneNodeAttachment& attachment, IAttachmentControlDelegate& attachmentControlDelegate);
-	virtual ~DelegatingSceneNodeController();
+	DelegatingNodeController(NodeAttachment& attachment, IAttachmentControlDelegate& attachmentControlDelegate);
+	virtual ~DelegatingNodeController();
 
 	virtual IAttachmentControlDelegate* getControlDelegate() const;
 
@@ -42,4 +42,4 @@ private:
 
 }
 
-#endif /* DELEGATINGSCENENODECONTROLLER_H_ */
+#endif /* DELEGATINGNodeController_H_ */

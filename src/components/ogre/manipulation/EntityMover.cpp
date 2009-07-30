@@ -27,7 +27,7 @@
 #include "EntityMover.h"
 #include "EntityMoveManager.h"
 #include "components/ogre/EmberEntity.h"
-#include "components/ogre/SceneNodeAttachment.h"
+#include "components/ogre/NodeAttachment.h"
 #include "components/ogre/Convert.h"
 
 #include "services/EmberServices.h"
@@ -37,10 +37,10 @@
 namespace EmberOgre
 {
 
-EntityMover::EntityMover(SceneNodeAttachment& sceneNodeAttachment, EntityMoveManager& manager) :
-	EntityMoverBase(sceneNodeAttachment.getAttachedEntity(), sceneNodeAttachment.getSceneNode()), mSceneNodeAttachment(sceneNodeAttachment), mManager(manager), mPreviousControlDelegate(sceneNodeAttachment.getControlDelegate()), mControlDelegate(new EntityMoverControlDelegate(*this))
+EntityMover::EntityMover(NodeAttachment& NodeAttachment, EntityMoveManager& manager) :
+	EntityMoverBase(NodeAttachment.getAttachedEntity(), NodeAttachment.getSceneNode()), mNodeAttachment(NodeAttachment), mManager(manager), mPreviousControlDelegate(NodeAttachment.getControlDelegate()), mControlDelegate(new EntityMoverControlDelegate(*this))
 {
-	sceneNodeAttachment.setControlDelegate(mControlDelegate);
+	NodeAttachment.setControlDelegate(mControlDelegate);
 }
 
 EntityMover::~EntityMover()
@@ -55,7 +55,7 @@ void EntityMover::finalizeMovement()
 		///send to server
 		Ember::EmberServices::getSingleton().getServerService()->place(&mEntity, mEntity.getLocation(), getPosition(), getOrientation());
 	}
-	mSceneNodeAttachment.updatePosition();
+	mNodeAttachment.updatePosition();
 	cleanup();
 	mManager.EventFinishedMoving.emit();
 
@@ -63,17 +63,17 @@ void EntityMover::finalizeMovement()
 void EntityMover::cancelMovement()
 {
 	cleanup();
-	mSceneNodeAttachment.updatePosition();
+	mNodeAttachment.updatePosition();
 	mManager.EventCancelledMoving.emit();
 }
 
 void EntityMover::cleanup()
 {
-	mSceneNodeAttachment.setControlDelegate(mPreviousControlDelegate);
+	mNodeAttachment.setControlDelegate(mPreviousControlDelegate);
 }
 void EntityMover::newEntityPosition(const Ogre::Vector3& position)
 {
-	mSceneNodeAttachment.updatePosition();
+	mNodeAttachment.updatePosition();
 }
 
 

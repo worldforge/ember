@@ -21,7 +21,7 @@
 #include "components/ogre/IGraphicalRepresentation.h"
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/IEntityAttachment.h"
-#include "components/ogre/SceneNodeAttachment.h"
+#include "components/ogre/NodeAttachment.h"
 #include "components/ogre/WorldEmberEntity.h"
 #include "components/ogre/SceneNodeProvider.h"
 #include "components/ogre/model/ModelRepresentation.h"
@@ -70,7 +70,7 @@ IEntityAttachment* WorldAttachment::attachEntity(EmberEntity& entity)
 	if (Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity)) {
 		return new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, new SceneNodeProvider(mWorldNode));
 	} else {
-		return new SceneNodeAttachment(getAttachedEntity(), entity, new SceneNodeProvider(mWorldNode));
+		return new NodeAttachment(getAttachedEntity(), entity, new SceneNodeProvider(mWorldNode));
 	}
 }
 

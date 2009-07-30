@@ -26,7 +26,7 @@
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/Convert.h"
 #include "components/ogre/AvatarLogger.h"
-#include "components/ogre/SceneNodeAttachment.h"
+#include "components/ogre/NodeAttachment.h"
 #include "components/ogre/AvatarAttachmentController.h"
 
 #include "components/ogre/camera/MainCamera.h"
@@ -275,7 +275,7 @@ bool Avatar::isOkayToSendRotationMovementChangeToServer()
 
 Ogre::Node* Avatar::getAvatarSceneNode() const
 {
-	SceneNodeAttachment* attachment = dynamic_cast<SceneNodeAttachment*>(mErisAvatarEntity.getAttachment());
+	NodeAttachment* attachment = dynamic_cast<NodeAttachment*>(mErisAvatarEntity.getAttachment());
 	if (attachment) {
 		return attachment->getSceneNode();
 	}

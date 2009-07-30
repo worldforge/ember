@@ -19,7 +19,7 @@
 #ifndef MODELATTACHMENT_H_
 #define MODELATTACHMENT_H_
 
-#include "components/ogre/SceneNodeAttachment.h"
+#include "components/ogre/NodeAttachment.h"
 
 namespace EmberOgre {
 
@@ -37,11 +37,11 @@ class ModelRepresentation;
  *
  * Use this attachment when you have a ModelRepresentation you need to attach to an entity.
  */
-class ModelAttachment : public SceneNodeAttachment
+class ModelAttachment : public NodeAttachment
 {
 public:
 	ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, INodeProvider* nodeProvider);
-	ModelAttachment(ModelAttachment& source, SceneNodeAttachment& newParentAttachment);
+	ModelAttachment(ModelAttachment& source, NodeAttachment& newParentAttachment);
 
 	virtual ~ModelAttachment();
 
