@@ -89,6 +89,19 @@ namespace EmberOgre {
 namespace Terrain {
 
 
+void TerrainGeneratorBackgroundWorker::tick()
+{
+	// join and destroy finished thread
+	if (!mIsProcessing && mThread) {
+		mThread->join();
+		delete mThread;
+		mThread = 0;
+	}
+
+	// call to create new page from queue, if available
+	createPageFromQueue();
+}
+
 void TerrainGeneratorBackgroundWorker::pushPageIntoQueue(const TerrainPosition& pos, ITerrainPageBridge* bridge)
 {
 	// add to queue
@@ -128,9 +141,6 @@ void TerrainGeneratorBackgroundWorker::pushPageReady(TerrainPage* page)
 		boost::mutex::scoped_lock lock(mMutexIsProcessing);
 		mIsProcessing = false;
 	}
-
-	// call to create new page from queue, if available
-	createPageFromQueue();
 }
 
 void TerrainGeneratorBackgroundWorker::createPageFromQueue()
@@ -142,8 +152,8 @@ void TerrainGeneratorBackgroundWorker::createPageFromQueue()
 			TerrainPosition pos = mPagesQueue.front().first;
 			ITerrainPageBridge* bridge = mPagesQueue.front().second;
 			S_LOG_INFO("TerrainPage at index [" << pos.x() << "," << pos.y() << "] being created from background thread");
-			boost::thread* t = new boost::thread(boost::bind(&TerrainGenerator::createPage,
-									 this, pos, bridge));
+			mThread = new boost::thread(boost::bind(&TerrainGenerator::createPage,
+								this, pos, bridge));
 			mPagesQueue.pop_front();
 			mIsProcessing = true;
 		}
@@ -497,6 +507,9 @@ bool TerrainGenerator::frameEnded(const Ogre::FrameEvent & evt)
 
 		page->notifyBridgePageReady();
 	}
+
+	// tick the terrain generator
+	mTerrainGeneratorBackgroundWorker.tick();
 
 	return true;
 }

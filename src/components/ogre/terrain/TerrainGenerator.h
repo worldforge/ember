@@ -114,7 +114,10 @@ class TerrainGeneratorBackgroundWorker
 {
 public:
 	/** Ctor. */
-	TerrainGeneratorBackgroundWorker() : mIsProcessing(false) {}
+	TerrainGeneratorBackgroundWorker() : mIsProcessing(false), mThread(0) {}
+
+	/** Tick be called periodically (e.g. after frame ended) to continue processing page creation requests */
+	void tick();
 
 	/** Push a page into the queue, to be loaded in the background */
 	void pushPageIntoQueue(const TerrainPosition& pos, ITerrainPageBridge* bridge);
@@ -136,6 +139,9 @@ private:
 	std::list<std::pair<TerrainPosition, ITerrainPageBridge*> > mPagesQueue;
 	/// Flag to know when a thread is already processing a request (only one request at a time, pages access other pages' data so they cannot be created in parallel)
 	bool mIsProcessing;
+	/// Thread, a pointer to free the thread after finishes
+	boost::thread* mThread;
+
 	/// Mutex for shared variable
 	boost::mutex mMutexPagesReady;
 	/// Mutex for shared variable
