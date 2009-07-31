@@ -19,21 +19,48 @@
 #ifndef INODEPROVIDER_H_
 #define INODEPROVIDER_H_
 
-namespace Ogre {
-	class Node;
-	class MovableObject;
+namespace Ogre
+{
+class Node;
+class MovableObject;
 }
 
 namespace EmberOgre
 {
 
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief A provider of Ogre Node instances.
+ *
+ * There are two kinds of nodes used in the system: Ogre::SceneNode and Ogre::TagPoint. However, most of the classes which deals with nodes use the base class Ogre::Node instead of the final classes.
+ * Subclasses of this are therefore used for providing concrete instances.
+ * A typical use is as a binding between a parent and child node.
+ */
 class INodeProvider
 {
 public:
+	/**
+	 * @brief Dtor.
+	 */
 	virtual ~INodeProvider(){}
+
+	/**
+	 * @brief Gets the main node instance, as created and managed by this instance.
+	 * @return A node instance.
+	 */
 	virtual Ogre::Node& getNode() const = 0;
+
+	/**
+	 * @brief Gets the parent node, if there is any.
+	 * @return The parent node, or null if no such exists.
+	 */
 	virtual Ogre::Node* getParentNode() const = 0;
 
+	/**
+	 * @brief Creates a new INodeProvider which is a child of this instance.
+	 * @param attachedObject An optional movable object which will be attached to the node created by new provider.
+	 * @return A new provider, which is a child of this instance.
+	 */
 	virtual INodeProvider* createChildProvider(Ogre::MovableObject* attachedObject = 0) = 0;
 };
 }

@@ -29,6 +29,7 @@ class EmberEntity;
 
 
 /**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief Hides all graphical representation.
  *
  * Use this attachment when you want to hide all graphical representations.

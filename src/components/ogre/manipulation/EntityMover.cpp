@@ -37,10 +37,10 @@
 namespace EmberOgre
 {
 
-EntityMover::EntityMover(NodeAttachment& NodeAttachment, EntityMoveManager& manager) :
-	EntityMoverBase(NodeAttachment.getAttachedEntity(), NodeAttachment.getSceneNode()), mNodeAttachment(NodeAttachment), mManager(manager), mPreviousControlDelegate(NodeAttachment.getControlDelegate()), mControlDelegate(new EntityMoverControlDelegate(*this))
+EntityMover::EntityMover(NodeAttachment& nodeAttachment, EntityMoveManager& manager) :
+	EntityMoverBase(nodeAttachment.getAttachedEntity(), nodeAttachment.getNode()), mNodeAttachment(nodeAttachment), mManager(manager), mPreviousControlDelegate(nodeAttachment.getControlDelegate()), mControlDelegate(new EntityMoverControlDelegate(*this))
 {
-	NodeAttachment.setControlDelegate(mControlDelegate);
+	nodeAttachment.setControlDelegate(mControlDelegate);
 }
 
 EntityMover::~EntityMover()

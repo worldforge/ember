@@ -56,7 +56,12 @@ struct CollisionResult
 class ICollisionDetector
 {
 public:
-	virtual ~ICollisionDetector() {}
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~ICollisionDetector()
+	{
+	}
 
 	/**
 	 * @brief Test whether the provided ray hits the entity.
@@ -64,6 +69,7 @@ public:
 	 * @param result The result of the collision. If the ray hits, the collision detector must update this object.
 	 */
 	virtual void testCollision(Ogre::Ray& ray, CollisionResult& result) = 0;
+
 	/**
 	 * @brief Refits the collision mesh against the entity. This is called to ensure that the collision mesh fits animated entities.
 	 */
@@ -79,6 +85,7 @@ public:
 	 * @param visualize
 	 */
 	virtual void setVisualize(bool visualize) = 0;
+
 	/**
 	 * @brief Gets whether the collision data should be visualized for debugging purposes.
 	 * @return

@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2009 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2009 Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
 #ifndef IENTITYATTACHMENT_H_
 #define IENTITYATTACHMENT_H_
@@ -25,7 +25,8 @@ template<int> class Point;
 template<int> class Vector;
 }
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
 class IGraphicalRepresentation;
 class IAttachmentControlDelegate;
@@ -39,13 +40,16 @@ class EmberEntity;
  * The normal case would be two entities being both represented through an instance of Ogre::SceneNode, and a Model. However, there are other instances where a SceneNode doesn't make any sense, and instead another kind of attachment is suitable.
  *
  */
-class IEntityAttachment {
+class IEntityAttachment
+{
 public:
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~IEntityAttachment(){}
+	virtual ~IEntityAttachment()
+	{
+	}
 
 	/**
 	 * @brief Gets the graphical representation that this attachment is bound to.
