@@ -35,7 +35,7 @@ namespace Model
 ModelAttachedAttachment::ModelAttachedAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, Model& rootModel, const std::string& attachPointName) :
 	AttachmentBase::AttachmentBase(parentEntity, modelRepresentation.getEntity()), mModelRepresentation(modelRepresentation), mRootModel(rootModel)
 {
-	mModelMount = new ModelMount(mModelRepresentation.getModel(), new ModelBoneProvider(rootModel, attachPointName, modelRepresentation.getModel()));
+	mModelMount = new ModelMount(mModelRepresentation.getModel(), new ModelBoneProvider(rootModel, attachPointName, &modelRepresentation.getModel()));
 	mModelMount->reset();
 }
 

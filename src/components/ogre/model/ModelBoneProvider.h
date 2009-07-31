@@ -37,7 +37,7 @@ class Model;
 class ModelBoneProvider: public INodeProvider
 {
 public:
-	ModelBoneProvider(Model& parentModel, const std::string& attachPointName, Ogre::MovableObject& movableObject);
+	ModelBoneProvider(Model& parentModel, const std::string& attachPointName, Ogre::MovableObject* movableObject);
 	virtual ~ModelBoneProvider();
 	virtual Ogre::Node& getNode() const;
 	virtual Ogre::Node* getParentNode() const;
@@ -46,10 +46,12 @@ public:
 protected:
 
 	Model& mParentModel;
+	std::string mAttachPointName;
 	Ogre::TagPoint* mNode;
-	Ogre::MovableObject& mAttachedObject;
+	Ogre::MovableObject* mAttachedObject;
 
 };
+
 }
 }
 

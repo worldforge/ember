@@ -86,40 +86,40 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 			break;
 		}
 	}
-	//Don't show a graphical representation if the model is set not to show any contained entities.
+	//Don't show a graphical representation if the model is set not to show any contained entities AND we're not set to attach ourselves to an attach point.
 	if (attachPoint == "" && !mModelRepresentation.getModel().getDefinition()->getShowContained()) {
 		return new HiddenAttachment(getAttachedEntity(), entity);
 	}
 	else {
 		ModelRepresentation* modelRepresentation = ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity);
-		NodeAttachment* currentNodeAttachment = dynamic_cast<NodeAttachment*> (entity.getAttachment());
-		ModelAttachment* currentModelAttachment = dynamic_cast<ModelAttachment*> (entity.getAttachment());
+		//		NodeAttachment* currentNodeAttachment = dynamic_cast<NodeAttachment*> (entity.getAttachment());
+		//		ModelAttachment* currentModelAttachment = dynamic_cast<ModelAttachment*> (entity.getAttachment());
 		//		if (attachPoint != "") {
 		//			return new ModelAttachment(getAttachedEntity(), *modelRepresentation, );
 		//		}
 		//		else {
 
-		if (attachPoint == "" && currentModelAttachment) {
-			return new ModelAttachment(*currentModelAttachment, *this);
-		}
-		else if (attachPoint == "" && currentNodeAttachment) {
-			return new NodeAttachment(*currentNodeAttachment, *this);
+		//		if (attachPoint == "" && currentModelAttachment) {
+		//			return new ModelAttachment(*currentModelAttachment, *this);
+		//		}
+		//		else if (attachPoint == "" && currentNodeAttachment) {
+		//			return new NodeAttachment(*currentNodeAttachment, *this);
+		//		}
+		//		else {
+		INodeProvider* nodeProvider(0);
+		if (attachPoint != "") {
+			nodeProvider = new ModelBoneProvider(mModelRepresentation.getModel(), attachPoint, &modelRepresentation->getModel());
 		}
 		else {
-			INodeProvider* nodeProvider(0);
-			if (attachPoint != "") {
-				nodeProvider = new ModelBoneProvider(mModelRepresentation.getModel(), attachPoint, modelRepresentation->getModel());
-			}
-			else {
-				nodeProvider = mNodeProvider->createChildProvider();
-			}
-			if (modelRepresentation) {
-				return new ModelAttachment(getAttachedEntity(), *modelRepresentation, nodeProvider);
-			}
-			else {
-				return new NodeAttachment(getAttachedEntity(), entity, nodeProvider);
-			}
+			nodeProvider = mNodeProvider->createChildProvider();
 		}
+		if (modelRepresentation) {
+			return new ModelAttachment(getAttachedEntity(), *modelRepresentation, nodeProvider);
+		}
+		else {
+			return new NodeAttachment(getAttachedEntity(), entity, nodeProvider);
+		}
+		//		}s
 		//		}
 	}
 }
@@ -164,7 +164,6 @@ void ModelAttachment::fittedEntity_BeingDeleted(EmberEntity* entity)
 	}
 }
 
-
 void ModelAttachment::setupFittings()
 {
 	const AttachPointDefinitionStore& attachpoints = mModelRepresentation.getModel().getDefinition()->getAttachPointsDefinitions();
@@ -176,10 +175,13 @@ void ModelAttachment::setupFittings()
 
 void ModelAttachment::detachFitting(EmberEntity& entity)
 {
-	IEntityAttachment* attachment = attachEntity(entity);
-	entity.setAttachment(attachment);
-	if (attachment) {
-		attachment->updateScale();
+	//If the detached entity still is a child of this entity, re-evaluate the attachment.
+	if (entity.getLocation() == &mChildEntity) {
+		IEntityAttachment* attachment = attachEntity(entity);
+		entity.setAttachment(attachment);
+		if (attachment) {
+			attachment->updateScale();
+		}
 	}
 }
 

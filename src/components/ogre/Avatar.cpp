@@ -277,7 +277,7 @@ Ogre::Node* Avatar::getAvatarSceneNode() const
 {
 	NodeAttachment* attachment = dynamic_cast<NodeAttachment*>(mErisAvatarEntity.getAttachment());
 	if (attachment) {
-		return attachment->getSceneNode();
+		return attachment->getNode();
 	}
 	return 0;
 }

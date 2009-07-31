@@ -38,19 +38,19 @@ namespace EmberOgre
 {
 
 NodeAttachment::NodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, INodeProvider* nodeProvider) :
-	AttachmentBase::AttachmentBase(parentEntity, childEntity), mSceneNode(0), mNodeProvider(nodeProvider), mAttachmentController(0)
+	AttachmentBase::AttachmentBase(parentEntity, childEntity), mNode(0), mNodeProvider(nodeProvider), mAttachmentController(0)
 {
 	setControlDelegate(mChildEntity.getAttachmentControlDelegate());
-	mSceneNode = &mNodeProvider->getNode();
-	//	mSceneNode = parentNode.createChildSceneNode("entity_" + childEntity.getId());
+	mNode = &mNodeProvider->getNode();
+	//	mNode = parentNode.createChildSceneNode("entity_" + childEntity.getId());
 	setupListeners();
 }
 
 NodeAttachment::NodeAttachment(NodeAttachment& source, NodeAttachment& newParentAttachment) :
-	AttachmentBase::AttachmentBase(newParentAttachment.getAttachedEntity(), source.getAttachedEntity()), mSceneNode(source.mSceneNode), mAttachmentController(0)
+	AttachmentBase::AttachmentBase(newParentAttachment.getAttachedEntity(), source.getAttachedEntity()), mNode(source.mNode), mAttachmentController(0)
 {
 	setControlDelegate(mChildEntity.getAttachmentControlDelegate());
-	source.mSceneNode = 0;
+	source.mNode = 0;
 	setupListeners();
 }
 
@@ -68,17 +68,17 @@ void NodeAttachment::setupListeners()
 void NodeAttachment::entity_VisibilityChanged(bool visible)
 {
 	if (!visible) {
-		if (mNodeProvider->getParentNode() && mSceneNode->getParent()) {
-			mNodeProvider->getParentNode()->removeChild(mSceneNode);
-//		} else {
-//			mSceneNode->setVisible(false);
+		if (mNodeProvider->getParentNode() && mNode->getParent()) {
+			mNodeProvider->getParentNode()->removeChild(mNode);
+			//		} else {
+			//			mNode->setVisible(false);
 		}
 	}
 	else {
-		if (mNodeProvider->getParentNode() && !mSceneNode->getParent()) {
-			mNodeProvider->getParentNode()->addChild(mSceneNode);
-//		} else {
-//			mSceneNode->setVisible(true);
+		if (mNodeProvider->getParentNode() && !mNode->getParent()) {
+			mNodeProvider->getParentNode()->addChild(mNode);
+			//		} else {
+			//			mNode->setVisible(true);
 		}
 	}
 }
@@ -87,22 +87,22 @@ IEntityAttachment* NodeAttachment::attachEntity(EmberEntity& entity)
 {
 
 	Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity);
-	NodeAttachment* currentNodeAttachment = dynamic_cast<NodeAttachment*> (entity.getAttachment());
-	Model::ModelAttachment* currentModelAttachment = dynamic_cast<Model::ModelAttachment*> (entity.getAttachment());
-	if (currentModelAttachment) {
-		return new Model::ModelAttachment(*currentModelAttachment, *this);
-	}
-	else if (currentNodeAttachment) {
-		return new NodeAttachment(*currentNodeAttachment, *this);
+	//	NodeAttachment* currentNodeAttachment = dynamic_cast<NodeAttachment*> (entity.getAttachment());
+	//	Model::ModelAttachment* currentModelAttachment = dynamic_cast<Model::ModelAttachment*> (entity.getAttachment());
+	//	if (currentModelAttachment) {
+	//		return new Model::ModelAttachment(*currentModelAttachment, *this);
+	//	}
+	//	else if (currentNodeAttachment) {
+	//		return new NodeAttachment(*currentNodeAttachment, *this);
+	//	}
+	//	else {
+	if (modelRepresentation) {
+		return new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, mNodeProvider->createChildProvider(&modelRepresentation->getModel()));
 	}
 	else {
-		if (modelRepresentation) {
-			return new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, mNodeProvider->createChildProvider(&modelRepresentation->getModel()));
-		}
-		else {
-			return new NodeAttachment(getAttachedEntity(), entity, mNodeProvider->createChildProvider(&modelRepresentation->getModel()));
-		}
+		return new NodeAttachment(getAttachedEntity(), entity, mNodeProvider->createChildProvider(&modelRepresentation->getModel()));
 	}
+	//	}
 }
 
 void NodeAttachment::setControlDelegate(IAttachmentControlDelegate* controllerDelegate)
@@ -131,14 +131,14 @@ void NodeAttachment::setPosition(const WFMath::Point<3>& position, const WFMath:
 		if (mParentEntity.getAttachment()) {
 			mParentEntity.getAttachment()->getOffsetForContainedNode(*this, position, adjustedOffset);
 		}
-		mSceneNode->setPosition(Convert::toOgre(position + adjustedOffset));
-		mSceneNode->setOrientation(Convert::toOgre(orientation));
+		mNode->setPosition(Convert::toOgre(position + adjustedOffset));
+		mNode->setOrientation(Convert::toOgre(orientation));
 	}
 }
 
-Ogre::Node* NodeAttachment::getSceneNode() const
+Ogre::Node* NodeAttachment::getNode() const
 {
-	return mSceneNode;
+	return mNode;
 }
 
 void NodeAttachment::updatePosition()

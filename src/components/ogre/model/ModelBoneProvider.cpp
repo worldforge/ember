@@ -18,6 +18,7 @@
 
 #include "ModelBoneProvider.h"
 #include "components/ogre/model/Model.h"
+#include "components/ogre/OgreInfo.h"
 #include <OgreMovableObject.h>
 #include <OgreNode.h>
 #include <OgreTagPoint.h>
@@ -26,18 +27,19 @@ namespace EmberOgre
 {
 namespace Model
 {
-ModelBoneProvider::ModelBoneProvider(Model& parentModel, const std::string& attachPointName, Ogre::MovableObject& movableObject) :
-	mParentModel(parentModel), mNode(0), mAttachedObject(movableObject)
+ModelBoneProvider::ModelBoneProvider(Model& parentModel, const std::string& attachPointName, Ogre::MovableObject* movableObject) :
+	mParentModel(parentModel), mAttachPointName(attachPointName), mNode(0), mAttachedObject(movableObject)
 {
-	movableObject.detatchFromParent();
-	mNode = mParentModel.attachObjectToAttachPoint(attachPointName, &movableObject);
+	if (movableObject) {
+		movableObject->detatchFromParent();
+		mNode = mParentModel.attachObjectToAttachPoint(attachPointName, movableObject);
+	}
 }
 
 ModelBoneProvider::~ModelBoneProvider()
 {
-	//Only detach if it's attached to ourselves
-	if (mAttachedObject.getParentNode() == mNode) {
-		mParentModel.detachObjectFromBone(mAttachedObject.getName());
+	if (mAttachedObject) {
+		mParentModel.detachObjectFromBone(mAttachedObject->getName());
 	}
 }
 
@@ -53,7 +55,7 @@ Ogre::Node* ModelBoneProvider::getParentNode() const
 
 INodeProvider* ModelBoneProvider::createChildProvider(Ogre::MovableObject* attachedObject)
 {
-	return 0;
+	return new ModelBoneProvider(mParentModel, mAttachPointName, attachedObject);
 }
 
 }
