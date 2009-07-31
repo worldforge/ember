@@ -62,6 +62,12 @@ public:
 	 * @return A new provider, which is a child of this instance.
 	 */
 	virtual INodeProvider* createChildProvider(Ogre::MovableObject* attachedObject = 0) = 0;
+
+	/**
+	 * @brief Sets the visiblity of the node.
+	 * @param visible Whether the node should be visible or not.
+	 */
+	virtual void setVisible(bool visible) = 0;
 };
 }
 

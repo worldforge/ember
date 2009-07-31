@@ -58,5 +58,11 @@ INodeProvider* ModelBoneProvider::createChildProvider(Ogre::MovableObject* attac
 	return new ModelBoneProvider(mParentModel, mAttachPointName, attachedObject);
 }
 
+void ModelBoneProvider::setVisible(bool visible)
+{
+	if (mAttachedObject) {
+		mAttachedObject->setVisible(visible);
+	}
+}
 }
 }

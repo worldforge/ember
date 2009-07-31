@@ -37,6 +37,7 @@ public:
 	virtual Ogre::Node& getNode() const;
 	virtual Ogre::Node* getParentNode() const;
 	virtual INodeProvider* createChildProvider(Ogre::MovableObject* attachedObject = 0);
+	virtual void setVisible(bool visible);
 
 protected:
 

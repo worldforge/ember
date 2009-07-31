@@ -60,6 +60,20 @@ INodeProvider* SceneNodeProvider::createChildProvider(Ogre::MovableObject* attac
 	return new SceneNodeProvider(*mNode, attachedObject);
 }
 
+void SceneNodeProvider::setVisible(bool visible)
+{
+	if (!visible) {
+		if (mNode->getParent() == &mParentNode) {
+			mParentNode.removeChild(mNode);
+		}
+	}
+	else {
+		if (!mNode->getParent()) {
+			mParentNode.addChild(mNode);
+		}
+	}
+}
+
 
 
 }

@@ -67,20 +67,7 @@ void NodeAttachment::setupListeners()
 
 void NodeAttachment::entity_VisibilityChanged(bool visible)
 {
-	if (!visible) {
-		if (mNodeProvider->getParentNode() && mNode->getParent()) {
-			mNodeProvider->getParentNode()->removeChild(mNode);
-			//		} else {
-			//			mNode->setVisible(false);
-		}
-	}
-	else {
-		if (mNodeProvider->getParentNode() && !mNode->getParent()) {
-			mNodeProvider->getParentNode()->addChild(mNode);
-			//		} else {
-			//			mNode->setVisible(true);
-		}
-	}
+	mNodeProvider->setVisible(visible);
 }
 
 IEntityAttachment* NodeAttachment::attachEntity(EmberEntity& entity)
