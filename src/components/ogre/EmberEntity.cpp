@@ -38,7 +38,6 @@
 #include <OgreWireBoundingBox.h>
 #include <OgreMaterialManager.h>
 
-
 //#include <Atlas/Objects/ObjectsFwd.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/View.h>
@@ -47,7 +46,6 @@
 #include <Atlas/Codecs/XML.h>
 #include <Atlas/Message/MEncoder.h>
 #include <Atlas/Message/QueuedDecoder.h>
-
 
 using namespace Ogre;
 
@@ -77,13 +75,11 @@ const std::string EmberEntity::MODE_FLOATING("floating");
 const std::string EmberEntity::MODE_FIXED("fixed");
 const std::string EmberEntity::MODE_PROJECTILE("projectile");
 
-
 const std::string EmberEntity::BboxMaterialName("BaseYellowNoLightning");
 
 EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager) :
 	Eris::Entity(id, ty, vw), mIsInitialized(false), mErisEntityBoundingBox(0), mTerrainArea(0), mTerrainMod(0), mMovementMode(MM_DEFAULT), mGraphicalRepresentation(0), mEntityMapping(0), mAttachment(0), mAttachmentControlDelegate(0)
 {
-//	createSceneNode(sceneManager);
 }
 
 EmberEntity::~EmberEntity()
@@ -91,8 +87,7 @@ EmberEntity::~EmberEntity()
 	delete mAttachment;
 	delete mGraphicalRepresentation;
 
-	if (mErisEntityBoundingBox)
-	{
+	if (mErisEntityBoundingBox) {
 		mErisEntityBoundingBox->getParentSceneNode()->getCreator()->destroySceneNode(mErisEntityBoundingBox->getParentSceneNode()->getName());
 	}
 	OGRE_DELETE mErisEntityBoundingBox;
@@ -111,7 +106,7 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 	mEntityMapping->initialize();
 
 	// Setup Sounds
-//	setSounds();
+	//	setSounds();
 
 	///start out with the default movement mode
 	onMovementModeChanged(EmberEntity::MM_DEFAULT);
@@ -120,8 +115,7 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 
 	// set the Ogre node position and orientation based on Atlas data
 	std::stringstream ss;
-	if (getPredictedPos().isValid())
-	{
+	if (getPredictedPos().isValid()) {
 		ss << "Entity " << getId() << "(" << getName() << ") placed at (" << getPredictedPos().x() << "," << getPredictedPos().y() << "," << getPredictedPos().x() << ")";
 	}
 	S_LOG_VERBOSE( ss.str());
@@ -130,13 +124,11 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 
 	///Delay the checking and creation of area and terrainmod, since if we do it in onAttrChanged before the entity is properly initialized we'll get problems with multiple reparsings, as well as problems with placing the areas or terrainmod before the entity has been moved to it's proper place.
 	///Another way of doing this would be by attaching listeners, but that require more memory. It might be in the end that that's a better approach, depending on how much memory is needed, contrasted with the extra cycles spent here for every entity.
-	if (hasAttr("area"))
-	{
+	if (hasAttr("area")) {
 		createDependentObject("area");
 	}
 
-	if (hasAttr("terrainmod"))
-	{
+	if (hasAttr("terrainmod")) {
 		createDependentObject("terrainmod");
 	}
 
@@ -151,16 +143,13 @@ bool EmberEntity::createDependentObject(const std::string& attributeName)
 {
 	///if the area attribute has changed, and we _don't_ have any mTerrainArea instance, try to create one such.
 	///if we do have an mTerrainArea instance, all updates will be taken care of by that instead and we can ignore this
-	if (attributeName == "area" && !mTerrainArea.get())
-	{
+	if (attributeName == "area" && !mTerrainArea.get()) {
 		mTerrainArea = std::auto_ptr<Terrain::TerrainArea>(new Terrain::TerrainArea(*this));
-		if (mTerrainArea->init())
-		{
+		if (mTerrainArea->init()) {
 			addArea(mTerrainArea.get());
 			return true;
 		}
-		else
-		{
+		else {
 			///if we couldn't properly initialize, delete the instance now, and then hopefully the next time the "area" attribute is changed we'll be able to properly create an area
 			mTerrainArea.reset();
 		}
@@ -168,16 +157,13 @@ bool EmberEntity::createDependentObject(const std::string& attributeName)
 
 	///if the area attribute has changed, and we _don't_ have any mTerrainMod instance, try to create one such.
 	///if we do have an mTerrainMod instance, all updates will be taken care of by that instead and we can ignore this
-	if (attributeName == "terrainmod" && !mTerrainMod.get())
-	{
+	if (attributeName == "terrainmod" && !mTerrainMod.get()) {
 		mTerrainMod = std::auto_ptr<Terrain::TerrainMod>(new Terrain::TerrainMod(this));
-		if (mTerrainMod->init())
-		{
+		if (mTerrainMod->init()) {
 			addTerrainMod(mTerrainMod.get());
 			return true;
 		}
-		else
-		{
+		else {
 			///if we couldn't properly initialize, delete the instance now, and then hopefully the next time the "area" attribute is changed we'll be able to properly create a mod
 			mTerrainMod.reset();
 		}
@@ -209,30 +195,25 @@ void EmberEntity::adjustPosition()
 void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArgs)
 {
 	const std::vector<Atlas::Objects::Root>& args = talkArgs->getArgs();
-	if (args.empty())
-	{
+	if (args.empty()) {
 		Eris::Entity::onTalk(talkArgs);
 		return;
 	}
 
 	const Atlas::Objects::Root& talk = args.front();
 
-	if (!talk->hasAttr("say"))
-	{
+	if (!talk->hasAttr("say")) {
 		Eris::Entity::onTalk(talkArgs);
 		return;
 	}
 
 	///some talk operations come with a predefined set of suitable responses, so we'll store those so that they can later on be queried by the GUI for example
 	mSuggestedResponses.clear();
-	if (talk->hasAttr("responses"))
-	{
-		if (talk->getAttr("responses").isList())
-		{
+	if (talk->hasAttr("responses")) {
+		if (talk->getAttr("responses").isList()) {
 			const Atlas::Message::ListType & responseList = talk->getAttr("responses").asList();
 			Atlas::Message::ListType::const_iterator I = responseList.begin();
-			for (; I != responseList.end(); ++I)
-			{
+			for (; I != responseList.end(); ++I) {
 				mSuggestedResponses.push_back(I->asString());
 			}
 
@@ -267,8 +248,7 @@ void EmberEntity::onSoundAction(const Atlas::Objects::Operation::RootOperation &
 	const std::list<std::string> &p = op->getParents();
 	std::list<std::string>::const_iterator I = p.begin();
 
-	if (I != p.end())
-	{
+	if (I != p.end()) {
 
 		const std::string& name = *I;
 		std::string message = getName() + " emits a " + name + ".";
@@ -295,8 +275,7 @@ IAttachmentControlDelegate* EmberEntity::getAttachmentControlDelegate() const
 }
 void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 {
-	if (getLocation() == oldLocation)
-	{
+	if (getLocation() == oldLocation) {
 		///If it's the same location, don't do anything, but do add a warning to the log since this isn't supposed to happen.
 		S_LOG_WARNING( "Same new location as old for entity: " << this->getId() << " (" << this->getName() << ")" );
 	}
@@ -316,19 +295,18 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 		} catch (const std::exception& ex) {
 			S_LOG_WARNING("Problem when creating new attachment for entity." << ex);
 		}
-	} else {
+	}
+	else {
 		setAttachment(0);
 	}
 }
-
 
 void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act)
 {
 	const std::list<std::string> &p = act->getParents();
 	std::list<std::string>::const_iterator I = p.begin();
 
-	if (I != p.end())
-	{
+	if (I != p.end()) {
 
 		const std::string& name = *I;
 		std::string message = getName() + " performs a " + name + ".";
@@ -343,8 +321,7 @@ void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act)
 void EmberEntity::onImaginary(const Atlas::Objects::Root& act)
 {
 	Atlas::Message::Element attr;
-	if (act->copyAttr("description", attr) && attr.isString())
-	{
+	if (act->copyAttr("description", attr) && attr.isString()) {
 		std::string message = getName() + " " + attr.asString() + ".";
 
 		Ember::ConsoleBackend::getSingletonPtr()->pushMessage(message);
@@ -370,8 +347,7 @@ void EmberEntity::addArea(Terrain::TerrainArea* area)
 {
 	///A normal EmberEntity shouldn't know anything about the terrain, so we can't handle the area here.
 	///Intead we just pass it on to the parent until we get to someone who knows how to handle this (preferrably the terrain).
-	if (getEmberLocation())
-	{
+	if (getEmberLocation()) {
 		getEmberLocation()->addArea(area);
 	}
 }
@@ -379,36 +355,27 @@ void EmberEntity::addArea(Terrain::TerrainArea* area)
 void EmberEntity::addTerrainMod(Terrain::TerrainMod* mod)
 {
 	///Same as addArea: pass it on to the parent until it gets to someone who knows how to handle this
-	if (getEmberLocation())
-	{
+	if (getEmberLocation()) {
 		getEmberLocation()->addTerrainMod(mod);
 	}
 }
 
 void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::Element& v)
 {
-	if (str == "mode")
-	{
+	if (str == "mode") {
 		parsePositioningModeChange(v);
 	}
-	else if (str == "bbox")
-	{
+	else if (str == "bbox") {
 		Entity::onAttrChanged(str, v);
 		onBboxChanged();
 		return;
-	} else if (str == "right_hand_wield") {
-		EmberEntity* childEntity = getAttachedEntity("right_hand_wield");
-		if (childEntity) {
-			childEntity->onLocationChanged(this);
-		}
 	}
 
 	///call this before checking for areas and terrainmods, since those instances created to handle that (TerrainMod and TerrainArea) will listen to the AttrChanged event, which would then be emitted after those have been created, causing duplicate regeneration from the same data
 	Entity::onAttrChanged(str, v);
 
 	///Only to this if the entity has been propely initialized, to avoid using incomplete entity data (for example an entity which haven't yet been moved to it's proper place, as well as avoiding duplicate parsing of the same data.
-	if (mIsInitialized)
-	{
+	if (mIsInitialized) {
 		createDependentObject(str);
 	}
 
@@ -422,7 +389,8 @@ void EmberEntity::parseMovementMode()
 		if (velocity.isValid()) {
 			if (velocity.mag() > 2.6) {
 				newMode = MM_RUNNING;
-			} else {
+			}
+			else {
 				newMode = MM_WALKING;
 			}
 		}
@@ -432,29 +400,23 @@ void EmberEntity::parseMovementMode()
 	}
 }
 
-
 void EmberEntity::parsePositioningModeChange(const Atlas::Message::Element& v)
 {
 	const std::string& mode = v.asString();
 	PositioningMode newMode;
-	if (mode.empty())
-	{
+	if (mode.empty()) {
 		newMode = PM_DEFAULT;
 	}
-	else if (mode == MODE_FLOATING)
-	{
+	else if (mode == MODE_FLOATING) {
 		newMode = PM_FLOATING;
 	}
-	else if (mode == MODE_FIXED)
-	{
+	else if (mode == MODE_FIXED) {
 		newMode = PM_FIXED;
 	}
-	else if (mode == MODE_PROJECTILE)
-	{
+	else if (mode == MODE_PROJECTILE) {
 		newMode = PM_PROJECTILE;
 	}
-	else
-	{
+	else {
 		newMode = PM_DEFAULT;
 	}
 
@@ -463,8 +425,7 @@ void EmberEntity::parsePositioningModeChange(const Atlas::Message::Element& v)
 
 void EmberEntity::onPositioningModeChanged(PositioningMode newMode)
 {
-	if (newMode != mPositioningMode)
-	{
+	if (newMode != mPositioningMode) {
 		adjustPosition();
 	}
 	EventPositioningModeChanged.emit(newMode);
@@ -482,14 +443,14 @@ void EmberEntity::setVisualize(const std::string& visualization, bool visualize)
 	if (mGraphicalRepresentation) {
 		mGraphicalRepresentation->setVisualize(visualization, visualize);
 	}
-//	if (visualization == "OgreBBox")
-//	{
-//		showOgreBoundingBox(visualize);
-//	}
-//	else if (visualization == "ErisBBox")
-//	{
-//		showErisBoundingBox(visualize);
-//	}
+	//	if (visualization == "OgreBBox")
+	//	{
+	//		showOgreBoundingBox(visualize);
+	//	}
+	//	else if (visualization == "ErisBBox")
+	//	{
+	//		showErisBoundingBox(visualize);
+	//	}
 }
 
 bool EmberEntity::getVisualize(const std::string& visualization) const
@@ -498,15 +459,15 @@ bool EmberEntity::getVisualize(const std::string& visualization) const
 		return mGraphicalRepresentation->getVisualize(visualization);
 	}
 	return false;
-//	if (visualization == "OgreBBox")
-//	{
-//		return getShowOgreBoundingBox();
-//	}
-//	else if (visualization == "ErisBBox")
-//	{
-//		return getShowErisBoundingBox();
-//	}
-//	return false;
+	//	if (visualization == "OgreBBox")
+	//	{
+	//		return getShowOgreBoundingBox();
+	//	}
+	//	else if (visualization == "ErisBBox")
+	//	{
+	//		return getShowErisBoundingBox();
+	//	}
+	//	return false;
 }
 
 void EmberEntity::showErisBoundingBox(bool show)
@@ -516,20 +477,17 @@ void EmberEntity::showErisBoundingBox(bool show)
 
 	///if there's no bounding box, create one now
 	///allowing for some lazy loading
-	if (!mErisEntityBoundingBox)
-	{
+	if (!mErisEntityBoundingBox) {
 		mErisEntityBoundingBox = OGRE_NEW Ogre::OOBBWireBoundingBox();
 		mErisEntityBoundingBox->setMaterial(BboxMaterialName);
 		Ogre::SceneNode* boundingBoxNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
 		boundingBoxNode->attachObject(mErisEntityBoundingBox);
 
 		///if there's no bounding box defined for this entity, show one that is 0.2 meters across in all direction
-		if (hasBBox())
-		{
+		if (hasBBox()) {
 			mErisEntityBoundingBox->setupBoundingBox(Convert::toOgre(getBBox()));
 		}
-		else
-		{
+		else {
 			mErisEntityBoundingBox->setupBoundingBox(Ogre::AxisAlignedBox(-0.1, -0.1, -0.1, 0.1, 0.1, 0.1));
 		}
 
@@ -542,8 +500,7 @@ void EmberEntity::showErisBoundingBox(bool show)
 
 void EmberEntity::createErisBboxMaterial()
 {
-	if (!Ogre::MaterialManager::getSingleton().resourceExists(BboxMaterialName))
-	{
+	if (!Ogre::MaterialManager::getSingleton().resourceExists(BboxMaterialName)) {
 		Ogre::MaterialPtr baseYellowNoLighting = Ogre::MaterialManager::getSingleton().create(BboxMaterialName, Ogre::ResourceGroupManager::INTERNAL_RESOURCE_GROUP_NAME);
 		baseYellowNoLighting->setLightingEnabled(false);
 		baseYellowNoLighting->setAmbient(Ogre::ColourValue(1, 1, 0.7));
@@ -556,8 +513,7 @@ void EmberEntity::onBboxChanged()
 	if (mAttachment) {
 		mAttachment->updateScale();
 	}
-	if (mErisEntityBoundingBox)
-	{
+	if (mErisEntityBoundingBox) {
 		mErisEntityBoundingBox->setupBoundingBox(Convert::toOgre(getBBox()));
 	}
 }
@@ -572,23 +528,24 @@ EmberEntity* EmberEntity::getEmberLocation() const
 	return static_cast<EmberEntity*> (getLocation());
 }
 
+EmberEntity* EmberEntity::getEmberContained(unsigned int index) const
+{
+	return static_cast<EmberEntity*> (getContained(index));
+}
+
 std::vector<std::string> EmberEntity::getActions()
 {
 	///get the actions from Eris and return them a simple vector of strings
 	std::vector<std::string> actions;
 
-	if (hasAttr("actions"))
-	{
+	if (hasAttr("actions")) {
 		const Atlas::Message::Element& operations = valueOfAttr("actions");
-		if (operations.isList())
-		{
+		if (operations.isList()) {
 			const Atlas::Message::ListType& list = operations.asList();
 			actions.reserve(list.size());
 			Atlas::Message::ListType::const_iterator J = list.begin();
-			for (; J != list.end(); ++J)
-			{
-				if (J->isString())
-				{
+			for (; J != list.end(); ++J) {
+				if (J->isString()) {
 					actions.push_back(J->asString());
 				}
 			}
@@ -605,8 +562,7 @@ std::vector<std::string> EmberEntity::getDefaultUseOperators()
 
 	Eris::TypeInfoArray types = getUseOperations();
 
-	for (Eris::TypeInfoArray::iterator I = types.begin(); I != types.end(); ++I)
-	{
+	for (Eris::TypeInfoArray::iterator I = types.begin(); I != types.end(); ++I) {
 		operators.push_back((*I)->getName());
 	}
 
@@ -636,8 +592,7 @@ IGraphicalRepresentation* EmberEntity::getGraphicalRepresentation() const
 
 void EmberEntity::setGraphicalRepresentation(IGraphicalRepresentation* graphicalRepresentation)
 {
-	if (graphicalRepresentation != mGraphicalRepresentation)
-	{
+	if (graphicalRepresentation != mGraphicalRepresentation) {
 		delete mGraphicalRepresentation;
 	}
 	mGraphicalRepresentation = graphicalRepresentation;
@@ -645,13 +600,26 @@ void EmberEntity::setGraphicalRepresentation(IGraphicalRepresentation* graphical
 
 void EmberEntity::setAttachment(IEntityAttachment* attachment)
 {
-	if (attachment != mAttachment)
-	{
-		delete mAttachment;
-	}
+	IEntityAttachment* oldAttachment = mAttachment;
 	mAttachment = attachment;
+	if (attachment != oldAttachment) {
+		reattachChildren();
+		delete oldAttachment;
+	}
 
 }
+
+void EmberEntity::reattachChildren()
+{
+	for (unsigned int i = 0; i < numContained(); ++i) {
+		EmberEntity* entity = getEmberContained(i);
+		if (entity) {
+			entity->onLocationChanged(entity->getEmberLocation());
+			entity->reattachChildren();
+		}
+	}
+}
+
 IEntityAttachment* EmberEntity::getAttachment() const
 {
 	return mAttachment;
@@ -660,48 +628,20 @@ IEntityAttachment* EmberEntity::getAttachment() const
 EmberEntity* EmberEntity::getAttachedEntity(const std::string& namedPoint)
 {
 	//HACK: this is just a temporary solution
-	if (hasAttr(namedPoint))
-	{
+	if (hasAttr(namedPoint)) {
 		const Atlas::Message::Element& idElement = valueOfAttr(namedPoint);
 		std::string id = idElement.asString();
 		if (id != "") {
 			for (unsigned int i = 0; i < numContained(); ++i) {
-				Eris::Entity* entity = getContained(i);
+				EmberEntity* entity = getEmberContained(i);
 				if (entity && entity->getId() == id) {
-					return static_cast<EmberEntity*>(entity);
+					return entity;
 				}
 			}
 		}
 	}
 
-
 	return 0;
 }
-
-const std::string& EmberEntity::getAttachPointForEntity(const EmberEntity& entity) const
-{
-	static const std::string empty("");
-	static const std::string right_hand_wield("right_hand_wield");
-	static const std::string left_hand_wield("left_hand_wield");
-
-	if (hasAttr(right_hand_wield))
-	{
-		const Atlas::Message::Element& idElement = valueOfAttr(right_hand_wield);
-		if (entity.getId() == idElement.asString()) {
-			return right_hand_wield;
-		}
-
-	}
-	if (hasAttr(left_hand_wield))
-	{
-		const Atlas::Message::Element& idElement = valueOfAttr(left_hand_wield);
-		if (entity.getId() == idElement.asString()) {
-			return left_hand_wield;
-		}
-	}
-	return empty;
-}
-
-
 
 }

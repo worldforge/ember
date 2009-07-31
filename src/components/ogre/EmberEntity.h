@@ -167,12 +167,10 @@ public:
 	 */
 	virtual ~EmberEntity();
 
-
 	/**
 	 *    Creates the model mapping for this entity. Call this once when initializing the entity.
 	 */
 	void createEntityMapping();
-
 
 	/**
 	 * @brief Adjust the height of the entity so that it "snaps" to the ground or is otherwise adjusted, depending on the current movement mode.
@@ -203,6 +201,14 @@ public:
 	 * @return The location of this entity, i.e. the parent entity. If there's no parent entity available, null will be returned (i.e. if the entity is in limbo, or if it's the topmost entity).
 	 */
 	EmberEntity* getEmberLocation() const;
+
+	/**
+	 * @brief Gets the child entity with the specified index.
+	 * @note This works just like Eris::Entity::getContained, only it returns EmberEntity instances directly (thus removing the need for casting).
+	 * @param index The index of the child entity.
+	 * @return A pointer to a contained entity.
+	 */
+	EmberEntity* getEmberContained(unsigned int index) const;
 
 	/**
 	 * @brief Returns true if init(...) has been called and the entity been set up.
@@ -240,9 +246,9 @@ public:
 	bool getShowErisBoundingBox() const;
 
 	/**
-	 *    Returns a list of the default use operators that can be used with this entity.
-	 For example, an axe would have a list of operators such as "chop" and "sharpen".
-	 * @return
+	 * @brief Returns a list of the default use operators that can be used with this entity.
+	 * For example, an axe would have a list of operators such as "chop" and "sharpen".
+	 * @return A list of default use operators.
 	 */
 	std::vector<std::string> getDefaultUseOperators();
 
@@ -334,6 +340,11 @@ public:
 	 * @param delegate The delegate through which all queries about the position and orientation of the entity will go.
 	 */
 	void setAttachmentControlDelegate(IAttachmentControlDelegate* delegate);
+
+	/**
+	 * @brief Gets the control delegate for the attachment.
+	 * @return A pointer to the currently used attachment controller delegate, or null if none is used.
+	 */
 	IAttachmentControlDelegate* getAttachmentControlDelegate() const;
 
 	/**
@@ -343,9 +354,6 @@ public:
 	 * @return A child entity, or null if none found.
 	 */
 	EmberEntity* getAttachedEntity(const std::string& namedPoint);
-
-	const std::string& getAttachPointForEntity(const EmberEntity& entity) const;
-
 
 protected:
 
@@ -500,12 +508,24 @@ protected:
 	virtual void parseMovementMode();
 
 	/**
+	 * @brief Reattaches all child entities.
+	 * This will iterate through all child entities recursively, and ask them to reattach themselves (i.e. create a new attachment).
+	 * You usually call this when the attachment has changed, and the child attachments needs to be updated.
+	 */
+	void reattachChildren();
+
+	/**
 	 * @brief The attachment for this entity.
 	 *
 	 * Since the graphical representation of an entity can be expressed in many different way, that is handled by an instance of IEntityAttachment and not by the entity itself.
 	 */
 	IEntityAttachment* mAttachment;
 
+	/**
+	 * @brief An attachment control delegate used by this entity.
+	 * Normally the entity attachment will use the position and orientation of the entity when determining where to position the graphical representation.
+	 * However, sometimes you want to override that with other data. This instance can be used by the attachment for this purpose.
+	 */
 	IAttachmentControlDelegate* mAttachmentControlDelegate;
 
 };
