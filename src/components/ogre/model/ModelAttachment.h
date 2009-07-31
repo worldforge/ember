@@ -20,26 +20,41 @@
 #define MODELATTACHMENT_H_
 
 #include "components/ogre/NodeAttachment.h"
+#include <map>
+#include <string>
+#include <sigc++/trackable.h>
 
-namespace EmberOgre {
+namespace Atlas
+{
+namespace Message
+{
+class Element;
+}
+}
+
+namespace EmberOgre
+{
 
 class IGraphicalRepresentation;
 class INodeProvider;
 class EmberEntity;
 
-namespace Model {
+namespace Model
+{
 
 class ModelMount;
 class ModelRepresentation;
+class ModelFitting;
 
 /**
  * @brief Attachment for a ModelRepresentation instance.
  *
  * Use this attachment when you have a ModelRepresentation you need to attach to an entity.
  */
-class ModelAttachment : public NodeAttachment
+class ModelAttachment: public NodeAttachment, public virtual sigc::trackable
 {
 public:
+	typedef std::map<std::string, ModelFitting*> ModelFittingStore;
 	ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, INodeProvider* nodeProvider);
 	ModelAttachment(ModelAttachment& source, NodeAttachment& newParentAttachment);
 
@@ -51,7 +66,6 @@ public:
 
 	void updateScale();
 
-
 protected:
 
 	ModelRepresentation& mModelRepresentation;
@@ -62,6 +76,15 @@ protected:
 	 */
 	ModelMount* mModelMount;
 
+	ModelFittingStore mFittings;
+
+	void setupFittings();
+
+	void entity_AttrChanged(const Atlas::Message::Element& attributeValue, const std::string& fittingName);
+	void fittedEntity_BeingDeleted(EmberEntity* entity);
+
+	void detachFitting(EmberEntity& entity);
+	void createFitting(const std::string& fittingName, const std::string& entityId);
 };
 
 }

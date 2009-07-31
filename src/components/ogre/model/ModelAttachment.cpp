@@ -30,7 +30,14 @@
 #include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/ogre/model/ModelAttachedAttachment.h"
 #include "components/ogre/model/ModelBoneProvider.h"
+#include "components/ogre/model/ModelFitting.h"
 
+#include <sigc++/bind.h>
+#include <sigc++/slot.h>
+#include <sigc++/signal.h>
+#include <sigc++/connection.h>
+
+#include <Atlas/Message/Element.h>
 
 namespace EmberOgre
 {
@@ -42,6 +49,7 @@ ModelAttachment::ModelAttachment(EmberEntity& parentEntity, ModelRepresentation&
 {
 	mModelMount = new ModelMount(mModelRepresentation.getModel(), nodeProvider->createChildProvider(&mModelRepresentation.getModel()));
 	mModelMount->reset();
+	setupFittings();
 }
 
 ModelAttachment::ModelAttachment(ModelAttachment& source, NodeAttachment& newParentAttachment) :
@@ -56,6 +64,10 @@ ModelAttachment::~ModelAttachment()
 	///When the modelmount is deleted the scale node will also be destroyed.
 	///Note that there's no need to destroy the light nodes since they are attached to the scale node, which is deleted (along with its children) when the model mount is destroyed.
 	delete mModelMount;
+
+	for (ModelFittingStore::iterator I = mFittings.begin(); I != mFittings.end(); ++I) {
+		delete I->second;
+	}
 }
 
 IGraphicalRepresentation* ModelAttachment::getGraphicalRepresentation() const
@@ -65,7 +77,15 @@ IGraphicalRepresentation* ModelAttachment::getGraphicalRepresentation() const
 
 IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 {
-	const std::string& attachPoint = getAttachedEntity().getAttachPointForEntity(entity);
+	std::string attachPoint;
+	for (ModelFittingStore::iterator I = mFittings.begin(); I != mFittings.end(); ++I) {
+		if (I->second->getChildEntityId() == entity.getId()) {
+			attachPoint = I->second->getMountPoint();
+			I->second->attachChild(entity);
+			entity.BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &ModelAttachment::fittedEntity_BeingDeleted), &entity));
+			break;
+		}
+	}
 	//Don't show a graphical representation if the model is set not to show any contained entities.
 	if (attachPoint == "" && !mModelRepresentation.getModel().getDefinition()->getShowContained()) {
 		return new HiddenAttachment(getAttachedEntity(), entity);
@@ -112,6 +132,70 @@ void ModelAttachment::updateScale()
 		}
 		else {
 			mModelMount->rescale(0);
+		}
+	}
+}
+
+void ModelAttachment::entity_AttrChanged(const Atlas::Message::Element& attributeValue, const std::string& fittingName)
+{
+	std::string newFittingEntityId = attributeValue.asString();
+
+	ModelFittingStore::iterator I = mFittings.find(fittingName);
+	if (I != mFittings.end()) {
+		mFittings.erase(I);
+		//Check if we should detach the existing fitting
+		if (I->second->getChild() && I->second->getChild()->getId() != newFittingEntityId) {
+			detachFitting(*I->second->getChild());
+		}
+	}
+	if (newFittingEntityId != "") {
+		createFitting(fittingName, newFittingEntityId);
+	}
+
+}
+
+void ModelAttachment::fittedEntity_BeingDeleted(EmberEntity* entity)
+{
+	for (ModelFittingStore::iterator I = mFittings.begin(); I != mFittings.end(); ++I) {
+		if (I->second->getChildEntityId() == entity->getId()) {
+			mFittings.erase(I);
+			break;
+		}
+	}
+}
+
+
+void ModelAttachment::setupFittings()
+{
+	const AttachPointDefinitionStore& attachpoints = mModelRepresentation.getModel().getDefinition()->getAttachPointsDefinitions();
+	for (AttachPointDefinitionStore::const_iterator I = attachpoints.begin(); I != attachpoints.end(); ++I) {
+		Eris::Entity::AttrChangedSlot observeSlot = sigc::bind(sigc::mem_fun(*this, &ModelAttachment::entity_AttrChanged), I->Name);
+		mChildEntity.observe(I->Name, observeSlot);
+	}
+}
+
+void ModelAttachment::detachFitting(EmberEntity& entity)
+{
+	IEntityAttachment* attachment = attachEntity(entity);
+	entity.setAttachment(attachment);
+	if (attachment) {
+		attachment->updateScale();
+	}
+}
+
+void ModelAttachment::createFitting(const std::string& fittingName, const std::string& entityId)
+{
+	ModelFitting* fitting = new ModelFitting(mChildEntity, fittingName, entityId);
+	mFittings.insert(ModelFittingStore::value_type(fittingName, fitting));
+	for (unsigned int i = 0; i < mChildEntity.numContained(); ++i) {
+		Eris::Entity* entity = mChildEntity.getContained(i);
+		if (entity && entity->getId() == entityId) {
+			EmberEntity* emberEntity = static_cast<EmberEntity*> (entity);
+			IEntityAttachment* attachment = attachEntity(*emberEntity);
+			emberEntity->setAttachment(attachment);
+			if (attachment) {
+				attachment->updateScale();
+			}
 		}
 	}
 }

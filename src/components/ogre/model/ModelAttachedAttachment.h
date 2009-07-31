@@ -21,6 +21,7 @@
 
 #include "components/ogre/AttachmentBase.h"
 #include <string>
+#include <sigc++/trackable.h>
 
 namespace EmberOgre
 {
@@ -36,7 +37,7 @@ class ModelMount;
 class ModelRepresentation;
 class ModelAttachment;
 
-class ModelAttachedAttachment: public AttachmentBase
+class ModelAttachedAttachment: public AttachmentBase, public virtual sigc::trackable
 {
 public:
 	ModelAttachedAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, Model& rootModel, const std::string& attachPointName);

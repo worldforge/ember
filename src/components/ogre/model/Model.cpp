@@ -193,11 +193,6 @@ bool Model::createActualModel()
 	Ogre::SceneManager* sceneManager = _getManager();
 	std::vector<std::string> showPartVector;
 
-	/*	const SubModelDefinitionsStore&
-	 std::vector<ModelDefinition::SubModelDefinition>::iterator I_subModels = mMasterModel->mSubModels.begin();
-	 std::vector<ModelDefinition::SubModelDefinition>::iterator I_subModels_end = mMasterModel->mSubModels.end();*/
-	S_LOG_VERBOSE("Number of submodels: " << mMasterModel->getSubModelDefinitions().size());
-
 	for (SubModelDefinitionsStore::const_iterator I_subModels = mMasterModel->getSubModelDefinitions().begin(); I_subModels != mMasterModel->getSubModelDefinitions().end(); ++I_subModels)
 	{
 		std::string entityName = mName + "/" + (*I_subModels)->getMeshName();

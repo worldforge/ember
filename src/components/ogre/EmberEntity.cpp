@@ -36,7 +36,6 @@
 
 #include "EmberOgre.h"
 #include <OgreWireBoundingBox.h>
-#include <OgreException.h>
 #include <OgreMaterialManager.h>
 
 
