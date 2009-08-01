@@ -25,6 +25,8 @@ namespace Ogre
 {
 class Node;
 class MovableObject;
+class Vector3;
+class Quaternion;
 }
 
 namespace EmberOgre
@@ -44,7 +46,9 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~INodeProvider(){}
+	virtual ~INodeProvider()
+	{
+	}
 
 	/**
 	 * @brief Gets the main node instance, as created and managed by this instance.
@@ -70,6 +74,13 @@ public:
 	 * @param visible Whether the node should be visible or not.
 	 */
 	virtual void setVisible(bool visible) = 0;
+
+	/**
+	 * @brief Sets the position and orientation of the node.
+	 * @param position The position.
+	 * @param orientation The orientation.
+	 */
+	virtual void setPositionAndOrientation(const Ogre::Vector3& position, const Ogre::Quaternion& orientation) = 0;
 };
 }
 

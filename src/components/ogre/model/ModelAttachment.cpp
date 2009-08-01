@@ -119,9 +119,20 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 		else {
 			return new NodeAttachment(getAttachedEntity(), entity, nodeProvider);
 		}
-		//		}s
+		//		}
 		//		}
 	}
+}
+
+void ModelAttachment::getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset)
+{
+	//If the attachment is on a fitting, don't do any adjustment
+	for (ModelFittingStore::iterator I = mFittings.begin(); I != mFittings.end(); ++I) {
+		if (I->second->getChildEntityId() == attachment.getAttachedEntity().getId()) {
+			return;
+		}
+	}
+	NodeAttachment::getOffsetForContainedNode(attachment, localPosition, offset);
 }
 
 void ModelAttachment::updateScale()

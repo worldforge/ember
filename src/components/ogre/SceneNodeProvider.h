@@ -54,6 +54,13 @@ public:
 	 */
 	virtual bool getVisualize(const std::string& visualization) const;
 
+	/**
+	 * @brief Sets the position and orientation of the node.
+	 * @param position The position.
+	 * @param orientation The orientation.
+	 */
+	virtual void setPositionAndOrientation(const Ogre::Vector3& position, const Ogre::Quaternion& orientation);
+
 protected:
 
 	Ogre::SceneNode& mParentNode;

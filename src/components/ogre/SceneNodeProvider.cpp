@@ -89,5 +89,12 @@ bool SceneNodeProvider::getVisualize(const std::string& visualization) const
 	return false;
 }
 
+void SceneNodeProvider::setPositionAndOrientation(const Ogre::Vector3& position, const Ogre::Quaternion& orientation)
+{
+	mNode->setPosition(position);
+	mNode->setOrientation(orientation);
+}
+
+
 
 }

@@ -42,7 +42,6 @@ NodeAttachment::NodeAttachment(EmberEntity& parentEntity, EmberEntity& childEnti
 {
 	setControlDelegate(mChildEntity.getAttachmentControlDelegate());
 	mNode = &mNodeProvider->getNode();
-	//	mNode = parentNode.createChildSceneNode("entity_" + childEntity.getId());
 	setupListeners();
 }
 
@@ -118,8 +117,7 @@ void NodeAttachment::setPosition(const WFMath::Point<3>& position, const WFMath:
 		if (mParentEntity.getAttachment()) {
 			mParentEntity.getAttachment()->getOffsetForContainedNode(*this, position, adjustedOffset);
 		}
-		mNode->setPosition(Convert::toOgre(position + adjustedOffset));
-		mNode->setOrientation(Convert::toOgre(orientation));
+		mNodeProvider->setPositionAndOrientation(Convert::toOgre(position + adjustedOffset), Convert::toOgre(orientation));
 	}
 }
 

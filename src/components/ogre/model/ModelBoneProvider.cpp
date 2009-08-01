@@ -32,7 +32,9 @@ ModelBoneProvider::ModelBoneProvider(Model& parentModel, const std::string& atta
 {
 	if (movableObject) {
 		movableObject->detatchFromParent();
-		mNode = mParentModel.attachObjectToAttachPoint(attachPointName, movableObject);
+		Model::AttachPointWrapper wrapper = mParentModel.attachObjectToAttachPoint(attachPointName, movableObject);
+		mNode = wrapper.TagPoint;
+		mAttachPointDefinition = wrapper.Definition;
 	}
 }
 
@@ -74,5 +76,10 @@ bool ModelBoneProvider::getVisualize(const std::string& visualization) const
 	return false;
 }
 
+void ModelBoneProvider::setPositionAndOrientation(const Ogre::Vector3& position, const Ogre::Quaternion& orientation)
+{
+	mNode->setPosition(position);
+	mNode->setOrientation(orientation * mAttachPointDefinition.Rotation);
+}
 }
 }

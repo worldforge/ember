@@ -20,6 +20,7 @@
 #define MODELBONEPROVIDER_H_
 
 #include "components/ogre/INodeProvider.h"
+#include "components/ogre/model/ModelDefinition.h"
 #include <string>
 
 namespace Ogre
@@ -58,12 +59,21 @@ public:
 	 */
 	virtual bool getVisualize(const std::string& visualization) const;
 
+	/**
+	 * @brief Sets the position and orientation of the node.
+	 * @param position The position.
+	 * @param orientation The orientation.
+	 */
+	virtual void setPositionAndOrientation(const Ogre::Vector3& position, const Ogre::Quaternion& orientation);
+
 protected:
 
 	Model& mParentModel;
 	std::string mAttachPointName;
 	Ogre::TagPoint* mNode;
 	Ogre::MovableObject* mAttachedObject;
+
+	AttachPointDefinition mAttachPointDefinition;
 
 };
 

@@ -80,6 +80,8 @@ public:
 	 */
 	virtual bool getVisualize(const std::string& visualization) const;
 
+	virtual void getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset);
+
 protected:
 
 	ModelRepresentation& mModelRepresentation;
