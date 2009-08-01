@@ -640,7 +640,7 @@ void Model::resetLights()
 	mLights.clear();
 }
 
-Ogre::TagPoint* Model::attachObjectToAttachPoint(const Ogre::String &attachPointName, Ogre::MovableObject *pMovable, const Ogre::Vector3 &scale, const Ogre::Quaternion &offsetOrientation, const Ogre::Vector3 &offsetPosition)
+Model::AttachPointWrapper Model::attachObjectToAttachPoint(const Ogre::String &attachPointName, Ogre::MovableObject *pMovable, const Ogre::Vector3 &scale, const Ogre::Quaternion &offsetOrientation, const Ogre::Vector3 &offsetPosition)
 {
 	for (AttachPointDefinitionStore::iterator I = mMasterModel->mAttachPoints.begin(); I != mMasterModel->mAttachPoints.end(); ++I) {
 		if (I->Name == attachPointName) {
@@ -672,13 +672,13 @@ Ogre::TagPoint* Model::attachObjectToAttachPoint(const Ogre::String &attachPoint
 
 			AttachPointWrapper wrapper;
 			wrapper.TagPoint = tagPoint;
-			wrapper.AttachPointName = attachPointName;
 			wrapper.Movable = pMovable;
+			wrapper.Definition = *I;
 			mAttachPoints->push_back(wrapper);
-			return tagPoint;
+			return wrapper;
 		}
 	}
-	return 0;
+	return AttachPointWrapper();
 }
 
 bool Model::hasAttachPoint(const std::string& attachPoint) const
