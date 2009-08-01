@@ -1,43 +1,40 @@
 /*
-    Copyright (C) 2004  Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2004  Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
 #ifndef EMBEROGRE_EMBERENTITY_H
 #define EMBEROGRE_EMBERENTITY_H
 
-#include "EmberOgrePrerequisites.h"
-
+#include "components/ogre/EmberOgrePrerequisites.h"
+#include "components/ogre/IVisualizable.h"
 
 #include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/Operation.h>
 
 #include <Eris/Entity.h>
 
-#include <OgreVector3.h>
-#include <OgreQuaternion.h>
-
 namespace Ogre
 {
-	class OOBBWireBoundingBox;
+class OOBBWireBoundingBox;
 }
 
 namespace Eris
 {
-	class View;
+class View;
 }
 
 namespace Ember
@@ -48,16 +45,18 @@ class EntityMapping;
 }
 }
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-namespace Model {
-	class Model;
+namespace Model
+{
+class Model;
 }
 
 namespace Terrain
 {
-	class TerrainArea;
-	class TerrainMod;
+class TerrainArea;
+class TerrainMod;
 }
 
 class EmberEntityFactory;
@@ -72,10 +71,10 @@ class IAttachmentControlDelegate;
  * This is the base class for any entities in the world. It's therefore safe to case any instance of Eris::Entity into this class.
  * Any entity which has a graphical representation in the world, and under normal circumstances that's the most of them, will have mGraphicalRepresentation set to a subclass of IGraphicalRepresentation.
  */
-class EmberEntity : public Eris::Entity {
+class EmberEntity: public Eris::Entity, public IVisualizable
+{
 	friend class EmberEntityFactory;
 public:
-
 
 	/**
 	 * @brief The movement modes the entity can be in.
@@ -147,10 +146,9 @@ public:
 	static const std::string MODE_PROJECTILE;
 
 	/**
-	The material used for showing the eris bbox.
-	*/
+	 The material used for showing the eris bbox.
+	 */
 	static const std::string BboxMaterialName;
-
 
 	/**
 	 * @brief Ctor.
@@ -160,7 +158,7 @@ public:
 	 * @param vw The world view to which this entity belongs.
 	 * @param sceneManager The scene manager to which this entity belongs.
 	 */
-	EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw,Ogre::SceneManager* sceneManager);
+	EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager);
 
 	/**
 	 * @brief Dtor.
@@ -231,27 +229,11 @@ public:
 	PositioningMode getPositioningMode() const;
 
 	/**
-	 * @brief Shows the eris/atlas bounding box.
-	 * This is mainly useful for debugging or authoring.
-	 * @see mErisEntityBoundingBox
-	 * @param show If true, the bounding box will be shown. If false, it will be hidden.
-	 */
-	void showErisBoundingBox(bool show);
-
-	/**
-	 * @brief Returns whether the eris/atlas bounding box is shown.
-	 * @see mErisEntityBoundingBox
-	 * @return True if the eris bounding box is shown.
-	 */
-	bool getShowErisBoundingBox() const;
-
-	/**
 	 * @brief Returns a list of the default use operators that can be used with this entity.
 	 * For example, an axe would have a list of operators such as "chop" and "sharpen".
 	 * @return A list of default use operators.
 	 */
 	std::vector<std::string> getDefaultUseOperators();
-
 
 	/**
 	 * @brief Returns a list of actions that can be performed on this entity, if any.
@@ -273,7 +255,6 @@ public:
 	 * @param visualize Whether to visualize or not.
 	 */
 	void setVisualize(const std::string& visualization, bool visualize);
-
 
 	/**
 	 * @brief Gets whether a certain visualization is turned on or off.
@@ -358,10 +339,68 @@ public:
 protected:
 
 	/**
-	* @brief If this is true, init(...) has been called and the entity been set up.
-	* @see isInitialized().
-	*/
+	 * @brief If this is true, init(...) has been called and the entity been set up.
+	 * @see isInitialized().
+	 */
 	bool mIsInitialized;
+
+	/**
+	 * @brief For debugging purposes. This holds a bounding box of how the entity appears in the eris/atlas world.
+	 * This is often different from the Ogre bounding box.
+	 */
+	Ogre::OOBBWireBoundingBox* mErisEntityBoundingBox;
+
+	/**
+	 @brief Sometimes when talking to an entity, the server will provide suggested responses. These are stored here.
+	 */
+	std::vector<std::string> mSuggestedResponses;
+
+	/**
+	 * @brief If there's a terrain area belonging to this entity, that's stored here.
+	 * The terrain area instance will take care of all required terrain area functionality once it's been created, offloading this from the EmberEntity. Most entities won't however have any terrain areas, for which this will be null.
+	 */
+	std::auto_ptr<Terrain::TerrainArea> mTerrainArea;
+
+	/**
+	 * @brief If a terrainmod belongs to this entity, it's stored here.
+	 * The terrain mod instance will take care of all required terrain mod functionality once it's been created, offloading this from the EmberEntity. Most entities won't however have any terrain mods, for which this will be null.
+	 */
+	std::auto_ptr<Terrain::TerrainMod> mTerrainMod;
+
+	/**
+	 * @brief The movement mode the entity is in, like walking, running, swimming etc.
+	 */
+	MovementMode mMovementMode;
+
+	/**
+	 * @brief The positioning mode the entity is in, like gravity affected, fixed or floating.
+	 */
+	PositioningMode mPositioningMode;
+
+	/**
+	 * @brief The graphical representation used for representing this entity.
+	 * Some entities won't have any graphical representation, and this will in those cases be null.
+	 */
+	IGraphicalRepresentation* mGraphicalRepresentation;
+
+	/**
+	 * @brief The model mapping used for this entity.
+	 */
+	Ember::EntityMapping::EntityMapping* mEntityMapping;
+
+	/**
+	 * @brief The attachment for this entity.
+	 *
+	 * Since the graphical representation of an entity can be expressed in many different way, that is handled by an instance of IEntityAttachment and not by the entity itself.
+	 */
+	IEntityAttachment* mAttachment;
+
+	/**
+	 * @brief An attachment control delegate used by this entity.
+	 * Normally the entity attachment will use the position and orientation of the entity when determining where to position the graphical representation.
+	 * However, sometimes you want to override that with other data. This instance can be used by the attachment for this purpose.
+	 */
+	IAttachmentControlDelegate* mAttachmentControlDelegate;
 
 	/**
 	 *    @copydoc Eris::Entity::onMoved()
@@ -378,11 +417,11 @@ protected:
 	/**
 	 *    @copydoc Eris::Entity::onAction()
 	 */
-    virtual void onAction(const Atlas::Objects::Operation::RootOperation& act);
+	virtual void onAction(const Atlas::Objects::Operation::RootOperation& act);
 	/**
 	 *    @copydoc Eris::Entity::onImaginary()
 	 */
-    virtual void onImaginary(const Atlas::Objects::Root& act);
+	virtual void onImaginary(const Atlas::Objects::Root& act);
 	/**
 	 *    @copydoc Eris::Entity::onSoundAction()
 	 */
@@ -439,12 +478,6 @@ protected:
 	virtual bool createDependentObject(const std::string& attributeName);
 
 	/**
-	* @brief For debugging purposes. This holds a bounding box of how the entity appears in the eris/atlas world.
-	* This is often different from the Ogre bounding box.
-	*/
-	Ogre::OOBBWireBoundingBox* mErisEntityBoundingBox;
-
-	/**
 	 * @brief Creates the material used for the eris bboxes, if not already created.
 	 */
 	void createErisBboxMaterial();
@@ -455,44 +488,6 @@ protected:
 	 * @param fromCreateOp
 	 */
 	virtual void init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp);
-
-	/**
-	@brief Sometimes when talking to an entity, the server will provide suggested responses. These are stored here.
-	*/
-	std::vector<std::string> mSuggestedResponses;
-
-	/**
-	 * @brief If there's a terrain area belonging to this entity, that's stored here.
-	 * The terrain area instance will take care of all required terrain area functionality once it's been created, offloading this from the EmberEntity. Most entities won't however have any terrain areas, for which this will be null.
-	 */
-	std::auto_ptr<Terrain::TerrainArea> mTerrainArea;
-
-	/**
-	 * @brief If a terrainmod belongs to this entity, it's stored here.
-	 * The terrain mod instance will take care of all required terrain mod functionality once it's been created, offloading this from the EmberEntity. Most entities won't however have any terrain mods, for which this will be null.
-	 */
-	std::auto_ptr<Terrain::TerrainMod> mTerrainMod;
-
-	/**
-	* @brief The movement mode the entity is in, like walking, running, swimming etc.
-	*/
-	MovementMode mMovementMode;
-
-	/**
-	* @brief The positioning mode the entity is in, like gravity affected, fixed or floating.
-	*/
-	PositioningMode mPositioningMode;
-
-	/**
-	 * @brief The graphical representation used for representing this entity.
-	 * Some entities won't have any graphical representation, and this will in those cases be null.
-	 */
-	IGraphicalRepresentation* mGraphicalRepresentation;
-
-	/**
-	 * @brief The model mapping used for this entity.
-	 */
-	Ember::EntityMapping::EntityMapping* mEntityMapping;
 
 	/**
 	 * @brief Parses the current positioning mode from the submitted element, which should be taken from the "mode" attribute.
@@ -515,21 +510,20 @@ protected:
 	void reattachChildren();
 
 	/**
-	 * @brief The attachment for this entity.
-	 *
-	 * Since the graphical representation of an entity can be expressed in many different way, that is handled by an instance of IEntityAttachment and not by the entity itself.
+	 * @brief Shows the eris/atlas bounding box.
+	 * This is mainly useful for debugging or authoring.
+	 * @see mErisEntityBoundingBox
+	 * @param show If true, the bounding box will be shown. If false, it will be hidden.
 	 */
-	IEntityAttachment* mAttachment;
+	void showErisBoundingBox(bool show);
 
 	/**
-	 * @brief An attachment control delegate used by this entity.
-	 * Normally the entity attachment will use the position and orientation of the entity when determining where to position the graphical representation.
-	 * However, sometimes you want to override that with other data. This instance can be used by the attachment for this purpose.
+	 * @brief Returns whether the eris/atlas bounding box is shown.
+	 * @see mErisEntityBoundingBox
+	 * @return True if the eris bounding box is shown.
 	 */
-	IAttachmentControlDelegate* mAttachmentControlDelegate;
-
+	bool getShowErisBoundingBox() const;
 };
-
 
 inline bool EmberEntity::isInitialized() const
 {

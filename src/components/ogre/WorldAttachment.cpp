@@ -29,21 +29,20 @@
 #include "components/ogre/model/ModelAttachment.h"
 #include "components/ogre/terrain/TerrainGenerator.h"
 
-
 #include <OgreSceneNode.h>
 #include <OgreVector3.h>
 
 #include <wfmath/vector.h>
 #include <wfmath/point.h>
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-WorldAttachment::WorldAttachment(WorldEmberEntity& worldEntity, Ogre::SceneNode& worldNode, Terrain::TerrainGenerator& terrainGenerator)
-: mWorldEntity(worldEntity), mWorldNode(worldNode), mTerrainGenerator(terrainGenerator)
+WorldAttachment::WorldAttachment(WorldEmberEntity& worldEntity, Ogre::SceneNode& worldNode, Terrain::TerrainGenerator& terrainGenerator) :
+	mWorldEntity(worldEntity), mWorldNode(worldNode), mTerrainGenerator(terrainGenerator)
 {
 	///set the position to always 0, 0, 0
 	mWorldNode.setPosition(Ogre::Vector3(0, 0, 0));
-
 }
 
 WorldAttachment::~WorldAttachment()
@@ -67,9 +66,10 @@ EmberEntity* WorldAttachment::getParentEntity() const
 
 IEntityAttachment* WorldAttachment::attachEntity(EmberEntity& entity)
 {
-	if (Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity)) {
+	if (Model::ModelRepresentation * modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity)) {
 		return new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, new SceneNodeProvider(mWorldNode));
-	} else {
+	}
+	else {
 		return new NodeAttachment(getAttachedEntity(), entity, new SceneNodeProvider(mWorldNode));
 	}
 }
@@ -100,6 +100,20 @@ IAttachmentControlDelegate* WorldAttachment::getControlDelegate() const
 	return 0;
 }
 
+void WorldAttachment::setVisualize(const std::string& visualization, bool visualize)
+{
+	if (visualization == "OgreBBox") {
+		mWorldNode.showBoundingBox(visualize);
+	}
+}
+
+bool WorldAttachment::getVisualize(const std::string& visualization) const
+{
+	if (visualization == "OgreBBox") {
+		return mWorldNode.getShowBoundingBox();
+	}
+	return false;
+}
 
 }
 

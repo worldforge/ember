@@ -501,8 +501,8 @@ function EntityEditor.clearEditing()
 		
 		if EntityEditor.instance.entity ~= nil then
 			--as we're not editing anymore, hide the bounding boxes
-			EntityEditor.instance.entity:showOgreBoundingBox(false)
-			EntityEditor.instance.entity:showErisBoundingBox(false)
+			EntityEditor.instance.entity:setVisualize("OgreBBox", false)
+			EntityEditor.instance.entity:setVisualize("ErisBBox", false)
 		end
 		
 		--we want to disconnect all stackable containers before we start
@@ -546,8 +546,8 @@ function EntityEditor.editEntity(entity)
 	EntityEditor.instance.entity = entity
 	
 	--show the bounding boxes by default when editing
-	EntityEditor.instance.entity:showOgreBoundingBox(false)
-	EntityEditor.instance.entity:showErisBoundingBox(true)
+	EntityEditor.instance.entity:setVisualize("OgreBBox", false)
+	EntityEditor.instance.entity:setVisualize("ErisBBox", true)
 	
 	EntityEditor.instance.deleteListener = EmberOgre.LuaConnector:new_local(entity.BeingDeleted):connect("EntityEditor.Entity_BeingDeleted")
 	
@@ -834,14 +834,14 @@ end
 
 function EntityEditor.ShowOgreBbox_CheckStateChanged(args)
 	if EntityEditor.instance.entity ~= nil then
-		EntityEditor.instance.entity:showOgreBoundingBox(EntityEditor.modelTab.showOgreBbox:isSelected())
+		EntityEditor.instance.entity:setVisualize("OgreBBox", EntityEditor.modelTab.showOgreBbox:isSelected())
 	end
 	return true
 end
 
 function EntityEditor.ShowErisBbox_CheckStateChanged(args)
 	if EntityEditor.instance.entity ~= nil then
-		EntityEditor.instance.entity:showErisBoundingBox(EntityEditor.modelTab.showErisBbox:isSelected())
+		EntityEditor.instance.entity:setVisualize("ErisBBox", EntityEditor.modelTab.showErisBbox:isSelected())
 	end
 	return true
 end
@@ -876,8 +876,10 @@ function EntityEditor.refreshChildren(entity)
 end
 
 function EntityEditor.refreshModelInfo(entity)
-	EntityEditor.modelTab.showOgreBbox:setSelected(entity:getShowOgreBoundingBox())
-	EntityEditor.modelTab.showErisBbox:setSelected(entity:getShowErisBoundingBox())
+	local showOgreBbox = entity:getVisualize("OgreBBox")
+	EntityEditor.modelTab.showOgreBbox:setSelected(showOgreBbox)
+	local showErisBbox = entity:getVisualize("ErisBBox")
+	EntityEditor.modelTab.showErisBbox:setSelected(showErisBbox)
 end
 
 function EntityEditor.Entity_Changed(attributes)

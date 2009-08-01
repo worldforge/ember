@@ -202,5 +202,31 @@ void ModelAttachment::createFitting(const std::string& fittingName, const std::s
 	}
 }
 
+void ModelAttachment::setVisualize(const std::string& visualization, bool visualize)
+{
+	if (visualization == "OgreBBox") {
+		if (mModelMount && mModelMount->getNodeProvider()) {
+			mModelMount->getNodeProvider()->setVisualize(visualization, visualize);
+		}
+	}
+	else {
+		NodeAttachment::setVisualize(visualization, visualize);
+	}
+}
+
+bool ModelAttachment::getVisualize(const std::string& visualization) const
+{
+	if (visualization == "OgreBBox") {
+		if (mModelMount && mModelMount->getNodeProvider()) {
+			return mModelMount->getNodeProvider()->getVisualize(visualization);
+		} else {
+			return false;
+		}
+	}
+	else {
+		return NodeAttachment::getVisualize(visualization);
+	}
+}
+
 }
 }

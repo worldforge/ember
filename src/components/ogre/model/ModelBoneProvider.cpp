@@ -64,5 +64,15 @@ void ModelBoneProvider::setVisible(bool visible)
 		mAttachedObject->setVisible(visible);
 	}
 }
+
+void ModelBoneProvider::setVisualize(const std::string& visualization, bool visualize)
+{
+}
+
+bool ModelBoneProvider::getVisualize(const std::string& visualization) const
+{
+	return false;
+}
+
 }
 }

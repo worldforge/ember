@@ -335,16 +335,16 @@ bool InspectWidget::ShowCollision_Click(const CEGUI::EventArgs& args)
 
 bool InspectWidget::ShowOgreBoundingBox_Click(const CEGUI::EventArgs& args)
 {
-//	if (mCurrentEntity) {
-//		mCurrentEntity->showOgreBoundingBox(!mCurrentEntity->getShowOgreBoundingBox());
-//	}
+	if (mCurrentEntity) {
+		mCurrentEntity->setVisualize("OgreBBox", !mCurrentEntity->getVisualize("OgreBBox"));
+	}
 	return true;
 }
 
 bool InspectWidget::ShowErisBoundingBox_Click(const CEGUI::EventArgs& args)
 {
 	if (mCurrentEntity) {
-		mCurrentEntity->showErisBoundingBox(!mCurrentEntity->getShowErisBoundingBox());
+		mCurrentEntity->setVisualize("ErisBBox", !mCurrentEntity->getVisualize("ErisBBox"));
 	}
 	return true;
 }

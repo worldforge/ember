@@ -21,15 +21,16 @@
 
 #include "INodeProvider.h"
 
-namespace Ogre {
-	class SceneNode;
-	class MovableObject;
+namespace Ogre
+{
+class SceneNode;
+class MovableObject;
 }
 
+namespace EmberOgre
+{
 
-namespace EmberOgre {
-
-class SceneNodeProvider : public INodeProvider
+class SceneNodeProvider: public INodeProvider
 {
 public:
 	SceneNodeProvider(Ogre::SceneNode& parentNode, Ogre::MovableObject* object = 0);
@@ -38,6 +39,20 @@ public:
 	virtual Ogre::Node* getParentNode() const;
 	virtual INodeProvider* createChildProvider(Ogre::MovableObject* attachedObject = 0);
 	virtual void setVisible(bool visible);
+
+	/**
+	 * General method for turning on and off debug visualizations. Subclasses might support more types of visualizations than the ones defined here.
+	 * @param visualization The type of visualization. Currently supports "OgreBBox" and "ErisBBox".
+	 * @param visualize Whether to visualize or not.
+	 */
+	virtual void setVisualize(const std::string& visualization, bool visualize);
+
+	/**
+	 * @brief Gets whether a certain visualization is turned on or off.
+	 * @param visualization The type of visualization. Currently supports "OgreBBox" and "ErisBBox".
+	 * @return true if visualization is turned on, else false
+	 */
+	virtual bool getVisualize(const std::string& visualization) const;
 
 protected:
 

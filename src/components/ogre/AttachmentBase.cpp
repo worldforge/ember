@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2009 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2009 Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -19,10 +19,7 @@
 #include "AttachmentBase.h"
 
 #include "components/ogre/EmberEntity.h"
-
-#include "components/ogre/model/ModelRepresentation.h"
-#include "components/ogre/model/ModelRepresentationManager.h"
-#include "components/ogre/model/ModelAttachment.h"
+#include "components/ogre/IGraphicalRepresentation.h"
 
 namespace EmberOgre
 {
@@ -75,6 +72,21 @@ void AttachmentBase::getOffsetForContainedNode(const IEntityAttachment& attachme
 		WFMath::Point<3> adjustedLocalPosition = localPosition + localPositionShift;
 		mParentEntity.getAttachment()->getOffsetForContainedNode(attachment, adjustedLocalPosition, offset);
 	}
+}
+
+void AttachmentBase::setVisualize(const std::string& visualization, bool visualize)
+{
+	if (getGraphicalRepresentation()) {
+		getGraphicalRepresentation()->setVisualize(visualization, visualize);
+	}
+}
+
+bool AttachmentBase::getVisualize(const std::string& visualization) const
+{
+	if (getGraphicalRepresentation()) {
+		return getGraphicalRepresentation()->getVisualize(visualization);
+	}
+	return false;
 }
 
 }

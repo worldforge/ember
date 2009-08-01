@@ -19,6 +19,8 @@
 #ifndef INODEPROVIDER_H_
 #define INODEPROVIDER_H_
 
+#include "components/ogre/IVisualizable.h"
+
 namespace Ogre
 {
 class Node;
@@ -36,7 +38,7 @@ namespace EmberOgre
  * Subclasses of this are therefore used for providing concrete instances.
  * A typical use is as a binding between a parent and child node.
  */
-class INodeProvider
+class INodeProvider: public IVisualizable
 {
 public:
 	/**

@@ -133,7 +133,18 @@ void NodeAttachment::updatePosition()
 	if (mAttachmentController) {
 		mAttachmentController->forceMovementUpdate();
 	}
+}
 
+void NodeAttachment::setVisualize(const std::string& visualization, bool visualize)
+{
+	mNodeProvider->setVisualize(visualization, visualize);
+	AttachmentBase::setVisualize(visualization, visualize);
+}
+
+bool NodeAttachment::getVisualize(const std::string& visualization) const
+{
+	bool providerResult = mNodeProvider->getVisualize(visualization);
+	return AttachmentBase::getVisualize(visualization) || providerResult;
 }
 
 }

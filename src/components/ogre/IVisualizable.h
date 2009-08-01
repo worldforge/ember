@@ -16,58 +16,46 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef MODELBONEPROVIDER_H_
-#define MODELBONEPROVIDER_H_
+#ifndef IVISUALIZABLE_H_
+#define IVISUALIZABLE_H_
 
-#include "components/ogre/INodeProvider.h"
 #include <string>
-
-namespace Ogre
-{
-class TagPoint;
-class MovableObject;
-}
 
 namespace EmberOgre
 {
-namespace Model
-{
-class Model;
 
-class ModelBoneProvider: public INodeProvider
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief An interface for graphical components which can provide simple late binding visualization features.
+ *
+ * Typical features would be debug visualizations.
+ *
+ */
+class IVisualizable
 {
 public:
-	ModelBoneProvider(Model& parentModel, const std::string& attachPointName, Ogre::MovableObject* movableObject);
-	virtual ~ModelBoneProvider();
-	virtual Ogre::Node& getNode() const;
-	virtual Ogre::Node* getParentNode() const;
-	virtual INodeProvider* createChildProvider(Ogre::MovableObject* attachedObject = 0);
-	virtual void setVisible(bool visible);
+
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~IVisualizable()
+	{
+	}
 
 	/**
 	 * General method for turning on and off debug visualizations. Subclasses might support more types of visualizations than the ones defined here.
 	 * @param visualization The type of visualization. Currently supports "OgreBBox" and "ErisBBox".
 	 * @param visualize Whether to visualize or not.
 	 */
-	virtual void setVisualize(const std::string& visualization, bool visualize);
+	virtual void setVisualize(const std::string& visualization, bool visualize) = 0;
 
 	/**
 	 * @brief Gets whether a certain visualization is turned on or off.
 	 * @param visualization The type of visualization. Currently supports "OgreBBox" and "ErisBBox".
 	 * @return true if visualization is turned on, else false
 	 */
-	virtual bool getVisualize(const std::string& visualization) const;
-
-protected:
-
-	Model& mParentModel;
-	std::string mAttachPointName;
-	Ogre::TagPoint* mNode;
-	Ogre::MovableObject* mAttachedObject;
-
+	virtual bool getVisualize(const std::string& visualization) const = 0;
 };
-
-}
 }
 
-#endif /* MODELBONEPROVIDER_H_ */
+#endif /* IVISUALIZABLE_H_ */

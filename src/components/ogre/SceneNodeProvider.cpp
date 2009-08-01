@@ -74,6 +74,20 @@ void SceneNodeProvider::setVisible(bool visible)
 	}
 }
 
+void SceneNodeProvider::setVisualize(const std::string& visualization, bool visualize)
+{
+	if (visualization == "OgreBBox") {
+		mNode->showBoundingBox(visualize);
+	}
+}
+
+bool SceneNodeProvider::getVisualize(const std::string& visualization) const
+{
+	if (visualization == "OgreBBox") {
+		return mNode->getShowBoundingBox();
+	}
+	return false;
+}
 
 
 }

@@ -19,6 +19,10 @@
 #ifndef IENTITYATTACHMENT_H_
 #define IENTITYATTACHMENT_H_
 
+#include "components/ogre/IVisualizable.h"
+
+#include <string>
+
 namespace WFMath
 {
 template<int> class Point;
@@ -40,7 +44,7 @@ class EmberEntity;
  * The normal case would be two entities being both represented through an instance of Ogre::SceneNode, and a Model. However, there are other instances where a SceneNode doesn't make any sense, and instead another kind of attachment is suitable.
  *
  */
-class IEntityAttachment
+class IEntityAttachment: public IVisualizable
 {
 public:
 

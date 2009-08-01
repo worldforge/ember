@@ -1564,71 +1564,6 @@ static int tolua_EmberOgre_EmberOgre_EmberEntity_getPositioningMode00(lua_State*
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: showErisBoundingBox of class  EmberOgre::EmberEntity */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EmberEntity_showErisBoundingBox00
-static int tolua_EmberOgre_EmberOgre_EmberEntity_showErisBoundingBox00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::EmberEntity",0,&tolua_err) ||
-     !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  EmberOgre::EmberEntity* self = (EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,1,0);
-  bool show = ((bool)  tolua_toboolean(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'showErisBoundingBox'",NULL);
-#endif
-  {
-   self->showErisBoundingBox(show);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'showErisBoundingBox'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: getShowErisBoundingBox of class  EmberOgre::EmberEntity */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EmberEntity_getShowErisBoundingBox00
-static int tolua_EmberOgre_EmberOgre_EmberEntity_getShowErisBoundingBox00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"const EmberOgre::EmberEntity",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  const EmberOgre::EmberEntity* self = (const EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getShowErisBoundingBox'",NULL);
-#endif
-  {
-   bool tolua_ret = (bool)  self->getShowErisBoundingBox();
-   tolua_pushboolean(tolua_S,(bool)tolua_ret);
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getShowErisBoundingBox'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* method: getDefaultUseOperators of class  EmberOgre::EmberEntity */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EmberEntity_getDefaultUseOperators00
 static int tolua_EmberOgre_EmberOgre_EmberEntity_getDefaultUseOperators00(lua_State* tolua_S)
@@ -22043,8 +21978,6 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"isInitialized",tolua_EmberOgre_EmberOgre_EmberEntity_isInitialized00);
     tolua_function(tolua_S,"getMovementMode",tolua_EmberOgre_EmberOgre_EmberEntity_getMovementMode00);
     tolua_function(tolua_S,"getPositioningMode",tolua_EmberOgre_EmberOgre_EmberEntity_getPositioningMode00);
-    tolua_function(tolua_S,"showErisBoundingBox",tolua_EmberOgre_EmberOgre_EmberEntity_showErisBoundingBox00);
-    tolua_function(tolua_S,"getShowErisBoundingBox",tolua_EmberOgre_EmberOgre_EmberEntity_getShowErisBoundingBox00);
     tolua_function(tolua_S,"getDefaultUseOperators",tolua_EmberOgre_EmberOgre_EmberEntity_getDefaultUseOperators00);
     tolua_function(tolua_S,"getActions",tolua_EmberOgre_EmberOgre_EmberEntity_getActions00);
     tolua_function(tolua_S,"setVisualize",tolua_EmberOgre_EmberOgre_EmberEntity_setVisualize00);
