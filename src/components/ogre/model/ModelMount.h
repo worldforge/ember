@@ -112,10 +112,10 @@ protected:
 	void scaleNode(const WFMath::AxisBox<3>* wfBbox);
 
 	/**
-	 * @brief Gets the active scaling node. If the model is attached to a node already, this will be used, else the mScaleNode will be used.
-	 * @return The active scaling node.
+	 * @brief Gets the node to which the model is attached, as provided by the mNodeProvider instance.
+	 * @return The node to which the model is attached.
 	 */
-	Ogre::Node* getActiveScaleNode() const;
+	Ogre::Node& getNode() const;
 
 };
 
