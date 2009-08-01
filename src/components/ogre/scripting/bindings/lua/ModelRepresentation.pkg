@@ -52,31 +52,6 @@ public:
     Model& getModel() const;
 
 	/**
-	 * @brief Returns the "scale node", which is the Ogre::SceneNode to which the Model instance is attached. This is separate from the Ogre::SceneNode in EmberEntity since we want to be able to scale the node without also scaling the attached nodes (such as any wielded entity).
-	 * @return An Ogre::SceneNode, to which the Model::Model instance is attached.
-	 */
-//	Ogre::SceneNode* getScaleNode() const;
-
-	/**
-	 * @brief Sets whether the ogre axis aligned bounding box should be shown or not.
-	 * @param show whether to show the ogre bounding box
-	 */
-	void showOgreBoundingBox(bool show);
-
-	/**
-	 * @brief Gets whether the ogre axis aligned bounding box should be shown or not.
-	 * @return true if the bounding box is shown
-	 */
-	bool getShowOgreBoundingBox() const;
-
-	/**
-	 * @brief Returns the entity that's attached to the specified point, if there is such
-	 * @param attachPoint
-	 * @return a pointer to the EmberEntity, or 0 if none found
-	 */
-	EmberEntity* getEntityAttachedToPoint(const std::string& attachPoint);
-
-	/**
 	 * @brief Accesses the world bounding box of the model.
 	 * @param derive Whether to derive from attached objects too.
 	 * @return The world bounding box for this model, in world units.

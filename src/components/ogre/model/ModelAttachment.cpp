@@ -23,6 +23,7 @@
 #include "components/ogre/IEntityAttachment.h"
 #include "components/ogre/NodeAttachment.h"
 #include "components/ogre/SceneNodeProvider.h"
+#include "components/ogre/Convert.h"
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelDefinition.h"
 #include "components/ogre/model/ModelMount.h"
@@ -38,6 +39,8 @@
 #include <sigc++/connection.h>
 
 #include <Atlas/Message/Element.h>
+
+#include <OgreVector3.h>
 
 namespace EmberOgre
 {
@@ -132,7 +135,14 @@ void ModelAttachment::getOffsetForContainedNode(const IEntityAttachment& attachm
 			return;
 		}
 	}
-	NodeAttachment::getOffsetForContainedNode(attachment, localPosition, offset);
+	///if the model has an offset specified, use that, else just send to the base class
+	const Ogre::Vector3& modelOffset(mModelRepresentation.getModel().getDefinition()->getContentOffset());
+	if (modelOffset != Ogre::Vector3::ZERO)
+	{
+		offset = Convert::toWF<WFMath::Vector<3> >(modelOffset);
+	} else {
+		NodeAttachment::getOffsetForContainedNode(attachment, localPosition, offset);
+	}
 }
 
 void ModelAttachment::updateScale()

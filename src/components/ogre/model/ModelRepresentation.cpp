@@ -72,7 +72,7 @@ const char * const ModelRepresentation::ACTION_SWIM("__movement_swim");
 const char * const ModelRepresentation::ACTION_FLOAT("__movement_float");
 
 ModelRepresentation::ModelRepresentation(::EmberOgre::EmberEntity& entity, Model& model)
-: mEntity(entity), mModel(model), mCurrentMovementAction(0), mActiveAction(0), mModelAttachedTo(0), mModelMarkedToAttachTo(0), mSoundEntity(0)
+: mEntity(entity), mModel(model), mCurrentMovementAction(0), mActiveAction(0), mSoundEntity(0)
 {
 	mEntity.Acted.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Acted));
 	mEntity.Changed.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Changed));
@@ -112,22 +112,11 @@ ModelRepresentation::ModelRepresentation(::EmberOgre::EmberEntity& entity, Model
 //		mLightNodes.push_back(lightNode);
 //	}
 
-	///check if we should do delayed attachment
-	if (mModelMarkedToAttachTo)
-	{
-		attachToPointOnModel(mModelMarkedToAttachTo->attachPoint, mModelMarkedToAttachTo->model, mModelMarkedToAttachTo->orientation, mModelMarkedToAttachTo->offset);
-		delete mModelMarkedToAttachTo;
-		mModelMarkedToAttachTo = 0;
-	}
 }
 
 ModelRepresentation::~ModelRepresentation()
 {
 	delete mSoundEntity;
-	delete mModelAttachedTo;
-	delete mModelMarkedToAttachTo;
-
-
 
 	delete mModel.getUserObject();
 	mModel._getManager()->destroyMovableObject(&mModel);
@@ -159,27 +148,27 @@ Model & ModelRepresentation::getModel() const
     return mModel;
 }
 
-EmberEntity* ModelRepresentation::getEntityAttachedToPoint(const std::string& attachPoint)
-{
-	///first check with the attach points
-	const std::string* entityId(0);
-	for (AttachedEntitiesStore::const_iterator I = mAttachedEntities.begin(); I != mAttachedEntities.end(); ++I)
-	{
-		if (I->second == attachPoint)
-		{
-			entityId = &I->first;
-			break;
-		}
-	}
-
-	if (entityId)
-	{
-		///then get the entity from the world
-		EmberEntity* entity = EmberOgre::getSingleton().getEmberEntity(*entityId);
-		return entity;
-	}
-	return 0;
-}
+//EmberEntity* ModelRepresentation::getEntityAttachedToPoint(const std::string& attachPoint)
+//{
+//	///first check with the attach points
+//	const std::string* entityId(0);
+//	for (AttachedEntitiesStore::const_iterator I = mAttachedEntities.begin(); I != mAttachedEntities.end(); ++I)
+//	{
+//		if (I->second == attachPoint)
+//		{
+//			entityId = &I->first;
+//			break;
+//		}
+//	}
+//
+//	if (entityId)
+//	{
+//		///then get the entity from the world
+//		EmberEntity* entity = EmberOgre::getSingleton().getEmberEntity(*entityId);
+//		return entity;
+//	}
+//	return 0;
+//}
 
 
 void ModelRepresentation::setModelPartShown(const std::string& partName, bool visible)
@@ -286,8 +275,8 @@ void ModelRepresentation::connectEntities()
 }
 
 
-void ModelRepresentation::attachToPointOnModel(const std::string& point, Model::Model* model, Ogre::Quaternion orientation, Ogre::Vector3 offset)
-{
+//void ModelRepresentation::attachToPointOnModel(const std::string& point, Model::Model* model, Ogre::Quaternion orientation, Ogre::Vector3 offset)
+//{
 //	///if we're not initialized, delay attachment until after init
 //	if (!isInitialized())
 //	{
@@ -342,10 +331,10 @@ void ModelRepresentation::attachToPointOnModel(const std::string& point, Model::
 //		}
 //
 //	}
-}
+//}
 
-void ModelRepresentation::detachFromModel()
-{
+//void ModelRepresentation::detachFromModel()
+//{
 //	if (mModelAttachedTo)
 //	{
 //		Model::Model* model = mModelAttachedTo->model;
@@ -380,25 +369,13 @@ void ModelRepresentation::detachFromModel()
 //		EmberEntity* entity = static_cast<EmberEntity*>(getContained(i));
 //		entity->detachFromModel();
 //	}
-}
-
-void ModelRepresentation::showOgreBoundingBox(bool show)
-{
-//	getScaleNode()->showBoundingBox(show);
-}
-
-bool ModelRepresentation::getShowOgreBoundingBox() const
-{
-	return false;
-//	return getScaleNode()->getShowBoundingBox();
-}
+//}
 
 void ModelRepresentation::model_Reloaded()
 {
 	initFromModel();
 	///Retrigger a movement change so that animations can be stopped and started now that the model has changed.
 	entity_MovementModeChanged(mEntity.getMovementMode());
-	attachAllEntities();
 }
 
 void ModelRepresentation::model_Resetting()
@@ -408,24 +385,8 @@ void ModelRepresentation::model_Resetting()
 		delete getModel().getUserObject();
 	}
 	getModel().setUserObject(0);
-	detachAllEntities();
 }
 
-void ModelRepresentation::processWield(const std::string& wieldName, const Atlas::Message::Element& idElement)
-{
-	S_LOG_VERBOSE("Set " << wieldName << " to " << idElement.asString());
-	const std::string& id = idElement.asString();
-	if (id.empty())
-	{
-		detachEntity(wieldName);
-	}
-	else
-	{
-		//detach first
-		detachEntity(wieldName);
-		attachEntity(wieldName, id);
-	}
-}
 
 void ModelRepresentation::processOutfit(const Atlas::Message::MapType & outfitMap)
 {
@@ -440,14 +401,14 @@ void ModelRepresentation::entity_Changed(const Eris::StringSet& attributeIds)
 
 void ModelRepresentation::attrChanged(const std::string& str, const Atlas::Message::Element& v)
 {
-	///this is kind of a hack, but it allows characters to wield other entities in their hands
-	if (str == "right_hand_wield" || str == "left_hand_wield")
-	{
-		processWield(str, v);
-		return;
-//	} if (str == "bbox") {
-//		bboxChanged();
-	}
+//	///this is kind of a hack, but it allows characters to wield other entities in their hands
+//	if (str == "right_hand_wield" || str == "left_hand_wield")
+//	{
+//		processWield(str, v);
+//		return;
+////	} if (str == "bbox") {
+////		bboxChanged();
+//	}
 
 	///check if the changed attribute should affect any particle systems
 	///TODO: refactor this into a system where the Model instead keeps track of whether any particle systems are in use and if so attaches listeners.
@@ -554,16 +515,6 @@ void ModelRepresentation::entity_ChildRemoved(Eris::Entity *e)
 
 }
 
-const Ogre::Vector3& ModelRepresentation::getOffsetForContainedNode(const Ogre::Vector3& position, const EmberEntity& entity)
-{
-	///if the model has an offset specified, use that, else just send to the base class
-	const Ogre::Vector3& offset(getModel().getDefinition()->getContentOffset());
-	if (offset != Ogre::Vector3::ZERO)
-	{
-		return offset;
-	}
-	return Ogre::Vector3::ZERO;
-}
 
 void ModelRepresentation::updateAnimation(Ogre::Real timeSlice)
 {
@@ -595,8 +546,8 @@ void ModelRepresentation::updateAnimation(Ogre::Real timeSlice)
 	}
 }
 
-void ModelRepresentation::detachEntity(const std::string & attachPoint)
-{
+//void ModelRepresentation::detachEntity(const std::string & attachPoint)
+//{
 //	///See if we've already have attached the entity that we now want to detach. Since attachments can be delayed the situation where we want to detach something which haven't yet been attached to the Model can arise, and in those instances we won't do anything more.
 //	const std::string* entityId(0);
 //	for (AttachedEntitiesStore::const_iterator I = mAttachedEntities.begin(); I != mAttachedEntities.end(); ++I)
@@ -622,10 +573,10 @@ void ModelRepresentation::detachEntity(const std::string & attachPoint)
 //		}
 //		mAttachedEntities.erase(*entityId);
 //	}
-}
+//}
 
-void ModelRepresentation::attachEntity(const std::string & attachPoint, const std::string & entityId)
-{
+//void ModelRepresentation::attachEntity(const std::string & attachPoint, const std::string & entityId)
+//{
 //	mAttachedEntities[entityId] = attachPoint;
 //	///Sometimes we get the op for attaching a certain entity before we've actually recieved the entity in question from the server. In those cases we'll instead wait until onChildAdded and do the attachment there.
 //	if (hasChild(entityId))
@@ -637,30 +588,30 @@ void ModelRepresentation::attachEntity(const std::string & attachPoint, const st
 //			entity->attachToPointOnModel(attachPoint, getModel());
 //		}
 //	}
-}
+//}
 
-void ModelRepresentation::detachAllEntities()
-{
-	for (AttachedEntitiesStore::const_iterator I = mAttachedEntities.begin(); I != mAttachedEntities.end(); ++I)
-	{
-		detachEntity(I->first);
-	}
-}
+//void ModelRepresentation::detachAllEntities()
+//{
+//	for (AttachedEntitiesStore::const_iterator I = mAttachedEntities.begin(); I != mAttachedEntities.end(); ++I)
+//	{
+//		detachEntity(I->first);
+//	}
+//}
 
-void ModelRepresentation::attachAllEntities()
-{
-//	///HACK: this should be data driven
-//	if (hasAttr("right_hand_wield"))
-//	{
-//		const Atlas::Message::Element& idElement = valueOfAttr("right_hand_wield");
-//		attachEntity("right_hand_wield", idElement.asString());
-//	}
-//	else if (hasAttr("left_hand_wield"))
-//	{
-//		const Atlas::Message::Element& idElement = valueOfAttr("left_hand_wield");
-//		attachEntity("left_hand_wield", idElement.asString());
-//	}
-}
+//void ModelRepresentation::attachAllEntities()
+//{
+////	///HACK: this should be data driven
+////	if (hasAttr("right_hand_wield"))
+////	{
+////		const Atlas::Message::Element& idElement = valueOfAttr("right_hand_wield");
+////		attachEntity("right_hand_wield", idElement.asString());
+////	}
+////	else if (hasAttr("left_hand_wield"))
+////	{
+////		const Atlas::Message::Element& idElement = valueOfAttr("left_hand_wield");
+////		attachEntity("left_hand_wield", idElement.asString());
+////	}
+//}
 
 const Ogre::AxisAlignedBox& ModelRepresentation::getWorldBoundingBox(bool derive) const
 {

@@ -122,33 +122,14 @@ public:
      */
     Model & getModel() const;
 
-	void attachToPointOnModel(const std::string& point, Model* model, Ogre::Quaternion orientation = Ogre::Quaternion::IDENTITY, Ogre::Vector3 offset = Ogre::Vector3::ZERO);
-	void detachFromModel();
+//	void attachToPointOnModel(const std::string& point, Model* model, Ogre::Quaternion orientation = Ogre::Quaternion::IDENTITY, Ogre::Vector3 offset = Ogre::Vector3::ZERO);
+//	void detachFromModel();
 
 	/**
 	 * @brief Updates the animation. This is normally called by MotionManager.
 	 * @param timeSlice time to update with.
 	 */
 	void updateAnimation(Ogre::Real timeSlice);
-
-	/**
-	 * @brief Sets whether the ogre axis aligned bounding box should be shown or not.
-	 * @param show whether to show the ogre bounding box
-	 */
-	void showOgreBoundingBox(bool show);
-
-	/**
-	 * @brief Gets whether the ogre axis aligned bounding box should be shown or not.
-	 * @return true if the bounding box is shown
-	 */
-	bool getShowOgreBoundingBox() const;
-
-	/**
-	 * @brief Returns the entity that's attached to the specified point, if there is such
-	 * @param attachPoint
-	 * @return a pointer to the EmberEntity, or 0 if none found
-	 */
-	EmberEntity* getEntityAttachedToPoint(const std::string& attachPoint);
 
 	/**
 	 * @brief Accesses the world bounding box of the model.
@@ -191,15 +172,6 @@ public:
 
 protected:
 
-	struct ModelAttachment
-	{
-		Model* model;
-		std::string attachPoint;
-		Ogre::Vector3 offset;
-		Ogre::Quaternion orientation;
-	};
-
-
 	/**
 	 * @brief The entity which this representation is bound to.
 	 */
@@ -226,24 +198,6 @@ protected:
 	Action* mActiveAction;
 
 	/**
-	 If the entity is attached to another entity, this is the model to which it is attached to.
-	 This will be 0 if the entity isn't attached.
-	 */
-	ModelAttachment* mModelAttachedTo;
-
-	/**
-	 We can't do attachments until the entity has been properly initialized, so sometimes we need to do delayed attachments. This will then hold the model to which this entity should be attached. Once the entity has been initialized we'll use mModelAttachedTo instead.
-	 */
-	ModelAttachment* mModelMarkedToAttachTo;
-
-	typedef std::map<std::string, std::string> AttachedEntitiesStore;
-
-	/**
-	 * @brief A store of all attached entities, indexed by their id.
-	 */
-	AttachedEntitiesStore mAttachedEntities;
-
-	/**
 	 * @brief The sound entity this entity is connected to.
 	 */
 	SoundEntity* mSoundEntity;
@@ -268,8 +222,6 @@ protected:
 
 	void setClientVisible(bool visible);
 
-	const Ogre::Vector3& getOffsetForContainedNode(const Ogre::Vector3& position, const EmberEntity& entity);
-
 	/**
 	 *   creates EmberEntityUserObjects, connects them and sets up the collision detection system
 	 * @return
@@ -284,36 +236,6 @@ protected:
 
 	void entity_ChildAdded(Eris::Entity *e);
 	void entity_ChildRemoved(Eris::Entity *e);
-
-	/**
-	 * @brief Detaches an entity which is already wielded.
-	 * @param entityId
-	 */
-	void detachEntity(const std::string & entityId);
-
-	/**
-	 * @brief Attaches an entity to a certain attach point
-	 * @param attachPoint the name of the attachpoint to attach to
-	 * @param entityId the id of the entity to attach to
-	 */
-	void attachEntity(const std::string & attachPoint, const std::string & entityId);
-
-	/**
-	 * @brief Detaches all currently attached entities. Call this before the Model is resetted.
-	 */
-	void detachAllEntities();
-
-	/**
-	 * @brief Attaches all entities that aren't currently attached.
-	 */
-	void attachAllEntities();
-
-	/**
-	 * @brief Process wield ops, which means wielding and unwielding entities. This methos will in turn call the appropriate attachEntity and detachEntity methods.
-	 * @param wieldName the attachpoint to update
-	 * @param idElement the id of the entity to wield
-	 */
-	void processWield(const std::string& wieldName, const Atlas::Message::Element& idElement);
 
 	/**
 	 * @brief Processes the outfit map and updates the appearance.

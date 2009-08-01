@@ -10803,106 +10803,6 @@ static int tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getModel00(lua_St
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: showOgreBoundingBox of class  EmberOgre::Model::ModelRepresentation */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_showOgreBoundingBox00
-static int tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_showOgreBoundingBox00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::Model::ModelRepresentation",0,&tolua_err) ||
-     !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  EmberOgre::Model::ModelRepresentation* self = (EmberOgre::Model::ModelRepresentation*)  tolua_tousertype(tolua_S,1,0);
-  bool show = ((bool)  tolua_toboolean(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'showOgreBoundingBox'",NULL);
-#endif
-  {
-   self->showOgreBoundingBox(show);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'showOgreBoundingBox'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: getShowOgreBoundingBox of class  EmberOgre::Model::ModelRepresentation */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getShowOgreBoundingBox00
-static int tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getShowOgreBoundingBox00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"const EmberOgre::Model::ModelRepresentation",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  const EmberOgre::Model::ModelRepresentation* self = (const EmberOgre::Model::ModelRepresentation*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getShowOgreBoundingBox'",NULL);
-#endif
-  {
-   bool tolua_ret = (bool)  self->getShowOgreBoundingBox();
-   tolua_pushboolean(tolua_S,(bool)tolua_ret);
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getShowOgreBoundingBox'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: getEntityAttachedToPoint of class  EmberOgre::Model::ModelRepresentation */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getEntityAttachedToPoint00
-static int tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getEntityAttachedToPoint00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::Model::ModelRepresentation",0,&tolua_err) ||
-     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  EmberOgre::Model::ModelRepresentation* self = (EmberOgre::Model::ModelRepresentation*)  tolua_tousertype(tolua_S,1,0);
-  const std::string attachPoint = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getEntityAttachedToPoint'",NULL);
-#endif
-  {
-   EmberOgre::EmberEntity* tolua_ret = (EmberOgre::EmberEntity*)  self->getEntityAttachedToPoint(attachPoint);
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::EmberEntity");
-   tolua_pushcppstring(tolua_S,(const char*)attachPoint);
-  }
- }
- return 2;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getEntityAttachedToPoint'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* method: getWorldBoundingBox of class  EmberOgre::Model::ModelRepresentation */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getWorldBoundingBox00
 static int tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getWorldBoundingBox00(lua_State* tolua_S)
@@ -22665,9 +22565,6 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"getTypeNameForClass",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getTypeNameForClass00);
      tolua_function(tolua_S,"getEntity",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getEntity00);
      tolua_function(tolua_S,"getModel",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getModel00);
-     tolua_function(tolua_S,"showOgreBoundingBox",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_showOgreBoundingBox00);
-     tolua_function(tolua_S,"getShowOgreBoundingBox",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getShowOgreBoundingBox00);
-     tolua_function(tolua_S,"getEntityAttachedToPoint",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getEntityAttachedToPoint00);
      tolua_function(tolua_S,"getWorldBoundingBox",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getWorldBoundingBox00);
      tolua_function(tolua_S,"getWorldBoundingSphere",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getWorldBoundingSphere00);
     tolua_endmodule(tolua_S);
