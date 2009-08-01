@@ -20,6 +20,7 @@
 
 #include <OgreSceneNode.h>
 #include <OgreMovableObject.h>
+#include <OgreSceneManager.h>
 
 namespace EmberOgre
 {
@@ -42,7 +43,13 @@ SceneNodeProvider::~SceneNodeProvider()
 			mNode->detachObject(mAttachedObject);
 		}
 	}
-	mParentNode.removeAndDestroyChild(mNode->getName());
+	//If the visibility was changed for the node, we usually detach it from the parent node. Therefore we need to first check whether there's any parent set.
+	if (mNode->getParent()) {
+		mParentNode.removeAndDestroyChild(mNode->getName());
+	}
+	else {
+		mNode->getCreator()->destroySceneNode(mNode);
+	}
 }
 
 Ogre::Node& SceneNodeProvider::getNode() const
@@ -94,7 +101,5 @@ void SceneNodeProvider::setPositionAndOrientation(const Ogre::Vector3& position,
 	mNode->setPosition(position);
 	mNode->setOrientation(orientation);
 }
-
-
 
 }

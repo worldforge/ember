@@ -297,7 +297,11 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 		}
 	}
 	else {
-		setAttachment(0);
+		try {
+			setAttachment(0);
+		} catch (const std::exception& ex) {
+			S_LOG_WARNING("Problem when setting attachment for entity." << ex);
+		}
 	}
 }
 

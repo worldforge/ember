@@ -285,14 +285,6 @@ void ModelRepresentation::connectEntities()
 
 }
 
-//Ogre::SceneNode* ModelRepresentation::getScaleNode() const
-//{
-//	if (mModelMount)
-//	{
-//		return mModelMount->getScaleNode();
-//	}
-//	return 0;
-//}
 
 void ModelRepresentation::attachToPointOnModel(const std::string& point, Model::Model* model, Ogre::Quaternion orientation, Ogre::Vector3 offset)
 {
