@@ -59,7 +59,7 @@ public:
 	/**
 	 * @brief Ctor.
 	 * @param model The model which we need a mount for.
-	 * @param mainNode The main node. A scale node will be created as a child, to which the model then will be attached. Ownership of the main node isn't transferred to this class, but the scale node that's created will be owned, and destroyed, by this class.
+	 * @param nodeProvider Provides an instance of a subclass of Ogre::Node to which the Model can be attached.
 	 */
 	ModelMount(::EmberOgre::Model::Model& model, INodeProvider* nodeProvider);
 
@@ -81,13 +81,16 @@ public:
 	 */
 	void rescale(const WFMath::AxisBox<3>* wfBbox);
 
-	// 	const Ogre::Vector3 calculateScaling(::EmberOgre::Model::Model& model, const WFMath::AxisBox<3>* wfBbox);
-
-
 	/**
 	 * @brief Resets all scaling and rotation
 	 */
 	void reset();
+
+	/**
+	 * @brief Gets the node provider, which is responsible for providing nodes to which the model mount can attach the model.
+	 * @return The node provider in use.
+	 */
+	INodeProvider* getNodeProvider() const;
 
 protected:
 	/**
@@ -95,6 +98,10 @@ protected:
 	 */
 	::EmberOgre::Model::Model& mModel;
 
+	/**
+	 * @brief The node provider used by the mount.
+	 * The node to which the Model is attached to is provided by this instance. It can be either a SceneNode or a TagPoint.
+	 */
 	INodeProvider* mNodeProvider;
 
 	/**

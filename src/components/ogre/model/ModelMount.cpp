@@ -165,6 +165,12 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 	}
 }
 
+INodeProvider* ModelMount::getNodeProvider() const
+{
+	return mNodeProvider;
+}
+
+
 }
 
 }
