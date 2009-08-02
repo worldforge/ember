@@ -28,20 +28,37 @@ namespace EmberOgre
 namespace Model
 {
 ModelBoneProvider::ModelBoneProvider(Model& parentModel, const std::string& attachPointName, Ogre::MovableObject* movableObject) :
-	mParentModel(parentModel), mAttachPointName(attachPointName), mNode(0), mAttachedObject(movableObject)
+	mParentModel(parentModel), mAttachPointName(attachPointName), mNode(0), mAttachedObject(movableObject), mParent(0), mPosition(Ogre::Vector3::ZERO), mOrientation(Ogre::Quaternion::IDENTITY)
 {
-	if (movableObject) {
-		movableObject->detatchFromParent();
-		Model::AttachPointWrapper wrapper = mParentModel.attachObjectToAttachPoint(attachPointName, movableObject);
-		mNode = wrapper.TagPoint;
-		mAttachPointDefinition = wrapper.Definition;
-	}
+	init();
+}
+
+ModelBoneProvider::ModelBoneProvider(Model& parentModel, const std::string& attachPointName, Ogre::MovableObject* movableObject, ModelBoneProvider* parent) :
+	mParentModel(parentModel), mAttachPointName(attachPointName), mNode(0), mAttachedObject(movableObject), mParent(parent), mPosition(Ogre::Vector3::ZERO), mOrientation(Ogre::Quaternion::IDENTITY)
+{
+	init();
 }
 
 ModelBoneProvider::~ModelBoneProvider()
 {
 	if (mAttachedObject) {
 		mParentModel.detachObjectFromBone(mAttachedObject->getName());
+	}
+	if (mParent) {
+		ModelBoneProviderStore::iterator I = std::find(mParent->mChildren.begin(), mParent->mChildren.end(), this);
+		if (I != mParent->mChildren.end()) {
+			mParent->mChildren.erase(I);
+		}
+	}
+}
+
+void ModelBoneProvider::init()
+{
+	if (mAttachedObject) {
+		mAttachedObject->detatchFromParent();
+		Model::AttachPointWrapper wrapper = mParentModel.attachObjectToAttachPoint(mAttachPointName, mAttachedObject);
+		mNode = wrapper.TagPoint;
+		mAttachPointDefinition = wrapper.Definition;
 	}
 }
 
@@ -57,7 +74,9 @@ Ogre::Node* ModelBoneProvider::getParentNode() const
 
 INodeProvider* ModelBoneProvider::createChildProvider(Ogre::MovableObject* attachedObject)
 {
-	return new ModelBoneProvider(mParentModel, mAttachPointName, attachedObject);
+	ModelBoneProvider* childProvider = new ModelBoneProvider(mParentModel, mAttachPointName, attachedObject, this);
+	mChildren.push_back(childProvider);
+	return childProvider;
 }
 
 void ModelBoneProvider::setVisible(bool visible)
@@ -78,10 +97,37 @@ bool ModelBoneProvider::getVisualize(const std::string& visualization) const
 
 void ModelBoneProvider::setPositionAndOrientation(const Ogre::Vector3& position, const Ogre::Quaternion& orientation)
 {
+	mPosition = position;
+	mOrientation = orientation * mAttachPointDefinition.Rotation;
+	updatePositionAndOrientation();
+}
+
+void ModelBoneProvider::updatePositionAndOrientation()
+{
 	if (mNode) {
-		mNode->setPosition(position);
-		mNode->setOrientation(orientation * mAttachPointDefinition.Rotation);
+		mNode->setPosition(getDerivedPosition());
+		mNode->setOrientation(getDerivedOrientation());
+	}
+	for (ModelBoneProviderStore::const_iterator I = mChildren.begin(); I != mChildren.end(); ++I) {
+		(*I)->updatePositionAndOrientation();
 	}
 }
+
+Ogre::Vector3 ModelBoneProvider::getDerivedPosition() const
+{
+	if (mParent) {
+		return mParent->getDerivedPosition() + mPosition;
+	}
+	return mPosition;
+}
+
+Ogre::Quaternion ModelBoneProvider::getDerivedOrientation() const
+{
+	if (mParent) {
+		return mParent->getDerivedOrientation() * mOrientation;
+	}
+	return mOrientation;
+}
+
 }
 }
