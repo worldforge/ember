@@ -31,16 +31,18 @@
 #ifndef MODELREPRESENTATION_H_
 #define MODELREPRESENTATION_H_
 
-namespace Eris {
+namespace Eris
+{
 class Entity;
 }
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 class EmberEntity;
 class SoundEntity;
 
-
-namespace Model {
+namespace Model
+{
 
 class ActionDefinition;
 class SoundDefinition;
@@ -61,7 +63,7 @@ typedef std::vector<Ogre::SceneNode*> SceneNodeStore;
  * An instance of this binds an EmberEntity instance and a Model instance together. It's normally not meant to be created externally.
  * You can access instances of it attached to an entity through the ModelRepresentationManager class.
  */
-class ModelRepresentation : public IGraphicalRepresentation, public virtual sigc::trackable, public IAnimated
+class ModelRepresentation: public IGraphicalRepresentation, public virtual sigc::trackable, public IAnimated
 {
 public:
 
@@ -97,12 +99,11 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-    virtual ~ModelRepresentation();
+	virtual ~ModelRepresentation();
 
-
-    /**
-     * @copydoc EmberOgre::IGraphicalRepresentation::getType()
-     */
+	/**
+	 * @copydoc EmberOgre::IGraphicalRepresentation::getType()
+	 */
 	virtual const std::string& getType() const;
 
 	/**
@@ -115,15 +116,15 @@ public:
 	/**
 	 * @brief Gets the entity which this representation is connected to.
 	 */
-    EmberEntity & getEntity() const;
+	EmberEntity & getEntity() const;
 
-    /**
-     * @brief Gets the model which this representation shows.
-     */
-    Model & getModel() const;
+	/**
+	 * @brief Gets the model which this representation shows.
+	 */
+	Model & getModel() const;
 
-//	void attachToPointOnModel(const std::string& point, Model* model, Ogre::Quaternion orientation = Ogre::Quaternion::IDENTITY, Ogre::Vector3 offset = Ogre::Vector3::ZERO);
-//	void detachFromModel();
+	//	void attachToPointOnModel(const std::string& point, Model* model, Ogre::Quaternion orientation = Ogre::Quaternion::IDENTITY, Ogre::Vector3 offset = Ogre::Vector3::ZERO);
+	//	void detachFromModel();
 
 	/**
 	 * @brief Updates the animation. This is normally called by MotionManager.
@@ -138,13 +139,12 @@ public:
 	 */
 	virtual const Ogre::AxisAlignedBox& getWorldBoundingBox(bool derive = true) const;
 
-
 	/**
 	 * @brief Accesses the world bounding sphere for this model.
 	 * @param derive
 	 * @return The world bounding sphere, in world units, for this model.
 	 */
-	virtual const Ogre::Sphere & getWorldBoundingSphere (bool derive=true) const;
+	virtual const Ogre::Sphere & getWorldBoundingSphere(bool derive = true) const;
 
 	/**
 	 * @brief General method for turning on and off debug visualizations. Subclasses might support more types of visualizations than the ones defined here.
@@ -175,9 +175,9 @@ protected:
 	/**
 	 * @brief The entity which this representation is bound to.
 	 */
-    EmberEntity & mEntity;
+	EmberEntity & mEntity;
 
-    /**
+	/**
 	 * @brief The model of the entity.
 	 * This is the main graphical representation of this entity.
 	 * Note that the Model won't be directly connected to the main scene node, instead the mModelMount instance will take care of setting everything up to use an intermediary "scale node".
@@ -207,10 +207,10 @@ protected:
 	 */
 	SceneNodeStore mLightNodes;
 
-    /**
-     * @brief The type name for the class.
-     */
-    static std::string sTypeName;
+	/**
+	 * @brief The type name for the class.
+	 */
+	static std::string sTypeName;
 
 	/**
 	 * Tells the entity to retrieve it sound actions from
@@ -234,9 +234,6 @@ protected:
 	 */
 	void entity_MovementModeChanged(EmberEntity::MovementMode newMode);
 
-	void entity_ChildAdded(Eris::Entity *e);
-	void entity_ChildRemoved(Eris::Entity *e);
-
 	/**
 	 * @brief Processes the outfit map and updates the appearance.
 	 * @param outfitMap
@@ -244,7 +241,6 @@ protected:
 	void processOutfit(const Atlas::Message::MapType & outfitMap);
 
 	void entity_Changed(const Eris::StringSet& attributeIds);
-
 
 	/**
 	 *    Overridden from Eris::Entity
@@ -272,7 +268,6 @@ protected:
 	 * @brief Initialize position and scaling of the scale node with values from the Model, as well as set up any alternative rendering techniques.
 	 */
 	void initFromModel();
-
 
 };
 
