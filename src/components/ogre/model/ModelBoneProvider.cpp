@@ -78,8 +78,10 @@ bool ModelBoneProvider::getVisualize(const std::string& visualization) const
 
 void ModelBoneProvider::setPositionAndOrientation(const Ogre::Vector3& position, const Ogre::Quaternion& orientation)
 {
-	mNode->setPosition(position);
-	mNode->setOrientation(orientation * mAttachPointDefinition.Rotation);
+	if (mNode) {
+		mNode->setPosition(position);
+		mNode->setOrientation(orientation * mAttachPointDefinition.Rotation);
+	}
 }
 }
 }
