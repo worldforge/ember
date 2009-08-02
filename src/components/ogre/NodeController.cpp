@@ -30,6 +30,7 @@ NodeController::NodeController(NodeAttachment& attachment)
 : mAttachment(attachment)
 {
 	mAttachment.getAttachedEntity().Moved.connect(sigc::mem_fun(*this, &NodeController::entity_Moved));
+	updatePosition();
 }
 
 NodeController::~NodeController()
