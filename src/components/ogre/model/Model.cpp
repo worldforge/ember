@@ -41,6 +41,7 @@
 #include <OgreSceneManager.h>
 #include <OgreAnimationState.h>
 #include <OgreSubEntity.h>
+#include <OgreParticleSystem.h>
 
 namespace EmberOgre
 {
@@ -49,19 +50,6 @@ namespace Model
 
 const Ogre::String Model::sMovableType = "Model";
 unsigned long Model::msAutoGenId = 0;
-
-// Model::Model()
-// : mScale(0)
-// , mRotation(Ogre::Quaternion::IDENTITY)
-// , mSkeletonInstance(0)
-// // , mAnimationStateSet(0)
-// , mSkeletonOwnerEntity(0)
-// {
-// 	std::stringstream ss;
-// 	ss << "__AutogenModel_" << msAutoGenId++;
-// 	mName = ss.str();
-// 	mVisible = true;
-// }
 
 Model::Model(const std::string& name) :
 	Ogre::MovableObject(name), mSkeletonOwnerEntity(0), mSkeletonInstance(0), mScale(0), mRotation(Ogre::Quaternion::IDENTITY), mAnimationStateSet(0), mAttachPoints(0), mBackgroundLoader(0)
@@ -165,9 +153,6 @@ bool Model::createFromDefn()
 	}
 
 	if (mBackgroundLoader->poll()) {
-		/*		ModelDefinitionManager::getSingleton().removeBackgroundLoader(mBackgroundLoader);
-		 delete mBackgroundLoader;
-		 mBackgroundLoader = 0;*/
 		return createActualModel();
 	}
 	else {
@@ -428,26 +413,11 @@ bool Model::removeSubmodel(SubModel* submodel)
 	return true;
 }
 
-// SubModel* Model::getSubModel(const std::string& name)
-// {
-// 	SubModelSet::const_iterator I = mSubmodels.begin();
-// 	SubModelSet::const_iterator I_end = mSubmodels.end();
-// 	for (; I != I_end; ++I) {
-// 		if ((*I)->getName() == name) {
-// 			return *I;
-// 		}
-// 	}
-// 	S_LOG_FAILURE("Could not find submodel with name "<< name << " in model " << getName());
-// 	return 0:
-//
-// }
-
 SubModel* Model::getSubModel(size_t index)
 {
-	SubModelSet::const_iterator I = mSubmodels.begin();
-	SubModelSet::const_iterator I_end = mSubmodels.end();
 	size_t i = 0;
-	for (; I != I_end; ++I) {
+	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
+	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
 		if (i == index) {
 			return *I;
 		}
@@ -512,43 +482,34 @@ void Model::hidePart(const std::string& partName, bool dontChangeVisibility)
 void Model::setVisible(bool visible)
 {
 	mVisible = visible;
-	{
-		SubModelSet::const_iterator I = mSubmodels.begin();
-		SubModelSet::const_iterator I_end = mSubmodels.end();
-		for (; I != I_end; ++I) {
+	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
+	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
 			(*I)->getEntity()->setVisible(visible);
+	}
+
+
+	LightSet::const_iterator lightsI_end = mLights.end();
+	for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
+		Ogre::Light* light = I->light;
+		if (light) {
+			light->setVisible(visible);
 		}
 	}
 
-	{
-		LightSet::const_iterator I = mLights.begin();
-		LightSet::const_iterator I_end = mLights.end();
-		for (; I != I_end; ++I) {
-			Ogre::Light* light = I->light;
-			if (light) {
-				light->setVisible(visible);
-			}
+
+	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
+	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
+		ParticleSystem* particleSystem = *I;
+		if (particleSystem) {
+			particleSystem->setVisible(visible);
 		}
 	}
-
-	{
-		ParticleSystemSet::iterator I = mParticleSystems.begin();
-		ParticleSystemSet::iterator I_end = mParticleSystems.end();
-		for (; I != I_end; ++I) {
-			ParticleSystem* particleSystem = *I;
-			if (particleSystem) {
-				particleSystem->setVisible(visible);
-			}
-		}
-	}
-
 }
 
 void Model::setDisplaySkeleton(bool display)
 {
-	SubModelSet::const_iterator I = mSubmodels.begin();
-	SubModelSet::const_iterator I_end = mSubmodels.end();
-	for (; I != I_end; ++I) {
+	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
+	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
 		(*I)->getEntity()->setDisplaySkeleton(display);
 	}
 }
@@ -593,9 +554,8 @@ Action* Model::getAction(const std::string& name)
 
 void Model::resetSubmodels()
 {
-	SubModelSet::const_iterator I = mSubmodels.begin();
-	SubModelSet::const_iterator I_end = mSubmodels.end();
-	for (; I != I_end; ++I) {
+	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
+	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
 		delete *I;
 		/* 		SubModel* submodel = *I;
 		 Ogre::SceneManager* sceneManager = ModelDefinitionManager::instance().getSceneManager();
@@ -607,9 +567,8 @@ void Model::resetSubmodels()
 
 void Model::resetParticles()
 {
-	ParticleSystemSet::const_iterator I = mParticleSystems.begin();
-	ParticleSystemSet::const_iterator I_end = mParticleSystems.end();
-	for (; I != I_end; ++I) {
+	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
+	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
 		ParticleSystem* system = *I;
 		delete system;
 	}
@@ -650,25 +609,6 @@ Model::AttachPointWrapper Model::attachObjectToAttachPoint(const Ogre::String &a
 			if (!mAttachPoints.get()) {
 				mAttachPoints = std::auto_ptr<AttachPointWrapperStore>(new AttachPointWrapperStore());
 			}
-			//			//Now also attach all lights and particles
-			//			LightSet::const_iterator lightI = mLights.begin();
-			//			LightSet::const_iterator lightI_end = mLights.end();
-			//			for (; lightI != lightI_end; ++lightI) {
-			//				Ogre::Light* light = lightI->light;
-			//				if (light) {
-			//					attachObjectToBone(boneName, light, offsetOrientation * I->Rotation, offsetPosition, scale);
-			//				}
-			//			}
-			//
-			//			ParticleSystemSet::const_iterator particleI = mParticleSystems.begin();
-			//			ParticleSystemSet::const_iterator particleI_end = mParticleSystems.end();
-			//			for (; particleI != particleI_end; ++particleI) {
-			//		 		ParticleSystem* system = *particleI;
-			//		 		if (system && system->getOgreParticleSystem())
-			//		 		{
-			//					attachObjectToBone(boneName, system->getOgreParticleSystem(), offsetOrientation * I->Rotation, offsetPosition, scale);
-			//		 		}
-			//			}
 
 			AttachPointWrapper wrapper;
 			wrapper.TagPoint = tagPoint;
@@ -792,10 +732,9 @@ void Model::_notifyCurrentCamera(Ogre::Camera* cam)
 {
 	MovableObject::_notifyCurrentCamera(cam);
 	if (isVisible()) {
-		SubModelSet::const_iterator I = mSubmodels.begin();
-		SubModelSet::const_iterator I_end = mSubmodels.end();
 		if (mVisible) {
-			for (; I != I_end; ++I) {
+			SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
+			for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
 				(*I)->getEntity()->_notifyCurrentCamera(cam);
 			}
 
@@ -805,30 +744,42 @@ void Model::_notifyCurrentCamera(Ogre::Camera* cam)
 			for (; child_itr != child_itr_end; child_itr++) {
 				child_itr->second->_notifyCurrentCamera(cam);
 			}
+
+			ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
+			for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
+				ParticleSystem* system = *I;
+				system->getOgreParticleSystem()->_notifyCurrentCamera(cam);
+			}
 		}
 	}
-
 }
 
 void Model::setUserObject(Ogre::UserDefinedObject *obj)
 {
 	Ogre::MovableObject::setUserObject(obj);
-	SubModelSet::const_iterator I = mSubmodels.begin();
-	SubModelSet::const_iterator I_end = mSubmodels.end();
-	for (; I != I_end; ++I) {
+	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
+	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
 		(*I)->getEntity()->setUserObject(obj);
+	}
+	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
+	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
+		ParticleSystem* system = *I;
+		system->getOgreParticleSystem()->setUserObject(obj);
 	}
 }
 
 /// Overridden - see MovableObject.
 void Model::setRenderQueueGroup(Ogre::RenderQueueGroupID queueID)
 {
-	SubModelSet::const_iterator I = mSubmodels.begin();
-	SubModelSet::const_iterator I_end = mSubmodels.end();
-	for (; I != I_end; ++I) {
+	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
+	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
 		(*I)->getEntity()->setRenderQueueGroup(queueID);
 	}
-
+	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
+	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
+		ParticleSystem* system = *I;
+		system->getOgreParticleSystem()->setRenderQueueGroup(queueID);
+	}
 }
 
 /** Overridden - see MovableObject.
@@ -838,10 +789,9 @@ const Ogre::AxisAlignedBox& Model::getBoundingBox(void) const
 	if (mSubmodels.size() != 0) {
 		mFull_aa_box.setNull();
 
-		SubModelSet::const_iterator child_itr = mSubmodels.begin();
-		SubModelSet::const_iterator child_itr_end = mSubmodels.end();
-		for (; child_itr != child_itr_end; child_itr++) {
-			mFull_aa_box.merge((*child_itr)->getEntity()->getBoundingBox());
+		SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
+		for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
+			mFull_aa_box.merge((*I)->getEntity()->getBoundingBox());
 		}
 	}
 
@@ -855,11 +805,9 @@ const Ogre::AxisAlignedBox& Model::getWorldBoundingBox(bool derive) const
 	if (mSubmodels.size() != 0) {
 		mWorldFull_aa_box.setNull();
 
-		SubModelSet::const_iterator child_itr = mSubmodels.begin();
-		SubModelSet::const_iterator child_itr_end = mSubmodels.end();
-
-		for (; child_itr != child_itr_end; child_itr++) {
-			mWorldFull_aa_box.merge((*child_itr)->getEntity()->getWorldBoundingBox(derive));
+		SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
+		for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
+			mWorldFull_aa_box.merge((*I)->getEntity()->getWorldBoundingBox(derive));
 		}
 	}
 
@@ -869,10 +817,9 @@ const Ogre::AxisAlignedBox& Model::getWorldBoundingBox(bool derive) const
 Ogre::Real Model::getBoundingRadius() const
 {
 	Ogre::Real rad(0);
-	SubModelSet::const_iterator child_itr = mSubmodels.begin();
-	SubModelSet::const_iterator child_itr_end = mSubmodels.end();
-	for (; child_itr != child_itr_end; child_itr++) {
-		rad = std::max<Ogre::Real>(rad, (*child_itr)->getEntity()->getBoundingRadius());
+	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
+	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
+		rad = std::max<Ogre::Real>(rad, (*I)->getEntity()->getBoundingRadius());
 	}
 	return rad;
 
@@ -884,9 +831,8 @@ void Model::_updateRenderQueue(Ogre::RenderQueue* queue)
 {
 	///check with both the model visibility setting and with the general model setting to see whether the model should be shown
 	if (isVisible()) {
-		SubModelSet::const_iterator I = mSubmodels.begin();
-		SubModelSet::const_iterator I_end = mSubmodels.end();
-		for (; I != I_end; ++I) {
+		SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
+		for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
 			if ((*I)->getEntity()->isVisible()) {
 				(*I)->getEntity()->_updateRenderQueue(queue);
 			}
@@ -902,6 +848,11 @@ void Model::_updateRenderQueue(Ogre::RenderQueue* queue)
 				if (child_itr->second->isVisible())
 					child_itr->second->_updateRenderQueue(queue);
 			}
+		}
+		ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
+		for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
+			ParticleSystem* system = *I;
+			system->getOgreParticleSystem()->_updateRenderQueue(queue);
 		}
 
 	}
@@ -923,19 +874,22 @@ const Ogre::String& Model::getMovableType(void) const
 void Model::setRenderingDistance(Ogre::Real dist)
 {
 	MovableObject::setRenderingDistance(dist);
-	SubModelSet::const_iterator I = mSubmodels.begin();
-	SubModelSet::const_iterator I_end = mSubmodels.end();
-	for (; I != I_end; ++I) {
+	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
+	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
 		(*I)->getEntity()->setRenderingDistance(dist);
+	}
+	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
+	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
+		ParticleSystem* system = *I;
+		system->getOgreParticleSystem()->setRenderingDistance(dist);
 	}
 }
 
 void Model::setQueryFlags(unsigned long flags)
 {
 	MovableObject::setQueryFlags(flags);
-	SubModelSet::const_iterator I = mSubmodels.begin();
-	SubModelSet::const_iterator I_end = mSubmodels.end();
-	for (; I != I_end; ++I) {
+	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
+	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
 		(*I)->getEntity()->setQueryFlags(flags);
 	}
 }
@@ -943,9 +897,8 @@ void Model::setQueryFlags(unsigned long flags)
 void Model::addQueryFlags(unsigned long flags)
 {
 	MovableObject::addQueryFlags(flags);
-	SubModelSet::const_iterator I = mSubmodels.begin();
-	SubModelSet::const_iterator I_end = mSubmodels.end();
-	for (; I != I_end; ++I) {
+	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
+	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
 		(*I)->getEntity()->addQueryFlags(flags);
 	}
 
@@ -957,9 +910,8 @@ void Model::removeQueryFlags(unsigned long flags)
 	//and we don't want segfaults
 	//	return;
 	MovableObject::removeQueryFlags(flags);
-	SubModelSet::const_iterator I = mSubmodels.begin();
-	SubModelSet::const_iterator I_end = mSubmodels.end();
-	for (; I != I_end; ++I) {
+	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
+	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
 		(*I)->getEntity()->removeQueryFlags(flags);
 	}
 
@@ -968,12 +920,16 @@ void Model::removeQueryFlags(unsigned long flags)
 void Model::visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRenderables)
 {
 	if (isVisible()) {
-		SubModelSet::const_iterator I = mSubmodels.begin();
-		SubModelSet::const_iterator I_end = mSubmodels.end();
-		for (; I != I_end; ++I) {
+		SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
+		for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
 			if ((*I)->getEntity()->isVisible()) {
 				(*I)->getEntity()->visitRenderables(visitor, debugRenderables);
 			}
+		}
+		ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
+		for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
+			ParticleSystem* system = *I;
+			system->getOgreParticleSystem()->visitRenderables(visitor, debugRenderables);
 		}
 	}
 }
@@ -984,14 +940,18 @@ void Model::_notifyAttached(Ogre::Node* parent, bool isTagPoint)
 	if (parent != mParentNode) {
 		MovableObject::_notifyAttached(parent, isTagPoint);
 	}
-	{
-		SubModelSet::const_iterator I = mSubmodels.begin();
-		SubModelSet::const_iterator I_end = mSubmodels.end();
-		for (; I != I_end; ++I) {
-			if ((*I)->getEntity()->getParentNode() != parent) {
-				(*I)->getEntity()->_notifyAttached(parent, isTagPoint);
-			}
+
+	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
+	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
+		if ((*I)->getEntity()->getParentNode() != parent) {
+			(*I)->getEntity()->_notifyAttached(parent, isTagPoint);
 		}
+	}
+
+	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
+	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
+		ParticleSystem* system = *I;
+		system->getOgreParticleSystem()->_notifyAttached(parent, isTagPoint);
 	}
 	//	{
 	//		LightSet::const_iterator I = mLights.begin();
