@@ -805,13 +805,15 @@ void Model::setRenderQueueGroup(Ogre::RenderQueueGroupID queueID)
  */
 const Ogre::AxisAlignedBox& Model::getBoundingBox(void) const
 {
-	if (mSubmodels.size() != 0) {
-		mFull_aa_box.setNull();
+	mFull_aa_box.setNull();
 
-		SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
-		for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
-			mFull_aa_box.merge((*I)->getEntity()->getBoundingBox());
-		}
+	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
+	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
+		mFull_aa_box.merge((*I)->getEntity()->getBoundingBox());
+	}
+	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
+	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
+		mFull_aa_box.merge((*I)->getOgreParticleSystem()->getBoundingBox());
 	}
 
 	return mFull_aa_box;
@@ -821,13 +823,15 @@ const Ogre::AxisAlignedBox& Model::getBoundingBox(void) const
  */
 const Ogre::AxisAlignedBox& Model::getWorldBoundingBox(bool derive) const
 {
-	if (mSubmodels.size() != 0) {
-		mWorldFull_aa_box.setNull();
+	mWorldFull_aa_box.setNull();
 
-		SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
-		for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
-			mWorldFull_aa_box.merge((*I)->getEntity()->getWorldBoundingBox(derive));
-		}
+	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
+	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
+		mWorldFull_aa_box.merge((*I)->getEntity()->getWorldBoundingBox(derive));
+	}
+	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
+	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
+		mWorldFull_aa_box.merge((*I)->getOgreParticleSystem()->getWorldBoundingBox(derive));
 	}
 
 	return mWorldFull_aa_box;
@@ -839,6 +843,10 @@ Ogre::Real Model::getBoundingRadius() const
 	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
 	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
 		rad = std::max<Ogre::Real>(rad, (*I)->getEntity()->getBoundingRadius());
+	}
+	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
+	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
+		rad = std::max<Ogre::Real>(rad, (*I)->getOgreParticleSystem()->getBoundingRadius());
 	}
 	return rad;
 
