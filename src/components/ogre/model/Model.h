@@ -184,7 +184,6 @@ public:
 	/** @see Ogre::MovableObject::setRenderingDistance(Ogre::Real dist)
 	 */
 	virtual void setRenderingDistance(Ogre::Real dist);
-	//inline bool isAnimated() { return mAnimationPartMap.size(); }
 
 	/** Overridden - see MovableObject.
 	 */
@@ -193,6 +192,8 @@ public:
 	/** Overridden - see MovableObject.
 	 */
 	virtual void _notifyCurrentCamera(Ogre::Camera* cam);
+
+	virtual void _notifyMoved();
 
 	/** Overridden - see MovableObject.
 	 */

@@ -256,9 +256,8 @@ bool Model::createActualModel()
 
 	createLights();
 
-	std::vector<std::string>::const_iterator I = showPartVector.begin();
 	std::vector<std::string>::const_iterator I_end = showPartVector.end();
-	for (; I != I_end; I++) {
+	for (std::vector<std::string>::const_iterator I = showPartVector.begin(); I != I_end; I++) {
 		showPart(*I);
 	}
 	return true;
@@ -266,9 +265,9 @@ bool Model::createActualModel()
 
 void Model::createActions()
 {
-	ActionDefinitionsStore::const_iterator I_actions = mMasterModel->getActionDefinitions().begin();
+
 	ActionDefinitionsStore::const_iterator I_actions_end = mMasterModel->getActionDefinitions().end();
-	for (; I_actions != I_actions_end; ++I_actions) {
+	for (ActionDefinitionsStore::const_iterator I_actions = mMasterModel->getActionDefinitions().begin(); I_actions != I_actions_end; ++I_actions) {
 		//std::multiset< Model::AnimationPart* >* animationPartSet = new std::multiset< Model::AnimationPart* >();
 		Action action;
 		action.setName((*I_actions)->getName());
@@ -276,13 +275,11 @@ void Model::createActions()
 
 		if (getSkeleton() && getAllAnimationStates()) {
 			if (mSubmodels.size()) {
-				AnimationDefinitionsStore::const_iterator I_anims = (*I_actions)->getAnimationDefinitions().begin();
 				AnimationDefinitionsStore::const_iterator I_anims_end = (*I_actions)->getAnimationDefinitions().end();
-				for (; I_anims != I_anims_end; ++I_anims) {
+				for (AnimationDefinitionsStore::const_iterator I_anims = (*I_actions)->getAnimationDefinitions().begin(); I_anims != I_anims_end; ++I_anims) {
 					Animation animation((*I_anims)->getIterations());
-					AnimationPartDefinitionsStore::const_iterator I_animParts = (*I_anims)->getAnimationPartDefinitions().begin();
 					AnimationPartDefinitionsStore::const_iterator I_animParts_end = (*I_anims)->getAnimationPartDefinitions().end();
-					for (; I_animParts != I_animParts_end; ++I_animParts) {
+					for (AnimationPartDefinitionsStore::const_iterator I_animParts = (*I_anims)->getAnimationPartDefinitions().begin(); I_animParts != I_animParts_end; ++I_animParts) {
 						if (getAllAnimationStates()->hasAnimationState((*I_animParts)->Name)) {
 							AnimationPart animPart;
 							try {
@@ -308,9 +305,8 @@ void Model::createActions()
 
 void Model::createParticles()
 {
-	std::vector<ModelDefinition::ParticleSystemDefinition>::const_iterator I_particlesys = mMasterModel->mParticleSystems.begin();
 	std::vector<ModelDefinition::ParticleSystemDefinition>::const_iterator I_particlesys_end = mMasterModel->mParticleSystems.end();
-	for (; I_particlesys != I_particlesys_end; ++I_particlesys) {
+	for (std::vector<ModelDefinition::ParticleSystemDefinition>::const_iterator I_particlesys = mMasterModel->mParticleSystems.begin(); I_particlesys != I_particlesys_end; ++I_particlesys) {
 		//first try to create the ogre particle system
 		std::string name(mName + "/particle" + I_particlesys->Script);
 		Ogre::ParticleSystem* ogreParticleSystem;
@@ -335,10 +331,9 @@ void Model::createParticles()
 
 void Model::createLights()
 {
-	ModelDefinition::LightSet::const_iterator I_lights = mMasterModel->mLights.begin();
 	ModelDefinition::LightSet::const_iterator I_lights_end = mMasterModel->mLights.end();
 	int j = 0;
-	for (; I_lights != I_lights_end; ++I_lights) {
+	for (ModelDefinition::LightSet::const_iterator I_lights = mMasterModel->mLights.begin(); I_lights != I_lights_end; ++I_lights) {
 		//first try to create the ogre lights
 		//std::string name(mName + "/light");
 		std::stringstream name;
@@ -484,25 +479,17 @@ void Model::setVisible(bool visible)
 	mVisible = visible;
 	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
 	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
-			(*I)->getEntity()->setVisible(visible);
+		(*I)->getEntity()->setVisible(visible);
 	}
-
 
 	LightSet::const_iterator lightsI_end = mLights.end();
 	for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
-		Ogre::Light* light = I->light;
-		if (light) {
-			light->setVisible(visible);
-		}
+		I->light->setVisible(visible);
 	}
-
 
 	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
 	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
-		ParticleSystem* particleSystem = *I;
-		if (particleSystem) {
-			particleSystem->setVisible(visible);
-		}
+		(*I)->setVisible(visible);
 	}
 }
 
@@ -578,9 +565,9 @@ void Model::resetParticles()
 
 void Model::resetLights()
 {
-	LightSet::const_iterator I = mLights.begin();
-	LightSet::const_iterator I_end = mLights.end();
-	for (; I != I_end; ++I) {
+
+	LightSet::const_iterator lightsI_end = mLights.end();
+	for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
 		Ogre::Light* light = I->light;
 		if (light) {
 			///Try first with the manager to which the light belongs to. If none is found, try to see if we belong to a maneger. And if that's not true either, just delete it.
@@ -739,18 +726,41 @@ void Model::_notifyCurrentCamera(Ogre::Camera* cam)
 			}
 
 			// Notify any child objects
-			Ogre::Entity::ChildObjectList::iterator child_itr = mChildObjectList.begin();
 			Ogre::Entity::ChildObjectList::iterator child_itr_end = mChildObjectList.end();
-			for (; child_itr != child_itr_end; child_itr++) {
+			for (Ogre::Entity::ChildObjectList::iterator child_itr = mChildObjectList.begin(); child_itr != child_itr_end; child_itr++) {
 				child_itr->second->_notifyCurrentCamera(cam);
 			}
 
 			ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
 			for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
-				ParticleSystem* system = *I;
-				system->getOgreParticleSystem()->_notifyCurrentCamera(cam);
+				(*I)->getOgreParticleSystem()->_notifyCurrentCamera(cam);
+			}
+
+			LightSet::const_iterator lightsI_end = mLights.end();
+			for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
+				I->light->_notifyCurrentCamera(cam);
 			}
 		}
+	}
+}
+
+void Model::_notifyMoved()
+{
+	MovableObject::_notifyMoved();
+
+	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
+	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
+		(*I)->getEntity()->_notifyMoved();
+	}
+
+	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
+	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
+		(*I)->getOgreParticleSystem()->_notifyMoved();
+	}
+
+	LightSet::const_iterator lightsI_end = mLights.end();
+	for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
+		I->light->_notifyMoved();
 	}
 }
 
@@ -763,8 +773,12 @@ void Model::setUserObject(Ogre::UserDefinedObject *obj)
 	}
 	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
 	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
-		ParticleSystem* system = *I;
-		system->getOgreParticleSystem()->setUserObject(obj);
+		(*I)->getOgreParticleSystem()->setUserObject(obj);
+	}
+
+	LightSet::const_iterator lightsI_end = mLights.end();
+	for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
+		I->light->setUserObject(obj);
 	}
 }
 
@@ -777,9 +791,14 @@ void Model::setRenderQueueGroup(Ogre::RenderQueueGroupID queueID)
 	}
 	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
 	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
-		ParticleSystem* system = *I;
-		system->getOgreParticleSystem()->setRenderQueueGroup(queueID);
+		(*I)->getOgreParticleSystem()->setRenderQueueGroup(queueID);
 	}
+
+	LightSet::const_iterator lightsI_end = mLights.end();
+	for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
+		I->light->setRenderQueueGroup(queueID);
+	}
+
 }
 
 /** Overridden - see MovableObject.
@@ -851,8 +870,12 @@ void Model::_updateRenderQueue(Ogre::RenderQueue* queue)
 		}
 		ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
 		for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
-			ParticleSystem* system = *I;
-			system->getOgreParticleSystem()->_updateRenderQueue(queue);
+			(*I)->getOgreParticleSystem()->_updateRenderQueue(queue);
+		}
+
+		LightSet::const_iterator lightsI_end = mLights.end();
+		for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
+			I->light->_updateRenderQueue(queue);
 		}
 
 	}
@@ -880,8 +903,12 @@ void Model::setRenderingDistance(Ogre::Real dist)
 	}
 	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
 	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
-		ParticleSystem* system = *I;
-		system->getOgreParticleSystem()->setRenderingDistance(dist);
+		(*I)->getOgreParticleSystem()->setRenderingDistance(dist);
+	}
+
+	LightSet::const_iterator lightsI_end = mLights.end();
+	for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
+		I->light->setRenderingDistance(dist);
 	}
 }
 
@@ -891,6 +918,16 @@ void Model::setQueryFlags(unsigned long flags)
 	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
 	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
 		(*I)->getEntity()->setQueryFlags(flags);
+	}
+
+	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
+	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
+		(*I)->getOgreParticleSystem()->setQueryFlags(flags);
+	}
+
+	LightSet::const_iterator lightsI_end = mLights.end();
+	for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
+		I->light->setQueryFlags(flags);
 	}
 }
 
@@ -902,17 +939,33 @@ void Model::addQueryFlags(unsigned long flags)
 		(*I)->getEntity()->addQueryFlags(flags);
 	}
 
+	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
+	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
+		(*I)->getOgreParticleSystem()->addQueryFlags(flags);
+	}
+
+	LightSet::const_iterator lightsI_end = mLights.end();
+	for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
+		I->light->addQueryFlags(flags);
+	}
 }
 
 void Model::removeQueryFlags(unsigned long flags)
 {
-	//for now, only return. This is because this is often called at shutdown, when the entities already have been destroyed
-	//and we don't want segfaults
-	//	return;
 	MovableObject::removeQueryFlags(flags);
 	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
 	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
 		(*I)->getEntity()->removeQueryFlags(flags);
+	}
+
+	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
+	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
+		(*I)->getOgreParticleSystem()->removeQueryFlags(flags);
+	}
+
+	LightSet::const_iterator lightsI_end = mLights.end();
+	for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
+		I->light->removeQueryFlags(flags);
 	}
 
 }
@@ -926,10 +979,15 @@ void Model::visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRende
 				(*I)->getEntity()->visitRenderables(visitor, debugRenderables);
 			}
 		}
+
 		ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
 		for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
-			ParticleSystem* system = *I;
-			system->getOgreParticleSystem()->visitRenderables(visitor, debugRenderables);
+			(*I)->getOgreParticleSystem()->visitRenderables(visitor, debugRenderables);
+		}
+
+		LightSet::const_iterator lightsI_end = mLights.end();
+		for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
+			I->light->visitRenderables(visitor, debugRenderables);
 		}
 	}
 }
@@ -950,21 +1008,13 @@ void Model::_notifyAttached(Ogre::Node* parent, bool isTagPoint)
 
 	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
 	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
-		ParticleSystem* system = *I;
-		system->getOgreParticleSystem()->_notifyAttached(parent, isTagPoint);
+		(*I)->getOgreParticleSystem()->_notifyAttached(parent, isTagPoint);
 	}
-	//	{
-	//		LightSet::const_iterator I = mLights.begin();
-	//		LightSet::const_iterator I_end = mLights.end();
-	//		for (; I != I_end; ++I) {
-	//			Ogre::Light* light = I->light;
-	//			if (light) {
-	//				if (light->getParentNode() != parent) {
-	//					light->_notifyAttached(parent, isTagPoint);
-	//				}
-	//			}
-	//		}
-	//	}
+
+	LightSet::const_iterator lightsI_end = mLights.end();
+	for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
+		I->light->_notifyAttached(parent, isTagPoint);
+	}
 
 }
 
