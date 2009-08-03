@@ -43,18 +43,17 @@
 #include "../terrain/TerrainGenerator.h"
 #include "../terrain/ISceneManagerAdapter.h"
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-namespace Environment {
+namespace Environment
+{
 
-Forest::Forest()
-: mTrees(0)
-, mTreeLoader(0)
-, mEntityLoader(0)
+Forest::Forest() :
+	mTrees(0), mTreeLoader(0), mEntityLoader(0)
 {
 	Ogre::Root::getSingleton().addFrameListener(this);
 }
-
 
 Forest::~Forest()
 {
@@ -73,8 +72,8 @@ void Forest::initialize()
 		Ogre::Camera* camera = EmberOgre::getSingleton().getMainOgreCamera();
 
 		mTrees = new Forests::PagedGeometry();
-		mTrees->setCamera(camera);	//Set the camera so PagedGeometry knows how to calculate LODs
-		mTrees->setPageSize(64);	//Set the size of each page of geometry
+		mTrees->setCamera(camera); //Set the camera so PagedGeometry knows how to calculate LODs
+		mTrees->setPageSize(64); //Set the size of each page of geometry
 
 		::Forests::TBounds ogreBounds(Convert::toOgre(worldSize));
 		if (ogreBounds.width() != ogreBounds.height()) {
@@ -87,28 +86,25 @@ void Forest::initialize()
 			}
 		}
 		mTrees->setBounds(ogreBounds);
-	// 	mTrees->addDetailLevel<Forests::BatchPage>(150, 50);		//Use batches up to 150 units away, and fade for 30 more units
-	//  mTrees->addDetailLevel<Forests::DummyPage>(100, 0);		//Use batches up to 150 units away, and fade for 30 more units
-		mTrees->addDetailLevel<Forests::PassiveEntityPage>(150, 0);		//Use standard entities up to 150 units away, and don't fade since the PassiveEntityPage doesn't support this (yet)
-		mTrees->addDetailLevel<Forests::ImpostorPage>(500, 50);	//Use impostors up to 400 units, and for for 50 more units
+		// 	mTrees->addDetailLevel<Forests::BatchPage>(150, 50);		//Use batches up to 150 units away, and fade for 30 more units
+		//  mTrees->addDetailLevel<Forests::DummyPage>(100, 0);		//Use batches up to 150 units away, and fade for 30 more units
+		mTrees->addDetailLevel<Forests::PassiveEntityPage> (150, 0); //Use standard entities up to 150 units away, and don't fade since the PassiveEntityPage doesn't support this (yet)
+		mTrees->addDetailLevel<Forests::ImpostorPage> (500, 50); //Use impostors up to 400 units, and for for 50 more units
 
 		//Create a new TreeLoader2D object
 		mEntityLoader = new EmberEntityLoader(*mTrees, 64);
-	// 	mTreeLoader = new Forests::TreeLoader3D(mTrees, Convert::toOgre(worldSize));
-		mTrees->setPageLoader(mEntityLoader);	//Assign the "treeLoader" to be used to load geometry for the PagedGeometry instance
+		// 	mTreeLoader = new Forests::TreeLoader3D(mTrees, Convert::toOgre(worldSize));
+		mTrees->setPageLoader(mEntityLoader); //Assign the "treeLoader" to be used to load geometry for the PagedGeometry instance
 	}
 }
 
 void Forest::addTree(Ogre::Entity *entity, const Ogre::Vector3 &position, Ogre::Degree yaw, Ogre::Real scale)
 {
-	return;
-	if (mTreeLoader && mTrees)
-	{
+	if (mTreeLoader && mTrees) {
 		S_LOG_VERBOSE("Adding tree of entity type " << entity->getMesh()->getName() << " to position x: " << position.x << " y: " << position.y << " z: " << position.z << " and scale " << scale);
 		try {
 			mTreeLoader->addTree(entity, position, yaw, scale);
-		} catch (const std::exception& ex)
-		{
+		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when adding tree." << ex);
 		}
 	} else {
@@ -121,8 +117,7 @@ bool Forest::frameStarted(const Ogre::FrameEvent & evt)
 	if (mTrees) {
 		try {
 			mTrees->update();
-		} catch (const Ogre::Exception& ex)
-		{
+		} catch (const Ogre::Exception& ex) {
 			S_LOG_FAILURE("Error when updating forest. Will disable forest."<< ex);
 			delete mTreeLoader;
 			delete mEntityLoader;
@@ -152,5 +147,4 @@ void Forest::removeEmberEntity(EmberEntity* entity)
 }
 
 }
-
 

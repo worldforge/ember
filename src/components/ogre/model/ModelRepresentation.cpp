@@ -131,8 +131,7 @@ void ModelRepresentation::setModelPartShown(const std::string& partName, bool vi
 
 	if (visible) {
 		mModel.showPart(partName);
-	}
-	else {
+	} else {
 		mModel.hidePart(partName);
 	}
 
@@ -204,8 +203,8 @@ void ModelRepresentation::initFromModel()
 
 Ogre::Vector3 ModelRepresentation::getScale() const
 {
-	if (mModel.getParentSceneNode()) {
-		return mModel.getParentSceneNode()->_getDerivedScale();
+	if (mModel.getParentNode()) {
+		return mModel.getParentNode()->_getDerivedScale();
 	}
 	return Ogre::Vector3::UNIT_SCALE;
 }
@@ -272,14 +271,11 @@ void ModelRepresentation::entity_MovementModeChanged(EmberEntity::MovementMode n
 	const char * actionName;
 	if (newMode == EmberEntity::MM_WALKING) {
 		actionName = ACTION_WALK;
-	}
-	else if (newMode == EmberEntity::MM_RUNNING) {
+	} else if (newMode == EmberEntity::MM_RUNNING) {
 		actionName = ACTION_RUN;
-	}
-	else if (newMode == EmberEntity::MM_SWIMMING) {
+	} else if (newMode == EmberEntity::MM_SWIMMING) {
 		actionName = ACTION_SWIM;
-	}
-	else {
+	} else {
 		actionName = ACTION_STAND;
 	}
 
@@ -308,8 +304,7 @@ void ModelRepresentation::entity_MovementModeChanged(EmberEntity::MovementMode n
 			MotionManager::getSingleton().addAnimated(mEntity.getId(), this);
 			//				mCurrentMovementAction->getAnimations()->setEnabled(true);
 
-		}
-		else {
+		} else {
 			MotionManager::getSingleton().removeAnimated(mEntity.getId());
 		}
 	}
@@ -327,15 +322,13 @@ void ModelRepresentation::updateAnimation(Ogre::Real timeSlice)
 			mActiveAction->getAnimations().reset();
 			mActiveAction = 0;
 		}
-	}
-	else {
+	} else {
 		if (mCurrentMovementAction) {
 			bool continuePlay = false;
 			///Check if we're walking backward. This is a bit of a hack (we should preferrably have a separate animation for backwards walking.
 			if (mEntity.getVelocity().isValid() && static_cast<int> ((WFMath::Vector<3>(mEntity.getVelocity()).rotate((mEntity.getOrientation().inverse()))).x()) < 0) {
 				mCurrentMovementAction->getAnimations().addTime(-timeSlice, continuePlay);
-			}
-			else {
+			} else {
 				mCurrentMovementAction->getAnimations().addTime(timeSlice, continuePlay);
 			}
 		}
