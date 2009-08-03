@@ -275,21 +275,16 @@ IAttachmentControlDelegate* EmberEntity::getAttachmentControlDelegate() const
 }
 void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 {
-	if (getLocation() == oldLocation) {
-		///If it's the same location, don't do anything, but do add a warning to the log since this isn't supposed to happen.
-		S_LOG_WARNING( "Same new location as old for entity: " << this->getId() << " (" << this->getName() << ")" );
-	}
 	Eris::Entity::onLocationChanged(oldLocation);
 
 	///Get the new location. We use getEmberLocation() since we always know that all entities are of type EmberEntity.
 	EmberEntity* newLocationEntity = getEmberLocation();
 
-	if (newLocationEntity) {
+	if (newLocationEntity && newLocationEntity->getAttachment()) {
 		try {
 			IEntityAttachment* newAttachment = newLocationEntity->getAttachment()->attachEntity(*this);
 			setAttachment(newAttachment);
-			//If we're not initialized, we'll get a bounding box update soon, so we won't need to update the scale yet.
-			if (newAttachment && isInitialized()) {
+			if (newAttachment) {
 				newAttachment->updateScale();
 			}
 		} catch (const std::exception& ex) {
@@ -586,9 +581,12 @@ IGraphicalRepresentation* EmberEntity::getGraphicalRepresentation() const
 void EmberEntity::setGraphicalRepresentation(IGraphicalRepresentation* graphicalRepresentation)
 {
 	if (graphicalRepresentation != mGraphicalRepresentation) {
+		//We must delete the attachment before we delete the graphical representation.
+		setAttachment(0);
 		delete mGraphicalRepresentation;
+		mGraphicalRepresentation = graphicalRepresentation;
+		onLocationChanged(getLocation()); //This is needed to generate a new attachment.
 	}
-	mGraphicalRepresentation = graphicalRepresentation;
 }
 
 void EmberEntity::setAttachment(IEntityAttachment* attachment)
