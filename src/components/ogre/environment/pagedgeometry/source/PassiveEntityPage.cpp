@@ -47,7 +47,7 @@ PassiveEntityPage::~PassiveEntityPage()
 
 void PassiveEntityPage::addEntity(Ogre::Entity *ent, const Ogre::Vector3 &position, const Ogre::Quaternion &rotation, const Ogre::Vector3 &scale, const Ogre::ColourValue &color)
 {
-	mEntities.push_back(std::pair<SceneNode*, Entity*>(ent->getParentSceneNode(), ent));
+	mEntities.push_back(EntityStore::value_type(ent->getParentNode(), ent));
 /*	ent->setVisible(true);
 	ent->getParentSceneNode()->detachObject(ent);*/
 }

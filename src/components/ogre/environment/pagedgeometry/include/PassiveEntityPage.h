@@ -27,7 +27,7 @@ namespace Forests {
 class PassiveEntityPage: public GeometryPage
 {
 public:
-	typedef std::vector<std::pair<Ogre::SceneNode*, Ogre::Entity*> > EntityStore;
+	typedef std::vector<std::pair<Ogre::Node*, Ogre::Entity*> > EntityStore;
 
 	void init(::Forests::PagedGeometry *geom, const Ogre::Any &data);
 	PassiveEntityPage();
