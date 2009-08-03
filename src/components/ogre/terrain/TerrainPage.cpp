@@ -250,7 +250,9 @@ const TerrainPageSurface* TerrainPage::getSurface() const
 
 void TerrainPage::getPlantsForArea(PlantAreaQuery& query) const
 {
-	mPageFoliage->getPlantsForArea(*mGeometry, query);
+	if (mGenerator.isFoliageShown()) {
+		mPageFoliage->getPlantsForArea(*mGeometry, query);
+	}
 }
 
 
