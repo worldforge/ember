@@ -37,7 +37,7 @@ class ConfigListener;
 
 /**
  @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
- All classes that whishes to use the ConfigListener class to listen for configuration changes must inherit from this class.
+ All classes that wishes to use the ConfigListener class to listen for configuration changes must inherit from this class.
  Call registerConfigListener to register new listeners.
 
  All listeners will be automatically destroyed when this class is destroyed.

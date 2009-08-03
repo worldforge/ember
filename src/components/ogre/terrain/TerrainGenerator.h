@@ -22,6 +22,7 @@
 
 #include "components/ogre/Types.h"
 #include "framework/ConsoleObject.h"
+#include "services/config/ConfigListenerContainer.h"
 
 #include <wfmath/point.h> //needed for the terrain position
 
@@ -108,7 +109,7 @@ class TerrainDefPoint
  * It works closely with EmberTerrainPageSource.
  *
  */
-class TerrainGenerator : public Ogre::FrameListener, public sigc::trackable, public Ember::ConsoleObject
+class TerrainGenerator : public Ogre::FrameListener, public sigc::trackable, public Ember::ConsoleObject, public Ember::ConfigListenerContainer
 {
 public:
 
@@ -366,6 +367,13 @@ public:
 	 */
 	unsigned int getFoliageBatchSize() const;
 
+	/**
+	 *    @brief Whether the foliage should be shown or not.
+	 *    @note If the GPU doesn't support the required shaders, this will return false even though it's set in the config.
+	 * @return
+	 */
+	bool isFoliageShown() const;
+
 protected:
 	/**
 	 * @brief Encapsules a shader update request.
@@ -462,6 +470,12 @@ protected:
 
 
 	/**
+	 * @brief True if foliage should be shown.
+	 */
+	bool mIsFoliageShown;
+
+
+	/**
 	 * @brief Reloads the terrain found at the specified positions.
 	 * Calling this method will update both the internal Mercator heightfield data as well as the Ogre graphical representation.
 	 * @param positions A vector of terrain positions, in world space. The terrain found at these positions will be reloaded. Note that if there's any pages between these positions, these will not be updated.
@@ -472,25 +486,12 @@ protected:
 	void updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate);
 	void updateEntityPosition(EmberEntity* entity, const std::set<TerrainPage*>& pagesToUpdate);
 
-
-	/**
-	 *    @brief Whether the foliage should be shown or not.
-	 *    @note If the GPU doesn't support the required shaders, this will return false even though it's set in the config.
-	 * @return
-	 */
-	bool isFoliageShown() const;
-
 	/**
 	 *    @brief Iterates through all TerrainPages and shows or hides the foliage.
 	 */
 	void updateFoliageVisibility();
 
-	/**
-	 *    @brief Catch changes to the configuration.
-	 * @param section
-	 * @param key
-	 */
-	void ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key);
+	void config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 	/**
 	Listen to changes in areas.
@@ -529,6 +530,7 @@ protected:
 	 * @param shaderManager The shader manager, which contains information on the graphics level set.
 	 */
 	void shaderManager_LevelChanged(ShaderManager* shaderManager);
+
 
 };
 

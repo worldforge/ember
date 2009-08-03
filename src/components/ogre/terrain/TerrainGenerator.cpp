@@ -97,6 +97,7 @@ mHeightMax(std::numeric_limits<Ogre::Real>::min()),
 mHeightMin(std::numeric_limits<Ogre::Real>::max()),
 mHasTerrainInfo(false),
 mSceneManagerAdapter(0),
+mIsFoliageShown(false),
 mFoliageBatchSize(32)
 {
 
@@ -105,11 +106,9 @@ mFoliageBatchSize(32)
 	loadTerrainOptions();
 	mTerrain = new Mercator::Terrain(Mercator::Terrain::SHADED);
 
-	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
-
 	Ogre::Root::getSingleton().addFrameListener(this);
 
-	configSrv->EventChangedConfigItem.connect(sigc::mem_fun(*this, &TerrainGenerator::ConfigService_EventChangedConfigItem));
+	registerConfigListener("graphics", "foliage", sigc::mem_fun(*this, &TerrainGenerator::config_Foliage));
 
 	EmberOgre::getSingleton().getShaderManager()->EventLevelChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainGenerator::shaderManager_LevelChanged), EmberOgre::getSingleton().getShaderManager()));
 }
@@ -535,21 +534,19 @@ void TerrainGenerator::updateFoliageVisibility()
 	}
 }
 
-void TerrainGenerator::ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key)
+void TerrainGenerator::config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
-	if (section == "graphics") {
-		if (key == "foliage") {
-			updateFoliageVisibility();
-		}
+	if (GpuProgramManager::getSingleton().isSyntaxSupported("arbvp1") && variable.is_bool()) {
+		mIsFoliageShown = static_cast<bool>(variable);
+	} else {
+		mIsFoliageShown = false;
 	}
+	updateFoliageVisibility();
 }
 
 bool TerrainGenerator::isFoliageShown() const
 {
-	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("graphics", "foliage") && GpuProgramManager::getSingleton().isSyntaxSupported("arbvp1")) {
-		return static_cast<bool>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("graphics", "foliage"));
-	}
-	return false;
+	return mIsFoliageShown;
 }
 
 
