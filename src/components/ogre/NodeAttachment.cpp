@@ -66,6 +66,11 @@ void NodeAttachment::setupListeners()
 
 void NodeAttachment::entity_VisibilityChanged(bool visible)
 {
+	setVisible(visible);
+}
+
+void NodeAttachment::setVisible(bool visible)
+{
 	mNodeProvider->setVisible(visible);
 }
 

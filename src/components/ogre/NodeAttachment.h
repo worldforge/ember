@@ -127,6 +127,12 @@ protected:
 	 */
 	void entity_VisibilityChanged(bool visible);
 
+	/**
+	 * @brief Sets the visibility of the attachment.
+	 * The implementation in NodeAttachment will ask the node provider to set the visibility, but there's an option for any subclass to do additional work.
+	 */
+	virtual void setVisible(bool visible);
+
 };
 
 }

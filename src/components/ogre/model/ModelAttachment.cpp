@@ -131,10 +131,10 @@ void ModelAttachment::getOffsetForContainedNode(const IEntityAttachment& attachm
 {
 	///if the model has an offset specified, use that, else just send to the base class
 	const Ogre::Vector3& modelOffset(mModelRepresentation.getModel().getDefinition()->getContentOffset());
-	if (modelOffset != Ogre::Vector3::ZERO)
-	{
+	if (modelOffset != Ogre::Vector3::ZERO) {
 		offset = Convert::toWF<WFMath::Vector<3> >(modelOffset);
-	} else {
+	}
+	else {
 		//If the attachment is on a fitting, don't do any adjustment
 		for (ModelFittingStore::iterator I = mFittings.begin(); I != mFittings.end(); ++I) {
 			if (I->second->getChildEntityId() == attachment.getAttachedEntity().getId()) {
@@ -142,6 +142,16 @@ void ModelAttachment::getOffsetForContainedNode(const IEntityAttachment& attachm
 			}
 		}
 		NodeAttachment::getOffsetForContainedNode(attachment, localPosition, offset);
+	}
+}
+
+void ModelAttachment::setVisible(bool visible)
+{
+	NodeAttachment::setVisible(visible);
+	//We set the visibility of the Model here too, even though one might think that it would suffice with the call to NodeAttachment (since that will tell the node provider to set the visibility).
+	//However, the issue is that even though the Model has been detached from the scene graph, the light will still be taken into account unless they have their visibility turned off. Therefore the call to Model::setVisible.
+	if (mModelMount) {
+		mModelMount->getModel().setVisible(visible);
 	}
 }
 
@@ -240,7 +250,8 @@ bool ModelAttachment::getVisualize(const std::string& visualization) const
 	if (visualization == "OgreBBox") {
 		if (mModelMount && mModelMount->getNodeProvider()) {
 			return mModelMount->getNodeProvider()->getVisualize(visualization);
-		} else {
+		}
+		else {
 			return false;
 		}
 	}

@@ -101,6 +101,8 @@ protected:
 
 	void detachFitting(EmberEntity& entity);
 	void createFitting(const std::string& fittingName, const std::string& entityId);
+
+	virtual void setVisible(bool visible);
 };
 
 }
