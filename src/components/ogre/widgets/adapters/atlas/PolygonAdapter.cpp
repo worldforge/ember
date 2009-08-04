@@ -28,6 +28,7 @@
 
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/Convert.h"
+#include "components/ogre/NodeAttachment.h"
 #include "components/ogre/terrain/TerrainGenerator.h"
 #include "components/ogre/manipulation/PolygonPointPickListener.h"
 #include "components/ogre/camera/MainCamera.h"
@@ -38,16 +39,20 @@
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-namespace Gui {
+namespace Gui
+{
 
-namespace Adapters {
+namespace Adapters
+{
 
-namespace Atlas {
+namespace Atlas
+{
 
-EntityPolygonPositionProvider::EntityPolygonPositionProvider(EmberEntity& entity)
-: mEntity(entity)
+EntityPolygonPositionProvider::EntityPolygonPositionProvider(EmberEntity& entity) :
+	mEntity(entity)
 {
 }
 
@@ -68,9 +73,8 @@ float EntityPolygonPositionProvider::getHeightForPosition(const WFMath::Point<2>
 	return 0;
 }
 
-
-PolygonAdapter::PolygonAdapter(const ::Atlas::Message::Element& element, CEGUI::PushButton* showButton, EmberEntity* entity)
-: AdapterBase(element), mShowButton(showButton), mPolygon(0), mPickListener(0), mPointMovement(0), mEntity(entity), mPositionProvider(0)
+PolygonAdapter::PolygonAdapter(const ::Atlas::Message::Element& element, CEGUI::PushButton* showButton, EmberEntity* entity) :
+	AdapterBase(element), mShowButton(showButton), mPolygon(0), mPickListener(0), mPointMovement(0), mEntity(entity), mPositionProvider(0)
 {
 
 	if (entity) {
@@ -83,7 +87,6 @@ PolygonAdapter::PolygonAdapter(const ::Atlas::Message::Element& element, CEGUI::
 
 	updateGui(mOriginalElement);
 }
-
 
 PolygonAdapter::~PolygonAdapter()
 {
@@ -104,9 +107,19 @@ void PolygonAdapter::updateGui(const ::Atlas::Message::Element& element)
 {
 }
 
-bool PolygonAdapter::showButton_Clicked(const CEGUI::EventArgs& e) {
+bool PolygonAdapter::showButton_Clicked(const CEGUI::EventArgs& e)
+{
 	toggleDisplayOfPolygon();
 	return true;
+}
+
+Ogre::SceneNode* PolygonAdapter::getEntitySceneNode() const
+{
+	NodeAttachment* nodeAttachment = dynamic_cast<NodeAttachment*> (mEntity->getAttachment());
+	if (nodeAttachment) {
+		return dynamic_cast<Ogre::SceneNode*> (nodeAttachment->getNode());
+	}
+	return 0;
 }
 
 void PolygonAdapter::toggleDisplayOfPolygon()
@@ -115,12 +128,12 @@ void PolygonAdapter::toggleDisplayOfPolygon()
 		if (!mEntity) {
 			S_LOG_WARNING("There's no entity attached to the PolygonAdapter, and the polygon can't thus be shown.");
 		} else {
+			//It's important that we do the call to getChangedElement before we create and set mPolygon, since if that's set, the values from there will be used instead of the original atlas values.
 			::Atlas::Message::Element areaElem(getChangedElement());
 
-			Ogre::SceneNode* entitySceneNode = EmberOgre::getSingleton().getSceneManager()->getSceneNode("entity_" + mEntity->getId()); //HACK
+			Ogre::SceneNode* entitySceneNode = getEntitySceneNode();
 			if (entitySceneNode) {
 				mPolygon = new ::EmberOgre::Manipulation::Polygon(entitySceneNode, mPositionProvider);
-
 
 				if (areaElem.isMap()) {
 					try {
@@ -135,6 +148,7 @@ void PolygonAdapter::toggleDisplayOfPolygon()
 				} else {
 					createNewPolygon();
 				}
+
 			}
 		}
 	} else {
@@ -160,7 +174,7 @@ void PolygonAdapter::createNewPolygon()
 {
 	delete mPolygon;
 	mPolygon = 0;
-	Ogre::SceneNode* entitySceneNode = EmberOgre::getSingleton().getSceneManager()->getSceneNode("entity_" + mEntity->getId()); //HACK
+	Ogre::SceneNode* entitySceneNode = getEntitySceneNode();
 	if (entitySceneNode) {
 		mPolygon = new ::EmberOgre::Manipulation::Polygon(entitySceneNode, mPositionProvider);
 		WFMath::Polygon<2> poly;
